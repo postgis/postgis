@@ -1386,6 +1386,31 @@ BOX3D	*bbox_of_geometry(GEOMETRY *geom)
 }
 
 
+//given wkt and SRID, return a geometry 
+//actually we cheat, postgres will convert the string to a geometry for us...
+PG_FUNCTION_INFO_V1(geometry_from_text);
+Datum geometry_from_text(PG_FUNCTION_ARGS)
+{
+	GEOMETRY		      *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	int32	   			SRID = PG_GETARG_INT32(1);
+
+	GEOMETRY	*result;
+
+	result = (GEOMETRY *) palloc(geom1->size);
+	memcpy(result,geom1, geom1->size);
+
+	if (result != NULL)
+	{
+		result->SRID = SRID;
+	}
+	else
+	{
+		PG_RETURN_NULL();
+	}
+	PG_RETURN_POINTER(result);
+}
+
+
 
 // Parse a geometry object
 //
@@ -1411,12 +1436,45 @@ Datum geometry_in(PG_FUNCTION_ARGS)
 		int32		*offsets;
 		int		t;
 		int		obj_parse_offset;
+		int		nitems;
+		int32		SRID;
+		double	scale,offx,offy;
 
-
+printf("str=%s\n",str);
 
 		//trim white
 	while (isspace((unsigned char) *str))
 		str++;
+
+	//test to see if it starts with a SRID=
+	
+	SRID = -1;
+	scale = offx = offy = 0;
+
+	if (strstr(str,"SRID="))
+	{
+		//its spatially located
+		nitems = sscanf(str,"SRID=%i;",&SRID);
+		if (nitems !=1 )
+		{
+			//error
+			elog(ERROR,"couldnt parse objects in GEOMETRY (SRID related)\n");
+			PG_RETURN_NULL() ;
+		}
+		//delete first part of string
+		str = strchr(str,';');
+		if (str != NULL)
+			str++;
+	}
+
+
+
+	if ((str==NULL) || (strlen(str) == 0) )
+	{
+		elog(ERROR,"couldnt parse objects in GEOMETRY (null string)\n");
+		PG_RETURN_NULL() ;
+	}
+	
 
 //printf("geometry_in got string ''\n");
 
@@ -1573,17 +1631,77 @@ Datum geometry_in(PG_FUNCTION_ARGS)
 	
 
 //printf("returning from geometry_in, nobjs = %i\n", nobjs);
+
+
+		geometry->SRID = SRID;
+		geometry->scale = scale;
+		geometry->offsetX = offx;
+		geometry->offsetY = offy;
 	PG_RETURN_POINTER(geometry);
 }
 
+PG_FUNCTION_INFO_V1(srid_geom);
+Datum srid_geom(PG_FUNCTION_ARGS)
+{ 
+	GEOMETRY		   *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+	PG_RETURN_INT32(geom1->SRID);
+}
 
 
-//Take internal rep of geometry, output string
+//Take internal rep of geometry, output string in the form of
+//  'SRID=%i;<wkt>'  ie.  'SRID=5;POINT(1 1)'
 PG_FUNCTION_INFO_V1(geometry_out);
 Datum geometry_out(PG_FUNCTION_ARGS)
 {
-	char	*result;
-	GEOMETRY  *geometry = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+		GEOMETRY		   *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+		char				*wkt;
+		char				*result;
+		int				len;
+
+		wkt = geometry_to_text(geom1);
+		len = strlen(wkt) + 6+ 25 + 1;
+		result = palloc(len);//extra space for SRID
+		memset(result, 0, len);	//zero everything out
+
+		sprintf(result,"SRID=%i;%s",geom1->SRID,wkt);
+
+		pfree(wkt);
+
+		PG_RETURN_CSTRING(result);
+		
+}
+
+//Take internal rep of geometry, output string
+PG_FUNCTION_INFO_V1(astext_geometry);
+Datum astext_geometry(PG_FUNCTION_ARGS)
+{
+	GEOMETRY		   *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char			   *wkt;
+	char			   *result;
+	int			len;
+
+	wkt = geometry_to_text(geom1);
+	len = strlen(wkt) + 5;
+		
+	result= palloc(len);
+	*((int *) result) = len;
+
+	memcpy(result +4, wkt, len-4);
+
+	pfree(wkt);
+
+	PG_RETURN_CSTRING(result);
+}
+
+
+//Take internal rep of geometry, output string
+
+
+//takes a GEOMETRY and returns a WKT representation
+char *geometry_to_text(GEOMETRY  *geometry)
+{
+	char		*result;
 	int		t,u;
 	int32		*offsets;
 	char		*obj;
@@ -1784,7 +1902,7 @@ Datum geometry_out(PG_FUNCTION_ARGS)
 
 	if (!(briefmode))
 		strcat(result,")");
-	PG_RETURN_CSTRING(result);
+	return(result);
 }
 
 
@@ -1827,6 +1945,10 @@ Datum get_geometry_of_bbox(PG_FUNCTION_ARGS)
 	geom->size = sizeof(GEOMETRY);
 	geom->type = BBOXONLYTYPE;
 	geom->nobjs = -1;
+	geom->SRID = -1;
+	geom->scale = 1.0;
+	geom->offsetX = 0.0;
+	geom->offsetY = 0.0;
 	memcpy(&(geom->bvol),bbox, sizeof(BOX3D) );
 
 
@@ -2667,10 +2789,12 @@ printf("requested NDR\n");
 // if you want to change the object's type to something else (ie GEOMETRYCOLLECTION), do
 // that after with geom->type = GEOMETRYCOLLECTION
 // this does  calculate the bvol 
+// 
+// sets the SRID and grid info to the given values
 //
 // do not call this with type = GEOMETRYCOLLECTION
 
-GEOMETRY	*make_oneobj_geometry(int sub_obj_size, char *sub_obj, int type, bool is3d)
+GEOMETRY	*make_oneobj_geometry(int sub_obj_size, char *sub_obj, int type, bool is3d,int SRID, double scale, double offx, double offy)
 {
 	int size = sizeof(GEOMETRY) + 4 + sub_obj_size ;
 	GEOMETRY	*result = palloc(size);
@@ -2681,6 +2805,9 @@ GEOMETRY	*make_oneobj_geometry(int sub_obj_size, char *sub_obj, int type, bool i
 	result->nobjs = 1;
 	result->type = type;
 	result->is3d = is3d;
+
+
+	
 
 	result->objType[0] = type;
 	if (type == MULTIPOINTTYPE)

@@ -168,6 +168,10 @@ typedef struct
 typedef struct
 {
 	int32		size;		// postgres variable-length type requirement
+	int32		SRID;		// spatial reference system id
+	double	offsetX;	// for precision grid (future improvement)
+	double	offsetY;	// for precision grid (future improvement)
+	double	scale;	// for precision grid (future improvement)
 	int32		type;		// this type of geometry
 	bool		is3d;		// true if the points are 3d (only for output)
 	BOX3D		bvol;		// bounding volume of all the geo objects
@@ -308,12 +312,19 @@ bool point_in_poly(POINT3D *p, POLYGON3D *poly);
 
 void print_point_debug(POINT3D *p);
 
+
+char *geometry_to_text(GEOMETRY  *geometry);
+
 //exposed to psql
 
 Datum box3d_in(PG_FUNCTION_ARGS);
 Datum box3d_out(PG_FUNCTION_ARGS);
 Datum geometry_in(PG_FUNCTION_ARGS);
 Datum geometry_out(PG_FUNCTION_ARGS);
+
+Datum astext_geometry(PG_FUNCTION_ARGS);
+
+
 Datum get_bbox_of_geometry(PG_FUNCTION_ARGS);
 Datum get_geometry_of_bbox(PG_FUNCTION_ARGS);
 Datum box3d_same(PG_FUNCTION_ARGS);
@@ -386,6 +397,8 @@ Datum point_inside_circle(PG_FUNCTION_ARGS);
 Datum distance(PG_FUNCTION_ARGS);
 
 Datum expand_bbox(PG_FUNCTION_ARGS);
+Datum srid_geom(PG_FUNCTION_ARGS);
+Datum geometry_from_text(PG_FUNCTION_ARGS);
 
 //for GIST index
 typedef char* (*BINARY_UNION)(char*, char*, int*);

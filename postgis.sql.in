@@ -1,5 +1,28 @@
 BEGIN TRANSACTION;
 
+CREATE FUNCTION POSTGIS_VERSION() returns char
+as 'select \'@POSTGIS_VERSION@\'::char as version'
+LANGUAGE 'sql';
+
+-- create the table with spatial referencing information in it. spec, section 3.2.1.2
+
+create table spatial_ref_sys ( srid integer not null primary key, auth_name varchar(256), auth_srid integer, srtext varchar(2048) );
+
+-- create the metadata table.  spec, section 3.2.2.1
+
+create table geometry_columns (
+f_table_catalog varchar(256) not null,
+f_table_schema  varchar(256) not null,
+f_table_name    varchar(256) not null,
+f_geometry_column varchar(256) not null,
+coord_dimension  integer ,
+srid		integer,
+CONSTRAINT GC_PK primary key ( f_table_catalog,f_table_schema, f_table_name,f_geometry_column)
+-- # ,CONSTRAINT IS_REF1 FOREIGN KEY (f_table_name) 
+-- # 	REFERENCES pg_class (relname) ON UPDATE CASCADE ON DELETE CASCADE
+
+) ;
+
 
 
 CREATE FUNCTION BOX3D_in(opaque)
@@ -197,7 +220,25 @@ CREATE FUNCTION distance(GEOMETRY,GEOMETRY)
    AS '@MODULE_FILENAME@'
 	     LANGUAGE 'c'  with (isstrict);
 
+CREATE FUNCTION astext(geometry)
+   RETURNS TEXT
+   AS '@MODULE_FILENAME@','astext_geometry'
+	     LANGUAGE 'c'  with (isstrict);
 
+CREATE FUNCTION srid(geometry)
+   RETURNS INT4
+   AS '@MODULE_FILENAME@','srid_geom'
+	     LANGUAGE 'c'  with (isstrict);
+
+CREATE FUNCTION geometryfromtext(geometry,int4)
+   RETURNS geometry
+   AS '@MODULE_FILENAME@','geometry_from_text'
+	     LANGUAGE 'c'  with (isstrict);
+
+CREATE FUNCTION setSRID(geometry,int4)
+   RETURNS geometry
+   AS '@MODULE_FILENAME@','geometry_from_text'
+	     LANGUAGE 'c'  with (isstrict);
 
 ------- spheroid calcs
 

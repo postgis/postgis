@@ -42,8 +42,7 @@ shp2pgsql:
 include $(top_srcdir)/src/Makefile.shlib
 
 $(NAME).sql: $(NAME).sql.in
-	sed -e 's:@MODULE_FILENAME@:$(libdir)/$(shlib):g' < $< > $@
-
+	sed -e 's:@MODULE_FILENAME@:$(libdir)/$(shlib):g;s:@POSTGIS_VERSION@:$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION):g' < $< > $@
 
 install: all installdirs install-lib
 	$(INSTALL_DATA) $(srcdir)/README.$(NAME)  $(docdir)/contrib
