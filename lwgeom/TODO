@@ -3,8 +3,6 @@
 
 - Make collect() avoid flatting
  
-- Make GEOS2POSTGIS() avoid flatting
-
 - Flatten(geometry) 
 
 - F linemerge(linestring, linestring)
