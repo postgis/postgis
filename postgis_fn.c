@@ -11,6 +11,10 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.30  2003/10/29 15:53:10  strk
+ * geoscentroid() removed. both geos and pgis versions are called 'centroid'.
+ * only one version will be compiled based on USE_GEOS flag.
+ *
  * Revision 1.29  2003/10/28 16:57:35  strk
  * Added collect_garray() function.
  *
@@ -2255,6 +2259,7 @@ Datum isclosed(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(TRUE);
 }
 
+#ifndef USE_GEOS
 PG_FUNCTION_INFO_V1(centroid);
 Datum centroid(PG_FUNCTION_ARGS)
 {
@@ -2310,6 +2315,7 @@ Datum centroid(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 
 }
+#endif // ! defined USE_GEOS
 
 // max_distance(geom,geom)  (both geoms must be linestrings)
 //find max distance between l1 and l2

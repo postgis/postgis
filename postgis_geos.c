@@ -10,6 +10,10 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.20  2003/10/29 15:53:10  strk
+ * geoscentroid() removed. both geos and pgis versions are called 'centroid'.
+ * only one version will be compiled based on USE_GEOS flag.
+ *
  * Revision 1.19  2003/10/29 13:59:40  strk
  * Added geoscentroid function.
  *
@@ -201,8 +205,6 @@ Datum issimple(PG_FUNCTION_ARGS);
 Datum isring(PG_FUNCTION_ARGS);
 Datum geomequals(PG_FUNCTION_ARGS);
 Datum pointonsurface(PG_FUNCTION_ARGS);
-Datum geoscentroid(PG_FUNCTION_ARGS);
-
 
 
 Geometry *POSTGIS2GEOS(GEOMETRY *g);
@@ -745,8 +747,8 @@ Datum pointonsurface(PG_FUNCTION_ARGS)
 		PG_RETURN_POINTER(result);
 }
 
-PG_FUNCTION_INFO_V1(geoscentroid);
-Datum geoscentroid(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(centroid);
+Datum centroid(PG_FUNCTION_ARGS)
 {
 	GEOMETRY *geom, *result;
 	Geometry *geosgeom, *geosresult;
@@ -1849,13 +1851,6 @@ PG_FUNCTION_INFO_V1(pointonsurface);
 Datum pointonsurface(PG_FUNCTION_ARGS)
 {
 	elog(ERROR,"pointonsurface:: operation not implemented - compile PostGIS with GEOS support");
-	PG_RETURN_NULL(); // never get here
-}
-
-PG_FUNCTION_INFO_V1(pointonsurface);
-Datum geoscentroid(PG_FUNCTION_ARGS)
-{
-	elog(ERROR,"geoscentroid:: operation not implemented - compile PostGIS with GEOS support");
 	PG_RETURN_NULL(); // never get here
 }
 
