@@ -8,6 +8,8 @@ PostGIS 1.0.0?
 	  for performance improvement
 	- new performance tips chapter in manual
 	- BUILDDATE extraction made more portable
+	- fixed bogus 72 index bindings
+	- prefixed DEBUG macros with PGIS_ to avoid clash with pgsql one
 
 PostGIS 1.0.0RC2
 2005/01/26
