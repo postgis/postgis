@@ -712,7 +712,8 @@ Datum lwgeom_box_penalty(PG_FUNCTION_ARGS)
 #endif
 
 
-	ud = DirectFunctionCall2(box2d_union, origentry->key, newentry->key);
+	ud = DirectFunctionCall2(BOX2D_union, origentry->key, newentry->key);
+	//ud = box2d_union(origentry->key, newentry->key);
 	tmp1 = size_box2d_double(ud);
 	if (DatumGetPointer(ud) != NULL)
 		pfree(DatumGetPointer(ud));
@@ -733,7 +734,8 @@ Datum lwgeom_box_penalty(PG_FUNCTION_ARGS)
 		BOX2DFLOAT4 *a, *b,*c;
 		a = (BOX2DFLOAT4*) DatumGetPointer(origentry->key);
 		b = (BOX2DFLOAT4*) DatumGetPointer(newentry->key);
-		c = (BOX2DFLOAT4*) DatumGetPointer(DirectFunctionCall2(box2d_union, origentry->key, newentry->key));
+		//c = (BOX2DFLOAT4*) DatumGetPointer(DirectFunctionCall2(box2d_union, origentry->key, newentry->key));
+		c = box2d_union(origentry->key, newentry->key);
 		//elog(NOTICE,"lwgeom_box_penalty -- a = <%.16g %.16g,%.16g %.16g>", a->xmin, a->ymin, a->xmax, a->ymax);
 		//elog(NOTICE,"lwgeom_box_penalty -- b = <%.16g %.16g,%.16g %.16g>", b->xmin, b->ymin, b->xmax, b->ymax);
 		//elog(NOTICE,"lwgeom_box_penalty -- c = <%.16g %.16g,%.16g %.16g>", c->xmin, c->ymin, c->xmax, c->ymax);

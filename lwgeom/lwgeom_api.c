@@ -720,6 +720,36 @@ BOX3D *pointArray_bbox(const POINTARRAY *pa)
 	return result;
 }
 
+// calculate the 2d bounding box of a set of points
+// write result to the provided BOX2DFLOAT4
+// Return 0 if bounding box is NULL (empty geom)
+int
+ptarray_compute_bbox_p(const POINTARRAY *pa, BOX2DFLOAT4 *result)
+{
+	int t;
+	POINT2D *pt;
+
+	if (pa->npoints == 0) return 0;
+
+	pt = (POINT2D *)getPoint(pa, 0);
+
+	result->xmin = pt->x;
+	result->xmax = pt->x;
+	result->ymin = pt->y;
+	result->ymax = pt->y;
+
+	for (t=1;t<pa->npoints;t++)
+	{
+		pt = (POINT2D *)getPoint(pa, t);
+		if (pt->x < result->xmin) result->xmin = pt->x;
+		if (pt->y < result->ymin) result->ymin = pt->y;
+		if (pt->x > result->xmax) result->xmax = pt->x;
+		if (pt->y > result->ymax) result->ymax = pt->y;
+	}
+
+	return 1;
+}
+
 //size of point represeneted in the POINTARRAY
 // 16 for 2d, 24 for 3d, 32 for 4d
 int
@@ -2530,3 +2560,82 @@ ptarray_isccw(const POINTARRAY *pa)
 	else return 1;
 }
 
+// returns a BOX2DFLOAT4 that encloses b1 and b2
+// combine_boxes(NULL,A) --> A
+// combine_boxes(A,NULL) --> A
+// combine_boxes(A,B) --> A union B
+BOX2DFLOAT4 *
+box2d_union(BOX2DFLOAT4 *b1, BOX2DFLOAT4 *b2)
+{
+	BOX2DFLOAT4 *result;
+
+	if ( (b1 == NULL) && (b2 == NULL) )
+	{
+		return NULL;
+	}
+
+	result = lwalloc(sizeof(BOX2DFLOAT4));
+
+	if  (b1 == NULL)
+	{
+		memcpy(result, b2, sizeof(BOX3D));
+		return result;
+	}
+	if (b2 == NULL)
+	{
+		memcpy(result, b1, sizeof(BOX3D));
+		return result;
+	}
+
+	if (b1->xmin < b2->xmin) result->xmin = b1->xmin;
+	else result->xmin = b2->xmin;
+
+	if (b1->ymin < b2->ymin) result->ymin = b1->ymin;
+	else result->ymin = b2->ymin;
+
+	if (b1->xmax > b2->xmax) result->xmax = b1->xmax;
+	else result->xmax = b2->xmax;
+
+	if (b1->ymax > b2->ymax) result->ymax = b1->ymax;
+	else result->ymax = b2->ymax;
+
+	return result;
+}
+
+// combine_boxes(NULL,A) --> A
+// combine_boxes(A,NULL) --> A
+// combine_boxes(A,B) --> A union B
+// ubox may be one of the two args...
+int
+box2d_union_p(BOX2DFLOAT4 *b1, BOX2DFLOAT4 *b2, BOX2DFLOAT4 *ubox)
+{
+	if ( (b1 == NULL) && (b2 == NULL) )
+	{
+		return 0;
+	}
+
+	if  (b1 == NULL)
+	{
+		memcpy(ubox, b2, sizeof(BOX3D));
+		return 1;
+	}
+	if (b2 == NULL)
+	{
+		memcpy(ubox, b1, sizeof(BOX3D));
+		return 1;
+	}
+
+	if (b1->xmin < b2->xmin) ubox->xmin = b1->xmin;
+	else ubox->xmin = b2->xmin;
+
+	if (b1->ymin < b2->ymin) ubox->ymin = b1->ymin;
+	else ubox->ymin = b2->ymin;
+
+	if (b1->xmax > b2->xmax) ubox->xmax = b1->xmax;
+	else ubox->xmax = b2->xmax;
+
+	if (b1->ymax > b2->ymax) ubox->ymax = b1->ymax;
+	else ubox->ymax = b2->ymax;
+
+	return 1;
+}

@@ -263,21 +263,15 @@ Datum box2d_inter(PG_FUNCTION_ARGS)
 
 
 //union of two BOX2Ds
-PG_FUNCTION_INFO_V1(box2d_union);
-Datum box2d_union(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(BOX2D_union);
+Datum BOX2D_union(PG_FUNCTION_ARGS)
 {
-	BOX2DFLOAT4        *a = (BOX2DFLOAT4*) PG_GETARG_POINTER(0);
-	BOX2DFLOAT4        *b = (BOX2DFLOAT4*) PG_GETARG_POINTER(1);
-	BOX2DFLOAT4        *n;
+	BOX2DFLOAT4 *a = (BOX2DFLOAT4*) PG_GETARG_POINTER(0);
+	BOX2DFLOAT4 *b = (BOX2DFLOAT4*) PG_GETARG_POINTER(1);
+	BOX2DFLOAT4 *n;
 
-	n = (BOX2DFLOAT4 *) palloc(sizeof(BOX2DFLOAT4));
-
-	n->xmax = LWGEOM_Maxf(a->xmax, b->xmax);
-	n->ymax = LWGEOM_Maxf(a->ymax, b->ymax);
-	n->xmin = LWGEOM_Minf(a->xmin, b->xmin);
-	n->ymin = LWGEOM_Minf(a->ymin, b->ymin);
-
-
+	n = (BOX2DFLOAT4 *) lwalloc(sizeof(BOX2DFLOAT4));
+	if ( ! box2d_union_p(a,b,n) ) PG_RETURN_NULL();
 	PG_RETURN_POINTER(n);
 }
 

@@ -113,80 +113,16 @@ lwpoly_deserialize(char *serialized_form)
 char *
 lwpoly_serialize(LWPOLY *poly)
 {
-	int size=1;  // type byte
-	char hasSRID;
+	size_t size, retsize;
 	char *result;
-	int t,u;
-	int total_points = 0;
-	int npoints;
-	char *loc;
 
-	hasSRID = (poly->SRID != -1);
-
-	if (hasSRID)
-		size +=4;  //4 byte SRID
-
-	size += 4; // nrings
-	size += 4*poly->nrings; //npoints/ring
-
-
-	for (t=0;t<poly->nrings;t++)
-	{
-		total_points  += poly->rings[t]->npoints;
-	}
-	if (poly->ndims == 3)
-		size += 24*total_points;
-	else if (poly->ndims == 2)
-		size += 16*total_points;
-	else if (poly->ndims == 4)
-		size += 32*total_points;
-
+	size = lwpoly_serialize_size(poly);
 	result = lwalloc(size);
-
-	result[0] = (unsigned char) lwgeom_makeType(poly->ndims,hasSRID, POLYGONTYPE);
-	loc = result+1;
-
-	if (hasSRID)
+	lwpoly_serialize_buf(poly, result, &retsize);
+	
+	if ( retsize != size )
 	{
-		memcpy(loc, &poly->SRID, sizeof(int32));
-		loc += 4;
-	}
-
-	memcpy(loc, &poly->nrings, sizeof(int32));  // nrings
-	loc+=4;
-
-
-
-	for (t=0;t<poly->nrings;t++)
-	{
-		POINTARRAY *pa = poly->rings[t];
-		npoints = poly->rings[t]->npoints;
-		memcpy(loc, &npoints, sizeof(int32)); //npoints this ring
-		loc+=4;
-		if (poly->ndims == 3)
-		{
-			for (u=0;u<npoints;u++)
-			{
-				getPoint3d_p(pa, u, loc);
-				loc+= 24;
-			}
-		}
-		else if (poly->ndims == 2)
-		{
-			for (u=0;u<npoints;u++)
-			{
-				getPoint2d_p(pa, u, loc);
-				loc+= 16;
-			}
-		}
-		else if (poly->ndims == 4)
-		{
-			for (u=0;u<npoints;u++)
-			{
-				getPoint4d_p(pa, u, loc);
-				loc+= 32;
-			}
-		}
+		lwerror("lwpoly_serialize_size returned %d, ..serialize_buf returned %d", size, retsize);
 	}
 
 	return result;
@@ -209,27 +145,30 @@ lwpoly_serialize_buf(LWPOLY *poly, char *buf, int *retsize)
 
 	hasSRID = (poly->SRID != -1);
 
-	if (hasSRID) size +=4;  //4 byte SRID
-
 	size += 4; // nrings
 	size += 4*poly->nrings; //npoints/ring
 
-	for (t=0;t<poly->nrings;t++)
-	{
+	for (t=0;t<poly->nrings;t++) {
 		total_points  += poly->rings[t]->npoints;
 	}
-	if (poly->ndims == 3) size += 24*total_points;
-	else if (poly->ndims == 2) size += 16*total_points;
-	else if (poly->ndims == 4) size += 32*total_points;
+	size += sizeof(double)*poly->ndims*total_points;
 
-	buf[0] = (unsigned char) lwgeom_makeType(poly->ndims,
-		hasSRID, POLYGONTYPE);
+	buf[0] = (unsigned char) lwgeom_makeType_full(poly->ndims,
+		hasSRID, POLYGONTYPE, poly->hasbbox);
 	loc = buf+1;
+
+	if (poly->hasbbox)
+	{
+		lwgeom_compute_bbox_p((LWGEOM *)poly, (BOX2DFLOAT4 *)loc);
+		size += sizeof(BOX2DFLOAT4); // bvol
+		loc += sizeof(BOX2DFLOAT4);
+	}
 
 	if (hasSRID)
 	{
 		memcpy(loc, &poly->SRID, sizeof(int32));
 		loc += 4;
+		size +=4;  //4 byte SRID
 	}
 
 	memcpy(loc, &poly->nrings, sizeof(int32));  // nrings
@@ -380,6 +319,7 @@ lwpoly_serialize_size(LWPOLY *poly)
 	uint32 i;
 
 	if ( poly->SRID != -1 ) size += 4; // SRID
+	if ( poly->hasbbox ) size += sizeof(BOX2DFLOAT4);
 
 	size += 4; // nrings
 
@@ -419,3 +359,20 @@ void printLWPOLY(LWPOLY *poly)
 	lwnotice("}");
 }
 
+int
+lwpoly_compute_bbox_p(LWPOLY *poly, BOX2DFLOAT4 *box)
+{
+	BOX2DFLOAT4 boxbuf;
+	uint32 i;
+
+	if ( ! poly->nrings ) return 0;
+	if ( ! ptarray_compute_bbox_p(poly->rings[0], box) ) return 0;
+	for (i=1; i<poly->nrings; i++)
+	{
+		if ( ! ptarray_compute_bbox_p(poly->rings[0], &boxbuf) )
+			return 0;
+		if ( ! box2d_union_p(box, &boxbuf, box) )
+			return 0;
+	}
+	return 1;
+}

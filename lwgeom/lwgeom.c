@@ -48,11 +48,8 @@ lwgeom_serialize_size(LWGEOM *lwgeom)
 		case POLYGONTYPE:
 			size = lwpoly_serialize_size((LWPOLY *)lwgeom);
 		case MULTIPOINTTYPE:
-			size = lwmpoint_serialize_size((LWMPOINT *)lwgeom);
 		case MULTILINETYPE:
-			size = lwmline_serialize_size((LWMLINE *)lwgeom);
 		case MULTIPOLYGONTYPE:
-			size = lwmpoly_serialize_size((LWMPOLY *)lwgeom);
 		case COLLECTIONTYPE:
 			size = lwcollection_serialize_size((LWCOLLECTION *)lwgeom);
 		default:
@@ -67,57 +64,42 @@ void
 lwgeom_serialize_buf(LWGEOM *lwgeom, char *buf, int *retsize)
 {
 	int type = lwgeom->type;
-	int size;
 
 	switch (type)
 	{
 		case POINTTYPE:
-			lwpoint_serialize_buf((LWPOINT *)lwgeom, buf, &size);
+			lwpoint_serialize_buf((LWPOINT *)lwgeom, buf, retsize);
 			break;
 		case LINETYPE:
-			lwline_serialize_buf((LWLINE *)lwgeom, buf, &size);
+			lwline_serialize_buf((LWLINE *)lwgeom, buf, retsize);
 			break;
 		case POLYGONTYPE:
-			lwpoly_serialize_buf((LWPOLY *)lwgeom, buf, &size);
+			lwpoly_serialize_buf((LWPOLY *)lwgeom, buf, retsize);
 			break;
 		case MULTIPOINTTYPE:
-			lwmpoint_serialize_buf((LWMPOINT *)lwgeom, buf, &size);
-			break;
 		case MULTILINETYPE:
-			lwmline_serialize_buf((LWMLINE *)lwgeom, buf, &size);
-			break;
 		case MULTIPOLYGONTYPE:
-			lwmpoly_serialize_buf((LWMPOLY *)lwgeom, buf, &size);
-			break;
 		case COLLECTIONTYPE:
-			lwcollection_serialize_buf((LWCOLLECTION *)lwgeom, buf, &size);
+			lwcollection_serialize_buf((LWCOLLECTION *)lwgeom, buf,
+				retsize);
 			break;
 		default:
 			lwerror("Unknown geometry type: %d", type);
 			return;
 	}
-	*retsize = size;
 	return;
 }
 
 char *
-lwgeom_serialize(LWGEOM *lwgeom, char wantbbox)
+lwgeom_serialize(LWGEOM *lwgeom)
 {
 	size_t size = lwgeom_serialize_size(lwgeom);
 	size_t retsize;
-	char *loc;
-
-	if ( wantbbox ) size += sizeof(BOX2DFLOAT4);
-
 	char *serialized = lwalloc(size);
 
-	if ( wantbbox ) loc = serialized + sizeof(BOX2DFLOAT4);
-	else loc = serialized;
-
-	lwgeom_serialize_buf(lwgeom, loc, &retsize);
+	lwgeom_serialize_buf(lwgeom, serialized, &retsize);
 
 #ifdef DEBUG
-	if ( wantbbox ) retsize += 4;
 	if ( retsize != size )
 	{
 		lwerror("lwgeom_serialize: computed size %d, returned size %d",
@@ -175,3 +157,31 @@ lwgeom_reverse(LWGEOM *lwgeom)
 	}
 }
 
+int
+lwgeom_compute_bbox_p(LWGEOM *lwgeom, BOX2DFLOAT4 *buf)
+{
+	switch(lwgeom->type)
+	{
+		case POINTTYPE:
+			return lwpoint_compute_bbox_p((LWPOINT *)lwgeom, buf);
+		case LINETYPE:
+			return lwline_compute_bbox_p((LWLINE *)lwgeom, buf);
+		case POLYGONTYPE:
+			return lwpoly_compute_bbox_p((LWPOLY *)lwgeom, buf);
+		case MULTIPOINTTYPE:
+		case MULTILINETYPE:
+		case MULTIPOLYGONTYPE:
+		case COLLECTIONTYPE:
+			return lwcollection_compute_bbox_p((LWCOLLECTION *)lwgeom, buf);
+	}
+	return 0;
+}
+
+//dont forget to lwfree() result
+BOX2DFLOAT4 *
+lwgeom_compute_bbox(LWGEOM *lwgeom)
+{
+	BOX2DFLOAT4 *result = lwalloc(sizeof(BOX2DFLOAT4));
+	if ( lwgeom_compute_bbox_p(lwgeom, result) ) return result;
+	else return NULL;
+}

@@ -8,36 +8,18 @@
 char *
 lwpoint_serialize(LWPOINT *point)
 {
-	int size=1;
-	char hasSRID;
+	size_t size, retsize;
 	char *result;
-	char *loc;
 
-	hasSRID = (point->SRID != -1);
-
-	if (hasSRID) size +=4;  //4 byte SRID
-
-	if (point->ndims == 3) size += 24; //x,y,z
-	else if (point->ndims == 2) size += 16 ; //x,y,z
-	else if (point->ndims == 4) size += 32 ; //x,y,z,m
-
+	size = lwpoint_serialize_size(point);
 	result = lwalloc(size);
+	lwpoint_serialize_buf(point, result, &retsize);
 
-	result[0] = (unsigned char) lwgeom_makeType(point->ndims,
-		hasSRID, POINTTYPE);
-	loc = result+1;
-
-	if (hasSRID)
+	if ( retsize != size )
 	{
-		memcpy(loc, &point->SRID, sizeof(int32));
-		loc += 4;
+		lwerror("lwpoint_serialize_size returned %d, ..serialize_buf returned %d", size, retsize);
 	}
 
-	//copy in points
-
-	if (point->ndims == 3) getPoint3d_p(point->point, 0, loc);
-	else if (point->ndims == 2) getPoint2d_p(point->point, 0, loc);
-	else if (point->ndims == 4) getPoint4d_p(point->point, 0, loc);
 	return result;
 }
 
@@ -55,14 +37,21 @@ lwpoint_serialize_buf(LWPOINT *point, char *buf, int *retsize)
 	hasSRID = (point->SRID != -1);
 
 	if (hasSRID) size +=4;  //4 byte SRID
+	if (point->hasbbox) size += sizeof(BOX2DFLOAT4); // bvol
 
 	if (point->ndims == 3) size += 24; //x,y,z
 	else if (point->ndims == 2) size += 16 ; //x,y,z
 	else if (point->ndims == 4) size += 32 ; //x,y,z,m
 
-	buf[0] = (unsigned char) lwgeom_makeType(point->ndims,
-		hasSRID, POINTTYPE);
+	buf[0] = (unsigned char) lwgeom_makeType_full(point->ndims,
+		hasSRID, POINTTYPE, point->hasbbox);
 	loc = buf+1;
+
+	if (point->hasbbox)
+	{
+		lwgeom_compute_bbox_p((LWGEOM *)point, (BOX2DFLOAT4 *)loc);
+		loc += sizeof(BOX2DFLOAT4);
+	}
 
 	if (hasSRID)
 	{
@@ -133,6 +122,8 @@ lwpoint_serialize_size(LWPOINT *point)
 	size_t size = 1; // type
 
 	if ( point->SRID != -1 ) size += 4; // SRID
+	if ( point->hasbbox ) size += sizeof(BOX2DFLOAT4);
+
 	size += point->ndims * sizeof(double); // point
 
 	return size; 
@@ -232,3 +223,8 @@ void printLWPOINT(LWPOINT *point)
 	lwnotice("}");
 }
 
+int
+lwpoint_compute_bbox_p(LWPOINT *point, BOX2DFLOAT4 *box)
+{
+	return ptarray_compute_bbox_p(point->point, box);
+}

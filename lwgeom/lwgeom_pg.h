@@ -29,7 +29,7 @@ Datum box2d_overright(PG_FUNCTION_ARGS);
 Datum box2d_contained(PG_FUNCTION_ARGS);
 Datum box2d_contain(PG_FUNCTION_ARGS);
 Datum box2d_inter(PG_FUNCTION_ARGS);
-Datum box2d_union(PG_FUNCTION_ARGS);
+Datum BOX2D_union(PG_FUNCTION_ARGS);
 
 Datum gist_lwgeom_compress(PG_FUNCTION_ARGS);
 Datum gist_lwgeom_consistent(PG_FUNCTION_ARGS);

@@ -51,6 +51,7 @@ lwcollection_serialize_size(LWCOLLECTION *col)
 	int i;
 
 	if ( col->SRID != -1 ) size += 4; // SRID
+	if ( col->hasbbox ) size += sizeof(BOX2DFLOAT4);
 
 	for (i=0; i<col->ngeoms; i++)
 		size += lwgeom_serialize_size(lwcollection_getsubgeom(col, i));
@@ -76,6 +77,14 @@ lwcollection_serialize_buf(LWCOLLECTION *coll, char *buf, int *retsize)
 		hasSRID, COLLECTIONTYPE);
 	loc = buf+1;
 
+	// Add BBOX if requested
+	if ( coll->hasbbox )
+	{
+		lwgeom_compute_bbox_p((LWGEOM *)coll, (BOX2DFLOAT4 *)loc);
+		size += sizeof(BOX2DFLOAT4);
+		loc += sizeof(BOX2DFLOAT4);
+	}
+
 	// Add SRID if requested
 	if (hasSRID)
 	{
@@ -97,4 +106,20 @@ lwcollection_serialize_buf(LWCOLLECTION *coll, char *buf, int *retsize)
 	}
 
 	if (retsize) *retsize = size;
+}
+
+int
+lwcollection_compute_bbox_p(LWCOLLECTION *col, BOX2DFLOAT4 *box)
+{
+	BOX2DFLOAT4 boxbuf;
+	uint32 i;
+
+	if ( ! col->ngeoms ) return 0;
+	if ( ! lwgeom_compute_bbox_p(col->geoms[0], box) ) return 0;
+	for (i=1; i<col->ngeoms; i++)
+	{
+		if ( ! lwgeom_compute_bbox_p(col->geoms[i], &boxbuf) ) return 0;
+		if ( ! box2d_union_p(box, &boxbuf, box) ) return 0;
+	}
+	return 1;
 }

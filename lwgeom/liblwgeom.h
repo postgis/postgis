@@ -463,21 +463,10 @@ extern BOX3D *lwpoly_findbbox(LWPOLY *poly);
 //--------------------------------------------------------
 
 
-extern size_t lwmpoint_serialize_size(LWMPOINT *mpoint);
-extern void lwmpoint_serialize_buf(LWMPOINT *mpoint, char *buf, int *size);
-
-extern size_t lwmline_serialize_size(LWMLINE *mline);
-extern void lwmline_serialize_buf(LWMLINE *mline, char *buf, int *size);
-
-extern size_t lwmpoly_serialize_size(LWMPOLY *mpoly);
-extern void lwmpoly_serialize_buf(LWMPOLY *mpoly, char *buf, int *size);
-
-
 extern size_t lwgeom_serialize_size(LWGEOM *geom);
-extern void lwgeom_serialize_buf(LWGEOM *geom, char *buf, int *size);
-extern char *lwgeom_serialize(LWGEOM *geom, char wantbbox);
-
 extern size_t lwcollection_serialize_size(LWCOLLECTION *coll);
+extern void lwgeom_serialize_buf(LWGEOM *geom, char *buf, int *size);
+extern char *lwgeom_serialize(LWGEOM *geom);
 extern void lwcollection_serialize_buf(LWCOLLECTION *mcoll, char *buf, int *size);
 
 LWGEOM *lwgeom_deserialize(char *serializedform);
@@ -889,5 +878,15 @@ extern void lwpoly_forceRHR(LWPOLY *poly);
 extern void lwgeom_forceRHR(LWGEOM *lwgeom);
 extern char *lwgeom_summary(LWGEOM *lwgeom, int offset);
 extern const char *lwgeom_typename(int type);
+extern int ptarray_compute_bbox_p(const POINTARRAY *pa, BOX2DFLOAT4 *result);
+extern int lwpoint_compute_bbox_p(LWPOINT *point, BOX2DFLOAT4 *box);
+extern int lwline_compute_bbox_p(LWLINE *line, BOX2DFLOAT4 *box);
+extern int lwpoly_compute_bbox_p(LWPOLY *poly, BOX2DFLOAT4 *box);
+extern int lwcollection_compute_bbox_p(LWCOLLECTION *col, BOX2DFLOAT4 *box);
+// return alloced memory
+extern BOX2DFLOAT4 *box2d_union(BOX2DFLOAT4 *b1, BOX2DFLOAT4 *b2);
+// args may overlap !
+extern int box2d_union_p(BOX2DFLOAT4 *b1, BOX2DFLOAT4 *b2, BOX2DFLOAT4 *ubox);
+extern int lwgeom_compute_bbox_p(LWGEOM *lwgeom, BOX2DFLOAT4 *box);
 
 #endif // !defined _LIBLWGEOM_H 

@@ -86,78 +86,20 @@ LWLINE *lwline_deserialize(char *serialized_form)
 // result's first char will be the 8bit type.  See serialized form doc
 char  *lwline_serialize(LWLINE *line)
 {
-	int size=1;  // type byte
-	char hasSRID;
-	unsigned char * result;
-	int t;
-	char *loc;
+	size_t size, retsize;
+	char * result;
 
-if (line == NULL)
-	lwerror("lwline_serialize:: given null line");
+	if (line == NULL) lwerror("lwline_serialize:: given null line");
 
-	hasSRID = (line->SRID != -1);
-
-	if (hasSRID)
-		size +=4;  //4 byte SRID
-
-	if (line->ndims == 3)
-	{
-		size += 24 * line->points->npoints; //x,y,z
-	}
-	else if (line->ndims == 2)
-	{
-		size += 16 * line->points->npoints; //x,y
-	}
-	else if (line->ndims == 4)
-	{
-		size += 32 * line->points->npoints; //x,y
-	}
-
-
-	size+=4; // npoints
-
+	size = lwline_serialize_size(line);
 	result = lwalloc(size);
+	lwline_serialize_buf(line, result, &retsize);
 
-	result[0] = (unsigned char) lwgeom_makeType(line->ndims,hasSRID, LINETYPE);
-	loc = result+1;
-
-	if (hasSRID)
+	if ( retsize != size )
 	{
-		memcpy(loc, &line->SRID, sizeof(int32));
-		loc += 4;
+		lwerror("lwline_serialize_size returned %d, ..serialize_buf returned %d", size, retsize);
 	}
 
-	memcpy(loc, &line->points->npoints, sizeof(int32));
-	loc +=4;
-	//copy in points
-
-//lwnotice(" line serialize - size = %i", size);
-
-	if (line->ndims == 3)
-	{
-		for (t=0; t< line->points->npoints;t++)
-		{
-			getPoint3d_p(line->points, t, loc);
-			loc += 24; // size of a 3d point
-		}
-	}
-	else if (line->ndims == 2)
-	{
-		for (t=0; t< line->points->npoints;t++)
-		{
-			getPoint2d_p(line->points, t, loc);
-			loc += 16; // size of a 2d point
-		}
-	}
-	else if (line->ndims == 4)
-	{
-		for (t=0; t< line->points->npoints;t++)
-		{
-			getPoint4d_p(line->points, t, loc);
-			loc += 32; // size of a 2d point
-		}
-	}
-	//printBYTES((unsigned char *)result, size);
 	return result;
 }
 
@@ -171,6 +113,7 @@ void lwline_serialize_buf(LWLINE *line, char *buf, int *retsize)
 	char hasSRID;
 	int t;
 	char *loc;
+	int ptsize = sizeof(double)*line->ndims;
 
 	if (line == NULL)
 		lwerror("lwline_serialize:: given null line");
@@ -178,25 +121,20 @@ void lwline_serialize_buf(LWLINE *line, char *buf, int *retsize)
 	hasSRID = (line->SRID != -1);
 
 	if (hasSRID) size +=4;  //4 byte SRID
-
-	if (line->ndims == 3)
-	{
-		size += 24 * line->points->npoints; //x,y,z
-	}
-	else if (line->ndims == 2)
-	{
-		size += 16 * line->points->npoints; //x,y
-	}
-	else if (line->ndims == 4)
-	{
-			size += 32 * line->points->npoints; //x,y
-	}
+	if (line->hasbbox) size += sizeof(BOX2DFLOAT4); // bvol
+	size += ptsize * line->points->npoints; 
 
 	size+=4; // npoints
 
-	buf[0] = (unsigned char) lwgeom_makeType(line->ndims,
-		hasSRID, LINETYPE);
+	buf[0] = (unsigned char) lwgeom_makeType_full(line->ndims,
+		hasSRID, LINETYPE, line->hasbbox);
 	loc = buf+1;
+
+	if (line->hasbbox)
+	{
+		lwgeom_compute_bbox_p((LWGEOM *)line, (BOX2DFLOAT4 *)loc);
+		loc += sizeof(BOX2DFLOAT4);
+	}
 
 	if (hasSRID)
 	{
@@ -258,6 +196,8 @@ lwline_serialize_size(LWLINE *line)
 	size_t size = 1;  //type
 
 	if ( line->SRID != -1 ) size += 4; // SRID
+	if ( line->hasbbox ) size += sizeof(BOX2DFLOAT4);
+
 	size += sizeof(double)*line->ndims*line->points->npoints; // points
 
 	return size;
@@ -326,3 +266,8 @@ void printLWLINE(LWLINE *line)
 	lwnotice("}");
 }
 
+int
+lwline_compute_bbox_p(LWLINE *line, BOX2DFLOAT4 *box)
+{
+	return ptarray_compute_bbox_p(line->points, box);
+}
