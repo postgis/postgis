@@ -108,7 +108,7 @@ public class VersionPrinter {
     }
 
     public static void printVersionString(String function, String value) {
-        System.out.println("\t" + function + "(): " + value);
+        System.out.println("\t" + function + ": " + value);
     }
 
     public static void printVersionString(String function, Statement stat) {
