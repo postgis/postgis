@@ -193,7 +193,9 @@ Datum combine_box2d(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(lwgeom_mem_size);
 Datum lwgeom_mem_size(PG_FUNCTION_ARGS)
 {
-	//char *geom = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	//struct varlena *vl = (struct varlena *)(PG_GETARG_POINTER(0));
-	PG_RETURN_INT32(VARSIZE(PG_GETARG_POINTER(0)));
+	char *geom = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	int size = *((int *)geom);
+	PG_FREE_IF_COPY(geom,0);
+	int32 vlsize = VARSIZE(PG_GETARG_POINTER(0));
+	PG_RETURN_INT32(size);
 }
