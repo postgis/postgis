@@ -189,4 +189,8 @@ CREATE OPERATOR CLASS gist_geometry_ops
 		FUNCTION	6	gbox_picksplit (internal, internal),
 		FUNCTION	7	gbox_same (box, box, internal);
 
+update pg_opclass 
+	set opckeytype = (select oid from pg_type where typname = 'box') 
+	where opcname = 'gist_geometry_ops';
+
 END TRANSACTION;
