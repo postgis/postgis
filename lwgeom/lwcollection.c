@@ -47,7 +47,7 @@ lwcollection_construct(unsigned int type, int SRID, BOX2DFLOAT4 *bbox,
 }
 
 LWCOLLECTION *
-lwcollection_construct_empty(int SRID, char hasZ, char hasM);
+lwcollection_construct_empty(int SRID, char hasz, char hasm)
 {
 	LWCOLLECTION *ret;
 
@@ -57,7 +57,7 @@ lwcollection_construct_empty(int SRID, char hasZ, char hasM);
 	ret->SRID = SRID;
 	ret->ngeoms = 0;
 	ret->geoms = NULL;
-	ret->bbox = bbox;
+	ret->bbox = NULL;
 
 	return ret;
 }
@@ -295,7 +295,7 @@ lwcollection_segmentize2d(LWCOLLECTION *col, double dist)
 char
 lwcollection_same(const LWCOLLECTION *c1, const LWCOLLECTION *c2)
 {
-	unsigned int i,j;
+	unsigned int i;
 
 	if ( TYPE_GETTYPE(c1->type) != TYPE_GETTYPE(c2->type) ) return 0;
 	if ( c1->ngeoms != c2->ngeoms ) return 0;
