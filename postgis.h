@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.47  2004/07/22 16:20:09  strk
+ * Added postgis_lib_version() and postgis_geos_version()
+ *
  * Revision 1.46  2004/06/09 09:06:55  strk
  * Added Romi's Win32 patches.
  *
@@ -669,6 +672,8 @@ Datum simplify(PG_FUNCTION_ARGS);
 Datum line_interpolate_point(PG_FUNCTION_ARGS);
 
 Datum fluffType(PG_FUNCTION_ARGS);
+Datum postgis_lib_version(PG_FUNCTION_ARGS);
+Datum postgis_geos_version(PG_FUNCTION_ARGS);
 
 /*--------------------------------------------------------------------
  * Useful floating point utilities and constants.

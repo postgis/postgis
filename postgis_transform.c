@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.17  2004/07/22 16:20:10  strk
+ * Added postgis_lib_version() and postgis_geos_version()
+ *
  * Revision 1.16  2004/04/28 22:26:02  pramsey
  * Fixed spelling mistake in header text.
  *
@@ -456,7 +459,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 }
 
 
-#else
+#else // ! defined USE_PROJ
 
 	// return the original geometry
 PG_FUNCTION_INFO_V1(transform_geom);

@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.37  2004/07/22 16:20:10  strk
+ * Added postgis_lib_version() and postgis_geos_version()
+ *
  * Revision 1.36  2004/06/03 16:44:56  strk
  * Added expand_geometry - expand(geometry, int8)
  *
@@ -3135,4 +3138,11 @@ Datum fluffType(PG_FUNCTION_ARGS)
 
 	PG_FREE_IF_COPY(geom1,0);
 	PG_RETURN_POINTER(g);
+}
+
+PG_FUNCTION_INFO_V1(postgis_lib_version);
+Datum postgis_lib_version(PG_FUNCTION_ARGS)
+{
+	char *result = pstrdup(POSTGIS_LIB_VERSION);
+	PG_RETURN_CSTRING(result);
 }

@@ -2,6 +2,9 @@
 
 /*
 * $Log$
+* Revision 1.26  2004/07/22 16:20:10  strk
+* Added postgis_lib_version() and postgis_geos_version()
+*
 * Revision 1.25  2004/07/17 09:52:48  strk
 * GEOS multi-version support switches implemented with GEOS_LAST_INTERFACE
 *
@@ -74,8 +77,6 @@
 
 using namespace geos;
 
-
-
 //WARNING THIS *MUST* BE SET CORRECTLY.
 int MAXIMUM_ALIGNOF = -999999;    // to be set during initialization - this will be either 4 (intel) or 8 (sparc)
 
@@ -138,7 +139,7 @@ extern "C" char GEOSrelateCrosses(Geometry *g1, Geometry*g2);
 extern "C" char GEOSrelateWithin(Geometry *g1, Geometry*g2);
 extern "C" char GEOSrelateContains(Geometry *g1, Geometry*g2);
 extern "C" char GEOSrelateOverlaps(Geometry *g1, Geometry*g2);
-
+extern "C" char *GEOSversion();
 
 extern "C" Geometry *PostGIS2GEOS_point(POINT3D *point,int SRID, bool is3d);
 extern "C" Geometry *PostGIS2GEOS_linestring(const LINE3D *line,int SRID, bool is3d);
@@ -1508,5 +1509,20 @@ int      GEOSGetSRID(Geometry *g1)
 	}
 }
 
+char *
+GEOSversion()
+{
+#if GEOS_LAST_INTERFACE < 2
+	/*
+	 * GEOS upgrade needs postgis re-build, so this static
+	 * assignment is not going to be a problem
+	 */
+	char *res = strdup("GEOS 1.0.0 ported from JTS-1.3");
+#else
+	string version = geos::version();
+	char *res = strdup(version.c_str());
+#endif
+	return res;
+}
 
 

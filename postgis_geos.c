@@ -10,6 +10,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.33  2004/07/22 16:20:10  strk
+ * Added postgis_lib_version() and postgis_geos_version()
+ *
  * Revision 1.32  2004/07/01 17:02:05  strk
  * Updated to support latest GEOS (actually removed all geos-version related
  * switches).
@@ -181,6 +184,7 @@ extern char *GEOSasText(Geometry *g1);
 extern char GEOSisEmpty(Geometry *g1);
 extern char *GEOSGeometryType(Geometry *g1);
 extern int GEOSGeometryTypeId(Geometry *g1);
+extern char *GEOSversion();
 
 
 extern void GEOSdeleteChar(char *a);
@@ -1831,6 +1835,15 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
+PG_FUNCTION_INFO_V1(postgis_geos_version);
+Datum postgis_geos_version(PG_FUNCTION_ARGS)
+{
+	char *ver = GEOSversion();
+	char *result = pstrdup(ver);
+	free(ver);
+	PG_RETURN_CSTRING(result);
+}
+
 //----------------------------------------------------------------------------
 // NULL implementation here
 // ---------------------------------------------------------------------------
@@ -2016,10 +2029,10 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 	PG_RETURN_NULL();
 }
 
-PG_FUNCTION_INFO_V1(GEOSversion);
-Datum GEOSversion(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(postgis_geos_version);
+Datum postgis_geos_version(PG_FUNCTION_ARGS)
 {
-	elog(ERROR,"GEOSversion:: operation not implemented - compile PostGIS with GEOS support");
+	//elog(ERROR,"GEOSversion:: operation not implemented - compile PostGIS with GEOS support");
 	PG_RETURN_NULL();
 }
 

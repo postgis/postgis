@@ -85,6 +85,7 @@ endif
 NAME=postgis
 SO_MAJOR_VERSION=0
 SO_MINOR_VERSION=8
+SO_MICRO_VERSION=2
 ifeq (${USE_VERSION}, 71) 
 	MODULE_FILENAME = $(LPATH)/$(shlib)
 	MODULE_INSTALLDIR = $(libdir)
@@ -97,6 +98,7 @@ endif
 # Postgis version
 #---------------------------------------------------------------
 
+POSTGIS_LIB_VERSION = $(SO_MAJOR_VERSION).$(SO_MINOR_VERSION).$(SO_MICRO_VERSION)
 POSTGIS_VERSION = $(SO_MAJOR_VERSION).$(SO_MINOR_VERSION) USE_GEOS=$(USE_GEOS) USE_PROJ=$(USE_PROJ) USE_STATS=$(USE_STATS)
 
 #---------------------------------------------------------------
@@ -104,6 +106,7 @@ POSTGIS_VERSION = $(SO_MAJOR_VERSION).$(SO_MINOR_VERSION) USE_GEOS=$(USE_GEOS) U
 override CFLAGS += -g -fexceptions 
 override CFLAGS += -I$(srcdir) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"' 
 override CFLAGS += -DUSE_VERSION=$(USE_VERSION)
+override CFLAGS += -DPOSTGIS_LIB_VERSION='"$(POSTGIS_LIB_VERSION)"'
 
 ifeq ($(USE_GEOS),1)
 	override CFLAGS += -I$(GEOS_DIR)/include -DUSE_GEOS
