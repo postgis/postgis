@@ -28,7 +28,6 @@ package examples;
 
 import org.postgis.Geometry;
 import org.postgis.PGgeometry;
-import org.postgresql.PGConnection;
 import org.postgresql.util.PGtokenizer;
 
 import java.sql.Connection;
