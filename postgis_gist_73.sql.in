@@ -1,5 +1,13 @@
 BEGIN TRANSACTION;
 
+CREATE CAST ( chip AS geometry ) WITH FUNCTION geometry(chip) AS IMPLICIT;
+CREATE CAST ( geometry AS box3d ) WITH FUNCTION box3d(geometry) AS IMPLICIT;
+CREATE CAST ( geometry AS box ) WITH FUNCTION box(geometry) AS IMPLICIT;
+CREATE CAST ( box3d AS geometry ) WITH FUNCTION geometry(box3d) AS IMPLICIT;
+CREATE CAST ( text AS geometry) WITH FUNCTION geometry(text) AS IMPLICIT;
+CREATE CAST ( wkb AS bytea ) WITH FUNCTION bytea(wkb) AS IMPLICIT;
+CREATE CAST ( box3d AS box ) WITH FUNCTION box3dtobox(box3d);
+
 --drop function UPDATE_GEOMETRY_STATS();
 -- UPDATE_GEOMETRY_STATS()  -- all tables
 CREATE FUNCTION UPDATE_GEOMETRY_STATS() returns text

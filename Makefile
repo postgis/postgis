@@ -33,8 +33,8 @@ else
 endif
 
 #---------------------------------------------------------------
-# Test the version string and select the correct GiST index
-# bindings.
+# Test the version string and set the USE_VERSION macro
+# appropriately.
 #
 ifneq ($(findstring 7.1,$(VERSION)),)
 	USE_VERSION=71
@@ -52,7 +52,7 @@ endif
 TEST_DB=geom_regress
 
 #---------------------------------------------------------------
-# shared library parameters
+# Shared library parameters.
 #
 NAME=postgis
 SO_MAJOR_VERSION=0

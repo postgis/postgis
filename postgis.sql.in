@@ -19,13 +19,13 @@ LANGUAGE 'sql';
 
 
 -- need this to define geometry_columns table
-create function histogram2d_in(opaque)
+create function histogram2d_in(CSTRING)
 	RETURNS HISTOGRAM2D
    AS '@MODULE_FILENAME@'
    LANGUAGE 'c' with (isstrict);
 
-create function histogram2d_out(opaque)
-	RETURNS opaque
+create function histogram2d_out(histogram2d)
+	RETURNS CSTRING
    AS '@MODULE_FILENAME@'
    LANGUAGE 'c' with (isstrict);
 
@@ -250,23 +250,23 @@ END;
 
 
 
-CREATE FUNCTION BOX3D_in(opaque)
+CREATE FUNCTION BOX3D_in(CSTRING)
    RETURNS BOX3D 
    AS '@MODULE_FILENAME@'
    LANGUAGE 'c' with (isstrict);
 
-CREATE FUNCTION BOX3D_out(opaque)
-   RETURNS opaque
+CREATE FUNCTION BOX3D_out(BOX3D)
+   RETURNS CSTRING
    AS '@MODULE_FILENAME@'
    LANGUAGE 'c' with (isstrict);
 
-CREATE FUNCTION SPHEROID_in(opaque)
+CREATE FUNCTION SPHEROID_in(CSTRING)
    RETURNS SPHEROID 
    AS '@MODULE_FILENAME@','ellipsoid_in'
    LANGUAGE 'c' with (isstrict,iscachable);
 
-CREATE FUNCTION SPHEROID_out(opaque)
-   RETURNS opaque
+CREATE FUNCTION SPHEROID_out(spheroid)
+   RETURNS CSTRING
    AS '@MODULE_FILENAME@','ellipsoid_out'
    LANGUAGE 'c' with (isstrict);
 
@@ -284,7 +284,7 @@ CREATE TYPE BOX3D (
 	output = BOX3D_out
 );
 
-create function WKB_in(opaque)
+create function WKB_in(CSTRING)
 	RETURNS WKB
    AS '@MODULE_FILENAME@','WKB_in'
    LANGUAGE 'c' with (isstrict);
@@ -292,8 +292,8 @@ create function WKB_in(opaque)
 
 
 
-create function WKB_out(opaque)
-	RETURNS opaque
+create function WKB_out(wkb)
+	RETURNS CSTRING
    AS '@MODULE_FILENAME@','WKB_out'
    LANGUAGE 'c' with (isstrict);
 
@@ -305,13 +305,13 @@ CREATE TYPE WKB (
 	storage= extended
 );
 
-create function CHIP_in(opaque)
+create function CHIP_in(CSTRING)
 	RETURNS CHIP
    AS '@MODULE_FILENAME@','CHIP_in'
    LANGUAGE 'c' with (isstrict);
 
-create function CHIP_out(opaque)
-	RETURNS opaque
+create function CHIP_out(CHIP)
+	RETURNS CSTRING
    AS '@MODULE_FILENAME@','CHIP_out'
    LANGUAGE 'c' with (isstrict);
 
@@ -392,13 +392,13 @@ CREATE FUNCTION setfactor(chip,float4)
    AS '@MODULE_FILENAME@','setfactor_chip'
 	     LANGUAGE 'c'  with (isstrict,iscachable);
 
-create function geometry_in(opaque)
+create function geometry_in(CSTRING)
 	RETURNS GEOMETRY
    AS '@MODULE_FILENAME@'
    LANGUAGE 'c' with (isstrict);
 
-create function geometry_out(opaque)
-	RETURNS opaque
+create function geometry_out(GEOMETRY)
+	RETURNS CSTRING
    AS '@MODULE_FILENAME@'
    LANGUAGE 'c' with (isstrict);
 
