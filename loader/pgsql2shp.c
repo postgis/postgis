@@ -10,6 +10,10 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.53.2.1  2004/09/20 15:39:22  strk
+ * Fixed a bug in multipolygon handling (failed to reverse Z
+ * values when modifying clocwise order)
+ *
  * Revision 1.53  2004/08/05 16:53:29  strk
  * schema support patches sent by Mark
  *
@@ -1864,7 +1868,7 @@ create_multipolygon3D_WKB(byte *wkb, int shape_id)
 					printf("Forcing CW\n");
 #endif
 					reverse_points(npoints, x+totpoints,
-							y+totpoints, NULL);
+							y+totpoints, z+totpoints);
 				}
 			} else {
 				if (is_clockwise(npoints, x+totpoints,
@@ -1874,7 +1878,7 @@ create_multipolygon3D_WKB(byte *wkb, int shape_id)
 					printf("Forcing CCW\n");
 #endif
 					reverse_points(npoints, x+totpoints,
-							y+totpoints, NULL);
+							y+totpoints, z+totpoints);
 				}
 			}
 
