@@ -7136,4 +7136,7 @@ INSERT INTO "spatial_ref_sys" (srid, auth_name, auth_srid, srtext, proj4text) VA
 --
 INSERT INTO "spatial_ref_sys" (srid, auth_name, auth_srid, srtext, proj4text) VALUES (104305,'ESRI',104305,'GEOGCS["GCS_Voirol_Unifie_1960_Degree",DATUM["D_Voirol_Unifie_1960",SPHEROID["Clarke_1880_RGS",6378249.145,293.465]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]]','+proj=longlat +ellps=clrk80');
 --
+-- British Columbia Albers
+--
+INSERT INTO "spatial_ref_sys" (srid, auth_name, auth_srid, srtext, proj4text) VALUES (42102, 'BC', 42102, 'PROJCS["BC_Albers",GEOGCS["GCS_North_American_1983",DATUM["D_North_American_1983",SPHEROID["GRS_1980",6378137,298.257222101]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Albers"],PARAMETER["False_Easting",1000000],PARAMETER["False_Northing",0],PARAMETER["Central_Meridian",-126],PARAMETER["Standard_Parallel_1",50],PARAMETER["Standard_Parallel_2",58.5],PARAMETER["Latitude_Of_Origin",45],UNIT["Meter",1]]','+proj=aea +ellps=GRS80 +datum=NAD83 +lat_0=45.0 +lon_0=-126.0 +lat_1=58.5 +lat_2=50.0 +x_0=1000000 +y_0=0');
 COMMIT;
