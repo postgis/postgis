@@ -36,7 +36,12 @@ public class TestServer
 			((org.postgresql.Connection)conn).addDataType("box3d","org.postgis.PGbox3d");
 			Statement s = conn.createStatement();
 			System.out.println("Creating table with geometric types...");
-			s.execute(dropSQL);
+			//table might not yet exist
+			try {
+			    s.execute(dropSQL);
+			} catch(Exception e) {
+			    e.printStackTrace();
+			}
 			s.execute(createSQL);
 			System.out.println("Inserting point...");
 			s.execute(insertPointSQL);
@@ -45,7 +50,7 @@ public class TestServer
 			System.out.println("Done.");
 			s = conn.createStatement();
 			System.out.println("Querying table...");
-			ResultSet r = s.executeQuery("select * from " + dbtable);
+			ResultSet r = s.executeQuery("select asText(geom),id from " + dbtable);
 			while( r.next() ) 
 			{
 				Object obj =  r.getObject(1);
