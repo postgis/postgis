@@ -7,9 +7,13 @@
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of hte GNU General Public Licence. See the COPYING file.
- * 
+ *
  **********************************************************************
  * $Log$
+ * Revision 1.6  2003/08/05 18:27:21  dblasby
+ * Added null implementations of new GEOS-returning-geometry functions (ie.
+ * buffer).
+ *
  * Revision 1.5  2003/08/01 23:58:08  dblasby
  * added the functionality to convert GEOS->PostGIS geometries.  Added those geos
  * functions to postgis.
@@ -22,7 +26,7 @@
 
 
 //--------------------------------------------------------------------------
-//  
+//
 #ifdef USE_GEOS
 
 #include "postgres.h"
@@ -117,7 +121,7 @@ Datum within(PG_FUNCTION_ARGS);
 Datum contains(PG_FUNCTION_ARGS);
 Datum overlaps(PG_FUNCTION_ARGS);
 Datum isvalid(PG_FUNCTION_ARGS);
- 
+
 
 Datum buffer(PG_FUNCTION_ARGS);
 Datum intersection(PG_FUNCTION_ARGS);
@@ -142,7 +146,7 @@ LINE3D *LineFromGeometry(Geometry *g, int *size);
 
 //select geomunion('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))','POLYGON((5 5, 15 5, 15 7, 5 7, 5 5))');
 PG_FUNCTION_INFO_V1(geomunion);
-Datum geomunion(PG_FUNCTION_ARGS) 
+Datum geomunion(PG_FUNCTION_ARGS)
 {
 		GEOMETRY		*geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 		GEOMETRY		*geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
@@ -165,13 +169,13 @@ Datum geomunion(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL(); //never get here
 	}
 
-	
+
 	empty = GEOSisEmpty(g3);
 	if (empty ==2)
 	{
 		GEOSdeleteGeometry(g1);
 		GEOSdeleteGeometry(g2);
-		GEOSdeleteGeometry(g3);	
+		GEOSdeleteGeometry(g3);
 		elog(ERROR,"GEOS union() threw an error (couldnt test empty on result)!");
 		PG_RETURN_NULL(); //never get here
 	}
@@ -187,16 +191,16 @@ Datum geomunion(PG_FUNCTION_ARGS)
 	{
 		GEOSdeleteGeometry(g1);
 		GEOSdeleteGeometry(g2);
-		GEOSdeleteGeometry(g3);	
+		GEOSdeleteGeometry(g3);
 		elog(ERROR,"GEOS union() threw an error (result postgis geometry formation)!");
 		PG_RETURN_NULL(); //never get here
 	}
-		
-	
+
+
 
 		GEOSdeleteGeometry(g1);
 		GEOSdeleteGeometry(g2);
-		GEOSdeleteGeometry(g3);	
+		GEOSdeleteGeometry(g3);
 
 		PG_RETURN_POINTER(result);
 }
@@ -204,7 +208,7 @@ Datum geomunion(PG_FUNCTION_ARGS)
 
 // select symdifference('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))','POLYGON((5 5, 15 5, 15 7, 5 7, 5 5))');
 PG_FUNCTION_INFO_V1(symdifference);
-Datum symdifference(PG_FUNCTION_ARGS) 
+Datum symdifference(PG_FUNCTION_ARGS)
 {
 		GEOMETRY		*geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 		GEOMETRY		*geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
@@ -227,13 +231,13 @@ Datum symdifference(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL(); //never get here
 	}
 
-	
+
 	empty = GEOSisEmpty(g3);
 	if (empty ==2)
 	{
 		GEOSdeleteGeometry(g1);
 		GEOSdeleteGeometry(g2);
-		GEOSdeleteGeometry(g3);	
+		GEOSdeleteGeometry(g3);
 		elog(ERROR,"GEOS symdifference() threw an error (couldnt test empty on result)!");
 		PG_RETURN_NULL(); //never get here
 	}
@@ -249,23 +253,23 @@ Datum symdifference(PG_FUNCTION_ARGS)
 	{
 		GEOSdeleteGeometry(g1);
 		GEOSdeleteGeometry(g2);
-		GEOSdeleteGeometry(g3);	
+		GEOSdeleteGeometry(g3);
 		elog(ERROR,"GEOS symdifference() threw an error (result postgis geometry formation)!");
 		PG_RETURN_NULL(); //never get here
 	}
-		
-	
+
+
 
 		GEOSdeleteGeometry(g1);
 		GEOSdeleteGeometry(g2);
-		GEOSdeleteGeometry(g3);	
+		GEOSdeleteGeometry(g3);
 
 		PG_RETURN_POINTER(result);
 }
 
 
 PG_FUNCTION_INFO_V1(boundary);
-Datum boundary(PG_FUNCTION_ARGS) 
+Datum boundary(PG_FUNCTION_ARGS)
 {
 		GEOMETRY		*geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
@@ -285,12 +289,12 @@ Datum boundary(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL(); //never get here
 	}
 
-	
+
 	empty = GEOSisEmpty(g3);
 	if (empty ==2)
 	{
 		GEOSdeleteGeometry(g1);
-		GEOSdeleteGeometry(g3);	
+		GEOSdeleteGeometry(g3);
 		elog(ERROR,"GEOS bounary() threw an error (couldnt test empty on result)!");
 		PG_RETURN_NULL(); //never get here
 	}
@@ -306,21 +310,21 @@ Datum boundary(PG_FUNCTION_ARGS)
 	{
 		GEOSdeleteGeometry(g1);
 
-		GEOSdeleteGeometry(g3);	
+		GEOSdeleteGeometry(g3);
 		elog(ERROR,"GEOS bounary() threw an error (result postgis geometry formation)!");
 		PG_RETURN_NULL(); //never get here
 	}
-		
-	
+
+
 
 		GEOSdeleteGeometry(g1);
-		GEOSdeleteGeometry(g3);	
+		GEOSdeleteGeometry(g3);
 
 		PG_RETURN_POINTER(result);
 }
 
 PG_FUNCTION_INFO_V1(convexhull);
-Datum convexhull(PG_FUNCTION_ARGS) 
+Datum convexhull(PG_FUNCTION_ARGS)
 {
 		GEOMETRY		*geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 		char empty;
@@ -344,7 +348,7 @@ Datum convexhull(PG_FUNCTION_ARGS)
 	if (empty ==2)
 	{
 		GEOSdeleteGeometry(g1);
-		GEOSdeleteGeometry(g3);	
+		GEOSdeleteGeometry(g3);
 		elog(ERROR,"GEOS convexhull() threw an error (couldnt test empty on result)!");
 		PG_RETURN_NULL(); //never get here
 	}
@@ -359,19 +363,19 @@ Datum convexhull(PG_FUNCTION_ARGS)
 	if (result == NULL)
 	{
 		GEOSdeleteGeometry(g1);
-		GEOSdeleteGeometry(g3);	
+		GEOSdeleteGeometry(g3);
 		elog(ERROR,"GEOS convexhull() threw an error (result postgis geometry formation)!");
 		PG_RETURN_NULL(); //never get here
 	}
 		GEOSdeleteGeometry(g1);
-		GEOSdeleteGeometry(g3);	
+		GEOSdeleteGeometry(g3);
 
 		PG_RETURN_POINTER(result);
 
 }
 
 PG_FUNCTION_INFO_V1(buffer);
-Datum buffer(PG_FUNCTION_ARGS) 
+Datum buffer(PG_FUNCTION_ARGS)
 {
 		GEOMETRY		*geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 		double			size   = PG_GETARG_FLOAT8(1);
@@ -396,7 +400,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 	if (empty ==2)
 	{
 		GEOSdeleteGeometry(g1);
-		GEOSdeleteGeometry(g3);	
+		GEOSdeleteGeometry(g3);
 		elog(ERROR,"GEOS buffer() threw an error (couldnt test empty on result)!");
 		PG_RETURN_NULL(); //never get here
 	}
@@ -411,12 +415,12 @@ Datum buffer(PG_FUNCTION_ARGS)
 	if (result == NULL)
 	{
 		GEOSdeleteGeometry(g1);
-		GEOSdeleteGeometry(g3);	
+		GEOSdeleteGeometry(g3);
 		elog(ERROR,"GEOS buffer() threw an error (result postgis geometry formation)!");
 		PG_RETURN_NULL(); //never get here
 	}
 		GEOSdeleteGeometry(g1);
-		GEOSdeleteGeometry(g3);	
+		GEOSdeleteGeometry(g3);
 
 		PG_RETURN_POINTER(result);
 
@@ -437,7 +441,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 //select intersection('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))','MULTILINESTRING((5 5, 10 10),(1 1, 2 2) )');
 //select intersection('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))','MULTIPOLYGON(((5 5, 15 5, 15 7, 5 7, 5 5)),((1 1,1 2,2 2,1 2, 1 1)))');
 PG_FUNCTION_INFO_V1(intersection);
-Datum intersection(PG_FUNCTION_ARGS) 
+Datum intersection(PG_FUNCTION_ARGS)
 {
 		GEOMETRY		*geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 		GEOMETRY		*geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
@@ -460,13 +464,13 @@ Datum intersection(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL(); //never get here
 	}
 
-	
+
 	empty = GEOSisEmpty(g3);
 	if (empty ==2)
 	{
 		GEOSdeleteGeometry(g1);
 		GEOSdeleteGeometry(g2);
-		GEOSdeleteGeometry(g3);	
+		GEOSdeleteGeometry(g3);
 		elog(ERROR,"GEOS Intersection() threw an error (couldnt test empty on result)!");
 		PG_RETURN_NULL(); //never get here
 	}
@@ -482,23 +486,23 @@ Datum intersection(PG_FUNCTION_ARGS)
 	{
 		GEOSdeleteGeometry(g1);
 		GEOSdeleteGeometry(g2);
-		GEOSdeleteGeometry(g3);	
+		GEOSdeleteGeometry(g3);
 		elog(ERROR,"GEOS Intersection() threw an error (result postgis geometry formation)!");
 		PG_RETURN_NULL(); //never get here
 	}
-		
-	
+
+
 
 		GEOSdeleteGeometry(g1);
 		GEOSdeleteGeometry(g2);
-		GEOSdeleteGeometry(g3);	
+		GEOSdeleteGeometry(g3);
 
 		PG_RETURN_POINTER(result);
 }
 
 //select difference('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))','POLYGON((5 5, 15 5, 15 7, 5 7, 5 5))');
 PG_FUNCTION_INFO_V1(difference);
-Datum difference(PG_FUNCTION_ARGS) 
+Datum difference(PG_FUNCTION_ARGS)
 {
 		GEOMETRY		*geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 		GEOMETRY		*geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
@@ -521,13 +525,13 @@ Datum difference(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL(); //never get here
 	}
 
-	
+
 	empty = GEOSisEmpty(g3);
 	if (empty ==2)
 	{
 		GEOSdeleteGeometry(g1);
 		GEOSdeleteGeometry(g2);
-		GEOSdeleteGeometry(g3);	
+		GEOSdeleteGeometry(g3);
 		elog(ERROR,"GEOS difference() threw an error (couldnt test empty on result)!");
 		PG_RETURN_NULL(); //never get here
 	}
@@ -543,16 +547,16 @@ Datum difference(PG_FUNCTION_ARGS)
 	{
 		GEOSdeleteGeometry(g1);
 		GEOSdeleteGeometry(g2);
-		GEOSdeleteGeometry(g3);	
+		GEOSdeleteGeometry(g3);
 		elog(ERROR,"GEOS difference() threw an error (result postgis geometry formation)!");
 		PG_RETURN_NULL(); //never get here
 	}
-		
-	
+
+
 
 		GEOSdeleteGeometry(g1);
 		GEOSdeleteGeometry(g2);
-		GEOSdeleteGeometry(g3);	
+		GEOSdeleteGeometry(g3);
 
 		PG_RETURN_POINTER(result);
 }
@@ -562,7 +566,7 @@ Datum difference(PG_FUNCTION_ARGS)
 //----------------------------------------------
 
 
- 
+
 void errorIfGeometryCollection(GEOMETRY *g1, GEOMETRY *g2)
 {
 	if (  (g1->type == COLLECTIONTYPE) || (g2->type == COLLECTIONTYPE) )
@@ -570,7 +574,7 @@ void errorIfGeometryCollection(GEOMETRY *g1, GEOMETRY *g2)
 }
 
 PG_FUNCTION_INFO_V1(isvalid);
-Datum isvalid(PG_FUNCTION_ARGS) 
+Datum isvalid(PG_FUNCTION_ARGS)
 {
 		GEOMETRY		*geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 		bool result;
@@ -940,10 +944,10 @@ POLYGON3D *PolyFromGeometry(Geometry *g, int *size)
 		POLYGON3D *poly;
 		int npoints;
 
-	
+
 		npoints = 	GEOSGetNumCoordinate(g);
 		pts = GEOSGetCoordinates(g);
-		if (npoints <3) 
+		if (npoints <3)
 		{
 			GEOSdeleteChar( (char*) pts);
 			return NULL;
@@ -957,9 +961,9 @@ POLYGON3D *PolyFromGeometry(Geometry *g, int *size)
 			pts_per_ring[t+1] = GEOSGetNumCoordinate(GEOSGetInteriorRingN(g,t));
 		}
 
-		
 
-		poly = make_polygon( ninteriorrings+1, pts_per_ring, 
+
+		poly = make_polygon( ninteriorrings+1, pts_per_ring,
 							pts, GEOSGetNumCoordinate(g), size);
 
 
@@ -978,7 +982,7 @@ LINE3D *LineFromGeometry(Geometry *g,int *size)
 		LINE3D	*line;
 		int npoints = GEOSGetNumCoordinate(g);
 
-		if (npoints <2) 
+		if (npoints <2)
 		{
 			GEOSdeleteChar( (char*) pts);
 			return NULL;
@@ -1005,7 +1009,7 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 						        (char *) pt,
 							   POINTTYPE,  want3d, GEOSGetSRID(g),1.0, 0.0, 0.0
 						);
-		
+
 
 		GEOSdeleteChar( (char*) pt);
 		return result;
@@ -1018,7 +1022,7 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 		line = LineFromGeometry(g,&size);
 		if (line == NULL)
 			return NULL;
-		
+
 
 		result = make_oneobj_geometry(size,
 						        (char *) line,
@@ -1032,7 +1036,7 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 		int size;
 		POLYGON3D *poly;
 
-		
+
 
 		poly = PolyFromGeometry(g,&size);
 		if (poly == NULL)
@@ -1053,7 +1057,7 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 		g_new = NULL;
 
 		ngeoms = 	GEOSGetNumGeometries(g);
-		if (ngeoms ==0) 
+		if (ngeoms ==0)
 		{
 			return NULL;
 		}
@@ -1082,7 +1086,7 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 
 
 		ngeoms = 	GEOSGetNumGeometries(g);
-		if (ngeoms ==0) 
+		if (ngeoms ==0)
 		{
 			return NULL;
 		}
@@ -1115,7 +1119,7 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 
 
 		ngeoms = 	GEOSGetNumGeometries(g);
-		if (ngeoms ==0) 
+		if (ngeoms ==0)
 		{
 			return NULL;
 		}
@@ -1146,7 +1150,7 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 		GEOMETRY *geom, *g2, *r;
 		int t;
 
-		if (ngeoms ==0) 
+		if (ngeoms ==0)
 		{
 			return NULL;
 		}
@@ -1159,8 +1163,8 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 		{
 			g2 = GEOS2POSTGIS(GEOSGetGeometryN(g,t) , want3d);
 			r = geom;
-			geom = (GEOMETRY *)  
-				DatumGetPointer( 
+			geom = (GEOMETRY *)
+				DatumGetPointer(
 						DirectFunctionCall2(collector,
 								PointerGetDatum(geom),PointerGetDatum(g2)
 							)
@@ -1195,7 +1199,7 @@ Geometry *POSTGIS2GEOS(GEOMETRY *g)
 
 	switch(g->type)
 	{
-		case POINTTYPE:	
+		case POINTTYPE:
 							pt = (POINT3D*) ((char *) g +offsets1[0]) ;
 							result =  PostGIS2GEOS_point(pt,g->SRID,g->is3d);
 							if (result == NULL)
@@ -1204,7 +1208,7 @@ Geometry *POSTGIS2GEOS(GEOMETRY *g)
 							}
 							return result;
 							break;
-		case LINETYPE:		
+		case LINETYPE:
 							line = (LINE3D*) ((char *) g +offsets1[0]) ;
 							result =  PostGIS2GEOS_linestring(line,g->SRID,g->is3d);
 							if (result == NULL)
@@ -1213,7 +1217,7 @@ Geometry *POSTGIS2GEOS(GEOMETRY *g)
 							}
 							return result;
 							break;
-		case POLYGONTYPE:   
+		case POLYGONTYPE:
 							poly = (POLYGON3D*) ((char *) g +offsets1[0]) ;
 							result =  PostGIS2GEOS_polygon(poly,g->SRID,g->is3d);
 							if (result == NULL)
@@ -1322,7 +1326,7 @@ Geometry *POSTGIS2GEOS(GEOMETRY *g)
 							{
 								elog(ERROR,"Couldnt convert the postgis geometry to GEOS!");
 							}
-							return geos; 
+							return geos;
 							break;
 
 	}
@@ -1360,6 +1364,61 @@ Datum within(PG_FUNCTION_ARGS);
 Datum contains(PG_FUNCTION_ARGS);
 Datum overlaps(PG_FUNCTION_ARGS);
 Datum isvalid(PG_FUNCTION_ARGS);
+
+
+Datum buffer(PG_FUNCTION_ARGS);
+Datum intersection(PG_FUNCTION_ARGS);
+Datum convexhull(PG_FUNCTION_ARGS);
+Datum difference(PG_FUNCTION_ARGS);
+Datum boundary(PG_FUNCTION_ARGS);
+Datum symdifference(PG_FUNCTION_ARGS);
+Datum geomunion(PG_FUNCTION_ARGS);
+
+PG_FUNCTION_INFO_V1(intersection);
+Datum intersection(PG_FUNCTION_ARGS)
+{
+	elog(ERROR,"intersection:: operation not implemented - compile PostGIS with GEOS support");
+	PG_RETURN_NULL(); // never get here
+}
+PG_FUNCTION_INFO_V1(convexhull);
+Datum convexhull(PG_FUNCTION_ARGS)
+{
+	elog(ERROR,"convexhull:: operation not implemented - compile PostGIS with GEOS support");
+	PG_RETURN_NULL(); // never get here
+}
+PG_FUNCTION_INFO_V1(difference);
+Datum difference(PG_FUNCTION_ARGS)
+{
+	elog(ERROR,"difference:: operation not implemented - compile PostGIS with GEOS support");
+	PG_RETURN_NULL(); // never get here
+}
+PG_FUNCTION_INFO_V1(boundary);
+Datum boundary(PG_FUNCTION_ARGS)
+{
+	elog(ERROR,"boundary:: operation not implemented - compile PostGIS with GEOS support");
+	PG_RETURN_NULL(); // never get here
+}
+PG_FUNCTION_INFO_V1(symdifference);
+Datum symdifference(PG_FUNCTION_ARGS)
+{
+	elog(ERROR,"symdifference:: operation not implemented - compile PostGIS with GEOS support");
+	PG_RETURN_NULL(); // never get here
+}
+PG_FUNCTION_INFO_V1(geomunion);
+Datum geomunion(PG_FUNCTION_ARGS)
+{
+	elog(ERROR,"geomunion:: operation not implemented - compile PostGIS with GEOS support");
+	PG_RETURN_NULL(); // never get here
+}
+
+PG_FUNCTION_INFO_V1(buffer);
+Datum buffer(PG_FUNCTION_ARGS)
+{
+	elog(ERROR,"buffer:: operation not implemented - compile PostGIS with GEOS support");
+	PG_RETURN_NULL(); // never get here
+}
+
+
 
 PG_FUNCTION_INFO_V1(relate_full);
 Datum relate_full(PG_FUNCTION_ARGS)
