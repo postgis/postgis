@@ -540,3 +540,44 @@ lwpoly_same(const LWPOLY *p1, const LWPOLY *p2)
 	}
 	return 1;
 }
+
+/*
+ * Construct a polygon from a LWLINE being
+ * the shell and an array of LWLINE (possibly NULL) being holes.
+ * Pointarrays from intput geoms are cloned.
+ * SRID must be the same for each input line.
+ * Input lines must have at least 4 points, and be closed.
+ */
+LWPOLY *
+lwpoly_from_lwlines(const LWLINE *shell,
+	unsigned int nholes, const LWLINE **holes)
+{
+	unsigned int nrings;
+	POINTARRAY **rings = lwalloc((nholes+1)*sizeof(POINTARRAY *));
+	int SRID = shell->SRID;
+	LWPOLY *ret;
+
+	if ( shell->points->npoints < 4 )
+		lwerror("lwpoly_from_lwlines: shell must have at least 4 points");
+	if ( ! ptarray_isclosed2d(shell->points) )
+		lwerror("lwpoly_from_lwlines: shell must be closed");
+	rings[0] = ptarray_clone(shell->points);
+
+	for (nrings=1; nrings<=nholes; nrings++)
+	{
+		const LWLINE *hole = holes[nrings-1];
+
+		if ( hole->SRID != SRID )
+			lwerror("lwpoly_from_lwlines: mixed SRIDs in input lines");
+
+		if ( hole->points->npoints < 4 )
+			lwerror("lwpoly_from_lwlines: holes must have at least 4 points");
+		if ( ! ptarray_isclosed2d(hole->points) )
+			lwerror("lwpoly_from_lwlines: holes must be closed");
+
+		rings[nrings] = ptarray_clone(hole->points);
+	}
+
+	ret = lwpoly_construct(SRID, NULL, nrings, rings);
+	return ret;
+}
