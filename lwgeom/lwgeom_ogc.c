@@ -886,6 +886,7 @@ Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 
 	pfree(result_cstring);
 	PG_FREE_IF_COPY(lwgeom, 0);
+	if ( ogclwgeom != lwgeom ) pfree(ogclwgeom);
 
 	PG_RETURN_POINTER(result);
 }

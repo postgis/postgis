@@ -1580,7 +1580,8 @@ BOX3D *lw_geom_getBB_inspected(LWGEOM_INSPECTED *inspected)
 //  directly with the structure - NOT the stuff pointing into
 //  the original de-serialized info
 
-void pfree_inspected(LWGEOM_INSPECTED *inspected)
+void
+pfree_inspected(LWGEOM_INSPECTED *inspected)
 {
 	if ( inspected->ngeometries )
 		lwfree(inspected->sub_geoms);

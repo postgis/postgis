@@ -5,6 +5,8 @@
 #define CONTEXT_PG 0
 #define CONTEXT_SA 1
 
+//#define PGIS_DEBUG_ALLOCS 1
+
 
 #ifdef STANDALONE
 #define DEFAULT_CONTEXT CONTEXT_SA
@@ -128,6 +130,9 @@ lwalloc(size_t size)
 void *
 lwrealloc(void *mem, size_t size)
 {
+#ifdef PGIS_DEBUG_ALLOCS
+	lwnotice("lwrealloc: %d@%p", size, mem);
+#endif
 	return lwrealloc_var(mem, size);
 }
 

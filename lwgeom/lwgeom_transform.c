@@ -114,43 +114,44 @@ void to_dec(POINT2D *pt)
 }
 
 //given a string, make a PJ object
-PJ *make_project(char *str1)
+PJ *
+make_project(char *str1)
 {
 	int t;
-	char	*params[1024];  //one for each parameter
-	char  *loc;
-	char 	*str;
+	char *params[1024];  //one for each parameter
+	char *loc;
+	char *str;
 	PJ *result;
 
 
-	if (str1 == NULL)
-		return NULL;
+	if (str1 == NULL) return NULL;
 
-	if (strlen(str1) ==0)
-		return NULL;
+	if (strlen(str1) == 0) return NULL;
 
-	str = palloc(1+strlen(str1) );
-	strcpy(str,str1);
+	str = pstrdup(str1);
 
-	//first we split the string into a bunch of smaller strings, based on the " " separator
+	/*
+	 * first we split the string into a bunch of smaller strings,
+	 * based on the " " separator
+	 */
 
-	params[0] = str; //1st param, we'll null terminate at the " " soon
+	params[0] = str; // 1st param, we'll null terminate at the " " soon
 
 	loc = str;
-	t =1;
+	t = 1;
 	while  ((loc != NULL) && (*loc != 0) )
 	{
-		loc = strchr( loc,' ');
+		loc = strchr(loc, ' ');
 		if (loc != NULL)
 		{
 			*loc = 0; // null terminate
-			params[t] = loc +1;
+			params[t] = loc+1;
 			loc++; // next char
 			t++; //next param
 		}
 	}
 
-	if (!(result= pj_init ( t , params)))
+	if (!(result=pj_init(t, params)))
 	{
 		pfree(str);
 		return NULL;
@@ -184,6 +185,7 @@ lwgeom_transform_recursive(char *geom, PJ *inpj, PJ *outpj)
 			transform_point(&p, inpj, outpj);
 			memcpy(getPoint_internal(point->point, 0),
 				&p, sizeof(POINT2D));
+			lwgeom_release((LWGEOM *)point);
 			continue;
 		}
 
@@ -198,6 +200,7 @@ lwgeom_transform_recursive(char *geom, PJ *inpj, PJ *outpj)
 				memcpy(getPoint_internal(pts, i),
 					&p, sizeof(POINT2D));
 			}
+			lwgeom_release((LWGEOM *)line);
 			continue;
 		}
 
@@ -216,6 +219,7 @@ lwgeom_transform_recursive(char *geom, PJ *inpj, PJ *outpj)
 						&p, sizeof(POINT2D));
 				}
 			}
+			lwgeom_release((LWGEOM *)poly);
 			continue;
 		}
 
@@ -231,7 +235,8 @@ lwgeom_transform_recursive(char *geom, PJ *inpj, PJ *outpj)
 		}
 		else
 		{
-	elog(NOTICE, "lwgeom_getsubgeometry_inspected returned NULL");
+			pfree_inspected(inspected);
+			lwerror("lwgeom_getsubgeometry_inspected returned NULL");
 			return 0;
 		}
 	}
@@ -257,14 +262,14 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	int32 result_srid ;
 	char *srl;
 
-	result_srid   = PG_GETARG_INT32(3);
+	result_srid = PG_GETARG_INT32(3);
 	if (result_srid == -1)
 	{
 		elog(ERROR,"tranform: destination SRID = -1");
 		PG_RETURN_NULL();
 	}
 
-	geom = (PG_LWGEOM *)  PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+	geom = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
 	if (pglwgeom_getSRID(geom) == -1)
 	{
 		pfree(geom);
@@ -275,7 +280,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	input_proj4_text  = (PG_GETARG_TEXT_P(1));
 	output_proj4_text = (PG_GETARG_TEXT_P(2));
 
-	input_proj4 = (char *) palloc(input_proj4_text->vl_len +1-4);
+	input_proj4 = (char *)palloc(input_proj4_text->vl_len+1-4);
 	memcpy(input_proj4, input_proj4_text->vl_dat,
 		input_proj4_text->vl_len-4);
 	input_proj4[input_proj4_text->vl_len-4] = 0; //null terminate
@@ -295,6 +300,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 		elog(ERROR, "transform: couldn't parse proj4 input string: '%s': %s", input_proj4, pj_strerrno(pj_errno));
 		PG_RETURN_NULL();
 	}
+	pfree(input_proj4);
 
 	output_pj = make_project(output_proj4);
 	if ((output_pj == NULL)|| pj_errno)
@@ -306,6 +312,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 		elog(ERROR, "transform: couldn't parse proj4 output string: '%s': %s", output_proj4, pj_strerrno(pj_errno));
 		PG_RETURN_NULL();
 	}
+	pfree(output_proj4);
 
 	/* now we have a geometry, and input/output PJ structs. */
 	lwgeom_transform_recursive(SERIALIZED_FORM(geom),
@@ -314,7 +321,6 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	/* clean up */
 	pj_free(input_pj);
 	pj_free(output_pj);
-	pfree(input_proj4); pfree(output_proj4);
 
 	srl = SERIALIZED_FORM(geom);
 
@@ -325,6 +331,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 		lwgeom_dropBBOX(lwgeom);
 		lwgeom->bbox = lwgeom_compute_bbox(lwgeom);
 		lwgeom->SRID = result_srid;
+		lwfree(lwgeom->bbox); 
 		lwgeom_release(lwgeom);
 		result = pglwgeom_serialize(lwgeom);
 	}
