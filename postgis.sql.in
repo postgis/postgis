@@ -808,6 +808,55 @@ LANGUAGE 'sql' WITH (iscachable,isstrict);
 
 
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- FIX_GEOMETRY_COLUMNS() 
+--
+
+CREATE FUNCTION fix_geometry_columns() RETURNS text
+AS 
+'
+BEGIN
+
+#if USE_VERSION >= 73
+	-- Since 7.3 schema support has been added.
+	-- Previous postgis versions used to put the database name in
+	-- the schema column. This needs to be fixed, so we set to the
+	-- empty string any schema value not existing in pg_namespace
+	--
+	-- it would be better to find the correct schema name
+	UPDATE geometry_columns SET f_table_schema = ''public''
+		WHERE f_table_schema is NULL or f_table_schema NOT IN
+		( SELECT nspname::varchar FROM pg_namespace );
+#endif
+
+#if USE_VERSION < 75
+	-- Until PG75 we mantain a custom statistic field
+	UPDATE geometry_columns SET attrelid = (
+		SELECT c.oid 
+		FROM pg_class c, pg_attribute a, pg_namespace n
+		WHERE c.relname = geometry_columns.f_table_name::name
+		AND a.attrelid = c.oid AND c.relnamespace = n.oid
+		AND a.attname = geometry_columns.f_geometry_column::name
+		AND n.nspname = geometry_columns.f_table_schema::name
+		);
+	
+	UPDATE geometry_columns SET varattnum = (
+		SELECT a.attnum
+		FROM pg_class c, pg_attribute a, pg_namespace n
+		WHERE n.nspname = geometry_columns.f_table_schema::name
+		AND c.relname = geometry_columns.f_table_name::name
+		AND a.attname = geometry_columns.f_geometry_column::name
+		AND a.attrelid = c.oid AND c.relnamespace = n.oid
+		);
+#endif
+
+	RETURN ''geometry_columns table is now linked to the system tables'';
+
+END;
+'
+LANGUAGE 'plpgsql' ;
+
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- FIND_EXTENT( <table name>, <column name> )
 
 CREATE FUNCTION find_extent(text,text) RETURNS box3d AS
@@ -2069,22 +2118,6 @@ INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
 	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops'
 		AND proname = 'ggeometry_same';
 
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- FIX_GEOMETRY_COLUMNS()
-
-CREATE FUNCTION fix_geometry_columns() RETURNS text
-AS 
-'
-BEGIN
-        UPDATE geometry_columns SET attrelid = (                                                SELECT c.oid AS attrelid FROM pg_class c, pg_attribute a                        WHERE c.relname = geometry_columns.f_table_name::name                           AND a.attrelid = c.oid                                                          AND a.attname = geometry_columns.f_geometry_column::name
-                );
-                                                                                        UPDATE geometry_columns SET varattnum = (                                               SELECT a.attnum FROM pg_class c, pg_attribute a                                 WHERE c.relname = geometry_columns.f_table_name::name                           AND a.attrelid = c.oid                                                          AND a.attname = geometry_columns.f_geometry_column::name
-                );
-
-        RETURN ''geometry_columns table is now linked to the system tables'';
-END;
-'
-LANGUAGE 'plpgsql' ;
 
 #elif USE_VERSION == 72
 
@@ -2376,24 +2409,6 @@ INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
       and opcname = 'gist_geometry_ops'
       and proname = 'gbox_same';
 
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- FIX_GEOMETRY_COLUMNS()
-
-CREATE FUNCTION fix_geometry_columns() RETURNS text
-AS 
-'
-BEGIN
-
-        UPDATE geometry_columns SET attrelid = (                                                SELECT c.oid AS attrelid FROM pg_class c, pg_attribute a                        WHERE c.relname = geometry_columns.f_table_name::name                           AND a.attrelid = c.oid                                                          AND a.attname = geometry_columns.f_geometry_column::name
-                );
-                                                                                        UPDATE geometry_columns SET varattnum = (                                               SELECT a.attnum FROM pg_class c, pg_attribute a                                 WHERE c.relname = geometry_columns.f_table_name::name                           AND a.attrelid = c.oid                                                          AND a.attname = geometry_columns.f_geometry_column::name
-                );
-
-        RETURN ''geometry_columns table is now linked to the system tables'';
-
-END;
-'
-LANGUAGE 'plpgsql' ;
 
 #elif USE_VERSION == 73
 
@@ -2569,48 +2584,6 @@ CREATE OPERATOR CLASS gist_geometry_ops
 UPDATE pg_opclass 
 	SET opckeytype = (select oid from pg_type where typname = 'box') 
 	WHERE opcname = 'gist_geometry_ops';
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- FIX_GEOMETRY_COLUMNS()
---
--- Since 7.3 schema support has been added.
--- Previous postgis versions used to put the database name in
--- the schema column. This needs to be fixed, so we set to the
--- empty string any schema value not existing in pg_namespace
---
-
-CREATE FUNCTION fix_geometry_columns() RETURNS text
-AS 
-'
-BEGIN
-	-- it would be better to find the correct schema name
-	UPDATE geometry_columns SET f_table_schema = ''public''
-		WHERE f_table_schema is NULL or f_table_schema NOT IN
-		( SELECT nspname::varchar FROM pg_namespace );
-
-	UPDATE geometry_columns SET attrelid = (
-		SELECT c.oid 
-		FROM pg_class c, pg_attribute a, pg_namespace n
-		WHERE c.relname = geometry_columns.f_table_name::name
-		AND a.attrelid = c.oid AND c.relnamespace = n.oid
-		AND a.attname = geometry_columns.f_geometry_column::name
-		AND n.nspname = geometry_columns.f_table_schema::name
-		);
-	
-	UPDATE geometry_columns SET varattnum = (
-		SELECT a.attnum
-		FROM pg_class c, pg_attribute a, pg_namespace n
-		WHERE n.nspname = geometry_columns.f_table_schema::name
-		AND c.relname = geometry_columns.f_table_name::name
-		AND a.attname = geometry_columns.f_geometry_column::name
-		AND a.attrelid = c.oid AND c.relnamespace = n.oid
-		);
-
-	RETURN ''geometry_columns table is now linked to the system tables'';
-
-END;
-'
-LANGUAGE 'plpgsql' ;
 
 
 #elif USE_VERSION == 74
@@ -2813,48 +2786,6 @@ CREATE OPERATOR CLASS btree_geometry_ops
 	FUNCTION	1	geometry_cmp (geometry, geometry);
 
 
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- FIX_GEOMETRY_COLUMNS()
---
--- Since 7.3 schema support has been added.
--- Previous postgis versions used to put the database name in
--- the schema column. This needs to be fixed, so we set to the
--- empty string any schema value not existing in pg_namespace
---
-
-CREATE FUNCTION fix_geometry_columns() RETURNS text
-AS 
-'
-BEGIN
-	-- it would be better to find the correct schema name
-	UPDATE geometry_columns SET f_table_schema = ''public''
-		WHERE f_table_schema is NULL or f_table_schema NOT IN
-		( SELECT nspname::varchar FROM pg_namespace );
-
-	UPDATE geometry_columns SET attrelid = (
-		SELECT c.oid 
-		FROM pg_class c, pg_attribute a, pg_namespace n
-		WHERE c.relname = geometry_columns.f_table_name::name
-		AND a.attrelid = c.oid AND c.relnamespace = n.oid
-		AND a.attname = geometry_columns.f_geometry_column::name
-		AND n.nspname = geometry_columns.f_table_schema::name
-		);
-	
-	UPDATE geometry_columns SET varattnum = (
-		SELECT a.attnum
-		FROM pg_class c, pg_attribute a, pg_namespace n
-		WHERE n.nspname = geometry_columns.f_table_schema::name
-		AND c.relname = geometry_columns.f_table_name::name
-		AND a.attname = geometry_columns.f_geometry_column::name
-		AND a.attrelid = c.oid AND c.relnamespace = n.oid
-		);
-
-	RETURN ''geometry_columns table is now linked to the system tables'';
-
-
-END;
-'
-LANGUAGE 'plpgsql' ;
 
 #elif USE_VERSION == 75
 
@@ -3040,31 +2971,6 @@ CREATE OPERATOR CLASS btree_geometry_ops
 	OPERATOR	5	> ,
 	FUNCTION	1	geometry_cmp (geometry, geometry);
 
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- FIX_GEOMETRY_COLUMNS()
---
--- Since 7.3 schema support has been added.
--- Previous postgis versions used to put the database name in
--- the schema column. This needs to be fixed, so we set to the
--- empty string any schema value not existing in pg_namespace
---
-
-CREATE FUNCTION fix_geometry_columns() RETURNS text
-AS 
-'
-BEGIN
-	-- it would be better to find the correct schema name
-	UPDATE geometry_columns SET f_table_schema = ''public''
-		WHERE f_table_schema is NULL or f_table_schema NOT IN
-		( SELECT nspname::varchar FROM pg_namespace );
-
-	RETURN ''geometry_columns table is now linked to the system tables'';
-
-
-END;
-'
-LANGUAGE 'plpgsql' ;
 
 
 #endif // USE_VERSION == ...
