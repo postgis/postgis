@@ -163,7 +163,8 @@ all: all-lib lwgeom.sql
 # Shared library stuff
 
 lwgeom.sql:	lwgeom.sql.in
-	cat lwgeom.sql.in | sed -e 's:@MODULE_FILENAME@:$(MODULE_FILENAME):g;s:@POSTGIS_VERSION@:$(POSTGIS_VERSION):g'  > $@ 
+	#cat lwgeom.sql.in | sed -e 's:@MODULE_FILENAME@:$(MODULE_FILENAME):g;s:@POSTGIS_VERSION@:$(POSTGIS_VERSION):g'  > $@ 
+	cpp -P -traditional-cpp -DUSE_VERSION=$(USE_VERSION) $< | sed -e 's:@MODULE_FILENAME@:$(MODULE_FILENAME):g;s:@POSTGIS_VERSION@:$(POSTGIS_VERSION):g;s:@POSTGIS_SCRIPTS_VERSION@:$(SCRIPTS_VERSION):g' > $@
 
 install: all installdirs install-lwgeom-lib
 	$(INSTALL_DATA) lwgeom.sql $(DESTDIR)$(datadir)
