@@ -38,6 +38,7 @@ Datum LWGEOM_inside_circle_point(PG_FUNCTION_ARGS);
 Datum LWGEOM_collect(PG_FUNCTION_ARGS);
 Datum LWGEOM_accum(PG_FUNCTION_ARGS);
 Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS);
+Datum LWGEOM_expand(PG_FUNCTION_ARGS);
 
 // internal
 char * lwgeom_summary_recursive(char *serialized, int offset);
@@ -2275,4 +2276,52 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 	pfree(serialized_result);
 
 	PG_RETURN_POINTER( result );
+}
+
+// makes a polygon of the expanded features bvol - 1st point = LL 3rd=UR
+// 2d only. (3d might be worth adding).
+// create new geometry of type polygon, 1 ring, 5 points
+PG_FUNCTION_INFO_V1(LWGEOM_expand);
+Datum LWGEOM_expand(PG_FUNCTION_ARGS)
+{
+	LWGEOM *geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	double d = PG_GETARG_FLOAT8(1);
+	BOX2DFLOAT4 box;
+	POINT2D *pts = palloc(sizeof(POINT2D)*5);
+	POINTARRAY *pa[1];
+	LWPOLY *poly;
+	int SRID;
+	LWGEOM *result;
+	char *ser;
+
+	// get geometry box and SRID
+	getbox2d_p(SERIALIZED_FORM(geom), &box);
+	SRID = lwgeom_getsrid(SERIALIZED_FORM(geom));
+
+	// expand it
+	expand_box2d(&box, d);
+
+	// Assign coordinates to POINT2D array
+	pts[0].x = box.xmin; pts[0].y = box.ymin;
+	pts[1].x = box.xmin; pts[1].y = box.ymax;
+	pts[2].x = box.xmax; pts[2].y = box.ymax;
+	pts[3].x = box.xmax; pts[3].y = box.ymin;
+	pts[4].x = box.xmin; pts[4].y = box.ymin;
+
+	// Construct point array
+	pa[0] = palloc(sizeof(POINTARRAY));
+	pa[0]->serialized_pointlist = (char *)pts;
+	pa[0]->ndims = 2;
+	pa[0]->npoints = 5;
+
+	// Construct polygon
+	poly = lwpoly_construct(2, SRID, 1, pa);
+
+	// Serialize polygon
+	ser = lwpoly_serialize(poly);
+
+	// Construct LWGEOM 
+	result = LWGEOM_construct(ser, SRID, lwgeom_hasBBOX(geom->type));
+	
+	PG_RETURN_POINTER(result);
 }

@@ -107,6 +107,40 @@ CREATE TYPE geometry (
         storage = main
 );
 
+        
+CREATEFUNCTION geometry(text)
+        RETURNS geometry
+        AS '@MODULE_FILENAME@','parse_WKT_lwgeom'
+        LANGUAGE 'C' WITH (isstrict,iscachable);
+
+-------------------------------------------------------------------
+--  BOX3D TYPE
+-------------------------------------------------------------------
+
+#if USE_VERSION < 73
+# define BOX3D_IN_REP opaque
+# define BOX3D_OUT_REP opaque
+#else
+# define BOX3D_IN_REP box3d
+# define BOX3D_OUT_REP cstring
+#endif
+
+CREATEFUNCTION box3d_in(BOX3D_OUT_REP)
+	RETURNS BOX3D_IN_REP
+	AS '@MODULE_FILENAME@', 'BOX3D_in'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION box3d_out(BOX3D_IN_REP)
+	RETURNS BOX3D_OUT_REP
+	AS '@MODULE_FILENAME@', 'BOX3D_out'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE TYPE box3d (
+	alignment = double,
+	internallength = 48,
+	input = box3d_in,
+	output = box3d_out
+);
 
 -----------------------------------------------------------------------
 --
@@ -130,19 +164,6 @@ CREATE TYPE box2d (
         output = box2d_out,
         storage = plain
 );
-
-CREATEFUNCTION box2d(geometry)
-        RETURNS box2d
-        AS '@MODULE_FILENAME@','LWGEOM_to_BOX2DFLOAT4'
-        LANGUAGE 'C' WITH (isstrict,iscachable);
-
-
-
-        
-CREATEFUNCTION geometry(text)
-        RETURNS geometry
-        AS '@MODULE_FILENAME@','parse_WKT_lwgeom'
-        LANGUAGE 'C' WITH (isstrict,iscachable);
 
 ---- BOX2D  support functions
 
@@ -1214,6 +1235,21 @@ CREATE AGGREGATE collect (
 	finalfunc = collect_garray
 	);
 
+CREATEFUNCTION expand(box3d,float8)
+	RETURNS box3d
+	AS '@MODULE_FILENAME@', 'BOX3D_expand'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATEFUNCTION expand(box2d,float8)
+	RETURNS box2d
+	AS '@MODULE_FILENAME@', 'BOX2DFLOAT4_expand'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATEFUNCTION expand(geometry,float8)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_expand'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
 ------------------------------------------------------------------------
 
 --
@@ -2253,6 +2289,38 @@ BEGIN
 	RETURN fullver;
 END
 ' LANGUAGE 'plpgsql';
+
+---------------------------------------------------------------
+-- CASTS
+---------------------------------------------------------------
+
+CREATEFUNCTION box2d(geometry)
+        RETURNS box2d
+        AS '@MODULE_FILENAME@','LWGEOM_to_BOX2DFLOAT4'
+        LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE CAST (geometry as box2d) WITH FUNCTION box2d(geometry) AS IMPLICIT ;
+
+CREATEFUNCTION box3d(geometry)
+        RETURNS box3d
+        AS '@MODULE_FILENAME@','LWGEOM_to_BOX3D'
+        LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE CAST (geometry as box3d) WITH FUNCTION box3d(geometry) AS IMPLICIT ;
+
+CREATEFUNCTION box2d(box3d)
+        RETURNS box2d
+        AS '@MODULE_FILENAME@','BOX3D_to_BOX2DFLOAT4'
+        LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE CAST (box3d as box2d) WITH FUNCTION box2d(box3d) AS IMPLICIT ;
+
+CREATEFUNCTION box3d(box2d)
+        RETURNS box3d
+        AS '@MODULE_FILENAME@','BOX2DFLOAT4_to_BOX3D'
+        LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE CAST (box2d as box3d) WITH FUNCTION box3d(box2d) AS IMPLICIT ;
 
 ---------------------------------------------------------------
 -- END

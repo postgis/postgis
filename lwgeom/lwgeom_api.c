@@ -21,10 +21,6 @@
 
 //forward decs
 
-extern float  nextDown_f(double d);
-extern float  nextUp_f(double d);
-extern double nextDown_d(float d);
-extern double nextUp_d(float d);
 
 
 extern  BOX3D *lw_geom_getBB_simple(char *serialized_form);
@@ -217,6 +213,7 @@ BOX2DFLOAT4 *box_to_box2df(BOX *box)
 }
 
 // convert BOX2D to BOX3D
+// zmin and zmax are set to 0.0
 BOX3D box2df_to_box3d(BOX2DFLOAT4 *box)
 {
 	BOX3D result;
@@ -224,13 +221,30 @@ BOX3D box2df_to_box3d(BOX2DFLOAT4 *box)
 	if (box == NULL)
 		return result;
 
-	result.xmin = nextDown_d(box->xmin);
-	result.ymin = nextDown_d(box->ymin);
+	result.xmin = box->xmin;
+	result.ymin = box->ymin;
 
-	result.xmax = nextUp_d(box->xmax);
-	result.ymax = nextUp_d(box->ymax);
+	result.xmax = box->xmax;
+	result.ymax = box->ymax;
+
+	result.zmin = result.zmax = 0.0;
 
 	return result;
+}
+
+// convert BOX2D to BOX3D, using pre-allocated BOX3D as output
+// Z values are set to 0.0.
+void box2df_to_box3d_p(BOX2DFLOAT4 *box, BOX3D *out)
+{
+	if (box == NULL) return;
+
+	out->xmin = box->xmin;
+	out->ymin = box->ymin;
+
+	out->xmax = box->xmax;
+	out->ymax = box->ymax;
+
+	out->zmin = out->zmax = 0.0;
 }
 
 
@@ -1259,7 +1273,7 @@ elog(NOTICE, "lwpoint_findlength: returning (%d)", result+32);
 //********************************************************************
 // basic polygon manipulation
 
-// construct a new LWLINE.  arrays (points/points per ring) will NOT be copied
+// construct a new LWPOLY.  arrays (points/points per ring) will NOT be copied
 // use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
 LWPOLY *lwpoly_construct(int ndims, int SRID, int nrings,POINTARRAY **points)
 {
@@ -1357,83 +1371,83 @@ LWPOLY *lwpoly_deserialize(char *serialized_form)
 // points copied
 char *lwpoly_serialize(LWPOLY *poly)
 {
-		int size=1;  // type byte
-		char hasSRID;
-		char *result;
-		int t,u;
-		int total_points = 0;
-		int npoints;
-		char *loc;
+	int size=1;  // type byte
+	char hasSRID;
+	char *result;
+	int t,u;
+	int total_points = 0;
+	int npoints;
+	char *loc;
 
-		hasSRID = (poly->SRID != -1);
+	hasSRID = (poly->SRID != -1);
 
-		if (hasSRID)
-			size +=4;  //4 byte SRID
+	if (hasSRID)
+		size +=4;  //4 byte SRID
 
-		size += 4; // nrings
-		size += 4*poly->nrings; //npoints/ring
+	size += 4; // nrings
+	size += 4*poly->nrings; //npoints/ring
 
 
-		for (t=0;t<poly->nrings;t++)
-		{
-			total_points  += poly->rings[t]->npoints;
-		}
-		if (poly->ndims == 3)
-			size += 24*total_points;
-		else if (poly->ndims == 2)
-			size += 16*total_points;
-		else if (poly->ndims == 4)
-			size += 32*total_points;
+	for (t=0;t<poly->nrings;t++)
+	{
+		total_points  += poly->rings[t]->npoints;
+	}
+	if (poly->ndims == 3)
+		size += 24*total_points;
+	else if (poly->ndims == 2)
+		size += 16*total_points;
+	else if (poly->ndims == 4)
+		size += 32*total_points;
 
-		result = palloc(size);
+	result = palloc(size);
 
-		result[0] = (unsigned char) lwgeom_makeType(poly->ndims,hasSRID, POLYGONTYPE);
-		loc = result+1;
+	result[0] = (unsigned char) lwgeom_makeType(poly->ndims,hasSRID, POLYGONTYPE);
+	loc = result+1;
 
-		if (hasSRID)
-		{
-			memcpy(loc, &poly->SRID, sizeof(int32));
-			loc += 4;
-		}
+	if (hasSRID)
+	{
+		memcpy(loc, &poly->SRID, sizeof(int32));
+		loc += 4;
+	}
 
-		memcpy(loc, &poly->nrings, sizeof(int32));  // nrings
+	memcpy(loc, &poly->nrings, sizeof(int32));  // nrings
+	loc+=4;
+
+
+
+	for (t=0;t<poly->nrings;t++)
+	{
+		POINTARRAY *pa = poly->rings[t];
+		npoints = poly->rings[t]->npoints;
+		memcpy(loc, &npoints, sizeof(int32)); //npoints this ring
 		loc+=4;
-
-
-
-		for (t=0;t<poly->nrings;t++)
+		if (poly->ndims == 3)
 		{
-			POINTARRAY *pa = poly->rings[t];
-			npoints = poly->rings[t]->npoints;
-			memcpy(loc, &npoints, sizeof(int32)); //npoints this ring
-			loc+=4;
-			if (poly->ndims == 3)
+			for (u=0;u<npoints;u++)
 			{
-				for (u=0;u<npoints;u++)
-				{
-					getPoint3d_p(pa, u, loc);
-					loc+= 24;
-				}
-			}
-			else if (poly->ndims == 2)
-			{
-				for (u=0;u<npoints;u++)
-				{
-					getPoint2d_p(pa, u, loc);
-					loc+= 16;
-				}
-			}
-			else if (poly->ndims == 4)
-			{
-				for (u=0;u<npoints;u++)
-				{
-					getPoint4d_p(pa, u, loc);
-					loc+= 32;
-				}
+				getPoint3d_p(pa, u, loc);
+				loc+= 24;
 			}
 		}
+		else if (poly->ndims == 2)
+		{
+			for (u=0;u<npoints;u++)
+			{
+				getPoint2d_p(pa, u, loc);
+				loc+= 16;
+			}
+		}
+		else if (poly->ndims == 4)
+		{
+			for (u=0;u<npoints;u++)
+			{
+				getPoint4d_p(pa, u, loc);
+				loc+= 32;
+			}
+		}
+	}
 
-		return result;
+	return result;
 }
 
 // create the serialized form of the polygon writing it into the

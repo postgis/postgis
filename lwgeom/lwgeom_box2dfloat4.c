@@ -23,10 +23,12 @@
 // basic implementation of BOX2D
 
 
-		//forward defs
+//forward defs
 Datum BOX2DFLOAT4_in(PG_FUNCTION_ARGS);
 Datum BOX2DFLOAT4_out(PG_FUNCTION_ARGS);
 Datum LWGEOM_to_BOX2DFLOAT4(PG_FUNCTION_ARGS);
+Datum BOX2DFLOAT4_expand(PG_FUNCTION_ARGS);
+Datum BOX2DFLOAT4_to_BOX3D(PG_FUNCTION_ARGS);
 
 
 
@@ -34,41 +36,41 @@ Datum LWGEOM_to_BOX2DFLOAT4(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(BOX2DFLOAT4_in);
 Datum BOX2DFLOAT4_in(PG_FUNCTION_ARGS)
 {
-	    char                    *str = PG_GETARG_CSTRING(0);
-		int nitems;
-	    BOX2DFLOAT4      *box = (BOX2DFLOAT4 *) palloc(sizeof(BOX2DFLOAT4));
+	char *str = PG_GETARG_CSTRING(0);
+	int nitems;
+	BOX2DFLOAT4 *box = (BOX2DFLOAT4 *) palloc(sizeof(BOX2DFLOAT4));
 
 
 
 //printf( "box3d_in gets '%s'\n",str);
 
-		if (strstr(str,"BOX(") !=  str )
-		{
-				 pfree(box);
-				 elog(ERROR,"BOX2DFLOAT4 parser - doesnt start with BOX(");
-				 PG_RETURN_NULL();
-		}
-		nitems = sscanf(str,"BOX(%f %f,%f %f)", &box->xmin,&box->ymin,&box->xmax,&box->ymax);
-		if (nitems != 4)
-		{
-			 pfree(box);
-			 elog(ERROR,"BOX2DFLOAT4 parser - couldnt parse.  It should look like: BOX(xmin ymin,xmax ymax)");
-			 PG_RETURN_NULL();
-		}
+	if (strstr(str,"BOX(") !=  str )
+	{
+		 pfree(box);
+		 elog(ERROR,"BOX2DFLOAT4 parser - doesnt start with BOX(");
+		 PG_RETURN_NULL();
+	}
+	nitems = sscanf(str,"BOX(%f %f,%f %f)", &box->xmin,&box->ymin,&box->xmax,&box->ymax);
+	if (nitems != 4)
+	{
+		 pfree(box);
+		 elog(ERROR,"BOX2DFLOAT4 parser - couldnt parse.  It should look like: BOX(xmin ymin,xmax ymax)");
+		 PG_RETURN_NULL();
+	}
 
-		if (box->xmin > box->xmax)
-		{
-			float tmp = box->xmin;
-			box->xmin = box->xmax;
-			box->xmax = tmp;
-		}
-		if (box->ymin > box->ymax)
-		{
-				float tmp = box->ymin;
-				box->ymin = box->ymax;
-				box->ymax = tmp;
-		}
-		PG_RETURN_POINTER(box);
+	if (box->xmin > box->xmax)
+	{
+		float tmp = box->xmin;
+		box->xmin = box->xmax;
+		box->xmax = tmp;
+	}
+	if (box->ymin > box->ymax)
+	{
+		float tmp = box->ymin;
+		box->ymin = box->ymax;
+		box->ymax = tmp;
+	}
+	PG_RETURN_POINTER(box);
 }
 
 //writer  "BOX(xmin ymin,xmax ymax)"
@@ -290,5 +292,37 @@ float LWGEOM_Maxf(float a, float b)
 }
 
 
+/* Expand given box of 'd' units in all directions */
+void
+expand_box2d(BOX2DFLOAT4 *box, double d)
+{
+	box->xmin -= d;
+	box->ymin -= d;
 
+	box->xmax += d;
+	box->ymax += d;
+}
 
+PG_FUNCTION_INFO_V1(BOX2DFLOAT4_expand);
+Datum BOX2DFLOAT4_expand(PG_FUNCTION_ARGS)
+{
+	BOX2DFLOAT4 *box = (BOX2DFLOAT4 *)PG_GETARG_POINTER(0);
+	double d = PG_GETARG_FLOAT8(1);
+	BOX2DFLOAT4 *result = (BOX2DFLOAT4 *)palloc(sizeof(BOX2DFLOAT4));
+
+	memcpy(result, box, sizeof(BOX2DFLOAT4));
+	expand_box2d(result, d);
+
+	PG_RETURN_POINTER(result);
+}
+
+PG_FUNCTION_INFO_V1(BOX2DFLOAT4_to_BOX3D);
+Datum BOX2DFLOAT4_to_BOX3D(PG_FUNCTION_ARGS)
+{
+	BOX2DFLOAT4 *box = (BOX2DFLOAT4 *)PG_GETARG_POINTER(0);
+	BOX3D *result = palloc(sizeof(BOX3D));
+
+	box2df_to_box3d_p(box, result);
+
+	PG_RETURN_POINTER(result);
+}

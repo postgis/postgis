@@ -493,6 +493,8 @@ extern BOX2DFLOAT4 *box3d_to_box2df(BOX3D *box);
 extern BOX2DFLOAT4 *box_to_box2df(BOX *box);  // postgresql standard type
 
 extern BOX3D box2df_to_box3d(BOX2DFLOAT4 *box);
+extern void box2df_to_box3d_p(BOX2DFLOAT4 *box, BOX3D *box3d);
+
 extern BOX   box2df_to_box(BOX2DFLOAT4 *box);  // postgresql standard type
 extern BOX3D *combine_boxes(BOX3D *b1, BOX3D *b2);
 
@@ -502,6 +504,10 @@ extern BOX3D *combine_boxes(BOX3D *b1, BOX3D *b2);
 // otherwise we need to compute it.
 extern BOX2DFLOAT4 getbox2d(char *serialized_form);
 extern void getbox2d_p(char *serialized_form, BOX2DFLOAT4 *box);
+
+// Expand given box of 'd' units in all directions 
+void expand_box2d(BOX2DFLOAT4 *box, double d);
+void expand_box3d(BOX3D *box, double d);
 
 //****************************************************************
 // memory management -- these only delete the memory associated
@@ -664,7 +670,6 @@ Datum box2d_contain(PG_FUNCTION_ARGS);
 Datum box2d_inter(PG_FUNCTION_ARGS);
 Datum box2d_union(PG_FUNCTION_ARGS);
 
-
 Datum gist_lwgeom_compress(PG_FUNCTION_ARGS);
 Datum gist_lwgeom_consistent(PG_FUNCTION_ARGS);
 Datum gist_rtree_decompress(PG_FUNCTION_ARGS);
@@ -680,6 +685,11 @@ extern float LWGEOM_Maxf(float a, float b);
 
 
 extern BOX3D *lw_geom_getBB_simple(char *serialized_form);
+
+extern float  nextDown_f(double d);
+extern float  nextUp_f(double d);
+extern double nextDown_d(float d);
+extern double nextUp_d(float d);
 
 
 
