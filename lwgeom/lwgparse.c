@@ -5,10 +5,11 @@
  * www.telogis.com
  *
  */
-#include "wktparse.h"
 #include <string.h>
 #include <stdio.h>
+
 #include "liblwgeom.h"
+#include "wktparse.h"
 
 /*
 //To get byte order
@@ -26,7 +27,7 @@ typedef unsigned long int4;
 typedef struct tag_tuple tuple;
 
 struct tag_outputstate{
-	byte*	pos;
+	uchar*	pos;
 };
 
 typedef struct tag_outputstate output_state;
@@ -129,10 +130,10 @@ void alloc_multipolygon(void);
 void alloc_geomertycollection(void);
 void alloc_counter(void);
 void alloc_empty(void);
-byte* make_lwgeom(void);
-byte strhex_readbyte(const char* in);
-byte read_wkb_byte(const char** in);
-void read_wkb_bytes(const char** in,byte* out, int cnt);
+uchar* make_lwgeom(void);
+uchar strhex_readbyte(const char* in);
+uchar read_wkb_byte(const char** in);
+void read_wkb_bytes(const char** in,uchar* out, int cnt);
 int4 read_wkb_int(const char** in);
 double read_wbk_double(const char** in,int convert_from_int);
 void read_wkb_point(const char** b);
@@ -140,9 +141,9 @@ void read_collection(const char** b,read_col_func f);
 void read_collection2(const char** b);
 void parse_wkb(const char** b);
 void alloc_wkb(const char* parser);
-byte* parse_it(const char* geometry,allocator allocfunc,report_error errfunc);
-byte* parse_lwg(const char* geometry,allocator allocfunc,report_error errfunc);
-byte* parse_lwgi(const char* geometry,allocator allocfunc,report_error errfunc);
+uchar* parse_it(const char* geometry,allocator allocfunc,report_error errfunc);
+uchar* parse_lwg(const char* geometry,allocator allocfunc,report_error errfunc);
+uchar* parse_lwgi(const char* geometry,allocator allocfunc,report_error errfunc);
 
 void
 set_srid(double d_srid)
@@ -300,7 +301,7 @@ WRITE_INT4(output_state * out,int4 val)
 			val |=0x80;
 		}
 
-		*out->pos++ = (byte)val;
+		*out->pos++ = (uchar)val;
 		the_geom.alloc_size-=3;
 	}
 	else{
@@ -460,7 +461,7 @@ alloc_point_4d(double x,double y,double z,double m)
 void
 write_type(tuple* this,output_state* out)
 {
-	byte type=0;
+	uchar type=0;
 
 	//Empty handler - switch back
 	if ( this->uu.nn.type == 0xff )
@@ -596,13 +597,13 @@ alloc_empty()
 
 }
 
-byte *
+uchar *
 make_lwgeom()
 {
-	byte* out_c;
+	uchar* out_c;
 	output_state out;
 	tuple* cur;
-	out_c = (byte*)local_malloc(the_geom.alloc_size);
+	out_c = (uchar*)local_malloc(the_geom.alloc_size);
 	out.pos = out_c;
 	cur = the_geom.first ;
 
@@ -634,7 +635,7 @@ lwg_parse_yyerror(char* s)
  puts '{'+a.join(",")+'}'
 
  */
-static const byte to_hex[]  = {
+static const uchar to_hex[]  = {
 	255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
 	255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
 	255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
@@ -652,7 +653,7 @@ static const byte to_hex[]  = {
 	255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
 	255,255,255,255,255,255,255,255};
 
-byte
+uchar
 strhex_readbyte(const char* in)
 {
 	if ( *in == 0 ){
@@ -664,10 +665,10 @@ strhex_readbyte(const char* in)
 	return to_hex[(int)*in]<<4 | to_hex[(int)*(in+1)];
 }
 
-byte
+uchar
 read_wkb_byte(const char** in)
 {
-	byte ret = strhex_readbyte(*in);
+	uchar ret = strhex_readbyte(*in);
 	(*in)+=2;
 	return ret;
 }
@@ -675,7 +676,7 @@ read_wkb_byte(const char** in)
 int swap_order;
 
 void
-read_wkb_bytes(const char** in,byte* out, int cnt)
+read_wkb_bytes(const char** in,uchar* out, int cnt)
 {
 	if ( ! swap_order ){
 		while(cnt--) *out++ = read_wkb_byte(in);
@@ -690,7 +691,7 @@ int4
 read_wkb_int(const char** in)
 {
 	int4 ret;
-	read_wkb_bytes(in,(byte*)&ret,4);
+	read_wkb_bytes(in,(uchar*)&ret,4);
 	return ret;
 }
 
@@ -700,7 +701,7 @@ read_wbk_double(const char** in,int convert_from_int)
 	double ret;
 
 	if ( ! convert_from_int){
-		read_wkb_bytes(in,(byte*)&ret,8);
+		read_wkb_bytes(in,(uchar*)&ret,8);
 		return ret;
 	}else{
 		ret  = read_wkb_int(in);
@@ -771,7 +772,7 @@ void
 parse_wkb(const char** b)
 {
 	int4 type;
-	byte xdr = read_wkb_byte(b);
+	uchar xdr = read_wkb_byte(b);
 	int4 localsrid;
 
 	swap_order=0;
@@ -883,7 +884,7 @@ alloc_wkb(const char* parser)
 /*
 	Parse a string and return a LW_GEOM
 */
-byte *
+uchar *
 parse_it(const char* geometry,allocator allocfunc,report_error errfunc)
 {
 
@@ -902,14 +903,14 @@ parse_it(const char* geometry,allocator allocfunc,report_error errfunc)
 	return make_lwgeom();
 }
 
-byte *
+uchar *
 parse_lwg(const char* geometry,allocator allocfunc,report_error errfunc)
 {
 	the_geom.lwgi=0;
 	return parse_it(geometry,allocfunc,errfunc);
 }
 
-byte *
+uchar *
 parse_lwgi(const char* geometry,allocator allocfunc,report_error errfunc)
 {
 	the_geom.lwgi=1;

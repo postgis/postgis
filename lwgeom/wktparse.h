@@ -8,7 +8,9 @@
 
 #include <stdlib.h>
 
-typedef unsigned char byte;
+#ifndef _LIBLWGEOM_H
+typedef unsigned char uchar;
+#endif
 typedef void* (*allocator)(size_t size);
 typedef void  (*freeor)(void* mem);
 typedef void  (*report_error)(const char* string);
@@ -64,10 +66,10 @@ void alloc_wkb(const char* parser);
 	You are responsible for freeing the returned memory.
 */
 
-byte* parse_lwg(const char* wkt,allocator allocfunc,report_error errfunc);
-byte* parse_lwgi(const char* wkt,allocator allocfunc,report_error errfunc);
-char* unparse_WKT(byte* serialized, allocator alloc,freeor free);
-char* unparse_WKB(byte* serialized, allocator alloc,freeor free, char endian, size_t *outsize, byte hexform);
+uchar* parse_lwg(const char* wkt,allocator allocfunc,report_error errfunc);
+uchar* parse_lwgi(const char* wkt,allocator allocfunc,report_error errfunc);
+char* unparse_WKT(uchar* serialized, allocator alloc,freeor free);
+char* unparse_WKB(uchar* serialized, allocator alloc,freeor free, char endian, size_t *outsize, uchar hexform);
 int lwg_parse_yyparse(void);
 int lwg_parse_yyerror(char* s);
 

@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
-#include "wktparse.h"
 
 //#include "lwgeom_pg.h"
 #include "liblwgeom.h"
+#include "wktparse.h"
 
 //#define PGIS_DEBUG_CALLS 1
 

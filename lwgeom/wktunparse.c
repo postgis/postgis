@@ -8,7 +8,6 @@
  */
 
 
-#include "wktparse.h"
 #include <string.h>
 #include <math.h>
 #include <stdio.h>
@@ -20,12 +19,14 @@
 //#include <netinet/ip.h>
 
 #include "liblwgeom.h"
+#include "wktparse.h"
+
 
 //-- Typedefs ----------------------------------------------
 
 typedef unsigned long int4;
-typedef byte* (*outfunc)(byte*,int);
-typedef byte* (*outwkbfunc)(byte*);
+typedef uchar* (*outfunc)(uchar*,int);
+typedef uchar* (*outwkbfunc)(uchar*);
 
 //-- Prototypes --------------------------------------------
 
@@ -34,24 +35,24 @@ void to_end(void);
 void write_str(const char* str);
 void write_double(double val);
 void write_int(int i);
-int4 read_int(byte** geom);
-double read_double(byte** geom);
-byte* output_point(byte* geom,int supress);
-byte* output_single(byte* geom,int supress);
-byte* output_collection(byte* geom,outfunc func,int supress);
-byte* output_collection_2(byte* geom,int suppress);
-byte* output_multipoint(byte* geom,int suppress);
+int4 read_int(uchar** geom);
+double read_double(uchar** geom);
+uchar* output_point(uchar* geom,int supress);
+uchar* output_single(uchar* geom,int supress);
+uchar* output_collection(uchar* geom,outfunc func,int supress);
+uchar* output_collection_2(uchar* geom,int suppress);
+uchar* output_multipoint(uchar* geom,int suppress);
 
-void write_wkb_hex_bytes(byte* ptr, unsigned int cnt, size_t size);
-void write_wkb_bin_bytes(byte* ptr, unsigned int cnt, size_t size);
-void write_wkb_bin_flip_bytes(byte* ptr, unsigned int cnt, size_t size);
-void write_wkb_hex_flip_bytes(byte* ptr, unsigned int cnt, size_t size);
+void write_wkb_hex_bytes(uchar* ptr, unsigned int cnt, size_t size);
+void write_wkb_bin_bytes(uchar* ptr, unsigned int cnt, size_t size);
+void write_wkb_bin_flip_bytes(uchar* ptr, unsigned int cnt, size_t size);
+void write_wkb_hex_flip_bytes(uchar* ptr, unsigned int cnt, size_t size);
 
 void write_wkb_int(int i);
-byte* output_wkb_collection(byte* geom,outwkbfunc func);
-byte* output_wkb_collection_2(byte* geom);
-byte* output_wkb_point(byte* geom);
-byte* output_wkb(byte* geom);
+uchar* output_wkb_collection(uchar* geom,outwkbfunc func);
+uchar* output_wkb_collection_2(uchar* geom);
+uchar* output_wkb_point(uchar* geom);
+uchar* output_wkb(uchar* geom);
 
 //-- Globals -----------------------------------------------
 
@@ -63,8 +64,8 @@ static char*  out_pos;
 static int len;
 static int lwgi;
 //static int flipbytes;
-static byte endianbyte;
-void (*write_wkb_bytes)(byte* ptr,unsigned int cnt,size_t size);
+static uchar endianbyte;
+void (*write_wkb_bytes)(uchar* ptr,unsigned int cnt,size_t size);
 
 //----------------------------------------------------------
 
@@ -119,7 +120,7 @@ write_int(int i){
 }
 
 int4
-read_int(byte** geom)
+read_int(uchar** geom)
 {
 	int4 ret;
 #ifdef SHRINK_INTS
@@ -152,7 +153,7 @@ read_int(byte** geom)
 
 double round(double);
 
-double read_double(byte** geom){
+double read_double(uchar** geom){
 	if (lwgi){
 		double ret = *((int4*)*geom);
 		ret /= 0xb60b60;
@@ -168,8 +169,8 @@ double read_double(byte** geom){
 	}
 }
            
-byte *
-output_point(byte* geom,int supress)
+uchar *
+output_point(uchar* geom,int supress)
 {
 	int i;
 
@@ -181,8 +182,8 @@ output_point(byte* geom,int supress)
 	return geom;
 }
 
-byte *
-output_single(byte* geom,int supress)
+uchar *
+output_single(uchar* geom,int supress)
 {
 	write_str("(");
 	geom=output_point(geom,supress);
@@ -190,8 +191,8 @@ output_single(byte* geom,int supress)
 	return geom;
 }
 
-byte *
-output_collection(byte* geom,outfunc func,int supress)
+uchar *
+output_collection(uchar* geom,outfunc func,int supress)
 {
 	int cnt = read_int(&geom);
 	if ( cnt == 0 ){
@@ -210,16 +211,16 @@ output_collection(byte* geom,outfunc func,int supress)
 	return geom;
 }
 
-byte *
-output_collection_2(byte* geom,int suppress)
+uchar *
+output_collection_2(uchar* geom,int suppress)
 {
 	return output_collection(geom,output_point,suppress);
 }
 
-byte *output_wkt(byte* geom, int supress);
+uchar *output_wkt(uchar* geom, int supress);
 
 /* special case for multipoint to supress extra brackets */
-byte *output_multipoint(byte* geom,int suppress){
+uchar *output_multipoint(uchar* geom,int suppress){
 	unsigned type = *geom & 0x0f;
 	
 	if ( type  == POINTTYPE )
@@ -237,8 +238,8 @@ byte *output_multipoint(byte* geom,int suppress){
 // Suppress=0 // write TYPE, M, coords
 // Suppress=1 // write TYPE, coords 
 // Suppress=2 // write only coords
-byte *
-output_wkt(byte* geom, int supress)
+uchar *
+output_wkt(uchar* geom, int supress)
 {
 
 	unsigned type=*geom++;
@@ -351,7 +352,7 @@ output_wkt(byte* geom, int supress)
 }
 
 char *
-unparse_WKT(byte* serialized, allocator alloc, freeor free)
+unparse_WKT(uchar* serialized, allocator alloc, freeor free)
 {
 
 	if (serialized==NULL)
@@ -372,7 +373,7 @@ static char outchr[]={"0123456789ABCDEF" };
 
 /* Write HEX bytes flipping */
 void
-write_wkb_hex_flip_bytes(byte* ptr, unsigned int cnt, size_t size)
+write_wkb_hex_flip_bytes(uchar* ptr, unsigned int cnt, size_t size)
 {
 	unsigned int bc; // byte count
 
@@ -390,7 +391,7 @@ write_wkb_hex_flip_bytes(byte* ptr, unsigned int cnt, size_t size)
 
 /* Write HEX bytes w/out flipping */
 void
-write_wkb_hex_bytes(byte* ptr, unsigned int cnt, size_t size)
+write_wkb_hex_bytes(uchar* ptr, unsigned int cnt, size_t size)
 {
 	unsigned int bc; // byte count
 
@@ -408,7 +409,7 @@ write_wkb_hex_bytes(byte* ptr, unsigned int cnt, size_t size)
 
 /* Write BIN bytes flipping */
 void
-write_wkb_bin_flip_bytes(byte* ptr, unsigned int cnt, size_t size)
+write_wkb_bin_flip_bytes(uchar* ptr, unsigned int cnt, size_t size)
 {
 	unsigned int bc; // byte count
 
@@ -425,7 +426,7 @@ write_wkb_bin_flip_bytes(byte* ptr, unsigned int cnt, size_t size)
 
 /* Write BIN bytes w/out flipping */
 void
-write_wkb_bin_bytes(byte* ptr, unsigned int cnt, size_t size)
+write_wkb_bin_bytes(uchar* ptr, unsigned int cnt, size_t size)
 {
 	unsigned int bc; // byte count
 
@@ -440,8 +441,8 @@ write_wkb_bin_bytes(byte* ptr, unsigned int cnt, size_t size)
 	}
 }
 
-byte *
-output_wkb_point(byte* geom)
+uchar *
+output_wkb_point(uchar* geom)
 {
 	if ( lwgi ){
 		write_wkb_bytes(geom,dims,4);
@@ -455,11 +456,11 @@ output_wkb_point(byte* geom)
 
 void
 write_wkb_int(int i){
-	write_wkb_bytes((byte*)&i,1,4);
+	write_wkb_bytes((uchar*)&i,1,4);
 }
 
-byte *
-output_wkb_collection(byte* geom,outwkbfunc func)
+uchar *
+output_wkb_collection(uchar* geom,outwkbfunc func)
 {
 	int cnt = read_int(&geom);
 #ifdef PGIS_DEBUG
@@ -470,14 +471,14 @@ output_wkb_collection(byte* geom,outwkbfunc func)
 	return geom;
 }
 
-byte *
-output_wkb_collection_2(byte* geom){
+uchar *
+output_wkb_collection_2(uchar* geom){
 	return output_wkb_collection(geom,output_wkb_point);
 }
 
 
-byte *
-output_wkb(byte* geom)
+uchar *
+output_wkb(uchar* geom)
 {
 	unsigned char type=*geom++;
 	int4 wkbtype;
@@ -558,7 +559,7 @@ output_wkb(byte* geom)
 }
 
 char *
-unparse_WKB(byte* serialized, allocator alloc, freeor free, char endian, size_t *outsize, byte hex)
+unparse_WKB(uchar* serialized, allocator alloc, freeor free, char endian, size_t *outsize, uchar hex)
 {
 #ifdef PGIS_DEBUG
 	lwnotice("unparse_WKB(%p,...) called", serialized);
@@ -609,6 +610,9 @@ unparse_WKB(byte* serialized, allocator alloc, freeor free, char endian, size_t 
 
 /******************************************************************
  * $Log$
+ * Revision 1.18  2005/02/21 16:16:14  strk
+ * Changed byte to uchar to avoid clashes with win32 headers.
+ *
  * Revision 1.17  2005/02/07 13:21:10  strk
  * Replaced DEBUG* macros with PGIS_DEBUG*, to avoid clashes with postgresql DEBUG
  *
