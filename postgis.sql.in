@@ -314,7 +314,7 @@ CREATE FUNCTION compression(chip)
 CREATE FUNCTION setSRID(chip,int4)
    RETURNS chip
    AS '@MODULE_FILENAME@','setsrid_chip'
-	     LANGUAGE 'c'  with (isstrict);
+	     LANGUAGE 'c'  with (isstrict,iscachable);
 
 
 create function geometry_in(opaque)
