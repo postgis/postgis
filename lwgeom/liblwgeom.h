@@ -1020,4 +1020,7 @@ extern void *lwalloc(size_t size);
 extern void *lwrealloc(void *mem, size_t size);
 extern void lwfree(void *mem);
 
+/* Utilities */
+extern void trim_trailing_zeros(char *num);
+
 #endif // !defined _LIBLWGEOM_H 
