@@ -410,7 +410,9 @@ printf(conn_string);
 	strcat(query, geo_col_name);
 	strcat(query, ")) from ") ;
 	strcat(query, table);
-	strcat(query," where NOT geometrytype(geom) = NULL");
+	strcat(query," where NOT geometrytype(");
+	strcat(query,geo_col_name);
+	strcat(query,") = NULL");
 	res3 = PQexec(conn, query);	
 	//printf("\n\n-->%s\n\n",query);
 
