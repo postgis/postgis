@@ -1810,6 +1810,16 @@ CREATE AGGREGATE makeline (
 	finalfunc = makeline_garray
 	);
 
+CREATEFUNCTION MakePolygon(geometry, geometry[])
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_makepoly'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATEFUNCTION MakePolygon(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_makepoly'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
 CREATEFUNCTION polygonize_garray (geometry[])
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'GEOS_polygonize_garray'

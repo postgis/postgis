@@ -50,6 +50,7 @@ Datum LWGEOM_makepoint(PG_FUNCTION_ARGS);
 Datum LWGEOM_makepoint3dm(PG_FUNCTION_ARGS);
 Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS);
 Datum LWGEOM_makeline(PG_FUNCTION_ARGS);
+Datum LWGEOM_makepoly(PG_FUNCTION_ARGS);
 Datum LWGEOM_line_from_mpoint(PG_FUNCTION_ARGS);
 Datum LWGEOM_addpoint(PG_FUNCTION_ARGS);
 Datum LWGEOM_asEWKT(PG_FUNCTION_ARGS);
@@ -2106,6 +2107,61 @@ Datum LWGEOM_makeline(PG_FUNCTION_ARGS)
 	outline = lwline_from_lwpointarray(lwpoints[0]->SRID, 2, lwpoints);
 
 	result = pglwgeom_serialize((LWGEOM *)outline);
+
+	PG_RETURN_POINTER(result);
+}
+
+/*
+ * makepoly( GEOMETRY, GEOMETRY[] ) returns a POLYGON 
+ * formed by the given shell and holes geometries.
+ */
+PG_FUNCTION_INFO_V1(LWGEOM_makepoly);
+Datum LWGEOM_makepoly(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *pglwg1;
+	ArrayType *array=NULL;
+	PG_LWGEOM *result=NULL;
+	const LWLINE *shell=NULL;
+	const LWLINE **holes=NULL;
+	LWPOLY *outpoly;
+	unsigned int nholes=0;
+	unsigned int i;
+	size_t offset=0;
+
+#ifdef DEBUG
+	elog(NOTICE, "LWGEOM_makepoly called");
+#endif
+
+	/* Get input shell */
+	pglwg1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	if ( ! TYPE_GETTYPE(pglwg1->type) == LINETYPE ) {
+		lwerror("Shell is not a line");
+	}
+	shell = lwline_deserialize(SERIALIZED_FORM(pglwg1));
+
+	/* Get input holes if any */
+	if ( PG_NARGS() > 1 )
+	{
+		array = (ArrayType *) PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+		nholes = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
+		holes = lwalloc(sizeof(LWLINE *)*nholes);
+		for (i=0; i<nholes; i++)
+		{
+			PG_LWGEOM *g = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
+			LWLINE *hole;
+			offset += INTALIGN(g->size);
+			if ( TYPE_GETTYPE(g->type) != LINETYPE ) {
+				lwerror("Hole %d is not a line", i);
+			}
+			hole = lwline_deserialize(SERIALIZED_FORM(g));
+			holes[i] = hole;
+		}
+	}
+
+	outpoly = lwpoly_from_lwlines(shell, nholes, holes);
+	//lwnotice("%s", lwpoly_summary(outpoly));
+
+	result = pglwgeom_serialize((LWGEOM *)outpoly);
 
 	PG_RETURN_POINTER(result);
 }
