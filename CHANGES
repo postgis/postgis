@@ -14,6 +14,7 @@ PostGIS 1.0.0RC4
         - added distance_sphere function 
 	- subselects support in selectivity estimator 
 	- bug fixes for 64bit architectures
+	- bugfix in loaded, skipping all but first hole of polygons.
 
 PostGIS 1.0.0RC3
 2005/02/24
