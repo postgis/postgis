@@ -3850,6 +3850,20 @@ FROM geometry_table;</literallayout>
         </varlistentry>
 
         <varlistentry>
+          <term>estimated_extent(schema, table, geocolumn)</term>
+
+          <listitem>
+            <para>
+	    Return the 'estimated' extent of the given spatial table.
+	    The estimated is taken from the geometry column's statistics
+	    gathered by running VACUUM ANALYZE, and is statistically 
+	    about 95% of 'real' extent.
+            </para>
+            <para>NOTE: This is only available with PostgreSQL >= 8.0.0</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
           <term>find_srid(varchar,varchar,varchar)</term>
 
           <listitem>
