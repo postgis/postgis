@@ -12,6 +12,9 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.2  2004/02/23 12:18:55  strk
+-- added skeleton functions for pg75 stats integration
+--
 -- Revision 1.1  2004/02/04 22:27:02  strk
 -- Added pg75 support scripts
 --
@@ -155,11 +158,6 @@ CREATE FUNCTION explode_histogram2d (histogram2d, text)
 CREATE FUNCTION estimate_histogram2d(histogram2d,box)
 	RETURNS float8
 	AS '@MODULE_FILENAME@','estimate_histogram2d'
-	LANGUAGE 'C'  with (isstrict);
-
-CREATE FUNCTION postgisgistcostestimate(internal,internal,internal,internal,internal,internal,internal,internal)
-	RETURNS opaque
-	AS '@MODULE_FILENAME@','postgisgistcostestimate'
 	LANGUAGE 'C'  with (isstrict);
 
 --

@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.42  2004/02/23 12:18:55  strk
+ * added skeleton functions for pg75 stats integration
+ *
  * Revision 1.41  2004/01/25 19:33:00  pramsey
  * Test commit on new CVS archive.
  *
@@ -618,6 +621,9 @@ Datum geometry2box(PG_FUNCTION_ARGS);
 
 Datum explode_histogram2d(PG_FUNCTION_ARGS);
 Datum estimate_histogram2d(PG_FUNCTION_ARGS);
+#if USE_VERSION >= 75
+Datum geometry_analyze(PG_FUNCTION_ARGS);
+#endif
 
 Datum postgisgistcostestimate(PG_FUNCTION_ARGS);
 

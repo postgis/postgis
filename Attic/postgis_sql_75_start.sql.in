@@ -12,6 +12,9 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.2  2004/02/23 12:18:55  strk
+-- added skeleton functions for pg75 stats integration
+--
 -- Revision 1.1  2004/02/04 22:27:02  strk
 -- Added pg75 support scripts
 --
@@ -36,11 +39,11 @@ BEGIN TRANSACTION;
 -- if it is, you get a message "PL/PgSQL is installed" 
 -- otherwise it will give a big error message.
 
-CREATE FUNCTION plpgsql_call_handler() RETURNS language_handler AS
-    '$libdir/plpgsql' LANGUAGE C;
+--CREATE FUNCTION plpgsql_call_handler() RETURNS language_handler AS
+--    '$libdir/plpgsql' LANGUAGE C;
 
-CREATE TRUSTED PROCEDURAL LANGUAGE plpgsql
-    HANDLER plpgsql_call_handler;
+--CREATE TRUSTED PROCEDURAL LANGUAGE plpgsql
+--    HANDLER plpgsql_call_handler;
 
 --(select 'PL/PgSQL is installed.' as message from pg_language where lanname='plpgsql') union (select 'You must install PL/PgSQL before running this SQL file,\nor you will get an error. To install PL/PgSQL run:\n\tcreatelang plpgsql <dbname>'::text as message) order by message limit 1;
 
@@ -158,12 +161,18 @@ CREATE FUNCTION geometry_out(geometry)
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
 
+CREATE FUNCTION geometry_analyze(internal)
+	RETURNS bool
+	AS '@MODULE_FILENAME@'
+	LANGUAGE 'C' WITH (isstrict);
+
 CREATE TYPE geometry (
 	alignment = double,
 	internallength = variable,
 	input = geometry_in,
 	output = geometry_out,
-	storage = main
+	storage = main,
+	analyze = geometry_analyze
 );
 
 --

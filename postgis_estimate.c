@@ -11,6 +11,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.8  2004/02/23 12:18:55  strk
+ * added skeleton functions for pg75 stats integration
+ *
  * Revision 1.7  2003/11/11 10:14:57  strk
  * Added support for PG74
  *
@@ -75,6 +78,39 @@
 
 
 #include "executor/spi.h"
+
+#if USE_VERSION >= 75
+
+#define DEBUG_GEOMETRY_STATS 1
+
+#include "commands/vacuum.h"
+
+/*
+ * 	Assign a number to the postgis statistics kind
+ *
+ * 	tgl suggested:
+ *
+ * 	1-100:	reserved for assignment by the core Postgres project
+ * 	100-199: reserved for assignment by PostGIS
+ * 	200-9999: reserved for other globally-known stats kinds
+ * 	10000-32767: reserved for private site-local use
+ *
+ */
+#define STATISTIC_KIND_GEOMETRY 100
+
+typedef struct GEOM_STATS_T
+{
+	//boxesPerSide * boxesPerSide = total boxes in grid
+	float4 boxesPerSide;
+	// average bbox area of features in this histogram
+	float4 avgFeatureArea;
+	// BOX of area
+	float4 xmin,ymin, xmax, ymax;
+	// variable length # of floats for histogram
+	float4 value[1];
+} GEOM_STATS;
+
+#endif
 
 
 //estimate_histogram2d(histogram2d, box)
@@ -575,6 +611,7 @@ get_restriction_var(List *args,
 
 
 
+#if USE_VERSION < 75
 //restriction in the GiST && operator
 PG_FUNCTION_INFO_V1(postgis_gist_sel);
 Datum postgis_gist_sel(PG_FUNCTION_ARGS)
@@ -864,5 +901,365 @@ postgisgistcostestimate(PG_FUNCTION_ARGS)
 
     PG_RETURN_VOID();
 }
+
+#else // USE_VERSION >= 75
+
+/*
+ * This function should return an estimation of the number of
+ * rows returned by a query involving an overlap check 
+ * ( it's the restrict function for the && operator )
+ *
+ * It can make use (if available) of the statistics collected
+ * by the geometry analyzer function.
+ *
+ */
+PG_FUNCTION_INFO_V1(postgis_gist_sel);
+Datum postgis_gist_sel(PG_FUNCTION_ARGS)
+{
+	Query *root = (Query *) PG_GETARG_POINTER(0);
+	//	Oid			operator = PG_GETARG_OID(1);
+	List *args = (List *) PG_GETARG_POINTER(2);
+	int varRelid = PG_GETARG_INT32(3);
+	GEOMETRY *in;
+	BOX *search_box;
+	char sql[1000];
+	SPITupleTable *tuptable;
+	TupleDesc tupdesc ;
+	HeapTuple tuple ;
+	Datum datum;
+	bool isnull;
+	Var *var;
+	Node *other;
+	bool varonleft;
+	Oid relid;
+	int SPIcode;
+	double myest;
+
+#if DEBUG_GEOMETRY_STATS
+	elog(NOTICE, "postgis_gist_sel called");
+	elog(NOTICE, " returning a fixed estimate of 0.000005%%");
+#endif
+	PG_RETURN_FLOAT8(0.000005);
+
+	if (!get_restriction_var(args, varRelid,
+		&var, &other, &varonleft))
+	{
+		//elog(NOTICE,"get_restriction_var FAILED -returning early");
+		PG_RETURN_FLOAT8(0.000005);
+	}
+
+	relid = getrelid(var->varno, root->rtable);
+	if (relid == InvalidOid)
+	{
+		//elog(NOTICE,"getrelid FAILED (invalid oid) -returning early");
+		PG_RETURN_FLOAT8(0.000005);
+	}
+
+	//elog(NOTICE,"operator's oid = %i (this should be GEOMETRY && GEOMETRY)",operator);
+	//elog(NOTICE,"relations' oid = %i (this should be the relation that the && is working on) ",relid);
+	//elog(NOTICE,"varatt oid = %i (basically relations column #) ",var->varattno);
+
+
+	if (IsA(other, Const) &&((Const *) other)->constisnull)
+	{
+		//elog(NOTICE,"other operand of && is NULL - returning early");
+		PG_RETURN_FLOAT8(0.000005);
+	}
+
+	if (IsA(other, Const))
+	{
+		//elog(NOTICE,"The other side of the && is a constant with type (oid) = %i and length %i.  This should be GEOMETRY with length -1 (variable length)",((Const*)other)->consttype,((Const*)other)->constlen);
+	}
+	else
+	{
+		//elog(NOTICE,"the other side of && isnt a constant - returning early");
+		PG_RETURN_FLOAT8(0.000005);
+	}
+
+	//get the BOX thats being searched in
+	in = (GEOMETRY*)PG_DETOAST_DATUM( ((Const*)other)->constvalue );
+	search_box = convert_box3d_to_box(&in->bvol);
+
+	//elog(NOTICE,"requested search box is : (%.15g %.15g, %.15g %.15g)",search_box->low.x,search_box->low.y,search_box->high.x,search_box->high.y);
+
+
+	SPIcode = SPI_connect();
+	if (SPIcode  != SPI_OK_CONNECT)
+	{
+		elog(NOTICE,"postgis_gist_sel: couldnt open a connection to SPI:%i",SPIcode);
+		PG_RETURN_FLOAT8(0.000005) ;
+	}
+
+	sprintf(sql,"SELECT stats FROM GEOMETRY_COLUMNS WHERE attrelid=%u AND varattnum=%i",relid,var->varattno);
+	//elog(NOTICE,"sql:%s",sql);
+	SPIcode = SPI_exec(sql, 1 );
+	if (SPIcode  != SPI_OK_SELECT )
+	{
+		SPI_finish();
+		elog(NOTICE,"postgis_gist_sel: couldnt execute sql via SPI");
+		PG_RETURN_FLOAT8(0.000005) ;
+	}
+
+	if (SPI_processed !=1)
+	{
+		SPI_finish();
+		//elog(NOTICE,"postgis_gist_sel: geometry_columns didnt return a unique value");
+		PG_RETURN_FLOAT8(0.000005) ;
+	}
+
+	tuptable = SPI_tuptable;
+	tupdesc = SPI_tuptable->tupdesc;
+	tuple = tuptable->vals[0];
+	datum = SPI_getbinval(tuple, tupdesc, 1, &isnull);
+	if (isnull)
+	{
+		SPI_finish();
+		//elog(NOTICE,"postgis_gist_sel: geometry_columns returned a null histogram");
+		PG_RETURN_FLOAT8(0.000005) ;
+	}
+
+	//elog(NOTICE,"postgis_gist_sel: checking against estimate_histogram2d");
+	// now we have the histogram, and our search box - use the estimate_histogram2d(histo,box) to get the result!
+	myest = DatumGetFloat8( DirectFunctionCall2( estimate_histogram2d, datum, PointerGetDatum(search_box) ) );
+
+	if ( (myest<0) || (myest!=myest) ) // <0?  or NaN?
+	{
+		//elog(NOTICE,"postgis_gist_sel: got something crazy back from estimate_histogram2d");
+		PG_RETURN_FLOAT8(0.000005) ;
+	}
+
+	SPIcode =SPI_finish();
+	if (SPIcode  != SPI_OK_FINISH )
+	{
+		//elog(NOTICE,"postgis_gist_sel: couldnt disconnect from SPI");
+		PG_RETURN_FLOAT8(0.000005) ;
+	}
+	//elog(NOTICE,"postgis_gist_sel: finished, returning with %lf",myest);
+	PG_RETURN_FLOAT8(myest);
+}
+
+/*
+ * This function is called by the analyze function iff
+ * the geometry_analyze() function give it its pointer
+ * (this is always the case so far).
+ * The geometry_analyze() function is also responsible
+ * of deciding the number of "sample" rows we will receive
+ * here. It is able to give use other 'custom' data, but we
+ * won't use them so far.
+ *
+ * Our job is to build some statistics on the sample data
+ * for use by operator estimators.
+ *
+ * Currently we only need statistics to estimate the number of rows
+ * overlapping a given extent (estimation function bound
+ * to the && operator).
+ *
+ */
+static void
+compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
+		int samplerows, double totalrows)
+{
+	MemoryContext old_context;
+	int i;
+	int size;
+	BOX **sampleboxes;
+	GEOM_STATS *geomstats;
+	bool isnull;
+	int null_cnt=0, notnull_cnt=0;
+	BOX3D *sample_extent=NULL;
+	double total_width=0;
+	double total_boxes_area=0;
+	/*
+	 * This is where geometry_analyze
+	 * should put its' custom parameters.
+	 * boxesPerSide would be a good candidate.
+	 */
+	//void *mystats = stats->extra_data;
+	int boxesPerSide = 40; 
+
+
+
+#if DEBUG_GEOMETRY_STATS
+	elog(NOTICE, "compute_geometry_stats called");
+	elog(NOTICE, " samplerows: %d", samplerows);
+#endif
+
+	sampleboxes = palloc(sizeof(BOX *)*samplerows);
+
+	/*
+	 * First scan:
+	 *  o find extent of the sample rows
+	 *  o count null/not-null values
+	 *  o compute total_width
+	 *  o compute total features's box area (for avgFeatureArea)
+	 */
+	for (i=0; i<samplerows; i++)
+	{
+		Datum datum;
+		GEOMETRY *geom;
+		BOX *box;
+
+		datum = fetchfunc(stats, i, &isnull);
+
+		if ( isnull ) {
+			null_cnt++;
+			sampleboxes[i] = NULL;
+			continue;
+		}
+		notnull_cnt++;
+
+		geom = (GEOMETRY *) PG_DETOAST_DATUM(datum);
+		box = (BOX *)&(geom->bvol);
+		sampleboxes[i] = box;
+
+		sample_extent = union_box3d(&(geom->bvol), sample_extent);
+		
+		// TODO: ask if we need geom or bvol size for stawidth
+		total_width += geom->size;
+		total_boxes_area += (box->high.x-box->low.x)*(box->high.y-box->low.y);
+
+	}
+
+	if ( ! notnull_cnt ) {
+		elog(NOTICE, " no notnull values, invalid stats");
+		stats->stats_valid = true;
+		return;
+	}
+
+	/*
+	 * Create the histogram (GEOM_STATS)
+	 */
+	old_context = MemoryContextSwitchTo(stats->anl_context);
+	size=sizeof(GEOM_STATS)+
+		(boxesPerSide*boxesPerSide-1)*sizeof(geomstats->value);
+	geomstats = palloc(size);
+	MemoryContextSwitchTo(old_context);
+
+	geomstats->xmin = sample_extent->LLB.x;
+	geomstats->ymin = sample_extent->LLB.y;
+	geomstats->xmax = sample_extent->URT.x;
+	geomstats->ymax = sample_extent->URT.y;
+	geomstats->boxesPerSide = boxesPerSide;
+	geomstats->avgFeatureArea = total_boxes_area/notnull_cnt;
+
+#if DEBUG_GEOMETRY_STATS
+	elog(NOTICE, " histo: xmin,ymin: %f,%f",
+									geomstats->xmin, geomstats->ymin);
+	elog(NOTICE, " histo: xmax,ymax: %f,%f",
+									geomstats->xmax, geomstats->ymax);
+	elog(NOTICE, " histo: boxesPerSide: %f", geomstats->boxesPerSide);
+	elog(NOTICE, " histo: avgFeatureArea: %f", geomstats->avgFeatureArea);
+#endif
+
+	/*
+	 * Second scan:
+	 *  o fill histogram values with the number of
+	 *    features' bbox overlaps: a feature's bvol
+	 *    can fully overlap (1) or partially overlap
+	 *    (fraction of 1) an histogram cell.
+	 */
+	for (i=0; i<samplerows; i++)
+	{
+					BOX *box;
+					double box_area;
+					if ( sampleboxes[i] == NULL ) continue;
+					box = (BOX *)sampleboxes[i];
+					box_area = (box->high.x-box->low.x)*(box->high.y-box->low.y);
+	}
+#if DEBUG_GEOMETRY_STATS
+	elog(NOTICE, " histo: values skipped (not implemented yet)");
+#endif
+
+	/*
+	 * Write the statistics data 
+	 */
+	stats->stakind[0] = STATISTIC_KIND_GEOMETRY;
+	stats->staop[0] = InvalidOid;
+	stats->stanumbers[0] = (float4 *)geomstats;
+	stats->numnumbers[0] = boxesPerSide*boxesPerSide+6;
+
+	stats->stanullfrac = null_cnt/samplerows;
+	stats->stawidth = total_width/notnull_cnt;
+	stats->stadistinct = -1.0;
+
+#if DEBUG_GEOMETRY_STATS
+	elog(NOTICE, " out: slot 0: kind %d (STATISTIC_KIND_GEOMETRY)",
+									stats->stakind[0]);
+	elog(NOTICE, " out: slot 0: op %d (InvalidOid)", stats->staop[0]);
+	elog(NOTICE, " out: slot 0: numnumbers %d", stats->numnumbers[0]);
+	elog(NOTICE, " out: null fraction: %d/%d", null_cnt, samplerows);
+	elog(NOTICE, " out: average width: %d bytes", stats->stawidth);
+	elog(NOTICE, " out: distinct values: all (no check done)");
+#endif
+
+	stats->stats_valid = true;
+}
+
+/*
+ * This function will be called when the ANALYZE command is run
+ * on a column of the "geometry" type.
+ * 
+ * It will need to return a stats builder function reference
+ * and a "minimum" sample rows to feed it.
+ * If we want analisys to be completely skipped we can return
+ * FALSE and leave output vals untouched.
+ *
+ * What we know from this call is:
+ *
+ * 	o The pg_attribute row referring to the specific column.
+ * 	  Could be used to get reltuples from pg_class (which 
+ * 	  might quite inexact though...) and use them to set an
+ * 	  appropriate minimum number of sample rows to feed to
+ * 	  the stats builder. The stats builder will also receive
+ * 	  a more accurate "estimation" of the number or rows.
+ *
+ * 	o The pg_type row for the specific column.
+ * 	  Could be used to set stat builder / sample rows
+ * 	  based on domain type (when postgis will be implemented
+ * 	  that way).
+ *
+ * Being this experimental we'll stick to a static stat_builder/sample_rows
+ * value for now.
+ *
+ */
+PG_FUNCTION_INFO_V1(geometry_analyze);
+Datum geometry_analyze(PG_FUNCTION_ARGS)
+{
+	VacAttrStats *stats = (VacAttrStats *)PG_GETARG_POINTER(0);
+	Form_pg_attribute attr = stats->attr;
+
+#if DEBUG_GEOMETRY_STATS
+	elog(NOTICE, "geometry_analyze called");
+#endif
+
+	/* If the attstattarget column is negative, use the default value */
+	/* NB: it is okay to scribble on stats->attr since it's a copy */
+        if (attr->attstattarget < 0)
+                attr->attstattarget = default_statistics_target;
+
+#if DEBUG_GEOMETRY_STATS
+	elog(NOTICE, " attribute stat target: %d", attr->attstattarget);
+#endif
+
+	/*
+	 * There might be a reason not to analyze this column
+	 * (can we detect the absence of an index?)
+	 */
+	//elog(NOTICE, "compute_geometry_stats not implemented yet");
+	//PG_RETURN_BOOL(false);
+
+	/* Setup the minimum rows and the algorithm function */
+	stats->minrows = 300 * stats->attr->attstattarget;
+	stats->compute_stats = compute_geometry_stats;
+
+#if DEBUG_GEOMETRY_STATS
+	elog(NOTICE, " minrows: %d", stats->minrows);
+#endif
+
+	/* Indicate we are done successfully */
+	PG_RETURN_BOOL(true);
+}
+
+#endif
 
 
