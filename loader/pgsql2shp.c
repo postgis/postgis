@@ -71,7 +71,6 @@ int binary;
 SHPObject * (*shape_creator)(byte *, int);
 int big_endian = 0;
 int pgis_major_version;
-int zmflag;
 
 /* Prototypes */
 int getMaxFieldSize(PGconn *conn, char *schema, char *table, char *fname);
@@ -83,7 +82,7 @@ int initShapefile(char *shp_file, PGresult *res);
 int initialize(void);
 int getGeometryOID(PGconn *conn);
 int getGeometryType(char *schema, char *table, char *geo_col_name);
-int getGeometryDims(char *schema, char *table, char *geo_col_name);
+int getGeometryMaxDims(char *schema, char *table, char *geo_col_name);
 char *shapetypename(int num);
 int parse_points(char *str, int num_points, double *x,double *y,double *z);
 int num_points(char *str);
@@ -127,8 +126,10 @@ double popdouble(byte **c);
 void skipdouble(byte **c);
 void dump_wkb(byte *wkb);
 byte * HexDecode(byte *hex);
+
 #define WKBZOFFSET 0x80000000
 #define WKBMOFFSET 0x40000000
+#define ZMFLAG(x) (((x)&((WKBZOFFSET)+(WKBMOFFSET)))>>30)
 
 
 static void exit_nicely(PGconn *conn){
@@ -160,7 +161,6 @@ main(int ARGC, char **ARGV)
 	includegid=0;
 	unescapedattrs=0;
 	binary = 0;
-	zmflag = 0;
 #ifdef DEBUG
 	FILE *debug;
 #endif
@@ -652,9 +652,13 @@ create_multiline3D_WKB (byte *wkb)
 	double *x=NULL, *y=NULL, *zm=NULL;
 	int nparts=0, *part_index=NULL, totpoints=0, nlines=0;
 	int li;
+	int zmflag;
 
-	// skip byteOrder and type
-	skipbyte(&wkb); skipint(&wkb);
+	// skip byteOrder
+	skipbyte(&wkb);
+
+	// extract zmflag from type
+	zmflag = ZMFLAG(popint(&wkb));
 
 	/*
 	 * Scan all lines in multiline
@@ -716,9 +720,13 @@ create_multiline4D_WKB (byte *wkb)
 	double *x=NULL, *y=NULL, *z=NULL, *m=NULL;
 	int nparts=0, *part_index=NULL, totpoints=0, nlines=0;
 	int li;
+	int zmflag;
 
-	// skip byteOrder and type
-	skipbyte(&wkb); skipint(&wkb);
+	// skip byteOrder 
+	skipbyte(&wkb); 
+
+	// extract zmflag from type
+	zmflag = ZMFLAG(popint(&wkb));
 
 	/*
 	 * Scan all lines in multiline
@@ -776,9 +784,13 @@ create_multiline2D_WKB (byte *wkb)
 	int nparts=0, *part_index=NULL, totpoints=0, nlines=0;
 	int li;
 	SHPObject *obj;
+	int zmflag;
 	
-	// skip byteOrder and type
-	skipbyte(&wkb); skipint(&wkb);
+	// skip byteOrder 
+	skipbyte(&wkb); 
+
+	// extract zmflag from type
+	zmflag = ZMFLAG(popint(&wkb));
 
 	/*
 	 * Scan all lines in multiline
@@ -832,9 +844,13 @@ create_line4D_WKB (byte *wkb)
 	double *x=NULL, *y=NULL, *z=NULL, *m=NULL;
 	uint32 npoints=0, pn;
 	SHPObject *obj;
+	int zmflag;
 	
-	// skip byteOrder and type
-	skipbyte(&wkb); skipint(&wkb);
+	// skip byteOrder 
+	skipbyte(&wkb); 
+
+	// extract zmflag from type
+	zmflag = ZMFLAG(popint(&wkb));
 
 	npoints = popint(&wkb);
 
@@ -869,9 +885,13 @@ create_line3D_WKB (byte *wkb)
 	double *x=NULL, *y=NULL, *zm=NULL;
 	uint32 npoints=0, pn;
 	SHPObject *obj;
+	int zmflag;
 	
-	// skip byteOrder and type
-	skipbyte(&wkb); skipint(&wkb);
+	// skip byteOrder 
+	skipbyte(&wkb); 
+
+	// extract zmflag from type
+	zmflag = ZMFLAG(popint(&wkb));
 
 	npoints = popint(&wkb);
 
@@ -910,9 +930,13 @@ create_line2D_WKB (byte *wkb)
 	double *x=NULL, *y=NULL, *z=NULL;
 	uint32 npoints=0, pn;
 	SHPObject *obj;
+	int zmflag;
 	
-	// skip byteOrder and type
-	skipbyte(&wkb); skipint(&wkb);
+	// skip byteOrder 
+	skipbyte(&wkb); 
+
+	// extract zmflag from type
+	zmflag = ZMFLAG(popint(&wkb));
 
 	npoints = popint(&wkb);
 
@@ -941,9 +965,13 @@ create_point4D_WKB(byte *wkb)
 {
 	SHPObject *obj;
 	double x, y, z, m;
+	int zmflag;
 
-	// skip byteOrder and wkbType
-	skipbyte(&wkb); skipint(&wkb);
+	// skip byteOrder 
+	skipbyte(&wkb); 
+
+	// extract zmflag from type
+	zmflag = ZMFLAG(popint(&wkb));
 
 	x = popdouble(&wkb);
 	y = popdouble(&wkb);
@@ -961,9 +989,13 @@ create_point3D_WKB(byte *wkb)
 {
 	SHPObject *obj;
 	double x, y, zm;
+	int zmflag;
 
-	// skip byteOrder and wkbType
-	skipbyte(&wkb); skipint(&wkb);
+	// skip byteOrder 
+	skipbyte(&wkb); 
+
+	// extract zmflag from type
+	zmflag = ZMFLAG(popint(&wkb));
 
 	x = popdouble(&wkb);
 	y = popdouble(&wkb);
@@ -985,9 +1017,13 @@ create_point2D_WKB(byte *wkb)
 {
 	SHPObject *obj;
 	double x, y;
+	int zmflag;
 
-	// skip byteOrder and wkbType
-	skipbyte(&wkb); skipint(&wkb);
+	// skip byteOrder 
+	skipbyte(&wkb); 
+
+	// extract zmflag from type
+	zmflag = ZMFLAG(popint(&wkb));
 
 	x = popdouble(&wkb);
 	y = popdouble(&wkb);
@@ -1004,9 +1040,13 @@ create_multipoint4D_WKB(byte *wkb)
 	double *x=NULL, *y=NULL, *z=NULL, *m=NULL;
 	int npoints;
 	int pn;
+	int zmflag;
 
-	// skip byteOrder and type
-	skipbyte(&wkb); skipint(&wkb);
+	// skip byteOrder 
+	skipbyte(&wkb); 
+
+	// extract zmflag from type
+	zmflag = ZMFLAG(popint(&wkb));
 
 	npoints = popint(&wkb);
 
@@ -1038,9 +1078,13 @@ create_multipoint3D_WKB(byte *wkb)
 	double *x=NULL, *y=NULL, *zm=NULL;
 	uint32 npoints;
 	uint32 pn;
+	int zmflag;
 
-	// skip byteOrder and type
-	skipbyte(&wkb); skipint(&wkb);
+	// skip byteOrder 
+	skipbyte(&wkb); 
+
+	// extract zmflag from type
+	zmflag = ZMFLAG(popint(&wkb));
 
 	npoints = popint(&wkb);
 
@@ -1077,9 +1121,13 @@ create_multipoint2D_WKB(byte *wkb)
 	double *x=NULL, *y=NULL;
 	uint32 npoints;
 	uint32 pn;
+	int zmflag;
 
-	// skip byteOrder and type
-	skipbyte(&wkb); skipint(&wkb);
+	// skip byteOrder 
+	skipbyte(&wkb); 
+
+	// extract zmflag from type
+	zmflag = ZMFLAG(popint(&wkb));
 
 	npoints = popint(&wkb);
 
@@ -1106,9 +1154,13 @@ create_polygon2D_WKB(byte *wkb)
 	SHPObject *obj;
 	int ri, nrings, totpoints=0, *part_index=NULL;
 	double *x=NULL, *y=NULL, *z=NULL;
+	int zmflag;
 	
-	// skip byteOrder and type
-	skipbyte(&wkb); skipint(&wkb);
+	// skip byteOrder 
+	skipbyte(&wkb); 
+
+	// extract zmflag from type
+	zmflag = ZMFLAG(popint(&wkb));
 
 	/*
 	 * Scan all rings
@@ -1178,9 +1230,13 @@ create_polygon4D_WKB(byte *wkb)
 	SHPObject *obj;
 	int ri, nrings, totpoints=0, *part_index=NULL;
 	double *x=NULL, *y=NULL, *z=NULL, *m=NULL;
+	int zmflag;
 	
-	// skip byteOrder and type
-	skipbyte(&wkb); skipint(&wkb);
+	// skip byteOrder 
+	skipbyte(&wkb); 
+
+	// extract zmflag from type
+	zmflag = ZMFLAG(popint(&wkb));
 
 	/*
 	 * Scan all rings
@@ -1252,9 +1308,13 @@ create_polygon3D_WKB(byte *wkb)
 	SHPObject *obj;
 	int ri, nrings, totpoints=0, *part_index=NULL;
 	double *x=NULL, *y=NULL, *zm=NULL, *z=NULL;
+	int zmflag;
 	
-	// skip byteOrder and type
-	skipbyte(&wkb); skipint(&wkb);
+	// skip byteOrder 
+	skipbyte(&wkb); 
+
+	// extract zmflag from type
+	zmflag = ZMFLAG(popint(&wkb));
 
 	/*
 	 * Scan all rings
@@ -1339,11 +1399,13 @@ create_multipolygon2D_WKB(byte *wkb)
 	int *part_index=NULL;
 	uint32 pi;
 	double *x=NULL, *y=NULL;
+	int zmflag;
 
-	// skip byteOrder and type
-	//printf("byteOrder is %d\n", popbyte(&wkb));
-	//printf("Type is %d", popint(&wkb)); 
-	skipbyte(&wkb); skipint(&wkb);
+	// skip byteOrder 
+	skipbyte(&wkb); 
+
+	// extract zmflag from type
+	zmflag = ZMFLAG(popint(&wkb));
 
 	/*
 	 * Scan all polygons in multipolygon
@@ -1465,11 +1527,13 @@ create_multipolygon3D_WKB(byte *wkb)
 	int *part_index=NULL;
 	int pi;
 	double *x=NULL, *y=NULL, *z=NULL, *zm=NULL;
+	int zmflag;
 
-	// skip byteOrder and type
-	//printf("byteOrder is %d\n", popbyte(&wkb));
-	//printf("Type is %d", popint(&wkb)); 
-	skipbyte(&wkb); skipint(&wkb);
+	// skip byteOrder 
+	skipbyte(&wkb); 
+
+	// extract zmflag from type
+	zmflag = ZMFLAG(popint(&wkb));
 	
 	/*
 	 * Scan all polygons in multipolygon
@@ -1604,11 +1668,13 @@ create_multipolygon4D_WKB(byte *wkb)
 	int *part_index=NULL;
 	int pi;
 	double *x=NULL, *y=NULL, *z=NULL, *m=NULL;
+	int zmflag;
 
-	// skip byteOrder and type
-	//printf("byteOrder is %d\n", popbyte(&wkb));
-	//printf("Type is %d", popint(&wkb)); 
-	skipbyte(&wkb); skipint(&wkb);
+	// skip byteOrder 
+	skipbyte(&wkb); 
+
+	// extract zmflag from type
+	zmflag = ZMFLAG(popint(&wkb));
 	
 	/*
 	 * Scan all polygons in multipolygon
@@ -2097,7 +2163,7 @@ getGeometryType(char *schema, char *table, char *geo_col_name)
 	 * Get Geometry dimensions (2d/3dm/3dz/4d)
 	 **************************************************/
 	if ( pgis_major_version > 0 )
-		if ( -1 == getGeometryDims(schema, table, geo_col_name) )
+		if ( -1 == getGeometryMaxDims(schema, table, geo_col_name) )
 			return -1;
 
 	if ( foundmulti )
@@ -2116,10 +2182,11 @@ getGeometryType(char *schema, char *table, char *geo_col_name)
  * Call only on postgis >= 1.0.0
  */
 int
-getGeometryDims(char *schema, char *table, char *geo_col_name)
+getGeometryMaxDims(char *schema, char *table, char *geo_col_name)
 {
 	char query[1024];
 	PGresult *res;
+	int maxzmflag;
 
 	if ( schema )
 	{
@@ -2149,10 +2216,10 @@ getGeometryDims(char *schema, char *table, char *geo_col_name)
 		return -1;
 	}
 
-	zmflag = atoi(PQgetvalue(res, 0, 0));
+	maxzmflag = atoi(PQgetvalue(res, 0, 0));
 	PQclear(res);
 
-	switch (zmflag)
+	switch (maxzmflag)
 	{
 		case 0:
 			outtype = 's';
@@ -3016,6 +3083,9 @@ create_usrquerytable()
 
 /**********************************************************************
  * $Log$
+ * Revision 1.65  2004/10/15 08:26:03  strk
+ * Fixed handling of mixed dimensioned geometries in source table.
+ *
  * Revision 1.64  2004/10/14 09:59:51  strk
  * Added support for user query (replacing schema.table)
  *
