@@ -21,22 +21,6 @@
 
 #include "liblwgeom.h"
 
-static int endian_check_int = 1; // dont modify this!!!
-
-#define LITTLE_ENDIAN_CHECK 1
-static unsigned int getMachineEndian()
-{
-	// 0 = big endian, 1 = little endian
-	if ( *((char *) &endian_check_int) )
-	{
-		return LITTLE_ENDIAN;
-	}
-	else
-	{
-		return BIG_ENDIAN;
-	}
-}
-
 //-- Typedefs ----------------------------------------------
 
 typedef unsigned long int4;
@@ -133,7 +117,7 @@ read_int(byte** geom)
 {
 	int4 ret;
 #ifdef SHRINK_INTS
-	if ( getMachineEndian() == LITTLE_ENDIAN_CHECK ){
+	if ( getMachineEndian() == NDR ){
 		if( (**geom)& 0x01){
 			ret = **geom >>1;
 			(*geom)++;
@@ -151,7 +135,7 @@ read_int(byte** geom)
 	memcpy(&ret,*geom,4);
 
 #ifdef SHRINK_INTS
-	if ( getMachineEndian() == LITTLE_ENDIAN_CHECK ){
+	if ( getMachineEndian() == NDR ){
 		ret >>= 1;
 	}
 #endif
@@ -524,7 +508,7 @@ output_wkb(byte* geom)
 }
 
 char *
-unparse_WKB(byte* serialized, allocator alloc, freeor free, unsigned int endian)
+unparse_WKB(byte* serialized, allocator alloc, freeor free, char endian)
 {
 
 #ifdef DEBUG
@@ -540,13 +524,14 @@ unparse_WKB(byte* serialized, allocator alloc, freeor free, unsigned int endian)
 	out_start = out_pos = alloc(len);
 	lwgi=0;
 
-	if ( endian == -1 ) endian = getMachineEndian();
-
-	if ( endian == LITTLE_ENDIAN) endianbyte=1;
-	else endianbyte=0;
-
-	if ( endian != getMachineEndian() ) flipbytes = 1;
-	else flipbytes = 0;
+	if ( endian == -1 ) {
+		endianbyte = getMachineEndian();
+		flipbytes = 0;
+	} else {
+		endianbyte = endian;
+		if ( endianbyte != getMachineEndian() ) flipbytes = 1;
+		else flipbytes = 0;
+	}
 
 	output_wkb(serialized);
 	ensure(1);
@@ -558,6 +543,11 @@ unparse_WKB(byte* serialized, allocator alloc, freeor free, unsigned int endian)
 
 /******************************************************************
  * $Log$
+ * Revision 1.14  2004/12/17 11:08:53  strk
+ * Moved getMachineEndian from parser to liblwgeom.{h,c}.
+ * Added XDR and NDR defines.
+ * Fixed all usage of them.
+ *
  * Revision 1.13  2004/10/25 12:27:33  strk
  * Removed useless network type includes,
  * Added param.h include for BYTE_ORDER defines under win32.

@@ -350,6 +350,8 @@ extern int pointArray_ptsize(const POINTARRAY *pa);
 
 #define WKBZOFFSET 0x80000000
 #define WKBMOFFSET 0x40000000
+#define WKBSRIDFLAG 0x20000000
+#define WKBBBOXFLAG 0x10000000
 
 #define TYPE_SETTYPE(c,t) ((c)=(((c)&0xF0)|(t)))
 #define TYPE_SETZM(t,z,m) ((t)=(((t)&0xCF)|((z)<<5)|((m)<<4)))
@@ -1029,5 +1031,10 @@ extern void lwfree(void *mem);
 
 /* Utilities */
 extern void trim_trailing_zeros(char *num);
+
+/* Machine endianness */
+#define XDR 0
+#define NDR 1
+extern char getMachineEndian(void);
 
 #endif // !defined _LIBLWGEOM_H 

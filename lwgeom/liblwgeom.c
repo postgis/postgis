@@ -169,3 +169,13 @@ trim_trailing_zeros(char *str)
 	
 	//lwnotice("output: %s", str);
 }
+
+char getMachineEndian()
+{
+	static int endian_check_int = 1; // dont modify this!!!
+
+	return *((char *) &endian_check_int); // 0 = big endian | xdr,
+					      // 1 = little endian | ndr
+}
+
+

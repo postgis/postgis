@@ -21,16 +21,6 @@
 void set_zm(char z, char m);
 void close_parser(void);
 
-#undef LITTLE_ENDIAN
-#define LITTLE_ENDIAN 1
-char getMachineEndian()
-{
-	static int endian_check_int = 1; // dont modify this!!!
-
-	return *((char *) &endian_check_int); // 0 = big endian, 1 = little endian
-}
-
-
 typedef unsigned long int4;
 
 typedef struct tag_tuple tuple;
@@ -295,7 +285,7 @@ void
 WRITE_INT4(output_state * out,int4 val)
 {
 	if ( val <= 0x7f ){
-		if ( getMachineEndian() == LITTLE_ENDIAN ){
+		if ( getMachineEndian() == NDR ){
 			val = (val<<1) | 1;
 		}
 		else{
@@ -306,7 +296,7 @@ WRITE_INT4(output_state * out,int4 val)
 		the_geom.alloc_size-=3;
 	}
 	else{
-		if ( getMachineEndian() == LITTLE_ENDIAN ){
+		if ( getMachineEndian() == NDR ){
 			val <<=1;
 		}
 		WRITE_INT4_REAL(out,val);
@@ -749,13 +739,9 @@ parse_wkb(const char** b)
 	byte xdr = read_wkb_byte(b);
 	swap_order=0;
 
-	if ( xdr == 0x01 ){  // wkb is in little endian
-		if ( getMachineEndian() != LITTLE_ENDIAN )
-			swap_order=1;
-	}
-	else if ( xdr == 0x00 ){ // wkb is in big endian
-		if ( getMachineEndian() == LITTLE_ENDIAN )
-			swap_order=1;
+	if ( xdr != getMachineEndian() )
+	{
+		swap_order=1;
 	}
 
 	type = read_wkb_int(b);
@@ -776,6 +762,12 @@ parse_wkb(const char** b)
 		the_geom.ndims++;
 	}
 	else the_geom.hasM = 0;
+
+	if (type & WKBSRIDFLAG )
+	{
+		the_geom.hasZ = 1;
+		the_geom.ndims++;
+	}
 
 	type &=0x0f;
 

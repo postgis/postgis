@@ -23,7 +23,7 @@
 #include "stringBuffer.h"
 
 
-#define DEBUG 1
+//#define DEBUG 1
 
 #include "lwgeom_pg.h"
 #include "wktparse.h"
@@ -251,7 +251,7 @@ Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 
 	size_header = sprintf(sridText,"SRID=%i;",SRID);
 	//SRID text size + wkb size (+1 = NULL term)
-	size_result = size_header +  2*(wkb_input->size -4) + 1; 
+	size_result = size_header +  2*(wkb_input->size-4) + 1; 
 
 	wkb_srid_hexized = palloc(size_result);
 	wkb_srid_hexized[0] = 0; // empty
@@ -312,11 +312,11 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 		if  ( ! strncmp(VARDATA(type), "xdr", 3) ||
 			! strncmp(VARDATA(type), "XDR", 3) )
 		{
-			byteorder = BIG_ENDIAN;
+			byteorder = XDR;
 		}
 		else
 		{
-			byteorder = LITTLE_ENDIAN;
+			byteorder = NDR;
 		}
 	}
 
@@ -494,7 +494,7 @@ Datum LWGEOM_recv(PG_FUNCTION_ARGS)
 #endif
 
 #ifdef DEBUG
-	elog(NOTICE, "LWGEOMFromWKB returned %s", unparse_WKB(SERIALIZED_FORM(result),pg_alloc,pg_free,-1));
+	elog(NOTICE, "LWGEOM_from_bytea returned %s", unparse_WKB(SERIALIZED_FORM(result),pg_alloc,pg_free,-1));
 #endif
 
 
