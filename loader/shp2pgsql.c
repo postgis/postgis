@@ -12,6 +12,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.40  2003/09/19 00:37:33  jeffloun
+ * fixed a bug that actually tests the first 2 point for pip instead of just thinking I was testing the first two.
+ *
  * Revision 1.39  2003/08/17 19:00:14  pramsey
  * Change sequence handling to respect versions prior to 7.3. Patch from
  * strk.
@@ -346,7 +349,7 @@ int ring_check(SHPObject* obj, char *table, char *sr_id, int rings,DBFHandle hDB
 		pt2.y = Inner[u]->list[1].y;
 		for(i=0;i< out_index; i++){
 			in = PIP(pt,Outer[i]->list,Outer[i]->n);
-			if(in==1 && PIP(pt2,Outer[i]->list,Outer[i]->n)){
+			if(in==1 || (PIP(pt2,Outer[i]->list,Outer[i]->n) == 1)){
 				Poly = Outer[i];
 				while(Poly->next != NULL){
 					Poly = Poly->next;
