@@ -1,14 +1,12 @@
-- AsBinary(geometry, XDR|NDR)
-
-- 4d and WKB support in loader.
-
-- Endiannes honouring in dumper (currently does not specify and does not
-  flip when required).
 
 - size computation functions for deserialized objects
 
-- Implement lwexploded_serialize_buf for speedup of GEOS<=>POSTGIS conversion
-  and more!
+- AsBinary(geometry, XDR|NDR)
+
+- Endiannes honouring in dumper (currently does not specify and does not
+  flip when required). Depends on AsBinary() item above.
+
+- 4d and WKB support in loader.
 
 - box extractor function (getbox2d) returning an actual
   object should probably find a way to return NULL (for empty geometries).
@@ -24,8 +22,5 @@
 
 - proj support functions might need 3d sometimes.
 
-- GiST index creation tests on PG80a segfaults
-
 - GEOMETRY && BOX2D, GEOMETRY && BOX3D
 
-- try reducing box2d copies in selectivity estimation funx
