@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.16  2004/08/20 10:23:19  strk
+ * removed leak from mem_size()
+ *
  * Revision 1.15  2004/04/28 22:26:02  pramsey
  * Fixed spelling mistake in header text.
  *
@@ -81,9 +84,10 @@
 PG_FUNCTION_INFO_V1(mem_size);
 Datum mem_size(PG_FUNCTION_ARGS)
 {
-	GEOMETRY		      *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-
-	PG_RETURN_INT32(geom1->size);
+	GEOMETRY *geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	int32 size = geom->size;
+	PG_FREE_IF_COPY(geom,0);
+	PG_RETURN_INT32(size);
 }
 
 
