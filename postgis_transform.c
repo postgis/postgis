@@ -7,10 +7,13 @@
  * Copyright 2001-2003 Refractions Research Inc.
  *
  * This is free software; you can redistribute and/or modify it under
- * the terms of hte GNU General Public Licence. See the COPYING file.
+ * the terms of the GNU General Public Licence. See the COPYING file.
  *
  **********************************************************************
  * $Log$
+ * Revision 1.16  2004/04/28 22:26:02  pramsey
+ * Fixed spelling mistake in header text.
+ *
  * Revision 1.15  2004/01/14 01:52:53  pramsey
  * Fix solaris alignment problem in transformations.
  *

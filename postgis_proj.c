@@ -7,10 +7,13 @@
  * Copyright 2001-2003 Refractions Research Inc.
  *
  * This is free software; you can redistribute and/or modify it under
- * the terms of hte GNU General Public Licence. See the COPYING file.
+ * the terms of the GNU General Public Licence. See the COPYING file.
  *
  **********************************************************************
  * $Log$
+ * Revision 1.13  2004/04/28 22:26:02  pramsey
+ * Fixed spelling mistake in header text.
+ *
  * Revision 1.12  2004/02/06 00:42:25  dblasby
  * moved forward declarations from postgis.h to postgis_proj.c
  *

@@ -7,10 +7,13 @@
  * Copyright 2001-2003 Refractions Research Inc.
  *
  * This is free software; you can redistribute and/or modify it under
- * the terms of hte GNU General Public Licence. See the COPYING file.
+ * the terms of the GNU General Public Licence. See the COPYING file.
  *
  **********************************************************************
  * $Log$
+ * Revision 1.35  2004/04/28 22:26:02  pramsey
+ * Fixed spelling mistake in header text.
+ *
  * Revision 1.34  2004/03/26 00:54:09  dblasby
  * added full support for fluffType(<geom>)
  * postgis09=# select fluffType('POINT(0 0)');
