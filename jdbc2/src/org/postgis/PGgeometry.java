@@ -28,7 +28,6 @@ package org.postgis;
 
 import org.postgis.binary.BinaryParser;
 import org.postgresql.util.PGobject;
-import org.postgresql.util.PGtokenizer;
 
 import java.sql.SQLException;
 
@@ -68,12 +67,12 @@ public class PGgeometry extends PGobject {
         value = value.trim();
 
         int srid = -1;
+
         if (value.startsWith("SRID")) {
             //break up geometry into srid and wkt
-            PGtokenizer t = new PGtokenizer(value, ';');
-            value = t.getToken(1).trim();
-
-            srid = Integer.parseInt(t.getToken(0).split("=")[1]);
+            String[] parts = PGgeometry.splitAtFirst(value, ';');
+            value = parts[1];
+            srid = Integer.parseInt(PGgeometry.splitAtFirst(parts[0], '=')[1]);
         }
 
         Geometry result;
@@ -130,4 +129,23 @@ public class PGgeometry extends PGobject {
         return obj;
     }
 
+    /**
+     * Splits a String at the first occurrence of border charachter.
+     * 
+     * Poor man's String.split() replacement, as String.split() was invented at
+     * jdk1.4, and the Debian PostGIS Maintainer had problems building the woody
+     * backport of his package using DFSG-free compilers. In all the cases we
+     * used split() in the org.postgis package, we only needed to split at the
+     * first occurence, and thus this code could even be faster.
+     */
+    public static String[] splitAtFirst(String whole, char border) {
+        int index = whole.indexOf(border);
+        if (index == -1) {
+            return new String[]{whole};
+        } else {
+            return new String[]{
+                whole.substring(0, index),
+                whole.substring(index + 1)};
+        }
+    }
 }

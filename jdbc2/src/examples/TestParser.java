@@ -28,6 +28,7 @@ package examples;
 
 import org.postgis.Geometry;
 import org.postgis.PGgeometry;
+import org.postgresql.util.PGtokenizer;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -159,16 +160,17 @@ public class TestParser {
 
     /** Our apps entry point */
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        String[] dburls;
+        PGtokenizer dburls;
         String dbuser = null;
         String dbpass = null;
 
         if (args.length == 1 && args[0].equalsIgnoreCase("offline")) {
             System.out.println("Performing only offline tests");
-            dburls = new String[0];
+            dburls = new PGtokenizer("",';');
         } else if (args.length == 3) {
             System.out.println("Performing offline and online tests");
-            dburls = args[0].split(";");
+            dburls = new PGtokenizer(args[0],';');
+            
             dbuser = args[1];
             dbpass = args[2];
         } else {
@@ -180,14 +182,14 @@ public class TestParser {
             System.err.println("tablename is 'jdbc_test' by default.");
             System.exit(1);
             // Signal the compiler that code flow ends here.
-            throw new AssertionError();
+            return;
         }
 
         Connection[] conns;
-        conns = new Connection[dburls.length];
-        for (int i = 0; i < dburls.length; i++) {
-            System.out.println("Creating JDBC connection to " + dburls[i]);
-            conns[i] = connect(dburls[i], dbuser, dbpass);
+        conns = new Connection[dburls.getSize()];
+        for (int i = 0; i < dburls.getSize(); i++) {
+            System.out.println("Creating JDBC connection to " + dburls.getToken(i));
+            conns[i] = connect(dburls.getToken(i), dbuser, dbpass);
         }
 
         System.out.println("Performing tests...");

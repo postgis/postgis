@@ -59,11 +59,11 @@ public class TestAutoregister {
             System.err.println("Usage: java examples/TestParser dburl user pass");
             System.exit(1);
             // Signal the compiler that code flow ends here.
-            throw new AssertionError();
+            return;
         }
 
         System.out.println("Driver version: " + Driver.getVersion());
-        int major = Integer.parseInt(Driver.getVersion().trim().split(" ")[1].split("\\.")[0]);
+        int major = Integer.parseInt(PGgeometry.splitAtFirst(PGgeometry.splitAtFirst(Driver.getVersion().trim(),' ')[1],'.')[0]);
         if (major < 8) {
             System.out.println("Your pgdjbc " + major
                     + ".X is too old, it does not support autoregistration!");

@@ -226,7 +226,7 @@ public class Point extends Geometry {
             tz = this.z - other.z;
             return Math.sqrt(tx * tx + ty * ty + tz * tz);
         default :
-            throw new AssertionError("Illegal dimension of Point" + this.dimension);
+            throw new IllegalArgumentException("Illegal dimension of Point" + this.dimension);
         }
     }
 }
