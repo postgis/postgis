@@ -7,6 +7,7 @@ PostGIS 1.0.0
 	- FLEX & YACC variables set *after* pgsql Makefile.global
 	  is included and only if the pgsql *stripped* version
 	  evaulates to the empty string
+	- added already generated parser in release
 
 PostGIS 1.0.0RC3
 2005/02/24
