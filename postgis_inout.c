@@ -2214,6 +2214,7 @@ char	*wkb_multiline(LINE3D **lines,int32 *size, int numb_lines, bool flipbytes, 
 		total_size = 9 + 9*numb_lines + 16*total_points;		
 	}
 
+	*size = total_size;
 
 	result = palloc (total_size);
 
@@ -2426,6 +2427,8 @@ char	*wkb_multipolygon(POLYGON3D	**polys,int numb_polys,int32 *size, bool flipby
 	{
 		total_size = 9 + 9*numb_polys + 16*total_points + 4*total_rings;		
 	}
+
+	*size = total_size;
 
 	result = palloc (total_size);
 
