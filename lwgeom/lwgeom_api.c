@@ -312,8 +312,9 @@ BOX3D *combine_boxes(BOX3D *b1, BOX3D *b2)
 // returns a real entity so it doesnt leak
 // if this has a pre-built BOX2d, then we use it,
 // otherwise we need to compute it.
+// OBSOLETED!
 BOX2DFLOAT4
-getbox2d(char *serialized_form)
+__getbox2d(char *serialized_form)
 {
 	int type = (unsigned char) serialized_form[0];
 	char *loc;

@@ -72,9 +72,14 @@ Datum LWGEOM_overlap(PG_FUNCTION_ARGS)
 	char *lwgeom1 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	char *lwgeom2 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	bool result;
+	BOX2DFLOAT4 box1;
+	BOX2DFLOAT4 box2;
 
-	BOX2DFLOAT4 box1 = getbox2d(lwgeom1+4);
-	BOX2DFLOAT4 box2 = getbox2d(lwgeom2+4);
+	if ( ! (getbox2d_p(lwgeom1+4, &box1) && getbox2d_p(lwgeom2+4, &box2)) )
+	{
+		// One or both are empty geoms
+        	PG_RETURN_BOOL(FALSE);
+	}
 
 
 	result = DatumGetBool(DirectFunctionCall2(BOX2D_overlap,
@@ -105,12 +110,18 @@ Datum LWGEOM_overleft(PG_FUNCTION_ARGS)
 	char *lwgeom1 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	char *lwgeom2 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	bool result;
-	BOX2DFLOAT4 box1 = getbox2d(lwgeom1+4);
-	BOX2DFLOAT4 box2 = getbox2d(lwgeom2+4);
+	BOX2DFLOAT4 box1;
+	BOX2DFLOAT4 box2;
 
 #ifdef DEBUG_CALLS
 	elog(NOTICE,"GIST: LWGEOM_overleft --entry");
 #endif
+
+	if ( ! (getbox2d_p(lwgeom1+4, &box1) && getbox2d_p(lwgeom2+4, &box2)) )
+	{
+		PG_RETURN_BOOL(FALSE);
+	}
+
 
 	result = DatumGetBool(DirectFunctionCall2(BOX2D_overleft,
 		PointerGetDatum(&box1), PointerGetDatum(&box2))); 
@@ -127,13 +138,17 @@ Datum LWGEOM_left(PG_FUNCTION_ARGS)
 	char *lwgeom1 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	char *lwgeom2 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	bool result;
-
-	BOX2DFLOAT4 box1 = getbox2d(lwgeom1+4);
-	BOX2DFLOAT4 box2 = getbox2d(lwgeom2+4);
+	BOX2DFLOAT4 box1;
+	BOX2DFLOAT4 box2;
 
 #ifdef DEBUG_CALLS
 	elog(NOTICE,"GIST: LWGEOM_left --entry");
 #endif
+
+	if ( ! (getbox2d_p(lwgeom1+4, &box1) && getbox2d_p(lwgeom2+4, &box2)) )
+	{
+		PG_RETURN_BOOL(FALSE);
+	}
 
 	result = DatumGetBool(DirectFunctionCall2(BOX2D_left,
 		PointerGetDatum(&box1), PointerGetDatum(&box2))); 
@@ -151,13 +166,18 @@ Datum LWGEOM_right(PG_FUNCTION_ARGS)
 	char *lwgeom1 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	char *lwgeom2 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	bool result;
-
-	BOX2DFLOAT4 box1 = getbox2d(lwgeom1+4);
-	BOX2DFLOAT4 box2 = getbox2d(lwgeom2+4);
+	BOX2DFLOAT4 box1;
+	BOX2DFLOAT4 box2;
 
 #ifdef DEBUG_CALLS
 	elog(NOTICE,"GIST: LWGEOM_right --entry");
 #endif
+
+	if ( ! (getbox2d_p(lwgeom1+4, &box1) && getbox2d_p(lwgeom2+4, &box2)) )
+	{
+		PG_RETURN_BOOL(FALSE);
+	}
+
 	result = DatumGetBool(DirectFunctionCall2(BOX2D_right,
 		PointerGetDatum(&box1), PointerGetDatum(&box2)));
 
@@ -174,13 +194,17 @@ Datum LWGEOM_overright(PG_FUNCTION_ARGS)
 	char *lwgeom1 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	char *lwgeom2 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	bool result;
-
-	BOX2DFLOAT4 box1 = getbox2d(lwgeom1+4);
-	BOX2DFLOAT4 box2 = getbox2d(lwgeom2+4);
+	BOX2DFLOAT4 box1;
+	BOX2DFLOAT4 box2;
 
 #ifdef DEBUG_CALLS
 	elog(NOTICE,"GIST: LWGEOM_overright --entry");
 #endif
+
+	if ( ! (getbox2d_p(lwgeom1+4, &box1) && getbox2d_p(lwgeom2+4, &box2)) )
+	{
+		PG_RETURN_BOOL(FALSE);
+	}
 
 	result = DatumGetBool(DirectFunctionCall2(BOX2D_overright,
 		PointerGetDatum(&box1), PointerGetDatum(&box2)));
@@ -198,13 +222,18 @@ Datum LWGEOM_contained(PG_FUNCTION_ARGS)
 	char *lwgeom1 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	char *lwgeom2 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	bool result;
-
-	BOX2DFLOAT4 box1 = getbox2d(lwgeom1+4);
-	BOX2DFLOAT4 box2 = getbox2d(lwgeom2+4);
+	BOX2DFLOAT4 box1;
+	BOX2DFLOAT4 box2;
 
 #ifdef DEBUG_CALLS
 	elog(NOTICE,"GIST: LWGEOM_contained --entry");
 #endif
+
+	if ( ! (getbox2d_p(lwgeom1+4, &box1) && getbox2d_p(lwgeom2+4, &box2)) )
+	{
+		PG_RETURN_BOOL(FALSE);
+	}
+
 	result = DatumGetBool(DirectFunctionCall2(BOX2D_contained,
 		PointerGetDatum(&box1), PointerGetDatum(&box2)));
 
@@ -221,13 +250,17 @@ Datum LWGEOM_contain(PG_FUNCTION_ARGS)
 	char *lwgeom1 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	char *lwgeom2 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	bool result;
-
-	BOX2DFLOAT4 box1 = getbox2d(lwgeom1+4);
-	BOX2DFLOAT4 box2 = getbox2d(lwgeom2+4);
+	BOX2DFLOAT4 box1;
+	BOX2DFLOAT4 box2;
 
 #ifdef DEBUG_CALLS
 	elog(NOTICE,"GIST: LWGEOM_contain --entry");
 #endif
+
+	if ( ! (getbox2d_p(lwgeom1+4, &box1) && getbox2d_p(lwgeom2+4, &box2)) )
+	{
+		PG_RETURN_BOOL(FALSE);
+	}
 
 	result = DatumGetBool(DirectFunctionCall2(BOX2D_contain,
 		PointerGetDatum(&box1), PointerGetDatum(&box2)));
@@ -383,11 +416,6 @@ Datum LWGEOM_gist_consistent(PG_FUNCTION_ARGS)
 	if ( ! (DatumGetPointer(entry->key) != NULL && query) )
 		PG_RETURN_BOOL(FALSE);
 
-	//box3d = lw_geom_getBB(query+4);
-	//thebox = box3d_to_box2df(box3d);
-	//pfree(box3d);
-	//convert_box3d_to_box_p( &(query->bvol) , &thebox);
-	//thebox = getbox2d_cache(query);
 	getbox2d_p(query+4, &box);
 
 	if (GIST_LEAF(entry))

@@ -10,7 +10,11 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.10  2004/10/25 17:07:09  strk
+ * Obsoleted getbox2d(). Use getbox2d_p() or getbox2d_internal() instead.
+ *
  * Revision 1.9  2004/10/08 13:20:54  strk
+ *
  * Changed LWGEOM structure to point to an actual BOX2DFLOAT4.
  * Renamed most function to reflect a TYPE_method naming convention.
  * (you'll need a dump/reload for it to work)
@@ -1260,8 +1264,13 @@ Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS)
 	 */
 
 	in = (char *)PG_DETOAST_DATUM( ((Const*)other)->constvalue );
-	//search_box = convert_box3d_to_box(&in->bvol);
-	search_box = getbox2d(in+4);
+	if ( ! getbox2d_p(in+4, &search_box) )
+	{
+#if DEBUG_GEOMETRY_STATS 
+		elog(NOTICE, "search box is EMPTY");
+#endif
+		PG_RETURN_FLOAT8(0.0);
+	}
 
 #if DEBUG_GEOMETRY_STATS > 1
 	elog(NOTICE," requested search box is : %.15g %.15g, %.15g %.15g",search_box->xmin,search_box->ymin,search_box->xmax,search_box->ymax);
@@ -1425,7 +1434,14 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 
 		geom = (char *) PG_DETOAST_DATUM(datum);
 
-		box = getbox2d(geom+4);
+		if ( ! getbox2d_p(geom+4, &box) )
+		{
+			// Skip empty geometry
+#if DEBUG_GEOMETRY_STATS 
+			elog(NOTICE, " skipped empty geometry %d", i);
+#endif
+			continue;
+		}
 
 		/*
 		 * Skip infinite geoms

@@ -704,7 +704,8 @@ extern BOX3D *combine_boxes(BOX3D *b1, BOX3D *b2);
 // if this has a pre-built BOX2d, then we use it,
 // otherwise we need to compute it.
 // WARNING! the EMPTY geom will result in a random BOX2D returned
-extern BOX2DFLOAT4 getbox2d(char *serialized_form);
+// OBSOLETED for this reason
+//extern BOX2DFLOAT4 getbox2d(char *serialized_form);
 
 // Returns a pointer to the BBOX internal to the serialized form.
 // READ-ONLY!
