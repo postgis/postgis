@@ -1,6 +1,3 @@
-- make bbox caching behaviour consistent for all functions
-  (computation-simplicity-based vs. npoints-thrashold heuristics)
-
 - lwgeom_clone_deep / lwgeom_release_deep
   (or maybe should both be always be deep.... )
 
@@ -22,6 +19,4 @@
   collection elements (currently it is not w/ LWGEOM) ?
 
 - proj support functions might need 3d sometimes.
-
-- GEOMETRY && BOX2D, GEOMETRY && BOX3D
 
