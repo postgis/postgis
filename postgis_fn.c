@@ -517,7 +517,7 @@ bool lineseg_inside_box( POINT3D *P1, POINT3D *P2, BOX3D *box)
 	// know that its a diagonal line
 
 	//this is the tough case - it may or maynot intersect the box
-	//see if it intersects the horizonal box lines
+	//see if it intersects the horizonal and vertical box lines
 
 	// from comp.graphics.algo's faq:
 	/*
@@ -560,6 +560,32 @@ bool lineseg_inside_box( POINT3D *P1, POINT3D *P2, BOX3D *box)
 	if  ( (r>=0) && (r<=1) && (s>=0) && (s<=1)    )
 		return TRUE;
 
+	//left ver part of box
+	Cx = box->LLB.x; Cy= box->LLB.y;
+	Dx = box->LLB.x; Dy= box->URT.y;
+
+		r= ((Ay-Cy)*(Dx-Cx)-(Ax-Cx)*(Dy-Cy) )/
+			((Bx-Ax)*(Dy-Cy)-(By-Ay)*(Dx-Cx) ) ;
+
+		s=  ((Ay-Cy)*(Bx-Ax)-(Ax-Cx)*(By-Ay))/
+			((Bx-Ax)*(Dy-Cy)-(By-Ay)*(Dx-Cx) ) ;
+
+	if  ( (r>=0) && (r<=1) && (s>=0) && (s<=1)    )
+		return TRUE;
+
+	//right ver part of box
+	Cx = box->URT.x; Cy= box->LLB.y;
+	Dx = box->URT.x; Dy= box->URT.y;
+
+		r= ((Ay-Cy)*(Dx-Cx)-(Ax-Cx)*(Dy-Cy) )/
+			((Bx-Ax)*(Dy-Cy)-(By-Ay)*(Dx-Cx) ) ;
+
+		s=  ((Ay-Cy)*(Bx-Ax)-(Ax-Cx)*(By-Ay))/
+			((Bx-Ax)*(Dy-Cy)-(By-Ay)*(Dx-Cx) ) ;
+	if  ( (r>=0) && (r<=1) && (s>=0) && (s<=1)    )
+		return TRUE;
+
+	//otherwise we did not intersect the box
 	return FALSE;
 	
 }
