@@ -514,7 +514,7 @@ byte* make_lwgeom(){
 }
 
 int lwg_parse_yyerror(char* s){
-	error("parse error - invalid geometry");
+	error_func("parse error - invalid geometry");
 	return 1;
 }
 
