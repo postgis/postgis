@@ -19,15 +19,14 @@
 	 <abstract> 
 		<para>PostGIS is an extension to the PostgreSQL object-relational
 		  database system which allows GIS (Geographic Information Systems) objects to be
-		  stored in the database. PostGIS includes support for GiST indexes, and
+		  stored in the database. PostGIS includes support for GiST-based R-Tree spatial indexes, and
 		  functions for basic analysis of GIS objects.</para> 
 	 </abstract> 
   </bookinfo> 
   <chapter> 
 	 <title>Introduction</title> 
-	 <para>PostGIS is developed by Refractions Research Inc, as a research
-		project into spatial database technology. Refractions is a GIS and database
-		consulting company in Victoria, British Columbia, specializing in data
+	 <para>PostGIS is developed by Refractions Research Inc, as a spatial database technology research project. Refractions is a GIS and database
+		consulting company in Victoria, British Columbia, Canada, specializing in data
 		integration and custom software development. We plan on supporting and
 		developing PostGIS to support a range of important GIS functionality, including
 		full OpenGIS support, advanced topological constructs (coverages, surfaces, networks), desktop user
@@ -40,8 +39,8 @@
 			 <term>Dave Blasby &lt;dblasby@refractions.net&gt;</term> 
 			 <listitem> 
 				<para>The principal developer of PostGIS. Dave maintains the server
-				  side objects and index support, as well as the server side analytical
-				  functions.</para> 
+				  side objects and index support,  the server side analytical
+				  functions, and the Mapserver connectivity.</para> 
 			 </listitem> 
 		  </varlistentry> 
 		  <varlistentry> 
@@ -92,7 +91,7 @@
 		  <ulink url="http://www.postgresql.org">http://www.postgresql.org</ulink>.</para> 
 		<para>PostGIS 0.6 has been built and tested against PostgreSQL 7.1.2. It
 		  will probably work with any of the 7.1.x versions. It will
-		  <emphasis>not</emphasis> work with any version prior to 7.1, or with version 7.2. The <emphasis>next</emphasis> version of PostGIS will work with version 7.2.</para> 
+		  <emphasis>not</emphasis> work with any version prior to 7.1, or with version 7.2 (not yet released at date of writing). The <emphasis>next</emphasis> version,  PostGIS 0.7, will work with PostgreSQL version 7.2.</para> 
 		<orderedlist> 
 		  <listitem> 
 			 <para>Before you can compile the postgis server modules, you must
@@ -103,8 +102,8 @@
 				<ulink url="http://postgis.refractions.net/postgis-0.6.tar.gz">http://postgis.refractions.net/postgis-0.6.tar.gz</ulink>. Uncompress and untar the
 				archive in the "contrib" directory of the PostgreSQL source tree.</para> 
 			  
-		  <programlisting># cd [postgresql source tree]/contrib zcat
-#	postgis-0.6.tar.gz | tar xvf -</programlisting></listitem> 
+		  <programlisting># cd [postgresql source tree]/contrib 
+# gzip -d -c	postgis-0.6.tar.gz | tar xvf -</programlisting></listitem> 
 		  <listitem> 
 			 <para>Once your PostgreSQL installation is up-to-date, enter the
 				"postgis" directory, and run the compile and install commands. </para> 
@@ -119,14 +118,14 @@ CREATE TRUSTED PROCEDURAL LANGUAGE 'plpgsql'
 		  <listitem> 
 			 <para>Finally, you
 				must load the PostGIS object and function definitions into your database. </para> 
-			 <programlisting># psql -d [yourdatabase] &lt;	postgis.sql</programlisting><para>The PostGIS server extensions are now loaded and ready to
+			 <programlisting># psql -d [yourdatabase] -f	postgis.sql</programlisting><para>The PostGIS server extensions are now loaded and ready to
 				use.</para> 
 		  </listitem> 
 		</orderedlist> 
 	 <sect2><title>Upgrading</title><para>Upgrading PostGIS can be tricky, because the underlying C libraries which
 support the object types and geometries may have changed between versions.
 To avoid problems when upgrading, you will have to dump all the tables
-in your database, destroy the database, create a new one, upload the
+in your database, destroy the database, create a new one, execute the
 new <filename>postgis.sql</filename> file, then upload your database dump:</para><programlisting># pg_dump -t "*" -f dumpfile.sql yourdatabase
 # dropdb yourdatabase
 # createdb yourdatabase
@@ -195,6 +194,7 @@ SELECT AddGeometryColumn('dbname','gtest','geom',-1,'LINESTRING',2);</programlis
 				insert statement. The GIS object itself is formatted using the OpenGIS
 				Consortium "well-known text" format: </para><programlisting>INSERT INTO gtest (ID, NAME,	GEOM) 
   VALUES (1, 'First Geometry', GeometryFromText('LINESTRING(2 3,4 5,6 5,7 8)', -1));
+
 SELECT id, name,	AsText(geom) AS geom FROM gtest;</programlisting><para>For more information about other GIS objects, see the 
 				<link linkend="RefObject">object reference</link>.</para> 
 			 <para>To view your GIS data in the table: <emphasis></emphasis>. The return value should look
@@ -266,12 +266,12 @@ SELECT id, name,	AsText(geom) AS geom FROM gtest;</programlisting><para>For more
 		</qandaentry> 
 		<qandaentry> 
 		  <question> 
-			 <para>Why aren't R-Tree's supported?</para> 
+			 <para>Why aren't PostgreSQL R-Tree indexes supported?</para> 
 		  </question> 
 		  <answer> 
-			 <para>Early versions of PostGIS support R-Tree indexing.  R-Trees have been completely discarded since version 0.6.  Our tests have shown search speed for R-Tree and GiST to be comparable.  R-Trees have two limitations which make them undesirable for
-				use with GIS feature in the PostgreSQL database (note that these limitations
-				are due to the PostgreSQL implementations, not the R-Tree concept in
+			 <para>Early versions of PostGIS used the PostgreSQL R-Tree indexes. However, PostgreSQL R-Trees have been completely discarded since version 0.6, and spatial indexing is provided with an R-Tree-over-GiST scheme.  </para><para>Our tests have shown search speed for native R-Tree and GiST to be comparable.  Native PostgreSQL R-Trees have two limitations which make them undesirable for
+				use with GIS features (note that these limitations
+				are due to the current PostgreSQL native R-Tree implementation, not the R-Tree concept in
 				general):</para> 
 			 <itemizedlist> 
 				<listitem> 
@@ -285,7 +285,7 @@ SELECT id, name,	AsText(geom) AS geom FROM gtest;</programlisting><para>For more
 				</listitem> 
 			 </itemizedlist> 
 		  </answer> 
-		</qandaentry><qandaentry><question><para>Why should I use the AddGeometryColumn() function (and all the other OpenGIS crap)?</para></question><answer><para>If you do not want to use the OpenGIS support functions, you do not have to. Simply create tables as in older versions, defining your geometry columns in the CREATE statement. All your geometries will have SRIDs of -1, and the OpenGIS meta-data tables will not be filled in properly. For most current applications, this will not matter.</para><para>However, in the future it is likely that client software will use the meta-data tables to interrogate the database about available layers and projections before rendering data. An obvious early example is the Mapserver internet mapping software, which could be altered to interrogate the SPATIAL_REF_SYS table for projection information on the layers it is rendering.</para></answer></qandaentry> 
+		</qandaentry><qandaentry><question><para>Why should I use the AddGeometryColumn() function and all the other OpenGIS stuff?</para></question><answer><para>If you do not want to use the OpenGIS support functions, you do not have to. Simply create tables as in older versions, defining your geometry columns in the CREATE statement. All your geometries will have SRIDs of -1, and the OpenGIS meta-data tables will <emphasis>not</emphasis> be filled in properly. For most current applications, this will not matter.</para><para>However, in the future it is likely that client software will use the meta-data tables to interrogate the database about available layers and projections before rendering data. An obvious early example is the Mapserver internet mapping software, which could be altered to interrogate the SPATIAL_REF_SYS table for projection information on the layers it is rendering.</para><para>For these reasons it is probably wise to learn and use the OpenGIS concepts from early on.</para></answer></qandaentry> 
 	 </qandaset> 
   </chapter> 
   <chapter> 
@@ -540,12 +540,12 @@ SRID=123;LINESTRING(-123.741378393049 48.9124018962261,-123.741587115639 48.9123
 			 spatial column (assuming the db is 'parks_db' and that an SRID of 128 exists
 			 already):</para> 
 		  <programlisting>CREATE TABLE PARKS ( PARK_ID int4, PARK_NAME varchar(128), PARK_DATE date, PARK_TYPE varchar(2) ); 
-SELECT AddGeometryColumn('parks_db', 'parks', 'park_geom', 128, MULTIPOLYGON, 2 );
+SELECT AddGeometryColumn('parks_db', 'parks', 'park_geom', 128, 'MULTIPOLYGON', 2 );
 </programlisting> 
 		  <para>Here is another example, using the generic "geometry" type and
 			 the undefined SRID value of -1:</para> 
 		  <programlisting>CREATE TABLE ROADS ( ROAD_ID int4, ROAD_NAME varchar(128) ); 
-SELECT AddGeometryColumn( 'roads_db', 'roads', 'roads_geom',	-1, GEOMETRY, 3 );
+SELECT AddGeometryColumn( 'roads_db', 'roads', 'roads_geom',	-1, 'GEOMETRY', 3 );
 </programlisting> 
 		</sect2> 
 	 </sect1> 
@@ -659,8 +659,8 @@ id | geom                                    | name
 				<term>~=</term> 
 				<listitem> 
 				  <para>This operators tests whether two geometries are
-					 geometrically identical. For example, if "POLYGON((0 0,1 1,1 0,0 0))" is the
-					 same as "POLYGON((0 0,1 0,1 1,0 0))" (it is).</para> 
+					 geometrically identical. For example, if 'POLYGON((0 0,1 1,1 0,0 0))' is the
+					 same as 'POLYGON((0 0,1 1,1 0,0 0))' (it is).</para> 
 				</listitem> 
 			 </varlistentry> 
 			 <varlistentry> 
@@ -680,7 +680,7 @@ id | geom                                    | name
 			 "ROADS_GEOM" table in which the geometry was equal to that value.</para> 
 		  <para>When using the "&amp;&amp;" operator, you can specify either a
 			 BOX3D as the comparison feature or a GEOMETRY. When you specify a GEOMETRY,
-			 however, the bounding box will be used for the comparison.</para> 
+			 however, its bounding box will be used for the comparison.</para> 
 		  <literallayout>SELECT ID, NAME FROM ROADS_GEOM 
   WHERE GEOM &amp;&amp; GeometryFromText('POLYGON((191232 243117,191232 243119,191234 243117,191232 243117))',-1);</literallayout> 
 		  <para>The above query will use the bounding box of the polygon for
@@ -724,7 +724,7 @@ END</programlisting><para>In the example above, the PostGIS-specific directives 
 is a standard set of keys and values like this (with the default values
 in &lt;&gt;):</para><para>user=&lt;username&gt; password=&lt;password&gt; dbname=&lt;username&gt; hostname=&lt;server&gt; port=&lt;5432&gt;</para><para>An empty connection string is still valid, and any of the key/value
 pairs can be omitted. At a minimum you will generally supply the database
-name and username to connect with.</para></listitem></varlistentry><varlistentry><term>DATA</term><listitem><para>The form of this parameter is "&lt;column&gt; from &lt;tablename&gt;" where the column is the spatial column to be rendered to the name.</para></listitem></varlistentry><varlistentry><term>FILTER</term><listitem><para>The filter must be a valid SQL string corresponding to the logic normally following the "WHERE" keyword in a SQL query. So, for example, to render only roads with 6 or more lanes, use a filter of "num_lanes &gt;= 6".</para></listitem></varlistentry></variablelist></listitem><listitem><para>In your spatial database, ensure you have spatial (GiST) indexes built for any the layers you will be drawing.</para></listitem><listitem><para>If you will be querying your layers using Mapserver you will also require an "oid index".</para><para>Mapserver requires unique identifiers for each spatial record when doing queries, and the PostGIS module of Mapserver uses the PostgreSQL <varname>oid</varname> value to provide these unique identifiers. A side-effect of this is that in order to do fast random access of records during queries, an index on the <varname>oid</varname> is needed. </para><para>To build an "oid index", use the following SQL:</para><programlisting>CREATE INDEX &lt;indexname&gt; ON &lt;tablename&gt; ( oid );</programlisting></listitem></orderedlist></sect2></sect1> 
+name and username to connect with.</para></listitem></varlistentry><varlistentry><term>DATA</term><listitem><para>The form of this parameter is "&lt;column&gt; from &lt;tablename&gt;" where the column is the spatial column to be rendered to the name.</para></listitem></varlistentry><varlistentry><term>FILTER</term><listitem><para>The filter must be a valid SQL string corresponding to the logic normally following the "WHERE" keyword in a SQL query. So, for example, to render only roads with 6 or more lanes, use a filter of "num_lanes &gt;= 6".</para></listitem></varlistentry></variablelist></listitem><listitem><para>In your spatial database, ensure you have spatial (GiST) indexes built for any the layers you will be drawing.</para></listitem><listitem><para>If you will be querying your layers using Mapserver you will also need an "oid index".</para><para>Mapserver requires unique identifiers for each spatial record when doing queries, and the PostGIS module of Mapserver uses the PostgreSQL <varname>oid</varname> value to provide these unique identifiers. A side-effect of this is that in order to do fast random access of records during queries, an index on the <varname>oid</varname> is needed. </para><para>To build an "oid index", use the following SQL:</para><programlisting>CREATE INDEX &lt;indexname&gt; ON &lt;tablename&gt; ( oid );</programlisting></listitem></orderedlist></sect2></sect1> 
 	 <sect1> 
 		<title>Building Indexes</title> 
 		<para>Indexes are what make using a spatial database for large databases
@@ -785,8 +785,7 @@ name and username to connect with.</para></listitem></varlistentry><varlistentry
 		  <para>Ordinarily, indexes invisibly speed up data access: once the
 			 index is built, the query planner tranparently decides when to use index
 			 information to speed up a query plan. Unfortunately, the PostgreSQL query
-			 planner does not optimize the use of R-Tree and GiST indexes well, so very
-			 often searches which should use a spatial index instead default to a sequence
+			 planner does not optimize the use of  GiST indexes well, so sometimes searches which should use a spatial index instead default to a sequence
 			 scan of the whole table.</para> 
 		  <para>If you find your spatial indexes are not being used (or your
 			 attribute indexes, for that matter) there are a couple things you can
@@ -797,10 +796,10 @@ name and username to connect with.</para></listitem></varlistentry><varlistentry
 				  command on the tables you are having problems with. "VACUUM ANALYZE" gathers
 				  statistics about the number and distributions of values in a table, to provide
 				  the query planner with better information to make decisions around index
-				  usage.</para> 
+				  usage. You should regularly vacuum your databases anyways -- many PostgreSQL DBAs have "VACUUM" run as an off-peak cron job on a regular basis.</para> 
 			 </listitem> 
 			 <listitem> 
-				<para>Secondly, you can force the planner to use the index
+				<para>If vacuuming does not work, you can force the planner to use the index
 				  information by using the "SET =OFF" command. You should only use
 				  this command sparingly, and only on spatially indexed queries: generally
 				  speaking, the planner knows better than you do about when to use normal B-Tree
@@ -917,7 +916,7 @@ if( geom.getType() = Geometry.POLYGON )
 			 <listitem> 
 				<para>Syntax: AddGeometryColumn(&lt;db_name&gt;,
 				  &lt;table_name&gt;, &lt;column_name&gt;, &lt;srid&gt;, &lt;type&gt;,
-				  &lt;dimension&gt;). Adds a geometry column to an existing table of attributes. The <varname>srid</varname> must be an integer value reference to an entry in the SPATIAL_REF_SYS table. The <varname>type</varname> must be an uppercase string corresponding to the geometry type.</para> 
+				  &lt;dimension&gt;). Adds a geometry column to an existing table of attributes. The <varname>dbname</varname> is the name of the database instance. The <varname>srid</varname> must be an integer value reference to an entry in the SPATIAL_REF_SYS table. The <varname>type</varname> must be an uppercase string corresponding to the geometry type, eg, 'POLYGON' or 'MULTILINESTRING'.</para> 
 			 </listitem> 
 		  </varlistentry><varlistentry><term>DropGeometryColumn(varchar, varchar, varchar)</term><listitem><para>Syntax: DropGeometryColumn(&lt;db_name&gt;,&lt;table_name&gt;,&lt;column_name&gt;). Remove a geometry column from a spatial table.</para></listitem></varlistentry> 
 		  <varlistentry> 
@@ -946,8 +945,8 @@ if( geom.getType() = Geometry.POLYGON )
 		  <varlistentry> 
 			 <term>GeometryType(geometry)</term> 
 			 <listitem> 
-				<para>Returns the type of the geometry. Eg: LINESTRING, POLYGON,
-				  MULTIPOINT, etc.</para> 
+				<para>Returns the type of the geometry as a string. Eg: 'LINESTRING', 'POLYGON',
+				  'MULTIPOINT', etc.</para> 
 			 </listitem> 
 		  </varlistentry> 
 		  <varlistentry> 
@@ -1017,9 +1016,9 @@ if( geom.getType() = Geometry.POLYGON )
 			 <term>GeometryN(geometry)</term> 
 			 <listitem> 
 				<para>Return the N'th geometry if the geometry is a
-				  GEOMETRYCOLLECTION. Otherwise, return NULL.</para> 
+				  GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING or MULTIPOLYGON. Otherwise, return NULL.</para> 
 			 </listitem> 
-		  </varlistentry><varlistentry><term>Distance(geometry,geometry)</term><listitem><para>Return the cartesian distance between two geometries in projected units.</para></listitem></varlistentry><varlistentry><term>AsText(geometry)</term><listitem><para>Return the Well-Known Text representation of the geometry. For example: POLYGON(0 0,0 1,1 1,1 0,0 0)</para></listitem></varlistentry><varlistentry><term>SRID(geometry)</term><listitem><para>Returns the integer SRID number of the spatial reference system of the geometry.</para></listitem></varlistentry><varlistentry><term>GeometryFromText(varchar, integer)</term><listitem><para>Syntax: GeometryFromText(&lt;geometry&gt;,&lt;SRID&gt;) Convert a Well-Known Text representation of a geometry into a geometry object.</para></listitem></varlistentry><varlistentry><term>SetSRID(geometry)</term><listitem><para>Set the SRID on a geometry to a particular integer value. Useful in constructing geometry for queries.</para></listitem></varlistentry> 
+		  </varlistentry><varlistentry><term>Distance(geometry,geometry)</term><listitem><para>Return the cartesian distance between two geometries in projected units.</para></listitem></varlistentry><varlistentry><term>AsText(geometry)</term><listitem><para>Return the Well-Known Text representation of the geometry. For example: POLYGON(0 0,0 1,1 1,1 0,0 0)</para></listitem></varlistentry><varlistentry><term>SRID(geometry)</term><listitem><para>Returns the integer SRID number of the spatial reference system of the geometry.</para></listitem></varlistentry><varlistentry><term>GeometryFromText(varchar, integer)</term><listitem><para>Syntax: GeometryFromText(&lt;geometry&gt;,&lt;SRID&gt;) Convert a Well-Known Text representation of a geometry into a geometry object.</para></listitem></varlistentry><varlistentry><term>SetSRID(geometry)</term><listitem><para>Set the SRID on a geometry to a particular integer value. Useful in constructing bounding boxes for queries.</para></listitem></varlistentry> 
 		<varlistentry><term>EndPoint(geometry)</term><listitem><para>Returns the last point of the geometry as a point.</para></listitem></varlistentry><varlistentry><term>StartPoint(geometry)</term><listitem><para>Returns the first point of the geometry as a point.</para></listitem></varlistentry><varlistentry><term>Centroid(geometry)</term><listitem><para>Returns the centroid of the geometry as a point.</para></listitem></varlistentry> 
 		  </variablelist> 
 	 </sect1> 
@@ -1116,7 +1115,7 @@ if( geom.getType() = Geometry.POLYGON )
 				  all features in the table. Similarly, "SELECT EXTENT(GEOM) FROM GEOMTABLE GROUP
 				  BY CATEGORY" will return one extent result for each category.</para> 
 			 </listitem> 
-		  </varlistentry><varlistentry><term>find_srid(varchar,varchar,varchar)</term><listitem><para>The syntax is find_srid(&lt;db/schema&gt;, &lt;table&gt;, &lt;column&gt;) and the function returns the integer SRID of the specified column.</para></listitem></varlistentry> 
+		  </varlistentry><varlistentry><term>find_srid(varchar,varchar,varchar)</term><listitem><para>The syntax is find_srid(&lt;db/schema&gt;, &lt;table&gt;, &lt;column&gt;) and the function returns the integer SRID of the specified column by searching through the GEOMETRY_COLUMNS table. If the geometry column has not been properly added with the AddGeometryColumns() function, this function will not work either.</para></listitem></varlistentry> 
 		  <varlistentry> 
 			 <term>force_collection(geometry)</term> 
 			 <listitem> 
@@ -1143,7 +1142,7 @@ if( geom.getType() = Geometry.POLYGON )
 		  <varlistentry> 
 			 <term>length2d(geometry)</term> 
 			 <listitem> 
-				<para>Returns the 23-dimensional length of the geometry if it is a
+				<para>Returns the 2-dimensional length of the geometry if it is a
 				  linestring or multi-linestring.</para> 
 			 </listitem> 
 		  </varlistentry> 
@@ -1245,366 +1244,11 @@ if( geom.getType() = Geometry.POLYGON )
 		  <varlistentry> 
 			 <term>truly_inside(geometryA,geometryB)</term> 
 			 <listitem> 
-				<para>Returns true if any part of A is within the bounding box of
-				  B.</para> 
+				<para>Returns true if any part of B is within the bounding box of
+				  A.</para> 
 			 </listitem> 
 		  </varlistentry> 
 		</variablelist> 
 	 </sect1> 
   </chapter> 
-  <chapter> 
-	 <title>Programming Information</title> 
-	 <para> The following sections provide information about the internal
-		structure of the PostGIS spatial objects, and some information about certain
-		design decisions.</para> 
-	 <sect1> 
-		<title>Internal Object Representation</title> 
-		<para>The internal representation information is useful to people who
-		  intend to write C functions to directly manipulate the backend objects at the
-		  server. Reading <filename>postgis.h</filename> will give the exact type
-		  definitions used, and reading <filename>postgis.c</filename> will give some
-		  examples of how to manipulate the objects.</para> 
-		<sect2> 
-		  <title>Basic Structure</title> 
-		  <para>In the most basic sense, a GEOMETRY type is a list of sub-objects
-			 and a bounding volume. In an ideal world, the type should be defined as:
-			 </para> 
-		  <programlisting>typedef struct { 
-  int32 size;   // postgres variable-length type requirement 
-  int32 type;   // this type of geometry 
-		bool is3d;    // true if the points are 3d (only for output) 
-  BOX3D bvol;   // bounding volume of all the geo objects 
-  int32 nobjs;  // how many sub-objects in this object 
-  int32 objType[1];   // type of object 
-  int32 objOffset[1]; // offset (in bytes) into this structure where the object is located 
-  char objData[1];    // store for actual objects 
-} GEOMETRY;</programlisting> 
-		  <para>However, because of the way PostgreSQL handles memory allocation
-			 for objects, the type is actually organized as:</para> 
-		  <programlisting>typedef struct { 
-  int32 size;   // postgres variable-length type requirement 
-  int32 type;   // this type of geometry bool
-	 is3d;         // true if the points are 3d (only for output) 
-  BOX3D bvol;   // bounding volume of all the geo objects 
-  int32 nobjs;  // how many sub-objects in this object 
-  char data[?]; // info about the sub-objects 
-} GEOMETRY;</programlisting> 
-		  <para>This is because a Postgres type is a just a chuck of memory - it
-			 cannot contain any pointers. In a normal program 
-			 <varname>objType</varname> and objData would be pointers to separate
-			 chunks of memory for these two lists (in fact, 
-			 <varname>objData</varname> would likely be a list of pointers to
-			 other memory locations). That would look something like:</para> 
-		  <para>Since we cannot have pointers, the geometry structure actually
-			 has pseudo-pointers to its data portion, and looks like: </para> 
-		  <para>Since we cannot have pointers, the geometry structure actually
-			 has pseudo-pointers to its data portion, and looks like: </para> 
-		  <itemizedlist> 
-			 <listitem> 
-				<para>The structure is assumed to start off double-aligned (see the
-				  SQL define type).</para> 
-			 </listitem> 
-			 <listitem> 
-				<para>Inside the structure, 
-				  <varname>bvol</varname> and all the objects are double-aligned
-				  (there is unused space between 
-				  <varname>is3d</varname> and 
-				  <varname>bvol</varname>, there could be unused space between 
-				  <varname>objOffset[n]</varname> and object 0, and there could be
-				  unused space between object i and object i+1.</para> 
-			 </listitem> 
-			 <listitem> 
-				<para>The actual location of 
-				  <varname>objType[0]</varname> is always 
-				  <varname>geometry-&gt;objType[0]</varname>.</para> 
-			 </listitem> 
-			 <listitem> 
-				<para>The actual location of 
-				  <varname>objOffset[0]</varname> is 
-				  <varname>sizeof(int32)*geometry-&gt;nobjs</varname> after
-				  objType[0]. </para> 
-			 </listitem> 
-			 <listitem> 
-				<para>The actual location of object 0 is 
-				  <varname>objOffset[0]</varname> bytes into the structure .
-				  </para> 
-			 </listitem> 
-			 <listitem> 
-				<para>Object 0 is also 
-				  <varname>sizeof(int32)*geometry-&gt;nobjs</varname> bytes after 
-				  <varname>objOffset[0]</varname> (could be 4 more bytes along if
-				  this isn't double-aligned) . </para> 
-			 </listitem> 
-			 <listitem> 
-				<para>The actual location of object 1 is 
-				  <varname>objOffset[1]</varname> bytes into the structure. </para>
-				
-			 </listitem> 
-		  </itemizedlist> 
-		</sect2> 
-		<sect2> 
-		  <title>Usage</title> 
-		  <para>Normally, one will want to find the location of 
-			 <varname>objOffset[0]</varname> so it is accessible:</para> 
-		  <programlisting>Int32 *offsets; 
-offsets = (int32 *) ( ((char *) &amp;(geom1-&gt;objType[0] ))+ sizeof(int32) * geom1-&gt;nobjs);</programlisting> 
-		  <para>Next, one might want to get object i:</para> 
-		  <programlisting>Char *obji; 
-oi = (char *) geom1 +offsets[i] ; 
-typei = geom1-&gt;objType[i];</programlisting> 
-		  <para>Then one can re-cast the object:</para> 
-		  <programlisting>POLYGON3D *poly; 
-LINE3D *line; 
-POINT3D *point; 
-if (typei == POINTTYPE) // point { 
-  point = (LINE3D *) oi; 
-  ... 
-} 
-if (type1 == LINETYPE) // line { 
-  line = (LINE3D *) oi;
-  ... 
-} 
-if (type1 == POLYGONTYPE) // polygon { 
-  poly = (POLYGON3D *) oi; 
-  ... 
-}</programlisting> 
-		  <para>What does everything mean? </para> 
-		  <variablelist> 
-			 <varlistentry> 
-				<term>Size </term> 
-				<listitem> 
-				  <para>The total size of the structure.</para> 
-				</listitem> 
-			 </varlistentry> 
-			 <varlistentry> 
-				<term>Type</term> 
-				<listitem> 
-				  <para>Generic type for this Structure.</para> 
-				  <para>This is mostly used so output knows how the object was
-					 originally entered into the system. </para> 
-				</listitem> 
-			 </varlistentry> 
-			 <varlistentry> 
-				<term>Is3d</term> 
-				<listitem> 
-				  <para>TRUE if and only if, when the object was created, any of
-					 the points were given in 3D.</para> 
-				  <para>For example, MULTIPOINT(1 1,2 2) -&gt; is3d = FALSE
-					 MULTIPOINT(1 1, 2 2, 3 3 3) -&gt; is3d = TRUE</para> 
-				  <para>Since POINT(1 1) is stored as a POINT(1 1 0), we use the
-					 is3d flag during output to give POINT( 1 1) or POINT(1 1 0). Its not used for
-					 anything else.</para> 
-				</listitem> 
-			 </varlistentry> 
-			 <varlistentry> 
-				<term>Bvol</term> 
-				<listitem> 
-				  <para>Bounding Volume for all the points in this geometry </para>
-				  
-				</listitem> 
-			 </varlistentry> 
-			 <varlistentry> 
-				<term>nobjs</term> 
-				<listitem> 
-				  <para>The number of point/line/polygons there are in this
-					 geometry.</para> 
-				</listitem> 
-			 </varlistentry> 
-			 <varlistentry> 
-				<term>objType[i]</term> 
-				<listitem> 
-				  <para>The type of each of the sub-objects.</para> 
-				  <programlisting>#define POINTTYPE 1 
-#define LINETYPE 2 
-#define POLYGONTYPE 3
-</programlisting> 
-				</listitem> 
-			 </varlistentry> 
-			 <varlistentry> 
-				<term>objOffset[i]</term> 
-				<listitem> 
-				  <para>Offset, in bytes, into the structure where the object i is
-					 actually stored.</para> 
-				</listitem> 
-			 </varlistentry> 
-			 <varlistentry> 
-				<term>objdata</term> 
-				<listitem> 
-				  <para>Data block with all the objects stored in it.</para> 
-				</listitem> 
-			 </varlistentry> 
-		  </variablelist> 
-		</sect2> 
-		<sect2> 
-		  <title>Input / Output</title> 
-		  <para>The geometry type tries really hard to consistently reproduce
-			 objects. For example, if you insert a MULTIPOINT(), you will get a MULTIPOINT()
-			 when you select. This is more difficult than you might expect because,
-			 internally, all the objects listed below are stored the same: </para> 
-		  <itemizedlist> 
-			 <listitem> 
-				<para>MULTIPOINT( 1 1, 2 2, 3 3) </para> 
-			 </listitem> 
-			 <listitem> 
-				<para>GEOMETRYCOLLECTION(POINT(1 1), POINT(2 2), POINT(3 3)
-				  )</para> 
-			 </listitem> 
-			 <listitem> 
-				<para>GEOMETRYCOLLECTION(MULTIPOINT( 1 1, 2 2), POINT( 3 3) )
-				  </para> 
-			 </listitem> 
-			 <listitem> 
-				<para>GEOMETRYCOLLECTION(MULTIPOINT( 1 1, 2 2, 3 3)) </para> 
-			 </listitem> 
-		  </itemizedlist> 
-		  <para>Every GEOMETRY is a set (GEOMETRYCOLLECTION) of sub-objects
-			 (point, line, polygon). So, truthfully, the 2nd example is the best OGC WKT of
-			 the internal structure. </para> 
-		  <para>Therefore, if you start with a MULTI-geometry (MULTIPOINT,
-			 MULTILINE, MULTIPOLYGON), the type member will record that fact. On output, it
-			 does a simple conversion: </para> 
-		  <itemizedlist> 
-			 <listitem> 
-				<para>GEOMETRYCOLLECTION(POINT(1 1),POINT(2 2)) becomes
-				  MULTIPOINT(1 1 , 2 2)</para> 
-			 </listitem> 
-			 <listitem> 
-				<para>GEOMETRYCOLLECTION(LINESTRING(1 1,2 2),LINESTRING(10 10, 20
-				  20)) becomes MULTILINESTRING((1 1,2 2), (10 10, 20 20))</para> 
-			 </listitem> 
-			 <listitem> 
-				<para>GEOMETRYCOLLECTION(POLYGON((0 0, 0 1, 1 1, 0 0)), POLYGON((0
-				  0, 0 10, 10 10 , 0 0) ) becomes MULTIPOLYGON( ((0 0, 0 1, 1 1, 0 0)), ((0 0, 0
-				  10, 10 10 , 0 0))) </para> 
-			 </listitem> 
-		  </itemizedlist> 
-		  <para>Single point, line, or polygon objects are returned as single
-			 point, line or polygon objects. Unfortunately, GEOMETRYCOLLECTIONS() are not
-			 always returned the same as they are entered. They are always returned as a set
-			 of base types. For example: </para> 
-		  <itemizedlist> 
-			 <listitem> 
-				<para>GEOMETRYCOLLECTION(POINT(1 1),POINT(2 2),POINT(3 3)) becomes
-				  GEOMETRYCOLLECTION(POINT(1 1),POINT(2 2),POINT(3 3)) </para> 
-			 </listitem> 
-			 <listitem> 
-				<para>GEOMETRYCOLLECTION(MULTIPOINT(1 1,2 2,3 3)) becomes
-				  GEOMETRYCOLLECTION(POINT(1 1),POINT(2 2),POINT(3 3)) </para> 
-			 </listitem> 
-		  </itemizedlist> 
-		</sect2> 
-		<sect2> 
-		  <title>Fundamental Geometry Types</title> 
-		  <para>Inside each GEOMETRY object there are only four different
-			 possible geomtry types, and the 
-			 <varname>Type</varname> variable of the GEOMETRY controls how the
-			 collection will be presented to the outside world (as a GEOMETRYCOLLECTION or a
-			 MULTIPOLYGON, for example).</para> 
-		  <sect3> 
-			 <title>POINT3D</title> 
-			 <para>This is the base geometry used by all the other sub-points. Its
-				simply the X,Y,Z location represented as a double-precision floating point
-				number. 2D locations are represented with the Z location set to 0.0. See above
-				for a discussion on how to tell the difference between a 2D point, and 3D
-				points with Z=0.0.</para> 
-			 <programlisting>typedef struct { 
-  double x,y,z; 
-}	POINT3D;</programlisting> 
-		  </sect3> 
-		  <sect3> 
-			 <title>LINE3D</title> 
-			 <para>A lines is a set of connected points. The line moves from 
-				<varname>points[0]-&gt;points[1]-&gt;points[2]</varname> </para> 
-			 <programlisting>typedef struct { 
-  int32 npoints; // how many points in	the line 
-  int32 junk; // double-word alignment 
-  POINT3D points[1]; // array of	actual points 
-} LINE3D;</programlisting> 
-		  </sect3> 
-		  <sect3> 
-			 <title>POLYGON3D</title> 
-			 <para>A polygon is a set of rings. Each ring is a closed line.
-				</para> 
-			 <itemizedlist> 
-				<listitem> 
-				  <para>The first ring is the outer ring, the others are
-					 holes.</para> 
-				</listitem> 
-				<listitem> 
-				  <para><varname>Npoints[i]</varname> is the number of points in
-					 ring i.</para> 
-				</listitem> 
-				<listitem> 
-				  <para><varname>&amp;points[0]</varname> is at 
-					 <varname>&amp;polygon-&gt;npoints[0] +
-						sizeof(int32)*polygon-&gt;nrings</varname>.</para> 
-				</listitem> 
-				<listitem> 
-				  <para>Once you've calculated 
-					 <varname>&amp;points[0]</varname>, ensure it is
-					 double-aligned.</para> 
-				</listitem> 
-			 </itemizedlist> 
-			 <para>For example: </para> 
-			 <programlisting>POINT3D *pts; 
-pts = (POINT3D *) ( (char	*)&amp;(poly-&gt;npoints[poly-&gt;nrings] ) ); 
-if ((int32) pts1 !=	(((int32)pts1&gt;&gt;3)&lt;&lt;3) ) pts1 = (POINT3D *) ((char *) pts1 +	4);</programlisting> 
-			 <para>Therefore, </para> 
-			 <itemizedlist> 
-				<listitem> 
-				  <para>Ring 0's points are 
-					 <varname>points[0]</varname> to 
-					 <varname>points[npoint[0]-1]</varname>.</para> 
-				</listitem> 
-				<listitem> 
-				  <para>Ring 1's points are from 
-					 <varname>points[npoint[0]]</varname> to 
-					 <varname>points[npoints[0] + npoints[1]-1]</varname>.</para> 
-				</listitem> 
-			 </itemizedlist> 
-			 <programlisting>typedef struct { 
-  int32 nrings; // how many rings in	this polygon 
-  int32 npoints[1]; //how many points in each ring 
-  /* 
-   * could be 4		byes of filler here to make sure 
-   * points[] is double-word aligned
-  */ 
-  POINT3D	points[1]; // array of actual points 
-} POLYGON3D;</programlisting> 
-		  </sect3> 
-		  <sect3> 
-			 <title>BOX3D</title> 
-			 <para>Representation of a long diagonal of a cube, from the
-				lower-left bottom (LLB) to the upper-right top (URT). </para> 
-			 <itemizedlist> 
-				<listitem> 
-				  <para>Minimum X is box3d-&gt;LLB.x</para> 
-				</listitem> 
-				<listitem> 
-				  <para>Minimum Y is box3d-&gt;LLB.y</para> 
-				</listitem> 
-				<listitem> 
-				  <para>Minimum Z is box3d-&gt;LLB.z</para> 
-				</listitem> 
-				<listitem> 
-				  <para>Maximum X is box3d-&gt;URT.x</para> 
-				</listitem> 
-				<listitem> 
-				  <para>Maximum Y is box3d-&gt;URT.y</para> 
-				</listitem> 
-				<listitem> 
-				  <para>Maximum Y is box3d-&gt;URT.z</para> 
-				</listitem> 
-			 </itemizedlist> 
-			 <programlisting>typedef struct { 
-  POINT3D LLB,URT; /* corner POINT3Ds	on long diagonal */ 
-} BOX3D;</programlisting> 
-		  </sect3> 
-		</sect2> 
-	 </sect1> 
-	 <sect1> 
-		<title>Internal Functions</title> 
-		<para>To be done.</para> 
-	 </sect1> 
-  </chapter> 
-</book> 
+  </book> 
