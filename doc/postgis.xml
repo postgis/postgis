@@ -4603,7 +4603,7 @@ FROM geometry_table;</literallayout>
 
 			<sect2>
 				<title>Other changes</title>
-	<para>Small build scripts refinements.</para>
+	<para>Small build scripts and utilities refinements.</para>
         <para>Additional performance tips documented.</para>
 			</sect2>
 
