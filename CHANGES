@@ -17,6 +17,7 @@ PostGIS 1.0.0?
 	  older jdk releases.
 	- jdbc2: Added support for building against pg72jdbc2.jar
 	- documentation updates: pgsql72 requirement, lwpostgis.sql
+	- memory alignment handling
 
 PostGIS 1.0.0RC2
 2005/01/26
