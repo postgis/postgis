@@ -4,6 +4,9 @@ PostGIS 1.0.0
 	- segfault fix in geom_accum()
 	- consistency check fix in SnapToGrid()
 	- jdbc2: code cleanups, Makefile improvements
+	- FLEX & YACC variables set *after* pgsql Makefile.global
+	  is included and only if the pgsql *stripped* version
+	  evaulates to the empty string
 
 PostGIS 1.0.0RC3
 2005/02/24
