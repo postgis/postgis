@@ -125,7 +125,7 @@ lwline_serialize_buf(LWLINE *line, char *buf, size_t *retsize)
 
 	if ( ptsize != sizeof(double)*TYPE_NDIMS(line->type) )
 	{
-		lwerror("lwline_serialize_buf: line has %d dims, its pointarray has %d dims");
+		lwerror("lwline_serialize_buf: line has %d dims, its pointarray has %d dims", TYPE_NDIMS(line->type), TYPE_NDIMS(line->points->dims));
 	}
 
 #ifdef DEBUG_CALLS
