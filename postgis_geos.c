@@ -10,6 +10,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.11  2003/10/14 23:19:19  dblasby
+ * GEOS2POSTGIS - added protection to pfree(NULL) for multi* geoms
+ *
  * Revision 1.10  2003/10/03 16:45:37  dblasby
  * added pointonsurface() as a sub.  Some memory management fixes/tests.
  * removed a few NOTICEs.
@@ -191,10 +194,16 @@ Datum geomunion(PG_FUNCTION_ARGS)
 		GEOMETRY *result;
 
 		initGEOS(MAXIMUM_ALIGNOF);
+//elog(NOTICE,"in geomunion");
 
 		g1 = 	POSTGIS2GEOS(geom1 );
 		g2 = 	POSTGIS2GEOS(geom2 );
+
+//elog(NOTICE,"g1=%s",GEOSasText(g1));
+//elog(NOTICE,"g2=%s",GEOSasText(g2));
 		g3 =    GEOSUnion(g1,g2);
+
+//elog(NOTICE,"g3=%s",GEOSasText(g3));
 
 		//pfree(geom1);
 		//pfree(geom2);
@@ -208,9 +217,10 @@ Datum geomunion(PG_FUNCTION_ARGS)
 	}
 
 
-//	elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
+//elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
 
 	result = GEOS2POSTGIS(g3, geom1->is3d || geom2->is3d);
+
 	if (result == NULL)
 	{
 		GEOSdeleteGeometry(g1);
@@ -227,7 +237,6 @@ Datum geomunion(PG_FUNCTION_ARGS)
 		GEOSdeleteGeometry(g3);
 
 		compressType(result);  // convert multi* to single item if appropriate
-
 		PG_RETURN_POINTER(result);
 }
 
@@ -1111,10 +1120,12 @@ POLYGON3D *PolyFromGeometry(Geometry *g, int *size)
 
 LINE3D *LineFromGeometry(Geometry *g,int *size)
 {
+//	int t;
 		POINT3D *pts = GEOSGetCoordinates(g);
 
 		LINE3D	*line;
 		int npoints = GEOSGetNumCoordinate(g);
+
 
 		if (npoints <2)
 		{
@@ -1123,6 +1134,12 @@ LINE3D *LineFromGeometry(Geometry *g,int *size)
 		}
 
 		line = make_line(npoints, pts, size);
+//elog(NOTICE,"line::");
+//for (t=0;t<npoints;t++)
+//{
+//	elog(NOTICE,"point (in): %g,%g,%g",  pts[t].x,pts[t].y,pts[t].z);
+//	elog(NOTICE,"point (line): %g,%g,%g",line->points[t].x,line->points[t].y,line->points[t].z);
+//}
 		GEOSdeleteChar( (char*) pts);
 		return line;
 }
@@ -1248,12 +1265,16 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 						        (char *) line,
 							   MULTILINETYPE,  want3d, GEOSGetSRID(g),1.0, 0.0, 0.0
 						);
+//elog(NOTICE,"t==0; %s",geometry_to_text(result));
+//elog(NOTICE,"    size = %i", result->size);
 			}
 			else
 			{
 				line = LineFromGeometry(GEOSGetGeometryN(g,t) ,&size);
 				g_old = result;
 				result = 	add_to_geometry(g_old,size, (char*) line, LINETYPE);
+//elog(NOTICE,"t>0; %s",geometry_to_text(result));
+//elog(NOTICE,"    size = %i", result->size);
 				pfree(g_old);
 			}
 		}
@@ -1261,7 +1282,8 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 		memcpy( &result->bvol, bbox, sizeof(BOX3D) ); // copy bounding box
 		pfree( bbox ); // free bounding box
 		free(type);
-
+//elog(NOTICE,"end; %s",geometry_to_text(result));
+//elog(NOTICE,"    size = %i", result->size);
 		return result;
 
 	}
@@ -1416,7 +1438,8 @@ Geometry *POSTGIS2GEOS(GEOMETRY *g)
 								lines[t] = 	(LINE3D*) ((char *) g +offsets1[t]) ;
 							}
 							geos= PostGIS2GEOS_multilinestring(lines, g->nobjs, g->SRID,g->is3d);
-							pfree(lines);
+							if (lines != NULL)
+								pfree(lines);
 							if (geos == NULL)
 							{
 								elog(ERROR,"Couldnt convert the postgis geometry to GEOS!");
@@ -1433,7 +1456,8 @@ Geometry *POSTGIS2GEOS(GEOMETRY *g)
 								points[t] = 	(POINT3D*) ((char *) g +offsets1[t]) ;
 							}
 							geos= PostGIS2GEOS_multipoint(points, g->nobjs,g->SRID,g->is3d);
-							pfree(points);
+							if (points != NULL)
+								pfree(points);
 							if (geos == NULL)
 							{
 								elog(ERROR,"Couldnt convert the postgis geometry to GEOS!");
