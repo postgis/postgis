@@ -12,6 +12,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.42  2003/12/01 14:27:58  strk
+ * added simple malloc wrapper
+ *
  * Revision 1.41  2003/09/29 16:15:22  pramsey
  * Patch from strk:
  * - "\t" always preceeded the first value of a dump_format query
@@ -112,6 +115,19 @@ int ring_check(SHPObject* obj, char *table, char *sr_id, int rings,
 DBFHandle hDBFHandle);
 char	*protect_quotes_string(char *str);
 int PIP( Point P, Point* V, int n );
+void *safe_malloc(size_t size);
+
+void *safe_malloc(size_t size)
+{
+	void *ret = malloc(size);
+	if ( ! ret ) {
+		fprintf(stderr, "Out of virtual memory\n");
+		exit(1);
+	}
+	return ret;
+}
+
+#define malloc(x) safe_malloc(x)
 
 
 char	*make_good_string(char *str){
@@ -651,7 +667,7 @@ int main (int ARGC, char **ARGV){
 	hSHPHandle = SHPOpen( shp_file, "rb" );
 	hDBFHandle = DBFOpen( shp_file, "rb" );
 	if (hSHPHandle == NULL || hDBFHandle == NULL){
-		printf ("shape is null\n");
+		fprintf(stderr, "shape is null\n");
 		exit(-1);
 	}
 
