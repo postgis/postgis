@@ -40,10 +40,6 @@ functions.</para></listitem>
 </variablelist> 
 </sect1> 
 <sect1> 
-<title>To Do List</title>
-<para>This is the To Do list.</para> 
-</sect1> 
-<sect1> 
 <title>More Information</title>
 <itemizedlist> 
 <listitem><para>The latest software, documentation and news items are available at the PostGIS web site, <ulink url="http://postgis.refractions.net">http://postgis.refractions.net</ulink>.</para></listitem> 
@@ -102,7 +98,8 @@ make install</literallayout>
 	 </sect1> 
 	 <sect1> 
 		<title>Loader/Dumper</title>
-		<para>No documentation yet.</para> 
+		<para>The data loader should compile very simple.</para><literallayout>cd postgis-0.5/loader
+make</literallayout><para>The loader is called "shp2pgsql" and converts ESRI Shape files into SQL suitable for loading in PostGIS/PostgreSQL.</para> 
 	 </sect1> 
   </chapter> 
   <chapter> 
@@ -300,8 +297,8 @@ INSERT INTO ROADS_GEOM (ID,GEOM,NAME ) VALUES (6,'LINESTRING(198231 263418,19821
 		</sect2> 
 		<sect2> 
 		  <title>Using the Loader</title>
-		  <para>This section to be done.</para> 
-		</sect2> 
+		  <para>The data loader converts ESRI Shape files into SQL suitable for insertion into a PostGIS/PostgreSQL database.  The loader has several operating modes distinguished by command line flags:</para><variablelist><varlistentry><term>-d</term><listitem><para>Drops the database table before creating a new table with the data in the Shape file.</para></listitem></varlistentry><varlistentry><term>-a</term><listitem><para>Appends data from the Shape file into the database table. Note that to use this option to load multiple files, the files must have the same attributes and same data types.</para></listitem></varlistentry><varlistentry><term>-c</term><listitem><para>Creates a new table and populates it from the Shape file. <emphasis>This is the default mode.</emphasis></para></listitem></varlistentry><varlistentry><term>-dump</term><listitem><para>Creates a new table and populates it from the Shape file. This uses the PostgreSQL "dump" format for the output data and is much faster to load than the default "insert" SQL format. Use this for very large data sets.</para></listitem></varlistentry></variablelist><para>An example session using the loader to create an input file and uploading it might look like this:</para><literallayout>shp2pgsql shaperoads roads.sql
+psql -d roadsdb -f roads.sql</literallayout><para>A conversion and upload can be done all in one step using UNIX pipes:</para><literallayout>shp2pgsql shaperoads | psql -d roadsdb</literallayout></sect2> 
 	 </sect1> 
 	 <sect1> 
 		<title>Retrieving GIS Data</title>
@@ -536,44 +533,81 @@ if( geom.getType() = Geometry.POLYGON ) {
 	 <title>PostGIS Reference</title>
 	 <para>The functions given below are the ones which a user of PostGIS is likely to need. There are other functions which are required support functions to the PostGIS objects which are not of use to a general user.</para> 
 	 <sect1> 
-		<title>Functions</title>
+		<title>OpenGIS Functions</title>
 		<variablelist> 
 		  <varlistentry> 
-			 <term>length3d(geometry)</term> 
-			 <listitem><para>Returns the 3-dimensional length of the geometry if it is a
-				linestring or multi-linestring.</para> 
+			 <term>AsBinary(geometry)</term> 
+			 <listitem><para>Returns the geometry in the OGC "well-known-binary" format,
+				using the endian encoding of the server on which the database is running.  This is useful in binary cursors to pull data out
+				of the database without converting it to a string representation.</para>
 			 </listitem> 
+		  </varlistentry><varlistentry> 
+			 <term>Dimension(geometry)</term> 
+			 <listitem><para>Returns '2' if the geometry is two dimensional and '3' if the geometry is three dimensional.</para></listitem> 
+		  </varlistentry>
+		  
+		  <varlistentry> 
+			 <term>Envelope(geometry)</term> 
+			 <listitem><para>Returns a POLYGON representing the bounding box of the geometry.</para></listitem> 
 		  </varlistentry>
 		  <varlistentry> 
-			 <term>length2d(geometry)</term> 
-			 <listitem><para>Returns the 23-dimensional length of the geometry if it is
-				a linestring or multi-linestring.</para> 
-			 </listitem> 
+			 <term>GeometryType(geometry)</term> 
+			 <listitem><para>Returns the type of the geometry. Eg: LINESTRING, POLYGON, MULTIPOINT, etc.</para></listitem> 
+		  </varlistentry><varlistentry> 
+			 <term>X(geometry)</term> 
+			 <listitem><para>Find and return the X coordinate of the first point in the geometry. Return NULL if there is no point in the geometry.</para></listitem> 
 		  </varlistentry>
 		  <varlistentry> 
-			 <term>area2d(geometry)</term> 
-			 <listitem><para>Returns the area of the geometry if it is a polygon or
-				multi-polygon.</para>
-			 </listitem> 
+			 <term>Y(geometry)</term> 
+			 <listitem><para>Find and return the Y coordinate of the first point in the geometry. Return NULL if there is no point in the geometry.</para></listitem> 
 		  </varlistentry>
 		  <varlistentry> 
-			 <term>perimeter3d(geometry)</term> 
-			 <listitem><para>Returns the 3-dimensional perimeter of the geometry, if it
-				is a polygon or multi-polygon.</para>
-			 </listitem> 
+			 <term>Z(geometry)</term> 
+			 <listitem><para>Find and return the Z coordinate of the first point in the geometry. Return NULL if there is no point in the geometry.</para></listitem> 
 		  </varlistentry>
 		  <varlistentry> 
-			 <term>perimeter2d(geometry)</term> 
-			 <listitem><para>Returns the 2-dimensional perimeter of the geometry, if it
-				is a polygon or multi-polygon.</para> 
-			 </listitem> 
+			 <term>NumPoints(geometry)</term> 
+			 <listitem><para>Find and return the number of points in the first linestring in the geometry. Return NULL if there is no linestring in the geometry.</para></listitem> 
 		  </varlistentry>
 		  <varlistentry> 
-			 <term>truly_inside(geometryA,geometryB)</term> 
-			 <listitem><para>Returns true if any part of A is within the bounding box
-				of B.</para>
-			 </listitem> 
+			 <term>PointN(geometry,integer)</term> 
+			 <listitem><para>Return the N'th point in the first linestring in the geometry. Return NULL if there is no linestring in the geometry.</para></listitem> 
 		  </varlistentry>
+		  <varlistentry> 
+			 <term>ExteriorRing(geometry)</term> 
+			 <listitem><para>Return the exterior ring of the first polygon in the geometry. Return NULL if there is no polygon in the geometry.</para></listitem> 
+		  </varlistentry>
+		  <varlistentry> 
+			 <term>NumInteriorRings(geometry)</term> 
+			 <listitem><para>Return the number of interior rings of the first polygon in the geometry. Return NULL if there is no polygon in the geometry.</para></listitem> 
+		  </varlistentry>
+		  <varlistentry> 
+			 <term>InteriorRingN(geometry,integer)</term> 
+			 <listitem><para>Return the N'th interior ring of the first polygon in the geometry. Return NULL if there is no polygon in the geometry.</para></listitem> 
+		  </varlistentry>
+		  <varlistentry> 
+			 <term>NumGeometries(geometry)</term> 
+			 <listitem><para>If geometry is a GEOMETRYCOLLECTION return the number of geometries, otherwise return NULL.</para></listitem> 
+		  </varlistentry>
+		  <varlistentry> 
+			 <term>GeometryN(geometry)</term> 
+			 <listitem><para>Return the N'th geometry if the geometry is a GEOMETRYCOLLECTION. Otherwise, return NULL.</para></listitem> 
+		  </varlistentry>
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		   
+		</variablelist> 
+	 </sect1> 
+  <sect1><title>Other Functions</title><variablelist>
+		  
+		  
+		  
 		  <varlistentry> 
 			 <term>A &lt;&amp; B</term> 
 			 <listitem><para>The "&lt;&amp;" operator returns true if A's bounding box
@@ -618,34 +652,28 @@ if( geom.getType() = Geometry.POLYGON ) {
 			 </listitem> 
 		  </varlistentry>
 		  <varlistentry> 
-			 <term>npoints(geometry)</term> 
-			 <listitem><para>Returns the number of points in the geometry.</para> 
+			 <term>area2d(geometry)</term> 
+			 <listitem><para>Returns the area of the geometry if it is a polygon or
+				multi-polygon.</para>
 			 </listitem> 
 		  </varlistentry>
 		  <varlistentry> 
-			 <term>nrings(geometry)</term> 
-			 <listitem><para>If the geometry is a polygon or multi-polygon returns the
-				number of rings.</para>
+			 <term>asbinary(geometry,'NDR')</term> 
+			 <listitem><para>Returns the geometry in the OGC "well-known-binary" format,
+				using little-endian encoding.  This is useful in binary cursors to pull data out
+				of the database without converting it to a string representation.</para>
 			 </listitem> 
-		  </varlistentry>
-		  <varlistentry> 
-			 <term>mem_size(geometry)</term> 
-			 <listitem><para>Returns the amount of space (in bytes) the geometry takes.</para>
-				
+		  </varlistentry><varlistentry> 
+			 <term>asbinary(geometry,'XDR')</term> 
+			 <listitem><para>Returns the geometry in the OGC "well-known-binary" format,
+				using big-endian encoding.  This is useful in binary cursors to pull data out
+				of the database without converting it to a string representation.</para>
 			 </listitem> 
-		  </varlistentry>
-		  <varlistentry> 
-			 <term>numb_sub_objects(geometry)</term> 
-			 <listitem><para>Returns the number of objects stored in the geometry. This
-				is useful for MULTI-geometries and GEOMETRYCOLLECTIONs.</para> 
+		  </varlistentry><varlistentry> 
+			 <term>box3d(geometry)</term> 
+			 <listitem><para>Returns a BOX3D representing the maximum extents of the geometry.</para>
 			 </listitem> 
-		  </varlistentry>
-		  <varlistentry> 
-			 <term>summary(geometry)</term> 
-			 <listitem><para>Returns a text summary of the contents of the geometry.</para> 
-			 </listitem> 
-		  </varlistentry>
-		  <varlistentry> 
+		  </varlistentry><varlistentry> 
 			 <term>extent(geometry)</term> 
 			 <listitem><para>The extent() function is an "aggregate" function in the
 				terminology of PostgreSQL. That means that it operators on lists of data, in
@@ -654,14 +682,11 @@ if( geom.getType() = Geometry.POLYGON ) {
 				all features in the table. Similarly, "SELECT EXTENT(GEOM) FROM GEOMTABLE GROUP
 				BY CATEGORY" will return one extent result for each category.</para>
 			 </listitem> 
-		  </varlistentry>
-		  <varlistentry> 
-			 <term>translate(geometry,float8,float8,float8)</term> 
-			 <listitem><para>Translates the geometry to a new location using the numeric
-				parameters as offsets. Ie: translate(geom,X,Y,Z).</para>
+		  </varlistentry><varlistentry> 
+			 <term>force_collection(geometry)</term> 
+			 <listitem><para>Converts the geometry into a GEOMETRYCOLLECTION. This is useful for simplifying the WKB representation.</para> 
 			 </listitem> 
-		  </varlistentry>
-		  <varlistentry> 
+		  </varlistentry><varlistentry> 
 			 <term>force_2d(geometry)</term> 
 			 <listitem><para>Forces the geometries into a "2-dimensional mode" so that
 				all output representations will only have the X and Y coordinates. This is
@@ -675,23 +700,73 @@ if( geom.getType() = Geometry.POLYGON ) {
 				all output representations will have the X, Y and Z coordinates.</para> 
 			 </listitem> 
 		  </varlistentry>
+		  
 		  <varlistentry> 
-			 <term>wkb_ndr(geometry)</term> 
-			 <listitem><para>Returns the geometry in the OGC "well-known-binary" format,
-				using little-endian encoding. This is useful in binary cursors to pull data out
-				of the database without converting it to a string representation.</para>
+			 <term>length2d(geometry)</term> 
+			 <listitem><para>Returns the 23-dimensional length of the geometry if it is
+				a linestring or multi-linestring.</para> 
+			 </listitem> 
+		  </varlistentry><varlistentry> 
+			 <term>length3d(geometry)</term> 
+			 <listitem><para>Returns the 3-dimensional length of the geometry if it is a
+				linestring or multi-linestring.</para> 
+			 </listitem> 
+		  </varlistentry><varlistentry> 
+			 <term>length_spheroid(geometry,spheroid)</term> 
+			 <listitem><para>Calculates the length of of a geometry on an elipsoid. This is useful if the coordinates of the geometry are in latitude/longitude and a length is desired without reprojection. The elipsoid is a separate database type and can be constructed as follows:<literallayout>SPHEROID[&lt;NAME&gt;,&lt;SEMI-MAJOR AXIS&gt;,&lt;INVERSE FLATTENING&gt;]
+Eg: SPHEROID["GRS_1980",6378137,298.257222101]</literallayout>An example calculation might look like this:<literallayout>SELECT length_spheroid(geometry_column,'SPHEROID["GRS_1980",6378137,298.257222101]') from geometry_table;</literallayout></para> 
+			 </listitem> 
+		  </varlistentry><varlistentry> 
+			 <term>length3d_spheroid(geometry,spheroid)</term> 
+			 <listitem><para>Calculates the length of of a geometry on an elipsoid, taking the elevation into account. This is just like length_spheroid except vertical coordinates (expressed in the same units as the spheroid axes) are used to calculate the extra distance vertical displacement adds.</para> 
+			 </listitem> 
+		  </varlistentry><varlistentry> 
+			 <term>mem_size(geometry)</term> 
+			 <listitem><para>Returns the amount of space (in bytes) the geometry takes.</para>
+			 </listitem> 
+		  </varlistentry><varlistentry> 
+			 <term>npoints(geometry)</term> 
+			 <listitem><para>Returns the number of points in the geometry.</para> 
 			 </listitem> 
 		  </varlistentry>
 		  <varlistentry> 
-			 <term>wkb_xdr(geometry)</term> 
-			 <listitem><para>Returns the geometry in the OGC "well-known-binary"
-				format, using big-endian encoding. This is useful in binary cursors to pull
-				data out of the database without converting it to a string representation.</para> 
+			 <term>nrings(geometry)</term> 
+			 <listitem><para>If the geometry is a polygon or multi-polygon returns the
+				number of rings.</para>
 			 </listitem> 
-		  </varlistentry> 
-		</variablelist> 
-	 </sect1> 
-  </chapter> 
+		  </varlistentry><varlistentry> 
+			 <term>numb_sub_objects(geometry)</term> 
+			 <listitem><para>Returns the number of objects stored in the geometry. This
+				is useful for MULTI-geometries and GEOMETRYCOLLECTIONs.</para> 
+			 </listitem> 
+		  </varlistentry><varlistentry> 
+			  
+			 <term>perimeter2d(geometry)</term> 
+			 <listitem><para>Returns the 2-dimensional perimeter of the geometry, if it
+				is a polygon or multi-polygon.</para> 
+			 </listitem> 
+		  </varlistentry><varlistentry><term>perimeter3d(geometry)</term> 
+			 <listitem><para>Returns the 3-dimensional perimeter of the geometry, if it
+				is a polygon or multi-polygon.</para>
+			 </listitem> 
+		  </varlistentry><varlistentry><term>point_inside_circle(geometry,float,float,float)</term> 
+			 <listitem><para>The syntax for this functions is point_inside_circle(&lt;geometry&gt;,&lt;circle_center_x&gt;,&lt;circle_center_y&gt;,&lt;radius&gt;). Returns the true if the geometry is a point and is inside the circle. Returns false otherwise.</para>
+			 </listitem> 
+		  </varlistentry><varlistentry> 
+			 <term>summary(geometry)</term> 
+			 <listitem><para>Returns a text summary of the contents of the geometry.</para> 
+			 </listitem> 
+		  </varlistentry><varlistentry> 
+			 <term>translate(geometry,float8,float8,float8)</term> 
+			 <listitem><para>Translates the geometry to a new location using the numeric
+				parameters as offsets. Ie: translate(geom,X,Y,Z).</para>
+			 </listitem> 
+		  </varlistentry><varlistentry> 
+			 <term>truly_inside(geometryA,geometryB)</term> 
+			 <listitem><para>Returns true if any part of A is within the bounding box
+				of B.</para>
+			 </listitem> 
+		  </varlistentry></variablelist></sect1></chapter> 
   <chapter> 
 	 <title>Programming Information</title>
 	 <para> The following sections provide information about the internal structure of the PostGIS spatial objects, and some information about certain design decisions.</para> 
