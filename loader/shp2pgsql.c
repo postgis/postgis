@@ -4,6 +4,9 @@
  * Author: Jeff Lounsbury, jeffloun@refractions.net
  *
  * $Log$
+ * Revision 1.29  2003/02/04 22:57:44  pramsey
+ * Fix memory management error, array of pointers allocated insufficient space.
+ *
  * Revision 1.28  2003/02/04 21:39:20  pramsey
  * Added CVS substitution strings for logging.
  *
@@ -552,7 +555,7 @@ int main (int ARGC, char **ARGV){
 
 		num_fields = DBFGetFieldCount( hDBFHandle );
 		num_records = DBFGetRecordCount(hDBFHandle);
-		names = malloc(num_fields +1);
+		names = malloc((num_fields + 1)*sizeof(char*));
 		for(j=0;j<num_fields;j++){
 			type = DBFGetFieldInfo(hDBFHandle, j, name, NULL, NULL); 
 			names[j] = malloc ( strlen(name)+1);
