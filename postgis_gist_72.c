@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.16  2004/06/03 08:13:11  strk
+ * Simplified INFINITY checks by use of isinf()
+ *
  * Revision 1.15  2004/06/03 07:58:11  strk
  * Infinite coordinate geoms omitted from index
  *
@@ -169,8 +172,7 @@ Datum ggeometry_compress(PG_FUNCTION_ARGS)
 
 			checkinf = in->bvol.URT.x - in->bvol.URT.y -
 				in->bvol.LLB.x - in->bvol.LLB.y;
-			if ( isnan(checkinf) || checkinf == INFINITY ||
-				checkinf == -INFINITY )
+			if ( isnan(checkinf) || isinf(checkinf) )
 			{
 				//elog(NOTICE, "found infinite geometry");
 				PG_RETURN_POINTER(entry);
@@ -478,18 +480,6 @@ gbox_picksplit(PG_FUNCTION_ARGS)
 		if (pageunion.low.y > cur->low.y)
 			pageunion.low.y = cur->low.y;
 	}
-
-	if (
-		pageunion.low.y == -INFINITY ||
-		pageunion.low.y == -INFINITY ||
-		pageunion.high.y == -INFINITY ||
-		pageunion.high.y == INFINITY ||
-		pageunion.low.x == -INFINITY ||
-		pageunion.low.x == -INFINITY ||
-		pageunion.high.x == -INFINITY ||
-		pageunion.high.x == INFINITY 
-	) elog(NOTICE, "infinite pageunion");
-
 
 	nbytes = (maxoff + 2) * sizeof(OffsetNumber);
 	listL = (OffsetNumber *) palloc(nbytes);
