@@ -20,89 +20,107 @@ COMPUTE_BBOX:
         4) ALWAYS,
         5) NEVER
 
-Here is a list of geometry-returning functions with the bbox cache
+Following is a list of geometry-returning functions with the bbox cache
 strategy they use. Note that current condition matching
 FOR_COMPLEX_GEOMS is that geometrytype(geom) != POINTTYPE.
+
+These marks show output creation methods (to find single entry
+points where some BBOX caching strategies could be enforced).
+
+	*SRL*	Directly works on the serialized geometries,
+		uses PG_LWGEOM_construct() for final output
+
+	**SRL**	Directly works on the serialized geometries,
+		uses internal strategies to construct output.
+
+	*EXP*	Uses deprecated LWEXPLODED, and LWEXPLODED_serialize()
+
+	*LWG*	Uses LWGEOM, pglwgeom_serialize()
+	
 
 [ explicit control ]
 	addBBOX(geometry) 
 	dropBBOX(geometry) 
 
 [ AUTOCACHE_BBOX==1 ? FOR_COMPLEX_GEOMS : NEVER ]
-	geometry_in(cstring)
-	geometry_recv(internal)
-	geometry(text)
-	geometry(bytea)
-	GeometryFromText(geometry, SRID)
-	GeomFromWKB(bytea, SRID)
-	GeomFromEWKB(bytea)
-	GeomFromEWKT(text)
-	noop(geometry)
-	polygonize_garray (geometry[])
+	geometry_in(cstring) **SRL**
+	geometry_recv(internal) **SRL**
+	geometry(text) **SRL**
+	geometry(bytea) **SRL**
+	GeometryFromText(geometry, SRID) **SRL**
+	GeomFromWKB(bytea, SRID) **SRL**
+	GeomFromEWKB(bytea) **SRL**
+	GeomFromEWKT(text) **SRL**
+
 	-- GEOS
-	intersection(geometry,geometry)
-	buffer(geometry,float8,[integer])
-	difference(geometry,geometry)
-	boundary(geometry) 
-	symdifference(geometry,geometry)
-	symmetricdifference(geometry,geometry)
-	GeomUnion(geometry,geometry)
-	unite_garray (geometry[])
-	GEOSnoop(geometry)
-	Centroid(geometry)
-	PointOnSurface(geometry)
+	polygonize_garray (geometry[]) *LWG*
+	intersection(geometry,geometry) *LWG*
+	buffer(geometry,float8,[integer]) *LWG*
+	difference(geometry,geometry) *LWG*
+	boundary(geometry)  *LWG*
+	symdifference(geometry,geometry) *LWG*
+	symmetricdifference(geometry,geometry) *LWG*
+	GeomUnion(geometry,geometry) *LWG*
+	unite_garray (geometry[]) *LWG*
+	GEOSnoop(geometry) *LWG*
+	Centroid(geometry) *LWG*
+	PointOnSurface(geometry) *LWG*
 
 [ TAINING ]
-	GeometryN(geometry,integer)
+	GeometryN(geometry,integer) *SRL*
+	InteriorRingN(geometry,integer) *SRL*
+	simplify(geometry, float8) *SRL* *EXP*
 
 	#### could use WHEN_SIMPLE
 	#### translating and transforming an eventually present
 	#### bbox cache in input
-	translate(geometry,float8,float8,[float8])
-	transform(geometry,integer)
-
-	InteriorRingN(geometry,integer) 
-	simplify(geometry, float8)
+	translate(geometry,float8,float8,[float8]) *SRL*
+	transform(geometry,integer) *SRL*
 
 [ WHEN_SIMPLE (use input bbox if present) ]
-	ExteriorRing(geometry)
-	SetSRID(geometry,int4) 
-	force_2d(geometry) 
-	force_3dz(geometry) 
-	force_3d(geometry) 
-	force_3dm(geometry) 
-	force_4d(geometry) 
-	force_collection(geometry) 
-	multi(geometry) 
-	envelope(geometry)
-	reverse(geometry)
-	ForceRHR(geometry)
-	segmentize(geometry, float8)
+	noop(geometry) *LWG*
+	ExteriorRing(geometry) *SRL*
+	SetSRID(geometry,int4) **SRL**
+	force_2d(geometry) **SRL**
+	force_3dz(geometry) **SRL**
+	force_3d(geometry) **SRL**
+	force_3dm(geometry) **SRL**
+	force_4d(geometry) **SRL**
+	force_collection(geometry) **SRL**
+	multi(geometry) **SRL**
+	envelope(geometry) *SRL*
+
+	## These use LWGEOM as a mean to access and modigy SERIALIZED form
+	reverse(geometry) *LWG* **SRL**
+	ForceRHR(geometry) *LWG* **SRL**
+
+	segmentize(geometry, float8) *LWG*
+
 	convexhull(geometry) #### uses FOR_COMPLEX_GEOMS with AUTOCACHE_BBOX=1
+			     *LWG* 
 
 [ NEVER ]
-	PointN(geometry,integer)
-	StartPoint(geometry) 
-	EndPoint(geometry) 
+	PointN(geometry,integer) *SRL*
+	StartPoint(geometry) *SRL*
+	EndPoint(geometry) *SRL*
 
 	### could use WHEN_SIMPLE computing union of
 	### input bbox (if available or SIMPLE to compute: points)
-	collector(geometry, geometry) 
-	collect(geometry, geometry) 
-	collect_garray (geometry[]) 
+	collect(geometry, geometry) *LWG*
+	collect_garray (geometry[]) *LWG*
 	
-	makePoint(float8, float8, [float8], [float8])
-	makePointM(float8, float8, float8)
-	makeline_garray (geometry[])
-	LineFromMultiPoint(geometry)
-	MakeLine(geometry, geometry)
-	AddPoint(geometry, geometry, [integer])
-	geometry(box2d)
-	geometry(box3d)
-	geometry(chip)
-	line_interpolate_point(geometry, float8)
-	Centroid(geometry) [the version w/out GEOS]
+	makePoint(float8, float8, [float8], [float8]) *LWG*
+	makePointM(float8, float8, float8) *LWG*
+	makeline_garray (geometry[]) *LWG*
+	LineFromMultiPoint(geometry) *LWG*
+	MakeLine(geometry, geometry) *LWG*
+	AddPoint(geometry, geometry, [integer]) *LWG*
+	geometry(box2d) *SRL*
+	geometry(box3d) *SRL*
+	geometry(chip) *SRL*
+	line_interpolate_point(geometry, float8) *SRL*
+	Centroid(geometry) [the version w/out GEOS] *SRL*
 
 [ ALWAYS ]
-	expand(geometry,float8)
+	expand(geometry,float8) *SRL*
 
