@@ -536,7 +536,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_distance_sphere);
 Datum LWGEOM_distance_sphere(PG_FUNCTION_ARGS)
 {
         const double EARTH_RADIUS = 6370986.884258304;
-	const double TWO_PI = 2.0 * M_PI;
+	//const double TWO_PI = 2.0 * M_PI;
 	PG_LWGEOM *geom1 = (PG_LWGEOM *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	PG_LWGEOM *geom2 = (PG_LWGEOM *) PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
         LWPOINT *lwpt1, *lwpt2;
