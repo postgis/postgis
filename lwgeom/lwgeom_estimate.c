@@ -25,6 +25,8 @@
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
 
+//#define DEBUG_GEOMETRY_STATS 1
+
 
 #if USE_VERSION >= 80
 
@@ -43,8 +45,6 @@
  *
  */
 #define STATISTIC_KIND_GEOMETRY 100
-
-//#define DEBUG_GEOMETRY_STATS 1
 
 /*
  * Define this if you want to use standard deviation based
@@ -275,7 +275,7 @@ Datum create_lwhistogram2d(PG_FUNCTION_ARGS)
 
 	size =  sizeof(LWHISTOGRAM2D) + (boxesPerSide*boxesPerSide-1)*4  ;
 
-	histo = (LWHISTOGRAM2D *) palloc(size);
+	histo = (LWHISTOGRAM2D *)palloc(size);
 	histo->size = size;
 
 	histo->xmin = bbox->xmin;
@@ -340,6 +340,11 @@ Datum build_lwhistogram2d(PG_FUNCTION_ARGS)
 	ymin = histo->ymin;
 	xmax = histo->xmax;
 	ymax = histo->ymax;
+
+#if DEBUG_GEOMETRY_STATS
+	elog(NOTICE, " build_histogram2d: histogram extent = %g %g, %g %g",
+		histo->xmin, histo->ymin, histo->xmax, histo->ymax);
+#endif
 
 
 	result = (LWHISTOGRAM2D *) malloc(histo->size);
@@ -1179,8 +1184,143 @@ Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_estimated_extent);
 Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 {
-	elog(ERROR, "estimated_extent() not implemented yet for PG<80");
-	PG_RETURN_NULL();
+	text *txnsp = NULL;
+	text *txtbl = NULL;
+	text *txcol = NULL;
+	char *nsp = NULL;
+	char *tbl = NULL;
+	char *col = NULL;
+	char *query;
+	size_t querysize;
+	SPITupleTable *tuptable;
+	TupleDesc tupdesc ;
+	HeapTuple tuple ;
+	LWHISTOGRAM2D *histo;
+	Datum datum;
+	int SPIcode;
+	bool isnull;
+	BOX2DFLOAT4 *box;
+
+	if ( PG_NARGS() == 3 )
+	{
+		txnsp = PG_GETARG_TEXT_P(0);
+		nsp = palloc(VARSIZE(txnsp)+1);
+		memcpy(nsp, VARATT_DATA(txnsp), VARSIZE(txnsp)-VARHDRSZ);
+		nsp[VARSIZE(txnsp)-VARHDRSZ]='\0';
+
+		txtbl = PG_GETARG_TEXT_P(1);
+		txcol = PG_GETARG_TEXT_P(2);
+	}
+	else if ( PG_NARGS() == 2 )
+	{
+		txtbl = PG_GETARG_TEXT_P(0);
+		txcol = PG_GETARG_TEXT_P(1);
+	}
+	else
+	{
+		elog(ERROR, "estimated_extent() called with wrong number of arguments");
+		PG_RETURN_NULL();
+	}
+
+	tbl = palloc(VARSIZE(txtbl)+1);
+	memcpy(tbl, VARATT_DATA(txtbl), VARSIZE(txtbl)-VARHDRSZ);
+	tbl[VARSIZE(txtbl)-VARHDRSZ]='\0';
+
+	col = palloc(VARSIZE(txcol)+1);
+	memcpy(col, VARATT_DATA(txcol), VARSIZE(txcol)-VARHDRSZ);
+	col[VARSIZE(txcol)-VARHDRSZ]='\0';
+
+#if DEBUG_GEOMETRY_STATS
+	elog(NOTICE, "LWGEOM_estimated_extent called");
+#endif
+
+	/* Connect to SPI manager */
+	SPIcode = SPI_connect();
+	if (SPIcode != SPI_OK_CONNECT)
+	{
+		elog(ERROR, "LWGEOM_estimated_extent: couldnt open a connection to SPI");
+		PG_RETURN_NULL() ;
+	}
+
+	querysize = strlen(tbl)+strlen(col)+256;
+	if ( nsp )
+	{
+		querysize += strlen(nsp)+32;
+		query = palloc(querysize);
+		sprintf(query, "SELECT stats FROM geometry_columns WHERE f_table_schema = '%s' AND f_table_name = '%s' AND f_geometry_column = '%s'", nsp, tbl, col);
+	} 
+	else
+	{
+		query = palloc(querysize);
+		sprintf(query, "SELECT stats FROM geometry_columns WHERE f_table_name = '%s' AND f_geometry_column = '%s'", tbl, col);
+	}
+
+#if DEBUG_GEOMETRY_STATS > 1
+	elog(NOTICE, " query: %s", query);
+#endif
+
+	SPIcode = SPI_exec(query, 1);
+	if (SPIcode != SPI_OK_SELECT )
+	{
+		SPI_finish();
+		elog(ERROR,"LWGEOM_estimated_extent: couldnt execute sql via SPI");
+		PG_RETURN_NULL();
+	}
+	if (SPI_processed > 1)
+	{
+		SPI_finish();
+		elog(NOTICE, " More then a single row (%d) in geometry_columns matches given schema/table/column specs", SPI_processed);
+		PG_RETURN_NULL() ;
+	}
+	if (SPI_processed == 0)
+	{
+		SPI_finish();
+#if DEBUG_GEOMETRY_STATS
+		elog(NOTICE, " %d stat rows", SPI_processed);
+#endif
+		PG_RETURN_NULL() ;
+	}
+
+	tuptable = SPI_tuptable;
+	tupdesc = SPI_tuptable->tupdesc;
+	tuple = tuptable->vals[0];
+	datum = SPI_getbinval(tuple, tupdesc, 1, &isnull);
+	if (isnull)
+	{
+		SPI_finish();
+#if DEBUG_GEOMETRY_STATS
+		elog(NOTICE, " stats are NULL");
+#endif
+		PG_RETURN_NULL();
+	}
+
+	histo = (LWHISTOGRAM2D *)PG_DETOAST_DATUM(datum);
+
+#if DEBUG_GEOMETRY_STATS
+	elog(NOTICE, " histogram extent = %g %g, %g %g", histo->xmin,
+		histo->ymin, histo->xmax, histo->ymax);
+#endif
+
+	/* Construct box2dfloat4 */
+	box = palloc(sizeof(BOX2DFLOAT4));
+
+	box->xmin = histo->xmin;
+	box->ymin = histo->ymin;
+	box->xmax = histo->xmax;
+	box->ymax = histo->ymax;
+
+#if DEBUG_GEOMETRY_STATS
+	elog(NOTICE, " histogram extent = %f %f, %f %f", box->xmin,
+		box->ymin, box->xmax, box->ymax);
+#endif
+
+	SPIcode = SPI_finish();
+	if (SPIcode != SPI_OK_FINISH )
+	{
+		elog(ERROR, "LWGEOM_estimated_extent: couldnt disconnect from SPI");
+	}
+
+	PG_RETURN_POINTER(box);
 }
 
 #else // USE_VERSION >= 80
@@ -2313,6 +2453,9 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.22  2005/01/13 18:26:49  strk
+ * estimated_extent() implemented for PG<80
+ *
  * Revision 1.21  2005/01/13 17:41:40  strk
  * estimated_extent() prepared for future expansion (support of pre-800 PGSQL)
  *
