@@ -985,6 +985,7 @@ extern LWLINE *lwline_clone(const LWLINE *lwgeom);
 extern LWPOLY *lwpoly_clone(const LWPOLY *lwgeom);
 extern LWCOLLECTION *lwcollection_clone(const LWCOLLECTION *lwgeom);
 extern BOX2DFLOAT4 *box2d_clone(const BOX2DFLOAT4 *lwgeom);
+extern POINTARRAY *ptarray_clone(const POINTARRAY *ptarray);
 
 // Geometry constructors
 // Take ownership of arguments
@@ -1007,6 +1008,7 @@ extern LWPOINT *make_lwpoint4d(int SRID, double x, double y, double z, double m)
 extern LWLINE *lwline_from_lwpointarray(int SRID, unsigned int npoints, LWPOINT **points);
 extern LWLINE *lwline_from_lwmpoint(int SRID, LWMPOINT *mpoint);
 extern LWLINE *lwline_addpoint(LWLINE *line, LWPOINT *point, unsigned int where);
+extern LWPOLY *lwpoly_from_lwlines(const LWLINE *shell, unsigned int nholes, const LWLINE **holes);
 
 // Return a char string with ASCII versionf of type flags
 extern const char *lwgeom_typeflags(unsigned char type);
@@ -1018,6 +1020,7 @@ extern POINTARRAY *ptarray_construct3dz(uint32 npoints, const POINT3DZ *pts);
 extern POINTARRAY *ptarray_construct3dm(uint32 npoints, const POINT3DM *pts);
 extern POINTARRAY *ptarray_construct4d(uint32 npoints, const POINT4D *pts);
 extern POINTARRAY *ptarray_addPoint(POINTARRAY *pa, char *p, size_t pdims, unsigned int where);
+extern int ptarray_isclosed2d(const POINTARRAY *pa);
 
 extern int32 lwgeom_nrings_recursive(char *serialized);
 extern void dump_lwexploded(LWGEOM_EXPLODED *exploded);
