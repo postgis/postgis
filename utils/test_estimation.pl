@@ -122,7 +122,7 @@ print "  bps\test\treal\tdelta\tmatch_factor\n";
 print "----------------------------------------------------------\n";
 for ($bps=1; $bps<=$BPS; $bps*=2)
 {
-	split_extent($ext, $bps, \@extents);
+	@extents = split_extent($ext, $bps);
 
 
 	$best_match_factor=10000;
@@ -185,10 +185,10 @@ sub split_extent
 {
 	local($ext) = shift;
 	local($bps) = shift;
-	local($stack) = shift;
 
 	local($width, $height, $cell_width, $cell_height);
 	local($x,$y);
+	local(@stack);
 
 	$width = $ext->{'xmax'} - $ext->{'xmin'};
 	$height = $ext->{'ymax'} - $ext->{'ymin'};
@@ -201,23 +201,21 @@ sub split_extent
 		print "cell_h: $cell_height\n";
 	}
 
-	@$stack = ();
-	for ($x=$ext->{'xmin'}; $x<$ext->{'xmax'}; $x += $cell_width)
+	@stack = ();
+	for ($x=0; $x<$bps; $x++)
 	{
-		for ($y=$ext->{'ymin'}; $y<$ext->{'ymax'}; $y += $cell_height)
+		for($y=0; $y<$bps; $y++)
 		{
 			local(%cell);
-			$cell{'xmin'} = $x;
-			$cell{'ymin'} = $y;
-			$cell{'xmax'} = $x+$cell_width;
-			$cell{'ymax'} = $y+$cell_height;
-			#print "PUSH\n";
-
+			$cell{'xmin'} = $ext->{'xmin'}+$x*$cell_width;
+			$cell{'ymin'} = $ext->{'ymin'}+$y*$cell_height;
+			$cell{'xmax'} = $ext->{'xmin'}+($x+1)*$cell_width;
+			$cell{'ymax'} = $ext->{'ymin'}+($y+1)*$cell_height;
 			print "cell: ".print_extent(\%cell)."\n" if ($VERBOSE);
-			#print "Y: $y\n" if ($VERBOSE);
-			push(@$stack, \%cell);
+			push(@stack, \%cell);
 		}
 	}
+	return @stack;
 }
 
 sub test_extent
@@ -248,6 +246,9 @@ sub test_extent
 
 # 
 # $Log$
+# Revision 1.4  2004/03/05 16:40:30  strk
+# rewritten split_extent to be more datatype-conservative
+#
 # Revision 1.3  2004/03/05 16:01:02  strk
 # added -bps switch to set maximun query level. reworked command line parsing
 #
