@@ -1,8 +1,8 @@
 #!/bin/sh
 
-major=`grep ^SO_MAJOR_VERSION lwgeom/Makefile | cut -d= -f2`
-minor=`grep ^SO_MINOR_VERSION lwgeom/Makefile | cut -d= -f2`
-micro=`grep ^SO_MICRO_VERSION lwgeom/Makefile | cut -d= -f2`
+major=`grep ^SO_MAJOR_VERSION Version.config | cut -d= -f2`
+minor=`grep ^SO_MINOR_VERSION Version.config | cut -d= -f2`
+micro=`grep ^SO_MICRO_VERSION Version.config | cut -d= -f2`
 
 if [ -n "$3" ]; then
 	major=$1
