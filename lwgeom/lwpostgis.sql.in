@@ -1689,6 +1689,18 @@ CREATE AGGREGATE makeline (
 	finalfunc = makeline_garray
 	);
 
+CREATEFUNCTION makepoly_garray (geometry[])
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'GEOS_makepoly_garray'
+	LANGUAGE 'C';
+
+CREATE AGGREGATE makepoly (
+	sfunc = geom_accum,
+	basetype = geometry,
+	stype = geometry[],
+	finalfunc = makepoly_garray
+	);
+
 ------------------------------------------------------------------------
 
 --
@@ -1876,6 +1888,7 @@ CREATEFUNCTION fix_geometry_columns() RETURNS text
 AS 
 '
 DECLARE
+	mislinked record;
 	result text;
 	linked integer;
 	deleted integer;
@@ -1933,27 +1946,33 @@ BEGIN
 #endif
 
 	-- fix linking to system tables
-	UPDATE geometry_columns SET
-		attrelid = NULL,
-		varattnum = NULL,
-		stats = NULL;
-
-	UPDATE geometry_columns SET
-		attrelid = c.oid,
-		varattnum = a.attnum
+	SELECT 0 INTO linked;
+	FOR mislinked in
+		SELECT gc.oid as gcrec,
+			a.attrelid as attrelid, a.attnum as attnum
+                FROM geometry_columns gc, pg_class c,
 #if USE_VERSION >= 73
-		FROM pg_class c, pg_attribute a, pg_namespace n
-		WHERE n.nspname = f_table_schema::name
-		AND c.relname = f_table_name::name
-		AND c.relnamespace = n.oid
-#else // USE_VERSION < 73 
-		FROM pg_class c, pg_attribute a
-		WHERE c.relname = f_table_name::name
+		pg_namespace n, pg_attribute a
+#else
+		pg_attribute a
 #endif
-		AND a.attname = f_geometry_column::name
-		AND a.attrelid = c.oid;
-	
-	GET DIAGNOSTICS linked = ROW_COUNT;
+                WHERE ( gc.attrelid IS NULL OR gc.attrelid != a.attrelid 
+			OR gc.varattnum IS NULL OR gc.varattnum != a.attnum)
+#if USE_VERSION >= 73
+                AND n.nspname = gc.f_table_schema::name
+                AND c.relnamespace = n.oid
+#endif
+                AND c.relname = gc.f_table_name::name
+                AND a.attname = f_geometry_column::name
+                AND a.attrelid = c.oid
+	LOOP
+		UPDATE geometry_columns SET
+			attrelid = mislinked.attrelid,
+			varattnum = mislinked.attnum,
+			stats = NULL
+			WHERE geometry_columns.oid = mislinked.gcrec;
+		SELECT linked+1 INTO linked;
+	END LOOP; 
 
 	-- remove stale records
 	DELETE FROM geometry_columns WHERE attrelid IS NULL;
