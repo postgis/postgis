@@ -2,6 +2,9 @@
 
 /*
 * $Log$
+* Revision 1.25  2004/07/17 09:52:48  strk
+* GEOS multi-version support switches implemented with GEOS_LAST_INTERFACE
+*
 * Revision 1.24  2004/07/08 19:33:51  strk
 * Updated to respect CoordinateSequence GEOS interface switch.
 *
@@ -192,10 +195,9 @@ extern "C" void NOTICE_MESSAGE(char *msg);
 
 
 //###########################################################
-#if POSTGIS_GEOS_VERSION == 100
+#if GEOS_LAST_INTERFACE < 2
 # define CoordinateSequence CoordinateList
 # define DefaultCoordinateSequence BasicCoordinateList
-#else
 #endif
 
 GeometryFactory *geomFactory = NULL;
@@ -235,7 +237,7 @@ Geometry *PostGIS2GEOS_box3d(BOX3D *box, int SRID)
 		cl->setAt(c, 4);
 
 		g = geomFactory->createLinearRing(cl);
-#if POSTGIS_GEOS_VERSION == 100
+#if GEOS_LAST_INTERFACE < 2
 		delete cl;
 #endif
 		if (g==NULL) return NULL;
@@ -268,7 +270,7 @@ Geometry *PostGIS2GEOS_collection(Geometry **geoms, int ngeoms,int SRID, bool is
 			subGeos->push_back(geoms[t]);
 		}
 		g = geomFactory->buildGeometry(subGeos);
-#if POSTGIS_GEOS_VERSION == 100
+#if GEOS_LAST_INTERFACE < 2
 		delete subGeos;
 #endif
 		if (g==NULL)
@@ -353,7 +355,7 @@ PostGIS2GEOS_linestring(const LINE3D *line,int SRID, bool is3d)
 			}
 		}
 		Geometry *g = geomFactory->createLineString(coords);
-#if POSTGIS_GEOS_VERSION == 100
+#if GEOS_LAST_INTERFACE < 2
 		delete coords;
 #endif
 		if (g==NULL) return NULL;
@@ -389,7 +391,7 @@ Geometry *PostGIS2GEOS_multipolygon(POLYGON3D **polygons,int npolys, int SRID, b
 				subPolys->push_back(PostGIS2GEOS_polygon(polygons[t], SRID,is3d ));
 			}
 			g = geomFactory->createMultiPolygon(subPolys);
-#if POSTGIS_GEOS_VERSION == 100
+#if GEOS_LAST_INTERFACE < 2
 			delete subPolys;
 #endif
 
@@ -427,7 +429,7 @@ PostGIS2GEOS_multilinestring(const LINE3D **lines, int nlines, int SRID, bool is
 						SRID,is3d ));
 		}
 		g = geomFactory->createMultiLineString(subLines);
-#if POSTGIS_GEOS_VERSION == 100
+#if GEOS_LAST_INTERFACE < 2
 		delete subLines;
 #endif
 		if (g==NULL) return NULL;
@@ -459,7 +461,7 @@ Geometry *PostGIS2GEOS_multipoint(POINT3D **points,int npoints, int SRID, bool i
 				subPoints->push_back(PostGIS2GEOS_point(points[t], SRID,is3d ));
 			}
 			g = geomFactory->createMultiPoint(subPoints);
-#if POSTGIS_GEOS_VERSION == 100
+#if GEOS_LAST_INTERFACE < 2
 			delete subPoints;
 #endif
 			if (g==NULL)
@@ -523,7 +525,7 @@ Geometry *PostGIS2GEOS_polygon(POLYGON3D *polygon,int SRID, bool is3d)
 				}
 			}
 			outerRing = (LinearRing*) geomFactory->createLinearRing(cl);
-#if POSTGIS_GEOS_VERSION == 100
+#if GEOS_LAST_INTERFACE < 2
 			delete cl;
 #endif
 			if (outerRing == NULL)
@@ -555,7 +557,7 @@ Geometry *PostGIS2GEOS_polygon(POLYGON3D *polygon,int SRID, bool is3d)
 				}
 			}
 			innerRing = (LinearRing *) geomFactory->createLinearRing(cl);
-#if POSTGIS_GEOS_VERSION == 100
+#if GEOS_LAST_INTERFACE < 2
 			delete cl;
 #endif
 			if (innerRing == NULL)
