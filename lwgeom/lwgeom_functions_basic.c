@@ -2378,7 +2378,7 @@ Datum LWGEOM_noop(PG_FUNCTION_ARGS)
 
 	lwgeom = lwgeom_deserialize(SERIALIZED_FORM(in));
 
-	lwnotice("Deserialized: %s", lwgeom_summary(lwgeom, 0));
+	//lwnotice("Deserialized: %s", lwgeom_summary(lwgeom, 0));
 
 	out = pglwgeom_serialize(lwgeom);
 
