@@ -29,8 +29,6 @@
 #include <unistd.h>
 #include "getopt.h"
 
-#define USE_WKB 1
-
 #define	POINTTYPE	1
 #define	LINETYPE	2
 #define	POLYGONTYPE	3
@@ -92,13 +90,13 @@ void InsertLineString(int id);
 int parse_cmdline(int ARGC, char **ARGV);
 void SetPgType(void);
 char *dump_ring(Ring *ring);
-#ifdef USE_WKB
+
+// WKB
 static char getEndianByte(void);
 static void print_wkb_bytes(unsigned char* ptr, unsigned int cnt, size_t size);
 static void print_wkb_byte(unsigned char val);
 static void print_wkb_int(int val);
 static void print_wkb_double(double val);
-#endif
 
 static char rcsid[] =
   "$Id$";
@@ -1239,7 +1237,7 @@ dump_ring(Ring *ring)
 	return buf;
 }
 
-#ifdef USE_WKB
+//--------------- WKB handling 
 
 static char outchr[]={"0123456789ABCDEF"};
 
@@ -1296,10 +1294,12 @@ print_wkb_bytes(unsigned char *ptr, unsigned int cnt, size_t size)
 	//fprintf(stderr, "\nwkbbytes:%s\n", buf);
 	printf("%s", buf);
 }
-#endif // USE_WKB
 
 /**********************************************************************
  * $Log$
+ * Revision 1.74  2004/10/17 13:25:44  strk
+ * removed USE_WKB partially-used define
+ *
  * Revision 1.73  2004/10/17 13:24:44  strk
  * HEXWKB polygon
  *
