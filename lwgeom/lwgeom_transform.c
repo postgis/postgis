@@ -10,6 +10,9 @@
 
 #include "lwgeom.h"
 
+Datum transform_geom(PG_FUNCTION_ARGS);
+Datum postgis_proj_version(PG_FUNCTION_ARGS);
+
 // if USE_PROJECTION undefined, we get a do-nothing transform() function
 #ifndef USE_PROJ
 
@@ -32,9 +35,11 @@ Datum postgis_proj_version(PG_FUNCTION_ARGS)
 #include "projects.h"
 
 PJ *make_project(char *str1);
-void to_rad(POINT3D *pts, int num_points);
-void to_dec(POINT3D *pts, int num_points);
+void to_rad(POINT2D *pt);
+void to_dec(POINT2D *pt);
 int pj_transform_nodatum(PJ *srcdefn, PJ *dstdefn, long point_count, int point_offset, double *x, double *y, double *z );
+int transform_point(POINT2D *pt, PJ *srcdefn, PJ *dstdefn);
+int lwgeom_transform_recursive(char *geom, PJ *inpj, PJ *outpj);
 
 //this is *exactly* the same as PROJ.4's pj_transform(), but it doesnt do the
 // datum shift.
@@ -94,26 +99,17 @@ int point_offset, double *x, double *y, double *z )
 
 
 // convert decimal degress to radians
-void to_rad(POINT3D *pts, int num_points)
+void to_rad(POINT2D *pt)
 {
-	int t;
-	for(t=0;t<num_points;t++)
-	{
-		pts[t].x *= PI/180.0;
-		pts[t].y *= PI/180.0;
-	}
+	pt->x *= PI/180.0;
+	pt->y *= PI/180.0;
 }
 
 // convert radians to decimal degress
-void to_dec(POINT3D *pts, int num_points)
+void to_dec(POINT2D *pt)
 {
-	int t;
-	for(t=0;t<num_points;t++)
-	{
-		pts[t].x *= 180.0/PI;
-		pts[t].y *= 180.0/PI;
-	}
-
+	pt->x *= 180.0/PI;
+	pt->y *= 180.0/PI;
 }
 
 //given a string, make a PJ object
@@ -162,6 +158,80 @@ PJ *make_project(char *str1)
 	return result;
 }
 
+/*
+ * Transform given SERIALIZED geometry
+ * from inpj projection to outpj projection
+ */
+int
+lwgeom_transform_recursive(char *geom, PJ *inpj, PJ *outpj)
+{
+	LWGEOM_INSPECTED *inspected = lwgeom_inspect(geom);
+	int j, i;
+
+	for (j=0; j<inspected->ngeometries; j++)
+	{
+		LWLINE *line=NULL;
+		LWPOINT *point=NULL;
+		LWPOLY *poly=NULL;
+		char *subgeom=NULL;
+
+		point = lwgeom_getpoint_inspected(inspected,j);
+		if (point != NULL)
+		{
+			POINT2D *p = (POINT2D *) getPoint(point->point, 0);
+			transform_point(p, inpj, outpj);
+			continue;
+		}
+
+		line = lwgeom_getline_inspected(inspected, j);
+		if (line != NULL)
+		{
+			POINTARRAY *pts = line->points;
+			for (i=0; i<pts->npoints; i++)
+			{
+				POINT2D *p = (POINT2D *)getPoint(pts, i);
+				transform_point(p, inpj, outpj);
+			}
+			continue;
+		}
+
+		poly = lwgeom_getpoly_inspected(inspected, j);
+		if (poly !=NULL)
+		{
+			for (i=0; i<poly->nrings;i++)
+			{
+				int pi;
+				POINTARRAY *pts = poly->rings[i];
+				for (pi=0; pi<pts->npoints; pi++)
+				{
+					POINT2D *p = (POINT2D *)getPoint(pts, pi);
+					transform_point(p, inpj, outpj);
+				}
+			}
+			continue;
+		}
+
+		subgeom = lwgeom_getsubgeometry_inspected(inspected, j);
+		if ( subgeom != NULL )
+		{
+			if (!lwgeom_transform_recursive(subgeom, inpj, outpj))
+			{
+				pfree_inspected(inspected);
+				return 0;
+			}
+			continue;
+		}
+		else
+		{
+	elog(NOTICE, "lwgeom_getsubgeometry_inspected returned NULL");
+			return 0;
+		}
+	}
+
+	pfree_inspected(inspected);
+	return 1;
+}
+
 
 //tranform_geom( GEOMETRY, TEXT (input proj4), TEXT (output proj4), INT (output srid)
 // tmpPts - if there is a nadgrid error (-38), we re-try the transform on a copy of points.  The transformed points
@@ -170,36 +240,15 @@ PG_FUNCTION_INFO_V1(transform_geom);
 Datum transform_geom(PG_FUNCTION_ARGS)
 {
 	LWGEOM *geom;
-
 	LWGEOM *result=NULL;
 	PJ *input_pj,*output_pj;
-
-/*
-	LWGEOM_INSPECTED *geom_inspected;
-	char *o1;
-	int32 *offsets1;
-	int j,type1, i,poly_points;
-	unsigned char gtype;
-
-	LWPOLY *poly;
-	LWLINE *line;
-	LWPOINT *pt;
-	POINT3D *poly_pts;
-
-
-	BOX3D *bbox;
-	POINT3D *tmpPts;
-*/
 	char *input_proj4, *output_proj4;
-
-	text	   *input_proj4_text;
-	text	   *output_proj4_text;
-	int32	   result_srid ;
-
-	elog(ERROR, "Not implemented yet");
+	text *input_proj4_text;
+	text *output_proj4_text;
+	int32 result_srid ;
 
 	result_srid   = PG_GETARG_INT32(3);
-	if (result_srid   == -1)
+	if (result_srid  == -1)
 	{
 		elog(ERROR,"tranform: destination SRID = -1");
 		PG_RETURN_NULL();
@@ -248,14 +297,13 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 
 	//great, now we have a geometry, and input/output PJ* structs. 
 	//Excellent.
-
+	lwgeom_transform_recursive(SERIALIZED_FORM(geom), input_pj, output_pj);
+	result = lwgeom_setSRID(geom, result_srid);
 
 	// clean up
 	pj_free(input_pj);
 	pj_free(output_pj);
 	pfree(input_proj4); pfree(output_proj4);
-
-	elog(ERROR, "Not implemented yet");
 
 	PG_RETURN_POINTER(result); // new geometry
 }
@@ -270,6 +318,33 @@ Datum postgis_proj_version(PG_FUNCTION_ARGS)
 	memcpy(VARDATA(result), ver, strlen(ver));
 	PG_RETURN_POINTER(result);
 }
+
+int
+transform_point(POINT2D *pt, PJ *srcpj, PJ *dstpj)
+{
+	if (srcpj->is_latlong) to_rad(pt);
+	pj_transform(srcpj, dstpj, 1, 2, &(pt->x), &(pt->y), NULL);
+	if (pj_errno)
+	{
+		if (pj_errno == -38)  //2nd chance
+		{
+			//couldnt do nadshift - do it without the datum
+			pj_transform_nodatum(srcpj, dstpj, 1, 2,
+				&(pt->x), &(pt->y), NULL);
+		}
+
+		if (pj_errno)
+		{
+			elog(ERROR,"transform: couldnt project point: %i (%s)",
+				pj_errno,pj_strerrno(pj_errno));
+			return 0;
+		}
+	}
+
+	if (dstpj->is_latlong) to_dec(pt);
+	return 1;
+}
+
 
 #endif
 

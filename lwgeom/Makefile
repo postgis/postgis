@@ -3,7 +3,7 @@
 #---------------------------------------------------------------
 # Set USE_PROJ to 1 for Proj4 reprojection support
 #
-USE_PROJ=0
+USE_PROJ=1
 ifeq (${PROJ_DIR},) 
 	PROJ_DIR=/usr/local
 endif
