@@ -26,6 +26,10 @@ pgsql2shp: $(OBJS) pgsql2shp.o
 shp2pgsql: $(OBJS) shp2pgsql.o
 	$(CC) $(CFLAGS) $(OBJS) shp2pgsql.o $(libpq) $(LDFLAGS) $(LIBS) -o $@ 
 
+install: all
+	$(INSTALL_PROGRAM) pgsql2shp $(bindir)
+	$(INSTALL_PROGRAM) shp2pgsql $(bindir)
+
 clean:
 	@rm -f $(OBJS) shp2pgsql.o pgsql2shp.o shp2pgsql pgsql2shp
 
