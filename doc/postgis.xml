@@ -3718,20 +3718,31 @@ FROM geometry_table;</literallayout>
 		</varlistentry>
 
 		<varlistentry>
+		  <term>LineFromMultiPoint(multipoint)</term>
+
+		  <listitem>
+		    <para>Creates a LineString from a MultiPoint geometry.</para>
+		  </listitem>
+		</varlistentry>
+
+		<varlistentry>
+		  <term>AddPoint(linestring, point, [&lt;position&gt;])</term>
+
+		  <listitem>
+		    <para>Adds a point to a LineString at position &lt;pos&gt;.
+		    Third parameter can be omitted or set to -1 for appending.
+		    </para>
+		  </listitem>
+		</varlistentry>
+
+
+		<varlistentry>
 		  <term>Polygonize(geometry set)</term>
 
 		  <listitem>
 		    <para>Aggregate. Creates a MultiPolygon from the costituent
 		    linework of a set of geometries.
 		    Only available when compiled against GEOS >= 2.1.0.</para>
-		  </listitem>
-		</varlistentry>
-
-		<varlistentry>
-		  <term>LineFromMultiPoint(multipoint)</term>
-
-		  <listitem>
-		    <para>Creates a LineString from a MultiPoint geometry.</para>
 		  </listitem>
 		</varlistentry>
 

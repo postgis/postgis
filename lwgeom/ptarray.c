@@ -3,6 +3,8 @@
 
 #include "liblwgeom.h"
 
+//#define DEBUG 1
+
 POINTARRAY *
 ptarray_construct(char hasz, char hasm, unsigned int npoints)
 {
@@ -259,4 +261,55 @@ ptarray_same(const POINTARRAY *pa1, const POINTARRAY *pa2)
 	}
 
 	return 1;
+}
+
+/*
+ * Add a point in a pointarray.
+ * 'where' is the offset (starting at 0)
+ * if 'where' == -1 append is required.
+ */
+POINTARRAY *
+ptarray_addPoint(POINTARRAY *pa, char *p, size_t pdims, unsigned int where)
+{
+	POINTARRAY *ret;
+	POINT4D pbuf;
+	size_t ptsize = pointArray_ptsize(pa);
+
+	if ( pdims < 2 || pdims > 4 )
+	{
+		lwerror("ptarray_addPoint: point dimension out of range (%d)",
+			pdims);
+		return NULL;
+	}
+
+#if DEBUG
+	lwnotice("ptarray_addPoint: called with a %dD point");
+#endif
+	
+	pbuf.x = pbuf.y = pbuf.z = pbuf.m = 0.0;
+	memcpy((char *)&pbuf, p, pdims*sizeof(double));
+
+#if DEBUG
+	lwnotice("ptarray_addPoint: initialized point buffer");
+#endif
+
+	ret = ptarray_construct(TYPE_HASZ(pa->dims),
+		TYPE_HASM(pa->dims), pa->npoints+1);
+	
+	if ( where == -1 ) where = pa->npoints;
+
+	if ( where )
+	{
+		memcpy(getPoint(ret, 0), getPoint(pa, 0), ptsize*where);
+	}
+
+	memcpy(getPoint(ret, where), (char *)&pbuf, ptsize);
+
+	if ( where+1 != ret->npoints )
+	{
+		memcpy(getPoint(ret, where+1), getPoint(pa, where),
+			ptsize*(pa->npoints-where));
+	}
+
+	return ret;
 }

@@ -100,3 +100,23 @@ init_pg_func()
 	lwnotice = pg_notice;
 }
 
+PG_LWGEOM *
+pglwgeom_serialize(LWGEOM *in)
+{
+	size_t size;
+	PG_LWGEOM *result;
+
+	size = lwgeom_serialize_size(in);
+	//lwnotice("lwgeom_serialize_size returned %d", size);
+	result = palloc(size+4);
+	result->size = (size+4);
+	lwgeom_serialize_buf(in, SERIALIZED_FORM(result), &size);
+	if ( size != result->size-4 )
+	{
+		lwerror("lwgeom_serialize size:%d, lwgeom_serialize_size:%d",
+			size, result->size-4);
+		return NULL;
+	}
+
+	return result;
+}

@@ -55,6 +55,7 @@ Datum LWGEOM_makepoint(PG_FUNCTION_ARGS);
 Datum LWGEOM_makepoint3dm(PG_FUNCTION_ARGS);
 Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS);
 Datum LWGEOM_makeline(PG_FUNCTION_ARGS);
+Datum LWGEOM_addpoint(PG_FUNCTION_ARGS);
 
 
 /*------------------------------------------------------------------*/
@@ -2372,3 +2373,39 @@ Datum LWGEOM_makepoint3dm(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
+PG_FUNCTION_INFO_V1(LWGEOM_addpoint);
+Datum LWGEOM_addpoint(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *pglwg1, *pglwg2, *result;
+	LWPOINT *point;
+	LWLINE *line, *outline;
+	int where = -1;
+
+	pglwg1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	pglwg2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+
+	if ( PG_NARGS() > 2 ) {
+		where = PG_GETARG_INT32(2);
+	}
+
+	if ( ! TYPE_GETTYPE(pglwg1->type) == LINETYPE )
+	{
+		elog(ERROR, "First argument must be a LINESTRING");
+		PG_RETURN_NULL();
+	}
+
+	if ( ! TYPE_GETTYPE(pglwg2->type) == POINTTYPE )
+	{
+		elog(ERROR, "Second argument must be a POINT");
+		PG_RETURN_NULL();
+	}
+
+	line = lwline_deserialize(SERIALIZED_FORM(pglwg1));
+	point = lwpoint_deserialize(SERIALIZED_FORM(pglwg2));
+
+	outline = lwline_addpoint(line, point, where);
+
+	result = pglwgeom_serialize(outline);
+	PG_RETURN_POINTER(result);
+
+}

@@ -1695,7 +1695,17 @@ CREATEFUNCTION makeline_garray (geometry[])
 CREATEFUNCTION LineFromMultiPoint(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_makeline'
-	LANGUAGE 'C';
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATEFUNCTION AddPoint(geometry, geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_addpoint'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATEFUNCTION AddPoint(geometry, geometry, integer)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_addpoint'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
 
 CREATE AGGREGATE makeline (
 	sfunc = geom_accum,

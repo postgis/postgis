@@ -16,6 +16,9 @@ void pg_free(void *ptr);
 void pg_error(const char *msg, ...);
 void pg_notice(const char *msg, ...);
 
+// Serialize an LWGEOM into a PG_LWGEOM (postgis datatype)
+PG_LWGEOM *pglwgeom_serialize(LWGEOM *lwgeom);
+
 // call this as first thing of any PG function
 void init_pg_func(void);
 

@@ -993,6 +993,7 @@ extern LWPOINT *make_lwpoint3dm(int SRID, double x, double y, double m);
 extern LWPOINT *make_lwpoint4d(int SRID, double x, double y, double z, double m);
 extern LWLINE *lwline_from_lwpointarray(int SRID, unsigned int npoints, LWPOINT **points);
 extern LWLINE *lwline_from_lwmpoint(int SRID, LWMPOINT *mpoint);
+extern LWLINE *lwline_addpoint(LWLINE *line, LWPOINT *point, unsigned int where);
 
 // Return a char string with ASCII versionf of type flags
 extern const char *lwgeom_typeflags(unsigned char type);
@@ -1003,6 +1004,7 @@ extern POINTARRAY *ptarray_construct2d(uint32 npoints, const POINT2D *pts);
 extern POINTARRAY *ptarray_construct3dz(uint32 npoints, const POINT3DZ *pts);
 extern POINTARRAY *ptarray_construct3dm(uint32 npoints, const POINT3DM *pts);
 extern POINTARRAY *ptarray_construct4d(uint32 npoints, const POINT4D *pts);
+extern POINTARRAY *ptarray_addPoint(POINTARRAY *pa, char *p, size_t pdims, unsigned int where);
 
 extern int32 lwgeom_nrings_recursive(char *serialized);
 extern void dump_lwexploded(LWGEOM_EXPLODED *exploded);

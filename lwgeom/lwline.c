@@ -528,3 +528,17 @@ lwline_from_lwmpoint(int SRID, LWMPOINT *mpoint)
 
 	return lwline_construct(SRID, NULL, pa);
 }
+
+LWLINE *
+lwline_addpoint(LWLINE *line, LWPOINT *point, unsigned int where)
+{
+	POINTARRAY *newpa;
+	LWLINE *ret;
+
+	newpa = ptarray_addPoint(line->points, getPoint(point->point, 0),
+		TYPE_NDIMS(point->type), where);
+
+	ret = lwline_construct(line->SRID, NULL, newpa);
+
+	return ret;
+}
