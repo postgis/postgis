@@ -1467,6 +1467,8 @@ Datum geometry_in(PG_FUNCTION_ARGS)
 			str++;
 	}
 
+	if (strcmp(str,"NULL")==0)
+		PG_RETURN_NULL() ;
 
 
 	if ((str==NULL) || (strlen(str) == 0) )
@@ -1660,6 +1662,9 @@ Datum geometry_out(PG_FUNCTION_ARGS)
 		int				len;
 
 		wkt = geometry_to_text(geom1);
+
+
+
 		len = strlen(wkt) + 6+ 25 + 1;
 		result = palloc(len);//extra space for SRID
 		memset(result, 0, len);	//zero everything out
@@ -1682,6 +1687,8 @@ Datum astext_geometry(PG_FUNCTION_ARGS)
 	int			len;
 
 	wkt = geometry_to_text(geom1);
+
+
 	len = strlen(wkt) + 5;
 		
 	result= palloc(len);
@@ -1725,7 +1732,8 @@ char *geometry_to_text(GEOMETRY  *geometry)
 
 	if (geometry->type == BBOXONLYTYPE)
 	{
-		sprintf(result,"BOX3D ONLY - NOT useable");
+		strcpy(result,"NULL");
+		return result;
 	}
 
 
