@@ -17,7 +17,7 @@
 #include "lwgeom.h"
 
 
-#define DEBUG
+//#define DEBUG
 
 #include "wktparse.h"
 
@@ -33,10 +33,15 @@ Datum LWGEOM_numpoints_linestring(PG_FUNCTION_ARGS);
 Datum LWGEOM_numgeometries_collection(PG_FUNCTION_ARGS);
 // ---- GeometryN(geometry, integer)
 Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS);
+// ---- Dimension(geometry)
+Datum LWGEOM_dimension(PG_FUNCTION_ARGS);
+// ---- ExteriorRing(geometry)
+Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS);
 
 
 // internal
 int32 lwgeom_numpoints_linestring_recursive(char *serialized);
+int32 lwgeom_dimension_recursive(char *serialized);
 
 /*------------------------------------------------------------------*/
 
@@ -179,11 +184,12 @@ Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS)
 {
 	LWGEOM *geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	LWGEOM *result;
-	int size;
 	int type = lwgeom_getType(geom->type);
 	int32 idx;
 	char *serialized;
 	char *subgeom;
+
+	//elog(NOTICE, "GeometryN called");
 
 	// call is valid on multi* geoms only
 	if ( type < 4 )
@@ -203,11 +209,114 @@ Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS)
 	}
 
 	// we have it, not it's time to make an LWGEOM
-	size = lwgeom_seralizedformlength_simple(subgeom);
-	result = palloc(size);
-	memcpy(result, &size, 4);
-	memcpy(SERIALIZED_FORM(result), subgeom, size);
+
+	// Here is the actual of the line
+	result = LWGEOM_construct(subgeom, lwgeom_getSRID(geom), lwgeom_hasBBOX(geom->type));
+
+	//elog(NOTICE, "geomtryN about to return");
 	PG_RETURN_POINTER(result);
 
+}
+
+//returns 0 for points, 1 for lines, 2 for polygons.
+//returns max dimension for a collection.
+//returns -1 for the empty geometry (TODO)
+//returns -2 on error
+int32
+lwgeom_dimension_recursive(char *serialized)
+{
+	LWGEOM_INSPECTED *inspected;
+	int ret = -1;
+	int i;
+
+	inspected = lwgeom_inspect(serialized);
+	for (i=0; i<inspected->ngeometries; i++)
+	{
+		char *subgeom;
+		char typeflags = lwgeom_getsubtype_inspected(inspected, i);
+		int type = lwgeom_getType(typeflags);
+		int dims=-1;
+
+		if ( type == POINTTYPE ) dims = 0;
+		else if ( type == MULTIPOINTTYPE ) dims=0;
+		else if ( type == LINETYPE ) dims=1;
+		else if ( type == MULTILINETYPE ) dims=1;
+		else if ( type == POLYGONTYPE ) dims=2;
+		else if ( type == MULTIPOLYGONTYPE ) dims=2;
+		else if ( type == COLLECTIONTYPE ) 
+		{
+			subgeom = lwgeom_getsubgeometry_inspected(inspected, i);
+			if ( subgeom == NULL ) return -2;
+
+			dims = lwgeom_dimension_recursive(subgeom);
+		}
+
+		if ( dims == 2 ) return 2; // nothing can be higher
+		if ( dims > ret ) ret = dims;
+	}
+
+	return ret;
+}
+
+//returns 0 for points, 1 for lines, 2 for polygons.
+//returns max dimension for a collection.
+//returns -1 for the empty geometry (TODO)
+PG_FUNCTION_INFO_V1(LWGEOM_dimension);
+Datum LWGEOM_dimension(PG_FUNCTION_ARGS)
+{
+	LWGEOM *geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	int dimension;
+
+	dimension = lwgeom_dimension_recursive(SERIALIZED_FORM(geom));
+	if ( dimension == -1 )
+	{
+		elog(ERROR, "Something went wrong in dimension computation");
+		PG_RETURN_NULL();
+	}
+
+	PG_RETURN_INT32(dimension);
+}
+
+
+// exteriorRing(GEOMETRY) -- find the first polygon in GEOMETRY, return
+// its exterior ring (as a linestring).  Return NULL if there is no
+// POLYGON(..) in GEOMETRY.
+PG_FUNCTION_INFO_V1(LWGEOM_exteriorring_polygon);
+Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
+{
+	LWGEOM *geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	LWGEOM_INSPECTED *inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
+	LWPOLY *poly = NULL;
+	POINTARRAY *extring;
+	LWLINE *line;
+	char *serializedline;
+	LWGEOM *result;
+	int i;
+
+	for (i=0; i<inspected->ngeometries; i++)
+	{
+		poly = lwgeom_getpoly_inspected(inspected, i);
+		if ( poly ) break;
+	}
+
+	if ( poly == NULL ) PG_RETURN_NULL();
+
+	// Ok, now we have a polygon. Here is its exterior ring.
+	extring = poly->rings[0];
+
+	// This is a LWLINE constructed by exterior ring POINTARRAY
+	line = lwline_construct(poly->ndims, poly->SRID, extring);
+
+	// Now we serialized it (copying data)
+	serializedline = lwline_serialize(line);
+
+	// And we construct the line (copy again)
+	result = LWGEOM_construct(serializedline, poly->SRID,
+		lwgeom_hasBBOX(geom->type));
+
+	pfree(serializedline);
+	pfree(line);
+
+	PG_RETURN_POINTER(result);
 }
 

@@ -11,6 +11,9 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.11  2004/08/24 14:48:58  strk
+-- Added dimension() and exteriorring()
+--
 -- Revision 1.10  2004/08/24 10:01:16  strk
 -- OGC functions (not implemented by GEOS) moved to lwgeom_ogc.c.
 -- Renamed PG-exposed functions to start with LWGEOM
@@ -857,6 +860,16 @@ CREATEFUNCTION numgeometries(geometry)
 CREATEFUNCTION geometryn(geometry,integer)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_geometryn_collection'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION dimension(geometry)
+	RETURNS int4
+	AS '@MODULE_FILENAME@', 'LWGEOM_dimension'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION exteriorring(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','LWGEOM_exteriorring_polygon'
 	LANGUAGE 'C' WITH (isstrict);
 
 ------------------------------------------------------------------------
