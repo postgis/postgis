@@ -8,9 +8,18 @@
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of hte GNU General Public Licence. See the COPYING file.
- * 
+ *
  **********************************************************************
  * $Log$
+ * Revision 1.24  2003/08/08 18:19:20  dblasby
+ * Conformance changes.
+ * Removed junk from postgis_debug.c and added the first run of the long
+ * transaction locking support.  (this will change - dont use it)
+ * conformance tests were corrected
+ * some dos cr/lf removed
+ * empty geometries i.e. GEOMETRYCOLLECT(EMPTY) added (with indexing support)
+ * pointN(<linestring>,1) now returns the first point (used to return 2nd)
+ *
  * Revision 1.23  2003/07/25 17:08:37  pramsey
  * Moved Cygwin endian define out of source files into postgis.h common
  * header file.
@@ -38,6 +47,14 @@
 
 #include "postgis.h"
 #include "utils/elog.h"
+
+#define NfunctionFirstPoint 1
+
+// if you use #define NfunctionFirstPoint 0, you get 0-based indexing (this is what programmers want)::
+//  pointN(<linestring>, 0) is the 1st point, and pointN(<linestring>, 1) is the second point.
+
+// if you use #define NfunctionFirstPoint 1, you get 1-based indexing (which seems to be what the spec wants)::
+//  pointN(<linestring>, 1) is the 1st point, and pointN(<linestring>, 2) is the second point.
 
 
 #define SHOW_DIGS_DOUBLE 15
@@ -69,7 +86,7 @@ double line_length2d(LINE3D *line)
 	for (i=1; i<line->npoints;i++)
 	{
 		to = &line->points[i];
-	
+
 		dist += sqrt( ( (frm->x - to->x)*(frm->x - to->x) )  +
 			  	  ( (frm->y - to->y)*(frm->y - to->y) ) );
 
@@ -92,9 +109,9 @@ double line_length3d(LINE3D *line)
 	for (i=1; i<line->npoints;i++)
 	{
 		to = &line->points[i];
-	
+
 		dist += sqrt( ( (frm->x - to->x)*(frm->x - to->x) )  +
-				((frm->y - to->y)*(frm->y - to->y) ) + 
+				((frm->y - to->y)*(frm->y - to->y) ) +
 				((frm->z - to->z)*(frm->z - to->z) ) );
 
 		frm = to;
@@ -108,7 +125,7 @@ double line_length3d(LINE3D *line)
 // length3d(line) = length of line
 // length3d(polygon) = 0  -- could make sense to return sum(ring perimeter)
 // uses euclidian 3d length
- 
+
 PG_FUNCTION_INFO_V1(length3d);
 Datum length3d(PG_FUNCTION_ARGS)
 {
@@ -126,7 +143,7 @@ Datum length3d(PG_FUNCTION_ARGS)
 
 	for (j=0; j< geom1->nobjs; j++)		//for each object in geom1
 	{
-		o1 = (char *) geom1 +offsets1[j] ;  
+		o1 = (char *) geom1 +offsets1[j] ;
 		type1=  geom1->objType[j];
 		if (type1 == LINETYPE)	//LINESTRING
 		{
@@ -142,7 +159,7 @@ Datum length3d(PG_FUNCTION_ARGS)
 // length3d(line) = length of line
 // length3d(polygon) = 0  -- could make sense to return sum(ring perimeter)
 // uses euclidian 2d length
- 
+
 PG_FUNCTION_INFO_V1(length2d);
 Datum length2d(PG_FUNCTION_ARGS)
 {
@@ -160,7 +177,7 @@ Datum length2d(PG_FUNCTION_ARGS)
 
 	for (j=0; j< geom1->nobjs; j++)		//for each object in geom1
 	{
-		o1 = (char *) geom1 +offsets1[j] ;  
+		o1 = (char *) geom1 +offsets1[j] ;
 		type1=  geom1->objType[j];
 		if (type1 == LINETYPE)	//LINESTRING
 		{
@@ -185,28 +202,28 @@ double polygon_area2d_old(POLYGON3D *poly1)
 	pts1 = (POINT3D *) MAXALIGN(pts1);
 
 //elog(NOTICE,"in polygon_area2d_old");
-	
+
 	pt_offset = 0; //index to first point in ring
 	for (ring = 0; ring < poly1->nrings; ring++)
 	{
 		ringarea = 0.0;
-		
-		for (i=0;i<(poly1->npoints[ring]-1);i++) 
-    	{ 
+
+		for (i=0;i<(poly1->npoints[ring]-1);i++)
+    	{
 		//	j = (i+1) % (poly1->npoints[ring]);
 			j = i+1;
-			ringarea  += pts1[pt_offset+ i].x * pts1[pt_offset+j].y - pts1[pt_offset+ i].y * pts1[pt_offset+j].x; 
-		} 
+			ringarea  += pts1[pt_offset+ i].x * pts1[pt_offset+j].y - pts1[pt_offset+ i].y * pts1[pt_offset+j].x;
+		}
 
-		ringarea  /= 2.0; 
+		ringarea  /= 2.0;
 //elog(NOTICE," ring 1 has area %lf",ringarea);
 		ringarea  = fabs(ringarea );
 		if (ring != 0)	//outer
 			ringarea  = -1.0*ringarea ; // its a hole
-		
+
 		poly_area += ringarea;
 
-		pt_offset += poly1->npoints[ring];	
+		pt_offset += poly1->npoints[ring];
 	}
 
 	return poly_area;
@@ -234,7 +251,7 @@ Datum area2d(PG_FUNCTION_ARGS)
 
 	for (j=0; j< geom1->nobjs; j++)		//for each object in geom1
 	{
-		o1 = (char *) geom1 +offsets1[j] ;  
+		o1 = (char *) geom1 +offsets1[j] ;
 		type1=  geom1->objType[j];
 		if (type1 == POLYGONTYPE)	//POLYGON
 		{
@@ -255,31 +272,31 @@ double 	polygon_perimeter3d(POLYGON3D	*poly1)
 
 	pts1 = (POINT3D *) ( (char *)&(poly1->npoints[poly1->nrings] )  );
 	pts1 = (POINT3D *) MAXALIGN(pts1);
-	
 
-	
+
+
 	pt_offset = 0; //index to first point in ring
 	for (ring = 0; ring < poly1->nrings; ring++)
 	{
 		ring_perimeter = 0.0;
-		
+
 
 		frm = &pts1[pt_offset];
 
 		for (i=1; i<poly1->npoints[ring];i++)
 		{
 			to = &pts1[pt_offset+ i];
-	
+
 			ring_perimeter += sqrt( ( (frm->x - to->x)*(frm->x - to->x) )  +
-				((frm->y - to->y)*(frm->y - to->y) ) + 
+				((frm->y - to->y)*(frm->y - to->y) ) +
 				((frm->z - to->z)*(frm->z - to->z) ) );
 
 			frm = to;
 		}
-		
+
 		poly_perimeter += ring_perimeter;
 
-		pt_offset += poly1->npoints[ring];	
+		pt_offset += poly1->npoints[ring];
 	}
 
 	return poly_perimeter;
@@ -297,28 +314,28 @@ double 	polygon_perimeter2d(POLYGON3D	*poly1)
 	pts1 = (POINT3D *) ( (char *)&(poly1->npoints[poly1->nrings] )  );
 	pts1 = (POINT3D *) MAXALIGN(pts1);
 
-	
+
 	pt_offset = 0; //index to first point in ring
 	for (ring = 0; ring < poly1->nrings; ring++)
 	{
 		ring_perimeter = 0.0;
-		
+
 
 		frm = &pts1[pt_offset];
 
 		for (i=1; i<poly1->npoints[ring];i++)
 		{
 			to = &pts1[pt_offset+ i];
-	
+
 			ring_perimeter += sqrt( ( (frm->x - to->x)*(frm->x - to->x) )  +
 				((frm->y - to->y)*(frm->y - to->y) )   );
 
 			frm = to;
 		}
-		
+
 		poly_perimeter += ring_perimeter;
 
-		pt_offset += poly1->npoints[ring];	
+		pt_offset += poly1->npoints[ring];
 	}
 
 	return poly_perimeter;
@@ -344,7 +361,7 @@ Datum perimeter3d(PG_FUNCTION_ARGS)
 
 	for (j=0; j< geom1->nobjs; j++)		//for each object in geom1
 	{
-		o1 = (char *) geom1 +offsets1[j] ;  
+		o1 = (char *) geom1 +offsets1[j] ;
 		type1=  geom1->objType[j];
 		if (type1 == POLYGONTYPE)	//POLYGON
 		{
@@ -372,7 +389,7 @@ Datum perimeter2d(PG_FUNCTION_ARGS)
 
 	for (j=0; j< geom1->nobjs; j++)		//for each object in geom1
 	{
-		o1 = (char *) geom1 +offsets1[j] ;  
+		o1 = (char *) geom1 +offsets1[j] ;
 		type1=  geom1->objType[j];
 		if (type1 == POLYGONTYPE)	//POLYGON
 		{
@@ -389,7 +406,7 @@ Datum perimeter2d(PG_FUNCTION_ARGS)
 //               V[] = vertex points of a polygon V[n+1] with V[n]=V[0]
 //      returns: 0 = outside, 1 = inside
 //
-//	Our polygons have first and last point the same, 
+//	Our polygons have first and last point the same,
 //
 
 int PIP( POINT3D *P, POINT3D *V, int n )
@@ -401,17 +418,17 @@ int PIP( POINT3D *P, POINT3D *V, int n )
 
     // loop through all edges of the polygon
 
-    	for (i=0; i< (n-1) ; i++) 
+    	for (i=0; i< (n-1) ; i++)
 	{    // edge from V[i] to V[i+1]
 
        	if (((V[i].y <= P->y) && (V[i+1].y > P->y))    // an upward crossing
        		 || ((V[i].y > P->y) && (V[i+1].y <= P->y))) // a downward crossing
-	 	{ 
+	 	{
 
        	   vt = (double)(P->y - V[i].y) / (V[i+1].y - V[i].y);
          	   if (P->x < V[i].x + vt * (V[i+1].x - V[i].x)) 			// P.x <intersect
            	     		++cn;   // a valid crossing of y=P.y right of P.x
-      	}	
+      	}
     }
     return (cn&1);    // 0 if even (out), and 1 if odd (in)
 
@@ -424,15 +441,15 @@ int PIP( POINT3D *P, POINT3D *V, int n )
 //this one is easy - is the point inside a box?
 bool point_truely_inside(POINT3D	*point, BOX3D	*box)
 {
-	return ( 
-			(point->x >= box->LLB.x) && (point->x <= box->URT.x)  && 
-		      (point->y >= box->LLB.y) && (point->y <= box->URT.y)  
+	return (
+			(point->x >= box->LLB.x) && (point->x <= box->URT.x)  &&
+		      (point->y >= box->LLB.y) && (point->y <= box->URT.y)
 		 );
 }
 
 
 // see if a linestring is inside a box - check to see if each its line
-//	segments are inside the box  
+//	segments are inside the box
 // NOTE: all this is happening in 2d - third dimention is ignored
 //
 //use a modified CohenSutherland line clipping algoritm
@@ -484,7 +501,7 @@ int	compute_outcode( POINT3D *p, BOX3D *box)
 	  return (Code+1);
  	}
 
- 	return (Code);		
+ 	return (Code);
 }
 
 
@@ -497,7 +514,7 @@ bool lineseg_inside_box( POINT3D *P1, POINT3D *P2, BOX3D *box)
 	outcode_p1 = compute_outcode(P1, box);
 	if (outcode_p1 ==0)
 		return TRUE;
-	
+
 	outcode_p2 = compute_outcode(P2, box);
 	if (outcode_p2 ==0)
 		return TRUE;
@@ -521,17 +538,17 @@ bool lineseg_inside_box( POINT3D *P1, POINT3D *P2, BOX3D *box)
 
 	// from comp.graphics.algo's faq:
 	/*
-	       (Ay-Cy)(Dx-Cx)-(Ax-Cx)(Dy-Cy) 
+	       (Ay-Cy)(Dx-Cx)-(Ax-Cx)(Dy-Cy)
 	r =  ------------------------------------
-         	  (Bx-Ax)(Dy-Cy)-(By-Ay)(Dx-Cx) 
+         	  (Bx-Ax)(Dy-Cy)-(By-Ay)(Dx-Cx)
 
-		(Ay-Cy)(Bx-Ax)-(Ax-Cx)(By-Ay) 
+		(Ay-Cy)(Bx-Ax)-(Ax-Cx)(By-Ay)
 	s = 	-----------------------------------
-		(Bx-Ax)(Dy-Cy)-(By-Ay)(Dx-Cx) 
+		(Bx-Ax)(Dy-Cy)-(By-Ay)(Dx-Cx)
 
 	*/
 	// if  0<= r&s <=1 then intersection exists
-	
+
 	Ax = P1->x; Ay = P1->y;
 	Bx = P2->x; By = P2->y;
 
@@ -587,7 +604,7 @@ bool lineseg_inside_box( POINT3D *P1, POINT3D *P2, BOX3D *box)
 
 	//otherwise we did not intersect the box
 	return FALSE;
-	
+
 }
 
 
@@ -605,8 +622,8 @@ bool	linestring_inside_box(POINT3D *pts, int npoints, BOX3D *box)
 	for (i=1; i< npoints;i++)
 	{
 		to = &pts[i];
-	
-		if (lineseg_inside_box( frm, to,  box)) 
+
+		if (lineseg_inside_box( frm, to,  box))
 			return TRUE;
 
 		frm = to;
@@ -633,13 +650,13 @@ bool polygon_truely_inside(POLYGON3D	*poly, BOX3D *box)
 	POINT3D	test_point;
 	int32		ring;
 	int		point_offset;
-	
+
 	pts1 = (POINT3D *) ( (char *)&(poly->npoints[poly->nrings] )  );
 	pts1 = (POINT3D *) MAXALIGN(pts1);
 
 
 	//step 1 (and 2)
-	outer_ring_inside = linestring_inside_box(pts1, poly->npoints[0], box);	
+	outer_ring_inside = linestring_inside_box(pts1, poly->npoints[0], box);
 
 	if (outer_ring_inside)
 		return TRUE;
@@ -647,8 +664,8 @@ bool polygon_truely_inside(POLYGON3D	*poly, BOX3D *box)
 	test_point.x = box->LLB.x;
 	test_point.y = box->LLB.y;
 		//.z unimportant
-	
-	outer_ring_surrounds = PIP(&test_point, pts1,poly->npoints[0] ); 
+
+	outer_ring_surrounds = PIP(&test_point, pts1,poly->npoints[0] );
 
 	if (!(outer_ring_surrounds))
 		return FALSE;	// disjoing
@@ -671,7 +688,7 @@ bool polygon_truely_inside(POLYGON3D	*poly, BOX3D *box)
 		}
 		point_offset += poly->npoints[ring];
 	}
-	
+
 	return TRUE;
 }
 
@@ -713,11 +730,11 @@ Datum truly_inside(PG_FUNCTION_ARGS)
 
 	offsets1 = (int32 *) ( ((char *) &(geom1->objType[0] ))+ sizeof(int32) * geom1->nobjs ) ;
 
-	//now have to do a scan of each object 
+	//now have to do a scan of each object
 
 	for (j=0; j< geom1->nobjs; j++)		//for each object in geom1
 	{
-		o1 = (char *) geom1 +offsets1[j] ;  
+		o1 = (char *) geom1 +offsets1[j] ;
 		type1=  geom1->objType[j];
 
 		if (type1 == POINTTYPE)	//point
@@ -761,11 +778,11 @@ Datum npoints(PG_FUNCTION_ARGS)
 
 	offsets1 = (int32 *) ( ((char *) &(geom1->objType[0] ))+ sizeof(int32) * geom1->nobjs ) ;
 
-	//now have to do a scan of each object 
+	//now have to do a scan of each object
 
 	for (j=0; j< geom1->nobjs; j++)		//for each object in geom1
 	{
-		o1 = (char *) geom1 +offsets1[j] ;  
+		o1 = (char *) geom1 +offsets1[j] ;
 		type1=  geom1->objType[j];
 
 		if (type1 == POINTTYPE)	//point
@@ -805,17 +822,17 @@ Datum nrings(PG_FUNCTION_ARGS)
 
 	offsets1 = (int32 *) ( ((char *) &(geom1->objType[0] ))+ sizeof(int32) * geom1->nobjs ) ;
 
-	//now have to do a scan of each object 
+	//now have to do a scan of each object
 
 	for (j=0; j< geom1->nobjs; j++)		//for each object in geom1
 	{
-		o1 = (char *) geom1 +offsets1[j] ;  
+		o1 = (char *) geom1 +offsets1[j] ;
 		type1=  geom1->objType[j];
 
 		if (type1 == POLYGONTYPE)	//POLYGON
 		{
 			poly = (POLYGON3D *) o1;
-			numb_rings += poly->nrings;		
+			numb_rings += poly->nrings;
 		}
 	}
 
@@ -874,11 +891,11 @@ Datum translate(PG_FUNCTION_ARGS)
 
 	offsets1 = (int32 *) ( ((char *) &(geom1->objType[0] ))+ sizeof(int32) * geom1->nobjs ) ;
 
-	//now have to do a scan of each object 
+	//now have to do a scan of each object
 
 	for (j=0; j< geom1->nobjs; j++)		//for each object in geom1
 	{
-		o1 = (char *) geom1 +offsets1[j] ;  
+		o1 = (char *) geom1 +offsets1[j] ;
 		type=  geom1->objType[j];
 
 		if (type == POINTTYPE)	//point
@@ -933,7 +950,7 @@ Datum force_2d(PG_FUNCTION_ARGS)
 
 	result = (GEOMETRY *) palloc(geom->size);
 	memcpy(result,geom, geom->size);
-	
+
 	result->is3d = FALSE;
 	PG_RETURN_POINTER(result);
 }
@@ -976,7 +993,7 @@ Datum combine_bbox(PG_FUNCTION_ARGS)
 	{
 		geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
-		box = (BOX3D *) palloc(sizeof(BOX3D)); 
+		box = (BOX3D *) palloc(sizeof(BOX3D));
 		memcpy(box, &(geom->bvol), sizeof(BOX3D) );
 
 		PG_RETURN_POINTER(box);  // combine_bbox(null, geometry) => geometry->bvol
@@ -984,9 +1001,9 @@ Datum combine_bbox(PG_FUNCTION_ARGS)
 
 	if (geom_ptr == NULL)
 	{
-		box = (BOX3D *) palloc(sizeof(BOX3D)); 
+		box = (BOX3D *) palloc(sizeof(BOX3D));
 		memcpy(box, (char *) PG_GETARG_DATUM(0) , sizeof(BOX3D) );
-		
+
 
 		PG_RETURN_POINTER( box ); // combine_bbox(BOX3D, null) => BOX3D
 	}
@@ -1029,11 +1046,53 @@ PG_FUNCTION_INFO_V1(dimension);
 Datum dimension(PG_FUNCTION_ARGS)
 {
 		GEOMETRY		      *geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+		int t;
+		int result,dim,type;
 
-	if (geom->is3d)
-		PG_RETURN_INT32(3);
-	else
+
+	if ((geom->type == COLLECTIONTYPE) && (geom->nobjs ==0))
+		PG_RETURN_INT32(-1);
+
+	if (geom->type == POINTTYPE)
+		PG_RETURN_INT32(0);
+
+	if (geom->type == LINETYPE)
+		PG_RETURN_INT32(1);
+
+	if (geom->type == POLYGONTYPE)
 		PG_RETURN_INT32(2);
+
+
+	if (geom->type == MULTIPOINTTYPE)
+		PG_RETURN_INT32(0);
+
+	if (geom->type == MULTILINETYPE)
+		PG_RETURN_INT32(1);
+
+	if (geom->type == MULTIPOLYGONTYPE)
+		PG_RETURN_INT32(2);
+
+	result = -1;
+	dim =0;
+	//its a collection -look for the largest one
+	for (t=0;t<geom->nobjs;t++)
+	{
+		type=  geom->objType[t];
+
+		if (type == POINTTYPE)
+				dim=0;
+
+		if (type == LINETYPE)
+			dim=1;
+
+		if (type == POLYGONTYPE)
+			dim=2;
+
+		if (dim>result)
+			result = dim;
+
+	}
+	PG_RETURN_INT32(result);
 }
 
 //returns a string representation of this geometry's type
@@ -1044,7 +1103,7 @@ Datum geometrytype(PG_FUNCTION_ARGS)
 		char				*text_ob = palloc(20+4);
 		char				*result = text_ob+4;
 		int32				size;
-		
+
 
 	memset(result,0,20);
 
@@ -1072,7 +1131,7 @@ Datum geometrytype(PG_FUNCTION_ARGS)
 	size = strlen(result) +4 ;
 
 	memcpy(text_ob, &size,4); // size of string
-	
+
 
 	PG_RETURN_POINTER(text_ob);
 
@@ -1093,7 +1152,7 @@ Datum envelope(PG_FUNCTION_ARGS)
 	POINT3D			pts[5];	//5 points around box
 	int				pts_per_ring[1];
 	int				poly_size;
-	
+
 	//use LLB's z value (we're going to set is3d to false)
 
 	set_point( &pts[0], geom->bvol.LLB.x , geom->bvol.LLB.y , geom->bvol.LLB.z );
@@ -1101,7 +1160,7 @@ Datum envelope(PG_FUNCTION_ARGS)
 	set_point( &pts[2], geom->bvol.URT.x , geom->bvol.URT.y , geom->bvol.LLB.z );
 	set_point( &pts[3], geom->bvol.LLB.x , geom->bvol.URT.y , geom->bvol.LLB.z );
 	set_point( &pts[4], geom->bvol.LLB.x , geom->bvol.LLB.y , geom->bvol.LLB.z );
-	
+
 	pts_per_ring[0] = 5; //ring has 5 points
 
 		//make a polygon
@@ -1109,11 +1168,11 @@ Datum envelope(PG_FUNCTION_ARGS)
 
 	result = make_oneobj_geometry(poly_size, (char *)poly, POLYGONTYPE, FALSE,geom->SRID, geom->scale, geom->offsetX, geom->offsetY);
 
-	PG_RETURN_POINTER(result);	
+	PG_RETURN_POINTER(result);
 
 }
 
-//X(GEOMETRY) -- find the first POINT(..) in GEOMETRY, returns its X value.  
+//X(GEOMETRY) -- find the first POINT(..) in GEOMETRY, returns its X value.
 //Return NULL if there is no POINT(..) in GEOMETRY
 PG_FUNCTION_INFO_V1(x_point);
 Datum x_point(PG_FUNCTION_ARGS)
@@ -1122,15 +1181,15 @@ Datum x_point(PG_FUNCTION_ARGS)
 	char				*o;
 	int				type1,j;
 	int32				*offsets1;
-	
+
 
 	offsets1 = (int32 *) ( ((char *) &(geom->objType[0] ))+ sizeof(int32) * geom->nobjs ) ;
 
-	//now have to do a scan of each object 
+	//now have to do a scan of each object
 
 	for (j=0; j< geom->nobjs; j++)		//for each object in geom1
 	{
-		o = (char *) geom +offsets1[j] ;  
+		o = (char *) geom +offsets1[j] ;
 		type1=  geom->objType[j];
 
 		if (type1 == POINTTYPE)	//point
@@ -1139,10 +1198,10 @@ Datum x_point(PG_FUNCTION_ARGS)
 		}
 
 	}
-	PG_RETURN_NULL();	
+	PG_RETURN_NULL();
 }
 
-//Y(GEOMETRY) -- find the first POINT(..) in GEOMETRY, returns its Y value.  
+//Y(GEOMETRY) -- find the first POINT(..) in GEOMETRY, returns its Y value.
 //Return NULL if there is no POINT(..) in GEOMETRY
 PG_FUNCTION_INFO_V1(y_point);
 Datum y_point(PG_FUNCTION_ARGS)
@@ -1151,15 +1210,15 @@ Datum y_point(PG_FUNCTION_ARGS)
 	char				*o;
 	int				type1,j;
 	int32				*offsets1;
-	
+
 
 	offsets1 = (int32 *) ( ((char *) &(geom->objType[0] ))+ sizeof(int32) * geom->nobjs ) ;
 
-	//now have to do a scan of each object 
+	//now have to do a scan of each object
 
 	for (j=0; j< geom->nobjs; j++)		//for each object in geom1
 	{
-		o = (char *) geom +offsets1[j] ;  
+		o = (char *) geom +offsets1[j] ;
 		type1=  geom->objType[j];
 
 		if (type1 == POINTTYPE)	//point
@@ -1168,10 +1227,10 @@ Datum y_point(PG_FUNCTION_ARGS)
 		}
 
 	}
-	PG_RETURN_NULL();	
+	PG_RETURN_NULL();
 }
 
-//Z(GEOMETRY) -- find the first POINT(..) in GEOMETRY, returns its Z value.  
+//Z(GEOMETRY) -- find the first POINT(..) in GEOMETRY, returns its Z value.
 //Return NULL if there is no POINT(..) in GEOMETRY
 PG_FUNCTION_INFO_V1(z_point);
 Datum z_point(PG_FUNCTION_ARGS)
@@ -1180,15 +1239,15 @@ Datum z_point(PG_FUNCTION_ARGS)
 	char				*o;
 	int				type1,j;
 	int32				*offsets1;
-	
+
 
 	offsets1 = (int32 *) ( ((char *) &(geom->objType[0] ))+ sizeof(int32) * geom->nobjs ) ;
 
-	//now have to do a scan of each object 
+	//now have to do a scan of each object
 
 	for (j=0; j< geom->nobjs; j++)		//for each object in geom1
 	{
-		o = (char *) geom +offsets1[j] ;  
+		o = (char *) geom +offsets1[j] ;
 		type1=  geom->objType[j];
 
 		if (type1 == POINTTYPE)	//point
@@ -1197,7 +1256,7 @@ Datum z_point(PG_FUNCTION_ARGS)
 		}
 
 	}
-	PG_RETURN_NULL();	
+	PG_RETURN_NULL();
 }
 
 //numpoints(GEOMETRY) -- find the first linestring in GEOMETRY, return
@@ -1210,12 +1269,12 @@ Datum numpoints_linestring(PG_FUNCTION_ARGS)
 	char				*o;
 	int				type1,j;
 	int32				*offsets1;
-	
+
 	offsets1 = (int32 *) ( ((char *) &(geom->objType[0] ))+ sizeof(int32) * geom->nobjs ) ;
 
 	for (j=0; j< geom->nobjs; j++)		//for each object in geom1
 	{
-		o = (char *) geom +offsets1[j] ;  
+		o = (char *) geom +offsets1[j] ;
 		type1=  geom->objType[j];
 
 		if (type1 == LINETYPE)	//linestring
@@ -1224,7 +1283,7 @@ Datum numpoints_linestring(PG_FUNCTION_ARGS)
 		}
 
 	}
-	PG_RETURN_NULL();	
+	PG_RETURN_NULL();
 }
 
 //pointn(GEOMETRY,INTEGER) -- find the first linestring in GEOMETRY,
@@ -1236,18 +1295,20 @@ PG_FUNCTION_INFO_V1(pointn_linestring);
 Datum pointn_linestring(PG_FUNCTION_ARGS)
 {
 	GEOMETRY		      *geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	int32				wanted_index =PG_GETARG_INT32(1); 
+	int32				wanted_index =PG_GETARG_INT32(1);
 	char				*o;
 	int				type1,j;
 	int32				*offsets1;
 	LINE3D			*line;
 
-	
+
+	wanted_index -= NfunctionFirstPoint;
+
 	offsets1 = (int32 *) ( ((char *) &(geom->objType[0] ))+ sizeof(int32) * geom->nobjs ) ;
 
 	for (j=0; j< geom->nobjs; j++)		//for each object in geom1
 	{
-		o = (char *) geom +offsets1[j] ;  
+		o = (char *) geom +offsets1[j] ;
 		type1=  geom->objType[j];
 
 		if (type1 == LINETYPE)	//linestring
@@ -1257,19 +1318,19 @@ Datum pointn_linestring(PG_FUNCTION_ARGS)
 				PG_RETURN_NULL(); //index out of range
 			//get the point, make a new geometry
 			PG_RETURN_POINTER(
-				make_oneobj_geometry(sizeof(POINT3D), 
+				make_oneobj_geometry(sizeof(POINT3D),
 						         (char *)&line->points[wanted_index],
-							   POINTTYPE,  geom->is3d, geom->SRID, geom->scale, geom->offsetX, geom->offsetY) 
+							   POINTTYPE,  geom->is3d, geom->SRID, geom->scale, geom->offsetX, geom->offsetY)
 						);
 		}
 
 	}
-	PG_RETURN_NULL();	
+	PG_RETURN_NULL();
 }
 
 // exteriorRing(GEOMETRY) -- find the first polygon in GEOMETRY, return
 //its exterior ring (as a linestring).  Return NULL if there is no
-//POLYGON(..) in GEOMETRY. 
+//POLYGON(..) in GEOMETRY.
 
 PG_FUNCTION_INFO_V1(exteriorring_polygon);
 Datum exteriorring_polygon(PG_FUNCTION_ARGS)
@@ -1284,12 +1345,12 @@ Datum exteriorring_polygon(PG_FUNCTION_ARGS)
 	POINT3D			*pts;
 	int				size_line;
 
-	
+
 	offsets1 = (int32 *) ( ((char *) &(geom->objType[0] ))+ sizeof(int32) * geom->nobjs ) ;
 
 	for (j=0; j< geom->nobjs; j++)		//for each object in geom1
 	{
-		o = (char *) geom +offsets1[j] ;  
+		o = (char *) geom +offsets1[j] ;
 		type1=  geom->objType[j];
 
 		if (type1 == POLYGONTYPE)	//polygon object
@@ -1304,7 +1365,7 @@ Datum exteriorring_polygon(PG_FUNCTION_ARGS)
 			PG_RETURN_POINTER(
 				make_oneobj_geometry(size_line,
 						         (char *) line,
-							   LINETYPE,  geom->is3d,geom->SRID,  geom->scale, geom->offsetX, geom->offsetY) 
+							   LINETYPE,  geom->is3d,geom->SRID,  geom->scale, geom->offsetX, geom->offsetY)
 						);
 		}
 
@@ -1327,12 +1388,12 @@ Datum numinteriorrings_polygon(PG_FUNCTION_ARGS)
 	POLYGON3D			*poly;
 
 
-	
+
 	offsets1 = (int32 *) ( ((char *) &(geom->objType[0] ))+ sizeof(int32) * geom->nobjs ) ;
 
 	for (j=0; j< geom->nobjs; j++)		//for each object in geom1
 	{
-		o = (char *) geom +offsets1[j] ;  
+		o = (char *) geom +offsets1[j] ;
 		type1=  geom->objType[j];
 
 		if (type1 == POLYGONTYPE)	//polygon object
@@ -1353,7 +1414,7 @@ PG_FUNCTION_INFO_V1(interiorringn_polygon);
 Datum interiorringn_polygon(PG_FUNCTION_ARGS)
 {
 	GEOMETRY		      *geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	int32				wanted_index =PG_GETARG_INT32(1); 
+	int32				wanted_index =PG_GETARG_INT32(1);
 	char				*o;
 	int				type1,j,t,point_offset;
 	int32				*offsets1;
@@ -1362,12 +1423,14 @@ Datum interiorringn_polygon(PG_FUNCTION_ARGS)
 	POINT3D			*pts;
 	int				size_line;
 
-	
+
+	wanted_index -= NfunctionFirstPoint;
+
 	offsets1 = (int32 *) ( ((char *) &(geom->objType[0] ))+ sizeof(int32) * geom->nobjs ) ;
 
 	for (j=0; j< geom->nobjs; j++)		//for each object in geom1
 	{
-		o = (char *) geom +offsets1[j] ;  
+		o = (char *) geom +offsets1[j] ;
 		type1=  geom->objType[j];
 
 		if (type1 == POLYGONTYPE)	//polygon object
@@ -1377,7 +1440,7 @@ Datum interiorringn_polygon(PG_FUNCTION_ARGS)
 			if ( (wanted_index<0) || (wanted_index> (poly->nrings-2) ) )
 				PG_RETURN_NULL(); //index out of range
 
-			
+
 	  		pts = (POINT3D *) ( (char *)&(poly->npoints[poly->nrings] )  );
 			pts = (POINT3D *) MAXALIGN(pts);
 
@@ -1385,7 +1448,7 @@ Datum interiorringn_polygon(PG_FUNCTION_ARGS)
 			point_offset=0;
 			for (t=0; t< (wanted_index+1); t++)
 			{
-				point_offset += poly->npoints[t];	
+				point_offset += poly->npoints[t];
 			}
 
 			line = make_line(poly->npoints[wanted_index+1], &pts[point_offset], &size_line);
@@ -1394,8 +1457,8 @@ Datum interiorringn_polygon(PG_FUNCTION_ARGS)
 			PG_RETURN_POINTER(
 				make_oneobj_geometry(size_line,
 						         (char *) line,
-							   LINETYPE,  geom->is3d, geom->SRID, geom->scale, geom->offsetX, geom->offsetY) 
-						);	  		
+							   LINETYPE,  geom->is3d, geom->SRID, geom->scale, geom->offsetX, geom->offsetY)
+						);
 		}
 	}
 	PG_RETURN_NULL();
@@ -1411,14 +1474,14 @@ Datum numgeometries_collection(PG_FUNCTION_ARGS)
 {
 		GEOMETRY		      *geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-		if  ( (geom->type == COLLECTIONTYPE) || 
-		      (geom->type == MULTIPOINTTYPE) || 
-			(geom->type == MULTILINETYPE) || 
+		if  ( (geom->type == COLLECTIONTYPE) ||
+		      (geom->type == MULTIPOINTTYPE) ||
+			(geom->type == MULTILINETYPE) ||
 			(geom->type == MULTIPOLYGONTYPE)
 		    )
 			PG_RETURN_INT32( geom->nobjs ) ;
 		else
-			PG_RETURN_NULL();	
+			PG_RETURN_NULL();
 }
 
 
@@ -1434,35 +1497,35 @@ PG_FUNCTION_INFO_V1(geometryn_collection);
 Datum geometryn_collection(PG_FUNCTION_ARGS)
 {
 		GEOMETRY		      *geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-		int32				wanted_index =PG_GETARG_INT32(1); 
+		int32				wanted_index =PG_GETARG_INT32(1);
 		int				type;
 		int32				*offsets1;
 		char				*o;
 
-
+	wanted_index -= NfunctionFirstPoint;
 
 	offsets1 = (int32 *) ( ((char *) &(geom->objType[0] ))+ sizeof(int32) * geom->nobjs ) ;
 
-		if  (!(( (geom->type == COLLECTIONTYPE) || 
-		      (geom->type == MULTIPOINTTYPE) || 
-			(geom->type == MULTILINETYPE) || 
+		if  (!(( (geom->type == COLLECTIONTYPE) ||
+		      (geom->type == MULTIPOINTTYPE) ||
+			(geom->type == MULTILINETYPE) ||
 			(geom->type == MULTIPOLYGONTYPE)
 		    )))
-				PG_RETURN_NULL();			
+				PG_RETURN_NULL();
 
 
 		if ( (wanted_index <0) || (wanted_index > (geom->nobjs-1) ) )
 			PG_RETURN_NULL();	//bad index
 
 		type = geom->objType[wanted_index];
-		o = (char *) geom +offsets1[wanted_index] ;  
-		
+		o = (char *) geom +offsets1[wanted_index] ;
+
 		if (type == POINTTYPE)
 		{
 				PG_RETURN_POINTER(
 				make_oneobj_geometry(sizeof(POINT3D),
 						         o,
-							   POINTTYPE,  geom->is3d, geom->SRID, geom->scale, geom->offsetX, geom->offsetY) 
+							   POINTTYPE,  geom->is3d, geom->SRID, geom->scale, geom->offsetX, geom->offsetY)
 						);
 		}
 		if (type == LINETYPE)
@@ -1470,7 +1533,7 @@ Datum geometryn_collection(PG_FUNCTION_ARGS)
 				PG_RETURN_POINTER(
 				make_oneobj_geometry(	size_subobject (o, LINETYPE),
 						         o,
-							   LINETYPE,  geom->is3d, geom->SRID, geom->scale, geom->offsetX, geom->offsetY) 
+							   LINETYPE,  geom->is3d, geom->SRID, geom->scale, geom->offsetX, geom->offsetY)
 						);
 		}
 		if (type == POLYGONTYPE)
@@ -1478,11 +1541,11 @@ Datum geometryn_collection(PG_FUNCTION_ARGS)
 				PG_RETURN_POINTER(
 				make_oneobj_geometry(	size_subobject (o, POLYGONTYPE),
 						         o,
-							   POLYGONTYPE,  geom->is3d, geom->SRID, geom->scale, geom->offsetX, geom->offsetY) 
+							   POLYGONTYPE,  geom->is3d, geom->SRID, geom->scale, geom->offsetX, geom->offsetY)
 						);
 		}
 
-		PG_RETURN_NULL();	
+		PG_RETURN_NULL();
 }
 
 
@@ -1496,7 +1559,7 @@ Datum force_collection(PG_FUNCTION_ARGS)
 
 	result = (GEOMETRY *) palloc(geom->size);
 	memcpy(result,geom, geom->size);
-	
+
 	result->type = COLLECTIONTYPE;
 
 	PG_RETURN_POINTER(result);
@@ -1523,11 +1586,11 @@ Datum point_inside_circle(PG_FUNCTION_ARGS)
 
 	offsets1 = (int32 *) ( ((char *) &(geom->objType[0] ))+ sizeof(int32) * geom->nobjs ) ;
 
-	//now have to do a scan of each object 
+	//now have to do a scan of each object
 
 	for (j=0; j< geom->nobjs; j++)		//for each object in geom
 	{
-		o = (char *) geom +offsets1[j] ;  
+		o = (char *) geom +offsets1[j] ;
 		type1=  geom->objType[j];
 
 		if (type1 == POINTTYPE)	//point
@@ -1541,7 +1604,7 @@ Datum point_inside_circle(PG_FUNCTION_ARGS)
 		}
 
 	}
-	PG_RETURN_BOOL(FALSE);	
+	PG_RETURN_BOOL(FALSE);
 }
 
 
@@ -1557,15 +1620,15 @@ double distance_pt_seg(POINT3D *p, POINT3D *A, POINT3D *B)
 
 	//otherwise, we use comp.graphics.algorithms Frequently Asked Questions method
 
-	/*(1)     	      AC dot AB 
+	/*(1)     	      AC dot AB
                    r = ---------
-                         ||AB||^2 
+                         ||AB||^2
 		r has the following meaning:
-		r=0 P = A 
-		r=1 P = B 
-		r<0 P is on the backward extension of AB 
-		r>1 P is on the forward extension of AB 
-		0<r<1 P is interior to AB 
+		r=0 P = A
+		r=1 P = B
+		r<0 P is on the backward extension of AB
+		r>1 P is on the forward extension of AB
+		0<r<1 P is interior to AB
 	*/
 
 	r = ( (p->x-A->x) * (B->x-A->x) + (p->y-A->y) * (B->y-A->y) )/( (B->x-A->x)*(B->x-A->x) +(B->y-A->y)*(B->y-A->y) );
@@ -1574,19 +1637,19 @@ double distance_pt_seg(POINT3D *p, POINT3D *A, POINT3D *B)
 		return (distance_pt_pt(p,A));
 	if (r>1)
 		return(distance_pt_pt(p,B));
-	
+
 
 	/*(2)
-		     (Ay-Cy)(Bx-Ax)-(Ax-Cx)(By-Ay) 
-		s = ----------------------------- 
-		             	L^2 
-		
-		Then the distance from C to P = |s|*L. 
+		     (Ay-Cy)(Bx-Ax)-(Ax-Cx)(By-Ay)
+		s = -----------------------------
+		             	L^2
+
+		Then the distance from C to P = |s|*L.
 
 	*/
 
 	s = ((A->y-p->y)*(B->x-A->x)- (A->x-p->x)*(B->y-A->y) )/ ((B->x-A->x)*(B->x-A->x) +(B->y-A->y)*(B->y-A->y) );
-	
+
 	return abs(s) * sqrt(((B->x-A->x)*(B->x-A->x) +(B->y-A->y)*(B->y-A->y) ));
 }
 
@@ -1614,23 +1677,23 @@ double distance_seg_seg(POINT3D *A, POINT3D *B, POINT3D *C, POINT3D *D)
 	// AB and CD are line segments
 	/* from comp.graphics.algo
 
-	Solving the above for r and s yields 
-				(Ay-Cy)(Dx-Cx)-(Ax-Cx)(Dy-Cy) 
-	           r = ----------------------------- (eqn 1) 
+	Solving the above for r and s yields
+				(Ay-Cy)(Dx-Cx)-(Ax-Cx)(Dy-Cy)
+	           r = ----------------------------- (eqn 1)
 				(Bx-Ax)(Dy-Cy)-(By-Ay)(Dx-Cx)
 
-		 	(Ay-Cy)(Bx-Ax)-(Ax-Cx)(By-Ay) 
-		s = ----------------------------- (eqn 2) 
-			(Bx-Ax)(Dy-Cy)-(By-Ay)(Dx-Cx) 
-	Let P be the position vector of the intersection point, then 
-		P=A+r(B-A) or 
-		Px=Ax+r(Bx-Ax) 
-		Py=Ay+r(By-Ay) 
-	By examining the values of r & s, you can also determine some other limiting conditions: 
-		If 0<=r<=1 & 0<=s<=1, intersection exists 
-		r<0 or r>1 or s<0 or s>1 line segments do not intersect 
-		If the denominator in eqn 1 is zero, AB & CD are parallel 
-		If the numerator in eqn 1 is also zero, AB & CD are collinear. 
+		 	(Ay-Cy)(Bx-Ax)-(Ax-Cx)(By-Ay)
+		s = ----------------------------- (eqn 2)
+			(Bx-Ax)(Dy-Cy)-(By-Ay)(Dx-Cx)
+	Let P be the position vector of the intersection point, then
+		P=A+r(B-A) or
+		Px=Ax+r(Bx-Ax)
+		Py=Ay+r(By-Ay)
+	By examining the values of r & s, you can also determine some other limiting conditions:
+		If 0<=r<=1 & 0<=s<=1, intersection exists
+		r<0 or r>1 or s<0 or s>1 line segments do not intersect
+		If the denominator in eqn 1 is zero, AB & CD are parallel
+		If the numerator in eqn 1 is also zero, AB & CD are collinear.
 
 	*/
 	r_top = (A->y-C->y)*(D->x-C->x) - (A->x-C->x)*(D->y-C->y) ;
@@ -1641,9 +1704,9 @@ double distance_seg_seg(POINT3D *A, POINT3D *B, POINT3D *C, POINT3D *D)
 
 	if  ( (r_bot==0) || (s_bot == 0) )
 	{
-		return ( 
-			min(distance_pt_seg(A,C,D), 
-				min(distance_pt_seg(B,C,D), 
+		return (
+			min(distance_pt_seg(A,C,D),
+				min(distance_pt_seg(B,C,D),
 					min(distance_pt_seg(C,A,B),
 						distance_pt_seg(D,A,B)    ) ) )
 			 );
@@ -1654,22 +1717,22 @@ double distance_seg_seg(POINT3D *A, POINT3D *B, POINT3D *C, POINT3D *D)
 	if ((r<0) || (r>1) || (s<0) || (s>1) )
 	{
 		//no intersection
-		return ( 
-			min(distance_pt_seg(A,C,D), 
-				min(distance_pt_seg(B,C,D), 
+		return (
+			min(distance_pt_seg(A,C,D),
+				min(distance_pt_seg(B,C,D),
 					min(distance_pt_seg(C,A,B),
 						distance_pt_seg(D,A,B)    ) ) )
 			 );
-		
+
 	}
-	else 
+	else
 		return -0; //intersection exists
-	
+
 }
 
 
 
-//trivial 
+//trivial
 double distance_pt_pt(POINT3D *p1, POINT3D *p2)
 {
 	//print_point_debug(p1);
@@ -1727,11 +1790,11 @@ double distance_line_line(LINE3D *l1, LINE3D *l2)
 		end = &(l1->points[t]);
 
 		start2 = &(l2->points[0]);
-		
+
 		for (u=1; u< l2->npoints; u++)	//for each segment in L2
 		{
 			end2 = &(l2->points[u]);
-				
+
 				dist_this = distance_seg_seg(start,end,start2,end2);
 //printf("line_line; seg %i * seg %i, dist = %g\n",t,u,dist_this);
 
@@ -1785,10 +1848,10 @@ double distance_pt_poly(POINT3D *p1, POLYGON3D *poly2)
 					line = make_line (poly2->npoints[t] , &pts[offset] , &junk);
 					result = distance_pt_line(p1, line);
 					pfree(line);
-					return result;	
+					return result;
 			}
 			offset += poly2->npoints[t];
-		}	
+		}
 
 		return 0; //its inside the polygon
 	}
@@ -1802,12 +1865,12 @@ double distance_pt_poly(POINT3D *p1, POLYGON3D *poly2)
 		return result;
 	}
 
-	
+
 }
 
 
 // brute force.  Test l1 against each ring.  If there's an intersection then return 0 (crosses boundary)
-// otherwise, test to see if a point inside outer rings of polygon, but not in inner rings. 
+// otherwise, test to see if a point inside outer rings of polygon, but not in inner rings.
 // if so, return 0  (line inside polygon)
 // otherwise return min distance to a ring (could be outside polygon or inside a hole)
 double distance_line_poly(LINE3D *l1, POLYGON3D *poly2)
@@ -1855,11 +1918,11 @@ double distance_line_poly(LINE3D *l1, POLYGON3D *poly2)
 			if (	PIP( &l1->points[0],  &pts[offset], poly2->npoints[t] ) )
 			{
 				//its inside a hole, then the actual distance is the min ring distance
-//printf("line_poly; inside inner ring %i\n",t);				
+//printf("line_poly; inside inner ring %i\n",t);
 				return min_dist;
 			}
 			offset += poly2->npoints[t];
-		}	
+		}
 		// not in hole, there for inside the polygon
 		return 0;
 	}
@@ -1868,7 +1931,7 @@ double distance_line_poly(LINE3D *l1, POLYGON3D *poly2)
 		//not in the outside ring, so min distance to a ring is the actual min distance
 		return min_dist;
 	}
-	
+
 }
 
 // true if point is in poly (and not in its holes)
@@ -1877,7 +1940,7 @@ bool point_in_poly(POINT3D *p, POLYGON3D *poly)
 	int	t;
 	POINT3D	*pts1;
 	int		offset;
-	
+
 		pts1 = (POINT3D *) ( (char *)&(poly->npoints[poly->nrings] )  );
 		pts1 = (POINT3D *) MAXALIGN(pts1);
 
@@ -1898,7 +1961,7 @@ bool point_in_poly(POINT3D *p, POLYGON3D *poly)
 		return FALSE; //not in outer ring
 }
 
-// brute force.  
+// brute force.
 // test to see if any rings intersect.  if yes, dist =0
 // test to see if one inside the other and if they are inside holes.
 // find min distance ring-to-ring
@@ -1971,7 +2034,7 @@ Datum distance(PG_FUNCTION_ARGS)
 	int	g1_i, g2_i;
 	double		dist,this_dist = 0;
 	bool			dist_set = FALSE; //true once dist makes sense.
-	int32			*offsets1,*offsets2;	
+	int32			*offsets1,*offsets2;
 	int			type1,type2;
 	char			*o1,*o2;
 
@@ -1991,11 +2054,11 @@ Datum distance(PG_FUNCTION_ARGS)
 
 	for (g1_i=0; g1_i < geom1->nobjs; g1_i++)
 	{
-		o1 = (char *) geom1 +offsets1[g1_i] ;  
+		o1 = (char *) geom1 +offsets1[g1_i] ;
 		type1=  geom1->objType[g1_i];
 		for (g2_i=0; g2_i < geom2->nobjs; g2_i++)
 		{
-			o2 = (char *) geom2 +offsets2[g2_i] ;  
+			o2 = (char *) geom2 +offsets2[g2_i] ;
 			type2=  geom2->objType[g2_i];
 
 			if  ( (type1 == POINTTYPE) && (type2 == POINTTYPE) )
@@ -2027,7 +2090,7 @@ Datum distance(PG_FUNCTION_ARGS)
 			if  ( (type1 == LINETYPE) && (type2 == POINTTYPE) )
 			{
 				this_dist = distance_pt_line( (POINT3D *)o2, (LINE3D *)o1 );
-			}	
+			}
 			if  ( (type1 == POLYGONTYPE) && (type2 == POINTTYPE) )
 			{
 				this_dist = distance_pt_poly( (POINT3D *)o2, (POLYGON3D *)o1 );
@@ -2047,7 +2110,7 @@ Datum distance(PG_FUNCTION_ARGS)
 				dist_set = TRUE;
 			}
 
-			if (dist <= 0.0)  
+			if (dist <= 0.0)
 				PG_RETURN_FLOAT8( (double) 0.0); // no need to look for things closer
 		}
 	}
@@ -2075,7 +2138,7 @@ Datum expand_bbox(PG_FUNCTION_ARGS)
 	result->URT.x = bbox->URT.x + d;
 	result->URT.y = bbox->URT.y + d;
 	result->URT.z = bbox->URT.z + d;
-	
+
 
 	PG_RETURN_POINTER(result);
 }
@@ -2099,12 +2162,12 @@ Datum startpoint(PG_FUNCTION_ARGS)
 
 	line = (LINE3D *) ( (char *) geom1 +offsets1[0]);
 
-	pt = &line->points[0];  
-	
+	pt = &line->points[0];
+
 	PG_RETURN_POINTER(
 				make_oneobj_geometry(sizeof(POINT3D),
 						         (char *) pt,
-							   POINTTYPE,  geom1->is3d, geom1->SRID, geom1->scale, geom1->offsetX, geom1->offsetY) 
+							   POINTTYPE,  geom1->is3d, geom1->SRID, geom1->scale, geom1->offsetX, geom1->offsetY)
 				);
 }
 
@@ -2130,18 +2193,18 @@ Datum endpoint(PG_FUNCTION_ARGS)
 	line = (LINE3D *) ( (char *) geom1 +offsets1[0]);
 
 
-	pt = &line->points[line->npoints-1];  
-	
+	pt = &line->points[line->npoints-1];
+
 	PG_RETURN_POINTER(
 				make_oneobj_geometry(sizeof(POINT3D),
 						         (char *) pt,
-							   POINTTYPE,  geom1->is3d, geom1->SRID, geom1->scale, geom1->offsetX, geom1->offsetY) 
+							   POINTTYPE,  geom1->is3d, geom1->SRID, geom1->scale, geom1->offsetX, geom1->offsetY)
 				);
 }
 
 
 
-//isclosed(geometry) :- if geometry is a linestring then returns 
+//isclosed(geometry) :- if geometry is a linestring then returns
 //startpoint == endpoint.  If its not a linestring then return NULL.  If
 //its a multilinestring, return true only if all the sub-linestrings have
 //startpoint=endpoint.
@@ -2166,11 +2229,11 @@ Datum isclosed(PG_FUNCTION_ARGS)
 	for (t=0; t< geom1->nobjs; t++)
 	{
 		line = (LINE3D *) ( (char *) geom1 +offsets1[t]);
-		pt1 = &line->points[0];  
-		pt2 = &line->points[line->npoints-1];  
-		
+		pt1 = &line->points[0];
+		pt2 = &line->points[line->npoints-1];
+
 		if ( (pt1->x != pt2->x) || (pt1->y != pt2->y) || (pt1->z != pt2->z) )
-			PG_RETURN_BOOL(FALSE);	
+			PG_RETURN_BOOL(FALSE);
 	}
 	PG_RETURN_BOOL(TRUE);
 }
@@ -2186,7 +2249,7 @@ Datum centroid(PG_FUNCTION_ARGS)
 		int				num_points,num_points_tot;
 		double			tot_x,tot_y,tot_z;
 		GEOMETRY			*result;
-		
+
 
 
 	offsets1 = (int32 *) ( ((char *) &(geom1->objType[0] ))+ sizeof(int32) * geom1->nobjs ) ;
@@ -2194,13 +2257,13 @@ Datum centroid(PG_FUNCTION_ARGS)
 	if  (!((geom1->type == POLYGONTYPE) || (geom1->type == MULTIPOLYGONTYPE) ))
 		PG_RETURN_NULL();
 
-	//find the centroid 
+	//find the centroid
 	num_points_tot = 0;
 		tot_x = 0; tot_y =0; tot_z=0;
-	
+
 	for (t=0;t<geom1->nobjs;t++)
 	{
-		poly = (POLYGON3D *) ( (char *) geom1 +offsets1[t]);	
+		poly = (POLYGON3D *) ( (char *) geom1 +offsets1[t]);
 		pts = (POINT3D *) ( (char *)&(poly->npoints[poly->nrings] )  );
 		pts = (POINT3D *) MAXALIGN(pts);
 		num_points =poly->npoints[0];
@@ -2214,9 +2277,9 @@ Datum centroid(PG_FUNCTION_ARGS)
 		num_points_tot += num_points-1; //last point = 1st point
 		for (v=0;v<num_points-1;v++)
 		{
-			tot_x  += pts[v].x;	
+			tot_x  += pts[v].x;
 			tot_y  += pts[v].y;
-			tot_z  += pts[v].z;		
+			tot_z  += pts[v].z;
 		}
 	}
 	cent = palloc(sizeof(POINT3D));
@@ -2224,7 +2287,7 @@ Datum centroid(PG_FUNCTION_ARGS)
 	 result = (
 				make_oneobj_geometry(sizeof(POINT3D),
 						         (char *) cent,
-							   POINTTYPE,  geom1->is3d, geom1->SRID, geom1->scale, geom1->offsetX, geom1->offsetY) 
+							   POINTTYPE,  geom1->is3d, geom1->SRID, geom1->scale, geom1->offsetX, geom1->offsetY)
 				);
 	pfree(cent);
 	PG_RETURN_POINTER(result);
@@ -2233,10 +2296,10 @@ Datum centroid(PG_FUNCTION_ARGS)
 
 // max_distance(geom,geom)  (both geoms must be linestrings)
 //find max distance between l1 and l2
-// method: for each point in l1, find distance to l2.  
+// method: for each point in l1, find distance to l2.
 //		return max distance
 //
-// note: max_distance(l1,l2) != max_distance(l2,l1) 
+// note: max_distance(l1,l2) != max_distance(l2,l1)
 // returns double
 
 PG_FUNCTION_INFO_V1(max_distance);
@@ -2248,9 +2311,9 @@ Datum max_distance(PG_FUNCTION_ARGS)
 		LINE3D			*l1,*l2;
 
 		int32			*offsets1,*offsets2;
-		
+
 		int			t;
-		POINT3D		*pt;	
+		POINT3D		*pt;
 
 		double		result,dist;
 
@@ -2324,15 +2387,15 @@ Datum optimistic_overlap(PG_FUNCTION_ARGS)
 	//bbox check
 
 	memcpy(&g1_bvol, &geom1->bvol, sizeof(BOX3D) );
-	
+
 	g1_bvol.LLB.x = g1_bvol.LLB.x - dist;
 	g1_bvol.LLB.y = g1_bvol.LLB.y - dist;
-	
+
 	g1_bvol.URT.x = g1_bvol.URT.x + dist;
 	g1_bvol.URT.y = g1_bvol.URT.y + dist;
-	
+
 	//xmin = LLB.x, xmax = URT.x
-	
+
 
 	if (  (g1_bvol.LLB.x > geom2->bvol.URT.x) ||
 		(g1_bvol.URT.x < geom2->bvol.LLB.x) ||
@@ -2353,7 +2416,7 @@ Datum optimistic_overlap(PG_FUNCTION_ARGS)
 //returns a list of points for a single polygon
 // foreach segment
 //  (1st and last points will be unaltered, but
-//   there will be more points inbetween if segment length is 
+//   there will be more points inbetween if segment length is
 POINT3D	*segmentize_ring(POINT3D	*points, double dist, int num_points_in, int *num_points_out)
 {
 	double	seg_distance;
@@ -2361,10 +2424,10 @@ POINT3D	*segmentize_ring(POINT3D	*points, double dist, int num_points_in, int *n
 	POINT3D	*result,*r;
 	bool	keep_going;
 	POINT3D	*last_point, *next_point;
-	
+
 
 		//initial storage
-	max_points = 1000;	
+	max_points = 1000;
 	offset_new=0; //start at beginning of points list
 	result = (POINT3D *) palloc (sizeof(POINT3D) * max_points);
 
@@ -2377,12 +2440,12 @@ POINT3D	*segmentize_ring(POINT3D	*points, double dist, int num_points_in, int *n
 	keep_going = 1;
 	while(keep_going)
 	{
-		next_point = &points[offset_old];				
+		next_point = &points[offset_old];
 
 			//distance last->next > dist
 		seg_distance = sqrt(
-			(next_point->x-last_point->x)*(next_point->x-last_point->x) + 
-			(next_point->y-last_point->y)*(next_point->y-last_point->y) ); 
+			(next_point->x-last_point->x)*(next_point->x-last_point->x) +
+			(next_point->y-last_point->y)*(next_point->y-last_point->y) );
 		if (offset_new >= max_points)
 		{
 			//need to add new points to result
@@ -2392,12 +2455,12 @@ POINT3D	*segmentize_ring(POINT3D	*points, double dist, int num_points_in, int *n
 			max_points *=2;
 			pfree(r);
 		}
-		
+
 		if (seg_distance > dist)
 		{
 			//add a point at the distance location
 			// and set last_point to this loc
-			
+
 			result[offset_new].x = last_point->x + (next_point->x-last_point->x)/seg_distance * dist;
 			result[offset_new].y = last_point->y + (next_point->y-last_point->y)/seg_distance * dist;
 			last_point = &result[offset_new];
@@ -2471,18 +2534,18 @@ Datum segmentize(PG_FUNCTION_ARGS)
 		for (r=0;r<p->nrings;r++)  //foreach ring in the polygon
 		{
 			polypts = segmentize_ring(p_points, maxdist, p->npoints[r], &num_polypts);
-			if ( (all_num_polypts + num_polypts) < all_num_polypts_max )	
+			if ( (all_num_polypts + num_polypts) < all_num_polypts_max )
 			{
 				//just add
 				memcpy( &all_polypts[all_num_polypts], polypts, sizeof(POINT3D) *num_polypts );
 				all_num_polypts += num_polypts;
 			}
-			else 
+			else
 			{
 				//need more space
 				new_size = all_num_polypts_max + num_polypts + 1000;
 				rr = (POINT3D*) palloc(sizeof(POINT3D) * new_size);
-				memcpy(rr,all_polypts, sizeof(POINT3D) *all_num_polypts);	
+				memcpy(rr,all_polypts, sizeof(POINT3D) *all_num_polypts);
 				memcpy(&rr[all_num_polypts], polypts , sizeof(POINT3D) *num_polypts);
 				pfree(all_polypts);
 				all_polypts = rr;
@@ -2492,7 +2555,7 @@ Datum segmentize(PG_FUNCTION_ARGS)
 			pfree(polypts);
 			p_npoints_ring[r] = num_polypts;
 		} //for each ring
-		
+
 		poly = make_polygon(p->nrings, p_npoints_ring, all_polypts, all_num_polypts, &poly_size);
 
 		if (first_one)
@@ -2512,7 +2575,7 @@ Datum segmentize(PG_FUNCTION_ARGS)
 			result = result2;
 			pfree(poly);
 			pfree(all_polypts);
-		}	
+		}
 
 	} // foreach polygon
 	PG_RETURN_POINTER(result);
@@ -2523,7 +2586,7 @@ Datum segmentize(PG_FUNCTION_ARGS)
 // all the sub_objects from both of the argument geometries
 
 // returned geometry is the simplest possible, based on the types
-// of the colelct objects 
+// of the colelct objects
 // ie. if all are of either X or multiX, then a multiX is returned
 // bboxonly types are treated as null geometries (no sub_objects)
 PG_FUNCTION_INFO_V1( collector );
@@ -2561,14 +2624,31 @@ Datum collector( PG_FUNCTION_ARGS )
 
 	geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+
 	if ( geom1->SRID != geom2->SRID )
 	{
 		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
 		PG_RETURN_NULL();
 	}
+
+	if (geom1->nobjs ==0)
+	{
+		geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+		result = (GEOMETRY *)palloc( geom2->size );
+		memcpy( result, geom2, geom2->size );
+		PG_RETURN_POINTER(result);
+	}
+	if (geom2->nobjs ==0)
+	{
+		geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+		result = (GEOMETRY *)palloc( geom1->size );
+		memcpy( result, geom1, geom1->size );
+		PG_RETURN_POINTER(result);
+	}
+
 	result = (GEOMETRY *)palloc( geom1->size );
 	memcpy( result, geom1, geom1->size );
-		
+
 	offsets2 = (int32 *)( ((char *)&(geom2->objType[0])) + sizeof( int32 ) * geom2->nobjs ) ;
 
 	for (i=0; i<geom2->nobjs; i++)
@@ -2577,7 +2657,7 @@ Datum collector( PG_FUNCTION_ARGS )
 		{
 			size = geom2->size - offsets2[i];
 		}
-		else 
+		else
 		{
 			size = offsets2[i+1] - offsets2[i];
 		}
@@ -2649,5 +2729,43 @@ Datum box3dtobox(PG_FUNCTION_ARGS)
 	BOX *out;
 	out = convert_box3d_to_box(box1);
 	PG_RETURN_POINTER(out);
+}
+
+
+PG_FUNCTION_INFO_V1(isempty);
+Datum isempty(PG_FUNCTION_ARGS)
+{
+		GEOMETRY		      *geom1= (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+
+	if (geom1->nobjs ==0)
+		PG_RETURN_INT32(1);
+	PG_RETURN_INT32(0);
+}
+
+
+// converts multi* types with 1 element to the single-element version.
+// ie. MULTIPOINT(0 0) --> POINT(0 0)
+void compressType(GEOMETRY *g)
+{
+	if (g->nobjs ==1)
+	{
+		if (g->type == MULTIPOINTTYPE)
+		{
+			g->type = POINTTYPE;
+			return;
+		}
+		if (g->type == MULTILINETYPE)
+		{
+			g->type = LINETYPE;
+			return;
+		}
+		if (g->type == MULTIPOLYGONTYPE)
+		{
+			g->type = POLYGONTYPE;
+			return;
+		}
+
+	}
 }
 

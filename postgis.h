@@ -11,6 +11,15 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.33  2003/08/08 18:19:20  dblasby
+ * Conformance changes.
+ * Removed junk from postgis_debug.c and added the first run of the long
+ * transaction locking support.  (this will change - dont use it)
+ * conformance tests were corrected
+ * some dos cr/lf removed
+ * empty geometries i.e. GEOMETRYCOLLECT(EMPTY) added (with indexing support)
+ * pointN(<linestring>,1) now returns the first point (used to return 2nd)
+ *
  * Revision 1.32  2003/08/06 19:31:18  dblasby
  * Added the WKB parser.  Added all the functions like
  * PolyFromWKB(<WKB>,[<SRID>]).
@@ -308,8 +317,7 @@ POLYGON3D	*make_polygon(int nrings, int *pts_per_ring, POINT3D *pts, int npoints
 void set_point( POINT3D *pt,double x, double y, double z);
 GEOMETRY	*make_oneobj_geometry(int sub_obj_size, char *sub_obj, int type, bool is3d, int SRID,double scale, double offx,double offy);
 
-void print_box(BOX3D *box);
-void print_box_oneline(BOX3D *box);
+
 void print_point(char *result, POINT3D *pt,bool is3d);
 void print_many_points(char *result, POINT3D *pt ,int npoints, bool is3d);
 void swap(double *d1, double *d2);
@@ -362,7 +370,7 @@ void	translate_points(POINT3D *pt, int npoints,double x_off, double y_off, doubl
 int	size_subobject (char *sub_obj, int type);
 GEOMETRY	*add_to_geometry(GEOMETRY *geom,int sub_obj_size, char *sub_obj, int type);
 LINE3D	*make_line(int	npoints, POINT3D	*pts, int	*size);
-char  *print_geometry(GEOMETRY *geom);
+
 
 void  swap_char(char *a, char*b);
 void	flip_endian_double(char	*dd);
@@ -379,9 +387,7 @@ char	*wkb_multipoint(POINT3D *pt,int32 numb_points,int32 *size, bool flipbytes, 
 char *to_wkb_collection(GEOMETRY *geom, bool flip_endian, int32 *size);
 char	*to_wkb_sub(GEOMETRY *geom, bool flip_endian, int32 *wkb_size);
 
-void decode_wkb_collection(char *wkb,int	*size);
-void decode_wkb(char *wkb, int *size);
-void dump_bytes( char *a, int numb);
+
 
 double deltaLongitude(double azimuth, double sigma, double tsm,SPHEROID *sphere);
 double bigA(double u2);
@@ -410,7 +416,7 @@ POINT3D	*segmentize_ring(POINT3D	*points, double dist, int num_points_in, int *n
 Datum optimistic_overlap(PG_FUNCTION_ARGS);
 
 
-void print_point_debug(POINT3D *p);
+
 unsigned char	parse_hex(char *str);
 void deparse_hex(unsigned char str, unsigned char *result);
 
@@ -424,6 +430,11 @@ double getdouble(char *c);
 GEOMETRY *WKBtoGeometry(char *WKB, int length, int *bytes_read);
 
 POINT3D *wkb_linearring(char *WKB,char is3d, char flip_endian, int *numbPoints, int *bytes,int bytes_in_stream);
+
+GEOMETRY *makeNullGeometry(int SRID);
+
+void compressType(GEOMETRY *g);
+
 
 //exposed to psql
 
@@ -469,7 +480,6 @@ Datum geometry_eq(PG_FUNCTION_ARGS);
 Datum npoints(PG_FUNCTION_ARGS);
 Datum nrings(PG_FUNCTION_ARGS);
 Datum mem_size(PG_FUNCTION_ARGS);
-Datum numb_sub_objs(PG_FUNCTION_ARGS);
 Datum summary(PG_FUNCTION_ARGS);
 Datum translate(PG_FUNCTION_ARGS);
 
@@ -590,6 +600,7 @@ Datum geometry_from_text_mpoint(PG_FUNCTION_ARGS);
 Datum geometry_from_text_line(PG_FUNCTION_ARGS);
 Datum geometry_from_text_mline(PG_FUNCTION_ARGS);
 Datum geometry_from_text_gc(PG_FUNCTION_ARGS);
+Datum isempty(PG_FUNCTION_ARGS);
 
 /*--------------------------------------------------------------------
  * Useful floating point utilities and constants.

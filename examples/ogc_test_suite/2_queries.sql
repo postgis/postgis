@@ -931,9 +931,9 @@ WHERE named_places.name = 'Ashton' AND forests.name = 'Green Forest';
 --
 --================================
 --
-SELECT Union(shore, boundary)
+SELECT GeomUnion(shore, boundary)
 FROM lakes, named_places 
-WHERE lakes.name = 'Blue Lake' AND named_places.name = 'Ashton';
+WHERE lakes.name = 'Blue Lake' AND named_places.name = 'Goose Island';
 --
 --================================
 -- Conformance Item T50	
@@ -948,7 +948,7 @@ WHERE lakes.name = 'Blue Lake' AND named_places.name = 'Ashton';
 --
 SELECT SymmetricDifference(shore, boundary)
 FROM lakes, named_places 
-WHERE lakes.name = 'Blue Lake' OR named_places.name = 'Ashton';
+WHERE lakes.name = 'Blue Lake' AND named_places.name = 'Goose Island';
 --
 --================================
 -- Conformance Item T51	

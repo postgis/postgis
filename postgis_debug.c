@@ -8,9 +8,18 @@
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of hte GNU General Public Licence. See the COPYING file.
- * 
+ *
  **********************************************************************
  * $Log$
+ * Revision 1.11  2003/08/08 18:19:20  dblasby
+ * Conformance changes.
+ * Removed junk from postgis_debug.c and added the first run of the long
+ * transaction locking support.  (this will change - dont use it)
+ * conformance tests were corrected
+ * some dos cr/lf removed
+ * empty geometries i.e. GEOMETRYCOLLECT(EMPTY) added (with indexing support)
+ * pointN(<linestring>,1) now returns the first point (used to return 2nd)
+ *
  * Revision 1.10  2003/07/25 17:08:37  pramsey
  * Moved Cygwin endian define out of source files into postgis.h common
  * header file.
@@ -41,6 +50,9 @@
 #include "postgis.h"
 #include "utils/elog.h"
 
+#include "executor/spi.h"
+#include "commands/trigger.h"
+
 
 #define SHOW_DIGS_DOUBLE 15
 #define MAX_DIGS_DOUBLE (SHOW_DIGS_DOUBLE + 6 + 1 + 3 +1)
@@ -49,50 +61,9 @@
 // #define DEBUG_GIST
 //#define DEBUG_GIST2
 
-void print_box2d(BOX *box);
 
 
-void dump_bytes( char *a, int numb)
-{
-	int	t;
 
-	for (t=0; t<numb; t++)
-	{
-		printf("	+ Byte #%i has value %i (%x)\n",t,a[t],a[t]);
-	}
-}
-
-
-//debug function - whats really in that BOX3D?
-void print_box(BOX3D *box)
-{
-	printf("box is at %p\n",box);
-	if (box == NULL)
-	{
-		printf ("	+ BOX IS NULL\n");
-		return;
-	}
-	printf("	+ LLB = [%g,%g,%g]\n", box->LLB.x, box->LLB.y,box->LLB.z);
-	printf("	+ URT = [%g,%g,%g]\n", box->URT.x, box->URT.y,box->URT.z);
-}
-
-void print_box2d(BOX *box)
-{
-	printf (" BOX[%g %g , %g %g] ",box->low.x, box->low.y, box->high.x, box->high.y);
-}
-
-//debug function - whats really in that BOX3D?
-void print_box_oneline(BOX3D *box)
-{
-	printf(" (%p) {",box);
-	if (box == NULL)
-	{
-		printf ("BOX IS NULL}");
-		return;
-	}
-	printf("[%g,%g,%g] ", box->LLB.x, box->LLB.y,box->LLB.z);
-	printf("[%g,%g,%g]}", box->URT.x, box->URT.y,box->URT.z);
-}
 
 //find the size of geometry
 PG_FUNCTION_INFO_V1(mem_size);
@@ -103,14 +74,7 @@ Datum mem_size(PG_FUNCTION_ARGS)
 	PG_RETURN_INT32(geom1->size);
 }
 
-//find the size of geometry
-PG_FUNCTION_INFO_V1(numb_sub_objs);
-Datum numb_sub_objs(PG_FUNCTION_ARGS)
-{
-	GEOMETRY		      *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	PG_RETURN_INT32(geom1->nobjs);
-}
 
 //get summary info on a GEOMETRY
 PG_FUNCTION_INFO_V1(summary);
@@ -186,552 +150,126 @@ Datum summary(PG_FUNCTION_ARGS)
 
 
 
-//  DO NOT USE THESE decoding function (except for debugging purposes)
-//    The code is NOT maintained and is thrown together
 
 
-// unsupported debugging function.
-// given a wkb input thats a geometrycollection, returns its size and prints out
-// its contents
-//
-//  Its really messy - dont even think about using this for anything
-//
-// you shouldnt call this function; just call decode_wkb() and it will
-// call this function
-//
-void decode_wkb_collection(char *wkb,int	*size)
+extern Datum lockcheck(PG_FUNCTION_ARGS);
+
+PG_FUNCTION_INFO_V1(lockcheck);
+
+Datum lockcheck (PG_FUNCTION_ARGS)
 {
-	int	offset =0;
-	bool	flipbytes;
-	int	total_size=0,sub_size;
-	int	numb_sub,t;
-	bool	first_one = TRUE;
+	TriggerData *trigdata =      (TriggerData *) fcinfo->context;
+	char		*colname ;
+	char		*locktablename ;
+	int			id;
+	HeapTuple   rettuple;
+	TupleDesc   tupdesc;
+	int         SPIcode;
+	char		*relname;
+	bool		isnull;
+	char		query[1024];
 
+	elog(NOTICE,"in lockcheck()");
 
-	if (wkb[0] ==0 )  //big endian
+	/* Make sure trigdata is pointing at what I expect */
+    if (!CALLED_AS_TRIGGER(fcinfo))
+        elog(ERROR, "lockcheck: not fired by trigger manager");
+
+	rettuple = trigdata->tg_newtuple;
+	tupdesc = trigdata->tg_relation->rd_att;
+
+	    /* Connect to SPI manager */
+    SPIcode = SPI_connect();
+
+	if (SPIcode  != SPI_OK_CONNECT)
 	{
-		if (BYTE_ORDER == LITTLE_ENDIAN)
-			flipbytes= 1;
-		else
-			flipbytes= 0;
+		elog(ERROR,"lockcheck: couldnt open a connection to SPI");
+		PG_RETURN_NULL() ;
 	}
-	else //little
+
+	relname = SPI_getrelname(trigdata->tg_relation);
+
+	colname  =       trigdata->tg_trigger->tgargs[0];
+
+	locktablename  = trigdata->tg_trigger->tgargs[1];
+
+
+	elog(NOTICE,"trigger was executed on the relation: '%s', with attribute named '%s', with locktable named '%s'", relname,colname,locktablename);
+
+	//get the value
+	id = (int) DatumGetInt32( SPI_getbinval(rettuple, tupdesc, SPI_fnumber(tupdesc,colname), &isnull) );
+
+	sprintf(query,"SELECT lock_key FROM %s WHERE expires >= now() AND id = %i", locktablename,id);
+	elog(NOTICE,"about to execute :%s", query);
+
+	SPIcode = SPI_exec(query,0);
+	if (SPIcode !=SPI_OK_SELECT )
+		elog(ERROR,"couldnt execute to test for lock :%s",query);
+
+
+	if (SPI_processed >0)
 	{
-		if (BYTE_ORDER == LITTLE_ENDIAN)
-			flipbytes= 0;
-		else
-			flipbytes= 1;
-	}
+		// there is a lock - check to see if I have rights to it!
 
-	memcpy(&numb_sub, wkb+5,4);
-	if (flipbytes)
-		flip_endian_int32( (char *) & numb_sub) ;
+		TupleDesc tupdesc = SPI_tuptable->tupdesc;
+		SPITupleTable *tuptable = SPI_tuptable;
+		HeapTuple tuple = tuptable->vals[0];
+		char	*lockcode = SPI_getvalue(tuple, tupdesc, 1);
 
-	printf("GEOMETRYCOLLECTION(\n");
-	offset = 9;
-	for (t=0;t<numb_sub;t++)
+		elog(NOTICE,"there is a lock on this row!");
+
+		// check to see if temp_lock_have_table table exists (it might not exist if they own no locks
+		sprintf(query,"SELECT * FROM pg_class WHERE relname = 'temp_lock_have_table'");
+		SPIcode = SPI_exec(query,0);
+		if (SPIcode !=SPI_OK_SELECT )
+			elog(ERROR,"couldnt execute to test for lockkey temp table :%s",query);
+		if (SPI_processed ==0)
+		{
+			elog(NOTICE,"I do not own any locks (no lock table) - I cannot modify the row");
+			//PG_RETURN_NULL();
+			SPI_finish();
+			return NULL;
+		}
+
+
+		sprintf(query,"SELECT * FROM temp_lock_have_table  WHERE xideq(transid , getTransactionID() ) AND lockcode =%s",lockcode);
+		elog(NOTICE,"about to execute :%s", query);
+
+	SPIcode = SPI_exec(query,0);
+	if (SPIcode !=SPI_OK_SELECT )
+		elog(ERROR,"couldnt execute to test for lock aquire:%s",query);
+
+	if (SPI_processed >0)
 	{
-			if (first_one)
-			{
-				first_one = FALSE;
-			}
-			else
-			{
-				printf(",");
-			}
-
-		printf("	");
-		decode_wkb( wkb + offset, &sub_size);
-		total_size += sub_size;
-		offset += sub_size;
+		elog(NOTICE,"I own the lock - I can modify the row");
+		SPI_finish();
+		return PointerGetDatum(rettuple);
 	}
-	*size = total_size +9 ;
-	printf(")\n");
-	return;
+
+		elog(NOTICE,"I do not own the lock - I cannot modify the row");
+		//PG_RETURN_NULL();
+		SPI_finish();
+		return NULL;
+	}
+	else
+	{
+		elog(NOTICE,"there is NOT a lock on this row!");
+		SPI_finish();
+		return PointerGetDatum(rettuple);
+	}
+
 }
 
 
-// unsupported debugging function.
-// given a wkb input, returns its size and prints out
-// its contents
-//
-//  Its really messy - dont even think about using this for anything
-//
-//dump wkb to screen (for debugging)
-// assume endian is constant though out structure
-void decode_wkb(char *wkb, int *size)
+extern Datum getTransactionID(PG_FUNCTION_ARGS);
+
+PG_FUNCTION_INFO_V1(getTransactionID);
+
+Datum getTransactionID(PG_FUNCTION_ARGS)
 {
-
-	bool	flipbytes;
-	uint32	type;
-	uint32	n1,n2,n3,t,u,v;
-	bool	is3d;
-	bool first_one,first_one2,first_one3;
-
-	int	offset,offset1;
-	double	x,y,z;
-	int	total_points;
-
-
-
-	//printf("decoding wkb\n");
-
-
-	if (wkb[0] ==0 )  //big endian
-	{
-		if (BYTE_ORDER == LITTLE_ENDIAN)
-			flipbytes= 1;
-		else
-			flipbytes= 0;
-	}
-	else //little
-	{
-		if (BYTE_ORDER == LITTLE_ENDIAN)
-			flipbytes= 0;
-		else
-			flipbytes= 1;
-	}
-
-	//printf("	+ flipbytes = %i\n", flipbytes);
-
-	//printf("info about wkb:\n");
-	memcpy(&type, wkb+1,4);
-	if (flipbytes)
-		flip_endian_int32( (char *) & type) ;
-
-	is3d = 0;
-
-	if (type > 1000 )
-	{
-		is3d = 1;
-		type = type - 32768;
-	}
-	//printf("	Type = %i (is3d = %i)\n", type, is3d);
-	if (type == 1)  //POINT()
-	{
-		printf("POINT(");
-		if (is3d)
-		{
-			memcpy(&x, &wkb[5], 8);
-			memcpy(&y, &wkb[5+8], 8);
-			memcpy(&z, &wkb[5+16], 8);
-			if (flipbytes)
-			{
-				flip_endian_double( (char *) & x) ;
-				flip_endian_double( (char *) & y) ;
-				flip_endian_double( (char *) & z) ;
-			}
-			printf("%g %g %g)",x,y,z );
-		}
-		else
-		{
-			memcpy(&x, &wkb[5], 8);
-			memcpy(&y, &wkb[5+8], 8);
-			if (flipbytes)
-			{
-				flip_endian_double( (char *) & x) ;
-				flip_endian_double( (char *) & y) ;
-			}
-			printf("%g %g)", x,y);
-		}
-		printf("\n");
-		if (is3d)
-			*size = 29;
-		else
-			*size = 21;
-		return;
-
-	}
-	if (type == 2)
-	{
-		printf("LINESTRING(");
-		memcpy(&n1, &wkb[5],4);
-		if (flipbytes)
-			flip_endian_int32( (char *) & n1) ;
-	//	printf("  --- has %i sub points\n",n1);
-		first_one = TRUE;
-		for (t=0; t<n1; t++)
-		{
-			if (first_one)
-			{
-				first_one = FALSE;
-			}
-			else
-			{
-				printf(",");
-			}
-			if (is3d)
-			{
-				memcpy(&x, &wkb[9+t*24],8);
-				memcpy(&y, &wkb[9+t*24+8],8);
-				memcpy(&z, &wkb[9+t*24+16],8);
-				if (flipbytes)
-				{
-					flip_endian_double( (char *) & x) ;
-					flip_endian_double( (char *) & y) ;
-					flip_endian_double( (char *) & z) ;
-				}
-				printf("%g %g %g",x,y,z);
-			}
-			else
-			{
-				memcpy(&x, &wkb[9+t*16],8);
-				memcpy(&y, &wkb[9+t*16+8],8);
-				if (flipbytes)
-				{
-					flip_endian_double( (char *) & x) ;
-					flip_endian_double( (char *) & y) ;
-				}
-				printf("%g %g",x,y);
-			}
-		}
-
-
-		printf(")\n");
-		if (is3d)
-			*size = 9 + n1*24;
-		else
-			*size = 9 + n1*16;
-		return;
-	}
-	if (type == 3)
-	{
-		*size = 9;
-		printf("POLYGON(");
-		memcpy(&n1, &wkb[5],4);
-		if (flipbytes)
-			flip_endian_int32( (char *) & n1) ;
-		//printf("  --- has %i rings\n",n1);
-		*size += 4*n1;
-		offset= 9;
-		first_one = TRUE;
-		for (u=0; u<n1; u++)
-		{
-			memcpy(&n2, &wkb[offset],4);
-			if (flipbytes)
-				flip_endian_int32( (char *) & n2) ;
-		//	printf(" ring %i: has %i points\n",u,n2);
-
-
-			if (first_one)
-			{
-				first_one = FALSE;
-			}
-			else
-			{
-			  	printf(",");
-			}
-			printf("(");
-
-			first_one2 = TRUE;
-			for (v=0; v< n2; v++)
-			{
-			if (first_one2)
-			{
-				first_one2 = FALSE;
-			}
-			else
-			{
-			  	printf(",");
-			}
-				if (is3d)
-				{
-					memcpy(&x, &wkb[offset + 4+ v*24],8);
-					memcpy(&y, &wkb[offset + 4+ v*24 + 8],8);
-					memcpy(&z, &wkb[offset + 4+ v*24 + 16],8);
-					if (flipbytes)
-					{
-						flip_endian_double( (char *) & x) ;
-						flip_endian_double( (char *) & y) ;
-						flip_endian_double( (char *) & z) ;
-					}
-					printf("%g %g %g",x,y,z);
-
-				}
-				else
-				{
-					memcpy(&x, &wkb[offset +4 +v*16],8);
-					memcpy(&y, &wkb[offset +4 +v*16 + 8],8);
-					if (flipbytes)
-					{
-						flip_endian_double( (char *) & x) ;
-						flip_endian_double( (char *) & y) ;
-					}
-					printf("%g %g",x,y);
-
-				}
-			}
-			if (is3d)
-			{
-				offset +=4 +24*n2;
-				*size += n2*24;
-			}
-			else
-			{
-				offset += 4+ 16*n2;
-				*size += n2*16;
-			}
-			printf(")");
-		}
-
-		printf(")\n");
-
-		return;
-
-	}
-	if (type == 4)
-	{
-		printf("MULTIPOINT(");
-		memcpy(&n1,&wkb[5],4);
-		if (flipbytes)
-			flip_endian_int32( (char *) & n1) ;
-	//	printf(" -- has %i points\n",n1);
-		if (is3d)
-			*size = 9 + n1*29;
-		else
-			*size = 9 + n1*21;
-		first_one = TRUE;
-		for (t=0; t<n1; t++)
-		{
-			if (first_one)
-			{
-				first_one= FALSE;
-			}
-			else
-			{
-				printf(",");
-			}
-			if (is3d)
-			{
-				memcpy(&x, &wkb[9+t*29+5],8);
-				memcpy(&y, &wkb[9+t*29+8+5],8);
-				memcpy(&z, &wkb[9+t*29+16+5],8);
-				if (flipbytes)
-				{
-					flip_endian_double( (char *) & x) ;
-					flip_endian_double( (char *) & y) ;
-					flip_endian_double( (char *) & z) ;
-				}
-				printf("%g %g %g",x,y,z);
-			}
-			else
-			{
-				memcpy(&x, &wkb[9+t*21+5],8);
-				memcpy(&y, &wkb[9+t*21+8+5],8);
-				if (flipbytes)
-				{
-					flip_endian_double( (char *) & x) ;
-					flip_endian_double( (char *) & y) ;
-				}
-				printf("%g %g",x,y);
-			}
-		}
-		printf (")\n");
-		return;
-	}
-	if (type == 5)
-	{
-		*size = 9;
-		printf("MULTILINESTRING(");
-		memcpy(&n2,&wkb[5],4);
-		if (flipbytes)
-			flip_endian_int32( (char *) & n2) ;
-	//	printf(" -- has %i sub-lines\n",n2);
-		*size += 9 *n2;
-		offset =9;
-		first_one2 = TRUE;
-		for (u=0; u<n2; u++)
-		{
-			if (first_one2)
-			{
-				first_one2= FALSE;
-			}
-			else
-			{
-				printf(",");
-			}
-		printf("(");
-		memcpy(&n1, &wkb[5 +offset],4);
-		if (flipbytes)
-			flip_endian_int32( (char *) & n1) ;
-	//	printf("  --- has %i sub points\n",n1);
-		first_one = TRUE;
-		for (t=0; t<n1; t++)
-		{
-			if (first_one)
-			{
-				first_one= FALSE;
-			}
-			else
-			{
-				printf(",");
-			}
-
-			if (is3d)
-			{
-				memcpy(&x, &wkb[offset+9+t*24],8);
-				memcpy(&y, &wkb[offset+9+t*24+8],8);
-				memcpy(&z, &wkb[offset+9+t*24+16],8);
-				if (flipbytes)
-				{
-					flip_endian_double( (char *) & x) ;
-					flip_endian_double( (char *) & y) ;
-					flip_endian_double( (char *) & z) ;
-				}
-				printf("%g %g %g",x,y,z);
-			}
-			else
-			{
-				memcpy(&x, &wkb[offset+9+t*16],8);
-				memcpy(&y, &wkb[offset+9+t*16+8],8);
-				if (flipbytes)
-				{
-					flip_endian_double( (char *) & x) ;
-					flip_endian_double( (char *) & y) ;
-				}
-				printf("%g %g",x,y);
-			}
-		}
-		printf(")");
-		if (is3d)
-		{
-			*size += (24*n1);
-			offset += 9 + (24*n1);
-		}
-		else
-		{
-			*size += (16*n1);
-			offset += 9 + (16*n1);
-		}
-		}
-		printf(")\n");
-		return;
-
-	}
-	if (type == 6)
-	{
-		*size = 9;
-		printf("MULTIPOLYGON(");
-		memcpy(&n3,&wkb[5],4);
-		if (flipbytes)
-			flip_endian_int32( (char *) & n3) ;
-		//printf(" -- has %i sub-poly\n",n3);
-		*size += 9*n3;
-		offset1 =9;//where polygon starts
-		first_one3= TRUE;
-	for (t=0;t<n3; t++)  //for each polygon
-	{
-			if (first_one3)
-			{
-				first_one3= FALSE;
-			}
-			else
-			{
-				printf(",");
-			}
-		printf("(");
-		//printf("polygon #%i\n",t);
-		total_points = 0;
-		memcpy(&n1,&wkb[offset1+5],4); //# rings
-		*size += 4*n1;
-		if (flipbytes)
-			flip_endian_int32( (char *) & n1) ;
-		//printf("This polygon has %i rings\n",n1);
-		offset = offset1+9; //where linear rings are
-		first_one = TRUE;
-		for (u=0; u<n1; u++) //for each ring
-		{
-			if (first_one)
-			{
-				first_one= FALSE;
-			}
-			else
-			{
-				printf(",");
-			}
-			printf("(");
-			memcpy(&n2, &wkb[offset],4);
-			if (flipbytes)
-				flip_endian_int32( (char *) & n2) ; //pts in linear ring
-		//	printf(" ring %i: has %i points\n",u,n2);
-			total_points += n2;
-			first_one2 = TRUE;
-			for (v=0; v< n2; v++)	//for each point
-			{
-			if (first_one2)
-			{
-				first_one2= FALSE;
-			}
-			else
-			{
-				printf(",");
-			}
-				if (is3d)
-				{
-					memcpy(&x, &wkb[offset + 4+ v*24],8);
-					memcpy(&y, &wkb[offset + 4+ v*24 + 8],8);
-					memcpy(&z, &wkb[offset + 4+ v*24 + 16],8);
-					if (flipbytes)
-					{
-						flip_endian_double( (char *) & x) ;
-						flip_endian_double( (char *) & y) ;
-						flip_endian_double( (char *) & z) ;
-					}
-					printf("%g %g %g",x,y,z);
-				}
-				else
-				{
-					memcpy(&x, &wkb[offset +4 +v*16],8);
-					memcpy(&y, &wkb[offset +4 +v*16 + 8],8);
-					if (flipbytes)
-					{
-						flip_endian_double( (char *) & x) ;
-						flip_endian_double( (char *) & y) ;
-					}
-					printf("%g %g",x,y);
-				}
-			}
-			if (is3d)
-			{
-				*size += 24*n2;
-				offset += 4+ 24*n2;
-			}
-			else
-			{
-				*size += 16*n2;
-				offset += 4+ 16*n2;
-			}
-			printf(")");
-		}
-		printf(")");
-		if (is3d)
-			offset1 +=9 +24*total_points +4*n1;
-		else
-			offset1 += 9+ 16*total_points +4*n1;
-	}
-	printf(")\n");
-	return;
-	}
-	if (type == 7)
-	{
-		decode_wkb_collection(wkb, size);
-	}
+    TransactionId xid = GetCurrentTransactionId();
+    PG_RETURN_DATUM( TransactionIdGetDatum(xid) );
 }
 
-
-char *print_geometry(GEOMETRY *geom)
-{
-	char	*text;
-
-	text = (char *) DatumGetPointer(DirectFunctionCall1(geometry_out,PointerGetDatum(geom) ) ) ;
-
-	printf( "%s", text);
-	return text;
-}
-
-void print_point_debug(POINT3D *p)
-{
-	printf("[%g %g %g]\n",p->x,p->y,p->z);
-}
 
 

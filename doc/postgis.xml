@@ -1705,15 +1705,244 @@ if( geom.getType() = Geometry.POLYGON )
 						  running. This is useful in binary cursors to pull data out of
 						  the database without converting it to a string representation.
 						</para> 
+						<para>OGC SPEC s2.1.1.1 - also see asBinary(<geometry>,'XDR') and asBinary(<geometry>,'NDR')
 					</listitem> 
 				</varlistentry> 
 				<varlistentry> 
 					<term>Dimension(geometry)</term> 
 					<listitem> 
-						<para>Returns '2' if the geometry is two dimensional and '3' if the
-						  geometry is three dimensional.
+						<para>The inherent dimension of this Geometry object, which must be less than or equal
+to the coordinate dimension. OGC SPEC s2.1.1.1 - returns 0 for points, 1 for lines, 2 for polygons, and the largest dimension of the components of a GEOMETRYCOLLECTION.
 						</para> 
+						<programlisting>select dimension('GEOMETRYCOLLECTION(LINESTRING(1 1,0 0),POINT(0 0)'); 
+dimension 
+-----------
+1</programlisting>
 					</listitem> 
+				</varlistentry> 
+				<varlistentry> 
+				<term>isEmpty(geometry)</term> 
+				<listitem> 
+					<para>
+						Returns 1 (TRUE) if this Geometry is the empty geometry . If true, then this
+Geometry represents the empty point set - i.e. GEOMETRYCOLLECTION(EMPTY).
+					</para> 
+					<para>OGC SPEC s2.1.1.1 </para>
+				</listitem> 
+				</varlistentry> 
+				<varlistentry> 
+				<term>isSimple(geometry)</term> 
+				<listitem> 
+					<para>
+						Returns 1 (TRUE) if this Geometry has no anomalous geometric points, such as self
+						intersection or self tangency. 
+					</para> 
+					<para>Performed by the GEOS module</para>
+					
+					<para>OGC SPEC s2.1.1.1  </para>
+				</listitem> 
+				</varlistentry> 
+				<varlistentry> 
+				<term>boundary(geometry)</term> 
+				<listitem> 
+					<para>
+						Returns the closure of the combinatorial boundary of this Geometry. The
+						combinatorial boundary is defined as described in section 3.12.3.2 of the OGC SPEC. Because the result of this function
+						is a closure, and hence topologically closed, the resulting boundary can be represented using
+representational geometry primitives as discussed in the OGC SPEC, section 3.12.2.
+					</para> 
+					<para>Performed by the GEOS module</para>
+					<para>OGC SPEC s2.1.1.1  </para>
+				</listitem> 
+				</varlistentry> 
+				<varlistentry> 
+				<term>equals(geometry)</term> 
+				<listitem> 
+					<para>
+						Returns 1 (TRUE) if this Geometry is ‘spatially equal’ to
+anotherGeometry.  Use this for a 'better' answer than '='.  equals ('LINESTRING(0 0, 10 10)','LINESTRING(0 0, 5 5, 10 10)') is true.
+					</para> 
+					<para>Performed by the GEOS module</para>
+					<para>OGC SPEC s2.1.1.1  </para>
+				</listitem> 
+				</varlistentry> 
+			
+				<varlistentry> 
+				<term>disjoint(geometry,geometry)</term> 
+				<listitem> 
+					<para>Returns 1 (TRUE) if this Geometry is ‘spatially disjoint’ from anotherGeometry.
+					</para> 
+					<para>Performed by the GEOS module</para>
+					<para>Do not call with a GeometryCollection as an argument</para>
+					<para> NOTE: this is the "allowable" version that returns a boolean, not an integer.
+					<para>OGC SPEC s2.1.1.1 //s2.1.13.3 - a.Relate(b, ‘FF*FF****’) </para>
+				</listitem> 
+				</varlistentry> 
+				<varlistentry> 
+				<term>intersects(geometry,geometry)</term> 
+				<listitem> 
+					<para>Returns 1 (TRUE) if this Geometry  ‘spatially intersects’  anotherGeometry.
+					</para> 
+					<para>Performed by the GEOS module</para>
+					<para>Do not call with a GeometryCollection as an argument</para>
+					<para> NOTE: this is the "allowable" version that returns a boolean, not an integer.
+					<para>OGC SPEC s2.1.1.1 //s2.1.13.3 - Intersects(g1, g2 ) --> Not (Disjoint(g1, g2 )) </para>
+				</listitem> 
+				</varlistentry> 
+				<varlistentry> 
+				<term>touches(geometry,geometry)</term> 
+				<listitem> 
+					<para>Returns 1 (TRUE) if this Geometry  ‘spatially touches’  anotherGeometry.
+					</para> 
+					<para>Performed by the GEOS module</para>
+					<para>Do not call with a GeometryCollection as an argument</para>
+					<para> NOTE: this is the "allowable" version that returns a boolean, not an integer.
+					<para>OGC SPEC s2.1.1.1 // s2.1.13.3- a.Touches(b) -> (I(a) intersection I(b) = {empty set} ) and (a intersection b) not empty  </para>
+				</listitem> 
+				</varlistentry> 
+				<varlistentry> 
+				<term>crosses(geometry,geometry)</term> 
+				<listitem> 
+					<para>Returns 1 (TRUE) if this Geometry  ‘spatially crosses’  anotherGeometry.
+					</para> 
+					<para>Performed by the GEOS module</para>
+					<para>Do not call with a GeometryCollection as an argument</para>
+					<para> NOTE: this is the "allowable" version that returns a boolean, not an integer.
+					<para>OGC SPEC s2.1.1.1 // s2.1.13.3 - a.Relate(b, ‘T*T******’)  </para>
+				</listitem> 
+				</varlistentry> 
+				<varlistentry> 
+				<term>within(geometry,geometry)</term> 
+				<listitem> 
+					<para>Returns 1 (TRUE) if this Geometry is ‘spatially within’  anotherGeometry.
+					</para> 
+					<para>Performed by the GEOS module</para>
+					<para>Do not call with a GeometryCollection as an argument</para>
+					<para> NOTE: this is the "allowable" version that returns a boolean, not an integer.
+					<para>OGC SPEC s2.1.1.1 // s2.1.13.3 - a.Relate(b, ‘T*F**F***’) </para>
+				</listitem> 
+				</varlistentry> 
+				<varlistentry> 
+				<term>overlaps(geometry,geometry)</term> 
+				<listitem> 
+					<para>Returns 1 (TRUE) if this Geometry is ‘spatially overlapping’  anotherGeometry.
+					</para> 
+					<para>Performed by the GEOS module</para>
+					<para>Do not call with a GeometryCollection as an argument</para>
+					<para> NOTE: this is the "allowable" version that returns a boolean, not an integer.
+					<para>OGC SPEC s2.1.1.1 // s2.1.13.3 </para>
+				</listitem> 
+				</varlistentry> 
+				<varlistentry> 
+				<term>contains(geometry,geometry)</term> 
+				<listitem> 
+					<para>Returns 1 (TRUE) if this Geometry is ‘spatially contains’  anotherGeometry.
+					</para> 
+					<para>Performed by the GEOS module</para>
+					<para>Do not call with a GeometryCollection as an argument</para>
+					<para> NOTE: this is the "allowable" version that returns a boolean, not an integer.
+					<para>OGC SPEC s2.1.1.1 // s2.1.13.3  - same as within(geometry,geometry)</para>
+				</listitem> 
+				</varlistentry> 
+				<varlistentry> 
+				<term>intersects(geometry,geometry)</term> 
+				<listitem> 
+					<para>Returns 1 (TRUE) if this Geometry is ‘spatially intersects’  anotherGeometry.
+					</para> 
+					<para>Performed by the GEOS module</para>
+					<para>Do not call with a GeometryCollection as an argument</para>
+					<para> NOTE: this is the "allowable" version that returns a boolean, not an integer.
+					<para>OGC SPEC s2.1.1.1 // s2.1.13.3  - NOT disjoint(geometry,geometry)</para>
+				</listitem> 
+				</varlistentry> 
+				<varlistentry> 
+				<term>relate(geometry,geometry, intersectionPatternMatrix)</term> 
+				<listitem> 
+					<para>Returns 1 (TRUE) if this
+Geometry is spatially related to anotherGeometry, by testing for intersections between the Interior,
+Boundary and Exterior of the two geometries as specified by the values in the intersectionPatternMatrix.
+					</para> 
+					<para>Performed by the GEOS module</para>
+					<para>Do not call with a GeometryCollection as an argument</para>
+					<para> NOTE: this is the "allowable" version that returns a boolean, not an integer.
+					<para>OGC SPEC s2.1.1.1 // s2.1.13.3 </para>
+				</listitem> 
+				</varlistentry> 
+				<varlistentry> 
+				<term>relate(geometry,geometry)</term> 
+				<listitem> 
+					<para> returns the DE-9IM (dimensionally extended nine-intersection matrix)
+					</para> 
+					<para>Performed by the GEOS module</para>
+					<para>Do not call with a GeometryCollection as an argument</para>
+					<para>not in OGC spec, but implied.  see s2.1.13.2 </para>
+				</listitem> 
+				</varlistentry> 
+				<varlistentry> 
+				<term>buffer(geometry,double)</term> 
+				<listitem> 
+					<para> Returns a geometry that represents all points whose distance from
+this Geometry is less than or equal to distance. Calculations are in the Spatial Reference System of this
+Geometry.
+					</para> 
+					<para>Performed by the GEOS module</para>
+					<para>Do not call with a GeometryCollection as an argument</para>
+					<para>OGC SPEC s2.1.1.1</para>
+				</listitem> 
+				</varlistentry> 
+				<varlistentry> 
+				<term>convexhull(geometry)</term> 
+				<listitem> 
+					<para> Returns a geometry that represents the convex hull of this Geometry.
+					</para> 
+					<para>Performed by the GEOS module</para>
+					<para>OGC SPEC s2.1.1.1</para>
+				</listitem> 
+				</varlistentry> 
+				<varlistentry> 
+				<term>intersection(geometry,geometry)</term> 
+				<listitem> 
+					<para> Returns a geometry that represents the point set
+intersection of this Geometry with anotherGeometry.
+					</para> 
+					<para>Performed by the GEOS module</para>
+					<para>Do not call with a GeometryCollection as an argument</para>
+					<para>OGC SPEC s2.1.1.1</para>
+				</listitem> 
+				</varlistentry> 
+				<varlistentry> 
+				<term>geomunion(geometry,geometry)</term> 
+				<listitem> 
+					<para> Returns a geometry that represents the point set union of
+this Geometry with anotherGeometry.
+					</para> 
+					<para>Performed by the GEOS module</para>
+					<para>Do not call with a GeometryCollection as an argument</para>
+					<para>NOTE: this is renamed from "union" because union is an SQL reserved word</para>
+					<para>OGC SPEC s2.1.1.1</para>
+				</listitem> 
+				</varlistentry> 
+				<varlistentry> 
+				<term>difference(geometry,geometry)</term> 
+				<listitem> 
+					<para> Returns a geometry that represents the point set
+difference of this Geometry with anotherGeometry.
+					</para> 
+					<para>Performed by the GEOS module</para>
+					<para>Do not call with a GeometryCollection as an argument</para>
+					<para>OGC SPEC s2.1.1.1</para>
+				</listitem> 
+				</varlistentry> 
+				<varlistentry> 
+				<term>difference(geometry,geometry)</term> 
+				<listitem> 
+					<para> Returns a geometry that represents the point set
+symmetric difference of this Geometry with anotherGeometry.
+					</para> 
+					<para>Performed by the GEOS module</para>
+					<para>Do not call with a GeometryCollection as an argument</para>
+					<para>OGC SPEC s2.1.1.1</para>
+				</listitem> 
 				</varlistentry> 
 				<varlistentry> 
 					<term>Envelope(geometry)</term> 
@@ -1721,14 +1950,21 @@ if( geom.getType() = Geometry.POLYGON )
 						<para>Returns a POLYGON representing the bounding box of the
 						  geometry.
 						</para> 
+						<para> OGC SPEC s2.1.1.1 - The minimum bounding box for this Geometry, returned as a Geometry. The
+polygon is defined by the corner points of the bounding box ((MINX, MINY), (MAXX, MINY), (MAXX,
+MAXY), (MINX, MAXY), (MINX, MINY)).  </para><para>NOTE:PostGIS will add a Zmin/Zmax coordinate as well.</para>
 					</listitem> 
 				</varlistentry> 
 				<varlistentry> 
 					<term>GeometryType(geometry)</term> 
 					<listitem> 
 						<para>Returns the type of the geometry as a string. Eg: 'LINESTRING',
-						  'POLYGON', 'MULTIPOINT', etc.
+						  'POLYGON', 'MULTIPOINT', etc. 
 						</para> 
+						<para>
+						OGC SPEC s2.1.1.1 - Returns the name of the instantiable subtype of Geometry of which this
+Geometry instance is a member. The name of the instantiable subtype of Geometry is returned as a string.
+						</para>
 					</listitem> 
 				</varlistentry> 
 				<varlistentry> 
@@ -1803,10 +2039,21 @@ if( geom.getType() = Geometry.POLYGON )
 						</para>
 					</listitem>
 				</varlistentry> 
+				<varlistentry>
+				<term>IsRing(geometry)</term>
+				<listitem>
+					<para>Returns 1 (TRUE) if this Curve is closed (StartPoint ( ) = EndPoint ( )) and this Curve
+is simple (does not pass through the same point more than once).
+					
+					</para>
+					<para>performed by GEOS</para>
+					<para> OGC spec 2.1.5.1</para>
+				</listitem>
+				</varlistentry> 
 				<varlistentry> 
 					<term>NumGeometries(geometry)</term> 
 					<listitem> 
-						<para>If geometry is a GEOMETRYCOLLECTION return the number of
+						<para>If geometry is a GEOMETRYCOLLECTION (or MULTI*) return the number of
 						  geometries, otherwise return NULL.
 						</para> 
 					</listitem> 
@@ -1818,6 +2065,7 @@ if( geom.getType() = Geometry.POLYGON )
 						  GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING or
 						  MULTIPOLYGON. Otherwise, return NULL.
 						</para> 
+						<para>0 is 1st geometry</para>
 					</listitem> 
 				</varlistentry>
 				<varlistentry>
@@ -1834,6 +2082,7 @@ if( geom.getType() = Geometry.POLYGON )
 						<para>Return the Well-Known Text representation of the
 						  geometry. For example: POLYGON(0 0,0 1,1 1,1 0,0 0)
 						</para>
+						<para>OGC SPEC s2.1.1.1</para>
 					</listitem>
 				</varlistentry>
 				<varlistentry>
@@ -1842,6 +2091,7 @@ if( geom.getType() = Geometry.POLYGON )
 						<para>Returns the integer SRID number of the spatial
 						  reference system of the geometry.
 						</para>
+						<para>OGC SPEC s2.1.1.1</para>
 					</listitem>
 				</varlistentry>
 				<varlistentry>
@@ -1963,6 +2213,14 @@ if( geom.getType() = Geometry.POLYGON )
 					</listitem> 
 				</varlistentry> 
 				<varlistentry> 
+				<term>area(geometry)</term> 
+				<listitem> 
+					<para>Returns the area of the geometry if it is a polygon or
+					  multi-polygon. (same as area2(<polygon|multipolygon>)
+					</para> 
+				</listitem> 
+				</varlistentry> 
+				<varlistentry> 
 					<term>asbinary(geometry,'NDR')</term> 
 					<listitem> 
 						<para>Returns the geometry in the OGC "well-known-binary" format,
@@ -1970,6 +2228,13 @@ if( geom.getType() = Geometry.POLYGON )
 						  of the database without converting it to a string representation.
 						</para> 
 					</listitem> 
+				</varlistentry> 
+				<varlistentry> 
+				<term>isvalid(geometry)</term> 
+				<listitem> 
+					<para>returns true if this geometry is valid.
+					</para> 
+				</listitem> 
 				</varlistentry> 
 				<varlistentry> 
 					<term>asbinary(geometry,'XDR')</term> 
@@ -1980,6 +2245,213 @@ if( geom.getType() = Geometry.POLYGON )
 						</para> 
 					</listitem> 
 				</varlistentry> 
+				<varlistentry> 
+				<term>GeomFromText(text,[<srid>])</term> 
+				<listitem> 
+					<para>Makes a Geometry from WKT with the given SRID.  If SRID is not give, it defaults to -1.</para> 
+					<para> OGC SPEC 3.2.6.2  - option SRID is from the conformance suite</para>
+
+				</listitem> 
+				</varlistentry> 
+				
+				<varlistentry> 
+				<term>GeometryFromText(text,[<srid>])</term> 
+				<listitem> 
+					<para>Makes a Geometry from WKT with the given SRID.  If SRID is not give, it defaults to -1.</para> 
+					<para> OGC SPEC 3.2.6.2  - option SRID is from the conformance suite</para>
+
+				</listitem> 
+				</varlistentry> 
+				
+				<varlistentry> 
+				<term>PointFromText(text,[<srid>])</term> 
+				<listitem> 
+					<para>Makes a Geometry from WKT with the given SRID.  If SRID is not give, it defaults to -1.</para> 
+					<para> OGC SPEC 3.2.6.2  - option SRID is from the conformance suite</para>
+					<para> Throws an error if the WKT is not a Point</para>
+				</listitem> 
+				</varlistentry> 
+				
+				<varlistentry> 
+				<term>LineFromText(text,[<srid>])</term> 
+				<listitem> 
+					<para>Makes a Geometry from WKT with the given SRID.  If SRID is not give, it defaults to -1.</para> 
+					<para> OGC SPEC 3.2.6.2  - option SRID is from the conformance suite</para>
+					<para> Throws an error if the WKT is not a Line</para>
+				</listitem> 
+				</varlistentry> 
+				
+				<varlistentry> 
+				<term>LinestringFromText(text,[<srid>])</term> 
+				<listitem> 
+					<para>Makes a Geometry from WKT with the given SRID.  If SRID is not give, it defaults to -1.</para> 
+					<para> from the conformance suite</para>
+					<para> Throws an error if the WKT is not a Line</para>
+				</listitem> 
+				</varlistentry> 
+				
+				
+				<varlistentry> 
+				<term>PolyFromText(text,[<srid>])</term> 
+				<listitem> 
+					<para>Makes a Geometry from WKT with the given SRID.  If SRID is not give, it defaults to -1.</para> 
+					<para> OGC SPEC 3.2.6.2  - option SRID is from the conformance suite</para>
+					<para> Throws an error if the WKT is not a Polygon</para>
+				</listitem> 
+				</varlistentry> 
+				
+				<varlistentry> 
+				<term>PolygonFromText(text,[<srid>])</term> 
+				<listitem> 
+					<para>Makes a Geometry from WKT with the given SRID.  If SRID is not give, it defaults to -1.</para> 
+					<para> from the conformance suite</para>
+					<para> Throws an error if the WKT is not a Polygon</para>
+				</listitem> 
+				</varlistentry> 
+				
+				<varlistentry> 
+				<term>MPointFromText(text,[<srid>])</term> 
+				<listitem> 
+					<para>Makes a Geometry from WKT with the given SRID.  If SRID is not give, it defaults to -1.</para> 
+					<para> OGC SPEC 3.2.6.2  - option SRID is from the conformance suite</para>
+					<para> Throws an error if the WKT is not a MULTIPOINT</para>
+				</listitem> 
+				</varlistentry> 
+				
+				<varlistentry> 
+				<term>MLineFromText(text,[<srid>])</term> 
+				<listitem> 
+					<para>Makes a Geometry from WKT with the given SRID.  If SRID is not give, it defaults to -1.</para> 
+					<para> OGC SPEC 3.2.6.2  - option SRID is from the conformance suite</para>
+					<para> Throws an error if the WKT is not a MULTILINESTRING</para>
+				</listitem> 
+				</varlistentry> 
+				
+				<varlistentry> 
+				<term>MPolyFromText(text,[<srid>])</term> 
+				<listitem> 
+					<para>Makes a Geometry from WKT with the given SRID.  If SRID is not give, it defaults to -1.</para> 
+					<para> OGC SPEC 3.2.6.2  - option SRID is from the conformance suite</para>
+					<para> Throws an error if the WKT is not a MULTIPOLYGON</para>
+				</listitem> 
+				</varlistentry> 
+				
+				<varlistentry> 
+				<term>GeomCollFromText(text,[<srid>])</term> 
+				<listitem> 
+					<para>Makes a Geometry from WKT with the given SRID.  If SRID is not give, it defaults to -1.</para> 
+					<para> OGC SPEC 3.2.6.2  - option SRID is from the conformance suite</para>
+					<para> Throws an error if the WKT is not a GEOMETRYCOLLECTION</para>
+				</listitem> 
+				</varlistentry> 
+				
+				<varlistentry> 
+				<term>GeomFromWKB(text,[<srid>])</term> 
+				<listitem> 
+					<para>Makes a Geometry from WKB with the given SRID.  If SRID is not give, it defaults to -1.</para> 
+					<para> OGC SPEC 3.2.6.2  - option SRID is from the conformance suite</para>
+				</listitem> 
+				</varlistentry> 
+				
+				<varlistentry> 
+				<term>GeometryFromWKB(text,[<srid>])</term> 
+				<listitem> 
+					<para>Makes a Geometry from WKB with the given SRID.  If SRID is not give, it defaults to -1.</para> 
+					<para> OGC SPEC 3.2.6.2  - option SRID is from the conformance suite</para>
+				</listitem> 
+				</varlistentry> 
+				
+				<varlistentry> 
+				<term>PointFromWKB(text,[<srid>])</term> 
+				<listitem> 
+					<para>Makes a Geometry from WKB with the given SRID.  If SRID is not give, it defaults to -1.</para> 
+					<para> OGC SPEC 3.2.6.2  - option SRID is from the conformance suite</para>
+					<para> throws an error if WKB is not a POINT </para>
+				</listitem> 
+				</varlistentry> 
+				
+				<varlistentry> 
+				<term>LineFromWKB(text,[<srid>])</term> 
+				<listitem> 
+					<para>Makes a Geometry from WKB with the given SRID.  If SRID is not give, it defaults to -1.</para> 
+					<para> OGC SPEC 3.2.6.2  - option SRID is from the conformance suite</para>
+					<para> throws an error if WKB is not a LINESTRING </para>
+				</listitem> 
+				</varlistentry> 
+				
+				<varlistentry> 
+				<term>LinestringFromWKB(text,[<srid>])</term> 
+				<listitem> 
+					<para>Makes a Geometry from WKB with the given SRID.  If SRID is not give, it defaults to -1.</para> 
+					<para>  from the conformance suite</para>
+					<para> throws an error if WKB is not a LINESTRING </para>
+				</listitem> 
+				</varlistentry> 
+				
+				<varlistentry> 
+				<term>PolyFromWKB(text,[<srid>])</term> 
+				<listitem> 
+					<para>Makes a Geometry from WKB with the given SRID.  If SRID is not give, it defaults to -1.</para> 
+					<para> OGC SPEC 3.2.6.2  - option SRID is from the conformance suite</para>
+					<para> throws an error if WKB is not a POLYGON </para>
+				</listitem> 
+				</varlistentry> 
+				
+				<varlistentry> 
+				<term>PolygonFromWKB(text,[<srid>])</term> 
+				<listitem> 
+					<para>Makes a Geometry from WKB with the given SRID.  If SRID is not give, it defaults to -1.</para> 
+					<para> from the conformance suite</para>
+					<para> throws an error if WKB is not a POLYGON </para>
+				</listitem> 
+				</varlistentry> 
+				
+				<varlistentry> 
+				<term>MPointFromWKB(text,[<srid>])</term> 
+				<listitem> 
+					<para>Makes a Geometry from WKB with the given SRID.  If SRID is not give, it defaults to -1.</para> 
+					<para> OGC SPEC 3.2.6.2  - option SRID is from the conformance suite</para>
+					<para> throws an error if WKB is not a MULTIPOINT </para>
+				</listitem> 
+				</varlistentry> 
+				
+				<varlistentry> 
+				<term>MLineFromWKB(text,[<srid>])</term> 
+				<listitem> 
+					<para>Makes a Geometry from WKB with the given SRID.  If SRID is not give, it defaults to -1.</para> 
+					<para> OGC SPEC 3.2.6.2  - option SRID is from the conformance suite</para>
+					<para> throws an error if WKB is not a MULTILINESTRING </para>
+				</listitem> 
+				</varlistentry> 
+				
+				<varlistentry> 
+				<term>MPolyFromWKB(text,[<srid>])</term> 
+				<listitem> 
+					<para>Makes a Geometry from WKB with the given SRID.  If SRID is not give, it defaults to -1.</para> 
+					<para> OGC SPEC 3.2.6.2  - option SRID is from the conformance suite</para>
+					<para> throws an error if WKB is not a MULTIPOLYGON </para>
+				</listitem> 
+				</varlistentry> 
+				
+				<varlistentry> 
+				<term>GeomCollFromWKB(text,[<srid>])</term> 
+				<listitem> 
+					<para>Makes a Geometry from WKB with the given SRID.  If SRID is not give, it defaults to -1.</para> 
+					<para> OGC SPEC 3.2.6.2  - option SRID is from the conformance suite</para>
+					<para> throws an error if WKB is not a GEOMETRYCOLLECTION </para>
+				</listitem> 
+				</varlistentry> 
+				
+				<varlistentry> 
+				<term>PointOnSurface(geometry)</term> 
+				<listitem> 
+					<para>Return a Point guaranteed to lie on the surface</para> 
+					<para>Implemented using GEOS</para>
+					<para> OGC SPEC 3.2.14.2 and 3.2.18.2 - </para>
+				</listitem> 
+				</varlistentry> 
+				
+				
 				<varlistentry> 
 					<term>box3d(geometry)</term> 
 					<listitem> 
@@ -2051,6 +2523,14 @@ if( geom.getType() = Geometry.POLYGON )
 						<para>Returns the 2-dimensional length of the geometry if it is a
 						  linestring or multi-linestring.</para> 
 					</listitem> 
+				</varlistentry> 
+				<varlistentry> 
+				<term>length(geometry)</term> 
+				<listitem> 
+					<para>The length of this Curve in its associated spatial reference.</para> 
+					  <para>synonym for length2d()</para>
+					  <para>OGC SPEC 2.1.5.1 </para>
+				</listitem> 
 				</varlistentry> 
 				<varlistentry> 
 					<term>length3d(geometry)</term> 

@@ -8,9 +8,18 @@
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of hte GNU General Public Licence. See the COPYING file.
- * 
+ *
  **********************************************************************
  * $Log$
+ * Revision 1.6  2003/08/08 18:19:20  dblasby
+ * Conformance changes.
+ * Removed junk from postgis_debug.c and added the first run of the long
+ * transaction locking support.  (this will change - dont use it)
+ * conformance tests were corrected
+ * some dos cr/lf removed
+ * empty geometries i.e. GEOMETRYCOLLECT(EMPTY) added (with indexing support)
+ * pointN(<linestring>,1) now returns the first point (used to return 2nd)
+ *
  * Revision 1.5  2003/07/01 18:30:55  pramsey
  * Added CVS revision headers.
  *
@@ -93,31 +102,46 @@ Datum ggeometry_compress(PG_FUNCTION_ARGS)
 	if ( entry->leafkey)
 	{
 		retval = palloc(sizeof(GISTENTRY));
-		if ( DatumGetPointer(entry->key) != NULL ) {
+		if ( DatumGetPointer(entry->key) != NULL )
+		{
 
 			GEOMETRY *in;
 			BOX	*r;
 
 #ifdef DEBUG_GIST
-	printf("GIST: ggeometry_compress called on geometry\n");
+	elog(NOTICE,"GIST: ggeometry_compress called on geometry\n");
 	fflush( stdout );
 #endif
 
 			in = (GEOMETRY*)PG_DETOAST_DATUM( entry->key );
-			r = convert_box3d_to_box(&in->bvol);
-			if ( in != (GEOMETRY*)DatumGetPointer(entry->key) )
+
+			if (in->nobjs ==0)  // this is the EMPTY geometry
 			{
-				pfree( in );
+				//elog(NOTICE,"found an empty geometry");
+				// dont bother adding this to the index
+				PG_RETURN_POINTER(entry);
+			}
+			else
+			{
+				r = convert_box3d_to_box(&in->bvol);
+				if ( in != (GEOMETRY*)DatumGetPointer(entry->key) )
+				{
+					pfree( in );
+				}
+
+				gistentryinit(*retval, PointerGetDatum(r), entry->rel, entry->page,
+					entry->offset, sizeof(BOX), FALSE);
 			}
 
-			gistentryinit(*retval, PointerGetDatum(r), entry->rel, entry->page,
-				entry->offset, sizeof(BOX), FALSE);
-
-		} else {
+		}
+		else
+		{
 			gistentryinit(*retval, (Datum) 0, entry->rel, entry->page,
 				entry->offset, 0,FALSE);
 		}
-	} else {
+	}
+	else
+	{
 		retval = entry;
 	}
 	PG_RETURN_POINTER(retval);
@@ -137,7 +161,7 @@ Datum ggeometry_consistent(PG_FUNCTION_ARGS)
     */
 
 #ifdef DEBUG_GIST
-	printf("GIST: ggeometry_consistent called\n");
+	elog(NOTICE,"GIST: ggeometry_consistent called\n");
 	fflush( stdout );
 #endif
 
@@ -159,7 +183,7 @@ bool rtree_internal_consistent(BOX *key,
     bool retval;
 
 #ifdef DEBUG_GIST
-	printf("GIST: rtree_internal_consist called\n");
+	elog(NOTICE,"GIST: rtree_internal_consist called\n");
 	fflush( stdout );
 #endif
 
@@ -209,7 +233,7 @@ Datum gbox_union(PG_FUNCTION_ARGS)
 			   *pageunion;
 
 #ifdef DEBUG_GIST
-	printf("GIST: gbox_union called\n");
+	elog(NOTICE,"GIST: gbox_union called\n");
 	fflush( stdout );
 #endif
 
@@ -249,7 +273,7 @@ Datum gbox_penalty(PG_FUNCTION_ARGS)
 	float		tmp1;
 
 #ifdef DEBUG_GIST
-	printf("GIST: gbox_penalty called\n");
+	elog(NOTICE,"GIST: gbox_penalty called\n");
 	fflush( stdout );
 #endif
 
@@ -310,7 +334,7 @@ gbox_picksplit(PG_FUNCTION_ARGS)
 	int			nbytes;
 
 #ifdef DEBUG_GIST
-	printf("GIST: gbox_picksplit called\n");
+	elog(NOTICE,"GIST: gbox_picksplit called\n");
 	fflush( stdout );
 #endif
 
@@ -511,7 +535,7 @@ Datum gbox_same(PG_FUNCTION_ARGS)
 	bool	   *result = (bool *) PG_GETARG_POINTER(2);
 
 #ifdef DEBUG_GIST
-	printf("GIST: gbox_same called\n");
+	elog(NOTICE,"GIST: gbox_same called\n");
 	fflush( stdout );
 #endif
 
@@ -527,7 +551,7 @@ size_box(Datum box)
 {
 
 #ifdef DEBUG_GIST
-	printf("GIST: size_box called\n");
+	elog(NOTICE,"GIST: size_box called\n");
 	fflush( stdout );
 #endif
 

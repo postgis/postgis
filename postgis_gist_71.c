@@ -8,9 +8,18 @@
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of hte GNU General Public Licence. See the COPYING file.
- * 
+ *
  **********************************************************************
  * $Log$
+ * Revision 1.3  2003/08/08 18:19:20  dblasby
+ * Conformance changes.
+ * Removed junk from postgis_debug.c and added the first run of the long
+ * transaction locking support.  (this will change - dont use it)
+ * conformance tests were corrected
+ * some dos cr/lf removed
+ * empty geometries i.e. GEOMETRYCOLLECT(EMPTY) added (with indexing support)
+ * pointN(<linestring>,1) now returns the first point (used to return 2nd)
+ *
  * Revision 1.2  2003/07/01 18:30:55  pramsey
  * Added CVS revision headers.
  *
@@ -35,7 +44,7 @@
 #include "utils/elog.h"
 
 //Norman Vine found this problem for compiling under cygwin
-//  it defines BYTE_ORDER and LITTLE_ENDIAN 
+//  it defines BYTE_ORDER and LITTLE_ENDIAN
 
 #ifdef __CYGWIN__
 #include <sys/param.h>       // FOR ENDIAN DEFINES
@@ -116,12 +125,20 @@ GISTENTRY *ggeometry_compress(PG_FUNCTION_ARGS)
 #endif
 
 			in = (GEOMETRY*)PG_DETOAST_DATUM(PointerGetDatum(entry->pred));
+
+	if (in->nobjs ==0)  // this is the EMPTY geometry
+	{
+			//elog(NOTICE,"found an empty geometry");
+			// dont bother adding this to the index
+			PG_RETURN_POINTER(entry);
+	}
+
 			r = (GEOMETRYKEY*)palloc( sizeof(GEOMETRYKEY) );
 			r->size = sizeof(GEOMETRYKEY);
 			r->SRID = in->SRID;
 			thebox = convert_box3d_to_box(&in->bvol);
 			memcpy( (void*)&(r->key), (void*)thebox, sizeof(BOX) );
-			if ( (char*)in != entry->pred ) 
+			if ( (char*)in != entry->pred )
 			{
 				pfree( in );
 				pfree(thebox);
@@ -133,7 +150,7 @@ GISTENTRY *ggeometry_compress(PG_FUNCTION_ARGS)
 		} else {
 			gistentryinit(*retval, NULL, entry->rel, entry->page,
 				entry->offset, 0,FALSE);
-		} 
+		}
 	} else {
 		retval = entry;
 	}
@@ -167,7 +184,7 @@ bool ggeometry_consistent(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(FALSE);
 	}
 
-    PG_RETURN_BOOL(rtree_internal_consistent((BOX*)&( ((GEOMETRYKEY *)(entry->pred))->key ), 
+    PG_RETURN_BOOL(rtree_internal_consistent((BOX*)&( ((GEOMETRYKEY *)(entry->pred))->key ),
 		thebox, strategy));
 }
 
@@ -181,7 +198,7 @@ GEOMETRYKEY *ggeometry_union(PG_FUNCTION_ARGS)
 	printf("GIST: ggeometry_union called\n");
 #endif
 
-	result = (GEOMETRYKEY*) 
+	result = (GEOMETRYKEY*)
 		rtree_union(
 			(bytea*) PG_GETARG_POINTER(0),
 			(int*) PG_GETARG_POINTER(1),
@@ -241,11 +258,11 @@ bool *ggeometry_same(PG_FUNCTION_ARGS)
 
 
   if ( b1 && b2 )
-   	*result = DatumGetBool( DirectFunctionCall2( box_same, 
-		PointerGetDatum(&(b1->key)), 
+   	*result = DatumGetBool( DirectFunctionCall2( box_same,
+		PointerGetDatum(&(b1->key)),
 		PointerGetDatum(&(b2->key))) );
   else
-	*result = ( b1==NULL && b2==NULL ) ? TRUE : FALSE; 
+	*result = ( b1==NULL && b2==NULL ) ? TRUE : FALSE;
   return(result);
 }
 
@@ -264,16 +281,16 @@ Datum ggeometry_inter(PG_FUNCTION_ARGS) {
 			rt_box_inter,
 			PointerGetDatum( &(b1->key) ),
 			PointerGetDatum( &(b2->key) )) );
-	
+
 	if (interd) {
 		GEOMETRYKEY *tmp = (GEOMETRYKEY*)palloc( sizeof(GEOMETRYKEY) );
 		tmp->size = sizeof(GEOMETRYKEY);
-	
+
 		memcpy( (void*)&(tmp->key), (void*)interd, sizeof(BOX) );
 		tmp->SRID = b1->SRID;
 		pfree( interd );
 		PG_RETURN_POINTER( tmp );
-	} else 
+	} else
 		PG_RETURN_POINTER( NULL );
 }
 
@@ -297,7 +314,7 @@ char *ggeometry_binary_union(char *r1, char *r2, int *sizep)
 	} else {
 		*sizep = 0;
 		retval = NULL;
-	} 
+	}
     } else {
     	BOX *key = (BOX*)DatumGetPointer( DirectFunctionCall2(
 		rt_box_union,
@@ -338,7 +355,7 @@ char *rtree_union(bytea *entryvec, int *sizep, BINARY_UNION bu)
 	printf("GIST: rtree_union called\n");
 #endif
 
-    numranges = (VARSIZE(entryvec) - VARHDRSZ)/sizeof(GISTENTRY); 
+    numranges = (VARSIZE(entryvec) - VARHDRSZ)/sizeof(GISTENTRY);
     tmp = (char *)(((GISTENTRY *)(VARDATA(entryvec)))[0]).pred;
     out = NULL;
 
@@ -364,9 +381,9 @@ float *rtree_penalty(GISTENTRY *origentry, GISTENTRY *newentry, float *result, B
 #endif
 
 
-   
+
     ud = (*bu)( origentry->pred, newentry->pred, &sizep );
-    tmp1 = (*sb)( ud ); 
+    tmp1 = (*sb)( ud );
     if (ud) pfree(ud);
 
     *result = tmp1 - (*sb)( origentry->pred );
@@ -375,7 +392,7 @@ float *rtree_penalty(GISTENTRY *origentry, GISTENTRY *newentry, float *result, B
 
 /*
 ** The GiST PickSplit method
-** We use Guttman's poly time split algorithm 
+** We use Guttman's poly time split algorithm
 */
 GIST_SPLITVEC *rtree_picksplit(bytea *entryvec, GIST_SPLITVEC *v, int keylen, BINARY_UNION bu, RDF interop, SIZE_BOX sb)
 {
@@ -402,17 +419,17 @@ GIST_SPLITVEC *rtree_picksplit(bytea *entryvec, GIST_SPLITVEC *v, int keylen, BI
     nbytes =  (maxoff + 2) * sizeof(OffsetNumber);
     v->spl_left = (OffsetNumber *) palloc(nbytes);
     v->spl_right = (OffsetNumber *) palloc(nbytes);
-    
+
     firsttime = true;
     waste = 0.0;
-    
+
     for (i = FirstOffsetNumber; i < maxoff; i = OffsetNumberNext(i)) {
 	datum_alpha = (char *)(((GISTENTRY *)(VARDATA(entryvec)))[i].pred);
 	for (j = OffsetNumberNext(i); j <= maxoff; j = OffsetNumberNext(j)) {
 	    datum_beta = (char *)(((GISTENTRY *)(VARDATA(entryvec)))[j].pred);
-	    
+
 	    /* compute the wasted space by unioning these guys */
-	    /* size_waste = size_union - size_inter; */	
+	    /* size_waste = size_union - size_inter; */
 	    union_d = (*bu)( datum_alpha, datum_beta, &sizep );
 	    if ( union_d ) {
 		size_union = (*sb)(union_d);
@@ -428,18 +445,18 @@ GIST_SPLITVEC *rtree_picksplit(bytea *entryvec, GIST_SPLITVEC *v, int keylen, BI
 		if ( inter_d ) {
 			size_inter = (*sb)(inter_d);
 			pfree(inter_d);
-		} else 
+		} else
 			size_inter = 0.0;
 	    } else
 		size_inter = 0.0;
 
 	    size_waste = size_union - size_inter;
-	    
+
 	    /*
 	     *  are these a more promising split that what we've
 	     *  already seen?
 	     */
-	    
+
 	    if (size_waste > waste || firsttime) {
 		waste = size_waste;
 		seed_1 = i;
@@ -448,25 +465,25 @@ GIST_SPLITVEC *rtree_picksplit(bytea *entryvec, GIST_SPLITVEC *v, int keylen, BI
 	    }
 	}
     }
-    
+
     left = v->spl_left;
     v->spl_nleft = 0;
     right = v->spl_right;
     v->spl_nright = 0;
-  
+
     if ( ((GISTENTRY *)(VARDATA(entryvec)))[seed_1].pred ) {
 	datum_l = (char*) palloc( keylen );
 	memcpy( (void*)datum_l, (void*)(((GISTENTRY *)(VARDATA(entryvec)))[seed_1].pred ), keylen );
-    } else 
-	datum_l = NULL; 
-    size_l  = (*sb)( datum_l ); 
+    } else
+	datum_l = NULL;
+    size_l  = (*sb)( datum_l );
     if ( ((GISTENTRY *)(VARDATA(entryvec)))[seed_2].pred ) {
 	datum_r = (char*) palloc( keylen );
 	memcpy( (void*)datum_r, (void*)(((GISTENTRY *)(VARDATA(entryvec)))[seed_2].pred ), keylen );
-    } else 
-	datum_r = NULL; 
-    size_r  = (*sb)( datum_r ); 
-    
+    } else
+	datum_r = NULL;
+    size_r  = (*sb)( datum_r );
+
     /*
      *  Now split up the regions between the two seeds.  An important
      *  property of this split algorithm is that the split vector v
@@ -478,17 +495,17 @@ GIST_SPLITVEC *rtree_picksplit(bytea *entryvec, GIST_SPLITVEC *v, int keylen, BI
      *  This is handled at the very end, when we have placed all the
      *  existing tuples and i == maxoff + 1.
      */
-    
+
     maxoff = OffsetNumberNext(maxoff);
     for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i)) {
-	
+
 	/*
 	 *  If we've already decided where to place this item, just
 	 *  put it on the right list.  Otherwise, we need to figure
 	 *  out which page needs the least enlargement in order to
 	 *  store the item.
 	 */
-	
+
 	if (i == seed_1) {
 	    *left++ = i;
 	    v->spl_nleft++;
@@ -498,14 +515,14 @@ GIST_SPLITVEC *rtree_picksplit(bytea *entryvec, GIST_SPLITVEC *v, int keylen, BI
 	    v->spl_nright++;
 	    continue;
 	}
-	
-	/* okay, which page needs least enlargement? */ 
+
+	/* okay, which page needs least enlargement? */
 	datum_alpha = (char *)(((GISTENTRY *)(VARDATA(entryvec)))[i].pred);
 	union_dl = (*bu)( datum_l, datum_alpha, &sizep );
 	union_dr = (*bu)( datum_r, datum_alpha, &sizep );
-	size_alpha = (*sb)( union_dl ); 
-	size_beta  = (*sb)( union_dr ); 
-	
+	size_alpha = (*sb)( union_dl );
+	size_beta  = (*sb)( union_dr );
+
 	/* pick which page to add it to */
 	if (size_alpha - size_l < size_beta - size_r) {
 	    pfree(datum_l);
@@ -524,7 +541,7 @@ GIST_SPLITVEC *rtree_picksplit(bytea *entryvec, GIST_SPLITVEC *v, int keylen, BI
 	}
     }
     *left = *right = FirstOffsetNumber;	/* sentinel value, see dosplit() */
-    
+
     v->spl_ldatum = datum_l;
     v->spl_rdatum = datum_r;
 

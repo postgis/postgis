@@ -11,6 +11,15 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.25  2003/08/08 18:19:20  dblasby
+ * Conformance changes.
+ * Removed junk from postgis_debug.c and added the first run of the long
+ * transaction locking support.  (this will change - dont use it)
+ * conformance tests were corrected
+ * some dos cr/lf removed
+ * empty geometries i.e. GEOMETRYCOLLECT(EMPTY) added (with indexing support)
+ * pointN(<linestring>,1) now returns the first point (used to return 2nd)
+ *
  * Revision 1.24  2003/08/06 19:31:18  dblasby
  * Added the WKB parser.  Added all the functions like
  * PolyFromWKB(<WKB>,[<SRID>]).
@@ -1476,6 +1485,8 @@ Datum geometry_in(PG_FUNCTION_ARGS)
 
 //printf("str=%s\n",str);
 
+
+
 		//trim white
 	while (isspace((unsigned char) *str))
 		str++;
@@ -1499,6 +1510,19 @@ Datum geometry_in(PG_FUNCTION_ARGS)
 		str = strchr(str,';');
 		if (str != NULL)
 			str++;
+	}
+
+
+	if (strstr(str,"EMPTY"))
+	{
+		GEOMETRY *result=makeNullGeometry( SRID);
+		if (strstr(str,"MULTIPOLYGON"))
+			result->type = MULTIPOLYGONTYPE;
+		if (strstr(str,"MULTILINESTRING"))
+			result->type = MULTILINETYPE;
+		if (strstr(str,"MULTIPOINT"))
+			result->type = MULTIPOINTTYPE;
+		PG_RETURN_POINTER( result );
 	}
 
 	if (strstr(str,"BOX3D") != NULL ) // bbox only
@@ -1810,6 +1834,23 @@ char *geometry_to_text(GEOMETRY  *geometry)
 	int		mem_size,npts;
 
 
+	if (geometry->nobjs == 0)
+	{
+			//empty geometry
+		result = (char*) palloc(30);
+
+		sprintf(result,"GEOMETRYCOLLECTION(EMPTY)");
+
+		if (geometry->type == MULTILINETYPE)
+			sprintf(result,"MULTILINESTRING(EMPTY)");
+		if (geometry->type == MULTIPOINTTYPE)
+			sprintf(result,"MULTIPOINT(EMPTY)");
+		if (geometry->type == MULTIPOLYGONTYPE)
+			sprintf(result,"MULTIPOLYGON(EMPTY)");
+		return result;
+	}
+
+
 //printf("in geom_out(%p)\n",geometry);
 
 	size = 30;	//just enough to put in object type
@@ -2019,6 +2060,9 @@ Datum get_bbox_of_geometry(PG_FUNCTION_ARGS)
 	GEOMETRY  *geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	BOX3D	 *result;
+
+	if (geom->nobjs == 0)
+		PG_RETURN_NULL();
 
 	//make a copy of it
 
@@ -2641,12 +2685,15 @@ char *to_wkb_collection(GEOMETRY *geom, bool flip_endian, int32 *end_size)
 	// we make a list of smaller wkb chunks in sub_result[]
 	// and that wkb chunk's size in sizes[]
 
+	sub_result = NULL;
+	if (geom->nobjs >0)
+		sub_result = palloc( sizeof(char *) * geom->nobjs);
+	sizes = NULL;
+	if (geom->nobjs >0)
+		sizes = palloc( sizeof(int) * geom->nobjs);
 
-	sub_result = palloc( sizeof(char *) * geom->nobjs);
-	sizes = palloc( sizeof(int) * geom->nobjs);
 
-
-	for (t=0; t<=geom->nobjs; t++)	//for each part of the collections, do the work in another function
+	for (t=0; t<geom->nobjs; t++)	//for each part of the collections, do the work in another function
 	{
 		type = geom->objType[t];
 
@@ -2709,8 +2756,10 @@ char *to_wkb_collection(GEOMETRY *geom, bool flip_endian, int32 *end_size)
 	}
 
 		//free temp structures
-	pfree( sub_result);
-	pfree( sizes);
+	if (sub_result != NULL)
+		pfree( sub_result);
+	if (sizes != NULL)
+		pfree( sizes);
 
 		//total size of the wkb
 	*end_size = total_size+9;
@@ -2799,7 +2848,9 @@ char	*to_wkb_sub(GEOMETRY *geom, bool flip_endian, int32 *wkb_size)
 	if (geom->type == MULTILINETYPE)
 	{
 		//make a list of lines
-		linelist = palloc( sizeof(LINE3D *) * geom->nobjs);
+		linelist = NULL;
+		if (geom->nobjs >0)
+			linelist = palloc( sizeof(LINE3D *) * geom->nobjs);
 		for (t=0;t<geom->nobjs; t++)
 		{
 			linelist[t] = (LINE3D *) ((char *) geom +offsets1[t] ) ;
@@ -2819,7 +2870,9 @@ char	*to_wkb_sub(GEOMETRY *geom, bool flip_endian, int32 *wkb_size)
 	if (geom->type == MULTIPOLYGONTYPE)
 	{
 		//make a list of polygons
-		polylist = palloc( sizeof(POLYGON3D *) * geom->nobjs);
+		polylist = NULL;
+		if (geom->nobjs >0)
+			polylist = palloc( sizeof(POLYGON3D *) * geom->nobjs);
 		for (t=0;t<geom->nobjs; t++)
 		{
 			polylist[t] = (POLYGON3D *) ((char *) geom +offsets1[t] ) ;
@@ -4193,7 +4246,11 @@ switch (wkbType)
 					WKB+=4;
 					(*bytes_read)+=4;
 					if (ngeoms ==0)
-						return NULL;
+					{
+						GEOMETRY *result= makeNullGeometry(-1);
+						result->type = MULTIPOINTTYPE;
+						return result;
+					}
 
 						mybytes_read = *bytes_read;
 						so_far = WKBtoGeometry(WKB, length - mybytes_read, &other_bytes_read);
@@ -4240,7 +4297,11 @@ switch (wkbType)
 					WKB+=4;
 					(*bytes_read)+=4;
 					if (ngeoms ==0)
-						return NULL;
+					{
+						GEOMETRY *result= makeNullGeometry(-1);
+						result->type = MULTILINETYPE;
+						return result;
+					}
 
 						mybytes_read = *bytes_read;
 						so_far = WKBtoGeometry(WKB, length - mybytes_read, &other_bytes_read);
@@ -4287,7 +4348,11 @@ switch (wkbType)
 				WKB+=4;
 				(*bytes_read)+=4;
 				if (ngeoms ==0)
-					return NULL;
+				{
+					GEOMETRY *result= makeNullGeometry(-1);
+					result->type = MULTIPOLYGONTYPE;
+					return result;
+				}
 
 					mybytes_read = *bytes_read;
 					so_far = WKBtoGeometry(WKB, length - mybytes_read, &other_bytes_read);
@@ -4334,7 +4399,10 @@ switch (wkbType)
 				WKB+=4;
 				(*bytes_read)+=4;
 				if (ngeoms ==0)
-					return NULL;
+				{
+					GEOMETRY *result= makeNullGeometry(-1);
+					return result;
+				}
 
 					mybytes_read = *bytes_read;
 					so_far = WKBtoGeometry(WKB, length - mybytes_read, &other_bytes_read);
@@ -4622,4 +4690,32 @@ Datum geometry_from_text_gc(PG_FUNCTION_ARGS)
 			elog(ERROR,"geometry_from_text_gc:: WKT isnt GEOMETRYCOLLECTION");
 		}
 		PG_RETURN_POINTER(geom);
+}
+
+
+//returns a GEOMETRYCOLLECTION(EMPTY)
+// bbox of this object is BOX3D(0 0 0, 0 0 0)
+//   but should be treated as NULL
+GEOMETRY *makeNullGeometry(int SRID)
+{
+		int size = sizeof(GEOMETRY);
+		GEOMETRY	*result = palloc(size);
+
+
+		memset(result,0, size ); // init to 0s
+
+		result->size = size;
+		result->nobjs = 0;
+		result->type = COLLECTIONTYPE;
+		result->is3d = false;
+
+
+		result->SRID = SRID;
+		result->scale = 1.0;
+		result->offsetX = 0;
+		result->offsetY = 0;
+
+		memset(&result->bvol,0, sizeof(BOX3D) );  //make bbox :: BOX3D(0 0 0, 0 0 0)
+
+	return result;
 }

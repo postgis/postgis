@@ -113,6 +113,14 @@ extern "C" int      GEOSGetNumInteriorRings(Geometry *g1);
 extern "C" int      GEOSGetSRID(Geometry *g1);
 extern "C" int      GEOSGetNumGeometries(Geometry *g1);
 
+extern "C" char GEOSisSimple(Geometry *g1);
+extern "C" char GEOSequals(Geometry *g1, Geometry*g2);
+
+extern "C" char GEOSisRing(Geometry *g1);
+
+extern "C" Geometry *GEOSpointonSurface(Geometry *g1);
+
+
 
 //###########################################################
 
@@ -163,7 +171,7 @@ Geometry *PostGIS2GEOS_collection(Geometry **geoms, int ngeoms,int SRID, bool is
 
 		for (t =0; t< ngeoms; t++)
 		{
-			subGeos->push_back(geoms[t]);	
+			subGeos->push_back(geoms[t]);
 		}
 		g = geomFactory->buildGeometry(subGeos);
 		if (g==NULL)
@@ -184,7 +192,7 @@ Geometry *PostGIS2GEOS_point(POINT3D *point,int SRID, bool is3d)
 			Coordinate *c;
 
 			if (is3d)
-				c = new Coordinate(point->x, point->y);	
+				c = new Coordinate(point->x, point->y);
 			else
 				c = new Coordinate(point->x, point->y, point->z);
 			Geometry *g = geomFactory->createPoint(*c);
@@ -255,7 +263,7 @@ Geometry *PostGIS2GEOS_multipolygon(POLYGON3D **polygons,int npolys, int SRID, b
 
 			for (t =0; t< npolys; t++)
 			{
-				subPolys->push_back(PostGIS2GEOS_polygon(polygons[t], SRID,is3d ));	
+				subPolys->push_back(PostGIS2GEOS_polygon(polygons[t], SRID,is3d ));
 			}
 			g = geomFactory->createMultiPolygon(subPolys);
 			if (g== NULL)
@@ -280,7 +288,7 @@ Geometry *PostGIS2GEOS_multilinestring(LINE3D **lines,int nlines, int SRID, bool
 
 			for (t =0; t< nlines; t++)
 			{
-				subLines->push_back(PostGIS2GEOS_linestring(lines[t], SRID,is3d ));	
+				subLines->push_back(PostGIS2GEOS_linestring(lines[t], SRID,is3d ));
 			}
 			g = geomFactory->createMultiLineString(subLines);
 			if (g==NULL)
@@ -304,7 +312,7 @@ Geometry *PostGIS2GEOS_multipoint(POINT3D **points,int npoints, int SRID, bool i
 
 			for (t =0; t< npoints; t++)
 			{
-				subPoints->push_back(PostGIS2GEOS_point(points[t], SRID,is3d ));	
+				subPoints->push_back(PostGIS2GEOS_point(points[t], SRID,is3d ));
 			}
 			g = geomFactory->createMultiPoint(subPoints);
 			if (g==NULL)
@@ -337,7 +345,7 @@ Geometry *PostGIS2GEOS_polygon(POLYGON3D *polygon,int SRID, bool is3d)
 
 		pts = (POINT3D *) ( (char *)&(polygon->npoints[polygon->nrings] )  );
 		pts = (POINT3D *) MAXALIGN(pts);
-	
+
 			// make outerRing
 			cl = new BasicCoordinateList(polygon->npoints[0]);
 			if (is3d)
@@ -479,7 +487,7 @@ char GEOSrelateWithin(Geometry *g1, Geometry*g2)
 	}
 }
 
-// call g1->contains(g2) 
+// call g1->contains(g2)
 // returns 0 = false
 //         1 = true
 //         2 = error was trapped
@@ -578,6 +586,21 @@ char GEOSisvalid(Geometry *g1)
 // general purpose
 //-----------------------------------------------------------------
 
+char GEOSequals(Geometry *g1, Geometry*g2)
+{
+	try {
+		bool result;
+		result = g1->equals(g2);
+		return result;
+	}
+	catch (...)
+	{
+		return 2;
+	}
+}
+
+
+
 char *GEOSasText(Geometry *g1)
 {
 	try
@@ -607,6 +630,33 @@ char GEOSisEmpty(Geometry *g1)
 		return 2;
 	}
 }
+
+char GEOSisSimple(Geometry *g1)
+{
+	try
+	{
+		return g1->isSimple();
+	}
+	catch (...)
+	{
+		return 2;
+	}
+}
+
+char GEOSisRing(Geometry *g1)
+{
+	try
+	{
+		return (( (LinearRing*)g1)->isRing());
+	}
+	catch (...)
+	{
+		return 2;
+	}
+}
+
+
+
 
 char *GEOSGeometryType(Geometry *g1)
 {
@@ -725,7 +775,18 @@ Geometry *GEOSUnion(Geometry *g1,Geometry *g2)
 }
 
 
-
+Geometry *GEOSpointonSurface(Geometry *g1)
+{
+	try
+	{
+		Geometry *g3 = g1->getInteriorPoint();
+		return g3;
+	}
+	catch (...)
+	{
+		return NULL;
+	}
+}
 
 
 
@@ -772,7 +833,7 @@ POINT3D  *GEOSGetCoordinate(Geometry *g1)
 	try{
 		POINT3D		*result = (POINT3D*) malloc (sizeof(POINT3D));
 		Coordinate *c =g1->getCoordinate();
-		
+
 		result->x = c->x;
 		result->y = c->y;
 		result->z = c->z;
@@ -782,7 +843,7 @@ POINT3D  *GEOSGetCoordinate(Geometry *g1)
 	{
 		return NULL;
 	}
-	
+
 }
 
 
@@ -801,12 +862,12 @@ POINT3D  *GEOSGetCoordinates(Geometry *g1)
 		for (t=0;t<numPoints;t++)
 		{
 			c =cl->getAt(t);
-		
+
 			result[t].x = c.x;
 			result[t].y = c.y;
 			result[t].z = c.z;
 		}
-		
+
 		return result;
 	}
 	catch(...)
@@ -842,7 +903,7 @@ int      GEOSGetNumInteriorRings(Geometry *g1)
 }
 
 
-//only call on GCs
+//only call on GCs (or multi*)
 int      GEOSGetNumGeometries(Geometry *g1)
 {
 	try{
@@ -907,5 +968,6 @@ int      GEOSGetSRID(Geometry *g1)
 		return 0;
 	}
 }
+
 
 

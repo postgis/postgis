@@ -12,6 +12,15 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.14  2003/08/08 18:19:20  dblasby
+-- Conformance changes.
+-- Removed junk from postgis_debug.c and added the first run of the long
+-- transaction locking support.  (this will change - dont use it)
+-- conformance tests were corrected
+-- some dos cr/lf removed
+-- empty geometries i.e. GEOMETRYCOLLECT(EMPTY) added (with indexing support)
+-- pointN(<linestring>,1) now returns the first point (used to return 2nd)
+--
 -- Revision 1.13  2003/08/06 19:31:18  dblasby
 -- Added the WKB parser.  Added all the functions like
 -- PolyFromWKB(<WKB>,[<SRID>]).
@@ -461,6 +470,17 @@ CREATE FUNCTION LineFromWKB(wkb)
 	AS '@MODULE_FILENAME@','LinefromWKB_SRID'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
+
+CREATE FUNCTION LinestringFromWKB(wkb,int)
+	RETURNS GEOMETRY
+	AS '@MODULE_FILENAME@','LinefromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATE FUNCTION LinestringFromWKB(wkb)
+	RETURNS GEOMETRY
+	AS '@MODULE_FILENAME@','LinefromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+	
 CREATE FUNCTION PolyFromWKB(wkb,int)
 	RETURNS GEOMETRY
 	AS '@MODULE_FILENAME@','PolyfromWKB_SRID'
@@ -470,6 +490,17 @@ CREATE FUNCTION PolyFromWKB(wkb)
 	RETURNS GEOMETRY
 	AS '@MODULE_FILENAME@','PolyfromWKB_SRID'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
+	
+CREATE FUNCTION PolygonFromWKB(wkb,int)
+	RETURNS GEOMETRY
+	AS '@MODULE_FILENAME@','PolyfromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATE FUNCTION PolygonFromWKB(wkb)
+	RETURNS GEOMETRY
+	AS '@MODULE_FILENAME@','PolyfromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
 
 CREATE FUNCTION MPointFromWKB(wkb,int)
 	RETURNS GEOMETRY
@@ -480,6 +511,28 @@ CREATE FUNCTION MPointFromWKB(wkb)
 	RETURNS GEOMETRY
 	AS '@MODULE_FILENAME@','MPointfromWKB_SRID'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+
+CREATE FUNCTION MultiPointFromWKB(wkb,int)
+	RETURNS GEOMETRY
+	AS '@MODULE_FILENAME@','MPointfromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATE FUNCTION MultiPointFromWKB(wkb)
+	RETURNS GEOMETRY
+	AS '@MODULE_FILENAME@','MPointfromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATE FUNCTION MultiLineFromWKB(wkb,int)
+	RETURNS GEOMETRY
+	AS '@MODULE_FILENAME@','MLinefromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATE FUNCTION MultiLineFromWKB(wkb)
+	RETURNS GEOMETRY
+	AS '@MODULE_FILENAME@','MLinefromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+	
 	
 CREATE FUNCTION MLineFromWKB(wkb,int)
 	RETURNS GEOMETRY
@@ -500,6 +553,18 @@ CREATE FUNCTION MPolyFromWKB(wkb)
 	RETURNS GEOMETRY
 	AS '@MODULE_FILENAME@','MPolyfromWKB_SRID'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
+	
+CREATE FUNCTION MultiPolyFromWKB(wkb,int)
+	RETURNS GEOMETRY
+	AS '@MODULE_FILENAME@','MPolyfromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATE FUNCTION MultiPolyFromWKB(wkb)
+	RETURNS GEOMETRY
+	AS '@MODULE_FILENAME@','MPolyfromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+
 	
 CREATE FUNCTION GeomCollFromWKB(wkb,int)
 	RETURNS GEOMETRY
@@ -536,10 +601,6 @@ CREATE FUNCTION mem_size(geometry)
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION numb_sub_objs(geometry)
-	RETURNS int4
-	AS '@MODULE_FILENAME@'
-	LANGUAGE 'C' WITH (isstrict);
 
 CREATE FUNCTION summary(geometry)
 	RETURNS text
@@ -672,6 +733,16 @@ CREATE FUNCTION polyfromtext(geometry,int4)
 	AS '@MODULE_FILENAME@','geometry_from_text_poly'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
+CREATE FUNCTION polygonfromtext(geometry,int4)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','geometry_from_text_poly'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION polygonfromtext(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','geometry_from_text_poly'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+	
 CREATE FUNCTION mpolyfromtext(geometry,int4)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text_mpoly'
@@ -682,11 +753,22 @@ CREATE FUNCTION linefromtext(geometry,int4)
 	AS '@MODULE_FILENAME@','geometry_from_text_line'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
+	
 CREATE FUNCTION mlinefromtext(geometry,int4)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text_mline'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
+CREATE FUNCTION multilinestringfromtext(geometry,int4)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','geometry_from_text_mline'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION multilinestringfromtext(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','geometry_from_text_mline'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+	
 CREATE FUNCTION pointfromtext(geometry,int4)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text_point'
@@ -697,6 +779,16 @@ CREATE FUNCTION mpointfromtext(geometry,int4)
 	AS '@MODULE_FILENAME@','geometry_from_text_mpoint'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
+CREATE FUNCTION multipointfromtext(geometry,int4)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','geometry_from_text_mpoint'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION multipointfromtext(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','geometry_from_text_mpoint'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+	
 CREATE FUNCTION geomcollfromtext(geometry,int4)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text_gc'
@@ -704,7 +796,7 @@ CREATE FUNCTION geomcollfromtext(geometry,int4)
 
 CREATE FUNCTION setSRID(geometry,int4)
 	RETURNS geometry
-	AS '@MODULE_FILENAME@','geometry_from_text_gc'
+	AS '@MODULE_FILENAME@','geometry_from_text'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATE FUNCTION polyfromtext(geometry)
@@ -712,12 +804,33 @@ CREATE FUNCTION polyfromtext(geometry)
 	AS '@MODULE_FILENAME@','geometry_from_text_poly'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
+
 CREATE FUNCTION mpolyfromtext(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text_mpoly'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
+CREATE FUNCTION multipolygonfromtext(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','geometry_from_text_mpoly'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION multipolygonfromtext(geometry,int)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','geometry_from_text_mpoly'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+	
 CREATE FUNCTION linefromtext(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','geometry_from_text_line'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+	
+CREATE FUNCTION linestringfromtext(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','geometry_from_text_line'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION linestringfromtext(geometry,int)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text_line'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
@@ -743,7 +856,21 @@ CREATE FUNCTION geomcollfromtext(geometry)
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 
+CREATE FUNCTION isempty(geometry)
+	RETURNS int
+	AS '@MODULE_FILENAME@','isempty'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
 
+CREATE FUNCTION issimple(geometry)
+	RETURNS boolean
+	AS '@MODULE_FILENAME@','issimple'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+	
+
+CREATE FUNCTION equals(geometry,geometry)
+	RETURNS boolean
+	AS '@MODULE_FILENAME@','geomequals'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 
 --
@@ -828,6 +955,17 @@ CREATE FUNCTION centroid(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
+	
+CREATE FUNCTION isring(geometry)
+	RETURNS boolean
+	AS '@MODULE_FILENAME@'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION pointonsurface(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@'
+	LANGUAGE 'C' WITH (isstrict);
+	
 
 --
 -- BBox operations
@@ -1085,6 +1223,13 @@ CREATE FUNCTION buffer(geometry,float8)
         RETURNS geometry
         AS '@MODULE_FILENAME@','symdifference'
    LANGUAGE 'C' WITH (isstrict);
+   
+   
+     CREATE FUNCTION symmetricdifference(geometry,geometry)
+          RETURNS geometry
+          AS '@MODULE_FILENAME@','symdifference'
+     LANGUAGE 'C' WITH (isstrict);
+   
    
       CREATE FUNCTION GeomUnion(geometry,geometry)
            RETURNS geometry

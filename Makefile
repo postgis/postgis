@@ -19,7 +19,7 @@ GEOS_DIR=/usr/local
 # GEOMETRY_COLUMNS, so see the list archives for info or
 # install a fresh database using postgis.sql
 #
-USE_STATS=0
+USE_STATS=1
 
 #---------------------------------------------------------------
 subdir=contrib/postgis
