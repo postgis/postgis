@@ -733,8 +733,9 @@ CREATE FUNCTION get_proj4_from_srid(integer) RETURNS text AS
 LANGUAGE 'sql' WITH (iscachable,isstrict);
 
 
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-----------------------------------------------------------------------
 -- FIX_GEOMETRY_COLUMNS() 
+-----------------------------------------------------------------------
 --
 
 CREATE FUNCTION fix_geometry_columns() RETURNS text
@@ -759,8 +760,7 @@ BEGIN
 
 	UPDATE geometry_columns SET
 		attrelid = NULL,
-		varattnum = NULL,
-		stats = NULL;
+		varattnum = NULL;
 
 	UPDATE geometry_columns SET attrelid = (
 		SELECT c.oid 
@@ -779,6 +779,9 @@ BEGIN
 		AND a.attname = geometry_columns.f_geometry_column::name
 		AND a.attrelid = c.oid AND c.relnamespace = n.oid
 		);
+
+	-- remove stale records
+	DELETE FROM geometry_columns WHERE attrelid IS NULL;
 #endif
 
 	RETURN ''geometry_columns table is now linked to the system tables'';
@@ -789,6 +792,7 @@ LANGUAGE 'plpgsql' ;
 
 -----------------------------------------------------------------------
 -- FIND_EXTENT( <schema name>, <table name>, <column name> )
+-----------------------------------------------------------------------
 
 CREATE FUNCTION find_extent(text,text,text) RETURNS box3d AS
 '
@@ -3027,6 +3031,9 @@ BEGIN
 		AND a.attname = f_geometry_column::name
 		AND a.attrelid = c.oid;
 #endif
+
+	-- remove stale records
+	DELETE FROM geometry_columns WHERE attrelid IS NULL;
 
 	return ''done'';
 END;
