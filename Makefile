@@ -24,6 +24,7 @@ maintainer-clean:
 	@echo '------------------------------------------------------'
 	$(MAKE) distclean
 	$(MAKE) -C lwgeom maintainer-clean
+	rm -f configure
 
 test: liblwgeom
 	$(MAKE) -C regress test
