@@ -2382,3 +2382,61 @@ LWGEOM *lwgeom_setSRID(LWGEOM *lwgeom, int32 newSRID)
 	}
 	return result;
 }
+
+LWGEOM *
+LWGEOM_construct(char *ser, int SRID, int wantbbox)
+{
+	int size;
+	char *iptr, *optr, *eptr;
+	int wantsrid = 0;
+	BOX2DFLOAT4 box;
+	LWGEOM *result;
+
+	size = lwgeom_seralizedformlength_simple(ser);
+	eptr = ser+size; // end of subgeom
+
+	iptr = ser+1; // skip type
+	if ( lwgeom_hasSRID(ser[0]) )
+	{
+		iptr += 4; // skip SRID
+		size -= 4;
+	}
+	if ( lwgeom_hasBBOX(ser[0]) )
+	{
+		iptr += sizeof(BOX2DFLOAT4); // skip BBOX
+		size -= sizeof(BOX2DFLOAT4);
+	}
+
+	if ( SRID != -1 )
+	{
+		wantsrid = 1;
+		size += 4;
+	}
+	if ( wantbbox )
+	{
+		size += sizeof(BOX2DFLOAT4);
+		getbox2d_p(ser, &box);
+	}
+
+	size+=4; // size header
+
+	result = palloc(size);
+	result->size = size;
+
+	result->type = lwgeom_makeType_full(lwgeom_ndims(ser[0]),
+		wantsrid, lwgeom_getType(ser[0]), wantbbox);
+	optr = result->data;
+	if ( wantbbox )
+	{
+		memcpy(optr, &box, sizeof(BOX2DFLOAT4));
+		optr += sizeof(BOX2DFLOAT4);
+	}
+	if ( wantsrid )
+	{
+		memcpy(optr, &SRID, 4);
+		optr += 4;
+	}
+	memcpy(optr, iptr, eptr-iptr);
+
+	return result;
+}

@@ -179,6 +179,17 @@ extern int  lwgeom_getType(unsigned char type); // returns the tttt value
 extern unsigned char lwgeom_makeType(int ndims, char hasSRID, int type);
 extern unsigned char lwgeom_makeType_full(int ndims, char hasSRID, int type, bool hasBBOX);
 
+/*
+ * Construct a full LWGEOM type (including size header)
+ * from a serialized form.
+ * The constructed LWGEOM object will be allocated using palloc
+ * and the serialized form will be copied.
+ * If you specify a SRID other then -1 it will be set.
+ * If you request bbox (wantbbox=1) it will be extracted or computed
+ * from the serialized form.
+ */
+extern LWGEOM *LWGEOM_construct(char *serialized, int SRID, int wantbbox);
+
 // all the base types (point/line/polygon) will have a
 // basic constructor, basic de-serializer, basic serializer, and
 // bounding box finder.
