@@ -33,19 +33,22 @@ subdir=contrib/postgis
 # To use a non-standard location set the PGSQL_SRC environment
 # variable to the appropriate location.
 #
-ifeq (${LPATH},) 
+ifeq (${PGSQL_SRC},) 
+	PGSQL_SRC = ../..
+endif
+
+#---------------------------------------------------------------
+# Path to library (to be specified in CREATE FUNCTION queries)
+# Defaults to $libdir.
+# Set LPATH environment variable to change it.
+#
+ifeq (${LPATH},)
 	LPATH := \$$libdir
 endif
 
-ifeq (${PGSQL_SRC},) 
-	top_builddir = ../..
-	include $(top_builddir)/src/Makefile.global
-	#LPATH := \$$libdir
-else
-	top_builddir = ${PGSQL_SRC}
-	include $(top_builddir)/src/Makefile.global
-	#LPATH := ${PWD}
-endif
+#---------------------------------------------------------------
+top_builddir = ${PGSQL_SRC}
+include $(top_builddir)/src/Makefile.global
 
 #---------------------------------------------------------------
 # Default missing CXX variable to c++

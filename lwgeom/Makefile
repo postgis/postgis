@@ -26,22 +26,27 @@ USE_STATS=1
 
 #---------------------------------------------------------------
 subdir=contrib/postgis
-
 #---------------------------------------------------------------
 # Default the root of the PostgreSQL source tree 
 # To use a non-standard location set the PGSQL_SRC environment
 # variable to the appropriate location.
 #
 ifeq (${PGSQL_SRC},) 
-	top_builddir = ../../..
-	include $(top_builddir)/src/Makefile.global
-	LPATH := \$$libdir
-else
-	top_builddir = ${PGSQL_SRC}
-	include $(top_builddir)/src/Makefile.global
-	LPATH := ${PWD}
+	PGSQL_SRC = ../../..
 endif
 
+#---------------------------------------------------------------
+# Path to library (to be specified in CREATE FUNCTION queries)
+# Defaults to $libdir.
+# Set LPATH environment variable to change it.
+#
+ifeq (${LPATH},)
+	LPATH := \$$libdir
+endif
+
+#---------------------------------------------------------------
+top_builddir = ${PGSQL_SRC}
+include $(top_builddir)/src/Makefile.global
 #---------------------------------------------------------------
 # Default missing CXX variable to c++
 # 
@@ -189,5 +194,5 @@ uninstall: uninstall-lib
 
 clean distclean maintainer-clean: clean-lib
 	@rm -f $(OBJS) 
-	@rm -f $(OTHERS)
+	rm -f $(OTHERS)
 
