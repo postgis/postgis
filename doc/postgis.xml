@@ -2428,12 +2428,12 @@ TOAST table used 8225 pages.
 </para>
 
 <para>
-Now issue a query where you use the geometry operator && to search for a
+Now issue a query where you use the geometry operator &amp;&amp; to search for a
 bounding box that matches only very few of those rows. Now the query
 optimizer sees that the table has only 3 pages and 80 rows. He estimates
 that a sequential scan on such a small table is much faster than using
 an index. And so he decides to ignore the GIST index. Usually, this
-estimation is correct. But in our case, the && operator has to fetch
+estimation is correct. But in our case, the &amp;&amp; operator has to fetch
 every geometry from disk to compare the bounding boxes, thus reading all
 TOAST pages, too.
 </para>
@@ -2478,12 +2478,12 @@ UPDATE mytable set bbox = Envelope(Force_2d(the_geom));
 </programlisting>
 
 <para>
-Now change your query to use the && operator against bbox instead of
+Now change your query to use the &amp;&amp; operator against bbox instead of
 geom_column, like:
 </para>
 
 <programlisting>
-SELECT geom_column FROM mytable WHERE bbox && SetSrid('BOX3D(0 0,1 1)'::box3d,4326);
+SELECT geom_column FROM mytable WHERE bbox &amp;&amp; SetSrid('BOX3D(0 0,1 1)'::box3d,4326);
 </programlisting>
 
 <para>
