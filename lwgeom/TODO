@@ -1,6 +1,4 @@
 
-- ForceRHR(polygon|multipolygon)
-
 - Flatten(geometry) 
 
 - Make collect() avoid flatting
