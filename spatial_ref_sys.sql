@@ -10783,4 +10783,4 @@ INSERT INTO "spatial_ref_sys" ("srid","auth_name","auth_srid","srtext","proj4tex
 ---
 INSERT INTO "spatial_ref_sys" ("srid","auth_name","auth_srid","srtext","proj4text") VALUES (4904,'EPSG',4904,'GEOGCS["Lisbon 1890 (Lisbon)",DATUM["Lisbon_1890_Lisbon",SPHEROID["Bessel 1841",6377397.155,299.1528128,AUTHORITY["EPSG","7004"]],AUTHORITY["EPSG","6904"]],PRIMEM["Lisbon",-9.131906111111112,AUTHORITY["EPSG","8902"]],UNIT["degree",0.01745329251994328,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4904"]]','+proj=longlat +ellps=bessel +pm=lisbon +no_defs ');
 COMMIT;
-VACUUM ANALYZE;
+VACUUM ANALYZE spatial_ref_sys;
