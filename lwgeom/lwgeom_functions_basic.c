@@ -34,6 +34,8 @@ Datum postgis_uses_stats(PG_FUNCTION_ARGS);
 Datum postgis_scripts_released(PG_FUNCTION_ARGS);
 Datum postgis_lib_version(PG_FUNCTION_ARGS);
 
+char * lwgeom_summary_recursive(char *serialized, int offset);
+
 // getSRID(lwgeom) :: int4
 PG_FUNCTION_INFO_V1(LWGEOM_getSRID);
 Datum LWGEOM_getSRID(PG_FUNCTION_ARGS)
