@@ -11,6 +11,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.8  2003/12/04 18:58:35  dblasby
+ * changed david skae to skea
+ *
  * Revision 1.7  2003/07/01 18:30:55  pramsey
  * Added CVS revision headers.
  *
@@ -107,9 +110,9 @@ Datum ellipsoid_out(PG_FUNCTION_ARGS)
 }
 
 //support function for distance calc
-	//code is taken from David Skae
+	//code is taken from David Skea
 	//Geographic Data BC, Province of British Columbia, Canada.
-	// Thanks to GDBC and David Skae for allowing this to be
+	// Thanks to GDBC and David Skea for allowing this to be
 	// put in PostGIS.
 double deltaLongitude(double azimuth, double sigma, double tsm,SPHEROID *sphere)
 {
@@ -129,9 +132,9 @@ double deltaLongitude(double azimuth, double sigma, double tsm,SPHEROID *sphere)
 
 
 //support function for distance calc
-	//code is taken from David Skae
+	//code is taken from David Skea
 	//Geographic Data BC, Province of British Columbia, Canada.
-	// Thanks to GDBC and David Skae for allowing this to be
+	// Thanks to GDBC and David Skea for allowing this to be
 	// put in PostGIS.
 double mu2(double azimuth,SPHEROID *sphere)
 {
@@ -143,9 +146,9 @@ double mu2(double azimuth,SPHEROID *sphere)
 
 
 //support function for distance calc
-	//code is taken from David Skae
+	//code is taken from David Skea
 	//Geographic Data BC, Province of British Columbia, Canada.
-	// Thanks to GDBC and David Skae for allowing this to be
+	// Thanks to GDBC and David Skea for allowing this to be
 	// put in PostGIS.
 double bigA(double u2)
 {
@@ -154,9 +157,9 @@ double bigA(double u2)
 
 
 //support function for distance calc
-	//code is taken from David Skae
+	//code is taken from David Skea
 	//Geographic Data BC, Province of British Columbia, Canada.
-	// Thanks to GDBC and David Skae for allowing this to be
+	// Thanks to GDBC and David Skea for allowing this to be
 	// put in PostGIS.
 double bigB(double u2)
 {
@@ -170,9 +173,9 @@ double	distance_ellipse(double lat1, double long1,
 					double lat2, double long2,
 					SPHEROID *sphere)
 {
-	//code is taken from David Skae
+	//code is taken from David Skea
 	//Geographic Data BC, Province of British Columbia, Canada.
-	// Thanks to GDBC and David Skae for allowing this to be
+	// Thanks to GDBC and David Skea for allowing this to be
 	// put in PostGIS.
 
 	double L1,L2,sinU1,sinU2,cosU1,cosU2;
