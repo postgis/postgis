@@ -10,6 +10,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.42  2004/02/09 18:49:23  strk
+ * byte endiannes detected empirically
+ *
  * Revision 1.41  2004/02/06 08:26:02  strk
  * updated wkb reading funx to reflect changes made by pramsey in postgis_inout.c to be nicer with solaris
  *
@@ -143,6 +146,7 @@ SHPObject * (*shape_creator)(byte *, int);
 #else
 SHPObject * (*shape_creator)(char *, int, SHPHandle, int);
 #endif
+int big_endian = 0;
 
 /* Prototypes */
 int getMaxFieldSize(PGconn *conn, char *table, char *fname);
@@ -167,6 +171,7 @@ char *scan_to_same_level(char *str);
 int points_per_sublist( char *str, int *npoints, long max_lists);
 int reverse_points(int num_points,double *x,double *y,double *z);
 int is_clockwise(int num_points,double *x,double *y,double *z);
+int is_bigendian(void);
 
 /* WKB functions */
 SHPObject * create_polygon3D_WKB(byte *wkb, int shape_id);
@@ -2199,6 +2204,9 @@ initialize()
 	int mainscan_nflds=0;
 	int size;
 
+	/* Detect host endiannes */
+	big_endian = is_bigendian();
+
 	/* Query user attributes name, type and size */
 
 	size = strlen(table);
@@ -2593,24 +2601,30 @@ initialize()
 		{
 #ifdef USE_WKB
 
-#if BYTE_ORDER == LITTLE_ENDIAN
+			if ( big_endian ) 
+			{
 
 #ifdef HEXWKB
-			sprintf(buf, "asbinary(\"%s\", 'NDR')",
+				sprintf(buf, "asbinary(\"%s\", 'XDR')",
+					mainscan_flds[i]);
 #else
-			sprintf(buf, "asbinary(\"%s\", 'NDR')::bytea",
+				sprintf(buf, "asbinary(\"%s\", 'XDR')::bytea",
+					mainscan_flds[i]);
 #endif
 
-#else // BYTE_ORDER != LITTLE_ENDIAN
+			}
+			else // little_endian
+			{
 
 #ifdef HEXWKB
-			sprintf(buf, "asbinary(\"%s\", 'XDR')",
+				sprintf(buf, "asbinary(\"%s\", 'NDR')",
+					mainscan_flds[i]);
 #else // ndef HEXWKB
-			sprintf(buf, "asbinary(\"%s\", 'XDR')::bytea",
+				sprintf(buf, "asbinary(\"%s\", 'NDR')::bytea",
+					mainscan_flds[i]);
 #endif // def HEXWKB
 
-#endif // BYTE_ORDER == LITTLE_ENDIAN
-					mainscan_flds[i]);
+			}
 #else // ndef USE_WKB
 			if ( binary ) sprintf(buf, "\"%s\"::text",
 				mainscan_flds[i]);
@@ -2734,6 +2748,20 @@ HexDecode(byte *hex)
 	//printf(" Done.\n");
 
 	return ret;
+}
+
+int is_bigendian()
+{
+	int test = 1;
+
+	if ( (((char *)(&test))[0]) == 1)
+	{
+		return 0; //NDR (little_endian)
+	}
+	else
+	{
+		return 1; //XDR (big_endian)
+	}
 }
 
 /*********************************************************************
