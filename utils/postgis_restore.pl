@@ -367,12 +367,22 @@ print "Creating db ($dbname)\n";
 `createdb $dbname`;
 print "Adding plpgsql\n";
 `createlang plpgsql $dbname`;
+
+open( PSQL, "| psql $dbname") || die "Can't run psql\n";
 print "Sourcing $postgissql\n";
-`psql -f $postgissql $dbname`;
+#`psql -f $postgissql $dbname`;
+open(INPUT, "<$postgissql") || die "Can't read $postgissql\n";
+while(<INPUT>) { print PSQL; }
+close(INPUT);
 print "Dropping geometry_columns and spatial_ref_sys\n";
-`psql -c "drop table geometry_columns; drop table spatial_ref_sys;" $dbname`;
+#`psql -c "drop table geometry_columns; drop table spatial_ref_sys;" $dbname`;
+print PSQL "DROP TABLE geometry_columns;";
+print PSQL "DROP TABLE spatial_ref_sys;";
 print "Restoring ascii dump $dumpascii\n";
-`psql -f $dumpascii $dbname`;
+#`psql -f $dumpascii $dbname`;
+open(INPUT, "<$dumpascii") || die "Can't read $postgissql\n";
+while(<INPUT>) { print PSQL; }
+close(INPUT);
 exit;
 
 
