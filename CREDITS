@@ -27,4 +27,6 @@ Version 0.5 of PostGIS includes contributions from:
 Version 0.7 of PostGIS includes patches from:
   Steffen Macke on numerous loader/dumper bugs.
   Bernhard Reiter on some documentation issues and a loader limit.
+  Mark Cave-Ayland on truly_inside().
+
 
