@@ -44,12 +44,12 @@ Datum GEOS_polygonize_garray(PG_FUNCTION_ARGS);
  * Define this to have have many notices printed
  * during postgis->geos and geos->postgis conversions
  */
-//#undef DEBUG_CONVERTER 
-#ifdef DEBUG_CONVERTER
-#define DEBUG_POSTGIS2GEOS 1
-#define DEBUG_GEOS2POSTGIS 1
-#endif // DEBUG_CONVERTER
-//#define DEBUG 1
+//#undef PGIS_DEBUG_CONVERTER 
+#ifdef PGIS_DEBUG_CONVERTER
+#define PGIS_DEBUG_POSTGIS2GEOS 1
+#define PGIS_DEBUG_GEOS2POSTGIS 1
+#endif // PGIS_DEBUG_CONVERTER
+//#define PGIS_DEBUG 1
 
 typedef  struct Geometry Geometry;
 
@@ -159,11 +159,11 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 	Geometry *g1, *g2, *geos_result=NULL;
 	int SRID=-1;
 	size_t offset;
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	static int call=1;
 #endif
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	call++;
 #endif
 
@@ -176,7 +176,7 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 
 	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	elog(NOTICE, "unite_garray: number of elements: %d", nelems);
 #endif
 
@@ -196,7 +196,7 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 
 		pgis_geom = geom;
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 		elog(NOTICE, "geom %d @ %p", i, geom);
 #endif
 
@@ -208,7 +208,7 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 		{
 			geos_result = POSTGIS2GEOS(geom);
 			SRID = pglwgeom_getSRID(geom);
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 		elog(NOTICE, "first geom is a %s", lwgeom_typename(TYPE_GETTYPE(geom->type)));
 #endif
 			continue;
@@ -225,7 +225,7 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 		
 		g1 = POSTGIS2GEOS(pgis_geom);
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 		elog(NOTICE, "unite_garray(%d): adding geom %d to union (%s)",
 				call, i, lwgeom_typename(TYPE_GETTYPE(geom->type)));
 #endif
@@ -2009,7 +2009,7 @@ lwpoint_from_geometry(Geometry *g, char want3d)
 	size_t ptsize = want3d ? sizeof(POINT3DZ) : sizeof(POINT2D);
 	int SRID = GEOSGetSRID(g);
 
-#ifdef DEBUG_GEOS2POSTGIS
+#ifdef PGIS_DEBUG_GEOS2POSTGIS
 	elog(NOTICE, "lwpoint_from_geometry: point size %d", ptsize);
 #endif
 
@@ -2042,7 +2042,7 @@ lwline_from_geometry(Geometry *g, char want3d)
 	int i;
 	int SRID = GEOSGetSRID(g);
 
-#ifdef DEBUG_GEOS2POSTGIS
+#ifdef PGIS_DEBUG_GEOS2POSTGIS
 	elog(NOTICE, "lwline_from_geometry: point size %d", ptsize);
 #endif
 
@@ -2086,7 +2086,7 @@ lwpoly_from_geometry(Geometry *g, char want3d)
 	int ptsize = sizeof(double)*ndims;
 	int SRID = GEOSGetSRID(g);
 
-#ifdef DEBUG_GEOS2POSTGIS
+#ifdef PGIS_DEBUG_GEOS2POSTGIS
 	elog(NOTICE, "lwpoly_from_geometry: point size %d", ptsize);
 #endif
 
@@ -2151,7 +2151,7 @@ lwcollection_from_geometry(Geometry *geom, char want3d)
 
 	ngeoms = GEOSGetNumGeometries(geom);
 
-#ifdef DEBUG_GEOS2POSTGIS
+#ifdef PGIS_DEBUG_GEOS2POSTGIS
 	lwnotice("lwcollection_from_geometry: type: %s, geoms %d",
 		lwgeom_typename(type), ngeoms);
 #endif
@@ -2161,11 +2161,11 @@ lwcollection_from_geometry(Geometry *geom, char want3d)
 	for (i=0; i<ngeoms; i++)
 	{
 		Geometry *g = GEOSGetGeometryN(geom, i);
-#ifdef DEBUG_GEOS2POSTGIS
+#ifdef PGIS_DEBUG_GEOS2POSTGIS
 		lwnotice("lwcollection_from_geometry: geom %d is a %s", i, lwgeom_typename(GEOSGeometryTypeId(g)));
 #endif
 		geoms[i] = lwgeom_from_geometry(g, want3d);
-#ifdef DEBUG_GEOS2POSTGIS
+#ifdef PGIS_DEBUG_GEOS2POSTGIS
 		lwnotice("lwcollection_from_geometry: geoms[%d] is a %s", i, lwgeom_typename(TYPE_GETTYPE(geoms[i]->type)));
 #endif
 	}
@@ -2191,7 +2191,7 @@ lwgeom_from_geometry(Geometry *geom, char want3d)
 		}
 	}
 
-#ifdef DEBUG_GEOS2POSTGIS
+#ifdef PGIS_DEBUG_GEOS2POSTGIS
 	lwnotice("lwgeom_from_geometry: it's a %s", lwgeom_typename(type));
 #endif
 	switch (type)
@@ -2234,7 +2234,7 @@ GEOS2POSTGIS(Geometry *geom, char want3d)
 		return NULL;
 	}
 
-#ifdef DEBUG_GEOS2POSTGIS
+#ifdef PGIS_DEBUG_GEOS2POSTGIS
 	lwnotice("GEOS2POSTGIS: lwgeom_from_geometry returned a %s", lwgeom_summary(lwgeom, 0)); 
 #endif
 
@@ -2260,26 +2260,26 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 	LWCOLLECTION *col;
 	if ( ! lwgeom ) return NULL;
 
-#ifdef DEBUG_POSTGIS2GEOS
+#ifdef PGIS_DEBUG_POSTGIS2GEOS
 	lwnotice("LWGEOM2GEOS: got lwgeom[%p]", lwgeom);
 #endif
 
 	switch (TYPE_GETTYPE(lwgeom->type))
 	{
 		case POINTTYPE:
-#ifdef DEBUG_POSTGIS2GEOS
+#ifdef PGIS_DEBUG_POSTGIS2GEOS
 			lwnotice("LWGEOM2GEOS: point[%p]", lwgeom);
 #endif
 			return PostGIS2GEOS_point((LWPOINT *)lwgeom);
 
 		case LINETYPE:
-#ifdef DEBUG_POSTGIS2GEOS
+#ifdef PGIS_DEBUG_POSTGIS2GEOS
 			lwnotice("LWGEOM2GEOS: line[%p]", lwgeom);
 #endif
 			return PostGIS2GEOS_linestring((LWLINE *)lwgeom);
 
 		case POLYGONTYPE:
-#ifdef DEBUG_POSTGIS2GEOS
+#ifdef PGIS_DEBUG_POSTGIS2GEOS
 			lwnotice("LWGEOM2GEOS: poly[%p]", lwgeom);
 #endif
 			return PostGIS2GEOS_polygon((LWPOLY *)lwgeom);
@@ -2289,7 +2289,7 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 		case MULTIPOLYGONTYPE:
 		case COLLECTIONTYPE:
 			col = (LWCOLLECTION *)lwgeom;
-#ifdef DEBUG_POSTGIS2GEOS
+#ifdef PGIS_DEBUG_POSTGIS2GEOS
 			lwnotice("LWGEOM2GEOS: %s with %d subgeoms", lwgeom_typename(TYPE_GETTYPE(col->type)), col->ngeoms);
 #endif
 			collected = (Geometry **)lwalloc(sizeof(Geometry *)*col->ngeoms);
@@ -2338,7 +2338,7 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 	initGEOS(MAXIMUM_ALIGNOF);
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-#ifdef DEBUG_CONVERTER
+#ifdef PGIS_DEBUG_CONVERTER
 	elog(NOTICE, "GEOSnoop: IN: %s", unparse_WKT(SERIALIZED_FORM(geom), malloc, free));
 #endif
 
@@ -2354,7 +2354,7 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 	result = GEOS2POSTGIS(geosgeom, TYPE_NDIMS(geom->type) > 2);
 	GEOSdeleteGeometry(geosgeom);
 
-#ifdef DEBUG_CONVERTER
+#ifdef PGIS_DEBUG_CONVERTER
 	elog(NOTICE, "GEOSnoop: OUT: %s", unparse_WKT(SERIALIZED_FORM(result), malloc, free));
 #endif
 
@@ -2373,11 +2373,11 @@ Datum GEOS_polygonize_garray(PG_FUNCTION_ARGS)
 	Geometry **vgeoms;
 	int SRID=-1;
 	size_t offset;
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	static int call=1;
 #endif
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	call++;
 #endif
 
@@ -2390,7 +2390,7 @@ Datum GEOS_polygonize_garray(PG_FUNCTION_ARGS)
 
 	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	elog(NOTICE, "GEOS_polygonize_garray: number of elements: %d", nelems);
 #endif
 
@@ -2421,12 +2421,12 @@ Datum GEOS_polygonize_garray(PG_FUNCTION_ARGS)
 		}
 	}
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	elog(NOTICE, "GEOS_polygonize_garray: invoking GEOSpolygonize");
 #endif
 
 	geos_result = GEOSpolygonize(vgeoms, nelems);
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	elog(NOTICE, "GEOS_polygonize_garray: GEOSpolygonize returned");
 #endif
 	//pfree(vgeoms);

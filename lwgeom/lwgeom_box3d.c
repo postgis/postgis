@@ -19,7 +19,7 @@
 #include "liblwgeom.h"
 
 
-//#define DEBUG
+//#define PGIS_DEBUG
 // basic implementation of BOX2D
 
 #define SHOW_DIGS_DOUBLE 15

@@ -3,7 +3,7 @@
 #include <string.h>
 #include "liblwgeom.h"
 
-//#define DEBUG_CALLS 1
+//#define PGIS_DEBUG_CALLS 1
 
 // convert this point into its serialize form
 // result's first char will be the 8bit type.  See serialized form doc
@@ -37,7 +37,7 @@ lwpoint_serialize_buf(LWPOINT *point, char *buf, size_t *retsize)
 	char *loc;
 
 	//printLWPOINT(point);
-#ifdef DEBUG_CALLS
+#ifdef PGIS_DEBUG_CALLS
 	lwnotice("lwpoint_serialize_buf(%p, %p) called", point, buf);
 #endif
 
@@ -86,18 +86,18 @@ lwpoint_serialize_buf(LWPOINT *point, char *buf, size_t *retsize)
 BOX3D *
 lwpoint_findbbox(LWPOINT *point)
 {
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("lwpoint_findbbox called with point %p", point);
 #endif
 	if (point == NULL)
 	{
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 		lwnotice("lwpoint_findbbox returning NULL");
 #endif
 		return NULL;
 	}
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("lwpoint_findbbox returning pointArray_bbox return");
 #endif
 
@@ -135,7 +135,7 @@ lwpoint_serialize_size(LWPOINT *point)
 {
 	size_t size = 1; // type
 
-#ifdef DEBUG_CALLS
+#ifdef PGIS_DEBUG_CALLS
 	lwnotice("lwpoint_serialize_size called");
 #endif
 
@@ -144,7 +144,7 @@ lwpoint_serialize_size(LWPOINT *point)
 
 	size += TYPE_NDIMS(point->type) * sizeof(double); // point
 
-#ifdef DEBUG_CALLS
+#ifdef PGIS_DEBUG_CALLS
 	lwnotice("lwpoint_serialize_size returning %d", size);
 #endif
 
@@ -226,7 +226,7 @@ lwpoint_deserialize(char *serialized_form)
 	char *loc = NULL;
 	POINTARRAY *pa;
 
-#ifdef DEBUG_CALLS
+#ifdef PGIS_DEBUG_CALLS
 	lwnotice("lwpoint_deserialize called");
 #endif
 
@@ -241,7 +241,7 @@ lwpoint_deserialize(char *serialized_form)
 
 	if (lwgeom_hasBBOX(type))
 	{
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 		lwnotice("lwpoint_deserialize: input has bbox");
 #endif
 		result->bbox = (BOX2DFLOAT4 *)loc;
@@ -254,7 +254,7 @@ lwpoint_deserialize(char *serialized_form)
 
 	if ( lwgeom_hasSRID(type))
 	{
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 		lwnotice("lwpoint_deserialize: input has SRID");
 #endif
 		result->SRID = get_int32(loc);
@@ -301,7 +301,7 @@ LWPOINT *
 lwpoint_clone(const LWPOINT *g)
 {
 	LWPOINT *ret = lwalloc(sizeof(LWPOINT));
-#ifdef DEBUG_CALLS
+#ifdef PGIS_DEBUG_CALLS
 	lwnotice("lwpoint_clone called");
 #endif
 	memcpy(ret, g, sizeof(LWPOINT));
@@ -371,7 +371,7 @@ lwgeom_size_point(const char *serialized_point)
 
 	if ( lwgeom_getType(type) != POINTTYPE) return 0;
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 lwnotice("lwgeom_size_point called (%d)", result);
 #endif
 
@@ -381,14 +381,14 @@ lwnotice("lwgeom_size_point called (%d)", result);
 	{
 		loc += sizeof(BOX2DFLOAT4);
 		result +=sizeof(BOX2DFLOAT4);
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 lwnotice("lwgeom_size_point: has bbox (%d)", result);
 #endif
 	}
 
 	if ( lwgeom_hasSRID(type))
 	{
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 lwnotice("lwgeom_size_point: has srid (%d)", result);
 #endif
 		loc +=4; // type + SRID

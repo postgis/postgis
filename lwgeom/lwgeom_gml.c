@@ -460,7 +460,7 @@ getSRSbySRID(int SRID)
 	// write query
 	sprintf(query, "SELECT textcat(auth_name, textcat(':', auth_srid)) \
 		FROM spatial_ref_sys WHERE srid = '%d'", SRID);
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	elog(NOTICE, "Query: %s", query);
 #endif
 
@@ -503,6 +503,9 @@ getSRSbySRID(int SRID)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.9  2005/02/07 13:21:10  strk
+ * Replaced DEBUG* macros with PGIS_DEBUG*, to avoid clashes with postgresql DEBUG
+ *
  * Revision 1.8  2004/11/19 17:29:09  strk
  * precision made of type signed int (for %.*d correct use).
  *

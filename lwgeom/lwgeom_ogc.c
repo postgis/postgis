@@ -17,7 +17,7 @@
 #include "lwgeom_pg.h"
 
 
-//#define DEBUG
+//#define PGIS_DEBUG
 
 #include "wktparse.h"
 

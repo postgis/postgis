@@ -6,7 +6,7 @@
 //#include "lwgeom_pg.h"
 #include "liblwgeom.h"
 
-//#define DEBUG_CALLS 1
+//#define PGIS_DEBUG_CALLS 1
 
 LWGEOM *
 lwgeom_deserialize(char *srl)
@@ -43,7 +43,7 @@ lwgeom_serialize_size(LWGEOM *lwgeom)
 {
 	int type = TYPE_GETTYPE(lwgeom->type);
 
-#ifdef DEBUG_CALLS
+#ifdef PGIS_DEBUG_CALLS
 	lwnotice("lwgeom_serialize_size(%s) called", lwgeom_typename(type));
 #endif
 
@@ -71,7 +71,7 @@ lwgeom_serialize_buf(LWGEOM *lwgeom, char *buf, size_t *retsize)
 {
 	int type = TYPE_GETTYPE(lwgeom->type);
 
-#ifdef DEBUG_CALLS 
+#ifdef PGIS_DEBUG_CALLS 
 	lwnotice("lwgeom_serialize_buf called with a %s",
 			lwgeom_typename(type));
 #endif
@@ -109,7 +109,7 @@ lwgeom_serialize(LWGEOM *lwgeom)
 
 	lwgeom_serialize_buf(lwgeom, serialized, &retsize);
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	if ( retsize != size )
 	{
 		lwerror("lwgeom_serialize: computed size %d, returned size %d",
@@ -317,7 +317,7 @@ lwgeom_add(const LWGEOM *to, uint32 where, const LWGEOM *what)
 		return NULL;
 	}
 
-#ifdef DEBUG_CALLS
+#ifdef PGIS_DEBUG_CALLS
 	lwnotice("lwgeom_add(%s, %d, %s) called",
 		lwgeom_typename(TYPE_GETTYPE(to->type)),
 		where,

@@ -5,7 +5,7 @@
 #include <string.h>
 #include "liblwgeom.h"
 
-//#define DEBUG_CALLS 1
+//#define PGIS_DEBUG_CALLS 1
 
 #define CHECK_POLY_RINGS_ZM 1
 
@@ -160,7 +160,7 @@ lwpoly_serialize_buf(LWPOLY *poly, char *buf, size_t *retsize)
 	int npoints;
 	char *loc;
 
-#ifdef DEBUG_CALLS
+#ifdef PGIS_DEBUG_CALLS
 	lwnotice("lwpoly_serialize_buf called");
 #endif
 
@@ -295,7 +295,7 @@ lwgeom_size_poly(const char *serialized_poly)
 
 	if (lwgeom_hasBBOX(type))
 	{
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 		lwnotice("lwgeom_size_poly: has bbox");
 #endif
 		loc += sizeof(BOX2DFLOAT4);
@@ -305,7 +305,7 @@ lwgeom_size_poly(const char *serialized_poly)
 
 	if ( lwgeom_hasSRID(type))
 	{
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 		lwnotice("lwgeom_size_poly: has srid");
 #endif
 		loc +=4; // type + SRID
@@ -354,7 +354,7 @@ lwpoly_serialize_size(LWPOLY *poly)
 	if ( poly->SRID != -1 ) size += 4; // SRID
 	if ( poly->bbox ) size += sizeof(BOX2DFLOAT4);
 
-#ifdef DEBUG_CALLS
+#ifdef PGIS_DEBUG_CALLS
 	lwnotice("lwpoly_serialize_size called with poly[%p] (%d rings)",
 			poly, poly->nrings);
 #endif
@@ -367,7 +367,7 @@ lwpoly_serialize_size(LWPOLY *poly)
 		size += poly->rings[i]->npoints*TYPE_NDIMS(poly->type)*sizeof(double);
 	}
 
-#ifdef DEBUG_CALLS
+#ifdef PGIS_DEBUG_CALLS
 	lwnotice("lwpoly_serialize_size returning %d", size);
 #endif
 

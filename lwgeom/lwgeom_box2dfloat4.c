@@ -17,7 +17,7 @@
 #include "stringBuffer.h"
 
 
-//#define DEBUG
+//#define PGIS_DEBUG
 
 // basic implementation of BOX2D
 

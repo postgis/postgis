@@ -3,7 +3,7 @@
 #include <string.h>
 #include "liblwgeom.h"
 
-//#define DEBUG_CALLS 1
+//#define PGIS_DEBUG_CALLS 1
 
 LWMPOLY *
 lwmpoly_deserialize(char *srl)
@@ -13,7 +13,7 @@ lwmpoly_deserialize(char *srl)
 	int type = lwgeom_getType(srl[0]);
 	int i;
 
-#ifdef DEBUG_CALLS
+#ifdef PGIS_DEBUG_CALLS
 	lwnotice("lwmpoly_deserialize called");
 #endif
 

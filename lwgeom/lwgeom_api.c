@@ -13,14 +13,14 @@
 #define NO_Z_VALUE NO_VALUE
 #define NO_M_VALUE NO_VALUE
 
-//#define DEBUG 1
-//#define DEBUG_EXPLODED 1
+//#define PGIS_DEBUG 1
+//#define PGIS_DEBUG_EXPLODED 1
 
 // This is an implementation of the functions defined in lwgeom.h
 
 //forward decs
 extern BOX3D *lw_geom_getBB_simple(char *serialized_form);
-#ifdef DEBUG_EXPLODED
+#ifdef PGIS_DEBUG_EXPLODED
 void checkexplodedsize(char *srl, LWGEOM_EXPLODED *exploded, int alloced, char wantbbox);
 #endif
 extern char *parse_lwg(const char* geometry, lwallocator allocfunc, lwreporter errfunc);
@@ -326,7 +326,7 @@ getbox2d_p(char *serialized_form, BOX2DFLOAT4 *box)
 	char *loc;
 	BOX3D *box3d;
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("getbox2d_p call");
 #endif
 
@@ -335,14 +335,14 @@ getbox2d_p(char *serialized_form, BOX2DFLOAT4 *box)
 	if (lwgeom_hasBBOX(type))
 	{
 		//woot - this is easy
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 		lwnotice("getbox2d_p: has box");
 #endif
 		memcpy(box, loc, sizeof(BOX2DFLOAT4));
 		return 1;
 	}
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("getbox2d_p: has no box - computing");
 #endif
 
@@ -350,7 +350,7 @@ getbox2d_p(char *serialized_form, BOX2DFLOAT4 *box)
 //lwnotice("getbox2d_p:: computing box");
 	box3d = lw_geom_getBB_simple(serialized_form);
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("getbox2d_p: lw_geom_getBB_simple returned %p", box3d);
 #endif
 
@@ -364,7 +364,7 @@ getbox2d_p(char *serialized_form, BOX2DFLOAT4 *box)
 		return 0;
 	}
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("getbox2d_p: box3d converted to box2d");
 #endif
 
@@ -472,7 +472,7 @@ getPoint3dz_p(const POINTARRAY *pa, int n, POINT3DZ *op)
 
 	if ( ! pa ) return 0;
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("getPoint3dz_p called on array of %d-dimensions / %u pts",
 		TYPE_NDIMS(pa->dims), pa->npoints);
 #endif
@@ -485,7 +485,7 @@ getPoint3dz_p(const POINTARRAY *pa, int n, POINT3DZ *op)
 
 	size = pointArray_ptsize(pa);
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("getPoint3dz_p: point size: %d", size);
 #endif
 
@@ -509,7 +509,7 @@ getPoint3dm_p(const POINTARRAY *pa, int n, POINT3DM *op)
 
 	if ( ! pa ) return 0;
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("getPoint3dm_p(%d) called on array of %d-dimensions / %u pts",
 		n, TYPE_NDIMS(pa->dims), pa->npoints);
 #endif
@@ -522,7 +522,7 @@ getPoint3dm_p(const POINTARRAY *pa, int n, POINT3DM *op)
 
 	size = pointArray_ptsize(pa);
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("getPoint3d_p: point size: %d", size);
 #endif
 
@@ -644,12 +644,12 @@ pointArray_bbox(const POINTARRAY *pa)
 	POINT3DZ pt;
 	int npoints = pa->npoints;
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("pointArray_bbox call (array has %d points)", pa->npoints);
 #endif
 	if (pa->npoints == 0)
 	{
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 		lwnotice("pointArray_bbox returning NULL");
 #endif
 		return NULL;
@@ -668,7 +668,7 @@ pointArray_bbox(const POINTARRAY *pa)
 	getPoint3dz_p(pa, 0, &pt);
 
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("pointArray_bbox: got point 0");
 #endif
 
@@ -685,7 +685,7 @@ pointArray_bbox(const POINTARRAY *pa)
 		result->zmax = NO_Z_VALUE;
 	}
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("pointArray_bbox: scanning other %d points", pa->npoints);
 #endif
 	for (t=1;t<pa->npoints;t++)
@@ -702,7 +702,7 @@ pointArray_bbox(const POINTARRAY *pa)
 		}
 	}
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("pointArray_bbox returning box");
 #endif
 
@@ -833,7 +833,7 @@ lwgeom_inspect(const char *serialized_form)
 	const char *loc;
 	int 	t;
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("lwgeom_inspect: serialized@%p", serialized_form);
 #endif
 
@@ -873,7 +873,7 @@ lwgeom_inspect(const char *serialized_form)
 
 	result->ngeometries = get_uint32(loc);
 	loc +=4;
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("lwgeom_inspect: geometry is a collection of %d elements",
 		result->ngeometries);
 #endif
@@ -883,14 +883,14 @@ lwgeom_inspect(const char *serialized_form)
 	sub_geoms = (char**) lwalloc(sizeof(char*) * result->ngeometries );
 	result->sub_geoms = sub_geoms;
 	sub_geoms[0] = (char *)loc;
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("subgeom[0] @ %p (+%d)", sub_geoms[0], sub_geoms[0]-serialized_form);
 #endif
 	for (t=1;t<result->ngeometries; t++)
 	{
 		int sub_length = lwgeom_size_subgeom(sub_geoms[t-1], -1);//-1 = entire object
 		sub_geoms[t] = sub_geoms[t-1] + sub_length;
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 		lwnotice("subgeom[%d] @ %p (+%d)",
 			t, sub_geoms[t], sub_geoms[0]-serialized_form);
 #endif
@@ -1323,27 +1323,27 @@ lwgeom_size(const char *serialized_form)
 	int sub_size;
 	int result = 1; //"type"
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("lwgeom_size called");
 #endif
 
 	if (type == POINTTYPE)
 	{
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 		lwnotice("lwgeom_size: is a point");
 #endif
 		return lwgeom_size_point(serialized_form);
 	}
 	else if (type == LINETYPE)
 	{
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 		lwnotice("lwgeom_size: is a line");
 #endif
 		return lwgeom_size_line(serialized_form);
 	}
 	else if (type == POLYGONTYPE)
 	{
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 		lwnotice("lwgeom_size: is a polygon");
 #endif
 		return lwgeom_size_poly(serialized_form);
@@ -1358,7 +1358,7 @@ lwgeom_size(const char *serialized_form)
 	//handle all the multi* and geometrycollections the same
 	//NOTE: for a geometry collection of GC of GC of GC we will be recursing...
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("lwgeom_size called on a geoemtry with type %d", type);
 #endif
 
@@ -1366,7 +1366,7 @@ lwgeom_size(const char *serialized_form)
 
 	if (lwgeom_hasBBOX((unsigned char) serialized_form[0]))
 	{
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 		lwnotice("lwgeom_size: has bbox");
 #endif
 
@@ -1376,7 +1376,7 @@ lwgeom_size(const char *serialized_form)
 
 	if (lwgeom_hasSRID( (unsigned char) serialized_form[0]) )
 	{
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 		lwnotice("lwgeom_size: has srid");
 #endif
 		result +=4;
@@ -1388,21 +1388,21 @@ lwgeom_size(const char *serialized_form)
 	loc +=4;
 	result += 4; // numgeoms
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("lwgeom_size called on a geoemtry with %d elems (result so far: %d)", ngeoms, result);
 #endif
 
 	for (t=0;t<ngeoms;t++)
 	{
 		sub_size = lwgeom_size(loc);
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 		lwnotice(" subsize %d", sub_size);
 #endif
 		loc += sub_size;
 		result += sub_size;
 	}
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("lwgeom_size returning %d", result);
 #endif
 	return result;
@@ -1471,18 +1471,18 @@ BOX3D *lw_geom_getBB_simple(char *serialized_form)
 	BOX3D *b1,*b2;
 	int sub_size;
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 lwnotice("lw_geom_getBB_simple called on type %d", type);
 #endif
 
 	if (type == POINTTYPE)
 	{
 		LWPOINT *pt = lwpoint_deserialize(serialized_form);
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 lwnotice("lw_geom_getBB_simple: lwpoint deserialized");
 #endif
 		result = lwpoint_findbbox(pt);
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 lwnotice("lw_geom_getBB_simple: bbox found");
 #endif
 		pfree_point(pt);
@@ -1935,14 +1935,14 @@ lwgeom_explode(char *serialized)
 	LWGEOM_EXPLODED *subexploded, *result;
 	int i;
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("lwgeom_explode called");
 #endif
 
 	inspected = lwgeom_inspect(serialized);
 
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 lwnotice("lwgeom_explode: serialized inspected");
 #endif
 
@@ -1977,7 +1977,7 @@ lwnotice("lwgeom_explode: serialized inspected");
 
 		if ( type == POINTTYPE )
 		{
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 lwnotice("lwgeom_explode: it's a point");
 #endif
 			result->points = lwrealloc(result->points,
@@ -1989,7 +1989,7 @@ lwnotice("lwgeom_explode: it's a point");
 
 		if ( type == LINETYPE )
 		{
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 lwnotice("lwgeom_explode: it's a line");
 #endif
 			result->lines = lwrealloc(result->lines,
@@ -2001,7 +2001,7 @@ lwnotice("lwgeom_explode: it's a line");
 
 		if ( type == POLYGONTYPE )
 		{
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 lwnotice("lwgeom_explode: it's a polygon");
 #endif
 			result->polys = lwrealloc(result->polys,
@@ -2011,14 +2011,14 @@ lwnotice("lwgeom_explode: it's a polygon");
 			continue;
 		}
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 		lwnotice("type of subgeom %d is %d, recursing", i, type);
 #endif
 
 		// it's a multi geometry, recurse
 		subexploded = lwgeom_explode(subgeom);
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 		lwnotice("subgeom %d, exploded: %d point, %d lines, %d polys", i, subexploded->npoints, subexploded->nlines, subexploded->npolys);
 #endif
 
@@ -2034,7 +2034,7 @@ lwnotice("lwgeom_explode: it's a polygon");
 			if ( ! result )
 				lwerror("Out of virtual memory");
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 			lwnotice("lwrealloc'ed exploded->points");
 #endif
 
@@ -2042,13 +2042,13 @@ lwnotice("lwgeom_explode: it's a polygon");
 				subexploded->points,
 				subexploded->npoints*sizeof(char *));
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 			lwnotice("memcpied exploded->points");
 #endif
 
 			result->npoints += subexploded->npoints;
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 			lwnotice("memcopied %d points from subexploded (exploded points: %d", subexploded->npoints, result->npoints);
 #endif
 		}
@@ -2086,7 +2086,7 @@ lwnotice("lwgeom_explode: it's a polygon");
 
 	pfree_inspected(inspected);
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 lwnotice("lwgeom_explode: returning");
 #endif
 
@@ -2180,7 +2180,7 @@ lwexploded_serialize(LWGEOM_EXPLODED *exploded, int wantbbox)
 	size = lwexploded_findlength(exploded, wantbbox);
 	result = lwalloc(size);
 	lwexploded_serialize_buf(exploded, wantbbox, result, &sizecom);
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("lwexploded_serialize: findlength:%d, serialize_buf:%d", size, sizecom);
 #endif
 	return result;
@@ -2296,7 +2296,7 @@ lwexploded_serialize_buf(LWGEOM_EXPLODED *exploded, int wantbbox,
 		else outtype = (exploded->npolys>1) ? MULTIPOLYGONTYPE : POLYGONTYPE;
 	}
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice(" computed outtype: %d, ngeoms: %d", outtype, ngeoms);
 #endif
 
@@ -2415,7 +2415,7 @@ lwexploded_serialize_buf(LWGEOM_EXPLODED *exploded, int wantbbox,
 		loc += 4; // useless.. we've finished
 	}
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("lwexploded_serialize finished");
 	lwnotice(" type: %d", lwgeom_getType(buf[0]));
 	lwnotice(" SRID: %d", lwgeom_getsrid(buf));
@@ -2435,7 +2435,7 @@ lwexploded_serialize_buf(LWGEOM_EXPLODED *exploded, int wantbbox,
 	return;
 }
 
-#ifdef DEBUG_EXPLODED
+#ifdef PGIS_DEBUG_EXPLODED
 void
 checkexplodedsize(char *srl, LWGEOM_EXPLODED *exp, int alloced, char wantbbox)
 {
@@ -2882,7 +2882,7 @@ parse_lwgeom_wkt(char *wkt_input)
 		lwalloc, lwerror);
 
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("parse_lwgeom_wkt with %s",wkt_input);
 #endif
 

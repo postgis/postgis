@@ -23,7 +23,7 @@
 #include "stringBuffer.h"
 
 
-//#define DEBUG 1
+//#define PGIS_DEBUG 1
 
 #include "lwgeom_pg.h"
 #include "wktparse.h"
@@ -163,7 +163,7 @@ Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 	else
 		SRID = -1;
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	elog(NOTICE,"LWGEOMFromWKB: entry with SRID=%i",SRID);
 #endif
 
@@ -185,7 +185,7 @@ Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 
 	wkb_srid_hexized[size_result-1] = 0; // null term
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	elog(NOTICE,"size_header = %i",size_header);
 	elog(NOTICE,"size_result = %i", size_result);
 	elog(NOTICE,"LWGEOMFromWKB :: '%s'", wkb_srid_hexized);
@@ -201,7 +201,7 @@ Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 			LWGEOM_addBBOX, PointerGetDatum(lwgeom)));
 	}
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	elog(NOTICE, "LWGEOMFromWKB returning %s", unparse_WKB(SERIALIZED_FORM(lwgeom), pg_alloc, pg_free, -1, NULL, 1));
 #endif
 
@@ -303,10 +303,10 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 	lwnotice("unparse_WKB: prof: %lu", proftime[PROF_QRUN]);
 #endif
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("Output size is %lu (comp: %lu)",
 		VARSIZE(result), (unsigned long)size);
-#endif // def DEBUG
+#endif // def PGIS_DEBUG
 
 
 	PG_RETURN_POINTER(result);
@@ -499,7 +499,7 @@ Datum LWGEOM_recv(PG_FUNCTION_ARGS)
         bytea *wkb;
 	PG_LWGEOM *result;
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	elog(NOTICE, "LWGEOM_recv start");
 #endif
 
@@ -508,7 +508,7 @@ Datum LWGEOM_recv(PG_FUNCTION_ARGS)
 	VARATT_SIZEP(wkb) = buf->len+VARHDRSZ;
 	memcpy(VARATT_DATA(wkb), buf->data, buf->len);
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	elog(NOTICE, "LWGEOM_recv calling LWGEOMFromWKB");
 #endif
 
@@ -516,11 +516,11 @@ Datum LWGEOM_recv(PG_FUNCTION_ARGS)
 	result = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall1(
 		LWGEOMFromWKB, PointerGetDatum(wkb)));
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	elog(NOTICE, "LWGEOM_recv advancing StringInfo buffer");
 #endif
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	elog(NOTICE, "LWGEOM_from_bytea returned %s", unparse_WKB(SERIALIZED_FORM(result),pg_alloc,pg_free,-1));
 #endif
 
@@ -528,7 +528,7 @@ Datum LWGEOM_recv(PG_FUNCTION_ARGS)
 	/* Set cursor to the end of buffer (so the backend is happy) */
 	buf->cursor = buf->len;
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	elog(NOTICE, "LWGEOM_recv returning");
 #endif
 
@@ -540,7 +540,7 @@ Datum LWGEOM_send(PG_FUNCTION_ARGS)
 {
 	bytea *result;
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	elog(NOTICE, "LWGEOM_send called");
 #endif
 
@@ -557,7 +557,7 @@ Datum LWGEOM_to_bytea(PG_FUNCTION_ARGS)
 {
 	bytea *result;
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	elog(NOTICE, "LWGEOM_to_bytea called");
 #endif
 
@@ -572,7 +572,7 @@ Datum LWGEOM_from_bytea(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *result;
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	elog(NOTICE, "LWGEOM_from_bytea start");
 #endif
 

@@ -116,11 +116,11 @@ lwgeom_typename(int type)
 void *
 lwalloc(size_t size)
 {
-#ifdef DEBUG_ALLOCS
+#ifdef PGIS_DEBUG_ALLOCS
 	void *mem = lwalloc_var(size);
 	lwnotice("lwalloc: %d@%p", size, mem);
 	return mem;
-#else // ! DEBUG_ALLOCS
+#else // ! PGIS_DEBUG_ALLOCS
 	return lwalloc_var(size);
 #endif
 }

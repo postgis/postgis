@@ -5,8 +5,8 @@
 #include <string.h>
 #include "liblwgeom.h"
 
-//#define DEBUG_CALLS 1
-//#define DEBUG 1
+//#define PGIS_DEBUG_CALLS 1
+//#define PGIS_DEBUG 1
 
 
 // construct a new LWLINE.  points will *NOT* be copied
@@ -124,7 +124,7 @@ lwline_serialize_buf(LWLINE *line, char *buf, size_t *retsize)
 	int ptsize = pointArray_ptsize(line->points);
 	unsigned int u;
 
-#ifdef DEBUG_CALLS
+#ifdef PGIS_DEBUG_CALLS
 	lwnotice("lwline_serialize_buf(%p, %p, %p) called",
 		line, buf, retsize);
 #endif
@@ -139,7 +139,7 @@ lwline_serialize_buf(LWLINE *line, char *buf, size_t *retsize)
 		hasSRID, LINETYPE, line->bbox ? 1 : 0);
 	loc = buf+1;
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("lwline_serialize_buf added type (%d)", line->type);
 #endif
 
@@ -147,7 +147,7 @@ lwline_serialize_buf(LWLINE *line, char *buf, size_t *retsize)
 	{
 		memcpy(loc, line->bbox, sizeof(BOX2DFLOAT4));
 		loc += sizeof(BOX2DFLOAT4);
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 		lwnotice("lwline_serialize_buf added BBOX");
 #endif
 	}
@@ -156,7 +156,7 @@ lwline_serialize_buf(LWLINE *line, char *buf, size_t *retsize)
 	{
 		memcpy(loc, &line->SRID, sizeof(int32));
 		loc += sizeof(int32);
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 		lwnotice("lwline_serialize_buf added SRID");
 #endif
 	}
@@ -164,7 +164,7 @@ lwline_serialize_buf(LWLINE *line, char *buf, size_t *retsize)
 	memcpy(loc, &line->points->npoints, sizeof(uint32));
 	loc += sizeof(uint32);
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("lwline_serialize_buf added npoints (%d)",
 		line->points->npoints);
 #endif
@@ -206,7 +206,7 @@ lwline_serialize_buf(LWLINE *line, char *buf, size_t *retsize)
 			}
 	}
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("lwline_serialize_buf copied serialized_pointlist (%d bytes)",
 		ptsize * line->points->npoints);
 #endif
@@ -215,7 +215,7 @@ lwline_serialize_buf(LWLINE *line, char *buf, size_t *retsize)
 
 	//printBYTES((unsigned char *)result, loc-buf);
 
-#ifdef DEBUG_CALLS
+#ifdef PGIS_DEBUG_CALLS
 	lwnotice("lwline_serialize_buf returning (loc: %p, size: %d)",
 		loc, loc-buf);
 #endif
@@ -240,7 +240,7 @@ lwline_serialize_size(LWLINE *line)
 {
 	size_t size = 1;  //type
 
-#ifdef DEBUG_CALLS
+#ifdef PGIS_DEBUG_CALLS
 	lwnotice("lwline_serialize_size called");
 #endif
 
@@ -250,7 +250,7 @@ lwline_serialize_size(LWLINE *line)
 	size += 4; // npoints
 	size += pointArray_ptsize(line->points)*line->points->npoints;
 
-#ifdef DEBUG_CALLS
+#ifdef PGIS_DEBUG_CALLS
 	lwnotice("lwline_serialize_size returning %d", size);
 #endif
 
@@ -272,7 +272,7 @@ lwgeom_size_line(const char *serialized_line)
 	const char *loc;
 	uint32 npoints;
 
-#ifdef DEBUG_CALLS
+#ifdef PGIS_DEBUG_CALLS
 	lwnotice("lwgeom_size_line called");
 #endif
 
@@ -300,7 +300,7 @@ lwgeom_size_line(const char *serialized_line)
 
 	result += TYPE_NDIMS(type) * sizeof(double) * npoints;
 
-#ifdef DEBUG_CALLS
+#ifdef PGIS_DEBUG_CALLS
 	lwnotice("lwgeom_size_line returning %d", result);
 #endif
 
@@ -432,7 +432,7 @@ lwline_from_lwpointarray(int SRID, unsigned int npoints, LWPOINT **points)
 	/* Allocate space for output pointarray */
 	pa = ptarray_construct(zmflag&2, zmflag&1, npoints);
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("lwline_from_lwpointarray: constructed pointarray for %d points, %d zmflag",
 		npoints, zmflag);
 #endif
@@ -488,7 +488,7 @@ lwline_from_lwmpoint(int SRID, LWMPOINT *mpoint)
 	pa = ptarray_construct(TYPE_HASZ(mpoint->type),
 		TYPE_HASM(mpoint->type), mpoint->ngeoms);
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("lwline_from_lwmpoint: constructed pointarray for %d points, %d zmflag", mpoint->ngeoms, zmflag);
 #endif
 

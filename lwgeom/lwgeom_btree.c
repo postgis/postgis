@@ -27,7 +27,7 @@ Datum lwgeom_ge(PG_FUNCTION_ARGS);
 Datum lwgeom_gt(PG_FUNCTION_ARGS);
 Datum lwgeom_cmp(PG_FUNCTION_ARGS);
 
-//#define DEBUG
+//#define PGIS_DEBUG
 
 PG_FUNCTION_INFO_V1(lwgeom_lt);
 Datum lwgeom_lt(PG_FUNCTION_ARGS)
@@ -37,7 +37,7 @@ Datum lwgeom_lt(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4 box1;
 	BOX2DFLOAT4 box2;
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	elog(NOTICE, "lwgeom_lt called");
 #endif
 
@@ -52,14 +52,14 @@ Datum lwgeom_lt(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	elog(NOTICE, "lwgeom_lt passed getSRID test");
 #endif
 
 	getbox2d_p(SERIALIZED_FORM(geom1), &box1);
 	getbox2d_p(SERIALIZED_FORM(geom2), &box2);
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	elog(NOTICE, "lwgeom_lt getbox2d_p passed");
 #endif
 
@@ -94,7 +94,7 @@ Datum lwgeom_le(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4 box1;
 	BOX2DFLOAT4 box2;
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	elog(NOTICE, "lwgeom_le called");
 #endif
 
@@ -174,7 +174,7 @@ Datum lwgeom_eq(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4 box1;
 	BOX2DFLOAT4 box2;
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	elog(NOTICE, "lwgeom_eq called");
 #endif
 
@@ -234,7 +234,7 @@ Datum lwgeom_ge(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4 box1;
 	BOX2DFLOAT4 box2;
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	elog(NOTICE, "lwgeom_ge called");
 #endif
 
@@ -306,7 +306,7 @@ Datum lwgeom_gt(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4 box1;
 	BOX2DFLOAT4 box2;
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	elog(NOTICE, "lwgeom_gt called");
 #endif
 
@@ -374,7 +374,7 @@ Datum lwgeom_cmp(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4 box1;
 	BOX2DFLOAT4 box2;
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	elog(NOTICE, "lwgeom_cmp called");
 #endif
 
@@ -449,6 +449,9 @@ Datum lwgeom_cmp(PG_FUNCTION_ARGS)
 /***********************************************************
  *
  * $Log$
+ * Revision 1.7  2005/02/07 13:21:10  strk
+ * Replaced DEBUG* macros with PGIS_DEBUG*, to avoid clashes with postgresql DEBUG
+ *
  * Revision 1.6  2005/01/05 12:44:47  strk
  * Added is_worth_caching_serialized_bbox(). Renamed lwgeom_setSRID() to
  * pglwgeom_setSRID(). Fixed a bug in PG_LWGEOM_construct support for

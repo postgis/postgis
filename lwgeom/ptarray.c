@@ -3,7 +3,7 @@
 
 #include "liblwgeom.h"
 
-//#define DEBUG 1
+//#define PGIS_DEBUG 1
 
 POINTARRAY *
 ptarray_construct(char hasz, char hasm, unsigned int npoints)
@@ -282,14 +282,14 @@ ptarray_addPoint(POINTARRAY *pa, char *p, size_t pdims, unsigned int where)
 		return NULL;
 	}
 
-#if DEBUG
+#if PGIS_DEBUG
 	lwnotice("ptarray_addPoint: called with a %dD point");
 #endif
 	
 	pbuf.x = pbuf.y = pbuf.z = pbuf.m = 0.0;
 	memcpy((char *)&pbuf, p, pdims*sizeof(double));
 
-#if DEBUG
+#if PGIS_DEBUG
 	lwnotice("ptarray_addPoint: initialized point buffer");
 #endif
 

@@ -3,7 +3,7 @@
 
 #include "liblwgeom.h"
 
-//#define DEBUG
+//#define PGIS_DEBUG
 
 // pt_in_ring_2d(): crossing number test for a point in a polygon
 //      input:   p = a point,
@@ -31,7 +31,7 @@ int pt_in_ring_2d(POINT2D *p, POINTARRAY *ring)
 	}
 #endif
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("pt_in_ring_2d called with point: %g %g", p->x, p->y);
 	printPA(ring);
 #endif
@@ -64,7 +64,7 @@ int pt_in_ring_2d(POINT2D *p, POINTARRAY *ring)
 		}
 		v1 = v2;
 	}
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("pt_in_ring_2d returning %d", cn&1);
 #endif
 	return (cn&1);    // 0 if even (out), and 1 if odd (in)
@@ -129,7 +129,7 @@ double distance2d_seg_seg(POINT2D *A, POINT2D *B, POINT2D *C, POINT2D *D)
 	double	s_top, s_bot,s;
 	double	r_top, r_bot,r;
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("distance2d_seg_seg [%g,%g]->[%g,%g] by [%g,%g]->[%g,%g]",
 		A->x,A->y,B->x,B->y, C->x,C->y, D->x, D->y);
 #endif
@@ -239,7 +239,7 @@ double distance2d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2)
 	POINT2D	*start,*end;
 	POINT2D	*start2,*end2;
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("distance2d_ptarray_ptarray called (points: %d-%d)",
 			l1->npoints, l2->npoints);
 #endif
@@ -267,7 +267,7 @@ double distance2d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2)
 				result = dist;
 			}
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 			lwnotice(" seg%d-seg%d dist: %f, mindist: %f",
 				t, u, dist, result);
 #endif
@@ -314,7 +314,7 @@ double distance2d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly)
 	int i;
 	double mindist = 0;
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("distance2d_ptarray_poly called (%d rings)", poly->nrings);
 #endif
 
@@ -323,7 +323,7 @@ double distance2d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly)
 		double dist = distance2d_ptarray_ptarray(pa, poly->rings[i]);
 		if (i) mindist = LW_MIN(mindist, dist);
 		else mindist = dist;
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice(" distance from ring %d: %f, mindist: %f",
 			i, dist, mindist);
 #endif
@@ -383,14 +383,14 @@ double distance2d_point_poly(LWPOINT *point, LWPOLY *poly)
 	POINT2D *p = (POINT2D *)getPoint(point->point, 0);
 	int i;
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("distance2d_point_poly called");
 #endif
 
 	// Return distance to outer ring if not inside it
 	if ( ! pt_in_ring_2d(p, poly->rings[0]) )
 	{
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice(" not inside outer-ring");
 #endif
 		return distance2d_pt_ptarray(p, poly->rings[0]);
@@ -405,14 +405,14 @@ double distance2d_point_poly(LWPOINT *point, LWPOLY *poly)
 		// Inside a hole. Distance = pt -> ring
 		if ( pt_in_ring_2d(p, poly->rings[i]) )
 		{
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 			lwnotice(" inside an hole");
 #endif
 			return distance2d_pt_ptarray(p, poly->rings[i]);
 		}
 	}
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice(" inside the polygon");
 #endif
 	return 0.0; // Is inside the polygon
@@ -429,7 +429,7 @@ double distance2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2)
 	double mindist = 0;
 	int i;
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("distance2d_poly_poly called");
 #endif
 
@@ -441,7 +441,7 @@ double distance2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2)
 	pt = (POINT2D *)getPoint(poly2->rings[0], 0);
 	if ( pt_in_poly_2d(pt, poly1) ) return 0.0;  
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("  polys not inside each other");
 #endif
 
@@ -454,7 +454,7 @@ double distance2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2)
 		if (i) mindist = LW_MIN(mindist, dist);
 		else mindist = dist;
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 		lwnotice("  ring%d dist: %f, mindist: %f", i, dist, mindist);
 #endif
 
@@ -520,7 +520,7 @@ double lwgeom_polygon_area(LWPOLY *poly)
 	double poly_area=0.0;
 	int i;
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("in lwgeom_polygon_area (%d rings)", poly->nrings);
 #endif
 
@@ -691,7 +691,7 @@ lwgeom_mindistance2d_recursive(char *lw1, char *lw2)
 			if (mindist == -1 ) mindist = dist;
 			else mindist = LW_MIN(dist, mindist);
 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 		lwnotice("dist %d-%d: %f - mindist: %f",
 				t1, t2, dist, mindist);
 #endif

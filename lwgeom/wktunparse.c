@@ -462,7 +462,7 @@ byte *
 output_wkb_collection(byte* geom,outwkbfunc func)
 {
 	int cnt = read_int(&geom);
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("output_wkb_collection: %d iterations loop", cnt);
 #endif
 	write_wkb_int(cnt);
@@ -483,7 +483,7 @@ output_wkb(byte* geom)
 	int4 wkbtype;
 
 	dims = TYPE_NDIMS(type); 
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("output_wkb: dims set to %d", dims);
 #endif
 
@@ -560,7 +560,7 @@ output_wkb(byte* geom)
 char *
 unparse_WKB(byte* serialized, allocator alloc, freeor free, char endian, size_t *outsize, byte hex)
 {
-#ifdef DEBUG
+#ifdef PGIS_DEBUG
 	lwnotice("unparse_WKB(%p,...) called", serialized);
 #endif
 
@@ -609,6 +609,9 @@ unparse_WKB(byte* serialized, allocator alloc, freeor free, char endian, size_t 
 
 /******************************************************************
  * $Log$
+ * Revision 1.17  2005/02/07 13:21:10  strk
+ * Replaced DEBUG* macros with PGIS_DEBUG*, to avoid clashes with postgresql DEBUG
+ *
  * Revision 1.16  2005/01/18 09:32:03  strk
  * Changed unparse_WKB interface to take an output size pointer and an HEXFORM
  * specifier. Reworked code in wktunparse to use function pointers.

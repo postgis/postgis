@@ -3,7 +3,7 @@
 #include <string.h>
 #include "liblwgeom.h"
 
-//#define DEBUG_CALLS 1
+//#define PGIS_DEBUG_CALLS 1
 
 #define CHECK_LWGEOM_ZM 1
 
@@ -115,7 +115,7 @@ lwcollection_serialize_size(LWCOLLECTION *col)
 	if ( col->SRID != -1 ) size += 4; // SRID
 	if ( col->bbox ) size += sizeof(BOX2DFLOAT4);
 
-#ifdef DEBUG_CALLS
+#ifdef PGIS_DEBUG_CALLS
 	lwnotice("lwcollection_serialize_size[%p]: start size: %d", col, size);
 #endif
 
@@ -123,12 +123,12 @@ lwcollection_serialize_size(LWCOLLECTION *col)
 	for (i=0; i<col->ngeoms; i++)
 	{
 		size += lwgeom_serialize_size(col->geoms[i]);
-#ifdef DEBUG_CALLS
+#ifdef PGIS_DEBUG_CALLS
 		lwnotice("lwcollection_serialize_size[%p]: with geom%d: %d", col, i, size);
 #endif
 	}
 
-#ifdef DEBUG_CALLS
+#ifdef PGIS_DEBUG_CALLS
 	lwnotice("lwcollection_serialize_size[%p]:  returning %d", col, size);
 #endif
 
@@ -147,7 +147,7 @@ lwcollection_serialize_buf(LWCOLLECTION *coll, char *buf, size_t *retsize)
 	char *loc;
 	int i;
 
-#ifdef DEBUG_CALLS
+#ifdef PGIS_DEBUG_CALLS
 	lwnotice("lwcollection_serialize_buf called (%d with %d elems)",
 		lwgeom_typename(TYPE_GETTYPE(coll->type)), coll->ngeoms);
 #endif
@@ -190,7 +190,7 @@ lwcollection_serialize_buf(LWCOLLECTION *coll, char *buf, size_t *retsize)
 
 	if (retsize) *retsize = size;
 
-#ifdef DEBUG_CALLS
+#ifdef PGIS_DEBUG_CALLS
 	lwnotice("lwcollection_serialize_buf returning");
 #endif
 }
@@ -297,9 +297,9 @@ lwcollection_same(const LWCOLLECTION *c1, const LWCOLLECTION *c2)
 	unsigned int i, j;
 	char *hit;
 
-#if DEBUG_CALLS
+#if PGIS_DEBUG_CALLS
 	lwnotice("lwcollection_same called");
-#endif // DEBUG_CALLS
+#endif // PGIS_DEBUG_CALLS
 
 	if ( TYPE_GETTYPE(c1->type) != TYPE_GETTYPE(c2->type) ) return 0;
 	if ( c1->ngeoms != c2->ngeoms ) return 0;

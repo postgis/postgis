@@ -90,7 +90,7 @@ lwcollection_summary(LWCOLLECTION *col, int offset)
 	memset(pad, ' ', offset);
 	pad[offset] = '\0';
 
-#ifdef DEBUG_CALLS
+#ifdef PGIS_DEBUG_CALLS
 	lwnotice("lwcollection_summary called");
 #endif
 
@@ -111,7 +111,7 @@ lwcollection_summary(LWCOLLECTION *col, int offset)
 		lwfree(tmp);
 	}
 
-#ifdef DEBUG_CALLS
+#ifdef PGIS_DEBUG_CALLS
 	lwnotice("lwcollection_summary returning");
 #endif
 
@@ -129,7 +129,7 @@ lwpoly_summary(LWPOLY *poly, int offset)
 	memset(pad, ' ', offset);
 	pad[offset] = '\0';
 
-#ifdef DEBUG_CALLS
+#ifdef PGIS_DEBUG_CALLS
 	lwnotice("lwpoly_summary called");
 #endif
 
@@ -147,7 +147,7 @@ lwpoly_summary(LWPOLY *poly, int offset)
 		strcat(result,tmp);
 	}
 
-#ifdef DEBUG_CALLS
+#ifdef PGIS_DEBUG_CALLS
 	lwnotice("lwpoly_summary returning");
 #endif
 
