@@ -1911,7 +1911,7 @@ Datum LWGEOM_line_from_mpoint(PG_FUNCTION_ARGS)
 	}
 
 	mpoint = lwmpoint_deserialize(SERIALIZED_FORM(ingeom));
-	lwline = lwline_from_lwmpoint(-1, mpoint);
+	lwline = lwline_from_lwmpoint(mpoint->SRID, mpoint);
 	if ( ! lwline )
 	{
 		elog(ERROR, "makeline: lwline_from_lwmpoint returned NULL");
