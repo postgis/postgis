@@ -9,6 +9,7 @@ chunked-html: postgis-out.xml
 	xsltproc \
 		--param shade.verbatim 1 \
 		--param chunk.section.depth 0 \
+		--param section.autolabel 1 \
 		--stringparam html.stylesheet style.css \
 		--stringparam saxon.character.representation decimal \
 		/usr/share/sgml/docbook/xsl-stylesheets/html/chunk.xsl \
@@ -18,6 +19,7 @@ html: postgis-out.xml
 	xsltproc \
 		--output html/postgis.html \
 		--param shade.verbatim 1 \
+		--param section.autolabel 1 \
 		--param chunk.section.depth 0 \
 		--stringparam html.stylesheet style.css \
 		/usr/share/sgml/docbook/xsl-stylesheets/html/docbook.xsl \
