@@ -1,28 +1,41 @@
+#/bin/sh
+#
 # This script is aimed at restoring postgis data
 # from a dumpfile produced by pg_dump -Fc
 #
 # Basically it will restore all but things created by
 # the given postgis.sql.
 #
-# A particular attention is given to the spatial_ref_sys
-# and geometry_columns tables which are created as from dump.
+# A particular attention must be given to the spatial_ref_sys
+# and geometry_columns tables which are created from postgis.sql
+# and filled using data from dump. If pre-7.5 is restored to 7.5+
+# some columns will be missing from geometry_columns, so they'll
+# probably need to be added first and dropped after (currently not
+# done).
 #
-# Note that a postgresql-7.5 installation would require a shrink
-# in the geomtry_columns table, due to internal gathering of
-# statistics. The shrink is not performed so far (TODO).
+# Known issues:
+#	- operators from the dump are never restored due to
+#	  the impossibility (for current implementation) to
+#	  detect wheter or not they are from postgis
 #
 
+exec perl $0
+	if (0);
+
 (@ARGV == 3) || die "Usage: perl postgis_restore.pl <postgis.sql> <db> <dump>\nRestore a custom dump (pg_dump -Fc) of a postgis enabled database.\n";
+
+$DEBUG=0;
 
 my %aggs = {};
 my %casts = ();
 my %funcs = {};
 my %types = {};
-my @ops = ();
 
 my $postgissql = $ARGV[0];
 my $dbname = $ARGV[1];
 my $dump = $ARGV[2];
+my $dumplist=$dump.".list";
+my $dumpascii=$dump.".ascii";
 
 print "postgis.sql is $postgsisql\n";
 print "dbname is $dbname\n";
@@ -72,13 +85,13 @@ while( my $line = <INPUT>)
 		}
 		my $id = $name."(".join(", ", @args).")";
 		$funcs{$id} = 1;
-		print "SQLFUNC: $id\n";
+		print "SQLFUNC: $id\n" if $DEBUG;
 		next;
 	}
 	if ($line =~ /^create type +([^ ]+)/i)
 	{
 		my $type = $1;
-		print "SQLTYPE $type\n";
+		print "SQLTYPE $type\n" if $DEBUG;
 		$types{$type} = 1;
 		next;
 	}
@@ -102,14 +115,14 @@ while( my $line = <INPUT>)
 			exit 1;
 		}
 		my $id = $name.'('.$type.')';
-		print "SQLAGG $id\n";
+		print "SQLAGG $id\n" if $DEBUG;
 		$aggs{$id} = 1;
 		next;
 	}
 	if ($line =~ /create cast .* with function *([^ ]*) *\(([^ ]*) *\)/i)
 	{
 		my $id = lc($1)."(".lc($2).")";
-		print "SQLCAST $id\n";
+		print "SQLCAST $id\n" if $DEBUG;
 		$casts{$id} = 1;
 		next;
 	}
@@ -118,14 +131,12 @@ while( my $line = <INPUT>)
 close( INPUT );
 #exit;
 
-print " ".@ops." operators [classes]\n";
-print " ".@aggs." aggregates\n";
 
 #
 # Scan dump list
 #
 print "Scanning $dump list\n"; 
-open( OUTPUT, ">".$dump.".list") || die "Can't write to ".$dump.".list\n";
+open( OUTPUT, ">$dumplist") || die "Can't write to ".$dump.".list\n";
 open( INPUT, "pg_restore -l $dump |") || die "Couldn't run pg_restore -l $dump\n";
 while( my $line = <INPUT> )
 {
@@ -152,25 +163,25 @@ while( my $line = <INPUT> )
 		my $id = $funcname."(".$args.")";
 		if ( $funcname eq 'plpgsql_call_handler' )
 		{
-			print "SKIPPING $funcname($args)\n";
+			print "SKIPPING $id\n" if $DEBUG;
 			next;
 		}
 		# This is an old postgis function which might
 		# still be in a dump
 		if ( $funcname eq 'unite_finalfunc' )
 		{
-			print "SKIPPING $funcname($args)\n";
+			print "SKIPPING $id\n" if $DEBUG;
 			next;
 		}
 		if ( $funcs{$id} )
 		{
-			print "SKIPPING PGIS $funcname($args) [".$funcs{$funcname."(".$args.")"}."]\n";
+			print "SKIPPING PGIS $id\n" if $DEBUG;
 			next;
 		}
-		print "KEEPING FUNCTION: [$id]\n";
+		print "KEEPING FUNCTION: [$id]\n" if $DEBUG;
 		#next;
 	}
-	if ($line =~ / AGGREGATE (.*)\((.*)\)/)
+	elsif ($line =~ / AGGREGATE (.*)\((.*)\)/)
 	{
 		my $name = $1;
 		my @args = split(",", $2);
@@ -190,44 +201,56 @@ while( my $line = <INPUT> )
 		my $id = $name."(".$args.")";
 		if ( $aggs{$id} )
 		{
-			print "SKIPPING PGIS AGG $id\n";
+			print "SKIPPING PGIS AGG $id\n" if $DEBUG;
 			next;
 		}
 		# This is an old postgis aggregate
 		if ( $name eq 'fastunion' )
 		{
-			print "SKIPPING old PGIS AGG $id\n";
+			print "SKIPPING old PGIS AGG $id\n" if $DEBUG;
 			next;
 		}
-		print "KEEPING AGGREGATE [$id]\n";
+		print "KEEPING AGGREGATE [$id]\n" if $DEBUG;
 		#next;
 	}
-	if ($line =~ / TYPE (.*) .*/)
+	elsif ($line =~ / TYPE (.*) .*/)
 	{
 		my $type = $1;
 		if ( $types{$type} )
 		{
-			#print "SKIPPING PGIS $funcname($args) [".$funcs{$funcname."(".$args.")"}."]\n";
+			print "SKIPPING PGIS TYPE $type\n" if $DEBUG;
 			next;
 		}
-		#print "KEEPING TYPE [$type]\n";
+		print "KEEPING TYPE [$type]\n" if $DEBUG;
 		#next;
 	}
-	if ($line =~ / PROCEDURAL LANGUAGE plpgsql/)
+	elsif ($line =~ / PROCEDURAL LANGUAGE plpgsql/)
 	{
-		#print "SKIPPING plpgsql\n";
+		print "SKIPPING plpgsql\n" if $DEBUG;
+		next;
+	}
+
+	# spatial_ref_sys and geometry_columns
+	elsif ($line =~ / TABLE geometry_columns/)
+	{
+		print "SKIPPING geometry_columns schema\n" if $DEBUG;
+		next;
+	}
+	elsif ($line =~ / TABLE spatial_ref_sys/)
+	{
+		print "SKIPPING spatial_ref_sys schema\n" if $DEBUG;
 		next;
 	}
 
 	# Will skip all operators (there is no way to tell from a dump
 	# list which types the operator works on
-	if ($line =~ / OPERATOR /)
+	elsif ($line =~ / OPERATOR /)
 	{
-		#print "SKIPPING operator\n";
+		print "SKIPPING operator\n" if $DEBUG;
 		next;
 	}
 
-	if ($line =~ / CAST *([^ ]*) *\( *([^ )]*) *\)/)
+	elsif ($line =~ / CAST *([^ ]*) *\( *([^ )]*) *\)/)
 	{
 		my $arg1 = lc($1);
 		my $arg2 = lc($2);
@@ -236,19 +259,19 @@ while( my $line = <INPUT> )
 		my $id = $arg1."(".$arg2.")";
 		if ( $casts{$id} )
 		{
-			print "SKIPPING PGIS CAST $id\n";
+			print "SKIPPING PGIS CAST $id\n" if $DEBUG;
 			next;
 		}
 		if ($arg1 eq 'box3d' || $arg2 eq 'geometry')
 		{
-			print "SKIPPING PGIS type CAST $id\n";
+			print "SKIPPING PGIS type CAST $id\n" if $DEBUG;
 			next;
 		}
-		print "KEEPING CAST $id\n";
+		#print "KEEPING CAST $id\n";
 		#next;
 	}
 	print OUTPUT $line;
-	print "UNANDLED: $line"
+#	print "UNANDLED: $line"
 }
 close( INPUT );
 close(OUTPUT);
@@ -260,11 +283,9 @@ print "Adding plpgsql\n";
 `createlang plpgsql $dbname`;
 print "Sourcing $postgissql\n";
 `psql -f $postgissql $dbname`;
-print "Dropping spatial_ref_sys and geometry_columns\n";
-`psql -c 'DROP TABLE spatial_ref_sys; DROP TABLE geometry_columns' $dbname`;
 print "Restoring $dump\n";
-$dumplist=$dump.".list";
-`pg_restore -v -L $dumplist -d $dbname $dump`;
+`pg_restore -L $dumplist $dump | sed 's/^\\(SET search_path .*\\);/\\1, public;/' > $dumpascii`;
+`psql -f $dumpascii $dbname`;
 exit;
 
 
