@@ -1,7 +1,8 @@
-2002/05/02
+2003/10/20
 
 - GML import/export routines
-- Inclusion of OGC simple feature predicate functions for overlaps, 
-  intersections, etc.
-  - Port of JTS topology suite to C++
 - Connectivity to commercial GIS software.
+- Re-write WKT input/output functions to be faster
+- PgSQL 7.4 support
+- SVG output routines
+- Douglas/Peuker simplification for linestrings
