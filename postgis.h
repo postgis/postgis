@@ -1,9 +1,11 @@
-//Geometric types for Postgis
-//
-// point3d, line3d, and polygon3d are the base types.
-// 
-// Everything is stored in a geometry3d, which is just a conglomeration
-// of the base types (and a little bit of other info).
+/*
+ * Geometric types for Postgis
+ *
+ * point3d, line3d, and polygon3d are the base types.
+ * 
+ * Everything is stored in a geometry3d, which is just a conglomeration
+ * of the base types (and a little bit of other info).
+ */
 
 
 
