@@ -10,6 +10,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.41  2004/02/06 08:26:02  strk
+ * updated wkb reading funx to reflect changes made by pramsey in postgis_inout.c to be nicer with solaris
+ *
  * Revision 1.40  2003/12/27 13:30:23  strk
  * Added schema specification support
  *
@@ -182,10 +185,8 @@ byte getbyte(byte *c);
 void skipbyte(byte **c);
 byte popbyte(byte **c);
 uint32 popint(byte **c);
-uint32 getint(byte *c);
 void skipint(byte **c);
 double popdouble(byte **c);
-double getdouble(byte *c);
 void skipdouble(byte **c);
 void dump_wkb(byte *wkb);
 byte * HexDecode(byte *hex);
@@ -2780,30 +2781,24 @@ byte popbyte(byte **c) {
 }
 
 uint32 popint(byte **c) {
-	int ret = *((uint32*)*c);
+	uint32 i;
+	memcpy(&i, *c, 4);
 	*c+=4;
-	return ret;
+	return i;
 }
 
 void skipint(byte **c) {
 	*c+=4;
 }
 
-uint32 getint(byte *c) {
-	return *((uint32*)c);
-}
-
 double popdouble(byte **c) {
-	double ret;
-	ret = *((double*)*c);
+	double d;
+	memcpy(&d, *c, 8);
 	*c+=8;
-	return ret;
+	return d;
 }
 
 void skipdouble(byte **c) {
 	*c+=8;
 }
 
-double getdouble(byte *c) {
-	return *((double*)c);
-}
