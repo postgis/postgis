@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.12  2004/02/06 00:42:25  dblasby
+ * moved forward declarations from postgis.h to postgis_proj.c
+ *
  * Revision 1.11  2004/02/05 20:31:48  dblasby
  * Optimized the curvature method (doesnt have to calculate e2)
  *
@@ -58,7 +61,9 @@
 
 
 double distance_sphere_method(double lat1, double long1,double lat2,double long2, SPHEROID *sphere);
-
+double	distance_ellipse_calculation(double lat1, double long1,
+					double lat2, double long2,
+					SPHEROID *sphere);
 
 //use the WKT definition of an ellipsoid
 // ie. SPHEROID["name",A,rf] or SPHEROID("name",A,rf)
