@@ -98,7 +98,7 @@ SRCDIR=src
 EXAMPLES=examples
 BUILD=bin
 RUNCP=$(POSTGIS_BUILD_CLASSPATH):postgis.jar
-BUILDCP=$(STUBBUILD):$(POSTGIS_BUILD_CLASSPATH)
+BUILDCP=$(STUBBUILD):$(POSTGIS_BUILD_CLASSPATH):$(SRCDIR)
 
 # All the java files to compile
 SRC= $(SRCDIR)/examples/Test.java \
