@@ -37,17 +37,11 @@ Then run:
   make install
 
 PostGIS now requires the PL/pgSQL procedural language in order to operate
-correctly. To install PL/pgSQL, locate the plpgsql.so library in your
-PostgreSQL installation (usually in the 'lib' directory). Then run the
-following SQL commands in your database, replacing the plpgsql.so 
-location with the correct one for your system:
+correctly. To install PL/pgSQL you should use the createlang script coming
+with postgresql.  (The PostgreSQL 7.1 Programmer's Guide details 
+if you want to this manually for some reason.)
 
-  CREATE FUNCTION plpgsql_call_handler() 
-     RETURNS OPAQUE AS '/usr/local/pgsql/lib/plpgsql.so' 
-     LANGUAGE 'C';
-  CREATE TRUSTED PROCEDURAL LANGUAGE 'plpgsql'
-     HANDLER plpgsql_call_handler
-     LANCOMPILER 'PL/pgSQL';
+  createlang plpgsql yourdatabase
 
 Finally, load the function and object definitions into your database 
 with psql (you must run this as a database user with system privledges):

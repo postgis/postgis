@@ -109,11 +109,17 @@
 				"postgis" directory, and run the compile and install commands. </para> 
 			 <programlisting># cd ./postgis-0.6 
 # make 
-# make install</programlisting></listitem><listitem><para>As of version 0.6, PostGIS requires the PL/pgSQL procedural language extension. Before loading the postgis.sql file, you must first enable PL/pgSQL. The code snippet below gives an example, substitute the correct location of your <filename>plpgsql.so</filename> library.</para><programlisting>CREATE FUNCTION plpgsql_call_handler () RETURNS OPAQUE AS
-   '/usr/local/pgsql/lib/plpgsql.so' LANGUAGE 'C';
-CREATE TRUSTED PROCEDURAL LANGUAGE 'plpgsql'
-   HANDLER plpgsql_call_handler
-   LANCOMPILER 'PL/pgSQL';</programlisting></listitem> 
+# make install</programlisting></listitem>
+		<listitem><para>
+As of version 0.6, PostGIS requires the PL/pgSQL procedural language extension.
+Before loading the postgis.sql file, you must first enable PL/pgSQL. 
+You should use the <filename>createlang</filename> command.
+The PostgreSQL 7.1 Programmer's Guide has the details if you want to this
+manually for some reason.
+<programlisting>
+# createlang plpgsql [yourdatabase]
+</programlisting>
+   		</listitem> 
 		  <listitem> 
 			 <para>Finally, you
 				must load the PostGIS object and function definitions into your database. </para> 
