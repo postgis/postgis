@@ -1,4 +1,4 @@
-#!/bin/sh
+#/bin/sh
 #
 # This script is aimed at restoring postgis data
 # from a dumpfile produced by pg_dump -Fc
@@ -90,6 +90,10 @@ my %obsoleted_function = (
 	'ggeometry_consistent', 1,
 	'create_histogram2d(box3d, integer)', 1,
 	'estimate_histogram2d(histogram2d, box)', 1,
+	'xmin(box2d)', 1,
+	'ymin(box2d)', 1,
+	'xmax(box2d)', 1,
+	'ymax(box2d)', 1,
 	'optimistic_overlap', 1,
 	'unite_finalfunc', 1
 );
