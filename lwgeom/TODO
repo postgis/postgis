@@ -1,4 +1,7 @@
 
+- ZM flags debugging (segfaults with force_type)
+
+
 - LWGEOM editor (insert/append a geom, remove a geom, ....)
 
 - Make collect() avoid flatting
