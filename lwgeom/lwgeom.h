@@ -228,7 +228,7 @@ typedef struct {
 	unsigned char type; // encodes ndims, type, bbox presence,
 			    // srid presence
 	char data[1];
-} LWGEOM;
+} PG_LWGEOM;
 
 /*
  * Construct a full LWGEOM type (including size header)
@@ -239,12 +239,12 @@ typedef struct {
  * If you request bbox (wantbbox=1) it will be extracted or computed
  * from the serialized form.
  */
-extern LWGEOM *LWGEOM_construct(char *serialized, int SRID, int wantbbox);
+extern PG_LWGEOM *PG_LWGEOM_construct(char *serialized, int SRID, int wantbbox);
 
 /*
  * Use this macro to extract the char * required
- * by most functions from an LWGEOM struct.
- * (which is an LWGEOM w/out int32 size casted to char *)
+ * by most functions from an PG_LWGEOM struct.
+ * (which is an PG_LWGEOM w/out int32 size casted to char *)
  */
 #define SERIALIZED_FORM(x) ((char *)(x))+4
 
@@ -265,9 +265,10 @@ extern int lwgeom_size_subgeom(const char *serialized_form, int geom_number);
 
 typedef struct
 {
-   	char     ndims; // 2=2d, 3=3d, 4=4d, 5=undef
-   	int      SRID;   // spatial ref sys
-   	POINTARRAY  *point;  // hide 2d/3d (this will be an array of 1 point)
+	int type;	// POINTTYPE
+   	char ndims;	// 2=2d, 3=3d, 4=4d, 5=undef
+   	int SRID;	// spatial ref sys
+   	POINTARRAY *point;  // hide 2d/3d (this will be an array of 1 point)
 }  LWPOINT; // "light-weight point"
 
 // construct a new point.  point will NOT be copied
@@ -302,6 +303,7 @@ extern POINT3D lwpoint_getPoint3d(const LWPOINT *point);
 
 typedef struct
 {
+	int type; // LINETYPE
 	char  ndims; // 2=2d, 3=3d, 4=4d, 5=undef
 	int  SRID;   // spatial ref sys -1=none
 	POINTARRAY    *points; // array of POINT3D
@@ -335,6 +337,7 @@ extern BOX3D *lwline_findbbox(LWLINE *line);
 
 typedef struct
 {
+	int type; // POLYGONTYPE
 	int32 SRID;
 	char ndims;
 	int  nrings;
@@ -515,9 +518,9 @@ int lwgeom_empty_length(int SRID);
 
 // get the SRID from the LWGEOM
 // none present => -1
-extern int lwgeom_getSRID(LWGEOM *lwgeom);
+extern int lwgeom_getSRID(PG_LWGEOM *lwgeom);
 extern int lwgeom_getsrid(char *serialized);
-extern LWGEOM *lwgeom_setSRID(LWGEOM *lwgeom, int32 newSRID);
+extern PG_LWGEOM *lwgeom_setSRID(PG_LWGEOM *lwgeom, int32 newSRID);
 
 //get bounding box of LWGEOM (automatically calls the sub-geometries bbox generators)
 extern BOX3D *lw_geom_getBB(char *serialized_form);

@@ -100,9 +100,9 @@ extern Geometry *PostGIS2GEOS_multipoint(LWPOINT *const *const geoms, uint32 nge
 extern Geometry *PostGIS2GEOS_collection(Geometry **geoms, int ngeoms, int SRID, bool is3d);
 
 void NOTICE_MESSAGE(char *msg);
-LWGEOM *GEOS2POSTGIS(Geometry *geom, char want3d);
-Geometry * POSTGIS2GEOS(LWGEOM *g);
-void errorIfGeometryCollection(LWGEOM *g1, LWGEOM *g2);
+PG_LWGEOM *GEOS2POSTGIS(Geometry *geom, char want3d);
+Geometry * POSTGIS2GEOS(PG_LWGEOM *g);
+void errorIfGeometryCollection(PG_LWGEOM *g1, PG_LWGEOM *g2);
 char *PointFromGeometry(Geometry *g, char want3d);
 char *LineFromGeometry(Geometry *g, char want3d);
 char *PolyFromGeometry(Geometry *g, char want3d);
@@ -144,7 +144,7 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 	ArrayType *array;
 	int is3d = 0;
 	int nelems, i;
-	LWGEOM **geoms, *result, *pgis_geom;
+	PG_LWGEOM **geoms, *result, *pgis_geom;
 	Geometry *g1, *g2, *geos_result;
 #ifdef DEBUG
 	static int call=1;
@@ -169,7 +169,7 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 
 	if ( nelems == 0 ) PG_RETURN_NULL();
 
-	geoms = (LWGEOM **)ARR_DATA_PTR(array);
+	geoms = (PG_LWGEOM **)ARR_DATA_PTR(array);
 
 	/* One-element union is the element itself */
 	if ( nelems == 1 ) PG_RETURN_POINTER(geoms[0]);
@@ -228,18 +228,18 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geomunion);
 Datum geomunion(PG_FUNCTION_ARGS)
 {
-	LWGEOM *geom1;
-	LWGEOM *geom2;
+	PG_LWGEOM *geom1;
+	PG_LWGEOM *geom2;
 	int is3d;
 	Geometry *g1,*g2,*g3;
-	LWGEOM *result;
+	PG_LWGEOM *result;
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
 #endif
 
-	geom1 = (LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	geom2 = (LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	is3d = ( lwgeom_ndims(geom1->type) > 2 ) ||
 		( lwgeom_ndims(geom2->type) > 2 );
@@ -320,18 +320,18 @@ Datum geomunion(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(symdifference);
 Datum symdifference(PG_FUNCTION_ARGS)
 {
-	LWGEOM *geom1;
-	LWGEOM *geom2;
+	PG_LWGEOM *geom1;
+	PG_LWGEOM *geom2;
 	Geometry *g1,*g2,*g3;
-	LWGEOM *result;
+	PG_LWGEOM *result;
 	int is3d;
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
 #endif
 
-	geom1 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	geom2 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	is3d = ( lwgeom_ndims(geom1->type) > 2 ) ||
 		( lwgeom_ndims(geom2->type) > 2 );
@@ -407,15 +407,15 @@ Datum symdifference(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(boundary);
 Datum boundary(PG_FUNCTION_ARGS)
 {
-	LWGEOM	*geom1;
+	PG_LWGEOM	*geom1;
 	Geometry *g1,*g3;
-	LWGEOM *result;
+	PG_LWGEOM *result;
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
 #endif
 
-	geom1 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	initGEOS(MAXIMUM_ALIGNOF);
 
@@ -479,15 +479,15 @@ Datum boundary(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(convexhull);
 Datum convexhull(PG_FUNCTION_ARGS)
 {
-	LWGEOM	*geom1;
+	PG_LWGEOM	*geom1;
 	Geometry *g1,*g3;
-	LWGEOM *result;
+	PG_LWGEOM *result;
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
 #endif
 
-	geom1 = (LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	initGEOS(MAXIMUM_ALIGNOF);
 
@@ -543,16 +543,16 @@ Datum convexhull(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(buffer);
 Datum buffer(PG_FUNCTION_ARGS)
 {
-	LWGEOM	*geom1;
+	PG_LWGEOM	*geom1;
 	double	size;
 	Geometry *g1,*g3;
-	LWGEOM *result;
+	PG_LWGEOM *result;
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
 #endif
 
-	geom1 = (LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	size = PG_GETARG_FLOAT8(1);
 
 	initGEOS(MAXIMUM_ALIGNOF);
@@ -614,18 +614,18 @@ Datum buffer(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(intersection);
 Datum intersection(PG_FUNCTION_ARGS)
 {
-	LWGEOM *geom1;
-	LWGEOM *geom2;
+	PG_LWGEOM *geom1;
+	PG_LWGEOM *geom2;
 	Geometry *g1,*g2,*g3;
-	LWGEOM *result;
+	PG_LWGEOM *result;
 	int is3d;
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
 #endif
 
-	geom1 = (LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	geom2 = (LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	is3d = ( lwgeom_ndims(geom1->type) > 2 ) ||
 		( lwgeom_ndims(geom2->type) > 2 );
@@ -721,18 +721,18 @@ Datum intersection(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(difference);
 Datum difference(PG_FUNCTION_ARGS)
 {
-	LWGEOM *geom1;
-	LWGEOM *geom2;
+	PG_LWGEOM *geom1;
+	PG_LWGEOM *geom2;
 	Geometry *g1,*g2,*g3;
-	LWGEOM *result;
+	PG_LWGEOM *result;
 	int is3d;
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
 #endif
 
-	geom1 = (LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	geom2 = (LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	is3d = ( lwgeom_ndims(geom1->type) > 2 ) ||
 		( lwgeom_ndims(geom2->type) > 2 );
@@ -807,15 +807,15 @@ Datum difference(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(pointonsurface);
 Datum pointonsurface(PG_FUNCTION_ARGS)
 {
-	LWGEOM *geom1;
+	PG_LWGEOM *geom1;
 	Geometry *g1,*g3;
-	LWGEOM *result;
+	PG_LWGEOM *result;
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
 #endif
 
-	geom1 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	initGEOS(MAXIMUM_ALIGNOF);
 
@@ -876,14 +876,14 @@ Datum pointonsurface(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(centroid);
 Datum centroid(PG_FUNCTION_ARGS)
 {
-	LWGEOM *geom, *result;
+	PG_LWGEOM *geom, *result;
 	Geometry *geosgeom, *geosresult;
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
 #endif
 
-	geom = (LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	initGEOS(MAXIMUM_ALIGNOF);
 
@@ -941,7 +941,7 @@ Datum centroid(PG_FUNCTION_ARGS)
 
 
 
-void errorIfGeometryCollection(LWGEOM *g1, LWGEOM *g2)
+void errorIfGeometryCollection(PG_LWGEOM *g1, PG_LWGEOM *g2)
 {
 	int t1 = lwgeom_getType(g1->type);
 	int t2 = lwgeom_getType(g2->type);
@@ -953,7 +953,7 @@ void errorIfGeometryCollection(LWGEOM *g1, LWGEOM *g2)
 PG_FUNCTION_INFO_V1(isvalid);
 Datum isvalid(PG_FUNCTION_ARGS)
 {
-	LWGEOM	*geom1;
+	PG_LWGEOM	*geom1;
 	bool result;
 	Geometry *g1;
 
@@ -961,7 +961,7 @@ Datum isvalid(PG_FUNCTION_ARGS)
 	profstart(PROF_QRUN);
 #endif
 
-	geom1 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	initGEOS(MAXIMUM_ALIGNOF);
 
@@ -998,14 +998,14 @@ Datum isvalid(PG_FUNCTION_ARGS)
 }
 
 
-// overlaps(LWGEOM g1,LWGEOM g2)
+// overlaps(PG_LWGEOM g1,PG_LWGEOM g2)
 // returns  if GEOS::g1->overlaps(g2) returns true
 // throws an error (elog(ERROR,...)) if GEOS throws an error
 PG_FUNCTION_INFO_V1(overlaps);
 Datum overlaps(PG_FUNCTION_ARGS)
 {
-	LWGEOM *geom1;
-	LWGEOM *geom2;
+	PG_LWGEOM *geom1;
+	PG_LWGEOM *geom2;
 	Geometry *g1,*g2;
 	bool result;
 	const BOX2DFLOAT4 *box1, *box2;
@@ -1014,8 +1014,8 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	profstart(PROF_QRUN);
 #endif
 
-	geom1 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	geom2 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	errorIfGeometryCollection(geom1,geom2);
 
@@ -1079,8 +1079,8 @@ Datum overlaps(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(contains);
 Datum contains(PG_FUNCTION_ARGS)
 {
-	LWGEOM *geom1;
-	LWGEOM *geom2;
+	PG_LWGEOM *geom1;
+	PG_LWGEOM *geom2;
 	Geometry *g1,*g2;
 	bool result;
 	const BOX2DFLOAT4 *box1, *box2;
@@ -1089,8 +1089,8 @@ Datum contains(PG_FUNCTION_ARGS)
 	profstart(PROF_QRUN);
 #endif
 
-	geom1 = (LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	geom2 = (LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	errorIfGeometryCollection(geom1,geom2);
 
@@ -1154,8 +1154,8 @@ Datum contains(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(within);
 Datum within(PG_FUNCTION_ARGS)
 {
-	LWGEOM *geom1;
-	LWGEOM *geom2;
+	PG_LWGEOM *geom1;
+	PG_LWGEOM *geom2;
 	Geometry *g1,*g2;
 	bool result;
 	const BOX2DFLOAT4 *box1, *box2;
@@ -1164,8 +1164,8 @@ Datum within(PG_FUNCTION_ARGS)
 	profstart(PROF_QRUN);
 #endif
 
-	geom1 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	geom2 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	errorIfGeometryCollection(geom1,geom2);
 
@@ -1230,8 +1230,8 @@ Datum within(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(crosses);
 Datum crosses(PG_FUNCTION_ARGS)
 {
-	LWGEOM *geom1;
-	LWGEOM *geom2;
+	PG_LWGEOM *geom1;
+	PG_LWGEOM *geom2;
 	Geometry *g1,*g2;
 	bool result;
 	const BOX2DFLOAT4 *box1, *box2;
@@ -1240,8 +1240,8 @@ Datum crosses(PG_FUNCTION_ARGS)
 	profstart(PROF_QRUN);
 #endif
 
-	geom1 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	geom2 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	errorIfGeometryCollection(geom1,geom2);
 
@@ -1306,8 +1306,8 @@ Datum crosses(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(intersects);
 Datum intersects(PG_FUNCTION_ARGS)
 {
-	LWGEOM *geom1;
-	LWGEOM *geom2;
+	PG_LWGEOM *geom1;
+	PG_LWGEOM *geom2;
 	Geometry *g1,*g2;
 	bool result;
 	const BOX2DFLOAT4 *box1, *box2;
@@ -1316,8 +1316,8 @@ Datum intersects(PG_FUNCTION_ARGS)
 	profstart(PROF_QRUN);
 #endif
 
-	geom1 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	geom2 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	errorIfGeometryCollection(geom1,geom2);
 
@@ -1379,8 +1379,8 @@ Datum intersects(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(touches);
 Datum touches(PG_FUNCTION_ARGS)
 {
-	LWGEOM *geom1;
-	LWGEOM *geom2;
+	PG_LWGEOM *geom1;
+	PG_LWGEOM *geom2;
 	Geometry *g1,*g2;
 	bool result;
 	const BOX2DFLOAT4 *box1, *box2;
@@ -1389,8 +1389,8 @@ Datum touches(PG_FUNCTION_ARGS)
 	profstart(PROF_QRUN);
 #endif
 
-	geom1 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	geom2 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	errorIfGeometryCollection(geom1,geom2);
 
@@ -1454,8 +1454,8 @@ Datum touches(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(disjoint);
 Datum disjoint(PG_FUNCTION_ARGS)
 {
-	LWGEOM *geom1;
-	LWGEOM *geom2;
+	PG_LWGEOM *geom1;
+	PG_LWGEOM *geom2;
 	Geometry *g1,*g2;
 	bool result;
 	const BOX2DFLOAT4 *box1, *box2;
@@ -1464,8 +1464,8 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	profstart(PROF_QRUN);
 #endif
 
-	geom1 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	geom2 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	errorIfGeometryCollection(geom1,geom2);
 
@@ -1528,8 +1528,8 @@ Datum disjoint(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(relate_pattern);
 Datum relate_pattern(PG_FUNCTION_ARGS)
 {
-	LWGEOM *geom1;
-	LWGEOM *geom2;
+	PG_LWGEOM *geom1;
+	PG_LWGEOM *geom2;
 	char *patt;
 	bool result;
 	Geometry *g1,*g2;
@@ -1538,8 +1538,8 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 	profstart(PROF_QRUN);
 #endif
 
-	geom1 = (LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	geom2 = (LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	errorIfGeometryCollection(geom1,geom2);
 
@@ -1593,8 +1593,8 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(relate_full);
 Datum relate_full(PG_FUNCTION_ARGS)
 {
-	LWGEOM *geom1;
-	LWGEOM *geom2;
+	PG_LWGEOM *geom1;
+	PG_LWGEOM *geom2;
 	Geometry *g1,*g2;
 	char *relate_str;
 	int len;
@@ -1606,8 +1606,8 @@ Datum relate_full(PG_FUNCTION_ARGS)
 
 //elog(NOTICE,"in relate_full()");
 
-	geom1 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	geom2 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	errorIfGeometryCollection(geom1,geom2);
 
@@ -1687,8 +1687,8 @@ Datum relate_full(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geomequals);
 Datum geomequals(PG_FUNCTION_ARGS)
 {
-	LWGEOM *geom1;
-	LWGEOM *geom2;
+	PG_LWGEOM *geom1;
+	PG_LWGEOM *geom2;
 	Geometry *g1,*g2;
 	bool result;
 	const BOX2DFLOAT4 *box1, *box2;
@@ -1697,8 +1697,8 @@ Datum geomequals(PG_FUNCTION_ARGS)
 	profstart(PROF_QRUN);
 #endif
 
-	geom1 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	geom2 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	errorIfGeometryCollection(geom1,geom2);
 
@@ -1760,7 +1760,7 @@ Datum geomequals(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(issimple);
 Datum issimple(PG_FUNCTION_ARGS)
 {
-	LWGEOM *geom;
+	PG_LWGEOM *geom;
 	Geometry *g1;
 	int result;
 
@@ -1768,7 +1768,7 @@ Datum issimple(PG_FUNCTION_ARGS)
 	profstart(PROF_QRUN);
 #endif
 
-	geom = (LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	if (lwgeom_getnumgeometries(SERIALIZED_FORM(geom)) == 0)
 		PG_RETURN_BOOL(true);
@@ -1811,7 +1811,7 @@ Datum issimple(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(isring);
 Datum isring(PG_FUNCTION_ARGS)
 {
-	LWGEOM*geom;
+	PG_LWGEOM*geom;
 	Geometry *g1;
 	int result;
 
@@ -1819,7 +1819,7 @@ Datum isring(PG_FUNCTION_ARGS)
 	profstart(PROF_QRUN);
 #endif
 
-	geom = (LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	if (lwgeom_getType(geom->type) != LINETYPE)
 	{
@@ -2096,10 +2096,10 @@ addToExploded_recursive(Geometry *geom, LWGEOM_EXPLODED *exp)
 
 }
 
-LWGEOM *
+PG_LWGEOM *
 GEOS2POSTGIS(Geometry *geom, char want3d)
 {
-	LWGEOM *result;
+	PG_LWGEOM *result;
 	LWGEOM_EXPLODED *oexp;
 	int SRID;
 	int wantbbox = 0; // might as well be 1 ...
@@ -2132,7 +2132,7 @@ GEOS2POSTGIS(Geometry *geom, char want3d)
 //-----=POSTGIS2GEOS=
 
 Geometry *
-POSTGIS2GEOS(LWGEOM *geom)
+POSTGIS2GEOS(PG_LWGEOM *geom)
 {
 	LWPOINT *point;
 	LWLINE *line;
@@ -2227,13 +2227,13 @@ POSTGIS2GEOS(LWGEOM *geom)
 PG_FUNCTION_INFO_V1(GEOSnoop);
 Datum GEOSnoop(PG_FUNCTION_ARGS)
 {
-	LWGEOM *geom;
+	PG_LWGEOM *geom;
 	Geometry *geosgeom;
-	LWGEOM *result;
+	PG_LWGEOM *result;
 
 	initGEOS(MAXIMUM_ALIGNOF);
 
-	geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 #ifdef DEBUG_CONVERTER
 	elog(NOTICE, "GEOSnoop: IN: %s", unparse_WKT((char *)geom, malloc, free));
 #endif

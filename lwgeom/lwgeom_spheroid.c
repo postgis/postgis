@@ -333,7 +333,7 @@ double lwgeom_pointarray_length2d_ellipse(POINTARRAY *pts, SPHEROID *sphere)
 PG_FUNCTION_INFO_V1(LWGEOM_length2d_ellipsoid_linestring);
 Datum LWGEOM_length2d_ellipsoid_linestring(PG_FUNCTION_ARGS)
 {
-	LWGEOM *geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	SPHEROID *sphere = (SPHEROID *) PG_GETARG_POINTER(1);
 	LWGEOM_INSPECTED *inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
 	LWLINE *line;
@@ -366,7 +366,7 @@ Datum LWGEOM_length2d_ellipsoid_linestring(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_length_ellipsoid_linestring);
 Datum LWGEOM_length_ellipsoid_linestring(PG_FUNCTION_ARGS)
 {
-	LWGEOM *geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	SPHEROID *sphere = (SPHEROID *) PG_GETARG_POINTER(1);
 	LWGEOM_INSPECTED *inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
 	LWLINE *line;
@@ -483,8 +483,8 @@ PG_FUNCTION_INFO_V1(distance_ellipsoid);
 Datum LWGEOM_distance_ellipsoid_point(PG_FUNCTION_ARGS)
 {
 	SPHEROID *sphere = (SPHEROID *)PG_GETARG_POINTER(2);
-	LWGEOM *geom1 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	LWGEOM *geom2 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	PG_LWGEOM *geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	PG_LWGEOM *geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	LWPOINT *point1, *point2;
 	POINT2D *p1, *p2;
 

@@ -48,7 +48,7 @@ unsigned int precision;
 PG_FUNCTION_INFO_V1(LWGEOM_asGML);
 Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 {
-	LWGEOM *geom;
+	PG_LWGEOM *geom;
 	char *gml;
 	char *result;
 	int len;
@@ -59,7 +59,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 
 	if ( PG_ARGISNULL(0) ) PG_RETURN_NULL();
 
-	geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	// Get precision (if provided) 
 	if ( PG_NARGS() > 1 && ! PG_ARGISNULL(1) )
@@ -513,6 +513,10 @@ getSRSbySRID(int SRID)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.3  2004/09/29 06:31:42  strk
+ * Changed LWGEOM to PG_LWGEOM.
+ * Changed LWGEOM_construct to PG_LWGEOM_construct.
+ *
  * Revision 1.2  2004/09/23 15:09:07  strk
  * Modified GML output as suggested by Martin Daly.
  *

@@ -255,7 +255,7 @@ elog(NOTICE, "simplify_polygon3d: simplified polygon with %d rings", norings);
 PG_FUNCTION_INFO_V1(LWGEOM_simplify2d);
 Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS)
 {
-	LWGEOM *geom = (LWGEOM *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	PG_LWGEOM *geom = (PG_LWGEOM *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	LWGEOM_EXPLODED *exp = lwgeom_explode(SERIALIZED_FORM(geom));
 	double dist = PG_GETARG_FLOAT8(1);
 	int i;
@@ -263,7 +263,7 @@ Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS)
 	int newlinesnum=0;
 	char **newpolys;
 	int newpolysnum=0;
-	LWGEOM *result;
+	PG_LWGEOM *result;
 	char *serialized;
 
 	// no lines, no points... return input
@@ -321,7 +321,7 @@ Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS)
 
 
 	// copy 2 (see above)
-	result = LWGEOM_construct(serialized,
+	result = PG_LWGEOM_construct(serialized,
 		lwgeom_getSRID(geom), lwgeom_hasBBOX(geom->type));
 
 	PG_RETURN_POINTER(result);
@@ -346,7 +346,7 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(LWGEOM_line_interpolate_point);
 Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 {
-	LWGEOM *geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	double distance = PG_GETARG_FLOAT8(1);
 	LWLINE *line;
 	LWPOINT *point;
@@ -383,7 +383,7 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 		point = lwpoint_construct(line->ndims, line->SRID, opa);
 		srl = lwpoint_serialize(point);
 		pfree_point(point);
-		PG_RETURN_POINTER(LWGEOM_construct(srl, line->SRID, 0));
+		PG_RETURN_POINTER(PG_LWGEOM_construct(srl, line->SRID, 0));
 	}
 
 	/* Interpolate a point on the line */
@@ -413,7 +413,7 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 			point = lwpoint_construct(line->ndims, line->SRID, opa);
 			srl = lwpoint_serialize(point);
 			pfree_point(point);
-			PG_RETURN_POINTER(LWGEOM_construct(srl, line->SRID, 0));
+			PG_RETURN_POINTER(PG_LWGEOM_construct(srl, line->SRID, 0));
 		}
 		tlength += slength;
 	}
@@ -425,7 +425,7 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 	point = lwpoint_construct(line->ndims, line->SRID, opa);
 	srl = lwpoint_serialize(point);
 	pfree_point(point);
-	PG_RETURN_POINTER(LWGEOM_construct(srl, line->SRID, 0));
+	PG_RETURN_POINTER(PG_LWGEOM_construct(srl, line->SRID, 0));
 }
 /***********************************************************************
  * --jsunday@rochgrp.com;

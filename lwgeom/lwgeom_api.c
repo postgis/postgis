@@ -2792,7 +2792,7 @@ int lwgeom_getsrid(char *serialized)
 
 // get the SRID from the LWGEOM
 // none present => -1
-int lwgeom_getSRID(LWGEOM *lwgeom)
+int lwgeom_getSRID(PG_LWGEOM *lwgeom)
 {
 	unsigned char type = lwgeom->type;
 	char *loc = lwgeom->data;
@@ -2810,12 +2810,12 @@ int lwgeom_getSRID(LWGEOM *lwgeom)
 // Set the SRID of a LWGEOM
 // Returns a newly allocated LWGEOM object.
 // Allocation will be done using the palloc.
-LWGEOM *lwgeom_setSRID(LWGEOM *lwgeom, int32 newSRID)
+PG_LWGEOM *lwgeom_setSRID(PG_LWGEOM *lwgeom, int32 newSRID)
 {
 	unsigned char type = lwgeom->type;
 	int bbox_offset=0; //0=no bbox, otherwise sizeof(BOX2DFLOAT4)
 	int len,len_new,len_left;
-	LWGEOM *result;
+	PG_LWGEOM *result;
 	char *loc_new, *loc_old;
 
 	if (lwgeom_hasBBOX(type))
@@ -2863,14 +2863,14 @@ LWGEOM *lwgeom_setSRID(LWGEOM *lwgeom, int32 newSRID)
 	return result;
 }
 
-LWGEOM *
-LWGEOM_construct(char *ser, int SRID, int wantbbox)
+PG_LWGEOM *
+PG_LWGEOM_construct(char *ser, int SRID, int wantbbox)
 {
 	int size;
 	char *iptr, *optr, *eptr;
 	int wantsrid = 0;
 	BOX2DFLOAT4 box;
-	LWGEOM *result;
+	PG_LWGEOM *result;
 
 	size = lwgeom_size(ser);
 	eptr = ser+size; // end of subgeom

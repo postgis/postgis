@@ -21,7 +21,7 @@
 #include "lwgeom.h"
 
 Datum assvg_geometry(PG_FUNCTION_ARGS);
-char *geometry_to_svg(LWGEOM *geometry, int svgrel, int precision);
+char *geometry_to_svg(PG_LWGEOM *geometry, int svgrel, int precision);
 void print_svg_coords(char *result, POINT2D *pt, int precision);
 void print_svg_circle(char *result, POINT2D *pt, int precision);
 void print_svg_path_abs(char *result, POINTARRAY *pa, int precision);
@@ -36,7 +36,7 @@ void print_svg_path_rel(char *result, POINTARRAY *pa, int precision);
 PG_FUNCTION_INFO_V1(assvg_geometry);
 Datum assvg_geometry(PG_FUNCTION_ARGS)
 {
-	LWGEOM *geom;
+	PG_LWGEOM *geom;
 	char *svg;
 	char *result;
 	int len;
@@ -45,7 +45,7 @@ Datum assvg_geometry(PG_FUNCTION_ARGS)
 
 	if ( PG_ARGISNULL(0) ) PG_RETURN_NULL();
 
-	geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	// check for relative path notation
 	if ( PG_NARGS() > 1 && ! PG_ARGISNULL(1) )
@@ -71,7 +71,7 @@ Datum assvg_geometry(PG_FUNCTION_ARGS)
 
 
 //takes a GEOMETRY and returns a SVG representation
-char *geometry_to_svg(LWGEOM *geometry, int svgrel, int precision)
+char *geometry_to_svg(PG_LWGEOM *geometry, int svgrel, int precision)
 {
 	char *result;
 	LWGEOM_INSPECTED *inspected;
@@ -251,6 +251,10 @@ print_svg_path_rel(char *result, POINTARRAY *pa, int precision)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.2  2004/09/29 06:31:42  strk
+ * Changed LWGEOM to PG_LWGEOM.
+ * Changed LWGEOM_construct to PG_LWGEOM_construct.
+ *
  * Revision 1.1  2004/09/13 13:32:01  strk
  * Added AsSVG().
  *

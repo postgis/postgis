@@ -97,11 +97,11 @@ Datum BOX2DFLOAT4_out(PG_FUNCTION_ARGS)
 }
 
 
-//convert a LWGEOM to BOX2D
+//convert a PG_LWGEOM to BOX2D
 PG_FUNCTION_INFO_V1(LWGEOM_to_BOX2DFLOAT4);
 Datum LWGEOM_to_BOX2DFLOAT4(PG_FUNCTION_ARGS)
 {
-	LWGEOM *lwgeom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	PG_LWGEOM *lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	BOX2DFLOAT4 *result;
 
 	result = palloc(sizeof(BOX2DFLOAT4));
@@ -424,7 +424,7 @@ Datum BOX2DFLOAT4_to_LWGEOM(PG_FUNCTION_ARGS)
 	POINTARRAY *pa[1];
 	LWPOLY *poly;
 	int wantbbox = 0;
-	LWGEOM *result;
+	PG_LWGEOM *result;
 	char *ser;
 
 	// Assign coordinates to POINT2D array
@@ -446,8 +446,8 @@ Datum BOX2DFLOAT4_to_LWGEOM(PG_FUNCTION_ARGS)
 	// Serialize polygon
 	ser = lwpoly_serialize(poly);
 
-	// Construct LWGEOM 
-	result = LWGEOM_construct(ser, -1, wantbbox);
+	// Construct PG_LWGEOM 
+	result = PG_LWGEOM_construct(ser, -1, wantbbox);
 	
 	PG_RETURN_POINTER(result);
 }

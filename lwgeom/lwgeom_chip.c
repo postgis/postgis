@@ -159,7 +159,7 @@ PG_FUNCTION_INFO_V1(CHIP_to_LWGEOM);
 Datum CHIP_to_LWGEOM(PG_FUNCTION_ARGS)
 {
 	CHIP *chip = (CHIP *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	LWGEOM *result;
+	PG_LWGEOM *result;
 	POINT2D *pts = palloc(sizeof(POINT2D)*5);
 	POINTARRAY *pa[1];
 	LWPOLY *poly;
@@ -185,8 +185,8 @@ Datum CHIP_to_LWGEOM(PG_FUNCTION_ARGS)
 	// Serialize polygon
 	ser = lwpoly_serialize(poly);
 
-	// Construct LWGEOM 
-	result = LWGEOM_construct(ser, chip->SRID, wantbbox);
+	// Construct PG_LWGEOM 
+	result = PG_LWGEOM_construct(ser, chip->SRID, wantbbox);
 	
 	PG_RETURN_POINTER(result);
 

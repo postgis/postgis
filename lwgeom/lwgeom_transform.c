@@ -239,8 +239,8 @@ lwgeom_transform_recursive(char *geom, PJ *inpj, PJ *outpj)
 PG_FUNCTION_INFO_V1(transform_geom);
 Datum transform_geom(PG_FUNCTION_ARGS)
 {
-	LWGEOM *geom;
-	LWGEOM *result=NULL;
+	PG_LWGEOM *geom;
+	PG_LWGEOM *result=NULL;
 	PJ *input_pj,*output_pj;
 	char *input_proj4, *output_proj4;
 	text *input_proj4_text;
@@ -254,7 +254,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	geom = (LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	if (lwgeom_getSRID(geom) == -1)
 	{
 		PG_FREE_IF_COPY(geom, 0);

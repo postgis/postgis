@@ -62,7 +62,7 @@ typedef struct Well_known_bin {
 //  LWGEOM_in( 'SRID=99;POINT(0 0)')
 //  LWGEOM_in( 'POINT(0 0)')            --> assumes SRID=-1
 //  LWGEOM_in( 'SRID=99;0101000000000000000000F03F000000000000004')
-//  returns a LWGEOM object
+//  returns a PG_LWGEOM object
 PG_FUNCTION_INFO_V1(LWGEOM_in);
 Datum LWGEOM_in(PG_FUNCTION_ARGS)
 {
@@ -475,8 +475,8 @@ unsigned char	parse_hex(char *str)
 PG_FUNCTION_INFO_V1(LWGEOM_addBBOX);
 Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS)
 {
-	LWGEOM *lwgeom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	LWGEOM *result;
+	PG_LWGEOM *lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	PG_LWGEOM *result;
 	BOX2DFLOAT4	box;
 	unsigned char	old_type;
 	int		size;

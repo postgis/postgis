@@ -162,7 +162,7 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 	POINTARRAY *pa[1];
 	LWPOLY *poly;
 	int wantbbox = 0;
-	LWGEOM *result;
+	PG_LWGEOM *result;
 	char *ser;
 
 	// Assign coordinates to POINT2D array
@@ -184,8 +184,8 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 	// Serialize polygon
 	ser = lwpoly_serialize(poly);
 
-	// Construct LWGEOM 
-	result = LWGEOM_construct(ser, -1, wantbbox);
+	// Construct PG_LWGEOM 
+	result = PG_LWGEOM_construct(ser, -1, wantbbox);
 	
 	PG_RETURN_POINTER(result);
 }
@@ -216,11 +216,11 @@ Datum BOX3D_expand(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-//convert a LWGEOM to BOX3D
+//convert a PG_LWGEOM to BOX3D
 PG_FUNCTION_INFO_V1(LWGEOM_to_BOX3D);
 Datum LWGEOM_to_BOX3D(PG_FUNCTION_ARGS)
 {
-	LWGEOM *lwgeom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	PG_LWGEOM *lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	BOX3D *result;
 
 	result = lw_geom_getBB(SERIALIZED_FORM(lwgeom));
@@ -277,7 +277,7 @@ Datum BOX3D_combine(PG_FUNCTION_ARGS)
 	Pointer box3d_ptr = PG_GETARG_POINTER(0);
 	Pointer geom_ptr = PG_GETARG_POINTER(1);
 	BOX3D *a,*b;
-	LWGEOM *lwgeom;
+	PG_LWGEOM *lwgeom;
 	BOX3D *box, *result;
 
 	if  ( (box3d_ptr == NULL) && (geom_ptr == NULL) )
@@ -289,7 +289,7 @@ Datum BOX3D_combine(PG_FUNCTION_ARGS)
 
 	if (box3d_ptr == NULL)
 	{
-		lwgeom = (LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+		lwgeom = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 		box = lw_geom_getBB(SERIALIZED_FORM(lwgeom));
 		if ( ! box ) PG_RETURN_NULL(); // must be the empty geom
 		memcpy(result, box, sizeof(BOX3D));
@@ -303,7 +303,7 @@ Datum BOX3D_combine(PG_FUNCTION_ARGS)
 		PG_RETURN_POINTER(result);
 	}
 
-	lwgeom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	box = lw_geom_getBB(SERIALIZED_FORM(lwgeom));
 	if ( ! box ) // must be the empty geom
 	{
