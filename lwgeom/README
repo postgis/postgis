@@ -1,7 +1,9 @@
 Welcome to the Initial version of LWGEOM.
 
 More information is available on the PostGIS user's mailing list and 
-the PostGIS developer's mailing list.
+the PostGIS developer's mailing list.  
+
+See "Installing', below, on how to build.
 
 
 Differences
@@ -11,18 +13,18 @@ The LWGEOM is very much like the original PostGIS GEOMETRY type.  The
 main differences are:
 
 a) LWGEOMs are much smaller than the PostGIS GEOMETRY
-b) LWGEOMs support 2d, 3d, and 4d points
+b) LWGEOMs natively support 2d, 3d, and 4d points
 c) LWGEOMs are indexed using single-precision bounding boxes.  This
    make the indexes significantly smaller than PostGIS GEOMETRY
    indexes.
-d) LWGEOMs are internally very similiar to OGC WKB   
+d) LWGEOMs are internally very similar to OGC WKB   
 e) The "normal" view of LWGEOMs is OGC WKB - PostGIS GEOMETRY is OGC WKT
 f) PostGIS geometries have a built-in BOX3D.  LWGEOMs have an *optional*
    BOX2D (see below).
 
 
 Also included with the LWGEOMs is a type called 'box2d'.  This is
-very similiar to PostGIS BOX3D type:
+very similar to PostGIS BOX3D type:
 
 a) BOX2Ds are 2D - BOX3D is 3D
 b) BOX2Ds are represented by single-precision floating point numbers,
@@ -41,7 +43,7 @@ Installing
 4. Install PostGIS normally into your database
 5. Install LWGEOM into your database using the produced "lwgeom.sql" file.
      \i lwgeom.sql
-6. If you dont get any errors, LWGEOM is installed
+6. If you don't get any errors, LWGEOM is installed
 
 Testing
 -------
@@ -49,8 +51,8 @@ Testing
       SELECT asText('POINT(0 0)'::lwgeom);
 2. it should respond with
         POINT(0 0)
-3. if it didnt, LWGEOM did not install properly.
-4. There are three regression tests to run.  They are located
+   if it didn't, LWGEOM did not install properly.
+3. There are three regression tests to run.  They are located
    in the "lwgeom/regress/" directory.
       ./run_regress
       ./run_regress2
@@ -73,7 +75,8 @@ are:
    
 This means you can do most normal things with LWGEOMs.
 
--- create a simple table.  Notice that the_geom is of
+
+-- create a simple table.  Notice that the_geom column is of
 --  type 'lwgeom'
 CREATE TABLE lwgeom_test (the_geom lwgeom, id int);
 
@@ -94,7 +97,7 @@ SELECT * FROM lwgeom_test;
  0101000000000000000000F03F000000000000F03F |  2
 (2 rows)
 
--- Lets view it as WKT
+-- View it as WKT
 SELECT asText(the_Geom),id FROM lwgeom_test;
    astext   | id 
 ------------+----
@@ -103,17 +106,19 @@ SELECT asText(the_Geom),id FROM lwgeom_test;
 (2 rows)
 
 
-
    
--- explict conversions.
+-- explicit conversions.
+
 --  PostGIS -> LWGEOM
 SELECT   lwgeom('POINT(0 0)'::geometry);
+
 --  LWGEOM --> PostGIS
 SELECT   geometry('POINT(0 0)'::lwgeom);
 
--- Run some PostGIS based functions on LWGEOMs.  All PostGIS functions
+-- You can run  PostGIS functions on LWGEOMs.  All PostGIS functions
 --  are runnable this way.
 -- NOTE: this is doing a hidden LWGEOM->PostGIS GEOMETRY step
+--       This is actually running the length(GEOMETRY) function.
 SELECT length('LINESTRING(0 0, 0 10)'::lwgeom);
     length 
    --------
@@ -134,26 +139,27 @@ SELECT box2d('LINESTRING(0 0, 0 10)'::lwgeom);
 Building Indexes
 ----------------
 
-This is very similiar to PostGIS:
+This is very similar to PostGIS 
+(use "GIST_LWGEOM_OPS" instead of GIST_GEOMETRY_OPS):
 
 CREATE INDEX <name> ON <table> USING GIST (<lwgeom column> GIST_LWGEOM_OPS);
 
 ie. CREATE INDEX lwgeom_test_lwgeom_idx ON lwgeom_test
 	USING GIST ( the_geom GIST_LWGEOM_OPS);
 
-Dont forget to VACUUM ANALYSE your table:
+Don't forget to VACUUM ANALYSE your table:
 VACUUM ANALYSE <table>;
 
 Bounding Boxes
 --------------
 
-<this section for advanced users.  Ignore it if you dont understand
- what its saying>
+<this section for advanced users.  Ignore it if you don't understand
+ what its saying.>
 
 Bounding boxes are optional in LWGEOMs.  By not having one, you are
 saving a small amount of space per LWGEOM geometry (16 bytes).
 
-If you are cross-joining tables, you might want to explictly put a
+If you are cross-joining tables, you might want to explicitly put a
 bounding box inside the LWGEOM to make it faster.
 
 DROP INDEX <lwgeom index name>;
@@ -165,32 +171,38 @@ VACUUM ANALYSE <table>;
 
 A cross-joining query looks like this:
 
-SELECT  table1.id as node_id1,
-        table2.id as node_id2
-FROM    node_10000 table1,
-        node_10000 table2
-WHERE   table1.the_geom && table2.the_geom;
+SELECT  nodes1.id as node_id1,
+        nodes2.id as node_id2
+FROM    nodes nodes1,
+        nodes nodes2
+WHERE   nodes1.the_geom && nodes2.the_geom;
 
-For every row in node_10000, postgresql searches for rows in node_10000
-that overlap.  If node_10000 has 10,000 rows, this query will do 10,000
-index searches - THAT A LOT OF WORK.
+For every row in nodes, postgresql searches all the rows in nodes
+for ones that overlap that lwgeom .  If nodes has 10,000 rows, 
+this query will do 10,000 index searches - THAT A LOT OF WORK.
 
+Pre-computing the bounding boxes makes this type of query much faster.
+
+We have not currently decided if bounding boxes should default to
+being inside the LWGEOM or not.  Currently, its set to not being
+automatically there. This may change in the future.  If you have
+an opinion, post it to the mailing list.
 
 
 Space Saving
 ------------
 
-LWGEOM indexs are approximately 40% smaller than PostGIS indexes.
+LWGEOM indexes are approximately 40% smaller than PostGIS indexes.
 
 A LWGEOM 'POINT(0 0)' takes up 21 bytes, a POSTGIS 'POINT(0 0)' takes
 up 140 bytes.  This shows that LWGEOMs have a much smaller overhead.
 
 LWGEOMs will store 2D points as 2 double precision numbers (16 bytes) -
-PostGIS will store 2D points with 3 (24 bytes).   This can be another
-big savings.
+PostGIS will store 2D points with 3 numbers (24 bytes).   This can be 
+another big savings.
 
 
-Future Developement
+Future Development
 -------------------
 
 Testing Testing Testing
