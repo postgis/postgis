@@ -2503,6 +2503,7 @@ Datum GEOS_polygonize_garray(PG_FUNCTION_ARGS)
 
 }
 
+Datum JTSnoop(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(JTSnoop);
 Datum JTSnoop(PG_FUNCTION_ARGS)
 {
