@@ -323,43 +323,39 @@ PG_FUNCTION_INFO_V1(LWGEOM_exteriorring_polygon);
 Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	LWGEOM_INSPECTED *inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
 	LWPOLY *poly = NULL;
 	POINTARRAY *extring;
 	LWLINE *line;
-	char *serializedline;
 	PG_LWGEOM *result;
 	BOX2DFLOAT4 *bbox;
-	int i;
 
-	for (i=0; i<inspected->ngeometries; i++)
+	if ( TYPE_GETTYPE(geom->type) != POLYGONTYPE )
 	{
-		poly = lwgeom_getpoly_inspected(inspected, i);
-		if ( poly ) break;
+		elog(ERROR, "ExteriorRing: geom is not a polygon");
+		PG_RETURN_NULL();
 	}
-
-	if ( poly == NULL ) PG_RETURN_NULL();
+	poly = lwpoly_deserialize(SERIALIZED_FORM(geom));
 
 	// Ok, now we have a polygon. Here is its exterior ring.
 	extring = poly->rings[0];
 
 	// If the input geom has a bbox, use it for 
 	// the output geom, as exterior ring makes it up !
+	// COMPUTE_BBOX==WHEN_SIMPLE
 	bbox = getbox2d_internal(SERIALIZED_FORM(geom));
 	if ( bbox ) bbox = box2d_clone(bbox);
 
 	// This is a LWLINE constructed by exterior ring POINTARRAY
 	line = lwline_construct(poly->SRID, bbox, extring);
 
-	// Now we serialized it (copying data)
-	serializedline = lwline_serialize(line);
+	// Copy SRID from polygon
+	line->SRID = poly->SRID;
 
-	// And we construct the line (copy again)
-	result = PG_LWGEOM_construct(serializedline, lwgeom_getSRID(geom),
-		bbox?1:0);
+	result = pglwgeom_serialize((LWGEOM *)line);
 
-	pfree(serializedline);
-	pfree(line);
+	lwgeom_release((LWGEOM *)line);
+	lwgeom_release((LWGEOM *)poly);
+
 
 	PG_RETURN_POINTER(result);
 }
@@ -399,14 +395,11 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom;
 	int32 wanted_index;
-	LWGEOM_INSPECTED *inspected;
 	LWPOLY *poly = NULL;
 	POINTARRAY *ring;
 	LWLINE *line;
-	char *serializedline;
 	PG_LWGEOM *result;
 	BOX2DFLOAT4 *bbox = NULL;
-	int i;
 
 	wanted_index = PG_GETARG_INT32(1);
 	if ( wanted_index < 1 )
@@ -417,12 +410,12 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	poly = lwpoly_deserialize(SERIALIZED_FORM(geom));
-	if ( ! poly )
+	if ( TYPE_GETTYPE(geom->type) != POLYGONTYPE )
 	{
 		elog(ERROR, "InteriorRingN: geom is not a polygon");
 		PG_RETURN_NULL();
 	}
+	poly = lwpoly_deserialize(SERIALIZED_FORM(geom));
 
 	// Ok, now we have a polygon. Let's see if it has enough holes
 	if ( wanted_index >= poly->nrings )
@@ -442,7 +435,7 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 	// Copy SRID from polygon
 	line->SRID = poly->SRID;
 
-	result = pglwgeom_serialize(line);
+	result = pglwgeom_serialize((LWGEOM *)line);
 
 	lwgeom_release((LWGEOM *)line);
 	lwgeom_release((LWGEOM *)poly);

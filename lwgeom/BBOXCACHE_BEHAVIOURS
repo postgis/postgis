@@ -79,7 +79,7 @@ points where some BBOX caching strategies could be enforced).
 
 [ WHEN_SIMPLE (use input bbox if present) ]
 	noop(geometry) *LWG*
-	ExteriorRing(geometry) *SRL*
+	ExteriorRing(geometry) *LWG*
 	SetSRID(geometry,int4) **SRL**
 	force_2d(geometry) **SRL**
 	force_3dz(geometry) **SRL**
