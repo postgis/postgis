@@ -12,6 +12,11 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.63  2004/08/20 07:57:06  strk
+ * Fixed a bug in 'append-mode'.
+ * Added -g switch to specify geometry column.
+ * Added a note about -d mode conceptual bugs.
+ *
  * Revision 1.62  2004/08/05 20:00:24  strk
  * Another schema support bug from Mark
  *
@@ -178,6 +183,7 @@ int	quoteidentifiers = 0;
 int	forceint4 = 0;
 char    opt;
 char    *col_names;
+char    *geom;
 
 DBFFieldType *types;	/* Fields type, width and precision */
 SHPHandle  hSHPHandle;
@@ -623,7 +629,9 @@ Insert_attributes(DBFHandle hDBFHandle, int row)
 // main()     
 //see description at the top of this file
 
-int main (int ARGC, char **ARGV){
+int
+main (int ARGC, char **ARGV)
+{
 	int begin=0,trans,field_precision, field_width;
 	int num_entities, phnshapetype;
 	int next_ring=0,errflg,c;
@@ -639,10 +647,10 @@ int main (int ARGC, char **ARGV){
 	opt = ' ';
 	errflg =0;
 	j=0;
-	sr_id =shp_file = table = schema = NULL;
+	sr_id = shp_file = table = schema = geom = NULL;
 	obj=NULL;
 
-	while ((c = getopt(ARGC, ARGV, "kcdaDs:i")) != EOF){
+	while ((c = getopt(ARGC, ARGV, "kcdaDs:g:i")) != EOF){
                switch (c) {
                case 'c':
                     if (opt == ' ')
@@ -668,6 +676,9 @@ int main (int ARGC, char **ARGV){
                case 's':
                     sr_id = optarg;
                     break;
+               case 'g':
+                    geom = optarg;
+                    break;
                case 'k':
                     quoteidentifiers = 1;
                     break;
@@ -682,6 +693,10 @@ int main (int ARGC, char **ARGV){
 
 	if(sr_id == NULL){
 		sr_id = "-1";
+	}
+
+	if(geom == NULL){
+		geom = "the_geom";
 	}
 
 	if(opt == ' '){
@@ -729,6 +744,9 @@ int main (int ARGC, char **ARGV){
 		printf("      -c  Creates a new table and populates it, this is the\n");
 		printf("          default if you do not specify any options.\n");
 		printf("\n");
+		printf("  -g <geometry_column> Specify the name of the geometry column\n");
+		printf("     (mostly useful in append mode).\n");
+		printf("\n");
 		printf("  -D  Use postgresql dump format (defaults to sql insert\n");
 		printf("      statments.\n");
 		printf("\n");
@@ -769,14 +787,20 @@ int main (int ARGC, char **ARGV){
 	if(opt == 'd')
 	{
 		//---------------Drop the table--------------------------
+		// TODO: if the table has more then one geometry column
+		// the DROP TABLE call will leave spurious records in
+		// geometry_columns. 
+		//
 		if ( schema )
 		{
-			printf("SELECT DropGeometryColumn('%s','%s','the_geom');\n", schema, table);
+			printf("SELECT DropGeometryColumn('%s','%s','%s');\n",
+				schema, table, geom);
 			printf("DROP TABLE \"%s\".\"%s\";\n", schema, table);
 		}
 		else
 		{
-			printf("SELECT DropGeometryColumn('','%s','the_geom');\n", table);
+			printf("SELECT DropGeometryColumn('','%s','%s');\n",
+				table, geom);
 			printf("DROP TABLE \"%s\";\n", table);
 		}
 	}
@@ -864,7 +888,7 @@ int main (int ARGC, char **ARGV){
 		if (j) strcat(col_names, ",");
 		sprintf(col_names, "%s\"%s\"", col_names, name);
 	}
-	strcat(col_names, ",the_geom)");
+	sprintf(col_names, "%s, \"%s\")", col_names, geom);
 
 
 	SHPGetInfo( hSHPHandle, &num_entities, &phnshapetype, &padminbound[0], &padmaxbound[0]);
@@ -929,13 +953,17 @@ int main (int ARGC, char **ARGV){
 		{
 			if ( schema )
 			{
-				printf("INSERT INTO \"%s\".\"%s\" %s VALUES ('%d',",
-                                        schema, table, col_names, j);
+				printf("INSERT INTO \"%s\".\"%s\" %s VALUES (",
+                                        schema, table, col_names);
 			}
 			else
 			{
-		  		printf("INSERT INTO \"%s\" %s VALUES ('%d',",
-					table, col_names, j);
+		  		printf("INSERT INTO \"%s\" %s VALUES (",
+					table, col_names);
+			}
+			if(opt != 'a')
+			{
+				printf("'%d',", j);
 			}
 		}
 		else
@@ -1273,11 +1301,13 @@ void create_table()
 	//create the geometry column with an addgeometry call to dave's function
 		if ( schema )
 		{
-			printf("SELECT AddGeometryColumn('%s','%s','the_geom','%s',",schema, table, sr_id);
+			printf("SELECT AddGeometryColumn('%s','%s','%s','%s',",
+				schema, table, geom, sr_id);
 		}
 		else
 		{
-			printf("SELECT AddGeometryColumn('','%s','the_geom','%s',", table, sr_id);
+			printf("SELECT AddGeometryColumn('','%s','%s','%s',",
+				table, geom, sr_id);
 		}
 		if( obj->nSHPType == 1 ){  //2d point
 			printf("'POINT',2);\n");
