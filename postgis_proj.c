@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.10  2004/02/05 20:21:14  dblasby
+ * Added 'curvature method' for cases where the original algorithm breaks down.
+ *
  * Revision 1.9  2004/02/04 02:53:20  dblasby
  * applied patricia tozer's patch (distance function was taking acos of something
  * just slightly outside [-1,1]).
@@ -51,7 +54,7 @@
 //	distance from -126 49  to -126 49.011096139863 in 'SPHEROID["GRS_1980",6378137,298.257222101]' is 1234.000
 
 
-
+double distance_sphere_method(double lat1, double long1,double lat2,double long2, SPHEROID *sphere);
 
 
 //use the WKT definition of an ellipsoid
@@ -171,9 +174,35 @@ double bigB(double u2)
 }
 
 
+
+double	distance_ellipse(double lat1, double long1,
+					double lat2, double long2,
+					SPHEROID *sphere)
+{
+		double result;
+
+	    if ( (lat1==lat2) && (long1 == long2) )
+		{
+			return 0.0; // same point, therefore zero distance
+		}
+
+		result = distance_ellipse_calculation(lat1,long1,lat2,long2,sphere);
+//		result2 =  distance_sphere_method(lat1, long1,lat2,long2, sphere);
+
+//elog(NOTICE,"delta = %lf, skae says: %.15lf,2 circle says: %.15lf",(result2-result),result,result2);
+//elog(NOTICE,"2 circle says: %.15lf",result2);
+
+		if (result != result)  // NaN check (x==x for all x except NaN by IEEE definition)
+		{
+			result =  distance_sphere_method(lat1, long1,lat2,long2, sphere);
+		}
+
+		return result;
+}
+
 //given 2 lat/longs and ellipse, find the distance
 // note original r = 1st, s=2nd location
-double	distance_ellipse(double lat1, double long1,
+double	distance_ellipse_calculation(double lat1, double long1,
 					double lat2, double long2,
 					SPHEROID *sphere)
 {
@@ -191,6 +220,7 @@ double	distance_ellipse(double lat1, double long1,
 	double TEMP;
 
 	int iterations;
+
 
 	L1 = atan((1.0 - sphere->f ) * tan( lat1) );
 	L2 = atan((1.0 - sphere->f ) * tan( lat2) );
@@ -428,4 +458,90 @@ Datum distance_ellipsoid(PG_FUNCTION_ARGS)
 }
 
 
+/*
+ *  For some lat/long points, the above method doesnt calculate the distance very well.
+ *  Typically this is for two lat/long points that are very very close together (<10cm).
+ *  This gets worse closer to the equator.
+ *
+ *   This method works very well for very close together points, not so well if they're
+ *   far away (>1km).
+ *
+ *  METHOD:
+ *    We create two circles (with Radius R and Radius S) and use these to calculate the distance.
+ *
+ *    The first (R) is basically a (north-south) line of longitude.
+ *    Its radius is approximated by looking at the ellipse. Near the equator R = 'a' (earth's major axis)
+ *    near the pole R = 'b' (earth's minor axis).
+ *
+ *    The second (S) is basically a (east-west) line of lattitude.
+ *    Its radius runs from 'a' (major axis) at the equator, and near 0 at the poles.
+ *
+ *
+ *                North pole
+ *                *
+ *               *
+ *              *\--S--
+ *             *  R   +
+ *            *    \  +
+ *           *     A\ +
+ *          * ------ \         Equator/centre of earth
+ *           *
+ *            *
+ *             *
+ *              *
+ *               *
+ *                *
+ *                South pole
+ *  (side view of earth)
+ *
+ *   Angle A is lat1
+ *   R is the distance from the centre of the earth to the lat1/long1 point on the surface
+ *   of the Earth.
+ *   S is the circle-of-lattitude.  Its calculated from the right triangle defined by
+ *      the angle (90-A), and the hypothenus R.
+ *
+ *
+ *
+ *   Once R and S have been calculated, the actual distance between the two points can be
+ *   calculated.
+ *
+ *   We dissolve the vector from lat1,long1 to lat2,long2 into its X and Y components (called DeltaX,DeltaY).
+ *   The actual distance that these angle-based measurements represent is taken from the two
+ *   circles we just calculated; R (for deltaY) and S (for deltaX).
+ *
+ *    (if deltaX is 1 degrees, then that distance represents 1/360 of a circle of radius S.)
+ *
+ *
+ *  Parts taken from PROJ4 - geodetic_to_geocentric() (for calculating Rn)
+ *
+ *  remember that lat1/long1/lat2/long2 are comming in a *RADIANS* not degrees.
+ *
+ * By Patricia Tozer and Dave Blasby
+ */
 
+double distance_sphere_method(double lat1, double long1,double lat2,double long2, SPHEROID *sphere)
+{
+			double R,S,X,Y,deltaX,deltaY;
+
+			double 	distance 	= 0.0;
+			double 	sin_lat 	= sin(lat1);
+			double 	sin2_lat 	= sin_lat * sin_lat;
+
+			double  Geocent_a 	= sphere->a;
+			double  Geocent_a2 	= sphere->a * sphere->a;
+			double  Geocent_b2 	= sphere->b * sphere->b;
+			double  Geocent_e2 	= (Geocent_a2 - Geocent_b2) / Geocent_a2;
+
+			R  	= Geocent_a / (sqrt(1.0e0 - Geocent_e2 * sin2_lat));
+			S 	= R * sin(M_PI/2.0-lat1) ; // 90 - lat1, but in radians
+
+			deltaX = long2 - long1;  //in rads
+			deltaY = lat2 - lat1;    // in rads
+
+			X = deltaX/(2.0*M_PI) * 2 * M_PI * S;  // think: a % of 2*pi*S
+			Y = deltaY /(2.0*M_PI) * 2 * M_PI * R;
+
+			distance = sqrt((X * X + Y * Y));
+
+			return distance;
+}
