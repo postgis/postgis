@@ -10,6 +10,10 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.23  2003/11/14 22:04:51  strk
+ * Used environment vars to pass libpq connection options (less error prone,
+ * easier to read). Printed clearer error message on query error.
+ *
  * Revision 1.22  2003/09/10 22:44:56  jeffloun
  * got rid of warning...
  *
@@ -70,11 +74,11 @@ int is_clockwise(int num_points,double *x,double *y,double *z);
 //  -g <geometry_column> Specify the geometry column to be exported.
 
 int main(int ARGC, char **ARGV){
-	char	   *pghost,*pgport,*pgoptions,*dbName,*pgpass,
+	char	   *dbName,
 		   *query,*query1,*geo_str,*geo_str_left,
 		   *geo_col_name,*geo_OID,
-		   conn_string[512],field_name[32],table_OID[16],
-		   *shp_file,*pguser, *table;
+		   field_name[32],table_OID[16],
+		   *shp_file, *table;
 	int			nFields, is3d, c, errflg, curindex;
 	int			i,j,type,size,flds;
 	int			type_ary[256];
@@ -92,12 +96,8 @@ int main(int ARGC, char **ARGV){
 	geo_col_name = NULL;
 	geo_str = NULL;
 	dbName = NULL;
-	pghost = NULL;
 	shp_file = NULL;
-	pgport = NULL;
 	geovalue_field = -1;
-	pguser = "";
-	pgpass = "";
 	is3d = 0;
 	errflg = 0;
 	OID = 0;
@@ -107,19 +107,19 @@ int main(int ARGC, char **ARGV){
                     shp_file = optarg;
                     break;
                case 'h':
-                    pghost=optarg;
+        	    setenv("PGHOST", optarg, 1);
                     break;
                case 'd':
 	            is3d = 1;
                     break;		  
                case 'u':
-                    pguser = optarg;
+		    setenv("PGUSER", optarg, 1);
                     break;
                case 'p':
-                    pgport = optarg;
+		    setenv("PGPORT", optarg, 1);
                     break;
 	       case 'P':
-		    pgpass = optarg;
+		    setenv("PGPASSWORD", optarg, 1);
 		    break;
 	       case 'g':
 		    geo_col_name = optarg;
@@ -133,6 +133,7 @@ int main(int ARGC, char **ARGV){
         for ( ; optind < ARGC; optind++){
                 if(curindex ==0){
                         dbName = ARGV[optind];
+			setenv("PGDATABASE", dbName, 1);
                 }else if(curindex == 1){
                         table = ARGV[optind];
                 }
@@ -167,34 +168,8 @@ int main(int ARGC, char **ARGV){
                 strcpy(shp_file,table);
         }
 
-        if(pgport == NULL){
-		pgport = "5432";		
-        }
-        if(pghost == NULL){
-		pghost = "localhost";		
-        }
-
-	if(strcmp(pgpass,"")==0 && strcmp(pguser,"")==0){
-		pgoptions = malloc(1);
-		strcpy(pgoptions,"");
-	}else{
-		pgoptions = malloc(strlen(pguser) + strlen(pgpass) + 20);
-		if(strcmp(pguser,"")!=0){
-			strcpy(pgoptions,"user=");
-			strcat(pgoptions,pguser);
-		}
-		if(strcmp(pgpass,"") !=0 ){
-			strcat(pgoptions," password=");
-			strcat(pgoptions,pgpass); 
-		}
-	}
-
-/* printf(conn_string); */
-
 	/* make a connection to the specified database */
-	sprintf(conn_string,"host=%s %s port=%s dbname=%s",pghost,pgoptions,pgport,dbName);
-	conn = PQconnectdb( conn_string );
-	
+	conn = PQconnectdb("");
 
 	/* check to see that the backend connection was successfully made */
 	if (PQstatus(conn) == CONNECTION_BAD)
@@ -239,7 +214,8 @@ int main(int ARGC, char **ARGV){
 	if(PQntuples(res) > 0 ){
 
 	}else{
-		printf("Invalid table: '%s' (check spelling and existance of >0 tuples).\nData-Dump Failed.",table);
+		fprintf(stderr, "Error: %s", PQerrorMessage(conn));
+		//printf("Invalid table: '%s' (check spelling and existance of >0 tuples).\nData-Dump Failed.",table);
 		exit_nicely(conn);
 	}
 	//printf("Select * query result: %s\n",PQresultErrorMessage(res));
