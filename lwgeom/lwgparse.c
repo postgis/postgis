@@ -128,7 +128,6 @@ void alloc_geomertycollection(void);
 void alloc_counter(void);
 void alloc_empty(void);
 byte* make_lwgeom(void);
-int lwg_parse_yyerror(char* s);
 byte strhex_readbyte(const char* in);
 byte read_wkb_byte(const char** in);
 void read_wkb_bytes(const char** in,byte* out, int cnt);

@@ -9,6 +9,7 @@
 %x vals_ok
 %{
 #include "wktparse.tab.h"
+#include "unistd.h"
 
 void init_parser(const char *src);
 void close_parser(void);

@@ -52,7 +52,6 @@ void alloc_multilinestring(void);
 void alloc_multipolygon(void);
 void alloc_geomertycollection(void);
 void alloc_empty();
-
 void alloc_counter(void);
 
 
@@ -69,5 +68,7 @@ byte* parse_lwg(const char* wkt,allocator allocfunc,report_error errfunc);
 byte* parse_lwgi(const char* wkt,allocator allocfunc,report_error errfunc);
 char* unparse_WKT(byte* serialized, allocator alloc,freeor free);
 char* unparse_WKB(byte* serialized, allocator alloc,freeor free, char endian);
+int lwg_parse_yyparse(void);
+int lwg_parse_yyerror(char* s);
 
 

@@ -8,8 +8,10 @@
 
 %{
 #include "wktparse.h"
+#include "unistd.h"
 
 void set_zm(char z, char m);
+int lwg_parse_yylex(void);
 %}
 
 %start geometry
