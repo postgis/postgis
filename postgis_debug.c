@@ -39,9 +39,8 @@
 //  it defines BYTE_ORDER and LITTLE_ENDIAN 
 
 #ifdef __CYGWIN__
-#include <sys/param.h>       // FOR ENDIAN DEFINES
+#include <sys/param.h>       
 #endif
-
 
 #define SHOW_DIGS_DOUBLE 15
 #define MAX_DIGS_DOUBLE (SHOW_DIGS_DOUBLE + 6 + 1 + 3 +1)

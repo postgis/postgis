@@ -56,7 +56,7 @@ typedef struct
  *           this is the long diagonal
  *
  * example:
- *   'BOX([0.0,0.0,0.0],[10.0,10.0,10.0])'
+ *   BOX([0.0,0.0,0.0],[10.0,10.0,10.0])
  *
  *	NOTE:  You CAN make columns in your database of this type
  *		 IT IS NOT A TRUE GEOMETRY!
@@ -188,7 +188,7 @@ typedef struct chiptag
 {
 	int	size; //unused (for use by postgresql)
 
-	int	endian_hint;  // the number '1' in the endian of this datastruct
+	int	endian_hint;  // the number 1 in the endian of this datastruct
 
 	BOX3D	 bvol;
 	int	 SRID;
@@ -220,7 +220,7 @@ typedef struct chiptag
 //  Originally, we used BOXONLYTYPE geometries as our keys, but after
 //   Oleg and teodor (http://www.sai.msu.su/~megera/postgres/gist/)
 //   have released a more generic rtree/gist index for geo_decls.h polygon
-//   type.  I'm using a slightly modified version of this, so 
+//   type.  I am using a slightly modified version of this, so 
 //   it will be easier to maintain.
 //
 //   Their indexing is based on the BOX object, so we include it here.
@@ -529,7 +529,7 @@ GISTENTRY * rtree_decompress(PG_FUNCTION_ARGS);
 
 /*--------------------------------------------------------------------
  * Useful floating point utilities and constants.
- * from postgres's geo_decls.c 
+ * from postgres geo_decls.c 
  * EPSILON modified to be more "double" friendly
  *-------------------------------------------------------------------*/
 
