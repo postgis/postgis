@@ -13,5 +13,8 @@ html: postgis-out.xml
 		/usr/share/sgml/docbook/xsl-stylesheets/html/docbook.xsl \
 		$<
 
+jw: postgis-out.xml
+	jw $(COMMONOPTS) -o html/ postgis-out.xml
+
 clean:
 
