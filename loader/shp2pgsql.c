@@ -464,17 +464,21 @@ int main (int ARGC, char **ARGV){
         if (errflg==1) {
 		printf("\n**ERROR** invalid option or command parameters\n");
 		printf("\n");
-		printf("USAGE: shp2psql [<options>] <shapefile name> <table name> <database>\n");
+		printf("USAGE: shp2pgsql [<options>] <shapefile name> <table name> <database>\n");
 		printf("\n");
 		printf("OPTIONS:\n");
-		printf("\t-s <sr_id : set the SR_ID field, if not specified it defaults to -1\n");
+		printf("  -s <srid>  Set the SRID field. If not specified it defaults to -1.\n");
 		printf("\n");
-		printf("\t(-d || -a || -c) , These are mutually exclusive options\n");
-		printf("\t\t-d: drops the table , then recreates it and populates it with current shape file data\n");
-		printf("\t\t-a: appends shape file into current table, must be excatly the same table schema\n");
-		printf(" \t\t-c: creates a new table and populates it, this is the default if you don't specify any options\n");
+		printf("  (-d|a|c) These are mutually exclusive options:\n");
+		printf("      -d  Drops the table , then recreates it and populates\n");
+		printf("          it with current shape file data.\n");
+		printf("      -a  Appends shape file into current table, must be\n");
+		printf("          exacatly the same table schema.\n");
+		printf("      -c  Creates a new table and populates it, this is the\n");
+		printf("          default if you do not specify any options.\n");
+		printf("  -D  use postgresql dump format (defaults to sql insert\n"); 
+		printf("      statments.\n"); 
 		printf("\n");
-		printf("\t-D: use postgresql dump format (defaults to sql insert statements). Use this option whenever possible for much faster application\n\n");
 		exit (2);
         }
 
