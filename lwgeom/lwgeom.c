@@ -44,7 +44,7 @@ lwgeom_serialize_size(LWGEOM *lwgeom)
 	int type = TYPE_GETTYPE(lwgeom->type);
 
 #ifdef DEBUG_CALLS
-	lwnotice("lwgeom_serialize_size called");
+	lwnotice("lwgeom_serialize_size(%s) called", lwgeom_typename(type));
 #endif
 
 	switch (type)
