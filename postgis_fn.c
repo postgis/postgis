@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.40.2.1  2004/10/09 15:16:10  strk
+ * Applied Steffen Macke <sdteffen@gmail.com> LINESTRING patch for segmentize().
+ *
  * Revision 1.40  2004/08/26 16:55:09  strk
  * max_distance() raises an 'unimplemented yet' error.
  *
@@ -2615,7 +2618,8 @@ POINT3D	*segmentize_ring(POINT3D	*points, double dist, int num_points_in, int *n
 // select segmentize('POLYGON((0 0, 0 10, 5 5, 0 0))',1);
 
 //segmentize(GEOMETRY P1, double maxlen)
-//given a [multi-]polygon, return a new polygon with each segment at most a given length
+//given a [multi-]polygon or [multi-]linestring, return a new polygon or 
+//linestring with each segment at most a given length
 PG_FUNCTION_INFO_V1(segmentize);
 Datum segmentize(PG_FUNCTION_ARGS)
 {
@@ -2623,8 +2627,9 @@ Datum segmentize(PG_FUNCTION_ARGS)
 		GEOMETRY		*result = NULL, *result2;
 		double			maxdist = PG_GETARG_FLOAT8(1);
 		int32			*offsets1,*p_npoints_ring;
-		int				g1_i,r;
+		int			g1_i,r;
 		POLYGON3D		*p,*poly;
+		LINE3D			*l,*line;
 		POINT3D			*polypts;
 		int				num_polypts;
 		POINT3D			*all_polypts;
@@ -2638,33 +2643,92 @@ Datum segmentize(PG_FUNCTION_ARGS)
 	first_one = 1;
 
 
-	if ( (geom1->type != POLYGONTYPE) &&  (geom1->type != MULTIPOLYGONTYPE) )
+	if ( (geom1->type == POLYGONTYPE) ||  (geom1->type == MULTIPOLYGONTYPE) )
 	{
-		elog(ERROR,"segmentize: 1st arg isnt a [multi-]polygon\n");
-		PG_RETURN_NULL();
-	}
-
-
-
-	offsets1 = (int32 *) ( ((char *) &(geom1->objType[0] ))+ sizeof(int32) * geom1->nobjs ) ;
-
-	for (g1_i=0; g1_i < geom1->nobjs; g1_i++)
-	{
-
-		all_num_polypts = 0;
-		all_num_polypts_max = 1000;
-		all_polypts = (POINT3D *) palloc (sizeof(POINT3D) * all_num_polypts_max );
-
-		p = (POLYGON3D*)((char *) geom1 +offsets1[g1_i]) ;  // the polygon
-
-		p_npoints_ring = (int32 *) palloc(sizeof(int32) * p->nrings);
-
-		p_points = (POINT3D *) ( (char *)&(p->npoints[p->nrings] )  );
-		p_points = (POINT3D *) MAXALIGN(p_points);
-
-		for (r=0;r<p->nrings;r++)  //foreach ring in the polygon
+		offsets1 = (int32 *) ( ((char *) &(geom1->objType[0] ))+ sizeof(int32) * geom1->nobjs ) ;
+	
+		for (g1_i=0; g1_i < geom1->nobjs; g1_i++)
 		{
-			polypts = segmentize_ring(p_points, maxdist, p->npoints[r], &num_polypts);
+	
+			all_num_polypts = 0;
+			all_num_polypts_max = 1000;
+			all_polypts = (POINT3D *) palloc (sizeof(POINT3D) * all_num_polypts_max );
+	
+			p = (POLYGON3D*)((char *) geom1 +offsets1[g1_i]) ;  // the polygon
+	
+			p_npoints_ring = (int32 *) palloc(sizeof(int32) * p->nrings);
+	
+			p_points = (POINT3D *) ( (char *)&(p->npoints[p->nrings] )  );
+			p_points = (POINT3D *) MAXALIGN(p_points);
+	
+			for (r=0;r<p->nrings;r++)  //foreach ring in the polygon
+			{
+				polypts = segmentize_ring(p_points, maxdist, p->npoints[r], &num_polypts);
+				if ( (all_num_polypts + num_polypts) < all_num_polypts_max )
+				{
+					//just add
+					memcpy( &all_polypts[all_num_polypts], polypts, sizeof(POINT3D) *num_polypts );
+					all_num_polypts += num_polypts;
+				}
+				else
+				{
+					//need more space
+					new_size = all_num_polypts_max + num_polypts + 1000;
+					rr = (POINT3D*) palloc(sizeof(POINT3D) * new_size);
+					memcpy(rr,all_polypts, sizeof(POINT3D) *all_num_polypts);
+					memcpy(&rr[all_num_polypts], polypts , sizeof(POINT3D) *num_polypts);
+					pfree(all_polypts);
+					all_polypts = rr;
+					all_num_polypts += num_polypts;
+				}
+				//set points in ring value
+				pfree(polypts);
+				p_npoints_ring[r] = num_polypts;
+			} //for each ring
+	
+			poly = make_polygon(p->nrings, p_npoints_ring, all_polypts, all_num_polypts, &poly_size);
+	
+			if (first_one)
+			{
+				first_one = 0;
+				result = make_oneobj_geometry(poly_size, (char *)poly, POLYGONTYPE, FALSE,geom1->SRID, geom1->scale, geom1->offsetX, geom1->offsetY);
+				pfree(poly);
+				pfree(all_polypts);
+			}
+			else
+			{
+				result2 = add_to_geometry(result,poly_size, (char *) poly, POLYGONTYPE);
+				bbox = bbox_of_geometry( result2 ); // make bounding box
+				memcpy( &result2->bvol, bbox, sizeof(BOX3D) ); // copy bounding box
+				pfree(bbox); // free bounding box
+				pfree(result);
+				result = result2;
+				pfree(poly);
+				pfree(all_polypts);
+			}
+	
+		} // foreach polygon
+		PG_RETURN_POINTER(result);
+	} 
+	if ( (geom1->type == LINETYPE) ||  (geom1->type == MULTILINETYPE) ) 
+	{
+		offsets1 = (int32 *) ( ((char *) &(geom1->objType[0] ))+ sizeof(int32) * geom1->nobjs ) ;
+	
+		for (g1_i=0; g1_i < geom1->nobjs; g1_i++)
+		{
+	
+			all_num_polypts = 0;
+			all_num_polypts_max = 1000;
+			all_polypts = (POINT3D *) palloc (sizeof(POINT3D) * all_num_polypts_max );
+	
+			l = (LINE3D*)((char *) geom1 +offsets1[g1_i]) ;  // the line
+	
+			p_npoints_ring = (int32 *) palloc(sizeof(int32) * l->npoints);
+	
+			p_points = (POINT3D *) (l->points);
+			p_points = (POINT3D *) MAXALIGN(p_points);
+				
+			polypts = segmentize_ring(p_points, maxdist, l->npoints, &num_polypts);
 			if ( (all_num_polypts + num_polypts) < all_num_polypts_max )
 			{
 				//just add
@@ -2684,32 +2748,36 @@ Datum segmentize(PG_FUNCTION_ARGS)
 			}
 			//set points in ring value
 			pfree(polypts);
-			p_npoints_ring[r] = num_polypts;
-		} //for each ring
+	
+			line = make_line(all_num_polypts, all_polypts, &poly_size);
+	
+			if (first_one)
+			{
+				first_one = 0;
+				result = make_oneobj_geometry(poly_size, (char *)line, LINETYPE, FALSE,geom1->SRID, geom1->scale, geom1->offsetX, geom1->offsetY);
+				pfree(line);
+				pfree(all_polypts);
+			}
+			else
+			{
+				result2 = add_to_geometry(result,poly_size, (char *) line, LINETYPE);
+				bbox = bbox_of_geometry( result2 ); // make bounding box
+				memcpy( &result2->bvol, bbox, sizeof(BOX3D) ); // copy bounding box
+				pfree(bbox); // free bounding box
+				pfree(result);
+				result = result2;
+				pfree(line);
+				pfree(all_polypts);
+			}
+	
+		} // foreach line
+		PG_RETURN_POINTER(result);
+	} else 
+	{
+		elog(ERROR,"segmentize: 1st arg isnt a [multi-]polygon or [multi-]linestring\n");
+		PG_RETURN_NULL();
+	}
 
-		poly = make_polygon(p->nrings, p_npoints_ring, all_polypts, all_num_polypts, &poly_size);
-
-		if (first_one)
-		{
-			first_one = 0;
-			result = make_oneobj_geometry(poly_size, (char *)poly, POLYGONTYPE, FALSE,geom1->SRID, geom1->scale, geom1->offsetX, geom1->offsetY);
-			pfree(poly);
-			pfree(all_polypts);
-		}
-		else
-		{
-			result2 = add_to_geometry(result,poly_size, (char *) poly, POLYGONTYPE);
-			bbox = bbox_of_geometry( result2 ); // make bounding box
-			memcpy( &result2->bvol, bbox, sizeof(BOX3D) ); // copy bounding box
-			pfree(bbox); // free bounding box
-			pfree(result);
-			result = result2;
-			pfree(poly);
-			pfree(all_polypts);
-		}
-
-	} // foreach polygon
-	PG_RETURN_POINTER(result);
 }
 
 /*
