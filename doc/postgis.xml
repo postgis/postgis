@@ -1051,7 +1051,7 @@ if( geom.getType() = Geometry.POLYGON )
 			 </listitem> 
 		  </varlistentry> 
 		  <varlistentry> 
-			 <term>GeometryN(geometry)</term> 
+			 <term>GeometryN(geometry,int)</term> 
 			 <listitem> 
 				<para>Return the N'th geometry if the geometry is a
 				  GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING or MULTIPOLYGON. Otherwise, return NULL.</para> 
