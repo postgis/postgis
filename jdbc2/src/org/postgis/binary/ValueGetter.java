@@ -83,12 +83,7 @@ public abstract class ValueGetter {
         }
 
         protected int getInt(int index) {
-            int hg = data.get(index + 3);
-            int high = ((int) hg << 24);
-            int hmed = ((int) data.get(index + 2) << 16);
-            int lmed = ((int) data.get(index + 1) << 8);
-            int low = (int) data.get(index);
-            return high + hmed + lmed + low;
+            return (data.get(index + 3) << 24) + (data.get(index + 2) << 16) + (data.get(index + 1) << 8) + data.get(index);
         }
 
         protected long getLong(int index) {

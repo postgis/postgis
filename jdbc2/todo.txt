@@ -29,3 +29,6 @@ Todo for PostGIS 1.0 compatible JDBC classes
 
 - Possibly relicensing under LGPL
 
+- Possibly adding server side code to support plJava
+  http://gborg.postgresql.org/project/pljava/projdisplay.php
+

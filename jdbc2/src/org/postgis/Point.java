@@ -6,6 +6,8 @@ import java.sql.SQLException;
 
 public class Point extends Geometry {
 
+    public static final boolean CUTINTS=true;
+    
     public int hashCode() {
         return super.hashCode() ^ hashCode(x) ^ hashCode(y) ^ hashCode(z) ^ hashCode(m);
     }
@@ -109,15 +111,26 @@ public class Point extends Geometry {
 
     public void innerWKT(StringBuffer sb) {
         sb.append(x);
+        if (CUTINTS) cutint(sb);
         sb.append(' ');
         sb.append(y);
+        if (CUTINTS) cutint(sb);
         if (dimension == 3) {
             sb.append(' ');
             sb.append(z);
+            if (CUTINTS) cutint(sb);
         }
         if (haveMeasure) {
             sb.append(' ');
             sb.append(m);
+            if (CUTINTS) cutint(sb);
+        }
+    }
+
+    private static void cutint(StringBuffer sb) {
+        int l = sb.length()-2;
+        if ((sb.charAt(l+1)=='0')&&(sb.charAt(l)=='.')) {
+            sb.setLength(l);
         }
     }
 
