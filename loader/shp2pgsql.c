@@ -29,7 +29,7 @@
 #include <unistd.h>
 #include "getopt.h"
 
-//#define USE_WKB 1
+#define USE_WKB 1
 
 #define	POINTTYPE	1
 #define	LINETYPE	2
@@ -39,8 +39,8 @@
 #define	MULTIPOLYGONTYPE	6
 #define	COLLECTIONTYPE	7
 
-#define TYPE_SETTYPE(c,t) ((c)=(((c)&0xF0)|(t)))
-#define TYPE_SETZM(t,z,m) ((t)=(((t)&0xCF)|((z)<<5)|((m)<<4)))
+#define WKBZOFFSET 0x80000000
+#define WKBMOFFSET 0x40000000
 
 typedef struct {double x, y, z, m;} Point;
 
@@ -61,7 +61,7 @@ char    *geom;
 char	*pgtype;
 int	istypeM;
 int	pgdims;
-unsigned char pgtypeflag;
+unsigned int wkbtype;
 char  	*shp_file;
 
 DBFFieldType *types;	/* Fields type, width and precision */
@@ -85,6 +85,7 @@ void *safe_malloc(size_t size);
 void create_table(void);
 void usage(char *me, int exitcode);
 void InsertPoint(void);
+void InsertMultiPoint(void);
 void InsertPolygon(void);
 void InsertLineString(int id);
 int parse_cmdline(int ARGC, char **ARGV);
@@ -92,10 +93,10 @@ void SetPgType(void);
 char *dump_ring(Ring *ring);
 #ifdef USE_WKB
 static char getEndianByte(void);
-static const char *wkb_bytes(char* ptr, unsigned int cnt, size_t size);
-static const char *wkb_byte(char val);
-static const char *wkb_int(int val);
-static const char *wkb_double(double val);
+static void print_wkb_bytes(unsigned char* ptr, unsigned int cnt, size_t size);
+static void print_wkb_byte(unsigned char val);
+static void print_wkb_int(int val);
+static void print_wkb_double(double val);
 #endif
 
 static char rcsid[] =
@@ -534,10 +535,6 @@ main (int ARGC, char **ARGV)
 		//wrap a transaction block around each 250 inserts...
 		if ( ! dump_format )
 		{
-			//if(j==0) {
-				//trans=0;
-				//printf("BEGIN;\n");
-			//} else
 			if (trans == 250) {
 				trans=0;
 				printf("END;\n");
@@ -579,7 +576,7 @@ main (int ARGC, char **ARGV)
 		// ---------- NULL SHAPE -----------------
 		if (obj->nVertices == 0)
 		{
-			if (dump_format) printf("\\N\n\\.\n");
+			if (dump_format) printf("\\N\n");
 			else printf("NULL);\n");
 			SHPDestroyObject(obj);	
 			continue;
@@ -596,10 +593,13 @@ main (int ARGC, char **ARGV)
 			case SHPT_POINT:
 			case SHPT_POINTM:
 			case SHPT_POINTZ:
+				InsertPoint();
+				break;
+
 			case SHPT_MULTIPOINT:
 			case SHPT_MULTIPOINTM:
 			case SHPT_MULTIPOINTZ:
-				InsertPoint();
+				InsertMultiPoint();
 				break;
 
 			case SHPT_ARC:
@@ -1079,96 +1079,46 @@ InsertPolygon()
 void
 InsertPoint()
 {
-	unsigned int u;
-
-#ifdef USE_WKB
 	if (!dump_format) printf("'");
-	printf("SRID=%s;%s%s", sr_id,
-		wkb_byte(getEndianByte()),
-		wkb_int(pgtypeflag));
-#else
-	if (dump_format) printf("SRID=%s;%s(",sr_id,pgtype );
-	else printf("GeometryFromText('%s(", pgtype);
-#endif
-	
-	if ( pgdims == 4 )
-	{
-		for (u=0;u<obj->nVertices; u++){
-#ifdef USE_WKB
-			printf("%s%s%s%s",
-				wkb_double(obj->padfX[u]),
-				wkb_double(obj->padfY[u]),
-				wkb_double(obj->padfZ[u]),
-				wkb_double(obj->padfM[u]));
-#else
-			if (u) printf(",");
-			printf("%.15g %.15g %.15g %.15g",
-				obj->padfX[u],
-				obj->padfY[u],
-				obj->padfZ[u],
-				obj->padfM[u]);
-#endif // USE_WKB
-		}
-	}
-	else if ( pgdims == 2 )
-	{
-		for (u=0;u<obj->nVertices; u++){
-#ifdef USE_WKB
-			printf("%s%s",
-				wkb_double(obj->padfX[u]),
-				wkb_double(obj->padfY[u]));
-#else
-			if (u>0) printf(",");
-			printf("%.15g %.15g",
-				obj->padfX[u],
-				obj->padfY[u]);
-#endif // USE_WKB
-		}
-	}
-	else if ( istypeM )
-	{
-		for (u=0;u<obj->nVertices; u++){
-#ifdef USE_WKB
-			printf("%s%s%s",
-				wkb_double(obj->padfX[u]),
-				wkb_double(obj->padfY[u]),
-				wkb_double(obj->padfM[u]));
-#else
-			if (u) printf(",");
-			printf("%.15g %.15g %.15g",
-				obj->padfX[u],
-				obj->padfY[u],
-				obj->padfM[u]);
-#endif // USE_WKB
-		}
-	}
-	else // POINT3dZ -- should never happen
-	{
-		fprintf(stderr, "InsertPoint: writing XYZ (loosing M)\n");
-		for (u=0;u<obj->nVertices; u++){
-#ifdef USE_WKB
-			printf("%s%s%s",
-				wkb_double(obj->padfX[u]),
-				wkb_double(obj->padfY[u]),
-				wkb_double(obj->padfZ[u]));
-#else
-			if (u>0) printf(",");
-			printf("%.15g %.15g %.15g",
-				obj->padfX[u],
-				obj->padfY[u],
-				obj->padfZ[u]);
-#endif // USE_WKB
-		}
-	}
+	if ( sr_id && sr_id != "-1" ) printf("SRID=%s;", sr_id);
 
-#ifdef USE_WKB
+	print_wkb_byte(getEndianByte());
+	print_wkb_int(wkbtype);
+	print_wkb_double(obj->padfX[0]);
+	print_wkb_double(obj->padfY[0]);
+	if ( wkbtype & WKBZOFFSET ) print_wkb_double(obj->padfZ[0]);
+	if ( wkbtype & WKBMOFFSET ) print_wkb_double(obj->padfM[0]);
+
 	if (dump_format) printf("\n");
 	else printf("');\n");
-#else
-	if (dump_format) printf(")\n");
-	else printf(")',%s) );\n",sr_id);
-#endif // USE_WKB
+}
 
+void
+InsertMultiPoint()
+{
+	unsigned int u;
+	unsigned int subtype = POINTTYPE | (wkbtype&WKBZOFFSET) | 
+		(wkbtype&WKBMOFFSET);
+
+	if (!dump_format) printf("'");
+	if ( sr_id && sr_id != "-1" ) printf("SRID=%s;", sr_id);
+
+	print_wkb_byte(getEndianByte());
+	print_wkb_int(wkbtype);
+	print_wkb_int(obj->nVertices);
+	
+	for (u=0;u<obj->nVertices; u++)
+	{
+		print_wkb_byte(getEndianByte());
+		print_wkb_int(subtype);
+		print_wkb_double(obj->padfX[u]);
+		print_wkb_double(obj->padfY[u]);
+		if ( wkbtype & WKBZOFFSET ) print_wkb_double(obj->padfZ[u]);
+		if ( wkbtype & WKBMOFFSET ) print_wkb_double(obj->padfM[u]);
+	}
+
+	if (dump_format) printf("\n");
+	else printf("');\n");
 }
 
 int
@@ -1259,84 +1209,71 @@ SetPgType()
 	{
 		case SHPT_POINT: // Point
 			pgtype = "POINT";
-			pgtypeflag = POINTTYPE;
-			TYPE_SETZM(pgtypeflag, 0, 0);
+			wkbtype = POINTTYPE;
 			pgdims = 2;
 			break;
 		case SHPT_ARC: // PolyLine
 			pgtype = "MULTILINESTRING";
-			pgtypeflag = MULTILINETYPE;
-			TYPE_SETZM(pgtypeflag, 0, 0);
+			wkbtype = MULTILINETYPE ;
 			pgdims = 2;
 			break;
 		case SHPT_POLYGON: // Polygon
 			pgtype = "MULTIPOLYGON";
-			pgtypeflag = MULTIPOLYGONTYPE;
-			TYPE_SETZM(pgtypeflag, 0, 0);
+			wkbtype = MULTIPOLYGONTYPE;
 			pgdims = 2;
 			break;
 		case SHPT_MULTIPOINT: // MultiPoint
 			pgtype = "MULTIPOINT";
-			pgtypeflag = MULTIPOINTTYPE;
-			TYPE_SETZM(pgtypeflag, 0, 0);
+			wkbtype = MULTIPOINTTYPE;
 			pgdims = 2;
 			break;
 		case SHPT_POINTM: // PointM
 			pgtype = "POINTM";
-			pgtypeflag = POINTTYPE;
-			TYPE_SETZM(pgtypeflag, 0, 1);
+			wkbtype = POINTTYPE | WKBMOFFSET;
 			pgdims = 3;
 			istypeM = 1;
 			break;
 		case SHPT_ARCM: // PolyLineM
 			pgtype = "MULTILINESTRINGM";
-			pgtypeflag = MULTILINETYPE;
-			TYPE_SETZM(pgtypeflag, 0, 1);
+			wkbtype = MULTILINETYPE | WKBMOFFSET;
 			pgdims = 3;
 			istypeM = 1;
 			break;
 		case SHPT_POLYGONM: // PolygonM
 			pgtype = "MULTIPOLYGONM";
-			pgtypeflag = MULTIPOLYGONTYPE;
-			TYPE_SETZM(pgtypeflag, 0, 1);
+			wkbtype = MULTIPOLYGONTYPE | WKBMOFFSET;
 			pgdims = 3;
 			istypeM = 1;
 			break;
 		case SHPT_MULTIPOINTM: // MultiPointM
 			pgtype = "MULTIPOINTM";
-			pgtypeflag = MULTIPOINTTYPE;
-			TYPE_SETZM(pgtypeflag, 0, 1);
+			wkbtype = MULTIPOINTTYPE | WKBMOFFSET;
 			pgdims = 3;
 			istypeM = 1;
 			break;
 		case SHPT_POINTZ: // PointZ
 			pgtype = "POINT";
-			pgtypeflag = POINTTYPE;
-			TYPE_SETZM(pgtypeflag, 1, 1);
+			wkbtype = POINTTYPE | WKBMOFFSET | WKBZOFFSET;
 			pgdims = 4;
 			break;
 		case SHPT_ARCZ: // PolyLineZ
 			pgtype = "MULTILINESTRING";
-			pgtypeflag = MULTILINETYPE;
-			TYPE_SETZM(pgtypeflag, 1, 1);
+			wkbtype = MULTILINETYPE | WKBZOFFSET | WKBMOFFSET;
 			pgdims = 4;
 			break;
 		case SHPT_POLYGONZ: // MultiPolygonZ
 			pgtype = "MULTIPOLYGON";
-			pgtypeflag = MULTIPOLYGONTYPE;
-			TYPE_SETZM(pgtypeflag, 1, 1);
+			wkbtype = MULTIPOLYGONTYPE | WKBZOFFSET | WKBMOFFSET;
 			pgdims = 4;
 			break;
 		case SHPT_MULTIPOINTZ: // MultiPointZ
 			pgtype = "MULTIPOINT";
-			pgtypeflag = MULTIPOINTTYPE;
-			TYPE_SETZM(pgtypeflag, 1, 1);
+			wkbtype = MULTIPOINTTYPE | WKBZOFFSET | WKBMOFFSET;
 			pgdims = 4;
 			break;
 		default:
 			pgtype = "GEOMETRY";
-			pgtypeflag = COLLECTIONTYPE;
-			TYPE_SETZM(pgtypeflag, 1, 1);
+			wkbtype = COLLECTIONTYPE | WKBZOFFSET | WKBMOFFSET;
 			pgdims = 4;
 			fprintf(stderr, "Unknown geometry type: %d\n",
 				shpfiletype);
@@ -1362,7 +1299,7 @@ dump_ring(Ring *ring)
 
 #ifdef USE_WKB
 
-static char outchr[]={"0123456789ABCDEF" };
+static char outchr[]={"0123456789ABCDEF"};
 
 static int endian_check_int = 1; // dont modify this!!!
 
@@ -1373,26 +1310,26 @@ static char getEndianByte()
 	else return 0;
 }
 
-static const char *
-wkb_double(double val)
+static void
+print_wkb_double(double val)
 {
-	return wkb_bytes((char *)&val, 1, 8);
+	print_wkb_bytes((unsigned char *)&val, 1, 8);
 }
 
-static const char *
-wkb_byte(char val)
+static void
+print_wkb_byte(unsigned char val)
 {
-	return wkb_bytes((char *)&val, 1, 1);
+	print_wkb_bytes((unsigned char *)&val, 1, 1);
 }
 
-static const char *
-wkb_int(int val)
+static void
+print_wkb_int(int val)
 {
-	return wkb_bytes((char *)&val, 1, 4);
+	print_wkb_bytes((unsigned char *)&val, 1, 4);
 }
 
-static const char *
-wkb_bytes(char *ptr, unsigned int cnt, size_t size)
+static void
+print_wkb_bytes(unsigned char *ptr, unsigned int cnt, size_t size)
 {
 	unsigned int bc; // byte count
 	static char buf[256];
@@ -1414,12 +1351,16 @@ wkb_bytes(char *ptr, unsigned int cnt, size_t size)
 		}
 	}
 	*bufp = '\0';
-	return buf;
+	//fprintf(stderr, "\nwkbbytes:%s\n", buf);
+	printf("%s", buf);
 }
 #endif // USE_WKB
 
 /**********************************************************************
  * $Log$
+ * Revision 1.71  2004/10/17 12:26:02  strk
+ * Point and MultiPoint loaded using HEXWKB.
+ *
  * Revision 1.70  2004/10/15 22:01:35  strk
  * Initial WKB functionalities
  *
