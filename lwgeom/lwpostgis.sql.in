@@ -1646,6 +1646,12 @@ CREATEFUNCTION geom_accum (geometry[],geometry)
 	AS '@MODULE_FILENAME@', 'LWGEOM_accum'
 	LANGUAGE 'C';
 
+CREATE AGGREGATE accum (
+	sfunc = geom_accum,
+	basetype = geometry,
+	stype = geometry[]
+	);
+
 CREATEFUNCTION collect_garray (geometry[])
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_collect_garray'
