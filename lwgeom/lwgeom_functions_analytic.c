@@ -23,8 +23,10 @@
 /* Prototypes */
 void DP_findsplit2d(POINTARRAY *pts, int p1, int p2, int *split, double *dist);
 POINTARRAY *DP_simplify2d(POINTARRAY *inpts, double epsilon);
-LWLINE *simplify2d_lwline(LWLINE *iline, double dist);
-LWPOLY *simplify2d_lwpoly(LWPOLY *ipoly, double dist);
+LWLINE *simplify2d_lwline(const LWLINE *iline, double dist);
+LWPOLY *simplify2d_lwpoly(const LWPOLY *ipoly, double dist);
+LWCOLLECTION *simplify2d_collection(const LWCOLLECTION *igeom, double dist);
+LWGEOM *simplify2d_lwgeom(const LWGEOM *igeom, double dist);
 Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS);
 
 
@@ -164,7 +166,7 @@ DP_simplify2d(POINTARRAY *inpts, double epsilon)
 }
 
 LWLINE *
-simplify2d_lwline(LWLINE *iline, double dist)
+simplify2d_lwline(const LWLINE *iline, double dist)
 {
 	POINTARRAY *ipts;
 	POINTARRAY *opts;
@@ -183,7 +185,7 @@ simplify2d_lwline(LWLINE *iline, double dist)
 
 // TODO
 LWPOLY *
-simplify2d_lwpoly(LWPOLY *ipoly, double dist)
+simplify2d_lwpoly(const LWPOLY *ipoly, double dist)
 {
 	POINTARRAY *ipts;
 	POINTARRAY **orings = NULL;
@@ -250,77 +252,67 @@ elog(NOTICE, "simplify_polygon3d: simplified polygon with %d rings", norings);
 	return opoly;
 }
 
+LWCOLLECTION *
+simplify2d_collection(const LWCOLLECTION *igeom, double dist)
+{
+	unsigned int i;
+	unsigned int ngeoms=0;
+	LWGEOM **geoms = lwalloc(sizeof(LWGEOM *)*igeom->ngeoms);
+	LWCOLLECTION *out;
+
+	for (i=0; i<igeom->ngeoms; i++)
+	{
+		LWGEOM *ngeom = simplify2d_lwgeom(igeom->geoms[i], dist);
+		if ( ngeom ) geoms[ngeoms++] = ngeom;
+	}
+
+	out = lwcollection_construct(TYPE_GETTYPE(igeom->type), igeom->SRID,
+		NULL, ngeoms, geoms);
+
+	return out;
+}
+
+LWGEOM *
+simplify2d_lwgeom(const LWGEOM *igeom, double dist)
+{
+	switch(TYPE_GETTYPE(igeom->type))
+	{
+		case POINTTYPE:
+		case MULTIPOINTTYPE:
+			return lwgeom_clone(igeom);
+		case LINETYPE:
+			return (LWGEOM *)simplify2d_lwline(
+				(LWLINE *)igeom, dist);
+		case POLYGONTYPE:
+			return (LWGEOM *)simplify2d_lwpoly(
+				(LWPOLY *)igeom, dist);
+		case MULTILINETYPE:
+		case MULTIPOLYGONTYPE:
+		case COLLECTIONTYPE:
+			return (LWGEOM *)simplify2d_collection(
+				(LWCOLLECTION *)igeom, dist);
+		default:
+			lwerror("simplify2d_lwgeom: unknown geometry type: %d",
+				TYPE_GETTYPE(igeom->type));
+	}
+	return NULL;
+}
+
 PG_FUNCTION_INFO_V1(LWGEOM_simplify2d);
 Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	LWGEOM_EXPLODED *exp = lwgeom_explode(SERIALIZED_FORM(geom));
-	double dist = PG_GETARG_FLOAT8(1);
-	int i;
-	char **newlines;
-	int newlinesnum=0;
-	char **newpolys;
-	int newpolysnum=0;
+	LWGEOM *in = lwgeom_deserialize(SERIALIZED_FORM(geom));
+	LWGEOM *out;
 	PG_LWGEOM *result;
-	char *serialized;
+	double dist = PG_GETARG_FLOAT8(1);
 
-	// no lines, no points... return input
-	if ( exp->nlines + exp->npolys == 0 )
-	{
-		pfree_exploded(exp);
-	 	PG_RETURN_POINTER(geom);
-	}
+	out = simplify2d_lwgeom(in, dist);
 
-	if ( exp->nlines )
-	{
-#if VERBOSE
-		elog(NOTICE, "%d lines in exploded geom", exp->nlines);
-#endif
-		newlines = palloc(sizeof(char *)*exp->nlines);
-		for ( i=0; i<exp->nlines; i++ )
-		{
-			LWLINE *iline = lwline_deserialize(exp->lines[i]);
-#if VERBOSE
-			elog(NOTICE, " line %d deserialized", i);
-#endif
-			LWLINE *oline = simplify2d_lwline(iline, dist);
-#if VERBOSE
-			elog(NOTICE, " line %d simplified", i);
-#endif
-			if ( oline == NULL ) continue;
-			newlines[newlinesnum] = lwline_serialize(oline);
-			newlinesnum++;
-		}
-		pfree(exp->lines);
-		exp->lines = newlines;
-		exp->nlines = newlinesnum;
-	}
+	/* COMPUTE_BBOX TAINTING */
+	if ( in->bbox ) lwgeom_addBBOX(out);
 
-	if ( exp->npolys )
-	{
-		newpolys = palloc(sizeof(char *)*exp->npolys);
-		for ( i=0; i<exp->npolys; i++ )
-		{
-			LWPOLY *ipoly = lwpoly_deserialize(exp->polys[i]);
-			LWPOLY *opoly = simplify2d_lwpoly(ipoly, dist);
-			if ( opoly == NULL ) continue;
-			newpolys[newpolysnum] = lwpoly_serialize(opoly);
-			newpolysnum++;
-		}
-		pfree(exp->polys);
-		exp->polys = newpolys;
-		exp->npolys = newpolysnum;
-	}
-
-	// copy 1 (when lwexploded_serialize_buf will be implemented this
-	// can be avoided)
-	serialized = lwexploded_serialize(exp, lwgeom_hasBBOX(geom->type));
-	pfree_exploded(exp);
-
-
-	// copy 2 (see above)
-	result = PG_LWGEOM_construct(serialized,
-		pglwgeom_getSRID(geom), lwgeom_hasBBOX(geom->type));
+	result = pglwgeom_serialize(out);
 
 	PG_RETURN_POINTER(result);
 }

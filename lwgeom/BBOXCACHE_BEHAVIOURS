@@ -75,7 +75,7 @@ section also use it.
 [ TAINING ]
 	GeometryN(geometry,integer) *LWG*
 	InteriorRingN(geometry,integer) *LWG*
-	simplify(geometry, float8) *SRL* (*EXP*)
+	simplify(geometry, float8) *LWG*
 
 	#### could use WHEN_SIMPLE
 	#### translating and transforming an eventually present
