@@ -74,7 +74,13 @@ endif
 NAME=postgis
 SO_MAJOR_VERSION=0
 SO_MINOR_VERSION=8
-MODULE_FILENAME = $$libdir/../$(shlib)
+ifeq (${USE_VERSION}, 71) 
+	MODULE_FILENAME = $(libdir)/$(shlib)
+	MODULE_INSTALLDIR = $(libdir)
+else
+	MODULE_FILENAME = $$libdir/$(shlib)
+	MODULE_INSTALLDIR = $(pkglibdir)
+endif
 #---------------------------------------------------------------
 
 override CFLAGS += -g -fexceptions  
@@ -153,13 +159,31 @@ postgis.sql: postgis_sql_common.sql.in postgis_sql_$(USE_VERSION)_end.sql.in pos
 postgis_undef.sql: postgis.sql create_undef.pl
 	perl create_undef.pl $< $(USE_VERSION) > $@ 
 
-install: all installdirs install-lib
+install: all installdirs install-postgis-lib
 	$(INSTALL_DATA) $(srcdir)/README.postgis  $(docdir)/contrib
 	$(INSTALL_DATA) postgis.sql $(datadir)/contrib
 	$(INSTALL_DATA) postgis_undef.sql $(datadir)/contrib
 	$(INSTALL_DATA) spatial_ref_sys.sql $(datadir)/contrib
 	$(INSTALL_DATA) README.postgis $(datadir)/contrib
 	$(MAKE) -C loader install
+
+#- This has been copied from postgresql and adapted
+install-postgis-lib: $(shlib)
+	$(INSTALL_SHLIB) $< $(DESTDIR)$(MODULE_INSTALLDIR)/$(shlib)
+ifneq ($(PORTNAME), win)
+ifneq ($(shlib), lib$(NAME)$(DLSUFFIX).$(SO_MAJOR_VERSION))
+	cd $(DESTDIR)$(MODULE_INSTALLDIR) && \
+	rm -f lib$(NAME)$(DLSUFFIX).$(SO_MAJOR_VERSION) && \
+	$(LN_S) $(shlib) lib$(NAME)$(DLSUFFIX).$(SO_MAJOR_VERSION)
+endif
+ifneq ($(shlib), lib$(NAME)$(DLSUFFIX))
+	cd $(DESTDIR)$(MODULE_INSTALLDIR) && \
+	rm -f lib$(NAME)$(DLSUFFIX) && \
+	$(LN_S) $(shlib) lib$(NAME)$(DLSUFFIX)
+endif
+
+endif # not win
+#----------------------------------------------------------
 
 installdirs:
 	$(mkinstalldirs) $(docdir)/contrib $(datadir)/contrib $(libdir)
