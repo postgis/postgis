@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.35  2003/10/28 11:16:46  strk
+ * Added postgis_algo.c prototypes
+ *
  * Revision 1.34  2003/10/16 16:35:42  dblasby
  * added #include <sys/types.h> for people using freeBSD (strk@keybit.net patch)
  *
@@ -439,6 +442,11 @@ GEOMETRY *makeNullGeometry(int SRID);
 
 void compressType(GEOMETRY *g);
 
+void DP_findsplit(POINT3D *, int, int, int, int *, double *);
+void DP_simplify(POINT3D *, int, POINT3D **, int *, double);
+char *simplify_line3d(LINE3D *, double);
+char *simplify_polygon3d(POLYGON3D *, double);
+char *simplify_point3d(POINT3D *, double);
 
 //exposed to psql
 
@@ -605,6 +613,7 @@ Datum geometry_from_text_line(PG_FUNCTION_ARGS);
 Datum geometry_from_text_mline(PG_FUNCTION_ARGS);
 Datum geometry_from_text_gc(PG_FUNCTION_ARGS);
 Datum isempty(PG_FUNCTION_ARGS);
+Datum simplify(PG_FUNCTION_ARGS);
 
 /*--------------------------------------------------------------------
  * Useful floating point utilities and constants.
