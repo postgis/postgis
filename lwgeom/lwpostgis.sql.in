@@ -11,6 +11,9 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.4  2004/08/20 14:54:35  strk
+-- gist operators support functions renamed to allow for finer control by postgis_restore.pl
+--
 -- Revision 1.3  2004/08/20 14:08:41  strk
 -- Added Geom{etry,}FromWkb(<geometry>,[<int4>]) funx.
 -- Added LWGEOM typedef and SERIALIZED_FORM(LWGEOM) macro.
@@ -334,90 +337,90 @@ CREATEFUNCTION postgis_gist_sel (internal, oid, internal, int4)
 	AS '@MODULE_FILENAME@', 'lwgeom_gist_sel'
 	LANGUAGE 'C';
 
-CREATEFUNCTION lwgeom_overleft(geometry, geometry) 
+CREATEFUNCTION geometry_overleft(geometry, geometry) 
 	RETURNS bool
-	AS '@MODULE_FILENAME@'
+	AS '@MODULE_FILENAME@', 'lwgeom_overleft'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATEFUNCTION lwgeom_overright(geometry, geometry) 
+CREATEFUNCTION geometry_overright(geometry, geometry) 
 	RETURNS bool
-	AS '@MODULE_FILENAME@' 
+	AS '@MODULE_FILENAME@', 'lwgeom_overright'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATEFUNCTION lwgeom_left(geometry, geometry) 
+CREATEFUNCTION geometry_left(geometry, geometry) 
 	RETURNS bool
-	AS '@MODULE_FILENAME@' 
+	AS '@MODULE_FILENAME@', 'lwgeom_left'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATEFUNCTION lwgeom_right(geometry, geometry) 
+CREATEFUNCTION geometry_right(geometry, geometry) 
 	RETURNS bool
-	AS '@MODULE_FILENAME@' 
+	AS '@MODULE_FILENAME@', 'lwgeom_right'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATEFUNCTION lwgeom_contain(geometry, geometry) 
+CREATEFUNCTION geometry_contain(geometry, geometry) 
 	RETURNS bool
-	AS '@MODULE_FILENAME@'
+	AS '@MODULE_FILENAME@', 'lwgeom_contain'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATEFUNCTION lwgeom_contained(geometry, geometry) 
+CREATEFUNCTION geometry_contained(geometry, geometry) 
 	RETURNS bool
-	AS '@MODULE_FILENAME@'
+	AS '@MODULE_FILENAME@', 'lwgeom_contained'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATEFUNCTION lwgeom_overlap(geometry, geometry) 
+CREATEFUNCTION geometry_overlap(geometry, geometry) 
 	RETURNS bool
-	AS '@MODULE_FILENAME@'
+	AS '@MODULE_FILENAME@', 'lwgeom_overlap'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATEFUNCTION lwgeom_same(geometry, geometry) 
+CREATEFUNCTION geometry_same(geometry, geometry) 
 	RETURNS bool
-	AS '@MODULE_FILENAME@' 
+	AS '@MODULE_FILENAME@', 'lwgeom_same'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATE OPERATOR << (
-   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = lwgeom_left,
+   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_left,
    COMMUTATOR = '>>',
    RESTRICT = positionsel, JOIN = positionjoinsel
 );
 
 CREATE OPERATOR &< (
-   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = lwgeom_overleft,
+   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overleft,
    COMMUTATOR = '&>',
    RESTRICT = positionsel, JOIN = positionjoinsel
 );
 
 CREATE OPERATOR && (
-   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = lwgeom_overlap,
+   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overlap,
    COMMUTATOR = '&&',
    RESTRICT = postgis_gist_sel, JOIN = positionjoinsel
 );
 
 CREATE OPERATOR &> (
-   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = lwgeom_overright,
+   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overright,
    COMMUTATOR = '&<',
    RESTRICT = positionsel, JOIN = positionjoinsel
 );
 
 CREATE OPERATOR >> (
-   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = lwgeom_right,
+   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_right,
    COMMUTATOR = '<<',
    RESTRICT = positionsel, JOIN = positionjoinsel
 );
 
 CREATE OPERATOR ~= (
-   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = lwgeom_same,
+   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_same,
    COMMUTATOR = '~=', 
    RESTRICT = eqsel, JOIN = eqjoinsel
 );
 
 CREATE OPERATOR @ (
-   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = lwgeom_contained,
+   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_contained,
    COMMUTATOR = '~',
    RESTRICT = contsel, JOIN = contjoinsel
 );
 
 CREATE OPERATOR ~ (
-   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = lwgeom_contain,
+   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_contain,
    COMMUTATOR = '@',
    RESTRICT = contsel, JOIN = contjoinsel
 );
