@@ -1301,6 +1301,11 @@ CREATEFUNCTION distance_spheroid(geometry,geometry,spheroid)
 	AS '@MODULE_FILENAME@','distance_ellipsoid'
 	LANGUAGE 'C' WITH (isstrict);
 
+CREATEFUNCTION distance_sphere(geometry,geometry)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@', 'distance_sphere'
+	LANGUAGE 'C' WITH (isstrict);
+
 --
 -- Generic operations
 --

@@ -11,6 +11,11 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.51  2004/09/16 15:50:59  mleslie
+ * Added the distance_sphere function to calculate the distance between two points
+ * on an earth-sized sphere using an algorithm implemented by Bruno Wolff III.
+ * Added the postgresql loader function.
+ *
  * Revision 1.50  2004/08/19 06:15:58  strk
  * USE_VERSION gets 80 where it got 75
  *
@@ -585,6 +590,7 @@ Datum ellipsoid_in(PG_FUNCTION_ARGS);
 Datum length_ellipsoid(PG_FUNCTION_ARGS);
 Datum length3d_ellipsoid(PG_FUNCTION_ARGS);
 Datum distance_ellipsoid(PG_FUNCTION_ARGS);
+Datum distance_sphere(PG_FUNCTION_ARGS);
 
 Datum point_inside_circle(PG_FUNCTION_ARGS);
 Datum distance(PG_FUNCTION_ARGS);

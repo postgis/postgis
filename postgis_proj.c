@@ -11,6 +11,11 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.14  2004/09/16 15:50:59  mleslie
+ * Added the distance_sphere function to calculate the distance between two points
+ * on an earth-sized sphere using an algorithm implemented by Bruno Wolff III.
+ * Added the postgresql loader function.
+ *
  * Revision 1.13  2004/04/28 22:26:02  pramsey
  * Fixed spelling mistake in header text.
  *
@@ -417,6 +422,86 @@ Datum length3d_ellipsoid(PG_FUNCTION_ARGS)
 	}
 	PG_RETURN_FLOAT8(dist);
 }
+
+/*
+ * This algorithm was taken from the geo_distance function of the 
+ * earthdistance package contributed by Bruno Wolff III.
+ * It was altered to accept GEOMETRY objects and return results in
+ * meters.
+ */
+PG_FUNCTION_INFO_V1(distance_sphere);
+Datum distance_sphere(PG_FUNCTION_ARGS)
+{
+		const double EARTH_RADIUS = 6370986.884258304;
+		const double TWO_PI = 2.0 * M_PI;
+		GEOMETRY		*geom1 = (GEOMETRY *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+		GEOMETRY		*geom2 = (GEOMETRY *) PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+		POINT3D 		*pt1, *pt2;
+		int32			*offsets1;
+		int32			*offsets2;
+		char			*o;
+
+		double			long1, lat1, long2, lat2;
+		double			longdiff;
+		double 			sino;
+
+	if (geom1->SRID != geom2->SRID)
+	{
+		elog(ERROR, "optimistic_overlap:Operation on two GEOMETRIES with differenc SRIDs\n");
+		PG_RETURN_NULL();
+	}
+
+	if (geom1->type != POINTTYPE)
+	{
+		elog(ERROR, "optimistic_overlap: first arg isnt a point\n");
+		PG_RETURN_NULL();
+	}
+
+	if (geom2->type != POINTTYPE)
+	{
+		elog(ERROR, "optimistic_overlap: second arg isnt a point\n");
+		PG_RETURN_NULL();
+	}
+
+	offsets1 = (int32 *) ( ((char *) &(geom1->objType[0] ))+ sizeof(int32) * geom1->nobjs );
+	offsets2 = (int32 *) ( ((char *) &(geom2->objType[0] ))+ sizeof(int32) * geom2->nobjs );
+	o = (char *) geom1 + offsets1[0];
+	pt1 = (POINT3D *) o;
+
+	o = (char *) geom2 + offsets2[0];
+	pt2 = (POINT3D *) o;
+
+	/*
+	 * Start geo_distance code.  Longitude is degrees west of
+	 * Greenwich, and thus is negative from what normal things
+	 * will supply the function.
+	 */
+        long1 = -1 * (pt1->x / 360.0) * TWO_PI;
+        lat1 = (pt1->y / 360.0) * TWO_PI;
+
+	long2 = -1 * (pt2->x / 360.0) * TWO_PI;
+	lat2 = (pt2->y / 360.0) * TWO_PI;
+
+        /* compute difference in longitudes - want < 180 degrees */
+        longdiff = fabs(long1 - long2);
+        if (longdiff > M_PI)
+                longdiff = TWO_PI - longdiff;
+
+        sino = sqrt(sin(fabs(lat1 - lat2) / 2.) * sin(fabs(lat1 - lat2) / 2.) +
+                cos(lat1) * cos(lat2) * sin(longdiff / 2.) * sin(longdiff / 2.));
+        if (sino > 1.)
+                sino = 1.;
+        PG_RETURN_FLOAT8(2. * EARTH_RADIUS * asin(sino));
+
+/*	PG_RETURN_FLOAT8(distance_sphere_method(pt1->y*M_PI/180.0 ,
+						pt1->x*M_PI/180.0 ,
+						pt2->y*M_PI/180.0 ,
+						pt2->x*M_PI/180.0 ,
+						sphere));
+*/
+
+}
+
 
 //distance (geometry,geometry, sphere)
 // -geometrys MUST be points
