@@ -3,7 +3,7 @@
 #---------------------------------------------------------------
 # Set USE_PROJ to 1 for Proj4 reprojection support
 #
-USE_PROJ=1
+USE_PROJ=0
 ifeq (${PROJ_DIR},) 
 	PROJ_DIR=/usr/local
 endif
@@ -12,7 +12,7 @@ endif
 # Set USE_GEOS to 1 for GEOS spatial predicate and operator
 # support
 #
-USE_GEOS=1
+USE_GEOS=0
 ifeq (${GEOS_DIR},) 
 	GEOS_DIR=/usr/local
 endif
@@ -94,7 +94,8 @@ POSTGIS_VERSION = $(SO_MAJOR_VERSION).$(SO_MINOR_VERSION) USE_GEOS=$(USE_GEOS) U
 
 #---------------------------------------------------------------
 
-override CFLAGS += -g -fexceptions  
+override CFLAGS += -g 
+
 override CFLAGS += -I$(srcdir) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"' 
 override CFLAGS += -DUSE_VERSION=$(USE_VERSION)
 
@@ -134,7 +135,8 @@ ifeq ($(USE_GEOS),1)
 	GEOS_WRAPPER=postgis_geos_wrapper.o
 endif
 
-OBJS=lwgeom_api.o lwgeom_functions_analytic.o lwgeom_geos.o lwgeom_inout.o lwgeom_estimate.o lwgeom_functions_basic.o lwgeom_gist.o lwgeom_transform.o stringBuffer.o
+OBJS=lwgeom_api.o lwgeom_functions_analytic.o lwgeom_geos.o lwgeom_inout.o lwgeom_estimate.o lwgeom_functions_basic.o lwgeom_gist.o lwgeom_transform.o stringBuffer.o lwgeom_box2dfloat4.o lex.yy.o wktparse.tab.o lwgparse.o wktunparse.o 
+
 
 
 
