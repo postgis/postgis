@@ -1645,7 +1645,7 @@ Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS)
 	}
 
 #if DEBUG_GEOMETRY_STATS > 1
-	elog(NOTICE," requested search box is : %.15g %.15g, %.15g %.15g",search_box->xmin,search_box->ymin,search_box->xmax,search_box->ymax);
+	elog(NOTICE," requested search box is : %.15g %.15g, %.15g %.15g",search_box.xmin,search_box.ymin,search_box.xmax,search_box.ymax);
 #endif
 
 	/*
@@ -2446,6 +2446,9 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.25  2005/03/08 09:23:34  strk
+ * Fixed debugging lines.
+ *
  * Revision 1.24  2005/02/21 16:22:32  strk
  * Changed min() max() usage with LW_MIN() LW_MAX()
  *
