@@ -2275,7 +2275,8 @@ lwexploded_serialize_buf(LWGEOM_EXPLODED *exploded, int wantbbox,
 		// Now compute the bounding box and write it
 		if ( wantbbox && ! lwgeom_hasBBOX(loc[0]) )
 		{
-			buf[0] = TYPE_SETHASBBOX(loc[0], 1);
+			buf[0] = loc[0];
+			TYPE_SETHASBBOX(buf[0], 1);
 			box3d = lw_geom_getBB_simple(loc);
 			box2d = box3d_to_box2df(box3d);
 			loc = buf+1;

@@ -1974,7 +1974,8 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS)
 	{
 		result = (PG_LWGEOM *)lwalloc(geom->size);
 		result->size = geom->size;
-		result->type = TYPE_SETTYPE(geom->type, COLLECTIONTYPE);
+		result->type = geom->type;
+		TYPE_SETTYPE(result->type, COLLECTIONTYPE);
 		memcpy(result->data, geom->data, geom->size-5);
 		PG_RETURN_POINTER(result);
 	}
@@ -1987,7 +1988,8 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS)
 	result = (PG_LWGEOM *)lwalloc(size); // 4 for numgeoms, 1 for type
 	result->size = size;
 
-	result->type = TYPE_SETTYPE(geom->type, COLLECTIONTYPE);
+	result->type = geom->type;
+	TYPE_SETTYPE(result->type, COLLECTIONTYPE);
 	iptr = geom->data;
 	optr = result->data;
 
@@ -2017,8 +2019,9 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS)
 	optr+=4;
 
 	// write type of first geometry w/out BBOX and SRID
-	optr[0] = TYPE_SETHASSRID(geom->type, 0);
-	optr[0] = TYPE_SETHASBBOX(optr[0], 0);
+	optr[0] = geom->type;
+	TYPE_SETHASSRID(optr[0], 0);
+	TYPE_SETHASBBOX(optr[0], 0);
 	optr++;
 
 	// write remaining stuff
@@ -2053,7 +2056,8 @@ Datum LWGEOM_force_multi(PG_FUNCTION_ARGS)
 	result = (PG_LWGEOM *)lwalloc(size); // 4 for numgeoms, 1 for type
 	result->size = size;
 
-	result->type = TYPE_SETTYPE(geom->type, newtype);
+	result->type = geom->type;
+	TYPE_SETTYPE(result->type, newtype);
 	iptr = geom->data;
 	optr = result->data;
 
@@ -2083,8 +2087,9 @@ Datum LWGEOM_force_multi(PG_FUNCTION_ARGS)
 	optr+=4;
 
 	// write type of first geometry w/out BBOX and SRID
-	optr[0] = TYPE_SETHASSRID(geom->type, 0);
-	optr[0] = TYPE_SETHASBBOX(optr[0], 0);
+	optr[0] = geom->type;
+	TYPE_SETHASSRID(optr[0], 0);
+	TYPE_SETHASBBOX(optr[0], 0);
 	optr++;
 
 	// write remaining stuff
