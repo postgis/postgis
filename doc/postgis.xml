@@ -1077,31 +1077,31 @@ if( geom.getType() = Geometry.POLYGON )
 		<title>Other Functions</title> 
 		<variablelist> 
 		  <varlistentry> 
-			 <term>A &lt;&amp; B</term> 
+			  <term>A &amp;&lt; B</term> 
 			 <listitem> 
-				<para>The "&lt;&amp;" operator returns true if A's bounding box
-				  overlaps or is to the right of B's bounding box.</para> 
+				 <para>The "&amp;&lt;" operator returns true if A's bounding box
+				   overlaps or is to the left of B's bounding box.</para> 
 			 </listitem> 
 		  </varlistentry> 
 		  <varlistentry> 
 			 <term>A &amp;&gt; B</term> 
 			 <listitem> 
 				<para>The "&amp;&gt;" operator returns true if A's bounding box
-				  overlaps or is to the left of B's bounding box.</para> 
+				  overlaps or is to the right of B's bounding box.</para> 
 			 </listitem> 
 		  </varlistentry> 
 		  <varlistentry> 
 			 <term>A &lt;&lt; B</term> 
 			 <listitem> 
 				<para>The "&lt;&lt;" operator returns true if A's bounding box is
-				  strictly to the right of B's bounding box.</para> 
+				  strictly to the left of B's bounding box.</para> 
 			 </listitem> 
 		  </varlistentry> 
 		  <varlistentry> 
 			 <term>A &gt;&gt; B</term> 
 			 <listitem> 
 				<para>The "&gt;&gt;" operator returns true if A's bounding box is
-				  strictly to the left of B's bounding box.</para> 
+				  strictly to the right of B's bounding box.</para> 
 			 </listitem> 
 		  </varlistentry> 
 		  <varlistentry> 

@@ -145,7 +145,7 @@ their bounding boxes.
 You can build a GiST index with:
 
   CREATE INDEX <indexname> ON <tablename>  
-     USING gist ( <geometryfield> gist_geometry_ops ) WITH ( islossy );
+     USING gist ( <geometryfield> gist_geometry_ops );
 
 Always run the "VACUUM ANALYZE <tablename>" on your tables after
 creating an index. This gathers statistics which the query planner

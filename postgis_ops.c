@@ -569,7 +569,7 @@ Datum box3d_overleft(PG_FUNCTION_ARGS)
 
 	bool	result;
 
-	result = FPle(box1->URT.x, box2->LLB.x);
+	result = FPle(box1->URT.x, box2->URT.x);
 
 //printf("box3d_overleft about to return %i\n",(int) result);	
 
