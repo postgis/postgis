@@ -207,7 +207,7 @@
       url="http://www.postgresql.org">http://www.postgresql.org</ulink>.</para>
 
       <para>PostGIS @@LAST_RELEASE_VERSION@@ can be built against PostgreSQL
-      versions 7.1.0 to 7.4.x. Earlier versions of PostgreSQL are
+      versions 7.2.0 to 7.4.x. Earlier versions of PostgreSQL are
       <emphasis>not</emphasis> supported.</para>
 
       <orderedlist>
@@ -281,7 +281,7 @@
 
             <listitem>
               <para>Important support files such as
-              <filename>postgis.sql</filename> are installed in
+              <filename>lwpostgis.sql</filename> are installed in
               <filename>[prefix]/share/contrib</filename>.</para>
             </listitem>
 
@@ -294,9 +294,9 @@
 
         <listitem>
           <para>PostGIS requires the PL/pgSQL procedural language extension.
-          Before loading the <filename>postgis.sql</filename> file, you must
+          Before loading the <filename>lwpostgis.sql</filename> file, you must
           first enable PL/pgSQL. You should use the
-          <filename>createlang</filename> command. The PostgreSQL 7.1
+          <filename>createlang</filename> command. The PostgreSQL 
           Programmer's Guide has the details if you want to this manually for
           some reason.</para>
 
@@ -305,10 +305,10 @@
 
         <listitem>
           <para>Now load the PostGIS object and function definitions into your
-          database by loading the <filename>postgis.sql</filename> definitions
+          database by loading the <filename>lwpostgis.sql</filename> definitions
           file.</para>
 
-          <programlisting># psql -d [yourdatabase] -f postgis.sql</programlisting>
+          <programlisting># psql -d [yourdatabase] -f lwpostgis.sql</programlisting>
 
           <para>The PostGIS server extensions are now loaded and ready to
           use.</para>
@@ -331,14 +331,14 @@
         libraries which support the object types and geometries may have
         changed between versions. To avoid problems when upgrading, you will
         have to dump all the tables in your database, destroy the database,
-        create a new one, execute the new <filename>postgis.sql</filename>
+        create a new one, execute the new <filename>lwpostgis.sql</filename>
         file, then upload your database dump:</para>
 
         <programlisting># pg_dump -t spatialtable -f dumpfile.sql yourdatabase
 # dropdb yourdatabase
 # createdb yourdatabase
 # createlang plpgsql yourdatabse
-# psql -f postgis.sql -d yourdatabase
+# psql -f lwpostgis.sql -d yourdatabase
 # psql -f dumpfile.sql -d yourdatabase
 # vacuumdb -z yourdatabase</programlisting>
       </sect2>
@@ -362,13 +362,13 @@
           </listitem>
 
           <listitem>
-            <para>Check that you you have installed PostgreSQL 7.1 or newer,
+            <para>Check that you you have installed PostgreSQL 7.2 or newer,
             and that you are compiling against the same version of the
             PostgreSQL source as the version of PostgreSQL that is running.
             Mix-ups can occur when your (Linux) distrubution has already
             installed PostgreSQL, or you have otherwise installed PostgreSQL
             before and forgotten about it. PostGIS will only work with
-            PostgreSQL 7.1 or newer, and strange, unexpected error messages
+            PostgreSQL 7.2 or newer, and strange, unexpected error messages
             will result if you use an older version. To check the version of
             PostgreSQL which is running, connect to the database using psql
             and run this query:</para>
@@ -563,11 +563,10 @@ AND
           (Generalized Search Tree) index.</para>
 
           <note>
-            <para>For PostgreSQL version 7.1.x, you must specifically request
-            a "lossy" index by appending WITH (ISLOSSY) to the index creation
-            command. For PostgreSQL 7.2.x and above all GiST indexes are
-            assumed to be lossy. Lossy indexes uses a proxy object (in the
-            spatial case, a bounding box) for building the index.</para>
+            <para>
+            GiST indexes are assumed to be lossy.
+	    Lossy indexes uses a proxy object (in the spatial case,
+	    a bounding box) for building the index.</para>
           </note>
 
           <para>You should also ensure that the PostgreSQL query planner has
@@ -3597,7 +3596,7 @@ dimension
           <term>postgis_scripts_installed()</term>
 
           <listitem>
-            <para>Returns the version number of the postgis.sql script
+            <para>Returns the version number of the lwpostgis.sql script
             installed in this database.</para>
           </listitem>
         </varlistentry>
@@ -3606,7 +3605,7 @@ dimension
           <term>postgis_scripts_released()</term>
 
           <listitem>
-            <para>Returns the version number of the postgis.sql script
+            <para>Returns the version number of the lwpostgis.sql script
             released with the installed postgis lib.</para>
           </listitem>
         </varlistentry>
