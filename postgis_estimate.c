@@ -11,6 +11,10 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.28  2004/06/14 07:48:10  strk
+ * Histogram extent redefinition after hard deviant removal fixed to be
+ * "at most" the standard deviation based computed.
+ *
  * Revision 1.27  2004/06/11 11:38:57  strk
  * Infinite geometries handling.
  * Histogram extent re-computation after 'hard deviant' features removal.
@@ -1605,7 +1609,21 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 				newhistobox->high.y = box->high.y;
 		}
 	}
-	memcpy(&histobox, newhistobox, sizeof(BOX));
+
+	/*
+	 * Set histogram extent as the intersection between
+	 * standard deviation based histogram extent 
+	 * and computed sample extent after removal of
+	 * hard deviants (there might be no hard deviants).
+	 */
+	if ( histobox.low.x < newhistobox->low.x )
+		histobox.low.x = newhistobox->low.x;
+	if ( histobox.low.y < newhistobox->low.y )
+		histobox.low.y = newhistobox->low.y;
+	if ( histobox.high.x > newhistobox->high.x )
+		histobox.high.x = newhistobox->high.x;
+	if ( histobox.high.y > newhistobox->high.y )
+		histobox.high.y = newhistobox->high.y;
 
 
 #else // ! USE_STANDARD_DEVIATION
