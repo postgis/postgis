@@ -1839,9 +1839,10 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 	for (i=0; i<nelems; i++)
 	{
 		PG_LWGEOM *geom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
+		unsigned int intype = TYPE_GETTYPE(geom->type);
+
 		offset += INTALIGN(geom->size);
 
-		unsigned int intype = TYPE_GETTYPE(geom->type);
 		lwgeoms[i] = lwgeom_deserialize(SERIALIZED_FORM(geom));
 #ifdef DEBUG
 	elog(NOTICE, "LWGEOM_collect_garray: geom %d deserialized", i);
