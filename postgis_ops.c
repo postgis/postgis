@@ -61,6 +61,15 @@ PG_FUNCTION_INFO_V1(ggeometry_same);
 PG_FUNCTION_INFO_V1(ggeometry_inter);
 PG_FUNCTION_INFO_V1(rtree_decompress);
 
+
+//restriction in the GiST && operator
+
+Datum postgis_gist_sel(PG_FUNCTION_ARGS)
+{
+        PG_RETURN_FLOAT8(0.000005);
+}
+
+
 //given a bvol, make a "fake" geometry that contains it (for indexing)
 GEOMETRY *make_bvol_geometry(BOX3D *box)
 {

@@ -10,6 +10,14 @@ BEGIN TRANSACTION;
 --     HANDLER plpgsql_call_handler
 --     LANCOMPILER 'PL/pgSQL';
 
+-- here's some hockey code to test to see if plpgsql is installed
+--  if it is, you get a message "plpgsql is installed" 
+--    otherwise it will give a big error message
+
+select lanname || ' is installed' as message from pg_language where lanname='plpgsql' union select 'you must install plpgsql before running this sql file, or you will get an error.\nTo install plpgsql:\n1. Install the handler.\n CREATE FUNCTION plpgsql_call_handler () RETURNS OPAQUE AS \n  ''/usr/local/pgsql/lib/plpgsql.so'' LANGUAGE ''C'';\n\nYou might have to change the location of the .so file. Common places are:\n/usr/local/lib\n/usr/local/pgsql/lib\n/usr/lib/pgsql\nOr where your postgresql lib directory is\n\n2. Install the language\nCREATE TRUSTED PROCEDURAL LANGUAGE ''plpgsql''\nHANDLER plpgsql_call_handler\nLANCOMPILER ''PL/pgSQL''; '::text order by message limit 1;
+
+
+
 
 CREATE FUNCTION POSTGIS_VERSION() returns char
 as 'select \'@POSTGIS_VERSION@\'::char as version'
@@ -37,6 +45,19 @@ srid	 	integer NOT NULL,
 type	 	varchar(30) NOT NULL,
 CONSTRAINT GC_PK primary key ( f_table_catalog,f_table_schema, f_table_name,f_geometry_column)
 ) ;
+
+
+-- drop function find_srid(varchar,varchar,varchar);
+
+-- given a schema (or ''), table name, geometry column, find its SRID
+--- find_SRID(<schema/database>,<table>,<geom col>)
+
+CREATE FUNCTION find_SRID(varchar,varchar,varchar) returns int4 as
+'select SRID from geometry_columns where  f_table_schema like $1 || ''%'' and f_table_name = $2 and f_geometry_column = $3' LANGUAGE 'sql' with (iscachable,isstrict); 
+
+-- select find_srid('','geometry_test','mygeom');
+
+
 
 --- DropGeometryColumn(<db name>,<table name>,<column name>)
 --- There is no ALTER TABLE DROP COLUMN command in postgresql
@@ -558,6 +579,9 @@ as '@MODULE_FILENAME@'   language 'C';
 
 create function rtree_decompress(opaque) returns opaque
 as '@MODULE_FILENAME@'   language 'C';
+--------------------------
+create function postgis_gist_sel(oid, oid, int2, opaque, int4) returns float8 
+as '@MODULE_FILENAME@'   language 'C';
 
 ------ RTREE support functions
 
@@ -585,7 +609,7 @@ CREATE OPERATOR &< (
 CREATE OPERATOR && (
    LEFTARG = GEOMETRY, RIGHTARG = GEOMETRY, PROCEDURE = geometry_overlap,
    COMMUTATOR = '&&',
-   RESTRICT = positionsel, JOIN = positionjoinsel
+   RESTRICT = postgis_gist_sel, JOIN = positionjoinsel
 );
 
 CREATE OPERATOR &> (

@@ -408,6 +408,9 @@ Datum isclosed(PG_FUNCTION_ARGS);
 
 Datum centroid(PG_FUNCTION_ARGS);
 
+Datum postgis_gist_sel(PG_FUNCTION_ARGS);
+
+
 //for GIST index
 typedef char* (*BINARY_UNION)(char*, char*, int*);
 typedef float (*SIZE_BOX)(char*);
