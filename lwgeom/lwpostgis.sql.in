@@ -1239,200 +1239,220 @@ CREATEFUNCTION GeomFromWKB(bytea, int)
 	AS 'SELECT setSRID(GeomFromWKB($1), $2)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
-CREATEFUNCTION PointFromWKB(geometry, int)
+CREATEFUNCTION PointFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype($1) = ''POINT'' THEN setSRID($1, $2)
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''POINT''
+	THEN GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
-CREATEFUNCTION PointFromWKB(geometry)
+CREATEFUNCTION PointFromWKB(bytea)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype($1) = ''POINT'' THEN $1
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''POINT''
+	THEN GeomFromWKB($1)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
-CREATEFUNCTION LineFromWKB(geometry, int)
+CREATEFUNCTION LineFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype($1) = ''LINESTRING'' THEN setSRID($1, $2)
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''LINESTRING''
+	THEN GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
-CREATEFUNCTION LineFromWKB(geometry)
+CREATEFUNCTION LineFromWKB(bytea)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype($1) = ''LINESTRING'' THEN $1
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''LINESTRING''
+	THEN GeomFromWKB($1)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
-CREATEFUNCTION LinestringFromWKB(geometry, int)
+CREATEFUNCTION LinestringFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype($1) = ''LINESTRING'' THEN setSRID($1, $2)
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''LINESTRING''
+	THEN GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
-CREATEFUNCTION LinestringFromWKB(geometry)
+CREATEFUNCTION LinestringFromWKB(bytea)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype($1) = ''LINESTRING'' THEN $1
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''LINESTRING''
+	THEN GeomFromWKB($1)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
-CREATEFUNCTION PolyFromWKB(geometry, int)
+CREATEFUNCTION PolyFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype($1) = ''POLYGON'' THEN setSRID($1, $2)
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''POLYGON''
+	THEN GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
-CREATEFUNCTION PolyFromWKB(geometry)
+CREATEFUNCTION PolyFromWKB(bytea)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype($1) = ''POLYGON'' THEN $1
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''POLYGON''
+	THEN GeomFromWKB($1)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
-CREATEFUNCTION PolygonFromWKB(geometry, int)
+CREATEFUNCTION PolygonFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype($1) = ''POLYGON'' THEN setSRID($1, $2)
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1,$2)) = ''POLYGON''
+	THEN GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
-CREATEFUNCTION PolygonFromWKB(geometry)
+CREATEFUNCTION PolygonFromWKB(bytea)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype($1) = ''POLYGON'' THEN $1
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''POLYGON''
+	THEN GeomFromWKB($1)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
-CREATEFUNCTION MPointFromWKB(geometry, int)
+CREATEFUNCTION MPointFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype($1) = ''MULTIPOINT'' THEN setSRID($1, $2)
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1,$2)) = ''MULTIPOINT''
+	THEN GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
-CREATEFUNCTION MPointFromWKB(geometry)
+CREATEFUNCTION MPointFromWKB(bytea)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype($1) = ''MULTIPOINT'' THEN $1
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''MULTIPOINT''
+	THEN GeomFromWKB($1)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
-CREATEFUNCTION MultiPointFromWKB(geometry, int)
+CREATEFUNCTION MultiPointFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype($1) = ''MULTIPOINT'' THEN setSRID($1, $2)
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1,$2)) = ''MULTIPOINT''
+	THEN GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
-CREATEFUNCTION MultiPointFromWKB(geometry)
+CREATEFUNCTION MultiPointFromWKB(bytea)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype($1) = ''MULTIPOINT'' THEN $1
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''MULTIPOINT''
+	THEN GeomFromWKB($1)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
-CREATEFUNCTION MultiLineFromWKB(geometry, int)
+CREATEFUNCTION MultiLineFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype($1) = ''MULTILINESTRING''
-	THEN setSRID($1, $2)
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''MULTILINESTRING''
+	THEN GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
-CREATEFUNCTION MultiLineFromWKB(geometry)
+CREATEFUNCTION MultiLineFromWKB(bytea)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype($1) = ''MULTILINESTRING'' THEN $1
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''MULTILINESTRING''
+	THEN GeomFromWKB($1)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
-CREATEFUNCTION MLineFromWKB(geometry, int)
+CREATEFUNCTION MLineFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype($1) = ''MULTILINESTRING''
-	THEN setSRID($1, $2)
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''MULTILINESTRING''
+	THEN GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
-CREATEFUNCTION MLineFromWKB(geometry)
+CREATEFUNCTION MLineFromWKB(bytea)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype($1) = ''MULTILINESTRING'' THEN $1
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''MULTILINESTRING''
+	THEN GeomFromWKB($1)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
-CREATEFUNCTION MPolyFromWKB(geometry, int)
+CREATEFUNCTION MPolyFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype($1) = ''MULTIPOLYGON'' THEN
-	setSRID($1, $2)
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''MULTIPOLYGON''
+	THEN GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
-CREATEFUNCTION MPolyFromWKB(geometry)
+CREATEFUNCTION MPolyFromWKB(bytea)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype($1) = ''MULTIPOLYGON'' THEN $1
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''MULTIPOLYGON''
+	THEN GeomFromWKB($1)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
-CREATEFUNCTION MultiPolyFromWKB(geometry, int)
+CREATEFUNCTION MultiPolyFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype($1) = ''MULTIPOLYGON'' THEN
-	setSRID($1, $2)
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''MULTIPOLYGON''
+	THEN GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
-CREATEFUNCTION MultiPolyFromWKB(geometry)
+CREATEFUNCTION MultiPolyFromWKB(bytea)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype($1) = ''MULTIPOLYGON'' THEN $1
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''MULTIPOLYGON''
+	THEN GeomFromWKB($1)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
-CREATEFUNCTION GeomCollFromWKB(geometry, int)
+CREATEFUNCTION GeomCollFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype($1) = ''GEOMETRYCOLLECTION'' THEN
-	setSRID($1, $2)
+	SELECT CASE
+	WHEN geometrytype(GeomFromWKB($1, $2)) = ''GEOMETRYCOLLECTION''
+	THEN GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
-CREATEFUNCTION GeomCollFromWKB(geometry)
+CREATEFUNCTION GeomCollFromWKB(bytea)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype($1) = ''GEOMETRYCOLLECTION'' THEN
-	$1
+	SELECT CASE
+	WHEN geometrytype(GeomFromWKB($1)) = ''GEOMETRYCOLLECTION''
+	THEN GeomFromWKB($1)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
