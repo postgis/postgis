@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.30  2003/12/08 17:57:36  strk
+ * Binary WKB input function built only when USE_VERSION > 73. Making some modifications based on reported failures
+ *
  * Revision 1.29  2003/11/28 11:06:49  strk
  * Added WKB_recv function for binary WKB input
  *
@@ -76,6 +79,9 @@
 
 
 #include "postgis.h"
+#if USE_VERSION > 73
+# include "lib/stringinfo.h" // for WKB binary input
+#endif
 #include "utils/elog.h"
 
 
@@ -3539,16 +3545,22 @@ Datum WKB_out(PG_FUNCTION_ARGS)
 }
 
 
+#if USE_VERSION > 73
 PG_FUNCTION_INFO_V1(WKB_recv);
 Datum WKB_recv(PG_FUNCTION_ARGS)
 {
-	bytea *in = (bytea *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	StringInfo buf = (StringInfo) PG_GETARG_POINTER(0);
         WellKnownBinary *result;
 
-	result = (WellKnownBinary *) palloc(in->vl_len);
-	memcpy(result, in, in->vl_len);
+	elog(NOTICE, "WKB_recv start");
+
+	result = (WellKnownBinary *)palloc(buf->len);
+	memcpy(result, buf->data, buf->len);
+
+	elog(NOTICE, "WKB_recv end (returning result)");
         PG_RETURN_POINTER(result);
 }
+#endif
 
 PG_FUNCTION_INFO_V1(WKBtoBYTEA);
 Datum WKBtoBYTEA(PG_FUNCTION_ARGS)
