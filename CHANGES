@@ -11,6 +11,7 @@ PostGIS 1.0.0
 	- build scripts refinements
 	- MultiLine handling BUG fix in loader and dumper
 	- improved version handling, central Version.config
+        - added distance_sphere function 
 
 PostGIS 1.0.0RC3
 2005/02/24

@@ -3834,7 +3834,8 @@ dimension
             <para>Returns linear distance in meters between two lat/lon
             points. Uses a spherical earth and radius of 6370986 meters.
             Faster than <link linkend="distance_spheroid">distance_spheroid()</link>, but
-            less accurate.</para>
+            less accurate.
+			Only implemented for points.</para>			
           </listitem>
         </varlistentry>
 

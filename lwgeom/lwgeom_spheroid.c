@@ -547,15 +547,11 @@ Datum LWGEOM_distance_sphere(PG_FUNCTION_ARGS)
 	double sino;
         double result;
 
-        //elog(NOTICE, "LWGEOM_distance_sphere called\n");
-
 	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
 	{
 		elog(ERROR, "LWGEOM_distance_sphere Operation on two GEOMETRIES with differenc SRIDs\n");
 		PG_RETURN_NULL();
 	}
-
-        //elog(NOTICE, "LWGEOM_distance_sphere passed srid check: %i, %i\n", pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
 
         lwpt1 = lwpoint_deserialize(SERIALIZED_FORM(geom1));
 	if (lwpt1 == NULL)
@@ -571,19 +567,11 @@ Datum LWGEOM_distance_sphere(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-        //elog(NOTICE, "LWGEOM_distance_sphere passed point check\n");
-
         pt1 = palloc(sizeof(POINT2D));
         pt2 = palloc(sizeof(POINT2D));
 
         lwpoint_getPoint2d_p(lwpt1, pt1);
         lwpoint_getPoint2d_p(lwpt2, pt2);
-
-        //elog(NOTICE, "LWGEOM_distance_sphere created point2d objects: %f, %f %f, %f\n", pt1->x, pt1->y, pt2->x, pt2->y);
-
-        //elog(NOTICE, "LWGEOM_distance_sphere beginning calculation\n");
-        //elog(NOTICE, "LWGEOM_distance_sphere TWO_PI = %f\n", TWO_PI);
-        //elog(NOTICE, "LWGEOM_distance_sphere M_PI = %f\n", M_PI);
 
 	/*
 	 * Start geo_distance code.  Longitude is degrees west of
@@ -596,16 +584,12 @@ Datum LWGEOM_distance_sphere(PG_FUNCTION_ARGS)
 	long2 = -2 * (pt2->x / 360.0) * M_PI;
 	lat2 = 2 * (pt2->y / 360.0) * M_PI;
 
-        //elog(NOTICE, "LWGEOM_distance_sphere normalized: %f, %f %f, %f", long1, lat1, long2, lat2);
-
         /* compute difference in longitudes - want < 180 degrees */
         longdiff = fabs(long1 - long2);
         if (longdiff > M_PI)
         {
                 longdiff = (2 * M_PI) - longdiff;
         }
-
-        //elog(NOTICE, "LWGEOM_distance_sphere longdiff = %f\n", longdiff);
 
         sino = sqrt(sin(fabs(lat1 - lat2) / 2.) * sin(fabs(lat1 - lat2) / 2.) +
                 cos(lat1) * cos(lat2) * sin(longdiff / 2.) * sin(longdiff / 2.));
@@ -614,11 +598,8 @@ Datum LWGEOM_distance_sphere(PG_FUNCTION_ARGS)
                 sino = 1.;
         }
 
-        //elog(NOTICE, "LWGEOM_distance_sphere sino = %f\n", sino);          
-
         result = 2. * EARTH_RADIUS * asin(sino);
         
-        //elog(NOTICE, "LWGEOM_distance_sphere finished calculation: %f\n", result);
         pfree(pt1);
         pfree(pt2);
 
