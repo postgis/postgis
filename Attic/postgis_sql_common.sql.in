@@ -12,6 +12,9 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.21  2003/11/13 13:14:49  strk
+-- used quote_ident() calls in AddGeometryColumns as suggested by Bernhard Herzog
+--
 -- Revision 1.20  2003/11/12 20:55:18  strk
 -- AddGeometryColumn column identifier case respect fix as suggested by Bernhard Herzog
 --
@@ -291,7 +294,7 @@ BEGIN
 		return ''fail'';
 	END IF;
 
-	EXECUTE ''ALTER TABLE "'' || table_name || ''" ADD COLUMN "'' || column_name || ''" geometry '';
+	EXECUTE ''ALTER TABLE '' || quote_ident(table_name) || '' ADD COLUMN '' || quote_ident(column_name) || '' geometry '';
 	EXECUTE ''INSERT INTO 	geometry_columns VALUES ('' || quote_literal('''') || '','' ||
 			 quote_literal(database_name) || '','' || quote_literal(table_name) || '','' ||
 			 quote_literal(column_name) || '','' ||
@@ -300,15 +303,21 @@ BEGIN
 	EXECUTE ''update geometry_columns set attrelid = (select pg_class.oid AS attrelid from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name), varattnum = (select pg_attribute.attnum from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name)'';
 
  
-	EXECUTE ''ALTER TABLE "'' ||table_name||''" ADD CHECK (SRID("'' || column_name ||
-		''") = '' || new_srid || '')'' ;
+	EXECUTE ''ALTER TABLE '' || quote_ident(table_name) ||
+		'' ADD CHECK (SRID('' || quote_ident(column_name) ||
+		'') = '' || new_srid || '')'' ;
 
 	IF (not(new_type = ''GEOMETRY'')) THEN
-		EXECUTE ''ALTER TABLE "'' ||table_name||''" ADD CHECK ( geometrytype("''||column_name||''")=''|| quote_literal(new_type)||'' OR ("'' ||column_name ||''") is null)'';
+		EXECUTE ''ALTER TABLE '' || quote_ident(table_name) ||
+		'' ADD CHECK (geometrytype('' ||
+		quote_ident(column_name) || '')='' ||
+		quote_literal(new_type) || '' OR ('' ||
+		quote_ident(column_name) || '') is null)'';
 	END IF;
 
 	return ''Geometry column '' || column_name || '' added to table ''
-			||table_name ||'' WITH a SRID of ''||new_srid || '' and type ''||new_type;	
+		|| table_name || '' WITH a SRID of '' || new_srid ||
+		'' and type '' || new_type;
 END;
 '
 	LANGUAGE 'plpgsql' WITH (isstrict);
