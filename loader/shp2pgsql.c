@@ -12,6 +12,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.47  2004/01/16 20:06:10  strk
+ * Added FTLogical<->boolean mapping
+ *
  * Revision 1.46  2004/01/15 09:57:07  strk
  * field type array allocates num_fields * sizeof(int) instead of sizeof(char*)
  *
@@ -553,6 +556,9 @@ Insert_attributes(DBFHandle hDBFHandle, int row)
             case FTDouble:
                sprintf(val, "%f", DBFReadDoubleAttribute(hDBFHandle, row, i));
                break;
+            case FTLogical:
+               sprintf(val, "%s", DBFReadLogicalAttribute(hDBFHandle, row, i));
+               break;
             default:
                fprintf(stderr,
                   "Error: field %d has invalid or unknown field type (%d)\n",
@@ -808,6 +814,8 @@ int main (int ARGC, char **ARGV){
 					}else{
 						printf ("float8");
 					}
+				}else if(type == FTLogical){
+					printf ("boolean");
 				}else{
 					printf ("Invalid type in DBF file");
 				}
