@@ -35,6 +35,7 @@ extern  BOX3D *lw_geom_getBB_simple(char *serialized_form);
 
 #define NO_Z_VALUE 0
 
+//#define DEBUG 1
 
 //*********************************************************************
 // BOX routines
@@ -1100,46 +1101,63 @@ POINT3D lwpoint_getPoint3d(LWPOINT *point)
 //find length of this serialized point
 uint32 lwpoint_findlength(char *serialized_point)
 {
-		uint  result = 1;
-		unsigned char type;
-		char *loc;
+	uint  result = 1;
+	unsigned char type;
+	char *loc;
 
+	type = (unsigned char) serialized_point[0];
 
-		type = (unsigned char) serialized_point[0];
+	if ( lwgeom_getType(type) != POINTTYPE) return -9999;
 
+#ifdef DEBUG
+elog(NOTICE, "lwpoint_findlength called (%d)", result);
+#endif
 
-		if ( lwgeom_getType(type) != POINTTYPE)
-			return -9999;
+	loc = serialized_point+1;
 
+	if (lwgeom_hasBBOX(type))
+	{
+		loc += sizeof(BOX2DFLOAT4);
+		result +=sizeof(BOX2DFLOAT4);
+#ifdef DEBUG
+elog(NOTICE, "lwpoint_findlength: has bbox (%d)", result);
+#endif
+	}
 
-		loc = serialized_point+1;
+	if ( lwgeom_hasSRID(type))
+	{
+#ifdef DEBUG
+elog(NOTICE, "lwpoint_findlength: has srid (%d)", result);
+#endif
+		loc +=4; // type + SRID
+		result +=4;
+	}
 
-		if (lwgeom_hasBBOX(type))
-		{
-			loc += sizeof(BOX2DFLOAT4);
-			result +=sizeof(BOX2DFLOAT4);
-		}
+	if (lwgeom_ndims(type) == 3)
+	{
+#ifdef DEBUG
+elog(NOTICE, "lwpoint_findlength: returning (%d)", result+24);
+#endif
+		return result + 24;
+	}
+	else if (lwgeom_ndims(type) == 2)
+	{
+#ifdef DEBUG
+elog(NOTICE, "lwpoint_findlength: returning (%d)", result+16);
+#endif
+		return result + 16;
+	}
+	else if (lwgeom_ndims(type) == 4)
+	{
+#ifdef DEBUG
+elog(NOTICE, "lwpoint_findlength: returning (%d)", result+32);
+#endif
+		return result + 32;
+	}
 
-		if ( lwgeom_hasSRID(type))
-		{
-			loc +=4; // type + SRID
-			result +=4;
-		}
-
-		if (lwgeom_ndims(type) == 3)
-		{
-			return result + 24;
-		}
-		else if (lwgeom_ndims(type) == 2)
-		{
-			return result + 16;
-		}
-		else if (lwgeom_ndims(type) == 4)
-		{
-			return result + 32;
-		}
-	    elog(ERROR,"lwpoint_findlength :: invalid ndims = %i",lwgeom_ndims(type));
-		return 0; //never get here
+    	elog(ERROR,"lwpoint_findlength :: invalid ndims = %i",
+		lwgeom_ndims(type));
+	return 0; //never get here
 }
 
 
@@ -1537,19 +1555,17 @@ LWPOINT *lwgeom_getpoint(char *serialized_form, int geom_number)
 // this is fine to call on a point (with geom_num=0), multipoint or geometrycollection
 LWPOINT *lwgeom_getpoint_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
 {
-		char *sub_geom;
-		unsigned char type;
+	char *sub_geom;
+	unsigned char type;
 
-		sub_geom = lwgeom_getsubgeometry_inspected(inspected, geom_number);
+	sub_geom = lwgeom_getsubgeometry_inspected(inspected, geom_number);
 
-		if (sub_geom == NULL)
-			return NULL;
+	if (sub_geom == NULL) return NULL;
 
-		type = lwgeom_getType( (unsigned char) sub_geom[0]);
-		if (type != POINTTYPE)
-			return NULL;
+	type = lwgeom_getType( (unsigned char) sub_geom[0]);
+	if (type != POINTTYPE) return NULL;
 
-		return lwpoint_deserialize(sub_geom);
+	return lwpoint_deserialize(sub_geom);
 }
 
 
@@ -1559,25 +1575,23 @@ LWPOINT *lwgeom_getpoint_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
 // this is fine to call on a line, multiline or geometrycollection
 LWLINE *lwgeom_getline(char *serialized_form, int geom_number)
 {
-		unsigned char type = lwgeom_getType( (unsigned char) serialized_form[0]);
-		char *sub_geom;
+	unsigned char type = lwgeom_getType( (unsigned char) serialized_form[0]);
+	char *sub_geom;
 
-		if ((type == LINETYPE)  && (geom_number == 0))
-		{
-			//be nice and do as they want instead of what they say
-			return lwline_deserialize(serialized_form);
-		}
+	if ((type == LINETYPE)  && (geom_number == 0))
+	{
+		//be nice and do as they want instead of what they say
+		return lwline_deserialize(serialized_form);
+	}
 
-		if ((type != MULTILINETYPE) && (type != COLLECTIONTYPE) )
-			return NULL;
+	if ((type != MULTILINETYPE) && (type != COLLECTIONTYPE) )
+		return NULL;
 
-		sub_geom = lwgeom_getsubgeometry(serialized_form, geom_number);
-		if (sub_geom == NULL)
-			return NULL;
+	sub_geom = lwgeom_getsubgeometry(serialized_form, geom_number);
+	if (sub_geom == NULL) return NULL;
 
-		type = lwgeom_getType((unsigned char) sub_geom[0]);
-		if (type != LINETYPE)
-			return NULL;
+	type = lwgeom_getType((unsigned char) sub_geom[0]);
+	if (type != LINETYPE) return NULL;
 
 	return lwline_deserialize(sub_geom);
 }
@@ -1588,20 +1602,17 @@ LWLINE *lwgeom_getline(char *serialized_form, int geom_number)
 // this is fine to call on a line, multiline or geometrycollection
 LWLINE *lwgeom_getline_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
 {
-		char *sub_geom;
-		unsigned char type;
+	char *sub_geom;
+	unsigned char type;
 
-		sub_geom = lwgeom_getsubgeometry_inspected(inspected, geom_number);
+	sub_geom = lwgeom_getsubgeometry_inspected(inspected, geom_number);
 
-		if (sub_geom == NULL)
-			return NULL;
+	if (sub_geom == NULL) return NULL;
 
+	type = lwgeom_getType((unsigned char) sub_geom[0]);
+	if (type != LINETYPE) return NULL;
 
-		type = lwgeom_getType((unsigned char) sub_geom[0]);
-		if (type != LINETYPE)
-			return NULL;
-
-		return lwline_deserialize(sub_geom);
+	return lwline_deserialize(sub_geom);
 }
 
 // 1st geometry has geom_number = 0
@@ -1610,27 +1621,25 @@ LWLINE *lwgeom_getline_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
 // this is fine to call on a polygon, multipolygon or geometrycollection
 LWPOLY *lwgeom_getpoly(char *serialized_form, int geom_number)
 {
-		unsigned char type = lwgeom_getType( (unsigned char) serialized_form[0]);
-		char *sub_geom;
+	unsigned char type = lwgeom_getType((unsigned char)serialized_form[0]);
+	char *sub_geom;
 
-		if ((type == POLYGONTYPE)  && (geom_number == 0))
-		{
-			//be nice and do as they want instead of what they say
-			return lwpoly_deserialize(serialized_form);
-		}
+	if ((type == POLYGONTYPE)  && (geom_number == 0))
+	{
+		//be nice and do as they want instead of what they say
+		return lwpoly_deserialize(serialized_form);
+	}
 
-		if ((type != MULTIPOLYGONTYPE) && (type != COLLECTIONTYPE) )
-			return NULL;
+	if ((type != MULTIPOLYGONTYPE) && (type != COLLECTIONTYPE) )
+		return NULL;
 
-		sub_geom = lwgeom_getsubgeometry(serialized_form, geom_number);
-		if (sub_geom == NULL)
-			return NULL;
+	sub_geom = lwgeom_getsubgeometry(serialized_form, geom_number);
+	if (sub_geom == NULL) return NULL;
 
-		type = lwgeom_getType((unsigned char) sub_geom[0]);
-		if (type != POLYGONTYPE)
-			return NULL;
+	type = lwgeom_getType((unsigned char) sub_geom[0]);
+	if (type != POLYGONTYPE) return NULL;
 
-		return lwpoly_deserialize(sub_geom);
+	return lwpoly_deserialize(sub_geom);
 }
 
 // 1st geometry has geom_number = 0
@@ -1639,19 +1648,17 @@ LWPOLY *lwgeom_getpoly(char *serialized_form, int geom_number)
 // this is fine to call on a polygon, multipolygon or geometrycollection
 LWPOLY *lwgeom_getpoly_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
 {
-		char *sub_geom;
-		unsigned char type;
+	char *sub_geom;
+	unsigned char type;
 
-		sub_geom = lwgeom_getsubgeometry_inspected(inspected, geom_number);
+	sub_geom = lwgeom_getsubgeometry_inspected(inspected, geom_number);
 
-		if (sub_geom == NULL)
-			return NULL;
+	if (sub_geom == NULL) return NULL;
 
-		type = lwgeom_getType((unsigned char) sub_geom[0]);
-		if (type != POLYGONTYPE)
-			return NULL;
+	type = lwgeom_getType((unsigned char) sub_geom[0]);
+	if (type != POLYGONTYPE) return NULL;
 
-		return lwpoly_deserialize(sub_geom);
+	return lwpoly_deserialize(sub_geom);
 }
 
 // this gets the serialized form of a sub-geometry
@@ -1694,15 +1701,15 @@ char *lwgeom_getsubgeometry_inspected(LWGEOM_INSPECTED *inspected, int geom_numb
 // gets the 8bit type of the geometry at location geom_number
 char lwgeom_getsubtype(char *serialized_form, int geom_number)
 {
-		//major cheat!!
-		char  result;
-		LWGEOM_INSPECTED *inspected = lwgeom_inspect(serialized_form);
+	//major cheat!!
+	char  result;
+	LWGEOM_INSPECTED *inspected = lwgeom_inspect(serialized_form);
 
-		result = lwgeom_getsubtype_inspected(inspected, geom_number);
-		pfree_inspected(inspected);
-		return result;
-
+	result = lwgeom_getsubtype_inspected(inspected, geom_number);
+	pfree_inspected(inspected);
+	return result;
 }
+
 char lwgeom_getsubtype_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
 {
 	if ((geom_number <0) || (geom_number >= inspected->ngeometries) )
@@ -1716,14 +1723,13 @@ char lwgeom_getsubtype_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
 //  for point,line,polygon will return 1.
 int lwgeom_getnumgeometries(char *serialized_form)
 {
-		unsigned char type = lwgeom_getType((unsigned char)serialized_form[0]);
-		char *loc;
+	unsigned char type = lwgeom_getType((unsigned char)serialized_form[0]);
+	char *loc;
 
-		if ( (type==POINTTYPE) || (type==LINETYPE) || (type==POLYGONTYPE) )
-		{
-			return 1;
-		}
-
+	if ( (type==POINTTYPE) || (type==LINETYPE) || (type==POLYGONTYPE) )
+	{
+		return 1;
+	}
 
 	loc = serialized_form+1;
 
@@ -1732,12 +1738,12 @@ int lwgeom_getnumgeometries(char *serialized_form)
 		loc += sizeof(BOX2DFLOAT4);
 	}
 
-		if (lwgeom_hasSRID((unsigned char) serialized_form[0]) )
-		{
-			loc += 4;
-		}
-		//its a GeometryCollection or multi* geometry
-		return get_uint32(loc);
+	if (lwgeom_hasSRID((unsigned char) serialized_form[0]) )
+	{
+		loc += 4;
+	}
+	//its a GeometryCollection or multi* geometry
+	return get_uint32(loc);
 }
 
 // how many sub-geometries are there?
@@ -1896,6 +1902,10 @@ int lwgeom_seralizedformlength_simple(char *serialized_form)
 	uint32 ngeoms;
 	int sub_size;
 	int result = 1; //"type"
+
+#ifdef DEBUG
+	elog(NOTICE, "lwgeom_seralizedformlength_simple called");
+#endif
 
 	if (type == POINTTYPE)
 	{
