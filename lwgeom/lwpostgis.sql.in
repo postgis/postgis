@@ -10,60 +10,6 @@
 -- the terms of the GNU General Public Licence. See the COPYING file.
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- $Log$
--- Revision 1.16  2004/08/25 07:29:32  strk
--- Moved some OGC functions from lwgeom_inout.c to lwgeom_ogc.c.
--- Added area2d (area) to lwgeom_functions_basic.c
---
--- Revision 1.15  2004/08/24 16:33:41  strk
--- Added StartPoint(), EndPoint()
---
--- Revision 1.14  2004/08/24 16:20:10  strk
--- Added X(), Y() and Z() funx
---
--- Revision 1.13  2004/08/24 15:50:04  strk
--- PointN() ported.
---
--- Revision 1.12  2004/08/24 15:05:34  strk
--- Added NumInteriorRings() and InteriorRingN()
---
--- Revision 1.11  2004/08/24 14:48:58  strk
--- Added dimension() and exteriorring()
---
--- Revision 1.10  2004/08/24 10:01:16  strk
--- OGC functions (not implemented by GEOS) moved to lwgeom_ogc.c.
--- Renamed PG-exposed functions to start with LWGEOM
---
--- Revision 1.9  2004/08/24 09:34:33  strk
--- Added npoints,numpoints,numgeometries,geometryn
---
--- Revision 1.8  2004/08/23 15:57:56  strk
--- versioning functions completed
---
--- Revision 1.7  2004/08/23 15:37:16  strk
--- Changed SCRIPTS_VERSION to 0.0.1
---
--- Revision 1.6  2004/08/23 08:32:14  strk
--- Removed custom allocator from lwgeom_api.
--- Added summary(geometry).
--- Some indentation.
---
--- Revision 1.5  2004/08/20 16:36:22  strk
--- transform() support
---
--- Revision 1.4  2004/08/20 14:54:35  strk
--- gist operators support functions renamed to allow for finer control by postgis_restore.pl
---
--- Revision 1.3  2004/08/20 14:08:41  strk
--- Added Geom{etry,}FromWkb(<geometry>,[<int4>]) funx.
--- Added LWGEOM typedef and SERIALIZED_FORM(LWGEOM) macro.
--- Made lwgeom_setSRID an API function.
--- Added LWGEOM_setAllocator().
---
--- Revision 1.2  2004/08/19 13:54:15  strk
--- cpp checks updated to use 80 instead of 75 for USE_VERSION
---
--- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 #if USE_VERSION > 71
 #define CREATEFUNCTION CREATE OR REPLACE FUNCTION
@@ -940,16 +886,61 @@ CREATEFUNCTION GeometryFromText(geometry, int4)
 -- Misures
 ------------------------------------------------------------------------
 
+-- this is a fake (for back-compatibility)
+-- uses 3d if 3d is available, 2d otherwise
+CREATEFUNCTION length3d(geometry)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@', 'LWGEOM_length_linestring'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION length2d(geometry)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@', 'LWGEOM_length2d_linestring'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION length(geometry)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@', 'LWGEOM_length_linestring'
+	LANGUAGE 'C' WITH (isstrict);
+
+-- this is a fake (for back-compatibility)
+-- uses 3d if 3d is available, 2d otherwise
+CREATEFUNCTION perimeter3d(geometry)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@', 'LWGEOM_perimeter_poly'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION perimeter2d(geometry)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@', 'LWGEOM_perimeter2d_poly'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION perimeter(geometry)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@', 'LWGEOM_perimeter_poly'
+	LANGUAGE 'C' WITH (isstrict);
+
+-- this is an alias for 'area(geometry)'
+-- there is nothing such an 'area3d'...
 CREATEFUNCTION area2d(geometry)
 	RETURNS FLOAT8
-	AS '@MODULE_FILENAME@', 'LWGEOM_area2d'
+	AS '@MODULE_FILENAME@', 'LWGEOM_area_polygon'
 	LANGUAGE 'C' WITH (isstrict);
 
 CREATEFUNCTION area(geometry)
 	RETURNS FLOAT8
-	AS '@MODULE_FILENAME@','LWGEOM_area2d'
+	AS '@MODULE_FILENAME@','LWGEOM_area_polygon'
 	LANGUAGE 'C' WITH (isstrict);
 
+
+------------------------------------------------------------------------
+-- MISC
+------------------------------------------------------------------------
+
+CREATEFUNCTION force_2d(geometry) 
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_force_2d'
+	LANGUAGE 'C' WITH (isstrict);
 
 ------------------------------------------------------------------------
 

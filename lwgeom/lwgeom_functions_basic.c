@@ -20,7 +20,7 @@
 
 
 
-#define DEBUG
+//#define DEBUG
 
 #include "wktparse.h"
 
@@ -28,16 +28,135 @@ Datum combine_box2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_mem_size(PG_FUNCTION_ARGS);
 Datum LWGEOM_summary(PG_FUNCTION_ARGS);
 Datum LWGEOM_npoints(PG_FUNCTION_ARGS);
-Datum LWGEOM_area2d(PG_FUNCTION_ARGS);
+Datum LWGEOM_area_polygon(PG_FUNCTION_ARGS);
 Datum postgis_uses_stats(PG_FUNCTION_ARGS);
 Datum postgis_scripts_released(PG_FUNCTION_ARGS);
 Datum postgis_lib_version(PG_FUNCTION_ARGS);
-
+Datum LWGEOM_length2d_linestring(PG_FUNCTION_ARGS);
+Datum LWGEOM_length3d_linestring(PG_FUNCTION_ARGS);
+Datum LWGEOM_length_linestring(PG_FUNCTION_ARGS);
+Datum LWGEOM_perimeter2d_poly(PG_FUNCTION_ARGS);
+Datum LWGEOM_perimeter_poly(PG_FUNCTION_ARGS);
+Datum LWGEOM_force_2d(PG_FUNCTION_ARGS);
 
 // internal
 char * lwgeom_summary_recursive(char *serialized, int offset);
 int32 lwgeom_npoints_recursive(char *serialized);
-double lwgeom_polygon_area2d(LWPOLY *poly);
+double lwgeom_polygon_area(LWPOLY *poly);
+double lwgeom_polygon_perimeter(LWPOLY *poly);
+double lwgeom_polygon_perimeter2d(LWPOLY *poly);
+double lwgeom_line_length2d(LWLINE *line);
+double lwgeom_pointarray_length2d(POINTARRAY *pts);
+double lwgeom_pointarray_length(POINTARRAY *pts);
+void lwgeom_force2d_recursive(char *serialized, char *optr, int *retsize);
+
+/*------------------------------------------------------------------*/
+
+//find the 2d length of the given POINTARRAY (even if it's 3d)
+double lwgeom_pointarray_length2d(POINTARRAY *pts)
+{
+	double dist = 0.0;
+	int i;
+
+	if ( pts->npoints < 2 ) return 0.0;
+	for (i=0; i<pts->npoints-1;i++)
+	{
+		POINT2D *frm = (POINT2D *)getPoint(pts, i);
+		POINT2D *to = (POINT2D *)getPoint(pts, i+1);
+		dist += sqrt( ( (frm->x - to->x)*(frm->x - to->x) )  +
+				((frm->y - to->y)*(frm->y - to->y) ) );
+	}
+	return dist;
+}
+
+//find the 3d/2d length of the given POINTARRAY (depending on its dimensions)
+double lwgeom_pointarray_length(POINTARRAY *pts)
+{
+	double dist = 0.0;
+	int i;
+
+	if ( pts->npoints < 2 ) return 0.0;
+
+	// compute 2d length if 3d is not available
+	if ( pts->ndims < 3 ) return lwgeom_pointarray_length2d(pts);
+
+	for (i=0; i<pts->npoints-1;i++)
+	{
+		POINT3D *frm = (POINT3D *)getPoint(pts, i);
+		POINT3D *to = (POINT3D *)getPoint(pts, i+1);
+		dist += sqrt( ( (frm->x - to->x)*(frm->x - to->x) )  +
+				((frm->y - to->y)*(frm->y - to->y) ) +
+				((frm->z - to->z)*(frm->z - to->z) ) );
+	}
+
+	return dist;
+}
+
+//find the area of the outer ring - sum (area of inner rings)
+// Could use a more numerically stable calculator...
+double lwgeom_polygon_area(LWPOLY *poly)
+{
+	double poly_area=0.0;
+	int i;
+
+//elog(NOTICE,"in lwgeom_polygon_area (%d rings)", poly->nrings);
+
+	for (i=0; i<poly->nrings; i++)
+	{
+		int j;
+		POINTARRAY *ring = poly->rings[i];
+		double ringarea = 0.0;
+
+//elog(NOTICE," rings %d has %d points", i, ring->npoints);
+		for (j=0; j<ring->npoints-1; j++)
+    		{
+			POINT2D *p1 = (POINT2D *)getPoint(ring, j);
+			POINT2D *p2 = (POINT2D *)getPoint(ring, j+1);
+			ringarea += ( p1->x * p2->y ) - ( p1->y * p2->x );
+		}
+
+		ringarea  /= 2.0;
+//elog(NOTICE," ring 1 has area %lf",ringarea);
+		ringarea  = fabs(ringarea );
+		if (i != 0)	//outer
+			ringarea  = -1.0*ringarea ; // its a hole
+
+		poly_area += ringarea;
+	}
+
+	return poly_area;
+}
+
+// Compute the sum of polygon rings length.
+// Could use a more numerically stable calculator...
+double lwgeom_polygon_perimeter(LWPOLY *poly)
+{
+	double result=0.0;
+	int i;
+
+//elog(NOTICE,"in lwgeom_polygon_perimeter (%d rings)", poly->nrings);
+
+	for (i=0; i<poly->nrings; i++)
+		result += lwgeom_pointarray_length(poly->rings[i]);
+
+	return result;
+}
+
+// Compute the sum of polygon rings length (forcing 2d computation).
+// Could use a more numerically stable calculator...
+double lwgeom_polygon_perimeter2d(LWPOLY *poly)
+{
+	double result=0.0;
+	int i;
+
+//elog(NOTICE,"in lwgeom_polygon_perimeter (%d rings)", poly->nrings);
+
+	for (i=0; i<poly->nrings; i++)
+		result += lwgeom_pointarray_length2d(poly->rings[i]);
+
+	return result;
+}
+
 
 /*------------------------------------------------------------------*/
 
@@ -314,47 +433,12 @@ Datum LWGEOM_npoints(PG_FUNCTION_ARGS)
 	PG_RETURN_INT32(npoints);
 }
 
-//find the 2d area of the outer ring - sum (area 2d of inner rings)
-// Could use a more numerically stable calculator...
-double lwgeom_polygon_area2d(LWPOLY *poly)
-{
-	double poly_area=0.0;
-	int i;
-
-//elog(NOTICE,"in lwgeom_polygon_area2d (%d rings)", poly->nrings);
-
-	for (i=0; i<poly->nrings; i++)
-	{
-		int j;
-		POINTARRAY *ring = poly->rings[i];
-		double ringarea = 0.0;
-
-//elog(NOTICE," rings %d has %d points", i, ring->npoints);
-		for (j=0; j<ring->npoints-1; j++)
-    		{
-			POINT2D *p1 = (POINT2D *)getPoint(ring, j);
-			POINT2D *p2 = (POINT2D *)getPoint(ring, j+1);
-			ringarea += ( p1->x * p2->y ) - ( p1->y * p2->x );
-		}
-
-		ringarea  /= 2.0;
-//elog(NOTICE," ring 1 has area %lf",ringarea);
-		ringarea  = fabs(ringarea );
-		if (i != 0)	//outer
-			ringarea  = -1.0*ringarea ; // its a hole
-
-		poly_area += ringarea;
-	}
-
-	return poly_area;
-}
-
 // Calculate the area of all the subobj in a polygon
 // area(point) = 0
 // area (line) = 0
 // area(polygon) = find its 2d area
-PG_FUNCTION_INFO_V1(LWGEOM_area2d);
-Datum LWGEOM_area2d(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(LWGEOM_area_polygon);
+Datum LWGEOM_area_polygon(PG_FUNCTION_ARGS)
 {
 	LWGEOM *geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	LWGEOM_INSPECTED *inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
@@ -362,17 +446,267 @@ Datum LWGEOM_area2d(PG_FUNCTION_ARGS)
 	double area = 0.0;
 	int i;
 
-//elog(NOTICE, "in LWGEOM_area2d");
+//elog(NOTICE, "in LWGEOM_area_polygon");
 
 	for (i=0; i<inspected->ngeometries; i++)
 	{
 		poly = lwgeom_getpoly_inspected(inspected, i);
 		if ( poly == NULL ) continue;
-		area += lwgeom_polygon_area2d(poly);
-//elog(NOTICE, " LWGEOM_area2d found a poly (%f)", area);
+		area += lwgeom_polygon_area(poly);
+//elog(NOTICE, " LWGEOM_area_polygon found a poly (%f)", area);
 	}
 	
 	pfree_inspected(inspected);
 
 	PG_RETURN_FLOAT8(area);
+}
+
+//find the "length of a geometry"
+// length2d(point) = 0
+// length2d(line) = length of line
+// length2d(polygon) = 0  -- could make sense to return sum(ring perimeter)
+// uses euclidian 2d length (even if input is 3d)
+PG_FUNCTION_INFO_V1(LWGEOM_length2d_linestring);
+Datum LWGEOM_length2d_linestring(PG_FUNCTION_ARGS)
+{
+	LWGEOM *geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	LWGEOM_INSPECTED *inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
+	LWLINE *line;
+	double dist = 0.0;
+	int i;
+
+//elog(NOTICE, "in LWGEOM_length2d");
+
+	for (i=0; i<inspected->ngeometries; i++)
+	{
+		line = lwgeom_getline_inspected(inspected, i);
+		if ( line == NULL ) continue;
+		dist += lwgeom_pointarray_length2d(line->points);
+//elog(NOTICE, " LWGEOM_length2d found a line (%f)", dist);
+	}
+
+	pfree_inspected(inspected);
+
+	PG_RETURN_FLOAT8(dist);
+}
+
+//find the "length of a geometry"
+// length(point) = 0
+// length(line) = length of line
+// length(polygon) = 0  -- could make sense to return sum(ring perimeter)
+// uses euclidian 3d/2d length depending on input dimensions.
+PG_FUNCTION_INFO_V1(LWGEOM_length_linestring);
+Datum LWGEOM_length_linestring(PG_FUNCTION_ARGS)
+{
+	LWGEOM *geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	LWGEOM_INSPECTED *inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
+	LWLINE *line;
+	double dist = 0.0;
+	int i;
+
+	for (i=0; i<inspected->ngeometries; i++)
+	{
+		line = lwgeom_getline_inspected(inspected, i);
+		if ( line == NULL ) continue;
+		dist += lwgeom_pointarray_length(line->points);
+	}
+
+	pfree_inspected(inspected);
+
+	PG_RETURN_FLOAT8(dist);
+}
+
+// find the "perimeter of a geometry"
+// perimeter(point) = 0
+// perimeter(line) = 0
+// perimeter(polygon) = sum of ring perimeters
+// uses euclidian 3d/2d computation depending on input dimension.
+PG_FUNCTION_INFO_V1(LWGEOM_perimeter_poly);
+Datum LWGEOM_perimeter_poly(PG_FUNCTION_ARGS)
+{
+	LWGEOM *geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	LWGEOM_INSPECTED *inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
+	double ret = 0.0;
+	int i;
+
+	for (i=0; i<inspected->ngeometries; i++)
+	{
+		LWPOLY *poly;
+		poly = lwgeom_getpoly_inspected(inspected, i);
+		if ( poly == NULL ) continue;
+		ret += lwgeom_polygon_perimeter(poly);
+	}
+
+	pfree_inspected(inspected);
+
+	PG_RETURN_FLOAT8(ret);
+}
+
+// find the "perimeter of a geometry"
+// perimeter(point) = 0
+// perimeter(line) = 0
+// perimeter(polygon) = sum of ring perimeters
+// uses euclidian 2d computation even if input is 3d
+PG_FUNCTION_INFO_V1(LWGEOM_perimeter2d_poly);
+Datum LWGEOM_perimeter2d_poly(PG_FUNCTION_ARGS)
+{
+	LWGEOM *geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	LWGEOM_INSPECTED *inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
+	double ret = 0.0;
+	int i;
+
+	for (i=0; i<inspected->ngeometries; i++)
+	{
+		LWPOLY *poly;
+		poly = lwgeom_getpoly_inspected(inspected, i);
+		if ( poly == NULL ) continue;
+		ret += lwgeom_polygon_perimeter2d(poly);
+	}
+
+	pfree_inspected(inspected);
+
+	PG_RETURN_FLOAT8(ret);
+}
+
+
+/*
+ * Write to already allocated memory 'optr' a 2d version of
+ * the given serialized form. 
+ * Return number bytes written in given int pointer.
+ */
+void
+lwgeom_force2d_recursive(char *serialized, char *optr, int *retsize)
+{
+	LWGEOM_INSPECTED *inspected;
+	int i;
+	int totsize=0;
+	int size=0;
+	int type;
+	LWPOINT *point = NULL;
+	LWLINE *line = NULL;
+	LWPOLY *poly = NULL;
+	char *loc;
+
+		
+#ifdef DEBUG
+	elog(NOTICE, "lwgeom_force2d_recursive: call");
+#endif
+
+	type = lwgeom_getType(serialized[0]);
+
+	if ( type == POINTTYPE )
+	{
+		point = lwpoint_deserialize(serialized);
+		point->ndims = 2;
+		lwpoint_serialize_buf(point, optr, retsize);
+#ifdef DEBUG
+elog(NOTICE, "lwgeom_force2d_recursive: it's a point, size:%d", *retsize);
+#endif
+		return;
+	}
+
+	if ( type == LINETYPE )
+	{
+		line = lwline_deserialize(serialized);
+		line->ndims = 2;
+		lwline_serialize_buf(line, optr, retsize);
+#ifdef DEBUG
+elog(NOTICE, "lwgeom_force2d_recursive: it's a line, size:%d", *retsize);
+#endif
+		return;
+	}
+
+	if ( type == POLYGONTYPE )
+	{
+		poly = lwpoly_deserialize(serialized);
+		poly->ndims = 2;
+		lwpoly_serialize_buf(poly, optr, retsize);
+#ifdef DEBUG
+elog(NOTICE, "lwgeom_force2d_recursive: it's a poly, size:%d", *retsize);
+#endif
+		return;
+	}
+
+ 	// OK, this is a collection, so we write down its metadata
+	// first and then call us again
+
+#ifdef DEBUG
+elog(NOTICE, "lwgeom_force2d_recursive: it's a collection (type:%d)", type);
+#endif
+
+	// Add type
+	*optr = lwgeom_makeType_full(2, lwgeom_hasSRID(serialized[0]),
+		type, lwgeom_hasBBOX(serialized[0]));
+	optr++;
+	totsize++;
+	loc=serialized+1;
+
+	// Add BBOX if any
+	if (lwgeom_hasBBOX(serialized[0]))
+	{
+		memcpy(optr, loc, sizeof(BOX2DFLOAT4));
+		optr += sizeof(BOX2DFLOAT4);
+		totsize += sizeof(BOX2DFLOAT4);
+		loc += sizeof(BOX2DFLOAT4);
+	}
+
+	// Add SRID if any
+	if (lwgeom_hasSRID(serialized[0]))
+	{
+		memcpy(optr, loc, 4);
+		optr += 4;
+		totsize += 4;
+		loc += 4;
+	}
+
+	// Add numsubobjects
+	memcpy(optr, loc, 4);
+	optr += 4;
+	totsize += 4;
+
+#ifdef DEBUG
+elog(NOTICE, " collection header size:%d", totsize);
+#endif
+
+	// Now recurse for each suboject
+	inspected = lwgeom_inspect(serialized);
+	for (i=0; i<inspected->ngeometries; i++)
+	{
+		char *subgeom = lwgeom_getsubgeometry_inspected(inspected, i);
+		lwgeom_force2d_recursive(subgeom, optr, &size);
+		totsize += size;
+		optr += size;
+#ifdef DEBUG
+elog(NOTICE, " elem %d size: %d (tot: %d)", i, size, totsize);
+#endif
+	}
+	pfree_inspected(inspected);
+
+	*retsize = totsize;
+}
+
+// transform input geometry to 2d if not 2d already
+PG_FUNCTION_INFO_V1(LWGEOM_force_2d);
+Datum LWGEOM_force_2d(PG_FUNCTION_ARGS)
+{
+	LWGEOM *geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	LWGEOM *result;
+	int32 size = 0;
+
+	// already 2d
+	if ( lwgeom_ndims(geom->type) == 2 ) PG_RETURN_POINTER(geom);
+
+	// allocate a larger for safety and simplicity
+	result = (LWGEOM *) palloc(geom->size);
+
+	lwgeom_force2d_recursive(SERIALIZED_FORM(geom),
+		SERIALIZED_FORM(result), &size);
+
+	// we can safely avoid this... memory will be freed at
+	// end of query processing anyway.
+	//result = repalloc(result, size+4);
+
+	result->size = size+4;
+
+	PG_RETURN_POINTER(result);
 }
