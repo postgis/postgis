@@ -177,8 +177,18 @@
 						</listitem>
 						<listitem>
 							<para>If want support for coordinate reprojection you must
-							  have the Proj4 library installed, and set the
-							  <varname>USE_PROJ</varname> variable to <emphasis>1</emphasis>.
+							  have the Proj4 library installed, set the
+							  <varname>USE_PROJ</varname> variable to <emphasis>1</emphasis>,
+								and eventually adjust <varname>PROJ_DIR</varname> to point
+								to your Proj4 installation directory.
+							</para>
+						</listitem>
+						<listitem>
+							<para>If want to use GEOS functionalities you must
+							  have the GEOS library installed, set the
+							  <varname>USE_GEOS</varname> variable to <emphasis>1</emphasis>,
+								and eventually adjust <varname>GEOS_DIR</varname> to point to
+								your GEOS installation directory.
 							</para>
 						</listitem>
 					</itemizedlist>
@@ -309,10 +319,19 @@
 						</para>
 					</listitem>
 					<listitem>
-						<para>Also, if you want to be able to do coordinate
+						<para>If you want to be able to do coordinate
 						  reprojections, you must install the Proj.4 library on your
-						  system, and set the <filename>USE_PROJ</filename> variable
-						  to 1 in the Makefile.
+						  system, set the <varname>USE_PROJ</varname> variable
+						  to 1 and the <varname>PROJ_DIR</varname> to your installation
+							prefix in the Makefile.
+						</para>
+					</listitem>
+					<listitem>
+						<para>If you want to be able to use GEOS functions 
+						  you must install the GEOS library on your
+						  system, and set the <varname>USE_GEOS</varname> to 1
+							and the <varname>GEOS_DIR</varname> to your installation
+							prefix in the Makefile.
 						</para>
 					</listitem>
 				</orderedlist>
