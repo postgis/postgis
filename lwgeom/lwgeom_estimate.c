@@ -10,6 +10,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.3  2004/08/19 13:54:15  strk
+ * cpp checks updated to use 80 instead of 75 for USE_VERSION
+ *
  * Revision 1.2  2004/08/19 13:18:01  strk
  * Added selectivity estimation
  *
@@ -31,7 +34,7 @@
 
 #include "lwgeom.h"
 
-#if USE_VERSION >= 75
+#if USE_VERSION >= 80
 
 #include "commands/vacuum.h"
 #include "utils/lsyscache.h"
@@ -120,7 +123,7 @@ Datum build_lwhistogram2d(PG_FUNCTION_ARGS);
 Datum explode_lwhistogram2d(PG_FUNCTION_ARGS);
 Datum estimate_lwhistogram2d(PG_FUNCTION_ARGS);
 Datum lwgeom_gist_sel(PG_FUNCTION_ARGS);
-#if USE_VERSION >= 75
+#if USE_VERSION >= 80
 Datum lwgeom_analyze(PG_FUNCTION_ARGS);
 #endif
 
@@ -714,7 +717,7 @@ Datum estimate_lwhistogram2d(PG_FUNCTION_ARGS)
 /**************************** FROM POSTGIS ****************/
 
 
-#if USE_VERSION < 75
+#if USE_VERSION < 80
 /*
  * get_restriction_var
  *		Examine the args of a restriction clause to see if it's of the
@@ -907,7 +910,7 @@ Datum lwgeom_gist_sel(PG_FUNCTION_ARGS)
         PG_RETURN_FLOAT8(myest);
 }
 
-#else // USE_VERSION >= 75
+#else // USE_VERSION >= 80
 
 /*
  * This function returns an estimate of the selectivity

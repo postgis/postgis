@@ -11,8 +11,8 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
--- Revision 1.1  2004/08/19 13:49:29  strk
--- initial import
+-- Revision 1.2  2004/08/19 13:54:15  strk
+-- cpp checks updated to use 80 instead of 75 for USE_VERSION
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -68,7 +68,7 @@ CREATEFUNCTION geometry_out(geometry)
         AS '@MODULE_FILENAME@','LWGEOM_out'
         LANGUAGE 'C' WITH (isstrict,iscachable);
 
-#if USE_VERSION >= 75
+#if USE_VERSION >= 80
 CREATEFUNCTION geometry_analyze(internal)
 	RETURNS bool
 	AS '@MODULE_FILENAME@', 'lwgeom_analyze'
@@ -907,7 +907,7 @@ CREATE TABLE geometry_columns (
 	coord_dimension integer not null,
 	srid integer not null,
 	type varchar(30) not null,
-#if USE_VERSION < 75
+#if USE_VERSION < 80
 	attrelid oid,
 	varattnum int,
 	stats histogram2d,
@@ -1011,7 +1011,7 @@ BEGIN
 	GET DIAGNOSTICS foundschema = ROW_COUNT;
 #endif
 
-#if USE_VERSION >= 75
+#if USE_VERSION >= 80
 	-- no linkage to system table needed
 	return ''fixed:''||foundschema::text;
 #endif
@@ -1119,7 +1119,7 @@ BEGIN
 			strpos(typecheck.consrc, ''::'')-
 			strpos(typecheck.consrc, ''='')
 			))::varchar as type,
-#if USE_VERSION < 75
+#if USE_VERSION < 80
 		a.attrelid,
 		a.attnum as varattnum,
 		null::histogram2d as stats
@@ -1578,10 +1578,10 @@ LANGUAGE 'sql' WITH (isstrict);
 -- It is defined also for PG>=75 for back-compatibility
 --
 -----------------------------------------------------------------------
-#if USE_VERSION >= 75
+#if USE_VERSION >= 80
 CREATEFUNCTION update_geometry_stats() RETURNS text
 AS ' SELECT ''update_geometry_stats() has been obsoleted. Statistics are automatically built running the ANALYZE command''::text' LANGUAGE 'sql';
-#else // USE_VERSION < 75
+#else // USE_VERSION < 80
 CREATEFUNCTION update_geometry_stats()
 RETURNS text
 AS
@@ -1621,7 +1621,7 @@ BEGIN
 END;
 '
 LANGUAGE 'plpgsql' ;
-#endif // USE_VERSION < 75
+#endif // USE_VERSION < 80
 
 -----------------------------------------------------------------------
 -- UPDATE_GEOMETRY_STATS( <table>, <column> )
@@ -1634,7 +1634,7 @@ LANGUAGE 'plpgsql' ;
 -- It is defined also for PG>=75 for back-compatibility
 --
 -----------------------------------------------------------------------
-#if USE_VERSION >= 75
+#if USE_VERSION >= 80
 CREATEFUNCTION update_geometry_stats(varchar,varchar) RETURNS text
 AS 'SELECT update_geometry_stats();' LANGUAGE 'sql' ;
 #else
@@ -1687,7 +1687,7 @@ END;
 '
 LANGUAGE 'plpgsql' ;
 
-#endif  // USE_VERSION < 75
+#endif  // USE_VERSION < 80
 
 -----------------------------------------------------------------------
 -- FIND_SRID( <schema>, <table>, <geom col> )
