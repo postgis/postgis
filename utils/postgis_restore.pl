@@ -78,6 +78,7 @@ while( my $line = <INPUT>)
 	{
 		my $name = lc($2);
 		my @args = split(",", $3);
+		my $geomfound = 0;
 		for (my $i=0; $i<@args; $i++)
 		{
 			$arg = lc($args[$i]);
@@ -106,17 +107,36 @@ while( my $line = <INPUT>)
 				next;
 			}
 			$args[$i] = $arg;
+			$geomfound++ if ( $arg eq 'oldgeometry' );
 		}
 		my $id = $name."(".join(", ", @args).")";
 		$funcs{$id} = 1;
 		print "SQLFUNC: $id\n" if $DEBUG;
+		if ( $geomfound )
+		{
+			for (my $i=0; $i<@args; $i++)
+			{
+				$arg = $args[$i];
+				$arg = 'geometry' if ($arg eq 'oldgeometry');
+				$args[$i] = $arg;
+			}
+			my $id = $name."(".join(", ", @args).")";
+			$funcs{$id} = 1;
+			print "SQLFUNC: $id\n" if $DEBUG;
+		}
 		next;
 	}
 	if ($line =~ /^create type +([^ ]+)/i)
 	{
 		my $type = $1;
-		print "SQLTYPE $type\n" if $DEBUG;
 		$types{$type} = 1;
+		print "SQLTYPE $type\n" if $DEBUG;
+		if ( $type eq 'oldgeometry' )
+		{
+			$type = 'geometry';
+			$types{$type} = 1;
+			print "SQLTYPE $type\n" if $DEBUG;
+		}
 		next;
 	}
 	if ($line =~ /^create aggregate *([^ ]*) *\(/i)
@@ -141,6 +161,13 @@ while( my $line = <INPUT>)
 		my $id = $name.'('.$type.')';
 		print "SQLAGG $id\n" if $DEBUG;
 		$aggs{$id} = 1;
+		if ( $type eq 'oldgeometry' )
+		{
+			$type = 'geometry';
+			my $id = $name.'('.$type.')';
+			$aggs{$id} = 1;
+			print "SQLAGG $id\n" if $DEBUG;
+		}
 		next;
 	}
 
@@ -154,13 +181,27 @@ while( my $line = <INPUT>)
 
 		my $id = $funcname."(".$funcarg.")";
 		$fncasts{$id} = 1;
-
 		print "SQLFNCAST $id\n" if $DEBUG;
+		if ( $funcarg eq 'oldgeometry' )
+		{
+			$funcarg = 'geometry';
+			my $id = $funcname."(".$funcarg.")";
+			$fncasts{$id} = 1;
+			print "SQLFNCAST $id\n" if $DEBUG;
+		}
 
 		my $id = $from.','.$to;
 		$casts{$id} = 1;
-
 		print "SQLCAST $id\n" if $DEBUG;
+		if ( $from eq 'oldgeometry' || $to eq 'oldgeometry' )
+		{
+			$from = 'geometry' if $from eq 'geometry';
+			$to = 'geometry' if $to eq 'geometry';
+			my $id = $from.','.$to;
+			$casts{$id} = 1;
+			print "SQLCAST $id\n" if $DEBUG;
+		}
+
 
 		next;
 	}
@@ -195,6 +236,14 @@ while( my $line = <INPUT>)
 		my $id = $name.','.$larg.','.$rarg;
 		print "SQLOP $id\n" if $DEBUG;
 		$ops{$id} = 1;
+		if ( $larg eq 'oldgeometry' || $rarg eq 'oldgeometry' )
+		{
+			$larg = 'geometry' if $larg eq 'oldgeometry';
+			$rarg = 'geometry' if $rarg eq 'oldgeometry';
+			my $id = $name.','.$larg.','.$rarg;
+			print "SQLOP $id\n" if $DEBUG;
+			$ops{$id} = 1;
+		}
 		next;
 	}
 }
@@ -284,6 +333,14 @@ while( my $line = <INPUT> )
 			print "SKIPPING old PGIS AGG $id\n" if $DEBUG;
 			next;
 		}
+
+		# This is an old postgis aggregate
+		if ( $name eq 'mem_collect' )
+		{
+			print "SKIPPING old PGIS AGG $id\n" if $DEBUG;
+			next;
+		}
+
 		print "KEEPING AGGREGATE [$id]\n" if $DEBUG;
 		#next;
 	}
@@ -445,7 +502,7 @@ print "Adding plpgsql\n";
 #
 # Open a pipe to the SQL monitor
 #
-open( PSQL, "| psql $dbname") || die "Can't run psql\n";
+open( PSQL, "| psql -a $dbname") || die "Can't run psql\n";
 
 #
 # Source new postgis.sql
