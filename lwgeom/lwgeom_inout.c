@@ -189,7 +189,7 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 	char *lwgeom_input = (char *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	// SRID=#;<hexized wkb>
-	char *hexized_wkb_srid =unparse_WKB(lwgeom_input,palloc_fn,free_fn);
+	char *hexized_wkb_srid = unparse_WKB(lwgeom_input,palloc_fn,free_fn);
 
 	char *hexized_wkb; // hexized_wkb_srid w/o srid
 	char *result; //wkb

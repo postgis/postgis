@@ -40,6 +40,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS);
 Datum LWGEOM_expand(PG_FUNCTION_ARGS);
 Datum LWGEOM_to_BOX(PG_FUNCTION_ARGS);
 Datum LWGEOM_envelope(PG_FUNCTION_ARGS);
+Datum LWGEOM_isempty(PG_FUNCTION_ARGS);
 
 // internal
 char * lwgeom_summary_recursive(char *serialized, int offset);
@@ -2335,4 +2336,14 @@ Datum LWGEOM_envelope(PG_FUNCTION_ARGS)
 	result = LWGEOM_construct(ser, SRID, lwgeom_hasBBOX(geom->type));
 	
 	PG_RETURN_POINTER(result);
+}
+
+PG_FUNCTION_INFO_V1(LWGEOM_isempty);
+Datum LWGEOM_isempty(PG_FUNCTION_ARGS)
+{
+	LWGEOM *geom = (LWGEOM *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+	if ( lwgeom_getnumgeometries(SERIALIZED_FORM(geom)) == 0 )
+		PG_RETURN_BOOL(TRUE);
+	PG_RETURN_BOOL(FALSE);
 }

@@ -968,6 +968,11 @@ CREATEFUNCTION IsClosed(geometry)
 	AS '@MODULE_FILENAME@', 'LWGEOM_isclosed_linestring'
 	LANGUAGE 'C' WITH (isstrict);
 
+CREATEFUNCTION IsEmpty(geometry)
+	RETURNS boolean
+	AS '@MODULE_FILENAME@', 'LWGEOM_isempty'
+	LANGUAGE 'C' WITH (isstrict);
+
 CREATEFUNCTION SRID(geometry) 
 	RETURNS int4
 	AS '@MODULE_FILENAME@','LWGEOM_getSRID'
