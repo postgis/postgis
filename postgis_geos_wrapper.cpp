@@ -2,6 +2,9 @@
 
 /*
 * $Log$
+* Revision 1.24  2004/07/08 19:33:51  strk
+* Updated to respect CoordinateSequence GEOS interface switch.
+*
 * Revision 1.23  2004/07/02 13:33:23  strk
 * Changed GEOS header inclusion mechanism to be more polite
 *
@@ -189,6 +192,11 @@ extern "C" void NOTICE_MESSAGE(char *msg);
 
 
 //###########################################################
+#if POSTGIS_GEOS_VERSION == 100
+# define CoordinateSequence CoordinateList
+# define DefaultCoordinateSequence BasicCoordinateList
+#else
+#endif
 
 GeometryFactory *geomFactory = NULL;
 
@@ -211,7 +219,7 @@ void initGEOS (int maxalign)
 		//note: you lose the 3d from this!
 Geometry *PostGIS2GEOS_box3d(BOX3D *box, int SRID)
 {
-	BasicCoordinateList  *cl = new BasicCoordinateList(5);
+	DefaultCoordinateSequence  *cl = new DefaultCoordinateSequence(5);
 	try {
 		Geometry *g;
 		Coordinate c;
@@ -323,7 +331,7 @@ PostGIS2GEOS_linestring(const LINE3D *line,int SRID, bool is3d)
 		Coordinate c;
 
 		//build coordinatelist & pre-allocate space
-		BasicCoordinateList  *coords = new BasicCoordinateList(line->npoints);
+		DefaultCoordinateSequence  *coords = new DefaultCoordinateSequence(line->npoints);
 		if (is3d)
 		{
 			for (t=0;t<line->npoints;t++)
@@ -484,7 +492,7 @@ Geometry *PostGIS2GEOS_polygon(POLYGON3D *polygon,int SRID, bool is3d)
 		Geometry *g;
 		LinearRing *outerRing;
 		LinearRing *innerRing;
-		BasicCoordinateList *cl;
+		DefaultCoordinateSequence *cl;
 		int pointOffset =0; // first point that we're looking at.  a POLYGON3D has all its points smooshed together
 		vector<Geometry *> *innerRings=new vector<Geometry *>;
 
@@ -493,7 +501,7 @@ Geometry *PostGIS2GEOS_polygon(POLYGON3D *polygon,int SRID, bool is3d)
 		pts = (POINT3D *) MAXALIGN(pts);
 
 			// make outerRing
-			cl = new BasicCoordinateList(polygon->npoints[0]);
+			cl = new DefaultCoordinateSequence(polygon->npoints[0]);
 			if (is3d)
 			{
 				for(t=0;t<polygon->npoints[0];t++)
@@ -525,7 +533,7 @@ Geometry *PostGIS2GEOS_polygon(POLYGON3D *polygon,int SRID, bool is3d)
 
 		for(ring =1; ring< polygon->nrings; ring++)
 		{
-			cl = new BasicCoordinateList(polygon->npoints[ring]);
+			cl = new DefaultCoordinateSequence(polygon->npoints[ring]);
 			if (is3d)
 			{
 				for(t=0;t<polygon->npoints[ring];t++)
@@ -1248,7 +1256,7 @@ POINT3D  *GEOSGetCoordinates(Geometry *g1)
 		int numPoints = g1->getNumPoints();
 		POINT3D *result = (POINT3D*) malloc (sizeof(POINT3D) * numPoints );
 		int t;
-		CoordinateList *cl = g1->getCoordinates();
+		CoordinateSequence *cl = g1->getCoordinates();
 		Coordinate		c;
 
 		for (t=0;t<numPoints;t++)
@@ -1282,7 +1290,7 @@ POINT3D  *GEOSGetCoordinates_Polygon(Polygon *g1)
 {
 	try {
 		int t, r, outidx=0;
-		const CoordinateList *cl;
+		const CoordinateSequence *cl;
 		Coordinate c;
 		const LineString *lr;
 		int npts, nrings;
