@@ -10,6 +10,10 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.29  2004/06/16 18:47:59  strk
+ * Added code to detect geos version.
+ * Added appropriate includes in geos connectors.
+ *
  * Revision 1.28  2004/04/28 22:26:02  pramsey
  * Fixed spelling mistake in header text.
  *
@@ -135,7 +139,7 @@
 #include "access/rtree.h"
 
 #include "utils/builtins.h"
-
+#include "postgis_geos_version.h"
 
  /*
   * Define this to have have many notices printed

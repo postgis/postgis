@@ -168,7 +168,7 @@ include $(top_srcdir)/src/Makefile.shlib
 
 postgis_geos_wrapper.o: postgis_geos_wrapper.cpp
 
-all: all-lib postgis.sql postgis_undef.sql loaderdumper
+all: postgis_geos_version.h all-lib postgis.sql postgis_undef.sql loaderdumper
 
 loaderdumper:
 	$(MAKE) -C loader
@@ -208,6 +208,9 @@ endif
 
 endif # not win
 #----------------------------------------------------------
+
+postgis_geos_version.h:
+	./geos_version.sh $(GEOS_DIR) > $@
 
 installdirs:
 	$(mkinstalldirs) $(docdir)/contrib $(datadir)/contrib $(libdir)

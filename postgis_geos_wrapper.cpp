@@ -2,6 +2,10 @@
 
 /*
 * $Log$
+* Revision 1.19  2004/06/16 18:47:59  strk
+* Added code to detect geos version.
+* Added appropriate includes in geos connectors.
+*
 * Revision 1.18  2004/04/27 07:44:26  strk
 * Removed use of geometryFactory->toGeometry(), indicated by Martin Davis
 * as being intended for internal use only. Created a linear ring instead
@@ -48,6 +52,7 @@
 
 #include "geom.h"
 #include "util.h"
+#include "postgis_geos_version.h"
 
 using namespace geos;
 
