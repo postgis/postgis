@@ -1754,8 +1754,8 @@ Datum astext_geometry(PG_FUNCTION_ARGS)
 
 	wkt = geometry_to_text(geom1);
 
-
-	len = strlen(wkt) + 5;
+			//changed so it isnt null terminated (not needed with text)
+	len = strlen(wkt) + 4;
 
 	result= palloc(len);
 	*((int *) result) = len;
@@ -2867,17 +2867,25 @@ PG_FUNCTION_INFO_V1(geometry_text);
 Datum geometry_text(PG_FUNCTION_ARGS)
 {
 	char		*input = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char		*cstring;
+	void		*result;
 
 	if (*((int *) input) == 4)
 	{
 		//empty string
 		PG_RETURN_NULL();
 	}
-	input = &input[4];
-	PG_RETURN_POINTER (
-		DatumGetPointer(	DirectFunctionCall1(geometry_in,PointerGetDatum(input)))
-			);
+	cstring = palloc(*((int *) input));  // length+4
 
+	memcpy(cstring, &input[4], ( *((int *) input))-4);
+	cstring[( *((int *) input))-4] = 0; // nullterminate
+
+	result = DatumGetPointer(	DirectFunctionCall1(geometry_in,PointerGetDatum(cstring))) ;
+
+	PG_RETURN_POINTER (result);
+//NOTE: this could cause problem since input isnt null terminated - usually this will not
+//      cause a problem because the parse will not go further than the end of the string.
+//       FIXED.
 }
 
 
