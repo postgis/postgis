@@ -1,5 +1,14 @@
-//compile line for Refractions' Solaris machine...
-//gcc -g -I/data3/postgresql-7.1.2/include -L/data3/postgresql-7.1.2/lib dump.c ../shapelib-1.2.8/shpopen.o ../shapelib-1.2.8/dbfopen.o -o dump -lpq
+/*
+ * $Id$
+ *
+ * Author: Jeff Lounsbury, jeffloun@refractions.net
+ *
+ * $Log$
+ * Revision 1.18  2003/02/04 21:39:20  pramsey
+ * Added CVS substitution strings for logging.
+ *
+ *
+ */
 
 #include <stdio.h>
 #include <stdlib.h>

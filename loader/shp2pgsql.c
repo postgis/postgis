@@ -1,25 +1,20 @@
-
-//  usage:   shp2pgsql.c  [<options>] <shapefile name>  <table name> <database>
-
-// -s SR_ID : set the SR_ID field, if not specified it defaults to -1
-// -d: drops the table , then recreates it and populates it with current shape file data
-// -a: appends shape file into current table, must be excatly the same table schema
-// -c: creates a new table and populates it, this is the default if you don't specify any options
-// -D: use postgresql dump format (defaults to sql insert statements). Use
-//     this option whenever possible for much faster application
-
-//	Using shapelib 1.2.8, this program reads in shape files and processes it's contents
-//	into a Insert statements which can be easily piped into a database frontend.
-//	Specifically designed to insert type 'geometry' (a custom written PostgreSQL type)
-//	for the shape files and PostgreSQL standard types for all attributes of the entity. 
-//
-//	Basically the program determines which type of shape (currently supports: 2d points,2d lines,2d
-//      polygons,3d points, and 3d lines) is in the file and takes appropriate
-//      action to create the table,geometry and load the attributes.
-
-
-// BUGS:
-//	possible: no row # for polygons?
+/*
+ * $Id$
+ *
+ * Author: Jeff Lounsbury, jeffloun@refractions.net
+ *
+ * $Log$
+ * Revision 1.28  2003/02/04 21:39:20  pramsey
+ * Added CVS substitution strings for logging.
+ *
+ *
+ * Using shapelib 1.2.8, this program reads in shape files and 
+ * processes it's contents into a Insert statements which can be 
+ * easily piped into a database frontend.
+ * Specifically designed to insert type 'geometry' (a custom 
+ * written PostgreSQL type) for the shape files and PostgreSQL 
+ * standard types for all attributes of the entity. 
+ */
 
 #include "shapefil.h"
 #include <stdio.h>
