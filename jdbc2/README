@@ -157,7 +157,7 @@ autoregister for the same PostGIS types, as the driver cannot guess
 which extension it should actually use on which connection. The
 current pgjdbc implementation simply parses all
 org/postgresql/driverconfig.properties the classloader can find in his
-classpath, and later definitions override earlier ones.
+classpath, using the first definition found for each type.
 
 
 * How to I run the tests? Are they allowed to fail? *
