@@ -10,6 +10,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.8  2004/10/05 21:54:48  strk
+ * Yes another change in SPI_cursor_open
+ *
  * Revision 1.7  2004/09/29 10:50:30  strk
  * Big layout change.
  * lwgeom.h is public API
@@ -396,7 +399,7 @@ Datum build_lwhistogram2d(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL() ;
 	}
 
-#if USE_VERSION > 80
+#if USE_VERSION >= 80
 	SPIportal = SPI_cursor_open(NULL, SPIplan, NULL, NULL, 1);
 #else
 	SPIportal = SPI_cursor_open(NULL, SPIplan, NULL, NULL);
