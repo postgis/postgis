@@ -71,9 +71,9 @@ default_noticereporter(const char *fmt, ...)
 	va_start (ap, fmt);
 
 	/*
-	* This is a GNU extension.
-	* Dunno how to handle errors here.
-	*/
+	 * This is a GNU extension.
+	 * Dunno how to handle errors here.
+	 */
 	if (!vasprintf (&msg, fmt, ap))
 	{
 		va_end (ap);
@@ -93,9 +93,9 @@ default_errorreporter(const char *fmt, ...)
 	va_start (ap, fmt);
 
 	/*
-	* This is a GNU extension.
-	* Dunno how to handle errors here.
-	*/
+	 * This is a GNU extension.
+	 * Dunno how to handle errors here.
+	 */
 	if (!vasprintf (&msg, fmt, ap))
 	{
 		va_end (ap);

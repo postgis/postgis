@@ -2,6 +2,7 @@
 #define _LIBLWGEOM_H 1
 
 #include <stdio.h>
+#include <compat.h>
 
 #define INTEGRITY_CHECKS 1
 //#define DEBUG_ALLOCS 1
