@@ -10,6 +10,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.30  2003/11/24 17:36:28  strk
+ * Removed useless BYTE_ORDER checks
+ *
  * Revision 1.29  2003/11/21 23:51:14  pramsey
  * Added Cygwin endian definition include to fix windows compile.
  *
@@ -1656,11 +1659,7 @@ initialize()
 		/* this is the geometry */
 		if ( type_ary[i] == 9 )
 		{
-			if (BYTE_ORDER == BIG_ENDIAN) {
-				sprintf(buf, "\"%s\"", mainscan_flds[i]);
-			} else {
-				sprintf(buf, "\"%s\"", mainscan_flds[i]);
-			}
+			sprintf(buf, "\"%s\"", mainscan_flds[i]);
 		}
 		else
 		{
