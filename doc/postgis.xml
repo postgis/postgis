@@ -4247,6 +4247,14 @@ FROM geometry_table;</literallayout>
           </listitem>
         </varlistentry>
 
+        <varlistentry>
+          <term>accum(geometry set)</term>
+
+          <listitem>
+            <para>Aggregate. Constructs an array of geometries.</para>
+          </listitem>
+        </varlistentry>
+
 
         </variablelist>
       </sect2>
