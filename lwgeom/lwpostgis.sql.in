@@ -1633,6 +1633,11 @@ CREATEFUNCTION noop(geometry)
 	AS '@MODULE_FILENAME@', 'LWGEOM_noop'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
+CREATEFUNCTION zmflag(geometry)
+	RETURNS smallint
+	AS '@MODULE_FILENAME@', 'LWGEOM_zmflag'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
 ------------------------------------------------------------------------
 
 --

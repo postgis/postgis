@@ -49,6 +49,7 @@ Datum LWGEOM_segmentize2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_reverse(PG_FUNCTION_ARGS);
 Datum LWGEOM_forceRHR_poly(PG_FUNCTION_ARGS);
 Datum LWGEOM_noop(PG_FUNCTION_ARGS);
+Datum LWGEOM_zmflag(PG_FUNCTION_ARGS);
 
 // internal
 int32 lwgeom_nrings_recursive(char *serialized);
@@ -3006,4 +3007,23 @@ Datum LWGEOM_noop(PG_FUNCTION_ARGS)
 	}
 
 	PG_RETURN_POINTER(out);
+}
+
+// Return:
+//  0==2d
+//  1==3dm
+//  2==3dz
+//  3==4d
+PG_FUNCTION_INFO_V1(LWGEOM_zmflag);
+Datum LWGEOM_zmflag(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *in;
+	unsigned char type;
+	int ret = 0;
+
+	in = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+	type = in->type;
+	if ( TYPE_HASZ(type) ) ret += 2;
+	if ( TYPE_HASM(type) ) ret += 1;
+	PG_RETURN_INT16(ret);
 }
