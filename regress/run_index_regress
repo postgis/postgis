@@ -5,11 +5,15 @@ echo ""
 echo "Index Creation will take some time..."
 echo ""
 
+if [ -z "$TMPDIR" ]; then
+	TMPDIR=/tmp
+fi
+
 DB=postgis_reg
 createdb $DB > /dev/null
 createlang plpgsql $DB > /dev/null
 psql -f ../lwpostgis.sql $DB > /dev/null 2>&1
-psql -tA < regress_index.sql $DB > regress_index_out 2>&1
-diff regress_index_out regress_index_expected
+psql -tA < regress_index.sql $DB > "${TMPDIR}/regress_index_out" 2>&1
+diff regress_index_expected "${TMPDIR}/regress_index_out"
 sleep 1
 dropdb $DB > /dev/null

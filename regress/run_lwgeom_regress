@@ -3,6 +3,10 @@ echo "Running LWGEOM Regression Test..."
 echo ""
 echo "Building a database for testing (postgis_reg)."
 
+if [ -z "$TMPDIR" ]; then
+	TMPDIR=/tmp
+fi
+
 DB=postgis_reg
 createdb $DB > /dev/null
 
@@ -15,7 +19,7 @@ psql -f ../lwpostgis.sql $DB > /dev/null 2>&1
 echo "there shouldnt be any real output produced after this line."
 echo ""
 
-psql -tA < lwgeom_regress.sql $DB 2>&1 | grep -v "^INSERT" > lwgeom_regress_out
-diff lwgeom_regress_out lwgeom_regress_expected
+psql -tA < lwgeom_regress.sql $DB 2>&1 | grep -v "^INSERT" > "${TMPDIR}/lwgeom_regress_out"
+diff lwgeom_regress_expected "${TMPDIR}/lwgeom_regress_out"
 sleep 1
 dropdb $DB > /dev/null

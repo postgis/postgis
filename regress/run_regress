@@ -4,11 +4,15 @@ echo
 echo "       expected:'<'     obtained:'>'"
 echo
 
+if [ -z "$TMPDIR" ]; then
+	TMPDIR=/tmp
+fi
+
 DB=postgis_reg
 createdb $DB > /dev/null
 createlang plpgsql $DB > /dev/null
 psql -f ../lwpostgis.sql $DB > /dev/null 2>&1
-psql -tA < regress.sql $DB 2>&1 | grep -v INSERT > regress_out
-diff regress_expected regress_out
+psql -tA < regress.sql $DB 2>&1 | grep -v INSERT > "${TMPDIR}/regress_out"
+diff regress_expected "${TMPDIR}/regress_out"
 sleep 1
 dropdb $DB > /dev/null
