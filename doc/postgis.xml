@@ -1001,9 +1001,9 @@ SRID=312;01010000009A99999999995FC0295C8FC2F5A84640
             <listitem>
               <para>The type of the spatial object. To restrict the spatial
               column to a single type, use one of: POINT, LINESTRING, POLYGON,
-              MULTPOINT, MULTILINESTRING, MULTIPOLYGON, GEOMETRYCOLLECTION or
+              MULTIPOINT, MULTILINESTRING, MULTIPOLYGON, GEOMETRYCOLLECTION or
 	      corresponding XYM versions POINTM, LINESTRINGM, POLYGONM,
-	      MULTPOINTM, MULTILINESTRINGM, MULTIPOLYGONM, GEOMETRYCOLLECTIONM.
+	      MULTIPOINTM, MULTILINESTRINGM, MULTIPOLYGONM, GEOMETRYCOLLECTIONM.
               For heterogeneous (mixed-type) collections, you can use
               "GEOMETRY" as the type.</para>
 
