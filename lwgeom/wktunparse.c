@@ -107,7 +107,11 @@ double read_double(byte** geom){
 		return ret-180.0;
 	}
 	else{
-		double ret = *((double*)*geom);
+		//double ret = *((double*)*geom);
+		double ret;
+
+		memcpy(&ret, *geom, 8);
+
 		(*geom)+=8;
 		return ret;
 	}
@@ -159,7 +163,7 @@ byte* output_wkt(byte* geom, int supress){
 
 	unsigned type=*geom++;
 	dims = ((type & 0x30) >> 4)+2;
-	
+
 	//Skip the bounding box if there is one
 	if ( type & 0x80 ){
 		geom+=16;

@@ -570,7 +570,7 @@ Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS)
 
 void elog_ERROR(const char* string)
 {
-	elog(ERROR,string);
+	elog(NOTICE,string);
 }
 
 void *palloc_fn(size_t size)
