@@ -129,13 +129,26 @@ if ( $VACUUM )
 	}
 }
 
+# get number of features from pg_class.ntuples
+# (correct if vacuum have been run after last insertion/deletions)
+$query = 'SELECT c.reltuples FROM pg_class c, pg_namespace n '.
+	"WHERE c.relnamespace = n.oid AND n.nspname = '$SCHEMA' ".
+	" AND c.relname = '$TABLE'";
+$res = $conn->exec($query);
+if ( $res->resultStatus != PGRES_TUPLES_OK )  {
+	print STDERR $conn->errorMessage;
+	exit(1);
+}
+$TOTROWS=$res->getvalue(0, 0);
+
 
 @extents = ( \%ext );
 
 print "  Type: $TYPE\n";
+print "  Rows: $TOTROWS\n";
 print "Extent: ".print_extent(\%ext)."\n" if ($VERBOSE);
 
-print "  bps\test\treal\tdelta\tmatch_factor\n";
+print "  bps\test\treal\tdelta\terror%\n";
 print "----------------------------------------------------------\n";
 
 for ($i=0; $i<@bps_list; $i++)
@@ -143,46 +156,41 @@ for ($i=0; $i<@bps_list; $i++)
 	$bps=$bps_list[$i];
 	@extents = split_extent(\%ext, $bps);
 
-	$best_match_factor=10000;
-	$worst_match_factor=1;
-	$sum_match_factors=0;
-	$count_match_factors=0;
+	$best_error=0;
+	$worst_error=10000;
+	$sum_error=0;
+	$count_errors=0;
+	$try=0;
 	while ( ($cell_ext=pop(@extents)) )
 	{
 		($est,$real) = test_extent($cell_ext);
 		$delta = $est-$real;
 
 		print "    $bps\t".$est."\t".$real."\t$delta";
-		if ($real)
-		{
-			$match_factor = $est/$real;
-			if ( $match_factor && $match_factor < 1 )
-			{
-				$match_factor = - (1/$match_factor);
-			}
-			$match_factor = int($match_factor*1000)/1000;
-			print "\t$match_factor";
-			$count_match_factors++;
 
-			$abs_match_factor = abs($match_factor);
-			$sum_match_factors += $abs_match_factor;
-			if ( $abs_match_factor > $worst_match_factor )
-			{
-				$worst_match_factor = $match_factor;
-			}
-			if ( $abs_match_factor < $best_match_factor )
-			{
-				$best_match_factor = $match_factor;
-			}
+		$error = $delta/$TOTROWS;
+		$count_errors++;
+
+		print "\t".(int(($error)*10000)/100)."\n";
+
+		$abs_error = abs($error);
+		$sum_error += $abs_error;
+		if ( $try == 0 || $abs_error > abs($worst_error) )
+		{
+			$worst_error = $error;
 		}
-		print "\n";
+		if ( $try == 0 || $abs_error < abs($best_error) )
+		{
+			$best_error = $error;
+		}
+		$try++;
 	}
-	$avg_match_factor = $sum_match_factors/$count_match_factors;
-	$avg_match_factor = int($avg_match_factor*1000)/1000;
+	$avg_error = $sum_error/$count_errors;
 	print "    $bps\t".
 		"(best/worst/avg)   \t".
-		$best_match_factor."\t".
-		$worst_match_factor."\t".$avg_match_factor."\n";
+		(int($best_error*10000)/100)."\t".
+		(int($worst_error*10000)/100)."\t".
+		"+-".(int($avg_error*10000)/100)."\n";
 }
 
 
@@ -264,6 +272,9 @@ sub test_extent
 
 # 
 # $Log$
+# Revision 1.8  2004/03/08 17:21:57  strk
+# changed error computation code to delta/totrows
+#
 # Revision 1.7  2004/03/06 18:02:48  strk
 # Comma-separated bps values accepted
 #
