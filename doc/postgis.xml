@@ -3562,13 +3562,20 @@ dimension
           </listitem>
         </varlistentry>
 
-        <varlistentry id="force_3d">
+        <varlistentry id="force_3dz">
+          <term>force_3dz(geometry)</term>
           <term>force_3d(geometry)</term>
 
           <listitem>
-            <para>Forces the geometries into a "3-dimensional mode" so that
-            all output representations will have the X, Y and Z
-            coordinates.</para>
+            <para>Forces the geometries into XYZ mode.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="force_3dm">
+          <term>force_3dm(geometry)</term>
+
+          <listitem>
+            <para>Forces the geometries into XYM mode.</para>
           </listitem>
         </varlistentry>
 
@@ -3576,9 +3583,7 @@ dimension
           <term>force_4d(geometry)</term>
 
           <listitem>
-            <para>Forces the geometries into a "4-dimensional mode" so that
-            all output representations will have the X, Y, Z and M
-            coordinates.</para>
+            <para>Forces the geometries into XYZM mode.</para>
           </listitem>
         </varlistentry>
 
