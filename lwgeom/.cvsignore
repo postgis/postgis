@@ -4,3 +4,4 @@ wktparse.tab.c
 wktparse.tab.h
 lex.yy.c
 y.output
+lwpostgis.sql
