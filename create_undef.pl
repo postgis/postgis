@@ -11,6 +11,7 @@
 #	4. Operators   - must be of type op(geometry,geometry)
 #	5. Functions
 #	6. Types
+#	7. Tables
 
 @aggs =();
 @funcs = ();
@@ -111,6 +112,10 @@ open( INPUT,$ARGV[0]) || die "couldnt open file: $ARGV[0]";
 		}
 	}
 
+	print "----tables\n";
+	print "drop table spatial_ref_sys;\n";
+	print "drop table geometry_columns;\n";
+	print "\n";
 
 
 	print "end;\n";

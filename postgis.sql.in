@@ -194,7 +194,7 @@ BEGIN
 		'') = '' || new_srid || '')'' ;
 
 	IF (not(new_type = ''GEOMETRY'')) THEN
-		EXECUTE ''ALTER TABLE '' ||table_name||'' ADD CHECK ( geometrytype(''||column_name||'')=''|| quote_literal(new_type)||'')'';
+		EXECUTE ''ALTER TABLE '' ||table_name||'' ADD CHECK ( geometrytype(''||column_name||'')=''|| quote_literal(new_type)||'' OR NULL=('' ||column_name ||''))'';
 	END IF;
 
 	return ''Geometry column '' || column_name || '' added to table ''
