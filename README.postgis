@@ -117,9 +117,9 @@ with an SRID.
   SELECT AddGeometryColumn('db','geotest','geopoint',1,'POINT',2);
 
   INSERT INTO geotest (id, name, geopoint)
-    VALUES (1, 'Olympia', GeometryFromText('POINT(-122.90,46.97)',1));
+    VALUES (1, 'Olympia', GeometryFromText('POINT(-122.90 46.97)',1));
   INSERT INTO geotest (id, name, geopoint)
-    VALUES (2, 'Renton', GeometryFromText('POINT(-122.22,47.50)',1));
+    VALUES (2, 'Renton', GeometryFromText('POINT(-122.22 47.50)',1));
 
   SELECT name,AsText(geopoint) FROM geotest;
 
