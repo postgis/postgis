@@ -1,11 +1,15 @@
 #ifndef _LIBLWGEOM_H
 #define _LIBLWGEOM_H 1
 
+#include <stdio.h>
+
+#define INTEGRITY_CHECKS 1
+//#define DEBUG_ALLOCS 1
+
 //liblwgeom.h
 
 //#define DEBUG 1
 //#define DEBUG_CALLS 1
-
 
 typedef void* (*lwallocator)(size_t size);
 typedef void* (*lwreallocator)(void *mem, size_t size);
@@ -148,6 +152,7 @@ typedef struct
 typedef struct
 {
 	unsigned char type; 
+	BOX2DFLOAT4 *bbox;
 	uint32 SRID; // -1 == unneeded
 	void *data;
 } LWGEOM;
@@ -155,7 +160,8 @@ typedef struct
 // POINTYPE
 typedef struct
 {
-	int type; // POINTTYPE
+	unsigned char type; // POINTTYPE
+	BOX2DFLOAT4 *bbox;
    	uint32 SRID;	
    	POINTARRAY *point;  // hide 2d/3d (this will be an array of 1 point)
 }  LWPOINT; // "light-weight point"
@@ -163,7 +169,8 @@ typedef struct
 // LINETYPE
 typedef struct
 {
-	int type; // LINETYPE
+	unsigned char type; // LINETYPE
+	BOX2DFLOAT4 *bbox;
    	uint32 SRID;	
 	POINTARRAY    *points; // array of POINT3D
 } LWLINE; //"light-weight line"
@@ -171,7 +178,8 @@ typedef struct
 // POLYGONTYPE
 typedef struct
 {
-	int type; // POLYGONTYPE
+	unsigned char type; // POLYGONTYPE
+	BOX2DFLOAT4 *bbox;
    	uint32 SRID;	
 	int  nrings;
 	POINTARRAY **rings; // list of rings (list of points)
@@ -181,6 +189,7 @@ typedef struct
 typedef struct
 {
 	unsigned char type; 
+	BOX2DFLOAT4 *bbox;
    	uint32 SRID;	
 	int  ngeoms;
 	LWPOINT **geoms;
@@ -190,6 +199,7 @@ typedef struct
 typedef struct
 {  
 	unsigned char type; 
+	BOX2DFLOAT4 *bbox;
    	uint32 SRID;	
 	int  ngeoms;
 	LWLINE **geoms;
@@ -199,6 +209,7 @@ typedef struct
 typedef struct
 {  
 	unsigned char type; 
+	BOX2DFLOAT4 *bbox;
    	uint32 SRID;	
 	int  ngeoms;
 	LWPOLY **geoms;
@@ -208,28 +219,41 @@ typedef struct
 typedef struct
 {   
 	unsigned char type; 
+	BOX2DFLOAT4 *bbox;
    	uint32 SRID;	
 	int  ngeoms;
 	LWGEOM **geoms;
 } LWCOLLECTION; 
 
 // Casts LWGEOM->LW* (return NULL if cast is illegal)
-LWMPOLY *lwgeom_as_lwmpoly(LWGEOM *lwgeom);
-LWMLINE *lwgeom_as_lwmline(LWGEOM *lwgeom);
-LWMPOINT *lwgeom_as_lwmpoint(LWGEOM *lwgeom);
-LWCOLLECTION *lwgeom_as_lwcollection(LWGEOM *lwgeom);
-LWPOLY *lwgeom_as_lwpoly(LWGEOM *lwgeom);
-LWLINE *lwgeom_as_lwline(LWGEOM *lwgeom);
-LWPOINT *lwgeom_as_lwpoint(LWGEOM *lwgeom);
+extern LWMPOLY *lwgeom_as_lwmpoly(LWGEOM *lwgeom);
+extern LWMLINE *lwgeom_as_lwmline(LWGEOM *lwgeom);
+extern LWMPOINT *lwgeom_as_lwmpoint(LWGEOM *lwgeom);
+extern LWCOLLECTION *lwgeom_as_lwcollection(LWGEOM *lwgeom);
+extern LWPOLY *lwgeom_as_lwpoly(LWGEOM *lwgeom);
+extern LWLINE *lwgeom_as_lwline(LWGEOM *lwgeom);
+extern LWPOINT *lwgeom_as_lwpoint(LWGEOM *lwgeom);
 
 // Casts LW*->LWGEOM (always cast)
-LWGEOM *lwmpoly_as_lwgeom(LWMPOLY *obj);
-LWGEOM *lwmline_as_lwgeom(LWMLINE *obj);
-LWGEOM *lwmpoint_as_lwgeom(LWMPOINT *obj);
-LWGEOM *lwcollection_as_lwgeom(LWCOLLECTION *obj);
-LWGEOM *lwpoly_as_lwgeom(LWPOLY *obj);
-LWGEOM *lwline_as_lwgeom(LWLINE *obj);
-LWGEOM *lwpoint_as_lwgeom(LWPOINT *obj);
+extern LWGEOM *lwmpoly_as_lwgeom(LWMPOLY *obj);
+extern LWGEOM *lwmline_as_lwgeom(LWMLINE *obj);
+extern LWGEOM *lwmpoint_as_lwgeom(LWMPOINT *obj);
+extern LWGEOM *lwcollection_as_lwgeom(LWCOLLECTION *obj);
+extern LWGEOM *lwpoly_as_lwgeom(LWPOLY *obj);
+extern LWGEOM *lwline_as_lwgeom(LWLINE *obj);
+extern LWGEOM *lwpoint_as_lwgeom(LWPOINT *obj);
+
+// Call this function everytime LWGEOM coordinates 
+// change so to invalidate bounding box
+extern void lwgeom_changed(LWGEOM *lwgeom);
+
+// Call this function to drop BBOX and SRID
+// from LWGEOM. If LWGEOM type is *not* flagged
+// with the HASBBOX flag and has a bbox, it
+// will be released.
+extern void lwgeom_dropBBOX(LWGEOM *lwgeom);
+extern void lwgeom_dropSRID(LWGEOM *lwgeom);
+
 //-------------------------------------------------------------
 
 // copies a point from the point array into the parameter point
@@ -400,10 +424,6 @@ extern size_t lwgeom_size_poly(const char *serialized_line);
 // bounding box finder and (TODO) serialized form size finder.
 //--------------------------------------------------------
 
-// construct a new point.  point will NOT be copied
-// use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
-extern LWPOINT  *lwpoint_construct(int SRID, char wantbbox, POINTARRAY *point);
-
 // given the LWPOINT serialized form (or a pointer into a muli* one)
 // construct a proper LWPOINT.
 // serialized_form should point to the 8bit type format (with type = 1)
@@ -432,9 +452,6 @@ extern int lwpoint_getPoint4d_p(const LWPOINT *point, POINT4D *out);
 
 //--------------------------------------------------------
 
-// construct a new LWLINE.  points will *NOT* be copied
-// use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
-extern LWLINE *lwline_construct(int SRID, char wantbbox, POINTARRAY *points);
 
 // given the LWGEOM serialized form (or a pointer into a muli* one)
 // construct a proper LWLINE.
@@ -458,9 +475,6 @@ extern BOX3D *lwline_findbbox(LWLINE *line);
 
 //--------------------------------------------------------
 
-// construct a new LWPOLY.  arrays (points/points per ring) will NOT be copied
-// use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
-extern LWPOLY *lwpoly_construct(int SRID, char wantbbox, unsigned int nrings, POINTARRAY **points);
 
 // given the LWPOLY serialized form (or a pointer into a muli* one)
 // construct a proper LWPOLY.
@@ -693,19 +707,21 @@ extern BOX3D *combine_boxes(BOX3D *b1, BOX3D *b2);
 // WARNING! the EMPTY geom will result in a random BOX2D returned
 extern BOX2DFLOAT4 getbox2d(char *serialized_form);
 
+// Returns a pointer to the BBOX internal to the serialized form.
+// READ-ONLY!
+// Or NULL if serialized form does not have a BBOX
+extern BOX2DFLOAT4 *getbox2d_internal(char *serialized_form);
+
 // this function writes to 'box' and returns 0 if serialized_form
 // does not have a bounding box (empty geom)
 extern int getbox2d_p(char *serialized_form, BOX2DFLOAT4 *box);
 
-// this function returns a pointer to the 'internal' bounding
-// box of a serialized-form geometry. If the geometry does
-// not have an embedded bounding box the function returns NULL.
-// READ-ONLY!
-extern const BOX2DFLOAT4 * getbox2d_internal(char *serialized_form);
-
 // Expand given box of 'd' units in all directions 
 void expand_box2d(BOX2DFLOAT4 *box, double d);
 void expand_box3d(BOX3D *box, double d);
+
+// Check if to boxes are equal (considering FLOAT approximations)
+char box2d_same(BOX2DFLOAT4 *box1, BOX2DFLOAT4 *box2);
 
 //****************************************************************
 // memory management -- these only delete the memory associated
@@ -912,6 +928,7 @@ extern void lwgeom_forceRHR(LWGEOM *lwgeom);
 extern char *lwgeom_summary(LWGEOM *lwgeom, int offset);
 extern const char *lwgeom_typename(int type);
 extern int ptarray_compute_bbox_p(const POINTARRAY *pa, BOX2DFLOAT4 *result);
+extern BOX2DFLOAT4 *ptarray_compute_bbox(const POINTARRAY *pa);
 extern int lwpoint_compute_bbox_p(LWPOINT *point, BOX2DFLOAT4 *box);
 extern int lwline_compute_bbox_p(LWLINE *line, BOX2DFLOAT4 *box);
 extern int lwpoly_compute_bbox_p(LWPOLY *poly, BOX2DFLOAT4 *box);
@@ -923,12 +940,14 @@ extern BOX2DFLOAT4 *box2d_union(BOX2DFLOAT4 *b1, BOX2DFLOAT4 *b2);
 // args may overlap !
 extern int box2d_union_p(BOX2DFLOAT4 *b1, BOX2DFLOAT4 *b2, BOX2DFLOAT4 *ubox);
 extern int lwgeom_compute_bbox_p(LWGEOM *lwgeom, BOX2DFLOAT4 *box);
+// is lwgeom1 geometrically equal to lwgeom2 ?
+char lwgeom_same(LWGEOM *lwgeom1, LWGEOM *lwgeom2);
 
 // Add 'what' to 'to' at position 'where'.
 // where=0 == prepend
 // where=-1 == append
 // Mix of dimensions is not allowed (TODO: allow it?).
-// Returns a newly allocated LWGEOM
+// Returns a newly allocated LWGEOM (with NO BBOX)
 extern LWGEOM *lwgeom_add(const LWGEOM *to, uint32 where, const LWGEOM *what);
 
 LWGEOM *lwpoint_add(const LWPOINT *to, uint32 where, const LWGEOM *what);
@@ -939,14 +958,26 @@ LWGEOM *lwmline_add(const LWMLINE *to, uint32 where, const LWGEOM *what);
 LWGEOM *lwmpoint_add(const LWMPOINT *to, uint32 where, const LWGEOM *what);
 LWGEOM *lwcollection_add(const LWCOLLECTION *to, uint32 where, const LWGEOM *what);
 
-// Clone an LWGEOM (pointarray are not copied)
+// Clone an LWGEOM
+// pointarray are not copied.
+// BBOXes are copied only if HASBBOX flag is 0 (meaning bbox ownership)
 extern LWGEOM *lwgeom_clone(const LWGEOM *lwgeom);
 extern LWPOINT *lwpoint_clone(const LWPOINT *lwgeom);
 extern LWLINE *lwline_clone(const LWLINE *lwgeom);
 extern LWPOLY *lwpoly_clone(const LWPOLY *lwgeom);
 extern LWCOLLECTION *lwcollection_clone(const LWCOLLECTION *lwgeom);
+extern BOX2DFLOAT4 *box2d_clone(const BOX2DFLOAT4 *lwgeom);
 
-extern LWCOLLECTION *lwcollection_construct(unsigned int type, int SRID, char hasbbox, unsigned int ngeoms, LWGEOM **geoms);
+// Geometry constructors
+// Take ownership of arguments
+extern LWPOINT  *lwpoint_construct(int SRID, BOX2DFLOAT4 *bbox,
+	POINTARRAY *point);
+extern LWLINE *lwline_construct(int SRID, BOX2DFLOAT4 *bbox,
+	POINTARRAY *points);
+extern LWPOLY *lwpoly_construct(int SRID, BOX2DFLOAT4 *bbox,
+	unsigned int nrings, POINTARRAY **points);
+extern LWCOLLECTION *lwcollection_construct(unsigned int type, int SRID,
+	BOX2DFLOAT4 *bbox, unsigned int ngeoms, LWGEOM **geoms);
 
 // Return a char string with ASCII versionf of type flags
 extern const char *lwgeom_typeflags(unsigned char type);

@@ -59,3 +59,65 @@ ptarray_reverse(POINTARRAY *pa)
 	}
 
 }
+
+// calculate the 2d bounding box of a set of points
+// write result to the provided BOX2DFLOAT4
+// Return 0 if bounding box is NULL (empty geom)
+int
+ptarray_compute_bbox_p(const POINTARRAY *pa, BOX2DFLOAT4 *result)
+{
+	int t;
+	POINT2D *pt;
+
+	if (pa->npoints == 0) return 0;
+
+	pt = (POINT2D *)getPoint(pa, 0);
+
+	result->xmin = pt->x;
+	result->xmax = pt->x;
+	result->ymin = pt->y;
+	result->ymax = pt->y;
+
+	for (t=1;t<pa->npoints;t++)
+	{
+		pt = (POINT2D *)getPoint(pa, t);
+		if (pt->x < result->xmin) result->xmin = pt->x;
+		if (pt->y < result->ymin) result->ymin = pt->y;
+		if (pt->x > result->xmax) result->xmax = pt->x;
+		if (pt->y > result->ymax) result->ymax = pt->y;
+	}
+
+	return 1;
+}
+
+// calculate the 2d bounding box of a set of points
+// return allocated BOX2DFLOAT4 or NULL (for empty array)
+BOX2DFLOAT4 *
+ptarray_compute_bbox(const POINTARRAY *pa)
+{
+	int t;
+	POINT2D *pt;
+	BOX2DFLOAT4 *result;
+
+	if (pa->npoints == 0) return NULL;
+
+	result = lwalloc(sizeof(BOX2DFLOAT4));
+
+	pt = (POINT2D *)getPoint(pa, 0);
+
+	result->xmin = pt->x;
+	result->xmax = pt->x;
+	result->ymin = pt->y;
+	result->ymax = pt->y;
+
+	for (t=1;t<pa->npoints;t++)
+	{
+		pt = (POINT2D *)getPoint(pa, t);
+		if (pt->x < result->xmin) result->xmin = pt->x;
+		if (pt->y < result->ymin) result->ymin = pt->y;
+		if (pt->x > result->xmax) result->xmax = pt->x;
+		if (pt->y > result->ymax) result->ymax = pt->y;
+	}
+
+	return result;
+}

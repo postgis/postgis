@@ -12,7 +12,7 @@
 // construct a new LWPOLY.  arrays (points/points per ring) will NOT be copied
 // use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
 LWPOLY *
-lwpoly_construct(int SRID, char wantbbox, unsigned int nrings, POINTARRAY **points)
+lwpoly_construct(int SRID, BOX2DFLOAT4 *bbox, unsigned int nrings, POINTARRAY **points)
 {
 	LWPOLY *result;
 	int hasz, hasm;
@@ -37,10 +37,11 @@ lwpoly_construct(int SRID, char wantbbox, unsigned int nrings, POINTARRAY **poin
 
 	result = (LWPOLY*) lwalloc(sizeof(LWPOLY));
 	result->type = lwgeom_makeType_full(hasz, hasm, (SRID!=-1), POLYGONTYPE,
-		wantbbox);
+		0);
 	result->SRID = SRID;
 	result->nrings = nrings;
 	result->rings = points;
+	result->bbox = bbox;
 
 	return result;
 }
@@ -88,9 +89,11 @@ lwpoly_deserialize(char *serialized_form)
 
 	loc = serialized_form+1;
 
-	if (lwgeom_hasBBOX(type))
-	{
+	if (lwgeom_hasBBOX(type)) {
+		result->bbox = (BOX2DFLOAT4 *)loc;
 		loc += sizeof(BOX2DFLOAT4);
+	} else {
+		result->bbox = NULL;
 	}
 
 	if ( lwgeom_hasSRID(type))
@@ -173,12 +176,12 @@ lwpoly_serialize_buf(LWPOLY *poly, char *buf, size_t *retsize)
 
 	buf[0] = (unsigned char) lwgeom_makeType_full(
 		TYPE_HASZ(poly->type), TYPE_HASM(poly->type),
-		hasSRID, POLYGONTYPE, TYPE_HASBBOX(poly->type));
+		hasSRID, POLYGONTYPE, poly->bbox ? 1 : 0);
 	loc = buf+1;
 
-	if (TYPE_HASBBOX(poly->type))
+	if (poly->bbox)
 	{
-		lwgeom_compute_bbox_p((LWGEOM *)poly, (BOX2DFLOAT4 *)loc);
+		memcpy(loc, poly->bbox, sizeof(BOX2DFLOAT4));
 		size += sizeof(BOX2DFLOAT4); // bvol
 		loc += sizeof(BOX2DFLOAT4);
 	}
@@ -349,7 +352,7 @@ lwpoly_serialize_size(LWPOLY *poly)
 	uint32 i;
 
 	if ( poly->SRID != -1 ) size += 4; // SRID
-	if ( TYPE_HASBBOX(poly->type) ) size += sizeof(BOX2DFLOAT4);
+	if ( poly->bbox ) size += sizeof(BOX2DFLOAT4);
 
 #ifdef DEBUG_CALLS
 	lwnotice("lwpoly_serialize_size called with poly[%p] (%d rings)",
@@ -424,6 +427,8 @@ lwpoly_clone(const LWPOLY *g)
 	memcpy(ret, g, sizeof(LWPOLY));
 	ret->rings = lwalloc(sizeof(POINTARRAY *)*g->nrings);
 	memcpy(ret->rings, g->rings, sizeof(POINTARRAY *)*g->nrings);
+	if ( g->bbox && ! TYPE_HASBBOX(g->type) )
+		ret->bbox = box2d_clone(g->bbox);
 	return ret;
 }
 
@@ -470,8 +475,7 @@ lwpoly_add(const LWPOLY *to, uint32 where, const LWGEOM *what)
 	else newtype = COLLECTIONTYPE;
 
 	col = lwcollection_construct(newtype,
-		to->SRID,
-		( TYPE_HASBBOX(what->type) || TYPE_HASBBOX(to->type) ),
+		to->SRID, NULL,
 		2, geoms);
 	
 	return (LWGEOM *)col;

@@ -26,6 +26,11 @@ lwmline_deserialize(char *srl)
 	result->ngeoms = insp->ngeometries;
 	result->geoms = lwalloc(sizeof(LWLINE *)*insp->ngeometries);
 
+	if (lwgeom_hasBBOX(srl[0]))
+		result->bbox = (BOX2DFLOAT4 *)(srl+1);
+	else result->bbox = NULL;
+
+
 	for (i=0; i<insp->ngeometries; i++)
 	{
 		result->geoms[i] = lwline_deserialize(insp->sub_geoms[i]);
@@ -80,8 +85,7 @@ lwmline_add(const LWMLINE *to, uint32 where, const LWGEOM *what)
 	else newtype = COLLECTIONTYPE;
 
 	col = lwcollection_construct(newtype,
-		to->SRID,
-		( TYPE_HASBBOX(what->type) || TYPE_HASBBOX(to->type) ),
+		to->SRID, NULL,
 		to->ngeoms+1, geoms);
 	
 	return (LWGEOM *)col;

@@ -10,6 +10,12 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.9  2004/10/08 13:20:54  strk
+ * Changed LWGEOM structure to point to an actual BOX2DFLOAT4.
+ * Renamed most function to reflect a TYPE_method naming convention.
+ * (you'll need a dump/reload for it to work)
+ * Added more manipulation functions.
+ *
  * Revision 1.8  2004/10/05 21:54:48  strk
  * Yes another change in SPI_cursor_open
  *
@@ -142,9 +148,9 @@ Datum create_lwhistogram2d(PG_FUNCTION_ARGS);
 Datum build_lwhistogram2d(PG_FUNCTION_ARGS);
 Datum explode_lwhistogram2d(PG_FUNCTION_ARGS);
 Datum estimate_lwhistogram2d(PG_FUNCTION_ARGS);
-Datum lwgeom_gist_sel(PG_FUNCTION_ARGS);
+Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS);
 #if USE_VERSION >= 80
-Datum lwgeom_analyze(PG_FUNCTION_ARGS);
+Datum LWGEOM_analyze(PG_FUNCTION_ARGS);
 #endif
 
 //text form of LWHISTOGRAM2D is:
@@ -803,8 +809,8 @@ get_restriction_var(List *args, int varRelid, Var **var,
 }
 
 //restriction in the GiST && operator
-PG_FUNCTION_INFO_V1(lwgeom_gist_sel);
-Datum lwgeom_gist_sel(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(LWGEOM_gist_sel);
+Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS)
 {
 	Query *root = (Query *) PG_GETARG_POINTER(0);
 	List *args = (List *) PG_GETARG_POINTER(2);
@@ -832,7 +838,7 @@ Datum lwgeom_gist_sel(PG_FUNCTION_ARGS)
 	PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_SEL);
 #endif
 
-	//elog(NOTICE,"lwgeom_gist_sel was called");
+	//elog(NOTICE,"LWGEOM_gist_sel was called");
 
 	if (!get_restriction_var(args, varRelid, &var, &other, &varonleft))
 	{
@@ -881,7 +887,7 @@ Datum lwgeom_gist_sel(PG_FUNCTION_ARGS)
 	SPIcode = SPI_connect();
 	if (SPIcode  != SPI_OK_CONNECT)
 	{
-		elog(NOTICE,"lwgeom_gist_sel: couldnt open a connection to SPI:%i",SPIcode);
+		elog(NOTICE,"LWGEOM_gist_sel: couldnt open a connection to SPI:%i",SPIcode);
 		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_SEL) ;
 	}
 
@@ -891,14 +897,14 @@ Datum lwgeom_gist_sel(PG_FUNCTION_ARGS)
 	if (SPIcode  != SPI_OK_SELECT )
 	{
 		SPI_finish();
-		elog(NOTICE,"lwgeom_gist_sel: couldnt execute sql via SPI");
+		elog(NOTICE,"LWGEOM_gist_sel: couldnt execute sql via SPI");
 		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_SEL) ;
 	}
 
 	if (SPI_processed !=1)
 	{
 		SPI_finish();
-		//elog(NOTICE,"lwgeom_gist_sel: geometry_columns didnt return a unique value");
+		//elog(NOTICE,"LWGEOM_gist_sel: geometry_columns didnt return a unique value");
 		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_SEL) ;
 	}
 
@@ -909,28 +915,28 @@ Datum lwgeom_gist_sel(PG_FUNCTION_ARGS)
 	if (isnull)
 	{
 		SPI_finish();
-		//elog(NOTICE,"lwgeom_gist_sel: geometry_columns returned a null histogram");
+		//elog(NOTICE,"LWGEOM_gist_sel: geometry_columns returned a null histogram");
 		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_SEL) ;
 	}
-//elog(NOTICE,"lwgeom_gist_sel: checking against estimate_histogram2d");
+//elog(NOTICE,"LWGEOM_gist_sel: checking against estimate_histogram2d");
 
 	// now we have the histogram, and our search box - use the estimate_histogram2d(histo,box) to get the result!
 	myest = DatumGetFloat8( DirectFunctionCall2( estimate_lwhistogram2d, datum, PointerGetDatum(&search_box) ) );
 
 	if ( (myest<0) || (myest!=myest) ) // <0?  or NaN?
 	{
-		//elog(NOTICE,"lwgeom_gist_sel: got something crazy back from estimate_histogram2d");
+		//elog(NOTICE,"LWGEOM_gist_sel: got something crazy back from estimate_histogram2d");
 		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_SEL) ;
 	}
 
 	SPIcode =SPI_finish();
 	if (SPIcode  != SPI_OK_FINISH )
 	{
-		//elog(NOTICE,"lwgeom_gist_sel: couldnt disconnect from SPI");
+		//elog(NOTICE,"LWGEOM_gist_sel: couldnt disconnect from SPI");
 		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_SEL) ;
 	}
 
-//elog(NOTICE,"lwgeom_gist_sel: finished, returning with %lf",myest);
+//elog(NOTICE,"LWGEOM_gist_sel: finished, returning with %lf",myest);
         PG_RETURN_FLOAT8(myest);
 }
 
@@ -1182,8 +1188,8 @@ elog(NOTICE, " avg feat overlaps %f cells", avg_feat_cells);
  * This is the one used for PG version >= 7.5
  *
  */
-PG_FUNCTION_INFO_V1(lwgeom_gist_sel);
-Datum lwgeom_gist_sel(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(LWGEOM_gist_sel);
+Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS)
 {
 	Query *root = (Query *) PG_GETARG_POINTER(0);
 	//Oid operator = PG_GETARG_OID(1);
@@ -1200,14 +1206,14 @@ Datum lwgeom_gist_sel(PG_FUNCTION_ARGS)
 	float8 selectivity=0;
 
 #if DEBUG_GEOMETRY_STATS
-	elog(NOTICE, "lwgeom_gist_sel called");
+	elog(NOTICE, "LWGEOM_gist_sel called");
 #endif
 
         /* Fail if not a binary opclause (probably shouldn't happen) */
 	if (list_length(args) != 2)
 	{
 #if DEBUG_GEOMETRY_STATS
-		elog(NOTICE, "lwgeom_gist_sel: not a binary opclause");
+		elog(NOTICE, "LWGEOM_gist_sel: not a binary opclause");
 #endif
 		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_SEL);
 	}
@@ -1851,8 +1857,8 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
  * value for now.
  *
  */
-PG_FUNCTION_INFO_V1(lwgeom_analyze);
-Datum lwgeom_analyze(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(LWGEOM_analyze);
+Datum LWGEOM_analyze(PG_FUNCTION_ARGS)
 {
 	VacAttrStats *stats = (VacAttrStats *)PG_GETARG_POINTER(0);
 	Form_pg_attribute attr = stats->attr;

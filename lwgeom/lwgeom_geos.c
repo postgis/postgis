@@ -43,7 +43,7 @@ Datum centroid(PG_FUNCTION_ARGS);
  * Define this to have have many notices printed
  * during postgis->geos and geos->postgis conversions
  */
-#undef DEBUG_CONVERTER
+//#undef DEBUG_CONVERTER 
 #ifdef DEBUG_CONVERTER
 #define DEBUG_POSTGIS2GEOS 1
 #define DEBUG_GEOS2POSTGIS 1
@@ -1900,7 +1900,7 @@ lwpoint_from_geometry(Geometry *g, char want3d)
 	GEOSdeleteChar( (char*) pts);
 
 	// Construct LWPOINT
-	point = lwpoint_construct(-1, 0, pa);
+	point = lwpoint_construct(-1, NULL, pa);
 
 	return point;
 }
@@ -1940,7 +1940,7 @@ lwline_from_geometry(Geometry *g, char want3d)
 	GEOSdeleteChar( (char*) pts);
 
 	// Construct LWPOINT
-	line = lwline_construct(-1, 0, pa);
+	line = lwline_construct(-1, NULL, pa);
 
 	return line;
 }
@@ -2006,7 +2006,7 @@ lwpoly_from_geometry(Geometry *g, char want3d)
 	}
 
 	// Construct LWPOLY
-	poly = lwpoly_construct(-1, 0, nrings+1, rings);
+	poly = lwpoly_construct(-1, NULL, nrings+1, rings);
 
 	return poly;
 }
@@ -2020,7 +2020,6 @@ lwcollection_from_geometry(Geometry *geom, char want3d)
 	LWCOLLECTION *ret;
 	int type = GEOSGeometryTypeId(geom) ;
 	int SRID = GEOSGetSRID(geom);
-	char wantbbox = 0;
 	int i;
 
 	ngeoms = GEOSGetNumGeometries(geom);
@@ -2044,7 +2043,7 @@ lwcollection_from_geometry(Geometry *geom, char want3d)
 #endif
 	}
 
-	ret = lwcollection_construct(type, SRID, wantbbox, ngeoms, geoms);
+	ret = lwcollection_construct(type, SRID, NULL, ngeoms, geoms);
 	return ret;
 }
 
@@ -2195,6 +2194,11 @@ POSTGIS2GEOS(PG_LWGEOM *geom)
 {
 	Geometry *ret;
 	LWGEOM *lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom));
+	if ( ! lwgeom )
+	{
+		lwerror("POSTGIS2GEOS: unable to deserialize input");
+		return NULL;
+	}
 	ret = LWGEOM2GEOS(lwgeom);
 	lwgeom_release(lwgeom);
 	return ret;

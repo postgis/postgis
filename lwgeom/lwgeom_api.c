@@ -167,7 +167,8 @@ double nextUp_d(float d)
 
 // Convert BOX3D to BOX2D
 // returned box2d is allocated with 'lwalloc'
-BOX2DFLOAT4 *box3d_to_box2df(BOX3D *box)
+BOX2DFLOAT4 *
+box3d_to_box2df(BOX3D *box)
 {
 	BOX2DFLOAT4 *result = (BOX2DFLOAT4*) lwalloc(sizeof(BOX2DFLOAT4));
 
@@ -189,7 +190,8 @@ BOX2DFLOAT4 *box3d_to_box2df(BOX3D *box)
 // Convert BOX3D to BOX2D using pre-allocated BOX2D
 // returned box2d is allocated with 'lwalloc'
 // return 0 on error (NULL input box)
-int box3d_to_box2df_p(BOX3D *box, BOX2DFLOAT4 *result)
+int
+box3d_to_box2df_p(BOX3D *box, BOX2DFLOAT4 *result)
 {
 	if (box == NULL)
 	{
@@ -210,7 +212,8 @@ int box3d_to_box2df_p(BOX3D *box, BOX2DFLOAT4 *result)
 
 // convert BOX2D to BOX3D
 // zmin and zmax are set to 0.0
-BOX3D box2df_to_box3d(BOX2DFLOAT4 *box)
+BOX3D
+box2df_to_box3d(BOX2DFLOAT4 *box)
 {
 	BOX3D result;
 
@@ -230,7 +233,8 @@ BOX3D box2df_to_box3d(BOX2DFLOAT4 *box)
 
 // convert BOX2D to BOX3D, using pre-allocated BOX3D as output
 // Z values are set to 0.0.
-void box2df_to_box3d_p(BOX2DFLOAT4 *box, BOX3D *out)
+void
+box2df_to_box3d_p(BOX2DFLOAT4 *box, BOX3D *out)
 {
 	if (box == NULL) return;
 
@@ -308,7 +312,8 @@ BOX3D *combine_boxes(BOX3D *b1, BOX3D *b2)
 // returns a real entity so it doesnt leak
 // if this has a pre-built BOX2d, then we use it,
 // otherwise we need to compute it.
-BOX2DFLOAT4 getbox2d(char *serialized_form)
+BOX2DFLOAT4
+getbox2d(char *serialized_form)
 {
 	int type = (unsigned char) serialized_form[0];
 	char *loc;
@@ -345,6 +350,15 @@ BOX2DFLOAT4 getbox2d(char *serialized_form)
 	lwfree(box3d);
 
 	return result;
+}
+
+// returns a pointer to internal storage, or NULL
+// if the serialized form does not have a BBOX.
+BOX2DFLOAT4 *
+getbox2d_internal(char *srl)
+{
+	if (TYPE_HASBBOX(srl[0])) return (BOX2DFLOAT4 *)(srl+1);
+	else return NULL;
 }
 
 // same as getbox2d, but modifies box instead of returning result on the stack
@@ -404,21 +418,6 @@ getbox2d_p(char *serialized_form, BOX2DFLOAT4 *box)
 	lwfree(box3d);
 
 	return 1;
-}
-
-// this function returns a pointer to the 'internal' bounding
-// box of a serialized-form geometry. If the geometry does
-// not have an embedded bounding box the function returns NULL.
-// READ-ONLY!
-const BOX2DFLOAT4 *
-getbox2d_internal(char *serialized_form)
-{
-	unsigned char type = (unsigned char) serialized_form[0];
-
-	// No embedded bounding box ...
-	if (!lwgeom_hasBBOX(type)) return NULL;
-
-	return (BOX2DFLOAT4 *)(serialized_form+1);
 }
 
 //************************************************************************
@@ -753,35 +752,6 @@ pointArray_bbox(const POINTARRAY *pa)
 	return result;
 }
 
-// calculate the 2d bounding box of a set of points
-// write result to the provided BOX2DFLOAT4
-// Return 0 if bounding box is NULL (empty geom)
-int
-ptarray_compute_bbox_p(const POINTARRAY *pa, BOX2DFLOAT4 *result)
-{
-	int t;
-	POINT2D *pt;
-
-	if (pa->npoints == 0) return 0;
-
-	pt = (POINT2D *)getPoint(pa, 0);
-
-	result->xmin = pt->x;
-	result->xmax = pt->x;
-	result->ymin = pt->y;
-	result->ymax = pt->y;
-
-	for (t=1;t<pa->npoints;t++)
-	{
-		pt = (POINT2D *)getPoint(pa, t);
-		if (pt->x < result->xmin) result->xmin = pt->x;
-		if (pt->y < result->ymin) result->ymin = pt->y;
-		if (pt->x > result->xmax) result->xmax = pt->x;
-		if (pt->y > result->ymax) result->ymax = pt->y;
-	}
-
-	return 1;
-}
 
 //size of point represeneted in the POINTARRAY
 // 16 for 2d, 24 for 3d, 32 for 4d

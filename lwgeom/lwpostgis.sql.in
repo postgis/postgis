@@ -95,7 +95,7 @@ CREATEFUNCTION geometry_out(geometry)
 #if USE_VERSION >= 80
 CREATEFUNCTION geometry_analyze(internal)
 	RETURNS bool
-	AS '@MODULE_FILENAME@', 'lwgeom_analyze'
+	AS '@MODULE_FILENAME@', 'LWGEOM_analyze'
 	LANGUAGE 'C' WITH (isstrict);
 #endif
 
@@ -242,42 +242,47 @@ CREATE TYPE box2d (
 
 CREATEFUNCTION box2d_overleft(box2d, box2d) 
 	RETURNS bool
-	AS '@MODULE_FILENAME@'
+	AS '@MODULE_FILENAME@', 'BOX2D_overleft'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION box2d_overright(box2d, box2d) 
 	RETURNS bool
-	AS '@MODULE_FILENAME@' 
+	AS '@MODULE_FILENAME@', 'BOX2D_overright' 
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION box2d_left(box2d, box2d) 
 	RETURNS bool
-	AS '@MODULE_FILENAME@' 
+	AS '@MODULE_FILENAME@', 'BOX2D_left' 
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION box2d_right(box2d, box2d) 
 	RETURNS bool
-	AS '@MODULE_FILENAME@' 
+	AS '@MODULE_FILENAME@', 'BOX2D_right' 
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION box2d_contain(box2d, box2d) 
 	RETURNS bool
-	AS '@MODULE_FILENAME@'
+	AS '@MODULE_FILENAME@', 'BOX2D_contain'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION box2d_contained(box2d, box2d) 
 	RETURNS bool
-	AS '@MODULE_FILENAME@'
+	AS '@MODULE_FILENAME@', 'BOX2D_contained'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION box2d_overlap(box2d, box2d) 
 	RETURNS bool
-	AS '@MODULE_FILENAME@'
+	AS '@MODULE_FILENAME@', 'BOX2D_overlap'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION box2d_same(box2d, box2d) 
 	RETURNS bool
-	AS '@MODULE_FILENAME@' 
+	AS '@MODULE_FILENAME@', 'BOX2D_same'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATEFUNCTION box2d_intersects(box2d, box2d) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@', 'BOX2D_intersects'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATE OPERATOR << (
@@ -442,47 +447,47 @@ CREATEFUNCTION postgis_gist_sel(opaque, oid,  opaque, int4)
 CREATEFUNCTION postgis_gist_sel (internal, oid, internal, int4)
 #endif
 	RETURNS float8
-	AS '@MODULE_FILENAME@', 'lwgeom_gist_sel'
+	AS '@MODULE_FILENAME@', 'LWGEOM_gist_sel'
 	LANGUAGE 'C';
 
 CREATEFUNCTION geometry_overleft(geometry, geometry) 
 	RETURNS bool
-	AS '@MODULE_FILENAME@', 'lwgeom_overleft'
+	AS '@MODULE_FILENAME@', 'LWGEOM_overleft'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION geometry_overright(geometry, geometry) 
 	RETURNS bool
-	AS '@MODULE_FILENAME@', 'lwgeom_overright'
+	AS '@MODULE_FILENAME@', 'LWGEOM_overright'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION geometry_left(geometry, geometry) 
 	RETURNS bool
-	AS '@MODULE_FILENAME@', 'lwgeom_left'
+	AS '@MODULE_FILENAME@', 'LWGEOM_left'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION geometry_right(geometry, geometry) 
 	RETURNS bool
-	AS '@MODULE_FILENAME@', 'lwgeom_right'
+	AS '@MODULE_FILENAME@', 'LWGEOM_right'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION geometry_contain(geometry, geometry) 
 	RETURNS bool
-	AS '@MODULE_FILENAME@', 'lwgeom_contain'
+	AS '@MODULE_FILENAME@', 'LWGEOM_contain'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION geometry_contained(geometry, geometry) 
 	RETURNS bool
-	AS '@MODULE_FILENAME@', 'lwgeom_contained'
+	AS '@MODULE_FILENAME@', 'LWGEOM_contained'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION geometry_overlap(geometry, geometry) 
 	RETURNS bool
-	AS '@MODULE_FILENAME@', 'lwgeom_overlap'
+	AS '@MODULE_FILENAME@', 'LWGEOM_overlap'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION geometry_same(geometry, geometry) 
 	RETURNS bool
-	AS '@MODULE_FILENAME@', 'lwgeom_same'
+	AS '@MODULE_FILENAME@', 'LWGEOM_same'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATE OPERATOR << (
@@ -537,39 +542,39 @@ CREATE OPERATOR ~ (
 -- gist support functions
 
 
-CREATEFUNCTION gist_lwgeom_consistent(internal,geometry,int4) 
+CREATEFUNCTION LWGEOM_gist_consistent(internal,geometry,int4) 
 	RETURNS bool 
-	AS '@MODULE_FILENAME@' ,'gist_lwgeom_consistent'
+	AS '@MODULE_FILENAME@' ,'LWGEOM_gist_consistent'
 	LANGUAGE 'C';
 
-CREATEFUNCTION gist_lwgeom_compress(internal) 
+CREATEFUNCTION LWGEOM_gist_compress(internal) 
 	RETURNS internal 
-	AS '@MODULE_FILENAME@','gist_lwgeom_compress'
+	AS '@MODULE_FILENAME@','LWGEOM_gist_compress'
 	LANGUAGE 'C';
 
-CREATEFUNCTION gist_lwgeom_penalty(internal,internal,internal) 
+CREATEFUNCTION LWGEOM_gist_penalty(internal,internal,internal) 
 	RETURNS internal 
-	AS '@MODULE_FILENAME@' ,'lwgeom_box_penalty'
+	AS '@MODULE_FILENAME@' ,'LWGEOM_gist_penalty'
 	LANGUAGE 'C';
 
-CREATEFUNCTION gist_lwgeom_picksplit(internal, internal) 
+CREATEFUNCTION LWGEOM_gist_picksplit(internal, internal) 
 	RETURNS internal 
-	AS '@MODULE_FILENAME@' ,'lwgeom_gbox_picksplit'
+	AS '@MODULE_FILENAME@' ,'LWGEOM_gist_picksplit'
 	LANGUAGE 'C';
 
-CREATEFUNCTION gist_lwgeom_union(bytea, internal) 
+CREATEFUNCTION LWGEOM_gist_union(bytea, internal) 
 	RETURNS internal 
-	AS '@MODULE_FILENAME@' ,'lwgeom_box_union'
+	AS '@MODULE_FILENAME@' ,'LWGEOM_gist_union'
 	LANGUAGE 'C';
 
-CREATEFUNCTION gist_lwgeom_same(box2d, box2d, internal) 
+CREATEFUNCTION LWGEOM_gist_same(box2d, box2d, internal) 
 	RETURNS internal 
-	AS '@MODULE_FILENAME@' ,'lwgeom_gbox_same'
+	AS '@MODULE_FILENAME@' ,'LWGEOM_gist_same'
 	LANGUAGE 'C';
 
-CREATEFUNCTION gist_lwgeom_decompress(internal) 
+CREATEFUNCTION LWGEOM_gist_decompress(internal) 
 	RETURNS internal
-	AS '@MODULE_FILENAME@' ,'gist_rtree_decompress'
+	AS '@MODULE_FILENAME@' ,'LWGEOM_gist_decompress'
 	LANGUAGE 'C';
 
 -------------------------------------------
@@ -654,43 +659,43 @@ INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
 	SELECT am.oid, opcl.oid, pro.oid, 1
 	FROM pg_am am, pg_opclass opcl, pg_proc pro
 	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops'
-		AND proname = 'gist_lwgeom_consistent';
+		AND proname = 'LWGEOM_gist_consistent';
 
 INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
 	SELECT am.oid, opcl.oid, pro.oid, 2
 	FROM pg_am am, pg_opclass opcl, pg_proc pro
 	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops'
-		AND proname = 'gist_lwgeom_union';
+		AND proname = 'LWGEOM_gist_union';
 
 INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
 	SELECT am.oid, opcl.oid, pro.oid, 3
 	FROM pg_am am, pg_opclass opcl, pg_proc pro
 	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops'
-		AND proname = 'gist_lwgeom_compress';
+		AND proname = 'LWGEOM_gist_compress';
 
 INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
 	SELECT am.oid, opcl.oid, pro.oid, 4
 	FROM pg_am am, pg_opclass opcl, pg_proc pro
 	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops'
-		AND proname = 'gist_lwgeom_decompress';
+		AND proname = 'LWGEOM_gist_decompress';
 
 INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
 	SELECT am.oid, opcl.oid, pro.oid, 5
 	FROM pg_am am, pg_opclass opcl, pg_proc pro
 	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops'
-		AND proname = 'gist_lwgeom_penalty';
+		AND proname = 'LWGEOM_gist_penalty';
 
 INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
 	SELECT am.oid, opcl.oid, pro.oid, 6
 	FROM pg_am am, pg_opclass opcl, pg_proc pro
 	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops'
-		AND proname = 'gist_lwgeom_picksplit';
+		AND proname = 'LWGEOM_gist_picksplit';
 
 INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
 	SELECT am.oid, opcl.oid, pro.oid, 7
 	FROM pg_am am, pg_opclass opcl, pg_proc pro
 	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops'
-		AND proname = 'gist_lwgeom_same';
+		AND proname = 'LWGEOM_gist_same';
 
 #elsif USE_VERSION == 72
 
@@ -796,7 +801,7 @@ INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
    WHERE
       opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
       and opcname = 'gist_geometry_ops'
-      and proname = 'gist_lwgeom_consistent';
+      and proname = 'LWGEOM_gist_consistent';
 
 INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
    SELECT opcl.oid, 2, pro.oid
@@ -804,7 +809,7 @@ INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
    WHERE
       opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
       and opcname = 'gist_geometry_ops'
-      and proname = 'gist_lwgeom_union';
+      and proname = 'LWGEOM_gist_union';
 
 INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
    SELECT opcl.oid, 3, pro.oid
@@ -812,7 +817,7 @@ INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
    WHERE
       opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
       and opcname = 'gist_geometry_ops'
-      and proname = 'gist_lwgeom_compress';
+      and proname = 'LWGEOM_gist_compress';
 
 INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
    SELECT opcl.oid, 4, pro.oid
@@ -820,7 +825,7 @@ INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
    WHERE
       opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
       and opcname = 'gist_geometry_ops'
-      and proname = 'gist_lwgeom_decompress';
+      and proname = 'LWGEOM_gist_decompress';
 
 INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
    SELECT opcl.oid, 5, pro.oid
@@ -828,7 +833,7 @@ INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
    WHERE
       opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
       and opcname = 'gist_geometry_ops'
-      and proname = 'gist_lwgeom_penalty';
+      and proname = 'LWGEOM_gist_penalty';
 
 INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
    SELECT opcl.oid, 6, pro.oid
@@ -836,7 +841,7 @@ INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
    WHERE
       opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
       and opcname = 'gist_geometry_ops'
-      and proname = 'gist_lwgeom_picksplit';
+      and proname = 'LWGEOM_gist_picksplit';
 
 INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
    SELECT opcl.oid, 7, pro.oid
@@ -844,7 +849,7 @@ INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
    WHERE
       opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
       and opcname = 'gist_geometry_ops'
-      and proname = 'gist_lwgeom_same';
+      and proname = 'LWGEOM_gist_same';
 
 #else // USE_VERSION >= 73
 
@@ -862,13 +867,13 @@ CREATE OPERATOR CLASS gist_geometry_ops
         OPERATOR        6        ~=	RECHECK,
         OPERATOR        7        ~	RECHECK,
         OPERATOR        8        @	RECHECK,
-        FUNCTION        1        gist_lwgeom_consistent (internal, geometry, int4),
-        FUNCTION        2        gist_lwgeom_union (bytea, internal),
-        FUNCTION        3        gist_lwgeom_compress (internal),
-        FUNCTION        4        gist_lwgeom_decompress (internal),
-        FUNCTION        5        gist_lwgeom_penalty (internal, internal, internal),
-        FUNCTION        6        gist_lwgeom_picksplit (internal, internal),
-        FUNCTION        7        gist_lwgeom_same (box2d, box2d, internal);
+        FUNCTION        1        LWGEOM_gist_consistent (internal, geometry, int4),
+        FUNCTION        2        LWGEOM_gist_union (bytea, internal),
+        FUNCTION        3        LWGEOM_gist_compress (internal),
+        FUNCTION        4        LWGEOM_gist_decompress (internal),
+        FUNCTION        5        LWGEOM_gist_penalty (internal, internal, internal),
+        FUNCTION        6        LWGEOM_gist_picksplit (internal, internal),
+        FUNCTION        7        LWGEOM_gist_same (box2d, box2d, internal);
 
 UPDATE pg_opclass 
 	SET opckeytype = (select oid from pg_type where typname = 'box2d') 

@@ -175,7 +175,7 @@ simplify2d_lwline(LWLINE *iline, double dist)
 
 	ipts = iline->points;
 	opts = DP_simplify2d(ipts, dist);
-	oline = lwline_construct(iline->SRID, TYPE_HASBBOX(iline->type), opts);
+	oline = lwline_construct(iline->SRID, NULL, opts);
 
 	return oline;
 }
@@ -244,11 +244,7 @@ elog(NOTICE, "simplify_polygon3d: simplified polygon with %d rings", norings);
 
 	if ( ! norings ) return NULL;
 
-	opoly = palloc(sizeof(LWPOLY));
-	opoly->type = ipoly->type;
-	opoly->SRID = ipoly->SRID;
-	opoly->nrings = norings;
-	opoly->rings = orings;
+	opoly = lwpoly_construct(ipoly->SRID, NULL, norings, orings);
 
 	return opoly;
 }

@@ -11,7 +11,7 @@
 // construct a new LWLINE.  points will *NOT* be copied
 // use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
 LWLINE *
-lwline_construct(int SRID, char wantbbox, POINTARRAY *points)
+lwline_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points)
 {
 	LWLINE *result;
 	result = (LWLINE*) lwalloc(sizeof(LWLINE));
@@ -20,9 +20,10 @@ lwline_construct(int SRID, char wantbbox, POINTARRAY *points)
 		TYPE_HASZ(points->dims),
 		TYPE_HASM(points->dims),
 		(SRID!=-1), LINETYPE,
-		wantbbox);
+		0);
 	result->SRID = SRID;
 	result->points = points;
+	result->bbox = bbox;
 
 	return result;
 }
@@ -56,10 +57,12 @@ lwline_deserialize(char *serialized_form)
 	if (lwgeom_hasBBOX(type))
 	{
 		//lwnotice("line has bbox");
+		result->bbox = (BOX2DFLOAT4 *)loc;
 		loc += sizeof(BOX2DFLOAT4);
 	}
 	else
 	{
+		result->bbox = NULL;
 		//lwnotice("line has NO bbox");
 	}
 
@@ -134,16 +137,18 @@ lwline_serialize_buf(LWLINE *line, char *buf, size_t *retsize)
 
 	hasSRID = (line->SRID != -1);
 
-	buf[0] = line->type; 
+	buf[0] = (unsigned char) lwgeom_makeType_full(
+		TYPE_HASZ(line->type), TYPE_HASM(line->type),
+		hasSRID, LINETYPE, line->bbox ? 1 : 0);
 	loc = buf+1;
 
 #ifdef DEBUG
 	lwnotice("lwline_serialize_buf added type (%d)", line->type);
 #endif
 
-	if (TYPE_HASBBOX(line->type))
+	if (line->bbox)
 	{
-		lwgeom_compute_bbox_p((LWGEOM *)line, (BOX2DFLOAT4 *)loc);
+		memcpy(loc, line->bbox, sizeof(BOX2DFLOAT4));
 		loc += sizeof(BOX2DFLOAT4);
 #ifdef DEBUG
 		lwnotice("lwline_serialize_buf added BBOX");
@@ -211,7 +216,7 @@ lwline_serialize_size(LWLINE *line)
 #endif
 
 	if ( line->SRID != -1 ) size += 4; // SRID
-	if ( TYPE_HASBBOX(line->type) ) size += sizeof(BOX2DFLOAT4);
+	if ( line->bbox ) size += sizeof(BOX2DFLOAT4);
 
 	size += 4; // npoints
 	size += pointArray_ptsize(line->points)*line->points->npoints;
@@ -294,6 +299,8 @@ lwline_clone(const LWLINE *g)
 {
 	LWLINE *ret = lwalloc(sizeof(LWLINE));
 	memcpy(ret, g, sizeof(LWLINE));
+	if ( g->bbox && ! TYPE_HASBBOX(g->type) )
+		ret->bbox = box2d_clone(g->bbox);
 	return ret;
 }
 
@@ -340,8 +347,7 @@ lwline_add(const LWLINE *to, uint32 where, const LWGEOM *what)
 	else newtype = COLLECTIONTYPE;
 
 	col = lwcollection_construct(newtype,
-		to->SRID,
-		( TYPE_HASBBOX(what->type) || TYPE_HASBBOX(to->type) ),
+		to->SRID, NULL,
 		2, geoms);
 	
 	return (LWGEOM *)col;

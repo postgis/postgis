@@ -13,6 +13,8 @@ lwgeom_deserialize(char *srl)
 {
 	int type = lwgeom_getType(srl[0]);
 
+	lwnotice("lwgeom_deserialize got %s", lwgeom_typename(type));
+
 	switch (type)
 	{
 		case POINTTYPE:
@@ -219,7 +221,8 @@ lwgeom_as_lwpoly(LWGEOM *lwgeom)
 LWCOLLECTION *
 lwgeom_as_lwcollection(LWGEOM *lwgeom)
 {
-	if ( lwgeom->type >= MULTIPOINTTYPE ) return (LWCOLLECTION *)lwgeom;
+	if ( TYPE_GETTYPE(lwgeom->type) >= MULTIPOINTTYPE )
+		return (LWCOLLECTION *)lwgeom;
 	else return NULL;
 }
 
@@ -257,6 +260,11 @@ lwgeom_release(LWGEOM *lwgeom)
 {
 	uint32 i;
 	LWCOLLECTION *col;
+
+#ifdef INTEGRITY_CHECKS
+	if ( ! lwgeom )
+		lwerror("lwgeom_release: someone called on 0x0");
+#endif
 
 	// Collection
 	if ( (col=lwgeom_as_lwcollection(lwgeom)) )
@@ -342,3 +350,54 @@ lwgeom_to_wkt(LWGEOM *lwgeom)
 	return ret;
 }
 
+// geom1 same as geom2
+//  iff
+//      + have same type                                                        //      + have same # objects
+//      + have same bvol
+//      + each object in geom1 has a corresponding object in geom2 (see above)
+//
+char
+lwgeom_same(LWGEOM *lwgeom1, LWGEOM *lwgeom2)
+{
+	if ( TYPE_GETTYPE(lwgeom1->type) != TYPE_GETTYPE(lwgeom2->type) )
+		return 0;
+
+	if ( TYPE_GETZM(lwgeom1->type) != TYPE_GETZM(lwgeom2->type) )
+		return 0;
+
+	// Check boxes if both already computed 
+	if ( lwgeom1->bbox && lwgeom2->bbox )
+	{
+		lwnotice("bbox1:%p, bbox2:%p", lwgeom1->bbox, lwgeom2->bbox);
+		if ( ! box2d_same(lwgeom1->bbox, lwgeom2->bbox) ) return 0;
+	}
+
+	lwnotice("geometry_same only checked for type,dims and boxes");
+	return 1;
+}
+
+void
+lwgeom_changed(LWGEOM *lwgeom)
+{
+	// HASBBOX flag on LWGEOM type means the BBOX is not
+	// owned by LWGEOM
+	if ( lwgeom->bbox && ! TYPE_HASBBOX(lwgeom->type) )
+		lwfree(lwgeom->bbox);
+	lwgeom->bbox = NULL;
+	TYPE_SETHASBBOX(lwgeom->type, 0);
+}
+
+void
+lwgeom_dropBBOX(LWGEOM *lwgeom)
+{
+	if ( lwgeom->bbox && ! TYPE_HASBBOX(lwgeom->type) )
+		lwfree(lwgeom->bbox);
+	lwgeom->bbox = NULL;
+}
+
+void
+lwgeom_dropSRID(LWGEOM *lwgeom)
+{
+	TYPE_SETHASSRID(lwgeom->type, 0);
+	lwgeom->SRID = -1;
+}

@@ -8,7 +8,7 @@
 #define CHECK_LWGEOM_ZM 1
 
 LWCOLLECTION *
-lwcollection_construct(unsigned int type, int SRID, char hasbbox,
+lwcollection_construct(unsigned int type, int SRID, BOX2DFLOAT4 *bbox,
 	unsigned int ngeoms, LWGEOM **geoms)
 {
 	LWCOLLECTION *ret;
@@ -37,10 +37,12 @@ lwcollection_construct(unsigned int type, int SRID, char hasbbox,
 
 	ret = lwalloc(sizeof(LWCOLLECTION));
 	ret->type = lwgeom_makeType_full(hasz, hasm, (SRID!=-1),
-		type, hasbbox);
+		type, 0);
 	ret->SRID = SRID;
 	ret->ngeoms = ngeoms;
 	ret->geoms = geoms;
+	ret->bbox = bbox;
+
 	return ret;
 }
 
@@ -69,6 +71,11 @@ lwcollection_deserialize(char *srl)
 	result->ngeoms = insp->ngeometries;
 	result->geoms = lwalloc(sizeof(LWGEOM *)*insp->ngeometries);
 
+	if (lwgeom_hasBBOX(srl[0]))
+		result->bbox = (BOX2DFLOAT4 *)(srl+1);
+	else result->bbox = NULL;
+
+
 	for (i=0; i<insp->ngeometries; i++)
 	{
 		result->geoms[i] = lwgeom_deserialize(insp->sub_geoms[i]);
@@ -91,7 +98,7 @@ lwcollection_serialize_size(LWCOLLECTION *col)
 	int i;
 
 	if ( col->SRID != -1 ) size += 4; // SRID
-	if ( TYPE_HASBBOX(col->type) ) size += sizeof(BOX2DFLOAT4);
+	if ( col->bbox ) size += sizeof(BOX2DFLOAT4);
 
 #ifdef DEBUG_CALLS
 	lwnotice("lwcollection_serialize_size[%p]: start size: %d", col, size);
@@ -134,13 +141,13 @@ lwcollection_serialize_buf(LWCOLLECTION *coll, char *buf, size_t *retsize)
 
 	buf[0] = (unsigned char) lwgeom_makeType_full(
 		TYPE_HASZ(coll->type), TYPE_HASM(coll->type),
-		hasSRID, TYPE_GETTYPE(coll->type), TYPE_HASBBOX(coll->type));
+		hasSRID, TYPE_GETTYPE(coll->type), coll->bbox ? 1 : 0);
 	loc = buf+1;
 
 	// Add BBOX if requested
-	if ( TYPE_HASBBOX(coll->type) )
+	if ( coll->bbox )
 	{
-		lwgeom_compute_bbox_p((LWGEOM *)coll, (BOX2DFLOAT4 *)loc);
+		memcpy(loc, coll->bbox, sizeof(BOX2DFLOAT4));
 		size += sizeof(BOX2DFLOAT4);
 		loc += sizeof(BOX2DFLOAT4);
 	}
@@ -200,6 +207,8 @@ lwcollection_clone(const LWCOLLECTION *g)
 	{
 		ret->geoms[i] = lwgeom_clone(g->geoms[i]);
 	}
+	if ( g->bbox && ! TYPE_HASBBOX(g->type) )
+		ret->bbox = box2d_clone(g->bbox);
 	return ret;
 }
 
@@ -229,16 +238,21 @@ lwcollection_add(const LWCOLLECTION *to, uint32 where, const LWGEOM *what)
 	for (i=0; i<where; i++)
 	{
 		geoms[i] = lwgeom_clone(to->geoms[i]);
+		lwgeom_dropSRID(geoms[i]);
+		lwgeom_dropBBOX(geoms[i]);
 	}
 	geoms[where] = lwgeom_clone(what);
+	lwgeom_dropSRID(geoms[where]);
+	lwgeom_dropBBOX(geoms[where]);
 	for (i=where; i<to->ngeoms; i++)
 	{
 		geoms[i+1] = lwgeom_clone(to->geoms[i]);
+		lwgeom_dropSRID(geoms[i+1]);
+		lwgeom_dropBBOX(geoms[i+1]);
 	}
 
 	col = lwcollection_construct(COLLECTIONTYPE,
-		to->SRID,
-		( TYPE_HASBBOX(what->type) || TYPE_HASBBOX(to->type) ),
+		to->SRID, NULL,
 		to->ngeoms+1, geoms);
 	
 	return (LWGEOM *)col;

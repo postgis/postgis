@@ -2627,13 +2627,13 @@ Datum LWGEOM_expand(PG_FUNCTION_ARGS)
 	pa[0]->npoints = 5;
 
 	// Construct polygon 
-	poly = lwpoly_construct(SRID, lwgeom_hasBBOX(geom->type), 1, pa);
+	poly = lwpoly_construct(SRID, box2d_clone(&box), 1, pa);
 
 	// Serialize polygon
 	ser = lwpoly_serialize(poly);
 
 	// Construct PG_LWGEOM 
-	result = PG_LWGEOM_construct(ser, SRID, lwgeom_hasBBOX(geom->type));
+	result = PG_LWGEOM_construct(ser, SRID, 1);
 	
 	PG_RETURN_POINTER(result);
 }
@@ -2694,13 +2694,13 @@ Datum LWGEOM_envelope(PG_FUNCTION_ARGS)
 	pa[0]->npoints = 5;
 
 	// Construct polygon 
-	poly = lwpoly_construct(SRID, lwgeom_hasBBOX(geom->type), 1, pa);
+	poly = lwpoly_construct(SRID, box2d_clone(&box), 1, pa);
 
 	// Serialize polygon
 	ser = lwpoly_serialize(poly);
 
 	// Construct PG_LWGEOM 
-	result = PG_LWGEOM_construct(ser, SRID, lwgeom_hasBBOX(geom->type));
+	result = PG_LWGEOM_construct(ser, SRID, 1);
 	
 	PG_RETURN_POINTER(result);
 }
@@ -2768,7 +2768,7 @@ Datum centroid(PG_FUNCTION_ARGS)
 	pa = pointArray_construct((char *)&cent, 1, 0, 1);
 
 	// Construct LWPOINT
-	point = lwpoint_construct(SRID, wantbbox, pa);
+	point = lwpoint_construct(SRID, NULL, pa);
 
 	// Serialize LWPOINT 
 	srl = lwpoint_serialize(point);
@@ -2970,3 +2970,35 @@ Datum LWGEOM_zmflag(PG_FUNCTION_ARGS)
 	if ( TYPE_HASM(type) ) ret += 1;
 	PG_RETURN_INT16(ret);
 }
+
+// lwgeom_same(lwgeom1, lwgeom2)
+PG_FUNCTION_INFO_V1(LWGEOM_same);
+Datum LWGEOM_same(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *g1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	PG_LWGEOM *g2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	LWGEOM *lwg1, *lwg2;
+	bool result;
+
+	if ( TYPE_GETTYPE(g1->type) != TYPE_GETTYPE(g2->type) )
+		PG_RETURN_BOOL(FALSE); // different types
+
+	if ( TYPE_GETZM(g1->type) != TYPE_GETZM(g2->type) )
+		PG_RETURN_BOOL(FALSE); // different dimensions
+
+	// ok, deserialize.
+	lwg1 = lwgeom_deserialize(SERIALIZED_FORM(g1));
+	lwg2 = lwgeom_deserialize(SERIALIZED_FORM(g2));
+
+	// invoke appropriate function
+	result = lwgeom_same(lwg1, lwg2);
+
+	// Relase memory
+	lwgeom_release(lwg1);
+	lwgeom_release(lwg2);
+	PG_FREE_IF_COPY(g1, 0);
+        PG_FREE_IF_COPY(g2, 1);
+
+        PG_RETURN_BOOL(result);
+}
+

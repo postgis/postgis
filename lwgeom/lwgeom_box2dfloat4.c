@@ -118,8 +118,8 @@ Datum LWGEOM_to_BOX2DFLOAT4(PG_FUNCTION_ARGS)
 
 /*		box_same		-		are two boxes identical?
  */
-PG_FUNCTION_INFO_V1(box2d_same);
-Datum box2d_same(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(BOX2D_same);
+Datum BOX2D_same(PG_FUNCTION_ARGS)
 {
 	BOX2DFLOAT4		   *box1 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(0);
 	BOX2DFLOAT4		   *box2 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(1);
@@ -132,8 +132,8 @@ Datum box2d_same(PG_FUNCTION_ARGS)
 
 /*		box_overlap		-		does box1 overlap box2?
  */
-PG_FUNCTION_INFO_V1(box2d_overlap);
-Datum box2d_overlap(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(BOX2D_overlap);
+Datum BOX2D_overlap(PG_FUNCTION_ARGS)
 {
 	BOX2DFLOAT4		   *box1 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(0);
 	BOX2DFLOAT4		   *box2 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(1);
@@ -160,8 +160,8 @@ Datum box2d_overlap(PG_FUNCTION_ARGS)
  *		This is "less than or equal" for the end of a time range,
  *		when time ranges are stored as rectangles.
  */
- PG_FUNCTION_INFO_V1(box2d_overleft);
-Datum box2d_overleft(PG_FUNCTION_ARGS)
+ PG_FUNCTION_INFO_V1(BOX2D_overleft);
+Datum BOX2D_overleft(PG_FUNCTION_ARGS)
 {
 	BOX2DFLOAT4		   *box1 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(0);
 	BOX2DFLOAT4		   *box2 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(1);
@@ -171,8 +171,8 @@ Datum box2d_overleft(PG_FUNCTION_ARGS)
 
 /*		box_left		-		is box1 strictly left of box2?
  */
- PG_FUNCTION_INFO_V1(box2d_left);
-Datum box2d_left(PG_FUNCTION_ARGS)
+ PG_FUNCTION_INFO_V1(BOX2D_left);
+Datum BOX2D_left(PG_FUNCTION_ARGS)
 {
 	BOX2DFLOAT4		   *box1 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(0);
 	BOX2DFLOAT4		   *box2 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(1);
@@ -182,8 +182,8 @@ Datum box2d_left(PG_FUNCTION_ARGS)
 
 /*		box_right		-		is box1 strictly right of box2?
  */
- PG_FUNCTION_INFO_V1(box2d_right);
-Datum box2d_right(PG_FUNCTION_ARGS)
+ PG_FUNCTION_INFO_V1(BOX2D_right);
+Datum BOX2D_right(PG_FUNCTION_ARGS)
 {
 	BOX2DFLOAT4		   *box1 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(0);
 	BOX2DFLOAT4		   *box2 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(1);
@@ -197,8 +197,8 @@ Datum box2d_right(PG_FUNCTION_ARGS)
  *		This is "greater than or equal" for time ranges, when time ranges
  *		are stored as rectangles.
  */
- PG_FUNCTION_INFO_V1(box2d_overright);
-Datum box2d_overright(PG_FUNCTION_ARGS)
+ PG_FUNCTION_INFO_V1(BOX2D_overright);
+Datum BOX2D_overright(PG_FUNCTION_ARGS)
 {
 	BOX2DFLOAT4		   *box1 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(0);
 	BOX2DFLOAT4		   *box2 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(1);
@@ -208,8 +208,8 @@ Datum box2d_overright(PG_FUNCTION_ARGS)
 
 /*		box_contained	-		is box1 contained by box2?
  */
- PG_FUNCTION_INFO_V1(box2d_contained);
-Datum box2d_contained(PG_FUNCTION_ARGS)
+ PG_FUNCTION_INFO_V1(BOX2D_contained);
+Datum BOX2D_contained(PG_FUNCTION_ARGS)
 {
 	BOX2DFLOAT4		   *box1 =(BOX2DFLOAT4 *) PG_GETARG_POINTER(0);
 	BOX2DFLOAT4		   *box2 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(1);
@@ -222,8 +222,8 @@ Datum box2d_contained(PG_FUNCTION_ARGS)
 
 /*		box_contain		-		does box1 contain box2?
  */
- PG_FUNCTION_INFO_V1(box2d_contain);
-Datum box2d_contain(PG_FUNCTION_ARGS)
+ PG_FUNCTION_INFO_V1(BOX2D_contain);
+Datum BOX2D_contain(PG_FUNCTION_ARGS)
 {
 	BOX2DFLOAT4		   *box1 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(0);
 	BOX2DFLOAT4		   *box2 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(1);
@@ -235,30 +235,30 @@ Datum box2d_contain(PG_FUNCTION_ARGS)
 
 }
 
-PG_FUNCTION_INFO_V1(box2d_inter);
-Datum box2d_inter(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(BOX2D_intersects);
+Datum BOX2D_intersects(PG_FUNCTION_ARGS)
 {
-	BOX2DFLOAT4		   *a = (BOX2DFLOAT4 *) PG_GETARG_POINTER(0);
-	BOX2DFLOAT4		   *b = (BOX2DFLOAT4 *) PG_GETARG_POINTER(1);
-    BOX2DFLOAT4        *n;
+	BOX2DFLOAT4 *a = (BOX2DFLOAT4 *) PG_GETARG_POINTER(0);
+	BOX2DFLOAT4 *b = (BOX2DFLOAT4 *) PG_GETARG_POINTER(1);
+	BOX2DFLOAT4 *n;
 
 
-    n = (BOX2DFLOAT4 *) palloc(sizeof(BOX2DFLOAT4));
+	n = (BOX2DFLOAT4 *) palloc(sizeof(BOX2DFLOAT4));
 
-    n->xmax = LWGEOM_Minf(a->xmax, b->xmax);
-    n->ymax = LWGEOM_Minf(a->ymax, b->ymax);
-    n->xmin = LWGEOM_Maxf(a->xmin, b->xmin);
-    n->ymin = LWGEOM_Maxf(a->ymin, b->ymin);
+	n->xmax = LWGEOM_Minf(a->xmax, b->xmax);
+	n->ymax = LWGEOM_Minf(a->ymax, b->ymax);
+	n->xmin = LWGEOM_Maxf(a->xmin, b->xmin);
+	n->ymin = LWGEOM_Maxf(a->ymin, b->ymin);
 
 
-    if (n->xmax < n->xmin || n->ymax < n->ymin)
-    {
-        pfree(n);
-        /* Indicate "no intersection" by returning NULL pointer */
-        n = NULL;
-    }
+	if (n->xmax < n->xmin || n->ymax < n->ymin)
+	{
+		pfree(n);
+		/* Indicate "no intersection" by returning NULL pointer */
+		n = NULL;
+	}
 
-    PG_RETURN_POINTER(n);
+	PG_RETURN_POINTER(n);
 }
 
 
@@ -287,21 +287,8 @@ float LWGEOM_Minf(float a, float b)
 //max(a,b)
 float LWGEOM_Maxf(float a, float b)
 {
-	if (b>a)
-		return b;
+	if (b>a) return b;
 	return a;
-}
-
-
-/* Expand given box of 'd' units in all directions */
-void
-expand_box2d(BOX2DFLOAT4 *box, double d)
-{
-	box->xmin -= d;
-	box->ymin -= d;
-
-	box->xmax += d;
-	box->ymax += d;
 }
 
 PG_FUNCTION_INFO_V1(BOX2DFLOAT4_expand);
@@ -434,7 +421,7 @@ Datum BOX2DFLOAT4_to_LWGEOM(PG_FUNCTION_ARGS)
 	pa[0]->npoints = 5;
 
 	// Construct polygon
-	poly = lwpoly_construct(-1, wantbbox, 1, pa);
+	poly = lwpoly_construct(-1, NULL, 1, pa);
 
 	// Serialize polygon
 	ser = lwpoly_serialize(poly);
