@@ -579,7 +579,7 @@ FROM GEOTABLE
 WHERE 
   GEOM &amp;&amp; GeometryFromText('BOX3D(900 900,1100 1100)',-1)
 AND
-Distance(GeometryFromText('POINT(1000 1000)',-1),GEOM) < 100;</programlisting>
+Distance(GeometryFromText('POINT(1000 1000)',-1),GEOM) &lt; 100;</programlisting>
 				</answer>
 			</qandaentry>
 			<qandaentry>
@@ -1198,7 +1198,7 @@ WHERE
 				<para>
 <programlisting> VACUUM ANALYZE [table_name] [column_name];
 
--- This is only needed for PostgreSQL < 75 installations
+-- This is only needed for PostgreSQL &lt; 75 installations
 SELECT UPDATE_GEOMETRY_STATS([table_name], [column_name]);</programlisting>
 				</para>
 
@@ -1230,7 +1230,7 @@ SELECT UPDATE_GEOMETRY_STATS([table_name], [column_name]);</programlisting>
 <para>Firstly, make sure statistics are gathered about the number and
 distributions of values in a table, to provide the query planner with
 better information to make decisions around index usage.
-For PostgreSQL < 75 installations this is done by running
+For PostgreSQL &lt; 75 installations this is done by running
 "update_geometry_stats([table_name, column_name])" (compute distribution)
 and "VACUUM ANALYZE [table_name] [column_name]" (compute number of values).
 Starting with PostgreSQL 75 running "VACUUM ANALYZE" will do both operations.
@@ -1273,7 +1273,7 @@ DBAs have "VACUUM" run as an off-peak cron job on a regular basis.
 				  following query would be quite slow on a large table:
 				</para>
 				<programlisting>SELECT the_geom FROM geom_table
-WHERE distance( the_geom, GeometryFromText( 'POINT(100000 200000)', -1 ) ) < 100</programlisting>
+WHERE distance( the_geom, GeometryFromText( 'POINT(100000 200000)', -1 ) ) &lt; 100</programlisting>
 				<para>This query is selecting all the geometries in geom_table which are within
 				  100 units of the point (100000, 200000). It will be slow because it is
 				  calculating the distance between each point in the table and our specified
@@ -1283,7 +1283,7 @@ WHERE distance( the_geom, GeometryFromText( 'POINT(100000 200000)', -1 ) ) < 100
 				</para>
 				<programlisting>SELECT the_geom FROM geom_table
 WHERE the_geom &amp;&amp; 'BOX3D(90900 190900, 100100 200100)'::box3d
-  AND distance( the_geom, GeometryFromText( 'POINT(100000 200000)', -1 ) ) < 100</programlisting>
+  AND distance( the_geom, GeometryFromText( 'POINT(100000 200000)', -1 ) ) &lt; 100</programlisting>
   				<para>This query selects the same geometries, but it does it in a more efficient way.
   				  Assuming there is a GiST index on the_geom, the query planner will recognize that
   				  it can use the index to reduce the number of rows before calculating the result
