@@ -6,10 +6,10 @@ subdir = contrib/postgis
 # Root of the pgsql source tree 
 ifeq (${PGSQL_SRC},) 
 	top_builddir = ../..
-	installlibdir = $(libdir)/contrib
+	libdir = $(libdir)/contrib
 else
 	top_builddir = ${PGSQL_SRC}
-	installlibdir = ${PWD}
+	libdir = ${PWD}
 endif
 
 include $(top_builddir)/src/Makefile.global
@@ -39,7 +39,7 @@ all: all-lib $(NAME).sql
 include $(top_srcdir)/src/Makefile.shlib
 
 $(NAME).sql: $(NAME).sql.in
-	sed -e 's:@MODULE_FILENAME@:$(installlibdir)/$(shlib):g' < $< > $@
+	sed -e 's:@MODULE_FILENAME@:$(libdir)/$(shlib):g' < $< > $@
 
 
 install: all installdirs install-lib
@@ -47,7 +47,7 @@ install: all installdirs install-lib
 	$(INSTALL_DATA) $(NAME).sql $(datadir)/contrib
 
 installdirs:
-	$(mkinstalldirs) $(docdir)/contrib $(datadir)/contrib $(installlibdir)
+	$(mkinstalldirs) $(docdir)/contrib $(datadir)/contrib $(libdir)
 
 uninstall: uninstall-lib
 	@rm -f $(docdir)/contrib/README.$(NAME) $(datadir)/contrib/$(NAME).sql
