@@ -34,6 +34,9 @@
  ******************************************************************************
  *
  * $Log$
+ * Revision 1.5  2002/10/17 17:06:39  chodgson
+ * fixed the last compile warning on solaris/gcc
+ *
  * Revision 1.4  2002/10/17 16:45:04  chodgson
  * - cleaned up all the compiler warnings
  * - for getopt.c, this involved moving the line:
@@ -1294,8 +1297,8 @@ static void str_to_upper (char *string)
     len = strlen (string);
 
     while (++i < len)
-        if (isalpha(string[i]) && islower(string[i]))
-            string[i] = toupper ((int)string[i]);
+        if (isalpha((unsigned)string[i]) && islower((unsigned)string[i]))
+    	    string[i] = toupper ((int)string[i]);
 }
 
 /************************************************************************/
