@@ -143,7 +143,20 @@ new <filename>postgis.sql</filename> file, then upload your database dump:</para
 of -1. To create valid OpenGIS geometries, you will have to create a
 valid SRID in the SPATIAL_REF_SYS table, and then update your geometries
 to reference the SRID with the following SQL (with the appropriate
-substitutions:</para><programlisting>UPDATE TABLE &lt;table&gt; SET &lt;geocolumn&gt; = SetSRID(&lt;geocolumn&gt;,&lt;SRID&gt;);</programlisting></note></sect2></sect1> 
+substitutions:</para><programlisting>UPDATE TABLE &lt;table&gt; SET &lt;geocolumn&gt; = SetSRID(&lt;geocolumn&gt;,&lt;SRID&gt;);</programlisting></note></sect2>
+	 <sect2><title>Common Problems</title>
+		 <para>There are several things to check when your installation or upgrade doesn't go as you expected.</para>
+		 <orderedlist>
+			 <listitem><para>It is easiest if you untar the PostGIS distribution into the contrib directory under the PostgreSQL source tree. However, if this is not possible for some reason, you can set the <programlisting>PGSQL_SRC</programlisting>environment variable to the path to the PostgreSQL source directory. This will allow you to compile PostGIS, but the <programlisting>make install</programlisting> may not work, so be prepared to copy the PostGIS library and executable files to the appropriate locations yourself.</para></listitem>
+			 <listitem><para>Check that you you have installed PostgreSQL 7.1 or newer, and that you are compiling against the same version of the PostgreSQL source as the version of PostgreSQL that is running. Mix-ups can occur when your (Linux) distrubution has already installed PostgreSQL, or you have otherwise installed PostgreSQL before and forgotten about it. PostGIS will only work with PostgreSQL 7.1 or newer, and strange, unexpected error messages will result if you use an older version. To check the version of PostgreSQL which is running, connect to the database using psql and run this query:</para><programlisting>SELECT version();</programlisting></listitem>
+		</orderedlist>
+		<para>Also check that you have made any necessary changes to the top of the Makefile. This includes:</para>
+		<orderedlist>
+			<listitem><para>Changing the <programlisting>USE_PG72=0</programlisting>line to <programlisting>USE_PG72=1</programlisting> if you are using PostgreSQL 7.2 or newer. If this line is incorrect, it will result in a large number of errors being generated when executing the sql statements in the postgis.sql file.</para></listitem>
+			<listitem><para>Also, if you want to be able to do coordinate reprojections, you must install the Proj.4 library on your system, and set the <programlisting>USE_PROJ</programlisting> variable to 1 in the Makefile.</para></listitem>
+		</orderedlist>
+	 </sect2>
+         </sect1> 
 	 <sect1> 
 		<title>JDBC</title> 
 		<para>The JDBC extensions provide Java objects corresponding to the
