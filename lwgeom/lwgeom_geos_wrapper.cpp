@@ -14,7 +14,7 @@
 #endif // GEOS_FIRST_INTERFACE <= 3
 
 //#define DEBUG_POSTGIS2GEOS 1
-#define DEBUG 1
+//#define DEBUG 1
 
 using namespace geos;
 

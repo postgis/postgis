@@ -49,7 +49,7 @@ Datum GEOS_makepoly_garray(PG_FUNCTION_ARGS);
 #define DEBUG_POSTGIS2GEOS 1
 #define DEBUG_GEOS2POSTGIS 1
 #endif // DEBUG_CONVERTER
-#define DEBUG 1
+//#define DEBUG 1
 
 typedef  struct Geometry Geometry;
 
