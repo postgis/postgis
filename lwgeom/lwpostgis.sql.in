@@ -767,7 +767,7 @@ INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
    WHERE
       opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
       and opcname = 'gist_geometry_ops'
-      and proname = 'LWGEOM_gist_consistent';
+      and proname = 'lwgeom_gist_consistent';
 
 INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
    SELECT opcl.oid, 2, pro.oid
@@ -775,7 +775,7 @@ INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
    WHERE
       opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
       and opcname = 'gist_geometry_ops'
-      and proname = 'LWGEOM_gist_union';
+      and proname = 'lwgeom_gist_union';
 
 INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
    SELECT opcl.oid, 3, pro.oid
@@ -783,7 +783,7 @@ INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
    WHERE
       opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
       and opcname = 'gist_geometry_ops'
-      and proname = 'LWGEOM_gist_compress';
+      and proname = 'lwgeom_gist_compress';
 
 INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
    SELECT opcl.oid, 4, pro.oid
@@ -791,7 +791,7 @@ INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
    WHERE
       opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
       and opcname = 'gist_geometry_ops'
-      and proname = 'LWGEOM_gist_decompress';
+      and proname = 'lwgeom_gist_decompress';
 
 INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
    SELECT opcl.oid, 5, pro.oid
@@ -799,7 +799,7 @@ INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
    WHERE
       opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
       and opcname = 'gist_geometry_ops'
-      and proname = 'LWGEOM_gist_penalty';
+      and proname = 'lwgeom_gist_penalty';
 
 INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
    SELECT opcl.oid, 6, pro.oid
@@ -807,7 +807,7 @@ INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
    WHERE
       opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
       and opcname = 'gist_geometry_ops'
-      and proname = 'LWGEOM_gist_picksplit';
+      and proname = 'lwgeom_gist_picksplit';
 
 INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
    SELECT opcl.oid, 7, pro.oid
@@ -815,7 +815,7 @@ INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
    WHERE
       opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
       and opcname = 'gist_geometry_ops'
-      and proname = 'LWGEOM_gist_same';
+      and proname = 'lwgeom_gist_same';
 
 #else // USE_VERSION >= 73
 
