@@ -2651,13 +2651,15 @@ if( geom.getType() = Geometry.POLYGON )
           </varlistentry>
 
           <varlistentry>
-            <term>Buffer(geometry,double)</term>
+            <term>Buffer(geometry,double,[integer])</term>
 
             <listitem>
               <para>Returns a geometry that represents all points whose
               distance from this Geometry is less than or equal to distance.
               Calculations are in the Spatial Reference System of this
-              Geometry.</para>
+              Geometry. The optional third parameter sets the
+	      number of segment used to approximate a quarter circle
+	      (defaults to 8).</para>
 
               <para>Performed by the GEOS module</para>
 
