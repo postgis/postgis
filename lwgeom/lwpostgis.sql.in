@@ -1612,6 +1612,11 @@ CREATEFUNCTION reverse(geometry)
 	AS '@MODULE_FILENAME@', 'LWGEOM_reverse'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
+CREATEFUNCTION ForceRHR(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_forceRHR_poly'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
 ------------------------------------------------------------------------
 
 --

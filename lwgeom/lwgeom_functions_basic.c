@@ -45,6 +45,7 @@ Datum LWGEOM_envelope(PG_FUNCTION_ARGS);
 Datum LWGEOM_isempty(PG_FUNCTION_ARGS);
 Datum LWGEOM_segmentize2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_reverse(PG_FUNCTION_ARGS);
+Datum LWGEOM_forceRHR_poly(PG_FUNCTION_ARGS);
 
 // internal
 char * lwgeom_summary_recursive(char *serialized, int offset);
@@ -53,6 +54,7 @@ void dump_lwexploded(LWGEOM_EXPLODED *exploded);
 POINTARRAY *ptarray_reverse(const POINTARRAY *pa);
 LWLINE *lwline_reverse(const LWLINE *line);
 LWPOLY *lwpoly_reverse(const LWPOLY *poly);
+LWPOLY *lwpoly_forceRHR(const LWPOLY *poly);
 
 /*------------------------------------------------------------------*/
 
@@ -798,6 +800,39 @@ lwpoly_reverse(const LWPOLY *ipoly)
 	for (i=0; i<ipoly->nrings; i++)
 	{
 		rpa[i] = ptarray_reverse(ipoly->rings[i]);
+	}
+
+	opoly = lwpoly_construct(ipoly->ndims, ipoly->SRID,
+		ipoly->nrings, rpa);
+
+	return opoly;
+}
+
+LWPOLY *
+lwpoly_forceRHR(const LWPOLY *ipoly)
+{
+	LWPOLY *opoly;
+	POINTARRAY **rpa;
+	int i;
+	POINTARRAY *opa;
+
+	rpa = palloc(sizeof(POINTARRAY *)*ipoly->nrings);
+
+	if ( ptarray_isccw(ipoly->rings[0]) )
+	{
+		opa = ipoly->rings[0];
+		rpa[0] = ptarray_reverse(ipoly->rings[0]);
+	}
+	else rpa[0] = ipoly->rings[0];
+
+	for (i=1; i<ipoly->nrings; i++)
+	{
+		if ( ! ptarray_isccw(ipoly->rings[i]) )
+		{
+			opa = ipoly->rings[i];
+			rpa[i] = ptarray_reverse(ipoly->rings[i]);
+		}
+		else rpa[i] = ipoly->rings[i];
 	}
 
 	opoly = lwpoly_construct(ipoly->ndims, ipoly->SRID,
@@ -2816,6 +2851,50 @@ Datum LWGEOM_reverse(PG_FUNCTION_ARGS)
 		LWPOLY *poly = lwpoly_deserialize(exp->polys[i]);
 		LWPOLY *rpoly = lwpoly_reverse(poly);
 		pfree_polygon(poly);
+		exp->polys[i] = lwpoly_serialize(rpoly);
+	}
+
+	size = lwexploded_findlength(exp, wantbbox);
+	result = palloc(size+4);
+	result->size = (size+4);
+	lwexploded_serialize_buf(exp, wantbbox, SERIALIZED_FORM(result), &size);
+	
+	if ( result->size != (size+4) )
+	{
+		elog(ERROR, "lwexploded_serialize_buf wrote %d bytes, lwexploded_findlength returned %d", size, result->size-4);
+		PG_RETURN_NULL();
+	}
+
+	PG_RETURN_POINTER(result);
+}
+
+// Force polygons of the collection to obey Right-Hand-Rule
+PG_FUNCTION_INFO_V1(LWGEOM_forceRHR_poly);
+Datum LWGEOM_forceRHR_poly(PG_FUNCTION_ARGS)
+{
+	LWGEOM *geom;
+	LWGEOM *result = NULL;
+	LWGEOM_EXPLODED *exp;
+	int size;
+	int wantbbox;
+	int i;
+
+	geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+	if ( lwgeom_getType(geom->type) != POLYGONTYPE &&
+		lwgeom_getType(geom->type) != MULTIPOLYGONTYPE )
+	{
+		elog(ERROR, "Only polygon|multipolygon supported");
+		PG_RETURN_NULL();
+	}
+
+	wantbbox = lwgeom_hasBBOX(geom->type);
+	exp = lwgeom_explode(SERIALIZED_FORM(geom));
+
+	for (i=0; i<exp->npolys; i++)
+	{
+		LWPOLY *poly = lwpoly_deserialize(exp->polys[i]);
+		LWPOLY *rpoly = lwpoly_reverse(poly);
 		exp->polys[i] = lwpoly_serialize(rpoly);
 	}
 
