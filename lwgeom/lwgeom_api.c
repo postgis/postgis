@@ -44,8 +44,8 @@ extern  BOX3D *lw_geom_getBB_simple(char *serialized_form);
 // some machines do *not* have these functions defined, so we give
 //  an implementation of them here.
 
-//typedef int int32_t;
-//typedef unsigned int u_int32_t;
+typedef int int32_tt;
+typedef unsigned int u_int32_tt;
 
 
 float nextafterf_custom(float x, float y);
@@ -53,7 +53,7 @@ float nextafterf_custom(float x, float y);
 typedef union
 {
   float value;
-  u_int32_t word;
+  u_int32_tt word;
 } ieee_float_shape_type;
 
 
@@ -76,7 +76,7 @@ do {                                                            \
 
 float nextafterf_custom(float x, float y)
 {
-        int32_t hx,hy,ix,iy;
+        int32_tt hx,hy,ix,iy;
 
         GET_FLOAT_WORD(hx,x);
         GET_FLOAT_WORD(hy,y);
