@@ -13,8 +13,8 @@ select lanname || ' is installed' as message from pg_language where lanname='plp
 
 
 
-CREATE FUNCTION POSTGIS_VERSION() returns char
-as 'select \'@POSTGIS_VERSION@\'::char as version'
+CREATE FUNCTION POSTGIS_VERSION() returns text
+as 'select \'@POSTGIS_VERSION@\'::text as version'
 LANGUAGE 'sql';
 
 
