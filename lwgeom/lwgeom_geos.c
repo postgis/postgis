@@ -2249,7 +2249,7 @@ Datum GEOS_polygonize_garray(PG_FUNCTION_ARGS)
 	ArrayType *array;
 	int is3d = 0;
 	unsigned int nelems, i;
-	PG_LWGEOM **geoms, *result, *pgis_geom;
+	PG_LWGEOM **geoms, *result;
 	Geometry *geos_result;
 	Geometry **vgeoms;
 #ifdef DEBUG
