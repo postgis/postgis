@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.32  2003/12/09 11:58:42  strk
+ * Final touch to wkb binary input function
+ *
  * Revision 1.31  2003/12/09 11:13:41  strk
  * WKB_recv: set StringInfo cursor to the end of StringInfo buf as required by postgres backend
  *
@@ -3554,22 +3557,25 @@ Datum WKB_out(PG_FUNCTION_ARGS)
  * and leave it at the end of StringInfo.buf. If it fails
  * to do so the backend will raise an exception with message:
  * ERROR:  incorrect binary data format in bind parameter #
+ *
  */
 PG_FUNCTION_INFO_V1(WKB_recv);
 Datum WKB_recv(PG_FUNCTION_ARGS)
 {
 	StringInfo buf = (StringInfo) PG_GETARG_POINTER(0);
-        WellKnownBinary *result;
+        bytea *result;
 
-	elog(NOTICE, "WKB_recv start");
+	//elog(NOTICE, "WKB_recv start");
 
-	result = (WellKnownBinary *)palloc(buf->len);
-	memcpy(result, buf->data, buf->len);
+	/* Add VARLENA size info to make it a valid varlena object */
+	result = (WellKnownBinary *)palloc(buf->len+VARHDRSZ);
+	VARATT_SIZEP(result) = buf->len+VARHDRSZ;
+	memcpy(VARATT_DATA(result), buf->data, buf->len);
 
 	/* Set cursor to the end of buffer (so the backend is happy) */
 	buf->cursor = buf->len;
 
-	elog(NOTICE, "WKB_recv end (returning result)");
+	//elog(NOTICE, "WKB_recv end (returning result)");
         PG_RETURN_POINTER(result);
 }
 #endif
