@@ -81,8 +81,11 @@ section also use it.
 [ WHEN_SIMPLE (use input bbox if present) ]
 	noop(geometry) *LWG*
 	ExteriorRing(geometry) *LWG*
-	SetSRID(geometry,int4) **SRL**
-	force_2d(geometry) **SRL**
+	SetSRID(geometry,int4) *SRL*
+
+	# doesn't change bbox cache status if input is already 2d
+	force_2d(geometry) *SRL*
+
 	force_3dz(geometry) **SRL**
 	force_3d(geometry) **SRL**
 	force_3dm(geometry) **SRL**

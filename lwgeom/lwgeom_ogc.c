@@ -84,11 +84,12 @@ Datum LWGEOM_getSRID(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_setSRID);
 Datum LWGEOM_setSRID(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *lwgeom = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	int newSRID = PG_GETARG_INT32(1);
 	PG_LWGEOM *result;
 
-	result = pglwgeom_setSRID(lwgeom, newSRID);
+	result = PG_LWGEOM_construct(SERIALIZED_FORM(geom), newSRID,
+		lwgeom_hasBBOX(geom->type));
 
 	PG_RETURN_POINTER(result);
 }

@@ -1156,6 +1156,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_force_2d);
 Datum LWGEOM_force_2d(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char *srl;
 	PG_LWGEOM *result;
 	size_t size = 0;
 
@@ -1163,16 +1164,13 @@ Datum LWGEOM_force_2d(PG_FUNCTION_ARGS)
 	if ( lwgeom_ndims(geom->type) == 2 ) PG_RETURN_POINTER(geom);
 
 	// allocate a larger for safety and simplicity
-	result = (PG_LWGEOM *) lwalloc(geom->size);
+	srl = (char *) lwalloc(geom->size);
 
 	lwgeom_force2d_recursive(SERIALIZED_FORM(geom),
-		SERIALIZED_FORM(result), &size);
+		srl, &size);
 
-	// we can safely avoid this... memory will be freed at
-	// end of query processing anyway.
-	//result = lwrealloc(result, size+4);
-
-	result->size = size+4;
+	result = PG_LWGEOM_construct(srl, pglwgeom_getSRID(geom),
+		lwgeom_hasBBOX(geom->type));
 
 	PG_RETURN_POINTER(result);
 }
