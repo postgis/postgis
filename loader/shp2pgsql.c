@@ -421,11 +421,12 @@ int main (int ARGC, char **ARGV){
 	int num_fields,num_records,begin,trans;
 	int num_entities, phnshapetype,next_ring,errflg,c;
 	double padminbound[8], padmaxbound[8];
-	int u,j,tot_rings,curindex;
+	int u,j,z,tot_rings,curindex;
 	SHPObject	*obj=NULL;
-	char  name[12];
+	char  name[32];
 	char  opt;
 	char  *sr_id,*shp_file,*table, *database;
+	char **names;
 	DBFFieldType type;
 	extern char *optarg;
 	extern int optind;
@@ -539,10 +540,20 @@ int main (int ARGC, char **ARGV){
 
 		num_fields = DBFGetFieldCount( hDBFHandle );
 		num_records = DBFGetRecordCount(hDBFHandle);
-
+		names = malloc(num_fields +1);
 		for(j=0;j<num_fields;j++){
-			type = DBFGetFieldInfo(hDBFHandle, j, name, NULL, NULL);
-			
+			type = DBFGetFieldInfo(hDBFHandle, j, name, NULL, NULL); 
+			names[j] = malloc ( strlen(name)+1);
+			strcpy(names[j], name);
+			for(z=0; z < j ; z++){
+//				printf("\n\n%i-z\n\n",z);
+//				printf("\n\n %s  vs %s from %i-z and %i-j\n\n",names[z],name,z,j);
+				if(strcmp(names[z],name)==0){
+					strcat(name,"__");
+					sprintf(name,"%s%i",name,j);
+					break;
+				}
+			}	
 			if(strcmp(name,"gid")==0){
 				printf(", %s__2 ",name);
 			}else{
