@@ -1706,6 +1706,7 @@ if( geom.getType() = Geometry.POLYGON )
 						  the database without converting it to a string representation.
 						</para> 
 						<para>OGC SPEC s2.1.1.1 - also see asBinary(&lt;geometry&gt;,'XDR') and asBinary(&lt;geometry&gt;,'NDR')
+						</para>
 					</listitem> 
 				</varlistentry> 
 				<varlistentry> 
@@ -1759,7 +1760,7 @@ representational geometry primitives as discussed in the OGC SPEC, section 3.12.
 				<term>equals(geometry)</term> 
 				<listitem> 
 					<para>
-						Returns 1 (TRUE) if this Geometry is ‘spatially equal’ to
+						Returns 1 (TRUE) if this Geometry is "spatially equal" to
 anotherGeometry.  Use this for a 'better' answer than '='.  equals ('LINESTRING(0 0, 10 10)','LINESTRING(0 0, 5 5, 10 10)') is true.
 					</para> 
 					<para>Performed by the GEOS module</para>
@@ -1770,18 +1771,18 @@ anotherGeometry.  Use this for a 'better' answer than '='.  equals ('LINESTRING(
 				<varlistentry> 
 				<term>disjoint(geometry,geometry)</term> 
 				<listitem> 
-					<para>Returns 1 (TRUE) if this Geometry is ‘spatially disjoint’ from anotherGeometry.
+					<para>Returns 1 (TRUE) if this Geometry is "spatially disjoint" from anotherGeometry.
 					</para> 
 					<para>Performed by the GEOS module</para>
 					<para>Do not call with a GeometryCollection as an argument</para>
-					<para> NOTE: this is the "allowable" version that returns a boolean, not an integer.
-					<para>OGC SPEC s2.1.1.1 //s2.1.13.3 - a.Relate(b, ‘FF*FF****’) </para>
+					<para> NOTE: this is the "allowable" version that returns a boolean, not an integer.</para>
+					<para>OGC SPEC s2.1.1.1 //s2.1.13.3 - a.Relate(b, 'FF*FF****') </para>
 				</listitem> 
 				</varlistentry> 
 				<varlistentry> 
 				<term>intersects(geometry,geometry)</term> 
 				<listitem> 
-					<para>Returns 1 (TRUE) if this Geometry  ‘spatially intersects’  anotherGeometry.
+					<para>Returns 1 (TRUE) if this Geometry  "spatially intersects"  anotherGeometry.
 					</para> 
 					<para>Performed by the GEOS module</para>
 					<para>Do not call with a GeometryCollection as an argument</para>
@@ -1792,7 +1793,7 @@ anotherGeometry.  Use this for a 'better' answer than '='.  equals ('LINESTRING(
 				<varlistentry> 
 				<term>touches(geometry,geometry)</term> 
 				<listitem> 
-					<para>Returns 1 (TRUE) if this Geometry  ‘spatially touches’  anotherGeometry.
+					<para>Returns 1 (TRUE) if this Geometry  "spatially touches"  anotherGeometry.
 					</para> 
 					<para>Performed by the GEOS module</para>
 					<para>Do not call with a GeometryCollection as an argument</para>
@@ -1803,29 +1804,29 @@ anotherGeometry.  Use this for a 'better' answer than '='.  equals ('LINESTRING(
 				<varlistentry> 
 				<term>crosses(geometry,geometry)</term> 
 				<listitem> 
-					<para>Returns 1 (TRUE) if this Geometry  ‘spatially crosses’  anotherGeometry.
+					<para>Returns 1 (TRUE) if this Geometry  "spatially crosses"  anotherGeometry.
 					</para> 
 					<para>Performed by the GEOS module</para>
 					<para>Do not call with a GeometryCollection as an argument</para>
 					<para> NOTE: this is the "allowable" version that returns a boolean, not an integer.
-					<para>OGC SPEC s2.1.1.1 // s2.1.13.3 - a.Relate(b, ‘T*T******’)  </para>
+					<para>OGC SPEC s2.1.1.1 // s2.1.13.3 - a.Relate(b, 'T*T******')  </para>
 				</listitem> 
 				</varlistentry> 
 				<varlistentry> 
 				<term>within(geometry,geometry)</term> 
 				<listitem> 
-					<para>Returns 1 (TRUE) if this Geometry is ‘spatially within’  anotherGeometry.
+					<para>Returns 1 (TRUE) if this Geometry is "spatially within"  anotherGeometry.
 					</para> 
 					<para>Performed by the GEOS module</para>
 					<para>Do not call with a GeometryCollection as an argument</para>
 					<para> NOTE: this is the "allowable" version that returns a boolean, not an integer.
-					<para>OGC SPEC s2.1.1.1 // s2.1.13.3 - a.Relate(b, ‘T*F**F***’) </para>
+					<para>OGC SPEC s2.1.1.1 // s2.1.13.3 - a.Relate(b, 'T*F**F***') </para>
 				</listitem> 
 				</varlistentry> 
 				<varlistentry> 
 				<term>overlaps(geometry,geometry)</term> 
 				<listitem> 
-					<para>Returns 1 (TRUE) if this Geometry is ‘spatially overlapping’  anotherGeometry.
+					<para>Returns 1 (TRUE) if this Geometry is "spatially overlapping"  anotherGeometry.
 					</para> 
 					<para>Performed by the GEOS module</para>
 					<para>Do not call with a GeometryCollection as an argument</para>
@@ -1836,7 +1837,7 @@ anotherGeometry.  Use this for a 'better' answer than '='.  equals ('LINESTRING(
 				<varlistentry> 
 				<term>contains(geometry,geometry)</term> 
 				<listitem> 
-					<para>Returns 1 (TRUE) if this Geometry is ‘spatially contains’  anotherGeometry.
+					<para>Returns 1 (TRUE) if this Geometry is "spatially contains"  anotherGeometry.
 					</para> 
 					<para>Performed by the GEOS module</para>
 					<para>Do not call with a GeometryCollection as an argument</para>
@@ -1847,7 +1848,7 @@ anotherGeometry.  Use this for a 'better' answer than '='.  equals ('LINESTRING(
 				<varlistentry> 
 				<term>intersects(geometry,geometry)</term> 
 				<listitem> 
-					<para>Returns 1 (TRUE) if this Geometry is ‘spatially intersects’  anotherGeometry.
+					<para>Returns 1 (TRUE) if this Geometry is "spatially intersects"  anotherGeometry.
 					</para> 
 					<para>Performed by the GEOS module</para>
 					<para>Do not call with a GeometryCollection as an argument</para>
@@ -2216,7 +2217,7 @@ is simple (does not pass through the same point more than once).
 				<term>area(geometry)</term> 
 				<listitem> 
 					<para>Returns the area of the geometry if it is a polygon or
-					  multi-polygon. (same as area2(<polygon|multipolygon>)
+					  multi-polygon. (same as area2(&lt;polygon|multipolygon&gt;)
 					</para> 
 				</listitem> 
 				</varlistentry> 
