@@ -152,7 +152,7 @@ substitutions:</para><programlisting>UPDATE TABLE &lt;table&gt; SET &lt;geocolum
 		</orderedlist>
 		<para>Also check that you have made any necessary changes to the top of the Makefile. This includes:</para>
 		<orderedlist>
-			<listitem><para>Changing the <filename>USE_PG72=0</filename>line to <filename>USE_PG72=1</filename> if you are using PostgreSQL 7.2 or newer. If this line is incorrect, it will result in a large number of errors being generated when executing the sql statements in the postgis.sql file.</para></listitem>
+			<listitem><para>Changing the <filename>USE_PG72=0</filename> line to <filename>USE_PG72=1</filename> if you are using PostgreSQL 7.2 or newer. If this line is incorrect, it will result in a large number of errors being generated either when compiling, or when executing the sql statements in the postgis.sql file.</para></listitem>
 			<listitem><para>Also, if you want to be able to do coordinate reprojections, you must install the Proj.4 library on your system, and set the <filename>USE_PROJ</filename> variable to 1 in the Makefile.</para></listitem>
 		</orderedlist>
 	 </sect2>
