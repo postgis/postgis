@@ -105,7 +105,7 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 				//PG_RETURN_POINTER(parse_lwgeom_serialized_form(str));
 				PG_RETURN_POINTER( parse_lwgeom_wkt(str) );   // this function handles wkt and wkb (in hex-form)
 		}
-		else if ( (start == 'P') || (start == 'L') || (start == 'M') || (start == 'G'))
+		else if ( (start == 'P') || (start == 'L') || (start == 'M') || (start == 'G') || (start == 'p') || (start == 'l') || (start == 'm') || (start == 'g'))
 		{
 				// its WKT
 				PG_RETURN_POINTER( parse_lwgeom_wkt(str) );  // this function handles wkt and wkb (in hex-form)
