@@ -1,5 +1,6 @@
 PostGIS 1.0.0
 	- NEW manual pages for loader/dumper
+	- NEW shp2pgsql support for old (HWGEOM) postgis versions
 
 PostGIS 1.0.0RC6
 2005/03/30

@@ -7,8 +7,8 @@ shp2pgsql - shapefile to postgis loader
 shp2pgsql [\fIoptions\fR] \fIshapefile\fR [\fIschema\fR\fB.\fR]\fItable\fR
 .SH "DESCRIPTION"
 .LP 
-The shp2pgsql data loader converts ESRI Shape files into SQL suitable for insertion into a PostGIS/PostgreSQL database. Produced output is NOT compatible
-with pre\-1.0.0 versions of PostGIS.
+The shp2pgsql data loader converts ESRI Shape files into SQL suitable for insertion into a PostGIS/PostgreSQL database. 
+
 .SH "OPTIONS"
 .LP 
 The loader has several operating modes distinguished by command line flags:
@@ -37,10 +37,16 @@ Creates and populates the geometry tables with the specified SRID.
 \fB\-k\fR
 Keep idendifiers case (column, schema and attributes). Note that attributes in Shapefile are all UPPERCASE.
 
-
 .TP 
 \fB\-i\fR
 Coerce all integers to standard 32\-bit integers, do not create 64\-bit bigints, even if the DBF header signature appears to warrant it.
+
+.TP 
+\fB\-w\fR
+Output WKT format, for use with older (0.x) versions of PostGIS.
+Note that this will introduce coordinate drifts and will drop
+M values from shapefiles.
+
 .SH "EXAMPLES"
 .LP 
 An example session using the loader to create an input file and uploading it might look like this:

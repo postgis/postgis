@@ -1319,6 +1319,19 @@ COMMIT;</programlisting>
               to warrant it.</para>
             </listitem>
           </varlistentry>
+
+          <varlistentry>
+            <term>-w</term>
+
+            <listitem>
+              <para>
+       	      Output WKT format, for use with older (0.x) versions of PostGIS.
+              Note  that this will introduce coordinate drifts and will drop M
+              values from shapefiles.
+              </para>
+            </listitem>
+          </varlistentry>
+
         </variablelist>
 
         <para>An example session using the loader to create an input file and
