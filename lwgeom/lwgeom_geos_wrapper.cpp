@@ -10,6 +10,7 @@
 #include "geos/geom.h"
 #include "geos/util.h"
 #if GEOS_FIRST_INTERFACE <= 3 && GEOS_LAST_INTERFACE >= 3
+#include "geos/opValid.h"
 #include "geos/opPolygonize.h"
 #endif // GEOS_FIRST_INTERFACE <= 3
 
@@ -896,9 +897,24 @@ char *GEOSrelate(Geometry *g1, Geometry*g2)
 
 char GEOSisvalid(Geometry *g1)
 {
+#if GEOS_FIRST_INTERFACE <= 3 && GEOS_LAST_INTERFACE >= 3
+	IsValidOp ivo(g1);
+#endif
+	bool result;
 	try {
-		bool result;
-		result =g1->isValid();
+#if GEOS_FIRST_INTERFACE <= 3 && GEOS_LAST_INTERFACE >= 3
+		result = ivo.isValid();
+		if ( result == 0 )
+		{
+			TopologyValidationError *err = ivo.getValidationError();
+			if ( err ) {
+				string errmsg = err->getMessage();
+				NOTICE_MESSAGE((char *)errmsg.c_str());
+			}
+		}
+#else // GEOS_INTERFACE 3 not supported
+		result = g1->isValid();
+#endif
 		return result;
 	}
 	catch (GEOSException *ge)
