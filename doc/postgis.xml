@@ -477,7 +477,7 @@
           <filename>psql</filename> and try the following SQL:</para>
 
           <programlisting>CREATE TABLE gtest ( ID int4, NAME varchar(20) );
-SELECT AddGeometryColumn('gtest','geom',-1,'LINESTRING',2);</programlisting>
+SELECT AddGeometryColumn('', 'gtest','geom',-1,'LINESTRING',2);</programlisting>
 
           <para>If the geometry column addition fails, you probably have not
           loaded the PostGIS functions and objects into this database. See the
