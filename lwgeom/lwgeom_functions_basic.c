@@ -2370,7 +2370,7 @@ Datum LWGEOM_noop(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom;
 	size_t size, retsize;
 
-	in = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+	in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	lwgeom = lwgeom_deserialize(SERIALIZED_FORM(in));
 
@@ -2423,7 +2423,7 @@ Datum LWGEOM_ndims(PG_FUNCTION_ARGS)
 	PG_LWGEOM *in;
 	int ret;
 
-	in = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+	in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	ret = (TYPE_NDIMS(in->type));
 	PG_RETURN_INT16(ret);
 }
