@@ -1576,23 +1576,32 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 	Pointer **pointers;
 	MemoryContext oldcontext;
 
-//elog(NOTICE, "LWGEOM_accum called");
+#ifdef DEBUG
+	elog(NOTICE, "LWGEOM_accum called");
+#endif
 
 	datum = PG_GETARG_DATUM(0);
 	if ( (Pointer *)datum == NULL ) {
 		array = NULL;
 		nelems = 0;
-		//elog(NOTICE, "geom_accum: NULL array, nelems=%d", nelems);
+#ifdef DEBUG
+		elog(NOTICE, "geom_accum: NULL array");
+#endif
 	} else {
 		array = (ArrayType *) PG_DETOAST_DATUM_COPY(datum);
 		nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
+#ifdef DEBUG
+		elog(NOTICE, "geom_accum: array of nelems=%d", nelems);
+#endif
 	}
 
 	datum = PG_GETARG_DATUM(1);
 	// Do nothing, return state array
 	if ( (Pointer *)datum == NULL )
 	{
-		//elog(NOTICE, "geom_accum: NULL geom, nelems=%d", nelems);
+#ifdef DEBUG
+		elog(NOTICE, "geom_accum: NULL geom, nelems=%d", nelems);
+#endif
 		PG_RETURN_ARRAYTYPE_P(array);
 	}
 
@@ -1607,8 +1616,6 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 	/* Make a DETOASTED copy of input geometry */
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(datum);
 
-	//elog(NOTICE, "geom_accum: adding %p (nelems=%d)", geom, nelems);
-
 	/*
 	 * Might use a more optimized version instead of lwrealloc'ing
 	 * at every iteration. This is not the bottleneck anyway.
@@ -1621,11 +1628,18 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 		result->size = nbytes;
 		result->ndim = 1;
 		*((int *) ARR_DIMS(result)) = nelems;
+#ifdef DEBUG
+		elog(NOTICE, "geom_accum: adding %p (nelems=%d)", geom, nelems);
+#endif
+
 	} else {
 		result = (ArrayType *) lwrealloc(array, nbytes);
 		result->size = nbytes;
 		result->ndim = 1;
 		*((int *) ARR_DIMS(result)) = nelems;
+#ifdef DEBUG
+		elog(NOTICE, "geom_accum: adding %p (nelems=%d)", geom, nelems);
+#endif
 	}
 
 	pointers = (Pointer **)ARR_DATA_PTR(result);
@@ -1661,7 +1675,9 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 	unsigned int outtype;
 	int i;
 
-//elog(NOTICE, "LWGEOM_collect_garray called");
+#ifdef DEBUG
+	elog(NOTICE, "LWGEOM_collect_garray called");
+#endif
 
 	/* Get input datum */
 	datum = PG_GETARG_DATUM(0);
@@ -1678,6 +1694,10 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 
 	/* Get number of geometries in array */
 	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
+
+#ifdef DEBUG
+	elog(NOTICE, "LWGEOM_collect_garray: array has %d elements", nelems);
+#endif
 
 	/* Return null on 0-elements input array */
 	if ( nelems == 0 )
@@ -1756,7 +1776,9 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 	unsigned int npoints;
 	int i;
 
-//elog(NOTICE, "LWGEOM_makeline_garray called");
+#ifdef DEBUG
+	elog(NOTICE, "LWGEOM_makeline_garray called");
+#endif
 
 	/* Get input datum */
 	datum = PG_GETARG_DATUM(0);
@@ -1771,8 +1793,16 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 	/* Get actual ArrayType */
 	array = (ArrayType *) PG_DETOAST_DATUM(datum);
 
+#ifdef DEBUG
+	elog(NOTICE, "LWGEOM_makeline_garray: array detoasted");
+#endif
+
 	/* Get number of geometries in array */
 	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
+
+#ifdef DEBUG
+	elog(NOTICE, "LWGEOM_makeline_garray: array has %d elements", nelems);
+#endif
 
 	/* Return null on 0-elements input array */
 	if ( nelems == 0 )
@@ -1798,6 +1828,10 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 		if ( TYPE_GETTYPE(geoms[i]->type) != POINTTYPE ) continue;
 		lwpoints[npoints++] =
 			lwpoint_deserialize(SERIALIZED_FORM(geoms[i]));
+#ifdef DEBUG
+		elog(NOTICE, "LWGEOM_makeline_garray: element %d deserialized",
+			i);
+#endif
 	}
 
 	/* Return null on 0-points input array */
@@ -1806,6 +1840,10 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 		elog(NOTICE, "No points in input array");
 		PG_RETURN_NULL();
 	}
+
+#ifdef DEBUG
+	elog(NOTICE, "LWGEOM_makeline_garray: point elements: %d", npoints);
+#endif
 
 	outlwg = (LWGEOM *)make_lwline(-1, npoints, lwpoints);
 
