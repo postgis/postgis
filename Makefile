@@ -4,18 +4,14 @@
 # Set USE_PROJ to 1 for Proj4 reprojection support
 #
 USE_PROJ=1
-ifeq (${PROJ_DIR},) 
-	PROJ_DIR=/usr/local
-endif
+PROJ_DIR=/raid/local
 
 #---------------------------------------------------------------
 # Set USE_GEOS to 1 for GEOS spatial predicate and operator
 # support
 #
 USE_GEOS=1
-ifeq (${GEOS_DIR},) 
-	GEOS_DIR=/usr/local
-endif
+GEOS_DIR=/raid/local
 
 #---------------------------------------------------------------
 # Set USE_STATS to 1 for new GiST statistics collection support
@@ -164,7 +160,7 @@ install: all installdirs install-postgis-lib
 	$(INSTALL_DATA) postgis_undef.sql $(DESTDIR)$(datadir)/contrib
 	$(INSTALL_DATA) spatial_ref_sys.sql $(DESTDIR)$(datadir)/contrib
 	$(INSTALL_DATA) README.postgis $(DESTDIR)$(datadir)/contrib
-	$(MAKE) -C DESTDIR=$(DESTDIR) loader install
+	$(MAKE) DESTDIR=$(DESTDIR) -C loader install
 
 #- This has been copied from postgresql and adapted
 install-postgis-lib: $(shlib)
