@@ -489,7 +489,6 @@ Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS)
 	unsigned char	old_type;
 	int		size;
 
-
 //elog(NOTICE,"in LWGEOM_addBBOX");
 
 	if (lwgeom_hasBBOX( lwgeom->type ) )
@@ -516,6 +515,8 @@ Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS)
 		lwgeom_hasSRID(old_type), lwgeom_getType(old_type), 1);
 	// copy in bbox
 	memcpy(result->data, &box, sizeof(BOX2DFLOAT4));
+
+	//lwnotice("result->type hasbbox: %d", TYPE_HASBBOX(result->type));
 
 //elog(NOTICE,"LWGEOM_addBBOX  -- about to copy serialized form");
 	// everything but the type and length

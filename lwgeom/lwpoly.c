@@ -10,13 +10,13 @@
 // construct a new LWPOLY.  arrays (points/points per ring) will NOT be copied
 // use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
 LWPOLY *
-lwpoly_construct(int ndims, int SRID, int nrings,POINTARRAY **points)
+lwpoly_construct(int ndims, int SRID, char wantbbox, int nrings, POINTARRAY **points)
 {
 	LWPOLY *result;
 
 	result = (LWPOLY*) lwalloc(sizeof(LWPOLY));
-	result->type = POLYGONTYPE;
-	result->ndims = ndims;
+	result->type = lwgeom_makeType_full(ndims, (SRID!=-1), POLYGONTYPE,
+		wantbbox);
 	result->SRID = SRID;
 	result->nrings = nrings;
 	result->rings = points;
@@ -50,7 +50,7 @@ lwpoly_deserialize(char *serialized_form)
 	result = (LWPOLY*) lwalloc(sizeof(LWPOLY));
 
 	type = (unsigned  char) serialized_form[0];
-	result->type = POLYGONTYPE;
+	result->type = type;
 
 	ndims = lwgeom_ndims(type);
 	loc = serialized_form;
@@ -68,11 +68,6 @@ lwpoly_deserialize(char *serialized_form)
 	if (lwgeom_hasBBOX(type))
 	{
 		loc += sizeof(BOX2DFLOAT4);
-		result->hasbbox = 1;
-	}
-	else
-	{
-		result->hasbbox = 0;
 	}
 
 	if ( lwgeom_hasSRID(type))
@@ -104,7 +99,6 @@ lwpoly_deserialize(char *serialized_form)
 		else if (ndims == 4)
 			loc += 32*npoints;
 	}
-	result->ndims = ndims;
 
 	return result;
 }
@@ -157,13 +151,13 @@ lwpoly_serialize_buf(LWPOLY *poly, char *buf, size_t *retsize)
 	for (t=0;t<poly->nrings;t++) {
 		total_points  += poly->rings[t]->npoints;
 	}
-	size += sizeof(double)*poly->ndims*total_points;
+	size += sizeof(double)*TYPE_NDIMS(poly->type)*total_points;
 
-	buf[0] = (unsigned char) lwgeom_makeType_full(poly->ndims,
-		hasSRID, POLYGONTYPE, poly->hasbbox);
+	buf[0] = (unsigned char) lwgeom_makeType_full(TYPE_NDIMS(poly->type),
+		hasSRID, POLYGONTYPE, TYPE_HASBBOX(poly->type));
 	loc = buf+1;
 
-	if (poly->hasbbox)
+	if (TYPE_HASBBOX(poly->type))
 	{
 		lwgeom_compute_bbox_p((LWGEOM *)poly, (BOX2DFLOAT4 *)loc);
 		size += sizeof(BOX2DFLOAT4); // bvol
@@ -186,7 +180,7 @@ lwpoly_serialize_buf(LWPOLY *poly, char *buf, size_t *retsize)
 		npoints = poly->rings[t]->npoints;
 		memcpy(loc, &npoints, sizeof(int32)); //npoints this ring
 		loc+=4;
-		if (poly->ndims == 3)
+		if (TYPE_NDIMS(poly->type) == 3)
 		{
 			for (u=0;u<npoints;u++)
 			{
@@ -194,7 +188,7 @@ lwpoly_serialize_buf(LWPOLY *poly, char *buf, size_t *retsize)
 				loc+= 24;
 			}
 		}
-		else if (poly->ndims == 2)
+		else if (TYPE_NDIMS(poly->type) == 2)
 		{
 			for (u=0;u<npoints;u++)
 			{
@@ -202,7 +196,7 @@ lwpoly_serialize_buf(LWPOLY *poly, char *buf, size_t *retsize)
 				loc+= 16;
 			}
 		}
-		else if (poly->ndims == 4)
+		else if (TYPE_NDIMS(poly->type) == 4)
 		{
 			for (u=0;u<npoints;u++)
 			{
@@ -325,7 +319,7 @@ lwpoly_serialize_size(LWPOLY *poly)
 	uint32 i;
 
 	if ( poly->SRID != -1 ) size += 4; // SRID
-	if ( poly->hasbbox ) size += sizeof(BOX2DFLOAT4);
+	if ( TYPE_HASBBOX(poly->type) ) size += sizeof(BOX2DFLOAT4);
 
 #ifdef DEBUG_CALLS
 	lwnotice("lwpoly_serialize_size called with poly[%p] (%d rings)",
@@ -337,7 +331,7 @@ lwpoly_serialize_size(LWPOLY *poly)
 	for (i=0; i<poly->nrings; i++)
 	{
 		size += 4; // npoints
-		size += poly->rings[i]->npoints*poly->ndims*sizeof(double);
+		size += poly->rings[i]->npoints*TYPE_NDIMS(poly->type)*sizeof(double);
 	}
 
 #ifdef DEBUG_CALLS
@@ -363,7 +357,7 @@ void printLWPOLY(LWPOLY *poly)
 {
 	int t;
 	lwnotice("LWPOLY {");
-	lwnotice("    ndims = %i", (int)poly->ndims);
+	lwnotice("    ndims = %i", (int)TYPE_NDIMS(poly->type));
 	lwnotice("    SRID = %i", (int)poly->SRID);
 	lwnotice("    nrings = %i", (int)poly->nrings);
 	for (t=0;t<poly->nrings;t++)
@@ -436,14 +430,18 @@ lwpoly_add(const LWPOLY *to, uint32 where, const LWGEOM *what)
 	}
 	// reset SRID and wantbbox flag from component types
 	geoms[0]->SRID = geoms[1]->SRID = -1;
-	geoms[0]->hasbbox = geoms[1]->hasbbox = 0;
+	TYPE_SETHASSRID(geoms[0]->type, 0);
+	TYPE_SETHASSRID(geoms[1]->type, 0);
+	TYPE_SETHASBBOX(geoms[0]->type, 0);
+	TYPE_SETHASBBOX(geoms[1]->type, 0);
 
 	// Find appropriate geom type
-	if ( what->type == POLYGONTYPE ) newtype = MULTIPOLYGONTYPE;
+	if ( TYPE_GETTYPE(what->type) == POLYGONTYPE ) newtype = MULTIPOLYGONTYPE;
 	else newtype = COLLECTIONTYPE;
 
-	col = lwcollection_construct(newtype, to->ndims, to->SRID,
-		(what->hasbbox || to->hasbbox ), 2, geoms);
+	col = lwcollection_construct(newtype, TYPE_NDIMS(to->type), to->SRID,
+		( TYPE_HASBBOX(what->type) || TYPE_HASBBOX(to->type) ),
+		2, geoms);
 	
 	return (LWGEOM *)col;
 }

@@ -27,6 +27,8 @@ typedef  int int32;
 
 //---- Definitions found in lwgeom.h (and postgis)
 
+#define TYPE_NDIMS(t) ((((t)&0x20)>>5)+(((t)&0x10)>>4)+2)
+
 typedef unsigned int uint32;
 typedef int int32;
 
@@ -47,30 +49,24 @@ typedef struct
 
 typedef struct
 {
-	int type; // POINTTYPE
-   	char ndims;
+	unsigned char type; 
    	uint32 SRID;	
-	char hasbbox; 
    	POINTARRAY *point;  // hide 2d/3d (this will be an array of 1 point)
 }  LWPOINT; // "light-weight point"
 
 // LINETYPE
 typedef struct
 {
-	int type; // LINETYPE
-   	char ndims;
+	unsigned char type; 
    	uint32 SRID;	
-	char hasbbox; 
 	POINTARRAY    *points; // array of POINT3D
 } LWLINE; //"light-weight line"
 
 // POLYGONTYPE
 typedef struct
 {
-	int type; // POLYGONTYPE
-   	char ndims;
+	unsigned char type; 
    	uint32 SRID;	
-	char hasbbox; 
 	int  nrings;
 	POINTARRAY **rings; // list of rings (list of points)
 } LWPOLY; // "light-weight polygon"
@@ -357,7 +353,7 @@ Geometry *PostGIS2GEOS_polygon(const LWPOLY *lwpoly)
 {
 	POINTARRAY *pa;
 	int SRID = lwpoly->SRID;
-	bool is3d = lwpoly->ndims > 2 ? 1 : 0;
+	bool is3d = TYPE_NDIMS(lwpoly->type) > 2 ? 1 : 0;
 
 #ifdef DEBUG_POSTGIS2GEOS
 	char buf[256];

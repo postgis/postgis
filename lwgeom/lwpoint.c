@@ -43,15 +43,15 @@ lwpoint_serialize_buf(LWPOINT *point, char *buf, size_t *retsize)
 	hasSRID = (point->SRID != -1);
 
 	if (hasSRID) size +=4;  //4 byte SRID
-	if (point->hasbbox) size += sizeof(BOX2DFLOAT4); // bvol
+	if (TYPE_HASBBOX(point->type)) size += sizeof(BOX2DFLOAT4); // bvol
 
-	size += sizeof(double)*point->ndims;
+	size += sizeof(double)*TYPE_NDIMS(point->type);
 
-	buf[0] = (unsigned char) lwgeom_makeType_full(point->ndims,
-		hasSRID, POINTTYPE, point->hasbbox);
+	buf[0] = (unsigned char) lwgeom_makeType_full(TYPE_NDIMS(point->type),
+		hasSRID, POINTTYPE, TYPE_HASBBOX(point->type));
 	loc = buf+1;
 
-	if (point->hasbbox)
+	if (TYPE_HASBBOX(point->type))
 	{
 		lwgeom_compute_bbox_p((LWGEOM *)point, (BOX2DFLOAT4 *)loc);
 		loc += sizeof(BOX2DFLOAT4);
@@ -65,9 +65,9 @@ lwpoint_serialize_buf(LWPOINT *point, char *buf, size_t *retsize)
 
 	//copy in points
 
-	if (point->ndims == 3) getPoint3d_p(point->point, 0, loc);
-	else if (point->ndims == 2) getPoint2d_p(point->point, 0, loc);
-	else if (point->ndims == 4) getPoint4d_p(point->point, 0, loc);
+	if (TYPE_NDIMS(point->type) == 3) getPoint3d_p(point->point, 0, loc);
+	else if (TYPE_NDIMS(point->type) == 2) getPoint2d_p(point->point, 0, loc);
+	else if (TYPE_NDIMS(point->type) == 4) getPoint4d_p(point->point, 0, loc);
 
 	if (retsize) *retsize = size;
 }
@@ -130,9 +130,9 @@ lwpoint_serialize_size(LWPOINT *point)
 #endif
 
 	if ( point->SRID != -1 ) size += 4; // SRID
-	if ( point->hasbbox ) size += sizeof(BOX2DFLOAT4);
+	if ( TYPE_HASBBOX(point->type) ) size += sizeof(BOX2DFLOAT4);
 
-	size += point->ndims * sizeof(double); // point
+	size += TYPE_NDIMS(point->type) * sizeof(double); // point
 
 #ifdef DEBUG_CALLS
 	lwnotice("lwpoint_serialize_size returning %d", size);
@@ -144,7 +144,7 @@ lwpoint_serialize_size(LWPOINT *point)
 // construct a new point.  point will not be copied
 // use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
 LWPOINT *
-lwpoint_construct(int ndims, int SRID, POINTARRAY *point)
+lwpoint_construct(int ndims, int SRID, char wantbbox, POINTARRAY *point)
 {
 	LWPOINT *result ;
 
@@ -152,10 +152,9 @@ lwpoint_construct(int ndims, int SRID, POINTARRAY *point)
 		return NULL; // error
 
 	result = lwalloc(sizeof(LWPOINT));
-	result->type = POINTTYPE;
-	result->ndims = ndims;
+	result->type = lwgeom_makeType_full(ndims, (SRID!=-1), POINTTYPE,
+		wantbbox);
 	result->SRID = SRID;
-
 	result->point = point;
 
 	return result;
@@ -182,7 +181,7 @@ lwpoint_deserialize(char *serialized_form)
 	type = (unsigned char) serialized_form[0];
 
 	if ( lwgeom_getType(type) != POINTTYPE) return NULL;
-	result->type = POINTTYPE;
+	result->type = type;
 
 	loc = serialized_form+1;
 
@@ -191,10 +190,8 @@ lwpoint_deserialize(char *serialized_form)
 #ifdef DEBUG
 		lwnotice("lwpoint_deserialize: input has bbox");
 #endif
-		result->hasbbox = 1;
 		loc += sizeof(BOX2DFLOAT4);
 	}
-	else result->hasbbox = 0;
 
 	if ( lwgeom_hasSRID(type))
 	{
@@ -214,7 +211,6 @@ lwpoint_deserialize(char *serialized_form)
 	pa = pointArray_construct(loc, lwgeom_ndims(type), 1);
 
 	result->point = pa;
-	result->ndims = lwgeom_ndims(type);
 
 	return result;
 }
@@ -228,8 +224,8 @@ void pfree_point    (LWPOINT *pt)
 void printLWPOINT(LWPOINT *point)
 {
 	lwnotice("LWPOINT {");
-	lwnotice("    ndims = %i", (int)point->ndims);
-	lwnotice("    BBOX = %i", point->hasbbox ? 1 : 0 );
+	lwnotice("    ndims = %i", (int)TYPE_NDIMS(point->type));
+	lwnotice("    BBOX = %i", TYPE_HASBBOX(point->type) ? 1 : 0 );
 	lwnotice("    SRID = %i", (int)point->SRID);
 	printPA(point->point);
 	lwnotice("}");
@@ -287,14 +283,18 @@ lwpoint_add(const LWPOINT *to, uint32 where, const LWGEOM *what)
 	}
 	// reset SRID and wantbbox flag from component types
 	geoms[0]->SRID = geoms[1]->SRID = -1;
-	geoms[0]->hasbbox = geoms[1]->hasbbox = 0;
+	TYPE_SETHASSRID(geoms[0]->type, 0);
+	TYPE_SETHASSRID(geoms[1]->type, 0);
+	TYPE_SETHASBBOX(geoms[0]->type, 0);
+	TYPE_SETHASBBOX(geoms[1]->type, 0);
 
 	// Find appropriate geom type
-	if ( what->type == POINTTYPE ) newtype = MULTIPOINTTYPE;
+	if ( TYPE_GETTYPE(what->type) == POINTTYPE ) newtype = MULTIPOINTTYPE;
 	else newtype = COLLECTIONTYPE;
 
-	col = lwcollection_construct(newtype, to->ndims, to->SRID,
-		(what->hasbbox || to->hasbbox ), 2, geoms);
+	col = lwcollection_construct(newtype, TYPE_NDIMS(to->type), to->SRID,
+		( TYPE_HASBBOX(what->type) || TYPE_HASBBOX(to->type) ),
+		2, geoms);
 	
 	return (LWGEOM *)col;
 }

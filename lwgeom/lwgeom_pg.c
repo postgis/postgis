@@ -18,6 +18,11 @@ pg_alloc(size_t size)
 #ifdef DEBUG
 	lwnotice("  pg_alloc(%d) returning %p", size, result);
 #endif
+	if ( ! result )
+	{
+		elog(ERROR, "Out of virtual memory");
+		return NULL;
+	}
 	return result;
 }
 

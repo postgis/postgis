@@ -182,7 +182,7 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 	/* Ok, we really need geos now ;) */
 	initGEOS(MAXIMUM_ALIGNOF);
 
-	if ( lwgeom_ndims(geoms[0]->type) > 2 ) is3d = 1;
+	if ( TYPE_NDIMS(geoms[0]->type) > 2 ) is3d = 1;
 	geos_result = POSTGIS2GEOS(geoms[0]);
 	pfree(geoms[0]);
 	for (i=1; i<nelems; i++)
@@ -246,8 +246,8 @@ Datum geomunion(PG_FUNCTION_ARGS)
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
-	is3d = ( lwgeom_ndims(geom1->type) > 2 ) ||
-		( lwgeom_ndims(geom2->type) > 2 );
+	is3d = ( TYPE_NDIMS(geom1->type) > 2 ) ||
+		( TYPE_NDIMS(geom2->type) > 2 );
 
 	initGEOS(MAXIMUM_ALIGNOF);
 //elog(NOTICE,"in geomunion");
@@ -338,8 +338,8 @@ Datum symdifference(PG_FUNCTION_ARGS)
 	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
-	is3d = ( lwgeom_ndims(geom1->type) > 2 ) ||
-		( lwgeom_ndims(geom2->type) > 2 );
+	is3d = ( TYPE_NDIMS(geom1->type) > 2 ) ||
+		( TYPE_NDIMS(geom2->type) > 2 );
 
 	initGEOS(MAXIMUM_ALIGNOF);
 
@@ -452,7 +452,7 @@ Datum boundary(PG_FUNCTION_ARGS)
 #ifdef PROFILE
 	profstart(PROF_G2P);
 #endif
-	result = GEOS2POSTGIS(g3, lwgeom_ndims(geom1->type) > 2);
+	result = GEOS2POSTGIS(g3, TYPE_NDIMS(geom1->type) > 2);
 #ifdef PROFILE
 	profstart(PROF_P2G1);
 #endif
@@ -522,7 +522,7 @@ Datum convexhull(PG_FUNCTION_ARGS)
 
 //	elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
 
-	result = GEOS2POSTGIS(g3, lwgeom_ndims(geom1->type) > 2);
+	result = GEOS2POSTGIS(g3, TYPE_NDIMS(geom1->type) > 2);
 	if (result == NULL)
 	{
 		GEOSdeleteGeometry(g1);
@@ -591,7 +591,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 #ifdef PROFILE
 	profstart(PROF_G2P);
 #endif
-	result = GEOS2POSTGIS(g3, lwgeom_ndims(geom1->type) > 2);
+	result = GEOS2POSTGIS(g3, TYPE_NDIMS(geom1->type) > 2);
 #ifdef PROFILE
 	profstop(PROF_G2P);
 #endif
@@ -632,8 +632,8 @@ Datum intersection(PG_FUNCTION_ARGS)
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
-	is3d = ( lwgeom_ndims(geom1->type) > 2 ) ||
-		( lwgeom_ndims(geom2->type) > 2 );
+	is3d = ( TYPE_NDIMS(geom1->type) > 2 ) ||
+		( TYPE_NDIMS(geom2->type) > 2 );
 
 	initGEOS(MAXIMUM_ALIGNOF);
 
@@ -739,8 +739,8 @@ Datum difference(PG_FUNCTION_ARGS)
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
-	is3d = ( lwgeom_ndims(geom1->type) > 2 ) ||
-		( lwgeom_ndims(geom2->type) > 2 );
+	is3d = ( TYPE_NDIMS(geom1->type) > 2 ) ||
+		( TYPE_NDIMS(geom2->type) > 2 );
 
 	initGEOS(MAXIMUM_ALIGNOF);
 
@@ -852,7 +852,7 @@ Datum pointonsurface(PG_FUNCTION_ARGS)
 #ifdef PROFILE
 	profstart(PROF_G2P);
 #endif
-	result = GEOS2POSTGIS(g3, (lwgeom_ndims(geom1->type) > 2));
+	result = GEOS2POSTGIS(g3, (TYPE_NDIMS(geom1->type) > 2));
 #ifdef PROFILE
 	profstop(PROF_G2P);
 #endif
@@ -918,7 +918,7 @@ Datum centroid(PG_FUNCTION_ARGS)
 #ifdef PROFILE
 	profstart(PROF_G2P);
 #endif
-	result = GEOS2POSTGIS(geosresult, (lwgeom_ndims(geom->type) > 2));
+	result = GEOS2POSTGIS(geosresult, (TYPE_NDIMS(geom->type) > 2));
 #ifdef PROFILE
 	profstop(PROF_G2P);
 #endif
@@ -1889,7 +1889,7 @@ lwpoint_from_geometry(Geometry *g, char want3d)
 #endif
 
 	// Construct point array
-	pa = (POINTARRAY *)palloc(sizeof(POINTARRAY));
+	pa = (POINTARRAY *)lwalloc(sizeof(POINTARRAY));
 	pa->ndims = want3d ? 3 : 2;
 	pa->npoints = 1;
 
@@ -1900,7 +1900,7 @@ lwpoint_from_geometry(Geometry *g, char want3d)
 	GEOSdeleteChar( (char*) pts);
 
 	// Construct LWPOINT
-	point = lwpoint_construct(pa->ndims, -1, pa);
+	point = lwpoint_construct(pa->ndims, -1, 0, pa);
 
 	return point;
 }
@@ -1940,7 +1940,7 @@ lwline_from_geometry(Geometry *g, char want3d)
 	GEOSdeleteChar( (char*) pts);
 
 	// Construct LWPOINT
-	line = lwline_construct(pa->ndims, -1, pa);
+	line = lwline_construct(pa->ndims, -1, 0, pa);
 
 	return line;
 }
@@ -2006,7 +2006,7 @@ lwpoly_from_geometry(Geometry *g, char want3d)
 	}
 
 	// Construct LWPOLY
-	poly = lwpoly_construct(pa->ndims, -1, nrings+1, rings);
+	poly = lwpoly_construct(pa->ndims, -1, 0, nrings+1, rings);
 
 	return poly;
 }
@@ -2041,7 +2041,7 @@ lwcollection_from_geometry(Geometry *geom, char want3d)
 #endif
 		geoms[i] = lwgeom_from_geometry(g, want3d);
 #ifdef DEBUG_GEOS2POSTGIS
-		lwnotice("lwcollection_from_geometry: geoms[%d] is a %s", i, lwgeom_typename(geoms[i]->type));
+		lwnotice("lwcollection_from_geometry: geoms[%d] is a %s", i, lwgeom_typename(TYPE_GETTYPE(geoms[i]->type)));
 #endif
 	}
 
@@ -2103,7 +2103,7 @@ GEOS2POSTGIS(Geometry *geom, char want3d)
 	}
 
 #ifdef DEBUG_GEOS2POSTGIS
-	lwnotice("GEOS2POSTGIS: lwgeom_from_geometry returned a %s", lwgeom_summary(lwgeom, 0)); //lwgeom_typename(lwgeom->type));
+	lwnotice("GEOS2POSTGIS: lwgeom_from_geometry returned a %s", lwgeom_summary(lwgeom, 0)); 
 #endif
 
 	size = lwgeom_serialize_size(lwgeom);
@@ -2117,7 +2117,8 @@ GEOS2POSTGIS(Geometry *geom, char want3d)
 	result->size = size;
 
 #ifdef DEBUG_GEOS2POSTGIS
-	lwnotice("GEOS2POSTGIS: about to serialize %s", lwgeom_typename(lwgeom->type));
+	lwnotice("GEOS2POSTGIS: about to serialize %s",
+		lwgeom_typename(TYPE_GETTYPE(lwgeom->type)));
 #endif
 
 	lwgeom_serialize_buf(lwgeom, SERIALIZED_FORM(result), &retsize);
@@ -2146,7 +2147,7 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 	lwnotice("LWGEOM2GEOS: got lwgeom[%p]", lwgeom);
 #endif
 
-	switch (lwgeom->type)
+	switch (TYPE_GETTYPE(lwgeom->type))
 	{
 		case POINTTYPE:
 #ifdef DEBUG_POSTGIS2GEOS
@@ -2172,19 +2173,20 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 		case COLLECTIONTYPE:
 			col = (LWCOLLECTION *)lwgeom;
 #ifdef DEBUG_POSTGIS2GEOS
-			lwnotice("LWGEOM2GEOS: %s with %d subgeoms", lwgeom_typename(col->type), col->ngeoms);
+			lwnotice("LWGEOM2GEOS: %s with %d subgeoms", lwgeom_typename(TYPE_GETTYPE(col->type)), col->ngeoms);
 #endif
 			collected = (Geometry **)lwalloc(sizeof(Geometry *)*col->ngeoms);
 			for (i=0; i<col->ngeoms; i++)
 			{
 				collected[i] = LWGEOM2GEOS(col->geoms[i]);
 			}
-			return PostGIS2GEOS_collection(col->type,
+			return PostGIS2GEOS_collection(TYPE_GETTYPE(col->type),
 				collected, col->ngeoms, col->SRID,
-				col->ndims>2);
+				TYPE_NDIMS(col->type)>2);
 
 		default:
-			lwerror("Unknown geometry type: %d", lwgeom->type);
+			lwerror("Unknown geometry type: %d",
+				TYPE_GETTYPE(lwgeom->type));
 			return NULL;
 	}
 
@@ -2223,7 +2225,7 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 	profstop(PROF_GRUN);
 #endif
 
-	result = GEOS2POSTGIS(geosgeom, lwgeom_ndims(geom->type) > 2);
+	result = GEOS2POSTGIS(geosgeom, TYPE_NDIMS(geom->type) > 2);
 	GEOSdeleteGeometry(geosgeom);
 
 #ifdef DEBUG_CONVERTER

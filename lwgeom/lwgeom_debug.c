@@ -14,7 +14,7 @@ lwgeom_summary(LWGEOM *lwgeom, int offset)
 {
 	char *result;
 
-	switch (lwgeom->type)
+	switch (TYPE_GETTYPE(lwgeom->type))
 	{
 		case POINTTYPE:
 			return lwpoint_summary((LWPOINT *)lwgeom, offset);
@@ -47,16 +47,14 @@ char *
 lwpoint_summary(LWPOINT *point, int offset)
 {
 	char *result;
-	result = lwalloc(128);
+	result = lwalloc(128+offset);
 	char pad[offset+1];
 	memset(pad, ' ', offset);
 	pad[offset] = '\0';
 
-	sprintf(result, "%s%s[%c%c%d]\n",
-		pad, lwgeom_typename(point->type),
-		point->hasbbox ? 'B' : '_',
-		point->SRID != -1 ? 'S' : '_',
-		point->ndims);
+	sprintf(result, "%s%s[%s]\n",
+		pad, lwgeom_typename(TYPE_GETTYPE(point->type)),
+		lwgeom_typeflags(point->type));
 	return result;
 }
 
@@ -69,11 +67,9 @@ lwline_summary(LWLINE *line, int offset)
 	memset(pad, ' ', offset);
 	pad[offset] = '\0';
 
-	sprintf(result, "%s%s[%c%c%d] with %d points\n",
-		pad, lwgeom_typename(line->type),
-		line->hasbbox ? 'B' : '_',
-		line->SRID != -1 ? 'S' : '_',
-		line->ndims,
+	sprintf(result, "%s%s[%s] with %d points\n",
+		pad, lwgeom_typename(TYPE_GETTYPE(line->type)),
+		lwgeom_typeflags(line->type),
 		line->points->npoints);
 	return result;
 }
@@ -96,11 +92,9 @@ lwcollection_summary(LWCOLLECTION *col, int offset)
 
 	result = (char *)lwalloc(size);
 
-	sprintf(result, "%s%s[%c%c%d] with %d elements\n",
-		pad, lwgeom_typename(col->type),
-		col->hasbbox ? 'B' : '_',
-		col->SRID != -1 ? 'S' : '_',
-		col->ndims,
+	sprintf(result, "%s%s[%s] with %d elements\n",
+		pad, lwgeom_typename(TYPE_GETTYPE(col->type)),
+		lwgeom_typeflags(col->type),
 		col->ngeoms);
 
 	for (i=0; i<col->ngeoms; i++)
@@ -137,11 +131,9 @@ lwpoly_summary(LWPOLY *poly, int offset)
 
 	result = lwalloc(size);
 
-	sprintf(result, "%s%s[%c%c%d] with %i rings\n",
-		pad, lwgeom_typename(poly->type),
-		poly->hasbbox ? 'B' : '_',
-		poly->SRID != -1 ? 'S' : '_',
-		poly->ndims,
+	sprintf(result, "%s%s[%s] with %i rings\n",
+		pad, lwgeom_typename(TYPE_GETTYPE(poly->type)),
+		lwgeom_typeflags(poly->type),
 		poly->nrings);
 
 	for (i=0; i<poly->nrings;i++)

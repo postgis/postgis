@@ -10,13 +10,14 @@
 
 // construct a new LWLINE.  points will *NOT* be copied
 // use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
-LWLINE *lwline_construct(int ndims, int SRID,  POINTARRAY *points)
+LWLINE *
+lwline_construct(int ndims, int SRID, char wantbbox, POINTARRAY *points)
 {
 	LWLINE *result;
 	result = (LWLINE*) lwalloc( sizeof(LWLINE));
 
-	result->type = LINETYPE;
-	result->ndims =ndims;
+	result->type = lwgeom_makeType_full(ndims, (SRID!=-1), LINETYPE,
+		wantbbox);
 	result->SRID = SRID;
 	result->points = points;
 
@@ -38,7 +39,7 @@ LWLINE *lwline_deserialize(char *serialized_form)
 	result = (LWLINE*) lwalloc(sizeof(LWLINE)) ;
 
 	type = (unsigned char) serialized_form[0];
-	result->type = LINETYPE;
+	result->type = type;
 
 	if ( lwgeom_getType(type) != LINETYPE)
 	{
@@ -52,11 +53,9 @@ LWLINE *lwline_deserialize(char *serialized_form)
 	{
 		//lwnotice("line has bbox");
 		loc += sizeof(BOX2DFLOAT4);
-		result->hasbbox = 1;
 	}
 	else
 	{
-		result->hasbbox = 0;
 		//lwnotice("line has NO bbox");
 	}
 
@@ -80,7 +79,6 @@ LWLINE *lwline_deserialize(char *serialized_form)
 	pa = pointArray_construct( loc, lwgeom_ndims(type), npoints);
 
 	result->points = pa;
-	result->ndims = lwgeom_ndims(type);
 
 	return result;
 }
@@ -116,18 +114,18 @@ void lwline_serialize_buf(LWLINE *line, char *buf, size_t *retsize)
 	char hasSRID;
 	int t;
 	char *loc;
-	int ptsize = sizeof(double)*line->ndims;
+	int ptsize = sizeof(double)*TYPE_NDIMS(line->type);
 
 	if (line == NULL)
 		lwerror("lwline_serialize:: given null line");
 
 	hasSRID = (line->SRID != -1);
 
-	buf[0] = (unsigned char) lwgeom_makeType_full(line->ndims,
-		hasSRID, LINETYPE, line->hasbbox);
+	buf[0] = (unsigned char) lwgeom_makeType_full(TYPE_NDIMS(line->type),
+		hasSRID, LINETYPE, TYPE_HASBBOX(line->type));
 	loc = buf+1;
 
-	if (line->hasbbox)
+	if (TYPE_HASBBOX(line->type))
 	{
 		lwgeom_compute_bbox_p((LWGEOM *)line, (BOX2DFLOAT4 *)loc);
 		loc += sizeof(BOX2DFLOAT4);
@@ -149,7 +147,7 @@ void lwline_serialize_buf(LWLINE *line, char *buf, size_t *retsize)
 
 //lwnotice(" line serialize - size = %i", size);
 
-	if (line->ndims == 3)
+	if (TYPE_NDIMS(line->type) == 3)
 	{
 		for (t=0; t< line->points->npoints;t++)
 		{
@@ -157,7 +155,7 @@ void lwline_serialize_buf(LWLINE *line, char *buf, size_t *retsize)
 			loc += 24; // size of a 3d point
 		}
 	}
-	else if (line->ndims == 2)
+	else if (TYPE_NDIMS(line->type) == 2)
 	{
 		for (t=0; t< line->points->npoints;t++)
 		{
@@ -165,7 +163,7 @@ void lwline_serialize_buf(LWLINE *line, char *buf, size_t *retsize)
 			loc += 16; // size of a 2d point
 		}
 	}
-	else if (line->ndims == 4)
+	else if (TYPE_NDIMS(line->type) == 4)
 	{
 		for (t=0; t< line->points->npoints;t++)
 		{
@@ -203,9 +201,9 @@ lwline_serialize_size(LWLINE *line)
 #endif
 
 	if ( line->SRID != -1 ) size += 4; // SRID
-	if ( line->hasbbox ) size += sizeof(BOX2DFLOAT4);
+	if ( TYPE_HASBBOX(line->type) ) size += sizeof(BOX2DFLOAT4);
 
-	size += sizeof(double)*line->ndims*line->points->npoints; // points
+	size += sizeof(double)*TYPE_NDIMS(line->type)*line->points->npoints; // points
 	size += 4; // npoints
 
 #ifdef DEBUG_CALLS
@@ -272,7 +270,7 @@ lwgeom_size_line(const char *serialized_line)
 void printLWLINE(LWLINE *line)
 {
 	lwnotice("LWLINE {");
-	lwnotice("    ndims = %i", (int)line->ndims);
+	lwnotice("    ndims = %i", (int)TYPE_NDIMS(line->type));
 	lwnotice("    SRID = %i", (int)line->SRID);
 	printPA(line->points);
 	lwnotice("}");
@@ -326,14 +324,18 @@ lwline_add(const LWLINE *to, uint32 where, const LWGEOM *what)
 	}
 	// reset SRID and wantbbox flag from component types
 	geoms[0]->SRID = geoms[1]->SRID = -1;
-	geoms[0]->hasbbox = geoms[1]->hasbbox = 0;
+	TYPE_SETHASSRID(geoms[0]->type, 0);
+	TYPE_SETHASSRID(geoms[1]->type, 0);
+	TYPE_SETHASBBOX(geoms[0]->type, 0);
+	TYPE_SETHASBBOX(geoms[1]->type, 0);
 
 	// Find appropriate geom type
-	if ( what->type == LINETYPE ) newtype = MULTILINETYPE;
+	if ( TYPE_GETTYPE(what->type) == LINETYPE ) newtype = MULTILINETYPE;
 	else newtype = COLLECTIONTYPE;
 
-	col = lwcollection_construct(newtype, to->ndims, to->SRID,
-		(what->hasbbox || to->hasbbox ), 2, geoms);
+	col = lwcollection_construct(newtype, TYPE_NDIMS(to->type), to->SRID,
+		( TYPE_HASBBOX(what->type) || TYPE_HASBBOX(to->type) ),
+		2, geoms);
 	
 	return (LWGEOM *)col;
 }

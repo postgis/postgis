@@ -24,9 +24,7 @@ lwcollection_deserialize(char *srl)
 	insp = lwgeom_inspect(srl);
 
 	result = lwalloc(sizeof(LWCOLLECTION));
-	result->type = COLLECTIONTYPE;
-	result->hasbbox = lwgeom_hasBBOX(typefl);
-	result->ndims = lwgeom_ndims(typefl);
+	result->type = typefl;
 	result->SRID = insp->SRID;
 	result->ngeoms = insp->ngeometries;
 	result->geoms = lwalloc(sizeof(LWGEOM *)*insp->ngeometries);
@@ -53,7 +51,7 @@ lwcollection_serialize_size(LWCOLLECTION *col)
 	int i;
 
 	if ( col->SRID != -1 ) size += 4; // SRID
-	if ( col->hasbbox ) size += sizeof(BOX2DFLOAT4);
+	if ( TYPE_HASBBOX(col->type) ) size += sizeof(BOX2DFLOAT4);
 
 #ifdef DEBUG_CALLS
 	lwnotice("lwcollection_serialize_size[%p]: start size: %d", col, size);
@@ -89,12 +87,12 @@ lwcollection_serialize_buf(LWCOLLECTION *coll, char *buf, size_t *retsize)
 
 	hasSRID = (coll->SRID != -1);
 
-	buf[0] = (unsigned char) lwgeom_makeType_full(coll->ndims,
-		hasSRID, coll->type, coll->hasbbox);
+	buf[0] = (unsigned char) lwgeom_makeType_full(TYPE_NDIMS(coll->type),
+		hasSRID, TYPE_GETTYPE(coll->type), TYPE_HASBBOX(coll->type));
 	loc = buf+1;
 
 	// Add BBOX if requested
-	if ( coll->hasbbox )
+	if ( TYPE_HASBBOX(coll->type) )
 	{
 		lwgeom_compute_bbox_p((LWGEOM *)coll, (BOX2DFLOAT4 *)loc);
 		size += sizeof(BOX2DFLOAT4);
@@ -147,10 +145,9 @@ lwcollection_construct(int type, int ndims, uint32 SRID, char hasbbox,
 {
 	LWCOLLECTION *ret;
 	ret = lwalloc(sizeof(LWCOLLECTION));
-	ret->type = type;
-	ret->ndims = ndims;
+	ret->type = lwgeom_makeType_full(ndims, (SRID!=-1), COLLECTIONTYPE,
+		hasbbox);
 	ret->SRID = SRID;
-	ret->hasbbox = hasbbox;
 	ret->ngeoms = ngeoms;
 	ret->geoms = geoms;
 	return ret;
@@ -203,8 +200,10 @@ lwcollection_add(const LWCOLLECTION *to, uint32 where, const LWGEOM *what)
 		geoms[i+1] = lwgeom_clone(to->geoms[i]);
 	}
 
-	col = lwcollection_construct(COLLECTIONTYPE, to->ndims, to->SRID,
-		(what->hasbbox || to->hasbbox ), to->ngeoms+1, geoms);
+	col = lwcollection_construct(COLLECTIONTYPE, TYPE_NDIMS(to->type),
+		to->SRID,
+		( TYPE_HASBBOX(what->type) || TYPE_HASBBOX(to->type) ),
+		to->ngeoms+1, geoms);
 	
 	return (LWGEOM *)col;
 

@@ -775,15 +775,29 @@ pointArray_ptsize(const POINTARRAY *pa)
 
 
 // returns true if this type says it has an SRID (S bit set)
-char lwgeom_hasSRID(unsigned char type)
+char
+lwgeom_hasSRID(unsigned char type)
 {
-	return (type & 0x40);
+	return TYPE_HASSRID(type);
 }
 
 // returns either 2,3, or 4 -- 2=2D, 3=3D, 4=4D
-int lwgeom_ndims(unsigned char type)
+int
+lwgeom_ndims(unsigned char type)
 {
-	return  ( (type & 0x30) >>4) +2;
+	return  TYPE_NDIMS(type);
+}
+
+// has M ?
+int lwgeom_hasM(unsigned char type)
+{
+	return  ( (type & 0x10) >>4);
+}
+
+// has Z ?
+int lwgeom_hasZ(unsigned char type)
+{
+	return  ( (type & 0x20) >>5);
 }
 
 
@@ -797,31 +811,25 @@ int  lwgeom_getType(unsigned char type)
 //construct a type (hasBOX=false)
 unsigned char lwgeom_makeType(int ndims, char hasSRID, int type)
 {
-	unsigned char result = type;
-
-	if (ndims == 3)
-		result = result | 0x10;
-	if (ndims == 4)
-		result = result | 0x20;
-	if (hasSRID)
-		result = result | 0x40;
-
-	return result;
+	return lwgeom_makeType_full(ndims, hasSRID, type, 0);
 }
 
-//construct a type
+/*
+ * Construct a type
+ * TODO: needs to be expanded to accept explicit MZ type
+ */
 unsigned char lwgeom_makeType_full(int ndims, char hasSRID, int type, char hasBBOX)
 {
 		unsigned char result = type;
 
 		if (ndims == 3)
-			result = result | 0x10;
+			TYPE_SETZM(result, 1, 0);
 		if (ndims == 4)
-			result = result | 0x20;
+			TYPE_SETZM(result, 1, 1);
 		if (hasSRID)
-			result = result | 0x40;
+			TYPE_SETHASSRID(result, 1);
 		if (hasBBOX)
-			result = result | 0x80;
+			TYPE_SETHASBBOX(result, 1);
 
 	return result;
 }
@@ -829,7 +837,7 @@ unsigned char lwgeom_makeType_full(int ndims, char hasSRID, int type, char hasBB
 //returns true if there's a bbox in this LWGEOM (B bit set)
 char lwgeom_hasBBOX(unsigned char type)
 {
-	return (type & 0x80);
+	return TYPE_HASBBOX(type);
 }
 
 //*****************************************************************************
@@ -2643,4 +2651,18 @@ box2d_union_p(BOX2DFLOAT4 *b1, BOX2DFLOAT4 *b2, BOX2DFLOAT4 *ubox)
 	else ubox->ymax = b2->ymax;
 
 	return 1;
+}
+
+const char *
+lwgeom_typeflags(unsigned char type)
+{
+	static char flags[5];
+	int flagno=0;
+	if ( TYPE_HASZ(type) ) flags[flagno++] = 'Z';
+	if ( TYPE_HASM(type) ) flags[flagno++] = 'M';
+	if ( TYPE_HASBBOX(type) ) flags[flagno++] = 'B';
+	if ( TYPE_HASSRID(type) ) flags[flagno++] = 'S';
+	flags[flagno] = '\0';
+	//lwnotice("Flags: %s - returning %p", flags, flags);
+	return flags;
 }

@@ -333,7 +333,8 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 	extring = poly->rings[0];
 
 	// This is a LWLINE constructed by exterior ring POINTARRAY
-	line = lwline_construct(poly->ndims, poly->SRID, extring);
+	line = lwline_construct(TYPE_NDIMS(poly->type), poly->SRID,
+		lwgeom_hasBBOX(geom->type), extring);
 
 	// Now we serialized it (copying data)
 	serializedline = lwline_serialize(line);
@@ -416,7 +417,8 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 	ring = poly->rings[wanted_index+1];
 
 	// This is a LWLINE constructed by exterior ring POINTARRAY
-	line = lwline_construct(poly->ndims, poly->SRID, ring);
+	line = lwline_construct(TYPE_NDIMS(poly->type), poly->SRID,
+		lwgeom_hasBBOX(geom->type), ring);
 
 	// Now we serialized it (copying data)
 	serializedline = lwline_serialize(line);
@@ -476,7 +478,7 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 
 	// Construct an LWPOINT
 	point = lwpoint_construct(line->points->ndims, lwgeom_getSRID(geom),
-		pts);
+		lwgeom_hasBBOX(geom->type), pts);
 
 	// Serialized the point
 	serializedpoint = lwpoint_serialize(point);
@@ -618,7 +620,7 @@ Datum LWGEOM_startpoint_linestring(PG_FUNCTION_ARGS)
 
 	// Construct an LWPOINT
 	point = lwpoint_construct(line->points->ndims, lwgeom_getSRID(geom),
-		pts);
+		lwgeom_hasBBOX(geom->type), pts);
 
 	// Serialized the point
 	serializedpoint = lwpoint_serialize(point);
@@ -669,7 +671,7 @@ Datum LWGEOM_endpoint_linestring(PG_FUNCTION_ARGS)
 
 	// Construct an LWPOINT
 	point = lwpoint_construct(line->points->ndims, lwgeom_getSRID(geom),
-		pts);
+		lwgeom_hasBBOX(geom->type), pts);
 
 	// Serialized the point
 	serializedpoint = lwpoint_serialize(point);
@@ -748,7 +750,7 @@ char line_is_closed(LWLINE *line)
 
 	if ( sp->x != ep->x ) return 0;
 	if ( sp->y != ep->y ) return 0;
-	if ( line->ndims > 2 )
+	if ( TYPE_HASZ(line->type) )
 	{
 		if ( sp->z != ep->z ) return 0;
 	}

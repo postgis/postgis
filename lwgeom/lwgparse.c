@@ -8,6 +8,7 @@
 #include "wktparse.h"
 #include <string.h>
 #include <stdio.h>
+#include "liblwgeom.h"
 
 /*
 //To get byte order
@@ -393,7 +394,17 @@ void write_type(tuple* this,output_state* out){
 	type |= this->type;
 
 	if (the_geom.ndims) //Support empty
-		type |= ((the_geom.ndims-2) << 4);
+	{
+		if ( the_geom.ndims == 3 )
+		{
+			TYPE_SETZM(type, 1, 0);
+		}
+		if ( the_geom.ndims == 4 )
+		{
+			TYPE_SETZM(type, 1, 1);
+		}
+		//type |= ((the_geom.ndims-2) << 4);
+	}
 
 	if ( the_geom.srid != -1 ){
 		type |= 0x40;
@@ -666,12 +677,11 @@ void parse_wkb(const char** b){
 	//quick exit on error
 	if ( ferror_occured ) return;
 
-	if (type & 0x80000000)
+	the_geom.ndims=2;
+	if (type & WKBZOFFSET)
 		the_geom.ndims=3;
-	else if (type & 0x40000000)
+	if (type & WKBMOFFSET)
 		the_geom.ndims=4;
-	else
-		the_geom.ndims=2;
 
 	type &=0x0f;
 

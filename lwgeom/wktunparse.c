@@ -16,6 +16,7 @@
 #include <netinet/in_systm.h>
 #include <netinet/ip.h>
 
+#include "liblwgeom.h"
 
 static int endian_check_int = 1; // dont modify this!!!
 
@@ -213,21 +214,27 @@ byte* output_multipoint(byte* geom,int suppress){
 	return output_wkt(geom,suppress);
 }
 
-byte* output_wkt(byte* geom, int supress){
+byte *
+output_wkt(byte* geom, int supress)
+{
 
 	unsigned type=*geom++;
-	dims = ((type & 0x30) >> 4)+2;
+	dims = TYPE_NDIMS(type); //((type & 0x30) >> 4)+2;
 
 	//Skip the bounding box if there is one
-	if ( type & 0x80 ){
+	//if ( type & 0x80 ){
+	if ( TYPE_HASBBOX(type) )
+	{
 		geom+=16;
 	}
 
-	if ( type & 0x40 ){
+	//if ( type & 0x40 ){
+	if ( TYPE_HASSRID(type) ) {
 		write_str("SRID=");write_int(read_int(&geom));write_str(";");
 	}
 
-	switch(type & 0x0F){
+	//switch(type & 0x0F){
+	switch(TYPE_GETTYPE(type)) {
 		case POINTTYPE:
 			if ( ! supress) write_str("POINT");
 			geom=output_single(geom,0);
@@ -279,7 +286,9 @@ byte* output_wkt(byte* geom, int supress){
 	return geom;
 }
 
-char* unparse_WKT(byte* lw_geom,allocator alloc,freeor free){
+char *
+unparse_WKT(byte* lw_geom, allocator alloc, freeor free)
+{
 
 	if (lw_geom==NULL)
 		return NULL;
@@ -290,7 +299,7 @@ char* unparse_WKT(byte* lw_geom,allocator alloc,freeor free){
 	out_start = out_pos = alloc(len);
 	lwgi=0;
 
-	output_wkt(lw_geom+4,0);
+	output_wkt(lw_geom+4, 0);
 
 	return out_start;
 }
@@ -307,7 +316,9 @@ void write_wkb_bytes(byte* ptr,int cnt){
 	}
 }
 
-byte* output_wkb_point(byte* geom){
+byte *
+output_wkb_point(byte* geom)
+{
 	if ( lwgi ){
 		write_wkb_bytes(geom,dims*4);
 		return geom + (4*dims);
@@ -318,43 +329,50 @@ byte* output_wkb_point(byte* geom){
 	}
 }
 
-void write_wkb_int(int i){
+void
+write_wkb_int(int i){
 	write_wkb_bytes((byte*)&i,4);
 }
 
-byte* output_wkb_collection(byte* geom,outwkbfunc func){
+byte *
+output_wkb_collection(byte* geom,outwkbfunc func){
 	int cnt = read_int(&geom);
 	write_wkb_int(cnt);
 	while(cnt--) geom=func(geom);
 	return geom;
 }
 
-byte* output_wkb_collection_2(byte* geom){
+byte *
+output_wkb_collection_2(byte* geom){
 	return output_wkb_collection(geom,output_wkb_point);
 }
 
 
-byte* output_wkb(byte* geom){
+byte *
+output_wkb(byte* geom)
+{
 
-	int4 type=*geom++;
+	unsigned char type=*geom++;
+	int4 wkbtype;
 
-	dims = ((type & 0x30) >> 4)+2;
+	dims = TYPE_NDIMS(type); 
 
 	//Skip the bounding box
-	if ( type & 0x80 ){
+	if ( TYPE_HASBBOX(type) ) { 
 		geom+=16;
 	}
 
-	if ( type & 0x40 ){
+	if ( TYPE_HASSRID(type) ) {
 		write_str("SRID=");write_int(read_int(&geom));write_str(";");
 	}
 
-	type &=0x0f;
+	//type&=0x0f;
+	wkbtype = TYPE_GETTYPE(type); 
 
-	if ( dims==3)
-		 type |=0x80000000;
-	else if (dims==4)
-		 type |=0x40000000;
+	if ( TYPE_HASZ(type) )
+		 wkbtype |= WKBZOFFSET;
+	if ( TYPE_HASM(type) )
+		 wkbtype |= WKBMOFFSET;
 
 	if ( getMachineEndian() != LITTLE_ENDIAN_CHECK ){
 		byte endian=0;
@@ -365,9 +383,9 @@ byte* output_wkb(byte* geom){
 		write_wkb_bytes(&endian,1);
 	}
 
-	write_wkb_int(type);
+	write_wkb_int(wkbtype);
 
-	switch(type & 0x0F){
+	switch(TYPE_GETTYPE(type)){
 		case POINTTYPE:
 			geom=output_wkb_point(geom);
 			break;

@@ -176,7 +176,8 @@ simplify2d_lwline(LWLINE *iline, double dist)
 
 	ipts = iline->points;
 	opts = DP_simplify2d(ipts, dist);
-	oline = lwline_construct(ipts->ndims, iline->SRID, opts);
+	oline = lwline_construct(ipts->ndims, iline->SRID,
+		TYPE_HASBBOX(iline->type), opts);
 
 	return oline;
 }
@@ -246,8 +247,8 @@ elog(NOTICE, "simplify_polygon3d: simplified polygon with %d rings", norings);
 	if ( ! norings ) return NULL;
 
 	opoly = palloc(sizeof(LWPOLY));
+	opoly->type = ipoly->type;
 	opoly->SRID = ipoly->SRID;
-	opoly->ndims = ipoly->ndims;
 	opoly->nrings = norings;
 	opoly->rings = orings;
 
@@ -381,8 +382,10 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 		else
 			getPoint4d_p(ipa, ipa->npoints-1, (char *)&pt);
 
-		opa = pointArray_construct((char *)&pt, line->ndims, 1);
-		point = lwpoint_construct(line->ndims, line->SRID, opa);
+		opa = pointArray_construct((char *)&pt,
+			TYPE_NDIMS(line->type), 1);
+		point = lwpoint_construct(TYPE_NDIMS(line->type),
+			line->SRID, 0, opa);
 		srl = lwpoint_serialize(point);
 		pfree_point(point);
 		PG_RETURN_POINTER(PG_LWGEOM_construct(srl, line->SRID, 0));
@@ -411,8 +414,10 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 			pt.y = (p1->y) + ((p2->y - p1->y) * dseg);
 			pt.z = 0;
 			pt.m = 0;
-			opa = pointArray_construct((char *)&pt, line->ndims, 1);
-			point = lwpoint_construct(line->ndims, line->SRID, opa);
+			opa = pointArray_construct((char *)&pt,
+				TYPE_NDIMS(line->type), 1);
+			point = lwpoint_construct(TYPE_NDIMS(line->type),
+				line->SRID, 0, opa);
 			srl = lwpoint_serialize(point);
 			pfree_point(point);
 			PG_RETURN_POINTER(PG_LWGEOM_construct(srl, line->SRID, 0));
@@ -423,8 +428,8 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 	/* Return the last point on the line. This shouldn't happen, but
 	 * could if there's some floating point rounding errors. */
 	getPoint4d_p(ipa, ipa->npoints-1, (char *)&pt);
-	opa = pointArray_construct((char *)&pt, line->ndims, 1);
-	point = lwpoint_construct(line->ndims, line->SRID, opa);
+	opa = pointArray_construct((char *)&pt, TYPE_NDIMS(line->type), 1);
+	point = lwpoint_construct(TYPE_NDIMS(line->type), line->SRID, 0, opa);
 	srl = lwpoint_serialize(point);
 	pfree_point(point);
 	PG_RETURN_POINTER(PG_LWGEOM_construct(srl, line->SRID, 0));

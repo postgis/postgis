@@ -38,7 +38,7 @@ lwgeom_deserialize(char *srl)
 size_t
 lwgeom_serialize_size(LWGEOM *lwgeom)
 {
-	int type = lwgeom->type;
+	int type = TYPE_GETTYPE(lwgeom->type);
 
 #ifdef DEBUG_CALLS
 	lwnotice("lwgeom_serialize_size called");
@@ -66,7 +66,7 @@ lwgeom_serialize_size(LWGEOM *lwgeom)
 void
 lwgeom_serialize_buf(LWGEOM *lwgeom, char *buf, size_t *retsize)
 {
-	int type = lwgeom->type;
+	int type = TYPE_GETTYPE(lwgeom->type);
 
 #ifdef DEBUG_CALLS 
 	lwnotice("lwgeom_serialize_buf called with a %s",
@@ -124,7 +124,7 @@ lwgeom_forceRHR(LWGEOM *lwgeom)
 	LWCOLLECTION *coll;
 	int i;
 
-	switch (lwgeom->type)
+	switch (TYPE_GETTYPE(lwgeom->type))
 	{
 		case POLYGONTYPE:
 			lwpoly_reverse((LWPOLY *)lwgeom);
@@ -146,7 +146,7 @@ lwgeom_reverse(LWGEOM *lwgeom)
 	int i;
 	LWCOLLECTION *col;
 
-	switch (lwgeom->type)
+	switch (TYPE_GETTYPE(lwgeom->type))
 	{
 		case LINETYPE:
 			lwline_reverse((LWLINE *)lwgeom);
@@ -167,7 +167,7 @@ lwgeom_reverse(LWGEOM *lwgeom)
 int
 lwgeom_compute_bbox_p(LWGEOM *lwgeom, BOX2DFLOAT4 *buf)
 {
-	switch(lwgeom->type)
+	switch(TYPE_GETTYPE(lwgeom->type))
 	{
 		case POINTTYPE:
 			return lwpoint_compute_bbox_p((LWPOINT *)lwgeom, buf);
@@ -276,7 +276,7 @@ lwgeom_release(LWGEOM *lwgeom)
 LWGEOM *
 lwgeom_clone(const LWGEOM *lwgeom)
 {
-	switch(lwgeom->type)
+	switch(TYPE_GETTYPE(lwgeom->type))
 	{
 		case POINTTYPE:
 			return (LWGEOM *)lwpoint_clone((LWPOINT *)lwgeom);
@@ -302,13 +302,13 @@ lwgeom_clone(const LWGEOM *lwgeom)
 LWGEOM *
 lwgeom_add(const LWGEOM *to, uint32 where, const LWGEOM *what)
 {
-	if ( what->ndims != to->ndims )
+	if ( TYPE_NDIMS(what->type) != TYPE_NDIMS(to->type) )
 	{
 		lwerror("lwgeom_add: mixed dimensions not supported");
 		return NULL;
 	}
 
-	switch(to->type)
+	switch(TYPE_GETTYPE(to->type))
 	{
 		case POINTTYPE:
 			return (LWGEOM *)lwpoint_add((const LWPOINT *)to, where, what);

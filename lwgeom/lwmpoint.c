@@ -21,20 +21,20 @@ lwmpoint_deserialize(char *srl)
 	insp = lwgeom_inspect(srl);
 
 	result = lwalloc(sizeof(LWMPOINT));
-	result->type = MULTIPOINTTYPE;
+	result->type = insp->type;
 	result->SRID = insp->SRID;
-	result->hasbbox = lwgeom_hasBBOX(insp->type);
-	result->ndims = lwgeom_ndims(insp->type);
 	result->ngeoms = insp->ngeometries;
 	result->geoms = lwalloc(sizeof(LWPOINT *)*result->ngeoms);
 
 	for (i=0; i<insp->ngeometries; i++)
 	{
 		result->geoms[i] = lwpoint_deserialize(insp->sub_geoms[i]);
-		if ( result->geoms[i]->ndims != result->ndims )
+		if ( TYPE_NDIMS(result->geoms[i]->type) != TYPE_NDIMS(result->type) )
 		{
 			lwerror("Mixed dimensions (multipoint:%d, point%d:%d)",
-				result->ndims, i, result->geoms[i]->ndims);
+				TYPE_NDIMS(result->type), i,
+				TYPE_NDIMS(result->geoms[i]->type)
+			);
 			return NULL;
 		}
 	}
@@ -76,11 +76,13 @@ lwmpoint_add(const LWMPOINT *to, uint32 where, const LWGEOM *what)
 		geoms[i+1] = lwgeom_clone((LWGEOM *)to->geoms[i]);
 	}
 
-	if ( what->type == POINTTYPE ) newtype = MULTIPOINTTYPE;
+	if ( TYPE_GETTYPE(what->type) == POINTTYPE ) newtype = MULTIPOINTTYPE;
 	else newtype = COLLECTIONTYPE;
 
-	col = lwcollection_construct(newtype, to->ndims, to->SRID,
-		(what->hasbbox || to->hasbbox ), to->ngeoms+1, geoms);
+	col = lwcollection_construct(newtype, TYPE_NDIMS(to->type),
+		to->SRID,
+		( TYPE_HASBBOX(what->type) || TYPE_HASBBOX(to->type) ),
+		to->ngeoms+1, geoms);
 	
 	return (LWGEOM *)col;
 
