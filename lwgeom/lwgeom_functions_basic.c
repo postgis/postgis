@@ -1907,17 +1907,31 @@ dump_lwexploded(LWGEOM_EXPLODED *exploded)
 	for (i=0; i<exploded->npoints; i++)
 	{
 		elog(NOTICE, "Point%d @ %p", i, exploded->points[i]);
+		if ( (int)exploded->points[i] < 100 )
+		{
+			elog(ERROR, "dirty point pointer");
+		}
 	}
 
 	for (i=0; i<exploded->nlines; i++)
 	{
 		elog(NOTICE, "Line%d @ %p", i, exploded->lines[i]);
+		if ( (int)exploded->lines[i] < 100 )
+		{
+			elog(ERROR, "dirty line pointer");
+		}
 	}
 
 	for (i=0; i<exploded->npolys; i++)
 	{
 		elog(NOTICE, "Poly%d @ %p", i, exploded->polys[i]);
+		if ( (int)exploded->polys[i] < 100 )
+		{
+			elog(ERROR, "dirty poly pointer");
+		}
 	}
+
+	return 0;
 }
 
 // collect( geom, geom ) returns a geometry which contains
@@ -1996,7 +2010,12 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 	}
 
 	//DEBUG
-	dump_lwexploded(expcoll);
+	//elog(NOTICE, "[exp1]");
+	//dump_lwexploded(exp1);
+	//elog(NOTICE, "[exp2]");
+	//dump_lwexploded(exp2);
+	//elog(NOTICE, "[expcoll]");
+	//dump_lwexploded(expcoll);
 
 	// Now serialized collected LWGEOM_EXPLODED
 	serialized_result = lwexploded_serialize(expcoll, wantbbox);
@@ -2007,7 +2026,9 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
+#ifdef DEBUG
 	elog(NOTICE, "Serialized lwexploded"); 
+#endif
 
 	// And create LWGEOM type (could provide a _buf version of
 	// the serializer instead)

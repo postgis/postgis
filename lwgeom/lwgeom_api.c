@@ -2671,6 +2671,10 @@ lwgeom_explode(char *serialized)
 	result->nlines = 0;
 	result->npolys = 0;
 
+#ifdef DEBUG
+	elog(NOTICE, "lwgeom_explode called");
+#endif
+
 	if ( ! inspected->ngeometries )
 	{
 		pfree(result->points);
@@ -2678,6 +2682,10 @@ lwgeom_explode(char *serialized)
 		pfree(result->polys);
 		result->SRID = -1;
 		result->ndims = 0;
+		pfree_inspected(inspected);
+#ifdef DEBUG
+		elog(NOTICE, "lwgeom_explode: no geometries");
+#endif
 		return result;
 	}
 
@@ -2693,7 +2701,7 @@ lwgeom_explode(char *serialized)
 		if ( type == POINTTYPE )
 		{
 			result->points = repalloc(result->points,
-				result->npoints+1);
+				(result->npoints+1)*sizeof(LWPOINT *));
 			result->points[result->npoints] = subgeom;
 			result->npoints++;
 			continue;
@@ -2702,7 +2710,7 @@ lwgeom_explode(char *serialized)
 		if ( type == LINETYPE )
 		{
 			result->lines = repalloc(result->lines,
-				result->nlines+1);
+				(result->nlines+1)*sizeof(LWLINE *));
 			result->lines[result->nlines] = subgeom;
 			result->nlines++;
 			continue;
@@ -2711,11 +2719,15 @@ lwgeom_explode(char *serialized)
 		if ( type == POLYGONTYPE )
 		{
 			result->polys = repalloc(result->polys,
-				result->npolys+1);
+				(result->npolys+1)*sizeof(LWPOLY *));
 			result->polys[result->npolys] = subgeom;
 			result->npolys++;
 			continue;
 		}
+
+#ifdef DEBUG
+		elog(NOTICE, "subtype is %d, recursing", type);
+#endif
 
 		// it's a multi geometry, recurse
 		subexploded = lwgeom_explode(subgeom);
@@ -2765,6 +2777,8 @@ lwgeom_explode(char *serialized)
 		pfree_exploded(subexploded);
 
 	}
+
+	pfree_inspected(inspected);
 
 	return result;
 }
