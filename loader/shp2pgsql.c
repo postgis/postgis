@@ -12,6 +12,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.61  2004/08/05 16:53:29  strk
+ * schema support patches sent by Mark
+ *
  * Revision 1.60  2004/07/29 14:10:37  strk
  * Unability to open a shapefile or dbffile reported more nicely.
  *
@@ -921,8 +924,16 @@ int main (int ARGC, char **ARGV){
 
 		if (!dump_format)
 		{
-			printf("INSERT INTO \"%s\" %s VALUES ('%d',",
+			if ( schema )
+			{
+				printf("INSERT INTO \"%s\".\"%s\" %s VALUES ('%d',",
+                                        schema, table, col_names, j);
+			}
+			else
+			{
+		  		printf("INSERT INTO \"%s\" %s VALUES ('%d',",
 					table, col_names, j);
+			}
 		}
 		else
 		{

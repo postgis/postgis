@@ -10,6 +10,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.53  2004/08/05 16:53:29  strk
+ * schema support patches sent by Mark
+ *
  * Revision 1.52  2004/06/16 13:42:05  strk
  * Added schema support in getMaxFieldSize.
  * Added direct support for TIMESTAMP field types (thanks to Steffen Macke).
@@ -2393,6 +2396,7 @@ initialize()
 		sprintf(query, "SELECT a.attname, a.atttypid, a.attlen FROM "
 			"pg_attribute a, pg_class c, pg_namespace n WHERE "
 			"n.nspname = '%s' AND a.attrelid = c.oid AND "
+			"n.oid = c.relnamespace AND "
 			"a.atttypid != 0 AND "
 			"a.attnum > 0 AND c.relname = '%s'", schema, table);
 	}
