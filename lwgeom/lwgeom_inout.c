@@ -184,7 +184,7 @@ Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 	pfree(wkb_srid_hexized);
 
 #ifdef DEBUG
-	elog(NOTICE, "LWGEOMFromWKB returning %s", unparse_WKB(SERIALIZED_FORM(lwgeom), pg_alloc, pg_free));
+	elog(NOTICE, "LWGEOMFromWKB returning %s", unparse_WKB(SERIALIZED_FORM(lwgeom), pg_alloc, pg_free, -1));
 #endif
 
 	PG_RETURN_POINTER(lwgeom);
