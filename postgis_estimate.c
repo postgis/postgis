@@ -11,6 +11,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.25  2004/06/10 15:44:43  strk
+ * Added standard deviation based histogram extent refinement
+ *
  * Revision 1.24  2004/06/10 13:42:17  strk
  * Separated the estimator code in an estimate_selectivity() function.
  * Handled complete contaiment and complete miss of histogram by searc box.
@@ -157,6 +160,12 @@
 #define STATISTIC_KIND_GEOMETRY 100
 
 #define DEBUG_GEOMETRY_STATS 1
+
+/*
+ * Define this if you want to use standard deviation based
+ * histogram extent computation
+ */
+#define USE_STANDARD_DEVIATION 1
 
 /*
  * Default geometry selectivity factor
@@ -1368,7 +1377,7 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	BOX **sampleboxes;
 	GEOM_STATS *geomstats;
 	bool isnull;
-	int null_cnt=0, notnull_cnt=0;
+	int null_cnt=0, notnull_cnt=0, examinedsamples=0;
 	BOX3D *sample_extent=NULL;
 	double total_width=0;
 	double total_boxes_area=0;
@@ -1376,6 +1385,14 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	double cell_area;
 	double cell_width;
 	double cell_height;
+
+#if USE_STANDARD_DEVIATION
+	/* for standard deviation */
+	double avgLOWx, avgLOWy, avgHIGx, avgHIGy;
+	double sumLOWx=0, sumLOWy=0, sumHIGx=0, sumHIGy=0;
+	double sdLOWx=0, sdLOWy=0, sdHIGx=0, sdHIGy=0;
+#endif
+
 	double geow, geoh; // width and height of histogram
 	int bps; // boxesPerSide  (alias)
 	int boxesPerSide;
@@ -1406,6 +1423,7 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	 *  o count null/not-null values
 	 *  o compute total_width
 	 *  o compute total features's box area (for avgFeatureArea)
+	 *  o sum features box coordinates (for standard deviation)
 	 */
 	for (i=0; i<samplerows; i++)
 	{
@@ -1434,6 +1452,14 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		// TODO: ask if we need geom or bvol size for stawidth
 		total_width += geom->size;
 		total_boxes_area += (box->high.x-box->low.x)*(box->high.y-box->low.y);
+
+#if USE_STANDARD_DEVIATION
+		/* add box to sum */
+		sumLOWx += box->low.x;
+		sumLOWy += box->low.y;
+		sumHIGx += box->high.x;
+		sumHIGy += box->high.y;
+#endif
 	}
 
 	if ( ! notnull_cnt ) {
@@ -1441,6 +1467,57 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		stats->stats_valid = false;
 		return;
 	}
+
+#if USE_STANDARD_DEVIATION
+
+#if DEBUG_GEOMETRY_STATS 
+	elog(NOTICE, " sample_extent: xmin,ymin: %f,%f",
+		sample_extent->LLB.x, sample_extent->LLB.y);
+	elog(NOTICE, " sample_extent: xmax,ymax: %f,%f",
+		sample_extent->URT.x, sample_extent->URT.y);
+#endif
+
+	/*
+	 * Second scan:
+	 *  o compute standard deviation
+	 */
+	avgLOWx = sumLOWx/notnull_cnt;
+	avgLOWy = sumLOWy/notnull_cnt;
+	avgHIGx = sumHIGx/notnull_cnt;
+	avgHIGy = sumHIGy/notnull_cnt;
+	for (i=0; i<samplerows; i++)
+	{
+		BOX *box;
+		if ( sampleboxes[i] == NULL ) continue;
+		box = (BOX *)sampleboxes[i];
+
+		sdLOWx += (box->low.x - avgLOWx) * (box->low.x - avgLOWx);
+		sdLOWy += (box->low.y - avgLOWy) * (box->low.y - avgLOWy);
+		sdHIGx += (box->high.x - avgHIGx) * (box->high.x - avgHIGx);
+		sdHIGy += (box->high.y - avgHIGy) * (box->high.y - avgHIGy);
+	}
+	sdLOWx = sqrt(sdLOWx/(notnull_cnt-1));
+	sdLOWy = sqrt(sdLOWy/(notnull_cnt-1));
+	sdHIGx = sqrt(sdHIGx/(notnull_cnt-1));
+	sdHIGy = sqrt(sdHIGy/(notnull_cnt-1));
+
+#if DEBUG_GEOMETRY_STATS 
+	elog(NOTICE, " standard deviations:");
+	elog(NOTICE, "  LOWx - avg:%f sd:%f", avgLOWx, sdLOWx);
+	elog(NOTICE, "  LOWy - avg:%f sd:%f", avgLOWy, sdLOWy);
+	elog(NOTICE, "  HIGx - avg:%f sd:%f", avgHIGx, sdHIGx);
+	elog(NOTICE, "  HIGy - avg:%f sd:%f", avgHIGy, sdHIGy);
+#endif
+
+#endif // USE_STANDARD_DEVIATION
+
+
+	/*
+	 * TODO:
+	 *   o refine histogram extent based on standard deviation
+	 *   o compute columns/rows based on sample extent.
+	 *   o handle some corner cases
+	 */
 
 	/*
 	 * Create the histogram (GEOM_STATS)
@@ -1451,10 +1528,18 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	geomstats = palloc(geom_stats_size);
 	MemoryContextSwitchTo(old_context);
 
+#if ! USE_STANDARD_DEVIATION
 	geomstats->xmin = sample_extent->LLB.x;
 	geomstats->ymin = sample_extent->LLB.y;
 	geomstats->xmax = sample_extent->URT.x;
 	geomstats->ymax = sample_extent->URT.y;
+#else
+	geomstats->xmin = max((avgLOWx - 2 * sdLOWx), sample_extent->LLB.x);
+	geomstats->ymin = max((avgLOWy - 2 * sdLOWy), sample_extent->LLB.y);
+	geomstats->xmax = min((avgHIGx + 2 * sdHIGx), sample_extent->URT.x); 
+	geomstats->ymax = min((avgHIGy + 2 * sdHIGy), sample_extent->URT.y); 
+#endif // USE_STANDARD_DEVIATION
+
 	geomstats->boxesPerSide = boxesPerSide;
 	geomstats->avgFeatureArea = total_boxes_area/notnull_cnt;
 	// Initialize all values to 0
@@ -1475,13 +1560,18 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	
 
 	/*
-	 * Second scan:
+	 * Third scan:
 	 *  o fill histogram values with the number of
 	 *    features' bbox overlaps: a feature's bvol
 	 *    can fully overlap (1) or partially overlap
 	 *    (fraction of 1) an histogram cell.
 	 *
 	 *  o compute total cells occupation
+	 *
+	 *  o skip geoms falling outside of histogram
+	 *    extent (as modified base on standard deviation)
+	 *    and count the examined ones
+	 *
 	 */
 	for (i=0; i<samplerows; i++)
 	{
@@ -1492,6 +1582,19 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 
 		if ( sampleboxes[i] == NULL ) continue;
 		box = (BOX *)sampleboxes[i];
+
+#if USE_STANDARD_DEVIATION
+		if ( box->low.x > geomstats->xmax ||
+			box->high.x < geomstats->xmin ||
+			box->low.y > geomstats->ymax ||
+			box->high.y < geomstats->ymin )
+		{
+#if DEBUG_GEOMETRY_STATS 
+	elog(NOTICE, " feat %d is an hard deviant, skipped", i);
+#endif
+			continue;
+		}
+#endif // USE_STANDARD_DEVIATION
 
 		/* give backend a chance of interrupting us */
 		vacuum_delay_point();
@@ -1543,6 +1646,8 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		// we could decide if we really 
 		// want this feature to count
 		total_boxes_cells += numcells;
+
+		examinedsamples++;
 	}
 
 	// what about null features (TODO) ?
@@ -1568,7 +1673,7 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	 *
 	 */
 	for (i=0; i<boxesPerSide*boxesPerSide; i++)
-		geomstats->value[i] /= samplerows;
+		geomstats->value[i] /= examinedsamples;
 
 #if DEBUG_GEOMETRY_STATS > 1
 	{
