@@ -3887,6 +3887,24 @@ FROM geometry_table;</literallayout>
         </varlistentry>
 
         <varlistentry>
+          <term>addBBOX(geometry)</term>
+          <listitem>
+            <para>Add bounding box to the geometry. This would make bounding
+	    box based queries faster, but will increase the size of the
+	    geometry.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>dropBBOX(geometry)</term>
+          <listitem>
+            <para>Drop the bounding box cache from the geometry.
+	    This reduces geometry size, but makes bounding-box based
+	    queries slower.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
           <term>force_collection(geometry)</term>
 
           <listitem>
