@@ -12,6 +12,7 @@ use Pg;
 use Time::HiRes("gettimeofday");
 
 $VERBOSE = 0;
+$USE_GIST = 1;
 
 sub usage
 {
@@ -174,11 +175,14 @@ if ( $res->resultStatus != PGRES_TUPLES_OK )  {
 $TOTROWS=$res->getvalue(0, 0);
 
 # Disable index scan
-$query = 'SET enable_indexscan = off';
-$res = $conn->exec($query);
-if ( $res->resultStatus != PGRES_COMMAND_OK )  {
-	print STDERR $conn->errorMessage;
-	exit(1);
+if (!$USE_GIST)
+{
+	$query = 'SET enable_indexscan = off';
+	$res = $conn->exec($query);
+	if ( $res->resultStatus != PGRES_COMMAND_OK )  {
+		print STDERR $conn->errorMessage;
+		exit(1);
+	}
 }
 
 @extents = ( \%ext );
@@ -219,7 +223,7 @@ for ($i=0; $i<@bps_list; $i++)
 			die "intersects gave $icount true valus, distance $dcount\n";
 		}
 
-		print "    $bps\t".$icount."\t".$itime."\t".$dtime."\t".$fact."\n";
+		print "    $bps\t".(int(($icount/$TOTROWS)*100)/100)."\t".$itime."\t".$dtime."\t".$fact."\n";
 
 		if ( $try == 0 || $fact > $best_dist )
 		{
@@ -305,11 +309,28 @@ sub test_intersects
 	local($ext) = shift;
 
 	# Test whole extent query
-	$query = 'select count(oid) from "'.
-		$CSCHEMA.'"."'.$CTABLE.'" WHERE intersects("'.$CCOLUMN.'", '.
-		"setSRID('BOX3D(".$ext->{'xmin'}." ".
-		$ext->{'ymin'}.", ".$ext->{'xmax'}." ".
-		$ext->{'ymax'}.")'::box3d::geometry, $SRID));";
+	if ( $USE_GIST )
+	{
+		$query = 'select count(oid) from "'.
+			$CSCHEMA.'"."'.$CTABLE.'"'.
+			' WHERE "'.$CCOLUMN.'" && '.
+			"setSRID('BOX3D(".$ext->{'xmin'}." ".
+			$ext->{'ymin'}.", ".$ext->{'xmax'}." ".
+			$ext->{'ymax'}.")'::box3d::geometry, $SRID)".
+			' AND intersects("'.$CCOLUMN.'", '.
+			"setSRID('BOX3D(".$ext->{'xmin'}." ".
+			$ext->{'ymin'}.", ".$ext->{'xmax'}." ".
+			$ext->{'ymax'}.")'::box3d::geometry, $SRID));";
+	}
+	else
+	{
+		$query = 'select count(oid) from "'.
+			$CSCHEMA.'"."'.$CTABLE.
+			'" WHERE intersects("'.$CCOLUMN.'", '.
+			"setSRID('BOX3D(".$ext->{'xmin'}." ".
+			$ext->{'ymin'}.", ".$ext->{'xmax'}." ".
+			$ext->{'ymax'}.")'::box3d::geometry, $SRID));";
+	}
 	$res = $conn->exec($query);
 	if ( $res->resultStatus != PGRES_TUPLES_OK )  {
 		print STDERR "$query: ".$conn->errorMessage;
@@ -325,11 +346,28 @@ sub test_distance
 	local($ext) = shift;
 
 	# Test whole extent query
-	$query = 'select count(oid) from "'.
-		$CSCHEMA.'"."'.$CTABLE.'" WHERE distance("'.$CCOLUMN.'", '.
-		"setSRID('BOX3D(".$ext->{'xmin'}." ".
-		$ext->{'ymin'}.", ".$ext->{'xmax'}." ".
-		$ext->{'ymax'}."'::box3d::geometry, $SRID))=0;";
+	if ( $USE_GIST )
+	{
+		$query = 'select count(oid) from "'.
+			$CSCHEMA.'"."'.$CTABLE.'"'.
+			' WHERE "'.$CCOLUMN.'" && '.
+			"setSRID('BOX3D(".$ext->{'xmin'}." ".
+			$ext->{'ymin'}.", ".$ext->{'xmax'}." ".
+			$ext->{'ymax'}.")'::box3d::geometry, $SRID)".
+			' AND distance("'.$CCOLUMN.'", '.
+			"setSRID('BOX3D(".$ext->{'xmin'}." ".
+			$ext->{'ymin'}.", ".$ext->{'xmax'}." ".
+			$ext->{'ymax'}.")'::box3d::geometry, $SRID))=0;";
+	}
+	else
+	{
+		$query = 'select count(oid) from "'.
+			$CSCHEMA.'"."'.$CTABLE.
+			'" WHERE distance("'.$CCOLUMN.'", '.
+			"setSRID('BOX3D(".$ext->{'xmin'}." ".
+			$ext->{'ymin'}.", ".$ext->{'xmax'}." ".
+			$ext->{'ymax'}."'::box3d::geometry, $SRID))=0;";
+	}
 	$res = $conn->exec($query);
 	if ( $res->resultStatus != PGRES_TUPLES_OK )  {
 		print STDERR "$query: ".$conn->errorMessage;
@@ -342,6 +380,10 @@ sub test_distance
 
 # 
 # $Log$
+# Revision 1.4  2004/09/27 08:23:45  strk
+# Added USE_GIST variable on top of file. Changed true values report
+# as fraction of total rows.
+#
 # Revision 1.3  2004/09/24 12:20:56  strk
 # Added worst and best percentile for both intersects and distance
 #
