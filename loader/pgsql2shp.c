@@ -10,6 +10,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.21  2003/09/10 22:40:11  jeffloun
+ * changed it to make the field names in the dbf file capital letters
+ *
  * Revision 1.20  2003/09/10 21:36:04  jeffloun
  * fixed a bug in is_clockwise...
  *
@@ -72,6 +75,8 @@ int main(int ARGC, char **ARGV){
 	int			i,j,type,size,flds;
 	int			type_ary[256];
 	int			OID,geovalue_field;
+	int 	z;
+
 
 	DBFHandle	dbf;
 	SHPHandle	shp;
@@ -257,6 +262,9 @@ int main(int ARGC, char **ARGV){
 		}else{
 			printf("field name %s is too long, must be less than 32 characters.\n",PQfname(res, i));
 			exit_nicely(conn);
+		}
+		for(z=0; z < strlen(field_name); z++){
+			field_name[z] = toupper(field_name[z]);
 		}
 
 		for(j=0;j<i;j++){ //make sure the fields all have unique names, 10-digit limit on dbf names...
