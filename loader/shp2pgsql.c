@@ -12,6 +12,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.51  2004/03/10 17:23:56  strk
+ * code cleanup, fixed a bug missing to transform 'gid' to 'gid__2' in shapefile attribute name
+ *
  * Revision 1.50  2004/03/06 17:43:06  strk
  * Added RCSID string in usage output
  *
@@ -755,15 +758,25 @@ int main (int ARGC, char **ARGV){
 		strcpy(col_names, "(" );
 	}
 
-	for(j=0;j<num_fields;j++){
+	for(j=0;j<num_fields;j++)
+	{
 		type = DBFGetFieldInfo(hDBFHandle, j, name, &field_width, &field_precision); 
 
 //fprintf(stderr, "Field %d (%s) width/decimals: %d/%d\n", j, name, field_width, field_precision);
-		names[j] = malloc ( strlen(name)+3 );
 		types[j] = type;
 		widths[j] = field_width;
 		precisions[j] = field_precision;
-		strcpy(names[j], name);
+
+		/*
+		 * Make field names lowercase unless asked to
+		 * quote identifiers
+		 */
+		if ( ! quoteidentifiers ) {
+			for(z=0; z<strlen(name) ;z++)
+				name[z] = tolower(name[z]);
+		}
+
+		/* Avoid duplicating field names */
 		for(z=0; z < j ; z++){
 			if(strcmp(names[z],name)==0){
 				strcat(name,"__");
@@ -771,30 +784,24 @@ int main (int ARGC, char **ARGV){
 				break;
 			}
 		}	
-		if(strcasecmp(name,"gid")==0){
-			if(j ==0){
-				sprintf(col_names,"%s%s__2",col_names,name);
-			}else{
-				sprintf(col_names,"%s,%s__2",col_names,name);
-			}
-		}else{
-			if ( quoteidentifiers ){
-				if(j ==0){
-					sprintf(col_names,"%s\"%s\"",col_names,name);
-				}else{
-					sprintf(col_names,"%s,\"%s\"",col_names,name);
-				}
-			}else{
-				if(j ==0){
-					sprintf(col_names,"%s%s",col_names,name);
-				}else{
-					sprintf(col_names,"%s,%s",col_names,name);
-				}
-			}
+
+		/*
+		 * Avoid duplicating system fields
+		 * (currently only gid is handled)
+		 */
+		if( strcmp(name,"gid")==0 )
+		{
+			strcat(name,"__2");
 		}
+
+		names[j] = malloc ( strlen(name)+3 );
+		strcpy(names[j], name);
+
+		if (j) strcat(col_names, ",");
+		else sprintf(col_names, "(");
+		sprintf(col_names, "%s\"%s\"", col_names, name);
 	}
 	strcat(col_names, ",the_geom)");
-
 
 	//if opt is 'a' do nothing, go straight to making inserts
 	if(opt == 'c' || opt == 'd')
@@ -820,8 +827,7 @@ int main (int ARGC, char **ARGV){
 			field_width = widths[j];
 			field_precision = precisions[j];
 
-			if ( quoteidentifiers ) printf(", \"%s\" ", names[j]);
-			else printf(", %s ", names[j]);
+			printf(", \"%s\" ", names[j]);
 
 			if(hDBFHandle->pachFieldType[j] == 'D' ) /* Date field */
 			{
