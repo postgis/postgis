@@ -1049,7 +1049,7 @@ extern LWCOLLECTION *lwcollection_segmentize2d(LWCOLLECTION *coll, double dist);
 extern uchar parse_hex(char *str);
 extern void deparse_hex(uchar str, uchar *result);
 extern uchar *parse_lwgeom_wkt(char *wkt_input);
-extern char *lwgeom_to_wkt(LWGEOM *lwgeom);
+extern char *lwgeom_to_ewkt(LWGEOM *lwgeom);
 extern char *lwgeom_to_hexwkb(LWGEOM *lwgeom, unsigned int byteorder);
 
 extern void *lwalloc(size_t size);

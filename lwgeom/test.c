@@ -9,7 +9,7 @@ int main()
 	point = make_lwpoint2d(-1, 10, 20);
 
 	// Print WKT end HEXWKB
-	printf("WKT: %s\n", lwgeom_to_wkt(point));
+	printf("EWKT: %s\n", lwgeom_to_ewkt(point));
 	printf("HEXWKB: %s\n", lwgeom_to_hexwkb(point,-1));
 
 	return 1;

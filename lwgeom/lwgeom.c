@@ -360,7 +360,7 @@ lwgeom_add(const LWGEOM *to, uint32 where, const LWGEOM *what)
  * Return an alloced string
  */
 char *
-lwgeom_to_wkt(LWGEOM *lwgeom)
+lwgeom_to_ewkt(LWGEOM *lwgeom)
 {
 	uchar *serialized = lwgeom_serialize(lwgeom);
 	char *ret;
