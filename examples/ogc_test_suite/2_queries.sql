@@ -751,7 +751,7 @@ WHERE divided_routes.name = 'Route 75' AND named_places.name = 'Ashton';
 --
 --================================
 --
-SELECT Touch(centerline, shore)
+SELECT Touches(centerline, shore)
 FROM streams, lakes 
 WHERE streams.name = 'Cam Stream' AND lakes.name = 'Blue Lake';
 --
@@ -787,7 +787,7 @@ WHERE named_places.name = 'Ashton' AND buildings.address = '215 Main Street';
 --
 --================================
 --
-SELECT Overlap(forests.boundary, named_places.boundary)
+SELECT Overlaps(forests.boundary, named_places.boundary)
 FROM forests, named_places 
 WHERE forests.name = 'Green Forest' AND named_places.name = 'Ashton';
 --
@@ -805,7 +805,7 @@ WHERE forests.name = 'Green Forest' AND named_places.name = 'Ashton';
 --
 --================================
 --
-SELECT Cross(road_segments.centerline, divided_routes.centerlines)
+SELECT Crosses(road_segments.centerline, divided_routes.centerlines)
 FROM road_segments, divided_routes 
 WHERE road_segments.fid = 102 AND divided_routes.name = 'Route 75';
 --
