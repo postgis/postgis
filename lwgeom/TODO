@@ -1,9 +1,5 @@
 - find syntax problem with lwgparse.c (tag_tuple...)
 
-- makepoly: REMOVE DEBUGGING OUTPUT
-
-- Document: makeline, line_from_multipoint, makepoint, makepointm
-
 - research on extent() extracting output from an existing index.
 
 - lwgeom_clone_deep / lwgeom_release_deep
