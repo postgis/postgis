@@ -498,14 +498,15 @@ char	*scan_to_same_level(char	*str)
  *
  *
  */
-PG_FUNCTION_INFO_V1(box3d_in);
-Datum box3d_in(PG_FUNCTION_ARGS)
+
+BOX3D	*parse_box3d(char *str)
 {
-	char	   *str = PG_GETARG_CSTRING(0);
+
 	BOX3D	   *bbox = (BOX3D *) palloc(sizeof(BOX3D));
 	bool		junk_bool;
 	bool	   okay;
 	int 		npoints;
+
 
 	//verify that there are exactly two points
 
@@ -518,7 +519,7 @@ Datum box3d_in(PG_FUNCTION_ARGS)
 	{
 		 elog(ERROR,"BOX3D parser - doesnt start with BOX3D");
 		 pfree(bbox);
-		 PG_RETURN_NULL();	
+		 return NULL;	
 	}
 
 	if ((npoints = numb_points_in_list(str)) != 2)
@@ -526,7 +527,7 @@ Datum box3d_in(PG_FUNCTION_ARGS)
 //printf("npoints in this bbox is %i, should be 2\n",npoints);
 		 elog(ERROR,"BOX3D parser - number of points should be exactly 2");
 		 pfree(bbox);
-		 PG_RETURN_NULL();
+		 return NULL;
 	}
 
 	//want to parse two points, and dont care if they are 2d or 3d
@@ -535,7 +536,7 @@ Datum box3d_in(PG_FUNCTION_ARGS)
 	{
 		elog(ERROR,"box3d: couldnt parse: '%s'\n",str);
 		pfree(bbox);
-		PG_RETURN_NULL() ;
+		return NULL;
 	}	
 	
 
@@ -553,7 +554,20 @@ Datum box3d_in(PG_FUNCTION_ARGS)
 		swap ( &bbox->LLB.z , &bbox->URT.z ) ;
 	}
 
-	PG_RETURN_POINTER(bbox);
+	return bbox;
+}
+
+PG_FUNCTION_INFO_V1(box3d_in);
+Datum box3d_in(PG_FUNCTION_ARGS)
+{
+	char	   *str = PG_GETARG_CSTRING(0);
+	BOX3D	   *bbox ;
+
+	bbox = parse_box3d(str);
+	if (bbox != NULL)
+		PG_RETURN_POINTER(bbox);
+	else
+		PG_RETURN_NULL();
 }
 
 /*
@@ -1472,7 +1486,7 @@ Datum geometry_in(PG_FUNCTION_ARGS)
 	{
 
 			
-		mybox = (BOX3D*) 	DatumGetPointer(	DirectFunctionCall1(box3d_in,PointerGetDatum(str)));
+		mybox = parse_box3d(str);
 
 		if (mybox == NULL)
 			PG_RETURN_NULL() ;
@@ -1489,9 +1503,6 @@ Datum geometry_in(PG_FUNCTION_ARGS)
 
 		pfree(mybox);
 		PG_RETURN_POINTER(geometry);
-
-		
-
 	}
 
 
@@ -1758,7 +1769,7 @@ char *geometry_to_text(GEOMETRY  *geometry)
 	{
 			mem_size = MAX_DIGS_DOUBLE*6+5+2+4+5+1;
 			pfree(result);
-			result = (char *) palloc(size); //double digits+ "BOX3D"+ "()" + commas +null
+			result = (char *) palloc(mem_size); //double digits+ "BOX3D"+ "()" + commas +null
 			sprintf(result, "BOX3D(%.15g %.15g %.15g,%.15g %.15g %.15g)",
 					geometry->bvol.LLB.x,geometry->bvol.LLB.y,geometry->bvol.LLB.z,
 					geometry->bvol.URT.x,geometry->bvol.URT.y,geometry->bvol.URT.z);

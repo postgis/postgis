@@ -360,7 +360,7 @@ void deparse_hex(unsigned char str, unsigned char *result);
 
 char *geometry_to_text(GEOMETRY  *geometry);
 
-
+BOX3D	*parse_box3d(char *str);
 
 
 //exposed to psql
