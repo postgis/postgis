@@ -297,10 +297,12 @@ lwcollection_same(const LWCOLLECTION *c1, const LWCOLLECTION *c2)
 {
 	unsigned int i;
 
+#if DEBUG_CALLS
+	lwnotice("lwcollection_same called");
+#endif // DEBUG_CALLS
+
 	if ( TYPE_GETTYPE(c1->type) != TYPE_GETTYPE(c2->type) ) return 0;
 	if ( c1->ngeoms != c2->ngeoms ) return 0;
-
-	lwnotice("lwcollection_same called");
 
 	for (i=0; i<c1->ngeoms; i++)
 	{
