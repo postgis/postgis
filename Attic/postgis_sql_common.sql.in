@@ -12,6 +12,10 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.22  2003/11/19 15:23:27  strk
+-- Fixed wrong COMMUTATOR specifications in '<','>','~=','@' operators,
+-- added new '<=', '>=' operators
+--
 -- Revision 1.21  2003/11/13 13:14:49  strk
 -- used quote_ident() calls in AddGeometryColumns as suggested by Bernhard Herzog
 --
@@ -1199,13 +1203,13 @@ CREATE OPERATOR >> (
 
 CREATE OPERATOR ~= (
    LEFTARG = GEOMETRY, RIGHTARG = GEOMETRY, PROCEDURE = geometry_same,
-   COMMUTATOR = '=', 
+   COMMUTATOR = '~=', 
    RESTRICT = eqsel, JOIN = eqjoinsel
 );
 
 CREATE OPERATOR @ (
    LEFTARG = GEOMETRY, RIGHTARG = GEOMETRY, PROCEDURE = geometry_contained,
-   COMMUTATOR = '@',
+   COMMUTATOR = '~',
    RESTRICT = contsel, JOIN = contjoinsel
 );
 
@@ -1215,21 +1219,36 @@ CREATE OPERATOR ~ (
    RESTRICT = contsel, JOIN = contjoinsel
 );
 
-CREATE OPERATOR = (
-   LEFTARG = GEOMETRY, RIGHTARG = GEOMETRY, PROCEDURE = geometry_eq,
-   COMMUTATOR = '=',
-   RESTRICT = contsel, JOIN = contjoinsel
-);
+--
+-- Sorting operators for Btree
+--
 
 CREATE OPERATOR < (
    LEFTARG = GEOMETRY, RIGHTARG = GEOMETRY, PROCEDURE = geometry_lt,
-   COMMUTATOR = '<',
+   COMMUTATOR = '>', NEGATOR = '>=',
    RESTRICT = contsel, JOIN = contjoinsel
 );
 
+CREATE OPERATOR <= (
+   LEFTARG = GEOMETRY, RIGHTARG = GEOMETRY, PROCEDURE = geometry_le,
+   COMMUTATOR = '>=', NEGATOR = '>',
+   RESTRICT = contsel, JOIN = contjoinsel
+);
+
+CREATE OPERATOR = (
+   LEFTARG = GEOMETRY, RIGHTARG = GEOMETRY, PROCEDURE = geometry_eq,
+   COMMUTATOR = '=', -- we might implement a faster negator here
+   RESTRICT = contsel, JOIN = contjoinsel
+);
+
+CREATE OPERATOR >= (
+   LEFTARG = GEOMETRY, RIGHTARG = GEOMETRY, PROCEDURE = geometry_ge,
+   COMMUTATOR = '<=', NEGATOR = '<',
+   RESTRICT = contsel, JOIN = contjoinsel
+);
 CREATE OPERATOR > (
    LEFTARG = GEOMETRY, RIGHTARG = GEOMETRY, PROCEDURE = geometry_gt,
-   COMMUTATOR = '>',
+   COMMUTATOR = '<', NEGATOR = '<=',
    RESTRICT = contsel, JOIN = contjoinsel
 );
 
