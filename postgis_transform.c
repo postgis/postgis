@@ -24,8 +24,8 @@
 #define MAX_DIGS_DOUBLE (SHOW_DIGS_DOUBLE + 6 + 1 + 3 +1)
 
 
-// if WANT_PROJECTION undefined, we get a do-nothing transform() function
-#ifdef WANT_PROJECTION
+// if USE_PROJECTION undefined, we get a do-nothing transform() function
+#ifdef USE_PROJ
 
 #include "projects.h"
 
