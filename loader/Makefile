@@ -20,7 +20,7 @@ ifeq ($(USE_ICONV),1)
 	override CFLAGS += -DUSE_ICONV
 endif
 
-override CFLAGS := -g -I.. -I$(srcdir) -I$(top_builddir)/src/interfaces/libpq $(CFLAGS) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"' -DUSE_VERSION=$(USE_VERSION)
+override CFLAGS := -g -Wall -I.. -I$(srcdir) -I$(top_builddir)/src/interfaces/libpq $(CFLAGS) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"' -DUSE_VERSION=$(USE_VERSION)
 
 all: shp2pgsql$(EXE) pgsql2shp$(EXE)
 
