@@ -1520,45 +1520,6 @@ Datum LWGEOM_inside_circle_point(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(lwgeom_pt_inside_circle(&pt, cx, cy, rr));
 }
 
-void
-dump_lwexploded(LWGEOM_EXPLODED *exploded)
-{
-	int i;
-
-	elog(NOTICE, "SRID=%d ndims=%d", exploded->SRID,
-		TYPE_NDIMS(exploded->dims));
-	elog(NOTICE, "%d points, %d lines, %d polygons",
-		exploded->npoints, exploded->nlines, exploded->npolys);
-
-	for (i=0; i<exploded->npoints; i++)
-	{
-		elog(NOTICE, "Point%d @ %p", i, exploded->points[i]);
-		if ( (int)exploded->points[i] < 100 )
-		{
-			elog(ERROR, "dirty point pointer");
-		}
-	}
-
-	for (i=0; i<exploded->nlines; i++)
-	{
-		elog(NOTICE, "Line%d @ %p", i, exploded->lines[i]);
-		if ( (int)exploded->lines[i] < 100 )
-		{
-			elog(ERROR, "dirty line pointer");
-		}
-	}
-
-	for (i=0; i<exploded->npolys; i++)
-	{
-		elog(NOTICE, "Poly%d @ %p", i, exploded->polys[i]);
-		if ( (int)exploded->polys[i] < 100 )
-		{
-			elog(ERROR, "dirty poly pointer");
-		}
-	}
-
-}
-
 // collect( geom, geom ) returns a geometry which contains
 // all the sub_objects from both of the argument geometries
 // returned geometry is the simplest possible, based on the types
@@ -2331,7 +2292,7 @@ Datum LWGEOM_isempty(PG_FUNCTION_ARGS)
 }
 
 
-#if ! USE_GEOS
+#if ! USE_GEOS && ! USE_JTS
 Datum centroid(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(centroid);
 Datum centroid(PG_FUNCTION_ARGS)
@@ -2397,7 +2358,7 @@ Datum centroid(PG_FUNCTION_ARGS)
 
 	PG_RETURN_POINTER(result);
 }
-#endif // ! USE_GEOS
+#endif // ! USE_GEOS && ! USE_JTS
 
 // Returns a modified [multi]polygon so that no ring segment is 
 // longer then the given distance (computed using 2d).
