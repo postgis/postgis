@@ -38,6 +38,7 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS);
 Datum LWGEOM_in(PG_FUNCTION_ARGS);
 Datum LWGEOM_out(PG_FUNCTION_ARGS);
 Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS);
+Datum LWGEOM_dropBBOX(PG_FUNCTION_ARGS);
 Datum LWGEOM_getBBOX(PG_FUNCTION_ARGS);
 Datum LWGEOM_to_text(PG_FUNCTION_ARGS);
 Datum LWGEOM_to_bytea(PG_FUNCTION_ARGS);
@@ -400,6 +401,46 @@ Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS)
 //elog(NOTICE,"LWGEOM_addBBOX  -- about to copy serialized form");
 	// everything but the type and length
 	memcpy(result->data+sizeof(BOX2DFLOAT4), lwgeom->data, lwgeom->size-5);
+
+	PG_RETURN_POINTER(result);
+}
+
+// removes a bbox from a geometry
+PG_FUNCTION_INFO_V1(LWGEOM_dropBBOX);
+Datum LWGEOM_dropBBOX(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	PG_LWGEOM *result;
+	unsigned char	old_type;
+	int		size;
+
+//elog(NOTICE,"in LWGEOM_dropBBOX");
+
+	if (!lwgeom_hasBBOX( lwgeom->type ) )
+	{
+//elog(NOTICE,"LWGEOM_dropBBOX  -- doesnt have a bbox already");
+		result = palloc (lwgeom->size);
+		memcpy(result, lwgeom, lwgeom->size);
+		PG_RETURN_POINTER(result);
+	}
+
+//elog(NOTICE,"LWGEOM_dropBBOX  -- dropping the bbox");
+
+	//construct new one
+	old_type = lwgeom->type;
+
+	size = lwgeom->size-sizeof(BOX2DFLOAT4);
+
+	result = palloc(size);// 16 for bbox2d
+
+	memcpy(result,&size,4); // size
+	result->type = lwgeom_makeType_full(
+		TYPE_HASZ(old_type),
+		TYPE_HASM(old_type),
+		lwgeom_hasSRID(old_type), lwgeom_getType(old_type), 0);
+
+	// everything but the type and length
+	memcpy(result->data, lwgeom->data+sizeof(BOX2DFLOAT4), lwgeom->size-5-sizeof(BOX2DFLOAT4));
 
 	PG_RETURN_POINTER(result);
 }

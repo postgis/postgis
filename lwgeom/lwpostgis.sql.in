@@ -929,6 +929,11 @@ CREATEFUNCTION addBBOX(geometry)
 	AS '@MODULE_FILENAME@','LWGEOM_addBBOX'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
+CREATEFUNCTION dropBBOX(geometry) 
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','LWGEOM_dropBBOX'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
 	
 CREATEFUNCTION getSRID(geometry) 
 	RETURNS int4
