@@ -2306,6 +2306,7 @@ DECLARE
 	schema_ok bool;
 	real_schema name;
 #endif
+	fixgeomres text;
 
 BEGIN
 
@@ -2414,16 +2415,16 @@ BEGIN
 		quote_ident(column_name) || '') is null)'';
 	END IF;
 
-	EXECUTE ''select fix_geometry_columns()'';
+	SELECT fix_geometry_columns() INTO fixgeomres;
 
-	return ''Geometry column '' || column_name || '' added to table ''
+	return 
 #if USE_VERSION >= 73
-		|| real_schema || ''.'' || table_name
-#else
-		|| table_name
+		real_schema || ''.'' || 
 #endif
-		|| '' WITH a SRID of '' || new_srid ||
-		'' and type '' || new_type;
+		table_name || ''.'' || column_name ||
+		'' SRID:'' || new_srid ||
+		'' TYPE:'' || new_type || ''\n '' ||
+		''geometry_column '' || fixgeomres;
 END;
 ' LANGUAGE 'plpgsql' WITH (isstrict);
 
