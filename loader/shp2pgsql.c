@@ -476,6 +476,7 @@ int main (int ARGC, char **ARGV){
 		printf("          exacatly the same table schema.\n");
 		printf("      -c  Creates a new table and populates it, this is the\n");
 		printf("          default if you do not specify any options.\n");
+		printf("\n");
 		printf("  -D  use postgresql dump format (defaults to sql insert\n"); 
 		printf("      statments.\n"); 
 		printf("\n");
