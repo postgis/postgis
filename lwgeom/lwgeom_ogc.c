@@ -236,7 +236,7 @@ Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS)
 	idx = PG_GETARG_INT32(1);
 	idx -= 1; // index is 1-based
 
-	coll = lwcollection_deserialize(SERIALIZED_FORM(geom));
+	coll = (LWCOLLECTION *)lwgeom_deserialize(SERIALIZED_FORM(geom));
 
 	if ( idx < 0 ) PG_RETURN_NULL();
 	if ( idx >= coll->ngeoms ) PG_RETURN_NULL();
