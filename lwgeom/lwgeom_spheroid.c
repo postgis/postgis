@@ -485,12 +485,12 @@ double distance_sphere_method(double lat1, double long1,double lat2,double long2
 
 //distance (geometry,geometry, sphere)
 // -geometrys MUST be points
-PG_FUNCTION_INFO_V1(distance_ellipsoid);
+PG_FUNCTION_INFO_V1(LWGEOM_distance_ellipsoid_point);
 Datum LWGEOM_distance_ellipsoid_point(PG_FUNCTION_ARGS)
 {
-	SPHEROID *sphere = (SPHEROID *)PG_GETARG_POINTER(2);
 	PG_LWGEOM *geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	PG_LWGEOM *geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	SPHEROID *sphere = (SPHEROID *)PG_GETARG_POINTER(2);
 	LWPOINT *point1, *point2;
 	POINT2D *p1, *p2;
 
