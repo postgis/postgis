@@ -1,6 +1,7 @@
 
-- ZM flags debugging (segfaults with force_type)
+- ZM and WKB support in loader / dumper
 
+- lwgeom_clone_deep / lwgeom_release_deep
 
 - LWGEOM editor (insert/append a geom, remove a geom, ....)
 
@@ -19,10 +20,8 @@
 - Endiannes honouring in dumper (currently does not specify and does not
   flip when required). Depends on AsBinary() item above.
 
-- 4d and WKB support in loader.
-
-- box extractor function (getbox2d) returning an actual
-  object should probably find a way to return NULL (for empty geometries).
+- OBSOLETE box extractor function (getbox2d) returning an actual
+  object. (return undefined values for empty geometries).
 
 - Check spheroid misure functions
 	o can't understand if 3d computation works since
