@@ -19,15 +19,26 @@
 #    along with this program; if not, write to the Free Software
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+# Following are some variable definitions that may have to be changed
+# according to your build environment. This can be done either by editing
+# this Makefile, or setting them via shell environment prior to calling make.
 
-# Configure the helper executables used during build - change this according to
-# your environment if necessary.
+### Config variable section starts ###
+
+# Configure the helper executables used during build.
 
 JAVAC?=javac
 JAVA?=java
 JAR?=jar
 MKDIR?=mkdir -p
 DELETE?=rm -rvf
+CP?=cp
+
+# If you happen to be stuck with ancient jar implementations that do not
+# know about -u, but happen to have one that does not complain about
+# duplicate directorys (e. G. debian woody fastjar), set the DEBUGJAR
+# variable to postgis_debug.fastjar and JAR (above) to fastjar.
+DEBUGJAR?=postgis_debug.jar
 
 # Find our postgresql build directory - needed for "make installdirs" and 
 # "make install" that are used by the debian packaging process. As everything
@@ -49,7 +60,6 @@ top_makefile:=$(PGSQL_SRC)/src/Makefile.global
 # gij and kaffe are known to work fine.
 
 CLASSPATH?=/usr/share/java/postgresql.jar
-CP=$(CLASSPATH):src/
 
 # This are used for the online regression tests, override via environment
 # as applicable.
@@ -59,11 +69,16 @@ PGDATABASE?=jdbc_test
 PGUSER?=psql
 PGPASS?=guess
 
+### Config variable section ends ###
+
 # build internal constants follow:
 SRCDIR=src
 EXAMPLES=examples
 BUILD=bin
+RUNCP=$(CLASSPATH):postgis.jar
+BUILDCP=$(STUBBUILD):$(SRCDIR):$(CLASSPATH)
 
+# All the java files to compile
 SRC= $(SRCDIR)/examples/Test.java \
 		$(SRCDIR)/examples/TestAutoregister.java \
 		$(SRCDIR)/examples/TestBoxes.java \
@@ -87,11 +102,21 @@ SRC= $(SRCDIR)/examples/Test.java \
 		$(SRCDIR)/org/postgis/Polygon.java \
 		$(SRCDIR)/org/postgis/Version.java 
 
+# The pgjdbc 7.2/7.4/8.0 compatibility stub stuff
 STUBDIR=stubs
 STUBBUILD=stubbin/
 STUBSRC= $(STUBDIR)/org/postgresql/Connection.java \
 	 $(STUBDIR)/org/postgresql/PGConnection.java
 
+# What to put into the JAR files:
+JARCONTENTS=-C $(BUILD) . \
+	       -C $(SRCDIR) org/postgresql/driverconfig.properties \
+	       -C . README COPYING_LGPL \
+	       -C .. COPYING
+
+DEBUGJARCONTENTS=-C $(SRCDIR) .
+
+# Preliminary jts support - not stable yet!
 JTSDIR=jtssrc
 JTSBUILD=jtsbin/
 JTSSRC= $(JTSDIR)/examples/JtsTestParser.java \
@@ -99,29 +124,24 @@ JTSSRC= $(JTSDIR)/examples/JtsTestParser.java \
 	$(JTSDIR)/org/postgis/jts/JtsGeometry.java \
 	$(JTSDIR)/org/postgis/jts/JtsGisWrapper.java \
 	$(JTSDIR)/org/postgis/jts/JtsWrapper.java \
-	
 
 # Now the makefile targets that do the work:
 
 all:	jar \
 	offlinetests
 
-jar:	compile postgis.jar postgis_debug.jar
+jar:	compile postgis.jar $(DEBUGJAR)
 
 postgis.jar: compile $(SRCDIR)/org/postgresql/driverconfig.properties
-	$(JAR) -cf postgis.jar -C $(BUILD) . \
-	       -C $(SRCDIR) org/postgresql/driverconfig.properties \
-	       -C . README COPYING_LGPL \
-	       -C .. COPYING
+	$(JAR) -cf postgis.jar $(JARCONTENTS)
 	       
-postgis_debug.jar: compile $(SRC) $(SRCDIR)/org/postgresql/driverconfig.properties
-	$(JAR) -cf postgis_debug.jar -C $(BUILD) . \
-		-C . README COPYING_LGPL \
-		-C .. COPYING
-	$(JAR) -uf postgis_debug.jar -C $(SRCDIR) .
-# We cannot add $(SRCDIR) with -cf because some jar implementations
-# abort with file name conflicts because of $(BUILD)/org and $(SRCDIR)/org.
-# Thus we have to use -uf above.
+postgis_debug.jar: postgis.jar $(SRC)
+	$(CP) postgis.jar postgis_debug.jar
+	$(JAR) -uf postgis_debug.jar $(DEBUGJARCONTENTS)
+
+# woody seems to have only broken jar implementations
+postgis_debug.fastjar: compile $(SRC) $(SRCDIR)/org/postgresql/driverconfig.properties
+	$(JAR) -cf postgis_debug.jar $(JARCONTENTS) $(DEBUGJARCONTENTS)
 
 $(BUILD):
 	$(MKDIR) $(BUILD)
@@ -134,37 +154,37 @@ stubcompile: $(STUBBUILD)
 	touch stubcompile
 
 compile: stubcompile $(BUILD) $(SRC)
-	$(JAVAC) -classpath "$(STUBBUILD):$(CP)" -d $(BUILD) $(SRC) 
+	$(JAVAC) -classpath "$(BUILDCP)" -d $(BUILD) $(SRC) 
 	touch compile
 
-test:	compile
-	$(JAVA) -classpath "$(BUILD):$(CP)" $(EXAMPLES)/Test
+test:	postgis.jar
+	$(JAVA) -classpath "$(RUNCP)" $(EXAMPLES)/Test
         
-jtest:	compile
-	$(JAVA) -classpath "$(BUILD):$(CP)" $(EXAMPLES)/TestServer jdbc:postgresql://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
+jtest:	postgis.jar
+	$(JAVA) -classpath "$(RUNCP)" $(EXAMPLES)/TestServer jdbc:postgresql://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
 
-ptestoffline: compile	
-	$(JAVA) -classpath "$(BUILD):$(CP)" $(EXAMPLES)/TestParser offline
+ptestoffline: postgis.jar	
+	$(JAVA) -classpath "$(RUNCP)" $(EXAMPLES)/TestParser offline
 
-ptest:  compile
-	$(JAVA) -classpath "$(BUILD):$(CP)" $(EXAMPLES)/TestParser jdbc:postgresql_postGIS://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
+ptest:  postgis.jar
+	$(JAVA) -classpath "$(RUNCP)" $(EXAMPLES)/TestParser jdbc:postgresql_postGIS://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
 
-boxtestoffline: compile	
-	$(JAVA) -classpath "$(BUILD):$(CP)" $(EXAMPLES)/TestBoxes offline
+boxtestoffline: postgis.jar	
+	$(JAVA) -classpath "$(RUNCP)" $(EXAMPLES)/TestBoxes offline
 
-boxtest:  compile
-	$(JAVA) -classpath "$(BUILD):$(CP)" $(EXAMPLES)/TestBoxes jdbc:postgresql_postGIS://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
+boxtest:  postgis.jar
+	$(JAVA) -classpath "$(RUNCP)" $(EXAMPLES)/TestBoxes jdbc:postgresql_postGIS://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
 
-autoregistertest:  compile
-	$(JAVA) -classpath "$(BUILD):$(CP)" $(EXAMPLES)/TestAutoregister jdbc:postgresql://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
+autoregistertest:  postgis.jar
+	$(JAVA) -classpath "$(RUNCP)" $(EXAMPLES)/TestAutoregister jdbc:postgresql://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
 
 offlinetests: boxtestoffline ptestoffline test
 
 onlinetests: boxtest ptest jtest autoregistertest
 
 # Print all available versions
-versions:  compile
-	$(JAVA) -classpath "$(BUILD):$(CP)" $(EXAMPLES)/VersionPrinter jdbc:postgresql://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
+versions:  postgis.jar
+	$(JAVA) -classpath "$(RUNCP)" $(EXAMPLES)/VersionPrinter jdbc:postgresql://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
 
 # boxtest and ptest include boxtestoffline and ptestoffline, so we only need
 # to run test in addition to the onlinetests
@@ -174,8 +194,8 @@ clean:
 	$(DELETE) $(BUILD) bin stubbin postgis.jar postgis_debug.jar \
 		compile stubcompile jtscompile $(JTSBUILD) postgis_jts.jar
 
-# The following two targets are needed for debian build, but may be hepful
-# for someone else, too.
+# Install - this needs the successfull inclusion of PostgreSQL top
+# level Makefile (which is mandatory for the C part of PostGIS as well).
 install: jar installdirs
 	@echo Testing for successful inclusion of $(top_makefile)
 	test $(DESTDIR)

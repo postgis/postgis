@@ -20,7 +20,7 @@ PostGIS 1.0.0?
 	- memory alignment handling
 	- fixed bug in force_collection causing mapserver connector
 	  failures on simple (single) geometry types.
-	- jdbc2: slightly updated makefile
+	- jdbc2: updated and cleaned makefile
 	- plugged a leak in GEOS2POSTGIS converter
 	- jdbc2: added BETA support for jts geometry classes
 	- jdbc2: Skip known-to-fail tests against older PostGIS servers.
