@@ -36,7 +36,7 @@ SHLIB_LINK = $(filter -L%, $(LDFLAGS))
 all: all-lib $(NAME).sql shp2pgsql
 
 shp2pgsql:
-	cd loader; make
+	make -C loader
 
 # Shared library stuff
 include $(top_srcdir)/src/Makefile.shlib
