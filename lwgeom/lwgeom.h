@@ -21,6 +21,21 @@ typedef struct
         double xmax, ymax, zmax;
 } BOX3D;
 
+/*
+ * standard definition of an ellipsoid (what wkt calls a spheroid)
+ *    f = (a-b)/a
+ *    e_sq = (a*a - b*b)/(a*a)
+ *    b = a - fa
+ */
+typedef struct
+{
+	double	a;	//semimajor axis
+	double	b; 	//semiminor axis
+	double	f;	//flattening
+	double	e;	//eccentricity (first)
+	double	e_sq;	//eccentricity (first), squared
+	char		name[20]; //name of ellipse
+} SPHEROID;
 
 
 // POINT3D already defined in postgis.h
@@ -251,6 +266,7 @@ extern LWPOINT  *lwpoint_construct(int ndims, int SRID, POINTARRAY *point);
 // given the LWPOINT serialized form (or a pointer into a muli* one)
 // construct a proper LWPOINT.
 // serialized_form should point to the 8bit type format (with type = 1)
+// Returns NULL if serialized form is not a point.
 // See serialized form doc
 extern LWPOINT *lwpoint_deserialize(char *serialized_form);
 

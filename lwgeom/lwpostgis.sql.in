@@ -50,6 +50,35 @@ CREATE TYPE histogram2d (
 );
 
 -------------------------------------------------------------------
+--  SPHEROID TYPE
+-------------------------------------------------------------------
+
+#if USE_VERSION < 73
+# define SPHEROID_IN_REP opaque
+# define SPHEROID_OUT_REP opaque
+#else
+# define SPHEROID_IN_REP spheroid
+# define SPHEROID_OUT_REP cstring
+#endif
+
+CREATEFUNCTION spheroid_in(SPHEROID_OUT_REP)
+	RETURNS SPHEROID_IN_REP
+	AS '@MODULE_FILENAME@','ellipsoid_in'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATEFUNCTION spheroid_out(SPHEROID_IN_REP)
+	RETURNS SPHEROID_OUT_REP
+	AS '@MODULE_FILENAME@','ellipsoid_out'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE TYPE spheroid (
+	alignment = double,
+	internallength = 65,
+	input = spheroid_in,
+	output = spheroid_out
+);
+
+-------------------------------------------------------------------
 --  GEOMETRY TYPE (lwgeom)
 -------------------------------------------------------------------
 
@@ -79,6 +108,11 @@ CREATE TYPE geometry (
 );
 
 CREATEFUNCTION geometryfromtext(geometry)
+        RETURNS geometry
+        AS '@MODULE_FILENAME@','LWGEOM_from_text'
+        LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATEFUNCTION geometryfromtext(geometry, int4)
         RETURNS geometry
         AS '@MODULE_FILENAME@','LWGEOM_from_text'
         LANGUAGE 'C' WITH (isstrict,iscachable);
@@ -910,6 +944,23 @@ CREATEFUNCTION length(geometry)
 
 -- this is a fake (for back-compatibility)
 -- uses 3d if 3d is available, 2d otherwise
+CREATEFUNCTION length3d_spheroid(geometry, spheroid)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@','LWGEOM_length_ellipsoid_linestring'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION length_spheroid(geometry, spheroid)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@','LWGEOM_length_ellipsoid_linestring'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION length2d_spheroid(geometry, spheroid)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@','LWGEOM_length2d_ellipsoid_linestring'
+	LANGUAGE 'C' WITH (isstrict);
+
+-- this is a fake (for back-compatibility)
+-- uses 3d if 3d is available, 2d otherwise
 CREATEFUNCTION perimeter3d(geometry)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@', 'LWGEOM_perimeter_poly'
@@ -936,6 +987,12 @@ CREATEFUNCTION area(geometry)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@','LWGEOM_area_polygon'
 	LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION distance_spheroid(geometry,geometry,spheroid)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@','LWGEOM_distance_ellipsoid_point'
+	LANGUAGE 'C' WITH (isstrict);
+
 
 
 ------------------------------------------------------------------------

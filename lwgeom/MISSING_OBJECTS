@@ -2,8 +2,6 @@
 
 FUNC: KEEPING FUNCTION: [box3d_in(cstring)]
 FUNC: KEEPING FUNCTION: [box3d_out(box3d)]
-FUNC: KEEPING FUNCTION: [spheroid_in(cstring)]
-FUNC: KEEPING FUNCTION: [spheroid_out(spheroid)]
 FUNC: KEEPING FUNCTION: [chip_in(cstring)]
 FUNC: KEEPING FUNCTION: [chip_out(chip)]
 FUNC: KEEPING FUNCTION: [srid(chip)]
@@ -64,16 +62,11 @@ FUNC: KEEPING FUNCTION: [zmax(box3d)]
 FUNC: KEEPING FUNCTION: [box3dtobox(box3d)]
 FUNC: KEEPING FUNCTION: [combine_bbox(box3d, geometry)]
 TYPE: KEEPING TYPE [box3d]
-TYPE: KEEPING TYPE [spheroid]
 TYPE: KEEPING TYPE [chip]
 FNCAST: KEEPING FNCAST geometry(chip) (see CAST)
 FNCAST: KEEPING FNCAST geometry(box3d) (see CAST)
 FNCAST: KEEPING FNCAST geometry(text) (see CAST)
 FNCAST: KEEPING FNCAST box3dtobox(box3d) (see CAST)
-
-FUNC: KEEPING FUNCTION: [length_spheroid(geometry, spheroid)]
-FUNC: KEEPING FUNCTION: [length3d_spheroid(geometry, spheroid)]
-FUNC: KEEPING FUNCTION: [distance_spheroid(geometry, geometry, spheroid)]
 
 FUNC: KEEPING FUNCTION: [point_inside_circle(geometry, double precision, double precision, double precision)]
 
