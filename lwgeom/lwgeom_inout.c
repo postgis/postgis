@@ -516,6 +516,8 @@ Datum LWGEOM_send(PG_FUNCTION_ARGS)
         PG_RETURN_POINTER(result);
 }
 
+#endif // USE_VERSION > 73
+
 PG_FUNCTION_INFO_V1(LWGEOM_to_bytea);
 Datum LWGEOM_to_bytea(PG_FUNCTION_ARGS)
 {
@@ -546,4 +548,3 @@ Datum LWGEOM_from_bytea(PG_FUNCTION_ARGS)
         PG_RETURN_POINTER(result);
 }
 
-#endif // USE_VERSION > 73
