@@ -98,7 +98,7 @@ postgis.jar: compile $(SRCDIR)/org/postgresql/driverconfig.properties
 	       -C $(SRCDIR) org/postgresql/driverconfig.properties \
 	       README COPYING_LGPL -C .. COPYING
 	       
-postgis_debug.jar: compile $SRC $(SRCDIR)/org/postgresql/driverconfig.properties
+postgis_debug.jar: compile $(SRC) $(SRCDIR)/org/postgresql/driverconfig.properties
 	$(JAR) -cf postgis_debug.jar -C $(BUILD) . README COPYING_LGPL -C .. COPYING
 	$(JAR) -uf postgis_debug.jar -C $(SRCDIR) .
 
