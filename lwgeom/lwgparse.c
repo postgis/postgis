@@ -100,7 +100,7 @@ extern void init_parser(const char *);
 
 /* Prototypes */
 tuple* alloc_tuple(output_func of,size_t size);
-void error(const char* err);
+static void error(const char* err);
 void free_tuple(tuple* to_free);
 void inc_num(void);
 void alloc_stack_tuple(int type,output_func of,size_t size);
@@ -194,7 +194,7 @@ tuple* alloc_tuple(output_func of,size_t size){
 	return ret;
 }
 
-void error(const char* err){
+static void error(const char* err){
 	error_func(err);
 	ferror_occured=1;
 }
