@@ -3,18 +3,24 @@ package org.postgis;
 import org.postgresql.util.*;
 import java.sql.*;
 
+/*
+ * Updates Oct 2002
+ *	- data members made private
+ *	- getLLB() and getURT() methods added
+ */
+
 public class PGbox3d extends PGobject 
 {
 
 	/**
 	 * The lower left bottom corner of the box.
 	 */
-	Point llb;
+	private Point llb;
 	
 	/**
 	 * The upper right top corner of the box.
 	 */
-	Point urt;
+	private Point urt;
 	
 
 	public PGbox3d() {}
@@ -48,11 +54,20 @@ public class PGbox3d extends PGobject
 		return getValue();
 	}
 
-	public Object clone() 
-	{
+	public Object clone() {
 		PGbox3d obj = new PGbox3d(llb,urt);
 		obj.setType(type);
 		return obj;
+	}
+	
+	/**Returns the lower left bottom corner of the box as a Point object*/
+	public Point getLLB() {
+		return llb;
+	}
+	
+	/**Returns the upper right top corner of the box as a Point object*/
+	public Point getURT() {
+		return urt;
 	}
 	
 }

@@ -1,17 +1,24 @@
 package org.postgis;
 
 import org.postgresql.util.PGobject;
+import org.postgresql.util.PGtokenizer;
 import java.sql.*;
+
+/*
+ * Updates Oct 2002
+ *	- setValue() method now cheaks if the geometry has a SRID. If present,
+ *	  it is removed and only the wkt is used to create the new geometry
+ */
 
 public class PGgeometry extends PGobject 
 {
 
 	Geometry geom;
 
-	public PGgeometry() {}
+	public PGgeometry() { }
 
 	public PGgeometry(Geometry geom) {
-		this.geom = geom;
+      		this.geom = geom;
 	}
 
 	public PGgeometry(String value) throws SQLException
@@ -22,6 +29,12 @@ public class PGgeometry extends PGobject
 	public void setValue(String value) throws SQLException
 	{
 		value = value.trim();
+		if( value.startsWith("SRID")) {
+			//break up geometry into srid and wkt
+			PGtokenizer t = new PGtokenizer(value,';');
+			value = t.getToken(1);
+		}
+
 		if( value.startsWith("MULTIPOLYGON")) {
 			geom = new MultiPolygon(value);
 		} else if( value.startsWith("MULTILINESTRING")) {
