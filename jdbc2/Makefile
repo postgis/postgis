@@ -227,8 +227,7 @@ clean:
 # level Makefile (which is mandatory for the C part of PostGIS as well).
 install: jar installdirs
 	@echo Testing for successful inclusion of $(top_makefile)
-	test $(DESTDIR)
-	test $(INSTALL_DATA)
+	test $(top_makefile)
 	$(INSTALL_DATA) postgis.jar $(DESTDIR)
 	$(INSTALL_DATA) postgis_debug.jar $(DESTDIR)
 
