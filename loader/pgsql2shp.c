@@ -736,7 +736,7 @@ create_multiline4D_WKB (byte *wkb)
 		x = realloc(x, sizeof(double)*(totpoints+npoints));
 		y = realloc(y, sizeof(double)*(totpoints+npoints));
 		z = realloc(z, sizeof(double)*(totpoints+npoints));
-		m = realloc(z, sizeof(double)*(totpoints+npoints));
+		m = realloc(m, sizeof(double)*(totpoints+npoints));
 
 		/* wkb now points at first point */
 		for (pn=0; pn<npoints; pn++)
@@ -1189,7 +1189,7 @@ create_polygon4D_WKB(byte *wkb)
 		x = realloc(x, sizeof(double)*(totpoints+npoints));
 		y = realloc(y, sizeof(double)*(totpoints+npoints));
 		z = realloc(z, sizeof(double)*(totpoints+npoints));
-		m = realloc(z, sizeof(double)*(totpoints+npoints));
+		m = realloc(m, sizeof(double)*(totpoints+npoints));
 
 		for (pn=0; pn<npoints; pn++)
 		{
@@ -1648,7 +1648,7 @@ create_multipolygon4D_WKB(byte *wkb)
 			x = realloc(x, sizeof(double)*(totpoints+npoints));
 			y = realloc(y, sizeof(double)*(totpoints+npoints));
 			z = realloc(z, sizeof(double)*(totpoints+npoints));
-			m = realloc(z, sizeof(double)*(totpoints+npoints));
+			m = realloc(m, sizeof(double)*(totpoints+npoints));
 
 			/* wkb now points at first point */
 			for (pn=0; pn<npoints; pn++)
@@ -2970,6 +2970,9 @@ shapetypename(int num)
 }
 /**********************************************************************
  * $Log$
+ * Revision 1.62  2004/10/07 21:51:05  strk
+ * Fixed a bug in 4d handling
+ *
  * Revision 1.61  2004/10/07 17:15:28  strk
  * Fixed TYPEM handling.
  *
