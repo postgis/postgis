@@ -535,8 +535,8 @@ Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_addBBOX);
 Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS)
 {
-	char *lwgeom = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	char		*result;
+	LWGEOM *lwgeom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	LWGEOM *result;
 	BOX2DFLOAT4	box;
 	unsigned char	old_type;
 	int		size;
@@ -544,29 +544,34 @@ Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS)
 
 //elog(NOTICE,"in LWGEOM_addBBOX");
 
-	if (lwgeom_hasBBOX( (unsigned char) lwgeom[0] ) )
+	if (lwgeom_hasBBOX( lwgeom->type ) )
 	{
 //elog(NOTICE,"LWGEOM_addBBOX  -- already has bbox");
 		// easy - already has one.  Just copy!
-		result = palloc ( *((int *) lwgeom));
-		memcpy(result,lwgeom, *((int *) lwgeom));
+		result = palloc (lwgeom->size);
+		memcpy(result, lwgeom, lwgeom->size);
 		PG_RETURN_POINTER(result);
 	}
 
 //elog(NOTICE,"LWGEOM_addBBOX  -- giving it a bbox");
 
 	//construct new one
-	box = getbox2d(lwgeom+4);
-	old_type = (unsigned char) lwgeom[4];
+	getbox2d_p(SERIALIZED_FORM(lwgeom), &box);
+	old_type = lwgeom->type;
 
-	size = *((int *) lwgeom) +sizeof(BOX2DFLOAT4);
+	size = lwgeom->size+sizeof(BOX2DFLOAT4);
 
-	result = palloc ( size );// 16 for bbox2d
+	result = palloc(size);// 16 for bbox2d
 
 	memcpy(result,&size,4); // size
-	result[4] = lwgeom_makeType_full( lwgeom_ndims(old_type), lwgeom_hasSRID(old_type), lwgeom_getType(old_type), 1);
-	memcpy(result+5, &box, sizeof(BOX2DFLOAT4)); // copy in bbox
-	memcpy(result+5+sizeof(BOX2DFLOAT4), lwgeom+5, *((int *) lwgeom) -5);  // everything but the type and length
+	result->type = lwgeom_makeType_full(lwgeom_ndims(old_type),
+		lwgeom_hasSRID(old_type), lwgeom_getType(old_type), 1);
+	// copy in bbox
+	memcpy(result->data, &box, sizeof(BOX2DFLOAT4));
+
+//elog(NOTICE,"LWGEOM_addBBOX  -- about to copy serialized form");
+	// everything but the type and length
+	memcpy(result->data+sizeof(BOX2DFLOAT4), lwgeom->data, lwgeom->size-5);
 
 	PG_RETURN_POINTER(result);
 }
