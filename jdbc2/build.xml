@@ -1,0 +1,41 @@
+<?xml version="1.0" ?>
+<!-- ================================================================
+     postgis ant build.xml
+     (C) 2004 Markus.Schaber@logi-track.com, logi-track ag, Zürich
+     This file is licensed under the GNU GPL.
+     
+     $Id$
+     ============================================================ -->
+<project name="postgis" default="jar" basedir=".">
+
+	<path id="classpath.base">
+		<pathelement location="lib/postgresql-8.0.309.jdbc3.jar" />
+	</path>
+
+	<target name="compile">        
+        <mkdir dir="bin/ant" />
+		<javac srcdir="src" destdir="bin/ant">
+			<classpath refid="classpath.base" />
+		</javac>
+	</target>
+
+	<target name="jar" depends="compile">
+		<jar destfile="postgis.jar" index="true">
+			<fileset dir="bin/ant" includes="**/*.class" />
+			<fileset dir="src" excludes="**/*.java" />
+            <fileset file="README"/>
+		</jar>
+        <!-- And a source including version for debugging purposes -->      
+		<jar destfile="postgis_debug.jar" index="true">
+			<fileset dir="bin/ant" includes="**/*.class" />
+			<fileset dir="src" />
+            <fileset file="README"/>
+		</jar>
+	</target>
+
+    <target name="clean">
+        <delete dir="bin/ant" />
+        <delete file="postgis.jar" />
+        <delete file="postgis_debug.jar" />
+    </target>
+</project>
