@@ -1246,7 +1246,7 @@ Datum LWGEOM_force_3dm(PG_FUNCTION_ARGS)
 		size = geom->size;
 	} else {
 		// allocate double as memory a larger for safety 
-		size = geom->size * 1.5;
+		size = geom->size * 2;
 	}
 	srl = lwalloc(size);
 
