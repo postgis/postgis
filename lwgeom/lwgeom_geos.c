@@ -316,10 +316,6 @@ Datum geomunion(PG_FUNCTION_ARGS)
 
 //elog(NOTICE,"g3=%s",GEOSasText(g3));
 
-#ifndef PROFILE
-	PG_FREE_IF_COPY(geom1, 0);
-	PG_FREE_IF_COPY(geom2, 1);
-#endif
 	GEOSdeleteGeometry(g1);
 	GEOSdeleteGeometry(g2);
 
@@ -356,6 +352,9 @@ Datum geomunion(PG_FUNCTION_ARGS)
 	profstop(PROF_QRUN);
 	profreport("geos",geom1, geom2, result);
 #endif
+
+	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom2, 1);
 
 	PG_RETURN_POINTER(result);
 }
@@ -454,6 +453,9 @@ Datum symdifference(PG_FUNCTION_ARGS)
 	profreport("geos",geom1, geom2, result);
 #endif
 
+	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom2, 1);
+
 	PG_RETURN_POINTER(result);
 }
 
@@ -516,7 +518,7 @@ Datum boundary(PG_FUNCTION_ARGS)
 		GEOSdeleteGeometry(g1);
 
 		GEOSdeleteGeometry(g3);
-		elog(ERROR,"GEOS bounary() threw an error (result postgis geometry formation)!");
+		elog(ERROR,"GEOS boundary() threw an error (result postgis geometry formation)!");
 		PG_RETURN_NULL(); //never get here
 	}
 
@@ -531,6 +533,8 @@ Datum boundary(PG_FUNCTION_ARGS)
 	profstop(PROF_QRUN);
 	profreport("geos",geom1, NULL, result);
 #endif
+
+	PG_FREE_IF_COPY(geom1, 0);
 
 	PG_RETURN_POINTER(result);
 }
@@ -624,6 +628,8 @@ Datum convexhull(PG_FUNCTION_ARGS)
 	profreport("geos",geom1, NULL, result);
 #endif
 
+	PG_FREE_IF_COPY(geom1, 0);
+
 	PG_RETURN_POINTER(result);
 
 }
@@ -699,6 +705,8 @@ Datum buffer(PG_FUNCTION_ARGS)
 	profstop(PROF_QRUN);
 	profreport("geos",geom1, NULL, result);
 #endif
+
+	PG_FREE_IF_COPY(geom1, 0);
 
 	PG_RETURN_POINTER(result);
 }
@@ -816,6 +824,9 @@ Datum intersection(PG_FUNCTION_ARGS)
 	profreport("geos",geom1, geom2, result);
 #endif
 
+	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom2, 1);
+
 	PG_RETURN_POINTER(result);
 }
 
@@ -911,6 +922,9 @@ Datum difference(PG_FUNCTION_ARGS)
 	profreport("geos",geom1, geom2, result);
 #endif
 
+	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom2, 1);
+
 	PG_RETURN_POINTER(result);
 }
 
@@ -983,6 +997,8 @@ Datum pointonsurface(PG_FUNCTION_ARGS)
 	profreport("geos",geom1, NULL, result);
 #endif
 
+	PG_FREE_IF_COPY(geom1, 0);
+
 	PG_RETURN_POINTER(result);
 }
 
@@ -1050,6 +1066,8 @@ Datum centroid(PG_FUNCTION_ARGS)
 	profstop(PROF_QRUN);
 	profreport("geos",geom, NULL, result);
 #endif
+
+	PG_FREE_IF_COPY(geom, 0);
 
 	PG_RETURN_POINTER(result);
 }
@@ -1125,6 +1143,8 @@ Datum isvalid(PG_FUNCTION_ARGS)
 	profstop(PROF_QRUN);
 	profreport("geos",geom1, NULL, NULL);
 #endif
+
+	PG_FREE_IF_COPY(geom1, 0);
 
 	PG_RETURN_BOOL(result);
 }
@@ -1203,6 +1223,9 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	profreport("geos",geom1, geom2, NULL);
 #endif
 
+	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom2, 1);
+
 	PG_RETURN_BOOL(result);
 }
 
@@ -1279,6 +1302,9 @@ Datum contains(PG_FUNCTION_ARGS)
 	profreport("geos",geom1, geom2, NULL);
 #endif
 
+	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom2, 1);
+
 	PG_RETURN_BOOL(result);
 }
 
@@ -1353,6 +1379,9 @@ Datum within(PG_FUNCTION_ARGS)
 	profstop(PROF_QRUN);
 	profreport("geos",geom1, geom2, NULL);
 #endif
+
+	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom2, 1);
 
 	PG_RETURN_BOOL(result);
 }
@@ -1430,6 +1459,9 @@ Datum crosses(PG_FUNCTION_ARGS)
 	profreport("geos",geom1, geom2, NULL);
 #endif
 
+	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom2, 1);
+
 	PG_RETURN_BOOL(result);
 }
 
@@ -1503,6 +1535,9 @@ Datum intersects(PG_FUNCTION_ARGS)
 	profstop(PROF_QRUN);
 	profreport("intr",geom1, geom2, NULL);
 #endif
+
+	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom2, 1);
 
 	PG_RETURN_BOOL(result);
 }
@@ -1579,6 +1614,9 @@ Datum touches(PG_FUNCTION_ARGS)
 	profreport("geos",geom1, geom2, NULL);
 #endif
 
+	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom2, 1);
+
 	PG_RETURN_BOOL(result);
 }
 
@@ -1653,6 +1691,9 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	profreport("geos",geom1, geom2, NULL);
 #endif
 
+	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom2, 1);
+
 	PG_RETURN_BOOL(result);
 }
 
@@ -1716,6 +1757,9 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 	profstop(PROF_QRUN);
 	profreport("geos",geom1, geom2, NULL);
 #endif
+
+	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom2, 1);
 
 	PG_RETURN_BOOL(result);
 }
@@ -1812,6 +1856,9 @@ Datum relate_full(PG_FUNCTION_ARGS)
 	profreport("geos",geom1, geom2, NULL);
 #endif
 
+	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom2, 1);
+
 	PG_RETURN_POINTER(result);
 }
 
@@ -1887,6 +1934,9 @@ Datum geomequals(PG_FUNCTION_ARGS)
 	profreport("geos",geom1, geom2, NULL);
 #endif
 
+	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom2, 1);
+
 	PG_RETURN_BOOL(result);
 }
 
@@ -1938,13 +1988,15 @@ Datum issimple(PG_FUNCTION_ARGS)
 	profreport("geos",geom, NULL, NULL);
 #endif
 
+	PG_FREE_IF_COPY(geom, 0);
+
 	PG_RETURN_BOOL(result);
 }
 
 PG_FUNCTION_INFO_V1(isring);
 Datum isring(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM*geom;
+	PG_LWGEOM *geom;
 	Geometry *g1;
 	int result;
 
@@ -1952,7 +2004,7 @@ Datum isring(PG_FUNCTION_ARGS)
 	profstart(PROF_QRUN);
 #endif
 
-	geom = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	if (lwgeom_getType(geom->type) != LINETYPE)
 	{
@@ -1993,6 +2045,8 @@ Datum isring(PG_FUNCTION_ARGS)
 	profstop(PROF_QRUN);
 	profreport("geos",geom, NULL, NULL);
 #endif
+
+	PG_FREE_IF_COPY(geom, 0);
 
 	PG_RETURN_BOOL(result);
 }
@@ -2346,7 +2400,6 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 #endif
 
 	geosgeom = POSTGIS2GEOS(geom);
-	//if ( (Pointer *)geom != (Pointer *)PG_GETARG_DATUM(0) ) pfree(geom);
 	if ( ! geosgeom ) PG_RETURN_NULL();
 
 #ifdef PROFILE
@@ -2360,6 +2413,8 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 #ifdef PGIS_DEBUG_CONVERTER
 	elog(NOTICE, "GEOSnoop: OUT: %s", unparse_WKT(SERIALIZED_FORM(result), malloc, free));
 #endif
+
+	PG_FREE_IF_COPY(geom, 0);
 
 	PG_RETURN_POINTER(result);
 }
