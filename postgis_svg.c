@@ -13,7 +13,15 @@
  * SVG output routines.
  * Originally written by: Klaus Förster <klaus@svg.cc>
  * Patches from: Olivier Courtin <pnine@free.fr>
+ *
+ **********************************************************************
+ * $Log$
+ * Revision 1.3  2004/09/10 16:16:31  pramsey
+ * Added Log tag to header.
+ *
+ *
  **********************************************************************/
+
 
 #include "postgres.h"
 #include "postgis.h"
@@ -319,6 +327,9 @@ precision){
 
 /**********************************************************************
  * $Log$
+ * Revision 1.3  2004/09/10 16:16:31  pramsey
+ * Added Log tag to header.
+ *
  * Revision 1.2  2004/09/10 13:25:36  strk
  * fixed a memory fault
  *
