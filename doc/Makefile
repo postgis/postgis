@@ -3,6 +3,7 @@ LAST_RELEASE_VERSION = 1.0.0
 
 XSLBASE?=/usr/share/sgml/docbook/xsl-stylesheets
 
+all: html
 
 postgis-out.xml: postgis.xml
 	cat $< | sed "s/@@LAST_RELEASE_VERSION@@/$(LAST_RELEASE_VERSION)/g" > $@
