@@ -1,9 +1,7 @@
 # This is a list of objects still missing lwgeom support
 
 AGGREGATE: KEEPING AGGREGATE [collect(geometry)]
-AGGREGATE: KEEPING AGGREGATE [geomunion(geometry)]
 AGGREGATE: KEEPING AGGREGATE [memcollect(geometry)]
-AGGREGATE: KEEPING AGGREGATE [memgeomunion(geometry)]
 FNCAST: KEEPING FNCAST geometry(text) (see CAST)
 FUNC: KEEPING FUNCTION: [line_interpolate_point(geometry, double precision)]
 FUNC: KEEPING FUNCTION: [simplify(geometry, double precision)]
@@ -17,16 +15,18 @@ FUNC: KEEPING FUNCTION: [envelope(geometry)]
 FUNC: KEEPING FUNCTION: [equals(geometry, geometry)]
 FUNC: KEEPING FUNCTION: [expand(geometry, double precision)]
 FUNC: KEEPING FUNCTION: [geom_accum(geometry[], geometry)]
-FUNC: KEEPING FUNCTION: [geometry_size(geometry, internal)]
 FUNC: KEEPING FUNCTION: [isempty(geometry)]
-FUNC: KEEPING FUNCTION: [optimistic_overlap(geometry, geometry, double precision)]
-FUNC: KEEPING FUNCTION: [point_inside_circle(geometry, double precision, double precision, double precision)]
 FUNC: KEEPING FUNCTION: [segmentize(geometry, double precision)]
-FUNC: KEEPING FUNCTION: [translate(geometry, double precision, double precision, double precision)]
 FUNC: KEEPING FUNCTION: [unite_garray(geometry[])]
+
+--- OBSOLETED ?
+FUNC: KEEPING FUNCTION: [geometry_size(geometry, internal)]
+FUNC: KEEPING FUNCTION: [optimistic_overlap(geometry, geometry, double precision)]
 
 --- GEOS
 FUNC: KEEPING FUNCTION: [centroid(geometry)]  (Also !GEOS implementation)
+AGGREGATE: KEEPING AGGREGATE [memgeomunion(geometry)]
+AGGREGATE: KEEPING AGGREGATE [geomunion(geometry)]
 FUNC: KEEPING FUNCTION: [isring(geometry)]
 FUNC: KEEPING FUNCTION: [pointonsurface(geometry)]
 FUNC: KEEPING FUNCTION: [buffer(geometry, double precision)]

@@ -783,6 +783,17 @@ CREATEFUNCTION getbbox(geometry)
         AS '@MODULE_FILENAME@','LWGEOM_to_BOX2DFLOAT4'
         LANGUAGE 'C' WITH (isstrict,iscachable);
 
+CREATEFUNCTION translate(geometry,float8,float8,float8)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_translate'
+	LANGUAGE 'C' WITH (isstrict) ;
+
+CREATEFUNCTION translate(geometry,float8,float8)
+RETURNS geometry
+AS '
+ SELECT translate($1, $2, $3, 0)
+' LANGUAGE 'SQL' WITH (isstrict);
+
 ------------------------------------------------------------------------
 -- DEBUG
 ------------------------------------------------------------------------
@@ -1145,6 +1156,10 @@ CREATEFUNCTION max_distance(geometry,geometry)
 	AS '@MODULE_FILENAME@', 'LWGEOM_maxdistance2d_linestring'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
+CREATEFUNCTION point_inside_circle(geometry,float8,float8,float8)
+	RETURNS bool
+	AS '@MODULE_FILENAME@', 'LWGEOM_inside_circle_point'
+	LANGUAGE 'C' WITH (isstrict);
 
 
 ------------------------------------------------------------------------

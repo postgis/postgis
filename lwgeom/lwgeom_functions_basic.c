@@ -32,6 +32,8 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS);
 Datum LWGEOM_force_multi(PG_FUNCTION_ARGS);
 Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_maxdistance2d_linestring(PG_FUNCTION_ARGS);
+Datum LWGEOM_translate(PG_FUNCTION_ARGS);
+Datum LWGEOM_inside_circle_point(PG_FUNCTION_ARGS);
 
 // internal
 char * lwgeom_summary_recursive(char *serialized, int offset);
@@ -61,6 +63,9 @@ double distance2d_point_poly(LWPOINT *point, LWPOLY *poly);
 double distance2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2);
 double distance2d_line_poly(LWLINE *line, LWPOLY *poly);
 double lwgeom_mindistance2d_recursive(char *lw1, char *lw2);
+void lwgeom_translate_recursive(char *serialized, double xoff, double yoff, double zoff);
+void lwgeom_translate_ptarray(POINTARRAY *pa, double xoff, double yoff, double zoff);
+int lwgeom_pt_inside_circle(POINT2D *p, double cx, double cy, double rad);
 
 
 /*------------------------------------------------------------------*/
@@ -751,6 +756,19 @@ lwgeom_mindistance2d_recursive(char *lw1, char *lw2)
 	return mindist;
 }
 
+int
+lwgeom_pt_inside_circle(POINT2D *p, double cx, double cy, double rad)
+{
+	POINT2D center;
+
+	center.x = cx;
+	center.y = cy;
+
+	if ( distance2d_pt_pt(p, &center) < rad ) return 1;
+	else return 0;
+
+}
+
 /*------------------------------------------------------------------*/
 
 PG_FUNCTION_INFO_V1(combine_box2d);
@@ -907,6 +925,85 @@ lwgeom_summary_recursive(char *serialized, int offset)
 
 	pfree_inspected(inspected);
 	return result;
+}
+
+/*
+ * Translate a pointarray.
+ */
+void
+lwgeom_translate_ptarray(POINTARRAY *pa, double xoff, double yoff, double zoff)
+{
+	int i;
+
+	if ( pa->ndims > 2 ) {
+		for (i=0; i<pa->npoints; i++) {
+			POINT3D *p = (POINT3D *)getPoint(pa, i);
+			p->x += xoff;
+			p->y += yoff;
+			p->z += zoff;
+		}
+	} else {
+		for (i=0; i<pa->npoints; i++) {
+			POINT2D *p = (POINT2D *)getPoint(pa, i);
+			p->x += xoff;
+			p->y += yoff;
+		}
+	}
+}
+
+void
+lwgeom_translate_recursive(char *serialized,
+	double xoff, double yoff, double zoff)
+{
+	LWGEOM_INSPECTED *inspected;
+	int i, j;
+
+	inspected = lwgeom_inspect(serialized);
+
+	// scan each object translating it
+	for (i=0; i<inspected->ngeometries; i++)
+	{
+		LWLINE *line=NULL;
+		LWPOINT *point=NULL;
+		LWPOLY *poly=NULL;
+		char *subgeom=NULL;
+
+		point = lwgeom_getpoint_inspected(inspected, i);
+		if (point !=NULL)
+		{
+			lwgeom_translate_ptarray(point->point,
+				xoff, yoff, zoff);
+			continue;
+		}
+
+		poly = lwgeom_getpoly_inspected(inspected, i);
+		if (poly !=NULL)
+		{
+			for (j=0; j<poly->nrings; j++)
+			{
+				lwgeom_translate_ptarray(poly->rings[j],
+					xoff, yoff, zoff);
+			}
+			continue;
+		}
+
+		line = lwgeom_getline_inspected(inspected, i);
+		if (line != NULL)
+		{
+			lwgeom_translate_ptarray(line->points,
+				xoff, yoff, zoff);
+			continue;
+		}
+
+		subgeom = lwgeom_getsubgeometry_inspected(inspected, i);
+		if ( subgeom == NULL )
+		{
+			elog(ERROR, "lwgeom_getsubgeometry_inspected returned NULL??");
+		}
+		lwgeom_translate_recursive(subgeom, xoff, yoff, zoff);
+	}
+
+	pfree_inspected(inspected);
 }
 
 //get summary info on a GEOMETRY
@@ -1763,3 +1860,35 @@ Datum LWGEOM_maxdistance2d_linestring(PG_FUNCTION_ARGS)
 	PG_RETURN_FLOAT8(maxdist);
 }
 
+//translate geometry
+PG_FUNCTION_INFO_V1(LWGEOM_translate);
+Datum LWGEOM_translate(PG_FUNCTION_ARGS)
+{
+	LWGEOM *geom = (LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+	double xoff =  PG_GETARG_FLOAT8(1);
+	double yoff =  PG_GETARG_FLOAT8(2);
+	double zoff =  PG_GETARG_FLOAT8(3);
+
+	lwgeom_translate_recursive(SERIALIZED_FORM(geom), xoff, yoff, zoff);
+
+	PG_RETURN_POINTER(geom);
+}
+
+PG_FUNCTION_INFO_V1(LWGEOM_inside_circle_point);
+Datum LWGEOM_inside_circle_point(PG_FUNCTION_ARGS)
+{
+	LWGEOM *geom;
+	double cx = PG_GETARG_FLOAT8(1);
+	double cy = PG_GETARG_FLOAT8(2);
+	double rr = PG_GETARG_FLOAT8(3);
+	LWPOINT *point;
+	POINT2D *pt;
+
+	geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	point = lwpoint_deserialize(SERIALIZED_FORM(geom));
+	if ( point == NULL ) PG_RETURN_NULL(); // not a point
+
+	pt = (POINT2D *)getPoint(point->point, 0);
+
+	PG_RETURN_BOOL(lwgeom_pt_inside_circle(pt, cx, cy, rr));
+}
