@@ -1901,6 +1901,95 @@ END</programlisting>
       </sect2>
 
       <sect2>
+        <title>Frequently Asked Questions</title>
+
+        <qandaset>
+          <qandadiv>
+            <qandaentry>
+              <question>
+                <para>When I use an <varname>EXPRESSION</varname> in my map
+                file, the condition never returns as true, even though I know
+                the values exist in my table.</para>
+              </question>
+
+              <answer>
+                <para>Unlike shape files, PostGIS field names have to be
+                referenced in EXPRESSIONS using <emphasis>lower
+                case</emphasis>.</para>
+
+                <programlisting>EXPRESSION ([numlanes] &gt;= 6)</programlisting>
+              </answer>
+            </qandaentry>
+
+            <qandaentry>
+              <question>
+                <para>The FILTER I use for my Shape files is not working for
+                my PostGIS table of the same data.</para>
+              </question>
+
+              <answer>
+                <para>Unlike shape files, filters for PostGIS layers use SQL
+                syntax (they are appended to the SQL statement the PostGIS
+                connector generates for drawing layers in Mapserver).</para>
+
+                <programlisting>FILTER "type = 'highway' and numlanes &gt;= 4"</programlisting>
+              </answer>
+            </qandaentry>
+
+            <qandaentry>
+              <question>
+                <para>My PostGIS layer draws much slower than my Shape file
+                layer, is this normal?</para>
+              </question>
+
+              <answer>
+                <para>In general, expect PostGIS layers to be 10% slower than
+                equivalent Shape files layers, due to the extra overhead
+                involved in database connections, data transformations and
+                data transit between the database and Mapserver.</para>
+
+                <para>If you are finding substantial draw performance
+                problems, it is likely that you have not build a spatial index
+                on your table.</para>
+
+                <programlisting>postgis# CREATE INDEX geotable_gix ON geotable USING GIST ( geocolumn );
+postgis# SELECT update_geometry_stats();  -- For PGSQL &lt; 8.0
+postgis# VACUUM ANALYZE;                  -- For PGSQL &gt;= 8.0</programlisting>
+              </answer>
+            </qandaentry>
+
+            <qandaentry>
+              <question>
+                <para>My PostGIS layer draws fine, but queries are really
+                slow. What is wrong?</para>
+              </question>
+
+              <answer>
+                <para>For queries to be fast, you must have a unique key for
+                your spatial table and you must have an index on that unique
+                key.</para>
+
+                <para>You can specify what unique key for mapserver to use
+                with the <varname>USING UNIQUE</varname> clause in your
+                <varname>DATA</varname> line:</para>
+
+                <programlisting>DATA "the_geom FROM geotable USING UNIQUE gid"</programlisting>
+
+                <para>If your table does not have an explicit unique column,
+                you can "fake" a unique column by using the PostgreSQL row
+                "oid" for your unique column. "oid" is the default unique
+                column if you do not declare one, so enhancing your query
+                speed is a matter of building an index on your spatial table
+                oid value.</para>
+
+                <programlisting>postgis# CREATE INDEX geotable_oid_idx ON geotable (oid);</programlisting>
+              </answer>
+            </qandaentry>
+          </qandadiv>
+        </qandaset>
+      </sect2>
+
+      <sect2>
         <title>Advanced Usage</title>
 
         <para>The <varname>USING</varname> pseudo-SQL clause is used to add
@@ -1965,6 +2054,14 @@ END</programlisting>
             </listitem>
           </varlistentry>
         </variablelist>
+
+        <warning>
+          <para>The parser for Mapserver PostGIS layers is fairly primitive,
+          and is case sensitive in a few areas. Be careful to ensure that all
+          SQL keywords and all your <varname>USING</varname> clauses are in
+          upper case, and that your <varname>USING UNIQUE</varname> clause
+          precedes your <varname>USING SRID</varname> clause.</para>
+        </warning>
       </sect2>
 
       <sect2>
