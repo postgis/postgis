@@ -6,13 +6,13 @@ subdir = contrib/postgis
 # Root of the pgsql source tree 
 ifeq (${PGSQL_SRC},) 
 	top_builddir = ../..
-	libdir = $(libdir)/contrib
+	include $(top_builddir)/src/Makefile.global
+	libdir := $(libdir)/contrib
 else
 	top_builddir = ${PGSQL_SRC}
-	libdir = ${PWD}
+	include $(top_builddir)/src/Makefile.global
+	libdir := ${PWD}
 endif
-
-include $(top_builddir)/src/Makefile.global
 
 test_db = geom_regress
 
