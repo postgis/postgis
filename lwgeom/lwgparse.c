@@ -21,12 +21,12 @@
 void set_zm(char z, char m);
 void close_parser(void);
 
-static int endian_check_int = 1; // dont modify this!!!
-
 #undef LITTLE_ENDIAN
 #define LITTLE_ENDIAN 1
-static char getMachineEndian()
+char getMachineEndian()
 {
+	static int endian_check_int = 1; // dont modify this!!!
+
 	return *((char *) &endian_check_int); // 0 = big endian, 1 = little endian
 }
 
