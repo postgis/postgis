@@ -12,6 +12,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.48  2004/02/03 08:37:48  strk
+ * schema support added, slightly modified logic used to keep table and schema names cases (always quoted and forced to lower case if not asked to keep original case)
+ *
  * Revision 1.47  2004/01/16 20:06:10  strk
  * Added FTLogical<->boolean mapping
  *
@@ -108,6 +111,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include "getopt.h"
 
 typedef struct {double x, y, z;} Point;
@@ -129,7 +133,7 @@ int 	*precisions;
 
 int Insert_attributes(DBFHandle hDBFHandle, int row);
 char	*make_good_string(char *str);
-int ring_check(SHPObject* obj, char *table, char *sr_id, int rings,
+int ring_check(SHPObject* obj, char *schema, char *table, char *sr_id, int rings,
 DBFHandle hDBFHandle);
 char	*protect_quotes_string(char *str);
 int PIP( Point P, Point* V, int n );
@@ -279,7 +283,7 @@ int PIP( Point P, Point* V, int n ){
 //it sorts the polys in order of outer,inner,inner, so that inners always come after outers they are within 
 //return value is the number of rings seen so far, used to keep id's unique.
 
-int ring_check(SHPObject* obj, char *table, char *sr_id, int rings,DBFHandle hDBFHandle){
+int ring_check(SHPObject* obj, char *schema, char *table, char *sr_id, int rings,DBFHandle hDBFHandle){
 	Point pt,pt2;
 	Ring *Poly;
 	Ring *temp;
@@ -423,18 +427,10 @@ int ring_check(SHPObject* obj, char *table, char *sr_id, int rings,DBFHandle hDB
 			printf("%i\t",rings);
 		}
 	}else{
-		if ( quoteidentifiers ){
-			if(opt == 'a'){
-				printf("\nInsert into \"%s\" %s values(",table,col_names);
-			}else{
-				printf("\nInsert into \"%s\" %s values('%i',",table,col_names,rings);
-			}
+		if(opt == 'a'){
+			printf("\nINSERT INTO \"%s\" %s VALUES (",table,col_names);
 		}else{
-			if(opt == 'a'){
-				printf("\nInsert into %s %s values(",table,col_names);
-			}else{
-				printf("\nInsert into %s %s values('%i',",table,col_names,rings);
-			}
+			printf("\nINSERT INTO \"%s\" %s VALUES ('%i',",table,col_names,rings);
 		}
 	}
 
@@ -593,7 +589,7 @@ int main (int ARGC, char **ARGV){
 	int u,j,z,tot_rings,curindex;
 	SHPObject	*obj=NULL;
 	char  name[32];
-	char  *sr_id,*shp_file,*table;
+	char  *sr_id,*shp_file,*table,*schema,*ptr;
 	char **names;
 	DBFFieldType type = -1;
 	extern char *optarg;
@@ -601,7 +597,7 @@ int main (int ARGC, char **ARGV){
 	opt = ' ';
 	errflg =0;
 	j=0;
-	sr_id =shp_file = table = NULL;
+	sr_id =shp_file = table = schema = NULL;
 
 	while ((c = getopt(ARGC, ARGV, "kcdaDs:")) != EOF){
                switch (c) {
@@ -633,6 +629,7 @@ int main (int ARGC, char **ARGV){
                     quoteidentifiers = 1;
                     break;
                case '?':
+               default:              
                     errflg=1;
                }
 	}
@@ -651,6 +648,12 @@ int main (int ARGC, char **ARGV){
 			shp_file = ARGV[optind];
 		}else if(curindex == 1){
 			table = ARGV[optind];
+			if ( (ptr=strchr(table, '.')) )
+			{
+				*ptr = '\0';
+				schema = table;
+				table = ptr+1;
+			}
 		}
 		curindex++;
 	}
@@ -666,7 +669,7 @@ int main (int ARGC, char **ARGV){
         if (errflg==1) {
 		printf("\n**ERROR** invalid option or command parameters\n");
 		printf("\n");
-		printf("USAGE: shp2pgsql [<options>] <shapefile name> <table name>\n");
+		printf("USAGE: shp2pgsql [<options>] <shapefile> [<schema>.]<table>\n");
 		printf("\n");
 		printf("OPTIONS:\n");
 		printf("  -s <srid>  Set the SRID field. If not specified it defaults to -1.\n");
@@ -687,6 +690,21 @@ int main (int ARGC, char **ARGV){
         }
 
 
+	/* 
+	 * Transform table name to lower case unless asked
+	 * to keep original case (we'll quote it later on)
+	 */
+	if ( ! quoteidentifiers )
+	{
+		for (j=0; j<strlen(table); j++) table[j] = tolower(table[j]);
+		if ( schema )
+		{
+			for (j=0; j<strlen(schema); j++)
+				schema[j] = tolower(schema[j]);
+		}
+	}
+
+
 	//Open the shp and dbf files
 	hSHPHandle = SHPOpen( shp_file, "rb" );
 	hDBFHandle = DBFOpen( shp_file, "rb" );
@@ -697,12 +715,16 @@ int main (int ARGC, char **ARGV){
 
 	if(opt == 'd')
 	{
-		//-------------------------Drop the table--------------------------------
-		printf("select DropGeometryColumn('','%s','the_geom');", table);
-		if ( quoteidentifiers ){
-			printf("\ndrop table \"%s\";\n",table);
-		}else{
-			printf("\ndrop table %s;\n",table);
+		//---------------Drop the table--------------------------
+		if ( schema )
+		{
+			printf("SELECT DropGeometryColumn('%s','%s','the_geom');\n", schema, table);
+			printf("DROP TABLE \"%s\".\"%s\";\n", schema, table);
+		}
+		else
+		{
+			printf("SELECT DropGeometryColumn('','%s','the_geom');\n", table);
+			printf("DROP TABLE \"%s\";\n", table);
 		}
 	}
 
@@ -773,10 +795,13 @@ int main (int ARGC, char **ARGV){
 		 * columns and types
 		 */
 
-		if ( quoteidentifiers ){
+		if ( schema )
+		{
+			printf("CREATE TABLE \"%s\".\"%s\" (gid serial", schema, table);
+		}
+		else
+		{
 			printf("CREATE TABLE \"%s\" (gid serial", table);
-		}else{
-			printf("CREATE TABLE %s (gid serial", table);
 		}
 
 		for(j=0;j<num_fields;j++)
@@ -784,7 +809,6 @@ int main (int ARGC, char **ARGV){
 			type = types[j];
 			field_width = widths[j];
 			field_precision = precisions[j];
-
 
 			if ( quoteidentifiers ) printf(", \"%s\" ", names[j]);
 			else printf(", %s ", names[j]);
@@ -844,7 +868,14 @@ int main (int ARGC, char **ARGV){
 
 	//create the geometry column with an addgeometry call to dave's function
 	if(opt != 'a'){
-		printf("select AddGeometryColumn('','%s','the_geom','%s',",table,sr_id);
+		if ( schema )
+		{
+			printf("SELECT AddGeometryColumn('%s','%s','the_geom','%s',",schema, table, sr_id);
+		}
+		else
+		{
+			printf("SELECT AddGeometryColumn('','%s','the_geom','%s',", table, sr_id);
+		}
 		if( obj->nSHPType == 1 ){  //2d point
 			printf("'POINT',2);\n");
 		}else if( obj->nSHPType == 21){ // PointM
@@ -874,7 +905,16 @@ int main (int ARGC, char **ARGV){
 		}
 	}
 	if (dump_format){
-			printf("COPY \"%s\" %s FROM stdin;\n",table, col_names);
+		if ( schema )
+		{
+			printf("COPY \"%s\".\"%s\" %s FROM stdin;\n",
+				schema, table, col_names);
+		}
+		else
+		{
+			printf("COPY \"%s\" %s FROM stdin;\n",
+				table, col_names);
+		}
 	}
 	
 
@@ -914,11 +954,11 @@ int main (int ARGC, char **ARGV){
 			if(trans == 250 || j==0){
 				if(j==0){
 					if (!(dump_format) )
-						printf("begin;");
+						printf("BEGIN;");
 				}else{
 					if (!(dump_format) ){
-						printf("end;\n");
-						printf("begin;");
+						printf("END;\n");
+						printf("BEGIN;");
 					}
 				}
 				trans=0;
@@ -929,12 +969,12 @@ int main (int ARGC, char **ARGV){
 			obj = SHPReadObject(hSHPHandle,j);	//open the next object
 
 
-			tot_rings = ring_check(obj,table,sr_id,tot_rings,hDBFHandle);
+			tot_rings = ring_check(obj,schema,table,sr_id,tot_rings,hDBFHandle);
 			SHPDestroyObject(obj); //close the object
 		}
 
 		if (!(dump_format) ){
-			printf("end;");	//End the last transaction block
+			printf("END;");	//End the last transaction block
 		}
 
 	}else if( obj->nSHPType == 1 || obj->nSHPType == 21 ){
@@ -947,11 +987,11 @@ int main (int ARGC, char **ARGV){
 			if(trans == 250 || j==0){
 				if(j==0){
 					if (!(dump_format) )
-						printf("begin;");
+						printf("BEGIN;");
 				}else{
 					if (!(dump_format) ){
-						printf("end;\n");
-						printf("begin;");
+						printf("END;\n");
+						printf("BEGIN;");
 					}
 				}
 				trans=0;
@@ -964,18 +1004,10 @@ int main (int ARGC, char **ARGV){
 					printf("%i\t",j);
 				}
 			}else{
-				if ( quoteidentifiers ){
-					if(opt == 'a'){
-						printf("insert into \"%s\" %s values (",table,col_names);
-					}else{
-						printf("insert into \"%s\" %s values ('%i',",table,col_names,j);
-					}
+				if(opt == 'a'){
+					printf("INSERT INTO \"%s\" %s VALUES (",table,col_names);
 				}else{
-					if(opt == 'a'){
-						printf("insert into %s %s values (",table,col_names);
-					}else{
-						printf("insert into %s %s values ('%i',",table,col_names,j);
-					}
+					printf("INSERT INTO \"%s\" %s VALUES ('%i',",table,col_names,j);
 				}
 			}
 
@@ -1011,7 +1043,7 @@ int main (int ARGC, char **ARGV){
 
 		}
 		if (!(dump_format) ){
-			printf("end;"); //End the last transaction
+			printf("END;"); //End the last transaction
 		}
 	}else if( obj->nSHPType == 3 || obj->nSHPType == 23 ){
 		//------------------------------------------------------------------------
@@ -1025,12 +1057,12 @@ int main (int ARGC, char **ARGV){
 			if(trans == 250 || j==0){
 				if(j==0){
 					if (!(dump_format) )
-						printf("begin;\n");
+						printf("BEGIN;\n");
 				}else{
 					if (!(dump_format) )
-						printf("end;\n");
+						printf("END;\n");
 					if (!(dump_format) )
-						printf("begin;");
+						printf("BEGIN;");
 				}
 				trans=0;
 			}
@@ -1042,18 +1074,10 @@ int main (int ARGC, char **ARGV){
 					printf("%i\t",j);
 				}
 			}else{
-				if ( quoteidentifiers ){
-					if(opt == 'a'){
-						printf("insert into \"%s\" %s values(",table,col_names);
-					}else{
-						printf("insert into \"%s\" %s values('%i',",table,col_names,j);
-					}
+				if(opt == 'a'){
+					printf("INSERT INTO \"%s\" %s VALUES (",table,col_names);
 				}else{
-					if(opt == 'a'){
-						printf("insert into %s %s values(",table,col_names);
-					}else{
-						printf("insert into %s %s values('%i',",table,col_names,j);
-					}
+					printf("INSERT INTO \"%s\" %s VALUES ('%i',",table,col_names,j);
 				}
 			}
 			obj = SHPReadObject(hSHPHandle,j);
@@ -1132,7 +1156,7 @@ int main (int ARGC, char **ARGV){
 		}
 
 		if (!(dump_format) )
-			printf("end;");//end the last transaction
+			printf("END;");//end the last transaction
 		
 
 	}else if( obj->nSHPType == 8 || obj->nSHPType == 28 ){
@@ -1145,11 +1169,11 @@ int main (int ARGC, char **ARGV){
 			if(trans == 250 || j==0){
 				if(j==0){
 					if (!(dump_format) )
-						printf("begin;");
+						printf("BEGIN;");
 				}else{
 					if (!(dump_format) ){
-						printf("end;\n");
-						printf("begin;");
+						printf("END;\n");
+						printf("BEGIN;");
 					}
 				}
 				trans=0;
@@ -1162,18 +1186,10 @@ int main (int ARGC, char **ARGV){
 					printf("%i\t",j);
 				}
 			}else{			
-				if ( quoteidentifiers ){
-					if(opt == 'a'){
-						printf("insert into \"%s\" %s values (",table,col_names);
-					}else{
-						printf("insert into \"%s\" %s values ('%i',",table,col_names,j);
-					}
+				if(opt == 'a'){
+					printf("INSERT INTO \"%s\" %s VALUES (",table,col_names);
 				}else{
-					if(opt == 'a'){
-						printf("insert into %s %s values (",table,col_names);
-					}else{
-						printf("insert into %s %s values ('%i',",table,col_names,j);
-					}
+					printf("INSERT INTO \"%s\" %s VALUES ('%i',",table,col_names,j);
 				}
 			}
 
@@ -1209,7 +1225,7 @@ int main (int ARGC, char **ARGV){
 
 		}
 		if (!(dump_format) ){
-			printf("end;"); //End the last transaction
+			printf("END;"); //End the last transaction
 		}
 	}else if( obj->nSHPType == 11 ){  
 		//---------------------------------------------------------------------
@@ -1221,11 +1237,11 @@ int main (int ARGC, char **ARGV){
 			if(trans == 250 || j==0){
 				if(j==0){
 					if (!(dump_format) )
-						printf("begin;");
+						printf("BEGIN;");
 				}else{
 					if (!(dump_format) ){
-						printf("end;\n");
-						printf("begin;");
+						printf("END;\n");
+						printf("BEGIN;");
 					}
 				}
 				trans=0;
@@ -1238,18 +1254,10 @@ int main (int ARGC, char **ARGV){
 					printf("%i\t",j);
 				}
 			}else{			
-				if ( quoteidentifiers ){
-					if(opt == 'a'){
-						printf("insert into \"%s\" %s values (",table,col_names);
-					}else{
-						printf("insert into \"%s\" %s values ('%i',",table,col_names,j);
-					}
+				if(opt == 'a'){
+					printf("INSERT INTO \"%s\" %s VALUES (",table,col_names);
 				}else{
-					if(opt == 'a'){
-						printf("insert into %s %s values (",table,col_names);
-					}else{
-						printf("insert into %s %s values ('%i',",table,col_names,j);
-					}
+					printf("INSERT INTO \"%s\" %s VALUES ('%i',",table,col_names,j);
 				}
 			}
 
@@ -1285,7 +1293,7 @@ int main (int ARGC, char **ARGV){
 
 		}
 		if (!(dump_format) ){
-			printf("end;"); //End the last transaction
+			printf("END;"); //End the last transaction
 		}
 	}else if( obj->nSHPType == 13 ){  
 		//---------------------------------------------------------------------
@@ -1299,12 +1307,12 @@ int main (int ARGC, char **ARGV){
 			if(trans == 250 || j==0){
 				if(j==0){
 					if (!(dump_format) )
-						printf("begin;");
+						printf("BEGIN;");
 				}else{
 					if (!(dump_format) )
-						printf("end;\n");
+						printf("END;\n");
 					if (!(dump_format) )
-						printf("begin;");
+						printf("BEGIN;");
 				}
 				trans=0;
 			}
@@ -1316,18 +1324,10 @@ int main (int ARGC, char **ARGV){
 					printf("%i\t",j);
 				}
 			}else{
-				if ( quoteidentifiers ){
-					if(opt == 'a'){
-						printf("insert into \"%s\" %s values (",table,col_names);
-					}else{
-						printf("insert into \"%s\" %s values ('%i',",table,col_names,j);
-					}
+				if(opt == 'a'){
+					printf("INSERT INTO \"%s\" %s VALUES (",table,col_names);
 				}else{
-					if(opt == 'a'){
-						printf("insert into %s %s values (",table,col_names);
-					}else{
-						printf("insert into %s %s values ('%i',",table,col_names,j);
-					}
+					printf("INSERT INTO \"%s\" %s VALUES ('%i',",table,col_names,j);
 				}
 			}
 
@@ -1397,7 +1397,7 @@ int main (int ARGC, char **ARGV){
 		}
 
 		if (!(dump_format) )
-			printf("end;");//close last transaction
+			printf("END;");//close last transaction
 	
        }else if( obj->nSHPType == 15 ){
            //---------------------------------------------------------------------------------
@@ -1418,11 +1418,11 @@ int main (int ARGC, char **ARGV){
 			if(trans == 250 || j==0){
 				if(j==0){
 					if (!(dump_format) )
-						printf("begin;");
+						printf("BEGIN;");
 				}else{
 					if (!(dump_format) ){
-						printf("end;\n");
-						printf("begin;");
+						printf("END;\n");
+						printf("BEGIN;");
 					}
 				}
 				trans=0;
@@ -1433,12 +1433,12 @@ int main (int ARGC, char **ARGV){
 			obj = SHPReadObject(hSHPHandle,j);	//open the next object
 
 
-			tot_rings = ring_check(obj,table,sr_id,tot_rings,hDBFHandle);
+			tot_rings = ring_check(obj,schema,table,sr_id,tot_rings,hDBFHandle);
 			SHPDestroyObject(obj); //close the object
 		}
 
 		if (!(dump_format) ){
-			printf("end;");	//End the last transaction block
+			printf("END;");	//End the last transaction block
 		}
 
 
@@ -1452,12 +1452,12 @@ int main (int ARGC, char **ARGV){
 			if(trans == 250 || j==0){
 				if(j==0){
 					if (!(dump_format) )
-						printf("begin;\n");
+						printf("BEGIN;\n");
 				}else{
 					if (!(dump_format) )
-						printf("end;\n");
+						printf("END;\n");
 					if (!(dump_format) )
-						printf("begin;\n");
+						printf("BEGIN;\n");
 				}
 				trans=0;
 			}
@@ -1469,18 +1469,10 @@ int main (int ARGC, char **ARGV){
 					printf("%i\t",j);
 				}
 			}else{
-				if ( quoteidentifiers ){
-					if(opt == 'a'){
-						printf("insert into \"%s\" %s values(",table,col_names);
-					}else{
-						printf("insert into \"%s\" %s values('%i',",table,col_names,j);
-					}
+				if(opt == 'a'){
+					printf("INSERT INTO \"%s\" %s VALUES (",table,col_names);
 				}else{
-					if(opt == 'a'){
-						printf("insert into %s %s values(",table,col_names);
-					}else{
-						printf("insert into %s %s values('%i',",table,col_names,j);
-					}
+					printf("INSERT INTO \"%s\" %s VALUES ('%i',",table,col_names,j);
 				}
 			}
 
@@ -1516,7 +1508,7 @@ int main (int ARGC, char **ARGV){
 
 
 		if (!(dump_format) )
-			printf("end;");//end the last transaction
+			printf("END;");//end the last transaction
 	}else{
 		printf ("\n\n**** Type is NOT SUPPORTED, type id = %d ****\n\n",obj->nSHPType);
 		//print out what type the file is and that it is not supported
@@ -1531,9 +1523,9 @@ int main (int ARGC, char **ARGV){
 	}
 	free(col_names);
 	if(opt != 'a'){
-		printf("\nALTER TABLE ONLY %s ADD CONSTRAINT %s_pkey PRIMARY KEY (gid);\n",table,table);
+		printf("\nALTER TABLE ONLY \"%s\" ADD CONSTRAINT \"%s_pkey\" PRIMARY KEY (gid);\n",table,table);
 		if(j > 1){
-			printf("SELECT setval ('%s_gid_seq', %i, true);\n", table, j-1);
+			printf("SELECT setval ('\"%s_gid_seq\"', %i, true);\n", table, j-1);
 		}
 	}
 
