@@ -26,7 +26,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-typedef struct {double x, y;} Point;
+typedef struct {double x, y, z;} Point;
 
 typedef struct Ring{
 	Point *list;	//list of points
@@ -46,7 +46,7 @@ int PIP( Point P, Point* V, int n );
 
 char	*make_good_string(char *str){
 	//find all the tabs and make them \<tab>s
-	// 
+	//
 	// 1. find # of tabs
 	// 2. make new string 
 	//
@@ -193,36 +193,37 @@ int ring_check(SHPObject* obj, char *table, char *sr_id, int rings,DBFHandle hDB
 	}else{
 		next_ring = -99;
 	}
-	
-	
+
+
 	//allocate initial pointer memory
-	Outer = (Ring**)malloc(sizeof(Ring*)*obj->nParts);				
-	Inner = (Ring**)malloc(sizeof(Ring*)*obj->nParts);				
-	Poly = (Ring*)malloc(sizeof(Ring));				
+	Outer = (Ring**)malloc(sizeof(Ring*)*obj->nParts);
+	Inner = (Ring**)malloc(sizeof(Ring*)*obj->nParts);
+	Poly = (Ring*)malloc(sizeof(Ring));
 	Poly->list = (Point*)malloc(sizeof(Point)*N);
 	Poly->next = NULL;
 
-	
+
 	for (u=0;u<N;u++){
-	
+
 		//check if the next point is the start of a new ring
 		if( ((next_ring != -99) && (u+1 == obj->panPartStart[next_ring] )) || u==N-1){
 			//check if a ring is clockwise(outer) or not(inner) by getting positive(inner) or negative(outer) area.
 			//'area' is actually twice actual polygon area so divide by 2, not that it matters but in case we use it latter...
 			area = area/2.0;
 			if(area < 0.0 || obj->nParts ==1){
-				
+
 				//An outer ring so fill in the last point then put it in the 'Outer' list
 				Poly->list[n].x = obj->padfX[u]; //the polygon is ended with it's first co-ordinates reused
 				Poly->list[n].y = obj->padfY[u];
+				Poly->list[n].z = obj->padfZ[u];
 				Poly->n = n+1;
 				Outer[out_index] = Poly;
 				out_index++;
-				
+
 				if(u != N-1){ //dont make another ring if we are finished
 					//allocate memory to start building the next ring
-					Poly = (Ring*)malloc(sizeof(Ring));	
-				
+					Poly = (Ring*)malloc(sizeof(Ring));
+
 					//temp2 is the number of points in the list of the next ring
 					//determined so that we can allocate the right amount of mem 6 lines down
 					if((next_ring + 1) == obj->nParts){
@@ -233,19 +234,20 @@ int ring_check(SHPObject* obj, char *table, char *sr_id, int rings,DBFHandle hDB
 					Poly->list = (Point*)malloc(sizeof(Point)*temp2);
 					Poly->next = NULL;//make sure to make to initiale next to null or you never know when the list ends
 								  //this never used to be here and was a pain in the ass bug to find...
-				}		
+				}
 				n=0;//set your count of what point you are at in the current ring back to 0
-		
+
 			}else{
-				
+
 				Poly->list[n].x = obj->padfX[u]; //the polygon ends with it's first co-ordinates reused
 				Poly->list[n].y = obj->padfY[u];
+				Poly->list[n].z = obj->padfZ[u];
 				Poly->n = n+1;
 
 				Inner[in_index] = Poly;
 				in_index++;
-	
-				Poly = (Ring*)malloc(sizeof(Ring));				
+
+				Poly = (Ring*)malloc(sizeof(Ring));
 				temp2 = N;
 				if((next_ring + 1) == obj->nParts){
 				}else{
@@ -265,15 +267,16 @@ int ring_check(SHPObject* obj, char *table, char *sr_id, int rings,DBFHandle hDB
 				next_ring++;
 			}
 		}else{
-	
+
 			Poly->list[n].x = obj->padfX[u];
 			Poly->list[n].y = obj->padfY[u];
+			Poly->list[n].z = obj->padfZ[u];
 			n++;
-			area += (obj->padfX[u] * obj->padfY[u+1]) - (obj->padfY[u] * obj->padfX[u+1]); //calculate the area 
+			area += (obj->padfX[u] * obj->padfY[u+1]) - (obj->padfY[u] * obj->padfX[u+1]); //calculate the area
 
 		}
 	}
-	
+
 
 
 	//Put the inner rings into the list of the outer rings of which they are within
@@ -284,7 +287,7 @@ int ring_check(SHPObject* obj, char *table, char *sr_id, int rings,DBFHandle hDB
 		pt2.x = Inner[u]->list[1].x;
 		pt2.y = Inner[u]->list[1].y;
 		for(i=0;i< out_index; i++){
-			in = PIP(pt,Outer[i]->list,Outer[i]->n);				
+			in = PIP(pt,Outer[i]->list,Outer[i]->n);
 			if(in==1 && PIP(pt2,Outer[i]->list,Outer[i]->n)){
 				Poly = Outer[i];
 				while(Poly->next != NULL){
@@ -295,13 +298,13 @@ int ring_check(SHPObject* obj, char *table, char *sr_id, int rings,DBFHandle hDB
 			}
 		}
 		//if the ring wasn't within any outer rings, assume it is a new outer ring
-		
+
 		if(i == out_index){
 			Outer[out_index] = Inner[u];
 			out_index++;
 		}
 	}
-	
+
 	//start spitting out the sql for ordered entities now.
 	if (dump_format){
 		printf("%i",rings);
@@ -325,24 +328,42 @@ int ring_check(SHPObject* obj, char *table, char *sr_id, int rings,DBFHandle hDB
 		}else{
 			printf(",(");
 		}
-		while(Poly != NULL){
-			for(i=0;i<Poly->n;i++){
-				if(i==0){
-					if(Poly != Outer[u]){
-						printf(",");	
+		if(obj->nSHPType == 5){
+			while(Poly != NULL){
+				for(i=0;i<Poly->n;i++){
+					if(i==0){
+						if(Poly != Outer[u]){
+							printf(",");
+						}
+						printf("(%.15g %.15g ",Poly->list[i].x,Poly->list[i].y);
+					}else{
+						printf(",%.15g %.15g ",Poly->list[i].x,Poly->list[i].y);
 					}
-					printf("(%.15g %.15g ",Poly->list[i].x,Poly->list[i].y);
-				}else{
-					printf(",%.15g %.15g ",Poly->list[i].x,Poly->list[i].y);
 				}
+				printf(")");
+				Poly = Poly->next;
 			}
 			printf(")");
-			Poly = Poly->next;
+		}else{
+  			while(Poly != NULL){
+				for(i=0;i<Poly->n;i++){
+					if(i==0){
+						if(Poly != Outer[u]){
+							printf(",");
+						}
+						printf("(%.15g %.15g %.15g ",Poly->list[i].x,Poly->list[i].y,Poly->list[i].z);
+					}else{
+						printf(",%.15g %.15g %.15g ",Poly->list[i].x,Poly->list[i].y,Poly->list[i].z);
+					}
+				}
+				printf(")");
+				Poly = Poly->next;
+			}
+			printf(")");
 		}
-		printf(")");
 	}
 	if (dump_format){
-		printf(")\n"); 
+		printf(")\n");
 	}else{
 		printf(")',%s) );",sr_id);
 	}
@@ -479,12 +500,12 @@ int main (int ARGC, char **ARGV){
 		printf("      -d  Drops the table , then recreates it and populates\n");
 		printf("          it with current shape file data.\n");
 		printf("      -a  Appends shape file into current table, must be\n");
-		printf("          exacatly the same table schema.\n");
+		printf("          exactly the same table schema.\n");
 		printf("      -c  Creates a new table and populates it, this is the\n");
 		printf("          default if you do not specify any options.\n");
 		printf("\n");
-		printf("  -D  use postgresql dump format (defaults to sql insert\n"); 
-		printf("      statments.\n"); 
+		printf("  -D  Use postgresql dump format (defaults to sql insert\n");
+		printf("      statments.\n");
 		printf("\n");
 		exit (2);
         }
@@ -494,7 +515,7 @@ int main (int ARGC, char **ARGV){
 	hSHPHandle = SHPOpen( shp_file, "rb" );
 	hDBFHandle = DBFOpen( shp_file, "rb" );
 	if (hSHPHandle == NULL || hDBFHandle == NULL){
-		printf ("shape is null\n");	
+		printf ("shape is null\n");
 		exit(-1);
 	}
 
@@ -507,7 +528,7 @@ int main (int ARGC, char **ARGV){
 
 	}
 
-	
+
 
 	if(opt == 'c' || opt == 'd'){ //if opt is 'a' do nothing, go straight to making inserts
 
@@ -546,7 +567,7 @@ int main (int ARGC, char **ARGV){
 		}
 		printf (");\n");
 		//finished creating the table
-		
+
 
 
 	}
@@ -570,15 +591,21 @@ int main (int ARGC, char **ARGV){
 		printf("select AddGeometryColumn('%s','%s','the_geom','%s',",database,table,sr_id);
 
 		if( obj->nSHPType == 1 ){  //2d point
-			printf("'MULTIPOINT',2);\n");
+			printf("'POINT',2);\n");
 		}else if( obj->nSHPType == 3){	//2d arcs/lines
 			printf("'MULTILINESTRING',2);\n");
 		}else if( obj->nSHPType == 5){	//2d polygons
 			printf("'MULTIPOLYGON',2);\n");
+		}else if( obj->nSHPType == 8){ //2d multipoint
+		         printf("'MULTIPOINT',2);\n");
 		}else if( obj->nSHPType == 11){ //3d points
-			printf("'MULTIPOINT',3);\n");
+			printf("'POINT',3);\n");
 		}else if( obj->nSHPType == 13){  //3d arcs/lines
 			printf("'MULTILINESTRING',3);\n");
+		}else if( obj->nSHPType == 15){  //3d polygons
+			printf("'MULTIPOLYGON',3);\n");
+		}else if( obj->nSHPType == 18){  //3d multipoints
+			printf("'MULTIPOINT',3);\n");
 		}else{
 			printf("'GEOMETRY',3);\n");
 		}
@@ -587,7 +614,7 @@ int main (int ARGC, char **ARGV){
 			printf("COPY \"%s\" from stdin;\n",table);
 	}
 	
-	
+
 	if (obj->nVertices == 0){
 		if (dump_format){
 			printf("\\N");
@@ -605,21 +632,21 @@ int main (int ARGC, char **ARGV){
 
 	   //Determine what type of shape is in the file and do appropriate processing
 
-	   if( obj->nSHPType == 5 ){  
+	   if(( obj->nSHPType == 5 ) || ( obj->nSHPType == 15 )){
            //---------------------------------------------------------------------------------
            //---------POLYGONS----------------------------------------------------------------
 
 		// sorts of all the rings so that they are outer,inner,iner,outer,inner...
 		// with the inner ones coming after the outer ones they are within spatially
-				
+
 		tot_rings = 0;
-		
+
 
 		//go through each entity and call ring_check() to sort the rings and print out the sql statement
-		// keep track of total number of inserts in tot_rings so 
+		// keep track of total number of inserts in tot_rings so
 		// you can pass it to the function for the next entity
-		for (j=0;j<num_entities; j++){	
-			
+		for (j=0;j<num_entities; j++){
+
 			//wrap a transaction block around each 250 inserts...
 			if(trans == 250 || j==0){
 				if(j==0){
@@ -635,9 +662,9 @@ int main (int ARGC, char **ARGV){
 			}
 			trans++;
 			// transaction stuff done
-			
+
 			obj = SHPReadObject(hSHPHandle,j);	//open the next object
-		
+
 
 			tot_rings = ring_check(obj,table,sr_id,tot_rings,hDBFHandle);
 			SHPDestroyObject(obj); //close the object
@@ -646,13 +673,13 @@ int main (int ARGC, char **ARGV){
 		if (!(dump_format) ){
 			printf("end;");	//End the last transaction block
 		}
-	
-	}else if( obj->nSHPType == 1){  
+
+	}else if( obj->nSHPType == 1){
 		//---------------------------------------------------------------------
 		//----------POINTS-----------------------------------------------------
 
 		for (j=0;j<num_entities; j++){
-			
+
 			//wrap a transaction block around each 250 inserts...
 			if(trans == 250 || j==0){
 				if(j==0){
@@ -671,7 +698,7 @@ int main (int ARGC, char **ARGV){
 
 			if (dump_format){
 				printf("%i",j);
-			}else{			
+			}else{
 				printf("insert into %s values ('%i'",table,j);
 			}
 
@@ -680,12 +707,12 @@ int main (int ARGC, char **ARGV){
 
 
 			if (dump_format){
-				printf("\tSRID=%s;MULTIPOINT(",sr_id);
+				printf("\tSRID=%s;POINT(",sr_id);
 			}else{
-				printf(",GeometryFromText('MULTIPOINT ("); 
+				printf(",GeometryFromText('POINT (");
 			}
 			obj = SHPReadObject(hSHPHandle,j);
-			
+
 			for (u=0;u<obj->nVertices; u++){
 				if (u>0){
 					printf(",%.15g %.15g",obj->padfX[u],obj->padfY[u]);
@@ -700,7 +727,7 @@ int main (int ARGC, char **ARGV){
 			else{
 				printf(")',%s) );\n",sr_id);
 			}
-			
+
 			SHPDestroyObject(obj);
 
 
@@ -801,7 +828,130 @@ int main (int ARGC, char **ARGV){
 			printf("end;");//end the last transaction
 		
 
-	
+	}else if( obj->nSHPType == 8){
+		//---------------------------------------------------------------------
+		//----------MULTIPOINTS------------------------------------------------
+
+		for (j=0;j<num_entities; j++){
+			
+			//wrap a transaction block around each 250 inserts...
+			if(trans == 250 || j==0){
+				if(j==0){
+					if (!(dump_format) )
+						printf("begin;");
+				}else{
+					if (!(dump_format) ){
+						printf("end;\n");
+						printf("begin;");
+					}
+				}
+				trans=0;
+			}
+			trans++;
+			// transaction stuff done
+
+			if (dump_format){
+				printf("%i",j);
+			}else{			
+				printf("insert into %s values ('%i'",table,j);
+			}
+
+			Insert_attributes(hDBFHandle,j); //add the attributes for each entity to the insert statement
+
+
+
+			if (dump_format){
+				printf("\tSRID=%s;MULTIPOINT(",sr_id);
+			}else{
+				printf(",GeometryFromText('MULTIPOINT ("); 
+			}
+			obj = SHPReadObject(hSHPHandle,j);
+			
+			for (u=0;u<obj->nVertices; u++){
+				if (u>0){
+					printf(",%.15g %.15g",obj->padfX[u],obj->padfY[u]);
+				}else{
+					printf("%.15g %.15g",obj->padfX[u],obj->padfY[u]);
+				}
+			}
+			if (dump_format){
+				printf(")\n");
+
+			}
+			else{
+				printf(")',%s) );\n",sr_id);
+			}
+			
+			SHPDestroyObject(obj);
+
+
+
+		}
+		if (!(dump_format) ){
+			printf("end;"); //End the last transaction
+		}
+	}else if( obj->nSHPType == 11){  
+		//---------------------------------------------------------------------
+		//----------POINTZ-----------------------------------------------------
+
+		for (j=0;j<num_entities; j++){
+			
+			//wrap a transaction block around each 250 inserts...
+			if(trans == 250 || j==0){
+				if(j==0){
+					if (!(dump_format) )
+						printf("begin;");
+				}else{
+					if (!(dump_format) ){
+						printf("end;\n");
+						printf("begin;");
+					}
+				}
+				trans=0;
+			}
+			trans++;
+			// transaction stuff done
+
+			if (dump_format){
+				printf("%i",j);
+			}else{			
+				printf("insert into %s values ('%i'",table,j);
+			}
+
+			Insert_attributes(hDBFHandle,j); //add the attributes for each entity to the insert statement
+
+
+
+			if (dump_format){
+				printf("\tSRID=%s;POINT(",sr_id);
+			}else{
+				printf(",GeometryFromText('POINT ("); 
+			}
+			obj = SHPReadObject(hSHPHandle,j);
+			
+			for (u=0;u<obj->nVertices; u++){
+				if (u>0){
+					printf(",%.15g %.15g %.15g",obj->padfX[u],obj->padfY[u],obj->padfZ[u]);
+				}else{
+					printf("%.15g %.15g %.15g",obj->padfX[u],obj->padfY[u],obj->padfZ[u]);
+				}
+			}
+			if (dump_format){
+				printf(")\n");
+
+			}
+			else{
+				printf(")',%s) );\n",sr_id);
+			}
+			
+			SHPDestroyObject(obj);
+
+
+
+		}
+		if (!(dump_format) ){
+			printf("end;"); //End the last transaction
+		}
 	}else if( obj->nSHPType == 13){  
 		//---------------------------------------------------------------------
 		//------Linez(3D lines)--------------------------------------------
@@ -852,7 +1002,7 @@ int main (int ARGC, char **ARGV){
 			//for each vertice write out the coordinates in the insert statement, when there is a new line 
 			//you must end the brackets and start new ones etc.
 			for (u=0;u<obj->nVertices; u++){
-				
+
 				//check if the next vertice is the start of a new line				
 				if(((next_ring != -99) && (u+1 == obj->panPartStart[next_ring] )) || u==(obj->nVertices-1) ){
 					printf(",%.15g %.15g ",obj->padfX[u],obj->padfY[u]);
@@ -883,11 +1033,53 @@ int main (int ARGC, char **ARGV){
 		if (!(dump_format) )
 			printf("end;");//close last transaction
 	
-	
-	}else if( obj->nSHPType == 11){  
+       }else if( obj->nSHPType == 15 ){
+           //---------------------------------------------------------------------------------
+           //---------POLYGONZ (3D POLYGONS)--------------------------------------------------
+
+		// sorts of all the rings so that they are outer,inner,iner,outer,inner...
+		// with the inner ones coming after the outer ones they are within spatially
+
+		tot_rings = 0;
+
+
+		//go through each entity and call ring_check() to sort the rings and print out the sql statement
+		// keep track of total number of inserts in tot_rings so
+		// you can pass it to the function for the next entity
+		for (j=0;j<num_entities; j++){
+
+			//wrap a transaction block around each 250 inserts...
+			if(trans == 250 || j==0){
+				if(j==0){
+					if (!(dump_format) )
+						printf("begin;");
+				}else{
+					if (!(dump_format) ){
+						printf("end;\n");
+						printf("begin;");
+					}
+				}
+				trans=0;
+			}
+			trans++;
+			// transaction stuff done
+
+			obj = SHPReadObject(hSHPHandle,j);	//open the next object
+
+
+			tot_rings = ring_check(obj,table,sr_id,tot_rings,hDBFHandle);
+			SHPDestroyObject(obj); //close the object
+		}
+
+		if (!(dump_format) ){
+			printf("end;");	//End the last transaction block
+		}
+
+
+	}else if( obj->nSHPType == 18){
 		//---------------------------------------------------------------------------
-		//------POINTZ (3D POINTS)---------------------------------------------------
-		
+		//------MULTIPOINTZ (3D MULTIPOINTS)-----------------------------------------
+
 		for (j=0;j<num_entities; j++){
 
 			//wrap a transaction around each 250 inserts...
@@ -905,7 +1097,7 @@ int main (int ARGC, char **ARGV){
 			}
 			trans++;
 			//end of transaction stuff
-			
+
 			if (dump_format){
 				printf("%i",j);
 			}else{
@@ -922,7 +1114,7 @@ int main (int ARGC, char **ARGV){
 			}else{
 				printf(",GeometryFromText('MULTIPOINT (");
 			}
-			
+
 			for (u=0;u<obj->nVertices; u++){
 				if (u>0){
 					printf(",%.15g %.15g %.15g",obj->padfX[u],obj->padfY[u],obj->padfZ[u]);
@@ -938,18 +1130,17 @@ int main (int ARGC, char **ARGV){
 			else
 				printf(")',%s));\n",sr_id);
 
-			
+
 			SHPDestroyObject(obj);
 		}
-		
 
-	
+
 		if (!(dump_format) )
 			printf("end;");//end the last transaction
-	}else{  
+	}else{
 		printf ("\n\n**** Type is NOT SUPPORTED, type id = %d ****\n\n",obj->nSHPType);
 		//print out what type the file is and that it is not supported
-	
+
 	}//end the if statement for shape types
 
 	}
@@ -958,7 +1149,7 @@ int main (int ARGC, char **ARGV){
 		printf("\\.\n");
 
 	}
-	return(1);	
+	return(1);
 }//end main()
 
 
