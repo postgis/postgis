@@ -1,13 +1,26 @@
+
+/**********************************************************************
+ * $Id$
+ *
+ * PostGIS - Spatial Types for PostgreSQL
+ * http://postgis.refractions.net
+ * Copyright 2001-2003 Refractions Research Inc.
+ *
+ * This is free software; you can redistribute and/or modify it under
+ * the terms of hte GNU General Public Licence. See the COPYING file.
+ * 
+ **********************************************************************
+ * $Log$
+ * Revision 1.30  2003/07/01 18:30:55  pramsey
+ * Added CVS revision headers.
+ *
+ *
+ **********************************************************************/
+
 /*
- * Geometric types for Postgis
- *
- * point3d, line3d, and polygon3d are the base types.
- *
  * Everything is stored in a geometry3d, which is just a conglomeration
  * of the base types (and a little bit of other info).
  */
-
-
 
 #include "utils/geo_decls.h"
 
