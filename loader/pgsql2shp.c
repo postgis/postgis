@@ -106,20 +106,18 @@ int main(int ARGC, char **ARGV){
         if (errflg==1) {
                 printf("\n**ERROR** invalid option or command parameters\n");
                 printf("\n");
-                printf("USAGE: psql2shp [<options>] <database> <table>");
+                printf("USAGE: pgsql2shp [<options>] <database> <table>\n");
                 printf("\n");
                 printf("OPTIONS:\n");
-                printf("\t-d: set the dump file to 3 dimensions, if this option is not used all dumping will be 2d only.\n");
-                printf("\n");
-                printf("\t-f <filename>: Use this option to specify the name of the file to create.\n");
-                printf("\n");
-                printf("\t-h <host>: allows you to specify connection to a database on a machine other than the localhost.\n");
-                printf("\n");
-                printf("\t-p <port>: allows you to specify a database port other than 5432.\n");
-                printf("\n");
-                printf("\t-P <password>: Connect to the database with the specified password.\n");
-                printf("\n");
-                printf("\t-u <user>: Connect to the database as the specified user.\n");
+                printf("  -d Set the dump file to 3 dimensions, if this option is not used\n");
+                printf("     all dumping will be 2d only.\n");
+                printf("  -f <filename>  Use this option to specify the name of the file\n");
+                printf("     to create.\n");
+                printf("  -h <host>  Allows you to specify connection to a database on a\n");
+                printf("     machine other than the localhost.\n");
+                printf("  -p <port>  Allows you to specify a database port other than 5432.\n");
+                printf("  -P <password>  Connect to the database with the specified password.\n");
+                printf("  -u <user>  Connect to the database as the specified user.\n");
                 exit (2);
         }
 
