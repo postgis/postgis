@@ -21,7 +21,6 @@ endif
 # Set USE_STATS to 1 for new GiST statistics collection support
 # Note that this support requires additional columns in 
 # GEOMETRY_COLUMNS, so see the list archives for info or
-# install a fresh database using postgis.sql
 #
 USE_STATS=1
 
@@ -34,13 +33,13 @@ subdir=contrib/postgis
 # variable to the appropriate location.
 #
 ifeq (${PGSQL_SRC},) 
-	top_builddir = ../..
+	top_builddir = ../../..
 	include $(top_builddir)/src/Makefile.global
-	#LPATH := $$libdir
+	LPATH := \$$libdir
 else
 	top_builddir = ${PGSQL_SRC}
 	include $(top_builddir)/src/Makefile.global
-	#LPATH := ${PWD}
+	LPATH := ${PWD}
 endif
 
 #---------------------------------------------------------------
@@ -78,11 +77,11 @@ endif
 NAME=lwgeom
 SO_MAJOR_VERSION=0
 SO_MINOR_VERSION=1
-ifeq (${USE_VERSION}, 71) 
-	MODULE_FILENAME = $(libdir)/$(shlib)
+ifeq (${USE_VERSION},71) 
+	MODULE_FILENAME = $(LPATH)/$(shlib)
 	MODULE_INSTALLDIR = $(libdir)
 else
-	MODULE_FILENAME =/net/lion/raid/share/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/$(shlib)
+	MODULE_FILENAME = $(LPATH)/$(shlib)
 	MODULE_INSTALLDIR = $(pkglibdir)
 endif
 
@@ -120,24 +119,8 @@ ifeq ($(USE_STATS),1)
 	override CFLAGS += -DUSE_STATS
 endif
  
-#---------------------------------------------------------------
-# Select proper GiST support C file
-#
-ifeq ($(USE_VERSION),71) 
-	GIST_SUPPORT=71
-	GIST_ESTIMATE=
-else
-	GIST_SUPPORT=72
-	GIST_ESTIMATE=postgis_estimate.o
-endif
-
-ifeq ($(USE_GEOS),1)
-	GEOS_WRAPPER=postgis_geos_wrapper.o
-endif
 
 OBJS=lwgeom_api.o lwgeom_functions_analytic.o lwgeom_geos.o lwgeom_inout.o lwgeom_estimate.o lwgeom_functions_basic.o lwgeom_gist.o lwgeom_transform.o stringBuffer.o lwgeom_box2dfloat4.o lex.yy.o wktparse.tab.o lwgparse.o wktunparse.o 
-
-
 
 
 #---------------------------------------------------------------
@@ -159,33 +142,18 @@ SHLIB_LINK += $(BE_DLLLIBS)
 
 include $(top_srcdir)/src/Makefile.shlib
 
-postgis_geos_wrapper.o: postgis_geos_wrapper.cpp
-
 all: all-lib lwgeom.sql 
-
-loaderdumper:
-	$(MAKE) -C loader
 
 # Shared library stuff
 
 lwgeom.sql:	lwgeom.sql.in
 	cat lwgeom.sql.in | sed -e 's:@MODULE_FILENAME@:$(MODULE_FILENAME):g;s:@POSTGIS_VERSION@:$(POSTGIS_VERSION):g'  > $@ 
 
-#postgis_new.sql: postgis.sql.in
-#	cpp -P -traditional-cpp -DUSE_VERSION=$(USE_VERSION) -DMODULE_FILENAME="'$(MODULE_FILENAME)'" -DPOSTGIS_VERSION="'$(POSTGIS_VERSION)'" $< > $@
-
-#postgis_undef.sql: postgis.sql create_undef.pl
-#	perl create_undef.pl $< $(USE_VERSION) > $@ 
-
-#install: all installdirs install-postgis-lib
-#	$(INSTALL_DATA) postgis.sql $(DESTDIR)$(datadir)
-#	$(INSTALL_DATA) postgis_undef.sql $(DESTDIR)$(datadir)
-#	$(INSTALL_DATA) spatial_ref_sys.sql $(DESTDIR)$(datadir)
-#	$(INSTALL_DATA) README.postgis $(DESTDIR)$(datadir)
-#	$(MAKE) DESTDIR=$(DESTDIR) -C loader install
+install: all installdirs install-lwgeom-lib
+	$(INSTALL_DATA) lwgeom.sql $(DESTDIR)$(datadir)
 
 #- This has been copied from postgresql and adapted
-install-postgis-lib: $(shlib)
+install-lwgeom-lib: $(shlib)
 	$(INSTALL_SHLIB) $< $(DESTDIR)$(MODULE_INSTALLDIR)/$(shlib)
 ifneq ($(PORTNAME), win)
 ifneq ($(shlib), lib$(NAME)$(DLSUFFIX).$(SO_MAJOR_VERSION))
@@ -205,11 +173,9 @@ endif # not win
 installdirs:
 	$(mkinstalldirs) $(docdir)/contrib $(datadir)/contrib $(libdir)
 
-#uninstall: uninstall-lib
-#	@rm -f $(docdir)/contrib/README.postgis $(datadir)/contrib/postgis.sql
+uninstall: uninstall-lib
+	@rm -f $(datadir)/contrib/lwgeom.sql
 
 clean distclean maintainer-clean: clean-lib
 	@rm -f $(OBJS) 
-#	$(MAKE) -C loader clean
-#	$(MAKE) -C doc clean
 
