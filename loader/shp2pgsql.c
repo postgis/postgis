@@ -4,7 +4,11 @@
  * Author: Jeff Lounsbury, jeffloun@refractions.net
  *
  * $Log$
+ * Revision 1.34  2003/04/14 18:01:42  pramsey
+ * Patch for optional case sensitivity respect. From strk.
+ *
  * Revision 1.33  2003/04/01 23:02:50  jeffloun
+ *
  * Fixed a bug which dropped the last Z value of each line in 3d lines.
  *
  * Revision 1.32  2003/03/07 16:39:53  pramsey
@@ -48,6 +52,7 @@ typedef struct Ring{
 } Ring;
 
 int	dump_format = 0; //0=insert statements, 1 = dump
+int	quoteidentifiers = 0;
 
 int Insert_attributes(DBFHandle hDBFHandle, int row);
 char	*make_good_string(char *str);
@@ -330,7 +335,10 @@ int ring_check(SHPObject* obj, char *table, char *sr_id, int rings,DBFHandle hDB
 	if (dump_format){
 		printf("%i",rings);
 	}else{
-		printf("\nInsert into %s values('%i'",table,rings);
+		if ( quoteidentifiers )
+			printf("\nInsert into \"%s\" values('%i'",table,rings);
+		else
+			printf("\nInsert into %s values('%i'",table,rings);
 	}
 
 	rings++;
@@ -428,7 +436,10 @@ int Insert_attributes(DBFHandle hDBFHandle, int row){
 		 }else{
 			if (dump_format){
 
-				printf("\t%s",make_good_string((char*)DBFReadStringAttribute( hDBFHandle,row, i )) );
+				if ( quoteidentifiers )
+					printf("\t\"%s\"",make_good_string((char*)DBFReadStringAttribute( hDBFHandle,row, i )) );
+				else
+					printf("\t%s",make_good_string((char*)DBFReadStringAttribute( hDBFHandle,row, i )) );
 			}else{
 
 				printf(",'%s'",protect_quotes_string((char*)DBFReadStringAttribute(hDBFHandle, row, i )) );
@@ -464,7 +475,7 @@ int main (int ARGC, char **ARGV){
 	j=0;
 	sr_id =shp_file = table = database = NULL;
 
-	while ((c = getopt(ARGC, ARGV, "cdaDs:")) != EOF){
+	while ((c = getopt(ARGC, ARGV, "kcdaDs:")) != EOF){
                switch (c) {
                case 'c':
                     if (opt == ' ')
@@ -489,6 +500,9 @@ int main (int ARGC, char **ARGV){
                     break;
                case 's':
                     sr_id = optarg;
+                    break;
+               case 'k':
+                    quoteidentifiers = 1;
                     break;
                case '?':
                     errflg=1;
@@ -537,6 +551,7 @@ int main (int ARGC, char **ARGV){
 		printf("  -D  Use postgresql dump format (defaults to sql insert\n");
 		printf("      statments.\n");
 		printf("\n");
+		printf("  -k  Keep postgresql identifiers case.\n");
 		exit (2);
         }
 
@@ -553,7 +568,10 @@ int main (int ARGC, char **ARGV){
 		//-------------------------Drop the table--------------------------------
 		//drop the table given
 		printf("delete from geometry_columns where f_table_name = '%s';\n",table);
-		printf("\ndrop table %s;\n",table);
+		if ( quoteidentifiers )
+			printf("\ndrop table \"%s\";\n",table);
+		else
+			printf("\ndrop table %s;\n",table);
 
 
 	}
@@ -565,7 +583,10 @@ int main (int ARGC, char **ARGV){
 		//-------------------------Create the table--------------------------------
 		//create a table for inserting the shapes into with appropriate columns and types
 
-		printf("create table %s (gid int4 ",table);
+		if ( quoteidentifiers )
+			printf("create table \"%s\" (gid int4 ",table);
+		else
+			printf("create table %s (gid int4 ",table);
 
 		num_fields = DBFGetFieldCount( hDBFHandle );
 		num_records = DBFGetRecordCount(hDBFHandle);
@@ -586,7 +607,10 @@ int main (int ARGC, char **ARGV){
 			if(strcasecmp(name,"gid")==0){
 				printf(", %s__2 ",name);
 			}else{
-				printf(", %s ",name);
+				if ( quoteidentifiers )
+					printf(", \"%s\" ",name);
+				else
+					printf(", %s ",name);
 			}
 	
 			if(hDBFHandle->pachFieldType[j] == 'D' ){
@@ -756,7 +780,10 @@ int main (int ARGC, char **ARGV){
 			if (dump_format){
 				printf("%i",j);
 			}else{
-				printf("insert into %s values ('%i'",table,j);
+				if ( quoteidentifiers )
+					printf("insert into \"%s\" values ('%i'",table,j);
+				else
+					printf("insert into %s values ('%i'",table,j);
 			}
 
 			Insert_attributes(hDBFHandle,j); //add the attributes for each entity to the insert statement
@@ -820,7 +847,10 @@ int main (int ARGC, char **ARGV){
 			if (dump_format){
 				printf("%i",j);
 			}else{
-				printf("insert into %s values('%i'",table,j);
+				if ( quoteidentifiers )
+					printf("insert into \"%s\" values('%i'",table,j);
+				else
+					printf("insert into %s values('%i'",table,j);
 			}
 			obj = SHPReadObject(hSHPHandle,j);
 
@@ -910,7 +940,10 @@ int main (int ARGC, char **ARGV){
 			if (dump_format){
 				printf("%i",j);
 			}else{			
-				printf("insert into %s values ('%i'",table,j);
+				if ( quoteidentifiers )
+					printf("insert into \"%s\" values ('%i'",table,j);
+				else
+					printf("insert into %s values ('%i'",table,j);
 			}
 
 			Insert_attributes(hDBFHandle,j); //add the attributes for each entity to the insert statement
@@ -972,7 +1005,10 @@ int main (int ARGC, char **ARGV){
 			if (dump_format){
 				printf("%i",j);
 			}else{			
-				printf("insert into %s values ('%i'",table,j);
+				if ( quoteidentifiers )
+					printf("insert into \"%s\" values ('%i'",table,j);
+				else
+					printf("insert into %s values ('%i'",table,j);
 			}
 
 			Insert_attributes(hDBFHandle,j); //add the attributes for each entity to the insert statement
@@ -1036,7 +1072,10 @@ int main (int ARGC, char **ARGV){
 			if (dump_format){
 				printf("%i",j);
 			}else{
-				printf("insert into %s values ('%i'",table,j);
+				if ( quoteidentifiers )
+					printf("insert into \"%s\" values ('%i'",table,j);
+				else
+					printf("insert into %s values ('%i'",table,j);
 			}
 
 			obj = SHPReadObject(hSHPHandle,j);
@@ -1158,7 +1197,10 @@ int main (int ARGC, char **ARGV){
 			if (dump_format){
 				printf("%i",j);
 			}else{
-				printf("insert into %s values('%i'",table,j);
+				if ( quoteidentifiers )
+					printf("insert into \"%s\" values('%i'",table,j);
+				else
+					printf("insert into %s values('%i'",table,j);
 			}
 
 			obj = SHPReadObject(hSHPHandle,j);
