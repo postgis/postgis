@@ -1587,7 +1587,11 @@ const Geometry *GEOSGetInteriorRingN(Geometry *g1,int n)
 Geometry *GEOSGetCentroid(Geometry *g)
 {
 	try{
-		return g->getCentroid();
+		Geometry *ret = g->getCentroid();
+		if ( ret == NULL ) {
+			ret = geomFactory->createGeometryCollection();
+		}
+		return ret;
 	}
 	catch (GEOSException *ge)
 	{
@@ -1595,7 +1599,6 @@ Geometry *GEOSGetCentroid(Geometry *g)
 		delete ge;
 		return NULL;
 	}
-
 	catch(...)
 	{
 		return NULL;
