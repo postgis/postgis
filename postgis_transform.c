@@ -18,7 +18,6 @@
 #include "postgis.h"
 #include "utils/elog.h"
 
-#include "projects.h"
 
 
 #define SHOW_DIGS_DOUBLE 15
@@ -27,6 +26,9 @@
 
 // if WANT_PROJECTION undefined, we get a do-nothing transform() function
 #ifdef WANT_PROJECTION
+
+#include "projects.h"
+
 
 PJ *make_project(char *str1);
 void to_rad(POINT3D *pts, int num_points);
