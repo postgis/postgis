@@ -2,6 +2,7 @@ PostGIS 1.0.0
 ??????
 	- BUGFIX dumper 64bit
 	- BUGFIX in multi()
+	- BUGFIX in postgis_restore.pl script
 	- early return [when noop] from multi()
 	- dropped {x,y}{min,max}(box2d) functions
 
