@@ -462,6 +462,8 @@ Datum compression_chip(PG_FUNCTION_ARGS);
 
 Datum transform_geom(PG_FUNCTION_ARGS);
 
+Datum max_distance(PG_FUNCTION_ARGS);
+
 
 //for GIST index
 typedef char* (*BINARY_UNION)(char*, char*, int*);

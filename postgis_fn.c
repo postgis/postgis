@@ -1945,6 +1945,13 @@ Datum distance(PG_FUNCTION_ARGS)
 	int			type1,type2;
 	char			*o1,*o2;
 
+
+	if (geom1->SRID != geom2->SRID)
+	{
+		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
+		PG_RETURN_NULL();
+	}
+
 	dist = 99999999999999999999.9; //very far
 
 
@@ -2194,5 +2201,60 @@ Datum centroid(PG_FUNCTION_ARGS)
 
 }
 
+// max_distance(geom,geom)  (both geoms must be linestrings)
+//find max distance between l1 and l2
+// method: for each point in l1, find distance to l2.  
+//		return max distance
+//
+// note: max_distance(l1,l2) != max_distance(l2,l1) 
+// returns double
 
+PG_FUNCTION_INFO_V1(max_distance);
+Datum max_distance(PG_FUNCTION_ARGS)
+{
+		GEOMETRY		      *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+		GEOMETRY		      *geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
+		LINE3D			*l1,*l2;
+
+		int32			*offsets1,*offsets2;
+		
+		int			t;
+		POINT3D		*pt;	
+
+		double		result,dist;
+
+	if (geom1->SRID != geom2->SRID)
+	{
+		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
+		PG_RETURN_NULL();
+	}
+
+	// only works with lines
+	if  (  (geom1->type != LINETYPE) || (geom2->type != LINETYPE) )
+		PG_RETURN_NULL();
+
+	offsets1 = (int32 *) ( ((char *) &(geom1->objType[0] ))+ sizeof(int32) * geom1->nobjs ) ;
+	offsets2 = (int32 *) ( ((char *) &(geom2->objType[0] ))+ sizeof(int32) * geom2->nobjs ) ;
+
+	l1 =  (LINE3D *) ( (char *) geom1 +offsets1[0]  );
+	l2 =  (LINE3D *) ( (char *) geom2 +offsets2[0]  ) ;
+
+	result = -9999; // all distances should be positive
+
+	for(t=0;t<l1->npoints;t++) //for each point in l1
+	{
+		pt = &l1->points[t];
+		dist =  distance_pt_line(pt, l2);
+
+		if (dist > result)
+		{
+			result = dist;
+		}
+	}
+
+	if (result <0.0)
+		result = 0;
+
+	PG_RETURN_FLOAT8(result);
+}

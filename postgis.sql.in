@@ -505,11 +505,16 @@ CREATE FUNCTION geometryn(GEOMETRY,INTEGER)
    AS '@MODULE_FILENAME@','geometryn_collection'
 	     LANGUAGE 'c'  with (isstrict);
 
+CREATE FUNCTION max_distance(GEOMETRY,GEOMETRY)
+   RETURNS float8
+   AS '@MODULE_FILENAME@'
+	     LANGUAGE 'c'  with (isstrict,iscachable);
+
 
 CREATE FUNCTION distance(GEOMETRY,GEOMETRY)
    RETURNS float8
    AS '@MODULE_FILENAME@'
-	     LANGUAGE 'c'  with (isstrict);
+	     LANGUAGE 'c'  with (isstrict,iscachable);
 
 CREATE FUNCTION astext(geometry)
    RETURNS TEXT
