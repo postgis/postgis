@@ -3954,6 +3954,9 @@ FROM geometry_table;</literallayout>
 		    components, and the path will express the position
 		    of the component inside the collection.
 		    </para>
+
+              	    <para>NOTE: this function is not available for
+		    builds against PostgreSQL 7.2.x</para>
 		  </listitem>
 		</varlistentry>
 
