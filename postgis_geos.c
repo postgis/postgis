@@ -10,6 +10,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.23  2003/11/05 18:25:08  strk
+ * moved #ifdef USE_GEOS below prototypes, added NULL implementation of unite_garray
+ *
  * Revision 1.22  2003/11/05 18:02:41  strk
  * renamed unite_finalfunc to unite_garray
  *
@@ -95,7 +98,6 @@
 //--------------------------------------------------------------------------
 //
 //#define DEBUG
-#ifdef USE_GEOS
 
 #include "postgres.h"
 
@@ -221,6 +223,8 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g, char want3d );
 POLYGON3D *PolyFromGeometry(Geometry *g, int *size);
 LINE3D *LineFromGeometry(Geometry *g, int *size);
 void NOTICE_MESSAGE(char *msg);
+
+#ifdef USE_GEOS
 
 //-----------------------------------------------
 // return a GEOS Geometry from a POSTGIS GEOMETRY
@@ -1861,6 +1865,13 @@ PG_FUNCTION_INFO_V1(pointonsurface);
 Datum pointonsurface(PG_FUNCTION_ARGS)
 {
 	elog(ERROR,"pointonsurface:: operation not implemented - compile PostGIS with GEOS support");
+	PG_RETURN_NULL(); // never get here
+}
+
+PG_FUNCTION_INFO_V1(unite_garray);
+Datum unite_garray(PG_FUNCTION_ARGS)
+{
+	elog(ERROR,"unite_garray:: operation not implemented - compile PostGIS with GEOS support");
 	PG_RETURN_NULL(); // never get here
 }
 
