@@ -239,7 +239,9 @@ alltests: onlinetests test
 clean:  
 	$(DELETE) $(BUILD) bin stubbin postgis.jar postgis_debug.jar \
 		compile stubcompile jtscompile $(JTSBUILD) postgis_jts.jar \
-                versionstamp
+                versionstamp \
+		postgis_$(VERSION).jar \
+		postgis_debug_$(VERSION).jar
 
 # Install - this needs the successfull inclusion of PostgreSQL top
 # level Makefile (which is mandatory for the C part of PostGIS as well).
