@@ -3069,9 +3069,9 @@ dimension
             <term>InteriorRingN(geometry,integer)</term>
 
             <listitem>
-              <para>Return the N'th interior ring of the first polygon in the
-              geometry. Return NULL if there is no polygon in the
-              geometry.</para>
+              <para>Return the N'th interior ring of the polygon geometry.
+	      Return NULL if the geometry is not a polygon or the given
+	      N is out of range (1-based).</para>
             </listitem>
           </varlistentry>
 
