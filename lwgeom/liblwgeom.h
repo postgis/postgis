@@ -985,6 +985,12 @@ extern LWCOLLECTION *lwcollection_construct(unsigned int type, int SRID,
 extern LWCOLLECTION *lwcollection_construct_empty(int SRID,
 	char hasZ, char hasM);
 
+// Other constructors
+extern LWPOINT *make_lwpoint2d(int SRID, double x, double y);
+extern LWPOINT *make_lwpoint3dz(int SRID, double x, double y, double z);
+extern LWPOINT *make_lwpoint3dm(int SRID, double x, double y, double m);
+extern LWPOINT *make_lwpoint4d(int SRID, double x, double y, double z, double m);
+
 // Return a char string with ASCII versionf of type flags
 extern const char *lwgeom_typeflags(unsigned char type);
 

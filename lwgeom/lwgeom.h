@@ -34,8 +34,10 @@ extern char *lwgeom_to_wkt(LWGEOM lwgeom);
 extern char *lwgeom_to_hexwkb(LWGEOM lwgeom, unsigned int byteorder);
 
 // Construction
-extern LWGEOM lwpoint_construct(int SRID, char wantbbox, POINTARRAY pa);
-extern LWGEOM lwline_construct(int SRID, char wantbbox, POINTARRAY pa);
+extern LWGEOM make_lwpoint2d(int SRID, double x, double y);
+extern LWGEOM make_lwpoint3dz(int SRID, double x, double y, double z);
+extern LWGEOM make_lwpoint3dm(int SRID, double x, double y, double m);
+extern LWGEOM make_lwpoint4d(int SRID, double x, double y, double z, double m);
 
 // Spatial functions
 extern void lwgeom_reverse(LWGEOM lwgeom);
