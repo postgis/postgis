@@ -155,7 +155,7 @@
 				</listitem>
 				<listitem> 
 					<para>Retrieve the PostGIS source archive from
-					  <ulink url="http://postgis.refractions.net/postgis-0.7.3.tar.gz">http://postgis.refractions.net/postgis-0.7.3.tar.gz</ulink>.
+					  <ulink url="http://postgis.refractions.net/postgis-@@LAST_RELEASE_VERSION@@.tar.gz">http://postgis.refractions.net/postgis-0.7.3.tar.gz</ulink>.
 					  Uncompress and untar the archive in the "contrib" directory of
 					  the PostgreSQL source tree.
 					</para> 
