@@ -732,9 +732,11 @@ CREATE TABLE geometry_columns (
 	coord_dimension integer not null,
 	srid integer not null,
 	type varchar(30) not null,
+#if USE_VERSION < 75
 	attrelid oid,
 	varattnum int,
 	stats histogram2d,
+#endif
 	CONSTRAINT geometry_columns_pk primary key ( 
 		f_table_catalog, 
 		f_table_schema, 
@@ -3583,37 +3585,27 @@ CREATE CAST ( geometry AS text ) WITH FUNCTION astext(geometry);
 
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- UPDATE_GEOMETRY_STATS()
+--
+-- This is no more needed, running ANALYZE will store
+-- geometry attributes statistics in system tables.
+-- It is kept for back compatibility, will raise a message.
+--
 
 CREATE FUNCTION update_geometry_stats() 
 RETURNS text
 AS
 '
-BEGIN
-	EXECUTE ''update geometry_columns set attrelid = (select pg_class.oid AS attrelid from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name  and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name),  varattnum = (select pg_attribute.attnum from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name)'';
-	execute ''update geometry_columns set stats = (build_histogram2d( create_histogram2d(find_extent(f_table_name,f_geometry_column),40 ),f_table_name::text, f_geometry_column::text))  '';	
-	return ''done'';
-END;
+	SELECT ''update_geometry_stats() has been obsoleted. Statistics are automatically built running the ANALYZE command''::text
 '
-LANGUAGE 'plpgsql' ;
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- UPDATE_GEOMETRY_STATS( <table>, <column> )
+LANGUAGE 'sql' ;
 
 CREATE FUNCTION update_geometry_stats(varchar,varchar) 
 RETURNS text
 AS
 '
-DECLARE
-	tablename aliAS for $1;
-	columnname aliAS for $2;
-
-BEGIN
-	EXECUTE ''update geometry_columns set attrelid = (select pg_class.oid AS attrelid from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name  and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name),  varattnum = (select pg_attribute.attnum from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name)'';
-	execute ''update geometry_columns set stats = (build_histogram2d( create_histogram2d(find_extent(''|| quote_literal(tablename) || '',''||quote_literal(columnname) ||''),40 ),''|| quote_literal(tablename) || ''::text,''||quote_literal(columnname) ||''::text )) WHERE f_table_name=''|| quote_literal(tablename) || ''and f_geometry_column=''||quote_literal(columnname) ;	
-	return ''done'';
-END;
+	SELECT update_geometry_stats();
 '
-LANGUAGE 'plpgsql' ;
+LANGUAGE 'sql' ;
 
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- CREATE_HISTOGRAM2D( <box>, <size> )
@@ -3763,24 +3755,6 @@ BEGIN
 	UPDATE geometry_columns SET f_table_schema = ''public''
 		WHERE f_table_schema is NULL or f_table_schema NOT IN
 		( SELECT nspname::varchar FROM pg_namespace );
-
-	UPDATE geometry_columns SET attrelid = (
-		SELECT c.oid 
-		FROM pg_class c, pg_attribute a, pg_namespace n
-		WHERE c.relname = geometry_columns.f_table_name::name
-		AND a.attrelid = c.oid AND c.relnamespace = n.oid
-		AND a.attname = geometry_columns.f_geometry_column::name
-		AND n.nspname = geometry_columns.f_table_schema::name
-		);
-	
-	UPDATE geometry_columns SET varattnum = (
-		SELECT a.attnum
-		FROM pg_class c, pg_attribute a, pg_namespace n
-		WHERE n.nspname = geometry_columns.f_table_schema::name
-		AND c.relname = geometry_columns.f_table_name::name
-		AND a.attname = geometry_columns.f_geometry_column::name
-		AND a.attrelid = c.oid AND c.relnamespace = n.oid
-		);
 
 	RETURN ''geometry_columns table is now linked to the system tables'';
 
