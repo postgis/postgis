@@ -112,6 +112,7 @@ override CFLAGS += -DPOSTGIS_SCRIPTS_VERSION='"$(SCRIPTS_VERSION)"'
 
 ifeq ($(USE_GEOS),1)
 	override CFLAGS += -I$(GEOS_DIR)/include -DUSE_GEOS
+	GEOS_RULES=detect_geos_version
 endif
 ifeq ($(USE_PROJ),1)
 	override CFLAGS += -I$(PROJ_DIR)/include -DUSE_PROJ 
@@ -173,7 +174,7 @@ include $(top_srcdir)/src/Makefile.shlib
 
 postgis_geos_wrapper.o: postgis_geos_wrapper.cpp
 
-all: detect_geos_version all-lib postgis.sql postgis_undef.sql loaderdumper
+all: $(GEOS_RULES) all-lib postgis.sql postgis_undef.sql loaderdumper
 
 loaderdumper:
 	$(MAKE) -C loader
