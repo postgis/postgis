@@ -1663,6 +1663,14 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 	Datum datum;
 	PG_LWGEOM *geom;
 	ArrayType *result;
+#if USE_VERSION > 72
+# if USE_VERSION == 73
+	Oid oid = getGeometryOID();
+# else  // USE_VERSION > 73
+	Oid oid = get_fn_expr_argtype(fcinfo->flinfo, 1);
+# endif // USE_VERSION > 73
+#endif // USE_VERSION > 72
+
 
 #ifdef DEBUG
 	elog(NOTICE, "LWGEOM_accum called");
@@ -1697,7 +1705,6 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 	/* Make a DETOASTED copy of input geometry */
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(datum);
 
-
 	/*
 	 * Might use a more optimized version instead of lwrealloc'ing
 	 * at every iteration. This is not the bottleneck anyway.
@@ -1719,14 +1726,9 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 
 		result->size = nbytes;
 		result->ndim = 1;
-/*
- * TODO: PG73 require array to contain ->elemtype, but
- * does not contain the argument types in FmgrInfo.
- * We need a way to obtain 'geometry' type oid.
- */
 
-#if USE_VERSION > 73
-		result->elemtype = get_fn_expr_argtype(fcinfo->flinfo, 1);
+#if USE_VERSION > 72
+		result->elemtype = oid;
 #endif
 		memcpy(ARR_DIMS(result), &nelems, sizeof(int));
 		memcpy(ARR_LBOUND(result), &lbs, sizeof(int));
