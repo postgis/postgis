@@ -2348,8 +2348,9 @@ BEGIN
 #else
 		quote_ident(table_name)
 #endif
-		|| '' ADD CONSTRAINT "enforce_srid_'' || 
-		column_name || ''" CHECK (SRID('' || quote_ident(column_name) ||
+		|| '' ADD CONSTRAINT '' 
+		|| quote_ident(''enforce_srid_'' || column_name)
+		|| '' CHECK (SRID('' || quote_ident(column_name) ||
 		'') = '' || new_srid || '')'' ;
 
 	EXECUTE ''ALTER TABLE '' || 
@@ -2358,8 +2359,9 @@ BEGIN
 #else
 		quote_ident(table_name)
 #endif
-		|| '' ADD CONSTRAINT "enforce_dims_'' || 
-		column_name || ''" CHECK (ndims('' || quote_ident(column_name) ||
+		|| '' ADD CONSTRAINT ''
+		|| quote_ident(''enforce_dims_'' || column_name)
+		|| '' CHECK (ndims('' || quote_ident(column_name) ||
 		'') = '' || new_dim || '')'' ;
 
 	IF (not(new_type = ''GEOMETRY'')) THEN
@@ -2369,8 +2371,9 @@ BEGIN
 #else
 		quote_ident(table_name)
 #endif
-		|| '' ADD CONSTRAINT "enforce_geotype_'' ||
-		column_name || ''" CHECK (geometrytype('' ||
+		|| '' ADD CONSTRAINT ''
+		|| quote_ident(''enforce_geotype_'' || column_name)
+		|| '' CHECK (geometrytype('' ||
 		quote_ident(column_name) || '')='' ||
 		quote_literal(new_type) || '' OR ('' ||
 		quote_ident(column_name) || '') is null)'';
