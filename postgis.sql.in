@@ -11,6 +11,12 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+#if USE_VERSION > 71
+#define CREATEFUNCTION CREATE OR REPLACE FUNCTION
+#else
+#define CREATEFUNCTION CREATE FUNCTION
+#endif
+
 BEGIN TRANSACTION;
 
 -- You might have to define the PL/PgSQL language usually done with the
@@ -34,12 +40,12 @@ BEGIN TRANSACTION;
 # define HISTOGRAM_OUT_REP cstring
 #endif
 
-CREATE FUNCTION histogram2d_in(HISTOGRAM_OUT_REP)
+CREATEFUNCTION histogram2d_in(HISTOGRAM_OUT_REP)
 	RETURNS HISTOGRAM_IN_REP
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION histogram2d_out(HISTOGRAM_IN_REP)
+CREATEFUNCTION histogram2d_out(HISTOGRAM_IN_REP)
 	RETURNS HISTOGRAM_OUT_REP
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
@@ -63,12 +69,12 @@ CREATE TYPE histogram2d (
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --  BOX3D
 
-CREATE FUNCTION box3d_in(opaque)
+CREATEFUNCTION box3d_in(opaque)
 	RETURNS opaque 
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION box3d_out(opaque)
+CREATEFUNCTION box3d_out(opaque)
 	RETURNS opaque
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
@@ -83,12 +89,12 @@ CREATE TYPE box3d (
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --  SPHEROID
 
-CREATE FUNCTION spheroid_in(opaque)
+CREATEFUNCTION spheroid_in(opaque)
 	RETURNS opaque 
 	AS '@MODULE_FILENAME@','ellipsoid_in'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION spheroid_out(opaque)
+CREATEFUNCTION spheroid_out(opaque)
 	RETURNS opaque
 	AS '@MODULE_FILENAME@','ellipsoid_out'
 	LANGUAGE 'C' WITH (isstrict);
@@ -103,12 +109,12 @@ CREATE TYPE spheroid (
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --  WKB
 
-CREATE FUNCTION wkb_in(opaque)
+CREATEFUNCTION wkb_in(opaque)
 	RETURNS opaque
 	AS '@MODULE_FILENAME@','WKB_in'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION wkb_out(opaque)
+CREATEFUNCTION wkb_out(opaque)
 	RETURNS opaque
 	AS '@MODULE_FILENAME@','WKB_out'
 	LANGUAGE 'C' WITH (isstrict);
@@ -123,12 +129,12 @@ CREATE TYPE wkb (
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --  CHIP
 
-CREATE FUNCTION chip_in(opaque)
+CREATEFUNCTION chip_in(opaque)
 	RETURNS opaque
 	AS '@MODULE_FILENAME@','CHIP_in'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION chip_out(opaque)
+CREATEFUNCTION chip_out(opaque)
 	RETURNS opaque
 	AS '@MODULE_FILENAME@','CHIP_out'
 	LANGUAGE 'C' WITH (isstrict);
@@ -144,12 +150,12 @@ CREATE TYPE chip (
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --  GEOMETRY
 
-CREATE FUNCTION geometry_in(opaque)
+CREATEFUNCTION geometry_in(opaque)
 	RETURNS opaque
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION geometry_out(opaque)
+CREATEFUNCTION geometry_out(opaque)
 	RETURNS opaque
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
@@ -166,7 +172,7 @@ CREATE TYPE geometry (
 -- GiST Selectivity Function
 --
 
-CREATE FUNCTION postgis_gist_sel(oid, oid, int2, opaque, int4)
+CREATEFUNCTION postgis_gist_sel(oid, oid, int2, opaque, int4)
 	RETURNS float8
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C';
@@ -176,12 +182,12 @@ CREATE FUNCTION postgis_gist_sel(oid, oid, int2, opaque, int4)
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --  BOX3D
 
-CREATE FUNCTION box3d_in(opaque)
+CREATEFUNCTION box3d_in(opaque)
 	RETURNS opaque 
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION box3d_out(opaque)
+CREATEFUNCTION box3d_out(opaque)
 	RETURNS opaque
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
@@ -196,12 +202,12 @@ CREATE TYPE box3d (
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --  SPHEROID
 
-CREATE FUNCTION spheroid_in(opaque)
+CREATEFUNCTION spheroid_in(opaque)
 	RETURNS opaque 
 	AS '@MODULE_FILENAME@','ellipsoid_in'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION spheroid_out(opaque)
+CREATEFUNCTION spheroid_out(opaque)
 	RETURNS opaque
 	AS '@MODULE_FILENAME@','ellipsoid_out'
 	LANGUAGE 'C' WITH (isstrict);
@@ -216,12 +222,12 @@ CREATE TYPE spheroid (
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --  WKB
 
-CREATE FUNCTION wkb_in(opaque)
+CREATEFUNCTION wkb_in(opaque)
 	RETURNS opaque
 	AS '@MODULE_FILENAME@','WKB_in'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION wkb_out(opaque)
+CREATEFUNCTION wkb_out(opaque)
 	RETURNS opaque
 	AS '@MODULE_FILENAME@','WKB_out'
 	LANGUAGE 'C' WITH (isstrict);
@@ -236,12 +242,12 @@ CREATE TYPE wkb (
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --  CHIP
 
-CREATE FUNCTION chip_in(opaque)
+CREATEFUNCTION chip_in(opaque)
 	RETURNS opaque
 	AS '@MODULE_FILENAME@','CHIP_in'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION chip_out(opaque)
+CREATEFUNCTION chip_out(opaque)
 	RETURNS opaque
 	AS '@MODULE_FILENAME@','CHIP_out'
 	LANGUAGE 'C' WITH (isstrict);
@@ -257,12 +263,12 @@ CREATE TYPE chip (
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --  GEOMETRY
 
-CREATE FUNCTION geometry_in(opaque)
+CREATEFUNCTION geometry_in(opaque)
 	RETURNS opaque
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION geometry_out(opaque)
+CREATEFUNCTION geometry_out(opaque)
 	RETURNS opaque
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
@@ -279,7 +285,7 @@ CREATE TYPE geometry (
 -- GiST Selectivity Function
 --
 
-CREATE FUNCTION postgis_gist_sel(opaque, oid,  opaque, int4)
+CREATEFUNCTION postgis_gist_sel(opaque, oid,  opaque, int4)
 	RETURNS float8
 	AS '@MODULE_FILENAME@'
 	LANGUAGE'C';
@@ -289,12 +295,12 @@ CREATE FUNCTION postgis_gist_sel(opaque, oid,  opaque, int4)
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --  BOX3D
 
-CREATE FUNCTION box3d_in(cstring)
+CREATEFUNCTION box3d_in(cstring)
 	RETURNS box3d 
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION box3d_out(box3d)
+CREATEFUNCTION box3d_out(box3d)
 	RETURNS cstring
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
@@ -309,12 +315,12 @@ CREATE TYPE box3d (
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --  SPHEROID
 
-CREATE FUNCTION spheroid_in(cstring)
+CREATEFUNCTION spheroid_in(cstring)
 	RETURNS spheroid 
 	AS '@MODULE_FILENAME@','ellipsoid_in'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION spheroid_out(spheroid)
+CREATEFUNCTION spheroid_out(spheroid)
 	RETURNS cstring
 	AS '@MODULE_FILENAME@','ellipsoid_out'
 	LANGUAGE 'C' WITH (isstrict);
@@ -329,12 +335,12 @@ CREATE TYPE spheroid (
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --  WKB
 
-CREATE FUNCTION wkb_in(cstring)
+CREATEFUNCTION wkb_in(cstring)
 	RETURNS wkb
 	AS '@MODULE_FILENAME@','WKB_in'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION wkb_out(wkb)
+CREATEFUNCTION wkb_out(wkb)
 	RETURNS cstring
 	AS '@MODULE_FILENAME@','WKB_out'
 	LANGUAGE 'C' WITH (isstrict);
@@ -349,12 +355,12 @@ CREATE TYPE wkb (
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --  CHIP
 
-CREATE FUNCTION chip_in(cstring)
+CREATEFUNCTION chip_in(cstring)
 	RETURNS chip
 	AS '@MODULE_FILENAME@','CHIP_in'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION chip_out(chip)
+CREATEFUNCTION chip_out(chip)
 	RETURNS cstring
 	AS '@MODULE_FILENAME@','CHIP_out'
 	LANGUAGE 'C' WITH (isstrict);
@@ -370,12 +376,12 @@ CREATE TYPE chip (
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --  GEOMETRY
 
-CREATE FUNCTION geometry_in(cstring)
+CREATEFUNCTION geometry_in(cstring)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION geometry_out(geometry)
+CREATEFUNCTION geometry_out(geometry)
 	RETURNS cstring
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
@@ -392,7 +398,7 @@ CREATE TYPE geometry (
 -- GiST selectivity function
 --
 
-CREATE FUNCTION postgis_gist_sel (internal, oid, internal, int4)
+CREATEFUNCTION postgis_gist_sel (internal, oid, internal, int4)
 	RETURNS float8
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C';
@@ -402,12 +408,12 @@ CREATE FUNCTION postgis_gist_sel (internal, oid, internal, int4)
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --  BOX3D
 
-CREATE FUNCTION box3d_in(cstring)
+CREATEFUNCTION box3d_in(cstring)
 	RETURNS box3d 
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION box3d_out(box3d)
+CREATEFUNCTION box3d_out(box3d)
 	RETURNS cstring
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
@@ -422,12 +428,12 @@ CREATE TYPE box3d (
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --  SPHEROID
 
-CREATE FUNCTION spheroid_in(cstring)
+CREATEFUNCTION spheroid_in(cstring)
 	RETURNS spheroid 
 	AS '@MODULE_FILENAME@','ellipsoid_in'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION spheroid_out(spheroid)
+CREATEFUNCTION spheroid_out(spheroid)
 	RETURNS cstring
 	AS '@MODULE_FILENAME@','ellipsoid_out'
 	LANGUAGE 'C' WITH (isstrict);
@@ -442,17 +448,17 @@ CREATE TYPE spheroid (
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --  WKB
 
-CREATE FUNCTION wkb_in(cstring)
+CREATEFUNCTION wkb_in(cstring)
 	RETURNS wkb
 	AS '@MODULE_FILENAME@','WKB_in'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION wkb_out(wkb)
+CREATEFUNCTION wkb_out(wkb)
 	RETURNS cstring
 	AS '@MODULE_FILENAME@','WKB_out'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION wkb_recv(internal)
+CREATEFUNCTION wkb_recv(internal)
 	RETURNS wkb
 	AS '@MODULE_FILENAME@','WKB_recv'
 	LANGUAGE 'C' WITH (isstrict);
@@ -461,12 +467,12 @@ CREATE FUNCTION wkb_recv(internal)
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --  CHIP
 
-CREATE FUNCTION chip_in(cstring)
+CREATEFUNCTION chip_in(cstring)
 	RETURNS chip
 	AS '@MODULE_FILENAME@','CHIP_in'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION chip_out(chip)
+CREATEFUNCTION chip_out(chip)
 	RETURNS cstring
 	AS '@MODULE_FILENAME@','CHIP_out'
 	LANGUAGE 'C' WITH (isstrict);
@@ -482,12 +488,12 @@ CREATE TYPE chip (
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --  GEOMETRY
 
-CREATE FUNCTION geometry_in(cstring)
+CREATEFUNCTION geometry_in(cstring)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION geometry_out(geometry)
+CREATEFUNCTION geometry_out(geometry)
 	RETURNS cstring
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
@@ -504,7 +510,7 @@ CREATE TYPE geometry (
 -- GiST selectivity function
 --
 
-CREATE FUNCTION postgis_gist_sel (internal, oid, internal, int4)
+CREATEFUNCTION postgis_gist_sel (internal, oid, internal, int4)
 	RETURNS float8
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C';
@@ -515,12 +521,12 @@ CREATE FUNCTION postgis_gist_sel (internal, oid, internal, int4)
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --  BOX3D
 
-CREATE FUNCTION box3d_in(cstring)
+CREATEFUNCTION box3d_in(cstring)
 	RETURNS box3d 
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION box3d_out(box3d)
+CREATEFUNCTION box3d_out(box3d)
 	RETURNS cstring
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
@@ -535,12 +541,12 @@ CREATE TYPE box3d (
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --  SPHEROID
 
-CREATE FUNCTION spheroid_in(cstring)
+CREATEFUNCTION spheroid_in(cstring)
 	RETURNS spheroid 
 	AS '@MODULE_FILENAME@','ellipsoid_in'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION spheroid_out(spheroid)
+CREATEFUNCTION spheroid_out(spheroid)
 	RETURNS cstring
 	AS '@MODULE_FILENAME@','ellipsoid_out'
 	LANGUAGE 'C' WITH (isstrict);
@@ -555,17 +561,17 @@ CREATE TYPE spheroid (
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --  WKB
 
-CREATE FUNCTION wkb_in(cstring)
+CREATEFUNCTION wkb_in(cstring)
 	RETURNS wkb
 	AS '@MODULE_FILENAME@','WKB_in'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION wkb_out(wkb)
+CREATEFUNCTION wkb_out(wkb)
 	RETURNS cstring
 	AS '@MODULE_FILENAME@','WKB_out'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION wkb_recv(internal)
+CREATEFUNCTION wkb_recv(internal)
 	RETURNS wkb
 	AS '@MODULE_FILENAME@','WKB_recv'
 	LANGUAGE 'C' WITH (isstrict);
@@ -574,12 +580,12 @@ CREATE FUNCTION wkb_recv(internal)
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --  CHIP
 
-CREATE FUNCTION chip_in(cstring)
+CREATEFUNCTION chip_in(cstring)
 	RETURNS chip
 	AS '@MODULE_FILENAME@','CHIP_in'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION chip_out(chip)
+CREATEFUNCTION chip_out(chip)
 	RETURNS cstring
 	AS '@MODULE_FILENAME@','CHIP_out'
 	LANGUAGE 'C' WITH (isstrict);
@@ -595,17 +601,17 @@ CREATE TYPE chip (
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --  GEOMETRY
 
-CREATE FUNCTION geometry_in(cstring)
+CREATEFUNCTION geometry_in(cstring)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION geometry_out(geometry)
+CREATEFUNCTION geometry_out(geometry)
 	RETURNS cstring
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION geometry_analyze(internal)
+CREATEFUNCTION geometry_analyze(internal)
 	RETURNS bool
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
@@ -623,7 +629,7 @@ CREATE TYPE geometry (
 -- GiST selectivity function
 --
 
-CREATE FUNCTION postgis_gist_sel (internal, oid, internal, int4)
+CREATEFUNCTION postgis_gist_sel (internal, oid, internal, int4)
 	RETURNS float8
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C';
@@ -681,7 +687,7 @@ UPDATE pg_type SET typdefault = NULL WHERE typname = 'histogram2d';
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- POSTGIS_VERSION()
 
-CREATE FUNCTION postgis_version() RETURNS text
+CREATEFUNCTION postgis_version() RETURNS text
 AS 'SELECT \'@POSTGIS_VERSION@\'::text AS version'
 LANGUAGE 'sql';
 
@@ -689,7 +695,7 @@ LANGUAGE 'sql';
 -- FIND_SRID( <schema>, <table>, <geom col> )
 -----------------------------------------------------------------------
 
-CREATE FUNCTION find_srid(varchar,varchar,varchar) RETURNS int4 AS
+CREATEFUNCTION find_srid(varchar,varchar,varchar) RETURNS int4 AS
 'DECLARE
    schem text;
    tabl text;
@@ -728,7 +734,7 @@ LANGUAGE 'plpgsql' WITH (iscachable);
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- GET_PROJ4_FROM_SRID( <srid> )
 
-CREATE FUNCTION get_proj4_from_srid(integer) RETURNS text AS
+CREATEFUNCTION get_proj4_from_srid(integer) RETURNS text AS
 'SELECT proj4text::text FROM spatial_ref_sys WHERE srid= $1' 
 LANGUAGE 'sql' WITH (iscachable,isstrict);
 
@@ -738,7 +744,7 @@ LANGUAGE 'sql' WITH (iscachable,isstrict);
 -----------------------------------------------------------------------
 --
 
-CREATE FUNCTION fix_geometry_columns() RETURNS text
+CREATEFUNCTION fix_geometry_columns() RETURNS text
 AS 
 '
 BEGIN
@@ -794,7 +800,7 @@ LANGUAGE 'plpgsql' ;
 -- FIND_EXTENT( <schema name>, <table name>, <column name> )
 -----------------------------------------------------------------------
 
-CREATE FUNCTION find_extent(text,text,text) RETURNS box3d AS
+CREATEFUNCTION find_extent(text,text,text) RETURNS box3d AS
 '
 DECLARE
 	schemaname alias for $1;
@@ -814,7 +820,7 @@ LANGUAGE 'plpgsql' WITH (isstrict);
 -----------------------------------------------------------------------
 -- FIND_EXTENT( <table name>, <column name> )
 
-CREATE FUNCTION find_extent(text,text) RETURNS box3d AS
+CREATEFUNCTION find_extent(text,text) RETURNS box3d AS
 '
 DECLARE
 	tablename alias for $1;
@@ -846,12 +852,12 @@ LANGUAGE 'plpgsql' WITH (isstrict);
 --      -> 'SRID=2;POINT(1370033.37046971 600755.810968684)'
 --
 
-CREATE FUNCTION transform_geometry(geometry,text,text,int)
+CREATEFUNCTION transform_geometry(geometry,text,text,int)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','transform_geom'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION transform(geometry,integer) RETURNS geometry AS
+CREATEFUNCTION transform(geometry,integer) RETURNS geometry AS
 'BEGIN
  RETURN transform_geometry( $1 , get_proj4_from_srid(SRID( $1 ) ), get_proj4_from_srid( $2 ), $2 );
  END;'
@@ -862,72 +868,72 @@ LANGUAGE 'plpgsql' WITH (iscachable,isstrict);
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- COMMON FUNCTIONS
 
-CREATE FUNCTION srid(chip)
+CREATEFUNCTION srid(chip)
 	RETURNS int4
 	AS '@MODULE_FILENAME@','srid_chip'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION height(chip)
+CREATEFUNCTION height(chip)
 	RETURNS int4
 	AS '@MODULE_FILENAME@','height_chip'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION factor(chip)
+CREATEFUNCTION factor(chip)
 	RETURNS FLOAT4
 	AS '@MODULE_FILENAME@','factor_chip'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION width(chip)
+CREATEFUNCTION width(chip)
 	RETURNS int4
 	AS '@MODULE_FILENAME@','width_chip'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION datatype(chip)
+CREATEFUNCTION datatype(chip)
 	RETURNS int4
 	AS '@MODULE_FILENAME@','datatype_chip'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION compression(chip)
+CREATEFUNCTION compression(chip)
 	RETURNS int4
 	AS '@MODULE_FILENAME@','compression_chip'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION setSRID(chip,int4)
+CREATEFUNCTION setSRID(chip,int4)
 	RETURNS chip
 	AS '@MODULE_FILENAME@','setsrid_chip'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION setfactor(chip,float4)
+CREATEFUNCTION setfactor(chip,float4)
 	RETURNS chip
 	AS '@MODULE_FILENAME@','setfactor_chip'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION geometry(CHIP)
+CREATEFUNCTION geometry(CHIP)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','CHIP_to_geom'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION box3d(geometry)
+CREATEFUNCTION box3d(geometry)
 	RETURNS box3d
 	AS '@MODULE_FILENAME@','get_bbox_of_geometry'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
-CREATE FUNCTION box(geometry)
+CREATEFUNCTION box(geometry)
 	RETURNS BOX
 	AS '@MODULE_FILENAME@','geometry2box'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
-CREATE FUNCTION geometry(box3d)
+CREATEFUNCTION geometry(box3d)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','get_geometry_of_bbox'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
-CREATE FUNCTION geometry(text)
+CREATEFUNCTION geometry(text)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_text'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
-CREATE FUNCTION expand(box3d,float8)
+CREATEFUNCTION expand(box3d,float8)
 	RETURNS box3d
 	AS '@MODULE_FILENAME@','expand_bbox'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
@@ -936,164 +942,164 @@ CREATE FUNCTION expand(box3d,float8)
 -- Functions for converting to WKB
 --
 
-CREATE FUNCTION asbinary(geometry)
+CREATEFUNCTION asbinary(geometry)
 	RETURNS wkb
 	AS '@MODULE_FILENAME@','asbinary_simple'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
-CREATE FUNCTION asbinary(geometry,TEXT)
+CREATEFUNCTION asbinary(geometry,TEXT)
 	RETURNS wkb
 	AS '@MODULE_FILENAME@','asbinary_specify'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
-CREATE FUNCTION bytea(wkb)
+CREATEFUNCTION bytea(wkb)
 	RETURNS bytea
 	AS '@MODULE_FILENAME@','WKBtoBYTEA'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 	
-CREATE FUNCTION geometry(wkb)
+CREATEFUNCTION geometry(wkb)
 	RETURNS GEOMETRY
 	AS '@MODULE_FILENAME@','geometryfromWKB_SRID'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 	
-CREATE FUNCTION GeomFromWKB(wkb)
+CREATEFUNCTION GeomFromWKB(wkb)
 	RETURNS GEOMETRY
 	AS '@MODULE_FILENAME@','geometryfromWKB_SRID'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
-CREATE FUNCTION GeomFromWKB(wkb,int)
+CREATEFUNCTION GeomFromWKB(wkb,int)
 	RETURNS GEOMETRY
 	AS '@MODULE_FILENAME@','geometryfromWKB_SRID'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 	
-CREATE FUNCTION PointFromWKB(wkb,int)
+CREATEFUNCTION PointFromWKB(wkb,int)
 	RETURNS GEOMETRY
 	AS '@MODULE_FILENAME@','PointfromWKB_SRID'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
-CREATE FUNCTION PointFromWKB(wkb)
+CREATEFUNCTION PointFromWKB(wkb)
 	RETURNS GEOMETRY
 	AS '@MODULE_FILENAME@','PointfromWKB_SRID'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 	
-CREATE FUNCTION LineFromWKB(wkb,int)
+CREATEFUNCTION LineFromWKB(wkb,int)
 	RETURNS GEOMETRY
 	AS '@MODULE_FILENAME@','LinefromWKB_SRID'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
-CREATE FUNCTION LineFromWKB(wkb)
+CREATEFUNCTION LineFromWKB(wkb)
 	RETURNS GEOMETRY
 	AS '@MODULE_FILENAME@','LinefromWKB_SRID'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
 
-CREATE FUNCTION LinestringFromWKB(wkb,int)
+CREATEFUNCTION LinestringFromWKB(wkb,int)
 	RETURNS GEOMETRY
 	AS '@MODULE_FILENAME@','LinefromWKB_SRID'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
-CREATE FUNCTION LinestringFromWKB(wkb)
+CREATEFUNCTION LinestringFromWKB(wkb)
 	RETURNS GEOMETRY
 	AS '@MODULE_FILENAME@','LinefromWKB_SRID'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 	
-CREATE FUNCTION PolyFromWKB(wkb,int)
+CREATEFUNCTION PolyFromWKB(wkb,int)
 	RETURNS GEOMETRY
 	AS '@MODULE_FILENAME@','PolyfromWKB_SRID'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
-CREATE FUNCTION PolyFromWKB(wkb)
+CREATEFUNCTION PolyFromWKB(wkb)
 	RETURNS GEOMETRY
 	AS '@MODULE_FILENAME@','PolyfromWKB_SRID'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 	
-CREATE FUNCTION PolygonFromWKB(wkb,int)
+CREATEFUNCTION PolygonFromWKB(wkb,int)
 	RETURNS GEOMETRY
 	AS '@MODULE_FILENAME@','PolyfromWKB_SRID'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
-CREATE FUNCTION PolygonFromWKB(wkb)
+CREATEFUNCTION PolygonFromWKB(wkb)
 	RETURNS GEOMETRY
 	AS '@MODULE_FILENAME@','PolyfromWKB_SRID'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
 
-CREATE FUNCTION MPointFromWKB(wkb,int)
+CREATEFUNCTION MPointFromWKB(wkb,int)
 	RETURNS GEOMETRY
 	AS '@MODULE_FILENAME@','MPointfromWKB_SRID'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
-CREATE FUNCTION MPointFromWKB(wkb)
+CREATEFUNCTION MPointFromWKB(wkb)
 	RETURNS GEOMETRY
 	AS '@MODULE_FILENAME@','MPointfromWKB_SRID'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
 
-CREATE FUNCTION MultiPointFromWKB(wkb,int)
+CREATEFUNCTION MultiPointFromWKB(wkb,int)
 	RETURNS GEOMETRY
 	AS '@MODULE_FILENAME@','MPointfromWKB_SRID'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
-CREATE FUNCTION MultiPointFromWKB(wkb)
+CREATEFUNCTION MultiPointFromWKB(wkb)
 	RETURNS GEOMETRY
 	AS '@MODULE_FILENAME@','MPointfromWKB_SRID'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
-CREATE FUNCTION MultiLineFromWKB(wkb,int)
+CREATEFUNCTION MultiLineFromWKB(wkb,int)
 	RETURNS GEOMETRY
 	AS '@MODULE_FILENAME@','MLinefromWKB_SRID'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
-CREATE FUNCTION MultiLineFromWKB(wkb)
+CREATEFUNCTION MultiLineFromWKB(wkb)
 	RETURNS GEOMETRY
 	AS '@MODULE_FILENAME@','MLinefromWKB_SRID'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 	
 	
-CREATE FUNCTION MLineFromWKB(wkb,int)
+CREATEFUNCTION MLineFromWKB(wkb,int)
 	RETURNS GEOMETRY
 	AS '@MODULE_FILENAME@','MLinefromWKB_SRID'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
-CREATE FUNCTION MLineFromWKB(wkb)
+CREATEFUNCTION MLineFromWKB(wkb)
 	RETURNS GEOMETRY
 	AS '@MODULE_FILENAME@','MLinefromWKB_SRID'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
-CREATE FUNCTION MPolyFromWKB(wkb,int)
+CREATEFUNCTION MPolyFromWKB(wkb,int)
 	RETURNS GEOMETRY
 	AS '@MODULE_FILENAME@','MPolyfromWKB_SRID'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
-CREATE FUNCTION MPolyFromWKB(wkb)
+CREATEFUNCTION MPolyFromWKB(wkb)
 	RETURNS GEOMETRY
 	AS '@MODULE_FILENAME@','MPolyfromWKB_SRID'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 	
-CREATE FUNCTION MultiPolyFromWKB(wkb,int)
+CREATEFUNCTION MultiPolyFromWKB(wkb,int)
 	RETURNS GEOMETRY
 	AS '@MODULE_FILENAME@','MPolyfromWKB_SRID'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
-CREATE FUNCTION MultiPolyFromWKB(wkb)
+CREATEFUNCTION MultiPolyFromWKB(wkb)
 	RETURNS GEOMETRY
 	AS '@MODULE_FILENAME@','MPolyfromWKB_SRID'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
 
 	
-CREATE FUNCTION GeomCollFromWKB(wkb,int)
+CREATEFUNCTION GeomCollFromWKB(wkb,int)
 	RETURNS GEOMETRY
 	AS '@MODULE_FILENAME@','GCfromWKB_SRID'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
-CREATE FUNCTION GeomCollFromWKB(wkb)
+CREATEFUNCTION GeomCollFromWKB(wkb)
 	RETURNS GEOMETRY
 	AS '@MODULE_FILENAME@','GCfromWKB_SRID'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 	
 	
--- CREATE FUNCTION index_thing(geometry)
+-- CREATEFUNCTION index_thing(geometry)
 -- RETURNS BOOL
 -- AS '@MODULE_FILENAME@'
 -- LANGUAGE 'C' WITH (isstrict);
@@ -1102,288 +1108,288 @@ CREATE FUNCTION GeomCollFromWKB(wkb)
 -- Debugging functions
 --
 
-CREATE FUNCTION npoints(geometry)
+CREATEFUNCTION npoints(geometry)
 	RETURNS int4
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION nrings(geometry)
+CREATEFUNCTION nrings(geometry)
 	RETURNS int4
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict) ;
 
-CREATE FUNCTION mem_size(geometry)
+CREATEFUNCTION mem_size(geometry)
 	RETURNS int4
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
 
 
-CREATE FUNCTION summary(geometry)
+CREATEFUNCTION summary(geometry)
 	RETURNS text
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION translate(geometry,float8,float8,float8)
+CREATEFUNCTION translate(geometry,float8,float8,float8)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict) ;
 
-CREATE FUNCTION dimension(geometry)
+CREATEFUNCTION dimension(geometry)
 	RETURNS int4
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict) ;
 
-CREATE FUNCTION geometrytype(geometry)
+CREATEFUNCTION geometrytype(geometry)
 	RETURNS text
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION envelope(geometry)
+CREATEFUNCTION envelope(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION x(geometry)
+CREATEFUNCTION x(geometry)
 	RETURNS float8
 	AS '@MODULE_FILENAME@','x_point'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION y(geometry)
+CREATEFUNCTION y(geometry)
 	RETURNS float8
 	AS '@MODULE_FILENAME@','y_point'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION z(geometry)
+CREATEFUNCTION z(geometry)
 	RETURNS float8
 	AS '@MODULE_FILENAME@','z_point'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION numpoints(geometry)
+CREATEFUNCTION numpoints(geometry)
 	RETURNS integer
 	AS '@MODULE_FILENAME@','numpoints_linestring'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION pointn(geometry,integer)
+CREATEFUNCTION pointn(geometry,integer)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','pointn_linestring'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION exteriorring(geometry)
+CREATEFUNCTION exteriorring(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','exteriorring_polygon'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION numinteriorrings(geometry)
+CREATEFUNCTION numinteriorrings(geometry)
 	RETURNS integer
 	AS '@MODULE_FILENAME@','numinteriorrings_polygon'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION interiorringn(geometry,integer)
+CREATEFUNCTION interiorringn(geometry,integer)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','interiorringn_polygon'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION numgeometries(geometry)
+CREATEFUNCTION numgeometries(geometry)
 	RETURNS integer
 	AS '@MODULE_FILENAME@','numgeometries_collection'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION geometryn(geometry,integer)
+CREATEFUNCTION geometryn(geometry,integer)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometryn_collection'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION max_distance(geometry,geometry)
+CREATEFUNCTION max_distance(geometry,geometry)
 	RETURNS float8
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION optimistic_overlap(geometry,geometry,FLOAT8)
+CREATEFUNCTION optimistic_overlap(geometry,geometry,FLOAT8)
 	RETURNS BOOL
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION segmentize(geometry,FLOAT8)
+CREATEFUNCTION segmentize(geometry,FLOAT8)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION distance(geometry,geometry)
+CREATEFUNCTION distance(geometry,geometry)
 	RETURNS float8
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION astext(geometry)
+CREATEFUNCTION astext(geometry)
 	RETURNS TEXT
 	AS '@MODULE_FILENAME@','astext_geometry'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION srid(geometry)
+CREATEFUNCTION srid(geometry)
 	RETURNS int4
 	AS '@MODULE_FILENAME@','srid_geom'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION geometryfromtext(geometry,int4)
+CREATEFUNCTION geometryfromtext(geometry,int4)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 	
 	
-CREATE FUNCTION geometryfromtext(geometry)
+CREATEFUNCTION geometryfromtext(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION geomfromtext(geometry,int4)
+CREATEFUNCTION geomfromtext(geometry,int4)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION geomfromtext(geometry)
+CREATEFUNCTION geomfromtext(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION polyfromtext(geometry,int4)
+CREATEFUNCTION polyfromtext(geometry,int4)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text_poly'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION polygonfromtext(geometry,int4)
+CREATEFUNCTION polygonfromtext(geometry,int4)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text_poly'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION polygonfromtext(geometry)
+CREATEFUNCTION polygonfromtext(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text_poly'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 	
-CREATE FUNCTION mpolyfromtext(geometry,int4)
+CREATEFUNCTION mpolyfromtext(geometry,int4)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text_mpoly'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION linefromtext(geometry,int4)
+CREATEFUNCTION linefromtext(geometry,int4)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text_line'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 	
-CREATE FUNCTION mlinefromtext(geometry,int4)
+CREATEFUNCTION mlinefromtext(geometry,int4)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text_mline'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION multilinestringfromtext(geometry,int4)
+CREATEFUNCTION multilinestringfromtext(geometry,int4)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text_mline'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION multilinestringfromtext(geometry)
+CREATEFUNCTION multilinestringfromtext(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text_mline'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 	
-CREATE FUNCTION pointfromtext(geometry,int4)
+CREATEFUNCTION pointfromtext(geometry,int4)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text_point'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION mpointfromtext(geometry,int4)
+CREATEFUNCTION mpointfromtext(geometry,int4)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text_mpoint'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION multipointfromtext(geometry,int4)
+CREATEFUNCTION multipointfromtext(geometry,int4)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text_mpoint'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION multipointfromtext(geometry)
+CREATEFUNCTION multipointfromtext(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text_mpoint'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 	
-CREATE FUNCTION geomcollfromtext(geometry,int4)
+CREATEFUNCTION geomcollfromtext(geometry,int4)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text_gc'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION setSRID(geometry,int4)
+CREATEFUNCTION setSRID(geometry,int4)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION polyfromtext(geometry)
+CREATEFUNCTION polyfromtext(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text_poly'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 
-CREATE FUNCTION mpolyfromtext(geometry)
+CREATEFUNCTION mpolyfromtext(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text_mpoly'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION multipolygonfromtext(geometry)
+CREATEFUNCTION multipolygonfromtext(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text_mpoly'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION multipolygonfromtext(geometry,int)
+CREATEFUNCTION multipolygonfromtext(geometry,int)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text_mpoly'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 	
-CREATE FUNCTION linefromtext(geometry)
+CREATEFUNCTION linefromtext(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text_line'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 	
-CREATE FUNCTION linestringfromtext(geometry)
+CREATEFUNCTION linestringfromtext(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text_line'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION linestringfromtext(geometry,int)
+CREATEFUNCTION linestringfromtext(geometry,int)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text_line'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION mlinefromtext(geometry)
+CREATEFUNCTION mlinefromtext(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text_mline'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION pointfromtext(geometry)
+CREATEFUNCTION pointfromtext(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text_point'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION mpointfromtext(geometry)
+CREATEFUNCTION mpointfromtext(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text_mpoint'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION geomcollfromtext(geometry)
+CREATEFUNCTION geomcollfromtext(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text_gc'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 
-CREATE FUNCTION isempty(geometry)
+CREATEFUNCTION isempty(geometry)
 	RETURNS boolean
 	AS '@MODULE_FILENAME@','isempty'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION issimple(geometry)
+CREATEFUNCTION issimple(geometry)
 	RETURNS boolean
 	AS '@MODULE_FILENAME@','issimple'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 	
 
-CREATE FUNCTION equals(geometry,geometry)
+CREATEFUNCTION equals(geometry,geometry)
 	RETURNS boolean
 	AS '@MODULE_FILENAME@','geomequals'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
@@ -1393,17 +1399,17 @@ CREATE FUNCTION equals(geometry,geometry)
 -- Special spheroid functions
 --
 
-CREATE FUNCTION length_spheroid(geometry,spheroid)
+CREATEFUNCTION length_spheroid(geometry,spheroid)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@','length_ellipsoid'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION length3d_spheroid(geometry,spheroid)
+CREATEFUNCTION length3d_spheroid(geometry,spheroid)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@','length3d_ellipsoid'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION distance_spheroid(geometry,geometry,spheroid)
+CREATEFUNCTION distance_spheroid(geometry,geometry,spheroid)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@','distance_ellipsoid'
 	LANGUAGE 'C' WITH (isstrict);
@@ -1412,77 +1418,77 @@ CREATE FUNCTION distance_spheroid(geometry,geometry,spheroid)
 -- Generic operations
 --
 
-CREATE FUNCTION multi(geometry)
+CREATEFUNCTION multi(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','fluffType'
 	LANGUAGE 'C' WITH (isstrict);
 	
-CREATE FUNCTION length3d(geometry)
+CREATEFUNCTION length3d(geometry)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION length(geometry)
+CREATEFUNCTION length(geometry)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@','length2d'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION area2d(geometry)
+CREATEFUNCTION area2d(geometry)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION area(geometry)
+CREATEFUNCTION area(geometry)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@','area2d'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION perimeter3d(geometry)
+CREATEFUNCTION perimeter3d(geometry)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION perimeter(geometry)
+CREATEFUNCTION perimeter(geometry)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@','perimeter2d'
 	LANGUAGE 'C' WITH (isstrict);
 
----CREATE FUNCTION truly_inside(geometry,geometry)
+---CREATEFUNCTION truly_inside(geometry,geometry)
 ---	RETURNS bool
 ---	AS '@MODULE_FILENAME@'
 ---	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION point_inside_circle(geometry,float8,float8,float8)
+CREATEFUNCTION point_inside_circle(geometry,float8,float8,float8)
 	RETURNS bool
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION startpoint(geometry)
+CREATEFUNCTION startpoint(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION endpoint(geometry)
+CREATEFUNCTION endpoint(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION isclosed(geometry)
+CREATEFUNCTION isclosed(geometry)
 	RETURNS boolean
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION centroid(geometry)
+CREATEFUNCTION centroid(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
 	
-CREATE FUNCTION isring(geometry)
+CREATEFUNCTION isring(geometry)
 	RETURNS boolean
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION pointonsurface(geometry)
+CREATEFUNCTION pointonsurface(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
@@ -1492,37 +1498,37 @@ CREATE FUNCTION pointonsurface(geometry)
 -- BBox operations
 --
 
-CREATE FUNCTION xmin(box3d)
+CREATEFUNCTION xmin(box3d)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@','box3d_xmin'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION ymin(box3d)
+CREATEFUNCTION ymin(box3d)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@','box3d_ymin'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION zmin(box3d)
+CREATEFUNCTION zmin(box3d)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@','box3d_zmin'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION xmax(box3d)
+CREATEFUNCTION xmax(box3d)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@','box3d_xmax'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION ymax(box3d)
+CREATEFUNCTION ymax(box3d)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@','box3d_ymax'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION zmax(box3d)
+CREATEFUNCTION zmax(box3d)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@','box3d_zmax'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION box3dtobox(box3d)
+CREATEFUNCTION box3dtobox(box3d)
 	RETURNS BOX
 	AS '@MODULE_FILENAME@','box3dtobox'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
@@ -1531,12 +1537,12 @@ CREATE FUNCTION box3dtobox(box3d)
 -- Aggregate functions
 --
 
-CREATE FUNCTION geom_accum (geometry[],geometry)
+CREATEFUNCTION geom_accum (geometry[],geometry)
 	RETURNS geometry[]
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C';
 
-CREATE FUNCTION combine_bbox(box3d,geometry)
+CREATEFUNCTION combine_bbox(box3d,geometry)
 	RETURNS box3d
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C';
@@ -1547,7 +1553,7 @@ CREATE AGGREGATE extent(
 	stype = box3d
 	);
 
-CREATE FUNCTION collector(geometry,geometry)
+CREATEFUNCTION collector(geometry,geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C';
@@ -1558,7 +1564,7 @@ CREATE AGGREGATE memcollect(
 	stype = geometry
 	);
 
-CREATE FUNCTION collect_garray (geometry[])
+CREATEFUNCTION collect_garray (geometry[])
         RETURNS geometry
         AS '@MODULE_FILENAME@'
         LANGUAGE 'C';
@@ -1575,42 +1581,42 @@ CREATE AGGREGATE collect (
 -- Operator definitions
 --
 
-CREATE FUNCTION geometry_overleft(geometry, geometry) 
+CREATEFUNCTION geometry_overleft(geometry, geometry) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION geometry_overright(geometry, geometry) 
+CREATEFUNCTION geometry_overright(geometry, geometry) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION geometry_left(geometry, geometry) 
+CREATEFUNCTION geometry_left(geometry, geometry) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION geometry_right(geometry, geometry) 
+CREATEFUNCTION geometry_right(geometry, geometry) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION geometry_contain(geometry, geometry) 
+CREATEFUNCTION geometry_contain(geometry, geometry) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION geometry_contained(geometry, geometry) 
+CREATEFUNCTION geometry_contained(geometry, geometry) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION geometry_overlap(geometry, geometry) 
+CREATEFUNCTION geometry_overlap(geometry, geometry) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION geometry_same(geometry, geometry) 
+CREATEFUNCTION geometry_same(geometry, geometry) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C' WITH (isstrict);
@@ -1619,32 +1625,32 @@ CREATE FUNCTION geometry_same(geometry, geometry)
 -- Sorting functions
 --
 
-CREATE FUNCTION geometry_lt(geometry, geometry) 
+CREATEFUNCTION geometry_lt(geometry, geometry) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION geometry_le(geometry, geometry) 
+CREATEFUNCTION geometry_le(geometry, geometry) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION geometry_gt(geometry, geometry) 
+CREATEFUNCTION geometry_gt(geometry, geometry) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION geometry_ge(geometry, geometry) 
+CREATEFUNCTION geometry_ge(geometry, geometry) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION geometry_eq(geometry, geometry) 
+CREATEFUNCTION geometry_eq(geometry, geometry) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION geometry_cmp(geometry, geometry) 
+CREATEFUNCTION geometry_cmp(geometry, geometry) 
 	RETURNS integer
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C' WITH (isstrict);
@@ -1653,12 +1659,12 @@ CREATE FUNCTION geometry_cmp(geometry, geometry)
 -- Two dimensional to three dimensional forces
 -- 
 
-CREATE FUNCTION force_2d(geometry) 
+CREATEFUNCTION force_2d(geometry) 
 	RETURNS geometry
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION force_3d(geometry) 
+CREATEFUNCTION force_3d(geometry) 
 	RETURNS geometry
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C' WITH (isstrict);
@@ -1667,7 +1673,7 @@ CREATE FUNCTION force_3d(geometry)
 -- Force collection
 --
 
-CREATE FUNCTION force_collection(geometry) 
+CREATEFUNCTION force_collection(geometry) 
 	RETURNS geometry
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C' WITH (isstrict);
@@ -1762,45 +1768,45 @@ CREATE OPERATOR > (
 --
 
 
-CREATE FUNCTION intersection(geometry,geometry)
+CREATEFUNCTION intersection(geometry,geometry)
    RETURNS geometry
    AS '@MODULE_FILENAME@','intersection'
    LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION buffer(geometry,float8)
+CREATEFUNCTION buffer(geometry,float8)
    RETURNS geometry
    AS '@MODULE_FILENAME@','buffer'
    LANGUAGE 'C' WITH (isstrict);
    
-   CREATE FUNCTION convexhull(geometry)
+   CREATEFUNCTION convexhull(geometry)
       RETURNS geometry
       AS '@MODULE_FILENAME@','convexhull'
    LANGUAGE 'C' WITH (isstrict);
   
   
-     CREATE FUNCTION difference(geometry,geometry)
+     CREATEFUNCTION difference(geometry,geometry)
         RETURNS geometry
         AS '@MODULE_FILENAME@','difference'
    LANGUAGE 'C' WITH (isstrict);
    
-  CREATE FUNCTION boundary(geometry)
+  CREATEFUNCTION boundary(geometry)
       RETURNS geometry
       AS '@MODULE_FILENAME@','boundary'
    LANGUAGE 'C' WITH (isstrict);
 
-   CREATE FUNCTION symdifference(geometry,geometry)
+   CREATEFUNCTION symdifference(geometry,geometry)
         RETURNS geometry
         AS '@MODULE_FILENAME@','symdifference'
    LANGUAGE 'C' WITH (isstrict);
 
 
-CREATE FUNCTION symmetricdifference(geometry,geometry)
+CREATEFUNCTION symmetricdifference(geometry,geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','symdifference'
 	LANGUAGE 'C' WITH (isstrict);
 
 
-CREATE FUNCTION GeomUnion(geometry,geometry)
+CREATEFUNCTION GeomUnion(geometry,geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geomunion'
 	LANGUAGE 'C' WITH (isstrict);
@@ -1811,7 +1817,7 @@ CREATE AGGREGATE MemGeomUnion (
 	stype = geometry
 	);
 
-CREATE FUNCTION unite_garray (geometry[])
+CREATEFUNCTION unite_garray (geometry[])
 	RETURNS geometry
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C'; 
@@ -1824,57 +1830,57 @@ CREATE AGGREGATE GeomUnion (
 	);
 
 
-CREATE FUNCTION relate(geometry,geometry)
+CREATEFUNCTION relate(geometry,geometry)
    RETURNS text
    AS '@MODULE_FILENAME@','relate_full'
    LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION relate(geometry,geometry,text)
+CREATEFUNCTION relate(geometry,geometry,text)
    RETURNS boolean
    AS '@MODULE_FILENAME@','relate_pattern'
    LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION disjoint(geometry,geometry)
+CREATEFUNCTION disjoint(geometry,geometry)
    RETURNS boolean
    AS '@MODULE_FILENAME@'
    LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION touches(geometry,geometry)
+CREATEFUNCTION touches(geometry,geometry)
    RETURNS boolean
    AS '@MODULE_FILENAME@'
    LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION intersects(geometry,geometry)
+CREATEFUNCTION intersects(geometry,geometry)
    RETURNS boolean
    AS '@MODULE_FILENAME@'
    LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION crosses(geometry,geometry)
+CREATEFUNCTION crosses(geometry,geometry)
    RETURNS boolean
    AS '@MODULE_FILENAME@'
    LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION within(geometry,geometry)
+CREATEFUNCTION within(geometry,geometry)
    RETURNS boolean
    AS '@MODULE_FILENAME@'
    LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION contains(geometry,geometry)
+CREATEFUNCTION contains(geometry,geometry)
    RETURNS boolean
    AS '@MODULE_FILENAME@'
    LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION overlaps(geometry,geometry)
+CREATEFUNCTION overlaps(geometry,geometry)
    RETURNS boolean
    AS '@MODULE_FILENAME@'
    LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION isvalid(geometry)
+CREATEFUNCTION isvalid(geometry)
    RETURNS boolean
    AS '@MODULE_FILENAME@'
    LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION geosnoop(geometry)
+CREATEFUNCTION geosnoop(geometry)
    RETURNS geometry
    AS '@MODULE_FILENAME@', 'GEOSnoop'
    LANGUAGE 'C' WITH (isstrict);
@@ -1884,12 +1890,12 @@ CREATE FUNCTION geosnoop(geometry)
 -- Algorithms
 --
 
-CREATE FUNCTION simplify(geometry, float8)
+CREATEFUNCTION simplify(geometry, float8)
    RETURNS geometry
    AS '@MODULE_FILENAME@'
    LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION line_interpolate_point(geometry, float8)
+CREATEFUNCTION line_interpolate_point(geometry, float8)
    RETURNS geometry
    AS '@MODULE_FILENAME@'
    LANGUAGE 'C' WITH (isstrict);
@@ -1904,37 +1910,37 @@ CREATE FUNCTION line_interpolate_point(geometry, float8)
 -- GiST support functions
 --
 
-CREATE FUNCTION ggeometry_consistent(opaque,geometry,int4) 
+CREATEFUNCTION ggeometry_consistent(opaque,geometry,int4) 
 	RETURNS bool 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
 
-CREATE FUNCTION ggeometry_compress(opaque) 
+CREATEFUNCTION ggeometry_compress(opaque) 
 	RETURNS opaque 
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C';
 
-CREATE FUNCTION ggeometry_penalty(opaque,opaque,opaque) 
+CREATEFUNCTION ggeometry_penalty(opaque,opaque,opaque) 
 	RETURNS opaque 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
 
-CREATE FUNCTION ggeometry_picksplit(opaque, opaque) 
+CREATEFUNCTION ggeometry_picksplit(opaque, opaque) 
 	RETURNS opaque 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
 
-CREATE FUNCTION ggeometry_union(bytea, opaque) 
+CREATEFUNCTION ggeometry_union(bytea, opaque) 
 	RETURNS opaque 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
 
-CREATE FUNCTION ggeometry_same(opaque, opaque, opaque) 
+CREATEFUNCTION ggeometry_same(opaque, opaque, opaque) 
 	RETURNS opaque 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
 
-CREATE FUNCTION rtree_decompress(opaque) 
+CREATEFUNCTION rtree_decompress(opaque) 
 	RETURNS opaque
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
@@ -1943,17 +1949,17 @@ CREATE FUNCTION rtree_decompress(opaque)
 -- R-Tree support functions
 --
 
-CREATE FUNCTION geometry_union(geometry,geometry) 
+CREATEFUNCTION geometry_union(geometry,geometry) 
 	RETURNS geometry 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
 
-CREATE FUNCTION geometry_inter(geometry,geometry) 
+CREATEFUNCTION geometry_inter(geometry,geometry) 
 	RETURNS geometry 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
 
-CREATE FUNCTION geometry_size(geometry,opaque) 
+CREATEFUNCTION geometry_size(geometry,opaque) 
 	RETURNS float4 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
@@ -2080,7 +2086,7 @@ INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
 -- POSTGISCOSTESTIMATE()
 --
 
-CREATE FUNCTION postgisgistcostestimate(opaque,opaque,opaque,opaque,opaque,opaque,opaque,opaque)
+CREATEFUNCTION postgisgistcostestimate(opaque,opaque,opaque,opaque,opaque,opaque,opaque,opaque)
    RETURNS opaque
    AS '@MODULE_FILENAME@','postgisgistcostestimate'
 	   LANGUAGE 'C'  with (isstrict);
@@ -2089,37 +2095,37 @@ CREATE FUNCTION postgisgistcostestimate(opaque,opaque,opaque,opaque,opaque,opaqu
 -- 7.2 GiST support functions
 --
 
-CREATE FUNCTION ggeometry_consistent(opaque,geometry,int4) 
+CREATEFUNCTION ggeometry_consistent(opaque,geometry,int4) 
 	RETURNS bool 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE'C';
 
-CREATE FUNCTION ggeometry_compress(opaque) 
+CREATEFUNCTION ggeometry_compress(opaque) 
 	RETURNS opaque 
 	AS '@MODULE_FILENAME@'  
 	LANGUAGE'C';
 
-CREATE FUNCTION gbox_penalty(opaque,opaque,opaque) 
+CREATEFUNCTION gbox_penalty(opaque,opaque,opaque) 
 	RETURNS opaque 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE'C';
 
-CREATE FUNCTION gbox_picksplit(opaque, opaque) 
+CREATEFUNCTION gbox_picksplit(opaque, opaque) 
 	RETURNS opaque 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE'C';
 
-CREATE FUNCTION gbox_union(bytea, opaque) 
+CREATEFUNCTION gbox_union(bytea, opaque) 
 	RETURNS opaque 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE'C';
 
-CREATE FUNCTION gbox_same(box, box, opaque) 
+CREATEFUNCTION gbox_same(box, box, opaque) 
 	RETURNS opaque 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE'C';
 
-CREATE FUNCTION rtree_decompress(opaque) 
+CREATEFUNCTION rtree_decompress(opaque) 
 	RETURNS opaque
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE'C';
@@ -2128,17 +2134,17 @@ CREATE FUNCTION rtree_decompress(opaque)
 -- 7.2 RTREE support functions
 --
 
-CREATE FUNCTION geometry_union(geometry,geometry) 
+CREATEFUNCTION geometry_union(geometry,geometry) 
 	RETURNS geometry 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE'C';
 
-CREATE FUNCTION geometry_inter(geometry,geometry) 
+CREATEFUNCTION geometry_inter(geometry,geometry) 
 	RETURNS geometry 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE'C';
 
-CREATE FUNCTION geometry_size(geometry,opaque) 
+CREATEFUNCTION geometry_size(geometry,opaque) 
 	RETURNS float4 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE'C';
@@ -2312,7 +2318,7 @@ CREATE CAST ( box3d AS box ) WITH FUNCTION box3dtobox(box3d);
 CREATE CAST ( geometry AS text ) WITH FUNCTION astext(geometry);
 
 
-CREATE FUNCTION postgisgistcostestimate(internal,internal,internal,internal,internal,internal,internal,internal)
+CREATEFUNCTION postgisgistcostestimate(internal,internal,internal,internal,internal,internal,internal,internal)
 	RETURNS opaque
 	AS '@MODULE_FILENAME@','postgisgistcostestimate'
 	LANGUAGE 'C'  with (isstrict);
@@ -2321,37 +2327,37 @@ CREATE FUNCTION postgisgistcostestimate(internal,internal,internal,internal,inte
 -- 7.2 GiST support functions
 --
 
-CREATE FUNCTION ggeometry_consistent(internal,geometry,int4) 
+CREATEFUNCTION ggeometry_consistent(internal,geometry,int4) 
 	RETURNS bool 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
 
-CREATE FUNCTION ggeometry_compress(internal) 
+CREATEFUNCTION ggeometry_compress(internal) 
 	RETURNS internal 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
 
-CREATE FUNCTION gbox_penalty(internal,internal,internal) 
+CREATEFUNCTION gbox_penalty(internal,internal,internal) 
 	RETURNS internal 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
 
-CREATE FUNCTION gbox_picksplit(internal, internal) 
+CREATEFUNCTION gbox_picksplit(internal, internal) 
 	RETURNS internal 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
 
-CREATE FUNCTION gbox_union(bytea, internal) 
+CREATEFUNCTION gbox_union(bytea, internal) 
 	RETURNS internal 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
 
-CREATE FUNCTION gbox_same(box, box, internal) 
+CREATEFUNCTION gbox_same(box, box, internal) 
 	RETURNS internal 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
 
-CREATE FUNCTION rtree_decompress(internal) 
+CREATEFUNCTION rtree_decompress(internal) 
 	RETURNS internal
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
@@ -2360,17 +2366,17 @@ CREATE FUNCTION rtree_decompress(internal)
 -- 7.2 RTREE support functions
 --
 
-CREATE FUNCTION geometry_union(geometry,geometry) 
+CREATEFUNCTION geometry_union(geometry,geometry) 
 	RETURNS geometry 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
 
-CREATE FUNCTION geometry_inter(geometry,geometry) 
+CREATEFUNCTION geometry_inter(geometry,geometry) 
 	RETURNS geometry 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
 
-CREATE FUNCTION geometry_size(geometry,internal) 
+CREATEFUNCTION geometry_size(geometry,internal) 
 	RETURNS float4 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
@@ -2432,7 +2438,7 @@ CREATE CAST ( wkb AS bytea ) WITH FUNCTION bytea(wkb) AS IMPLICIT;
 CREATE CAST ( box3d AS box ) WITH FUNCTION box3dtobox(box3d);
 CREATE CAST ( geometry AS text ) WITH FUNCTION astext(geometry);
 
-CREATE FUNCTION postgisgistcostestimate(internal,internal,internal,internal,internal,internal,internal,internal)
+CREATEFUNCTION postgisgistcostestimate(internal,internal,internal,internal,internal,internal,internal,internal)
 	RETURNS opaque
 	AS '@MODULE_FILENAME@','postgisgistcostestimate'
 	LANGUAGE 'C'  with (isstrict);
@@ -2441,37 +2447,37 @@ CREATE FUNCTION postgisgistcostestimate(internal,internal,internal,internal,inte
 -- 7.2 GiST support functions
 --
 
-CREATE FUNCTION ggeometry_consistent(internal,geometry,int4) 
+CREATEFUNCTION ggeometry_consistent(internal,geometry,int4) 
 	RETURNS bool 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
 
-CREATE FUNCTION ggeometry_compress(internal) 
+CREATEFUNCTION ggeometry_compress(internal) 
 	RETURNS internal 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
 
-CREATE FUNCTION gbox_penalty(internal,internal,internal) 
+CREATEFUNCTION gbox_penalty(internal,internal,internal) 
 	RETURNS internal 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
 
-CREATE FUNCTION gbox_picksplit(internal, internal) 
+CREATEFUNCTION gbox_picksplit(internal, internal) 
 	RETURNS internal 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
 
-CREATE FUNCTION gbox_union(bytea, internal) 
+CREATEFUNCTION gbox_union(bytea, internal) 
 	RETURNS internal 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
 
-CREATE FUNCTION gbox_same(box, box, internal) 
+CREATEFUNCTION gbox_same(box, box, internal) 
 	RETURNS internal 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
 
-CREATE FUNCTION rtree_decompress(internal) 
+CREATEFUNCTION rtree_decompress(internal) 
 	RETURNS internal
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
@@ -2480,17 +2486,17 @@ CREATE FUNCTION rtree_decompress(internal)
 -- 7.2 RTREE support functions
 --
 
-CREATE FUNCTION geometry_union(geometry,geometry) 
+CREATEFUNCTION geometry_union(geometry,geometry) 
 	RETURNS geometry 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
 
-CREATE FUNCTION geometry_inter(geometry,geometry) 
+CREATEFUNCTION geometry_inter(geometry,geometry) 
 	RETURNS geometry 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
 
-CREATE FUNCTION geometry_size(geometry,internal) 
+CREATEFUNCTION geometry_size(geometry,internal) 
 	RETURNS float4 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
@@ -2566,37 +2572,37 @@ CREATE CAST ( geometry AS text ) WITH FUNCTION astext(geometry);
 -- 7.2 GiST support functions
 --
 
-CREATE FUNCTION ggeometry_consistent(internal,geometry,int4) 
+CREATEFUNCTION ggeometry_consistent(internal,geometry,int4) 
 	RETURNS bool 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
 
-CREATE FUNCTION ggeometry_compress(internal) 
+CREATEFUNCTION ggeometry_compress(internal) 
 	RETURNS internal 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
 
-CREATE FUNCTION gbox_penalty(internal,internal,internal) 
+CREATEFUNCTION gbox_penalty(internal,internal,internal) 
 	RETURNS internal 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
 
-CREATE FUNCTION gbox_picksplit(internal, internal) 
+CREATEFUNCTION gbox_picksplit(internal, internal) 
 	RETURNS internal 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
 
-CREATE FUNCTION gbox_union(bytea, internal) 
+CREATEFUNCTION gbox_union(bytea, internal) 
 	RETURNS internal 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
 
-CREATE FUNCTION gbox_same(box, box, internal) 
+CREATEFUNCTION gbox_same(box, box, internal) 
 	RETURNS internal 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
 
-CREATE FUNCTION rtree_decompress(internal) 
+CREATEFUNCTION rtree_decompress(internal) 
 	RETURNS internal
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
@@ -2605,17 +2611,17 @@ CREATE FUNCTION rtree_decompress(internal)
 -- 7.2 RTREE support functions
 --
 
-CREATE FUNCTION geometry_union(geometry,geometry) 
+CREATEFUNCTION geometry_union(geometry,geometry) 
 	RETURNS geometry 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
 
-CREATE FUNCTION geometry_inter(geometry,geometry) 
+CREATEFUNCTION geometry_inter(geometry,geometry) 
 	RETURNS geometry 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
 
-CREATE FUNCTION geometry_size(geometry,internal) 
+CREATEFUNCTION geometry_size(geometry,internal) 
 	RETURNS float4 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
@@ -2684,7 +2690,7 @@ CREATE OPERATOR CLASS btree_geometry_ops
 -- Calls fix_geometry_columns() at the end.
 --
 -----------------------------------------------------------------------
-CREATE FUNCTION AddGeometryColumn(varchar,varchar,varchar,varchar,integer,varchar,integer)
+CREATEFUNCTION AddGeometryColumn(varchar,varchar,varchar,varchar,integer,varchar,integer)
 	RETURNS text
 	AS 
 '
@@ -2830,7 +2836,7 @@ END;
 -- when catalogue is undefined
 --
 ----------------------------------------------------------------------------
-CREATE FUNCTION AddGeometryColumn(varchar,varchar,varchar,integer,varchar,integer) RETURNS text AS '
+CREATEFUNCTION AddGeometryColumn(varchar,varchar,varchar,integer,varchar,integer) RETURNS text AS '
 DECLARE
 	ret  text;
 BEGIN
@@ -2847,7 +2853,7 @@ END;
 -- when catalogue and schema are undefined
 --
 ----------------------------------------------------------------------------
-CREATE FUNCTION AddGeometryColumn(varchar,varchar,integer,varchar,integer) RETURNS text AS '
+CREATEFUNCTION AddGeometryColumn(varchar,varchar,integer,varchar,integer) RETURNS text AS '
 DECLARE
 	ret  text;
 BEGIN
@@ -2866,7 +2872,7 @@ END;
 -- Make some silly enforcements on it for pgsql < 73
 --
 -----------------------------------------------------------------------
-CREATE FUNCTION DropGeometryColumn(varchar, varchar,varchar,varchar)
+CREATEFUNCTION DropGeometryColumn(varchar, varchar,varchar,varchar)
 	RETURNS text
 	AS 
 '
@@ -2950,7 +2956,7 @@ LANGUAGE 'plpgsql' WITH (isstrict);
 -- when catalogue is undefined
 --
 -----------------------------------------------------------------------
-CREATE FUNCTION DropGeometryColumn(varchar,varchar,varchar)
+CREATEFUNCTION DropGeometryColumn(varchar,varchar,varchar)
 	RETURNS text
 	AS 
 '
@@ -2971,7 +2977,7 @@ END;
 -- when catalogue and schema is undefined. 
 --
 -----------------------------------------------------------------------
-CREATE FUNCTION DropGeometryColumn(varchar,varchar)
+CREATEFUNCTION DropGeometryColumn(varchar,varchar)
 	RETURNS text
 	AS 
 '
@@ -2996,13 +3002,18 @@ END;
 --
 -----------------------------------------------------------------------
 #if USE_VERSION >= 75
-CREATE FUNCTION update_geometry_stats() RETURNS text
+CREATEFUNCTION update_geometry_stats() RETURNS text
 AS ' SELECT ''update_geometry_stats() has been obsoleted. Statistics are automatically built running the ANALYZE command''::text' LANGUAGE 'sql';
 #else // USE_VERSION < 75
-CREATE FUNCTION update_geometry_stats() RETURNS text
+CREATEFUNCTION update_geometry_stats()
+RETURNS text
 AS
 '
-
+DECLARE
+	result text;
+	linked integer;
+	stated integer;
+	deleted integer;
 BEGIN
 
 	UPDATE geometry_columns SET
@@ -3012,30 +3023,53 @@ BEGIN
 
 	UPDATE geometry_columns SET
 		attrelid = c.oid,
-		varattnum = a.attnum,
+		varattnum = a.attnum
+#if USE_VERSION >= 73
+		FROM pg_class c, pg_attribute a, pg_namespace n
+		WHERE n.nspname = f_table_schema::name
+		AND c.relname = f_table_name::name
+		AND c.relnamespace = n.oid
+#else // USE_VERSION < 73 
+		FROM pg_class c, pg_attribute a
+		WHERE c.relname = f_table_name::name
+#endif
+		AND a.attname = f_geometry_column::name
+		AND a.attrelid = c.oid;
+	
+	GET DIAGNOSTICS linked = ROW_COUNT;
+
+	UPDATE geometry_columns SET
 #if USE_VERSION >= 73
 		stats = (build_histogram2d(create_histogram2d(
 			find_extent(f_table_schema, f_table_name, f_geometry_column), 40), f_table_schema, f_table_name, f_geometry_column))
 		FROM pg_class c, pg_attribute a, pg_namespace n
 		WHERE n.nspname = f_table_schema::name
 		AND c.relname = f_table_name::name
-		AND a.attname = f_geometry_column::name
 		AND c.relnamespace = n.oid
-		AND a.attrelid = c.oid;
 #else // USE_VERSION < 73 
 		stats = (build_histogram2d(create_histogram2d(
 			find_extent(f_table_name, f_geometry_column),
 			40), f_table_name, f_geometry_column))
 		FROM pg_class c, pg_attribute a
 		WHERE c.relname = f_table_name::name
-		AND a.attname = f_geometry_column::name
-		AND a.attrelid = c.oid;
 #endif
+		AND a.attname = f_geometry_column::name
+		AND a.attrelid = c.oid
+		AND geometry_columns.attrelid is not null;
+
+	GET DIAGNOSTICS stated = ROW_COUNT;
 
 	-- remove stale records
 	DELETE FROM geometry_columns WHERE attrelid IS NULL;
 
-	return ''done'';
+	GET DIAGNOSTICS deleted = ROW_COUNT;
+
+	result = ''link:'' || linked::text || '' '' ||
+		''stat:'' || stated::text || '' '' ||
+		''del:'' || deleted::text;
+
+
+	return result;
 END;
 '
 LANGUAGE 'plpgsql' ;
@@ -3053,44 +3087,96 @@ LANGUAGE 'plpgsql' ;
 --
 -----------------------------------------------------------------------
 #if USE_VERSION >= 75
-CREATE FUNCTION update_geometry_stats(varchar,varchar) RETURNS text
+CREATEFUNCTION update_geometry_stats(varchar,varchar) RETURNS text
 AS 'SELECT update_geometry_stats();' LANGUAGE 'sql' ;
 #else
-CREATE FUNCTION update_geometry_stats(varchar,varchar) RETURNS text
+CREATEFUNCTION update_geometry_stats(varchar,varchar) RETURNS text
 AS
 '
 DECLARE
 	tablename aliAS for $1;
 	columnname aliAS for $2;
-
+	linked integer;
+	stated integer;
+	deleted integer;
+	result text;
 BEGIN
 
-	EXECUTE ''UPDATE geometry_columns set
-		attrelid = (
-			SELECT pg_class.oid AS attrelid
-			FROM pg_class, pg_attribute
-			WHERE relname = geometry_columns.f_table_name::name
-			AND pg_attribute.attrelid = pg_class.oid
-			AND pg_attribute.attname = geometry_columns.f_GEOMETRY_column::name),
-		varattnum = (
-			SELECT pg_attribute.attnum
-			FROM pg_class,pg_attribute
-			WHERE relname = geometry_columns.f_table_name::name
-			AND pg_attribute.attrelid = pg_class.oid
-			AND pg_attribute.attname = geometry_columns.f_GEOMETRY_column::name),
-		stats = (build_histogram2d(create_histogram2d(
-			find_extent(''|| quote_literal(tablename) ||
-				'',''||quote_literal(columnname) ||''),40 
-				),''|| quote_literal(tablename) || ''::text,
-				''||quote_literal(columnname) ||''::text ))
-		
-		WHERE f_table_name=''|| quote_literal(tablename) || ''
-		AND f_GEOMETRY_column=''||quote_literal(columnname) ; '';
+	EXECUTE ''UPDATE geometry_columns SET
+			attrelid = NULL,
+			varattnum = NULL
+		WHERE f_table_name = '' || quote_literal(tablename) || ''
+		AND f_geometry_column = '' || quote_literal(columnname);
 
-	return ''done'';
+	EXECUTE ''UPDATE geometry_columns SET
+			attrelid = c.oid,
+			varattnum = a.attnum
+#if USE_VERSION >= 73
+			FROM pg_class c, pg_attribute a, pg_namespace n
+			WHERE n.nspname = f_table_schema::name
+			AND c.relname = f_table_name::name
+			AND a.attname = f_geometry_column::name
+			AND c.relnamespace = n.oid
+			AND a.attrelid = c.oid
+#else // USE_VERSION < 73 
+			stats = (build_histogram2d(create_histogram2d(
+				find_extent(f_table_name, f_geometry_column),
+				40), f_table_name, f_geometry_column))
+			FROM pg_class c, pg_attribute a
+			WHERE c.relname = f_table_name::name
+			AND a.attname = f_geometry_column::name
+			AND a.attrelid = c.oid
+#endif
+			AND f_table_name = '' || quote_literal(tablename) || ''
+			AND f_geometry_column = '' || quote_literal(columnname);
+
+	GET DIAGNOSTICS linked = ROW_COUNT;
+
+	EXECUTE ''UPDATE geometry_columns SET
+#if USE_VERSION >= 73
+			stats = (build_histogram2d(create_histogram2d(
+				find_extent(f_table_schema,
+					f_table_name,
+					f_geometry_column), 40),
+					f_table_schema, f_table_name,
+					f_geometry_column))
+			FROM pg_class c, pg_attribute a, pg_namespace n
+			WHERE n.nspname = f_table_schema::name
+			AND c.relname = f_table_name::name
+			AND a.attname = f_geometry_column::name
+			AND c.relnamespace = n.oid
+			AND a.attrelid = c.oid
+#else // USE_VERSION < 73 
+			stats = (build_histogram2d(create_histogram2d(
+				find_extent(f_table_name, f_geometry_column),
+				40), f_table_name, f_geometry_column))
+			FROM pg_class c, pg_attribute a
+			WHERE c.relname = f_table_name::name
+			AND a.attname = f_geometry_column::name
+			AND a.attrelid = c.oid
+#endif
+			AND f_table_name = '' || quote_literal(tablename) || ''
+			AND f_geometry_column = '' || quote_literal(columnname)
+			|| '' AND geometry_columns.attrelid is not null'';
+
+	GET DIAGNOSTICS stated = ROW_COUNT;
+
+	-- remove stale record
+	EXECUTE ''DELETE FROM geometry_columns WHERE attrelid IS NULL AND
+		f_table_name = '' || quote_literal(tablename) || ''
+		AND f_geometry_column = '' || quote_literal(columnname);
+
+	GET DIAGNOSTICS deleted = ROW_COUNT;
+
+	result = ''link:'' || linked::text || '' '' ||
+		''stat:'' || stated::text || '' '' ||
+		''del:'' || deleted::text;
+
+	return result;
 END;
 '
 LANGUAGE 'plpgsql' ;
+
 #endif  // USE_VERSION < 75
 
 -----------------------------------------------------------------------
@@ -3100,7 +3186,7 @@ LANGUAGE 'plpgsql' ;
 -- Returns a histgram with 0s in all the boxes.
 --
 -----------------------------------------------------------------------
-CREATE FUNCTION create_histogram2d(box3d,int)
+CREATEFUNCTION create_histogram2d(box3d,int)
 	RETURNS histogram2d
 	AS '@MODULE_FILENAME@','create_histogram2d'
 	LANGUAGE 'C'  with (isstrict);
@@ -3108,7 +3194,7 @@ CREATE FUNCTION create_histogram2d(box3d,int)
 -----------------------------------------------------------------------
 -- BUILD_HISTOGRAM2D( <histogram2d>, <tablename>, <columnname> )
 -----------------------------------------------------------------------
-CREATE FUNCTION build_histogram2d (histogram2d,text,text)
+CREATEFUNCTION build_histogram2d (histogram2d,text,text)
 	RETURNS histogram2d
 	AS '@MODULE_FILENAME@','build_histogram2d'
 	LANGUAGE 'C'  with (isstrict);
@@ -3120,7 +3206,7 @@ CREATE FUNCTION build_histogram2d (histogram2d,text,text)
 -- This is a wrapper to the omonimous schema unaware function,
 -- thanks to Carl Anderson for the idea.
 -----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION build_histogram2d (histogram2d,text,text,text)
+CREATEFUNCTION build_histogram2d (histogram2d,text,text,text)
 RETURNS histogram2d
 AS '
 BEGIN
@@ -3133,7 +3219,7 @@ END
 -----------------------------------------------------------------------
 -- EXPLODE_HISTOGRAM2D( <histogram2d>, <tablename> )
 -----------------------------------------------------------------------
-CREATE FUNCTION explode_histogram2d (HISTOGRAM2D,text)
+CREATEFUNCTION explode_histogram2d (HISTOGRAM2D,text)
 	RETURNS histogram2d
 	AS '@MODULE_FILENAME@','explode_histogram2d'
 	LANGUAGE 'C'  with (isstrict);
@@ -3141,7 +3227,7 @@ CREATE FUNCTION explode_histogram2d (HISTOGRAM2D,text)
 -----------------------------------------------------------------------
 -- ESTIMATE_HISTOGRAM2D( <histogram2d>, <box> )
 -----------------------------------------------------------------------
-CREATE FUNCTION estimate_histogram2d(HISTOGRAM2D,box)
+CREATEFUNCTION estimate_histogram2d(HISTOGRAM2D,box)
 	RETURNS float8
 	AS '@MODULE_FILENAME@','estimate_histogram2d'
 	LANGUAGE 'C'  with (isstrict);
