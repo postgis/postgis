@@ -446,7 +446,7 @@
       <para>The loader is called <filename>shp2pgsql</filename> and converts
       ESRI Shape files into SQL suitable for loading in PostGIS/PostgreSQL.
       The dumper is called <filename>pgsql2shp</filename> and converts PostGIS
-      tables into ESRI Shape files.</para>
+      tables (or queries) into ESRI Shape files.</para>
     </sect1>
   </chapter>
 
@@ -1274,10 +1274,12 @@ WHERE
         <title>Using the Dumper</title>
 
         <para>The <filename>pgsql2shp</filename> table dumper connects
-        directly to the database and converts a table into a shape file. The
+        directly to the database and converts a table (possibly created
+	by use query) into a shape file. The
         basic syntax is:</para>
 
-        <programlisting>pgsql2shp [&lt;options&gt;] &lt;database&gt; &lt;table&gt;</programlisting>
+        <programlisting>pgsql2shp [&lt;options&gt;] &lt;database&gt; [&lt;schema&gt;.]&lt;table&gt;</programlisting>
+        <programlisting>pgsql2shp [&lt;options&gt;] &lt;database&gt; &lt;query&gt;</programlisting>
 
         <para>The commandline options are:</para>
 
