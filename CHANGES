@@ -10,6 +10,8 @@ PostGIS 1.0.0?
 	- BUILDDATE extraction made more portable
 	- fixed bogus 72 index bindings
 	- prefixed DEBUG macros with PGIS_ to avoid clash with pgsql one
+	- fixes in probe_geometry_columns() to work with PG72 and support
+	  multiple geometry columns in a single table
 
 PostGIS 1.0.0RC2
 2005/01/26
