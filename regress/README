@@ -1,0 +1,16 @@
+- Mixed-dimensioned geometries are no longer supported
+  (previous behaviour was to fill Z with a 0 value)
+  [ updated to use new behaviour ]
+
+- geometry_same operator (=~) now requires all dimensions equality
+  Previously only x/y were checked
+
+- geometry_same operator (=~) now requires geom type equality
+  Previous behaviour:
+     GEOMETRYCOLLECTION(POINT(0 1), POINT(2 3)) =~  MULTIPOINT(0 1,2 3)
+
+- numb_sub_geometries does not exist anymore
+  [updated to use numgeometries]
+
+- truly_inside does not exist anymore
+  [updated to use within]
