@@ -335,6 +335,9 @@ Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS)
 char
 is_worth_caching_pglwgeom_bbox(PG_LWGEOM *in)
 {
+#if ! AUTOCACHE_BBOX
+	return false;
+#endif
 	if ( TYPE_GETTYPE(in->type) == POINTTYPE ) return false;
 	return true;
 }
@@ -342,6 +345,9 @@ is_worth_caching_pglwgeom_bbox(PG_LWGEOM *in)
 char
 is_worth_caching_lwgeom_bbox(LWGEOM *in)
 {
+#if ! AUTOCACHE_BBOX
+	return false;
+#endif
 	if ( TYPE_GETTYPE(in->type) == POINTTYPE ) return false;
 	return true;
 }

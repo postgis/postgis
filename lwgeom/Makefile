@@ -60,6 +60,8 @@ ifeq ($(USE_PROJ),1)
 	override CFLAGS += -I$(PROJ_DIR)/include -DUSE_PROJ 
 endif
 
+override CFLAGS += -I$(PROJ_DIR)/include -DAUTOCACHE_BBOX=$(AUTOCACHE_BBOX) 
+
 override DLLLIBS += $(BE_DLLLIBS) 
 
 override CXXFLAGS := $(CFLAGS)
