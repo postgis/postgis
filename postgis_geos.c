@@ -10,6 +10,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.15  2003/10/27 20:13:05  strk
+ * Made GeomUnion release memory soon, Added fastunion support functions
+ *
  * Revision 1.14  2003/10/24 21:52:35  strk
  * Modified strcmp-based if-else with switch-case in GEOS2POSTGIS()
  * using new GEOSGeometryTypeId() interface.
@@ -83,6 +86,7 @@
 
 #include "postgis.h"
 #include "utils/elog.h"
+#include "utils/array.h"
 
 #include "access/gist.h"
 #include "access/itup.h"
@@ -176,6 +180,8 @@ Datum difference(PG_FUNCTION_ARGS);
 Datum boundary(PG_FUNCTION_ARGS);
 Datum symdifference(PG_FUNCTION_ARGS);
 Datum geomunion(PG_FUNCTION_ARGS);
+Datum unite_sfunc(PG_FUNCTION_ARGS);
+Datum unite_finalfunc(PG_FUNCTION_ARGS);
 
 
 Datum issimple(PG_FUNCTION_ARGS);
@@ -206,6 +212,183 @@ void NOTICE_MESSAGE(char *msg)
 }
 
 
+/*
+ * Resize an ArrayType of 1 dimension to contain num (Pointer *) elements
+ * array will be repalloc'ed
+ */
+static ArrayType *
+resize_ptrArrayType(ArrayType *a, int num)
+{
+	int nelems = ArrayGetNItems(ARR_NDIM(a), ARR_DIMS(a));
+	int nbytes = ARR_OVERHEAD(1) + sizeof(Pointer *) * num;
+
+	if (num == nelems) return a;
+
+	a = (ArrayType *) repalloc(a, nbytes);
+
+	a->size = nbytes;
+	a->ndim = 1;
+
+	*((int *) ARR_DIMS(a)) = num;
+	return a;
+}
+
+
+/*
+ * This is the state function for union/fastunite/geomunion
+ * aggregate (still discussing the name). Will have
+ * as input an array of Geometry pointers and a Geometry.
+ * Will DETOAST given geometry and put a pointer to it
+ * in the given array. DETOASTED value is first copied
+ * to a safe memory context to avoid premature deletion.
+ *
+ * WARNING: array resize is not checked for memory
+ * context. Might use instable memory!! --strk(TODO);
+ *
+ */
+PG_FUNCTION_INFO_V1(unite_sfunc);
+Datum unite_sfunc(PG_FUNCTION_ARGS)
+{
+	ArrayType *array;
+	int nelems;
+	Datum datum;
+	GEOMETRY *geom, *tmpgeom;
+	ArrayType *result;
+	Pointer **pointers;
+#ifdef USE_BOGUS_MEMORY_CONTEXT_SWITCHING
+	MemoryContext oldcontext; 
+#endif
+
+	array = (ArrayType *) PG_GETARG_ARRAYTYPE_P(0);
+	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
+
+	datum = PG_GETARG_DATUM(1);
+	// Do nothing, return state array
+	if ( (Pointer *)datum == NULL )
+	{
+		elog(NOTICE, "unite_sfunc: NULL geom, nelems=%d", nelems);
+		PG_RETURN_ARRAYTYPE_P(array);
+	}
+
+	/*
+	 * Find a way to directly detoast datum in
+	 * flinfo->fcinfo->fn_mcxt context.
+	 * ( this way we'll reduce a memory copy I guess)
+	 * 	--strk(TODO);
+	 */
+#ifdef USE_BOGUS_MEMORY_CONTEXT_SWITCHING
+	oldcontext = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
+	geom = (GEOMETRY *)PG_DETOAST_DATUM(datum); 
+	MemoryContextSwitchTo(oldcontext);
+#else
+	tmpgeom = (GEOMETRY *)PG_DETOAST_DATUM(datum); 
+	geom = (GEOMETRY *) MemoryContextAlloc(
+		fcinfo->flinfo->fn_mcxt, tmpgeom->size);
+	memcpy(geom, tmpgeom, tmpgeom->size);
+	if ( (GEOMETRY *)datum != tmpgeom ) pfree(tmpgeom);
+#endif
+
+	// Add given geometry to state array 
+	nelems++;
+	//elog(NOTICE, "unite_sfunc: adding %p, nelems=%d", geom, nelems);
+
+	/*
+	 * Might use a more optimized version instead of repalloc'ing
+	 * at every iteration. This is not the bottleneck anyway.
+	 *
+	 * WARNING: should use fcinfo->flinfo->fn_mcxt
+	 * memory context for the array too!
+	 *  --strk(TODO);
+	 */
+	result = resize_ptrArrayType(array, nelems);
+
+	pointers = (Pointer **)ARR_DATA_PTR(result);
+	pointers[nelems-1] = (Pointer *)geom;
+
+	PG_RETURN_ARRAYTYPE_P(result);
+
+}
+
+/*
+ * This is the final function for union/fastunite/geomunion
+ * aggregate (still discussing the name). Will have
+ * as input an array of Geometry pointers.
+ * Will iteratively call GEOSUnion on the GEOS-converted
+ * versions of them and return PGIS-converted version back.
+ * Changing combination order *might* speed up performance.
+ *
+ * Geometries in the array are pfree'd as soon as possible.
+ *
+ */
+PG_FUNCTION_INFO_V1(unite_finalfunc);
+Datum unite_finalfunc(PG_FUNCTION_ARGS)
+{
+	ArrayType *array;
+	int is3d = 0;
+	int nelems, i;
+	static int call=1;
+	GEOMETRY **geoms, *result, *pgis_geom;
+	Geometry *g1, *g2, *geos_result;
+
+	call++;
+
+	array = (ArrayType *) PG_GETARG_ARRAYTYPE_P(0);
+
+	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
+
+	//elog(NOTICE, "unite_finalfunc: number of elements: %d", nelems);
+
+	if ( nelems == 0 ) PG_RETURN_NULL();
+
+	geoms = (GEOMETRY **)ARR_DATA_PTR(array);
+
+	/* One-element union is the element itself */
+	if ( nelems == 1 ) PG_RETURN_POINTER(geoms[0]);
+
+	/* Ok, we really need geos now ;) */
+	initGEOS(MAXIMUM_ALIGNOF);
+
+	if ( geoms[0]->is3d ) is3d = 1;
+	geos_result = POSTGIS2GEOS(geoms[0]);
+	for (i=1; i<nelems; i++)
+	{
+		pgis_geom = geoms[i];
+		
+		g1 = POSTGIS2GEOS(pgis_geom);
+		/*
+		 * If we free this memory now we'll have
+		 * more space for the growing result geometry.
+		 * We don't need it anyway.
+		 */
+		pfree(pgis_geom);
+
+		elog(NOTICE, "unite_finalfunc(%d): adding geom %d to union", i, call);
+		g2 = GEOSUnion(g1,geos_result);
+		if ( g2 == NULL )
+		{
+			GEOSdeleteGeometry(g1);
+			GEOSdeleteGeometry(geos_result);
+			elog(ERROR,"GEOS union() threw an error!");
+		}
+		GEOSdeleteGeometry(g1);
+		GEOSdeleteGeometry(geos_result);
+		geos_result = g2;
+	}
+
+	result = GEOS2POSTGIS(geos_result, is3d);
+	GEOSdeleteGeometry(geos_result);
+	if ( result == NULL )
+	{
+		elog(ERROR, "GEOS2POSTGIS returned an error");
+		PG_RETURN_NULL(); //never get here
+	}
+
+	compressType(result);
+
+	PG_RETURN_POINTER(result);
+
+}
+
 
 //select geomunion('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))','POLYGON((5 5, 15 5, 15 7, 5 7, 5 5))');
 PG_FUNCTION_INFO_V1(geomunion);
@@ -229,13 +412,13 @@ Datum geomunion(PG_FUNCTION_ARGS)
 
 //elog(NOTICE,"g3=%s",GEOSasText(g3));
 
-		//pfree(geom1);
-		//pfree(geom2);
+		PG_FREE_IF_COPY(geom1, 0);
+		PG_FREE_IF_COPY(geom2, 1);
+		GEOSdeleteGeometry(g1);
+		GEOSdeleteGeometry(g2);
 
 	if (g3 == NULL)
 	{
-		GEOSdeleteGeometry(g1);
-		GEOSdeleteGeometry(g2);
 		elog(ERROR,"GEOS union() threw an error!");
 		PG_RETURN_NULL(); //never get here
 	}
@@ -244,8 +427,6 @@ Datum geomunion(PG_FUNCTION_ARGS)
 
 	result = GEOS2POSTGIS(g3, geom1->is3d || geom2->is3d);
 
-	GEOSdeleteGeometry(g1);
-	GEOSdeleteGeometry(g2);
 	GEOSdeleteGeometry(g3);
 
 	if (result == NULL)
