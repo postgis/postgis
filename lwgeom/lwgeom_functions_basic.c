@@ -2731,3 +2731,30 @@ Datum LWGEOM_forceRHR_poly(PG_FUNCTION_ARGS)
 
 	PG_RETURN_POINTER(geom);
 }
+
+// Test deserialize/serialize operations
+PG_FUNCTION_INFO_V1(LWGEOM_noop);
+Datum LWGEOM_noop(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *in, *out;
+	LWGEOM *lwgeom;
+	size_t size, retsize;
+
+	in = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+
+	lwgeom = lwgeom_deserialize(SERIALIZED_FORM(in));
+
+	lwnotice("Deserialized: %s", lwgeom_summary(lwgeom, 0));
+
+	size = lwgeom_serialize_size(lwgeom);
+	out = palloc(size+4);
+	out->size = size+4;
+	lwgeom_serialize_buf(lwgeom, SERIALIZED_FORM(out), &retsize);
+
+	if ( size != retsize )
+	{
+		lwerror ("lwgeom_serialize_buf returned size(%d) != lwgeom_serialize_size (%d)", retsize, size);
+	}
+
+	PG_RETURN_POINTER(out);
+}

@@ -5,6 +5,8 @@
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
 
+//#define DEBUG_CALLS 1
+
 LWGEOM *
 lwgeom_deserialize(char *srl)
 {
@@ -37,34 +39,39 @@ size_t
 lwgeom_serialize_size(LWGEOM *lwgeom)
 {
 	int type = lwgeom->type;
-	size_t size;
+
+#ifdef DEBUG_CALLS
+	lwnotice("lwgeom_serialize_size called");
+#endif
 
 	switch (type)
 	{
 		case POINTTYPE:
-			size = lwpoint_serialize_size((LWPOINT *)lwgeom);
+			return lwpoint_serialize_size((LWPOINT *)lwgeom);
 		case LINETYPE:
-			size = lwline_serialize_size((LWLINE *)lwgeom);
+			return lwline_serialize_size((LWLINE *)lwgeom);
 		case POLYGONTYPE:
-			size = lwpoly_serialize_size((LWPOLY *)lwgeom);
+			return lwpoly_serialize_size((LWPOLY *)lwgeom);
 		case MULTIPOINTTYPE:
 		case MULTILINETYPE:
 		case MULTIPOLYGONTYPE:
 		case COLLECTIONTYPE:
-			size = lwcollection_serialize_size((LWCOLLECTION *)lwgeom);
+			return lwcollection_serialize_size((LWCOLLECTION *)lwgeom);
 		default:
 			lwerror("Unknown geometry type: %d", type);
 			return 0;
 	}
-
-	return size;
 }
 
 void
-lwgeom_serialize_buf(LWGEOM *lwgeom, char *buf, int *retsize)
+lwgeom_serialize_buf(LWGEOM *lwgeom, char *buf, size_t *retsize)
 {
 	int type = lwgeom->type;
 
+#ifdef DEBUG_CALLS 
+	lwnotice("lwgeom_serialize_buf called with a %s",
+			lwgeom_typename(type));
+#endif
 	switch (type)
 	{
 		case POINTTYPE:
@@ -318,3 +325,4 @@ lwgeom_add(const LWGEOM *to, uint32 where, const LWGEOM *what)
 			return NULL;
 	}
 }
+

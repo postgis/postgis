@@ -416,7 +416,7 @@ extern size_t lwpoint_serialize_size(LWPOINT *point);
 extern char  *lwpoint_serialize(LWPOINT *point);
 
 // same as above, writes to buf
-extern void lwpoint_serialize_buf(LWPOINT *point, char *buf, int *size);
+extern void lwpoint_serialize_buf(LWPOINT *point, char *buf, size_t *size);
 
 // find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
 extern BOX3D *lwpoint_findbbox(LWPOINT *point);
@@ -446,7 +446,7 @@ extern size_t lwline_serialize_size(LWLINE *line);
 extern char  *lwline_serialize(LWLINE *line);
 
 // same as above, writes to buf
-extern void lwline_serialize_buf(LWLINE *line, char *buf, int *size);
+extern void lwline_serialize_buf(LWLINE *line, char *buf, size_t *size);
 
 // find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
 extern BOX3D *lwline_findbbox(LWLINE *line);
@@ -472,7 +472,7 @@ extern size_t lwpoly_serialize_size(LWPOLY *poly);
 extern char *lwpoly_serialize(LWPOLY *poly);
 
 // same as above, writes to buf
-extern void lwpoly_serialize_buf(LWPOLY *poly, char *buf, int *size);
+extern void lwpoly_serialize_buf(LWPOLY *poly, char *buf, size_t *size);
 
 // find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
 extern BOX3D *lwpoly_findbbox(LWPOLY *poly);
@@ -482,9 +482,9 @@ extern BOX3D *lwpoly_findbbox(LWPOLY *poly);
 
 extern size_t lwgeom_serialize_size(LWGEOM *geom);
 extern size_t lwcollection_serialize_size(LWCOLLECTION *coll);
-extern void lwgeom_serialize_buf(LWGEOM *geom, char *buf, int *size);
+extern void lwgeom_serialize_buf(LWGEOM *geom, char *buf, size_t *size);
 extern char *lwgeom_serialize(LWGEOM *geom);
-extern void lwcollection_serialize_buf(LWCOLLECTION *mcoll, char *buf, int *size);
+extern void lwcollection_serialize_buf(LWCOLLECTION *mcoll, char *buf, size_t *size);
 
 //-----------------------------------------------------
 
@@ -578,7 +578,7 @@ extern uint32 lwexploded_findlength(LWGEOM_EXPLODED *exp, int wantbbox);
 extern char *lwexploded_serialize(LWGEOM_EXPLODED *exploded, int wantbbox);
 
 // Same as lwexploded_serialize but writing to pre-allocated space
-extern void lwexploded_serialize_buf(LWGEOM_EXPLODED *exploded, int wantbbox, char *buf, int *retsize);
+extern void lwexploded_serialize_buf(LWGEOM_EXPLODED *exploded, int wantbbox, char *buf, size_t *retsize);
 
 // note - for a simple type (ie. point), this will have sub_geom[0] = serialized_form.
 // for multi-geomtries sub_geom[0] will be a few bytes into the serialized form

@@ -5,6 +5,9 @@
 #include <string.h>
 #include "liblwgeom.h"
 
+//#define DEBUG_CALLS 1
+
+
 // construct a new LWLINE.  points will *NOT* be copied
 // use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
 LWLINE *lwline_construct(int ndims, int SRID,  POINTARRAY *points)
@@ -107,7 +110,7 @@ char  *lwline_serialize(LWLINE *line)
 // the given buffer, and returning number of bytes written into
 // the given int pointer.
 // result's first char will be the 8bit type.  See serialized form doc
-void lwline_serialize_buf(LWLINE *line, char *buf, int *retsize)
+void lwline_serialize_buf(LWLINE *line, char *buf, size_t *retsize)
 {
 	int size=1;  // type byte
 	char hasSRID;
@@ -195,11 +198,19 @@ lwline_serialize_size(LWLINE *line)
 {
 	size_t size = 1;  //type
 
+#ifdef DEBUG_CALLS
+	lwnotice("lwline_serialize_size called");
+#endif
+
 	if ( line->SRID != -1 ) size += 4; // SRID
 	if ( line->hasbbox ) size += sizeof(BOX2DFLOAT4);
 
 	size += sizeof(double)*line->ndims*line->points->npoints; // points
 	size += 4; // npoints
+
+#ifdef DEBUG_CALLS
+	lwnotice("lwline_serialize_size returning %d", size);
+#endif
 
 	return size;
 }

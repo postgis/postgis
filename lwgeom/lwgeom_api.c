@@ -2222,9 +2222,9 @@ lwexploded_serialize(LWGEOM_EXPLODED *exploded, int wantbbox)
  */
 void
 lwexploded_serialize_buf(LWGEOM_EXPLODED *exploded, int wantbbox,
-	char *buf, int *retsize)
+	char *buf, size_t *retsize)
 {
-	unsigned int size=0;
+	size_t size=0;
 	int i;
 	int ntypes = 0;
 	int ngeoms = 0;

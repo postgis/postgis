@@ -3,6 +3,8 @@
 #include <string.h>
 #include "liblwgeom.h"
 
+//#define DEBUG_CALLS 1
+
 LWCOLLECTION *
 lwcollection_deserialize(char *srl)
 {
@@ -53,8 +55,22 @@ lwcollection_serialize_size(LWCOLLECTION *col)
 	if ( col->SRID != -1 ) size += 4; // SRID
 	if ( col->hasbbox ) size += sizeof(BOX2DFLOAT4);
 
+#ifdef DEBUG_CALLS
+	lwnotice("lwcollection_serialize_size[%p]: start size: %d", col, size);
+#endif
+
+
 	for (i=0; i<col->ngeoms; i++)
+	{
 		size += lwgeom_serialize_size(lwcollection_getsubgeom(col, i));
+#ifdef DEBUG_CALLS
+		lwnotice("lwcollection_serialize_size[%p]: with geom%d: %d", col, i, size);
+#endif
+	}
+
+#ifdef DEBUG_CALLS
+	lwnotice("lwcollection_serialize_size[%p]:  returning %d", col, size);
+#endif
 
 	return size; 
 }
@@ -63,7 +79,7 @@ lwcollection_serialize_size(LWCOLLECTION *col)
 // the given buffer, and returning number of bytes written into
 // the given int pointer.
 void
-lwcollection_serialize_buf(LWCOLLECTION *coll, char *buf, int *retsize)
+lwcollection_serialize_buf(LWCOLLECTION *coll, char *buf, size_t *retsize)
 {
 	int size=1; // type 
 	int subsize=0;
@@ -73,8 +89,8 @@ lwcollection_serialize_buf(LWCOLLECTION *coll, char *buf, int *retsize)
 
 	hasSRID = (coll->SRID != -1);
 
-	buf[0] = (unsigned char) lwgeom_makeType(coll->ndims,
-		hasSRID, COLLECTIONTYPE);
+	buf[0] = (unsigned char) lwgeom_makeType_full(coll->ndims,
+		hasSRID, coll->type, coll->hasbbox);
 	loc = buf+1;
 
 	// Add BBOX if requested
@@ -103,6 +119,7 @@ lwcollection_serialize_buf(LWCOLLECTION *coll, char *buf, int *retsize)
 	{
 		lwgeom_serialize_buf(coll->geoms[i], loc, &subsize);
 		size += subsize;
+		loc += subsize;
 	}
 
 	if (retsize) *retsize = size;

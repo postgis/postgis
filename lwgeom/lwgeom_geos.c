@@ -44,8 +44,10 @@ Datum centroid(PG_FUNCTION_ARGS);
  * during postgis->geos and geos->postgis conversions
  */
 #undef DEBUG_CONVERTER
-#undef DEBUG_POSTGIS2GEOS 
-#undef DEBUG_GEOS2POSTGIS 
+#ifdef DEBUG_CONVERTER
+#define DEBUG_POSTGIS2GEOS 1
+#define DEBUG_GEOS2POSTGIS 1
+#endif // DEBUG_CONVERTER
 
 typedef  struct Geometry Geometry;
 
@@ -96,19 +98,20 @@ extern int      GEOSGetNumGeometries(Geometry *g1);
 extern Geometry *PostGIS2GEOS_point(const LWPOINT *point);
 extern Geometry *PostGIS2GEOS_linestring(const LWLINE *line);
 extern Geometry *PostGIS2GEOS_polygon(const LWPOLY *polygon);
-extern Geometry *PostGIS2GEOS_multipolygon(LWPOLY *const *const geoms, uint32 ngeoms, int SRID, int is3d);
-extern Geometry *PostGIS2GEOS_multilinestring(LWLINE *const *const geoms, uint32 ngeoms, int SRID, int is3d);
-extern Geometry *PostGIS2GEOS_multipoint(LWPOINT *const *const geoms, uint32 ngeoms, int SRID, int is3d);
-extern Geometry *PostGIS2GEOS_collection(Geometry **geoms, int ngeoms, int SRID, bool is3d);
+extern Geometry *PostGIS2GEOS_multipolygon(LWPOLY **geoms, uint32 ngeoms, int SRID, int is3d);
+extern Geometry *PostGIS2GEOS_multilinestring(LWLINE **geoms, uint32 ngeoms, int SRID, int is3d);
+extern Geometry *PostGIS2GEOS_multipoint(LWPOINT **geoms, uint32 ngeoms, int SRID, int is3d);
+extern Geometry *PostGIS2GEOS_collection(int type, Geometry **geoms, int ngeoms, int SRID, bool is3d);
 
 void NOTICE_MESSAGE(char *msg);
 PG_LWGEOM *GEOS2POSTGIS(Geometry *geom, char want3d);
 Geometry * POSTGIS2GEOS(PG_LWGEOM *g);
 void errorIfGeometryCollection(PG_LWGEOM *g1, PG_LWGEOM *g2);
-char *PointFromGeometry(Geometry *g, char want3d);
-char *LineFromGeometry(Geometry *g, char want3d);
-char *PolyFromGeometry(Geometry *g, char want3d);
-void addToExploded_recursive(Geometry *geom, LWGEOM_EXPLODED *exp);
+LWPOINT *lwpoint_from_geometry(Geometry *g, char want3d);
+LWLINE *lwline_from_geometry(Geometry *g, char want3d);
+LWPOLY *lwpoly_from_geometry(Geometry *g, char want3d);
+LWCOLLECTION *lwcollection_from_geometry(Geometry *geom, char want3d);
+LWGEOM *lwgeom_from_geometry(Geometry *g, char want3d);
 
 void NOTICE_MESSAGE(char *msg)
 {
@@ -1870,14 +1873,20 @@ Datum isring(PG_FUNCTION_ARGS)
 
 //= GEOS <=> POSTGIS CONVERSION =========================
 
-// Return a serialized line from a GEOS geometry (no SRID, no BBOX)
-char *PointFromGeometry(Geometry *g, char want3d)
+//-----=GEOS2POSTGIS=
+
+// Return a LWPOINT from a GEOS Point.
+LWPOINT *
+lwpoint_from_geometry(Geometry *g, char want3d)
 {
 	POINTARRAY *pa;
 	LWPOINT *point;
-	char *srl;
 	POINT3D *pts;
-	int ptsize = want3d ? sizeof(POINT3D) : sizeof(POINT2D);
+	size_t ptsize = want3d ? sizeof(POINT3D) : sizeof(POINT2D);
+
+#ifdef DEBUG_GEOS2POSTGIS
+	elog(NOTICE, "lwpoint_from_geometry: point size %d", ptsize);
+#endif
 
 	// Construct point array
 	pa = (POINTARRAY *)palloc(sizeof(POINTARRAY));
@@ -1885,7 +1894,7 @@ char *PointFromGeometry(Geometry *g, char want3d)
 	pa->npoints = 1;
 
 	// Fill point array
-	pa->serialized_pointlist = palloc(ptsize);
+	pa->serialized_pointlist = lwalloc(ptsize);
 	pts = GEOSGetCoordinates(g);
 	memcpy(pa->serialized_pointlist, pts, ptsize);
 	GEOSdeleteChar( (char*) pts);
@@ -1893,22 +1902,23 @@ char *PointFromGeometry(Geometry *g, char want3d)
 	// Construct LWPOINT
 	point = lwpoint_construct(pa->ndims, -1, pa);
 
-	// Serialize LWPOINT
-	srl = lwpoint_serialize(point);
-
-	return srl;
+	return point;
 }
 
-// Return a serialized line from a GEOS geometry (no SRID no BBOX)
-char *LineFromGeometry(Geometry *g, char want3d)
+// Return a LWLINE from a GEOS linestring
+LWLINE *
+lwline_from_geometry(Geometry *g, char want3d)
 {
 	POINTARRAY *pa;
 	LWLINE *line;
 	int npoints;
-	char *srl;
 	POINT3D *pts, *ip, *op;
 	int ptsize = want3d ? sizeof(POINT3D) : sizeof(POINT2D);
 	int i;
+
+#ifdef DEBUG_GEOS2POSTGIS
+	elog(NOTICE, "lwline_from_geometry: point size %d", ptsize);
+#endif
 
 	npoints = GEOSGetNumCoordinate(g);
 	if (npoints <2) return NULL;
@@ -1932,14 +1942,12 @@ char *LineFromGeometry(Geometry *g, char want3d)
 	// Construct LWPOINT
 	line = lwline_construct(pa->ndims, -1, pa);
 
-	// Serialize LWPOINT
-	srl = lwline_serialize(line);
-
-	return srl;
+	return line;
 }
 
-// Return a serialized polygon from a GEOS geometry (no SRID no BBOX)
-char *PolyFromGeometry(Geometry *g, char want3d)
+// Return a LWPOLY from a GEOS polygon
+LWPOLY *
+lwpoly_from_geometry(Geometry *g, char want3d)
 {
 	POINTARRAY **rings, *pa;
 	LWPOLY *poly;
@@ -1947,10 +1955,13 @@ char *PolyFromGeometry(Geometry *g, char want3d)
 	int nrings;
 	int npoints;
 	int i, j;
-	char *srl;
 	POINT3D *pts, *ip, *op;
 	int ptoff=0; // point offset inside POINT3D *
-	int ptsize = 8*ndims;
+	int ptsize = sizeof(double)*ndims;
+
+#ifdef DEBUG_GEOS2POSTGIS
+	elog(NOTICE, "lwpoly_from_geometry: point size %d", ptsize);
+#endif
 
 	// Get number of rings, and pointlist
 	pts = GEOSGetCoordinates(g);
@@ -1997,32 +2008,58 @@ char *PolyFromGeometry(Geometry *g, char want3d)
 	// Construct LWPOLY
 	poly = lwpoly_construct(pa->ndims, -1, nrings+1, rings);
 
-	// Serialize LWPOLY
-	srl = lwpoly_serialize(poly);
-
-	// Get rid of GEOS points...
-	GEOSdeleteChar( (char*) pts);
-
-	return srl;
+	return poly;
 }
 
-//-----=GEOS2POSTGIS=
-
-
-/*
- * Recursively add a Geometry to the LWGEOM_EXPLODED structure
- * The exploded struct contains note about the number of dimensions
- * requested.
- */
-void
-addToExploded_recursive(Geometry *geom, LWGEOM_EXPLODED *exp)
+// Return a lwcollection from a GEOS multi*
+LWCOLLECTION *
+lwcollection_from_geometry(Geometry *geom, char want3d)
 {
-	char *srl;
+	uint32 ngeoms;
+	LWGEOM **geoms;
+	LWCOLLECTION *ret;
+	int ndims = want3d ? 3 : 2;
 	int type = GEOSGeometryTypeId(geom) ;
-	char want3d = exp->ndims > 2 ? 1 : 0;
-	int ngeoms;
-	int t;
+	int SRID = GEOSGetSRID(geom);
+	char wantbbox = 0;
+	int i;
 
+	ngeoms = GEOSGetNumGeometries(geom);
+
+#ifdef DEBUG_GEOS2POSTGIS
+	lwnotice("lwcollection_from_geometry: type: %s, geoms %d",
+		lwgeom_typename(type), ngeoms);
+#endif
+
+	geoms = lwalloc(sizeof(LWGEOM *)*ngeoms);
+
+	for (i=0; i<ngeoms; i++)
+	{
+		Geometry *g = GEOSGetGeometryN(geom, i);
+#ifdef DEBUG_GEOS2POSTGIS
+		lwnotice("lwcollection_from_geometry: geom %d is a %s", i, lwgeom_typename(GEOSGeometryTypeId(g)));
+#endif
+		geoms[i] = lwgeom_from_geometry(g, want3d);
+#ifdef DEBUG_GEOS2POSTGIS
+		lwnotice("lwcollection_from_geometry: geoms[%d] is a %s", i, lwgeom_typename(geoms[i]->type));
+#endif
+	}
+
+	ret = lwcollection_construct(type, ndims, SRID,
+		wantbbox, ngeoms, geoms);
+	return ret;
+}
+
+
+// Return an LWGEOM from a Geometry
+LWGEOM *
+lwgeom_from_geometry(Geometry *geom, char want3d)
+{
+	int type = GEOSGeometryTypeId(geom) ;
+
+#ifdef DEBUG_GEOS2POSTGIS
+	lwnotice("lwgeom_from_geometry: it's a %s", lwgeom_typename(type));
+#endif
 
 	switch (type)
 	{
@@ -2032,68 +2069,20 @@ addToExploded_recursive(Geometry *geom, LWGEOM_EXPLODED *exp)
 		case MULTIPOLYGONTYPE:
 		case MULTILINETYPE:
 		case MULTIPOINTTYPE:
-
-			//this is more difficult because GEOS allows GCs of GCs
-			ngeoms = GEOSGetNumGeometries(geom);
-#ifdef DEBUG_GEOS2POSTGIS
-	elog(NOTICE, "GEOS2POSTGIS: It's a MULTI (of %d elems)", ngeoms);
-#endif
-			if (ngeoms == 0)
-			{
-				return; // skip EMPTY geoms
-			}
-			if (ngeoms == 1) {
-				Geometry *g = GEOSGetGeometryN(geom, 0);
-				// short cut!
-				return addToExploded_recursive(g, exp);
-			}
-			for (t=0; t<ngeoms; t++) {
-				Geometry *g = GEOSGetGeometryN(geom, t);
-				addToExploded_recursive(g, exp);
-			}
-			return;
+			return (LWGEOM *)lwcollection_from_geometry(geom, want3d);
 
 		case POLYGONTYPE:
-#ifdef DEBUG_GEOS2POSTGIS
-			elog(NOTICE, "GEOS2POSTGIS: It's a POLYGON");
-#endif
-			srl = PolyFromGeometry(geom, want3d);
-			if (srl == NULL) return;
-			exp->npolys++;
-			exp->polys = repalloc(exp->polys,
-				sizeof(char *)*exp->npolys);
-			exp->polys[exp->npolys-1] = srl;
-			return;
+			return (LWGEOM *)lwpoly_from_geometry(geom, want3d);
 
 		case LINETYPE:
-#ifdef DEBUG_GEOS2POSTGIS
-			elog(NOTICE, "GEOS2POSTGIS: It's a LINE");
-#endif
-			srl = LineFromGeometry(geom, want3d);
-			if (srl == NULL) return;
-			exp->nlines++;
-			exp->lines = repalloc(exp->lines,
-				sizeof(char *)*exp->nlines);
-			exp->lines[exp->nlines-1] = srl;
-			return;
+			return (LWGEOM *)lwline_from_geometry(geom, want3d);
 
 		case POINTTYPE: 
-#ifdef DEBUG_GEOS2POSTGIS
-			elog(NOTICE, "GEOS2POSTGIS: It's a POINT");
-#endif
-			srl = PointFromGeometry(geom, want3d);
-			if (srl == NULL) return;
-			exp->npoints++;
-			exp->points = repalloc(exp->points,
-				sizeof(char *)*exp->npoints);
-			exp->points[exp->npoints-1] = srl;
-			return;
+			return (LWGEOM *)lwpoint_from_geometry(geom, want3d);
 
 		default:
-#ifdef DEBUG_GEOS2POSTGIS
-			elog(NOTICE, "GEOS2POSTGIS: It's UNKNOWN!");
-#endif
-			return;
+			lwerror("lwgeom_from_geometry: unknown geometry type: %d", type);
+			return NULL;
 
 	}
 
@@ -2102,32 +2091,41 @@ addToExploded_recursive(Geometry *geom, LWGEOM_EXPLODED *exp)
 PG_LWGEOM *
 GEOS2POSTGIS(Geometry *geom, char want3d)
 {
+	LWGEOM *lwgeom;
+	size_t size, retsize;
 	PG_LWGEOM *result;
-	LWGEOM_EXPLODED *oexp;
-	int SRID;
-	int wantbbox = 0; // might as well be 1 ...
-	int size;
 
-	SRID = GEOSGetSRID(geom);
+	lwgeom = lwgeom_from_geometry(geom, want3d);
+	if ( ! lwgeom )
+	{
+		lwerror("GEOS2POSTGIS: lwgeom_from_geometry returned NULL");
+		return NULL;
+	}
 
-	// Initialize exploded lwgeom
-	oexp = (LWGEOM_EXPLODED *)palloc(sizeof(LWGEOM_EXPLODED));
-	oexp->SRID = SRID;
-	oexp->ndims = want3d ? 3 : 2;
-	oexp->npoints = 0;
-	oexp->points = palloc(sizeof(char *));
-	oexp->nlines = 0;
-	oexp->lines = palloc(sizeof(char *));
-	oexp->npolys = 0;
-	oexp->polys = palloc(sizeof(char *));
+#ifdef DEBUG_GEOS2POSTGIS
+	lwnotice("GEOS2POSTGIS: lwgeom_from_geometry returned a %s", lwgeom_summary(lwgeom, 0)); //lwgeom_typename(lwgeom->type));
+#endif
 
-	addToExploded_recursive(geom, oexp);
+	size = lwgeom_serialize_size(lwgeom);
 
-	size = lwexploded_findlength(oexp, wantbbox);
+#ifdef DEBUG_GEOS2POSTGIS
+	lwnotice("GEOS2POSTGIS: lwgeom_serialize_size returned %d", size);
+#endif
+
 	size += 4; // postgresql size header
 	result = palloc(size);
 	result->size = size;
-	lwexploded_serialize_buf(oexp, wantbbox, SERIALIZED_FORM(result), NULL);
+
+#ifdef DEBUG_GEOS2POSTGIS
+	lwnotice("GEOS2POSTGIS: about to serialize %s", lwgeom_typename(lwgeom->type));
+#endif
+
+	lwgeom_serialize_buf(lwgeom, SERIALIZED_FORM(result), &retsize);
+
+	if ( retsize != size-4 )
+	{
+		lwerror("GEOS2POSTGIS: lwgeom_serialize_buf returned %d, lwgeom_serialize_size returned %d", retsize, size);
+	}
 
 	return result;
 }
@@ -2145,22 +2143,27 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 	if ( ! lwgeom ) return NULL;
 
 #ifdef DEBUG_POSTGIS2GEOS
-	elog(NOTICE, "LWGEOM2GEOS: got lwgeom[%p]", lwgeom);
+	lwnotice("LWGEOM2GEOS: got lwgeom[%p]", lwgeom);
 #endif
 
 	switch (lwgeom->type)
 	{
-		LWPOINT *p;
-
 		case POINTTYPE:
-			p = (LWPOINT *)lwgeom;
-			elog(NOTICE, "LWGEOM2GEOS: lwpoint[%p]", p);
-			return PostGIS2GEOS_point(p);
+#ifdef DEBUG_POSTGIS2GEOS
+			lwnotice("LWGEOM2GEOS: point[%p]", lwgeom);
+#endif
+			return PostGIS2GEOS_point((LWPOINT *)lwgeom);
 
 		case LINETYPE:
+#ifdef DEBUG_POSTGIS2GEOS
+			lwnotice("LWGEOM2GEOS: line[%p]", lwgeom);
+#endif
 			return PostGIS2GEOS_linestring((LWLINE *)lwgeom);
 
 		case POLYGONTYPE:
+#ifdef DEBUG_POSTGIS2GEOS
+			lwnotice("LWGEOM2GEOS: poly[%p]", lwgeom);
+#endif
 			return PostGIS2GEOS_polygon((LWPOLY *)lwgeom);
 
 		case MULTIPOINTTYPE:
@@ -2168,13 +2171,17 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 		case MULTIPOLYGONTYPE:
 		case COLLECTIONTYPE:
 			col = (LWCOLLECTION *)lwgeom;
+#ifdef DEBUG_POSTGIS2GEOS
+			lwnotice("LWGEOM2GEOS: %s with %d subgeoms", lwgeom_typename(col->type), col->ngeoms);
+#endif
 			collected = (Geometry **)lwalloc(sizeof(Geometry *)*col->ngeoms);
 			for (i=0; i<col->ngeoms; i++)
 			{
 				collected[i] = LWGEOM2GEOS(col->geoms[i]);
 			}
-			return PostGIS2GEOS_collection(collected, col->ngeoms,
-				col->SRID, col->ndims > 2);
+			return PostGIS2GEOS_collection(col->type,
+				collected, col->ngeoms, col->SRID,
+				col->ndims>2);
 
 		default:
 			lwerror("Unknown geometry type: %d", lwgeom->type);
@@ -2191,99 +2198,6 @@ POSTGIS2GEOS(PG_LWGEOM *geom)
 	ret = LWGEOM2GEOS(lwgeom);
 	lwgeom_release(lwgeom);
 	return ret;
-}
-
-Geometry *
-_POSTGIS2GEOS(PG_LWGEOM *geom)
-{
-	LWPOINT *point;
-	LWLINE *line;
-	LWPOLY *poly;
-	LWGEOM_EXPLODED *exploded;
-	int type;
-	int i, j;
-	Geometry **collected;
-	int ncollected;
-	Geometry *ret=NULL;
-
-	type = lwgeom_getType(geom->type);
-
-	switch (type)
-	{
-		case POINTTYPE:
-#ifdef DEBUG_POSTGIS2GEOS
-			elog(NOTICE, "POSTGIS2GEOS: it's a point");
-#endif
-			point = lwpoint_deserialize(SERIALIZED_FORM(geom));
-			ret = PostGIS2GEOS_point(point);
-			break;
-
-		case LINETYPE:
-#ifdef DEBUG_POSTGIS2GEOS
-			elog(NOTICE, "POSTGIS2GEOS: it's a line");
-#endif
-			line = lwline_deserialize(SERIALIZED_FORM(geom));
-			ret = PostGIS2GEOS_linestring(line);
-			break;
-
-		case POLYGONTYPE:
-#ifdef DEBUG_POSTGIS2GEOS
-			elog(NOTICE, "POSTGIS2GEOS: it's a polygon");
-#endif
-			poly = lwpoly_deserialize(SERIALIZED_FORM(geom));
-			ret = PostGIS2GEOS_polygon(poly);
-			break;
-
-		default:
-			break;
-	}
-
-	if ( ret )
-	{
-		return ret;
-	}
-
-#ifdef DEBUG_POSTGIS2GEOS
-	elog(NOTICE, "POSTGIS2GEOS: out of switch");
-#endif
-
-	// Since it is not a base type, let's explode...
-	exploded = lwgeom_explode(SERIALIZED_FORM(geom));
-
-#ifdef DEBUG_POSTGIS2GEOS
-	elog(NOTICE, "POSTGIS2GEOS: exploded produced");
-#endif
-
-	ncollected = exploded->npoints + exploded->nlines + exploded->npolys;
-
-#ifdef DEBUG_POSTGIS2GEOS
-	elog(NOTICE, "POSTGIS2GEOS: it's a collection of %d elems", ncollected);
-#endif
-
-	collected = (Geometry **)palloc(sizeof(Geometry *)*ncollected);
-
-	j=0;
-	for (i=0; i<exploded->npoints; i++)
-	{
-		point = lwpoint_deserialize(exploded->points[i]);
-		collected[j++] = PostGIS2GEOS_point(point);
-	}
-	for (i=0; i<exploded->nlines; i++)
-	{
-		line = lwline_deserialize(exploded->lines[j]);
-		collected[j++] = PostGIS2GEOS_linestring(line);
-	}
-	for (i=0; i<exploded->npolys; i++)
-	{
-		poly = lwpoly_deserialize(exploded->polys[i]);
-		collected[j++] = PostGIS2GEOS_polygon(poly);
-	}
-
-	ret = PostGIS2GEOS_collection(collected, ncollected,
-		exploded->SRID, exploded->ndims > 2);
-
-	return ret;
-
 }
 
 PG_FUNCTION_INFO_V1(GEOSnoop);

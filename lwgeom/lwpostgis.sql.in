@@ -1617,6 +1617,11 @@ CREATEFUNCTION ForceRHR(geometry)
 	AS '@MODULE_FILENAME@', 'LWGEOM_forceRHR_poly'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
+CREATEFUNCTION noop(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_noop'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
 ------------------------------------------------------------------------
 
 --

@@ -10,7 +10,7 @@
 #include "geos/geom.h"
 #include "geos/util.h"
 
-#define DEBUG_POSTGIS2GEOS 1
+//#define DEBUG_POSTGIS2GEOS 1
 
 using namespace geos;
 
@@ -109,10 +109,7 @@ extern "C" char *GEOSjtsport();
 extern "C" Geometry *PostGIS2GEOS_point(const LWPOINT *point);
 extern "C" Geometry *PostGIS2GEOS_linestring(const LWLINE *line);
 extern "C" Geometry *PostGIS2GEOS_polygon(const LWPOLY *polygon);
-extern "C" Geometry *PostGIS2GEOS_multipolygon(LWPOLY *const *const geoms, uint32 ngeoms, int SRID, int is3d);
-extern "C" Geometry *PostGIS2GEOS_multilinestring(LWLINE *const *const geoms, uint32 ngeoms, int SRID, int is3d);
-extern "C" Geometry *PostGIS2GEOS_multipoint(LWPOINT *const *const geoms, uint32 ngeoms, int SRID, int is3d);
-extern "C" Geometry *PostGIS2GEOS_collection(Geometry **geoms, int ngeoms, int SRID, bool is3d);
+extern "C" Geometry *PostGIS2GEOS_collection(int type, Geometry **geoms, int ngeoms, int SRID, bool is3d);
 extern "C" Geometry *PostGIS2GEOS_box3d(BOX3D *box, int SRID);
 
 extern "C" char GEOSisvalid(Geometry *g1);
@@ -281,6 +278,12 @@ PostGIS2GEOS_linestring(const LWLINE *lwline)
 	bool is3d = pa->ndims > 2 ? 1 : 0;
 	int SRID = lwline->SRID;
 
+#ifdef DEBUG_POSTGIS2GEOS
+	char buf[256];
+	sprintf(buf, "PostGIS2GEOS_line got lwline[%p]", lwline);
+	NOTICE_MESSAGE(buf);
+#endif
+
 	try{
 		uint32 t;
 		Coordinate c;
@@ -355,6 +358,12 @@ Geometry *PostGIS2GEOS_polygon(const LWPOLY *lwpoly)
 	POINTARRAY *pa;
 	int SRID = lwpoly->SRID;
 	bool is3d = lwpoly->ndims > 2 ? 1 : 0;
+
+#ifdef DEBUG_POSTGIS2GEOS
+	char buf[256];
+	sprintf(buf, "PostGIS2GEOS_poly got lwpoly[%p]", lwpoly);
+	NOTICE_MESSAGE(buf);
+#endif
 
 	try
 	{
@@ -497,7 +506,7 @@ Geometry *PostGIS2GEOS_polygon(const LWPOLY *lwpoly)
 	}
 }
 
-Geometry *PostGIS2GEOS_multipoint(LWPOINT *const *const geoms, uint32 ngeoms, int SRID, bool is3d)
+Geometry *PostGIS2GEOS_multipoint(LWPOINT **geoms, uint32 ngeoms, int SRID, bool is3d)
 {
 	try
 	{
@@ -534,7 +543,7 @@ Geometry *PostGIS2GEOS_multipoint(LWPOINT *const *const geoms, uint32 ngeoms, in
 	}
 }
 
-Geometry *PostGIS2GEOS_multilinestring(LWLINE *const *const geoms, uint32 ngeoms, int SRID, bool is3d)
+Geometry *PostGIS2GEOS_multilinestring(LWLINE **geoms, uint32 ngeoms, int SRID, bool is3d)
 {
 	try
 	{
@@ -571,7 +580,7 @@ Geometry *PostGIS2GEOS_multilinestring(LWLINE *const *const geoms, uint32 ngeoms
 	}
 }
 
-Geometry *PostGIS2GEOS_multipolygon(LWPOLY *const *const polygons, uint32 npolys, int SRID, bool is3d)
+Geometry *PostGIS2GEOS_multipolygon(LWPOLY **polygons, uint32 npolys, int SRID, bool is3d)
 {
 	try
 	{
@@ -608,8 +617,15 @@ Geometry *PostGIS2GEOS_multipolygon(LWPOLY *const *const polygons, uint32 npolys
 	}
 }
 
-Geometry *PostGIS2GEOS_collection(Geometry **geoms, int ngeoms, int SRID, bool is3d)
+Geometry *PostGIS2GEOS_collection(int type, Geometry **geoms, int ngeoms, int SRID, bool is3d)
 {
+#ifdef DEBUG_POSTGIS2GEOS
+	char buf[256];
+	sprintf(buf, "PostGIS2GEOS_collection: requested type %d, ngeoms: %d",
+			type, ngeoms);
+	NOTICE_MESSAGE(buf);
+#endif
+
 	try
 	{
 		Geometry *g;
@@ -620,7 +636,26 @@ Geometry *PostGIS2GEOS_collection(Geometry **geoms, int ngeoms, int SRID, bool i
 		{
 			(*subGeos)[t] = geoms[t];
 		}
-		g = geomFactory->buildGeometry(subGeos);
+		//g = geomFactory->buildGeometry(subGeos);
+		switch (type)
+		{
+			case COLLECTIONTYPE:
+				g = geomFactory->createGeometryCollection(subGeos);
+				break;
+			case MULTIPOINTTYPE:
+				g = geomFactory->createMultiPoint(subGeos);
+				break;
+			case MULTILINETYPE:
+				g = geomFactory->createMultiLineString(subGeos);
+				break;
+			case MULTIPOLYGONTYPE:
+				g = geomFactory->createMultiPolygon(subGeos);
+				break;
+			default:
+				NOTICE_MESSAGE("Unsupported type request for PostGIS2GEOS_collection");
+				g = NULL;
+				
+		}
 #if GEOS_LAST_INTERFACE < 2
 		delete subGeos;
 #endif

@@ -5,6 +5,8 @@
 #include <string.h>
 #include "liblwgeom.h"
 
+//#define DEBUG_CALLS 1
+
 // construct a new LWPOLY.  arrays (points/points per ring) will NOT be copied
 // use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
 LWPOLY *
@@ -134,7 +136,7 @@ lwpoly_serialize(LWPOLY *poly)
 // result's first char will be the 8bit type.  See serialized form doc
 // points copied
 void
-lwpoly_serialize_buf(LWPOLY *poly, char *buf, int *retsize)
+lwpoly_serialize_buf(LWPOLY *poly, char *buf, size_t *retsize)
 {
 	int size=1;  // type byte
 	char hasSRID;
@@ -142,6 +144,10 @@ lwpoly_serialize_buf(LWPOLY *poly, char *buf, int *retsize)
 	int total_points = 0;
 	int npoints;
 	char *loc;
+
+#ifdef DEBUG_CALLS
+	lwnotice("lwpoly_serialize_buf called");
+#endif
 
 	hasSRID = (poly->SRID != -1);
 
@@ -321,6 +327,11 @@ lwpoly_serialize_size(LWPOLY *poly)
 	if ( poly->SRID != -1 ) size += 4; // SRID
 	if ( poly->hasbbox ) size += sizeof(BOX2DFLOAT4);
 
+#ifdef DEBUG_CALLS
+	lwnotice("lwpoly_serialize_size called with poly[%p] (%d rings)",
+			poly, poly->nrings);
+#endif
+
 	size += 4; // nrings
 
 	for (i=0; i<poly->nrings; i++)
@@ -328,6 +339,10 @@ lwpoly_serialize_size(LWPOLY *poly)
 		size += 4; // npoints
 		size += poly->rings[i]->npoints*poly->ndims*sizeof(double);
 	}
+
+#ifdef DEBUG_CALLS
+	lwnotice("lwpoly_serialize_size returning %d", size);
+#endif
 
 	return size;
 }

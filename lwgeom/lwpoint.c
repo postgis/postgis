@@ -3,6 +3,8 @@
 #include <string.h>
 #include "liblwgeom.h"
 
+//#define DEBUG_CALLS 1
+
 // convert this point into its serialize form
 // result's first char will be the 8bit type.  See serialized form doc
 char *
@@ -28,20 +30,22 @@ lwpoint_serialize(LWPOINT *point)
 // the given int pointer.
 // result's first char will be the 8bit type.  See serialized form doc
 void
-lwpoint_serialize_buf(LWPOINT *point, char *buf, int *retsize)
+lwpoint_serialize_buf(LWPOINT *point, char *buf, size_t *retsize)
 {
 	int size=1;
 	char hasSRID;
 	char *loc;
+
+#ifdef DEBUG_CALLS
+	lwnotice("lwpoint_serialize_buf(%p, %p) called", point, buf);
+#endif
 
 	hasSRID = (point->SRID != -1);
 
 	if (hasSRID) size +=4;  //4 byte SRID
 	if (point->hasbbox) size += sizeof(BOX2DFLOAT4); // bvol
 
-	if (point->ndims == 3) size += 24; //x,y,z
-	else if (point->ndims == 2) size += 16 ; //x,y,z
-	else if (point->ndims == 4) size += 32 ; //x,y,z,m
+	size += sizeof(double)*point->ndims;
 
 	buf[0] = (unsigned char) lwgeom_makeType_full(point->ndims,
 		hasSRID, POINTTYPE, point->hasbbox);
@@ -121,10 +125,18 @@ lwpoint_serialize_size(LWPOINT *point)
 {
 	size_t size = 1; // type
 
+#ifdef DEBUG_CALLS
+	lwnotice("lwpoint_serialize_size called");
+#endif
+
 	if ( point->SRID != -1 ) size += 4; // SRID
 	if ( point->hasbbox ) size += sizeof(BOX2DFLOAT4);
 
 	size += point->ndims * sizeof(double); // point
+
+#ifdef DEBUG_CALLS
+	lwnotice("lwpoint_serialize_size returning %d", size);
+#endif
 
 	return size; 
 }
@@ -161,7 +173,7 @@ lwpoint_deserialize(char *serialized_form)
 	char *loc = NULL;
 	POINTARRAY *pa;
 
-#ifdef DEBUG
+#ifdef DEBUG_CALLS
 	lwnotice("lwpoint_deserialize called");
 #endif
 
@@ -234,6 +246,9 @@ LWPOINT *
 lwpoint_clone(const LWPOINT *g)
 {
 	LWPOINT *ret = lwalloc(sizeof(LWPOINT));
+#ifdef DEBUG_CALLS
+	lwnotice("lwpoint_clone called");
+#endif
 	memcpy(ret, g, sizeof(LWPOINT));
 	return ret;
 }
