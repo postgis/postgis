@@ -8,6 +8,7 @@
 #include <fstream>
 
 #include "geom.h"
+#include "util.h"
 
 using namespace geos;
 
@@ -116,6 +117,8 @@ extern "C" char GEOSisRing(Geometry *g1);
 
 extern "C" Geometry *GEOSpointonSurface(Geometry *g1);
 
+extern "C" void NOTICE_MESSAGE(char *msg);
+
 
 
 //###########################################################
@@ -151,6 +154,11 @@ Geometry *PostGIS2GEOS_box3d(BOX3D *box, int SRID)
 		delete envelope;
 		return g;
 	}
+	catch (GEOSException *ge)
+	{
+			NOTICE_MESSAGE((char *)ge->toString().c_str());
+			return NULL;
+	}
 	catch (...)
 	{
 		return NULL;
@@ -175,6 +183,12 @@ Geometry *PostGIS2GEOS_collection(Geometry **geoms, int ngeoms,int SRID, bool is
 		g->setSRID(SRID);
 		return g;
 	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return NULL;
+	}
+
 	catch (...)
 	{
 		return NULL;
@@ -197,6 +211,12 @@ Geometry *PostGIS2GEOS_point(POINT3D *point,int SRID, bool is3d)
 			g->setSRID(SRID);
 			return g;
 		}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return NULL;
+	}
+
 	catch (...)
 	{
 		return NULL;
@@ -242,6 +262,12 @@ Geometry *PostGIS2GEOS_linestring(LINE3D *line,int SRID, bool is3d)
 			g->setSRID(SRID);
 			return g;
 		}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return NULL;
+	}
+
 	catch (...)
 	{
 		return NULL;
@@ -275,6 +301,12 @@ Geometry *PostGIS2GEOS_multipolygon(POLYGON3D **polygons,int npolys, int SRID, b
 			g->setSRID(SRID);
 			return g;
 		}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return NULL;
+	}
+
 	catch (...)
 	{
 		return NULL;
@@ -300,6 +332,12 @@ Geometry *PostGIS2GEOS_multilinestring(LINE3D **lines,int nlines, int SRID, bool
 			g->setSRID(SRID);
 			return g;
 		}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return NULL;
+	}
+
 	catch (...)
 	{
 		return NULL;
@@ -324,6 +362,12 @@ Geometry *PostGIS2GEOS_multipoint(POINT3D **points,int npoints, int SRID, bool i
 			g->setSRID(SRID);
 			return g;
 		}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return NULL;
+	}
+
 	catch (...)
 	{
 		return NULL;
@@ -415,6 +459,12 @@ Geometry *PostGIS2GEOS_polygon(POLYGON3D *polygon,int SRID, bool is3d)
 		g->setSRID(SRID);
 		return g;
 		}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return NULL;
+	}
+
 	catch (...)
 	{
 		return NULL;
@@ -433,6 +483,11 @@ char GEOSrelateDisjoint(Geometry *g1, Geometry*g2)
 		result = g1->disjoint(g2);
 		return result;
 	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return 2;
+	}
 	catch (...)
 	{
 		return 2;
@@ -446,6 +501,12 @@ char GEOSrelateTouches(Geometry *g1, Geometry*g2)
 		result =  g1->touches(g2);
 		return result;
 	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return 2;
+	}
+
 	catch (...)
 	{
 		return 2;
@@ -459,6 +520,12 @@ char GEOSrelateIntersects(Geometry *g1, Geometry*g2)
 		result = g1->intersects(g2);
 		return result;
 	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return 2;
+	}
+
 	catch (...)
 	{
 		return 2;
@@ -472,6 +539,12 @@ char GEOSrelateCrosses(Geometry *g1, Geometry*g2)
 		result = g1->crosses(g2);
 		return result;
 	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return 2;
+	}
+
 	catch (...)
 	{
 		return 2;
@@ -485,6 +558,12 @@ char GEOSrelateWithin(Geometry *g1, Geometry*g2)
 		result = g1->within(g2);
 		return result;
 	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return 2;
+	}
+
 	catch (...)
 	{
 		return 2;
@@ -502,6 +581,12 @@ char GEOSrelateContains(Geometry *g1, Geometry*g2)
 		result = g1->contains(g2);
 		return result;
 	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return 2;
+	}
+
 	catch (...)
 	{
 		return 2;
@@ -515,6 +600,12 @@ char GEOSrelateOverlaps(Geometry *g1, Geometry*g2)
 		result = g1->overlaps(g2);
 		return result;
 	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return 2;
+	}
+
 	catch (...)
 	{
 		return 2;
@@ -534,6 +625,12 @@ char GEOSrelatePattern(Geometry *g1, Geometry*g2,char *pat)
 		result = g1->relate(g2,pat);
 		return result;
 	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return 2;
+	}
+
 	catch (...)
 	{
 		return 2;
@@ -558,6 +655,12 @@ char *GEOSrelate(Geometry *g1, Geometry*g2)
 
 		return result;
 	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return NULL;
+	}
+
 	catch (...)
 	{
 		return NULL;
@@ -578,6 +681,12 @@ char GEOSisvalid(Geometry *g1)
 		result =g1->isValid();
 		return result;
 	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return 2;
+	}
+
 	catch (...)
 	{
 		return 2;
@@ -597,6 +706,12 @@ char GEOSequals(Geometry *g1, Geometry*g2)
 		result = g1->equals(g2);
 		return result;
 	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return 2;
+	}
+
 	catch (...)
 	{
 		return 2;
@@ -617,6 +732,12 @@ char *GEOSasText(Geometry *g1)
 		strcpy(result, s.c_str() );
 		return result;
 	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return NULL;
+	}
+
 	catch (...)
 	{
 		return NULL;
@@ -629,6 +750,12 @@ char GEOSisEmpty(Geometry *g1)
 	{
 		return g1->isEmpty();
 	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return 2;
+	}
+
 	catch (...)
 	{
 		return 2;
@@ -641,6 +768,12 @@ char GEOSisSimple(Geometry *g1)
 	{
 		return g1->isSimple();
 	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return 2;
+	}
+
 	catch (...)
 	{
 		return 2;
@@ -653,6 +786,12 @@ char GEOSisRing(Geometry *g1)
 	{
 		return (( (LinearRing*)g1)->isRing());
 	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return 2;
+	}
+
 	catch (...)
 	{
 		return 2;
@@ -674,6 +813,12 @@ char *GEOSGeometryType(Geometry *g1)
 		strcpy(result, s.c_str() );
 		return result;
 	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return NULL;
+	}
+
 	catch (...)
 	{
 		return NULL;
@@ -694,6 +839,12 @@ Geometry *GEOSIntersection(Geometry *g1,Geometry *g2)
 		Geometry *g3 = g1->intersection(g2);
 		return g3;
 	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return NULL;
+	}
+
 	catch (...)
 	{
 		return NULL;
@@ -707,6 +858,12 @@ Geometry *GEOSBuffer(Geometry *g1,double width)
 		Geometry *g3 = g1->buffer(width);
 		return g3;
 	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return NULL;
+	}
+
 	catch (...)
 	{
 		return NULL;
@@ -720,6 +877,12 @@ Geometry *GEOSConvexHull(Geometry *g1)
 		Geometry *g3 = g1->convexHull();
 		return g3;
 	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return NULL;
+	}
+
 	catch (...)
 	{
 		return NULL;
@@ -733,6 +896,12 @@ Geometry *GEOSDifference(Geometry *g1,Geometry *g2)
 		Geometry *g3 = g1->difference(g2);
 		return g3;
 	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return NULL;
+	}
+
 	catch (...)
 	{
 		return NULL;
@@ -746,6 +915,12 @@ Geometry *GEOSBoundary(Geometry *g1)
 		Geometry *g3 = g1->getBoundary();
 		return g3;
 	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return NULL;
+	}
+
 	catch (...)
 	{
 		return NULL;
@@ -759,6 +934,12 @@ Geometry *GEOSSymDifference(Geometry *g1,Geometry *g2)
 		Geometry *g3 = g1->symDifference(g2);
 		return g3;
 	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return NULL;
+	}
+
 	catch (...)
 	{
 		return NULL;
@@ -771,6 +952,11 @@ Geometry *GEOSUnion(Geometry *g1,Geometry *g2)
 	{
 		Geometry *g3 = g1->Union(g2);
 		return g3;
+	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return NULL;
 	}
 	catch (...)
 	{
@@ -786,6 +972,12 @@ Geometry *GEOSpointonSurface(Geometry *g1)
 		Geometry *g3 = g1->getInteriorPoint();
 		return g3;
 	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return NULL;
+	}
+
 	catch (...)
 	{
 		return NULL;
@@ -807,6 +999,12 @@ void GEOSdeleteGeometry(Geometry *a)
 	try{
 		delete a;
 	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		//return NULL;
+	}
+
 	catch(...)
 	{
 		// do nothing!
@@ -818,6 +1016,12 @@ void GEOSdeleteChar(char *a)
 	try{
 	   free(a);
 	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		//return NULL;
+	}
+
 	catch(...)
 	{
 		// do nothing!
@@ -843,6 +1047,12 @@ POINT3D  *GEOSGetCoordinate(Geometry *g1)
 		result->z = c->z;
 		return result;
 	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return NULL;
+	}
+
 	catch(...)
 	{
 		return NULL;
@@ -874,6 +1084,12 @@ POINT3D  *GEOSGetCoordinates(Geometry *g1)
 
 		return result;
 	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return NULL;
+	}
+
 	catch(...)
 	{
 		return NULL;
@@ -888,6 +1104,12 @@ int      GEOSGetNumCoordinate(Geometry *g1)
 	try{
 		return g1->getNumPoints();
 	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return 0;
+	}
+
 	catch(...)
 	{
 		return 0;
@@ -900,6 +1122,12 @@ int      GEOSGetNumInteriorRings(Geometry *g1)
 		Polygon *p = (Polygon *) g1;
 		return p->getNumInteriorRing();
 	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return 0;
+	}
+
 	catch(...)
 	{
 		return 0;
@@ -914,6 +1142,12 @@ int      GEOSGetNumGeometries(Geometry *g1)
 		GeometryCollection *gc = (GeometryCollection *) g1;
 		return gc->getNumGeometries();
 	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return 0;
+	}
+
 	catch(...)
 	{
 		return 0;
@@ -928,6 +1162,12 @@ const Geometry *GEOSGetGeometryN(Geometry *g1, int n)
 		const GeometryCollection *gc = (GeometryCollection *) g1;
 		return gc->getGeometryN(n);
 	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return NULL;
+	}
+
 	catch(...)
 	{
 		return NULL;
@@ -942,6 +1182,12 @@ const Geometry *GEOSGetExteriorRing(Geometry *g1)
 		Polygon *p = (Polygon *) g1;
 		return p->getExteriorRing();
 	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return 0;
+	}
+
 	catch(...)
 	{
 		return 0;
@@ -955,6 +1201,12 @@ const Geometry *GEOSGetInteriorRingN(Geometry *g1,int n)
 		Polygon *p = (Polygon *) g1;
 		return p->getInteriorRingN(n);
 	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return NULL;
+	}
+
 	catch(...)
 	{
 		return NULL;
@@ -967,6 +1219,12 @@ int      GEOSGetSRID(Geometry *g1)
 	try{
 		return g1->getSRID();
 	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return 0;
+	}
+
 	catch(...)
 	{
 		return 0;
