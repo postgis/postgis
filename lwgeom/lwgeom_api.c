@@ -492,7 +492,6 @@ LWLINE *lwline_deserialize(char *serialized_form)
 	result->points = pa;
 	result->is3d = lwgeom_is3d(type);
 
-//elog(NOTICE,"npoints in deserialize line = %i",npoints);
 	return result;
 }
 
@@ -506,7 +505,9 @@ char  *lwline_serialize(LWLINE *line)
 	int t;
 	char *loc;
 
-elog(NOTICE,"lwline_serialize::entry");
+if (line == NULL)
+	elog(ERROR,"lwline_serialize:: given null line");
+
 	hasSRID = (line->SRID != -1);
 
 	if (hasSRID)
@@ -521,9 +522,8 @@ elog(NOTICE,"lwline_serialize::entry");
 		size += 16 * line->points->npoints; //x,y
 	}
 
-	size+=4; // npoints
 
-elog(NOTICE,"lwline_serialize:: size = %i",size);
+	size+=4; // npoints
 
 	result = palloc(size);
 
@@ -539,6 +539,8 @@ elog(NOTICE,"lwline_serialize:: size = %i",size);
 	memcpy(loc, &line->points->npoints, sizeof(int32));
 	loc +=4;
 	//copy in points
+
+elog(NOTICE," line serialize - size = %i", size);
 
 	if (line->is3d)
 	{
@@ -556,7 +558,7 @@ elog(NOTICE,"lwline_serialize:: size = %i",size);
 			loc += 16; // size of a 2d point
 		}
 	}
-	printBYTES((unsigned char *)result, size);
+	//printBYTES((unsigned char *)result, size);
 	return result;
 }
 
@@ -593,7 +595,6 @@ uint32 lwline_findlength(char *serialized_line)
 		// we've read the type (1 byte) and SRID (4 bytes, if present)
 
 		npoints = get_uint32(loc);
-elog(NOTICE,"npoint in lwline_findlength= %i",npoints);
 		result += 4; //npoints
 
 		if (lwgeom_is3d(type) )
@@ -843,7 +844,6 @@ LWPOLY *lwpoly_deserialize(char *serialized_form)
 	nrings = get_uint32(loc);
 	result->nrings = nrings;
 	loc +=4;
-elog(NOTICE,"lwpoly_deserialize:: polygon with %i rings",nrings);
 	result->rings = (POINTARRAY**) palloc(nrings* sizeof(POINTARRAY*));
 
 	for (t =0;t<nrings;t++)
@@ -895,7 +895,6 @@ char *lwpoly_serialize(LWPOLY *poly)
 			size += 16*total_points;
 
 		result = palloc(size);
-	elog(NOTICE,"lwpoly_serialize size = %i", size);
 
 		result[0] = lwgeom_makeType(poly->is3d,hasSRID, POLYGONTYPE);
 		loc = result+1;
@@ -915,7 +914,6 @@ char *lwpoly_serialize(LWPOLY *poly)
 		{
 			POINTARRAY *pa = poly->rings[t];
 			npoints = poly->rings[t]->npoints;
-elog(NOTICE,"doing ring #%i with %i points",t,npoints);
 			memcpy(loc, &npoints, sizeof(int32)); //npoints this ring
 			loc+=4;
 			if (poly->is3d)
@@ -930,7 +928,6 @@ elog(NOTICE,"doing ring #%i with %i points",t,npoints);
 			{
 				for (u=0;u<npoints;u++)
 				{
-elog(NOTICE,"pt %i",u);
 					getPoint2d_p(pa, u, loc);
 					loc+= 16;
 				}

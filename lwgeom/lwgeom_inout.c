@@ -164,7 +164,7 @@ Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 					SRID = -1;
 
 #ifdef DEBUG
-        elog(NOTICE,"LWGEOMFromWKB: entry with SRID=%i\n",SRID);
+        elog(NOTICE,"LWGEOMFromWKB: entry with SRID=%i",SRID);
 #endif
 
 					// need to do this because there might be a bunch of endian flips!
@@ -240,7 +240,7 @@ char *wkb_to_lwgeom(char *wkb, int SRID,int *size)
 	simpletype = wkb_simpletype(wkbtype);
 
 #ifdef DEBUG
-        elog(NOTICE,"wkb_to_lwgeom: entry with SRID=%i, dims=%i, simpletype=%i\n",SRID,(int) dims, (int) simpletype);
+        elog(NOTICE,"wkb_to_lwgeom: entry with SRID=%i, dims=%i, simpletype=%i",SRID,(int) dims, (int) simpletype);
 #endif
 
 
@@ -254,21 +254,17 @@ char *wkb_to_lwgeom(char *wkb, int SRID,int *size)
 						break;
 		case LINETYPE:
 						line = wkb_line_to_lwline(wkb, SRID);
-	printLWLINE(line);
-	elog(NOTICE,"have line with %i points",line->points->npoints);
+	//printLWLINE(line);
 						result  = lwline_serialize(line);
-	elog(NOTICE,"serialized it");
+//	elog(NOTICE,"line serialized");
 						*size = lwline_findlength(result);
-	elog(NOTICE,"serialized length=%i",*size);
 						pfree_line(line);
 						break;
 		case POLYGONTYPE:
 						poly = wkb_poly_to_lwpoly(wkb, SRID);
-	printLWPOLY(poly);
+//	printLWPOLY(poly);
 						result  = lwpoly_serialize(poly);
-	elog(NOTICE,"serialized polygon");
 						*size = lwpoly_findlength(result);
-	elog(NOTICE,"serialized polygon has length = %i",*size);
 						pfree_polygon(poly);
 						break;
 		case MULTIPOINTTYPE:
@@ -308,7 +304,7 @@ LWPOINT *wkb_point_to_lwpoint(char *wkb,int SRID)
 	simpletype = wkb_simpletype(wkbtype);
 
 #ifdef DEBUG
-        elog(NOTICE,"wkb_point_to_lwpoint: entry with SRID=%i, dims=%i, simpletype=%i\n",SRID,(int) dims, (int) simpletype);
+        elog(NOTICE,"wkb_point_to_lwpoint: entry with SRID=%i, dims=%i, simpletype=%i",SRID,(int) dims, (int) simpletype);
 #endif
 
 
@@ -352,7 +348,6 @@ LWLINE *wkb_line_to_lwline(char *wkb,int SRID)
 		flipPoints(wkb+9,npoints,dims);
 
 	pa = pointArray_construct(wkb+9, dims, npoints);
-printPA(pa);
 	return lwline_construct(dims, SRID, pa);
 }
 
@@ -413,7 +408,6 @@ LWPOLY *wkb_poly_to_lwpoly(char *wkb,int SRID)
 					// read a ring
 			if (need_flip)
 				flipPoints(loc+4,npoints,dims);
-elog(NOTICE,"wkb_poly_to_lwpoly:: doing ring %i with %i points", t, npoints);
 			pa = pointArray_construct(loc+4, dims, npoints);
 
 			loc += 4;
@@ -439,7 +433,7 @@ char *lwgeom_to_wkb(char *serialized_form,int *wkblength,char desiredWKBEndian)
 	char   *multigeom = NULL;
 
 #ifdef DEBUG
-        elog(NOTICE,"lwgeom_to_wkb: entry with  simpletype=%i, dims=%i\n",(int) simple_type,(int)  lwgeom_is3d( serialized_form[0]) );
+        elog(NOTICE,"lwgeom_to_wkb: entry with  simpletype=%i, dims=%i",(int) simple_type,(int)  lwgeom_is3d( serialized_form[0]) );
 #endif
 
 
@@ -456,9 +450,8 @@ char *lwgeom_to_wkb(char *serialized_form,int *wkblength,char desiredWKBEndian)
 						pfree_line(line);
 						break;
 		case POLYGONTYPE:
-	elog(NOTICE,"lwgeom_to_wkb :: deserializing polygon");
 						poly = lwpoly_deserialize(serialized_form);
-	printLWPOLY(poly);
+//	printLWPOLY(poly);
 						result = lwpoly_to_wkb(poly, desiredWKBEndian, wkblength);
 						pfree_polygon(poly );
 						break;
@@ -483,7 +476,7 @@ char *lwpoint_to_wkb(LWPOINT *pt, char desiredWKBEndian, int *wkbsize)
 	bool need_flip =  requiresflip( desiredWKBEndian );
 
 #ifdef DEBUG
-        elog(NOTICE,"lwpoint_to_wkb:  pa dims = %i\n", (int)pt->point->is3d );
+        elog(NOTICE,"lwpoint_to_wkb:  pa dims = %i", (int)pt->point->is3d );
 #endif
 
 
@@ -496,7 +489,7 @@ char *lwpoint_to_wkb(LWPOINT *pt, char desiredWKBEndian, int *wkbsize)
 	wkbtype = constructWKBType(POINTTYPE, pt->point->is3d);
 
 #ifdef DEBUG
-        elog(NOTICE,"lwpoint_to_wkb: entry with wkbtype=%i, pa dims = %i\n",wkbtype, (int)pt->point->is3d );
+        elog(NOTICE,"lwpoint_to_wkb: entry with wkbtype=%i, pa dims = %i",wkbtype, (int)pt->point->is3d );
 #endif
 
 
@@ -518,9 +511,6 @@ char *lwline_to_wkb(LWLINE *line, char desiredWKBEndian, int *wkbsize)
 		char * result;
 		uint32 wkbtype ;
 		bool need_flip =  requiresflip( desiredWKBEndian );
-
-
-printLWLINE(line);
 
 		*wkbsize = 1+ 4+4+ line->points->npoints * ptsize; //endian, type, npoints, points
 

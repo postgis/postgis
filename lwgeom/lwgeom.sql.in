@@ -45,3 +45,5 @@ select geometry(wkb(lwgeom(asbinary('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))'::ge
 select geometry(wkb(lwgeom(asbinary('POLYGON((0 0 -99, 10 0 -99, 10 10 -99, 0 10 -99, 0 0 -99))'::geometry))));
 
 
+select geometry(wkb(lwgeom(asbinary('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0),(5 5,7 5, 7 7, 5 7, 5 5))'::geometry))));
+select geometry(wkb(lwgeom(asbinary('POLYGON((0 0 -99, 10 0 -99, 10 10 -99, 0 10 -99, 0 0 -99),(5 5 -99,7 5 -99, 7 7 -99, 5 7 -99, 5 5 -99))'::geometry))));
