@@ -374,7 +374,7 @@ BEGIN
 
 #if USE_VERSION >= 75
 	-- no linkage to system table needed
-	return "done";
+	return ''done.'';
 #endif
 
 	-- fix linking to system tables
@@ -1924,18 +1924,6 @@ INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
 
 #elif USE_VERSION == 73
 
---
--- 7.3 explicit casting definitions
---
-
-CREATE CAST ( chip AS geometry ) WITH FUNCTION geometry(chip) AS IMPLICIT;
-CREATE CAST ( geometry AS box3d ) WITH FUNCTION box3d(geometry) AS IMPLICIT;
-CREATE CAST ( geometry AS box ) WITH FUNCTION box(geometry) AS IMPLICIT;
-CREATE CAST ( box3d AS geometry ) WITH FUNCTION geometry(box3d) AS IMPLICIT;
-CREATE CAST ( text AS geometry) WITH FUNCTION geometry(text) AS IMPLICIT;
-CREATE CAST ( wkb AS bytea ) WITH FUNCTION bytea(wkb) AS IMPLICIT;
-CREATE CAST ( box3d AS box ) WITH FUNCTION box3dtobox(box3d);
-CREATE CAST ( geometry AS text ) WITH FUNCTION astext(geometry);
 
 
 CREATEFUNCTION postgisgistcostestimate(internal,internal,internal,internal,internal,internal,internal,internal)
@@ -2030,18 +2018,6 @@ UPDATE pg_opclass
 
 #elif USE_VERSION == 74
 
---
--- 7.3 explicit casting definitions
---
-
-CREATE CAST ( chip AS geometry ) WITH FUNCTION geometry(chip) AS IMPLICIT;
-CREATE CAST ( geometry AS box3d ) WITH FUNCTION box3d(geometry) AS IMPLICIT;
-CREATE CAST ( geometry AS box ) WITH FUNCTION box(geometry) AS IMPLICIT;
-CREATE CAST ( box3d AS geometry ) WITH FUNCTION geometry(box3d) AS IMPLICIT;
-CREATE CAST ( text AS geometry) WITH FUNCTION geometry(text) AS IMPLICIT;
-CREATE CAST ( wkb AS bytea ) WITH FUNCTION bytea(wkb) AS IMPLICIT;
-CREATE CAST ( box3d AS box ) WITH FUNCTION box3dtobox(box3d);
-CREATE CAST ( geometry AS text ) WITH FUNCTION astext(geometry);
 
 CREATEFUNCTION postgisgistcostestimate(internal,internal,internal,internal,internal,internal,internal,internal)
 	RETURNS opaque
@@ -2145,20 +2121,6 @@ CREATE OPERATOR CLASS btree_geometry_ops
 
 #elif USE_VERSION == 75
 
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
---  WKB
---
--- 7.3 explicit casting definitions
---
-
-CREATE CAST ( chip AS geometry ) WITH FUNCTION geometry(chip) AS IMPLICIT;
-CREATE CAST ( geometry AS box3d ) WITH FUNCTION box3d(geometry) AS IMPLICIT;
-CREATE CAST ( geometry AS box ) WITH FUNCTION box(geometry) AS IMPLICIT;
-CREATE CAST ( box3d AS geometry ) WITH FUNCTION geometry(box3d) AS IMPLICIT;
-CREATE CAST ( text AS geometry) WITH FUNCTION geometry(text) AS IMPLICIT;
-CREATE CAST ( wkb AS bytea ) WITH FUNCTION bytea(wkb) AS IMPLICIT;
-CREATE CAST ( box3d AS box ) WITH FUNCTION box3dtobox(box3d);
-CREATE CAST ( geometry AS text ) WITH FUNCTION astext(geometry);
 
 --
 -- 7.2 GiST support functions
@@ -2264,6 +2226,20 @@ CREATE OPERATOR CLASS btree_geometry_ops
 -- see the differences between pgsql versions
 --  
 ---------------------------------------------
+
+-----------------------------------------------------------------------
+-- 7.3+ explicit casting definitions
+-----------------------------------------------------------------------
+#if USE_VERSION >= 73
+--CREATE CAST ( chip AS geometry ) WITH FUNCTION geometry(chip) AS IMPLICIT;
+CREATE CAST ( geometry AS box3d ) WITH FUNCTION box3d(geometry) AS IMPLICIT;
+CREATE CAST ( geometry AS box ) WITH FUNCTION box(geometry) AS IMPLICIT;
+CREATE CAST ( box3d AS geometry ) WITH FUNCTION geometry(box3d) AS IMPLICIT;
+CREATE CAST ( text AS geometry) WITH FUNCTION geometry(text) AS IMPLICIT;
+CREATE CAST ( wkb AS bytea ) WITH FUNCTION bytea(wkb) AS IMPLICIT;
+CREATE CAST ( box3d AS box ) WITH FUNCTION box3dtobox(box3d);
+CREATE CAST ( geometry AS text ) WITH FUNCTION astext(geometry);
+#endif
 
 -----------------------------------------------------------------------
 -- ADDGEOMETRYCOLUMN
