@@ -10,6 +10,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.39  2004/08/23 15:37:16  strk
+ * Changed SCRIPTS_VERSION to 0.0.1
+ *
  * Revision 1.38  2004/07/28 16:10:59  strk
  * Changed all version functions to return text.
  * Renamed postgis_scripts_version() to postgis_scripts_installed()
@@ -296,7 +299,6 @@ void NOTICE_MESSAGE(char *msg);
 //-----------------------------------------------
 // return a GEOS Geometry from a POSTGIS GEOMETRY
 //----------------------------------------------
-
 
 
 

@@ -11,6 +11,9 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.7  2004/08/23 15:37:16  strk
+-- Changed SCRIPTS_VERSION to 0.0.1
+--
 -- Revision 1.6  2004/08/23 08:32:14  strk
 -- Removed custom allocator from lwgeom_api.
 -- Added summary(geometry).
@@ -1791,6 +1794,81 @@ CREATEFUNCTION transform(geometry,integer) RETURNS geometry AS
  END;'
 LANGUAGE 'plpgsql' WITH (iscachable,isstrict);
 
+-----------------------------------------------------------------------
+-- POSTGIS_VERSION()
+-----------------------------------------------------------------------
+
+CREATEFUNCTION postgis_version() RETURNS text
+AS 'SELECT \'@POSTGIS_VERSION@\'::text AS version'
+LANGUAGE 'sql';
+
+CREATEFUNCTION postgis_proj_version() RETURNS text
+	AS '@MODULE_FILENAME@'
+	LANGUAGE 'C';
+
+CREATEFUNCTION postgis_scripts_installed() RETURNS text
+AS 'SELECT \'@POSTGIS_SCRIPTS_VERSION@\'::text AS version'
+LANGUAGE 'sql';
+
+CREATEFUNCTION postgis_lib_version() RETURNS text
+	AS '@MODULE_FILENAME@'
+	LANGUAGE 'C';
+
+CREATEFUNCTION postgis_scripts_released() RETURNS text
+	AS '@MODULE_FILENAME@'
+	LANGUAGE 'C';
+
+CREATEFUNCTION postgis_uses_stats() RETURNS bool
+	AS '@MODULE_FILENAME@'
+	LANGUAGE 'C';
+
+--CREATEFUNCTION postgis_geos_version() RETURNS text
+--	AS '@MODULE_FILENAME@'
+--	LANGUAGE 'C';
+--
+
+--CREATEFUNCTION postgis_full_version() RETURNS text
+--AS '
+--DECLARE
+--	libver text;
+--	projver text;
+--	geosver text;
+--	usestats bool;
+--	dbproc text;
+--	relproc text;
+--	fullver text;
+--BEGIN
+--	SELECT postgis_lib_version() INTO libver;
+--	SELECT postgis_proj_version() INTO projver;
+--	SELECT postgis_geos_version() INTO geosver;
+--	SELECT postgis_uses_stats() INTO usestats;
+--	SELECT postgis_scripts_installed() INTO dbproc;
+--	SELECT postgis_scripts_released() INTO relproc;
+--
+--	fullver = \'POSTGIS="\' || libver || \'"\';
+--
+--	IF  geosver IS NOT NULL THEN
+--		fullver = fullver || \' GEOS="\' || geosver || \'"\';
+--	END IF;
+--
+--	IF  projver IS NOT NULL THEN
+--		fullver = fullver || \' PROJ="\' || projver || \'"\';
+--	END IF;
+--
+--	IF usestats THEN
+--		fullver = fullver || \' USE_STATS\';
+--	END IF;
+--
+--	fullver = fullver || \' DBPROC="\' || dbproc || \'"\';
+--	fullver = fullver || \' RELPROC="\' || relproc || \'"\';
+--
+--	IF dbproc != relproc THEN
+--		fullver = fullver || \' (needs proc upgrade)\';
+--	END IF;
+--
+--	RETURN fullver;
+--END
+--' LANGUAGE 'plpgsql';
 
 ---------------------------------------------------------------
 -- END
@@ -1798,78 +1876,3 @@ LANGUAGE 'plpgsql' WITH (iscachable,isstrict);
 
 COMMIT;
 
-#if 0
-
------------------------------------------------
--- CONVERSION FUNCTION TO/FROM OLDGEOMETRY
------------------------------------------------
-
-BEGIN;
-
-CREATEFUNCTION geometry(wkb,int4)
-        RETURNS geometry
-        AS '@MODULE_FILENAME@','LWGEOMFromWKB'
-        LANGUAGE 'C' WITH (isstrict,iscachable);
-
-CREATEFUNCTION wkb(geometry)
-        RETURNS wkb
-        AS '@MODULE_FILENAME@','WKBFromLWGEOM'
-        LANGUAGE 'C' WITH (isstrict,iscachable);
-        
-CREATEFUNCTION asbinary(geometry)
-        RETURNS wkb
-        AS '@MODULE_FILENAME@','WKBFromLWGEOM'
-        LANGUAGE 'C' WITH (isstrict,iscachable);
-
-CREATEFUNCTION geometry(wkb)
-        RETURNS geometry
-        AS '@MODULE_FILENAME@','LWGEOMFromWKB'
-        LANGUAGE 'C' WITH (isstrict,iscachable);
-        
-
-CREATEFUNCTION oldgeometry(geometry)
-	RETURNS oldgeometry
-	AS 
-'BEGIN
- RAISE NOTICE ''lwgeom => geometry CONVERSION'';
- RETURN GeomFromWKB(asBinary($1),getSRID($1) );
- END;'
-LANGUAGE 'plpgsql' WITH (iscachable,isstrict);
-
-
-CREATEFUNCTION geometry(oldgeometry)
-	RETURNS geometry
-	AS 
-'BEGIN
- RAISE NOTICE ''geometry => lwgeom CONVERSION'';
- RETURN setSRID(geometry(asBinary($1)),SRID($1) );
- END;'
-LANGUAGE 'plpgsql' WITH (iscachable,isstrict);
-
-CREATE CAST (geometry as oldgeometry) WITH FUNCTION oldgeometry(geometry)
-	AS IMPLICIT ;
-CREATE CAST (oldgeometry as geometry) WITH FUNCTION geometry(oldgeometry)
-	AS IMPLICIT ;
-CREATE CAST (geometry as box2d) WITH FUNCTION box2d(geometry)
-	AS IMPLICIT ;
-	
-CREATE CAST (geometry as wkb) WITH FUNCTION wkb(geometry)
-	AS IMPLICIT ;
-CREATE CAST (wkb as geometry) WITH FUNCTION geometry(wkb)
-	AS IMPLICIT ;
-
-CREATEFUNCTION box2d(box3d)
-        RETURNS box2d
-        AS '@MODULE_FILENAME@','BOX3D_to_BOX2DFLOAT4'
-        LANGUAGE 'C' WITH (isstrict,iscachable);
-
-CREATEFUNCTION box3d(box2d)
-        RETURNS box3d
-        AS '@MODULE_FILENAME@','BOX2DFLOAT4_to_BOX3D'
-        LANGUAGE 'C' WITH (isstrict,iscachable);
-
-CREATE CAST (box3d as box2d) WITH FUNCTION box2d(box3d) AS IMPLICIT ;
-CREATE CAST (box2d as box3d) WITH FUNCTION box3d(box2d) AS IMPLICIT ;
-
-COMMIT;
-#endif

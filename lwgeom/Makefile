@@ -12,7 +12,7 @@ endif
 # Set USE_GEOS to 1 for GEOS spatial predicate and operator
 # support
 #
-USE_GEOS=0
+USE_GEOS=1
 ifeq (${GEOS_DIR},) 
 	GEOS_DIR=/usr/local
 endif
@@ -80,10 +80,10 @@ endif
 # Shared library parameters.
 #
 NAME=lwgeom
-SO_MAJOR_VERSION=0
-SO_MINOR_VERSION=1
-SO_MICRO_VERSION=2
-SCRIPTS_VERSION=0.0.1
+SO_MAJOR_VERSION=1
+SO_MINOR_VERSION=0
+SO_MICRO_VERSION=0
+SCRIPTS_VERSION=1.0.0
 ifeq (${USE_VERSION},71) 
 	MODULE_FILENAME = $(LPATH)/$(shlib)
 	MODULE_INSTALLDIR = $(libdir)
@@ -105,10 +105,15 @@ override CFLAGS += -g
 
 override CFLAGS += -I$(srcdir) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"' 
 override CFLAGS += -DUSE_VERSION=$(USE_VERSION)
+override CFLAGS += -DPOSTGIS_LIB_VERSION='"$(POSTGIS_LIB_VERSION)"'
+override CFLAGS += -DPOSTGIS_SCRIPTS_VERSION='"$(SCRIPTS_VERSION)"'
 
 ifeq ($(USE_GEOS),1)
-	override CFLAGS += -I$(GEOS_DIR)/include/geos -DUSE_GEOS
+	override CFLAGS += -I$(GEOS_DIR)/include -DUSE_GEOS
+	GEOS_RULES=detect_geos_version
+	GEOS_WRAPPER=lwgeom_geos_wrapper.o
 endif
+
 ifeq ($(USE_PROJ),1)
 	override CFLAGS += -I$(PROJ_DIR)/include -DUSE_PROJ 
 endif
@@ -127,8 +132,7 @@ ifeq ($(USE_STATS),1)
 	override CFLAGS += -DUSE_STATS
 endif
  
-
-OBJS=lwgeom_api.o lwgeom_functions_analytic.o lwgeom_geos.o lwgeom_inout.o lwgeom_estimate.o lwgeom_functions_basic.o lwgeom_gist.o lwgeom_btree.o lwgeom_transform.o stringBuffer.o lwgeom_box2dfloat4.o lex.yy.o wktparse.tab.o lwgparse.o wktunparse.o 
+OBJS=lwgeom_api.o lwgeom_functions_analytic.o lwgeom_geos.o lwgeom_inout.o lwgeom_estimate.o lwgeom_functions_basic.o lwgeom_gist.o lwgeom_btree.o lwgeom_transform.o stringBuffer.o lwgeom_box2dfloat4.o lex.yy.o wktparse.tab.o lwgparse.o wktunparse.o $(GEOS_WRAPPER)
 
 OTHERS=y.output lex.yy.c wktparse.tab.c wktparse.tab.h lwgeom.sql lwpostgis.sql
 
@@ -161,15 +165,20 @@ wktparse.tab.c: wktparse.y
 lex.yy.c: wktparse.lex wktparse.tab.c
 	$(FLEX) -Plwg_parse_yy -if -o'lex.yy.c' wktparse.lex 
 
-all: all-lib lwgeom.sql lwpostgis.sql
+lwgeom_geos_wrapper.o: lwgeom_geos_wrapper.cpp
+
+all: all-lib lwpostgis.sql
 
 # Shared library stuff
 
-lwgeom.sql: lwgeom.sql.in
-	cpp -P -traditional-cpp -DUSE_VERSION=$(USE_VERSION) $< | sed -e 's:@MODULE_FILENAME@:$(MODULE_FILENAME):g;s:@POSTGIS_VERSION@:$(POSTGIS_VERSION):g;s:@POSTGIS_SCRIPTS_VERSION@:$(SCRIPTS_VERSION):g' > $@
+#lwgeom.sql: lwgeom.sql.in
+#	cpp -P -traditional-cpp -DUSE_VERSION=$(USE_VERSION) $< | sed -e 's:@MODULE_FILENAME@:$(MODULE_FILENAME):g;s:@POSTGIS_VERSION@:$(POSTGIS_VERSION):g;s:@POSTGIS_SCRIPTS_VERSION@:$(SCRIPTS_VERSION):g' > $@
 
 lwpostgis.sql: lwpostgis.sql.in
 	cpp -P -traditional-cpp -DUSE_VERSION=$(USE_VERSION) $< | sed -e 's:@MODULE_FILENAME@:$(MODULE_FILENAME):g;s:@POSTGIS_VERSION@:$(POSTGIS_VERSION):g;s:@POSTGIS_SCRIPTS_VERSION@:$(SCRIPTS_VERSION):g' > $@
+
+detect_geos_version: 
+	./geos_version.sh $(GEOS_DIR) > postgis_geos_version.h
 
 install: all installdirs install-lwgeom-lib
 	$(INSTALL_DATA) lwgeom.sql $(DESTDIR)$(datadir)

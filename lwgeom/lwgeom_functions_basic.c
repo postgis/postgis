@@ -30,6 +30,9 @@ Datum LWGEOM_setSRID(PG_FUNCTION_ARGS);
 Datum combine_box2d(PG_FUNCTION_ARGS);
 Datum lwgeom_mem_size(PG_FUNCTION_ARGS);
 Datum lwgeom_summary(PG_FUNCTION_ARGS);
+Datum postgis_uses_stats(PG_FUNCTION_ARGS);
+Datum postgis_scripts_released(PG_FUNCTION_ARGS);
+Datum postgis_lib_version(PG_FUNCTION_ARGS);
 
 // getSRID(lwgeom) :: int4
 PG_FUNCTION_INFO_V1(LWGEOM_getSRID);
@@ -265,4 +268,36 @@ Datum lwgeom_summary(PG_FUNCTION_ARGS)
 	memcpy(VARDATA(mytext) , result, strlen(result) );
 	pfree(result);
 	PG_RETURN_POINTER(mytext);
+}
+
+PG_FUNCTION_INFO_V1(postgis_lib_version);
+Datum postgis_lib_version(PG_FUNCTION_ARGS)
+{
+	char *ver = POSTGIS_LIB_VERSION;
+	text *result;
+	result = (text *) palloc(VARHDRSZ  + strlen(ver));
+	VARATT_SIZEP(result) = VARHDRSZ + strlen(ver) ;
+	memcpy(VARDATA(result), ver, strlen(ver));
+	PG_RETURN_POINTER(result);
+}
+
+PG_FUNCTION_INFO_V1(postgis_scripts_released);
+Datum postgis_scripts_released(PG_FUNCTION_ARGS)
+{
+	char *ver = POSTGIS_SCRIPTS_VERSION;
+	text *result;
+	result = (text *) palloc(VARHDRSZ  + strlen(ver));
+	VARATT_SIZEP(result) = VARHDRSZ + strlen(ver) ;
+	memcpy(VARDATA(result), ver, strlen(ver));
+	PG_RETURN_POINTER(result);
+}
+
+PG_FUNCTION_INFO_V1(postgis_uses_stats);
+Datum postgis_uses_stats(PG_FUNCTION_ARGS)
+{
+#ifdef USE_STATS
+	PG_RETURN_BOOL(TRUE);
+#else
+	PG_RETURN_BOOL(FALSE);
+#endif
 }
