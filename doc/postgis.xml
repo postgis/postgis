@@ -446,7 +446,7 @@
       <para>The loader is called <filename>shp2pgsql</filename> and converts
       ESRI Shape files into SQL suitable for loading in PostGIS/PostgreSQL.
       The dumper is called <filename>pgsql2shp</filename> and converts PostGIS
-      tables into ESRI Shape files.</para>
+      tables (or queries) into ESRI Shape files.</para>
     </sect1>
   </chapter>
 
@@ -1302,23 +1302,16 @@ WHERE
         <title>Using the Dumper</title>
 
         <para>The <filename>pgsql2shp</filename> table dumper connects
-        directly to the database and converts a table into a shape file. The
+        directly to the database and converts a table (possibly defined by
+	a query) into a shape file. The
         basic syntax is:</para>
 
-        <programlisting>pgsql2shp [&lt;options&gt;] &lt;database&gt; &lt;table&gt;</programlisting>
+        <programlisting>pgsql2shp [&lt;options&gt;] &lt;database&gt; [&lt;schema&gt;.]&lt;table&gt;</programlisting>
+        <programlisting>pgsql2shp [&lt;options&gt;] &lt;database&gt; &lt;query&gt;</programlisting>
 
         <para>The commandline options are:</para>
 
         <variablelist>
-          <varlistentry>
-            <term>-d</term>
-
-            <listitem>
-              <para>Write a 3-dimensional shape file. The default is to write
-              a 2-dimensional shape file.</para>
-            </listitem>
-          </varlistentry>
-
           <varlistentry>
             <term>-f &lt;filename&gt;</term>
 
@@ -1388,6 +1381,19 @@ WHERE
               escape column names.</para>
             </listitem>
           </varlistentry>
+
+          <varlistentry>
+            <term>-d</term>
+
+            <listitem>
+	      <para>For backward compatibility: write a 3-dimensional shape
+	      file when dumping from old (pre-1.0.0) postgis databases (the
+	      default is to write a 2-dimensional shape file in that case).
+	      Starting from postgis-1.0.0+, dimensions are fully encoded.
+	      </para>
+            </listitem>
+          </varlistentry>
+
         </variablelist>
       </sect2>
     </sect1>
