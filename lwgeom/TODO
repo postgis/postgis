@@ -1,3 +1,4 @@
+- port LINESTRING extension to LWGEOM
 
 - WKB support in loader (canonical form is OK)
 
