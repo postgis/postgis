@@ -594,8 +594,9 @@ pointArray_construct(uchar *points, char hasz, char hasm,
 	pa->npoints = npoints;
 
 	size=(2+hasz+hasm)*sizeof(double)*npoints;
-	pa->serialized_pointlist = lwalloc(size);
-	memcpy(pa->serialized_pointlist, points, size);
+	//pa->serialized_pointlist = lwalloc(size);
+	//memcpy(pa->serialized_pointlist, points, size);
+	pa->serialized_pointlist = points;
 
 	return pa;
 }
