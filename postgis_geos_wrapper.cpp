@@ -2,6 +2,12 @@
 
 /*
 * $Log$
+* Revision 1.11  2003/10/24 08:28:50  strk
+* Fixed memory leak in GEOSGetCoordinates(), made sure that GEOS2POSTGIS
+* free type string even in case of collapsed geoms. Made sure that geomunion
+* release memory in case of exception thrown by GEOSUnion. Sooner release
+* of palloced memory in PolyFromGeometry (pts_per_ring).
+*
 * Revision 1.10  2003/10/20 19:50:49  strk
 * Removed some memory leaks in PostGIS2* converters.
 *
@@ -1083,7 +1089,8 @@ POINT3D  *GEOSGetCoordinates(Geometry *g1)
 		int numPoints = g1->getNumPoints();
 		POINT3D *result = (POINT3D*) malloc (sizeof(POINT3D) * numPoints );
 		int t;
-		CoordinateList *cl = g1->getCoordinates();
+		LineString *ls = (LineString *)g1;
+		const CoordinateList *cl = ls->getCoordinatesRO();
 		Coordinate		c;
 
 		for (t=0;t<numPoints;t++)

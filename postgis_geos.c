@@ -10,6 +10,12 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.13  2003/10/24 08:28:49  strk
+ * Fixed memory leak in GEOSGetCoordinates(), made sure that GEOS2POSTGIS
+ * free type string even in case of collapsed geoms. Made sure that geomunion
+ * release memory in case of exception thrown by GEOSUnion. Sooner release
+ * of palloced memory in PolyFromGeometry (pts_per_ring).
+ *
  * Revision 1.12  2003/10/16 20:16:18  dblasby
  * Added NOTICE_HANDLER function.  For some reason this didnt get properly
  * committed last time.
@@ -223,34 +229,28 @@ Datum geomunion(PG_FUNCTION_ARGS)
 
 	if (g3 == NULL)
 	{
-		elog(ERROR,"GEOS union() threw an error!");
 		GEOSdeleteGeometry(g1);
 		GEOSdeleteGeometry(g2);
+		elog(ERROR,"GEOS union() threw an error!");
 		PG_RETURN_NULL(); //never get here
 	}
-
 
 //elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
 
 	result = GEOS2POSTGIS(g3, geom1->is3d || geom2->is3d);
 
+	GEOSdeleteGeometry(g1);
+	GEOSdeleteGeometry(g2);
+	GEOSdeleteGeometry(g3);
+
 	if (result == NULL)
 	{
-		GEOSdeleteGeometry(g1);
-		GEOSdeleteGeometry(g2);
-		GEOSdeleteGeometry(g3);
 		elog(ERROR,"GEOS union() threw an error (result postgis geometry formation)!");
 		PG_RETURN_NULL(); //never get here
 	}
 
-
-
-		GEOSdeleteGeometry(g1);
-		GEOSdeleteGeometry(g2);
-		GEOSdeleteGeometry(g3);
-
-		compressType(result);  // convert multi* to single item if appropriate
-		PG_RETURN_POINTER(result);
+	compressType(result);  // convert multi* to single item if appropriate
+	PG_RETURN_POINTER(result);
 }
 
 
@@ -1126,6 +1126,7 @@ POLYGON3D *PolyFromGeometry(Geometry *g, int *size)
 
 
 		GEOSdeleteChar( (char*) pts);
+		pfree(pts_per_ring);
 		return poly;
 }
 
@@ -1170,6 +1171,8 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 	{
 		POINT3D *pt = GEOSGetCoordinate(g);
 
+		free(type);
+
 		result = make_oneobj_geometry(sizeof(POINT3D),
 						        (char *) pt,
 							   POINTTYPE,  want3d, GEOSGetSRID(g),1.0, 0.0, 0.0
@@ -1177,13 +1180,14 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 
 
 		GEOSdeleteChar( (char*) pt);
-		free(type);
 		return result;
 	}
 	else if (strcmp(type,"LineString")==0)
 	{
 		LINE3D	*line;
 		int size;
+
+		free(type);
 
 		line = LineFromGeometry(g,&size);
 		if (line == NULL)
@@ -1194,16 +1198,14 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 						        (char *) line,
 							   LINETYPE,  want3d, GEOSGetSRID(g),1.0, 0.0, 0.0
 						);
-		free(type);
 		return result;
 	}
 	else if (strcmp(type,"Polygon")==0)
 	{
-
 		int size;
 		POLYGON3D *poly;
 
-
+		free(type);
 
 		poly = PolyFromGeometry(g,&size);
 		if (poly == NULL)
@@ -1213,7 +1215,6 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 						        (char *) poly,
 							   POLYGONTYPE,  want3d, GEOSGetSRID(g),1.0, 0.0, 0.0
 						);
-		free(type);
 		return result;
 	}
 	else if (strcmp(type,"MultiPoint")==0)
@@ -1221,6 +1222,8 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 		int ngeoms,t;
 		POINT3D *pts;
 		GEOMETRY *g_new,*g_old;
+
+		free(type);
 
 		g_new = NULL;
 
@@ -1251,7 +1254,6 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 		bbox = bbox_of_geometry( g_new ); // make bounding box
 		memcpy( &g_new->bvol, bbox, sizeof(BOX3D) ); // copy bounding box
 		pfree( bbox ); // free bounding box
-		free(type);
 
 		return g_new;
 	}
@@ -1261,6 +1263,7 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 		LINE3D *line;
 		GEOMETRY *g_old;
 
+		free(type);
 
 		ngeoms = 	GEOSGetNumGeometries(g);
 		if (ngeoms ==0)
@@ -1294,7 +1297,6 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 		bbox = bbox_of_geometry( result ); // make bounding box
 		memcpy( &result->bvol, bbox, sizeof(BOX3D) ); // copy bounding box
 		pfree( bbox ); // free bounding box
-		free(type);
 //elog(NOTICE,"end; %s",geometry_to_text(result));
 //elog(NOTICE,"    size = %i", result->size);
 		return result;
@@ -1306,6 +1308,7 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 		POLYGON3D *poly;
 		GEOMETRY *g_old;
 
+		free(type); // before we forget ;)
 
 		ngeoms = 	GEOSGetNumGeometries(g);
 		if (ngeoms ==0)
@@ -1314,11 +1317,12 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 			result->type = MULTIPOLYGONTYPE;
 			return result;
 		}
+
 		for (t=0;t<ngeoms;t++)
 		{
+			poly = PolyFromGeometry(GEOSGetGeometryN(g,t) ,&size);
 			if (t==0)
 			{
-				poly = PolyFromGeometry(GEOSGetGeometryN(g,0) ,&size);
 				result = make_oneobj_geometry(size,
 						        (char *) poly,
 							   MULTIPOLYGONTYPE,  want3d, GEOSGetSRID(g),1.0, 0.0, 0.0
@@ -1326,16 +1330,15 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 			}
 			else
 			{
-				poly = PolyFromGeometry(GEOSGetGeometryN(g,t) ,&size);
 				g_old = result;
 				result = 	add_to_geometry(g_old,size, (char*) poly, POLYGONTYPE);
 				pfree(g_old);
 			}
+			pfree(poly);
 		}
 		bbox = bbox_of_geometry( result ); // make bounding box
 	    memcpy( &result->bvol, bbox, sizeof(BOX3D) ); // copy bounding box
 		pfree( bbox ); // free bounding box
-		free(type);
 		return result;
 	}
 	else if (strcmp(type,"GeometryCollection")==0)
@@ -1344,6 +1347,8 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 		int ngeoms = 	GEOSGetNumGeometries(g);
 		GEOMETRY *geom, *g2, *r;
 		int t;
+
+		free(type);
 
 		if (ngeoms ==0)
 		{
@@ -1368,9 +1373,9 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 			pfree(r);
 			pfree(g2);
 		}
-		free(type);
 		return geom;
 	}
+	free(type); // Unknown geometry type
 	return NULL;
 }
 
