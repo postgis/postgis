@@ -55,7 +55,7 @@ char	*make_good_string(char *str)
 
 	while (str2 = strchr(str2, '\t') )
 	{
-		if ( (str2 == str) || (str2[-1] != '\\') ) //the previous char isnt a \
+		if ( (str2 == str) || (str2[-1] != '\\') ) //the previous char isnt a '\'
 			num_tabs ++;
 		str2++;
 	}
@@ -68,7 +68,7 @@ char	*make_good_string(char *str)
 
 	while(end = strchr(start,'\t'))
 	{
-		if ( (end == str) || (end[-1] != '\\' ) ) //the previous char isnt a \
+		if ( (end == str) || (end[-1] != '\\' ) ) //the previous char isnt a '\'
 		{
 			strncat(result, start, (end-start));	
 			strcat(result,"\\\t");
@@ -102,7 +102,7 @@ char	*protect_quotes_string(char *str)
 
 	while (str2 = strchr(str2, '\'') )
 	{
-		if ( (str2 == str) || (str2[-1] != '\\') ) //the previous char isnt a \
+		if ( (str2 == str) || (str2[-1] != '\\') ) //the previous char isnt a '\'
 			num_tabs ++;
 		str2++;
 	}
@@ -115,7 +115,7 @@ char	*protect_quotes_string(char *str)
 
 	while(end = strchr(start,'\''))
 	{
-		if ( (end == str) || (end[-1] != '\\' ) ) //the previous char isnt a \
+		if ( (end == str) || (end[-1] != '\\' ) ) //the previous char isnt a '\'
 		{
 
 			strncat(result, start, (end-start));	
