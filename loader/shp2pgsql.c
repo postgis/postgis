@@ -55,19 +55,17 @@ typedef struct Ring {
 	unsigned int linked; // number of "next" rings
 } Ring;
 
-
 /* globals */
 int	dump_format = 0; //0=insert statements, 1 = dump
 int	quoteidentifiers = 0;
 int	forceint4 = 0;
-char    opt;
+char    opt = ' ';
 char    *col_names;
-char    *geom;
 char	*pgtype;
-int	istypeM;
+int	istypeM = 0;
 int	pgdims;
 unsigned int wkbtype;
-char  	*shp_file;
+char  	*shp_file = NULL;
 int	hwgeom = 0; // old (hwgeom) mode
 #ifdef USE_ICONV
 char	*encoding=NULL;
@@ -77,13 +75,13 @@ DBFFieldType *types;	/* Fields type, width and precision */
 SHPHandle  hSHPHandle;
 DBFHandle  hDBFHandle;
 int shpfiletype;
-SHPObject  *obj;
+SHPObject  *obj=NULL;
 int 	*widths;
 int 	*precisions;
-char    *table,*schema;
-int     num_fields,num_records;
+char    *table=NULL,*schema=NULL,*geom=NULL;
+int     num_fields,num_records,num_entities;
 char    **field_names;
-char 	*sr_id;
+char 	*sr_id = NULL;
 
 /* Prototypes */
 int Insert_attributes(DBFHandle hDBFHandle, int row);
@@ -91,7 +89,7 @@ char *make_good_string(char *str);
 char *protect_quotes_string(char *str);
 int PIP( Point P, Point* V, int n );
 void *safe_malloc(size_t size);
-void create_table(void);
+void CreateTable(void);
 void usage(char *me, int exitcode);
 void InsertPoint(void);
 void InsertPointWKT(void);
@@ -100,12 +98,21 @@ void InsertPolygon(void);
 void InsertPolygonWKT(void);
 void InsertLineString(int id);
 void InsertLineStringWKT(int id);
-int parse_cmdline(int ARGC, char **ARGV);
+int ParseCmdline(int ARGC, char **ARGV);
 void SetPgType(void);
 char *dump_ring(Ring *ring);
 #ifdef USE_ICONV
 char *utf8(const char *fromcode, char *inputbuf);
 #endif
+int FindPolygons(SHPObject *obj, Ring ***Out);
+void ReleasePolygons(Ring **polys, int npolys);
+void DropTable(char *schema, char *table, char *geom);
+void GetFieldsSpec(void);
+void LoadData(void);
+void UpdateSerials(void);
+void OpenShape(void);
+void LowerCase(char *s);
+void Cleanup(void);
 
 
 // WKB
@@ -342,54 +349,20 @@ Insert_attributes(DBFHandle hDBFHandle, int row)
 int
 main (int ARGC, char **ARGV)
 {
-	int trans,field_precision, field_width;
-	int num_entities, phnshapetype;
-	double padminbound[8], padmaxbound[8];
-	int j,z;
-	char  name[64];
-	char  name2[64];
-	DBFFieldType type = -1;
-	extern char *optarg;
-	extern int optind;
 
-	istypeM = 0;
-
-	opt = ' ';
-	j=0;
-	sr_id = shp_file = table = schema = geom = NULL;
-	obj=NULL;
-
-	if ( ! parse_cmdline(ARGC, ARGV) ) usage(ARGV[0], 2);
-
-	/* 
-	 * Transform table name to lower case unless asked
-	 * to keep original case (we'll quote it later on)
+	/*
+	 * Parse command line
 	 */
-	if ( ! quoteidentifiers )
-	{
-		for (j=0; j<strlen(table); j++) table[j] = tolower(table[j]);
-		if ( schema )
-		{
-			for (j=0; j<strlen(schema); j++)
-				schema[j] = tolower(schema[j]);
-		}
-	}
+	if ( ! ParseCmdline(ARGC, ARGV) ) usage(ARGV[0], 2);
 
+	/*
+	 * Open shapefile and initialize globals
+	 */
+	OpenShape();
 
-	//Open the shp and dbf files
-	hSHPHandle = SHPOpen( shp_file, "rb" );
-	if (hSHPHandle == NULL) {
-		fprintf(stderr, "%s: shape (.shp) or index files (.shx) can not be opened.\n", shp_file);
-		exit(-1);
-	}
-	hDBFHandle = DBFOpen( shp_file, "rb" );
-	if (hSHPHandle == NULL || hDBFHandle == NULL){
-		fprintf(stderr, "%s: dbf file (.dbf) can not be opened.\n",
-			shp_file);
-		exit(-1);
-	}
-
-	SHPGetInfo(hSHPHandle, NULL, &shpfiletype, NULL, NULL);
+	/*
+	 * Compute output geometry type
+	 */
 	SetPgType();
 
 	fprintf(stderr, "Shapefile type: %s\n", SHPTypeName(shpfiletype));
@@ -402,137 +375,201 @@ main (int ARGC, char **ARGV)
 	}
 #endif // defined USE_ICONV
 
-	if(opt == 'd')
-	{
-		//---------------Drop the table--------------------------
-		// TODO: if the table has more then one geometry column
-		// the DROP TABLE call will leave spurious records in
-		// geometry_columns. 
-		//
-		// If the geometry column in the table being dropped
-		// does not match 'the_geom' or the name specified with
-		// -g an error is returned by DropGeometryColumn. 
-		//
-		// The table to be dropped might not exist.
-		//
-		if ( schema )
-		{
-			printf("SELECT DropGeometryColumn('%s','%s','%s');\n",
-				schema, table, geom);
-			printf("DROP TABLE \"%s\".\"%s\";\n", schema, table);
-		}
-		else
-		{
-			printf("SELECT DropGeometryColumn('','%s','%s');\n",
-				table, geom);
-			printf("DROP TABLE \"%s\";\n", table);
-		}
-	}
-
+	/*
+	 * Drop table if requested
+	 */
+	if(opt == 'd') DropTable(schema, table, geom);
 
 	/*
-	 * Get col names and types to fully specify them in inserts
+	 * Get col names and types for table creation
+	 * and data load.
 	 */
-	num_fields = DBFGetFieldCount( hDBFHandle );
-	num_records = DBFGetRecordCount(hDBFHandle);
-	field_names = malloc(num_fields*sizeof(char*));
-	types = (DBFFieldType *)malloc(num_fields*sizeof(int));
-	widths = malloc(num_fields*sizeof(int));
-	precisions = malloc(num_fields*sizeof(int));
-	col_names = malloc((num_fields+2) * sizeof(char) * 32);
-	if(opt != 'a'){
-		strcpy(col_names, "(gid," );
-	}else{
-		strcpy(col_names, "(" );
-	}
-
-	//fprintf(stderr, "Number of fields from DBF: %d\n", num_fields);
-	for(j=0;j<num_fields;j++)
-	{
-		type = DBFGetFieldInfo(hDBFHandle, j, name, &field_width, &field_precision); 
-
-//fprintf(stderr, "Field %d (%s) width/decimals: %d/%d\n", j, name, field_width, field_precision);
-		types[j] = type;
-		widths[j] = field_width;
-		precisions[j] = field_precision;
-
-		/*
-		 * Make field names lowercase unless asked to
-		 * keep identifiers case.
-		 */
-		if ( ! quoteidentifiers ) {
-			for(z=0; z<strlen(name) ;z++)
-				name[z] = tolower(name[z]);
-		}
-
-		/*
-		 * Escape names starting with the
-		 * escape char (_)
-		 */
-		if( name[0]=='_' )
-		{
-			strcpy(name2+2, name);
-			name2[0] = '_';
-			name2[1] = '_';
-			strcpy(name, name2);
-		}
-
-		/*
-		 * Escape attributes named 'gid'
-		 * and pgsql reserved attribute names
-		 */
-		else if(
-			! strcmp(name,"gid") ||
-			! strcmp(name, "tableoid") ||
-			! strcmp(name, "cmax") ||
-			! strcmp(name, "xmax") ||
-			! strcmp(name, "cmin") ||
-			! strcmp(name, "primary") ||
-			! strcmp(name, "oid") ||
-			! strcmp(name, "ctid")
-		) {
-			strcpy(name2+2, name);
-			name2[0] = '_';
-			name2[1] = '_';
-			strcpy(name, name2);
-		}
-
-		/* Avoid duplicating field names */
-		for(z=0; z < j ; z++){
-			if(strcmp(field_names[z],name)==0){
-				strcat(name,"__");
-				sprintf(name,"%s%i",name,j);
-				break;
-			}
-		}	
-
-
-		field_names[j] = malloc ( strlen(name)+3 );
-		strcpy(field_names[j], name);
-
-		sprintf(col_names, "%s\"%s\",", col_names, name);
-	}
-	sprintf(col_names, "%s\"%s\")", col_names, geom);
-
-
-	SHPGetInfo( hSHPHandle, &num_entities, &phnshapetype, &padminbound[0], &padmaxbound[0]);
-	j=num_entities;
-	while( ( obj == NULL || obj->nVertices == 0 ) && j--)
-	{
-		obj = SHPReadObject(hSHPHandle,j);
-	}
-	if ( obj == NULL) 
-	{
-		fprintf(stderr, "Shapefile contains %d NULL object(s)\n", num_entities);
-		exit(-1);
-	}
-
-	trans=0;
+	GetFieldsSpec();
 
 	printf("BEGIN;\n");
 
-	//if opt is 'a' do nothing, go straight to making inserts
-	if(opt == 'c' || opt == 'd') create_table();
+	/*
+	 * If not in 'append' mode create the spatial table
+	 */
+	if(opt != 'a') CreateTable();
+
+	/*
+	 * Generate INSERT or COPY lines
+	 */
+	LoadData();
+
+	/*
+	 * If not in 'append' mode update sequence numbering
+	 */
+	if(opt != 'a') UpdateSerials();
+
+	printf("END;\n"); // End the last transaction
+
+
+	return(1);
+}//end main()
+
+void
+LowerCase(char *s)
+{
+	int j;
+	for (j=0; j<strlen(s); j++) s[j] = tolower(s[j]);
+}
+
+void
+Cleanup(void)
+{
+	if ( col_names ) free(col_names);
+}
+
+void
+OpenShape(void)
+{
+	int j;
+
+	hSHPHandle = SHPOpen( shp_file, "rb" );
+	if (hSHPHandle == NULL) {
+		fprintf(stderr, "%s: shape (.shp) or index files (.shx) can not be opened.\n", shp_file);
+		exit(-1);
+	}
+	hDBFHandle = DBFOpen( shp_file, "rb" );
+	if (hSHPHandle == NULL || hDBFHandle == NULL){
+		fprintf(stderr, "%s: dbf file (.dbf) can not be opened.\n",
+			shp_file);
+		exit(-1);
+	}
+	SHPGetInfo(hSHPHandle, &num_entities, &shpfiletype, NULL, NULL);
+
+	/* Check we have at least a not-null geometry */
+	j=num_entities;
+	while( ( obj == NULL || obj->nVertices == 0 ) && j--)
+		obj = SHPReadObject(hSHPHandle,j);
+	if ( obj == NULL) 
+	{
+		fprintf(stderr, "Shapefile contains %d NULL object(s)\n",
+			num_entities);
+		exit(-1);
+	}
+
+}
+
+void
+UpdateSerials(void)
+{
+	if ( schema )
+	{
+		if(num_entities>1){
+			printf("SELECT setval('\"%s\".\"%s_gid_seq\"', %i, true);\n", schema, table, num_entities-1);
+		}
+	}
+	else
+	{
+		if(num_entities>1){
+			printf("SELECT setval('\"%s_gid_seq\"', %i, true);\n", table, num_entities-1);
+		}
+	}
+}
+
+void
+CreateTable(void)
+{
+	int j;
+	int field_precision, field_width;
+	DBFFieldType type = -1;
+
+	/* 
+	 * Create a table for inserting the shapes into with appropriate
+	 * columns and types
+	 */
+
+	if ( schema )
+	{
+		printf("CREATE TABLE \"%s\".\"%s\" (gid serial PRIMARY KEY",
+			schema, table);
+	}
+	else
+	{
+		printf("CREATE TABLE \"%s\" (gid serial PRIMARY KEY", table);
+	}
+
+	for(j=0;j<num_fields;j++)
+	{
+		type = types[j];
+		field_width = widths[j];
+		field_precision = precisions[j];
+
+		printf(", \"%s\" ", field_names[j]);
+
+		if(hDBFHandle->pachFieldType[j] == 'D' ) /* Date field */
+		{
+			printf ("varchar(8)");//date data-type is not supported in API so check for it explicity before the api call.
+		}
+			
+		else
+		{
+
+			if(type == FTString)
+			{
+				printf ("varchar");
+			}
+			else if(type == FTInteger)
+			{
+				if ( forceint4 || field_width <= 9 )
+				{
+					printf ("int4");
+				}
+				else if( field_width > 18 )
+				{
+					printf("numeric(%d,0)",
+						field_width);
+				}
+				else 
+				{
+					printf ("int8");
+				}
+			}
+			else if(type == FTDouble)
+			{
+				if( field_width > 18 )
+				{
+					printf ("numeric");
+				}
+				else
+				{
+					printf ("float8");
+				}
+			}
+			else if(type == FTLogical)
+			{
+				printf ("boolean");
+			}
+			else
+			{
+				printf ("Invalid type in DBF file");
+			}
+		}	
+	}
+	printf (");\n");
+
+	//create the geometry column with an addgeometry call to dave's function
+	if ( schema )
+	{
+		printf("SELECT AddGeometryColumn('%s','%s','%s','%s',",
+			schema, table, geom, sr_id);
+	}
+	else
+	{
+		printf("SELECT AddGeometryColumn('','%s','%s','%s',",
+			table, geom, sr_id);
+	}
+
+	printf("'%s',%d);\n", pgtype, pgdims);
+}
+
+void
+LoadData(void)
+{
+	int j, trans=0;
 
 	if (dump_format){
 		if ( schema )
@@ -547,15 +584,13 @@ main (int ARGC, char **ARGV)
 		}
 	}
 
-	obj = SHPReadObject(hSHPHandle,0);
-	
 
-/**************************************************************
- * 
- *   MAIN SHAPE OBJECTS SCAN
- * 
- **************************************************************/
-	for (j=0;j<num_entities; j++)
+	/**************************************************************
+	 * 
+	 *   MAIN SHAPE OBJECTS SCAN
+	 * 
+	 **************************************************************/
+	for (j=0; j<num_entities; j++)
 	{
 		//wrap a transaction block around each 250 inserts...
 		if ( ! dump_format )
@@ -653,125 +688,6 @@ main (int ARGC, char **ARGV)
 		printf("\\.\n");
 
 	} 
-
-	free(col_names);
-	if(opt != 'a')
-	{
-		if ( schema )
-		{
-			printf("\nALTER TABLE ONLY \"%s\".\"%s\" ADD CONSTRAINT \"%s_pkey\" PRIMARY KEY (gid);\n",schema,table,table);
-			if(j > 1)
-			{
-				printf("SELECT setval ('\"%s\".\"%s_gid_seq\"', %i, true);\n", schema, table, j-1);
-			}
-		}
-		else
-		{
-			printf("\nALTER TABLE ONLY \"%s\" ADD CONSTRAINT \"%s_pkey\" PRIMARY KEY (gid);\n",table,table);
-			if(j > 1){
-				printf("SELECT setval ('\"%s_gid_seq\"', %i, true);\n", table, j-1);
-			}
-		}
-	}
-
-	printf("END;\n"); //End the last transaction
-
-	return(1);
-}//end main()
-
-void
-create_table(void)
-{
-	int j;
-	int field_precision, field_width;
-	DBFFieldType type = -1;
-
-	/* 
-	 * Create a table for inserting the shapes into with appropriate
-	 * columns and types
-	 */
-
-	if ( schema )
-	{
-		printf("CREATE TABLE \"%s\".\"%s\" (gid serial", schema, table);
-	}
-	else
-	{
-		printf("CREATE TABLE \"%s\" (gid serial", table);
-	}
-
-	for(j=0;j<num_fields;j++)
-	{
-		type = types[j];
-		field_width = widths[j];
-		field_precision = precisions[j];
-
-		printf(", \"%s\" ", field_names[j]);
-
-		if(hDBFHandle->pachFieldType[j] == 'D' ) /* Date field */
-		{
-			printf ("varchar(8)");//date data-type is not supported in API so check for it explicity before the api call.
-		}
-			
-		else
-		{
-
-			if(type == FTString)
-			{
-				printf ("varchar");
-			}
-			else if(type == FTInteger)
-			{
-				if ( forceint4 || field_width <= 9 )
-				{
-					printf ("int4");
-				}
-				else if( field_width > 18 )
-				{
-					printf("numeric(%d,0)",
-						field_width);
-				}
-				else 
-				{
-					printf ("int8");
-				}
-			}
-			else if(type == FTDouble)
-			{
-				if( field_width > 18 )
-				{
-					printf ("numeric");
-				}
-				else
-				{
-					printf ("float8");
-				}
-			}
-			else if(type == FTLogical)
-			{
-				printf ("boolean");
-			}
-			else
-			{
-				printf ("Invalid type in DBF file");
-			}
-		}	
-	}
-	printf (");\n");
-
-	//create the geometry column with an addgeometry call to dave's function
-	if ( schema )
-	{
-		printf("SELECT AddGeometryColumn('%s','%s','%s','%s',",
-			schema, table, geom, sr_id);
-	}
-	else
-	{
-		printf("SELECT AddGeometryColumn('','%s','%s','%s',",
-			table, geom, sr_id);
-	}
-
-	printf("'%s',%d);\n", pgtype, pgdims);
 }
 
 void
@@ -920,25 +836,20 @@ InsertLineStringWKT(int id)
 	else printf(")',%s) );\n",sr_id);
 }
 
-//This function basically deals with the polygon case.
-//it sorts the polys in order of outer,inner,inner, so that inners
-//always come after outers they are within 
-void
-InsertPolygon(void)
+int
+FindPolygons(SHPObject *obj, Ring ***Out)
 {
 	Ring **Outer;    // Pointers to Outer rings
 	int out_index=0; // Count of Outer rings
 	Ring **Inner;    // Pointers to Inner rings
 	int in_index=0;  // Count of Inner rings
 	int pi; // part index
-	unsigned int subtype = POLYGONTYPE | (wkbtype&WKBZOFFSET) | 
-		(wkbtype&WKBMOFFSET);
 
 #ifdef DEBUG
 	static int call = -1;
 	call++;
 
-	fprintf(stderr, "InsertPolygon[%d]: allocated space for %d rings\n",
+	fprintf(stderr, "FindPolygons[%d]: allocated space for %d rings\n",
 		call, obj->nParts);
 #endif
 
@@ -1006,7 +917,7 @@ InsertPolygon(void)
 	}
 
 #ifdef DEBUG
-	fprintf(stderr, "InsertPolygon[%d]: found %d Outer, %d Inners\n",
+	fprintf(stderr, "FindPolygons[%d]: found %d Outer, %d Inners\n",
 		call, out_index, in_index);
 #endif
 
@@ -1049,13 +960,51 @@ InsertPolygon(void)
 			// assume it is a new outer ring.
 #ifdef DEBUG
 			fprintf(stderr,
-				"InsertPolygon[%d]: hole %d is orphan\n",
+				"FindPolygons[%d]: hole %d is orphan\n",
 				call, pi);
 #endif
 			Outer[out_index] = inner;
 			out_index++;
 		}
 	}
+
+	*Out = Outer;
+	free(Inner);
+
+	return out_index;
+}
+
+void
+ReleasePolygons(Ring **polys, int npolys)
+{
+	int pi;
+	// Release all memory
+	for(pi=0; pi<npolys; pi++)
+	{
+		Ring *Poly, *temp;
+		Poly = polys[pi];
+		while(Poly != NULL){
+			temp = Poly;
+			Poly = Poly->next;
+			free(temp->list);
+			free(temp);
+		}
+	}
+}
+
+//This function basically deals with the polygon case.
+//it sorts the polys in order of outer,inner,inner, so that inners
+//always come after outers they are within 
+void
+InsertPolygon(void)
+{
+	unsigned int subtype = POLYGONTYPE | (wkbtype&WKBZOFFSET) | 
+		(wkbtype&WKBMOFFSET);
+	Ring **Outer;
+	int out_index;
+	int pi; // part index
+
+	out_index = FindPolygons(obj, &Outer);
 
 	if (!dump_format) printf("'");
 	if ( sr_id && sr_id != "-1" ) printf("SRID=%s;", sr_id);
@@ -1100,19 +1049,8 @@ InsertPolygon(void)
 	else printf("');\n");
 
 	// Release all memory
-	for(pi=0; pi<out_index; pi++)
-	{
-		Ring *Poly, *temp;
-		Poly = Outer[pi];
-		while(Poly != NULL){
-			temp = Poly;
-			Poly = Poly->next;
-			free(temp->list);
-			free(temp);
-		}
-	}
+	ReleasePolygons(Outer, out_index);
 	free(Outer);
-	free(Inner);
 }
 
 void
@@ -1120,8 +1058,6 @@ InsertPolygonWKT(void)
 {
 	Ring **Outer;    // Pointers to Outer rings
 	int out_index=0; // Count of Outer rings
-	Ring **Inner;    // Pointers to Inner rings
-	int in_index=0;  // Count of Inner rings
 	int pi; // part index
 
 #ifdef DEBUG
@@ -1132,120 +1068,7 @@ InsertPolygonWKT(void)
 		call, obj->nParts);
 #endif
 
-	// Allocate initial memory
-	Outer = (Ring**)malloc(sizeof(Ring*)*obj->nParts);
-	Inner = (Ring**)malloc(sizeof(Ring*)*obj->nParts);
-
-	// Iterate over rings dividing in Outers and Inners
-	for (pi=0; pi<obj->nParts; pi++)
-	{
-		int vi; // vertex index
-		int vs; // start index
-		int ve; // end index
-		int nv; // number of vertex
-		double area = 0.0;
-		Ring *ring;
-
-		// Set start and end vertexes
-		if ( pi==obj->nParts-1 ) ve = obj->nVertices;
-		else ve = obj->panPartStart[pi+1];
-		vs = obj->panPartStart[pi];
-
-		// Compute number of vertexes
-		nv = ve-vs;
-
-		// Allocate memory for a ring
-		ring = (Ring*)malloc(sizeof(Ring));
-		ring->list = (Point*)malloc(sizeof(Point)*nv);
-		ring->n = nv;
-		ring->next = NULL;
-		ring->linked = 0;
-
-		// Iterate over ring vertexes
-		for ( vi=vs; vi<ve; vi++)
-		{
-			int vn = vi+1; // next vertex for area
-			if ( vn==ve ) vn = vs;
-
-			ring->list[vi-vs].x = obj->padfX[vi];
-			ring->list[vi-vs].y = obj->padfY[vi];
-			ring->list[vi-vs].z = obj->padfZ[vi];
-			ring->list[vi-vs].m = obj->padfM[vi];
-
-			area += (obj->padfX[vi] * obj->padfY[vn]) -
-				(obj->padfY[vi] * obj->padfX[vn]); 
-		}
-
-		// Close the ring with first vertex 
-		//ring->list[vi].x = obj->padfX[vs];
-		//ring->list[vi].y = obj->padfY[vs];
-		//ring->list[vi].z = obj->padfZ[vs];
-		//ring->list[vi].m = obj->padfM[vs];
-
-		// Clockwise (or single-part). It's an Outer Ring !
-		if(area < 0.0 || obj->nParts ==1) {
-			Outer[out_index] = ring;
-			out_index++;
-		}
-
-		// Counterclockwise. It's an Inner Ring !
-		else {
-			Inner[in_index] = ring;
-			in_index++;
-		}
-	}
-
-#ifdef DEBUG
-	fprintf(stderr, "InsertPolygon[%d]: found %d Outer, %d Inners\n",
-		call, out_index, in_index);
-#endif
-
-	// Put the inner rings into the list of the outer rings
-	// of which they are within
-	for(pi=0; pi<in_index; pi++)
-	{
-		Point pt,pt2;
-		int i;
-		Ring *inner=Inner[pi], *outer=NULL;
-
-		pt.x = inner->list[0].x;
-		pt.y = inner->list[0].y;
-
-		pt2.x = inner->list[1].x;
-		pt2.y = inner->list[1].y;
-
-		for(i=0; i<out_index; i++)
-		{
-			int in;
-
-			in = PIP(pt, Outer[i]->list, Outer[i]->n);
-			if( in || PIP(pt2, Outer[i]->list, Outer[i]->n) )
-			{
-				outer = Outer[i];
-				break;
-			}
-			//fprintf(stderr, "!PIP %s\nOUTE %s\n", dump_ring(inner), dump_ring(Outer[i]));
-		}
-
-		if ( outer )
-		{
-			outer->linked++;
-			while(outer->next) outer = outer->next;
-			outer->next = inner;
-		}
-		else
-		{
-			// The ring wasn't within any outer rings,
-			// assume it is a new outer ring.
-#ifdef DEBUG
-			fprintf(stderr,
-				"InsertPolygon[%d]: hole %d is orphan\n",
-				call, pi);
-#endif
-			Outer[out_index] = inner;
-			out_index++;
-		}
-	}
+	out_index = FindPolygons(obj, &Outer);
 
 	if (dump_format) printf("SRID=%s;MULTIPOLYGON(",sr_id );
 	else printf("GeometryFromText('MULTIPOLYGON(");
@@ -1288,19 +1111,8 @@ InsertPolygonWKT(void)
 	else printf(")',%s) );\n",sr_id);
 
 	// Release all memory
-	for(pi=0; pi<out_index; pi++)
-	{
-		Ring *Poly, *temp;
-		Poly = Outer[pi];
-		while(Poly != NULL){
-			temp = Poly;
-			Poly = Poly->next;
-			free(temp->list);
-			free(temp);
-		}
-	}
+	ReleasePolygons(Outer, out_index);
 	free(Outer);
-	free(Inner);
 }
 
 void
@@ -1366,11 +1178,13 @@ InsertMultiPoint(void)
 }
 
 int
-parse_cmdline(int ARGC, char **ARGV)
+ParseCmdline(int ARGC, char **ARGV)
 {
 	int c;
 	int curindex=0;
 	char  *ptr;
+	extern char *optarg;
+	extern int optind;
 
 	while ((c = getopt(ARGC, ARGV, "kcdaDs:g:iW:w")) != EOF){
                switch (c) {
@@ -1450,6 +1264,16 @@ parse_cmdline(int ARGC, char **ARGV)
 		return 0;
 	}
 
+	/* 
+	 * Transform table name to lower case unless asked
+	 * to keep original case (we'll quote it later on)
+	 */
+	if ( ! quoteidentifiers )
+	{
+		LowerCase(table);
+		if ( schema ) LowerCase(schema);
+	}
+
 	return 1;
 }
 
@@ -1480,48 +1304,72 @@ SetPgType(void)
 			pgdims = 2;
 			break;
 		case SHPT_POINTM: // PointM
-			pgtype = "POINTM";
 			wkbtype = POINTTYPE | WKBMOFFSET;
-			pgdims = 3;
-			istypeM = 1;
+			if ( ! hwgeom ) {
+				pgtype = "POINTM";
+				pgdims = 3;
+				istypeM = 1;
+			} else {
+				pgtype = "POINT";
+				pgdims = 2;
+			}
 			break;
 		case SHPT_ARCM: // PolyLineM
-			pgtype = "MULTILINESTRINGM";
 			wkbtype = MULTILINETYPE | WKBMOFFSET;
-			pgdims = 3;
-			istypeM = 1;
+			if ( ! hwgeom ) {
+				pgtype = "MULTILINESTRINGM";
+				pgdims = 3;
+				istypeM = 1;
+			} else {
+				pgtype = "MULTILINESTRING";
+				pgdims = 2;
+			}
 			break;
 		case SHPT_POLYGONM: // PolygonM
-			pgtype = "MULTIPOLYGONM";
 			wkbtype = MULTIPOLYGONTYPE | WKBMOFFSET;
-			pgdims = 3;
-			istypeM = 1;
+			if ( ! hwgeom ) {
+				pgtype = "MULTIPOLYGONM";
+				pgdims = 3;
+				istypeM = 1;
+			} else {
+				pgtype = "MULTIPOLYGON";
+				pgdims = 2;
+			}
 			break;
 		case SHPT_MULTIPOINTM: // MultiPointM
-			pgtype = "MULTIPOINTM";
 			wkbtype = MULTIPOINTTYPE | WKBMOFFSET;
-			pgdims = 3;
-			istypeM = 1;
+			if ( ! hwgeom ) {
+				pgtype = "MULTIPOINTM";
+				pgdims = 3;
+				istypeM = 1;
+			} else {
+				pgtype = "MULTIPOINT";
+				pgdims = 2;
+			}
 			break;
 		case SHPT_POINTZ: // PointZ
-			pgtype = "POINT";
 			wkbtype = POINTTYPE | WKBMOFFSET | WKBZOFFSET;
-			pgdims = 4;
+			pgtype = "POINT";
+			if ( ! hwgeom ) pgdims = 4;
+			else pgdims = 3;
 			break;
 		case SHPT_ARCZ: // PolyLineZ
 			pgtype = "MULTILINESTRING";
 			wkbtype = MULTILINETYPE | WKBZOFFSET | WKBMOFFSET;
-			pgdims = 4;
+			if ( ! hwgeom ) pgdims = 4;
+			else pgdims = 3;
 			break;
 		case SHPT_POLYGONZ: // MultiPolygonZ
 			pgtype = "MULTIPOLYGON";
 			wkbtype = MULTIPOLYGONTYPE | WKBZOFFSET | WKBMOFFSET;
-			pgdims = 4;
+			if ( ! hwgeom ) pgdims = 4;
+			else pgdims = 3;
 			break;
 		case SHPT_MULTIPOINTZ: // MultiPointZ
 			pgtype = "MULTIPOINT";
 			wkbtype = MULTIPOINTTYPE | WKBZOFFSET | WKBMOFFSET;
-			pgdims = 4;
+			if ( ! hwgeom ) pgdims = 4;
+			else pgdims = 3;
 			break;
 		default:
 			pgtype = "GEOMETRY";
@@ -1608,6 +1456,125 @@ print_wkb_bytes(unsigned char *ptr, unsigned int cnt, size_t size)
 	printf("%s", buf);
 }
 
+void
+DropTable(char *schema, char *table, char *geom)
+{
+		//---------------Drop the table--------------------------
+		// TODO: if the table has more then one geometry column
+		// the DROP TABLE call will leave spurious records in
+		// geometry_columns. 
+		//
+		// If the geometry column in the table being dropped
+		// does not match 'the_geom' or the name specified with
+		// -g an error is returned by DropGeometryColumn. 
+		//
+		// The table to be dropped might not exist.
+		//
+		if ( schema )
+		{
+			printf("SELECT DropGeometryColumn('%s','%s','%s');\n",
+				schema, table, geom);
+			printf("DROP TABLE \"%s\".\"%s\";\n", schema, table);
+		}
+		else
+		{
+			printf("SELECT DropGeometryColumn('','%s','%s');\n",
+				table, geom);
+			printf("DROP TABLE \"%s\";\n", table);
+		}
+}
+
+void
+GetFieldsSpec(void)
+{
+	int field_precision, field_width;
+	int j, z;
+	char  name[64];
+	char  name2[64];
+	DBFFieldType type = -1;
+
+	num_fields = DBFGetFieldCount( hDBFHandle );
+	num_records = DBFGetRecordCount(hDBFHandle);
+	field_names = malloc(num_fields*sizeof(char*));
+	types = (DBFFieldType *)malloc(num_fields*sizeof(int));
+	widths = malloc(num_fields*sizeof(int));
+	precisions = malloc(num_fields*sizeof(int));
+	col_names = malloc((num_fields+2) * sizeof(char) * 32);
+	if(opt != 'a'){
+		strcpy(col_names, "(gid," );
+	}else{
+		strcpy(col_names, "(" );
+	}
+
+	//fprintf(stderr, "Number of fields from DBF: %d\n", num_fields);
+	for(j=0;j<num_fields;j++)
+	{
+		type = DBFGetFieldInfo(hDBFHandle, j, name, &field_width, &field_precision); 
+
+//fprintf(stderr, "Field %d (%s) width/decimals: %d/%d\n", j, name, field_width, field_precision);
+		types[j] = type;
+		widths[j] = field_width;
+		precisions[j] = field_precision;
+
+		/*
+		 * Make field names lowercase unless asked to
+		 * keep identifiers case.
+		 */
+		if ( ! quoteidentifiers ) {
+			for(z=0; z<strlen(name) ;z++)
+				name[z] = tolower(name[z]);
+		}
+
+		/*
+		 * Escape names starting with the
+		 * escape char (_)
+		 */
+		if( name[0]=='_' )
+		{
+			strcpy(name2+2, name);
+			name2[0] = '_';
+			name2[1] = '_';
+			strcpy(name, name2);
+		}
+
+		/*
+		 * Escape attributes named 'gid'
+		 * and pgsql reserved attribute names
+		 */
+		else if(
+			! strcmp(name,"gid") ||
+			! strcmp(name, "tableoid") ||
+			! strcmp(name, "cmax") ||
+			! strcmp(name, "xmax") ||
+			! strcmp(name, "cmin") ||
+			! strcmp(name, "primary") ||
+			! strcmp(name, "oid") ||
+			! strcmp(name, "ctid")
+		) {
+			strcpy(name2+2, name);
+			name2[0] = '_';
+			name2[1] = '_';
+			strcpy(name, name2);
+		}
+
+		/* Avoid duplicating field names */
+		for(z=0; z < j ; z++){
+			if(strcmp(field_names[z],name)==0){
+				strcat(name,"__");
+				sprintf(name,"%s%i",name,j);
+				break;
+			}
+		}	
+
+
+		field_names[j] = malloc ( strlen(name)+3 );
+		strcpy(field_names[j], name);
+
+		sprintf(col_names, "%s\"%s\",", col_names, name);
+	}
+	sprintf(col_names, "%s\"%s\")", col_names, geom);
+}
+
 #ifdef USE_ICONV
 
 #include <iconv.h>
@@ -1656,6 +1623,10 @@ utf8 (const char *fromcode, char *inputbuf)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.85  2005/04/06 10:46:10  strk
+ * Bugfix in -w (hwgeom) handling of ZM shapefiles.
+ * Big reorganizzation of code to easy maintainance.
+ *
  * Revision 1.84  2005/04/04 20:51:26  strk
  * Added -w flag to output old (WKT/HWGEOM) sql.
  *
