@@ -3079,7 +3079,7 @@ dimension
             <term>EndPoint(geometry)</term>
 
             <listitem>
-              <para>Returns the last point of the geometry as a point.</para>
+              <para>Returns the last point of the LineString geometry as a point.</para>
             </listitem>
           </varlistentry>
 
@@ -3087,7 +3087,7 @@ dimension
             <term>StartPoint(geometry)</term>
 
             <listitem>
-              <para>Returns the first point of the geometry as a point.</para>
+              <para>Returns the first point of the LineString geometry as a point.</para>
             </listitem>
           </varlistentry>
 
