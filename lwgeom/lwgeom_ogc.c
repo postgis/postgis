@@ -315,7 +315,7 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 	serializedline = lwline_serialize(line);
 
 	// And we construct the line (copy again)
-	result = LWGEOM_construct(serializedline, poly->SRID,
+	result = LWGEOM_construct(serializedline, lwgeom_getSRID(geom),
 		lwgeom_hasBBOX(geom->type));
 
 	pfree(serializedline);
@@ -397,7 +397,7 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 	serializedline = lwline_serialize(line);
 
 	// And we construct the line (copy again)
-	result = LWGEOM_construct(serializedline, poly->SRID,
+	result = LWGEOM_construct(serializedline, lwgeom_getSRID(geom),
 		lwgeom_hasBBOX(geom->type));
 
 	pfree(serializedline);
