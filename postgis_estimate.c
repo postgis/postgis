@@ -11,6 +11,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.14  2004/03/01 16:02:41  strk
+ * histogram's boxesPerSide computed as a function of the column's statistic target
+ *
  * Revision 1.13  2004/02/29 21:53:42  strk
  * bug fix in postgis_gist_sel (for PG75): SysCache is not released if not acquired
  *
@@ -941,6 +944,8 @@ postgisgistcostestimate(PG_FUNCTION_ARGS)
  * It can make use (if available) of the statistics collected
  * by the geometry analyzer function.
  *
+ * This is the one used for PG version >= 7.5
+ *
  */
 PG_FUNCTION_INFO_V1(postgis_gist_sel);
 Datum postgis_gist_sel(PG_FUNCTION_ARGS)
@@ -1248,20 +1253,25 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	int total_boxes_cells=0;
 	double cell_area;
 	double geow, geoh; // width and height of histogram
-	int bps; // boxesPerSide 
+	int bps; // boxesPerSide  (alias)
+	int boxesPerSide;
 	/*
 	 * This is where geometry_analyze
 	 * should put its' custom parameters.
-	 * boxesPerSide would be a good candidate.
 	 */
 	//void *mystats = stats->extra_data;
-	int boxesPerSide = 40; 
+	
+	/*
+	 * We'll build an histogram having from 40 to 400 boxesPerSide
+	 */
+	boxesPerSide = sqrt(160*stats->attr->attstattarget);
 
 
 
 #if DEBUG_GEOMETRY_STATS
 	elog(NOTICE, "compute_geometry_stats called");
 	elog(NOTICE, " samplerows: %d", samplerows);
+	elog(NOTICE, " boxesPerSide: %d", boxesPerSide);
 #endif
 
 	sampleboxes = palloc(sizeof(BOX *)*samplerows);
