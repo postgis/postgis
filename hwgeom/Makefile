@@ -1,49 +1,9 @@
 #---------------------------------------------------------------
 # Configuration Directives
 #
-# We recommend that you install the Proj4 and GEOS libraries
-# referenced below to get the most use out of your PostGIS
-# database.
-
-#---------------------------------------------------------------
-# Set USE_PROJ to 1 for Proj4 reprojection support (recommended)
-#
-# Reprojection allows you to transform coordinate systems
-# in the database with the Transform() function.
-#
-# Download from: http://www.remotesensing.org/proj
-#
-USE_PROJ=1
-ifeq (${PROJ_DIR},) 
-	PROJ_DIR=/usr/local
-endif
-
-#---------------------------------------------------------------
-# Set USE_GEOS to 1 for GEOS spatial predicate and operator
-# support (recommended)
-#
-# GEOS allows you to do exact topological tests, such as
-# Intersects() and Touches(), as well as geometry operations,
-# such as Buffer(), GeomUnion() and Difference().
-#
-# Download from: http://geos.refractions.net
-#
-USE_GEOS=1
-ifeq (${GEOS_DIR},) 
-	GEOS_DIR=/usr/local
-endif
-
-#---------------------------------------------------------------
-# Set USE_STATS to 1 for new GiST statistics collection support
-# Note that this support requires additional columns in 
-# GEOMETRY_COLUMNS, so see the list archives for info or
-# install a fresh database using postgis.sql
-#
-USE_STATS=1
 
 #---------------------------------------------------------------
 subdir=contrib/postgis
-
 #---------------------------------------------------------------
 # Default the root of the PostgreSQL source tree 
 # To use a non-standard location set the PGSQL_SRC environment
@@ -232,7 +192,7 @@ endif # not win
 #----------------------------------------------------------
 
 detect_geos_version: 
-	./geos_version.sh $(GEOS_DIR) > postgis_geos_version.h
+	../geos_version.sh $(GEOS_DIR) > postgis_geos_version.h
 
 installdirs:
 	$(mkinstalldirs) $(docdir)/contrib $(datadir)/contrib $(libdir)

@@ -1,30 +1,6 @@
 # Configuration Directives
 
 #---------------------------------------------------------------
-# Set USE_PROJ to 1 for Proj4 reprojection support
-#
-USE_PROJ=1
-ifeq (${PROJ_DIR},) 
-	PROJ_DIR=/usr/local
-endif
-
-#---------------------------------------------------------------
-# Set USE_GEOS to 1 for GEOS spatial predicate and operator
-# support
-#
-USE_GEOS=1
-ifeq (${GEOS_DIR},) 
-	GEOS_DIR=/usr/local
-endif
-
-#---------------------------------------------------------------
-# Set USE_STATS to 1 for new GiST statistics collection support
-# Note that this support requires additional columns in 
-# GEOMETRY_COLUMNS, so see the list archives for info or
-#
-USE_STATS=1
-
-#---------------------------------------------------------------
 subdir=contrib/postgis
 #---------------------------------------------------------------
 # Default the root of the PostgreSQL source tree 
@@ -101,8 +77,7 @@ POSTGIS_LIB_VERSION = $(SO_MAJOR_VERSION).$(SO_MINOR_VERSION).$(SO_MICRO_VERSION
 
 #---------------------------------------------------------------
 
-override CFLAGS += -g 
-
+override CFLAGS += -g -fexceptions
 override CFLAGS += -I$(srcdir) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"' 
 override CFLAGS += -DUSE_VERSION=$(USE_VERSION)
 override CFLAGS += -DPOSTGIS_LIB_VERSION='"$(POSTGIS_LIB_VERSION)"'
