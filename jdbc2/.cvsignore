@@ -1,7 +1,6 @@
 bin
 compile
-postgis.jar
-postgis_debug.jar
+*.jar
 stubbin
 stubcompile
 jtscompile
