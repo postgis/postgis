@@ -3244,7 +3244,7 @@ CREATEFUNCTION symdifference(geometry,geometry)
 CREATEFUNCTION symmetricdifference(geometry,geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','symdifference'
-	LANGUAGE 'C' WITH (isstrict,,iscachable);
+	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 
 CREATEFUNCTION GeomUnion(geometry,geometry)
