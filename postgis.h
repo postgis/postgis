@@ -385,6 +385,7 @@ Datum length3d_ellipsoid(PG_FUNCTION_ARGS);
 Datum point_inside_circle(PG_FUNCTION_ARGS);
 Datum distance(PG_FUNCTION_ARGS);
 
+Datum expand_bbox(PG_FUNCTION_ARGS);
 
 //for GIST index
 typedef char* (*BINARY_UNION)(char*, char*, int*);

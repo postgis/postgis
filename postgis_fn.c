@@ -2001,3 +2001,29 @@ Datum distance(PG_FUNCTION_ARGS)
 		dist = 0; //computational error, may get -0.00000000001
 	PG_RETURN_FLOAT8(dist);
 }
+
+
+//expand_bbox(bbox3d, d)
+// returns a new bbox which is exanded d unit in all directions
+PG_FUNCTION_INFO_V1(expand_bbox);
+Datum expand_bbox(PG_FUNCTION_ARGS)
+{
+	BOX3D  *bbox   = (BOX3D *) PG_GETARG_POINTER(0);
+	double  d 	   = PG_GETARG_FLOAT8(1);
+	BOX3D	 *result = (BOX3D *) palloc(sizeof(BOX3D));
+
+
+	result->LLB.x = bbox->LLB.x - d;
+	result->LLB.y = bbox->LLB.y - d;
+	result->LLB.z = bbox->LLB.z - d;
+
+
+	result->URT.x = bbox->URT.x + d;
+	result->URT.y = bbox->URT.y + d;
+	result->URT.z = bbox->URT.z + d;
+	
+
+	PG_RETURN_POINTER(result);
+}
+
+

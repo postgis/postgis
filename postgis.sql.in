@@ -74,6 +74,12 @@ CREATE FUNCTION geometry(BOX3D)
    AS '@MODULE_FILENAME@','get_geometry_of_bbox'
 	     LANGUAGE 'c' WITH (iscachable,isstrict);
 
+CREATE FUNCTION expand(BOX3D,float8)
+   RETURNS BOX3D
+   AS '@MODULE_FILENAME@','expand_bbox'
+	     LANGUAGE 'c' WITH (iscachable,isstrict);
+
+
 --------- functions for converting to wkb
 
 CREATE FUNCTION asbinary(GEOMETRY)
