@@ -113,10 +113,11 @@ print "-- Drop all functions.\n";
 
 foreach my $fn (@funcs)
 {
-	if ($fn =~ /create .* function ([^(]+)\((.*)\)/i )
+	if ($fn =~ /.* function ([^(]+)\((.*)\)/i )
 	{
 		my $fn_nm = $1;
 		my $fn_arg = $2;
+
 		if ( $version ge "73" )
 		{
 			if ( ! ( $fn_nm =~ /_in/i || $fn_nm =~ /_out/i || $fn_nm =~ /_recv/i || $fn_nm =~ /_send/i || $fn_nm =~ /_analyze/i ) ) 
