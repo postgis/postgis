@@ -313,3 +313,32 @@ ptarray_addPoint(POINTARRAY *pa, char *p, size_t pdims, unsigned int where)
 
 	return ret;
 }
+
+/* 
+ * Clone a pointarray 
+ */
+POINTARRAY *
+ptarray_clone(const POINTARRAY *in)
+{
+	POINTARRAY *out = lwalloc(sizeof(POINTARRAY));
+	size_t size;
+
+	out->dims = in->dims;
+	out->npoints = in->npoints;
+
+	size = in->npoints*sizeof(double)*TYPE_NDIMS(in->dims);
+	out->serialized_pointlist = lwalloc(size);
+	memcpy(out->serialized_pointlist, in->serialized_pointlist, size);
+
+	return out;
+}
+
+int
+ptarray_isclosed2d(const POINTARRAY *in)
+{
+	POINT2D *p1, *p2;
+	p1 = (POINT2D *)getPoint(in, 0);
+	p2 = (POINT2D *)getPoint(in, in->npoints-1);
+	if ( p1->x != p2->x || p1->y != p2->y ) return 0;
+	else return 1;
+}
