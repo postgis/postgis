@@ -142,6 +142,36 @@ CREATE TYPE box3d (
 	output = box3d_out
 );
 
+CREATEFUNCTION xmin(box3d)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@','BOX3D_xmin'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATEFUNCTION ymin(box3d)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@','BOX3D_ymin'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATEFUNCTION zmin(box3d)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@','BOX3D_zmin'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATEFUNCTION xmax(box3d)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@','BOX3D_xmax'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATEFUNCTION ymax(box3d)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@','BOX3D_ymax'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATEFUNCTION zmax(box3d)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@','BOX3D_zmax'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
 -----------------------------------------------------------------------
 --
 -- BOX2D
@@ -255,6 +285,26 @@ CREATE OPERATOR ~ (
    COMMUTATOR = '@',
    RESTRICT = contsel, JOIN = contjoinsel
 );
+
+CREATEFUNCTION xmin(box2d)
+	RETURNS FLOAT4
+	AS '@MODULE_FILENAME@','BOX2DFLOAT4_xmin'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATEFUNCTION ymin(box2d)
+	RETURNS FLOAT4
+	AS '@MODULE_FILENAME@','BOX2DFLOAT4_ymin'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATEFUNCTION xmax(box2d)
+	RETURNS FLOAT4
+	AS '@MODULE_FILENAME@','BOX2DFLOAT4_xmax'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATEFUNCTION ymax(box2d)
+	RETURNS FLOAT4
+	AS '@MODULE_FILENAME@','BOX2DFLOAT4_ymax'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 -- lwgeom  operator support functions
 

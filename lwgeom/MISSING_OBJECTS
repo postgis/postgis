@@ -11,9 +11,6 @@ FUNC: KEEPING FUNCTION: [box(geometry)]
 FUNC: KEEPING FUNCTION: [envelope(geometry)]
 FUNC: KEEPING FUNCTION: [equals(geometry, geometry)]
 
-FUNC: KEEPING FUNCTION: [expand(geometry, double precision)]
-FUNC: KEEPING FUNCTION: [expand(box3d, double precision)]
-
 FUNC: KEEPING FUNCTION: [isempty(geometry)]
 FUNC: KEEPING FUNCTION: [segmentize(geometry, double precision)]
 FUNC: KEEPING FUNCTION: [unite_garray(geometry[])]
@@ -64,12 +61,6 @@ FUNC: KEEPING FUNCTION: [compression(chip)]
 FNCAST: KEEPING FNCAST geometry(chip) (see CAST)
 
 --- BOX3D
-FUNC: KEEPING FUNCTION: [xmax(box3d)]
-FUNC: KEEPING FUNCTION: [xmin(box3d)]
-FUNC: KEEPING FUNCTION: [ymax(box3d)]
-FUNC: KEEPING FUNCTION: [ymin(box3d)]
-FUNC: KEEPING FUNCTION: [zmax(box3d)]
-FUNC: KEEPING FUNCTION: [zmin(box3d)]
 FNCAST: KEEPING FNCAST box3dtobox(box3d) (see CAST)
 FNCAST: KEEPING FNCAST geometry(box3d) (see CAST)
 FUNC: KEEPING FUNCTION: [box3d(geometry)]
