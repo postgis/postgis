@@ -2324,7 +2324,7 @@ int lwgeom_getSRID(LWGEOM *lwgeom)
 		loc += sizeof(BOX2DFLOAT4);
 	}
 
-	return get_int32(lwgeom->data);
+	return get_int32(loc);
 }
 
 // Set the SRID of a LWGEOM
