@@ -73,7 +73,7 @@ default_noticereporter(const char *fmt, ...)
 		va_end (ap);
 		return;
 	}
-	printf("%s", msg);
+	printf("%s\n", msg);
 	va_end(ap);
 	free(msg);
 }
@@ -95,7 +95,7 @@ default_errorreporter(const char *fmt, ...)
 		va_end (ap);
 		return;
 	}
-	fprintf(stderr, "%s", msg);
+	fprintf(stderr, "%s\n", msg);
 	va_end(ap);
 	free(msg);
 }
