@@ -1421,8 +1421,16 @@ Datum geometryn_collection(PG_FUNCTION_ARGS)
 }
 
 
+//force the geometry to be a geometrycollection type
 
+PG_FUNCTION_INFO_V1(force_collection);
+Datum force_collection(PG_FUNCTION_ARGS)
+{
+		GEOMETRY		      *geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
+	geom->type = COLLECTIONTYPE;
+	PG_RETURN_POINTER(geom);
+}
 
 
 

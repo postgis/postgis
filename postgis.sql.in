@@ -290,6 +290,10 @@ CREATE FUNCTION force_2d(GEOMETRY) RETURNS GEOMETRY
 CREATE FUNCTION force_3d(GEOMETRY) RETURNS GEOMETRY
         AS '@MODULE_FILENAME@'  LANGUAGE 'c' with (isstrict);
 
+-------- cause geometry to be represented as a geometry collection
+
+CREATE FUNCTION force_collection(GEOMETRY) RETURNS GEOMETRY
+        AS '@MODULE_FILENAME@'  LANGUAGE 'c' with (isstrict);
 
 
 -------- GiST support functions

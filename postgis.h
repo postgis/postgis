@@ -344,6 +344,7 @@ Datum asbinary_simple(PG_FUNCTION_ARGS);
 
 Datum force_2d(PG_FUNCTION_ARGS);
 Datum force_3d(PG_FUNCTION_ARGS);
+Datum force_collection(PG_FUNCTION_ARGS);
 
 Datum combine_bbox(PG_FUNCTION_ARGS);
 
