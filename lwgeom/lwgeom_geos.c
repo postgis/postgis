@@ -2129,7 +2129,7 @@ LWCOLLECTION *
 lwcollection_from_geometry(Geometry *geom, char want3d)
 {
 	uint32 ngeoms;
-	LWGEOM **geoms;
+	LWGEOM **geoms = NULL;
 	LWCOLLECTION *ret;
 	int type = GEOSGeometryTypeId(geom) ;
 	int SRID = GEOSGetSRID(geom);
@@ -2142,7 +2142,7 @@ lwcollection_from_geometry(Geometry *geom, char want3d)
 		lwgeom_typename(type), ngeoms);
 #endif
 
-	geoms = lwalloc(sizeof(LWGEOM *)*ngeoms);
+	if ( ngeoms ) geoms = lwalloc(sizeof(LWGEOM *)*ngeoms);
 
 	for (i=0; i<ngeoms; i++)
 	{
@@ -2180,7 +2180,6 @@ lwgeom_from_geometry(Geometry *geom, char want3d)
 #ifdef DEBUG_GEOS2POSTGIS
 	lwnotice("lwgeom_from_geometry: it's a %s", lwgeom_typename(type));
 #endif
-
 	switch (type)
 	{
 		/* From slower to faster.. compensation rule :) */
