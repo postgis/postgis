@@ -3476,9 +3476,22 @@ dimension
 
         <varlistentry>
           <term>postgis_lib_version()</term>
-
           <listitem>
             <para>Returns the version number of the PostGIS library.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>postgis_lib_build_date()</term>
+          <listitem>
+            <para>Returns build date of the PostGIS library.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>postgis_script_build_date()</term>
+          <listitem>
+            <para>Returns build date of the PostGIS scripts.</para>
           </listitem>
         </varlistentry>
 
