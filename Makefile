@@ -137,7 +137,11 @@ ifeq ($(USE_VERSION),71)
 	GIST_SUPPORT=71
 	GIST_ESTIMATE=
 else
-	GIST_SUPPORT=72
+	ifeq ($(USE_VERSION),75) 
+		GIST_SUPPORT=75
+	else
+		GIST_SUPPORT=72
+	endif
 	GIST_ESTIMATE=postgis_estimate.o
 endif
 
