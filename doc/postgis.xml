@@ -3899,6 +3899,20 @@ FROM geometry_table;</literallayout>
         </varlistentry>
 
         <varlistentry>
+          <term>Reverse(geometry)</term>
+          <listitem>
+            <para>Returns the geometry with vertex order reversed.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ForceRHR(geometry)</term>
+          <listitem>
+            <para>Force polygons of the collection to obey Right-Hand-Rule.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
           <term>simplify(geometry, tolerance)</term>
 
           <listitem>
