@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.20  2004/08/10 21:09:59  strk
+ * changed proj version extractor to support pre 4.4.8 releases
+ *
  * Revision 1.19  2004/07/28 16:10:59  strk
  * Changed all version functions to return text.
  * Renamed postgis_scripts_version() to postgis_scripts_installed()
@@ -470,7 +473,8 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(postgis_proj_version);
 Datum postgis_proj_version(PG_FUNCTION_ARGS)
 {
-	const char *ver = pj_get_release();
+	//const char *ver = pj_get_release();
+	const char *ver = pj_release;
 	text *result;
 	result = (text *) palloc(VARHDRSZ  + strlen(ver));
 	VARATT_SIZEP(result) = VARHDRSZ + strlen(ver) ;
