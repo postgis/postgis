@@ -279,6 +279,12 @@ CREATE FUNCTION geometry(BOX3D)
    AS '@MODULE_FILENAME@','get_geometry_of_bbox'
 	     LANGUAGE 'c' WITH (iscachable,isstrict);
 
+CREATE FUNCTION geometry(text)
+   RETURNS GEOMETRY
+   AS '@MODULE_FILENAME@','geometry_text'
+	     LANGUAGE 'c' WITH (iscachable,isstrict);
+
+
 CREATE FUNCTION expand(BOX3D,float8)
    RETURNS BOX3D
    AS '@MODULE_FILENAME@','expand_bbox'
@@ -299,6 +305,12 @@ CREATE FUNCTION asbinary(GEOMETRY,TEXT)
 
 
 ---- Debug (info) functions
+
+
+--CREATE FUNCTION index_thing(GEOMETRY)
+--   RETURNS BOOL
+--   AS '@MODULE_FILENAME@'
+--	     LANGUAGE 'c'  with (isstrict);
 
 CREATE FUNCTION npoints(GEOMETRY)
    RETURNS INT4

@@ -76,6 +76,11 @@ void print_box(BOX3D *box)
 	printf("	+ URT = [%g,%g,%g]\n", box->URT.x, box->URT.y,box->URT.z);
 }
 
+void print_box2d(BOX *box)
+{
+	printf (" BOX[%g %g , %g %g] ",box->low.x, box->low.y, box->high.x, box->high.y);
+}
+
 //debug function - whats really in that BOX3D?
 void print_box_oneline(BOX3D *box)
 {
@@ -728,3 +733,91 @@ void print_point_debug(POINT3D *p)
 {
 	printf("[%g %g %g]\n",p->x,p->y,p->z);
 }
+
+
+
+
+#include "access/gist.h"
+#include "access/genam.h"
+
+//not quite sure how the IndexTuple is set up - should be using its accessors
+// instead of just grabbing know-location data.
+//You might need to do some locking here to ensure consistency (ie. someone changing the index
+// during this search).
+static void
+gist_dumptree(Relation r, int level, BlockNumber blk, OffsetNumber coff)
+{
+        Buffer          buffer;
+        Page            page;
+        GISTPageOpaque opaque;
+        IndexTuple      which;
+        ItemId          iid;
+        OffsetNumber i,
+                                maxoff;
+        BlockNumber cblk;
+        char       *pred;
+	  int32		srid;
+	  BOX			*box;
+
+        pred = (char *) palloc(sizeof(char) * level + 1);
+        MemSet(pred, '\t', level);
+        pred[level] = '\0';
+
+        buffer = ReadBuffer(r, blk);
+        page = (Page) BufferGetPage(buffer);
+        opaque = (GISTPageOpaque) PageGetSpecialPointer(page);
+
+        maxoff = PageGetMaxOffsetNumber(page);
+
+        elog(NOTICE, "%sPage: %d %s blk: %d maxoff: %d free: %d", pred, coff, (opaque->flags & F_LEAF) ? "LEAF" : "INTE", (int) blk, (int) maxoff, PageGetFreeSpace(page));
+
+        for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i))
+        {
+                iid = PageGetItemId(page, i);
+                which = (IndexTuple) PageGetItem(page, iid);
+                cblk = ItemPointerGetBlockNumber(&(which->t_tid));
+
+                elog(NOTICE, "%s  Tuple. blk: %d size: %d", pred, (int) cblk, IndexTupleSize(which));
+		
+		//	dump_bytes( which, 56);
+
+		box = (BOX*) &(((char *) which)[16]);
+		
+		print_box2d( box) ; printf("\n");
+	//	srid =  * ((int32 *) &(((char *) which)[47]));
+	//	printf( ", srid=%i\n",srid);
+		
+
+
+                if (!(opaque->flags & F_LEAF))
+                        gist_dumptree(r, level + 1, cblk, i);
+        }
+        ReleaseBuffer(buffer);
+        pfree(pred);
+}
+
+
+//currently just calls the dumptree command.
+// future:
+//		1. have index name as parameter
+//		2. check to make sure the given index is actually a gist geometry index
+//		3. change gist_dumptree so it accumulates a bbox
+//		4. return the accumulated bbox
+PG_FUNCTION_INFO_V1(index_thing);
+Datum index_thing(PG_FUNCTION_ARGS)
+{
+	  Relation r;
+
+	printf("inside indexthing; sizeof(GEOMETRYKEY) = %i,sizeof(GISTENTRY) = %i\n", sizeof(GEOMETRYKEY) ,sizeof(GISTENTRY));
+
+ r= index_openr( "quicky" );
+gist_dumptree(r, 0, GISTP_ROOT, 0);
+index_close( r );
+
+		printf("finished indexthing\n");
+
+	PG_RETURN_BOOL(FALSE);
+
+}
+
+

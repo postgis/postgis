@@ -1293,3 +1293,4 @@ GISTENTRY *rtree_decompress(PG_FUNCTION_ARGS)
 {
     return((GISTENTRY*)PG_GETARG_POINTER(0));
 }
+

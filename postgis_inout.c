@@ -2780,7 +2780,18 @@ printf("requested NDR\n");
 	}
 }
 
+//takes a text argument and parses it to make a geometry
+PG_FUNCTION_INFO_V1(geometry_text);
+Datum geometry_text(PG_FUNCTION_ARGS)
+{
+	char		*input = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
+	input = &input[4];
+	PG_RETURN_POINTER ( 
+		DatumGetPointer(	DirectFunctionCall1(geometry_in,PointerGetDatum(input)))
+			);
+
+}
 
 
 
@@ -3043,3 +3054,4 @@ LINE3D	*make_line(int	npoints, POINT3D	*pts, int	*size)
 
 	return result;
 }
+
