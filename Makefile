@@ -19,7 +19,7 @@ test_db = geom_regress
 # shared library parameters
 NAME=postgis
 SO_MAJOR_VERSION=0
-SO_MINOR_VERSION=3
+SO_MINOR_VERSION=5
 
 #override CPPFLAGS := -I$(srcdir) $(CPPFLAGS)
 # Altered for Cynwin
