@@ -380,11 +380,11 @@ Geometry *PostGIS2GEOS_polygon(const LWPOLY *lwpoly)
 		CoordinateSequence *cl;
 		POINT3D *p;
 		vector<Geometry *> *innerRings;
-		vector<Coordinate> *vc;
 
 		// make outerRing
 		pa = lwpoly->rings[0];
 #if GEOS_LAST_INTERFACE >= 2
+		vector<Coordinate> *vc;
 		vc = new vector<Coordinate>(pa->npoints);
 #else
 		cl = new DefaultCoordinateSequence(pa->npoints);
