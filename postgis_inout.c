@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.42  2004/06/03 09:45:57  strk
+ * infinite geoms handled in WKB parser
+ *
  * Revision 1.41  2004/06/03 08:19:20  strk
  * yet another Infinite check used: finite() - which checks for NaN,-Inf,+Inf
  *
@@ -4210,6 +4213,11 @@ switch (wkbType)
 						pt.z =0;
 					}
 				}
+				if ( ! finite(pt.x) || ! finite(pt.y) || ! finite(pt.z) )
+				{
+					elog(ERROR, "infinite coordinate in geom");
+					return NULL;
+				}
 				return make_oneobj_geometry(sizeof(POINT3D),
 											(char *) &pt,
 											POINTTYPE,  is3d, -1,1.0, 0.0, 0.0
@@ -4255,6 +4263,11 @@ switch (wkbType)
 								{
 									pts[t].z =0;
 								}
+								if ( ! finite(pts[t].x) || ! finite(pts[t].y) || ! finite(pts[t].z) )
+								{
+									elog(ERROR, "infinite coordinate in geom");
+									return NULL;
+								}
 							}
 							//make_line(int  npoints, POINT3D    *pts, int   *size)
 							line = make_line(npoints, pts,&size);
@@ -4293,13 +4306,15 @@ switch (wkbType)
 								{
 									pts[t].z =0;
 								}
+								if ( ! finite(pts[t].x) || ! finite(pts[t].y) || ! finite(pts[t].z) )
+								{
+									elog(ERROR, "infinite coordinate in geom");
+									return NULL;
+								}
 							}
 							//make_line(int  npoints, POINT3D    *pts, int   *size)
 							line = make_line(npoints, pts,&size);
-							return make_oneobj_geometry(size,
-														(char *) line,
-														LINETYPE,  is3d, -1,1.0, 0.0, 0.0
-												);
+							return make_oneobj_geometry(size, (char *) line, LINETYPE,  is3d, -1,1.0, 0.0, 0.0);
 						}
 					}
 			break;
@@ -4623,6 +4638,11 @@ POINT3D *wkb_linearring(char *WKB,char is3d, char flip_endian, int *numbPoints, 
 			else
 			{
 				pts[t].z =0;
+			}
+			if ( ! finite(pts[t].x) || ! finite(pts[t].y) || ! finite(pts[t].z) )
+			{
+				elog(ERROR, "infinite coordinate in geom");
+				return NULL;
 			}
 		}
 		*numbPoints = npoints;
