@@ -47,10 +47,10 @@ byte* output_collection(byte* geom,outfunc func,int supress);
 byte* output_collection_2(byte* geom,int suppress);
 byte* output_multipoint(byte* geom,int suppress);
 void write_wkb_bytes(byte* ptr,int cnt);
-byte* output_wkb_point(byte* geom);
 void write_wkb_int(int i);
 byte* output_wkb_collection(byte* geom,outwkbfunc func);
 byte* output_wkb_collection_2(byte* geom);
+byte* output_wkb_point(byte* geom);
 byte* output_wkb(byte* geom);
 
 //-- Globals -----------------------------------------------
@@ -67,7 +67,12 @@ static int lwgi;
 
 
 
-void ensure(int chars){
+/*
+ * Ensure there is enough space for chars bytes.
+ * Reallocate memory is this is not the case.
+ */
+void
+ensure(int chars){
 
 	int pos = out_pos - out_start;
 
@@ -93,7 +98,8 @@ void write_str(const char* str){
 	to_end();
 }
 
-void write_double(double val){
+void
+write_double(double val){
 	ensure(32);
 	if (lwgi)
 		sprintf(out_pos,"%.8g",val);
@@ -102,13 +108,16 @@ void write_double(double val){
 	to_end();
 }
 
-void write_int(int i){
+void
+write_int(int i){
 	ensure(32);
 	sprintf(out_pos,"%i",i);
 	to_end();
 }
 
-int4 read_int(byte** geom){
+int4
+read_int(byte** geom)
+{
 	int4 ret;
 #ifdef SHRINK_INTS
 	if ( getMachineEndian() == LITTLE_ENDIAN_CHECK ){
@@ -156,7 +165,9 @@ double read_double(byte** geom){
 	}
 }
            
-byte* output_point(byte* geom,int supress){
+byte *
+output_point(byte* geom,int supress)
+{
 	int i;
 
 	for( i = 0 ; i < dims ; i++ ){
@@ -356,7 +367,8 @@ unparse_WKT(byte* lw_geom, allocator alloc, freeor free)
 
 static char outchr[]={"0123456789ABCDEF" };
 
-void write_wkb_bytes(byte* ptr,int cnt){
+void
+write_wkb_bytes(byte* ptr,int cnt){
 	ensure(cnt*2);
 
 	while(cnt--){
@@ -385,8 +397,12 @@ write_wkb_int(int i){
 }
 
 byte *
-output_wkb_collection(byte* geom,outwkbfunc func){
+output_wkb_collection(byte* geom,outwkbfunc func)
+{
 	int cnt = read_int(&geom);
+#ifdef DEBUG
+	lwnotice("output_wkb_collection: %d iterations loop", cnt);
+#endif
 	write_wkb_int(cnt);
 	while(cnt--) geom=func(geom);
 	return geom;
@@ -401,11 +417,14 @@ output_wkb_collection_2(byte* geom){
 byte *
 output_wkb(byte* geom)
 {
-
 	unsigned char type=*geom++;
 	int4 wkbtype;
+	byte endian;
 
 	dims = TYPE_NDIMS(type); 
+#ifdef DEBUG
+	lwnotice("output_wkb: dims set to %d", dims);
+#endif
 
 	//Skip the bounding box
 	if ( TYPE_HASBBOX(type) ) { 
@@ -413,7 +432,9 @@ output_wkb(byte* geom)
 	}
 
 	if ( TYPE_HASSRID(type) ) {
-		write_str("SRID=");write_int(read_int(&geom));write_str(";");
+		write_str("SRID=");
+		write_int(read_int(&geom));
+		write_str(";");
 	}
 
 	//type&=0x0f;
@@ -425,11 +446,11 @@ output_wkb(byte* geom)
 		 wkbtype |= WKBMOFFSET;
 
 	if ( getMachineEndian() != LITTLE_ENDIAN_CHECK ){
-		byte endian=0;
+		endian=0;
 		write_wkb_bytes(&endian,1);
 	}
 	else{
-		byte endian=1;
+		endian=1;
 		write_wkb_bytes(&endian,1);
 	}
 
@@ -440,10 +461,10 @@ output_wkb(byte* geom)
 			geom=output_wkb_point(geom);
 			break;
 		case LINETYPE:
-			geom = output_wkb_collection(geom,output_wkb_point);
+			geom=output_wkb_collection(geom,output_wkb_point);
 			break;
 		case POLYGONTYPE:
-			geom = output_wkb_collection(geom,output_wkb_collection_2);
+			geom=output_wkb_collection(geom,output_wkb_collection_2);
 			break;
 		case MULTIPOINTTYPE:
 		case MULTILINETYPE:
@@ -482,6 +503,10 @@ output_wkb(byte* geom)
 char *
 unparse_WKB(byte* lw_geom,allocator alloc,freeor free)
 {
+
+#ifdef DEBUG
+	lwnotice("unparse_WKB(%p,...) called", lw_geom);
+#endif
 
 	if (lw_geom==NULL)
 		return NULL;

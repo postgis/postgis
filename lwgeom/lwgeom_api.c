@@ -899,10 +899,15 @@ LWGEOM_INSPECTED *
 lwgeom_inspect(const char *serialized_form)
 {
 	LWGEOM_INSPECTED *result = lwalloc(sizeof(LWGEOM_INSPECTED));
+	unsigned char typefl = (unsigned char)serialized_form[0];
 	unsigned char type;
 	char **sub_geoms;
 	const char *loc;
 	int 	t;
+
+#ifdef DEBUG
+	lwnotice("lwgeom_inspect: serialized@%p", serialized_form);
+#endif
 
 	if (serialized_form == NULL)
 		return NULL;
@@ -911,16 +916,23 @@ lwgeom_inspect(const char *serialized_form)
 	result->type = (unsigned char) serialized_form[0];
 	result->SRID = -1; // assume
 
-	type = lwgeom_getType( (unsigned char) serialized_form[0]);
+	type = lwgeom_getType(typefl);
 
 	loc = serialized_form+1;
 
+	if ( lwgeom_hasBBOX(typefl) )
+	{
+		loc += sizeof(BOX2DFLOAT4);
+	}
+
+	if ( lwgeom_hasSRID(typefl) )
+	{
+		result->SRID = get_int32(loc);
+		loc += 4;
+	}
+
 	if ( (type==POINTTYPE) || (type==LINETYPE) || (type==POLYGONTYPE) )
 	{
-		if (lwgeom_hasSRID((unsigned char) serialized_form[0]) )
-		{
-			result->SRID = get_int32(loc);
-		}
 		//simple geometry (point/line/polygon)-- not multi!
 		result->ngeometries = 1;
 		sub_geoms = (char**) lwalloc(sizeof(char*));
@@ -930,17 +942,6 @@ lwgeom_inspect(const char *serialized_form)
 	}
 
 	// its a GeometryCollection or multi* geometry
-
-	if (lwgeom_hasBBOX((unsigned char) serialized_form[0]))
-	{
-		loc += sizeof(BOX2DFLOAT4);
-	}
-
-	if (lwgeom_hasSRID((unsigned char) serialized_form[0]) )
-	{
-		result->SRID=  get_int32(loc);
-		loc += 4;
-	}
 
 	result->ngeometries = get_uint32(loc);
 	loc +=4;
@@ -955,15 +956,15 @@ lwgeom_inspect(const char *serialized_form)
 	result->sub_geoms = sub_geoms;
 	sub_geoms[0] = (char *)loc;
 #ifdef DEBUG
-	lwnotice("subgeom[0] @ %p", sub_geoms[0]);
+	lwnotice("subgeom[0] @ %p (+%d)", sub_geoms[0], sub_geoms[0]-serialized_form);
 #endif
 	for (t=1;t<result->ngeometries; t++)
 	{
 		int sub_length = lwgeom_size_subgeom(sub_geoms[t-1], -1);//-1 = entire object
 		sub_geoms[t] = sub_geoms[t-1] + sub_length;
 #ifdef DEBUG
-		lwnotice("subgeom[%d] @ %p (sub_length: %d)",
-			t, sub_geoms[t], sub_length);
+		lwnotice("subgeom[%d] @ %p (+%d)",
+			t, sub_geoms[t], sub_geoms[0]-serialized_form);
 #endif
 	}
 
@@ -1136,10 +1137,14 @@ lwgeom_getsubgeometry(const char *serialized_form, int geom_number)
 	return result;
 }
 
-char *lwgeom_getsubgeometry_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
+char *
+lwgeom_getsubgeometry_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
 {
 	if ((geom_number <0) || (geom_number >= inspected->ngeometries) )
+	{
+		lwerror("lwgeom_getsubgeometry_inspected: geom_number out of range");
 		return NULL;
+	}
 
 	return inspected->sub_geoms[geom_number];
 }
@@ -1152,7 +1157,8 @@ char *lwgeom_getsubgeometry_inspected(LWGEOM_INSPECTED *inspected, int geom_numb
 //   ie lwgeom_gettype( <'MULTIPOINT(0 0, 1 1)'>, 0)
 //                 --> point
 // gets the 8bit type of the geometry at location geom_number
-char lwgeom_getsubtype(char *serialized_form, int geom_number)
+char
+lwgeom_getsubtype(char *serialized_form, int geom_number)
 {
 	//major cheat!!
 	char  result;

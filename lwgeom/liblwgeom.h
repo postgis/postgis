@@ -334,8 +334,8 @@ extern int pointArray_ptsize(const POINTARRAY *pa);
 
 #define TYPE_HASZ(t) ( ((t)&0x20)>>5 )
 #define TYPE_HASM(t) ( ((t)&0x10)>>4 )
-#define TYPE_HASBBOX(t) ((t)&0x80)
-#define TYPE_HASSRID(t) (((t)&0x40))
+#define TYPE_HASBBOX(t) ( ((t)&0x80)>>7 )
+#define TYPE_HASSRID(t) ( (((t)&0x40))>>6 )
 #define TYPE_NDIMS(t) ((((t)&0x20)>>5)+(((t)&0x10)>>4)+2)
 #define TYPE_GETTYPE(t) ((t)&0x0F)
 #define TYPE_GETZM(t) (((t)&0x30)>>4)
@@ -882,7 +882,7 @@ extern double lwgeom_pointarray_length2d(POINTARRAY *pts);
 extern double lwgeom_pointarray_length(POINTARRAY *pts);
 extern void lwgeom_force2d_recursive(char *serialized, char *optr, size_t *retsize);
 extern void lwgeom_force3dz_recursive(char *serialized, char *optr, size_t *retsize);
-extern void lwgeom_force3dm_recursive(char *serialized, char *optr, size_t *retsize);
+extern void lwgeom_force3dm_recursive(unsigned char *serialized, char *optr, size_t *retsize);
 extern void lwgeom_force4d_recursive(char *serialized, char *optr, size_t *retsize);
 extern double distance2d_pt_pt(POINT2D *p1, POINT2D *p2);
 extern double distance2d_pt_seg(POINT2D *p, POINT2D *A, POINT2D *B);

@@ -1511,13 +1511,14 @@ elog(NOTICE, " elem %d size: %d (tot: %d)", i, size, totsize);
  * Return number bytes written in given int pointer.
  */
 void
-lwgeom_force3dm_recursive(char *serialized, char *optr, size_t *retsize)
+lwgeom_force3dm_recursive(unsigned char *serialized, char *optr, size_t *retsize)
 {
 	LWGEOM_INSPECTED *inspected;
 	int i,j,k;
 	int totsize=0;
 	int size=0;
 	int type;
+	unsigned char newtypefl;
 	LWPOINT *point = NULL;
 	LWLINE *line = NULL;
 	LWPOLY *poly = NULL;
@@ -1546,6 +1547,8 @@ lwgeom_force3dm_recursive(char *serialized, char *optr, size_t *retsize)
 		point->point = &newpts;
 		TYPE_SETZM(point->type, 0, 1);
 		lwpoint_serialize_buf(point, optr, retsize);
+		lwfree(newpts.serialized_pointlist);
+		lwfree(point);
 
 #ifdef DEBUG
 lwnotice("lwgeom_force3dm_recursive returning");
@@ -1581,6 +1584,8 @@ elog(NOTICE, "lwgeom_force3dm_recursive: %d bytes pointlist allocated", sizeof(P
 		line->points = &newpts;
 		TYPE_SETZM(line->type, 0, 1);
 		lwline_serialize_buf(line, optr, retsize);
+		lwfree(newpts.serialized_pointlist);
+		lwfree(line);
 
 #ifdef DEBUG
 lwnotice("lwgeom_force3dm_recursive returning");
@@ -1615,6 +1620,8 @@ lwnotice("lwgeom_force3dm_recursive returning");
 		poly->rings = nrings;
 		TYPE_SETZM(poly->type, 0, 1);
 		lwpoly_serialize_buf(poly, optr, retsize);
+		lwfree(poly);
+		// TODO: free nrigs[*]->serialized_pointlist
 
 #ifdef DEBUG
 lwnotice("lwgeom_force3dm_recursive returning");
@@ -1638,15 +1645,21 @@ lwnotice("lwgeom_force3dm_recursive: it's a collection (%s)", lwgeom_typename(ty
 
 
 	// Add type
-	optr[0] = lwgeom_makeType_full(0, 1, lwgeom_hasSRID(serialized[0]),
+	newtypefl = lwgeom_makeType_full(0, 1, lwgeom_hasSRID(serialized[0]),
 		type, lwgeom_hasBBOX(serialized[0]));
+	optr[0] = newtypefl;
 	optr++;
 	totsize++;
 	loc=serialized+1;
 
 #ifdef DEBUG
-	lwnotice("lwgeom_force3dm_recursive: added collection type (%s) - size:%d", lwgeom_typename(type), totsize);
+	lwnotice("lwgeom_force3dm_recursive: added collection type (%s[%s]) - size:%d", lwgeom_typename(type), lwgeom_typeflags(newtypefl), totsize);
 #endif
+
+	if ( lwgeom_hasBBOX(serialized[0]) != lwgeom_hasBBOX(newtypefl) )
+		lwerror("typeflag mismatch in BBOX");
+	if ( lwgeom_hasSRID(serialized[0]) != lwgeom_hasSRID(newtypefl) )
+		lwerror("typeflag mismatch in SRID");
 
 	// Add BBOX if any
 	if (lwgeom_hasBBOX(serialized[0]))
@@ -1684,7 +1697,7 @@ lwnotice("lwgeom_force3dm_recursive: it's a collection (%s)", lwgeom_typename(ty
 #ifdef DEBUG
 	lwnotice("lwgeom_force3dm_recursive: inspecting subgeoms");
 #endif
-	// Now recurse for each suboject
+	// Now recurse for each subobject
 	inspected = lwgeom_inspect(serialized);
 	for (i=0; i<inspected->ngeometries; i++)
 	{
@@ -1705,6 +1718,7 @@ lwnotice("lwgeom_force3dm_recursive returning");
 
 	if ( retsize ) *retsize = totsize;
 }
+
 
 /*
  * Write to already allocated memory 'optr' a 4d version of
@@ -1934,7 +1948,7 @@ Datum LWGEOM_force_3dm(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
 	PG_LWGEOM *result;
 	int olddims;
-	int32 size = 0;
+	size_t size = 0;
 
 	olddims = lwgeom_ndims(geom->type);
 	
@@ -1942,18 +1956,22 @@ Datum LWGEOM_force_3dm(PG_FUNCTION_ARGS)
 	if ( olddims == 3 && TYPE_HASM(geom->type) ) PG_RETURN_POINTER(geom);
 
 	if ( olddims > 3 ) {
-		result = (PG_LWGEOM *)lwalloc(geom->size);
+		size = geom->size;
 	} else {
 		// allocate double as memory a larger for safety 
-		result = (PG_LWGEOM *) lwalloc(geom->size*1.5);
+		size = geom->size * 1.5;
 	}
+	result = (PG_LWGEOM *)lwalloc(size);
+
+#ifdef DEBUG
+	lwnotice("LWGEOM_force_3dm: allocated %d bytes for result", size);
+#endif
 
 	lwgeom_force3dm_recursive(SERIALIZED_FORM(geom),
 		SERIALIZED_FORM(result), &size);
 
 #ifdef DEBUG
-	lwnotice("lwgeom_force3dm_recursive returned a %d sized geom",
-		size);
+	lwnotice("LWGEOM_force_3dm: lwgeom_force3dm_recursive returned a %d sized geom", size);
 #endif
 
 	// we can safely avoid this... memory will be freed at
