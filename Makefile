@@ -4,15 +4,17 @@
 subdir = contrib/postgis
 
 # Root of the pgsql source tree 
-#top_builddir = ../..
-top_builddir = /data3/postgresql-7.1.2/src
+ifneq (${PGSQL_SRC},"") 
+	top_builddir = ${PGSQL_SRC}
+	installlibdir = ${PWD}
+else
+	top_builddir = ../..
+	installlibdir = $(libdir)/contrib
+endif
 
 include $(top_builddir)/src/Makefile.global
 
 test_db = geom_regress
-
-# override libdir to install shlib in contrib not main directory
-libdir := $(libdir)/contrib
 
 # shared library parameters
 NAME=postgis
@@ -36,18 +38,16 @@ all: all-lib $(NAME).sql
 # Shared library stuff
 include $(top_srcdir)/src/Makefile.shlib
 
-#$(NAME).sql: $(NAME).sql.in
-#	sed -e 's:@MODULE_FILENAME@:$(libdir)/$(shlib):g' < $< > $@
-
 $(NAME).sql: $(NAME).sql.in
-	sed -e 's:@MODULE_FILENAME@:/data1/Refractions/Projects/PostGIS/work_dave/postgis/$(shlib):g' < $< > $@
+	sed -e 's:@MODULE_FILENAME@:$(installlibdir)/$(shlib):g' < $< > $@
+
 
 install: all installdirs install-lib
 	$(INSTALL_DATA) $(srcdir)/README.$(NAME)  $(docdir)/contrib
 	$(INSTALL_DATA) $(NAME).sql $(datadir)/contrib
 
 installdirs:
-	$(mkinstalldirs) $(docdir)/contrib $(datadir)/contrib $(libdir)
+	$(mkinstalldirs) $(docdir)/contrib $(datadir)/contrib $(installlibdir)
 
 uninstall: uninstall-lib
 	@rm -f $(docdir)/contrib/README.$(NAME) $(datadir)/contrib/$(NAME).sql
