@@ -2067,15 +2067,16 @@ BEGIN
                 AND c.oid = a.attrelid
                 AND c.relnamespace = n.oid
                 AND f_geometry_column::name = a.attname
+
                 AND sridcheck.conrelid = c.oid
-                --AND sridcheck.conname = ''$1''
 		AND sridcheck.consrc LIKE ''(srid(% = %)''
+                AND sridcheck.consrc ~ textcat('' = '', srid::text)
+
                 AND typecheck.conrelid = c.oid
-                --AND typecheck.conname = ''$2''
 		AND typecheck.consrc LIKE
 	''((geometrytype(%) = ''''%''''::text) OR (% IS NULL))''
-                AND sridcheck.consrc ~ textcat('' = '', srid::text)
                 AND typecheck.consrc ~ textcat('' = '''''', type::text)
+
                 AND NOT EXISTS (
                         SELECT oid FROM geometry_columns gc
                         WHERE c.relname::varchar = gc.f_table_name
@@ -2177,12 +2178,10 @@ BEGIN
 		AND typecheck.connamespace = n.oid
 #endif
 		AND sridcheck.conrelid = c.oid
-		--AND sridcheck.conname = ''$1''
-		AND sridcheck.consrc LIKE ''(srid(% = %)''
+		AND sridcheck.consrc LIKE ''(srid(''||a.attname||'') = %)''
 		AND typecheck.conrelid = c.oid
-		--AND typecheck.conname = ''$2'';
 		AND typecheck.consrc LIKE
-	''((geometrytype(%) = ''''%''''::text) OR (% IS NULL))''
+	''((geometrytype(''||a.attname||'') = ''''%''''::text) OR (% IS NULL))''
 		;
 
 	INSERT INTO geometry_columns SELECT
@@ -2221,12 +2220,10 @@ BEGIN
 		AND typecheck.connamespace = n.oid
 #endif
 		AND sridcheck.conrelid = c.oid
-		--AND sridcheck.conname = ''$1''
-		AND sridcheck.consrc LIKE ''(srid(% = %)''
+		AND sridcheck.consrc LIKE ''(srid(''||a.attname||'') = %)''
 		AND typecheck.conrelid = c.oid
-		--AND typecheck.conname = ''$2''
 		AND typecheck.consrc LIKE
-	''((geometrytype(%) = ''''%''''::text) OR (% IS NULL))''
+	''((geometrytype(''||a.attname||'') = ''''%''''::text) OR (% IS NULL))''
 
                 AND NOT EXISTS (
                         SELECT oid FROM geometry_columns gc
