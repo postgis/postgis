@@ -3071,16 +3071,16 @@ LANGUAGE 'plpgsql' WITH (iscachable,isstrict);
 -----------------------------------------------------------------------
 
 CREATEFUNCTION postgis_version() RETURNS text
-AS 'SELECT \'@POSTGIS_VERSION@\'::text AS version'
-LANGUAGE 'sql';
+        AS 'SELECT \'@POSTGIS_VERSION@\'::text AS version'
+        LANGUAGE 'sql';
 
 CREATEFUNCTION postgis_proj_version() RETURNS text
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C';
 
 CREATEFUNCTION postgis_scripts_installed() RETURNS text
-AS 'SELECT \'@POSTGIS_SCRIPTS_VERSION@\'::text AS version'
-LANGUAGE 'sql';
+        AS 'SELECT \'@POSTGIS_SCRIPTS_VERSION@\'::text AS version'
+        LANGUAGE 'sql';
 
 CREATEFUNCTION postgis_lib_version() RETURNS text
 	AS '@MODULE_FILENAME@'
@@ -3097,6 +3097,15 @@ CREATEFUNCTION postgis_uses_stats() RETURNS bool
 CREATEFUNCTION postgis_geos_version() RETURNS text
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C';
+
+CREATEFUNCTION postgis_scripts_build_date() RETURNS text
+        AS 'SELECT \'@POSTGIS_BUILD_DATE@\'::text AS version'
+        LANGUAGE 'sql';
+
+CREATEFUNCTION postgis_lib_build_date() RETURNS text
+	AS '@MODULE_FILENAME@'
+	LANGUAGE 'C';
+
 
 
 CREATEFUNCTION postgis_full_version() RETURNS text

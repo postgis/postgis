@@ -26,6 +26,7 @@ Datum postgis_uses_stats(PG_FUNCTION_ARGS);
 Datum postgis_autocache_bbox(PG_FUNCTION_ARGS);
 Datum postgis_scripts_released(PG_FUNCTION_ARGS);
 Datum postgis_lib_version(PG_FUNCTION_ARGS);
+Datum postgis_lib_build_date(PG_FUNCTION_ARGS);
 Datum LWGEOM_length2d_linestring(PG_FUNCTION_ARGS);
 Datum LWGEOM_length_linestring(PG_FUNCTION_ARGS);
 Datum LWGEOM_perimeter2d_poly(PG_FUNCTION_ARGS);
@@ -189,6 +190,17 @@ PG_FUNCTION_INFO_V1(postgis_lib_version);
 Datum postgis_lib_version(PG_FUNCTION_ARGS)
 {
 	char *ver = POSTGIS_LIB_VERSION;
+	text *result;
+	result = (text *) lwalloc(VARHDRSZ  + strlen(ver));
+	VARATT_SIZEP(result) = VARHDRSZ + strlen(ver) ;
+	memcpy(VARDATA(result), ver, strlen(ver));
+	PG_RETURN_POINTER(result);
+}
+
+PG_FUNCTION_INFO_V1(postgis_lib_build_date);
+Datum postgis_lib_build_date(PG_FUNCTION_ARGS)
+{
+	char *ver = POSTGIS_BUILD_DATE;
 	text *result;
 	result = (text *) lwalloc(VARHDRSZ  + strlen(ver));
 	VARATT_SIZEP(result) = VARHDRSZ + strlen(ver) ;

@@ -35,11 +35,13 @@ else
 endif
 
 #---------------------------------------------------------------
-# Postgis version
+# Postgis version and build date
 #---------------------------------------------------------------
 
 POSTGIS_VERSION = $(SO_MAJOR_VERSION).$(SO_MINOR_VERSION) USE_GEOS=$(USE_GEOS) USE_PROJ=$(USE_PROJ) USE_STATS=$(USE_STATS)
 POSTGIS_LIB_VERSION = $(SO_MAJOR_VERSION).$(SO_MINOR_VERSION).$(SO_MICRO_VERSION)
+POSTGIS_BUILD_DATE := $(shell date -u "+%F %H-%M-%S")
+
 
 #---------------------------------------------------------------
 
@@ -49,6 +51,7 @@ override CFLAGS += -fPIC
 override CFLAGS += -DUSE_VERSION=$(USE_VERSION)
 override CFLAGS += -DPOSTGIS_LIB_VERSION='"$(POSTGIS_LIB_VERSION)"'
 override CFLAGS += -DPOSTGIS_SCRIPTS_VERSION='"$(SCRIPTS_VERSION)"'
+override CFLAGS += -DPOSTGIS_BUILD_DATE='"$(POSTGIS_BUILD_DATE)"'
 
 ifeq ($(USE_GEOS),1)
 	override CFLAGS += -I$(GEOS_DIR)/include -DUSE_GEOS
@@ -121,7 +124,7 @@ all: $(GEOS_RULES) $(shlib) lwpostgis.sql
 # Shared library stuff
 
 lwpostgis.sql: lwpostgis.sql.in
-	cpp -P -traditional-cpp -DUSE_VERSION=$(USE_VERSION) $< | sed -e 's:@MODULE_FILENAME@:$(MODULE_FILENAME):g;s:@POSTGIS_VERSION@:$(POSTGIS_VERSION):g;s:@POSTGIS_SCRIPTS_VERSION@:$(SCRIPTS_VERSION):g' | grep -v ^# > $@
+	cpp -P -traditional-cpp -DUSE_VERSION=$(USE_VERSION) $< | sed -e 's:@MODULE_FILENAME@:$(MODULE_FILENAME):g;s:@POSTGIS_VERSION@:$(POSTGIS_VERSION):g;s:@POSTGIS_SCRIPTS_VERSION@:$(SCRIPTS_VERSION):g;s:@POSTGIS_BUILD_DATE@:$(POSTGIS_BUILD_DATE):g' | grep -v ^# > $@
 	cp lwpostgis.sql ..
 
 install: all installdirs install-lwgeom-lib install-lwgeom-scripts
