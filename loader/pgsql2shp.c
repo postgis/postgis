@@ -10,6 +10,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.38  2003/12/04 19:11:56  strk
+ * code cleanup (removed useless and leaking malloc calls)
+ *
  * Revision 1.37  2003/11/26 18:54:22  strk
  * fixed bug in HexDecoder, made WKB parsing the default
  *
@@ -659,7 +662,6 @@ create_multilines(char *str,int shape_id, SHPHandle shp,int dims)
 	}
 
 	
-	obj = (SHPObject *)malloc(sizeof(SHPObject));
 	if(dims == 0){
 		if(notnull > 0){
 			obj = SHPCreateObject(SHPT_ARC,shape_id,lines,part_index,NULL,max_points,totx,toty,totz,NULL);
@@ -817,8 +819,6 @@ create_lines(char *str,int shape_id, SHPHandle shp,int dims)
 
 	notnull = parse_points(str,points,x,y,z);
 
-	obj = (SHPObject *)malloc(sizeof(SHPObject));
-	
 	if(dims == 0){
 		if(notnull > 0){
 			obj = SHPCreateObject(SHPT_ARC,shape_id,1,part_index,NULL,points,x,y,z,NULL);
@@ -957,9 +957,6 @@ create_points(char *str, int shape_id, SHPHandle shp, int dims)
 
 	notnull = parse_points(str,1,x,y,z);
 	
-
-	obj = (SHPObject *)malloc(sizeof(SHPObject));
-	
 	if(dims == 0){
 		if(notnull > 0){
 			obj = SHPCreateSimpleObject(SHPT_POINT,1,x,y,z);
@@ -997,8 +994,6 @@ create_multipoints(char *str,int shape_id, SHPHandle shp,int dims)
 
 	notnull = parse_points(str,points,x,y,z);
 
-	obj = (SHPObject *)malloc(sizeof(SHPObject));
-	
 	if(dims == 0){
 		if(notnull > 0){
 			obj = SHPCreateSimpleObject(SHPT_MULTIPOINT ,points,x,y,z);
@@ -1154,7 +1149,6 @@ create_polygons(char *str,int shape_id, SHPHandle shp,int dims)
 //		free(z);
 	}
 
-	obj = (SHPObject *)malloc(sizeof(SHPObject));
 	if(dims == 0){
 		if(notnull > 0){
 			obj = SHPCreateObject(SHPT_POLYGON,shape_id,rings,part_index,NULL,max_points,totx,toty,totz,NULL);
@@ -1469,7 +1463,6 @@ create_multipolygons(char *str,int shape_id, SHPHandle shp,int dims)
 	}//end for (k < polys... loop
 
 
-	obj	= (SHPObject *)malloc(sizeof(SHPObject));
 	if(dims == 0){
 		if(notnull > 0){
 			obj = SHPCreateObject(SHPT_POLYGON,shape_id,tot_rings,final_part_index,NULL,final_max_points,finalx,finaly,finalz,NULL);
@@ -1623,7 +1616,6 @@ SHPObject *
 create_multipolygon3D_WKB(byte *wkb, int shape_id)
 {
 	SHPObject *obj;
-	obj = (SHPObject *)malloc(sizeof(SHPObject));
 	int nrings, nparts;
 	uint32 npolys;
 	int totpoints=0;
