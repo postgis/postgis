@@ -295,25 +295,77 @@ CREATE TABLE geometry_columns (
 -----------------------------------------------------------------------
 -- POSTGIS_VERSION()
 -----------------------------------------------------------------------
-CREATEFUNCTION postgis_lib_version() RETURNS cstring
-	AS '@MODULE_FILENAME@'
-	LANGUAGE 'C';
-
-CREATEFUNCTION postgis_geos_version() RETURNS cstring
-	AS '@MODULE_FILENAME@'
-	LANGUAGE 'C';
-
-CREATEFUNCTION postgis_proj_version() RETURNS cstring
-	AS '@MODULE_FILENAME@'
-	LANGUAGE 'C';
 
 CREATEFUNCTION postgis_version() RETURNS text
 AS 'SELECT \'@POSTGIS_VERSION@\'::text AS version'
 LANGUAGE 'sql';
 
-CREATEFUNCTION postgis_scripts_version() RETURNS text
+CREATEFUNCTION postgis_lib_version() RETURNS text
+	AS '@MODULE_FILENAME@'
+	LANGUAGE 'C';
+
+CREATEFUNCTION postgis_geos_version() RETURNS text
+	AS '@MODULE_FILENAME@'
+	LANGUAGE 'C';
+
+CREATEFUNCTION postgis_proj_version() RETURNS text
+	AS '@MODULE_FILENAME@'
+	LANGUAGE 'C';
+
+CREATEFUNCTION postgis_scripts_installed() RETURNS text
 AS 'SELECT \'@POSTGIS_SCRIPTS_VERSION@\'::text AS version'
 LANGUAGE 'sql';
+
+CREATEFUNCTION postgis_scripts_released() RETURNS text
+	AS '@MODULE_FILENAME@'
+	LANGUAGE 'C';
+
+CREATEFUNCTION postgis_uses_stats() RETURNS bool
+	AS '@MODULE_FILENAME@'
+	LANGUAGE 'C';
+
+CREATEFUNCTION postgis_full_version() RETURNS text
+AS '
+DECLARE
+	libver text;
+	projver text;
+	geosver text;
+	usestats bool;
+	dbproc text;
+	relproc text;
+	fullver text;
+BEGIN
+	SELECT postgis_lib_version() INTO libver;
+	SELECT postgis_proj_version() INTO projver;
+	SELECT postgis_geos_version() INTO geosver;
+	SELECT postgis_uses_stats() INTO usestats;
+	SELECT postgis_scripts_installed() INTO dbproc;
+	SELECT postgis_scripts_released() INTO relproc;
+
+	fullver = \'POSTGIS="\' || libver || \'"\';
+
+	IF  geosver IS NOT NULL THEN
+		fullver = fullver || \' GEOS="\' || geosver || \'"\';
+	END IF;
+
+	IF  projver IS NOT NULL THEN
+		fullver = fullver || \' PROJ="\' || geosver || \'"\';
+	END IF;
+
+	IF usestats THEN
+		fullver = fullver || \' USE_STATS\';
+	END IF;
+
+	fullver = fullver || \' DBPROC="\' || dbproc || \'"\';
+	fullver = fullver || \' RELPROC="\' || relproc || \'"\';
+
+	IF dbproc != relproc THEN
+		fullver = fullver || \' (needs proc upgrade)\';
+	END IF;
+
+	RETURN fullver;
+END
+' LANGUAGE 'plpgsql';
 
 -----------------------------------------------------------------------
 -- FIND_SRID( <schema>, <table>, <geom col> )

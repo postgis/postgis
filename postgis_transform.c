@@ -11,6 +11,12 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.19  2004/07/28 16:10:59  strk
+ * Changed all version functions to return text.
+ * Renamed postgis_scripts_version() to postgis_scripts_installed()
+ * Added postgis_scripts_released().
+ * Added postgis_full_version().
+ *
  * Revision 1.18  2004/07/23 21:24:33  strk
  * Added postgis_proj_version()
  *
@@ -464,8 +470,12 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(postgis_proj_version);
 Datum postgis_proj_version(PG_FUNCTION_ARGS)
 {
-	char *result = pstrdup(pj_get_release());
-	PG_RETURN_CSTRING(result);
+	const char *ver = pj_get_release();
+	text *result;
+	result = (text *) palloc(VARHDRSZ  + strlen(ver));
+	VARATT_SIZEP(result) = VARHDRSZ + strlen(ver) ;
+	memcpy(VARDATA(result), ver, strlen(ver));
+	PG_RETURN_POINTER(result);
 }
 
 

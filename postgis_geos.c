@@ -10,6 +10,12 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.38  2004/07/28 16:10:59  strk
+ * Changed all version functions to return text.
+ * Renamed postgis_scripts_version() to postgis_scripts_installed()
+ * Added postgis_scripts_released().
+ * Added postgis_full_version().
+ *
  * Revision 1.37  2004/07/28 13:37:43  strk
  * Added postgis_uses_stats and postgis_scripts_version.
  * Experimented with PIP short-circuit in within/contains functions.
@@ -1927,9 +1933,12 @@ PG_FUNCTION_INFO_V1(postgis_geos_version);
 Datum postgis_geos_version(PG_FUNCTION_ARGS)
 {
 	char *ver = GEOSversion();
-	char *result = pstrdup(ver);
+	text *result;
+	result = (text *) palloc(VARHDRSZ  + strlen(ver));
+	VARATT_SIZEP(result) = VARHDRSZ + strlen(ver) ;
+	memcpy(VARDATA(result), ver, strlen(ver));
 	free(ver);
-	PG_RETURN_CSTRING(result);
+	PG_RETURN_POINTER(result);
 }
 
 //----------------------------------------------------------------------------

@@ -11,6 +11,12 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.39  2004/07/28 16:10:59  strk
+ * Changed all version functions to return text.
+ * Renamed postgis_scripts_version() to postgis_scripts_installed()
+ * Added postgis_scripts_released().
+ * Added postgis_full_version().
+ *
  * Revision 1.38  2004/07/28 13:37:43  strk
  * Added postgis_uses_stats and postgis_scripts_version.
  * Experimented with PIP short-circuit in within/contains functions.
@@ -3173,8 +3179,23 @@ Datum fluffType(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(postgis_lib_version);
 Datum postgis_lib_version(PG_FUNCTION_ARGS)
 {
-	char *result = pstrdup(POSTGIS_LIB_VERSION);
-	PG_RETURN_CSTRING(result);
+	char *ver = POSTGIS_LIB_VERSION;
+	text *result;
+	result = (text *) palloc(VARHDRSZ  + strlen(ver));
+	VARATT_SIZEP(result) = VARHDRSZ + strlen(ver) ;
+	memcpy(VARDATA(result), ver, strlen(ver));
+	PG_RETURN_POINTER(result);
+}
+
+PG_FUNCTION_INFO_V1(postgis_scripts_released);
+Datum postgis_scripts_released(PG_FUNCTION_ARGS)
+{
+	char *ver = POSTGIS_SCRIPTS_VERSION;
+	text *result;
+	result = (text *) palloc(VARHDRSZ  + strlen(ver));
+	VARATT_SIZEP(result) = VARHDRSZ + strlen(ver) ;
+	memcpy(VARDATA(result), ver, strlen(ver));
+	PG_RETURN_POINTER(result);
 }
 
 PG_FUNCTION_INFO_V1(postgis_uses_stats);

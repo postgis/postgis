@@ -2720,6 +2720,20 @@ FROM geometry_table;</literallayout>
 					</listitem>
 				</varlistentry>
 				<varlistentry>
+					<term>postgis_scripts_installed()</term>
+					<listitem>
+						<para>Returns the version number of the postgis.sql script installed in this database. 
+						</para>
+					</listitem>
+				</varlistentry>
+				<varlistentry>
+					<term>postgis_scripts_released()</term>
+					<listitem>
+						<para>Returns the version number of the postgis.sql script released with the installed postgis lib.
+						</para>
+					</listitem>
+				</varlistentry>
+				<varlistentry>
 					<term>postgis_geos_version()</term>
 					<listitem>
 						<para>Returns the version number of the GEOS library, or NULL if GEOS support is not enabled.
