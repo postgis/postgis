@@ -340,7 +340,8 @@ while( my $line = <INPUT> )
 			print "SKIPPING FUNC $id\n" if $DEBUG;
 			next;
 		}
-		if ( $funcname eq 'wkb_in' || $funcname eq 'wkb_out' )
+		if ( $funcname eq 'wkb_in' || $funcname eq 'wkb_out' ||
+			$funcname eq 'wkb_recv' || $funcname eq 'wkb_send' )
 		{
 			print "SKIPPING FUNC $id\n" if $DEBUG;
 			next;
