@@ -1697,7 +1697,7 @@ CREATEFUNCTION LineFromMultiPoint(geometry)
 	AS '@MODULE_FILENAME@', 'LWGEOM_line_from_mpoint'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
-CREATEFUNCTION makeline(geometry, geometry)
+CREATEFUNCTION MakeLine(geometry, geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_makeline'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
