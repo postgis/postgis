@@ -140,7 +140,7 @@ lwpoint_serialize_size(LWPOINT *point)
 #endif
 
 	if ( point->SRID != -1 ) size += 4; // SRID
-	if ( TYPE_HASBBOX(point->type) ) size += sizeof(BOX2DFLOAT4);
+	if ( point->bbox ) size += sizeof(BOX2DFLOAT4);
 
 	size += TYPE_NDIMS(point->type) * sizeof(double); // point
 
