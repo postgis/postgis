@@ -6,6 +6,7 @@
 #include "liblwgeom.h"
 
 //#define DEBUG_CALLS 1
+//#define DEBUG 1
 
 
 // construct a new LWLINE.  points will *NOT* be copied
@@ -385,16 +386,27 @@ make_lwline(int SRID, unsigned int npoints, LWPOINT **points)
 	POINTARRAY *pa;
 
 	/*
-	 * Find output dimensions
+	 * Find output dimensions, check integrity
 	 */
 	for (i=0; i<npoints; i++)
 	{
+		if ( TYPE_GETTYPE(points[i]->type) != POINTTYPE )
+		{
+			lwerror("make_lwline: invalid input type: %s",
+				lwgeom_typename(TYPE_GETTYPE(points[i]->type)));
+			return NULL;
+		}
 		zmflag = TYPE_GETZM(points[i]->type);
 		if ( zmflag == 3 ) break;
 	}
 
 	/* Allocate space for output pointarray */
 	pa = ptarray_construct(zmflag&2, zmflag&1, npoints);
+
+#ifdef DEBUG
+	lwnotice("make_lwline: constructed pointarray for %d points, %d zmflag",
+		npoints, zmflag);
+#endif
 
 	/*
 	 * Fill pointarray
@@ -405,20 +417,30 @@ make_lwline(int SRID, unsigned int npoints, LWPOINT **points)
 			for (i=0; i<npoints; i++)
 				getPoint2d_p(points[i]->point, 0,
 					(POINT2D *)getPoint(pa, i));
+			break;
+
 		case 1: // 3dm
 			for (i=0; i<npoints; i++)
 				getPoint3dm_p(points[i]->point, 0,
 					(POINT3DM *)getPoint(pa, i));
+			break;
+
 		case 2: // 3dz
 			for (i=0; i<npoints; i++)
 				getPoint3dz_p(points[i]->point, 0,
 					(POINT3DZ *)getPoint(pa, i));
-		default: // 4d
+			break;
+
+		case 3: // 4d
 			for (i=0; i<npoints; i++)
 				getPoint4d_p(points[i]->point, 0,
 					(POINT4D *)getPoint(pa, i));
+			break;
+
+		default:
+			lwerror ("make_lwline: unespected ZMflag: %d", zmflag);
+			return NULL;
 	}
 
 	return lwline_construct(SRID, NULL, pa);
 }
-
