@@ -1,4 +1,4 @@
-PostGIS 1.0.0
+PostGIS 1.0.0RC4
 ?????
 	- early return from force_collection
 	- segfault fix in geom_accum()
@@ -12,6 +12,7 @@ PostGIS 1.0.0
 	- MultiLine handling BUG fix in loader and dumper
 	- improved version handling, central Version.config
         - added distance_sphere function 
+	- subselects support in selectivity estimator 
 
 PostGIS 1.0.0RC3
 2005/02/24
