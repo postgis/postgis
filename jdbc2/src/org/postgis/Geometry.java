@@ -109,11 +109,6 @@ public abstract class Geometry implements Serializable {
     public final int type;
 
     /**
-     * The string rep of the current type
-     */
-    public final String typestring;
-
-    /**
      * The spacial reference system id of this geometry, default (no srid) is -1
      */
     public int srid = -1;
@@ -125,7 +120,6 @@ public abstract class Geometry implements Serializable {
      */
     protected Geometry(int type) {
         this.type = type;
-        this.typestring = getTypeString(type);
     }
 
     /**
@@ -242,7 +236,7 @@ public abstract class Geometry implements Serializable {
      * StringBuffer.
      */
     public void outerWKT(StringBuffer sb, boolean putM) {
-        sb.append(typestring);
+        sb.append(getTypeString());
         if (putM && haveMeasure && dimension == 2) {
             sb.append('M');
         }

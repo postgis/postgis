@@ -32,6 +32,8 @@ import org.postgresql.util.PGobject;
 import java.sql.SQLException;
 
 public class PGgeometry extends PGobject {
+    /* JDK 1.5 Serialization */
+    private static final long serialVersionUID = 0x100;
 
     Geometry geom;
     BinaryParser bp = new BinaryParser();
@@ -78,7 +80,7 @@ public class PGgeometry extends PGobject {
         int srid = -1;
 
         if (value.startsWith(SRIDPREFIX)) {
-            //break up geometry into srid and wkt
+            // break up geometry into srid and wkt
             String[] parts = PGgeometry.splitSRID(value);
             value = parts[1].trim();
             srid = Integer.parseInt(parts[0].substring(5));

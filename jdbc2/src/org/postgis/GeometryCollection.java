@@ -26,8 +26,6 @@
 
 package org.postgis;
 
-import org.postgresql.util.PGtokenizer;
-
 import java.sql.SQLException;
 
 /**
@@ -40,8 +38,10 @@ import java.sql.SQLException;
  */
 
 public class GeometryCollection extends ComposedGeom {
+    /* JDK 1.5 Serialization */
+    private static final long serialVersionUID = 0x100;
+
     public static final String GeoCollID = "GEOMETRYCOLLECTION";
-    public static final String EmptyColl = GeoCollID + "(EMPTY)";
 
     public GeometryCollection() {
         super(GEOMETRYCOLLECTION);
@@ -56,29 +56,15 @@ public class GeometryCollection extends ComposedGeom {
     }
 
     public GeometryCollection(String value, boolean haveM) throws SQLException {
-        this();
-        value = value.trim();
-        if (value.equals(EmptyColl)) {
-            //Do nothing
-        } else if (value.startsWith(GeoCollID)) {
-            int pfxlen = typestring.length();
-            if (value.charAt(pfxlen) == 'M') {
-                pfxlen += 1;
-                haveM = true;
-            }
-            value = value.substring(pfxlen).trim();
+        super(GEOMETRYCOLLECTION, value, haveM);
+    }
 
-            PGtokenizer t = new PGtokenizer(PGtokenizer.removePara(value), ',');
-            int ngeoms = t.getSize();
-            subgeoms = new Geometry[ngeoms];
-            for (int p = 0; p < ngeoms; p++) {
-                subgeoms[p] = PGgeometry.geomFromString(t.getToken(p), haveM);
-            }
-            dimension = subgeoms[0].dimension;
-            haveMeasure = subgeoms[0].haveMeasure;
-        } else {
-            throw new SQLException("postgis.geocollection");
-        }
+    protected Geometry[] createSubGeomArray(int ngeoms) {
+        return new Geometry[ngeoms];
+    }
+
+    protected Geometry createSubGeomInstance(String token, boolean haveM) throws SQLException {
+        return PGgeometry.geomFromString(token, haveM);
     }
 
     protected void innerWKT(StringBuffer SB) {

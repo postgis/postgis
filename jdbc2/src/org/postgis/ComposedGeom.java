@@ -26,6 +26,9 @@
 
 package org.postgis;
 
+import org.postgresql.util.PGtokenizer;
+
+import java.sql.SQLException;
 import java.util.Iterator;
 
 /**
@@ -69,6 +72,51 @@ public abstract class ComposedGeom extends Geometry {
             dimension = 0;
         }
     }
+
+    protected ComposedGeom(int type, String value, boolean haveM) throws SQLException {
+        super(type);
+        value = value.trim();
+        String typestring = getTypeString();
+        if (value.indexOf(typestring) == 0) {
+            int pfxlen = typestring.length();
+            if (value.charAt(pfxlen) == 'M') {
+                pfxlen += 1;
+                haveM = true;
+            }
+            value = value.substring(pfxlen).trim();
+        } else if (value.charAt(0) != '(') {
+            // we are neigher inner nor outer rep.
+            throw new SQLException("Error parsing a " + typestring + " out of " + value);
+        }
+        if (value.equals("(EMPTY)")) {
+            // Special case for PostGIS 0.X style empty geometry collections
+            // (which are not OpenGIS compliant)
+            return;
+        }
+        PGtokenizer t = new PGtokenizer(PGtokenizer.removePara(value), ',');
+        int subgeomcount = t.getSize();
+        subgeoms = createSubGeomArray(subgeomcount);
+        for (int p = 0; p < subgeomcount; p++) {
+            subgeoms[p] = createSubGeomInstance(t.getToken(p), haveM);
+        }
+        dimension = subgeoms[0].dimension;
+        // fetch haveMeasure from subpoint because haveM does only work with
+        // 2d+M, not with 3d+M geometries
+        haveMeasure = subgeoms[0].haveMeasure;
+    }
+
+    /**
+     * Return the appropriate instance of the subgeometry - this encapsulates
+     * subclass specific constructor calls
+     */
+    protected abstract Geometry createSubGeomInstance(String token, boolean haveM)
+            throws SQLException;
+
+    /**
+     * Return the appropriate instance of the subgeometry array - this
+     * encapsulates subclass specific array instantiation
+     */
+    protected abstract Geometry[] createSubGeomArray(int size);
 
     protected boolean equalsintern(Geometry other) {
         // Can be assumed to be the same subclass of Geometry, so it must be a

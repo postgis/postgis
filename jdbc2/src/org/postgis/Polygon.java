@@ -26,11 +26,11 @@
 
 package org.postgis;
 
-import org.postgresql.util.PGtokenizer;
-
 import java.sql.SQLException;
 
 public class Polygon extends ComposedGeom {
+    /* JDK 1.5 Serialization */
+    private static final long serialVersionUID = 0x100;
 
     public Polygon() {
         super(POLYGON);
@@ -43,28 +43,17 @@ public class Polygon extends ComposedGeom {
     public Polygon(String value) throws SQLException {
         this(value, false);
     }
-    
-    public Polygon(String value, boolean haveM) throws SQLException{
-        this();
-        value = value.trim();
-        if (value.indexOf(typestring) == 0) {
-            int pfxlen = typestring.length();
-            if (value.charAt(pfxlen) == 'M') {
-                pfxlen += 1;
-                haveM = true;
-            }
-            value = value.substring(pfxlen).trim();
-        }
-        PGtokenizer t = new PGtokenizer(PGtokenizer.removePara(value), ',');
-        int nrings = t.getSize();
-        subgeoms = new LinearRing[nrings];
-        for (int r = 0; r < nrings; r++) {
-            subgeoms[r] = new LinearRing(t.getToken(r), haveM);
-        }
-        dimension = subgeoms[0].dimension;
-        // fetch haveMeasure from subpoint because haveM does only work with
-        // 2d+M, not with 3d+M geometries
-        this.haveMeasure = subgeoms[0].haveMeasure;
+
+    public Polygon(String value, boolean haveM) throws SQLException {
+        super(POLYGON, value, haveM);
+    }
+
+    protected Geometry createSubGeomInstance(String token, boolean haveM) throws SQLException {
+        return new LinearRing(token, haveM);
+    }
+
+    protected Geometry[] createSubGeomArray(int ringcount) {
+        return new LinearRing[ringcount];
     }
 
     public int numRings() {

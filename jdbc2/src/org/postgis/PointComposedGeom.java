@@ -25,8 +25,6 @@
  */
 package org.postgis;
 
-import org.postgresql.util.PGtokenizer;
-
 import java.sql.SQLException;
 
 /**
@@ -50,30 +48,17 @@ public abstract class PointComposedGeom extends ComposedGeom {
     public PointComposedGeom(int type, String value) throws SQLException {
         this(type, value, false);
     }
+    
     public PointComposedGeom(int type, String value, boolean haveM) throws SQLException {
-        this(type);
-        value = value.trim();
-        if (value.indexOf(typestring) == 0) {
-            int pfxlen = typestring.length();
-            if (value.charAt(pfxlen)=='M') {
-                pfxlen += 1;
-                haveM=true;
-            }
-            value = value.substring(pfxlen).trim();
-        }
-        if (value.charAt(0) == '(') {
-            PGtokenizer t = new PGtokenizer(PGtokenizer.removePara(value), ',');
-            int npoints = t.getSize();
-            subgeoms = new Point[npoints];
-            for (int p = 0; p < npoints; p++) {
-                subgeoms[p] = new Point(t.getToken(p), haveM);                
-            }
-            dimension = subgeoms[0].dimension;
-            haveM |= subgeoms[0].haveMeasure;
-        } else {
-            throw new SQLException("postgis.multipointgeometry");
-        }
-        this.haveMeasure = haveM;
+        super(type, value, haveM);
+    }
+
+    protected Geometry createSubGeomInstance(String token, boolean haveM) throws SQLException {
+        return new Point(token, haveM);
+    }
+
+    protected Geometry[] createSubGeomArray(int pointcount) {
+        return new Point[pointcount];
     }
 
     protected void innerWKT(StringBuffer sb) {

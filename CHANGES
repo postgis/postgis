@@ -3,6 +3,7 @@ PostGIS 1.0.0
 	- early return from force_collection
 	- segfault fix in geom_accum()
 	- consistency check fix in SnapToGrid()
+	- jdbc2: code cleanups, Makefile improvements
 
 PostGIS 1.0.0RC3
 2005/02/24

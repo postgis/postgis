@@ -52,17 +52,39 @@ top_builddir:=$(PGSQL_SRC)
 top_makefile:=$(PGSQL_SRC)/src/Makefile.global
 -include $(top_makefile)
 
-# Make sure you CLASSPATH environmental variable includes your postgresql.jar
-# We set a reasonable default for un*xoid systems here. Note that some JREs
-# (e. G. sablevm on debian woody) seem to need their own system classes
-# to be included in the classpath, because they do not adhere to the standard
-# concept of -classpath and -bootclasspath. SUN jdk, IBM jdk, Blackdown JDK,
-# gij and kaffe are known to work fine.
+# Make sure our classpath includes your postgresql.jar. This is somehow
+# difficult because some JREs (e. G. those on debian woody or sablevm) seem
+# to forget their own system classes (aka bootclasspath) as soon as _any_
+# classpath is set, either via environment or via command line. They do not
+# implement the concept of distinct classpath and bootclasspath settings,
+# as most current java implementations do. This makes it necessary to either
+# explicitly include the system classes in the set classpath, or use
+# non-standard options line --addclasspath to add both the postgresql.jar
+# and our own classes. We also cannot set an unset CLASSPATH variable here
+# for this reason. Current (Jan 2005) implementations from SUN, IBM, 
+# Blackdown, gij and kaffe are known to work fine.
 
-CLASSPATH?=/usr/share/java/postgresql.jar
+# If you set POSTGIS_BUILD_CLASSPATH via Environment (even to an empty string), we
+# simply use it and do not try to guess anything. If POSTGIS_CLASSPATH is
+# not set, we use the contents of CLASSPATH. If CLASSPATH is empty or not
+# set, we try to guess a default location that works on most unixoid systems.
+
+ifeq (${CLASSPATH},)
+	TEMP=/usr/share/java/postgresql.jar
+else
+	TEMP=${CLASSPATH}
+endif
+
+POSTGIS_BUILD_CLASSPATH?=$(TEMP)
+
+# Set those to --addclasspath for sablevm, to avoid overriding the
+# BOOTCLASSPATH, the first one is for the compiler, the second one for JRE.
+COMP_ADDCP?=-classpath
+EXEC_ADDCP?=-classpath
 
 # This are used for the online regression tests, override via environment
-# as applicable.
+# as applicable. The jtest needs table creation privilege in current_schema(),
+# the others only call self contained SELECTs that do not access any tables.
 PGHOST?=localhost
 PGPORT?=5432
 PGDATABASE?=jdbc_test
@@ -75,8 +97,8 @@ PGPASS?=guess
 SRCDIR=src
 EXAMPLES=examples
 BUILD=bin
-RUNCP=$(CLASSPATH):postgis.jar
-BUILDCP=$(STUBBUILD):$(SRCDIR):$(CLASSPATH)
+RUNCP=$(POSTGIS_BUILD_CLASSPATH):postgis.jar
+BUILDCP=$(STUBBUILD):$(POSTGIS_BUILD_CLASSPATH)
 
 # All the java files to compile
 SRC= $(SRCDIR)/examples/Test.java \
@@ -160,29 +182,29 @@ stubcompile: $(STUBBUILD)
 	touch stubcompile
 
 compile: stubcompile $(BUILD) $(SRC)
-	$(JAVAC) -classpath "$(BUILDCP)" -d $(BUILD) $(SRC) 
+	$(JAVAC) $(COMP_ADDCP) "$(BUILDCP)" -d $(BUILD) $(SRC) 
 	touch compile
 
 test:	postgis.jar
-	$(JAVA) -classpath "$(RUNCP)" $(EXAMPLES)/Test
+	$(JAVA) $(EXEC_ADDCP) "$(RUNCP)" $(EXAMPLES)/Test
         
 jtest:	postgis.jar
-	$(JAVA) -classpath "$(RUNCP)" $(EXAMPLES)/TestServer jdbc:postgresql://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
+	$(JAVA) $(EXEC_ADDCP) "$(RUNCP)" $(EXAMPLES)/TestServer jdbc:postgresql://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
 
 ptestoffline: postgis.jar	
-	$(JAVA) -classpath "$(RUNCP)" $(EXAMPLES)/TestParser offline
+	$(JAVA) $(EXEC_ADDCP) "$(RUNCP)" $(EXAMPLES)/TestParser offline
 
 ptest:  postgis.jar
-	$(JAVA) -classpath "$(RUNCP)" $(EXAMPLES)/TestParser jdbc:postgresql_postGIS://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
+	$(JAVA) $(EXEC_ADDCP) "$(RUNCP)" $(EXAMPLES)/TestParser jdbc:postgresql_postGIS://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
 
 boxtestoffline: postgis.jar	
-	$(JAVA) -classpath "$(RUNCP)" $(EXAMPLES)/TestBoxes offline
+	$(JAVA) $(EXEC_ADDCP) "$(RUNCP)" $(EXAMPLES)/TestBoxes offline
 
 boxtest:  postgis.jar
-	$(JAVA) -classpath "$(RUNCP)" $(EXAMPLES)/TestBoxes jdbc:postgresql_postGIS://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
+	$(JAVA) $(EXEC_ADDCP) "$(RUNCP)" $(EXAMPLES)/TestBoxes jdbc:postgresql_postGIS://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
 
 autoregistertest:  postgis.jar
-	$(JAVA) -classpath "$(RUNCP)" $(EXAMPLES)/TestAutoregister jdbc:postgresql://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
+	$(JAVA) $(EXEC_ADDCP) "$(RUNCP)" $(EXAMPLES)/TestAutoregister jdbc:postgresql://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
 
 offlinetests: boxtestoffline ptestoffline test
 
@@ -190,7 +212,7 @@ onlinetests: boxtest ptest jtest autoregistertest
 
 # Print all available versions
 versions:  postgis.jar
-	$(JAVA) -classpath "$(RUNCP)" $(EXAMPLES)/VersionPrinter jdbc:postgresql://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
+	$(JAVA) $(EXEC_ADDCP) "$(RUNCP)" $(EXAMPLES)/VersionPrinter jdbc:postgresql://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
 
 # boxtest and ptest include boxtestoffline and ptestoffline, so we only need
 # to run test in addition to the onlinetests
@@ -223,14 +245,14 @@ $(JTSBUILD):
 
 
 jtscompile: compile stubcompile $(JTSBUILD) $(JTSSRC)
-	$(JAVAC) -classpath "$(BUILD):$(CP)" -d $(JTSBUILD) $(JTSSRC) 
+	$(JAVAC) $(COMP_ADDCP) "$(BUILD):$(CP)" -d $(JTSBUILD) $(JTSSRC) 
 	touch jtscompile
 	
 jtstestoffline: jtscompile	
-	$(JAVA) -classpath "$(JTSBUILD):$(BUILD):$(CP)" $(EXAMPLES)/JtsTestParser offline
+	$(JAVA) $(EXEC_ADDCP) "$(JTSBUILD):$(BUILD):$(CP)" $(EXAMPLES)/JtsTestParser offline
 
 jtstest:  jtscompile
-	$(JAVA) -classpath "$(JTSBUILD):$(BUILD):$(CP)" $(EXAMPLES)/JtsTestParser jdbc:postgres_jts://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
+	$(JAVA) -$(EXEC_ADDCP) "$(JTSBUILD):$(BUILD):$(CP)" $(EXAMPLES)/JtsTestParser jdbc:postgres_jts://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
 
 postgis_jts.jar: jtscompile $(SRCDIR)/org/postgresql/driverconfig.properties
 	$(JAR) -cf postgis_jts.jar -C $(BUILD) . \

@@ -35,6 +35,8 @@ import java.sql.SQLException;
  * the polygon types, but is not stored or retrieved directly from the database.
  */
 public class LinearRing extends PointComposedGeom {
+    /* JDK 1.5 Serialization */
+    private static final long serialVersionUID = 0x100;
 
     public LinearRing(Point[] points) {
         super(LINEARRING, points);

@@ -26,11 +26,11 @@
 
 package org.postgis;
 
-import org.postgresql.util.PGtokenizer;
-
 import java.sql.SQLException;
 
 public class MultiPolygon extends ComposedGeom {
+    /* JDK 1.5 Serialization */
+    private static final long serialVersionUID = 0x100;
 
     public MultiPolygon() {
         super(MULTIPOLYGON);
@@ -45,28 +45,15 @@ public class MultiPolygon extends ComposedGeom {
     }
 
     protected MultiPolygon(String value, boolean haveM) throws SQLException {
-        this();
-        value = value.trim();
-        if (value.indexOf("MULTIPOLYGON") == 0) {
-            int pfxlen = typestring.length();
-            if (value.charAt(pfxlen) == 'M') {
-                pfxlen += 1;
-                haveM = true;
-            }
-            value = value.substring(pfxlen).trim();
-            PGtokenizer t = new PGtokenizer(PGtokenizer.removePara(value), ',');
-            int npolygons = t.getSize();
-            subgeoms = new Polygon[npolygons];
-            for (int p = 0; p < npolygons; p++) {
-                subgeoms[p] = new Polygon(t.getToken(p), haveM);
-            }
-            dimension = subgeoms[0].dimension;
-            // fetch haveMeasure from subpoint because haveM does only work with
-            // 2d+M, not with 3d+M geometries
-            this.haveMeasure = subgeoms[0].haveMeasure;
-        } else {
-            throw new SQLException("postgis.multipolygongeometry");
-        }
+        super(MULTIPOLYGON, value, haveM);
+    }
+
+    protected Geometry[] createSubGeomArray(int npolygons) {
+        return new Polygon[npolygons];
+    }
+
+    protected Geometry createSubGeomInstance(String token, boolean haveM) throws SQLException {
+        return new Polygon(token, haveM);
     }
 
     public int numPolygons() {
@@ -80,5 +67,4 @@ public class MultiPolygon extends ComposedGeom {
             return null;
         }
     }
-
 }

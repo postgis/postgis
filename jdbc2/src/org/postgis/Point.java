@@ -31,6 +31,8 @@ import org.postgresql.util.PGtokenizer;
 import java.sql.SQLException;
 
 public class Point extends Geometry {
+    /* JDK 1.5 Serialization */
+    private static final long serialVersionUID = 0x100;
 
     public static final boolean CUTINTS = true;
 
@@ -163,7 +165,7 @@ public class Point extends Geometry {
                 m = Double.valueOf(t.getToken(dimension)).doubleValue();
             }
         } catch (NumberFormatException e) {
-            throw new SQLException("postgis.Point" + e.toString());
+            throw new SQLException("Error parsing Point: " + e.toString());
         }
         haveMeasure = haveM;
     }

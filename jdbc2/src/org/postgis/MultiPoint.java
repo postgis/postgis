@@ -29,6 +29,8 @@ package org.postgis;
 import java.sql.SQLException;
 
 public class MultiPoint extends PointComposedGeom {
+    /* JDK 1.5 Serialization */
+    private static final long serialVersionUID = 0x100;
 
     public MultiPoint() {
         super(MULTIPOINT);
