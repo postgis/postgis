@@ -15,16 +15,27 @@
 # drop statistic fields from that table.... currently not done.
 #
 # Issues:
-# 	o this script could do less then it does, to allow users
+#	o Some obsoleted functions would not be present in the
+#	  postgis.sql, but will be found in the dump. Currently
+#	  some are skipped, but some depend on the pg version
+#	  so will issue an ERROR due to unavailability of
+#	  corresponding C function in postgis lib.
+#	 
+# 	o This script could do less then it does, to allow users
 #	  to further modify edited dump before feeding it to the
 #	  restoring side.
+#	
 #
 # Tested on:
 #
 #	pg_dump-734/pg734 => pg_restore-743/pg743
 #	pg_dump-743/pg734 => pg_restore-743/pg743
 #	pg_dump-743/pg743 => pg_restore-743/pg743
-#	
+#	pg_dump-734/pg734 => pg_restore-800/pg800
+#	pg_dump-743/pg734 => pg_restore-800/pg800
+#	pg_dump-743/pg743 => pg_restore-800/pg800
+#	pg_dump-800/pg800 => pg_restore-800/pg800
+#
 
 eval "exec perl $0 $@"
 	if (0);
@@ -223,7 +234,7 @@ while( my $line = <INPUT> )
 		$args = join(', ', @args);
 		#print "ARGS SCALAR: [$args]\n";
 		my $id = $funcname."(".$args.")";
-		print "ID: [$id]\n";
+		#print "ID: [$id]\n";
 		if ( $funcname eq 'plpgsql_call_handler' )
 		{
 			print "SKIPPING FUNC $id\n" if $DEBUG;
@@ -380,26 +391,27 @@ while( my $line = <INPUT> )
 	{
 	}
 
-	elsif ( $line =~ /OPERATOR *([^ ,]*)/)
+	elsif ( $line =~ /CREATE OPERATOR *([^ ,]*)/)
 	{
-		my $name = $1;
+		my $name = lc($1);
+		$name =~ s/^.*\.//;
 		my $larg = undef;
 		my $rarg = undef;
 		my @sublines = ($line);
 		while( my $subline = <INPUT>)
 		{
+			push(@sublines, $subline);
 			last if $subline =~ /\);/;
 			if ( $subline =~ /leftarg *= *([^ ,]*)/i )
 			{
 				$larg=lc($1);
-				$larg =~ s/^public\.//;
+				$larg =~ s/^.*\.//;
 			}
 			if ( $subline =~ /rightarg *= *([^ ,]*)/i )
 			{
 				$rarg=lc($1);
-				$rarg =~ s/^public\.//;
+				$rarg =~ s/^.*\.//;
 			}
-			push(@sublines, $subline);
 		}
 		my $id = $name.','.$larg.','.$rarg;
 		if ( $ops{$id} )
@@ -450,6 +462,9 @@ close(INPUT);
 print "Dropping geometry_columns and spatial_ref_sys\n";
 print PSQL "DROP TABLE geometry_columns;";
 print PSQL "DROP TABLE spatial_ref_sys;";
+#print "Now source $dumpascii manually\n";
+#exit(1);
+
 
 #
 # Source modified ascii dump
@@ -458,3 +473,4 @@ print "Restoring ascii dump $dumpascii\n";
 open(INPUT, "<$dumpascii") || die "Can't read $postgissql\n";
 while(<INPUT>) { print PSQL; }
 close(INPUT);
+close(PSQL);
