@@ -75,14 +75,14 @@ CREATE OPERATOR ~= (
 
 
 CREATE OPERATOR @ (
-   LEFTARG = GEOMETRY, RIGHTARG = GEOMETRY, PROCEDURE = geometry_contain,
+   LEFTARG = GEOMETRY, RIGHTARG = GEOMETRY, PROCEDURE = geometry_contained,
    COMMUTATOR = '@',
    RESTRICT = contsel, JOIN = contjoinsel
 );
 
 
 CREATE OPERATOR ~ (
-   LEFTARG = GEOMETRY, RIGHTARG = GEOMETRY, PROCEDURE = geometry_contained,
+   LEFTARG = GEOMETRY, RIGHTARG = GEOMETRY, PROCEDURE = geometry_contain,
    COMMUTATOR = '@',
    RESTRICT = contsel, JOIN = contjoinsel
 );
