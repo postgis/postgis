@@ -20,6 +20,7 @@ public class LinearRing extends Geometry
 	public LinearRing(Point[] points) 
 	{
 		this.points = points;
+		dimension = points[0].dimension;
 	}
 
 	/**
