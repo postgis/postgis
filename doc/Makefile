@@ -10,7 +10,7 @@ html: postgis-out.xml
 		--param shade.verbatim 1 \
 		--param chunk.section.depth 0 \
 		--stringparam html.stylesheet style.css \
-		/usr/share/sgml/docbook/xsl-stylesheets/html/chunk.xsl \
+		/usr/share/sgml/docbook/xsl-stylesheets/html/docbook.xsl \
 		$<
 
 clean:
