@@ -106,15 +106,14 @@ pglwgeom_serialize(LWGEOM *in)
 	size_t size;
 	PG_LWGEOM *result;
 
-	size = lwgeom_serialize_size(in);
-	//lwnotice("lwgeom_serialize_size returned %d", size);
-	result = palloc(size+4);
-	result->size = (size+4);
+	size = lwgeom_serialize_size(in) + VARHDRSZ;
+	//lwnotice("lwgeom_serialize_size returned %d", size-VARHDRSZ);
+	result = palloc(size);
+	result->size = (size);
 	lwgeom_serialize_buf(in, SERIALIZED_FORM(result), &size);
-	if ( size != result->size-4 )
+	if ( size != result->size-VARHDRSZ )
 	{
-		lwerror("lwgeom_serialize size:%d, lwgeom_serialize_size:%d",
-			size, result->size-4);
+		lwerror("pglwgeom_serialize: serialized size:%d, computed size:%d", size, result->size-VARHDRSZ);
 		return NULL;
 	}
 
