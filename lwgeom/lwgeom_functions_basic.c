@@ -1740,6 +1740,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 	size_t size;
 	unsigned int outtype;
 	int i;
+	int SRID;
 
 #ifdef DEBUG
 	elog(NOTICE, "LWGEOM_collect_garray called");
@@ -1775,6 +1776,9 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 	/* Get pointer to GEOMETRY pointers array */
 	geoms = (PG_LWGEOM **)ARR_DATA_PTR(array);
 
+	/* Get first geometry SRID */
+	SRID = lwgeom_getSRID(geoms[0]);
+
 	/*
 	 * Deserialize all geometries in array into the lwgeoms pointers
 	 * array. Check input types to form output type.
@@ -1785,6 +1789,19 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 	{
 		unsigned int intype = TYPE_GETTYPE(geoms[i]->type);
 		lwgeoms[i] = lwgeom_deserialize(SERIALIZED_FORM(geoms[i]));
+
+		// Check SRID homogeneity
+		if ( i ) {
+			if ( lwgeoms[i]->SRID != SRID )
+			{
+				elog(ERROR,
+					"Operation on mixed SRID geometries");
+				PG_RETURN_NULL();
+			}
+		}
+
+		lwgeom_dropSRID(lwgeoms[i]);
+		lwgeom_dropBBOX(lwgeoms[i]);
 
 		// Output type not initialized
 		if ( ! outtype ) {
@@ -1804,8 +1821,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 	}
 
 	outlwg = (LWGEOM *)lwcollection_construct(
-		outtype,
-		lwgeom_getSRID(geoms[0]),
+		outtype, SRID,
 		NULL, nelems, lwgeoms);
 
 	size = lwgeom_serialize_size(outlwg);
