@@ -10,6 +10,10 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.51  2004/05/13 12:24:15  strk
+ * Transformed NULL numeric values to 0 as it was before the introduction
+ * of bigint bug workaround.
+ *
  * Revision 1.50  2004/05/13 12:13:01  strk
  * Used DBFWriteAttributeDirectly interface for writing attributes.
  * This way we are not affected by shapelib long-integer bug.
@@ -2004,7 +2008,22 @@ addRecord(PGresult *res, int residx, int row)
 		/* Default (not geometry) attribute */
 		if (type_ary[j] != 9)
 		{
-			val = PQgetvalue(res, residx, j);
+			/*
+			 * Transform NULL numbers to '0'
+			 * This is because the shapelibe
+			 * won't easly take care of setting
+			 * nulls unless paying the acquisition
+			 * of a bug in long integer values
+			 */
+			if ( PQgetisnull(res, residx, j) &&
+				( type_ary[j] == 1 || type_ary[j] == 2 ) )
+			{
+				val = "0";
+			}
+			else
+			{
+				val = PQgetvalue(res, residx, j);
+			}
 #if VERBOSE > 1
 fprintf(stdout, "s"); fflush(stdout);
 #endif
