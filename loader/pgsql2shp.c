@@ -10,6 +10,10 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.24  2003/11/16 00:27:46  strk
+ * Huge code re-organization. More structured code, more errors handled,
+ * cursor based iteration, less code lines.
+ *
  * Revision 1.23  2003/11/14 22:04:51  strk
  * Used environment vars to pass libpq connection options (less error prone,
  * easier to read). Printed clearer error message on query error.
@@ -40,16 +44,37 @@
 #include "shapefil.h"
 #include "getopt.h"
 
-static void exit_nicely(PGconn *conn){
-	PQfinish(conn);
-	exit(1);
-}
+#define	POINTTYPE	1
+#define	LINETYPE	2
+#define	POLYGONTYPE	3
+#define	MULTIPOINTTYPE	4
+#define	MULTILINETYPE	5
+#define	MULTIPOLYGONTYPE	6
+#define	COLLECTIONTYPE	7
+#define	BBOXONLYTYPE	99
 
-int create_lines(char *str,int shape_id, SHPHandle shp,int dims);
-int create_multilines(char *str,int shape_id, SHPHandle shp,int dims);
-int create_points(char *str,SHPHandle shp,int dims);
-int create_multipoints(char *str, SHPHandle shp,int dims);
-int create_polygons(char *str,int shape_id, SHPHandle shp,int dims);
+/* Global data */
+PGconn *conn;
+char *geo_col_name, *table;
+int type_ary[256];
+int geo_col_num; // attribute num for the requested or detected geometry 
+DBFHandle dbf;
+SHPHandle shp;
+int geotype;
+int is3d;
+int (*shape_creator)(char *, int, SHPHandle, int);
+
+/* Prototypes */
+char *getTableOID(char *table);
+int addRecord(PGresult *res, int row);
+int initShapefile(char *shp_file, PGresult *res);
+int getGeometryOID(PGconn *conn);
+int getGeometryType(char *table, char *geo_col_name);
+int         create_lines(char *str,int shape_id, SHPHandle shp,int dims);
+int    create_multilines(char *str,int shape_id, SHPHandle shp,int dims);
+int        create_points(char *str,int shape_id, SHPHandle shp,int dims);
+int   create_multipoints(char *str,int shape_id, SHPHandle shp,int dims);
+int      create_polygons(char *str,int shape_id, SHPHandle shp,int dims);
 int create_multipolygons(char *str,int shape_id, SHPHandle shp,int dims);
 int parse_points(char *str, int num_points, double *x,double *y,double *z);
 int num_points(char *str);
@@ -58,6 +83,11 @@ char *scan_to_same_level(char *str);
 int points_per_sublist( char *str, int *npoints, long max_lists);
 int reverse_points(int num_points,double *x,double *y,double *z);
 int is_clockwise(int num_points,double *x,double *y,double *z);
+
+static void exit_nicely(PGconn *conn){
+	PQfinish(conn);
+	exit(1);
+}
 
 //main
 //USAGE: pgsql2shp [<options>] <database> <table>
@@ -74,33 +104,24 @@ int is_clockwise(int num_points,double *x,double *y,double *z);
 //  -g <geometry_column> Specify the geometry column to be exported.
 
 int main(int ARGC, char **ARGV){
-	char	   *dbName,
-		   *query,*query1,*geo_str,*geo_str_left,
-		   *geo_col_name,*geo_OID,
-		   field_name[32],table_OID[16],
-		   *shp_file, *table;
-	int			nFields, is3d, c, errflg, curindex;
-	int			i,j,type,size,flds;
-	int			type_ary[256];
-	int			OID,geovalue_field;
-	int 	z;
+	char *dbName, *query, *shp_file;
+	int c, errflg, curindex;
+	int row;
+	PGresult *res;
 
-
-	DBFHandle	dbf;
-	SHPHandle	shp;
-
-	PGconn	   *conn;
-	PGresult   *res,*res2,*res3;
-
+	dbf=NULL;
+	shp=NULL;
+	geotype=-1;
+	shape_creator = NULL;
 	table = NULL;
 	geo_col_name = NULL;
-	geo_str = NULL;
 	dbName = NULL;
 	shp_file = NULL;
-	geovalue_field = -1;
+	geo_col_num = -1;
 	is3d = 0;
 	errflg = 0;
-	OID = 0;
+
+	/* Parse command line */
         while ((c = getopt(ARGC, ARGV, "f:h:du:p:P:g:")) != EOF){
                switch (c) {
                case 'f':
@@ -185,402 +206,79 @@ int main(int ARGC, char **ARGV){
 #endif	 /* DEBUG */
 
 
+
 //------------------------------------------------------------
-//Get the OID of the geometry type
-	query1 = (char *)malloc(strlen("select OID, typname from pg_type where typname =  'geometry';")+2);
-	strcpy(query1,"select OID, typname from pg_type where typname =  'geometry';");
-	res = PQexec(conn, query1);	
-	
-	//	printf("OID query result: %s\n",PQresultErrorMessage(res));
-	free (query1);
-	if(PQntuples(res) > 0 ){
-		char *temp_int = (char *)PQgetvalue(res, 0, 0);
-		OID = atoi(temp_int);
-	}else{
-		printf("Cannot determine geometry type OID, Data-Dump Failed.");
+//Get the table data in a cursor
+
+	// begin the transaction
+	res=PQexec(conn, "BEGIN");
+	if ( ! res || PQresultStatus(res) != PGRES_COMMAND_OK ) {
+		fprintf(stderr, "%s\n", PQerrorMessage(conn));
+		exit_nicely(conn);
+	}
+	PQclear(res);
+
+	// declare a cursor
+	query= (char *)malloc(strlen(table)+256);
+	sprintf(query, "DECLARE cur CURSOR FOR SELECT * FROM \"%s\"", table);
+	//printf("%s\n",query);
+	res = PQexec(conn, query);	
+	free(query);
+	if ( ! res || PQresultStatus(res) != PGRES_COMMAND_OK ) {
+		fprintf(stderr, "%s\n", PQerrorMessage(conn));
 		exit_nicely(conn);
 	}
 	PQclear(res);
 
 //------------------------------------------------------------
-//Get the table from the DB
-
-	query= (char *)malloc(strlen(table) + strlen("select * from ")+2);
-	strcpy(query, "select * from ") ;
-	strcat(query, table);
-	//	printf("%s\n",query);
-	res = PQexec(conn, query);	
-
-	if(PQntuples(res) > 0 ){
-
-	}else{
-		fprintf(stderr, "Error: %s", PQerrorMessage(conn));
-		//printf("Invalid table: '%s' (check spelling and existance of >0 tuples).\nData-Dump Failed.",table);
-		exit_nicely(conn);
-	}
-	//printf("Select * query result: %s\n",PQresultErrorMessage(res));
-	
-	free (query);
-	
+// Fetch each result in cursor, initialize stuff on first row
 //------------------------------------------------------------
-//Create the dbf file
 
-	dbf = DBFCreate(shp_file);
-	if(dbf == NULL){
-		printf("DBF could not be created - Dump FAILED.");
-		exit_nicely(conn);
-	}
-
-	// add the fields to the DBF
-	nFields = PQnfields(res);
-
-	flds =0;		//keep track of how many fields you have actually created
-	
-	for (i = 0; i < nFields; i++){
-		if(strlen(PQfname(res, i)) <32){
-			strcpy(field_name, PQfname(res, i));
-		}else{
-			printf("field name %s is too long, must be less than 32 characters.\n",PQfname(res, i));
+	row=0;
+	while(1)
+	{
+		res = PQexec(conn, "FETCH FROM cur");
+		if ( ! res || PQresultStatus(res) != PGRES_TUPLES_OK ) {
+			fprintf(stderr, "%s\n", PQerrorMessage(conn));
 			exit_nicely(conn);
 		}
-		for(z=0; z < strlen(field_name); z++){
-			field_name[z] = toupper(field_name[z]);
-		}
 
-		for(j=0;j<i;j++){ //make sure the fields all have unique names, 10-digit limit on dbf names...
-			if(strncmp(field_name, PQfname(res, j),10) == 0){
-				printf("\nWarning: Field '%s' has first 10 characters which duplicate a previous field name's.\nRenaming it to be: '",field_name);
-				strncpy(field_name,field_name,9);
-				field_name[9] = 0;
-				sprintf(field_name,"%s%d",field_name,i);
-				printf("%s'\n\n",field_name);
-			}
-		}
+		// This is our first row.. let's initialize 
+		if ( ! row ) {
 
-		type = PQftype(res,i);
-		size = PQfsize(res,i);
-		if(type == 1082){ //date field, which we store as a string so we need more width in the column
-			size = 10;
-		}
-		if(size==-1 && type != OID){ //-1 represents variable size in postgres, this should not occur, but use 32 bytes in case it does
-			
-			//( this is ugly: don't forget counting the length 
-			// when changing the fixed query strings )
-			query1 = (char *)malloc(
-			  24+strlen(PQfname(res, i))+8+strlen(table)+1 ); 
-			
-			strncpy(query1,"select max(octet_length(",24+1);
-			strcat(query1,PQfname(res, i));
-			strncat(query1,")) from ",8);
-			strcat(query1,table);
-			res2 = PQexec(conn, query1);			
-
-			free(query1);
-			if(PQntuples(res2) > 0 ){
-				char *temp_int = (char *)PQgetvalue(res2, 0, 0);
-				size = atoi(temp_int);
-			}else{
-				size = 32;
+			if ( ! PQntuples(res) ) { // No tuples ? Give up !
+				fprintf(stderr, "No records in table\n");
+				exit_nicely(conn);
 			}
 
+			printf("Initializing shapefile %s... ", shp_file);
+			fflush(stdout);
+			if ( ! initShapefile(shp_file, res) )
+				exit_nicely(conn);
+			printf("done.\n");
+			printf("Adding records");
+			fflush(stdout);
 		}
-		if(type == 20 || type == 21 || type == 22 || type == 23){
-			if(DBFAddField(dbf, field_name,FTInteger,16,0) == -1)printf("error - Field could not be created.\n");
-			type_ary[i]=1;
-			flds++;
-		}else if(type == 700 || type == 701){
-			if(DBFAddField(dbf, field_name,FTDouble,32,10) == -1)printf("error - Field could not be created.\n");
-			type_ary[i]=2;
-			flds++;
-		}else if(type == OID){
-		        if( geovalue_field == -1){
-			        geovalue_field = i;
-			        flds++;
-			}else if(geo_col_name != NULL && !strcasecmp(geo_col_name, field_name)){
-			        geovalue_field = i;
-			}
-			type_ary[i]=9; //the geometry type field			
-		}else{
-			if(DBFAddField(dbf, field_name,FTString,size,0) == -1)printf("error - Field could not be created.\n");
-			type_ary[i]=3;
-			flds++;
+
+		/* No more rows, end of loop */
+		if ( ! PQntuples(res) ) {
+			PQclear(res);
+			break;
 		}
+
+		/* Add record in all output files */
+		if ( ! addRecord(res, row) ) exit_nicely(conn);
+		printf("."); fflush(stdout);
+
+		row++;
+		PQclear(res);
 	}
-
-
-	
-	/* next, print out the instances */
-
-	for (i = 0; i < PQntuples(res); i++)
-	{
-		if(i%50 ==1){
-			printf("DBF tuple - %d added\n",i);
-		}
-		flds = 0;			
-		for (j = 0; j < nFields; j++){
-			if(type_ary[j] == 1){
-				char *temp_int = (char *)PQgetvalue(res, i, j);
-				int temp = atoi(temp_int);
-				if(DBFWriteIntegerAttribute(dbf, i, flds,temp)== 0)printf("error(int) - Record could not be created\n");
-				flds++;
-			}else if(type_ary[j] == 2){
-				char *temp_dbl = PQgetvalue(res, i, j);
-				double temp = atof(temp_dbl);
-				if(DBFWriteDoubleAttribute( dbf, i, flds,temp)== 0)printf("error(double) - Record could not be created\n");
-				flds++;
-			}else if(type_ary[j] == 9){
-				//this is the geometry type field, would do all the .shp and .shx stuff here i imagine
-			}else{
-				char *temp = (char *)malloc(strlen(PQgetvalue(res, i, j))*8);
-				temp = (char *)PQgetvalue(res, i, j);
-				if(DBFWriteStringAttribute( dbf, i, flds,temp)== 0)printf("error(string) - Record could not be created\n");
-				flds++;
-			}
-			
-		}
-	
-	}
-	printf("DBF tuple - %d added\n",i);
-
-	if(flds==0){
-		printf("WARNING: There were no fields in the database. The DBF was not created properly, please add a field to the database and try again.");
-	}
+	printf("[%d rows]\n", (row-1));
 
 	DBFClose(dbf);
+	if (shp) SHPClose(shp);
+	exit_nicely(conn);
 
-
-
-
-//--------------------------------------------------------------------
-//Now parse the geo_value																													(All your base belong to us. For great justice.) 
-//field into the shx and shp files
-
-
-	query= (char *)malloc(strlen("select OID from pg_class where relname = ' '")+strlen(table)+2);
-	strcpy(query, "select OID from pg_class where relname = '") ;
-	strcat(query, table);
-	strcat(query, "'");
-	res3 = PQexec(conn, query);
-	if(PQntuples(res3) == 1 ){
-		strncpy(table_OID, (PQgetvalue(res3, 0,0)), 15 );
-	}else if(PQntuples(res3) == 0 ){
-		printf("ERROR: Cannot determine relation OID.\n");
-		exit_nicely(conn);
-	}else{
-		strncpy(table_OID, (PQgetvalue(res3, 0,0)), 15 );
-		printf("Warning: Multiple relations detected, the program will only dump the first relation.\n");
-	}	
-
-	//get the geometry column
-	if(geo_col_name == NULL){
-	        query= (char *)malloc(strlen("select attname from pg_attribute where attrelid =  and atttypid = ")+38);
-		strcpy(query, "select attname from pg_attribute where attrelid = ");
-		strcat(query, table_OID);
-		strcat(query, " and atttypid = ");
-		geo_OID = (char *)malloc(34);
-		sprintf(geo_OID, "%i", OID);
-		strcat(query, geo_OID );
-	}else{
-	        query = (char *)malloc(strlen("select attname from pg_attribute where attrelid = and atttypid = ")+
-				       strlen("and attname = ''")+strlen(geo_col_name)+38);
-		strcpy(query, "select attname from pg_attribute where attrelid = ");
-		strcat(query, table_OID);
-		strcat(query, " and atttypid = ");
-		geo_OID = (char *)malloc(34);
-		sprintf(geo_OID, "%i", OID);
-		strcat(query, geo_OID );
-		strcat(query, " and attname = '");
-		strcat(query, geo_col_name);
-		strcat(query, "'");
-	}
-	res3 = PQexec(conn, query);	
-	if(PQntuples(res3) == 1 ){
-		geo_col_name = (char *)malloc(strlen(PQgetvalue(res3, 0,0)) +2 );
-		geo_col_name = PQgetvalue(res3,0,0);
-	}else if(PQntuples(res3) == 0 ){
-	        if(geo_col_name == NULL){
-		        printf("ERROR: Cannot determine name of geometry column.\n");
-		}else{
-		        printf("ERROR: Wrong geometry column name.\n");
-		}
-		exit_nicely(conn);
-	}else{
-		geo_col_name = (char *)malloc(strlen(PQgetvalue(res3, 0,0)) +2 );
-		geo_col_name = PQgetvalue(res3,0,0);
-		printf("Warning: Multiple geometry columns detected, the program will only dump the first geometry.\n");
-	}	
-
-
-
-	//get what kind of Geometry type is in the table
-	query= (char *)malloc(strlen(table) + strlen("select distinct (geometrytype()) from where NOT geometrytype(geom) = NULL")+38);
-	strcpy(query, "select distinct (geometrytype(");
-	strcat(query, geo_col_name);
-	strcat(query, ")) from ") ;
-	strcat(query, table);
-	strcat(query," where NOT geometrytype(");
-	strcat(query,geo_col_name);
-	strcat(query,") IS NULL");
-	res3 = PQexec(conn, query);	
-	//printf("\n\n-->%s\n\n",query);
-
-
-
-	if(PQntuples(res3) == 1 ){
-		geo_str = (char *)malloc(strlen(PQgetvalue(res3, 0, 0))+1);
-		memcpy(geo_str, (char *)PQgetvalue(res3, 0, 0),strlen(PQgetvalue(res3,0,0))+1);
-	}else if(PQntuples(res3) > 1 ){
-		printf("ERROR: Cannot have multiple geometry types in a shapefile.\nUse option -t(unimplemented currently,sorry...) to specify what type of geometry you want dumped\n\n");
-		exit_nicely(conn);
-	}else{
-		printf("ERROR: Cannot determine geometry type of table. \n");
-		exit_nicely(conn);
-	}
-	
-	geo_str_left = (char *)malloc(10);
-	strncpy(geo_str_left,geo_str,8);
-	free(geo_str);
-	
-	if(strncmp(geo_str_left,"MULTILIN",8)==0 ){			
-		//multilinestring ---------------------------------------------------
-		if(is3d == 0){
-			shp = SHPCreate(shp_file, SHPT_ARC );//2d line shp file
-		}else{
-			shp = SHPCreate(shp_file, SHPT_ARCZ );//3d line shp file
-		}
-		
-		for(i=0;i<PQntuples(res);i++){
-			geo_str = (char *)malloc(strlen(PQgetvalue(res, i, geovalue_field))+1);
-			memcpy(geo_str, (char *)PQgetvalue(res, i, geovalue_field),strlen(PQgetvalue(res, i, geovalue_field))+1);
-			if(create_multilines(geo_str,i,shp,is3d) ==0){
-				printf("Error writing multiline to shape file");
-			}
-			if(i%50 ==1){
-				printf("shape - %d added\n",i);
-			}
-			free(geo_str);
-
-		}
-		printf("shape - %d added\n",i);
-
-	}else if (strncmp(geo_str_left,"LINESTRI",8)==0 ){ 
-		//linestring---------------------------------------------------
-		if(is3d==0){
-			shp = SHPCreate(shp_file, SHPT_ARC );//2d lines shp file
-		}else{
-			shp = SHPCreate(shp_file, SHPT_ARCZ );//3d lines shp file
-		}
-		
-		for(i=0;i<PQntuples(res);i++){
-			geo_str = (char *)malloc(strlen(PQgetvalue(res, i, geovalue_field))+1);
-			memcpy(geo_str, (char *)PQgetvalue(res, i, geovalue_field),strlen(PQgetvalue(res, i, geovalue_field))+1);
-			if(create_lines(geo_str,i,shp,is3d) ==0){
-				printf("Error writing line to shape file");
-			}
-			if(i%100 ==0){
-				printf("shape - %d added\n",i);
-			}
-			free(geo_str);
-		}
-		printf("shape - %d added\n",i);
-
-	}else if (strncmp(geo_str_left,"POLYGON",7)==0 ){ 
-		//Polygon---------------------------------------------------
-		if(is3d==0){
-			shp = SHPCreate(shp_file, SHPT_POLYGON );//2d lines shp file
-		}else{
-			shp = SHPCreate(shp_file, SHPT_POLYGONZ );//3d lines shp file
-		}
-		
-		for(i=0;i<PQntuples(res);i++){
-			geo_str = (char *)malloc(strlen(PQgetvalue(res, i, geovalue_field))+1);
-			memcpy(geo_str, (char *)PQgetvalue(res, i, geovalue_field),strlen(PQgetvalue(res, i, geovalue_field))+1);
-			if(create_polygons(geo_str,i,shp,is3d) == 0){
-				printf("Error writing polygon to shape file");
-			}
-			if(i%100 == 0){
-				printf("shape - %d added\n",i);
-			}
-			free(geo_str);
-		}
-		printf("shape - %d added\n",i);
-	}else if(strncmp(geo_str_left,"MULTIPOL",8)==0 ){	
-		//multipolygon---------------------------------------------------
-		if(is3d==0){
-			shp = SHPCreate(shp_file, SHPT_POLYGON );//2d polygon shp file
-		}else{
-			shp = SHPCreate(shp_file, SHPT_POLYGONZ );//3d polygon shp file
-		}
-		for(i=0;i<PQntuples(res);i++){
-			geo_str = (char *)malloc(strlen(PQgetvalue(res, i, geovalue_field))+1);
-			memcpy(geo_str, (char *)PQgetvalue(res, i, geovalue_field),strlen(PQgetvalue(res, i, geovalue_field))+1);
-			if(create_multipolygons(geo_str,i,shp,is3d) == 0){
-				printf("Error writing polygon to shape file");
-			}
-			if(i%100 == 0){
-				printf("shape - %d added\n",i);
-			}
-			free(geo_str);
-		}
-		printf("shape - %d added\n",i);
-	}else if(strncmp(geo_str_left,"POINT",5)==0 ){	
-		//point---------------------------------------------------
-		if(is3d==0){
-			shp = SHPCreate(shp_file, SHPT_POINT );//2d point shp file
-		}else{
-			shp = SHPCreate(shp_file, SHPT_POINTZ );//3d point shp file
-		}
-		
-		for(i=0;i<PQntuples(res);i++){
-			geo_str = (char *)malloc(strlen(PQgetvalue(res, i, geovalue_field))+1);
-			memcpy(geo_str, (char *)PQgetvalue(res, i, geovalue_field),strlen(PQgetvalue(res, i, geovalue_field))+1);
-			if(create_points(geo_str,shp,is3d) ==0){
-				printf("Error writing line to shape file");
-			}
-			if(i%100 ==0){
-				printf("shape - %d added\n",i);
-			}
-			free(geo_str);
-		}
-		printf("shape - %d added\n",i);
-	}else if(strncmp(geo_str_left,"MULTIPOI",8)==0 ){	
-		//multipoint---------------------------------------------------
-
-		if(is3d==0){
-			shp = SHPCreate(shp_file, SHPT_MULTIPOINT );//2d point shp file
-		}else{
-			shp = SHPCreate(shp_file, SHPT_MULTIPOINTZ );//3d point shp file
-		}
-		
-		for(i=0;i<PQntuples(res);i++){
-			geo_str = (char *)malloc(strlen(PQgetvalue(res, i, geovalue_field))+1);
-			memcpy(geo_str, (char *)PQgetvalue(res, i, geovalue_field),strlen(PQgetvalue(res, i, geovalue_field))+1);
-			if(create_multipoints(geo_str,shp,is3d) ==0){
-				printf("Error writing line to shape file");
-			}
-			if(i%100 ==0){
-				printf("shape - %d added\n",i);
-			}
-			free(geo_str);
-		}
-		printf("shape - %d added\n",i);
-	}else{
-		printf("type '%s' is not Supported at this time.\nThe DBF file has been created but not the shx or shp files.\n",geo_str_left);
-		shp = NULL;
-	}
-
-
-	if(shp != NULL){	
-		SHPClose( shp );	
-	}
-	
-
-
-	free(geo_str_left);
-
-	PQclear(res);
-	/* close the connection to the database and cleanup */
-	PQfinish(conn);
 
 #ifdef DEBUG
 	fclose(debug);
@@ -990,7 +688,7 @@ int create_lines(char *str,int shape_id, SHPHandle shp,int dims){
 
 
 
-int create_points(char *str, SHPHandle shp,int dims){
+int create_points(char *str, int shape_id, SHPHandle shp, int dims){
 	
 	double	*x,
 			*y,
@@ -1035,7 +733,7 @@ int create_points(char *str, SHPHandle shp,int dims){
 
 
 
-int create_multipoints(char *str, SHPHandle shp,int dims){
+int create_multipoints(char *str,int shape_id, SHPHandle shp,int dims){
 	int points;	
 	
 	double	*x,
@@ -1417,4 +1115,392 @@ int is_clockwise(int  num_points,double *x,double *y,double *z){
 	}else{
 		return 1; //clockwise
 	}
+}
+
+/*
+ * Returns OID integer on success
+ * Returns -1 on error.
+ */
+int
+getGeometryOID(PGconn *conn)
+{
+	PGresult *res1;
+	char *temp_int;
+	int OID;
+
+	res1=PQexec(conn, "select OID from pg_type where typname = 'geometry'");	
+	if ( ! res1 || PQresultStatus(res1) != PGRES_TUPLES_OK )
+	{
+		fprintf(stderr, "OID query error: %s\n",
+				PQerrorMessage(conn));
+		return -1;
+	}
+
+	if(PQntuples(res1) <= 0 )
+	{
+		fprintf(stderr, "Geometry type unknown "
+				"(have you enabled postgis?)\n");
+		return -1;
+	}
+
+	temp_int = (char *)PQgetvalue(res1, 0, 0);
+	OID = atoi(temp_int);
+	PQclear(res1);
+	return OID;
+}
+
+
+/*
+ * Initialize the Shapefile (dbf,shp,shx) using
+ * information from given postgresql result.
+ *
+ * Return 1 on success.
+ * Return 0 on failure.
+ */
+int
+initShapefile(char *shp_file, PGresult *res)
+{
+	PGresult *res2;
+	int flds, nFields, i, type, size, z, j;
+	char field_name[32];
+	char *query1;
+	int geometry_oid;
+	
+	geometry_oid = getGeometryOID(conn);
+	if ( geometry_oid == -1 ) return 0;
+	
+	/* Create the dbf file */
+	dbf = DBFCreate(shp_file);
+	if(dbf == NULL){
+		fprintf(stderr, "DBF could not be created - Dump FAILED.\n");
+		return 0;
+	}
+
+	// add the fields to the DBF
+	nFields = PQnfields(res);
+
+	flds =0; //keep track of how many fields you have actually created
+	for (i = 0; i < nFields; i++){
+		if(strlen(PQfname(res, i)) <32){
+			strcpy(field_name, PQfname(res, i));
+		}else{
+			printf("field name %s is too long, must be less than 32 characters.\n",PQfname(res, i));
+			return 0;
+		}
+		for(z=0; z < strlen(field_name); z++){
+			field_name[z] = toupper(field_name[z]);
+		}
+
+		/* 
+		 * make sure the fields all have unique names,
+		 * 10-digit limit on dbf names...
+		 */
+		for(j=0;j<i;j++){
+			if(strncmp(field_name, PQfname(res, j),10) == 0){
+				printf("\nWarning: Field '%s' has first 10 characters which duplicate a previous field name's.\nRenaming it to be: '",field_name);
+				strncpy(field_name,field_name,9);
+				field_name[9] = 0;
+				sprintf(field_name,"%s%d",field_name,i);
+				printf("%s'\n\n",field_name);
+			}
+		}
+
+		type = PQftype(res,i);
+		size = PQfsize(res,i);
+		if(type == 1082){ //date field, which we store as a string so we need more width in the column
+			size = 10;
+		}
+		if(size==-1 && type != geometry_oid){ //-1 represents variable size in postgres, this should not occur, but use 32 bytes in case it does
+			
+			//( this is ugly: don't forget counting the length 
+			// when changing the fixed query strings )
+			query1 = (char *)malloc(strlen(PQfname(res, i))+strlen(table)+40); 
+			sprintf(query1, "select max(octet_length(\"%s\")) from \"%s\"",
+								 PQfname(res, i), table);
+			res2 = PQexec(conn, query1);			
+			free(query1);
+			if ( ! res2 || PQresultStatus(res2) != PGRES_TUPLES_OK ) {
+				fprintf(stderr, "%s\n", PQerrorMessage(conn));
+				return 0;
+			}
+
+			if(PQntuples(res2) > 0 ){
+				char *temp_int = (char *)PQgetvalue(res2, 0, 0);
+				size = atoi(temp_int);
+			}else{
+				size = 32;
+			}
+
+		}
+		if(type == 20 || type == 21 || type == 22 || type == 23){
+			if(DBFAddField(dbf, field_name,FTInteger,16,0) == -1)printf("error - Field could not be created.\n");
+			type_ary[i]=1;
+			flds++;
+		}else if(type == 700 || type == 701){
+			if(DBFAddField(dbf, field_name,FTDouble,32,10) == -1)printf("error - Field could not be created.\n");
+			type_ary[i]=2;
+			flds++;
+		}
+		
+		// This is a geometry column
+		//
+		else if(type == geometry_oid)
+		{
+			type_ary[i]=9; //the geometry type field			
+
+			// a geometry attribute name as not been specified
+			if ( ! geo_col_name )
+			{
+				geo_col_name = PQfname(res, i);
+				geo_col_num = i;
+				flds++;
+			}
+			else if (!strcasecmp(geo_col_name,field_name))
+			{
+				geo_col_num = i;
+				flds++;
+			}
+		}
+		
+		else{
+			if(DBFAddField(dbf, field_name,FTString,size,0) == -1)printf("error - Field could not be created.\n");
+			type_ary[i]=3;
+			flds++;
+		}
+	}
+
+	/* No geometry attribute has been found */
+	if ( geo_col_num == -1 )
+	{
+		/* If a geometry column was specified this is an error */
+		if ( geo_col_name )
+		{
+			fprintf(stderr, "%s: no such attribute in table %s\n",
+					geo_col_name, table);
+			return 0;
+		}
+
+		/* Otherwise we'll just forget about .shp and .shx files */
+		fprintf(stderr, "No geometry column found.\n");
+		fprintf(stderr, "The DBF file will be created "
+				"but not the shx or shp files.\n");
+		return 1;
+	}
+
+	/*
+	 * We now create the appropriate shape (shp) file.
+	 */
+
+	geotype = getGeometryType(table, geo_col_name);
+	if ( geotype == -1 ) return 0;
+
+	switch (geotype)
+	{
+		case MULTILINETYPE:
+			if ( is3d ) shp = SHPCreate(shp_file, SHPT_ARCZ);
+			else shp = SHPCreate(shp_file, SHPT_ARC);
+			shape_creator = create_multilines;
+			break;
+			
+		case LINETYPE:
+			if ( is3d ) shp = SHPCreate(shp_file, SHPT_ARCZ);
+			else shp = SHPCreate(shp_file, SHPT_ARC);
+			shape_creator = create_lines;
+			break;
+
+		case POLYGONTYPE:
+			if ( is3d ) shp = SHPCreate(shp_file, SHPT_POLYGONZ);
+			else shp = SHPCreate(shp_file, SHPT_POLYGON);
+			shape_creator = create_polygons;
+			break;
+
+		case MULTIPOLYGONTYPE:
+			if ( is3d ) shp = SHPCreate(shp_file, SHPT_POLYGONZ);
+			else shp = SHPCreate(shp_file, SHPT_POLYGON);
+			shape_creator = create_multipolygons;
+			break;
+
+		case POINTTYPE:
+			if ( is3d ) shp = SHPCreate(shp_file, SHPT_POINTZ);
+			else shp = SHPCreate(shp_file, SHPT_POINT);
+			shape_creator = create_points;
+			break;
+
+		case MULTIPOINTTYPE:
+			if ( is3d ) shp = SHPCreate(shp_file, SHPT_MULTIPOINTZ);
+			else shp = SHPCreate(shp_file, SHPT_MULTIPOINT);
+			shape_creator = create_multipoints;
+			break;
+
+		
+		default:
+			shp = NULL;
+			shape_creator = NULL;
+			fprintf(stderr, "You've found a bug! (%s:%d)\n",
+				__FILE__, __LINE__);
+			return 0;
+
+	}
+
+	return 1;
+}
+
+
+/* 
+ * Passed result is a 1 row result.
+ * Return 1 on success.
+ * Return 0 on failure.
+ */
+int
+addRecord(PGresult *res, int row)
+{
+	int j;
+	int nFields = PQnfields(res);
+	int flds = 0; /* number of dbf field */
+	char *val;
+
+	for (j=0; j<nFields; j++)
+	{
+		/* Integer attribute */
+		if (type_ary[j] == 1)
+		{
+			val = (char *)PQgetvalue(res, 0, j);
+			int temp = atoi(val);
+			if (!DBFWriteIntegerAttribute(dbf, row, flds, temp))
+			{
+				fprintf(stderr, "error(int) - Record could not be created\n");
+				return 0;
+			}
+			flds++;
+			continue;
+		}
+		
+		/* Double attribute */
+		if (type_ary[j] == 2)
+		{
+			val = PQgetvalue(res, 0, j);
+			double temp = atof(val);
+			if (!DBFWriteDoubleAttribute(dbf, row, flds, temp))
+			{
+				fprintf(stderr, "error(double) - Record could "
+						"not be created\n");
+				return 0;
+			}
+			flds++;
+			continue;
+		}
+
+		/* Default (not geometry) attribute */
+		if (type_ary[j] != 9)
+		{
+			val = PQgetvalue(res, 0, j);
+			if(!DBFWriteStringAttribute(dbf, row, flds, val))
+			{
+				printf("error(string) - Record could not be "
+						"created\n");
+				return 0;
+			}
+			flds++;
+			continue;
+		}
+		
+		/* If we arrived here it is a geometry attribute */
+
+		/* not the requested one, skipping */
+		if ( j != geo_col_num ) continue;
+		
+		// (All your base belong to us. For great justice.) 
+
+		val = PQgetvalue(res, 0, j);
+		if ( ! shape_creator )
+		{
+			fprintf(stderr, "shape_creator is not set...\n");
+			return 0;
+		}
+		if ( ! shape_creator(val, row, shp, is3d) )
+		{
+			fprintf(stderr, "Error creating shape for record %d "
+					"(geotype is %d)\n", row, geotype);
+			return 0;
+		}
+	}
+
+	return 1;
+}
+
+/* 
+ * Return allocate memory. Free after use.
+ */
+char *
+getTableOID(char *table)
+{
+   PGresult *res3;
+	char *query;
+	char *ret;
+
+	query = (char *)malloc(strlen(table)+256);
+	sprintf(query, "SELECT oid FROM pg_class WHERE relname = '%s'", table);
+	res3 = PQexec(conn, query);
+	free(query);
+	if ( ! res3 || PQresultStatus(res3) != PGRES_TUPLES_OK ) {
+		fprintf(stderr, "%s\n", PQerrorMessage(conn));
+		exit_nicely(conn);
+	}
+	if(PQntuples(res3) == 1 ){
+		ret = strdup(PQgetvalue(res3, 0, 0));
+	}else if(PQntuples(res3) == 0 ){
+		fprintf(stderr, "ERROR: Cannot determine relation OID.\n");
+		return NULL;
+	}else{
+		ret = strdup(PQgetvalue(res3, 0, 0));
+		fprintf(stderr, "Warning: Multiple relations detected, the program will only dump the first relation.\n");
+	}	
+	return ret;
+}
+
+/*
+ * Return geometry type as defined at top file.
+ * Return -1 on error
+ * Return  0 on unknown or unsupported geometry type
+ */
+int
+getGeometryType(char *table, char *geo_col_name)
+{
+	char query[1024];
+	PGresult *res;
+	char *geo_str; // the geometry type string
+
+	//get what kind of Geometry type is in the table
+	sprintf(query, "SELECT DISTINCT geometrytype(\"%s\") FROM \"%s\" WHERE NOT geometrytype(\"%s\") IS NULL", geo_col_name, table, geo_col_name);
+
+	//printf("\n\n-->%s\n\n",query);
+	res = PQexec(conn, query);	
+	if ( ! res || PQresultStatus(res) != PGRES_TUPLES_OK ) {
+		fprintf(stderr, "%s\n", PQerrorMessage(conn));
+		return -1;
+	}
+
+	if(PQntuples(res) == 1 ){
+		geo_str = (char *)malloc(strlen(PQgetvalue(res, 0, 0))+1);
+		memcpy(geo_str, (char *)PQgetvalue(res, 0, 0),strlen(PQgetvalue(res,0,0))+1);
+	}else if(PQntuples(res) > 1 ){
+		fprintf(stderr, "ERROR: Cannot have multiple geometry types in a shapefile.\nUse option -t(unimplemented currently,sorry...) to specify what type of geometry you want dumped\n\n");
+		return -1;
+	}else{
+		printf("ERROR: Cannot determine geometry type of table. \n");
+		return -1;
+	}
+
+	if ( ! strncmp(geo_str, "MULTILIN", 8) ) return MULTILINETYPE;
+	if ( ! strncmp(geo_str, "MULTIPOL", 8) ) return MULTIPOLYGONTYPE;
+	if ( ! strncmp(geo_str, "MULTIPOI", 8) ) return MULTIPOINTTYPE;
+	if ( ! strncmp(geo_str, "LINESTRI", 8) ) return LINETYPE;
+	if ( ! strncmp(geo_str, "POLYGON", 7) ) return POLYGONTYPE;
+	if ( ! strncmp(geo_str, "POINT", 5) ) return POINTTYPE;
+
+	fprintf(stderr, "type '%s' is not Supported at this time.\n",
+			geo_str);
+	fprintf(stderr, "The DBF file will be created but not the shx "
+			"or shp files.\n");
+	return  0;
 }
