@@ -2967,7 +2967,7 @@ dimension
             </listitem>
           </varlistentry>
 
-          <varlistentry>
+          <varlistentry id="IsSimple">
             <term>IsSimple(geometry)</term>
 
             <listitem>
@@ -4052,7 +4052,7 @@ FROM geometry_table;</literallayout>
             any kind of geometry. Since simplification occurs on a
             object-by-object basis you can also feed a GeometryCollection to
             this function. Note that returned geometry might loose its
-            simplicity (see isSimple)</para>
+            simplicity (see <link linkend="IsSimple">IsSimple</link>)</para>
           </listitem>
         </varlistentry>
 
@@ -4069,6 +4069,8 @@ FROM geometry_table;</literallayout>
 	    enough to define a geometry of the given type.
 	    Collapsed geometries in a collection are stripped
 	    from it.
+            Note that returned geometry might loose its
+            simplicity (see <link linkend="IsSimple">IsSimple</link>).
 	    </para>
           </listitem>
         </varlistentry>
