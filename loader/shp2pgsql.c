@@ -206,7 +206,7 @@ int ring_check(SHPObject* obj, char *table, char *sr_id, int rings,DBFHandle hDB
 	for (u=0;u<N;u++){
 	
 		//check if the next point is the start of a new ring
-		if(((next_ring != -99) && (u+1 == obj->panPartStart[next_ring] )) || u==N-1){
+		if( ((next_ring != -99) && (u+1 == obj->panPartStart[next_ring] )) || u==N-1){
 			//check if a ring is clockwise(outer) or not(inner) by getting positive(inner) or negative(outer) area.
 			//'area' is actually twice actual polygon area so divide by 2, not that it matters but in case we use it latter...
 			area = area/2.0;
@@ -219,20 +219,21 @@ int ring_check(SHPObject* obj, char *table, char *sr_id, int rings,DBFHandle hDB
 				Outer[out_index] = Poly;
 				out_index++;
 				
-				//allocate memory to start building the next ring
-				Poly = (Ring*)malloc(sizeof(Ring));	
+				if(u != N-1){ //dont make another ring if we are finished
+					//allocate memory to start building the next ring
+					Poly = (Ring*)malloc(sizeof(Ring));	
 				
-				//temp2 is the number of points in the list of the next ring
-				//determined so that we can allocate the right amount of mem 6 lines down
-				if((next_ring + 1) == obj->nParts){
-					temp2 = N;
-				}else{
-					temp2 = obj->panPartStart[next_ring+1] - obj->panPartStart[next_ring];
-				}
-				Poly->list = (Point*)malloc(sizeof(Point)*temp2);
-				Poly->next = NULL;//make sure to make to initiale next to null or you never know when the list ends
+					//temp2 is the number of points in the list of the next ring
+					//determined so that we can allocate the right amount of mem 6 lines down
+					if((next_ring + 1) == obj->nParts){
+						temp2 = N;
+					}else{
+						temp2 = obj->panPartStart[next_ring+1] - obj->panPartStart[next_ring];
+					}
+					Poly->list = (Point*)malloc(sizeof(Point)*temp2);
+					Poly->next = NULL;//make sure to make to initiale next to null or you never know when the list ends
 								  //this never used to be here and was a pain in the ass bug to find...
-				
+				}		
 				n=0;//set your count of what point you are at in the current ring back to 0
 		
 			}else{
@@ -336,10 +337,7 @@ int ring_check(SHPObject* obj, char *table, char *sr_id, int rings,DBFHandle hDB
 				}
 			}
 			printf(")");
-			temp = Poly;
 			Poly = Poly->next;
-			free(temp->list);
-			free(temp);
 		}
 		printf(")");
 	}
@@ -349,6 +347,16 @@ int ring_check(SHPObject* obj, char *table, char *sr_id, int rings,DBFHandle hDB
 		printf(")',%s) );",sr_id);
 	}
 
+	for(u=0; u < out_index; u++){
+		Poly = Outer[u];
+		while(Poly != NULL){
+			temp = Poly;
+			Poly = Poly->next;
+			free(temp->list);
+			free(temp->next);
+			free(temp);
+		}
+	}
 	free(Outer);
 	free(Inner);
 	free(Poly);
