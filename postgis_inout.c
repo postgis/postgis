@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.34  2003/12/12 14:39:04  strk
+ * Fixed a bug in make_line allocating less memory then required
+ *
  * Revision 1.33  2003/12/12 12:03:30  strk
  * More debugging output, some code cleanup.
  *
@@ -3272,7 +3275,7 @@ LINE3D	*make_line(int	npoints, POINT3D	*pts, int	*size)
 {
 	LINE3D	*result;
 
-	*size = sizeof(LINE3D) + (npoints-1)*sizeof(POINT3D);
+	*size = sizeof(LINE3D) + (npoints)*sizeof(POINT3D);
 
 	result= (LINE3D *) palloc (*size);
 
