@@ -769,3 +769,4 @@ double lwgeom_mindistance2d_recursive(char *lw1, char *lw2);
 void lwgeom_translate_recursive(char *serialized, double xoff, double yoff, double zoff);
 void lwgeom_translate_ptarray(POINTARRAY *pa, double xoff, double yoff, double zoff);
 int lwgeom_pt_inside_circle(POINT2D *p, double cx, double cy, double rad);
+POINTARRAY *segmentize2d_ptarray(POINTARRAY *ipa, double dist);

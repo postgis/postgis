@@ -7,7 +7,6 @@ FUNC: KEEPING FUNCTION: [asbinary(geometry, text)]
 FUNC: KEEPING FUNCTION: [line_interpolate_point(geometry, double precision)]
 
 --- UNDOCUMENTED
-FUNC: KEEPING FUNCTION: [segmentize(geometry, double precision)]
 FUNC: KEEPING FUNCTION: [optimistic_overlap(geometry, geometry, double precision)]
 
 --- OBSOLETED ?

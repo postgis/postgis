@@ -2503,6 +2503,11 @@ CREATEFUNCTION simplify(geometry, float8)
    AS '@MODULE_FILENAME@', 'LWGEOM_simplify2d'
    LANGUAGE 'C' WITH (isstrict);
 
+CREATEFUNCTION segmentize(geometry, float8)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_segmentize2d'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
 ---------------------------------------------------------------
 -- GEOS
 ---------------------------------------------------------------
