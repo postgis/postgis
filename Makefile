@@ -4,14 +4,18 @@
 # Set USE_PROJ to 1 for Proj4 reprojection support
 #
 USE_PROJ=1
-PROJ_DIR=/usr/local
+ifeq (${PROJ_DIR},) 
+	PROJ_DIR=/usr/local
+endif
 
 #---------------------------------------------------------------
 # Set USE_GEOS to 1 for GEOS spatial predicate and operator
 # support
 #
 USE_GEOS=1
-GEOS_DIR=/usr/local
+ifeq (${GEOS_DIR},) 
+	GEOS_DIR=/usr/local
+endif
 
 #---------------------------------------------------------------
 # Set USE_STATS to 1 for new GiST statistics collection support
