@@ -86,6 +86,7 @@ NAME=postgis
 SO_MAJOR_VERSION=0
 SO_MINOR_VERSION=8
 SO_MICRO_VERSION=2
+SCRIPTS_VERSION=1.0.0
 ifeq (${USE_VERSION}, 71) 
 	MODULE_FILENAME = $(LPATH)/$(shlib)
 	MODULE_INSTALLDIR = $(libdir)
@@ -107,6 +108,7 @@ override CFLAGS += -g -fexceptions
 override CFLAGS += -I$(srcdir) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"' 
 override CFLAGS += -DUSE_VERSION=$(USE_VERSION)
 override CFLAGS += -DPOSTGIS_LIB_VERSION='"$(POSTGIS_LIB_VERSION)"'
+override CFLAGS += -DPOSTGIS_SCRIPTS_VERSION='"$(SCRIPTS_VERSION)"'
 
 ifeq ($(USE_GEOS),1)
 	override CFLAGS += -I$(GEOS_DIR)/include -DUSE_GEOS
@@ -182,7 +184,7 @@ postgis_old.sql: postgis_sql_common.sql.in postgis_sql_$(USE_VERSION)_end.sql.in
 	cat postgis_sql_$(USE_VERSION)_start.sql.in postgis_sql_common.sql.in postgis_sql_$(USE_VERSION)_end.sql.in | sed -e 's:@MODULE_FILENAME@:$(MODULE_FILENAME):g;s:@POSTGIS_VERSION@:$(POSTGIS_VERSION):g'  > $@ 
 
 postgis.sql: postgis.sql.in
-	cpp -P -traditional-cpp -DUSE_VERSION=$(USE_VERSION) $< | sed -e 's:@MODULE_FILENAME@:$(MODULE_FILENAME):g;s:@POSTGIS_VERSION@:$(POSTGIS_VERSION):g' > $@
+	cpp -P -traditional-cpp -DUSE_VERSION=$(USE_VERSION) $< | sed -e 's:@MODULE_FILENAME@:$(MODULE_FILENAME):g;s:@POSTGIS_VERSION@:$(POSTGIS_VERSION):g;s:@POSTGIS_SCRIPTS_VERSION@:$(SCRIPTS_VERSION):g' > $@
 
 postgis_undef.sql: postgis.sql create_undef.pl
 	perl create_undef.pl $< $(USE_VERSION) > $@ 

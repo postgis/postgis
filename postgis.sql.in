@@ -311,6 +311,10 @@ CREATEFUNCTION postgis_version() RETURNS text
 AS 'SELECT \'@POSTGIS_VERSION@\'::text AS version'
 LANGUAGE 'sql';
 
+CREATEFUNCTION postgis_scripts_version() RETURNS text
+AS 'SELECT \'@POSTGIS_SCRIPTS_VERSION@\'::text AS version'
+LANGUAGE 'sql';
+
 -----------------------------------------------------------------------
 -- FIND_SRID( <schema>, <table>, <geom col> )
 -----------------------------------------------------------------------
