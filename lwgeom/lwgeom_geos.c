@@ -70,7 +70,7 @@ extern char *GEOSversion();
 extern char *GEOSjtsport();
 extern char GEOSisvalid(Geometry *g1);
 extern Geometry *GEOSIntersection(Geometry *g1, Geometry *g2);
-extern Geometry *GEOSBuffer(Geometry *g1,double width);
+extern Geometry *GEOSBuffer(Geometry *g1,double width, int quadsegs);
 extern Geometry *GEOSConvexHull(Geometry *g1);
 extern Geometry *GEOSDifference(Geometry *g1,Geometry *g2);
 extern Geometry *GEOSBoundary(Geometry *g1);
@@ -552,6 +552,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 	double	size;
 	Geometry *g1,*g3;
 	PG_LWGEOM *result;
+	int quadsegs = 8; // the default
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
@@ -559,13 +560,14 @@ Datum buffer(PG_FUNCTION_ARGS)
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	size = PG_GETARG_FLOAT8(1);
+	if ( PG_NARGS() > 2 ) quadsegs = PG_GETARG_INT32(3);
 
 	initGEOS(MAXIMUM_ALIGNOF);
 
 #ifdef PROFILE
 	profstart(PROF_P2G1);
 #endif
-	g1 = POSTGIS2GEOS(geom1 );
+	g1 = POSTGIS2GEOS(geom1);
 #ifdef PROFILE
 	profstop(PROF_P2G1);
 #endif
@@ -573,7 +575,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 #ifdef PROFILE
 	profstart(PROF_GRUN);
 #endif
-	g3 = GEOSBuffer(g1,size);
+	g3 = GEOSBuffer(g1,size,quadsegs);
 #ifdef PROFILE
 	profstop(PROF_GRUN);
 #endif
