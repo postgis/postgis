@@ -58,7 +58,7 @@ my $dump = $ARGV[2];
 my $dumplist=$dump.".list";
 my $dumpascii=$dump.".ascii";
 
-print "postgis.sql is $postgsisql\n";
+print "postgis.sql is $postgissql\n";
 print "dbname is $dbname\n";
 print "dumpfile is $dump\n";
 
@@ -142,6 +142,7 @@ while( my $line = <INPUT>)
 	if ($line =~ /^create aggregate *([^ ]*) *\(/i)
 	{
 		my $name = lc($1);
+		$name =~ s/^public.//;
 		my $type = undef;
 		while( my $subline = <INPUT>)
 		{
@@ -265,8 +266,12 @@ while( my $line = <INPUT> )
 	if ($line =~ / FUNCTION *([^ ]*) *\(([^)]*)\)/)
 	{
 		my $funcname = $1;
-		#print "FUNCNAME: [$funcname]\n";
 		my @args = split(",", $2);
+
+		$funcname =~ s/^"//;
+		$funcname =~ s/"$//;
+		#print "FUNCNAME: [$funcname]\n";
+
 		#print "ARGS: [".@args."]\n";
 		my $wkbinvolved = 0;
 		for (my $i=0; $i<@args; $i++)
@@ -354,7 +359,7 @@ while( my $line = <INPUT> )
 		print "KEEPING FUNCTION: [$id]\n" if $DEBUG;
 		#next;
 	}
-	elsif ($line =~ / AGGREGATE (.*)\((.*)\)/)
+	elsif ($line =~ /CREATE .* AGGREGATE (.*)\((.*)\)/)
 	{
 		my $name = $1;
 		my @args = split(",", $2);
@@ -397,6 +402,7 @@ while( my $line = <INPUT> )
 	elsif ($line =~ / TYPE (.*) .*/)
 	{
 		my $type = lc($1);
+		$type =~ s/^public.//;
 		if ( $type eq 'wkb' )
 		{
 			print "SKIPPING PGIS TYPE $type\n" if $DEBUG;
@@ -428,7 +434,7 @@ while( my $line = <INPUT> )
 		#next;
 	}
 
-	elsif ($line =~ / OPERATOR CLASS *([^ ]*)/)
+	elsif ($line =~ /CREATE .* OPERATOR CLASS *([^ ]*)/)
 	{
 		my $id = lc($1);
 
