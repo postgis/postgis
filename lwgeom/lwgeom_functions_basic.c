@@ -2377,9 +2377,11 @@ Datum centroid(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	LWGEOM *lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom));
 	LWGEOM *centroid = lwgeom_centroid(lwgeom);
+	PG_LWGEOM *ret;
+
 	lwgeom_release(lwgeom);
 	if ( ! centroid ) PG_RETURN_NULL();
-	PG_LWGEOM *ret = pglwgeom_serialize(centroid);
+	ret = pglwgeom_serialize(centroid);
 	lwgeom_release((LWGEOM *)centroid);
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_POINTER(ret);
