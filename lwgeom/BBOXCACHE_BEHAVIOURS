@@ -53,7 +53,7 @@ section also use it.
 	geometry_recv(internal) **SRL**
 	geometry(text) **SRL**
 	geometry(bytea) **SRL**
-	GeometryFromText(geometry, SRID) **SRL**
+	GeometryFromText(geometry, SRID) *SRL*
 	GeomFromWKB(bytea, SRID) **SRL**
 	GeomFromEWKB(bytea) **SRL**
 	GeomFromEWKT(text) **SRL**

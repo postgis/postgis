@@ -784,6 +784,7 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 	size_t size;
 	PG_LWGEOM *geom;
 	PG_LWGEOM *result = NULL;
+	LWGEOM *lwgeom;
 
 	size = VARSIZE(wkttext)-VARHDRSZ;
 
@@ -812,22 +813,20 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 
 	geom = (PG_LWGEOM *)parse_lwgeom_wkt(wkt);
 
-	if ( pglwgeom_getSRID(geom) != -1 || TYPE_GETZM(geom->type) != 0 )
+	lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom));
+
+	if ( lwgeom->SRID != -1 || TYPE_GETZM(lwgeom->type) != 0 )
 	{
 		elog(WARNING, "OGC WKT expected, EWKT provided - use GeomFromEWKT() for this");
 	}
 
 	// read user-requested SRID if any
-	if ( PG_NARGS() > 1 )
-	{
-		SRID = PG_GETARG_INT32(1);
-		if ( SRID != pglwgeom_getSRID(geom) )
-		{
-			result = pglwgeom_setSRID(geom, SRID);
-			pfree(geom);
-		}
-	}
-	if ( ! result )	result = geom;
+	if ( PG_NARGS() > 1 ) lwgeom->SRID = PG_GETARG_INT32(1);
+
+	result = pglwgeom_serialize(lwgeom);
+
+	pfree(geom);
+	lwgeom_release(lwgeom);
 
 	PG_RETURN_POINTER(result);
 }
