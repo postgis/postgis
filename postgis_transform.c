@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.15  2004/01/14 01:52:53  pramsey
+ * Fix solaris alignment problem in transformations.
+ *
  * Revision 1.14  2003/09/16 20:27:12  dblasby
  * added ability to delete geometries.
  *
@@ -393,6 +396,8 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 					poly_points  += poly->npoints[i];
 				}
 				poly_pts = (POINT3D *) ( (char *)&(poly->npoints[poly->nrings] )  );
+				poly_pts = (POINT3D *) MAXALIGN(poly_pts);
+
 				if (input_pj->is_latlong)
 					to_rad(poly_pts , poly_points);
 
