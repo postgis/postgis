@@ -4,12 +4,12 @@
 subdir = contrib/postgis
 
 # Root of the pgsql source tree 
-ifneq (${PGSQL_SRC},"") 
-	top_builddir = ${PGSQL_SRC}
-	installlibdir = ${PWD}
-else
+ifeq (${PGSQL_SRC},) 
 	top_builddir = ../..
 	installlibdir = $(libdir)/contrib
+else
+	top_builddir = ${PGSQL_SRC}
+	installlibdir = ${PWD}
 endif
 
 include $(top_builddir)/src/Makefile.global
