@@ -10,6 +10,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.55  2004/09/20 14:14:43  strk
+ * Fixed a bug in popbyte. Trapped WKB endiannes errors.
+ *
  * Revision 1.54  2004/09/20 13:49:27  strk
  * Postgis-1.x support (LWGEOM) added.
  * postgis version detected at runtime.
@@ -398,9 +401,16 @@ shape_creator_wrapper_WKB(byte *str, int idx)
 	byte *ptr = str;
 	uint32 type;
 	int is3d;
+	int wkb_big_endian;
 
 	// skip byte order
-	skipbyte(&ptr);
+	//skipbyte(&ptr);
+	wkb_big_endian = ! popbyte(&ptr);
+	if ( wkb_big_endian != big_endian )
+	{
+		fprintf(stderr, "Wrong WKB endiannes, dunno how to flip\n");
+		exit(1);
+	}
 
 	// get type
 	type = getint(ptr);
@@ -2462,9 +2472,8 @@ byte getbyte(byte *c) {
 	return *((char*)c);
 }
 
-// #define popbyte(x) *x++
 byte popbyte(byte **c) {
-	return *((byte*)*c++);
+	return *((*c)++);
 }
 
 uint32 popint(byte **c) {
