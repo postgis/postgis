@@ -52,6 +52,48 @@ my %types = ();
 my %opclass = ();
 my %ops = ();
 
+# This are old postgis functions which might
+# still be in a dump
+my %obsoleted_function = (
+	'linefromtext', 1,
+	'linestringfromtext', 1,
+	'mlinefromtext', 1,
+	'multilinestringfromtext', 1,
+	'mpolyfromtext', 1,
+	'multipolygonfromtext', 1,
+	'polyfromtext', 1,
+	'polygonfromtext', 1,
+	'pointfromtext', 1,
+	'mpointfromtext', 1,
+	'multipointfromtext', 1,
+	'geomcollfromtext', 1,
+	'geometryfromtext', 1,
+	'geomfromtext', 1,
+	'wkb_in', 1,
+	'wkb_out', 1,
+	'wkb_recv', 1,
+	'wkb_send', 1,
+	'postgisgistcostestimate', 1,
+	'ggeometry_compress', 1,
+	'ggeometry_picksplit', 1,
+	'gbox_picksplit', 1,
+	'ggeometry_union', 1,
+	'gbox_union', 1,
+	'ggeometry_same', 1,
+	'gbox_same', 1,
+	'rtree_decompress', 1,
+	'ggeometry_penalty', 1,
+	'gbox_penalty', 1,
+	'geometry_union(geometry, geometry)', 1,
+	'geometry_inter(geometry, geometry)', 1,
+	'geometry_size', 1,
+	'ggeometry_consistent', 1,
+	'create_histogram2d(box3d, integer)', 1,
+	'estimate_histogram2d(histogram2d, box)', 1,
+	'optimistic_overlap', 1,
+	'unite_finalfunc', 1
+);
+
 my $postgissql = $ARGV[0];
 my $dbname = $ARGV[1];
 my $dump = $ARGV[2];
@@ -325,50 +367,10 @@ while( my $line = <INPUT> )
 			print "SKIPPING FUNC $id\n" if $DEBUG;
 			next;
 		}
-		# This is an old postgis function which might
-		# still be in a dump
-		if ( $funcname eq 'unite_finalfunc' )
-		{
-			print "SKIPPING FUNC $id\n" if $DEBUG;
-			next;
-		}
 
-		# This are old postgis functions which might
-		# still be in a dump
-		if ( $funcname eq 'postgisgistcostestimate' )
+		if ( $obsoleted_function{$funcname} || $obsoleted_function{$id} )
 		{
-			print "SKIPPING FUNC $id\n" if $DEBUG;
-			next;
-		}
-		if ( $funcname eq 'wkb_in' || $funcname eq 'wkb_out' ||
-			$funcname eq 'wkb_recv' || $funcname eq 'wkb_send' )
-		{
-			print "SKIPPING FUNC $id\n" if $DEBUG;
-			next;
-		}
-		if ( $funcname eq 'ggeometry_consistent' ||
-			$funcname eq 'ggeometry_compress' ||
-			$funcname eq 'ggeometry_picksplit' ||
-			$funcname eq 'gbox_picksplit' ||
-			$funcname eq 'ggeometry_union' ||
-			$funcname eq 'gbox_union' ||
-			$funcname eq 'ggeometry_same' ||
-			$funcname eq 'gbox_same' ||
-			$funcname eq 'rtree_decompress' ||
-			$funcname eq 'ggeometry_penalty' ||
-			$funcname eq 'gbox_penalty' ||
-			$id eq 'geometry_union(geometry, geometry)' ||
-			$id eq 'geometry_inter(geometry, geometry)' ||
-			$funcname eq 'geometry_size' )
-		{
-			print "SKIPPING FUNC $id\n" if $DEBUG;
-			next;
-		}
-
-		if ( $id eq 'create_histogram2d(box3d, integer)' ||
-			$id eq 'estimate_histogram2d(histogram2d, box)' )
-		{
-			print "SKIPPING FUNC $id\n" if $DEBUG;
+			print "SKIPPING OBSOLETED FUNC $id\n" if $DEBUG;
 			next;
 		}
 
