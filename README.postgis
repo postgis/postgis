@@ -47,6 +47,22 @@ To run some regression tests, use 'make test'. The results will be output
 to tests/output.log and compared to tests/expected.log.
 
 
+UPGRADING:
+
+Upgrading PostGIS can be tricky, because the underlying C libraries which 
+support the object types and geometries may have changed between versions.
+To avoid problems when upgrading, you will have to dump all the tables
+in your database, destroy the database, create a new one, upload the
+new postgis.sql file, then upload your database dump:
+
+        pg_dump -t "*" -f dumpfile.sql yourdatabase
+        dropdb yourdatabase
+        createdb yourdatabase
+        psql -f postgis.sql -d yourdatabase
+        psql -f dumpfile.sql -d yourdatabase
+	vacuumdb -z yourdatabase
+
+
 USAGE:
 
 Try the following example SQL statements:
