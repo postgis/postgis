@@ -308,6 +308,7 @@ Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS)
 	double dist = PG_GETARG_FLOAT8(1);
 
 	out = simplify2d_lwgeom(in, dist);
+	if ( ! out ) PG_RETURN_NULL();
 
 	/* COMPUTE_BBOX TAINTING */
 	if ( in->bbox ) lwgeom_addBBOX(out);
@@ -793,8 +794,8 @@ Datum LWGEOM_apply_grid(PG_FUNCTION_ARGS)
 	LWGEOM *in_lwgeom;
 	PG_LWGEOM *out_geom = NULL;
 	LWGEOM *out_lwgeom;
-	size_t size;
 	gridspec grid;
+	BOX2DFLOAT4 *box;
 
 	if ( PG_ARGISNULL(0) ) PG_RETURN_NULL();
 	datum = PG_GETARG_DATUM(0);
@@ -824,14 +825,26 @@ Datum LWGEOM_apply_grid(PG_FUNCTION_ARGS)
    	out_lwgeom = lwgeom_grid(in_lwgeom, &grid);
 	if ( out_lwgeom == NULL ) PG_RETURN_NULL();
 
+	/* COMPUTE_BBOX WHEN_SIMPLE */
+	if ( in_lwgeom->bbox )
+	{
+		box = palloc(sizeof(BOX2DFLOAT4));
+		box->xmin = rint((in_lwgeom->bbox->xmin - grid.ipx)/grid.xsize)
+			* grid.xsize + grid.ipx;
+		box->xmax = rint((in_lwgeom->bbox->xmax - grid.ipx)/grid.xsize)
+			* grid.xsize + grid.ipx;
+		box->ymin = rint((in_lwgeom->bbox->ymin - grid.ipy)/grid.ysize)
+			* grid.ysize + grid.ipy;
+		box->ymax = rint((in_lwgeom->bbox->ymax - grid.ipy)/grid.ysize)
+			* grid.ysize + grid.ipy;
+		out_lwgeom->bbox = box;
+	}
+
 #if VERBOSE
 	elog(NOTICE, "apply_grid made a %s", lwgeom_typename(TYPE_GETTYPE(out_lwgeom->type)));
 #endif
 
-	size = lwgeom_serialize_size(out_lwgeom);
-	out_geom = palloc(size+4);
-	out_geom->size = size+4;
-	lwgeom_serialize_buf(out_lwgeom, SERIALIZED_FORM(out_geom), NULL);
+	out_geom = pglwgeom_serialize(out_lwgeom);
 
 	PG_RETURN_POINTER(out_geom);
 }

@@ -100,7 +100,9 @@ section also use it.
 	### input bbox (if all available)
 	collect(geometry, geometry) *LWG*
 	collect_garray (geometry[]) *LWG*
-	
+
+	## apply grid to eventually present box in input
+	apply_grid(geometry, float8, float8, float8, float8);
 
 	## These use LWGEOM as a mean to access and modigy SERIALIZED form
 	reverse(geometry) *LWG* **SRL**
