@@ -83,17 +83,18 @@ Datum BOX2DFLOAT4_in(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(BOX2DFLOAT4_out);
 Datum BOX2DFLOAT4_out(PG_FUNCTION_ARGS)
 {
-		BOX2DFLOAT4		        *box = (BOX2DFLOAT4 *) PG_GETARG_POINTER(0);
-		char		 tmp[500]; // big enough
-		char		 *result;
-		int			size;
+	BOX2DFLOAT4 *box = (BOX2DFLOAT4 *) PG_GETARG_POINTER(0);
+	char tmp[500]; // big enough
+	char *result;
+	int size;
 
-		size  = sprintf(tmp,"BOX(%.15g %.15g,%.15g %.15g)", box->xmin, box->ymin, box->xmax, box->ymax);
+	size  = sprintf(tmp,"BOX(%g %g,%g %g)",
+		box->xmin, box->ymin, box->xmax, box->ymax);
 
-		result= palloc(size+1); // +1= null term
+	result= palloc(size+1); // +1= null term
 
-		memcpy(result,tmp,size+1);
-		PG_RETURN_CSTRING(result);
+	memcpy(result,tmp,size+1);
+	PG_RETURN_CSTRING(result);
 }
 
 
