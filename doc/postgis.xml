@@ -192,7 +192,7 @@
           to provide geometry tests (Touches(), Contains(), Intersects()) and
           operations (Buffer(), GeomUnion(), Difference()) within PostGIS.
           GEOS is available for download from <ulink
-          url="http://www.remotesensing.org/proj">http://geos.refractions.net</ulink>.</para>
+          url="http://geos.refractions.net">http://geos.refractions.net</ulink>.</para>
         </listitem>
       </itemizedlist>
     </sect1>
