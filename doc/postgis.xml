@@ -2621,6 +2621,12 @@ FROM geometry_table;</literallayout>
 					</listitem> 
 				</varlistentry> 
 				<varlistentry> 
+					<term>multi(geometry)</term> 
+					<listitem> 
+						<para>Returns the geometry as a MULTI* geometry. If the geometry is already a MULTI*, it is returned unchanged.</para>
+					</listitem> 
+				</varlistentry> 
+				<varlistentry> 
 					<term>npoints(geometry)</term> 
 					<listitem> 
 						<para>Returns the number of points in the geometry.</para> 
