@@ -88,7 +88,7 @@ Datum BOX2DFLOAT4_out(PG_FUNCTION_ARGS)
 	char *result;
 	int size;
 
-	size  = sprintf(tmp,"BOX(%g %g,%g %g)",
+	size  = sprintf(tmp,"BOX(%.15g %.15g,%.15g %.15g)",
 		box->xmin, box->ymin, box->xmax, box->ymax);
 
 	result= palloc(size+1); // +1= null term
