@@ -10,6 +10,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.21  2003/11/04 19:06:08  strk
+ * added missing first geom pfree in unite_finalfunc
+ *
  * Revision 1.20  2003/10/29 15:53:10  strk
  * geoscentroid() removed. both geos and pgis versions are called 'centroid'.
  * only one version will be compiled based on USE_GEOS flag.
@@ -88,6 +91,7 @@
 
 //--------------------------------------------------------------------------
 //
+//#define DEBUG
 #ifdef USE_GEOS
 
 #include "postgres.h"
@@ -157,10 +161,10 @@ extern Geometry *GEOSIntersection(Geometry *g1, Geometry *g2);
 extern POINT3D  *GEOSGetCoordinate(Geometry *g1);
 extern POINT3D  *GEOSGetCoordinates(Geometry *g1);
 extern int      GEOSGetNumCoordinate(Geometry *g1);
-extern Geometry *GEOSGetGeometryN(Geometry *g1, int n);
-extern Geometry *GEOSGetExteriorRing(Geometry *g1);
-extern Geometry *GEOSGetInteriorRingN(Geometry *g1,int n);
-extern int      GEOSGetNumInteriorRings(Geometry *g1);
+extern Geometry	*GEOSGetGeometryN(Geometry *g1, int n);
+extern Geometry	*GEOSGetExteriorRing(Geometry *g1);
+extern Geometry	*GEOSGetInteriorRingN(Geometry *g1,int n);
+extern int	GEOSGetNumInteriorRings(Geometry *g1);
 extern int      GEOSGetSRID(Geometry *g1);
 extern int      GEOSGetNumGeometries(Geometry *g1);
 
@@ -303,6 +307,7 @@ Datum unite_finalfunc(PG_FUNCTION_ARGS)
 
 	if ( geoms[0]->is3d ) is3d = 1;
 	geos_result = POSTGIS2GEOS(geoms[0]);
+	pfree(geoms[0]);
 	for (i=1; i<nelems; i++)
 	{
 		pgis_geom = geoms[i];
@@ -1271,13 +1276,14 @@ Datum isring(PG_FUNCTION_ARGS)
 POLYGON3D *PolyFromGeometry(Geometry *g, int *size)
 {
 
-		int ninteriorrings =GEOSGetNumInteriorRings(g);
+		int ninteriorrings;
 		POINT3D *pts;
 		int		*pts_per_ring;
 		int t;
 		POLYGON3D *poly;
 		int npoints;
 
+		ninteriorrings = GEOSGetNumInteriorRings(g);
 
 		npoints = 	GEOSGetNumCoordinate(g);
 		pts = GEOSGetCoordinates(g);
@@ -1292,6 +1298,7 @@ POLYGON3D *PolyFromGeometry(Geometry *g, int *size)
 
 		for (t=0;t<ninteriorrings;t++)
 		{
+
 			pts_per_ring[t+1] = GEOSGetNumCoordinate(GEOSGetInteriorRingN(g,t));
 		}
 
