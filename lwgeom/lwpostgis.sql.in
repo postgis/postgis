@@ -3018,8 +3018,14 @@ LANGUAGE 'plpgsql' _IMMUTABLE_STRICT; -- WITH (iscachable);
 ---------------------------------------------------------------
 
 CREATEFUNCTION get_proj4_from_srid(integer) RETURNS text AS
-'SELECT proj4text::text FROM spatial_ref_sys WHERE srid= $1' 
-LANGUAGE 'sql' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
+'
+BEGIN
+	RETURN proj4text::text FROM spatial_ref_sys WHERE srid= $1;
+END;
+'
+LANGUAGE 'plpgsql' IMMUTABLE STRICT; -- WITH (iscachable,isstrict);
+
+
 
 CREATEFUNCTION transform_geometry(geometry,text,text,int)
 	RETURNS geometry

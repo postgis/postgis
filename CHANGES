@@ -15,6 +15,8 @@ PostGIS 1.0.0RC4
 	- subselects support in selectivity estimator 
 	- bug fixes for 64bit architectures
 	- bugfix in loaded, skipping all but first hole of polygons.
+	- changed get_proj4_from_srid implementation to use plpgsql
+	  instead of sql to workaround a pgsql80x bug.
 
 PostGIS 1.0.0RC3
 2005/02/24
