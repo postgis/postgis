@@ -181,7 +181,8 @@ detect_geos_version:
 	./geos_version.sh $(GEOS_DIR) > postgis_geos_version.h
 
 install: all installdirs install-lwgeom-lib
-	$(INSTALL_DATA) lwgeom.sql $(DESTDIR)$(datadir)
+	#$(INSTALL_DATA) lwgeom.sql $(DESTDIR)$(datadir)
+	$(INSTALL_DATA) lwpostgis.sql $(DESTDIR)$(datadir)
 
 #- This has been copied from postgresql and adapted
 install-lwgeom-lib: $(shlib)
