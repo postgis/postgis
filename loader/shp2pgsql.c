@@ -12,6 +12,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.65  2004/09/20 17:13:31  strk
+ * changed comments to better show shape type handling
+ *
  * Revision 1.64  2004/08/20 08:14:37  strk
  * Whole output wrapped in transaction blocks.
  * Drops are out of transaction, and multiple transactions are used
@@ -996,7 +999,7 @@ main (int ARGC, char **ARGV)
 			else printf(", NULL);\n");
 		}
 
-                // ---------POLYGONS (2D or 3d) -----------
+                // --------- POLYGON / POLYGONM / POLYGONZ ------
 	   	else if(( obj->nSHPType == 5 ) || ( obj->nSHPType == 25 )
 			|| ( obj->nSHPType == 15) )
 		{
@@ -1004,7 +1007,7 @@ main (int ARGC, char **ARGV)
 		}
 
 
-		//--------POINTS--------------
+		//-------- POINT / POINTM --------------
 		else if( obj->nSHPType == 1 || obj->nSHPType == 21 )
 		{
 
@@ -1019,7 +1022,7 @@ main (int ARGC, char **ARGV)
 			else printf(")',%s) );\n",sr_id);
 		}
 
-		//--------ARCs / LINES-----------------
+		//-------- POLYLINE / POLYLINEM ------------------
 		else if( obj->nSHPType == 3 || obj->nSHPType == 23 )
 		{
 			/*
@@ -1081,7 +1084,7 @@ main (int ARGC, char **ARGV)
 			else printf(")',%s) );\n",sr_id);
 		}
 
-		//--------MULTIPOINTS------------
+		//-------- MULTIPOINT / MULTIPOINTM ------------
 		else if( obj->nSHPType == 8 || obj->nSHPType == 28 )
 		{
 			if (dump_format) printf("\tSRID=%s;MULTIPOINT(",sr_id);
@@ -1096,7 +1099,7 @@ main (int ARGC, char **ARGV)
 			else printf(")',%s) );\n",sr_id);
 		}
 
-		//----------POINTZ----------
+		//---------- POINTZ ----------
 		else if( obj->nSHPType == 11 )
 		{ 
 			if (dump_format) printf("\tSRID=%s;POINT(",sr_id);
@@ -1114,7 +1117,7 @@ main (int ARGC, char **ARGV)
 
 		}
 
-		//------Linez(3D lines)------
+		//------ POLYLINEZ -----------
 		else if( obj->nSHPType == 13 )
 		{  
 			/* Invalid (MULTI)Linestring */
@@ -1166,7 +1169,7 @@ main (int ARGC, char **ARGV)
 			else printf(")',%s));\n",sr_id);
 		}
 
-		//------MULTIPOINTZ (3D MULTIPOINTS)---
+		//------ MULTIPOINTZ -----------------------
 		else if( obj->nSHPType == 18 )
 		{
 
