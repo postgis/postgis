@@ -119,7 +119,7 @@ all: $(GEOS_RULES) all-lib lwpostgis.sql
 # Shared library stuff
 
 lwpostgis.sql: lwpostgis.sql.in
-	cpp -P -traditional-cpp -DUSE_VERSION=$(USE_VERSION) $< | sed -e 's:@MODULE_FILENAME@:$(MODULE_FILENAME):g;s:@POSTGIS_VERSION@:$(POSTGIS_VERSION):g;s:@POSTGIS_SCRIPTS_VERSION@:$(SCRIPTS_VERSION):g' > $@
+	cpp -P -traditional-cpp -DUSE_VERSION=$(USE_VERSION) $< | sed -e 's:@MODULE_FILENAME@:$(MODULE_FILENAME):g;s:@POSTGIS_VERSION@:$(POSTGIS_VERSION):g;s:@POSTGIS_SCRIPTS_VERSION@:$(SCRIPTS_VERSION):g' | grep -v ^# > $@
 
 install: all installdirs install-lwgeom-lib install-lwgeom-scripts
 
