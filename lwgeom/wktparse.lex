@@ -19,8 +19,8 @@ static YY_BUFFER_STATE buf_state;
 
 %%
 
-
-<vals_ok>(-)?([0-9]*)?(\.[0-9]+([Ee](\+|-)?[0-9]+)?)? { lwg_parse_yylval.value=atof(lwg_parse_yytext); return VALUE; }
+<vals_ok>[-|\+]?[0-9]+(\.[0-9]+)?([Ee](\+|-)?[0-9]+)? { lwg_parse_yylval.value=atof(lwg_parse_yytext); return VALUE; }
+<vals_ok>[-|\+]?(\.[0-9]+)([Ee](\+|-)?[0-9]+)? { lwg_parse_yylval.value=atof(lwg_parse_yytext); return VALUE; }
 
 <INITIAL>00[0-9A-F]* {  lwg_parse_yylval.wkb=lwg_parse_yytext; return WKB;}
 <INITIAL>01[0-9A-F]* {  lwg_parse_yylval.wkb=lwg_parse_yytext; return WKB;}
