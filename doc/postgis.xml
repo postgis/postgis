@@ -4580,6 +4580,7 @@ FROM geometry_table;</literallayout>
 
     		<sect1>
 			<title>Release 1.0.0RC5</title>
+			<para>Release date: 2005/03/25</para>
 
 			<para>Fifth release candidate for 1.0.0.
 			Contains a few bug fixes and a improvements.</para>
@@ -4614,6 +4615,7 @@ FROM geometry_table;</literallayout>
 
     		<sect1>
 			<title>Release 1.0.0RC4</title>
+			<para>Release date: 2005/03/18</para>
 
 			<para>Fourth release candidate for 1.0.0.
 			Contains bug fixes and a few improvements.</para>
@@ -4659,6 +4661,7 @@ FROM geometry_table;</literallayout>
 
     		<sect1>
 			<title>Release 1.0.0RC3</title>
+			<para>Release date: 2005/02/24</para>
 
 			<para>Third release candidate for 1.0.0.
 			Contains many bug fixes and improvements.</para>
@@ -4720,6 +4723,7 @@ FROM geometry_table;</literallayout>
 
     		<sect1>
 			<title>Release 1.0.0RC2</title>
+			<para>Release date: 2005/01/26</para>
 
 			<para>Second release candidate for 1.0.0
 			containing bug fixes and a few improvements.</para>
@@ -4766,6 +4770,7 @@ FROM geometry_table;</literallayout>
 
     		<sect1>
 			<title>Release 1.0.0RC1</title>
+			<para>Release date: 2005/01/13</para>
 
 			<para>This is the first candidate of a
 			major postgis release, with internal
