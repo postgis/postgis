@@ -82,7 +82,7 @@ to this manually for some reason.)
 As postgres run:
 
   createlang plpgsql yourdatabase
-  psql -f postgis.sql -d yourdatabase
+  psql -f lwpostgis.sql -d yourdatabase
 
 Installation should now be complete.
 
