@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.13  2004/06/02 23:29:08  strk
+ * reverted Inf handling modification (conceptually bogus)
+ *
  * Revision 1.12  2004/06/02 22:43:54  strk
  * handled special case of Inf boxes as GiST keys in picksplit
  *
@@ -524,6 +527,7 @@ gbox_picksplit(PG_FUNCTION_ARGS)
 			ADDLIST(listL, unionL, posL,i);
 		else
 			ADDLIST(listR, unionR, posR,i);
+
 		if (cur->low.y - pageunion.low.y < pageunion.high.y - cur->high.y)
 			ADDLIST(listB, unionB, posB,i);
 		else
@@ -558,12 +562,8 @@ gbox_picksplit(PG_FUNCTION_ARGS)
 					ADDLIST(listT, unionT, posT,arr[i-1].pos);
 				else
 					ADDLIST(listB, unionB, posB,arr[i-1].pos);
-			} else {
-				if ( posB>posT )
-					ADDLIST(listT, unionT, posT,arr[i-1].pos);
-				else
-					ADDLIST(listB, unionB, posB,arr[i-1].pos);
-			}
+			} else 
+				ADDLIST(listT, unionT, posT,arr[i-1].pos);
 		}
 		pfree(arr);
 	}
