@@ -30,6 +30,10 @@ install: all
 	$(INSTALL_PROGRAM) pgsql2shp$(EXE) $(DESTDIR)$(bindir)/pgsql2shp$(EXE)
 	$(INSTALL_PROGRAM) shp2pgsql$(EXE) $(DESTDIR)$(bindir)/shp2pgsql$(EXE)
 
+uninstall:
+	rm -f $(DESTDIR)$(bindir)/pgsql2shp$(EXE)
+	rm -f $(DESTDIR)$(bindir)/shp2pgsql$(EXE)
+
 clean:
 	rm -f $(OBJS) shp2pgsql.o pgsql2shp.o shp2pgsql$(EXE) pgsql2shp$(EXE)
 

@@ -1,17 +1,8 @@
 # Configuration Directives
-
 include ../Makefile.config
 
 #---------------------------------------------------------------
 subdir=contrib/postgis
-#---------------------------------------------------------------
-# Path to library (to be specified in CREATE FUNCTION queries)
-# Defaults to $libdir.
-# Set LPATH environment variable to change it.
-#
-ifeq (${LPATH},)
-	LPATH := \$$libdir
-endif
 
 #---------------------------------------------------------------
 # Default missing CXX variable to c++
@@ -77,7 +68,7 @@ endif
  
 OBJS=lwgeom_pg.o lwgeom_spheroid.o lwgeom_api.o lwgeom_ogc.o lwgeom_functions_analytic.o lwgeom_geos.o lwgeom_inout.o lwgeom_estimate.o lwgeom_functions_basic.o lwgeom_gist.o lwgeom_btree.o lwgeom_transform.o stringBuffer.o lwgeom_box3d.o lwgeom_box2dfloat4.o lwgeom_chip.o lex.yy.o wktparse.tab.o lwgparse.o wktunparse.o lwgeom_svg.o $(GEOS_WRAPPER)
 
-OTHERS=y.output lex.yy.c wktparse.tab.c wktparse.tab.h lwgeom.sql lwpostgis.sql
+OTHERS=y.output lex.yy.c wktparse.tab.c wktparse.tab.h lwpostgis.sql
 
 
 #---------------------------------------------------------------
@@ -114,14 +105,12 @@ all: all-lib lwpostgis.sql
 
 # Shared library stuff
 
-#lwgeom.sql: lwgeom.sql.in
-#	cpp -P -traditional-cpp -DUSE_VERSION=$(USE_VERSION) $< | sed -e 's:@MODULE_FILENAME@:$(MODULE_FILENAME):g;s:@POSTGIS_VERSION@:$(POSTGIS_VERSION):g;s:@POSTGIS_SCRIPTS_VERSION@:$(SCRIPTS_VERSION):g' > $@
-
 lwpostgis.sql: lwpostgis.sql.in
 	cpp -P -traditional-cpp -DUSE_VERSION=$(USE_VERSION) $< | sed -e 's:@MODULE_FILENAME@:$(MODULE_FILENAME):g;s:@POSTGIS_VERSION@:$(POSTGIS_VERSION):g;s:@POSTGIS_SCRIPTS_VERSION@:$(SCRIPTS_VERSION):g' > $@
 
-install: all installdirs install-lwgeom-lib
-	#$(INSTALL_DATA) lwgeom.sql $(DESTDIR)$(datadir)
+install: all installdirs install-lwgeom-lib install-lwgeom-scripts
+
+install-lwgeom-scripts:
 	$(INSTALL_DATA) lwpostgis.sql $(DESTDIR)$(datadir)
 
 #- This has been copied from postgresql and adapted
@@ -146,10 +135,12 @@ detect_geos_version:
 	../geos_version.sh $(GEOS_DIR) > postgis_geos_version.h
 
 installdirs:
-	$(mkinstalldirs) $(docdir)/contrib $(datadir)/contrib $(libdir)
+	$(mkinstalldirs) $(libdir)
 
-uninstall: uninstall-lib
-	@rm -f $(datadir)/contrib/lwgeom.sql
+uninstall-lwgeom-scripts:
+	rm -f $(DESTDIR)$(datadir)/lwpostgis.sql
+
+uninstall: uninstall-lib uninstall-lwgeom-scripts
 
 clean distclean maintainer-clean: clean-lib
 	@rm -f $(OBJS) 

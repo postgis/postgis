@@ -8,6 +8,8 @@ all: liblwgeom loaderdumper
 
 install: all liblwgeom-install loaderdumper-install
 
+uninstall: liblwgeom-uninstall loaderdumper-uninstall
+
 clean: liblwgeom-clean loaderdumper-clean
 
 liblwgeom: 
@@ -19,6 +21,9 @@ liblwgeom-clean:
 liblwgeom-install:
 	$(MAKE) -C lwgeom install
 
+liblwgeom-uninstall:
+	$(MAKE) -C lwgeom uninstall
+
 loaderdumper:
 	$(MAKE) -C loader
 
@@ -27,3 +32,6 @@ loaderdumper-clean:
 
 loaderdumper-install:
 	$(MAKE) -C loader install
+
+loaderdumper-uninstall:
+	$(MAKE) -C loader uninstall
