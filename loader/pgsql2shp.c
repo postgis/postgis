@@ -10,6 +10,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.53.2.3  2004/10/17 12:15:32  strk
+ * Fixed a bug in multipoint3D_WKB creation
+ *
  * Revision 1.53.2.2  2004/10/14 10:13:28  strk
  * Added support for user defined query (replacing schema.table)
  *
@@ -1214,6 +1217,8 @@ create_multipoint3D_WKB(byte *wkb, int shape_id)
 
 	for (pn=0; pn<npoints; pn++)
 	{
+		// skip byteOrder and wkbType
+		skipbyte(&wkb); skipint(&wkb);
 		x[pn]=popdouble(&wkb);
 		y[pn]=popdouble(&wkb);
 		z[pn]=popdouble(&wkb);
