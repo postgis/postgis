@@ -109,7 +109,7 @@
 				"postgis" directory, and run the compile and install commands. </para> 
 			 <programlisting># cd ./postgis-0.6 
 # make 
-# make install</programlisting></listitem><listitem><para>As of version 0.6, PostGIS requires the PL/pgSQL procedural language extension. Before loading the postgis.sql file, you must first enable PL/pgSQL. The code snippet below gives an example, substitude the correct location of your <filename>plpgsql.so</filename> library.</para><programlisting>CREATE FUNCTION plpgsql_call_handler () RETURNS OPAQUE AS
+# make install</programlisting></listitem><listitem><para>As of version 0.6, PostGIS requires the PL/pgSQL procedural language extension. Before loading the postgis.sql file, you must first enable PL/pgSQL. The code snippet below gives an example, substitute the correct location of your <filename>plpgsql.so</filename> library.</para><programlisting>CREATE FUNCTION plpgsql_call_handler () RETURNS OPAQUE AS
    '/usr/local/pgsql/lib/plpgsql.so' LANGUAGE 'C';
 CREATE TRUSTED PROCEDURAL LANGUAGE 'plpgsql'
    HANDLER plpgsql_call_handler
@@ -686,7 +686,7 @@ id | geom                                    | name
 		  <title>Using the Dumper</title> 
 		  <para>This section to be written.</para> 
 		</sect2> 
-	 <sect2><title>Using Minnesota Mapserver</title><para>The Minnesota Mapserver is an internet web-mapping server. The latest versions conform to the OpenGIS Web Map Specification.</para><itemizedlist><listitem> <para>The Mapserver homepage is at <ulink url="http://mapserver.gis.umn.edu">http://mapserver.gis.umn.edu</ulink>.</para></listitem><listitem> <para>The OpenGIS Web Map Specification is at <ulink url="http://www.opengis.org/techno/specs/01-047r2.pdf">http://www.opengis.org/techno/specs/01-047r2.pdf</ulink>.</para></listitem></itemizedlist><para>To use PostGIS with Mapserver, you will need to know about how to configure Mapserver, which is beyond the scope of this documentation. This section will cover specific PostGIS issues and configuration details.</para><para>To use PostGIS with Mapserver, you will need:</para><itemizedlist><listitem><para>The latest version of PostGIS.</para></listitem><listitem><para>Version 3.5 of Mapserver. At the date of writing, version 3.5 has not been released, but the CVS version is fully functional with PostGIS.</para></listitem></itemizedlist><para>Mapserver accesses PostGIS/PostgreSQL data like any other PostgreSQL client -- using <filename>libpq</filename>. This means that Mapserver can be installed on any machine with network access to hte PostGIS server, as long as the system has the <filename>libpq</filename> PostgreSQL client libraries.</para><orderedlist><listitem><para>Compile and install Mapserver, with whatever options you desire, including the "--with-postgis" configuration option.</para></listitem><listitem><para>In your Mapserver map file, add a PostGIS layer. For example:</para><programlisting>LAYER
+	 <sect2><title>Using Minnesota Mapserver</title><para>The Minnesota Mapserver is an internet web-mapping server. The latest versions conform to the OpenGIS Web Map Specification.</para><itemizedlist><listitem> <para>The Mapserver homepage is at <ulink url="http://mapserver.gis.umn.edu">http://mapserver.gis.umn.edu</ulink>.</para></listitem><listitem> <para>The OpenGIS Web Map Specification is at <ulink url="http://www.opengis.org/techno/specs/01-047r2.pdf">http://www.opengis.org/techno/specs/01-047r2.pdf</ulink>.</para></listitem></itemizedlist><para>To use PostGIS with Mapserver, you will need to know about how to configure Mapserver, which is beyond the scope of this documentation. This section will cover specific PostGIS issues and configuration details.</para><para>To use PostGIS with Mapserver, you will need:</para><itemizedlist><listitem><para>The latest version of PostGIS.</para></listitem><listitem><para>Version 3.5 of Mapserver. At the date of writing, version 3.5 has not been released, but the CVS version is fully functional with PostGIS.</para></listitem></itemizedlist><para>Mapserver accesses PostGIS/PostgreSQL data like any other PostgreSQL client -- using <filename>libpq</filename>. This means that Mapserver can be installed on any machine with network access to the PostGIS server, as long as the system has the <filename>libpq</filename> PostgreSQL client libraries.</para><orderedlist><listitem><para>Compile and install Mapserver, with whatever options you desire, including the "--with-postgis" configuration option.</para></listitem><listitem><para>In your Mapserver map file, add a PostGIS layer. For example:</para><programlisting>LAYER
   CONNECTIONTYPE postgis
   NAME "widehighways"
   # Connect to a remote spatial database
@@ -731,14 +731,14 @@ name and username to connect with.</para></listitem></varlistentry><varlistentry
 		  </listitem> 
 		  <listitem> 
 			 <para>R-Trees break up data into rectangles, and sub-rectangles, and
-				sub-sub rectanges, etc. R-Trees are used by some spatial databases to index GIS
+				sub-sub rectangles, etc. R-Trees are used by some spatial databases to index GIS
 				data, but the PostgreSQL R-Tree implementation is not as robust as the GiST
 				implementation.</para> 
 		  </listitem> 
 		  <listitem> 
 			 <para> GiST (Generalized Search Trees) indexes break up data into
 				"things to one side", "things which overlap", "things which are inside" and can
-				be used on a wide range of datatypes, including GIS data. PostGIS uses GiST
+				be used on a wide range of data-types, including GIS data. PostGIS uses GiST
 				indexing to index GIS data.</para> 
 		  </listitem> 
 		</itemizedlist> 
@@ -877,7 +877,7 @@ if( geom.getType() = Geometry.POLYGON )
   } 
 }</programlisting> 
 		<para>The JavaDoc for the extension objects provides a reference for the
-		  various data acessor functions in the geometric objects.</para> 
+		  various data accessor functions in the geometric objects.</para> 
 	 </sect1> 
 	 <sect1> 
 		<title> C Clients (libpq)</title> 
