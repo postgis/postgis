@@ -150,7 +150,7 @@ while( my $line = <INPUT>)
 				$type = $1;
 				last;
 			}
-			last if $subline =~ /\);/;
+			last if $subline =~ /;[\t ]*$/;
 		}
 		if ( $type eq undef )
 		{
@@ -223,7 +223,7 @@ while( my $line = <INPUT>)
 		my $rarg = undef;
 		while( my $subline = <INPUT>)
 		{
-			last if $subline =~ /\);/;
+			last if $subline =~ /;[\t ]*$/;
 			if ( $subline =~ /leftarg *= *([^ ,]*)/i )
 			{
 				$larg=lc($1);
@@ -465,7 +465,7 @@ while( my $line = <INPUT> )
 		while( my $subline = <INPUT>)
 		{
 			push(@sublines, $subline);
-			last if $subline =~ /\);/;
+			last if $subline =~ /;[\t ]*$/;
 			if ( $subline =~ /leftarg *= *([^ ,]*)/i )
 			{
 				$larg=lc($1);
@@ -485,6 +485,7 @@ while( my $line = <INPUT> )
 		}
 		print "KEEPING OP $id\n" if $DEBUG;
 		print OUTPUT @sublines;
+		next;
 	}
 
 	print OUTPUT $line;
