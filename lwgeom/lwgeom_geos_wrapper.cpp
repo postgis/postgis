@@ -1609,7 +1609,7 @@ Geometry *GEOSGetCentroid(Geometry *g, int *failure)
 Geometry *GEOSpolygonize(Geometry **g, unsigned int ngeoms)
 {
 	unsigned int i;
-	Geometry *multipoly = NULL;
+	Geometry *out = NULL;
 
 	// construct vector
 	vector<Geometry *> *geoms = new vector<Geometry *>(ngeoms);
@@ -1641,7 +1641,7 @@ Geometry *GEOSpolygonize(Geometry **g, unsigned int ngeoms)
 
 		geoms = new vector<Geometry *>(polys->size());
 		for (i=0; i<polys->size(); i++) (*geoms)[i] = (*polys)[i];
-		multipoly = geomFactory->createMultiPolygon(geoms);
+		out = geomFactory->createGeometryCollection(geoms);
 	}
 	catch (GEOSException *ge)
 	{
@@ -1654,7 +1654,7 @@ Geometry *GEOSpolygonize(Geometry **g, unsigned int ngeoms)
 		return NULL;
 	}
 
-	return multipoly;
+	return out;
 }
 #else // ! (GEOS_FIRST_INTERFACE <= 3 && GEOS_LAST_INTERFACE >= 3)
 Geometry *GEOSpolygonize(Geometry **g, unsigned int ngeoms)
