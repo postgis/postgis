@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.41  2004/01/25 19:33:00  pramsey
+ * Test commit on new CVS archive.
+ *
  * Revision 1.40  2004/01/21 19:04:03  strk
  * Added line_interpolate_point function by jsunday@rochgrp.com
  *
@@ -86,10 +89,13 @@
 #endif
 
 
-//standard definition of an ellipsoid (what wkt calls a spheroid)
-//	f = (a-b)/a
-//	e_sq = (a*a - b*b)/(a*a)
-//	b = a - fa
+/*
+ * standard definition of an ellipsoid (what wkt calls a spheroid)
+ *    f = (a-b)/a
+ *    e_sq = (a*a - b*b)/(a*a)
+ *    b = a - fa
+ */
+
 typedef struct
 {
 	double	a;	//semimajor axis
