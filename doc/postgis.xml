@@ -341,7 +341,7 @@ db=#
 			 "ROADS_GEOM" table in which the geometry was equal to that value.</para> 
 		  <para>When using the "&amp;&amp;" operator, you can specify either a
 			 BOX3D as the comparison feature or a GEOMETRY. When you specify a GEOMETRY,
-			 however, the bounding box will be used for the comparison.</para><literallayout>SELECT * FROM ROADS_GEOM WHERE GEOM &amp;&amp; 'POLYGON(191232 243117,191232 243119,191234 243117,191232 243117)'::geometry;</literallayout> 
+			 however, the bounding box will be used for the comparison.</para><literallayout>SELECT * FROM ROADS_GEOM WHERE GEOM &amp;&amp; 'POLYGON((191232 243117,191232 243119,191234 243117,191232 243117))'::geometry;</literallayout> 
 		  <para>The above query will use the bounding box of the polygon for
 			 comparison purposes.</para>
 		  <para>The most common spatial query will probably be a "frame-based"
