@@ -11,7 +11,7 @@
 
 #include "lwgeom.h"
 
-#define DEBUG
+//#define DEBUG
 
 Datum combine_box2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_mem_size(PG_FUNCTION_ARGS);
@@ -34,11 +34,13 @@ Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_maxdistance2d_linestring(PG_FUNCTION_ARGS);
 Datum LWGEOM_translate(PG_FUNCTION_ARGS);
 Datum LWGEOM_inside_circle_point(PG_FUNCTION_ARGS);
+Datum LWGEOM_collect(PG_FUNCTION_ARGS);
 
 // internal
 char * lwgeom_summary_recursive(char *serialized, int offset);
 int32 lwgeom_npoints_recursive(char *serialized);
 int32 lwgeom_nrings_recursive(char *serialized);
+void dump_lwexploded(LWGEOM_EXPLODED *exploded);
 
 // general utilities (might be moved in lwgeom_api.c)
 double lwgeom_polygon_area(LWPOLY *poly);
@@ -1891,4 +1893,135 @@ Datum LWGEOM_inside_circle_point(PG_FUNCTION_ARGS)
 	pt = (POINT2D *)getPoint(point->point, 0);
 
 	PG_RETURN_BOOL(lwgeom_pt_inside_circle(pt, cx, cy, rr));
+}
+
+void
+dump_lwexploded(LWGEOM_EXPLODED *exploded)
+{
+	int i;
+
+	elog(NOTICE, "SRID=%d ndims=%d", exploded->SRID, exploded->ndims);
+	elog(NOTICE, "%d points, %d lines, %d polygons",
+		exploded->npoints, exploded->nlines, exploded->npolys);
+
+	for (i=0; i<exploded->npoints; i++)
+	{
+		elog(NOTICE, "Point%d @ %p", i, exploded->points[i]);
+	}
+
+	for (i=0; i<exploded->nlines; i++)
+	{
+		elog(NOTICE, "Line%d @ %p", i, exploded->lines[i]);
+	}
+
+	for (i=0; i<exploded->npolys; i++)
+	{
+		elog(NOTICE, "Poly%d @ %p", i, exploded->polys[i]);
+	}
+}
+
+// collect( geom, geom ) returns a geometry which contains
+// all the sub_objects from both of the argument geometries
+// returned geometry is the simplest possible, based on the types
+// of the colelct objects
+// ie. if all are of either X or multiX, then a multiX is returned.
+PG_FUNCTION_INFO_V1(LWGEOM_collect);
+Datum LWGEOM_collect(PG_FUNCTION_ARGS)
+{
+	Pointer geom1_ptr = PG_GETARG_POINTER(0);
+	Pointer geom2_ptr = PG_GETARG_POINTER(1);
+	LWGEOM *geom1, *geom2, *result;
+	LWGEOM_EXPLODED *exp1, *exp2, *expcoll;
+	char *serialized_result;
+	int wantbbox = 0;
+	int size;
+
+	// return null if both geoms are null
+	if ( (geom1_ptr == NULL) && (geom2_ptr == NULL) )
+	{
+		PG_RETURN_NULL();
+	}
+
+	// return a copy of the second geom if only first geom is null
+	if (geom1_ptr == NULL)
+	{
+		geom2 = (LWGEOM *) PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(1));
+		PG_RETURN_POINTER(geom2);
+	}
+
+	// return a copy of the first geom if only second geom is null
+	if (geom2_ptr == NULL)
+	{
+		geom1 = (LWGEOM *) PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+		PG_RETURN_POINTER(geom1);
+	}
+
+	geom1 = (LWGEOM *) PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+	geom2 = (LWGEOM *) PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(1));
+
+	if ( lwgeom_getSRID(geom1) != lwgeom_getSRID(geom2) )
+	{
+		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
+		PG_RETURN_NULL();
+	}
+
+	exp1 = lwgeom_explode(SERIALIZED_FORM(geom1));
+	if ( exp1->npoints + exp1->nlines + exp1->npolys == 0 )
+	{
+		pfree(geom1);
+		pfree_exploded(exp1);
+		PG_RETURN_POINTER(geom2);
+	}
+
+	exp2 = lwgeom_explode(SERIALIZED_FORM(geom2));
+	if ( exp2->npoints + exp2->nlines + exp2->npolys == 0 )
+	{
+		pfree(geom2);
+		pfree_exploded(exp1);
+		pfree_exploded(exp2);
+		PG_RETURN_POINTER(geom1);
+	}
+
+	wantbbox = lwgeom_hasBBOX(geom1->type) ||
+		lwgeom_hasBBOX(geom2->type);
+
+	// Ok, make a new LWGEOM_EXPLODED being the union
+	// of the input ones
+
+	expcoll = lwexploded_sum(exp1, exp2);
+	if ( !expcoll ) 
+	{
+		elog(ERROR, "Could not sum exploded geoms");
+		PG_RETURN_NULL();
+	}
+
+	//DEBUG
+	dump_lwexploded(expcoll);
+
+	// Now serialized collected LWGEOM_EXPLODED
+	serialized_result = lwexploded_serialize(expcoll, wantbbox);
+	//serialized_result = lwexploded_serialize(exp1, wantbbox);
+	if ( ! serialized_result )
+	{
+		elog(ERROR, "Could not serialize exploded geoms");
+		PG_RETURN_NULL();
+	}
+
+	elog(NOTICE, "Serialized lwexploded"); 
+
+	// And create LWGEOM type (could provide a _buf version of
+	// the serializer instead)
+	size = lwgeom_seralizedformlength_simple(serialized_result);
+	result = LWGEOM_construct(serialized_result,
+		lwgeom_getsrid(serialized_result), wantbbox);
+	pfree(serialized_result);
+
+	pfree(geom1);
+	pfree(geom2);
+	pfree_exploded(exp1);
+	pfree_exploded(exp2);
+	pfree_exploded(expcoll);
+
+	//elog(ERROR, "Not implemented yet");
+	PG_RETURN_POINTER(result);
 }

@@ -1186,6 +1186,17 @@ CREATEFUNCTION multi(geometry)
 	AS '@MODULE_FILENAME@', 'LWGEOM_force_multi'
 	LANGUAGE 'C' WITH (isstrict);
 
+CREATEFUNCTION collector(geometry, geometry) 
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_collect'
+	LANGUAGE 'C';
+
+CREATE AGGREGATE memcollect(
+	sfunc = collector,
+	basetype = geometry,
+	stype = geometry
+	);
+
 ------------------------------------------------------------------------
 
 --

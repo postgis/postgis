@@ -1,4 +1,4 @@
-- Decide what to do with bogus max_distance(geom, geom) function
+- Find the bug in memcollect/lwexploded_serialize/...
 
 - Check spheroid misure functions
 	o can't understand if 3d computation works since

@@ -1202,7 +1202,7 @@ uint32 lwpoint_findlength(char *serialized_point)
 
 	type = (unsigned char) serialized_point[0];
 
-	if ( lwgeom_getType(type) != POINTTYPE) return -9999;
+	if ( lwgeom_getType(type) != POINTTYPE) return 0;
 
 #ifdef DEBUG
 elog(NOTICE, "lwpoint_findlength called (%d)", result);
@@ -1291,7 +1291,10 @@ LWPOLY *lwpoly_deserialize(char *serialized_form)
 	int t;
 
 	if (serialized_form == NULL)
+	{
+		elog(ERROR, "lwpoly_deserialize called with NULL arg");
 		return NULL;
+	}
 
 	result = (LWPOLY*) palloc(sizeof(LWPOLY));
 
@@ -1301,7 +1304,11 @@ LWPOLY *lwpoly_deserialize(char *serialized_form)
 	loc = serialized_form;
 
 	if ( lwgeom_getType(type) != POLYGONTYPE)
+	{
+		elog(ERROR, "lwpoly_deserialize called with arg of type %d",
+			lwgeom_getType(type));
 		return NULL;
+	}
 
 
 	loc = serialized_form+1;
@@ -1670,6 +1677,8 @@ LWGEOM_INSPECTED *lwgeom_inspect(char *serialized_form)
 	elog(NOTICE, "lwgeom_inspect: geometry is a collection of %d elements",
 		result->ngeometries);
 #endif
+
+	if ( ! result->ngeometries ) return result;
 
 	sub_geoms = (char**) palloc(sizeof(char*) * result->ngeometries );
 	result->sub_geoms = sub_geoms;
@@ -2317,7 +2326,8 @@ BOX3D *lw_geom_getBB_inspected(LWGEOM_INSPECTED *inspected)
 
 void pfree_inspected(LWGEOM_INSPECTED *inspected)
 {
-	pfree(inspected->sub_geoms);
+	if ( inspected->ngeometries )
+		pfree(inspected->sub_geoms);
 	pfree(inspected);
 }
 
@@ -2484,6 +2494,23 @@ void printType(unsigned char type)
 
 // get the SRID from the LWGEOM
 // none present => -1
+int lwgeom_getsrid(char *serialized)
+{
+	unsigned char type = serialized[0];
+	char *loc = serialized+1;
+
+	if ( ! lwgeom_hasSRID(type)) return -1;
+
+	if (lwgeom_hasBBOX(type))
+	{
+		loc += sizeof(BOX2DFLOAT4);
+	}
+
+	return get_int32(loc);
+}
+
+// get the SRID from the LWGEOM
+// none present => -1
 int lwgeom_getSRID(LWGEOM *lwgeom)
 {
 	unsigned char type = lwgeom->type;
@@ -2612,3 +2639,448 @@ LWGEOM_construct(char *ser, int SRID, int wantbbox)
 
 	return result;
 }
+
+void
+pfree_exploded(LWGEOM_EXPLODED *exploded)
+{
+	if ( exploded->npoints )
+		pfree(exploded->points);
+	if ( exploded->nlines )
+		pfree(exploded->lines);
+	if ( exploded->npolys )
+		pfree(exploded->polys);
+	pfree(exploded);
+};
+
+/*
+ * This function recursively scan the given serialized geometry
+ * and returns a list of _all_ subgeoms in it (deep-first)
+ */
+LWGEOM_EXPLODED *
+lwgeom_explode(char *serialized)
+{
+	LWGEOM_INSPECTED *inspected = lwgeom_inspect(serialized);
+	LWGEOM_EXPLODED *subexploded, *result;
+	int i;
+
+	result = palloc(sizeof(LWGEOM_EXPLODED));
+	result->points = palloc(1);
+	result->lines = palloc(1);
+	result->polys = palloc(1);
+	result->npoints = 0;
+	result->nlines = 0;
+	result->npolys = 0;
+
+	if ( ! inspected->ngeometries )
+	{
+		pfree(result->points);
+		pfree(result->lines);
+		pfree(result->polys);
+		result->SRID = -1;
+		result->ndims = 0;
+		return result;
+	}
+
+	result->SRID = lwgeom_getsrid(serialized);
+	result->ndims = lwgeom_ndims(serialized[0]);
+
+	for (i=0; i<inspected->ngeometries; i++)
+	{
+
+		char *subgeom = inspected->sub_geoms[i];
+		int type = lwgeom_getType(subgeom[0]);
+
+		if ( type == POINTTYPE )
+		{
+			result->points = repalloc(result->points,
+				result->npoints+1);
+			result->points[result->npoints] = subgeom;
+			result->npoints++;
+			continue;
+		}
+
+		if ( type == LINETYPE )
+		{
+			result->lines = repalloc(result->lines,
+				result->nlines+1);
+			result->lines[result->nlines] = subgeom;
+			result->nlines++;
+			continue;
+		}
+
+		if ( type == POLYGONTYPE )
+		{
+			result->polys = repalloc(result->polys,
+				result->npolys+1);
+			result->polys[result->npolys] = subgeom;
+			result->npolys++;
+			continue;
+		}
+
+		// it's a multi geometry, recurse
+		subexploded = lwgeom_explode(subgeom);
+
+		// Re-allocate adding space for new exploded geoms
+		// (-1 because 1 was already allocated for the collection)
+		// Copy subgeom pointers from subexploded to current
+		// exploded.
+
+		if ( subexploded->npoints )
+		{
+			result->points = repalloc(result->points,
+				result->npoints+subexploded->npoints-1);
+
+			memcpy(result->points[result->npoints],
+				subexploded->points,
+				subexploded->npoints*sizeof(char *));
+
+			result->npoints += subexploded->npoints;
+		}
+
+		if ( subexploded->nlines )
+		{
+			result->lines = repalloc(result->lines,
+				result->nlines+subexploded->nlines-1);
+
+			memcpy(result->lines[result->nlines],
+				subexploded->lines,
+				subexploded->nlines*sizeof(char *));
+
+			result->nlines += subexploded->nlines;
+		}
+
+		if ( subexploded->npolys )
+		{
+			result->polys = repalloc(result->polys,
+				result->npolys+subexploded->npolys-1);
+
+			memcpy(result->polys[result->npolys],
+				subexploded->polys,
+				subexploded->npolys*sizeof(char *));
+
+			result->npolys += subexploded->npolys;
+		}
+
+		// release subexploded memory
+		pfree_exploded(subexploded);
+
+	}
+
+	return result;
+}
+
+// Returns a 'palloced' union of the two input exploded geoms
+// Returns NULL if SRID or ndims do not match.
+LWGEOM_EXPLODED *
+lwexploded_sum(LWGEOM_EXPLODED *exp1, LWGEOM_EXPLODED *exp2)
+{
+	LWGEOM_EXPLODED *expcoll;
+	char *loc;
+
+	if ( exp1->ndims != exp2->ndims ) return NULL;
+	if ( exp1->SRID != exp2->SRID ) return NULL;
+
+	expcoll = palloc(sizeof(LWGEOM_EXPLODED));
+
+	expcoll->npoints = exp1->npoints + exp2->npoints;
+	if ( expcoll->npoints ) {
+		expcoll->points = (char **)palloc(expcoll->npoints*sizeof(char *));
+		loc = (char *)&(expcoll->points[0]);
+		if ( exp1->npoints ) {
+			memcpy(loc, exp1->points,
+				exp1->npoints*sizeof(char *));
+			loc += exp1->npoints*sizeof(char *);
+		}
+		if ( exp2->npoints ) {
+			memcpy(loc, exp2->points,
+				exp2->npoints*sizeof(char *));
+		}
+	}
+
+	expcoll->nlines = exp1->nlines + exp2->nlines;
+	if ( expcoll->nlines ) {
+		expcoll->lines = palloc(expcoll->nlines*sizeof(char *));
+		loc = (char *)&(expcoll->lines[0]);
+		if ( exp1->nlines ) {
+			memcpy(loc, exp1->lines,
+				exp1->nlines*sizeof(char *));
+			loc += exp1->nlines*sizeof(char *);
+		}
+		if ( exp2->nlines ) {
+			memcpy(loc, exp2->lines,
+				exp2->nlines*sizeof(char *));
+		}
+	}
+
+	expcoll->npolys = exp1->npolys + exp2->npolys;
+	if ( expcoll->npolys ) {
+		expcoll->polys = palloc(expcoll->npolys*sizeof(char *));
+		loc = (char *)&(expcoll->polys[0]);
+		if ( exp1->npolys ) {
+			memcpy(loc, exp1->polys,
+				exp1->npolys*sizeof(char *));
+			loc += exp1->npolys*sizeof(char *);
+		}
+		if ( exp2->npolys ) {
+			memcpy(loc, exp2->polys,
+				exp2->npolys*sizeof(char *));
+		}
+	}
+
+	expcoll->ndims = exp1->ndims;
+	expcoll->SRID = exp1->SRID;
+
+	return expcoll;
+}
+
+
+/*
+ * Serialized a LWGEOM_EXPLODED structure
+ */
+char *
+lwexploded_serialize(LWGEOM_EXPLODED *exploded, int wantbbox)
+{
+	unsigned int size=0;
+	int i;
+	int ntypes = 0;
+	int ngeoms = 0;
+	char *result, *loc;
+	int outtype = 0;
+	LWPOLY *poly;
+	LWLINE *line;
+	LWPOINT *point;
+	BOX2DFLOAT4 *box2d;
+	BOX3D *box3d;
+	char *ser;
+
+	// find size of all geoms.
+	// If BBOX and SRID are included this size could be
+	// larger then needed, but that should not be a problem
+	for (i=0; i<exploded->npoints; i++)
+		size += lwpoint_findlength(exploded->points[i]);
+	for (i=0; i<exploded->nlines; i++)
+		size += lwline_findlength(exploded->lines[i]);
+	for (i=0; i<exploded->npolys; i++)
+		size += lwpoly_findlength(exploded->polys[i]);
+
+	if ( exploded->npoints )
+	{
+		ntypes++;
+		outtype = (exploded->npoints>1) ? MULTIPOINTTYPE : POINTTYPE;
+	}
+	if ( exploded->nlines )
+	{
+		ntypes++;
+		if ( outtype ) outtype = COLLECTIONTYPE;
+		else outtype = (exploded->nlines>1) ? MULTILINETYPE : LINETYPE;
+	}
+	if ( exploded->npolys )
+	{
+		ntypes++;
+		if ( outtype ) outtype = COLLECTIONTYPE;
+		else outtype = (exploded->npolys>1) ? MULTIPOLYGONTYPE : POLYGONTYPE;
+	}
+
+	ngeoms = exploded->npoints + exploded->nlines + exploded->npolys;
+
+#ifdef DEBUG
+	elog(NOTICE, " computed outtype: %d, ngeoms: %d", outtype, ngeoms);
+#endif
+
+
+	// For a single geometry just set SRID and BBOX (if requested)
+	if ( ngeoms < 2 )
+	{
+		if ( exploded->npoints )
+		{
+			point = lwpoint_deserialize(exploded->points[0]);
+			point->SRID = exploded->SRID;
+			ser = lwpoint_serialize(point);
+			pfree_point(point);
+			size = lwpoint_findlength(ser);
+		}
+		else if ( exploded->nlines )
+		{
+			line = lwline_deserialize(exploded->lines[0]);
+			line->SRID = exploded->SRID;
+			ser = lwline_serialize(line);
+			pfree_line(line);
+			size = lwline_findlength(ser);
+		}
+		else if ( exploded->npolys )
+		{
+			poly = lwpoly_deserialize(exploded->polys[0]);
+			poly->SRID = exploded->SRID;
+			ser = lwpoly_serialize(poly);
+			pfree_polygon(poly);
+			size = lwpoly_findlength(ser);
+		}
+		else return NULL;
+		if ( wantbbox && ! lwgeom_hasBBOX(ser[0]) )
+		{
+			result = palloc(size+4);
+			result[0] = TYPE_SETHASBBOX(ser[0], 1);
+			loc = result+1;
+			box3d = lw_geom_getBB_simple(ser);
+			box2d = box3d_to_box2df(box3d);
+			memcpy(loc, box2d, sizeof(BOX2DFLOAT4));
+			loc += sizeof(BOX2DFLOAT4);
+			memcpy(loc, (ser+1), size-1);
+			pfree(ser);
+			return result;
+		}
+		else
+		{
+			return ser;
+		}
+	}
+
+	// Add size for 3 multigeoms + root geom + bbox and srid.
+	// Also in this case we are considering worst case.
+	size += 24+sizeof(BOX2DFLOAT4); 
+
+#ifdef DEBUG
+	elog(NOTICE, " computed totsize: %d", size);
+#endif
+
+	result = palloc(size*2);
+	loc = result+1; // skip type
+
+	if ( wantbbox ) loc += sizeof(BOX2DFLOAT4); // skip box
+	if ( exploded->SRID != -1 ) loc += 4; // skip SRID
+
+	// If we have more then one type of geom
+	// write that number in the 'ngeoms' field of the
+	// output serialized form (internal geoms would be multi themself)
+	if ( ntypes > 1 )
+	{
+		memcpy(loc, &ntypes, 4);
+		loc += 4; 
+	}
+
+	else
+	{
+		loc--; // let the type be specified later.
+	}
+	
+	if ( exploded->npoints > 1 )
+	{
+		loc[0] = lwgeom_makeType_full(exploded->ndims, 0,
+			MULTIPOINTTYPE, 0);
+		loc++;
+		memcpy(loc, &exploded->npoints, 4); // numpoints
+		loc += 4; 
+	}
+	// Serialize points stripping BBOX and SRID if any
+	for (i=0; i<exploded->npoints; i++)
+	{
+		int subsize;
+
+		point = lwpoint_deserialize(exploded->points[i]);
+		point->SRID = -1;
+		ser = lwpoint_serialize(point);
+		subsize = lwpoint_findlength(ser);
+		memcpy(loc, ser, subsize);
+		loc += subsize;
+	}
+
+	if ( exploded->nlines > 1 )
+	{
+		loc[0] = lwgeom_makeType_full(exploded->ndims, 0,
+			MULTILINETYPE, 0);
+		loc++;
+		memcpy(loc, &exploded->nlines, 4); // numlines
+		loc += 4; 
+	}
+	// Serialize lines stripping BBOX and SRID if any
+	for (i=0; i<exploded->nlines; i++)
+	{
+		char *ser;
+		int subsize;
+
+		line = lwline_deserialize(exploded->lines[i]);
+		if ( line == NULL )
+		{
+	elog(ERROR, "Error deserializing %dnt line from exploded geom", i);
+	return NULL;
+		}
+		line->SRID = -1;
+		ser = lwline_serialize(line);
+		pfree_line(line);
+		subsize = lwline_findlength(ser);
+		memcpy(loc, ser, subsize);
+		pfree(ser);
+		loc += subsize;
+	}
+
+	if ( exploded->npolys > 1 )
+	{
+		loc[0] = lwgeom_makeType_full(exploded->ndims, 0,
+			MULTIPOLYGONTYPE, 0);
+		loc++;
+		memcpy(loc, &exploded->npolys, 4); // numpolys
+		loc += 4; 
+	}
+	// Serialize polys stripping BBOX and SRID if any
+	for (i=0; i<exploded->npolys; i++)
+	{
+		char *ser;
+		int subsize;
+
+		poly = lwpoly_deserialize(exploded->polys[i]);
+		if ( poly == NULL )
+		{
+	elog(ERROR, "Error deserializing %dnt polygon from exploded geom", i);
+	return NULL;
+		}
+		poly->SRID = -1;
+		ser = lwpoly_serialize(poly);
+		pfree_polygon(poly);
+		subsize = lwpoly_findlength(ser);
+#ifdef DEBUG
+		elog(NOTICE, "size of polygon %d: %d", i, subsize);
+#endif
+		memcpy(loc, ser, subsize);
+		pfree(ser);
+		loc += subsize;
+	}
+
+	// Ok. now we need to add type, SRID and bbox 
+	result[0] = lwgeom_makeType_full(exploded->ndims,
+		(exploded->SRID!=-1), outtype, wantbbox);
+	loc = result+1;
+
+	if ( wantbbox )
+	{
+		box3d = lw_geom_getBB_simple(result);
+		box2d = box3d_to_box2df(box3d);
+		memcpy(loc, box2d, sizeof(BOX2DFLOAT4));
+		loc += sizeof(BOX2DFLOAT4);
+	}
+
+	if ( exploded->SRID != -1 )
+	{
+		memcpy(loc, &(exploded->SRID), 4);
+		loc += 4; // useless.. we've finished
+	}
+
+#ifdef DEBUG
+	elog(NOTICE, "lwexploded_serialize finished");
+	elog(NOTICE, " type: %d", lwgeom_getType(result[0]));
+	elog(NOTICE, " SRID: %d", lwgeom_getsrid(result));
+	if ( lwgeom_hasBBOX(result[0]) )
+	{
+		{
+			BOX2DFLOAT4 boxbuf;
+			getbox2d_p(result, &boxbuf);
+			elog(NOTICE, " BBOX: %f,%f %f,%f",
+				boxbuf.xmin, boxbuf.ymin,
+				boxbuf.xmax, boxbuf.ymax);
+		}
+	}
+	elog(NOTICE, " numgeoms: %d", lwgeom_getnumgeometries(result));
+#endif
+		
+	return result;
+}
+

@@ -18,7 +18,7 @@
 #include "stringBuffer.h"
 
 
-#define DEBUG
+//#define DEBUG
 
 #include "lwgeom_pg.h"
 #include "wktparse.h"

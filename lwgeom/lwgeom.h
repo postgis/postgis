@@ -1,5 +1,6 @@
 //lwgeom.h
 
+
 // basic API for handling the LWGEOM, BOX2DFLOAT4, LWPOINT, LWLINE, and LWPOLY.
 // See below for other support types like POINTARRAY and LWGEOM_INSPECTED
 
@@ -286,7 +287,7 @@ extern POINT2D lwpoint_getPoint2d(LWPOINT *point);
 extern POINT3D lwpoint_getPoint3d(LWPOINT *point);
 
 //find length of this serialized point
-extern uint32 lwpoint_findlength(char *serialized_line);
+extern uint32 lwpoint_findlength(char *serialized_point);
 
 //--------------------------------------------------------
 
@@ -352,6 +353,38 @@ typedef struct
 	int   ngeometries;     // number of sub-geometries
 	char  **sub_geoms;    // list of pointers (into serialized_form) of the sub-geoms
 } LWGEOM_INSPECTED;
+
+/*
+ * This structure is intended to be used for geometry collection construction
+ */
+typedef struct
+{
+	int SRID;
+	int ndims;
+	int npoints;
+	char **points;
+	int nlines;
+	char **lines;
+	int npolys;
+	char **polys;
+} LWGEOM_EXPLODED;
+
+void pfree_exploded(LWGEOM_EXPLODED *exploded);
+
+// Returns a 'palloced' union of the two input exploded geoms.
+// Returns NULL if SRID or ndims do not match.
+LWGEOM_EXPLODED * lwexploded_sum(LWGEOM_EXPLODED *exp1, LWGEOM_EXPLODED *exp2);
+
+/*
+ * This function recursively scan the given serialized geometry
+ * and returns a list of _all_ subgeoms in it (deep-first)
+ */
+LWGEOM_EXPLODED *lwgeom_explode(char *serialized);
+
+// Serialize an LWGEOM_EXPLODED object.
+// SRID and ndims will be taken from exploded structure.
+// wantbbox will determine result bbox.
+char *lwexploded_serialize(LWGEOM_EXPLODED *exploded, int wantbbox);
 
 // note - for a simple type (ie. point), this will have sub_geom[0] = serialized_form.
 // for multi-geomtries sub_geom[0] will be a few bytes into the serialized form
@@ -441,6 +474,7 @@ extern int lwgeom_seralizedformlength_inspected(LWGEOM_INSPECTED *inspected, int
 // get the SRID from the LWGEOM
 // none present => -1
 extern int lwgeom_getSRID(LWGEOM *lwgeom);
+extern int lwgeom_getsrid(char *serialized);
 extern LWGEOM *lwgeom_setSRID(LWGEOM *lwgeom, int32 newSRID);
 
 //get bounding box of LWGEOM (automatically calls the sub-geometries bbox generators)

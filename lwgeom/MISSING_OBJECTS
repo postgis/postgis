@@ -1,7 +1,6 @@
 # This is a list of objects still missing lwgeom support
 
 AGGREGATE: KEEPING AGGREGATE [collect(geometry)]
-AGGREGATE: KEEPING AGGREGATE [memcollect(geometry)]
 FNCAST: KEEPING FNCAST geometry(text) (see CAST)
 FUNC: KEEPING FUNCTION: [line_interpolate_point(geometry, double precision)]
 FUNC: KEEPING FUNCTION: [simplify(geometry, double precision)]
@@ -10,7 +9,6 @@ FUNC: KEEPING FUNCTION: [asbinary(geometry, text)]
 FUNC: KEEPING FUNCTION: [boundary(geometry)]
 FUNC: KEEPING FUNCTION: [box(geometry)]
 FUNC: KEEPING FUNCTION: [collect_garray(geometry[])]
-FUNC: KEEPING FUNCTION: [collector(geometry, geometry)]
 FUNC: KEEPING FUNCTION: [envelope(geometry)]
 FUNC: KEEPING FUNCTION: [equals(geometry, geometry)]
 FUNC: KEEPING FUNCTION: [expand(geometry, double precision)]
