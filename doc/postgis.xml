@@ -2386,10 +2386,10 @@ is simple (does not pass through the same point more than once).
 				</varlistentry> 
 				
 				<varlistentry> 
-				<term>GeometryFromWKB(text,[&lt;srid&gt;])</term> 
+				<term>GeomFromWKB(text,[&lt;srid&gt;])</term> 
 				<listitem> 
 					<para>Makes a Geometry from WKB with the given SRID.  If SRID is not give, it defaults to -1.</para> 
-					<para> OGC SPEC 3.2.6.2  - option SRID is from the conformance suite</para>
+					<para> OGC SPEC 3.2.7.2  - option SRID is from the conformance suite</para>
 				</listitem> 
 				</varlistentry> 
 				
@@ -2397,7 +2397,7 @@ is simple (does not pass through the same point more than once).
 				<term>PointFromWKB(text,[&lt;srid&gt;])</term> 
 				<listitem> 
 					<para>Makes a Geometry from WKB with the given SRID.  If SRID is not give, it defaults to -1.</para> 
-					<para> OGC SPEC 3.2.6.2  - option SRID is from the conformance suite</para>
+					<para> OGC SPEC 3.2.7.2  - option SRID is from the conformance suite</para>
 					<para> throws an error if WKB is not a POINT </para>
 				</listitem> 
 				</varlistentry> 
@@ -2406,7 +2406,7 @@ is simple (does not pass through the same point more than once).
 				<term>LineFromWKB(text,[&lt;srid&gt;])</term> 
 				<listitem> 
 					<para>Makes a Geometry from WKB with the given SRID.  If SRID is not give, it defaults to -1.</para> 
-					<para> OGC SPEC 3.2.6.2  - option SRID is from the conformance suite</para>
+					<para> OGC SPEC 3.2.7.2  - option SRID is from the conformance suite</para>
 					<para> throws an error if WKB is not a LINESTRING </para>
 				</listitem> 
 				</varlistentry> 
@@ -2424,7 +2424,7 @@ is simple (does not pass through the same point more than once).
 				<term>PolyFromWKB(text,[&lt;srid&gt;])</term> 
 				<listitem> 
 					<para>Makes a Geometry from WKB with the given SRID.  If SRID is not give, it defaults to -1.</para> 
-					<para> OGC SPEC 3.2.6.2  - option SRID is from the conformance suite</para>
+					<para> OGC SPEC 3.2.7.2  - option SRID is from the conformance suite</para>
 					<para> throws an error if WKB is not a POLYGON </para>
 				</listitem> 
 				</varlistentry> 
@@ -2442,7 +2442,7 @@ is simple (does not pass through the same point more than once).
 				<term>MPointFromWKB(text,[&lt;srid&gt;])</term> 
 				<listitem> 
 					<para>Makes a Geometry from WKB with the given SRID.  If SRID is not give, it defaults to -1.</para> 
-					<para> OGC SPEC 3.2.6.2  - option SRID is from the conformance suite</para>
+					<para> OGC SPEC 3.2.7.2  - option SRID is from the conformance suite</para>
 					<para> throws an error if WKB is not a MULTIPOINT </para>
 				</listitem> 
 				</varlistentry> 
@@ -2451,7 +2451,7 @@ is simple (does not pass through the same point more than once).
 				<term>MLineFromWKB(text,[&lt;srid&gt;])</term> 
 				<listitem> 
 					<para>Makes a Geometry from WKB with the given SRID.  If SRID is not give, it defaults to -1.</para> 
-					<para> OGC SPEC 3.2.6.2  - option SRID is from the conformance suite</para>
+					<para> OGC SPEC 3.2.7.2  - option SRID is from the conformance suite</para>
 					<para> throws an error if WKB is not a MULTILINESTRING </para>
 				</listitem> 
 				</varlistentry> 
@@ -2460,7 +2460,7 @@ is simple (does not pass through the same point more than once).
 				<term>MPolyFromWKB(text,[&lt;srid&gt;])</term> 
 				<listitem> 
 					<para>Makes a Geometry from WKB with the given SRID.  If SRID is not give, it defaults to -1.</para> 
-					<para> OGC SPEC 3.2.6.2  - option SRID is from the conformance suite</para>
+					<para> OGC SPEC 3.2.7.2  - option SRID is from the conformance suite</para>
 					<para> throws an error if WKB is not a MULTIPOLYGON </para>
 				</listitem> 
 				</varlistentry> 
@@ -2469,7 +2469,7 @@ is simple (does not pass through the same point more than once).
 				<term>GeomCollFromWKB(text,[&lt;srid&gt;])</term> 
 				<listitem> 
 					<para>Makes a Geometry from WKB with the given SRID.  If SRID is not give, it defaults to -1.</para> 
-					<para> OGC SPEC 3.2.6.2  - option SRID is from the conformance suite</para>
+					<para> OGC SPEC 3.2.7.2  - option SRID is from the conformance suite</para>
 					<para> throws an error if WKB is not a GEOMETRYCOLLECTION </para>
 				</listitem> 
 				</varlistentry> 
