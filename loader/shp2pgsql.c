@@ -353,7 +353,6 @@ int ring_check(SHPObject* obj, char *table, char *sr_id, int rings,DBFHandle hDB
 			temp = Poly;
 			Poly = Poly->next;
 			free(temp->list);
-			free(temp->next);
 			free(temp);
 		}
 	}
@@ -402,7 +401,7 @@ int main (int ARGC, char **ARGV){
 	int num_entities, phnshapetype,next_ring,errflg,c;
 	double padminbound[8], padmaxbound[8];
 	int u,j,tot_rings,curindex;
-	SHPObject	*obj;
+	SHPObject	*obj=NULL;
 	char  name[12];
 	char  opt;
 	char  *sr_id,*shp_file,*table, *database;
@@ -555,9 +554,16 @@ int main (int ARGC, char **ARGV){
 
 
 	SHPGetInfo( hSHPHandle, &num_entities, &phnshapetype, &padminbound[0], &padmaxbound[0]);
-	obj = 	SHPReadObject(hSHPHandle,0);
-	trans=0;
+	if(obj == NULL){
+		obj = 	SHPReadObject(hSHPHandle,0);
+		if(obj == NULL){
+			printf("file exists but contains null shapes");
+			exit(-1);
+		}
+	}
 
+	trans=0;
+	
 
 	//create the geometry column with an addgeometry call to dave's function
 	if(opt != 'a'){
@@ -582,7 +588,6 @@ int main (int ARGC, char **ARGV){
 	}
 	
 	
-	//Determine what type of shape is in the file and do appropriate processing
 	if (obj->nVertices == 0){
 		if (dump_format){
 			printf("\\N");
@@ -598,10 +603,11 @@ int main (int ARGC, char **ARGV){
 	{
 
 
+	   //Determine what type of shape is in the file and do appropriate processing
 
-		if( obj->nSHPType == 5 ){  
-	//---------------------------------------------------------------------------------
-	//---------POLYGONS----------------------------------------------------------------
+	   if( obj->nSHPType == 5 ){  
+           //---------------------------------------------------------------------------------
+           //---------POLYGONS----------------------------------------------------------------
 
 		// sorts of all the rings so that they are outer,inner,iner,outer,inner...
 		// with the inner ones coming after the outer ones they are within spatially
