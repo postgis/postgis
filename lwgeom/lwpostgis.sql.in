@@ -1832,6 +1832,13 @@ CREATE AGGREGATE polygonize (
 	finalfunc = polygonize_garray
 	);
 
+CREATE TYPE geometry_dump AS (path integer[], geom geometry);
+
+CREATEFUNCTION dump(geometry)
+	RETURNS SETOF geometry_dump
+	AS '@MODULE_FILENAME@', 'LWGEOM_dump'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
 ------------------------------------------------------------------------
 
 --
