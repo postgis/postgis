@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.11  2004/02/05 20:31:48  dblasby
+ * Optimized the curvature method (doesnt have to calculate e2)
+ *
  * Revision 1.10  2004/02/05 20:21:14  dblasby
  * Added 'curvature method' for cases where the original algorithm breaks down.
  *
@@ -517,6 +520,8 @@ Datum distance_ellipsoid(PG_FUNCTION_ARGS)
  *  remember that lat1/long1/lat2/long2 are comming in a *RADIANS* not degrees.
  *
  * By Patricia Tozer and Dave Blasby
+ *
+ *  This is also called the "curvature method".
  */
 
 double distance_sphere_method(double lat1, double long1,double lat2,double long2, SPHEROID *sphere)
@@ -528,9 +533,7 @@ double distance_sphere_method(double lat1, double long1,double lat2,double long2
 			double 	sin2_lat 	= sin_lat * sin_lat;
 
 			double  Geocent_a 	= sphere->a;
-			double  Geocent_a2 	= sphere->a * sphere->a;
-			double  Geocent_b2 	= sphere->b * sphere->b;
-			double  Geocent_e2 	= (Geocent_a2 - Geocent_b2) / Geocent_a2;
+			double  Geocent_e2 	= sphere->e_sq;
 
 			R  	= Geocent_a / (sqrt(1.0e0 - Geocent_e2 * sin2_lat));
 			S 	= R * sin(M_PI/2.0-lat1) ; // 90 - lat1, but in radians
