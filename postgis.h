@@ -490,6 +490,7 @@ Datum box3d_zmax(PG_FUNCTION_ARGS);
 Datum transform_geom(PG_FUNCTION_ARGS);
 
 Datum max_distance(PG_FUNCTION_ARGS);
+Datum collector(PG_FUNCTION_ARGS);
 
 
 //for GIST index

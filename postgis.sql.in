@@ -678,6 +678,17 @@ CREATE AGGREGATE extent(
 	stype = BOX3D
 );
 
+CREATE FUNCTION collector(GEOMETRY,GEOMETRY)
+   RETURNS GEOMETRY
+   AS '@MODULE_FILENAME@'
+	     LANGUAGE 'c';
+
+CREATE AGGREGATE collect(
+	sfunc = collector,
+	basetype = GEOMETRY,
+	stype = GEOMETRY
+);
+
 
 
 -------  OPERATOR functions

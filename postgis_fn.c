@@ -2395,20 +2395,21 @@ POINT3D	*segmentize_ring(POINT3D	*points, double dist, int num_points_in, int *n
 PG_FUNCTION_INFO_V1(segmentize);
 Datum segmentize(PG_FUNCTION_ARGS)
 {
-		GEOMETRY		      *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-		GEOMETRY			*result,*result2;
+		GEOMETRY		*geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+		GEOMETRY		*result,*result2;
 		double			maxdist = PG_GETARG_FLOAT8(1);
-		int32				*offsets1,*p_npoints_ring;
+		int32			*offsets1,*p_npoints_ring;
 		int				g1_i,r;
-		POLYGON3D			*p,*poly;
+		POLYGON3D		*p,*poly;
 		POINT3D			*polypts;
 		int				num_polypts;
 		POINT3D			*all_polypts;
 		int				all_num_polypts,all_num_polypts_max;
 		POINT3D			*p_points,*rr;
 		int				new_size;
-		bool				first_one;
+		bool			first_one;
 		int				poly_size;
+		BOX3D			*bbox;
 
 	first_one = 1;
 
@@ -2474,12 +2475,92 @@ Datum segmentize(PG_FUNCTION_ARGS)
 		else
 		{
 			result2 = add_to_geometry(result,poly_size, (char *) poly, POLYGONTYPE);
+			bbox = bbox_of_geometry( result2 ); // make bounding box
+			memcpy( &result2->bvol, bbox, sizeof(BOX3D) ); // copy bounding box
+			pfree(bbox); // free bounding box
 			pfree(result);
 			result = result2;
 			pfree(poly);
 			pfree(all_polypts);
 		}	
 
-	}//foreach polygon
+	} // foreach polygon
 	PG_RETURN_POINTER(result);
+}
+
+
+// collector( geom, geom ) returns a geometry which contains
+// all the sub_objects from both of the argument geometries
+
+// returned geometry is always a geomtry collection
+// bboxonly types are treated as null geometries (no sub_objects)
+PG_FUNCTION_INFO_V1( collector );
+Datum collector( PG_FUNCTION_ARGS )
+{
+	Pointer		geom1_ptr = PG_GETARG_POINTER(0);
+	Pointer		geom2_ptr =  PG_GETARG_POINTER(1);
+	GEOMETRY	*geom1, *geom2, *temp, *result;
+	BOX3D		*bbox;
+	int32		i, size, *offsets2;
+
+	// return null if both geoms are null
+	if ( (geom1_ptr == NULL) && (geom2_ptr == NULL) )
+	{
+		PG_RETURN_NULL();
+	}
+
+	// return a copy of the second geom if only first geom is null
+	if (geom1_ptr == NULL)
+	{
+		geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+		result = (GEOMETRY *)palloc( geom2->size );
+		memcpy( result, geom2, geom2->size );
+		result->type = COLLECTIONTYPE;
+		PG_RETURN_POINTER(result);
+	}
+
+	// return a copy of the first geom if only second geom is null
+	if (geom2_ptr == NULL)
+	{
+		geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+		result = (GEOMETRY *)palloc( geom1->size );
+		memcpy( result, geom1, geom1->size );
+		result->type = COLLECTIONTYPE;
+		PG_RETURN_POINTER(result);
+	}
+
+	geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	if ( geom1->SRID != geom2->SRID )
+	{
+		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
+		PG_RETURN_NULL();
+	}
+	result = (GEOMETRY *)palloc( geom1->size );
+	memcpy( result, geom1, geom1->size );
+	result->type = COLLECTIONTYPE;
+
+	offsets2 = (int32 *)( ((char *)&(geom2->objType[0])) + sizeof( int32 ) * geom2->nobjs ) ;
+
+	for (i=0; i<geom2->nobjs; i++)
+	{
+		if( i == geom2->nobjs-1 )
+		{
+			size = geom2->size - offsets2[i];
+		}
+		else 
+		{
+			size = offsets2[i+1] - offsets2[i];
+		}
+		temp = add_to_geometry( result, size, ((char *) geom2 + offsets2[i]), geom2->objType[i] );
+		pfree( result );
+		result = temp;
+	}
+
+	result->is3d = geom1->is3d || geom2->is3d;
+	bbox = bbox_of_geometry( result ); // make bounding box
+	memcpy( &result->bvol, bbox, sizeof(BOX3D) ); // copy bounding box
+	pfree( bbox ); // free bounding box
+
+	PG_RETURN_POINTER( result );
 }

@@ -2956,7 +2956,6 @@ GEOMETRY	*add_to_geometry(GEOMETRY *geom,int sub_obj_size, char *sub_obj, int ty
 	int		size_obj,next_offset;
 	GEOMETRY	*result;
 	int32		*old_offsets, *new_offsets;
-	BOX3D		*bbox;
 
 	//all the offsets could cause re-alignment problems, so need to deal with each on
 	size = geom->size +(4*geom->nobjs +1) /*byte align*/
@@ -2965,7 +2964,10 @@ GEOMETRY	*add_to_geometry(GEOMETRY *geom,int sub_obj_size, char *sub_obj, int ty
 	result = (GEOMETRY *) palloc(size);
 	result->size = size;
 	result->is3d = geom->is3d;
-
+	result->SRID = geom->SRID;
+	result->offsetX = geom->offsetX;
+	result->offsetY = geom->offsetY;
+	result->scale = geom->scale;
 
 	//accidently sent in a single-entity type but gave it a multi-entity type
 	//  re-type it as single-entity
@@ -3045,11 +3047,6 @@ GEOMETRY	*add_to_geometry(GEOMETRY *geom,int sub_obj_size, char *sub_obj, int ty
 	result->objType[ result->nobjs -1 ] = type;
 	new_offsets[ result->nobjs -1 ] = next_offset;
 	memcpy(  ((char *) result)  + new_offsets[result->nobjs-1] ,sub_obj , sub_obj_size);
-
-//printf("calculating bbox\n");
-
-	bbox = bbox_of_geometry(result);
-	memcpy(&result->bvol,bbox, sizeof(BOX3D) ); //make bounding box
 
 //printf("returning\n");
 
