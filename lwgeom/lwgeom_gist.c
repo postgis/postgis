@@ -86,11 +86,18 @@ int counter_intern = 0;
 PG_FUNCTION_INFO_V1(LWGEOM_overlap);
 Datum LWGEOM_overlap(PG_FUNCTION_ARGS)
 {
-	char *lwgeom1 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	char *lwgeom2 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	char *lwgeom1 = (char *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char *lwgeom2 = (char *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	bool result;
 	BOX2DFLOAT4 box1;
 	BOX2DFLOAT4 box2;
+
+	if ( lwgeom_getsrid(lwgeom1+4) != lwgeom_getsrid(lwgeom2+4) )
+	{
+		elog(ERROR, "Operation on two geometries with different SRIDs");
+		PG_RETURN_NULL();
+	}
+
 
 	if ( ! (getbox2d_p(lwgeom1+4, &box1) && getbox2d_p(lwgeom2+4, &box2)) )
 	{
@@ -124,8 +131,8 @@ Datum LWGEOM_overlap(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_overleft);
 Datum LWGEOM_overleft(PG_FUNCTION_ARGS)
 {
-	char *lwgeom1 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	char *lwgeom2 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	char *lwgeom1 = (char *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char *lwgeom2 = (char *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	bool result;
 	BOX2DFLOAT4 box1;
 	BOX2DFLOAT4 box2;
@@ -133,6 +140,12 @@ Datum LWGEOM_overleft(PG_FUNCTION_ARGS)
 #ifdef DEBUG_CALLS
 	elog(NOTICE,"GIST: LWGEOM_overleft --entry");
 #endif
+
+	if ( lwgeom_getsrid(lwgeom1+4) != lwgeom_getsrid(lwgeom2+4) )
+	{
+		elog(ERROR, "Operation on two geometries with different SRIDs");
+		PG_RETURN_NULL();
+	}
 
 	if ( ! (getbox2d_p(lwgeom1+4, &box1) && getbox2d_p(lwgeom2+4, &box2)) )
 	{
@@ -152,8 +165,8 @@ Datum LWGEOM_overleft(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_left);
 Datum LWGEOM_left(PG_FUNCTION_ARGS)
 {
-	char *lwgeom1 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	char *lwgeom2 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	char *lwgeom1 = (char *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char *lwgeom2 = (char *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	bool result;
 	BOX2DFLOAT4 box1;
 	BOX2DFLOAT4 box2;
@@ -161,6 +174,12 @@ Datum LWGEOM_left(PG_FUNCTION_ARGS)
 #ifdef DEBUG_CALLS
 	elog(NOTICE,"GIST: LWGEOM_left --entry");
 #endif
+
+	if ( lwgeom_getsrid(lwgeom1+4) != lwgeom_getsrid(lwgeom2+4) )
+	{
+		elog(ERROR, "Operation on two geometries with different SRIDs");
+		PG_RETURN_NULL();
+	}
 
 	if ( ! (getbox2d_p(lwgeom1+4, &box1) && getbox2d_p(lwgeom2+4, &box2)) )
 	{
@@ -180,8 +199,8 @@ Datum LWGEOM_left(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_right);
 Datum LWGEOM_right(PG_FUNCTION_ARGS)
 {
-	char *lwgeom1 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	char *lwgeom2 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	char *lwgeom1 = (char *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char *lwgeom2 = (char *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	bool result;
 	BOX2DFLOAT4 box1;
 	BOX2DFLOAT4 box2;
@@ -189,6 +208,12 @@ Datum LWGEOM_right(PG_FUNCTION_ARGS)
 #ifdef DEBUG_CALLS
 	elog(NOTICE,"GIST: LWGEOM_right --entry");
 #endif
+
+	if ( lwgeom_getsrid(lwgeom1+4) != lwgeom_getsrid(lwgeom2+4) )
+	{
+		elog(ERROR, "Operation on two geometries with different SRIDs");
+		PG_RETURN_NULL();
+	}
 
 	if ( ! (getbox2d_p(lwgeom1+4, &box1) && getbox2d_p(lwgeom2+4, &box2)) )
 	{
@@ -208,8 +233,8 @@ Datum LWGEOM_right(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_overright);
 Datum LWGEOM_overright(PG_FUNCTION_ARGS)
 {
-	char *lwgeom1 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	char *lwgeom2 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	char *lwgeom1 = (char *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char *lwgeom2 = (char *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	bool result;
 	BOX2DFLOAT4 box1;
 	BOX2DFLOAT4 box2;
@@ -217,6 +242,12 @@ Datum LWGEOM_overright(PG_FUNCTION_ARGS)
 #ifdef DEBUG_CALLS
 	elog(NOTICE,"GIST: LWGEOM_overright --entry");
 #endif
+
+	if ( lwgeom_getsrid(lwgeom1+4) != lwgeom_getsrid(lwgeom2+4) )
+	{
+		elog(ERROR, "Operation on two geometries with different SRIDs");
+		PG_RETURN_NULL();
+	}
 
 	if ( ! (getbox2d_p(lwgeom1+4, &box1) && getbox2d_p(lwgeom2+4, &box2)) )
 	{
@@ -236,8 +267,8 @@ Datum LWGEOM_overright(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_overbelow);
 Datum LWGEOM_overbelow(PG_FUNCTION_ARGS)
 {
-	char *lwgeom1 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	char *lwgeom2 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	char *lwgeom1 = (char *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char *lwgeom2 = (char *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	bool result;
 	BOX2DFLOAT4 box1;
 	BOX2DFLOAT4 box2;
@@ -245,6 +276,12 @@ Datum LWGEOM_overbelow(PG_FUNCTION_ARGS)
 #ifdef DEBUG_CALLS
 	elog(NOTICE,"GIST: LWGEOM_overbelow --entry");
 #endif
+
+	if ( lwgeom_getsrid(lwgeom1+4) != lwgeom_getsrid(lwgeom2+4) )
+	{
+		elog(ERROR, "Operation on two geometries with different SRIDs");
+		PG_RETURN_NULL();
+	}
 
 	if ( ! (getbox2d_p(lwgeom1+4, &box1) && getbox2d_p(lwgeom2+4, &box2)) )
 	{
@@ -264,8 +301,8 @@ Datum LWGEOM_overbelow(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_below);
 Datum LWGEOM_below(PG_FUNCTION_ARGS)
 {
-	char *lwgeom1 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	char *lwgeom2 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	char *lwgeom1 = (char *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char *lwgeom2 = (char *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	bool result;
 	BOX2DFLOAT4 box1;
 	BOX2DFLOAT4 box2;
@@ -273,6 +310,12 @@ Datum LWGEOM_below(PG_FUNCTION_ARGS)
 #ifdef DEBUG_CALLS
 	elog(NOTICE,"GIST: LWGEOM_below --entry");
 #endif
+
+	if ( lwgeom_getsrid(lwgeom1+4) != lwgeom_getsrid(lwgeom2+4) )
+	{
+		elog(ERROR, "Operation on two geometries with different SRIDs");
+		PG_RETURN_NULL();
+	}
 
 	if ( ! (getbox2d_p(lwgeom1+4, &box1) && getbox2d_p(lwgeom2+4, &box2)) )
 	{
@@ -292,8 +335,8 @@ Datum LWGEOM_below(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_above);
 Datum LWGEOM_above(PG_FUNCTION_ARGS)
 {
-	char *lwgeom1 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	char *lwgeom2 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	char *lwgeom1 = (char *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char *lwgeom2 = (char *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	bool result;
 	BOX2DFLOAT4 box1;
 	BOX2DFLOAT4 box2;
@@ -301,6 +344,12 @@ Datum LWGEOM_above(PG_FUNCTION_ARGS)
 #ifdef DEBUG_CALLS
 	elog(NOTICE,"GIST: LWGEOM_above --entry");
 #endif
+
+	if ( lwgeom_getsrid(lwgeom1+4) != lwgeom_getsrid(lwgeom2+4) )
+	{
+		elog(ERROR, "Operation on two geometries with different SRIDs");
+		PG_RETURN_NULL();
+	}
 
 	if ( ! (getbox2d_p(lwgeom1+4, &box1) && getbox2d_p(lwgeom2+4, &box2)) )
 	{
@@ -320,8 +369,8 @@ Datum LWGEOM_above(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_overabove);
 Datum LWGEOM_overabove(PG_FUNCTION_ARGS)
 {
-	char *lwgeom1 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	char *lwgeom2 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	char *lwgeom1 = (char *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char *lwgeom2 = (char *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	bool result;
 	BOX2DFLOAT4 box1;
 	BOX2DFLOAT4 box2;
@@ -329,6 +378,12 @@ Datum LWGEOM_overabove(PG_FUNCTION_ARGS)
 #ifdef DEBUG_CALLS
 	elog(NOTICE,"GIST: LWGEOM_overabove --entry");
 #endif
+
+	if ( lwgeom_getsrid(lwgeom1+4) != lwgeom_getsrid(lwgeom2+4) )
+	{
+		elog(ERROR, "Operation on two geometries with different SRIDs");
+		PG_RETURN_NULL();
+	}
 
 	if ( ! (getbox2d_p(lwgeom1+4, &box1) && getbox2d_p(lwgeom2+4, &box2)) )
 	{
@@ -348,8 +403,8 @@ Datum LWGEOM_overabove(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_contained);
 Datum LWGEOM_contained(PG_FUNCTION_ARGS)
 {
-	char *lwgeom1 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	char *lwgeom2 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	char *lwgeom1 = (char *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char *lwgeom2 = (char *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	bool result;
 	BOX2DFLOAT4 box1;
 	BOX2DFLOAT4 box2;
@@ -357,6 +412,12 @@ Datum LWGEOM_contained(PG_FUNCTION_ARGS)
 #ifdef DEBUG_CALLS
 	elog(NOTICE,"GIST: LWGEOM_contained --entry");
 #endif
+
+	if ( lwgeom_getsrid(lwgeom1+4) != lwgeom_getsrid(lwgeom2+4) )
+	{
+		elog(ERROR, "Operation on two geometries with different SRIDs");
+		PG_RETURN_NULL();
+	}
 
 	if ( ! (getbox2d_p(lwgeom1+4, &box1) && getbox2d_p(lwgeom2+4, &box2)) )
 	{
@@ -376,8 +437,8 @@ Datum LWGEOM_contained(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_contain);
 Datum LWGEOM_contain(PG_FUNCTION_ARGS)
 {
-	char *lwgeom1 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	char *lwgeom2 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	char *lwgeom1 = (char *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char *lwgeom2 = (char *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	bool result;
 	BOX2DFLOAT4 box1;
 	BOX2DFLOAT4 box2;
@@ -385,6 +446,12 @@ Datum LWGEOM_contain(PG_FUNCTION_ARGS)
 #ifdef DEBUG_CALLS
 	elog(NOTICE,"GIST: LWGEOM_contain --entry");
 #endif
+
+	if ( lwgeom_getsrid(lwgeom1+4) != lwgeom_getsrid(lwgeom2+4) )
+	{
+		elog(ERROR, "Operation on two geometries with different SRIDs");
+		PG_RETURN_NULL();
+	}
 
 	if ( ! (getbox2d_p(lwgeom1+4, &box1) && getbox2d_p(lwgeom2+4, &box2)) )
 	{
@@ -433,7 +500,7 @@ Datum LWGEOM_gist_compress(PG_FUNCTION_ARGS)
 			in = (char*)PG_DETOAST_DATUM(entry->key);
 
 #ifdef DEBUG_GIST4
-		elog(NOTICE,"GIST: LWGEOM_gist_compress detoasted entry->key: %s", unparse_WKT(SERIALIZED_FORM(in), malloc, free));
+		elog(NOTICE,"GIST: LWGEOM_gist_compress detoasted entry->key: %s", unparse_WKT(in+4, malloc, free));
 #endif
 
 			if (in == NULL)
@@ -539,7 +606,7 @@ Datum LWGEOM_gist_consistent(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(false); // null query - this is screwy!
 	}
 
-	query = (char*) PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	query = (char*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 
 	if ( ! (DatumGetPointer(entry->key) != NULL && query) )
