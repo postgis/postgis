@@ -39,6 +39,7 @@ rm -Rf $outdir/regress
 echo "Generating documentation"
 owd="$PWD"
 cd "$outdir"/doc
+sleep 2 # wait some time to have 'make' recognize it needs to build html
 make html
 if [ $? -gt 0 ]; then
 	exit 1
