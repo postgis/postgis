@@ -18,6 +18,8 @@ PostGIS 1.0.0?
 	- jdbc2: Added support for building against pg72jdbc2.jar
 	- documentation updates: pgsql72 requirement, lwpostgis.sql
 	- memory alignment handling
+	- fixed bug in force_collection causing mapserver connector
+	  failures on simple (single) geometry types.
 
 PostGIS 1.0.0RC2
 2005/01/26
