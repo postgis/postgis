@@ -33,9 +33,11 @@ import org.postgresql.util.PGtokenizer;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 
 public class TestParser {
 
@@ -142,8 +144,8 @@ public class TestParser {
             ONLY10, // Cannot be parsed by 0.X servers
             "GEOMETRYCOLLECTION(MULTIPOINT(10 10 10, 20 20 20),MULTIPOINT(10 10 10, 20 20 20))"},
         {
-            EQUAL10, // PostGIs 0.X "flattens" this geometry, so it is not equal
-            // after reparsing.
+            EQUAL10, // PostGIs 0.X "flattens" this geometry, so it is not
+            // equal after reparsing.
             "GEOMETRYCOLLECTION(MULTILINESTRING((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)))"},
         {
             EQUAL10,// PostGIs 0.X "flattens" this geometry, so it is not equal
@@ -153,7 +155,7 @@ public class TestParser {
             ALL,
             "GEOMETRYCOLLECTION(POINT(10 10 20),LINESTRING(10 10 20,20 20 20, 50 50 50, 34 34 34),POLYGON((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)))"},
         {
-            ONLY10, //Collections that contain both X and MultiX do not work on
+            ONLY10, // Collections that contain both X and MultiX do not work on
             // PostGIS 0.x
             "GEOMETRYCOLLECTION(POINT(10 10 20),MULTIPOINT(10 10 10, 20 20 20),LINESTRING(10 10 20,20 20 20, 50 50 50, 34 34 34),POLYGON((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)),MULTIPOLYGON(((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)),((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0))),MULTILINESTRING((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)))"},
         {
@@ -212,14 +214,15 @@ public class TestParser {
             System.out.println("Equals:    yes");
         }
         for (int i = 0; i < conns.length; i++) {
-            Statement statement = conns[i].createStatement();
+            Connection connection = conns[i];
+            Statement statement = connection.createStatement();
             int serverPostgisMajor = TestAutoregister.getPostgisMajor(statement);
 
             if ((flags == ONLY10) && serverPostgisMajor < 1) {
                 System.out.println("PostGIS server too old, skipping test on connection " + i
-                        + ": " + conns[i].getCatalog());
+                        + ": " + connection.getCatalog());
             } else {
-                System.out.println("Testing on connection " + i + ": " + conns[i].getCatalog());
+                System.out.println("Testing on connection " + i + ": " + connection.getCatalog());
                 try {
                     Geometry sqlGeom = viaSQL(WKT, statement);
                     System.out.println("SQLin    : " + sqlGeom.toString());
@@ -257,6 +260,26 @@ public class TestParser {
                     System.out.println("--- Server side error: " + e.toString());
                     failcount++;
                 }
+
+                try {
+                    Geometry sqlreGeom = viaPrepSQL(geom, connection);
+                    System.out.println("Prepared:  " + sqlreGeom.toString());
+                    if (!geom.equals(sqlreGeom)) {
+                        System.out.println("--- reparsed Geometries after prepared StatementSQL are not equal!");
+                        if (flags == EQUAL10 && serverPostgisMajor < 1) {
+                            System.out.println("--- This is expected with PostGIS "
+                                    + serverPostgisMajor + ".X");
+                        } else {
+                            failcount++;
+                        }
+                    } else {
+                        System.out.println("Eq Prep: yes");
+                    }
+                } catch (SQLException e) {
+                    System.out.println("--- Server side error: " + e.toString());
+                    failcount++;
+                }
+
                 // asEWKT() function is not present on PostGIS 0.X, and the test
                 // is pointless as 0.X uses EWKT as canonical rep so the same
                 // functionality was already tested above.
@@ -294,6 +317,17 @@ public class TestParser {
         return ((PGgeometry) rs.getObject(1)).getGeometry();
     }
 
+    /** Pass a geometry representation through the SQL server via prepared statement*/
+    private static Geometry viaPrepSQL(Geometry geom, Connection conn) throws SQLException {
+        PreparedStatement prep = conn.prepareStatement("SELECT ?::geometry");
+        PGgeometry wrapper = new PGgeometry(geom);
+        prep.setObject(1, wrapper, Types.OTHER);
+        ResultSet rs = prep.executeQuery();
+        rs.next();
+        PGgeometry resultwrapper = ((PGgeometry) rs.getObject(1));
+        return resultwrapper.getGeometry();
+    }
+
     /** Pass a geometry representation through the SQL server via EWKT */
     private static Geometry ewktViaSQL(String rep, Statement stat) throws SQLException {
         ResultSet rs = stat.executeQuery("SELECT asEWKT(geometry_in('" + rep + "'))");
@@ -323,7 +357,7 @@ public class TestParser {
      * @throws ClassNotFoundException
      * 
      * @see org.postgis.DriverWrapper
-     *  
+     * 
      */
     public static Connection connect(String url, String dbuser, String dbpass) throws SQLException,
             ClassNotFoundException {
@@ -380,7 +414,7 @@ public class TestParser {
             conns[i].close();
         }
 
-        //System.out.println("Finished.");
+        // System.out.println("Finished.");
         System.out.println("Finished, " + failcount + " tests failed!");
     }
 }
