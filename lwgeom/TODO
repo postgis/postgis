@@ -4,6 +4,8 @@
 
 - WKB support in loader (canonical form is OK)
 
+- research on extent() extracting output from an existing index.
+
 - lwgeom_clone_deep / lwgeom_release_deep
   (or maybe should both be always be deep.... )
 
