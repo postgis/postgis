@@ -3023,7 +3023,7 @@ BEGIN
 	RETURN proj4text::text FROM spatial_ref_sys WHERE srid= $1;
 END;
 '
-LANGUAGE 'plpgsql' IMMUTABLE STRICT; -- WITH (iscachable,isstrict);
+LANGUAGE 'plpgsql' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
 
 

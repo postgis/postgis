@@ -84,7 +84,7 @@ SA_OBJS=measures.o box2d.o ptarray.o lwgeom_api.o lwgeom.o lwpoint.o lwline.o lw
 OBJS=$(SA_OBJS) liblwgeom.o lwgeom_pg.o lwgeom_debug.o lwgeom_spheroid.o lwgeom_ogc.o lwgeom_functions_analytic.o $(JTS_OBJ) lwgeom_inout.o lwgeom_estimate.o lwgeom_functions_basic.o lwgeom_gist.o lwgeom_btree.o lwgeom_transform.o stringBuffer.o lwgeom_box.o lwgeom_box3d.o lwgeom_box2dfloat4.o lwgeom_chip.o lwgeom_svg.o lwgeom_gml.o lwgeom_triggers.o lwgeom_dump.o
 
 #OTHERS=y.output lex.yy.c wktparse.tab.c wktparse.tab.h lwpostgis.sql
-OTHERS=y.output lwpostgis.sql postgis_geos_version.h
+OTHERS=y.output lwpostgis.sql ../lwpostgis.sql postgis_geos_version.h
 
 
 #---------------------------------------------------------------
@@ -130,13 +130,15 @@ lwgeom_nojts.o: lwgeom_nojts.c
 
 lwgeom_functions_basic.o: lwgeom_functions_basic.c profile.h
 
-all: $(GEOS_RULES) $(shlib) lwpostgis.sql
+all: $(GEOS_RULES) $(shlib) ../lwpostgis.sql
 
 # Shared library stuff
 
+../lwpostgis.sql: lwpostgis.sql
+	cp lwpostgis.sql ..
+
 lwpostgis.sql: lwpostgis.sql.in
 	cpp -P -traditional-cpp -DUSE_VERSION=$(USE_VERSION) $< | sed -e 's:@MODULE_FILENAME@:$(MODULE_FILENAME):g;s:@POSTGIS_VERSION@:$(POSTGIS_VERSION):g;s:@POSTGIS_SCRIPTS_VERSION@:$(SCRIPTS_VERSION):g;s/@POSTGIS_BUILD_DATE@/$(POSTGIS_BUILD_DATE)/g' | grep -v ^# > $@
-	cp $@ ..
 
 install: all installdirs install-lwgeom-lib install-lwgeom-scripts
 
