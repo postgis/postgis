@@ -18,7 +18,7 @@
 #include "stringBuffer.h"
 
 
-//#define DEBUG
+#define DEBUG
 
 #include "wktparse.h"
 
@@ -127,11 +127,10 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_out);
 Datum LWGEOM_out(PG_FUNCTION_ARGS)
 {
-		char		        *lwgeom = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-		char   				*result =unparse_WKB(lwgeom,palloc_fn2,free_fn);
+	char *lwgeom = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char *result = unparse_WKB(lwgeom,palloc_fn2,free_fn);
 
-
-		PG_RETURN_CSTRING(result);
+	PG_RETURN_CSTRING(result);
 }
 
 
@@ -157,6 +156,7 @@ Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 					SRID = -1;
 
  //       elog(NOTICE,"LWGEOMFromWKB: entry with SRID=%i",SRID);
+	elog(NOTICE,"wkb => lwgeom CONVERSION");
 
 
 			// convert WKB to hexized WKB string
@@ -195,18 +195,21 @@ Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(WKBFromLWGEOM);
 Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 {
-		char   *lwgeom_input = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char *lwgeom_input = (char *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-		char   				*hexized_wkb_srid =unparse_WKB(lwgeom_input,palloc_fn2,free_fn); // SRID=#;<hexized wkb>
-		char				*hexized_wkb; // hexized_wkb_srid w/o srid
-		char		*result; //wkb
+	// SRID=#;<hexized wkb>
+	char *hexized_wkb_srid =unparse_WKB(lwgeom_input,palloc_fn2,free_fn);
 
-		int			len_hexized_wkb;
-		int			size_result;
-		char		*semicolonLoc;
+	char *hexized_wkb; // hexized_wkb_srid w/o srid
+	char *result; //wkb
+
+	int len_hexized_wkb;
+	int			size_result;
+	char		*semicolonLoc;
 		int t;
 
 //elog(NOTICE, "in WKBFromLWGEOM with WKB = '%s'", hexized_wkb_srid);
+	elog(NOTICE,"lwgeom => wkb CONVERSION");
 
 		hexized_wkb = hexized_wkb_srid;
 		semicolonLoc = strchr(hexized_wkb_srid,';');

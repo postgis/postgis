@@ -34,13 +34,12 @@ Datum combine_box2d(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(LWGEOM_getSRID);
 Datum LWGEOM_getSRID(PG_FUNCTION_ARGS)
 {
-		char		        *lwgeom = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-		int					srid = lwgeom_getSRID (lwgeom+4);
+	char *lwgeom = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	int srid = lwgeom_getSRID (lwgeom+4);
 
-	//	printBYTES(lwgeom, *((int*)lwgeom) );
+	//printBYTES(lwgeom, *((int*)lwgeom) );
 
-		PG_RETURN_INT32(srid);
-
+	PG_RETURN_INT32(srid);
 }
 
 //setSRID(lwgeom, int4) :: lwgeom
