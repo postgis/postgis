@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.36  2003/10/28 15:16:17  strk
+ * unite_sfunc() from postgis_geos.c renamed to geom_accum() and moved in postgis_fn.c
+ *
  * Revision 1.35  2003/10/28 11:16:46  strk
  * Added postgis_algo.c prototypes
  *
@@ -576,6 +579,7 @@ Datum box3dtobox(PG_FUNCTION_ARGS);
 Datum transform_geom(PG_FUNCTION_ARGS);
 
 Datum max_distance(PG_FUNCTION_ARGS);
+Datum geom_accum(PG_FUNCTION_ARGS);
 Datum collector(PG_FUNCTION_ARGS);
 
 Datum WKBtoBYTEA(PG_FUNCTION_ARGS);

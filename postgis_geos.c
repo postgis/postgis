@@ -10,6 +10,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.18  2003/10/28 15:16:17  strk
+ * unite_sfunc() from postgis_geos.c renamed to geom_accum() and moved in postgis_fn.c
+ *
  * Revision 1.17  2003/10/28 10:59:55  strk
  * handled NULL state array in unite_finalfunc, cleaned up some spurios code
  *
@@ -187,7 +190,6 @@ Datum difference(PG_FUNCTION_ARGS);
 Datum boundary(PG_FUNCTION_ARGS);
 Datum symdifference(PG_FUNCTION_ARGS);
 Datum geomunion(PG_FUNCTION_ARGS);
-Datum unite_sfunc(PG_FUNCTION_ARGS);
 Datum unite_finalfunc(PG_FUNCTION_ARGS);
 
 
@@ -240,93 +242,6 @@ resize_ptrArrayType(ArrayType *a, int num)
 	return a;
 }
 
-
-/*
- * This is the state function for union/fastunite/geomunion
- * aggregate (still discussing the name). Will have
- * as input an array of Geometry pointers and a Geometry.
- * Will DETOAST given geometry and put a pointer to it
- * in the given array. DETOASTED value is first copied
- * to a safe memory context to avoid premature deletion.
- */
-#define DEBUG 
-PG_FUNCTION_INFO_V1(unite_sfunc);
-Datum unite_sfunc(PG_FUNCTION_ARGS)
-{
-	ArrayType *array;
-	int nelems, nbytes;
-	Datum datum;
-	GEOMETRY *geom;
-	ArrayType *result;
-	Pointer **pointers;
-	MemoryContext oldcontext; 
-
-	datum = PG_GETARG_DATUM(0);
-	if ( (Pointer *)datum == NULL ) {
-		array = NULL;
-		nelems = 0;
-#ifdef DEBUG
-		elog(NOTICE, "unite_sfunc: NULL array, nelems=%d", nelems);
-#endif
-	} else {
-		array = (ArrayType *) PG_DETOAST_DATUM_COPY(datum);
-		nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
-	}
-
-	datum = PG_GETARG_DATUM(1);
-	// Do nothing, return state array
-	if ( (Pointer *)datum == NULL )
-	{
-#ifdef DEBUG
-		elog(NOTICE, "unite_sfunc: NULL geom, nelems=%d", nelems);
-#endif
-		PG_RETURN_ARRAYTYPE_P(array);
-	}
-
-	/*
-	 * Switch to * flinfo->fcinfo->fn_mcxt
-	 * memory context to be sure both detoasted
-	 * geometry AND array of pointers to it
-	 * last till the call to unite_finalfunc.
-	 */
-	oldcontext = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
-
-	/* Make a DETOASTED copy of input geometry */
-	geom = (GEOMETRY *)PG_DETOAST_DATUM_COPY(datum); 
-
-#ifdef DEBUG
-	elog(NOTICE, "unite_sfunc: adding %p (nelems=%d)", geom, nelems);
-#endif
-
-	/*
-	 * Might use a more optimized version instead of repalloc'ing
-	 * at every iteration. This is not the bottleneck anyway.
-	 * 		--strk(TODO);
-	 */
-	++nelems;
-	nbytes = ARR_OVERHEAD(1) + sizeof(Pointer *) * nelems;
-	if ( ! array ) {
-		result = (ArrayType *) palloc(nbytes);
-		result->size = nbytes;
-		result->ndim = 1;
-		*((int *) ARR_DIMS(result)) = nelems;
-	} else {
-		result = (ArrayType *) repalloc(array, nbytes);
-		result->size = nbytes;
-		result->ndim = 1;
-		*((int *) ARR_DIMS(result)) = nelems;
-	}
-
-	pointers = (Pointer **)ARR_DATA_PTR(result);
-	pointers[nelems-1] = (Pointer *)geom;
-
-	/* Go back to previous memory context */
-	MemoryContextSwitchTo(oldcontext);
-
-
-	PG_RETURN_ARRAYTYPE_P(result);
-
-}
 
 /*
  * This is the final function for union/fastunite/geomunion
