@@ -340,6 +340,9 @@ Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS)
  * Initially written by: jsunday@rochgrp.com
  * Ported to LWGEOM by: strk@refractions.net
  ***********************************************************************/
+
+Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS);
+
 PG_FUNCTION_INFO_V1(LWGEOM_line_interpolate_point);
 Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 {
