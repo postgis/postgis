@@ -24,16 +24,16 @@ lwmpoint_deserialize(char *srl)
 	result->type = MULTIPOINTTYPE;
 	result->SRID = insp->SRID;
 	result->ndims = lwgeom_ndims(insp->type);
-	result->npoints = insp->ngeometries;
-	result->points = lwalloc(sizeof(LWPOINT *)*result->npoints);
+	result->ngeoms = insp->ngeometries;
+	result->geoms = lwalloc(sizeof(LWPOINT *)*result->ngeoms);
 
 	for (i=0; i<insp->ngeometries; i++)
 	{
-		result->points[i] = lwpoint_deserialize(insp->sub_geoms[i]);
-		if ( result->points[i]->ndims != result->ndims )
+		result->geoms[i] = lwpoint_deserialize(insp->sub_geoms[i]);
+		if ( result->geoms[i]->ndims != result->ndims )
 		{
 			lwerror("Mixed dimensions (multipoint:%d, point%d:%d)",
-				result->ndims, i, result->points[i]->ndims);
+				result->ndims, i, result->geoms[i]->ndims);
 			return NULL;
 		}
 	}
@@ -50,8 +50,8 @@ lwmpoint_serialize_size(LWMPOINT *mpoint)
 
 	if ( mpoint->SRID != -1 ) size += 4; // SRID
 
-	for (i=0; i<mpoint->npoints; i++)
-		size += lwpoint_serialize_size(mpoint->points[i]);
+	for (i=0; i<mpoint->ngeoms; i++)
+		size += lwpoint_serialize_size(mpoint->geoms[i]);
 
 	return size; 
 }
@@ -83,14 +83,14 @@ lwmpoint_serialize_buf(LWMPOINT *mpoint, char *buf, int *retsize)
 	}
 
 	// Write number of subgeoms
-	memcpy(loc, &mpoint->npoints, 4);
+	memcpy(loc, &mpoint->ngeoms, 4);
 	size += 4;
 	loc += 4;
 
 	// Serialize subgeoms
-	for (i=0; i<mpoint->npoints; i++)
+	for (i=0; i<mpoint->ngeoms; i++)
 	{
-		lwpoint_serialize_buf(mpoint->points[i], loc, &subsize);
+		lwpoint_serialize_buf(mpoint->geoms[i], loc, &subsize);
 		size += subsize;
 	}
 

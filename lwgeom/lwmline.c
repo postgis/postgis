@@ -24,16 +24,16 @@ lwmline_deserialize(char *srl)
 	result->type = MULTILINETYPE;
 	result->SRID = insp->SRID;
 	result->ndims = lwgeom_ndims(insp->type);
-	result->nlines = insp->ngeometries;
-	result->lines = lwalloc(sizeof(LWLINE *)*insp->ngeometries);
+	result->ngeoms = insp->ngeometries;
+	result->geoms = lwalloc(sizeof(LWLINE *)*insp->ngeometries);
 
 	for (i=0; i<insp->ngeometries; i++)
 	{
-		result->lines[i] = lwline_deserialize(insp->sub_geoms[i]);
-		if ( result->lines[i]->ndims != result->ndims )
+		result->geoms[i] = lwline_deserialize(insp->sub_geoms[i]);
+		if ( result->geoms[i]->ndims != result->ndims )
 		{
 			lwerror("Mixed dimensions (multiline:%d, line%d:%d)",
-				result->ndims, i, result->lines[i]->ndims);
+				result->ndims, i, result->geoms[i]->ndims);
 			return NULL;
 		}
 	}
@@ -50,8 +50,8 @@ lwmline_serialize_size(LWMLINE *mline)
 
 	if ( mline->SRID != -1 ) size += 4; // SRID
 
-	for (i=0; i<mline->nlines; i++)
-		size += lwline_serialize_size(mline->lines[i]);
+	for (i=0; i<mline->ngeoms; i++)
+		size += lwline_serialize_size(mline->geoms[i]);
 
 	return size; 
 }
@@ -83,14 +83,14 @@ lwmline_serialize_buf(LWMLINE *mline, char *buf, int *retsize)
 	}
 
 	// Write number of subgeoms
-	memcpy(loc, &mline->nlines, 4);
+	memcpy(loc, &mline->ngeoms, 4);
 	size += 4;
 	loc += 4;
 
 	// Serialize subgeoms
-	for (i=0; i<mline->nlines; i++)
+	for (i=0; i<mline->ngeoms; i++)
 	{
-		lwline_serialize_buf(mline->lines[i], loc, &subsize);
+		lwline_serialize_buf(mline->geoms[i], loc, &subsize);
 		size += subsize;
 	}
 

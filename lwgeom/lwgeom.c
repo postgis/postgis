@@ -128,3 +128,50 @@ lwgeom_serialize(LWGEOM *lwgeom, char wantbbox)
 	return serialized;
 }
 
+// Force Right-hand-rule on LWGEOM polygons
+void
+lwgeom_forceRHR(LWGEOM *lwgeom)
+{
+	LWCOLLECTION *coll;
+	int i;
+
+	switch (lwgeom->type)
+	{
+		case POLYGONTYPE:
+			lwpoly_reverse((LWPOLY *)lwgeom);
+			return;
+
+		case MULTIPOLYGONTYPE:
+		case COLLECTIONTYPE:
+			coll = (LWCOLLECTION *)lwgeom;
+			for (i=0; i<coll->ngeoms; i++)
+				lwgeom_forceRHR(coll->geoms[i]);
+			return;
+	}
+}
+
+// Reverse vertex order of LWGEOM
+void
+lwgeom_reverse(LWGEOM *lwgeom)
+{
+	int i;
+	LWCOLLECTION *col;
+
+	switch (lwgeom->type)
+	{
+		case LINETYPE:
+			lwline_reverse((LWLINE *)lwgeom);
+			return;
+		case POLYGONTYPE:
+			lwpoly_reverse((LWPOLY *)lwgeom);
+			return;
+		case MULTILINETYPE:
+		case MULTIPOLYGONTYPE:
+		case COLLECTIONTYPE:
+			col = (LWCOLLECTION *)lwgeom;
+			for (i=0; i<col->ngeoms; i++)
+				lwgeom_reverse(col->geoms[i]);
+			return;
+	}
+}
+

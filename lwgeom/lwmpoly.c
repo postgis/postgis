@@ -3,6 +3,8 @@
 #include <string.h>
 #include "liblwgeom.h"
 
+//#define DEBUG_CALLS 1
+
 LWMPOLY *
 lwmpoly_deserialize(char *srl)
 {
@@ -10,6 +12,10 @@ lwmpoly_deserialize(char *srl)
 	LWGEOM_INSPECTED *insp;
 	int type = lwgeom_getType(srl[0]);
 	int i;
+
+#ifdef DEBUG_CALLS
+	lwnotice("lwmpoly_deserialize called");
+#endif
 
 	if ( type != MULTIPOLYGONTYPE ) 
 	{
@@ -21,20 +27,19 @@ lwmpoly_deserialize(char *srl)
 	insp = lwgeom_inspect(srl);
 
 	result = lwalloc(sizeof(LWMPOLY));
-	result->type = srl[0];
 	result->type = MULTIPOLYGONTYPE;
 	result->SRID = insp->SRID;
 	result->ndims = lwgeom_ndims(insp->type);
-	result->npolys = insp->ngeometries;
-	result->polys = lwalloc(sizeof(LWPOLY *)*insp->ngeometries);
+	result->ngeoms = insp->ngeometries;
+	result->geoms = lwalloc(sizeof(LWPOLY *)*insp->ngeometries);
 
 	for (i=0; i<insp->ngeometries; i++)
 	{
-		result->polys[i] = lwpoly_deserialize(insp->sub_geoms[i]);
-		if ( result->polys[i]->ndims != result->ndims )
+		result->geoms[i] = lwpoly_deserialize(insp->sub_geoms[i]);
+		if ( result->geoms[i]->ndims != result->ndims )
 		{
 			lwerror("Mixed dimensions (multipoly:%d, poly%d:%d)",
-				result->ndims, i, result->polys[i]->ndims);
+				result->ndims, i, result->geoms[i]->ndims);
 			return NULL;
 		}
 	}
@@ -51,8 +56,8 @@ lwmpoly_serialize_size(LWMPOLY *mpoly)
 
 	if ( mpoly->SRID != -1 ) size += 4; // SRID
 
-	for (i=0; i<mpoly->npolys; i++)
-		size += lwpoly_serialize_size(mpoly->polys[i]);
+	for (i=0; i<mpoly->ngeoms; i++)
+		size += lwpoly_serialize_size(mpoly->geoms[i]);
 
 	return size; 
 }
@@ -84,14 +89,14 @@ lwmpoly_serialize_buf(LWMPOLY *mpoly, char *buf, int *retsize)
 	}
 
 	// Write number of subgeoms
-	memcpy(loc, &mpoly->npolys, 4);
+	memcpy(loc, &mpoly->ngeoms, 4);
 	size += 4;
 	loc += 4;
 
 	// Serialize subgeoms
-	for (i=0; i<mpoly->npolys; i++)
+	for (i=0; i<mpoly->ngeoms; i++)
 	{
-		lwpoly_serialize_buf(mpoly->polys[i], loc, &subsize);
+		lwpoly_serialize_buf(mpoly->geoms[i], loc, &subsize);
 		size += subsize;
 	}
 

@@ -53,10 +53,8 @@ char * lwgeom_summary_recursive(char *serialized, int offset);
 char * lwgeom_summary(LWGEOM *serialized, int offset);
 int32 lwgeom_nrings_recursive(char *serialized);
 void dump_lwexploded(LWGEOM_EXPLODED *exploded);
-POINTARRAY *ptarray_reverse(const POINTARRAY *pa);
-LWLINE *lwline_reverse(const LWLINE *line);
-LWPOLY *lwpoly_reverse(const LWPOLY *poly);
-LWPOLY *lwpoly_forceRHR(const LWPOLY *poly);
+void ptarray_reverse(POINTARRAY *pa);
+
 
 /*------------------------------------------------------------------*/
 
@@ -759,88 +757,59 @@ lwgeom_pt_inside_circle(POINT2D *p, double cx, double cy, double rad)
 
 }
 
-POINTARRAY *
-ptarray_reverse(const POINTARRAY *ipa)
+void
+ptarray_reverse(POINTARRAY *pa)
 {
-	POINTARRAY *opa;
-	uint32 i, j;
-	int ptsize;
+	POINT4D pbuf;
+	uint32 i;
+	int ptsize = pointArray_ptsize(pa);
+	int last = pa->npoints-1;
+	int mid = last/2;
 
-	opa = (POINTARRAY *)lwalloc(sizeof(POINTARRAY));
-	opa->ndims = ipa->ndims;
-	opa->npoints = ipa->npoints;
-	ptsize = pointArray_ptsize(ipa);
-	opa->serialized_pointlist = lwalloc(ipa->npoints*ptsize);
-
-	for (i=0, j=ipa->npoints-1; i<ipa->npoints; i++, j--)
+	for (i=0; i<=mid; i++)
 	{
-		memcpy(getPoint(opa, j), getPoint(ipa, i), ptsize);
+		char *from, *to;
+		from = getPoint(pa, i);
+		to = getPoint(pa, (last-i));
+		memcpy((char *)&pbuf, to, ptsize);
+		memcpy(to, from, ptsize);
+		memcpy(from, (char *)&pbuf, ptsize);
 	}
 
-	return opa;
 }
 
-LWLINE *
-lwline_reverse(const LWLINE *iline)
+void
+lwline_reverse(LWLINE *line)
 {
-	LWLINE *oline;
-	POINTARRAY *rpa = ptarray_reverse(iline->points);
-
-	oline = lwline_construct(iline->ndims, iline->SRID, rpa);
-	return oline;
+	ptarray_reverse(line->points);
 }
 
-LWPOLY *
-lwpoly_reverse(const LWPOLY *ipoly)
+void
+lwpoly_reverse(LWPOLY *poly)
 {
-	LWPOLY *opoly;
-	POINTARRAY **rpa;
 	int i;
 
-	rpa = lwalloc(sizeof(POINTARRAY *)*ipoly->nrings);
-
-	for (i=0; i<ipoly->nrings; i++)
-	{
-		rpa[i] = ptarray_reverse(ipoly->rings[i]);
-	}
-
-	opoly = lwpoly_construct(ipoly->ndims, ipoly->SRID,
-		ipoly->nrings, rpa);
-
-	return opoly;
+	for (i=0; i<poly->nrings; i++)
+		ptarray_reverse(poly->rings[i]);
 }
 
-LWPOLY *
-lwpoly_forceRHR(const LWPOLY *ipoly)
+void
+lwpoly_forceRHR(LWPOLY *poly)
 {
-	LWPOLY *opoly;
-	POINTARRAY **rpa;
 	int i;
-	POINTARRAY *opa;
 
-	rpa = lwalloc(sizeof(POINTARRAY *)*ipoly->nrings);
-
-	if ( ptarray_isccw(ipoly->rings[0]) )
+	if ( ptarray_isccw(poly->rings[0]) )
 	{
-		opa = ipoly->rings[0];
-		rpa[0] = ptarray_reverse(ipoly->rings[0]);
+		ptarray_reverse(poly->rings[0]);
 	}
-	else rpa[0] = ipoly->rings[0];
 
-	for (i=1; i<ipoly->nrings; i++)
+	for (i=1; i<poly->nrings; i++)
 	{
-		if ( ! ptarray_isccw(ipoly->rings[i]) )
+		if ( ! ptarray_isccw(poly->rings[i]) )
 		{
-			opa = ipoly->rings[i];
-			rpa[i] = ptarray_reverse(ipoly->rings[i]);
+			ptarray_reverse(poly->rings[i]);
 		}
-		else rpa[i] = ipoly->rings[i];
 	}
-
-	opoly = lwpoly_construct(ipoly->ndims, ipoly->SRID,
-		ipoly->nrings, rpa);
-
-	return opoly;
 }
 
 /*------------------------------------------------------------------*/
@@ -917,16 +886,16 @@ lwmpoint_summary(LWMPOINT *mpoint, int offset)
 {
 	char *result = lwalloc(60);
 	sprintf(result, "Object %d is a MULTIPOINT() with %d points\n",
-		offset, mpoint->npoints);
+		offset, mpoint->ngeoms);
 	return result;
 }
 
 char *
 lwmline_summary(LWMLINE *mline, int offset)
 {
-	char *result = lwalloc(60*(mline->nlines+1));
+	char *result = lwalloc(60*(mline->ngeoms+1));
 	sprintf(result, "Object %d is a MULTILINE() with %d lines\n",
-		offset, mline->nlines);
+		offset, mline->ngeoms);
 	return result;
 }
 
@@ -939,11 +908,11 @@ lwmpoly_summary(LWMPOLY *mpoly, int offset)
 	int i;
 
 	sprintf(result, "Object %d is a MULTIPOLYGON() with %d polys\n",
-		offset, mpoly->npolys);
+		offset, mpoly->ngeoms);
 
-	for (i=0; i<mpoly->npolys; i++)
+	for (i=0; i<mpoly->ngeoms; i++)
 	{
-		tmp = lwpoly_summary(mpoly->polys[i], i);
+		tmp = lwpoly_summary(mpoly->geoms[i], i);
 		size += strlen(tmp)+1;
 		result = lwrealloc(result, size);
 		strcat(result, tmp);
@@ -2977,51 +2946,14 @@ PG_FUNCTION_INFO_V1(LWGEOM_reverse);
 Datum LWGEOM_reverse(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom;
-	PG_LWGEOM *result = NULL;
-	LWGEOM_EXPLODED *exp;
-	int size;
-	int wantbbox;
-	int i;
+	LWGEOM *lwgeom;
 
-	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
 
-	if ( lwgeom_getType(geom->type) == COLLECTIONTYPE )
-	{
-		elog(ERROR, "Collection reversing is not supported");
-		PG_RETURN_NULL();
-	}
+	lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom));
+	lwgeom_reverse(lwgeom);
 
-	wantbbox = lwgeom_hasBBOX(geom->type);
-	exp = lwgeom_explode(SERIALIZED_FORM(geom));
-
-	for (i=0; i<exp->nlines; i++)
-	{
-		LWLINE *line = lwline_deserialize(exp->lines[i]);
-		LWLINE *rline = lwline_reverse(line);
-		pfree_line(line);
-		exp->lines[i] = lwline_serialize(rline);
-	}
-
-	for (i=0; i<exp->npolys; i++)
-	{
-		LWPOLY *poly = lwpoly_deserialize(exp->polys[i]);
-		LWPOLY *rpoly = lwpoly_reverse(poly);
-		pfree_polygon(poly);
-		exp->polys[i] = lwpoly_serialize(rpoly);
-	}
-
-	size = lwexploded_findlength(exp, wantbbox);
-	result = lwalloc(size+4);
-	result->size = (size+4);
-	lwexploded_serialize_buf(exp, wantbbox, SERIALIZED_FORM(result), &size);
-	
-	if ( result->size != (size+4) )
-	{
-		elog(ERROR, "lwexploded_serialize_buf wrote %d bytes, lwexploded_findlength returned %d", size, result->size-4);
-		PG_RETURN_NULL();
-	}
-
-	PG_RETURN_POINTER(result);
+	PG_RETURN_POINTER(geom);
 }
 
 // Force polygons of the collection to obey Right-Hand-Rule
@@ -3029,41 +2961,12 @@ PG_FUNCTION_INFO_V1(LWGEOM_forceRHR_poly);
 Datum LWGEOM_forceRHR_poly(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom;
-	PG_LWGEOM *result = NULL;
-	LWGEOM_EXPLODED *exp;
-	int size;
-	int wantbbox;
-	int i;
+	LWGEOM *lwgeom;
 
-	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
 
-	if ( lwgeom_getType(geom->type) != POLYGONTYPE &&
-		lwgeom_getType(geom->type) != MULTIPOLYGONTYPE )
-	{
-		elog(ERROR, "Only polygon|multipolygon supported");
-		PG_RETURN_NULL();
-	}
+	lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom));
+	lwgeom_forceRHR(lwgeom);
 
-	wantbbox = lwgeom_hasBBOX(geom->type);
-	exp = lwgeom_explode(SERIALIZED_FORM(geom));
-
-	for (i=0; i<exp->npolys; i++)
-	{
-		LWPOLY *poly = lwpoly_deserialize(exp->polys[i]);
-		LWPOLY *rpoly = lwpoly_reverse(poly);
-		exp->polys[i] = lwpoly_serialize(rpoly);
-	}
-
-	size = lwexploded_findlength(exp, wantbbox);
-	result = lwalloc(size+4);
-	result->size = (size+4);
-	lwexploded_serialize_buf(exp, wantbbox, SERIALIZED_FORM(result), &size);
-	
-	if ( result->size != (size+4) )
-	{
-		elog(ERROR, "lwexploded_serialize_buf wrote %d bytes, lwexploded_findlength returned %d", size, result->size-4);
-		PG_RETURN_NULL();
-	}
-
-	PG_RETURN_POINTER(result);
+	PG_RETURN_POINTER(geom);
 }

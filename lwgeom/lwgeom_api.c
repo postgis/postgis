@@ -939,8 +939,8 @@ lwgeom_inspect(const char *serialized_form)
 		//simple geometry (point/line/polygon)-- not multi!
 		result->ngeometries = 1;
 		sub_geoms = (char**) lwalloc(sizeof(char*));
-		sub_geoms[0] = serialized_form;
-		result->sub_geoms = sub_geoms;
+		sub_geoms[0] = (char *)serialized_form;
+		result->sub_geoms = (char **)sub_geoms;
 		return result;
 	}
 
@@ -963,7 +963,7 @@ lwgeom_inspect(const char *serialized_form)
 
 	sub_geoms = (char**) lwalloc(sizeof(char*) * result->ngeometries );
 	result->sub_geoms = sub_geoms;
-	sub_geoms[0] = loc;
+	sub_geoms[0] = (char *)loc;
 #ifdef DEBUG
 	lwnotice("subgeom[0] @ %p", sub_geoms[0]);
 #endif

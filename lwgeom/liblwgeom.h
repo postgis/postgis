@@ -363,7 +363,7 @@ extern BOX3D *lwline_findbbox(LWLINE *line);
 
 typedef struct
 {
-	char type;
+	int type;
 	int32 SRID;
 	char ndims;
 	int  nrings;
@@ -402,8 +402,8 @@ typedef struct
 	int type;
 	int32 SRID;
 	char ndims;
-	int  npoints;
-	LWPOINT **points;
+	int  ngeoms;
+	LWPOINT **geoms;
 } LWMPOINT; 
 
 extern size_t lwmpoint_serialize_size(LWMPOINT *mpoint);
@@ -415,8 +415,8 @@ typedef struct
 	int type;
 	int32 SRID;
 	char ndims;
-	int  nlines;
-	LWLINE **lines;
+	int  ngeoms;
+	LWLINE **geoms;
 } LWMLINE; 
 
 extern size_t lwmline_serialize_size(LWMLINE *mline);
@@ -428,8 +428,8 @@ typedef struct
 	int type;
 	int32 SRID;
 	char ndims;
-	int  npolys;
-	LWPOLY **polys;
+	int  ngeoms;
+	LWPOLY **geoms;
 } LWMPOLY; 
 
 extern size_t lwmpoly_serialize_size(LWMPOLY *mpoly);
@@ -494,7 +494,7 @@ typedef struct
 	const char  *serialized_form; // orginal structure
 	unsigned char  type;            // 8-bit type for the LWGEOM
 	int ngeometries;     	// number of sub-geometries
-	char * * const sub_geoms;  // list of pointers (into serialized_form) of the sub-geoms
+	char **sub_geoms;  // list of pointers (into serialized_form) of the sub-geoms
 } LWGEOM_INSPECTED;
 
 extern int lwgeom_size_inspected(const LWGEOM_INSPECTED *inspected, int geom_number);
@@ -861,5 +861,10 @@ extern int lwgeom_pt_inside_circle(POINT2D *p, double cx, double cy, double rad)
 extern POINTARRAY *segmentize2d_ptarray(POINTARRAY *ipa, double dist);
 extern int32 lwgeom_npoints(char *serialized);
 extern char ptarray_isccw(const POINTARRAY *pa);
+extern void lwgeom_reverse(LWGEOM *lwgeom);
+extern void lwline_reverse(LWLINE *line);
+extern void lwpoly_reverse(LWPOLY *poly);
+extern void lwpoly_forceRHR(LWPOLY *poly);
+extern void lwgeom_forceRHR(LWGEOM *lwgeom);
 
 #endif // !defined _LIBLWGEOM_H 
