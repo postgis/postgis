@@ -3893,6 +3893,17 @@ FROM geometry_table;</literallayout>
             cx/cy when 'rel' arg is 0, x/y when 'rel' is 1.</para>
           </listitem>
         </varlistentry>
+
+        <varlistentry>
+          <term>AsGML(geometry, [precision])</term>
+
+          <listitem>
+            <para>Return the geometry as a GML element.
+            Second argument may be used to reduce the maximum number
+	    of significant digits used in output (defaults to 15).</para>
+          </listitem>
+        </varlistentry>
+
       </variablelist>
     </sect1>
   </chapter>
