@@ -91,7 +91,7 @@ as '@MODULE_FILENAME@'   language 'C';
 create function rtree_decompress(opaque) returns opaque
 as '@MODULE_FILENAME@'   language 'C';
 --------------------------
-create function postgis_gist_sel (opaque, oid,  opaque, int4)  returns float8 
+create function postgis_gist_sel (internal, oid, internal, int4)  returns float8 
 as '@MODULE_FILENAME@'   language 'C';
 
 ------ 7.2 RTREE support functions
