@@ -368,8 +368,8 @@ double distance2d_point_point(LWPOINT *point1, LWPOINT *point2)
 double distance2d_point_line(LWPOINT *point, LWLINE *line)
 {
 	POINT2D p;
-	getPoint2d_p(point->point, 0, &p);
 	POINTARRAY *pa = line->points;
+	getPoint2d_p(point->point, 0, &p);
 	return distance2d_pt_ptarray(&p, pa);
 }
 
@@ -386,8 +386,9 @@ double distance2d_line_line(LWLINE *line1, LWLINE *line2)
 double distance2d_point_poly(LWPOINT *point, LWPOLY *poly)
 {
 	POINT2D p;
-	getPoint2d_p(point->point, 0, &p);
 	int i;
+
+	getPoint2d_p(point->point, 0, &p);
 
 #ifdef PGIS_DEBUG
 	lwnotice("distance2d_point_poly called");
