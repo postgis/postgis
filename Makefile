@@ -22,7 +22,7 @@ subdir=contrib/postgis
 ifeq (${PGSQL_SRC},) 
 	top_builddir = ../..
 	include $(top_builddir)/src/Makefile.global
-	libdir := $(libdir)/contrib
+	libdir := $$libdir
 else
 	top_builddir = ${PGSQL_SRC}
 	include $(top_builddir)/src/Makefile.global
@@ -83,7 +83,7 @@ else
 	GIST_SUPPORT=72
 endif
 
-OBJS=postgis_debug.o postgis_ops.o postgis_fn.o postgis_inout.o postgis_proj.o postgis_chip.o postgis_transform.o postgis_gist_$(GIST_SUPPORT).o
+OBJS=postgis_debug.o postgis_ops.o postgis_fn.o postgis_inout.o postgis_proj.o postgis_chip.o postgis_transform.o postgis_gist_$(GIST_SUPPORT).o postgis_estimate.o
 
 # Add libraries that libpq depends (or might depend) on into the
 # shared library link.  (The order in which you list them here doesn't
