@@ -10,6 +10,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.34  2003/11/26 16:40:41  strk
+ * Handled NULLS in wkb parsing, reduced functions args
+ *
  * Revision 1.33  2003/11/26 15:45:53  strk
  * wkb support for all geom types
  *
@@ -107,7 +110,11 @@ DBFHandle dbf;
 SHPHandle shp;
 int geotype;
 int is3d;
-int (*shape_creator)(char *, int, SHPHandle, int);
+#ifdef USE_WKB
+SHPObject * (*shape_creator)(char *, int);
+#else
+SHPObject * (*shape_creator)(char *, int, SHPHandle, int);
+#endif
 
 /* Prototypes */
 int getMaxFieldSize(PGconn *conn, char *table, char *fname);
@@ -119,12 +126,12 @@ int initShapefile(char *shp_file, PGresult *res);
 int initialize(void);
 int getGeometryOID(PGconn *conn);
 int getGeometryType(char *table, char *geo_col_name);
-int         create_lines(char *str,int shape_id, SHPHandle shp,int dims);
-int    create_multilines(char *str,int shape_id, SHPHandle shp,int dims);
-int        create_points(char *str,int shape_id, SHPHandle shp,int dims);
-int   create_multipoints(char *str,int shape_id, SHPHandle shp,int dims);
-int      create_polygons(char *str,int shape_id, SHPHandle shp,int dims);
-int create_multipolygons(char *str,int shape_id, SHPHandle shp,int dims);
+SHPObject *create_lines(char *str,int shape_id, SHPHandle shp,int dims);
+SHPObject *create_multilines(char *str,int shape_id, SHPHandle shp,int dims);
+SHPObject *create_points(char *str,int shape_id, SHPHandle shp,int dims);
+SHPObject *create_multipoints(char *str,int shape_id, SHPHandle shp,int dims);
+SHPObject *create_polygons(char *str,int shape_id, SHPHandle shp,int dims);
+SHPObject *create_multipolygons(char *str,int shape_id, SHPHandle shp,int dims);
 int parse_points(char *str, int num_points, double *x,double *y,double *z);
 int num_points(char *str);
 int num_lines(char *str);
@@ -135,18 +142,18 @@ int is_clockwise(int num_points,double *x,double *y,double *z);
 
 /* WKB functions */
 typedef unsigned long int uint32;
-int create_polygon3D_WKB(char *wkb, int shape_id, SHPHandle shp, int junk);
-int create_polygon2D_WKB(char *wkb, int shape_id, SHPHandle shp, int junk);
-int create_multipoint2D_WKB(char *wkb, int shape_id, SHPHandle shp, int junk);
-int create_multipoint3D_WKB(char *wkb, int shape_id, SHPHandle shp, int junk);
-int create_point2D_WKB(char *wkb, int shape_id, SHPHandle shp, int junk);
-int create_point3D_WKB(char *wkb, int shape_id, SHPHandle shp, int junk);
-int create_multiline3D_WKB (char *wkb, int shpid, SHPHandle shp, int junk);
-int create_multiline2D_WKB (char *wkb, int shpid, SHPHandle shp, int junk);
-int create_line2D_WKB(char *wkb, int shape_id, SHPHandle shp, int junk);
-int create_line3D_WKB(char *wkb, int shape_id, SHPHandle shp, int junk);
-int create_multipolygon2D_WKB(char *wkb, int shpid, SHPHandle shp, int junk);
-int create_multipolygon3D_WKB(char *wkb, int shpid, SHPHandle shp, int junk);
+SHPObject * create_polygon3D_WKB(char *wkb, int shape_id);
+SHPObject * create_polygon2D_WKB(char *wkb, int shape_id);
+SHPObject * create_multipoint2D_WKB(char *wkb, int shape_id);
+SHPObject * create_multipoint3D_WKB(char *wkb, int shape_id);
+SHPObject * create_point2D_WKB(char *wkb, int shape_id);
+SHPObject * create_point3D_WKB(char *wkb, int shape_id);
+SHPObject * create_multiline3D_WKB (char *wkb, int shpid);
+SHPObject * create_multiline2D_WKB (char *wkb, int shpid);
+SHPObject * create_line2D_WKB(char *wkb, int shape_id);
+SHPObject * create_line3D_WKB(char *wkb, int shape_id);
+SHPObject * create_multipolygon2D_WKB(char *wkb, int shpid);
+SHPObject * create_multipolygon3D_WKB(char *wkb, int shpid);
 char getbyte(char *c);
 void skipbyte(char **c);
 char popbyte(char **c);
@@ -564,9 +571,9 @@ int points_per_sublist( char *str, int *npoints, long max_lists){
 	return 1 ; // probably should give an error
 }
 
-
-
-int create_multilines(char *str,int shape_id, SHPHandle shp,int dims){
+SHPObject *
+create_multilines(char *str,int shape_id, SHPHandle shp,int dims)
+{
 	int		lines,i,j,max_points,index;
 	int		*points;
 	int		*part_index;
@@ -645,28 +652,20 @@ int create_multilines(char *str,int shape_id, SHPHandle shp,int dims){
 			obj = SHPCreateObject(SHPT_NULL,shape_id,lines,part_index,NULL,max_points,totx,toty,totz,NULL);
 		}
 	}
-	free(part_index);
-	free(points);
-	free(totx);
-	free(toty);
-	free(totz);
-	if(SHPWriteObject(shp,-1,obj)!= -1){
-		SHPDestroyObject(obj);
-		return 1;
-	}else{
-		SHPDestroyObject(obj);
-		return 0;
-	}
+	free(part_index); free(points);
+	free(totx); free(toty); free(totz);
+
+	return obj;
 }
 
-int
-create_multiline3D_WKB (char *wkb, int shape_id, SHPHandle shp,int junk)
+SHPObject *
+create_multiline3D_WKB (char *wkb, int shape_id)
 {
+	SHPObject *obj;
 	double *x=NULL, *y=NULL, *z=NULL;
 	int nparts=0, *part_index=NULL, totpoints=0, nlines=0;
 	int li;
-	SHPObject *obj;
-	
+
 	// skip byteOrder and type
 	skipbyte(&wkb); skipint(&wkb);
 
@@ -708,24 +707,17 @@ create_multiline3D_WKB (char *wkb, int shape_id, SHPHandle shp,int junk)
 		totpoints += npoints;
 	}
 
-
 	obj = SHPCreateObject(SHPT_ARC, shape_id, nparts,
 		part_index, NULL, totpoints,
 		x, y, z, NULL);
 
 	free(part_index); free(x); free(y); free(z);
 
-	if ( SHPWriteObject(shp, -1, obj) == -1) {
-		SHPDestroyObject(obj);
-		return 0;
-	}
-
-	SHPDestroyObject(obj);
-	return 1;
+	return obj;
 }
 
-int
-create_multiline2D_WKB (char *wkb, int shape_id, SHPHandle shp,int junk)
+SHPObject *
+create_multiline2D_WKB (char *wkb, int shape_id)
 {
 	double *x=NULL, *y=NULL;
 	int nparts=0, *part_index=NULL, totpoints=0, nlines=0;
@@ -778,16 +770,12 @@ create_multiline2D_WKB (char *wkb, int shape_id, SHPHandle shp,int junk)
 
 	free(part_index); free(x); free(y);
 
-	if ( SHPWriteObject(shp, -1, obj) == -1) {
-		SHPDestroyObject(obj);
-		return 0;
-	}
-
-	SHPDestroyObject(obj);
-	return 1;
+	return obj;
 }
 
-int create_lines(char *str,int shape_id, SHPHandle shp,int dims){
+SHPObject *
+create_lines(char *str,int shape_id, SHPHandle shp,int dims)
+{
 	int		points;
 	int		*part_index;
 	int 		notnull;
@@ -824,20 +812,13 @@ int create_lines(char *str,int shape_id, SHPHandle shp,int dims){
 		}
 	}
 	free(part_index);
-	free(x);
-	free(y);
-	free(z);
-	if(SHPWriteObject(shp,-1,obj)!= -1){
-		SHPDestroyObject(obj);
-		return 1;
-	}else{
-		SHPDestroyObject(obj);
-		return 0;
-	}
+	free(x); free(y); free(z);
+
+	return obj;
 }
 
-int
-create_line3D_WKB (char *wkb, int shape_id, SHPHandle shp,int junk)
+SHPObject *
+create_line3D_WKB (char *wkb, int shape_id)
 {
 	double *x=NULL, *y=NULL, *z=NULL;
 	uint32 npoints=0, pn;
@@ -867,17 +848,11 @@ create_line3D_WKB (char *wkb, int shape_id, SHPHandle shp,int junk)
 	obj = SHPCreateSimpleObject(SHPT_ARCZ, npoints, x, y, z);
 	free(x); free(y); free(z);
 
-	if ( SHPWriteObject(shp, -1, obj) == -1) {
-		SHPDestroyObject(obj);
-		return 0;
-	}
-
-	SHPDestroyObject(obj);
-	return 1;
+	return obj;
 }
 
-int
-create_line2D_WKB (char *wkb, int shape_id, SHPHandle shp,int junk)
+SHPObject *
+create_line2D_WKB (char *wkb, int shape_id)
 {
 	double *x=NULL, *y=NULL, *z=NULL;
 	uint32 npoints=0, pn;
@@ -905,18 +880,12 @@ create_line2D_WKB (char *wkb, int shape_id, SHPHandle shp,int junk)
 	obj = SHPCreateSimpleObject(SHPT_ARC, npoints, x, y, z);
 	free(x); free(y); 
 
-	if ( SHPWriteObject(shp, -1, obj) == -1) {
-		SHPDestroyObject(obj);
-		return 0;
-	}
-
-	SHPDestroyObject(obj);
-	return 1;
+	return obj;
 }
 
 
-int
-create_point3D_WKB(char *wkb, int shape_id, SHPHandle shp, int junk)
+SHPObject *
+create_point3D_WKB(char *wkb, int shape_id)
 {
 	SHPObject *obj;
 	double x, y, z;
@@ -930,16 +899,11 @@ create_point3D_WKB(char *wkb, int shape_id, SHPHandle shp, int junk)
 
 	obj = SHPCreateSimpleObject(SHPT_POINTZ,1,&x,&y,&z);
 
-	if ( SHPWriteObject(shp, -1, obj) == -1) {
-		SHPDestroyObject(obj);
-		return 0;
-	}
-
-	SHPDestroyObject(obj);
-	return 1;
+	return obj;
 }
-int
-create_point2D_WKB(char *wkb, int shape_id, SHPHandle shp, int junk)
+
+SHPObject *
+create_point2D_WKB(char *wkb, int shape_id)
 {
 	SHPObject *obj;
 	double x, y;
@@ -952,16 +916,12 @@ create_point2D_WKB(char *wkb, int shape_id, SHPHandle shp, int junk)
 
 	obj = SHPCreateSimpleObject(SHPT_POINT, 1, &x, &y, NULL);
 
-	if ( SHPWriteObject(shp, -1, obj) == -1) {
-		SHPDestroyObject(obj);
-		return 0;
-	}
-
-	SHPDestroyObject(obj);
-	return 1;
+	return obj;
 }
 
-int create_points(char *str, int shape_id, SHPHandle shp, int dims){
+SHPObject *
+create_points(char *str, int shape_id, SHPHandle shp, int dims)
+{
 	
 	double	*x,
 			*y,
@@ -992,21 +952,14 @@ int create_points(char *str, int shape_id, SHPHandle shp, int dims){
 			obj = SHPCreateSimpleObject(SHPT_NULL,1,x,y,z);
 		}
 	}
-	free(x);
-	free(y);
-	free(z);
-	if(SHPWriteObject(shp,-1,obj)!= -1){
-		SHPDestroyObject(obj);
-		return 1;
-	}else{
-		SHPDestroyObject(obj);
-		return 0;
-	}
+	free(x); free(y); free(z);
+
+	return obj;
 }
 
-
-
-int create_multipoints(char *str,int shape_id, SHPHandle shp,int dims){
+SHPObject *
+create_multipoints(char *str,int shape_id, SHPHandle shp,int dims)
+{
 	int points;	
 	
 	double	*x,
@@ -1039,21 +992,13 @@ int create_multipoints(char *str,int shape_id, SHPHandle shp,int dims){
 		}
 	}
 
-	free(x);
-	free(y);
-	free(z);
-	if(SHPWriteObject(shp,-1,obj)!= -1){
-		SHPDestroyObject(obj);
-		return 1;
-	}else{
-		SHPDestroyObject(obj);
-		return 0;
-	}
+	free(x); free(y); free(z);
+
+	return obj;
 }
 
-
-int
-create_multipoint3D_WKB(char *wkb, int shape_id, SHPHandle shp, int junk)
+SHPObject *
+create_multipoint3D_WKB(char *wkb, int shape_id)
 {
 	SHPObject *obj;
 	double *x=NULL, *y=NULL, *z=NULL;
@@ -1079,17 +1024,11 @@ create_multipoint3D_WKB(char *wkb, int shape_id, SHPHandle shp, int junk)
 	obj = SHPCreateSimpleObject(SHPT_MULTIPOINTZ,1,x,y,z);
 	free(x); free(y); free(z);
 
-	if ( SHPWriteObject(shp, -1, obj) == -1) {
-		SHPDestroyObject(obj);
-		return 0;
-	}
-
-	SHPDestroyObject(obj);
-	return 1;
+	return obj;
 }
 
-int
-create_multipoint2D_WKB(char *wkb, int shape_id, SHPHandle shp, int junk)
+SHPObject *
+create_multipoint2D_WKB(char *wkb, int shape_id)
 {
 	SHPObject *obj;
 	double *x=NULL, *y=NULL;
@@ -1113,19 +1052,12 @@ create_multipoint2D_WKB(char *wkb, int shape_id, SHPHandle shp, int junk)
 	obj = SHPCreateSimpleObject(SHPT_MULTIPOINT,1,x,y,NULL);
 	free(x); free(y); 
 
-	if ( SHPWriteObject(shp, -1, obj) == -1) {
-		SHPDestroyObject(obj);
-		return 0;
-	}
-
-	SHPDestroyObject(obj);
-	return 1;
+	return obj;
 }
 
-
-
-
-int create_polygons(char *str,int shape_id, SHPHandle shp,int dims){
+SHPObject *
+create_polygons(char *str,int shape_id, SHPHandle shp,int dims)
+{
 	int		rings,i,j,max_points,index;
 	int		*points;
 	int		*part_index;
@@ -1220,17 +1152,12 @@ int create_polygons(char *str,int shape_id, SHPHandle shp,int dims){
 	free(totx);
 	free(toty);
 	free(totz);
-	if(SHPWriteObject(shp,-1,obj)!= -1){
-		SHPDestroyObject(obj);
-		return 1;
-	}else{
-		SHPDestroyObject(obj);
-		return 0;
-	}
+
+	return obj;
 }
 
-int
-create_polygon2D_WKB(char *wkb, int shape_id, SHPHandle shp, int junk)
+SHPObject *
+create_polygon2D_WKB(char *wkb, int shape_id)
 {
 	SHPObject *obj;
 	int ri, nrings, totpoints=0, *part_index=NULL;
@@ -1298,21 +1225,11 @@ create_polygon2D_WKB(char *wkb, int shape_id, SHPHandle shp, int junk)
 	free(part_index);
 	free(x); free(y); 
 
-	/*
-	 * Using -1 as shape index means append mode
-	 * this makes shape_id argument useless...
-	 */
-	if ( SHPWriteObject(shp, -1, obj) == -1) {
-		SHPDestroyObject(obj);
-		return 0;
-	}
-
-	SHPDestroyObject(obj);
-	return 1;
+	return obj;
 }
 
-int
-create_polygon3D_WKB(char *wkb, int shape_id, SHPHandle shp, int junk)
+SHPObject *
+create_polygon3D_WKB(char *wkb, int shape_id)
 {
 	SHPObject *obj;
 	int ri, nrings, totpoints=0, *part_index=NULL;
@@ -1380,21 +1297,12 @@ create_polygon3D_WKB(char *wkb, int shape_id, SHPHandle shp, int junk)
 	free(part_index);
 	free(x); free(y); free(z);
 
-	/*
-	 * Using -1 as shape index means append mode
-	 * this makes shape_id argument useless...
-	 */
-	if ( SHPWriteObject(shp, -1, obj) == -1) {
-		SHPDestroyObject(obj);
-		return 0;
-	}
-
-	SHPDestroyObject(obj);
-	return 1;
+	return obj;
 }
 
-
-int create_multipolygons(char *str,int shape_id, SHPHandle shp,int dims){
+SHPObject *
+create_multipolygons(char *str,int shape_id, SHPHandle shp,int dims)
+{
 	int		polys,rings,i,j,k,max_points;
 	int		index,indexk,index2part,tot_rings,final_max_points;
 	int		*points;
@@ -1559,21 +1467,14 @@ int create_multipolygons(char *str,int shape_id, SHPHandle shp,int dims){
 	free(finalx);
 	free(finaly);
 	free(finalz);
-	if(SHPWriteObject(shp,-1,obj)!= -1){
-		SHPDestroyObject(obj);
-		return 1;
-	}else{
-		SHPDestroyObject(obj);
-		return 0;
-	}
-	
+
+	return obj;
 }
 
-int
-create_multipolygon2D_WKB(char *wkb, int shape_id, SHPHandle shp, int junk)
+SHPObject *
+create_multipolygon2D_WKB(char *wkb, int shape_id)
 {
 	SHPObject *obj;
-	obj = (SHPObject *)malloc(sizeof(SHPObject));
 	uint32 nrings, nparts;
 	uint32 npolys;
 	uint32 totpoints=0;
@@ -1694,25 +1595,11 @@ create_multipolygon2D_WKB(char *wkb, int shape_id, SHPHandle shp, int junk)
 	free(part_index);
 	free(x); free(y); 
 
-	/*
-	 * Using -1 as shape index means append mode
-	 * this makes shape_id argument useless...
-	 */
-	if ( SHPWriteObject(shp, -1, obj) == -1) {
-		SHPDestroyObject(obj);
-		printf("Error writing object\n");
-		return 0;
-	}
-
-	SHPDestroyObject(obj);
-#if VERBOSE > 2
-	printf("Object wrote successfully\n");
-#endif
-	return 1;
+	return obj;
 }
 
-int
-create_multipolygon3D_WKB(char *wkb, int shape_id, SHPHandle shp, int junk)
+SHPObject *
+create_multipolygon3D_WKB(char *wkb, int shape_id)
 {
 	SHPObject *obj;
 	obj = (SHPObject *)malloc(sizeof(SHPObject));
@@ -1838,21 +1725,7 @@ create_multipolygon3D_WKB(char *wkb, int shape_id, SHPHandle shp, int junk)
 	free(part_index);
 	free(x); free(y); free(z);
 
-	/*
-	 * Using -1 as shape index means append mode
-	 * this makes shape_id argument useless...
-	 */
-	if ( SHPWriteObject(shp, -1, obj) == -1) {
-		SHPDestroyObject(obj);
-		printf("Error writing object\n");
-		return 0;
-	}
-
-	SHPDestroyObject(obj);
-#if VERBOSE > 2
-	printf("Object wrote successfully\n");
-#endif
-	return 1;
+	return obj;
 }
 
 //Reverse the clockwise-ness of the point list...
@@ -1961,6 +1834,8 @@ addRecord(PGresult *res, int residx, int row)
 
 	for (j=0; j<nFields; j++)
 	{
+		SHPObject *obj;
+
 		/* Integer attribute */
 		if (type_ary[j] == 1)
 		{
@@ -2017,12 +1892,27 @@ fprintf(stdout, "s"); fflush(stdout);
 		
 		/* If we arrived here it is a geometry attribute */
 
+		// Handle NULL shapes
+		if ( PQgetisnull(res, residx, j) ) {
+			obj=SHPCreateSimpleObject(SHPT_NULL,0,NULL,NULL,NULL);
+			if ( SHPWriteObject(shp,-1,obj) == -1)
+			{
+				fprintf(stderr,
+					"Error writing null shape %d\n", row);
+				SHPDestroyObject(obj);
+				return 0;
+			}
+			SHPDestroyObject(obj);
+			continue;
+		}
+
 #ifdef USE_WKB
 		{
 			int junk;
 			char *v = PQgetvalue(res, residx, j);
 			//val = HexDecode(v);
 			val = PQunescapeBytea(v, &junk);
+			//printf("Unescaped %d bytes\n", junk);
 #if VERBOSE > 2
 			dump_wkb(val);
 #endif
@@ -2035,12 +1925,25 @@ fprintf(stdout, "s"); fflush(stdout);
 		fprintf(stdout, "g"); fflush(stdout);
 #endif
 
-		if ( ! shape_creator(val, row, shp, is3d) )
+#ifdef USE_WKB
+		obj = shape_creator(val, row);
+#else
+		obj = shape_creator(val, row, shp, is3d);
+#endif
+		if ( ! obj )
 		{
 			fprintf(stderr, "Error creating shape for record %d "
 					"(geotype is %d)\n", row, geotype);
 			return 0;
 		}
+		if ( SHPWriteObject(shp,-1,obj) == -1)
+		{
+			fprintf(stderr, "Error writing shape %d\n", row);
+			SHPDestroyObject(obj);
+			return 0;
+		}
+		SHPDestroyObject(obj);
+
 #ifdef USE_WKB
 		free(val);
 #endif
