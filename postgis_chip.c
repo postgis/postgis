@@ -82,6 +82,8 @@ Datum CHIP_in(PG_FUNCTION_ARGS)
 		flip_endian_int32( (char *)  & result->height);	
 		flip_endian_int32( (char *)  & result->width);
 		flip_endian_int32( (char *)  & result->compression);
+		flip_endian_int32( (char *)  & result->factor);
+		flip_endian_int32( (char *)  & result->datatype);
 
 	}
 	if (result->endian_hint != 1 )
