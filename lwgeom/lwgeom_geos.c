@@ -560,7 +560,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	size = PG_GETARG_FLOAT8(1);
-	if ( PG_NARGS() > 2 ) quadsegs = PG_GETARG_INT32(3);
+	if ( PG_NARGS() > 2 ) quadsegs = PG_GETARG_INT32(2);
 
 	initGEOS(MAXIMUM_ALIGNOF);
 
