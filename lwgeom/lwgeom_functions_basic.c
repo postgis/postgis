@@ -135,6 +135,7 @@ lwgeom_translate_recursive(uchar *serialized,
 		{
 			lwgeom_translate_ptarray(point->point,
 				xoff, yoff, zoff);
+			lwgeom_release((LWGEOM *)point);
 			continue;
 		}
 
@@ -146,6 +147,7 @@ lwgeom_translate_recursive(uchar *serialized,
 				lwgeom_translate_ptarray(poly->rings[j],
 					xoff, yoff, zoff);
 			}
+			lwgeom_release((LWGEOM *)poly);
 			continue;
 		}
 
@@ -154,6 +156,7 @@ lwgeom_translate_recursive(uchar *serialized,
 		{
 			lwgeom_translate_ptarray(line->points,
 				xoff, yoff, zoff);
+			lwgeom_release((LWGEOM *)line);
 			continue;
 		}
 
