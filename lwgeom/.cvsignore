@@ -1,4 +1,4 @@
-liblwgeom.so.0.1
+liblwgeom.so.*
 lwgeom.sql
 wktparse.tab.c
 wktparse.tab.h
