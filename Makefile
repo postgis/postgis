@@ -168,7 +168,7 @@ postgis.sql: postgis_sql_common.sql.in postgis_sql_$(USE_VERSION)_end.sql.in pos
 	cat postgis_sql_$(USE_VERSION)_start.sql.in postgis_sql_common.sql.in postgis_sql_$(USE_VERSION)_end.sql.in | sed -e 's:@MODULE_FILENAME@:$(MODULE_FILENAME):g;s:@POSTGIS_VERSION@:$(POSTGIS_VERSION):g'  > $@ 
 
 postgis_new.sql: postgis.sql.in
-	cpp -P -traditional-cpp -DUSE_VERSION=$(USE_VERSION) -DMODULE_FILENAME="'$(MODULE_FILENAME)'" -DPOSTGIS_VERSION="'$(POSTGIS_VERSION)'" $< $@
+	cpp -P -traditional-cpp -DUSE_VERSION=$(USE_VERSION) -DMODULE_FILENAME="'$(MODULE_FILENAME)'" -DPOSTGIS_VERSION="'$(POSTGIS_VERSION)'" $< > $@
 
 postgis_undef.sql: postgis.sql create_undef.pl
 	perl create_undef.pl $< $(USE_VERSION) > $@ 
