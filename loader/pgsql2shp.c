@@ -10,6 +10,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.22  2003/09/10 22:44:56  jeffloun
+ * got rid of warning...
+ *
  * Revision 1.21  2003/09/10 22:40:11  jeffloun
  * changed it to make the field names in the dbf file capital letters
  *
@@ -27,6 +30,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include <math.h>
 #include "libpq-fe.h"
 #include "shapefil.h"
