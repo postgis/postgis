@@ -11,11 +11,16 @@ DELETE = rm -rvf
 
 #CP=src/:../../../src/interfaces/jdbc/jars/postgresql.jar
 #CP=src/:lib/postgresql-8.0.309.jdbc3.jar
-CP="$(CLASSPATH):src/:/usr/share/java/postgresql.jar"
+CP=$(CLASSPATH):src/:/usr/share/java/postgresql.jar
 
 SRCDIR=src
 EXAMPLES=examples
 BUILD=bin/make
+PGHOST?=localhost
+PGPORT?=5432
+PGDATABASE?=jdbc_test
+PGUSER?=psql
+PGPASS?=guess
 
 SRC= $(SRCDIR)/examples/Test.java \
 		$(SRCDIR)/examples/TestParser.java \
@@ -56,7 +61,7 @@ test:	compile
 	$(JAVA) -classpath $(BUILD):$(CP) $(EXAMPLES)/Test
         
 jtest:	compile
-	$(JAVA) -classpath $(BUILD):$(CP) $(EXAMPLES)/TestServer
+	$(JAVA) -classpath $(BUILD):$(CP) $(EXAMPLES)/TestServer jdbc:postgresql://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
 
 ptestoffline: compile	
 	$(JAVA) -classpath $(BUILD):$(CP) $(EXAMPLES)/TestParser offline
