@@ -394,6 +394,20 @@ CREATE CAST (lwgeom as box2d) WITH FUNCTION box2d(lwgeom)  AS IMPLICIT ;
 CREATE CAST (lwgeom as wkb) WITH FUNCTION wkb(lwgeom)  AS IMPLICIT ;
 CREATE CAST (wkb as lwgeom) WITH FUNCTION lwgeom(wkb)  AS IMPLICIT ;
 	
+--
+-- Aggregate functions
+--
+
+CREATEFUNCTION combine_bbox(box2d,lwgeom)
+	RETURNS box2d
+	AS '@MODULE_FILENAME@', 'combine_box2d'
+	LANGUAGE 'C';
+
+CREATE AGGREGATE extent(
+	sfunc = combine_bbox,
+	basetype = lwgeom,
+	stype = box2d
+	);
 
 COMMIT;
 
