@@ -1,4 +1,5 @@
-PostGIS 1.0.0?
+PostGIS 1.0.0RC3
+2005/02/24
 	- transform(): missing SRID bugfix, better error handling
 	- jdbc2: small patches, box2d/3d tests, revised docs and license.
 	- jdbc2: bug fix and testcase in for pgjdbc 8.0 type autoregistration
@@ -28,6 +29,8 @@ PostGIS 1.0.0?
 	- Reduced memory usage by early releasing query-context palloced one.
 	- Added bool::text cast in lwpostgis.sql
 	- bug fix in GeometryFromText() missing to add a bbox cache.
+	- spatial_ref_sys: changed Paris entries to match the ones
+	  distributed with 0.x.
 
 PostGIS 1.0.0RC2
 2005/01/26
