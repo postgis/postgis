@@ -64,8 +64,8 @@ PG_FUNCTION_INFO_V1(LWGEOM_mem_size);
 Datum LWGEOM_mem_size(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	int32 size = geom->size;
-	int32 computed_size = lwgeom_size(SERIALIZED_FORM(geom));
+	size_t size = geom->size;
+	size_t computed_size = lwgeom_size(SERIALIZED_FORM(geom));
 	computed_size += 4; // varlena size
 	if ( size != computed_size )
 	{
@@ -480,8 +480,8 @@ lwgeom_force2d_recursive(char *serialized, char *optr, size_t *retsize)
 {
 	LWGEOM_INSPECTED *inspected;
 	int i;
-	int totsize=0;
-	int size=0;
+	size_t totsize=0;
+	size_t size=0;
 	int type;
 	LWPOINT *point = NULL;
 	LWLINE *line = NULL;
@@ -598,8 +598,8 @@ lwgeom_force3dz_recursive(char *serialized, char *optr, size_t *retsize)
 {
 	LWGEOM_INSPECTED *inspected;
 	int i,j,k;
-	int totsize=0;
-	int size=0;
+	size_t totsize=0;
+	size_t size=0;
 	int type;
 	LWPOINT *point = NULL;
 	LWLINE *line = NULL;
@@ -759,8 +759,8 @@ lwgeom_force3dm_recursive(unsigned char *serialized, char *optr, size_t *retsize
 {
 	LWGEOM_INSPECTED *inspected;
 	int i,j,k;
-	int totsize=0;
-	int size=0;
+	size_t totsize=0;
+	size_t size=0;
 	int type;
 	unsigned char newtypefl;
 	LWPOINT *point = NULL;
@@ -975,8 +975,8 @@ lwgeom_force4d_recursive(char *serialized, char *optr, size_t *retsize)
 {
 	LWGEOM_INSPECTED *inspected;
 	int i,j,k;
-	int totsize=0;
-	int size=0;
+	size_t totsize=0;
+	size_t size=0;
 	int type;
 	LWPOINT *point = NULL;
 	LWLINE *line = NULL;
@@ -1132,7 +1132,7 @@ Datum LWGEOM_force_2d(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	PG_LWGEOM *result;
-	int32 size = 0;
+	size_t size = 0;
 
 	// already 2d
 	if ( lwgeom_ndims(geom->type) == 2 ) PG_RETURN_POINTER(geom);
@@ -1159,7 +1159,7 @@ Datum LWGEOM_force_3dz(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	PG_LWGEOM *result;
 	int olddims;
-	int32 size = 0;
+	size_t size = 0;
 
 	olddims = lwgeom_ndims(geom->type);
 	
@@ -1234,7 +1234,7 @@ Datum LWGEOM_force_4d(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	PG_LWGEOM *result;
 	int olddims;
-	int32 size = 0;
+	size_t size = 0;
 
 	olddims = lwgeom_ndims(geom->type);
 	
@@ -1263,7 +1263,7 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	PG_LWGEOM *result;
 	int oldtype;
-	int32 size = 0;
+	size_t size = 0;
 	char *iptr, *optr;
 	int32 nsubgeoms = 1;
 
@@ -1340,7 +1340,7 @@ Datum LWGEOM_force_multi(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	PG_LWGEOM *result;
 	int oldtype, newtype;
-	int32 size = 0;
+	size_t size = 0;
 	char *iptr, *optr;
 	int32 nsubgeoms = 1;
 

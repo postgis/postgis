@@ -141,8 +141,8 @@ lwcollection_serialize_size(LWCOLLECTION *col)
 void
 lwcollection_serialize_buf(LWCOLLECTION *coll, char *buf, size_t *retsize)
 {
-	int size=1; // type 
-	int subsize=0;
+	size_t size=1; // type 
+	size_t subsize=0;
 	char hasSRID;
 	char *loc;
 	int i;

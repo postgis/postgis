@@ -1273,7 +1273,7 @@ lwgeom_constructempty(int SRID, char hasz, char hasm)
 	return result;
 }
 
-int
+size_t
 lwgeom_empty_length(int SRID)
 {
 	int size = 5;
@@ -1284,7 +1284,8 @@ lwgeom_empty_length(int SRID)
 // construct the empty geometry (GEOMETRYCOLLECTION(EMPTY))
 // writing it into the provided buffer.
 void
-lwgeom_constructempty_buf(int SRID, char hasz, char hasm, char *buf, int *retsize)
+lwgeom_constructempty_buf(int SRID, char hasz, char hasm,
+	char *buf, size_t *retsize)
 {
 	int ngeoms = 0;
 
@@ -2172,8 +2173,8 @@ lwexploded_sum(LWGEOM_EXPLODED *exp1, LWGEOM_EXPLODED *exp2)
 char *
 lwexploded_serialize(LWGEOM_EXPLODED *exploded, int wantbbox)
 {
-	int sizecom = 0;
-	int size;
+	size_t sizecom = 0;
+	size_t size;
 	char *result;
 
 	size = lwexploded_findlength(exploded, wantbbox);
@@ -2328,7 +2329,7 @@ lwexploded_serialize_buf(LWGEOM_EXPLODED *exploded, int wantbbox,
 	// Serialize points stripping BBOX and SRID if any
 	for (i=0; i<exploded->npoints; i++)
 	{
-		int subsize;
+		size_t subsize;
 		point = lwpoint_deserialize(exploded->points[i]);
 		point->SRID = -1;
 		lwpoint_serialize_buf(point, loc, &subsize);
@@ -2349,7 +2350,7 @@ lwexploded_serialize_buf(LWGEOM_EXPLODED *exploded, int wantbbox,
 	// Serialize lines stripping BBOX and SRID if any
 	for (i=0; i<exploded->nlines; i++)
 	{
-		int subsize;
+		size_t subsize;
 
 		line = lwline_deserialize(exploded->lines[i]);
 		if ( line == NULL )
@@ -2376,7 +2377,7 @@ lwexploded_serialize_buf(LWGEOM_EXPLODED *exploded, int wantbbox,
 	// Serialize polys stripping BBOX and SRID if any
 	for (i=0; i<exploded->npolys; i++)
 	{
-		int subsize;
+		size_t subsize;
 
 		poly = lwpoly_deserialize(exploded->polys[i]);
 		if ( poly == NULL )
@@ -2444,10 +2445,10 @@ checkexplodedsize(char *srl, LWGEOM_EXPLODED *exp, int alloced, char wantbbox)
 }
 #endif
 
-uint32
+size_t
 lwexploded_findlength(LWGEOM_EXPLODED *exploded, int wantbbox)
 {
-	uint32 size=0;
+	size_t size=0;
 	char ntypes=0;
 	uint32 i;
 	

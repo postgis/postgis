@@ -605,7 +605,7 @@ extern LWGEOM_EXPLODED *lwgeom_explode(char *serialized);
  * Return the length of the serialized form corresponding
  * to this exploded structure.
  */
-extern uint32 lwexploded_findlength(LWGEOM_EXPLODED *exp, int wantbbox);
+extern size_t lwexploded_findlength(LWGEOM_EXPLODED *exp, int wantbbox);
 
 // Serialize an LWGEOM_EXPLODED object.
 // SRID and ndims will be taken from exploded structure.
@@ -687,8 +687,8 @@ extern char *lwgeom_serialized_construct(int SRID, int finalType, char hasz, cha
 
 // construct the empty geometry (GEOMETRYCOLLECTION(EMPTY))
 extern char *lwgeom_constructempty(int SRID, char hasz, char hasm);
-extern void lwgeom_constructempty_buf(int SRID, char hasz, char hasm, char *buf, int *size);
-int lwgeom_empty_length(int SRID);
+extern void lwgeom_constructempty_buf(int SRID, char hasz, char hasm, char *buf, size_t *size);
+size_t lwgeom_empty_length(int SRID);
 
 // get the SRID from the LWGEOM
 // none present => -1
