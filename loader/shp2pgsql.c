@@ -12,6 +12,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.46  2004/01/15 09:57:07  strk
+ * field type array allocates num_fields * sizeof(int) instead of sizeof(char*)
+ *
  * Revision 1.45  2004/01/02 20:11:41  strk
  * always call setval with no schema specification. drop 'database' argument using the empty string to the AddGeometryColumn call
  *
@@ -704,7 +707,7 @@ int main (int ARGC, char **ARGV){
 	num_fields = DBFGetFieldCount( hDBFHandle );
 	num_records = DBFGetRecordCount(hDBFHandle);
 	names = malloc(num_fields*sizeof(char*));
-	types = (DBFFieldType *)malloc(num_fields*sizeof(char*));
+	types = (DBFFieldType *)malloc(num_fields*sizeof(int));
 	widths = malloc(num_fields*sizeof(int));
 	precisions = malloc(num_fields*sizeof(int));
 	col_names = malloc(num_fields * sizeof(char) * 32);
