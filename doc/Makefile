@@ -7,7 +7,8 @@ postgis-out.xml: postgis.xml
 
 html: postgis-out.xml
 	xsltproc \
-		--stringparam shade.verbatim 1 \
+		--param shade.verbatim 1 \
+		--param chunk.section.depth 0 \
 		--stringparam html.stylesheet style.css \
 		/usr/share/sgml/docbook/xsl-stylesheets/html/chunk.xsl \
 		$<
