@@ -27,6 +27,7 @@
 
 #include "lwgeom_pg.h"
 #include "wktparse.h"
+#include "profile.h"
 
 void elog_ERROR(const char* string);
 
@@ -106,7 +107,7 @@ Datum LWGEOM_out(PG_FUNCTION_ARGS)
 	init_pg_func();
 
 	lwgeom = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	result = unparse_WKB(SERIALIZED_FORM(lwgeom),lwalloc,lwfree,-1);
+	result = unparse_WKB(SERIALIZED_FORM(lwgeom),lwalloc,lwfree,-1,NULL,1);
 
 	PG_RETURN_CSTRING(result);
 }
@@ -122,15 +123,16 @@ Datum LWGEOM_to_text(PG_FUNCTION_ARGS)
 	PG_LWGEOM *lwgeom;
 	char *result;
 	text *text_result;
+	size_t size;
 
 	init_pg_func();
 
 	lwgeom = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	result = unparse_WKB(SERIALIZED_FORM(lwgeom),lwalloc,lwfree,-1);
+	result = unparse_WKB(SERIALIZED_FORM(lwgeom),lwalloc,lwfree,-1,&size,1);
 
-	text_result = palloc(strlen(result)+VARHDRSZ);
-	memcpy(VARDATA(text_result),result,strlen(result));
-	VARATT_SIZEP(text_result) = strlen(result)+VARHDRSZ;
+	text_result = palloc(size+VARHDRSZ);
+	memcpy(VARDATA(text_result),result,size);
+	VARATT_SIZEP(text_result) = size+VARHDRSZ;
 	pfree(result);
 
 	PG_RETURN_POINTER(text_result);
@@ -200,7 +202,7 @@ Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 	}
 
 #ifdef DEBUG
-	elog(NOTICE, "LWGEOMFromWKB returning %s", unparse_WKB(SERIALIZED_FORM(lwgeom), pg_alloc, pg_free, -1));
+	elog(NOTICE, "LWGEOMFromWKB returning %s", unparse_WKB(SERIALIZED_FORM(lwgeom), pg_alloc, pg_free, -1, NULL, 1));
 #endif
 
 	PG_RETURN_POINTER(lwgeom);
@@ -211,16 +213,24 @@ Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(WKBFromLWGEOM);
 Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 {
+//#define BINARY_FROM_HEX 1
+
 	PG_LWGEOM *lwgeom_input; // SRID=#;<hexized wkb>
-	char *hexized_wkb_srid;
 	char *hexized_wkb; // hexized_wkb_srid w/o srid
 	char *result; //wkb
-	int len_hexized_wkb;
 	int size_result;
+#ifdef BINARY_FROM_HEX
+	char *hexized_wkb_srid;
 	char *semicolonLoc;
 	int t;
+#endif // BINARY_FROM_HEX
 	text *type;
 	unsigned int byteorder=-1;
+	size_t size;
+
+#ifdef PROFILE
+	profstart(PROF_QRUN);
+#endif
 
 	init_pg_func();
 
@@ -245,15 +255,16 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 	}
 
 	lwgeom_input = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+#ifdef BINARY_FROM_HEX
 	hexized_wkb_srid = unparse_WKB(SERIALIZED_FORM(lwgeom_input),
-		lwalloc, lwfree, byteorder);
+		lwalloc, lwfree, byteorder, &size, 1);
 
 //elog(NOTICE, "in WKBFromLWGEOM with WKB = '%s'", hexized_wkb_srid);
 
 	hexized_wkb = hexized_wkb_srid;
+
 	semicolonLoc = strchr(hexized_wkb_srid,';');
-
-
 	if (semicolonLoc != NULL)
 	{
 		hexized_wkb = (semicolonLoc+1);
@@ -261,19 +272,42 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 
 //elog(NOTICE, "in WKBFromLWGEOM with WKB (with no 'SRID=#;' = '%s'", hexized_wkb);
 
-	len_hexized_wkb = strlen(hexized_wkb);
-	size_result = len_hexized_wkb/2 + VARHDRSZ;
+	size_result = size/2 + VARHDRSZ;
 	result = palloc(size_result);
 
 	memcpy(result, &size_result,VARHDRSZ); // size header
 
 	// have a hexized string, want to make it binary
-	for (t=0; t< (len_hexized_wkb/2); t++)
+	for (t=0; t< (size/2); t++)
 	{
 		((unsigned char *) result +VARHDRSZ)[t] = parse_hex(  hexized_wkb + (t*2) );
 	}
 
 	pfree(hexized_wkb_srid);
+
+#else // ndef BINARY_FROM_HEX
+
+	hexized_wkb = unparse_WKB(SERIALIZED_FORM(lwgeom_input),
+		lwalloc, lwfree, byteorder, &size, 0);
+
+	size_result = size+VARHDRSZ;
+	result = palloc(size_result);
+	memcpy(result, &size_result, VARHDRSZ);
+	memcpy(VARDATA(result), hexized_wkb, size);
+	pfree(hexized_wkb);
+
+#endif
+
+#ifdef PROFILE
+	profstop(PROF_QRUN);
+	lwnotice("unparse_WKB: prof: %lu", proftime[PROF_QRUN]);
+#endif
+
+#ifdef DEBUG
+	lwnotice("Output size is %lu (comp: %lu)",
+		VARSIZE(result), (unsigned long)size);
+#endif // def DEBUG
+
 
 	PG_RETURN_POINTER(result);
 }

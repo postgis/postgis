@@ -41,7 +41,12 @@ byte* output_single(byte* geom,int supress);
 byte* output_collection(byte* geom,outfunc func,int supress);
 byte* output_collection_2(byte* geom,int suppress);
 byte* output_multipoint(byte* geom,int suppress);
-void write_wkb_bytes(byte* ptr,unsigned int cnt,size_t size);
+
+void write_wkb_hex_bytes(byte* ptr, unsigned int cnt, size_t size);
+void write_wkb_bin_bytes(byte* ptr, unsigned int cnt, size_t size);
+void write_wkb_bin_flip_bytes(byte* ptr, unsigned int cnt, size_t size);
+void write_wkb_hex_flip_bytes(byte* ptr, unsigned int cnt, size_t size);
+
 void write_wkb_int(int i);
 byte* output_wkb_collection(byte* geom,outwkbfunc func);
 byte* output_wkb_collection_2(byte* geom);
@@ -57,8 +62,9 @@ static char*  out_start;
 static char*  out_pos;
 static int len;
 static int lwgi;
-static int flipbytes;
-byte endianbyte;
+//static int flipbytes;
+static byte endianbyte;
+void (*write_wkb_bytes)(byte* ptr,unsigned int cnt,size_t size);
 
 //----------------------------------------------------------
 
@@ -364,30 +370,72 @@ unparse_WKT(byte* serialized, allocator alloc, freeor free)
 
 static char outchr[]={"0123456789ABCDEF" };
 
+/* Write HEX bytes flipping */
 void
-write_wkb_bytes(byte* ptr, unsigned int cnt, size_t size)
+write_wkb_hex_flip_bytes(byte* ptr, unsigned int cnt, size_t size)
 {
 	unsigned int bc; // byte count
 
 	ensure(cnt*2*size);
 
 	while(cnt--){
-		if (flipbytes)
+		for(bc=size; bc; bc--)
 		{
-			for(bc=size; bc; bc--)
-			{
-				*out_pos++ = outchr[ptr[bc-1]>>4];
-				*out_pos++ = outchr[ptr[bc-1]&0x0F];
-			}
+			*out_pos++ = outchr[ptr[bc-1]>>4];
+			*out_pos++ = outchr[ptr[bc-1]&0x0F];
 		}
-		else
+		ptr+=size;
+	}
+}
+
+/* Write HEX bytes w/out flipping */
+void
+write_wkb_hex_bytes(byte* ptr, unsigned int cnt, size_t size)
+{
+	unsigned int bc; // byte count
+
+	ensure(cnt*2*size);
+
+	while(cnt--){
+		for(bc=0; bc<size; bc++)
 		{
-			for(bc=0; bc<size; bc++)
-			{
-				*out_pos++ = outchr[ptr[bc]>>4];
-				*out_pos++ = outchr[ptr[bc]&0x0F];
-			}
+			*out_pos++ = outchr[ptr[bc]>>4];
+			*out_pos++ = outchr[ptr[bc]&0x0F];
 		}
+		ptr+=size;
+	}
+}
+
+/* Write BIN bytes flipping */
+void
+write_wkb_bin_flip_bytes(byte* ptr, unsigned int cnt, size_t size)
+{
+	unsigned int bc; // byte count
+
+	ensure(cnt*size);
+
+	while(cnt--)
+	{
+		for(bc=size; bc; bc--)
+			*out_pos++ = ptr[bc-1];
+		ptr+=size;
+	}
+}
+
+
+/* Write BIN bytes w/out flipping */
+void
+write_wkb_bin_bytes(byte* ptr, unsigned int cnt, size_t size)
+{
+	unsigned int bc; // byte count
+
+	ensure(cnt*size);
+
+	/* Could just use a memcpy here ... */
+	while(cnt--)
+	{
+		for(bc=0; bc<size; bc++)
+			*out_pos++ = ptr[bc];
 		ptr+=size;
 	}
 }
@@ -510,9 +558,8 @@ output_wkb(byte* geom)
 }
 
 char *
-unparse_WKB(byte* serialized, allocator alloc, freeor free, char endian)
+unparse_WKB(byte* serialized, allocator alloc, freeor free, char endian, size_t *outsize, byte hex)
 {
-
 #ifdef DEBUG
 	lwnotice("unparse_WKB(%p,...) called", serialized);
 #endif
@@ -526,18 +573,35 @@ unparse_WKB(byte* serialized, allocator alloc, freeor free, char endian)
 	out_start = out_pos = alloc(len);
 	lwgi=0;
 
-	if ( endian == -1 ) {
+	if ( endian == -1 )
+	{
 		endianbyte = getMachineEndian();
-		flipbytes = 0;
-	} else {
+		if ( hex ) write_wkb_bytes = write_wkb_hex_bytes;
+		else write_wkb_bytes = write_wkb_bin_bytes;
+	}
+	else
+	{
 		endianbyte = endian;
-		if ( endianbyte != getMachineEndian() ) flipbytes = 1;
-		else flipbytes = 0;
+		if ( endianbyte != getMachineEndian() )
+		{
+			if ( hex ) write_wkb_bytes = write_wkb_hex_flip_bytes;
+			else write_wkb_bytes = write_wkb_bin_flip_bytes;
+		}
+		else
+		{
+			if ( hex ) write_wkb_bytes = write_wkb_hex_bytes;
+			else write_wkb_bytes = write_wkb_bin_bytes;
+		}
 	}
 
 	output_wkb(serialized);
-	ensure(1);
-	*out_pos=0;
+
+	if ( hex ) {
+		ensure(1);
+		*out_pos=0;
+	}
+
+	if ( outsize ) *outsize = (out_pos-out_start);
 
 	return out_start;
 }
@@ -545,6 +609,10 @@ unparse_WKB(byte* serialized, allocator alloc, freeor free, char endian)
 
 /******************************************************************
  * $Log$
+ * Revision 1.16  2005/01/18 09:32:03  strk
+ * Changed unparse_WKB interface to take an output size pointer and an HEXFORM
+ * specifier. Reworked code in wktunparse to use function pointers.
+ *
  * Revision 1.15  2004/12/21 15:19:01  strk
  * Canonical binary reverted back to EWKB, now supporting SRID inclusion.
  *

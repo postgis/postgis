@@ -379,7 +379,7 @@ char *
 lwgeom_to_hexwkb(LWGEOM *lwgeom, unsigned int byteorder)
 {
 	char *serialized = lwgeom_serialize(lwgeom);
-	char *hexwkb = unparse_WKB(serialized, lwalloc, lwfree, byteorder);
+	char *hexwkb = unparse_WKB(serialized, lwalloc, lwfree, byteorder,NULL,1);
 	lwfree(serialized);
 	return hexwkb;
 }
