@@ -1075,6 +1075,7 @@ int GEOSGeometryTypeId(Geometry *g1)
 			case GEOS_POINT:
 				return POINTTYPE;
 			case GEOS_LINESTRING:
+			case GEOS_LINEARRING:
 				return LINETYPE;
 			case GEOS_POLYGON:
 				return POLYGONTYPE;
