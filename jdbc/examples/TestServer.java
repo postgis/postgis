@@ -32,8 +32,8 @@ public class TestServer
 			String url = "jdbc:postgresql://" + dbhost + ":" + dbport + "/" + dbname;
 			conn = DriverManager.getConnection(url, dbuser, dbpass);
 			System.out.println("Adding geometric type entries...");
-			((org.postgresql.Connection)conn).addDataType("geometry","org.postgis.PGgeometry");
-			((org.postgresql.Connection)conn).addDataType("box3d","org.postgis.PGbox3d");
+			((org.postgresql.PGConnection)conn).addDataType("geometry","org.postgis.PGgeometry");
+			((org.postgresql.PGConnection)conn).addDataType("box3d","org.postgis.PGbox3d");
 			Statement s = conn.createStatement();
 			System.out.println("Creating table with geometric types...");
 			//table might not yet exist
