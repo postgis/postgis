@@ -2,6 +2,7 @@
 
 #---------------------------------------------------------------
 # Set USE_PROJ to 1 for Proj4 reprojection support
+#
 USE_PROJ=1
 PROJ_DIR=/usr/local
 
@@ -10,6 +11,7 @@ PROJ_DIR=/usr/local
 # Note that this support requires additional columns in 
 # GEOMETRY_COLUMNS, so see the list archives for info or
 # install a fresh database using postgis.sql
+#
 USE_STATS=0
 
 #---------------------------------------------------------------
@@ -19,6 +21,7 @@ subdir=contrib/postgis
 # Default the root of the PostgreSQL source tree 
 # To use a non-standard location set the PGSQL_SRC environment
 # variable to the appropriate location.
+#
 ifeq (${PGSQL_SRC},) 
 	top_builddir = ../..
 	include $(top_builddir)/src/Makefile.global
@@ -32,6 +35,7 @@ endif
 #---------------------------------------------------------------
 # Test the version string and select the correct GiST index
 # bindings.
+#
 ifneq ($(findstring 7.1,$(VERSION)),)
 	USE_VERSION=71
 else
@@ -44,39 +48,29 @@ endif
 
 #---------------------------------------------------------------
 # Regression test temporary database.
+#
 TEST_DB=geom_regress
 
 #---------------------------------------------------------------
 # shared library parameters
+#
 NAME=postgis
 SO_MAJOR_VERSION=0
 SO_MINOR_VERSION=7
 
-#override CPPFLAGS := -I$(srcdir) $(CPPFLAGS)
+#---------------------------------------------------------------
+# override CPPFLAGS := -I$(srcdir) $(CPPFLAGS)
 # Altered for Cynwin
 ifeq ($(USE_PROJ),1)
-	override CPPFLAGS := -g  -I$(PROJ_DIR)/include -I$(srcdir) $(CPPFLAGS) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"' -DUSE_PROJ
-endif
-
-#---------------------------------------------------------------
-# Regression test temporary database.
-TEST_DB=geom_regress
-
-#---------------------------------------------------------------
-# shared library parameters
-NAME=postgis
-SO_MAJOR_VERSION=0
-SO_MINOR_VERSION=7
-
-#override CPPFLAGS := -I$(srcdir) $(CPPFLAGS)
-# Altered for Cynwin
-ifeq ($(USE_PROJ),1)
-	override CPPFLAGS := -g  -I$(srcdir) $(CPPFLAGS) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"' -DUSE_PROJ
+	override CPPFLAGS := -g -I$(PROJ_DIR)/include -I$(srcdir) $(CPPFLAGS) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"' -DUSE_PROJ -DUSE_VERSION=$(USE_VERSION)
 else
-	override CPPFLAGS := -g  -I$(srcdir) $(CPPFLAGS) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"' 
+	override CPPFLAGS := -g -I$(srcdir) $(CPPFLAGS) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"' -DUSE_VERSION=$(USE_VERSION)
 endif
 override DLLLIBS := $(BE_DLLLIBS) $(DLLLIBS)
 
+#---------------------------------------------------------------
+# Select proper GiST support C file
+#
 ifeq ($(USE_VERSION),71) 
 	GIST_SUPPORT=71
 else
@@ -85,6 +79,7 @@ endif
 
 OBJS=postgis_debug.o postgis_ops.o postgis_fn.o postgis_inout.o postgis_proj.o postgis_chip.o postgis_transform.o postgis_gist_$(GIST_SUPPORT).o postgis_estimate.o
 
+#---------------------------------------------------------------
 # Add libraries that libpq depends (or might depend) on into the
 # shared library link.  (The order in which you list them here doesn't
 # matter.)
@@ -94,6 +89,9 @@ ifeq ($(USE_PROJ),1)
 else
 	SHLIB_LINK=$(filter -L%, $(LDFLAGS)) 
 endif
+
+#---------------------------------------------------------------
+# Makefile targets
 
 all: all-lib $(NAME).sql $(NAME).sql $(NAME)_undef.sql loaderdumper
 
