@@ -13,7 +13,7 @@ lwgeom_deserialize(char *srl)
 {
 	int type = lwgeom_getType(srl[0]);
 
-	lwnotice("lwgeom_deserialize got %s", lwgeom_typename(type));
+	//lwnotice("lwgeom_deserialize got %s", lwgeom_typename(type));
 
 	switch (type)
 	{
@@ -368,7 +368,7 @@ lwgeom_same(LWGEOM *lwgeom1, LWGEOM *lwgeom2)
 	// Check boxes if both already computed 
 	if ( lwgeom1->bbox && lwgeom2->bbox )
 	{
-		lwnotice("bbox1:%p, bbox2:%p", lwgeom1->bbox, lwgeom2->bbox);
+		//lwnotice("bbox1:%p, bbox2:%p", lwgeom1->bbox, lwgeom2->bbox);
 		if ( ! box2d_same(lwgeom1->bbox, lwgeom2->bbox) ) return 0;
 	}
 
