@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.35  2003/12/12 18:00:15  strk
+ * reverted make_line patch, patched size_subobject instead - the reported bug was caused to their inconsistency
+ *
  * Revision 1.34  2003/12/12 14:39:04  strk
  * Fixed a bug in make_line allocating less memory then required
  *
@@ -3094,7 +3097,8 @@ int	size_subobject (char *sub_obj, int type)
 	}
 	if (type == LINETYPE)
 	{
-		return(sizeof(LINE3D) +  sizeof(POINT3D) * ( ((LINE3D *)sub_obj)->npoints ));
+		/* size of first point is included in struct LINE3D */
+		return(sizeof(LINE3D) +  sizeof(POINT3D) * ( ((LINE3D *)sub_obj)->npoints - 1 ));
 	}
 	if (type==POLYGONTYPE)
 	{
@@ -3275,7 +3279,7 @@ LINE3D	*make_line(int	npoints, POINT3D	*pts, int	*size)
 {
 	LINE3D	*result;
 
-	*size = sizeof(LINE3D) + (npoints)*sizeof(POINT3D);
+	*size = sizeof(LINE3D) + (npoints-1)*sizeof(POINT3D);
 
 	result= (LINE3D *) palloc (*size);
 
