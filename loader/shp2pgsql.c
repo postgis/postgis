@@ -4,6 +4,9 @@
  * Author: Jeff Lounsbury, jeffloun@refractions.net
  *
  * $Log$
+ * Revision 1.30  2003/02/14 20:07:26  jeffloun
+ * changed the PIP function to loop from i=0 to  1<n-1
+ *
  * Revision 1.29  2003/02/04 22:57:44  pramsey
  * Fix memory management error, array of pointers allocated insufficient space.
  *
@@ -157,7 +160,7 @@ int PIP( Point P, Point* V, int n ){
     int cn = 0;    // the crossing number counter
 	int i;
     // loop through all edges of the polygon
-    for (i=0; i<n; i++) {    // edge from V[i] to V[i+1]
+    for (i=0; i<n-1; i++) {    // edge from V[i] to V[i+1]
        if (((V[i].y <= P.y) && (V[i+1].y > P.y))    // an upward crossing
         || ((V[i].y > P.y) && (V[i+1].y <= P.y))) { // a downward crossing
             double vt = (float)(P.y - V[i].y) / (V[i+1].y - V[i].y);
