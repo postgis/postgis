@@ -6,7 +6,7 @@
  *
  * Project:  Shapelib
  * Purpose:  Primary include file for Shapelib.
- * Author:   Frank Warmerdam, warmerda@home.com
+ * Author:   Frank Warmerdam, warmerdam@pobox.com
  *
  ******************************************************************************
  * Copyright (c) 1999, Frank Warmerdam
@@ -37,8 +37,29 @@
  ******************************************************************************
  *
  * $Log$
- * Revision 1.3  2002/05/04 22:44:04  pramsey
- * Update shapelib references to 1.2.9.
+ * Revision 1.4  2003/12/01 20:52:00  strk
+ * shapelib put in sync with gdal cvs
+ *
+ * Revision 1.27  2003/04/21 18:30:37  warmerda
+ * added header write/update public methods
+ *
+ * Revision 1.26  2002/09/29 00:00:08  warmerda
+ * added FTLogical and logical attribute read/write calls
+ *
+ * Revision 1.25  2002/05/07 13:46:30  warmerda
+ * added DBFWriteAttributeDirectly().
+ *
+ * Revision 1.24  2002/04/10 16:59:54  warmerda
+ * added SHPRewindObject
+ *
+ * Revision 1.23  2002/01/15 14:36:07  warmerda
+ * updated email address
+ *
+ * Revision 1.22  2002/01/15 14:32:00  warmerda
+ * try to improve SHPAPI_CALL docs
+ *
+ * Revision 1.21  2001/11/01 16:29:55  warmerda
+ * move pabyRec into SHPInfo for thread safety
  *
  * Revision 1.20  2001/07/20 13:06:02  warmerda
  * fixed SHPAPI attribute for SHPTreeFindLikelyShapes
@@ -109,12 +130,6 @@
 extern "C" {
 #endif
 
-#ifndef SHPAPI_CALL
-#define SHPAPI_CALL
-#endif
-
-#define SHPAPI_CALL1(x)      * SHPAPI_CALL
-    
 /************************************************************************/
 /*                        Configuration options.                        */
 /************************************************************************/
@@ -132,6 +147,48 @@ extern "C" {
 /* -------------------------------------------------------------------- */
 #define DISABLE_MULTIPATCH_MEASURE
 
+/* -------------------------------------------------------------------- */
+/*      SHPAPI_CALL                                                     */
+/*                                                                      */
+/*      The following two macros are present to allow forcing           */
+/*      various calling conventions on the Shapelib API.                */
+/*                                                                      */
+/*      To force __stdcall conventions (needed to call Shapelib         */
+/*      from Visual Basic and/or Dephi I believe) the makefile could    */
+/*      be modified to define:                                          */
+/*                                                                      */
+/*        /DSHPAPI_CALL=__stdcall                                       */
+/*                                                                      */
+/*      If it is desired to force export of the Shapelib API without    */
+/*      using the shapelib.def file, use the following definition.      */
+/*                                                                      */
+/*        /DSHAPELIB_DLLEXPORT                                          */
+/*                                                                      */
+/*      To get both at once it will be necessary to hack this           */
+/*      include file to define:                                         */
+/*                                                                      */
+/*        #define SHPAPI_CALL __declspec(dllexport) __stdcall           */
+/*        #define SHPAPI_CALL1 __declspec(dllexport) * __stdcall        */
+/*                                                                      */
+/*      The complexity of the situtation is partly caused by the        */
+/*      peculiar requirement of Visual C++ that __stdcall appear        */
+/*      after any "*"'s in the return value of a function while the     */
+/*      __declspec(dllexport) must appear before them.                  */
+/* -------------------------------------------------------------------- */
+
+#ifdef SHAPELIB_DLLEXPORT
+#  define SHPAPI_CALL __declspec(dllexport)
+#  define SHPAPI_CALL1(x)  __declspec(dllexport) x
+#endif
+
+#ifndef SHPAPI_CALL
+#  define SHPAPI_CALL
+#endif
+
+#ifndef SHPAPI_CALL1
+#  define SHPAPI_CALL1(x)      x SHPAPI_CALL
+#endif
+    
 /************************************************************************/
 /*                             SHP Support.                             */
 /************************************************************************/
@@ -153,6 +210,9 @@ typedef	struct
     double	adBoundsMax[4];
 
     int		bUpdated;
+
+    unsigned char *pabyRec;
+    int         nBufSize;
 } SHPInfo;
 
 typedef SHPInfo * SHPHandle;
@@ -248,8 +308,11 @@ SHPObject SHPAPI_CALL1(*)
       SHPCreateSimpleObject( int nSHPType, int nVertices,
                              double * padfX, double * padfY, double * padfZ );
 
-void SHPAPI_CALL
-      SHPClose( SHPHandle hSHP );
+int SHPAPI_CALL
+      SHPRewindObject( SHPHandle hSHP, SHPObject * psObject );
+
+void SHPAPI_CALL SHPClose( SHPHandle hSHP );
+void SHPAPI_CALL SHPWriteHeader( SHPHandle hSHP );
 
 const char SHPAPI_CALL1(*)
       SHPTypeName( int nSHPType );
@@ -352,6 +415,7 @@ typedef enum {
   FTString,
   FTInteger,
   FTDouble,
+  FTLogical,
   FTInvalid
 } DBFFieldType;
 
@@ -383,6 +447,8 @@ double 	SHPAPI_CALL
       DBFReadDoubleAttribute( DBFHandle hDBF, int iShape, int iField );
 const char SHPAPI_CALL1(*)
       DBFReadStringAttribute( DBFHandle hDBF, int iShape, int iField );
+const char SHPAPI_CALL1(*)
+      DBFReadLogicalAttribute( DBFHandle hDBF, int iShape, int iField );
 int     SHPAPI_CALL
       DBFIsAttributeNULL( DBFHandle hDBF, int iShape, int iField );
 
@@ -398,6 +464,12 @@ int SHPAPI_CALL
 int SHPAPI_CALL
      DBFWriteNULLAttribute( DBFHandle hDBF, int iShape, int iField );
 
+int SHPAPI_CALL
+     DBFWriteLogicalAttribute( DBFHandle hDBF, int iShape, int iField,
+			       const char lFieldValue);
+int SHPAPI_CALL
+     DBFWriteAttributeDirectly(DBFHandle psDBF, int hEntity, int iField,
+                               void * pValue );
 const char SHPAPI_CALL1(*)
       DBFReadTuple(DBFHandle psDBF, int hEntity );
 int SHPAPI_CALL
@@ -408,6 +480,8 @@ DBFHandle SHPAPI_CALL
  
 void	SHPAPI_CALL
       DBFClose( DBFHandle hDBF );
+void    SHPAPI_CALL
+      DBFUpdateHeader( DBFHandle hDBF );
 char    SHPAPI_CALL
       DBFGetNativeFieldType( DBFHandle hDBF, int iField );
 
