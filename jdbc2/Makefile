@@ -96,10 +96,14 @@ SRC= $(SRCDIR)/examples/Test.java \
 		$(SRCDIR)/org/postgis/MultiPolygon.java \
 		$(SRCDIR)/org/postgis/PGbox2d.java \
 		$(SRCDIR)/org/postgis/PGbox3d.java \
+		$(SRCDIR)/org/postgis/PGboxbase.java \
 		$(SRCDIR)/org/postgis/PGgeometry.java \
 		$(SRCDIR)/org/postgis/PointComposedGeom.java \
 		$(SRCDIR)/org/postgis/Point.java \
 		$(SRCDIR)/org/postgis/Polygon.java \
+		$(SRCDIR)/org/postgis/binary/BinaryParser.java \
+		$(SRCDIR)/org/postgis/binary/ByteGetter.java \
+		$(SRCDIR)/org/postgis/binary/ValueGetter.java \
 		$(SRCDIR)/org/postgis/Version.java 
 
 # The pgjdbc 7.2/7.4/8.0 compatibility stub stuff
