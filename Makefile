@@ -82,9 +82,16 @@ ifeq (${USE_VERSION}, 71)
 	MODULE_FILENAME = $(libdir)/$(shlib)
 	MODULE_INSTALLDIR = $(libdir)
 else
-	MODULE_FILENAME = $$libdir/$(shlib)
+	MODULE_FILENAME = \$$libdir/$(shlib)
 	MODULE_INSTALLDIR = $(pkglibdir)
 endif
+
+#---------------------------------------------------------------
+# Postgis version
+#---------------------------------------------------------------
+
+POSTGIS_VERSION = $(SO_MAJOR_VERSION).$(SO_MINOR_VERSION) USE_GEOS=$(USE_GEOS) USE_PROJ=$(USE_PROJ) USE_STATS=$(USE_STATS)
+
 #---------------------------------------------------------------
 
 override CFLAGS += -g -fexceptions  
@@ -158,7 +165,10 @@ loaderdumper:
 # Shared library stuff
 
 postgis.sql: postgis_sql_common.sql.in postgis_sql_$(USE_VERSION)_end.sql.in postgis_sql_$(USE_VERSION)_start.sql.in 
-	cat postgis_sql_$(USE_VERSION)_start.sql.in postgis_sql_common.sql.in postgis_sql_$(USE_VERSION)_end.sql.in | sed -e 's:@MODULE_FILENAME@:$(MODULE_FILENAME):g;s:@POSTGIS_VERSION@:$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION) USE_GEOS=$(USE_GEOS) USE_PROJ=$(USE_PROJ) USE_STATS=$(USE_STATS):g'  > $@ 
+	cat postgis_sql_$(USE_VERSION)_start.sql.in postgis_sql_common.sql.in postgis_sql_$(USE_VERSION)_end.sql.in | sed -e 's:@MODULE_FILENAME@:$(MODULE_FILENAME):g;s:@POSTGIS_VERSION@:$(POSTGIS_VERSION):g'  > $@ 
+
+postgis_new.sql: postgis.sql.in
+	cpp -P -traditional-cpp -DUSE_VERSION=$(USE_VERSION) -DMODULE_FILENAME="'$(MODULE_FILENAME)'" -DPOSTGIS_VERSION="'$(POSTGIS_VERSION)'" $< $@
 
 postgis_undef.sql: postgis.sql create_undef.pl
 	perl create_undef.pl $< $(USE_VERSION) > $@ 
