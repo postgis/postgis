@@ -38,6 +38,89 @@ extern  BOX3D *lw_geom_getBB_simple(char *serialized_form);
 
 // returns the float thats very close to the input, but <=
 //  handles the funny differences in float4 and float8 reps.
+
+
+//these are taken from glibc
+// some machines do *not* have these functions defined, so we give
+//  an implementation of them here.
+
+//typedef int int32_t;
+//typedef unsigned int u_int32_t;
+
+
+float nextafterf_custom(float x, float y);
+
+typedef union
+{
+  float value;
+  u_int32_t word;
+} ieee_float_shape_type;
+
+
+
+#define GET_FLOAT_WORD(i,d)                                     \
+do {                                                            \
+  ieee_float_shape_type gf_u;                                   \
+  gf_u.value = (d);                                             \
+  (i) = gf_u.word;                                              \
+} while (0)
+
+
+#define SET_FLOAT_WORD(d,i)                                     \
+do {                                                            \
+  ieee_float_shape_type sf_u;                                   \
+  sf_u.word = (i);                                              \
+  (d) = sf_u.value;                                             \
+} while (0)
+
+
+float nextafterf_custom(float x, float y)
+{
+        int32_t hx,hy,ix,iy;
+
+        GET_FLOAT_WORD(hx,x);
+        GET_FLOAT_WORD(hy,y);
+        ix = hx&0x7fffffff;             /* |x| */
+        iy = hy&0x7fffffff;             /* |y| */
+
+        if((ix>0x7f800000) ||   /* x is nan */
+           (iy>0x7f800000))     /* y is nan */
+           return x+y;
+        if(x==y) return y;              /* x=y, return y */
+        if(ix==0) {                             /* x == 0 */
+            SET_FLOAT_WORD(x,(hy&0x80000000)|1);/* return +-minsubnormal */
+            y = x*x;
+            if(y==x) return y; else return x;   /* raise underflow flag */
+        }
+        if(hx>=0) {                             /* x > 0 */
+            if(hx>hy) {                         /* x > y, x -= ulp */
+                hx -= 1;
+            } else {                            /* x < y, x += ulp */
+                hx += 1;
+            }
+        } else {                                /* x < 0 */
+            if(hy>=0||hx>hy){                   /* x < y, x -= ulp */
+                hx -= 1;
+            } else {                            /* x > y, x += ulp */
+                hx += 1;
+            }
+        }
+        hy = hx&0x7f800000;
+        if(hy>=0x7f800000) return x+x;  /* overflow  */
+        if(hy<0x00800000) {             /* underflow */
+            y = x*x;
+            if(y!=x) {          /* raise underflow flag */
+                SET_FLOAT_WORD(y,hx);
+                return y;
+            }
+        }
+        SET_FLOAT_WORD(x,hx);
+        return x;
+}
+
+
+
+
 float nextDown_f(double d)
 {
 	float result  = d;
@@ -45,7 +128,7 @@ float nextDown_f(double d)
 	if ( ((double) result) <=d)
 		return result;
 
-	return nextafterf(result, result - 1000000);
+	return nextafterf_custom(result, result - 1000000);
 
 }
 
@@ -58,7 +141,7 @@ float nextUp_f(double d)
 		if ( ((double) result) >=d)
 			return result;
 
-		return nextafterf(result, result + 1000000);
+		return nextafterf_custom(result, result + 1000000);
 }
 
 
@@ -71,7 +154,7 @@ double nextDown_d(float d)
 		if ( result < d)
 			return result;
 
-		return nextafterf(result, result - 1000000);
+		return nextafterf_custom(result, result - 1000000);
 }
 
 // returns the double thats very close to the input, but >
@@ -83,7 +166,7 @@ double nextUp_d(float d)
 			if ( result > d)
 				return result;
 
-			return nextafterf(result, result + 1000000);
+			return nextafterf_custom(result, result + 1000000);
 }
 
 
