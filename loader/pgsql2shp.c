@@ -405,13 +405,14 @@ printf(conn_string);
 
 
 	//get what kind of Geometry type is in the table
-	query= (char *)malloc(strlen(table) + strlen("select distinct (geometrytype()) from ")+18);
+	query= (char *)malloc(strlen(table) + strlen("select distinct (geometrytype()) from where NOT geometrytype(geom) = NULL")+18);
 	strcpy(query, "select distinct (geometrytype(");
 	strcat(query, geo_col_name);
 	strcat(query, ")) from ") ;
 	strcat(query, table);
+	strcat(query," where NOT geometrytype(geom) = NULL");
 	res3 = PQexec(conn, query);	
-
+	//printf("\n\n-->%s\n\n",query);
 
 
 
@@ -964,20 +965,30 @@ int create_points(char *str, SHPHandle shp,int dims){
 			*y,
 			*z;
 	SHPObject	*obj;
-
+	int notnull;
+	notnull = 1;
 	
 	x = (double *)malloc(sizeof(double));
 	y = (double *)malloc(sizeof(double));
 	z = (double *)malloc(sizeof(double));
 
-	parse_points(str,1,x,y,z);
+	notnull = parse_points(str,1,x,y,z);
+	
 
 	obj = (SHPObject *)malloc(sizeof(SHPObject));
 	
 	if(dims == 0){
-		obj = SHPCreateSimpleObject(SHPT_POINT,1,x,y,z);
+		if(notnull == 1){
+			obj = SHPCreateSimpleObject(SHPT_POINT,1,x,y,z);
+		}else{
+			obj = SHPCreateSimpleObject(SHPT_NULL,1,x,y,z);
+		}
 	}else{
-		obj = SHPCreateSimpleObject(SHPT_POINTZ,1,x,y,z);
+		if(notnull == 1){
+			obj = SHPCreateSimpleObject(SHPT_POINTZ,1,x,y,z);
+		}else{
+			obj = SHPCreateSimpleObject(SHPT_NULL,1,x,y,z);
+		}
 	}
 	free(x);
 	free(y);
@@ -1000,21 +1011,30 @@ int create_multipoints(char *str, SHPHandle shp,int dims){
 			*y,
 			*z;
 	SHPObject	*obj;
+	int notnull;
+	notnull=1;	
 
-	
 	points = num_points(str);
 	x = (double *)malloc(sizeof(double)*points);
 	y = (double *)malloc(sizeof(double)*points);
 	z = (double *)malloc(sizeof(double)*points);
 
-	parse_points(str,points,x,y,z);
+	notnull = parse_points(str,points,x,y,z);
 
 	obj = (SHPObject *)malloc(sizeof(SHPObject));
 	
 	if(dims == 0){
-		obj = SHPCreateSimpleObject(SHPT_MULTIPOINT ,1,x,y,z);
+		if(notnull == 1){
+			obj = SHPCreateSimpleObject(SHPT_MULTIPOINT ,1,x,y,z);
+		}else{
+			obj = SHPCreateSimpleObject(SHPT_NULL ,1,x,y,z);
+		}
 	}else{
-		obj = SHPCreateSimpleObject(SHPT_MULTIPOINTZ ,1,x,y,z);
+		if(notnull == 1){
+			obj = SHPCreateSimpleObject(SHPT_MULTIPOINTZ ,1,x,y,z);
+		}else{
+			obj = SHPCreateSimpleObject(SHPT_NULL ,1,x,y,z);
+		}
 	}
 
 	free(x);
