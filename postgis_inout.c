@@ -1440,7 +1440,7 @@ Datum geometry_in(PG_FUNCTION_ARGS)
 		int32		SRID;
 		double	scale,offx,offy;
 
-printf("str=%s\n",str);
+//printf("str=%s\n",str);
 
 		//trim white
 	while (isspace((unsigned char) *str))
@@ -2807,7 +2807,10 @@ GEOMETRY	*make_oneobj_geometry(int sub_obj_size, char *sub_obj, int type, bool i
 	result->is3d = is3d;
 
 
-	
+	result->SRID = SRID;
+	result->scale = scale;
+	result->offsetX = offx;
+	result->offsetY = offy;
 
 	result->objType[0] = type;
 	if (type == MULTIPOINTTYPE)
@@ -2878,6 +2881,7 @@ int	size_subobject (char *sub_obj, int type)
 // do not call this as with type = GEOMETRYCOLLECTION
 //
 // doesnt change the is3d flag
+// doesnt change the SRID or other attributes
 
 GEOMETRY	*add_to_geometry(GEOMETRY *geom,int sub_obj_size, char *sub_obj, int type)
 {

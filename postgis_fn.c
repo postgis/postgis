@@ -681,6 +681,12 @@ Datum truly_inside(PG_FUNCTION_ARGS)
 	LINE3D			*line;
 	POINT3D			*point;
 
+	if (geom1->SRID != geom2->SRID)
+	{
+		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
+		PG_RETURN_NULL();
+	}
+
 	the_bbox = &geom2->bvol;
 
 	offsets1 = (int32 *) ( ((char *) &(geom1->objType[0] ))+ sizeof(int32) * geom1->nobjs ) ;
@@ -841,7 +847,7 @@ Datum translate(PG_FUNCTION_ARGS)
 	//make a copy of geom so we can return a new version
 
 	geom1 = (GEOMETRY *) palloc (geom->size);
-	memcpy(geom1, geom, geom->size);
+	memcpy(geom1, geom, geom->size);			//Will handle SRID and grid
 
 
 	offsets1 = (int32 *) ( ((char *) &(geom1->objType[0] ))+ sizeof(int32) * geom1->nobjs ) ;
@@ -1071,7 +1077,7 @@ Datum envelope(PG_FUNCTION_ARGS)
 		//make a polygon
 	poly = make_polygon(1, pts_per_ring, pts, 5, &poly_size);
 
-	result = make_oneobj_geometry(poly_size, (char *)poly, POLYGONTYPE, FALSE);
+	result = make_oneobj_geometry(poly_size, (char *)poly, POLYGONTYPE, FALSE,geom->SRID, geom->scale, geom->offsetX, geom->offsetY);
 
 	PG_RETURN_POINTER(result);	
 
@@ -1223,7 +1229,7 @@ Datum pointn_linestring(PG_FUNCTION_ARGS)
 			PG_RETURN_POINTER(
 				make_oneobj_geometry(sizeof(POINT3D), 
 						         (char *)&line->points[wanted_index],
-							   POINTTYPE,  geom->is3d) 
+							   POINTTYPE,  geom->is3d, geom->SRID, geom->scale, geom->offsetX, geom->offsetY) 
 						);
 		}
 
@@ -1268,7 +1274,7 @@ Datum exteriorring_polygon(PG_FUNCTION_ARGS)
 			PG_RETURN_POINTER(
 				make_oneobj_geometry(size_line,
 						         (char *) line,
-							   LINETYPE,  geom->is3d) 
+							   LINETYPE,  geom->is3d,geom->SRID,  geom->scale, geom->offsetX, geom->offsetY) 
 						);
 		}
 
@@ -1358,7 +1364,7 @@ Datum interiorringn_polygon(PG_FUNCTION_ARGS)
 			PG_RETURN_POINTER(
 				make_oneobj_geometry(size_line,
 						         (char *) line,
-							   LINETYPE,  geom->is3d) 
+							   LINETYPE,  geom->is3d, geom->SRID, geom->scale, geom->offsetX, geom->offsetY) 
 						);	  		
 		}
 	}
@@ -1415,7 +1421,7 @@ Datum geometryn_collection(PG_FUNCTION_ARGS)
 				PG_RETURN_POINTER(
 				make_oneobj_geometry(sizeof(POINT3D),
 						         o,
-							   POINTTYPE,  geom->is3d) 
+							   POINTTYPE,  geom->is3d, geom->SRID, geom->scale, geom->offsetX, geom->offsetY) 
 						);
 		}
 		if (type == LINETYPE)
@@ -1423,7 +1429,7 @@ Datum geometryn_collection(PG_FUNCTION_ARGS)
 				PG_RETURN_POINTER(
 				make_oneobj_geometry(	size_subobject (o, LINETYPE),
 						         o,
-							   LINETYPE,  geom->is3d) 
+							   LINETYPE,  geom->is3d, geom->SRID, geom->scale, geom->offsetX, geom->offsetY) 
 						);
 		}
 		if (type == POLYGONTYPE)
@@ -1431,7 +1437,7 @@ Datum geometryn_collection(PG_FUNCTION_ARGS)
 				PG_RETURN_POINTER(
 				make_oneobj_geometry(	size_subobject (o, POLYGONTYPE),
 						         o,
-							   POLYGONTYPE,  geom->is3d) 
+							   POLYGONTYPE,  geom->is3d, geom->SRID, geom->scale, geom->offsetX, geom->offsetY) 
 						);
 		}
 

@@ -6,22 +6,163 @@ LANGUAGE 'sql';
 
 -- create the table with spatial referencing information in it. spec, section 3.2.1.2
 
-create table spatial_ref_sys ( srid integer not null primary key, auth_name varchar(256), auth_srid integer, srtext varchar(2048) );
+create table spatial_ref_sys (
+	 srid integer not null primary key,
+	 auth_name varchar(256), 
+	 auth_srid integer, 
+	 srtext varchar(2048) 
+					);
 
 -- create the metadata table.  spec, section 3.2.2.1
+
+-- currently only type =0 (GEOMETRY_GENERIC) is supported
 
 create table geometry_columns (
 f_table_catalog varchar(256) not null,
 f_table_schema  varchar(256) not null,
 f_table_name    varchar(256) not null,
 f_geometry_column varchar(256) not null,
-coord_dimension  integer ,
-srid		integer,
+coord_dimension  integer NOT NULL,
+srid	 	integer NOT NULL,
+type	 	integer NOT NULL,
 CONSTRAINT GC_PK primary key ( f_table_catalog,f_table_schema, f_table_name,f_geometry_column)
--- # ,CONSTRAINT IS_REF1 FOREIGN KEY (f_table_name) 
--- # 	REFERENCES pg_class (relname) ON UPDATE CASCADE ON DELETE CASCADE
-
 ) ;
+
+--- DropGeometryColumn(<db name>,<table name>,<column name>)
+--- There is no ALTER TABLE DROP COLUMN command in postgresql
+--- There is no ALTER TABLE DROP CONSTRAINT command in postgresql
+--- So, we ;
+---  1. remove the unwanted geom column reference from the geometry_columns table
+---  2. update the table so that the geometry column is all NULLS
+----        This is okay since the CHECK srid(geometry) = <srid> is not
+----           checked if geometry is NULL (the isstrict attribute on srid())
+---  3. add another constraint that the geometry column must be NULL
+---  This, effectively kills the geometry column 
+----   (a) its not in the geometry_column table
+----   (b) it only has nulls in it
+----   (c) you cannot add anything to the geom column because it must be NULL
+----  
+----  This will screw up if you put a NOT NULL constraint on the geometry column, so the
+----     first thing we must do is remove this constraint (its a modification of the
+----     pg_attribute system table)
+---
+----   We also check to see if the table/column exists in the geometry_columns table 
+
+
+---  drop function DropGeometryColumn(varchar,varchar,varchar);
+
+CREATE FUNCTION DropGeometryColumn(varchar,varchar,varchar)
+	RETURNS text
+	AS 
+'
+DECLARE
+	database_name alias for $1;
+	table_name alias for $2;
+	column_name alias for $3;
+	myrec RECORD;
+	okay boolean;
+BEGIN
+ 	-- first we find out if the column is in the geometry_columns table
+	okay = ''f'';
+	FOR myrec IN SELECT * from geometry_columns where f_table_schema = database_name and f_table_name = table_name and f_geometry_column = column_name LOOP
+		okay := ''t'';
+	END LOOP; 
+	IF (okay <> ''t'') THEN 
+		RAISE EXCEPTION ''column not found in geometry_columns table'';
+		return ''f'';
+	END IF;
+	
+	-- ensure the geometry column does not have a NOT NULL attribute
+	EXECUTE ''update pg_attribute set attnotnull = false from pg_class where  pg_attribute.attrelid = pg_class.oid and pg_class.relname = '' || quote_literal(table_name) ||'' and pg_attribute.attname = '' || quote_literal(column_name);
+
+	-- remove ref from geometry_columns table
+	EXECUTE ''delete from geometry_columns where f_table_schema = '' || quote_literal(database_name) ||
+		  '' and f_table_name = '' || quote_literal(table_name) || 
+		  '' and f_geometry_column = '' || quote_literal(column_name );
+
+	-- update the given table/column so that it it all NULLS
+
+	EXECUTE ''update ''||table_name||'' set ''||column_name||''=NULL'';
+
+	-- add = NULL constraint to given table/column
+
+	EXECUTE ''ALTER TABLE ''||table_name||'' ADD CHECK (''||column_name||'' = NULL)'';
+
+	RETURN table_name || ''.'' || column_name ||'' effectively removed.'';
+	
+END;
+'
+	LANGUAGE 'plpgsql' with (isstrict);
+
+-- select DropGeometryColumn('new_test','test_table','mygeom');
+
+
+---select AddGeometryColumn('new_test','tt','new_geom2',2,0,3);
+---drop function AddGeometryColumn(varchar,varchar,varchar,integer,integer,integer);
+
+--- AddGeometryColumn(<db name>,<table name>,<column name>, <srid>, <type>,<dim>)
+--- only type available is 0 GEOMETRY_GENERIC, so its ignored (for future expansion)
+--- uses SQL ALTER TABLE command to add the geometry column to the table
+--- added a row to geometry_columns with info (catalog = '', schema = <db name>)
+--- addes a constraint on the table that all the geometries MUST have the same SRID
+--- checks the coord_dimension to make sure its between 0 and 3
+--- should also check the precision grid (future expansion)
+---  also checks to see if the database_name is in the pg_database table
+
+CREATE FUNCTION AddGeometryColumn(varchar,varchar,varchar,integer,integer,integer)
+	RETURNS text
+	AS 
+'
+DECLARE
+	database_name alias for $1;
+	table_name alias for $2;
+	column_name alias for $3;
+	new_srid alias for $4;
+	new_type alias for $5;
+	new_dim alias for $6;
+	
+	real_db_name varchar;
+	db_query	 RECORD;
+	db_name_ok   boolean;
+
+BEGIN
+	IF ( (new_dim >3) or (new_dim <0) ) THEN
+		RAISE EXCEPTION ''invalid dimension'';
+		return ''fail'';
+	END IF;
+
+	IF (new_type <> 0) THEN
+		RAISE EXCEPTION ''invalid type'';
+		return ''fail'';
+	END IF;
+
+	db_name_ok   := ''f'';
+
+	FOR db_query IN SELECT datname from pg_database where text(datname) = database_name LOOP
+		db_name_ok := ''t'';
+	END LOOP; 
+
+	if (db_name_ok    <> ''t'') THEN
+		RAISE EXCEPTION ''invalid database name'';
+		return ''fail'';
+	end if;
+
+	EXECUTE ''ALTER TABLE '' || table_name || '' ADD COLUMN '' || column_name || '' GEOMETRY '';
+	EXECUTE ''INSERT INTO 	geometry_columns VALUES ('' || quote_literal('''') || '','' ||
+			 quote_literal(database_name) || '','' || quote_literal(table_name) || '','' ||
+			 quote_literal(column_name) || '','' ||
+			 new_dim ||'',''||new_srid||'',''||new_type||'')'';
+
+
+ 
+	EXECUTE ''ALTER TABLE '' ||table_name||'' ADD CHECK (SRID('' || column_name ||
+		'') = '' || new_srid || '')'' ;
+	return ''Geometry column '' || column_name || '' added to table ''
+			||table_name ||'' with a SRID of ''||new_srid;	
+END;
+'
+	LANGUAGE 'plpgsql' with (isstrict);
+
 
 
 
@@ -233,12 +374,12 @@ CREATE FUNCTION srid(geometry)
 CREATE FUNCTION geometryfromtext(geometry,int4)
    RETURNS geometry
    AS '@MODULE_FILENAME@','geometry_from_text'
-	     LANGUAGE 'c'  with (isstrict);
+	     LANGUAGE 'c'  with (isstrict,iscachable);
 
 CREATE FUNCTION setSRID(geometry,int4)
    RETURNS geometry
    AS '@MODULE_FILENAME@','geometry_from_text'
-	     LANGUAGE 'c'  with (isstrict);
+	     LANGUAGE 'c'  with (isstrict,iscachable);
 
 ------- spheroid calcs
 

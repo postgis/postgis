@@ -201,6 +201,7 @@ typedef struct
 typedef struct geomkey {
 	int32 size; /* size in varlena terms */ 
 	BOX	key;
+	int32	SRID; //spatial reference system identifier
 } GEOMETRYKEY; 
 
 
@@ -212,7 +213,7 @@ typedef struct geomkey {
 /* constructors*/
 POLYGON3D	*make_polygon(int nrings, int *pts_per_ring, POINT3D *pts, int npoints, int *size);
 void set_point( POINT3D *pt,double x, double y, double z);
-GEOMETRY	*make_oneobj_geometry(int sub_obj_size, char *sub_obj, int type, bool is3d);
+GEOMETRY	*make_oneobj_geometry(int sub_obj_size, char *sub_obj, int type, bool is3d, int SRID,double scale, double offx,double offy);
 
 void print_box(BOX3D *box);
 void print_box_oneline(BOX3D *box);

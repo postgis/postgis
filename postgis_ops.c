@@ -48,7 +48,7 @@
 
 
 // #define DEBUG_GIST
-//#define DEBUG_GIST2
+// #define DEBUG_GIST2
 
 
 
@@ -105,6 +105,13 @@ Datum geometry_overleft(PG_FUNCTION_ARGS)
 //printf("in geometry_overleft\n");
 //print_box(&geom1->bvol);
 //print_box(&geom2->bvol);
+
+	if (geom1->SRID != geom2->SRID)
+	{
+		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
+		PG_RETURN_NULL();
+	}
+
 	result = FPle(geom1->bvol.URT.x, geom2->bvol.URT.x);
 
 	PG_RETURN_BOOL(result);
@@ -119,6 +126,13 @@ Datum geometry_left(PG_FUNCTION_ARGS)
 	bool	result;
 
 //printf("in geometry_left\n");
+
+	if (geom1->SRID != geom2->SRID)
+	{
+		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
+		PG_RETURN_NULL();
+	}
+
 
 	result = FPlt(geom1->bvol.URT.x, geom2->bvol.LLB.x);
 
@@ -136,6 +150,13 @@ Datum geometry_right(PG_FUNCTION_ARGS)
 	bool	result;
 //printf("in geometry_right\n");
 
+	if (geom1->SRID != geom2->SRID)
+	{
+		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
+		PG_RETURN_NULL();
+	}
+
+
 	result = FPgt(geom1->bvol.LLB.x, geom2->bvol.URT.x);
 	
 	PG_RETURN_BOOL(result);
@@ -149,6 +170,12 @@ Datum geometry_overright(PG_FUNCTION_ARGS)
 
 	bool	result;
 //printf("in geometry_overright\n");
+
+	if (geom1->SRID != geom2->SRID)
+	{
+		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
+		PG_RETURN_NULL();
+	}
 
 
 	result = FPge(geom1->bvol.LLB.x, geom2->bvol.LLB.x);
@@ -165,6 +192,13 @@ Datum geometry_contained(PG_FUNCTION_ARGS)
 	GEOMETRY		   *geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	bool	result;
+
+	if (geom1->SRID != geom2->SRID)
+	{
+		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
+		PG_RETURN_NULL();
+	}
+
 
 //printf("in geometry_contained\n");
 
@@ -186,6 +220,13 @@ Datum geometry_contain(PG_FUNCTION_ARGS)
 
 	bool	result;
 //printf("in geometry_contain\n");
+
+	if (geom1->SRID != geom2->SRID)
+	{
+		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
+		PG_RETURN_NULL();
+	}
+
 
 	result = FPge(geom1->bvol.URT.x, geom2->bvol.URT.x) &&
 				   FPle(geom1->bvol.LLB.x, geom2->bvol.LLB.x) &&
@@ -225,7 +266,15 @@ Datum geometry_overlap(PG_FUNCTION_ARGS)
 {
 	GEOMETRY		   *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	GEOMETRY		   *geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+
 //printf("in geometry_overlap\n");
+
+	if (geom1->SRID != geom2->SRID)
+	{
+		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
+		PG_RETURN_NULL();
+	}
+
 
 	PG_RETURN_BOOL(box3d_ov(&(geom1->bvol), &(geom2->bvol)));
 }
@@ -262,6 +311,14 @@ Datum geometry_lt(PG_FUNCTION_ARGS)
 	GEOMETRY		   *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	GEOMETRY		   *geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
+
+	if (geom1->SRID != geom2->SRID)
+	{
+		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
+		PG_RETURN_NULL();
+	}
+
+
 	if  (geom1->bvol.LLB.x < geom2->bvol.LLB.x)  
 		PG_RETURN_BOOL(TRUE);
 
@@ -295,6 +352,13 @@ Datum geometry_gt(PG_FUNCTION_ARGS)
 	GEOMETRY		   *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	GEOMETRY		   *geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
+
+	if (geom1->SRID != geom2->SRID)
+	{
+		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
+		PG_RETURN_NULL();
+	}
+
 	if  (geom1->bvol.LLB.x > geom2->bvol.LLB.x)  
 		PG_RETURN_BOOL(TRUE);
 
@@ -327,6 +391,13 @@ Datum geometry_eq(PG_FUNCTION_ARGS)
 {
 	GEOMETRY		   *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	GEOMETRY		   *geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+
+	if (geom1->SRID != geom2->SRID)
+	{
+		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
+		PG_RETURN_NULL();
+	}
+
 
 	if  ( FPeq(geom1->bvol.LLB.x , geom2->bvol.LLB.x)  && FPeq(geom1->bvol.LLB.y , geom2->bvol.LLB.y)  && FPeq(geom1->bvol.LLB.z , geom2->bvol.LLB.z)  )
 		PG_RETURN_BOOL(TRUE);
@@ -399,6 +470,12 @@ Datum geometry_same(PG_FUNCTION_ARGS)
 	int32				type1,type2;
 	int32				*offsets1,*offsets2;
 	char				*o1,*o2;
+
+	if (geom1->SRID != geom2->SRID)
+	{
+		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
+		PG_RETURN_NULL();
+	}
 
 
 //printf("in geometry_same\n");
@@ -570,10 +647,26 @@ Datum geometry_union(PG_FUNCTION_ARGS)
 	GEOMETRY		   *result = (GEOMETRY *) palloc(sizeof(GEOMETRY) );
 	BOX3D				*n;
 
+#ifdef DEBUG_GIST2
+	printf("GIST: geometry_union called\n");
+#endif
+
+
+
+	if (geom1->SRID != geom2->SRID)
+	{
+		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
+		PG_RETURN_NULL();
+	}
+
 
 	result->size = sizeof(GEOMETRY);
 	result->type = BBOXONLYTYPE;
 	result->nobjs = -1;
+	result->SRID = geom1->SRID;
+	result->scale = geom1->scale;
+	result->offsetX = geom1->offsetX;
+	result->offsetY = geom1->offsetY;
 
 
 	n = &result->bvol;
@@ -602,10 +695,23 @@ Datum geometry_inter(PG_FUNCTION_ARGS)
 	GEOMETRY		   *geom2 =  (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	GEOMETRY		   *result = (GEOMETRY *) palloc(sizeof(GEOMETRY) );
 
+	if (geom1->SRID != geom2->SRID)
+	{
+		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
+		PG_RETURN_NULL();
+	}
+#ifdef DEBUG_GIST2
+	printf("GIST: geometry_inter called\n");
+#endif
+
 
 	result->size = sizeof(GEOMETRY);
 	result->type = BBOXONLYTYPE;
 	result->nobjs = -1;
+	result->SRID = geom1->SRID;
+	result->scale = geom1->scale;
+	result->offsetX = geom1->offsetX;
+	result->offsetY = geom1->offsetY;
 
 		result->bvol.URT.x = min(geom1->bvol.URT.x, geom2->bvol.URT.x);
 		result->bvol.URT.y = min(geom1->bvol.URT.y, geom2->bvol.URT.y);
@@ -638,6 +744,9 @@ Datum geometry_size(PG_FUNCTION_ARGS)
 
 
 //printf("entering rt_points3d_size \n");
+#ifdef DEBUG_GIST2
+	printf("GIST: geometry_size called\n");
+#endif
 
 
         if (aptr == NULL)
@@ -706,12 +815,19 @@ GISTENTRY *ggeometry_compress(PG_FUNCTION_ARGS)
 	if ( entry->leafkey) {
 		retval = palloc(sizeof(GISTENTRY));
 		if ( entry->pred ) {
+
 			GEOMETRY *in;
 			GEOMETRYKEY *r;
 			BOX	*thebox;
+
+#ifdef DEBUG_GIST2
+	printf("GIST: ggeometry_compress called on geometry\n");
+#endif
+
 			in = (GEOMETRY*)PG_DETOAST_DATUM(PointerGetDatum(entry->pred));
 			r = (GEOMETRYKEY*)palloc( sizeof(GEOMETRYKEY) );
 			r->size = sizeof(GEOMETRYKEY);
+			r->SRID = in->SRID;
 			thebox = convert_box3d_to_box(&in->bvol);
 			memcpy( (void*)&(r->key), (void*)thebox, sizeof(BOX) );
 			if ( (char*)in != entry->pred ) 
@@ -744,10 +860,20 @@ bool ggeometry_consistent(PG_FUNCTION_ARGS)
     ** else use gbox_leaf_consistent
     */
 
+#ifdef DEBUG_GIST2
+	printf("GIST: ggeometry_consistent called\n");
+#endif
+
     if ( ! (entry->pred && query) )
 	return FALSE;
 
 	thebox = convert_box3d_to_box( &(query->bvol) );
+
+	if(    ((GEOMETRYKEY *)(entry->pred))->SRID != query->SRID)
+	{
+		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs (ggeometry_consistent)\n");
+		PG_RETURN_BOOL(FALSE);
+	}
 
     PG_RETURN_BOOL(rtree_internal_consistent((BOX*)&( ((GEOMETRYKEY *)(entry->pred))->key ), 
 		thebox, strategy));
@@ -756,17 +882,29 @@ bool ggeometry_consistent(PG_FUNCTION_ARGS)
 
 GEOMETRYKEY *ggeometry_union(PG_FUNCTION_ARGS)
 {
-    return (GEOMETRYKEY*) 
-	rtree_union(
-		(bytea*) PG_GETARG_POINTER(0),
-		(int*) PG_GETARG_POINTER(1),
-		ggeometry_binary_union
-	);
+	GEOMETRYKEY		*result;
+
+#ifdef DEBUG_GIST2
+	printf("GIST: ggeometry_union called\n");
+#endif
+
+	result = (GEOMETRYKEY*) 
+		rtree_union(
+			(bytea*) PG_GETARG_POINTER(0),
+			(int*) PG_GETARG_POINTER(1),
+			ggeometry_binary_union
+		);
+
+    return result;
 }
 
 
 float *ggeometry_penalty(PG_FUNCTION_ARGS)
 {
+#ifdef DEBUG_GIST2
+	printf("GIST: ggeometry_penalty called\n");
+#endif
+
     return rtree_penalty(
 	(GISTENTRY*) PG_GETARG_POINTER(0),
 	(GISTENTRY*) PG_GETARG_POINTER(1),
@@ -778,6 +916,11 @@ float *ggeometry_penalty(PG_FUNCTION_ARGS)
 
 GIST_SPLITVEC *ggeometry_picksplit(PG_FUNCTION_ARGS)
 {
+#ifdef DEBUG_GIST2
+	printf("GIST: ggeometry_picksplit called\n");
+#endif
+
+
     return rtree_picksplit(
 	(bytea*)PG_GETARG_POINTER(0),
 	(GIST_SPLITVEC*)PG_GETARG_POINTER(1),
@@ -790,10 +933,18 @@ GIST_SPLITVEC *ggeometry_picksplit(PG_FUNCTION_ARGS)
 
 bool *ggeometry_same(PG_FUNCTION_ARGS)
 {
+
+
   GEOMETRYKEY *b1 = (GEOMETRYKEY*) PG_GETARG_POINTER(0);
   GEOMETRYKEY *b2 = (GEOMETRYKEY*) PG_GETARG_POINTER(1);
 
   bool *result = (bool*) PG_GETARG_POINTER(2);
+
+#ifdef DEBUG_GIST2
+	printf("GIST: ggeometry_same called\n");
+#endif
+
+
   if ( b1 && b2 )
    	*result = DatumGetBool( DirectFunctionCall2( box_same, 
 		PointerGetDatum(&(b1->key)), 
@@ -808,6 +959,11 @@ Datum ggeometry_inter(PG_FUNCTION_ARGS) {
   	GEOMETRYKEY*b2 = (GEOMETRYKEY*) PG_GETARG_POINTER(1);
 	char *interd;
 
+#ifdef DEBUG_GIST2
+	printf("GIST: ggeometry_inter called\n");
+#endif
+
+
     	interd = DatumGetPointer(DirectFunctionCall2(
 			rt_box_inter,
 			PointerGetDatum( &(b1->key) ),
@@ -816,7 +972,9 @@ Datum ggeometry_inter(PG_FUNCTION_ARGS) {
 	if (interd) {
 		GEOMETRYKEY *tmp = (GEOMETRYKEY*)palloc( sizeof(GEOMETRYKEY) );
 		tmp->size = sizeof(GEOMETRYKEY);
+	
 		memcpy( (void*)&(tmp->key), (void*)interd, sizeof(BOX) );
+		tmp->SRID = b1->SRID;
 		pfree( interd );
 		PG_RETURN_POINTER( tmp );
 	} else 
@@ -826,6 +984,12 @@ Datum ggeometry_inter(PG_FUNCTION_ARGS) {
 char *ggeometry_binary_union(char *r1, char *r2, int *sizep)
 {
     GEOMETRYKEY *retval;
+
+#ifdef DEBUG_GIST2
+	printf("GIST: ggeometry_binary_union called\n");
+#endif
+
+
 
     if ( ! (r1 && r2) ) {
 	if ( r1 ) {
@@ -846,6 +1010,7 @@ char *ggeometry_binary_union(char *r1, char *r2, int *sizep)
 		PointerGetDatum( &(((GEOMETRYKEY*)r1)->key) ),
 		PointerGetDatum( &(((GEOMETRYKEY*)r2)->key) )) );
 	retval = (GEOMETRYKEY*)palloc( sizeof(GEOMETRYKEY) );
+	retval->SRID = ((GEOMETRYKEY *) r1)->SRID;
 	memcpy( (void*)&(retval->key), (void*)key, sizeof(BOX) );
 	pfree( key );
     	*sizep = retval->size = sizeof(GEOMETRYKEY);
@@ -855,6 +1020,12 @@ char *ggeometry_binary_union(char *r1, char *r2, int *sizep)
 
 
 float size_geometrykey( char *pk ) {
+
+#ifdef DEBUG_GIST2
+	printf("GIST: size_geometrykey called\n");
+#endif
+
+
     if ( pk ) {
 	float size;
     	DirectFunctionCall2( rt_box_size,
@@ -869,6 +1040,12 @@ char *rtree_union(bytea *entryvec, int *sizep, BINARY_UNION bu)
 {
     int numranges, i;
     char *out, *tmp;
+
+#ifdef DEBUG_GIST2
+	printf("GIST: rtree_union called\n");
+#endif
+
+
 
     numranges = (VARSIZE(entryvec) - VARHDRSZ)/sizeof(GISTENTRY); 
     tmp = (char *)(((GISTENTRY *)(VARDATA(entryvec)))[0]).pred;
@@ -890,6 +1067,12 @@ float *rtree_penalty(GISTENTRY *origentry, GISTENTRY *newentry, float *result, B
     char * ud;
     float tmp1;
     int sizep;
+
+#ifdef DEBUG_GIST2
+	printf("GIST: rtree_penalty called\n");
+#endif
+
+
    
     ud = (*bu)( origentry->pred, newentry->pred, &sizep );
     tmp1 = (*sb)( ud ); 
@@ -919,6 +1102,12 @@ GIST_SPLITVEC *rtree_picksplit(bytea *entryvec, GIST_SPLITVEC *v, int keylen, BI
     OffsetNumber seed_1 = 0, seed_2 = 0;
     OffsetNumber *left, *right;
     OffsetNumber maxoff;
+
+
+#ifdef DEBUG_GIST2
+	printf("GIST: rtree_picsplit called\n");
+#endif
+
 
     maxoff = ((VARSIZE(entryvec) - VARHDRSZ)/sizeof(GISTENTRY)) - 2;
     nbytes =  (maxoff + 2) * sizeof(OffsetNumber);
@@ -1059,6 +1248,12 @@ bool rtree_internal_consistent(BOX *key,
 			StrategyNumber strategy)
 {
     bool retval;
+
+#ifdef DEBUG_GIST2
+	printf("GIST: rtree_internal_consist called\n");
+#endif
+
+
 
     switch(strategy) {
     case RTLeftStrategyNumber:
