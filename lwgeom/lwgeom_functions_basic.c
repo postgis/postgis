@@ -1956,9 +1956,6 @@ Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	//proftime[PROF_G2P] = 0;
-	//proftime[PROF_P2G] = 0;
-	//proftime[PROF_GRUN] = 0;
 	profreport("dist",geom1, geom2, NULL);
 #endif
 

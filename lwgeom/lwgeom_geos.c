@@ -248,12 +248,18 @@ Datum geomunion(PG_FUNCTION_ARGS)
 //elog(NOTICE,"in geomunion");
 
 #ifdef PROFILE
-	profstart(PROF_P2G);
+	profstart(PROF_P2G1);
 #endif
 	g1 = POSTGIS2GEOS(geom1);
+#ifdef PROFILE
+	profstop(PROF_P2G1);
+#endif
+#ifdef PROFILE
+	profstart(PROF_P2G2);
+#endif
 	g2 = POSTGIS2GEOS(geom2);
 #ifdef PROFILE
-	profstop(PROF_P2G);
+	profstop(PROF_P2G2);
 #endif
 
 //elog(NOTICE,"g1=%s",GEOSasText(g1));
@@ -333,12 +339,18 @@ Datum symdifference(PG_FUNCTION_ARGS)
 	initGEOS(MAXIMUM_ALIGNOF);
 
 #ifdef PROFILE
-	profstart(PROF_P2G);
+	profstart(PROF_P2G1);
 #endif
 	g1 = POSTGIS2GEOS(geom1);
+#ifdef PROFILE
+	profstop(PROF_P2G1);
+#endif
+#ifdef PROFILE
+	profstart(PROF_P2G2);
+#endif
 	g2 = POSTGIS2GEOS(geom2);
 #ifdef PROFILE
-	profstop(PROF_P2G);
+	profstop(PROF_P2G2);
 #endif
 
 #ifdef PROFILE
@@ -408,11 +420,11 @@ Datum boundary(PG_FUNCTION_ARGS)
 	initGEOS(MAXIMUM_ALIGNOF);
 
 #ifdef PROFILE
-	profstart(PROF_P2G);
+	profstart(PROF_P2G1);
 #endif
 	g1 = POSTGIS2GEOS(geom1 );
 #ifdef PROFILE
-	profstop(PROF_P2G);
+	profstop(PROF_P2G1);
 #endif
 
 #ifdef PROFILE
@@ -437,7 +449,7 @@ Datum boundary(PG_FUNCTION_ARGS)
 #endif
 	result = GEOS2POSTGIS(g3, lwgeom_ndims(geom1->type) > 2);
 #ifdef PROFILE
-	profstart(PROF_P2G);
+	profstart(PROF_P2G1);
 #endif
 
 	if (result == NULL)
@@ -480,11 +492,11 @@ Datum convexhull(PG_FUNCTION_ARGS)
 	initGEOS(MAXIMUM_ALIGNOF);
 
 #ifdef PROFILE
-	profstart(PROF_P2G);
+	profstart(PROF_P2G1);
 #endif
 	g1 = POSTGIS2GEOS(geom1 );
 #ifdef PROFILE
-	profstop(PROF_P2G);
+	profstop(PROF_P2G1);
 #endif
 
 #ifdef PROFILE
@@ -546,11 +558,11 @@ Datum buffer(PG_FUNCTION_ARGS)
 	initGEOS(MAXIMUM_ALIGNOF);
 
 #ifdef PROFILE
-	profstart(PROF_P2G);
+	profstart(PROF_P2G1);
 #endif
 	g1 = POSTGIS2GEOS(geom1 );
 #ifdef PROFILE
-	profstop(PROF_P2G);
+	profstop(PROF_P2G1);
 #endif
 
 #ifdef PROFILE
@@ -623,12 +635,18 @@ Datum intersection(PG_FUNCTION_ARGS)
 //elog(NOTICE,"intersection() START");
 
 #ifdef PROFILE
-	profstart(PROF_P2G);
+	profstart(PROF_P2G1);
 #endif
 	g1 = POSTGIS2GEOS(geom1);
+#ifdef PROFILE
+	profstop(PROF_P2G1);
+#endif
+#ifdef PROFILE
+	profstart(PROF_P2G2);
+#endif
 	g2 = POSTGIS2GEOS(geom2);
 #ifdef PROFILE
-	profstop(PROF_P2G);
+	profstop(PROF_P2G2);
 #endif
 
 //elog(NOTICE,"               constructed geometrys - calling geos");
@@ -722,12 +740,18 @@ Datum difference(PG_FUNCTION_ARGS)
 	initGEOS(MAXIMUM_ALIGNOF);
 
 #ifdef PROFILE
-	profstart(PROF_P2G);
+	profstart(PROF_P2G1);
 #endif
 	g1 = POSTGIS2GEOS(geom1);
+#ifdef PROFILE
+	profstop(PROF_P2G1);
+#endif
+#ifdef PROFILE
+	profstart(PROF_P2G2);
+#endif
 	g2 = POSTGIS2GEOS(geom2);
 #ifdef PROFILE
-	profstop(PROF_P2G);
+	profstop(PROF_P2G2);
 #endif
 
 #ifdef PROFILE
@@ -796,11 +820,11 @@ Datum pointonsurface(PG_FUNCTION_ARGS)
 	initGEOS(MAXIMUM_ALIGNOF);
 
 #ifdef PROFILE
-	profstart(PROF_P2G);
+	profstart(PROF_P2G1);
 #endif
 	g1 = POSTGIS2GEOS(geom1);
 #ifdef PROFILE
-	profstop(PROF_P2G);
+	profstop(PROF_P2G1);
 #endif
 
 #ifdef PROFILE
@@ -864,11 +888,11 @@ Datum centroid(PG_FUNCTION_ARGS)
 	initGEOS(MAXIMUM_ALIGNOF);
 
 #ifdef PROFILE
-	profstart(PROF_P2G);
+	profstart(PROF_P2G1);
 #endif
 	geosgeom = POSTGIS2GEOS(geom);
 #ifdef PROFILE
-	profstop(PROF_P2G);
+	profstop(PROF_P2G1);
 #endif
 
 #ifdef PROFILE
@@ -942,11 +966,11 @@ Datum isvalid(PG_FUNCTION_ARGS)
 	initGEOS(MAXIMUM_ALIGNOF);
 
 #ifdef PROFILE
-	profstart(PROF_P2G);
+	profstart(PROF_P2G1);
 #endif
 	g1 = POSTGIS2GEOS(geom1);
 #ifdef PROFILE
-	profstop(PROF_P2G);
+	profstop(PROF_P2G1);
 #endif
 
 #ifdef PROFILE
@@ -1012,12 +1036,18 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	initGEOS(MAXIMUM_ALIGNOF);
 
 #ifdef PROFILE
-	profstart(PROF_P2G);
+	profstart(PROF_P2G1);
 #endif
 	g1 = POSTGIS2GEOS(geom1);
+#ifdef PROFILE
+	profstop(PROF_P2G1);
+#endif
+#ifdef PROFILE
+	profstart(PROF_P2G2);
+#endif
 	g2 = POSTGIS2GEOS(geom2);
 #ifdef PROFILE
-	profstop(PROF_P2G);
+	profstop(PROF_P2G2);
 #endif
 
 #ifdef PROFILE
@@ -1081,12 +1111,18 @@ Datum contains(PG_FUNCTION_ARGS)
 	initGEOS(MAXIMUM_ALIGNOF);
 
 #ifdef PROFILE
-	profstart(PROF_P2G);
+	profstart(PROF_P2G1);
 #endif
 	g1 = POSTGIS2GEOS(geom1);
+#ifdef PROFILE
+	profstop(PROF_P2G1);
+#endif
+#ifdef PROFILE
+	profstart(PROF_P2G2);
+#endif
 	g2 = POSTGIS2GEOS(geom2);
 #ifdef PROFILE
-	profstop(PROF_P2G);
+	profstop(PROF_P2G2);
 #endif
 
 #ifdef PROFILE
@@ -1150,12 +1186,18 @@ Datum within(PG_FUNCTION_ARGS)
 	initGEOS(MAXIMUM_ALIGNOF);
 
 #ifdef PROFILE
-	profstart(PROF_P2G);
+	profstart(PROF_P2G1);
 #endif
 	g1 = POSTGIS2GEOS(geom1);
+#ifdef PROFILE
+	profstop(PROF_P2G1);
+#endif
+#ifdef PROFILE
+	profstart(PROF_P2G2);
+#endif
 	g2 = POSTGIS2GEOS(geom2);
 #ifdef PROFILE
-	profstop(PROF_P2G);
+	profstop(PROF_P2G2);
 #endif
 
 #ifdef PROFILE
@@ -1220,12 +1262,18 @@ Datum crosses(PG_FUNCTION_ARGS)
 	initGEOS(MAXIMUM_ALIGNOF);
 
 #ifdef PROFILE
-	profstart(PROF_P2G);
+	profstart(PROF_P2G1);
 #endif
 	g1 = POSTGIS2GEOS(geom1);
+#ifdef PROFILE
+	profstop(PROF_P2G1);
+#endif
+#ifdef PROFILE
+	profstart(PROF_P2G2);
+#endif
 	g2 = POSTGIS2GEOS(geom2);
 #ifdef PROFILE
-	profstop(PROF_P2G);
+	profstop(PROF_P2G2);
 #endif
 
 #ifdef PROFILE
@@ -1290,12 +1338,18 @@ Datum intersects(PG_FUNCTION_ARGS)
 	initGEOS(MAXIMUM_ALIGNOF);
 
 #ifdef PROFILE
-	profstart(PROF_P2G);
+	profstart(PROF_P2G1);
 #endif
 	g1 = POSTGIS2GEOS(geom1 );
+#ifdef PROFILE
+	profstop(PROF_P2G1);
+#endif
+#ifdef PROFILE
+	profstart(PROF_P2G2);
+#endif
 	g2 = POSTGIS2GEOS(geom2 );
 #ifdef PROFILE
-	profstop(PROF_P2G);
+	profstop(PROF_P2G2);
 #endif
 
 #ifdef PROFILE
@@ -1357,12 +1411,18 @@ Datum touches(PG_FUNCTION_ARGS)
 	initGEOS(MAXIMUM_ALIGNOF);
 
 #ifdef PROFILE
-	profstart(PROF_P2G);
+	profstart(PROF_P2G1);
 #endif
 	g1 = POSTGIS2GEOS(geom1 );
+#ifdef PROFILE
+	profstop(PROF_P2G1);
+#endif
+#ifdef PROFILE
+	profstart(PROF_P2G2);
+#endif
 	g2 = POSTGIS2GEOS(geom2 );
 #ifdef PROFILE
-	profstop(PROF_P2G);
+	profstop(PROF_P2G2);
 #endif
 
 #ifdef PROFILE
@@ -1426,12 +1486,18 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	initGEOS(MAXIMUM_ALIGNOF);
 
 #ifdef PROFILE
-	profstart(PROF_P2G);
+	profstart(PROF_P2G1);
 #endif
 	g1 = POSTGIS2GEOS(geom1);
+#ifdef PROFILE
+	profstop(PROF_P2G1);
+#endif
+#ifdef PROFILE
+	profstart(PROF_P2G2);
+#endif
 	g2 = POSTGIS2GEOS(geom2);
 #ifdef PROFILE
-	profstop(PROF_P2G);
+	profstop(PROF_P2G2);
 #endif
 
 #ifdef PROFILE
@@ -1480,12 +1546,18 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 	initGEOS(MAXIMUM_ALIGNOF);
 
 #ifdef PROFILE
-	profstart(PROF_P2G);
+	profstart(PROF_P2G1);
 #endif
 	g1 = POSTGIS2GEOS(geom1);
+#ifdef PROFILE
+	profstop(PROF_P2G1);
+#endif
+#ifdef PROFILE
+	profstart(PROF_P2G2);
+#endif
 	g2 = POSTGIS2GEOS(geom2);
 #ifdef PROFILE
-	profstop(PROF_P2G);
+	profstop(PROF_P2G2);
 #endif
 
 	patt =  DatumGetCString(DirectFunctionCall1(textout,
@@ -1545,12 +1617,18 @@ Datum relate_full(PG_FUNCTION_ARGS)
 //elog(NOTICE,"GEOS init()");
 
 #ifdef PROFILE
-	profstart(PROF_P2G);
+	profstart(PROF_P2G1);
 #endif
 	g1 = POSTGIS2GEOS(geom1 );
+#ifdef PROFILE
+	profstop(PROF_P2G1);
+#endif
+#ifdef PROFILE
+	profstart(PROF_P2G2);
+#endif
 	g2 = POSTGIS2GEOS(geom2 );
 #ifdef PROFILE
-	profstop(PROF_P2G);
+	profstop(PROF_P2G2);
 #endif
 
 //elog(NOTICE,"constructed geometries ");
@@ -1641,12 +1719,18 @@ Datum geomequals(PG_FUNCTION_ARGS)
 	initGEOS(MAXIMUM_ALIGNOF);
 
 #ifdef PROFILE
-	profstart(PROF_P2G);
+	profstart(PROF_P2G1);
 #endif
 	g1 = POSTGIS2GEOS(geom1);
+#ifdef PROFILE
+	profstop(PROF_P2G1);
+#endif
+#ifdef PROFILE
+	profstart(PROF_P2G2);
+#endif
 	g2 = POSTGIS2GEOS(geom2);
 #ifdef PROFILE
-	profstop(PROF_P2G);
+	profstop(PROF_P2G2);
 #endif
 
 #ifdef PROFILE
@@ -1694,11 +1778,11 @@ Datum issimple(PG_FUNCTION_ARGS)
 	//elog(NOTICE,"GEOS init()");
 
 #ifdef PROFILE
-	profstart(PROF_P2G);
+	profstart(PROF_P2G1);
 #endif
 	g1 = POSTGIS2GEOS(geom);
 #ifdef PROFILE
-	profstop(PROF_P2G);
+	profstop(PROF_P2G1);
 #endif
 
 #ifdef PROFILE
@@ -1750,11 +1834,11 @@ Datum isring(PG_FUNCTION_ARGS)
 	//elog(NOTICE,"GEOS init()");
 
 #ifdef PROFILE
-	profstart(PROF_P2G);
+	profstart(PROF_P2G1);
 #endif
 	g1 = POSTGIS2GEOS(geom );
 #ifdef PROFILE
-	profstop(PROF_P2G);
+	profstop(PROF_P2G1);
 #endif
 
 #ifdef PROFILE
