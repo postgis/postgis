@@ -12,6 +12,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.57  2004/05/20 19:21:08  pramsey
+ * Fix bug in append mode that filled values into nonexistant gid column.
+ *
  * Revision 1.56  2004/05/13 09:40:33  strk
  * Totally reworked code to have a main loop for shapefile objects.
  * Much more readable, I belive.
@@ -889,7 +892,10 @@ int main (int ARGC, char **ARGV){
 		}
 		else
 		{
-			printf("%d\t", j);
+			if(opt != 'a')
+			{
+				printf("%d\t", j);
+			}
 		}
 		Insert_attributes(hDBFHandle,j);
 
