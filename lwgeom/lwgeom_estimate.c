@@ -1297,7 +1297,7 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 #endif
 
 	/* Construct box2dfloat4 */
-	box = palloc(sizeof(BOX2DFLOAT4));
+	box = SPI_palloc(sizeof(BOX2DFLOAT4));
 
 	box->xmin = histo->xmin;
 	box->ymin = histo->ymin;
@@ -2420,7 +2420,7 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 #endif
 
 	/* Construct box2dfloat4 */
-	box = palloc(sizeof(BOX2DFLOAT4));
+	box = SPI_palloc(sizeof(BOX2DFLOAT4));
 
 	/* Construct the box */
 	memcpy(box, ARR_DATA_PTR(array), sizeof(BOX2DFLOAT4));
@@ -2447,6 +2447,9 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.27  2005/03/24 14:45:50  strk
+ * Fixed bug in estimated_extent() returning pointer to a memory allocated in SPI memory context
+ *
  * Revision 1.26  2005/03/08 09:27:23  strk
  * RESTRICT selectivity estimator use self->varno instead of varRelid.
  * Seems to work for subqueries...
