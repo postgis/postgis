@@ -88,9 +88,9 @@ public abstract class PGboxbase extends PGobject {
         }
         String myPrefix = getPrefix();
         if (value.startsWith(myPrefix)) {
-            value = value.substring(myPrefix.length());
+            value = value.substring(myPrefix.length()).trim();
         }
-        PGtokenizer t = new PGtokenizer(PGtokenizer.removePara(value.trim()), ',');
+        PGtokenizer t = new PGtokenizer(PGtokenizer.removePara(value), ',');
         llb = new Point(t.getToken(0));
         urt = new Point(t.getToken(1));
         if (srid != -1) {
