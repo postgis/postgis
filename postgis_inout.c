@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.27  2003/08/22 17:40:11  dblasby
+ * fixed geometry_in('SRID=<int>{no ;}').
+ *
  * Revision 1.26  2003/08/21 16:22:09  dblasby
  * added patch from strk@freek.keybit.net  for PG_NARGS() not being in 7.2
  *
@@ -1506,13 +1509,18 @@ Datum geometry_in(PG_FUNCTION_ARGS)
 		if (nitems !=1 )
 		{
 			//error
-			elog(ERROR,"couldnt parse objects in GEOMETRY (SRID related)\n");
+			elog(ERROR,"couldnt parse objects in GEOMETRY (SRID related)");
 			PG_RETURN_NULL() ;
 		}
 		//delete first part of string
 		str = strchr(str,';');
 		if (str != NULL)
 			str++;
+		else
+		{
+			elog(ERROR,"couldnt parse objects in GEOMETRY (SRID related - no ';')");
+			PG_RETURN_NULL() ;
+		}
 	}
 
 
