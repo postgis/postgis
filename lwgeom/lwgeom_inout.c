@@ -169,14 +169,14 @@ Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 
 	size_header = sprintf(sridText,"SRID=%i;",SRID);
 	//SRID text size + wkb size (+1 = NULL term)
-	size_result = size_header +  2*(wkb_input->size-4) + 1; 
+	size_result = size_header +  2*(wkb_input->size-VARHDRSZ) + 1; 
 
 	wkb_srid_hexized = palloc(size_result);
 	wkb_srid_hexized[0] = 0; // empty
 	strcpy(wkb_srid_hexized, sridText);
 	loc = wkb_srid_hexized + size_header; // points to null in "SRID=#;"
 
-	for (t=0; t< (wkb_input->size -4); t++)
+	for (t=0; t< (wkb_input->size -VARHDRSZ); t++)
 	{
 		deparse_hex( ((unsigned char *) wkb_input)[4 + t], &loc[t*2]);
 	}
@@ -229,7 +229,7 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 		type = PG_GETARG_TEXT_P(1);
 		if (VARSIZE(type) < 7)  
 		{
-			elog(ERROR,"asbinary(geometry, <type>) - type should be 'XDR' or 'NDR'.  type length is %i",VARSIZE(type) -4);
+			elog(ERROR,"asbinary(geometry, <type>) - type should be 'XDR' or 'NDR'.  type length is %i",VARSIZE(type) -VARHDRSZ);
 			PG_RETURN_NULL();
 		}
 
@@ -262,15 +262,15 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 //elog(NOTICE, "in WKBFromLWGEOM with WKB (with no 'SRID=#;' = '%s'", hexized_wkb);
 
 	len_hexized_wkb = strlen(hexized_wkb);
-	size_result = len_hexized_wkb/2 + 4;
+	size_result = len_hexized_wkb/2 + VARHDRSZ;
 	result = palloc(size_result);
 
-	memcpy(result, &size_result,4); // size header
+	memcpy(result, &size_result,VARHDRSZ); // size header
 
 	// have a hexized string, want to make it binary
 	for (t=0; t< (len_hexized_wkb/2); t++)
 	{
-		((unsigned char *) result +4)[t] = parse_hex(  hexized_wkb + (t*2) );
+		((unsigned char *) result +VARHDRSZ)[t] = parse_hex(  hexized_wkb + (t*2) );
 	}
 
 	pfree(hexized_wkb_srid);
@@ -315,7 +315,7 @@ Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS)
 
 	result = palloc(size);// 16 for bbox2d
 
-	memcpy(result,&size,4); // size
+	result->size = size;
 	result->type = lwgeom_makeType_full(
 		TYPE_HASZ(old_type),
 		TYPE_HASM(old_type),
@@ -380,7 +380,7 @@ Datum LWGEOM_dropBBOX(PG_FUNCTION_ARGS)
 
 	result = palloc(size);// 16 for bbox2d
 
-	memcpy(result,&size,4); // size
+	result->size = size;
 	result->type = lwgeom_makeType_full(
 		TYPE_HASZ(old_type),
 		TYPE_HASM(old_type),

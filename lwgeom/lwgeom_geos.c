@@ -1689,7 +1689,7 @@ Datum relate_full(PG_FUNCTION_ARGS)
 	Geometry *g1,*g2;
 	char *relate_str;
 	int len;
-	char *result;
+	text *result;
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
@@ -1756,12 +1756,13 @@ Datum relate_full(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL(); //never get here
 	}
 
-	len = strlen(relate_str) + 4;
+	len = strlen(relate_str) + VARHDRSZ;
 
 	result= palloc(len);
-	*((int *) result) = len;
+	VARATT_SIZEP(result) = len;
+	//*((int *) result) = len;
 
-	memcpy(result +4, relate_str, len-4);
+	memcpy(VARDATA(result), relate_str, len-VARHDRSZ);
 
 	free(relate_str);
 
@@ -2213,7 +2214,7 @@ GEOS2POSTGIS(Geometry *geom, char want3d)
 	lwnotice("GEOS2POSTGIS: lwgeom_serialize_size returned %d", size);
 #endif
 
-	size += 4; // postgresql size header
+	size += VARHDRSZ; // postgresql size header
 	result = palloc(size);
 	result->size = size;
 
@@ -2224,7 +2225,7 @@ GEOS2POSTGIS(Geometry *geom, char want3d)
 
 	lwgeom_serialize_buf(lwgeom, SERIALIZED_FORM(result), &retsize);
 
-	if ( retsize != size-4 )
+	if ( retsize != size-VARHDRSZ )
 	{
 		lwerror("GEOS2POSTGIS: lwgeom_serialize_buf returned %d, lwgeom_serialize_size returned %d", retsize, size);
 	}
