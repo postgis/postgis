@@ -917,7 +917,7 @@ WHERE streams.name = 'Cam Stream' AND lakes.name = 'Blue Lake';
 --
 --================================
 --
-SELECT Difference(named_places.boundary, forests.boundary)
+SELECT AsText(Difference(named_places.boundary, forests.boundary))
 FROM named_places, forests 
 WHERE named_places.name = 'Ashton' AND forests.name = 'Green Forest';
 --
@@ -931,7 +931,7 @@ WHERE named_places.name = 'Ashton' AND forests.name = 'Green Forest';
 --
 --================================
 --
-SELECT GeomUnion(shore, boundary)
+SELECT AsText(GeomUnion(shore, boundary))
 FROM lakes, named_places 
 WHERE lakes.name = 'Blue Lake' AND named_places.name = 'Goose Island';
 --
@@ -946,7 +946,7 @@ WHERE lakes.name = 'Blue Lake' AND named_places.name = 'Goose Island';
 --
 --================================
 --
-SELECT SymmetricDifference(shore, boundary)
+SELECT AsText(SymmetricDifference(shore, boundary))
 FROM lakes, named_places 
 WHERE lakes.name = 'Blue Lake' AND named_places.name = 'Goose Island';
 --
@@ -984,7 +984,7 @@ WHERE Contains(Buffer(bridges.position, 15.0), buildings.footprint);
 --
 --================================
 --
-SELECT ConvexHull(shore)
+SELECT AsText(ConvexHull(shore))
 FROM lakes
 WHERE lakes.name = 'Blue Lake';
 --
