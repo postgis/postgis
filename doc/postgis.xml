@@ -1705,7 +1705,7 @@ if( geom.getType() = Geometry.POLYGON )
 						  running. This is useful in binary cursors to pull data out of
 						  the database without converting it to a string representation.
 						</para> 
-						<para>OGC SPEC s2.1.1.1 - also see asBinary(<geometry>,'XDR') and asBinary(<geometry>,'NDR')
+						<para>OGC SPEC s2.1.1.1 - also see asBinary(&lt;geometry&gt;,'XDR') and asBinary(&lt;geometry&gt;,'NDR')
 					</listitem> 
 				</varlistentry> 
 				<varlistentry> 
