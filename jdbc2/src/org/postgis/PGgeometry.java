@@ -22,14 +22,16 @@ public class PGgeometry extends PGobject {
     BinaryParser bp = new BinaryParser();
 
     public PGgeometry() {
-        // Do nothing
+        this.setType("geometry");
     }
 
     public PGgeometry(Geometry geom) {
+        this();
         this.geom = geom;
     }
 
     public PGgeometry(String value) throws SQLException {
+        this();
         setValue(value);
     }
 

@@ -4,3 +4,5 @@ postgis_undef.sql
 postgis_old.sql
 postgis_geos_version.h
 lwpostgis.sql
+.classpath
+.project

@@ -1,5 +1,5 @@
 /*
- * PostGisWrapper.java
+ * DriverWrapper.java
  * 
  * $Id$
  * 
