@@ -21,17 +21,18 @@ NAME=postgis
 SO_MAJOR_VERSION=0
 SO_MINOR_VERSION=6
 
+
 #override CPPFLAGS := -I$(srcdir) $(CPPFLAGS)
 # Altered for Cynwin
-override CPPFLAGS := -g  -I$(srcdir) $(CPPFLAGS) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"'
+override CPPFLAGS := -g  -I$(srcdir) $(CPPFLAGS) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"' -DWANT_PROJECTION 
 override DLLLIBS := $(BE_DLLLIBS) $(DLLLIBS)
 
-OBJS=postgis_debug.o postgis_ops.o postgis_fn.o postgis_inout.o postgis_proj.o postgis_chip.o
+OBJS=postgis_debug.o postgis_ops.o postgis_fn.o postgis_inout.o postgis_proj.o postgis_chip.o postgis_transform.o
 
 # Add libraries that libpq depends (or might depend) on into the
 # shared library link.  (The order in which you list them here doesn't
 # matter.)
-SHLIB_LINK = $(filter -L%, $(LDFLAGS))
+SHLIB_LINK = $(filter -L%, $(LDFLAGS)) -lproj
 
 all: all-lib $(NAME).sql $(NAME)_undef.sql loaderdumper
 

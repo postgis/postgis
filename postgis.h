@@ -347,6 +347,9 @@ void deparse_hex(unsigned char str, unsigned char *result);
 
 char *geometry_to_text(GEOMETRY  *geometry);
 
+
+
+
 //exposed to psql
 
 Datum box3d_in(PG_FUNCTION_ARGS);
@@ -455,6 +458,10 @@ Datum width_chip(PG_FUNCTION_ARGS);
 Datum height_chip(PG_FUNCTION_ARGS);
 Datum datatype_chip(PG_FUNCTION_ARGS);
 Datum compression_chip(PG_FUNCTION_ARGS);
+
+
+Datum transform_geom(PG_FUNCTION_ARGS);
+
 
 //for GIST index
 typedef char* (*BINARY_UNION)(char*, char*, int*);

@@ -162,6 +162,8 @@ double	distance_ellipse(double lat1, double long1,
 	double u2,A,B;
 	double dsigma;
 
+	int iterations;  
+
 	L1 = atan((1.0 - sphere->f ) * tan( lat1) );
 	L2 = atan((1.0 - sphere->f ) * tan( lat2) );
 	sinU1 = sin(L1);
@@ -173,6 +175,7 @@ double	distance_ellipse(double lat1, double long1,
 	dl1 = dl;
 	cosdl1 = cos(dl);
 	sindl1 = sin(dl);
+	iterations = 0;
 	do {
 		cosSigma = sinU1 * sinU2 + cosU1 * cosU2 * cosdl1;
 		sigma = acos(cosSigma);
@@ -183,7 +186,8 @@ double	distance_ellipse(double lat1, double long1,
 		dl1 = dl + dl2;
 		cosdl1 = cos(dl1);
 		sindl1 = sin(dl1);
-	} while (fabs(dl3) > 1.0e-032);
+		iterations++;
+	} while ( (iterations<999) && (fabs(dl3) > 1.0e-032));
 
 	   // compute expansions A and B 
 	u2 = mu2(azimuthEQ,sphere);
