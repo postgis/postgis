@@ -241,11 +241,22 @@ CREATE TYPE BOX3D (
 	output = BOX3D_out
 );
 
+create function WKB_in(opaque)
+	RETURNS WKB
+   AS '@MODULE_FILENAME@','WKB_in'
+   LANGUAGE 'c' with (isstrict);
+
+create function WKB_out(opaque)
+	RETURNS opaque
+   AS '@MODULE_FILENAME@','WKB_out'
+   LANGUAGE 'c' with (isstrict);
+
+
 CREATE TYPE WKB (
-	alignment = double,
 	internallength = VARIABLE,
-	input =  textin,
-	output =  textout
+	input =  WKB_in,
+	output =  WKB_out,
+	storage= extended
 );
 
 

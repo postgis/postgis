@@ -205,6 +205,13 @@ typedef struct geomkey {
 } GEOMETRYKEY; 
 
 
+// WKB structure  -- exactly the same as TEXT
+typedef struct Well_known_bin {
+	int32 size;    // total size of this structure
+	unsigned char  data[1]; //THIS HOLD VARIABLE LENGTH DATA
+} WellKnownBinary;
+
+
 //prototypes 
 
      int isspace(int c);
@@ -312,6 +319,8 @@ double distance_seg_seg(POINT3D *A, POINT3D *B, POINT3D *C, POINT3D *D);
 bool point_in_poly(POINT3D *p, POLYGON3D *poly);
 
 void print_point_debug(POINT3D *p);
+unsigned char	parse_hex(char *str);
+void deparse_hex(unsigned char str, unsigned char *result);
 
 
 char *geometry_to_text(GEOMETRY  *geometry);
@@ -411,6 +420,9 @@ Datum isclosed(PG_FUNCTION_ARGS);
 Datum centroid(PG_FUNCTION_ARGS);
 
 Datum postgis_gist_sel(PG_FUNCTION_ARGS);
+
+Datum WKB_in(PG_FUNCTION_ARGS);
+Datum WKB_out(PG_FUNCTION_ARGS);
 
 
 //for GIST index

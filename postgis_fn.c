@@ -2193,3 +2193,6 @@ Datum centroid(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 
 }
+
+
+
