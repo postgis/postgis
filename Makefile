@@ -33,7 +33,10 @@ OBJS=postgis_debug.o postgis_ops.o postgis_fn.o postgis_inout.o postgis_proj.o
 # matter.)
 SHLIB_LINK = $(filter -L%, $(LDFLAGS))
 
-all: all-lib $(NAME).sql
+all: all-lib $(NAME).sql shp2pgsql
+
+shp2pgsql:
+	cd loader; make
 
 # Shared library stuff
 include $(top_srcdir)/src/Makefile.shlib
@@ -54,6 +57,7 @@ uninstall: uninstall-lib
 
 clean distclean maintainer-clean: clean-lib
 	@rm -f $(OBJS) $(NAME).sql
+	cd loader; make clean
 
 test: all
 	csh regress/regress.csh $(test_db)
