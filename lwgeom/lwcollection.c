@@ -300,9 +300,11 @@ lwcollection_same(const LWCOLLECTION *c1, const LWCOLLECTION *c2)
 	if ( TYPE_GETTYPE(c1->type) != TYPE_GETTYPE(c2->type) ) return 0;
 	if ( c1->ngeoms != c2->ngeoms ) return 0;
 
+	lwnotice("lwcollection_same called");
+
 	for (i=0; i<c1->ngeoms; i++)
 	{
-		if ( ! lwgeom_same(c1->geoms[0], c2->geoms[1]) )
+		if ( ! lwgeom_same(c1->geoms[i], c2->geoms[i]) )
 			return 0;
 	}
 	return 1;
