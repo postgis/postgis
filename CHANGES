@@ -19,6 +19,7 @@ PostGIS 1.0.0RC4
 	  instead of sql to workaround a pgsql80x bug.
 	- box2d output changed back to 15 significant digits
 	- BUGFIX in box3d computation function with collections
+	- improvements in postgis_restore.pl
 
 PostGIS 1.0.0RC3
 2005/02/24
