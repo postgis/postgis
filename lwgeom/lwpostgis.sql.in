@@ -11,6 +11,9 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.5  2004/08/20 16:36:22  strk
+-- transform() support
+--
 -- Revision 1.4  2004/08/20 14:54:35  strk
 -- gist operators support functions renamed to allow for finer control by postgis_restore.pl
 --
@@ -955,13 +958,6 @@ CREATE TABLE geometry_columns (
 		f_geometry_column ) );
 
 -----------------------------------------------------------------------
--- GET_PROJ4_FROM_SRID( <srid> )
------------------------------------------------------------------------
-CREATEFUNCTION get_proj4_from_srid(integer) RETURNS text AS
-'SELECT proj4text::text FROM spatial_ref_sys WHERE srid= $1' 
-LANGUAGE 'sql' WITH (iscachable,isstrict);
-
------------------------------------------------------------------------
 -- RENAME_GEOMETRY_TABLE_CONSTRAINTS()
 -----------------------------------------------------------------------
 -- This function has been obsoleted for the difficulty in
@@ -1765,7 +1761,29 @@ END;
 LANGUAGE 'plpgsql' WITH (iscachable); 
 
 
+---------------------------------------------------------------
+-- PROJ support
+---------------------------------------------------------------
 
+CREATEFUNCTION get_proj4_from_srid(integer) RETURNS text AS
+'SELECT proj4text::text FROM spatial_ref_sys WHERE srid= $1' 
+LANGUAGE 'sql' WITH (iscachable,isstrict);
+
+CREATEFUNCTION transform_geometry(geometry,text,text,int)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','transform_geom'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATEFUNCTION transform(geometry,integer) RETURNS geometry AS
+'BEGIN
+ RETURN transform_geometry( $1 , get_proj4_from_srid(SRID( $1 ) ), get_proj4_from_srid( $2 ), $2 );
+ END;'
+LANGUAGE 'plpgsql' WITH (iscachable,isstrict);
+
+
+---------------------------------------------------------------
+-- END
+---------------------------------------------------------------
 
 COMMIT;
 
