@@ -1,6 +1,5 @@
 2004/09/10
 
-- Allow pgsql2shp to accept a SQL query
 - Clean up mapserver connectivity
 - Submit to OpenGIS Consortium for testing
 - More connectivity to commercial GIS software.
