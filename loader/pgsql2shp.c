@@ -1,7 +1,7 @@
 //compile line for Refractions' Solaris machine...
 //gcc -g -I/data3/postgresql-7.1.2/include -L/data3/postgresql-7.1.2/lib dump.c ../shapelib-1.2.8/shpopen.o ../shapelib-1.2.8/dbfopen.o -o dump -lpq
 
-
+#include <getopt.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -52,13 +52,19 @@ int main(int ARGC, char **ARGV){
 	PGconn	   *conn;
 	PGresult   *res,*res2,*res3;
 
-
+	table = NULL;
+	geo_col_name = NULL;
+	geo_str = NULL;
+	dbName = NULL;
 	pghost = NULL;
 	shp_file = NULL;
 	pgport = NULL;
+	geovalue_field = 0;
 	pguser = "";
 	pgpass = "";
 	is3d = 0;
+	errflg =0;
+	OID =0;
         while ((c = getopt(ARGC, ARGV, "f:h:du:p:P:")) != EOF){
                switch (c) {
                case 'f':
@@ -1089,6 +1095,8 @@ int create_multipolygons(char *str,int shape_id, SHPHandle shp,int dims){
 	double	*finalz;
 
 	SHPObject *obj;
+	
+	points=0;
 
 	polys = num_lines(str); //the number of rings in the polygon
 	final_max_points =0;

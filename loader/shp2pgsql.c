@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <getopt.h>
 
 typedef struct {double x, y;} Point;
 
@@ -401,23 +402,27 @@ int main (int ARGC, char **ARGV){
 	DBFFieldType type;
 	extern char *optarg;
 	extern int optind;
+	opt = ' ';
+	errflg =0;
+	j=0;
+	sr_id =shp_file = table = database = NULL;
 
 	while ((c = getopt(ARGC, ARGV, "cdaDs:")) != EOF){
                switch (c) {
                case 'c':
-                    if (opt == NULL)
+                    if (opt == ' ')
                          opt ='c';
                     else
                          errflg =1;;
                     break;
                case 'd':
-                    if (opt == NULL)
+                    if (opt == ' ')
                          opt ='d';
                     else
                          errflg =1;;
                     break;
 	       case 'a':
-                    if (opt == NULL)
+                    if (opt == ' ')
                          opt ='a';
                     else
                          errflg =1;;
@@ -437,7 +442,7 @@ int main (int ARGC, char **ARGV){
 		sr_id = "-1";
 	}
 
-	if(opt == NULL){
+	if(opt == ' '){
 		opt = 'c';
 	}
 
