@@ -42,6 +42,7 @@ Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS);
 Datum LWGEOM_recv(PG_FUNCTION_ARGS);
 Datum LWGEOM_send(PG_FUNCTION_ARGS);
 #endif
+Datum BOOL_to_text(PG_FUNCTION_ARGS);
 
 
 // included here so we can be independent from postgis
