@@ -12,6 +12,13 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.28  2004/03/26 00:54:09  dblasby
+-- added full support for fluffType(<geom>)
+-- postgis09=# select fluffType('POINT(0 0)');
+--         flufftype
+-- 		-------------------------
+-- 		 SRID=-1;MULTIPOINT(0 0)
+--
 -- Revision 1.27  2004/01/21 19:04:03  strk
 -- Added line_interpolate_point function by jsunday@rochgrp.com
 --
@@ -776,7 +783,12 @@ CREATE FUNCTION distance_spheroid(geometry,geometry,spheroid)
 --
 -- Generic operations
 --
-
+CREATE FUNCTION fluffType(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','fluffType'
+	LANGUAGE 'C' WITH (isstrict);
+	
+	
 CREATE FUNCTION length3d(geometry)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@'
@@ -846,6 +858,7 @@ CREATE FUNCTION pointonsurface(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
+	
 	
 
 --

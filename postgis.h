@@ -11,6 +11,13 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.43  2004/03/26 00:54:09  dblasby
+ * added full support for fluffType(<geom>)
+ * postgis09=# select fluffType('POINT(0 0)');
+ *         flufftype
+ * 		-------------------------
+ * 		 SRID=-1;MULTIPOINT(0 0)
+ *
  * Revision 1.42  2004/02/23 12:18:55  strk
  * added skeleton functions for pg75 stats integration
  *
@@ -649,6 +656,8 @@ Datum geometry_from_text_gc(PG_FUNCTION_ARGS);
 Datum isempty(PG_FUNCTION_ARGS);
 Datum simplify(PG_FUNCTION_ARGS);
 Datum line_interpolate_point(PG_FUNCTION_ARGS);
+
+Datum fluffType(PG_FUNCTION_ARGS);
 
 /*--------------------------------------------------------------------
  * Useful floating point utilities and constants.

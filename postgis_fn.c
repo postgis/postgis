@@ -11,6 +11,13 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.34  2004/03/26 00:54:09  dblasby
+ * added full support for fluffType(<geom>)
+ * postgis09=# select fluffType('POINT(0 0)');
+ *         flufftype
+ * 		-------------------------
+ * 		 SRID=-1;MULTIPOINT(0 0)
+ *
  * Revision 1.33  2004/03/25 00:43:41  dblasby
  * added function fluffType() that takes POINT LINESTRING or POLYGON
  * type and converts it to a multi*.
@@ -3043,24 +3050,45 @@ void compressType(GEOMETRY *g)
 	}
 }
 
+
 // converts single-type (point,linestring,polygon)
 // to multi* types with 1 element
 // ie. POINT(0 0) --> MULTIPOINT(0 0)
-void fluffType(GEOMETRY *g)
+//
+//postgis09=# select fluffType('POINT(0 0)');
+//        flufftype
+//-------------------------
+// SRID=-1;MULTIPOINT(0 0)
+//(1 row)
+//
+//postgis09=# select fluffType('LINESTRING(0 0, 1 1)');
+//             flufftype
+//------------------------------------
+// SRID=-1;MULTILINESTRING((0 0,1 1))
+//(1 row)
+
+PG_FUNCTION_INFO_V1(fluffType);
+Datum fluffType(PG_FUNCTION_ARGS)
 {
-		if (g->type == POINTTYPE)
-		{
-			g->type = MULTIPOINTTYPE;
-			return;
-		}
-		if (g->type == LINETYPE)
-		{
-			g->type = MULTILINETYPE;
-			return;
-		}
-		if (g->type == POLYGONTYPE)
-		{
-			g->type = MULTIPOLYGONTYPE;
-			return;
-		}
+		GEOMETRY		      *geom1= (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+		GEOMETRY			  *g;
+
+		g = (GEOMETRY*) palloc( *((int *) geom1) );
+		memcpy(g,geom1, *((int *) geom1));
+
+			if (g->type == POINTTYPE)
+			{
+				g->type = MULTIPOINTTYPE;
+			}
+			if (g->type == LINETYPE)
+			{
+				g->type = MULTILINETYPE;
+			}
+			if (g->type == POLYGONTYPE)
+			{
+				g->type = MULTIPOLYGONTYPE;
+			}
+
+	PG_FREE_IF_COPY(geom1,0);
+	PG_RETURN_POINTER(g);
 }
