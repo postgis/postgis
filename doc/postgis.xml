@@ -113,8 +113,7 @@
    '/usr/local/pgsql/lib/plpgsql.so' LANGUAGE 'C';
 CREATE TRUSTED PROCEDURAL LANGUAGE 'plpgsql'
    HANDLER plpgsql_call_handler
-   LANCOMPILER 'PL/pgSQL';
-</programlisting></listitem> 
+   LANCOMPILER 'PL/pgSQL';</programlisting></listitem> 
 		  <listitem> 
 			 <para>Finally, you
 				must load the PostGIS object and function definitions into your database. </para> 
@@ -131,8 +130,7 @@ new <filename>postgis.sql</filename> file, then upload your database dump:</para
 # createdb yourdatabase
 # psql -f postgis.sql -d yourdatabase
 # psql -f dumpfile.sql -d yourdatabase
-# vacuumdb -z yourdatabase
-</programlisting><note><para>When upgrading to 0.6, all your geometries will be created with an SRID
+# vacuumdb -z yourdatabase</programlisting><note><para>When upgrading to 0.6, all your geometries will be created with an SRID
 of -1. To create valid OpenGIS geometries, you will have to create a
 valid SRID in the SPATIAL_REF_SYS table, and then update your geometries
 to reference the SRID with the following SQL (with the appropriate
@@ -365,8 +363,7 @@ db=&gt; SELECT geom AS PostGISGeom FROM thetable;
 PostGISGeom
 -------------------------------------------------
 SRID=123;LINESTRING(-123.741378393049 48.9124018962261,-123.741587115639 48.9123981907507)
-(1 row)
-</programlisting></sect2> 
+(1 row)</programlisting></sect2> 
 	 </sect1> 
 	 <sect1> 
 		<title>Using OpenGIS Standards</title> 
@@ -386,8 +383,7 @@ SRID=123;LINESTRING(-123.741378393049 48.9124018962261,-123.741587115639 48.9123
   AUTH_NAME VARCHAR(256), 
   AUTH_SRID INTEGER, 
   SRTEXT VARCHAR(2048) 
-)
-			 </programlisting> 
+)</programlisting> 
 		  <para>The SPATIAL_REF_SYS columns are as follows:</para> 
 		  <variablelist> 
 			 <varlistentry> 
@@ -460,8 +456,7 @@ SRID=123;LINESTRING(-123.741378393049 48.9124018962261,-123.741587115639 48.9123
 		COORD_DIMENSION INTEGER NOT NULL, 
   SRID INTEGER NOT NULL, 
   TYPE VARCHAR(30) NOT NULL 
-)
- </programlisting> 
+)</programlisting> 
 		  <para>The columns are as follows:</para> 
 		  <variablelist> 
 			 <varlistentry> 
@@ -540,13 +535,11 @@ SRID=123;LINESTRING(-123.741378393049 48.9124018962261,-123.741587115639 48.9123
 			 spatial column (assuming the db is 'parks_db' and that an SRID of 128 exists
 			 already):</para> 
 		  <programlisting>CREATE TABLE PARKS ( PARK_ID int4, PARK_NAME varchar(128), PARK_DATE date, PARK_TYPE varchar(2) ); 
-SELECT AddGeometryColumn('parks_db', 'parks', 'park_geom', 128, 'MULTIPOLYGON', 2 );
-</programlisting> 
+SELECT AddGeometryColumn('parks_db', 'parks', 'park_geom', 128, 'MULTIPOLYGON', 2 );</programlisting> 
 		  <para>Here is another example, using the generic "geometry" type and
 			 the undefined SRID value of -1:</para> 
 		  <programlisting>CREATE TABLE ROADS ( ROAD_ID int4, ROAD_NAME varchar(128) ); 
-SELECT AddGeometryColumn( 'roads_db', 'roads', 'roads_geom',	-1, 'GEOMETRY', 3 );
-</programlisting> 
+SELECT AddGeometryColumn( 'roads_db', 'roads', 'roads_geom',	-1, 'GEOMETRY', 3 );</programlisting> 
 		</sect2> 
 	 </sect1> 
 	 <sect1> 
@@ -613,13 +606,10 @@ INSERT INTO ROADS_GEOM (ID,GEOM,NAME ) VALUES (6,GeometryFromText('LINESTRING(19
 		  </variablelist> 
 		  <para>An example session using the loader to create an input file and
 			 uploading it might look like this:</para> 
-		  <literallayout>shp2pgsql shaperoads roadstable &gt; roads.sql psql -d
-			 roadsdb -f roads.sql</literallayout> 
-		  <para>A conversion and upload can be done all in one step using UNIX
+		  <programlisting># shp2pgsql shaperoads roadstable &gt; roads.sql 
+# psql -d roadsdb -f roads.sql</programlisting><para>A conversion and upload can be done all in one step using UNIX
 			 pipes:</para> 
-		  <literallayout>shp2pgsql shaperoads roadstable | psql -d
-			 roadsdb</literallayout> 
-		</sect2> 
+		  <programlisting>shp2pgsql shaperoads roadstable | psql -d roadsdb</programlisting></sect2> 
 	 </sect1> 
 	 <sect1> 
 		<title>Retrieving GIS Data</title> 
@@ -640,8 +630,7 @@ id | geom                                    | name
  4 | LINESTRING(189412 252431,189631 259122) | Graeme Ave 
  5 | LINESTRING(190131 224148,190871 228134) | Phil Tce 
  6 | LINESTRING(198231 263418,198213 268322) | Dave Cres 
-(6 rows)
-</literallayout> 
+(6 rows)</literallayout> 
 		  <para>However, there will be times when some kind of restriction is
 			 necessary to cut down the number of fields returned. In the case of
 			 attribute-based restrictions, just use the same SQL syntax as normal with a
