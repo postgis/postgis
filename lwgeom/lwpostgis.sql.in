@@ -2080,14 +2080,12 @@ BEGIN
                 AND NOT EXISTS (
                         SELECT oid FROM geometry_columns gc
                         WHERE c.relname::varchar = gc.f_table_name
-#if USE_VERSION >= 73
                         AND n.nspname::varchar = gc.f_table_schema
-#endif
                         AND a.attname::varchar = gc.f_geometry_column
                 );
 
 	GET DIAGNOSTICS foundschema = ROW_COUNT;
-#endif
+#endif // USE_VERSION >= 73
 
 #if USE_VERSION >= 80
 	-- no linkage to system table needed
@@ -2167,8 +2165,11 @@ BEGIN
 		FROM pg_class c, pg_attribute a, pg_type t, 
 #if USE_VERSION >= 73
 			pg_namespace n,
-#endif
 			pg_constraint sridcheck, pg_constraint typecheck
+#else // USE_VERSION < 73
+			pg_relcheck sridcheck, pg_relcheck typecheck
+#endif // USE_VERSION < 73
+
 		WHERE t.typname = ''geometry''
 		AND a.atttypid = t.oid
 		AND a.attrelid = c.oid
@@ -2177,11 +2178,20 @@ BEGIN
 		AND sridcheck.connamespace = n.oid
 		AND typecheck.connamespace = n.oid
 #endif
+
+#if USE_VERSION >= 73
 		AND sridcheck.conrelid = c.oid
 		AND sridcheck.consrc LIKE ''(srid(''||a.attname||'') = %)''
 		AND typecheck.conrelid = c.oid
 		AND typecheck.consrc LIKE
 	''((geometrytype(''||a.attname||'') = ''''%''''::text) OR (% IS NULL))''
+#else // USE_VERSION < 73
+		AND sridcheck.rcrelid = c.oid
+		AND sridcheck.rcsrc LIKE ''(srid(''||a.attname||'') = %)''
+		AND typecheck.rcrelid = c.oid
+		AND typecheck.rcsrc LIKE
+	''((geometrytype(''||a.attname||'') = ''''%''''::text) OR (% IS NULL))''
+#endif // USE_VERSION < 73
 		;
 
 	INSERT INTO geometry_columns SELECT
@@ -2194,6 +2204,7 @@ BEGIN
 		c.relname::varchar as f_table_name,
 		a.attname::varchar as f_geometry_column,
 		2 as coord_dimension,
+#if USE_VERSION >= 73
 		trim(both  '' =)'' from substr(sridcheck.consrc,
 			strpos(sridcheck.consrc, ''='')))::integer as srid,
 		trim(both '' =)'''''' from substr(typecheck.consrc, 
@@ -2201,6 +2212,16 @@ BEGIN
 			strpos(typecheck.consrc, ''::'')-
 			strpos(typecheck.consrc, ''='')
 			))::varchar as type
+#else
+		trim(both  '' =)'' from substr(sridcheck.rcsrc,
+			strpos(sridcheck.rcsrc, ''='')))::integer as srid,
+		trim(both '' =)'''''' from substr(typecheck.rcsrc, 
+			strpos(typecheck.rcsrc, ''=''),
+			strpos(typecheck.rcsrc, ''::'')-
+			strpos(typecheck.rcsrc, ''='')
+			))::varchar as type
+#endif
+
 #if USE_VERSION < 80
 		, a.attrelid,
 		a.attnum as varattnum,
@@ -2209,8 +2230,10 @@ BEGIN
 		FROM pg_class c, pg_attribute a, pg_type t, 
 #if USE_VERSION >= 73
 			pg_namespace n,
-#endif
 			pg_constraint sridcheck, pg_constraint typecheck
+#else // USE_VERSION < 73
+			pg_relcheck sridcheck, pg_relcheck typecheck
+#endif // USE_VERSION < 73
 		WHERE t.typname = ''geometry''
 		AND a.atttypid = t.oid
 		AND a.attrelid = c.oid
@@ -2218,12 +2241,18 @@ BEGIN
 		AND c.relnamespace = n.oid
 		AND sridcheck.connamespace = n.oid
 		AND typecheck.connamespace = n.oid
-#endif
 		AND sridcheck.conrelid = c.oid
 		AND sridcheck.consrc LIKE ''(srid(''||a.attname||'') = %)''
 		AND typecheck.conrelid = c.oid
 		AND typecheck.consrc LIKE
 	''((geometrytype(''||a.attname||'') = ''''%''''::text) OR (% IS NULL))''
+#else // USE_VERSION < 73
+		AND sridcheck.rcrelid = c.oid
+		AND sridcheck.rcsrc LIKE ''(srid(''||a.attname||'') = %)''
+		AND typecheck.rcrelid = c.oid
+		AND typecheck.rcsrc LIKE
+	''((geometrytype(''||a.attname||'') = ''''%''''::text) OR (% IS NULL))''
+#endif // USE_VERSION < 73
 
                 AND NOT EXISTS (
                         SELECT oid FROM geometry_columns gc
