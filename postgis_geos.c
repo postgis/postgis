@@ -10,6 +10,10 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.24  2003/12/12 10:08:24  strk
+ * Added GEOSnoop function and some optional debugging output for
+ * geos<->postgis converter (define DEBUG_CONVERTER at top postgis_geos.c)
+ *
  * Revision 1.23  2003/11/05 18:25:08  strk
  * moved #ifdef USE_GEOS below prototypes, added NULL implementation of unite_garray
  *
@@ -121,6 +125,12 @@
 #include "utils/builtins.h"
 
 
+ /*
+  * Define this to have have many notices printed
+  * during postgis->geos and geos->postgis conversions
+  */
+#undef DEBUG_CONVERTER
+
 
 typedef  struct Geometry Geometry;
 
@@ -214,6 +224,8 @@ Datum issimple(PG_FUNCTION_ARGS);
 Datum isring(PG_FUNCTION_ARGS);
 Datum geomequals(PG_FUNCTION_ARGS);
 Datum pointonsurface(PG_FUNCTION_ARGS);
+
+Datum GEOSnoop(PG_FUNCTION_ARGS);
 
 
 Geometry *POSTGIS2GEOS(GEOMETRY *g);
@@ -1369,6 +1381,9 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 		/* From slower to faster.. compensation rule :) */
 
 		case COLLECTIONTYPE:
+#ifdef DEBUG_CONVERTER
+			elog(NOTICE, "GEOS2POSTGIS: It's a COLLECTION");
+#endif
 			//this is more difficult because GEOS allows GCs of GCs
 			ngeoms = GEOSGetNumGeometries(g);
 			if (ngeoms ==0)
@@ -1387,10 +1402,14 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 				g2 = GEOS2POSTGIS(GEOSGetGeometryN(g,t),
 					want3d);
 				r = geom;
+#if 1
 				geom = (GEOMETRY *) DatumGetPointer(
 					DirectFunctionCall2(collector,
-					PointerGetDatum(geom),
+					PointerGetDatum(r),
 					PointerGetDatum(g2)));
+#else
+				geom = collector_raw(r, g2);
+#endif
 				pfree(r);
 				pfree(g2);
 			}
@@ -1398,6 +1417,9 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 
 		case MULTIPOLYGONTYPE:
 			ngeoms = 	GEOSGetNumGeometries(g);
+#ifdef DEBUG_CONVERTER
+			elog(NOTICE, "GEOS2POSTGIS: It's a MULTIPOLYGON");
+#endif // DEBUG_CONVERTER
 			if (ngeoms ==0)
 			{
 				result =  makeNullGeometry(GEOSGetSRID(g));
@@ -1431,6 +1453,9 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 			return result;
 
 		case MULTILINETYPE:
+#ifdef DEBUG_CONVERTER
+			elog(NOTICE, "GEOS2POSTGIS: It's a MULTILINE");
+#endif
 			ngeoms = GEOSGetNumGeometries(g);
 			if (ngeoms ==0)
 			{
@@ -1438,36 +1463,43 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 				result->type = MULTILINETYPE;
 				return result;
 			}
-			for (t=0;t<ngeoms;t++)
+
+			line = LineFromGeometry(GEOSGetGeometryN(g,0), &size);
+			result = make_oneobj_geometry(size, (char *)line,
+				MULTILINETYPE,  want3d,
+				GEOSGetSRID(g),1.0, 0.0, 0.0);
+#ifdef DEBUG_CONVERTER
+	elog(NOTICE,"GEOS2POSTGIS: t0: %s",geometry_to_text(result));
+	elog(NOTICE,"    size = %i", result->size);
+#endif
+
+			for (t=1;t<ngeoms;t++)
 			{
-				if (t==0)
-				{
-					line = LineFromGeometry(GEOSGetGeometryN(g,0) ,&size);
-					result = make_oneobj_geometry(size,
-								(char *) line,
-								   MULTILINETYPE,  want3d, GEOSGetSRID(g),1.0, 0.0, 0.0
-							);
-	//elog(NOTICE,"t==0; %s",geometry_to_text(result));
-	//elog(NOTICE,"    size = %i", result->size);
-				}
-				else
-				{
-					line = LineFromGeometry(GEOSGetGeometryN(g,t) ,&size);
-					g_old = result;
-					result = 	add_to_geometry(g_old,size, (char*) line, LINETYPE);
-	//elog(NOTICE,"t>0; %s",geometry_to_text(result));
-	//elog(NOTICE,"    size = %i", result->size);
-					pfree(g_old);
-				}
+				line = LineFromGeometry(GEOSGetGeometryN(g,t),
+						&size);
+				g_old = result;
+				result = add_to_geometry(g_old,size,
+						(char*) line, LINETYPE);
+#ifdef DEBUG_CONVERTER
+	elog(NOTICE,"GEOS2POSTGIS: t%d: %s", t, geometry_to_text(result));
+	elog(NOTICE,"    size = %i", result->size);
+#endif
+				pfree(g_old);
 			}
 			bbox = bbox_of_geometry( result ); // make bounding box
 			memcpy( &result->bvol, bbox, sizeof(BOX3D) ); // copy bounding box
 			pfree( bbox ); // free bounding box
-	//elog(NOTICE,"end; %s",geometry_to_text(result));
-	//elog(NOTICE,"    size = %i", result->size);
+#ifdef DEBUG_CONVERTER
+	elog(NOTICE,"GEOS2POSTGIS: end: %s",geometry_to_text(result));
+	elog(NOTICE,"    size = %i", result->size);
+#endif
+
 			return result;
 
 		case MULTIPOINTTYPE:
+#ifdef DEBUG_CONVERTER
+			elog(NOTICE, "GEOS2POSTGIS: It's a MULTIPOINT");
+#endif
 			g_new = NULL;
 			ngeoms = GEOSGetNumGeometries(g);
 			if (ngeoms ==0)
@@ -1497,6 +1529,9 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 			return g_new;
 
 		case POLYGONTYPE:
+#ifdef DEBUG_CONVERTER
+			elog(NOTICE, "GEOS2POSTGIS: It's a POLYGON");
+#endif
 			poly = PolyFromGeometry(g,&size);
 			if (poly == NULL) return NULL;
 			result = make_oneobj_geometry(size,
@@ -1505,6 +1540,9 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 			return result;
 
 		case LINETYPE:
+#ifdef DEBUG_CONVERTER
+			elog(NOTICE, "GEOS2POSTGIS: It's a LINE");
+#endif
 			line = LineFromGeometry(g,&size);
 			if (line == NULL) return NULL;
 			result = make_oneobj_geometry(size,
@@ -1513,6 +1551,9 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 			return result;
 
 		case POINTTYPE: 
+#ifdef DEBUG_CONVERTER
+			elog(NOTICE, "GEOS2POSTGIS: It's a POINT");
+#endif
 			pts = GEOSGetCoordinate(g);
 			result = make_oneobj_geometry(sizeof(POINT3D),
 				(char *) pts, POINTTYPE, want3d,
@@ -1521,6 +1562,9 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 			return result;
 
 		default:
+#ifdef DEBUG_CONVERTER
+			elog(NOTICE, "GEOS2POSTGIS: It's UNKNOWN!");
+#endif
 			return NULL;
 
 	}
@@ -1549,158 +1593,210 @@ Geometry *POSTGIS2GEOS(GEOMETRY *g)
 	switch(g->type)
 	{
 		case POINTTYPE:
-							pt = (POINT3D*) ((char *) g +offsets1[0]) ;
-							result =  PostGIS2GEOS_point(pt,g->SRID,g->is3d);
-							if (result == NULL)
-							{
-								elog(ERROR,"Couldnt convert the postgis geometry to GEOS!");
-							}
-							return result;
-							break;
+#ifdef DEBUG_CONVERTER
+			elog(NOTICE, "POSTGIS2GEOS: it's a POINT");
+#endif
+			pt = (POINT3D*) ((char *) g +offsets1[0]) ;
+			result =  PostGIS2GEOS_point(pt,g->SRID,g->is3d);
+			if (result == NULL)
+			{
+				elog(ERROR,"Couldnt convert the postgis geometry to GEOS!");
+			}
+			return result;
+			break;
+
 		case LINETYPE:
-							line = (LINE3D*) ((char *) g +offsets1[0]) ;
-							result =  PostGIS2GEOS_linestring(line,g->SRID,g->is3d);
-							if (result == NULL)
-							{
-								elog(ERROR,"Couldnt convert the postgis geometry to GEOS!");
-							}
-							return result;
-							break;
+#ifdef DEBUG_CONVERTER
+			elog(NOTICE, "POSTGIS2GEOS: it's a LINE");
+#endif
+			line = (LINE3D*) ((char *) g +offsets1[0]) ;
+			result =  PostGIS2GEOS_linestring(line,g->SRID,g->is3d);
+			if (result == NULL)
+			{
+				elog(ERROR,"Couldnt convert the postgis geometry to GEOS!");
+			}
+			return result;
+			break;
+
 		case POLYGONTYPE:
-							poly = (POLYGON3D*) ((char *) g +offsets1[0]) ;
-							result =  PostGIS2GEOS_polygon(poly,g->SRID,g->is3d);
-							if (result == NULL)
-							{
-								elog(ERROR,"Couldnt convert the postgis geometry to GEOS!");
-							}
-							return result;
-							break;
+#ifdef DEBUG_CONVERTER
+			elog(NOTICE, "POSTGIS2GEOS: it's a POLYGON");
+#endif
+			poly = (POLYGON3D*) ((char *) g +offsets1[0]) ;
+			result =  PostGIS2GEOS_polygon(poly,g->SRID,g->is3d);
+			if (result == NULL)
+			{
+				elog(ERROR,"Couldnt convert the postgis geometry to GEOS!");
+			}
+			return result;
+			break;
+
 		case MULTIPOLYGONTYPE:
-									//make an array of POLYGON3Ds
-							polys = NULL;
-							if (g->nobjs >0)
-								polys = (POLYGON3D**) palloc(sizeof (POLYGON3D*) * g->nobjs);
-							for (t=0;t<g->nobjs;t++)
-							{
-								polys[t] = 	(POLYGON3D*) ((char *) g +offsets1[t]) ;
-							}
-							geos= PostGIS2GEOS_multipolygon(polys, g->nobjs, g->SRID,g->is3d);
-							if (polys != NULL)
-								pfree(polys);
-							if (geos == NULL)
-							{
-								elog(ERROR,"Couldnt convert the postgis geometry to GEOS!");
-							}
-							return geos;
-							break;
+#ifdef DEBUG_CONVERTER
+			elog(NOTICE, "POSTGIS2GEOS: it's a MULTIPOLYGON");
+#endif
+			//make an array of POLYGON3Ds
+			polys = NULL;
+			if (g->nobjs >0)
+				polys = (POLYGON3D**) palloc(sizeof (POLYGON3D*) * g->nobjs);
+			for (t=0;t<g->nobjs;t++)
+			{
+				polys[t] = 	(POLYGON3D*) ((char *) g +offsets1[t]) ;
+			}
+			geos= PostGIS2GEOS_multipolygon(polys, g->nobjs, g->SRID,g->is3d);
+			if (polys != NULL) pfree(polys);
+			if (geos == NULL)
+			{
+				elog(ERROR,"Couldnt convert the postgis geometry to GEOS!");
+			}
+			return geos;
+			break;
+
 		case MULTILINETYPE:
-								//make an array of POLYGON3Ds
-							lines = NULL;
-							if (g->nobjs >0)
-								lines = (LINE3D**) palloc(sizeof (LINE3D*) * g->nobjs);
-							for (t=0;t<g->nobjs;t++)
-							{
-								lines[t] = 	(LINE3D*) ((char *) g +offsets1[t]) ;
-							}
-							geos= PostGIS2GEOS_multilinestring(lines, g->nobjs, g->SRID,g->is3d);
-							if (lines != NULL)
-								pfree(lines);
-							if (geos == NULL)
-							{
-								elog(ERROR,"Couldnt convert the postgis geometry to GEOS!");
-							}
-							return geos;
-							break;
+#ifdef DEBUG_CONVERTER
+			elog(NOTICE, "POSTGIS2GEOS: it's a MULTILINE");
+#endif
+			//make an array of POLYGON3Ds
+			lines = NULL;
+			if (g->nobjs >0)
+				lines = (LINE3D**) palloc(sizeof (LINE3D*) * g->nobjs);
+			for (t=0;t<g->nobjs;t++)
+			{
+				lines[t] = 	(LINE3D*) ((char *) g +offsets1[t]) ;
+			}
+			geos= PostGIS2GEOS_multilinestring(lines, g->nobjs, g->SRID,g->is3d);
+			if (lines != NULL) pfree(lines);
+			if (geos == NULL)
+			{
+				elog(ERROR,"Couldnt convert the postgis geometry to GEOS!");
+			}
+			return geos;
+			break;
+
 		case MULTIPOINTTYPE:
-								//make an array of POINT3Ds
-							points = NULL;
-							if (g->nobjs >0)
-								points = (POINT3D**) palloc(sizeof (POINT3D*) * g->nobjs);
-							for (t=0;t<g->nobjs;t++)
-							{
-								points[t] = 	(POINT3D*) ((char *) g +offsets1[t]) ;
-							}
-							geos= PostGIS2GEOS_multipoint(points, g->nobjs,g->SRID,g->is3d);
-							if (points != NULL)
-								pfree(points);
-							if (geos == NULL)
-							{
-								elog(ERROR,"Couldnt convert the postgis geometry to GEOS!");
-							}
-							return geos;
-							break;
+#ifdef DEBUG_CONVERTER
+			elog(NOTICE, "POSTGIS2GEOS: it's a MULTIPOINT");
+#endif
+			//make an array of POINT3Ds
+			points = NULL;
+			if (g->nobjs >0)
+				points = (POINT3D**) palloc(sizeof (POINT3D*) * g->nobjs);
+			for (t=0;t<g->nobjs;t++)
+			{
+				points[t] = 	(POINT3D*) ((char *) g +offsets1[t]) ;
+			}
+			geos= PostGIS2GEOS_multipoint(points, g->nobjs,g->SRID,g->is3d);
+			if (points != NULL) pfree(points);
+			if (geos == NULL)
+			{
+				elog(ERROR,"Couldnt convert the postgis geometry to GEOS!");
+			}
+			return geos;
+			break;
+
 		case BBOXONLYTYPE:
-							result =   PostGIS2GEOS_box3d(&g->bvol, g->SRID);
-							if (result == NULL)
-							{
-								elog(ERROR,"Couldnt convert the postgis geometry to GEOS!");
-							}
-							return result;
-							break;
+#ifdef DEBUG_CONVERTER
+			elog(NOTICE, "POSTGIS2GEOS: it's a BBOXONLY");
+#endif
+			result =   PostGIS2GEOS_box3d(&g->bvol, g->SRID);
+			if (result == NULL)
+			{
+				elog(ERROR,"Couldnt convert the postgis geometry to GEOS!");
+			}
+			return result;
+			break;
+
 		case COLLECTIONTYPE:
-								//make an array of GEOS Geometrys
-							geoms = NULL;
-							if (g->nobjs >0)
-								geoms = (Geometry**) palloc(sizeof (Geometry*) * g->nobjs);
-							for (t=0;t<g->nobjs;t++)
-							{
-								obj = ((char *) g +offsets1[t]);
-								obj_type =  g->objType[t];
-								switch (obj_type)
-								{
-									case POINTTYPE:
-													pt = (POINT3D*) obj ;
-													geoms[t] = PostGIS2GEOS_point(pt,g->SRID,g->is3d);
-													if (geoms[t] == NULL)
-													{
-														pfree(geoms);
-														elog(ERROR,"Couldnt convert the postgis geometry to GEOS!");
-														return NULL;
-													}
-													break;
-									case LINETYPE:
-													line = (LINE3D*) obj ;
-													geoms[t] = PostGIS2GEOS_linestring(line,g->SRID,g->is3d);
-													if (geoms[t] == NULL)
-													{
-														pfree(geoms);
-														elog(ERROR,"Couldnt convert the postgis geometry to GEOS!");
-														return NULL;
-													}
-													break;
-									case POLYGONTYPE:
-													poly = (POLYGON3D*) obj ;
-													geoms[t] = PostGIS2GEOS_polygon(poly,g->SRID,g->is3d);
-													if (geoms[t] == NULL)
-													{
-														pfree(geoms);
-														elog(ERROR,"Couldnt convert the postgis geometry to GEOS!");
-														return NULL;
-													}
-													break;
-								}
-							}
-							geos= PostGIS2GEOS_collection(geoms,g->nobjs,g->SRID,g->is3d);
-							if (geoms != NULL)
-								pfree(geoms);
-							if (geos == NULL)
-							{
-								elog(ERROR,"Couldnt convert the postgis geometry to GEOS!");
-							}
-							return geos;
-							break;
+#ifdef DEBUG_CONVERTER
+			elog(NOTICE, "POSTGIS2GEOS: it's a COLLECTION");
+#endif
+			//make an array of GEOS Geometries
+			geoms = NULL;
+			if (g->nobjs >0)
+				geoms = (Geometry**) palloc(sizeof (Geometry*) * g->nobjs);
+			for (t=0;t<g->nobjs;t++)
+			{
+				obj = ((char *) g +offsets1[t]);
+				obj_type =  g->objType[t];
+				switch (obj_type)
+				{
+					case POINTTYPE:
+						pt = (POINT3D*) obj ;
+						geoms[t] = PostGIS2GEOS_point(pt,g->SRID,g->is3d);
+						if (geoms[t] == NULL)
+						{
+							pfree(geoms);
+							elog(ERROR,"Couldnt convert the postgis geometry to GEOS!");
+							return NULL;
+						}
+						break;
+					case LINETYPE:
+						line = (LINE3D*) obj ;
+						geoms[t] = PostGIS2GEOS_linestring(line,g->SRID,g->is3d);
+						if (geoms[t] == NULL)
+						{
+							pfree(geoms);
+							elog(ERROR,"Couldnt convert the postgis geometry to GEOS!");
+							return NULL;
+						}
+						break;
+					case POLYGONTYPE:
+						poly = (POLYGON3D*) obj ;
+						geoms[t] = PostGIS2GEOS_polygon(poly,g->SRID,g->is3d);
+						if (geoms[t] == NULL)
+						{
+							pfree(geoms);
+							elog(ERROR,"Couldnt convert the postgis geometry to GEOS!");
+							return NULL;
+						}
+						break;
+				}
+			}
+#ifdef DEBUG_CONVERTER
+			elog(NOTICE, "POSTGIS2GEOS: COLLECTION has %d objs, srid %d and is %s 3d", g->nobjs, g->SRID, g->is3d ? "" : "not");
+#endif
+			geos = PostGIS2GEOS_collection(geoms,g->nobjs,g->SRID,g->is3d);
+			if (geoms != NULL) pfree(geoms);
+			if (geos == NULL)
+			{
+				elog(ERROR,"Couldnt convert the postgis geometry to GEOS!");
+			}
+			return geos;
+			break;
 
 	}
 	return NULL;
 }
 
+PG_FUNCTION_INFO_V1(GEOSnoop);
+Datum GEOSnoop(PG_FUNCTION_ARGS)
+{
+	GEOMETRY *geom;
+	Geometry *geosgeom;
+	GEOMETRY *result;
+	
+	initGEOS(MAXIMUM_ALIGNOF);
+
+	geom = (GEOMETRY *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+#ifdef DEBUG_CONVERTER
+	elog(NOTICE, "GEOSnoop: %s", geometry_to_text(geom));
+#endif
+
+	geosgeom = POSTGIS2GEOS(geom);
+	if ( (Pointer *)geom != (Pointer *)PG_GETARG_DATUM(0) ) pfree(geom);
+
+	result = GEOS2POSTGIS(geosgeom, geom->is3d);
+	GEOSdeleteGeometry(geosgeom);
+
+	PG_RETURN_POINTER(result);
+}
 
 
 
 //----------------------------------------------------------------------------
 // NULL implementation here
 // ---------------------------------------------------------------------------
-#else
+#else // ndef USE_GEOS
 
 
 #include "postgres.h"
@@ -1873,6 +1969,13 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 {
 	elog(ERROR,"unite_garray:: operation not implemented - compile PostGIS with GEOS support");
 	PG_RETURN_NULL(); // never get here
+}
+
+PG_FUNCTION_INFO_V1(GEOSnoop);
+Datum GEOSnoop(PG_FUNCTION_ARGS)
+{
+	elog(ERROR,"GEOSnoop:: operation not implemented - compile PostGIS with GEOS support");
+	PG_RETURN_NULL();
 }
 
 #endif

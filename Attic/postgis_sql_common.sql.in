@@ -12,6 +12,10 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.24  2003/12/12 10:08:24  strk
+-- Added GEOSnoop function and some optional debugging output for
+-- geos<->postgis converter (define DEBUG_CONVERTER at top postgis_geos.c)
+--
 -- Revision 1.23  2003/11/19 17:50:18  strk
 -- missing function definition added (I forgot - sorry)
 --
@@ -1385,6 +1389,11 @@ CREATE FUNCTION overlaps(geometry,geometry)
 CREATE FUNCTION isvalid(geometry)
    RETURNS boolean
    AS '@MODULE_FILENAME@'
+   LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION geosnoop(geometry)
+   RETURNS geometry
+   AS '@MODULE_FILENAME@', 'GEOSnoop'
    LANGUAGE 'C' WITH (isstrict);
    
 
