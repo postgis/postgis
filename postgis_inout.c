@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.45  2004/08/11 17:07:26  strk
+ * Fixed a bug in non-finite Z check
+ *
  * Revision 1.44  2004/06/09 09:08:53  strk
  * changed index/rindex to strchr/strrchr
  *
@@ -436,7 +439,7 @@ bool	parse_points_in_list_exact(char	*str, POINT3D	*points, int32	max_points, bo
 			points[numb_found].z = strtod(str,&end_of_double); //will be zero if error occured
 			if (!(end_of_double == str))
 			{
-				if ( ! finite(points[numb_found].y) )
+				if ( ! finite(points[numb_found].z) )
 				{
 					elog(ERROR, "infinite coordinate in geom");
 					return FALSE;
