@@ -21,7 +21,7 @@ else
 	major=`echo $version | sed 's/\..*//'`
 	minor=`echo $version | sed 's/[^\.]*\.\([^.]*\)\.*/\1/'`
 	first=$major
-	last=$(($major+$minor))
+	last=`expr $major + $minor`
 	geos_version=`printf %d%2.2d $major $minor`
 	jtsport=`${geos_dir}/bin/geos-config --jtsport`
 fi
