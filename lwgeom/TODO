@@ -1,3 +1,4 @@
+- make IsValid() return GEOS invalidity message if any (as a NOTICE probably)
 
 - AsBinary(geometry, XDR|NDR)
 
