@@ -532,18 +532,40 @@ POINT2D getPoint2d(POINTARRAY *pa, int n)
 //  for serialization/de-serialization
 void getPoint2d_p(POINTARRAY *pa, int n, char *point)
 {
-		 int size;
+	 int size;
 
-		 if ( (n<0) || (n>=pa->npoints))
-		 {
-			 return; //error
-		 }
+	 if ( (n<0) || (n>=pa->npoints))
+	 {
+		 return; //error
+	 }
 
-		 size = pointArray_ptsize(pa);
+	 size = pointArray_ptsize(pa);
 
-			// this does x,y
-		 memcpy(point, &pa->serialized_pointlist[size*n],sizeof(double)*2 );
+	 // this does x,y
+	 memcpy(point, &pa->serialized_pointlist[size*n],sizeof(double)*2 );
 }
+
+// get a pointer to nth point of a POINTARRAY
+// You'll need to cast it to appropriate dimensioned point.
+// Note that if you cast to a higher dimensional point you'll
+// possibly corrupt the POINTARRAY.
+char *
+getPoint(POINTARRAY *pa, int n)
+{
+	int size;
+
+	if ( (n<0) || (n>=pa->npoints))
+	{
+		return NULL; //error
+	}
+
+	size = pointArray_ptsize(pa);
+
+	// this does x,y
+	return (POINT2D *)&(pa->serialized_pointlist[size*n]);
+
+}
+
 
 
 // constructs a POINTARRAY.

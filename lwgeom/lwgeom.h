@@ -72,8 +72,6 @@ extern POINT4D getPoint4d(POINTARRAY *pa, int n);
 // NOTE: this will modify the point4d pointed to by 'point'.
 extern void getPoint4d_p(POINTARRAY *pa, int n, char *point);
 
-
-
 // copies a point from the point array into the parameter point
 // will set point's z=0 (or NaN) if pa is 2d
 // NOTE: point is a real POINT3D *not* a pointer
@@ -94,6 +92,12 @@ extern POINT2D getPoint2d(POINTARRAY *pa, int n);
 // z value (if present is not returned)
 // NOTE: this will modify the point2d pointed to by 'point'.
 extern void getPoint2d_p(POINTARRAY *pa, int n, char *point);
+
+// get a pointer to nth point of a POINTARRAY
+// You'll need to cast it to appropriate dimensioned point.
+// Note that if you cast to a higher dimensional point you'll
+// possibly corrupt the POINTARRAY.
+extern char *getPoint(POINTARRAY *pa, int n);
 
 
 // constructs a POINTARRAY.
