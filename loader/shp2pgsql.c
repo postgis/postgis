@@ -29,12 +29,12 @@
 #include <unistd.h>
 #include "getopt.h"
 
-typedef struct {double x, y, z;} Point;
+typedef struct {double x, y, z, m;} Point;
 
-typedef struct Ring{
+typedef struct Ring {
 	Point *list;	//list of points
 	struct Ring  *next;
-	int		n;		//number of points in list
+	int n;	//number of points in list
 } Ring;
 
 
@@ -45,6 +45,10 @@ int	forceint4 = 0;
 char    opt;
 char    *col_names;
 char    *geom;
+char	*pgtype;
+int	istypeM;
+int	pgdims;
+char  	*shp_file;
 
 DBFFieldType *types;	/* Fields type, width and precision */
 SHPHandle  hSHPHandle;
@@ -58,14 +62,20 @@ int     num_fields,num_records;
 char    **field_names;
 char 	*sr_id;
 
+/* Prototypes */
 int Insert_attributes(DBFHandle hDBFHandle, int row);
 char *make_good_string(char *str);
-int ring_check(SHPObject* obj, char *schema, char *table, char *sr_id);
 char *protect_quotes_string(char *str);
 int PIP( Point P, Point* V, int n );
 void *safe_malloc(size_t size);
 void create_table(void);
 void usage(char *me, int exitcode);
+void InsertPoint(void);
+void InsertPolygon(void);
+void InsertLineString(int id);
+int parse_cmdline(int ARGC, char **ARGV);
+void SetPgType(void);
+char *dump_ring(Ring *ring);
 
 static char rcsid[] =
   "$Id$";
@@ -83,7 +93,9 @@ void *safe_malloc(size_t size)
 #define malloc(x) safe_malloc(x)
 
 
-char	*make_good_string(char *str){
+char *
+make_good_string(char *str)
+{
 	//find all the tabs and make them \<tab>s
 	//
 	// 1. find # of tabs
@@ -193,9 +205,12 @@ char	*protect_quotes_string(char *str){
 //      input:   P = a point,
 //               V[] = vertex points of a polygon V[n+1] with V[n]=V[0]
 //      returns: 0 = outside, 1 = inside
-int PIP( Point P, Point* V, int n ){
-    int cn = 0;    // the crossing number counter
+int
+PIP( Point P, Point* V, int n )
+{
+	int cn = 0;    // the crossing number counter
 	int i;
+
     // loop through all edges of the polygon
     for (i=0; i<n-1; i++) {    // edge from V[i] to V[i+1]
        if (((V[i].y <= P.y) && (V[i+1].y > P.y))    // an upward crossing
@@ -208,214 +223,6 @@ int PIP( Point P, Point* V, int n ){
     return (cn&1);    // 0 if even (out), and 1 if odd (in)
 
 }
-
-
-//This function basically deals with the polygon case.
-//it sorts the polys in order of outer,inner,inner, so that inners
-//always come after outers they are within 
-int ring_check(SHPObject* obj, char *schema, char *table, char *sr_id)
-{
-	Point pt,pt2;
-	Ring *Poly;
-	Ring *temp;
-	Ring **Outer; //pointer to a list of outer polygons
-	Ring **Inner; //pointer to a list of inner polygons
-	int out_index,in_index,indet_index; //indexes to the lists **Outer and **Inner
-	int	in,temp2;
-	int u,i,N,n;
-	int next_ring;	//the index of the panPartStart list 
-	double area;	
-	
-	//initialize all counters/indexes
-	out_index=0;
-	in_index=0;
-	indet_index=0;
-	area=0;
-	n=0;
-	i=0;
-	N = obj->nVertices;
-
-	if(obj->nParts >1){
-		next_ring = 1;//if there is more than one part, set the next_ring index to one
-	}else{
-		next_ring = -99;
-	}
-
-
-	//allocate initial pointer memory
-	Outer = (Ring**)malloc(sizeof(Ring*)*obj->nParts);
-	Inner = (Ring**)malloc(sizeof(Ring*)*obj->nParts);
-	Poly = (Ring*)malloc(sizeof(Ring));
-	Poly->list = (Point*)malloc(sizeof(Point)*N);
-	Poly->next = NULL;
-
-
-	for (u=0;u<N;u++){
-
-		//check if the next point is the start of a new ring
-		if( ((next_ring != -99) && (u+1 == obj->panPartStart[next_ring] )) || u==N-1){
-			//check if a ring is clockwise(outer) or not(inner) by getting positive(inner) or negative(outer) area.
-			//'area' is actually twice actual polygon area so divide by 2, not that it matters but in case we use it latter...
-			area = area/2.0;
-			if(area < 0.0 || obj->nParts ==1){
-
-				//An outer ring so fill in the last point then put it in the 'Outer' list
-				Poly->list[n].x = obj->padfX[u]; //the polygon is ended with it's first co-ordinates reused
-				Poly->list[n].y = obj->padfY[u];
-				Poly->list[n].z = obj->padfZ[u];
-				Poly->n = n+1;
-				Outer[out_index] = Poly;
-				out_index++;
-
-				if(u != N-1){ //dont make another ring if we are finished
-					//allocate memory to start building the next ring
-					Poly = (Ring*)malloc(sizeof(Ring));
-
-					//temp2 is the number of points in the list of the next ring
-					//determined so that we can allocate the right amount of mem 6 lines down
-					if((next_ring + 1) == obj->nParts){
-						temp2 = N;
-					}else{
-						temp2 = obj->panPartStart[next_ring+1] - obj->panPartStart[next_ring];
-					}
-					Poly->list = (Point*)malloc(sizeof(Point)*temp2);
-					Poly->next = NULL;//make sure to make to initiale next to null or you never know when the list ends
-								  //this never used to be here and was a pain in the ass bug to find...
-				}
-				n=0;//set your count of what point you are at in the current ring back to 0
-
-			}else{
-
-				Poly->list[n].x = obj->padfX[u]; //the polygon ends with it's first co-ordinates reused
-				Poly->list[n].y = obj->padfY[u];
-				Poly->list[n].z = obj->padfZ[u];
-				Poly->n = n+1;
-
-				Inner[in_index] = Poly;
-				in_index++;
-
-				Poly = (Ring*)malloc(sizeof(Ring));
-				temp2 = N;
-				if((next_ring + 1) == obj->nParts){
-				}else{
-					temp2 = obj->panPartStart[next_ring+1] - obj->panPartStart[next_ring];
-				}
-
-
-				Poly->list = (Point*)malloc(sizeof(Point)*temp2);
-				Poly->next = NULL;
-
-				n=0;
-
-			}
-			area=0.0;
-			if((next_ring + 1) == obj->nParts){
-			}else{
-				next_ring++;
-			}
-		}else{
-
-			Poly->list[n].x = obj->padfX[u];
-			Poly->list[n].y = obj->padfY[u];
-			Poly->list[n].z = obj->padfZ[u];
-			n++;
-			area += (obj->padfX[u] * obj->padfY[u+1]) - (obj->padfY[u] * obj->padfX[u+1]); //calculate the area
-
-		}
-	}
-
-
-
-	//Put the inner rings into the list of the outer rings of which they are within
-	for(u=0; u < in_index; u++){
-		pt.x = Inner[u]->list[0].x;
-		pt.y = Inner[u]->list[0].y;
-
-		pt2.x = Inner[u]->list[1].x;
-		pt2.y = Inner[u]->list[1].y;
-		for(i=0;i< out_index; i++){
-			in = PIP(pt,Outer[i]->list,Outer[i]->n);
-			if(in==1 || (PIP(pt2,Outer[i]->list,Outer[i]->n) == 1)){
-				Poly = Outer[i];
-				while(Poly->next != NULL){
-					Poly = Poly->next;
-				}
-				Poly->next = Inner[u];
-				break;
-			}
-		}
-		//if the ring wasn't within any outer rings, assume it is a new outer ring
-
-		if(i == out_index){
-			Outer[out_index] = Inner[u];
-			out_index++;
-		}
-	}
-
-	if (dump_format) printf("SRID=%s ;MULTIPOLYGON(",sr_id );
-	else printf("GeometryFromText('MULTIPOLYGON(");
-
-	for(u=0; u < out_index; u++){
-		Poly = Outer[u];
-		if(u==0){
-			printf("(");
-		}else{
-			printf(",(");
-		}
-		if(obj->nSHPType == 5){
-			while(Poly != NULL){
-				for(i=0;i<Poly->n;i++){
-					if(i==0){
-						if(Poly != Outer[u]){
-							printf(",");
-						}
-						printf("(%.15g %.15g ",Poly->list[i].x,Poly->list[i].y);
-					}else{
-						printf(",%.15g %.15g ",Poly->list[i].x,Poly->list[i].y);
-					}
-				}
-				printf(")");
-				Poly = Poly->next;
-			}
-			printf(")");
-		}else{
-  			while(Poly != NULL){
-				for(i=0;i<Poly->n;i++){
-					if(i==0){
-						if(Poly != Outer[u]){
-							printf(",");
-						}
-						printf("(%.15g %.15g %.15g ",Poly->list[i].x,Poly->list[i].y,Poly->list[i].z);
-					}else{
-						printf(",%.15g %.15g %.15g ",Poly->list[i].x,Poly->list[i].y,Poly->list[i].z);
-					}
-				}
-				printf(")");
-				Poly = Poly->next;
-			}
-			printf(")");
-		}
-	}
-
-	if (dump_format) printf(")\n");
-	else printf(")',%s) );\n",sr_id);
-
-	for(u=0; u < out_index; u++){
-		Poly = Outer[u];
-		while(Poly != NULL){
-			temp = Poly;
-			Poly = Poly->next;
-			free(temp->list);
-			free(temp);
-		}
-	}
-	free(Outer);
-	free(Inner);
-	free(Poly);
-	
-	return 1;
-}
-
 
 
 //Insert the attributes from the correct row of dbf file
@@ -495,105 +302,24 @@ Insert_attributes(DBFHandle hDBFHandle, int row)
 int
 main (int ARGC, char **ARGV)
 {
-	int begin=0,trans,field_precision, field_width;
+	int trans,field_precision, field_width;
 	int num_entities, phnshapetype;
-	int next_ring=0,errflg,c;
 	double padminbound[8], padmaxbound[8];
-	int u,j,z,curindex;
+	int j,z;
 	char  name[64];
 	char  name2[64];
-	char  *shp_file,*ptr;
 	DBFFieldType type = -1;
 	extern char *optarg;
 	extern int optind;
 
+	istypeM = 0;
+
 	opt = ' ';
-	errflg =0;
 	j=0;
 	sr_id = shp_file = table = schema = geom = NULL;
 	obj=NULL;
 
-	while ((c = getopt(ARGC, ARGV, "kcdaDs:g:i")) != EOF){
-               switch (c) {
-               case 'c':
-                    if (opt == ' ')
-                         opt ='c';
-                    else
-                         errflg =1;;
-                    break;
-               case 'd':
-                    if (opt == ' ')
-                         opt ='d';
-                    else
-                         errflg =1;;
-                    break;
-	       case 'a':
-                    if (opt == ' ')
-                         opt ='a';
-                    else
-                         errflg =1;;
-                    break;
-	       case 'D':
-		    dump_format =1;
-                    break;
-               case 's':
-                    sr_id = optarg;
-                    break;
-               case 'g':
-                    geom = optarg;
-                    break;
-               case 'k':
-                    quoteidentifiers = 1;
-                    break;
-               case 'i':
-                    forceint4 = 1;
-                    break;
-               case '?':
-               default:              
-                    errflg=1;
-               }
-	}
-
-	if(sr_id == NULL){
-		sr_id = "-1";
-	}
-
-	if(geom == NULL){
-		geom = "the_geom";
-	}
-
-	if(opt == ' '){
-		opt = 'c';
-	}
-
-	curindex=0;
-        for ( ; optind < ARGC; optind++){
-		if(curindex ==0){
-			shp_file = ARGV[optind];
-		}else if(curindex == 1){
-			table = ARGV[optind];
-			if ( (ptr=strchr(table, '.')) )
-			{
-				*ptr = '\0';
-				schema = table;
-				table = ptr+1;
-			}
-		}
-		curindex++;
-	}
-	
-	/*
-	 * Third argument (if present) is supported for compatibility
-	 * with old shp2pgsql versions taking also database name.
-	 */
-	if(curindex < 2 || curindex > 3){
-		errflg = 1;
-	}
-
-        if (errflg==1) {
-		usage(ARGV[0], 2);
-        }
-
+	if ( ! parse_cmdline(ARGC, ARGV) ) usage(ARGV[0], 2);
 
 	/* 
 	 * Transform table name to lower case unless asked
@@ -624,8 +350,10 @@ main (int ARGC, char **ARGV)
 	}
 
 	SHPGetInfo(hSHPHandle, NULL, &shpfiletype, NULL, NULL);
+	SetPgType();
 
-	fprintf(stderr, "Input Shapefile is %s\n", SHPTypeName(shpfiletype));
+	fprintf(stderr, "Shapefile type: %s\n", SHPTypeName(shpfiletype));
+	fprintf(stderr, "Postgis type: %s[%d]\n", pgtype, pgdims);
 
 	if(opt == 'd')
 	{
@@ -832,203 +560,37 @@ main (int ARGC, char **ARGV)
 		{
 			if (dump_format) printf("\\N\n\\.\n");
 			else printf("NULL);\n");
+			SHPDestroyObject(obj);	
+			continue;
 		}
 
-                // --------- POLYGON / POLYGONM / POLYGONZ ------
-	   	else if(( obj->nSHPType == 5 ) || ( obj->nSHPType == 25 )
-			|| ( obj->nSHPType == 15) )
+		switch (obj->nSHPType)
 		{
-			ring_check(obj,schema,table,sr_id);
-		}
+			case SHPT_POLYGON:
+			case SHPT_POLYGONM:
+			case SHPT_POLYGONZ:
+				InsertPolygon();
+				break;
 
+			case SHPT_POINT:
+			case SHPT_POINTM:
+			case SHPT_POINTZ:
+			case SHPT_MULTIPOINT:
+			case SHPT_MULTIPOINTM:
+			case SHPT_MULTIPOINTZ:
+				InsertPoint();
+				break;
 
-		//-------- POINT / POINTM --------------
-		else if( obj->nSHPType == 1 || obj->nSHPType == 21 )
-		{
+			case SHPT_ARC:
+			case SHPT_ARCM:
+			case SHPT_ARCZ:
+				InsertLineString(j);
+				break;
 
-			if (dump_format) printf("SRID=%s;POINT(",sr_id);
-			else printf("GeometryFromText('POINT (");
-
-			for (u=0;u<obj->nVertices; u++){
-				if (u>0) printf(",");
-				printf("%.15g %.15g",obj->padfX[u],obj->padfY[u]);
-			}
-			if (dump_format) printf(")\n");
-			else printf(")',%s) );\n",sr_id);
-		}
-
-		//-------- POLYLINE / POLYLINEM ------------------
-		else if( obj->nSHPType == 3 || obj->nSHPType == 23 )
-		{
-			/*
-			 * if there is more than one part,
-			 * set the next_ring index to one
-			 */
-			if(obj->nParts >1) next_ring = 1;
-			else next_ring = -99;
-			
-
-			/* Invalid (MULTI)Linestring */
-			if ( obj->nVertices < 2 )
-			{
-				fprintf(stderr,
-	"MULTILINESTRING %d as %d vertices, set to NULL\n",
-	j, obj->nVertices);
-				if (dump_format) printf("\\N\n");
-				else printf("NULL);\n");
-
-				SHPDestroyObject(obj);
-
-				continue;
-			}
-
-			if (dump_format) printf("SRID=%s;MULTILINESTRING(",sr_id);
-			else printf("GeometryFromText('MULTILINESTRING (");
-
-			//for each vertice write out the coordinates in the insert statement, when there is a new line 
-			//you must end the brackets and start new ones etc.
-			for (u=0;u<obj->nVertices; u++){
-				
-				//check if the next vertice is the start of a new line
-		                //printf("\n\nu+1 = %d, next_ring = %d  index = %d\n",u+1,next_ring,obj->panPartStart[next_ring]);
-
-				if(next_ring==-99 && obj->nVertices ==1){	
-					printf("(%.15g %.15g )",obj->padfX[u],obj->padfY[u]);
-				}else if((next_ring != -99)&& (begin==1) && (u+1 == obj->panPartStart[next_ring]) ){
-					printf("(%.15g %.15g )",obj->padfX[u],obj->padfY[u]);
-					next_ring++;
-					begin=1;
-				}else if(((next_ring != -99) && (u+1 == obj->panPartStart[next_ring] )) || u==(obj->nVertices-1) ){
-					printf(",%.15g %.15g ",obj->padfX[u],obj->padfY[u]);
-					printf(")");
-					
-					next_ring++;
-					begin=1;//flag the fact that you area at a new line next time through the loop
-				}else{
-					if (u==0 || begin==1){ //if you are at the begging of a new line add comma and brackets 
-						if(u!=0) printf(",");
-						printf("(%.15g %.15g ",obj->padfX[u],obj->padfY[u]);
-						begin=0;
-					}else{
-						printf(",%.15g %.15g ",obj->padfX[u],obj->padfY[u]);
-					}
-				}
-			}
-
-			if (dump_format) printf(")\n");
-			else printf(")',%s) );\n",sr_id);
-		}
-
-		//-------- MULTIPOINT / MULTIPOINTM ------------
-		else if( obj->nSHPType == 8 || obj->nSHPType == 28 )
-		{
-			if (dump_format) printf("SRID=%s;MULTIPOINT(",sr_id);
-			else printf("GeometryFromText('MULTIPOINT ("); 
-			
-			for (u=0;u<obj->nVertices; u++){
-				if (u>0) printf(",");
-				printf("%.15g %.15g",
-					obj->padfX[u],obj->padfY[u]);
-			}
-			if (dump_format) printf(")\n");
-			else printf(")',%s) );\n",sr_id);
-		}
-
-		//---------- POINTZ ----------
-		else if( obj->nSHPType == 11 )
-		{ 
-			if (dump_format) printf("SRID=%s;POINT(",sr_id);
-			else printf("GeometryFromText('POINT ("); 
-			
-			for (u=0;u<obj->nVertices; u++){
-				if (u>0) printf(",");
-				printf("%.15g %.15g %.15g",
-					obj->padfX[u],
-					obj->padfY[u],
-					obj->padfZ[u]);
-			}
-			if (dump_format) printf(")\n");
-			else printf(")',%s) );\n",sr_id);
-
-		}
-
-		//------ POLYLINEZ -----------
-		else if( obj->nSHPType == 13 )
-		{  
-			/* Invalid (MULTI)Linestring */
-			if ( obj->nVertices < 2 )
-			{
-				fprintf(stderr,
-	"MULTILINESTRING %d as %d vertices, set to NULL\n",
-	j, obj->nVertices);
-				if (dump_format) printf("\\N\n");
-				else printf("NULL);\n");
-
-				SHPDestroyObject(obj);
-				continue;
-			}
-
-			/*
-			 * if there is more than one part,
-			 * set the next_ring index to one
-			 */
-			if(obj->nParts >1) next_ring = 1;
-			else next_ring = -99;
-
-			if (dump_format)
-				printf("SRID=%s;MULTILINESTRING(",sr_id);
-			else printf("GeometryFromText('MULTILINESTRING (");
-
-			//for each vertice write out the coordinates in the insert statement, when there is a new line 
-			//you must end the brackets and start new ones etc.
-			for (u=0;u<obj->nVertices; u++){
-
-				//check if the next vertice is the start of a new line				
-				if(((next_ring != -99) && (u+1 == obj->panPartStart[next_ring] )) || u==(obj->nVertices-1) ){
-					printf(",%.15g %.15g %.15g ",obj->padfX[u],obj->padfY[u],obj->padfZ[u]);
-					printf(")");
-					next_ring++;
-					begin =1;//flag the fact that you area at a new line next time through the loop
-				}else{
-					if (u==0 || begin==1){
-						if(u!=0) printf(",");
-						printf("(%.15g %.15g %.15g ",obj->padfX[u],obj->padfY[u],obj->padfZ[u]);
-						begin=0;
-					}else{
-						printf(",%.15g %.15g %.15g ",obj->padfX[u],obj->padfY[u],obj->padfZ[u]);
-					}
-				}
-			}	
-			
-			if (dump_format) printf(")\n");
-			else printf(")',%s));\n",sr_id);
-		}
-
-		//------ MULTIPOINTZ -----------------------
-		else if( obj->nSHPType == 18 )
-		{
-
-			if (dump_format) printf("SRID=%s;MULTIPOINT(",sr_id);
-			else printf("GeometryFromText('MULTIPOINT (");
-
-			for (u=0;u<obj->nVertices; u++){
-				if (u>0){
-					printf(",%.15g %.15g %.15g",obj->padfX[u],obj->padfY[u],obj->padfZ[u]);
-				}else{
-					printf("%.15g %.15g %.15g",obj->padfX[u],obj->padfY[u],obj->padfZ[u]);
-				}
-			}
-
-			if (dump_format) printf(")\n");
-			else printf(")',%s));\n",sr_id);
-
-
-		}
-
-		else
-		{
-			printf ("\n\n**** Type is NOT SUPPORTED, type id = %d ****\n\n",obj->nSHPType);
-			//print out what type the file is and that it is not supported
+			default:
+				printf ("\n\n**** Type is NOT SUPPORTED, type id = %d ****\n\n",
+					obj->nSHPType);
+				break;
 
 		}
 		
@@ -1159,50 +721,7 @@ create_table()
 			table, geom, sr_id);
 	}
 
-	switch(shpfiletype)
-	{
-		case SHPT_POINT: // Point
-			printf("'POINT',2);\n");
-			break;
-		case SHPT_ARC: // PolyLine
-			printf("'MULTILINESTRING',2);\n");
-			break;
-		case SHPT_POLYGON: // Polygon
-			printf("'MULTIPOLYGON',2);\n");
-			break;
-		case SHPT_MULTIPOINT: // MultiPoint
-	         	printf("'MULTIPOINT',2);\n");
-			break;
-		case SHPT_POINTM: // PointM
-			printf("'POINT',2);\n");
-			break;
-		case SHPT_ARCM: // PolyLineM
-			printf("'MULTILINESTRING',2);\n");
-			break;
-		case SHPT_POLYGONM: // PolygonM
-			printf("'MULTIPOLYGON',2);\n");
-			break;
-		case SHPT_MULTIPOINTM: // MultiPointM
-	         	printf("'MULTIPOINT',2);\n");
-			break;
-		case SHPT_POINTZ: // PointZ
-			printf("'POINT',3);\n");
-			break;
-		case SHPT_ARCZ: // PolyLineZ
-			printf("'MULTILINESTRING',3);\n");
-			break;
-		case SHPT_POLYGONZ: // MultiPolygonZ
-			printf("'MULTIPOLYGON',3);\n");
-			break;
-		case SHPT_MULTIPOINTZ: // MultiPointZ
-			printf("'MULTIPOINT',3);\n");
-			break;
-		default:
-			printf("'GEOMETRY',3); -- nSHPType: %d\n",
-				shpfiletype);
-			break;
-	}
-	//finished creating the table
+	printf("'%s',%d);\n", pgtype, pgdims);
 }
 
 void
@@ -1234,8 +753,530 @@ usage(char *me, int exitcode)
 	exit (exitcode);
 }
 
+void
+InsertLineString(int id)
+{
+	int pi; // part index
+
+	/* Invalid (MULTI)Linestring */
+	if ( obj->nVertices < 2 )
+	{
+		fprintf(stderr,
+			"MULTILINESTRING %d as %d vertices, set to NULL\n",
+			id, obj->nVertices);
+		if (dump_format) printf("\\N\n");
+		else printf("NULL);\n");
+
+		SHPDestroyObject(obj);
+		return;
+	}
+
+	if (dump_format) printf("SRID=%s;%s(",sr_id,pgtype );
+	else printf("GeometryFromText('%s(", pgtype);
+
+	for (pi=0; pi<obj->nParts; pi++)
+	{
+		int vi; // vertex index
+		int vs; // start vertex
+		int ve; // end vertex
+
+		// Set start and end vertexes
+		if ( pi==obj->nParts-1 ) ve = obj->nVertices;
+		else ve = obj->panPartStart[pi+1];
+		vs = obj->panPartStart[pi];
+
+		if (pi) printf(",");
+		printf("(");
+		if ( pgdims == 4 )
+		{
+			for ( vi=vs; vi<ve; vi++)
+			{
+				if (vi!=vs) printf(",");
+				printf("%.15g %.15g %.15g %.15g",
+					obj->padfX[vi],
+					obj->padfY[vi],
+					obj->padfZ[vi],
+					obj->padfM[vi]);
+			}
+		}
+		else if ( pgdims == 2 )
+		{
+			for ( vi=vs; vi<ve; vi++)
+			{
+				if (vi!=vs) printf(",");
+				printf("%.15g %.15g",
+					obj->padfX[vi],
+					obj->padfY[vi]);
+			}
+		}
+		else if ( istypeM )
+		{
+			for ( vi=vs; vi<ve; vi++)
+			{
+				if (vi!=vs) printf(",");
+				printf("%.15g %.15g %.15g",
+					obj->padfX[vi],
+					obj->padfY[vi],
+					obj->padfM[vi]);
+			}
+		}
+		else // LINE3dZ -- should never happen
+		{
+			for ( vi=vs; vi<ve; vi++)
+			{
+				if (vi!=vs) printf(",");
+				printf("%.15g %.15g %.15g",
+					obj->padfX[vi],
+					obj->padfY[vi],
+					obj->padfZ[vi]);
+			}
+		}
+
+		printf(")");
+
+	}
+
+	if (dump_format) printf(")\n");
+	else printf(")',%s));\n",sr_id);
+}
+
+//This function basically deals with the polygon case.
+//it sorts the polys in order of outer,inner,inner, so that inners
+//always come after outers they are within 
+void
+InsertPolygon()
+{
+	Ring **Outer;    // Pointers to Outer rings
+	int out_index=0; // Count of Outer rings
+	Ring **Inner;    // Pointers to Inner rings
+	int in_index=0;  // Count of Inner rings
+	int pi; // part index
+
+	if (dump_format) printf("SRID=%s ;%s(",sr_id,pgtype );
+	else printf("GeometryFromText('%s(", pgtype);
+
+#ifdef DEBUG
+	fprintf(stderr, "InsertPolygon: allocated space for %d rings\n",
+		obj->nParts);
+#endif
+
+	// Allocate initial memory
+	Outer = (Ring**)malloc(sizeof(Ring*)*obj->nParts);
+	Inner = (Ring**)malloc(sizeof(Ring*)*obj->nParts);
+
+	// Iterate over rings dividing in Outers and Inners
+	for (pi=0; pi<obj->nParts; pi++)
+	{
+		int vi; // vertex index
+		int vs; // start index
+		int ve; // end index
+		int nv; // number of vertex
+		double area = 0.0;
+		Ring *ring;
+
+		// Set start and end vertexes
+		if ( pi==obj->nParts-1 ) ve = obj->nVertices;
+		else ve = obj->panPartStart[pi+1];
+		vs = obj->panPartStart[pi];
+
+		// Compute number of vertexes
+		nv = ve-vs;
+
+		// Allocate memory for a ring
+		ring = (Ring*)malloc(sizeof(Ring));
+		ring->list = (Point*)malloc(sizeof(Point)*nv);
+		ring->n = nv;
+		ring->next = NULL;
+
+		// Iterate over ring vertexes
+		for ( vi=vs; vi<ve; vi++)
+		{
+			int vn = vi+1; // next vertex for area
+			if ( vn==ve ) vn = vs;
+
+			ring->list[vi-vs].x = obj->padfX[vi];
+			ring->list[vi-vs].y = obj->padfY[vi];
+			ring->list[vi-vs].z = obj->padfZ[vi];
+			ring->list[vi-vs].m = obj->padfM[vi];
+
+			area += (obj->padfX[vi] * obj->padfY[vn]) -
+				(obj->padfY[vi] * obj->padfX[vn]); 
+		}
+
+		// Close the ring with first vertex 
+		//ring->list[vi].x = obj->padfX[vs];
+		//ring->list[vi].y = obj->padfY[vs];
+		//ring->list[vi].z = obj->padfZ[vs];
+		//ring->list[vi].m = obj->padfM[vs];
+
+		// Clockwise (or single-part). It's an Outer Ring !
+		if(area < 0.0 || obj->nParts ==1) {
+			Outer[out_index] = ring;
+			out_index++;
+		}
+
+		// Counterclockwise. It's an Inner Ring !
+		else {
+			Inner[in_index] = ring;
+			in_index++;
+		}
+	}
+
+#ifdef DEBUG
+	fprintf(stderr, "InsertPolygon: found %d Outer, %d Inners\n",
+		out_index, in_index);
+#endif
+
+	// Put the inner rings into the list of the outer rings
+	// of which they are within
+	for(pi=0; pi<in_index; pi++)
+	{
+		Point pt,pt2;
+		int i;
+		Ring *inner=Inner[pi], *outer=NULL;
+
+		pt.x = inner->list[0].x;
+		pt.y = inner->list[0].y;
+
+		pt2.x = inner->list[1].x;
+		pt2.y = inner->list[1].y;
+
+		for(i=0; i<out_index; i++)
+		{
+			int in;
+
+			in = PIP(pt, Outer[i]->list, Outer[i]->n-1);
+			if( in || PIP(pt2,Outer[i]->list, Outer[i]->n-1) )
+			{
+				outer = Outer[i];
+				break;
+			}
+			fprintf(stderr, "!PIP %s\nOUTE %s\n", dump_ring(Inner[pi]), dump_ring(Outer[i]));
+		}
+
+		if ( outer )
+		{
+			while(outer->next) outer = outer->next;
+			outer->next = inner;
+			break;
+		}
+
+		// The ring wasn't within any outer rings,
+		// assume it is a new outer ring.
+		Outer[out_index] = inner;
+		out_index++;
+	}
+
+	// Write the coordinates
+	for(pi=0; pi<out_index; pi++)
+	{
+		Ring *poly;
+
+		poly = Outer[pi];
+
+		if (pi) printf(",");
+		printf("(");
+
+		while(poly)
+		{
+			int vi; // vertex index
+
+			printf("(");
+
+			if ( pgdims == 4 )
+			{
+				for(vi=0; vi<poly->n; vi++)
+				{
+					if (vi) printf(",");
+					printf("%.15g %.15g %.15g %.15g",
+						poly->list[vi].x,
+						poly->list[vi].y,
+						poly->list[vi].z,
+						poly->list[vi].m);
+				}
+			}
+			else if ( pgdims == 2 )
+			{
+				for(vi=0; vi<poly->n; vi++)
+				{
+					if (vi) printf(",");
+					printf("%.15g %.15g",
+						poly->list[vi].x,
+						poly->list[vi].y);
+				}
+			}
+			else if ( istypeM )
+			{
+				for(vi=0; vi<poly->n; vi++)
+				{
+					if (vi) printf(",");
+					printf("%.15g %.15g %.15g",
+						poly->list[vi].x,
+						poly->list[vi].y,
+						poly->list[vi].m);
+				}
+			}
+			else // POLYGON3DZ -- should never happen
+			{
+				for(vi=0; vi<poly->n; vi++)
+				{
+					if (vi) printf(",");
+					printf("%.15g %.15g %.15g",
+						poly->list[vi].x,
+						poly->list[vi].y,
+						poly->list[vi].z);
+				}
+			}
+
+			printf(")");
+			if ( poly->next ) printf(",");
+			poly = poly->next;
+		}
+
+		printf(")");
+	}
+
+	if (dump_format) printf(")\n");
+	else printf(")',%s) );\n",sr_id);
+
+	// Release all memory
+	for(pi=0; pi<out_index; pi++)
+	{
+		Ring *Poly, *temp;
+		Poly = Outer[pi];
+		while(Poly != NULL){
+			temp = Poly;
+			Poly = Poly->next;
+			free(temp->list);
+			free(temp);
+		}
+	}
+	free(Outer);
+	free(Inner);
+}
+
+void
+InsertPoint()
+{
+	unsigned int u;
+
+	if (dump_format) printf("SRID=%s ;%s(",sr_id,pgtype );
+	else printf("GeometryFromText('%s(", pgtype);
+	
+	if ( pgdims == 4 )
+	{
+		for (u=0;u<obj->nVertices; u++){
+			if (u) printf(",");
+			printf("%.15g %.15g %.15g %.15g",
+				obj->padfX[u],
+				obj->padfY[u],
+				obj->padfZ[u],
+				obj->padfM[u]);
+		}
+	}
+	else if ( pgdims == 2 )
+	{
+		for (u=0;u<obj->nVertices; u++){
+			if (u>0) printf(",");
+			printf("%.15g %.15g",
+				obj->padfX[u],
+				obj->padfY[u]);
+		}
+	}
+	else if ( istypeM )
+	{
+		for (u=0;u<obj->nVertices; u++){
+			if (u) printf(",");
+			printf("%.15g %.15g %.15g",
+				obj->padfX[u],
+				obj->padfY[u],
+				obj->padfM[u]);
+		}
+	}
+	else // POINT3dZ -- should never happen
+	{
+		fprintf(stderr, "InsertPoint: writing XYZ (loosing M)\n");
+		for (u=0;u<obj->nVertices; u++){
+			if (u>0) printf(",");
+			printf("%.15g %.15g %.15g",
+				obj->padfX[u],
+				obj->padfY[u],
+				obj->padfZ[u]);
+		}
+	}
+
+	if (dump_format) printf(")\n");
+	else printf(")',%s) );\n",sr_id);
+
+}
+
+int
+parse_cmdline(int ARGC, char **ARGV)
+{
+	int c;
+	int curindex=0;
+	char  *ptr;
+
+	while ((c = getopt(ARGC, ARGV, "kcdaDs:g:i")) != EOF){
+               switch (c) {
+               case 'c':
+                    if (opt == ' ')
+                         opt ='c';
+                    else
+                         return 0;
+                    break;
+               case 'd':
+                    if (opt == ' ')
+                         opt ='d';
+                    else
+                         return 0;
+                    break;
+	       case 'a':
+                    if (opt == ' ')
+                         opt ='a';
+                    else
+                         return 0;
+                    break;
+	       case 'D':
+		    dump_format =1;
+                    break;
+               case 's':
+                    sr_id = optarg;
+                    break;
+               case 'g':
+                    geom = optarg;
+                    break;
+               case 'k':
+                    quoteidentifiers = 1;
+                    break;
+               case 'i':
+                    forceint4 = 1;
+                    break;
+               case '?':
+               default:              
+		return 0;
+               }
+	}
+
+	if ( !sr_id ) sr_id = "-1";
+
+	if ( !geom ) geom = "the_geom";
+
+	if ( opt==' ' ) opt = 'c';
+
+        for (; optind < ARGC; optind++){
+		if(curindex ==0){
+			shp_file = ARGV[optind];
+		}else if(curindex == 1){
+			table = ARGV[optind];
+			if ( (ptr=strchr(table, '.')) )
+			{
+				*ptr = '\0';
+				schema = table;
+				table = ptr+1;
+			}
+		}
+		curindex++;
+	}
+	
+	/*
+	 * Third argument (if present) is supported for compatibility
+	 * with old shp2pgsql versions taking also database name.
+	 */
+	if(curindex < 2 || curindex > 3){
+		return 0;
+	}
+
+	return 1;
+}
+
+
+void
+SetPgType()
+{
+	switch(shpfiletype)
+	{
+		case SHPT_POINT: // Point
+			pgtype = "POINT";
+			pgdims = 2;
+			break;
+		case SHPT_ARC: // PolyLine
+			pgtype = "MULTILINESTRING";
+			pgdims = 2;
+			break;
+		case SHPT_POLYGON: // Polygon
+			pgtype = "MULTIPOLYGON";
+			pgdims = 2;
+			break;
+		case SHPT_MULTIPOINT: // MultiPoint
+			pgtype = "MULTIPOINT";
+			pgdims = 2;
+			break;
+		case SHPT_POINTM: // PointM
+			pgtype = "POINTM";
+			pgdims = 3;
+			istypeM = 1;
+			break;
+		case SHPT_ARCM: // PolyLineM
+			pgtype = "MULTILINESTRINGM";
+			pgdims = 3;
+			istypeM = 1;
+			break;
+		case SHPT_POLYGONM: // PolygonM
+			pgtype = "MULTIPOLYGONM";
+			pgdims = 3;
+			istypeM = 1;
+			break;
+		case SHPT_MULTIPOINTM: // MultiPointM
+			pgtype = "MULTIPOINTM";
+			pgdims = 3;
+			istypeM = 1;
+			break;
+		case SHPT_POINTZ: // PointZ
+			pgtype = "POINT";
+			pgdims = 4;
+			break;
+		case SHPT_ARCZ: // PolyLineZ
+			pgtype = "MULTILINESTRING";
+			pgdims = 4;
+			break;
+		case SHPT_POLYGONZ: // MultiPolygonZ
+			pgtype = "MULTIPOLYGON";
+			pgdims = 4;
+			break;
+		case SHPT_MULTIPOINTZ: // MultiPointZ
+			pgtype = "MULTIPOINT";
+			pgdims = 4;
+			break;
+		default:
+			pgtype = "GEOMETRY";
+			pgdims = 4;
+			fprintf(stderr, "Unknown geometry type: %d\n",
+				shpfiletype);
+			break;
+	}
+}
+
+char *
+dump_ring(Ring *ring)
+{
+	char *buf = malloc(256);
+	int i;
+	for (i=0; i<ring->n; i++)
+	{
+		if (i) sprintf(buf, "%s,", buf);
+		sprintf(buf, "%s%g %g",
+			buf,
+			ring->list[i].x,
+			ring->list[i].y);
+	}
+	return buf;
+}
 /**********************************************************************
  * $Log$
+ * Revision 1.69  2004/10/07 21:52:28  strk
+ * Lots of rewriting/cleanup. TypeM/TypeZ supports.
+ *
  * Revision 1.68  2004/10/07 06:54:24  strk
  * cleanups
  *
