@@ -3823,6 +3823,8 @@ FROM geometry_table;</literallayout>
 	    Third argument may be used to reduce the maximum
 	    number of significant digits used in output
 	    (defaults to 15).
+	    Point geometries will be rendered as cx/cy when
+	    'rel' arg is 0, x/y when 'rel' is 1.
             </para>
           </listitem>
         </varlistentry>
