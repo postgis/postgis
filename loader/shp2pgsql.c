@@ -40,6 +40,8 @@
 #define WKBZOFFSET 0x80000000
 #define WKBMOFFSET 0x40000000
 
+//#define DEBUG 1
+
 typedef struct {double x, y, z, m;} Point;
 
 typedef struct Ring {
@@ -845,8 +847,11 @@ InsertPolygon()
 		(wkbtype&WKBMOFFSET);
 
 #ifdef DEBUG
-	fprintf(stderr, "InsertPolygon: allocated space for %d rings\n",
-		obj->nParts);
+	static int call = -1;
+	call++;
+
+	fprintf(stderr, "InsertPolygon[%d]: allocated space for %d rings\n",
+		call, obj->nParts);
 #endif
 
 	// Allocate initial memory
@@ -913,8 +918,8 @@ InsertPolygon()
 	}
 
 #ifdef DEBUG
-	fprintf(stderr, "InsertPolygon: found %d Outer, %d Inners\n",
-		out_index, in_index);
+	fprintf(stderr, "InsertPolygon[%d]: found %d Outer, %d Inners\n",
+		call, out_index, in_index);
 #endif
 
 	// Put the inner rings into the list of the outer rings
@@ -935,13 +940,13 @@ InsertPolygon()
 		{
 			int in;
 
-			in = PIP(pt, Outer[i]->list, Outer[i]->n-1);
-			if( in || PIP(pt2,Outer[i]->list, Outer[i]->n-1) )
+			in = PIP(pt, Outer[i]->list, Outer[i]->n);
+			if( in || PIP(pt2, Outer[i]->list, Outer[i]->n) )
 			{
 				outer = Outer[i];
 				break;
 			}
-			//fprintf(stderr, "!PIP %s\nOUTE %s\n", dump_ring(Inner[pi]), dump_ring(Outer[i]));
+			//fprintf(stderr, "!PIP %s\nOUTE %s\n", dump_ring(inner), dump_ring(Outer[i]));
 		}
 
 		if ( outer )
@@ -954,6 +959,10 @@ InsertPolygon()
 
 		// The ring wasn't within any outer rings,
 		// assume it is a new outer ring.
+#ifdef DEBUG
+	fprintf(stderr, "InsertPolygon[%d]: hole %d is orphan\n",
+		call, pi);
+#endif
 		Outer[out_index] = inner;
 		out_index++;
 	}
@@ -1224,7 +1233,7 @@ SetPgType()
 char *
 dump_ring(Ring *ring)
 {
-	char *buf = malloc(256);
+	char *buf = malloc(256*ring->n);
 	int i;
 	for (i=0; i<ring->n; i++)
 	{
@@ -1297,6 +1306,9 @@ print_wkb_bytes(unsigned char *ptr, unsigned int cnt, size_t size)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.75  2004/11/15 10:51:35  strk
+ * Fixed a bug in PIP invocation, added some debugging lines.
+ *
  * Revision 1.74  2004/10/17 13:25:44  strk
  * removed USE_WKB partially-used define
  *
