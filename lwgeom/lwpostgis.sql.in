@@ -302,53 +302,6 @@ CREATEFUNCTION box2d_intersects(box2d, box2d)
 	AS '@MODULE_FILENAME@', 'BOX2D_intersects'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE OPERATOR << (
-   LEFTARG = box2d, RIGHTARG = box2d, PROCEDURE = box2d_left,
-   COMMUTATOR = '>>',
-   RESTRICT = positionsel, JOIN = positionjoinsel
-);
-
-CREATE OPERATOR &< (
-   LEFTARG = box2d, RIGHTARG = box2d, PROCEDURE = box2d_overleft,
-   COMMUTATOR = '&>',
-   RESTRICT = positionsel, JOIN = positionjoinsel
-);
-
-CREATE OPERATOR && (
-   LEFTARG = box2d, RIGHTARG = box2d, PROCEDURE = box2d_overlap,
-   COMMUTATOR = '&&',
-   RESTRICT = areasel, JOIN = positionjoinsel
-);
-
-CREATE OPERATOR &> (
-   LEFTARG = box2d, RIGHTARG = box2d, PROCEDURE = box2d_overright,
-   COMMUTATOR = '&<',
-   RESTRICT = positionsel, JOIN = positionjoinsel
-);
-
-CREATE OPERATOR >> (
-   LEFTARG = box2d, RIGHTARG = box2d, PROCEDURE = box2d_right,
-   COMMUTATOR = '<<',
-   RESTRICT = positionsel, JOIN = positionjoinsel
-);
-
-CREATE OPERATOR ~= (
-   LEFTARG = box2d, RIGHTARG = box2d, PROCEDURE = box2d_same,
-   COMMUTATOR = '~=', 
-   RESTRICT = eqsel, JOIN = eqjoinsel
-);
-
-CREATE OPERATOR @ (
-   LEFTARG = box2d, RIGHTARG = box2d, PROCEDURE = box2d_contained,
-   COMMUTATOR = '~',
-   RESTRICT = contsel, JOIN = contjoinsel
-);
-
-CREATE OPERATOR ~ (
-   LEFTARG = box2d, RIGHTARG = box2d, PROCEDURE = box2d_contain,
-   COMMUTATOR = '@',
-   RESTRICT = contsel, JOIN = contjoinsel
-);
 
 CREATEFUNCTION xmin(box2d)
 	RETURNS FLOAT4
@@ -467,6 +420,17 @@ CREATEFUNCTION postgis_gist_sel (internal, oid, internal, int4)
 	AS '@MODULE_FILENAME@', 'LWGEOM_gist_sel'
 	LANGUAGE 'C';
 
+#if USE_VERSION == 71
+CREATEFUNCTION postgis_gist_joinsel(oid, oid, int2, opaque, smallint)
+#elif USE_VERSION == 72
+CREATEFUNCTION postgis_gist_joinsel(opaque, oid,  opaque, smallint)
+#else
+CREATEFUNCTION postgis_gist_joinsel(internal, oid, internal, smallint)
+#endif
+	RETURNS float8
+	AS '@MODULE_FILENAME@', 'LWGEOM_gist_joinsel'
+	LANGUAGE 'C';
+
 CREATEFUNCTION geometry_overleft(geometry, geometry) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@', 'LWGEOM_overleft'
@@ -507,6 +471,8 @@ CREATEFUNCTION geometry_same(geometry, geometry)
 	AS '@MODULE_FILENAME@', 'LWGEOM_same'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
+-- GEOMETRY operators
+
 CREATE OPERATOR << (
    LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_left,
    COMMUTATOR = '>>',
@@ -522,7 +488,7 @@ CREATE OPERATOR &< (
 CREATE OPERATOR && (
    LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overlap,
    COMMUTATOR = '&&',
-   RESTRICT = postgis_gist_sel, JOIN = positionjoinsel
+   RESTRICT = postgis_gist_sel, JOIN = postgis_gist_joinsel
 );
 
 CREATE OPERATOR &> (
@@ -555,6 +521,55 @@ CREATE OPERATOR ~ (
    RESTRICT = contsel, JOIN = contjoinsel
 );
 
+-- BOX2D operators
+
+CREATE OPERATOR << (
+   LEFTARG = box2d, RIGHTARG = box2d, PROCEDURE = box2d_left,
+   COMMUTATOR = '>>',
+   RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+CREATE OPERATOR &< (
+   LEFTARG = box2d, RIGHTARG = box2d, PROCEDURE = box2d_overleft,
+   COMMUTATOR = '&>',
+   RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+CREATE OPERATOR && (
+   LEFTARG = box2d, RIGHTARG = box2d, PROCEDURE = box2d_overlap,
+   COMMUTATOR = '&&',
+   RESTRICT = postgis_gist_sel, JOIN = postgis_gist_joinsel
+);
+
+CREATE OPERATOR &> (
+   LEFTARG = box2d, RIGHTARG = box2d, PROCEDURE = box2d_overright,
+   COMMUTATOR = '&<',
+   RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+CREATE OPERATOR >> (
+   LEFTARG = box2d, RIGHTARG = box2d, PROCEDURE = box2d_right,
+   COMMUTATOR = '<<',
+   RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+CREATE OPERATOR ~= (
+   LEFTARG = box2d, RIGHTARG = box2d, PROCEDURE = box2d_same,
+   COMMUTATOR = '~=', 
+   RESTRICT = eqsel, JOIN = eqjoinsel
+);
+
+CREATE OPERATOR @ (
+   LEFTARG = box2d, RIGHTARG = box2d, PROCEDURE = box2d_contained,
+   COMMUTATOR = '~',
+   RESTRICT = contsel, JOIN = contjoinsel
+);
+
+CREATE OPERATOR ~ (
+   LEFTARG = box2d, RIGHTARG = box2d, PROCEDURE = box2d_contain,
+   COMMUTATOR = '@',
+   RESTRICT = contsel, JOIN = contjoinsel
+);
 
 -- gist support functions
 

@@ -86,6 +86,11 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS);
  */
 #define DEFAULT_GEOMETRY_SEL 0.000005 
 
+/*
+ * Default geometry join selectivity factor
+ */
+#define DEFAULT_GEOMETRY_JOINSEL 0.000005 
+
 #define min(a,b)  ((a) <= (b) ? (a) : (b))
 #define max(a,b)  ((a) >  (b) ? (a) : (b))
 
@@ -1306,6 +1311,18 @@ Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS)
 
 }
 
+// JOIN selectivity in the GiST && operator
+PG_FUNCTION_INFO_V1(LWGEOM_gist_joinsel);
+Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
+{
+#if DEBUG_GEOMETRY_STATS
+	elog(NOTICE, "LWGEOM_gist_joinsel called (returning %f)",
+		DEFAULT_GEOMETRY_JOINSEL);
+#endif
+	PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_JOINSEL);
+}
+
+
 /*
  * This function is called by the analyze function iff
  * the geometry_analyze() function give it its pointer
@@ -2006,6 +2023,10 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.15  2004/12/13 14:03:07  strk
+ * Initial skeleton on join selectivity estimator.
+ * Current estimators application for box2d && box2d operator.
+ *
  * Revision 1.14  2004/12/13 12:25:27  strk
  * Removed obsoleted function and fixed some warnings.
  *
