@@ -71,6 +71,7 @@ int binary;
 SHPObject * (*shape_creator)(byte *, int);
 int big_endian = 0;
 int pgis_major_version;
+int zmflag;
 
 /* Prototypes */
 int getMaxFieldSize(PGconn *conn, char *schema, char *table, char *fname);
@@ -124,8 +125,8 @@ double popdouble(byte **c);
 void skipdouble(byte **c);
 void dump_wkb(byte *wkb);
 byte * HexDecode(byte *hex);
-#define WKB3DOFFSET 0x80000000
-#define WKB4DOFFSET 0x40000000
+#define WKBZOFFSET 0x80000000
+#define WKBMOFFSET 0x40000000
 
 
 static void exit_nicely(PGconn *conn){
@@ -134,7 +135,8 @@ static void exit_nicely(PGconn *conn){
 }
 
 int
-main(int ARGC, char **ARGV){
+main(int ARGC, char **ARGV)
+{
 	char *query=NULL;
 	int row;
 	PGresult *res;
@@ -155,6 +157,7 @@ main(int ARGC, char **ARGV){
 	includegid=0;
 	unescapedattrs=0;
 	binary = 0;
+	zmflag = 0;
 #ifdef DEBUG
 	FILE *debug;
 #endif
@@ -199,7 +202,7 @@ main(int ARGC, char **ARGV){
 	}
 
 
-	printf("Output shape type is: %s\n", shapetypename(outshptype));
+	printf("Output shape: %s\n", shapetypename(outshptype));
 
 
 	/*
@@ -300,7 +303,7 @@ shape_creator_wrapper_WKB(byte *str, int idx)
 {
 	byte *ptr = str;
 	uint32 type;
-	int ndims = 2;
+	int ndims;
 	int wkb_big_endian;
 
 	// skip byte order
@@ -315,11 +318,16 @@ shape_creator_wrapper_WKB(byte *str, int idx)
 	// get type
 	type = getint(ptr);
 
-	if ( type&WKB3DOFFSET ) ndims = 3;
-	if ( type&WKB4DOFFSET ) ndims = 4;
+	ndims=2;
+	if ( type&WKBZOFFSET ) ndims++;
+	if ( type&WKBMOFFSET )
+	{
 
-	type &= ~WKB3DOFFSET;
-	type &= ~WKB4DOFFSET;
+		ndims++;
+	}
+
+	type &= ~WKBZOFFSET;
+	type &= ~WKBMOFFSET;
 
 	switch(type)
 	{
@@ -632,7 +640,7 @@ SHPObject *
 create_multiline3D_WKB (byte *wkb)
 {
 	SHPObject *obj;
-	double *x=NULL, *y=NULL, *z=NULL;
+	double *x=NULL, *y=NULL, *zm=NULL;
 	int nparts=0, *part_index=NULL, totpoints=0, nlines=0;
 	int li;
 
@@ -663,25 +671,31 @@ create_multiline3D_WKB (byte *wkb)
 
 		x = realloc(x, sizeof(double)*(totpoints+npoints));
 		y = realloc(y, sizeof(double)*(totpoints+npoints));
-		z = realloc(z, sizeof(double)*(totpoints+npoints));
+		zm = realloc(zm, sizeof(double)*(totpoints+npoints));
 
 		/* wkb now points at first point */
 		for (pn=0; pn<npoints; pn++)
 		{
 			x[totpoints+pn] = popdouble(&wkb);
 			y[totpoints+pn] = popdouble(&wkb);
-			z[totpoints+pn] = popdouble(&wkb);
+			zm[totpoints+pn] = popdouble(&wkb);
 		}
 
 		part_index[li] = totpoints;
 		totpoints += npoints;
 	}
 
-	obj = SHPCreateObject(outshptype, -1, nparts,
-		part_index, NULL, totpoints,
-		x, y, z, NULL);
+	if ( zmflag == 1 ) {
+		obj = SHPCreateObject(outshptype, -1, nparts,
+			part_index, NULL, totpoints,
+			x, y, NULL, zm);
+	} else {
+		obj = SHPCreateObject(outshptype, -1, nparts,
+			part_index, NULL, totpoints,
+			x, y, zm, NULL);
+	}
 
-	free(part_index); free(x); free(y); free(z);
+	free(part_index); free(x); free(y); free(zm);
 
 	return obj;
 }
@@ -843,7 +857,7 @@ create_line4D_WKB (byte *wkb)
 SHPObject *
 create_line3D_WKB (byte *wkb)
 {
-	double *x=NULL, *y=NULL, *z=NULL;
+	double *x=NULL, *y=NULL, *zm=NULL;
 	uint32 npoints=0, pn;
 	SHPObject *obj;
 	
@@ -858,18 +872,25 @@ create_line3D_WKB (byte *wkb)
 
 	x = malloc(sizeof(double)*(npoints));
 	y = malloc(sizeof(double)*(npoints));
-	z = malloc(sizeof(double)*(npoints));
+	zm = malloc(sizeof(double)*(npoints));
 
 	/* wkb now points at first point */
 	for (pn=0; pn<npoints; pn++)
 	{
 		x[pn] = popdouble(&wkb);
 		y[pn] = popdouble(&wkb);
-		z[pn] = popdouble(&wkb);
+		zm[pn] = popdouble(&wkb);
 	}
 
-	obj = SHPCreateSimpleObject(outshptype, npoints, x, y, z);
-	free(x); free(y); free(z);
+	if ( zmflag == 1 ) {
+		obj = SHPCreateObject(outshptype, -1, 0, NULL, NULL,
+			npoints, x, y, NULL, zm);
+	} else {
+		obj = SHPCreateObject(outshptype, -1, 0, NULL, NULL,
+			npoints, x, y, zm, NULL);
+	}
+
+	free(x); free(y); free(zm);
 
 	return obj;
 }
@@ -930,28 +951,21 @@ SHPObject *
 create_point3D_WKB(byte *wkb)
 {
 	SHPObject *obj;
-	double x, y, z;
+	double x, y, zm;
 
 	// skip byteOrder and wkbType
 	skipbyte(&wkb); skipint(&wkb);
 
 	x = popdouble(&wkb);
 	y = popdouble(&wkb);
-	z = popdouble(&wkb);
+	zm = popdouble(&wkb);
 
-	if ( geotype == POINTTYPE )
-	{
-		obj = SHPCreateSimpleObject(outshptype,1,&x,&y,&z);
-	}
-	else if ( geotype == MULTIPOINTTYPE )
-	{
-		//printf( "create_point3D_WKB: fluffing to MULTIPOINT\n");
-		obj = SHPCreateSimpleObject(outshptype, 1, &x, &y, &z);
-	}
-	else
-	{
-		printf( "ERROR: create_point2D_WKB called with wrong geometry type (%d)\n", geotype);
-		return NULL;
+	if ( zmflag == 1 ) {
+		obj = SHPCreateObject(outshptype, -1, 0, NULL, NULL,
+			1, &x, &y, NULL, &zm);
+	} else {
+		obj = SHPCreateObject(outshptype, -1, 0, NULL, NULL,
+			1, &x, &y, &zm, NULL);
 	}
 
 	return obj;
@@ -1012,9 +1026,9 @@ SHPObject *
 create_multipoint3D_WKB(byte *wkb)
 {
 	SHPObject *obj;
-	double *x=NULL, *y=NULL, *z=NULL;
-	int npoints;
-	int pn;
+	double *x=NULL, *y=NULL, *zm=NULL;
+	uint32 npoints;
+	uint32 pn;
 
 	// skip byteOrder and type
 	skipbyte(&wkb); skipint(&wkb);
@@ -1023,17 +1037,26 @@ create_multipoint3D_WKB(byte *wkb)
 
 	x = (double *)malloc(sizeof(double)*npoints);
 	y = (double *)malloc(sizeof(double)*npoints);
-	z = (double *)malloc(sizeof(double)*npoints);
+	zm = (double *)malloc(sizeof(double)*npoints);
 
 	for (pn=0; pn<npoints; pn++)
 	{
+		skipbyte(&wkb); // byteOrder
+		skipint(&wkb);  // wkbType
 		x[pn]=popdouble(&wkb);
 		y[pn]=popdouble(&wkb);
-		z[pn]=popdouble(&wkb);
+		zm[pn]=popdouble(&wkb);
 	}
 
-	obj = SHPCreateSimpleObject(outshptype,npoints,x,y,z);
-	free(x); free(y); free(z);
+	if ( zmflag == 1 ) {
+		obj = SHPCreateObject(outshptype, -1, 0, NULL, NULL,
+			npoints, x, y, NULL, zm);
+	} else {
+		obj = SHPCreateObject(outshptype, -1, 0, NULL, NULL,
+			npoints, x, y, zm, NULL);
+	}
+
+	free(x); free(y); free(zm);
 
 	return obj;
 }
@@ -1219,7 +1242,7 @@ create_polygon3D_WKB(byte *wkb)
 {
 	SHPObject *obj;
 	int ri, nrings, totpoints=0, *part_index=NULL;
-	double *x=NULL, *y=NULL, *z=NULL;
+	double *x=NULL, *y=NULL, *zm=NULL, *z=NULL;
 	
 	// skip byteOrder and type
 	skipbyte(&wkb); skipint(&wkb);
@@ -1239,36 +1262,41 @@ create_polygon3D_WKB(byte *wkb)
 
 		x = realloc(x, sizeof(double)*(totpoints+npoints));
 		y = realloc(y, sizeof(double)*(totpoints+npoints));
-		z = realloc(z, sizeof(double)*(totpoints+npoints));
+		zm = realloc(zm, sizeof(double)*(totpoints+npoints));
 
 		for (pn=0; pn<npoints; pn++)
 		{
 			x[totpoints+pn] = popdouble(&wkb);
 			y[totpoints+pn] = popdouble(&wkb);
-			z[totpoints+pn] = popdouble(&wkb);
+			zm[totpoints+pn] = popdouble(&wkb);
 		}
 
 		/*
 		 * First ring should be clockwise,
 		 * other rings should be counter-clockwise
 		 */
+
+		// Set z to NULL if TYPEM
+		if ( zmflag == 1 ) z = NULL;
+		else z = zm+totpoints;
+
 		if ( !ri ) {
 			if ( ! is_clockwise(npoints, x+totpoints,
-						y+totpoints, z+totpoints) ) {
+						y+totpoints, z) ) {
 #if VERBOSE > 2
 				printf("Forcing CW\n");
 #endif
 				reverse_points(npoints, x+totpoints,
-						y+totpoints, z+totpoints, NULL);
+						y+totpoints, zm+totpoints, NULL);
 			}
 		} else {
 			if ( is_clockwise(npoints, x+totpoints,
-						y+totpoints, z+totpoints) ) {
+						y+totpoints, z) ) {
 #if VERBOSE > 2
 				printf("Forcing CCW\n");
 #endif
 				reverse_points(npoints, x+totpoints,
-						y+totpoints, z+totpoints, NULL);
+						y+totpoints, zm+totpoints, NULL);
 			}
 		}
 
@@ -1276,12 +1304,18 @@ create_polygon3D_WKB(byte *wkb)
 		totpoints += npoints;
 	}
 
-	obj = SHPCreateObject(outshptype, -1, nrings,
-		part_index, NULL, totpoints,
-		x, y, z, NULL);
+	if ( zmflag == 1 ) {
+		obj = SHPCreateObject(outshptype, -1, nrings,
+			part_index, NULL, totpoints,
+			x, y, NULL, zm);
+	} else {
+		obj = SHPCreateObject(outshptype, -1, nrings,
+			part_index, NULL, totpoints,
+			x, y, zm, NULL);
+	}
 
 	free(part_index);
-	free(x); free(y); free(z);
+	free(x); free(y); free(zm);
 
 	return obj;
 }
@@ -1421,7 +1455,7 @@ create_multipolygon3D_WKB(byte *wkb)
 	int totpoints=0;
 	int *part_index=NULL;
 	int pi;
-	double *x=NULL, *y=NULL, *z=NULL;
+	double *x=NULL, *y=NULL, *z=NULL, *zm=NULL;
 
 	// skip byteOrder and type
 	//printf("byteOrder is %d\n", popbyte(&wkb));
@@ -1474,14 +1508,14 @@ create_multipolygon3D_WKB(byte *wkb)
 
 			x = realloc(x, sizeof(double)*(totpoints+npoints));
 			y = realloc(y, sizeof(double)*(totpoints+npoints));
-			z = realloc(z, sizeof(double)*(totpoints+npoints));
+			zm = realloc(zm, sizeof(double)*(totpoints+npoints));
 
 			/* wkb now points at first point */
 			for (pn=0; pn<npoints; pn++)
 			{
 				x[totpoints+pn] = popdouble(&wkb);
 				y[totpoints+pn] = popdouble(&wkb);
-				z[totpoints+pn] = popdouble(&wkb);
+				zm[totpoints+pn] = popdouble(&wkb);
 #if VERBOSE > 3
 	printf("Point%d (%f,%f)\n", pn, x[totpoints+pn], y[totpoints+pn]);
 #endif
@@ -1491,25 +1525,30 @@ create_multipolygon3D_WKB(byte *wkb)
 			 * First ring should be clockwise,
 			 * other rings should be counter-clockwise
 			 */
+
+			// Set z to NULL if TYPEM
+			if ( zmflag == 1 ) z = NULL;
+			else z = zm+totpoints;
+
 			if ( !ri ) {
 				if (!is_clockwise(npoints, x+totpoints,
-							y+totpoints, z+totpoints))
+							y+totpoints, z))
 				{
 #if VERBOSE > 2
 					printf("Forcing CW\n");
 #endif
 					reverse_points(npoints, x+totpoints,
-							y+totpoints, z+totpoints, NULL);
+							y+totpoints, zm+totpoints, NULL);
 				}
 			} else {
 				if (is_clockwise(npoints, x+totpoints,
-							y+totpoints, z+totpoints))
+							y+totpoints, z))
 				{
 #if VERBOSE > 2
 					printf("Forcing CCW\n");
 #endif
 					reverse_points(npoints, x+totpoints,
-							y+totpoints, z+totpoints, NULL);
+							y+totpoints, zm+totpoints, NULL);
 				}
 			}
 
@@ -1526,16 +1565,22 @@ create_multipolygon3D_WKB(byte *wkb)
 	printf("End of polygons\n");
 #endif
 
-	obj = SHPCreateObject(outshptype, -1, nparts,
-		part_index, NULL, totpoints,
-		x, y, z, NULL);
+	if ( zmflag == 1 ) {
+		obj = SHPCreateObject(outshptype, -1, nparts,
+			part_index, NULL, totpoints,
+			x, y, NULL, zm);
+	} else {
+		obj = SHPCreateObject(outshptype, -1, nparts,
+			part_index, NULL, totpoints,
+			x, y, zm, NULL);
+	}
 
 #if VERBOSE > 2
 	printf("Object created\n");
 #endif
 
 	free(part_index);
-	free(x); free(y); free(z);
+	free(x); free(y); free(zm);
 
 	return obj;
 }
@@ -2063,7 +2108,6 @@ getGeometryDims(char *schema, char *table, char *geo_col_name)
 {
 	char query[1024];
 	PGresult *res;
-	int zmflag;
 
 	if ( schema )
 	{
@@ -2837,8 +2881,10 @@ dump_wkb(byte *wkb)
 	else printf("ByteOrder: unknown (%d)\n", byteOrder);
 
 	type = popint(&wkb); 
-	if ( type&WKB3DOFFSET ) printf ("Is 3D\n");
-	type &= ~WKB3DOFFSET; // strip 3d flag
+	if ( type&WKBZOFFSET ) printf ("Has Z!\n");
+	if ( type&WKBMOFFSET ) printf ("Has M!\n");
+	type &= ~WKBZOFFSET; // strip Z flag
+	type &= ~WKBMOFFSET; // strip M flag
 	printf ("Type: %x\n", type);
 
 	printf("-----\n");
@@ -2924,6 +2970,9 @@ shapetypename(int num)
 }
 /**********************************************************************
  * $Log$
+ * Revision 1.61  2004/10/07 17:15:28  strk
+ * Fixed TYPEM handling.
+ *
  * Revision 1.60  2004/10/07 06:54:24  strk
  * cleanups
  *
