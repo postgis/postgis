@@ -106,7 +106,7 @@ lwgeom_geos.o: lwgeom_geos.c profile.h
 
 lwgeom_functions_basic.o: lwgeom_functions_basic.c profile.h
 
-all: all-lib lwpostgis.sql
+all: $(GEOS_RULES) all-lib lwpostgis.sql
 
 # Shared library stuff
 
