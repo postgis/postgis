@@ -91,6 +91,8 @@ endif
 override DLLLIBS += $(BE_DLLLIBS) 
 
 override CXXFLAGS := $(CFLAGS)
+# memory debug for gcc 2.91, 2.95, 3.0 and 3.1
+#override CXXFLAGS += -D__USE_MALLOC
 
 #---------------------------------------------------------------
 # Add index selectivity to C flags
