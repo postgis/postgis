@@ -33,7 +33,7 @@ endif
 
 POSTGIS_VERSION = $(SO_MAJOR_VERSION).$(SO_MINOR_VERSION) USE_GEOS=$(USE_GEOS) USE_PROJ=$(USE_PROJ) USE_STATS=$(USE_STATS)
 POSTGIS_LIB_VERSION = $(SO_MAJOR_VERSION).$(SO_MINOR_VERSION).$(SO_MICRO_VERSION)
-POSTGIS_BUILD_DATE := $(shell date -u "+%F %H:%M:%S")
+POSTGIS_BUILD_DATE := $(shell date -u "+%Y-%m-%d %H:%M:%S")
 
 
 #---------------------------------------------------------------
