@@ -462,7 +462,7 @@
         <answer>
           <para>You can store point, line, polygon, multipoint, multiline,
           multipolygon, and geometrycollections. These are specified in the
-          Open GIS Well Known Text Format (with 3d extentions).</para>
+          Open GIS Well Known Text Format (with XYZ,XYM,XYZM extentions).</para>
         </answer>
       </qandaentry>
 
@@ -477,7 +477,7 @@
           <filename>psql</filename> and try the following SQL:</para>
 
           <programlisting>CREATE TABLE gtest ( ID int4, NAME varchar(20) );
-SELECT AddGeometryColumn('dbname','gtest','geom',-1,'LINESTRING',2);</programlisting>
+SELECT AddGeometryColumn('gtest','geom',-1,'LINESTRING',2);</programlisting>
 
           <para>If the geometry column addition fails, you probably have not
           loaded the PostGIS functions and objects into this database. See the
@@ -706,7 +706,19 @@ AND
 
       <itemizedlist>
         <listitem>
-          <para>POINT(0 0 0)</para>
+          <para>POINT(0 0) -- XY</para>
+        </listitem>
+
+        <listitem>
+          <para>POINT(0 0 0) -- XYZ</para>
+        </listitem>
+
+        <listitem>
+          <para>POINTM(0 0 0) -- XYM</para>
+        </listitem>
+
+        <listitem>
+          <para>POINT(0 0 0 0) -- XYZM</para>
         </listitem>
 
         <listitem>
@@ -738,14 +750,16 @@ AND
         </listitem>
       </itemizedlist>
 
-      <para>Note that in the examples above there are features with both
-      2-dimensional and 3-dimensional coordinates. PostGIS supports both 2D
-      and 3D coordinates -- if you describe a feature with 2D coordinates when
-      you insert it, the database will return that feature to you with 2D
-      coordinates when you extract it. See the sections on the <link
-      linkend="force_2d">force_2d()</link> and <link
-      linkend="force_3d">force_3d()</link> functions for information on
-      converting features to a particular coordinate dimension
+      <para>Note that in the examples above there are features with 
+      2-dimensional, 3-dimensional (XYZ,XYM) and 4-dimensional coordinates.
+      PostGIS supports 2D,3DZ,3DM and 4D coordinates -- if you describe a
+      feature with 2D coordinates when you insert it, the database will
+      return that feature to you with 2D coordinates when you extract it.
+      See the sections on the <link linkend="force_2d">force_2d()</link>,
+      <link linkend="force_3dz">force_3dz()</link>,
+      <link linkend="force_3dm">force_3dm()</link> and
+      <link linkend="force_4d">force_4d()</link> functions for information
+      on converting features to a particular coordinate dimension
       representation.</para>
 
       <sect2>
@@ -780,20 +794,22 @@ VALUES (
         text representation which includes all the information necessary to
         construct the object. Unlike the OpenGIS standard forms, it includes
         the type, coordinate, <emphasis>and</emphasis> SRID information. The
-        canonical form is the default form returned from a SELECT query. The
-        example below shows the difference between the OGC standard and
+        canonical form is the default form returned from a SELECT query.
+	Since version 1.0.0 the canonical form is an HEX-encoded WKB with
+	an optional SRID=#; prefix.
+	The example below shows the difference between the OGC standard and
         PostGIS canonical forms:</para>
 
-        <programlisting>db=&gt; SELECT AsText(geom) AS OGCGeom FROM thetable;
+        <programlisting>db=&gt; SELECT AsText(geom) AS OGCGeom FROM SPATIALTABLE;
 OGCGeom
 -------------------------------------------------
-LINESTRING(-123.741378393049 48.9124018962261,-123.741587115639 48.9123981907507)
+POINT(-126.4 45.32)
 (1 row)
 
 db=&gt; SELECT geom AS PostGISGeom FROM thetable;
 PostGISGeom
 -------------------------------------------------
-SRID=123;LINESTRING(-123.741378393049 48.9124018962261,-123.741587115639 48.9123981907507)
+SRID=312;01010000009A99999999995FC0295C8FC2F5A84640
 (1 row)</programlisting>
       </sect2>
     </sect1>
@@ -964,7 +980,7 @@ SRID=123;LINESTRING(-123.741378393049 48.9124018962261,-123.741587115639 48.9123
             <term>COORD_DIMENSION</term>
 
             <listitem>
-              <para>The spatial dimension (2 or 3 dimensional) of the
+              <para>The spatial dimension (2, 3 or 4 dimensional) of the
               column.</para>
             </listitem>
           </varlistentry>
@@ -985,7 +1001,9 @@ SRID=123;LINESTRING(-123.741378393049 48.9124018962261,-123.741587115639 48.9123
             <listitem>
               <para>The type of the spatial object. To restrict the spatial
               column to a single type, use one of: POINT, LINESTRING, POLYGON,
-              MULTPOINT, MULTILINESTRING, MULTIPOLYGON, GEOMETRYCOLLECTION.
+              MULTPOINT, MULTILINESTRING, MULTIPOLYGON, GEOMETRYCOLLECTION or
+	      corresponding XYM versions POINTM, LINESTRINGM, POLYGONM,
+	      MULTPOINTM, MULTILINESTRINGM, MULTIPOLYGONM, GEOMETRYCOLLECTIONM.
               For heterogeneous (mixed-type) collections, you can use
               "GEOMETRY" as the type.</para>
 
@@ -1014,28 +1032,38 @@ SRID=123;LINESTRING(-123.741378393049 48.9124018962261,-123.741587115639 48.9123
 
           <listitem>
             <para>Add a spatial column to the table using the OpenGIS
-            "AddGeometryColumn" function. The syntax is:
-            <command>AddGeometryColumn(&lt;db_name&gt;, &lt;table_name&gt;,
+            "AddGeometryColumn" function.</para>
+	    
+	    <para>The syntax is:
+            <programlisting>AddGeometryColumn(&lt;schema_name&gt;, &lt;table_name&gt;,
             &lt;column_name&gt;, &lt;srid&gt;, &lt;type&gt;,
-            &lt;dimension&gt;)</command>.</para>
+            &lt;dimension&gt;)</programlisting>
 
-            <para>For example: <command>SELECT AddGeometryColumn('roads_db',
+	    Or, using current schema:
+            <programlisting>AddGeometryColumn(&lt;table_name&gt;,
+            &lt;column_name&gt;, &lt;srid&gt;, &lt;type&gt;,
+            &lt;dimension&gt;)</programlisting>
+	    </para>
+
+            <para>Example1: <command>SELECT AddGeometryColumn('public',
+            'roads_geom', 'geom', 423, 'LINESTRING', 2)</command></para>
+            <para>Example2: <command>SELECT AddGeometryColumn(
             'roads_geom', 'geom', 423, 'LINESTRING', 2)</command></para>
           </listitem>
         </itemizedlist>
 
         <para>Here is an example of SQL used to create a table and add a
-        spatial column (assuming the db is "parks_db" and that an SRID of 128
+        spatial column (assuming that an SRID of 128
         exists already):</para>
 
-        <programlisting>CREATE TABLE PARKS ( PARK_ID int4, PARK_NAME varchar(128), PARK_DATE date, PARK_TYPE varchar(2) );
-SELECT AddGeometryColumn('parks_db', 'parks', 'park_geom', 128, 'MULTIPOLYGON', 2 );</programlisting>
+        <programlisting>CREATE TABLE parks ( PARK_ID int4, PARK_NAME varchar(128), PARK_DATE date, PARK_TYPE varchar(2) );
+SELECT AddGeometryColumn('parks', 'park_geom', 128, 'MULTIPOLYGON', 2 );</programlisting>
 
         <para>Here is another example, using the generic "geometry" type and
         the undefined SRID value of -1:</para>
 
-        <programlisting>CREATE TABLE ROADS ( ROAD_ID int4, ROAD_NAME varchar(128) ); 
-SELECT AddGeometryColumn( 'roads_db', 'roads', 'roads_geom', -1, 'GEOMETRY', 3 );</programlisting>
+        <programlisting>CREATE TABLE roads ( ROAD_ID int4, ROAD_NAME varchar(128) ); 
+SELECT AddGeometryColumn( 'roads', 'roads_geom', -1, 'GEOMETRY', 3 );</programlisting>
       </sect2>
     </sect1>
 
@@ -1135,7 +1163,7 @@ COMMIT;</programlisting>
             <term>-k</term>
 
             <listitem>
-              <para>Keep column names upper case.</para>
+              <para>Keep idendifiers case (column, schema and attributes). Note that attributes in Shapefile are all UPPERCASE.</para>
             </listitem>
           </varlistentry>
 
@@ -1153,13 +1181,13 @@ COMMIT;</programlisting>
         <para>An example session using the loader to create an input file and
         uploading it might look like this:</para>
 
-        <programlisting># shp2pgsql shaperoads roadstable roadsdb &gt; roads.sql 
+        <programlisting># shp2pgsql shaperoads myschema.roadstable &gt; roads.sql 
 # psql -d roadsdb -f roads.sql</programlisting>
 
         <para>A conversion and upload can be done all in one step using UNIX
         pipes:</para>
 
-        <programlisting># shp2pgsql shaperoads roadstable roadsdb | psql -d roadsdb</programlisting>
+        <programlisting># shp2pgsql shaperoads myschema.roadstable | psql -d roadsdb</programlisting>
       </sect2>
     </sect1>
 
