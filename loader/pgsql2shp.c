@@ -1,6 +1,7 @@
 //compile line for Refractions' Solaris machine...
 //gcc -g -I/data3/postgresql-7.1.2/include -L/data3/postgresql-7.1.2/lib dump.c ../shapelib-1.2.8/shpopen.o ../shapelib-1.2.8/dbfopen.o -o dump -lpq
 
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -19,6 +20,13 @@ int create_points(char *str,SHPHandle shp,char *dims);
 int create_multipoints(char *str, SHPHandle shp,char *dims);
 int create_polygons(char *str,int shape_id, SHPHandle shp,char *dims);
 int create_multipolygons(char *str,int shape_id, SHPHandle shp,char *dims);
+int parse_points(char *str, int num_points, double *x,double *y,double *z);
+int num_points(char *str);
+int num_lines(char *str);
+char *scan_to_same_level(char *str);
+int points_per_sublist( char *str, int *npoints, long max_lists);
+
+
 
 //main
 //usage: dump <database> <table_name> <shape_file_name to create> ["2d" || 3d"]
@@ -36,8 +44,11 @@ int main(int ARGC, char **ARGV){
 				*query1,
 				*geo_str,
 				*geo_str_left,
+				*geo_col_name,
+				*geo_OID,
 				conn_string[512],
-				field_name[32];
+				field_name[32],
+				table_OID[16];
 
 	int			nFields;
 	int			i,j,type,size,flds;
@@ -52,7 +63,7 @@ int main(int ARGC, char **ARGV){
 
 
 	pghost = ARGV[4];		// host name of the backend server 
-	pgport = 5432;		
+//	pgport = 5432;		
 	pgport = ARGV[5];		// port of the backend server 
 	pgoptions = "user=postgres"; 	// special options to start up the backend
 	dbName = ARGV[1];
@@ -61,7 +72,7 @@ int main(int ARGC, char **ARGV){
 	//display proper usage if incorrect number of arguments given	
 	if (ARGC != 6 && ARGC != 7)
 	{
-		printf ("usage: pgsql2shp <database> <table name> <shape file name to create> <host ip/name> <port #> ['2d' || '3d']\nIf final argument is left out, the default is 3d.\n");
+		printf ("usage: dump <database> <table name> <shape file name to create> <host ip/name> <port #> ['2d' || '3d']\nIf final argument is left out, the default is 3d.\n");
 		exit (-1);
 	}
 	//set the 6th arg if it is not specified, 
@@ -243,9 +254,51 @@ int main(int ARGC, char **ARGV){
 //field into the shx and shp files
 
 
+	query= (char *)malloc(strlen("select OID from pg_class where relname = ' '")+strlen(ARGV[2])+2);
+	strcpy(query, "select OID from pg_class where relname = '") ;
+	strcat(query, ARGV[2]);
+	strcat(query, "'");
+	res3 = PQexec(conn, query);
+	if(PQntuples(res3) == 1 ){
+		strcpy(table_OID, (PQgetvalue(res3, 0,0)) );
+	}else if(PQntuples(res3) == 0 ){
+		printf("ERROR:Cannot determine name of geometry column.\n");
+		exit_nicely(conn);
+	}else{
+		strcpy(table_OID, (PQgetvalue(res3, 0,0)) );
+		printf("Warning: Multiple geometry columns detected, the program will only dump the first geometry");
+//JL - still need to write in some options to allow choosing a different geom col.
+	}	
+
+	//get the name of the geometry column
+	query= (char *)malloc(strlen("select attname from pg_attribute where
+attrelid =  and atttypid = ")+38);
+	strcpy(query, "select attname from pg_attribute where attrelid = ");
+	strcat(query, table_OID);
+	strcat(query, " and atttypid = ");
+	geo_OID = (char *)malloc(34);
+	sprintf(geo_OID,"%i",OID);
+	strcat(query,geo_OID );
+	res3 = PQexec(conn, query);	
+	if(PQntuples(res3) == 1 ){
+		geo_col_name = (char *)malloc(strlen(PQgetvalue(res3, 0,0)) +2 );
+		geo_col_name = PQgetvalue(res3,0,0);
+	}else if(PQntuples(res3) == 0 ){
+		printf("ERROR:Cannot determine name of geometry column.\n");
+		exit_nicely(conn);
+	}else{
+		geo_col_name = (char *)malloc(strlen(PQgetvalue(res3, 0,0)) +2 );
+		geo_col_name = PQgetvalue(res3,0,0);
+		printf("Warning: Multiple geometry columns detected, the program will only dump the first geometry");
+	}	
+
+
+
 	//get what kind of Geometry type is in the table
-	query= (char *)malloc(strlen(ARGV[2]) +strlen("select distinct (geometrytype(the_geom)) from ")+2);
-	strcpy(query, "select distinct (geometrytype(the_geom)) from ") ;
+	query= (char *)malloc(strlen(ARGV[2]) + strlen("select distinct (geometrytype()) from ")+18);
+	strcpy(query, "select distinct (geometrytype(");
+	strcat(query, geo_col_name);
+	strcat(query, ")) from ") ;
 	strcat(query, ARGV[2]);
 	res3 = PQexec(conn, query);	
 
@@ -256,7 +309,8 @@ int main(int ARGC, char **ARGV){
 		geo_str = (char *)malloc(strlen(PQgetvalue(res3, 0, 0))+1);
 		memcpy(geo_str, (char *)PQgetvalue(res3, 0, 0),strlen(PQgetvalue(res3,0,0))+1);
 	}else if(PQntuples(res3) > 1 ){
-		printf("ERROR: Cannot have multiple geometry types in a shapefile, conversion dump continue.\n");
+		printf("ERROR: Cannot have multiple geometry types in a shapefile.\nUse option -t(unimplemented currently,sorry...) to specify what type of geometry you want dumped\n\n");
+		exit_nicely(conn);
 	}else{
 		printf("ERROR: Cannot determine geometry type of table. \n");
 		exit_nicely(conn);
@@ -471,8 +525,7 @@ int parse_points(char *str, int num_points, double *x,double *y,double *z){
 // 	   back the wrong answer.
 //
 // "(1 2 3, 4 5 6),(7 8, 9 10, 11 12 13)" => 2 (2nd list is not included)
-int	num_points(char *str)
-{
+int	num_points(char *str){
 	int		keep_going;
 	int		points_found = 1; //no "," if only one point (and last point)
 						
@@ -533,8 +586,7 @@ int	num_points(char *str)
 //depth  12333223332112333210
 //        +           +         increase here
 
-int	num_lines(char *str)
-{
+int num_lines(char *str){
 	int	current_depth = 0;
 	int	numb_lists = 0;
 
@@ -567,8 +619,7 @@ int	num_lines(char *str)
 //simple scan-forward to find the next "(" at the same level
 //  ( (), (),(), ),(...
 //                 + return this location
-char	*scan_to_same_level(char	*str)
-{
+char *scan_to_same_level(char *str){
 
 	//scan forward in string looking for at "(" at the same level
 	// as the one its already pointing at

@@ -2,6 +2,7 @@
 //gcc -g pop.c ../shapelib-1.2.8/shpopen.o ../shapelib-1.2.8/dbfopen.o -o pop
 
 
+
 //  usage:   pop  <shapefile to process>  <table name> <SR_ID> [-d || -a || -c] [-dump] | psql -h <host> -d <database> -p <port> ...
 // -d: drops the table , then recreates it and populates it with current shape file data
 // -a: appends shape file into current table, must be excatly the same table schema
