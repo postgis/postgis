@@ -2,11 +2,11 @@
  postGIS - geometric types for postgres
 
  This software is copyrighted (2001).
- 
+
  This is free software; you can redistribute it and/or modify
  it under the GNU General Public Licence.  See the file "COPYING".
 
- More Info?  See the documentation, join the mailing list 
+ More Info?  See the documentation, join the mailing list
  (postgis@yahoogroups.com), or see the web page
  (http://postgis.refractions.net).
 
@@ -36,10 +36,10 @@
 
 
 //Norman Vine found this problem for compiling under cygwin
-//  it defines BYTE_ORDER and LITTLE_ENDIAN 
+//  it defines BYTE_ORDER and LITTLE_ENDIAN
 
 #ifdef __CYGWIN__
-#include <sys/param.h>       
+#include <sys/param.h>
 #endif
 
 #define SHOW_DIGS_DOUBLE 15
@@ -70,7 +70,7 @@ void print_box(BOX3D *box)
 	if (box == NULL)
 	{
 		printf ("	+ BOX IS NULL\n");
-		return;	
+		return;
 	}
 	printf("	+ LLB = [%g,%g,%g]\n", box->LLB.x, box->LLB.y,box->LLB.z);
 	printf("	+ URT = [%g,%g,%g]\n", box->URT.x, box->URT.y,box->URT.z);
@@ -88,7 +88,7 @@ void print_box_oneline(BOX3D *box)
 	if (box == NULL)
 	{
 		printf ("BOX IS NULL}");
-		return;	
+		return;
 	}
 	printf("[%g,%g,%g] ", box->LLB.x, box->LLB.y,box->LLB.z);
 	printf("[%g,%g,%g]}", box->URT.x, box->URT.y,box->URT.z);
@@ -131,15 +131,15 @@ Datum summary(PG_FUNCTION_ARGS)
 	size = 1;
 	result = palloc(1);
 	result[0] = 0; //null terminate it
-	
+
 
 	offsets1 = (int32 *) ( ((char *) &(geom1->objType[0] ))+ sizeof(int32) * geom1->nobjs ) ;
 
-	//now have to do a scan of each object 
+	//now have to do a scan of each object
 
 	for (j=0; j< geom1->nobjs; j++)		//for each object in geom1
 	{
-		o1 = (char *) geom1 +offsets1[j] ;  
+		o1 = (char *) geom1 +offsets1[j] ;
 		type1=  geom1->objType[j];
 
 		if (type1 == POINTTYPE)	//point
@@ -163,13 +163,13 @@ Datum summary(PG_FUNCTION_ARGS)
 		if (type1 == POLYGONTYPE)	//POLYGON
 		{
 			poly = (POLYGON3D *) o1;
-		
+
 			size += 57*(poly->nrings +1);
 			result = repalloc(result,size);
 			sprintf(tmp,"Object %i is a POLYGON() with %i rings\n",j,poly->nrings);
 			strcat(result,tmp);
 			for (i=0; i<poly->nrings;i++)
-			{	
+			{
 				sprintf(tmp,"     + ring %i has %i points\n",i,poly->npoints[i]);
 				strcat(result,tmp);
 			}
@@ -195,7 +195,7 @@ Datum summary(PG_FUNCTION_ARGS)
 // its contents
 //
 //  Its really messy - dont even think about using this for anything
-// 
+//
 // you shouldnt call this function; just call decode_wkb() and it will
 // call this function
 //
@@ -206,8 +206,8 @@ void decode_wkb_collection(char *wkb,int	*size)
 	int	total_size=0,sub_size;
 	int	numb_sub,t;
 	bool	first_one = TRUE;
-	
-		
+
+
 	if (wkb[0] ==0 )  //big endian
 	{
 		if (BYTE_ORDER == LITTLE_ENDIAN)
@@ -275,7 +275,7 @@ void decode_wkb(char *wkb, int *size)
 
 
 	//printf("decoding wkb\n");
-	
+
 
 	if (wkb[0] ==0 )  //big endian
 	{
@@ -291,16 +291,16 @@ void decode_wkb(char *wkb, int *size)
 		else
 			flipbytes= 1;
 	}
-	
+
 	//printf("	+ flipbytes = %i\n", flipbytes);
 
 	//printf("info about wkb:\n");
 	memcpy(&type, wkb+1,4);
 	if (flipbytes)
 		flip_endian_int32( (char *) & type) ;
-	
+
 	is3d = 0;
- 
+
 	if (type > 1000 )
 	{
 		is3d = 1;
@@ -335,12 +335,12 @@ void decode_wkb(char *wkb, int *size)
 			printf("%g %g)", x,y);
 		}
 		printf("\n");
-		if (is3d)	
+		if (is3d)
 			*size = 29;
 		else
 			*size = 21;
 		return;
-		
+
 	}
 	if (type == 2)
 	{
@@ -387,8 +387,8 @@ void decode_wkb(char *wkb, int *size)
 		}
 
 
-		printf(")\n");	
-		if (is3d)	
+		printf(")\n");
+		if (is3d)
 			*size = 9 + n1*24;
 		else
 			*size = 9 + n1*16;
@@ -411,8 +411,8 @@ void decode_wkb(char *wkb, int *size)
 			if (flipbytes)
 				flip_endian_int32( (char *) & n2) ;
 		//	printf(" ring %i: has %i points\n",u,n2);
-			
-			
+
+
 			if (first_one)
 			{
 				first_one = FALSE;
@@ -458,7 +458,7 @@ void decode_wkb(char *wkb, int *size)
 						flip_endian_double( (char *) & y) ;
 					}
 					printf("%g %g",x,y);
-				
+
 				}
 			}
 			if (is3d)
@@ -475,7 +475,7 @@ void decode_wkb(char *wkb, int *size)
 		}
 
 		printf(")\n");
-		
+
 		return;
 
 	}
@@ -486,7 +486,7 @@ void decode_wkb(char *wkb, int *size)
 		if (flipbytes)
 			flip_endian_int32( (char *) & n1) ;
 	//	printf(" -- has %i points\n",n1);
-		if (is3d)	
+		if (is3d)
 			*size = 9 + n1*29;
 		else
 			*size = 9 + n1*21;
@@ -496,7 +496,7 @@ void decode_wkb(char *wkb, int *size)
 			if (first_one)
 			{
 				first_one= FALSE;
-			}	
+			}
 			else
 			{
 				printf(",");
@@ -545,7 +545,7 @@ void decode_wkb(char *wkb, int *size)
 			if (first_one2)
 			{
 				first_one2= FALSE;
-			}	
+			}
 			else
 			{
 				printf(",");
@@ -561,7 +561,7 @@ void decode_wkb(char *wkb, int *size)
 			if (first_one)
 			{
 				first_one= FALSE;
-			}	
+			}
 			else
 			{
 				printf(",");
@@ -624,7 +624,7 @@ void decode_wkb(char *wkb, int *size)
 			if (first_one3)
 			{
 				first_one3= FALSE;
-			}	
+			}
 			else
 			{
 				printf(",");
@@ -644,7 +644,7 @@ void decode_wkb(char *wkb, int *size)
 			if (first_one)
 			{
 				first_one= FALSE;
-			}	
+			}
 			else
 			{
 				printf(",");
@@ -661,7 +661,7 @@ void decode_wkb(char *wkb, int *size)
 			if (first_one2)
 			{
 				first_one2= FALSE;
-			}	
+			}
 			else
 			{
 				printf(",");
@@ -699,7 +699,7 @@ void decode_wkb(char *wkb, int *size)
 			else
 			{
 				*size += 16*n2;
-				offset += 4+ 16*n2;			
+				offset += 4+ 16*n2;
 			}
 			printf(")");
 		}
@@ -714,7 +714,7 @@ void decode_wkb(char *wkb, int *size)
 	}
 	if (type == 7)
 	{
-		return	decode_wkb_collection(wkb, size);
+		decode_wkb_collection(wkb, size);
 	}
 }
 
