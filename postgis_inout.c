@@ -11,6 +11,11 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.28  2003/10/06 18:09:08  dblasby
+ * Fixed typo in add_to_geometry().  With very poorly aligned sub-objects, it
+ * wouldnt allocate enough memory.  Fixed it so its pesimistic and will allocate
+ * enough memory.
+ *
  * Revision 1.27  2003/08/22 17:40:11  dblasby
  * fixed geometry_in('SRID=<int>{no ;}').
  *
@@ -3086,8 +3091,8 @@ GEOMETRY	*add_to_geometry(GEOMETRY *geom,int sub_obj_size, char *sub_obj, int ty
 	GEOMETRY	*result;
 	int32		*old_offsets, *new_offsets;
 
-	//all the offsets could cause re-alignment problems, so need to deal with each on
-	size = geom->size +(4*geom->nobjs +1) /*byte align*/
+	//all the offsets could cause re-alignment problems, so need to deal with each one
+	size = geom->size +4*(geom->nobjs +1) /*byte align*/
 			+sub_obj_size + 4 /*ObjType[]*/ +4 /*new offset*/;
 
 	result = (GEOMETRY *) palloc(size);
