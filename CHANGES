@@ -10,6 +10,7 @@ PostGIS 1.0.0
 	- added already generated parser in release
 	- build scripts refinements
 	- MultiLine handling BUG fix in loader and dumper
+	- improved version handling, central Version.config
 
 PostGIS 1.0.0RC3
 2005/02/24
