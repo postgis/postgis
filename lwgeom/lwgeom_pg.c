@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include "postgres.h"
+#include "executor/spi.h"
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
 
@@ -125,4 +126,36 @@ pglwgeom_serialize(LWGEOM *in)
 	}
 
 	return result;
+}
+
+Oid
+getGeometryOID()
+{
+	static Oid OID = InvalidOid;
+	int SPIcode;
+	bool isnull;
+	char *query = "select OID from pg_type where typname = 'geometry'";	
+
+	if ( OID != InvalidOid ) return OID;
+	
+	SPIcode = SPI_connect();
+	if (SPIcode  != SPI_OK_CONNECT) {
+		lwerror("getGeometryOID(): couldn't connection to SPI");
+	}
+
+	SPIcode = SPI_exec(query, 0); 
+	if (SPIcode != SPI_OK_SELECT ) {
+		lwerror("getGeometryOID(): error querying geometry oid");
+	}
+	if (SPI_processed != 1) {
+		lwerror("getGeometryOID(): error querying geometry oid");
+	}
+
+	OID = (Oid)SPI_getbinval(SPI_tuptable->vals[0],
+		SPI_tuptable->tupdesc, 1, &isnull);
+
+	if (isnull) 
+		lwerror("getGeometryOID(): couldn't find geometry oid");
+
+	return OID;
 }
