@@ -608,6 +608,11 @@ getPoint(const POINTARRAY *pa, int n)
 {
 	int size;
 
+	if ( pa == NULL ) {
+		lwerror("getPoint got NULL pointarray");
+		return NULL;
+	}
+
 	if ( (n<0) || (n>=pa->npoints))
 	{
 		return NULL; //error

@@ -376,3 +376,59 @@ lwpoly_compute_bbox_p(LWPOLY *poly, BOX2DFLOAT4 *box)
 	}
 	return 1;
 }
+
+// Clone LWLINE object. POINTARRAY are not copied, it's ring array is.
+LWPOLY *
+lwpoly_clone(const LWPOLY *g)
+{
+	LWPOLY *ret = lwalloc(sizeof(LWPOLY));
+	memcpy(ret, g, sizeof(LWPOLY));
+	ret->rings = lwalloc(sizeof(POINTARRAY *)*g->nrings);
+	memcpy(ret->rings, g->rings, sizeof(POINTARRAY *)*g->nrings);
+	return ret;
+}
+
+// Add 'what' to this poly at position 'where'.
+// where=0 == prepend
+// where=-1 == append
+// Returns a MULTIPOLYGON or a GEOMETRYCOLLECTION
+LWGEOM *
+lwpoly_add(const LWPOLY *to, uint32 where, const LWGEOM *what)
+{
+	LWCOLLECTION *col;
+	LWGEOM **geoms;
+	int newtype;
+
+	if ( where != -1 && where != 0 )
+	{
+		lwerror("lwpoly_add only supports 0 or -1 as second argument, got %d", where);
+		return NULL;
+	}
+
+	// dimensions compatibility are checked by caller
+
+	// Construct geoms array
+	geoms = lwalloc(sizeof(LWGEOM *)*2);
+	if ( where == -1 ) // append
+	{
+		geoms[0] = lwgeom_clone((LWGEOM *)to);
+		geoms[1] = lwgeom_clone(what);
+	}
+	else // prepend
+	{
+		geoms[0] = lwgeom_clone(what);
+		geoms[1] = lwgeom_clone((LWGEOM *)to);
+	}
+	// reset SRID and wantbbox flag from component types
+	geoms[0]->SRID = geoms[1]->SRID = -1;
+	geoms[0]->hasbbox = geoms[1]->hasbbox = 0;
+
+	// Find appropriate geom type
+	if ( what->type == POLYGONTYPE ) newtype = MULTIPOLYGONTYPE;
+	else newtype = COLLECTIONTYPE;
+
+	col = lwcollection_construct(newtype, to->ndims, to->SRID,
+		(what->hasbbox || to->hasbbox ), 2, geoms);
+	
+	return (LWGEOM *)col;
+}

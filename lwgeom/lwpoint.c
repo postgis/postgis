@@ -228,3 +228,58 @@ lwpoint_compute_bbox_p(LWPOINT *point, BOX2DFLOAT4 *box)
 {
 	return ptarray_compute_bbox_p(point->point, box);
 }
+
+// Clone LWPOINT object. POINTARRAY is not copied.
+LWPOINT *
+lwpoint_clone(const LWPOINT *g)
+{
+	LWPOINT *ret = lwalloc(sizeof(LWPOINT));
+	memcpy(ret, g, sizeof(LWPOINT));
+	return ret;
+}
+
+// Add 'what' to this point at position 'where'.
+// where=0 == prepend
+// where=-1 == append
+// Returns a MULTIPOINT or a GEOMETRYCOLLECTION
+LWGEOM *
+lwpoint_add(const LWPOINT *to, uint32 where, const LWGEOM *what)
+{
+	LWCOLLECTION *col;
+	LWGEOM **geoms;
+	int newtype;
+
+	if ( where != -1 && where != 0 )
+	{
+		lwerror("lwpoint_add only supports 0 or -1 as second argument, got %d", where);
+		return NULL;
+	}
+
+	// dimensions compatibility are checked by caller
+
+
+	// Construct geoms array
+	geoms = lwalloc(sizeof(LWGEOM *)*2);
+	if ( where == -1 ) // append
+	{
+		geoms[0] = lwgeom_clone((LWGEOM *)to);
+		geoms[1] = lwgeom_clone(what);
+	}
+	else // prepend
+	{
+		geoms[0] = lwgeom_clone(what);
+		geoms[1] = lwgeom_clone((LWGEOM *)to);
+	}
+	// reset SRID and wantbbox flag from component types
+	geoms[0]->SRID = geoms[1]->SRID = -1;
+	geoms[0]->hasbbox = geoms[1]->hasbbox = 0;
+
+	// Find appropriate geom type
+	if ( what->type == POINTTYPE ) newtype = MULTIPOINTTYPE;
+	else newtype = COLLECTIONTYPE;
+
+	col = lwcollection_construct(newtype, to->ndims, to->SRID,
+		(what->hasbbox || to->hasbbox ), 2, geoms);
+	
+	return (LWGEOM *)col;
+}

@@ -486,7 +486,18 @@ extern void lwgeom_serialize_buf(LWGEOM *geom, char *buf, int *size);
 extern char *lwgeom_serialize(LWGEOM *geom);
 extern void lwcollection_serialize_buf(LWCOLLECTION *mcoll, char *buf, int *size);
 
+//-----------------------------------------------------
+
+// Deserialize an lwgeom serialized form.
+// The deserialized (recursive) structure will store
+// pointers to the serialized form (POINTARRAYs).
 LWGEOM *lwgeom_deserialize(char *serializedform);
+
+// Release memory associated with LWGEOM.
+// POINTARRAYs are not released as they are usually
+// pointers to user-managed memory.
+void lwgeom_release(LWGEOM *lwgeom);
+
 LWMPOINT *lwmpoint_deserialize(char *serializedform);
 LWMLINE *lwmline_deserialize(char *serializedform);
 LWMPOLY *lwmpoly_deserialize(char *serializedform);
@@ -900,10 +911,37 @@ extern int lwpoint_compute_bbox_p(LWPOINT *point, BOX2DFLOAT4 *box);
 extern int lwline_compute_bbox_p(LWLINE *line, BOX2DFLOAT4 *box);
 extern int lwpoly_compute_bbox_p(LWPOLY *poly, BOX2DFLOAT4 *box);
 extern int lwcollection_compute_bbox_p(LWCOLLECTION *col, BOX2DFLOAT4 *box);
+extern BOX2DFLOAT4 *lwgeom_compute_bbox(LWGEOM *lwgeom);
+int lwgeom_compute_bbox_p(LWGEOM *lwgeom, BOX2DFLOAT4 *buf);
 // return alloced memory
 extern BOX2DFLOAT4 *box2d_union(BOX2DFLOAT4 *b1, BOX2DFLOAT4 *b2);
 // args may overlap !
 extern int box2d_union_p(BOX2DFLOAT4 *b1, BOX2DFLOAT4 *b2, BOX2DFLOAT4 *ubox);
 extern int lwgeom_compute_bbox_p(LWGEOM *lwgeom, BOX2DFLOAT4 *box);
+
+// Add 'what' to 'to' at position 'where'.
+// where=0 == prepend
+// where=-1 == append
+// Mix of dimensions is not allowed (TODO: allow it?).
+// Returns a newly allocated LWGEOM
+extern LWGEOM *lwgeom_add(const LWGEOM *to, uint32 where, const LWGEOM *what);
+
+LWGEOM *lwpoint_add(const LWPOINT *to, uint32 where, const LWGEOM *what);
+LWGEOM *lwline_add(const LWLINE *to, uint32 where, const LWGEOM *what);
+LWGEOM *lwpoly_add(const LWPOLY *to, uint32 where, const LWGEOM *what);
+LWGEOM *lwmpoly_add(const LWMPOLY *to, uint32 where, const LWGEOM *what);
+LWGEOM *lwmline_add(const LWMLINE *to, uint32 where, const LWGEOM *what);
+LWGEOM *lwmpoint_add(const LWMPOINT *to, uint32 where, const LWGEOM *what);
+LWGEOM *lwcollection_add(const LWCOLLECTION *to, uint32 where, const LWGEOM *what);
+
+// Clone an LWGEOM (pointarray are not copied)
+extern LWGEOM *lwgeom_clone(const LWGEOM *lwgeom);
+extern LWPOINT *lwpoint_clone(const LWPOINT *lwgeom);
+extern LWLINE *lwline_clone(const LWLINE *lwgeom);
+extern LWPOLY *lwpoly_clone(const LWPOLY *lwgeom);
+extern LWCOLLECTION *lwcollection_clone(const LWCOLLECTION *lwgeom);
+
+extern LWCOLLECTION *lwcollection_construct(int type, int ndims, uint32 SRID, char hasbbox, int ngeoms, LWGEOM **geoms);
+
 
 #endif // !defined _LIBLWGEOM_H 

@@ -120,12 +120,6 @@ void lwline_serialize_buf(LWLINE *line, char *buf, int *retsize)
 
 	hasSRID = (line->SRID != -1);
 
-	if (hasSRID) size +=4;  //4 byte SRID
-	if (line->hasbbox) size += sizeof(BOX2DFLOAT4); // bvol
-	size += ptsize * line->points->npoints; 
-
-	size+=4; // npoints
-
 	buf[0] = (unsigned char) lwgeom_makeType_full(line->ndims,
 		hasSRID, LINETYPE, line->hasbbox);
 	loc = buf+1;
@@ -134,16 +128,20 @@ void lwline_serialize_buf(LWLINE *line, char *buf, int *retsize)
 	{
 		lwgeom_compute_bbox_p((LWGEOM *)line, (BOX2DFLOAT4 *)loc);
 		loc += sizeof(BOX2DFLOAT4);
+		size += sizeof(BOX2DFLOAT4); // bvol
 	}
 
 	if (hasSRID)
 	{
 		memcpy(loc, &line->SRID, sizeof(int32));
+		size +=4;  //4 byte SRID
 		loc += 4;
 	}
 
 	memcpy(loc, &line->points->npoints, sizeof(int32));
 	loc +=4;
+	size+=4; // npoints
+
 	//copy in points
 
 //lwnotice(" line serialize - size = %i", size);
@@ -172,6 +170,8 @@ void lwline_serialize_buf(LWLINE *line, char *buf, int *retsize)
 			loc += 32; // size of a 2d point
 		}
 	}
+	size += ptsize * line->points->npoints; 
+
 	//printBYTES((unsigned char *)result, size);
 
 	if (retsize) *retsize = size;
@@ -199,6 +199,7 @@ lwline_serialize_size(LWLINE *line)
 	if ( line->hasbbox ) size += sizeof(BOX2DFLOAT4);
 
 	size += sizeof(double)*line->ndims*line->points->npoints; // points
+	size += 4; // npoints
 
 	return size;
 }
@@ -270,4 +271,58 @@ int
 lwline_compute_bbox_p(LWLINE *line, BOX2DFLOAT4 *box)
 {
 	return ptarray_compute_bbox_p(line->points, box);
+}
+
+// Clone LWLINE object. POINTARRAY is not copied.
+LWLINE *
+lwline_clone(const LWLINE *g)
+{
+	LWLINE *ret = lwalloc(sizeof(LWLINE));
+	memcpy(ret, g, sizeof(LWLINE));
+	return ret;
+}
+
+// Add 'what' to this line at position 'where'.
+// where=0 == prepend
+// where=-1 == append
+// Returns a MULTILINE or a GEOMETRYCOLLECTION
+LWGEOM *
+lwline_add(const LWLINE *to, uint32 where, const LWGEOM *what)
+{
+	LWCOLLECTION *col;
+	LWGEOM **geoms;
+	int newtype;
+
+	if ( where != -1 && where != 0 )
+	{
+		lwerror("lwline_add only supports 0 or -1 as second argument, got %d", where);
+		return NULL;
+	}
+
+	// dimensions compatibility are checked by caller
+
+	// Construct geoms array
+	geoms = lwalloc(sizeof(LWGEOM *)*2);
+	if ( where == -1 ) // append
+	{
+		geoms[0] = lwgeom_clone((LWGEOM *)to);
+		geoms[1] = lwgeom_clone(what);
+	}
+	else // prepend
+	{
+		geoms[0] = lwgeom_clone(what);
+		geoms[1] = lwgeom_clone((LWGEOM *)to);
+	}
+	// reset SRID and wantbbox flag from component types
+	geoms[0]->SRID = geoms[1]->SRID = -1;
+	geoms[0]->hasbbox = geoms[1]->hasbbox = 0;
+
+	// Find appropriate geom type
+	if ( what->type == LINETYPE ) newtype = MULTILINETYPE;
+	else newtype = COLLECTIONTYPE;
+
+	col = lwcollection_construct(newtype, to->ndims, to->SRID,
+		(what->hasbbox || to->hasbbox ), 2, geoms);
+	
+	return (LWGEOM *)col;
 }

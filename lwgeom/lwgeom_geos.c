@@ -4,8 +4,8 @@
 #include "utils/builtins.h"
 #include "fmgr.h"
 
-#include "liblwgeom.h"
 #include "lwgeom_pg.h"
+#include "liblwgeom.h"
 #include "profile.h"
 #include "wktparse.h"
 
@@ -44,8 +44,8 @@ Datum centroid(PG_FUNCTION_ARGS);
  * during postgis->geos and geos->postgis conversions
  */
 #undef DEBUG_CONVERTER
-#undef DEBUG_POSTGIS2GEOS
-#undef DEBUG_GEOS2POSTGIS
+#undef DEBUG_POSTGIS2GEOS 
+#undef DEBUG_GEOS2POSTGIS 
 
 typedef  struct Geometry Geometry;
 
@@ -2008,6 +2008,7 @@ char *PolyFromGeometry(Geometry *g, char want3d)
 
 //-----=GEOS2POSTGIS=
 
+
 /*
  * Recursively add a Geometry to the LWGEOM_EXPLODED structure
  * The exploded struct contains note about the number of dimensions
@@ -2133,8 +2134,67 @@ GEOS2POSTGIS(Geometry *geom, char want3d)
 
 //-----=POSTGIS2GEOS=
 
+Geometry *LWGEOM2GEOS(LWGEOM *lwgeom);
+
+Geometry *
+LWGEOM2GEOS(LWGEOM *lwgeom)
+{
+	uint32 i;
+	Geometry **collected;
+	LWCOLLECTION *col;
+	if ( ! lwgeom ) return NULL;
+
+#ifdef DEBUG_POSTGIS2GEOS
+	elog(NOTICE, "LWGEOM2GEOS: got lwgeom[%p]", lwgeom);
+#endif
+
+	switch (lwgeom->type)
+	{
+		LWPOINT *p;
+
+		case POINTTYPE:
+			p = (LWPOINT *)lwgeom;
+			elog(NOTICE, "LWGEOM2GEOS: lwpoint[%p]", p);
+			return PostGIS2GEOS_point(p);
+
+		case LINETYPE:
+			return PostGIS2GEOS_linestring((LWLINE *)lwgeom);
+
+		case POLYGONTYPE:
+			return PostGIS2GEOS_polygon((LWPOLY *)lwgeom);
+
+		case MULTIPOINTTYPE:
+		case MULTILINETYPE:
+		case MULTIPOLYGONTYPE:
+		case COLLECTIONTYPE:
+			col = (LWCOLLECTION *)lwgeom;
+			collected = (Geometry **)lwalloc(sizeof(Geometry *)*col->ngeoms);
+			for (i=0; i<col->ngeoms; i++)
+			{
+				collected[i] = LWGEOM2GEOS(col->geoms[i]);
+			}
+			return PostGIS2GEOS_collection(collected, col->ngeoms,
+				col->SRID, col->ndims > 2);
+
+		default:
+			lwerror("Unknown geometry type: %d", lwgeom->type);
+			return NULL;
+	}
+
+}
+
 Geometry *
 POSTGIS2GEOS(PG_LWGEOM *geom)
+{
+	Geometry *ret;
+	LWGEOM *lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom));
+	ret = LWGEOM2GEOS(lwgeom);
+	lwgeom_release(lwgeom);
+	return ret;
+}
+
+Geometry *
+_POSTGIS2GEOS(PG_LWGEOM *geom)
 {
 	LWPOINT *point;
 	LWLINE *line;

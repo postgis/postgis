@@ -10,6 +10,8 @@
 #include "geos/geom.h"
 #include "geos/util.h"
 
+#define DEBUG_POSTGIS2GEOS 1
+
 using namespace geos;
 
 //WARNING THIS *MUST* BE SET CORRECTLY.
@@ -45,25 +47,33 @@ typedef struct
 
 typedef struct
 {
-	char     ndims; 
-   	int      SRID;
-   	POINTARRAY  *point;
+	int type; // POINTTYPE
+   	char ndims;
+   	uint32 SRID;	
+	char hasbbox; 
+   	POINTARRAY *point;  // hide 2d/3d (this will be an array of 1 point)
 }  LWPOINT; // "light-weight point"
 
+// LINETYPE
 typedef struct
 {
-	char  ndims; 
-	int  SRID;
-	POINTARRAY *points; 
-} LWLINE; 
+	int type; // LINETYPE
+   	char ndims;
+   	uint32 SRID;	
+	char hasbbox; 
+	POINTARRAY    *points; // array of POINT3D
+} LWLINE; //"light-weight line"
 
+// POLYGONTYPE
 typedef struct
 {
-	int32 SRID;
-	char ndims;
+	int type; // POLYGONTYPE
+   	char ndims;
+   	uint32 SRID;	
+	char hasbbox; 
 	int  nrings;
-	POINTARRAY **rings; 
-} LWPOLY; 
+	POINTARRAY **rings; // list of rings (list of points)
+} LWPOLY; // "light-weight polygon"
 
 extern "C" char *getPoint(POINTARRAY *pa, int n);
 
@@ -213,9 +223,26 @@ Geometry *PostGIS2GEOS_box3d(BOX3D *box, int SRID)
 
 Geometry *PostGIS2GEOS_point(const LWPOINT *lwpoint)
 {
-	POINT3D *point = (POINT3D *)getPoint(lwpoint->point, 0);
-	int SRID = lwpoint->SRID;
-	bool is3d = lwpoint->point->ndims > 2 ? 1 : 0;
+	POINT3D *point;
+	int SRID;
+	bool is3d;
+
+#ifdef DEBUG_POSTGIS2GEOS
+	char buf[256];
+	sprintf(buf, "PostGIS2GEOS_point got lwpoint[%p]", lwpoint);
+	NOTICE_MESSAGE(buf);
+#endif
+
+	if ( lwpoint == NULL )
+	{
+		NOTICE_MESSAGE("PostGIS2GEOS_point got a NULL lwpoint");
+		return NULL;
+	}
+
+	point = (POINT3D *)getPoint(lwpoint->point, 0);
+	SRID = lwpoint->SRID;
+	is3d = lwpoint->point->ndims > 2 ? 1 : 0;
+
 	try
 	{
 		Coordinate *c;

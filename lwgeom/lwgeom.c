@@ -178,6 +178,7 @@ lwgeom_compute_bbox_p(LWGEOM *lwgeom, BOX2DFLOAT4 *buf)
 }
 
 //dont forget to lwfree() result
+
 BOX2DFLOAT4 *
 lwgeom_compute_bbox(LWGEOM *lwgeom)
 {
@@ -242,3 +243,78 @@ LWGEOM *lwcollection_as_lwgeom(LWCOLLECTION *obj) { return (LWGEOM *)obj; }
 LWGEOM *lwpoly_as_lwgeom(LWPOLY *obj) { return (LWGEOM *)obj; }
 LWGEOM *lwline_as_lwgeom(LWLINE *obj) { return (LWGEOM *)obj; }
 LWGEOM *lwpoint_as_lwgeom(LWPOINT *obj) { return (LWGEOM *)obj; }
+
+void
+lwgeom_release(LWGEOM *lwgeom)
+{
+	uint32 i;
+	LWCOLLECTION *col;
+
+	// Collection
+	if ( (col=lwgeom_as_lwcollection(lwgeom)) )
+	{
+		for (i=0; i<col->ngeoms; i++)
+		{
+			lwgeom_release(col->geoms[i]);
+		}
+		lwfree(lwgeom);
+	}
+
+	// Single element
+	else lwfree(lwgeom);
+
+}
+
+// Clone an LWGEOM object. POINTARRAY are not copied.
+LWGEOM *
+lwgeom_clone(const LWGEOM *lwgeom)
+{
+	switch(lwgeom->type)
+	{
+		case POINTTYPE:
+			return (LWGEOM *)lwpoint_clone((LWPOINT *)lwgeom);
+		case LINETYPE:
+			return (LWGEOM *)lwline_clone((LWLINE *)lwgeom);
+		case POLYGONTYPE:
+			return (LWGEOM *)lwpoly_clone((LWPOLY *)lwgeom);
+		case MULTIPOINTTYPE:
+		case MULTILINETYPE:
+		case MULTIPOLYGONTYPE:
+		case COLLECTIONTYPE:
+			return (LWGEOM *)lwcollection_clone((LWCOLLECTION *)lwgeom);
+		default:
+			return NULL;
+	}
+}
+
+// Add 'what' to 'to' at position 'where'.
+// where=0 == prepend
+// where=-1 == append
+// Appended-to LWGEOM gets a new type based on new condition.
+// Mix of dimensions is not allowed (TODO: allow it?).
+LWGEOM *
+lwgeom_add(const LWGEOM *to, uint32 where, const LWGEOM *what)
+{
+	if ( what->ndims != to->ndims )
+	{
+		lwerror("lwgeom_add: mixed dimensions not supported");
+		return NULL;
+	}
+
+	switch(to->type)
+	{
+		case POINTTYPE:
+			return (LWGEOM *)lwpoint_add((const LWPOINT *)to, where, what);
+		case LINETYPE:
+			return (LWGEOM *)lwline_add((const LWLINE *)to, where, what);
+		case POLYGONTYPE:
+			return (LWGEOM *)lwpoly_add((const LWPOLY *)to, where, what);
+
+		case MULTIPOINTTYPE:
+		case MULTILINETYPE:
+		case MULTIPOLYGONTYPE:
+			return (LWGEOM *)lwcollection_add((const LWCOLLECTION *)to, where, what);
+		default:
+			return NULL;
+	}
+}

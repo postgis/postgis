@@ -123,3 +123,72 @@ lwcollection_compute_bbox_p(LWCOLLECTION *col, BOX2DFLOAT4 *box)
 	}
 	return 1;
 }
+
+LWCOLLECTION *
+lwcollection_construct(int type, int ndims, uint32 SRID, char hasbbox,
+	int ngeoms, LWGEOM **geoms)
+{
+	LWCOLLECTION *ret;
+	ret = lwalloc(sizeof(LWCOLLECTION));
+	ret->type = type;
+	ret->ndims = ndims;
+	ret->SRID = SRID;
+	ret->hasbbox = hasbbox;
+	ret->ngeoms = ngeoms;
+	ret->geoms = geoms;
+	return ret;
+}
+
+// Clone LWCOLLECTION object. POINTARRAY are not copied.
+LWCOLLECTION *
+lwcollection_clone(const LWCOLLECTION *g)
+{
+	uint32 i;
+	LWCOLLECTION *ret = lwalloc(sizeof(LWCOLLECTION));
+	memcpy(ret, g, sizeof(LWCOLLECTION));
+	for (i=0; i<g->ngeoms; i++)
+	{
+		ret->geoms[i] = lwgeom_clone(g->geoms[i]);
+	}
+	return ret;
+}
+
+// Add 'what' to this collection at position 'where'.
+// where=0 == prepend
+// where=-1 == append
+// Returns a GEOMETRYCOLLECTION
+LWGEOM *
+lwcollection_add(const LWCOLLECTION *to, uint32 where, const LWGEOM *what)
+{
+	LWCOLLECTION *col;
+	LWGEOM **geoms;
+	uint32 i;
+
+	if ( where == -1 ) where = to->ngeoms;
+	else if ( where < -1 || where > to->ngeoms )
+	{
+		lwerror("lwcollection_add: add position out of range %d..%d",
+			-1, to->ngeoms);
+		return NULL;
+	}
+
+	// dimensions compatibility are checked by caller
+
+	// Construct geoms array
+	geoms = lwalloc(sizeof(LWGEOM *)*(to->ngeoms+1));
+	for (i=0; i<where; i++)
+	{
+		geoms[i] = lwgeom_clone(to->geoms[i]);
+	}
+	geoms[where] = lwgeom_clone(what);
+	for (i=where; i<to->ngeoms; i++)
+	{
+		geoms[i+1] = lwgeom_clone(to->geoms[i]);
+	}
+
+	col = lwcollection_construct(COLLECTIONTYPE, to->ndims, to->SRID,
+		(what->hasbbox || to->hasbbox ), to->ngeoms+1, geoms);
+	
+	return (LWGEOM *)col;
+
+}
