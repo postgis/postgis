@@ -177,13 +177,17 @@ double nextUp_d(float d)
 
 
 
-//Connvert BOX3D to BOX2D
+// Convert BOX3D to BOX2D
+// returned box2d is allocated with 'palloc'
 BOX2DFLOAT4 *box3d_to_box2df(BOX3D *box)
 {
 	BOX2DFLOAT4 *result = (BOX2DFLOAT4*) palloc(sizeof(BOX2DFLOAT4));
 
 	if (box == NULL)
+	{
+		elog(NOTICE, "box3d_to_box2df got NUL box");
 		return result;
+	}
 
 	result->xmin = nextDown_f(box->xmin);
 	result->ymin = nextDown_f(box->ymin);
@@ -313,32 +317,34 @@ BOX3D *combine_boxes(BOX3D *b1, BOX3D *b2)
 // otherwise we need to compute it.
 BOX2DFLOAT4 getbox2d(char *serialized_form)
 {
-		int 	type = (unsigned char) serialized_form[0];
-		char	*loc;
-		BOX2DFLOAT4  result;
-		BOX3D	*box3d;
-		BOX2DFLOAT4	*box;
+	int type = (unsigned char) serialized_form[0];
+	char *loc;
+	BOX2DFLOAT4 result;
+	BOX3D *box3d;
+	BOX2DFLOAT4 *box;
 
-		loc = serialized_form+1;
+	loc = serialized_form+1;
 
-		if (lwgeom_hasBBOX(type))
-		{
-			//woot - this is easy
+//elog(NOTICE,"getbox2d: type is %d", type);
+
+	if (lwgeom_hasBBOX(type))
+	{
+		//woot - this is easy
 //elog(NOTICE,"getbox2d has box");
-			memcpy(&result,loc, sizeof(BOX2DFLOAT4));
-			return result;
-		}
-
-		//we have to actually compute it!
-//elog(NOTICE,"getbox2d -- computing bbox");
-		box3d = lw_geom_getBB_simple(serialized_form);
-//elog(NOTICE,"getbox2d got bbox3d(%.15g %.15g,%.15g %.15g)",box3d->xmin,box3d->ymin,box3d->xmax,box3d->ymax);
-		box = box3d_to_box2df(box3d);
-//elog(NOTICE,"getbox2d made box2d(%.15g %.15g,%.15g %.15g)",box->xmin,box->ymin,box->xmax,box->ymax);
-		memcpy(&result,box, sizeof(BOX2DFLOAT4));
-		pfree(box3d);
-		pfree(box);
+		memcpy(&result,loc, sizeof(BOX2DFLOAT4));
 		return result;
+	}
+
+	//we have to actually compute it!
+//elog(NOTICE,"getbox2d -- computing bbox");
+	box3d = lw_geom_getBB_simple(serialized_form);
+//elog(NOTICE,"lw_geom_getBB_simple got bbox3d(%.15g %.15g,%.15g %.15g)",box3d->xmin,box3d->ymin,box3d->xmax,box3d->ymax);
+	box = box3d_to_box2df(box3d);
+//elog(NOTICE,"box3d made box2d(%.15g %.15g,%.15g %.15g)",box->xmin,box->ymin,box->xmax,box->ymax);
+	memcpy(&result,box, sizeof(BOX2DFLOAT4));
+	pfree(box3d);
+	pfree(box);
+	return result;
 }
 
 
@@ -475,23 +481,27 @@ void getPoint3d_p(POINTARRAY *pa, int n, char *point)
 {
 	int size;
 
-	 if ( (n<0) || (n>=pa->npoints))
-	 {
-		 return ; //error
-	 }
+	if ( (n<0) || (n>=pa->npoints))
+	{
+		elog(NOTICE, "%d out of numpoint range (%d)", n, pa->npoints);
+		return ; //error
+	}
 
 	size = pointArray_ptsize(pa);
 
-	 	// this does x,y
-	 memcpy(point, &pa->serialized_pointlist[size*n],sizeof(double)*2 );
-	 if (pa->ndims >2)
-	 	memcpy(point+16, &pa->serialized_pointlist[size*n + sizeof(double)*2],sizeof(double) );
-	 else
-	 {
-		 double bad=NO_Z_VALUE;
+	// this does x,y
+	memcpy(point,
+		&pa->serialized_pointlist[size*n],
+		sizeof(double)*2 );
+
+	if (pa->ndims >2)
+		memcpy(point+16, &pa->serialized_pointlist[size*n + sizeof(double)*2],sizeof(double) );
+	else
+	{
+		double bad=NO_Z_VALUE;
 		memcpy(point+16, &bad,sizeof(double) );
 	 	//point->z = NO_Z_VALUE;
- 	 }
+ 	}
  }
 
 
@@ -565,7 +575,7 @@ BOX3D *pointArray_bbox(POINTARRAY *pa)
 
 	result = (BOX3D*) palloc(sizeof(BOX3D));
 
-	if (pa->npoints ==0)
+	if (pa->npoints == 0)
 		return result;
 
 	getPoint3d_p(pa,0,(char*)&pt);
@@ -582,7 +592,8 @@ BOX3D *pointArray_bbox(POINTARRAY *pa)
 		getPoint3d_p(pa,t,(char*)&pt);
 		if (pt.x < result->xmin)
 			result->xmin = pt.x;
-		if (pt.y < result->ymin)
+		if (pt.y <
+			result->ymin)
 			result->ymin = pt.y;
 		if (pt.x > result->xmax)
 			result->xmax = pt.x;
@@ -1915,80 +1926,78 @@ BOX3D *lw_geom_getBB(char *serialized_form)
 //dont forget to pfree() result
 BOX3D *lw_geom_getBB_simple(char *serialized_form)
 {
-		char type = lwgeom_getType((unsigned char) serialized_form[0]);
-		int t;
-		char *loc;
-		uint32 ngeoms;
-		BOX3D *result;
-		BOX3D *b1,*b2;
-		int sub_size;
+	char type = lwgeom_getType((unsigned char) serialized_form[0]);
+	int t;
+	char *loc;
+	uint32 ngeoms;
+	BOX3D *result;
+	BOX3D *b1,*b2;
+	int sub_size;
 
+	if (type == POINTTYPE)
+	{
+		LWPOINT *pt = lwpoint_deserialize(serialized_form);
+		result = lwpoint_findbbox(pt);
+		pfree_point(pt);
+		return result;
+	/*
+		result = palloc(sizeof(BOX3D));
+		memcpy(result, serialized_form+1, sizeof(BOX2DFLOAT4));
+		memcpy(( (char *)result)+24, serialized_form+1, sizeof(BOX2DFLOAT4));
+		return result;
+	*/
+	}
 
-		if (type == POINTTYPE)
+	else if (type == LINETYPE)
+	{
+		LWLINE *line = lwline_deserialize(serialized_form);
+		result = lwline_findbbox(line);
+		pfree_line(line);
+		return result;
+
+	}
+	else if (type == POLYGONTYPE)
+	{
+		LWPOLY *poly = lwpoly_deserialize(serialized_form);
+		result = lwpoly_findbbox(poly);
+		pfree_polygon(poly);
+		return result;
+	}
+
+	   loc = serialized_form+1;
+
+		if (lwgeom_hasBBOX((unsigned char) serialized_form[0]))
 		{
-
-			LWPOINT *pt = lwpoint_deserialize(serialized_form);
-			result = lwpoint_findbbox(pt);
-			pfree_point(pt);
-			return result;
-		/*
-			result = palloc(sizeof(BOX3D));
-			memcpy(result, serialized_form+1, sizeof(BOX2DFLOAT4));
-			memcpy(( (char *)result)+24, serialized_form+1, sizeof(BOX2DFLOAT4));
-			return result;
-		*/
+			loc += sizeof(BOX2DFLOAT4);
 		}
 
-		else if (type == LINETYPE)
-		{
-			LWLINE *line = lwline_deserialize(serialized_form);
-			result = lwline_findbbox(line);
-			pfree_line(line);
-			return result;
-
-		}
-		else if (type == POLYGONTYPE)
-		{
-			LWPOLY *poly = lwpoly_deserialize(serialized_form);
-			result = lwpoly_findbbox(poly);
-			pfree_polygon(poly);
-			return result;
-		}
-
-		   loc = serialized_form+1;
-
-			if (lwgeom_hasBBOX((unsigned char) serialized_form[0]))
-			{
-				loc += sizeof(BOX2DFLOAT4);
-			}
-
-		if (lwgeom_hasSRID((unsigned char) serialized_form[0]) )
-		{
-			loc +=4;
-		}
-
-		ngeoms =  get_uint32(loc);
+	if (lwgeom_hasSRID((unsigned char) serialized_form[0]) )
+	{
 		loc +=4;
+	}
 
-		result = NULL;
-			// each sub-type
-		for (t=0;t<ngeoms;t++)
+	ngeoms =  get_uint32(loc);
+	loc +=4;
+
+	result = NULL;
+		// each sub-type
+	for (t=0;t<ngeoms;t++)
+	{
+		b1 = lw_geom_getBB_simple(loc);
+		sub_size = lwgeom_seralizedformlength_simple(loc);
+		loc += sub_size;
+		if (result != NULL)
 		{
-			b1 = lw_geom_getBB_simple(loc);
-			sub_size = lwgeom_seralizedformlength_simple(loc);
-			loc += sub_size;
-			if (result != NULL)
-			{
-				b2= result;
-				result = combine_boxes(b2, b1);
-				pfree(b1);
-				pfree(b2);
-			}
-			else
-			{
-				result = b1;
-			}
+			b2= result;
+			result = combine_boxes(b2, b1);
+			pfree(b1);
+			pfree(b2);
 		}
+		else
+		{
+			result = b1;
+		}
+	}
 
 	return result;
 

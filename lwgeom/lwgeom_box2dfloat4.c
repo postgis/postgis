@@ -93,13 +93,13 @@ Datum BOX2DFLOAT4_out(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_to_BOX2DFLOAT4);
 Datum LWGEOM_to_BOX2DFLOAT4(PG_FUNCTION_ARGS)
 {
-	char		        *lwgeom = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	BOX2DFLOAT4			box, *result;
+	char *lwgeom = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	BOX2DFLOAT4 box, *result;
 
-			box = getbox2d(lwgeom+4);
-			result = palloc(sizeof(BOX2DFLOAT4));
-			memcpy(result,&box, sizeof(BOX2DFLOAT4));
-			PG_RETURN_POINTER(result);
+	box = getbox2d(lwgeom+4);
+	result = palloc(sizeof(BOX2DFLOAT4));
+	memcpy(result,&box, sizeof(BOX2DFLOAT4));
+	PG_RETURN_POINTER(result);
 }
 
 /*----------------------------------------------------------
@@ -257,20 +257,19 @@ Datum box2d_inter(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(box2d_union);
 Datum box2d_union(PG_FUNCTION_ARGS)
 {
-    BOX2DFLOAT4        *a = (BOX2DFLOAT4*) PG_GETARG_POINTER(0);
-    BOX2DFLOAT4        *b = (BOX2DFLOAT4*) PG_GETARG_POINTER(1);
-    BOX2DFLOAT4        *n;
+	BOX2DFLOAT4        *a = (BOX2DFLOAT4*) PG_GETARG_POINTER(0);
+	BOX2DFLOAT4        *b = (BOX2DFLOAT4*) PG_GETARG_POINTER(1);
+	BOX2DFLOAT4        *n;
 
-    n = (BOX2DFLOAT4 *) palloc(sizeof(BOX2DFLOAT4));
-
+	n = (BOX2DFLOAT4 *) palloc(sizeof(BOX2DFLOAT4));
 
 	n->xmax = LWGEOM_Maxf(a->xmax, b->xmax);
-    n->ymax = LWGEOM_Maxf(a->ymax, b->ymax);
-    n->xmin = LWGEOM_Minf(a->xmin, b->xmin);
-    n->ymin = LWGEOM_Minf(a->ymin, b->ymin);
+	n->ymax = LWGEOM_Maxf(a->ymax, b->ymax);
+	n->xmin = LWGEOM_Minf(a->xmin, b->xmin);
+	n->ymin = LWGEOM_Minf(a->ymin, b->ymin);
 
 
-    PG_RETURN_POINTER(n);
+	PG_RETURN_POINTER(n);
 }
 
 
