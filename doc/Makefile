@@ -10,6 +10,7 @@ chunked-html: postgis-out.xml
 		--param shade.verbatim 1 \
 		--param chunk.section.depth 0 \
 		--param section.autolabel 1 \
+		--param section.label.includes.component.label 1 \
 		--stringparam html.stylesheet style.css \
 		--stringparam saxon.character.representation decimal \
 		/usr/share/sgml/docbook/xsl-stylesheets/html/chunk.xsl \
@@ -20,6 +21,7 @@ html: postgis-out.xml
 		--output html/postgis.html \
 		--param shade.verbatim 1 \
 		--param section.autolabel 1 \
+		--param section.label.includes.component.label 1 \
 		--param chunk.section.depth 0 \
 		--stringparam html.stylesheet style.css \
 		/usr/share/sgml/docbook/xsl-stylesheets/html/docbook.xsl \
@@ -30,6 +32,7 @@ postgis.fo: postgis-out.xml
 		--output $@ \
 		--param shade.verbatim 1 \
 		--param section.autolabel 1 \
+		--param section.label.includes.component.label 1 \
 		--param chunk.section.depth 0 \
 		/usr/share/sgml/docbook/xsl-stylesheets/fo/docbook.xsl \
 		$<
