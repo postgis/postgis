@@ -67,7 +67,7 @@ void alloc_wkb(const char* parser);
 
 byte* parse_lwg(const char* wkt,allocator allocfunc,report_error errfunc);
 byte* parse_lwgi(const char* wkt,allocator allocfunc,report_error errfunc);
-char* unparse_WKT(byte* lw_geom,allocator alloc,freeor free);
-char* unparse_WKB(byte* lw_geom,allocator alloc,freeor free);
+char* unparse_WKT(byte* serialized, allocator alloc,freeor free);
+char* unparse_WKB(byte* serialized, allocator alloc,freeor free);
 
 

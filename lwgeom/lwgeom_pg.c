@@ -93,9 +93,10 @@ pg_notice(const char *fmt, ...)
 void
 init_pg_func()
 {
-	lwalloc = pg_alloc;
-	lwrealloc = pg_realloc;
-	lwfree = pg_free;
+	lwalloc_var = pg_alloc;
+	lwrealloc_var = pg_realloc;
+	lwfree_var = pg_free;
 	lwerror = pg_error;
 	lwnotice = pg_notice;
 }
+

@@ -154,7 +154,7 @@ lwpoint_serialize_size(LWPOINT *point)
 // construct a new point.  point will not be copied
 // use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
 LWPOINT *
-lwpoint_construct(char hasZ, char hasM, int SRID, char wantbbox, POINTARRAY *point)
+lwpoint_construct(int SRID, char wantbbox, POINTARRAY *point)
 {
 	LWPOINT *result ;
 
@@ -162,7 +162,7 @@ lwpoint_construct(char hasZ, char hasM, int SRID, char wantbbox, POINTARRAY *poi
 		return NULL; // error
 
 	result = lwalloc(sizeof(LWPOINT));
-	result->type = lwgeom_makeType_full(hasZ, hasM, (SRID!=-1),
+	result->type = lwgeom_makeType_full(TYPE_HASZ(point->dims), TYPE_HASM(point->dims), (SRID!=-1),
 		POINTTYPE, wantbbox);
 	result->SRID = SRID;
 	result->point = point;
@@ -303,8 +303,6 @@ lwpoint_add(const LWPOINT *to, uint32 where, const LWGEOM *what)
 	else newtype = COLLECTIONTYPE;
 
 	col = lwcollection_construct(newtype,
-		TYPE_HASZ(to->type),
-		TYPE_HASM(to->type),
 		to->SRID,
 		( TYPE_HASBBOX(what->type) || TYPE_HASBBOX(to->type) ),
 		2, geoms);

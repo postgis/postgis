@@ -333,11 +333,7 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 	extring = poly->rings[0];
 
 	// This is a LWLINE constructed by exterior ring POINTARRAY
-	line = lwline_construct(
-		TYPE_HASZ(poly->type),
-		TYPE_HASM(poly->type),
-		poly->SRID,
-		lwgeom_hasBBOX(geom->type), extring);
+	line = lwline_construct(poly->SRID, lwgeom_hasBBOX(geom->type), extring);
 
 	// Now we serialized it (copying data)
 	serializedline = lwline_serialize(line);
@@ -420,11 +416,7 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 	ring = poly->rings[wanted_index+1];
 
 	// This is a LWLINE constructed by exterior ring POINTARRAY
-	line = lwline_construct(
-		TYPE_HASZ(poly->type),
-		TYPE_HASM(poly->type),
-		poly->SRID,
-		lwgeom_hasBBOX(geom->type), ring);
+	line = lwline_construct(poly->SRID, lwgeom_hasBBOX(geom->type), ring);
 
 	// Now we serialized it (copying data)
 	serializedline = lwline_serialize(line);
@@ -483,8 +475,7 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 		TYPE_HASZ(line->type), TYPE_HASM(line->type), 1);
 
 	// Construct an LWPOINT
-	point = lwpoint_construct(TYPE_HASZ(line->type), TYPE_HASM(line->type),
-		lwgeom_getSRID(geom), lwgeom_hasBBOX(geom->type), pts);
+	point = lwpoint_construct(lwgeom_getSRID(geom), lwgeom_hasBBOX(geom->type), pts);
 
 	// Serialized the point
 	serializedpoint = lwpoint_serialize(point);
@@ -626,11 +617,7 @@ Datum LWGEOM_startpoint_linestring(PG_FUNCTION_ARGS)
 		TYPE_HASM(line->type), 1);
 
 	// Construct an LWPOINT
-	point = lwpoint_construct(
-		TYPE_HASZ(line->type),
-		TYPE_HASM(line->type),
-		lwgeom_getSRID(geom),
-		lwgeom_hasBBOX(geom->type), pts);
+	point = lwpoint_construct(lwgeom_getSRID(geom), lwgeom_hasBBOX(geom->type), pts);
 
 	// Serialized the point
 	serializedpoint = lwpoint_serialize(point);
@@ -681,11 +668,7 @@ Datum LWGEOM_endpoint_linestring(PG_FUNCTION_ARGS)
 		TYPE_HASM(line->type), 1);
 
 	// Construct an LWPOINT
-	point = lwpoint_construct(
-		TYPE_HASZ(line->type),
-		TYPE_HASM(line->type),
-		lwgeom_getSRID(geom),
-		lwgeom_hasBBOX(geom->type), pts);
+	point = lwpoint_construct(lwgeom_getSRID(geom), lwgeom_hasBBOX(geom->type), pts);
 
 	// Serialized the point
 	serializedpoint = lwpoint_serialize(point);
@@ -731,7 +714,7 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_asText);
 Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 {
-	char *lwgeom;
+	PG_LWGEOM *lwgeom;
 	char *result_cstring;
 	int len;
         char *result,*loc_wkt;
@@ -739,8 +722,8 @@ Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 
 	init_pg_func();
 
-	lwgeom = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	result_cstring =  unparse_WKT(lwgeom,lwalloc,lwfree);
+	lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	result_cstring =  unparse_WKT(SERIALIZED_FORM(lwgeom),lwalloc,lwfree);
 
 	semicolonLoc = strchr(result_cstring,';');
 

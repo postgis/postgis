@@ -51,11 +51,6 @@ Datum LWGEOM_forceRHR_poly(PG_FUNCTION_ARGS);
 Datum LWGEOM_noop(PG_FUNCTION_ARGS);
 Datum LWGEOM_zmflag(PG_FUNCTION_ARGS);
 
-// internal
-int32 lwgeom_nrings_recursive(char *serialized);
-void dump_lwexploded(LWGEOM_EXPLODED *exploded);
-void ptarray_reverse(POINTARRAY *pa);
-
 
 /*------------------------------------------------------------------*/
 
@@ -757,61 +752,6 @@ lwgeom_pt_inside_circle(POINT2D *p, double cx, double cy, double rad)
 	if ( distance2d_pt_pt(p, &center) < rad ) return 1;
 	else return 0;
 
-}
-
-void
-ptarray_reverse(POINTARRAY *pa)
-{
-	POINT4D pbuf;
-	uint32 i;
-	int ptsize = pointArray_ptsize(pa);
-	int last = pa->npoints-1;
-	int mid = last/2;
-
-	for (i=0; i<=mid; i++)
-	{
-		char *from, *to;
-		from = getPoint(pa, i);
-		to = getPoint(pa, (last-i));
-		memcpy((char *)&pbuf, to, ptsize);
-		memcpy(to, from, ptsize);
-		memcpy(from, (char *)&pbuf, ptsize);
-	}
-
-}
-
-void
-lwline_reverse(LWLINE *line)
-{
-	ptarray_reverse(line->points);
-}
-
-void
-lwpoly_reverse(LWPOLY *poly)
-{
-	int i;
-
-	for (i=0; i<poly->nrings; i++)
-		ptarray_reverse(poly->rings[i]);
-}
-
-void
-lwpoly_forceRHR(LWPOLY *poly)
-{
-	int i;
-
-	if ( ptarray_isccw(poly->rings[0]) )
-	{
-		ptarray_reverse(poly->rings[0]);
-	}
-
-	for (i=1; i<poly->nrings; i++)
-	{
-		if ( ! ptarray_isccw(poly->rings[i]) )
-		{
-			ptarray_reverse(poly->rings[i]);
-		}
-	}
 }
 
 /*------------------------------------------------------------------*/
@@ -2681,8 +2621,8 @@ Datum LWGEOM_expand(PG_FUNCTION_ARGS)
 	TYPE_SETZM(pa[0]->dims, 0, 0);
 	pa[0]->npoints = 5;
 
-	// Construct polygon
-	poly = lwpoly_construct(0, 0, SRID, lwgeom_hasBBOX(geom->type), 1, pa);
+	// Construct polygon 
+	poly = lwpoly_construct(SRID, lwgeom_hasBBOX(geom->type), 1, pa);
 
 	// Serialize polygon
 	ser = lwpoly_serialize(poly);
@@ -2748,10 +2688,8 @@ Datum LWGEOM_envelope(PG_FUNCTION_ARGS)
 	TYPE_SETZM(pa[0]->dims, 0, 0);
 	pa[0]->npoints = 5;
 
-	// Construct polygon 2d
-	poly = lwpoly_construct(
-		0, 0,
-		SRID, lwgeom_hasBBOX(geom->type), 1, pa);
+	// Construct polygon 
+	poly = lwpoly_construct(SRID, lwgeom_hasBBOX(geom->type), 1, pa);
 
 	// Serialize polygon
 	ser = lwpoly_serialize(poly);
@@ -2825,7 +2763,7 @@ Datum centroid(PG_FUNCTION_ARGS)
 	pa = pointArray_construct((char *)&cent, 1, 0, 1);
 
 	// Construct LWPOINT
-	point = lwpoint_construct(1, 0, SRID, wantbbox, pa);
+	point = lwpoint_construct(SRID, wantbbox, pa);
 
 	// Serialize LWPOINT 
 	srl = lwpoint_serialize(point);

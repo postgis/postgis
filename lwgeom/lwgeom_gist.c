@@ -288,7 +288,7 @@ Datum gist_lwgeom_compress(PG_FUNCTION_ARGS)
 			in = (char*)PG_DETOAST_DATUM(entry->key);
 
 #ifdef DEBUG_GIST4
-		elog(NOTICE,"GIST: gist_lwgeom_compress detoasted entry->key: %s", unparse_WKT(in, malloc, free));
+		elog(NOTICE,"GIST: gist_lwgeom_compress detoasted entry->key: %s", unparse_WKT(SERIALIZED_FORM(in), malloc, free));
 #endif
 
 			if (in == NULL)

@@ -434,7 +434,7 @@ Datum BOX2DFLOAT4_to_LWGEOM(PG_FUNCTION_ARGS)
 	pa[0]->npoints = 5;
 
 	// Construct polygon
-	poly = lwpoly_construct(0, 0, -1, wantbbox, 1, pa);
+	poly = lwpoly_construct(-1, wantbbox, 1, pa);
 
 	// Serialize polygon
 	ser = lwpoly_serialize(poly);

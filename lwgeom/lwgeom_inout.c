@@ -29,10 +29,6 @@
 void elog_ERROR(const char* string);
 
 
-extern unsigned char	parse_hex(char *str);
-extern void deparse_hex(unsigned char str, unsigned char *result);
-extern char *parse_lwgeom_wkt(char *wkt_input);
-
 // needed for OGC conformance
 Datum LWGEOMFromWKB(PG_FUNCTION_ARGS);
 Datum WKBFromLWGEOM(PG_FUNCTION_ARGS);
@@ -115,13 +111,13 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_out);
 Datum LWGEOM_out(PG_FUNCTION_ARGS)
 {
-	char *lwgeom;
+	PG_LWGEOM *lwgeom;
 	char *result;
 
 	init_pg_func();
 
-	lwgeom = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	result = unparse_WKB(lwgeom,lwalloc,lwfree);
+	lwgeom = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	result = unparse_WKB(SERIALIZED_FORM(lwgeom),lwalloc,lwfree);
 
 	PG_RETURN_CSTRING(result);
 }
@@ -143,7 +139,7 @@ Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 	int    SRID = -1;
 	char	sridText[100];
 	char	*loc;
-	char	*lwgeom;
+	PG_LWGEOM *lwgeom;
 	int t;
 
 	wkb_input = (WellKnownBinary *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
@@ -181,12 +177,12 @@ Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 	elog(NOTICE,"LWGEOMFromWKB :: '%s'", wkb_srid_hexized);
 #endif
 
-	lwgeom =  parse_lwgeom_wkt(wkb_srid_hexized);
+	lwgeom = (PG_LWGEOM *)parse_lwgeom_wkt(wkb_srid_hexized);
 
 	pfree(wkb_srid_hexized);
 
 #ifdef DEBUG
-	elog(NOTICE, "LWGEOMFromWKB returning %s", unparse_WKB(lwgeom, pg_alloc, pg_free));
+	elog(NOTICE, "LWGEOMFromWKB returning %s", unparse_WKB(SERIALIZED_FORM(lwgeom), pg_alloc, pg_free));
 #endif
 
 	PG_RETURN_POINTER(lwgeom);
@@ -197,7 +193,7 @@ Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(WKBFromLWGEOM);
 Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 {
-	char *lwgeom_input; // SRID=#;<hexized wkb>
+	PG_LWGEOM *lwgeom_input; // SRID=#;<hexized wkb>
 	char *hexized_wkb_srid;
 	char *hexized_wkb; // hexized_wkb_srid w/o srid
 	char *result; //wkb
@@ -208,8 +204,8 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 
 	init_pg_func();
 
-	lwgeom_input = (char *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	hexized_wkb_srid = unparse_WKB(lwgeom_input, lwalloc, lwfree);
+	lwgeom_input = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	hexized_wkb_srid = unparse_WKB(SERIALIZED_FORM(lwgeom_input), lwalloc, lwfree);
 
 //elog(NOTICE, "in WKBFromLWGEOM with WKB = '%s'", hexized_wkb_srid);
 
@@ -242,242 +238,6 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 }
 
 
-
-
-
-
-
-//given one byte, populate result with two byte representing
-// the hex number
-// ie deparse_hex( 255, mystr)
-//		-> mystr[0] = 'F' and mystr[1] = 'F'
-// no error checking done
-void deparse_hex(unsigned char str, unsigned char *result)
-{
-	int	input_high;
-	int  input_low;
-
-	input_high = (str>>4);
-	input_low = (str & 0x0F);
-
-	switch (input_high)
-	{
-		case 0:
-			result[0] = '0';
-			break;
-		case 1:
-			result[0] = '1';
-			break;
-		case 2:
-			result[0] = '2';
-			break;
-		case 3:
-			result[0] = '3';
-			break;
-		case 4:
-			result[0] = '4';
-			break;
-		case 5:
-			result[0] = '5';
-			break;
-		case 6:
-			result[0] = '6';
-			break;
-		case 7:
-			result[0] = '7';
-			break;
-		case 8:
-			result[0] = '8';
-			break;
-		case 9:
-			result[0] = '9';
-			break;
-		case 10:
-			result[0] = 'A';
-			break;
-		case 11:
-			result[0] = 'B';
-			break;
-		case 12:
-			result[0] = 'C';
-			break;
-		case 13:
-			result[0] = 'D';
-			break;
-		case 14:
-			result[0] = 'E';
-			break;
-		case 15:
-			result[0] = 'F';
-			break;
-	}
-
-	switch (input_low)
-	{
-		case 0:
-			result[1] = '0';
-			break;
-		case 1:
-			result[1] = '1';
-			break;
-		case 2:
-			result[1] = '2';
-			break;
-		case 3:
-			result[1] = '3';
-			break;
-		case 4:
-			result[1] = '4';
-			break;
-		case 5:
-			result[1] = '5';
-			break;
-		case 6:
-			result[1] = '6';
-			break;
-		case 7:
-			result[1] = '7';
-			break;
-		case 8:
-			result[1] = '8';
-			break;
-		case 9:
-			result[1] = '9';
-			break;
-		case 10:
-			result[1] = 'A';
-			break;
-		case 11:
-			result[1] = 'B';
-			break;
-		case 12:
-			result[1] = 'C';
-			break;
-		case 13:
-			result[1] = 'D';
-			break;
-		case 14:
-			result[1] = 'E';
-			break;
-		case 15:
-			result[1] = 'F';
-			break;
-	}
-}
-
-//given a string with at least 2 chars in it, convert them to
-// a byte value.  No error checking done!
-unsigned char	parse_hex(char *str)
-{
-	//do this a little brute force to make it faster
-
-	unsigned char		result_high = 0;
-	unsigned char		result_low = 0;
-
-	switch (str[0])
-	{
-		case '0' :
-			result_high = 0;
-			break;
-		case '1' :
-			result_high = 1;
-			break;
-		case '2' :
-			result_high = 2;
-			break;
-		case '3' :
-			result_high = 3;
-			break;
-		case '4' :
-			result_high = 4;
-			break;
-		case '5' :
-			result_high = 5;
-			break;
-		case '6' :
-			result_high = 6;
-			break;
-		case '7' :
-			result_high = 7;
-			break;
-		case '8' :
-			result_high = 8;
-			break;
-		case '9' :
-			result_high = 9;
-			break;
-		case 'A' :
-			result_high = 10;
-			break;
-		case 'B' :
-			result_high = 11;
-			break;
-		case 'C' :
-			result_high = 12;
-			break;
-		case 'D' :
-			result_high = 13;
-			break;
-		case 'E' :
-			result_high = 14;
-			break;
-		case 'F' :
-			result_high = 15;
-			break;
-	}
-	switch (str[1])
-	{
-		case '0' :
-			result_low = 0;
-			break;
-		case '1' :
-			result_low = 1;
-			break;
-		case '2' :
-			result_low = 2;
-			break;
-		case '3' :
-			result_low = 3;
-			break;
-		case '4' :
-			result_low = 4;
-			break;
-		case '5' :
-			result_low = 5;
-			break;
-		case '6' :
-			result_low = 6;
-			break;
-		case '7' :
-			result_low = 7;
-			break;
-		case '8' :
-			result_low = 8;
-			break;
-		case '9' :
-			result_low = 9;
-			break;
-		case 'A' :
-			result_low = 10;
-			break;
-		case 'B' :
-			result_low = 11;
-			break;
-		case 'C' :
-			result_low = 12;
-			break;
-		case 'D' :
-			result_low = 13;
-			break;
-		case 'E' :
-			result_low = 14;
-			break;
-		case 'F' :
-			result_low = 15;
-			break;
-	}
-	return (unsigned char) ((result_high<<4) + result_low);
-}
 
 // puts a bbox inside the geometry
 PG_FUNCTION_INFO_V1(LWGEOM_addBBOX);
@@ -580,22 +340,6 @@ Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS)
 }
 
 
-char *parse_lwgeom_wkt(char *wkt_input)
-{
-	char *serialized_form = parse_lwg((const char *)wkt_input,(allocator)pg_alloc, (report_error)elog_ERROR);
-
-
-#ifdef DEBUG
-	elog(NOTICE,"parse_lwgeom_wkt with %s",wkt_input);
-#endif
-
-	if (serialized_form == NULL)
-		elog(ERROR,"parse_WKT:: couldnt parse!");
-
-	return serialized_form;
-
-}
-
 #if USE_VERSION > 73
 /*
  * This function must advance the StringInfo.cursor pointer
@@ -609,7 +353,7 @@ Datum LWGEOM_recv(PG_FUNCTION_ARGS)
 {
 	StringInfo buf = (StringInfo) PG_GETARG_POINTER(0);
         bytea *wkb;
-	char *result;
+	PG_LWGEOM *result;
 
 #ifdef DEBUG
 	elog(NOTICE, "LWGEOM_recv start");
@@ -625,7 +369,7 @@ Datum LWGEOM_recv(PG_FUNCTION_ARGS)
 #endif
 
 	/* Call slow LWGEOMFromWKB function... */
-	result = DatumGetPointer(DirectFunctionCall1(LWGEOMFromWKB,
+	result = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall1(LWGEOMFromWKB,
 		PointerGetDatum(wkb)));
 
 #ifdef DEBUG
@@ -633,7 +377,7 @@ Datum LWGEOM_recv(PG_FUNCTION_ARGS)
 #endif
 
 #ifdef DEBUG
-	elog(NOTICE, "LWGEOMFromWKB returned %s", unparse_WKB(result,pg_alloc,pg_free));
+	elog(NOTICE, "LWGEOMFromWKB returned %s", unparse_WKB(SERIALIZED_FORM(result),pg_alloc,pg_free));
 #endif
 
 

@@ -11,12 +11,15 @@
 // construct a new LWLINE.  points will *NOT* be copied
 // use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
 LWLINE *
-lwline_construct(char hasz, char hasm, int SRID, char wantbbox, POINTARRAY *points)
+lwline_construct(int SRID, char wantbbox, POINTARRAY *points)
 {
 	LWLINE *result;
-	result = (LWLINE*) lwalloc( sizeof(LWLINE));
+	result = (LWLINE*) lwalloc(sizeof(LWLINE));
 
-	result->type = lwgeom_makeType_full(hasz, hasm, (SRID!=-1), LINETYPE,
+	result->type = lwgeom_makeType_full(
+		TYPE_HASZ(points->dims),
+		TYPE_HASM(points->dims),
+		(SRID!=-1), LINETYPE,
 		wantbbox);
 	result->SRID = SRID;
 	result->points = points;
@@ -337,11 +340,15 @@ lwline_add(const LWLINE *to, uint32 where, const LWGEOM *what)
 	else newtype = COLLECTIONTYPE;
 
 	col = lwcollection_construct(newtype,
-		TYPE_HASZ(to->type),
-		TYPE_HASM(to->type),
 		to->SRID,
 		( TYPE_HASBBOX(what->type) || TYPE_HASBBOX(to->type) ),
 		2, geoms);
 	
 	return (LWGEOM *)col;
+}
+
+void
+lwline_reverse(LWLINE *line)
+{
+	ptarray_reverse(line->points);
 }

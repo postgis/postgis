@@ -23,6 +23,7 @@ extern  BOX3D *lw_geom_getBB_simple(char *serialized_form);
 #ifdef DEBUG_EXPLODED
 void checkexplodedsize(char *srl, LWGEOM_EXPLODED *exploded, int alloced, char wantbbox);
 #endif
+extern char *parse_lwg(const char* geometry, lwallocator allocfunc, lwreporter errfunc);
 
 //*********************************************************************
 // BOX routines
@@ -2643,4 +2644,260 @@ lwgeom_typeflags(unsigned char type)
 	flags[flagno] = '\0';
 	//lwnotice("Flags: %s - returning %p", flags, flags);
 	return flags;
+}
+
+//given a string with at least 2 chars in it, convert them to
+// a byte value.  No error checking done!
+unsigned char
+parse_hex(char *str)
+{
+	//do this a little brute force to make it faster
+
+	unsigned char		result_high = 0;
+	unsigned char		result_low = 0;
+
+	switch (str[0])
+	{
+		case '0' :
+			result_high = 0;
+			break;
+		case '1' :
+			result_high = 1;
+			break;
+		case '2' :
+			result_high = 2;
+			break;
+		case '3' :
+			result_high = 3;
+			break;
+		case '4' :
+			result_high = 4;
+			break;
+		case '5' :
+			result_high = 5;
+			break;
+		case '6' :
+			result_high = 6;
+			break;
+		case '7' :
+			result_high = 7;
+			break;
+		case '8' :
+			result_high = 8;
+			break;
+		case '9' :
+			result_high = 9;
+			break;
+		case 'A' :
+			result_high = 10;
+			break;
+		case 'B' :
+			result_high = 11;
+			break;
+		case 'C' :
+			result_high = 12;
+			break;
+		case 'D' :
+			result_high = 13;
+			break;
+		case 'E' :
+			result_high = 14;
+			break;
+		case 'F' :
+			result_high = 15;
+			break;
+	}
+	switch (str[1])
+	{
+		case '0' :
+			result_low = 0;
+			break;
+		case '1' :
+			result_low = 1;
+			break;
+		case '2' :
+			result_low = 2;
+			break;
+		case '3' :
+			result_low = 3;
+			break;
+		case '4' :
+			result_low = 4;
+			break;
+		case '5' :
+			result_low = 5;
+			break;
+		case '6' :
+			result_low = 6;
+			break;
+		case '7' :
+			result_low = 7;
+			break;
+		case '8' :
+			result_low = 8;
+			break;
+		case '9' :
+			result_low = 9;
+			break;
+		case 'A' :
+			result_low = 10;
+			break;
+		case 'B' :
+			result_low = 11;
+			break;
+		case 'C' :
+			result_low = 12;
+			break;
+		case 'D' :
+			result_low = 13;
+			break;
+		case 'E' :
+			result_low = 14;
+			break;
+		case 'F' :
+			result_low = 15;
+			break;
+	}
+	return (unsigned char) ((result_high<<4) + result_low);
+}
+
+
+//given one byte, populate result with two byte representing
+// the hex number
+// ie deparse_hex( 255, mystr)
+//		-> mystr[0] = 'F' and mystr[1] = 'F'
+// no error checking done
+void
+deparse_hex(unsigned char str, unsigned char *result)
+{
+	int	input_high;
+	int  input_low;
+
+	input_high = (str>>4);
+	input_low = (str & 0x0F);
+
+	switch (input_high)
+	{
+		case 0:
+			result[0] = '0';
+			break;
+		case 1:
+			result[0] = '1';
+			break;
+		case 2:
+			result[0] = '2';
+			break;
+		case 3:
+			result[0] = '3';
+			break;
+		case 4:
+			result[0] = '4';
+			break;
+		case 5:
+			result[0] = '5';
+			break;
+		case 6:
+			result[0] = '6';
+			break;
+		case 7:
+			result[0] = '7';
+			break;
+		case 8:
+			result[0] = '8';
+			break;
+		case 9:
+			result[0] = '9';
+			break;
+		case 10:
+			result[0] = 'A';
+			break;
+		case 11:
+			result[0] = 'B';
+			break;
+		case 12:
+			result[0] = 'C';
+			break;
+		case 13:
+			result[0] = 'D';
+			break;
+		case 14:
+			result[0] = 'E';
+			break;
+		case 15:
+			result[0] = 'F';
+			break;
+	}
+
+	switch (input_low)
+	{
+		case 0:
+			result[1] = '0';
+			break;
+		case 1:
+			result[1] = '1';
+			break;
+		case 2:
+			result[1] = '2';
+			break;
+		case 3:
+			result[1] = '3';
+			break;
+		case 4:
+			result[1] = '4';
+			break;
+		case 5:
+			result[1] = '5';
+			break;
+		case 6:
+			result[1] = '6';
+			break;
+		case 7:
+			result[1] = '7';
+			break;
+		case 8:
+			result[1] = '8';
+			break;
+		case 9:
+			result[1] = '9';
+			break;
+		case 10:
+			result[1] = 'A';
+			break;
+		case 11:
+			result[1] = 'B';
+			break;
+		case 12:
+			result[1] = 'C';
+			break;
+		case 13:
+			result[1] = 'D';
+			break;
+		case 14:
+			result[1] = 'E';
+			break;
+		case 15:
+			result[1] = 'F';
+			break;
+	}
+}
+
+char *
+parse_lwgeom_wkt(char *wkt_input)
+{
+	char *serialized_form = parse_lwg((const char *)wkt_input,
+		lwalloc, lwerror);
+
+
+#ifdef DEBUG
+	lwnotice("parse_lwgeom_wkt with %s",wkt_input);
+#endif
+
+	if (serialized_form == NULL)
+	{
+		lwerror("parse_WKT:: couldnt parse!");
+		return NULL;
+	}
+
+	return serialized_form;
+
 }

@@ -7,12 +7,33 @@
 
 //#define DEBUG_CALLS 1
 
+#define CHECK_POLY_RINGS_ZM 1
+
 // construct a new LWPOLY.  arrays (points/points per ring) will NOT be copied
 // use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
 LWPOLY *
-lwpoly_construct(char hasz, char hasm, int SRID, char wantbbox, int nrings, POINTARRAY **points)
+lwpoly_construct(int SRID, char wantbbox, unsigned int nrings, POINTARRAY **points)
 {
 	LWPOLY *result;
+	int hasz, hasm;
+#ifdef CHECK_POLY_RINGS_ZM
+	char zm;
+	unsigned int i;
+#endif
+
+	if ( nrings < 1 ) lwerror("lwpoly_construct: need at least 1 ring");
+
+	hasz = TYPE_HASZ(points[0]->dims);
+	hasm = TYPE_HASM(points[0]->dims);
+
+#ifdef CHECK_POLY_RINGS_ZM
+	zm = TYPE_GETZM(points[0]->dims);
+	for (i=1; i<nrings; i++)
+	{
+		if ( zm != TYPE_GETZM(points[i]->dims) )
+			lwerror("lwpoly_construct: mixed dimensioned rings");
+	}
+#endif
 
 	result = (LWPOLY*) lwalloc(sizeof(LWPOLY));
 	result->type = lwgeom_makeType_full(hasz, hasm, (SRID!=-1), POLYGONTYPE,
@@ -449,11 +470,38 @@ lwpoly_add(const LWPOLY *to, uint32 where, const LWGEOM *what)
 	else newtype = COLLECTIONTYPE;
 
 	col = lwcollection_construct(newtype,
-		TYPE_HASZ(to->type),
-		TYPE_HASM(to->type),
 		to->SRID,
 		( TYPE_HASBBOX(what->type) || TYPE_HASBBOX(to->type) ),
 		2, geoms);
 	
 	return (LWGEOM *)col;
+}
+
+void
+lwpoly_forceRHR(LWPOLY *poly)
+{
+	int i;
+
+	if ( ptarray_isccw(poly->rings[0]) )
+	{
+		ptarray_reverse(poly->rings[0]);
+	}
+
+	for (i=1; i<poly->nrings; i++)
+	{
+		if ( ! ptarray_isccw(poly->rings[i]) )
+		{
+			ptarray_reverse(poly->rings[i]);
+		}
+	}
+}
+
+
+void
+lwpoly_reverse(LWPOLY *poly)
+{
+	int i;
+
+	for (i=0; i<poly->nrings; i++)
+		ptarray_reverse(poly->rings[i]);
 }

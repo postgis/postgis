@@ -180,7 +180,7 @@ Datum CHIP_to_LWGEOM(PG_FUNCTION_ARGS)
 	pa[0]->npoints = 5;
 
 	// Construct polygon
-	poly = lwpoly_construct(0, 0, chip->SRID, wantbbox, 1, pa);
+	poly = lwpoly_construct(chip->SRID, wantbbox, 1, pa);
 
 	// Serialize polygon
 	ser = lwpoly_serialize(poly);

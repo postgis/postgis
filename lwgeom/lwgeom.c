@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#include "wktparse.h"
 
-#include "lwgeom_pg.h"
+//#include "lwgeom_pg.h"
 #include "liblwgeom.h"
 
 //#define DEBUG_CALLS 1
@@ -324,5 +325,20 @@ lwgeom_add(const LWGEOM *to, uint32 where, const LWGEOM *what)
 		default:
 			return NULL;
 	}
+}
+
+/*
+ * Return an alloced string
+ */
+char *
+lwgeom_to_wkt(LWGEOM *lwgeom)
+{
+	char *serialized = lwgeom_serialize(lwgeom);
+	if ( ! serialized ) {
+		lwerror("Error serializing geom %p", lwgeom);
+	}
+	char *ret = unparse_WKT(serialized, lwalloc, lwfree);
+	lwfree(serialized);
+	return ret;
 }
 

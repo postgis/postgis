@@ -348,10 +348,10 @@ output_wkt(byte* geom, int supress)
 }
 
 char *
-unparse_WKT(byte* lw_geom, allocator alloc, freeor free)
+unparse_WKT(byte* serialized, allocator alloc, freeor free)
 {
 
-	if (lw_geom==NULL)
+	if (serialized==NULL)
 		return NULL;
 
 	local_malloc=alloc;
@@ -360,7 +360,7 @@ unparse_WKT(byte* lw_geom, allocator alloc, freeor free)
 	out_start = out_pos = alloc(len);
 	lwgi=0;
 
-	output_wkt(lw_geom+4, 0);
+	output_wkt(serialized, 0);
 
 	return out_start;
 }
@@ -501,14 +501,14 @@ output_wkb(byte* geom)
 }
 
 char *
-unparse_WKB(byte* lw_geom,allocator alloc,freeor free)
+unparse_WKB(byte* serialized, allocator alloc, freeor free)
 {
 
 #ifdef DEBUG
-	lwnotice("unparse_WKB(%p,...) called", lw_geom);
+	lwnotice("unparse_WKB(%p,...) called", serialized);
 #endif
 
-	if (lw_geom==NULL)
+	if (serialized==NULL)
 		return NULL;
 
 	local_malloc=alloc;
@@ -517,7 +517,7 @@ unparse_WKB(byte* lw_geom,allocator alloc,freeor free)
 	out_start = out_pos = alloc(len);
 	lwgi=0;
 
-	output_wkb(lw_geom+4);
+	output_wkb(serialized);
 	ensure(1);
 	*out_pos=0;
 

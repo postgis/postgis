@@ -1900,10 +1900,7 @@ lwpoint_from_geometry(Geometry *g, char want3d)
 	GEOSdeleteChar( (char*) pts);
 
 	// Construct LWPOINT
-	point = lwpoint_construct(
-		TYPE_HASZ(pa->dims),
-		TYPE_HASM(pa->dims),
-		-1, 0, pa);
+	point = lwpoint_construct(-1, 0, pa);
 
 	return point;
 }
@@ -1943,10 +1940,7 @@ lwline_from_geometry(Geometry *g, char want3d)
 	GEOSdeleteChar( (char*) pts);
 
 	// Construct LWPOINT
-	line = lwline_construct(
-		TYPE_HASZ(pa->dims),
-		TYPE_HASM(pa->dims),
-		-1, 0, pa);
+	line = lwline_construct(-1, 0, pa);
 
 	return line;
 }
@@ -2012,10 +2006,7 @@ lwpoly_from_geometry(Geometry *g, char want3d)
 	}
 
 	// Construct LWPOLY
-	poly = lwpoly_construct(
-		TYPE_HASZ(pa->dims),
-		TYPE_HASM(pa->dims),
-		-1, 0, nrings+1, rings);
+	poly = lwpoly_construct(-1, 0, nrings+1, rings);
 
 	return poly;
 }
@@ -2053,10 +2044,7 @@ lwcollection_from_geometry(Geometry *geom, char want3d)
 #endif
 	}
 
-	ret = lwcollection_construct(type,
-		want3d, 0, 
-		SRID,
-		wantbbox, ngeoms, geoms);
+	ret = lwcollection_construct(type, SRID, wantbbox, ngeoms, geoms);
 	return ret;
 }
 
@@ -2223,7 +2211,7 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 #ifdef DEBUG_CONVERTER
-	elog(NOTICE, "GEOSnoop: IN: %s", unparse_WKT((char *)geom, malloc, free));
+	elog(NOTICE, "GEOSnoop: IN: %s", unparse_WKT(SERIALIZED_FORM(geom), malloc, free));
 #endif
 
 	geosgeom = POSTGIS2GEOS(geom);
@@ -2239,7 +2227,7 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 	GEOSdeleteGeometry(geosgeom);
 
 #ifdef DEBUG_CONVERTER
-	elog(NOTICE, "GEOSnoop: OUT: %s", unparse_WKT((char *)result, malloc, free));
+	elog(NOTICE, "GEOSnoop: OUT: %s", unparse_WKT(SERIALIZED_FORM(result), malloc, free));
 #endif
 
 	PG_RETURN_POINTER(result);

@@ -2,25 +2,30 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-#include "lwgeom_pg.h"
-#include "liblwgeom.h"
-
 #define CONTEXT_PG 0
 #define CONTEXT_SA 1
 
+#ifdef STANDALONE
+#define DEFAULT_CONTEXT CONTEXT_SA
+#else
 #define DEFAULT_CONTEXT CONTEXT_PG
+#endif
 
 /* Global variables */
 #if DEFAULT_CONTEXT == CONTEXT_SA
-lwallocator lwalloc = default_allocator;
-lwreallocator lwrealloc = default_reallocator;
-lwfreeor lwfree = default_freeor;
+#include "liblwgeom.h"
+lwallocator lwalloc_var = default_allocator;
+lwreallocator lwrealloc_var = default_reallocator;
+lwfreeor lwfree_var = default_freeor;
 lwreporter lwerror = default_errorreporter;
 lwreporter lwnotice = default_noticereporter;
 #else
-lwallocator lwalloc = pg_alloc;
-lwreallocator lwrealloc = pg_realloc;
-lwfreeor lwfree = pg_free;
+#include "lwgeom_pg.h"
+#include "liblwgeom.h"
+
+lwallocator lwalloc_var = pg_alloc;
+lwreallocator lwrealloc_var = pg_realloc;
+lwfreeor lwfree_var = pg_free;
 lwreporter lwerror = pg_error;
 lwreporter lwnotice = pg_notice;
 #endif
@@ -98,10 +103,29 @@ default_errorreporter(const char *fmt, ...)
 	fprintf(stderr, "%s\n", msg);
 	va_end(ap);
 	free(msg);
+	exit(1);
 }
 
 const char *
 lwgeom_typename(int type)
 {
 	return lwgeomTypeName[type];
+}
+
+void *
+lwalloc(size_t size)
+{
+	return lwalloc_var(size);
+}
+
+void *
+lwrealloc(void *mem, size_t size)
+{
+	return lwrealloc_var(mem, size);
+}
+
+void
+lwfree(void *mem)
+{
+	return lwfree_var(mem);
 }

@@ -25,9 +25,9 @@ void default_errorreporter(const char *fmt, ...);
 void default_noticereporter(const char *fmt, ...);
 
 /* globals */
-extern lwreallocator lwrealloc;
-extern lwallocator lwalloc;
-extern lwfreeor lwfree;
+extern lwreallocator lwrealloc_var;
+extern lwallocator lwalloc_var;
+extern lwfreeor lwfree_var;
 extern lwreporter lwerror;
 extern lwreporter lwnotice;
 
@@ -402,7 +402,7 @@ extern size_t lwgeom_size_poly(const char *serialized_line);
 
 // construct a new point.  point will NOT be copied
 // use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
-extern LWPOINT  *lwpoint_construct(char hasZ, char hasM, int SRID, char wantbbox, POINTARRAY *point);
+extern LWPOINT  *lwpoint_construct(int SRID, char wantbbox, POINTARRAY *point);
 
 // given the LWPOINT serialized form (or a pointer into a muli* one)
 // construct a proper LWPOINT.
@@ -434,7 +434,7 @@ extern int lwpoint_getPoint4d_p(const LWPOINT *point, POINT4D *out);
 
 // construct a new LWLINE.  points will *NOT* be copied
 // use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
-extern LWLINE *lwline_construct(char hasz, char hasm, int SRID, char wantbbox, POINTARRAY *points);
+extern LWLINE *lwline_construct(int SRID, char wantbbox, POINTARRAY *points);
 
 // given the LWGEOM serialized form (or a pointer into a muli* one)
 // construct a proper LWLINE.
@@ -460,7 +460,7 @@ extern BOX3D *lwline_findbbox(LWLINE *line);
 
 // construct a new LWPOLY.  arrays (points/points per ring) will NOT be copied
 // use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
-extern LWPOLY *lwpoly_construct(char hasz, char hasm, int SRID, char wantbbox, int nrings, POINTARRAY **points);
+extern LWPOLY *lwpoly_construct(int SRID, char wantbbox, unsigned int nrings, POINTARRAY **points);
 
 // given the LWPOLY serialized form (or a pointer into a muli* one)
 // construct a proper LWPOLY.
@@ -730,7 +730,6 @@ extern void printLWLINE(LWLINE *line);
 extern void printLWPOLY(LWPOLY *poly);
 extern void printBYTES(unsigned char *a, int n);
 extern void printMULTI(char *serialized);
-extern void deparse_hex(unsigned char str, unsigned char *result);
 extern void printType(unsigned char str);
 
 
@@ -947,9 +946,26 @@ extern LWLINE *lwline_clone(const LWLINE *lwgeom);
 extern LWPOLY *lwpoly_clone(const LWPOLY *lwgeom);
 extern LWCOLLECTION *lwcollection_clone(const LWCOLLECTION *lwgeom);
 
-extern LWCOLLECTION *lwcollection_construct(int type, char hasz, char hasm, uint32 SRID, char hasbbox, int ngeoms, LWGEOM **geoms);
+extern LWCOLLECTION *lwcollection_construct(unsigned int type, int SRID, char hasbbox, unsigned int ngeoms, LWGEOM **geoms);
 
 // Return a char string with ASCII versionf of type flags
 extern const char *lwgeom_typeflags(unsigned char type);
+
+// Construct an empty pointarray
+extern POINTARRAY *ptarray_construct(char hasz, char hasm, unsigned int npoints);
+extern POINTARRAY *ptarray_construct2d(uint32 npoints, POINT2D const* const* pts);
+
+extern int32 lwgeom_nrings_recursive(char *serialized);
+extern void dump_lwexploded(LWGEOM_EXPLODED *exploded);
+extern void ptarray_reverse(POINTARRAY *pa);
+
+extern unsigned char	parse_hex(char *str);
+extern void deparse_hex(unsigned char str, unsigned char *result);
+extern char *parse_lwgeom_wkt(char *wkt_input);
+extern char * lwgeom_to_wkt(LWGEOM *lwgeom);
+
+extern void *lwalloc(size_t size);
+extern void *lwrealloc(void *mem, size_t size);
+extern void lwfree(void *mem);
 
 #endif // !defined _LIBLWGEOM_H 

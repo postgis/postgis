@@ -5,6 +5,46 @@
 
 //#define DEBUG_CALLS 1
 
+#define CHECK_LWGEOM_ZM 1
+
+LWCOLLECTION *
+lwcollection_construct(unsigned int type, int SRID, char hasbbox,
+	unsigned int ngeoms, LWGEOM **geoms)
+{
+	LWCOLLECTION *ret;
+	int hasz, hasm;
+#ifdef CHECK_LWGEOM_ZM
+	char zm;
+	unsigned int i;
+#endif
+
+	hasz = 0;
+	hasm = 0;
+	if ( ngeoms > 0 )
+	{
+		hasz = TYPE_HASZ(geoms[0]->type);
+		hasm = TYPE_HASM(geoms[0]->type);
+	}
+
+#ifdef CHECK_LWGEOM_ZM
+	zm = TYPE_GETZM(geoms[0]->type);
+	for (i=1; i<ngeoms; i++)
+	{
+		if ( zm != TYPE_GETZM(geoms[i]->type) )
+			lwerror("lwcollection_construct: mixed dimension geometries");
+	}
+#endif
+
+	ret = lwalloc(sizeof(LWCOLLECTION));
+	ret->type = lwgeom_makeType_full(hasz, hasm, (SRID!=-1),
+		type, hasbbox);
+	ret->SRID = SRID;
+	ret->ngeoms = ngeoms;
+	ret->geoms = geoms;
+	return ret;
+}
+
+
 LWCOLLECTION *
 lwcollection_deserialize(char *srl)
 {
@@ -149,20 +189,6 @@ lwcollection_compute_bbox_p(LWCOLLECTION *col, BOX2DFLOAT4 *box)
 	return 1;
 }
 
-LWCOLLECTION *
-lwcollection_construct(int type, char hasz, char hasm, uint32 SRID, char hasbbox,
-	int ngeoms, LWGEOM **geoms)
-{
-	LWCOLLECTION *ret;
-	ret = lwalloc(sizeof(LWCOLLECTION));
-	ret->type = lwgeom_makeType_full(hasz, hasm, (SRID!=-1),
-		type, hasbbox);
-	ret->SRID = SRID;
-	ret->ngeoms = ngeoms;
-	ret->geoms = geoms;
-	return ret;
-}
-
 // Clone LWCOLLECTION object. POINTARRAY are not copied.
 LWCOLLECTION *
 lwcollection_clone(const LWCOLLECTION *g)
@@ -211,7 +237,6 @@ lwcollection_add(const LWCOLLECTION *to, uint32 where, const LWGEOM *what)
 	}
 
 	col = lwcollection_construct(COLLECTIONTYPE,
-		TYPE_HASZ(to->type), TYPE_HASM(to->type),
 		to->SRID,
 		( TYPE_HASBBOX(what->type) || TYPE_HASBBOX(to->type) ),
 		to->ngeoms+1, geoms);

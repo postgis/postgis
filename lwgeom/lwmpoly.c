@@ -86,8 +86,6 @@ lwmpoly_add(const LWMPOLY *to, uint32 where, const LWGEOM *what)
 	else newtype = COLLECTIONTYPE;
 
 	col = lwcollection_construct(newtype,
-		TYPE_HASZ(to->type),
-		TYPE_HASM(to->type),
 		to->SRID,
 		( TYPE_HASBBOX(what->type) || TYPE_HASBBOX(to->type) ),
 		to->ngeoms+1, geoms);
