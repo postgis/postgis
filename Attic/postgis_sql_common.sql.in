@@ -585,6 +585,11 @@ CREATE FUNCTION area2d(geometry)
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
 
+CREATE FUNCTION area(geometry)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@','area2d'
+	LANGUAGE 'C' WITH (isstrict);
+
 CREATE FUNCTION perimeter3d(geometry)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@'
