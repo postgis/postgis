@@ -1,6 +1,8 @@
 #ifndef _PROFILE_H
 #define _PROFILE_H 1
 
+#include <math.h>
+
 /*
  * Define this to have profiling enabled
  */
@@ -20,7 +22,7 @@ long profipts, profopts;
 	proftime[x] = ( profstop[x].tv_sec*1000000+profstop[x].tv_usec) - \
 		( profstart[x].tv_sec*1000000+profstart[x].tv_usec); \
 	} while (0);
-#define profreport(x, y, r) do { \
+#define profreport(n, x, y, r) do { \
 	profipts = 0; \
 	if ((x)) profipts += lwgeom_npoints(SERIALIZED_FORM((x))); \
 	if ((y)) profipts += lwgeom_npoints(SERIALIZED_FORM((y))); \
@@ -33,13 +35,15 @@ long profipts, profopts;
 	int convpercent = round(((double)conv/(double)tot)*100); \
 	int runpercent = round(((double)run/(double)tot)*100); \
 	elog(NOTICE, \
-		"PROF_DET: npts:%lu+%lu=%lu cnv:%lu+%lu run:%lu gtot:%lu qtot:%lu", \
+		"PROF_DET(%s): npts:%lu+%lu=%lu cnv:%lu+%lu run:%lu gtot:%lu qtot:%lu", \
+		(n), \
 		profipts, profopts, profipts+profopts, \
 		proftime[PROF_P2G], proftime[PROF_G2P], \
 		proftime[PROF_GRUN], \
 		proftime[PROF_P2G]+proftime[PROF_G2P]+proftime[PROF_GRUN], \
 		proftime[PROF_QRUN]); \
-	elog(NOTICE, "PROF_SUM: pts %lu cnv %d%% grun %d%% tot %d%%", \
+	elog(NOTICE, "PROF_SUM(%s): pts %lu cnv %d%% grun %d%% tot %d%%", \
+		(n), \
 		profipts+profopts, \
 		convpercent, \
 		runpercent, \

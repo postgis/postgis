@@ -303,7 +303,7 @@ Datum geomunion(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport(geom1, geom2, result);
+	profreport("geos",geom1, geom2, result);
 #endif
 
 	PG_RETURN_POINTER(result);
@@ -385,7 +385,7 @@ Datum symdifference(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport(geom1, geom2, result);
+	profreport("geos",geom1, geom2, result);
 #endif
 
 	PG_RETURN_POINTER(result);
@@ -458,7 +458,7 @@ Datum boundary(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport(geom1, NULL, result);
+	profreport("geos",geom1, NULL, result);
 #endif
 
 	PG_RETURN_POINTER(result);
@@ -521,7 +521,7 @@ Datum convexhull(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport(geom1, NULL, result);
+	profreport("geos",geom1, NULL, result);
 #endif
 
 	PG_RETURN_POINTER(result);
@@ -593,7 +593,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport(geom1, NULL, result);
+	profreport("geos",geom1, NULL, result);
 #endif
 
 	PG_RETURN_POINTER(result);
@@ -693,7 +693,7 @@ Datum intersection(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport(geom1, geom2, result);
+	profreport("geos",geom1, geom2, result);
 #endif
 
 	PG_RETURN_POINTER(result);
@@ -772,7 +772,7 @@ Datum difference(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport(geom1, geom2, result);
+	profreport("geos",geom1, geom2, result);
 #endif
 
 	PG_RETURN_POINTER(result);
@@ -843,7 +843,7 @@ Datum pointonsurface(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport(geom1, NULL, result);
+	profreport("geos",geom1, NULL, result);
 #endif
 
 	PG_RETURN_POINTER(result);
@@ -905,7 +905,7 @@ Datum centroid(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport(geom, NULL, result);
+	profreport("geos",geom, NULL, result);
 #endif
 
 	PG_RETURN_POINTER(result);
@@ -967,7 +967,7 @@ Datum isvalid(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport(geom1, NULL, NULL);
+	profreport("geos",geom1, NULL, NULL);
 #endif
 
 	PG_RETURN_BOOL(result);
@@ -1038,7 +1038,7 @@ Datum overlaps(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport(geom1, geom2, NULL);
+	profreport("geos",geom1, geom2, NULL);
 #endif
 
 	PG_RETURN_BOOL(result);
@@ -1108,7 +1108,7 @@ Datum contains(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport(geom1, geom2, NULL);
+	profreport("geos",geom1, geom2, NULL);
 #endif
 
 	PG_RETURN_BOOL(result);
@@ -1177,7 +1177,7 @@ Datum within(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport(geom1, geom2, NULL);
+	profreport("geos",geom1, geom2, NULL);
 #endif
 
 	PG_RETURN_BOOL(result);
@@ -1247,7 +1247,7 @@ Datum crosses(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport(geom1, geom2, NULL);
+	profreport("geos",geom1, geom2, NULL);
 #endif
 
 	PG_RETURN_BOOL(result);
@@ -1315,7 +1315,7 @@ Datum intersects(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport(geom1, geom2, NULL);
+	profreport("intr",geom1, geom2, NULL);
 #endif
 
 	PG_RETURN_BOOL(result);
@@ -1384,7 +1384,7 @@ Datum touches(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport(geom1, geom2, NULL);
+	profreport("geos",geom1, geom2, NULL);
 #endif
 
 	PG_RETURN_BOOL(result);
@@ -1452,7 +1452,7 @@ Datum disjoint(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport(geom1, geom2, NULL);
+	profreport("geos",geom1, geom2, NULL);
 #endif
 
 	PG_RETURN_BOOL(result);
@@ -1510,7 +1510,7 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport(geom1, geom2, NULL);
+	profreport("geos",geom1, geom2, NULL);
 #endif
 
 	PG_RETURN_BOOL(result);
@@ -1598,7 +1598,7 @@ Datum relate_full(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport(geom1, geom2, NULL);
+	profreport("geos",geom1, geom2, NULL);
 #endif
 
 	PG_RETURN_POINTER(result);
@@ -1667,7 +1667,7 @@ Datum geomequals(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport(geom1, geom2, NULL);
+	profreport("geos",geom1, geom2, NULL);
 #endif
 
 	PG_RETURN_BOOL(result);
@@ -1718,7 +1718,7 @@ Datum issimple(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport(geom, NULL, NULL);
+	profreport("geos",geom, NULL, NULL);
 #endif
 
 	PG_RETURN_BOOL(result);
@@ -1774,7 +1774,7 @@ Datum isring(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport(geom, NULL, NULL);
+	profreport("geos",geom, NULL, NULL);
 #endif
 
 	PG_RETURN_BOOL(result);
