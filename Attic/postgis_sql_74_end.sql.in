@@ -12,6 +12,9 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.4  2003/11/28 11:25:31  strk
+-- Added explicit geometry as text cast
+--
 -- Revision 1.3  2003/11/28 11:06:49  strk
 -- Added WKB_recv function for binary WKB input
 --
@@ -53,6 +56,7 @@ CREATE CAST ( box3d AS geometry ) WITH FUNCTION geometry(box3d) AS IMPLICIT;
 CREATE CAST ( text AS geometry) WITH FUNCTION geometry(text) AS IMPLICIT;
 CREATE CAST ( wkb AS bytea ) WITH FUNCTION bytea(wkb) AS IMPLICIT;
 CREATE CAST ( box3d AS box ) WITH FUNCTION box3dtobox(box3d);
+CREATE CAST ( geometry AS text ) WITH FUNCTION astext(geometry);
 
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- UPDATE_GEOMETRY_STATS()
