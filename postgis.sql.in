@@ -349,7 +349,7 @@ BEGIN
 	END IF;
 
 	IF  projver IS NOT NULL THEN
-		fullver = fullver || \' PROJ="\' || geosver || \'"\';
+		fullver = fullver || \' PROJ="\' || projver || \'"\';
 	END IF;
 
 	IF usestats THEN
