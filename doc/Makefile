@@ -66,5 +66,6 @@ clean:
 maintainer-clean: clean
 	@rm -f html/*.html
 
+install: html/postgis.html man/shp2pgsql.1 man/pgsql2shp.1
 
 .PHONY: html 

@@ -1,0 +1,64 @@
+.TH "shp2pgsql" "1" "" "" "PostGIS"
+.SH "NAME"
+.LP 
+shp2pgsql - shapefile to postgis loader
+.SH "SYNTAX"
+.LP 
+shp2pgsql [\fIoptions\fR] \fIshapefile\fR [\fIschema\fR\fB.\fR]\fItable\fR
+.SH "DESCRIPTION"
+.LP 
+The shp2pgsql data loader converts ESRI Shape files into SQL suitable for insertion into a PostGIS/PostgreSQL database. Produced output is NOT compatible
+with pre\-1.0.0 versions of PostGIS.
+.SH "OPTIONS"
+.LP 
+The loader has several operating modes distinguished by command line flags:
+
+.TP 
+\fB\-d\fR
+Drops the database table before creating a new table with the data in the Shape file.
+
+.TP 
+\fB\-a\fR
+Appends data from the Shape file into the database table. Note that to use this option to load multiple files, the files must have the same attributes and same data types.
+
+.TP 
+\fB\-c\fR
+Creates a new table and populates it from the Shape file. This is the default mode.
+
+.TP 
+\fB\-D\fR
+Creates a new table and populates it from the Shape file. This uses the PostgreSQL "dump" format for the output data and is much faster to load than the default "insert" SQL format. Use this for very large data sets.
+
+.TP 
+\fB\-s\fR <\fISRID\fR>
+Creates and populates the geometry tables with the specified SRID.
+
+.TP 
+\fB\-k\fR
+Keep idendifiers case (column, schema and attributes). Note that attributes in Shapefile are all UPPERCASE.
+
+
+.TP 
+\fB\-i\fR
+Coerce all integers to standard 32\-bit integers, do not create 64\-bit bigints, even if the DBF header signature appears to warrant it.
+.SH "EXAMPLES"
+.LP 
+An example session using the loader to create an input file and uploading it might look like this:
+
+# \fBshp2pgsql shaperoads roadstable roadsdb > roads.sql\fR
+.br 
+# \fBpsql \-d roadsdb \-f roads.sql\fR
+
+A conversion and upload can be done all in one step using UNIX pipes:
+
+# \fBshp2pgsql shaperoads roadstable roadsdb | psql \-d roadsdb\fR
+.SH "AUTHORS"
+.LP
+Originally written by Jeff Lounsbury <jeffloun@refractions.net>.
+Improved and maintained by Sandro Santilli <strk@refractions.net>.
+
+This application uses functionality from shapelib 1.2.9
+by Frank Warmerdam <warmerda@gdal.velocet.ca> to read from ESRI Shape files.
+.SH "SEE ALSO"
+.LP 
+pgsql2shp(1)
