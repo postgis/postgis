@@ -5,6 +5,8 @@
 #
 # Basically it will restore all but things created by
 # the given postgis.sql.
+# Before restoring, it will create and postgis-enable
+# the target db.
 #
 # A particular attention must be given to the spatial_ref_sys
 # and geometry_columns tables which are created and populated
