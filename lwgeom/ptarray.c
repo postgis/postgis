@@ -12,7 +12,7 @@ ptarray_construct(char hasz, char hasm, unsigned int npoints)
 	POINTARRAY *pa;
 	
 	TYPE_SETZM(dims, hasz?1:0, hasm?1:0);
-	size = TYPE_NDIMS(dims)*npoints;
+	size = TYPE_NDIMS(dims)*npoints*sizeof(double);
 	ptlist = (char *)lwalloc(size);
 	pa = lwalloc(sizeof(POINTARRAY));
 	pa->dims = dims;
@@ -24,7 +24,7 @@ ptarray_construct(char hasz, char hasm, unsigned int npoints)
 }
 
 POINTARRAY *
-ptarray_construct2d(uint32 npoints, POINT2D const* const* pts)
+ptarray_construct2d(uint32 npoints, const POINT2D *pts)
 {
 	POINTARRAY *pa = ptarray_construct(0, 0, npoints);
 	uint32 i;
@@ -32,8 +32,8 @@ ptarray_construct2d(uint32 npoints, POINT2D const* const* pts)
 	for (i=0; i<npoints; i++)
 	{
 		POINT2D *pap = (POINT2D *)getPoint(pa, i);
-		pap->x = pts[i]->x;
-		pap->y = pts[i]->y;
+		pap->x = pts[i].x;
+		pap->y = pts[i].y;
 	}
 	
 	return pa;

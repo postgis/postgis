@@ -953,7 +953,7 @@ extern const char *lwgeom_typeflags(unsigned char type);
 
 // Construct an empty pointarray
 extern POINTARRAY *ptarray_construct(char hasz, char hasm, unsigned int npoints);
-extern POINTARRAY *ptarray_construct2d(uint32 npoints, POINT2D const* const* pts);
+extern POINTARRAY *ptarray_construct2d(uint32 npoints, const POINT2D *pts);
 
 extern int32 lwgeom_nrings_recursive(char *serialized);
 extern void dump_lwexploded(LWGEOM_EXPLODED *exploded);

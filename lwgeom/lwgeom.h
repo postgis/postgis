@@ -21,7 +21,7 @@ typedef struct { double x; double y; double z; double m; } POINT4D;
 typedef struct POINTARRAY_T *POINTARRAY;
 
 // Constructs a POINTARRAY copying given 2d points
-POINTARRAY ptarray_construct2d(unsigned int npoints, POINT2D ** pts);
+POINTARRAY ptarray_construct2d(unsigned int npoints, const POINT2D *pts);
 
 /*****************************************************************
  * LWGEOM
@@ -34,6 +34,7 @@ extern char *lwgeom_to_wkt(LWGEOM lwgeom);
 
 // Construction
 extern LWGEOM lwpoint_construct(int SRID, char wantbbox, POINTARRAY pa);
+extern LWGEOM lwline_construct(int SRID, char wantbbox, POINTARRAY pa);
 
 // Spatial functions
 extern void lwgeom_reverse(LWGEOM lwgeom);
