@@ -47,16 +47,27 @@ public class MultiLineString extends ComposedGeom {
     }
 
     public MultiLineString(String value) throws SQLException {
+        this(value, false);
+    }
+    
+    protected MultiLineString(String value, boolean haveM) throws SQLException {
         this();
-        value = value.trim();
-        if (value.indexOf("MULTILINESTRING") == 0) {
-            PGtokenizer t = new PGtokenizer(PGtokenizer.removePara(value.substring(15).trim()), ',');
+        value = value.trim();        
+        if (value.indexOf(typestring) == 0) {
+            int pfxlen = typestring.length();
+            if (value.charAt(pfxlen) == 'M') {
+                pfxlen += 1;
+                haveM = true;
+            }
+            value = value.substring(pfxlen).trim();
+            PGtokenizer t = new PGtokenizer(PGtokenizer.removePara(value), ',');
             int nlines = t.getSize();
             subgeoms = new LineString[nlines];
             for (int p = 0; p < nlines; p++) {
-                subgeoms[p] = new LineString(t.getToken(p));
+                subgeoms[p] = new LineString(t.getToken(p), haveM);
             }
             dimension = subgeoms[0].dimension;
+            haveMeasure = subgeoms[0].haveMeasure;
         } else {
             throw new SQLException("postgis.multilinestringgeometry");
         }

@@ -28,6 +28,7 @@ package examples;
 
 import org.postgis.Geometry;
 import org.postgis.PGgeometry;
+import org.postgresql.PGConnection;
 import org.postgresql.util.PGtokenizer;
 
 import java.sql.Connection;
@@ -45,26 +46,92 @@ public class TestParser {
      */
     public static final String[][] testset = new String[][]{
         {
-            ALL,
+            ALL, // 2D
+            "POINT(10 10)"},
+        {
+            ALL, // 3D with 3rd coordinate set to 0
+            "POINT(10 10 0)"},
+        {
+            ALL, // 3D
             "POINT(10 10 20)"},
         {
-            ALL,
-            "MULTIPOINT(10 10 10, 20 20 20)"},
+            ONLY10, // 2D + Measures
+            "POINTM(10 10 20)"},
+        {
+            ONLY10, // 3D + Measures
+            "POINT(10 10 20 30)"},
         {
             ALL,
-            "LINESTRING(10 10 20,20 20 20, 50 50 50, 34 34 34)"},
+            "MULTIPOINT(11 12, 20 20)"},
+        {
+            ALL,
+            "MULTIPOINT(11 12 13, 20 20 20)"},
+        {
+            ONLY10,
+            "MULTIPOINTM(11 12 13, 20 20 20)"},
+        {
+            ONLY10,
+            "MULTIPOINT(11 12 13 14,20 20 20 20)"},
+        {
+            ALL,
+            "LINESTRING(10 10,20 20,50 50,34 34)"},
+        {
+            ALL,
+            "LINESTRING(10 10 20,20 20 20,50 50 50,34 34 34)"},
+        {
+            ONLY10,
+            "LINESTRINGM(10 10 20,20 20 20,50 50 50,34 34 34)"},
+        {
+            ONLY10,
+            "LINESTRING(10 10 20 20,20 20 20 20,50 50 50 50,34 34 34 50)"},
+        {
+            ALL,
+            "POLYGON((10 10,20 10,20 20,20 10,10 10),(5 5,5 6,6 6,6 5,5 5))"},
         {
             ALL,
             "POLYGON((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0))"},
         {
+            ONLY10,
+            "POLYGONM((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0))"},
+        {
+            ONLY10,
+            "POLYGON((10 10 0 7,20 10 0 7,20 20 0 7,20 10 0 7,10 10 0 7),(5 5 0 7,5 6 0 7,6 6 0 7,6 5 0 7,5 5 0 7))"},
+        {
+            ALL,
+            "MULTIPOLYGON(((10 10,20 10,20 20,20 10,10 10),(5 5,5 6,6 6,6 5,5 5)),((10 10,20 10,20 20,20 10,10 10),(5 5,5 6,6 6,6 5,5 5)))"},
+        {
             ALL,
             "MULTIPOLYGON(((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)),((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)))"},
         {
+            ONLY10,
+            "MULTIPOLYGONM(((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)),((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)))"},
+        {
+            ONLY10,
+            "MULTIPOLYGON(((10 10 0 7,20 10 0 7,20 20 0 7,20 10 0 7,10 10 0 7),(5 5 0 7,5 6 0 7,6 6 0 7,6 5 0 7,5 5 0 7)),((10 10 0 7,20 10 0 7,20 20 0 7,20 10 0 7,10 10 0 7),(5 5 0 7,5 6 0 7,6 6 0 7,6 5 0 7,5 5 0 7)))"},
+        {
             ALL,
-            "MULTILINESTRING((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0))"},
+            "MULTILINESTRING((10 10,20 10,20 20,20 10,10 10),(5 5,5 6,6 6,6 5,5 5))"},
+        {
+            ALL,
+            "MULTILINESTRING((10 10 5,20 10 5,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0))"},
+        {
+            ONLY10,
+            "MULTILINESTRINGM((10 10 7,20 10 7,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0))"},
+        {
+            ONLY10,
+            "MULTILINESTRING((10 10 0 7,20 10 0 7,20 20 0 7,20 10 0 7,10 10 0 7),(5 5 0 7,5 6 0 7,6 6 0 7,6 5 0 7,5 5 0 7))"},
+        {
+            ALL,
+            "GEOMETRYCOLLECTION(POINT(10 10),POINT(20 20))"},
         {
             ALL,
             "GEOMETRYCOLLECTION(POINT(10 10 20),POINT(20 20 20))"},
+        {
+            ONLY10,
+            "GEOMETRYCOLLECTIONM(POINT(10 10 20),POINT(20 20 20))"},
+        {
+            ONLY10,
+            "GEOMETRYCOLLECTION(POINT(10 10 20 7),POINT(20 20 20 7))"},
         {
             ALL,
             "GEOMETRYCOLLECTION(LINESTRING(10 10 20,20 20 20, 50 50 50, 34 34 34),LINESTRING(10 10 20,20 20 20, 50 50 50, 34 34 34))"},
@@ -75,10 +142,12 @@ public class TestParser {
             ONLY10, // Cannot be parsed by 0.X servers
             "GEOMETRYCOLLECTION(MULTIPOINT(10 10 10, 20 20 20),MULTIPOINT(10 10 10, 20 20 20))"},
         {
-            EQUAL10, // PostGIs 0.X "flattens" this geometry, so it is not equal after reparsing.
+            EQUAL10, // PostGIs 0.X "flattens" this geometry, so it is not equal
+            // after reparsing.
             "GEOMETRYCOLLECTION(MULTILINESTRING((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)))"},
         {
-            EQUAL10,// PostGIs 0.X "flattens" this geometry, so it is not equal after reparsing.
+            EQUAL10,// PostGIs 0.X "flattens" this geometry, so it is not equal
+            // after reparsing.
             "GEOMETRYCOLLECTION(MULTIPOLYGON(((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)),((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0))),MULTIPOLYGON(((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)),((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0))))"},
         {
             ALL,
@@ -254,6 +323,7 @@ public class TestParser {
         for (int i = 0; i < dburls.getSize(); i++) {
             System.out.println("Creating JDBC connection to " + dburls.getToken(i));
             conns[i] = connect(dburls.getToken(i), dbuser, dbpass);
+            ((PGConnection) conns[i]).addDataType("geometry", "org.postgis.PGgeometry");
         }
 
         System.out.println("Performing tests...");

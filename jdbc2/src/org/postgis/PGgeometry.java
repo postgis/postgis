@@ -55,15 +55,24 @@ public class PGgeometry extends PGobject {
     }
 
     public static Geometry geomFromString(String value) throws SQLException {
+        return geomFromString(value, false);
+    }
+
+    public static Geometry geomFromString(String value, boolean haveM) throws SQLException {
         BinaryParser bp = new BinaryParser();
 
-        return geomFromString(value, bp);
+        return geomFromString(value, bp, haveM);
     }
 
     /**
      * Maybe we could add more error checking here?
      */
     public static Geometry geomFromString(String value, BinaryParser bp) throws SQLException {
+        return geomFromString(value, bp, false);
+    }
+
+    public static Geometry geomFromString(String value, BinaryParser bp, boolean haveM)
+            throws SQLException {
         value = value.trim();
 
         int srid = -1;
@@ -83,19 +92,19 @@ public class PGgeometry extends PGobject {
             // geometry which is to be parsed as an empty GeometryCollection.
             result = new GeometryCollection();
         } else if (value.startsWith("MULTIPOLYGON")) {
-            result = new MultiPolygon(value);
+            result = new MultiPolygon(value, haveM);
         } else if (value.startsWith("MULTILINESTRING")) {
-            result = new MultiLineString(value);
+            result = new MultiLineString(value, haveM);
         } else if (value.startsWith("MULTIPOINT")) {
-            result = new MultiPoint(value);
+            result = new MultiPoint(value, haveM);
         } else if (value.startsWith("POLYGON")) {
-            result = new Polygon(value);
+            result = new Polygon(value, haveM);
         } else if (value.startsWith("LINESTRING")) {
-            result = new LineString(value);
+            result = new LineString(value, haveM);
         } else if (value.startsWith("POINT")) {
-            result = new Point(value);
+            result = new Point(value, haveM);
         } else if (value.startsWith("GEOMETRYCOLLECTION")) {
-            result = new GeometryCollection(value);
+            result = new GeometryCollection(value, haveM);
         } else {
             throw new SQLException("Unknown type: " + value);
         }

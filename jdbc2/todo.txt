@@ -2,8 +2,6 @@ Todo for PostGIS 1.0 compatible JDBC classes
 
 - Testing
 
-- WKT parsing of M and 4d geometries
-
 - Handling of length() - esp. with modifying the geometries
 
 - Handling of hashCode() - esp. with modifying the geometries

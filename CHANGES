@@ -24,6 +24,7 @@ PostGIS 1.0.0?
 	- plugged a leak in GEOS2POSTGIS converter
 	- jdbc2: added BETA support for jts geometry classes
 	- jdbc2: Skip known-to-fail tests against older PostGIS servers.
+	- jdbc2: Fixed handling of measured geometries in EWKT.
 
 PostGIS 1.0.0RC2
 2005/01/26

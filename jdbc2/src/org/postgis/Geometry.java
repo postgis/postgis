@@ -146,9 +146,16 @@ public abstract class Geometry implements Serializable {
      * geometry specific equals implementation
      */
     public boolean equals(Geometry other) {
-        return ((other != null) && (this.dimension == other.dimension) && (this.type == other.type)
-                && (this.srid == other.srid) && (this.haveMeasure == other.haveMeasure)
-                && other.getClass().equals(this.getClass()) && this.equalsintern(other));
+        boolean firstline = (other != null) && (this.dimension == other.dimension) && (this.type == other.type);
+        boolean sridequals = (this.srid == other.srid);
+        boolean measEquals = (this.haveMeasure == other.haveMeasure);
+        boolean secondline = sridequals && measEquals;
+        boolean classequals = other.getClass().equals(this.getClass());
+        boolean equalsintern = this.equalsintern(other);
+        boolean result = firstline
+                && secondline
+                && classequals && equalsintern;
+        return result;
     }
 
     /**
@@ -226,7 +233,7 @@ public abstract class Geometry implements Serializable {
             sb.append(srid);
             sb.append(';');
         }
-        outerWKT(sb);
+        outerWKT(sb, true);
         return sb.toString();
     }
 
@@ -234,14 +241,18 @@ public abstract class Geometry implements Serializable {
      * Render the WKT version of this Geometry (without SRID) into the given
      * StringBuffer.
      */
-    public void outerWKT(StringBuffer sb) {
+    public void outerWKT(StringBuffer sb, boolean putM) {
         sb.append(typestring);
-        if (haveMeasure && dimension == 2) {
+        if (putM && haveMeasure && dimension == 2) {
             sb.append('M');
         }
         mediumWKT(sb);
     }
 
+    public final void outerWKT(StringBuffer sb) {
+        outerWKT(sb, true);
+    }
+    
     /**
      * Render the WKT without the type name, but including the brackets into the
      * StringBuffer

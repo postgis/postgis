@@ -44,6 +44,10 @@ public class LineString extends PointComposedGeom {
         super(LINESTRING, value);
     }
 
+    public LineString(String value, boolean haveM) throws SQLException {
+        super(LINESTRING, value, haveM);
+    }
+
     public LineString reverse() {
         Point[] points = this.getPoints();
         int l = points.length;

@@ -47,14 +47,27 @@ public class LinearRing extends PointComposedGeom {
      * @param value Definition of this ring in the PostGIS string format.
      */
     public LinearRing(String value) throws SQLException {
+        this(value, false);
+    }
+
+    /**
+     * @param value The text representation of this LinearRing
+     * @param haveM Hint whether we have a measure. This is given to us by other
+     *            "parent" Polygon, and is passed further to our parent.
+     */
+
+    protected LinearRing(String value, boolean haveM) throws SQLException {
         super(LINEARRING);
         PGtokenizer t = new PGtokenizer(PGtokenizer.removePara(value.trim()), ',');
         int npoints = t.getSize();
         Point[] points = new Point[npoints];
         for (int p = 0; p < npoints; p++) {
-            points[p] = new Point(t.getToken(p));
+            points[p] = new Point(t.getToken(p), haveM);
         }
-        dimension = points[0].dimension;
+        this.dimension = points[0].dimension;
+        // fetch haveMeasure from subpoint because haveM does only work with
+        // 2d+M, not with 3d+M geometries
+        this.haveMeasure = points[0].haveMeasure;
         this.subgeoms = points;
     }
 }

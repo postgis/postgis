@@ -64,6 +64,7 @@ public abstract class ComposedGeom extends Geometry {
         this.subgeoms = geoms;
         if (geoms.length > 0) {
             dimension = geoms[0].dimension;
+            haveMeasure = geoms[0].haveMeasure;
         } else {
             dimension = 0;
         }

@@ -41,16 +41,29 @@ public class MultiPolygon extends ComposedGeom {
     }
 
     public MultiPolygon(String value) throws SQLException {
+        this(value, false);
+    }
+
+    protected MultiPolygon(String value, boolean haveM) throws SQLException {
         this();
         value = value.trim();
         if (value.indexOf("MULTIPOLYGON") == 0) {
-            PGtokenizer t = new PGtokenizer(PGtokenizer.removePara(value.substring(12).trim()), ',');
+            int pfxlen = typestring.length();
+            if (value.charAt(pfxlen) == 'M') {
+                pfxlen += 1;
+                haveM = true;
+            }
+            value = value.substring(pfxlen).trim();
+            PGtokenizer t = new PGtokenizer(PGtokenizer.removePara(value), ',');
             int npolygons = t.getSize();
             subgeoms = new Polygon[npolygons];
             for (int p = 0; p < npolygons; p++) {
-                subgeoms[p] = new Polygon(t.getToken(p));
+                subgeoms[p] = new Polygon(t.getToken(p), haveM);
             }
             dimension = subgeoms[0].dimension;
+            // fetch haveMeasure from subpoint because haveM does only work with
+            // 2d+M, not with 3d+M geometries
+            this.haveMeasure = subgeoms[0].haveMeasure;
         } else {
             throw new SQLException("postgis.multipolygongeometry");
         }

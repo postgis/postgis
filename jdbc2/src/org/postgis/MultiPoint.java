@@ -39,6 +39,10 @@ public class MultiPoint extends PointComposedGeom {
     }
 
     public MultiPoint(String value) throws SQLException {
-        super(MULTIPOINT, value);
+        this(value, false);
+    }
+
+    protected MultiPoint(String value, boolean haveM) throws SQLException {
+        super(MULTIPOINT, value, haveM);
     }
 }

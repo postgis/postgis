@@ -52,29 +52,40 @@ public class GeometryCollection extends ComposedGeom {
     }
 
     public GeometryCollection(String value) throws SQLException {
+        this(value, false);
+    }
+
+    public GeometryCollection(String value, boolean haveM) throws SQLException {
         this();
         value = value.trim();
         if (value.equals(EmptyColl)) {
             //Do nothing
         } else if (value.startsWith(GeoCollID)) {
-            PGtokenizer t = new PGtokenizer(PGtokenizer.removePara(value.substring(
-                    GeoCollID.length()).trim()), ',');
+            int pfxlen = typestring.length();
+            if (value.charAt(pfxlen) == 'M') {
+                pfxlen += 1;
+                haveM = true;
+            }
+            value = value.substring(pfxlen).trim();
+
+            PGtokenizer t = new PGtokenizer(PGtokenizer.removePara(value), ',');
             int ngeoms = t.getSize();
             subgeoms = new Geometry[ngeoms];
             for (int p = 0; p < ngeoms; p++) {
-                subgeoms[p] = PGgeometry.geomFromString(t.getToken(p));
+                subgeoms[p] = PGgeometry.geomFromString(t.getToken(p), haveM);
             }
             dimension = subgeoms[0].dimension;
+            haveMeasure = subgeoms[0].haveMeasure;
         } else {
             throw new SQLException("postgis.geocollection");
         }
     }
 
     protected void innerWKT(StringBuffer SB) {
-        subgeoms[0].outerWKT(SB);
+        subgeoms[0].outerWKT(SB, false);
         for (int i = 1; i < subgeoms.length; i++) {
             SB.append(',');
-            subgeoms[i].outerWKT(SB);
+            subgeoms[i].outerWKT(SB, false);
         }
     }
 }

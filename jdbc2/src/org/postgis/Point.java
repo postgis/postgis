@@ -45,8 +45,15 @@ public class Point extends Geometry {
 
     protected boolean equalsintern(Geometry otherg) {
         Point other = (Point) otherg;
-        return x == other.x && y == other.y && ((dimension == 2) || (z == other.z))
-                && ((haveMeasure == false) || (m == other.m));
+        boolean xequals = x == other.x;
+        boolean zequals = ((dimension == 2) || (z == other.z));
+        boolean mequals = ((haveMeasure == false) || (m == other.m));
+        boolean result = xequals && yequals(other) && zequals && mequals;
+        return result;
+    }
+
+    private boolean yequals(Point other) {
+        return y == other.y;
     }
 
     public Point getPoint(int index) {
@@ -111,28 +118,54 @@ public class Point extends Geometry {
         dimension = 2;
     }
 
+    /**
+     * Construct a Point from EWKT.
+     * 
+     * (3D and measures are legal, but SRID is not allowed).
+     */
     public Point(String value) throws SQLException {
+        this(value, false);
+    }
+
+    /**
+     * Construct a Point
+     * 
+     * @param value The text representation of this point
+     * @param haveM Hint whether we have a measure. This is used by other
+     *            geometries parsing inner points where we only get "1 2 3 4"
+     *            like strings without the "POINT(" and ")" stuff. If there
+     *            acutally is a POINTM prefix, this overrides the given value.
+     *            However, POINT does not set it to false, as they can be
+     *            contained in measured collections, as in
+     *            "GEOMETRYCOLLECTIONM(POINT(0 0 0))".
+     */
+    protected Point(String value, boolean haveM) throws SQLException {
         this();
         value = value.trim();
-        if (value.indexOf("POINT") == 0) {
+        if (value.indexOf("POINTM") == 0) {
+            haveM = true;
+            value = value.substring(6).trim();
+        } else if (value.indexOf("POINT") == 0) {
             value = value.substring(5).trim();
         }
         PGtokenizer t = new PGtokenizer(PGtokenizer.removePara(value), ' ');
         try {
-            if (t.getSize() == 3) {
-                x = Double.valueOf(t.getToken(0)).doubleValue();
-                y = Double.valueOf(t.getToken(1)).doubleValue();
+            x = Double.valueOf(t.getToken(0)).doubleValue();
+            y = Double.valueOf(t.getToken(1)).doubleValue();
+            haveM |= t.getSize() == 4;
+            if ((t.getSize() == 3 && !haveM) || (t.getSize() == 4)) {
                 z = Double.valueOf(t.getToken(2)).doubleValue();
                 dimension = 3;
             } else {
-                x = Double.valueOf(t.getToken(0)).doubleValue();
-                y = Double.valueOf(t.getToken(1)).doubleValue();
-                z = 0.0;
                 dimension = 2;
+            }
+            if (haveM) {
+                m = Double.valueOf(t.getToken(dimension)).doubleValue();
             }
         } catch (NumberFormatException e) {
             throw new SQLException("postgis.Point" + e.toString());
         }
+        haveMeasure = haveM;
     }
 
     public void innerWKT(StringBuffer sb) {
