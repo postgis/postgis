@@ -53,15 +53,15 @@ if [ $? -gt 0 ]; then
 fi
 cd "$owd"
 
-# generating parser
-echo "Generating parser"
-owd="$PWD"
-cd "$outdir"/lwgeom
-make lex.yy.c
-if [ $? -gt 0 ]; then
-	exit 1
-fi
-cd "$owd"
+## generating parser
+#echo "Generating parser"
+#owd="$PWD"
+#cd "$outdir"/lwgeom
+#make lex.yy.c
+#if [ $? -gt 0 ]; then
+#	exit 1
+#fi
+#cd "$owd"
 
 echo "Generating tar file"
 tar czf "$package" "$outdir"
