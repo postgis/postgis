@@ -25,6 +25,7 @@
 #include "wktparse.h"
 
 Datum LWGEOM_getSRID(PG_FUNCTION_ARGS);
+Datum LWGEOM_getTYPE(PG_FUNCTION_ARGS);
 Datum LWGEOM_setSRID(PG_FUNCTION_ARGS);
 
 
@@ -100,4 +101,42 @@ Datum LWGEOM_setSRID(PG_FUNCTION_ARGS)
 		memcpy(loc_new, loc_old, len_left);
 	    PG_RETURN_POINTER(result);
 	}
+}
+
+//returns a string representation of this geometry's type
+PG_FUNCTION_INFO_V1(LWGEOM_getTYPE);
+Datum LWGEOM_getTYPE(PG_FUNCTION_ARGS)
+{
+	char *lwgeom = (char *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char *text_ob = palloc(20+4);
+	char *result = text_ob+4;
+	int32 size;
+	unsigned char type;
+
+	type = lwgeom_getType(*(lwgeom+4));
+
+	memset(result, 0, 20);
+
+	if (type == POINTTYPE)
+		strcpy(result,"POINT");
+	else if (type == MULTIPOINTTYPE)
+		strcpy(result,"MULTIPOINT");
+	else if (type == LINETYPE)
+		strcpy(result,"LINESTRING");
+	else if (type == MULTILINETYPE)
+		strcpy(result,"MULTILINESTRING");
+	else if (type == POLYGONTYPE)
+		strcpy(result,"POLYGON");
+	else if (type == MULTIPOLYGONTYPE)
+		strcpy(result,"MULTIPOLYGON");
+	else if (type == COLLECTIONTYPE)
+		strcpy(result,"GEOMETRYCOLLECTION");
+	else
+		strcpy(result,"UNKNOWN");
+
+	size = strlen(result) +4 ;
+
+	memcpy(text_ob, &size,4); // size of string
+
+	PG_RETURN_POINTER(text_ob);
 }

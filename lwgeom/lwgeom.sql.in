@@ -330,8 +330,13 @@ CREATEFUNCTION getbbox(LWGEOM)
         AS '@MODULE_FILENAME@','LWGEOM_to_BOX2DFLOAT4'
         LANGUAGE 'C' WITH (isstrict,iscachable);
 
+CREATEFUNCTION geometrytype(LWGEOM)
+	RETURNS text
+	AS '@MODULE_FILENAME@', 'LWGEOM_getTYPE'
+	LANGUAGE 'C' WITH (isstrict);
 
-commit;
+
+COMMIT;
 
 begin;
 -- extra conversions (might not work if there's no postgis install)
