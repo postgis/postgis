@@ -15,7 +15,7 @@
 
 
 #include "lwgeom.h"
-
+#include "stringBuffer.h"
 
 
 #define DEBUG
@@ -50,6 +50,15 @@ extern char *serialized_multi_to_wkb(char *serialized_form,char desiredWKBEndian
 extern unsigned char	parse_hex(char *str);
 extern void deparse_hex(unsigned char str, unsigned char *result);
 
+extern char *renderPOINTARRAY(POINTARRAY *array, int *slen,char *header);
+extern char *renderLWLINE(LWLINE *line, bool wantHeader, int *slen);
+extern char *renderLWPOINT(LWPOINT *pt, bool wantHeader, int *slen);
+extern char *renderLWPOLY(LWPOLY  *poly, bool wantHeader, int *slen);
+extern char *renderMULTI(LWGEOM_INSPECTED *inspected, int *slen);
+extern char *renderMULTIPOINT(LWGEOM_INSPECTED *inspected, int *slen);
+extern char *renderMULTILINE(LWGEOM_INSPECTED *inspected, int *slen);
+extern char *renderMULTIPOLY(LWGEOM_INSPECTED *inspected, int *slen);
+extern char *renderGC(LWGEOM_INSPECTED *inspected, int *slen);
 
 // 3d or 4d.  There is NOT a (x,y,m) point type!!!
 #define WKB3DOFFSET 0x80000000
@@ -61,6 +70,8 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS);
 
 Datum LWGEOM_in(PG_FUNCTION_ARGS);
 Datum LWGEOM_out(PG_FUNCTION_ARGS);
+
+Datum LWGEOM_asText(PG_FUNCTION_ARGS);
 
 
 // WKB structure  -- exactly the same as TEXT
@@ -1101,3 +1112,421 @@ unsigned char	parse_hex(char *str)
 	return (unsigned char) ((result_high<<4) + result_low);
 }
 
+
+// takes a point list and makes a '(1 2,3 4)'-like string
+// handles 2d, 3d, and 4d entities
+//
+// zero-length list looks like '()'
+//
+// final length of the string (excluding null-termination)
+// is returned in 'slen' for easy manipulation (strlen(result) == *slen)
+//
+// '(1 2,3 4)'         -- 2d example
+// '(1 2 3,4 5 6)'     -- 3d example
+// '(1 2 3 4,5 6 7 8)' -- 4d example
+//
+// header is something you put at the beginning of the result
+// ie renderPOINTARRAY(<array>, <len return>, "LINESTRING")
+// --> 'LINESTRING(1 2 3,4 5 6)'
+// if you dont want a header, then send in null or an empty string
+char *renderPOINTARRAY(POINTARRAY *array, int *slen, char *header)
+{
+	STRBUFF *buff ;
+	char	aPointStr[400]; // big enough for a 4d point in all representations!
+	int		t;
+	POINT2D pt2d;
+	POINT3D pt3d;
+	POINT4D pt4d;
+	char	*result;
+	int     len;
+	int     head_length=0;
+
+	if (header != NULL)
+	{
+		head_length = strlen(header);
+					// guess size a 10 chars/ordinate
+		buff = new_strBUFF(array->ndims * array->npoints * 10 +  head_length);
+		catenate(buff, header, head_length);
+	}
+	else  // no header
+	{
+					// guess size a 10 chars/ordinate
+		buff = new_strBUFF(array->ndims * array->npoints * 10);
+	}
+
+	catenate(buff,"(",1);
+
+			//optimize loop for speed
+		if (array->ndims == 4)
+		{
+			for (t=0;t<array->npoints;t++)
+			{
+				 getPoint4d_p(array, t,(char *) &pt4d);
+				 len = sprintf(aPointStr,"%.15g %.15g %.15g %.15g",pt4d.x,pt4d.y,pt4d.z,pt4d.m);
+				 catenate(buff,aPointStr,len);
+				 if (t!= (array->npoints-1)) // not the last one in the list
+				 	catenate(buff,",",1);
+			}
+		}
+		if (array->ndims == 3)
+		{
+			for (t=0;t<array->npoints;t++)
+			{
+				 getPoint3d_p(array, t,(char *) &pt3d);
+				 len = sprintf(aPointStr,"%.15g %.15g %.15g",pt3d.x,pt3d.y,pt3d.z);
+				 catenate(buff,aPointStr,len);
+				 if (t!= (array->npoints-1)) // not the last one in the list
+					catenate(buff,",",1);
+			}
+		}
+		if (array->ndims == 2)
+		{
+			for (t=0;t<array->npoints;t++)
+			{
+				 getPoint2d_p(array, t,(char *) &pt2d);
+				 len = sprintf(aPointStr,"%.15g %.15g",pt2d.x,pt2d.y);
+				 catenate(buff,aPointStr,len);
+				 if (t!= (array->npoints-1)) // not the last one in the list
+					catenate(buff,",",1);
+			}
+		}
+
+
+	catenate(buff,")",1);
+	*slen =  buff->length;
+	result = to_CString(buff);
+	delete_StrBUFF(buff);
+	return result;
+}
+
+
+// makes a 'LINESTRING(1 2, 3 4)' (wantHeader = true)
+// makes a '(1 2, 3 4)'           (wantHeader = false)
+// final length of the string (excluding null-termination)
+// is returned in 'slen' for easy manipulation (strlen(result) == *slen)
+char *renderLWLINE(LWLINE *line, bool wantHeader, int *slen)
+{
+	if (wantHeader)
+	{
+		return renderPOINTARRAY( line->points, slen, "LINESTRING");
+	}
+	else
+	{
+		return renderPOINTARRAY( line->points, slen, NULL);
+	}
+}
+
+// makes a 'POINT(1 2)' (wantHeader = true)
+// makes a '(1 2)'      (wantHeader = false)
+// final length of the string (excluding null-termination)
+// is returned in 'slen' for easy manipulation (strlen(result) == *slen)
+char *renderLWPOINT(LWPOINT *pt, bool wantHeader, int *slen)
+{
+	if (wantHeader)
+	{
+		return renderPOINTARRAY( pt->point, slen, "POINT");
+	}
+	else
+	{
+		return renderPOINTARRAY( pt->point, slen, NULL);
+	}
+}
+
+// makes a 'POLYGON((<ring 0>),(<ring 1>))' (wantHeader = true)
+// makes a '((<ring 0>),(<ring 1>))'      (wantHeader = false)
+// example::
+//  'POLYGON((0 0.1,0.2 10.3,10.4 10.5,10.7 0.6,0 0.1))'     (1 ring)
+//  'POLYGON((0 0.1,0.2 10.3,10.4 10.5,10.7 0.6,0 0.1),(2 2,2 3,3 3,3 2,2 2))'   (2 rings)
+// final length of the string (excluding null-termination)
+// is returned in 'slen' for easy manipulation (strlen(result) == *slen)
+char *renderLWPOLY(LWPOLY *poly, bool wantHeader, int *slen)
+{
+	STRBUFF *result_buff;
+	char    *result;
+	int total_points =0;
+	int t;
+
+
+
+	for (t=0;t<poly->nrings;t++)
+	{
+		total_points += poly->rings[t]->npoints;
+	}
+		// guess at size
+	result_buff = new_strBUFF(poly->ndims * total_points * 10 );
+
+
+	if (wantHeader)
+		catenate(result_buff, "POLYGON(",8);
+	else
+		catenate(result_buff, "(",1);
+
+	for (t=0;t<poly->nrings;t++)
+	{
+		char *aRingStr = renderPOINTARRAY( poly->rings[t], slen, NULL);
+		catenate(result_buff,aRingStr,*slen);
+		pfree(aRingStr);
+		if (t!= (poly->nrings-1) )	// not the last one
+			catenate(result_buff,",",1);
+	}
+
+	catenate(result_buff, ")",1);
+
+	*slen =  result_buff->length;
+	result = to_CString(result_buff);
+	delete_StrBUFF(result_buff);
+	return result;
+}
+
+// NOTE:  (!! LOOK !!)
+//  'MULTIPOINT(0 0,1 1,2 2)' --NOT--- 'MULTIPOINT((0 0),(1 1),(2 2))'
+char *renderMULTIPOINT(LWGEOM_INSPECTED *inspected, int *slen)
+{
+		STRBUFF *buff ;
+		char	aPointStr[400]; // big enough for a 4d point in all representations!
+		int		t;
+		POINT2D pt2d;
+		POINT3D pt3d;
+		POINT4D pt4d;
+		char	*result;
+		int     len;
+
+
+						// guess size a 10 chars/ordinate
+			buff = new_strBUFF(4 * inspected->ngeometries * 10);
+
+
+		catenate(buff,"MULTIPOINT(",11);
+
+		for (t=0;t<inspected->ngeometries;t++)
+		{
+			LWPOINT *pt = lwgeom_getpoint_inspected(inspected, t);
+			if (pt->ndims == 4)
+			{
+				 getPoint4d_p(pt->point,0,(char *) &pt4d);
+				 len = sprintf(aPointStr,"%.15g %.15g %.15g %.15g",pt4d.x,pt4d.y,pt4d.z,pt4d.m);
+				 catenate(buff,aPointStr,len);
+				 if (t!= (inspected->ngeometries-1)) // not the last one in the list
+					 	catenate(buff,",",1);
+			}
+			if (pt->ndims == 3)
+			{
+				 getPoint3d_p(pt->point,0,(char *) &pt3d);
+				 len = sprintf(aPointStr,"%.15g %.15g %.15g",pt3d.x,pt3d.y,pt3d.z);
+				 catenate(buff,aPointStr,len);
+				 if (t!= (inspected->ngeometries-1)) // not the last one in the list
+				 catenate(buff,",",1);
+			}
+			if (pt->ndims == 2)
+			{
+				 getPoint2d_p(pt->point,0,(char *) &pt2d);
+				 len = sprintf(aPointStr,"%.15g %.15g",pt2d.x,pt2d.y);
+				 catenate(buff,aPointStr,len);
+				 if (t!= (inspected->ngeometries-1)) // not the last one in the list
+					 catenate(buff,",",1);
+			}
+			pfree_point(pt);
+		}
+
+		catenate(buff,")",1);
+		*slen =  buff->length;
+		result = to_CString(buff);
+		delete_StrBUFF(buff);
+	return result;
+}
+
+char *renderMULTILINE(LWGEOM_INSPECTED *inspected, int *slen)
+{
+			STRBUFF *buff ;
+			int		t;
+			char	*result;
+			int     len;
+
+							// guess size a 10 chars/ordinate and 10 points/line -- total guess
+			buff = new_strBUFF(4* inspected->ngeometries * 10 * 10);
+
+
+			catenate(buff,"MULTILINESTRING(",16);
+
+			for (t=0;t<inspected->ngeometries;t++)
+			{
+				LWLINE *line = lwgeom_getline_inspected(inspected, t);
+				char	*single_line = renderLWLINE(line,false, &len);
+				catenate(buff, single_line, len);
+				pfree(single_line);
+				pfree_line(line);
+				if (t != (inspected->ngeometries-1) )
+					catenate(buff,",",1);
+			}
+
+			catenate(buff,")",1);
+			*slen =  buff->length;
+			result = to_CString(buff);
+			delete_StrBUFF(buff);
+
+			return result;
+}
+
+char *renderMULTIPOLY(LWGEOM_INSPECTED *inspected, int *slen)
+{
+			STRBUFF *buff ;
+			int		t;
+			char	*result;
+			int     len;
+
+
+
+							// guess size a 10 chars/ordinate and 20 points/polygon -- total guess
+			buff = new_strBUFF(4 * inspected->ngeometries * 10 * 20);
+
+
+			catenate(buff,"MULTIPOLYGON(",13);
+
+			for (t=0;t<inspected->ngeometries;t++)
+			{
+				LWPOLY  *poly = lwgeom_getpoly_inspected(inspected, t);
+				char	*single_poly = renderLWPOLY(poly,false, &len);
+				catenate(buff, single_poly, len);
+				pfree(single_poly);
+				pfree_polygon(poly);
+				if (t != (inspected->ngeometries-1) )
+					catenate(buff,",",1);
+			}
+
+			catenate(buff,")",1);
+			*slen =  buff->length;
+			result = to_CString(buff);
+			delete_StrBUFF(buff);
+
+			return result;
+}
+
+
+char *renderGC(LWGEOM_INSPECTED *inspected, int *slen)
+{
+			STRBUFF *buff ;
+			int		t;
+			char	*result;
+			int     len;
+							// guess size a 10 chars/ordinate and 20 points/object -- total guess
+			buff = new_strBUFF(4 * inspected->ngeometries * 10 * 20);
+
+
+			catenate(buff,"GEOMETRYCOLLECTION(",19);
+
+			for (t=0;t<inspected->ngeometries;t++)
+			{
+				char	*single_obj = lwgeom_getsubgeometry_inspected(inspected,t);
+				LWGEOM_INSPECTED *inspected_sub = lwgeom_inspect(single_obj);
+				char    *single_obj_str = renderMULTI(inspected_sub, &len);
+				pfree_inspected(inspected_sub);
+
+				catenate(buff, single_obj_str, len);
+				pfree(single_obj_str);
+
+				if (t != (inspected->ngeometries-1) )
+					catenate(buff,",",1);
+			}
+
+			catenate(buff,")",1);
+			*slen =  buff->length;
+			result = to_CString(buff);
+			delete_StrBUFF(buff);
+
+			return result;
+}
+
+// makes things like:
+// 'MULTILINESTRING((1 2,3 4,5 6),(7 8,9 10))'
+// 'MULTIPOLYGON(((0 0.1,0.2 10.3,10.4 10.5,10.7 0.6,0 0.1)),((0 0.1,0.2 10.3,10.4 10.5,10.7 0.6,0 0.1)'
+// 'GEOMETRYCOLLECTION(LINESTRING(5 6 -55,7 8 -22),LINESTRING(1 2 -1,3 4 -2))'
+//
+// NOTE:  (!! LOOK !!)
+//  'MULTIPOINT(0 0,1 1,2 2)' --NOT--- 'MULTIPOINT((0 0),(1 1),(2 2))'
+//
+// handles MULTI* inside GCs
+//
+// final length of the string (excluding null-termination)
+// is returned in 'slen' for easy manipulation (strlen(result) == *slen)
+char *renderMULTI(LWGEOM_INSPECTED *inspected, int *slen)
+{
+	LWPOINT *pt;
+	LWLINE  *line;
+	LWPOLY *poly;
+	char	*result;
+
+
+	switch(lwgeom_getType(inspected->type))
+	{
+				// shouldnt call this with a singular type, but we handle it here anyways
+		case POINTTYPE:
+					pt = lwgeom_getpoint_inspected(inspected,0);
+					result =  renderLWPOINT(pt, true,  slen);
+					pfree_point(pt);
+					return result;
+					break; //redundant
+		case LINETYPE:
+					line = lwgeom_getline_inspected(inspected,0);
+					result =   renderLWLINE(line, true,  slen);
+					pfree_line(line);
+					return result;
+					break; //redundant
+		case POLYGONTYPE:
+					poly = lwgeom_getpoly_inspected(inspected,0);
+					result =   renderLWPOLY(poly, true,  slen);
+					pfree_polygon(poly);
+					return result;
+					break; //redundant
+		case MULTIPOINTTYPE:
+					//this is the special case 'MULTIPOINT(0 0,1 1,2 2,3 3)'
+					return renderMULTIPOINT(inspected, slen);  // special case!!
+					break; //redundant
+		case MULTILINETYPE:
+					return renderMULTILINE(inspected, slen);
+					break; //redundant
+		case MULTIPOLYGONTYPE:
+					return renderMULTIPOLY(inspected, slen);
+					break; //redundant
+		case COLLECTIONTYPE:
+			    	return renderGC(inspected, slen);  // special case -- could recurse
+					break; //redundant
+	}
+	elog(ERROR,"renderMULTI:: couldnt determine geometry type");
+	return NULL;
+}
+
+
+
+
+PG_FUNCTION_INFO_V1(LWGEOM_asText);
+Datum LWGEOM_asText(PG_FUNCTION_ARGS)
+{
+		char		        *lwgeom = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+        char                *wkt;
+        char                *result;
+        int                 len,len_total;
+        int 				SRID;
+		LWGEOM_INSPECTED   *inspected = lwgeom_inspect(lwgeom+4);
+		char				SRIDtext[100];
+		int					len_SRIDtext;
+
+        wkt = renderMULTI(inspected, &len);
+  elog(NOTICE," wkt = %s", wkt);
+
+		SRID = inspected->SRID;
+
+		len_SRIDtext = sprintf(SRIDtext,"SRID=%i;",SRID);
+ elog(NOTICE," srid = %i", SRID);
+        len_total = len + len_SRIDtext+ 1 ; // 1= null term
+
+        result = palloc(len_total);//extra space for SRID
+
+        memcpy(result, SRIDtext, len_SRIDtext);
+        memcpy(result+len_SRIDtext, wkt, len);
+		result[len_total-1] = 0;//ensure null-terminated
+
+        pfree(wkt);
+
+        PG_RETURN_CSTRING(result);
+
+}

@@ -1165,6 +1165,7 @@ LWGEOM_INSPECTED *lwgeom_inspect(char *serialized_form)
 
 	result->serialized_form = serialized_form;
 	result->type = serialized_form[0];
+    result->SRID = -1; // assume
 
 	type = lwgeom_getType(serialized_form[0]);
 

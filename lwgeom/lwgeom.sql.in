@@ -28,6 +28,12 @@ CREATE FUNCTION wkb(lwgeom)
         RETURNS wkb
         AS '/net/lion/raid/share/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1','WKBFromLWGEOM'
         LANGUAGE 'C' WITH (isstrict,iscachable);
+        
+CREATE FUNCTION cstring(lwgeom)
+	RETURNS CSTRING
+	AS '/net/lion/raid/share/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1',
+	'LWGEOM_asText'
+        LANGUAGE 'C' WITH (isstrict,iscachable);
 
 COMMIT;
 

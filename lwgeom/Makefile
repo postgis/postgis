@@ -134,7 +134,7 @@ ifeq ($(USE_GEOS),1)
 	GEOS_WRAPPER=postgis_geos_wrapper.o
 endif
 
-OBJS=lwgeom_api.o lwgeom_functions_analytic.o lwgeom_geos.o lwgeom_inout.o lwgeom_estimate.o lwgeom_functions_basic.o lwgeom_gist.o lwgeom_transform.o
+OBJS=lwgeom_api.o lwgeom_functions_analytic.o lwgeom_geos.o lwgeom_inout.o lwgeom_estimate.o lwgeom_functions_basic.o lwgeom_gist.o lwgeom_transform.o stringBuffer.o
 
 
 
