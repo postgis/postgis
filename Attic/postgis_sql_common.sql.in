@@ -12,6 +12,9 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.18  2003/10/28 11:18:27  strk
+-- Added Algorithms section and simplify() enabler code
+--
 -- Revision 1.17  2003/10/23 08:06:54  strk
 -- Added 'unite' aggregate.
 --
@@ -1301,3 +1304,12 @@ CREATE FUNCTION isvalid(geometry)
    AS '@MODULE_FILENAME@'
    LANGUAGE 'C' WITH (isstrict);
    
+
+--
+-- Algorithms
+--
+
+CREATE FUNCTION simplify(geometry, float8)
+   RETURNS geometry
+   AS '@MODULE_FILENAME@'
+   LANGUAGE 'C' WITH (isstrict);
