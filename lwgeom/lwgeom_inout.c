@@ -521,7 +521,7 @@ Datum LWGEOM_recv(PG_FUNCTION_ARGS)
 #endif
 
 #ifdef PGIS_DEBUG
-	elog(NOTICE, "LWGEOM_from_bytea returned %s", unparse_WKB(SERIALIZED_FORM(result),pg_alloc,pg_free,-1));
+	elog(NOTICE, "LWGEOM_from_bytea returned %s", unparse_WKB(SERIALIZED_FORM(result),pg_alloc,pg_free,-1,NULL,1));
 #endif
 
 
