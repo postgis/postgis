@@ -30,9 +30,11 @@ extern  BOX3D *lw_geom_getBB_simple(char *serialized_form);
 #ifdef DEBUG_EXPLODED
 void checkexplodedsize(char *srl, LWGEOM_EXPLODED *exploded, int alloced, char wantbbox);
 #endif
-static uint32 lwline_findlength(char *serialized_line);
-static uint32 lwpoint_findlength(char *serialized_point);
-static uint32 lwpoly_findlength(char *serialized_line);
+static uint32 lwgeom_size_line(char *serialized_line);
+static uint32 lwgeom_size_point(char *serialized_point);
+static uint32 lwgeom_size_poly(char *serialized_line);
+static int lwgeom_size_inspected(LWGEOM_INSPECTED *inspected, int geom_number);
+
 
 
 //*********************************************************************
@@ -1116,7 +1118,7 @@ BOX3D *lwline_findbbox(LWLINE *line)
 }
 
 //find length of this serialized line
-uint32 lwline_findlength(char *serialized_line)
+uint32 lwgeom_size_line(char *serialized_line)
 {
 	int type = (unsigned char) serialized_line[0];
 	uint32 result =1;  //type
@@ -1124,7 +1126,7 @@ uint32 lwline_findlength(char *serialized_line)
 	uint32 npoints;
 
 	if ( lwgeom_getType(type) != LINETYPE)
-		elog(ERROR,"lwline_findlength::attempt to find the length of a non-line");
+		elog(ERROR,"lwgeom_size_line::attempt to find the length of a non-line");
 
 
 	loc = serialized_line+1;
@@ -1158,7 +1160,7 @@ uint32 lwline_findlength(char *serialized_line)
 		{
 			return result+ npoints * 32;
 		}
-		elog(ERROR,"lwline_findlength :: invalid ndims");
+		elog(ERROR,"lwgeom_size_line :: invalid ndims");
 		return 0; //never get here
 }
 
@@ -1356,7 +1358,7 @@ POINT3D lwpoint_getPoint3d(LWPOINT *point)
 
 
 //find length of this serialized point
-uint32 lwpoint_findlength(char *serialized_point)
+uint32 lwgeom_size_point(char *serialized_point)
 {
 	uint  result = 1;
 	unsigned char type;
@@ -1367,7 +1369,7 @@ uint32 lwpoint_findlength(char *serialized_point)
 	if ( lwgeom_getType(type) != POINTTYPE) return 0;
 
 #ifdef DEBUG
-elog(NOTICE, "lwpoint_findlength called (%d)", result);
+elog(NOTICE, "lwgeom_size_point called (%d)", result);
 #endif
 
 	loc = serialized_point+1;
@@ -1377,14 +1379,14 @@ elog(NOTICE, "lwpoint_findlength called (%d)", result);
 		loc += sizeof(BOX2DFLOAT4);
 		result +=sizeof(BOX2DFLOAT4);
 #ifdef DEBUG
-elog(NOTICE, "lwpoint_findlength: has bbox (%d)", result);
+elog(NOTICE, "lwgeom_size_point: has bbox (%d)", result);
 #endif
 	}
 
 	if ( lwgeom_hasSRID(type))
 	{
 #ifdef DEBUG
-elog(NOTICE, "lwpoint_findlength: has srid (%d)", result);
+elog(NOTICE, "lwgeom_size_point: has srid (%d)", result);
 #endif
 		loc +=4; // type + SRID
 		result +=4;
@@ -1393,26 +1395,26 @@ elog(NOTICE, "lwpoint_findlength: has srid (%d)", result);
 	if (lwgeom_ndims(type) == 3)
 	{
 #ifdef DEBUG
-elog(NOTICE, "lwpoint_findlength: returning (%d)", result+24);
+elog(NOTICE, "lwgeom_size_point: returning (%d)", result+24);
 #endif
 		return result + 24;
 	}
 	else if (lwgeom_ndims(type) == 2)
 	{
 #ifdef DEBUG
-elog(NOTICE, "lwpoint_findlength: returning (%d)", result+16);
+elog(NOTICE, "lwgeom_size_point: returning (%d)", result+16);
 #endif
 		return result + 16;
 	}
 	else if (lwgeom_ndims(type) == 4)
 	{
 #ifdef DEBUG
-elog(NOTICE, "lwpoint_findlength: returning (%d)", result+32);
+elog(NOTICE, "lwgeom_size_point: returning (%d)", result+32);
 #endif
 		return result + 32;
 	}
 
-    	elog(ERROR,"lwpoint_findlength :: invalid ndims = %i",
+    	elog(ERROR,"lwgeom_size_point :: invalid ndims = %i",
 		lwgeom_ndims(type));
 	return 0; //never get here
 }
@@ -1701,7 +1703,7 @@ BOX3D *lwpoly_findbbox(LWPOLY *poly)
 }
 
 //find length of this serialized polygon
-uint32 lwpoly_findlength(char *serialized_poly)
+uint32 lwgeom_size_poly(char *serialized_poly)
 {
 	uint32 result = 1; // char type
 	uint32 nrings;
@@ -1727,7 +1729,7 @@ uint32 lwpoly_findlength(char *serialized_poly)
 	if (lwgeom_hasBBOX(type))
 	{
 #ifdef DEBUG
-		elog(NOTICE, "lwpoly_findlength: has bbox");
+		elog(NOTICE, "lwgeom_size_poly: has bbox");
 #endif
 		loc += sizeof(BOX2DFLOAT4);
 		result +=sizeof(BOX2DFLOAT4);
@@ -1737,7 +1739,7 @@ uint32 lwpoly_findlength(char *serialized_poly)
 	if ( lwgeom_hasSRID(type))
 	{
 #ifdef DEBUG
-		elog(NOTICE, "lwpoly_findlength: has srid");
+		elog(NOTICE, "lwgeom_size_poly: has srid");
 #endif
 		loc +=4; // type + SRID
 		result += 4;
@@ -1850,7 +1852,7 @@ LWGEOM_INSPECTED *lwgeom_inspect(char *serialized_form)
 #endif
 	for (t=1;t<result->ngeometries; t++)
 	{
-		int sub_length = lwgeom_seralizedformlength(sub_geoms[t-1], -1);//-1 = entire object
+		int sub_length = lwgeom_size_subgeom(sub_geoms[t-1], -1);//-1 = entire object
 		sub_geoms[t] = sub_geoms[t-1] + sub_length;
 #ifdef DEBUG
 		elog(NOTICE, "subgeom[%d] @ %p (sub_length: %d)",
@@ -2119,7 +2121,7 @@ extern char *lwgeom_construct(int SRID,int finalType,int ndims, int nsubgeometri
 
 	for (t=0;t<nsubgeometries;t++)
 	{
-		lengths[t] = lwgeom_seralizedformlength(serialized_subs[t],-1);
+		lengths[t] = lwgeom_size_subgeom(serialized_subs[t],-1);
 		total_length += lengths[t];
 		this_type = lwgeom_getType((unsigned char) (serialized_subs[t][0]));
 		if (type == -1)
@@ -2266,7 +2268,7 @@ lwgeom_constructempty_buf(int SRID, int ndims, char *buf, int *retsize)
 //         --> size of the point
 
 // take a geometry, and find its length
-int lwgeom_seralizedformlength_simple(char *serialized_form)
+int lwgeom_size(char *serialized_form)
 {
 	unsigned char type = lwgeom_getType((unsigned char) serialized_form[0]);
 	int t;
@@ -2276,34 +2278,34 @@ int lwgeom_seralizedformlength_simple(char *serialized_form)
 	int result = 1; //"type"
 
 #ifdef DEBUG
-	elog(NOTICE, "lwgeom_seralizedformlength_simple called");
+	elog(NOTICE, "lwgeom_size called");
 #endif
 
 	if (type == POINTTYPE)
 	{
 #ifdef DEBUG
-		elog(NOTICE, "lwgeom_seralizedformlength_simple: is a point");
+		elog(NOTICE, "lwgeom_size: is a point");
 #endif
-		return lwpoint_findlength(serialized_form);
+		return lwgeom_size_point(serialized_form);
 	}
 	else if (type == LINETYPE)
 	{
 #ifdef DEBUG
-		elog(NOTICE, "lwgeom_seralizedformlength_simple: is a line");
+		elog(NOTICE, "lwgeom_size: is a line");
 #endif
-		return lwline_findlength(serialized_form);
+		return lwgeom_size_line(serialized_form);
 	}
 	else if (type == POLYGONTYPE)
 	{
 #ifdef DEBUG
-		elog(NOTICE, "lwgeom_seralizedformlength_simple: is a polygon");
+		elog(NOTICE, "lwgeom_size: is a polygon");
 #endif
-		return lwpoly_findlength(serialized_form);
+		return lwgeom_size_poly(serialized_form);
 	}
 
 	if ( type == 0 )
 	{
-		elog(ERROR, "lwgeom_seralizedformlength_simple called with unknown-typed serialized geometry");
+		elog(ERROR, "lwgeom_size called with unknown-typed serialized geometry");
 		return 0;
 	}
 
@@ -2311,7 +2313,7 @@ int lwgeom_seralizedformlength_simple(char *serialized_form)
 	//NOTE: for a geometry collection of GC of GC of GC we will be recursing...
 
 #ifdef DEBUG
-	elog(NOTICE, "lwgeom_seralizedformlength_simple called on a geoemtry with type %d", type);
+	elog(NOTICE, "lwgeom_size called on a geoemtry with type %d", type);
 #endif
 
 	loc = serialized_form+1;
@@ -2319,7 +2321,7 @@ int lwgeom_seralizedformlength_simple(char *serialized_form)
 	if (lwgeom_hasBBOX((unsigned char) serialized_form[0]))
 	{
 #ifdef DEBUG
-		elog(NOTICE, "lwgeom_seralizedformlength_simple: has bbox");
+		elog(NOTICE, "lwgeom_size: has bbox");
 #endif
 
 		loc += sizeof(BOX2DFLOAT4);
@@ -2329,7 +2331,7 @@ int lwgeom_seralizedformlength_simple(char *serialized_form)
 	if (lwgeom_hasSRID( (unsigned char) serialized_form[0]) )
 	{
 #ifdef DEBUG
-		elog(NOTICE, "lwgeom_seralizedformlength_simple: has srid");
+		elog(NOTICE, "lwgeom_size: has srid");
 #endif
 		result +=4;
 		loc +=4;
@@ -2341,12 +2343,12 @@ int lwgeom_seralizedformlength_simple(char *serialized_form)
 	result += 4; // numgeoms
 
 #ifdef DEBUG
-	elog(NOTICE, "lwgeom_seralizedformlength_simple called on a geoemtry with %d elems (result so far: %d)", ngeoms, result);
+	elog(NOTICE, "lwgeom_size called on a geoemtry with %d elems (result so far: %d)", ngeoms, result);
 #endif
 
 	for (t=0;t<ngeoms;t++)
 	{
-		sub_size = lwgeom_seralizedformlength_simple(loc);
+		sub_size = lwgeom_size(loc);
 #ifdef DEBUG
 		elog(NOTICE, " subsize %d", sub_size);
 #endif
@@ -2355,25 +2357,25 @@ int lwgeom_seralizedformlength_simple(char *serialized_form)
 	}
 
 #ifdef DEBUG
-	elog(NOTICE, "lwgeom_seralizedformlength_simple returning %d", result);
+	elog(NOTICE, "lwgeom_size returning %d", result);
 #endif
 	return result;
 }
 
-int lwgeom_seralizedformlength(char *serialized_form, int geom_number)
+int lwgeom_size_subgeom(char *serialized_form, int geom_number)
 {
 	if (geom_number == -1)
 	{
-		return lwgeom_seralizedformlength_simple(serialized_form);
+		return lwgeom_size(serialized_form);
 	}
-	return lwgeom_seralizedformlength_simple( lwgeom_getsubgeometry(serialized_form,geom_number));
+	return lwgeom_size( lwgeom_getsubgeometry(serialized_form,geom_number));
 }
 
 
 
-int lwgeom_seralizedformlength_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
+int lwgeom_size_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
 {
-		return lwgeom_seralizedformlength( inspected->sub_geoms[geom_number], -1);
+	return lwgeom_size(inspected->sub_geoms[geom_number]);
 }
 
 
@@ -2467,7 +2469,7 @@ elog(NOTICE, "lw_geom_getBB_simple: bbox found");
 	for (t=0;t<ngeoms;t++)
 	{
 		b1 = lw_geom_getBB_simple(loc);
-		sub_size = lwgeom_seralizedformlength_simple(loc);
+		sub_size = lwgeom_size(loc);
 		loc += sub_size;
 		if (result != NULL)
 		{
@@ -2800,7 +2802,7 @@ LWGEOM_construct(char *ser, int SRID, int wantbbox)
 	BOX2DFLOAT4 box;
 	LWGEOM *result;
 
-	size = lwgeom_seralizedformlength_simple(ser);
+	size = lwgeom_size(ser);
 	eptr = ser+size; // end of subgeom
 
 	iptr = ser+1; // skip type
@@ -3355,8 +3357,7 @@ void
 checkexplodedsize(char *srl, LWGEOM_EXPLODED *exp, int alloced, char wantbbox)
 {
 	elog(NOTICE, "exploded len: serialized:%d computed:%d alloced:%d",
-		lwgeom_seralizedformlength_simple(srl),
-		lwexploded_findlength(exp, wantbbox),
+		lwgeom_size(srl), lwexploded_findlength(exp, wantbbox),
 		alloced);
 }
 #endif
@@ -3376,7 +3377,7 @@ lwexploded_findlength(LWGEOM_EXPLODED *exploded, int wantbbox)
 		ntypes++;
 		for (i=0; i<exploded->npoints; i++)
 		{
-			size += lwpoint_findlength(exploded->points[i]);
+			size += lwgeom_size_point(exploded->points[i]);
 			if ( lwgeom_hasBBOX(exploded->points[i][0]) )
 				size -= sizeof(BOX2DFLOAT4);
 			if ( lwgeom_hasSRID(exploded->points[i][0]) )
@@ -3394,7 +3395,7 @@ lwexploded_findlength(LWGEOM_EXPLODED *exploded, int wantbbox)
 		ntypes++;
 		for (i=0; i<exploded->nlines; i++)
 		{
-			size += lwline_findlength(exploded->lines[i]);
+			size += lwgeom_size_line(exploded->lines[i]);
 			if ( lwgeom_hasBBOX(exploded->lines[i][0]) )
 				size -= sizeof(BOX2DFLOAT4);
 			if ( lwgeom_hasSRID(exploded->lines[i][0]) )
@@ -3412,7 +3413,7 @@ lwexploded_findlength(LWGEOM_EXPLODED *exploded, int wantbbox)
 		ntypes++;
 		for (i=0; i<exploded->npolys; i++)
 		{
-			size += lwpoly_findlength(exploded->polys[i]);
+			size += lwgeom_size_poly(exploded->polys[i]);
 			if ( lwgeom_hasBBOX(exploded->polys[i][0]) )
 				size -= sizeof(BOX2DFLOAT4);
 			if ( lwgeom_hasSRID(exploded->polys[i][0]) )

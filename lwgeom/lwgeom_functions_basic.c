@@ -760,7 +760,7 @@ Datum LWGEOM_mem_size(PG_FUNCTION_ARGS)
 {
 	LWGEOM *geom = (LWGEOM *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	int32 size = geom->size;
-	int32 computed_size = lwgeom_seralizedformlength_simple(SERIALIZED_FORM(geom));
+	int32 computed_size = lwgeom_size(SERIALIZED_FORM(geom));
 	computed_size += 4; // varlena size
 	if ( size != computed_size )
 	{
@@ -2176,7 +2176,7 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 
 	// And create LWGEOM type (could provide a _buf version of
 	// the serializer instead)
-	size = lwgeom_seralizedformlength_simple(serialized_result);
+	size = lwgeom_size(serialized_result);
 	result = LWGEOM_construct(serialized_result,
 		lwgeom_getsrid(serialized_result), wantbbox);
 	pfree(serialized_result);
@@ -2411,7 +2411,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 
 	// Create LWGEOM type (could provide a _buf version of
 	// the serializer instead)
-	size = lwgeom_seralizedformlength_simple(serialized_result);
+	size = lwgeom_size(serialized_result);
 	result = LWGEOM_construct(serialized_result,
 		lwgeom_getsrid(serialized_result), wantbbox);
 	pfree(serialized_result);

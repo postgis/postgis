@@ -239,6 +239,14 @@ extern unsigned char lwgeom_makeType(int ndims, char hasSRID, int type);
 extern unsigned char lwgeom_makeType_full(int ndims, char hasSRID, int type, bool hasBBOX);
 
 /*
+ * This function computes the size in bytes
+ * of the serialized geometries.
+ */
+extern int lwgeom_size(char *serialized_form);
+extern int lwgeom_size(char *serialized_form);
+extern int lwgeom_size_subgeom(char *serialized_form, int geom_number);
+
+/*
  * Construct a full LWGEOM type (including size header)
  * from a serialized form.
  * The constructed LWGEOM object will be allocated using palloc
@@ -252,7 +260,6 @@ extern LWGEOM *LWGEOM_construct(char *serialized, int SRID, int wantbbox);
 // all the base types (point/line/polygon) will have a
 // basic constructor, basic de-serializer, basic serializer, and
 // bounding box finder.
-
 
 
 //--------------------------------------------------------
@@ -492,18 +499,6 @@ extern char *lwgeom_construct(int SRID,int finalType,int ndims, int nsubgeometri
 extern char *lwgeom_constructempty(int SRID,int ndims);
 extern void lwgeom_constructempty_buf(int SRID, int ndims, char *buf, int *size);
 int lwgeom_empty_length(int SRID);
-
-// helper function (not for general use)
-// find the size a geometry (or a sub-geometry)
-// 1st geometry has geom_number = 0
-//  use geom_number = -1 to find the actual type of the serialized form.
-//    ie lwgeom_gettype( <'MULTIPOINT(0 0, 1 1)'>, -1)
-//                 --> size of the multipoint
-//   ie lwgeom_gettype( <'MULTIPOINT(0 0, 1 1)'>, 0)
-//                 --> size of the point
-extern int lwgeom_seralizedformlength_simple(char *serialized_form);
-extern int lwgeom_seralizedformlength(char *serialized_form, int geom_number);
-extern int lwgeom_seralizedformlength_inspected(LWGEOM_INSPECTED *inspected, int geom_number);
 
 // get the SRID from the LWGEOM
 // none present => -1
