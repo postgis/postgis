@@ -1408,6 +1408,11 @@ CREATE FUNCTION distance_spheroid(geometry,geometry,spheroid)
 -- Generic operations
 --
 
+CREATE FUNCTION multi(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','fluffType'
+	LANGUAGE 'C' WITH (isstrict);
+	
 CREATE FUNCTION length3d(geometry)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@'
