@@ -1689,10 +1689,10 @@ if( geom.getType() = Geometry.POLYGON )
 				<varlistentry> 
 					<term>AddGeometryColumn(varchar, varchar, varchar, integer, varchar, integer)</term> 
 					<listitem> 
-						<para>Syntax: AddGeometryColumn(&lt;db_name&gt;,
+						<para>Syntax: AddGeometryColumn(&lt;schema_name&gt;,
 						  &lt;table_name&gt;, &lt;column_name&gt;, &lt;srid&gt;, &lt;type&gt;,
 						  &lt;dimension&gt;). Adds a geometry column to an existing table of attributes.
-						  The <varname>dbname</varname> is the name of the database instance.
+						  The <varname>schema_name</varname> is the name of the table schema (unused for pre-schema PostgreSQL installations).
 						  The <varname>srid</varname> must be an integer value reference to an
 						  entry in the SPATIAL_REF_SYS table. The <varname>type</varname> must
 						  be an uppercase string corresponding to the geometry type, eg, 'POLYGON'
@@ -1703,8 +1703,8 @@ if( geom.getType() = Geometry.POLYGON )
 				<varlistentry>
 					<term>DropGeometryColumn(varchar, varchar, varchar)</term>
 					<listitem>
-						<para>Syntax: DropGeometryColumn(&lt;db_name&gt;, &lt;table_name&gt;,
-						  &lt;column_name&gt;). Remove a geometry column from a spatial table.
+						<para>Syntax: DropGeometryColumn(&lt;schema_name&gt;, &lt;table_name&gt;,
+						  &lt;column_name&gt;). Remove a geometry column from a spatial table. Note that <var>schema_name</var> will need to match the f_schema_name field of the table's row in the geometry_columns table.
 						</para>
 					</listitem>
 				</varlistentry> 
