@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.46  2004/06/09 09:06:55  strk
+ * Added Romi's Win32 patches.
+ *
  * Revision 1.45  2004/06/08 15:18:12  strk
  * Deleted prototype for isspace() in postgis.h
  * and included <ctype.h> in postgis_inout.c,
@@ -103,7 +106,7 @@
  * it defines BYTE_ORDER and LITTLE_ENDIAN
  */
 
-#ifdef __CYGWIN__
+#if defined(__CYGWIN__) || defined(__MINGW32__)
 #include <sys/param.h>       // FOR ENDIAN DEFINES
 #endif
 
@@ -677,8 +680,10 @@ Datum fluffType(PG_FUNCTION_ARGS);
 
 // from contrib/cube/cube.c
 
+#if ! defined(__MINGW32__)
 #define max(a,b)		((a) >	(b) ? (a) : (b))
 #define min(a,b)		((a) <= (b) ? (a) : (b))
+#endif
 #define abs(a)			((a) <	(0) ? (-a) : (a))
 
 
