@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.15  2004/06/03 07:58:11  strk
+ * Infinite coordinate geoms omitted from index
+ *
  * Revision 1.14  2004/06/02 23:54:09  strk
  * Made equality checks the default in picksplit to catch also NaN results (INF geoms)
  *
@@ -139,6 +142,7 @@ Datum ggeometry_compress(PG_FUNCTION_ARGS)
 {
 	GISTENTRY *entry=(GISTENTRY*)PG_GETARG_POINTER(0);
 	GISTENTRY *retval;
+	double checkinf;
 
 	if ( entry->leafkey)
 	{
@@ -162,17 +166,23 @@ Datum ggeometry_compress(PG_FUNCTION_ARGS)
 				// dont bother adding this to the index
 				PG_RETURN_POINTER(entry);
 			}
-			else
-			{
-				r = convert_box3d_to_box(&in->bvol);
-				if ( in != (GEOMETRY*)DatumGetPointer(entry->key) )
-				{
-					pfree( in );
-				}
 
-				gistentryinit(*retval, PointerGetDatum(r), entry->rel, entry->page,
-					entry->offset, sizeof(BOX), FALSE);
+			checkinf = in->bvol.URT.x - in->bvol.URT.y -
+				in->bvol.LLB.x - in->bvol.LLB.y;
+			if ( isnan(checkinf) || checkinf == INFINITY ||
+				checkinf == -INFINITY )
+			{
+				//elog(NOTICE, "found infinite geometry");
+				PG_RETURN_POINTER(entry);
 			}
+
+			r = convert_box3d_to_box(&in->bvol);
+			if ( in != (GEOMETRY*)DatumGetPointer(entry->key) )
+			{
+				pfree( in );
+			}
+
+			gistentryinit(*retval, PointerGetDatum(r), entry->rel, entry->page, entry->offset, sizeof(BOX), FALSE);
 
 		}
 		else
@@ -197,7 +207,7 @@ Datum ggeometry_consistent(PG_FUNCTION_ARGS)
     BOX		thebox;
 	bool result;
 
-	/*
+   /*
     ** if entry is not leaf, use rtree_internal_consistent,
     ** else use rtree_leaf_consistent
     */
@@ -217,7 +227,7 @@ Datum ggeometry_consistent(PG_FUNCTION_ARGS)
 	fflush( stdout );
 #endif
 
-    if ( ! (DatumGetPointer(entry->key) != NULL && query) )
+	if ( ! (DatumGetPointer(entry->key) != NULL && query) )
 		PG_RETURN_BOOL(FALSE);
 
 	convert_box3d_to_box_p( &(query->bvol) , &thebox);
@@ -468,6 +478,18 @@ gbox_picksplit(PG_FUNCTION_ARGS)
 		if (pageunion.low.y > cur->low.y)
 			pageunion.low.y = cur->low.y;
 	}
+
+	if (
+		pageunion.low.y == -INFINITY ||
+		pageunion.low.y == -INFINITY ||
+		pageunion.high.y == -INFINITY ||
+		pageunion.high.y == INFINITY ||
+		pageunion.low.x == -INFINITY ||
+		pageunion.low.x == -INFINITY ||
+		pageunion.high.x == -INFINITY ||
+		pageunion.high.x == INFINITY 
+	) elog(NOTICE, "infinite pageunion");
+
 
 	nbytes = (maxoff + 2) * sizeof(OffsetNumber);
 	listL = (OffsetNumber *) palloc(nbytes);
