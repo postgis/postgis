@@ -23,7 +23,7 @@ CREATE TABLE geometry_columns (
 	attrelid oid,
 	varattnum int,
 	stats histogram2d,
-	CONSTRAINT gc_ok primary key ( 
+	CONSTRAINT geometry_columns_pk primary key ( 
 		f_table_catalog, 
 		f_table_schema, 
 		f_table_name, 
