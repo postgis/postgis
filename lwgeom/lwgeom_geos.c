@@ -2371,7 +2371,7 @@ Datum GEOS_polygonize_garray(PG_FUNCTION_ARGS)
 		}
 		else
 		{
-			if ( SRID != lwgeom_getSRID(geoms[i]) );
+			if ( SRID != lwgeom_getSRID(geoms[i]) )
 			{
 	elog(ERROR, "polygonize: operation on mixed SRID geometries");
 	PG_RETURN_NULL();
