@@ -7,19 +7,6 @@ PostGIS 1.0.0?
 	  for performance improvement
 	- new performance tips chapter in manual
 
-1.0.0RC2
-	- More correct STABLE, IMMUTABLE, STRICT uses in lwpostgis.sql
-	- GEOMETRYCOLLECTION(EMPTY) syntax support for backward compatibility
-	- faster and more robust loader (both i18n and not)
-	- faster binary outputs
-	- bug fix in pointarray box3d computation
-	- initial autoconf script
-	- bug fix in distance_spheroid definition
-	- stricter OGC WKB constructors
-	- stricter OGC WKT constructors
-	- bug fix in transform() missing to update bbox cache
-	- LWGEOM aware JDBC driver (jdbc2)
-
 PostGIS 1.0.0RC2
 2005/01/26
 	- More correct STABLE, IMMUTABLE, STRICT uses in lwpostgis.sql
