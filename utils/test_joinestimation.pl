@@ -4,8 +4,7 @@
 # 
 # TODO:
 #
-#	accept a finer boxesPerSide specification
-#	eg. 1-3 or 1-32/5
+# Apply oid filters on table2
 #
 
 use Pg;
@@ -16,7 +15,7 @@ sub usage
 {
 	local($me) = `basename $0`;
 	chop($me);
-	print STDERR "$me [-v] [-vacuum] <table1> <col1> <table2> <col2>\n";
+	print STDERR "$me [-v] [-vacuum] <table1> <table2> [<col1>] [<col2>]\n";
 }
 
 $TABLE1='';
@@ -257,6 +256,9 @@ sub get_num_rows
 
 # 
 # $Log$
+# Revision 1.2  2004/12/23 14:48:25  strk
+# Fixed help string, and added a TODO item
+#
 # Revision 1.1  2004/12/22 17:02:17  strk
 # initial revision
 #
