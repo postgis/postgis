@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.14  2004/06/02 23:54:09  strk
+ * Made equality checks the default in picksplit to catch also NaN results (INF geoms)
+ *
  * Revision 1.13  2004/06/02 23:29:08  strk
  * reverted Inf handling modification (conceptually bogus)
  *
@@ -547,23 +550,27 @@ gbox_picksplit(PG_FUNCTION_ARGS)
 			cur = arr[i-1].key;
 			if (cur->low.x - pageunion.low.x < pageunion.high.x - cur->high.x)
 				ADDLIST(listL, unionL, posL,arr[i-1].pos);
-			else if ( cur->low.x - pageunion.low.x == pageunion.high.x - cur->high.x ) {
+			else if ( cur->low.x - pageunion.low.x > pageunion.high.x - cur->high.x ) 
+				ADDLIST(listR, unionR, posR,arr[i-1].pos);
+			else
+			{
 				if ( posL>posR )
 					ADDLIST(listR, unionR, posR,arr[i-1].pos);
 				else
 					ADDLIST(listL, unionL, posL,arr[i-1].pos);
-			} else
-				ADDLIST(listR, unionR, posR,arr[i-1].pos);
+			}
 
 			if (cur->low.y - pageunion.low.y < pageunion.high.y - cur->high.y)
 				ADDLIST(listB, unionB, posB,arr[i-1].pos);
-			else if ( cur->low.y - pageunion.low.y == pageunion.high.y - cur->high.y ) {
+			else if ( cur->low.y - pageunion.low.y > pageunion.high.y - cur->high.y ) 
+				ADDLIST(listT, unionT, posT,arr[i-1].pos);
+			else
+			{
 				if ( posB>posT )
 					ADDLIST(listT, unionT, posT,arr[i-1].pos);
 				else
 					ADDLIST(listB, unionB, posB,arr[i-1].pos);
-			} else 
-				ADDLIST(listT, unionT, posT,arr[i-1].pos);
+			}
 		}
 		pfree(arr);
 	}
