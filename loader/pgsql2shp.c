@@ -240,7 +240,8 @@ main(int ARGC, char **ARGV)
 #if VERBOSE > 2
 	printf( "MAINSCAN: %s\n", main_scan_query);
 #endif
-	res = PQexec(conn, query);	
+	free(main_scan_query);
+	res = PQexec(conn, query);
 	free(query);
 	if ( ! res || PQresultStatus(res) != PGRES_COMMAND_OK ) {
 		printf( "MainScanQuery: %s", PQerrorMessage(conn));
@@ -1855,8 +1856,10 @@ int is_clockwise(int num_points, double *x, double *y, double *z)
 		area += (x[i] * y[i+1]) - (y[i] * x[i+1]); //calculate the area	
 	}
 	if(area > 0 ){
+		free(x_new); free(y_new);
 		return 0; //counter-clockwise
 	}else{
+		free(x_new); free(y_new);
 		return 1; //clockwise
 	}
 }
@@ -2048,11 +2051,13 @@ getTableOID(char *schema, char *table)
 		ret = strdup(PQgetvalue(res3, 0, 0));
 	}else if(PQntuples(res3) == 0 ){
 		printf( "Cannot find relation OID (does table exist?).\n");
+		PQclear(res3);
 		return NULL;
 	}else{
 		ret = strdup(PQgetvalue(res3, 0, 0));
 		printf( "Warning: Multiple relations detected, the program will only dump the first relation.\n");
 	}	
+	PQclear(res3);
 	return ret;
 }
 
@@ -2103,6 +2108,7 @@ getGeometryType(char *schema, char *table, char *geo_col_name)
 	if (PQntuples(res) == 0)
 	{
 		printf("ERROR: Cannot determine geometry type (empty table).\n");
+		PQclear(res);
 		return -1;
 	}
 
@@ -2125,6 +2131,7 @@ getGeometryType(char *schema, char *table, char *geo_col_name)
 			if ( basetype && basetype != LINETYPE )
 			{
 				printf( "ERROR: uncompatible mixed geometry types in table\n");
+				PQclear(res);
 				return -1;
 			}
 			basetype = LINETYPE;
@@ -2135,6 +2142,7 @@ getGeometryType(char *schema, char *table, char *geo_col_name)
 			if ( basetype && basetype != POLYGONTYPE )
 			{
 				printf( "ERROR: uncompatible mixed geometries in table\n");
+				PQclear(res);
 				return -1;
 			}
 			basetype = POLYGONTYPE;
@@ -2145,6 +2153,7 @@ getGeometryType(char *schema, char *table, char *geo_col_name)
 			if ( basetype && basetype != POINTTYPE )
 			{
 				printf( "ERROR: uncompatible mixed geometries in table\n");
+				PQclear(res);
 				return -1;
 			}
 			basetype = POINTTYPE;
@@ -2156,6 +2165,7 @@ getGeometryType(char *schema, char *table, char *geo_col_name)
 				geo_str);
 			printf( "The DBF file will be created but not the shx "
 				"or shp files.\n");
+			PQclear(res);
 			return 0;
 		}
 
@@ -2211,12 +2221,14 @@ getGeometryMaxDims(char *schema, char *table, char *geo_col_name)
 	res = PQexec(conn, query);	
 	if ( ! res || PQresultStatus(res) != PGRES_TUPLES_OK ) {
 		printf( "ZMflagQuery: %s", PQerrorMessage(conn));
+		PQclear(res);
 		return -1;
 	}
 
 	if (PQntuples(res) == 0)
 	{
 		printf("ERROR: Cannot determine geometry dimensions (empty table).\n");
+		PQclear(res);
 		return -1;
 	}
 
@@ -2341,6 +2353,7 @@ get_postgis_major_version()
 {
 	PGresult *res;
 	char *version;
+	int ver;
 	char query[] = "SELECT postgis_version()";
 	res = PQexec(conn, query);
 
@@ -2351,8 +2364,11 @@ get_postgis_major_version()
 		exit(1);
 	}
 
+	res = PQexec(conn, query);
 	version = PQgetvalue(res, 0, 0);
-	return atoi(version);
+	ver = atoi(version);
+	PQclear(res);
+	return ver;
 }
 
 /*
@@ -3087,6 +3103,9 @@ create_usrquerytable()
 
 /**********************************************************************
  * $Log$
+ * Revision 1.69  2004/12/15 08:46:47  strk
+ * Fixed memory leaks depending on input size.
+ *
  * Revision 1.68  2004/11/18 18:14:19  strk
  * Added a copy of the PQunescapeBytea function found in libpq of PG>=73
  *
