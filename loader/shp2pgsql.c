@@ -979,17 +979,19 @@ InsertPolygon(void)
 			outer->linked++;
 			while(outer->next) outer = outer->next;
 			outer->next = inner;
-			continue; // check next hole
 		}
-
-		// The ring wasn't within any outer rings,
-		// assume it is a new outer ring.
+		else
+		{
+			// The ring wasn't within any outer rings,
+			// assume it is a new outer ring.
 #ifdef DEBUG
-	fprintf(stderr, "InsertPolygon[%d]: hole %d is orphan\n",
-		call, pi);
+			fprintf(stderr,
+				"InsertPolygon[%d]: hole %d is orphan\n",
+				call, pi);
 #endif
-		Outer[out_index] = inner;
-		out_index++;
+			Outer[out_index] = inner;
+			out_index++;
+		}
 	}
 
 	if (!dump_format) printf("'");
@@ -1383,6 +1385,9 @@ utf8 (const char *fromcode, char *inputbuf)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.83  2005/03/15 12:24:40  strk
+ * hole-in-ring detector made more readable
+ *
  * Revision 1.82  2005/03/14 22:02:31  strk
  * Fixed holes handling.
  *
