@@ -296,6 +296,13 @@ while( my $line = <INPUT> )
 			print "SKIPPING FUNC $id\n" if $DEBUG;
 			next;
 		}
+		# This is an old postgis function which might
+		# still be in a dump
+		if ( $funcname eq 'postgisgistcostestimate' )
+		{
+			print "SKIPPING FUNC $id\n" if $DEBUG;
+			next;
+		}
 		if ( $funcs{$id} )
 		{
 			print "SKIPPING PGIS FUNC $id\n" if $DEBUG;
