@@ -63,7 +63,8 @@ DBFHandle dbf;
 SHPHandle shp;
 int geotype;
 int outshptype;
-char outdims;
+char outtype;
+int dswitchprovided;
 int includegid;
 int unescapedattrs;
 int binary;
@@ -75,12 +76,13 @@ int pgis_major_version;
 int getMaxFieldSize(PGconn *conn, char *schema, char *table, char *fname);
 int parse_commandline(int ARGC, char **ARGV);
 void usage(int exitstatus);
-char *getTableOID(char *table);
+char *getTableOID(char *schema, char *table);
 int addRecord(PGresult *res, int residx, int row);
 int initShapefile(char *shp_file, PGresult *res);
 int initialize(void);
 int getGeometryOID(PGconn *conn);
 int getGeometryType(char *schema, char *table, char *geo_col_name);
+int getGeometryDims(char *schema, char *table, char *geo_col_name);
 char *shapetypename(int num);
 int parse_points(char *str, int num_points, double *x,double *y,double *z);
 int num_points(char *str);
@@ -148,7 +150,8 @@ main(int ARGC, char **ARGV){
 	shp_file = NULL;
 	main_scan_query = NULL;
 	rowbuflen=100;
-	outdims = 's';
+	outtype = 's';
+	dswitchprovided = 0;
 	includegid=0;
 	unescapedattrs=0;
 	binary = 0;
@@ -171,7 +174,7 @@ main(int ARGC, char **ARGV){
 	/* Make a connection to the specified database, and exit on failure */
 	conn = PQconnectdb("");
 	if (PQstatus(conn) == CONNECTION_BAD) {
-		fprintf(stderr, "%s", PQerrorMessage(conn));
+		printf( "%s", PQerrorMessage(conn));
 		exit_nicely(conn);
 	}
 
@@ -187,6 +190,12 @@ main(int ARGC, char **ARGV){
 	fprintf(stdout, "Done (postgis major version: %d).\n",
 		pgis_major_version); 
 
+	if ( pgis_major_version > 0 && dswitchprovided )
+	{
+		printf("WARNING: -d switch is useless when dumping from postgis-1.0.0+\n");
+	}
+
+
 	printf("Output shape type is: %s\n", shapetypename(outshptype));
 
 
@@ -196,7 +205,7 @@ main(int ARGC, char **ARGV){
 	 */
 	res=PQexec(conn, "BEGIN");
 	if ( ! res || PQresultStatus(res) != PGRES_COMMAND_OK ) {
-		fprintf(stderr, "%s", PQerrorMessage(conn));
+		printf( "%s", PQerrorMessage(conn));
 		exit_nicely(conn);
 	}
 	PQclear(res);
@@ -212,11 +221,13 @@ main(int ARGC, char **ARGV){
 	} else {
 		sprintf(query, "DECLARE cur CURSOR FOR %s", main_scan_query);
 	}
-	//fprintf(stderr, "MAINSCAN: %s\n", main_scan_query);
+#if VERBOSE > 2
+	printf( "MAINSCAN: %s\n", main_scan_query);
+#endif
 	res = PQexec(conn, query);	
 	free(query);
 	if ( ! res || PQresultStatus(res) != PGRES_COMMAND_OK ) {
-		fprintf(stderr, "%s", PQerrorMessage(conn));
+		printf( "MainScanQuery: %s", PQerrorMessage(conn));
 		exit_nicely(conn);
 	}
 	PQclear(res);
@@ -239,7 +250,8 @@ main(int ARGC, char **ARGV){
 #endif
 		res = PQexec(conn, fetchquery);
 		if ( ! res || PQresultStatus(res) != PGRES_TUPLES_OK ) {
-			fprintf(stderr, "%s", PQerrorMessage(conn));
+			printf( "RecordFetch: %s",
+				PQerrorMessage(conn));
 			exit_nicely(conn);
 		}
 
@@ -293,7 +305,7 @@ shape_creator_wrapper_WKB(byte *str, int idx)
 	wkb_big_endian = ! popbyte(&ptr);
 	if ( wkb_big_endian != big_endian )
 	{
-		fprintf(stderr, "Wrong WKB endiannes, dunno how to flip\n");
+		printf( "Wrong WKB endiannes, dunno how to flip\n");
 		exit(1);
 	}
 
@@ -357,7 +369,7 @@ shape_creator_wrapper_WKB(byte *str, int idx)
 				return create_multipoint4D_WKB(str);
 
 		default:
-			fprintf(stderr, "Unknown WKB type (%8.8lx) - (%s:%d)\n",
+			printf( "Unknown WKB type (%8.8lx) - (%s:%d)\n",
 				type, __FILE__, __LINE__);
 			return NULL;
 	}
@@ -930,12 +942,12 @@ create_point3D_WKB(byte *wkb)
 	}
 	else if ( geotype == MULTIPOINTTYPE )
 	{
-		//fprintf(stderr, "create_point3D_WKB: fluffing to MULTIPOINT\n");
+		//printf( "create_point3D_WKB: fluffing to MULTIPOINT\n");
 		obj = SHPCreateSimpleObject(outshptype, 1, &x, &y, &z);
 	}
 	else
 	{
-		fprintf(stderr, "ERROR: create_point2D_WKB called with wrong geometry type (%d)\n", geotype);
+		printf( "ERROR: create_point2D_WKB called with wrong geometry type (%d)\n", geotype);
 		return NULL;
 	}
 
@@ -1736,13 +1748,13 @@ getGeometryOID(PGconn *conn)
 	res1=PQexec(conn, "select OID from pg_type where typname = 'geometry'");	
 	if ( ! res1 || PQresultStatus(res1) != PGRES_TUPLES_OK )
 	{
-		fprintf(stderr, "OID query error: %s", PQerrorMessage(conn));
+		printf( "OIDQuery: %s", PQerrorMessage(conn));
 		return -1;
 	}
 
 	if(PQntuples(res1) <= 0 )
 	{
-		fprintf(stderr, "Geometry type unknown "
+		printf( "Geometry type unknown "
 				"(have you enabled postgis?)\n");
 		return -1;
 	}
@@ -1812,7 +1824,7 @@ fprintf(stdout, "s"); fflush(stdout);
 			obj=SHPCreateSimpleObject(SHPT_NULL,0,NULL,NULL,NULL);
 			if ( SHPWriteObject(shp,-1,obj) == -1)
 			{
-				fprintf(stderr,
+				printf(
 					"Error writing null shape %d\n", row);
 				SHPDestroyObject(obj);
 				return 0;
@@ -1851,13 +1863,13 @@ fprintf(stdout, "s"); fflush(stdout);
 		obj = shape_creator_wrapper_WKB(val, row);
 		if ( ! obj )
 		{
-			fprintf(stderr, "Error creating shape for record %d "
+			printf( "Error creating shape for record %d "
 					"(geotype is %d)\n", row, geotype);
 			return 0;
 		}
 		if ( SHPWriteObject(shp,-1,obj) == -1)
 		{
-			fprintf(stderr, "Error writing shape %d\n", row);
+			printf( "Error writing shape %d\n", row);
 			SHPDestroyObject(obj);
 			return 0;
 		}
@@ -1877,36 +1889,48 @@ fprintf(stdout, "s"); fflush(stdout);
  * Return allocate memory. Free after use.
  */
 char *
-getTableOID(char *table)
+getTableOID(char *schema, char *table)
 {
 	PGresult *res3;
 	char *query;
 	char *ret;
+	size_t size;
 
-	query = (char *)malloc(strlen(table)+256);
-	sprintf(query, "SELECT oid FROM pg_class WHERE relname = '%s'", table);
+	size = strlen(table)+256;
+	if ( schema ) size += strlen(schema)+1;
+
+	query = (char *)malloc(size);
+
+	if ( schema )
+	{
+		sprintf(query, "SELECT oid FROM pg_class c, pg_namespace n WHERE c.relnamespace n.oid AND n.nspname = '%s' AND c.relname = '%s'", schema, table);
+	} else {
+		sprintf(query, "SELECT oid FROM pg_class WHERE relname = '%s'", table);
+	}
+
 	res3 = PQexec(conn, query);
 	free(query);
 	if ( ! res3 || PQresultStatus(res3) != PGRES_TUPLES_OK ) {
-		fprintf(stderr, "%s", PQerrorMessage(conn));
+		printf( "TableOID: %s", PQerrorMessage(conn));
 		exit_nicely(conn);
 	}
 	if(PQntuples(res3) == 1 ){
 		ret = strdup(PQgetvalue(res3, 0, 0));
 	}else if(PQntuples(res3) == 0 ){
-		fprintf(stderr, "ERROR: Cannot determine relation OID.\n");
+		printf( "Cannot find relation OID (does table exist?).\n");
 		return NULL;
 	}else{
 		ret = strdup(PQgetvalue(res3, 0, 0));
-		fprintf(stderr, "Warning: Multiple relations detected, the program will only dump the first relation.\n");
+		printf( "Warning: Multiple relations detected, the program will only dump the first relation.\n");
 	}	
 	return ret;
 }
 
 /*
  * Return geometry type as defined at top file.
- * Return -1 on error
- * Return  0 on unknown or unsupported geometry type
+ * Return -1 on error.
+ * Return  0 on unknown or unsupported geometry type.
+ * Set outtype to 'm' or 'z' depending on input type.
  */
 int
 getGeometryType(char *schema, char *table, char *geo_col_name)
@@ -1920,7 +1944,10 @@ getGeometryType(char *schema, char *table, char *geo_col_name)
 	int foundsingle=0;
 	int i;
 
-	//get what kind of Geometry type is in the table
+	/**************************************************
+	 * Get what kind of Geometry type is in the table
+	 **************************************************/
+
 	if ( schema )
 	{
 		sprintf(query, "SELECT DISTINCT geometrytype(\"%s\") "
@@ -1934,10 +1961,12 @@ getGeometryType(char *schema, char *table, char *geo_col_name)
 			geo_col_name, table, geo_col_name);
 	}
 
-	//printf("\n\n-->%s\n\n",query);
+#if VERBOSE > 2
+	printf( "%s\n",query);
+#endif
 	res = PQexec(conn, query);	
 	if ( ! res || PQresultStatus(res) != PGRES_TUPLES_OK ) {
-		fprintf(stderr, "%s", PQerrorMessage(conn));
+		printf( "GeometryType: %s", PQerrorMessage(conn));
 		return -1;
 	}
 
@@ -1965,7 +1994,7 @@ getGeometryType(char *schema, char *table, char *geo_col_name)
 		{
 			if ( basetype && basetype != LINETYPE )
 			{
-				fprintf(stderr, "ERROR: uncompatible mixed geometries in table\n");
+				printf( "ERROR: uncompatible mixed geometry types in table\n");
 				return -1;
 			}
 			basetype = LINETYPE;
@@ -1975,7 +2004,7 @@ getGeometryType(char *schema, char *table, char *geo_col_name)
 		{
 			if ( basetype && basetype != POLYGONTYPE )
 			{
-				fprintf(stderr, "ERROR: uncompatible mixed geometries in table\n");
+				printf( "ERROR: uncompatible mixed geometries in table\n");
 				return -1;
 			}
 			basetype = POLYGONTYPE;
@@ -1985,7 +2014,7 @@ getGeometryType(char *schema, char *table, char *geo_col_name)
 		{
 			if ( basetype && basetype != POINTTYPE )
 			{
-				fprintf(stderr, "ERROR: uncompatible mixed geometries in table\n");
+				printf( "ERROR: uncompatible mixed geometries in table\n");
 				return -1;
 			}
 			basetype = POINTTYPE;
@@ -1993,19 +2022,92 @@ getGeometryType(char *schema, char *table, char *geo_col_name)
 		}
 		else
 		{
-			fprintf(stderr, "type '%s' is not Supported at this time.\n",
+			printf( "type '%s' is not Supported at this time.\n",
 				geo_str);
-			fprintf(stderr, "The DBF file will be created but not the shx "
+			printf( "The DBF file will be created but not the shx "
 				"or shp files.\n");
 			return 0;
 		}
+
 	}
+
+	PQclear(res);
+
+	/**************************************************
+	 * Get Geometry dimensions (2d/3dm/3dz/4d)
+	 **************************************************/
+	if ( pgis_major_version > 0 )
+		if ( -1 == getGeometryDims(schema, table, geo_col_name) )
+			return -1;
 
 	if ( foundmulti )
 		return multitype;
 	else
 		return basetype;
 
+}
+
+/*
+ * Set global outtype variable to:
+ * 	'm' for 3dm input
+ * 	'z' for 3dz or 4d input
+ * 	's' for 2d
+ * Return -1 on error, 0 on success.
+ * Call only on postgis >= 1.0.0
+ */
+int
+getGeometryDims(char *schema, char *table, char *geo_col_name)
+{
+	char query[1024];
+	PGresult *res;
+	int zmflag;
+
+	if ( schema )
+	{
+		sprintf(query, "SELECT max(zmflag(\"%s\")) "
+			"FROM \"%s\".\"%s\"", 
+			 geo_col_name, schema, table);
+	}
+	else
+	{
+		sprintf(query, "SELECT max(zmflag(\"%s\")) "
+			"FROM \"%s\"",
+			geo_col_name, table);
+	}
+
+#if VERBOSE > 2
+	printf("%s\n",query);
+#endif
+	res = PQexec(conn, query);	
+	if ( ! res || PQresultStatus(res) != PGRES_TUPLES_OK ) {
+		printf( "ZMflagQuery: %s", PQerrorMessage(conn));
+		return -1;
+	}
+
+	if (PQntuples(res) == 0)
+	{
+		printf("ERROR: Cannot determine geometry dimensions (empty table).\n");
+		return -1;
+	}
+
+	zmflag = atoi(PQgetvalue(res, 0, 0));
+	PQclear(res);
+
+	switch (zmflag)
+	{
+		case 0:
+			outtype = 's';
+			break;
+		case 1:
+			outtype = 'm';
+			break;
+		default:
+			outtype = 'z';
+			break;
+	}
+
+
+	return 0;
 }
 
 void
@@ -2015,9 +2117,6 @@ usage(status)
 	printf("USAGE: pgsql2shp [<options>] <database> [<schema>.]<table>\n");
 	printf("\n");
        	printf("OPTIONS:\n");
-	printf("  (-m|z) Output type modifiers (default is XY):\n");
-       	printf("     -m Set to XYM\n");
-       	printf("     -z Set to XYMZ (-d accepted for backward compatibility)\n");
        	printf("  -f <filename>  Use this option to specify the name of the file\n");
        	printf("     to create.\n");
        	printf("  -h <host>  Allows you to specify connection to a database on a\n");
@@ -2043,7 +2142,7 @@ int parse_commandline(int ARGC, char **ARGV)
 	buf[255] = '\0'; // just in case...
 
 	/* Parse command line */
-        while ((c = getopt(ARGC, ARGV, "bf:h:dmzu:p:P:g:r")) != EOF){
+        while ((c = getopt(ARGC, ARGV, "bf:h:du:p:P:g:r")) != EOF){
                switch (c) {
                case 'b':
                     binary = 1;
@@ -2057,11 +2156,8 @@ int parse_commandline(int ARGC, char **ARGV)
 		    putenv(strdup(buf));
                     break;
                case 'd':
-               case 'z':
-	            outdims = 'z';
-                    break;		  
-               case 'm':
-	            outdims = 'm';
+                    dswitchprovided = 1;
+		    outtype = 'z';
                     break;		  
                case 'r':
 	            includegid = 1;
@@ -2122,8 +2218,9 @@ get_postgis_major_version()
 	res = PQexec(conn, query);
 
 	if ( ! res || PQresultStatus(res) != PGRES_TUPLES_OK ) {
-		fprintf(stderr, "Can't detect postgis version:\n");
-		fprintf(stderr, "%s", PQerrorMessage(conn));
+		printf( "Can't detect postgis version:\n");
+		printf( "PostgisVersionQuery: %s",
+			PQerrorMessage(conn));
 		exit(1);
 	}
 
@@ -2185,15 +2282,18 @@ initialize()
 
 
 	/* Exec query */
-	//fprintf(stderr, "Attribute query:\n%s\n", query);
+#if VERBOSE > 2
+	printf( "Attribute query: %s\n", query);
+#endif
 	res = PQexec(conn, query);
 	free(query);
 	if ( ! res || PQresultStatus(res) != PGRES_TUPLES_OK ) {
-		fprintf(stderr, "%s", PQerrorMessage(conn));
+		printf( "Querying for attributes: %s",
+			PQerrorMessage(conn));
 		return 0;
 	}
 	if (! PQntuples(res)) {
-		fprintf(stderr, "Table %s does not exist\n", table);
+		printf( "Table %s does not exist\n", table);
 		PQclear(res);
 		return 0;
 	}
@@ -2201,7 +2301,7 @@ initialize()
 	/* Create the dbf file */
 	dbf = DBFCreate(shp_file);
 	if ( ! dbf ) {
-		fprintf(stderr, "Could not create dbf file\n");
+		printf( "Could not create dbf file\n");
 		return 0;
 	}
 
@@ -2230,7 +2330,7 @@ initialize()
 		type = atoi(PQgetvalue(res, i, 1));
 		size = atoi(PQgetvalue(res, i, 2));
 
-//fprintf(stderr, "A: %s, T: %d, S: %d\n", fname, type, size);
+//printf( "A: %s, T: %d, S: %d\n", fname, type, size);
 		/*
 		 * This is a geometry column
 		 */
@@ -2334,7 +2434,7 @@ initialize()
 		{
 			if(DBFAddField(dbf, field_name,FTInteger,16,0) == -1)
 			{
-				fprintf(stderr, "error - Field could not "
+				printf( "error - Field could not "
 					"be created.\n");
 				return 0;
 			}
@@ -2348,7 +2448,7 @@ initialize()
 		{
 			if(DBFAddField(dbf, field_name,FTDouble,32,10) == -1)
 			{
-				fprintf(stderr, "error - Field could not "
+				printf( "error - Field could not "
 						"be created.\n");
 				return 0;
 			}
@@ -2385,12 +2485,12 @@ initialize()
 			if ( size == -1 ) return 0;
 			if ( ! size ) size = 32; // might 0 be a good size ?
 		}
-//fprintf(stderr, "FIELD_NAME: %s, SIZE: %d\n", field_name, size);
+//printf( "FIELD_NAME: %s, SIZE: %d\n", field_name, size);
 		
 		/* generic type (use string representation) */
 		if(DBFAddField(dbf, field_name,FTString,size,0) == -1)
 		{
-			fprintf(stderr, "error - Field could not "
+			printf( "error - Field could not "
 					"be created.\n");
 			return 0;
 		}
@@ -2406,12 +2506,12 @@ initialize()
 	{
 		if ( geo_col_name )
 		{
-			fprintf(stderr, "%s: no such attribute in table %s\n",
+			printf( "%s: no such attribute in table %s\n",
 					geo_col_name, table);
 			return 0;
 		}
-		fprintf(stderr, "No geometry column found.\n");
-		fprintf(stderr, "The DBF file will be created "
+		printf( "No geometry column found.\n");
+		printf( "The DBF file will be created "
 				"but not the shx or shp files.\n");
 	}
 
@@ -2428,34 +2528,34 @@ initialize()
 		{
 			case MULTILINETYPE:
 			case LINETYPE:
-				if (outdims == 'z') outshptype=SHPT_ARCZ;
-				else if (outdims == 'm') outshptype=SHPT_ARCM;
+				if (outtype == 'z') outshptype=SHPT_ARCZ;
+				else if (outtype == 'm') outshptype=SHPT_ARCM;
 				else outshptype=SHPT_ARC;
 				break;
 				
 			case POLYGONTYPE:
 			case MULTIPOLYGONTYPE:
-				if (outdims == 'z') outshptype=SHPT_POLYGONZ;
-				else if (outdims == 'm') outshptype=SHPT_POLYGONM;
+				if (outtype == 'z') outshptype=SHPT_POLYGONZ;
+				else if (outtype == 'm') outshptype=SHPT_POLYGONM;
 				else outshptype=SHPT_POLYGON;
 				break;
 
 			case POINTTYPE:
-				if (outdims == 'z') outshptype=SHPT_POINTZ;
-				else if (outdims == 'm') outshptype=SHPT_POINTM;
+				if (outtype == 'z') outshptype=SHPT_POINTZ;
+				else if (outtype == 'm') outshptype=SHPT_POINTM;
 				else outshptype=SHPT_POINT;
 				break;
 
 			case MULTIPOINTTYPE:
-				if (outdims == 'z') outshptype=SHPT_MULTIPOINTZ;
-				else if (outdims == 'm') outshptype=SHPT_MULTIPOINTM;
+				if (outtype == 'z') outshptype=SHPT_MULTIPOINTZ;
+				else if (outtype == 'm') outshptype=SHPT_MULTIPOINTM;
 				else outshptype=SHPT_MULTIPOINT;
 				break;
 
 			default:
 				shp = NULL;
 				shape_creator = NULL;
-				fprintf(stderr, "You've found a bug! (%s:%d)\n",
+				printf( "You've found a bug! (%s:%d)\n",
 					__FILE__, __LINE__);
 				return 0;
 
@@ -2604,10 +2704,14 @@ getMaxFieldSize(PGconn *conn, char *schema, char *table, char *fname)
 			"select max(octet_length(\"%s\")) from \"%s\"",
 			fname, table);
 	}
+#if VERBOSE > 2
+	printf( "maxFieldLenQuery: %s\n", query);
+#endif
 	res = PQexec(conn, query);
 	free(query);
 	if ( ! res || PQresultStatus(res) != PGRES_TUPLES_OK ) {
-		fprintf(stderr, "%s", PQerrorMessage(conn));
+		printf( "Querying for maximum field length: %s",
+			PQerrorMessage(conn));
 		return -1;
 	}
 
@@ -2635,7 +2739,7 @@ HexDecode(byte *hex)
 	len = strlen(hex)/2;
 	ret = (byte *)malloc(len);
 	if ( ! ret )  {
-		fprintf(stderr, "Out of virtual memory\n");
+		printf( "Out of virtual memory\n");
 		exit(1);
 	}
 
@@ -2667,7 +2771,7 @@ HexDecode(byte *hex)
 		else if ( *hexptr > 64 && *hexptr < 71 )
 			byt = (((*hexptr)-55)<<4);
 		else {
-			fprintf(stderr, "Malformed WKB\n");
+			printf( "Malformed WKB\n");
 			exit(1);
 		}
 		hexptr++;
@@ -2678,7 +2782,7 @@ HexDecode(byte *hex)
 		else if ( *hexptr > 64 && *hexptr < 71 )
 			byt |= ((*hexptr)-55);
 		else {
-			fprintf(stderr, "Malformed WKB\n");
+			printf("Malformed WKB\n");
 			exit(1);
 		}
 		hexptr++;
@@ -2817,6 +2921,9 @@ shapetypename(int num)
 }
 /**********************************************************************
  * $Log$
+ * Revision 1.59  2004/10/06 17:04:38  strk
+ * ZM handling. Log trimmed.
+ *
  * Revision 1.58  2004/09/23 16:14:19  strk
  * Added -m / -z switches to control output type: XYM,XYMZ.
  *
@@ -2835,124 +2942,5 @@ shapetypename(int num)
  * Postgis-1.x support (LWGEOM) added.
  * postgis version detected at runtime.
  * Endiannes unchecked ... TODO.
- *
- * Revision 1.53  2004/08/05 16:53:29  strk
- * schema support patches sent by Mark
- *
- * Revision 1.52  2004/06/16 13:42:05  strk
- * Added schema support in getMaxFieldSize.
- * Added direct support for TIMESTAMP field types (thanks to Steffen Macke).
- *
- * Revision 1.51  2004/05/13 12:24:15  strk
- * Transformed NULL numeric values to 0 as it was before the introduction
- * of bigint bug workaround.
- *
- * Revision 1.50  2004/05/13 12:13:01  strk
- * Used DBFWriteAttributeDirectly interface for writing attributes.
- * This way we are not affected by shapelib long-integer bug.
- *
- * Revision 1.49  2004/05/13 12:07:13  strk
- * Other fix in 3d handling - you should now be able to dump as 2d or 3d any 2d or 3d object
- *
- * Revision 1.48  2004/05/13 11:59:08  strk
- * Fixed bug in 3d features handling.
- *
- * Revision 1.47  2004/04/21 09:13:15  strk
- * Attribute names escaping mechanism added. You should now
- * be able to dump a shapefile equal to the one loaded.
- *
- * Revision 1.46  2004/04/21 07:38:34  strk
- * Memory allocated for main_scan_query was not enough when using binary cursor. Fixed
- *
- * Revision 1.45  2004/03/29 10:20:48  strk
- * Fixed a bug in WKB parsing for Multipoints.
- * Fixed a bug in -d handling for WKB.
- * Added point->multipoint fluffing capabilities.
- *
- * Revision 1.44  2004/03/10 18:46:07  strk
- * Fixed a bug reducing the output shapes from Multipolygon tables.
- *
- * Revision 1.43  2004/03/06 17:43:06  strk
- * Added RCSID string in usage output
- *
- * Revision 1.42  2004/02/09 18:49:23  strk
- * byte endiannes detected empirically
- *
- * Revision 1.41  2004/02/06 08:26:02  strk
- * updated wkb reading funx to reflect changes made by pramsey in postgis_inout.c to be nicer with solaris
- *
- * Revision 1.40  2003/12/27 13:30:23  strk
- * Added schema specification support
- *
- * Revision 1.39  2003/12/19 18:55:46  strk
- * substituted setenv() calls with putenv() for Solaris support
- *
- * Revision 1.38  2003/12/04 19:11:56  strk
- * code cleanup (removed useless and leaking malloc calls)
- *
- * Revision 1.37  2003/11/26 18:54:22  strk
- * fixed bug in HexDecoder, made WKB parsing the default
- *
- * Revision 1.36  2003/11/26 18:14:11  strk
- * binary cursor implemented
- *
- * Revision 1.35  2003/11/26 17:21:00  strk
- * Made HEXWKB parsing settable at compile time
- *
- * Revision 1.34  2003/11/26 16:40:41  strk
- * Handled NULLS in wkb parsing, reduced functions args
- *
- * Revision 1.33  2003/11/26 15:45:53  strk
- * wkb support for all geom types
- *
- * Revision 1.32  2003/11/26 14:31:20  strk
- * WKB start to work
- *
- * Revision 1.31  2003/11/25 17:28:03  strk
- * hardly trying to get WKB parsing work
- *
- * Revision 1.30  2003/11/24 17:36:28  strk
- * Removed useless BYTE_ORDER checks
- *
- * Revision 1.29  2003/11/21 23:51:14  pramsey
- * Added Cygwin endian definition include to fix windows compile.
- *
- * Revision 1.28  2003/11/20 18:01:26  strk
- * patch from m.spring@gmx.de
- *
- * Revision 1.27  2003/11/20 15:27:20  strk
- * Removed some useless strdups.
- * Removed pgtype 22 (int2vector) from the list of integer DBF field types.
- * Added pgtype 1700 (numeric) in DBF doubles list.
- *
- * Revision 1.26  2003/11/18 14:58:47  strk
- * default row buffer lenght set to 100
- *
- * Revision 1.25  2003/11/18 14:39:26  strk
- * Some more structuring. Initialization routine moved out of main loop.
- * Preparing dumper for WKB parsing.
- *
- * Revision 1.24  2003/11/16 00:27:46  strk
- * Huge code re-organization. More structured code, more errors handled,
- * cursor based iteration, less code lines.
- *
- * Revision 1.23  2003/11/14 22:04:51  strk
- * Used environment vars to pass libpq connection options (less error prone,
- * easier to read). Printed clearer error message on query error.
- *
- * Revision 1.22  2003/09/10 22:44:56  jeffloun
- * got rid of warning...
- *
- * Revision 1.21  2003/09/10 22:40:11  jeffloun
- * changed it to make the field names in the dbf file capital letters
- *
- * Revision 1.20  2003/09/10 21:36:04  jeffloun
- * fixed a bug in is_clockwise...
- *
- * Revision 1.19  2003/07/01 18:30:55  pramsey
- * Added CVS revision headers.
- *
- * Revision 1.18  2003/02/04 21:39:20  pramsey
- * Added CVS substitution strings for logging.
  *
  **********************************************************************/
