@@ -12,6 +12,10 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.53  2004/04/21 09:13:15  strk
+ * Attribute names escaping mechanism added. You should now
+ * be able to dump a shapefile equal to the one loaded.
+ *
  * Revision 1.52  2004/03/10 17:35:16  strk
  * removed just-introduced bug
  *
@@ -603,7 +607,8 @@ int main (int ARGC, char **ARGV){
 	double padminbound[8], padmaxbound[8];
 	int u,j,z,tot_rings,curindex;
 	SHPObject	*obj=NULL;
-	char  name[32];
+	char  name[64];
+	char  name2[64];
 	char  *sr_id,*shp_file,*table,*schema,*ptr;
 	char **names;
 	DBFFieldType type = -1;
@@ -772,11 +777,43 @@ int main (int ARGC, char **ARGV){
 
 		/*
 		 * Make field names lowercase unless asked to
-		 * quote identifiers
+		 * keep identifiers case.
 		 */
 		if ( ! quoteidentifiers ) {
 			for(z=0; z<strlen(name) ;z++)
 				name[z] = tolower(name[z]);
+		}
+
+		/*
+		 * Escape names starting with the
+		 * escape char (_)
+		 */
+		if( name[0]=='_' )
+		{
+			strcpy(name2+2, name);
+			name2[0] = '_';
+			name2[1] = '_';
+			strcpy(name, name2);
+		}
+
+		/*
+		 * Escape attributes named 'gid'
+		 * and pgsql reserved attribute names
+		 */
+		else if(
+			! strcmp(name,"gid") ||
+			! strcmp(name, "tableoid") ||
+			! strcmp(name, "cmax") ||
+			! strcmp(name, "xmax") ||
+			! strcmp(name, "cmin") ||
+			! strcmp(name, "primary") ||
+			! strcmp(name, "oid") ||
+			! strcmp(name, "ctid")
+		) {
+			strcpy(name2+2, name);
+			name2[0] = '_';
+			name2[1] = '_';
+			strcpy(name, name2);
 		}
 
 		/* Avoid duplicating field names */
@@ -788,14 +825,6 @@ int main (int ARGC, char **ARGV){
 			}
 		}	
 
-		/*
-		 * Avoid duplicating system fields
-		 * (currently only gid is handled)
-		 */
-		if( strcmp(name,"gid")==0 )
-		{
-			strcat(name,"__2");
-		}
 
 		names[j] = malloc ( strlen(name)+3 );
 		strcpy(names[j], name);

@@ -10,6 +10,10 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.47  2004/04/21 09:13:15  strk
+ * Attribute names escaping mechanism added. You should now
+ * be able to dump a shapefile equal to the one loaded.
+ *
  * Revision 1.46  2004/04/21 07:38:34  strk
  * Memory allocated for main_scan_query was not enough when using binary cursor. Fixed
  *
@@ -158,6 +162,8 @@ SHPHandle shp;
 int geotype;
 int outshptype;
 int is3d;
+int includegid;
+int unescapedattrs;
 int binary;
 #ifdef USE_WKB
 SHPObject * (*shape_creator)(byte *, int);
@@ -224,20 +230,6 @@ static void exit_nicely(PGconn *conn){
 	exit(1);
 }
 
-//main
-//USAGE: pgsql2shp [<options>] <database> <table>
-//OPTIONS:
-//  -d Set the dump file to 3 dimensions, if this option is not used
-//     all dumping will be 2d only.
-//  -f <filename>  Use this option to specify the name of the file
-//     to create.
-//  -h <host>  Allows you to specify connection to a database on a
-//     machine other than the localhost.
-//  -p <port>  Allows you to specify a database port other than 5432.
-//  -P <password>  Connect to the database with the specified password.
-//  -u <user>  Connect to the database as the specified user.
-//  -g <geometry_column> Specify the geometry column to be exported.
-
 int main(int ARGC, char **ARGV){
 	char *query=NULL;
 	int row;
@@ -255,6 +247,8 @@ int main(int ARGC, char **ARGV){
 	main_scan_query = NULL;
 	rowbuflen=100;
 	is3d = 0;
+	includegid=0;
+	unescapedattrs=0;
 	binary = 0;
 #ifdef DEBUG
 	FILE *debug;
@@ -312,7 +306,7 @@ int main(int ARGC, char **ARGV){
 	} else {
 		sprintf(query, "DECLARE cur CURSOR FOR %s", main_scan_query);
 	}
-//fprintf(stderr, "MAINSCAN: %s\n", main_scan_query);
+fprintf(stderr, "MAINSCAN: %s\n", main_scan_query);
 	res = PQexec(conn, query);	
 	free(query);
 	if ( ! res || PQresultStatus(res) != PGRES_COMMAND_OK ) {
@@ -2295,6 +2289,9 @@ usage(status)
        	printf("  -u <user>  Connect to the database as the specified user.\n");
 	printf("  -g <geometry_column> Specify the geometry column to be exported.\n");
 	printf("  -b Use a binary cursor.\n");
+	printf("  -r Raw mode. Do not assume table has been created by \n");
+	printf("     the loader. This would not unescape attribute names\n");
+	printf("     and will not skip the 'gid' attribute.");
        	printf("\n");
        	exit (status);
 }
@@ -2308,7 +2305,7 @@ int parse_commandline(int ARGC, char **ARGV)
 	buf[255] = '\0'; // just in case...
 
 	/* Parse command line */
-        while ((c = getopt(ARGC, ARGV, "bf:h:du:p:P:g:")) != EOF){
+        while ((c = getopt(ARGC, ARGV, "bf:h:du:p:P:g:r")) != EOF){
                switch (c) {
                case 'b':
                     binary = 1;
@@ -2323,6 +2320,10 @@ int parse_commandline(int ARGC, char **ARGV)
                     break;
                case 'd':
 	            is3d = 1;
+                    break;		  
+               case 'r':
+	            includegid = 1;
+		    unescapedattrs = 1;
                     break;		  
                case 'u':
 		    //setenv("PGUSER", optarg, 1);
@@ -2387,6 +2388,7 @@ initialize()
 	char *mainscan_flds[256];
 	int mainscan_nflds=0;
 	int size;
+	int gidfound=0;
 
 	/* Detect host endiannes */
 	big_endian = is_bigendian();
@@ -2457,6 +2459,7 @@ initialize()
 		int j;
 		int type, size;
 		char *fname; // pgsql attribute name
+		char *ptr;
 		char field_name[32]; // dbf version of field name
 
 		fname = PQgetvalue(res, i, 0);
@@ -2504,12 +2507,37 @@ initialize()
 		 * a DBF attribute.
 		 */
 
-		if(strlen(fname) <32) strcpy(field_name, fname);
-		else {
-			printf("field name %s is too long, must be "
-				"less than 32 characters.\n", fname);
+		/* Skip gid (if not asked to do otherwise */
+		if ( ! strcmp(fname, "gid") )
+		{
+			gidfound = 1;
+			if ( ! includegid ) continue;
+		}
+
+		/* Unescape field name */
+		ptr = fname;
+		if ( ! unescapedattrs )
+		{
+			if (*ptr=='_') ptr+=2;
+		}
+		/*
+		 * This needs special handling since both xmin and _xmin
+		 * becomes __xmin when escaped
+		 */
+
+
+		if(strlen(ptr) <32) strcpy(field_name, ptr);
+		else
+		{
+			/*
+			 * TODO: you find an appropriate name if
+			 * running in RAW mode
+			 */
+			printf("dbf attribute name %s is too long, must be "
+				"less than 32 characters.\n", ptr);
 			return 0;
 		}
+
 
 		/* make UPPERCASE */
 		for(j=0; j < strlen(field_name); j++)
@@ -2734,6 +2762,13 @@ initialize()
 	}
 
 	strcat(main_scan_query, buf);
+
+	// Order by 'gid' (if found)
+	if ( gidfound )
+	{
+		sprintf(buf, " ORDER BY \"gid\"");
+		strcat(main_scan_query, buf);
+	}
 
 	PQclear(res);
 
