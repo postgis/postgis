@@ -16,6 +16,16 @@
 #include <netinet/in_systm.h>
 #include <netinet/ip.h>
 
+
+static int endian_check_int = 1; // dont modify this!!!
+
+#define LITTLE_ENDIAN 1
+static char getMachineEndian()
+{
+	return *((char *) &endian_check_int); // 0 = big endian, 1 = little endian
+}
+
+
 typedef unsigned long int4;
 
 static int dims;
@@ -70,7 +80,7 @@ void write_int(int i){
 int4 read_int(byte** geom){
 	int4 ret;
 #ifdef SHRINK_INTS
-	if ( BYTE_ORDER == LITTLE_ENDIAN ){
+	if ( getMachineEndian() == LITTLE_ENDIAN ){
 		if( (**geom)& 0x01){
 			ret = **geom >>1;
 			(*geom)++;
@@ -88,7 +98,7 @@ int4 read_int(byte** geom){
 	memcpy(&ret,*geom,4);
 
 #ifdef SHRINK_INTS
-	if ( BYTE_ORDER == LITTLE_ENDIAN ){
+	if ( getMachineEndian() == LITTLE_ENDIAN ){
 		ret >>= 1;
 	}
 #endif
@@ -304,7 +314,7 @@ byte* output_wkb(byte* geom){
 	else if (dims==4)
 		 type |=0x40000000;
 
-	if ( BYTE_ORDER != LITTLE_ENDIAN ){
+	if ( getMachineEndian() != LITTLE_ENDIAN ){
 		byte endian=0;
 		write_wkb_bytes(&endian,1);
 	}

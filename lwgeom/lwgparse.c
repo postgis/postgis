@@ -15,6 +15,16 @@
 #include <netinet/in_systm.h>
 #include <netinet/ip.h>
 
+
+static int endian_check_int = 1; // dont modify this!!!
+
+#define LITTLE_ENDIAN 1
+static char getMachineEndian()
+{
+	return *((char *) &endian_check_int); // 0 = big endian, 1 = little endian
+}
+
+
 typedef unsigned long int4;
 
 int srid=-1;
@@ -200,7 +210,7 @@ void check_dims(int num){
 #ifdef SHRINK_INTS
 void WRITE_INT4(output_state * out,int4 val){
 	if ( val <= 0x7f ){
-		if ( BYTE_ORDER == LITTLE_ENDIAN ){
+		if ( getMachineEndian() == LITTLE_ENDIAN ){
 			val = (val<<1) | 1;
 		}
 		else{
@@ -211,7 +221,7 @@ void WRITE_INT4(output_state * out,int4 val){
 		the_geom.alloc_size-=3;
 	}
 	else{
-		if ( BYTE_ORDER == LITTLE_ENDIAN ){
+		if ( getMachineEndian() == LITTLE_ENDIAN ){
 			val <<=1;
 		}
 		WRITE_INT4_REAL(out,val);
@@ -548,7 +558,7 @@ double read_wbk_double(const char** in,int convert_from_int){
 
 void read_wkb_point(const char** b){
 	int i;
-	tuple* p;
+	tuple* p = NULL;
 
 
 	if(the_geom.lwgi && the_geom.from_lwgi ){
@@ -606,11 +616,11 @@ void parse_wkb(const char** b){
 	swap_order=0;
 
 	if ( xdr == 0x01 ){  // wkb is in little endian
-		if ( BYTE_ORDER != LITTLE_ENDIAN )
+		if ( getMachineEndian() != LITTLE_ENDIAN )
 			swap_order=1;
 	}
 	else if ( xdr == 0x00 ){ // wkb is in big endian
-		if ( BYTE_ORDER == LITTLE_ENDIAN )
+		if ( getMachineEndian() == LITTLE_ENDIAN )
 			swap_order=1;
 	}
 
