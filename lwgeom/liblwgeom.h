@@ -596,49 +596,6 @@ typedef struct
 
 extern int lwgeom_size_inspected(const LWGEOM_INSPECTED *inspected, int geom_number);
 
-/*
- * This structure is intended to be used for geometry collection construction.
- * Does not allow specification of collection structure
- * (serialization chooses the simpler form)
- */
-typedef struct
-{
-	int SRID;
-	uchar dims;
-	uint32 npoints;
-	uchar **points;
-	uint32 nlines;
-	uchar **lines;
-	uint32 npolys;
-	uchar **polys;
-} LWGEOM_EXPLODED;
-
-void pfree_exploded(LWGEOM_EXPLODED *exploded);
-
-// Returns a 'palloced' union of the two input exploded geoms.
-// Returns NULL if SRID or ndims do not match.
-LWGEOM_EXPLODED * lwexploded_sum(LWGEOM_EXPLODED *exp1, LWGEOM_EXPLODED *exp2);
-
-/*
- * This function recursively scan the given serialized geometry
- * and returns a list of _all_ subgeoms in it (deep-first)
- */
-extern LWGEOM_EXPLODED *lwgeom_explode(uchar *serialized);
-
-/*
- * Return the length of the serialized form corresponding
- * to this exploded structure.
- */
-extern size_t lwexploded_findlength(LWGEOM_EXPLODED *exp, int wantbbox);
-
-// Serialize an LWGEOM_EXPLODED object.
-// SRID and ndims will be taken from exploded structure.
-// wantbbox will determine result bbox.
-extern uchar *lwexploded_serialize(LWGEOM_EXPLODED *exploded, int wantbbox);
-
-// Same as lwexploded_serialize but writing to pre-allocated space
-extern void lwexploded_serialize_buf(LWGEOM_EXPLODED *exploded, int wantbbox, uchar *buf, size_t *retsize);
-
 // note - for a simple type (ie. point), this will have sub_geom[0] = serialized_form.
 // for multi-geomtries sub_geom[0] will be a few bytes into the serialized form
 // This function just computes the length of each sub-object and pre-caches this info.
@@ -777,6 +734,7 @@ extern void pfree_POINTARRAY(POINTARRAY *pa);
 
 extern uint32 get_uint32(const uchar *loc);
 extern int32 get_int32(const uchar *loc);
+extern void printBOX3D(BOX3D *b);
 extern void printPA(POINTARRAY *pa);
 extern void printLWPOINT(LWPOINT *point);
 extern void printLWLINE(LWLINE *line);
@@ -1042,7 +1000,6 @@ extern POINTARRAY *ptarray_addPoint(POINTARRAY *pa, uchar *p, size_t pdims, unsi
 extern int ptarray_isclosed2d(const POINTARRAY *pa);
 
 extern int32 lwgeom_nrings_recursive(uchar *serialized);
-extern void dump_lwexploded(LWGEOM_EXPLODED *exploded);
 extern void ptarray_reverse(POINTARRAY *pa);
 
 // Ensure every segment is at most 'dist' long.

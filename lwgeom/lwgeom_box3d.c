@@ -231,6 +231,7 @@ Datum LWGEOM_to_BOX3D(PG_FUNCTION_ARGS)
 	BOX3D *result;
 
 	result = compute_serialized_box3d(SERIALIZED_FORM(lwgeom));
+	if ( ! result ) PG_RETURN_NULL();
 
 	PG_RETURN_POINTER(result);
 }
@@ -369,7 +370,8 @@ Datum BOX3D_construct(PG_FUNCTION_ARGS)
 }
 
 //min(a,b)
-double LWGEOM_Mind(double a, double b)
+double
+LWGEOM_Mind(double a, double b)
 {
 	if (a<b)
 		return a;
@@ -377,9 +379,11 @@ double LWGEOM_Mind(double a, double b)
 }
 
 //max(a,b)
-double LWGEOM_Maxd(double a, double b)
+double
+LWGEOM_Maxd(double a, double b)
 {
 	if (b>a)
 		return b;
 	return a;
 }
+
