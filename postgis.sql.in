@@ -230,6 +230,12 @@ CREATE FUNCTION truly_inside(GEOMETRY,GEOMETRY)
    AS '@MODULE_FILENAME@'
    LANGUAGE 'c' with (isstrict);
 
+CREATE FUNCTION point_inside_circle(GEOMETRY,float8,float8,float8)
+   RETURNS bool
+   AS '@MODULE_FILENAME@'
+   LANGUAGE 'c' with (isstrict);
+
+
 ------- Aggregate
 
 CREATE FUNCTION combine_bbox(BOX3D,GEOMETRY)

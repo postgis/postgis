@@ -1455,4 +1455,42 @@ Datum force_collection(PG_FUNCTION_ARGS)
 
 
 
+// point_inside_circle(geometry, Px, Py, d)
+// returns true if there is a point in geometry whose distance to (Px,Py) is < d
 
+PG_FUNCTION_INFO_V1(point_inside_circle);
+Datum point_inside_circle(PG_FUNCTION_ARGS)
+{
+
+	GEOMETRY		      *geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char				*o;
+	int				type1,j;
+	int32				*offsets1;
+	POINT3D			*pt;
+	double			Px  = PG_GETARG_FLOAT8(1);
+	double			Py =  PG_GETARG_FLOAT8(2);
+	double			d =   PG_GETARG_FLOAT8(3);
+	double			dd = d*d; //d squared
+
+	offsets1 = (int32 *) ( ((char *) &(geom->objType[0] ))+ sizeof(int32) * geom->nobjs ) ;
+
+	//now have to do a scan of each object 
+
+	for (j=0; j< geom->nobjs; j++)		//for each object in geom
+	{
+		o = (char *) geom +offsets1[j] ;  
+		type1=  geom->objType[j];
+
+		if (type1 == POINTTYPE)	//point
+		{
+			//see if its within d of Px,Py
+			pt = (POINT3D *) o;
+			if  ( (   (pt->x - Px)*(pt->x - Px) + (pt->y - Py)*(pt->y - Py) ) < dd)
+			{
+				PG_RETURN_BOOL(TRUE);
+			}
+		}
+
+	}
+	PG_RETURN_BOOL(FALSE);	
+}
