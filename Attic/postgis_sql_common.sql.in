@@ -12,6 +12,9 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.17  2003/10/23 08:06:54  strk
+-- Added 'unite' aggregate.
+--
 -- Revision 1.16  2003/10/17 16:07:05  dblasby
 -- made isEmpty() return true/false
 --
@@ -1241,7 +1244,11 @@ CREATE FUNCTION buffer(geometry,float8)
            RETURNS geometry
            AS '@MODULE_FILENAME@','geomunion'
    LANGUAGE 'C' WITH (isstrict);
-   
+
+CREATE AGGREGATE unite (
+	basetype = geometry,
+	sfunc = geomunion,
+	stype = geometry );
 
 
 CREATE FUNCTION relate(geometry,geometry)
