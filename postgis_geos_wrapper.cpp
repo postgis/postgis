@@ -52,23 +52,6 @@ typedef struct
 	POINT3D  	points[1]; // array of actual points
 } POLYGON3D;
 
-typedef struct
-{
-	int32		size;		// postgres variable-length type requirement
-	int32		SRID;		// spatial reference system id
-	double	offsetX;	// for precision grid (future improvement)
-	double	offsetY;	// for precision grid (future improvement)
-	double	scale;	// for precision grid (future improvement)
-	int32		type;		// this type of geometry
-	bool		is3d;		// true if the points are 3d (only for output)
-	BOX3D		bvol;		// bounding volume of all the geo objects
-	int32		nobjs;	// how many sub-objects in this object
-	int32		objType[1];	// type of object
-	int32		objOffset[1];// offset (in bytes) into this structure where
-					 // the object is located
-	char		objData[1];  // store for actual objects
-
-} GEOMETRY;
 
 
 //###########################################################
@@ -79,14 +62,14 @@ extern "C" void initGEOS(int maxalign);
 
 extern "C" void GEOSdeleteChar(char *a);
 extern "C" void GEOSdeleteGeometry(Geometry *a);
-extern "C" bool GEOSrelatePattern(Geometry *g1, Geometry*g2,char *pat);
-extern "C" bool GEOSrelateDisjoint(Geometry *g1, Geometry*g2);
-extern "C" bool GEOSrelateTouches(Geometry *g1, Geometry*g2);
-extern "C" bool GEOSrelateIntersects(Geometry *g1, Geometry*g2);
-extern "C" bool GEOSrelateCrosses(Geometry *g1, Geometry*g2);
-extern "C" bool GEOSrelateWithin(Geometry *g1, Geometry*g2);
-extern "C" bool GEOSrelateContains(Geometry *g1, Geometry*g2);
-extern "C" bool GEOSrelateOverlaps(Geometry *g1, Geometry*g2);
+extern "C" char GEOSrelatePattern(Geometry *g1, Geometry*g2,char *pat);
+extern "C" char GEOSrelateDisjoint(Geometry *g1, Geometry*g2);
+extern "C" char GEOSrelateTouches(Geometry *g1, Geometry*g2);
+extern "C" char GEOSrelateIntersects(Geometry *g1, Geometry*g2);
+extern "C" char GEOSrelateCrosses(Geometry *g1, Geometry*g2);
+extern "C" char GEOSrelateWithin(Geometry *g1, Geometry*g2);
+extern "C" char GEOSrelateContains(Geometry *g1, Geometry*g2);
+extern "C" char GEOSrelateOverlaps(Geometry *g1, Geometry*g2);
 
 
 extern "C" Geometry *PostGIS2GEOS_point(POINT3D *point,int SRID, bool is3d);
@@ -99,12 +82,18 @@ extern "C" Geometry *PostGIS2GEOS_multipoint(POINT3D **points,int npoints, int S
 extern "C" Geometry *PostGIS2GEOS_box3d(BOX3D *box, int SRID);
 extern "C" Geometry *PostGIS2GEOS_collection(Geometry **geoms, int ngeoms,int SRID, bool is3d);
 
-extern "C" bool GEOSisvalid(Geometry *g1);
+extern "C" char GEOSisvalid(Geometry *g1);
+
+
+extern "C" char *GEOSasText(Geometry *g1);
+
+extern "C" char *throw_exception(Geometry *g);
 
 
 //###########################################################
 
 GeometryFactory *geomFactory = NULL;
+
 
 void initGEOS (int maxalign)
 {
@@ -115,131 +104,201 @@ void initGEOS (int maxalign)
 	}
 }
 
+// ------------------------------------------------------------------------------
+// geometry constuctors - return NULL if there was an error
+//-------------------------------------------------------------------------------
+
+
+
 		//note: you lose the 3d from this!
 Geometry *PostGIS2GEOS_box3d(BOX3D *box, int SRID)
 {
-	Geometry *g;
-	Envelope *envelope = new Envelope(box->LLB.x,box->URT.x ,box->LLB.y,box->URT.y);
-	g = geomFactory->toGeometry(envelope,geomFactory->getPrecisionModel(), SRID);
-	delete envelope;
-	return g;
+	try {
+		Geometry *g;
+		Envelope *envelope = new Envelope(box->LLB.x,box->URT.x ,box->LLB.y,box->URT.y);
+		g = geomFactory->toGeometry(envelope,geomFactory->getPrecisionModel(), SRID);
+		if (g==NULL)
+			return NULL;
+		g->setSRID(SRID);
+		delete envelope;
+		return g;
+	}
+	catch (...)
+	{
+		return NULL;
+	}
 }
 
 Geometry *PostGIS2GEOS_collection(Geometry **geoms, int ngeoms,int SRID, bool is3d)
 {
-	Geometry *g;
-	int t;
-	vector<Geometry *> *subGeos=new vector<Geometry *>;
-
-	for (t =0; t< ngeoms; t++)
+	try
 	{
-		subGeos->push_back(geoms[t]);	
-	}
-	g = geomFactory->buildGeometry(subGeos);
-	g->setSRID(SRID);
-	return g;
+		Geometry *g;
+		int t;
+		vector<Geometry *> *subGeos=new vector<Geometry *>;
 
+		for (t =0; t< ngeoms; t++)
+		{
+			subGeos->push_back(geoms[t]);	
+		}
+		g = geomFactory->buildGeometry(subGeos);
+		if (g==NULL)
+			return NULL;
+		g->setSRID(SRID);
+		return g;
+	}
+	catch (...)
+	{
+		return NULL;
+	}
 }
 
 Geometry *PostGIS2GEOS_point(POINT3D *point,int SRID, bool is3d)
 {
-	Coordinate *c;
+	try
+	{
+			Coordinate *c;
 
-	if (is3d)
-		c = new Coordinate(point->x, point->y);	
-	else
-		c = new Coordinate(point->x, point->y, point->z);
-	Geometry *g = geomFactory->createPoint(*c);
-	g->setSRID(SRID);
-	return g;
+			if (is3d)
+				c = new Coordinate(point->x, point->y);	
+			else
+				c = new Coordinate(point->x, point->y, point->z);
+			Geometry *g = geomFactory->createPoint(*c);
+			if (g==NULL)
+				return NULL;
+			g->setSRID(SRID);
+			return g;
+		}
+	catch (...)
+	{
+		return NULL;
+	}
 }
 
 
 Geometry *PostGIS2GEOS_linestring(LINE3D *line,int SRID, bool is3d)
 {
-	int t;
-	Coordinate c;
+	try{
 
-	//build coordinatelist & pre-allocate space
-	BasicCoordinateList  *coords = new BasicCoordinateList(line->npoints);
-	if (is3d)
-	{
-		for (t=0;t<line->npoints;t++)
-		{
-			c.x = line->points[t].x;
-			c.y = line->points[t].y;
-			c.z = line->points[t].z;
-			coords->setAt( c ,t);
+			int t;
+			Coordinate c;
+
+			//build coordinatelist & pre-allocate space
+			BasicCoordinateList  *coords = new BasicCoordinateList(line->npoints);
+			if (is3d)
+			{
+				for (t=0;t<line->npoints;t++)
+				{
+					c.x = line->points[t].x;
+					c.y = line->points[t].y;
+					c.z = line->points[t].z;
+					coords->setAt( c ,t);
+				}
+
+			}
+			else  //make 2d points
+			{
+				for (t=0;t<line->npoints;t++)
+				{
+					c.x = line->points[t].x;
+					c.y = line->points[t].y;
+					c.z = DoubleNotANumber;
+					coords->setAt( c ,t);
+				}
+
+			}
+			Geometry *g = geomFactory->createLineString(coords);
+			if (g==NULL)
+				return NULL;
+			g->setSRID(SRID);
+			return g;
 		}
-
-	}
-	else  //make 2d points
+	catch (...)
 	{
-		for (t=0;t<line->npoints;t++)
-		{
-			c.x = line->points[t].x;
-			c.y = line->points[t].y;
-			c.z = DoubleNotANumber;
-			coords->setAt( c ,t);
-		}
-
+		return NULL;
 	}
-	Geometry *g = geomFactory->createLineString(coords);
-	g->setSRID(SRID);
-	return g;
 }
 
 	//polygons is an array of pointers to polygons
 Geometry *PostGIS2GEOS_multipolygon(POLYGON3D **polygons,int npolys, int SRID, bool is3d)
 {
-	int t;
-	vector<Geometry *> *subPolys=new vector<Geometry *>;
-	Geometry *g;
-
-	for (t =0; t< npolys; t++)
+	try
 	{
-		subPolys->push_back(PostGIS2GEOS_polygon(polygons[t], SRID,is3d ));	
+			int t;
+			vector<Geometry *> *subPolys=new vector<Geometry *>;
+			Geometry *g;
+
+			for (t =0; t< npolys; t++)
+			{
+				subPolys->push_back(PostGIS2GEOS_polygon(polygons[t], SRID,is3d ));	
+			}
+			g = geomFactory->createMultiPolygon(subPolys);
+			if (g== NULL)
+				return NULL;
+			g->setSRID(SRID);
+			return g;
+		}
+	catch (...)
+	{
+		return NULL;
 	}
-	g = geomFactory->createMultiPolygon(subPolys);
-	g->setSRID(SRID);
-	return g;
 }
 
 	//lines is an array of pointers to line3d
 Geometry *PostGIS2GEOS_multilinestring(LINE3D **lines,int nlines, int SRID, bool is3d)
 {
-	int t;
-	vector<Geometry *> *subLines =new vector<Geometry *>;
-	Geometry *g;
-
-	for (t =0; t< nlines; t++)
+	try
 	{
-		subLines->push_back(PostGIS2GEOS_linestring(lines[t], SRID,is3d ));	
+			int t;
+			vector<Geometry *> *subLines =new vector<Geometry *>;
+			Geometry *g;
+
+			for (t =0; t< nlines; t++)
+			{
+				subLines->push_back(PostGIS2GEOS_linestring(lines[t], SRID,is3d ));	
+			}
+			g = geomFactory->createMultiLineString(subLines);
+			if (g==NULL)
+				return NULL;
+			g->setSRID(SRID);
+			return g;
+		}
+	catch (...)
+	{
+		return NULL;
 	}
-	g = geomFactory->createMultiLineString(subLines);
-	g->setSRID(SRID);
-	return g;
 }
 
 Geometry *PostGIS2GEOS_multipoint(POINT3D **points,int npoints, int SRID, bool is3d)
 {
-	int t;
-	vector<Geometry *> *subPoints =new vector<Geometry *>;
-	Geometry *g;
-
-	for (t =0; t< npoints; t++)
+	try
 	{
-		subPoints->push_back(PostGIS2GEOS_point(points[t], SRID,is3d ));	
+			int t;
+			vector<Geometry *> *subPoints =new vector<Geometry *>;
+			Geometry *g;
+
+			for (t =0; t< npoints; t++)
+			{
+				subPoints->push_back(PostGIS2GEOS_point(points[t], SRID,is3d ));	
+			}
+			g = geomFactory->createMultiPoint(subPoints);
+			if (g==NULL)
+				return NULL;
+			g->setSRID(SRID);
+			return g;
+		}
+	catch (...)
+	{
+		return NULL;
 	}
-	g = geomFactory->createMultiPoint(subPoints);
-	g->setSRID(SRID);
-	return g;
 
 }
 
 
 Geometry *PostGIS2GEOS_polygon(POLYGON3D *polygon,int SRID, bool is3d)
 {
+	try
+	{
 		POINT3D *pts;
 		Coordinate c;
 		int  ring,t;
@@ -276,7 +335,9 @@ Geometry *PostGIS2GEOS_polygon(POLYGON3D *polygon,int SRID, bool is3d)
 						cl->setAt( c ,t);
 				}
 			}
-			outerRing = geomFactory->createLinearRing(cl);
+			outerRing = (LinearRing*) geomFactory->createLinearRing(cl);
+			if (outerRing == NULL)
+				return NULL;
 			outerRing->setSRID(SRID);
 			pointOffset = polygon->npoints[0];
 
@@ -303,99 +364,239 @@ Geometry *PostGIS2GEOS_polygon(POLYGON3D *polygon,int SRID, bool is3d)
 						cl->setAt( c ,t);
 				}
 			}
-			innerRing = geomFactory->createLinearRing(cl);
+			innerRing = (LinearRing *) geomFactory->createLinearRing(cl);
+			if (innerRing == NULL)
+				return NULL;
 			innerRing->setSRID(SRID);
 			innerRings->push_back(innerRing);
 			pointOffset += polygon->npoints[ring];
 		}
 
-	g = geomFactory->createPolygon(outerRing, innerRings);
-	g->setSRID(SRID);
-	return g;
+		g = geomFactory->createPolygon(outerRing, innerRings);
+		if (g==NULL)
+			return NULL;
+		g->setSRID(SRID);
+		return g;
+		}
+	catch (...)
+	{
+		return NULL;
+	}
 }
 
+//-----------------------------------------------------------
+// relate()-related functions
+//  return 0 = false, 1 = true, 2 = error occured
+//-----------------------------------------------------------
 
-
-bool GEOSrelateDisjoint(Geometry *g1, Geometry*g2)
+char GEOSrelateDisjoint(Geometry *g1, Geometry*g2)
 {
-	return g1->disjoint(g2);
+	try {
+		bool result;
+		result = g1->disjoint(g2);
+		return result;
+	}
+	catch (...)
+	{
+		return 2;
+	}
 }
 
-bool GEOSrelateTouches(Geometry *g1, Geometry*g2)
+char GEOSrelateTouches(Geometry *g1, Geometry*g2)
 {
-	return g1->touches(g2);
+	try {
+		bool result;
+		result =  g1->touches(g2);
+		return result;
+	}
+	catch (...)
+	{
+		return 2;
+	}
 }
 
-bool GEOSrelateIntersects(Geometry *g1, Geometry*g2)
+char GEOSrelateIntersects(Geometry *g1, Geometry*g2)
 {
-	return g1->intersects(g2);
+	try {
+		bool result;
+		result = g1->intersects(g2);
+		return result;
+	}
+	catch (...)
+	{
+		return 2;
+	}
 }
 
-bool GEOSrelateCrosses(Geometry *g1, Geometry*g2)
+char GEOSrelateCrosses(Geometry *g1, Geometry*g2)
 {
-	return g1->crosses(g2);
+	try {
+		bool result;
+		result = g1->crosses(g2);
+		return result;
+	}
+	catch (...)
+	{
+		return 2;
+	}
 }
 
-bool GEOSrelateWithin(Geometry *g1, Geometry*g2)
+char GEOSrelateWithin(Geometry *g1, Geometry*g2)
 {
-	return g1->within(g2);
+	try {
+		bool result;
+		result = g1->within(g2);
+		return result;
+	}
+	catch (...)
+	{
+		return 2;
+	}
 }
 
-bool GEOSrelateContains(Geometry *g1, Geometry*g2)
+// call g1->contains(g2) 
+// returns 0 = false
+//         1 = true
+//         2 = error was trapped
+char GEOSrelateContains(Geometry *g1, Geometry*g2)
 {
-	return g1->contains(g2);
+	try {
+		bool result;
+		result = g1->contains(g2);
+		return result;
+	}
+	catch (...)
+	{
+		return 2;
+	}
 }
 
-bool GEOSrelateOverlaps(Geometry *g1, Geometry*g2)
+char GEOSrelateOverlaps(Geometry *g1, Geometry*g2)
 {
-	return g1->overlaps(g2);
+	try {
+		bool result;
+		result = g1->overlaps(g2);
+		return result;
+	}
+	catch (...)
+	{
+		return 2;
+	}
 }
+
+
+//-------------------------------------------------------------------
+// low-level relate functions
+//------------------------------------------------------------------
+
+char GEOSrelatePattern(Geometry *g1, Geometry*g2,char *pat)
+{
+	try {
+		bool result;
+		string s = pat;
+		result = g1->relate(g2,pat);
+		return result;
+	}
+	catch (...)
+	{
+		return 2;
+	}
+}
+
+char *GEOSrelate(Geometry *g1, Geometry*g2)
+{
+
+	try {
+
+		IntersectionMatrix *im = g1->relate(g2);
+
+		string s;
+		char *result;
+		if (im == NULL)
+				return NULL;
+
+		s= im->toString();
+		result = (char*) malloc( s.length() + 1);
+		strcpy(result, s.c_str() );
+
+		return result;
+	}
+	catch (...)
+	{
+		return NULL;
+	}
+}
+
+
+
+//-----------------------------------------------------------------
+// isValid
+//-----------------------------------------------------------------
+
+
+char GEOSisvalid(Geometry *g1)
+{
+	try {
+		bool result;
+		result =g1->isValid();
+		return result;
+	}
+	catch (...)
+	{
+		return 2;
+	}
+
+}
+
+
+//-----------------------------------------------------------------
+// general purpose
+//-----------------------------------------------------------------
+
+char *GEOSasText(Geometry *g1)
+{
+	try
+	{
+		string s = g1->toString();
+
+
+		char *result;
+		result = (char*) malloc( s.length() + 1);
+		strcpy(result, s.c_str() );
+		return result;
+	}
+	catch (...)
+	{
+		return NULL;
+	}
+}
+
+//-------------------------------------------------------------------
+// memory management functions
+//------------------------------------------------------------------
+
 
 //BUG:: this leaks memory, but delete kills the PrecisionModel for ALL the geometries
 void GEOSdeleteGeometry(Geometry *a)
 {
-//	delete a;
+	try{
+		//
+	}
+	catch(...)
+	{
+		// do nothing!
+	}
 }
 
 void GEOSdeleteChar(char *a)
 {
-	free(a);
-}
+	try{
+	 delete a;
+	}
+	catch(...)
+	{
+		// do nothing!
+	}
 
-
-bool GEOSrelatePattern(Geometry *g1, Geometry*g2,char *pat)
-{
-	string s = pat;
-	return g1->relate(g2,pat);
-}
-
-
-char *GEOSrelate(Geometry *g1, Geometry*g2)
-{
-	IntersectionMatrix *im = g1->relate(g2);
-	string s;
-	char *result;
-
-	s= im->toString();
-	result = (char*) malloc( s.length() + 1);
-	strcpy(result, s.c_str() );
-
-
-	return result;
-}
-
-bool GEOSisvalid(Geometry *g1)
-{
-	return g1->isValid();
-}
-
-
-
-
-char *GEOSasText(Geometry *g1)
-{
-	string s = g1->toString();
-
-	return (char *) s.c_str() ;
 }
 

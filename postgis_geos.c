@@ -32,14 +32,14 @@ typedef  struct Geometry Geometry;
 extern const char * createGEOSPoint(POINT3D *pt);
 extern void initGEOS(int maxalign);
 extern char *GEOSrelate(Geometry *g1, Geometry*g2);
-extern bool GEOSrelatePattern(Geometry *g1, Geometry*g2,char *pat);
-extern  bool GEOSrelateDisjoint(Geometry *g1, Geometry*g2);
-extern  bool GEOSrelateTouches(Geometry *g1, Geometry*g2);
-extern  bool GEOSrelateIntersects(Geometry *g1, Geometry*g2);
-extern  bool GEOSrelateCrosses(Geometry *g1, Geometry*g2);
-extern  bool GEOSrelateWithin(Geometry *g1, Geometry*g2);
-extern  bool GEOSrelateContains(Geometry *g1, Geometry*g2);
-extern  bool GEOSrelateOverlaps(Geometry *g1, Geometry*g2);
+extern char GEOSrelatePattern(Geometry *g1, Geometry*g2,char *pat);
+extern  char GEOSrelateDisjoint(Geometry *g1, Geometry*g2);
+extern  char GEOSrelateTouches(Geometry *g1, Geometry*g2);
+extern  char GEOSrelateIntersects(Geometry *g1, Geometry*g2);
+extern  char GEOSrelateCrosses(Geometry *g1, Geometry*g2);
+extern  char GEOSrelateWithin(Geometry *g1, Geometry*g2);
+extern  char GEOSrelateContains(Geometry *g1, Geometry*g2);
+extern  char GEOSrelateOverlaps(Geometry *g1, Geometry*g2);
 
 extern char *GEOSasText(Geometry *g1);
 
@@ -56,7 +56,12 @@ extern Geometry *PostGIS2GEOS_multipoint(POINT3D **points,int npoints, int SRID,
 extern Geometry *PostGIS2GEOS_box3d(BOX3D *box, int SRID);
 extern Geometry *PostGIS2GEOS_collection(Geometry **geoms, int ngeoms,int SRID, bool is3d);
 
-extern bool GEOSisvalid(Geometry *g1);
+extern char GEOSisvalid(Geometry *g1);
+
+
+
+extern char *throw_exception(Geometry *g);
+
 
 
 Datum relate_full(PG_FUNCTION_ARGS);
@@ -68,8 +73,6 @@ Datum crosses(PG_FUNCTION_ARGS);
 Datum within(PG_FUNCTION_ARGS);
 Datum contains(PG_FUNCTION_ARGS);
 Datum overlaps(PG_FUNCTION_ARGS);
-
-
 Datum isvalid(PG_FUNCTION_ARGS);
  
 
@@ -95,13 +98,23 @@ Datum isvalid(PG_FUNCTION_ARGS)
 		initGEOS(MAXIMUM_ALIGNOF);
 
 		g1 = 	POSTGIS2GEOS(geom1 );
-		result = GEOSisvalid(g1);
 
-	GEOSdeleteGeometry(g1);
+		result = GEOSisvalid(g1);
+		GEOSdeleteGeometry(g1);
+	if (result == 2)
+	{
+		elog(ERROR,"GEOS isvalid() threw an error!");
+		PG_RETURN_NULL(); //never get here
+	}
+
 
 	PG_RETURN_BOOL(result);
 }
 
+
+// overlaps(GEOMETRY g1,GEOMETRY g2)
+// returns  if GEOS::g1->overlaps(g2) returns true
+// throws an error (elog(ERROR,...)) if GEOS throws an error
 PG_FUNCTION_INFO_V1(overlaps);
 Datum overlaps(PG_FUNCTION_ARGS)
 {
@@ -118,11 +131,15 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	g1 = 	POSTGIS2GEOS(geom1 );
 	g2 = 	POSTGIS2GEOS(geom2 );
 
-
-	result = GEOSrelateOverlaps(g1,g2);
-
 	GEOSdeleteGeometry(g1);
 	GEOSdeleteGeometry(g2);
+
+	result = GEOSrelateOverlaps(g1,g2);
+	if (result == 2)
+	{
+		elog(ERROR,"GEOS overlaps() threw an error!");
+		PG_RETURN_NULL(); //never get here
+	}
 
 	PG_RETURN_BOOL(result);
 }
@@ -145,11 +162,17 @@ Datum contains(PG_FUNCTION_ARGS)
 	g1 = 	POSTGIS2GEOS(geom1 );
 	g2 = 	POSTGIS2GEOS(geom2 );
 
-
-	result = GEOSrelateContains(g1,g2);
-
 	GEOSdeleteGeometry(g1);
 	GEOSdeleteGeometry(g2);
+
+	result = GEOSrelateContains(g1,g2);
+	if (result == 2)
+	{
+		elog(ERROR,"GEOS contains() threw an error!");
+		PG_RETURN_NULL(); //never get here
+	}
+
+
 
 	PG_RETURN_BOOL(result);
 }
@@ -171,11 +194,16 @@ Datum within(PG_FUNCTION_ARGS)
 	g1 = 	POSTGIS2GEOS(geom1 );
 	g2 = 	POSTGIS2GEOS(geom2 );
 
-
-	result = GEOSrelateWithin(g1,g2);
-
 	GEOSdeleteGeometry(g1);
 	GEOSdeleteGeometry(g2);
+	result = GEOSrelateWithin(g1,g2);
+	if (result == 2)
+	{
+		elog(ERROR,"GEOS within() threw an error!");
+		PG_RETURN_NULL(); //never get here
+	}
+
+
 
 	PG_RETURN_BOOL(result);
 }
@@ -198,11 +226,17 @@ Datum crosses(PG_FUNCTION_ARGS)
 	g1 = 	POSTGIS2GEOS(geom1 );
 	g2 = 	POSTGIS2GEOS(geom2 );
 
-
-	result = GEOSrelateCrosses(g1,g2);
-
 	GEOSdeleteGeometry(g1);
 	GEOSdeleteGeometry(g2);
+
+	result = GEOSrelateCrosses(g1,g2);
+	if (result == 2)
+	{
+		elog(ERROR,"GEOS crosses() threw an error!");
+		PG_RETURN_NULL(); //never get here
+	}
+
+
 
 	PG_RETURN_BOOL(result);
 }
@@ -225,11 +259,17 @@ Datum intersects(PG_FUNCTION_ARGS)
 	g1 = 	POSTGIS2GEOS(geom1 );
 	g2 = 	POSTGIS2GEOS(geom2 );
 
-
-	result = GEOSrelateIntersects(g1,g2);
-
 	GEOSdeleteGeometry(g1);
 	GEOSdeleteGeometry(g2);
+
+	result = GEOSrelateIntersects(g1,g2);
+	if (result == 2)
+	{
+		elog(ERROR,"GEOS intersects() threw an error!");
+		PG_RETURN_NULL(); //never get here
+	}
+
+
 
 	PG_RETURN_BOOL(result);
 }
@@ -251,11 +291,17 @@ Datum touches(PG_FUNCTION_ARGS)
 	g1 = 	POSTGIS2GEOS(geom1 );
 	g2 = 	POSTGIS2GEOS(geom2 );
 
-
-	result = GEOSrelateTouches(g1,g2);
-
 	GEOSdeleteGeometry(g1);
 	GEOSdeleteGeometry(g2);
+
+	result = GEOSrelateTouches(g1,g2);
+	if (result == 2)
+	{
+		elog(ERROR,"GEOS touches() threw an error!");
+		PG_RETURN_NULL(); //never get here
+	}
+
+
 
 	PG_RETURN_BOOL(result);
 }
@@ -279,9 +325,14 @@ Datum disjoint(PG_FUNCTION_ARGS)
 
 
 	result = GEOSrelateDisjoint(g1,g2);
-
 	GEOSdeleteGeometry(g1);
 	GEOSdeleteGeometry(g2);
+
+	if (result == 2)
+	{
+		elog(ERROR,"GEOS disjoin() threw an error!");
+		PG_RETURN_NULL(); //never get here
+	}
 
 	PG_RETURN_BOOL(result);
 }
@@ -309,12 +360,16 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
                         PointerGetDatum(PG_GETARG_DATUM(2))));
 
 	result = GEOSrelatePattern(g1,g2,patt);
-
-
 	GEOSdeleteGeometry(g1);
 	GEOSdeleteGeometry(g2);
-
 	pfree(patt);
+
+	if (result == 2)
+	{
+		elog(ERROR,"GEOS relate_pattern() threw an error!");
+		PG_RETURN_NULL(); //never get here
+	}
+
 	PG_RETURN_BOOL(result);
 
 
@@ -333,24 +388,51 @@ Datum relate_full(PG_FUNCTION_ARGS)
 	int len;
 	char *result;
 
+//elog(NOTICE,"in relate_full()");
+
 	errorIfGeometryCollection(geom1,geom2);
 
-//elog(NOTICE,"in relate_full: \n");
+
 	initGEOS(MAXIMUM_ALIGNOF);
 
-//elog(NOTICE,"making GOES geometries: \n");
+//elog(NOTICE,"GEOS init()");
+
 	g1 = 	POSTGIS2GEOS(geom1 );
 	g2 = 	POSTGIS2GEOS(geom2 );
-//	elog(NOTICE,"geometries made, here's what they are: \n");
-//g1 = createGEOSFromText("POINT(1 1)");
-//g2 = createGEOSFromText("POINT(1 1)");
+
+//elog(NOTICE,"constructed geometries ");
+
+
+
+
+
+if ((g1==NULL) || (g2 == NULL))
+	elog(NOTICE,"g1 or g2 are null");
+
 //elog(NOTICE,GEOSasText(g1));
 //elog(NOTICE,GEOSasText(g2));
 
-//elog(NOTICE,"calling relate: \n");
-	relate_str = GEOSrelate(g1, g2);
+//elog(NOTICE,"valid g1 = %i", GEOSisvalid(g1));
+//elog(NOTICE,"valid g2 = %i",GEOSisvalid(g2));
 
-//elog(NOTICE,"relate finished \n");
+//elog(NOTICE,"about to relate()");
+
+
+		relate_str = GEOSrelate(g1, g2);
+
+//elog(NOTICE,"finished relate()");
+
+	GEOSdeleteGeometry(g1);
+	GEOSdeleteGeometry(g2);
+
+
+
+	if (relate_str == NULL)
+	{
+		//free(relate_str);
+		elog(ERROR,"GEOS relate() threw an error!");
+		PG_RETURN_NULL(); //never get here
+	}
 
 
 	len = strlen(relate_str) + 4;
@@ -361,8 +443,7 @@ Datum relate_full(PG_FUNCTION_ARGS)
 	memcpy(result +4, relate_str, len-4);
 
 	free(relate_str);
-//	GEOSdeleteGeometry(g1);
-//	GEOSdeleteGeometry(g2);
+
 
 	PG_RETURN_POINTER(result);
 }
@@ -382,6 +463,7 @@ Geometry *POSTGIS2GEOS(GEOMETRY *g)
 	char     *obj;
 	int      obj_type;
 	int t;
+	Geometry	*result;
 
 	int32 *offsets1 = (int32 *) ( ((char *) &(g->objType[0] ))+ sizeof(int32) * g->nobjs ) ;
 
@@ -389,15 +471,30 @@ Geometry *POSTGIS2GEOS(GEOMETRY *g)
 	{
 		case POINTTYPE:	
 							pt = (POINT3D*) ((char *) g +offsets1[0]) ;
-							return PostGIS2GEOS_point(pt,g->SRID,g->is3d);
+							result =  PostGIS2GEOS_point(pt,g->SRID,g->is3d);
+							if (result == NULL)
+							{
+								elog(ERROR,"Couldnt convert the postgis geometry to GEOS!");
+							}
+							return result;
 							break;
 		case LINETYPE:		
 							line = (LINE3D*) ((char *) g +offsets1[0]) ;
-							return PostGIS2GEOS_linestring(line,g->SRID,g->is3d);
+							result =  PostGIS2GEOS_linestring(line,g->SRID,g->is3d);
+							if (result == NULL)
+							{
+								elog(ERROR,"Couldnt convert the postgis geometry to GEOS!");
+							}
+							return result;
 							break;
 		case POLYGONTYPE:   
 							poly = (POLYGON3D*) ((char *) g +offsets1[0]) ;
-							return PostGIS2GEOS_polygon(poly,g->SRID,g->is3d);
+							result =  PostGIS2GEOS_polygon(poly,g->SRID,g->is3d);
+							if (result == NULL)
+							{
+								elog(ERROR,"Couldnt convert the postgis geometry to GEOS!");
+							}
+							return result;
 							break;
 		case MULTIPOLYGONTYPE:
 									//make an array of POLYGON3Ds
@@ -408,6 +505,10 @@ Geometry *POSTGIS2GEOS(GEOMETRY *g)
 							}
 							geos= PostGIS2GEOS_multipolygon(polys, g->nobjs, g->SRID,g->is3d);
 							pfree(polys);
+							if (geos == NULL)
+							{
+								elog(ERROR,"Couldnt convert the postgis geometry to GEOS!");
+							}
 							return geos;
 							break;
 		case MULTILINETYPE:
@@ -419,6 +520,10 @@ Geometry *POSTGIS2GEOS(GEOMETRY *g)
 							}
 							geos= PostGIS2GEOS_multilinestring(lines, g->nobjs, g->SRID,g->is3d);
 							pfree(lines);
+							if (geos == NULL)
+							{
+								elog(ERROR,"Couldnt convert the postgis geometry to GEOS!");
+							}
 							return geos;
 							break;
 		case MULTIPOINTTYPE:
@@ -430,11 +535,20 @@ Geometry *POSTGIS2GEOS(GEOMETRY *g)
 							}
 							geos= PostGIS2GEOS_multipoint(points, g->nobjs,g->SRID,g->is3d);
 							pfree(points);
+							if (geos == NULL)
+							{
+								elog(ERROR,"Couldnt convert the postgis geometry to GEOS!");
+							}
 							return geos;
 							break;
 		case BBOXONLYTYPE:
-							 return PostGIS2GEOS_box3d(&g->bvol, g->SRID);
-							 break;
+							result =   PostGIS2GEOS_box3d(&g->bvol, g->SRID);
+							if (result == NULL)
+							{
+								elog(ERROR,"Couldnt convert the postgis geometry to GEOS!");
+							}
+							return result;
+							break;
 		case COLLECTIONTYPE:
 								//make an array of GEOS Geometrys
 							geoms = (Geometry**) palloc(sizeof (Geometry*) * g->nobjs);
@@ -447,19 +561,41 @@ Geometry *POSTGIS2GEOS(GEOMETRY *g)
 									case POINTTYPE:
 													pt = (POINT3D*) obj ;
 													geoms[t] = PostGIS2GEOS_point(pt,g->SRID,g->is3d);
+													if (geoms[t] == NULL)
+													{
+														pfree(geoms);
+														elog(ERROR,"Couldnt convert the postgis geometry to GEOS!");
+														return NULL;
+													}
 													break;
 									case LINETYPE:
 													line = (LINE3D*) obj ;
 													geoms[t] = PostGIS2GEOS_linestring(line,g->SRID,g->is3d);
+													if (geoms[t] == NULL)
+													{
+														pfree(geoms);
+														elog(ERROR,"Couldnt convert the postgis geometry to GEOS!");
+														return NULL;
+													}
 													break;
 									case POLYGONTYPE:
 													poly = (POLYGON3D*) obj ;
 													geoms[t] = PostGIS2GEOS_polygon(poly,g->SRID,g->is3d);
+													if (geoms[t] == NULL)
+													{
+														pfree(geoms);
+														elog(ERROR,"Couldnt convert the postgis geometry to GEOS!");
+														return NULL;
+													}
 													break;
 								}
 							}
 							geos= PostGIS2GEOS_collection(geoms,g->nobjs,g->SRID,g->is3d);
 							pfree(geoms);
+							if (geos == NULL)
+							{
+								elog(ERROR,"Couldnt convert the postgis geometry to GEOS!");
+							}
 							return geos; 
 							break;
 

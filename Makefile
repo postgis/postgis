@@ -3,14 +3,14 @@
 #---------------------------------------------------------------
 # Set USE_PROJ to 1 for Proj4 reprojection support
 #
-USE_PROJ=0
+USE_PROJ=1
 PROJ_DIR=/usr/local
 
 #---------------------------------------------------------------
 # Set USE_GEOS to 1 for GEOS spatial predicate and operator
 # support
 #
-USE_GEOS=0
+USE_GEOS=1
 GEOS_DIR=/usr/local
 
 #---------------------------------------------------------------
@@ -69,7 +69,7 @@ SO_MINOR_VERSION=8
 
 #---------------------------------------------------------------
 
-override CFLAGS += -g
+override CFLAGS += -g -fexceptions  
 override CFLAGS += -I$(srcdir) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"' 
 override CFLAGS += -DUSE_VERSION=$(USE_VERSION)
 
