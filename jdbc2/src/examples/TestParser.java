@@ -56,6 +56,9 @@ public class TestParser {
     /** The string prefix we get for the srid tests */
     public static final String SRIDPREFIX = "SRID=" + SRID + ";";
 
+    /** How much tests did fail? */
+    public static int failcount = 0;
+
     /** The actual test method */
     public static void test(String WKT, Connection[] conns) throws SQLException {
         System.out.println("Original:  " + WKT);
@@ -67,8 +70,10 @@ public class TestParser {
         System.out.println("Re-Parsed: " + reparsed);
         if (!geom.equals(regeom)) {
             System.out.println("--- Geometries are not equal!");
+            failcount++;
         } else if (!reparsed.equals(parsed)) {
             System.out.println("--- Text Reps are not equal!");
+            failcount++;
         } else {
             System.out.println("Equals:    yes");
         }
@@ -81,11 +86,13 @@ public class TestParser {
                 System.out.println("SQLin    : " + sqlGeom.toString());
                 if (!geom.equals(sqlGeom)) {
                     System.out.println("--- Geometries after SQL are not equal!");
+                    failcount++;
                 } else {
                     System.out.println("Eq SQL in: yes");
                 }
             } catch (SQLException e) {
                 System.out.println("--- Server side error: " + e.toString());
+                failcount++;
             }
 
             try {
@@ -93,11 +100,13 @@ public class TestParser {
                 System.out.println("SQLout  :  " + sqlreGeom.toString());
                 if (!geom.equals(sqlreGeom)) {
                     System.out.println("--- reparsed Geometries after SQL are not equal!");
+                    failcount++;
                 } else {
                     System.out.println("Eq SQLout: yes");
                 }
             } catch (SQLException e) {
                 System.out.println("--- Server side error: " + e.toString());
+                failcount++;
             }
 
             statement.close();
@@ -179,6 +188,7 @@ public class TestParser {
             conns[i].close();
         }
         
-        System.out.println("Finished.");
+        //System.out.println("Finished.");
+	System.out.println("Finished, " + failcount + " tests failed!");
     }
 }
