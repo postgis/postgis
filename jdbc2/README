@@ -104,6 +104,11 @@ several flavours for different JDBC relases and sun JDK releases, but
 currently, the same postgis.jar should work with all of them. If not,
 you clearly found a bug, and we kindly ask you to report it.
 
+If you run into troubles, make shure that you use the newest pgjdbc build.
+Especially pre releases are known to contain bugs (that's why they are pre
+releases), and e. G. 8.0 build 309 contained some problems that are fixed
+in 8.0 build 301.
+
 
 * How do I use it? *
 
@@ -220,6 +225,9 @@ CLASSPATH, "make postgis_jts" and use at your own risk.
 Well, the best place are the official PostGIS mailing lists for PostGIS,
 subscription information is linked at:
   http://postgis.refractions.net/support.php
+  
+If you want to report errors, please try to send us all the details we need
+to reproduce your problem. A small, self-contained test case would be best.
 
 
 * Phew. That's all? *
