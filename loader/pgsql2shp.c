@@ -95,7 +95,7 @@ int is_bigendian(void);
 SHPObject * shape_creator_wrapper_WKB(byte *str, int idx);
 int get_postgis_major_version(void);
 static void parse_table(char *spec);
-static int create_usrquerytable();
+static int create_usrquerytable(void);
 
 /* WKB functions */
 SHPObject * create_polygon2D_WKB(byte *wkb);
@@ -3086,6 +3086,9 @@ create_usrquerytable()
 
 /**********************************************************************
  * $Log$
+ * Revision 1.67  2004/10/17 12:16:47  strk
+ * fixed prototype for user query table
+ *
  * Revision 1.66  2004/10/17 12:15:10  strk
  * Bug fixed in multipoint4D creation
  *
