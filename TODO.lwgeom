@@ -1,3 +1,4 @@
+- AsBinary(geometry, XDR|NDR)
 
 - size computation functions for deserialized objects
 
