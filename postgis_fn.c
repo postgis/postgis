@@ -185,21 +185,22 @@ double polygon_area2d_old(POLYGON3D *poly1)
 	pts1 = (POINT3D *) ( (char *)&(poly1->npoints[poly1->nrings] )  );
 	pts1 = (POINT3D *) MAXALIGN(pts1);
 
-
+//elog(NOTICE,"in polygon_area2d_old");
 	
 	pt_offset = 0; //index to first point in ring
 	for (ring = 0; ring < poly1->nrings; ring++)
 	{
 		ringarea = 0.0;
 		
-		for (i=0;i<(poly1->npoints[ring]);i++) 
-    		{ 
-			j = (i+1) % (poly1->npoints[ring]);
+		for (i=0;i<(poly1->npoints[ring]-1);i++) 
+    	{ 
+		//	j = (i+1) % (poly1->npoints[ring]);
+			j = i+1;
 			ringarea  += pts1[pt_offset+ i].x * pts1[pt_offset+j].y - pts1[pt_offset+ i].y * pts1[pt_offset+j].x; 
 		} 
 
 		ringarea  /= 2.0; 
-
+//elog(NOTICE," ring 1 has area %lf",ringarea);
 		ringarea  = fabs(ringarea );
 		if (ring != 0)	//outer
 			ringarea  = -1.0*ringarea ; // its a hole
