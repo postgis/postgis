@@ -72,7 +72,7 @@ valid SRID in the SPATIAL_REF_SYS table, and then update your geometries
 to reference the SRID with the following SQL (with the appropriate
 substitutions:
 
-  UPDATE TABLE <table> SET <geocolumn> = SetSRID(<geocolumn>,<SRID>);
+  UPDATE <table> SET <geocolumn> = SetSRID(<geocolumn>,<SRID>);
 
 
 USAGE:
