@@ -10,6 +10,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.26  2003/12/12 12:03:29  strk
+ * More debugging output, some code cleanup.
+ *
  * Revision 1.25  2003/12/12 10:28:50  strk
  * added GEOSnoop OUTPUT debugging info
  *
@@ -133,6 +136,8 @@
   * during postgis->geos and geos->postgis conversions
   */
 #undef DEBUG_CONVERTER
+#undef DEBUG_POSTGIS2GEOS
+#undef DEBUG_GEOS2POSTGIS
 
 
 typedef  struct Geometry Geometry;
@@ -1384,7 +1389,7 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 		/* From slower to faster.. compensation rule :) */
 
 		case COLLECTIONTYPE:
-#ifdef DEBUG_CONVERTER
+#ifdef DEBUG_GEOS2POSTGIS
 			elog(NOTICE, "GEOS2POSTGIS: It's a COLLECTION");
 #endif
 			//this is more difficult because GEOS allows GCs of GCs
@@ -1420,9 +1425,9 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 
 		case MULTIPOLYGONTYPE:
 			ngeoms = 	GEOSGetNumGeometries(g);
-#ifdef DEBUG_CONVERTER
+#ifdef DEBUG_GEOS2POSTGIS
 			elog(NOTICE, "GEOS2POSTGIS: It's a MULTIPOLYGON");
-#endif // DEBUG_CONVERTER
+#endif // DEBUG_GEOS2POSTGIS
 			if (ngeoms ==0)
 			{
 				result =  makeNullGeometry(GEOSGetSRID(g));
@@ -1456,7 +1461,7 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 			return result;
 
 		case MULTILINETYPE:
-#ifdef DEBUG_CONVERTER
+#ifdef DEBUG_GEOS2POSTGIS
 			elog(NOTICE, "GEOS2POSTGIS: It's a MULTILINE");
 #endif
 			ngeoms = GEOSGetNumGeometries(g);
@@ -1471,7 +1476,7 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 			result = make_oneobj_geometry(size, (char *)line,
 				MULTILINETYPE,  want3d,
 				GEOSGetSRID(g),1.0, 0.0, 0.0);
-#ifdef DEBUG_CONVERTER
+#ifdef DEBUG_GEOS2POSTGIS
 	elog(NOTICE,"GEOS2POSTGIS: t0: %s",geometry_to_text(result));
 	elog(NOTICE,"    size = %i", result->size);
 #endif
@@ -1483,7 +1488,7 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 				g_old = result;
 				result = add_to_geometry(g_old,size,
 						(char*) line, LINETYPE);
-#ifdef DEBUG_CONVERTER
+#ifdef DEBUG_GEOS2POSTGIS
 	elog(NOTICE,"GEOS2POSTGIS: t%d: %s", t, geometry_to_text(result));
 	elog(NOTICE,"    size = %i", result->size);
 #endif
@@ -1492,7 +1497,7 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 			bbox = bbox_of_geometry( result ); // make bounding box
 			memcpy( &result->bvol, bbox, sizeof(BOX3D) ); // copy bounding box
 			pfree( bbox ); // free bounding box
-#ifdef DEBUG_CONVERTER
+#ifdef DEBUG_GEOS2POSTGIS
 	elog(NOTICE,"GEOS2POSTGIS: end: %s",geometry_to_text(result));
 	elog(NOTICE,"    size = %i", result->size);
 #endif
@@ -1500,7 +1505,7 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 			return result;
 
 		case MULTIPOINTTYPE:
-#ifdef DEBUG_CONVERTER
+#ifdef DEBUG_GEOS2POSTGIS
 			elog(NOTICE, "GEOS2POSTGIS: It's a MULTIPOINT");
 #endif
 			g_new = NULL;
@@ -1532,7 +1537,7 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 			return g_new;
 
 		case POLYGONTYPE:
-#ifdef DEBUG_CONVERTER
+#ifdef DEBUG_GEOS2POSTGIS
 			elog(NOTICE, "GEOS2POSTGIS: It's a POLYGON");
 #endif
 			poly = PolyFromGeometry(g,&size);
@@ -1543,7 +1548,7 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 			return result;
 
 		case LINETYPE:
-#ifdef DEBUG_CONVERTER
+#ifdef DEBUG_GEOS2POSTGIS
 			elog(NOTICE, "GEOS2POSTGIS: It's a LINE");
 #endif
 			line = LineFromGeometry(g,&size);
@@ -1554,7 +1559,7 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 			return result;
 
 		case POINTTYPE: 
-#ifdef DEBUG_CONVERTER
+#ifdef DEBUG_GEOS2POSTGIS
 			elog(NOTICE, "GEOS2POSTGIS: It's a POINT");
 #endif
 			pts = GEOSGetCoordinate(g);
@@ -1565,7 +1570,7 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 			return result;
 
 		default:
-#ifdef DEBUG_CONVERTER
+#ifdef DEBUG_GEOS2POSTGIS
 			elog(NOTICE, "GEOS2POSTGIS: It's UNKNOWN!");
 #endif
 			return NULL;
@@ -1596,7 +1601,7 @@ Geometry *POSTGIS2GEOS(GEOMETRY *g)
 	switch(g->type)
 	{
 		case POINTTYPE:
-#ifdef DEBUG_CONVERTER
+#ifdef DEBUG_POSTGIS2GEOS
 			elog(NOTICE, "POSTGIS2GEOS: it's a POINT");
 #endif
 			pt = (POINT3D*) ((char *) g +offsets1[0]) ;
@@ -1609,7 +1614,7 @@ Geometry *POSTGIS2GEOS(GEOMETRY *g)
 			break;
 
 		case LINETYPE:
-#ifdef DEBUG_CONVERTER
+#ifdef DEBUG_POSTGIS2GEOS
 			elog(NOTICE, "POSTGIS2GEOS: it's a LINE");
 #endif
 			line = (LINE3D*) ((char *) g +offsets1[0]) ;
@@ -1622,7 +1627,7 @@ Geometry *POSTGIS2GEOS(GEOMETRY *g)
 			break;
 
 		case POLYGONTYPE:
-#ifdef DEBUG_CONVERTER
+#ifdef DEBUG_POSTGIS2GEOS
 			elog(NOTICE, "POSTGIS2GEOS: it's a POLYGON");
 #endif
 			poly = (POLYGON3D*) ((char *) g +offsets1[0]) ;
@@ -1635,7 +1640,7 @@ Geometry *POSTGIS2GEOS(GEOMETRY *g)
 			break;
 
 		case MULTIPOLYGONTYPE:
-#ifdef DEBUG_CONVERTER
+#ifdef DEBUG_POSTGIS2GEOS
 			elog(NOTICE, "POSTGIS2GEOS: it's a MULTIPOLYGON");
 #endif
 			//make an array of POLYGON3Ds
@@ -1656,16 +1661,19 @@ Geometry *POSTGIS2GEOS(GEOMETRY *g)
 			break;
 
 		case MULTILINETYPE:
-#ifdef DEBUG_CONVERTER
+#ifdef DEBUG_POSTGIS2GEOS
 			elog(NOTICE, "POSTGIS2GEOS: it's a MULTILINE");
 #endif
-			//make an array of POLYGON3Ds
+			//make an array of LINES3D
 			lines = NULL;
 			if (g->nobjs >0)
 				lines = (LINE3D**) palloc(sizeof (LINE3D*) * g->nobjs);
 			for (t=0;t<g->nobjs;t++)
 			{
-				lines[t] = 	(LINE3D*) ((char *) g +offsets1[t]) ;
+#ifdef DEBUG_POSTGIS2GEOS
+		elog(NOTICE, "Line %d has offset %d", t, offsets1[t]);
+#endif
+				lines[t] = (LINE3D*) ((char *)g+offsets1[t]) ;
 			}
 			geos= PostGIS2GEOS_multilinestring(lines, g->nobjs, g->SRID,g->is3d);
 			if (lines != NULL) pfree(lines);
@@ -1677,7 +1685,7 @@ Geometry *POSTGIS2GEOS(GEOMETRY *g)
 			break;
 
 		case MULTIPOINTTYPE:
-#ifdef DEBUG_CONVERTER
+#ifdef DEBUG_POSTGIS2GEOS
 			elog(NOTICE, "POSTGIS2GEOS: it's a MULTIPOINT");
 #endif
 			//make an array of POINT3Ds
@@ -1698,7 +1706,7 @@ Geometry *POSTGIS2GEOS(GEOMETRY *g)
 			break;
 
 		case BBOXONLYTYPE:
-#ifdef DEBUG_CONVERTER
+#ifdef DEBUG_POSTGIS2GEOS
 			elog(NOTICE, "POSTGIS2GEOS: it's a BBOXONLY");
 #endif
 			result =   PostGIS2GEOS_box3d(&g->bvol, g->SRID);
@@ -1710,7 +1718,7 @@ Geometry *POSTGIS2GEOS(GEOMETRY *g)
 			break;
 
 		case COLLECTIONTYPE:
-#ifdef DEBUG_CONVERTER
+#ifdef DEBUG_POSTGIS2GEOS
 			elog(NOTICE, "POSTGIS2GEOS: it's a COLLECTION");
 #endif
 			//make an array of GEOS Geometries
@@ -1755,7 +1763,7 @@ Geometry *POSTGIS2GEOS(GEOMETRY *g)
 						break;
 				}
 			}
-#ifdef DEBUG_CONVERTER
+#ifdef DEBUG_POSTGIS2GEOS
 			elog(NOTICE, "POSTGIS2GEOS: COLLECTION has %d objs, srid %d and is %s 3d", g->nobjs, g->SRID, g->is3d ? "" : "not");
 #endif
 			geos = PostGIS2GEOS_collection(geoms,g->nobjs,g->SRID,g->is3d);

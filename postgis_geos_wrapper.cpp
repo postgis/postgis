@@ -2,6 +2,9 @@
 
 /*
 * $Log$
+* Revision 1.16  2003/12/12 12:03:30  strk
+* More debugging output, some code cleanup.
+*
 * Revision 1.15  2003/11/12 16:36:04  strk
 * delete all caught exceptions after use
 *
@@ -268,45 +271,44 @@ Geometry *PostGIS2GEOS_point(POINT3D *point,int SRID, bool is3d)
 }
 
 
-Geometry *PostGIS2GEOS_linestring(LINE3D *line,int SRID, bool is3d)
+/*
+ * This function must return an all-new allocated object
+ */
+Geometry *
+PostGIS2GEOS_linestring(const LINE3D *line,int SRID, bool is3d)
 {
 	try{
+		int t;
+		Coordinate c;
 
-			int t;
-			Coordinate c;
-
-			//build coordinatelist & pre-allocate space
-			BasicCoordinateList  *coords = new BasicCoordinateList(line->npoints);
-			if (is3d)
+		//build coordinatelist & pre-allocate space
+		BasicCoordinateList  *coords = new BasicCoordinateList(line->npoints);
+		if (is3d)
+		{
+			for (t=0;t<line->npoints;t++)
 			{
-				for (t=0;t<line->npoints;t++)
-				{
-					c.x = line->points[t].x;
-					c.y = line->points[t].y;
-					c.z = line->points[t].z;
-					coords->setAt( c ,t);
-				}
-
+				c.x = line->points[t].x;
+				c.y = line->points[t].y;
+				c.z = line->points[t].z;
+				coords->setAt( c ,t);
 			}
-			else  //make 2d points
-			{
-				for (t=0;t<line->npoints;t++)
-				{
-					c.x = line->points[t].x;
-					c.y = line->points[t].y;
-					c.z = DoubleNotANumber;
-					coords->setAt( c ,t);
-
-				}
-
-			}
-			Geometry *g = geomFactory->createLineString(coords);
-			delete coords;
-			if (g==NULL)
-				return NULL;
-			g->setSRID(SRID);
-			return g;
 		}
+		else  //make 2d points
+		{
+			for (t=0;t<line->npoints;t++)
+			{
+				c.x = line->points[t].x;
+				c.y = line->points[t].y;
+				c.z = DoubleNotANumber;
+				coords->setAt( c ,t);
+			}
+		}
+		Geometry *g = geomFactory->createLineString(coords);
+		delete coords;
+		if (g==NULL) return NULL;
+		g->setSRID(SRID);
+		return g;
+	}
 	catch (GEOSException *ge)
 	{
 		NOTICE_MESSAGE((char *)ge->toString().c_str());
@@ -356,33 +358,35 @@ Geometry *PostGIS2GEOS_multipolygon(POLYGON3D **polygons,int npolys, int SRID, b
 	}
 }
 
-	//lines is an array of pointers to line3d
-Geometry *PostGIS2GEOS_multilinestring(LINE3D **lines,int nlines, int SRID, bool is3d)
+//lines is an array of pointers to line3d
+Geometry *
+PostGIS2GEOS_multilinestring(const LINE3D **lines, int nlines, int SRID, bool is3d)
 {
 	try
 	{
-			int t;
-			vector<Geometry *> *subLines =new vector<Geometry *>;
-			Geometry *g;
+		int t;
+		vector<Geometry *> *subLines = new vector<Geometry *>;
+		Geometry *g;
 
-			for (t =0; t< nlines; t++)
-			{
-				subLines->push_back(PostGIS2GEOS_linestring(lines[t], SRID,is3d ));
-			}
-			g = geomFactory->createMultiLineString(subLines);
-			delete subLines;
-			if (g==NULL)
-				return NULL;
-			g->setSRID(SRID);
-			return g;
+		for (t =0; t< nlines; t++)
+		{
+			subLines->push_back(PostGIS2GEOS_linestring(lines[t],
+						SRID,is3d ));
 		}
+		// geometries pointed to by subLines will be owned
+		// by returned MultiLineString object
+		g = geomFactory->createMultiLineString(subLines);
+		delete subLines;
+		if (g==NULL) return NULL;
+		g->setSRID(SRID);
+		return g;
+	}
 	catch (GEOSException *ge)
 	{
 		NOTICE_MESSAGE((char *)ge->toString().c_str());
 		delete ge;
 		return NULL;
 	}
-
 	catch (...)
 	{
 		return NULL;

@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.33  2003/12/12 12:03:30  strk
+ * More debugging output, some code cleanup.
+ *
  * Revision 1.32  2003/12/09 11:58:42  strk
  * Final touch to wkb binary input function
  *
@@ -173,7 +176,9 @@ void print_many_points(char *result, POINT3D *pt ,int npoints, bool is3d)
 				result[0] = ',';
 				result++;
 			}
-			result+=	sprintf(result,"%.15g %.15g", pt[u].x,pt[u].y);
+
+			result += sprintf(result, "%.15g %.15g",
+					pt[u].x, pt[u].y);
 		}
 	}
 }
@@ -1803,8 +1808,6 @@ Datum geometry_out(PG_FUNCTION_ARGS)
 
 		wkt = geometry_to_text(geom1);
 
-
-
 		len = strlen(wkt) + 6+ 25 + 1;
 		result = palloc(len);//extra space for SRID
 		memset(result, 0, len);	//zero everything out
@@ -1900,25 +1903,39 @@ char *geometry_to_text(GEOMETRY  *geometry)
 
 
 	if (geometry->type == POINTTYPE)
-		sprintf(result, "POINT(" );
-	if (geometry->type == LINETYPE)
-		sprintf(result, "LINESTRING" );
-	if (geometry->type == POLYGONTYPE)
-		sprintf(result, "POLYGON" );
-
-	if (geometry->type == MULTIPOINTTYPE)
-		sprintf(result, "MULTIPOINT(" );
-	if (geometry->type == MULTILINETYPE)
-		sprintf(result, "MULTILINESTRING(" );
-	if (geometry->type == MULTIPOLYGONTYPE)
-		sprintf(result, "MULTIPOLYGON(" );
-
-	if  ( (geometry->type == MULTIPOINTTYPE) || (geometry->type == MULTILINETYPE) || (geometry->type == MULTIPOLYGONTYPE))
 	{
-		multi_obj = TRUE;	//multiple sub-object need to be put into one object
+		multi_obj = FALSE;
+		sprintf(result, "POINT(" );
 	}
-
-	if (geometry->type == COLLECTIONTYPE)
+	else if (geometry->type == LINETYPE)
+	{
+		multi_obj = FALSE;
+		sprintf(result, "LINESTRING" );
+	}
+	else if (geometry->type == POLYGONTYPE)
+	{
+		multi_obj = FALSE;
+		sprintf(result, "POLYGON" );
+	}
+	else if (geometry->type == MULTIPOINTTYPE)
+	{
+		//multiple sub-object need to be put into one object
+		multi_obj = TRUE;
+		sprintf(result, "MULTIPOINT(" );
+	}
+	else if (geometry->type == MULTILINETYPE)
+	{
+		//multiple sub-object need to be put into one object
+		multi_obj = TRUE;
+		sprintf(result, "MULTILINESTRING(" );
+	}
+	else if (geometry->type == MULTIPOLYGONTYPE)
+	{
+		//multiple sub-object need to be put into one object
+		multi_obj = TRUE;
+		sprintf(result, "MULTIPOLYGON(" );
+	}
+	else if (geometry->type == COLLECTIONTYPE)
 	{
 		sprintf(result, "GEOMETRYCOLLECTION(" );
 		briefmode = FALSE;
@@ -1973,6 +1990,11 @@ char *geometry_to_text(GEOMETRY  *geometry)
 			{
 				size +=(MAX_DIGS_DOUBLE*3+5)*line->npoints +3;
 				result = repalloc(result, size );
+#ifdef DEBUG_TOTEXT
+elog(NOTICE, "Added space for %d points, result size: %d", line->npoints, size);
+elog(NOTICE, "Strlen result(%x): %d", result, strlen(result));
+#endif
+
 				if (!(first_sub_obj))
 				{
 					strcat(result,",");
@@ -1987,6 +2009,9 @@ char *geometry_to_text(GEOMETRY  *geometry)
 				strcat(result,")");
 				if ((t == (geometry->nobjs-1)) && multi_obj )  //close object?
 					strcat(result,")");
+#ifdef DEBUG_TOTEXT
+elog(NOTICE, "RESULT: %s", result);
+#endif
 			}
 			else
 			{
@@ -3568,7 +3593,7 @@ Datum WKB_recv(PG_FUNCTION_ARGS)
 	//elog(NOTICE, "WKB_recv start");
 
 	/* Add VARLENA size info to make it a valid varlena object */
-	result = (WellKnownBinary *)palloc(buf->len+VARHDRSZ);
+	result = (bytea *)palloc(buf->len+VARHDRSZ);
 	VARATT_SIZEP(result) = buf->len+VARHDRSZ;
 	memcpy(VARATT_DATA(result), buf->data, buf->len);
 
