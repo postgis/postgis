@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.39  2004/06/03 07:57:29  strk
+ * wkt parser throws an error on Infinite coordinates
+ *
  * Revision 1.38  2004/04/28 22:26:02  pramsey
  * Fixed spelling mistake in header text.
  *
@@ -303,29 +306,35 @@ bool	parse_points_in_list(char	*str, POINT3D	*points, int32	max_points, bool *is
 	while (keep_going)
 	{
 		//attempt to get the point
-	      	num_entities = sscanf(str,"%le %le %le",  &(points[numb_found].x),
-									      &(points[numb_found].y),
-								     	      &(points[numb_found].z));
+	      	num_entities = sscanf(str,"%le %le %le", 
+			&(points[numb_found].x),
+			&(points[numb_found].y),
+			&(points[numb_found].z));
 
-			if (num_entities !=3)
+		if (num_entities !=3)
+		{
+			if (num_entities !=2 )
 			{
-				if (num_entities !=2 )
-				{
-					elog(ERROR, "geom3d: parse_points_in_list() on invalid point");
-					return FALSE; //error
-				}
-				else
-				{
-					points[numb_found].z = 0.0; //2d (only found x,y - set z =0.0)
-				}
+				elog(ERROR, "geom3d: parse_points_in_list() on invalid point");
+				return FALSE; //error
 			}
 			else
 			{
-				*is3d = TRUE; //found 3 entites (x,y,z)
+				points[numb_found].z = 0.0; //2d (only found x,y - set z =0.0)
 			}
-			numb_found++;
+		}
+		else
+		{
+			*is3d = TRUE; //found 3 entites (x,y,z)
+		}
 
-
+		if ( abs(points[numb_found].x) == INFINITY ||
+			abs(points[numb_found].y) == INFINITY )
+		{
+			elog(ERROR, "infinite coordinate in geom");
+			return FALSE;
+		}
+		numb_found++;
 
 		str=strpbrk(str,",)");  // look for a "," or ")"
 		if (str != NULL)
@@ -389,16 +398,35 @@ bool	parse_points_in_list_exact(char	*str, POINT3D	*points, int32	max_points, bo
 				return FALSE; //error occured (nothing parsed)
 			}
 			str = end_of_double;
+			if ( abs(points[numb_found].x) == INFINITY )
+			{
+				elog(ERROR, "infinite coordinate in geom");
+				return FALSE;
+			}
 			points[numb_found].y = strtod(str,&end_of_double);
 			if (end_of_double == str)
 			{
 				return FALSE; //error occured (nothing parsed)
 			}
+			if ( abs(points[numb_found].y) == INFINITY )
+			{
+				elog(ERROR, "infinite coordinate in geom");
+				return FALSE;
+			}
 			str = end_of_double;
 			points[numb_found].z = strtod(str,&end_of_double); //will be zero if error occured
 			if (!(end_of_double == str))
 			{
+				if ( abs(points[numb_found].y) == INFINITY )
+				{
+					elog(ERROR, "infinite coordinate in geom");
+					return FALSE;
+				}
 				*is3d = TRUE; //found 3 entites (x,y,z)
+			}
+			else
+			{
+				points[numb_found].z = 0.0;
 			}
 			str = end_of_double;
 			numb_found++;
