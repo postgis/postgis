@@ -99,9 +99,6 @@ static float8 estimate_selectivity(BOX2DFLOAT4 *box, GEOM_STATS *geomstats);
  */
 #define REALLY_DO_JOINSEL 1
 
-#define min(a,b)  ((a) <= (b) ? (a) : (b))
-#define max(a,b)  ((a) >  (b) ? (a) : (b))
-
 // --------------------------------------------
 // lwhistogram2d type
 
@@ -476,8 +473,8 @@ Datum build_lwhistogram2d(PG_FUNCTION_ARGS)
 					{
 						for (x=x_idx_min;x<= x_idx_max;x++)
 						{
-							intersect_x = min(box->xmax, xmin+ (x+1) * (xmax-xmin)/histo->boxesPerSide ) - max(box->xmin, xmin+ x*(xmax-xmin)/histo->boxesPerSide ) ;
-							intersect_y = min(box->ymax, ymin+ (y+1) * (ymax-ymin)/histo->boxesPerSide ) - max(box->ymin, ymin+ y*(ymax-ymin)/histo->boxesPerSide ) ;
+							intersect_x = LW_MIN(box->xmax, xmin+ (x+1) * (xmax-xmin)/histo->boxesPerSide ) - LW_MAX(box->xmin, xmin+ x*(xmax-xmin)/histo->boxesPerSide ) ;
+							intersect_y = LW_MIN(box->ymax, ymin+ (y+1) * (ymax-ymin)/histo->boxesPerSide ) - LW_MAX(box->ymin, ymin+ y*(ymax-ymin)/histo->boxesPerSide ) ;
 
 							// for a point, intersect_x=0, intersect_y=0, box_area =0
 //elog(NOTICE,"x=%i,y=%i, intersect_x= %.15g, intersect_y = %.15g",x,y,intersect_x,intersect_y);
@@ -701,10 +698,8 @@ Datum estimate_lwhistogram2d(PG_FUNCTION_ARGS)
 	{
 		for (x=x_idx_min;x<= x_idx_max;x++)
 		{
-			//intersect_x = min(box->high.x, xmin+ (x+1) * (xmax-xmin)/histo->boxesPerSide ) - max(box->low.x, xmin+ x*(xmax-xmin)/histo->boxesPerSide ) ;
-			intersect_x = min(box->xmax, xmin+ (x+1) * (xmax-xmin)/histo->boxesPerSide ) - max(box->xmin, xmin+ x*(xmax-xmin)/histo->boxesPerSide ) ;
-			//intersect_y = min(box->high.y, ymin+ (y+1) * (ymax-ymin)/histo->boxesPerSide ) - max(box->low.y, ymin+ y*(ymax-ymin)/histo->boxesPerSide ) ;
-			intersect_y = min(box->ymax, ymin+ (y+1) * (ymax-ymin)/histo->boxesPerSide ) - max(box->ymin, ymin+ y*(ymax-ymin)/histo->boxesPerSide ) ;
+			intersect_x = LW_MIN(box->xmax, xmin+ (x+1) * (xmax-xmin)/histo->boxesPerSide ) - LW_MAX(box->xmin, xmin+ x*(xmax-xmin)/histo->boxesPerSide ) ;
+			intersect_y = LW_MIN(box->ymax, ymin+ (y+1) * (ymax-ymin)/histo->boxesPerSide ) - LW_MAX(box->ymin, ymin+ y*(ymax-ymin)/histo->boxesPerSide ) ;
 
 // for a point, intersect_x=0, intersect_y=0, box_area =0
 //elog(NOTICE,"x=%i,y=%i, intersect_x= %.15g, intersect_y = %.15g",x,y,intersect_x,intersect_y);
@@ -757,10 +752,10 @@ calculate_column_intersection(BOX2DFLOAT4 *search_box, GEOM_STATS *geomstats1, G
 	 * if a valid intersection was found, false if there is no overlap
 	 */
 
-	float8 i_xmin = max(geomstats1->xmin, geomstats2->xmin);
-	float8 i_ymin = max(geomstats1->ymin, geomstats2->ymin);
-	float8 i_xmax = min(geomstats1->xmax, geomstats2->xmax);
-	float8 i_ymax = min(geomstats1->ymax, geomstats2->ymax);
+	float8 i_xmin = LW_MAX(geomstats1->xmin, geomstats2->xmin);
+	float8 i_ymin = LW_MAX(geomstats1->ymin, geomstats2->ymin);
+	float8 i_xmax = LW_MIN(geomstats1->xmax, geomstats2->xmax);
+	float8 i_ymax = LW_MIN(geomstats1->ymax, geomstats2->ymax);
 
 	/* If the rectangles don't intersect, return false */
 	if (i_xmin > i_xmax || i_ymin > i_ymax)
@@ -1470,10 +1465,8 @@ estimate_selectivity(BOX2DFLOAT4 *box, GEOM_STATS *geomstats)
 			 * only the overlap fraction.
 			 */
 
-			//intersect_x = min(box->high.x, geomstats->xmin + (x+1) * geow / histocols) - max(box->low.x, geomstats->xmin + x * geow / histocols );
-			intersect_x = min(box->xmax, geomstats->xmin + (x+1) * geow / histocols) - max(box->xmin, geomstats->xmin + x * geow / histocols );
-			//intersect_y = min(box->high.y, geomstats->ymin + (y+1) * geoh / historows) - max(box->low.y, geomstats->ymin+ y * geoh / historows) ;
-			intersect_y = min(box->ymax, geomstats->ymin + (y+1) * geoh / historows) - max(box->ymin, geomstats->ymin+ y * geoh / historows) ;
+			intersect_x = LW_MIN(box->xmax, geomstats->xmin + (x+1) * geow / histocols) - LW_MAX(box->xmin, geomstats->xmin + x * geow / histocols );
+			intersect_y = LW_MIN(box->ymax, geomstats->ymin + (y+1) * geoh / historows) - LW_MAX(box->ymin, geomstats->ymin+ y * geoh / historows) ;
 			
 			AOI = intersect_x*intersect_y;
 			gain = AOI/cell_area;
@@ -1540,7 +1533,7 @@ elog(NOTICE, " search_box overlaps %f cells", overlapping_cells);
 elog(NOTICE, " avg feat overlaps %f cells", avg_feat_cells);
 #endif
 
-	gain = 1/min(overlapping_cells, avg_feat_cells);
+	gain = 1/LW_MIN(overlapping_cells, avg_feat_cells);
 	selectivity = value*gain;
 
 #if DEBUG_GEOMETRY_STATS
@@ -1933,13 +1926,13 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	elog(NOTICE, "  HIGy - avg:%f sd:%f", avgHIGy, sdHIGy);
 #endif
 
-	histobox.xmin = max((avgLOWx - SDFACTOR * sdLOWx),
+	histobox.xmin = LW_MAX((avgLOWx - SDFACTOR * sdLOWx),
 		sample_extent->xmin);
-	histobox.ymin = max((avgLOWy - SDFACTOR * sdLOWy),
+	histobox.ymin = LW_MAX((avgLOWy - SDFACTOR * sdLOWy),
 		sample_extent->ymin);
-	histobox.xmax = min((avgHIGx + SDFACTOR * sdHIGx),
+	histobox.xmax = LW_MIN((avgHIGx + SDFACTOR * sdHIGx),
 		sample_extent->xmax); 
-	histobox.ymax = min((avgHIGy + SDFACTOR * sdHIGy),
+	histobox.ymax = LW_MIN((avgHIGy + SDFACTOR * sdHIGy),
 		sample_extent->ymax); 
 
 #if DEBUG_GEOMETRY_STATS 
@@ -2453,6 +2446,9 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.24  2005/02/21 16:22:32  strk
+ * Changed min() max() usage with LW_MIN() LW_MAX()
+ *
  * Revision 1.23  2005/02/10 10:52:53  strk
  * Changed 'char' to 'uchar' (unsigned char typedef) wherever octet is actually
  * meant to be.
