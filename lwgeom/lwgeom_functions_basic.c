@@ -145,8 +145,16 @@ Datum combine_box2d(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(lwgeom_mem_size);
 Datum lwgeom_mem_size(PG_FUNCTION_ARGS)
 {
-	char *geom = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	int32 size = *((int32 *)geom);
+	LWGEOM *geom = (LWGEOM *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	int32 size = geom->size;
+	int32 computed_size = lwgeom_seralizedformlength_simple(SERIALIZED_FORM(geom));
+	computed_size += 4; // varlena size
+	if ( size != computed_size )
+	{
+		elog(NOTICE, "varlena size (%d) != computed size+4 (%d)",
+				size, computed_size);
+	}
+
 	PG_FREE_IF_COPY(geom,0);
 	PG_RETURN_INT32(size);
 }
@@ -156,8 +164,9 @@ Datum lwgeom_mem_size(PG_FUNCTION_ARGS)
  * LWGEOM object
  */
 char *
-lwgeom_summary_recursive(char *serialized)
+lwgeom_summary_recursive(char *serialized, int offset)
 {
+	static int idx = 0;
 	LWGEOM_INSPECTED *inspected;
 	char *result;
 	char *ptr;
@@ -169,21 +178,34 @@ lwgeom_summary_recursive(char *serialized)
 	result = palloc(1);
 	result[0] = '\0';
 
+	if ( offset == 0 ) idx = 0;
+
 	inspected = lwgeom_inspect(serialized);
+
+	if (0) {
+		size += 57;
+		result = repalloc(result,size);
+		sprintf(tmp,
+			"Geometry (inspected) contains %i subgeoms\n",
+			inspected->ngeometries);
+		strcat(result,tmp);
+	}
+
 	//now have to do a scan of each object
 	for (j=0; j<inspected->ngeometries; j++)
 	{
 		LWLINE *line=NULL;
 		LWPOINT *point=NULL;
 		LWPOLY *poly=NULL;
-		char *subgeom;
+		char *subgeom=NULL;
 
 		point = lwgeom_getpoint_inspected(inspected,j);
 		if (point !=NULL)
 		{
 			size += 30;
 			result = repalloc(result,size);
-			sprintf(tmp,"Object %i is a POINT()\n",j);
+			sprintf(tmp,"Object %i is a POINT()\n",
+				idx++);
 			strcat(result,tmp);
 			continue;
 		}
@@ -193,7 +215,8 @@ lwgeom_summary_recursive(char *serialized)
 		{
 			size += 57*(poly->nrings+1);
 			result = repalloc(result,size);
-			sprintf(tmp,"Object %i is a POLYGON() with %i rings\n",j,poly->nrings);
+			sprintf(tmp,"Object %i is a POLYGON() with %i rings\n",
+					idx++, poly->nrings);
 			strcat(result,tmp);
 			for (i=0; i<poly->nrings;i++)
 			{
@@ -211,7 +234,7 @@ lwgeom_summary_recursive(char *serialized)
 			result = repalloc(result,size);
 			sprintf(tmp,
 				"Object %i is a LINESTRING() with %i points\n",
-				j, line->points->npoints);
+				idx++, line->points->npoints);
 			strcat(result,tmp);
 			continue;
 		}
@@ -219,7 +242,7 @@ lwgeom_summary_recursive(char *serialized)
 		subgeom = lwgeom_getsubgeometry_inspected(inspected, j);
 		if ( subgeom != NULL )
 		{
-			ptr = lwgeom_summary_recursive(subgeom);
+			ptr = lwgeom_summary_recursive(subgeom, 1);
 			size += strlen(ptr);
 			result = repalloc(result,size);
 			strcat(result, ptr);
@@ -231,6 +254,7 @@ lwgeom_summary_recursive(char *serialized)
 		}
 	}
 
+	pfree_inspected(inspected);
 	return result;
 }
 
@@ -242,7 +266,7 @@ Datum lwgeom_summary(PG_FUNCTION_ARGS)
 	char *result;
 	text *mytext;
 
-	result = lwgeom_summary_recursive(SERIALIZED_FORM(geom));
+	result = lwgeom_summary_recursive(SERIALIZED_FORM(geom), 0);
 
 	// create a text obj to return
 	mytext = (text *) palloc(VARHDRSZ  + strlen(result) );

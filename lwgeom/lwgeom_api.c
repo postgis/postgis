@@ -873,13 +873,13 @@ BOX3D *lwline_findbbox(LWLINE *line)
 //find length of this serialized line
 uint32 lwline_findlength(char *serialized_line)
 {
-		int type = (unsigned char) serialized_line[0];
-		uint32 result =1;  //type
-		char *loc;
-		uint32 npoints;
+	int type = (unsigned char) serialized_line[0];
+	uint32 result =1;  //type
+	char *loc;
+	uint32 npoints;
 
-		if ( lwgeom_getType(type) != LINETYPE)
-			elog(ERROR,"lwline_findlength::attempt to find the length of a non-line");
+	if ( lwgeom_getType(type) != LINETYPE)
+		elog(ERROR,"lwline_findlength::attempt to find the length of a non-line");
 
 
 	loc = serialized_line+1;
@@ -1323,69 +1323,75 @@ BOX3D *lwpoly_findbbox(LWPOLY *poly)
 //find length of this serialized polygon
 uint32 lwpoly_findlength(char *serialized_poly)
 {
-		uint32 result = 1; // char type
-		uint32 nrings;
-		int   ndims;
-		int t;
-		unsigned char type;
-		uint32 npoints;
-		char *loc;
+	uint32 result = 1; // char type
+	uint32 nrings;
+	int   ndims;
+	int t;
+	unsigned char type;
+	uint32 npoints;
+	char *loc;
 
-		if (serialized_poly == NULL)
-			return -9999;
+	if (serialized_poly == NULL)
+		return -9999;
 
 
-		type = (unsigned char) serialized_poly[0];
-		ndims = lwgeom_ndims(type);
+	type = (unsigned char) serialized_poly[0];
+	ndims = lwgeom_ndims(type);
 
-		if ( lwgeom_getType(type) != POLYGONTYPE)
-			return -9999;
+	if ( lwgeom_getType(type) != POLYGONTYPE)
+		return -9999;
 
 
 	loc = serialized_poly+1;
 
 	if (lwgeom_hasBBOX(type))
 	{
+#ifdef DEBUG
+		elog(NOTICE, "lwpoly_findlength: has bbox");
+#endif
 		loc += sizeof(BOX2DFLOAT4);
 		result +=sizeof(BOX2DFLOAT4);
 	}
 
 
-		if ( lwgeom_hasSRID(type))
-		{
-			loc +=4; // type + SRID
-			result += 4;
-		}
+	if ( lwgeom_hasSRID(type))
+	{
+#ifdef DEBUG
+		elog(NOTICE, "lwpoly_findlength: has srid");
+#endif
+		loc +=4; // type + SRID
+		result += 4;
+	}
 
 
-		nrings = get_uint32(loc);
+	nrings = get_uint32(loc);
+	loc +=4;
+	result +=4;
+
+
+	for (t =0;t<nrings;t++)
+	{
+		//read in a single ring and make a PA
+		npoints = get_uint32(loc);
 		loc +=4;
 		result +=4;
 
-
-		for (t =0;t<nrings;t++)
+		if (ndims == 3)
 		{
-			//read in a single ring and make a PA
-			npoints = get_uint32(loc);
-			loc +=4;
-			result +=4;
-
-			if (ndims == 3)
-			{
-				loc += 24*npoints;
-				result += 24*npoints;
-			}
-			else if (ndims == 2)
-			{
-				loc += 16*npoints;
-				result += 16*npoints;
-			}
-			else if (ndims == 4)
-			{
-				loc += 32*npoints;
-				result += 32*npoints;
-			}
+			loc += 24*npoints;
+			result += 24*npoints;
 		}
+		else if (ndims == 2)
+		{
+			loc += 16*npoints;
+			result += 16*npoints;
+		}
+		else if (ndims == 4)
+		{
+			loc += 32*npoints;
+			result += 32*npoints;
+		}
+	}
 	return result;
 }
 
@@ -1436,25 +1442,38 @@ LWGEOM_INSPECTED *lwgeom_inspect(char *serialized_form)
 		sub_geoms = (char**) palloc(sizeof(char*));
 		sub_geoms[0] = serialized_form;
 		result->sub_geoms = sub_geoms;
+		return result;
 	}
-	else
+
+	// its a GeometryCollection or multi* geometry
+
+	if (lwgeom_hasSRID((unsigned char) serialized_form[0]) )
 	{
-		if (lwgeom_hasSRID((unsigned char) serialized_form[0]) )
-		{
-			result->SRID=  get_int32(loc);
-			loc += 4;
-		}
-		//its a GeometryCollection or multi* geometry
-		result->ngeometries = get_uint32(loc);
-		loc +=4;
-		sub_geoms = (char**) palloc(sizeof(char*) * result->ngeometries );
-		result->sub_geoms = sub_geoms;
-		sub_geoms[0] = loc;
-		for (t=1;t<result->ngeometries; t++)
-		{
-			int sub_length = lwgeom_seralizedformlength(sub_geoms[t-1], -1);//-1 = entire object
-			sub_geoms[t] = sub_geoms[t-1] + sub_length;
-		}
+		result->SRID=  get_int32(loc);
+		loc += 4;
+	}
+
+	result->ngeometries = get_uint32(loc);
+	loc +=4;
+#ifdef DEBUG
+	elog(NOTICE, "lwgeom_inspect: geometry is a collection of %d elements",
+		result->ngeometries);
+#endif
+
+	sub_geoms = (char**) palloc(sizeof(char*) * result->ngeometries );
+	result->sub_geoms = sub_geoms;
+	sub_geoms[0] = loc;
+#ifdef DEBUG
+	elog(NOTICE, "subgeom[0] @ %i", sub_geoms[0]);
+#endif
+	for (t=1;t<result->ngeometries; t++)
+	{
+		int sub_length = lwgeom_seralizedformlength(sub_geoms[t-1], -1);//-1 = entire object
+		sub_geoms[t] = sub_geoms[t-1] + sub_length;
+#ifdef DEBUG
+		elog(NOTICE, "subgeom[%d] @ %i (sub_length: %d)",
+			t, sub_geoms[t], sub_length);
+#endif
 	}
 
 	return result;
@@ -1858,27 +1877,57 @@ int lwgeom_seralizedformlength_simple(char *serialized_form)
 	int result = 1; //"type"
 
 	if (type == POINTTYPE)
+	{
+#ifdef DEBUG
+		elog(NOTICE, "lwgeom_seralizedformlength_simple: is a point");
+#endif
 		return lwpoint_findlength(serialized_form);
+	}
 	else if (type == LINETYPE)
+	{
+#ifdef DEBUG
+		elog(NOTICE, "lwgeom_seralizedformlength_simple: is a line");
+#endif
 		return lwline_findlength(serialized_form);
+	}
 	else if (type == POLYGONTYPE)
+	{
+#ifdef DEBUG
+		elog(NOTICE, "lwgeom_seralizedformlength_simple: is a polygon");
+#endif
 		return lwpoly_findlength(serialized_form);
+	}
+
+	if ( type == 0 )
+	{
+		elog(ERROR, "lwgeom_seralizedformlength_simple called with unknown-typed serialized geometry");
+		return 0;
+	}
 
 	//handle all the multi* and geometrycollections the same
-	    //NOTE: for a geometry collection of GC of GC of GC we will be recursing...
+	//NOTE: for a geometry collection of GC of GC of GC we will be recursing...
 
-
+#ifdef DEBUG
+	elog(NOTICE, "lwgeom_seralizedformlength_simple called on a geoemtry with type %d", type);
+#endif
 
 	loc = serialized_form+1;
 
 	if (lwgeom_hasBBOX((unsigned char) serialized_form[0]))
 	{
+#ifdef DEBUG
+		elog(NOTICE, "lwgeom_seralizedformlength_simple: has bbox");
+#endif
+
 		loc += sizeof(BOX2DFLOAT4);
 		result +=sizeof(BOX2DFLOAT4);
 	}
 
 	if (lwgeom_hasSRID( (unsigned char) serialized_form[0]) )
 	{
+#ifdef DEBUG
+		elog(NOTICE, "lwgeom_seralizedformlength_simple: has srid");
+#endif
 		result +=4;
 		loc +=4;
 	}
@@ -1886,14 +1935,25 @@ int lwgeom_seralizedformlength_simple(char *serialized_form)
 
 	ngeoms =  get_uint32(loc);
 	loc +=4;
+	result += 4; // numgeoms
+
+#ifdef DEBUG
+	elog(NOTICE, "lwgeom_seralizedformlength_simple called on a geoemtry with %d elems (result so far: %d)", ngeoms, result);
+#endif
 
 	for (t=0;t<ngeoms;t++)
 	{
 		sub_size = lwgeom_seralizedformlength_simple(loc);
+#ifdef DEBUG
+		elog(NOTICE, " subsize %d", sub_size);
+#endif
 		loc += sub_size;
 		result += sub_size;
 	}
 
+#ifdef DEBUG
+	elog(NOTICE, "lwgeom_seralizedformlength_simple returning %d", result);
+#endif
 	return result;
 }
 
