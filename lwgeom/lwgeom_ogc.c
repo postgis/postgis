@@ -210,6 +210,7 @@ Datum LWGEOM_numgeometries_collection(PG_FUNCTION_ARGS)
 	}
 }
 
+// 1-based offset
 PG_FUNCTION_INFO_V1(LWGEOM_geometryn_collection);
 Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS)
 {
@@ -231,6 +232,10 @@ Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS)
 
 	idx = PG_GETARG_INT32(1);
 	serialized = SERIALIZED_FORM(geom);
+
+	idx -= 1; // index is 1-based
+	if ( idx < 0 ) PG_RETURN_NULL();
+	if ( idx >= lwgeom_getnumgeometries(serialized) ) PG_RETURN_NULL();
 
 	subgeom = lwgeom_getsubgeometry(serialized, idx);
 	if ( subgeom == NULL )
@@ -386,6 +391,7 @@ Datum LWGEOM_numinteriorrings_polygon(PG_FUNCTION_ARGS)
 // InteriorRingN(GEOMETRY) -- find the first polygon in GEOMETRY, return
 // its Nth interior ring (as a linestring).
 // Return NULL if there is no POLYGON(..) in (first level of) GEOMETRY.
+// Index is 1-based
 PG_FUNCTION_INFO_V1(LWGEOM_interiorringn_polygon);
 Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 {
@@ -401,7 +407,7 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 	int i;
 
 	wanted_index = PG_GETARG_INT32(1);
-	if ( wanted_index < 0 )
+	if ( wanted_index < 1 )
 		PG_RETURN_NULL(); // index out of range
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
@@ -416,14 +422,14 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 	if ( poly == NULL ) PG_RETURN_NULL();
 
 	// Ok, now we have a polygon. Let's see if it has enough holes
-	if ( wanted_index > poly->nrings-2 )
+	if ( wanted_index >= poly->nrings )
 	{
 		pfree_inspected(inspected);
 		PG_RETURN_NULL();
 	}
 	pfree_inspected(inspected);
 
-	ring = poly->rings[wanted_index+1];
+	ring = poly->rings[wanted_index];
 
 	// If input geometry did have a bounding box
 	// compute the new one
@@ -446,7 +452,7 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 }
 
 // PointN(GEOMETRY,INTEGER) -- find the first linestring in GEOMETRY,
-// return the point at index INTEGER (0 is 1st point).  Return NULL if
+// return the point at index INTEGER (1 is 1st point).  Return NULL if
 // there is no LINESTRING(..) in GEOMETRY or INTEGER is out of bounds.
 PG_FUNCTION_INFO_V1(LWGEOM_pointn_linestring);
 Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
@@ -462,7 +468,7 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 	int i;
 
 	wanted_index = PG_GETARG_INT32(1);
-	if ( wanted_index < 0 )
+	if ( wanted_index < 1 )
 		PG_RETURN_NULL(); // index out of range
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
@@ -477,7 +483,7 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 	if ( line == NULL ) PG_RETURN_NULL();
 
 	// Ok, now we have a line. Let's see if it has enough points.
-	if ( wanted_index > line->points->npoints-1 )
+	if ( wanted_index > line->points->npoints )
 	{
 		pfree_inspected(inspected);
 		PG_RETURN_NULL();
@@ -485,7 +491,7 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 	pfree_inspected(inspected);
 
 	// Construct a point array
-	pts = pointArray_construct(getPoint(line->points, wanted_index),
+	pts = pointArray_construct(getPoint(line->points, wanted_index-1),
 		TYPE_HASZ(line->type), TYPE_HASM(line->type), 1);
 
 	// Construct an LWPOINT
