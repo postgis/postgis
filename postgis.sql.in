@@ -396,7 +396,7 @@ BEGIN
 
 #if USE_VERSION >= 75
 	-- no linkage to system table needed
-	return ''schemafixes:''||foundschema::text;
+	return ''fixed:''||foundschema::text;
 #endif
 
 	-- fix linking to system tables
@@ -429,7 +429,7 @@ BEGIN
 
 	result = 
 #if USE_VERSION >= 73
-		'' schemafixes:'' || foundschema::text ||
+		''fixed:'' || foundschema::text ||
 #endif
 		'' linked:'' || linked::text || 
 		'' deleted:'' || deleted::text;
@@ -2611,32 +2611,11 @@ AS
 '
 DECLARE
 	result text;
-	linked integer;
 	stated integer;
-	deleted integer;
+	fixres text;
 BEGIN
 
-	UPDATE geometry_columns SET
-		attrelid = NULL,
-		varattnum = NULL,
-		stats = NULL;
-
-	UPDATE geometry_columns SET
-		attrelid = c.oid,
-		varattnum = a.attnum
-#if USE_VERSION >= 73
-		FROM pg_class c, pg_attribute a, pg_namespace n
-		WHERE n.nspname = f_table_schema::name
-		AND c.relname = f_table_name::name
-		AND c.relnamespace = n.oid
-#else // USE_VERSION < 73 
-		FROM pg_class c, pg_attribute a
-		WHERE c.relname = f_table_name::name
-#endif
-		AND a.attname = f_geometry_column::name
-		AND a.attrelid = c.oid;
-	
-	GET DIAGNOSTICS linked = ROW_COUNT;
+	SELECT fix_geometry_columns() INTO fixres;
 
 	UPDATE geometry_columns SET
 #if USE_VERSION >= 73
@@ -2659,15 +2638,7 @@ BEGIN
 
 	GET DIAGNOSTICS stated = ROW_COUNT;
 
-	-- remove stale records
-	DELETE FROM geometry_columns WHERE attrelid IS NULL;
-
-	GET DIAGNOSTICS deleted = ROW_COUNT;
-
-	result = ''link:'' || linked::text || '' '' ||
-		''stat:'' || stated::text || '' '' ||
-		''del:'' || deleted::text;
-
+	result = fixres || '' stats:'' || stated::text;
 
 	return result;
 END;
@@ -2696,41 +2667,12 @@ AS
 DECLARE
 	tablename aliAS for $1;
 	columnname aliAS for $2;
-	linked integer;
 	stated integer;
-	deleted integer;
 	result text;
+	fixres text;
 BEGIN
 
-	EXECUTE ''UPDATE geometry_columns SET
-			attrelid = NULL,
-			varattnum = NULL
-		WHERE f_table_name = '' || quote_literal(tablename) || ''
-		AND f_geometry_column = '' || quote_literal(columnname);
-
-	EXECUTE ''UPDATE geometry_columns SET
-			attrelid = c.oid,
-			varattnum = a.attnum
-#if USE_VERSION >= 73
-			FROM pg_class c, pg_attribute a, pg_namespace n
-			WHERE n.nspname = f_table_schema::name
-			AND c.relname = f_table_name::name
-			AND a.attname = f_geometry_column::name
-			AND c.relnamespace = n.oid
-			AND a.attrelid = c.oid
-#else // USE_VERSION < 73 
-			stats = (build_histogram2d(create_histogram2d(
-				find_extent(f_table_name, f_geometry_column),
-				40), f_table_name, f_geometry_column))
-			FROM pg_class c, pg_attribute a
-			WHERE c.relname = f_table_name::name
-			AND a.attname = f_geometry_column::name
-			AND a.attrelid = c.oid
-#endif
-			AND f_table_name = '' || quote_literal(tablename) || ''
-			AND f_geometry_column = '' || quote_literal(columnname);
-
-	GET DIAGNOSTICS linked = ROW_COUNT;
+	SELECT fix_geometry_columns() INTO fixres;
 
 	EXECUTE ''UPDATE geometry_columns SET
 #if USE_VERSION >= 73
@@ -2761,16 +2703,7 @@ BEGIN
 
 	GET DIAGNOSTICS stated = ROW_COUNT;
 
-	-- remove stale record
-	EXECUTE ''DELETE FROM geometry_columns WHERE attrelid IS NULL AND
-		f_table_name = '' || quote_literal(tablename) || ''
-		AND f_geometry_column = '' || quote_literal(columnname);
-
-	GET DIAGNOSTICS deleted = ROW_COUNT;
-
-	result = ''link:'' || linked::text || '' '' ||
-		''stat:'' || stated::text || '' '' ||
-		''del:'' || deleted::text;
+	result = fixres || '' stats:'' || stated::text;
 
 	return result;
 END;
