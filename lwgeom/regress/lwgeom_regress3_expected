@@ -1,0 +1,34 @@
+You are now connected as new user postgres.
+CREATE TABLE
+
+--- test some of the searching capabilities
+
+-- GiST index
+
+CREATE INDEX quick_gist on test using gist (lwgeom gist_lwgeom_ops);
+CREATE INDEX
+vacuum analyse test;
+VACUUM
+
+ select * from test where lwgeom && lwgeom(envelope('BOX3D(125 125,135 135)'::box3d)) order by num;
+ num  |                   lwgeom                   
+------+--------------------------------------------
+ 2594 | 0101000000CA880B40235060401990BDDEFDA15F40
+ 3618 | 01010000007233DC804F4E6040B70DA320F8746040
+ 7245 | 010100000061A6ED5F59036040CC9717601F5E6040
+(3 rows)
+
+
+set enable_seqscan = off;
+SET
+
+ select * from test where lwgeom && lwgeom(envelope('BOX3D(125 125,135 135)'::box3d)) order by num;
+ num  |                   lwgeom                   
+------+--------------------------------------------
+ 2594 | 0101000000CA880B40235060401990BDDEFDA15F40
+ 3618 | 01010000007233DC804F4E6040B70DA320F8746040
+ 7245 | 010100000061A6ED5F59036040CC9717601F5E6040
+(3 rows)
+
+
+
