@@ -11,6 +11,7 @@
 #include "utils/array.h"
 
 #include "lwgeom.h"
+#include "profile.h"
 
 //#define DEBUG
 
@@ -46,7 +47,6 @@ Datum LWGEOM_segmentize2d(PG_FUNCTION_ARGS);
 
 // internal
 char * lwgeom_summary_recursive(char *serialized, int offset);
-int32 lwgeom_npoints_recursive(char *serialized);
 int32 lwgeom_nrings_recursive(char *serialized);
 void dump_lwexploded(LWGEOM_EXPLODED *exploded);
 
@@ -994,7 +994,7 @@ Datum postgis_uses_stats(PG_FUNCTION_ARGS)
  * Recursively count points in a SERIALIZED lwgeom
  */
 int32
-lwgeom_npoints_recursive(char *serialized)
+lwgeom_npoints(char *serialized)
 {
 	LWGEOM_INSPECTED *inspected = lwgeom_inspect(serialized);
 	int i, j;
@@ -1035,7 +1035,7 @@ lwgeom_npoints_recursive(char *serialized)
 		subgeom = lwgeom_getsubgeometry_inspected(inspected, i);
 		if ( subgeom != NULL )
 		{
-			npoints += lwgeom_npoints_recursive(subgeom);
+			npoints += lwgeom_npoints(subgeom);
 		}
 		else
 		{
@@ -1091,7 +1091,7 @@ Datum LWGEOM_npoints(PG_FUNCTION_ARGS)
 	LWGEOM *geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	int32 npoints = 0;
 
-	npoints = lwgeom_npoints_recursive(SERIALIZED_FORM(geom));
+	npoints = lwgeom_npoints(SERIALIZED_FORM(geom));
 
 	PG_RETURN_INT32(npoints);
 }
@@ -1934,10 +1934,16 @@ Datum LWGEOM_force_multi(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_mindistance2d);
 Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS)
 {
-
-	LWGEOM *geom1 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	LWGEOM *geom2 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	LWGEOM *geom1;
+	LWGEOM *geom2;
 	double mindist;
+
+#ifdef PROFILE
+	profstart(PROF_QRUN);
+#endif
+
+	geom1 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom2 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	if (lwgeom_getSRID(geom1) != lwgeom_getSRID(geom2))
 	{
@@ -1947,6 +1953,11 @@ Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS)
 
 	mindist = lwgeom_mindistance2d_recursive(SERIALIZED_FORM(geom1),
 		SERIALIZED_FORM(geom2));
+
+#ifdef PROFILE
+	profstop(PROF_QRUN);
+	profreport(geom1, geom2, NULL);
+#endif
 
 	PG_RETURN_FLOAT8(mindist);
 }

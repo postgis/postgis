@@ -229,7 +229,7 @@ typedef struct {
  * by most functions from an LWGEOM struct.
  * (which is an LWGEOM w/out int32 size casted to char *)
  */
-#define SERIALIZED_FORM(x) ((char *)&((x)->type))
+#define SERIALIZED_FORM(x) ((char *)(x))+4
 
 
 extern bool lwgeom_hasSRID(unsigned char type); // true iff S bit is set
@@ -790,3 +790,4 @@ void lwgeom_translate_recursive(char *serialized, double xoff, double yoff, doub
 void lwgeom_translate_ptarray(POINTARRAY *pa, double xoff, double yoff, double zoff);
 int lwgeom_pt_inside_circle(POINT2D *p, double cx, double cy, double rad);
 POINTARRAY *segmentize2d_ptarray(POINTARRAY *ipa, double dist);
+int32 lwgeom_npoints(char *serialized);
