@@ -647,6 +647,10 @@ main (int ARGC, char **ARGV)
 			}
 			trans++;
 			//end of transaction stuff
+if (j == 5136)
+{
+	j=5136;
+}
 
 			if (dump_format)
 			{
@@ -668,7 +672,14 @@ main (int ARGC, char **ARGV)
 				
 				//check if the next vertice is the start of a new line
 		//		printf("\n\nu+1 = %d, next_ring = %d  index = %d\n",u+1,next_ring,obj->panPartStart[next_ring]);
-				if(((next_ring != -99) && (u+1 == obj->panPartStart[next_ring] )) || u==(obj->nVertices-1) ){
+
+				if(next_ring==-99 && obj->nVertices ==1){	
+					printf("(%.15g %.15g )",obj->padfX[u],obj->padfY[u]);
+				}else if((next_ring != -99)&& (begin==1) && (u+1 == obj->panPartStart[next_ring]) ){
+					printf("(%.15g %.15g )",obj->padfX[u],obj->padfY[u]);
+					next_ring++;
+					begin=1;
+				}else if(((next_ring != -99) && (u+1 == obj->panPartStart[next_ring] )) || u==(obj->nVertices-1) ){
 					printf(",%.15g %.15g ",obj->padfX[u],obj->padfY[u]);
 					printf(")");
 					
