@@ -11,6 +11,10 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.24  2004/06/10 13:42:17  strk
+ * Separated the estimator code in an estimate_selectivity() function.
+ * Handled complete contaiment and complete miss of histogram by searc box.
+ *
  * Revision 1.23  2004/06/09 09:35:49  strk
  * Removed partial pgsql List API copy
  *
@@ -152,7 +156,7 @@
  */
 #define STATISTIC_KIND_GEOMETRY 100
 
-#define DEBUG_GEOMETRY_STATS 0
+#define DEBUG_GEOMETRY_STATS 1
 
 /*
  * Default geometry selectivity factor
@@ -969,12 +973,235 @@ postgisgistcostestimate(PG_FUNCTION_ARGS)
 #else // USE_VERSION >= 75
 
 /*
+ * This function returns an estimate of the selectivity
+ * of a search_box looking at data in the GEOM_STATS 
+ * structure.
+ */
+static float8
+estimate_selectivity(BOX *box, GEOM_STATS *geomstats)
+{
+	int x, y;
+	int x_idx_min, x_idx_max, y_idx_min, y_idx_max;
+	double intersect_x, intersect_y, AOI;
+	double cell_area, box_area;
+	double geow, geoh; // width and height of histogram
+	int bps; // boxesPerSide 
+	double value;
+	float overlapping_cells;
+	float avg_feat_cells;
+	double gain;
+	float8 selectivity;
+
+
+	/*
+	 * Search box completely miss histogram extent
+	 */
+	if ( box->high.x < geomstats->xmin ||
+		box->low.x > geomstats->xmax ||
+		box->high.y < geomstats->ymin ||
+		box->low.y > geomstats->ymax )
+	{
+#if DEBUG_GEOMETRY_STATS
+		elog(NOTICE, " search_box does not overlaps histogram, returning 0");
+#endif
+		return 0.0;
+	}
+
+	/*
+	 * Search box completely contains histogram extent
+	 */
+	if ( box->high.x >= geomstats->xmax &&
+		box->low.x <= geomstats->xmin &&
+		box->high.y >= geomstats->ymax &&
+		box->low.y <= geomstats->ymin )
+	{
+#if DEBUG_GEOMETRY_STATS
+		elog(NOTICE, " search_box contains histogram, returning 1");
+#endif
+		return 1.0;
+	}
+
+	geow = geomstats->xmax-geomstats->xmin;
+	geoh = geomstats->ymax-geomstats->ymin;
+	bps = geomstats->boxesPerSide;
+	cell_area = (geow*geoh) / (bps*bps);
+	box_area = (box->high.x-box->low.x)*(box->high.y-box->low.y);
+	value = 0;
+
+	/* Find first overlapping column */
+	x_idx_min = (box->low.x-geomstats->xmin) / geow * bps;
+	if (x_idx_min < 0) {
+#if DEBUG_GEOMETRY_STATS
+		elog(NOTICE, " search_box overlaps %d columns on the left of histogram grid", -x_idx_min);
+#endif
+		// should increment the value somehow
+		x_idx_min = 0;
+	}
+	if (x_idx_min >= bps)
+	{
+#if DEBUG_GEOMETRY_STATS
+		elog(NOTICE, " search_box overlaps %d columns on the right of histogram grid", x_idx_min-bps+1);
+#endif
+		// should increment the value somehow
+		x_idx_min = bps-1;
+	}
+
+	/* Find first overlapping row */
+	y_idx_min = (box->low.y-geomstats->ymin) / geoh * bps;
+	if (y_idx_min <0)
+	{
+#if DEBUG_GEOMETRY_STATS
+		elog(NOTICE, " search_box overlaps %d columns on the bottom of histogram grid", -y_idx_min);
+#endif
+		// should increment the value somehow
+		y_idx_min = 0;
+	}
+	if (y_idx_min >= bps)
+	{
+#if DEBUG_GEOMETRY_STATS
+		elog(NOTICE, " search_box overlaps %d columns on the top of histogram grid", y_idx_min-bps+1);
+#endif
+		// should increment the value somehow
+		y_idx_min = bps-1;
+	}
+
+	/* Find last overlapping column */
+	x_idx_max = (box->high.x-geomstats->xmin) / geow * bps;
+	if (x_idx_max <0)
+	{
+		// should increment the value somehow
+		x_idx_max = 0;
+	}
+	if (x_idx_max >= bps )
+	{
+		// should increment the value somehow
+		x_idx_max = bps-1;
+	}
+
+	/* Find last overlapping row */
+	y_idx_max = (box->high.y-geomstats->ymin) / geoh * bps;
+	if (y_idx_max <0)
+	{
+		// should increment the value somehow
+		y_idx_max = 0;
+	}
+	if (y_idx_max >= bps)
+	{
+		// should increment the value somehow
+		y_idx_max = bps-1;
+	}
+
+	/*
+	 * the {x,y}_idx_{min,max}
+	 * define the grid squares that the box intersects
+	 */
+	for (y=y_idx_min; y<=y_idx_max; y++)
+	{
+		for (x=x_idx_min; x<=x_idx_max; x++)
+		{
+			double val;
+			double gain;
+
+			val = geomstats->value[x+y*bps];
+
+			/*
+			 * Of the cell value we get
+			 * only the overlap fraction.
+			 */
+
+			intersect_x = min(box->high.x, geomstats->xmin + (x+1) * geow / bps) - max(box->low.x, geomstats->xmin + x * geow / bps );
+			intersect_y = min(box->high.y, geomstats->ymin + (y+1) * geoh / bps) - max(box->low.y, geomstats->ymin+ y * geoh / bps) ;
+			
+			AOI = intersect_x*intersect_y;
+			gain = AOI/cell_area;
+
+#if DEBUG_GEOMETRY_STATS > 1
+			elog(NOTICE, " [%d,%d] cell val %.15f",
+					x, y, val);
+			elog(NOTICE, " [%d,%d] gain %.15f",
+					x, y, gain);
+#endif
+
+			val *= gain;
+
+#if DEBUG_GEOMETRY_STATS > 1
+			elog(NOTICE, " [%d,%d] adding %.15f to value",
+				x, y, val);
+#endif
+			value += val;
+		}
+	}
+
+
+	/*
+	 * If the search_box is a point, it will
+	 * overlap a single cell and thus get
+	 * it's value, which is the fraction of
+	 * samples (we can presume of row set also)
+	 * which bumped to that cell.
+	 *
+	 * If the table features are points, each
+	 * of them will overlap a single histogram cell.
+	 * Our search_box value would then be correctly
+	 * computed as the sum of the bumped cells values.
+	 *
+	 * If both our search_box AND the sample features
+	 * overlap more then a single histogram cell we
+	 * need to consider the fact that our sum computation
+	 * will have many duplicated included. E.g. each
+	 * single sample feature would have contributed to
+	 * raise the search_box value by as many times as
+	 * many cells in the histogram are commonly overlapped
+	 * by both searc_box and feature. We should then
+	 * divide our value by the number of cells in the virtual
+	 * 'intersection' between average feature cell occupation
+	 * and occupation of the search_box. This is as 
+	 * fuzzy as you understand it :)
+	 *
+	 * Consistency check: whenever the number of cells is
+	 * one of whichever part (search_box_occupation,
+	 * avg_feature_occupation) the 'intersection' must be 1.
+	 * If sounds that our 'intersaction' is actually the
+	 * minimun number between search_box_occupation and
+	 * avg_feat_occupation.
+	 *
+	 */
+	overlapping_cells = (x_idx_max-x_idx_min+1) *
+		(y_idx_max-y_idx_min+1);
+	avg_feat_cells = geomstats->avgFeatureCells;
+
+#if DEBUG_GEOMETRY_STATS
+elog(NOTICE, " search_box overlaps %f cells", overlapping_cells);
+elog(NOTICE, " avg feat overlaps %f cells", avg_feat_cells);
+#endif
+
+	gain = 1/min(overlapping_cells, avg_feat_cells);
+	selectivity = value*gain;
+
+#if DEBUG_GEOMETRY_STATS
+	elog(NOTICE, " SUM(ov_histo_cells)=%f", value);
+	elog(NOTICE, " gain=%f", gain);
+	elog(NOTICE, " selectivity=%f", selectivity);
+#endif
+
+	/* prevent rounding overflows */
+	if (selectivity > 1.0) selectivity = 1.0;
+	else if (selectivity < 0) selectivity = 0.0;
+
+	return selectivity;
+}
+
+/*
  * This function should return an estimation of the number of
  * rows returned by a query involving an overlap check 
  * ( it's the restrict function for the && operator )
  *
  * It can make use (if available) of the statistics collected
  * by the geometry analyzer function.
+ *
+ * Note that the good work is done by estimate_selectivity() above.
+ * This function just tries to find the search_box, loads the statistics
+ * and invoke the work-horse.
  *
  * This is the one used for PG version >= 7.5
  *
@@ -1101,188 +1328,7 @@ Datum postgis_gist_sel(PG_FUNCTION_ARGS)
 	/*
 	 * Do the estimation
 	 */
-	{
-		int x, y;
-		int x_idx_min, x_idx_max, y_idx_min, y_idx_max;
-		double intersect_x, intersect_y, AOI;
-		double cell_area, box_area;
-		double geow, geoh; // width and height of histogram
-		int bps; // boxesPerSide 
-		BOX *box;
-		double value;
-		float overlapping_cells;
-		float avg_feat_cells;
-		double gain;
-
-		box = search_box;
-		geow = geomstats->xmax-geomstats->xmin;
-		geoh = geomstats->ymax-geomstats->ymin;
-		bps = geomstats->boxesPerSide;
-		cell_area = (geow*geoh) / (bps*bps);
-		box_area = (box->high.x-box->low.x)*(box->high.y-box->low.y);
-		value = 0;
-
-		/* Find first overlapping column */
-		x_idx_min = (box->low.x-geomstats->xmin) / geow * bps;
-		if (x_idx_min < 0) {
-#if DEBUG_GEOMETRY_STATS
-			elog(NOTICE, " search_box overlaps %d columns on the left of histogram grid", -x_idx_min);
-#endif
-			// should increment the value somehow
-			x_idx_min = 0;
-		}
-		if (x_idx_min >= bps)
-		{
-#if DEBUG_GEOMETRY_STATS
-			elog(NOTICE, " search_box overlaps %d columns on the right of histogram grid", x_idx_min-bps+1);
-#endif
-			// should increment the value somehow
-			x_idx_min = bps-1;
-		}
-
-		/* Find first overlapping row */
-		y_idx_min = (box->low.y-geomstats->ymin) / geoh * bps;
-		if (y_idx_min <0)
-		{
-#if DEBUG_GEOMETRY_STATS
-			elog(NOTICE, " search_box overlaps %d columns on the bottom of histogram grid", -y_idx_min);
-#endif
-			// should increment the value somehow
-			y_idx_min = 0;
-		}
-		if (y_idx_min >= bps)
-		{
-#if DEBUG_GEOMETRY_STATS
-			elog(NOTICE, " search_box overlaps %d columns on the top of histogram grid", y_idx_min-bps+1);
-#endif
-			// should increment the value somehow
-			y_idx_min = bps-1;
-		}
-
-		/* Find last overlapping column */
-		x_idx_max = (box->high.x-geomstats->xmin) / geow * bps;
-		if (x_idx_max <0)
-		{
-			// should increment the value somehow
-			x_idx_max = 0;
-		}
-		if (x_idx_max >= bps )
-		{
-			// should increment the value somehow
-			x_idx_max = bps-1;
-		}
-
-		/* Find last overlapping row */
-		y_idx_max = (box->high.y-geomstats->ymin) / geoh * bps;
-		if (y_idx_max <0)
-		{
-			// should increment the value somehow
-			y_idx_max = 0;
-		}
-		if (y_idx_max >= bps)
-		{
-			// should increment the value somehow
-			y_idx_max = bps-1;
-		}
-
-		/*
-		 * the {x,y}_idx_{min,max}
-		 * define the grid squares that the box intersects
-		 */
-		for (y=y_idx_min; y<=y_idx_max; y++)
-		{
-			for (x=x_idx_min; x<=x_idx_max; x++)
-			{
-				double val;
-				double gain;
-
-				val = geomstats->value[x+y*bps];
-
-				/*
-				 * Of the cell value we get
-				 * only the overlap fraction.
-				 */
-
-				intersect_x = min(box->high.x, geomstats->xmin + (x+1) * geow / bps) - max(box->low.x, geomstats->xmin + x * geow / bps );
-				intersect_y = min(box->high.y, geomstats->ymin + (y+1) * geoh / bps) - max(box->low.y, geomstats->ymin+ y * geoh / bps) ;
-				
-				AOI = intersect_x*intersect_y;
-				gain = AOI/cell_area;
-
-#if DEBUG_GEOMETRY_STATS > 1
-				elog(NOTICE, " [%d,%d] cell val %.15f",
-						x, y, val);
-				elog(NOTICE, " [%d,%d] gain %.15f",
-						x, y, gain);
-#endif
-
-				val *= gain;
-
-#if DEBUG_GEOMETRY_STATS > 1
-				elog(NOTICE, " [%d,%d] adding %.15f to value",
-					x, y, val);
-#endif
-				value += val;
-			}
-		}
-
-
-		/*
-		 * If the search_box is a point, it will
-		 * overlap a single cell and thus get
-		 * it's value, which is the fraction of
-		 * samples (we can presume of row set also)
-		 * which bumped to that cell.
-		 *
-		 * If the table features are points, each
-		 * of them will overlap a single histogram cell.
-		 * Our search_box value would then be correctly
-		 * computed as the sum of the bumped cells values.
-		 *
-		 * If both our search_box AND the sample features
-		 * overlap more then a single histogram cell we
-		 * need to consider the fact that our sum computation
-		 * will have many duplicated included. E.g. each
-		 * single sample feature would have contributed to
-		 * raise the search_box value by as many times as
-		 * many cells in the histogram are commonly overlapped
-		 * by both searc_box and feature. We should then
-		 * divide our value by the number of cells in the virtual
-		 * 'intersection' between average feature cell occupation
-		 * and occupation of the search_box. This is as 
-		 * fuzzy as you understand it :)
-		 *
-		 * Consistency check: whenever the number of cells is
-		 * one of whichever part (search_box_occupation,
-		 * avg_feature_occupation) the 'intersection' must be 1.
-		 * If sounds that our 'intersaction' is actually the
-		 * minimun number between search_box_occupation and
-		 * avg_feat_occupation.
-		 *
-		 */
-		overlapping_cells = (x_idx_max-x_idx_min+1) *
-			(y_idx_max-y_idx_min+1);
-		avg_feat_cells = geomstats->avgFeatureCells;
-
-#if DEBUG_GEOMETRY_STATS
-	elog(NOTICE, " search_box overlaps %f cells", overlapping_cells);
-	elog(NOTICE, " avg feat overlaps %f cells", avg_feat_cells);
-#endif
-
-		gain = 1/min(overlapping_cells, avg_feat_cells);
-		selectivity = value*gain;
-
-#if DEBUG_GEOMETRY_STATS
-		elog(NOTICE, " SUM(ov_histo_cells)=%f", value);
-		elog(NOTICE, " gain=%f", gain);
-		elog(NOTICE, " selectivity=%f", selectivity);
-#endif
-
-		/* prevent rounding overflows */
-		if (selectivity > 1.0) selectivity = 1.0;
-		else if (selectivity < 0) selectivity = 0.0;
-	}
-	
+	selectivity = estimate_selectivity(search_box, geomstats);
 
 
 #if DEBUG_GEOMETRY_STATS
@@ -1626,6 +1672,8 @@ Datum geometry_analyze(PG_FUNCTION_ARGS)
 	/* Indicate we are done successfully */
 	PG_RETURN_BOOL(true);
 }
+	
+
 
 #endif
 
