@@ -1,4 +1,4 @@
-- find syntax problem with lwgparse.c (tag_tuple...)
+- Add enforce_dims_<geomfield> constraints to spatial table
 
 - research on extent() extracting output from an existing index.
 
