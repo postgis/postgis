@@ -1,6 +1,4 @@
 
-- AsBinary(geometry, XDR|NDR)
-
 - WKB support in loader (canonical form is OK)
 
 - lwgeom_clone_deep / lwgeom_release_deep
@@ -15,9 +13,6 @@
 - A linemerge(linestring, linestring)
 
 - make IsValid() return GEOS invalidity message if any (as a NOTICE probably)
-
-- Endiannes honouring in dumper (currently does not specify and does not
-  flip when required). Depends on AsBinary() item above.
 
 - OBSOLETE box extractor function (getbox2d) returning an actual
   object. (return undefined values for empty geometries).
