@@ -1,5 +1,5 @@
 PostGIS 1.0.0RC6
-??????
+2005/03/30
 	- BUGFIX dumper 64bit
 	- BUGFIX in multi()
 	- BUGFIX in postgis_restore.pl script
