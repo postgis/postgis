@@ -2544,8 +2544,84 @@ or run the UPDATE query above after every modification.
 
 </sect1>
 
-</chapter>
 
+<sect1> <title>CLUSTERing on geometry indices</title>
+
+<para>
+For tables that are mostly read-only, and where a single index is used for the
+majority of queries, PostgreSQL offers the CLUSTER command. This command 
+physically reorders all the data rows in the same order as the index criteria,
+yielding two performance advantages: First, for index range scans, the number of 
+seeks on the data table is drastically reduced. Second, if your working set
+concentrates to some small intervals on the indices, you have a more efficient
+caching because the data rows are spread along fewer data pages. (Feel invited
+to read the CLUSTER command documentation from the PostgreSQL manual at this
+point.)
+</para>
+
+<para>
+However, currently PostgreSQL does not allow clustering on PostGIS GIST indices
+because GIST indices simply ignores NULL values, you get an error message like:
+</para>
+
+<programlisting>
+lwgeom=# CLUSTER my_geom_index ON my_table;
+ERROR:  cannot cluster when index access method does not handle null values
+HINT:  You may be able to work around this by marking column "the_geom" NOT NULL.
+</programlisting>
+
+<para>
+As the HINT message tells you, one can work around this deficiency by adding a
+"not null" constraint to the table:
+</para>
+
+<programlisting>
+lwgeom=# ALTER TABLE my_table ALTER COLUMN the_geom SET not null;
+ALTER TABLE
+</programlisting>
+
+<para>
+Of course, this will not work if you in fact need NULL values in your geometry
+column. Additionally, you must use the above method to add the constraint, using
+a CHECK constraint like "ALTER TABLE blubb ADD CHECK (geometry is not null);" will
+not work.
+</para>
+
+</sect1>
+
+<sect1><title>Avoiding dimension conversion</title>
+
+<para>
+Sometimes, you happen to have 3D or 4D data in your table, but always access
+it using OpenGIS compliant asText() or asBinary() functions that only output
+2D geometries. They do this by internally calling the force_2d() function,
+which introduces a significant overhead for large geometries. To avoid this
+overhead, it may be feasible to pre-drop those additional dimensions once and
+forever:
+</para>
+
+<programlisting>
+UPDATE mytable SET the_geom = force_2d(the_geom);
+VACUUM FULL ANALYZE mytable;
+</programlisting>
+
+<para>
+If you run PostgreSQL 7.X, don't forget to use the update_geometry_stats() function 
+afterwards to keep your statistics up to date.
+</para>
+
+<para>
+In case of large tables, it may be wise to divide this UPDATE into smaller portions
+by constraining the UPDATE to a part of the table via a WHERE clause and your
+primary key or another feasible criteria, and running a simple "VACUUM;" between
+your UPDATEs. This drastically reduces the need for temporary disk space.
+Additionally, if you have mixed dimension geometries, restricting the UPDATE by "WHERE 
+dimension(the_geom)>2" skips re-writing of geometries that already are in 2D. 
+</para>
+
+</sect1>
+
+</chapter>
 
   <chapter>
     <title>PostGIS Reference</title>
