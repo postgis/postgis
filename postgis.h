@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.34  2003/10/16 16:35:42  dblasby
+ * added #include <sys/types.h> for people using freeBSD (strk@keybit.net patch)
+ *
  * Revision 1.33  2003/08/08 18:19:20  dblasby
  * Conformance changes.
  * Removed junk from postgis_debug.c and added the first run of the long
@@ -43,6 +46,7 @@
  * of the base types (and a little bit of other info).
  */
 
+#include <sys/types.h>
 #include "utils/geo_decls.h"
 
 #define	POINTTYPE	1
