@@ -274,10 +274,6 @@ LANGUAGE 'plpgsql' WITH (iscachable,isstrict);
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- COMMON FUNCTIONS
 
--- CREATE FUNCTION get_proj4_from_srid(integer) RETURNS text AS
--- 'SELECT proj4text::text FROM spatial_ref_sys WHERE srid= $1' 
--- LANGUAGE 'sql' WITH (iscachable,isstrict);
-
 CREATE FUNCTION srid(chip)
 	RETURNS int4
 	AS '@MODULE_FILENAME@','srid_chip'
