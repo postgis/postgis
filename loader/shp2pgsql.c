@@ -27,6 +27,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <errno.h>
 #include "getopt.h"
 
 #define	POINTTYPE	1
@@ -64,6 +65,9 @@ int	istypeM;
 int	pgdims;
 unsigned int wkbtype;
 char  	*shp_file;
+#ifdef USE_ICONV
+char	*encoding=NULL;
+#endif
 
 DBFFieldType *types;	/* Fields type, width and precision */
 SHPHandle  hSHPHandle;
@@ -92,6 +96,10 @@ void InsertLineString(int id);
 int parse_cmdline(int ARGC, char **ARGV);
 void SetPgType(void);
 char *dump_ring(Ring *ring);
+#ifdef USE_ICONV
+char *utf8(const char *fromcode, char *inputbuf);
+#endif
+
 
 // WKB
 static char getEndianByte(void);
@@ -126,13 +134,24 @@ make_good_string(char *str)
 	//
 	// we dont escape already escaped tabs
 
-
 	char	*result;
 	char	*str2;
 	char	*start,*end;
 	int	num_tabs = 0;
+#ifdef USE_ICONV
+	char *utf8str=NULL;
 
-	(str2) = (str);
+	if ( encoding )
+	{
+		utf8str=utf8(encoding, str);
+		if ( ! utf8str ) exit(1);
+		str = utf8str; // we leak anyway
+	}
+#endif
+
+	str2 = str;
+
+
 
 	while ((str2 = strchr(str2, '\t')) )
 	{
@@ -141,7 +160,9 @@ make_good_string(char *str)
 		str2++;
 	}
 	if (num_tabs == 0)
+	{
 		return str;
+	}
 	
 	result =(char *) malloc ( strlen(str) + num_tabs+1);
 	memset(result,0, strlen(str) + num_tabs+1 );
@@ -163,11 +184,17 @@ make_good_string(char *str)
 		}
 	}
 	strcat(result,start);
+
+#ifdef USE_ICONV
+	if ( utf8str ) free(utf8str);
+#endif // USE_ICONV
 	return result;
 	
 }
 
-char	*protect_quotes_string(char *str){
+char *
+protect_quotes_string(char *str)
+{
 	//find all quotes and make them \quotes
 	//find all '\' and make them '\\'
 	// 
@@ -178,8 +205,18 @@ char	*protect_quotes_string(char *str){
 	char	*str2;
 	char	*start, *end1, *end2 = NULL;
 	int	num_chars = 0;
+#ifdef USE_ICONV
+	char *utf8str=NULL;
 
-	str2 =  str;
+	if ( encoding )
+	{
+		utf8str=utf8(encoding, str);
+		if ( ! utf8str ) exit(1);
+		str = utf8str; // we leak anyway
+	}
+#endif
+
+	str2 = str;
 
 	while ((str2 = strchr((str2), '\'')) )
 	{
@@ -219,6 +256,11 @@ char	*protect_quotes_string(char *str){
 	}
 	    
 	strcat(result,start);
+
+#ifdef USE_ICONV
+	if ( utf8str ) free(utf8str);
+#endif // USE_ICONV
+
 	return result;
 }
 
@@ -377,6 +419,13 @@ main (int ARGC, char **ARGV)
 
 	fprintf(stderr, "Shapefile type: %s\n", SHPTypeName(shpfiletype));
 	fprintf(stderr, "Postgis type: %s[%d]\n", pgtype, pgdims);
+
+#if USE_ICONV
+	if ( encoding )
+	{
+		printf("SET CLIENT_ENCODING TO UTF8;\n");
+	}
+#endif // USE_ICONV
 
 	if(opt == 'd')
 	{
@@ -772,6 +821,11 @@ usage(char *me, int exitcode)
 	fprintf(stderr, "  -k  Keep postgresql identifiers case.\n");
 	fprintf(stderr, "\n");
 	fprintf(stderr, "  -i  Use int4 type for all integer dbf fields.\n");
+#ifdef USE_ICONV
+	fprintf(stderr, "\n");
+	fprintf(stderr, "  -W <ENCODING_NAME> Specify the character encoding of Shape's\n");
+	fprintf(stderr, "     attribute column. (default : \"ASCII\")\n");
+#endif
 	exit (exitcode);
 }
 
@@ -1077,7 +1131,7 @@ parse_cmdline(int ARGC, char **ARGV)
 	int curindex=0;
 	char  *ptr;
 
-	while ((c = getopt(ARGC, ARGV, "kcdaDs:g:i")) != EOF){
+	while ((c = getopt(ARGC, ARGV, "kcdaDs:g:iW:")) != EOF){
                switch (c) {
                case 'c':
                     if (opt == ' ')
@@ -1112,6 +1166,11 @@ parse_cmdline(int ARGC, char **ARGV)
                case 'i':
                     forceint4 = 1;
                     break;
+#ifdef USE_ICONV
+		case 'W':
+                    encoding = optarg;
+                    break;
+#endif
                case '?':
                default:              
 		return 0;
@@ -1304,8 +1363,56 @@ print_wkb_bytes(unsigned char *ptr, unsigned int cnt, size_t size)
 	printf("%s", buf);
 }
 
+#ifdef USE_ICONV
+
+#include <iconv.h>
+
+char *
+utf8 (const char *fromcode, char *inputbuf)
+{
+	iconv_t cd;
+	char *outputptr;
+	char *outputbuf;
+	size_t outbytesleft;
+	size_t inbytesleft;
+
+	inbytesleft = strlen (inputbuf);
+
+	cd = iconv_open ("UTF-8", fromcode);
+	if (cd == (iconv_t) - 1)
+	{
+		fprintf(stderr, "utf8: iconv_open: %s\n", strerror (errno));
+		return NULL;
+	}
+
+	outbytesleft = inbytesleft * 2;
+	outputbuf = (char *) malloc (outbytesleft);
+	if (!outputbuf)
+	{
+		fprintf(stderr, "utf8: malloc: %s\n", strerror (errno));
+		return NULL;
+	}
+	bzero (outputbuf, outbytesleft);
+	outputptr = outputbuf;
+
+	if (-1==iconv(cd, &inputbuf, &inbytesleft, &outputptr, &outbytesleft))
+	{
+		fprintf(stderr, "utf8: %s", strerror (errno));
+		return NULL;
+	}
+
+	iconv_close (cd);
+
+	return outputbuf;
+}
+
+#endif // USE_ICONV
+
 /**********************************************************************
  * $Log$
+ * Revision 1.76  2005/01/12 17:03:20  strk
+ * Added optional UTF8 output support as suggested by IIDA Tetsushi
+ *
  * Revision 1.75  2004/11/15 10:51:35  strk
  * Fixed a bug in PIP invocation, added some debugging lines.
  *
