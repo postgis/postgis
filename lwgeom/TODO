@@ -1,3 +1,5 @@
+- makeline, makepoly: aggregates on single types or functions on multitypes ?
+
 - Document point,line constructors
 
 - WKB support in loader (canonical form is OK)
