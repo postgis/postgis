@@ -1735,6 +1735,9 @@ Datum LWGEOM_maxdistance2d_linestring(PG_FUNCTION_ARGS)
 	double maxdist = 0;
 	int i;
 
+	elog(ERROR, "This function is unimplemented yet");
+	PG_RETURN_NULL();
+
 	geom1 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	line1 = lwline_deserialize(SERIALIZED_FORM(geom1));
 	if ( line1 == NULL ) PG_RETURN_NULL(); // not a linestring

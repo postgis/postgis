@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.40  2004/08/26 16:55:09  strk
+ * max_distance() raises an 'unimplemented yet' error.
+ *
  * Revision 1.39  2004/07/28 16:10:59  strk
  * Changed all version functions to return text.
  * Renamed postgis_scripts_version() to postgis_scripts_installed()
@@ -467,7 +470,6 @@ Datum perimeter2d(PG_FUNCTION_ARGS)
 //
 //	Our polygons have first and last point the same,
 //
-
 int PIP( POINT3D *P, POINT3D *V, int n )
 {
     int    cn = 0;    // the crossing number counter
@@ -1125,7 +1127,8 @@ Datum combine_bbox(PG_FUNCTION_ARGS)
 }
 
 
-//return 2 for 2d geometries or 3 for 3d geometries
+//returns 0 for points, 1 for lines, 2 for polygons.
+//returns max dimension for a collection.
 PG_FUNCTION_INFO_V1(dimension);
 Datum dimension(PG_FUNCTION_ARGS)
 {
@@ -2441,6 +2444,9 @@ Datum max_distance(PG_FUNCTION_ARGS)
 		POINT3D		*pt;
 
 		double		result,dist;
+
+	elog(ERROR, "This function is unimplemented yet");
+	PG_RETURN_NULL();
 
 	if (geom1->SRID != geom2->SRID)
 	{
