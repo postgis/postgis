@@ -127,6 +127,10 @@ Datum LWGEOM_out(PG_FUNCTION_ARGS)
 
 // LWGEOMFromWKB(wkb,  [SRID] )
 // NOTE: wkb is in *binary* not hex form.
+//
+// NOTE: this function is unoptimized, as it convert binary
+// form to hex form and then calls the unparser ...
+//
 PG_FUNCTION_INFO_V1(LWGEOMFromWKB);
 Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 {
@@ -146,9 +150,9 @@ Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 	else
 		SRID = -1;
 
- //       elog(NOTICE,"LWGEOMFromWKB: entry with SRID=%i",SRID);
-	elog(NOTICE,"wkb => lwgeom CONVERSION");
-
+#ifdef DEBUG
+	elog(NOTICE,"LWGEOMFromWKB: entry with SRID=%i",SRID);
+#endif
 
 	// convert WKB to hexized WKB string
 
@@ -168,13 +172,19 @@ Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 
 	wkb_srid_hexized[size_result-1] = 0; // null term
 
-//elog(NOTICE,"size_header = %i",size_header);
-//elog(NOTICE,"size_result = %i", size_result);
-//elog(NOTICE,"LWGEOMFromWKB :: '%s'", wkb_srid_hexized);
+#ifdef DEBUG
+	elog(NOTICE,"size_header = %i",size_header);
+	elog(NOTICE,"size_result = %i", size_result);
+	elog(NOTICE,"LWGEOMFromWKB :: '%s'", wkb_srid_hexized);
+#endif
 
 	lwgeom =  parse_lwgeom_wkt(wkb_srid_hexized);
 
 	pfree(wkb_srid_hexized);
+
+#ifdef DEBUG
+	elog(NOTICE, "LWGEOMFromWKB returning %s", unparse_WKB(lwgeom, palloc_fn, free_fn));
+#endif
 
 	PG_RETURN_POINTER(lwgeom);
 }
@@ -195,9 +205,7 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 	char *semicolonLoc;
 	int t;
 
-#ifdef DEBUG
-elog(NOTICE, "in WKBFromLWGEOM with WKB = '%s'", hexized_wkb_srid);
-#endif
+//elog(NOTICE, "in WKBFromLWGEOM with WKB = '%s'", hexized_wkb_srid);
 
 	hexized_wkb = hexized_wkb_srid;
 	semicolonLoc = strchr(hexized_wkb_srid,';');
@@ -208,9 +216,7 @@ elog(NOTICE, "in WKBFromLWGEOM with WKB = '%s'", hexized_wkb_srid);
 		hexized_wkb = (semicolonLoc+1);
 	}
 
-#ifdef DEBUG
-elog(NOTICE, "in WKBFromLWGEOM with WKB (with no 'SRID=#;' = '%s'", hexized_wkb);
-#endif
+//elog(NOTICE, "in WKBFromLWGEOM with WKB (with no 'SRID=#;' = '%s'", hexized_wkb);
 
 	len_hexized_wkb = strlen(hexized_wkb);
 	size_result = len_hexized_wkb/2 + 4;
@@ -570,16 +576,65 @@ char *parse_lwgeom_wkt(char *wkt_input)
 	char *serialized_form = parse_lwg((const char *)wkt_input,(allocator) palloc_fn, (report_error)elog_ERROR);
 
 
-	//elog(NOTICE,"parse_lwgeom_wkt with %s",wkt_input);
+#ifdef DEBUG
+	elog(NOTICE,"parse_lwgeom_wkt with %s",wkt_input);
+#endif
 
 	if (serialized_form == NULL)
 		elog(ERROR,"parse_WKT:: couldnt parse!");
 
 	return serialized_form;
 
-	//result = palloc( (*((int*) serialized_form)));
-	//memcpy(result, serialized_form, *((int*) serialized_form));
-	//free(serialized_form);
-	//return result;
 }
 
+#if USE_VERSION > 73
+/*
+ * This function must advance the StringInfo.cursor pointer
+ * and leave it at the end of StringInfo.buf. If it fails
+ * to do so the backend will raise an exception with message:
+ * ERROR:  incorrect binary data format in bind parameter #
+ *
+ */
+PG_FUNCTION_INFO_V1(LWGEOM_recv);
+Datum LWGEOM_recv(PG_FUNCTION_ARGS)
+{
+	StringInfo buf = (StringInfo) PG_GETARG_POINTER(0);
+        bytea *wkb;
+	char *result;
+
+#ifdef DEBUG
+	elog(NOTICE, "LWGEOM_recv start");
+#endif
+
+	/* Add VARLENA size info to make it a valid varlena object */
+	wkb = (bytea *)palloc(buf->len+VARHDRSZ);
+	VARATT_SIZEP(wkb) = buf->len+VARHDRSZ;
+	memcpy(VARATT_DATA(wkb), buf->data, buf->len);
+
+#ifdef DEBUG
+	elog(NOTICE, "LWGEOM_recv calling LWGEOMFromWKB");
+#endif
+
+	/* Call slow LWGEOMFromWKB function... */
+	result = DatumGetPointer(DirectFunctionCall1(LWGEOMFromWKB,
+		PointerGetDatum(wkb)));
+
+#ifdef DEBUG
+	elog(NOTICE, "LWGEOM_recv advancing StringInfo buffer");
+#endif
+
+#ifdef DEBUG
+	elog(NOTICE, "LWGEOMFromWKB returned %s", unparse_WKB(result,palloc_fn,free_fn));
+#endif
+
+
+	/* Set cursor to the end of buffer (so the backend is happy) */
+	buf->cursor = buf->len;
+
+#ifdef DEBUG
+	elog(NOTICE, "LWGEOM_recv returning");
+#endif
+
+        PG_RETURN_POINTER(result);
+}
+#endif

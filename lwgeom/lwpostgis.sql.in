@@ -99,11 +99,27 @@ CREATEFUNCTION geometry_analyze(internal)
 	LANGUAGE 'C' WITH (isstrict);
 #endif
 
+#if USE_VERSION > 73
+CREATEFUNCTION geometry_recv(internal)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','LWGEOM_recv'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION geometry_send(internal)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','WKBFromLWGEOM'
+	LANGUAGE 'C' WITH (isstrict);
+#endif
+
 
 CREATE TYPE geometry (
         internallength = variable,
         input = geometry_in,
         output = geometry_out,
+#if USE_VERSION > 73
+	send = geometry_send,
+	receive = geometry_recv,
+#endif
 #if USE_VERSION >= 80
 	analyze = geometry_analyze,
 #endif // USE_VERSION >= 80
