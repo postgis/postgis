@@ -315,7 +315,7 @@ CREATEFUNCTION getSRID(lwgeom)
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 -- defined for backward compatibility (pre LWGEOM)
-CREATEFUNCTION SRID(geometry) 
+CREATEFUNCTION SRID(lwgeom) 
 	RETURNS int4
 	AS '@MODULE_FILENAME@','LWGEOM_getSRID'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
