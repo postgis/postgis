@@ -1665,23 +1665,23 @@ CREATEFUNCTION buffer(geometry,float8)
    AS '@MODULE_FILENAME@','buffer'
    LANGUAGE 'C' WITH (isstrict);
    
-   CREATEFUNCTION convexhull(geometry)
-      RETURNS geometry
-      AS '@MODULE_FILENAME@','convexhull'
-   LANGUAGE 'C' WITH (isstrict);
+CREATEFUNCTION convexhull(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','convexhull'
+	LANGUAGE 'C' WITH (isstrict);
   
   
-     CREATEFUNCTION difference(geometry,geometry)
-        RETURNS geometry
+CREATEFUNCTION difference(geometry,geometry)
+	RETURNS geometry
         AS '@MODULE_FILENAME@','difference'
-   LANGUAGE 'C' WITH (isstrict);
+	LANGUAGE 'C' WITH (isstrict);
    
-  CREATEFUNCTION boundary(geometry)
-      RETURNS geometry
-      AS '@MODULE_FILENAME@','boundary'
-   LANGUAGE 'C' WITH (isstrict);
+CREATEFUNCTION boundary(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','boundary'
+	LANGUAGE 'C' WITH (isstrict);
 
-   CREATEFUNCTION symdifference(geometry,geometry)
+CREATEFUNCTION symdifference(geometry,geometry)
         RETURNS geometry
         AS '@MODULE_FILENAME@','symdifference'
    LANGUAGE 'C' WITH (isstrict);
