@@ -1,19 +1,7 @@
 /*
-
--- To enable the dump() function copy this SQL into lwpostgis.sql.in
--- and run make, then open lwpostgis.sql and feed the corresponding
--- queries to your spatial db
---
--- Also, add lwgeom_dump.o to OBJS variable in Makefile
-
-CREATE TYPE geometry_dump AS (path integer[], geom geometry);
-
-CREATEFUNCTION dump(geometry)
-	RETURNS SETOF geometry_dump
-	AS '@MODULE_FILENAME@', 'LWGEOM_dump'
-	LANGUAGE 'C' WITH (isstrict,iscachable);
-
-*/
+ * This only works for PGSQL > 72 
+ */
+#if USE_VERSION > 72
 
 #include <math.h>
 #include <float.h>
@@ -196,3 +184,4 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 }
 
 
+#endif // USE_VERSION > 72
