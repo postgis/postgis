@@ -1,0 +1,2 @@
+gcc -g -I/usr/include/pgsql -I/usr/local/include/pgsql -L/data3/postgresql-7.1.2/lib readwkb.c  -o readwkb -lpq
+

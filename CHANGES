@@ -1,0 +1,37 @@
+PostGIS 0.2
+2001/06/19
+
+- New functions
+  - extent()
+  - force_2d()
+  - force_3d()
+  - wkb_xdr()
+  - wkb_ndr()
+  - translate()
+- Fixes
+  - Cygwin compilation (Norman Vine)
+  - i386 byte alignment fixed
+  - 'VACUUM ANALYZE' fixed
+- Other
+  - documentation in docbook xml
+  - example program for WKB access
+  - removed 'make test' until we can get regression
+    working more cleanly
+
+
+PostGIS 0.1
+2001/05/25
+
+- Initial release!
+- 'geometry' and 'box3d' types.
+- Parsing routines for all possible geometries in OGIS text format 
+  (POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, MULTIPOLYGON,
+  GEOMETRYCOLLECTION).
+- Output routines for all possible geometries in OGIS text format.
+- area2d(), area3d()
+- length3d(), length3d()
+- perimeter2d(), perimeter3d()
+- truely_inside()
+- rtree index support functions
+- gist index support functions
+

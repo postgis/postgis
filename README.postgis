@@ -1,0 +1,95 @@
+PostGIS - Geographic Information Systems Extensions to PostgreSQL
+~~~~~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+VERSION: 0.2 (2001/06/19)
+
+MORE INFORMATION: http://postgis.refractions.net
+
+INTRODUCTION:
+This distribution contains a module which implements GIS simple features, ties 
+the features to rtree indexing, and provides some basic functions for accessing 
+and analyzing geographic data.
+
+Directory structure:
+
+	./      Core source code, makefiles and install directions.
+	./jdbc  Extensions to the PostgreSQL JDBC drivers to support
+	        the GIS objects. 
+	./doc   Documentation on the code, objects and functions 
+	        provided. 
+	./examples  Small programs which demonstrate ways of accessing 
+	        GIS data.
+	        
+
+INSTALLATION:
+
+To install the module, move this directory to the "contrib" directory of your
+PostgreSQL source installation. Alternately, edit the "top_buildir" in the 
+Makefile and point it at your PostgreSQL source tree. You must have a 
+PostgreSQL source tree, and you must have run succesfully built and installed
+it for this to work.
+
+Then run:
+	
+	make
+	make install
+	
+Finally, load the function and object definitions into a database with psql 
+(you must run this as a database user with system privledges):
+
+	psql -f postgis.sql -d yourdatabase
+
+Installation should be complete.
+
+To run some regression tests, use 'make test'. The results will be output
+to tests/output.log and compared to tests/expected.log.
+
+
+USAGE:
+
+Try the following example SQL statements:
+
+CREATE TABLE geom_test ( gid int4, geom geometry, name varchar(25) );
+INSERT INTO geom_test ( gid, geom, name ) 
+  VALUES ( 1, 'POLYGON((0 0 0,0 5 0,5 5 0,5 0 0,0 0 0))', '3D Square');
+INSERT INTO geom_test ( gid, geom, name ) 
+  VALUES ( 2, 'LINESTRING(1 1 1,5 5 5,7 7 5)', '3D Line' );
+INSERT INTO geom_test ( gid, geom, name )
+  VALUES ( 3, 'MULTIPOINT(3 4,8 9)', '2D Aggregate Point' );
+SELECT * from geom_test WHERE geom && 'BOX3D(2 2 0,3 3 0)'::box3d;
+
+RTREE vs GIST:
+
+PostgreSQL provides support for rtree and GiST index schemes. The rtree scheme 
+is marginally faster, but does not support the indexing of objects greater 
+than 8K in size. Unfortunately, GIS objects get larger than 8K moderately
+often.  The GiST scheme offers indexing even on large objects, using a system
+of "lossy" indexing where a large object is proxied by a smaller one in the 
+index.  In the case of the PostGIS indexing system, all objects are proxied
+in the index by their bounding boxes.
+
+PostGIS fully supports GiST indexing, because it is the most widely useful for 
+GIS indexing. RTree indexing is partially supported, and may be discontinued
+in the future. We recommend you use GiST indexes.
+
+You can build a GiST index with:
+
+ CREATE INDEX <indexname> ON <tablename>  
+     USING gist ( <geometryfield> gist_geometry_ops ) WITH ( islossy );
+
+You can build an rtree index with:
+
+ CREATE INDEX <indexname> ON <tablename> 
+    USING rtree ( <geometryfield> rt_geometry_ops );
+
+Note that PostgreSQL does not use the GiST or rtree indexes when performing 
+searches unless *forced* to do so. This is not good behavior, but it seems
+to stem from the fact that the developers are optimizing the planner while 
+looking at btree indexing schemes. To force the system to use your spacial
+indexes, use the command:
+
+ SET ENABLE_SEQSCAN = OFF
+
+Try doing an EXPLAIN on your query before and after the 'enable_seqscan'
+command to see the different query plans.
+

@@ -1,0 +1,9 @@
+H1,H2,H3,H4,TH,DT,B{color:#004400;font-family:verdana,arial,helvetica}
+A.ulink,A.vlink,P,LI,TD{font-family:arial,helvetica}
+B,TH,DT{color:#004400;font-weight:bold}
+H1{font-size:150%}
+H1.SECT1{font-size:130%}
+PRE{font-family:courier}
+TT{font-family:courier}
+CODE{font-family:courier}
+.LITERALLAYOUT{font-weight:bold;font-family:courier}

@@ -1,0 +1,10 @@
+#!/bin/csh
+echo "Running Normal Regression Test..."
+echo ""
+echo "Differences such as 'INSERT 18641077 1' are not important"
+echo ""
+createdb geometry_reg	
+psql -e geometry_reg <postgis.sql >& /dev/null 
+psql -e geometry_reg <regress.sql >& regress_out
+diff regress_out regress_expected
+dropdb geometry_reg

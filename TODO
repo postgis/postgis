@@ -1,0 +1,8 @@
+2001/06/19
+
+- Change function names to be OGC compliant (following the "Simple Features
+  Specification for SQL")
+- Add some more of the OGC spec functions
+- Tie in to simple GIS clients
+- GML import/export routines
+- Document Java code better. Usage example better and perhaps client app.

@@ -1,0 +1,507 @@
+BEGIN TRANSACTION;
+
+
+
+CREATE FUNCTION BOX3D_in(opaque)
+   RETURNS BOX3D 
+   AS '@MODULE_FILENAME@'
+   LANGUAGE 'c';
+
+CREATE FUNCTION BOX3D_out(opaque)
+   RETURNS opaque
+   AS '@MODULE_FILENAME@'
+   LANGUAGE 'c';
+
+CREATE TYPE BOX3D (
+	alignment = double,
+	internallength = 48,
+	input =  BOX3D_in,
+	output =  BOX3D_out
+);
+
+CREATE TYPE WKB (
+	alignment = double,
+	internallength = VARIABLE,
+	input =  textin,
+	output =  textout
+);
+
+
+
+create function geometry_in(opaque)
+	RETURNS GEOMETRY
+   AS '@MODULE_FILENAME@'
+   LANGUAGE 'c';
+
+create function geometry_out(opaque)
+	RETURNS opaque
+   AS '@MODULE_FILENAME@'
+   LANGUAGE 'c';
+
+CREATE TYPE GEOMETRY (
+	alignment = double,
+	internallength = VARIABLE,
+	input =  geometry_in,
+	output =  geometry_out,
+	storage = main
+);
+
+
+CREATE FUNCTION box3d(GEOMETRY)
+   RETURNS BOX3D
+   AS '@MODULE_FILENAME@','get_bbox_of_geometry'
+	     LANGUAGE 'c' WITH (iscachable);
+
+CREATE FUNCTION geometry(BOX3D)
+   RETURNS GEOMETRY
+   AS '@MODULE_FILENAME@','get_geometry_of_bbox'
+	     LANGUAGE 'c' WITH (iscachable);
+
+--------- functions for converting to wkb
+
+CREATE FUNCTION wkb_NDR(GEOMETRY)
+   RETURNS WKB
+   AS '@MODULE_FILENAME@','wkb_NDR'
+	     LANGUAGE 'c' WITH (iscachable);
+
+CREATE FUNCTION wkb_XDR(GEOMETRY)
+   RETURNS WKB
+   AS '@MODULE_FILENAME@','wkb_XDR'
+	     LANGUAGE 'c' WITH (iscachable);
+
+
+---- Debug (info) functions
+
+CREATE FUNCTION npoints(GEOMETRY)
+   RETURNS INT4
+   AS '@MODULE_FILENAME@'
+	     LANGUAGE 'c' ;
+
+CREATE FUNCTION nrings(GEOMETRY)
+   RETURNS INT4
+   AS '@MODULE_FILENAME@'
+	     LANGUAGE 'c' ;
+
+CREATE FUNCTION mem_size(GEOMETRY)
+   RETURNS INT4
+   AS '@MODULE_FILENAME@'
+	     LANGUAGE 'c' ;
+
+CREATE FUNCTION numb_sub_objs(GEOMETRY)
+   RETURNS INT4
+   AS '@MODULE_FILENAME@'
+	     LANGUAGE 'c' ;
+
+CREATE FUNCTION summary(GEOMETRY)
+   RETURNS text
+   AS '@MODULE_FILENAME@'
+	     LANGUAGE 'c' ;
+
+CREATE FUNCTION translate(GEOMETRY,float8,float8,float8)
+   RETURNS GEOMETRY
+   AS '@MODULE_FILENAME@'
+	     LANGUAGE 'c' ;
+
+
+-------  generic operations
+
+CREATE FUNCTION length3d(GEOMETRY)
+   RETURNS FLOAT4
+   AS '@MODULE_FILENAME@'
+   LANGUAGE 'c';
+
+CREATE FUNCTION length2d(GEOMETRY)
+   RETURNS FLOAT4
+   AS '@MODULE_FILENAME@'
+   LANGUAGE 'c';
+
+CREATE FUNCTION area2d(GEOMETRY)
+   RETURNS FLOAT4
+   AS '@MODULE_FILENAME@'
+   LANGUAGE 'c';
+
+CREATE FUNCTION perimeter3d(GEOMETRY)
+   RETURNS FLOAT4
+   AS '@MODULE_FILENAME@'
+   LANGUAGE 'c';
+
+CREATE FUNCTION perimeter2d(GEOMETRY)
+   RETURNS FLOAT4
+   AS '@MODULE_FILENAME@'
+   LANGUAGE 'c';
+
+CREATE FUNCTION truly_inside(GEOMETRY,GEOMETRY)
+   RETURNS bool
+   AS '@MODULE_FILENAME@'
+   LANGUAGE 'c';
+
+------- Aggregate
+
+CREATE FUNCTION combine_bbox(BOX3D,GEOMETRY)
+   RETURNS BOX3D
+   AS '@MODULE_FILENAME@'
+   LANGUAGE 'c';
+
+CREATE AGGREGATE extent(
+	sfunc = combine_bbox,
+	basetype = GEOMETRY,
+	stype = BOX3D
+);
+
+
+
+-------  OPERATOR functions
+
+CREATE FUNCTION geometry_overleft(GEOMETRY, GEOMETRY) RETURNS bool
+        AS '@MODULE_FILENAME@' LANGUAGE 'c';
+
+CREATE FUNCTION geometry_overright(GEOMETRY, GEOMETRY) RETURNS bool
+        AS '@MODULE_FILENAME@' LANGUAGE 'c';
+
+CREATE FUNCTION geometry_left(GEOMETRY, GEOMETRY) RETURNS bool
+        AS '@MODULE_FILENAME@'  LANGUAGE 'c';
+
+CREATE FUNCTION geometry_right(GEOMETRY, GEOMETRY) RETURNS bool
+        AS '@MODULE_FILENAME@' LANGUAGE 'c';
+
+CREATE FUNCTION geometry_contain(GEOMETRY, GEOMETRY) RETURNS bool
+        AS '@MODULE_FILENAME@'  LANGUAGE 'c';
+
+CREATE FUNCTION geometry_contained(GEOMETRY, GEOMETRY) RETURNS bool
+        AS '@MODULE_FILENAME@'  LANGUAGE 'c';
+
+CREATE FUNCTION geometry_overlap(GEOMETRY, GEOMETRY) RETURNS bool
+        AS '@MODULE_FILENAME@'  LANGUAGE 'c';
+
+CREATE FUNCTION geometry_same(GEOMETRY, GEOMETRY) RETURNS bool
+        AS '@MODULE_FILENAME@'  LANGUAGE 'c';
+
+--------- functions for doing sorting-like things (not very usefull)
+
+CREATE FUNCTION geometry_lt(GEOMETRY, GEOMETRY) RETURNS bool
+        AS '@MODULE_FILENAME@'  LANGUAGE 'c';
+
+CREATE FUNCTION geometry_gt(GEOMETRY, GEOMETRY) RETURNS bool
+        AS '@MODULE_FILENAME@'  LANGUAGE 'c';
+
+CREATE FUNCTION geometry_eq(GEOMETRY, GEOMETRY) RETURNS bool
+        AS '@MODULE_FILENAME@'  LANGUAGE 'c';
+
+--------- functions for forcing geometry to be 2d or 3d
+
+CREATE FUNCTION force_2d(GEOMETRY) RETURNS GEOMETRY
+        AS '@MODULE_FILENAME@'  LANGUAGE 'c';
+
+CREATE FUNCTION force_3d(GEOMETRY) RETURNS GEOMETRY
+        AS '@MODULE_FILENAME@'  LANGUAGE 'c';
+
+
+
+-------- GiST support functions
+create function ggeometry_consistent(opaque,GEOMETRY,int4) returns bool 
+as '@MODULE_FILENAME@'   language 'C';
+
+create function ggeometry_compress(opaque) returns opaque 
+as '@MODULE_FILENAME@'  language 'C';
+
+create function ggeometry_penalty(opaque,opaque,opaque) returns opaque 
+as '@MODULE_FILENAME@'   language 'C';
+
+create function ggeometry_picksplit(opaque, opaque) returns opaque 
+as '@MODULE_FILENAME@'   language 'C';
+
+create function ggeometry_union(bytea, opaque) returns opaque 
+as '@MODULE_FILENAME@'   language 'C';
+
+create function ggeometry_same(opaque, opaque, opaque) returns opaque 
+as '@MODULE_FILENAME@'   language 'C';
+
+create function rtree_decompress(opaque) returns opaque
+as '@MODULE_FILENAME@'   language 'C';
+
+------ RTREE support functions
+
+create function geometry_union(GEOMETRY,GEOMETRY) returns GEOMETRY 
+as '@MODULE_FILENAME@'   language 'C';
+create function geometry_inter(GEOMETRY,GEOMETRY) returns GEOMETRY 
+as '@MODULE_FILENAME@'   language 'C';
+create function geometry_size(GEOMETRY,opaque) returns float4 
+as '@MODULE_FILENAME@'   language 'C';
+
+---------Create actual operators
+
+CREATE OPERATOR << (
+   LEFTARG = GEOMETRY, RIGHTARG = GEOMETRY, PROCEDURE = geometry_left,
+   COMMUTATOR = '>>',
+   RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+CREATE OPERATOR &< (
+   LEFTARG = GEOMETRY, RIGHTARG = GEOMETRY, PROCEDURE = geometry_overleft,
+   COMMUTATOR = '&>',
+   RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+CREATE OPERATOR && (
+   LEFTARG = GEOMETRY, RIGHTARG = GEOMETRY, PROCEDURE = geometry_overlap,
+   COMMUTATOR = '&&',
+   RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+CREATE OPERATOR &> (
+   LEFTARG = GEOMETRY, RIGHTARG = GEOMETRY, PROCEDURE = geometry_overright,
+   COMMUTATOR = '&<',
+   RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+CREATE OPERATOR >> (
+   LEFTARG = GEOMETRY, RIGHTARG = GEOMETRY, PROCEDURE = geometry_right,
+   COMMUTATOR = '<<',
+   RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+CREATE OPERATOR ~= (
+   LEFTARG = GEOMETRY, RIGHTARG = GEOMETRY, PROCEDURE = geometry_same,
+   COMMUTATOR = '=', 
+   RESTRICT = eqsel, JOIN = eqjoinsel
+);
+
+
+
+CREATE OPERATOR @ (
+   LEFTARG = GEOMETRY, RIGHTARG = GEOMETRY, PROCEDURE = geometry_contain,
+   COMMUTATOR = '@',
+   RESTRICT = contsel, JOIN = contjoinsel
+);
+
+
+CREATE OPERATOR ~ (
+   LEFTARG = GEOMETRY, RIGHTARG = GEOMETRY, PROCEDURE = geometry_contained,
+   COMMUTATOR = '@',
+   RESTRICT = contsel, JOIN = contjoinsel
+);
+
+CREATE OPERATOR = (
+   LEFTARG = GEOMETRY, RIGHTARG = GEOMETRY, PROCEDURE = geometry_eq,
+   COMMUTATOR = '=',
+   RESTRICT = contsel, JOIN = contjoinsel
+);
+
+CREATE OPERATOR < (
+   LEFTARG = GEOMETRY, RIGHTARG = GEOMETRY, PROCEDURE = geometry_lt,
+   COMMUTATOR = '<',
+   RESTRICT = contsel, JOIN = contjoinsel
+);
+
+CREATE OPERATOR > (
+   LEFTARG = GEOMETRY, RIGHTARG = GEOMETRY, PROCEDURE = geometry_gt,
+   COMMUTATOR = '>',
+   RESTRICT = contsel, JOIN = contjoinsel
+);
+
+
+
+
+--- old way = insert into pg_opclass values ('gist_geometry_ops');
+
+INSERT INTO pg_opclass (opcname, opcdeftype)
+   SELECT 'gist_geometry_ops', oid
+   FROM pg_type
+   WHERE typname = 'geometry';
+
+--- drop table rt_ops_tmp;
+
+SELECT o.oid AS opoid, o.oprname
+INTO TABLE rt_ops_tmp
+FROM pg_operator o, pg_type t
+WHERE o.oprleft = t.oid 
+   and t.typname = 'geometry';
+
+-- box_left
+INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy) 
+   SELECT am.oid, opcl.oid, c.opoid, 1
+   FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
+   WHERE amname = 'gist' and opcname = 'gist_geometry_ops' 
+      and c.oprname = '<<';
+
+-- box_overleft
+INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy) 
+   SELECT am.oid, opcl.oid, c.opoid, 2
+   FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
+   WHERE amname = 'gist' and opcname = 'gist_geometry_ops' 
+      and c.oprname = '&<';
+
+-- box_overlap
+INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy) 
+   SELECT am.oid, opcl.oid, c.opoid, 3
+   FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
+   WHERE amname = 'gist' and opcname = 'gist_geometry_ops' 
+      and c.oprname = '&&';
+
+-- box_overright
+INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy) 
+   SELECT am.oid, opcl.oid, c.opoid, 4
+   FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
+   WHERE amname = 'gist' and opcname = 'gist_geometry_ops' 
+      and c.oprname = '&>';
+
+-- box_right
+INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy)
+   SELECT am.oid, opcl.oid, c.opoid, 5
+   FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
+   WHERE amname = 'gist' and opcname = 'gist_geometry_ops' 
+      and c.oprname = '>>';
+
+-- box_same
+INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy) 
+   SELECT am.oid, opcl.oid, c.opoid, 6
+   FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
+   WHERE amname = 'gist' and opcname = 'gist_geometry_ops' 
+      and c.oprname = '~=';
+
+-- box_contains
+INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy)
+   SELECT am.oid, opcl.oid, c.opoid, 7
+   FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
+   WHERE amname = 'gist' and opcname = 'gist_geometry_ops' 
+      and c.oprname = '~';
+
+-- box_contained
+INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy)
+   SELECT am.oid, opcl.oid, c.opoid, 8
+   FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
+   WHERE amname = 'gist' and opcname = 'gist_geometry_ops' 
+      and c.oprname = '@';
+
+DROP table rt_ops_tmp;
+
+-- add the entries to amproc for the support methods
+-- note the amprocnum numbers associated with each are specific!
+INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
+   SELECT am.oid, opcl.oid, pro.oid, 1
+   FROM pg_am am, pg_opclass opcl, pg_proc pro
+   WHERE  amname = 'gist' and opcname = 'gist_geometry_ops'
+      and proname = 'ggeometry_consistent';
+
+INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
+   SELECT am.oid, opcl.oid, pro.oid, 2
+   FROM pg_am am, pg_opclass opcl, pg_proc pro
+   WHERE  amname = 'gist' and opcname = 'gist_geometry_ops'
+      and proname = 'ggeometry_union';
+
+INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
+   SELECT am.oid, opcl.oid, pro.oid, 3
+   FROM pg_am am, pg_opclass opcl, pg_proc pro
+   WHERE  amname = 'gist' and opcname = 'gist_geometry_ops'
+      and proname = 'ggeometry_compress';
+
+INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
+   SELECT am.oid, opcl.oid, pro.oid, 4
+   FROM pg_am am, pg_opclass opcl, pg_proc pro
+   WHERE  amname = 'gist' and opcname = 'gist_geometry_ops'
+      and proname = 'rtree_decompress';
+
+INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
+   SELECT am.oid, opcl.oid, pro.oid, 5
+   FROM pg_am am, pg_opclass opcl, pg_proc pro
+   WHERE  amname = 'gist' and opcname = 'gist_geometry_ops'
+      and proname = 'ggeometry_penalty';
+
+INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
+   SELECT am.oid, opcl.oid, pro.oid, 6
+   FROM pg_am am, pg_opclass opcl, pg_proc pro
+   WHERE  amname = 'gist' and opcname = 'gist_geometry_ops'
+      and proname = 'ggeometry_picksplit';
+
+INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
+   SELECT am.oid, opcl.oid, pro.oid, 7
+   FROM pg_am am, pg_opclass opcl, pg_proc pro
+   WHERE  amname = 'gist' and opcname = 'gist_geometry_ops'
+      and proname = 'ggeometry_same';
+
+
+
+
+---- RTREE indexing support
+
+INSERT INTO pg_opclass (opcname, opcdeftype)
+   SELECT 'rt_geometry_ops', oid
+   FROM pg_type
+   WHERE typname = 'geometry'; 
+
+SELECT o.oid AS opoid, o.oprname
+INTO TABLE rt_ops_tmp
+FROM pg_operator o, pg_type t
+WHERE o.oprleft = t.oid 
+   and t.typname = 'geometry';
+
+
+INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy)
+   SELECT am.oid, opcl.oid, c.opoid, 1
+   FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
+   WHERE amname = 'rtree' and opcname = 'rt_geometry_ops'
+      and c.oprname = '<<';
+
+INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy)
+   SELECT am.oid, opcl.oid, c.opoid, 2
+   FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
+   WHERE amname = 'rtree' and opcname ='rt_geometry_ops'
+      and c.oprname = '&<';
+
+INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy)
+   SELECT am.oid, opcl.oid, c.opoid, 3
+   FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
+   WHERE amname = 'rtree' and opcname = 'rt_geometry_ops'
+      and c.oprname = '&&';
+
+INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy)
+   SELECT am.oid, opcl.oid, c.opoid, 4
+   FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
+   WHERE amname = 'rtree' and opcname = 'rt_geometry_ops'
+      and c.oprname = '&>';
+
+INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy)
+   SELECT am.oid, opcl.oid, c.opoid, 5
+   FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
+   WHERE amname = 'rtree' and opcname = 'rt_geometry_ops'
+      and c.oprname = '>>';
+
+INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy)
+   SELECT am.oid, opcl.oid, c.opoid, 6
+   FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
+   WHERE amname = 'rtree' and opcname = 'rt_geometry_ops'
+      and c.oprname = '~=';
+
+INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy)
+   SELECT am.oid, opcl.oid, c.opoid, 7
+   FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
+   WHERE amname = 'rtree' and opcname = 'rt_geometry_ops'
+      and c.oprname = '~';
+
+INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy)
+   SELECT am.oid, opcl.oid, c.opoid, 8
+   FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
+   WHERE amname = 'rtree' and opcname = 'rt_geometry_ops'
+      and c.oprname = '@';
+
+DROP table rt_ops_tmp;
+
+INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
+   SELECT am.oid, opcl.oid, pro.oid, 1
+   FROM pg_am am, pg_opclass opcl, pg_proc pro
+   WHERE  amname = 'rtree' and opcname = 'rt_geometry_ops'
+      and proname = 'geometry_union';
+
+INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
+   SELECT am.oid, opcl.oid, pro.oid, 2
+   FROM pg_am am, pg_opclass opcl, pg_proc pro
+   WHERE  amname = 'rtree' and opcname = 'rt_geometry_ops'
+      and proname = 'geometry_inter';
+
+INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
+   SELECT am.oid, opcl.oid, pro.oid, 3
+   FROM pg_am am, pg_opclass opcl, pg_proc pro
+   WHERE  amname = 'rtree' and opcname = 'rt_geometry_ops'
+      and proname = 'geometry_size';
+
+end TRANSACTION;

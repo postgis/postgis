@@ -1,0 +1,9 @@
+To use the PostGIS types, you must:
+- have the postgis.jar in your CLASSPATH
+- have a PostgreSQL JDBC Connection instance
+
+  Connection conn = new Connection();
+  ((org.postgresql.Connection)conn).addDataType("geometry","org.postgis.PGgeometry");
+  ((org.postgresql.Connection)conn).addDataType("box3d","org.postgis.PGbox3d");
+
+- 
