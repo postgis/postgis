@@ -11,11 +11,7 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-#if USE_VERSION > 71
 #define CREATEFUNCTION CREATE OR REPLACE FUNCTION
-#else
-#define CREATEFUNCTION CREATE FUNCTION
-#endif
 
 BEGIN;
 
@@ -410,9 +406,7 @@ CREATE OPERATOR CLASS btree_geometry_ops
 -------------------------------------------------------------------
 -- GiST indexes
 -------------------------------------------------------------------
-#if USE_VERSION == 71
-CREATEFUNCTION postgis_gist_sel(oid, oid, int2, opaque, int4)
-#elif USE_VERSION == 72
+#if USE_VERSION < 73
 CREATEFUNCTION postgis_gist_sel(opaque, oid,  opaque, int4)
 #else
 CREATEFUNCTION postgis_gist_sel (internal, oid, internal, int4)
@@ -421,9 +415,7 @@ CREATEFUNCTION postgis_gist_sel (internal, oid, internal, int4)
 	AS '@MODULE_FILENAME@', 'LWGEOM_gist_sel'
 	LANGUAGE 'C';
 
-#if USE_VERSION == 71
-CREATEFUNCTION postgis_gist_joinsel(oid, oid, int2, opaque, smallint)
-#elif USE_VERSION == 72
+#if USE_VERSION == 72
 CREATEFUNCTION postgis_gist_joinsel(opaque, oid,  opaque, smallint)
 #elif USE_VERSION == 73
 CREATEFUNCTION postgis_gist_joinsel(internal, oid,  internal)
@@ -614,153 +606,7 @@ CREATEFUNCTION LWGEOM_gist_decompress(OPAQUE_TYPE)
 -------------------------------------------
 -- GIST opclass index binding entries.
 -------------------------------------------
-#if USE_VERSION == 71
 
-INSERT INTO pg_opclass (opcname, opcdeftype)
-	SELECT 'gist_geometry_ops', oid
-	FROM pg_type
-	WHERE typname = 'geometry';
-
-SELECT o.oid AS opoid, o.oprname
-	INTO TABLE rt_ops_tmp
-	FROM pg_operator o, pg_type t
-	WHERE o.oprleft = t.oid AND t.typname = 'geometry';
-
--- box_left
-INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy) 
-	SELECT am.oid, opcl.oid, c.opoid, 1
-	FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
-	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops' 
-		AND c.oprname = '<<';
-
--- box_overleft
-INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy) 
-	SELECT am.oid, opcl.oid, c.opoid, 2
-	FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
-	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops' 
-		AND c.oprname = '&<';
-
--- box_overlap
-INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy) 
-	SELECT am.oid, opcl.oid, c.opoid, 3
-	FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
-	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops' 
-		AND c.oprname = '&&';
-
--- box_overright
-INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy) 
-	SELECT am.oid, opcl.oid, c.opoid, 4
-	FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
-	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops' 
-		AND c.oprname = '&>';
-
--- box_right
-INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy)
-	SELECT am.oid, opcl.oid, c.opoid, 5
-	FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
-	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops' 
-		AND c.oprname = '>>';
-
--- box_same
-INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy) 
-	SELECT am.oid, opcl.oid, c.opoid, 6
-	FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
-	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops' 
-		AND c.oprname = '~=';
-
--- box_contains
-INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy)
-	SELECT am.oid, opcl.oid, c.opoid, 7
-	FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
-	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops' 
-		AND c.oprname = '~';
-
--- box_contained
-INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy)
-	SELECT am.oid, opcl.oid, c.opoid, 8
-	FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
-	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops' 
-		AND c.oprname = '@';
-
--- box_overbelow
-INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy) 
-	SELECT am.oid, opcl.oid, c.opoid, 9
-	FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
-	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops' 
-		AND c.oprname = '&<|';
-
--- box_below
-INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy) 
-	SELECT am.oid, opcl.oid, c.opoid, 10
-	FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
-	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops' 
-		AND c.oprname = '<<|';
-
--- box_above
-INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy) 
-	SELECT am.oid, opcl.oid, c.opoid, 11
-	FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
-	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops' 
-		AND c.oprname = '|>>';
-
--- box_overabove
-INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy) 
-	SELECT am.oid, opcl.oid, c.opoid, 12
-	FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
-	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops' 
-		AND c.oprname = '|&>';
-
-
-DROP TABLE rt_ops_tmp;
-
---
--- Add the entries to amproc for the support methods.
--- Note the amprocnum numbers associated with each are specific!
---
-
-INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
-	SELECT am.oid, opcl.oid, pro.oid, 1
-	FROM pg_am am, pg_opclass opcl, pg_proc pro
-	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops'
-		AND proname = 'LWGEOM_gist_consistent';
-
-INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
-	SELECT am.oid, opcl.oid, pro.oid, 2
-	FROM pg_am am, pg_opclass opcl, pg_proc pro
-	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops'
-		AND proname = 'LWGEOM_gist_union';
-
-INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
-	SELECT am.oid, opcl.oid, pro.oid, 3
-	FROM pg_am am, pg_opclass opcl, pg_proc pro
-	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops'
-		AND proname = 'LWGEOM_gist_compress';
-
-INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
-	SELECT am.oid, opcl.oid, pro.oid, 4
-	FROM pg_am am, pg_opclass opcl, pg_proc pro
-	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops'
-		AND proname = 'LWGEOM_gist_decompress';
-
-INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
-	SELECT am.oid, opcl.oid, pro.oid, 5
-	FROM pg_am am, pg_opclass opcl, pg_proc pro
-	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops'
-		AND proname = 'LWGEOM_gist_penalty';
-
-INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
-	SELECT am.oid, opcl.oid, pro.oid, 6
-	FROM pg_am am, pg_opclass opcl, pg_proc pro
-	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops'
-		AND proname = 'LWGEOM_gist_picksplit';
-
-INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
-	SELECT am.oid, opcl.oid, pro.oid, 7
-	FROM pg_am am, pg_opclass opcl, pg_proc pro
-	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops'
-		AND proname = 'LWGEOM_gist_same';
-
-#else
 #if USE_VERSION == 72
 
 --
@@ -987,7 +833,6 @@ UPDATE pg_opclass
 -- TODO: add btree binding...
 
 #endif // USE_VERSION >= 73
-#endif // USE_VERSION != 71
 	
 -- other lwgeom functions
 
