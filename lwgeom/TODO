@@ -1,5 +1,5 @@
 
-- ZM and WKB support in loader / dumper
+- WKB support in loader (canonical form is OK)
 
 - lwgeom_clone_deep / lwgeom_release_deep
 
