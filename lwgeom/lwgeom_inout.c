@@ -155,70 +155,6 @@ Datum LWGEOM_to_text(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(text_result);
 }
 
-//
-// LWGEOM_to_bytea(LWGEOM)
-// bytea contains canonical binary form, being
-// internal representation with additional byte containing 
-// byte order
-//
-PG_FUNCTION_INFO_V1(LWGEOM_to_bytea);
-Datum LWGEOM_to_bytea(PG_FUNCTION_ARGS)
-{
-	bytea *ret;
-	PG_LWGEOM *pglwg;
-
-	pglwg = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-
-	ret = (bytea *)palloc(pglwg->size+5);
-	VARATT_SIZEP(ret) = pglwg->size+1;
-	*(VARDATA(ret)) = getMachineEndian();
-	memcpy((void *)(VARDATA(ret)+1), SERIALIZED_FORM(pglwg),
-		pglwg->size-4);
-
-#if DEBUG
-	elog(NOTICE, "LWGEOM_to_bytea returning %d bytes (machine endian: %d)",
-		VARSIZE(ret), getMachineEndian());
-#endif
-
-	PG_RETURN_POINTER(ret);
-}
-
-// LWGEOM_from_bytea(bytea)
-// bytea contains canonical binary form, being
-// internal representation with additional byte containing 
-// byte order
-//
-PG_FUNCTION_INFO_V1(LWGEOM_from_bytea);
-Datum LWGEOM_from_bytea(PG_FUNCTION_ARGS)
-{
-	bytea *in;
-	PG_LWGEOM *ret;
-	char flipbytes=0;
-
-	in = (bytea *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-
-	ret = (PG_LWGEOM *)palloc(VARSIZE(in)-1);
-	ret->size = VARSIZE(in)-1;
-
-	if ( *(VARDATA(in)) != getMachineEndian() ) flipbytes = 1;
-	if ( flipbytes )
-	{
-		elog(ERROR, "Unable to handle bytes flipping");
-		PG_RETURN_NULL();
-	}
-	else
-	{
-		memcpy(SERIALIZED_FORM(ret), VARDATA(in)+1, VARSIZE(in)-5);
-	}
-
-#if DEBUG
-	elog(NOTICE, "LWGEOM_from_bytea returning %d bytes", ret->size);
-#endif
-
-	PG_RETURN_POINTER(ret);
-}
-
-
 // LWGEOMFromWKB(wkb,  [SRID] )
 // NOTE: wkb is in *binary* not hex form.
 //
@@ -528,7 +464,7 @@ Datum LWGEOM_recv(PG_FUNCTION_ARGS)
 
 	/* Call LWGEOM_from_bytea function... */
 	result = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall1(
-		LWGEOM_from_bytea, PointerGetDatum(wkb)));
+		LWGEOMFromWKB, PointerGetDatum(wkb)));
 
 #ifdef DEBUG
 	elog(NOTICE, "LWGEOM_recv advancing StringInfo buffer");
@@ -552,14 +488,44 @@ Datum LWGEOM_recv(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_send);
 Datum LWGEOM_send(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *result;
+	bytea *result;
 
 #ifdef DEBUG
 	elog(NOTICE, "LWGEOM_send called");
 #endif
 
+	result = (bytea *)DatumGetPointer(DirectFunctionCall1(
+		WKBFromLWGEOM, PG_GETARG_DATUM(0)));
+
+        PG_RETURN_POINTER(result);
+}
+
+PG_FUNCTION_INFO_V1(LWGEOM_to_bytea);
+Datum LWGEOM_to_bytea(PG_FUNCTION_ARGS)
+{
+	bytea *result;
+
+#ifdef DEBUG
+	elog(NOTICE, "LWGEOM_to_bytea called");
+#endif
+
+	result = (bytea *)DatumGetPointer(DirectFunctionCall1(
+		WKBFromLWGEOM, PG_GETARG_DATUM(0)));
+
+        PG_RETURN_POINTER(result);
+}
+
+PG_FUNCTION_INFO_V1(LWGEOM_from_bytea);
+Datum LWGEOM_from_bytea(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *result;
+
+#ifdef DEBUG
+	elog(NOTICE, "LWGEOM_from_bytea start");
+#endif
+
 	result = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall1(
-		LWGEOM_to_bytea, PG_GETARG_DATUM(0)));
+		LWGEOMFromWKB, PG_GETARG_DATUM(0)));
 
         PG_RETURN_POINTER(result);
 }

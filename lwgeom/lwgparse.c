@@ -738,6 +738,7 @@ parse_wkb(const char** b)
 	int4 type;
 	byte xdr = read_wkb_byte(b);
 	swap_order=0;
+	int4 localsrid;
 
 	if ( xdr != getMachineEndian() )
 	{
@@ -765,8 +766,13 @@ parse_wkb(const char** b)
 
 	if (type & WKBSRIDFLAG )
 	{
-		the_geom.hasZ = 1;
-		the_geom.ndims++;
+		// local (in-EWKB) srid spec overrides SRID=#; 
+		localsrid = read_wkb_int(b);
+		if ( localsrid != -1 )
+		{
+			if ( the_geom.srid == -1 ) the_geom.alloc_size += 4;
+			the_geom.srid = localsrid;
+		}
 	}
 
 	type &=0x0f;

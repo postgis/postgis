@@ -444,12 +444,6 @@ output_wkb(byte* geom)
 		geom+=16;
 	}
 
-	if ( TYPE_HASSRID(type) ) {
-		write_str("SRID=");
-		write_int(read_int(&geom));
-		write_str(";");
-	}
-
 	//type&=0x0f;
 	wkbtype = TYPE_GETTYPE(type); 
 
@@ -457,11 +451,19 @@ output_wkb(byte* geom)
 		 wkbtype |= WKBZOFFSET;
 	if ( TYPE_HASM(type) )
 		 wkbtype |= WKBMOFFSET;
+	if ( TYPE_HASSRID(type) ) {
+		wkbtype |= WKBSRIDFLAG;
+	}
+
 
 	// Write byteorder (as from WKB specs...)
 	write_wkb_bytes(&endianbyte,1,1);
 
 	write_wkb_int(wkbtype);
+
+	if ( TYPE_HASSRID(type) ) {
+		write_wkb_int(read_int(&geom));
+	}
 
 	switch(TYPE_GETTYPE(type)){
 		case POINTTYPE:
@@ -543,6 +545,9 @@ unparse_WKB(byte* serialized, allocator alloc, freeor free, char endian)
 
 /******************************************************************
  * $Log$
+ * Revision 1.15  2004/12/21 15:19:01  strk
+ * Canonical binary reverted back to EWKB, now supporting SRID inclusion.
+ *
  * Revision 1.14  2004/12/17 11:08:53  strk
  * Moved getMachineEndian from parser to liblwgeom.{h,c}.
  * Added XDR and NDR defines.
