@@ -1353,7 +1353,7 @@ utf8 (const char *fromcode, char *inputbuf)
 		return NULL;
 	}
 
-	outbytesleft = inbytesleft * 3; // UTF8 string can be 3 times larger
+	outbytesleft = inbytesleft*3+1; // UTF8 string can be 3 times larger
 					// then local string
 	outputbuf = (char *) malloc (outbytesleft);
 	if (!outputbuf)
@@ -1379,6 +1379,9 @@ utf8 (const char *fromcode, char *inputbuf)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.78  2005/01/17 09:21:13  strk
+ * Added one more bytes for terminating NULL in utf8 encoder
+ *
  * Revision 1.77  2005/01/16 16:50:01  strk
  * String escaping algorithm made simpler and more robust.
  * Removed escaped strings leaking.
