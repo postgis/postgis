@@ -424,6 +424,7 @@ extern void printPA(POINTARRAY *pa);
 extern void printLWLINE(LWLINE *line);
 extern void printLWPOLY(LWPOLY *poly);
 extern void printBYTES(unsigned char *a, int n);
+extern void printMULTI(char *serialized);
 extern void deparse_hex(unsigned char str, unsigned char *result);
 
 

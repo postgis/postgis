@@ -24,7 +24,7 @@
 
 
 
-extern char *wkb_to_lwgeom(char *wkb, int SRID,int *size);
+extern char *wkb_to_lwgeom(char *wkb, int SRID,int *sizeLWGEOM, int *sizeWKB);
 extern char *lwgeom_to_wkb(char *serialized_form,int *wkblength,char desiredWKBEndian);
 extern void swap_char(char	*a,char *b);
 extern void	flip_endian_double(char 	*d);
@@ -36,14 +36,16 @@ extern bool requiresflip(char WKBendianflag);
 extern void flipPoints(char *pts, int npoints, char dims);
 extern uint32 constructWKBType(int simple_type, char dims);
 
-extern LWPOINT *wkb_point_to_lwpoint(char *wkb,int SRID);
-extern LWLINE *wkb_line_to_lwline(char *wkb,int SRID);
-extern LWPOLY *wkb_poly_to_lwpoly(char *wkb,int SRID);
+extern LWPOINT *wkb_point_to_lwpoint(char *wkb,int SRID, int *sizeWKB);
+extern LWLINE *wkb_line_to_lwline(char *wkb,int SRID, int *sizeWKB);
+extern LWPOLY *wkb_poly_to_lwpoly(char *wkb,int SRID, int *sizeWKB);
 
 extern char *lwline_to_wkb(LWLINE *line, char desiredWKBEndian, int *wkbsize);
 extern char *lwpoint_to_wkb(LWPOINT *point, char desiredWKBEndian, int *wkbsize);
 extern char *lwpoly_to_wkb(LWPOLY *poly, char desiredWKBEndian, int *wkbsize);
 
+extern char *wkb_multi_to_lwgeom_serialized(char *wkb,int type, int *serialized_size, int SRID, int *sizeWKB);
+extern char *serialized_multi_to_wkb(char *serialized_form,char desiredWKBEndian,int *wkblength);
 
 extern unsigned char	parse_hex(char *str);
 extern void deparse_hex(unsigned char str, unsigned char *result);
@@ -78,6 +80,7 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
         int                     size;
         int                     t;
         int                     input_str_len;
+        int						sizeWKB;
 
         int SRID = -1; //default (change)
 
@@ -104,7 +107,7 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 	}
 
 	//have WKB string (and we can safely modify it)
-			lwgeom = wkb_to_lwgeom(((char *) wkb)+4, SRID,&size);
+			lwgeom = wkb_to_lwgeom(((char *) wkb)+4, SRID,&size,&sizeWKB);
 
 			pfree(wkb); // no longer referenced!
 
@@ -156,6 +159,7 @@ Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 		char *lwgeom;
 		char * result;
 		char	*wkb_copy;
+		int		sizeWKB;
 
 
 				if (  ( PG_NARGS()>1) && ( ! PG_ARGISNULL(1) ))
@@ -163,15 +167,14 @@ Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 				else
 					SRID = -1;
 
-#ifdef DEBUG
-        elog(NOTICE,"LWGEOMFromWKB: entry with SRID=%i",SRID);
-#endif
+ //       elog(NOTICE,"LWGEOMFromWKB: entry with SRID=%i",SRID);
+
 
 					// need to do this because there might be a bunch of endian flips!
 		wkb_copy = palloc( *((int32 *) wkb_input));
 		memcpy(wkb_copy, wkb_input+4, *((int32 *) wkb_input) -4);
 
-		lwgeom = wkb_to_lwgeom(wkb_copy, SRID,&size);
+		lwgeom = wkb_to_lwgeom(wkb_copy, SRID,&size,&sizeWKB);
 
 		pfree(wkb_copy); // no longer referenced!
 
@@ -219,7 +222,7 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 //
 // also, wkb should point to the 1st wkb character; NOT
 // the postgresql length int32.
-char *wkb_to_lwgeom(char *wkb, int SRID,int *size)
+char *wkb_to_lwgeom(char *wkb, int SRID,int *sizeLWGEOM, int *sizeWKB)
 {
 	uint32 wkbtype;
 	char   dims;
@@ -228,7 +231,6 @@ char *wkb_to_lwgeom(char *wkb, int SRID,int *size)
 	LWPOINT *pt;
 	LWLINE  *line;
 	LWPOLY  *poly;
-	char    *multigeom = NULL;
 	char	*result = NULL;
 	int simpletype;
 
@@ -239,47 +241,50 @@ char *wkb_to_lwgeom(char *wkb, int SRID,int *size)
  	dims = wkb_dims(wkbtype);
 	simpletype = wkb_simpletype(wkbtype);
 
-#ifdef DEBUG
-        elog(NOTICE,"wkb_to_lwgeom: entry with SRID=%i, dims=%i, simpletype=%i",SRID,(int) dims, (int) simpletype);
-#endif
+
+//        elog(NOTICE,"wkb_to_lwgeom: entry with SRID=%i, dims=%i, simpletype=%i",SRID,(int) dims, (int) simpletype);
+
 
 
 	switch (simpletype)
 	{
 		case POINTTYPE:
-						pt = wkb_point_to_lwpoint(wkb, SRID);
+						pt = wkb_point_to_lwpoint(wkb, SRID,sizeWKB);
 						result  = lwpoint_serialize(pt);
-						*size = lwpoint_findlength(result);
+						*sizeLWGEOM = lwpoint_findlength(result);
 						pfree_point(pt);
 						break;
 		case LINETYPE:
-						line = wkb_line_to_lwline(wkb, SRID);
+						line = wkb_line_to_lwline(wkb, SRID,sizeWKB);
 	//printLWLINE(line);
 						result  = lwline_serialize(line);
 //	elog(NOTICE,"line serialized");
-						*size = lwline_findlength(result);
+						*sizeLWGEOM = lwline_findlength(result);
 						pfree_line(line);
 						break;
 		case POLYGONTYPE:
-						poly = wkb_poly_to_lwpoly(wkb, SRID);
+						poly = wkb_poly_to_lwpoly(wkb, SRID,sizeWKB);
 //	printLWPOLY(poly);
 						result  = lwpoly_serialize(poly);
-						*size = lwpoly_findlength(result);
+//	{
+//		LWPOLY *poly2 = lwpoly_deserialize(result);
+//		printLWPOLY(poly2);
+//	}
+						*sizeLWGEOM = lwpoly_findlength(result);
 						pfree_polygon(poly);
 						break;
 		case MULTIPOINTTYPE:
-						result = multigeom;
-						break;
 		case MULTILINETYPE:
-						break;
 		case MULTIPOLYGONTYPE:
-						break;
 		case COLLECTIONTYPE:
+						result = wkb_multi_to_lwgeom_serialized(wkb,simpletype, sizeLWGEOM,  SRID,sizeWKB);
+						//printBYTES(result,*size);
+						//printMULTI(result);
 						break;
 	}
-#ifdef DEBUG
-        elog(NOTICE,"wkb_to_lwgeom:returning");
-#endif
+
+//        elog(NOTICE,"wkb_to_lwgeom:returning");
+
 
 	return result;
 }
@@ -288,7 +293,7 @@ char *wkb_to_lwgeom(char *wkb, int SRID,int *size)
 // we make sure the point is correctly endianed
 // and make a LWPOINT that points into it.
 // wkb --> point to the endian definition of the wkb point
-LWPOINT *wkb_point_to_lwpoint(char *wkb,int SRID)
+LWPOINT *wkb_point_to_lwpoint(char *wkb,int SRID, int *sizeWKB)
 {
 	uint32 wkbtype;
 	char   dims;
@@ -303,9 +308,9 @@ LWPOINT *wkb_point_to_lwpoint(char *wkb,int SRID)
  	dims = wkb_dims(wkbtype);
 	simpletype = wkb_simpletype(wkbtype);
 
-#ifdef DEBUG
-        elog(NOTICE,"wkb_point_to_lwpoint: entry with SRID=%i, dims=%i, simpletype=%i",SRID,(int) dims, (int) simpletype);
-#endif
+
+      //  elog(NOTICE,"wkb_point_to_lwpoint: entry with SRID=%i, dims=%i, simpletype=%i",SRID,(int) dims, (int) simpletype);
+
 
 
 
@@ -316,11 +321,11 @@ LWPOINT *wkb_point_to_lwpoint(char *wkb,int SRID)
 	pa = pointArray_construct(wkb+5, dims, 1);
 
 
-
+	*sizeWKB = dims * 8 + 5;
 	return lwpoint_construct(dims, SRID, pa);
 }
 
-LWLINE *wkb_line_to_lwline(char *wkb,int SRID)
+LWLINE *wkb_line_to_lwline(char *wkb,int SRID, int *sizeWKB)
 {
 		uint32 wkbtype;
 		char   dims;
@@ -348,21 +353,25 @@ LWLINE *wkb_line_to_lwline(char *wkb,int SRID)
 		flipPoints(wkb+9,npoints,dims);
 
 	pa = pointArray_construct(wkb+9, dims, npoints);
+
+	*sizeWKB = dims * 8*npoints + 5 +4;
+
 	return lwline_construct(dims, SRID, pa);
 }
 
-LWPOLY *wkb_poly_to_lwpoly(char *wkb,int SRID)
+LWPOLY *wkb_poly_to_lwpoly(char *wkb,int SRID, int *sizeWKB)
 {
 		uint32 wkbtype;
 		char   dims;
 		char   simpletype;
 		POINTARRAY *pa;
-		int npoints;
+		int npoints =0;
 		POINTARRAY **rings;
 		int nrings;
 		int t;
 		char *loc;
 		int ptsize =16;
+		int total_points=0;
 
 		bool need_flip =  requiresflip( wkb[0] );
 		if (need_flip)
@@ -413,8 +422,118 @@ LWPOLY *wkb_poly_to_lwpoly(char *wkb,int SRID)
 			loc += 4;
 			loc += npoints * ptsize;
 			rings[t] = pa;
+			total_points += npoints;
 		}
+		*sizeWKB = dims * 8 *total_points + 4*nrings + 9;
+//elog(NOTICE,"polygon: size wkb = %i; npoints = %i", *sizeWKB, total_points);
 		return lwpoly_construct(dims, SRID, nrings,rings);
+}
+
+
+// Takes a wkb thats a multi* (or GC) and returns it in the serialized form.
+//  serialized_size is filled in.
+//  resulting serialized form will have type 'type' (MULTI* or GC).
+//
+//  Basically, all multi* geometries look the same - you just need to set
+//  the "main" type.  For example, a multipoint and GC are the same except
+//  the type is "MULTIPOINT" or "GEOMETRYCOLLECTION".
+
+char *wkb_multi_to_lwgeom_serialized(char *wkb,int type, int *serialized_size, int SRID, int *sizeWKB)
+{
+	int   *sub_obj_sizes;
+	char **sub_objs;
+
+
+	bool need_flip =  requiresflip( wkb[0] );
+	uint32 wkbtype;
+	char   dims;
+	int    ngeoms;
+	char   simpletype;
+	char   *loc;
+	int    sum_size_sub_objs = 0;
+	int    total_size = 0;
+	char   *result;
+	int    ndims = 2;
+	char   sub_type;
+	int t;
+	int   sizeWKB_sub;
+
+	sizeWKB = 0;
+
+	//make a list of all the serialized forms of the sub-objects
+	// NOTE: the sub-objects could possibly be MULTI* (gasp!).
+
+		wkbtype = get_uint32(wkb+1);
+		dims = wkb_dims(wkbtype);
+		simpletype = wkb_simpletype(wkbtype);
+
+	if ( (simpletype != MULTIPOINTTYPE) && (simpletype != MULTILINETYPE) && (simpletype != MULTIPOLYGONTYPE) && (simpletype != COLLECTIONTYPE))
+	{
+		elog(ERROR,"wkb_multi_to_lwgeom_serialized:: got a non-multi* type");
+		return NULL;
+	}
+	if (need_flip)
+		flip_endian_int32(wkb+5); // ngeoms
+
+	ngeoms = get_uint32(wkb+5);   // ngeoms
+
+	sub_obj_sizes = (int *) palloc(sizeof(int  *) * ngeoms);
+	sub_objs      =         palloc(sizeof(char *) * ngeoms);
+
+	loc = wkb+9; // start of 1st geometry
+
+	for (t=0;t<ngeoms;t++)
+	{
+				// this could recurse for GC's with multi* as sub-geometries!
+		sub_objs[t] = wkb_to_lwgeom(loc,SRID, &sub_obj_sizes[t],&sizeWKB_sub);
+		loc += sizeWKB_sub;
+		sum_size_sub_objs += sub_obj_sizes[t];
+		sub_type = sub_objs[t][0];
+		if (ndims < lwgeom_ndims(sub_type))
+			ndims =  lwgeom_ndims(sub_type);
+		sizeWKB += sizeWKB_sub;
+		//elog(NOTICE,"wkb_multi_to_lwgeom_serialized:: sub object %i has LWGEOM size %i, WKB size = %i", t,sub_obj_sizes[t],sizeWKB_sub );
+	}
+
+	if (SRID != -1)
+		total_size +=4; //SRID byte
+
+	total_size += 5; // 1 for type (multi*) + 4 (numb geometries);
+	total_size += sum_size_sub_objs; // actual geometries
+
+	result = palloc(total_size);
+
+//elog(NOTICE,"wkb_multi_to_lwgeom_serialized:: total wkb size = %i", total_size);
+
+	result[0] = lwgeom_makeType( ndims,  SRID != -1,  type);//type
+	loc  = result+1;
+	if (SRID != -1)
+	{
+			memcpy(loc, &SRID,4);
+			loc +=4;
+	}
+
+	memcpy(loc, &ngeoms,4);
+	loc +=4;
+
+	for (t=0;t<ngeoms;t++)
+	{
+		memcpy(loc, sub_objs[t], sub_obj_sizes[t]);
+		loc += sub_obj_sizes[t];
+	}
+
+		// clean up memory
+	for (t=0;t<ngeoms;t++)
+	{
+		pfree(sub_objs[t]);
+	}
+	pfree(sub_obj_sizes);
+	pfree(sub_objs);
+
+	*serialized_size = total_size;
+	sizeWKB  += 9; // already has all the components in it
+	return result;
+
 }
 
 
@@ -430,11 +549,10 @@ char *lwgeom_to_wkb(char *serialized_form,int *wkblength,char desiredWKBEndian)
 	LWPOINT *pt;
 	LWLINE *line;
 	LWPOLY *poly;
-	char   *multigeom = NULL;
 
-#ifdef DEBUG
-        elog(NOTICE,"lwgeom_to_wkb: entry with  simpletype=%i, dims=%i",(int) simple_type,  lwgeom_ndims( serialized_form[0]) );
-#endif
+
+
+//        elog(NOTICE,"lwgeom_to_wkb: entry with  simpletype=%i, dims=%i",(int) simple_type,  lwgeom_ndims( serialized_form[0]) );
 
 
 	switch (simple_type)
@@ -451,18 +569,17 @@ char *lwgeom_to_wkb(char *serialized_form,int *wkblength,char desiredWKBEndian)
 						break;
 		case POLYGONTYPE:
 						poly = lwpoly_deserialize(serialized_form);
-//	printLWPOLY(poly);
+	//printLWPOLY(poly);
 						result = lwpoly_to_wkb(poly, desiredWKBEndian, wkblength);
 						pfree_polygon(poly );
 						break;
 		case MULTIPOINTTYPE:
-						result  = multigeom;
-						break;
 		case MULTILINETYPE:
-						break;
 		case MULTIPOLYGONTYPE:
-						break;
 		case COLLECTIONTYPE:
+					//	elog(NOTICE,"lwgeom_to_wkb:: got a multi* lwgeom");
+						result = serialized_multi_to_wkb(serialized_form,desiredWKBEndian,wkblength);
+						//printBYTES(result,*wkblength);
 						break;
 	}
 	return result;
@@ -475,9 +592,9 @@ char *lwpoint_to_wkb(LWPOINT *pt, char desiredWKBEndian, int *wkbsize)
 	uint32 wkbtype ;
 	bool need_flip =  requiresflip( desiredWKBEndian );
 
-#ifdef DEBUG
-        elog(NOTICE,"lwpoint_to_wkb:  pa dims = %i", (int)pt->point->ndims );
-#endif
+
+     //   elog(NOTICE,"lwpoint_to_wkb:  pa dims = %i", (int)pt->point->ndims );
+
 
 
 	*wkbsize = 1+ 4+ ptsize; //endian, type, point
@@ -488,9 +605,9 @@ char *lwpoint_to_wkb(LWPOINT *pt, char desiredWKBEndian, int *wkbsize)
 
 	wkbtype = constructWKBType(POINTTYPE, pt->point->ndims);
 
-#ifdef DEBUG
-        elog(NOTICE,"lwpoint_to_wkb: entry with wkbtype=%i, pa dims = %i",wkbtype, (int)pt->point->ndims );
-#endif
+
+      //  elog(NOTICE,"lwpoint_to_wkb: entry with wkbtype=%i, pa dims = %i",wkbtype, (int)pt->point->ndims );
+
 
 
 
@@ -549,13 +666,17 @@ char *lwpoly_to_wkb(LWPOLY *poly, char desiredWKBEndian, int *wkbsize)
 			total_points += poly->rings[t]->npoints;
 		}
 
-		*wkbsize = 1+ 4+ total_points * ptsize + 4* poly->nrings; //endian, type, all points, ring lengths
+		*wkbsize = 1+ 4+ 4+total_points * ptsize + 4* poly->nrings; //endian, type, npoints, all points, ring lengths
+
+//elog(NOTICE,"lwpoly_to_wkb:: a polygon with %i rings, total of %i points, wkbsize =%i",poly->nrings, total_points, *wkbsize);
+
 
 		result = palloc(*wkbsize);
 
 		result[0] = desiredWKBEndian; //endian flag
 
 		wkbtype = constructWKBType(POLYGONTYPE, poly->ndims);
+
 		memcpy(result+1, &wkbtype, 4);  // type
 		if (need_flip)
 			flip_endian_int32(result+1);
@@ -577,8 +698,81 @@ char *lwpoly_to_wkb(LWPOLY *poly, char desiredWKBEndian, int *wkbsize)
 				flipPoints(loc+4, npoints, poly->ndims);
 			loc += 4+ ptsize * npoints;
 		}
+//printBYTES(result, *wkbsize);
 		return result;
 }
+
+
+//given an LWGEOM thats a GC or MULTI*, return the corresponding WKB
+char *serialized_multi_to_wkb(char *serialized_form,char desiredWKBEndian,int *wkblength)
+{
+	char *result;
+	uint32 wkbtype;
+	int t;
+	LWGEOM_INSPECTED *inspected;
+	int total_size_sub_objs = 0; //wkb
+	int total_size;
+
+	int   *sub_obj_sizes;  //wkb
+	char **sub_objs;       //wkb
+	bool need_flip =  requiresflip( desiredWKBEndian );
+	char *loc;
+
+	wkbtype = constructWKBType(lwgeom_getType(serialized_form[0]), lwgeom_ndims(serialized_form[0]) );
+
+//elog(NOTICE,"serialized_multi_to_wkb::wkbtype = %i", wkbtype);
+
+	inspected = lwgeom_inspect(serialized_form);
+	sub_obj_sizes = (int *) palloc(sizeof(int  *) * inspected->ngeometries);
+	sub_objs      =         palloc(sizeof(char *) * inspected->ngeometries);
+
+
+	for ( t=0;t<inspected->ngeometries;t++)
+	{
+		char *serial_sub = inspected->sub_geoms[t];
+		sub_objs[t] = lwgeom_to_wkb(serial_sub,&sub_obj_sizes[t], desiredWKBEndian);
+		total_size_sub_objs += sub_obj_sizes[t];
+		//elog(NOTICE,"serialized_multi_to_wkb:: sub geom %i has size %i (wkb)",t,sub_obj_sizes[t]);
+	}
+
+	total_size = 1 + 4+ 4 + total_size_sub_objs;// endian + wkbtype + ngeoms + geoms
+	result = palloc(total_size);
+
+//elog(NOTICE,"serialized_multi_to_wkb::total size of wkb = %i", total_size);
+
+	result[0] = desiredWKBEndian;
+	memcpy(result+1, &wkbtype, 4);
+	if (need_flip)
+		flip_endian_int32(result+1);
+
+	memcpy(result+5, &inspected->ngeometries, 4);
+	if (need_flip)
+		flip_endian_int32(result+5);
+
+	loc = result+9;
+	for ( t=0;t<inspected->ngeometries;t++)
+	{
+		memcpy(loc, sub_objs[t], sub_obj_sizes[t]);
+		loc += sub_obj_sizes[t];
+	}
+
+
+		// clean up memory
+		for ( t=0;t<inspected->ngeometries;t++)
+		{
+			pfree(sub_objs[t]);
+		}
+		pfree(sub_obj_sizes);
+		pfree(sub_objs);
+
+		pfree_inspected(inspected);
+
+	*wkblength = total_size;
+
+//	elog(NOTICE,"serialized_multi_to_wkb::returning");
+	return result;
+}
+
 
 
 bool requiresflip(char WKBendianflag)

@@ -381,7 +381,7 @@ POINTARRAY *pointArray_construct(char *points, int ndims, uint32 npoints)
 	POINTARRAY  *pa;
 	pa = (POINTARRAY*)palloc(sizeof(pa));
 
-	if (ndims>2)
+	if (ndims>4)
 		elog(ERROR,"pointArray_construct:: called with dims = %i", (int) ndims);
 
 	pa->ndims = ndims;
@@ -617,7 +617,7 @@ if (line == NULL)
 	loc +=4;
 	//copy in points
 
-elog(NOTICE," line serialize - size = %i", size);
+//elog(NOTICE," line serialize - size = %i", size);
 
 	if (line->ndims == 3)
 	{
@@ -694,7 +694,7 @@ uint32 lwline_findlength(char *serialized_line)
 		{
 			return result+ npoints * 32;
 		}
-		elog(NOTICE,"lwline_findlength :: invalid ndims");
+		elog(ERROR,"lwline_findlength :: invalid ndims");
 		return 0; //never get here
 }
 
@@ -876,7 +876,7 @@ uint32 lwpoint_findlength(char *serialized_point)
 		{
 			return result + 24;
 		}
-		else if (lwgeom_ndims(type) == 3)
+		else if (lwgeom_ndims(type) == 2)
 		{
 			return result + 16;
 		}
@@ -884,7 +884,7 @@ uint32 lwpoint_findlength(char *serialized_point)
 		{
 			return result + 32;
 		}
-	    elog(NOTICE,"lwpoint_findlength :: invalid ndims");
+	    elog(ERROR,"lwpoint_findlength :: invalid ndims = %i",lwgeom_ndims(type));
 		return 0; //never get here
 }
 
@@ -1193,7 +1193,7 @@ LWGEOM_INSPECTED *lwgeom_inspect(char *serialized_form)
 			result->ngeometries = get_uint32(loc);
 			loc +=4;
 			sub_geoms = (char**) palloc(sizeof(char*) * result->ngeometries );
-
+			result->sub_geoms = sub_geoms;
 			sub_geoms[0] = loc;
 			for (t=1;t<result->ngeometries; t++)
 			{
@@ -1288,14 +1288,17 @@ LWLINE *lwgeom_getline_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
 		char *sub_geom;
 		char type;
 
+
 		sub_geom = lwgeom_getsubgeometry_inspected(inspected, geom_number);
 
 		if (sub_geom == NULL)
 			return NULL;
 
+
 		type = lwgeom_getType(sub_geom[0]);
 		if (type != LINETYPE)
 			return NULL;
+
 
 		return lwline_deserialize(sub_geom);
 }
@@ -1869,3 +1872,41 @@ void printLWPOLY(LWPOLY *poly)
 	}
 	elog(NOTICE,"}");
 }
+
+void printMULTI(char *serialized)
+{
+	LWGEOM_INSPECTED *inspected = lwgeom_inspect(serialized);
+	LWLINE  *line;
+	LWPOINT *point;
+	LWPOLY  *poly;
+	int t;
+
+	elog(NOTICE,"MULTI* geometry (type = %i), with %i sub-geoms",lwgeom_getType(serialized[0]), inspected->ngeometries);
+
+	for (t=0;t<inspected->ngeometries;t++)
+	{
+		elog(NOTICE,"      sub-geometry %i:", t);
+		line = NULL; point = NULL; poly = NULL;
+
+		line = lwgeom_getline_inspected(inspected,t);
+		if (line !=NULL)
+		{
+			printLWLINE(line);
+		}
+		poly = lwgeom_getpoly_inspected(inspected,t);
+		if (poly !=NULL)
+		{
+			printLWPOLY(poly);
+		}
+		point = lwgeom_getpoint_inspected(inspected,t);
+		if (point !=NULL)
+		{
+			printPA(point->point);
+		}
+    }
+
+    elog(NOTICE,"end multi*");
+
+	pfree_inspected(inspected);
+}
+
