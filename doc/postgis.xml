@@ -1786,8 +1786,8 @@ anotherGeometry.  Use this for a 'better' answer than '='.  equals ('LINESTRING(
 					</para> 
 					<para>Performed by the GEOS module</para>
 					<para>Do not call with a GeometryCollection as an argument</para>
-					<para> NOTE: this is the "allowable" version that returns a boolean, not an integer.
-					<para>OGC SPEC s2.1.1.1 //s2.1.13.3 - Intersects(g1, g2 ) --> Not (Disjoint(g1, g2 )) </para>
+					<para> NOTE: this is the "allowable" version that returns a boolean, not an integer.  </para>
+					<para>OGC SPEC s2.1.1.1 //s2.1.13.3 - Intersects(g1, g2 ) --&gt; Not (Disjoint(g1, g2 )) </para>
 				</listitem> 
 				</varlistentry> 
 				<varlistentry> 
@@ -1797,8 +1797,8 @@ anotherGeometry.  Use this for a 'better' answer than '='.  equals ('LINESTRING(
 					</para> 
 					<para>Performed by the GEOS module</para>
 					<para>Do not call with a GeometryCollection as an argument</para>
-					<para> NOTE: this is the "allowable" version that returns a boolean, not an integer.
-					<para>OGC SPEC s2.1.1.1 // s2.1.13.3- a.Touches(b) -> (I(a) intersection I(b) = {empty set} ) and (a intersection b) not empty  </para>
+					<para> NOTE: this is the "allowable" version that returns a boolean, not an integer.  </para>
+					<para>OGC SPEC s2.1.1.1 // s2.1.13.3- a.Touches(b) -&gt; (I(a) intersection I(b) = {empty set} ) and (a intersection b) not empty  </para>
 				</listitem> 
 				</varlistentry> 
 				<varlistentry> 
@@ -1808,7 +1808,7 @@ anotherGeometry.  Use this for a 'better' answer than '='.  equals ('LINESTRING(
 					</para> 
 					<para>Performed by the GEOS module</para>
 					<para>Do not call with a GeometryCollection as an argument</para>
-					<para> NOTE: this is the "allowable" version that returns a boolean, not an integer.
+					<para> NOTE: this is the "allowable" version that returns a boolean, not an integer.  </para>
 					<para>OGC SPEC s2.1.1.1 // s2.1.13.3 - a.Relate(b, 'T*T******')  </para>
 				</listitem> 
 				</varlistentry> 
@@ -1819,7 +1819,7 @@ anotherGeometry.  Use this for a 'better' answer than '='.  equals ('LINESTRING(
 					</para> 
 					<para>Performed by the GEOS module</para>
 					<para>Do not call with a GeometryCollection as an argument</para>
-					<para> NOTE: this is the "allowable" version that returns a boolean, not an integer.
+					<para> NOTE: this is the "allowable" version that returns a boolean, not an integer. </para>
 					<para>OGC SPEC s2.1.1.1 // s2.1.13.3 - a.Relate(b, 'T*F**F***') </para>
 				</listitem> 
 				</varlistentry> 
@@ -1830,7 +1830,7 @@ anotherGeometry.  Use this for a 'better' answer than '='.  equals ('LINESTRING(
 					</para> 
 					<para>Performed by the GEOS module</para>
 					<para>Do not call with a GeometryCollection as an argument</para>
-					<para> NOTE: this is the "allowable" version that returns a boolean, not an integer.
+					<para> NOTE: this is the "allowable" version that returns a boolean, not an integer.  </para>
 					<para>OGC SPEC s2.1.1.1 // s2.1.13.3 </para>
 				</listitem> 
 				</varlistentry> 
@@ -1841,7 +1841,7 @@ anotherGeometry.  Use this for a 'better' answer than '='.  equals ('LINESTRING(
 					</para> 
 					<para>Performed by the GEOS module</para>
 					<para>Do not call with a GeometryCollection as an argument</para>
-					<para> NOTE: this is the "allowable" version that returns a boolean, not an integer.
+					<para> NOTE: this is the "allowable" version that returns a boolean, not an integer.  </para>
 					<para>OGC SPEC s2.1.1.1 // s2.1.13.3  - same as within(geometry,geometry)</para>
 				</listitem> 
 				</varlistentry> 
@@ -1852,7 +1852,7 @@ anotherGeometry.  Use this for a 'better' answer than '='.  equals ('LINESTRING(
 					</para> 
 					<para>Performed by the GEOS module</para>
 					<para>Do not call with a GeometryCollection as an argument</para>
-					<para> NOTE: this is the "allowable" version that returns a boolean, not an integer.
+					<para> NOTE: this is the "allowable" version that returns a boolean, not an integer.  </para>
 					<para>OGC SPEC s2.1.1.1 // s2.1.13.3  - NOT disjoint(geometry,geometry)</para>
 				</listitem> 
 				</varlistentry> 
@@ -1865,7 +1865,7 @@ Boundary and Exterior of the two geometries as specified by the values in the in
 					</para> 
 					<para>Performed by the GEOS module</para>
 					<para>Do not call with a GeometryCollection as an argument</para>
-					<para> NOTE: this is the "allowable" version that returns a boolean, not an integer.
+					<para> NOTE: this is the "allowable" version that returns a boolean, not an integer.  </para>
 					<para>OGC SPEC s2.1.1.1 // s2.1.13.3 </para>
 				</listitem> 
 				</varlistentry> 
