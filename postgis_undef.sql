@@ -19,16 +19,20 @@ drop operator <  (geometry,geometry);
 drop operator >  (geometry,geometry);
 --- functions
 drop function POSTGIS_VERSION ();
+drop function find_SRID (varchar,varchar,varchar);
 drop function DropGeometryColumn (varchar,varchar,varchar);
 drop function AddGeometryColumn (varchar,varchar,varchar,integer,varchar,integer);
 drop function BOX3D_in (opaque);
 drop function BOX3D_out (opaque);
 drop function SPHEROID_in (opaque);
 drop function SPHEROID_out (opaque);
+drop function WKB_in (opaque);
+drop function WKB_out (opaque);
 drop function geometry_in (opaque);
 drop function geometry_out (opaque);
 drop function box3d (GEOMETRY);
 drop function geometry (BOX3D);
+drop function geometry (text);
 drop function expand (BOX3D,float8);
 drop function asbinary (GEOMETRY);
 drop function asbinary (GEOMETRY,TEXT);
@@ -91,6 +95,7 @@ drop function ggeometry_picksplit (opaque, opaque);
 drop function ggeometry_union (bytea, opaque);
 drop function ggeometry_same (opaque, opaque, opaque);
 drop function rtree_decompress (opaque);
+drop function postgis_gist_sel (oid, oid, int2, opaque, int4);
 drop function geometry_union (GEOMETRY,GEOMETRY);
 drop function geometry_inter (GEOMETRY,GEOMETRY);
 drop function geometry_size (GEOMETRY,opaque);
@@ -99,4 +104,8 @@ drop type SPHEROID ;
 drop type BOX3D ;
 drop type WKB ;
 drop type GEOMETRY ;
+----tables
+drop table spatial_ref_sys;
+drop table geometry_columns;
+
 end;

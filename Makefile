@@ -33,7 +33,7 @@ OBJS=postgis_debug.o postgis_ops.o postgis_fn.o postgis_inout.o postgis_proj.o
 # matter.)
 SHLIB_LINK = $(filter -L%, $(LDFLAGS))
 
-all: all-lib $(NAME).sql loaderdumper
+all: all-lib $(NAME).sql $(NAME)_undef.sql loaderdumper
 
 loaderdumper:
 	make -C loader
@@ -44,9 +44,13 @@ include $(top_srcdir)/src/Makefile.shlib
 $(NAME).sql: $(NAME).sql.in
 	sed -e 's:@MODULE_FILENAME@:$(libdir)/$(shlib):g;s:@POSTGIS_VERSION@:$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION):g' < $< > $@
 
+$(NAME)_undef.sql: $(NAME).sql
+	perl create_undef.pl $< > $@ 
+
 install: all installdirs install-lib
 	$(INSTALL_DATA) $(srcdir)/README.$(NAME)  $(docdir)/contrib
 	$(INSTALL_DATA) $(NAME).sql $(datadir)/contrib
+	$(INSTALL_DATA) $(NAME)_undef.sql $(datadir)/contrib
 
 installdirs:
 	$(mkinstalldirs) $(docdir)/contrib $(datadir)/contrib $(libdir)
