@@ -405,43 +405,38 @@ void elog_ERROR(const char* string)
 PG_FUNCTION_INFO_V1(parse_WKT_lwgeom);
 Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS)
 {
-		const char   *wkt_input = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));  // text
-		char   		 *serialized_form;  //with length
-		char		 *wkt;
-		int			  wkt_size ;
+	// text
+	text *wkt_input = PG_GETARG_TEXT_P(0);
+	PG_LWGEOM *ret;  //with length
+	char *wkt;
+	int wkt_size ;
 
+	init_pg_func();
 
-		init_pg_func();
+	wkt_size = VARSIZE(wkt_input)-VARHDRSZ; // actual letters
+	//(*(int*) wkt_input) -4; 
 
-		wkt_size = (*(int*) wkt_input) -4;  // actual letters
-
-		wkt = palloc( wkt_size+1); //+1 for null
-		memcpy(wkt, wkt_input+4, wkt_size );
-		wkt[wkt_size] = 0; // null term
+	wkt = palloc( wkt_size+1); //+1 for null
+	memcpy(wkt, VARDATA(wkt_input), wkt_size );
+	wkt[wkt_size] = 0; // null term
 
 
 //elog(NOTICE,"in parse_WKT_lwgeom");
 //elog(NOTICE,"in parse_WKT_lwgeom with input: '%s'",wkt);
 
-		serialized_form = parse_lwg((const char *)wkt, (allocator)lwalloc, (report_error)elog_ERROR);
+	ret = (PG_LWGEOM *)parse_lwg((const char *)wkt, (allocator)lwalloc, (report_error)elog_ERROR);
 //elog(NOTICE,"parse_WKT_lwgeom:: finished parse");
-		pfree (wkt);
+	pfree (wkt);
 
-		if (serialized_form == NULL)
-			elog(ERROR,"parse_WKT:: couldnt parse!");
+	if (ret == NULL) elog(ERROR,"parse_WKT:: couldnt parse!");
 
+	if ( is_worth_caching_pglwgeom_bbox(ret) )
+	{
+		ret = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall1(
+			LWGEOM_addBBOX, PointerGetDatum(ret)));
+	}
 
-
-	//	printBYTES(serialized_form+4,*((int*) serialized_form)-4);
-
-	//	result = palloc( (*((int*) serialized_form)));
-	//	memcpy(result, serialized_form, *((int*) serialized_form));
-	//	free(serialized_form);
-
-	//	PG_RETURN_POINTER(result);
-		//PG_RETURN_NULL();
-
-		PG_RETURN_POINTER(serialized_form);
+	PG_RETURN_POINTER(ret);
 }
 
 
