@@ -71,5 +71,5 @@ ptest:  compile
 	$(JAVA) -classpath $(BUILD):$(CP) $(EXAMPLES)/TestParser
 
 clean:  
-	$(DELETE) $(BUILD) postgis.jar postgis_debug.jar compile
+	$(DELETE) $(BUILD) bin postgis.jar postgis_debug.jar compile
      
