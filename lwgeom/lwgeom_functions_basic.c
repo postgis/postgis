@@ -2252,108 +2252,8 @@ dump_lwexploded(LWGEOM_EXPLODED *exploded)
 PG_FUNCTION_INFO_V1(LWGEOM_collect);
 Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 {
-	Pointer geom1_ptr = PG_GETARG_POINTER(0);
-	Pointer geom2_ptr = PG_GETARG_POINTER(1);
-	PG_LWGEOM *geom1, *geom2, *result;
-	LWGEOM_EXPLODED *exp1, *exp2, *expcoll;
-	char *serialized_result;
-	int wantbbox = 0;
-	//int size;
-
-	// return null if both geoms are null
-	if ( (geom1_ptr == NULL) && (geom2_ptr == NULL) )
-	{
-		PG_RETURN_NULL();
-	}
-
-	// return a copy of the second geom if only first geom is null
-	if (geom1_ptr == NULL)
-	{
-		geom2 = (PG_LWGEOM *) PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(1));
-		PG_RETURN_POINTER(geom2);
-	}
-
-	// return a copy of the first geom if only second geom is null
-	if (geom2_ptr == NULL)
-	{
-		geom1 = (PG_LWGEOM *) PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
-		PG_RETURN_POINTER(geom1);
-	}
-
-	geom1 = (PG_LWGEOM *) PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
-	geom2 = (PG_LWGEOM *) PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(1));
-
-	if ( lwgeom_getSRID(geom1) != lwgeom_getSRID(geom2) )
-	{
-		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
-		PG_RETURN_NULL();
-	}
-
-	exp1 = lwgeom_explode(SERIALIZED_FORM(geom1));
-	if ( exp1->npoints + exp1->nlines + exp1->npolys == 0 )
-	{
-		pfree(geom1);
-		pfree_exploded(exp1);
-		PG_RETURN_POINTER(geom2);
-	}
-
-	exp2 = lwgeom_explode(SERIALIZED_FORM(geom2));
-	if ( exp2->npoints + exp2->nlines + exp2->npolys == 0 )
-	{
-		pfree(geom2);
-		pfree_exploded(exp1);
-		pfree_exploded(exp2);
-		PG_RETURN_POINTER(geom1);
-	}
-
-	wantbbox = lwgeom_hasBBOX(geom1->type) ||
-		lwgeom_hasBBOX(geom2->type);
-
-	// Ok, make a new LWGEOM_EXPLODED being the union
-	// of the input ones
-
-	expcoll = lwexploded_sum(exp1, exp2);
-	if ( !expcoll ) 
-	{
-		elog(ERROR, "Could not sum exploded geoms");
-		PG_RETURN_NULL();
-	}
-
-	//DEBUG
-	//elog(NOTICE, "[exp1]");
-	//dump_lwexploded(exp1);
-	//elog(NOTICE, "[exp2]");
-	//dump_lwexploded(exp2);
-	//elog(NOTICE, "[expcoll]");
-	//dump_lwexploded(expcoll);
-
-	// Now serialized collected LWGEOM_EXPLODED
-	serialized_result = lwexploded_serialize(expcoll, wantbbox);
-	if ( ! serialized_result )
-	{
-		elog(ERROR, "Could not serialize exploded geoms");
-		PG_RETURN_NULL();
-	}
-
-#ifdef DEBUG
-	elog(NOTICE, "Serialized lwexploded"); 
-#endif
-
-	// And create PG_LWGEOM type (could provide a _buf version of
-	// the serializer instead)
-	//size = lwgeom_size(serialized_result);
-	result = PG_LWGEOM_construct(serialized_result,
-		lwgeom_getsrid(serialized_result), wantbbox);
-	pfree(serialized_result);
-
-	pfree(geom1);
-	pfree(geom2);
-	pfree_exploded(exp1);
-	pfree_exploded(exp2);
-	pfree_exploded(expcoll);
-
-	//elog(ERROR, "Not implemented yet");
-	PG_RETURN_POINTER(result);
+	elog(ERROR, "memcollect() is obsoleted, use collect() instead");
+	PG_RETURN_NULL();
 }
 
 /*
@@ -2452,14 +2352,12 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 {
 	Datum datum;
 	ArrayType *array;
-	int nelems, srid=-1;
+	int nelems;
 	PG_LWGEOM **geoms;
-	PG_LWGEOM *result=NULL, *geom;
-	LWGEOM_EXPLODED *exploded=NULL;
+	PG_LWGEOM *result=NULL;
+	LWGEOM **lwgeoms, *outlwg;
+	size_t size;
 	int i;
-	int wantbbox = 0; // don't compute a bounding box...
-	//int size;
-	char *serialized_result = NULL;
 
 //elog(NOTICE, "LWGEOM_collect_garray called");
 
@@ -2489,97 +2387,31 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 	/* Get pointer to GEOMETRY pointers array */
 	geoms = (PG_LWGEOM **)ARR_DATA_PTR(array);
 
-	/* Return the only present element of a 1-element array */
-	if ( nelems == 1 ) PG_RETURN_POINTER(geoms[0]);
-
-	/* Iterate over all geometries in array */
+	/*
+	 * Deserialize all geometries in array into the lwgeoms pointers
+	 * array
+	 */
+	lwgeoms = palloc(sizeof(LWGEOM *)*nelems);
 	for (i=0; i<nelems; i++)
 	{
-		LWGEOM_EXPLODED *subexp, *tmpexp;
-
-		geom = geoms[i];
-
-		/* Skip NULL array elements (are them possible?) */
-		if ( geom == NULL ) continue;
-
-		/* Use first NOT-NULL GEOMETRY as the base */
-		if ( ! exploded )
-		{
-			/* Remember first geometry's SRID for later checks */
-			srid = lwgeom_getSRID(geom);
-
-			exploded = lwgeom_explode(SERIALIZED_FORM(geom));
-			if ( ! exploded ) {
-	elog(ERROR, "collect_garray: out of virtual memory");
-	PG_RETURN_NULL();
-			}
-
-			continue;
-		}
-
-		/* Skip geometry if it contains no sub-objects */
-		if ( ! lwgeom_getnumgeometries(SERIALIZED_FORM(geom)) )
-		{
-			pfree(geom); // se note above
-		 	continue;
-		}
-
-		/*
-		 * If we are here this means we are in front of a
-		 * good (non empty) geometry beside the first
-		 */
-
-		/* Fist let's check for SRID compatibility */
-		if ( lwgeom_getSRID(geom) != srid )
-		{
-	elog(ERROR, "Operation on GEOMETRIES with different SRIDs (need %d, have %d)", srid, lwgeom_getSRID(geom));
-	PG_RETURN_NULL();
-		}
-
-		subexp = lwgeom_explode(SERIALIZED_FORM(geom));
-
-		tmpexp = lwexploded_sum(exploded, subexp);
-		if ( ! tmpexp )
-		{
-	elog(ERROR, "Out of virtual memory");
-	PG_RETURN_NULL();
-		}
-		pfree_exploded(subexp);
-		pfree_exploded(exploded);
-		exploded = tmpexp;
-
+		lwgeoms[i] = lwgeom_deserialize(SERIALIZED_FORM(geoms[i]));
 	}
 
-	/* Check we got something in our result */
-	if ( exploded == NULL )
+	outlwg = (LWGEOM *)lwcollection_construct(
+		COLLECTIONTYPE,
+		lwgeom_getSRID(geoms[0]),
+		NULL, nelems, lwgeoms);
+
+	size = lwgeom_serialize_size(outlwg);
+	result = palloc(size+4);
+	result->size = (size+4);
+	lwgeom_serialize_buf(outlwg, SERIALIZED_FORM(result), &size);
+	if ( size != result->size-4 )
 	{
-		elog(NOTICE, "NULL exploded");
+		lwerror("lwgeom_serialize size:%d, lwgeom_serialize_size:%d",
+			size, result->size-4);
 		PG_RETURN_NULL();
 	}
-
-	/*
-	 * We should now have a big fat exploded geometry
-	 * with of all sub-objects from all geometries in array
-	 */
-
-	// Now serialized collected LWGEOM_EXPLODED
-	serialized_result = lwexploded_serialize(exploded, wantbbox);
-	if ( ! serialized_result )
-	{
-		elog(ERROR, "Could not serialize exploded geoms");
-		pfree_exploded(exploded);
-		PG_RETURN_NULL();
-	}
-
-	// now we could release all memory associated with geometries
-	// in the array.... TODO.
-
-	// Create PG_LWGEOM type (could provide a _buf version of
-	// the serializer instead)
-	//size = lwgeom_size(serialized_result);
-	result = PG_LWGEOM_construct(serialized_result,
-		lwgeom_getsrid(serialized_result), wantbbox);
-	pfree(serialized_result);
 
 	PG_RETURN_POINTER(result);
 }
