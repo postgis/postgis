@@ -1664,7 +1664,12 @@ CREATEFUNCTION buffer(geometry,float8)
    RETURNS geometry
    AS '@MODULE_FILENAME@','buffer'
    LANGUAGE 'C' WITH (isstrict);
-   
+
+CREATEFUNCTION buffer(geometry,float8,integer)
+   RETURNS geometry
+   AS '@MODULE_FILENAME@','buffer'
+   LANGUAGE 'C' WITH (isstrict);
+
 CREATEFUNCTION convexhull(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','convexhull'

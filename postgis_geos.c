@@ -10,6 +10,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.39.2.2  2004/10/13 18:50:15  strk
+ * Added third argument in buffer() func.
+ *
  * Revision 1.39.2.1  2004/09/16 08:07:00  strk
  * Added missing binary predicates short-circuit tests.
  *
@@ -244,7 +247,7 @@ extern int	GEOSGetNumInteriorRings(Geometry *g1);
 extern int      GEOSGetSRID(Geometry *g1);
 extern int      GEOSGetNumGeometries(Geometry *g1);
 
-extern  Geometry *GEOSBuffer(Geometry *g1,double width);
+extern  Geometry *GEOSBuffer(Geometry *g1,double width,int quadsegs);
 extern  Geometry *GEOSConvexHull(Geometry *g1);
 extern  Geometry *GEOSDifference(Geometry *g1,Geometry *g2);
 extern  Geometry *GEOSBoundary(Geometry *g1);
@@ -615,15 +618,20 @@ Datum convexhull(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(buffer);
 Datum buffer(PG_FUNCTION_ARGS)
 {
-		GEOMETRY		*geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-		double			size   = PG_GETARG_FLOAT8(1);
-		Geometry *g1,*g3;
-		GEOMETRY *result;
+	GEOMETRY *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	double size   = PG_GETARG_FLOAT8(1);
+	int quadsegs = 8;
+	Geometry *g1,*g3;
+	GEOMETRY *result;
 
-		initGEOS(MAXIMUM_ALIGNOF);
+	if ( PG_NARGS() > 2 ) quadsegs = PG_GETARG_INT32(2);
 
-		g1 = 	POSTGIS2GEOS(geom1 );
-		g3 =    GEOSBuffer(g1,size);
+	//elog(NOTICE, "nargs:%d Quadsegs: %d", PG_NARGS(), quadsegs);
+
+	initGEOS(MAXIMUM_ALIGNOF);
+
+	g1 = POSTGIS2GEOS(geom1 );
+	g3 = GEOSBuffer(g1,size,quadsegs);
 
 
 	if (g3 == NULL)

@@ -2,6 +2,9 @@
 
 /*
 * $Log$
+* Revision 1.27.2.1  2004/10/13 18:50:15  strk
+* Added third argument in buffer() func.
+*
 * Revision 1.27  2004/07/22 16:58:08  strk
 * Updated to reflect geos version string split.
 *
@@ -167,7 +170,7 @@ extern "C" int GEOSGeometryTypeId(Geometry *g1);
 extern "C" char *throw_exception(Geometry *g);
 
 extern "C" Geometry *GEOSIntersection(Geometry *g1,Geometry *g1);
-extern "C" Geometry *GEOSBuffer(Geometry *g1,double width);
+extern "C" Geometry *GEOSBuffer(Geometry *g1,double width,int quadsegs);
 extern "C" Geometry *GEOSConvexHull(Geometry *g1);
 extern "C" Geometry *GEOSDifference(Geometry *g1,Geometry *g2);
 extern "C" Geometry *GEOSBoundary(Geometry *g1);
@@ -1030,11 +1033,11 @@ Geometry *GEOSIntersection(Geometry *g1,Geometry *g2)
 	}
 }
 
-Geometry *GEOSBuffer(Geometry *g1,double width)
+Geometry *GEOSBuffer(Geometry *g1,double width,int quadsegs)
 {
 	try
 	{
-		Geometry *g3 = g1->buffer(width);
+		Geometry *g3 = g1->buffer(width,quadsegs);
 		return g3;
 	}
 	catch (GEOSException *ge)
