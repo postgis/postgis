@@ -1750,42 +1750,77 @@ lwgeom_setSRID(PG_LWGEOM *lwgeom, int32 newSRID)
 
 	if (lwgeom_hasSRID(type))
 	{
-		//we create a new one and copy the SRID in
-		result = lwalloc(len);
-		memcpy(result, lwgeom, len);
-		memcpy(result->data+bbox_offset, &newSRID,4);
-	}
-	else  // need to add one
-	{
-		len_new = len + 4;//+4 for SRID
-		result = lwalloc(len_new);
-		memcpy(result, &len_new, 4); // size copy in
-		result->type = lwgeom_makeType_full(
-			TYPE_HASZ(type), TYPE_HASM(type),
-			1, lwgeom_getType(type),lwgeom_hasBBOX(type));
+		if ( newSRID != -1 ) {
+			//we create a new one and copy the SRID in
+			result = lwalloc(len);
+			memcpy(result, lwgeom, len);
+			memcpy(result->data+bbox_offset, &newSRID,4);
+		} else {
+			//we create a new one dropping the SRID
+			result = lwalloc(len-4);
+			result->size = len-4;
+			result->type = lwgeom_makeType_full(
+				TYPE_HASZ(type), TYPE_HASM(type),
+				0, lwgeom_getType(type),
+				lwgeom_hasBBOX(type));
+			loc_new = result->data;
+			loc_old = lwgeom->data;
+			len_left = len-4-1;
 
-		loc_new = result->data;
-		loc_old = lwgeom->data;
+			// handle bbox (if there)
+			if (lwgeom_hasBBOX(type))
+			{
+				memcpy(loc_new, loc_old, sizeof(BOX2DFLOAT4));
+				loc_new += sizeof(BOX2DFLOAT4);
+				loc_old += sizeof(BOX2DFLOAT4);
+				len_left -= sizeof(BOX2DFLOAT4);
+			}
 
-		len_left = len -4-1;// old length - size - type
+			// skip SRID, copy the remaining
+			loc_old += 4;
+			len_left -= 4;
+			memcpy(loc_new, loc_old, len_left);
 
-		// handle bbox (if there)
-
-		if (lwgeom_hasBBOX(type))
-		{
-			memcpy(loc_new, loc_old, sizeof(BOX2DFLOAT4)) ;//copy in bbox
-			loc_new += sizeof(BOX2DFLOAT4);
-			loc_old += sizeof(BOX2DFLOAT4);
-			len_left -= sizeof(BOX2DFLOAT4);
 		}
 
-		//put in SRID
+	}
+	else 
+	{
+		// just copy input, already w/out a SRID
+		if ( newSRID == -1 ) {
+			result = lwalloc(len);
+			memcpy(result, lwgeom, len);
+		}
+		// need to add one
+		else {
+			len_new = len + 4;//+4 for SRID
+			result = lwalloc(len_new);
+			memcpy(result, &len_new, 4); // size copy in
+			result->type = lwgeom_makeType_full(
+				TYPE_HASZ(type), TYPE_HASM(type),
+				1, lwgeom_getType(type),lwgeom_hasBBOX(type));
 
-		memcpy(loc_new, &newSRID,4);
-		loc_new +=4;
-		memcpy(loc_new, loc_old, len_left);
+			loc_new = result->data;
+			loc_old = lwgeom->data;
 
-		// TODO: add SRID presence flag in type.
+			len_left = len -4-1;// old length - size - type
+
+			// handle bbox (if there)
+
+			if (lwgeom_hasBBOX(type))
+			{
+				memcpy(loc_new, loc_old, sizeof(BOX2DFLOAT4)) ;//copy in bbox
+				loc_new += sizeof(BOX2DFLOAT4);
+				loc_old += sizeof(BOX2DFLOAT4);
+				len_left -= sizeof(BOX2DFLOAT4);
+			}
+
+			//put in SRID
+
+			memcpy(loc_new, &newSRID,4);
+			loc_new +=4;
+			memcpy(loc_new, loc_old, len_left);
+		}
 	}
 	return result;
 }
