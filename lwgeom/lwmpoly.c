@@ -6,7 +6,7 @@
 //#define PGIS_DEBUG_CALLS 1
 
 LWMPOLY *
-lwmpoly_deserialize(char *srl)
+lwmpoly_deserialize(uchar *srl)
 {
 	LWMPOLY *result;
 	LWGEOM_INSPECTED *insp;

@@ -581,7 +581,7 @@ double lwgeom_polygon_perimeter2d(LWPOLY *poly)
 }
 
 double
-lwgeom_mindistance2d_recursive(char *lw1, char *lw2)
+lwgeom_mindistance2d_recursive(uchar *lw1, uchar *lw2)
 {
 	LWGEOM_INSPECTED *in1, *in2;
 	int i, j;
@@ -592,7 +592,7 @@ lwgeom_mindistance2d_recursive(char *lw1, char *lw2)
 
 	for (i=0; i<in1->ngeometries; i++)
 	{
-		char *g1 = lwgeom_getsubgeometry_inspected(in1, i);
+		uchar *g1 = lwgeom_getsubgeometry_inspected(in1, i);
 		int t1 = lwgeom_getType(g1[0]);
 		double dist=0;
 
@@ -608,7 +608,7 @@ lwgeom_mindistance2d_recursive(char *lw1, char *lw2)
 
 		for (j=0; j<in2->ngeometries; j++)
 		{
-			char *g2 = lwgeom_getsubgeometry_inspected(in2, j);
+			uchar *g2 = lwgeom_getsubgeometry_inspected(in2, j);
 			int t2 = lwgeom_getType(g2[0]);
 
 			if  ( t1 == POINTTYPE )

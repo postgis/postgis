@@ -156,7 +156,7 @@ Datum lwhistogram2d_in(PG_FUNCTION_ARGS)
 
 	int t;
 
-	while (isspace((unsigned char) *str))
+	while (isspace(*str))
 		str++;
 
 	if (strstr(str,"HISTOGRAM2D(") != str)
@@ -2453,6 +2453,10 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.23  2005/02/10 10:52:53  strk
+ * Changed 'char' to 'uchar' (unsigned char typedef) wherever octet is actually
+ * meant to be.
+ *
  * Revision 1.22  2005/01/13 18:26:49  strk
  * estimated_extent() implemented for PG<80
  *

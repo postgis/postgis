@@ -108,7 +108,7 @@ lwgeom_translate_ptarray(POINTARRAY *pa, double xoff, double yoff, double zoff)
 }
 
 void
-lwgeom_translate_recursive(char *serialized,
+lwgeom_translate_recursive(uchar *serialized,
 	double xoff, double yoff, double zoff)
 {
 	LWGEOM_INSPECTED *inspected;
@@ -122,7 +122,7 @@ lwgeom_translate_recursive(char *serialized,
 		LWLINE *line=NULL;
 		LWPOINT *point=NULL;
 		LWPOLY *poly=NULL;
-		char *subgeom=NULL;
+		uchar *subgeom=NULL;
 
 		point = lwgeom_getpoint_inspected(inspected, i);
 		if (point !=NULL)
@@ -244,7 +244,7 @@ Datum postgis_autocache_bbox(PG_FUNCTION_ARGS)
  * Recursively count points in a SERIALIZED lwgeom
  */
 int32
-lwgeom_npoints(char *serialized)
+lwgeom_npoints(uchar *serialized)
 {
 	LWGEOM_INSPECTED *inspected = lwgeom_inspect(serialized);
 	int i, j;
@@ -256,7 +256,7 @@ lwgeom_npoints(char *serialized)
 		LWLINE *line=NULL;
 		LWPOINT *point=NULL;
 		LWPOLY *poly=NULL;
-		char *subgeom=NULL;
+		uchar *subgeom=NULL;
 
 		point = lwgeom_getpoint_inspected(inspected, i);
 		if (point !=NULL)
@@ -299,7 +299,7 @@ lwgeom_npoints(char *serialized)
  * Recursively count rings in a SERIALIZED lwgeom
  */
 int32
-lwgeom_nrings_recursive(char *serialized)
+lwgeom_nrings_recursive(uchar *serialized)
 {
 	LWGEOM_INSPECTED *inspected;
 	int i;
@@ -311,7 +311,7 @@ lwgeom_nrings_recursive(char *serialized)
 	for (i=0; i<inspected->ngeometries; i++)
 	{
 		LWPOLY *poly=NULL;
-		char *subgeom=NULL;
+		uchar *subgeom=NULL;
 
 		subgeom = lwgeom_getsubgeometry_inspected(inspected, i);
 
@@ -501,7 +501,7 @@ Datum LWGEOM_perimeter2d_poly(PG_FUNCTION_ARGS)
  * Return number bytes written in given int pointer.
  */
 void
-lwgeom_force2d_recursive(char *serialized, char *optr, size_t *retsize)
+lwgeom_force2d_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 {
 	LWGEOM_INSPECTED *inspected;
 	int i;
@@ -511,7 +511,7 @@ lwgeom_force2d_recursive(char *serialized, char *optr, size_t *retsize)
 	LWPOINT *point = NULL;
 	LWLINE *line = NULL;
 	LWPOLY *poly = NULL;
-	char *loc;
+	uchar *loc;
 
 		
 #ifdef PGIS_DEBUG
@@ -598,7 +598,7 @@ elog(NOTICE, " collection header size:%d", totsize);
 	inspected = lwgeom_inspect(serialized);
 	for (i=0; i<inspected->ngeometries; i++)
 	{
-		char *subgeom = lwgeom_getsubgeometry_inspected(inspected, i);
+		uchar *subgeom = lwgeom_getsubgeometry_inspected(inspected, i);
 		lwgeom_force2d_recursive(subgeom, optr, &size);
 		totsize += size;
 		optr += size;
@@ -619,7 +619,7 @@ elog(NOTICE, " elem %d size: %d (tot: %d)", i, size, totsize);
  * Return number bytes written in given int pointer.
  */
 void
-lwgeom_force3dz_recursive(char *serialized, char *optr, size_t *retsize)
+lwgeom_force3dz_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 {
 	LWGEOM_INSPECTED *inspected;
 	int i,j,k;
@@ -631,7 +631,7 @@ lwgeom_force3dz_recursive(char *serialized, char *optr, size_t *retsize)
 	LWPOLY *poly = NULL;
 	POINTARRAY newpts;
 	POINTARRAY **nrings;
-	char *loc;
+	uchar *loc;
 
 		
 #ifdef PGIS_DEBUG
@@ -759,7 +759,7 @@ elog(NOTICE, " collection header size:%d", totsize);
 	inspected = lwgeom_inspect(serialized);
 	for (i=0; i<inspected->ngeometries; i++)
 	{
-		char *subgeom = lwgeom_getsubgeometry_inspected(inspected, i);
+		uchar *subgeom = lwgeom_getsubgeometry_inspected(inspected, i);
 		lwgeom_force3dz_recursive(subgeom, optr, &size);
 		totsize += size;
 		optr += size;
@@ -780,21 +780,21 @@ elog(NOTICE, " elem %d size: %d (tot: %d)", i, size, totsize);
  * Return number bytes written in given int pointer.
  */
 void
-lwgeom_force3dm_recursive(unsigned char *serialized, char *optr, size_t *retsize)
+lwgeom_force3dm_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 {
 	LWGEOM_INSPECTED *inspected;
 	int i,j,k;
 	size_t totsize=0;
 	size_t size=0;
 	int type;
-	unsigned char newtypefl;
+	uchar newtypefl;
 	LWPOINT *point = NULL;
 	LWLINE *line = NULL;
 	LWPOLY *poly = NULL;
 	POINTARRAY newpts;
 	POINTARRAY **nrings;
 	POINT3DM *p3dm;
-	char *loc;
+	uchar *loc;
 	char check;
 
 		
@@ -970,7 +970,7 @@ lwnotice("lwgeom_force3dm_recursive: it's a collection (%s)", lwgeom_typename(ty
 	inspected = lwgeom_inspect(serialized);
 	for (i=0; i<inspected->ngeometries; i++)
 	{
-		char *subgeom = lwgeom_getsubgeometry_inspected(inspected, i);
+		uchar *subgeom = lwgeom_getsubgeometry_inspected(inspected, i);
 		lwgeom_force3dm_recursive(subgeom, optr, &size);
 		totsize += size;
 		optr += size;
@@ -996,7 +996,7 @@ lwnotice("lwgeom_force3dm_recursive returning");
  * Return number bytes written in given int pointer.
  */
 void
-lwgeom_force4d_recursive(char *serialized, char *optr, size_t *retsize)
+lwgeom_force4d_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 {
 	LWGEOM_INSPECTED *inspected;
 	int i,j,k;
@@ -1008,7 +1008,7 @@ lwgeom_force4d_recursive(char *serialized, char *optr, size_t *retsize)
 	LWPOLY *poly = NULL;
 	POINTARRAY newpts;
 	POINTARRAY **nrings;
-	char *loc;
+	uchar *loc;
 
 		
 #ifdef PGIS_DEBUG
@@ -1138,7 +1138,7 @@ elog(NOTICE, " collection header size:%d", totsize);
 	inspected = lwgeom_inspect(serialized);
 	for (i=0; i<inspected->ngeometries; i++)
 	{
-		char *subgeom = lwgeom_getsubgeometry_inspected(inspected, i);
+		uchar *subgeom = lwgeom_getsubgeometry_inspected(inspected, i);
 		lwgeom_force4d_recursive(subgeom, optr, &size);
 		totsize += size;
 		optr += size;
@@ -1156,7 +1156,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_force_2d);
 Datum LWGEOM_force_2d(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	char *srl;
+	uchar *srl;
 	PG_LWGEOM *result;
 	size_t size = 0;
 
@@ -1164,7 +1164,7 @@ Datum LWGEOM_force_2d(PG_FUNCTION_ARGS)
 	if ( lwgeom_ndims(geom->type) == 2 ) PG_RETURN_POINTER(geom);
 
 	// allocate a larger for safety and simplicity
-	srl = (char *) lwalloc(geom->size);
+	srl = lwalloc(geom->size);
 
 	lwgeom_force2d_recursive(SERIALIZED_FORM(geom),
 		srl, &size);
@@ -1180,7 +1180,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_force_3dz);
 Datum LWGEOM_force_3dz(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	char *srl;
+	uchar *srl;
 	PG_LWGEOM *result;
 	int olddims;
 	size_t size = 0;
@@ -1191,10 +1191,10 @@ Datum LWGEOM_force_3dz(PG_FUNCTION_ARGS)
 	if ( olddims == 3 && TYPE_HASZ(geom->type) ) PG_RETURN_POINTER(geom);
 
 	if ( olddims > 3 ) {
-		srl = (char *) lwalloc(geom->size);
+		srl = lwalloc(geom->size);
 	} else {
 		// allocate double as memory a larger for safety 
-		srl = (char *) lwalloc(geom->size*1.5);
+		srl = lwalloc(geom->size*1.5);
 	}
 
 	lwgeom_force3dz_recursive(SERIALIZED_FORM(geom),
@@ -1211,7 +1211,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_force_3dm);
 Datum LWGEOM_force_3dm(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	char *srl;
+	uchar *srl;
 	PG_LWGEOM *result;
 	int olddims;
 	size_t size = 0;
@@ -1227,7 +1227,7 @@ Datum LWGEOM_force_3dm(PG_FUNCTION_ARGS)
 		// allocate double as memory a larger for safety 
 		size = geom->size * 1.5;
 	}
-	srl = (char *)lwalloc(size);
+	srl = lwalloc(size);
 
 #ifdef PGIS_DEBUG
 	lwnotice("LWGEOM_force_3dm: allocated %d bytes for result", size);
@@ -1251,7 +1251,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_force_4d);
 Datum LWGEOM_force_4d(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	char *srl;
+	uchar *srl;
 	PG_LWGEOM *result;
 	int olddims;
 	size_t size = 0;
@@ -1262,7 +1262,7 @@ Datum LWGEOM_force_4d(PG_FUNCTION_ARGS)
 	if ( olddims == 4 ) PG_RETURN_POINTER(geom);
 
 	// allocate double as memory a larger for safety 
-	srl = (char *)lwalloc(geom->size*2);
+	srl = lwalloc(geom->size*2);
 
 	lwgeom_force4d_recursive(SERIALIZED_FORM(geom),
 		srl, &size);
@@ -1414,7 +1414,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_translate);
 Datum LWGEOM_translate(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
-	char *srl = SERIALIZED_FORM(geom);
+	uchar *srl = SERIALIZED_FORM(geom);
 	BOX2DFLOAT4 *box;
 
 	double xoff =  PG_GETARG_FLOAT8(1);
@@ -1654,7 +1654,7 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 		elog(NOTICE, "geom_accum: adding %p (nelems=%d; nbytes=%d)",
 			geom, nelems, nbytes);
 #endif
-		result = (ArrayType *) lwalloc(nbytes);
+		result = lwalloc(nbytes);
 		if ( ! result )
 		{
 			elog(ERROR, "Out of virtual memory");
@@ -1693,8 +1693,8 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 #ifdef PGIS_DEBUG
 		elog(NOTICE, " array start  @ %p", result);
 		elog(NOTICE, " ARR_DATA_PTR @ %p (%d)",
-			ARR_DATA_PTR(result), (char *)ARR_DATA_PTR(result)-(char *)result);
-		elog(NOTICE, " next element @ %p", (char *)result+oldsize);
+			ARR_DATA_PTR(result), (uchar *)ARR_DATA_PTR(result)-(uchar *)result);
+		elog(NOTICE, " next element @ %p", (uchar *)result+oldsize);
 #endif
 		result->size = nbytes;
 		memcpy(ARR_DIMS(result), &nelems, sizeof(int));
@@ -1702,7 +1702,7 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 		elog(NOTICE, " writing next element starting @ %p",
 			result+oldsize);
 #endif
-		memcpy((char *)result+oldsize, geom, geom->size);
+		memcpy((uchar *)result+oldsize, geom, geom->size);
 	}
 
 #ifdef PGIS_DEBUG
@@ -2149,7 +2149,7 @@ Datum LWGEOM_expand(PG_FUNCTION_ARGS)
 
 	// Construct point array
 	pa[0] = lwalloc(sizeof(POINTARRAY));
-	pa[0]->serialized_pointlist = (char *)pts;
+	pa[0]->serialized_pointlist = (uchar *)pts;
 	TYPE_SETZM(pa[0]->dims, 0, 0);
 	pa[0]->npoints = 5;
 
@@ -2192,7 +2192,7 @@ Datum LWGEOM_envelope(PG_FUNCTION_ARGS)
 	LWPOLY *poly;
 	int SRID;
 	PG_LWGEOM *result;
-	char *ser;
+	uchar *ser;
 
 	// get bounding box 
 	if ( ! getbox2d_p(SERIALIZED_FORM(geom), &box) )
@@ -2213,7 +2213,7 @@ Datum LWGEOM_envelope(PG_FUNCTION_ARGS)
 
 	// Construct point array
 	pa[0] = lwalloc(sizeof(POINTARRAY));
-	pa[0]->serialized_pointlist = (char *)pts;
+	pa[0]->serialized_pointlist = (uchar *)pts;
 	TYPE_SETZM(pa[0]->dims, 0, 0);
 	pa[0]->npoints = 5;
 
@@ -2256,7 +2256,7 @@ Datum centroid(PG_FUNCTION_ARGS)
 	POINT3DZ *p, cent;
 	int i,j,k;
 	uint32 num_points_tot = 0;
-	char *srl;
+	uchar *srl;
 	char wantbbox = 0;
 	double tot_x=0, tot_y=0, tot_z=0;
 
@@ -2289,7 +2289,7 @@ Datum centroid(PG_FUNCTION_ARGS)
 	cent.z = tot_z/num_points_tot;
 
 	// Construct POINTARRAY (paranoia?)
-	pa = pointArray_construct((char *)&cent, 1, 0, 1);
+	pa = pointArray_construct((uchar *)&cent, 1, 0, 1);
 
 	// Construct LWPOINT
 	point = lwpoint_construct(SRID, NULL, pa);
@@ -2394,7 +2394,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_zmflag);
 Datum LWGEOM_zmflag(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *in;
-	unsigned char type;
+	uchar type;
 	int ret = 0;
 
 	in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));

@@ -52,14 +52,14 @@ lwpoly_construct(int SRID, BOX2DFLOAT4 *bbox, unsigned int nrings, POINTARRAY **
 // serialized_form should point to the 8bit type format (with type = 3)
 // See serialized form doc
 LWPOLY *
-lwpoly_deserialize(char *serialized_form)
+lwpoly_deserialize(uchar *serialized_form)
 {
 
 	LWPOLY *result;
 	uint32 nrings;
 	int ndims, hasz, hasm;
 	uint32 npoints;
-	unsigned char type;
+	uchar type;
 	char  *loc;
 	int t;
 
@@ -127,11 +127,11 @@ lwpoly_deserialize(char *serialized_form)
 // create the serialized form of the polygon
 // result's first char will be the 8bit type.  See serialized form doc
 // points copied
-char *
+uchar *
 lwpoly_serialize(LWPOLY *poly)
 {
 	size_t size, retsize;
-	char *result;
+	uchar *result;
 
 	size = lwpoly_serialize_size(poly);
 	result = lwalloc(size);
@@ -151,14 +151,14 @@ lwpoly_serialize(LWPOLY *poly)
 // result's first char will be the 8bit type.  See serialized form doc
 // points copied
 void
-lwpoly_serialize_buf(LWPOLY *poly, char *buf, size_t *retsize)
+lwpoly_serialize_buf(LWPOLY *poly, uchar *buf, size_t *retsize)
 {
 	int size=1;  // type byte
 	char hasSRID;
 	int t,u;
 	int total_points = 0;
 	int npoints;
-	char *loc;
+	uchar *loc;
 
 #ifdef PGIS_DEBUG_CALLS
 	lwnotice("lwpoly_serialize_buf called");
@@ -174,7 +174,7 @@ lwpoly_serialize_buf(LWPOLY *poly, char *buf, size_t *retsize)
 	}
 	size += sizeof(double)*TYPE_NDIMS(poly->type)*total_points;
 
-	buf[0] = (unsigned char) lwgeom_makeType_full(
+	buf[0] = (uchar) lwgeom_makeType_full(
 		TYPE_HASZ(poly->type), TYPE_HASM(poly->type),
 		hasSRID, POLYGONTYPE, poly->bbox ? 1 : 0);
 	loc = buf+1;
@@ -270,21 +270,21 @@ lwpoly_findbbox(LWPOLY *poly)
 
 //find length of this serialized polygon
 size_t
-lwgeom_size_poly(const char *serialized_poly)
+lwgeom_size_poly(const uchar *serialized_poly)
 {
 	uint32 result = 1; // char type
 	uint32 nrings;
-	int   ndims;
+	int ndims;
 	int t;
-	unsigned char type;
+	uchar type;
 	uint32 npoints;
-	const char *loc;
+	const uchar *loc;
 
 	if (serialized_poly == NULL)
 		return -9999;
 
 
-	type = (unsigned char) serialized_poly[0];
+	type = (uchar) serialized_poly[0];
 	ndims = lwgeom_ndims(type);
 
 	if ( lwgeom_getType(type) != POLYGONTYPE)

@@ -15,8 +15,8 @@
 #include "liblwgeom.h"
 
 // External functions (what's again the reason for using explicit hex form ?)
-extern void deparse_hex(unsigned char str, unsigned char *result);
-extern unsigned char parse_hex(char *str);
+extern void deparse_hex(uchar str, uchar *result);
+extern uchar parse_hex(char *str);
 
 // Internal funcs
 void swap_char(char *a,char *b);
@@ -69,7 +69,7 @@ Datum CHIP_in(PG_FUNCTION_ARGS)
 	
 	for (t=0;t<size;t++)
 	{
-		((unsigned char *)result)[t] = parse_hex( &str[t*2]) ;
+		((uchar *)result)[t] = parse_hex( &str[t*2]) ;
 	}
 // if endian is wrong, flip it otherwise do nothing
 	result->size = size;
@@ -148,7 +148,7 @@ Datum CHIP_out(PG_FUNCTION_ARGS)
 
 	for (t=0; t< (chip->size); t++)
 	{
-		deparse_hex( ((unsigned char *) chip)[t], &result[t*2]);
+		deparse_hex( ((uchar *) chip)[t], &result[t*2]);
 	}
 	PG_RETURN_CSTRING(result);	
 }

@@ -48,7 +48,7 @@ Datum LWGEOM_send(PG_FUNCTION_ARGS);
 // WKB structure  -- exactly the same as TEXT
 typedef struct Well_known_bin {
     int32 size;             // total size of this structure
-    unsigned char  data[1]; //THIS HOLD VARIABLE LENGTH DATA
+    uchar  data[1]; //THIS HOLD VARIABLE LENGTH DATA
 } WellKnownBinary;
 
 
@@ -180,7 +180,7 @@ Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 
 	for (t=0; t< (wkb_input->size -VARHDRSZ); t++)
 	{
-		deparse_hex( ((unsigned char *) wkb_input)[4 + t], &loc[t*2]);
+		deparse_hex( ((uchar *) wkb_input)[4 + t], &loc[t*2]);
 	}
 
 	wkb_srid_hexized[size_result-1] = 0; // null term
@@ -280,7 +280,7 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 	// have a hexized string, want to make it binary
 	for (t=0; t< (size/2); t++)
 	{
-		((unsigned char *) result +VARHDRSZ)[t] = parse_hex(  hexized_wkb + (t*2) );
+		((uchar *) result +VARHDRSZ)[t] = parse_hex(  hexized_wkb + (t*2) );
 	}
 
 	pfree(hexized_wkb_srid);
@@ -319,7 +319,7 @@ Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS)
 	PG_LWGEOM *lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	PG_LWGEOM *result;
 	BOX2DFLOAT4	box;
-	unsigned char	old_type;
+	uchar	old_type;
 	int		size;
 
 //elog(NOTICE,"in LWGEOM_addBBOX");
@@ -377,12 +377,12 @@ is_worth_caching_pglwgeom_bbox(const PG_LWGEOM *in)
 }
 
 char
-is_worth_caching_serialized_bbox(const char *in)
+is_worth_caching_serialized_bbox(const uchar *in)
 {
 #if ! AUTOCACHE_BBOX
 	return false;
 #endif
-	if ( TYPE_GETTYPE((unsigned char)in[0]) == POINTTYPE ) return false;
+	if ( TYPE_GETTYPE((uchar)in[0]) == POINTTYPE ) return false;
 	return true;
 }
 
@@ -402,8 +402,8 @@ Datum LWGEOM_dropBBOX(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	PG_LWGEOM *result;
-	unsigned char	old_type;
-	int		size;
+	uchar old_type;
+	int size;
 
 //elog(NOTICE,"in LWGEOM_dropBBOX");
 

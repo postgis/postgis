@@ -34,15 +34,15 @@ lwline_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points)
 // serialized_form should point to the 8bit type format (with type = 2)
 // See serialized form doc
 LWLINE *
-lwline_deserialize(char *serialized_form)
+lwline_deserialize(uchar *serialized_form)
 {
-	unsigned char type;
+	uchar type;
 	LWLINE *result;
-	char *loc =NULL;
+	uchar *loc =NULL;
 	uint32 npoints;
 	POINTARRAY *pa;
 
-	type = (unsigned char) serialized_form[0];
+	type = (uchar) serialized_form[0];
 
 	if ( lwgeom_getType(type) != LINETYPE)
 	{
@@ -92,11 +92,11 @@ lwline_deserialize(char *serialized_form)
 
 // convert this line into its serialize form
 // result's first char will be the 8bit type.  See serialized form doc
-char *
+uchar *
 lwline_serialize(LWLINE *line)
 {
 	size_t size, retsize;
-	char * result;
+	uchar * result;
 
 	if (line == NULL) lwerror("lwline_serialize:: given null line");
 
@@ -117,10 +117,10 @@ lwline_serialize(LWLINE *line)
 // the given int pointer.
 // result's first char will be the 8bit type.  See serialized form doc
 void
-lwline_serialize_buf(LWLINE *line, char *buf, size_t *retsize)
+lwline_serialize_buf(LWLINE *line, uchar *buf, size_t *retsize)
 {
 	char hasSRID;
-	char *loc;
+	uchar *loc;
 	int ptsize = pointArray_ptsize(line->points);
 	unsigned int u;
 
@@ -134,7 +134,7 @@ lwline_serialize_buf(LWLINE *line, char *buf, size_t *retsize)
 
 	hasSRID = (line->SRID != -1);
 
-	buf[0] = (unsigned char) lwgeom_makeType_full(
+	buf[0] = (uchar) lwgeom_makeType_full(
 		TYPE_HASZ(line->type), TYPE_HASM(line->type),
 		hasSRID, LINETYPE, line->bbox ? 1 : 0);
 	loc = buf+1;
@@ -213,7 +213,7 @@ lwline_serialize_buf(LWLINE *line, char *buf, size_t *retsize)
 
 	if (retsize) *retsize = loc-buf;
 
-	//printBYTES((unsigned char *)result, loc-buf);
+	//printBYTES((uchar *)result, loc-buf);
 
 #ifdef PGIS_DEBUG_CALLS
 	lwnotice("lwline_serialize_buf returning (loc: %p, size: %d)",
@@ -265,11 +265,11 @@ void pfree_line (LWLINE  *line)
 
 // find length of this serialized line
 size_t
-lwgeom_size_line(const char *serialized_line)
+lwgeom_size_line(const uchar *serialized_line)
 {
-	int type = (unsigned char) serialized_line[0];
+	int type = (uchar) serialized_line[0];
 	uint32 result = 1;  //type
-	const char *loc;
+	const uchar *loc;
 	uint32 npoints;
 
 #ifdef PGIS_DEBUG_CALLS

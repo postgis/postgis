@@ -4,7 +4,7 @@
 #include "liblwgeom.h"
 
 LWMPOINT *
-lwmpoint_deserialize(char *srl)
+lwmpoint_deserialize(uchar *srl)
 {
 	LWMPOINT *result;
 	LWGEOM_INSPECTED *insp;

@@ -8,14 +8,15 @@
 POINTARRAY *
 ptarray_construct(char hasz, char hasm, unsigned int npoints)
 {
-	unsigned char dims = 0;
+	uchar dims = 0;
 	size_t size; 
-	char *ptlist;
+	uchar *ptlist;
 	POINTARRAY *pa;
 	
 	TYPE_SETZM(dims, hasz?1:0, hasm?1:0);
 	size = TYPE_NDIMS(dims)*npoints*sizeof(double);
-	ptlist = (char *)lwalloc(size);
+
+	ptlist = (uchar *)lwalloc(size);
 	pa = lwalloc(sizeof(POINTARRAY));
 	pa->dims = dims;
 	pa->serialized_pointlist = ptlist;
@@ -104,12 +105,12 @@ ptarray_reverse(POINTARRAY *pa)
 
 	for (i=0; i<=mid; i++)
 	{
-		char *from, *to;
+		uchar *from, *to;
 		from = getPoint(pa, i);
 		to = getPoint(pa, (last-i));
-		memcpy((char *)&pbuf, to, ptsize);
+		memcpy((uchar *)&pbuf, to, ptsize);
 		memcpy(to, from, ptsize);
-		memcpy(from, (char *)&pbuf, ptsize);
+		memcpy(from, (uchar *)&pbuf, ptsize);
 	}
 
 }
@@ -197,7 +198,7 @@ ptarray_segmentize2d(POINTARRAY *ipa, double dist)
 	opa = (POINTARRAY *)lwalloc(ptsize * maxpoints);
 	opa->dims = ipa->dims;
 	opa->npoints = 0;
-	opa->serialized_pointlist = (char *)lwalloc(maxpoints*ptsize);
+	opa->serialized_pointlist = (uchar *)lwalloc(maxpoints*ptsize);
 
 	// Add first point
 	opa->npoints++;
@@ -230,7 +231,7 @@ ptarray_segmentize2d(POINTARRAY *ipa, double dist)
 		// Add point
 		if ( ++(opa->npoints) > maxpoints ) {
 			maxpoints *= 1.5;
-			opa->serialized_pointlist = (char *)lwrealloc(
+			opa->serialized_pointlist = (uchar *)lwrealloc(
 				opa->serialized_pointlist,
 				maxpoints*ptsize
 			);
@@ -269,7 +270,7 @@ ptarray_same(const POINTARRAY *pa1, const POINTARRAY *pa2)
  * if 'where' == -1 append is required.
  */
 POINTARRAY *
-ptarray_addPoint(POINTARRAY *pa, char *p, size_t pdims, unsigned int where)
+ptarray_addPoint(POINTARRAY *pa, uchar *p, size_t pdims, unsigned int where)
 {
 	POINTARRAY *ret;
 	POINT4D pbuf;
@@ -287,7 +288,7 @@ ptarray_addPoint(POINTARRAY *pa, char *p, size_t pdims, unsigned int where)
 #endif
 	
 	pbuf.x = pbuf.y = pbuf.z = pbuf.m = 0.0;
-	memcpy((char *)&pbuf, p, pdims*sizeof(double));
+	memcpy((uchar *)&pbuf, p, pdims*sizeof(double));
 
 #if PGIS_DEBUG
 	lwnotice("ptarray_addPoint: initialized point buffer");
@@ -303,7 +304,7 @@ ptarray_addPoint(POINTARRAY *pa, char *p, size_t pdims, unsigned int where)
 		memcpy(getPoint(ret, 0), getPoint(pa, 0), ptsize*where);
 	}
 
-	memcpy(getPoint(ret, where), (char *)&pbuf, ptsize);
+	memcpy(getPoint(ret, where), (uchar *)&pbuf, ptsize);
 
 	if ( where+1 != ret->npoints )
 	{

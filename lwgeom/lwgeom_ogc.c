@@ -102,7 +102,7 @@ Datum LWGEOM_getTYPE(PG_FUNCTION_ARGS)
 	char *text_ob;
 	char *result;
 	int32 size;
-	unsigned char type;
+	uchar type;
 
 	init_pg_func();
 

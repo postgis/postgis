@@ -9,7 +9,7 @@
 //#define PGIS_DEBUG_CALLS 1
 
 LWGEOM *
-lwgeom_deserialize(char *srl)
+lwgeom_deserialize(uchar *srl)
 {
 	int type = lwgeom_getType(srl[0]);
 
@@ -67,7 +67,7 @@ lwgeom_serialize_size(LWGEOM *lwgeom)
 }
 
 void
-lwgeom_serialize_buf(LWGEOM *lwgeom, char *buf, size_t *retsize)
+lwgeom_serialize_buf(LWGEOM *lwgeom, uchar *buf, size_t *retsize)
 {
 	int type = TYPE_GETTYPE(lwgeom->type);
 
@@ -100,12 +100,12 @@ lwgeom_serialize_buf(LWGEOM *lwgeom, char *buf, size_t *retsize)
 	return;
 }
 
-char *
+uchar *
 lwgeom_serialize(LWGEOM *lwgeom)
 {
 	size_t size = lwgeom_serialize_size(lwgeom);
 	size_t retsize;
-	char *serialized = lwalloc(size);
+	uchar *serialized = lwalloc(size);
 
 	lwgeom_serialize_buf(lwgeom, serialized, &retsize);
 
@@ -362,7 +362,7 @@ lwgeom_add(const LWGEOM *to, uint32 where, const LWGEOM *what)
 char *
 lwgeom_to_wkt(LWGEOM *lwgeom)
 {
-	char *serialized = lwgeom_serialize(lwgeom);
+	uchar *serialized = lwgeom_serialize(lwgeom);
 	char *ret;
 	if ( ! serialized ) {
 		lwerror("Error serializing geom %p", lwgeom);
@@ -378,7 +378,7 @@ lwgeom_to_wkt(LWGEOM *lwgeom)
 char *
 lwgeom_to_hexwkb(LWGEOM *lwgeom, unsigned int byteorder)
 {
-	char *serialized = lwgeom_serialize(lwgeom);
+	uchar *serialized = lwgeom_serialize(lwgeom);
 	char *hexwkb = unparse_WKB(serialized, lwalloc, lwfree, byteorder,NULL,1);
 	lwfree(serialized);
 	return hexwkb;

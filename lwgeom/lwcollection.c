@@ -64,7 +64,7 @@ lwcollection_construct_empty(int SRID, char hasz, char hasm)
 
 
 LWCOLLECTION *
-lwcollection_deserialize(char *srl)
+lwcollection_deserialize(uchar *srl)
 {
 	LWCOLLECTION *result;
 	LWGEOM_INSPECTED *insp;
@@ -139,12 +139,12 @@ lwcollection_serialize_size(LWCOLLECTION *col)
 // the given buffer, and returning number of bytes written into
 // the given int pointer.
 void
-lwcollection_serialize_buf(LWCOLLECTION *coll, char *buf, size_t *retsize)
+lwcollection_serialize_buf(LWCOLLECTION *coll, uchar *buf, size_t *retsize)
 {
 	size_t size=1; // type 
 	size_t subsize=0;
 	char hasSRID;
-	char *loc;
+	uchar *loc;
 	int i;
 
 #ifdef PGIS_DEBUG_CALLS
@@ -154,7 +154,7 @@ lwcollection_serialize_buf(LWCOLLECTION *coll, char *buf, size_t *retsize)
 
 	hasSRID = (coll->SRID != -1);
 
-	buf[0] = (unsigned char) lwgeom_makeType_full(
+	buf[0] = lwgeom_makeType_full(
 		TYPE_HASZ(coll->type), TYPE_HASM(coll->type),
 		hasSRID, TYPE_GETTYPE(coll->type), coll->bbox ? 1 : 0);
 	loc = buf+1;
@@ -295,7 +295,7 @@ char
 lwcollection_same(const LWCOLLECTION *c1, const LWCOLLECTION *c2)
 {
 	unsigned int i, j;
-	char *hit;
+	unsigned int *hit;
 
 #if PGIS_DEBUG_CALLS
 	lwnotice("lwcollection_same called");
@@ -304,8 +304,8 @@ lwcollection_same(const LWCOLLECTION *c1, const LWCOLLECTION *c2)
 	if ( TYPE_GETTYPE(c1->type) != TYPE_GETTYPE(c2->type) ) return 0;
 	if ( c1->ngeoms != c2->ngeoms ) return 0;
 
-	hit = (char *)lwalloc(sizeof(char)*c1->ngeoms);
-	memset(hit, 0, sizeof(char)*c1->ngeoms);
+	hit = lwalloc(sizeof(unsigned int)*c1->ngeoms);
+	memset(hit, 0, sizeof(unsigned int)*c1->ngeoms);
 
 	for (i=0; i<c1->ngeoms; i++)
 	{

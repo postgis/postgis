@@ -7,11 +7,11 @@
 
 // convert this point into its serialize form
 // result's first char will be the 8bit type.  See serialized form doc
-char *
+uchar *
 lwpoint_serialize(LWPOINT *point)
 {
 	size_t size, retsize;
-	char *result;
+	uchar *result;
 
 	size = lwpoint_serialize_size(point);
 	result = lwalloc(size);
@@ -30,11 +30,11 @@ lwpoint_serialize(LWPOINT *point)
 // the given int pointer.
 // result's first char will be the 8bit type.  See serialized form doc
 void
-lwpoint_serialize_buf(LWPOINT *point, char *buf, size_t *retsize)
+lwpoint_serialize_buf(LWPOINT *point, uchar *buf, size_t *retsize)
 {
 	int size=1;
 	char hasSRID;
-	char *loc;
+	uchar *loc;
 
 	//printLWPOINT(point);
 #ifdef PGIS_DEBUG_CALLS
@@ -48,7 +48,7 @@ lwpoint_serialize_buf(LWPOINT *point, char *buf, size_t *retsize)
 
 	size += sizeof(double)*TYPE_NDIMS(point->type);
 
-	buf[0] = (unsigned char) lwgeom_makeType_full(
+	buf[0] = (uchar) lwgeom_makeType_full(
 		TYPE_HASZ(point->type), TYPE_HASM(point->type),
 		hasSRID, POINTTYPE, point->bbox?1:0);
 	loc = buf+1;
@@ -219,11 +219,11 @@ make_lwpoint4d(int SRID, double x, double y, double z, double m)
 // serialized_form should point to the 8bit type format (with type = 1)
 // See serialized form doc
 LWPOINT *
-lwpoint_deserialize(char *serialized_form)
+lwpoint_deserialize(uchar *serialized_form)
 {
-	unsigned char type;
+	uchar type;
 	LWPOINT *result;
-	char *loc = NULL;
+	uchar *loc = NULL;
 	POINTARRAY *pa;
 
 #ifdef PGIS_DEBUG_CALLS
@@ -232,7 +232,7 @@ lwpoint_deserialize(char *serialized_form)
 
 	result = (LWPOINT*) lwalloc(sizeof(LWPOINT)) ;
 
-	type = (unsigned char) serialized_form[0];
+	type = (uchar) serialized_form[0];
 
 	if ( lwgeom_getType(type) != POINTTYPE) return NULL;
 	result->type = type;
@@ -361,13 +361,13 @@ lwpoint_add(const LWPOINT *to, uint32 where, const LWGEOM *what)
 
 //find length of this serialized point
 size_t
-lwgeom_size_point(const char *serialized_point)
+lwgeom_size_point(const uchar *serialized_point)
 {
 	uint32  result = 1;
-	unsigned char type;
-	const char *loc;
+	uchar type;
+	const uchar *loc;
 
-	type = (unsigned char) serialized_point[0];
+	type = serialized_point[0];
 
 	if ( lwgeom_getType(type) != POINTTYPE) return 0;
 
