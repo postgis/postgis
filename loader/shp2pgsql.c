@@ -4,6 +4,9 @@
  * Author: Jeff Lounsbury, jeffloun@refractions.net
  *
  * $Log$
+ * Revision 1.33  2003/04/01 23:02:50  jeffloun
+ * Fixed a bug which dropped the last Z value of each line in 3d lines.
+ *
  * Revision 1.32  2003/03/07 16:39:53  pramsey
  * M-handling patch and some Z-recognition too.
  * From strk@freek.keybit.net.
@@ -636,6 +639,8 @@ int main (int ARGC, char **ARGV){
 	//create the geometry column with an addgeometry call to dave's function
 	if(opt != 'a'){
 		printf("select AddGeometryColumn('%s','%s','the_geom','%s',",database,table,sr_id);
+		if( obj->nSHPType == 1 ){  //2d point
+			printf("'POINT',2);\n");
 		}else if( obj->nSHPType == 21){ // PointM
 			printf("'POINT',2);\n");
 		}else if( obj->nSHPType == 23){  // PolyLineM
@@ -644,9 +649,6 @@ int main (int ARGC, char **ARGV){
 			printf("'MULTIPOLYGON',2);\n");
 		}else if( obj->nSHPType == 28){ // MultiPointM
 		         printf("'MULTIPOINT',2);\n");
-
-		if( obj->nSHPType == 1 ){  //2d point
-			printf("'POINT',2);\n");
 		}else if( obj->nSHPType == 3){	//2d arcs/lines
 			printf("'MULTILINESTRING',2);\n");
 		}else if( obj->nSHPType == 5){	//2d polygons
@@ -1060,7 +1062,7 @@ int main (int ARGC, char **ARGV){
 
 				//check if the next vertice is the start of a new line				
 				if(((next_ring != -99) && (u+1 == obj->panPartStart[next_ring] )) || u==(obj->nVertices-1) ){
-					printf(",%.15g %.15g ",obj->padfX[u],obj->padfY[u]);
+					printf(",%.15g %.15g %.15g ",obj->padfX[u],obj->padfY[u],obj->padfZ[u]);
 					printf(")");
 					next_ring++;
 					begin =1;//flag the fact that you area at a new line next time through the loop
