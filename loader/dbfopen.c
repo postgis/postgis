@@ -34,8 +34,8 @@
  ******************************************************************************
  *
  * $Log$
- * Revision 1.2  2001/11/01 22:57:11  pramsey
- * Updated shapelib files from latest CVS version.
+ * Revision 1.3  2002/05/04 22:44:04  pramsey
+ * Update shapelib references to 1.2.9.
  *
  * Revision 1.37  2001/07/04 05:18:09  warmerda
  * do last fix properly

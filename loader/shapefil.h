@@ -37,11 +37,8 @@
  ******************************************************************************
  *
  * $Log$
- * Revision 1.2  2001/11/01 22:57:11  pramsey
- * Updated shapelib files from latest CVS version.
- *
- * Revision 1.21  2001/11/01 16:29:55  warmerda
- * move pabyRec into SHPInfo for thread safety
+ * Revision 1.3  2002/05/04 22:44:04  pramsey
+ * Update shapelib references to 1.2.9.
  *
  * Revision 1.20  2001/07/20 13:06:02  warmerda
  * fixed SHPAPI attribute for SHPTreeFindLikelyShapes
@@ -156,9 +153,6 @@ typedef	struct
     double	adBoundsMax[4];
 
     int		bUpdated;
-
-    unsigned char *pabyRec;
-    int         nBufSize;
 } SHPInfo;
 
 typedef SHPInfo * SHPHandle;

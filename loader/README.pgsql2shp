@@ -1,7 +1,7 @@
 pgsql2shp - Convert PostGIS Table to Shape
 ~~~~~~~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-VERSION: 0.6 (2001/09/20)
+VERSION: 0.7 (2002/05/04)
 
 MORE INFORMATION: http://postgis.refractions.net
 
@@ -9,7 +9,7 @@ INTRODUCTION:
 This program takes PostGIS spatial tables and outputs ESRI
 shape files.
 
-This application uses functionality from shapelib 1.2.8
+This application uses functionality from shapelib 1.2.9
 by Frank Warmerdam <warmerda@gdal.velocet.ca> to write to ESRI
 Shape files.
 

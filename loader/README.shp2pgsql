@@ -1,7 +1,7 @@
 shp2pgsql - Convert Shape file to PostGIS
 ~~~~~~~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-VERSION: 0.6 (2001/10/01)
+VERSION: 0.7 (2002/05/04)
 
 MORE INFORMATION: http://postgis.refractions.net
 
@@ -10,7 +10,7 @@ This program takes in ESRI shape files and output formatted text suitable
 for uploading to the PostGIS/PostgreSQL spatial database using the psql
 terminal monitor.
 
-This application uses functionality from shapelib 1.2.8
+This application uses functionality from shapelib 1.2.9
 by Frank Warmerdam <warmerda@gdal.velocet.ca> to read from ESRI
 Shape files.
 
