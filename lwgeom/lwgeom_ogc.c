@@ -49,6 +49,10 @@ Datum LWGEOM_x_point(PG_FUNCTION_ARGS);
 Datum LWGEOM_y_point(PG_FUNCTION_ARGS);
 // ---- Z(geometry)
 Datum LWGEOM_z_point(PG_FUNCTION_ARGS);
+// ---- StartPoint(geometry)
+Datum LWGEOM_startpoint_linestring(PG_FUNCTION_ARGS);
+// ---- EndPoint(geometry)
+Datum LWGEOM_endpoint_linestring(PG_FUNCTION_ARGS);
 
 
 // internal
@@ -565,4 +569,105 @@ Datum LWGEOM_z_point(PG_FUNCTION_ARGS)
 	p = (POINT3D *)getPoint(point->point, 0);
 
 	PG_RETURN_FLOAT8(p->z);
+}
+
+// StartPoint(GEOMETRY) -- find the first linestring in GEOMETRY,
+// return the first point.
+// Return NULL if there is no LINESTRING(..) in GEOMETRY 
+PG_FUNCTION_INFO_V1(LWGEOM_startpoint_linestring);
+Datum LWGEOM_startpoint_linestring(PG_FUNCTION_ARGS)
+{
+	LWGEOM *geom;
+	LWGEOM_INSPECTED *inspected;
+	LWLINE *line = NULL;
+	POINTARRAY *pts;
+	LWPOINT *point;
+	char *serializedpoint;
+	LWGEOM *result;
+	int i;
+
+	geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
+
+	for (i=0; i<inspected->ngeometries; i++)
+	{
+		line = lwgeom_getline_inspected(inspected, i);
+		if ( line ) break;
+	}
+	pfree_inspected(inspected);
+
+	if ( line == NULL ) PG_RETURN_NULL();
+
+	// Ok, now we have a line. 
+
+	// Construct a point array
+	pts = pointArray_construct(getPoint(line->points, 0),
+		line->points->ndims, 1);
+
+	// Construct an LWPOINT
+	point = lwpoint_construct(line->points->ndims, lwgeom_getSRID(geom),
+		pts);
+
+	// Serialized the point
+	serializedpoint = lwpoint_serialize(point);
+
+	// And we construct the line (copy again)
+	result = LWGEOM_construct(serializedpoint, lwgeom_getSRID(geom),
+		lwgeom_hasBBOX(geom->type));
+
+	pfree(point);
+	pfree(serializedpoint);
+
+	PG_RETURN_POINTER(result);
+}
+
+// EndPoint(GEOMETRY) -- find the first linestring in GEOMETRY,
+// return the last point.
+// Return NULL if there is no LINESTRING(..) in GEOMETRY 
+PG_FUNCTION_INFO_V1(LWGEOM_endpoint_linestring);
+Datum LWGEOM_endpoint_linestring(PG_FUNCTION_ARGS)
+{
+	LWGEOM *geom;
+	LWGEOM_INSPECTED *inspected;
+	LWLINE *line = NULL;
+	POINTARRAY *pts;
+	LWPOINT *point;
+	char *serializedpoint;
+	LWGEOM *result;
+	int i;
+
+	geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
+
+	for (i=0; i<inspected->ngeometries; i++)
+	{
+		line = lwgeom_getline_inspected(inspected, i);
+		if ( line ) break;
+	}
+	pfree_inspected(inspected);
+
+	if ( line == NULL ) PG_RETURN_NULL();
+
+	// Ok, now we have a line. 
+
+	// Construct a point array
+	pts = pointArray_construct(
+		getPoint(line->points, line->points->npoints-1),
+		line->points->ndims, 1);
+
+	// Construct an LWPOINT
+	point = lwpoint_construct(line->points->ndims, lwgeom_getSRID(geom),
+		pts);
+
+	// Serialized the point
+	serializedpoint = lwpoint_serialize(point);
+
+	// And we construct the line (copy again)
+	result = LWGEOM_construct(serializedpoint, lwgeom_getSRID(geom),
+		lwgeom_hasBBOX(geom->type));
+
+	pfree(point);
+	pfree(serializedpoint);
+
+	PG_RETURN_POINTER(result);
 }

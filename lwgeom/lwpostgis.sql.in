@@ -11,6 +11,9 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.15  2004/08/24 16:33:41  strk
+-- Added StartPoint(), EndPoint()
+--
 -- Revision 1.14  2004/08/24 16:20:10  strk
 -- Added X(), Y() and Z() funx
 --
@@ -914,6 +917,16 @@ CREATEFUNCTION Y(geometry)
 CREATEFUNCTION Z(geometry)
 	RETURNS float8
 	AS '@MODULE_FILENAME@','LWGEOM_z_point'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION StartPoint(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_startpoint_linestring'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION EndPoint(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_endpoint_linestring'
 	LANGUAGE 'C' WITH (isstrict);
 
 
