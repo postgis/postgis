@@ -42,16 +42,16 @@ lwline_deserialize(char *serialized_form)
 	uint32 npoints;
 	POINTARRAY *pa;
 
-	result = (LWLINE*) lwalloc(sizeof(LWLINE)) ;
-
 	type = (unsigned char) serialized_form[0];
-	result->type = type;
 
 	if ( lwgeom_getType(type) != LINETYPE)
 	{
 		lwerror("lwline_deserialize: attempt to deserialize a line when its not really a line");
 		return NULL;
 	}
+
+	result = (LWLINE*) lwalloc(sizeof(LWLINE)) ;
+	result->type = type;
 
 	loc = serialized_form+1;
 
