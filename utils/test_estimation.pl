@@ -29,6 +29,10 @@ for ($i=0; $i<@ARGV; $i++)
 			$BPS=int(abs($ARGV[++$i]));
 			push(@bps_list, $BPS);
 		}
+		elsif ( $ARGV[$i] eq '-vacuum' )
+		{
+			$VACUUM=1;
+		}
 		else
 		{
 			print STDERR "Unknown option $ARGV[$i]:\n";
@@ -109,11 +113,15 @@ $ext{xmax} = $4;
 $ext{ymax} = $5;
 
 # vacuum analyze table
-$query = 'vacuum analyze "'.$SCHEMA.'"."'.$TABLE.'"';
-$res = $conn->exec($query);
-if ( $res->resultStatus != PGRES_COMMAND_OK )  {
-	print STDERR $conn->errorMessage;
-	exit(1);
+if ( $VACUUM )
+{
+	print "VACUUM ANALYZE\n";
+	$query = 'vacuum analyze "'.$SCHEMA.'"."'.$TABLE.'"';
+	$res = $conn->exec($query);
+	if ( $res->resultStatus != PGRES_COMMAND_OK )  {
+		print STDERR $conn->errorMessage;
+		exit(1);
+	}
 }
 
 
@@ -252,6 +260,9 @@ sub test_extent
 
 # 
 # $Log$
+# Revision 1.6  2004/03/05 21:06:04  strk
+# Added -vacuum switch
+#
 # Revision 1.5  2004/03/05 21:03:18  strk
 # Made the -bps switch specify the exact level(s) at which to run the test
 #
