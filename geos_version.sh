@@ -19,7 +19,7 @@ if [ "$version" = "@GEOS_VERSION@" ]; then
 	last=1
 else
 	major=`echo $version | sed 's/\..*//'`
-	minor=`echo $version | sed 's/[^\.]*\.\([^.]*\)\.*/\1/'`
+	minor=`echo $version | sed 's/[^\.]*\.\([^\.]*\)\..*/\1/'`
 	first=$major
 	last=`expr $major + $minor`
 	geos_version=`printf %d%2.2d $major $minor`
