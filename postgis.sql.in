@@ -2735,6 +2735,8 @@ BEGIN
 #endif
 
 
+	-- Add geometry column
+
 	EXECUTE ''ALTER TABLE '' ||
 #if USE_VERSION >= 73
 		quote_ident(real_schema) || ''.'' || quote_ident(table_name)
@@ -2743,6 +2745,23 @@ BEGIN
 #endif
 		|| '' ADD COLUMN '' || quote_ident(column_name) || 
 		'' geometry '';
+
+
+	-- Delete stale record in geometry_column (if any)
+
+	EXECUTE ''DELETE FROM geometry_columns WHERE
+		f_table_catalog = '' || quote_literal('''') || 
+		'' AND f_table_schema = '' ||
+#if USE_VERSION >= 73
+		quote_literal(real_schema) || 
+#else
+		quote_literal('''') || 
+#endif
+		'' AND f_table_name = '' || quote_literal(table_name) ||
+		'' AND f_geometry_column = '' || quote_literal(column_name);
+
+
+	-- Add record in geometry_column 
 
 	EXECUTE ''INSERT INTO geometry_columns VALUES ('' ||
 		quote_literal('''') || '','' ||
@@ -2755,6 +2774,8 @@ BEGIN
 		quote_literal(column_name) || '','' ||
 		new_dim || '','' || new_srid || '','' ||
 		quote_literal(new_type) || '')'';
+
+	-- Add table checks
 
 	EXECUTE ''ALTER TABLE '' || 
 #if USE_VERSION >= 73
