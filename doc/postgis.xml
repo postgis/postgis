@@ -57,18 +57,18 @@ functions.</para></listitem>
 <para>The PostGIS module is a extension to the PostgreSQL backend server.
 As such, PostGIS <emphasis>requires</emphasis> a full copy of the PostgreSQL
 source tree in order to compile. The PostgreSQL source code is available at<ulink url="http://www.postgresql.org">http://www.postgresql.org</ulink>.</para> 
-<para>PostGIS 0.2 has been built and tested against PostgreSQL 7.1.2. It
+<para>PostGIS 0.5 has been built and tested against PostgreSQL 7.1.2. It
 will probably work with any of the 7.1.x versions. It will
 <emphasis>not</emphasis> work with any version prior to 7.1.</para> 
 <orderedlist> 
 <listitem><para>Before you can compile the postgis server modules, you must
 compile and install the PostgreSQL package. </para></listitem> 
-<listitem><para>Retrieve the PostGIS source archive from http://postgis.refractions.net/postgis-0.2.tar.gz. Uncompress and untar the
+<listitem><para>Retrieve the PostGIS source archive from http://postgis.refractions.net/postgis-0.5.tar.gz. Uncompress and untar the
 archive in the "contrib" directory of the PostgreSQL source tree.</para><literallayout>cd [postgresql source tree]/contrib
-zcat postgis-0.2.tar.gz | tar xvf -</literallayout> 
+zcat postgis-0.5.tar.gz | tar xvf -</literallayout> 
 		  </listitem> 
 		  <listitem><para>Once your PostgreSQL installation is up-to-date, enter the
-			 "postgis" directory, and run the compile and install commands. </para><literallayout>cd ./postgis-0.2
+			 "postgis" directory, and run the compile and install commands. </para><literallayout>cd ./postgis-0.5
 make
 make install</literallayout> 
 		  </listitem> 
