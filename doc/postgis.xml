@@ -1374,9 +1374,9 @@ WHERE
             <term>-b</term>
 
             <listitem>
-              <para>Use a binary cursor. This will help reduce the likelihood
-              of coordinate drift due to conversion to and from WKT format. It
-              will also be slightly faster.</para>
+              <para>Use a binary cursor. This will make the operation faster,
+	      but will not work if any NON-geometry attribute in the table
+	      lacks a cast to text.</para>
             </listitem>
           </varlistentry>
 
