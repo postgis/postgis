@@ -1,5 +1,12 @@
 //  g++ postgis_GEOSwrapper.cpp -c -I/usr/local/include  -I/usr/local/include/geos -I/usr/local/src/postgresql-7.2.3//src/include
 
+/*
+* $Log$
+* Revision 1.10  2003/10/20 19:50:49  strk
+* Removed some memory leaks in PostGIS2* converters.
+*
+*/
+
 
 #include <stdio.h>
 
@@ -148,10 +155,10 @@ Geometry *PostGIS2GEOS_box3d(BOX3D *box, int SRID)
 		Geometry *g;
 		Envelope *envelope = new Envelope(box->LLB.x,box->URT.x ,box->LLB.y,box->URT.y);
 		g = geomFactory->toGeometry(envelope,geomFactory->getPrecisionModel(), SRID);
+		delete envelope;
 		if (g==NULL)
 			return NULL;
 		g->setSRID(SRID);
-		delete envelope;
 		return g;
 	}
 	catch (GEOSException *ge)
@@ -178,6 +185,7 @@ Geometry *PostGIS2GEOS_collection(Geometry **geoms, int ngeoms,int SRID, bool is
 			subGeos->push_back(geoms[t]);
 		}
 		g = geomFactory->buildGeometry(subGeos);
+		delete subGeos;
 		if (g==NULL)
 			return NULL;
 		g->setSRID(SRID);
@@ -206,6 +214,7 @@ Geometry *PostGIS2GEOS_point(POINT3D *point,int SRID, bool is3d)
 			else
 				c = new Coordinate(point->x, point->y, point->z);
 			Geometry *g = geomFactory->createPoint(*c);
+			delete c;
 			if (g==NULL)
 				return NULL;
 			g->setSRID(SRID);
@@ -257,6 +266,7 @@ Geometry *PostGIS2GEOS_linestring(LINE3D *line,int SRID, bool is3d)
 
 			}
 			Geometry *g = geomFactory->createLineString(coords);
+			delete coords;
 			if (g==NULL)
 				return NULL;
 			g->setSRID(SRID);
@@ -290,11 +300,7 @@ Geometry *PostGIS2GEOS_multipolygon(POLYGON3D **polygons,int npolys, int SRID, b
 				subPolys->push_back(PostGIS2GEOS_polygon(polygons[t], SRID,is3d ));
 			}
 			g = geomFactory->createMultiPolygon(subPolys);
-			if (subPolys != NULL)
-			{
-
-				delete subPolys;
-			}
+			delete subPolys;
 
 			if (g== NULL)
 				return NULL;
@@ -327,6 +333,7 @@ Geometry *PostGIS2GEOS_multilinestring(LINE3D **lines,int nlines, int SRID, bool
 				subLines->push_back(PostGIS2GEOS_linestring(lines[t], SRID,is3d ));
 			}
 			g = geomFactory->createMultiLineString(subLines);
+			delete subLines;
 			if (g==NULL)
 				return NULL;
 			g->setSRID(SRID);
@@ -357,6 +364,7 @@ Geometry *PostGIS2GEOS_multipoint(POINT3D **points,int npoints, int SRID, bool i
 				subPoints->push_back(PostGIS2GEOS_point(points[t], SRID,is3d ));
 			}
 			g = geomFactory->createMultiPoint(subPoints);
+			delete subPoints;
 			if (g==NULL)
 				return NULL;
 			g->setSRID(SRID);
@@ -417,6 +425,7 @@ Geometry *PostGIS2GEOS_polygon(POLYGON3D *polygon,int SRID, bool is3d)
 				}
 			}
 			outerRing = (LinearRing*) geomFactory->createLinearRing(cl);
+			delete cl;
 			if (outerRing == NULL)
 				return NULL;
 			outerRing->setSRID(SRID);
@@ -446,8 +455,12 @@ Geometry *PostGIS2GEOS_polygon(POLYGON3D *polygon,int SRID, bool is3d)
 				}
 			}
 			innerRing = (LinearRing *) geomFactory->createLinearRing(cl);
+			delete cl;
 			if (innerRing == NULL)
+			{
+				delete outerRing;
 				return NULL;
+			}
 			innerRing->setSRID(SRID);
 			innerRings->push_back(innerRing);
 			pointOffset += polygon->npoints[ring];
@@ -458,7 +471,7 @@ Geometry *PostGIS2GEOS_polygon(POLYGON3D *polygon,int SRID, bool is3d)
 			return NULL;
 		g->setSRID(SRID);
 		return g;
-		}
+	}
 	catch (GEOSException *ge)
 	{
 		NOTICE_MESSAGE((char *)ge->toString().c_str());
