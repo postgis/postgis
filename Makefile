@@ -161,7 +161,7 @@ include $(top_srcdir)/src/Makefile.shlib
 
 postgis_geos_wrapper.o: postgis_geos_wrapper.cpp
 
-all: all-lib postgis.sql postgis_old.sql postgis_undef.sql loaderdumper
+all: all-lib postgis.sql postgis_undef.sql loaderdumper
 
 loaderdumper:
 	$(MAKE) -C loader
