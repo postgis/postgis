@@ -11,6 +11,12 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.12  2004/02/26 16:42:59  strk
+ * Fixed bugs reported by Mark Cave-Ayland <m.cave-ayland@webbased.co.uk>.
+ * Re-introduced previously removed estimate value incrementation by
+ * the fractional part of each of the cells' value computed as the fraction
+ * of overlapping area.
+ *
  * Revision 1.11  2004/02/25 12:00:32  strk
  * Added handling for point features in histogram creation (add 1 instead of AOI/cell_area when AOI is 0).
  * Fixed a wrong cast of BOX3D to BOX (called the convertion func).
@@ -108,7 +114,7 @@
  */
 #define STATISTIC_KIND_GEOMETRY 100
 
-#define DEBUG_GEOMETRY_STATS 1
+#define DEBUG_GEOMETRY_STATS 0
 
 /*
  * Default geometry selectivity factor
@@ -937,7 +943,7 @@ PG_FUNCTION_INFO_V1(postgis_gist_sel);
 Datum postgis_gist_sel(PG_FUNCTION_ARGS)
 {
 	Query *root = (Query *) PG_GETARG_POINTER(0);
-	Oid operator = PG_GETARG_OID(1);
+	//Oid operator = PG_GETARG_OID(1);
 	List *args = (List *) PG_GETARG_POINTER(2);
 	int varRelid = PG_GETARG_INT32(3);
 	Oid relid;
@@ -1127,9 +1133,6 @@ Datum postgis_gist_sel(PG_FUNCTION_ARGS)
 			{
 				double val;
 
-				intersect_x = min(box->high.x, geomstats->xmin + (x+1) * geow / bps) - max(box->low.x, geomstats->xmin + x * geow / bps );
-				intersect_y = min(box->high.y, geomstats->ymin + (y+1) * geoh / bps) - max(box->low.y, geomstats->ymin+ y * geoh / bps) ;
-				
 				val = geomstats->value[x+y*bps];
 
 				/*
@@ -1138,10 +1141,12 @@ Datum postgis_gist_sel(PG_FUNCTION_ARGS)
 				 * I guess we can overlook this,
 				 * we are not that precise anyway.
 				 */
-				//AOI = intersect_x*intersect_y;
-				//val *= AOI/cell_area;
+				intersect_x = min(box->high.x, geomstats->xmin + (x+1) * geow / bps) - max(box->low.x, geomstats->xmin + x * geow / bps );
+				intersect_y = min(box->high.y, geomstats->ymin + (y+1) * geoh / bps) - max(box->low.y, geomstats->ymin+ y * geoh / bps) ;
+				
+				AOI = intersect_x*intersect_y;
+				val *= AOI/cell_area;
 
-				//val *= cell_value_weight;
 #if DEBUG_GEOMETRY_STATS > 1
 				elog(NOTICE, " [%d,%d] adding %.15f to value",
 					x, y, val);
@@ -1185,7 +1190,7 @@ Datum postgis_gist_sel(PG_FUNCTION_ARGS)
 		 *
 		 */
 		overlapping_cells = (x_idx_max-x_idx_min+1) *
-			(y_idx_max-x_idx_min+1);
+			(y_idx_max-y_idx_min+1);
 		avg_feat_cells = geomstats->avgFeatureCells;
 #if DEBUG_GEOMETRY_STATS
 	elog(NOTICE, " search_box overlaps %f cells", overlapping_cells);
@@ -1295,7 +1300,7 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 
 	if ( ! notnull_cnt ) {
 		elog(NOTICE, " no notnull values, invalid stats");
-		stats->stats_valid = true;
+		stats->stats_valid = false;
 		return;
 	}
 
@@ -1428,17 +1433,16 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	 * by the number of samples examined.
 	 *
 	 */
-	for (i=0;i<boxesPerSide*boxesPerSide; i++)
+	for (i=0; i<boxesPerSide*boxesPerSide; i++)
 		geomstats->value[i] /= samplerows;
 
-#if 0 & DEBUG_GEOMETRY_STATS > 1
+#if DEBUG_GEOMETRY_STATS > 1
 	{
 		int x, y;
 		for (x=0; x<bps; x++)
 		{
 			for (y=0; y<bps; y++)
 			{
-				geomstats->value[i] = 0;
 				elog(NOTICE, " histo[%d,%d] = %.15f", x, y, geomstats->value[x+y*bps]);
 			}
 		}
