@@ -4,6 +4,10 @@
  * Author: Jeff Lounsbury, jeffloun@refractions.net
  *
  * $Log$
+ * Revision 1.31  2003/02/15 00:27:14  jeffloun
+ * added more type checking into the create table statment.
+ * Now uses int8, and numeric types if the columns definitions are too big
+ *
  * Revision 1.30  2003/02/14 20:07:26  jeffloun
  * changed the PIP function to loop from i=0 to  1<n-1
  *
@@ -436,7 +440,7 @@ int Insert_attributes(DBFHandle hDBFHandle, int row){
 int main (int ARGC, char **ARGV){
 	SHPHandle  hSHPHandle;
 	DBFHandle  hDBFHandle;
-	int num_fields,num_records,begin,trans;
+	int num_fields,num_records,begin,trans,field_precision, field_width;
 	int num_entities, phnshapetype,next_ring,errflg,c;
 	double padminbound[8], padmaxbound[8];
 	int u,j,z,tot_rings,curindex;
@@ -560,7 +564,7 @@ int main (int ARGC, char **ARGV){
 		num_records = DBFGetRecordCount(hDBFHandle);
 		names = malloc((num_fields + 1)*sizeof(char*));
 		for(j=0;j<num_fields;j++){
-			type = DBFGetFieldInfo(hDBFHandle, j, name, NULL, NULL); 
+			type = DBFGetFieldInfo(hDBFHandle, j, name, &field_width, &field_precision); 
 			names[j] = malloc ( strlen(name)+1);
 			strcpy(names[j], name);
 			for(z=0; z < j ; z++){
@@ -586,9 +590,19 @@ int main (int ARGC, char **ARGV){
 				if(type == FTString){
 					printf ("varchar");
 				}else if(type == FTInteger){
-					printf ("int4");			
+					if( field_width > 18 ){
+						printf ("numeric(%d,0)",field_width);
+					}else if( field_width > 9){
+						printf ("int8");
+					}else{
+						printf ("int4");
+					}
 				}else if(type == FTDouble){
-					printf ("float8");
+					if( field_width > 18 ){
+						printf ("numeric(%d,%d)",field_width, field_precision);
+					}else{
+						printf ("float8");
+					}
 				}else{
 					printf ("Invalid type in DBF file");
 				}
