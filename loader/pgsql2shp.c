@@ -1828,6 +1828,8 @@ addRecord(PGresult *res, int residx, int row)
 	int nFields = PQnfields(res);
 	int flds = 0; /* number of dbf field */
 	char *val;
+	char *v;
+	int junk;
 
 	for (j=0; j<nFields; j++)
 	{
@@ -1883,17 +1885,18 @@ fprintf(stdout, "s"); fflush(stdout);
 
 		if ( ! binary )
 		{
+			v = PQgetvalue(res, residx, j);
 #ifndef HEXWKB
-			{
-				int junk;
-				char *v = PQgetvalue(res, residx, j);
-				val = PQunescapeBytea(v, &junk);
-				//printf("Unescaped %d bytes\n", junk);
-			}
-
+			val = PQunescapeBytea(v, &junk);
 #else
-			char *v = PQgetvalue(res, residx, j);
-			val = HexDecode(v);
+			if ( pgis_major_version > 0 )
+			{
+				val = PQunescapeBytea(v, &junk);
+			}
+			else
+			{
+				val = HexDecode(v);
+			}
 #endif // HEXWKB
 #if VERBOSE > 2
 		dump_wkb(val);
@@ -2637,20 +2640,13 @@ initialize()
 
 
 #ifdef HEXWKB
-				if ( pgis_major_version > 0 )
-				{
-					sprintf(buf, "\"%s\"",
-						mainscan_flds[i]);
-				}
-				else
-				{
-					sprintf(buf, "asbinary(\"%s\", 'XDR')",
-						mainscan_flds[i]);
-				}
+				sprintf(buf, "asbinary(\"%s\", 'XDR')",
+					mainscan_flds[i]);
 #else
 				if ( pgis_major_version > 0 )
 				{
-					sprintf(buf, "asbinary(\"%s\")", mainscan_flds[i]);
+					sprintf(buf, "asbinary(\"%s\", 'XDR')",
+						mainscan_flds[i]);
 				}
 				else
 				{
@@ -2663,20 +2659,12 @@ initialize()
 			{
 
 #ifdef HEXWKB
-				if ( pgis_major_version > 0 )
-				{
-					sprintf(buf, "\"%s\"",
-						mainscan_flds[i]);
-				}
-				else
-				{
-					sprintf(buf, "asbinary(\"%s\", 'NDR')",
-						mainscan_flds[i]);
-				}
+				sprintf(buf, "asbinary(\"%s\", 'NDR')",
+					mainscan_flds[i]);
 #else // ndef HEXWKB
 				if ( pgis_major_version > 0 )
 				{
-					sprintf(buf, "asbinary(\"%s\")",
+					sprintf(buf, "asbinary(\"%s\", 'NDR')",
 						mainscan_flds[i]);
 				}
 				else
@@ -2970,6 +2958,9 @@ shapetypename(int num)
 }
 /**********************************************************************
  * $Log$
+ * Revision 1.63  2004/10/11 14:34:40  strk
+ * Added endiannes specification for postgis-1.0.0+
+ *
  * Revision 1.62  2004/10/07 21:51:05  strk
  * Fixed a bug in 4d handling
  *
