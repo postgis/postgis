@@ -69,7 +69,7 @@ public class Point extends Geometry
 			}
 		}
 		catch(NumberFormatException e) {
-			throw new PSQLException("postgis.Point",e.toString());
+			throw new SQLException("postgis.Point: " + e.toString());
 		}
 	}
 
