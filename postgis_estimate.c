@@ -11,6 +11,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.31.2.4  2004/10/13 13:39:21  strk
+ * Cleanup (some elogs made it unbuildable agains PG<8)
+ *
  * Revision 1.31.2.3  2004/10/05 21:58:21  strk
  * Yet another change in SPI_cursor_open (you'll need at least 8.0.0beta3
  *
@@ -889,8 +892,6 @@ genericcostestimate2(Query *root, RelOptInfo *rel,
 #endif
 
 
-elog(NOTICE,"in genericcostestimate");
-
 
 	/*
 	 * If the index is partial, AND the index predicate with the
@@ -930,10 +931,6 @@ elog(NOTICE,"in genericcostestimate");
 	 */
 	numIndexTuples = *indexSelectivity * rel->tuples;
 
-	elog(NOTICE,"relation has %li pages",rel->pages);
-	elog(NOTICE,"indexselectivity is %lf, ntuples = %lf, numindexTuples = %lf, index->tuples = %lf",*indexSelectivity, rel->tuples, numIndexTuples,index->tuples);
-
-
 	if (numIndexTuples > index->tuples)
 		numIndexTuples = index->tuples;
 
@@ -953,8 +950,6 @@ elog(NOTICE,"in genericcostestimate");
 	 */
 
 
-	 elog(NOTICE,"index->pages =  %li ",index->pages);
-
 	if (index->pages > 1 && index->tuples > 0)
 	{
 		numIndexPages = (numIndexTuples / index->tuples) * (index->pages - 1);
@@ -965,7 +960,6 @@ elog(NOTICE,"in genericcostestimate");
 		numIndexPages = 1.0;
 
 
-elog(NOTICE,"numIndexPages =  %lf ",numIndexPages);
 	/*
 	 * Compute the index access cost.
 	 *
@@ -990,15 +984,10 @@ elog(NOTICE,"numIndexPages =  %lf ",numIndexPages);
 #endif
 
 
-	elog(NOTICE,"cpu_index_tuple_cost = %lf, cost_qual_eval(indexQuals)) = %lf", cpu_index_tuple_cost,cost_qual_eval(indexQuals));
-
-	elog(NOTICE,"indexTotalCost =  %lf ",*indexTotalCost);
-
 	/*
 	 * Generic assumption about index correlation: there isn't any.
 	 */
 	*indexCorrelation = 0.97;
-	elog(NOTICE,"indexcorrelation =  %lf ",*indexCorrelation);
 }
 
 
@@ -1015,12 +1004,9 @@ postgisgistcostestimate(PG_FUNCTION_ARGS)
     Selectivity *indexSelectivity = (Selectivity *) PG_GETARG_POINTER(6);
     double     *indexCorrelation = (double *) PG_GETARG_POINTER(7);
 
-elog(NOTICE,"postgisgistcostestimate was called");
-
     genericcostestimate2(root, rel, index, indexQuals,
                         indexStartupCost, indexTotalCost,
                         indexSelectivity, indexCorrelation);
-elog(NOTICE,"postgisgistcostestimate is going to return void");
 
     PG_RETURN_VOID();
 }
