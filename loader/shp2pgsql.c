@@ -12,6 +12,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.62  2004/08/05 20:00:24  strk
+ * Another schema support bug from Mark
+ *
  * Revision 1.61  2004/08/05 16:53:29  strk
  * schema support patches sent by Mark
  *
@@ -1166,10 +1169,22 @@ int main (int ARGC, char **ARGV){
 
 
 	free(col_names);
-	if(opt != 'a'){
-		printf("\nALTER TABLE ONLY \"%s\" ADD CONSTRAINT \"%s_pkey\" PRIMARY KEY (gid);\n",table,table);
-		if(j > 1){
-			printf("SELECT setval ('\"%s_gid_seq\"', %i, true);\n", table, j-1);
+	if(opt != 'a')
+	{
+		if ( schema )
+		{
+			printf("\nALTER TABLE ONLY \"%s\".\"%s\" ADD CONSTRAINT \"%s_pkey\" PRIMARY KEY (gid);\n",schema,table,table);
+			if(j > 1)
+			{
+				printf("SELECT setval ('\"%s\".\"%s_gid_seq\"', %i, true);\n", schema, table, j-1);
+			}
+		}
+		else
+		{
+			printf("\nALTER TABLE ONLY \"%s\" ADD CONSTRAINT \"%s_pkey\" PRIMARY KEY (gid);\n",table,table);
+			if(j > 1){
+				printf("SELECT setval ('\"%s_gid_seq\"', %i, true);\n", table, j-1);
+			}
 		}
 	}
 
