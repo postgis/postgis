@@ -524,56 +524,6 @@ CREATE OPERATOR ~ (
    RESTRICT = contsel, JOIN = contjoinsel
 );
 
--- BOX2D operators
-
-CREATE OPERATOR << (
-   LEFTARG = box2d, RIGHTARG = box2d, PROCEDURE = box2d_left,
-   COMMUTATOR = '>>',
-   RESTRICT = positionsel, JOIN = positionjoinsel
-);
-
-CREATE OPERATOR &< (
-   LEFTARG = box2d, RIGHTARG = box2d, PROCEDURE = box2d_overleft,
-   COMMUTATOR = '&>',
-   RESTRICT = positionsel, JOIN = positionjoinsel
-);
-
-CREATE OPERATOR && (
-   LEFTARG = box2d, RIGHTARG = box2d, PROCEDURE = box2d_overlap,
-   COMMUTATOR = '&&',
-   RESTRICT = postgis_gist_sel, JOIN = postgis_gist_joinsel
-);
-
-CREATE OPERATOR &> (
-   LEFTARG = box2d, RIGHTARG = box2d, PROCEDURE = box2d_overright,
-   COMMUTATOR = '&<',
-   RESTRICT = positionsel, JOIN = positionjoinsel
-);
-
-CREATE OPERATOR >> (
-   LEFTARG = box2d, RIGHTARG = box2d, PROCEDURE = box2d_right,
-   COMMUTATOR = '<<',
-   RESTRICT = positionsel, JOIN = positionjoinsel
-);
-
-CREATE OPERATOR ~= (
-   LEFTARG = box2d, RIGHTARG = box2d, PROCEDURE = box2d_same,
-   COMMUTATOR = '~=', 
-   RESTRICT = eqsel, JOIN = eqjoinsel
-);
-
-CREATE OPERATOR @ (
-   LEFTARG = box2d, RIGHTARG = box2d, PROCEDURE = box2d_contained,
-   COMMUTATOR = '~',
-   RESTRICT = contsel, JOIN = contjoinsel
-);
-
-CREATE OPERATOR ~ (
-   LEFTARG = box2d, RIGHTARG = box2d, PROCEDURE = box2d_contain,
-   COMMUTATOR = '@',
-   RESTRICT = contsel, JOIN = contjoinsel
-);
-
 -- gist support functions
 
 #if USE_VERSION < 73
