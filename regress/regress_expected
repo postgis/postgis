@@ -63,14 +63,14 @@ ERROR:  geometry requires more points
 63|POINT(-inf 0)
 ERROR:  parse error - invalid geometry
 65|t
-66|t
+66|f
 67|t
 68|t
 69|t
 70|t
-71|t
-72|t
-73|t
+71|f
+72|f
+73|f
 74|f
 75|f
 76|f
@@ -117,7 +117,7 @@ ERROR:  parse error - invalid geometry
 117|4.24264068711929
 118|5.19615242270663
 119|f
-120|t
+120|f
 CREATE TABLE
 121|BOX3D(1.19894826 1.20265412 0,999.932129 999.692932 0)|BOX3D(1.40486765 1.3484304 0,999.857666 999.936401 0)
 122|f
