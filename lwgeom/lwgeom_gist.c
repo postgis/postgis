@@ -20,6 +20,7 @@
 
 
 //#define DEBUG
+#define DEBUG_CALLS
 //#define DEBUG_GIST
 //#define DEBUG_GIST2
 //#define DEBUG_GIST3
@@ -64,13 +65,13 @@ int counter_intern = 0;
 PG_FUNCTION_INFO_V1(lwgeom_same);
 Datum lwgeom_same(PG_FUNCTION_ARGS)
 {
-	char *lwgeom1 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	char *lwgeom2 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	char *lwgeom1 = (char *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char *lwgeom2 = (char *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	bool result;
 	BOX2DFLOAT4 box1 = getbox2d(lwgeom1+4);
 	BOX2DFLOAT4 box2 = getbox2d(lwgeom2+4);
 
-#ifdef DEBUG_GIST
+#ifdef DEBUG_CALLS
 	elog(NOTICE,"GIST: lwgeom_same --entry");
 #endif
 
@@ -125,7 +126,7 @@ Datum lwgeom_overleft(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4 box1 = getbox2d(lwgeom1+4);
 	BOX2DFLOAT4 box2 = getbox2d(lwgeom2+4);
 
-#ifdef DEBUG_GIST
+#ifdef DEBUG_CALLS
 	elog(NOTICE,"GIST: lwgeom_overleft --entry");
 #endif
 
@@ -148,7 +149,7 @@ Datum lwgeom_left(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4 box1 = getbox2d(lwgeom1+4);
 	BOX2DFLOAT4 box2 = getbox2d(lwgeom2+4);
 
-#ifdef DEBUG_GIST
+#ifdef DEBUG_CALLS
 	elog(NOTICE,"GIST: lwgeom_left --entry");
 #endif
 
@@ -172,7 +173,7 @@ Datum lwgeom_right(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4 box1 = getbox2d(lwgeom1+4);
 	BOX2DFLOAT4 box2 = getbox2d(lwgeom2+4);
 
-#ifdef DEBUG_GIST
+#ifdef DEBUG_CALLS
 	elog(NOTICE,"GIST: lwgeom_right --entry");
 #endif
 	result = DatumGetBool(DirectFunctionCall2(box2d_right,
@@ -195,7 +196,7 @@ Datum lwgeom_overright(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4 box1 = getbox2d(lwgeom1+4);
 	BOX2DFLOAT4 box2 = getbox2d(lwgeom2+4);
 
-#ifdef DEBUG_GIST
+#ifdef DEBUG_CALLS
 	elog(NOTICE,"GIST: lwgeom_overright --entry");
 #endif
 
@@ -219,7 +220,7 @@ Datum lwgeom_contained(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4 box1 = getbox2d(lwgeom1+4);
 	BOX2DFLOAT4 box2 = getbox2d(lwgeom2+4);
 
-#ifdef DEBUG_GIST
+#ifdef DEBUG_CALLS
 	elog(NOTICE,"GIST: lwgeom_contained --entry");
 #endif
 	result = DatumGetBool(DirectFunctionCall2(box2d_contained,
@@ -242,7 +243,7 @@ Datum lwgeom_contain(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4 box1 = getbox2d(lwgeom1+4);
 	BOX2DFLOAT4 box2 = getbox2d(lwgeom2+4);
 
-#ifdef DEBUG_GIST
+#ifdef DEBUG_CALLS
 	elog(NOTICE,"GIST: lwgeom_contain --entry");
 #endif
 
@@ -265,8 +266,8 @@ Datum gist_lwgeom_compress(PG_FUNCTION_ARGS)
 	GISTENTRY *entry=(GISTENTRY*)PG_GETARG_POINTER(0);
 	GISTENTRY *retval;
 
-#ifdef DEBUG_GIST4
-	elog(NOTICE,"GIST: gist_lwgeom_compress called on lwgeom");
+#ifdef DEBUG_CALLS
+	elog(NOTICE,"GIST: gist_lwgeom_compress called");
 #endif
 
 	if ( entry->leafkey)
@@ -384,7 +385,7 @@ Datum gist_lwgeom_consistent(PG_FUNCTION_ARGS)
 	 * if entry is not leaf, use rtree_internal_consistent,
 	 * else use rtree_leaf_consistent
 	 */
-#ifdef DEBUG_GIST
+#ifdef DEBUG_CALLS
 	elog(NOTICE,"GIST: gist_lwgeom_consistent called");
 #endif
 
@@ -421,14 +422,14 @@ Datum gist_lwgeom_consistent(PG_FUNCTION_ARGS)
 }
 
 
-static bool lwgeom_rtree_internal_consistent(BOX2DFLOAT4 *key,
-			BOX2DFLOAT4 *query,
-			StrategyNumber strategy)
+static bool
+lwgeom_rtree_internal_consistent(BOX2DFLOAT4 *key, BOX2DFLOAT4 *query,
+	StrategyNumber strategy)
 {
 	bool retval;
 
-#ifdef DEBUG_GIST
-	elog(NOTICE,"GIST: lwgeom_rtree_internal_consistent called with strategy=%i",strategy);
+#ifdef DEBUG_CALLS
+	elog(NOTICE,"GIST: lwgeom_rtree_internal_consistent called with strategy=%i", strategy);
 #endif
 
 	switch(strategy) {
@@ -485,13 +486,13 @@ elog(NOTICE,"%i:(int)<%.8g %.8g,%.8g %.8g>&&<%.8g %.8g,%.8g %.8g> %i",counter_in
 }
 
 
-static bool lwgeom_rtree_leaf_consistent(BOX2DFLOAT4 *key,
-			BOX2DFLOAT4 *query,
-			StrategyNumber strategy)
+static bool
+lwgeom_rtree_leaf_consistent(BOX2DFLOAT4 *key,
+	BOX2DFLOAT4 *query, StrategyNumber strategy)
 {
     bool retval;
 
-#ifdef DEBUG_GIST
+#ifdef DEBUG_CALLS
 	elog(NOTICE,"GIST: rtree_leaf_consist called with strategy=%i",strategy);
 #endif
 
@@ -548,7 +549,7 @@ static bool lwgeom_rtree_leaf_consistent(BOX2DFLOAT4 *key,
 PG_FUNCTION_INFO_V1(gist_rtree_decompress);
 Datum gist_rtree_decompress(PG_FUNCTION_ARGS)
 {
-#ifdef DEBUG_GIST
+#ifdef DEBUG_CALLS
 	static unsigned int counter2 = 0;
 	elog(NOTICE,"GIST: gist_rtree_decompress called %i",counter2);
 	counter2++;
@@ -577,7 +578,7 @@ Datum lwgeom_box_union(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4 *cur,
 			   *pageunion;
 
-#ifdef DEBUG_GIST
+#ifdef DEBUG_CALLS
 	elog(NOTICE,"GIST: lwgeom_box_union called\n");
 #endif
 
@@ -626,26 +627,31 @@ Datum lwgeom_box_union(PG_FUNCTION_ARGS)
 // size of a box is width*height
 // we do this in double precision because width and height can be very very small
 // and it gives screwy results
-static float size_box2d(Datum box2d)
+static float
+size_box2d(Datum box2d)
 {
-
 	float result;
+
+#ifdef DEBUG_CALLS
+	elog(NOTICE,"GIST: size_box2d called");
+#endif
 
 
 	if (DatumGetPointer(box2d) != NULL)
 	{
 		BOX2DFLOAT4 *a = (BOX2DFLOAT4*) DatumGetPointer(box2d);
 
-		    if (a == (BOX2DFLOAT4 *) NULL || a->xmax <= a->xmin || a->ymax <= a->ymin)
-		        result =  (float) 0.0;
-		    else
-		    {
-				result = (((double) a->xmax)-((double) a->xmin)) * (((double) a->ymax)-((double) a->ymin));
-			}
-		      //  result= (float) ((a->xmax - a->xmin) * (a->ymax - a->ymin));
+		if ( a == NULL || a->xmax <= a->xmin || a->ymax <= a->ymin)
+		{
+			result =  (float) 0.0;
+		}
+		else
+		{
+			result = (((double) a->xmax)-((double) a->xmin)) * (((double) a->ymax)-((double) a->ymin));
+		}
+		//  result= (float) ((a->xmax - a->xmin) * (a->ymax - a->ymin));
 	}
-	else
-		result = (float) 0.0;
+	else result = (float) 0.0;
 
 #ifdef DEBUG_GIST
 	elog(NOTICE,"GIST: size_box2d called - returning %.15g",result);
@@ -660,8 +666,11 @@ static float size_box2d(Datum box2d)
 static double size_box2d_double(Datum box2d);
 static double size_box2d_double(Datum box2d)
 {
-
 	double result;
+
+#ifdef DEBUG_CALLS
+	elog(NOTICE,"GIST: size_box2d_double called");
+#endif
 
 	if (DatumGetPointer(box2d) != NULL)
 	{
@@ -699,7 +708,7 @@ Datum lwgeom_box_penalty(PG_FUNCTION_ARGS)
 	Datum		ud;
 	double		tmp1;
 
-#ifdef DEBUG_GIST6
+#ifdef DEBUG_CALLS
 	elog(NOTICE,"GIST: lwgeom_box_penalty called");
 #endif
 
@@ -761,7 +770,7 @@ Datum lwgeom_gbox_same(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4		   *b2 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(1);
 	bool	   *result = (bool *) PG_GETARG_POINTER(2);
 
-#ifdef DEBUG_GIST
+#ifdef DEBUG_CALLS
 	elog(NOTICE,"GIST: lwgeom_gbox_same called");
 #endif
 
@@ -809,14 +818,9 @@ Datum lwgeom_gbox_picksplit(PG_FUNCTION_ARGS)
 	OffsetNumber maxoff;
 	int			nbytes;
 
-#ifdef DEBUG_GIST
+#ifdef DEBUG_CALLS
 	elog(NOTICE,"GIST: lwgeom_gbox_picksplit called");
 #endif
-
-#ifdef DEBUG_GIST6
-	elog(NOTICE,"GIST: lwgeom_gbox_picksplit called -- analysing");
-#endif
-
 
 	posL = posR = posB = posT = 0;
 #if USE_VERSION < 80
