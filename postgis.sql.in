@@ -806,4 +806,9 @@ INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
    WHERE  amname = 'gist' and opcname = 'gist_geometry_ops'
       and proname = 'ggeometry_same';
 
+--- workaround for user defined VARIABLE length datatype default value bug
+update pg_type set typdefault = NULL where  typname = 'wkb';
+update pg_type set typdefault = NULL where  typname = 'geometry';
+
+
 end TRANSACTION;
