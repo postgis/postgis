@@ -102,9 +102,9 @@ extern "C" Geometry *GEOSUnion(Geometry *g1,Geometry *g2);
 extern "C" POINT3D  *GEOSGetCoordinate(Geometry *g1);
 extern "C" POINT3D  *GEOSGetCoordinates(Geometry *g1);
 extern "C" int      GEOSGetNumCoordinate(Geometry *g1);
-extern "C" Geometry *GEOSGetGeometryN(Geometry *g1, int n);
-extern "C" Geometry *GEOSGetExteriorRing(Geometry *g1);
-extern "C" Geometry *GEOSGetInteriorRingN(Geometry *g1, int n);
+extern "C" const Geometry *GEOSGetGeometryN(Geometry *g1, int n);
+extern "C" const Geometry *GEOSGetExteriorRing(Geometry *g1);
+extern "C" const Geometry *GEOSGetInteriorRingN(Geometry *g1, int n);
 extern "C" int      GEOSGetNumInteriorRings(Geometry *g1);
 extern "C" int      GEOSGetSRID(Geometry *g1);
 extern "C" int      GEOSGetNumGeometries(Geometry *g1);
@@ -836,7 +836,7 @@ POINT3D  *GEOSGetCoordinate(Geometry *g1)
 {
 	try{
 		POINT3D		*result = (POINT3D*) malloc (sizeof(POINT3D));
-		Coordinate *c =g1->getCoordinate();
+		const Coordinate *c =g1->getCoordinate();
 
 		result->x = c->x;
 		result->y = c->y;
@@ -922,10 +922,10 @@ int      GEOSGetNumGeometries(Geometry *g1)
 
 
 //call only on GEOMETRYCOLLECTION or MULTI*
-Geometry *GEOSGetGeometryN(Geometry *g1, int n)
+const Geometry *GEOSGetGeometryN(Geometry *g1, int n)
 {
 	try{
-		GeometryCollection *gc = (GeometryCollection *) g1;
+		const GeometryCollection *gc = (GeometryCollection *) g1;
 		return gc->getGeometryN(n);
 	}
 	catch(...)
@@ -936,7 +936,7 @@ Geometry *GEOSGetGeometryN(Geometry *g1, int n)
 
 
 //call only on polygon
-Geometry *GEOSGetExteriorRing(Geometry *g1)
+const Geometry *GEOSGetExteriorRing(Geometry *g1)
 {
 	try{
 		Polygon *p = (Polygon *) g1;
@@ -949,7 +949,7 @@ Geometry *GEOSGetExteriorRing(Geometry *g1)
 }
 
 //call only on polygon
-Geometry *GEOSGetInteriorRingN(Geometry *g1,int n)
+const Geometry *GEOSGetInteriorRingN(Geometry *g1,int n)
 {
 	try{
 		Polygon *p = (Polygon *) g1;
