@@ -213,7 +213,7 @@ for ($i=0; $i<@bps_list; $i++)
 		local($sec2,$usec2) = gettimeofday();
 		$dtime = (($sec2*1000000)+$usec2)-(($sec*1000000)+$usec);
 
-		$fact = $itime/$dtime;
+		$fact = int(($itime/$dtime)*100)/100;
 
 		if ( $icount ne $dcount ) {
 			die "intersects gave $icount true valus, distance $dcount\n";
@@ -232,9 +232,9 @@ for ($i=0; $i<@bps_list; $i++)
 		$sum_fact += abs($fact);
 		$try++;
 	}
-	$avg_fact = $sum_fact/$try;
+	$avg_fact = int(($sum_fact/$try)*100)/100;
 
-	print "best intr/dist avgfact\t".
+	print "             (min/max/avg)  \t".
 		($best_intr)."\t".
 		($best_dist)."\t".
 		"+-".($avg_fact)."\n";
@@ -333,6 +333,9 @@ sub test_distance
 
 # 
 # $Log$
+# Revision 1.2  2004/09/24 11:58:01  strk
+# approximated nums to 2 decimal digits
+#
 # Revision 1.1  2004/09/24 11:35:45  strk
 # initial intersects profiler frontend implementation
 #
