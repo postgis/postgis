@@ -11,6 +11,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.15  2004/03/03 21:59:48  strk
+ * added check to keep selectivity value in the range of validity (suggested by m.cave)
+ *
  * Revision 1.14  2004/03/01 16:02:41  strk
  * histogram's boxesPerSide computed as a function of the column's statistic target
  *
@@ -1204,10 +1207,13 @@ Datum postgis_gist_sel(PG_FUNCTION_ARGS)
 	elog(NOTICE, " avg feat overlaps %f cells", avg_feat_cells);
 #endif
 		selectivity = (float8) value / (float8) min(overlapping_cells, avg_feat_cells);
-		//selectivity = value/overlapping_cells;
-		//selectivity *= 0.1;
-		//selectivity = 0.9;
+
+		/* prevent rounding overflows */
+		if (selectivity > 1.0) selectivity = 1.0;
+		else if (selectivity < 0) selectivity = 0.0;
 	}
+	
+
 
 #if DEBUG_GEOMETRY_STATS
 	elog(NOTICE, " returning computed value: %f", selectivity);
