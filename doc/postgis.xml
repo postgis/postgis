@@ -2492,6 +2492,16 @@ is simple (does not pass through the same point more than once).
 					</listitem> 
 				</varlistentry> 
 				<varlistentry> 
+					<term>expand(geometry, float)</term> 
+					<listitem> 
+						<para>This function returns a bounding box expanded in all directions
+						from the bounding box of the input geometry, by an amount specified
+						in the second argument.  Very useful for distance() queries, to add
+						an index filter to the query.
+						</para> 
+					</listitem> 
+				</varlistentry> 
+				<varlistentry> 
 					<term>collect(geometry set)</term> 
 					<listitem> 
 						<para>This function returns a GEOMETRYCOLLECTION object from a set
