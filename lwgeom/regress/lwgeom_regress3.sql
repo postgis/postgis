@@ -10,10 +10,13 @@
 CREATE INDEX quick_gist on test using gist (lwgeom gist_lwgeom_ops);
 vacuum analyse test;
 
- select num from test where lwgeom && lwgeom(envelope('BOX3D(125 125,135 135)'::box3d)) order by num;
+set enable_indexscan = off;
 
+ select num from test where lwgeom && 'POLYGON((125 125,125 135,135 135,135 125,125 125))'::lwgeom order by num;
+
+set enable_indexscan = on;
 set enable_seqscan = off;
 
- select num from test where lwgeom && lwgeom(envelope('BOX3D(125 125,135 135)'::box3d)) order by num;
+ select num from test where lwgeom && 'POLYGON((125 125,125 135,135 135,135 125,125 125))'::lwgeom order by num;
 
 
