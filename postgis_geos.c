@@ -10,6 +10,10 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.12  2003/10/16 20:16:18  dblasby
+ * Added NOTICE_HANDLER function.  For some reason this didnt get properly
+ * committed last time.
+ *
  * Revision 1.11  2003/10/14 23:19:19  dblasby
  * GEOS2POSTGIS - added protection to pfree(NULL) for multi* geoms
  *
@@ -176,11 +180,20 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g, char want3d );
 
 POLYGON3D *PolyFromGeometry(Geometry *g, int *size);
 LINE3D *LineFromGeometry(Geometry *g, int *size);
-
+void NOTICE_MESSAGE(char *msg);
 
 //-----------------------------------------------
 // return a GEOS Geometry from a POSTGIS GEOMETRY
 //----------------------------------------------
+
+
+
+
+void NOTICE_MESSAGE(char *msg)
+{
+	elog(NOTICE,msg);
+}
+
 
 
 //select geomunion('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))','POLYGON((5 5, 15 5, 15 7, 5 7, 5 5))');
