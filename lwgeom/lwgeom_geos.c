@@ -586,18 +586,18 @@ Datum convexhull(PG_FUNCTION_ARGS)
 #ifdef PROFILE
 	profstop(PROF_G2P);
 #endif
-	if (result == NULL)
+	if (lwout == NULL)
 	{
 		GEOSdeleteGeometry(g1);
 		GEOSdeleteGeometry(g3);
-		elog(ERROR,"GEOS convexhull() threw an error (result postgis geometry formation)!");
+		elog(ERROR,"convexhull() failed to convert GEOS geometry to LWGEOM");
 		PG_RETURN_NULL(); //never get here
 	}
 
 	/* Have lwgeom bbox point to input one (if any) */
 	lwout->bbox = getbox2d_internal(SERIALIZED_FORM(geom1));
 	/* Mark lwgeom bbox to be externally owned */
-	TYPE_SETHASBBOX(lwout->type, 1);
+	if ( lwout->bbox ) TYPE_SETHASBBOX(lwout->type, 0);
 
 	result = pglwgeom_serialize(lwout);
 	if (result == NULL)
@@ -2212,7 +2212,6 @@ PG_LWGEOM *
 GEOS2POSTGIS(Geometry *geom, char want3d)
 {
 	LWGEOM *lwgeom;
-	size_t size, retsize;
 	PG_LWGEOM *result;
 
 	lwgeom = lwgeom_from_geometry(geom, want3d);
@@ -2231,27 +2230,7 @@ GEOS2POSTGIS(Geometry *geom, char want3d)
 		lwgeom_addBBOX(lwgeom);
 	}
 
-	size = lwgeom_serialize_size(lwgeom);
-
-#ifdef DEBUG_GEOS2POSTGIS
-	lwnotice("GEOS2POSTGIS: lwgeom_serialize_size returned %d", size);
-#endif
-
-	size += VARHDRSZ; // postgresql size header
-	result = palloc(size);
-	result->size = size;
-
-#ifdef DEBUG_GEOS2POSTGIS
-	lwnotice("GEOS2POSTGIS: about to serialize %s",
-		lwgeom_typename(TYPE_GETTYPE(lwgeom->type)));
-#endif
-
-	lwgeom_serialize_buf(lwgeom, SERIALIZED_FORM(result), &retsize);
-
-	if ( retsize != size-VARHDRSZ )
-	{
-		lwerror("GEOS2POSTGIS: lwgeom_serialize_buf returned %d, lwgeom_serialize_size returned %d", retsize, size);
-	}
+	result = pglwgeom_serialize(lwgeom);
 
 	return result;
 }
