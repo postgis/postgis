@@ -29,8 +29,9 @@ BEGIN TRANSACTION;
 (select 'PL/PgSQL is installed.' as message from pg_language where lanname='plpgsql') union (select 'You must install PL/PgSQL before running this SQL file,\nor you will get an error. To install PL/PgSQL run:\n\tcreatelang plpgsql <dbname>'::text as message) order by message limit 1;
 
 
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
---  HISTOGRAM2D
+-------------------------------------------------------------------
+--  HISTOGRAM2D TYPE
+-------------------------------------------------------------------
 
 #if USE_VERSION < 73
 # define HISTOGRAM_IN_REP opaque
@@ -58,137 +59,25 @@ CREATE TYPE histogram2d (
 	storage = main
 );
 
+-------------------------------------------------------------------
+--  BOX3D TYPE
+-------------------------------------------------------------------
 
------------------------------------------
---  THESE WERE postgis_sql_VER_start.sql.in
------------------------------------------
+#if USE_VERSION < 73
+# define BOX3D_IN_REP opaque
+# define BOX3D_OUT_REP opaque
+#else
+# define BOX3D_IN_REP box3d
+# define BOX3D_OUT_REP cstring
+#endif
 
-
-#if USE_VERSION == 71
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
---  BOX3D
-
-CREATEFUNCTION box3d_in(opaque)
-	RETURNS opaque 
+CREATEFUNCTION box3d_in(BOX3D_OUT_REP)
+	RETURNS BOX3D_IN_REP
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATEFUNCTION box3d_out(opaque)
-	RETURNS opaque
-	AS '@MODULE_FILENAME@'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATE TYPE box3d (
-	alignment = double,
-	internallength = 48,
-	input = box3d_in,
-	output = box3d_out
-);
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
---  SPHEROID
-
-CREATEFUNCTION spheroid_in(opaque)
-	RETURNS opaque 
-	AS '@MODULE_FILENAME@','ellipsoid_in'
-	LANGUAGE 'C' WITH (isstrict,iscachable);
-
-CREATEFUNCTION spheroid_out(opaque)
-	RETURNS opaque
-	AS '@MODULE_FILENAME@','ellipsoid_out'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATE TYPE spheroid (
-	alignment = double,
-	internallength = 65,
-	input = spheroid_in,
-	output = spheroid_out
-);
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
---  WKB
-
-CREATEFUNCTION wkb_in(opaque)
-	RETURNS opaque
-	AS '@MODULE_FILENAME@','WKB_in'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATEFUNCTION wkb_out(opaque)
-	RETURNS opaque
-	AS '@MODULE_FILENAME@','WKB_out'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATE TYPE wkb (
-	internallength = variable,
-	input = wkb_in,
-	output = wkb_out,
-	storage = extended
-);
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
---  CHIP
-
-CREATEFUNCTION chip_in(opaque)
-	RETURNS opaque
-	AS '@MODULE_FILENAME@','CHIP_in'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATEFUNCTION chip_out(opaque)
-	RETURNS opaque
-	AS '@MODULE_FILENAME@','CHIP_out'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATE TYPE chip (
-	alignment = double,
-	internallength = variable,
-	input = chip_in,
-	output = chip_out,
-	storage = extended
-);
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
---  GEOMETRY
-
-CREATEFUNCTION geometry_in(opaque)
-	RETURNS opaque
-	AS '@MODULE_FILENAME@'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATEFUNCTION geometry_out(opaque)
-	RETURNS opaque
-	AS '@MODULE_FILENAME@'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATE TYPE geometry (
-	alignment = double,
-	internallength = variable,
-	input = geometry_in,
-	output = geometry_out,
-	storage = main
-);
-
---
--- GiST Selectivity Function
---
-
-CREATEFUNCTION postgis_gist_sel(oid, oid, int2, opaque, int4)
-	RETURNS float8
-	AS '@MODULE_FILENAME@'
-	LANGUAGE 'C';
-
-#elif USE_VERSION == 72
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
---  BOX3D
-
-CREATEFUNCTION box3d_in(opaque)
-	RETURNS opaque 
-	AS '@MODULE_FILENAME@'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATEFUNCTION box3d_out(opaque)
-	RETURNS opaque
+CREATEFUNCTION box3d_out(BOX3D_IN_REP)
+	RETURNS BOX3D_OUT_REP
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
 
@@ -199,16 +88,25 @@ CREATE TYPE box3d (
 	output = box3d_out
 );
 
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
---  SPHEROID
+-------------------------------------------------------------------
+--  SPHEROID TYPE
+-------------------------------------------------------------------
 
-CREATEFUNCTION spheroid_in(opaque)
-	RETURNS opaque 
+#if USE_VERSION < 73
+# define SPHEROID_IN_REP opaque
+# define SPHEROID_OUT_REP opaque
+#else
+# define SPHEROID_IN_REP spheroid
+# define SPHEROID_OUT_REP cstring
+#endif
+
+CREATEFUNCTION spheroid_in(SPHEROID_OUT_REP)
+	RETURNS SPHEROID_IN_REP
 	AS '@MODULE_FILENAME@','ellipsoid_in'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATEFUNCTION spheroid_out(opaque)
-	RETURNS opaque
+CREATEFUNCTION spheroid_out(SPHEROID_IN_REP)
+	RETURNS SPHEROID_OUT_REP
 	AS '@MODULE_FILENAME@','ellipsoid_out'
 	LANGUAGE 'C' WITH (isstrict);
 
@@ -219,261 +117,70 @@ CREATE TYPE spheroid (
 	output = spheroid_out
 );
 
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
---  WKB
+-------------------------------------------------------------------
+--  WKB TYPE
+-------------------------------------------------------------------
 
-CREATEFUNCTION wkb_in(opaque)
-	RETURNS opaque
+#if USE_VERSION < 73
+# define WKB_IN_REP opaque
+# define WKB_OUT_REP opaque
+#else
+# define WKB_IN_REP wkb
+# define WKB_OUT_REP cstring
+#endif
+
+CREATEFUNCTION wkb_in(WKB_OUT_REP)
+	RETURNS WKB_IN_REP
 	AS '@MODULE_FILENAME@','WKB_in'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATEFUNCTION wkb_out(opaque)
-	RETURNS opaque
+CREATEFUNCTION wkb_out(WKB_IN_REP)
+	RETURNS WKB_OUT_REP
 	AS '@MODULE_FILENAME@','WKB_out'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE TYPE wkb (
-	internallength = variable,
-	input = wkb_in,
-	output = wkb_out,
-	storage = extended
-);
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
---  CHIP
-
-CREATEFUNCTION chip_in(opaque)
-	RETURNS opaque
-	AS '@MODULE_FILENAME@','CHIP_in'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATEFUNCTION chip_out(opaque)
-	RETURNS opaque
-	AS '@MODULE_FILENAME@','CHIP_out'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATE TYPE chip (
-	alignment = double,
-	internallength = variable,
-	input = chip_in,
-	output = chip_out,
-	storage = extended
-);
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
---  GEOMETRY
-
-CREATEFUNCTION geometry_in(opaque)
-	RETURNS opaque
-	AS '@MODULE_FILENAME@'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATEFUNCTION geometry_out(opaque)
-	RETURNS opaque
-	AS '@MODULE_FILENAME@'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATE TYPE geometry (
-	alignment = double,
-	internallength = variable,
-	input = geometry_in,
-	output = geometry_out,
-	storage = main
-);
-
--- 
--- GiST Selectivity Function
---
-
-CREATEFUNCTION postgis_gist_sel(opaque, oid,  opaque, int4)
-	RETURNS float8
-	AS '@MODULE_FILENAME@'
-	LANGUAGE'C';
-
-#elif USE_VERSION == 73
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
---  BOX3D
-
-CREATEFUNCTION box3d_in(cstring)
-	RETURNS box3d 
-	AS '@MODULE_FILENAME@'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATEFUNCTION box3d_out(box3d)
-	RETURNS cstring
-	AS '@MODULE_FILENAME@'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATE TYPE box3d (
-	alignment = double,
-	internallength = 48,
-	input = box3d_in,
-	output = box3d_out
-);
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
---  SPHEROID
-
-CREATEFUNCTION spheroid_in(cstring)
-	RETURNS spheroid 
-	AS '@MODULE_FILENAME@','ellipsoid_in'
-	LANGUAGE 'C' WITH (isstrict,iscachable);
-
-CREATEFUNCTION spheroid_out(spheroid)
-	RETURNS cstring
-	AS '@MODULE_FILENAME@','ellipsoid_out'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATE TYPE spheroid (
-	alignment = double,
-	internallength = 65,
-	input = spheroid_in,
-	output = spheroid_out
-);
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
---  WKB
-
-CREATEFUNCTION wkb_in(cstring)
-	RETURNS wkb
-	AS '@MODULE_FILENAME@','WKB_in'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATEFUNCTION wkb_out(wkb)
-	RETURNS cstring
-	AS '@MODULE_FILENAME@','WKB_out'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATE TYPE wkb (
-	internallength = variable,
-	input = wkb_in,
-	output = wkb_out,
-	storage = extended
-);
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
---  CHIP
-
-CREATEFUNCTION chip_in(cstring)
-	RETURNS chip
-	AS '@MODULE_FILENAME@','CHIP_in'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATEFUNCTION chip_out(chip)
-	RETURNS cstring
-	AS '@MODULE_FILENAME@','CHIP_out'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATE TYPE chip (
-	alignment = double,
-	internallength = variable,
-	input = chip_in,
-	output = chip_out,
-	storage = extended
-);
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
---  GEOMETRY
-
-CREATEFUNCTION geometry_in(cstring)
-	RETURNS geometry
-	AS '@MODULE_FILENAME@'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATEFUNCTION geometry_out(geometry)
-	RETURNS cstring
-	AS '@MODULE_FILENAME@'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATE TYPE geometry (
-	alignment = double,
-	internallength = variable,
-	input = geometry_in,
-	output = geometry_out,
-	storage = main
-);
-
---
--- GiST selectivity function
---
-
-CREATEFUNCTION postgis_gist_sel (internal, oid, internal, int4)
-	RETURNS float8
-	AS '@MODULE_FILENAME@'
-	LANGUAGE 'C';
-
-#elif USE_VERSION == 74
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
---  BOX3D
-
-CREATEFUNCTION box3d_in(cstring)
-	RETURNS box3d 
-	AS '@MODULE_FILENAME@'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATEFUNCTION box3d_out(box3d)
-	RETURNS cstring
-	AS '@MODULE_FILENAME@'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATE TYPE box3d (
-	alignment = double,
-	internallength = 48,
-	input = box3d_in,
-	output = box3d_out
-);
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
---  SPHEROID
-
-CREATEFUNCTION spheroid_in(cstring)
-	RETURNS spheroid 
-	AS '@MODULE_FILENAME@','ellipsoid_in'
-	LANGUAGE 'C' WITH (isstrict,iscachable);
-
-CREATEFUNCTION spheroid_out(spheroid)
-	RETURNS cstring
-	AS '@MODULE_FILENAME@','ellipsoid_out'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATE TYPE spheroid (
-	alignment = double,
-	internallength = 65,
-	input = spheroid_in,
-	output = spheroid_out
-);
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
---  WKB
-
-CREATEFUNCTION wkb_in(cstring)
-	RETURNS wkb
-	AS '@MODULE_FILENAME@','WKB_in'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATEFUNCTION wkb_out(wkb)
-	RETURNS cstring
-	AS '@MODULE_FILENAME@','WKB_out'
-	LANGUAGE 'C' WITH (isstrict);
-
+#if USE_VERSION > 73
 CREATEFUNCTION wkb_recv(internal)
 	RETURNS wkb
 	AS '@MODULE_FILENAME@','WKB_recv'
 	LANGUAGE 'C' WITH (isstrict);
 
+CREATEFUNCTION wkb_send(wkb)
+	RETURNS bytea
+	AS '@MODULE_FILENAME@','WKBtoBYTEA'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+#endif
 
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
---  CHIP
+CREATE TYPE wkb (
+	internallength = variable,
+	input = wkb_in,
+	output = wkb_out,
+#if USE_VERSION > 73
+	send = wkb_send,
+	receive = wkb_recv,
+#endif
+	storage = extended
+);
 
-CREATEFUNCTION chip_in(cstring)
-	RETURNS chip
+-------------------------------------------------------------------
+--  CHIP TYPE
+-------------------------------------------------------------------
+
+#if USE_VERSION < 73
+# define CHIP_IN_REP opaque
+# define CHIP_OUT_REP opaque
+#else
+# define CHIP_IN_REP chip
+# define CHIP_OUT_REP cstring
+#endif
+
+CREATEFUNCTION chip_in(CHIP_OUT_REP)
+	RETURNS CHIP_IN_REP
 	AS '@MODULE_FILENAME@','CHIP_in'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATEFUNCTION chip_out(chip)
-	RETURNS cstring
+CREATEFUNCTION chip_out(CHIP_IN_REP)
+	RETURNS CHIP_OUT_REP
 	AS '@MODULE_FILENAME@','CHIP_out'
 	LANGUAGE 'C' WITH (isstrict);
 
@@ -485,166 +192,76 @@ CREATE TYPE chip (
 	storage = extended
 );
 
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
---  GEOMETRY
+-------------------------------------------------------------------
+--  GEOMETRY TYPE
+-------------------------------------------------------------------
 
-CREATEFUNCTION geometry_in(cstring)
-	RETURNS geometry
+#if USE_VERSION < 73
+# define GEOMETRY_IN_REP opaque
+# define GEOMETRY_OUT_REP opaque
+#else
+# define GEOMETRY_IN_REP geometry
+# define GEOMETRY_OUT_REP cstring
+#endif
+
+CREATEFUNCTION geometry_in(GEOMETRY_OUT_REP)
+	RETURNS GEOMETRY_IN_REP
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATEFUNCTION geometry_out(geometry)
-	RETURNS cstring
+CREATEFUNCTION geometry_out(GEOMETRY_IN_REP)
+	RETURNS GEOMETRY_OUT_REP
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE TYPE geometry (
-	alignment = double,
-	internallength = variable,
-	input = geometry_in,
-	output = geometry_out,
-	storage = main
-);
-
---
--- GiST selectivity function
---
-
-CREATEFUNCTION postgis_gist_sel (internal, oid, internal, int4)
-	RETURNS float8
-	AS '@MODULE_FILENAME@'
-	LANGUAGE 'C';
-
-
-#elif USE_VERSION == 75
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
---  BOX3D
-
-CREATEFUNCTION box3d_in(cstring)
-	RETURNS box3d 
-	AS '@MODULE_FILENAME@'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATEFUNCTION box3d_out(box3d)
-	RETURNS cstring
-	AS '@MODULE_FILENAME@'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATE TYPE box3d (
-	alignment = double,
-	internallength = 48,
-	input = box3d_in,
-	output = box3d_out
-);
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
---  SPHEROID
-
-CREATEFUNCTION spheroid_in(cstring)
-	RETURNS spheroid 
-	AS '@MODULE_FILENAME@','ellipsoid_in'
-	LANGUAGE 'C' WITH (isstrict,iscachable);
-
-CREATEFUNCTION spheroid_out(spheroid)
-	RETURNS cstring
-	AS '@MODULE_FILENAME@','ellipsoid_out'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATE TYPE spheroid (
-	alignment = double,
-	internallength = 65,
-	input = spheroid_in,
-	output = spheroid_out
-);
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
---  WKB
-
-CREATEFUNCTION wkb_in(cstring)
-	RETURNS wkb
-	AS '@MODULE_FILENAME@','WKB_in'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATEFUNCTION wkb_out(wkb)
-	RETURNS cstring
-	AS '@MODULE_FILENAME@','WKB_out'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATEFUNCTION wkb_recv(internal)
-	RETURNS wkb
-	AS '@MODULE_FILENAME@','WKB_recv'
-	LANGUAGE 'C' WITH (isstrict);
-
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
---  CHIP
-
-CREATEFUNCTION chip_in(cstring)
-	RETURNS chip
-	AS '@MODULE_FILENAME@','CHIP_in'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATEFUNCTION chip_out(chip)
-	RETURNS cstring
-	AS '@MODULE_FILENAME@','CHIP_out'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATE TYPE chip (
-	alignment = double,
-	internallength = variable,
-	input = chip_in,
-	output = chip_out,
-	storage = extended
-);
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
---  GEOMETRY
-
-CREATEFUNCTION geometry_in(cstring)
-	RETURNS geometry
-	AS '@MODULE_FILENAME@'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATEFUNCTION geometry_out(geometry)
-	RETURNS cstring
-	AS '@MODULE_FILENAME@'
-	LANGUAGE 'C' WITH (isstrict);
-
+#if USE_VERSION >= 75
 CREATEFUNCTION geometry_analyze(internal)
 	RETURNS bool
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
+#endif
 
 CREATE TYPE geometry (
 	alignment = double,
 	internallength = variable,
 	input = geometry_in,
 	output = geometry_out,
-	storage = main,
-	analyze = geometry_analyze
+#if USE_VERSION >= 75
+	analyze = geometry_analyze,
+#endif
+	storage = main
 );
 
---
--- GiST selectivity function
---
 
+-------------------------------------------------------------------
+-- Workaround for old user defined variable length datatype 
+-- default value bug. Should not be necessary > 7.2
+-------------------------------------------------------------------
+#if USE_VERSION <= 72
+UPDATE pg_type SET typdefault = NULL WHERE typname = 'wkb';
+UPDATE pg_type SET typdefault = NULL WHERE typname = 'geometry';
+UPDATE pg_type SET typdefault = NULL WHERE typname = 'histogram2d';
+#endif
+
+
+
+-------------------------------------------------------------------
+-- GiST Selectivity Function
+-------------------------------------------------------------------
+#if USE_VERSION == 71
+CREATEFUNCTION postgis_gist_sel(oid, oid, int2, opaque, int4)
+#elif USE_VERSION == 72
+CREATEFUNCTION postgis_gist_sel(opaque, oid,  opaque, int4)
+#else
 CREATEFUNCTION postgis_gist_sel (internal, oid, internal, int4)
+#endif
 	RETURNS float8
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C';
 
-
-
-#endif // USE_VERSION == ...
-
----------------------------------------
---  THIS WAS postgis_sql_common.sql.in
----------------------------------------
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-------------------------------------------------------------------
 -- SPATIAL_REF_SYS
-
+-------------------------------------------------------------------
 CREATE TABLE spatial_ref_sys (
 	 srid integer not null primary key,
 	 auth_name varchar(256), 
@@ -653,9 +270,9 @@ CREATE TABLE spatial_ref_sys (
 	 proj4text varchar(2048) 
 );
 
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-------------------------------------------------------------------
 -- GEOMETRY_COLUMNS
-
+-------------------------------------------------------------------
 CREATE TABLE geometry_columns (
 	f_table_catalog varchar(256) not null,
 	f_table_schema varchar(256) not null,
@@ -675,18 +292,9 @@ CREATE TABLE geometry_columns (
 		f_table_name, 
 		f_geometry_column ) );
 
---
--- Workaround for old user defined variable length datatype 
--- default value bug. Should not be necessary > 7.2
--- 
-
-UPDATE pg_type SET typdefault = NULL WHERE typname = 'wkb';
-UPDATE pg_type SET typdefault = NULL WHERE typname = 'geometry';
-UPDATE pg_type SET typdefault = NULL WHERE typname = 'histogram2d';
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-----------------------------------------------------------------------
 -- POSTGIS_VERSION()
-
+-----------------------------------------------------------------------
 CREATEFUNCTION postgis_version() RETURNS text
 AS 'SELECT \'@POSTGIS_VERSION@\'::text AS version'
 LANGUAGE 'sql';
@@ -694,7 +302,6 @@ LANGUAGE 'sql';
 -----------------------------------------------------------------------
 -- FIND_SRID( <schema>, <table>, <geom col> )
 -----------------------------------------------------------------------
-
 CREATEFUNCTION find_srid(varchar,varchar,varchar) RETURNS int4 AS
 'DECLARE
    schem text;
@@ -731,9 +338,9 @@ END;
 '
 LANGUAGE 'plpgsql' WITH (iscachable); 
 
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-----------------------------------------------------------------------
 -- GET_PROJ4_FROM_SRID( <srid> )
-
+-----------------------------------------------------------------------
 CREATEFUNCTION get_proj4_from_srid(integer) RETURNS text AS
 'SELECT proj4text::text FROM spatial_ref_sys WHERE srid= $1' 
 LANGUAGE 'sql' WITH (iscachable,isstrict);
@@ -742,55 +349,59 @@ LANGUAGE 'sql' WITH (iscachable,isstrict);
 -----------------------------------------------------------------------
 -- FIX_GEOMETRY_COLUMNS() 
 -----------------------------------------------------------------------
---
-
 CREATEFUNCTION fix_geometry_columns() RETURNS text
 AS 
 '
+DECLARE
+	result text;
+	linked integer;
+	deleted integer;
 BEGIN
 
 #if USE_VERSION >= 73
 	-- Since 7.3 schema support has been added.
 	-- Previous postgis versions used to put the database name in
-	-- the schema column. This needs to be fixed, so we set to the
-	-- empty string any schema value not existing in pg_namespace
+	-- the schema column. This needs to be fixed, so we set to 
+	-- "public" any schema value not existing in pg_namespace
 	--
 	-- it would be better to find the correct schema name
 	UPDATE geometry_columns SET f_table_schema = ''public''
-		WHERE f_table_schema is NULL or f_table_schema NOT IN
-		( SELECT nspname::varchar FROM pg_namespace );
+		WHERE f_table_schema is NULL or f_table_schema = ''''
+		OR f_table_schema NOT IN ( SELECT nspname::varchar
+			FROM pg_namespace );
 #endif
-
-#if USE_VERSION < 75
-	-- Until PG75 we mantain a custom statistic field
 
 	UPDATE geometry_columns SET
 		attrelid = NULL,
-		varattnum = NULL;
+		varattnum = NULL,
+		stats = NULL;
 
-	UPDATE geometry_columns SET attrelid = (
-		SELECT c.oid 
+	UPDATE geometry_columns SET
+		attrelid = c.oid,
+		varattnum = a.attnum
+#if USE_VERSION >= 73
 		FROM pg_class c, pg_attribute a, pg_namespace n
-		WHERE c.relname = geometry_columns.f_table_name::name
-		AND a.attrelid = c.oid AND c.relnamespace = n.oid
-		AND a.attname = geometry_columns.f_geometry_column::name
-		AND n.nspname = geometry_columns.f_table_schema::name
-		);
+		WHERE n.nspname = f_table_schema::name
+		AND c.relname = f_table_name::name
+		AND c.relnamespace = n.oid
+#else // USE_VERSION < 73 
+		FROM pg_class c, pg_attribute a
+		WHERE c.relname = f_table_name::name
+#endif
+		AND a.attname = f_geometry_column::name
+		AND a.attrelid = c.oid;
 	
-	UPDATE geometry_columns SET varattnum = (
-		SELECT a.attnum
-		FROM pg_class c, pg_attribute a, pg_namespace n
-		WHERE n.nspname = geometry_columns.f_table_schema::name
-		AND c.relname = geometry_columns.f_table_name::name
-		AND a.attname = geometry_columns.f_geometry_column::name
-		AND a.attrelid = c.oid AND c.relnamespace = n.oid
-		);
+	GET DIAGNOSTICS linked = ROW_COUNT;
 
 	-- remove stale records
 	DELETE FROM geometry_columns WHERE attrelid IS NULL;
-#endif
 
-	RETURN ''geometry_columns table is now linked to the system tables'';
+	GET DIAGNOSTICS deleted = ROW_COUNT;
+
+	result = ''link:'' || linked::text || '' '' ||
+		''del:'' || deleted::text;
+
+	return result;
 
 END;
 '
@@ -799,7 +410,6 @@ LANGUAGE 'plpgsql' ;
 -----------------------------------------------------------------------
 -- FIND_EXTENT( <schema name>, <table name>, <column name> )
 -----------------------------------------------------------------------
-
 CREATEFUNCTION find_extent(text,text,text) RETURNS box3d AS
 '
 DECLARE
@@ -819,7 +429,7 @@ LANGUAGE 'plpgsql' WITH (isstrict);
 
 -----------------------------------------------------------------------
 -- FIND_EXTENT( <table name>, <column name> )
-
+-----------------------------------------------------------------------
 CREATEFUNCTION find_extent(text,text) RETURNS box3d AS
 '
 DECLARE
@@ -836,8 +446,10 @@ END;
 '
 LANGUAGE 'plpgsql' WITH (isstrict);
 
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+-----------------------------------------------------------------------
 -- TRANSFORM ( <geometry>, <srid> )
+-----------------------------------------------------------------------
 --
 -- Test:
 --
@@ -851,7 +463,7 @@ LANGUAGE 'plpgsql' WITH (isstrict);
 -- select transform( 'SRID=1;POINT(-120.8 50.3)', 2);
 --      -> 'SRID=2;POINT(1370033.37046971 600755.810968684)'
 --
-
+-----------------------------------------------------------------------
 CREATEFUNCTION transform_geometry(geometry,text,text,int)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','transform_geom'
@@ -865,8 +477,9 @@ LANGUAGE 'plpgsql' WITH (iscachable,isstrict);
 
 
 
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-----------------------------------------------------------------------
 -- COMMON FUNCTIONS
+-----------------------------------------------------------------------
 
 CREATEFUNCTION srid(chip)
 	RETURNS int4
@@ -2410,21 +2023,6 @@ UPDATE pg_opclass
 
 #elif USE_VERSION == 74
 
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
---  WKB
-
--- this has been moved here at _end from _start 
--- because we need the definition of function bytea
--- found in _common 
-CREATE TYPE wkb (
-	internallength = variable,
-	input = wkb_in,
-	output = wkb_out,
-	storage = extended,
-	send = bytea,
-	receive = wkb_recv
-);
-
 --
 -- 7.3 explicit casting definitions
 --
@@ -2542,19 +2140,6 @@ CREATE OPERATOR CLASS btree_geometry_ops
 
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --  WKB
-
--- this has been moved here at _end from _start 
--- because we need the definition of function bytea
--- found in _common 
-CREATE TYPE wkb (
-	internallength = variable,
-	input = wkb_in,
-	output = wkb_out,
-	storage = extended,
-	send = bytea,
-	receive = wkb_recv
-);
-
 --
 -- 7.3 explicit casting definitions
 --
