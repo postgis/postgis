@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.14  2004/01/13 20:30:19  strk
+ * Added useless PG_RETURN_NULL() call to make compiler happy
+ *
  * Revision 1.13  2003/11/19 18:01:31  strk
  * CR removed
  *
@@ -283,22 +286,23 @@ Datum lockcheck (PG_FUNCTION_ARGS)
 		sprintf(query,"SELECT * FROM temp_lock_have_table  WHERE xideq(transid , getTransactionID() ) AND lockcode ='%s'",lockcode);
 		elog(NOTICE,"about to execute :%s", query);
 
-	SPIcode = SPI_exec(query,0);
-	if (SPIcode !=SPI_OK_SELECT )
-		elog(ERROR,"couldnt execute to test for lock aquire:%s",query);
+		SPIcode = SPI_exec(query,0);
+		if (SPIcode !=SPI_OK_SELECT )
+			elog(ERROR,"couldnt execute to test for lock aquire:%s",query);
 
-	if (SPI_processed >0)
-	{
-		elog(NOTICE,"I own the lock - I can modify the row");
-		SPI_finish();
-		return PointerGetDatum(rettuple);
-	}
+		if (SPI_processed >0)
+		{
+			elog(NOTICE,"I own the lock - I can modify the row");
+			SPI_finish();
+			return PointerGetDatum(rettuple);
+		}
 
 		elog(NOTICE,"I do not own the lock - I cannot modify the row");
 		//PG_RETURN_NULL();
 		SPI_finish();
 		//return NULL;
-			elog(ERROR,"attemted to modify a locked row that I do not have authorization for!");
+		elog(ERROR,"attemted to modify a locked row that I do not have authorization for!");
+		PG_RETURN_NULL();
 	}
 	else
 	{
