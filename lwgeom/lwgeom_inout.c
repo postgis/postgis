@@ -582,3 +582,19 @@ Datum LWGEOM_from_bytea(PG_FUNCTION_ARGS)
         PG_RETURN_POINTER(result);
 }
 
+PG_FUNCTION_INFO_V1(BOOL_to_text);
+Datum BOOL_to_text(PG_FUNCTION_ARGS)
+{
+	bool b = PG_GETARG_BOOL(0);
+	char c;
+	text *result;
+
+	c = b ? 't' : 'f';
+
+	result = palloc(VARHDRSZ+1*sizeof(char));
+	VARATT_SIZEP(result) = VARHDRSZ+1*sizeof(char);
+	memcpy(VARDATA(result), &c, 1*sizeof(char));
+
+	PG_RETURN_POINTER(result);
+
+}

@@ -3222,6 +3222,11 @@ CREATEFUNCTION bytea(geometry)
 	AS '@MODULE_FILENAME@','LWGEOM_to_bytea'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+CREATEFUNCTION text(bool)
+	RETURNS text
+	AS '@MODULE_FILENAME@','BOOL_to_text'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
 -- 7.3+ explicit casting definitions
 #if USE_VERSION >= 73
 CREATE CAST (geometry AS box2d) WITH FUNCTION box2d(geometry) AS IMPLICIT;
@@ -3237,6 +3242,7 @@ CREATE CAST (geometry AS text) WITH FUNCTION text(geometry) AS IMPLICIT;
 CREATE CAST (chip AS geometry) WITH FUNCTION geometry(chip) AS IMPLICIT;
 CREATE CAST (bytea AS geometry) WITH FUNCTION geometry(bytea) AS IMPLICIT;
 CREATE CAST (geometry AS bytea) WITH FUNCTION bytea(geometry) AS IMPLICIT;
+CREATE CAST (bool AS text) WITH FUNCTION text(bool) AS IMPLICIT;
 #endif
 
 ---------------------------------------------------------------
