@@ -1343,7 +1343,7 @@ WHERE
           </varlistentry>
 
           <varlistentry>
-            <term>-b </term>
+            <term>-b</term>
 
             <listitem>
               <para>Use a binary cursor. This will help reduce the likelihood
@@ -1553,7 +1553,7 @@ WHERE the_geom &amp;&amp; 'BOX3D(90900 190900, 100100 200100)'::box3d
 ------------+-------------------+-------------------
  gid        | integer           | Unique ID
  name       | character varying | Road Name
- type       | character varying | Road Type Number</programlisting>
+ the_geom   | geometry          | Location Geometry (Linestring)</programlisting>
 
         <para>The table definition for the <varname>bc_municipality</varname>
         table is:</para>
@@ -1569,27 +1569,168 @@ WHERE the_geom &amp;&amp; 'BOX3D(90900 190900, 100100 200100)'::box3d
           <qandadiv>
             <qandaentry>
               <question>
-                <para>Find all the roads within 1 kilometer of a point.</para>
+                <para>What is the total length of all roads, expressed in
+                kilometers?</para>
               </question>
 
               <answer>
                 <para>You can answer this question with a very simple piece of
                 SQL:</para>
 
-                <programlisting>SELECT * FROM geom_table WHERE Distance( the_geom, </programlisting>
+                <programlisting>postgis=# SELECT sum(length(the_geom))/1000 AS km_roads FROM bc_roads;
+     km_roads
+------------------
+ 70842.1243039643
+(1 row)</programlisting>
               </answer>
             </qandaentry>
 
             <qandaentry>
               <question>
-                <para>Find the length of all roads</para>
+                <para>How large is the city of Prince George, in
+                hectares?</para>
               </question>
 
               <answer>
-                <para>You can answer this question with a very simple piece of
-                SQL:</para>
+                <para>This query combines an attribute condition (on the
+                municipality name) with a spatial calculation (of the
+                area):</para>
 
-                <programlisting>SELECT * FROM geom_table WHERE Distance( the_geom, </programlisting>
+                <programlisting>postgis=# SELECT area(the_geom)/10000 AS hectares FROM bc_municipality 
+          WHERE name = 'PRINCE GEORGE';
+     hectares
+------------------
+ 32657.9103824927
+(1 row) </programlisting>
+              </answer>
+            </qandaentry>
+
+            <qandaentry>
+              <question>
+                <para>What is the largest municipality in the province, by
+                area?</para>
+              </question>
+
+              <answer>
+                <para>This query brings a spatial measurement into the query
+                condition. There are several ways of approaching this problem,
+                but the most efficient is below:</para>
+
+                <programlisting>postgis=# SELECT name, area(the_geom)/10000 AS hectares 
+          FROM bc_municipality 
+          ORDER BY hectares DESC 
+          LIMIT 1;
+     name      |    hectares
+---------------+-----------------
+ TUMBLER RIDGE | 155020.02556131
+(1 row)</programlisting>
+
+                <para>Note that in order to answer this query we have to
+                calculate the area of every polygon. If we were doing this a
+                lot it would make sense to add an area column to the table
+                that we could separately index for performance. By ordering
+                the results in a descending direction, and them using the
+                PostgreSQL "LIMIT" command we can easily pick off the largest
+                value without using an aggregate function like max().</para>
+              </answer>
+            </qandaentry>
+
+            <qandaentry>
+              <question>
+                <para>What is the length of roads fully contained within each
+                municipality?</para>
+              </question>
+
+              <answer>
+                <para>This is an example of a "spatial join", because we are
+                bringing together data from two tables (doing a join) but
+                using a spatial interaction condition ("contained") as the
+                join condition rather than the usual relational approach of
+                joining on a common key:</para>
+
+                <programlisting>postgis=# SELECT m.name, sum(length(r.the_geom))/1000 as roads_km 
+          FROM bc_roads AS r,bc_municipality AS m 
+          WHERE r.the_geom &amp;&amp; m.the_geom 
+          AND contains(m.the_geom,r.the_geom) 
+          GROUP BY m.name 
+          ORDER BY roads_km;
+
+            name            |     roads_km
+----------------------------+------------------
+ SURREY                     | 1539.47553551242
+ VANCOUVER                  | 1450.33093486576
+ LANGLEY DISTRICT           | 833.793392535662
+ BURNABY                    | 773.769091404338
+ PRINCE GEORGE              |  694.37554369147
+ ...</programlisting>
+
+                <para>This query takes a while, because every road in the
+                table is summarized into the final result (about 250K roads
+                for our particular example table). For smaller overlays
+                (several thousand records on several hundred) the response can
+                be very fast.</para>
+              </answer>
+            </qandaentry>
+
+            <qandaentry>
+              <question>
+                <para>Create a new table with all the roads within the city of
+                Prince George.</para>
+              </question>
+
+              <answer>
+                <para>This is an example of an "overlay", which takes in two
+                tables and outputs a new table that consists of spatially
+                clipped or cut resultants. Unlike the "spatial join"
+                demonstrated above, this query actually creates new
+                geometries. An overlay is like a turbo-charged spatial join,
+                and is useful for more exact analysis work:</para>
+
+                <programlisting>postgis=# CREATE TABLE pg_roads as
+          SELECT intersection(r.the_geom, m.the_geom) AS intersection_geom, 
+                 length(r.the_geom) AS rd_orig_length, 
+                 r.* 
+          FROM bc_roads AS r, bc_municipality AS m 
+          WHERE r.the_geom &amp;&amp; m.the_geom 
+          AND intersects(r.the_geom, m.the_geom) 
+          AND m.name = 'PRINCE GEORGE';</programlisting>
+              </answer>
+            </qandaentry>
+
+            <qandaentry>
+              <question>
+                <para>What is the length in kilometers of "Douglas St" in
+                Victoria?</para>
+              </question>
+
+              <answer>
+                <programlisting>postgis=# SELECT sum(length(r.the_geom))/1000 AS kilometers 
+          FROM bc_roads r, bc_municipality m 
+          WHERE r.the_geom &amp;&amp; m.the_geom 
+          AND r.name = 'Douglas St' 
+          AND m.name = 'VICTORIA';
+    kilometers
+------------------
+ 4.89151904172838
+(1 row)</programlisting>
+              </answer>
+            </qandaentry>
+
+            <qandaentry>
+              <question>
+                <para>What is the largest municipality polygon that has a
+                hole?</para>
+              </question>
+
+              <answer>
+                <programlisting>postgis=# SELECT gid, name, area(the_geom) AS area 
+          FROM bc_municipality 
+          WHERE nrings(the_geom) &gt; 1 
+          ORDER BY area DESC LIMIT 1;
+ gid |     name     |       area
+-----+--------------+------------------
+  12 | SPALLUMCHEEN | 257374619.430216
+(1 row)</programlisting>
               </answer>
             </qandaentry>
           </qandadiv>
@@ -3568,13 +3709,11 @@ FROM geometry_table;</literallayout>
 
           <listitem>
             <para>Return a modified [multi]polygon having no ring segment
-	    longer then the given distance. Interpolated points will
-	    have Z and M values (if needed) set to 0. Distance computation
-	    is performed in 2d only.
-            </para>
+            longer then the given distance. Interpolated points will have Z
+            and M values (if needed) set to 0. Distance computation is
+            performed in 2d only.</para>
           </listitem>
         </varlistentry>
-
       </variablelist>
     </sect1>
   </chapter>
