@@ -6,10 +6,15 @@
  * Copyright 2001-2003 Refractions Research Inc.
  *
  * This is free software; you can redistribute and/or modify it under
- * the terms of hte GNU General Public Licence. See the COPYING file.
+ * the terms of the GNU General Public Licence. See the COPYING file.
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.45  2004/03/29 10:20:48  strk
+ * Fixed a bug in WKB parsing for Multipoints.
+ * Fixed a bug in -d handling for WKB.
+ * Added point->multipoint fluffing capabilities.
+ *
  * Revision 1.44  2004/03/10 18:46:07  strk
  * Fixed a bug reducing the output shapes from Multipolygon tables.
  *
@@ -148,6 +153,7 @@ char *main_scan_query;
 DBFHandle dbf;
 SHPHandle shp;
 int geotype;
+int outshptype;
 int is3d;
 int binary;
 #ifdef USE_WKB
@@ -181,6 +187,8 @@ int points_per_sublist( char *str, int *npoints, long max_lists);
 int reverse_points(int num_points,double *x,double *y,double *z);
 int is_clockwise(int num_points,double *x,double *y,double *z);
 int is_bigendian(void);
+SHPObject * shape_creator_wrapper(char *str, int idx, SHPHandle shp, int is3d);
+SHPObject * shape_creator_wrapper_WKB(byte *str, int idx);
 
 /* WKB functions */
 SHPObject * create_polygon3D_WKB(byte *wkb, int shape_id);
@@ -199,6 +207,7 @@ byte getbyte(byte *c);
 void skipbyte(byte **c);
 byte popbyte(byte **c);
 uint32 popint(byte **c);
+uint32 getint(byte *c);
 void skipint(byte **c);
 double popdouble(byte **c);
 void skipdouble(byte **c);
@@ -367,6 +376,94 @@ int main(int ARGC, char **ARGV){
 }
 
 
+
+SHPObject *
+shape_creator_wrapper_WKB(byte *str, int idx)
+{
+	byte *ptr = str;
+	uint32 type;
+	int is3d;
+
+	// skip byte order
+	skipbyte(&ptr);
+
+	// get type
+	type = getint(ptr);
+
+	is3d = type&WKB3DOFFSET;
+
+	switch(type)
+	{
+		case MULTILINETYPE:
+			if ( is3d )
+				return create_multiline3D_WKB(str, idx);
+			else
+				return create_multiline2D_WKB(str, idx);
+				
+		case LINETYPE:
+			if ( is3d )
+				return create_line3D_WKB(str, idx);
+			else
+				return create_line2D_WKB(str, idx);
+		case POLYGONTYPE:
+			if ( is3d )
+				return create_polygon3D_WKB(str, idx);
+			else
+				return create_polygon2D_WKB(str, idx);
+		case MULTIPOLYGONTYPE:
+			if ( is3d )
+				return create_multipolygon3D_WKB(str, idx);
+			else
+				return create_multipolygon2D_WKB(str, idx);
+
+		case POINTTYPE:
+			if ( is3d )
+				return create_point3D_WKB(str, idx);
+			else
+				return create_point2D_WKB(str, idx);
+
+		case MULTIPOINTTYPE:
+			if ( is3d )
+				return create_multipoint3D_WKB(str, idx);
+			else
+				return create_multipoint2D_WKB(str, idx);
+
+		default:
+			fprintf(stderr, "Unknown WKB type (%lu) - (%s:%d)\n",
+				type, __FILE__, __LINE__);
+			return NULL;
+	}
+}
+
+SHPObject *
+shape_creator_wrapper(char *str, int idx, SHPHandle shp, int is3d)
+{
+	char *ptr;
+
+	ptr = strchr(str,';');
+	ptr++;
+	if ( (ptr == NULL) || (*ptr == 0) ){
+		fprintf(stderr, "Malformed WKT\n");
+		return NULL;  
+	}
+
+	if ( ! strncmp(ptr, "MULTILIN", 8) )
+		return create_multilines(str, idx, shp, is3d);
+	if ( ! strncmp(ptr, "MULTIPOL", 8) )
+		return create_multipolygons(str, idx, shp, is3d);
+	if ( ! strncmp(ptr, "MULTIPOI", 8) )
+		return create_multipoints(str, idx, shp, is3d);
+	if ( ! strncmp(ptr, "LINESTRI", 8) )
+		return create_lines(str, idx, shp, is3d);
+	if ( ! strncmp(ptr, "POLYGON", 7) )
+		return create_polygons(str, idx, shp, is3d);
+	if ( ! strncmp(ptr, "POINT", 5) )
+		return create_points(str, idx, shp, is3d);
+
+	fprintf(stderr, "Unknown geometry type provided (%s)\n", ptr);
+	return NULL;
+
+}
 
 
 
@@ -943,7 +1040,20 @@ create_point3D_WKB(byte *wkb, int shape_id)
 	y = popdouble(&wkb);
 	z = popdouble(&wkb);
 
-	obj = SHPCreateSimpleObject(SHPT_POINTZ,1,&x,&y,&z);
+	if ( geotype == POINTTYPE )
+	{
+		obj = SHPCreateSimpleObject(SHPT_POINTZ,1,&x,&y,&z);
+	}
+	else if ( geotype == MULTIPOINTTYPE )
+	{
+		//fprintf(stderr, "create_point3D_WKB: fluffing to MULTIPOINT\n");
+		obj = SHPCreateSimpleObject(SHPT_MULTIPOINTZ, 1, &x, &y, &z);
+	}
+	else
+	{
+		fprintf(stderr, "ERROR: create_point2D_WKB called with wrong geometry type (%d)\n", geotype);
+		return NULL;
+	}
 
 	return obj;
 }
@@ -960,13 +1070,13 @@ create_point2D_WKB(byte *wkb, int shape_id)
 	x = popdouble(&wkb);
 	y = popdouble(&wkb);
 
-	obj = SHPCreateSimpleObject(SHPT_POINT, 1, &x, &y, NULL);
+	obj = SHPCreateSimpleObject(outshptype, 1, &x, &y, NULL);
 
 	return obj;
 }
 
 SHPObject *
-create_points(char *str, int shape_id, SHPHandle shp, int dims)
+create_points(char *str, int shape_id, SHPHandle shp, int is3d)
 {
 	
 	double	*x,
@@ -974,6 +1084,8 @@ create_points(char *str, int shape_id, SHPHandle shp, int dims)
 			*z;
 	SHPObject	*obj;
 	int notnull;
+	int outtype;
+
 	notnull = 1;
 	
 	x = (double *)malloc(sizeof(double));
@@ -981,20 +1093,27 @@ create_points(char *str, int shape_id, SHPHandle shp, int dims)
 	z = (double *)malloc(sizeof(double));
 
 	notnull = parse_points(str,1,x,y,z);
-	
-	if(dims == 0){
-		if(notnull > 0){
-			obj = SHPCreateSimpleObject(SHPT_POINT,1,x,y,z);
-		}else{
-			obj = SHPCreateSimpleObject(SHPT_NULL,1,x,y,z);
-		}
-	}else{
-		if(notnull > 0){
-			obj = SHPCreateSimpleObject(SHPT_POINTZ,1,x,y,z);
-		}else{
-			obj = SHPCreateSimpleObject(SHPT_NULL,1,x,y,z);
-		}
+
+	if ( ! notnull )
+	{
+		outtype = SHPT_NULL;
 	}
+	else if ( geotype == POINTTYPE )
+	{
+		outtype = is3d ? SHPT_POINTZ : SHPT_POINT;
+	}
+	else if ( geotype == MULTIPOINTTYPE )
+	{
+		//fprintf(stderr, "create_points: fluffing to MULTIPOINT\n");
+		outtype = is3d ? SHPT_MULTIPOINTZ : SHPT_MULTIPOINT;
+	}
+	else
+	{
+		fprintf(stderr, "create_points called with wrong geometry type (%d)\n", geotype);
+		return NULL;
+	}
+	
+	obj = SHPCreateSimpleObject(outtype,1,x,y,z);
 	free(x); free(y); free(z);
 
 	return obj;
@@ -1062,7 +1181,7 @@ create_multipoint3D_WKB(byte *wkb, int shape_id)
 		z[pn]=popdouble(&wkb);
 	}
 
-	obj = SHPCreateSimpleObject(SHPT_MULTIPOINTZ,1,x,y,z);
+	obj = SHPCreateSimpleObject(SHPT_MULTIPOINTZ,npoints,x,y,z);
 	free(x); free(y); free(z);
 
 	return obj;
@@ -1073,8 +1192,8 @@ create_multipoint2D_WKB(byte *wkb, int shape_id)
 {
 	SHPObject *obj;
 	double *x=NULL, *y=NULL;
-	int npoints;
-	int pn;
+	uint32 npoints;
+	uint32 pn;
 
 	// skip byteOrder and type
 	skipbyte(&wkb); skipint(&wkb);
@@ -1086,11 +1205,13 @@ create_multipoint2D_WKB(byte *wkb, int shape_id)
 
 	for (pn=0; pn<npoints; pn++)
 	{
+		skipbyte(&wkb); // byteOrder
+		skipint(&wkb);  // wkbType
 		x[pn]=popdouble(&wkb);
 		y[pn]=popdouble(&wkb);
 	}
 
-	obj = SHPCreateSimpleObject(SHPT_MULTIPOINT,1,x,y,NULL);
+	obj = SHPCreateSimpleObject(outshptype,npoints,x,y,NULL);
 	free(x); free(y); 
 
 	return obj;
@@ -1258,7 +1379,7 @@ create_polygon2D_WKB(byte *wkb, int shape_id)
 		totpoints += npoints;
 	}
 
-	obj = SHPCreateObject(SHPT_POLYGON, shape_id, nrings,
+	obj = SHPCreateObject(outshptype, shape_id, nrings,
 		part_index, NULL, totpoints,
 		x, y, z, NULL);
 
@@ -1622,7 +1743,7 @@ create_multipolygon2D_WKB(byte *wkb, int shape_id)
 	printf("End of polygons\n");
 #endif
 
-	obj = SHPCreateObject(SHPT_POLYGON, shape_id, nparts,
+	obj = SHPCreateObject(outshptype, shape_id, nparts,
 		part_index, NULL, totpoints,
 		x, y, NULL, NULL);
 
@@ -1986,9 +2107,11 @@ fprintf(stdout, "s"); fflush(stdout);
 #endif
 
 #ifdef USE_WKB
-		obj = shape_creator(val, row);
+		obj = shape_creator_wrapper_WKB(val, row);
+		//obj = shape_creator(val, row);
 #else
-		obj = shape_creator(val, row, shp, is3d);
+		obj = shape_creator_wrapper(val, row, shp, is3d);
+		//obj = shape_creator(val, row, shp, is3d);
 #endif
 		if ( ! obj )
 		{
@@ -2057,6 +2180,11 @@ getGeometryType(char *schema, char *table, char *geo_col_name)
 	char query[1024];
 	PGresult *res;
 	char *geo_str; // the geometry type string
+	int multitype=0;
+	int basetype=0;
+	int foundmulti=0;
+	int foundsingle=0;
+	int i;
 
 	//get what kind of Geometry type is in the table
 	if ( schema )
@@ -2079,29 +2207,71 @@ getGeometryType(char *schema, char *table, char *geo_col_name)
 		return -1;
 	}
 
-	if(PQntuples(res) == 1 ){
-		geo_str = (char *)malloc(strlen(PQgetvalue(res, 0, 0))+1);
-		memcpy(geo_str, (char *)PQgetvalue(res, 0, 0),strlen(PQgetvalue(res,0,0))+1);
-	}else if(PQntuples(res) > 1 ){
-		fprintf(stderr, "ERROR: Cannot have multiple geometry types in a shapefile.\nUse option -t(unimplemented currently,sorry...) to specify what type of geometry you want dumped\n\n");
-		return -1;
-	}else{
-		printf("ERROR: Cannot determine geometry type of table.\n");
+	if (PQntuples(res) == 0)
+	{
+		printf("ERROR: Cannot determine geometry type (empty table).\n");
 		return -1;
 	}
 
-	if ( ! strncmp(geo_str, "MULTILIN", 8) ) return MULTILINETYPE;
-	if ( ! strncmp(geo_str, "MULTIPOL", 8) ) return MULTIPOLYGONTYPE;
-	if ( ! strncmp(geo_str, "MULTIPOI", 8) ) return MULTIPOINTTYPE;
-	if ( ! strncmp(geo_str, "LINESTRI", 8) ) return LINETYPE;
-	if ( ! strncmp(geo_str, "POLYGON", 7) ) return POLYGONTYPE;
-	if ( ! strncmp(geo_str, "POINT", 5) ) return POINTTYPE;
+	/* This will iterate max 2 times */
+	for (i=0; i<PQntuples(res); i++)
+	{
+		geo_str = PQgetvalue(res, i, 0);
+		if ( ! strncmp(geo_str, "MULTI", 5) )
+		{
+			foundmulti=1;
+			geo_str+=5;
+		}
+		else
+		{
+			foundsingle=1;
+		}
 
-	fprintf(stderr, "type '%s' is not Supported at this time.\n",
-			geo_str);
-	fprintf(stderr, "The DBF file will be created but not the shx "
-			"or shp files.\n");
-	return  0;
+		if ( ! strncmp(geo_str, "LINESTRI", 8) )
+		{
+			if ( basetype && basetype != LINETYPE )
+			{
+				fprintf(stderr, "ERROR: uncompatible mixed geometries in table\n");
+				return -1;
+			}
+			basetype = LINETYPE;
+			multitype = MULTILINETYPE;
+		}
+		else if ( ! strncmp(geo_str, "POLYGON", 7) )
+		{
+			if ( basetype && basetype != POLYGONTYPE )
+			{
+				fprintf(stderr, "ERROR: uncompatible mixed geometries in table\n");
+				return -1;
+			}
+			basetype = POLYGONTYPE;
+			multitype = MULTIPOLYGONTYPE;
+		}
+		else if ( ! strncmp(geo_str, "POINT", 5) )
+		{
+			if ( basetype && basetype != POINTTYPE )
+			{
+				fprintf(stderr, "ERROR: uncompatible mixed geometries in table\n");
+				return -1;
+			}
+			basetype = POINTTYPE;
+			multitype = MULTIPOINTTYPE;
+		}
+		else
+		{
+			fprintf(stderr, "type '%s' is not Supported at this time.\n",
+				geo_str);
+			fprintf(stderr, "The DBF file will be created but not the shx "
+				"or shp files.\n");
+			return 0;
+		}
+	}
+
+	if ( foundmulti )
+		return multitype;
+	else
+		return basetype;
+
 }
 
 void
@@ -2232,6 +2402,7 @@ initialize()
 		sprintf(query, "SELECT a.attname, a.atttypid, a.attlen FROM "
 			"pg_attribute a, pg_class c, pg_namespace n WHERE "
 			"n.nspname = '%s' AND a.attrelid = c.oid AND "
+			"a.atttypid != 0 AND "
 			"a.attnum > 0 AND c.relname = '%s'", schema, table);
 	}
 	else
@@ -2239,6 +2410,7 @@ initialize()
 		sprintf(query, "SELECT a.attname, a.atttypid, a.attlen FROM "
 			"pg_attribute a, pg_class c WHERE "
 			"a.attrelid = c.oid and a.attnum > 0 AND "
+			"a.atttypid != 0 AND "
 			"c.relname = '%s'", table);
 	}
 
@@ -2451,130 +2623,25 @@ initialize()
 		switch (geotype)
 		{
 			case MULTILINETYPE:
-				if ( is3d )
-				{
-					shp = SHPCreate(shp_file, SHPT_ARCZ);
-#ifdef USE_WKB
-					shape_creator = create_multiline3D_WKB;
-#else
-					shape_creator = create_multilines;
-#endif
-				}
-				else
-				{
-					shp = SHPCreate(shp_file, SHPT_ARC);
-#ifdef USE_WKB
-					shape_creator = create_multiline2D_WKB;
-#else
-					shape_creator = create_multilines;
-#endif
-				}
+			case LINETYPE:
+				if ( is3d ) outshptype=SHPT_ARCZ;
+				else outshptype=SHPT_ARC;
 				break;
 				
-			case LINETYPE:
-				if ( is3d )
-				{
-					shp = SHPCreate(shp_file, SHPT_ARCZ);
-#ifdef USE_WKB
-					shape_creator = create_line3D_WKB;
-#else
-					shape_creator = create_lines;
-#endif
-				}
-				else
-				{
-					shp = SHPCreate(shp_file, SHPT_ARC);
-#ifdef USE_WKB
-					shape_creator = create_line2D_WKB;
-#else
-					shape_creator = create_lines;
-#endif
-				}
-
-				break;
-
 			case POLYGONTYPE:
-				if ( is3d )
-				{
-					shp = SHPCreate(shp_file, SHPT_POLYGONZ);
-#ifdef USE_WKB
-					shape_creator = create_polygon3D_WKB;
-#else
-					shape_creator = create_polygons;
-#endif
-				}
-				else
-				{
-					shp = SHPCreate(shp_file, SHPT_POLYGON);
-#ifdef USE_WKB
-					shape_creator = create_polygon2D_WKB;
-#else
-					shape_creator = create_polygons;
-#endif
-				}
-				break;
-
 			case MULTIPOLYGONTYPE:
-				if ( is3d )
-				{
-					shp = SHPCreate(shp_file, SHPT_POLYGONZ);
-#ifdef USE_WKB
-					shape_creator = create_multipolygon3D_WKB;
-#else
-					shape_creator = create_multipolygons;
-#endif
-				}
-				else
-				{
-#ifdef USE_WKB
-					shape_creator = create_multipolygon2D_WKB;
-#else
-					shape_creator = create_multipolygons;
-#endif
-					shp = SHPCreate(shp_file, SHPT_POLYGON);
-				}
+				if ( is3d ) outshptype=SHPT_POLYGONZ;
+				else outshptype=SHPT_POLYGON;
 				break;
 
 			case POINTTYPE:
-				if ( is3d )
-				{
-				 	shp = SHPCreate(shp_file, SHPT_POINTZ);
-#ifdef USE_WKB
-					shape_creator = create_point3D_WKB;
-#else
-					shape_creator = create_points;
-#endif
-				}
-				else
-				{
-					shp = SHPCreate(shp_file, SHPT_POINT);
-#ifdef USE_WKB
-					shape_creator = create_point2D_WKB;
-#else
-					shape_creator = create_points;
-#endif
-				}
+				if ( is3d ) outshptype=SHPT_POINTZ;
+				else outshptype=SHPT_POINT;
 				break;
 
 			case MULTIPOINTTYPE:
-				if ( is3d )
-				{
-					shp = SHPCreate(shp_file, SHPT_MULTIPOINTZ);
-#ifdef USE_WKB
-					shape_creator = create_multipoint3D_WKB;
-#else
-					shape_creator = create_multipoints;
-#endif
-				}
-				else
-				{
-#ifdef USE_WKB
-					shape_creator = create_multipoint2D_WKB;
-#else
-					shape_creator = create_multipoints;
-#endif
-					shp = SHPCreate(shp_file, SHPT_MULTIPOINT);
-				}
+				if ( is3d ) outshptype=SHPT_MULTIPOINTZ;
+				else outshptype=SHPT_MULTIPOINT;
 				break;
 
 			
@@ -2586,6 +2653,7 @@ initialize()
 				return 0;
 
 		}
+		shp = SHPCreate(shp_file, outshptype);
 	}
 
 	/* 
@@ -2644,7 +2712,10 @@ initialize()
 		}
 		else
 		{
-			sprintf(buf, "\"%s\"::text", mainscan_flds[i]);
+			if ( binary )
+				sprintf(buf, "\"%s\"::text", mainscan_flds[i]);
+			else
+				sprintf(buf, "\"%s\"", mainscan_flds[i]);
 		}
 
 		strcat(main_scan_query, buf);
@@ -2823,6 +2894,12 @@ uint32 popint(byte **c) {
 	uint32 i;
 	memcpy(&i, *c, 4);
 	*c+=4;
+	return i;
+}
+
+uint32 getint(byte *c) {
+	uint32 i;
+	memcpy(&i, c, 4);
 	return i;
 }
 
