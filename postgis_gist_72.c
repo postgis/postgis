@@ -2,11 +2,11 @@
  postGIS - geometric types for postgres
 
  This software is copyrighted (2001).
- 
+
  This is free software; you can redistribute it and/or modify
  it under the GNU General Public Licence.  See the file "COPYING".
 
- More Info?  See the documentation, join the mailing list 
+ More Info?  See the documentation, join the mailing list
  (postgis@yahoogroups.com), or see the web page
  (http://postgis.refractions.net).
 
@@ -31,7 +31,7 @@
 #include "utils/elog.h"
 
 //Norman Vine found this problem for compiling under cygwin
-//  it defines BYTE_ORDER and LITTLE_ENDIAN 
+//  it defines BYTE_ORDER and LITTLE_ENDIAN
 
 #ifdef __CYGWIN__
 #include <sys/param.h>       // FOR ENDIAN DEFINES
@@ -61,12 +61,7 @@ static float size_box(Datum box);
 
 int debug = 0;
 
-//restriction in the GiST && operator
-PG_FUNCTION_INFO_V1(postgis_gist_sel);
-Datum postgis_gist_sel(PG_FUNCTION_ARGS)
-{
-        PG_RETURN_FLOAT8(0.000005);
-}
+
 
 BOX	*convert_box3d_to_box(BOX3D *in)
 {
@@ -87,7 +82,7 @@ Datum ggeometry_compress(PG_FUNCTION_ARGS)
 	GISTENTRY *entry=(GISTENTRY*)PG_GETARG_POINTER(0);
 	GISTENTRY *retval;
 
-	if ( entry->leafkey) 
+	if ( entry->leafkey)
 	{
 		retval = palloc(sizeof(GISTENTRY));
 		if ( DatumGetPointer(entry->key) != NULL ) {
@@ -102,7 +97,7 @@ Datum ggeometry_compress(PG_FUNCTION_ARGS)
 
 			in = (GEOMETRY*)PG_DETOAST_DATUM( entry->key );
 			r = convert_box3d_to_box(&in->bvol);
-			if ( in != (GEOMETRY*)DatumGetPointer(entry->key) ) 
+			if ( in != (GEOMETRY*)DatumGetPointer(entry->key) )
 			{
 				pfree( in );
 			}
@@ -113,7 +108,7 @@ Datum ggeometry_compress(PG_FUNCTION_ARGS)
 		} else {
 			gistentryinit(*retval, (Datum) 0, entry->rel, entry->page,
 				entry->offset, 0,FALSE);
-		} 
+		}
 	} else {
 		retval = entry;
 	}
@@ -266,7 +261,7 @@ typedef struct {
 
 static int
 compare_KB(const void* a, const void* b) {
-	BOX *abox = ((KBsort*)a)->key; 
+	BOX *abox = ((KBsort*)a)->key;
 	BOX *bbox = ((KBsort*)b)->key;
 	float sa = (abox->high.x - abox->low.x) * (abox->high.y - abox->low.y);
 	float sb = (bbox->high.x - bbox->low.x) * (bbox->high.y - bbox->low.y);
@@ -322,13 +317,13 @@ gbox_picksplit(PG_FUNCTION_ARGS)
 	{
 		cur = DatumGetBoxP(((GISTENTRY *) VARDATA(entryvec))[i].key);
 		if ( allisequal == true &&  (
-				pageunion.high.x != cur->high.x || 
-				pageunion.high.y != cur->high.y || 
-				pageunion.low.x != cur->low.x || 
-				pageunion.low.y != cur->low.y 
-			) ) 
+				pageunion.high.x != cur->high.x ||
+				pageunion.high.y != cur->high.y ||
+				pageunion.low.x != cur->low.x ||
+				pageunion.low.y != cur->low.y
+			) )
 			allisequal = false;
- 
+
 		if (pageunion.high.x < cur->high.x)
 			pageunion.high.x = cur->high.x;
 		if (pageunion.low.x > cur->low.x)
@@ -539,4 +534,5 @@ size_box(Datum box)
 	else
 		return 0.0;
 }
+
 

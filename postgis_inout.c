@@ -3413,3 +3413,183 @@ Datum WKBtoBYTEA(PG_FUNCTION_ARGS)
 
 		PG_RETURN_POINTER(result);
 }
+
+PG_FUNCTION_INFO_V1(geometry2box);
+Datum geometry2box(PG_FUNCTION_ARGS)
+{
+	 GEOMETRY *g = (GEOMETRY *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+//elog(NOTICE,"geometry2box - ymax is %.15g",g->bvol.URT.y);
+
+	PG_RETURN_POINTER(convert_box3d_to_box(&g->bvol) );
+
+}
+
+//create_histogram2d(BOX3D, boxesPerSide)
+// returns a histgram with 0s in all the boxes.
+PG_FUNCTION_INFO_V1(create_histogram2d);
+Datum create_histogram2d(PG_FUNCTION_ARGS)
+{
+	BOX3D  *bbox = (BOX3D *) PG_GETARG_POINTER(0);
+	int32	boxesPerSide=  PG_GETARG_INT32(1);
+	HISTOGRAM2D		*histo;
+	int size,t;
+
+
+	if ( (boxesPerSide <1) || (boxesPerSide >50) )
+	{
+			elog(ERROR,"create_histogram2d - boxesPerSide is too small or big.\n");
+			PG_RETURN_NULL() ;
+	}
+
+
+	size =  sizeof(HISTOGRAM2D) +    (boxesPerSide*boxesPerSide-1)*4  ;
+
+	histo = (HISTOGRAM2D *) palloc (size);
+	histo->size = size;
+
+	histo->xmin = bbox->LLB.x;
+	histo->ymin = bbox->LLB.y;
+
+
+	histo->xmax = bbox->URT.x;
+	histo->ymax = bbox->URT.y;
+
+	histo->avgFeatureArea = 0;
+
+	histo->boxesPerSide = boxesPerSide;
+
+	for (t=0;t<boxesPerSide*boxesPerSide; t++)
+	{
+		histo->value[t] =0;
+	}
+
+	//elog(NOTICE,"create_histogram2d returning");
+
+	PG_RETURN_POINTER(histo);
+
+}
+
+
+//text form of HISTOGRAM2D is:
+// 'HISTOGRAM2D(xmin,ymin,xmax,ymax,boxesPerSide;value[0],value[1],...')
+//    note the ";" in the middle (for easy parsing)
+//  I dont expect anyone to actually create one by hand
+PG_FUNCTION_INFO_V1(histogram2d_in);
+Datum histogram2d_in(PG_FUNCTION_ARGS)
+{
+	char	   		*str = PG_GETARG_CSTRING(0);
+	HISTOGRAM2D	    *histo ;
+	int nitems;
+	double xmin,ymin,xmax,ymax;
+	int boxesPerSide;
+	double avgFeatureArea;
+	char *str2,*str3;
+	long datum;
+
+	int t;
+
+	while (isspace((unsigned char) *str))
+		str++;
+
+	if (strstr(str,"HISTOGRAM2D(") != str)
+	{
+			elog(ERROR,"histogram2d parser - doesnt start with 'HISTOGRAM2D(\n");
+			PG_RETURN_NULL() ;
+	}
+	if (strstr(str,";") == NULL)
+	{
+			elog(ERROR,"histogram2d parser - doesnt have a ; in sring!\n");
+			PG_RETURN_NULL() ;
+	}
+
+	nitems = sscanf(str,"HISTOGRAM2D(%lf,%lf,%lf,%lf,%i,%lf;",&xmin,&ymin,&xmax,&ymax,&boxesPerSide,&avgFeatureArea);
+
+	if (nitems != 6)
+	{
+			elog(ERROR,"histogram2d parser - couldnt parse initial portion of histogram!\n");
+			PG_RETURN_NULL() ;
+	}
+
+	if  ( (boxesPerSide > 50) || (boxesPerSide <1) )
+	{
+			elog(ERROR,"histogram2d parser - boxesPerSide is too big or too small\n");
+			PG_RETURN_NULL() ;
+	}
+
+	str2 = strstr(str,";");
+	str2++;
+
+	if (str2[0] ==0)
+	{
+			elog(ERROR,"histogram2d parser - no histogram values\n");
+			PG_RETURN_NULL() ;
+	}
+
+	histo = (HISTOGRAM2D *) palloc (sizeof(HISTOGRAM2D) +    (boxesPerSide*boxesPerSide-1)*4 );
+	histo->size = sizeof(HISTOGRAM2D) +    (boxesPerSide*boxesPerSide-1)*4  ;
+
+	for (t=0;t<boxesPerSide*boxesPerSide;t++)
+	{
+		datum = strtol(str2,&str3,10); // str2=start of int, str3=end of int, base 10
+		// str3 points to "," or ")"
+		if (str3[0] ==0)
+		{
+			elog(ERROR,"histogram2d parser - histogram values prematurely ended!\n");
+			PG_RETURN_NULL() ;
+		}
+		histo->value[t] = (unsigned int) datum;
+		str2= str3+1; //move past the "," or ")"
+	}
+	histo->xmin = xmin;
+	histo->xmax = xmax;
+	histo->ymin = ymin;
+	histo->ymax = ymax;
+	histo->avgFeatureArea = avgFeatureArea;
+	histo->boxesPerSide = boxesPerSide;
+
+	PG_RETURN_POINTER(histo);
+}
+
+
+
+//text version
+PG_FUNCTION_INFO_V1(histogram2d_out);
+Datum histogram2d_out(PG_FUNCTION_ARGS)
+{
+	//char *result;
+	//result = palloc(200);
+	//sprintf(result,"HISTOGRAM2D(0,0,100,100,2;11,22,33,44)");
+	//PG_RETURN_CSTRING(result);
+
+		HISTOGRAM2D   *histo = (HISTOGRAM2D *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+		char	*result;
+		int t;
+		char	temp[100];
+		int size;
+
+		size = 26+6*MAX_DIGS_DOUBLE + histo->boxesPerSide*histo->boxesPerSide* (MAX_DIGS_DOUBLE+1);
+		result = palloc(size);
+
+		sprintf(result,"HISTOGRAM2D(%.15g,%.15g,%.15g,%.15g,%i,%.15g;",
+					histo->xmin,histo->ymin,histo->xmax,histo->ymax,histo->boxesPerSide,histo->avgFeatureArea );
+
+		//elog(NOTICE,"so far: %s",result);
+		//elog(NOTICE,"buffsize=%i, size=%i",size,histo->size);
+
+		for (t=0;t<histo->boxesPerSide*histo->boxesPerSide;t++)
+		{
+			if (t!=((histo->boxesPerSide*histo->boxesPerSide)-1))
+				sprintf(temp,"%u,", histo->value[t]);
+			else
+				sprintf(temp,"%u", histo->value[t]);
+			strcat(result,temp);
+		}
+
+		strcat(result,")");
+		//elog(NOTICE,"about to return string (len=%i): -%s-",strlen(result),result);
+
+		PG_RETURN_CSTRING(result);
+
+}
+

@@ -242,6 +242,29 @@ typedef struct Well_known_bin {
 	unsigned char  data[1]; //THIS HOLD VARIABLE LENGTH DATA
 } WellKnownBinary;
 
+// --------------------------------------------
+// histogram2d type
+
+// 2d histogram is a bounding box with a bunch of cells in it.
+// The cells will have width (xmax-xmin)/boxesPerSide
+//                 and height(ymax-ymin)/boxesPerSide
+// The first box is the ll corner's box, the send is directly to the right
+//   (row-major).
+//
+//  Size of structure is:
+//        4 (size) + 32 (box) + 4 (boxesPerSide) +
+//		    boxesPerSide*boxesPerSide*4 (data)
+typedef struct histotag
+{
+	int32		size;		// postgres variable-length type requirement
+	int			boxesPerSide;   //boxesPerSide * boxesPerSide = total boxes in grid
+	double		avgFeatureArea; // average bbox area of features in this histogram
+		// double will be correctly aligned
+	double      xmin,ymin, xmax, ymax; // BOX of area
+	unsigned int value[1]; // variable length # of ints for histogram
+} HISTOGRAM2D;
+
+
 
 //prototypes
 
@@ -498,6 +521,18 @@ Datum collector(PG_FUNCTION_ARGS);
 
 Datum WKBtoBYTEA(PG_FUNCTION_ARGS);
 
+Datum histogram2d_in(PG_FUNCTION_ARGS);
+Datum histogram2d_out(PG_FUNCTION_ARGS);
+Datum create_histogram2d(PG_FUNCTION_ARGS);
+
+Datum build_histogram2d(PG_FUNCTION_ARGS);
+
+Datum geometry2box(PG_FUNCTION_ARGS);
+
+Datum explode_histogram2d(PG_FUNCTION_ARGS);
+Datum estimate_histogram2d(PG_FUNCTION_ARGS);
+
+Datum postgisgistcostestimate(PG_FUNCTION_ARGS);
 
 /*--------------------------------------------------------------------
  * Useful floating point utilities and constants.
