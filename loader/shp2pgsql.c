@@ -11,159 +11,6 @@
  * the terms of hte GNU General Public Licence. See the COPYING file.
  * 
  **********************************************************************
- * $Log$
- * Revision 1.67  2004/10/06 10:11:16  strk
- * Other separator fixes
- *
- * Revision 1.66  2004/10/06 09:40:27  strk
- * Handled 0-DBF-attributes corner case.
- *
- * Revision 1.65  2004/09/20 17:13:31  strk
- * changed comments to better show shape type handling
- *
- * Revision 1.64  2004/08/20 08:14:37  strk
- * Whole output wrapped in transaction blocks.
- * Drops are out of transaction, and multiple transactions are used
- * for INSERT mode.
- *
- * Revision 1.63  2004/08/20 07:57:06  strk
- * Fixed a bug in 'append-mode'.
- * Added -g switch to specify geometry column.
- * Added a note about -d mode conceptual bugs.
- *
- * Revision 1.62  2004/08/05 20:00:24  strk
- * Another schema support bug from Mark
- *
- * Revision 1.61  2004/08/05 16:53:29  strk
- * schema support patches sent by Mark
- *
- * Revision 1.60  2004/07/29 14:10:37  strk
- * Unability to open a shapefile or dbffile reported more nicely.
- *
- * Revision 1.59  2004/07/19 16:24:47  strk
- * Added -i switch
- *
- * Revision 1.58  2004/06/22 11:05:46  strk
- * Handled empty strings in numeric fields as '0'es... pg_atoi() does
- * not do this (while atoi() does).
- *
- * Revision 1.57  2004/05/20 19:21:08  pramsey
- * Fix bug in append mode that filled values into nonexistant gid column.
- *
- * Revision 1.56  2004/05/13 09:40:33  strk
- * Totally reworked code to have a main loop for shapefile objects.
- * Much more readable, I belive.
- *
- * Revision 1.55  2004/05/13 07:48:47  strk
- * Put table creation code in its own function.
- * Fixed a bug with NULL shape records handling.
- *
- * Revision 1.54  2004/05/13 06:38:39  strk
- * DBFReadStringValue always used to workaround shapelib bug with int values.
- *
- * Revision 1.53  2004/04/21 09:13:15  strk
- * Attribute names escaping mechanism added. You should now
- * be able to dump a shapefile equal to the one loaded.
- *
- * Revision 1.52  2004/03/10 17:35:16  strk
- * removed just-introduced bug
- *
- * Revision 1.51  2004/03/10 17:23:56  strk
- * code cleanup, fixed a bug missing to transform 'gid' to 'gid__2' in shapefile attribute name
- *
- * Revision 1.50  2004/03/06 17:43:06  strk
- * Added RCSID string in usage output
- *
- * Revision 1.49  2004/03/06 17:35:59  strk
- * Added rcsid string to usage output
- *
- * Revision 1.48  2004/02/03 08:37:48  strk
- * schema support added, slightly modified logic used to keep table and schema names cases (always quoted and forced to lower case if not asked to keep original case)
- *
- * Revision 1.47  2004/01/16 20:06:10  strk
- * Added FTLogical<->boolean mapping
- *
- * Revision 1.46  2004/01/15 09:57:07  strk
- * field type array allocates num_fields * sizeof(int) instead of sizeof(char*)
- *
- * Revision 1.45  2004/01/02 20:11:41  strk
- * always call setval with no schema specification. drop 'database' argument using the empty string to the AddGeometryColumn call
- *
- * Revision 1.44  2003/12/30 13:31:53  strk
- * made shp2pgsql looser about numeric precisions
- *
- * Revision 1.43  2003/12/30 12:37:46  strk
- * Fixed segfault bug reported by Randy George, removed explicit sequence drop
- *
- * Revision 1.42  2003/12/01 14:27:58  strk
- * added simple malloc wrapper
- *
- * Revision 1.41  2003/09/29 16:15:22  pramsey
- * Patch from strk:
- * - "\t" always preceeded the first value of a dump_format query
- *   if NULL
- *
- * - field values where quoted with (") in dump_format when
- *   called with -k ( did I introduce that? )
- *
- * - Appropriate calls to DBF[..]ReadAttributes based on
- *   cached attribute types.
- *
- * - Assured that *all* shapes are NULL before exiting with
- *   an error ( I did not check that NULL shapes in the midle
- *   of the shapefiles are handled, but previous code did
- *   not check that either ... )
- *
- * Revision 1.40  2003/09/19 00:37:33  jeffloun
- * fixed a bug that actually tests the first 2 point for pip instead of just thinking I was testing the first two.
- *
- * Revision 1.39  2003/08/17 19:00:14  pramsey
- * Change sequence handling to respect versions prior to 7.3. Patch from
- * strk.
- *
- * Revision 1.38  2003/08/05 16:28:05  jeffloun
- * Removed the setval for the sequence if the value was going to be 0.
- * This avoids a warning that occirs when you try to set it to 0.
- *
- * Revision 1.37  2003/08/01 23:22:44  jeffloun
- * Altered the loader to use a (gid serial) type instead of just a (gid int4).
- * Also the gid is now declared as a primary key.
- *
- * Revision 1.36  2003/07/01 18:30:55  pramsey
- * Added CVS revision headers.
- *
- * Revision 1.35  2003/06/18 16:30:56  pramsey
- * It seems that invalid geometries where in the shapefile (as far as shapelib
- * let shp2pgsql know). LINEZ objects with less then 2 vertices. I've
- * patched shp2pgsql to recognized such an inconsistence and use a NULL
- * geometry for that record printing a warning on stderr.
- * <strk@freek.keybit.net>
- *
- * Revision 1.34  2003/04/14 18:01:42  pramsey
- * Patch for optional case sensitivity respect. From strk.
- *
- * Revision 1.33  2003/04/01 23:02:50  jeffloun
- *
- * Fixed a bug which dropped the last Z value of each line in 3d lines.
- *
- * Revision 1.32  2003/03/07 16:39:53  pramsey
- * M-handling patch and some Z-recognition too.
- * From strk@freek.keybit.net.
- *
- * Revision 1.31  2003/02/15 00:27:14  jeffloun
- * added more type checking into the create table statment.
- * Now uses int8, and numeric types if the columns definitions are too big
- *
- * Revision 1.30  2003/02/14 20:07:26  jeffloun
- * changed the PIP function to loop from i=0 to  1<n-1
- *
- * Revision 1.29  2003/02/04 22:57:44  pramsey
- * Fix memory management error, array of pointers allocated insufficient space.
- *
- * Revision 1.28  2003/02/04 21:39:20  pramsey
- * Added CVS substitution strings for logging.
- *
- **********************************************************************
  * Using shapelib 1.2.8, this program reads in shape files and 
  * processes it's contents into a Insert statements which can be 
  * easily piped into a database frontend.
@@ -202,6 +49,7 @@ char    *geom;
 DBFFieldType *types;	/* Fields type, width and precision */
 SHPHandle  hSHPHandle;
 DBFHandle  hDBFHandle;
+int shpfiletype;
 SHPObject  *obj;
 int 	*widths;
 int 	*precisions;
@@ -217,6 +65,7 @@ char *protect_quotes_string(char *str);
 int PIP( Point P, Point* V, int n );
 void *safe_malloc(size_t size);
 void create_table(void);
+void usage(char *me, int exitcode);
 
 static char rcsid[] =
   "$Id$";
@@ -742,32 +591,7 @@ main (int ARGC, char **ARGV)
 	}
 
         if (errflg==1) {
-		fprintf(stderr, "\n**ERROR** invalid option or command parameters\n");
-		fprintf(stderr, "\n");
-		fprintf(stderr, "RCSID: %s\n", rcsid);
-		fprintf(stderr, "USAGE: shp2pgsql [<options>] <shapefile> [<schema>.]<table>\n");
-		fprintf(stderr, "\n");
-		fprintf(stderr, "OPTIONS:\n");
-		fprintf(stderr, "  -s <srid>  Set the SRID field. If not specified it defaults to -1.\n");
-		fprintf(stderr, "\n");
-		fprintf(stderr, "  (-d|a|c) These are mutually exclusive options:\n");
-		fprintf(stderr, "      -d  Drops the table , then recreates it and populates\n");
-		fprintf(stderr, "          it with current shape file data.\n");
-		fprintf(stderr, "      -a  Appends shape file into current table, must be\n");
-		fprintf(stderr, "          exactly the same table schema.\n");
-		fprintf(stderr, "      -c  Creates a new table and populates it, this is the\n");
-		fprintf(stderr, "          default if you do not specify any options.\n");
-		fprintf(stderr, "\n");
-		fprintf(stderr, "  -g <geometry_column> Specify the name of the geometry column\n");
-		fprintf(stderr, "     (mostly useful in append mode).\n");
-		fprintf(stderr, "\n");
-		fprintf(stderr, "  -D  Use postgresql dump format (defaults to sql insert\n");
-		fprintf(stderr, "      statments.\n");
-		fprintf(stderr, "\n");
-		fprintf(stderr, "  -k  Keep postgresql identifiers case.\n");
-		fprintf(stderr, "\n");
-		fprintf(stderr, "  -i  Use int4 type for all integer dbf fields.\n");
-		exit (2);
+		usage(ARGV[0], 2);
         }
 
 
@@ -789,14 +613,19 @@ main (int ARGC, char **ARGV)
 	//Open the shp and dbf files
 	hSHPHandle = SHPOpen( shp_file, "rb" );
 	if (hSHPHandle == NULL) {
-		fprintf(stderr, "shape (.shp) or index files (.shx) can not be opened.\n");
+		fprintf(stderr, "%s: shape (.shp) or index files (.shx) can not be opened.\n", shp_file);
 		exit(-1);
 	}
 	hDBFHandle = DBFOpen( shp_file, "rb" );
 	if (hSHPHandle == NULL || hDBFHandle == NULL){
-		fprintf(stderr, "dbf file (.dbf) can not be opened.\n");
+		fprintf(stderr, "%s: dbf file (.dbf) can not be opened.\n",
+			shp_file);
 		exit(-1);
 	}
+
+	SHPGetInfo(hSHPHandle, NULL, &shpfiletype, NULL, NULL);
+
+	fprintf(stderr, "Input Shapefile is %s\n", SHPTypeName(shpfiletype));
 
 	if(opt == 'd')
 	{
@@ -1238,122 +1067,190 @@ main (int ARGC, char **ARGV)
 	return(1);
 }//end main()
 
-void create_table()
+void
+create_table()
 {
 	int j;
 	int field_precision, field_width;
 	DBFFieldType type = -1;
 
-		/* 
-		 * Create a table for inserting the shapes into with appropriate
-		 * columns and types
-		 */
+	/* 
+	 * Create a table for inserting the shapes into with appropriate
+	 * columns and types
+	 */
 
-		if ( schema )
+	if ( schema )
+	{
+		printf("CREATE TABLE \"%s\".\"%s\" (gid serial", schema, table);
+	}
+	else
+	{
+		printf("CREATE TABLE \"%s\" (gid serial", table);
+	}
+
+	for(j=0;j<num_fields;j++)
+	{
+		type = types[j];
+		field_width = widths[j];
+		field_precision = precisions[j];
+
+		printf(", \"%s\" ", field_names[j]);
+
+		if(hDBFHandle->pachFieldType[j] == 'D' ) /* Date field */
 		{
-			printf("CREATE TABLE \"%s\".\"%s\" (gid serial", schema, table);
+			printf ("varchar(8)");//date data-type is not supported in API so check for it explicity before the api call.
 		}
+			
 		else
 		{
-			printf("CREATE TABLE \"%s\" (gid serial", table);
-		}
 
-		for(j=0;j<num_fields;j++)
-		{
-			type = types[j];
-			field_width = widths[j];
-			field_precision = precisions[j];
-
-			printf(", \"%s\" ", field_names[j]);
-
-			if(hDBFHandle->pachFieldType[j] == 'D' ) /* Date field */
+			if(type == FTString)
 			{
-				printf ("varchar(8)");//date data-type is not supported in API so check for it explicity before the api call.
+				printf ("varchar");
 			}
-			
-			else
+			else if(type == FTInteger)
 			{
-
-				if(type == FTString)
+				if ( forceint4 || field_width <= 9 )
 				{
-					printf ("varchar");
+					printf ("int4");
 				}
-				else if(type == FTInteger)
+				else if( field_width > 18 )
 				{
-					if ( forceint4 || field_width <= 9 )
-					{
-						printf ("int4");
-					}
-					else if( field_width > 18 )
-					{
-						printf("numeric(%d,0)",
-							field_width);
-					}
-					else 
-					{
-						printf ("int8");
-					}
+					printf("numeric(%d,0)",
+						field_width);
 				}
-				else if(type == FTDouble)
+				else 
 				{
-					if( field_width > 18 )
-					{
-						printf ("numeric");
-					}
-					else
-					{
-						printf ("float8");
-					}
+					printf ("int8");
 				}
-				else if(type == FTLogical)
+			}
+			else if(type == FTDouble)
+			{
+				if( field_width > 18 )
 				{
-					printf ("boolean");
+					printf ("numeric");
 				}
 				else
 				{
-					printf ("Invalid type in DBF file");
+					printf ("float8");
 				}
-			}	
-		}
-		printf (");\n");
+			}
+			else if(type == FTLogical)
+			{
+				printf ("boolean");
+			}
+			else
+			{
+				printf ("Invalid type in DBF file");
+			}
+		}	
+	}
+	printf (");\n");
 
 	//create the geometry column with an addgeometry call to dave's function
-		if ( schema )
-		{
-			printf("SELECT AddGeometryColumn('%s','%s','%s','%s',",
-				schema, table, geom, sr_id);
-		}
-		else
-		{
-			printf("SELECT AddGeometryColumn('','%s','%s','%s',",
-				table, geom, sr_id);
-		}
-		if( obj->nSHPType == 1 ){  //2d point
+	if ( schema )
+	{
+		printf("SELECT AddGeometryColumn('%s','%s','%s','%s',",
+			schema, table, geom, sr_id);
+	}
+	else
+	{
+		printf("SELECT AddGeometryColumn('','%s','%s','%s',",
+			table, geom, sr_id);
+	}
+
+	switch(shpfiletype)
+	{
+		case SHPT_POINT: // Point
 			printf("'POINT',2);\n");
-		}else if( obj->nSHPType == 21){ // PointM
+			break;
+		case SHPT_ARC: // PolyLine
+			printf("'MULTILINESTRING',2);\n");
+			break;
+		case SHPT_POLYGON: // Polygon
+			printf("'MULTIPOLYGON',2);\n");
+			break;
+		case SHPT_MULTIPOINT: // MultiPoint
+	         	printf("'MULTIPOINT',2);\n");
+			break;
+		case SHPT_POINTM: // PointM
 			printf("'POINT',2);\n");
-		}else if( obj->nSHPType == 23){  // PolyLineM
+			break;
+		case SHPT_ARCM: // PolyLineM
 			printf("'MULTILINESTRING',2);\n");
-		}else if( obj->nSHPType == 25){  // PolygonM
+			break;
+		case SHPT_POLYGONM: // PolygonM
 			printf("'MULTIPOLYGON',2);\n");
-		}else if( obj->nSHPType == 28){ // MultiPointM
-		         printf("'MULTIPOINT',2);\n");
-		}else if( obj->nSHPType == 3){	//2d arcs/lines
-			printf("'MULTILINESTRING',2);\n");
-		}else if( obj->nSHPType == 5){	//2d polygons
-			printf("'MULTIPOLYGON',2);\n");
-		}else if( obj->nSHPType == 8){ //2d multipoint
-		         printf("'MULTIPOINT',2);\n");
-		}else if( obj->nSHPType == 11){ //3d points
+			break;
+		case SHPT_MULTIPOINTM: // MultiPointM
+	         	printf("'MULTIPOINT',2);\n");
+			break;
+		case SHPT_POINTZ: // PointZ
 			printf("'POINT',3);\n");
-		}else if( obj->nSHPType == 13){  //3d arcs/lines
+			break;
+		case SHPT_ARCZ: // PolyLineZ
 			printf("'MULTILINESTRING',3);\n");
-		}else if( obj->nSHPType == 15){  //3d polygons
+			break;
+		case SHPT_POLYGONZ: // MultiPolygonZ
 			printf("'MULTIPOLYGON',3);\n");
-		}else if( obj->nSHPType == 18){  //3d multipoints
+			break;
+		case SHPT_MULTIPOINTZ: // MultiPointZ
 			printf("'MULTIPOINT',3);\n");
-		}else{
-			printf("'GEOMETRY',3) -- nSHPType: %d\n", obj->nSHPType);
-		}
-		//finished creating the table
+			break;
+		default:
+			printf("'GEOMETRY',3); -- nSHPType: %d\n",
+				shpfiletype);
+			break;
+	}
+	//finished creating the table
 }
+
+void
+usage(char *me, int exitcode)
+{
+	fprintf(stderr, "RCSID: %s\n", rcsid);
+	fprintf(stderr, "USAGE: %s [<options>] <shapefile> [<schema>.]<table>\n", me);
+	fprintf(stderr, "\n");
+	fprintf(stderr, "OPTIONS:\n");
+	fprintf(stderr, "  -s <srid>  Set the SRID field. If not specified it defaults to -1.\n");
+	fprintf(stderr, "\n");
+	fprintf(stderr, "  (-d|a|c) These are mutually exclusive options:\n");
+	fprintf(stderr, "      -d  Drops the table , then recreates it and populates\n");
+	fprintf(stderr, "          it with current shape file data.\n");
+	fprintf(stderr, "      -a  Appends shape file into current table, must be\n");
+	fprintf(stderr, "          exactly the same table schema.\n");
+	fprintf(stderr, "      -c  Creates a new table and populates it, this is the\n");
+	fprintf(stderr, "          default if you do not specify any options.\n");
+	fprintf(stderr, "\n");
+	fprintf(stderr, "  -g <geometry_column> Specify the name of the geometry column\n");
+	fprintf(stderr, "     (mostly useful in append mode).\n");
+	fprintf(stderr, "\n");
+	fprintf(stderr, "  -D  Use postgresql dump format (defaults to sql insert\n");
+	fprintf(stderr, "      statments.\n");
+	fprintf(stderr, "\n");
+	fprintf(stderr, "  -k  Keep postgresql identifiers case.\n");
+	fprintf(stderr, "\n");
+	fprintf(stderr, "  -i  Use int4 type for all integer dbf fields.\n");
+	exit (exitcode);
+}
+
+/**********************************************************************
+ * $Log$
+ * Revision 1.68  2004/10/07 06:54:24  strk
+ * cleanups
+ *
+ * Revision 1.67  2004/10/06 10:11:16  strk
+ * Other separator fixes
+ *
+ * Revision 1.66  2004/10/06 09:40:27  strk
+ * Handled 0-DBF-attributes corner case.
+ *
+ * Revision 1.65  2004/09/20 17:13:31  strk
+ * changed comments to better show shape type handling
+ *
+ * Revision 1.64  2004/08/20 08:14:37  strk
+ * Whole output wrapped in transaction blocks.
+ * Drops are out of transaction, and multiple transactions are used
+ * for INSERT mode.
+ *
+ **********************************************************************/

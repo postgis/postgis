@@ -161,10 +161,13 @@ main(int ARGC, char **ARGV){
 
 	if ( getenv("ROWBUFLEN") ) rowbuflen=atoi(getenv("ROWBUFLEN"));
 
+	if ( ARGC == 1 ) {
+		usage(0);
+	}
+
 	if ( ! parse_commandline(ARGC, ARGV) ) {
                 printf("\n**ERROR** invalid option or command parameters\n\n");
 		usage(2);
-		exit_nicely(conn);
 	}
 
 
@@ -2921,6 +2924,9 @@ shapetypename(int num)
 }
 /**********************************************************************
  * $Log$
+ * Revision 1.60  2004/10/07 06:54:24  strk
+ * cleanups
+ *
  * Revision 1.59  2004/10/06 17:04:38  strk
  * ZM handling. Log trimmed.
  *
