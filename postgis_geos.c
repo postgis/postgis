@@ -10,6 +10,10 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.16  2003/10/27 23:44:54  strk
+ * unite_sfunc made always copy input array in long lived memory context.
+ * It should now work with safer memory.
+ *
  * Revision 1.15  2003/10/27 20:13:05  strk
  * Made GeomUnion release memory soon, Added fastunion support functions
  *
@@ -241,26 +245,30 @@ resize_ptrArrayType(ArrayType *a, int num)
  * Will DETOAST given geometry and put a pointer to it
  * in the given array. DETOASTED value is first copied
  * to a safe memory context to avoid premature deletion.
- *
- * WARNING: array resize is not checked for memory
- * context. Might use instable memory!! --strk(TODO);
- *
  */
+#define DEBUG 
 PG_FUNCTION_INFO_V1(unite_sfunc);
 Datum unite_sfunc(PG_FUNCTION_ARGS)
 {
 	ArrayType *array;
-	int nelems;
+	int nelems, nbytes;
 	Datum datum;
 	GEOMETRY *geom, *tmpgeom;
 	ArrayType *result;
 	Pointer **pointers;
-#ifdef USE_BOGUS_MEMORY_CONTEXT_SWITCHING
 	MemoryContext oldcontext; 
-#endif
 
-	array = (ArrayType *) PG_GETARG_ARRAYTYPE_P(0);
-	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
+	datum = PG_GETARG_DATUM(0);
+	if ( (Pointer *)datum == NULL ) {
+		array = NULL;
+		nelems = 0;
+#ifdef DEBUG
+		elog(NOTICE, "unite_sfunc: NULL array, nelems=%d", nelems);
+#endif
+	} else {
+		array = (ArrayType *) PG_DETOAST_DATUM_COPY(datum);
+		nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
+	}
 
 	datum = PG_GETARG_DATUM(1);
 	// Do nothing, return state array
@@ -271,39 +279,45 @@ Datum unite_sfunc(PG_FUNCTION_ARGS)
 	}
 
 	/*
-	 * Find a way to directly detoast datum in
-	 * flinfo->fcinfo->fn_mcxt context.
-	 * ( this way we'll reduce a memory copy I guess)
-	 * 	--strk(TODO);
+	 * Switch to * flinfo->fcinfo->fn_mcxt
+	 * memory context to be sure both detoasted
+	 * geometry AND array of pointers to it
+	 * last till the call to unite_finalfunc.
 	 */
-#ifdef USE_BOGUS_MEMORY_CONTEXT_SWITCHING
 	oldcontext = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
-	geom = (GEOMETRY *)PG_DETOAST_DATUM(datum); 
-	MemoryContextSwitchTo(oldcontext);
-#else
-	tmpgeom = (GEOMETRY *)PG_DETOAST_DATUM(datum); 
-	geom = (GEOMETRY *) MemoryContextAlloc(
-		fcinfo->flinfo->fn_mcxt, tmpgeom->size);
-	memcpy(geom, tmpgeom, tmpgeom->size);
-	if ( (GEOMETRY *)datum != tmpgeom ) pfree(tmpgeom);
-#endif
 
-	// Add given geometry to state array 
-	nelems++;
-	//elog(NOTICE, "unite_sfunc: adding %p, nelems=%d", geom, nelems);
+	/* Make a DETOASTED copy of input geometry */
+	geom = (GEOMETRY *)PG_DETOAST_DATUM_COPY(datum); 
+
+#ifdef DEBUG
+	elog(NOTICE, "unite_sfunc: adding %p (nelems=%d)", geom, nelems);
+#endif
 
 	/*
 	 * Might use a more optimized version instead of repalloc'ing
 	 * at every iteration. This is not the bottleneck anyway.
-	 *
-	 * WARNING: should use fcinfo->flinfo->fn_mcxt
-	 * memory context for the array too!
-	 *  --strk(TODO);
+	 * 		--strk(TODO);
 	 */
-	result = resize_ptrArrayType(array, nelems);
+	++nelems;
+	nbytes = ARR_OVERHEAD(1) + sizeof(Pointer *) * nelems;
+	if ( ! array ) {
+		result = (ArrayType *) palloc(nbytes);
+		result->size = nbytes;
+		result->ndim = 1;
+		*((int *) ARR_DIMS(result)) = nelems;
+	} else {
+		result = (ArrayType *) repalloc(array, nbytes);
+		result->size = nbytes;
+		result->ndim = 1;
+		*((int *) ARR_DIMS(result)) = nelems;
+	}
 
 	pointers = (Pointer **)ARR_DATA_PTR(result);
 	pointers[nelems-1] = (Pointer *)geom;
+
+	/* Go back to previous memory context */
+	MemoryContextSwitchTo(oldcontext);
+
 
 	PG_RETURN_ARRAYTYPE_P(result);
 
@@ -326,11 +340,15 @@ Datum unite_finalfunc(PG_FUNCTION_ARGS)
 	ArrayType *array;
 	int is3d = 0;
 	int nelems, i;
-	static int call=1;
 	GEOMETRY **geoms, *result, *pgis_geom;
 	Geometry *g1, *g2, *geos_result;
+#ifdef DEBUG
+	static int call=1;
+#endif
 
+#ifdef DEBUG
 	call++;
+#endif
 
 	array = (ArrayType *) PG_GETARG_ARRAYTYPE_P(0);
 
@@ -362,7 +380,11 @@ Datum unite_finalfunc(PG_FUNCTION_ARGS)
 		 */
 		pfree(pgis_geom);
 
-		elog(NOTICE, "unite_finalfunc(%d): adding geom %d to union", i, call);
+#ifdef DEBUG
+		elog(NOTICE, "unite_finalfunc(%d): adding geom %d to union",
+				call, i);
+#endif
+
 		g2 = GEOSUnion(g1,geos_result);
 		if ( g2 == NULL )
 		{
