@@ -862,6 +862,11 @@ CREATEFUNCTION EndPoint(geometry)
 	AS '@MODULE_FILENAME@', 'LWGEOM_endpoint_linestring'
 	LANGUAGE 'C' WITH (isstrict);
 
+CREATEFUNCTION IsClosed(geometry)
+	RETURNS boolean
+	AS '@MODULE_FILENAME@', 'LWGEOM_isclosed_linestring'
+	LANGUAGE 'C' WITH (isstrict);
+
 CREATEFUNCTION SRID(geometry) 
 	RETURNS int4
 	AS '@MODULE_FILENAME@','LWGEOM_getSRID'
@@ -945,6 +950,11 @@ CREATEFUNCTION force_2d(geometry)
 CREATEFUNCTION force_3d(geometry) 
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_force_3d'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION force_collection(geometry) 
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_force_collection'
 	LANGUAGE 'C' WITH (isstrict);
 
 ------------------------------------------------------------------------

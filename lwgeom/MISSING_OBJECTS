@@ -63,6 +63,13 @@ FUNC: KEEPING FUNCTION: [ymax(box3d)]
 FUNC: KEEPING FUNCTION: [zmax(box3d)]
 FUNC: KEEPING FUNCTION: [box3dtobox(box3d)]
 FUNC: KEEPING FUNCTION: [combine_bbox(box3d, geometry)]
+TYPE: KEEPING TYPE [box3d]
+TYPE: KEEPING TYPE [spheroid]
+TYPE: KEEPING TYPE [chip]
+FNCAST: KEEPING FNCAST geometry(chip) (see CAST)
+FNCAST: KEEPING FNCAST geometry(box3d) (see CAST)
+FNCAST: KEEPING FNCAST geometry(text) (see CAST)
+FNCAST: KEEPING FNCAST box3dtobox(box3d) (see CAST)
 
 FUNC: KEEPING FUNCTION: [length_spheroid(geometry, spheroid)]
 FUNC: KEEPING FUNCTION: [length3d_spheroid(geometry, spheroid)]
@@ -70,13 +77,11 @@ FUNC: KEEPING FUNCTION: [distance_spheroid(geometry, geometry, spheroid)]
 
 FUNC: KEEPING FUNCTION: [point_inside_circle(geometry, double precision, double precision, double precision)]
 
-FUNC: KEEPING FUNCTION: [isclosed(geometry)]
 FUNC: KEEPING FUNCTION: [centroid(geometry)]
 FUNC: KEEPING FUNCTION: [isring(geometry)]
 FUNC: KEEPING FUNCTION: [pointonsurface(geometry)]
 FUNC: KEEPING FUNCTION: [collector(geometry, geometry)]
 
-FUNC: KEEPING FUNCTION: [force_collection(geometry)]
 FUNC: KEEPING FUNCTION: [intersection(geometry, geometry)]
 FUNC: KEEPING FUNCTION: [buffer(geometry, double precision)]
 FUNC: KEEPING FUNCTION: [convexhull(geometry)]
@@ -118,9 +123,6 @@ FUNC: KEEPING FUNCTION: [collect_garray(geometry[])]
 FUNC: KEEPING FUNCTION: [geosnoop(geometry)]
 FUNC: KEEPING FUNCTION: [line_interpolate_point(geometry, double precision)]
 FUNC: KEEPING FUNCTION: [geometry_size(geometry, internal)]
-TYPE: KEEPING TYPE [box3d]
-TYPE: KEEPING TYPE [spheroid]
-TYPE: KEEPING TYPE [chip]
 AGGREGATE: KEEPING AGGREGATE [collect(geometry)]
 AGGREGATE: KEEPING AGGREGATE [collect(geometry)]
 AGGREGATE: KEEPING AGGREGATE [geomunion(geometry)]
@@ -128,7 +130,4 @@ AGGREGATE: KEEPING AGGREGATE [geomunion(geometry)]
 AGGREGATE: KEEPING AGGREGATE [memgeomunion(geometry)]
 AGGREGATE: KEEPING AGGREGATE [memgeomunion(geometry)]
 AGGREGATE: KEEPING AGGREGATE [memcollect(geometry)]
-FNCAST: KEEPING FNCAST geometry(chip) (see CAST)
-FNCAST: KEEPING FNCAST geometry(box3d) (see CAST)
-FNCAST: KEEPING FNCAST geometry(text) (see CAST)
-FNCAST: KEEPING FNCAST box3dtobox(box3d) (see CAST)
+

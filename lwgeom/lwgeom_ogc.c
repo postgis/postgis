@@ -58,10 +58,13 @@ Datum LWGEOM_endpoint_linestring(PG_FUNCTION_ARGS);
 Datum LWGEOM_asText(PG_FUNCTION_ARGS);
 // ---- GeometryFromText(text, integer)
 Datum LWGEOM_from_text(PG_FUNCTION_ARGS);
+// ---- IsClosed(geometry)
+Datum LWGEOM_isclosed_linestring(PG_FUNCTION_ARGS);
 
 // internal
 int32 lwgeom_numpoints_linestring_recursive(char *serialized);
 int32 lwgeom_dimension_recursive(char *serialized);
+char line_is_closed(LWLINE *line);
 
 /*------------------------------------------------------------------*/
 
@@ -726,3 +729,53 @@ Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
+char line_is_closed(LWLINE *line)
+{
+	POINT4D *sp, *ep;
+
+	sp = (POINT4D *)getPoint(line->points, 0);
+	ep = (POINT4D *)getPoint(line->points, line->points->npoints-1);
+
+	if ( sp->x != ep->x ) return 0;
+	if ( sp->y != ep->y ) return 0;
+	if ( line->ndims > 2 )
+	{
+		if ( sp->z != ep->z ) return 0;
+	}
+
+	return 1;
+}
+
+// IsClosed(GEOMETRY) if geometry is a linestring then returns
+// startpoint == endpoint.  If its not a linestring then return NULL.
+// If it's a collection containing multiple linestrings,
+// return true only if all the linestrings have startpoint=endpoint.
+PG_FUNCTION_INFO_V1(LWGEOM_isclosed_linestring);
+Datum LWGEOM_isclosed_linestring(PG_FUNCTION_ARGS)
+{
+	LWGEOM *geom;
+	LWGEOM_INSPECTED *inspected;
+	LWLINE *line = NULL;
+	int linesfound=0;
+	int i;
+
+	geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
+
+	for (i=0; i<inspected->ngeometries; i++)
+	{
+		line = lwgeom_getline_inspected(inspected, i);
+		if ( line == NULL ) continue;
+		if ( ! line_is_closed(line) )
+		{
+			pfree_inspected(inspected);
+			PG_RETURN_BOOL(FALSE);
+		}
+		linesfound++;
+	}
+	pfree_inspected(inspected);
+
+	if ( ! linesfound ) PG_RETURN_NULL();
+	PG_RETURN_BOOL(TRUE);
+
+}
