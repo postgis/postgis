@@ -105,8 +105,8 @@ CREATEFUNCTION geometry_recv(internal)
 	AS '@MODULE_FILENAME@','LWGEOM_recv'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATEFUNCTION geometry_send(internal)
-	RETURNS geometry
+CREATEFUNCTION geometry_send(geometry)
+	RETURNS bytea
 	AS '@MODULE_FILENAME@','WKBFromLWGEOM'
 	LANGUAGE 'C' WITH (isstrict);
 #endif
