@@ -1689,16 +1689,16 @@ CREATE AGGREGATE makeline (
 	finalfunc = makeline_garray
 	);
 
-CREATEFUNCTION makepoly_garray (geometry[])
+CREATEFUNCTION polygonize_garray (geometry[])
 	RETURNS geometry
-	AS '@MODULE_FILENAME@', 'GEOS_makepoly_garray'
+	AS '@MODULE_FILENAME@', 'GEOS_polygonize_garray'
 	LANGUAGE 'C';
 
-CREATE AGGREGATE makepoly (
+CREATE AGGREGATE polygonize (
 	sfunc = geom_accum,
 	basetype = geometry,
 	stype = geometry[],
-	finalfunc = makepoly_garray
+	finalfunc = polygonize_garray
 	);
 
 ------------------------------------------------------------------------

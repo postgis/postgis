@@ -34,7 +34,7 @@ Datum pointonsurface(PG_FUNCTION_ARGS);
 Datum GEOSnoop(PG_FUNCTION_ARGS);
 Datum postgis_geos_version(PG_FUNCTION_ARGS);
 Datum centroid(PG_FUNCTION_ARGS);
-Datum GEOS_makepoly_garray(PG_FUNCTION_ARGS);
+Datum GEOS_polygonize_garray(PG_FUNCTION_ARGS);
 
 
 
@@ -2242,8 +2242,8 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-PG_FUNCTION_INFO_V1(GEOS_makepoly_garray);
-Datum GEOS_makepoly_garray(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(GEOS_polygonize_garray);
+Datum GEOS_polygonize_garray(PG_FUNCTION_ARGS)
 {
 	Datum datum;
 	ArrayType *array;
@@ -2270,7 +2270,7 @@ Datum GEOS_makepoly_garray(PG_FUNCTION_ARGS)
 	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
 
 #ifdef DEBUG
-	elog(NOTICE, "GEOS_makepoly_garray: number of elements: %d", nelems);
+	elog(NOTICE, "GEOS_polygonize_garray: number of elements: %d", nelems);
 #endif
 
 	if ( nelems == 0 ) PG_RETURN_NULL();
@@ -2288,12 +2288,12 @@ Datum GEOS_makepoly_garray(PG_FUNCTION_ARGS)
 	}
 
 #ifdef DEBUG
-	elog(NOTICE, "GEOS_makepoly_garray: invoking GEOSpolygonize");
+	elog(NOTICE, "GEOS_polygonize_garray: invoking GEOSpolygonize");
 #endif
 
 	geos_result = GEOSpolygonize(vgeoms, nelems);
 #ifdef DEBUG
-	elog(NOTICE, "GEOS_makepoly_garray: GEOSpolygonize returned");
+	elog(NOTICE, "GEOS_polygonize_garray: GEOSpolygonize returned");
 #endif
 	//pfree(vgeoms);
 	if ( ! geos_result ) PG_RETURN_NULL();
@@ -2461,10 +2461,10 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 	PG_RETURN_NULL(); // never get here
 }
 
-PG_FUNCTION_INFO_V1(GEOS_makepoly_garray);
-Datum GEOS_makepoly_garray(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(GEOS_polygonize_garray);
+Datum GEOS_polygonize_garray(PG_FUNCTION_ARGS)
 {
-	elog(ERROR,"GEOS_makepoly_garray:: operation not implemented - compile PostGIS with GEOS support");
+	elog(ERROR,"GEOS_polygonize_garray:: operation not implemented - compile PostGIS with GEOS support");
 	PG_RETURN_NULL(); // never get here
 }
 

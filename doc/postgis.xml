@@ -3702,12 +3702,12 @@ FROM geometry_table;</literallayout>
 		</varlistentry>
 
 		<varlistentry>
-		  <term>MakePoly(geometry set)</term>
+		  <term>Polygonize(geometry set)</term>
 
 		  <listitem>
 		    <para>Aggregate. Creates a MultiPolygon from the costituent
-		    linework of a set of geometries. Only available when compiled
-		    agains GEOS >= 2.1.0.</para>
+		    linework of a set of geometries.
+		    Only available when compiled against GEOS >= 2.1.0.</para>
 		  </listitem>
 		</varlistentry>
 
