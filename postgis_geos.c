@@ -10,6 +10,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.22  2003/11/05 18:02:41  strk
+ * renamed unite_finalfunc to unite_garray
+ *
  * Revision 1.21  2003/11/04 19:06:08  strk
  * added missing first geom pfree in unite_finalfunc
  *
@@ -202,7 +205,7 @@ Datum difference(PG_FUNCTION_ARGS);
 Datum boundary(PG_FUNCTION_ARGS);
 Datum symdifference(PG_FUNCTION_ARGS);
 Datum geomunion(PG_FUNCTION_ARGS);
-Datum unite_finalfunc(PG_FUNCTION_ARGS);
+Datum unite_garray(PG_FUNCTION_ARGS);
 
 
 Datum issimple(PG_FUNCTION_ARGS);
@@ -265,8 +268,8 @@ resize_ptrArrayType(ArrayType *a, int num)
  * Geometries in the array are pfree'd as soon as possible.
  *
  */
-PG_FUNCTION_INFO_V1(unite_finalfunc);
-Datum unite_finalfunc(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(unite_garray);
+Datum unite_garray(PG_FUNCTION_ARGS)
 {
 	Datum datum;
 	ArrayType *array;
@@ -292,7 +295,7 @@ Datum unite_finalfunc(PG_FUNCTION_ARGS)
 	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
 
 #ifdef DEBUG
-	elog(NOTICE, "unite_finalfunc: number of elements: %d", nelems);
+	elog(NOTICE, "unite_garray: number of elements: %d", nelems);
 #endif
 
 	if ( nelems == 0 ) PG_RETURN_NULL();
@@ -321,7 +324,7 @@ Datum unite_finalfunc(PG_FUNCTION_ARGS)
 		pfree(pgis_geom);
 
 #ifdef DEBUG
-		elog(NOTICE, "unite_finalfunc(%d): adding geom %d to union",
+		elog(NOTICE, "unite_garray(%d): adding geom %d to union",
 				call, i);
 #endif
 
