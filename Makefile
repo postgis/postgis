@@ -101,12 +101,11 @@ loaderdumper:
 # Shared library stuff
 include $(top_srcdir)/src/Makefile.shlib
 
-$(NAME).sql: $(NAME).sql.in $(NAME)_gist_$(USE_VERSION).sql.in 
-	sed -e 's:@MODULE_FILENAME@:$(LPATH)/$(shlib):g;s:@POSTGIS_VERSION@:$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION):g' < $(NAME).sql.in > $@ 
-	sed -e 's:@MODULE_FILENAME@:$(LPATH)/$(shlib):g;s:@POSTGIS_VERSION@:$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION):g' < $(NAME)_gist_$(USE_VERSION).sql.in >> $(NAME).sql
+$(NAME).sql: $(NAME)_sql_common.sql.in $(NAME)_sql_$(USE_VERSION)_end.sql.in $(NAME)_sql_$(USE_VERSION)_start.sql.in 
+	cat $(NAME)_sql_$(USE_VERSION)_start.sql.in $(NAME)_sql_common.sql.in $(NAME)_sql_$(USE_VERSION)_end.sql.in | sed -e 's:@MODULE_FILENAME@:$(LPATH)/$(shlib):g;s:@POSTGIS_VERSION@:$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION):g'  > $@ 
 
-$(NAME)_undef.sql: $(NAME).sql
-	perl create_undef.pl $< > $@ 
+$(NAME)_undef.sql: $(NAME).sql create_undef.pl
+	perl create_undef.pl $< $(USE_VERSION) > $@ 
 
 install: all installdirs install-lib
 	$(INSTALL_DATA) $(srcdir)/README.$(NAME)  $(docdir)/contrib

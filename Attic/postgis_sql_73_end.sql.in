@@ -1,0 +1,174 @@
+
+--
+-- 7.3 explicit casting definitions
+--
+
+CREATE CAST ( chip AS geometry ) WITH FUNCTION geometry(chip) AS IMPLICIT;
+CREATE CAST ( geometry AS box3d ) WITH FUNCTION box3d(geometry) AS IMPLICIT;
+CREATE CAST ( geometry AS box ) WITH FUNCTION box(geometry) AS IMPLICIT;
+CREATE CAST ( box3d AS geometry ) WITH FUNCTION geometry(box3d) AS IMPLICIT;
+CREATE CAST ( text AS geometry) WITH FUNCTION geometry(text) AS IMPLICIT;
+CREATE CAST ( wkb AS bytea ) WITH FUNCTION bytea(wkb) AS IMPLICIT;
+CREATE CAST ( box3d AS box ) WITH FUNCTION box3dtobox(box3d);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- UPDATE_GEOMETRY_STATS()
+
+CREATE FUNCTION update_geometry_stats() 
+RETURNS text
+AS
+'
+BEGIN
+	EXECUTE ''update geometry_columns set attrelid = (select pg_class.oid AS attrelid from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name  and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name),  varattnum = (select pg_attribute.attnum from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name)'';
+	execute ''update geometry_columns set stats = (build_histogram2d( create_histogram2d(find_extent(f_table_name,f_geometry_column),40 ),f_table_name::text, f_geometry_column::text))  '';	
+	return ''done'';
+END;
+'
+LANGUAGE 'plpgsql' ;
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- UPDATE_GEOMETRY_STATS( <table>, <column> )
+
+CREATE FUNCTION update_geometry_stats(varchar,varchar) 
+RETURNS text
+AS
+'
+DECLARE
+	tablename aliAS for $1;
+	columnname aliAS for $2;
+
+BEGIN
+	EXECUTE ''update geometry_columns set attrelid = (select pg_class.oid AS attrelid from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name  and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name),  varattnum = (select pg_attribute.attnum from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name)'';
+	execute ''update geometry_columns set stats = (build_histogram2d( create_histogram2d(find_extent(''|| quote_literal(tablename) || '',''||quote_literal(columnname) ||''),40 ),''|| quote_literal(tablename) || ''::text,''||quote_literal(columnname) ||''::text )) WHERE f_table_name=''|| quote_literal(tablename) || ''and f_geometry_column=''||quote_literal(columnname) ;	
+	return ''done'';
+END;
+'
+LANGUAGE 'plpgsql' ;
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- CREATE_HISTOGRAM2D( <box>, <size> )
+--
+-- Returns a histgram with 0s in all the boxes.
+
+CREATE FUNCTION create_histogram2d(box3d,int)
+	RETURNS histogram2d
+	AS '@MODULE_FILENAME@','create_histogram2d'
+	LANGUAGE 'C'  with (isstrict);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- BUILD_HISTOGRAM2D( <histogram2d>, <tablename>, <columnname> )
+--
+
+CREATE FUNCTION build_histogram2d (histogram2d, text, text)
+	RETURNS histogram2d
+	AS '@MODULE_FILENAME@','build_histogram2d'
+	LANGUAGE 'C'  with (isstrict);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- EXPLODE_HISTOGRAM2D( <histogram2d>, <tablename> )
+--
+
+CREATE FUNCTION explode_histogram2d (histogram2d, text)
+	RETURNS histogram2d
+	AS '@MODULE_FILENAME@','explode_histogram2d'
+	LANGUAGE 'C'  with (isstrict);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- ESTIMATE_HISTOGRAM2D( <histogram2d>, <box> )
+--
+
+CREATE FUNCTION estimate_histogram2d(histogram2d,box)
+	RETURNS float8
+	AS '@MODULE_FILENAME@','estimate_histogram2d'
+	LANGUAGE 'C'  with (isstrict);
+
+CREATE FUNCTION postgisgistcostestimate(internal,internal,internal,internal,internal,internal,internal,internal)
+	RETURNS opaque
+	AS '@MODULE_FILENAME@','postgisgistcostestimate'
+	LANGUAGE 'C'  with (isstrict);
+
+--
+-- 7.2 GiST support functions
+--
+
+CREATE FUNCTION ggeometry_consistent(internal,geometry,int4) 
+	RETURNS bool 
+	AS '@MODULE_FILENAME@' 
+	LANGUAGE 'C';
+
+CREATE FUNCTION ggeometry_compress(internal) 
+	RETURNS internal 
+	AS '@MODULE_FILENAME@' 
+	LANGUAGE 'C';
+
+CREATE FUNCTION gbox_penalty(internal,internal,internal) 
+	RETURNS internal 
+	AS '@MODULE_FILENAME@' 
+	LANGUAGE 'C';
+
+CREATE FUNCTION gbox_picksplit(internal, internal) 
+	RETURNS internal 
+	AS '@MODULE_FILENAME@' 
+	LANGUAGE 'C';
+
+CREATE FUNCTION gbox_union(bytea, internal) 
+	RETURNS internal 
+	AS '@MODULE_FILENAME@' 
+	LANGUAGE 'C';
+
+CREATE FUNCTION gbox_same(box, box, internal) 
+	RETURNS internal 
+	AS '@MODULE_FILENAME@' 
+	LANGUAGE 'C';
+
+CREATE FUNCTION rtree_decompress(internal) 
+	RETURNS internal
+	AS '@MODULE_FILENAME@' 
+	LANGUAGE 'C';
+
+--
+-- 7.2 RTREE support functions
+--
+
+CREATE FUNCTION geometry_union(geometry,geometry) 
+	RETURNS geometry 
+	AS '@MODULE_FILENAME@' 
+	LANGUAGE 'C';
+
+CREATE FUNCTION geometry_inter(geometry,geometry) 
+	RETURNS geometry 
+	AS '@MODULE_FILENAME@' 
+	LANGUAGE 'C';
+
+CREATE FUNCTION geometry_size(geometry,internal) 
+	RETURNS float4 
+	AS '@MODULE_FILENAME@' 
+	LANGUAGE 'C';
+
+--
+-- Create opclass index bindings
+--
+
+CREATE OPERATOR CLASS gist_geometry_ops
+	DEFAULT FOR TYPE geometry USING gist AS
+	OPERATOR	1	<< ,
+	OPERATOR	2	&< ,
+	OPERATOR	3	&& ,
+	OPERATOR	4	&> ,
+	OPERATOR	5	>> ,
+	OPERATOR	6	= ,
+	OPERATOR	7	@ ,
+	OPERATOR	8	~ ,
+	FUNCTION	1	ggeometry_consistent (internal, geometry, int4),
+	FUNCTION	2	gbox_union (bytea, internal),
+	FUNCTION	3	ggeometry_compress (internal),
+	FUNCTION	4	rtree_decompress (internal),
+	FUNCTION	5	gbox_penalty (internal, internal, internal),
+	FUNCTION	6	gbox_picksplit (internal, internal),
+	FUNCTION	7	gbox_same (box, box, internal);
+
+UPDATE pg_opclass 
+	SET opckeytype = (select oid from pg_type where typname = 'box') 
+	WHERE opcname = 'gist_geometry_ops';
+
+END TRANSACTION;

@@ -1,0 +1,145 @@
+BEGIN TRANSACTION;
+
+
+-- You might have to define the PL/PgSQL language usually done with the
+-- changelang script.
+
+-- Here's some hokey code to test to see if PL/PgSQL is installed
+-- if it is, you get a message "PL/PgSQL is installed" 
+-- otherwise it will give a big error message.
+
+(select 'PL/PgSQL is installed.' as message from pg_language where lanname='plpgsql') union (select 'You must install PL/PgSQL before running this SQL file,\nor you will get an error. To install PL/PgSQL run:\n\tcreatelang plpgsql <dbname>'::text as message) order by message limit 1;
+
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--  HISTOGRAM2D
+
+CREATE FUNCTION histogram2d_in(opaque)
+	RETURNS opaque
+	AS '@MODULE_FILENAME@'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION histogram2d_out(opaque)
+	RETURNS opaque
+	AS '@MODULE_FILENAME@'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE TYPE histogram2d (
+	alignment = double,
+	internallength = variable,
+	input = histogram2d_in,
+	output = histogram2d_out,
+	storage = main
+);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--  BOX3D
+
+CREATE FUNCTION box3d_in(opaque)
+	RETURNS opaque 
+	AS '@MODULE_FILENAME@'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION box3d_out(opaque)
+	RETURNS opaque
+	AS '@MODULE_FILENAME@'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE TYPE box3d (
+	alignment = double,
+	internallength = 48,
+	input = box3d_in,
+	output = box3d_out
+);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--  SPHEROID
+
+CREATE FUNCTION spheroid_in(opaque)
+	RETURNS opaque 
+	AS '@MODULE_FILENAME@','ellipsoid_in'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION spheroid_out(opaque)
+	RETURNS opaque
+	AS '@MODULE_FILENAME@','ellipsoid_out'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE TYPE spheroid (
+	alignment = double,
+	internallength = 65,
+	input = spheroid_in,
+	output = spheroid_out
+);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--  WKB
+
+CREATE FUNCTION wkb_in(opaque)
+	RETURNS opaque
+	AS '@MODULE_FILENAME@','WKB_in'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION wkb_out(opaque)
+	RETURNS opaque
+	AS '@MODULE_FILENAME@','WKB_out'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE TYPE wkb (
+	internallength = variable,
+	input = wkb_in,
+	output = wkb_out,
+	storage = extended
+);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--  CHIP
+
+CREATE FUNCTION chip_in(opaque)
+	RETURNS opaque
+	AS '@MODULE_FILENAME@','CHIP_in'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION chip_out(opaque)
+	RETURNS opaque
+	AS '@MODULE_FILENAME@','CHIP_out'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE TYPE chip (
+	alignment = double,
+	internallength = variable,
+	input = chip_in,
+	output = chip_out,
+	storage = extended
+);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--  GEOMETRY
+
+CREATE FUNCTION geometry_in(opaque)
+	RETURNS opaque
+	AS '@MODULE_FILENAME@'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION geometry_out(opaque)
+	RETURNS opaque
+	AS '@MODULE_FILENAME@'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE TYPE geometry (
+	alignment = double,
+	internallength = variable,
+	input = geometry_in,
+	output = geometry_out,
+	storage = main
+);
+
+--
+-- GiST Selectivity Function
+--
+
+CREATE FUNCTION postgis_gist_sel(oid, oid, int2, opaque, int4)
+	RETURNS float8
+	AS '@MODULE_FILENAME@'
+	LANGUAGE 'C';
+
