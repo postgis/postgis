@@ -12,6 +12,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.45  2004/01/02 20:11:41  strk
+ * always call setval with no schema specification. drop 'database' argument using the empty string to the AddGeometryColumn call
+ *
  * Revision 1.44  2003/12/30 13:31:53  strk
  * made shp2pgsql looser about numeric precisions
  *
@@ -581,7 +584,7 @@ int main (int ARGC, char **ARGV){
 	int u,j,z,tot_rings,curindex;
 	SHPObject	*obj=NULL;
 	char  name[32];
-	char  *sr_id,*shp_file,*table, *database;
+	char  *sr_id,*shp_file,*table;
 	char **names;
 	DBFFieldType type = -1;
 	extern char *optarg;
@@ -589,7 +592,7 @@ int main (int ARGC, char **ARGV){
 	opt = ' ';
 	errflg =0;
 	j=0;
-	sr_id =shp_file = table = database = NULL;
+	sr_id =shp_file = table = NULL;
 
 	while ((c = getopt(ARGC, ARGV, "kcdaDs:")) != EOF){
                switch (c) {
@@ -639,19 +642,22 @@ int main (int ARGC, char **ARGV){
 			shp_file = ARGV[optind];
 		}else if(curindex == 1){
 			table = ARGV[optind];
-		}else if(curindex == 2){
-			database = ARGV[optind];
 		}
 		curindex++;
 	}
-	if(curindex != 3){
+	
+	/*
+	 * Third argument (if present) is supported for compatibility
+	 * with old shp2pgsql versions taking also database name.
+	 */
+	if(curindex < 2 || curindex > 3){
 		errflg = 1;
 	}
 
         if (errflg==1) {
 		printf("\n**ERROR** invalid option or command parameters\n");
 		printf("\n");
-		printf("USAGE: shp2pgsql [<options>] <shapefile name> <table name> <database>\n");
+		printf("USAGE: shp2pgsql [<options>] <shapefile name> <table name>\n");
 		printf("\n");
 		printf("OPTIONS:\n");
 		printf("  -s <srid>  Set the SRID field. If not specified it defaults to -1.\n");
@@ -827,7 +833,7 @@ int main (int ARGC, char **ARGV){
 
 	//create the geometry column with an addgeometry call to dave's function
 	if(opt != 'a'){
-		printf("select AddGeometryColumn('%s','%s','the_geom','%s',",database,table,sr_id);
+		printf("select AddGeometryColumn('','%s','the_geom','%s',",table,sr_id);
 		if( obj->nSHPType == 1 ){  //2d point
 			printf("'POINT',2);\n");
 		}else if( obj->nSHPType == 21){ // PointM
@@ -1516,12 +1522,7 @@ int main (int ARGC, char **ARGV){
 	if(opt != 'a'){
 		printf("\nALTER TABLE ONLY %s ADD CONSTRAINT %s_pkey PRIMARY KEY (gid);\n",table,table);
 		if(j > 1){
-#if USE_VERSION > 72
-			printf("SELECT pg_catalog.setval ('%s_gid_seq', %i, true);\n",table, j-1);
-#else
-			printf("SELECT setval ('%s_gid_seq', %i, true);\n",table, j-1);
-#endif
-
+			printf("SELECT setval ('%s_gid_seq', %i, true);\n", table, j-1);
 		}
 	}
 
