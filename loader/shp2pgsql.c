@@ -48,6 +48,7 @@ typedef struct Ring {
 	Point *list;	//list of points
 	struct Ring  *next;
 	int n;	//number of points in list
+	unsigned int linked; // number of "next" rings
 } Ring;
 
 
@@ -842,9 +843,8 @@ InsertPolygon()
 	Ring **Inner;    // Pointers to Inner rings
 	int in_index=0;  // Count of Inner rings
 	int pi; // part index
-
-	if (dump_format) printf("SRID=%s ;%s(",sr_id,pgtype );
-	else printf("GeometryFromText('%s(", pgtype);
+	unsigned int subtype = POLYGONTYPE | (wkbtype&WKBZOFFSET) | 
+		(wkbtype&WKBMOFFSET);
 
 #ifdef DEBUG
 	fprintf(stderr, "InsertPolygon: allocated space for %d rings\n",
@@ -878,6 +878,7 @@ InsertPolygon()
 		ring->list = (Point*)malloc(sizeof(Point)*nv);
 		ring->n = nv;
 		ring->next = NULL;
+		ring->linked = 0;
 
 		// Iterate over ring vertexes
 		for ( vi=vs; vi<ve; vi++)
@@ -942,11 +943,12 @@ InsertPolygon()
 				outer = Outer[i];
 				break;
 			}
-			fprintf(stderr, "!PIP %s\nOUTE %s\n", dump_ring(Inner[pi]), dump_ring(Outer[i]));
+			//fprintf(stderr, "!PIP %s\nOUTE %s\n", dump_ring(Inner[pi]), dump_ring(Outer[i]));
 		}
 
 		if ( outer )
 		{
+			outer->linked++;
 			while(outer->next) outer = outer->next;
 			outer->next = inner;
 			break;
@@ -958,6 +960,13 @@ InsertPolygon()
 		out_index++;
 	}
 
+	if (!dump_format) printf("'");
+	if ( sr_id && sr_id != "-1" ) printf("SRID=%s;", sr_id);
+
+	print_wkb_byte(getEndianByte());
+	print_wkb_int(wkbtype);
+	print_wkb_int(out_index); // npolys
+
 	// Write the coordinates
 	for(pi=0; pi<out_index; pi++)
 	{
@@ -965,70 +974,33 @@ InsertPolygon()
 
 		poly = Outer[pi];
 
-		if (pi) printf(",");
-		printf("(");
+		print_wkb_byte(getEndianByte());
+		print_wkb_int(subtype);
+		print_wkb_int(poly->linked+1); // nrings
 
 		while(poly)
 		{
 			int vi; // vertex index
 
-			printf("(");
+			print_wkb_int(poly->n); // npoints
 
-			if ( pgdims == 4 )
+			for(vi=0; vi<poly->n; vi++)
 			{
-				for(vi=0; vi<poly->n; vi++)
-				{
-					if (vi) printf(",");
-					printf("%.15g %.15g %.15g %.15g",
-						poly->list[vi].x,
-						poly->list[vi].y,
-						poly->list[vi].z,
-						poly->list[vi].m);
-				}
-			}
-			else if ( pgdims == 2 )
-			{
-				for(vi=0; vi<poly->n; vi++)
-				{
-					if (vi) printf(",");
-					printf("%.15g %.15g",
-						poly->list[vi].x,
-						poly->list[vi].y);
-				}
-			}
-			else if ( istypeM )
-			{
-				for(vi=0; vi<poly->n; vi++)
-				{
-					if (vi) printf(",");
-					printf("%.15g %.15g %.15g",
-						poly->list[vi].x,
-						poly->list[vi].y,
-						poly->list[vi].m);
-				}
-			}
-			else // POLYGON3DZ -- should never happen
-			{
-				for(vi=0; vi<poly->n; vi++)
-				{
-					if (vi) printf(",");
-					printf("%.15g %.15g %.15g",
-						poly->list[vi].x,
-						poly->list[vi].y,
-						poly->list[vi].z);
-				}
+				print_wkb_double(poly->list[vi].x);
+				print_wkb_double(poly->list[vi].y);
+				if ( wkbtype & WKBZOFFSET )
+					print_wkb_double(poly->list[vi].z);
+				if ( wkbtype & WKBMOFFSET )
+					print_wkb_double(poly->list[vi].m);
 			}
 
-			printf(")");
-			if ( poly->next ) printf(",");
 			poly = poly->next;
 		}
 
-		printf(")");
 	}
 
-	if (dump_format) printf(")\n");
-	else printf(")',%s) );\n",sr_id);
+	if (dump_format) printf("\n");
+	else printf("');\n");
 
 	// Release all memory
 	for(pi=0; pi<out_index; pi++)
@@ -1328,6 +1300,9 @@ print_wkb_bytes(unsigned char *ptr, unsigned int cnt, size_t size)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.73  2004/10/17 13:24:44  strk
+ * HEXWKB polygon
+ *
  * Revision 1.72  2004/10/17 12:59:12  strk
  * HEXWKB multiline output
  *
