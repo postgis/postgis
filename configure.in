@@ -1,5 +1,14 @@
 AC_INIT(README.postgis)
 
+AC_ARG_ENABLE(autoconf, [  --enable-autoconf       really use autoconf],
+	AC_MSG_RESULT(Using autoconf),
+	AC_MSG_ERROR([
+
+Autoconf-based configuration is not widely tested.
+If you want to use it anyway specify --enable-autoconf.
+])
+)
+
 AC_SUBST(USE_GEOS)
 AC_SUBST(GEOS_DIR)
 if test -z "$USE_GEOS"; then
@@ -9,7 +18,7 @@ if test -z "$GEOS_DIR"; then
 	GEOS_DIR=/usr/local
 fi
 AC_ARG_WITH(geos, 
-[  --with-geos=PATH        Enable spatial predicate and operator support
+[  --with-geos=PATH        enable spatial predicate and operator support
                           PATH is path to geos-config ],
   if test "$with_geos" != "no"; then
     USE_GEOS=1
@@ -30,7 +39,7 @@ if test -z "$PROJ_DIR"; then
 	PROJ_DIR=/usr/local
 fi
 AC_ARG_WITH(proj, 
-[  --with-proj=DIR         Enable reprojection support],
+[  --with-proj=DIR         enable reprojection support],
   if test "$with_proj" != "no"; then
     USE_PROJ=1
     if test "$with_proj" != "yes"; then
@@ -44,7 +53,7 @@ if test -z "$PGSQL_SRC"; then
 	PGSQL_SRC=${PWD}/../..
 fi
 AC_ARG_WITH(pgsql-src, 
-[  --with-pgsql-src=DIR    Where to find pgsql sources],
+[  --with-pgsql-src=DIR    where to find pgsql sources],
   if test -d "$with_pgsql_src"; then
     PGSQL_SRC=$with_pgsql_src
   else
