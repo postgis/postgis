@@ -3940,7 +3940,7 @@ FROM geometry_table;</literallayout>
             <para>Return the geometry as an SVG path data. Use 1 as second
             argument to have the path data implemented in terms of relative
             moves, the default (or 0) uses absolute moves. Third argument may
-            be used to reduce the maximum number of significant digits used in
+            be used to reduce the maximum number of decimal digits used in
             output (defaults to 15). Point geometries will be rendered as
             cx/cy when 'rel' arg is 0, x/y when 'rel' is 1.</para>
           </listitem>
