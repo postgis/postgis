@@ -26,7 +26,8 @@ for ($i=0; $i<@ARGV; $i++)
 		}
 		elsif ( $ARGV[$i] eq '-bps' )
 		{
-			$BPS=$ARGV[++$i]
+			$BPS=int(abs($ARGV[++$i]));
+			push(@bps_list, $BPS);
 		}
 		else
 		{
@@ -49,6 +50,12 @@ for ($i=0; $i<@ARGV; $i++)
 		usage();
 		exit(1);
 	}
+}
+
+if ( ! $TABLE || ! $COLUMN )
+{
+	usage();
+	exit 1;
 }
 
 
@@ -115,15 +122,14 @@ if ( $res->resultStatus != PGRES_COMMAND_OK )  {
 print "  Type: $TYPE\n";
 print "Extent: ".print_extent(\%ext)."\n" if ($VERBOSE);
 
-
-$ext = \%ext;
-#print "BPS: $bps (".@extents." cells)\n";
 print "  bps\test\treal\tdelta\tmatch_factor\n";
 print "----------------------------------------------------------\n";
-for ($bps=1; $bps<=$BPS; $bps*=2)
-{
-	@extents = split_extent($ext, $bps);
 
+#for ($bps=1; $bps<=$BPS; $bps*=2)
+for ($i=0; $i<@bps_list; $i++)
+{
+	$bps=$bps_list[$i];
+	@extents = split_extent(\%ext, $bps);
 
 	$best_match_factor=10000;
 	$worst_match_factor=1;
@@ -161,8 +167,8 @@ for ($bps=1; $bps<=$BPS; $bps*=2)
 	}
 	$avg_match_factor = $sum_match_factors/$count_match_factors;
 	$avg_match_factor = int($avg_match_factor*1000)/1000;
-	print "(bps/best/worst/avg):\t".
-		$bps."\t".
+	print "    $bps\t".
+		"(best/worst/avg)   \t".
 		$best_match_factor."\t".
 		$worst_match_factor."\t".$avg_match_factor."\n";
 }
@@ -246,6 +252,9 @@ sub test_extent
 
 # 
 # $Log$
+# Revision 1.5  2004/03/05 21:03:18  strk
+# Made the -bps switch specify the exact level(s) at which to run the test
+#
 # Revision 1.4  2004/03/05 16:40:30  strk
 # rewritten split_extent to be more datatype-conservative
 #
