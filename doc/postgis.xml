@@ -284,7 +284,7 @@ FROM GEOTABLE
 WHERE 
   GEOM &amp;&amp; GeometryFromText('BOX3D(900 900,1100 1100)',-1)
 AND
-  Distance(GeometryFromText('POINT(1000 1000)',-1),GEOM);</programlisting></answer></qandaentry><qandaentry><question><para>How do I perform a coordinate reprojection as part of a query?</para></question><answer><para>To perform a reprojection, both the source and destination coordinate systems must be defined in the SPATIAL_REF_SYS table, and the geometries being reprojected must already have an SRID set on them.  Once that is done, a reprojection is as simple as referring to the desired destination SRID.</para><programlisting>SELECT Transform(GEOM,4269) FROM GEOTABLE;</programlisting></answer></qandaentry> 
+Distance(GeometryFromText('POINT(1000 1000)',-1),GEOM) < 100;</programlisting></answer></qandaentry><qandaentry><question><para>How do I perform a coordinate reprojection as part of a query?</para></question><answer><para>To perform a reprojection, both the source and destination coordinate systems must be defined in the SPATIAL_REF_SYS table, and the geometries being reprojected must already have an SRID set on them.  Once that is done, a reprojection is as simple as referring to the desired destination SRID.</para><programlisting>SELECT Transform(GEOM,4269) FROM GEOTABLE;</programlisting></answer></qandaentry> 
 	 </qandaset> 
   </chapter> 
   <chapter> 
