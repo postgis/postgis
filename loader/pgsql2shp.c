@@ -10,6 +10,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.36  2003/11/26 18:14:11  strk
+ * binary cursor implemented
+ *
  * Revision 1.35  2003/11/26 17:21:00  strk
  * Made HEXWKB parsing settable at compile time
  *
@@ -116,6 +119,7 @@ DBFHandle dbf;
 SHPHandle shp;
 int geotype;
 int is3d;
+int binary;
 #ifdef USE_WKB
 SHPObject * (*shape_creator)(char *, int);
 #else
@@ -209,6 +213,7 @@ int main(int ARGC, char **ARGV){
 	main_scan_query = NULL;
 	rowbuflen=100;
 	is3d = 0;
+	binary = 0;
 
 	if ( getenv("ROWBUFLEN") ) rowbuflen=atoi(getenv("ROWBUFLEN"));
 
@@ -256,8 +261,13 @@ int main(int ARGC, char **ARGV){
 	 * as set by the initializer function.
 	 */
 	query = (char *)malloc(strlen(main_scan_query)+256);
-	sprintf(query, "DECLARE cur CURSOR FOR %s", main_scan_query);
-//fprintf(stderr, "MAINSCAN: %s\n", main_scan_query);
+	if ( binary ) {
+		sprintf(query, "DECLARE cur BINARY CURSOR FOR %s",
+				main_scan_query);
+	} else {
+		sprintf(query, "DECLARE cur CURSOR FOR %s", main_scan_query);
+	}
+fprintf(stderr, "MAINSCAN: %s\n", main_scan_query);
 	res = PQexec(conn, query);	
 	free(query);
 	if ( ! res || PQresultStatus(res) != PGRES_COMMAND_OK ) {
@@ -1846,8 +1856,12 @@ addRecord(PGresult *res, int residx, int row)
 		if (type_ary[j] == 1)
 		{
 			int temp;
-			val = (char *)PQgetvalue(res, residx, j);
-			temp = atoi(val);
+			if ( PQgetisnull(res, residx, j) ) {
+				temp = 0;
+			} else {
+				val = (char *)PQgetvalue(res, residx, j);
+				temp = atoi(val);
+			}
 #if VERBOSE > 1
 fprintf(stdout, "i"); fflush(stdout);
 #endif
@@ -1864,8 +1878,12 @@ fprintf(stdout, "i"); fflush(stdout);
 		if (type_ary[j] == 2)
 		{
 			double temp;
-			val = PQgetvalue(res, residx, j);
-			temp = atof(val);
+			if ( PQgetisnull(res, residx, j) ) {
+				temp = 0;
+			} else {
+				val = PQgetvalue(res, residx, j);
+				temp = atof(val);
+			}
 #if VERBOSE > 1
 fprintf(stdout, "d"); fflush(stdout);
 #endif
@@ -1882,7 +1900,11 @@ fprintf(stdout, "d"); fflush(stdout);
 		/* Default (not geometry) attribute */
 		if (type_ary[j] != 9)
 		{
-			val = PQgetvalue(res, residx, j);
+			if ( PQgetisnull(res, residx, j) ) {
+				val = "";
+			} else {
+				val = PQgetvalue(res, residx, j);
+			}
 #if VERBOSE > 1
 fprintf(stdout, "s"); fflush(stdout);
 #endif
@@ -1913,23 +1935,31 @@ fprintf(stdout, "s"); fflush(stdout);
 		}
 
 #ifdef USE_WKB
-#ifndef HEXWKB
+		if ( ! binary )
 		{
-			int junk;
-			char *v = PQgetvalue(res, residx, j);
-			val = PQunescapeBytea(v, &junk);
-			//printf("Unescaped %d bytes\n", junk);
-		}
+#ifndef HEXWKB
+			{
+				int junk;
+				char *v = PQgetvalue(res, residx, j);
+				val = PQunescapeBytea(v, &junk);
+				//printf("Unescaped %d bytes\n", junk);
+			}
+
 #else
-		char *v = PQgetvalue(res, residx, j);
-		val = HexDecode(v);
-#endif
+			char *v = PQgetvalue(res, residx, j);
+			val = HexDecode(v);
+#endif // HEXWKB
 #if VERBOSE > 2
 		dump_wkb(val);
-#endif
-#else
+#endif // VERBOSE > 2
+		}
+		else // binary
+		{
+			val = (char *)PQgetvalue(res, residx, j);
+		}
+#else // ndef USE_WKB
 		val = PQgetvalue(res, residx, j);
-#endif
+#endif // USE_WKB
 
 #if VERBOSE > 1
 		fprintf(stdout, "g"); fflush(stdout);
@@ -1955,7 +1985,7 @@ fprintf(stdout, "s"); fflush(stdout);
 		SHPDestroyObject(obj);
 
 #ifdef USE_WKB
-		free(val);
+		if ( ! binary ) free(val);
 #endif
 	}
 
@@ -2059,6 +2089,7 @@ usage(status)
        	printf("  -P <password>  Connect to the database with the specified password.\n");
        	printf("  -u <user>  Connect to the database as the specified user.\n");
 	printf("  -g <geometry_column> Specify the geometry column to be exported.\n");
+	printf("  -b Use a binary cursor.\n");
        	printf("\n");
        	exit (status);
 }
@@ -2069,8 +2100,11 @@ int parse_commandline(int ARGC, char **ARGV)
 	int c, curindex;
 
 	/* Parse command line */
-        while ((c = getopt(ARGC, ARGV, "f:h:du:p:P:g:")) != EOF){
+        while ((c = getopt(ARGC, ARGV, "bf:h:du:p:P:g:")) != EOF){
                switch (c) {
+               case 'b':
+                    binary = 1;
+                    break;
                case 'f':
                     shp_file = optarg;
                     break;
@@ -2504,27 +2538,34 @@ initialize()
 		if ( type_ary[i] == 9 )
 		{
 #ifdef USE_WKB
+
 #if BYTE_ORDER == LITTLE_ENDIAN
+
 #ifdef HEXWKB
 			sprintf(buf, "asbinary(\"%s\", 'NDR')",
 #else
 			sprintf(buf, "asbinary(\"%s\", 'NDR')::bytea",
 #endif
-#else
+
+#else // BYTE_ORDER != LITTLE_ENDIAN
+
 #ifdef HEXWKB
 			sprintf(buf, "asbinary(\"%s\", 'XDR')",
-#else
+#else // ndef HEXWKB
 			sprintf(buf, "asbinary(\"%s\", 'XDR')::bytea",
-#endif
-#endif
+#endif // def HEXWKB
+
+#endif // BYTE_ORDER == LITTLE_ENDIAN
 					mainscan_flds[i]);
-#else
-			sprintf(buf, "\"%s\"", mainscan_flds[i]);
-#endif
+#else // ndef USE_WKB
+			if ( binary ) sprintf(buf, "\"%s\"::text",
+				mainscan_flds[i]);
+			else sprintf(buf, "\"%s\"", mainscan_flds[i]);
+#endif // def USE_WKB
 		}
 		else
 		{
-			sprintf(buf, "\"%s\"", mainscan_flds[i]);
+			sprintf(buf, "\"%s\"::text", mainscan_flds[i]);
 		}
 
 		strcat(main_scan_query, buf);
