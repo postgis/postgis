@@ -2080,17 +2080,33 @@ BEGIN
 		   (new_type =''POLYGON'') or
 		   (new_type =''MULTIPOLYGON'') or
 		   (new_type =''LINESTRING'') or
-		   (new_type =''MULTILINESTRING'')) )
+		   (new_type =''MULTILINESTRING'') or
+		   (new_type =''GEOMETRYCOLLECTIONM'') or
+		   (new_type =''POINTM'') or 
+		   (new_type =''MULTIPOINTM'') or
+		   (new_type =''POLYGONM'') or
+		   (new_type =''MULTIPOLYGONM'') or
+		   (new_type =''LINESTRINGM'') or
+		   (new_type =''MULTILINESTRINGM'')) )
 	THEN
 		RAISE EXCEPTION ''Invalid type name - valid ones are: 
 			GEOMETRY, GEOMETRYCOLLECTION, POINT, 
 			MULTIPOINT, POLYGON, MULTIPOLYGON, 
-			LINESTRING, or MULTILINESTRING '';
+			LINESTRING, MULTILINESTRING,
+			GEOMETRYCOLLECTIONM, POINTM, 
+			MULTIPOINTM, POLYGONM, MULTIPOLYGONM, 
+			LINESTRINGM, or MULTILINESTRINGM '';
 		return ''fail'';
 	END IF;
 
 	IF ( (new_dim >3) or (new_dim <0) ) THEN
 		RAISE EXCEPTION ''invalid dimension'';
+		return ''fail'';
+	END IF;
+
+	IF ( (new_type LIKE ''%M'') and (new_dim!=3) ) THEN
+
+		RAISE EXCEPTION ''TypeM needs 3 dimensions'';
 		return ''fail'';
 	END IF;
 
