@@ -245,7 +245,7 @@ lwpoly_findbbox(LWPOLY *poly)
 }
 
 //find length of this serialized polygon
-uint32
+size_t
 lwgeom_size_poly(const char *serialized_poly)
 {
 	uint32 result = 1; // char type
@@ -298,8 +298,8 @@ lwgeom_size_poly(const char *serialized_poly)
 	{
 		//read in a single ring and make a PA
 		npoints = get_uint32(loc);
-		loc +=4;
-		result +=4;
+		loc += 4;
+		result += 4;
 
 		if (ndims == 3)
 		{

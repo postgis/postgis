@@ -888,77 +888,6 @@ get_int32(const char *loc)
 
 
 
-//********************************************************************
-// support for the LWPOINT sub-type
-
-
-
-//find length of this serialized point
-uint32
-lwgeom_size_point(const char *serialized_point)
-{
-	uint32  result = 1;
-	unsigned char type;
-	const char *loc;
-
-	type = (unsigned char) serialized_point[0];
-
-	if ( lwgeom_getType(type) != POINTTYPE) return 0;
-
-#ifdef DEBUG
-lwnotice("lwgeom_size_point called (%d)", result);
-#endif
-
-	loc = serialized_point+1;
-
-	if (lwgeom_hasBBOX(type))
-	{
-		loc += sizeof(BOX2DFLOAT4);
-		result +=sizeof(BOX2DFLOAT4);
-#ifdef DEBUG
-lwnotice("lwgeom_size_point: has bbox (%d)", result);
-#endif
-	}
-
-	if ( lwgeom_hasSRID(type))
-	{
-#ifdef DEBUG
-lwnotice("lwgeom_size_point: has srid (%d)", result);
-#endif
-		loc +=4; // type + SRID
-		result +=4;
-	}
-
-	if (lwgeom_ndims(type) == 3)
-	{
-#ifdef DEBUG
-lwnotice("lwgeom_size_point: returning (%d)", result+24);
-#endif
-		return result + 24;
-	}
-	else if (lwgeom_ndims(type) == 2)
-	{
-#ifdef DEBUG
-lwnotice("lwgeom_size_point: returning (%d)", result+16);
-#endif
-		return result + 16;
-	}
-	else if (lwgeom_ndims(type) == 4)
-	{
-#ifdef DEBUG
-lwnotice("lwgeom_size_point: returning (%d)", result+32);
-#endif
-		return result + 32;
-	}
-
-    	lwerror("lwgeom_size_point :: invalid ndims = %i",
-		lwgeom_ndims(type));
-	return 0; //never get here
-}
-
-
-
-
 //*************************************************************************
 // multi-geometry support
 // note - for a simple type (ie. point), this will have sub_geom[0] = serialized_form.
@@ -1449,7 +1378,7 @@ lwgeom_constructempty_buf(int SRID, char hasz, char hasm, char *buf, int *retsiz
 //         --> size of the point
 
 // take a geometry, and find its length
-uint32
+size_t
 lwgeom_size(const char *serialized_form)
 {
 	unsigned char type = lwgeom_getType((unsigned char) serialized_form[0]);
@@ -1544,7 +1473,7 @@ lwgeom_size(const char *serialized_form)
 	return result;
 }
 
-uint32
+size_t
 lwgeom_size_subgeom(const char *serialized_form, int geom_number)
 {
 	if (geom_number == -1)

@@ -1568,12 +1568,9 @@ elog(NOTICE, "lwgeom_force3dm_recursive: %d bytes pointlist allocated", sizeof(P
 
 		loc = newpts.serialized_pointlist;
 		check = TYPE_NDIMS(line->points->dims);
-		lwnotice("line->points ndims: %d", check);
 		for (j=0; j<line->points->npoints; j++)
 		{
-			lwnotice("line->points ndims: %d", check);
 			getPoint3dm_p(line->points, j, (POINT3DM *)loc);
-			lwnotice("line->points ndims: %d", check);
 			if ( check != TYPE_NDIMS(line->points->dims) )
 			{
 				lwerror("getPoint3dm_p messed with input pointarray");
@@ -1953,6 +1950,11 @@ Datum LWGEOM_force_3dm(PG_FUNCTION_ARGS)
 
 	lwgeom_force3dm_recursive(SERIALIZED_FORM(geom),
 		SERIALIZED_FORM(result), &size);
+
+#ifdef DEBUG
+	lwnotice("lwgeom_force3dm_recursive returned a %d sized geom",
+		size);
+#endif
 
 	// we can safely avoid this... memory will be freed at
 	// end of query processing anyway.

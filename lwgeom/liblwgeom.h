@@ -3,8 +3,8 @@
 
 //liblwgeom.h
 
-#define DEBUG 1
-#define DEBUG_CALLS 1
+//#define DEBUG 1
+//#define DEBUG_CALLS 1
 
 
 typedef void* (*lwallocator)(size_t size);
@@ -387,11 +387,11 @@ extern PG_LWGEOM *PG_LWGEOM_construct(char *serialized, int SRID, int wantbbox);
  * This function computes the size in bytes
  * of the serialized geometries.
  */
-extern uint32 lwgeom_size(const char *serialized_form);
-extern uint32 lwgeom_size_subgeom(const char *serialized_form, int geom_number);
-extern uint32 lwgeom_size_line(const char *serialized_line);
-extern uint32 lwgeom_size_point(const char *serialized_point);
-extern uint32 lwgeom_size_poly(const char *serialized_line);
+extern size_t lwgeom_size(const char *serialized_form);
+extern size_t lwgeom_size_subgeom(const char *serialized_form, int geom_number);
+extern size_t lwgeom_size_line(const char *serialized_line);
+extern size_t lwgeom_size_point(const char *serialized_point);
+extern size_t lwgeom_size_poly(const char *serialized_line);
 
 
 //--------------------------------------------------------

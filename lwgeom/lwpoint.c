@@ -311,3 +311,47 @@ lwpoint_add(const LWPOINT *to, uint32 where, const LWGEOM *what)
 	
 	return (LWGEOM *)col;
 }
+
+//find length of this serialized point
+size_t
+lwgeom_size_point(const char *serialized_point)
+{
+	uint32  result = 1;
+	unsigned char type;
+	const char *loc;
+
+	type = (unsigned char) serialized_point[0];
+
+	if ( lwgeom_getType(type) != POINTTYPE) return 0;
+
+#ifdef DEBUG
+lwnotice("lwgeom_size_point called (%d)", result);
+#endif
+
+	loc = serialized_point+1;
+
+	if (lwgeom_hasBBOX(type))
+	{
+		loc += sizeof(BOX2DFLOAT4);
+		result +=sizeof(BOX2DFLOAT4);
+#ifdef DEBUG
+lwnotice("lwgeom_size_point: has bbox (%d)", result);
+#endif
+	}
+
+	if ( lwgeom_hasSRID(type))
+	{
+#ifdef DEBUG
+lwnotice("lwgeom_size_point: has srid (%d)", result);
+#endif
+		loc +=4; // type + SRID
+		result +=4;
+	}
+
+	result += lwgeom_ndims(type)*sizeof(double);
+
+	return result;
+}
+
+
+

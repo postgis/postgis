@@ -112,7 +112,6 @@ lwline_serialize(LWLINE *line)
 void
 lwline_serialize_buf(LWLINE *line, char *buf, size_t *retsize)
 {
-	size_t size=1;  // type byte
 	char hasSRID;
 	char *loc;
 	int ptsize = pointArray_ptsize(line->points);
@@ -157,8 +156,8 @@ lwline_serialize_buf(LWLINE *line, char *buf, size_t *retsize)
 #endif
 	}
 
-	memcpy(loc, &line->points->npoints, sizeof(int32));
-	loc +=4;
+	memcpy(loc, &line->points->npoints, sizeof(uint32));
+	loc += sizeof(uint32);
 
 #ifdef DEBUG
 	lwnotice("lwline_serialize_buf added npoints (%d)",
@@ -168,7 +167,7 @@ lwline_serialize_buf(LWLINE *line, char *buf, size_t *retsize)
 	//copy in points
 	memcpy(loc, line->points->serialized_pointlist,
 		ptsize*line->points->npoints);
-	loc += ptsize * line->points->npoints;
+	loc += ptsize*line->points->npoints;
 
 #ifdef DEBUG
 	lwnotice("lwline_serialize_buf copied serialized_pointlist (%d bytes)",
@@ -211,8 +210,8 @@ lwline_serialize_size(LWLINE *line)
 	if ( line->SRID != -1 ) size += 4; // SRID
 	if ( TYPE_HASBBOX(line->type) ) size += sizeof(BOX2DFLOAT4);
 
-	size += pointArray_ptsize(line->points)*line->points->npoints;;
 	size += 4; // npoints
+	size += pointArray_ptsize(line->points)*line->points->npoints;
 
 #ifdef DEBUG_CALLS
 	lwnotice("lwline_serialize_size returning %d", size);
@@ -221,14 +220,14 @@ lwline_serialize_size(LWLINE *line)
 	return size;
 }
 
-void pfree_line     (LWLINE  *line)
+void pfree_line (LWLINE  *line)
 {
 	lwfree(line->points);
 	lwfree(line);
 }
 
 // find length of this serialized line
-uint32
+size_t
 lwgeom_size_line(const char *serialized_line)
 {
 	int type = (unsigned char) serialized_line[0];
@@ -262,7 +261,7 @@ lwgeom_size_line(const char *serialized_line)
 	npoints = get_uint32(loc);
 	result += sizeof(uint32); //npoints
 
-	result +=  TYPE_NDIMS(type) * sizeof(double);
+	result += TYPE_NDIMS(type) * sizeof(double) * npoints;
 
 #ifdef DEBUG_CALLS
 	lwnotice("lwgeom_size_line returning %d", result);
