@@ -1,6 +1,7 @@
 PostGIS 1.0.0?
 	- transform(): missing SRID bugfix, better error handling
 	- jdbc2: small patches, box2d/3d tests, revised docs and license.
+	- jdbc2: bug fix and testcase in for pgjdbc 8.0 type autoregistration
 	- few changes in autoconf 
 	- reduced precision of box2d output.
 	- some functions made IMMUTABLE from STABLE,
