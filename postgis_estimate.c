@@ -11,6 +11,12 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.11  2004/02/25 12:00:32  strk
+ * Added handling for point features in histogram creation (add 1 instead of AOI/cell_area when AOI is 0).
+ * Fixed a wrong cast of BOX3D to BOX (called the convertion func).
+ * Added some comments and an implementation on how to change evaluation
+ * based on the average feature and search box cells occupation.
+ *
  * Revision 1.10  2004/02/25 00:46:26  strk
  * initial version of && selectivity estimation for PG75
  *
@@ -113,8 +119,14 @@ typedef struct GEOM_STATS_T
 {
 	//boxesPerSide * boxesPerSide = total boxes in grid
 	float4 boxesPerSide;
-	// average bbox area of features in this histogram
+	
+	// average bounding box area of not-null features 
 	float4 avgFeatureArea;
+
+	// average number of histogram cells
+	// covered by the sample not-null features
+	float4 avgFeatureCells;
+
 	// BOX of area
 	float4 xmin,ymin, xmax, ymax;
 	// variable length # of floats for histogram
@@ -1028,6 +1040,7 @@ Datum postgis_gist_sel(PG_FUNCTION_ARGS)
 		geomstats->xmax, geomstats->ymax);
 	elog(NOTICE, " histo: boxesPerSide: %f", geomstats->boxesPerSide);
 	elog(NOTICE, " histo: avgFeatureArea: %f", geomstats->avgFeatureArea);
+	elog(NOTICE, " histo: avgFeatureCells: %d", geomstats->avgFeatureCells);
 #endif
 
 	/*
@@ -1042,8 +1055,8 @@ Datum postgis_gist_sel(PG_FUNCTION_ARGS)
 		int bps; // boxesPerSide 
 		BOX *box;
 		double value;
-		int overlapping_cells;
-		double cell_value_weight;
+		float overlapping_cells;
+		float avg_feat_cells;
 
 		box = search_box;
 		geow = geomstats->xmax-geomstats->xmin;
@@ -1052,7 +1065,6 @@ Datum postgis_gist_sel(PG_FUNCTION_ARGS)
 		cell_area = (geow*geoh) / (bps*bps);
 		box_area = (box->high.x-box->low.x)*(box->high.y-box->low.y);
 		value = 0;
-		cell_value_weight = cell_area/geomstats->avgFeatureArea;
 
 		/* Find first overlapping column */
 		x_idx_min = (box->low.x-geomstats->xmin) / geow * bps;
@@ -1129,7 +1141,7 @@ Datum postgis_gist_sel(PG_FUNCTION_ARGS)
 				//AOI = intersect_x*intersect_y;
 				//val *= AOI/cell_area;
 
-				val *= cell_value_weight;
+				//val *= cell_value_weight;
 #if DEBUG_GEOMETRY_STATS > 1
 				elog(NOTICE, " [%d,%d] adding %.15f to value",
 					x, y, val);
@@ -1140,19 +1152,46 @@ Datum postgis_gist_sel(PG_FUNCTION_ARGS)
 
 
 		/*
-		 * If the box was a point, I suppose
-		 * the computed value would be good enough,
-		 * because it would express the fraction
-		 * of features overlapping a single histogram
-		 * cell.
+		 * If the search_box is a point, it will
+		 * overlap a single cell and thus get
+		 * it's value, which is the fraction of
+		 * samples (we can presume of row set also)
+		 * which bumped to that cell.
 		 *
-		 * TODO: should we consider the null fraction
-		 *       or is it a job that the cost estimator
-		 *       would do for us ?
+		 * If the table features are points, each
+		 * of them will overlap a single histogram cell.
+		 * Our search_box value would then be correctly
+		 * computed as the sum of the bumped cells values.
+		 *
+		 * If both our search_box AND the sample features
+		 * overlap more then a single histogram cell we
+		 * need to consider the fact that our sum computation
+		 * will have many duplicated included. E.g. each
+		 * single sample feature would have contributed to
+		 * raise the search_box value by as many times as
+		 * many cells in the histogram are commonly overlapped
+		 * by both searc_box and feature. We should then
+		 * divide our value by the number of cells in the virtual
+		 * 'intersection' between average feature cell occupation
+		 * and occupation of the search_box. This is as 
+		 * fuzzy as you understand it :)
+		 *
+		 * Consistency check: whenever the number of cells is
+		 * one of whichever part (search_box_occupation,
+		 * avg_feature_occupation) the 'intersection' must be 1.
+		 * If sounds that our 'intersaction' is actually the
+		 * minimun number between search_box_occupation and
+		 * avg_feat_occupation.
+		 *
 		 */
 		overlapping_cells = (x_idx_max-x_idx_min+1) *
 			(y_idx_max-x_idx_min+1);
-		selectivity = value;
+		avg_feat_cells = geomstats->avgFeatureCells;
+#if DEBUG_GEOMETRY_STATS
+	elog(NOTICE, " search_box overlaps %f cells", overlapping_cells);
+	elog(NOTICE, " avg feat overlaps %f cells", avg_feat_cells);
+#endif
+		selectivity = (float8) value / (float8) min(overlapping_cells, avg_feat_cells);
 		//selectivity = value/overlapping_cells;
 		//selectivity *= 0.1;
 		//selectivity = 0.9;
@@ -1191,7 +1230,7 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 {
 	MemoryContext old_context;
 	int i;
-	int size;
+	int geom_stats_size;
 	BOX **sampleboxes;
 	GEOM_STATS *geomstats;
 	bool isnull;
@@ -1199,6 +1238,7 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	BOX3D *sample_extent=NULL;
 	double total_width=0;
 	double total_boxes_area=0;
+	int total_boxes_cells=0;
 	double cell_area;
 	double geow, geoh; // width and height of histogram
 	int bps; // boxesPerSide 
@@ -1242,7 +1282,7 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		notnull_cnt++;
 
 		geom = (GEOMETRY *) PG_DETOAST_DATUM(datum);
-		box = (BOX *)&(geom->bvol);
+		box = convert_box3d_to_box(&(geom->bvol));
 		sampleboxes[i] = box;
 
 		sample_extent = union_box3d(&(geom->bvol), sample_extent);
@@ -1263,9 +1303,9 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	 * Create the histogram (GEOM_STATS)
 	 */
 	old_context = MemoryContextSwitchTo(stats->anl_context);
-	size=sizeof(GEOM_STATS)+
-		(boxesPerSide*boxesPerSide-1)*sizeof(geomstats->value);
-	geomstats = palloc(size);
+	geom_stats_size=sizeof(GEOM_STATS)+
+		(boxesPerSide*boxesPerSide-1)*sizeof(float4);
+	geomstats = palloc(geom_stats_size);
 	MemoryContextSwitchTo(old_context);
 
 	geomstats->xmin = sample_extent->LLB.x;
@@ -1277,15 +1317,6 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	// Initialize all values to 0
 	for (i=0;i<boxesPerSide*boxesPerSide; i++) geomstats->value[i] = 0;
 
-
-#if DEBUG_GEOMETRY_STATS
-	elog(NOTICE, " histo: xmin,ymin: %f,%f",
-		geomstats->xmin, geomstats->ymin);
-	elog(NOTICE, " histo: xmax,ymax: %f,%f",
-		geomstats->xmax, geomstats->ymax);
-	elog(NOTICE, " histo: boxesPerSide: %f", geomstats->boxesPerSide);
-	elog(NOTICE, " histo: avgFeatureArea: %f", geomstats->avgFeatureArea);
-#endif
 
 	geow = geomstats->xmax-geomstats->xmin;
 	geoh = geomstats->ymax-geomstats->ymin;
@@ -1299,6 +1330,8 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	 *    features' bbox overlaps: a feature's bvol
 	 *    can fully overlap (1) or partially overlap
 	 *    (fraction of 1) an histogram cell.
+	 *
+	 *  o compute total cells occupation
 	 */
 	for (i=0; i<samplerows; i++)
 	{
@@ -1307,9 +1340,16 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		int y_idx_min, y_idx_max, y;
 		double intersect_x, intersect_y;
 		double AOI; // area of intersection
+		int numcells=0;
 
 		if ( sampleboxes[i] == NULL ) continue;
 		box = (BOX *)sampleboxes[i];
+
+#if DEBUG_GEOMETRY_STATS > 2
+		elog(NOTICE, " feat %d box is %f %f, %f %f",
+				i, box->high.x, box->high.y,
+				box->low.x, box->low.y);
+#endif
 							
 		/* Find first overlapping column */
 		x_idx_min = (box->low.x-geomstats->xmin) / geow * bps;
@@ -1330,6 +1370,10 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		y_idx_max = (box->high.y-geomstats->ymin) / geoh * bps;
 		if (y_idx_max <0) y_idx_max = 0;
 		if (y_idx_max >= bps) y_idx_max = bps-1;
+#if DEBUG_GEOMETRY_STATS > 2
+		elog(NOTICE, " feat %d overlaps columns %d-%d, rows %d-%d",
+				i, x_idx_min, x_idx_max, y_idx_min, y_idx_max);
+#endif
 
 		/*
 		 * the {x,y}_idx_{min,max}
@@ -1344,18 +1388,50 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 				intersect_y = min(box->high.y, geomstats->ymin + (y+1) * geoh / bps) -
 					max(box->low.y, geomstats->ymin+ y * geoh / bps) ;
 				AOI = intersect_x*intersect_y;
-				geomstats->value[x+y*bps] += AOI / cell_area;
+				if ( ! AOI ) // must be a point
+				{
+			geomstats->value[x+y*bps] += 1;
+				}
+				else
+				{
+			geomstats->value[x+y*bps] += AOI / cell_area;
+				}
+				numcells++;
 			}
 		}
+
+		// before adding to the total cells
+		// we could decide if we really 
+		// want this feature to count
+		total_boxes_cells += numcells;
 	}
+
+	// what about null features (TODO) ?
+	geomstats->avgFeatureCells = (float4)total_boxes_cells/notnull_cnt;
+
+#if DEBUG_GEOMETRY_STATS
+	elog(NOTICE, " histo: total_boxes_cells: %d", total_boxes_cells);
+	elog(NOTICE, " histo: xmin,ymin: %f,%f",
+		geomstats->xmin, geomstats->ymin);
+	elog(NOTICE, " histo: xmax,ymax: %f,%f",
+		geomstats->xmax, geomstats->ymax);
+	elog(NOTICE, " histo: boxesPerSide: %f", geomstats->boxesPerSide);
+	elog(NOTICE, " histo: avgFeatureArea: %f", geomstats->avgFeatureArea);
+	elog(NOTICE, " histo: avgFeatureCells: %f", geomstats->avgFeatureCells);
+#endif
+
 
 	/*
 	 * Normalize histogram
+	 *
+	 * We divide each histogram cell value
+	 * by the number of samples examined.
+	 *
 	 */
 	for (i=0;i<boxesPerSide*boxesPerSide; i++)
 		geomstats->value[i] /= samplerows;
 
-#if DEBUG_GEOMETRY_STATS > 1
+#if 0 & DEBUG_GEOMETRY_STATS > 1
 	{
 		int x, y;
 		for (x=0; x<bps; x++)
@@ -1375,7 +1451,7 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	stats->stakind[0] = STATISTIC_KIND_GEOMETRY;
 	stats->staop[0] = InvalidOid;
 	stats->stanumbers[0] = (float4 *)geomstats;
-	stats->numnumbers[0] = boxesPerSide*boxesPerSide+6;
+	stats->numnumbers[0] = geom_stats_size/sizeof(float4);
 
 	stats->stanullfrac = null_cnt/samplerows;
 	stats->stawidth = total_width/notnull_cnt;
@@ -1383,7 +1459,7 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 
 #if DEBUG_GEOMETRY_STATS
 	elog(NOTICE, " out: slot 0: kind %d (STATISTIC_KIND_GEOMETRY)",
-									stats->stakind[0]);
+		stats->stakind[0]);
 	elog(NOTICE, " out: slot 0: op %d (InvalidOid)", stats->staop[0]);
 	elog(NOTICE, " out: slot 0: numnumbers %d", stats->numnumbers[0]);
 	elog(NOTICE, " out: null fraction: %d/%d", null_cnt, samplerows);
