@@ -574,6 +574,10 @@ CREATE FUNCTION length3d_spheroid(GEOMETRY,SPHEROID)
    AS '@MODULE_FILENAME@','length3d_ellipsoid'
 	     LANGUAGE 'c'  with (isstrict);
 
+CREATE FUNCTION distance_spheroid(GEOMETRY,GEOMETRY,SPHEROID)
+   RETURNS FLOAT8
+   AS '@MODULE_FILENAME@','distance_ellipsoid'
+	     LANGUAGE 'c'  with (isstrict);
 
 -------  generic operations
 

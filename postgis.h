@@ -444,6 +444,7 @@ Datum ellipsoid_out(PG_FUNCTION_ARGS);
 Datum ellipsoid_in(PG_FUNCTION_ARGS);
 Datum length_ellipsoid(PG_FUNCTION_ARGS);
 Datum length3d_ellipsoid(PG_FUNCTION_ARGS);
+Datum distance_ellipsoid(PG_FUNCTION_ARGS);
 
 Datum point_inside_circle(PG_FUNCTION_ARGS);
 Datum distance(PG_FUNCTION_ARGS);

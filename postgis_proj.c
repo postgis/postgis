@@ -335,8 +335,55 @@ Datum length3d_ellipsoid(PG_FUNCTION_ARGS)
 	PG_RETURN_FLOAT8(dist);
 }
 
+//distance (geometry,geometry, sphere)
+// -geometrys MUST be points
+PG_FUNCTION_INFO_V1(distance_ellipsoid);
+Datum distance_ellipsoid(PG_FUNCTION_ARGS)
+{
+		SPHEROID    		*sphere = (SPHEROID *) PG_GETARG_POINTER(2);	
+		GEOMETRY		      *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+		GEOMETRY		      *geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+
+		POINT3D	*pt1,*pt2;
+		int32				*offsets1;
+		int32				*offsets2;
+		char				*o;
 
 
+	if (geom1->SRID != geom2->SRID)
+	{
+		elog(ERROR,"optimistic_overlap:Operation on two GEOMETRIES with different SRIDs\n");
+		PG_RETURN_NULL();
+	}
+	
+	if (geom1->type != POINTTYPE)
+	{
+		elog(ERROR,"optimistic_overlap: first arg isnt a point\n");
+		PG_RETURN_NULL();
+	}
+	if (geom2->type != POINTTYPE)
+	{
+		elog(ERROR,"optimistic_overlap: second arg isnt a point\n");
+		PG_RETURN_NULL();
+	}
+
+	offsets1 = (int32 *) ( ((char *) &(geom1->objType[0] ))+ sizeof(int32) * geom1->nobjs ) ;
+	offsets2 = (int32 *) ( ((char *) &(geom2->objType[0] ))+ sizeof(int32) * geom2->nobjs ) ;
+	o = (char *) geom1 +offsets1[0] ;
+	pt1 = (POINT3D *) o;
+
+	o = (char *) geom2 +offsets2[0] ;
+	pt2 = (POINT3D *) o;
+
+	PG_RETURN_FLOAT8(distance_ellipse(pt1->y*M_PI/180.0 ,pt1->x*M_PI/180.0 ,
+							  pt2->y*M_PI/180.0 ,pt2->x*M_PI/180.0 , sphere) );
+
+//double	distance_ellipse(double lat1, double long1,
+//					double lat2, double long2,
+//					SPHEROID *sphere)
+
+
+}
 
 
 
