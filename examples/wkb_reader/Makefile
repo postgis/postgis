@@ -13,3 +13,6 @@ CFLAGS=-I$(PG_INC) -L$(PG_LIB) -lpq
 all: readwkb
 
 readwkb: readwkb.c
+
+clean:
+	@rm -f readwkb
