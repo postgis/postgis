@@ -265,8 +265,12 @@ while( my $line = <INPUT> )
 	if ($line =~ / FUNCTION *([^ ]*) *\(([^)]*)\)/)
 	{
 		my $funcname = $1;
-		#print "FUNCNAME: [$funcname]\n";
 		my @args = split(",", $2);
+
+		$funcname =~ s/^"//;
+		$funcname =~ s/"$//;
+		#print "FUNCNAME: [$funcname]\n";
+
 		#print "ARGS: [".@args."]\n";
 		my $wkbinvolved = 0;
 		for (my $i=0; $i<@args; $i++)
