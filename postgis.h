@@ -325,6 +325,8 @@ Datum geometry_out(PG_FUNCTION_ARGS);
 
 Datum astext_geometry(PG_FUNCTION_ARGS);
 
+Datum geometry_text(PG_FUNCTION_ARGS);
+
 
 Datum get_bbox_of_geometry(PG_FUNCTION_ARGS);
 Datum get_geometry_of_bbox(PG_FUNCTION_ARGS);

@@ -2786,6 +2786,11 @@ Datum geometry_text(PG_FUNCTION_ARGS)
 {
 	char		*input = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
+	if (*((int *) input) == 4)
+	{
+		//empty string
+		PG_RETURN_NULL();
+	}
 	input = &input[4];
 	PG_RETURN_POINTER ( 
 		DatumGetPointer(	DirectFunctionCall1(geometry_in,PointerGetDatum(input)))
