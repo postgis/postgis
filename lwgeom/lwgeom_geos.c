@@ -2561,4 +2561,11 @@ Datum GEOS_polygonize_garray(PG_FUNCTION_ARGS)
 	PG_RETURN_NULL(); // never get here
 }
 
+PG_FUNCTION_INFO_V1(GEOSnoop);
+Datum GEOSnoop(PG_FUNCTION_ARGS)
+{
+	elog(ERROR,"GEOSnoop:: operation not implemented - compile PostGIS with GEOS support");
+	PG_RETURN_NULL(); // never get here
+}
+
 #endif // ! USE_GEOS
