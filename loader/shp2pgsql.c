@@ -12,6 +12,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.67  2004/10/06 10:11:16  strk
+ * Other separator fixes
+ *
  * Revision 1.66  2004/10/06 09:40:27  strk
  * Handled 0-DBF-attributes corner case.
  *
@@ -581,13 +584,13 @@ Insert_attributes(DBFHandle hDBFHandle, int row)
       {
          if(dump_format)
          {
-            if(i) printf("\t");
             printf("\\N");
+            printf("\t");
          }
          else
          {
-            if(i) printf(",");
             printf("NULL");
+            printf(",");
          }
       }
 
@@ -624,10 +627,10 @@ Insert_attributes(DBFHandle hDBFHandle, int row)
  
 			if (dump_format) {
 				printf("%s",make_good_string(val));
-				if ( i ) printf("\t");
+				printf("\t");
 			} else {
 				printf("'%s'",protect_quotes_string(val));
-				if ( i ) printf(",");
+				printf(",");
 			}
 		 }
 	}
@@ -904,7 +907,6 @@ main (int ARGC, char **ARGV)
 		strcpy(field_names[j], name);
 
 		sprintf(col_names, "%s\"%s\",", col_names, name);
-		if (j) strcat(col_names, ",");
 	}
 	sprintf(col_names, "%s\"%s\")", col_names, geom);
 
