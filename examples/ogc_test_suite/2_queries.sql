@@ -769,7 +769,7 @@ WHERE streams.name = 'Cam Stream' AND lakes.name = 'Blue Lake';
 --
 --================================
 --
-SELECT Within(boundary, footprint)
+SELECT Within(footprint, boundary)
 FROM named_places, buildings 
 WHERE named_places.name = 'Ashton' AND buildings.address = '215 Main Street';
 --
