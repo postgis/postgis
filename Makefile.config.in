@@ -15,8 +15,8 @@
 #
 # Download from: http://www.remotesensing.org/proj
 #
-USE_PROJ ?= @USE_PROJ@
-PROJ_DIR ?= @PROJ_DIR@
+USE_PROJ=@USE_PROJ@
+PROJ_DIR=@PROJ_DIR@
 
 #
 # Set USE_GEOS to 1 for GEOS spatial predicate and operator
@@ -30,8 +30,8 @@ PROJ_DIR ?= @PROJ_DIR@
 #
 # Download from: http://geos.refractions.net
 #
-USE_GEOS ?= @USE_GEOS@
-GEOS_DIR ?= @GEOS_DIR@
+USE_GEOS=@USE_GEOS@
+GEOS_DIR=@GEOS_DIR@
 
 #
 # Set USE_STATS to 1 for new GiST statistics collection support
@@ -51,7 +51,7 @@ USE_STATS=1
 # the file lwgeom/BBOXCACHE_BEHAVIOURS, but don't expect
 # them to be easy nor consistent.
 #
-AUTOCACHE_BBOX ?= 1
+AUTOCACHE_BBOX=1
 
 #
 # Root of the PostgreSQL source tree 
@@ -59,13 +59,13 @@ AUTOCACHE_BBOX ?= 1
 # set the PGSQL_SRC either below or in the environment (an absolute path).
 #
 # PGSQL_SRC=/usr/src/postgresql
-PGSQL_SRC ?= @PGSQL_SRC@
+PGSQL_SRC=@PGSQL_SRC@
 
 #
 # Set USE_ICONV to 1 if you want the loader (shp2pgsql)
 # to support UTF-8 output.
 #
-USE_ICONV ?= 0
+USE_ICONV=0
 
 #
 # Path to library (to be specified in CREATE FUNCTION queries)
@@ -73,7 +73,7 @@ USE_ICONV ?= 0
 # Set LPATH below or in the environment to change it.
 #
 # LPATH=/usr/src/postgis
-LPATH ?= \$$libdir
+LPATH=\$$libdir
 
 #---------------------------------------------------------------
 # END OF CONFIGURATION

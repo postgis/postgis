@@ -2,22 +2,33 @@ AC_INIT(README.postgis)
 
 AC_SUBST(USE_GEOS)
 AC_SUBST(GEOS_DIR)
-USE_GEOS=0
-GEOS_DIR=/usr/local
+if test -z "$USE_GEOS"; then
+	USE_GEOS=0
+fi
+if test -z "$GEOS_DIR"; then
+	GEOS_DIR=/usr/local
+fi
 AC_ARG_WITH(geos, 
-[  --with-geos=DIR         Enable spatial predicate and operator support],
+[  --with-geos=PATH        Enable spatial predicate and operator support
+                          PATH is path to geos-config ],
   if test "$with_geos" != "no"; then
     USE_GEOS=1
     if test "$with_geos" != "yes"; then
-       GEOS_DIR=$with_geos
+       GEOS_DIR=`$with_geos --prefix`
+    else
+       GEOS_DIR=`geos-config --prefix`
     fi
   fi
 )
 
 AC_SUBST(USE_PROJ)
 AC_SUBST(PROJ_DIR)
-USE_PROJ=0
-PROJ_DIR=/usr/local
+if test -z "$USE_PROJ"; then
+	USE_PROJ=0
+fi
+if test -z "$PROJ_DIR"; then
+	PROJ_DIR=/usr/local
+fi
 AC_ARG_WITH(proj, 
 [  --with-proj=DIR         Enable reprojection support],
   if test "$with_proj" != "no"; then
@@ -29,7 +40,9 @@ AC_ARG_WITH(proj,
 )
 
 AC_SUBST(PGSQL_SRC)
-PGSQL_SRC=${PWD}/../..
+if test -z "$PGSQL_SRC"; then
+	PGSQL_SRC=${PWD}/../..
+fi
 AC_ARG_WITH(pgsql-src, 
 [  --with-pgsql-src=DIR    Where to find pgsql sources],
   if test -d "$with_pgsql_src"; then
