@@ -23,7 +23,6 @@
 #include "wktparse.h"
 
 void elog_ERROR(const char* string);
-void *palloc_fn(size_t size);
 
 
 extern unsigned char	parse_hex(char *str);
@@ -32,8 +31,8 @@ extern void deparse_hex(unsigned char str, unsigned char *result);
 
 extern char *parse_lwgeom_wkt(char *wkt_input);
 
-void *palloc_fn2(size_t size);
-void free_fn(void *ptr);
+static void *palloc_fn(size_t size);
+static void free_fn(void *ptr);
 
 
 
@@ -44,9 +43,11 @@ void free_fn(void *ptr);
 Datum LWGEOMFromWKB(PG_FUNCTION_ARGS);
 Datum WKBFromLWGEOM(PG_FUNCTION_ARGS);
 
-
 Datum LWGEOM_in(PG_FUNCTION_ARGS);
 Datum LWGEOM_out(PG_FUNCTION_ARGS);
+
+// needed for OGC conformance
+Datum LWGEOM_from_text(PG_FUNCTION_ARGS);
 
 Datum LWGEOM_asText(PG_FUNCTION_ARGS);
 
@@ -77,45 +78,43 @@ typedef struct Well_known_bin {
 PG_FUNCTION_INFO_V1(LWGEOM_in);
 Datum LWGEOM_in(PG_FUNCTION_ARGS)
 {
-	    char                    *str = PG_GETARG_CSTRING(0);
+	char *str = PG_GETARG_CSTRING(0);
+ 	char *semicolonLoc,start;
 
- 		char  *semicolonLoc,start;
+	//determine if its WKB or WKT
 
+	semicolonLoc = strchr(str,';');
+	if (semicolonLoc == NULL)
+	{
+		start=str[0];
+	}
+	else
+	{
+		start=semicolonLoc[1]; // one in
+	}
 
-		//determine if its WKB or WKT
+	// this is included just for redundancy (new parser can handle wkt and wkb)
 
-		semicolonLoc = strchr(str,';');
-		if (semicolonLoc == NULL)
-		{
-			start = str[0];
-		}
-		else
-		{
-			start =semicolonLoc[1]; // one in
-		}
-
-					// this is included just for redundancy (new parser can handle wkt and wkb)
-
-		if (
-				( (start >= '0') &&  (start <= '9') ) ||
-				( (start >= 'A') &&  (start <= 'F') )
-			)
-		{
-				//its WKB
-				//PG_RETURN_POINTER(parse_lwgeom_serialized_form(str));
-				PG_RETURN_POINTER( parse_lwgeom_wkt(str) );   // this function handles wkt and wkb (in hex-form)
-		}
-		else if ( (start == 'P') || (start == 'L') || (start == 'M') || (start == 'G') || (start == 'p') || (start == 'l') || (start == 'm') || (start == 'g'))
-		{
-				// its WKT
-				PG_RETURN_POINTER( parse_lwgeom_wkt(str) );  // this function handles wkt and wkb (in hex-form)
-
-		}
-		else
-		{
-			elog(ERROR,"couldnt determine if input lwgeom is WKB or WKT");
-			PG_RETURN_NULL();
-		}
+	if ( ( (start >= '0') &&  (start <= '9') ) ||
+		( (start >= 'A') &&  (start <= 'F') ))
+	{
+		//its WKB
+		//PG_RETURN_POINTER(parse_lwgeom_serialized_form(str));
+		PG_RETURN_POINTER( parse_lwgeom_wkt(str) );   // this function handles wkt and wkb (in hex-form)
+	}
+	else if ( (start == 'P') || (start == 'L') || (start == 'M') ||
+		(start == 'G') || (start == 'p') || (start == 'l') ||
+		(start == 'm') || (start == 'g'))
+	{
+		// its WKT
+		// this function handles wkt and wkb (in hex-form)
+		PG_RETURN_POINTER( parse_lwgeom_wkt(str) );
+	}
+	else
+	{
+		elog(ERROR,"couldnt determine if input lwgeom is WKB or WKT");
+		PG_RETURN_NULL();
+	}
 }
 
 
@@ -128,7 +127,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_out);
 Datum LWGEOM_out(PG_FUNCTION_ARGS)
 {
 	char *lwgeom = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	char *result = unparse_WKB(lwgeom,palloc_fn2,free_fn);
+	char *result = unparse_WKB(lwgeom,palloc_fn,free_fn);
 
 	PG_RETURN_CSTRING(result);
 }
@@ -198,7 +197,7 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 	char *lwgeom_input = (char *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	// SRID=#;<hexized wkb>
-	char *hexized_wkb_srid =unparse_WKB(lwgeom_input,palloc_fn2,free_fn);
+	char *hexized_wkb_srid =unparse_WKB(lwgeom_input,palloc_fn,free_fn);
 
 	char *hexized_wkb; // hexized_wkb_srid w/o srid
 	char *result; //wkb
@@ -241,6 +240,30 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 		pfree(hexized_wkb_srid);
 
 		PG_RETURN_POINTER(result);
+}
+
+//given wkt and SRID, return a geometry
+//actually we cheat, postgres will convert the string to a geometry for us...
+PG_FUNCTION_INFO_V1(LWGEOM_from_text);
+Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
+{
+	LWGEOM *geom = (LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+	int32 SRID;
+	LWGEOM *result = NULL;
+
+	// read user-requested SRID if any
+	if ( PG_NARGS() > 1 )
+	{
+		SRID = PG_GETARG_INT32(1);
+		if ( SRID != lwgeom_getSRID(geom) )
+		{
+			result = lwgeom_setSRID(geom, SRID);
+			pfree(geom);
+		}
+	}
+	if ( ! result )	result = geom;
+
+	PG_RETURN_POINTER(result);
 }
 
 
@@ -480,56 +503,31 @@ unsigned char	parse_hex(char *str)
 	return (unsigned char) ((result_high<<4) + result_low);
 }
 
-
-// for the parser/unparser -- it needs memory management functions
-void *palloc_fn2(size_t size)
-{
-	void * result;
-
-	result = palloc(size);
-//	elog(NOTICE,"  palloc(%i) at %p",size,result);
-	return result;
-}
-
-void free_fn(void *ptr)
-{
-
-//	elog(NOTICE,"  pfree(%p)", ptr);
-	pfree(ptr);
-}
-
-
-
-
 //convert LWGEOM to wkt (in TEXT format)
 PG_FUNCTION_INFO_V1(LWGEOM_asText);
 Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 {
-		char		        *lwgeom = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-		char				*result_cstring =  unparse_WKT(lwgeom,palloc_fn2,free_fn);
-		int					len;
+	char *lwgeom = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char *result_cstring =  unparse_WKT(lwgeom,palloc_fn,free_fn);
+	int len;
 
+        char *result,*loc_wkt;
+	char *semicolonLoc;
 
-        char                *result,*loc_wkt;
-		char		*semicolonLoc;
+	semicolonLoc = strchr(result_cstring,';');
 
-		semicolonLoc = strchr(result_cstring,';');
+	//loc points to start of wkt
+	if (semicolonLoc == NULL) loc_wkt = result_cstring;
+	else loc_wkt = semicolonLoc +1;
 
-				//loc points to start of wkt
-		if (semicolonLoc == NULL)
-			loc_wkt = result_cstring;
-		else
-			loc_wkt = semicolonLoc +1;
+	len = strlen(loc_wkt)+4;
+	result = palloc(len);
+	memcpy(result, &len, 4);
 
+	memcpy(result+4,loc_wkt, len-4);
 
-		len = strlen(loc_wkt)+4;
-		result = palloc(len);
-		memcpy(result, &len, 4);
-
-		memcpy(result+4,loc_wkt, len-4);
-
-		pfree(result_cstring);
-		PG_RETURN_POINTER(result);
+	pfree(result_cstring);
+	PG_RETURN_POINTER(result);
 }
 
 
@@ -537,40 +535,40 @@ Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_addBBOX);
 Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS)
 {
-			char		        *lwgeom = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-			char				*result;
-			BOX2DFLOAT4			box;
-			unsigned char		old_type;
-			int					size;
+	char *lwgeom = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char		*result;
+	BOX2DFLOAT4	box;
+	unsigned char	old_type;
+	int		size;
 
 
 //elog(NOTICE,"in LWGEOM_addBBOX");
 
-			if (lwgeom_hasBBOX( (unsigned char) lwgeom[0] ) )
-			{
+	if (lwgeom_hasBBOX( (unsigned char) lwgeom[0] ) )
+	{
 //elog(NOTICE,"LWGEOM_addBBOX  -- already has bbox");
-				// easy - already has one.  Just copy!
-				result = palloc ( *((int *) lwgeom));
-				memcpy(result,lwgeom, *((int *) lwgeom));
-				PG_RETURN_POINTER(result);
-			}
+		// easy - already has one.  Just copy!
+		result = palloc ( *((int *) lwgeom));
+		memcpy(result,lwgeom, *((int *) lwgeom));
+		PG_RETURN_POINTER(result);
+	}
 
 //elog(NOTICE,"LWGEOM_addBBOX  -- giving it a bbox");
 
-			//construct new one
-			box = getbox2d(lwgeom+4);
-			old_type = (unsigned char) lwgeom[4];
+	//construct new one
+	box = getbox2d(lwgeom+4);
+	old_type = (unsigned char) lwgeom[4];
 
-			size = *((int *) lwgeom) +sizeof(BOX2DFLOAT4);
+	size = *((int *) lwgeom) +sizeof(BOX2DFLOAT4);
 
-			result = palloc ( size );// 16 for bbox2d
+	result = palloc ( size );// 16 for bbox2d
 
-			memcpy(result,&size,4); // size
-			result[4] = lwgeom_makeType_full( lwgeom_ndims(old_type), lwgeom_hasSRID(old_type), lwgeom_getType(old_type), 1);
-			memcpy(result+5, &box, sizeof(BOX2DFLOAT4)); // copy in bbox
-			memcpy(result+5+sizeof(BOX2DFLOAT4), lwgeom+5, *((int *) lwgeom) -5);  // everything but the type and length
+	memcpy(result,&size,4); // size
+	result[4] = lwgeom_makeType_full( lwgeom_ndims(old_type), lwgeom_hasSRID(old_type), lwgeom_getType(old_type), 1);
+	memcpy(result+5, &box, sizeof(BOX2DFLOAT4)); // copy in bbox
+	memcpy(result+5+sizeof(BOX2DFLOAT4), lwgeom+5, *((int *) lwgeom) -5);  // everything but the type and length
 
-			PG_RETURN_POINTER(result);
+	PG_RETURN_POINTER(result);
 }
 
 
@@ -581,11 +579,17 @@ void elog_ERROR(const char* string)
 	elog(ERROR,string);
 }
 
-void *palloc_fn(size_t size)
+static void free_fn(void *ptr)
+{
+	//elog(NOTICE,"  pfree(%p)", ptr);
+	pfree(ptr);
+}
+
+static void *palloc_fn(size_t size)
 {
 	void * result;
-
 	result = palloc(size);
+	//elog(NOTICE,"  palloc(%d) = %p", size, result);
 	return result;
 }
 
@@ -637,21 +641,20 @@ Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS)
 
 char *parse_lwgeom_wkt(char *wkt_input)
 {
-			char *serialized_form = parse_lwg((const char *)wkt_input,(allocator) palloc_fn, (report_error)elog_ERROR);
+	char *serialized_form = parse_lwg((const char *)wkt_input,(allocator) palloc_fn, (report_error)elog_ERROR);
 
 
-//elog(NOTICE,"parse_lwgeom_wkt with %s",wkt_input);
+	//elog(NOTICE,"parse_lwgeom_wkt with %s",wkt_input);
 
-			if (serialized_form == NULL)
-				elog(ERROR,"parse_WKT:: couldnt parse!");
+	if (serialized_form == NULL)
+		elog(ERROR,"parse_WKT:: couldnt parse!");
 
-			return serialized_form;
+	return serialized_form;
 
-		//	result = palloc( (*((int*) serialized_form)));
-		//	memcpy(result, serialized_form, *((int*) serialized_form));
-		//	free(serialized_form);
-
-		//	return result;
+	//result = palloc( (*((int*) serialized_form)));
+	//memcpy(result, serialized_form, *((int*) serialized_form));
+	//free(serialized_form);
+	//return result;
 }
 
 

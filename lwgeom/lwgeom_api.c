@@ -19,6 +19,8 @@
 
 // This is an implementation of the functions defined in lwgeom.h
 
+static LWGEOM_allocator internal_allocator = malloc;
+
 
 //forward decs
 
@@ -349,31 +351,32 @@ BOX2DFLOAT4 getbox2d(char *serialized_form)
 
 
 // same as getbox2d, but modifies box instead of returning result on the stack
-void getbox2d_p(char *serialized_form, BOX2DFLOAT4 *box)
+void
+getbox2d_p(char *serialized_form, BOX2DFLOAT4 *box)
 {
-			int 	type = (unsigned char) serialized_form[0];
-			char	*loc;
-			BOX3D	*box3d;
-			BOX2DFLOAT4	*box2;
+	unsigned char type = (unsigned char) serialized_form[0];
+	char *loc;
+	BOX3D *box3d;
+	BOX2DFLOAT4 *box2;
 
-			loc = serialized_form+1;
+	loc = serialized_form+1;
 
-			if (lwgeom_hasBBOX(type))
-			{
-				//woot - this is easy
-	//elog(NOTICE,"getbox2d has box");
-				memcpy(box,loc, sizeof(BOX2DFLOAT4));
-				return ;
-			}
+	if (lwgeom_hasBBOX(type))
+	{
+		//woot - this is easy
+//elog(NOTICE,"getbox2d has box");
+		memcpy(box,loc, sizeof(BOX2DFLOAT4));
+		return ;
+	}
 
-			//we have to actually compute it!
+	//we have to actually compute it!
 //elog(NOTICE,"getbox2d_p:: computing box");
-			box3d = lw_geom_getBB_simple(serialized_form);
-			box2 = box3d_to_box2df(box3d);
+	box3d = lw_geom_getBB_simple(serialized_form);
+	box2 = box3d_to_box2df(box3d);
 
-			memcpy(box,box2, sizeof(BOX2DFLOAT4));
-			pfree(box3d);
-			pfree(box2);
+	memcpy(box,box2, sizeof(BOX2DFLOAT4));
+	pfree(box3d);
+	pfree(box2);
 }
 
 //************************************************************************
@@ -705,8 +708,6 @@ int32 get_int32(char *loc)
 	memcpy(&result,loc, sizeof(int32));
 	return result;
 }
-
-
 
 //******************************************************************************
 // basic LWLINE functions
@@ -2216,27 +2217,87 @@ void printType(unsigned char type)
 	elog(NOTICE,"type 0x%x ==> hasBBOX=%i, hasSRID=%i, ndims=%i, type=%i",(unsigned int) type, lwgeom_hasBBOX(type), lwgeom_hasSRID(type),lwgeom_ndims(type), lwgeom_getType(type));
 }
 
-
-
-
-//get the SRID from the LWGEOM
+// get the SRID from the LWGEOM
 // none present => -1
-int lwgeom_getSRID(char *serialized_form)
+int lwgeom_getSRID(LWGEOM *lwgeom)
 {
-		unsigned char type = (unsigned char) serialized_form[0];
-		char *loc;
+	unsigned char type = lwgeom->type;
+	char *loc = lwgeom->data;
 
+	if ( ! lwgeom_hasSRID(type)) return -1;
 
-	loc = serialized_form+1;
-
-	if (lwgeom_hasBBOX((unsigned char) serialized_form[0]))
+	if (lwgeom_hasBBOX(type))
 	{
 		loc += sizeof(BOX2DFLOAT4);
 	}
 
-		if ( lwgeom_hasSRID(type))
+	return get_int32(lwgeom->data);
+}
+
+// Set the SRID of a LWGEOM
+// Returns a newly allocated LWGEOM object.
+// Allocation will be done using the internal_allocator.
+LWGEOM *lwgeom_setSRID(LWGEOM *lwgeom, int32 newSRID)
+{
+	unsigned char type = lwgeom->type;
+	int bbox_offset=0; //0=no bbox, otherwise sizeof(BOX2DFLOAT4)
+	int len,len_new,len_left;
+	LWGEOM *result;
+	char *loc_new, *loc_old;
+
+	if (lwgeom_hasBBOX(type))
+		bbox_offset = sizeof(BOX2DFLOAT4);
+
+	len = lwgeom->size;
+
+	if (lwgeom_hasSRID(type))
+	{
+		//we create a new one and copy the SRID in
+		result = internal_allocator(len);
+		memcpy(result, lwgeom, len);
+		memcpy(result->data+bbox_offset, &newSRID,4);
+	}
+	else  // need to add one
+	{
+		len_new = len + 4;//+4 for SRID
+		result = internal_allocator(len_new);
+		memcpy(result, &len_new, 4); // size copy in
+		result->type = lwgeom_makeType_full(lwgeom_ndims(type), true, lwgeom_getType(type),lwgeom_hasBBOX(type));
+
+		loc_new = result->data;
+		loc_old = lwgeom->data;
+
+		len_left = len -4-1;// old length - size - type
+
+		// handle bbox (if there)
+
+		if (lwgeom_hasBBOX(type))
 		{
-			return get_int32(loc);
+			memcpy(loc_new, loc_old, sizeof(BOX2DFLOAT4)) ;//copy in bbox
+			loc_new += sizeof(BOX2DFLOAT4);
+			loc_old += sizeof(BOX2DFLOAT4);
+			len_left -= sizeof(BOX2DFLOAT4);
 		}
-		return -1;
+
+		//put in SRID
+
+		memcpy(loc_new, &newSRID,4);
+		loc_new +=4;
+		memcpy(loc_new, loc_old, len_left);
+
+		// TODO: add SRID presence flag in type.
+	}
+	return result;
+}
+
+/*
+ * Set an allocator function.
+ * Return current allocator function.
+ */
+LWGEOM_allocator
+LWGEOM_setAllocator(LWGEOM_allocator newallocator)
+{
+	LWGEOM_allocator oldalloc = internal_allocator;
+	internal_allocator = newallocator;
+	return oldalloc;
 }

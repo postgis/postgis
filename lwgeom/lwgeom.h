@@ -7,7 +7,10 @@
 #include "utils/geo_decls.h"
 
 
-/*
+// This will be used to 
+typedef void* (*LWGEOM_allocator)(size_t size);
+
+LWGEOM_allocator LWGEOM_setAllocator(LWGEOM_allocator);
 
 typedef struct
 {
@@ -15,38 +18,7 @@ typedef struct
 	float ymin;
 	float xmax;
 	float ymax;
-
 } BOX2DFLOAT4;
-
-typedef struct
-{
-	float xmin;
-	float ymin;
-	float xmax;
-	float ymax;
-	char  junk[16];
-} BOX2DFLOAT4;
-typedef struct
-{
-	double xmin;
-	double ymin;
-	double xmax;
-	double ymax;
-} BOX2DFLOAT4;
-
-*/
-
-typedef struct
-{
-	float xmin;
-	float ymin;
-	float xmax;
-	float ymax;
-
-} BOX2DFLOAT4;
-
-
-
 
 typedef struct
 {
@@ -63,8 +35,7 @@ typedef struct
 // analysis functions simple.
 // NOTE: for GEOS integration, we'll probably set z=NaN
 //        so look out - z might be NaN for 2d geometries!
-
- typedef struct {	double	x,y,z;  } POINT3D;
+typedef struct { double	x,y,z; } POINT3D;
 
 
 // type for 2d points.  When you convert this to 3d, the
@@ -75,7 +46,6 @@ typedef struct
 	 double y;
 } POINT2D;
 
-
 typedef struct
 {
 	 double x;
@@ -83,8 +53,6 @@ typedef struct
 	 double z;
 	 double m;
 } POINT4D;
-
-
 
 // Point array abstracts a lot of the complexity of points and point lists.
 // It handles miss-alignment in the serialized form, 2d/3d translation
@@ -175,7 +143,6 @@ WHERE
 
 */
 
-
 // already defined in postgis.h
 
  #define	POINTTYPE	1
@@ -186,7 +153,23 @@ WHERE
  #define	MULTIPOLYGONTYPE	6
  #define	COLLECTIONTYPE	7
 
+/*
+ * This is the binary representation of lwgeom compatible
+ * with postgresql varlena struct
+ */
+typedef struct {
+	int32 size;
+	unsigned char type; // encodes ndims, type, bbox presence,
+			    // srid presence
+	char data[1];
+} LWGEOM;
 
+/*
+ * Use this macro to extract the char * required
+ * by most functions from an LWGEOM struct.
+ * (which is an LWGEOM w/out int32 size casted to char *)
+ */
+#define SERIALIZED_FORM(x) ((char *)&((x)->type))
 
 
 extern bool lwgeom_hasSRID(unsigned char type); // true iff S bit is set
@@ -415,9 +398,10 @@ extern int lwgeom_seralizedformlength_simple(char *serialized_form);
 extern int lwgeom_seralizedformlength(char *serialized_form, int geom_number);
 extern int lwgeom_seralizedformlength_inspected(LWGEOM_INSPECTED *inspected, int geom_number);
 
-//get the SRID from the LWGEOM
+// get the SRID from the LWGEOM
 // none present => -1
-extern int lwgeom_getSRID(char *serialized_form);
+extern int lwgeom_getSRID(LWGEOM *lwgeom);
+extern LWGEOM *lwgeom_setSRID(LWGEOM *lwgeom, int32 newSRID);
 
 //get bounding box of LWGEOM (automatically calls the sub-geometries bbox generators)
 extern BOX3D *lw_geom_getBB(char *serialized_form);
