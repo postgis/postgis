@@ -319,7 +319,7 @@ Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS)
 
 	// copy 2 (see above)
 	result = PG_LWGEOM_construct(serialized,
-		lwgeom_getSRID(geom), lwgeom_hasBBOX(geom->type));
+		pglwgeom_getSRID(geom), lwgeom_hasBBOX(geom->type));
 
 	PG_RETURN_POINTER(result);
 }

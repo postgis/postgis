@@ -333,7 +333,7 @@ Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS)
 }
 
 char
-is_worth_caching_pglwgeom_bbox(PG_LWGEOM *in)
+is_worth_caching_pglwgeom_bbox(const PG_LWGEOM *in)
 {
 #if ! AUTOCACHE_BBOX
 	return false;
@@ -343,7 +343,17 @@ is_worth_caching_pglwgeom_bbox(PG_LWGEOM *in)
 }
 
 char
-is_worth_caching_lwgeom_bbox(LWGEOM *in)
+is_worth_caching_serialized_bbox(const char *in)
+{
+#if ! AUTOCACHE_BBOX
+	return false;
+#endif
+	if ( TYPE_GETTYPE((unsigned char)in[0]) == POINTTYPE ) return false;
+	return true;
+}
+
+char
+is_worth_caching_lwgeom_bbox(const LWGEOM *in)
 {
 #if ! AUTOCACHE_BBOX
 	return false;

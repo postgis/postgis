@@ -411,8 +411,9 @@ extern int compute_serialized_bbox_p(char *serialized_form, BOX2DFLOAT4 *box);
  * Evaluate with an heuristic if the provided PG_LWGEOM is worth
  * caching a bbox
  */
-char is_worth_caching_pglwgeom_bbox(PG_LWGEOM *);
-char is_worth_caching_lwgeom_bbox(LWGEOM *);
+char is_worth_caching_pglwgeom_bbox(const PG_LWGEOM *);
+char is_worth_caching_serialized_bbox(const char *);
+char is_worth_caching_lwgeom_bbox(const LWGEOM *);
 
 /*
  * Use this macro to extract the char * required
@@ -691,9 +692,9 @@ int lwgeom_empty_length(int SRID);
 
 // get the SRID from the LWGEOM
 // none present => -1
-extern int lwgeom_getSRID(PG_LWGEOM *lwgeom);
+extern int pglwgeom_getSRID(PG_LWGEOM *lwgeom);
 extern int lwgeom_getsrid(char *serialized);
-extern PG_LWGEOM *lwgeom_setSRID(PG_LWGEOM *lwgeom, int32 newSRID);
+extern PG_LWGEOM *pglwgeom_setSRID(PG_LWGEOM *lwgeom, int32 newSRID);
 
 //get bounding box of LWGEOM (automatically calls the sub-geometries bbox generators)
 extern BOX3D *lw_geom_getBB(char *serialized_form);

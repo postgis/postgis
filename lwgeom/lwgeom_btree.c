@@ -41,7 +41,7 @@ Datum lwgeom_lt(PG_FUNCTION_ARGS)
 	elog(NOTICE, "lwgeom_lt called");
 #endif
 
-	if (lwgeom_getSRID(geom1) != lwgeom_getSRID(geom2))
+	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
 	{
 		elog(ERROR,
 			"Operation on two GEOMETRIES with different SRIDs\n");
@@ -98,7 +98,7 @@ Datum lwgeom_le(PG_FUNCTION_ARGS)
 	elog(NOTICE, "lwgeom_le called");
 #endif
 
-	if (lwgeom_getSRID(geom1) != lwgeom_getSRID(geom2))
+	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
 	{
 		elog(ERROR,
 			"Operation on two GEOMETRIES with different SRIDs\n");
@@ -178,7 +178,7 @@ Datum lwgeom_eq(PG_FUNCTION_ARGS)
 	elog(NOTICE, "lwgeom_eq called");
 #endif
 
-	if (lwgeom_getSRID(geom1) != lwgeom_getSRID(geom2))
+	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
 	{
 		elog(ERROR,
 			"Operation on two GEOMETRIES with different SRIDs\n");
@@ -238,7 +238,7 @@ Datum lwgeom_ge(PG_FUNCTION_ARGS)
 	elog(NOTICE, "lwgeom_ge called");
 #endif
 
-	if (lwgeom_getSRID(geom1) != lwgeom_getSRID(geom2))
+	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
 	{
 		elog(ERROR,
 			"Operation on two GEOMETRIES with different SRIDs\n");
@@ -310,7 +310,7 @@ Datum lwgeom_gt(PG_FUNCTION_ARGS)
 	elog(NOTICE, "lwgeom_gt called");
 #endif
 
-	if (lwgeom_getSRID(geom1) != lwgeom_getSRID(geom2))
+	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
 	{
 		elog(ERROR,
 			"Operation on two GEOMETRIES with different SRIDs\n");
@@ -378,7 +378,7 @@ Datum lwgeom_cmp(PG_FUNCTION_ARGS)
 	elog(NOTICE, "lwgeom_cmp called");
 #endif
 
-	if (lwgeom_getSRID(geom1) != lwgeom_getSRID(geom2))
+	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
 	{
 		elog(ERROR,
 			"Operation on two GEOMETRIES with different SRIDs\n");
@@ -449,6 +449,11 @@ Datum lwgeom_cmp(PG_FUNCTION_ARGS)
 /***********************************************************
  *
  * $Log$
+ * Revision 1.6  2005/01/05 12:44:47  strk
+ * Added is_worth_caching_serialized_bbox(). Renamed lwgeom_setSRID() to
+ * pglwgeom_setSRID(). Fixed a bug in PG_LWGEOM_construct support for
+ * AUTOCACHE_BBOX.
+ *
  * Revision 1.5  2004/09/29 10:50:30  strk
  * Big layout change.
  * lwgeom.h is public API

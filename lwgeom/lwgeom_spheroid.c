@@ -494,7 +494,7 @@ Datum LWGEOM_distance_ellipsoid_point(PG_FUNCTION_ARGS)
 	LWPOINT *point1, *point2;
 	POINT2D *p1, *p2;
 
-	if (lwgeom_getSRID(geom1) != lwgeom_getSRID(geom2))
+	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
 	{
 		elog(ERROR, "LWGEOM_distance_ellipsoid_point: Operation on two GEOMETRIES with different SRIDs\n");
 		PG_RETURN_NULL();

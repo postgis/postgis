@@ -1415,7 +1415,7 @@ Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS)
 	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
-	if (lwgeom_getSRID(geom1) != lwgeom_getSRID(geom2))
+	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
 	{
 		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
 		PG_RETURN_NULL();
@@ -1457,7 +1457,7 @@ Datum LWGEOM_maxdistance2d_linestring(PG_FUNCTION_ARGS)
 	line2 = lwline_deserialize(SERIALIZED_FORM(geom2));
 	if ( line2 == NULL ) PG_RETURN_NULL(); // not a linestring
 
-	if (lwgeom_getSRID(geom1) != lwgeom_getSRID(geom2))
+	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
 	{
 		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
 		PG_RETURN_NULL();
@@ -1493,7 +1493,7 @@ Datum LWGEOM_translate(PG_FUNCTION_ARGS)
 		if ( ! compute_serialized_bbox_p(srl, getbox2d_internal(srl)) )
 		{
 			oldgeom = geom;
-			geom = PG_LWGEOM_construct(srl, lwgeom_getSRID(geom), 0);
+			geom = PG_LWGEOM_construct(srl, pglwgeom_getSRID(geom), 0);
 			lwfree(oldgeom);
 		}
 	}
@@ -1602,7 +1602,7 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 	elog(NOTICE, "LWGEOM_collect(%s, %s): call", lwgeom_typename(TYPE_GETTYPE(pglwgeom1->type)), lwgeom_typename(TYPE_GETTYPE(pglwgeom2->type)));
 #endif
 	
-	if ( lwgeom_getSRID(pglwgeom1) != lwgeom_getSRID(pglwgeom2) )
+	if ( pglwgeom_getSRID(pglwgeom1) != pglwgeom_getSRID(pglwgeom2) )
 	{
 		elog(ERROR, "Operation on two GEOMETRIES with different SRIDs\n");
 		PG_RETURN_NULL();
@@ -2095,7 +2095,7 @@ Datum LWGEOM_makeline(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	if ( lwgeom_getSRID(pglwg1) != lwgeom_getSRID(pglwg2) )
+	if ( pglwgeom_getSRID(pglwg1) != pglwgeom_getSRID(pglwg2) )
 	{
 		elog(ERROR, "Operation with two geometries with different SRIDs\n");
 		PG_RETURN_NULL();
@@ -2250,7 +2250,7 @@ Datum centroid(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	int type = lwgeom_getType(geom->type);
-	int SRID = lwgeom_getSRID(geom);
+	int SRID = pglwgeom_getSRID(geom);
 	LWGEOM_EXPLODED *exp = lwgeom_explode(SERIALIZED_FORM(geom));
 	LWPOLY *poly=NULL;
 	LWPOINT *point;

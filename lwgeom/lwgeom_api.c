@@ -1736,7 +1736,7 @@ int lwgeom_getsrid(char *serialized)
 
 // get the SRID from the LWGEOM
 // none present => -1
-int lwgeom_getSRID(PG_LWGEOM *lwgeom)
+int pglwgeom_getSRID(PG_LWGEOM *lwgeom)
 {
 	unsigned char type = lwgeom->type;
 	char *loc = lwgeom->data;
@@ -1751,11 +1751,11 @@ int lwgeom_getSRID(PG_LWGEOM *lwgeom)
 	return get_int32(loc);
 }
 
-// Set the SRID of a LWGEOM
-// Returns a newly allocated LWGEOM object.
+// Set the SRID of a PG_LWGEOM
+// Returns a newly allocated PG_LWGEOM object.
 // Allocation will be done using the lwalloc.
 PG_LWGEOM *
-lwgeom_setSRID(PG_LWGEOM *lwgeom, int32 newSRID)
+pglwgeom_setSRID(PG_LWGEOM *lwgeom, int32 newSRID)
 {
 	unsigned char type = lwgeom->type;
 	int bbox_offset=0; //0=no bbox, otherwise sizeof(BOX2DFLOAT4)
@@ -1855,7 +1855,7 @@ PG_LWGEOM_construct(char *ser, int SRID, int wantbbox)
 	PG_LWGEOM *result;
 
 	/* COMPUTE_BBOX FOR_COMPLEX_GEOMS */
-	if ( is_worth_caching_pglwgeom_bbox(ser) ) 
+	if ( is_worth_caching_serialized_bbox(ser) ) 
 	{
 		// if ( ! wantbbox ) elog(NOTICE, "PG_LWGEOM_construct forced wantbbox=1 due to rule FOR_COMPLEX_GEOMS");
 		wantbbox=1;

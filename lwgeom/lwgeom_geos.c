@@ -206,7 +206,7 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 		if ( ! i )
 		{
 			geos_result = POSTGIS2GEOS(geom);
-			SRID = lwgeom_getSRID(geom);
+			SRID = pglwgeom_getSRID(geom);
 #ifdef DEBUG
 		elog(NOTICE, "first geom is a %s", lwgeom_typename(TYPE_GETTYPE(geom->type)));
 #endif
@@ -214,7 +214,7 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 		}
 		else
 		{
-			if ( SRID != lwgeom_getSRID(geom) )
+			if ( SRID != pglwgeom_getSRID(geom) )
 			{
 				elog(ERROR,
 					"Operation on mixed SRID geometries");
@@ -278,8 +278,8 @@ Datum geomunion(PG_FUNCTION_ARGS)
 	is3d = ( TYPE_NDIMS(geom1->type) > 2 ) ||
 		( TYPE_NDIMS(geom2->type) > 2 );
 
-	SRID = lwgeom_getSRID(geom1);
-	if ( SRID != lwgeom_getSRID(geom2) )
+	SRID = pglwgeom_getSRID(geom1);
+	if ( SRID != pglwgeom_getSRID(geom2) )
 	{
 		elog(ERROR, "Operation on two geometries with different SRIDs");
 		PG_RETURN_NULL();
@@ -381,8 +381,8 @@ Datum symdifference(PG_FUNCTION_ARGS)
 	is3d = ( TYPE_NDIMS(geom1->type) > 2 ) ||
 		( TYPE_NDIMS(geom2->type) > 2 );
 
-	SRID = lwgeom_getSRID(geom1);
-	if ( SRID != lwgeom_getSRID(geom2) )
+	SRID = pglwgeom_getSRID(geom1);
+	if ( SRID != pglwgeom_getSRID(geom2) )
 	{
 		elog(ERROR, "Operation on two geometries with different SRIDs");
 		PG_RETURN_NULL();
@@ -471,7 +471,7 @@ Datum boundary(PG_FUNCTION_ARGS)
 
 	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	SRID = lwgeom_getSRID(geom1);
+	SRID = pglwgeom_getSRID(geom1);
 
 	initGEOS(MAXIMUM_ALIGNOF);
 
@@ -548,7 +548,7 @@ Datum convexhull(PG_FUNCTION_ARGS)
 #endif
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	SRID = lwgeom_getSRID(geom1);
+	SRID = pglwgeom_getSRID(geom1);
 
 	initGEOS(MAXIMUM_ALIGNOF);
 
@@ -668,7 +668,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 
 //	elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
 
-	GEOSSetSRID(g3, lwgeom_getSRID(geom1));
+	GEOSSetSRID(g3, pglwgeom_getSRID(geom1));
 
 #ifdef PROFILE
 	profstart(PROF_G2P);
@@ -718,8 +718,8 @@ Datum intersection(PG_FUNCTION_ARGS)
 	is3d = ( TYPE_NDIMS(geom1->type) > 2 ) ||
 		( TYPE_NDIMS(geom2->type) > 2 );
 
-	SRID = lwgeom_getSRID(geom1);
-	if ( SRID != lwgeom_getSRID(geom2) )
+	SRID = pglwgeom_getSRID(geom1);
+	if ( SRID != pglwgeom_getSRID(geom2) )
 	{
 		elog(ERROR, "Operation on two geometries with different SRIDs");
 		PG_RETURN_NULL();
@@ -835,8 +835,8 @@ Datum difference(PG_FUNCTION_ARGS)
 	is3d = ( TYPE_NDIMS(geom1->type) > 2 ) ||
 		( TYPE_NDIMS(geom2->type) > 2 );
 
-	SRID = lwgeom_getSRID(geom1);
-	if ( SRID != lwgeom_getSRID(geom2) )
+	SRID = pglwgeom_getSRID(geom1);
+	if ( SRID != pglwgeom_getSRID(geom2) )
 	{
 		elog(ERROR, "Operation on two geometries with different SRIDs");
 		PG_RETURN_NULL();
@@ -951,7 +951,7 @@ Datum pointonsurface(PG_FUNCTION_ARGS)
 
 //	elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
 
-	GEOSSetSRID(g3, lwgeom_getSRID(geom1));
+	GEOSSetSRID(g3, pglwgeom_getSRID(geom1));
 #ifdef PROFILE
 	profstart(PROF_G2P);
 #endif
@@ -1022,7 +1022,7 @@ Datum centroid(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL(); 
 	}
 
-	GEOSSetSRID(geosresult, lwgeom_getSRID(geom));
+	GEOSSetSRID(geosresult, pglwgeom_getSRID(geom));
 
 #ifdef PROFILE
 	profstart(PROF_G2P);
@@ -2396,11 +2396,11 @@ Datum GEOS_polygonize_garray(PG_FUNCTION_ARGS)
 		vgeoms[i] = POSTGIS2GEOS(geom);
 		if ( ! i )
 		{
-			SRID = lwgeom_getSRID(geom);
+			SRID = pglwgeom_getSRID(geom);
 		}
 		else
 		{
-			if ( SRID != lwgeom_getSRID(geom) )
+			if ( SRID != pglwgeom_getSRID(geom) )
 			{
 	elog(ERROR, "polygonize: operation on mixed SRID geometries");
 	PG_RETURN_NULL();

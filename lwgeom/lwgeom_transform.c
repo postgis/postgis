@@ -257,7 +257,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	}
 
 	geom = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	if (lwgeom_getSRID(geom) == -1)
+	if (pglwgeom_getSRID(geom) == -1)
 	{
 		PG_FREE_IF_COPY(geom, 0);
 		elog(ERROR,"tranform: source SRID = -1");
@@ -265,7 +265,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	}
 
 	// This call will always copy given geometry
-	result = lwgeom_setSRID(geom, result_srid);
+	result = pglwgeom_setSRID(geom, result_srid);
 	PG_FREE_IF_COPY(geom, 0);
 
 	input_proj4_text  = (PG_GETARG_TEXT_P(1));
@@ -318,7 +318,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 		if ( ! compute_serialized_bbox_p(srl, getbox2d_internal(srl)) )
 		{
 			oldgeom = result;
-			result = PG_LWGEOM_construct(srl, lwgeom_getSRID(result), 0);
+			result = PG_LWGEOM_construct(srl, pglwgeom_getSRID(result), 0);
 			lwfree(oldgeom);
 		}
 	}

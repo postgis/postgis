@@ -75,9 +75,8 @@ char line_is_closed(LWLINE *line);
 PG_FUNCTION_INFO_V1(LWGEOM_getSRID);
 Datum LWGEOM_getSRID(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *lwgeom = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	int srid = lwgeom_getSRID (lwgeom);
-
+	PG_LWGEOM *pglwgeom=(PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	int srid = pglwgeom_getSRID (pglwgeom);
 	PG_RETURN_INT32(srid);
 }
 
@@ -89,7 +88,7 @@ Datum LWGEOM_setSRID(PG_FUNCTION_ARGS)
 	int newSRID = PG_GETARG_INT32(1);
 	PG_LWGEOM *result;
 
-	result = lwgeom_setSRID(lwgeom, newSRID);
+	result = pglwgeom_setSRID(lwgeom, newSRID);
 
 	PG_RETURN_POINTER(result);
 }
@@ -487,7 +486,7 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 		TYPE_HASZ(line->type), TYPE_HASM(line->type), 1);
 
 	// Construct an LWPOINT
-	point = lwpoint_construct(lwgeom_getSRID(geom),
+	point = lwpoint_construct(pglwgeom_getSRID(geom),
 		NULL, pts);
 
 	// Serialized the point
@@ -496,7 +495,7 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 	// And we construct the line
 	// TODO: use serialize_buf above, instead ..
 	result = PG_LWGEOM_construct(serializedpoint,
-		lwgeom_getSRID(geom), 0);
+		pglwgeom_getSRID(geom), 0);
 
 	pfree(point);
 	pfree(serializedpoint);
@@ -631,13 +630,13 @@ Datum LWGEOM_startpoint_linestring(PG_FUNCTION_ARGS)
 		TYPE_HASM(line->type), 1);
 
 	// Construct an LWPOINT
-	point = lwpoint_construct(lwgeom_getSRID(geom), NULL, pts);
+	point = lwpoint_construct(pglwgeom_getSRID(geom), NULL, pts);
 
 	// Serialized the point
 	serializedpoint = lwpoint_serialize(point);
 
 	// And we construct the line (copy again)
-	result = PG_LWGEOM_construct(serializedpoint, lwgeom_getSRID(geom),
+	result = PG_LWGEOM_construct(serializedpoint, pglwgeom_getSRID(geom),
 		0);
 
 	pfree(point);
@@ -682,13 +681,13 @@ Datum LWGEOM_endpoint_linestring(PG_FUNCTION_ARGS)
 		TYPE_HASM(line->type), 1);
 
 	// Construct an LWPOINT
-	point = lwpoint_construct(lwgeom_getSRID(geom), NULL, pts);
+	point = lwpoint_construct(pglwgeom_getSRID(geom), NULL, pts);
 
 	// Serialized the point
 	serializedpoint = lwpoint_serialize(point);
 
 	// And we construct the line (copy again)
-	result = PG_LWGEOM_construct(serializedpoint, lwgeom_getSRID(geom),
+	result = PG_LWGEOM_construct(serializedpoint, pglwgeom_getSRID(geom),
 		0);
 
 	pfree(point);
@@ -706,7 +705,7 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 	int32 SRID;
 	PG_LWGEOM *result = NULL;
 
-	if ( lwgeom_getSRID(geom) != -1 || TYPE_GETZM(geom->type) != 0 )
+	if ( pglwgeom_getSRID(geom) != -1 || TYPE_GETZM(geom->type) != 0 )
 	{
 		elog(WARNING, "OGC WKT expected, EWKT provided - use GeomFromEWKT() for this");
 	}
@@ -715,9 +714,9 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 	if ( PG_NARGS() > 1 )
 	{
 		SRID = PG_GETARG_INT32(1);
-		if ( SRID != lwgeom_getSRID(geom) )
+		if ( SRID != pglwgeom_getSRID(geom) )
 		{
-			result = lwgeom_setSRID(geom, SRID);
+			result = pglwgeom_setSRID(geom, SRID);
 			pfree(geom);
 		}
 	}
@@ -737,7 +736,7 @@ Datum LWGEOM_from_WKB(PG_FUNCTION_ARGS)
 	geom = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall1(
 		LWGEOMFromWKB, PG_GETARG_DATUM(0)));
 
-	if ( lwgeom_getSRID(geom) != -1 || TYPE_GETZM(geom->type) != 0 )
+	if ( pglwgeom_getSRID(geom) != -1 || TYPE_GETZM(geom->type) != 0 )
 	{
 		elog(WARNING, "OGC WKB expected, EWKB provided - use GeometryFromEWKB() for this");
 	}
@@ -747,9 +746,9 @@ Datum LWGEOM_from_WKB(PG_FUNCTION_ARGS)
 	if ( PG_NARGS() > 1 )
 	{
 		SRID = PG_GETARG_INT32(1);
-		if ( SRID != lwgeom_getSRID(geom) )
+		if ( SRID != pglwgeom_getSRID(geom) )
 		{
-			result = lwgeom_setSRID(geom, SRID);
+			result = pglwgeom_setSRID(geom, SRID);
 			pfree(geom);
 		}
 	}
