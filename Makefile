@@ -5,6 +5,13 @@
 USE_PROJ=0
 
 #---------------------------------------------------------------
+# Set USE_STATS to 1 for new GiST statistics collection support
+# Note that this support requires additional columns in 
+# GEOMETRY_COLUMNS, so see the list archives for info or
+# install a fresh database using postgis.sql
+USE_STATS=0
+
+#---------------------------------------------------------------
 subdir=contrib/postgis
 
 #---------------------------------------------------------------
