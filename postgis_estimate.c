@@ -11,6 +11,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.10  2004/02/25 00:46:26  strk
+ * initial version of && selectivity estimation for PG75
+ *
  * Revision 1.9  2004/02/23 21:59:16  strk
  * geometry analyzer builds the histogram
  *
@@ -99,7 +102,7 @@
  */
 #define STATISTIC_KIND_GEOMETRY 100
 
-#define DEBUG_GEOMETRY_STATS 0
+#define DEBUG_GEOMETRY_STATS 1
 
 /*
  * Default geometry selectivity factor
@@ -138,7 +141,7 @@ Datum estimate_histogram2d(PG_FUNCTION_ARGS)
 	BOX			  *box = (BOX *) PG_GETARG_POINTER(1);
 	double box_area;
 	int			x_idx_min, x_idx_max, y_idx_min, y_idx_max;
-	double intersect_x, intersect_y,AOI;
+	double intersect_x, intersect_y, AOI;
 	int x,y;
 	double xmin,ymin,xmax,ymax;
 	int32 result_sum;
@@ -925,13 +928,244 @@ Datum postgis_gist_sel(PG_FUNCTION_ARGS)
 	Oid operator = PG_GETARG_OID(1);
 	List *args = (List *) PG_GETARG_POINTER(2);
 	int varRelid = PG_GETARG_INT32(3);
+	Oid relid;
+	HeapTuple stats_tuple;
+	GEOM_STATS *geomstats;
+	int geomstats_nvalues=0;
+	Const *other;
+	Var *self;
+	GEOMETRY *in;
+	BOX *search_box;
+	float8 selectivity=0;
 
 #if DEBUG_GEOMETRY_STATS
 	elog(NOTICE, "postgis_gist_sel called");
-	elog(NOTICE, " returning default geometry selectivity");
 #endif
 
-	PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_SEL);
+	/*
+	 * Find the constant part
+	 */
+
+	other = (Const *) lfirst(args);
+	if ( ! IsA(other, Const) ) 
+	{
+		self = (Var *)other;
+		other = (Const *) lsecond(args);
+	}
+	else
+	{
+		self = (Var *) lsecond(args);
+	}
+
+	if ( ! IsA(other, Const) ) 
+	{
+#if DEBUG_GEOMETRY_STATS
+		elog(NOTICE, " no constant arguments - returning default selectivity");
+#endif
+		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_SEL);
+	}
+
+	/*
+	 * We are working on two constants..
+	 * TODO: check if expression is true,
+	 *       returned set would be either 
+	 *       the whole or none.
+	 */
+	if ( ! IsA(self, Var) ) 
+	{
+#if DEBUG_GEOMETRY_STATS
+		elog(NOTICE, " no variable argument ? - returning default selectivity");
+#endif
+		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_SEL);
+	}
+
+	/*
+	 * Convert the constant to a BOX
+	 */
+
+	in = (GEOMETRY*)PG_DETOAST_DATUM( ((Const*)other)->constvalue );
+	search_box = convert_box3d_to_box(&in->bvol);
+#if DEBUG_GEOMETRY_STATS > 1
+	elog(NOTICE," requested search box is : %.15g %.15g, %.15g %.15g",search_box->low.x,search_box->low.y,search_box->high.x,search_box->high.y);
+#endif
+
+	/*
+	 * Get pg_statistic row
+	 */
+
+	relid = getrelid(varRelid, root->rtable);
+	stats_tuple = SearchSysCache(STATRELATT, ObjectIdGetDatum(relid), Int16GetDatum(self->varattno), 0, 0);
+	if ( ! stats_tuple )
+	{
+#if DEBUG_GEOMETRY_STATS
+		elog(NOTICE, " SearchSysCache returned NULL - ret.def.");
+#endif
+		ReleaseSysCache(stats_tuple);
+		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_SEL);
+	}
+
+
+	if ( ! get_attstatsslot(stats_tuple, 0, 0,
+		STATISTIC_KIND_GEOMETRY, InvalidOid, NULL, NULL,
+		(float4 **)&geomstats, &geomstats_nvalues) )
+	{
+#if DEBUG_GEOMETRY_STATS
+		elog(NOTICE, " STATISTIC_KIND_GEOMETRY stats not found - returning default geometry selectivity");
+#endif
+		ReleaseSysCache(stats_tuple);
+		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_SEL);
+
+	}
+
+#if DEBUG_GEOMETRY_STATS > 1
+		elog(NOTICE, " %d read from stats", geomstats_nvalues);
+#endif
+
+#if DEBUG_GEOMETRY_STATS > 1
+	elog(NOTICE, " histo: xmin,ymin: %f,%f",
+		geomstats->xmin, geomstats->ymin);
+	elog(NOTICE, " histo: xmax,ymax: %f,%f",
+		geomstats->xmax, geomstats->ymax);
+	elog(NOTICE, " histo: boxesPerSide: %f", geomstats->boxesPerSide);
+	elog(NOTICE, " histo: avgFeatureArea: %f", geomstats->avgFeatureArea);
+#endif
+
+	/*
+	 * Do the estimation
+	 */
+	{
+		int x, y;
+		int x_idx_min, x_idx_max, y_idx_min, y_idx_max;
+		double intersect_x, intersect_y, AOI;
+		double cell_area, box_area;
+		double geow, geoh; // width and height of histogram
+		int bps; // boxesPerSide 
+		BOX *box;
+		double value;
+		int overlapping_cells;
+		double cell_value_weight;
+
+		box = search_box;
+		geow = geomstats->xmax-geomstats->xmin;
+		geoh = geomstats->ymax-geomstats->ymin;
+		bps = geomstats->boxesPerSide;
+		cell_area = (geow*geoh) / (bps*bps);
+		box_area = (box->high.x-box->low.x)*(box->high.y-box->low.y);
+		value = 0;
+		cell_value_weight = cell_area/geomstats->avgFeatureArea;
+
+		/* Find first overlapping column */
+		x_idx_min = (box->low.x-geomstats->xmin) / geow * bps;
+		if (x_idx_min < 0) {
+			// should increment the value somehow
+			x_idx_min = 0;
+		}
+		if (x_idx_min >= bps)
+		{
+			// should increment the value somehow
+			x_idx_min = bps-1;
+		}
+
+		/* Find first overlapping row */
+		y_idx_min = (box->low.y-geomstats->ymin) / geoh * bps;
+		if (y_idx_min <0)
+		{
+			// should increment the value somehow
+			y_idx_min = 0;
+		}
+		if (y_idx_min >= bps)
+		{
+			// should increment the value somehow
+			y_idx_min = bps-1;
+		}
+
+		/* Find last overlapping column */
+		x_idx_max = (box->high.x-geomstats->xmin) / geow * bps;
+		if (x_idx_max <0)
+		{
+			// should increment the value somehow
+			x_idx_max = 0;
+		}
+		if (x_idx_max >= bps )
+		{
+			// should increment the value somehow
+			x_idx_max = bps-1;
+		}
+
+		/* Find last overlapping row */
+		y_idx_max = (box->high.y-geomstats->ymin) / geoh * bps;
+		if (y_idx_max <0)
+		{
+			// should increment the value somehow
+			y_idx_max = 0;
+		}
+		if (y_idx_max >= bps)
+		{
+			// should increment the value somehow
+			y_idx_max = bps-1;
+		}
+
+		/*
+		 * the {x,y}_idx_{min,max}
+		 * define the grid squares that the box intersects
+		 */
+		for (y=y_idx_min; y<=y_idx_max; y++)
+		{
+			for (x=x_idx_min; x<=x_idx_max; x++)
+			{
+				double val;
+
+				intersect_x = min(box->high.x, geomstats->xmin + (x+1) * geow / bps) - max(box->low.x, geomstats->xmin + x * geow / bps );
+				intersect_y = min(box->high.y, geomstats->ymin + (y+1) * geoh / bps) - max(box->low.y, geomstats->ymin+ y * geoh / bps) ;
+				
+				val = geomstats->value[x+y*bps];
+
+				/*
+				 * Of the cell value we get
+				 * only the overlap fraction.
+				 * I guess we can overlook this,
+				 * we are not that precise anyway.
+				 */
+				//AOI = intersect_x*intersect_y;
+				//val *= AOI/cell_area;
+
+				val *= cell_value_weight;
+#if DEBUG_GEOMETRY_STATS > 1
+				elog(NOTICE, " [%d,%d] adding %.15f to value",
+					x, y, val);
+#endif
+				value += val;
+			}
+		}
+
+
+		/*
+		 * If the box was a point, I suppose
+		 * the computed value would be good enough,
+		 * because it would express the fraction
+		 * of features overlapping a single histogram
+		 * cell.
+		 *
+		 * TODO: should we consider the null fraction
+		 *       or is it a job that the cost estimator
+		 *       would do for us ?
+		 */
+		overlapping_cells = (x_idx_max-x_idx_min+1) *
+			(y_idx_max-x_idx_min+1);
+		selectivity = value;
+		//selectivity = value/overlapping_cells;
+		//selectivity *= 0.1;
+		//selectivity = 0.9;
+	}
+
+#if DEBUG_GEOMETRY_STATS
+	elog(NOTICE, " returning computed value: %f", selectivity);
+#endif
+
+	free_attstatsslot(0, NULL, 0, (float *)geomstats, geomstats_nvalues);
+	ReleaseSysCache(stats_tuple);
+	PG_RETURN_FLOAT8(selectivity);
+
 }
 
 /*
