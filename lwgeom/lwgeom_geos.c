@@ -72,7 +72,7 @@ long profipts, profopts;
 		profipts, profopts, profipts+profopts, \
 		proftime[PROF_P2G], proftime[PROF_G2P], \
 		proftime[PROF_GRUN]); \
-	elog(NOTICE, "PROF_SUMMARY: pts:%lu cnv:%d%% run:%d%%", \
+	elog(NOTICE, "PROF_SUM: pts %lu cnv %d%% run %d%%", \
 		profipts+profopts, \
 		convpercent, \
 		runpercent); \
