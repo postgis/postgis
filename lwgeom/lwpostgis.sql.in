@@ -11,6 +11,9 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.12  2004/08/24 15:05:34  strk
+-- Added NumInteriorRings() and InteriorRingN()
+--
 -- Revision 1.11  2004/08/24 14:48:58  strk
 -- Added dimension() and exteriorring()
 --
@@ -847,30 +850,41 @@ CREATEFUNCTION npoints(geometry)
 
 ------------------------------------------------------------------------
 
-CREATEFUNCTION numpoints(geometry)
+CREATEFUNCTION NumPoints(geometry)
 	RETURNS int4
 	AS '@MODULE_FILENAME@', 'LWGEOM_numpoints_linestring'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATEFUNCTION numgeometries(geometry)
+CREATEFUNCTION NumGeometries(geometry)
 	RETURNS int4
 	AS '@MODULE_FILENAME@', 'LWGEOM_numgeometries_collection'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATEFUNCTION geometryn(geometry,integer)
+CREATEFUNCTION GeometryN(geometry,integer)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_geometryn_collection'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATEFUNCTION dimension(geometry)
+CREATEFUNCTION Dimension(geometry)
 	RETURNS int4
 	AS '@MODULE_FILENAME@', 'LWGEOM_dimension'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATEFUNCTION exteriorring(geometry)
+CREATEFUNCTION ExterioRring(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','LWGEOM_exteriorring_polygon'
 	LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION NumInteriorRings(geometry)
+	RETURNS integer
+	AS '@MODULE_FILENAME@','LWGEOM_numinteriorrings_polygon'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION InteriorRingN(geometry,integer)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','LWGEOM_interiorringn_polygon'
+	LANGUAGE 'C' WITH (isstrict);
+
 
 ------------------------------------------------------------------------
 

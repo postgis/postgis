@@ -37,6 +37,10 @@ Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS);
 Datum LWGEOM_dimension(PG_FUNCTION_ARGS);
 // ---- ExteriorRing(geometry)
 Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS);
+// ---- InteriorRingN(geometry, integer)
+Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS);
+// ---- NumInteriorRings(geometry)
+Datum LWGEOM_numinteriorrings_polygon(PG_FUNCTION_ARGS);
 
 
 // internal
@@ -279,8 +283,8 @@ Datum LWGEOM_dimension(PG_FUNCTION_ARGS)
 
 
 // exteriorRing(GEOMETRY) -- find the first polygon in GEOMETRY, return
-// its exterior ring (as a linestring).  Return NULL if there is no
-// POLYGON(..) in GEOMETRY.
+// its exterior ring (as a linestring).
+// Return NULL if there is no POLYGON(..) in (first level of) GEOMETRY.
 PG_FUNCTION_INFO_V1(LWGEOM_exteriorring_polygon);
 Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 {
@@ -306,6 +310,88 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 
 	// This is a LWLINE constructed by exterior ring POINTARRAY
 	line = lwline_construct(poly->ndims, poly->SRID, extring);
+
+	// Now we serialized it (copying data)
+	serializedline = lwline_serialize(line);
+
+	// And we construct the line (copy again)
+	result = LWGEOM_construct(serializedline, poly->SRID,
+		lwgeom_hasBBOX(geom->type));
+
+	pfree(serializedline);
+	pfree(line);
+
+	PG_RETURN_POINTER(result);
+}
+
+// NumInteriorRings(GEOMETRY) -- find the first polygon in GEOMETRY, return
+// the number of its interior rings (holes).
+// Return NULL if there is no POLYGON(..) in (first level of) GEOMETRY.
+PG_FUNCTION_INFO_V1(LWGEOM_numinteriorrings_polygon);
+Datum LWGEOM_numinteriorrings_polygon(PG_FUNCTION_ARGS)
+{
+	LWGEOM *geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	LWGEOM_INSPECTED *inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
+	LWPOLY *poly = NULL;
+	int32 result;
+	int i;
+
+	for (i=0; i<inspected->ngeometries; i++)
+	{
+		poly = lwgeom_getpoly_inspected(inspected, i);
+		if ( poly ) break;
+	}
+
+	if ( poly == NULL ) PG_RETURN_NULL();
+
+	// Ok, now we have a polygon. Here is its number of holes
+	result = poly->nrings-1;
+
+	PG_RETURN_INT32(result);
+}
+
+// InteriorRingN(GEOMETRY) -- find the first polygon in GEOMETRY, return
+// its Nth interior ring (as a linestring).
+// Return NULL if there is no POLYGON(..) in (first level of) GEOMETRY.
+PG_FUNCTION_INFO_V1(LWGEOM_interiorringn_polygon);
+Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
+{
+	LWGEOM *geom;
+	int32 wanted_index;
+	LWGEOM_INSPECTED *inspected;
+	LWPOLY *poly = NULL;
+	POINTARRAY *ring;
+	LWLINE *line;
+	char *serializedline;
+	LWGEOM *result;
+	int i;
+
+	wanted_index = PG_GETARG_INT32(1);
+	if ( wanted_index < 0 )
+		PG_RETURN_NULL(); // index out of range
+
+	geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
+
+	for (i=0; i<inspected->ngeometries; i++)
+	{
+		poly = lwgeom_getpoly_inspected(inspected, i);
+		if ( poly ) break;
+	}
+
+	if ( poly == NULL ) PG_RETURN_NULL();
+
+	// Ok, now we have a polygon. Let's see if it has enough holes
+	if ( wanted_index > poly->nrings-2 )
+	{
+		pfree_inspected(inspected);
+		PG_RETURN_NULL();
+	}
+
+	ring = poly->rings[wanted_index+1];
+
+	// This is a LWLINE constructed by exterior ring POINTARRAY
+	line = lwline_construct(poly->ndims, poly->SRID, ring);
 
 	// Now we serialized it (copying data)
 	serializedline = lwline_serialize(line);
