@@ -28,6 +28,7 @@ package examples;
 
 import org.postgis.Geometry;
 import org.postgis.PGgeometry;
+import org.postgis.binary.BinaryParser;
 import org.postgresql.util.PGtokenizer;
 
 import java.sql.Connection;
@@ -256,6 +257,30 @@ public class TestParser {
                     System.out.println("--- Server side error: " + e.toString());
                     failcount++;
                 }
+                // asEWKT() function is not present on PostGIS 0.X, and the test
+                // is pointless as 0.X uses EWKT as canonical rep so the same
+                // functionality was already tested above.
+                if (serverPostgisMajor >= 1) {
+                    Geometry sqlGeom = ewktViaSQL(WKT, statement);
+                    System.out.println("asEWKT  : " + sqlGeom.toString());
+                    if (!geom.equals(sqlGeom)) {
+                        System.out.println("--- Geometries after EWKT SQL are not equal!");
+                        failcount++;
+                    } else {
+                        System.out.println("asEWKT in: yes");
+                    }
+                }
+                // asEWKB() function is not present on PostGIS 0.X.
+                if (serverPostgisMajor >= 1) {
+                    Geometry sqlGeom = ewkbViaSQL(WKT, statement);
+                    System.out.println("asEWKB  : " + sqlGeom.toString());
+                    if (!geom.equals(sqlGeom)) {
+                        System.out.println("--- Geometries after EWKB SQL are not equal!");
+                        failcount++;
+                    } else {
+                        System.out.println("asEWKB in: yes");
+                    }
+                }
             }
             statement.close();
         }
@@ -267,6 +292,24 @@ public class TestParser {
         ResultSet rs = stat.executeQuery("SELECT geometry_in('" + rep + "')");
         rs.next();
         return ((PGgeometry) rs.getObject(1)).getGeometry();
+    }
+
+    /** Pass a geometry representation through the SQL server via EWKT */
+    private static Geometry ewktViaSQL(String rep, Statement stat) throws SQLException {
+        ResultSet rs = stat.executeQuery("SELECT asEWKT(geometry_in('" + rep + "'))");
+        rs.next();
+        String resrep = rs.getString(1);
+        return PGgeometry.geomFromString(resrep);
+    }
+
+    private static BinaryParser bp = new BinaryParser();
+
+    /** Pass a geometry representation through the SQL server via EWKB */
+    private static Geometry ewkbViaSQL(String rep, Statement stat) throws SQLException {
+        ResultSet rs = stat.executeQuery("SELECT asEWKB(geometry_in('" + rep + "'))");
+        rs.next();
+        byte[] resrep = rs.getBytes(1);
+        return bp.parse(resrep);
     }
 
     /**
