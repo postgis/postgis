@@ -301,17 +301,16 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	//great, now we have a geometry, and input/output PJ* structs. 
-	//Excellent.
+	/* now we have a geometry, and input/output PJ structs. */
 	lwgeom_transform_recursive(SERIALIZED_FORM(result),
 		input_pj, output_pj);
 
-	// clean up
+	/* clean up */
 	pj_free(input_pj);
 	pj_free(output_pj);
 	pfree(input_proj4); pfree(output_proj4);
 
-	// Compute bbox if input had one
+	/* Compute bbox if input had one */
 	if ( TYPE_HASBBOX(result->type) ) 
 	{
 		srl = SERIALIZED_FORM(result);

@@ -78,10 +78,8 @@ section also use it.
 	simplify(geometry, float8) *LWG*
 
 	#### could use WHEN_SIMPLE
-	#### translating and transforming an eventually present
-	#### bbox cache in input
-	translate(geometry,float8,float8,[float8]) *SRL*
-	transform(geometry,integer) *SRL*
+	#### transforming an eventually present bbox cache in input
+	transform(geometry,integer) **SRL**
 
 [ WHEN_SIMPLE (use input bbox if present) ]
 	noop(geometry) *LWG*
@@ -101,10 +99,11 @@ section also use it.
 	collect(geometry, geometry) *LWG*
 	collect_garray (geometry[]) *LWG*
 
-	## apply grid to eventually present box in input
-	apply_grid(geometry, float8, float8, float8, float8);
+	## transform eventually present box in input
+	apply_grid(geometry, float8, float8, float8, float8); *LWG*
+	translate(geometry,float8,float8,[float8]) **SRL**
 
-	## These use LWGEOM as a mean to access and modigy SERIALIZED form
+	## These use LWGEOM as a mean to access and modify SERIALIZED form
 	reverse(geometry) *LWG* **SRL**
 	ForceRHR(geometry) *LWG* **SRL**
 
