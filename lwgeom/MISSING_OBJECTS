@@ -1,7 +1,6 @@
 # This is a list of objects still missing lwgeom support
 
 AsBinary(geometry, text)
-AsSVG(geometry, [int], [int])
 
 --- contrib
 line_interpolate_point(geometry, double precision)
