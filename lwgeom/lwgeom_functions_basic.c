@@ -2338,6 +2338,7 @@ Datum LWGEOM_isempty(PG_FUNCTION_ARGS)
 
 
 #if ! USE_GEOS
+Datum centroid(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(centroid);
 Datum centroid(PG_FUNCTION_ARGS)
 {
@@ -2349,12 +2350,13 @@ Datum centroid(PG_FUNCTION_ARGS)
 	LWPOLY *poly;
 	LWPOINT *point;
 	LWGEOM *result;
-	POINTARRAY *ring;
+	POINTARRAY *ring, *pa;
 	POINT3D *p, cent;
 	int i,j,k;
 	uint32 num_points_tot = 0;
 	char *srl;
 	char wantbbox = 0;
+	double tot_x=0, tot_y=0, tot_z=0;
 
 	if  (type != POLYGONTYPE && type != MULTIPOLYGONTYPE)
 		PG_RETURN_NULL();
@@ -2369,9 +2371,9 @@ Datum centroid(PG_FUNCTION_ARGS)
 			for (k=0; k<ring->npoints-1; k++)
 			{
 				p = (POINT3D *)getPoint(ring, k);
-				tot_x += p.x;
-				tot_y += p.y;
-				if ( ring->ndims > 2 ) tot_z += p.z;
+				tot_x += p->x;
+				tot_y += p->y;
+				if ( ring->ndims > 2 ) tot_z += p->z;
 			}
 			num_points_tot += ring->npoints-1;
 		}
