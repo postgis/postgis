@@ -23,8 +23,27 @@ html: postgis-out.xml
 		/usr/share/sgml/docbook/xsl-stylesheets/html/docbook.xsl \
 		$<
 
+postgis.fo: postgis-out.xml
+	xsltproc \
+		--output $@ \
+		--param shade.verbatim 1 \
+		--param chunk.section.depth 0 \
+		/usr/share/sgml/docbook/xsl-stylesheets/fo/docbook.xsl \
+		$<
+
+postgis.pdf: postgis.fo
+	pdfxmltex $< > /dev/null ; \
+	pdfxmltex $< > /dev/null
+
 jw: postgis-out.xml
 	jw $(COMMONOPTS) -o html/ postgis-out.xml
 
 clean:
+	@rm -f \
+		postgis-out.xml \
+		postgis.aux \
+		postgis.fo \
+		postgis.pdf \
+		postgis.out \
+		postgis.log
 
