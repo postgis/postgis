@@ -58,7 +58,7 @@ my $dump = $ARGV[2];
 my $dumplist=$dump.".list";
 my $dumpascii=$dump.".ascii";
 
-print "postgis.sql is $postgsisql\n";
+print "postgis.sql is $postgissql\n";
 print "dbname is $dbname\n";
 print "dumpfile is $dump\n";
 
