@@ -2702,6 +2702,12 @@ FROM geometry_table;</literallayout>
 					<listitem> 
 						<para>Returns the requested maxima of a bounding box.</para> 
 					</listitem> 
+				</varlistentry><varlistentry> 
+					<term>simplify(geometry, tolerance)</term> 
+					<listitem> 
+						<para>Returns a "simplified" version of the given geometry using the Douglas-Peuker algorithm. Will actually do something only with (multi)lines and (multi)polygons but you can safely call it
+with any kind of geometry. Since simplification occurs on a object-by-object basis you can also feed a GeometryCollection to this function. Note that returned geometry might loose its simplicity (see isSimple)</para>
+					</listitem> 
 				</varlistentry> 
 			</variablelist>
 		</sect1> 
