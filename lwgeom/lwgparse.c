@@ -88,7 +88,9 @@ struct {
 
 tuple* free_list=0;
 int minpoints;
-
+int checkclosed;
+double *first_point=NULL;
+double *last_point=NULL;
 
 /* External functions */
 extern void init_parser(const char *);
@@ -251,6 +253,13 @@ popc(void)
 	if ( the_geom.stack->uu.nn.num < minpoints){
 		error("geometry requires more points");
 	}
+	if ( checkclosed && first_point && last_point) {
+		if ( memcmp(first_point, last_point,
+			sizeof(double)*the_geom.ndims) )
+		{
+			error("geometry contains non-closed rings");
+		}
+	}
 	the_geom.stack = the_geom.stack->uu.nn.stack_next;
 }
 
@@ -397,6 +406,14 @@ alloc_point_2d(double x,double y)
 	tuple* p = alloc_tuple(write_point_2,the_geom.lwgi?8:16);
 	p->uu.points[0] = x;
 	p->uu.points[1] = y;
+
+	/* keep track of point */
+	if ( checkclosed ) {
+		if ( ! the_geom.stack->uu.nn.num )
+			first_point = p->uu.points;
+		last_point = p->uu.points;
+	}
+
 	inc_num();
 	check_dims(2);
 }
@@ -408,6 +425,14 @@ alloc_point_3d(double x,double y,double z)
 	p->uu.points[0] = x;
 	p->uu.points[1] = y;
 	p->uu.points[2] = z;
+
+	/* keep track of point */
+	if ( checkclosed ) {
+		if ( ! the_geom.stack->uu.nn.num )
+			first_point = p->uu.points;
+		last_point = p->uu.points;
+	}
+
 	inc_num();
 	check_dims(3);
 }
@@ -420,6 +445,14 @@ alloc_point_4d(double x,double y,double z,double m)
 	p->uu.points[1] = y;
 	p->uu.points[2] = z;
 	p->uu.points[3] = m;
+
+	/* keep track of point */
+	if ( checkclosed ) {
+		if ( ! the_geom.stack->uu.nn.num )
+			first_point = p->uu.points;
+		last_point = p->uu.points;
+	}
+
 	inc_num();
 	check_dims(4);
 }
@@ -477,6 +510,7 @@ alloc_point(void)
 		alloc_stack_tuple(POINTTYPE,write_type,1);
 
 	minpoints=1;
+	checkclosed=0;
 }
 
 void
@@ -488,6 +522,7 @@ alloc_linestring(void)
 		alloc_stack_tuple(LINETYPE,write_type,1);
 
 	minpoints=2;
+	checkclosed=0;
 }
 
 void
@@ -499,6 +534,7 @@ alloc_polygon(void)
 		alloc_stack_tuple(POLYGONTYPE, write_type,1);
 
 	minpoints=3;
+	checkclosed=1;
 }
 
 void
