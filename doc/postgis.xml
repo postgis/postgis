@@ -2540,7 +2540,7 @@ is simple (does not pass through the same point more than once).
 					</listitem> 
 				</varlistentry> 
 				<varlistentry> 
-					<term>mem_collect(geometry set)</term> 
+					<term>memcollect(geometry set)</term> 
 					<listitem> 
 						<para>This does the the same of collect(geometry), only more
 						memory-friendly (uses less memory and more processor time).
