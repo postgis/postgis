@@ -75,7 +75,7 @@ endif
 all: all-lib $(NAME).sql $(NAME).sql $(NAME)_undef.sql loaderdumper
 
 loaderdumper:
-	make -C loader
+	$(MAKE) -C loader
 
 # Shared library stuff
 include $(top_srcdir)/src/Makefile.shlib
@@ -97,7 +97,7 @@ install: all installdirs install-lib
 	$(INSTALL_DATA) $(NAME)_undef.sql $(datadir)/contrib
 	$(INSTALL_DATA) spatial_ref_sys.sql $(datadir)/contrib
 	$(INSTALL_DATA) README.postgis $(datadir)/contrib
-	make -C loader install
+	$(MAKE) -C loader install
 
 installdirs:
 	$(mkinstalldirs) $(docdir)/contrib $(datadir)/contrib $(libdir)
@@ -107,7 +107,7 @@ uninstall: uninstall-lib
 
 clean distclean maintainer-clean: clean-lib
 	@rm -f $(OBJS) $(NAME).sql $(NAME)_undef.sql
-	make -C loader clean
+	$(MAKE) -C loader clean
 
 test: all
 	csh regress/regress.csh $(TEST_DB)
