@@ -63,7 +63,7 @@ DBFHandle dbf;
 SHPHandle shp;
 int geotype;
 int outshptype;
-int ndims;
+char outdims;
 int includegid;
 int unescapedattrs;
 int binary;
@@ -148,7 +148,7 @@ main(int ARGC, char **ARGV){
 	shp_file = NULL;
 	main_scan_query = NULL;
 	rowbuflen=100;
-	ndims = 2;
+	outdims = 's';
 	includegid=0;
 	unescapedattrs=0;
 	binary = 0;
@@ -2015,8 +2015,9 @@ usage(status)
 	printf("USAGE: pgsql2shp [<options>] <database> [<schema>.]<table>\n");
 	printf("\n");
        	printf("OPTIONS:\n");
-       	printf("  -d Set the dump file to 3 dimensions, if this option is not used\n");
-       	printf("     all dumping will be 2d only. Specify this option twice for a 4d dump\n");
+	printf("  (-m|z) Output type modifiers (default is XY):\n");
+       	printf("     -m Set to XYM\n");
+       	printf("     -z Set to XYMZ (-d accepted for backward compatibility)\n");
        	printf("  -f <filename>  Use this option to specify the name of the file\n");
        	printf("     to create.\n");
        	printf("  -h <host>  Allows you to specify connection to a database on a\n");
@@ -2042,7 +2043,7 @@ int parse_commandline(int ARGC, char **ARGV)
 	buf[255] = '\0'; // just in case...
 
 	/* Parse command line */
-        while ((c = getopt(ARGC, ARGV, "bf:h:du:p:P:g:r")) != EOF){
+        while ((c = getopt(ARGC, ARGV, "bf:h:dmzu:p:P:g:r")) != EOF){
                switch (c) {
                case 'b':
                     binary = 1;
@@ -2056,7 +2057,11 @@ int parse_commandline(int ARGC, char **ARGV)
 		    putenv(strdup(buf));
                     break;
                case 'd':
-	            if ( ++ndims > 4 ) ndims = 4;
+               case 'z':
+	            outdims = 'z';
+                    break;		  
+               case 'm':
+	            outdims = 'm';
                     break;		  
                case 'r':
 	            includegid = 1;
@@ -2423,31 +2428,30 @@ initialize()
 		{
 			case MULTILINETYPE:
 			case LINETYPE:
-				if ( ndims == 2 ) outshptype=SHPT_ARC;
-				else if ( ndims == 3 ) outshptype=SHPT_ARCM;
-				else if ( ndims == 4 ) outshptype=SHPT_ARCZ;
+				if (outdims == 'z') outshptype=SHPT_ARCZ;
+				else if (outdims == 'm') outshptype=SHPT_ARCM;
+				else outshptype=SHPT_ARC;
 				break;
 				
 			case POLYGONTYPE:
 			case MULTIPOLYGONTYPE:
-				if ( ndims == 2 ) outshptype=SHPT_POLYGON;
-				else if ( ndims == 3 ) outshptype=SHPT_POLYGONM;
-				else if ( ndims == 4 ) outshptype=SHPT_POLYGONZ;
+				if (outdims == 'z') outshptype=SHPT_POLYGONZ;
+				else if (outdims == 'm') outshptype=SHPT_POLYGONM;
+				else outshptype=SHPT_POLYGON;
 				break;
 
 			case POINTTYPE:
-				if ( ndims == 2 ) outshptype=SHPT_POINT;
-				else if ( ndims == 3 ) outshptype=SHPT_POINTM;
-				else if ( ndims == 4 ) outshptype=SHPT_POINTZ;
+				if (outdims == 'z') outshptype=SHPT_POINTZ;
+				else if (outdims == 'm') outshptype=SHPT_POINTM;
+				else outshptype=SHPT_POINT;
 				break;
 
 			case MULTIPOINTTYPE:
-				if ( ndims == 2 ) outshptype=SHPT_MULTIPOINT;
-				else if ( ndims == 3 ) outshptype=SHPT_MULTIPOINTM;
-				else if ( ndims == 4 ) outshptype=SHPT_MULTIPOINTZ;
+				if (outdims == 'z') outshptype=SHPT_MULTIPOINTZ;
+				else if (outdims == 'm') outshptype=SHPT_MULTIPOINTM;
+				else outshptype=SHPT_MULTIPOINT;
 				break;
 
-			
 			default:
 				shp = NULL;
 				shape_creator = NULL;
@@ -2813,6 +2817,9 @@ shapetypename(int num)
 }
 /**********************************************************************
  * $Log$
+ * Revision 1.58  2004/09/23 16:14:19  strk
+ * Added -m / -z switches to control output type: XYM,XYMZ.
+ *
  * Revision 1.57  2004/09/20 17:11:44  strk
  * Added -d -d availability notice in help string.
  * Added user notice about output shape type.
