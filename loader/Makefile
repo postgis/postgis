@@ -12,7 +12,7 @@ ifeq ($(findstring CYGWIN,$(shell uname)),CYGWIN)
 	EXE = .exe
 endif
 
-OBJS = shpopen.o dbfopen.o getopt.o
+OBJS = shpopen.o dbfopen.o getopt.o PQunescapeBytea.o
 
 #---------------------------------------------------------------
 

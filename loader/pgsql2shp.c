@@ -26,6 +26,7 @@ static char rcsid[] =
 #include "libpq-fe.h"
 #include "shapefil.h"
 #include "getopt.h"
+#include "compat.h"
 
 #ifdef __CYGWIN__
 #include <sys/param.h>       
@@ -48,7 +49,7 @@ static char rcsid[] =
 #define VERBOSE 1
 
 /* Define this to use HEX encoding instead of bytea encoding */
-#define HEXWKB
+#define HEXWKB 1
 
 typedef unsigned long int uint32;
 typedef unsigned char byte;
@@ -3086,6 +3087,9 @@ create_usrquerytable()
 
 /**********************************************************************
  * $Log$
+ * Revision 1.68  2004/11/18 18:14:19  strk
+ * Added a copy of the PQunescapeBytea function found in libpq of PG>=73
+ *
  * Revision 1.67  2004/10/17 12:16:47  strk
  * fixed prototype for user query table
  *
