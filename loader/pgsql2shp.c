@@ -14,12 +14,12 @@ static void exit_nicely(PGconn *conn){
 	exit(1);
 }
 
-int create_lines(char *str,int shape_id, SHPHandle shp,char *dims);
-int create_multilines(char *str,int shape_id, SHPHandle shp,char *dims);
-int create_points(char *str,SHPHandle shp,char *dims);
-int create_multipoints(char *str, SHPHandle shp,char *dims);
-int create_polygons(char *str,int shape_id, SHPHandle shp,char *dims);
-int create_multipolygons(char *str,int shape_id, SHPHandle shp,char *dims);
+int create_lines(char *str,int shape_id, SHPHandle shp,int dims);
+int create_multilines(char *str,int shape_id, SHPHandle shp,int dims);
+int create_points(char *str,SHPHandle shp,int dims);
+int create_multipoints(char *str, SHPHandle shp,int dims);
+int create_polygons(char *str,int shape_id, SHPHandle shp,int dims);
+int create_multipolygons(char *str,int shape_id, SHPHandle shp,int dims);
 int parse_points(char *str, int num_points, double *x,double *y,double *z);
 int num_points(char *str);
 int num_lines(char *str);
@@ -36,21 +36,12 @@ int points_per_sublist( char *str, int *npoints, long max_lists);
 //2d or 3d specifies what type of shape file you want, a 2d one or a 3d one. Defaults to 3d if not specifed.
 
 int main(int ARGC, char **ARGV){
-	char	   *pghost,
-			   *pgport,
-			   *pgoptions,
-			   *dbName,
-				*query,
-				*query1,
-				*geo_str,
-				*geo_str_left,
-				*geo_col_name,
-				*geo_OID,
-				conn_string[512],
-				field_name[32],
-				table_OID[16];
-
-	int			nFields;
+	char	   *pghost,*pgport,*pgoptions,*dbName,*pgpass,
+		   *query,*query1,*geo_str,*geo_str_left,
+		   *geo_col_name,*geo_OID,
+		   conn_string[512],field_name[32],table_OID[16],
+		   *shp_file,*pguser, *table;
+	int			nFields, is3d, c, errflg, curindex;
 	int			i,j,type,size,flds;
 	int			type_ary[256];
 	int			OID,geovalue_field;
@@ -62,28 +53,101 @@ int main(int ARGC, char **ARGV){
 	PGresult   *res,*res2,*res3;
 
 
-	pghost = ARGV[4];		// host name of the backend server 
-//	pgport = 5432;		
-	pgport = ARGV[5];		// port of the backend server 
-	pgoptions = "user=postgres"; 	// special options to start up the backend
-	dbName = ARGV[1];
+	pghost = NULL;
+	shp_file = NULL;
+	pgport = NULL;
+	pguser = "";
+	pgpass = "";
+	is3d = 0;
+        while ((c = getopt(ARGC, ARGV, "f:h:du:p:P:")) != EOF){
+               switch (c) {
+               case 'f':
+                    shp_file = optarg;
+                    break;
+               case 'h':
+                    pghost=optarg;
+                    break;
+               case 'd':
+	            is3d = 1;
+                    break;		  
+               case 'u':
+                    pguser = optarg;
+                    break;
+               case 'p':
+                    pgport = optarg;
+                    break;
+	       case 'P':
+		    pgpass = optarg;
+		    break;
+               case '?':
+                    errflg=1;
+               }
+        }
 
+        curindex=0;
+        for ( ; optind < ARGC; optind++){
+                if(curindex ==0){
+                        dbName = ARGV[optind];
+                }else if(curindex == 1){
+                        table = ARGV[optind];
+                }
+                curindex++;
+        }
+        if(curindex != 2){
+                errflg = 1;
+        }
 
-	//display proper usage if incorrect number of arguments given	
-	if (ARGC != 6 && ARGC != 7)
-	{
-		printf ("usage: dump <database> <table name> <shape file name to create> <host ip/name> <port #> ['2d' || '3d']\nIf final argument is left out, the default is 3d.\n");
-		exit (-1);
+        if (errflg==1) {
+                printf("\n**ERROR** invalid option or command parameters\n");
+                printf("\n");
+                printf("USAGE: psql2shp [<options>] <database> <table>");
+                printf("\n");
+                printf("OPTIONS:\n");
+                printf("\t-d: set the dump file to 3 dimensions, if this option is not used all dumping will be 2d only.\n");
+                printf("\n");
+                printf("\t-f <filename>: Use this option to specify the name of the file to create.\n");
+                printf("\n");
+                printf("\t-h <host>: allows you to specify connection to a database on a machine other than the localhost.\n");
+                printf("\n");
+                printf("\t-p <port>: allows you to specify a database port other than 5432.\n");
+                printf("\n");
+                printf("\t-P <password>: Connect to the database with the specified password.\n");
+                printf("\n");
+                printf("\t-u <user>: Connect to the database as the specified user.\n");
+                exit (2);
+        }
+
+        if(shp_file == NULL){
+		shp_file = malloc(strlen(table) + 1);
+                strcpy(shp_file,table);
+        }
+
+        if(pgport == NULL){
+		pgport = "5432";		
+        }
+        if(pghost == NULL){
+		pghost = "localhost";		
+        }
+
+	if(strcmp(pgpass,"")==0 && strcmp(pguser,"")==0){
+		pgoptions = malloc(1);
+		strcpy(pgoptions,"");
+	}else{
+		pgoptions = malloc(strlen(pguser) + strlen(pgpass) + 20);
+		if(strcmp(pguser,"")!=0){
+			strcpy(pgoptions,"user=");
+			strcat(pgoptions,pguser);
+		}
+		if(strcmp(pgpass,"") !=0 ){
+			strcat(pgoptions," password=");
+			strcat(pgoptions,pgpass); 
+		}
 	}
-	//set the 6th arg if it is not specified, 
-	if(ARGV[6] == NULL){
-		ARGV[6] = (char *)malloc(4);
-		strcpy(ARGV[6],"3d");
-	}
-	
+
+printf(conn_string);
+
+	/* make a connection to the specified database */
 	sprintf(conn_string,"host=%s %s port=%s dbname=%s",pghost,pgoptions,pgport,dbName);
-	
-	/* make a connection to the database */
 	conn = PQconnectdb( conn_string );
 	
 
@@ -121,16 +185,16 @@ int main(int ARGC, char **ARGV){
 //------------------------------------------------------------
 //Get the table from the DB
 
-	query= (char *)malloc(strlen(ARGV[2]) +strlen("select * from ")+2);
+	query= (char *)malloc(strlen(table) + strlen("select * from ")+2);
 	strcpy(query, "select * from ") ;
-	strcat(query, ARGV[2]);
+	strcat(query, table);
 	//	printf("%s\n",query);
 	res = PQexec(conn, query);	
 
 	if(PQntuples(res) > 0 ){
 
 	}else{
-		printf("Invalid table: '%s' (check spelling and existance of >0 tuples).\nData-Dump Failed.",ARGV[2]);
+		printf("Invalid table: '%s' (check spelling and existance of >0 tuples).\nData-Dump Failed.",table);
 		exit_nicely(conn);
 	}
 	//printf("Select * query result: %s\n",PQresultErrorMessage(res));
@@ -140,7 +204,7 @@ int main(int ARGC, char **ARGV){
 //------------------------------------------------------------
 //Create the dbf file
 
-	dbf = DBFCreate(ARGV[3]);
+	dbf = DBFCreate(shp_file);
 	if(dbf == NULL){
 		printf("DBF could not be created - Dump FAILED.");
 		exit_nicely(conn);
@@ -180,7 +244,7 @@ int main(int ARGC, char **ARGV){
 			strcpy(query1,"select max(octet_length(");
 			strcat(query1,PQfname(res, i));
 			strcat(query1,")) from ");
-			strcat(query1,ARGV[2]);
+			strcat(query1,table);
 			res2 = PQexec(conn, query1);			
 			free(query1);
 			if(PQntuples(res2) > 0 ){
@@ -216,7 +280,7 @@ int main(int ARGC, char **ARGV){
 
 	for (i = 0; i < PQntuples(res); i++)
 	{
-		if(i%50 ==0){
+		if(i%50 ==1){
 			printf("DBF tuple - %d added\n",i);
 		}
 		flds = 0;			
@@ -243,6 +307,7 @@ int main(int ARGC, char **ARGV){
 		}
 	
 	}
+	printf("DBF tuple - %d added\n",i-1);
 
 	DBFClose(dbf);
 
@@ -254,9 +319,9 @@ int main(int ARGC, char **ARGV){
 //field into the shx and shp files
 
 
-	query= (char *)malloc(strlen("select OID from pg_class where relname = ' '")+strlen(ARGV[2])+2);
+	query= (char *)malloc(strlen("select OID from pg_class where relname = ' '")+strlen(table)+2);
 	strcpy(query, "select OID from pg_class where relname = '") ;
-	strcat(query, ARGV[2]);
+	strcat(query, table);
 	strcat(query, "'");
 	res3 = PQexec(conn, query);
 	if(PQntuples(res3) == 1 ){
@@ -295,11 +360,11 @@ attrelid =  and atttypid = ")+38);
 
 
 	//get what kind of Geometry type is in the table
-	query= (char *)malloc(strlen(ARGV[2]) + strlen("select distinct (geometrytype()) from ")+18);
+	query= (char *)malloc(strlen(table) + strlen("select distinct (geometrytype()) from ")+18);
 	strcpy(query, "select distinct (geometrytype(");
 	strcat(query, geo_col_name);
 	strcat(query, ")) from ") ;
-	strcat(query, ARGV[2]);
+	strcat(query, table);
 	res3 = PQexec(conn, query);	
 
 
@@ -322,36 +387,38 @@ attrelid =  and atttypid = ")+38);
 	
 	if(strncmp(geo_str_left,"MULTILIN",8)==0 ){			
 		//multilinestring ---------------------------------------------------
-		if(strcmp(ARGV[6],"2d")==0){
-			shp = SHPCreate(ARGV[3], SHPT_ARC );//2d line shp file
+		if(is3d == 0){
+			shp = SHPCreate(shp_file, SHPT_ARC );//2d line shp file
 		}else{
-			shp = SHPCreate(ARGV[3], SHPT_ARCZ );//3d line shp file
+			shp = SHPCreate(shp_file, SHPT_ARCZ );//3d line shp file
 		}
 		
 		for(i=0;i<PQntuples(res);i++){
 			geo_str = (char *)malloc(strlen(PQgetvalue(res, i, geovalue_field))+1);
 			memcpy(geo_str, (char *)PQgetvalue(res, i, geovalue_field),strlen(PQgetvalue(res, i, geovalue_field))+1);
-			if(create_multilines(geo_str,i,shp,ARGV[6]) ==0){
+			if(create_multilines(geo_str,i,shp,is3d) ==0){
 				printf("Error writing multiline to shape file");
 			}
-			if(i%100 ==0){
+			if(i%50 ==1){
 				printf("shape - %d added\n",i);
 			}
 			free(geo_str);
 
 		}
+		printf("shape - %d added\n",i);
+
 	}else if (strncmp(geo_str_left,"LINESTRI",8)==0 ){ 
 		//linestring---------------------------------------------------
-		if(strcmp(ARGV[6],"2d")==0){
-			shp = SHPCreate(ARGV[3], SHPT_ARC );//2d lines shp file
+		if(is3d==0){
+			shp = SHPCreate(shp_file, SHPT_ARC );//2d lines shp file
 		}else{
-			shp = SHPCreate(ARGV[3], SHPT_ARCZ );//3d lines shp file
+			shp = SHPCreate(shp_file, SHPT_ARCZ );//3d lines shp file
 		}
 		
 		for(i=0;i<PQntuples(res);i++){
 			geo_str = (char *)malloc(strlen(PQgetvalue(res, i, geovalue_field))+1);
 			memcpy(geo_str, (char *)PQgetvalue(res, i, geovalue_field),strlen(PQgetvalue(res, i, geovalue_field))+1);
-			if(create_lines(geo_str,i,shp,ARGV[6]) ==0){
+			if(create_lines(geo_str,i,shp,is3d) ==0){
 				printf("Error writing line to shape file");
 			}
 			if(i%100 ==0){
@@ -359,18 +426,20 @@ attrelid =  and atttypid = ")+38);
 			}
 			free(geo_str);
 		}
+		printf("shape - %d added\n",i);
+
 	}else if (strncmp(geo_str_left,"POLYGON",7)==0 ){ 
 		//Polygon---------------------------------------------------
-		if(strcmp(ARGV[6],"2d")==0){
-			shp = SHPCreate(ARGV[3], SHPT_POLYGON );//2d lines shp file
+		if(is3d==0){
+			shp = SHPCreate(shp_file, SHPT_POLYGON );//2d lines shp file
 		}else{
-			shp = SHPCreate(ARGV[3], SHPT_POLYGONZ );//3d lines shp file
+			shp = SHPCreate(shp_file, SHPT_POLYGONZ );//3d lines shp file
 		}
 		
 		for(i=0;i<PQntuples(res);i++){
 			geo_str = (char *)malloc(strlen(PQgetvalue(res, i, geovalue_field))+1);
 			memcpy(geo_str, (char *)PQgetvalue(res, i, geovalue_field),strlen(PQgetvalue(res, i, geovalue_field))+1);
-			if(create_polygons(geo_str,i,shp,ARGV[6]) == 0){
+			if(create_polygons(geo_str,i,shp,is3d) == 0){
 				printf("Error writing polygon to shape file");
 			}
 			if(i%100 == 0){
@@ -378,17 +447,18 @@ attrelid =  and atttypid = ")+38);
 			}
 			free(geo_str);
 		}
+		printf("shape - %d added\n",i);
 	}else if(strncmp(geo_str_left,"MULTIPOL",8)==0 ){	
 		//multipolygon---------------------------------------------------
-		if(strcmp(ARGV[6],"2d")==0){
-			shp = SHPCreate(ARGV[3], SHPT_POLYGON );//2d polygon shp file
+		if(is3d==0){
+			shp = SHPCreate(shp_file, SHPT_POLYGON );//2d polygon shp file
 		}else{
-			shp = SHPCreate(ARGV[3], SHPT_POLYGONZ );//3d polygon shp file
+			shp = SHPCreate(shp_file, SHPT_POLYGONZ );//3d polygon shp file
 		}
 		for(i=0;i<PQntuples(res);i++){
 			geo_str = (char *)malloc(strlen(PQgetvalue(res, i, geovalue_field))+1);
 			memcpy(geo_str, (char *)PQgetvalue(res, i, geovalue_field),strlen(PQgetvalue(res, i, geovalue_field))+1);
-			if(create_multipolygons(geo_str,i,shp,ARGV[6]) == 0){
+			if(create_multipolygons(geo_str,i,shp,is3d) == 0){
 				printf("Error writing polygon to shape file");
 			}
 			if(i%100 == 0){
@@ -396,18 +466,19 @@ attrelid =  and atttypid = ")+38);
 			}
 			free(geo_str);
 		}
+		printf("shape - %d added\n",i);
 	}else if(strncmp(geo_str_left,"POINT",5)==0 ){	
 		//point---------------------------------------------------
-		if(strcmp(ARGV[6],"2d")==0){
-			shp = SHPCreate(ARGV[3], SHPT_POINT );//2d point shp file
+		if(is3d==0){
+			shp = SHPCreate(shp_file, SHPT_POINT );//2d point shp file
 		}else{
-			shp = SHPCreate(ARGV[3], SHPT_POINTZ );//3d point shp file
+			shp = SHPCreate(shp_file, SHPT_POINTZ );//3d point shp file
 		}
 		
 		for(i=0;i<PQntuples(res);i++){
 			geo_str = (char *)malloc(strlen(PQgetvalue(res, i, geovalue_field))+1);
 			memcpy(geo_str, (char *)PQgetvalue(res, i, geovalue_field),strlen(PQgetvalue(res, i, geovalue_field))+1);
-			if(create_points(geo_str,shp,ARGV[6]) ==0){
+			if(create_points(geo_str,shp,is3d) ==0){
 				printf("Error writing line to shape file");
 			}
 			if(i%100 ==0){
@@ -415,19 +486,20 @@ attrelid =  and atttypid = ")+38);
 			}
 			free(geo_str);
 		}
+		printf("shape - %d added\n",i);
 	}else if(strncmp(geo_str_left,"MULTIPOI",8)==0 ){	
 		//multipoint---------------------------------------------------
 
-		if(strcmp(ARGV[6],"2d")==0){
-			shp = SHPCreate(ARGV[3], SHPT_MULTIPOINT );//2d point shp file
+		if(is3d==0){
+			shp = SHPCreate(shp_file, SHPT_MULTIPOINT );//2d point shp file
 		}else{
-			shp = SHPCreate(ARGV[3], SHPT_MULTIPOINTZ );//3d point shp file
+			shp = SHPCreate(shp_file, SHPT_MULTIPOINTZ );//3d point shp file
 		}
 		
 		for(i=0;i<PQntuples(res);i++){
 			geo_str = (char *)malloc(strlen(PQgetvalue(res, i, geovalue_field))+1);
 			memcpy(geo_str, (char *)PQgetvalue(res, i, geovalue_field),strlen(PQgetvalue(res, i, geovalue_field))+1);
-			if(create_multipoints(geo_str,shp,ARGV[6]) ==0){
+			if(create_multipoints(geo_str,shp,is3d) ==0){
 				printf("Error writing line to shape file");
 			}
 			if(i%100 ==0){
@@ -435,6 +507,7 @@ attrelid =  and atttypid = ")+38);
 			}
 			free(geo_str);
 		}
+		printf("shape - %d added\n",i);
 	}else{
 		printf("type '%s' is not Supported at this time.\nThe DBF file has been created but not the shx or shp files.\n",geo_str_left);
 		shp = NULL;
@@ -716,7 +789,7 @@ int points_per_sublist( char *str, int *npoints, long max_lists){
 
 
 
-int create_multilines(char *str,int shape_id, SHPHandle shp,char *dims){
+int create_multilines(char *str,int shape_id, SHPHandle shp,int dims){
 	int		lines,i,j,max_points,index;
 	int		*points;
 	int		*part_index;
@@ -778,7 +851,7 @@ int create_multilines(char *str,int shape_id, SHPHandle shp,char *dims){
 
 	
 	obj = (SHPObject *)malloc(sizeof(SHPObject));
-	if(strcmp(dims,"2d")==0){
+	if(dims == 0){
 		obj = SHPCreateObject(SHPT_ARC,shape_id,lines,part_index,NULL,max_points,totx,toty,totz,NULL);
 	}else{
 		obj = SHPCreateObject(SHPT_ARCZ,shape_id,lines,part_index,NULL,max_points,totx,toty,totz,NULL);
@@ -798,7 +871,7 @@ int create_multilines(char *str,int shape_id, SHPHandle shp,char *dims){
 }
 
 
-int create_lines(char *str,int shape_id, SHPHandle shp,char *dims){
+int create_lines(char *str,int shape_id, SHPHandle shp,int dims){
 	int		points;
 	int		*part_index;
 	
@@ -820,7 +893,7 @@ int create_lines(char *str,int shape_id, SHPHandle shp,char *dims){
 
 	obj = (SHPObject *)malloc(sizeof(SHPObject));
 	
-	if(strcmp(dims,"2d")==0){
+	if(dims == 0){
 		obj = SHPCreateObject(SHPT_ARC,shape_id,1,part_index,NULL,points,x,y,z,NULL);
 	}else{
 		obj = SHPCreateObject(SHPT_ARCZ,shape_id,1,part_index,NULL,points,x,y,z,NULL);
@@ -840,7 +913,7 @@ int create_lines(char *str,int shape_id, SHPHandle shp,char *dims){
 
 
 
-int create_points(char *str, SHPHandle shp,char *dims){
+int create_points(char *str, SHPHandle shp,int dims){
 	
 	double	*x,
 			*y,
@@ -856,7 +929,7 @@ int create_points(char *str, SHPHandle shp,char *dims){
 
 	obj = (SHPObject *)malloc(sizeof(SHPObject));
 	
-	if(strcmp(dims,"2d")==0){
+	if(dims == 0){
 		obj = SHPCreateSimpleObject(SHPT_POINT,1,x,y,z);
 	}else{
 		obj = SHPCreateSimpleObject(SHPT_POINTZ,1,x,y,z);
@@ -875,7 +948,7 @@ int create_points(char *str, SHPHandle shp,char *dims){
 
 
 
-int create_multipoints(char *str, SHPHandle shp,char *dims){
+int create_multipoints(char *str, SHPHandle shp,int dims){
 	int points;	
 	
 	double	*x,
@@ -893,7 +966,7 @@ int create_multipoints(char *str, SHPHandle shp,char *dims){
 
 	obj = (SHPObject *)malloc(sizeof(SHPObject));
 	
-	if(strcmp(dims,"2d")==0){
+	if(dims == 0){
 		obj = SHPCreateSimpleObject(SHPT_MULTIPOINT ,1,x,y,z);
 	}else{
 		obj = SHPCreateSimpleObject(SHPT_MULTIPOINTZ ,1,x,y,z);
@@ -914,7 +987,7 @@ int create_multipoints(char *str, SHPHandle shp,char *dims){
 
 
 
-int create_polygons(char *str,int shape_id, SHPHandle shp,char *dims){
+int create_polygons(char *str,int shape_id, SHPHandle shp,int dims){
 	int		rings,i,j,max_points,index;
 	int		*points;
 	int		*part_index;
@@ -973,7 +1046,7 @@ int create_polygons(char *str,int shape_id, SHPHandle shp,char *dims){
 	}
 
 	obj = (SHPObject *)malloc(sizeof(SHPObject));
-	if(strcmp(dims,"2d")==0){
+	if(dims == 0){
 		obj = SHPCreateObject(SHPT_POLYGON,shape_id,rings,part_index,NULL,max_points,totx,toty,totz,NULL);
 	}else{
 		obj = SHPCreateObject(SHPT_POLYGONZ,shape_id,rings,part_index,NULL,max_points,totx,toty,totz,NULL);
@@ -993,7 +1066,7 @@ int create_polygons(char *str,int shape_id, SHPHandle shp,char *dims){
 }
 
 
-int create_multipolygons(char *str,int shape_id, SHPHandle shp,char *dims){
+int create_multipolygons(char *str,int shape_id, SHPHandle shp,int dims){
 	int		polys,rings,i,j,k,max_points;
 	int		index,indexk,index2part,tot_rings,final_max_points;
 	int		*points;
@@ -1122,7 +1195,7 @@ int create_multipolygons(char *str,int shape_id, SHPHandle shp,char *dims){
 
 
 	obj	= (SHPObject *)malloc(sizeof(SHPObject));
-	if(strcmp(dims,"2d")==0){
+	if(dims == 0){
 		obj = SHPCreateObject(SHPT_POLYGON,shape_id,tot_rings,final_part_index,NULL,final_max_points,finalx,finaly,finalz,NULL);
 	}else{
 		obj = SHPCreateObject(SHPT_POLYGONZ,shape_id,tot_rings,final_part_index,NULL,final_max_points,finalx,finaly,finalz,NULL);
