@@ -52,8 +52,14 @@ public class VersionPrinter {
 
     public static void main(String[] args) {
         Statement stat = null;
-        Driver d = new Driver();
-
+        Driver d;
+        try {
+            d = new Driver();
+        } catch (Exception e) {
+            System.err.println("Cannot create Driver instance: "+e.getMessage());
+            System.exit(1);
+            return;
+        }
         if (args.length == 3) {
             Connection conn = null;
             try {

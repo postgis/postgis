@@ -21,13 +21,13 @@
 
 
 # Configure the helper executables used during build - change this according to
-# your environment if necessary
+# your environment if necessary.
 
-JAVAC = javac
-JAVA = java
-JAR = jar
-MKDIR = mkdir -p
-DELETE = rm -rvf
+JAVAC?=javac
+JAVA?=java
+JAR?=jar
+MKDIR?=mkdir -p
+DELETE?=rm -rvf
 
 # Find our postgresql build directory - needed for "make installdirs" and 
 # "make install" that are used by the debian packaging process. As everything
@@ -42,7 +42,11 @@ top_makefile:=$(PGSQL_SRC)/src/Makefile.global
 -include $(top_makefile)
 
 # Make sure you CLASSPATH environmental variable includes your postgresql.jar
-# We set a reasonable default for un*xoid systems here. 
+# We set a reasonable default for un*xoid systems here. Note that some JREs
+# (e. G. sablevm on debian woody) seem to need their own system classes
+# to be included in the classpath, because they do not adhere to the standard
+# concept of -classpath and -bootclasspath. SUN jdk, IBM jdk, Blackdown JDK,
+# gij and kaffe are known to work fine.
 
 CLASSPATH?=/usr/share/java/postgresql.jar
 CP=$(CLASSPATH):src/
@@ -107,11 +111,17 @@ jar:	compile postgis.jar postgis_debug.jar
 postgis.jar: compile $(SRCDIR)/org/postgresql/driverconfig.properties
 	$(JAR) -cf postgis.jar -C $(BUILD) . \
 	       -C $(SRCDIR) org/postgresql/driverconfig.properties \
-	       README COPYING_LGPL -C .. COPYING
+	       -C . README COPYING_LGPL \
+	       -C .. COPYING
 	       
 postgis_debug.jar: compile $(SRC) $(SRCDIR)/org/postgresql/driverconfig.properties
-	$(JAR) -cf postgis_debug.jar -C $(BUILD) . README COPYING_LGPL -C .. COPYING
+	$(JAR) -cf postgis_debug.jar -C $(BUILD) . \
+		-C . README COPYING_LGPL \
+		-C .. COPYING
 	$(JAR) -uf postgis_debug.jar -C $(SRCDIR) .
+# We cannot add $(SRCDIR) with -cf because some jar implementations
+# abort with file name conflicts because of $(BUILD)/org and $(SRCDIR)/org.
+# Thus we have to use -uf above.
 
 $(BUILD):
 	$(MKDIR) $(BUILD)
