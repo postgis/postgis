@@ -8,10 +8,6 @@
 
 
 
-#define TWODIMS 0
-#define THREEDIMS 1
-#define FOURDIMS 2
-
 typedef struct
 {
 	float xmin;
@@ -26,6 +22,7 @@ typedef struct
         double xmin, ymin, zmin;
         double xmax, ymax, zmax;
 } BOX3D;
+
 
 
 // POINT3D already defined in postgis.h
@@ -65,9 +62,23 @@ typedef struct
 typedef struct
 {
     char  *serialized_pointlist; // probably missaligned. 2d or 3d.  points to a double
-    char  is3d; // true if these are 3d points
+    char  ndims; // 2=2d, 3=3d, 4=4d, 5=undef
     uint32 npoints;
 }  POINTARRAY;
+
+// copies a point from the point array into the parameter point
+// will set point's z=0 (or NaN) if pa is 2d
+// will set point's m=0 (or NaN( if pa is 3d or 2d
+// NOTE: point is a real POINT3D *not* a pointer
+extern POINT4D getPoint4d(POINTARRAY *pa, int n);
+
+// copies a point from the point array into the parameter point
+// will set point's z=0 (or NaN) if pa is 2d
+// will set point's m=0 (or NaN( if pa is 3d or 2d
+// NOTE: this will modify the point4d pointed to by 'point'.
+extern void getPoint4d_p(POINTARRAY *pa, int n, char *point);
+
+
 
 // copies a point from the point array into the parameter point
 // will set point's z=0 (or NaN) if pa is 2d
@@ -93,9 +104,9 @@ extern void getPoint2d_p(POINTARRAY *pa, int n, char *point);
 
 // constructs a POINTARRAY.
 // NOTE: points is *not* copied, so be careful about modification (can be aligned/missaligned)
-// NOTE: is3d is descriptive - it describes what type of data 'points'
+// NOTE: ndims is descriptive - it describes what type of data 'points'
 //       points to.  No data conversion is done.
-extern POINTARRAY *pointArray_construct(char *points, char is3d, uint32 npoints);
+extern POINTARRAY *pointArray_construct(char *points, int ndims, uint32 npoints);
 
 //calculate the bounding box of a set of points
 // returns a 3d box
@@ -148,9 +159,9 @@ WHERE
 
 
 extern bool lwgeom_hasSRID(char type); // true iff S bit is set
-extern bool lwgeom_is3d(char type);    // true iff D bit is set
+extern int  lwgeom_ndims(char type);    // true iff D bit is set
 extern int  lwgeom_getType(char type); // returns the tttt value
-extern char lwgeom_makeType(char is3d, char hasSRID, int type);
+extern char lwgeom_makeType(int ndims, char hasSRID, int type);
 
 
 // all the base types (point/line/polygon) will have a
@@ -163,14 +174,14 @@ extern char lwgeom_makeType(char is3d, char hasSRID, int type);
 
 typedef struct
 {
-	char          is3d;   // true means points represent 3d points
+	char  ndims; // 2=2d, 3=3d, 4=4d, 5=undef
 	int  SRID;   // spatial ref sys -1=none
 	POINTARRAY    *points; // array of POINT3D
 } LWLINE; //"light-weight line"
 
 // construct a new LWLINE.  points will be copied
 // use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
-extern LWLINE *lwline_construct(char is3d, int SRID, POINTARRAY *points);
+extern LWLINE *lwline_construct(int ndims, int SRID, POINTARRAY *points);
 
 // given the LWGEOM serialized form (or a pointer into a muli* one)
 // construct a proper LWLINE.
@@ -194,14 +205,14 @@ extern uint32 lwline_findlength(char *serialized_line);
 
 typedef struct
 {
-   	char     is3d;   // true means points represent 3d points
+   	char     ndims; // 2=2d, 3=3d, 4=4d, 5=undef
    	int      SRID;   // spatial ref sys
    	POINTARRAY  *point;  // hide 2d/3d (this will be an array of 1 point)
 }  LWPOINT; // "light-weight point"
 
 // construct a new point.  point will NOT be copied
 // use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
-extern LWPOINT  *lwpoint_construct(char is3d, int SRID, POINTARRAY *point);
+extern LWPOINT  *lwpoint_construct(int ndims, int SRID, POINTARRAY *point);
 
 // given the LWPOINT serialized form (or a pointer into a muli* one)
 // construct a proper LWPOINT.
@@ -230,14 +241,14 @@ extern uint32 lwpoint_findlength(char *serialized_line);
 typedef struct
 {
 	int32 SRID;
-	char is3d;
+	char ndims;
 	int  nrings;
 	POINTARRAY **rings; // list of rings (list of points)
 } LWPOLY; // "light-weight polygon"
 
 // construct a new LWLINE.  arrays (points/points per ring) will NOT be copied
 // use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
-extern LWPOLY *lwpoly_construct(char is3d, int SRID, int nrings,POINTARRAY **points);
+extern LWPOLY *lwpoly_construct(int ndims, int SRID, int nrings,POINTARRAY **points);
 
 
 // given the LWPOLY serialized form (or a pointer into a muli* one)
@@ -353,11 +364,11 @@ extern int lwgeom_getnumgeometries_inspected(LWGEOM_INSPECTED *inspected);
 //  use SRID=-1 for unknown SRID  (will have 8bit type's S = 0)
 // all subgeometries must have the same SRID
 // if you want to construct an inspected, call this then inspect the result...
-extern char *lwgeom_construct(int SRID,int finalType,char is3d, int nsubgeometries, char **serialized_subs);
+extern char *lwgeom_construct(int SRID,int finalType,int ndims, int nsubgeometries, char **serialized_subs);
 
 
 // construct the empty geometry (GEOMETRYCOLLECTION(EMPTY))
-extern char *lwgeom_constructempty(int SRID,char is3d);
+extern char *lwgeom_constructempty(int SRID,int ndims);
 
 // helper function (not for general use)
 // find the size a geometry (or a sub-geometry)

@@ -385,11 +385,11 @@ LWPOLY *wkb_poly_to_lwpoly(char *wkb,int SRID)
 			//point size
 
 		ptsize =16;
-		if (dims == FOURDIMS)
+		if (dims == 4)
 		{
 			ptsize = 32;
 		}
-		if (dims == THREEDIMS)
+		if (dims == 3)
 		{
 			ptsize = 24;
         }
@@ -433,7 +433,7 @@ char *lwgeom_to_wkb(char *serialized_form,int *wkblength,char desiredWKBEndian)
 	char   *multigeom = NULL;
 
 #ifdef DEBUG
-        elog(NOTICE,"lwgeom_to_wkb: entry with  simpletype=%i, dims=%i",(int) simple_type,(int)  lwgeom_is3d( serialized_form[0]) );
+        elog(NOTICE,"lwgeom_to_wkb: entry with  simpletype=%i, dims=%i",(int) simple_type,  lwgeom_ndims( serialized_form[0]) );
 #endif
 
 
@@ -476,7 +476,7 @@ char *lwpoint_to_wkb(LWPOINT *pt, char desiredWKBEndian, int *wkbsize)
 	bool need_flip =  requiresflip( desiredWKBEndian );
 
 #ifdef DEBUG
-        elog(NOTICE,"lwpoint_to_wkb:  pa dims = %i", (int)pt->point->is3d );
+        elog(NOTICE,"lwpoint_to_wkb:  pa dims = %i", (int)pt->point->ndims );
 #endif
 
 
@@ -486,10 +486,10 @@ char *lwpoint_to_wkb(LWPOINT *pt, char desiredWKBEndian, int *wkbsize)
 
 	result[0] = desiredWKBEndian; //endian flag
 
-	wkbtype = constructWKBType(POINTTYPE, pt->point->is3d);
+	wkbtype = constructWKBType(POINTTYPE, pt->point->ndims);
 
 #ifdef DEBUG
-        elog(NOTICE,"lwpoint_to_wkb: entry with wkbtype=%i, pa dims = %i",wkbtype, (int)pt->point->is3d );
+        elog(NOTICE,"lwpoint_to_wkb: entry with wkbtype=%i, pa dims = %i",wkbtype, (int)pt->point->ndims );
 #endif
 
 
@@ -500,7 +500,7 @@ char *lwpoint_to_wkb(LWPOINT *pt, char desiredWKBEndian, int *wkbsize)
 
 	memcpy(result+5, pt->point->serialized_pointlist, pointArray_ptsize(pt->point) );
 	if (need_flip)
-		flipPoints(result+5, 1, pt->point->is3d);
+		flipPoints(result+5, 1, pt->point->ndims);
 
 	return result;
 }
@@ -518,7 +518,7 @@ char *lwline_to_wkb(LWLINE *line, char desiredWKBEndian, int *wkbsize)
 
 		result[0] = desiredWKBEndian; //endian flag
 
-		wkbtype = constructWKBType(LINETYPE, line->points->is3d);
+		wkbtype = constructWKBType(LINETYPE, line->points->ndims);
 		memcpy(result+1, &wkbtype, 4);
 		if (need_flip)
 			flip_endian_int32(result+1);
@@ -529,7 +529,7 @@ char *lwline_to_wkb(LWLINE *line, char desiredWKBEndian, int *wkbsize)
 
 		memcpy(result+9, line->points->serialized_pointlist, ptsize * line->points->npoints);
 		if (need_flip)
-			flipPoints(result+9, line->points->npoints, line->points->is3d);
+			flipPoints(result+9, line->points->npoints, line->points->ndims);
 		return result;
 }
 
@@ -555,7 +555,7 @@ char *lwpoly_to_wkb(LWPOLY *poly, char desiredWKBEndian, int *wkbsize)
 
 		result[0] = desiredWKBEndian; //endian flag
 
-		wkbtype = constructWKBType(POLYGONTYPE, poly->is3d);
+		wkbtype = constructWKBType(POLYGONTYPE, poly->ndims);
 		memcpy(result+1, &wkbtype, 4);  // type
 		if (need_flip)
 			flip_endian_int32(result+1);
@@ -574,7 +574,7 @@ char *lwpoly_to_wkb(LWPOLY *poly, char desiredWKBEndian, int *wkbsize)
 				flip_endian_int32(loc);
 			memcpy(loc+4, poly->rings[t]->serialized_pointlist, ptsize * npoints);
 			if (need_flip)
-				flipPoints(loc+4, npoints, poly->is3d);
+				flipPoints(loc+4, npoints, poly->ndims);
 			loc += 4+ ptsize * npoints;
 		}
 		return result;
@@ -620,10 +620,10 @@ void		flip_endian_int32(char		*i)
 char wkb_dims(uint32 type)
 {
 	if (type & 0x80000000)
-		return THREEDIMS;
+		return 3;
 	if (type & 0x40000000)
-		return FOURDIMS;
-	return TWODIMS;
+		return 4;
+	return 2;
 }
 
 
@@ -638,11 +638,11 @@ void flipPoints(char *pts, int npoints, char dims)
 	char *loc = pts;
 	int size =16;
 
-	if (dims == FOURDIMS)
+	if (dims == 4)
 	{
 		size = 32;
 	}
-	if (dims == THREEDIMS)
+	if (dims == 3)
 	{
 		size = 24;
 	}
@@ -651,11 +651,11 @@ void flipPoints(char *pts, int npoints, char dims)
 	{
 		flip_endian_double(loc);
 		flip_endian_double(loc+8);
-		if ( (dims == THREEDIMS)  || (dims == FOURDIMS) )
+		if ( (dims == 3)  || (dims == 4) )
 		{
 			flip_endian_double(loc+16);
 		}
-		if (dims == FOURDIMS)
+		if (dims == 4)
 		{
 			flip_endian_double(loc+24);
 		}
@@ -665,9 +665,9 @@ void flipPoints(char *pts, int npoints, char dims)
 
 uint32 constructWKBType(int simple_type, char dims)
 {
-	if (dims == TWODIMS)
+	if (dims == 2)
 		return simple_type;
-	if (dims == THREEDIMS)
+	if (dims == 3)
 		return simple_type | 0x80000000;
 
 	return simple_type | 0x40000000;
