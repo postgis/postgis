@@ -3718,6 +3718,15 @@ FROM geometry_table;</literallayout>
 		</varlistentry>
 
 		<varlistentry>
+		  <term>MakeLine(geometry, geometry)</term>
+
+		  <listitem>
+		    <para>Creates a Linestring from the two given point
+		    geometries.</para>
+		  </listitem>
+		</varlistentry>
+
+		<varlistentry>
 		  <term>LineFromMultiPoint(multipoint)</term>
 
 		  <listitem>

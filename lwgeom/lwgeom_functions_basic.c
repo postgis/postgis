@@ -55,6 +55,7 @@ Datum LWGEOM_makepoint(PG_FUNCTION_ARGS);
 Datum LWGEOM_makepoint3dm(PG_FUNCTION_ARGS);
 Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS);
 Datum LWGEOM_makeline(PG_FUNCTION_ARGS);
+Datum LWGEOM_line_from_mpoint(PG_FUNCTION_ARGS);
 Datum LWGEOM_addpoint(PG_FUNCTION_ARGS);
 
 
@@ -1823,11 +1824,11 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 }
 
 /*
- * makeline ( GEOMETRY ) returns a LINE formed by
+ * LineFromMultiPoint ( GEOMETRY ) returns a LINE formed by
  * all the points in the in given multipoint.
  */
-PG_FUNCTION_INFO_V1(LWGEOM_makeline);
-Datum LWGEOM_makeline(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(LWGEOM_line_from_mpoint);
+Datum LWGEOM_line_from_mpoint(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *ingeom, *result;
 	LWLINE *lwline;
@@ -1970,6 +1971,49 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 			size, result->size-4);
 		PG_RETURN_NULL();
 	}
+
+	PG_RETURN_POINTER(result);
+}
+
+/*
+ * makeline ( GEOMETRY, GEOMETRY ) returns a LINESTRIN segment
+ * formed by the given point geometries.
+ */
+PG_FUNCTION_INFO_V1(LWGEOM_makeline);
+Datum LWGEOM_makeline(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *pglwg1, *pglwg2;
+	PG_LWGEOM *result=NULL;
+	LWPOINT *lwpoints[2];
+	LWLINE *outline;
+
+#ifdef DEBUG
+	elog(NOTICE, "LWGEOM_makeline called");
+#endif
+
+	/* Get input datum */
+	pglwg1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	pglwg2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+
+	if ( ! TYPE_GETTYPE(pglwg1->type) == POINTTYPE ||
+		! TYPE_GETTYPE(pglwg2->type) == POINTTYPE )
+	{
+		elog(ERROR, "Input geometries must be points");
+		PG_RETURN_NULL();
+	}
+
+	if ( lwgeom_getSRID(pglwg1) != lwgeom_getSRID(pglwg2) )
+	{
+		elog(ERROR, "Operation with two geometries with different SRIDs\n");
+		PG_RETURN_NULL();
+	}
+
+	lwpoints[0] = lwpoint_deserialize(SERIALIZED_FORM(pglwg1));
+	lwpoints[1] = lwpoint_deserialize(SERIALIZED_FORM(pglwg2));
+
+	outline = lwline_from_lwpointarray(lwpoints[0]->SRID, 2, lwpoints);
+
+	result = pglwgeom_serialize((LWGEOM *)outline);
 
 	PG_RETURN_POINTER(result);
 }
@@ -2405,7 +2449,7 @@ Datum LWGEOM_addpoint(PG_FUNCTION_ARGS)
 
 	outline = lwline_addpoint(line, point, where);
 
-	result = pglwgeom_serialize(outline);
+	result = pglwgeom_serialize((LWGEOM *)outline);
 	PG_RETURN_POINTER(result);
 
 }
