@@ -12,6 +12,10 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.55  2004/05/13 07:48:47  strk
+ * Put table creation code in its own function.
+ * Fixed a bug with NULL shape records handling.
+ *
  * Revision 1.54  2004/05/13 06:38:39  strk
  * DBFReadStringValue always used to workaround shapelib bug with int values.
  *
@@ -147,8 +151,13 @@ char    opt;
 char    *col_names;
 
 DBFFieldType *types;	/* Fields type, width and precision */
+SHPHandle  hSHPHandle;
+DBFHandle  hDBFHandle;
 int 	*widths;
 int 	*precisions;
+char    *table,*schema;
+int     num_fields,num_records;
+char    **field_names;
 
 int Insert_attributes(DBFHandle hDBFHandle, int row);
 char	*make_good_string(char *str);
@@ -157,6 +166,7 @@ DBFHandle hDBFHandle);
 char	*protect_quotes_string(char *str);
 int PIP( Point P, Point* V, int n );
 void *safe_malloc(size_t size);
+void create_table(void);
 
 static char rcsid[] =
   "$Id$";
@@ -546,14 +556,14 @@ Insert_attributes(DBFHandle hDBFHandle, int row)
       {
          if(dump_format)
          {
-				if(i) printf("\t");
+            if(i) printf("\t");
             printf("\\N");
          }
          else
          {
-				if(i) printf(",");
-			   printf("NULL");
-		   }
+            if(i) printf(",");
+            printf("NULL");
+         }
       }
 
       else /* Attribute NOT NULL */
@@ -597,17 +607,14 @@ Insert_attributes(DBFHandle hDBFHandle, int row)
 //see description at the top of this file
 
 int main (int ARGC, char **ARGV){
-	SHPHandle  hSHPHandle;
-	DBFHandle  hDBFHandle;
-	int num_fields,num_records,begin,trans,field_precision, field_width;
+	int begin,trans,field_precision, field_width;
 	int num_entities, phnshapetype,next_ring,errflg,c;
 	double padminbound[8], padmaxbound[8];
 	int u,j,z,tot_rings,curindex;
 	SHPObject	*obj=NULL;
 	char  name[64];
 	char  name2[64];
-	char  *sr_id,*shp_file,*table,*schema,*ptr;
-	char **names;
+	char  *sr_id,*shp_file,*ptr;
 	DBFFieldType type = -1;
 	extern char *optarg;
 	extern int optind;
@@ -752,7 +759,7 @@ int main (int ARGC, char **ARGV){
 	 */
 	num_fields = DBFGetFieldCount( hDBFHandle );
 	num_records = DBFGetRecordCount(hDBFHandle);
-	names = malloc(num_fields*sizeof(char*));
+	field_names = malloc(num_fields*sizeof(char*));
 	types = (DBFFieldType *)malloc(num_fields*sizeof(int));
 	widths = malloc(num_fields*sizeof(int));
 	precisions = malloc(num_fields*sizeof(int));
@@ -815,7 +822,7 @@ int main (int ARGC, char **ARGV){
 
 		/* Avoid duplicating field names */
 		for(z=0; z < j ; z++){
-			if(strcmp(names[z],name)==0){
+			if(strcmp(field_names[z],name)==0){
 				strcat(name,"__");
 				sprintf(name,"%s%i",name,j);
 				break;
@@ -823,8 +830,8 @@ int main (int ARGC, char **ARGV){
 		}	
 
 
-		names[j] = malloc ( strlen(name)+3 );
-		strcpy(names[j], name);
+		field_names[j] = malloc ( strlen(name)+3 );
+		strcpy(field_names[j], name);
 
 		if (j) strcat(col_names, ",");
 		sprintf(col_names, "%s\"%s\"", col_names, name);
@@ -832,66 +839,7 @@ int main (int ARGC, char **ARGV){
 	strcat(col_names, ",the_geom)");
 
 	//if opt is 'a' do nothing, go straight to making inserts
-	if(opt == 'c' || opt == 'd')
-	{
-
-		/* 
-		 * Create a table for inserting the shapes into with appropriate
-		 * columns and types
-		 */
-
-		if ( schema )
-		{
-			printf("CREATE TABLE \"%s\".\"%s\" (gid serial", schema, table);
-		}
-		else
-		{
-			printf("CREATE TABLE \"%s\" (gid serial", table);
-		}
-
-		for(j=0;j<num_fields;j++)
-		{
-			type = types[j];
-			field_width = widths[j];
-			field_precision = precisions[j];
-
-			printf(", \"%s\" ", names[j]);
-
-			if(hDBFHandle->pachFieldType[j] == 'D' ) /* Date field */
-			{
-				printf ("varchar(8)");//date data-type is not supported in API so check for it explicity before the api call.
-			}
-			
-			else
-			{
-
-				if(type == FTString){
-					printf ("varchar");
-				}else if(type == FTInteger){
-					if( field_width > 18 ){
-						printf ("numeric(%d,0)",field_width);
-					}else if( field_width > 9){
-						printf ("int8");
-					}else{
-						printf ("int4");
-					}
-				}else if(type == FTDouble){
-					if( field_width > 18 ){
-						//printf ("numeric(%d,%d)",field_width, field_precision);
-						printf ("numeric");
-					}else{
-						printf ("float8");
-					}
-				}else if(type == FTLogical){
-					printf ("boolean");
-				}else{
-					printf ("Invalid type in DBF file");
-				}
-			}	
-		}
-		printf (");\n");
-		//finished creating the table
-	}
+	if(opt == 'c' || opt == 'd') create_table();
 
 
 
@@ -964,12 +912,13 @@ int main (int ARGC, char **ARGV){
 
 	if (obj->nVertices == 0){
 		if (dump_format){
-			printf("\\N");
+			printf("\\N\t");
 			Insert_attributes(hDBFHandle,j);//add the attributes of each shape to the insert statement
 			SHPDestroyObject(obj);
 		}else{
-			printf("NULL");
+			printf("INSERT INTO \"%s\" %s VALUES (NULL, ",table,col_names);
 			Insert_attributes(hDBFHandle,j);//add the attributes of each shape to the insert statement
+			printf(");");
 			SHPDestroyObject(obj);	
 		}
 	}
@@ -1564,7 +1513,8 @@ int main (int ARGC, char **ARGV){
 	if ((dump_format) ) {
 		printf("\\.\n");
 
-	}
+	} 
+
 	free(col_names);
 	if(opt != 'a'){
 		printf("\nALTER TABLE ONLY \"%s\" ADD CONSTRAINT \"%s_pkey\" PRIMARY KEY (gid);\n",table,table);
@@ -1575,3 +1525,67 @@ int main (int ARGC, char **ARGV){
 
 	return(1);
 }//end main()
+
+void create_table()
+{
+	int j;
+	int field_precision, field_width;
+	DBFFieldType type = -1;
+
+		/* 
+		 * Create a table for inserting the shapes into with appropriate
+		 * columns and types
+		 */
+
+		if ( schema )
+		{
+			printf("CREATE TABLE \"%s\".\"%s\" (gid serial", schema, table);
+		}
+		else
+		{
+			printf("CREATE TABLE \"%s\" (gid serial", table);
+		}
+
+		for(j=0;j<num_fields;j++)
+		{
+			type = types[j];
+			field_width = widths[j];
+			field_precision = precisions[j];
+
+			printf(", \"%s\" ", field_names[j]);
+
+			if(hDBFHandle->pachFieldType[j] == 'D' ) /* Date field */
+			{
+				printf ("varchar(8)");//date data-type is not supported in API so check for it explicity before the api call.
+			}
+			
+			else
+			{
+
+				if(type == FTString){
+					printf ("varchar");
+				}else if(type == FTInteger){
+					if( field_width > 18 ){
+						printf ("numeric(%d,0)",field_width);
+					}else if( field_width > 9){
+						printf ("int8");
+					}else{
+						printf ("int4");
+					}
+				}else if(type == FTDouble){
+					if( field_width > 18 ){
+						//printf ("numeric(%d,%d)",field_width, field_precision);
+						printf ("numeric");
+					}else{
+						printf ("float8");
+					}
+				}else if(type == FTLogical){
+					printf ("boolean");
+				}else{
+					printf ("Invalid type in DBF file");
+				}
+			}	
+		}
+		printf (");\n");
+		//finished creating the table
+}
