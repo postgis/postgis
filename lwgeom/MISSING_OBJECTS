@@ -1,11 +1,12 @@
 # This is a list of objects still missing lwgeom support
 
-FUNC: KEEPING FUNCTION: [asbinary(geometry, text)]
+AsBinary(geometry, text)
+AsSVG(geometry, [int], [int])
 
 --- contrib
-FUNC: KEEPING FUNCTION: [line_interpolate_point(geometry, double precision)]
+line_interpolate_point(geometry, double precision)
 
 --- OBSOLETED ?
-FUNC: KEEPING FUNCTION: [geometry_size(geometry, internal)]
-FUNC: KEEPING FUNCTION: [optimistic_overlap(geometry, geometry, double precision)]
+geometry_size(geometry, internal)
+optimistic_overlap(geometry, geometry, double precision)
 
