@@ -211,7 +211,7 @@ WHERE name = 'Blue Lake';
 --================================
 --
 SELECT GeometryType(centerlines) 
-FROM lakes 
+FROM divided_routes 
 WHERE name = 'Route 75';
 --
 --================================
@@ -301,7 +301,7 @@ WHERE name = 'Blue Lake';
 --
 --================================
 --
-SELECT AsText(Boundary((boundary)) 
+SELECT AsText(Boundary(boundary)) 
 FROM named_places 
 WHERE name = 'Goose Island';
 --
@@ -314,7 +314,7 @@ WHERE name = 'Goose Island';
 --
 --================================
 --
-SELECT AsText(Envelope((boundary)) 
+SELECT AsText(Envelope(boundary)) 
 FROM named_places 
 WHERE name = 'Goose Island';
 --
@@ -337,7 +337,7 @@ WHERE name = 'Goose Island';
 --
 SELECT X(position) 
 FROM bridges 
-WHERE name = 'Bridges';
+WHERE name = 'Cam Bridge';
 --
 --================================
 -- Conformance Item T16	
@@ -350,7 +350,7 @@ WHERE name = 'Bridges';
 --
 SELECT Y(position) 
 FROM bridges 
-WHERE name = 'Bridges';
+WHERE name = 'Cam Bridge';
 --
 --
 --
@@ -787,7 +787,7 @@ WHERE named_places.name = 'Ashton' AND buildings.address = '215 Main Street';
 --
 --================================
 --
-SELECT Overlap(forest.boundary, named_places.boundary)
+SELECT Overlap(forests.boundary, named_places.boundary)
 FROM forests, named_places 
 WHERE forests.name = 'Green Forest' AND named_places.name = 'Ashton';
 --
@@ -841,7 +841,7 @@ WHERE road_segment.fid = 102 AND divided_routes.name = 'Route 75';
 --
 --================================
 --
-SELECT Contains(forest.boundary, named_places.boundary)
+SELECT Contains(forests.boundary, named_places.boundary)
 FROM forests, named_places 
 WHERE forests.name = 'Green Forest' AND named_places.name = 'Ashton';
 --
@@ -859,7 +859,7 @@ WHERE forests.name = 'Green Forest' AND named_places.name = 'Ashton';
 --
 --================================
 --
-SELECT Relate(forest.boundary, named_places.boundary, 'TTTTTTTTT')
+SELECT Relate(forests.boundary, named_places.boundary, 'TTTTTTTTT')
 FROM forests, named_places 
 WHERE forests.name = 'Green Forest' AND named_places.name = 'Ashton';
 --

@@ -109,7 +109,8 @@
 --       srtext     VARCHAR(2000)
 --);
 --
-INSERT INTO spatial_ref_sys VALUES(101, 'POSC', 32214, 
+INSERT INTO spatial_ref_sys (SRID,AUTH_NAME,AUTH_SRID,SRTEXT) 
+VALUES (101, 'POSC', 32214, 
 'PROJCS["UTM_ZONE_14N", GEOGCS["World Geodetic System 72",
 DATUM["WGS_72",  SPHEROID["NWL_10D", 6378135, 298.26]],
 PRIMEM["Greenwich", 0], UNIT["Meter", 1.0]],
@@ -151,9 +152,10 @@ UNIT["Meter", 1.0]]'
 -- POSTGIS: to create and register the geometry column.
 CREATE TABLE lakes (
        fid               INTEGER NOT NULL PRIMARY KEY,
-       name              VARCHAR(64),
-       shore             POLYGON
+       name              VARCHAR(64)
+--     shore             POLYGON
 );
+SELECT AddGeometryColumn('ogc','lakes','shore','101','POLYGON','2');
 --
 -- Road Segments
 --
@@ -164,9 +166,10 @@ CREATE TABLE road_segments (
        fid               INTEGER NOT NULL PRIMARY KEY,
        name              VARCHAR(64),
        aliases           VARCHAR(64),
-       num_lanes         INTEGER,
-       centerline        LINESTRING
+       num_lanes         INTEGER
+--     centerline        LINESTRING
 );
+SELECT AddGeometryColumn('ogc','road_segments','centerline','101','LINESTRING','2');
 --
 -- Divided Routes
 --
@@ -176,9 +179,10 @@ CREATE TABLE road_segments (
 CREATE TABLE divided_routes (
        fid               INTEGER NOT NULL PRIMARY KEY,
        name              VARCHAR(64),
-       num_lanes         INTEGER,
-       centerlines       MULTILINESTRING
+       num_lanes         INTEGER
+--     centerlines       MULTILINESTRING
 );
+SELECT AddGeometryColumn('ogc','divided_routes','centerlines','101','MULTILINESTRING','2');
 --
 -- Forests
 --
@@ -187,9 +191,10 @@ CREATE TABLE divided_routes (
 --
 CREATE TABLE forests (
        fid            INTEGER NOT NULL PRIMARY KEY,
-       name           VARCHAR(64),
-       boundary       MULTIPOLYGON
+       name           VARCHAR(64)
+--     boundary       MULTIPOLYGON
 );
+SELECT AddGeometryColumn('ogc','forests','boundary','101','MULTIPOLYGON','2');
 --
 -- Bridges
 --
@@ -198,9 +203,10 @@ CREATE TABLE forests (
 --
 CREATE TABLE bridges (
        fid           INTEGER NOT NULL PRIMARY KEY,
-       name          VARCHAR(64),
-       position      POINT
+       name          VARCHAR(64)
+--     position      POINT
 );
+SELECT AddGeometryColumn('ogc','bridges','position','101','POINT','2');
 --
 -- Streams
 --
@@ -209,9 +215,10 @@ CREATE TABLE bridges (
 --
 CREATE TABLE streams (
        fid             INTEGER NOT NULL PRIMARY KEY,
-       name            VARCHAR(64),
-       centerline      LINESTRING
+       name            VARCHAR(64)
+--     centerline      LINESTRING
 );
+SELECT AddGeometryColumn('ogc','streams','centerline','101','LINESTRING','2');
 --
 -- Buildings
 --
@@ -225,10 +232,12 @@ CREATE TABLE streams (
 --
 CREATE TABLE buildings (
        fid             INTEGER NOT NULL PRIMARY KEY,
-       address         VARCHAR(64),
-       position        POINT,
-       footprint       POLYGON
+       address         VARCHAR(64)
+--     position        POINT
+--     footprint       POLYGON
 );
+SELECT AddGeometryColumn('ogc','buildings','position','101','POINT','2');
+SELECT AddGeometryColumn('ogc','buildings','footprint','101','POLYGON','2');
 --
 -- Ponds
 --
@@ -238,9 +247,10 @@ CREATE TABLE buildings (
 CREATE TABLE ponds (
        fid             INTEGER NOT NULL PRIMARY KEY,
        name            VARCHAR(64),
-       type            VARCHAR(64),
-       shores          MULTIPOYLGON
+       type            VARCHAR(64)
+--     shores          MULTIPOYLGON
 );
+SELECT AddGeometryColumn('ogc','ponds','shores','101','MULTIPOLYGON','2');
 --
 -- Named Places
 --
@@ -249,9 +259,10 @@ CREATE TABLE ponds (
 --
 CREATE TABLE named_places (
        fid             INTEGER NOT NULL PRIMARY KEY,
-       name            VARCHAR(64),
-       boundary        POLYGON
+       name            VARCHAR(64)
+--     boundary        POLYGON
 );
+SELECT AddGeometryColumn('ogc','named_places','boundary','101','POLYGON','2');
 --
 -- Map Neatline
 --
@@ -259,9 +270,10 @@ CREATE TABLE named_places (
 --
 --
 CREATE TABLE map_neatlines (
-       fid             INTEGER NOT NULL PRIMARY KEY,
-       neatline        POLYGON
+       fid             INTEGER NOT NULL PRIMARY KEY
+--     neatline        POLYGON
 );
+SELECT AddGeometryColumn('ogc','map_neatlines','neatline','101','POLYGON','2');
 --
 --
 --
@@ -288,7 +300,7 @@ CREATE TABLE map_neatlines (
 --==============================================================================
 --
 --
-INSERT INTO lakes VALUES (101, 'BLUE LAKE', 
+INSERT INTO lakes VALUES (101, 'Blue Lake', 
     PolygonFromText('POLYGON((52 18,66 23,73 9,48 6,52 18),(59 18,67 18,67 13,59 13,59 18))', 101)
 );
 --
