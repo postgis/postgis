@@ -13,7 +13,6 @@
 #include "fmgr.h"
 #include "utils/elog.h"
 
-
 #include "lwgeom.h"
 #include "stringBuffer.h"
 
@@ -279,10 +278,10 @@ Datum gist_lwgeom_compress(PG_FUNCTION_ARGS)
 		{
 
 			char *in; // lwgeom serialized
-			BOX2DFLOAT4 r,*rr;
+			BOX2DFLOAT4 *rr;
 
 			// lwgeom serialized form
-			in = (char*)PG_DETOAST_DATUM(entry->key );
+			in = (char*)PG_DETOAST_DATUM(entry->key);
 
 			if (in == NULL)
 				PG_RETURN_POINTER(entry);
@@ -294,28 +293,36 @@ Datum gist_lwgeom_compress(PG_FUNCTION_ARGS)
 				// dont bother adding this to the index
 				PG_RETURN_POINTER(entry);
 			}
-			else
+
+			rr = (BOX2DFLOAT4*) palloc(sizeof(BOX2DFLOAT4));
+			getbox2d_p(in+4, rr);
+			//memcpy(rr,&r,sizeof(BOX2DFLOAT4));
+
+			if ( ! finite(rr->xmin) ||
+				! finite(rr->ymin) ||
+				! finite(rr->xmax) ||
+				! finite(rr->ymax) )
 			{
-				r = getbox2d(in+4);
-				rr = (BOX2DFLOAT4*) palloc(sizeof(BOX2DFLOAT4));
-				memcpy(rr,&r,sizeof(BOX2DFLOAT4));
+				elog(NOTICE, "found infinite geometry");
+				pfree(rr);
+				PG_RETURN_POINTER(entry);
+			}
 
 
 #ifdef DEBUG_GIST2
-	elog(NOTICE,"GIST: gist_lwgeom_compress -- got box2d BOX(%.15g %.15g,%.15g %.15g)", r.xmin, r.ymin, r.xmax, r.ymax);
+	elog(NOTICE,"GIST: gist_lwgeom_compress -- got box2d BOX(%.15g %.15g,%.15g %.15g)", rr->xmin, rr->ymin, rr->xmax, rr->ymax);
 #endif
-				//r = convert_box3d_to_box(&in->bvol);
+			//r = convert_box3d_to_box(&in->bvol);
 
-				if ( in != (char*)DatumGetPointer(entry->key) )
-				{
-					pfree( in );  // PG_FREE_IF_COPY
-				}
-
-				gistentryinit(*retval, PointerGetDatum(rr),
-					entry->rel, entry->page,
-					entry->offset, sizeof(BOX2DFLOAT4),
-					FALSE);
+			if ( in != (char*)DatumGetPointer(entry->key) )
+			{
+				pfree( in );  // PG_FREE_IF_COPY
 			}
+
+			gistentryinit(*retval, PointerGetDatum(rr),
+				entry->rel, entry->page,
+				entry->offset, sizeof(BOX2DFLOAT4),
+				FALSE);
 
 		}
 		else
