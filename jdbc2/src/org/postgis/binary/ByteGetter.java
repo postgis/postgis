@@ -3,7 +3,7 @@
  * 
  * PostGIS extension for PostgreSQL JDBC driver - Binary Parser
  * 
- * (C) 2005 Markus Schaber, schabios@logi-track.com
+ * (C) 2005 Markus Schaber, markus@schabi.de
  * 
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free

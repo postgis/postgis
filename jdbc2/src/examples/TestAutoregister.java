@@ -3,7 +3,7 @@
  * 
  * PostGIS extension for PostgreSQL JDBC driver - example and test classes
  * 
- * (C) 2005 Markus Schaber, schabios@logi-track.com
+ * (C) 2005 Markus Schaber, markus@schabi.de
  * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software

@@ -3,7 +3,7 @@
  * the pgjdbc 7.2 binary jar which both are licensed under BSD license.
  *
  * Copyright (c) 2003-2005, PostgreSQL Global Development Group
- * Copyright (c) 2005 Markus Schaber <schabios@logi-track.com>
+ * Copyright (c) 2005 Markus Schaber <markus@schabi.de>
  *
  * IDENTIFICATION
  *   $PostgreSQL: pgjdbc/org/postgresql/PGConnection.java,v 1.13 2005/01/17 09:51:40 jurka Exp $

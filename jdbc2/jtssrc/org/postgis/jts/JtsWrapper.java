@@ -4,7 +4,7 @@
  * Allows transparent usage of JTS Geometry classes via PostgreSQL JDBC driver
  * connected to a PostGIS enabled PostgreSQL server.
  * 
- * (C) 2005 Markus Schaber, schabios@logi-track.com
+ * (C) 2005 Markus Schaber, markus@schabi.de
  * 
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -48,7 +48,7 @@ import java.util.Properties;
  * implementation, set the driver class property in the datasource config, the
  * following works for jboss:
  * 
- * &lt;driver-class&gt;com.logitrack.gis.util.PostGisWrapper&lt;/driver-class&gt;
+ * &lt;driver-class&gt;org.postgis.jts.PostGisWrapper&lt;/driver-class&gt;
  * 
  * @author schabi
  *  
@@ -101,7 +101,7 @@ public class JtsWrapper extends Driver {
         // Use the following for PostgreSQL jdbc driver V8.0 or newer
         // The above way still works, but is deprecated.
         // pgconn.addDataType("geometry",
-        // com.logitrack.gis.util.JtsGeometry.class);
+        // org.postgis.jts.JtsGeometry.class);
     }
 
     /**

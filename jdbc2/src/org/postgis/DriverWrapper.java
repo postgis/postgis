@@ -3,7 +3,7 @@
  * 
  * PostGIS extension for PostgreSQL JDBC driver - Wrapper utility class
  * 
- * (C) 2005 Markus Schaber, schabios@logi-track.com
+ * (C) 2005 Markus Schaber, markus@schabi.de
  * 
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -59,7 +59,7 @@ import java.util.Properties;
  * are deprecated in pgjdbc 8.0, see the commented code variants in the
  * addGisTypes() method.
  * 
- * @author Markus Schaber <schabios@logi-track.com>
+ * @author Markus Schaber <markus@schabi.de>
  *  
  */
 public class DriverWrapper extends Driver {

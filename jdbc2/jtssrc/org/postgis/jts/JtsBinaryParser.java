@@ -3,7 +3,7 @@
  * 
  * Binary Parser for JTS - relies on org.postgis V1.0.0+ package.
  * 
- * (C) 2005 Markus Schaber, schabios@logi-track.com
+ * (C) 2005 Markus Schaber, markus@schabi.de
  * 
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -54,7 +54,7 @@ import org.postgis.binary.ByteGetter.StringByteGetter;
  * (bytes), so we cannot even get or build Geometries with more than approx.
  * 2^28 coordinates (8 bytes each).
  * 
- * @author markus.schaber@logi-track.com
+ * @author Markus Schaber <markus@schabi.de>
  *  
  */
 public class JtsBinaryParser {

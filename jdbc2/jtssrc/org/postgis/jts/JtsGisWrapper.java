@@ -4,7 +4,7 @@
  * Allows transparent usage of JTS Geometry classes via PostgreSQL JDBC driver
  * connected to a PostGIS enabled PostgreSQL server.
  * 
- * (C) 2005 Markus Schaber, schabios@logi-track.com
+ * (C) 2005 Markus Schaber, markus@schabi.de
  * 
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -88,10 +88,10 @@ public class JtsGisWrapper extends Driver {
      * adds the JTS/PostGIS Data types to a PG Connection.
      */
     public static void addGISTypes(PGConnection pgconn) {
-        pgconn.addDataType("geometry", "com.logitrack.gis.util.JtsGeometry");
+        pgconn.addDataType("geometry", "org.postgis.jts.JtsGeometry");
         pgconn.addDataType("box3d", "org.postgis.PGbox3d");
         //pgconn.addDataType("geometry",
-        // com.logitrack.gis.util.JtsGeometry.class);
+        // org.postgis.jts.JtsGeometry.class);
         //pgconn.addDataType("box3d", org.postgis.PGbox3d.class);
     }
 

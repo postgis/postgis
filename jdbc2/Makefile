@@ -1,7 +1,7 @@
 # PostGIS Makefile
 
 # (C) 2004 Paul Ramsey, pramsey@refractions.net
-# (C) 2005 Markus Schaber, schabios@logi-track.com
+# (C) 2005 Markus Schaber, markus@schabi.de
 # (C) 2005 Sandro Santilli, strk@refractions.net
 # (C) 2005 Alex Bodnaru, alexbodn@012.net.il
 
