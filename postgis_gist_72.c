@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.18  2004/06/09 10:19:06  strk
+ * Moved changes needed for PG75 inside postgis_gist_72.c using #if switches.
+ *
  * Revision 1.17  2004/06/03 08:19:20  strk
  * yet another Infinite check used: finite() - which checks for NaN,-Inf,+Inf
  *
@@ -83,13 +86,6 @@
 
 #include "postgis.h"
 #include "utils/elog.h"
-
-//Norman Vine found this problem for compiling under cygwin
-//  it defines BYTE_ORDER and LITTLE_ENDIAN
-
-#ifdef __CYGWIN__
-#include <sys/param.h>       // FOR ENDIAN DEFINES
-#endif
 
 #define SHOW_DIGS_DOUBLE 15
 #define MAX_DIGS_DOUBLE (SHOW_DIGS_DOUBLE + 6 + 1 + 3 +1)
@@ -343,7 +339,11 @@ Datum rtree_decompress(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(gbox_union);
 Datum gbox_union(PG_FUNCTION_ARGS)
 {
-	bytea	   *entryvec = (bytea *) PG_GETARG_POINTER(0);
+#if USE_VERSION < 75
+	bytea *entryvec = (bytea *) PG_GETARG_POINTER(0);
+#else
+ 	GistEntryVector	   *entryvec = (GistEntryVector *) PG_GETARG_POINTER(0);
+#endif
 	int		   *sizep = (int *) PG_GETARG_POINTER(1);
 	int			numranges,
 				i;
@@ -355,14 +355,23 @@ Datum gbox_union(PG_FUNCTION_ARGS)
 	fflush( stdout );
 #endif
 
+#if USE_VERSION < 75
 	numranges = (VARSIZE(entryvec) - VARHDRSZ) / sizeof(GISTENTRY);
-	pageunion = (BOX *) palloc(sizeof(BOX));
 	cur = DatumGetBoxP(((GISTENTRY *) VARDATA(entryvec))[0].key);
+#else
+  	numranges = entryvec->n;
+  	cur = DatumGetBoxP(entryvec->vector[0].key);
+#endif
+	pageunion = (BOX *) palloc(sizeof(BOX));
 	memcpy((void *) pageunion, (void *) cur, sizeof(BOX));
 
 	for (i = 1; i < numranges; i++)
 	{
+#if USE_VERSION < 75
 		cur = DatumGetBoxP(((GISTENTRY *) VARDATA(entryvec))[i].key);
+#else
+  		cur = DatumGetBoxP(entryvec->vector[i].key);
+#endif
 		if (pageunion->high.x < cur->high.x)
 			pageunion->high.x = cur->high.x;
 		if (pageunion->low.x > cur->low.x)
@@ -429,7 +438,11 @@ PG_FUNCTION_INFO_V1(gbox_picksplit);
 Datum
 gbox_picksplit(PG_FUNCTION_ARGS)
 {
-	bytea	   *entryvec = (bytea *) PG_GETARG_POINTER(0);
+#if USE_VERSION < 75
+	bytea *entryvec = (bytea *) PG_GETARG_POINTER(0);
+#else
+  	GistEntryVector	*entryvec = (GistEntryVector *) PG_GETARG_POINTER(0);
+#endif
 	GIST_SPLITVEC *v = (GIST_SPLITVEC *) PG_GETARG_POINTER(1);
 	OffsetNumber i;
 	OffsetNumber *listL,
@@ -457,15 +470,24 @@ gbox_picksplit(PG_FUNCTION_ARGS)
 #endif
 
 	posL = posR = posB = posT = 0;
+#if USE_VERSION < 75
 	maxoff = ((VARSIZE(entryvec) - VARHDRSZ) / sizeof(GISTENTRY)) - 1;
-
 	cur = DatumGetBoxP(((GISTENTRY *) VARDATA(entryvec))[FirstOffsetNumber].key);
+#else
+  	maxoff = entryvec->n - 1;
+  	cur = DatumGetBoxP(entryvec->vector[FirstOffsetNumber].key);
+#endif
+
 	memcpy((void *) &pageunion, (void *) cur, sizeof(BOX));
 
 	/* find MBR */
 	for (i = OffsetNumberNext(FirstOffsetNumber); i <= maxoff; i = OffsetNumberNext(i))
 	{
+#if USE_VERSION < 75
 		cur = DatumGetBoxP(((GISTENTRY *) VARDATA(entryvec))[i].key);
+#else
+  		cur = DatumGetBoxP(entryvec->vector[i].key);
+#endif
 		if ( allisequal == true &&  (
 				pageunion.high.x != cur->high.x ||
 				pageunion.high.y != cur->high.y ||
@@ -491,7 +513,11 @@ gbox_picksplit(PG_FUNCTION_ARGS)
 	unionR = (BOX *) palloc(sizeof(BOX));
 	if (allisequal)
 	{
+#if USE_VERSION < 75
 		cur = DatumGetBoxP(((GISTENTRY *) VARDATA(entryvec))[OffsetNumberNext(FirstOffsetNumber)].key);
+#else
+  		cur = DatumGetBoxP(entryvec->vector[OffsetNumberNext(FirstOffsetNumber)].key);
+#endif
 		if (memcmp((void *) cur, (void *) &pageunion, sizeof(BOX)) == 0)
 		{
 			v->spl_left = listL;
@@ -540,7 +566,11 @@ gbox_picksplit(PG_FUNCTION_ARGS)
 
 	for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i))
 	{
+#if USE_VERSION < 75
 		cur = DatumGetBoxP(((GISTENTRY *) VARDATA(entryvec))[i].key);
+#else
+  		cur = DatumGetBoxP(entryvec->vector[i].key);
+#endif
 		if (cur->low.x - pageunion.low.x < pageunion.high.x - cur->high.x)
 			ADDLIST(listL, unionL, posL,i);
 		else
@@ -557,7 +587,11 @@ gbox_picksplit(PG_FUNCTION_ARGS)
 		KBsort *arr = (KBsort*)palloc( sizeof(KBsort) * maxoff );
 		posL = posR = posB = posT = 0;
 		for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i)) {
+#if USE_VERSION < 75
 			arr[i-1].key = DatumGetBoxP(((GISTENTRY *) VARDATA(entryvec))[i].key);
+#else
+  			arr[i-1].key = DatumGetBoxP(entryvec->vector[i].key);
+#endif
 			arr[i-1].pos = i;
 		}
 		qsort( arr, maxoff, sizeof(KBsort), compare_KB );
