@@ -157,9 +157,6 @@ Datum BOX2D_overlap(PG_FUNCTION_ARGS)
 
 /*		box_overleft	-		is the right edge of box1 to the left of
  *								the right edge of box2?
- *
- *		This is "less than or equal" for the end of a time range,
- *		when time ranges are stored as rectangles.
  */
  PG_FUNCTION_INFO_V1(BOX2D_overleft);
 Datum BOX2D_overleft(PG_FUNCTION_ARGS)
@@ -194,9 +191,6 @@ Datum BOX2D_right(PG_FUNCTION_ARGS)
 
 /*		box_overright	-		is the left edge of box1 to the right of
  *								the left edge of box2?
- *
- *		This is "greater than or equal" for time ranges, when time ranges
- *		are stored as rectangles.
  */
  PG_FUNCTION_INFO_V1(BOX2D_overright);
 Datum BOX2D_overright(PG_FUNCTION_ARGS)
@@ -205,6 +199,52 @@ Datum BOX2D_overright(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4		   *box2 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(1);
 
 	PG_RETURN_BOOL(FPge(box1->xmin, box2->xmin));
+}
+
+/*		box_overbelow	-		is the bottom edge of box1 below
+ *								the bottom edge of box2?
+ */
+ PG_FUNCTION_INFO_V1(BOX2D_overbelow);
+Datum BOX2D_overbelow(PG_FUNCTION_ARGS)
+{
+	BOX2DFLOAT4		   *box1 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(0);
+	BOX2DFLOAT4		   *box2 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(1);
+
+	PG_RETURN_BOOL(FPle(box1->ymin, box2->ymin));
+}
+
+/*		box_below		-		is box1 strictly below box2?
+ */
+ PG_FUNCTION_INFO_V1(BOX2D_below);
+Datum BOX2D_below(PG_FUNCTION_ARGS)
+{
+	BOX2DFLOAT4		   *box1 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(0);
+	BOX2DFLOAT4		   *box2 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(1);
+
+	PG_RETURN_BOOL(FPlt(box1->ymax, box2->ymin));
+}
+
+/*		box_above		-		is box1 strictly above box2?
+ */
+ PG_FUNCTION_INFO_V1(BOX2D_above);
+Datum BOX2D_above(PG_FUNCTION_ARGS)
+{
+	BOX2DFLOAT4		   *box1 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(0);
+	BOX2DFLOAT4		   *box2 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(1);
+
+	PG_RETURN_BOOL(FPgt(box1->ymin, box2->ymax));
+}
+
+/*		box_overabove	-		is the top edge of box1 above
+ *								the top edge of box2?
+ */
+ PG_FUNCTION_INFO_V1(BOX2D_overabove);
+Datum BOX2D_overabove(PG_FUNCTION_ARGS)
+{
+	BOX2DFLOAT4		   *box1 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(0);
+	BOX2DFLOAT4		   *box2 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(1);
+
+	PG_RETURN_BOOL(FPge(box1->ymax, box2->ymax));
 }
 
 /*		box_contained	-		is box1 contained by box2?

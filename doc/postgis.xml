@@ -3581,6 +3581,42 @@ dimension
 		</varlistentry>
 
 		<varlistentry>
+		  <term>A &amp;&lt;| B</term>
+
+		  <listitem>
+		    <para>The "&amp;&lt;|" operator returns true if A's bounding box
+		    overlaps or is below B's bounding box.</para>
+		  </listitem>
+		</varlistentry>
+
+		<varlistentry>
+		  <term>A |&amp;&gt; B</term>
+
+		  <listitem>
+		    <para>The "|&amp;&gt;" operator returns true if A's bounding box
+		    overlaps or is above B's bounding box.</para>
+		  </listitem>
+		</varlistentry>
+
+		<varlistentry>
+		  <term>A &lt;&lt;| B</term>
+
+		  <listitem>
+		    <para>The "&lt;&lt;|" operator returns true if A's bounding box is
+		    strictly below B's bounding box.</para>
+		  </listitem>
+		</varlistentry>
+
+		<varlistentry>
+		  <term>A |&gt;&gt; B</term>
+
+		  <listitem>
+		    <para>The "|&gt;&gt;" operator returns true if A's bounding box is
+		    strictly above B's bounding box.</para>
+		  </listitem>
+		</varlistentry>
+
+		<varlistentry>
 		  <term>A ~= B</term>
 
 		  <listitem>

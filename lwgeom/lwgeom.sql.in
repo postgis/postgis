@@ -76,6 +76,26 @@ CREATEFUNCTION box2d_right(box2d, box2d)
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
+CREATEFUNCTION box2d_overbelow(box2d, box2d) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@' 
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATEFUNCTION box2d_below(box2d, box2d) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@' 
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATEFUNCTION box2d_above(box2d, box2d) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@' 
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATEFUNCTION box2d_overabove(box2d, box2d) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@' 
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
 CREATEFUNCTION box2d_contain(box2d, box2d) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@'
@@ -108,6 +128,18 @@ CREATE OPERATOR &< (
    RESTRICT = positionsel, JOIN = positionjoinsel
 );
 
+CREATE OPERATOR <<| (
+   LEFTARG = box2d, RIGHTARG = box2d, PROCEDURE = box2d_below,
+   COMMUTATOR = '|>>',
+   RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+CREATE OPERATOR &<| (
+   LEFTARG = box2d, RIGHTARG = box2d, PROCEDURE = box2d_overbelow,
+   COMMUTATOR = '|&>',
+   RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
 CREATE OPERATOR && (
    LEFTARG = box2d, RIGHTARG = box2d, PROCEDURE = box2d_overlap,
    COMMUTATOR = '&&',
@@ -123,6 +155,18 @@ CREATE OPERATOR &> (
 CREATE OPERATOR >> (
    LEFTARG = box2d, RIGHTARG = box2d, PROCEDURE = box2d_right,
    COMMUTATOR = '<<',
+   RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+CREATE OPERATOR |&> (
+   LEFTARG = box2d, RIGHTARG = box2d, PROCEDURE = box2d_overabove,
+   COMMUTATOR = '&<|',
+   RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+CREATE OPERATOR |>> (
+   LEFTARG = box2d, RIGHTARG = box2d, PROCEDURE = box2d_above,
+   COMMUTATOR = '<<|',
    RESTRICT = positionsel, JOIN = positionjoinsel
 );
 
@@ -158,12 +202,32 @@ CREATEFUNCTION lwgeom_overright(lwgeom, lwgeom)
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
+CREATEFUNCTION lwgeom_overabove(lwgeom, lwgeom) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATEFUNCTION lwgeom_overbelow(lwgeom, lwgeom) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@' 
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
 CREATEFUNCTION lwgeom_left(lwgeom, lwgeom) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION lwgeom_right(lwgeom, lwgeom) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@' 
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATEFUNCTION lwgeom_above(lwgeom, lwgeom) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@' 
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATEFUNCTION lwgeom_below(lwgeom, lwgeom) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C' WITH (isstrict,iscachable);

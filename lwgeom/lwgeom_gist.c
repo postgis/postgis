@@ -7,7 +7,6 @@
 #include "postgres.h"
 #include "access/gist.h"
 #include "access/itup.h"
-#include "access/rtree.h"
 #include "fmgr.h"
 #include "utils/elog.h"
 
@@ -32,6 +31,10 @@ Datum LWGEOM_overleft(PG_FUNCTION_ARGS);
 Datum LWGEOM_left(PG_FUNCTION_ARGS);
 Datum LWGEOM_right(PG_FUNCTION_ARGS);
 Datum LWGEOM_overright(PG_FUNCTION_ARGS);
+Datum LWGEOM_overbelow(PG_FUNCTION_ARGS);
+Datum LWGEOM_below(PG_FUNCTION_ARGS);
+Datum LWGEOM_above(PG_FUNCTION_ARGS);
+Datum LWGEOM_overabove(PG_FUNCTION_ARGS);
 Datum LWGEOM_contained(PG_FUNCTION_ARGS);
 Datum LWGEOM_contain(PG_FUNCTION_ARGS);
 Datum LWGEOM_gist_compress(PG_FUNCTION_ARGS);
@@ -56,8 +59,22 @@ int counter_leaf = 0;
 int counter_intern = 0;
 
 
+// GiST strategies (modified from src/include/access/rtree.h)
+#define RTLeftStrategyNumber			1
+#define RTOverLeftStrategyNumber		2
+#define RTOverlapStrategyNumber			3
+#define RTOverRightStrategyNumber		4
+#define RTRightStrategyNumber			5
+#define RTSameStrategyNumber			6
+#define RTContainsStrategyNumber		7
+#define RTContainedByStrategyNumber		8
+#define RTOverBelowStrategyNumber		9
+#define RTBelowStrategyNumber			10
+#define RTAboveStrategyNumber			11
+#define RTOverAboveStrategyNumber		12
 
-// all the lwgeom_<same,overlpa,overleft,left,right,overright,contained,contain>
+
+// all the lwgeom_<same,overlpa,overleft,left,right,overright,overbelow,below,above,overabove,contained,contain>
 //  work the same.
 //  1. get lwgeom1
 //  2. get lwgeom2
@@ -207,6 +224,118 @@ Datum LWGEOM_overright(PG_FUNCTION_ARGS)
 	}
 
 	result = DatumGetBool(DirectFunctionCall2(BOX2D_overright,
+		PointerGetDatum(&box1), PointerGetDatum(&box2)));
+
+	PG_FREE_IF_COPY(lwgeom1, 0);
+        PG_FREE_IF_COPY(lwgeom2, 1);
+
+        PG_RETURN_BOOL(result);
+}
+
+
+PG_FUNCTION_INFO_V1(LWGEOM_overbelow);
+Datum LWGEOM_overbelow(PG_FUNCTION_ARGS)
+{
+	char *lwgeom1 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char *lwgeom2 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	bool result;
+	BOX2DFLOAT4 box1;
+	BOX2DFLOAT4 box2;
+
+#ifdef DEBUG_CALLS
+	elog(NOTICE,"GIST: LWGEOM_overbelow --entry");
+#endif
+
+	if ( ! (getbox2d_p(lwgeom1+4, &box1) && getbox2d_p(lwgeom2+4, &box2)) )
+	{
+		PG_RETURN_BOOL(FALSE);
+	}
+
+
+	result = DatumGetBool(DirectFunctionCall2(BOX2D_overbelow,
+		PointerGetDatum(&box1), PointerGetDatum(&box2))); 
+
+	PG_FREE_IF_COPY(lwgeom1, 0);
+        PG_FREE_IF_COPY(lwgeom2, 1);
+
+        PG_RETURN_BOOL(result);
+}
+
+PG_FUNCTION_INFO_V1(LWGEOM_below);
+Datum LWGEOM_below(PG_FUNCTION_ARGS)
+{
+	char *lwgeom1 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char *lwgeom2 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	bool result;
+	BOX2DFLOAT4 box1;
+	BOX2DFLOAT4 box2;
+
+#ifdef DEBUG_CALLS
+	elog(NOTICE,"GIST: LWGEOM_below --entry");
+#endif
+
+	if ( ! (getbox2d_p(lwgeom1+4, &box1) && getbox2d_p(lwgeom2+4, &box2)) )
+	{
+		PG_RETURN_BOOL(FALSE);
+	}
+
+	result = DatumGetBool(DirectFunctionCall2(BOX2D_below,
+		PointerGetDatum(&box1), PointerGetDatum(&box2))); 
+
+	PG_FREE_IF_COPY(lwgeom1, 0);
+        PG_FREE_IF_COPY(lwgeom2, 1);
+
+        PG_RETURN_BOOL(result);
+}
+
+
+PG_FUNCTION_INFO_V1(LWGEOM_above);
+Datum LWGEOM_above(PG_FUNCTION_ARGS)
+{
+	char *lwgeom1 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char *lwgeom2 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	bool result;
+	BOX2DFLOAT4 box1;
+	BOX2DFLOAT4 box2;
+
+#ifdef DEBUG_CALLS
+	elog(NOTICE,"GIST: LWGEOM_above --entry");
+#endif
+
+	if ( ! (getbox2d_p(lwgeom1+4, &box1) && getbox2d_p(lwgeom2+4, &box2)) )
+	{
+		PG_RETURN_BOOL(FALSE);
+	}
+
+	result = DatumGetBool(DirectFunctionCall2(BOX2D_above,
+		PointerGetDatum(&box1), PointerGetDatum(&box2)));
+
+	PG_FREE_IF_COPY(lwgeom1, 0);
+        PG_FREE_IF_COPY(lwgeom2, 1);
+
+        PG_RETURN_BOOL(result);
+}
+
+
+PG_FUNCTION_INFO_V1(LWGEOM_overabove);
+Datum LWGEOM_overabove(PG_FUNCTION_ARGS)
+{
+	char *lwgeom1 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char *lwgeom2 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	bool result;
+	BOX2DFLOAT4 box1;
+	BOX2DFLOAT4 box2;
+
+#ifdef DEBUG_CALLS
+	elog(NOTICE,"GIST: LWGEOM_overabove --entry");
+#endif
+
+	if ( ! (getbox2d_p(lwgeom1+4, &box1) && getbox2d_p(lwgeom2+4, &box2)) )
+	{
+		PG_RETURN_BOOL(FALSE);
+	}
+
+	result = DatumGetBool(DirectFunctionCall2(BOX2D_overabove,
 		PointerGetDatum(&box1), PointerGetDatum(&box2)));
 
 	PG_FREE_IF_COPY(lwgeom1, 0);
@@ -482,6 +611,14 @@ elog(NOTICE,"%i:(int)<%.8g %.8g,%.8g %.8g>&&<%.8g %.8g,%.8g %.8g> %i",counter_in
     case RTRightStrategyNumber:
       retval = DatumGetBool( DirectFunctionCall2( BOX2D_overright, PointerGetDatum(key), PointerGetDatum(query) ) );
       break;
+	case RTOverBelowStrategyNumber:
+	case RTBelowStrategyNumber:
+      retval = DatumGetBool( DirectFunctionCall2( BOX2D_overbelow, PointerGetDatum(key), PointerGetDatum(query) ) );
+      break;
+	case RTAboveStrategyNumber:
+	case RTOverAboveStrategyNumber:
+      retval = DatumGetBool( DirectFunctionCall2( BOX2D_overabove, PointerGetDatum(key), PointerGetDatum(query) ) );
+      break;
     case RTSameStrategyNumber:
     case RTContainsStrategyNumber:
       retval = DatumGetBool( DirectFunctionCall2( BOX2D_contain, PointerGetDatum(key), PointerGetDatum(query) ) );
@@ -538,6 +675,18 @@ lwgeom_rtree_leaf_consistent(BOX2DFLOAT4 *key,
 			break;
 		case RTRightStrategyNumber:
 			retval = DatumGetBool(DirectFunctionCall2(BOX2D_right, PointerGetDatum(key), PointerGetDatum(query)));
+			break;
+		case RTOverBelowStrategyNumber:
+			retval = DatumGetBool(DirectFunctionCall2(BOX2D_overbelow, PointerGetDatum(key), PointerGetDatum(query)));
+			break;
+		case RTBelowStrategyNumber:
+			retval = DatumGetBool(DirectFunctionCall2(BOX2D_below, PointerGetDatum(key), PointerGetDatum(query)));
+			break;
+		case RTAboveStrategyNumber:
+			retval = DatumGetBool(DirectFunctionCall2(BOX2D_above, PointerGetDatum(key), PointerGetDatum(query)));
+			break;
+		case RTOverAboveStrategyNumber:
+			retval = DatumGetBool(DirectFunctionCall2(BOX2D_overabove, PointerGetDatum(key), PointerGetDatum(query)));
 			break;
 		case RTSameStrategyNumber:
 			retval = DatumGetBool(DirectFunctionCall2(BOX2D_same, PointerGetDatum(key), PointerGetDatum(query)));

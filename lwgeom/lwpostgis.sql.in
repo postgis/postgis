@@ -444,6 +444,16 @@ CREATEFUNCTION geometry_overright(geometry, geometry)
 	AS '@MODULE_FILENAME@', 'LWGEOM_overright'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
+CREATEFUNCTION geometry_overabove(geometry, geometry) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@', 'LWGEOM_overabove'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATEFUNCTION geometry_overbelow(geometry, geometry) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@', 'LWGEOM_overbelow'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
 CREATEFUNCTION geometry_left(geometry, geometry) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@', 'LWGEOM_left'
@@ -452,6 +462,16 @@ CREATEFUNCTION geometry_left(geometry, geometry)
 CREATEFUNCTION geometry_right(geometry, geometry) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@', 'LWGEOM_right'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATEFUNCTION geometry_above(geometry, geometry) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@', 'LWGEOM_above'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATEFUNCTION geometry_below(geometry, geometry) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@', 'LWGEOM_below'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION geometry_contain(geometry, geometry) 
@@ -488,6 +508,18 @@ CREATE OPERATOR &< (
    RESTRICT = positionsel, JOIN = positionjoinsel
 );
 
+CREATE OPERATOR <<| (
+   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_below,
+   COMMUTATOR = '|>>',
+   RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+CREATE OPERATOR &<| (
+   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overbelow,
+   COMMUTATOR = '|&>',
+   RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
 CREATE OPERATOR && (
    LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overlap,
    COMMUTATOR = '&&',
@@ -503,6 +535,18 @@ CREATE OPERATOR &> (
 CREATE OPERATOR >> (
    LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_right,
    COMMUTATOR = '<<',
+   RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+CREATE OPERATOR |&> (
+   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overabove,
+   COMMUTATOR = '&<|',
+   RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+CREATE OPERATOR |>> (
+   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_above,
+   COMMUTATOR = '<<|',
    RESTRICT = positionsel, JOIN = positionjoinsel
 );
 
@@ -637,6 +681,35 @@ INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy)
 	FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
 	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops' 
 		AND c.oprname = '@';
+
+-- box_overbelow
+INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy) 
+	SELECT am.oid, opcl.oid, c.opoid, 9
+	FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
+	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops' 
+		AND c.oprname = '&<|';
+
+-- box_below
+INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy) 
+	SELECT am.oid, opcl.oid, c.opoid, 10
+	FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
+	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops' 
+		AND c.oprname = '<<|';
+
+-- box_above
+INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy) 
+	SELECT am.oid, opcl.oid, c.opoid, 11
+	FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
+	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops' 
+		AND c.oprname = '|>>';
+
+-- box_overabove
+INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy) 
+	SELECT am.oid, opcl.oid, c.opoid, 12
+	FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
+	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops' 
+		AND c.oprname = '|&>';
+
 
 DROP TABLE rt_ops_tmp;
 
@@ -782,7 +855,44 @@ INSERT INTO pg_amop (amopclaid, amopstrategy, amopreqcheck, amopopr)
       and opcname = 'gist_geometry_ops' 
       and c.oprname = '@';
 
+-- poly_overbelow
+INSERT INTO pg_amop (amopclaid, amopstrategy, amopreqcheck, amopopr)
+   SELECT opcl.oid, 9, true, c.opoid
+   FROM pg_opclass opcl, rt_ops_tmp c
+   WHERE
+      opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
+      and opcname = 'gist_geometry_ops' 
+      and c.oprname = '&<|';
+
+-- poly_below
+INSERT INTO pg_amop (amopclaid, amopstrategy, amopreqcheck, amopopr) 
+   SELECT opcl.oid, 10, true, c.opoid
+   FROM pg_opclass opcl, rt_ops_tmp c
+   WHERE
+      opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
+      and opcname = 'gist_geometry_ops' 
+      and c.oprname = '<<|';
+
+-- poly_above
+INSERT INTO pg_amop (amopclaid, amopstrategy, amopreqcheck, amopopr) 
+   SELECT opcl.oid, 11, true, c.opoid
+   FROM pg_opclass opcl, rt_ops_tmp c
+   WHERE
+      opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
+      and opcname = 'gist_geometry_ops' 
+      and c.oprname = '|>>';
+
+-- poly_overabove
+INSERT INTO pg_amop (amopclaid, amopstrategy, amopreqcheck, amopopr) 
+   SELECT opcl.oid, 12, true, c.opoid
+   FROM pg_opclass opcl, rt_ops_tmp c
+   WHERE
+      opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
+      and opcname = 'gist_geometry_ops' 
+      and c.oprname = '|&>';
+
 DROP TABLE rt_ops_tmp;
+
 
 -- add the entries to amproc for the support methods
 -- note the amprocnum numbers associated with each are specific!
@@ -858,7 +968,11 @@ CREATE OPERATOR CLASS gist_geometry_ops
         OPERATOR        6        ~=	RECHECK,
         OPERATOR        7        ~	RECHECK,
         OPERATOR        8        @	RECHECK,
-        FUNCTION        1        LWGEOM_gist_consistent (internal, geometry, int4),
+	OPERATOR	9	 &<|	RECHECK,
+	OPERATOR	10	 <<|	RECHECK,
+	OPERATOR	11	 |>>	RECHECK,
+	OPERATOR	12	 |&>	RECHECK,
+	FUNCTION        1        LWGEOM_gist_consistent (internal, geometry, int4),
         FUNCTION        2        LWGEOM_gist_union (bytea, internal),
         FUNCTION        3        LWGEOM_gist_compress (internal),
         FUNCTION        4        LWGEOM_gist_decompress (internal),
