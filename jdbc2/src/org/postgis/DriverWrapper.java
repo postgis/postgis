@@ -35,29 +35,14 @@ import java.util.Properties;
  * following works for jboss:
  * 
  * <code>
- * &lt;driver-class&gt;com.logitrack.gis.util.DriverWrapper&lt;/driver-class&gt;
+ * &lt;driver-class&gt;org.postgis.DriverWrapper&lt;/driver-class&gt;
  * </code>
  * If you don't like or want to use the DriverWrapper, you have two
- * alternatives:
- * 
- * A) If you use a pgjdbc driver newer than 8 Nov 2004, the
- * postgresql.properties file in the org.postgresql directory delivered with
- * this source should auto-register the PostGIS extension.
- * 
- * B) Add the datatypes manually to your connection:
- * 
- * <code>
- * ((org.postgresql.PGConnection) conn).addDataType("geometry", "org.postgis.PGgeometry");
- * ((org.postgresql.PGConnection) conn).addDataType("box3d", "org.postgis.PGbox3d");
- * </code>
- * 
- * (You may need to dig through some wrappers when running in an appserver. E.
- * G. for JBoss, you get a org.jboss.resource.adapter.jdbc.WrappedConnection and
- * have to call getUnderlyingConnection() on it.)
+ * alternatives, see the README file.
  * 
  * Also note that the addDataType() methods known from earlier pgjdbc versions
  * are deprecated in pgjdbc 8.0, see the commented code variants in the
- * addGisTypes() method for an alternative.
+ * addGisTypes() method.
  * 
  * @author Markus Schaber <schabios@logi-track.com>
  *  
