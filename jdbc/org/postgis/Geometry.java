@@ -16,39 +16,39 @@ public class Geometry
 	/**
 	 * The OGIS geometry type number for points.
 	 */
-	public static int POINT = 1;
+	public static final int POINT = 1;
 
 	/**
 	 * The OGIS geometry type number for lines.
 	 */
-	public static int LINESTRING = 2;
+	public static final int LINESTRING = 2;
 
 	/**
 	 * The OGIS geometry type number for polygons.
 	 */
-	public static int POLYGON = 3;
+	public static final int POLYGON = 3;
 
 	/**
 	 * The OGIS geometry type number for aggregate points.
 	 */
-	public static int MULTIPOINT = 4;
+	public static final int MULTIPOINT = 4;
 
 	/**
 	 * The OGIS geometry type number for aggregate lines.
 	 */
-	public static int MULTILINESTRING = 5;
+	public static final int MULTILINESTRING = 5;
 
 	/**
 	 * The OGIS geometry type number for aggregate polygons.
 	 */
-	public static int MULTIPOLYGON = 6;
+	public static final int MULTIPOLYGON = 6;
 	
 	/**
 	 * The OGIS geometry type number for feature collections.
 	 * Feature collections are not currently supported by the
 	 * backend.
 	 */
-	public static int GEOMETRYCOLLECTION = 7;
+	public static final int GEOMETRYCOLLECTION = 7;
 	
 	/**
 	 * @return The OGIS geometry type number of this geometry.
