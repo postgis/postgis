@@ -1306,6 +1306,17 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS)
 	int SRID;
 	BOX2DFLOAT4 *bbox;
 
+	/*
+	 * This funx is a no-op only if a bbox cache is already present
+	 * in input. If bbox cache is not there we'll need to handle
+	 * automatic bbox addition FOR_COMPLEX_GEOMS.
+	 */
+	if ( TYPE_GETTYPE(geom->type) == COLLECTIONTYPE &&
+		TYPE_HASBBOX(geom->type) )
+	{
+		PG_RETURN_POINTER(geom);
+	}
+
 	// deserialize into lwgeoms[0]
 	lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom));
 
