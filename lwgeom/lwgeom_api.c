@@ -16,6 +16,9 @@
 
 #include "lwgeom.h"
 
+// this will change to NaN when I figure out how to
+// get NaN in a platform-independent way
+#define NO_Z_VALUE 0.0
 
 //#define DEBUG 1
 //#define DEBUG_EXPLODED 1
@@ -27,12 +30,9 @@ extern  BOX3D *lw_geom_getBB_simple(char *serialized_form);
 #ifdef DEBUG_EXPLODED
 void checkexplodedsize(char *srl, LWGEOM_EXPLODED *exploded, int alloced, char wantbbox);
 #endif
-
-
-// this will change to NaN when I figure out how to
-// get NaN in a platform-independent way
-
-#define NO_Z_VALUE 0.0
+static uint32 lwline_findlength(char *serialized_line);
+static uint32 lwpoint_findlength(char *serialized_point);
+static uint32 lwpoly_findlength(char *serialized_line);
 
 
 //*********************************************************************

@@ -1,6 +1,5 @@
 //lwgeom.h
 
-
 // basic API for handling the LWGEOM, BOX2DFLOAT4, LWPOINT, LWLINE, and LWPOLY.
 // See below for other support types like POINTARRAY and LWGEOM_INSPECTED
 
@@ -204,14 +203,13 @@ WHERE
 
 
 // already defined in postgis.h
-
- #define	POINTTYPE	1
- #define	LINETYPE	2
- #define	POLYGONTYPE	3
- #define	MULTIPOINTTYPE	4
- #define	MULTILINETYPE	5
- #define	MULTIPOLYGONTYPE	6
- #define	COLLECTIONTYPE	7
+#define	POINTTYPE	1
+#define	LINETYPE	2
+#define	POLYGONTYPE	3
+#define	MULTIPOINTTYPE	4
+#define	MULTILINETYPE	5
+#define	MULTIPOLYGONTYPE	6
+#define	COLLECTIONTYPE	7
 
 /*
  * This is the binary representation of lwgeom compatible
@@ -286,10 +284,6 @@ extern void lwline_serialize_buf(LWLINE *line, char *buf, int *size);
 // find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
 extern BOX3D *lwline_findbbox(LWLINE *line);
 
-
-//find length of this serialized line
-extern uint32 lwline_findlength(char *serialized_line);
-
 //--------------------------------------------------------
 
 typedef struct
@@ -322,9 +316,6 @@ extern BOX3D *lwpoint_findbbox(LWPOINT *point);
 // convenience functions to hide the POINTARRAY
 extern POINT2D lwpoint_getPoint2d(LWPOINT *point);
 extern POINT3D lwpoint_getPoint3d(LWPOINT *point);
-
-//find length of this serialized point
-extern uint32 lwpoint_findlength(char *serialized_point);
 
 //--------------------------------------------------------
 
@@ -359,11 +350,6 @@ extern void lwpoly_serialize_buf(LWPOLY *poly, char *buf, int *size);
 
 // find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
 extern BOX3D *lwpoly_findbbox(LWPOLY *poly);
-
-
-//find length of this serialized polygon
-extern uint32 lwpoly_findlength(char *serialized_line);
-
 
 //------------------------------------------------------
 // Multi-geometries
