@@ -7,6 +7,13 @@
 extern char *GEOSversion();
 extern char *GEOSjtsport();
 
+void NOTICE_MESSAGE(char *msg);
+
+void NOTICE_MESSAGE(char *msg)
+{
+	elog(NOTICE,msg);
+}
+
 PG_FUNCTION_INFO_V1(postgis_geos_version);
 Datum postgis_geos_version(PG_FUNCTION_ARGS)
 {

@@ -11,6 +11,9 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.8  2004/08/23 15:57:56  strk
+-- versioning functions completed
+--
 -- Revision 1.7  2004/08/23 15:37:16  strk
 -- Changed SCRIPTS_VERSION to 0.0.1
 --
@@ -1822,53 +1825,53 @@ CREATEFUNCTION postgis_uses_stats() RETURNS bool
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C';
 
---CREATEFUNCTION postgis_geos_version() RETURNS text
---	AS '@MODULE_FILENAME@'
---	LANGUAGE 'C';
---
+CREATEFUNCTION postgis_geos_version() RETURNS text
+	AS '@MODULE_FILENAME@'
+	LANGUAGE 'C';
 
---CREATEFUNCTION postgis_full_version() RETURNS text
---AS '
---DECLARE
---	libver text;
---	projver text;
---	geosver text;
---	usestats bool;
---	dbproc text;
---	relproc text;
---	fullver text;
---BEGIN
---	SELECT postgis_lib_version() INTO libver;
---	SELECT postgis_proj_version() INTO projver;
---	SELECT postgis_geos_version() INTO geosver;
---	SELECT postgis_uses_stats() INTO usestats;
---	SELECT postgis_scripts_installed() INTO dbproc;
---	SELECT postgis_scripts_released() INTO relproc;
---
---	fullver = \'POSTGIS="\' || libver || \'"\';
---
---	IF  geosver IS NOT NULL THEN
---		fullver = fullver || \' GEOS="\' || geosver || \'"\';
---	END IF;
---
---	IF  projver IS NOT NULL THEN
---		fullver = fullver || \' PROJ="\' || projver || \'"\';
---	END IF;
---
---	IF usestats THEN
---		fullver = fullver || \' USE_STATS\';
---	END IF;
---
---	fullver = fullver || \' DBPROC="\' || dbproc || \'"\';
---	fullver = fullver || \' RELPROC="\' || relproc || \'"\';
---
---	IF dbproc != relproc THEN
---		fullver = fullver || \' (needs proc upgrade)\';
---	END IF;
---
---	RETURN fullver;
---END
---' LANGUAGE 'plpgsql';
+
+CREATEFUNCTION postgis_full_version() RETURNS text
+AS '
+DECLARE
+	libver text;
+	projver text;
+	geosver text;
+	usestats bool;
+	dbproc text;
+	relproc text;
+	fullver text;
+BEGIN
+	SELECT postgis_lib_version() INTO libver;
+	SELECT postgis_proj_version() INTO projver;
+	SELECT postgis_geos_version() INTO geosver;
+	SELECT postgis_uses_stats() INTO usestats;
+	SELECT postgis_scripts_installed() INTO dbproc;
+	SELECT postgis_scripts_released() INTO relproc;
+
+	fullver = \'POSTGIS="\' || libver || \'"\';
+
+	IF  geosver IS NOT NULL THEN
+		fullver = fullver || \' GEOS="\' || geosver || \'"\';
+	END IF;
+
+	IF  projver IS NOT NULL THEN
+		fullver = fullver || \' PROJ="\' || projver || \'"\';
+	END IF;
+
+	IF usestats THEN
+		fullver = fullver || \' USE_STATS\';
+	END IF;
+
+	fullver = fullver || \' DBPROC="\' || dbproc || \'"\';
+	fullver = fullver || \' RELPROC="\' || relproc || \'"\';
+
+	IF dbproc != relproc THEN
+		fullver = fullver || \' (needs proc upgrade)\';
+	END IF;
+
+	RETURN fullver;
+END
+' LANGUAGE 'plpgsql';
 
 ---------------------------------------------------------------
 -- END
