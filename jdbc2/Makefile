@@ -13,41 +13,44 @@ DELETE = rm -rvf
 #CP=src/:lib/postgresql-8.0.309.jdbc3.jar
 CP = $(CLASSPATH):src/:/usr/share/java/postgresql.jar
 
-SRC=src
+SRCDIR=src
 EXAMPLES=examples
 BUILD=bin/make
+
+SRC= $(SRCDIR)/examples/Test.java \
+		$(SRCDIR)/examples/TestParser.java \
+		$(SRCDIR)/examples/TestServer.java \
+		$(SRCDIR)/org/postgis/ComposedGeom.java \
+		$(SRCDIR)/org/postgis/DriverWrapper.java \
+		$(SRCDIR)/org/postgis/GeometryCollection.java \
+		$(SRCDIR)/org/postgis/Geometry.java \
+		$(SRCDIR)/org/postgis/LinearRing.java \
+		$(SRCDIR)/org/postgis/LineString.java \
+		$(SRCDIR)/org/postgis/MultiLineString.java \
+		$(SRCDIR)/org/postgis/MultiPoint.java \
+		$(SRCDIR)/org/postgis/MultiPolygon.java \
+		$(SRCDIR)/org/postgis/PGbox3d.java \
+		$(SRCDIR)/org/postgis/PGbox.java \
+		$(SRCDIR)/org/postgis/PGgeometry.java \
+		$(SRCDIR)/org/postgis/PointComposedGeom.java \
+		$(SRCDIR)/org/postgis/Point.java \
+		$(SRCDIR)/org/postgis/Polygon.java 
+
 
 all:	jar \
 	test
 
 jar:	compile
-	$(JAR) -cf postgis.jar -C $(BUILD) . -C $(SRC)/org/postgresql/ postgresql.properties README	
-	$(JAR) -cf postgis_debug.jar -C $(BUILD) . -C $(SRC) . README	
+	$(JAR) -cf postgis.jar -C $(BUILD) . -C $(SRCDIR)/org/postgresql/ postgresql.properties README	
+	$(JAR) -cf postgis_debug.jar -C $(BUILD) . -C $(SRCDIR) . README	
 
-prepare:
+$(BUILD):
 	$(MKDIR) $(BUILD)
 
 
-compile:	prepare
-	$(JAVAC) -classpath $(CP) -d $(BUILD)\
-		$(SRC)/examples/Test.java \
-		$(SRC)/examples/TestParser.java \
-		$(SRC)/examples/TestServer.java \
-		$(SRC)/org/postgis/ComposedGeom.java \
-		$(SRC)/org/postgis/DriverWrapper.java \
-		$(SRC)/org/postgis/GeometryCollection.java \
-		$(SRC)/org/postgis/Geometry.java \
-		$(SRC)/org/postgis/LinearRing.java \
-		$(SRC)/org/postgis/LineString.java \
-		$(SRC)/org/postgis/MultiLineString.java \
-		$(SRC)/org/postgis/MultiPoint.java \
-		$(SRC)/org/postgis/MultiPolygon.java \
-		$(SRC)/org/postgis/PGbox3d.java \
-		$(SRC)/org/postgis/PGbox.java \
-		$(SRC)/org/postgis/PGgeometry.java \
-		$(SRC)/org/postgis/PointComposedGeom.java \
-		$(SRC)/org/postgis/Point.java \
-		$(SRC)/org/postgis/Polygon.java 
+compile: $(BUILD) $(SRC)
+	$(JAVAC) -classpath $(CP) -d $(BUILD) $(SRC) 
+	touch compile
 
 test:	compile
 	$(JAVA) -classpath $(BUILD):$(CP) $(EXAMPLES)/Test
@@ -62,5 +65,5 @@ ptest:  compile
 	$(JAVA) -classpath $(BUILD):$(CP) $(EXAMPLES)/TestParser
 
 clean:  
-	$(DELETE) $(BUILD) postgis.jar postgis_debug.jar
+	$(DELETE) $(BUILD) postgis.jar postgis_debug.jar compile
      
