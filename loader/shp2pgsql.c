@@ -25,7 +25,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <getopt.h>
 
 typedef struct {double x, y;} Point;
 

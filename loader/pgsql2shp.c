@@ -1,13 +1,13 @@
 //compile line for Refractions' Solaris machine...
 //gcc -g -I/data3/postgresql-7.1.2/include -L/data3/postgresql-7.1.2/lib dump.c ../shapelib-1.2.8/shpopen.o ../shapelib-1.2.8/dbfopen.o -o dump -lpq
 
-#include <getopt.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
 #include "libpq-fe.h"
 #include "shapefil.h"
+#include "getopt.h"
 
 static void exit_nicely(PGconn *conn){
 	PQfinish(conn);
