@@ -2258,3 +2258,228 @@ Datum max_distance(PG_FUNCTION_ARGS)
 
 	PG_RETURN_FLOAT8(result);
 }
+
+// optimistic_overlap(Polygon P1, Multipolygon MP2, double dist)
+// returns true if P1 overlaps MP2
+//   method: bbox check - is separation < dist?  no - return false (quick)
+//                                               yes  - return distance(P1,MP2) < dist
+
+PG_FUNCTION_INFO_V1(optimistic_overlap);
+Datum optimistic_overlap(PG_FUNCTION_ARGS)
+{
+		GEOMETRY		      *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+		GEOMETRY		      *geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+		double			dist = PG_GETARG_FLOAT8(2);
+		BOX3D				g1_bvol;
+		double			calc_dist;
+
+	if (geom1->SRID != geom2->SRID)
+	{
+		elog(ERROR,"optimistic_overlap:Operation on two GEOMETRIES with different SRIDs\n");
+		PG_RETURN_NULL();
+	}
+
+	if (geom1->type != POLYGONTYPE)
+	{
+		elog(ERROR,"optimistic_overlap: first arg isnt a polygon\n");
+		PG_RETURN_NULL();
+	}
+
+	if ( (geom2->type != POLYGONTYPE) &&  (geom2->type != MULTIPOLYGONTYPE) )
+	{
+		elog(ERROR,"optimistic_overlap: 2nd arg isnt a [multi-]polygon\n");
+		PG_RETURN_NULL();
+	}
+
+	//bbox check
+
+	memcpy(&g1_bvol, &geom1->bvol, sizeof(BOX3D) );
+	
+	g1_bvol.LLB.x = g1_bvol.LLB.x - dist;
+	g1_bvol.LLB.y = g1_bvol.LLB.y - dist;
+	
+	g1_bvol.URT.x = g1_bvol.URT.x + dist;
+	g1_bvol.URT.y = g1_bvol.URT.y + dist;
+	
+	//xmin = LLB.x, xmax = URT.x
+	
+
+	if (  (g1_bvol.LLB.x > geom2->bvol.URT.x) ||
+		(g1_bvol.URT.x < geom2->bvol.LLB.x) ||
+		(g1_bvol.LLB.y > geom2->bvol.URT.y) ||
+		(g1_bvol.URT.y < geom2->bvol.LLB.y)
+	   )
+	{
+		PG_RETURN_BOOL(FALSE);	//bbox not overlap
+	}
+
+	//compute distances
+		//should be a fast calc if they actually do intersect
+	calc_dist =	DatumGetFloat8 (DirectFunctionCall2(distance,	PointerGetDatum( geom1 ), 	PointerGetDatum( geom2 )));
+
+	PG_RETURN_BOOL(calc_dist < dist);
+}
+
+//returns a list of points for a single polygon
+// foreach segment
+//  (1st and last points will be unaltered, but
+//   there will be more points inbetween if segment length is 
+POINT3D	*segmentize_ring(POINT3D	*points, double dist, int num_points_in, int *num_points_out)
+{
+	double	seg_distance;
+	int	max_points, offset_new,offset_old;
+	POINT3D	*result,*r;
+	bool	keep_going;
+	POINT3D	*last_point, *next_point;
+	
+
+		//initial storage
+	max_points = 1000;	
+	offset_new=0; //start at beginning of points list
+	result = (POINT3D *) palloc (sizeof(POINT3D) * max_points);
+
+	memcpy(result, points, sizeof(POINT3D) ); //1st point
+	offset_new++;
+
+	last_point = points;
+	offset_old = 1;
+
+	keep_going = 1;
+	while(keep_going)
+	{
+		next_point = &points[offset_old];				
+
+			//distance last->next > dist
+		seg_distance = sqrt(
+			(next_point->x-last_point->x)*(next_point->x-last_point->x) + 
+			(next_point->y-last_point->y)*(next_point->y-last_point->y) ); 
+		if (offset_new >= max_points)
+		{
+			//need to add new points to result
+			r = result;
+			result = (POINT3D *) palloc (sizeof(POINT3D) * max_points *2);//double size
+			memcpy(result,r, sizeof(POINT3D)*max_points);
+			max_points *=2;
+			pfree(r);
+		}
+		
+		if (seg_distance > dist)
+		{
+			//add a point at the distance location
+			// and set last_point to this loc
+			
+			result[offset_new].x = last_point->x + (next_point->x-last_point->x)/seg_distance * dist;
+			result[offset_new].y = last_point->y + (next_point->y-last_point->y)/seg_distance * dist;
+			last_point = &result[offset_new];
+			offset_new ++;
+		}
+		else
+		{
+			//everything fine, just add the next_point and pop forward
+			result[offset_new].x = next_point->x;
+			result[offset_new].y = next_point->y;
+			offset_new++;
+			offset_old++;
+			last_point = next_point;
+		}
+		keep_going = (offset_old < num_points_in);
+	}
+	*num_points_out = offset_new;
+	return result;
+}
+
+// select segmentize('POLYGON((0 0, 0 10, 5 5, 0 0))',1);
+
+//segmentize(GEOMETRY P1, double maxlen)
+//given a [multi-]polygon, return a new polygon with each segment at most a given length
+PG_FUNCTION_INFO_V1(segmentize);
+Datum segmentize(PG_FUNCTION_ARGS)
+{
+		GEOMETRY		      *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+		GEOMETRY			*result,*result2;
+		double			maxdist = PG_GETARG_FLOAT8(1);
+		int32				*offsets1,*p_npoints_ring;
+		int				g1_i,r;
+		POLYGON3D			*p,*poly;
+		POINT3D			*polypts;
+		int				num_polypts;
+		POINT3D			*all_polypts;
+		int				all_num_polypts,all_num_polypts_max;
+		POINT3D			*p_points,*rr;
+		int				new_size;
+		bool				first_one;
+		int				poly_size;
+
+	first_one = 1;
+
+
+	if ( (geom1->type != POLYGONTYPE) &&  (geom1->type != MULTIPOLYGONTYPE) )
+	{
+		elog(ERROR,"segmentize: 1st arg isnt a [multi-]polygon\n");
+		PG_RETURN_NULL();
+	}
+
+
+
+	offsets1 = (int32 *) ( ((char *) &(geom1->objType[0] ))+ sizeof(int32) * geom1->nobjs ) ;
+
+	for (g1_i=0; g1_i < geom1->nobjs; g1_i++)
+	{
+
+		all_num_polypts = 0;
+		all_num_polypts_max = 1000;
+		all_polypts = (POINT3D *) palloc (sizeof(POINT3D) * all_num_polypts_max );
+
+		p = (POLYGON3D*)((char *) geom1 +offsets1[g1_i]) ;  // the polygon
+
+		p_npoints_ring = (int32 *) palloc(sizeof(int32) * p->nrings);
+
+		p_points = (POINT3D *) ( (char *)&(p->npoints[p->nrings] )  );
+		p_points = (POINT3D *) MAXALIGN(p_points);
+
+		for (r=0;r<p->nrings;r++)  //foreach ring in the polygon
+		{
+			polypts = segmentize_ring(p_points, maxdist, p->npoints[r], &num_polypts);
+			if ( (all_num_polypts + num_polypts) < all_num_polypts_max )	
+			{
+				//just add
+				memcpy( &all_polypts[all_num_polypts], polypts, sizeof(POINT3D) *num_polypts );
+				all_num_polypts += num_polypts;
+			}
+			else 
+			{
+				//need more space
+				new_size = all_num_polypts_max + num_polypts + 1000;
+				rr = (POINT3D*) palloc(sizeof(POINT3D) * new_size);
+				memcpy(rr,all_polypts, sizeof(POINT3D) *all_num_polypts);	
+				memcpy(&rr[all_num_polypts], polypts , sizeof(POINT3D) *num_polypts);
+				pfree(all_polypts);
+				all_polypts = rr;
+				all_num_polypts += num_polypts;
+			}
+			//set points in ring value
+			pfree(polypts);
+			p_npoints_ring[r] = num_polypts;
+		} //for each ring
+		
+		poly = make_polygon(p->nrings, p_npoints_ring, all_polypts, all_num_polypts, &poly_size);
+
+		if (first_one)
+		{
+			first_one = 0;
+			result = make_oneobj_geometry(poly_size, (char *)poly, POLYGONTYPE, FALSE,geom1->SRID, geom1->scale, geom1->offsetX, geom1->offsetY);
+			pfree(poly);
+			pfree(all_polypts);
+		}
+		else
+		{
+			result2 = add_to_geometry(result,poly_size, (char *) poly, POLYGONTYPE);
+			pfree(result);
+			result = result2;
+			pfree(poly);
+			pfree(all_polypts);
+		}	
+
+	}//foreach polygon
+	PG_RETURN_POINTER(result);
+}

@@ -123,6 +123,8 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 
 	char				*input_proj4, *output_proj4;
 
+	BOX3D				*bbox;
+
 	
 	text	   *input_proj4_text  = (PG_GETARG_TEXT_P(1));
 	text	   *output_proj4_text = (PG_GETARG_TEXT_P(2));
@@ -247,6 +249,10 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	pfree(input_proj4); pfree(output_proj4);
 
 	result->SRID = result_srid   ;
+	bbox = bbox_of_geometry(result);
+	memcpy(&result->bvol,bbox, sizeof(BOX3D) ); //make bounding box
+
+
 	PG_RETURN_POINTER(result); // new geometry
 }
 

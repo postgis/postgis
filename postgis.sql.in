@@ -301,6 +301,11 @@ CREATE FUNCTION height(chip)
    AS '@MODULE_FILENAME@','height_chip'
 	     LANGUAGE 'c'  with (isstrict);
 
+CREATE FUNCTION factor(chip)
+   RETURNS FLOAT4
+   AS '@MODULE_FILENAME@','factor_chip'
+	     LANGUAGE 'c'  with (isstrict);
+
 CREATE FUNCTION width(chip)
    RETURNS INT4
    AS '@MODULE_FILENAME@','width_chip'
@@ -322,6 +327,10 @@ CREATE FUNCTION setSRID(chip,int4)
    AS '@MODULE_FILENAME@','setsrid_chip'
 	     LANGUAGE 'c'  with (isstrict,iscachable);
 
+CREATE FUNCTION setfactor(chip,float4)
+   RETURNS chip
+   AS '@MODULE_FILENAME@','setfactor_chip'
+	     LANGUAGE 'c'  with (isstrict,iscachable);
 
 create function geometry_in(opaque)
 	RETURNS GEOMETRY
@@ -514,6 +523,16 @@ CREATE FUNCTION geometryn(GEOMETRY,INTEGER)
 
 CREATE FUNCTION max_distance(GEOMETRY,GEOMETRY)
    RETURNS float8
+   AS '@MODULE_FILENAME@'
+	     LANGUAGE 'c'  with (isstrict,iscachable);
+
+CREATE FUNCTION optimistic_overlap(GEOMETRY,GEOMETRY,FLOAT8)
+   RETURNS BOOL
+   AS '@MODULE_FILENAME@'
+	     LANGUAGE 'c'  with (isstrict,iscachable);
+
+CREATE FUNCTION segmentize(GEOMETRY,FLOAT8)
+   RETURNS GEOMETRY
    AS '@MODULE_FILENAME@'
 	     LANGUAGE 'c'  with (isstrict,iscachable);
 

@@ -184,25 +184,32 @@ typedef struct
 } GEOMETRY;
 
 
-typedef struct {
-	int32		size;			//postgresql varlength header
-	int32		endian_hint;	// number '1' in the endian of this structure
-	BOX3D		bvol;
-	int32		SRID;
-	char		future[8]; // for future expantion 
-	
-	int32 	datatype;	 // 1 = float32 (XDR), 2 = unsigned int (XDR), 3 = RGBA, 4 = signed integer (XDR)
-					 // 101 = float32(NDR), 102 = unsigned int (NDR), 104 = signed integer (NDR)
-					// 6 = signed 16 bit (XDR), 7 = unsigned 16 bit(XDR), 8 = unsigned 8(XDR/NDR)
-					// 106 = signed 16 bit (NDR), 107 = unsigned 16 bit (NDR), 108 = unsigned 8 (XDR/NDR) 
-	int32 	height;
-	int32 	width;
-	int32   compression;	// 0 = no compression
+typedef struct chiptag
+{
+	int	size; //unused (for use by postgresql)
+
+	int	endian_hint;  // the number '1' in the endian of this datastruct
+
+	BOX3D	 bvol;
+	int	 SRID;
+	char	 future[4];	
+	float  factor;           //usually 1.0.  Integer values are multiplied by this number
+                              //to get the actual height value (for sub-meter accuracy
+					//height data).
+
+	int 	datatype;	 // 1 = float32, 5 = 24bit integer, 6 = 16bit integer (short)
+				 // 101 = float32 (NDR), 105 = 24bit integer (NDR), 106=16bit int (NDR)
+	int 	height;
+	int 	width;
+	int   compression;	//# 0 = no compression, 1 = differencer
+								//     0x80 = new value
+								//     0x7F = nodata
+
 		// this is provided for convenience, it should be set to 
 		//  sizeof(chip) bytes into the struct because the serialized form is:
 		//    <header><data>
-	void *data;	 	// data[0] = bottm left, data[width] = 1st pixel, 2nd row
-						// THIS MAY NOT ACTUALLY BE 32 bit data!!! watch out!
+		// NULL when serialized	
+	void  *data;	 	// data[0] = bottm left, data[width] = 1st pixel, 2nd row (uncompressed)
 } CHIP;
 
 
@@ -340,6 +347,12 @@ double distance_pt_seg(POINT3D *p, POINT3D *A, POINT3D *B);
 double distance_seg_seg(POINT3D *A, POINT3D *B, POINT3D *C, POINT3D *D);
 bool point_in_poly(POINT3D *p, POLYGON3D *poly);
 
+POINT3D	*segmentize_ring(POINT3D	*points, double dist, int num_points_in, int *num_points_out);
+
+
+Datum optimistic_overlap(PG_FUNCTION_ARGS);
+
+
 void print_point_debug(POINT3D *p);
 unsigned char	parse_hex(char *str);
 void deparse_hex(unsigned char str, unsigned char *result);
@@ -458,6 +471,12 @@ Datum width_chip(PG_FUNCTION_ARGS);
 Datum height_chip(PG_FUNCTION_ARGS);
 Datum datatype_chip(PG_FUNCTION_ARGS);
 Datum compression_chip(PG_FUNCTION_ARGS);
+Datum setfactor_chip(PG_FUNCTION_ARGS);
+Datum factor_chip(PG_FUNCTION_ARGS);
+
+
+Datum segmentize(PG_FUNCTION_ARGS);
+
 
 
 Datum transform_geom(PG_FUNCTION_ARGS);

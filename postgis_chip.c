@@ -100,10 +100,13 @@ Datum CHIP_in(PG_FUNCTION_ARGS)
 		datum_size=1;
 	}
 
-	if (result->size != (sizeof(CHIP) + datum_size * result->width*result->height) )
+	if (result->compression ==0) //only true for non-compressed data
 	{
-		elog(ERROR,"CHIP_in parser - bad data (actual size != computed size)!");
-		PG_RETURN_NULL();
+		if (result->size != (sizeof(CHIP) + datum_size * result->width*result->height) )
+		{
+			elog(ERROR,"CHIP_in parser - bad data (actual size != computed size)!");
+			PG_RETURN_NULL();
+		}
 	}
 
 	PG_RETURN_POINTER(result);
@@ -172,6 +175,15 @@ Datum srid_chip(PG_FUNCTION_ARGS)
 	PG_RETURN_INT32(c->SRID);
 }
 
+PG_FUNCTION_INFO_V1(factor_chip);
+Datum factor_chip(PG_FUNCTION_ARGS)
+{ 
+	CHIP		   *c = (CHIP *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+	PG_RETURN_FLOAT4(c->factor);
+}
+
+
 PG_FUNCTION_INFO_V1(datatype_chip);
 Datum datatype_chip(PG_FUNCTION_ARGS)
 { 
@@ -218,6 +230,21 @@ Datum setsrid_chip(PG_FUNCTION_ARGS)
 
 	memcpy(result,c,c->size);
 	result->SRID = new_srid;
+
+	PG_RETURN_POINTER(result);
+}
+
+PG_FUNCTION_INFO_V1(setfactor_chip);
+Datum setfactor_chip(PG_FUNCTION_ARGS)
+{ 
+	CHIP 	*c = (CHIP *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	float	factor = PG_GETARG_FLOAT4(1);
+	CHIP  *result;
+
+	result = (CHIP *) palloc(c->size);
+
+	memcpy(result,c,c->size);
+	result->factor = factor;
 
 	PG_RETURN_POINTER(result);
 }

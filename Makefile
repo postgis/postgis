@@ -19,7 +19,7 @@ test_db = geom_regress
 # shared library parameters
 NAME=postgis
 SO_MAJOR_VERSION=0
-SO_MINOR_VERSION=6
+SO_MINOR_VERSION=7
 
 
 #override CPPFLAGS := -I$(srcdir) $(CPPFLAGS)
