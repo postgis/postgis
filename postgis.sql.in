@@ -417,16 +417,33 @@ LANGUAGE 'sql' WITH (iscachable,isstrict);
 -----------------------------------------------------------------------
 -- RENAME_GEOMETRY_TABLE_CONSTRAINTS()
 -----------------------------------------------------------------------
--- This function has been obsoleted for the difficulty in
--- finding attribute on which the constraint is applied.
--- AddGeometryColumn will name the constraints in a meaningful
--- way, but nobody can rely on it since old postgis versions did
--- not do that.
+-- This function renames geometrytype and srid constraints
+-- applied to spatial tables by old AddGeometryColumn to
+-- new meaningful name 'enforce_geotype_<geomcolname>'
+-- and 'enforce_srid_<geomcolname>'
+-- Needs to be called only when upgrading from postgis < 0.8.3
 -----------------------------------------------------------------------
 CREATEFUNCTION rename_geometry_table_constraints() RETURNS text
 AS 
 '
-SELECT ''rename_geometry_table_constraint() is obsoleted''::text
+UPDATE pg_constraint 
+	SET conname = textcat(''enforce_geotype_'', a.attname)
+	FROM pg_attribute a
+	WHERE
+		a.attrelid = conrelid
+		AND a.attnum = conkey[1]
+		AND consrc LIKE ''((geometrytype(%) = %'';
+
+UPDATE pg_constraint
+	SET conname = textcat(''enforce_srid_'', a.attname)
+	FROM pg_attribute a
+	WHERE
+		a.attrelid = conrelid
+		AND a.attnum = conkey[1]
+		AND consrc LIKE ''(srid(% = %)'';
+
+SELECT ''spatial table constraints renamed''::text;
+
 ' LANGUAGE 'SQL';
 
 -----------------------------------------------------------------------
