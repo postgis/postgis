@@ -614,22 +614,23 @@ void getPoint3d_p(POINTARRAY *pa, int n, char *point)
 
 // copies a point from the point array into the parameter point
 // z value (if present is not returned)
-// NOTE: point is a real POINT3D *not* a pointer
-POINT2D getPoint2d(POINTARRAY *pa, int n)
+// NOTE: point is a real POINT2D *not* a pointer
+POINT2D
+getPoint2d(POINTARRAY *pa, int n)
 {
-		 POINT2D result;
-		 int size;
+	POINT2D result;
+	int size;
 
-		 if ( (n<0) || (n>=pa->npoints))
-		 {
-			 return result; //error
-		 }
+	if ( (n<0) || (n>=pa->npoints))
+	{
+		return result; //error
+	}
 
-		 size = pointArray_ptsize(pa);
+	size = pointArray_ptsize(pa);
 
-		 	// this does x,y
-		 memcpy(&result.x, &pa->serialized_pointlist[size*n],sizeof(double)*2 );
-		 return result;
+	// this does x,y
+	memcpy(&result.x, &pa->serialized_pointlist[size*n],sizeof(double)*2 );
+	return result;
 }
 
 // copies a point from the point array into the parameter point
