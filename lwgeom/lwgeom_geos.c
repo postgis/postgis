@@ -2198,6 +2198,11 @@ GEOS2POSTGIS(Geometry *geom, char want3d)
 	lwnotice("GEOS2POSTGIS: lwgeom_from_geometry returned a %s", lwgeom_summary(lwgeom, 0)); 
 #endif
 
+	if ( is_worth_caching_lwgeom_bbox(lwgeom) )
+	{
+		lwgeom_addBBOX(lwgeom);
+	}
+
 	size = lwgeom_serialize_size(lwgeom);
 
 #ifdef DEBUG_GEOS2POSTGIS

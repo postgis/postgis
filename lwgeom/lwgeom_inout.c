@@ -65,6 +65,7 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 {
 	char *str = PG_GETARG_CSTRING(0);
  	char *semicolonLoc,start;
+	PG_LWGEOM *ret;
 
 	//determine if its WKB or WKT
 
@@ -78,29 +79,16 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 		start=semicolonLoc[1]; // one in
 	}
 
-	// this is included just for redundancy (new parser can handle wkt and wkb)
+	// will handle both EWKB and EWKT
+	ret = (PG_LWGEOM *)parse_lwgeom_wkt(str);
 
-	if ( ( (start >= '0') &&  (start <= '9') ) ||
-		( (start >= 'A') &&  (start <= 'F') ))
+	if ( is_worth_caching_pglwgeom_bbox(ret) )
 	{
-		//its WKB
-		//PG_RETURN_POINTER(parse_lwgeom_serialized_form(str));
-		// this function handles wkt and wkb (in hex-form)
-		PG_RETURN_POINTER( parse_lwgeom_wkt(str) );  
+		ret = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall1(
+			LWGEOM_addBBOX, PointerGetDatum(ret)));
 	}
-	else if ( (start == 'P') || (start == 'L') || (start == 'M') ||
-		(start == 'G') || (start == 'p') || (start == 'l') ||
-		(start == 'm') || (start == 'g'))
-	{
-		// its WKT
-		// this function handles wkt and wkb (in hex-form)
-		PG_RETURN_POINTER( parse_lwgeom_wkt(str) );
-	}
-	else
-	{
-		elog(ERROR,"couldnt determine if input lwgeom is WKB or WKT");
-		PG_RETURN_NULL();
-	}
+
+	PG_RETURN_POINTER(ret);
 }
 
 
@@ -205,6 +193,12 @@ Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 
 	pfree(wkb_srid_hexized);
 
+	if ( is_worth_caching_pglwgeom_bbox(lwgeom) )
+	{
+		lwgeom = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall1(
+			LWGEOM_addBBOX, PointerGetDatum(lwgeom)));
+	}
+
 #ifdef DEBUG
 	elog(NOTICE, "LWGEOMFromWKB returning %s", unparse_WKB(SERIALIZED_FORM(lwgeom), pg_alloc, pg_free, -1));
 #endif
@@ -284,8 +278,6 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-
-
 // puts a bbox inside the geometry
 PG_FUNCTION_INFO_V1(LWGEOM_addBBOX);
 Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS)
@@ -310,7 +302,13 @@ Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS)
 //elog(NOTICE,"LWGEOM_addBBOX  -- giving it a bbox");
 
 	//construct new one
-	getbox2d_p(SERIALIZED_FORM(lwgeom), &box);
+	if ( ! getbox2d_p(SERIALIZED_FORM(lwgeom), &box) )
+	{
+		// Empty geom, no bbox to add
+		result = palloc (lwgeom->size);
+		memcpy(result, lwgeom, lwgeom->size);
+		PG_RETURN_POINTER(result);
+	}
 	old_type = lwgeom->type;
 
 	size = lwgeom->size+sizeof(BOX2DFLOAT4);
@@ -332,6 +330,20 @@ Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS)
 	memcpy(result->data+sizeof(BOX2DFLOAT4), lwgeom->data, lwgeom->size-5);
 
 	PG_RETURN_POINTER(result);
+}
+
+char
+is_worth_caching_pglwgeom_bbox(PG_LWGEOM *in)
+{
+	if ( TYPE_GETTYPE(in->type) == POINTTYPE ) return false;
+	return true;
+}
+
+char
+is_worth_caching_lwgeom_bbox(LWGEOM *in)
+{
+	if ( TYPE_GETTYPE(in->type) == POINTTYPE ) return false;
+	return true;
 }
 
 // removes a bbox from a geometry

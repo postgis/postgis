@@ -402,6 +402,13 @@ typedef struct {
 extern PG_LWGEOM *PG_LWGEOM_construct(char *serialized, int SRID, int wantbbox);
 
 /*
+ * Evaluate with an heuristic if the provided PG_LWGEOM is worth
+ * caching a bbox
+ */
+char is_worth_caching_pglwgeom_bbox(PG_LWGEOM *);
+char is_worth_caching_lwgeom_bbox(LWGEOM *);
+
+/*
  * Use this macro to extract the char * required
  * by most functions from an PG_LWGEOM struct.
  * (which is an PG_LWGEOM w/out int32 size casted to char *)
