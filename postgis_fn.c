@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.36  2004/06/03 16:44:56  strk
+ * Added expand_geometry - expand(geometry, int8)
+ *
  * Revision 1.35  2004/04/28 22:26:02  pramsey
  * Fixed spelling mistake in header text.
  *
@@ -2184,6 +2187,44 @@ Datum expand_bbox(PG_FUNCTION_ARGS)
 
 
 	PG_RETURN_POINTER(result);
+}
+
+// makes a polygon of the expanded features bvol - 1st point = LL 3rd=UR
+// 2d only
+// create new geometry of type polygon, 1 ring, 5 points
+PG_FUNCTION_INFO_V1(expand_geometry);
+Datum expand_geometry(PG_FUNCTION_ARGS)
+{
+	GEOMETRY *geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	double d = PG_GETARG_FLOAT8(1);
+	GEOMETRY *result;
+	POLYGON3D *poly;
+	POINT3D	pts[5];	//5 points around box
+	int pts_per_ring[1];
+	int poly_size;
+
+	//use LLB's z value (we're going to set is3d to false)
+
+	//0,1,2,3,4 --> CCW order,  4,3,2,1,0 --> CW order
+	set_point( &pts[4], geom->bvol.LLB.x - d, geom->bvol.LLB.y - d,
+		geom->bvol.LLB.z - d );
+	set_point( &pts[3], geom->bvol.URT.x + d, geom->bvol.LLB.y - d,
+		geom->bvol.LLB.z - d );
+	set_point( &pts[2], geom->bvol.URT.x + d, geom->bvol.URT.y + d,
+		geom->bvol.LLB.z - d);
+	set_point( &pts[1], geom->bvol.LLB.x - d, geom->bvol.URT.y + d,
+		geom->bvol.LLB.z - d);
+	memcpy(&pts[0], &pts[4], sizeof(POINT3D));
+
+	pts_per_ring[0] = 5; //ring has 5 points
+
+	//make a polygon
+	poly = make_polygon(1, pts_per_ring, pts, 5, &poly_size);
+
+	result = make_oneobj_geometry(poly_size, (char *)poly, POLYGONTYPE, FALSE,geom->SRID, geom->scale, geom->offsetX, geom->offsetY);
+
+	PG_RETURN_POINTER(result);
+
 }
 
 //startpoint(geometry) :- if geometry is a linestring, return the first

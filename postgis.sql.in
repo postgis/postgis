@@ -558,6 +558,11 @@ CREATEFUNCTION expand(box3d,float8)
 	AS '@MODULE_FILENAME@','expand_bbox'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
+CREATEFUNCTION expand(geometry,float8)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','expand_geometry'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
 --
 -- Functions for converting to WKB
 --

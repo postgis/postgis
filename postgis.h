@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.44  2004/06/03 16:44:56  strk
+ * Added expand_geometry - expand(geometry, int8)
+ *
  * Revision 1.43  2004/03/26 00:54:09  dblasby
  * added full support for fluffType(<geom>)
  * postgis09=# select fluffType('POINT(0 0)');
@@ -566,6 +569,7 @@ Datum point_inside_circle(PG_FUNCTION_ARGS);
 Datum distance(PG_FUNCTION_ARGS);
 
 Datum expand_bbox(PG_FUNCTION_ARGS);
+Datum expand_geometry(PG_FUNCTION_ARGS);
 Datum srid_geom(PG_FUNCTION_ARGS);
 Datum geometry_from_text(PG_FUNCTION_ARGS);
 
