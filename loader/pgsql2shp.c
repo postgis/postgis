@@ -10,6 +10,11 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.27  2003/11/20 15:27:20  strk
+ * Removed some useless strdups.
+ * Removed pgtype 22 (int2vector) from the list of integer DBF field types.
+ * Added pgtype 1700 (numeric) in DBF doubles list.
+ *
  * Revision 1.26  2003/11/18 14:58:47  strk
  * default row buffer lenght set to 100
  *
@@ -198,7 +203,7 @@ int main(int ARGC, char **ARGV){
 	/* Set the fetch query */
 	sprintf(fetchquery, "FETCH %d FROM cur", rowbuflen);
 
-	fprintf(stdout, "Dumping... "); fflush(stdout);
+	fprintf(stdout, "Dumping: "); fflush(stdout);
 	/*
 	 * Main scan
 	 */
@@ -1426,7 +1431,7 @@ initialize()
 				geom_fld = mainscan_nflds;
 				type_ary[mainscan_nflds]=9; 
 				geo_col_name = fname;
-				mainscan_flds[mainscan_nflds++] = strdup(fname);
+				mainscan_flds[mainscan_nflds++] = fname;
 			}
 
 			/*
@@ -1437,7 +1442,7 @@ initialize()
 			{
 				geom_fld = mainscan_nflds;
 				type_ary[mainscan_nflds]=9; 
-				mainscan_flds[mainscan_nflds++] = strdup(fname);
+				mainscan_flds[mainscan_nflds++] = fname;
 			}
 
 			continue;
@@ -1483,7 +1488,7 @@ initialize()
 		 */
 
 		/* integer type */
-		if(type == 20 || type == 21 || type == 22 || type == 23)
+		if(type == 20 || type == 21 || type == 23)
 		{
 			if(DBFAddField(dbf, field_name,FTInteger,16,0) == -1)
 			{
@@ -1492,12 +1497,12 @@ initialize()
 				return 0;
 			}
 			type_ary[mainscan_nflds]=1;
-			mainscan_flds[mainscan_nflds++] = strdup(fname);
+			mainscan_flds[mainscan_nflds++] = fname;
 			continue;
 		}
 		
 		/* double type */
-		if(type == 700 || type == 701)
+		if(type == 700 || type == 701 || type == 1700 )
 		{
 			if(DBFAddField(dbf, field_name,FTDouble,32,10) == -1)
 			{
@@ -1506,7 +1511,7 @@ initialize()
 				return 0;
 			}
 			type_ary[mainscan_nflds]=2;
-			mainscan_flds[mainscan_nflds++] = strdup(fname);
+			mainscan_flds[mainscan_nflds++] = fname;
 			continue;
 		}
 
@@ -1539,7 +1544,7 @@ initialize()
 			return 0;
 		}
 		type_ary[mainscan_nflds]=3;
-		mainscan_flds[mainscan_nflds++] = strdup(fname);
+		mainscan_flds[mainscan_nflds++] = fname;
 	}
 
 	/*
@@ -1636,9 +1641,17 @@ initialize()
 			strcat(main_scan_query, buf);
 		}
 
-		if ( type_ary[i] == 9 ) { // the geometry 
-			sprintf(buf, "\"%s\"", mainscan_flds[i]);
-		} else {
+		/* this is the geometry */
+		if ( type_ary[i] == 9 )
+		{
+			if (BYTE_ORDER == BIG_ENDIAN) {
+				sprintf(buf, "\"%s\"", mainscan_flds[i]);
+			} else {
+				sprintf(buf, "\"%s\"", mainscan_flds[i]);
+			}
+		}
+		else
+		{
 			sprintf(buf, "\"%s\"", mainscan_flds[i]);
 		}
 
@@ -1646,6 +1659,8 @@ initialize()
 	}
 	sprintf(buf, " FROM \"%s\"", table);
 	strcat(main_scan_query, buf);
+
+	PQclear(res);
 
 	return 1;
 }
