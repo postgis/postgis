@@ -242,6 +242,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom;
 	PG_LWGEOM *result=NULL;
+	LWGEOM *lwgeom;
 	PJ *input_pj,*output_pj;
 	char *input_proj4, *output_proj4;
 	text *input_proj4_text;
@@ -250,7 +251,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	char *srl;
 
 	result_srid   = PG_GETARG_INT32(3);
-	if (result_srid  == -1)
+	if (result_srid == -1)
 	{
 		elog(ERROR,"tranform: destination SRID = -1");
 		PG_RETURN_NULL();
@@ -306,10 +307,20 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	pj_free(output_pj);
 	pfree(input_proj4); pfree(output_proj4);
 
-	/* Compute bbox if input had one (COMPUTE_BBOX TAINTING) */
 	srl = SERIALIZED_FORM(geom);
-	result = PG_LWGEOM_construct(srl, result_srid,
-		TYPE_HASBBOX(geom->type));
+
+	/* Re-compute bbox if input had one (COMPUTE_BBOX TAINTING) */
+	if ( TYPE_HASBBOX(geom->type) )
+	{
+		lwgeom = lwgeom_deserialize(srl);
+		lwgeom_dropBBOX(lwgeom);
+		lwgeom->bbox = lwgeom_compute_bbox(lwgeom);
+		result = pglwgeom_serialize(lwgeom);
+	}
+	else
+	{
+		result = PG_LWGEOM_construct(srl, result_srid, 0);
+	}
 
 	PG_RETURN_POINTER(result); // new geometry
 }
