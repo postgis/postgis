@@ -152,6 +152,19 @@
 					<para>Before you can compile the postgis server modules, you must
 					  compile and install the PostgreSQL package.
 					</para> 
+					<para><emphasis>NOTE</emphasis>: if you plan to use GEOS
+				   	functionality you might need to link PostgreSQL against
+						the standard C++ library:
+					</para>
+
+					<programlisting>LDFLAGS=-lstdc++ ./configure YOUR_OPTIONS_HERE</programlisting>
+
+					<para>
+						This is a workaround for bogus C++ exceptions interaction
+						with older development tools.
+						If you experience weird problems (backend unexpectedly
+						closed or similar things) try that.
+					</para>
 				</listitem>
 				<listitem> 
 					<para>Retrieve the PostGIS source archive from
@@ -188,7 +201,7 @@
 							  have the GEOS library installed, set the
 							  <varname>USE_GEOS</varname> variable to <emphasis>1</emphasis>,
 								and eventually adjust <varname>GEOS_DIR</varname> to point to
-								your GEOS installation directory.
+								your GEOS installation directory. 
 							</para>
 						</listitem>
 					</itemizedlist>
