@@ -4347,4 +4347,86 @@ FROM geometry_table;</literallayout>
 
     </sect1>
   </chapter>
+
+	<chapter>
+		<title>Release Notes</title>
+
+    		<sect1>
+			<title>Release 1.0.0</title>
+
+			<para>This is a major postgis release, with internal
+			storage of postgis types redesigned to be smaller
+			and faster on indexed queries.</para>
+
+			<sect2>
+				<title>Upgrading</title>
+
+				<para>You need a dump/reload to upgrade
+				from precedent releases. Take a look at
+				utils/postgis_restore.pl for a convenient
+				way to do so.</para>
+			</sect2>
+
+			<sect2>
+				<title>Changes</title>
+
+				<para>
+				Faster canonical input parsing.
+				</para>
+
+				<para>
+				Lossless canonical output.
+				</para>
+
+				<para>
+				EWKB Canonical binary IO with PG>73.
+				</para>
+
+				<para>
+				Support for up to 4d coordinates, providing
+				lossless shapefile->postgis->shapefile
+				conversion.
+				</para>
+
+				<para>
+				New function: UpdateGeometrySRID(), AsGML(),
+				SnapToGrid(), ForceRHR(), estimated_extent(),
+				accum().
+				</para>
+
+				<para>
+				Vertical positioning indexed operators.
+				</para>
+
+				<para>
+				JOIN selectivity function.
+				</para>
+
+				<para>
+				More geometry constructors / editors.
+				</para>
+
+				<para>
+				Postgis extension API.
+				</para>
+
+				<para>
+				UTF8 support in loader.
+				</para>
+
+			</sect2>
+
+			<sect2>
+				<title>Credits</title>
+
+				<para>
+				This release includes contributions from
+				(in alphabetical order):
+				Carl Anderson, David Blasby, IIDA Tetsushi,
+				Kris Jurka, Mark Cave-Ayland, Markus Schaber,
+				Ralph Mason.
+				</para>
+			</sect2>
+		</sect1>
+	</chapter>
 </book>
