@@ -1275,7 +1275,7 @@ WHERE the_geom &amp;&amp; 'BOX3D(90900 190900, 100100 200100)'::box3d
 			</sect2>
 		</sect1>
 		<sect1>
-			<title>Mapserver</title>
+			<title>Using Mapserver</title>
 			<para>The Minnesota Mapserver is an internet web-mapping server which conforms
 			  to the OpenGIS Web Mapping Server specification.
 			</para>
