@@ -34,6 +34,65 @@ PJ *make_project(char *str1);
 void to_rad(POINT3D *pts, int num_points);
 void to_dec(POINT3D *pts, int num_points);
 
+int pj_transform_nodatum( PJ *srcdefn, PJ *dstdefn, long point_count, int point_offset,
+                  double *x, double *y, double *z );
+
+//this is *exactly* the same as PROJ.4's pj_transform(), but it doesnt do the
+// datum shift.
+int pj_transform_nodatum( PJ *srcdefn, PJ *dstdefn, long point_count, int point_offset,
+                  double *x, double *y, double *z )
+
+{
+    long      i;
+    //int       need_datum_shift;
+
+    pj_errno = 0;
+
+    if( point_offset == 0 )
+        point_offset = 1;
+
+    if( !srcdefn->is_latlong )
+    {
+        for( i = 0; i < point_count; i++ )
+        {
+            XY         projected_loc;
+            LP	       geodetic_loc;
+
+            projected_loc.u = x[point_offset*i];
+            projected_loc.v = y[point_offset*i];
+
+            geodetic_loc = pj_inv( projected_loc, srcdefn );
+            if( pj_errno != 0 )
+                return pj_errno;
+
+            x[point_offset*i] = geodetic_loc.u;
+            y[point_offset*i] = geodetic_loc.v;
+        }
+    }
+
+    if( !dstdefn->is_latlong )
+    {
+        for( i = 0; i < point_count; i++ )
+        {
+            XY         projected_loc;
+            LP	       geodetic_loc;
+
+            geodetic_loc.u = x[point_offset*i];
+            geodetic_loc.v = y[point_offset*i];
+
+            projected_loc = pj_fwd( geodetic_loc, dstdefn );
+            if( pj_errno != 0 )
+                return pj_errno;
+
+            x[point_offset*i] = projected_loc.u;
+            y[point_offset*i] = projected_loc.v;
+        }
+    }
+
+    return 0;
+}
+
+
 
 // convert decimal degress to radians
 void to_rad(POINT3D *pts, int num_points)
@@ -105,7 +164,9 @@ PJ *make_project(char *str1)
 }
 
 
-	//tranform_geom( GEOMETRY, TEXT (input proj4), TEXT (input proj4), INT (output srid)
+//tranform_geom( GEOMETRY, TEXT (input proj4), TEXT (input proj4), INT (output srid)
+// tmpPts - if there is a nadgrid error (-38), we re-try the transform on a copy of points.  The transformed points
+//          are in an indeterminate state after the -38 error is thrown.	
 PG_FUNCTION_INFO_V1(transform_geom);
 Datum transform_geom(PG_FUNCTION_ARGS)
 {
@@ -124,6 +185,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	char				*input_proj4, *output_proj4;
 
 	BOX3D				*bbox;
+	POINT3D			*tmpPts;
 
 	
 	text	   *input_proj4_text  = (PG_GETARG_TEXT_P(1));
@@ -188,14 +250,30 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 				pt = (POINT3D *) o1;
 				if (input_pj->is_latlong)
 					to_rad(pt,1);
+
+				tmpPts = palloc(sizeof(POINT3D) );
+				memcpy(tmpPts,pt, sizeof(POINT3D));
+
 				pj_transform(input_pj,output_pj, 1,3, &pt->x,&pt->y, &pt->z);
-				if (pj_errno )
+				if (pj_errno)
 				{
-					pfree(input_proj4); pfree(output_proj4);
-					pj_free(input_pj); pj_free(output_pj);
-					elog(ERROR,"tranform: couldnt project point: %i (%s)",pj_errno,pj_strerrno(pj_errno));
-					PG_RETURN_NULL();	
+					if (pj_errno == -38)  //2nd chance
+					{
+						//couldnt do nadshift - do it without the datum
+						memcpy(pt,tmpPts, sizeof(POINT3D));
+						pj_transform_nodatum(input_pj,output_pj, 1,3, &pt->x,&pt->y, &pt->z);
+					}
+
+					if (pj_errno)
+					{
+						pfree(input_proj4); pfree(output_proj4);
+						pj_free(input_pj); pj_free(output_pj);
+						elog(ERROR,"tranform: couldnt project point: %i (%s)",pj_errno,pj_strerrno(pj_errno));
+						PG_RETURN_NULL();	
+					}
+					
 				}
+				pfree(tmpPts);
 				if (output_pj->is_latlong)
 					to_dec(pt,1);
 			}
@@ -204,15 +282,32 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 				line = (LINE3D *) o1;
 				if (input_pj->is_latlong)
 					to_rad(&line->points[0],line->npoints);
+
+				tmpPts = palloc(sizeof(POINT3D)*line->npoints );
+				memcpy(tmpPts,&line->points[0], sizeof(POINT3D)*line->npoints);
+
 				pj_transform(input_pj,output_pj, line->npoints ,3, 
 							&line->points[0].x,&line->points[0].y, &line->points[0].z);
-				if (pj_errno )
+				if (pj_errno)
 				{
-					pfree(input_proj4); pfree(output_proj4);
-					pj_free(input_pj); pj_free(output_pj);
-					elog(ERROR,"tranform: couldnt project line");
-					PG_RETURN_NULL();	
+					if (pj_errno == -38)  //2nd chance
+					{
+						//couldnt do nadshift - do it without the datum
+						memcpy(&line->points[0],tmpPts, sizeof(POINT3D)*line->npoints);
+						pj_transform_nodatum(input_pj,output_pj, line->npoints ,3, 
+							&line->points[0].x,&line->points[0].y, &line->points[0].z);
+					}
+
+					if (pj_errno)
+					{
+
+						pfree(input_proj4); pfree(output_proj4);
+						pj_free(input_pj); pj_free(output_pj);
+						elog(ERROR,"tranform: couldnt project line");
+						PG_RETURN_NULL();	
+					}
 				}
+				pfree(tmpPts);
 				if (output_pj->is_latlong)
 					to_dec(&line->points[0],line->npoints);
 			}
@@ -229,15 +324,33 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 				if (input_pj->is_latlong)
 					to_rad(poly_pts , poly_points);
 
+				tmpPts = palloc(sizeof(POINT3D)* poly_points );
+				memcpy(tmpPts,&poly_pts[0].x, sizeof(POINT3D)* poly_points);
+
+
+
 				pj_transform(input_pj,output_pj, poly_points,3, 
 							&poly_pts[0].x,&poly_pts[0].y, &poly_pts[0].z);
 				if (pj_errno)
 				{
-					pfree(input_proj4); pfree(output_proj4);
-					pj_free(input_pj); pj_free(output_pj);
-					elog(ERROR,"tranform: couldnt project polygon");
-					PG_RETURN_NULL();	
+					if (pj_errno == -38)  //2nd chance
+					{
+						//couldnt do nadshift - do it without the datum
+						memcpy(&poly_pts[0].x,tmpPts, sizeof(POINT3D)*poly_points);
+						pj_transform_nodatum(input_pj,output_pj, poly_points,3, 
+							&poly_pts[0].x,&poly_pts[0].y, &poly_pts[0].z);
+					}
+
+					if (pj_errno)
+					{
+
+						pfree(input_proj4); pfree(output_proj4);
+						pj_free(input_pj); pj_free(output_pj);
+						elog(ERROR,"tranform: couldnt project polygon");
+						PG_RETURN_NULL();	
+					}
 				}
+				pfree(tmpPts);
 				if (output_pj->is_latlong)
 					to_dec(poly_pts , poly_points);
 			}
