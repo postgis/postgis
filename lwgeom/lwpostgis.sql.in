@@ -3148,12 +3148,12 @@ CREATE CAST (geometry AS bytea) WITH FUNCTION bytea(geometry) AS IMPLICIT;
 CREATEFUNCTION simplify(geometry, float8)
    RETURNS geometry
    AS '@MODULE_FILENAME@', 'LWGEOM_simplify2d'
-   LANGUAGE 'C' WITH (isstrict);
+   LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION line_interpolate_point(geometry, float8)
    RETURNS geometry
    AS '@MODULE_FILENAME@', 'LWGEOM_line_interpolate_point'
-   LANGUAGE 'C' WITH (isstrict);
+   LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION segmentize(geometry, float8)
 	RETURNS geometry
@@ -3167,50 +3167,50 @@ CREATEFUNCTION segmentize(geometry, float8)
 CREATEFUNCTION intersection(geometry,geometry)
    RETURNS geometry
    AS '@MODULE_FILENAME@','intersection'
-   LANGUAGE 'C' WITH (isstrict);
+   LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION buffer(geometry,float8)
    RETURNS geometry
    AS '@MODULE_FILENAME@','buffer'
-   LANGUAGE 'C' WITH (isstrict);
+   LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION buffer(geometry,float8,integer)
    RETURNS geometry
    AS '@MODULE_FILENAME@','buffer'
-   LANGUAGE 'C' WITH (isstrict);
+   LANGUAGE 'C' WITH (isstrict,iscachable);
    
 CREATEFUNCTION convexhull(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','convexhull'
-	LANGUAGE 'C' WITH (isstrict);
+	LANGUAGE 'C' WITH (isstrict,iscachable);
   
   
 CREATEFUNCTION difference(geometry,geometry)
 	RETURNS geometry
         AS '@MODULE_FILENAME@','difference'
-	LANGUAGE 'C' WITH (isstrict);
+	LANGUAGE 'C' WITH (isstrict,iscachable);
    
 CREATEFUNCTION boundary(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','boundary'
-	LANGUAGE 'C' WITH (isstrict);
+	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION symdifference(geometry,geometry)
         RETURNS geometry
         AS '@MODULE_FILENAME@','symdifference'
-   LANGUAGE 'C' WITH (isstrict);
+   LANGUAGE 'C' WITH (isstrict,iscachable);
 
 
 CREATEFUNCTION symmetricdifference(geometry,geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','symdifference'
-	LANGUAGE 'C' WITH (isstrict);
+	LANGUAGE 'C' WITH (isstrict,,iscachable);
 
 
 CREATEFUNCTION GeomUnion(geometry,geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geomunion'
-	LANGUAGE 'C' WITH (isstrict);
+	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATE AGGREGATE MemGeomUnion (
 	basetype = geometry,
@@ -3221,7 +3221,7 @@ CREATE AGGREGATE MemGeomUnion (
 CREATEFUNCTION unite_garray (geometry[])
 	RETURNS geometry
 	AS '@MODULE_FILENAME@'
-	LANGUAGE 'C'; 
+	LANGUAGE 'C' WITH (isstrict,iscachable); 
 
 CREATE AGGREGATE GeomUnion (
 	sfunc = geom_accum,
@@ -3234,73 +3234,73 @@ CREATE AGGREGATE GeomUnion (
 CREATEFUNCTION relate(geometry,geometry)
    RETURNS text
    AS '@MODULE_FILENAME@','relate_full'
-   LANGUAGE 'C' WITH (isstrict);
+   LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION relate(geometry,geometry,text)
    RETURNS boolean
    AS '@MODULE_FILENAME@','relate_pattern'
-   LANGUAGE 'C' WITH (isstrict);
+   LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION disjoint(geometry,geometry)
    RETURNS boolean
    AS '@MODULE_FILENAME@'
-   LANGUAGE 'C' WITH (isstrict);
+   LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION touches(geometry,geometry)
    RETURNS boolean
    AS '@MODULE_FILENAME@'
-   LANGUAGE 'C' WITH (isstrict);
+   LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION intersects(geometry,geometry)
    RETURNS boolean
    AS '@MODULE_FILENAME@'
-   LANGUAGE 'C' WITH (isstrict);
+   LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION crosses(geometry,geometry)
    RETURNS boolean
    AS '@MODULE_FILENAME@'
-   LANGUAGE 'C' WITH (isstrict);
+   LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION within(geometry,geometry)
    RETURNS boolean
    AS '@MODULE_FILENAME@'
-   LANGUAGE 'C' WITH (isstrict);
+   LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION contains(geometry,geometry)
    RETURNS boolean
    AS '@MODULE_FILENAME@'
-   LANGUAGE 'C' WITH (isstrict);
+   LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION overlaps(geometry,geometry)
    RETURNS boolean
    AS '@MODULE_FILENAME@'
-   LANGUAGE 'C' WITH (isstrict);
+   LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION IsValid(geometry)
    RETURNS boolean
    AS '@MODULE_FILENAME@', 'isvalid'
-   LANGUAGE 'C' WITH (isstrict);
+   LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION GEOSnoop(geometry)
    RETURNS geometry
    AS '@MODULE_FILENAME@', 'GEOSnoop'
-   LANGUAGE 'C' WITH (isstrict);
+   LANGUAGE 'C' WITH (isstrict,iscachable);
 
 -- This is also available w/out GEOS 
 CREATEFUNCTION Centroid(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@'
-	LANGUAGE 'C' WITH (isstrict);
+	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION IsRing(geometry)
 	RETURNS boolean
 	AS '@MODULE_FILENAME@'
-	LANGUAGE 'C' WITH (isstrict);
+	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION PointOnSurface(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@'
-	LANGUAGE 'C' WITH (isstrict);
+	LANGUAGE 'C' WITH (isstrict,iscachable);
 	
 CREATEFUNCTION IsSimple(geometry)
 	RETURNS boolean
@@ -3318,17 +3318,17 @@ CREATEFUNCTION Equals(geometry,geometry)
 CREATEFUNCTION AsSVG(geometry,int4,int4)
 	RETURNS TEXT
 	AS '@MODULE_FILENAME@','assvg_geometry'
-	LANGUAGE 'C';
+	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION AsSVG(geometry,int4)
 	RETURNS TEXT
 	AS '@MODULE_FILENAME@','assvg_geometry'
-	LANGUAGE 'C';
+	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION AsSVG(geometry)
 	RETURNS TEXT
 	AS '@MODULE_FILENAME@','assvg_geometry'
-	LANGUAGE 'C';
+	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 -----------------------------------------------------------------------
 -- GML OUTPUT
@@ -3337,19 +3337,19 @@ CREATEFUNCTION AsSVG(geometry)
 CREATEFUNCTION AsGML(geometry, int4, int4)
 	RETURNS TEXT
 	AS '@MODULE_FILENAME@','LWGEOM_asGML'
-	LANGUAGE 'C';
+	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 -- AsGML(geom, precision) / version=2
 CREATEFUNCTION AsGML(geometry, int4)
 	RETURNS TEXT
 	AS '@MODULE_FILENAME@','LWGEOM_asGML'
-	LANGUAGE 'C';
+	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 -- AsGML(geom) / precision=15 version=2
 CREATEFUNCTION AsGML(geometry)
 	RETURNS TEXT
 	AS '@MODULE_FILENAME@','LWGEOM_asGML'
-	LANGUAGE 'C';
+	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 ---------------------------------------------------------------
 -- END
