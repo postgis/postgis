@@ -44,10 +44,10 @@ override CFLAGS := -g -I.. -I$(srcdir) -I$(top_builddir)/src/interfaces/libpq $(
 all: shp2pgsql$(EXE) pgsql2shp$(EXE)
 
 pgsql2shp$(EXE): $(OBJS) pgsql2shp.o
-	$(CC) $(CFLAGS) $(OBJS) pgsql2shp.o $(libpq) $(LDFLAGS) $(LIBS) -o $@ 
+	$(CC) $(CFLAGS) $(OBJS) pgsql2shp.o $(libpq) $(LDFLAGS) -o $@ 
 
 shp2pgsql$(EXE): $(OBJS) shp2pgsql.o
-	$(CC) $(CFLAGS) $(OBJS) shp2pgsql.o $(libpq) $(LDFLAGS) $(LIBS) -o $@ 
+	$(CC) $(CFLAGS) $(OBJS) shp2pgsql.o $(LDFLAGS) -o $@ 
 
 install: all
 	$(INSTALL_PROGRAM) pgsql2shp$(EXE) $(bindir)/pgsql2shp$(EXE)
