@@ -1,6 +1,8 @@
+- find syntax problem with lwgparse.c (tag_tuple...)
+
 - makepoly
 
-- Document: makeline, makeline_from_multipoint, makepoint, makepointm
+- Document: makeline, line_from_multipoint, makepoint, makepointm
 
 - research on extent() extracting output from an existing index.
 
