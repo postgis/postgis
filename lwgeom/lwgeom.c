@@ -185,3 +185,60 @@ lwgeom_compute_bbox(LWGEOM *lwgeom)
 	if ( lwgeom_compute_bbox_p(lwgeom, result) ) return result;
 	else return NULL;
 }
+
+LWPOINT *
+lwgeom_as_lwpoint(LWGEOM *lwgeom)
+{
+	if ( lwgeom->type == POINTTYPE ) return (LWPOINT *)lwgeom;
+	else return NULL;
+}
+
+LWLINE *
+lwgeom_as_lwline(LWGEOM *lwgeom)
+{
+	if ( lwgeom->type == LINETYPE ) return (LWLINE *)lwgeom;
+	else return NULL;
+}
+
+LWPOLY *
+lwgeom_as_lwpoly(LWGEOM *lwgeom)
+{
+	if ( lwgeom->type == POLYGONTYPE ) return (LWPOLY *)lwgeom;
+	else return NULL;
+}
+
+LWCOLLECTION *
+lwgeom_as_lwcollection(LWGEOM *lwgeom)
+{
+	if ( lwgeom->type >= MULTIPOINTTYPE ) return (LWCOLLECTION *)lwgeom;
+	else return NULL;
+}
+
+LWMPOINT *
+lwgeom_as_lwmpoint(LWGEOM *lwgeom)
+{
+	if ( lwgeom->type == MULTIPOINTTYPE ) return (LWMPOINT *)lwgeom;
+	else return NULL;
+}
+
+LWMLINE *
+lwgeom_as_lwmline(LWGEOM *lwgeom)
+{
+	if ( lwgeom->type == MULTILINETYPE ) return (LWMLINE *)lwgeom;
+	else return NULL;
+}
+
+LWMPOLY *
+lwgeom_as_lwmpoly(LWGEOM *lwgeom)
+{
+	if ( lwgeom->type == MULTIPOLYGONTYPE ) return (LWMPOLY *)lwgeom;
+	else return NULL;
+}
+
+LWGEOM *lwmpoly_as_lwgeom(LWMPOLY *obj) { return (LWGEOM *)obj; }
+LWGEOM *lwmline_as_lwgeom(LWMLINE *obj) { return (LWGEOM *)obj; }
+LWGEOM *lwmpoint_as_lwgeom(LWMPOINT *obj) { return (LWGEOM *)obj; }
+LWGEOM *lwcollection_as_lwgeom(LWCOLLECTION *obj) { return (LWGEOM *)obj; }
+LWGEOM *lwpoly_as_lwgeom(LWPOLY *obj) { return (LWGEOM *)obj; }
+LWGEOM *lwline_as_lwgeom(LWLINE *obj) { return (LWGEOM *)obj; }
+LWGEOM *lwpoint_as_lwgeom(LWPOINT *obj) { return (LWGEOM *)obj; }

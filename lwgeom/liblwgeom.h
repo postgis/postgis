@@ -225,6 +225,23 @@ typedef struct
 	LWGEOM **geoms;
 } LWCOLLECTION; 
 
+// Casts LWGEOM->LW* (return NULL if cast is illegal)
+LWMPOLY *lwgeom_as_lwmpoly(LWGEOM *lwgeom);
+LWMLINE *lwgeom_as_lwmline(LWGEOM *lwgeom);
+LWMPOINT *lwgeom_as_lwmpoint(LWGEOM *lwgeom);
+LWCOLLECTION *lwgeom_as_lwcollection(LWGEOM *lwgeom);
+LWPOLY *lwgeom_as_lwpoly(LWGEOM *lwgeom);
+LWLINE *lwgeom_as_lwline(LWGEOM *lwgeom);
+LWPOINT *lwgeom_as_lwpoint(LWGEOM *lwgeom);
+
+// Casts LW*->LWGEOM (always cast)
+LWGEOM *lwmpoly_as_lwgeom(LWMPOLY *obj);
+LWGEOM *lwmline_as_lwgeom(LWMLINE *obj);
+LWGEOM *lwmpoint_as_lwgeom(LWMPOINT *obj);
+LWGEOM *lwcollection_as_lwgeom(LWCOLLECTION *obj);
+LWGEOM *lwpoly_as_lwgeom(LWPOLY *obj);
+LWGEOM *lwline_as_lwgeom(LWLINE *obj);
+LWGEOM *lwpoint_as_lwgeom(LWPOINT *obj);
 //-------------------------------------------------------------
 
 // copies a point from the point array into the parameter point
