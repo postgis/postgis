@@ -10,6 +10,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.20  2003/09/10 21:36:04  jeffloun
+ * fixed a bug in is_clockwise...
+ *
  * Revision 1.19  2003/07/01 18:30:55  pramsey
  * Added CVS revision headers.
  *
@@ -1411,14 +1414,14 @@ int is_clockwise(int  num_points,double *x,double *y,double *z){
 	y_new = (double *)malloc(sizeof(double) * num_points);	
 	area=0.0;
 	x_change = x[0];
-	y_change = z[0];
+	y_change = y[0];
 
 	for(i=0; i < num_points ; i++){
 		x_new[i] = x[i] - x_change;
 		y_new[i] = y[i] - y_change;
 	}
 
-	for(i=0; i < num_points ; i++){
+	for(i=0; i < num_points - 1; i++){
 		area += (x[i] * y[i+1]) - (y[i] * x[i+1]); //calculate the area	
 	}
 	if(area > 0 ){
@@ -1427,5 +1430,3 @@ int is_clockwise(int  num_points,double *x,double *y,double *z){
 		return 1; //clockwise
 	}
 }
-
-
