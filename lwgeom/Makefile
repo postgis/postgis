@@ -123,7 +123,7 @@ lwpostgis.sql: lwpostgis.sql.in
 install: all installdirs install-lwgeom-lib install-lwgeom-scripts
 
 install-lwgeom-scripts:
-	$(INSTALL_DATA) lwpostgis.sql $(DESTDIR)$(datadir)
+	$(INSTALL_DATA) lwpostgis.sql $(DESTDIR)$(datadir)/lwpostgis.sql
 
 #- This has been copied from postgresql and adapted
 install-lwgeom-lib: $(shlib)
