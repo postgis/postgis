@@ -1558,6 +1558,41 @@ CREATEFUNCTION distance_spheroid(geometry,geometry,spheroid)
 	AS '@MODULE_FILENAME@','LWGEOM_distance_ellipsoid_point'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+CREATEFUNCTION distance_sphere_latlon(geometry,geometry)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@','LWGEOM_distance_sphere'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+CREATEFUNCTION distance_sphere(geometry,geometry)
+        RETURNS FLOAT8 AS
+'
+DECLARE
+  proj1 integer;
+  proj2 integer;
+  projcount integer;
+BEGIN
+  SELECT INTO proj1 SRID($1);
+  SELECT INTO proj2 SRID($2);
+  IF proj1 != proj2 THEN
+    RAISE EXCEPTION ''Geometry projections must match.'';
+  END IF;
+  IF proj1 != -1 AND proj2 != -1 THEN
+    SELECT INTO projcount count(*) FROM spatial_ref_sys 
+    WHERE srid = proj1 AND proj4text like ''%longlat%'';
+    IF projcount = 0 THEN
+      RAISE EXCEPTION ''Geometries must be in a long/lat format.'';
+    END IF;
+    SELECT INTO projcount count(*) FROM spatial_ref_sys
+    WHERE srid = proj2 AND proj4text like ''%longlat%'';
+    IF projcount = 0 THEN
+      RAISE EXCEPTION ''Geometries must be in a long/lat format.'';
+    END IF;
+  END IF;
+  RETURN distance_sphere_latlon($1, $2);
+END;
+'
+LANGUAGE 'plpgsql' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
 -- Minimum distance. 2d only.
 CREATEFUNCTION distance(geometry,geometry)
 	RETURNS float8

@@ -43,6 +43,7 @@ Datum ellipsoid_out(PG_FUNCTION_ARGS);
 Datum LWGEOM_length2d_ellipsoid_linestring(PG_FUNCTION_ARGS);
 Datum LWGEOM_length_ellipsoid_linestring(PG_FUNCTION_ARGS);
 Datum LWGEOM_distance_ellipsoid_point(PG_FUNCTION_ARGS);
+Datum LWGEOM_distance_sphere(PG_FUNCTION_ARGS);
 
 // internal
 double distance_sphere_method(double lat1, double long1,double lat2,double long2, SPHEROID *sphere);
@@ -524,3 +525,103 @@ Datum LWGEOM_distance_ellipsoid_point(PG_FUNCTION_ARGS)
 		p2.x*M_PI/180.0, sphere));
 
 }
+
+/*
+ * This algorithm was taken from the geo_distance function of the 
+ * earthdistance package contributed by Bruno Wolff III.
+ * It was altered to accept GEOMETRY objects and return results in
+ * meters.
+ */
+PG_FUNCTION_INFO_V1(LWGEOM_distance_sphere);
+Datum LWGEOM_distance_sphere(PG_FUNCTION_ARGS)
+{
+        const double EARTH_RADIUS = 6370986.884258304;
+	const double TWO_PI = 2.0 * M_PI;
+	PG_LWGEOM *geom1 = (PG_LWGEOM *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	PG_LWGEOM *geom2 = (PG_LWGEOM *) PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+        LWPOINT *lwpt1, *lwpt2;
+	POINT2D *pt1, *pt2;
+
+	double long1, lat1, long2, lat2;
+	double longdiff;
+	double sino;
+        double result;
+
+        //elog(NOTICE, "LWGEOM_distance_sphere called\n");
+
+	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
+	{
+		elog(ERROR, "LWGEOM_distance_sphere Operation on two GEOMETRIES with differenc SRIDs\n");
+		PG_RETURN_NULL();
+	}
+
+        //elog(NOTICE, "LWGEOM_distance_sphere passed srid check: %i, %i\n", pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
+
+        lwpt1 = lwpoint_deserialize(SERIALIZED_FORM(geom1));
+	if (lwpt1 == NULL)
+	{
+		elog(ERROR, "LWGEOM_distance_sphere first arg isnt a point\n");
+		PG_RETURN_NULL();
+	}
+
+        lwpt2 = lwpoint_deserialize(SERIALIZED_FORM(geom2));
+	if (lwpt2 == NULL)
+	{
+		elog(ERROR, "optimistic_overlap: second arg isnt a point\n");
+		PG_RETURN_NULL();
+	}
+
+        //elog(NOTICE, "LWGEOM_distance_sphere passed point check\n");
+
+        pt1 = palloc(sizeof(POINT2D));
+        pt2 = palloc(sizeof(POINT2D));
+
+        lwpoint_getPoint2d_p(lwpt1, pt1);
+        lwpoint_getPoint2d_p(lwpt2, pt2);
+
+        //elog(NOTICE, "LWGEOM_distance_sphere created point2d objects: %f, %f %f, %f\n", pt1->x, pt1->y, pt2->x, pt2->y);
+
+        //elog(NOTICE, "LWGEOM_distance_sphere beginning calculation\n");
+        //elog(NOTICE, "LWGEOM_distance_sphere TWO_PI = %f\n", TWO_PI);
+        //elog(NOTICE, "LWGEOM_distance_sphere M_PI = %f\n", M_PI);
+
+	/*
+	 * Start geo_distance code.  Longitude is degrees west of
+	 * Greenwich, and thus is negative from what normal things
+	 * will supply the function.
+	 */
+        long1 = -2 * (pt1->x / 360.0) * M_PI;
+        lat1 = 2 * (pt1->y / 360.0) * M_PI;
+
+	long2 = -2 * (pt2->x / 360.0) * M_PI;
+	lat2 = 2 * (pt2->y / 360.0) * M_PI;
+
+        //elog(NOTICE, "LWGEOM_distance_sphere normalized: %f, %f %f, %f", long1, lat1, long2, lat2);
+
+        /* compute difference in longitudes - want < 180 degrees */
+        longdiff = fabs(long1 - long2);
+        if (longdiff > M_PI)
+        {
+                longdiff = (2 * M_PI) - longdiff;
+        }
+
+        //elog(NOTICE, "LWGEOM_distance_sphere longdiff = %f\n", longdiff);
+
+        sino = sqrt(sin(fabs(lat1 - lat2) / 2.) * sin(fabs(lat1 - lat2) / 2.) +
+                cos(lat1) * cos(lat2) * sin(longdiff / 2.) * sin(longdiff / 2.));
+        if (sino > 1.)
+        {
+                sino = 1.;
+        }
+
+        //elog(NOTICE, "LWGEOM_distance_sphere sino = %f\n", sino);          
+
+        result = 2. * EARTH_RADIUS * asin(sino);
+        
+        //elog(NOTICE, "LWGEOM_distance_sphere finished calculation: %f\n", result);
+        pfree(pt1);
+        pfree(pt2);
+
+        PG_RETURN_FLOAT8(result);
+}
+
