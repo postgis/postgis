@@ -55,7 +55,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	char *result;
 	int len;
 	int version = 2;
-	precision = DEF_PRECISION;
+	int precision = DEF_PRECISION;
 	char *srs;
 	int SRID;
 
@@ -502,6 +502,9 @@ getSRSbySRID(int SRID)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.6  2004/10/28 16:10:25  strk
+ * Fixed a bug in LWGEOM_asGML.
+ *
  * Revision 1.5  2004/10/05 16:28:34  strk
  * Added ZM dimensions flags knowledge.
  *
