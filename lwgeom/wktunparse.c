@@ -73,6 +73,7 @@ static char*  out_pos;
 static int len;
 static int lwgi;
 static int flipbytes;
+byte endianbyte;
 
 //----------------------------------------------------------
 
@@ -472,6 +473,9 @@ output_wkb(byte* geom)
 	if ( TYPE_HASM(type) )
 		 wkbtype |= WKBMOFFSET;
 
+	// Write byteorder (as from WKB specs...)
+	write_wkb_bytes(&endianbyte,1,1);
+
 	write_wkb_int(wkbtype);
 
 	switch(TYPE_GETTYPE(type)){
@@ -521,7 +525,6 @@ output_wkb(byte* geom)
 char *
 unparse_WKB(byte* serialized, allocator alloc, freeor free, unsigned int endian)
 {
-	byte endianbyte;
 
 #ifdef DEBUG
 	lwnotice("unparse_WKB(%p,...) called", serialized);
@@ -541,8 +544,6 @@ unparse_WKB(byte* serialized, allocator alloc, freeor free, unsigned int endian)
 	if ( endian == LITTLE_ENDIAN) endianbyte=1;
 	else endianbyte=0;
 
-	write_wkb_bytes(&endianbyte,1,1);
-
 	if ( endian != getMachineEndian() ) flipbytes = 1;
 	else flipbytes = 0;
 
@@ -556,6 +557,9 @@ unparse_WKB(byte* serialized, allocator alloc, freeor free, unsigned int endian)
 
 /******************************************************************
  * $Log$
+ * Revision 1.11  2004/10/15 07:35:41  strk
+ * Fixed a bug introduced by me (byteorder skipped for inner geoms in WKB)
+ *
  * Revision 1.10  2004/10/11 14:03:33  strk
  * Added endiannes specification to unparse_WKB, AsBinary, lwgeom_to_wkb.
  *
