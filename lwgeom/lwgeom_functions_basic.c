@@ -11,7 +11,7 @@
 
 #include "lwgeom.h"
 
-//#define DEBUG
+#define DEBUG
 
 Datum combine_box2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_mem_size(PG_FUNCTION_ARGS);
@@ -29,6 +29,7 @@ Datum LWGEOM_force_2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_force_3d(PG_FUNCTION_ARGS);
 Datum LWGEOM_force_collection(PG_FUNCTION_ARGS);
 Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS);
+Datum LWGEOM_maxdistance2d_linestring(PG_FUNCTION_ARGS);
 
 // internal
 char * lwgeom_summary_recursive(char *serialized, int offset);
@@ -746,7 +747,6 @@ lwgeom_mindistance2d_recursive(char *lw1, char *lw2)
 
 	return mindist;
 }
-
 
 /*------------------------------------------------------------------*/
 
@@ -1581,7 +1581,6 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS)
 }
 
 // Minimum 2d distance between objects in geom1 and geom2.
-// Returns null if it doesnt exist (future null-safe version).
 PG_FUNCTION_INFO_V1(LWGEOM_mindistance2d);
 Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS)
 {
@@ -1600,5 +1599,44 @@ Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS)
 		SERIALIZED_FORM(geom2));
 
 	PG_RETURN_FLOAT8(mindist);
+}
+
+// Maximum 2d distance between linestrings.
+// Returns NULL if given geoms are not linestrings.
+// This is very bogus (or I'm missing its meaning)
+PG_FUNCTION_INFO_V1(LWGEOM_maxdistance2d_linestring);
+Datum LWGEOM_maxdistance2d_linestring(PG_FUNCTION_ARGS)
+{
+
+	LWGEOM *geom1;
+	LWGEOM *geom2;
+	LWLINE *line1;
+	LWLINE *line2;
+	double maxdist = 0;
+	int i;
+
+	geom1 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	line1 = lwline_deserialize(SERIALIZED_FORM(geom1));
+	if ( line1 == NULL ) PG_RETURN_NULL(); // not a linestring
+
+	geom2 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	line2 = lwline_deserialize(SERIALIZED_FORM(geom2));
+	if ( line2 == NULL ) PG_RETURN_NULL(); // not a linestring
+
+	if (lwgeom_getSRID(geom1) != lwgeom_getSRID(geom2))
+	{
+		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
+		PG_RETURN_NULL();
+	}
+
+	for (i=0; i<line1->points->npoints; i++)
+	{
+		POINT2D *p = (POINT2D *)getPoint(line1->points, i);
+		double dist = distance2d_pt_ptarray(p, line2->points);
+
+		if (dist > maxdist) maxdist = dist;
+	}
+
+	PG_RETURN_FLOAT8(maxdist);
 }
 

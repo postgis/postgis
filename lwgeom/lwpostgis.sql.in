@@ -999,6 +999,12 @@ CREATEFUNCTION distance(geometry,geometry)
 	AS '@MODULE_FILENAME@', 'LWGEOM_mindistance2d'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
+-- Maximum distance between linestrings. 2d only. Very bogus.
+CREATEFUNCTION max_distance(geometry,geometry)
+	RETURNS float8
+	AS '@MODULE_FILENAME@', 'LWGEOM_maxdistance2d_linestring'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
 
 
 ------------------------------------------------------------------------

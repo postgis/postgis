@@ -23,7 +23,6 @@ FUNC: KEEPING FUNCTION: [nrings(geometry)]
 FUNC: KEEPING FUNCTION: [translate(geometry, double precision, double precision, double precision)]
 FUNC: KEEPING FUNCTION: [envelope(geometry)]
 
-FUNC: KEEPING FUNCTION: [max_distance(geometry, geometry)]
 
 FUNC: KEEPING FUNCTION: [optimistic_overlap(geometry, geometry, double precision)]
 FUNC: KEEPING FUNCTION: [segmentize(geometry, double precision)]
