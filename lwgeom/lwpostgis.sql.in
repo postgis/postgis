@@ -2698,6 +2698,11 @@ CREATEFUNCTION box3dtobox(box3d)
         AS 'SELECT box($1)'
 	LANGUAGE 'SQL' WITH (isstrict,iscachable);
 
+CREATEFUNCTION geometry(box2d)
+        RETURNS geometry
+        AS '@MODULE_FILENAME@','BOX2DFLOAT4_to_LWGEOM'
+        LANGUAGE 'C' WITH (isstrict,iscachable);
+
 CREATEFUNCTION geometry(box3d)
         RETURNS geometry
         AS '@MODULE_FILENAME@','BOX3D_to_LWGEOM'
@@ -2730,6 +2735,7 @@ CREATE CAST (geometry AS box3d) WITH FUNCTION box3d(geometry) AS IMPLICIT;
 CREATE CAST (geometry AS box) WITH FUNCTION box(geometry) AS IMPLICIT;
 CREATE CAST (box3d AS box2d) WITH FUNCTION box2d(box3d) AS IMPLICIT;
 CREATE CAST (box2d AS box3d) WITH FUNCTION box3d(box2d) AS IMPLICIT;
+CREATE CAST (box2d AS geometry) WITH FUNCTION geometry(box2d) AS IMPLICIT;
 CREATE CAST (box3d AS box) WITH FUNCTION box(box3d) AS IMPLICIT;
 CREATE CAST (box3d AS geometry) WITH FUNCTION geometry(box3d) AS IMPLICIT;
 CREATE CAST (text AS geometry) WITH FUNCTION geometry(text) AS IMPLICIT;

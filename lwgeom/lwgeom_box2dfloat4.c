@@ -34,6 +34,7 @@ Datum BOX2DFLOAT4_ymin(PG_FUNCTION_ARGS);
 Datum BOX2DFLOAT4_xmax(PG_FUNCTION_ARGS);
 Datum BOX2DFLOAT4_ymax(PG_FUNCTION_ARGS);
 Datum BOX2DFLOAT4_combine(PG_FUNCTION_ARGS);
+Datum BOX2DFLOAT4_to_LWGEOM(PG_FUNCTION_ARGS);
 
 
 
@@ -412,6 +413,42 @@ Datum BOX2DFLOAT4_combine(PG_FUNCTION_ARGS)
 	result->xmin = LWGEOM_Minf(a->xmin, b->xmin);
 	result->ymin = LWGEOM_Minf(a->ymin, b->ymin);
 
+	PG_RETURN_POINTER(result);
+}
+
+PG_FUNCTION_INFO_V1(BOX2DFLOAT4_to_LWGEOM);
+Datum BOX2DFLOAT4_to_LWGEOM(PG_FUNCTION_ARGS)
+{
+	BOX2DFLOAT4 *box = (BOX2DFLOAT4 *)PG_GETARG_POINTER(0);
+	POINT2D *pts = palloc(sizeof(POINT2D)*5);
+	POINTARRAY *pa[1];
+	LWPOLY *poly;
+	int wantbbox = 0;
+	LWGEOM *result;
+	char *ser;
+
+	// Assign coordinates to POINT2D array
+	pts[0].x = box->xmin; pts[0].y = box->ymin;
+	pts[1].x = box->xmin; pts[1].y = box->ymax;
+	pts[2].x = box->xmax; pts[2].y = box->ymax;
+	pts[3].x = box->xmax; pts[3].y = box->ymin;
+	pts[4].x = box->xmin; pts[4].y = box->ymin;
+
+	// Construct point array
+	pa[0] = palloc(sizeof(POINTARRAY));
+	pa[0]->serialized_pointlist = (char *)pts;
+	pa[0]->ndims = 2;
+	pa[0]->npoints = 5;
+
+	// Construct polygon
+	poly = lwpoly_construct(2, -1, 1, pa);
+
+	// Serialize polygon
+	ser = lwpoly_serialize(poly);
+
+	// Construct LWGEOM 
+	result = LWGEOM_construct(ser, -1, wantbbox);
+	
 	PG_RETURN_POINTER(result);
 }
 
