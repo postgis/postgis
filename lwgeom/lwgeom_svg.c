@@ -63,7 +63,7 @@ Datum assvg_geometry(PG_FUNCTION_ARGS)
 		
 	svg = geometry_to_svg(geom, svgrel, precision);
 
-	len = strlen(svg) + 5;
+	len = strlen(svg) + 4;
 
 	result= palloc(len);
 	*((int *) result) = len;
@@ -280,6 +280,9 @@ print_svg_path_rel(char *result, POINTARRAY *pa, int precision)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.5  2004/10/15 11:48:48  strk
+ * Fixed a bug making asSVG return a spurious char at the end.
+ *
  * Revision 1.4  2004/10/15 09:41:22  strk
  * changed precision semantic back to number of decimal digits
  *
