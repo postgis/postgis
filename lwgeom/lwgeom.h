@@ -118,40 +118,40 @@ typedef struct
 // will set point's z=0 (or NaN) if pa is 2d
 // will set point's m=0 (or NaN( if pa is 3d or 2d
 // NOTE: point is a real POINT3D *not* a pointer
-extern POINT4D getPoint4d(POINTARRAY *pa, int n);
+extern POINT4D getPoint4d(const POINTARRAY *pa, int n);
 
 // copies a point from the point array into the parameter point
 // will set point's z=0 (or NaN) if pa is 2d
 // will set point's m=0 (or NaN) if pa is 3d or 2d
 // NOTE: this will modify the point4d pointed to by 'point'.
-extern void getPoint4d_p(POINTARRAY *pa, int n, char *point);
+extern void getPoint4d_p(const POINTARRAY *pa, int n, char *point);
 
 // copies a point from the point array into the parameter point
 // will set point's z=0 (or NaN) if pa is 2d
 // NOTE: point is a real POINT3D *not* a pointer
-extern POINT3D getPoint3d(POINTARRAY *pa, int n);
+extern POINT3D getPoint3d(const POINTARRAY *pa, int n);
 
 // copies a point from the point array into the parameter point
 // will set point's z=0 (or NaN) if pa is 2d
 // NOTE: this will modify the point3d pointed to by 'point'.
-extern void getPoint3d_p(POINTARRAY *pa, int n, char *point);
+extern void getPoint3d_p(const POINTARRAY *pa, int n, char *point);
 
 
 // copies a point from the point array into the parameter point
 // z value (if present is not returned)
 // NOTE: point is a real POINT3D *not* a pointer
-extern POINT2D getPoint2d(POINTARRAY *pa, int n);
+extern POINT2D getPoint2d(const POINTARRAY *pa, int n);
 
 // copies a point from the point array into the parameter point
 // z value (if present is not returned)
 // NOTE: this will modify the point2d pointed to by 'point'.
-extern void getPoint2d_p(POINTARRAY *pa, int n, char *point);
+extern void getPoint2d_p(const POINTARRAY *pa, int n, char *point);
 
 // get a pointer to nth point of a POINTARRAY
 // You'll need to cast it to appropriate dimensioned point.
 // Note that if you cast to a higher dimensional point you'll
 // possibly corrupt the POINTARRAY.
-extern char *getPoint(POINTARRAY *pa, int n);
+extern char *getPoint(const POINTARRAY *pa, int n);
 //--- here is a macro equivalent, for speed...
 //#define getPoint(x,n) &( (x)->serialized_pointlist[((x)->ndims*8)*(n)] )
 
@@ -166,11 +166,11 @@ extern POINTARRAY *pointArray_construct(char *points, int ndims, uint32 npoints)
 // returns a 3d box
 // if pa is 2d, then box3d's zmin/zmax will be either 0 or NaN
 // dont call on an empty pa
-extern BOX3D *pointArray_bbox(POINTARRAY *pa);
+extern BOX3D *pointArray_bbox(const POINTARRAY *pa);
 
 //size of point represeneted in the POINTARRAY
 // 16 for 2d, 24 for 3d, 32 for 4d
-extern int pointArray_ptsize(POINTARRAY *pa);
+extern int pointArray_ptsize(const POINTARRAY *pa);
 
 
 /*
@@ -253,8 +253,8 @@ extern LWGEOM *LWGEOM_construct(char *serialized, int SRID, int wantbbox);
  * This function computes the size in bytes
  * of the serialized geometries.
  */
-extern int lwgeom_size(char *serialized_form);
-extern int lwgeom_size_subgeom(char *serialized_form, int geom_number);
+extern int lwgeom_size(const char *serialized_form);
+extern int lwgeom_size_subgeom(const char *serialized_form, int geom_number);
 
 
 //--------------------------------------------------------
@@ -295,8 +295,8 @@ extern void lwpoint_serialize_buf(LWPOINT *point, char *buf, int *size);
 extern BOX3D *lwpoint_findbbox(LWPOINT *point);
 
 // convenience functions to hide the POINTARRAY
-extern POINT2D lwpoint_getPoint2d(LWPOINT *point);
-extern POINT3D lwpoint_getPoint3d(LWPOINT *point);
+extern POINT2D lwpoint_getPoint2d(const LWPOINT *point);
+extern POINT3D lwpoint_getPoint3d(const LWPOINT *point);
 
 //--------------------------------------------------------
 
@@ -387,11 +387,13 @@ extern BOX3D *lwpoly_findbbox(LWPOLY *poly);
 typedef struct
 {
 	int   SRID;
-	char  *serialized_form; // orginal structure
+	const char  *serialized_form; // orginal structure
 	unsigned char  type;            // 8-bit type for the LWGEOM
-	int   ngeometries;     // number of sub-geometries
-	char  **sub_geoms;    // list of pointers (into serialized_form) of the sub-geoms
+	int ngeometries;     	// number of sub-geometries
+	char * * const sub_geoms;  // list of pointers (into serialized_form) of the sub-geoms
 } LWGEOM_INSPECTED;
+
+extern int lwgeom_size_inspected(const LWGEOM_INSPECTED *inspected, int geom_number);
 
 /*
  * This structure is intended to be used for geometry collection construction
@@ -439,7 +441,7 @@ extern void lwexploded_serialize_buf(LWGEOM_EXPLODED *exploded, int wantbbox, ch
 // This function just computes the length of each sub-object and pre-caches this info.
 // For a geometry collection of multi* geometries, you can inspect the sub-components
 // as well.
-extern LWGEOM_INSPECTED *lwgeom_inspect(char *serialized_form);
+extern LWGEOM_INSPECTED *lwgeom_inspect(const char *serialized_form);
 
 
 // 1st geometry has geom_number = 0
@@ -474,7 +476,7 @@ extern LWPOLY *lwgeom_getpoly_inspected(LWGEOM_INSPECTED *inspected, int geom_nu
 //   ie. lwgeom_getpoint( lwgeom_getsubgeometry( serialized, 0), 1)
 //           --> POINT(1 1)
 // you can inspect the sub-geometry as well if you wish.
-extern char *lwgeom_getsubgeometry(char *serialized_form, int geom_number);
+extern char *lwgeom_getsubgeometry(const char *serialized_form, int geom_number);
 extern char *lwgeom_getsubgeometry_inspected(LWGEOM_INSPECTED *inspected, int geom_number);
 
 
@@ -574,8 +576,8 @@ extern void pfree_POINTARRAY(POINTARRAY *pa);
 //***********************************************************
 // utility
 
-extern uint32 get_uint32(char *loc);
-extern int32 get_int32(char *loc);
+extern uint32 get_uint32(const char *loc);
+extern int32 get_int32(const char *loc);
 extern void printPA(POINTARRAY *pa);
 extern void printLWPOINT(LWPOINT *point);
 extern void printLWLINE(LWLINE *line);

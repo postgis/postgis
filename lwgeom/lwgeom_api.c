@@ -30,10 +30,9 @@ extern  BOX3D *lw_geom_getBB_simple(char *serialized_form);
 #ifdef DEBUG_EXPLODED
 void checkexplodedsize(char *srl, LWGEOM_EXPLODED *exploded, int alloced, char wantbbox);
 #endif
-static uint32 lwgeom_size_line(char *serialized_line);
-static uint32 lwgeom_size_point(char *serialized_point);
-static uint32 lwgeom_size_poly(char *serialized_line);
-static int lwgeom_size_inspected(LWGEOM_INSPECTED *inspected, int geom_number);
+static uint32 lwgeom_size_line(const char *serialized_line);
+static uint32 lwgeom_size_point(const char *serialized_point);
+static uint32 lwgeom_size_poly(const char *serialized_line);
 
 //*********************************************************************
 // BOX routines
@@ -485,7 +484,8 @@ getbox2d_internal(char *serialized_form)
 // will set point's z=0 (or NaN) if pa is 2d
 // will set point's m=0 (or NaN( if pa is 3d or 2d
 // NOTE: point is a real POINT3D *not* a pointer
-POINT4D getPoint4d(POINTARRAY *pa, int n)
+POINT4D
+getPoint4d(const POINTARRAY *pa, int n)
 {
 		 POINT4D result;
 		 int size;
@@ -515,7 +515,8 @@ POINT4D getPoint4d(POINTARRAY *pa, int n)
 // will set point's z=0 (or NaN) if pa is 2d
 // will set point's m=0 (or NaN( if pa is 3d or 2d
 // NOTE: this will modify the point4d pointed to by 'point'.
-void getPoint4d_p(POINTARRAY *pa, int n, char *point)
+void
+getPoint4d_p(const POINTARRAY *pa, int n, char *point)
 {
 		int size;
 
@@ -552,7 +553,8 @@ void getPoint4d_p(POINTARRAY *pa, int n, char *point)
 // copies a point from the point array into the parameter point
 // will set point's z=0 (or NaN) if pa is 2d
 // NOTE: point is a real POINT3D *not* a pointer
-POINT3D getPoint3d(POINTARRAY *pa, int n)
+POINT3D
+getPoint3d(const POINTARRAY *pa, int n)
 {
 	POINT3D result;
 	int size;
@@ -578,7 +580,8 @@ POINT3D getPoint3d(POINTARRAY *pa, int n)
 // NOTE: this will modify the point3d pointed to by 'point'.
 // we use a char* instead of a POINT3D because we want to use this function
 //  for serialization/de-serialization
-void getPoint3d_p(POINTARRAY *pa, int n, char *point)
+void
+getPoint3d_p(const POINTARRAY *pa, int n, char *point)
 {
 	int size;
 	POINT3D *op, *ip;
@@ -616,7 +619,7 @@ void getPoint3d_p(POINTARRAY *pa, int n, char *point)
 // z value (if present is not returned)
 // NOTE: point is a real POINT2D *not* a pointer
 POINT2D
-getPoint2d(POINTARRAY *pa, int n)
+getPoint2d(const POINTARRAY *pa, int n)
 {
 	POINT2D result;
 	int size;
@@ -638,7 +641,8 @@ getPoint2d(POINTARRAY *pa, int n)
 // NOTE: this will modify the point2d pointed to by 'point'.
 // we use a char* instead of a POINT2D because we want to use this function
 //  for serialization/de-serialization
-void getPoint2d_p(POINTARRAY *pa, int n, char *point)
+void
+getPoint2d_p(const POINTARRAY *pa, int n, char *point)
 {
 	 int size;
 
@@ -658,7 +662,7 @@ void getPoint2d_p(POINTARRAY *pa, int n, char *point)
 // Note that if you cast to a higher dimensional point you'll
 // possibly corrupt the POINTARRAY.
 char *
-getPoint(POINTARRAY *pa, int n)
+getPoint(const POINTARRAY *pa, int n)
 {
 	int size;
 
@@ -697,7 +701,7 @@ POINTARRAY *pointArray_construct(char *points, int ndims, uint32 npoints)
 // calculate the bounding box of a set of points
 // returns a palloced BOX3D, or NULL on empty array.
 // zmin/zmax values are set to NO_Z_VALUE if not available.
-BOX3D *pointArray_bbox(POINTARRAY *pa)
+BOX3D *pointArray_bbox(const POINTARRAY *pa)
 {
 	int t;
 	BOX3D *result;
@@ -776,7 +780,8 @@ BOX3D *pointArray_bbox(POINTARRAY *pa)
 
 //size of point represeneted in the POINTARRAY
 // 16 for 2d, 24 for 3d, 32 for 4d
-int pointArray_ptsize(POINTARRAY *pa)
+int
+pointArray_ptsize(const POINTARRAY *pa)
 {
 	if ( pa->ndims < 2 || pa->ndims > 4 )
 	{
@@ -854,7 +859,8 @@ bool lwgeom_hasBBOX(unsigned char type)
 // basic sub-geometry types
 
 // handle missaligned unsigned int32 data
-uint32 get_uint32(char *loc)
+uint32
+get_uint32(const char *loc)
 {
 	uint32 result;
 
@@ -863,7 +869,8 @@ uint32 get_uint32(char *loc)
 }
 
 // handle missaligned signed int32 data
-int32 get_int32(char *loc)
+int32
+get_int32(const char *loc)
 {
 	int32 result;
 
@@ -1118,11 +1125,11 @@ BOX3D *lwline_findbbox(LWLINE *line)
 
 // find length of this serialized line
 uint32
-lwgeom_size_line(char *serialized_line)
+lwgeom_size_line(const char *serialized_line)
 {
 	int type = (unsigned char) serialized_line[0];
 	uint32 result =1;  //type
-	char *loc;
+	const char *loc;
 	uint32 npoints;
 
 	if ( lwgeom_getType(type) != LINETYPE)
@@ -1354,7 +1361,7 @@ lwpoint_findbbox(LWPOINT *point)
 // convenience functions to hide the POINTARRAY
 // TODO: obsolete this
 POINT2D
-lwpoint_getPoint2d(LWPOINT *point)
+lwpoint_getPoint2d(const LWPOINT *point)
 {
 	POINT2D result;
 
@@ -1366,7 +1373,7 @@ lwpoint_getPoint2d(LWPOINT *point)
 
 // convenience functions to hide the POINTARRAY
 POINT3D
-lwpoint_getPoint3d(LWPOINT *point)
+lwpoint_getPoint3d(const LWPOINT *point)
 {
 	POINT3D result;
 
@@ -1379,11 +1386,11 @@ lwpoint_getPoint3d(LWPOINT *point)
 
 //find length of this serialized point
 uint32
-lwgeom_size_point(char *serialized_point)
+lwgeom_size_point(const char *serialized_point)
 {
 	uint  result = 1;
 	unsigned char type;
-	char *loc;
+	const char *loc;
 
 	type = (unsigned char) serialized_point[0];
 
@@ -1742,7 +1749,7 @@ lwpoly_findbbox(LWPOLY *poly)
 
 //find length of this serialized polygon
 uint32
-lwgeom_size_poly(char *serialized_poly)
+lwgeom_size_poly(const char *serialized_poly)
 {
 	uint32 result = 1; // char type
 	uint32 nrings;
@@ -1750,7 +1757,7 @@ lwgeom_size_poly(char *serialized_poly)
 	int t;
 	unsigned char type;
 	uint32 npoints;
-	char *loc;
+	const char *loc;
 
 	if (serialized_poly == NULL)
 		return -9999;
@@ -1844,18 +1851,19 @@ lwpoly_size(LWPOLY *poly)
 // This function just computes the length of each sub-object and pre-caches this info.
 // For a geometry collection of multi* geometries, you can inspect the sub-components
 // as well.
-LWGEOM_INSPECTED *lwgeom_inspect(char *serialized_form)
+LWGEOM_INSPECTED *
+lwgeom_inspect(const char *serialized_form)
 {
 	LWGEOM_INSPECTED *result = palloc(sizeof(LWGEOM_INSPECTED));
 	unsigned char type;
 	char **sub_geoms;
-	char *loc;
+	const char *loc;
 	int 	t;
 
 	if (serialized_form == NULL)
 		return NULL;
 
-	result->serialized_form = serialized_form;
+	result->serialized_form = serialized_form; 
 	result->type = (unsigned char) serialized_form[0];
 	result->SRID = -1; // assume
 
@@ -2073,7 +2081,8 @@ LWPOLY *lwgeom_getpoly_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
 //   ie. lwgeom_getpoint( lwgeom_getsubgeometry( serialized, 0), 1)
 //           --> POINT(1 1)
 // you can inspect the sub-geometry as well if you wish.
-char *lwgeom_getsubgeometry(char *serialized_form, int geom_number)
+char *
+lwgeom_getsubgeometry(const char *serialized_form, int geom_number)
 {
 	//major cheat!!
 	char * result;
@@ -2324,11 +2333,12 @@ lwgeom_constructempty_buf(int SRID, int ndims, char *buf, int *retsize)
 //         --> size of the point
 
 // take a geometry, and find its length
-int lwgeom_size(char *serialized_form)
+int
+lwgeom_size(const char *serialized_form)
 {
 	unsigned char type = lwgeom_getType((unsigned char) serialized_form[0]);
 	int t;
-	char *loc;
+	const char *loc;
 	uint32 ngeoms;
 	int sub_size;
 	int result = 1; //"type"
@@ -2418,7 +2428,8 @@ int lwgeom_size(char *serialized_form)
 	return result;
 }
 
-int lwgeom_size_subgeom(char *serialized_form, int geom_number)
+int
+lwgeom_size_subgeom(const char *serialized_form, int geom_number)
 {
 	if (geom_number == -1)
 	{
@@ -2430,7 +2441,7 @@ int lwgeom_size_subgeom(char *serialized_form, int geom_number)
 
 
 int
-lwgeom_size_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
+lwgeom_size_inspected(const LWGEOM_INSPECTED *inspected, int geom_number)
 {
 	return lwgeom_size(inspected->sub_geoms[geom_number]);
 }
@@ -2438,7 +2449,8 @@ lwgeom_size_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
 
 //get bounding box of LWGEOM (automatically calls the sub-geometries bbox generators)
 //dont forget to pfree() result
-BOX3D *lw_geom_getBB(char *serialized_form)
+BOX3D *
+lw_geom_getBB(char *serialized_form)
 {
 	  LWGEOM_INSPECTED *inspected = lwgeom_inspect(serialized_form);
 
@@ -2718,7 +2730,8 @@ void printLWPOLY(LWPOLY *poly)
 	elog(NOTICE,"}");
 }
 
-void printMULTI(char *serialized)
+void
+printMULTI(char *serialized)
 {
 	LWGEOM_INSPECTED *inspected = lwgeom_inspect(serialized);
 	LWLINE  *line;
