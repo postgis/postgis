@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.31  2003/11/11 10:58:43  strk
+ * Fixed a typo in envelope()
+ *
  * Revision 1.30  2003/10/29 15:53:10  strk
  * geoscentroid() removed. both geos and pgis versions are called 'centroid'.
  * only one version will be compiled based on USE_GEOS flag.
@@ -1179,8 +1182,8 @@ Datum envelope(PG_FUNCTION_ARGS)
 	set_point( &pts[4], geom->bvol.LLB.x , geom->bvol.LLB.y , geom->bvol.LLB.z );
 	set_point( &pts[3], geom->bvol.URT.x , geom->bvol.LLB.y , geom->bvol.LLB.z );
 	set_point( &pts[2], geom->bvol.URT.x , geom->bvol.URT.y , geom->bvol.LLB.z );
-	set_point( &pts[2], geom->bvol.LLB.x , geom->bvol.URT.y , geom->bvol.LLB.z );
-	set_point( &pts[1], geom->bvol.LLB.x , geom->bvol.LLB.y , geom->bvol.LLB.z );
+	set_point( &pts[1], geom->bvol.LLB.x , geom->bvol.URT.y , geom->bvol.LLB.z );
+	set_point( &pts[0], geom->bvol.LLB.x , geom->bvol.LLB.y , geom->bvol.LLB.z );
 
 	pts_per_ring[0] = 5; //ring has 5 points
 
