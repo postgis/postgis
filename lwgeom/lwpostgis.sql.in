@@ -1733,6 +1733,11 @@ CREATEFUNCTION GeomFromEWKT(text)
 	AS '@MODULE_FILENAME@','parse_WKT_lwgeom'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
+CREATEFUNCTION cache_bbox()
+	RETURNS trigger
+	AS '@MODULE_FILENAME@'
+	LANGUAGE 'C';
+
 ------------------------------------------------------------------------
 -- CONSTRUCTORS
 ------------------------------------------------------------------------
