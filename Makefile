@@ -4,7 +4,7 @@
 USE_PG72=0
 #---------------------------------------------------------------
 # Set USE_PROJ to 1 for Proj4 reprojection support
-USE_PROJ=1
+USE_PROJ=0
 
 #---------------------------------------------------------------
 subdir=contrib/postgis
