@@ -12,6 +12,11 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.64  2004/08/20 08:14:37  strk
+ * Whole output wrapped in transaction blocks.
+ * Drops are out of transaction, and multiple transactions are used
+ * for INSERT mode.
+ *
  * Revision 1.63  2004/08/20 07:57:06  strk
  * Fixed a bug in 'append-mode'.
  * Added -g switch to specify geometry column.
@@ -728,31 +733,31 @@ main (int ARGC, char **ARGV)
 	}
 
         if (errflg==1) {
-		printf("\n**ERROR** invalid option or command parameters\n");
-		printf("\n");
-		printf("RCSID: %s\n", rcsid);
-		printf("USAGE: shp2pgsql [<options>] <shapefile> [<schema>.]<table>\n");
-		printf("\n");
-		printf("OPTIONS:\n");
-		printf("  -s <srid>  Set the SRID field. If not specified it defaults to -1.\n");
-		printf("\n");
-		printf("  (-d|a|c) These are mutually exclusive options:\n");
-		printf("      -d  Drops the table , then recreates it and populates\n");
-		printf("          it with current shape file data.\n");
-		printf("      -a  Appends shape file into current table, must be\n");
-		printf("          exactly the same table schema.\n");
-		printf("      -c  Creates a new table and populates it, this is the\n");
-		printf("          default if you do not specify any options.\n");
-		printf("\n");
-		printf("  -g <geometry_column> Specify the name of the geometry column\n");
-		printf("     (mostly useful in append mode).\n");
-		printf("\n");
-		printf("  -D  Use postgresql dump format (defaults to sql insert\n");
-		printf("      statments.\n");
-		printf("\n");
-		printf("  -k  Keep postgresql identifiers case.\n");
-		printf("\n");
-		printf("  -i  Use int4 type for all integer dbf fields.\n");
+		fprintf(stderr, "\n**ERROR** invalid option or command parameters\n");
+		fprintf(stderr, "\n");
+		fprintf(stderr, "RCSID: %s\n", rcsid);
+		fprintf(stderr, "USAGE: shp2pgsql [<options>] <shapefile> [<schema>.]<table>\n");
+		fprintf(stderr, "\n");
+		fprintf(stderr, "OPTIONS:\n");
+		fprintf(stderr, "  -s <srid>  Set the SRID field. If not specified it defaults to -1.\n");
+		fprintf(stderr, "\n");
+		fprintf(stderr, "  (-d|a|c) These are mutually exclusive options:\n");
+		fprintf(stderr, "      -d  Drops the table , then recreates it and populates\n");
+		fprintf(stderr, "          it with current shape file data.\n");
+		fprintf(stderr, "      -a  Appends shape file into current table, must be\n");
+		fprintf(stderr, "          exactly the same table schema.\n");
+		fprintf(stderr, "      -c  Creates a new table and populates it, this is the\n");
+		fprintf(stderr, "          default if you do not specify any options.\n");
+		fprintf(stderr, "\n");
+		fprintf(stderr, "  -g <geometry_column> Specify the name of the geometry column\n");
+		fprintf(stderr, "     (mostly useful in append mode).\n");
+		fprintf(stderr, "\n");
+		fprintf(stderr, "  -D  Use postgresql dump format (defaults to sql insert\n");
+		fprintf(stderr, "      statments.\n");
+		fprintf(stderr, "\n");
+		fprintf(stderr, "  -k  Keep postgresql identifiers case.\n");
+		fprintf(stderr, "\n");
+		fprintf(stderr, "  -i  Use int4 type for all integer dbf fields.\n");
 		exit (2);
         }
 
@@ -790,6 +795,12 @@ main (int ARGC, char **ARGV)
 		// TODO: if the table has more then one geometry column
 		// the DROP TABLE call will leave spurious records in
 		// geometry_columns. 
+		//
+		// If the geometry column in the table being dropped
+		// does not match 'the_geom' or the name specified with
+		// -g an error is returned by DropGeometryColumn. 
+		//
+		// The table to be dropped might not exist.
 		//
 		if ( schema )
 		{
@@ -905,6 +916,8 @@ main (int ARGC, char **ARGV)
 
 	trans=0;
 
+	printf("BEGIN;\n");
+
 	//if opt is 'a' do nothing, go straight to making inserts
 	if(opt == 'c' || opt == 'd') create_table();
 
@@ -934,10 +947,11 @@ main (int ARGC, char **ARGV)
 		//wrap a transaction block around each 250 inserts...
 		if ( ! dump_format )
 		{
-			if(j==0) {
-				trans=0;
-				printf("BEGIN;\n");
-			} else if (trans == 250) {
+			//if(j==0) {
+				//trans=0;
+				//printf("BEGIN;\n");
+			//} else
+			if (trans == 250) {
 				trans=0;
 				printf("END;\n");
 				printf("BEGIN;\n");
@@ -1189,12 +1203,6 @@ main (int ARGC, char **ARGV)
 		printf("\\.\n");
 
 	} 
-	else
-	{
-		printf("END;\n"); //End the last transaction
-	}
-
-
 
 	free(col_names);
 	if(opt != 'a')
@@ -1215,6 +1223,8 @@ main (int ARGC, char **ARGV)
 			}
 		}
 	}
+
+	printf("END;\n"); //End the last transaction
 
 	return(1);
 }//end main()
