@@ -1,5 +1,10 @@
 # PostGIS Makefile
 
+# (C) 2004 Paul Ramsey, pramsey@refractions.net
+# (C) 2005 Markus Schaber, schabios@logi-track.com
+# (C) 2005 Sandro Santilli, strk@refractions.net
+# (C) 2005 Alex Bodnaru, alexbodn@012.net.il
+
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
 #    the Free Software Foundation; either version 2 of the License, or
@@ -14,28 +19,46 @@
 #    along with this program; if not, write to the Free Software
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+
+# Configure the helper executables used during build - change this according to
+# your environment if necessary
+
 JAVAC = javac
 JAVA = java
 JAR = jar
 MKDIR = mkdir -p
 DELETE = rm -rvf
 
-#
-# Make sure you CLASSPATH environmental variable
-# includes your postgresql.jar 
-# 
+# Find our postgresql build directory - needed for "make installdirs" and 
+# "make install" that are used by the debian packaging process. As everything
+# else works without Makefile.global, we don't abort on inclusion failure
+# and use late checking iside those rules instead.
+ifeq (${PGSQL_SRC},)
+	PGSQL_SRC=../../..
+endif
+
+top_builddir:=$(PGSQL_SRC)
+top_makefile:=$(PGSQL_SRC)/src/Makefile.global
+-include $(top_makefile)
+
+# Make sure you CLASSPATH environmental variable includes your postgresql.jar
+# We set a reasonable default for un*xoid systems here. 
 
 CLASSPATH?=/usr/share/java/postgresql.jar
 CP=$(CLASSPATH):src/
 
-SRCDIR=src
-EXAMPLES=examples
-BUILD=bin
+# This are used for the online regression tests, override via environment
+# as applicable.
 PGHOST?=localhost
 PGPORT?=5432
 PGDATABASE?=jdbc_test
 PGUSER?=psql
 PGPASS?=guess
+
+# build internal constants follow:
+SRCDIR=src
+EXAMPLES=examples
+BUILD=bin
 
 SRC= $(SRCDIR)/examples/Test.java \
 		$(SRCDIR)/examples/TestAutoregister.java \
@@ -63,14 +86,19 @@ STUBBUILD=stubbin/
 STUBSRC= $(STUBDIR)/org/postgresql/Connection.java \
 	$(STUBDIR)/org/postgresql/PGConnection.java
 
+# Now the makefile targets that do the work:
 
 all:	jar \
 	offlinetests
 
-jar:	compile
+jar:	compile postgis.jar postgis_debug.jar
+
+postgis.jar: compile
 	$(JAR) -cf postgis.jar -C $(BUILD) . \
 	       -C $(SRCDIR) org/postgresql/driverconfig.properties \
 	       README COPYING_LGPL -C .. COPYING
+	       
+postgis_debug.jar: compile	       
 	$(JAR) -cf postgis_debug.jar -C $(BUILD) . README COPYING_LGPL -C .. COPYING
 	$(JAR) -uf postgis_debug.jar -C $(SRCDIR) .
 
@@ -120,12 +148,15 @@ alltests: onlinetests test
 clean:  
 	$(DELETE) $(BUILD) bin stubbin postgis.jar postgis_debug.jar compile stubcompile
 
-# pgjdbc 7.2 special treating (needed e. G. for woody backport)
-# Calling this rules multiple times does not really hurt, but litter
-# your src directory with some .rej files.
-woodypatch:
-	patch -p0 -N <woody.patch
+# The following two targets are needed for debian build, but may be hepful
+# for someone else, too.
+install: jar installdirs
+	@echo Testing for successful inclusion of $(top_makefile)
+	test $(DESTDIR)
+	test $(INSTALL_DATA)
+	$(INSTALL_DATA) postgis.jar $(DESTDIR)
 
-woodyunpatch:
-	patch -p0 -R -N <woody.patch
-
+installdirs:
+	@echo Testing for successful inclusion of $(top_makefile)
+	test $(DESTDIR)
+	$(mkinstalldirs) $(DESTDIR)
