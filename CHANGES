@@ -1,3 +1,12 @@
+PostGIS 0.7.3
+2002/09/05
+
+- Bug Fixes
+  - Stupid bug in .sql install script breaks install for
+    many. Squashed. New release needed.
+  - Automatic version detection for appropriate GiST bindings
+  - postgis_transform now supports box3d types as well as geometry
+
 PostGIS 0.7.2
 2002/09/01
 
