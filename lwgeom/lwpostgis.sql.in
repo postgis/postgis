@@ -1652,24 +1652,24 @@ CREATEFUNCTION zmflag(geometry)
 -- CONSTRUCTORS
 ------------------------------------------------------------------------
 
-CREATEFUNCTION makepoint2d(integer, float8, float8)
+CREATEFUNCTION makepoint(float8, float8)
 	RETURNS geometry
-	AS '@MODULE_FILENAME@', 'LWGEOM_makepoint2d'
+	AS '@MODULE_FILENAME@', 'LWGEOM_makepoint'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
-CREATEFUNCTION makepoint3dz(integer, float8, float8, float8)
+CREATEFUNCTION makepoint(float8, float8, float8)
 	RETURNS geometry
-	AS '@MODULE_FILENAME@', 'LWGEOM_makepoint3dz'
+	AS '@MODULE_FILENAME@', 'LWGEOM_makepoint'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
-CREATEFUNCTION makepoint3dm(integer, float8, float8, float8)
+CREATEFUNCTION makepoint(float8, float8, float8, float8)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_makepoint'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATEFUNCTION makePointM(float8, float8, float8)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_makepoint3dm'
-	LANGUAGE 'C' WITH (iscachable,isstrict);
-
-CREATEFUNCTION makepoint4d(integer, float8, float8, float8, float8)
-	RETURNS geometry
-	AS '@MODULE_FILENAME@', 'LWGEOM_makepoint4d'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
 ------------------------------------------------------------------------

@@ -50,10 +50,8 @@ Datum LWGEOM_reverse(PG_FUNCTION_ARGS);
 Datum LWGEOM_forceRHR_poly(PG_FUNCTION_ARGS);
 Datum LWGEOM_noop(PG_FUNCTION_ARGS);
 Datum LWGEOM_zmflag(PG_FUNCTION_ARGS);
-Datum LWGEOM_makepoint2d(PG_FUNCTION_ARGS);
-Datum LWGEOM_makepoint3dz(PG_FUNCTION_ARGS);
-Datum LWGEOM_makepoint3dm(PG_FUNCTION_ARGS);
-Datum LWGEOM_makepoint4d(PG_FUNCTION_ARGS);
+Datum LWGEOM_makepoint(PG_FUNCTION_ARGS);
+Datum LWGEOM_makepointm(PG_FUNCTION_ARGS);
 
 
 /*------------------------------------------------------------------*/
@@ -2080,44 +2078,32 @@ Datum LWGEOM_same(PG_FUNCTION_ARGS)
         PG_RETURN_BOOL(result);
 }
 
-PG_FUNCTION_INFO_V1(LWGEOM_makepoint2d);
-Datum LWGEOM_makepoint2d(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(LWGEOM_makepoint);
+Datum LWGEOM_makepoint(PG_FUNCTION_ARGS)
 {
-	double x,y;
-	int SRID;
+	double x,y,z,m;
 	LWPOINT *point;
 	PG_LWGEOM *result;
 	size_t size;
 
-	SRID = PG_GETARG_INT32(0);
-	x = PG_GETARG_FLOAT8(1);
-	y = PG_GETARG_FLOAT8(2);
+	x = PG_GETARG_FLOAT8(0);
+	y = PG_GETARG_FLOAT8(1);
 
-	point = make_lwpoint2d(SRID, x, y);
-
-	size = lwpoint_serialize_size(point);
-	result = (PG_LWGEOM *)palloc(size+4);
-	result->size = (size+4);
-	lwpoint_serialize_buf(point, SERIALIZED_FORM(result), NULL);
-
-	PG_RETURN_POINTER(result);
-}
-
-PG_FUNCTION_INFO_V1(LWGEOM_makepoint3dz);
-Datum LWGEOM_makepoint3dz(PG_FUNCTION_ARGS)
-{
-	double x,y,z;
-	int SRID;
-	LWPOINT *point;
-	PG_LWGEOM *result;
-	size_t size;
-
-	SRID = PG_GETARG_INT32(0);
-	x = PG_GETARG_FLOAT8(1);
-	y = PG_GETARG_FLOAT8(2);
-	z = PG_GETARG_FLOAT8(3);
-
-	point = make_lwpoint3dz(SRID, x, y, z);
+	if ( PG_NARGS() == 2 ) point = make_lwpoint2d(-1, x, y);
+	else if ( PG_NARGS() == 3 ) {
+		z = PG_GETARG_FLOAT8(2);
+		point = make_lwpoint3dz(-1, x, y, z);
+	}
+	else if ( PG_NARGS() == 4 ) {
+		z = PG_GETARG_FLOAT8(2);
+		m = PG_GETARG_FLOAT8(3);
+		point = make_lwpoint4d(-1, x, y, z, m);
+	}
+	else {
+		elog(ERROR, "LWGEOM_makepoint: unsupported number of args: %d",
+			PG_NARGS());
+		PG_RETURN_NULL();
+	}
 
 	size = lwpoint_serialize_size(point);
 	result = (PG_LWGEOM *)palloc(size+4);
@@ -2136,10 +2122,9 @@ Datum LWGEOM_makepoint3dm(PG_FUNCTION_ARGS)
 	PG_LWGEOM *result;
 	size_t size;
 
-	SRID = PG_GETARG_INT32(0);
-	x = PG_GETARG_FLOAT8(1);
-	y = PG_GETARG_FLOAT8(2);
-	m = PG_GETARG_FLOAT8(3);
+	x = PG_GETARG_FLOAT8(0);
+	y = PG_GETARG_FLOAT8(1);
+	m = PG_GETARG_FLOAT8(2);
 
 	point = make_lwpoint3dm(SRID, x, y, m);
 
@@ -2151,27 +2136,3 @@ Datum LWGEOM_makepoint3dm(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-PG_FUNCTION_INFO_V1(LWGEOM_makepoint4d);
-Datum LWGEOM_makepoint4d(PG_FUNCTION_ARGS)
-{
-	double x,y,z,m;
-	int SRID;
-	LWPOINT *point;
-	PG_LWGEOM *result;
-	size_t size;
-
-	SRID = PG_GETARG_INT32(0);
-	x = PG_GETARG_FLOAT8(1);
-	y = PG_GETARG_FLOAT8(2);
-	z = PG_GETARG_FLOAT8(3);
-	m = PG_GETARG_FLOAT8(4);
-
-	point = make_lwpoint4d(SRID, x, y, z, m);
-
-	size = lwpoint_serialize_size(point);
-	result = (PG_LWGEOM *)palloc(size+4);
-	result->size = (size+4);
-	lwpoint_serialize_buf(point, SERIALIZED_FORM(result), NULL);
-
-	PG_RETURN_POINTER(result);
-}
