@@ -134,10 +134,10 @@ make_good_string(char *str)
 	//
 	// we dont escape already escaped tabs
 
-	char	*result;
-	char	*str2;
-	char	*start,*end;
-	int	num_tabs = 0;
+	char *result;
+	char *ptr, *optr;
+	int toescape = 0;
+	size_t size;
 #ifdef USE_ICONV
 	char *utf8str=NULL;
 
@@ -145,49 +145,34 @@ make_good_string(char *str)
 	{
 		utf8str=utf8(encoding, str);
 		if ( ! utf8str ) exit(1);
-		str = utf8str; // we leak anyway
+		str = utf8str; 
 	}
 #endif
 
-	str2 = str;
+	ptr = str;
 
-
-
-	while ((str2 = strchr(str2, '\t')) )
-	{
-		if ( (str2 == str) || (str2[-1] != '\\') ) //the previous char isnt a '\'
-			num_tabs ++;
-		str2++;
+	while (*ptr++) {
+		if ( *ptr == '\t' || *ptr == '\\' ) toescape++;
 	}
-	if (num_tabs == 0)
-	{
-		return str;
-	}
-	
-	result =(char *) malloc ( strlen(str) + num_tabs+1);
-	memset(result,0, strlen(str) + num_tabs+1 );
-	start = str;
 
-	while((end = strchr((start),'\t')))
-	{
-		if ( (end == str) || (end[-1] != '\\' ) ) //the previous char isnt a '\'
-		{
-			strncat(result, start, (end-start));	
-			strcat(result,"\\\t");
-			start = end +1;
-		}
-		else
-		{
-			strncat(result, start, (end-start));	
-			strcat(result,"\t");	
-			start = end  +1;
-		}
+	if (toescape == 0) return str;
+
+	size = ptr-str+toescape;
+
+	result = calloc(1,size);
+
+	optr=result;
+	ptr=str;
+	while (*ptr) {
+		if ( *ptr == '\t' || *ptr == '\\' ) *optr++='\\';
+		*optr++=*ptr++;
 	}
-	strcat(result,start);
+	*optr='\0';
 
 #ifdef USE_ICONV
-	if ( utf8str ) free(utf8str);
-#endif // USE_ICONV
+	free(str);
+#endif
+
 	return result;
 	
 }
@@ -202,9 +187,9 @@ protect_quotes_string(char *str)
 	// 2. make new string 
 
 	char	*result;
-	char	*str2;
-	char	*start, *end1, *end2 = NULL;
-	int	num_chars = 0;
+	char	*ptr, *optr;
+	int	toescape = 0;
+	size_t size;
 #ifdef USE_ICONV
 	char *utf8str=NULL;
 
@@ -212,54 +197,33 @@ protect_quotes_string(char *str)
 	{
 		utf8str=utf8(encoding, str);
 		if ( ! utf8str ) exit(1);
-		str = utf8str; // we leak anyway
+		str = utf8str; 
 	}
 #endif
 
-	str2 = str;
+	ptr = str;
 
-	while ((str2 = strchr((str2), '\'')) )
-	{
-		//if ( (str2 == str) || (str2[-1] != '\\') ) //the previous char isnt a '\'
-		num_chars ++;
-		str2++;
+	while (*ptr++) {
+		if ( *ptr == '\'' || *ptr == '\\' ) toescape++;
 	}
-	
-	str2 = str;
-	
-	while ((str2 = strchr((str2), '\\')) )
-	{
-		num_chars ++;
-		str2++;
-	}
-	if (num_chars == 0)
-		return str;
-	
-	result =(char *) malloc ( strlen(str) + num_chars+1);
-	memset(result,0, strlen(str) + num_chars+1 );
-	start = str;
 
-	while((end1 = strchr((start),'\''))||(end2 = strchr((start),'\\')))
-	{
-	   
-	  if(end1){
-	    strncat(result, start, (end1-start));
-	    strcat(result, "\\\'");
-	    start = end1+1;
-	  }else{
-	    strncat(result, start, (end2-start));
-	    strcat(result, "\\\\");
-	    start = end2+1;
-	  }
-	    
-	  end1 = 0;
+	if (toescape == 0) return str;
+	
+	size = ptr-str+toescape;
+
+	result = calloc(1, size);
+
+	optr=result;
+	ptr=str;
+	while (*ptr) {
+		if ( *ptr == '\'' || *ptr == '\\' ) *optr++='\\';
+		*optr++=*ptr++;
 	}
-	    
-	strcat(result,start);
+	*optr='\0';
 
 #ifdef USE_ICONV
-	if ( utf8str ) free(utf8str);
-#endif // USE_ICONV
+	free(str);
+#endif
 
 	return result;
 }
@@ -297,6 +261,7 @@ Insert_attributes(DBFHandle hDBFHandle, int row)
 {
    int i,num_fields;
    char val[1024];
+   char *escval;
 
    num_fields = DBFGetFieldCount( hDBFHandle );
    for( i = 0; i < num_fields; i++ )
@@ -347,12 +312,15 @@ Insert_attributes(DBFHandle hDBFHandle, int row)
          }
  
 			if (dump_format) {
-				printf("%s",make_good_string(val));
+				escval = make_good_string(val);
+				printf("%s", escval);
 				printf("\t");
 			} else {
-				printf("'%s'",protect_quotes_string(val));
+				escval = protect_quotes_string(val);
+				printf("'%s'", escval);
 				printf(",");
 			}
+			if ( val != escval ) free(escval);
 		 }
 	}
 	return 1;
@@ -420,12 +388,12 @@ main (int ARGC, char **ARGV)
 	fprintf(stderr, "Shapefile type: %s\n", SHPTypeName(shpfiletype));
 	fprintf(stderr, "Postgis type: %s[%d]\n", pgtype, pgdims);
 
-#if USE_ICONV
+#ifdef USE_ICONV
 	if ( encoding )
 	{
 		printf("SET CLIENT_ENCODING TO UTF8;\n");
 	}
-#endif // USE_ICONV
+#endif // defined USE_ICONV
 
 	if(opt == 'd')
 	{
@@ -1385,7 +1353,8 @@ utf8 (const char *fromcode, char *inputbuf)
 		return NULL;
 	}
 
-	outbytesleft = inbytesleft * 2;
+	outbytesleft = inbytesleft * 3; // UTF8 string can be 3 times larger
+					// then local string
 	outputbuf = (char *) malloc (outbytesleft);
 	if (!outputbuf)
 	{
@@ -1406,10 +1375,15 @@ utf8 (const char *fromcode, char *inputbuf)
 	return outputbuf;
 }
 
-#endif // USE_ICONV
+#endif // defined USE_ICONV
 
 /**********************************************************************
  * $Log$
+ * Revision 1.77  2005/01/16 16:50:01  strk
+ * String escaping algorithm made simpler and more robust.
+ * Removed escaped strings leaking.
+ * Fixed UTF8 encoder to allocate enough space for 3bytes chars strings.
+ *
  * Revision 1.76  2005/01/12 17:03:20  strk
  * Added optional UTF8 output support as suggested by IIDA Tetsushi
  *
