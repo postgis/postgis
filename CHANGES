@@ -1,3 +1,7 @@
+PostGIS 1.0.0
+?????
+	- early return from force_collection
+
 PostGIS 1.0.0RC3
 2005/02/24
 	- transform(): missing SRID bugfix, better error handling
