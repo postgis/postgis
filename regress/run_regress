@@ -1,15 +1,13 @@
 #!/bin/sh
 echo "Running Normal Regression Test..."
 echo 
-echo "Differences such as 'INSERT 18641077 1' are not important"
-echo 
-echo "       expected:>     obtained:<"
+echo "       expected:'<'     obtained:'>'"
 echo
 
 DB=postgis_reg
 createdb $DB > /dev/null
 createlang plpgsql $DB > /dev/null
 psql -f ../lwpostgis.sql $DB > /dev/null 2>&1
-psql -tA -f regress.sql $DB > regress_out 2>&1
-diff regress_out regress_expected
+psql -tA < regress.sql $DB 2>&1 | grep -v INSERT > regress_out
+diff regress_expected regress_out
 dropdb $DB > /dev/null
