@@ -75,6 +75,7 @@ typedef struct GEOM_STATS_T
 } GEOM_STATS;
 
 Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS);
+static float8 estimate_selectivity(BOX2DFLOAT4 *box, GEOM_STATS *geomstats);
 
 #endif // USE_VERSION >= 80
 
@@ -90,6 +91,12 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS);
  * Default geometry join selectivity factor
  */
 #define DEFAULT_GEOMETRY_JOINSEL 0.000005 
+
+/*
+ * Define this to actually DO join selectivity
+ * (as contrary to just return the default JOINSEL value)
+ */
+#define REALLY_DO_JOINSEL 1
 
 #define min(a,b)  ((a) <= (b) ? (a) : (b))
 #define max(a,b)  ((a) >  (b) ? (a) : (b))
@@ -718,6 +725,7 @@ Datum estimate_lwhistogram2d(PG_FUNCTION_ARGS)
 }
 
 
+#if ! REALLY_DO_JOINSEL
 // JOIN selectivity in the GiST && operator
 // for all PG versions
 PG_FUNCTION_INFO_V1(LWGEOM_gist_joinsel);
@@ -729,6 +737,234 @@ Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 #endif
 	PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_JOINSEL);
 }
+
+#else // REALLY_DO_JOINSEL
+
+int calculate_column_intersection(BOX2DFLOAT4 *search_box, GEOM_STATS *geomstats1, GEOM_STATS *geomstats2);
+
+int
+calculate_column_intersection(BOX2DFLOAT4 *search_box, GEOM_STATS *geomstats1, GEOM_STATS *geomstats2)
+{
+	/*
+	 * Calculate the intersection of two columns from their geomstats extents - return true
+	 * if a valid intersection was found, false if there is no overlap
+	 */
+
+	float8 i_xmin = max(geomstats1->xmin, geomstats2->xmin);
+	float8 i_ymin = max(geomstats1->ymin, geomstats2->ymin);
+	float8 i_xmax = min(geomstats1->xmax, geomstats2->xmax);
+	float8 i_ymax = min(geomstats1->ymax, geomstats2->ymax);
+
+	/* If the rectangles don't intersect, return false */
+	if (i_xmin > i_xmax || i_ymin > i_ymax)
+		return 0;
+
+	/* Otherwise return the rectangle in search_box */
+	search_box->xmin = i_xmin;
+	search_box->ymin = i_ymin;
+	search_box->xmax = i_xmax;
+	search_box->ymax = i_ymax;
+
+	return -1;
+}
+
+// JOIN selectivity in the GiST && operator
+// for all PG versions
+PG_FUNCTION_INFO_V1(LWGEOM_gist_joinsel);
+Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
+{
+	Query *root = (Query *) PG_GETARG_POINTER(0);
+	//Oid operator = PG_GETARG_OID(1);
+	List *args = (List *) PG_GETARG_POINTER(2);
+	JoinType jointype = (JoinType) PG_GETARG_INT16(3);
+
+	Node *arg1, *arg2;
+	Var *var1, *var2;
+	Oid relid1, relid2;
+
+	HeapTuple stats1_tuple, stats2_tuple, class_tuple;
+	GEOM_STATS *geomstats1, *geomstats2;
+	int geomstats1_nvalues = 0, geomstats2_nvalues = 0;
+	float8 selectivity1 = 0.0, selectivity2 = 0.0;
+	float4 num1_tuples = 0.0, num2_tuples = 0.0;
+	float4 total_tuples = 0.0, rows_returned = 0.0;
+	BOX2DFLOAT4 search_box;
+
+
+	/*
+	 * Join selectivity algorithm. To calculation the selectivity we
+	 * calculate the intersection of the two column sample extents,
+	 * sum the results, and then multiply by two since for each
+	 * geometry in col 1 that intersects a geometry in col 2, the same
+	 * will also be true.
+	 */
+
+
+#if DEBUG_GEOMETRY_STATS
+	elog(NOTICE, "LWGEOM_gist_joinsel called with jointype %d", jointype);
+#endif
+
+	/*
+	 * We'll only respond to an inner join/unknown context join
+	 */
+	if (jointype != JOIN_INNER)
+	{
+		elog(NOTICE, "LWGEOM_gist_joinsel called with incorrect join type");
+		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_JOINSEL);
+	}
+
+	/*
+	 * Determine the oids of the geometry columns we are working with
+	 */
+	arg1 = (Node *) linitial(args);
+	arg2 = (Node *) lsecond(args);
+
+	if (!IsA(arg1, Var) || !IsA(arg2, Var))
+	{
+		elog(NOTICE, "LWGEOM_gist_joinsel called with arguments that are not column references");
+		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_JOINSEL);
+	}
+
+	var1 = (Var *)arg1;
+	relid1 = getrelid(var1->varno, root->rtable);
+	var2 = (Var *)arg2;
+	relid2 = getrelid(var2->varno, root->rtable);
+
+#if DEBUG_GEOMETRY_STATS
+	elog(NOTICE, "Working with relations oids: %d %d", relid1, relid2);
+#endif
+	
+	/* Read the stats tuple from the first column */
+	stats1_tuple = SearchSysCache(STATRELATT, ObjectIdGetDatum(relid1), Int16GetDatum(var1->varattno), 0, 0);
+	if ( ! stats1_tuple )
+	{
+#if DEBUG_GEOMETRY_STATS
+		elog(NOTICE, " No statistics, returning default estimate");
+#endif
+		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_SEL);
+	}
+
+	
+
+	if ( ! get_attstatsslot(stats1_tuple, 0, 0,
+		STATISTIC_KIND_GEOMETRY, InvalidOid, NULL, NULL,
+		(float4 **)&geomstats1, &geomstats1_nvalues) )
+	{
+#if DEBUG_GEOMETRY_STATS
+		elog(NOTICE, " STATISTIC_KIND_GEOMETRY stats not found - returning default geometry selectivity");
+#endif
+		ReleaseSysCache(stats1_tuple);
+		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_SEL);
+	}
+
+
+	/* Read the stats tuple from the second column */
+	stats2_tuple = SearchSysCache(STATRELATT, ObjectIdGetDatum(relid2), Int16GetDatum(var2->varattno), 0, 0);
+	if ( ! stats2_tuple )
+	{
+#if DEBUG_GEOMETRY_STATS
+		elog(NOTICE, " No statistics, returning default estimate");
+#endif
+		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_SEL);
+	}
+
+
+	if ( ! get_attstatsslot(stats2_tuple, 0, 0,
+		STATISTIC_KIND_GEOMETRY, InvalidOid, NULL, NULL,
+		(float4 **)&geomstats2, &geomstats2_nvalues) )
+	{
+#if DEBUG_GEOMETRY_STATS
+		elog(NOTICE, " STATISTIC_KIND_GEOMETRY stats not found - returning default geometry selectivity");
+#endif
+		ReleaseSysCache(stats2_tuple);
+		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_SEL);
+	}
+
+
+	/*
+	 * Setup the search box - this is the intersection of the two column
+	 * extents.
+	 */
+	calculate_column_intersection(&search_box, geomstats1, geomstats2);
+
+#if DEBUG_GEOMETRY_STATS
+	elog(NOTICE," -- geomstats1 box: %.15g %.15g, %.15g %.15g",geomstats1->xmin,geomstats1->ymin,geomstats1->xmax,geomstats1->ymax);
+	elog(NOTICE," -- geomstats2 box: %.15g %.15g, %.15g %.15g",geomstats2->xmin,geomstats2->ymin,geomstats2->xmax,geomstats2->ymax);
+	elog(NOTICE," -- calculated intersection box is : %.15g %.15g, %.15g %.15g",search_box.xmin,search_box.ymin,search_box.xmax,search_box.ymax);
+#endif
+
+
+	/* Do the selectivity */
+	selectivity1 = estimate_selectivity(&search_box, geomstats1);
+	selectivity2 = estimate_selectivity(&search_box, geomstats2);
+
+#if DEBUG_GEOMETRY_STATS
+	elog(NOTICE, "selectivity1: %.15g   selectivity2: %.15g", selectivity1, selectivity2);
+#endif
+
+	/* Free the statistic tuples */
+	free_attstatsslot(0, NULL, 0, (float *)geomstats1, geomstats1_nvalues);
+	ReleaseSysCache(stats1_tuple);
+
+	free_attstatsslot(0, NULL, 0, (float *)geomstats2, geomstats2_nvalues);
+	ReleaseSysCache(stats2_tuple);
+
+	/*
+	 * OK, so before we calculate the join selectivity we also need to
+	 * know the number of tuples in each of the columns since
+	 * estimate_selectivity returns the number of estimated tuples
+	 * divided by the total number of tuples - hence we need to
+	 * multiply out the returned selectivity by the total number of rows.
+	 */
+	class_tuple = SearchSysCache(RELOID, ObjectIdGetDatum(relid1),
+		0, 0, 0);
+
+	if (HeapTupleIsValid(class_tuple))
+	{
+		Form_pg_class reltup = (Form_pg_class) GETSTRUCT(class_tuple);
+		num1_tuples = reltup->reltuples;
+	}
+
+	ReleaseSysCache(class_tuple);
+
+
+	class_tuple = SearchSysCache(RELOID, ObjectIdGetDatum(relid2),
+		0, 0, 0);
+
+	if (HeapTupleIsValid(class_tuple))
+	{
+		Form_pg_class reltup = (Form_pg_class) GETSTRUCT(class_tuple);
+		num2_tuples = reltup->reltuples;
+	}
+
+	ReleaseSysCache(class_tuple);
+
+
+	/*
+	 * Finally calculate the estimate of the number of rows returned
+	 *
+	 *    = 2 * (nrows from col1 + nrows from col2) /
+	 *	total nrows in col1 x total nrows in col2
+	 *
+	 * The factor of 2 accounts for the fact that for each tuple in
+	 * col 1 matching col 2,
+	 * there will be another match in col 2 matching col 1
+	 */
+
+	total_tuples = num1_tuples * num2_tuples;
+	rows_returned = 2 * ((num1_tuples * selectivity1) +
+		(num2_tuples * selectivity2));
+
+#if DEBUG_GEOMETRY_STATS
+	elog(NOTICE, "Rows from rel1: %f", num1_tuples * selectivity1);
+	elog(NOTICE, "Rows from rel2: %f", num2_tuples * selectivity2);
+	elog(NOTICE, "Estimated rows returned: %f", rows_returned);
+#endif
+
+	PG_RETURN_FLOAT8(rows_returned / total_tuples);
+}
+
+#endif // REALLY_DO_JOINSEL
 
 /**************************** FROM POSTGIS ****************/
 
@@ -2025,6 +2261,9 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.19  2004/12/22 17:12:34  strk
+ * Added Mark Cave-Ayland implementation of JOIN selectivity estimator.
+ *
  * Revision 1.18  2004/12/21 12:21:45  mcayland
  * Fixed bug in pass 4 where sample boxes were referred as BOXs and not BOX2DFLOAT4. Also increased SDFACTOR to 3.25
  *
