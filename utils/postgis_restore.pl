@@ -7,11 +7,10 @@
 # the given postgis.sql.
 #
 # A particular attention must be given to the spatial_ref_sys
-# and geometry_columns tables which are created from postgis.sql
-# and filled using data from dump. If pre-7.5 is restored to 7.5+
-# some columns will be missing from geometry_columns, so they'll
-# probably need to be added first and dropped after (currently not
-# done).
+# and geometry_columns tables which are created and populated
+# from the dump, not the postgis.sql file. When the new installation
+# is agains pgsql7.5+ and dump from pre7.5 this script should probably
+# drop statistic fields from that table.... currently not done.
 #
 # Known issues:
 #	- operators from the dump are never restored due to
@@ -233,13 +232,13 @@ while( my $line = <INPUT> )
 	# spatial_ref_sys and geometry_columns
 	elsif ($line =~ / TABLE geometry_columns/)
 	{
-		print "SKIPPING geometry_columns schema\n" if $DEBUG;
-		next;
+		#print "SKIPPING geometry_columns schema\n" if $DEBUG;
+		#next;
 	}
 	elsif ($line =~ / TABLE spatial_ref_sys/)
 	{
-		print "SKIPPING spatial_ref_sys schema\n" if $DEBUG;
-		next;
+		#print "SKIPPING spatial_ref_sys schema\n" if $DEBUG;
+		#next;
 	}
 
 	# Will skip all operators (there is no way to tell from a dump
