@@ -2083,9 +2083,9 @@ BEGIN
 			strpos(typecheck.consrc, ''=''),
 			strpos(typecheck.consrc, ''::'')-
 			strpos(typecheck.consrc, ''='')
-			))::varchar as type,
+			))::varchar as type
 #if USE_VERSION < 80
-		a.attrelid,
+		, a.attrelid,
 		a.attnum as varattnum,
 		null::histogram2d as stats
 #endif
