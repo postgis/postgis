@@ -10,6 +10,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.37  2003/11/26 18:54:22  strk
+ * fixed bug in HexDecoder, made WKB parsing the default
+ *
  * Revision 1.36  2003/11/26 18:14:11  strk
  * binary cursor implemented
  *
@@ -105,9 +108,12 @@
 #define VERBOSE 1
 
 /* Define this to try WKB parsing */
-#undef USE_WKB
+#define USE_WKB
 /* Define this to use HEX encoding instead of bytea encoding */
-#undef HEXWKB
+#define HEXWKB
+
+typedef unsigned long int uint32;
+typedef unsigned char byte;
 
 /* Global data */
 PGconn *conn;
@@ -121,7 +127,7 @@ int geotype;
 int is3d;
 int binary;
 #ifdef USE_WKB
-SHPObject * (*shape_creator)(char *, int);
+SHPObject * (*shape_creator)(byte *, int);
 #else
 SHPObject * (*shape_creator)(char *, int, SHPHandle, int);
 #endif
@@ -151,30 +157,29 @@ int reverse_points(int num_points,double *x,double *y,double *z);
 int is_clockwise(int num_points,double *x,double *y,double *z);
 
 /* WKB functions */
-typedef unsigned long int uint32;
-SHPObject * create_polygon3D_WKB(char *wkb, int shape_id);
-SHPObject * create_polygon2D_WKB(char *wkb, int shape_id);
-SHPObject * create_multipoint2D_WKB(char *wkb, int shape_id);
-SHPObject * create_multipoint3D_WKB(char *wkb, int shape_id);
-SHPObject * create_point2D_WKB(char *wkb, int shape_id);
-SHPObject * create_point3D_WKB(char *wkb, int shape_id);
-SHPObject * create_multiline3D_WKB (char *wkb, int shpid);
-SHPObject * create_multiline2D_WKB (char *wkb, int shpid);
-SHPObject * create_line2D_WKB(char *wkb, int shape_id);
-SHPObject * create_line3D_WKB(char *wkb, int shape_id);
-SHPObject * create_multipolygon2D_WKB(char *wkb, int shpid);
-SHPObject * create_multipolygon3D_WKB(char *wkb, int shpid);
-char getbyte(char *c);
-void skipbyte(char **c);
-char popbyte(char **c);
-int popint(char **c);
-int getint(char *c);
-void skipint(char **c);
-double popdouble(char **c);
-double getdouble(char *c);
-void skipdouble(char **c);
-void dump_wkb(char *wkb);
-char * HexDecode(char *hex);
+SHPObject * create_polygon3D_WKB(byte *wkb, int shape_id);
+SHPObject * create_polygon2D_WKB(byte *wkb, int shape_id);
+SHPObject * create_multipoint2D_WKB(byte *wkb, int shape_id);
+SHPObject * create_multipoint3D_WKB(byte *wkb, int shape_id);
+SHPObject * create_point2D_WKB(byte *wkb, int shape_id);
+SHPObject * create_point3D_WKB(byte *wkb, int shape_id);
+SHPObject * create_multiline3D_WKB (byte *wkb, int shpid);
+SHPObject * create_multiline2D_WKB (byte *wkb, int shpid);
+SHPObject * create_line2D_WKB(byte *wkb, int shape_id);
+SHPObject * create_line3D_WKB(byte *wkb, int shape_id);
+SHPObject * create_multipolygon2D_WKB(byte *wkb, int shpid);
+SHPObject * create_multipolygon3D_WKB(byte *wkb, int shpid);
+byte getbyte(byte *c);
+void skipbyte(byte **c);
+byte popbyte(byte **c);
+uint32 popint(byte **c);
+uint32 getint(byte *c);
+void skipint(byte **c);
+double popdouble(byte **c);
+double getdouble(byte *c);
+void skipdouble(byte **c);
+void dump_wkb(byte *wkb);
+byte * HexDecode(byte *hex);
 #define WKB3DOFFSET 0x80000000
 
 
@@ -675,7 +680,7 @@ create_multilines(char *str,int shape_id, SHPHandle shp,int dims)
 }
 
 SHPObject *
-create_multiline3D_WKB (char *wkb, int shape_id)
+create_multiline3D_WKB (byte *wkb, int shape_id)
 {
 	SHPObject *obj;
 	double *x=NULL, *y=NULL, *z=NULL;
@@ -733,7 +738,7 @@ create_multiline3D_WKB (char *wkb, int shape_id)
 }
 
 SHPObject *
-create_multiline2D_WKB (char *wkb, int shape_id)
+create_multiline2D_WKB (byte *wkb, int shape_id)
 {
 	double *x=NULL, *y=NULL;
 	int nparts=0, *part_index=NULL, totpoints=0, nlines=0;
@@ -834,7 +839,7 @@ create_lines(char *str,int shape_id, SHPHandle shp,int dims)
 }
 
 SHPObject *
-create_line3D_WKB (char *wkb, int shape_id)
+create_line3D_WKB (byte *wkb, int shape_id)
 {
 	double *x=NULL, *y=NULL, *z=NULL;
 	uint32 npoints=0, pn;
@@ -846,7 +851,7 @@ create_line3D_WKB (char *wkb, int shape_id)
 	npoints = popint(&wkb);
 
 #if VERBOSE > 2
-	printf("Line %d has %d points\n", li, npoints);
+	printf("Line has %lu points\n", npoints);
 #endif
 
 	x = malloc(sizeof(double)*(npoints));
@@ -868,7 +873,7 @@ create_line3D_WKB (char *wkb, int shape_id)
 }
 
 SHPObject *
-create_line2D_WKB (char *wkb, int shape_id)
+create_line2D_WKB (byte *wkb, int shape_id)
 {
 	double *x=NULL, *y=NULL, *z=NULL;
 	uint32 npoints=0, pn;
@@ -880,7 +885,7 @@ create_line2D_WKB (char *wkb, int shape_id)
 	npoints = popint(&wkb);
 
 #if VERBOSE > 2
-	printf("Line %d has %d points\n", li, npoints);
+	printf("Line has %lu points\n", npoints);
 #endif
 
 	x = malloc(sizeof(double)*(npoints));
@@ -901,7 +906,7 @@ create_line2D_WKB (char *wkb, int shape_id)
 
 
 SHPObject *
-create_point3D_WKB(char *wkb, int shape_id)
+create_point3D_WKB(byte *wkb, int shape_id)
 {
 	SHPObject *obj;
 	double x, y, z;
@@ -919,7 +924,7 @@ create_point3D_WKB(char *wkb, int shape_id)
 }
 
 SHPObject *
-create_point2D_WKB(char *wkb, int shape_id)
+create_point2D_WKB(byte *wkb, int shape_id)
 {
 	SHPObject *obj;
 	double x, y;
@@ -1014,7 +1019,7 @@ create_multipoints(char *str,int shape_id, SHPHandle shp,int dims)
 }
 
 SHPObject *
-create_multipoint3D_WKB(char *wkb, int shape_id)
+create_multipoint3D_WKB(byte *wkb, int shape_id)
 {
 	SHPObject *obj;
 	double *x=NULL, *y=NULL, *z=NULL;
@@ -1044,7 +1049,7 @@ create_multipoint3D_WKB(char *wkb, int shape_id)
 }
 
 SHPObject *
-create_multipoint2D_WKB(char *wkb, int shape_id)
+create_multipoint2D_WKB(byte *wkb, int shape_id)
 {
 	SHPObject *obj;
 	double *x=NULL, *y=NULL;
@@ -1173,7 +1178,7 @@ create_polygons(char *str,int shape_id, SHPHandle shp,int dims)
 }
 
 SHPObject *
-create_polygon2D_WKB(char *wkb, int shape_id)
+create_polygon2D_WKB(byte *wkb, int shape_id)
 {
 	SHPObject *obj;
 	int ri, nrings, totpoints=0, *part_index=NULL;
@@ -1245,7 +1250,7 @@ create_polygon2D_WKB(char *wkb, int shape_id)
 }
 
 SHPObject *
-create_polygon3D_WKB(char *wkb, int shape_id)
+create_polygon3D_WKB(byte *wkb, int shape_id)
 {
 	SHPObject *obj;
 	int ri, nrings, totpoints=0, *part_index=NULL;
@@ -1488,7 +1493,7 @@ create_multipolygons(char *str,int shape_id, SHPHandle shp,int dims)
 }
 
 SHPObject *
-create_multipolygon2D_WKB(char *wkb, int shape_id)
+create_multipolygon2D_WKB(byte *wkb, int shape_id)
 {
 	SHPObject *obj;
 	uint32 nrings, nparts;
@@ -1557,7 +1562,7 @@ create_multipolygon2D_WKB(char *wkb, int shape_id)
 				x[totpoints+pn] = popdouble(&wkb);
 				y[totpoints+pn] = popdouble(&wkb);
 #if VERBOSE > 3
-	printf("Point%d (%f,%f)\n", pn, x[totpoints+pn], y[totpoints+pn]);
+	printf("Point%lu (%f,%f)\n", pn, x[totpoints+pn], y[totpoints+pn]);
 #endif
 			}
 
@@ -1615,7 +1620,7 @@ create_multipolygon2D_WKB(char *wkb, int shape_id)
 }
 
 SHPObject *
-create_multipolygon3D_WKB(char *wkb, int shape_id)
+create_multipolygon3D_WKB(byte *wkb, int shape_id)
 {
 	SHPObject *obj;
 	obj = (SHPObject *)malloc(sizeof(SHPObject));
@@ -2615,16 +2620,20 @@ getMaxFieldSize(PGconn *conn, char *table, char *fname)
  * Input is a NULL-terminated string.
  * Output is a binary string.
  */
-char *
-HexDecode(char *hex)
+byte *
+HexDecode(byte *hex)
 {
-	char *ret, *retptr, *hexptr;
-	char byte;
+	byte *ret, *retptr, *hexptr;
+	byte byt;
 	int len;
 	
 	len = strlen(hex)/2;
+	ret = (byte *)malloc(len);
+	if ( ! ret )  {
+		fprintf(stderr, "Out of virtual memory\n");
+		exit(1);
+	}
 
-	ret = (char *)malloc(len);
 
 	//printf("Decoding %d bytes", len); fflush(stdout);
 	hexptr = hex; retptr = ret;
@@ -2639,9 +2648,9 @@ HexDecode(char *hex)
 
 		//printf("%c", *hexptr);
 		if ( *hexptr < 58 && *hexptr > 47 )
-			byte = (((*hexptr)-48)<<4);
+			byt = (((*hexptr)-48)<<4);
 		else if ( *hexptr > 64 && *hexptr < 71 )
-			byte = (((*hexptr)-65)<<4);
+			byt = (((*hexptr)-55)<<4);
 		else {
 			fprintf(stderr, "Malformed WKB\n");
 			exit(1);
@@ -2650,18 +2659,18 @@ HexDecode(char *hex)
 
 		//printf("%c", *hexptr);
 		if ( *hexptr < 58 && *hexptr > 47 )
-			byte |= ((*hexptr)-48);
+			byt |= ((*hexptr)-48);
 		else if ( *hexptr > 64 && *hexptr < 71 )
-			byte |= ((*hexptr)-65);
+			byt |= ((*hexptr)-55);
 		else {
 			fprintf(stderr, "Malformed WKB\n");
 			exit(1);
 		}
 		hexptr++;
 
-		//printf("(%d)", byte);
+		//printf("(%d)", byt);
 
-		*retptr = (char)byte;
+		*retptr = (byte)byt;
 		retptr++;
 	}
 	//printf(" Done.\n");
@@ -2680,7 +2689,7 @@ HexDecode(char *hex)
  *********************************************************************/
 
 void
-dump_wkb(char *wkb)
+dump_wkb(byte *wkb)
 {
 	int byteOrder;
 	int type;
@@ -2700,43 +2709,44 @@ dump_wkb(char *wkb)
 }
 
 
-void skipbyte(char **c) {
+void skipbyte(byte **c) {
 	*c+=1;
 }
 
-char getbyte(char *c) {
+byte getbyte(byte *c) {
 	return *((char*)c);
 }
 
 // #define popbyte(x) *x++
-char popbyte(char **c) {
-	return *((char*)*c++);
+byte popbyte(byte **c) {
+	return *((byte*)*c++);
 }
 
-int popint(char **c) {
-	int ret = *((int*)*c);
+uint32 popint(byte **c) {
+	int ret = *((uint32*)*c);
 	*c+=4;
 	return ret;
 }
 
-void skipint(char **c) {
+void skipint(byte **c) {
 	*c+=4;
 }
 
-int getint(char *c) {
-	return *((int*)c);
+uint32 getint(byte *c) {
+	return *((uint32*)c);
 }
 
-double popdouble(char **c) {
-	double ret = *((double*)*c);
+double popdouble(byte **c) {
+	double ret;
+	ret = *((double*)*c);
 	*c+=8;
 	return ret;
 }
 
-void skipdouble(char **c) {
+void skipdouble(byte **c) {
 	*c+=8;
 }
 
-double getdouble(char *c) {
+double getdouble(byte *c) {
 	return *((double*)c);
 }
