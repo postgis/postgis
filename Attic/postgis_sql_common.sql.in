@@ -12,6 +12,9 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.20  2003/11/12 20:55:18  strk
+-- AddGeometryColumn column identifier case respect fix as suggested by Bernhard Herzog
+--
 -- Revision 1.19  2003/11/05 18:26:54  strk
 -- Added fast collect() and geomunion() aggregates implementations
 --
@@ -301,7 +304,7 @@ BEGIN
 		''") = '' || new_srid || '')'' ;
 
 	IF (not(new_type = ''GEOMETRY'')) THEN
-		EXECUTE ''ALTER TABLE "'' ||table_name||''" ADD CHECK ( geometrytype("''||column_name||''")=''|| quote_literal(new_type)||'' OR ('' ||column_name ||'') is null)'';
+		EXECUTE ''ALTER TABLE "'' ||table_name||''" ADD CHECK ( geometrytype("''||column_name||''")=''|| quote_literal(new_type)||'' OR ("'' ||column_name ||''") is null)'';
 	END IF;
 
 	return ''Geometry column '' || column_name || '' added to table ''
