@@ -2,6 +2,11 @@
 
 /*
 * $Log$
+* Revision 1.18  2004/04/27 07:44:26  strk
+* Removed use of geometryFactory->toGeometry(), indicated by Martin Davis
+* as being intended for internal use only. Created a linear ring instead
+* (the function converts a box3d to a geos geometry).
+*
 * Revision 1.17  2003/12/12 13:34:20  strk
 * added missing 'const' in prototypes
 *
@@ -189,24 +194,36 @@ void initGEOS (int maxalign)
 		//note: you lose the 3d from this!
 Geometry *PostGIS2GEOS_box3d(BOX3D *box, int SRID)
 {
+	BasicCoordinateList  *cl = new BasicCoordinateList(5);
 	try {
 		Geometry *g;
-		Envelope *envelope = new Envelope(box->LLB.x,box->URT.x ,box->LLB.y,box->URT.y);
-		g = geomFactory->toGeometry(envelope,geomFactory->getPrecisionModel(), SRID);
-		delete envelope;
-		if (g==NULL)
-			return NULL;
+		Coordinate c;
+		c.x = box->LLB.x; c.y = box->LLB.y;
+		cl->setAt(c, 0);
+		c.x = box->LLB.x; c.y = box->URT.y;
+		cl->setAt(c, 1);
+		c.x = box->URT.x; c.y = box->URT.y;
+		cl->setAt(c, 2);
+		c.x = box->URT.x; c.y = box->LLB.y;
+		cl->setAt(c, 3);
+		c.x = box->LLB.x; c.y = box->LLB.y;
+		cl->setAt(c, 4);
+
+		g = geomFactory->createLinearRing(cl);
+		delete cl;
+		if (g==NULL) return NULL;
 		g->setSRID(SRID);
 		return g;
 	}
 	catch (GEOSException *ge)
 	{
 		NOTICE_MESSAGE((char *)ge->toString().c_str());
-		delete ge;
+		delete cl;
 		return NULL;
 	}
 	catch (...)
 	{
+		delete cl;
 		return NULL;
 	}
 }
