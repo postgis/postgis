@@ -117,7 +117,7 @@ Datum LWGEOM_out(PG_FUNCTION_ARGS)
 	init_pg_func();
 
 	lwgeom = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	result = unparse_WKB(SERIALIZED_FORM(lwgeom),lwalloc,lwfree);
+	result = unparse_WKB(SERIALIZED_FORM(lwgeom),lwalloc,lwfree,-1);
 
 	PG_RETURN_CSTRING(result);
 }
@@ -201,11 +201,34 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 	int size_result;
 	char *semicolonLoc;
 	int t;
+	text *type;
+	unsigned int byteorder=-1;
 
 	init_pg_func();
 
+	if ( (PG_NARGS()>1) && (!PG_ARGISNULL(1)) )
+	{
+		type = PG_GETARG_TEXT_P(1);
+		if (VARSIZE(type) < 7)  
+		{
+			elog(ERROR,"asbinary(geometry, <type>) - type should be 'XDR' or 'NDR'.  type length is %i",VARSIZE(type) -4);
+			PG_RETURN_NULL();
+		}
+
+		if  ( ! strncmp(VARDATA(type), "xdr", 3) ||
+			! strncmp(VARDATA(type), "XDR", 3) )
+		{
+			byteorder = BIG_ENDIAN;
+		}
+		else
+		{
+			byteorder = LITTLE_ENDIAN;
+		}
+	}
+
 	lwgeom_input = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	hexized_wkb_srid = unparse_WKB(SERIALIZED_FORM(lwgeom_input), lwalloc, lwfree);
+	hexized_wkb_srid = unparse_WKB(SERIALIZED_FORM(lwgeom_input),
+		lwalloc, lwfree, byteorder);
 
 //elog(NOTICE, "in WKBFromLWGEOM with WKB = '%s'", hexized_wkb_srid);
 

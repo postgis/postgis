@@ -26,8 +26,9 @@ int main()
 	// Construct a point LWGEOM
 	point = lwpoint_construct(-1, 0, pa);
 
-	// Print WKT
+	// Print WKT end HEXWKB
 	printf("WKT: %s\n", lwgeom_to_wkt(point));
+	printf("HEXWKB: %s\n", lwgeom_to_hexwkb(point,-1));
 
 	// Construct a 5-points pointarray2d
 	pa = ptarray_construct2d(5, pts2d);
@@ -35,8 +36,9 @@ int main()
 	// Construct a line LWGEOM
 	line = lwline_construct(-1, 0, pa);
 
-	// Print WKT
+	// Print WKT and HEXWKB
 	printf("WKT: %s\n", lwgeom_to_wkt(line));
+	printf("HEXWKB: %s\n", lwgeom_to_hexwkb(point,-1));
 
 	return 1;
 }

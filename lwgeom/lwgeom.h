@@ -31,6 +31,7 @@ typedef struct LWGEOM_T *LWGEOM;
 
 // Conversions
 extern char *lwgeom_to_wkt(LWGEOM lwgeom);
+extern char *lwgeom_to_hexwkb(LWGEOM lwgeom, unsigned int byteorder);
 
 // Construction
 extern LWGEOM lwpoint_construct(int SRID, char wantbbox, POINTARRAY pa);

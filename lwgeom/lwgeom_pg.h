@@ -6,6 +6,10 @@
 #include "fmgr.h"
 #include "liblwgeom.h"
 
+#ifndef PG_NARGS
+#define PG_NARGS() (fcinfo->nargs)
+#endif
+
 void *pg_alloc(size_t size);
 void *pg_realloc(void *ptr, size_t size);
 void pg_free(void *ptr);

@@ -709,11 +709,7 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 	PG_LWGEOM *result = NULL;
 
 	// read user-requested SRID if any
-#if USE_VERSION < 73
-	if ( fcinfo->nargs > 1 )
-#else
 	if ( PG_NARGS() > 1 )
-#endif
 	{
 		SRID = PG_GETARG_INT32(1);
 		if ( SRID != lwgeom_getSRID(geom) )

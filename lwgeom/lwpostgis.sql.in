@@ -1077,6 +1077,11 @@ CREATEFUNCTION AsBinary(geometry)
 	AS '@MODULE_FILENAME@','WKBFromLWGEOM'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
+CREATEFUNCTION AsBinary(geometry,text)
+	RETURNS bytea
+	AS '@MODULE_FILENAME@','WKBFromLWGEOM'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
 CREATEFUNCTION AsText(geometry)
 	RETURNS TEXT
 	AS '@MODULE_FILENAME@','LWGEOM_asText'

@@ -371,6 +371,18 @@ lwgeom_to_wkt(LWGEOM *lwgeom)
 	return ret;
 }
 
+/*
+ * Return an alloced string
+ */
+char *
+lwgeom_to_hexwkb(LWGEOM *lwgeom, unsigned int byteorder)
+{
+	char *serialized = lwgeom_serialize(lwgeom);
+	char *hexwkb = unparse_WKB(serialized, lwalloc, lwfree, byteorder);
+	lwfree(serialized);
+	return hexwkb;
+}
+
 // geom1 same as geom2
 //  iff
 //      + have same type                                                        //      + have same # objects

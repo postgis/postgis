@@ -4,7 +4,9 @@
  * Copyright Telogis 2004
  * www.telogis.com
  *
+ * $Id$
  */
+
 
 #include "wktparse.h"
 #include <string.h>
@@ -21,9 +23,17 @@
 static int endian_check_int = 1; // dont modify this!!!
 
 #define LITTLE_ENDIAN_CHECK 1
-static char getMachineEndian()
+static unsigned int getMachineEndian()
 {
-	return *((char *) &endian_check_int); // 0 = big endian, 1 = little endian
+	// 0 = big endian, 1 = little endian
+	if ( *((char *) &endian_check_int) )
+	{
+		return LITTLE_ENDIAN;
+	}
+	else
+	{
+		return BIG_ENDIAN;
+	}
 }
 
 //-- Typedefs ----------------------------------------------
@@ -46,7 +56,7 @@ byte* output_single(byte* geom,int supress);
 byte* output_collection(byte* geom,outfunc func,int supress);
 byte* output_collection_2(byte* geom,int suppress);
 byte* output_multipoint(byte* geom,int suppress);
-void write_wkb_bytes(byte* ptr,int cnt);
+void write_wkb_bytes(byte* ptr,unsigned int cnt,size_t size);
 void write_wkb_int(int i);
 byte* output_wkb_collection(byte* geom,outwkbfunc func);
 byte* output_wkb_collection_2(byte* geom);
@@ -62,6 +72,7 @@ static char*  out_start;
 static char*  out_pos;
 static int len;
 static int lwgi;
+static int flipbytes;
 
 //----------------------------------------------------------
 
@@ -368,13 +379,30 @@ unparse_WKT(byte* serialized, allocator alloc, freeor free)
 static char outchr[]={"0123456789ABCDEF" };
 
 void
-write_wkb_bytes(byte* ptr,int cnt){
-	ensure(cnt*2);
+write_wkb_bytes(byte* ptr, unsigned int cnt, size_t size)
+{
+	unsigned int bc; // byte count
+
+	ensure(cnt*2*size);
 
 	while(cnt--){
-		*out_pos++ = outchr[*ptr>>4];
-		*out_pos++ = outchr[*ptr&0x0F];
-		ptr ++;
+		if (flipbytes)
+		{
+			for(bc=size; bc; bc--)
+			{
+				*out_pos++ = outchr[ptr[bc-1]>>4];
+				*out_pos++ = outchr[ptr[bc-1]&0x0F];
+			}
+		}
+		else
+		{
+			for(bc=0; bc<size; bc++)
+			{
+				*out_pos++ = outchr[ptr[bc]>>4];
+				*out_pos++ = outchr[ptr[bc]&0x0F];
+			}
+		}
+		ptr+=size;
 	}
 }
 
@@ -382,18 +410,18 @@ byte *
 output_wkb_point(byte* geom)
 {
 	if ( lwgi ){
-		write_wkb_bytes(geom,dims*4);
+		write_wkb_bytes(geom,dims,4);
 		return geom + (4*dims);
 	}
 	else{
-		write_wkb_bytes(geom,dims*8);
+		write_wkb_bytes(geom,dims,8);
 		return geom + (8*dims);
 	}
 }
 
 void
 write_wkb_int(int i){
-	write_wkb_bytes((byte*)&i,4);
+	write_wkb_bytes((byte*)&i,1,4);
 }
 
 byte *
@@ -419,7 +447,6 @@ output_wkb(byte* geom)
 {
 	unsigned char type=*geom++;
 	int4 wkbtype;
-	byte endian;
 
 	dims = TYPE_NDIMS(type); 
 #ifdef DEBUG
@@ -444,15 +471,6 @@ output_wkb(byte* geom)
 		 wkbtype |= WKBZOFFSET;
 	if ( TYPE_HASM(type) )
 		 wkbtype |= WKBMOFFSET;
-
-	if ( getMachineEndian() != LITTLE_ENDIAN_CHECK ){
-		endian=0;
-		write_wkb_bytes(&endian,1);
-	}
-	else{
-		endian=1;
-		write_wkb_bytes(&endian,1);
-	}
 
 	write_wkb_int(wkbtype);
 
@@ -501,8 +519,9 @@ output_wkb(byte* geom)
 }
 
 char *
-unparse_WKB(byte* serialized, allocator alloc, freeor free)
+unparse_WKB(byte* serialized, allocator alloc, freeor free, unsigned int endian)
 {
+	byte endianbyte;
 
 #ifdef DEBUG
 	lwnotice("unparse_WKB(%p,...) called", serialized);
@@ -517,6 +536,16 @@ unparse_WKB(byte* serialized, allocator alloc, freeor free)
 	out_start = out_pos = alloc(len);
 	lwgi=0;
 
+	if ( endian == -1 ) endian = getMachineEndian();
+
+	if ( endian == LITTLE_ENDIAN) endianbyte=1;
+	else endianbyte=0;
+
+	write_wkb_bytes(&endianbyte,1,1);
+
+	if ( endian != getMachineEndian() ) flipbytes = 1;
+	else flipbytes = 0;
+
 	output_wkb(serialized);
 	ensure(1);
 	*out_pos=0;
@@ -525,3 +554,9 @@ unparse_WKB(byte* serialized, allocator alloc, freeor free)
 }
 
 
+/******************************************************************
+ * $Log$
+ * Revision 1.10  2004/10/11 14:03:33  strk
+ * Added endiannes specification to unparse_WKB, AsBinary, lwgeom_to_wkb.
+ *
+ ******************************************************************/
