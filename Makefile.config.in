@@ -78,8 +78,8 @@ LPATH=\$$libdir
 #
 # Path to flex, yacc
 #
-FLEX ?= @FLEX@
-YACC ?= @YACC@
+FLEX=@FLEX@
+YACC=@YACC@
 
 #---------------------------------------------------------------
 # END OF CONFIGURATION
