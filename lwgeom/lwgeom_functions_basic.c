@@ -188,7 +188,10 @@ Datum LWGEOM_summary(PG_FUNCTION_ARGS)
 	VARATT_SIZEP(mytext) = VARHDRSZ + strlen(result) + 1;
 	VARDATA(mytext)[0] = '\n';
 	memcpy(VARDATA(mytext)+1, result, strlen(result) );
+
 	lwfree(result);
+	PG_FREE_IF_COPY(geom,0);
+
 	PG_RETURN_POINTER(mytext);
 }
 
@@ -349,6 +352,7 @@ Datum LWGEOM_npoints(PG_FUNCTION_ARGS)
 
 	npoints = lwgeom_npoints(SERIALIZED_FORM(geom));
 
+	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_INT32(npoints);
 }
 
@@ -361,6 +365,7 @@ Datum LWGEOM_nrings(PG_FUNCTION_ARGS)
 
 	nrings = lwgeom_nrings_recursive(SERIALIZED_FORM(geom));
 
+	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_INT32(nrings);
 }
 
@@ -389,6 +394,7 @@ Datum LWGEOM_area_polygon(PG_FUNCTION_ARGS)
 	
 	pfree_inspected(inspected);
 
+	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_FLOAT8(area);
 }
 
@@ -418,6 +424,7 @@ Datum LWGEOM_length2d_linestring(PG_FUNCTION_ARGS)
 
 	pfree_inspected(inspected);
 
+	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_FLOAT8(dist);
 }
 
@@ -444,6 +451,7 @@ Datum LWGEOM_length_linestring(PG_FUNCTION_ARGS)
 
 	pfree_inspected(inspected);
 
+	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_FLOAT8(dist);
 }
 
@@ -470,6 +478,7 @@ Datum LWGEOM_perimeter_poly(PG_FUNCTION_ARGS)
 
 	pfree_inspected(inspected);
 
+	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_FLOAT8(ret);
 }
 
@@ -495,6 +504,7 @@ Datum LWGEOM_perimeter2d_poly(PG_FUNCTION_ARGS)
 	}
 
 	pfree_inspected(inspected);
+	PG_FREE_IF_COPY(geom, 0);
 
 	PG_RETURN_FLOAT8(ret);
 }
@@ -1177,6 +1187,7 @@ Datum LWGEOM_force_2d(PG_FUNCTION_ARGS)
 
 	result = PG_LWGEOM_construct(srl, pglwgeom_getSRID(geom),
 		lwgeom_hasBBOX(geom->type));
+	PG_FREE_IF_COPY(geom, 0);
 
 	PG_RETURN_POINTER(result);
 }
@@ -1209,6 +1220,7 @@ Datum LWGEOM_force_3dz(PG_FUNCTION_ARGS)
 	result = PG_LWGEOM_construct(srl, pglwgeom_getSRID(geom),
 		lwgeom_hasBBOX(geom->type));
 
+	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_POINTER(result);
 }
 
@@ -1249,6 +1261,8 @@ Datum LWGEOM_force_3dm(PG_FUNCTION_ARGS)
 	result = PG_LWGEOM_construct(srl, pglwgeom_getSRID(geom),
 		lwgeom_hasBBOX(geom->type));
 
+	PG_FREE_IF_COPY(geom, 0);
+
 	PG_RETURN_POINTER(result);
 }
 
@@ -1275,6 +1289,8 @@ Datum LWGEOM_force_4d(PG_FUNCTION_ARGS)
 
 	result = PG_LWGEOM_construct(srl, pglwgeom_getSRID(geom),
 		lwgeom_hasBBOX(geom->type));
+
+	PG_FREE_IF_COPY(geom, 0);
 
 	PG_RETURN_POINTER(result);
 }
@@ -1314,6 +1330,8 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS)
 
 	result = pglwgeom_serialize(lwgeom);
 
+	PG_FREE_IF_COPY(geom, 0);
+
 	PG_RETURN_POINTER(result);
 }
 
@@ -1343,6 +1361,8 @@ Datum LWGEOM_force_multi(PG_FUNCTION_ARGS)
 
 
 	result = pglwgeom_serialize(lwgeom);
+
+	PG_FREE_IF_COPY(geom, 0);
 
 	PG_RETURN_POINTER(result);
 }
@@ -1375,6 +1395,9 @@ Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS)
 	profstop(PROF_QRUN);
 	profreport("dist",geom1, geom2, NULL);
 #endif
+
+	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom2, 1);
 
 	PG_RETURN_FLOAT8(mindist);
 }
@@ -1421,6 +1444,11 @@ Datum LWGEOM_maxdistance2d_linestring(PG_FUNCTION_ARGS)
 		if (dist > maxdist) maxdist = dist;
 	}
 
+	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom2, 1);
+	lwgeom_release((LWGEOM *)line1);
+	lwgeom_release((LWGEOM *)line2);
+
 	PG_RETURN_FLOAT8(maxdist);
 }
 
@@ -1452,6 +1480,8 @@ Datum LWGEOM_translate(PG_FUNCTION_ARGS)
 	// Construct PG_LWGEOM 
 	geom = PG_LWGEOM_construct(srl, lwgeom_getsrid(srl), hasbbox);
 
+	PG_FREE_IF_COPY(geom, 0);
+
 	PG_RETURN_POINTER(geom);
 }
 
@@ -1467,9 +1497,14 @@ Datum LWGEOM_inside_circle_point(PG_FUNCTION_ARGS)
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	point = lwpoint_deserialize(SERIALIZED_FORM(geom));
-	if ( point == NULL ) PG_RETURN_NULL(); // not a point
+	if ( point == NULL ) {
+		PG_FREE_IF_COPY(geom, 0);
+		PG_RETURN_NULL(); // not a point
+	}
 
 	getPoint2d_p(point->point, 0, &pt);
+
+	PG_FREE_IF_COPY(geom, 0);
 
 	PG_RETURN_BOOL(lwgeom_pt_inside_circle(&pt, cx, cy, rr));
 }
@@ -1595,6 +1630,11 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 		box, 2, lwgeoms);
 
 	result = pglwgeom_serialize(outlwg);
+
+	PG_FREE_IF_COPY(pglwgeom1, 0);
+	PG_FREE_IF_COPY(pglwgeom2, 1);
+	lwgeom_release(lwgeoms[0]);
+	lwgeom_release(lwgeoms[1]);
 
 	PG_RETURN_POINTER(result);
 }
@@ -1725,6 +1765,8 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 #ifdef PGIS_DEBUG
 	elog(NOTICE, " returning");
 #endif
+
+	PG_FREE_IF_COPY(geom, 0);
 
 	PG_RETURN_ARRAYTYPE_P(result);
 
@@ -1911,11 +1953,15 @@ Datum LWGEOM_line_from_mpoint(PG_FUNCTION_ARGS)
 	lwline = lwline_from_lwmpoint(mpoint->SRID, mpoint);
 	if ( ! lwline )
 	{
+		PG_FREE_IF_COPY(ingeom, 0);
 		elog(ERROR, "makeline: lwline_from_lwmpoint returned NULL");
 		PG_RETURN_NULL();
 	}
 
 	result = pglwgeom_serialize((LWGEOM *)lwline);
+
+	PG_FREE_IF_COPY(ingeom, 0);
+	lwgeom_release((LWGEOM *)lwline);
 
 	PG_RETURN_POINTER(result);
 }
@@ -2071,6 +2117,11 @@ Datum LWGEOM_makeline(PG_FUNCTION_ARGS)
 
 	result = pglwgeom_serialize((LWGEOM *)outline);
 
+	PG_FREE_IF_COPY(pglwg1, 0);
+	PG_FREE_IF_COPY(pglwg2, 1);
+	lwgeom_release((LWGEOM *)lwpoints[0]);
+	lwgeom_release((LWGEOM *)lwpoints[1]);
+
 	PG_RETURN_POINTER(result);
 }
 
@@ -2126,6 +2177,10 @@ Datum LWGEOM_makepoly(PG_FUNCTION_ARGS)
 
 	result = pglwgeom_serialize((LWGEOM *)outpoly);
 
+	PG_FREE_IF_COPY(pglwg1, 0);
+	lwgeom_release((LWGEOM *)shell);
+	for (i=0; i<nholes; i++) lwgeom_release((LWGEOM *)holes[i]);
+
 	PG_RETURN_POINTER(result);
 }
 
@@ -2175,6 +2230,8 @@ Datum LWGEOM_expand(PG_FUNCTION_ARGS)
 
 	// Construct PG_LWGEOM 
 	result = pglwgeom_serialize((LWGEOM *)poly);
+
+	PG_FREE_IF_COPY(geom, 0);
 	
 	PG_RETURN_POINTER(result);
 }
@@ -2192,6 +2249,8 @@ Datum LWGEOM_to_BOX(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL(); // must be the empty geometry
 	}
 	box2df_to_box_p(&box2d, result);
+
+	PG_FREE_IF_COPY(lwgeom, 0);
 
 	PG_RETURN_POINTER(result);
 }
@@ -2221,6 +2280,8 @@ Datum LWGEOM_envelope(PG_FUNCTION_ARGS)
 	// get geometry SRID
 	SRID = lwgeom_getsrid(SERIALIZED_FORM(geom));
 
+	PG_FREE_IF_COPY(geom, 0);
+
 	// Assign coordinates to POINT2D array
 	pts[0].x = box.xmin; pts[0].y = box.ymin;
 	pts[1].x = box.xmin; pts[1].y = box.ymax;
@@ -2242,7 +2303,7 @@ Datum LWGEOM_envelope(PG_FUNCTION_ARGS)
 
 	// Construct PG_LWGEOM 
 	result = PG_LWGEOM_construct(ser, SRID, 1);
-	
+
 	PG_RETURN_POINTER(result);
 }
 
@@ -2252,7 +2313,11 @@ Datum LWGEOM_isempty(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom = (PG_LWGEOM *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	if ( lwgeom_getnumgeometries(SERIALIZED_FORM(geom)) == 0 )
+	{
+		PG_FREE_IF_COPY(geom, 0);
 		PG_RETURN_BOOL(TRUE);
+	}
+	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_BOOL(FALSE);
 }
 
@@ -2316,6 +2381,7 @@ Datum centroid(PG_FUNCTION_ARGS)
 
 	pfree_point(point);
 	pfree_POINTARRAY(pa);
+	PG_FREE_IF_COPY(geom, 0);
 
 	// Construct output PG_LWGEOM
 	result = PG_LWGEOM_construct(srl, SRID, wantbbox);
@@ -2347,6 +2413,10 @@ Datum LWGEOM_segmentize2d(PG_FUNCTION_ARGS)
 	outlwgeom = lwgeom_segmentize2d(inlwgeom, dist);
 	outgeom = pglwgeom_serialize(outlwgeom);
 
+	PG_FREE_IF_COPY(ingeom, 0);
+	lwgeom_release(outlwgeom);
+	lwgeom_release(inlwgeom);
+
 	PG_RETURN_POINTER(outgeom);
 }
 
@@ -2371,17 +2441,20 @@ Datum LWGEOM_reverse(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_forceRHR_poly);
 Datum LWGEOM_forceRHR_poly(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *geom;
+	PG_LWGEOM *ingeom, *outgeom;
 	LWGEOM *lwgeom;
 
-	geom = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+	ingeom = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
 
-	lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom));
+	lwgeom = lwgeom_deserialize(SERIALIZED_FORM(ingeom));
 	lwgeom_forceRHR(lwgeom);
 
-	geom = pglwgeom_serialize(lwgeom);
+	outgeom = pglwgeom_serialize(lwgeom);
 
-	PG_RETURN_POINTER(geom);
+	PG_FREE_IF_COPY(ingeom, 0);
+	lwgeom_release(lwgeom);
+
+	PG_RETURN_POINTER(outgeom);
 }
 
 // Test deserialize/serialize operations
@@ -2398,6 +2471,9 @@ Datum LWGEOM_noop(PG_FUNCTION_ARGS)
 	//lwnotice("Deserialized: %s", lwgeom_summary(lwgeom, 0));
 
 	out = pglwgeom_serialize(lwgeom);
+
+	PG_FREE_IF_COPY(in, 0);
+	lwgeom_release(lwgeom);
 
 	PG_RETURN_POINTER(out);
 }
@@ -2418,6 +2494,7 @@ Datum LWGEOM_zmflag(PG_FUNCTION_ARGS)
 	type = in->type;
 	if ( TYPE_HASZ(type) ) ret += 2;
 	if ( TYPE_HASM(type) ) ret += 1;
+	PG_FREE_IF_COPY(in, 0);
 	PG_RETURN_INT16(ret);
 }
 
@@ -2425,8 +2502,13 @@ PG_FUNCTION_INFO_V1(LWGEOM_hasBBOX);
 Datum LWGEOM_hasBBOX(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *in;
+	char res;
+
 	in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	PG_RETURN_BOOL(lwgeom_hasBBOX(in->type));
+	res=lwgeom_hasBBOX(in->type);
+	PG_FREE_IF_COPY(in, 0);
+
+	PG_RETURN_BOOL(res);
 }
 
 // Return: 2,3 or 4
@@ -2438,6 +2520,7 @@ Datum LWGEOM_ndims(PG_FUNCTION_ARGS)
 
 	in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	ret = (TYPE_NDIMS(in->type));
+	PG_FREE_IF_COPY(in, 0);
 	PG_RETURN_INT16(ret);
 }
 
@@ -2451,10 +2534,18 @@ Datum LWGEOM_same(PG_FUNCTION_ARGS)
 	bool result;
 
 	if ( TYPE_GETTYPE(g1->type) != TYPE_GETTYPE(g2->type) )
+	{
+		PG_FREE_IF_COPY(g1, 0);
+		PG_FREE_IF_COPY(g2, 0);
 		PG_RETURN_BOOL(FALSE); // different types
+	}
 
 	if ( TYPE_GETZM(g1->type) != TYPE_GETZM(g2->type) )
+	{
+		PG_FREE_IF_COPY(g1, 0);
+		PG_FREE_IF_COPY(g2, 0);
 		PG_RETURN_BOOL(FALSE); // different dimensions
+	}
 
 	// ok, deserialize.
 	lwg1 = lwgeom_deserialize(SERIALIZED_FORM(g1));
@@ -2553,6 +2644,14 @@ Datum LWGEOM_addpoint(PG_FUNCTION_ARGS)
 	outline = lwline_addpoint(line, point, where);
 
 	result = pglwgeom_serialize((LWGEOM *)outline);
+
+	// Release memory
+	PG_FREE_IF_COPY(pglwg1, 0);
+	PG_FREE_IF_COPY(pglwg2, 1);
+	lwgeom_release((LWGEOM *)point);
+	lwgeom_release((LWGEOM *)line);
+	lwgeom_release((LWGEOM *)outline);
+
 	PG_RETURN_POINTER(result);
 
 }
@@ -2586,6 +2685,8 @@ Datum LWGEOM_asEWKT(PG_FUNCTION_ARGS)
 	memcpy(result+4,loc_wkt, len-4);
 
 	pfree(result_cstring);
+	PG_FREE_IF_COPY(lwgeom, 0);
+
 	PG_RETURN_POINTER(result);
 }
 
