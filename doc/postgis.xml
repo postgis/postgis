@@ -3811,6 +3811,22 @@ FROM geometry_table;</literallayout>
             performed in 2d only.</para>
           </listitem>
         </varlistentry>
+
+        <varlistentry>
+          <term>AsSVG(geometry, [rel], [precision])</term>
+
+          <listitem>
+            <para>Return the geometry as an SVG path data. 
+	    Use 1 as second argument to have the path data
+	    implemented in terms of relative moves, the
+	    default (or 0) uses absolute moves.
+	    Third argument may be used to reduce the maximum
+	    number of significant digits used in output
+	    (defaults to 15).
+            </para>
+          </listitem>
+        </varlistentry>
+
       </variablelist>
     </sect1>
   </chapter>
