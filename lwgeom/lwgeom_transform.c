@@ -240,7 +240,7 @@ lwgeom_transform_recursive(char *geom, PJ *inpj, PJ *outpj)
 PG_FUNCTION_INFO_V1(transform_geom);
 Datum transform_geom(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *geom, *oldgeom;
+	PG_LWGEOM *geom;
 	PG_LWGEOM *result=NULL;
 	PJ *input_pj,*output_pj;
 	char *input_proj4, *output_proj4;
