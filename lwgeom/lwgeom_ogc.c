@@ -41,6 +41,8 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS);
 Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS);
 // ---- NumInteriorRings(geometry)
 Datum LWGEOM_numinteriorrings_polygon(PG_FUNCTION_ARGS);
+// ---- PointN(geometry, integer)
+Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS);
 
 
 // internal
@@ -387,6 +389,7 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 		pfree_inspected(inspected);
 		PG_RETURN_NULL();
 	}
+	pfree_inspected(inspected);
 
 	ring = poly->rings[wanted_index+1];
 
@@ -406,3 +409,62 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
+// PointN(GEOMETRY,INTEGER) -- find the first linestring in GEOMETRY,
+// return the point at index INTEGER (0 is 1st point).  Return NULL if
+// there is no LINESTRING(..) in GEOMETRY or INTEGER is out of bounds.
+PG_FUNCTION_INFO_V1(LWGEOM_pointn_linestring);
+Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
+{
+	LWGEOM *geom;
+	int32 wanted_index;
+	LWGEOM_INSPECTED *inspected;
+	LWLINE *line = NULL;
+	POINTARRAY *pts;
+	LWPOINT *point;
+	char *serializedpoint;
+	LWGEOM *result;
+	int i;
+
+	wanted_index = PG_GETARG_INT32(1);
+	if ( wanted_index < 0 )
+		PG_RETURN_NULL(); // index out of range
+
+	geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
+
+	for (i=0; i<inspected->ngeometries; i++)
+	{
+		line = lwgeom_getline_inspected(inspected, i);
+		if ( line ) break;
+	}
+
+	if ( line == NULL ) PG_RETURN_NULL();
+
+	// Ok, now we have a line. Let's see if it has enough points.
+	if ( wanted_index > line->points->npoints-1 )
+	{
+		pfree_inspected(inspected);
+		PG_RETURN_NULL();
+	}
+	pfree_inspected(inspected);
+
+	// Construct a point array
+	pts = pointArray_construct(getPoint(line->points, wanted_index),
+		line->points->ndims, 1);
+
+	// Construct an LWPOINT
+	point = lwpoint_construct(line->points->ndims, lwgeom_getSRID(geom),
+		pts);
+
+	// Serialized the point
+	serializedpoint = lwpoint_serialize(point);
+
+	// And we construct the line (copy again)
+	result = LWGEOM_construct(serializedpoint, lwgeom_getSRID(geom),
+		lwgeom_hasBBOX(geom->type));
+
+	pfree(point);
+	pfree(serializedpoint);
+
+	PG_RETURN_POINTER(result);
+}

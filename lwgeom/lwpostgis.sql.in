@@ -11,6 +11,9 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.13  2004/08/24 15:50:04  strk
+-- PointN() ported.
+--
 -- Revision 1.12  2004/08/24 15:05:34  strk
 -- Added NumInteriorRings() and InteriorRingN()
 --
@@ -885,13 +888,19 @@ CREATEFUNCTION InteriorRingN(geometry,integer)
 	AS '@MODULE_FILENAME@','LWGEOM_interiorringn_polygon'
 	LANGUAGE 'C' WITH (isstrict);
 
-
-------------------------------------------------------------------------
-
-CREATEFUNCTION geometrytype(geometry)
+CREATEFUNCTION GeometryType(geometry)
 	RETURNS text
 	AS '@MODULE_FILENAME@', 'LWGEOM_getTYPE'
 	LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION PointN(geometry,integer)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','LWGEOM_pointn_linestring'
+	LANGUAGE 'C' WITH (isstrict);
+
+
+
+------------------------------------------------------------------------
 
 --
 -- Aggregate functions
