@@ -15,8 +15,10 @@
 
 #include "postgres.h"
 #include "fmgr.h"
+#include "utils/geo_decls.h"
 
-#include "lwgeom.h"
+#include "liblwgeom.h"
+#include "lwgeom_pg.h"
 
 Datum lwgeom_lt(PG_FUNCTION_ARGS);
 Datum lwgeom_le(PG_FUNCTION_ARGS);
@@ -447,6 +449,13 @@ Datum lwgeom_cmp(PG_FUNCTION_ARGS)
 /***********************************************************
  *
  * $Log$
+ * Revision 1.5  2004/09/29 10:50:30  strk
+ * Big layout change.
+ * lwgeom.h is public API
+ * liblwgeom.h is private header
+ * lwgeom_pg.h is for PG-links
+ * lw<type>.c contains type-specific functions
+ *
  * Revision 1.4  2004/09/29 06:31:42  strk
  * Changed LWGEOM to PG_LWGEOM.
  * Changed LWGEOM_construct to PG_LWGEOM_construct.

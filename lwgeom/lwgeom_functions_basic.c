@@ -1,16 +1,17 @@
-#include "postgres.h"
-
 #include <math.h>
 #include <float.h>
 #include <string.h>
 #include <stdio.h>
 #include <errno.h>
 
+#include "postgres.h"
 #include "fmgr.h"
 #include "utils/elog.h"
 #include "utils/array.h"
+#include "utils/geo_decls.h"
 
-#include "lwgeom.h"
+#include "liblwgeom.h"
+#include "lwgeom_pg.h"
 #include "profile.h"
 
 //#define DEBUG

@@ -1,11 +1,34 @@
-//lwgeom.h
+#ifndef _LIBLWGEOM_H
+#define _LIBLWGEOM_H 1
 
-// basic API for handling the LWGEOM, BOX2DFLOAT4, LWPOINT, LWLINE, and LWPOLY.
-// See below for other support types like POINTARRAY and LWGEOM_INSPECTED
+//liblwgeom.h
 
-#include <sys/types.h>
-#include "utils/geo_decls.h"
 
+typedef void* (*lwallocator)(size_t size);
+typedef void* (*lwreallocator)(void *mem, size_t size);
+typedef void (*lwfreeor)(void* mem);
+typedef void (*lwreporter)(const char* fmt, ...);
+
+#ifndef C_H
+typedef unsigned int uint32;
+typedef int int32;
+#endif
+
+/* prototypes */
+void *default_allocator(size_t size);
+void *default_reallocator(void *mem, size_t size);
+void default_freeor(void *ptr);
+void default_errorreporter(const char *fmt, ...);
+void default_noticereporter(const char *fmt, ...);
+
+/* globals */
+extern lwreallocator lwrealloc;
+extern lwallocator lwalloc;
+extern lwfreeor lwfree;
+extern lwreporter lwerror;
+extern lwreporter lwnotice;
+
+//-----------------------------------------------------------------
 
 typedef struct
 {
@@ -123,7 +146,7 @@ extern POINT4D getPoint4d(const POINTARRAY *pa, int n);
 // copies a point from the point array into the parameter point
 // will set point's z=0 (or NaN) if pa is 2d
 // will set point's m=0 (or NaN) if pa is 3d or 2d
-// NOTE: this will modify the point4d pointed to by 'point'.
+// NOTE: this will modify the point32d pointed to by 'point'.
 extern void getPoint4d_p(const POINTARRAY *pa, int n, char *point);
 
 // copies a point from the point array into the parameter point
@@ -209,13 +232,14 @@ extern int pointArray_ptsize(const POINTARRAY *pa);
 #define TYPE_SETHASBBOX(c,b) (((c)&0x7F)|b)
 #define TYPE_SETHASSRID(c,s) (((c)&0xBF)|s)
 
-extern bool lwgeom_hasSRID(unsigned char type); // true iff S bit is set
-extern bool lwgeom_hasBBOX(unsigned char type); // true iff B bit set
+extern char lwgeom_hasBBOX(unsigned char type); // true iff B bit set
 extern int  lwgeom_ndims(unsigned char type);   // returns the DD value
 extern int  lwgeom_getType(unsigned char type); // returns the tttt value
 
 extern unsigned char lwgeom_makeType(int ndims, char hasSRID, int type);
-extern unsigned char lwgeom_makeType_full(int ndims, char hasSRID, int type, bool hasBBOX);
+extern unsigned char lwgeom_makeType_full(int ndims, char hasSRID, int type, char hasBBOX);
+extern char lwgeom_hasSRID(unsigned char type); // true iff S bit is set
+extern char lwgeom_hasBBOX(unsigned char type); // true iff B bit set
 
 
 
@@ -224,7 +248,7 @@ extern unsigned char lwgeom_makeType_full(int ndims, char hasSRID, int type, boo
  * with postgresql varlena struct
  */
 typedef struct {
-	int32 size;
+	uint32 size;
 	unsigned char type; // encodes ndims, type, bbox presence,
 			    // srid presence
 	char data[1];
@@ -253,8 +277,11 @@ extern PG_LWGEOM *PG_LWGEOM_construct(char *serialized, int SRID, int wantbbox);
  * This function computes the size in bytes
  * of the serialized geometries.
  */
-extern int lwgeom_size(const char *serialized_form);
-extern int lwgeom_size_subgeom(const char *serialized_form, int geom_number);
+extern uint32 lwgeom_size(const char *serialized_form);
+extern uint32 lwgeom_size_subgeom(const char *serialized_form, int geom_number);
+extern uint32 lwgeom_size_line(const char *serialized_line);
+extern uint32 lwgeom_size_point(const char *serialized_point);
+extern uint32 lwgeom_size_poly(const char *serialized_line);
 
 
 //--------------------------------------------------------
@@ -420,6 +447,9 @@ typedef struct
 
 LWGEOM *lwgeom_deserialize(char *serializedform);
 LWMPOINT *lwmpoint_deserialize(char *serializedform);
+LWMLINE *lwmline_deserialize(char *serializedform);
+LWMPOLY *lwmpoly_deserialize(char *serializedform);
+LWCOLLECTION *lwcollection_deserialize(char *serializedform);
 
 //------------------------------------------------------
 
@@ -591,12 +621,9 @@ extern BOX3D *lw_geom_getBB_inspected(LWGEOM_INSPECTED *inspected);
 
 extern BOX2DFLOAT4 *box3d_to_box2df(BOX3D *box);
 extern int box3d_to_box2df_p(BOX3D *box, BOX2DFLOAT4 *res);
+
 extern BOX3D box2df_to_box3d(BOX2DFLOAT4 *box);
 extern void box2df_to_box3d_p(BOX2DFLOAT4 *box, BOX3D *box3d);
-
-extern BOX2DFLOAT4 *box_to_box2df(BOX *box);  // postgresql standard type
-extern BOX box2df_to_box(BOX2DFLOAT4 *box);  // postgresql standard type
-extern void box2df_to_box_p(BOX2DFLOAT4 *box, BOX *out); // postgresql standard type
 
 extern BOX3D *combine_boxes(BOX3D *b1, BOX3D *b2);
 
@@ -767,16 +794,10 @@ extern void printType(unsigned char str);
 // NOTE: make sure your findlength() function knows what to do with z=NaN.
 
 
-
-
-// other forwards (for indirect function calls)
-
 extern float LWGEOM_Minf(float a, float b);
 extern float LWGEOM_Maxf(float a, float b);
 extern double LWGEOM_Mind(double a, double b);
 extern double LWGEOM_Maxd(double a, double b);
-
-
 
 extern BOX3D *lw_geom_getBB_simple(char *serialized_form);
 
@@ -823,4 +844,6 @@ extern void lwgeom_translate_ptarray(POINTARRAY *pa, double xoff, double yoff, d
 extern int lwgeom_pt_inside_circle(POINT2D *p, double cx, double cy, double rad);
 extern POINTARRAY *segmentize2d_ptarray(POINTARRAY *ipa, double dist);
 extern int32 lwgeom_npoints(char *serialized);
-extern bool ptarray_isccw(const POINTARRAY *pa);
+extern char ptarray_isccw(const POINTARRAY *pa);
+
+#endif // !defined _LIBLWGEOM_H 

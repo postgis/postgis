@@ -13,8 +13,7 @@
 #include "fmgr.h"
 #include "utils/elog.h"
 
-
-#include "lwgeom.h"
+#include "liblwgeom.h"
 #include "lwgeom_pg.h"
 
 
@@ -95,11 +94,17 @@ Datum LWGEOM_setSRID(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_getTYPE);
 Datum LWGEOM_getTYPE(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	char *text_ob = palloc(20+4);
-	char *result = text_ob+4;
+	PG_LWGEOM *lwgeom;
+	char *text_ob;
+	char *result;
 	int32 size;
 	unsigned char type;
+
+	init_pg_func();
+
+	lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	text_ob = lwalloc(20+4);
+	result = text_ob+4;
 
 	//type = lwgeom_getType(*(lwgeom+4));
 	type = lwgeom_getType(lwgeom->type);
@@ -706,9 +711,14 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_asText);
 Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 {
-	char *lwgeom = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	char *result_cstring =  unparse_WKT(lwgeom,palloc_fn,free_fn);
+	char *lwgeom;
+	char *result_cstring;
 	int len;
+
+	init_pg_func();
+
+	lwgeom = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	result_cstring =  unparse_WKT(lwgeom,lwalloc,lwfree);
 
         char *result,*loc_wkt;
 	char *semicolonLoc;

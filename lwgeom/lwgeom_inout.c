@@ -17,7 +17,7 @@
 #endif
 
 
-#include "lwgeom.h"
+#include "liblwgeom.h"
 #include "stringBuffer.h"
 
 
@@ -115,8 +115,13 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_out);
 Datum LWGEOM_out(PG_FUNCTION_ARGS)
 {
-	char *lwgeom = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	char *result = unparse_WKB(lwgeom,palloc_fn,free_fn);
+	char *lwgeom;
+	char *result;
+
+	init_pg_func();
+
+	lwgeom = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	result = unparse_WKB(lwgeom,lwalloc,lwfree);
 
 	PG_RETURN_CSTRING(result);
 }
@@ -181,7 +186,7 @@ Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 	pfree(wkb_srid_hexized);
 
 #ifdef DEBUG
-	elog(NOTICE, "LWGEOMFromWKB returning %s", unparse_WKB(lwgeom, palloc_fn, free_fn));
+	elog(NOTICE, "LWGEOMFromWKB returning %s", unparse_WKB(lwgeom, pg_alloc, pg_free));
 #endif
 
 	PG_RETURN_POINTER(lwgeom);
@@ -192,16 +197,19 @@ Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(WKBFromLWGEOM);
 Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 {
-	char *lwgeom_input = (char *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-
-	// SRID=#;<hexized wkb>
-	char *hexized_wkb_srid = unparse_WKB(lwgeom_input, palloc_fn, free_fn);
+	char *lwgeom_input; // SRID=#;<hexized wkb>
+	char *hexized_wkb_srid;
 	char *hexized_wkb; // hexized_wkb_srid w/o srid
 	char *result; //wkb
 	int len_hexized_wkb;
 	int size_result;
 	char *semicolonLoc;
 	int t;
+
+	init_pg_func();
+
+	lwgeom_input = (char *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	hexized_wkb_srid = unparse_WKB(lwgeom_input, lwalloc, lwfree);
 
 //elog(NOTICE, "in WKBFromLWGEOM with WKB = '%s'", hexized_wkb_srid);
 
@@ -535,6 +543,7 @@ Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS)
 		int			  wkt_size ;
 
 
+		init_pg_func();
 
 		wkt_size = (*(int*) wkt_input) -4;  // actual letters
 
@@ -546,8 +555,7 @@ Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS)
 //elog(NOTICE,"in parse_WKT_lwgeom");
 //elog(NOTICE,"in parse_WKT_lwgeom with input: '%s'",wkt);
 
-		//serialized_form = parse_WKT((const char *)wkt,(allocator) malloc, (report_error)elog_ERROR);
-		serialized_form = parse_lwg((const char *)wkt,(allocator) palloc_fn, (report_error)elog_ERROR);
+		serialized_form = parse_lwg((const char *)wkt, (allocator)lwalloc, (report_error)elog_ERROR);
 //elog(NOTICE,"parse_WKT_lwgeom:: finished parse");
 		pfree (wkt);
 
@@ -571,7 +579,7 @@ Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS)
 
 char *parse_lwgeom_wkt(char *wkt_input)
 {
-	char *serialized_form = parse_lwg((const char *)wkt_input,(allocator) palloc_fn, (report_error)elog_ERROR);
+	char *serialized_form = parse_lwg((const char *)wkt_input,(allocator)pg_alloc, (report_error)elog_ERROR);
 
 
 #ifdef DEBUG
@@ -622,7 +630,7 @@ Datum LWGEOM_recv(PG_FUNCTION_ARGS)
 #endif
 
 #ifdef DEBUG
-	elog(NOTICE, "LWGEOMFromWKB returned %s", unparse_WKB(result,palloc_fn,free_fn));
+	elog(NOTICE, "LWGEOMFromWKB returned %s", unparse_WKB(result,pg_alloc,pg_free));
 #endif
 
 

@@ -8,7 +8,8 @@
 #include "postgres.h"
 #include "fmgr.h"
 
-#include "lwgeom.h"
+#include "liblwgeom.h"
+#include "lwgeom_pg.h"
 
 Datum transform_geom(PG_FUNCTION_ARGS);
 Datum postgis_proj_version(PG_FUNCTION_ARGS);

@@ -10,6 +10,13 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.7  2004/09/29 10:50:30  strk
+ * Big layout change.
+ * lwgeom.h is public API
+ * liblwgeom.h is private header
+ * lwgeom_pg.h is for PG-links
+ * lw<type>.c contains type-specific functions
+ *
  * Revision 1.6  2004/09/27 08:26:03  strk
  * Debugging defines set to NODEBUG.
  *
@@ -28,8 +35,6 @@
  *
  **********************************************************************/
 
-#include "postgres.h"
-
 #include <math.h>
 #include <float.h>
 #include <string.h>
@@ -37,12 +42,14 @@
 #include <errno.h>
 #include <ctype.h>
 
+#include "postgres.h"
+#include "utils/geo_decls.h"
 #include "executor/spi.h"
 #include "fmgr.h"
-
 #include "parser/parsetree.h"
 
-#include "lwgeom.h"
+#include "liblwgeom.h"
+#include "lwgeom_pg.h"
 
 #if USE_VERSION >= 80
 

@@ -2,8 +2,10 @@
 #include "postgres.h"
 #include "utils/array.h"
 #include "utils/builtins.h"
+#include "fmgr.h"
 
-#include "lwgeom.h"
+#include "liblwgeom.h"
+#include "lwgeom_pg.h"
 #include "profile.h"
 #include "wktparse.h"
 

@@ -1,4 +1,3 @@
-
 #include <math.h>
 #include <float.h>
 #include <string.h>
@@ -12,7 +11,8 @@
 #include "fmgr.h"
 #include "utils/elog.h"
 
-#include "lwgeom.h"
+#include "lwgeom_pg.h"
+#include "liblwgeom.h"
 
 // External functions (what's again the reason for using explicit hex form ?)
 extern void deparse_hex(unsigned char str, unsigned char *result);

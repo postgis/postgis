@@ -1,5 +1,7 @@
 #include "postgres.h"
-#include "lwgeom.h"
+#include "fmgr.h"
+#include "liblwgeom.h"
+#include "lwgeom_pg.h"
 
 /***********************************************************************
  * Simple Douglas-Peucker line simplification. 
