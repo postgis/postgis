@@ -702,9 +702,39 @@ Datum LWGEOM_endpoint_linestring(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_from_text);
 Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+	text *wkttext = PG_GETARG_TEXT_P(0);
+	char *wkt, fc;
 	int32 SRID;
+	size_t size;
+	PG_LWGEOM *geom;
 	PG_LWGEOM *result = NULL;
+
+	size = VARSIZE(wkttext)-VARHDRSZ;
+
+	//lwnotice("size: %d", size);
+
+	if ( size < 10 )
+	{
+		lwerror("Invalid OGC WKT (too short)");
+		PG_RETURN_NULL();
+	}
+
+	fc=*(VARDATA(wkttext));
+	// 'S' is accepted for backward compatibility, a WARNING
+	// is issued later.
+	if ( fc!='P' && fc!='L' && fc!='M' && fc!='G' && fc!='S' )
+	{
+		lwerror("Invalid OGC WKT (does not start with P,L,M or G)");
+		PG_RETURN_NULL();
+	}
+
+	wkt = lwalloc(size+1);
+	memcpy(wkt, VARDATA(wkttext), size);
+	wkt[size]='\0';
+
+	//lwnotice("wkt: [%s]", wkt);
+
+	geom = (PG_LWGEOM *)parse_lwgeom_wkt(wkt);
 
 	if ( pglwgeom_getSRID(geom) != -1 || TYPE_GETZM(geom->type) != 0 )
 	{
