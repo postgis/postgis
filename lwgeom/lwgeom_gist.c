@@ -529,7 +529,7 @@ Datum gist_rtree_decompress(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(lwgeom_box_union);
 Datum lwgeom_box_union(PG_FUNCTION_ARGS)
 {
-#if USE_VERSION < 75
+#if USE_VERSION < 80
 	bytea *entryvec = (bytea *) PG_GETARG_POINTER(0);
 #else
  	GistEntryVector	*entryvec = (GistEntryVector *) PG_GETARG_POINTER(0);
@@ -544,7 +544,7 @@ Datum lwgeom_box_union(PG_FUNCTION_ARGS)
 	elog(NOTICE,"GIST: lwgeom_box_union called\n");
 #endif
 
-#if USE_VERSION < 75
+#if USE_VERSION < 80
 	numranges = (VARSIZE(entryvec) - VARHDRSZ) / sizeof(GISTENTRY);
 	cur = (BOX2DFLOAT4 *) DatumGetPointer(((GISTENTRY *) VARDATA(entryvec))[0].key);
 #else
@@ -559,7 +559,7 @@ Datum lwgeom_box_union(PG_FUNCTION_ARGS)
 
 	for (i = 1; i < numranges; i++)
 	{
-#if USE_VERSION < 75
+#if USE_VERSION < 80
 		cur = (BOX2DFLOAT4*) DatumGetPointer(((GISTENTRY *) VARDATA(entryvec))[i].key);
 #else
 		cur = (BOX2DFLOAT4*) DatumGetPointer(entryvec->vector[i].key);
@@ -746,7 +746,7 @@ Datum lwgeom_gbox_same(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(lwgeom_gbox_picksplit);
 Datum lwgeom_gbox_picksplit(PG_FUNCTION_ARGS)
 {
-#if USE_VERSION < 75
+#if USE_VERSION < 80
 	bytea	   *entryvec = (bytea *) PG_GETARG_POINTER(0);
 #else
   	GistEntryVector	*entryvec = (GistEntryVector *) PG_GETARG_POINTER(0);
@@ -782,7 +782,7 @@ Datum lwgeom_gbox_picksplit(PG_FUNCTION_ARGS)
 
 
 	posL = posR = posB = posT = 0;
-#if USE_VERSION < 75
+#if USE_VERSION < 80
 	maxoff = ((VARSIZE(entryvec) - VARHDRSZ) / sizeof(GISTENTRY)) - 1;
 	cur = (BOX2DFLOAT4*) DatumGetPointer(((GISTENTRY *) VARDATA(entryvec))[FirstOffsetNumber].key);
 #else
@@ -800,7 +800,7 @@ elog(NOTICE,"   cur is: <%.16g %.16g,%.16g %.16g>", cur->xmin, cur->ymin, cur->x
 	/* find MBR */
 	for (i = OffsetNumberNext(FirstOffsetNumber); i <= maxoff; i = OffsetNumberNext(i))
 	{
-#if USE_VERSION < 75
+#if USE_VERSION < 80
 		cur = (BOX2DFLOAT4*) DatumGetPointer(((GISTENTRY *) VARDATA(entryvec))[i].key);
 #else
   		cur = (BOX2DFLOAT4 *) DatumGetPointer(entryvec->vector[i].key);
@@ -840,7 +840,7 @@ elog(NOTICE,"   pageunion is: <%.16g %.16g,%.16g %.16g>", pageunion.xmin, pageun
 #ifdef DEBUG_GIST6
 elog(NOTICE," AllIsEqual!");
 #endif
-#if USE_VERSION < 75
+#if USE_VERSION < 80
 		cur = (BOX2DFLOAT4*) DatumGetPointer(((GISTENTRY *) VARDATA(entryvec))[OffsetNumberNext(FirstOffsetNumber)].key);
 #else
   		cur = (BOX2DFLOAT4*) DatumGetPointer(entryvec->vector[OffsetNumberNext(FirstOffsetNumber)].key);
@@ -898,7 +898,7 @@ elog(NOTICE," AllIsEqual!");
 
 	for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i))
 	{
-#if USE_VERSION < 75
+#if USE_VERSION < 80
 		cur = (BOX2DFLOAT4*) DatumGetPointer(((GISTENTRY *) VARDATA(entryvec))[i].key);
 #else
   		cur = (BOX2DFLOAT4*) DatumGetPointer(entryvec->vector[i].key);
@@ -927,7 +927,7 @@ elog(NOTICE,"   unionB is: <%.16g %.16g,%.16g %.16g>", unionB->xmin, unionB->ymi
 		KBsort *arr = (KBsort*)palloc( sizeof(KBsort) * maxoff );
 		posL = posR = posB = posT = 0;
 		for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i)) {
-#if USE_VERSION < 75
+#if USE_VERSION < 80
 			arr[i-1].key = (BOX2DFLOAT4*) DatumGetPointer(((GISTENTRY *) VARDATA(entryvec))[i].key);
 #else
   			arr[i-1].key = (BOX2DFLOAT4*) DatumGetPointer(entryvec->vector[i].key);

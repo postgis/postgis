@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.19  2004/08/19 06:15:58  strk
+ * USE_VERSION gets 80 where it got 75
+ *
  * Revision 1.18  2004/06/09 10:19:06  strk
  * Moved changes needed for PG75 inside postgis_gist_72.c using #if switches.
  *
@@ -339,7 +342,7 @@ Datum rtree_decompress(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(gbox_union);
 Datum gbox_union(PG_FUNCTION_ARGS)
 {
-#if USE_VERSION < 75
+#if USE_VERSION < 80
 	bytea *entryvec = (bytea *) PG_GETARG_POINTER(0);
 #else
  	GistEntryVector	   *entryvec = (GistEntryVector *) PG_GETARG_POINTER(0);
@@ -355,7 +358,7 @@ Datum gbox_union(PG_FUNCTION_ARGS)
 	fflush( stdout );
 #endif
 
-#if USE_VERSION < 75
+#if USE_VERSION < 80
 	numranges = (VARSIZE(entryvec) - VARHDRSZ) / sizeof(GISTENTRY);
 	cur = DatumGetBoxP(((GISTENTRY *) VARDATA(entryvec))[0].key);
 #else
@@ -367,7 +370,7 @@ Datum gbox_union(PG_FUNCTION_ARGS)
 
 	for (i = 1; i < numranges; i++)
 	{
-#if USE_VERSION < 75
+#if USE_VERSION < 80
 		cur = DatumGetBoxP(((GISTENTRY *) VARDATA(entryvec))[i].key);
 #else
   		cur = DatumGetBoxP(entryvec->vector[i].key);
@@ -438,7 +441,7 @@ PG_FUNCTION_INFO_V1(gbox_picksplit);
 Datum
 gbox_picksplit(PG_FUNCTION_ARGS)
 {
-#if USE_VERSION < 75
+#if USE_VERSION < 80
 	bytea *entryvec = (bytea *) PG_GETARG_POINTER(0);
 #else
   	GistEntryVector	*entryvec = (GistEntryVector *) PG_GETARG_POINTER(0);
@@ -470,7 +473,7 @@ gbox_picksplit(PG_FUNCTION_ARGS)
 #endif
 
 	posL = posR = posB = posT = 0;
-#if USE_VERSION < 75
+#if USE_VERSION < 80
 	maxoff = ((VARSIZE(entryvec) - VARHDRSZ) / sizeof(GISTENTRY)) - 1;
 	cur = DatumGetBoxP(((GISTENTRY *) VARDATA(entryvec))[FirstOffsetNumber].key);
 #else
@@ -483,7 +486,7 @@ gbox_picksplit(PG_FUNCTION_ARGS)
 	/* find MBR */
 	for (i = OffsetNumberNext(FirstOffsetNumber); i <= maxoff; i = OffsetNumberNext(i))
 	{
-#if USE_VERSION < 75
+#if USE_VERSION < 80
 		cur = DatumGetBoxP(((GISTENTRY *) VARDATA(entryvec))[i].key);
 #else
   		cur = DatumGetBoxP(entryvec->vector[i].key);
@@ -513,7 +516,7 @@ gbox_picksplit(PG_FUNCTION_ARGS)
 	unionR = (BOX *) palloc(sizeof(BOX));
 	if (allisequal)
 	{
-#if USE_VERSION < 75
+#if USE_VERSION < 80
 		cur = DatumGetBoxP(((GISTENTRY *) VARDATA(entryvec))[OffsetNumberNext(FirstOffsetNumber)].key);
 #else
   		cur = DatumGetBoxP(entryvec->vector[OffsetNumberNext(FirstOffsetNumber)].key);
@@ -566,7 +569,7 @@ gbox_picksplit(PG_FUNCTION_ARGS)
 
 	for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i))
 	{
-#if USE_VERSION < 75
+#if USE_VERSION < 80
 		cur = DatumGetBoxP(((GISTENTRY *) VARDATA(entryvec))[i].key);
 #else
   		cur = DatumGetBoxP(entryvec->vector[i].key);
@@ -587,7 +590,7 @@ gbox_picksplit(PG_FUNCTION_ARGS)
 		KBsort *arr = (KBsort*)palloc( sizeof(KBsort) * maxoff );
 		posL = posR = posB = posT = 0;
 		for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i)) {
-#if USE_VERSION < 75
+#if USE_VERSION < 80
 			arr[i-1].key = DatumGetBoxP(((GISTENTRY *) VARDATA(entryvec))[i].key);
 #else
   			arr[i-1].key = DatumGetBoxP(entryvec->vector[i].key);

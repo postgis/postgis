@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.50  2004/08/19 06:15:58  strk
+ * USE_VERSION gets 80 where it got 75
+ *
  * Revision 1.49  2004/07/28 13:37:43  strk
  * Added postgis_uses_stats and postgis_scripts_version.
  * Experimented with PIP short-circuit in within/contains functions.
@@ -650,7 +653,7 @@ Datum geometry2box(PG_FUNCTION_ARGS);
 
 Datum explode_histogram2d(PG_FUNCTION_ARGS);
 Datum estimate_histogram2d(PG_FUNCTION_ARGS);
-#if USE_VERSION >= 75
+#if USE_VERSION >= 80
 Datum geometry_analyze(PG_FUNCTION_ARGS);
 #endif
 

@@ -11,6 +11,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.31  2004/08/19 06:15:58  strk
+ * USE_VERSION gets 80 where it got 75
+ *
  * Revision 1.30  2004/08/16 11:03:25  mcayland
  * Added DLLIMPORT reference to "default_statistics_target" if we are compiling under Win32. This should make it unnecessary to apply Romi's patch to the PostgreSQL source tree when compiling PostgreSQL ready for PostGIS.
  *
@@ -160,7 +163,7 @@
 
 #include "executor/spi.h"
 
-#if USE_VERSION >= 75
+#if USE_VERSION >= 80
 
 #include "commands/vacuum.h"
 
@@ -652,7 +655,7 @@ Datum build_histogram2d(PG_FUNCTION_ARGS)
 
 
 
-#if USE_VERSION < 75
+#if USE_VERSION < 80
 /*
  * get_restriction_var
  *		Examine the args of a restriction clause to see if it's of the
@@ -1008,7 +1011,7 @@ postgisgistcostestimate(PG_FUNCTION_ARGS)
     PG_RETURN_VOID();
 }
 
-#else // USE_VERSION >= 75
+#else // USE_VERSION >= 80
 
 /*
  * This function returns an estimate of the selectivity

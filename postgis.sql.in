@@ -214,7 +214,7 @@ CREATEFUNCTION geometry_out(GEOMETRY_IN_REP)
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
 
-#if USE_VERSION >= 75
+#if USE_VERSION >= 80
 CREATEFUNCTION geometry_analyze(internal)
 	RETURNS bool
 	AS '@MODULE_FILENAME@'
@@ -226,7 +226,7 @@ CREATE TYPE geometry (
 	internallength = variable,
 	input = geometry_in,
 	output = geometry_out,
-#if USE_VERSION >= 75
+#if USE_VERSION >= 80
 	analyze = geometry_analyze,
 #endif
 	storage = main
@@ -281,7 +281,7 @@ CREATE TABLE geometry_columns (
 	coord_dimension integer not null,
 	srid integer not null,
 	type varchar(30) not null,
-#if USE_VERSION < 75
+#if USE_VERSION < 80
 	attrelid oid,
 	varattnum int,
 	stats histogram2d,
@@ -438,10 +438,10 @@ SELECT ''rename_geometry_table_constraint() is obsoleted''::text
 --		(for PG>=73)
 --
 --	o link records to system tables through attrelid and varattnum
---		(for PG<75)
+--		(for PG<80)
 --
 --	o delete all records for which no linking was possible
---		(for PG<75)
+--		(for PG<80)
 --	
 -- 
 -----------------------------------------------------------------------
@@ -500,7 +500,7 @@ BEGIN
 	GET DIAGNOSTICS foundschema = ROW_COUNT;
 #endif
 
-#if USE_VERSION >= 75
+#if USE_VERSION >= 80
 	-- no linkage to system table needed
 	return ''fixed:''||foundschema::text;
 #endif
@@ -608,7 +608,7 @@ BEGIN
 			strpos(typecheck.consrc, ''::'')-
 			strpos(typecheck.consrc, ''='')
 			))::varchar as type,
-#if USE_VERSION < 75
+#if USE_VERSION < 80
 		a.attrelid,
 		a.attnum as varattnum,
 		null::histogram2d as stats
@@ -2586,17 +2586,17 @@ LANGUAGE 'sql' WITH (isstrict);
 -- UPDATE_GEOMETRY_STATS()
 -----------------------------------------------------------------------
 --
--- Only meaningful for PG<75.
+-- Only meaningful for PG<80.
 -- Gather statisticts about geometry columns for use
 -- with cost estimator.
 --
--- It is defined also for PG>=75 for back-compatibility
+-- It is defined also for PG>=80 for back-compatibility
 --
 -----------------------------------------------------------------------
-#if USE_VERSION >= 75
+#if USE_VERSION >= 80
 CREATEFUNCTION update_geometry_stats() RETURNS text
 AS ' SELECT ''update_geometry_stats() has been obsoleted. Statistics are automatically built running the ANALYZE command''::text' LANGUAGE 'sql';
-#else // USE_VERSION < 75
+#else // USE_VERSION < 80
 CREATEFUNCTION update_geometry_stats()
 RETURNS text
 AS
@@ -2636,20 +2636,20 @@ BEGIN
 END;
 '
 LANGUAGE 'plpgsql' ;
-#endif // USE_VERSION < 75
+#endif // USE_VERSION < 80
 
 -----------------------------------------------------------------------
 -- UPDATE_GEOMETRY_STATS( <table>, <column> )
 -----------------------------------------------------------------------
 --
--- Only meaningful for PG<75.
+-- Only meaningful for PG<80.
 -- Gather statisticts about a geometry column for use
 -- with cost estimator.
 --
--- It is defined also for PG>=75 for back-compatibility
+-- It is defined also for PG>=80 for back-compatibility
 --
 -----------------------------------------------------------------------
-#if USE_VERSION >= 75
+#if USE_VERSION >= 80
 CREATEFUNCTION update_geometry_stats(varchar,varchar) RETURNS text
 AS 'SELECT update_geometry_stats();' LANGUAGE 'sql' ;
 #else
@@ -2702,7 +2702,7 @@ END;
 '
 LANGUAGE 'plpgsql' ;
 
-#endif  // USE_VERSION < 75
+#endif  // USE_VERSION < 80
 
 -----------------------------------------------------------------------
 -- CREATE_HISTOGRAM2D( <box>, <size> )
