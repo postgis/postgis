@@ -743,11 +743,12 @@ Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 	lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	result_cstring =  unparse_WKT(SERIALIZED_FORM(lwgeom),lwalloc,lwfree);
 
-	semicolonLoc = strchr(result_cstring,';');
+	//semicolonLoc = strchr(result_cstring,';');
 
-	//loc points to start of wkt
-	if (semicolonLoc == NULL) loc_wkt = result_cstring;
-	else loc_wkt = semicolonLoc +1;
+	////loc points to start of wkt
+	//if (semicolonLoc == NULL) loc_wkt = result_cstring;
+	//else loc_wkt = semicolonLoc +1;
+	loc_wkt = result_cstring;
 
 	len = strlen(loc_wkt)+4;
 	result = palloc(len);
