@@ -107,13 +107,13 @@ geometrycollection_int  : geometry_int | geometrycollection_int  COMMA geometry_
 
 a_point : point_2d | point_3d | point_4d ;
 
-point_2d : VALUE VALUE {alloc_point_2d($1,$2) };
+point_2d : VALUE VALUE {alloc_point_2d($1,$2); };
 
-point_3d : VALUE VALUE VALUE {alloc_point_3d($1,$2,$3) };
+point_3d : VALUE VALUE VALUE {alloc_point_3d($1,$2,$3); };
 
-point_4d : VALUE VALUE VALUE VALUE {alloc_point_4d($1,$2,$3,$4) };
+point_4d : VALUE VALUE VALUE VALUE {alloc_point_4d($1,$2,$3,$4); };
 
-empty : EMPTY  {alloc_empty() } ;
+empty : EMPTY  {alloc_empty(); } ;
 %%
 
 
