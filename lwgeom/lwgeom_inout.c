@@ -124,6 +124,31 @@ Datum LWGEOM_out(PG_FUNCTION_ARGS)
 	PG_RETURN_CSTRING(result);
 }
 
+// LWGEOM_to_text(lwgeom) --> text
+// output is 'SRID=#;<wkb in hex form>'
+// ie. 'SRID=-99;0101000000000000000000F03F0000000000000040'
+// WKB is machine endian
+// if SRID=-1, the 'SRID=-1;' will probably not be present.
+PG_FUNCTION_INFO_V1(LWGEOM_to_text);
+Datum LWGEOM_to_text(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *lwgeom;
+	char *result;
+	text *text_result;
+
+	init_pg_func();
+
+	lwgeom = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	result = unparse_WKB(SERIALIZED_FORM(lwgeom),lwalloc,lwfree,-1);
+
+	text_result = palloc(strlen(result)+VARHDRSZ);
+	memcpy(VARDATA(text_result),result,strlen(result));
+	VARATT_SIZEP(text_result) = strlen(result)+VARHDRSZ;
+	pfree(result);
+
+	PG_RETURN_POINTER(text_result);
+}
+
 
 
 // LWGEOMFromWKB(wkb,  [SRID] )

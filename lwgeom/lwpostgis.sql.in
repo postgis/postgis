@@ -2910,6 +2910,11 @@ CREATEFUNCTION box(box3d)
         AS '@MODULE_FILENAME@','BOX3D_to_BOX'
         LANGUAGE 'C' WITH (isstrict,iscachable);
 
+CREATEFUNCTION text(geometry)
+        RETURNS text
+        AS '@MODULE_FILENAME@','LWGEOM_to_text'
+        LANGUAGE 'C' WITH (isstrict,iscachable);
+
 -- this is kept for backward-compatibility
 CREATEFUNCTION box3dtobox(box3d)
         RETURNS box
@@ -2957,6 +2962,7 @@ CREATE CAST (box2d AS geometry) WITH FUNCTION geometry(box2d) AS IMPLICIT;
 CREATE CAST (box3d AS box) WITH FUNCTION box(box3d) AS IMPLICIT;
 CREATE CAST (box3d AS geometry) WITH FUNCTION geometry(box3d) AS IMPLICIT;
 CREATE CAST (text AS geometry) WITH FUNCTION geometry(text) AS IMPLICIT;
+CREATE CAST (geometry AS text) WITH FUNCTION text(geometry) AS IMPLICIT;
 CREATE CAST (chip AS geometry) WITH FUNCTION geometry(chip) AS IMPLICIT;
 CREATE CAST (bytea AS geometry) WITH FUNCTION geometry(bytea) AS IMPLICIT;
 CREATE CAST (geometry AS bytea) WITH FUNCTION bytea(geometry) AS IMPLICIT;
