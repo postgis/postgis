@@ -188,17 +188,16 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 
 	// SRID=#;<hexized wkb>
 	char *hexized_wkb_srid = unparse_WKB(lwgeom_input, palloc_fn, free_fn);
-
 	char *hexized_wkb; // hexized_wkb_srid w/o srid
 	char *result; //wkb
-
 	int len_hexized_wkb;
-	int			size_result;
-	char		*semicolonLoc;
+	int size_result;
+	char *semicolonLoc;
 	int t;
 
-//elog(NOTICE, "in WKBFromLWGEOM with WKB = '%s'", hexized_wkb_srid);
-	elog(NOTICE,"lwgeom => wkb CONVERSION");
+#ifdef DEBUG
+elog(NOTICE, "in WKBFromLWGEOM with WKB = '%s'", hexized_wkb_srid);
+#endif
 
 	hexized_wkb = hexized_wkb_srid;
 	semicolonLoc = strchr(hexized_wkb_srid,';');
@@ -209,7 +208,9 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 		hexized_wkb = (semicolonLoc+1);
 	}
 
-//elog(NOTICE, "in WKBFromLWGEOM with WKB (with no 'SRID=#;' = '%s'", hexized_wkb);
+#ifdef DEBUG
+elog(NOTICE, "in WKBFromLWGEOM with WKB (with no 'SRID=#;' = '%s'", hexized_wkb);
+#endif
 
 	len_hexized_wkb = strlen(hexized_wkb);
 	size_result = len_hexized_wkb/2 + 4;
@@ -217,10 +218,7 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 
 	memcpy(result, &size_result,4); // size header
 
-
-
 	// have a hexized string, want to make it binary
-
 	for (t=0; t< (len_hexized_wkb/2); t++)
 	{
 		((unsigned char *) result +4)[t] = parse_hex(  hexized_wkb + (t*2) );

@@ -1051,6 +1051,11 @@ CREATEFUNCTION SetSRID(geometry,int4)
 	AS '@MODULE_FILENAME@','LWGEOM_setSRID'
 	LANGUAGE 'C' WITH (isstrict,iscachable);	
 	
+CREATEFUNCTION AsBinary(geometry)
+	RETURNS bytea
+	AS '@MODULE_FILENAME@','WKBFromLWGEOM'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
 CREATEFUNCTION AsText(geometry)
 	RETURNS TEXT
 	AS '@MODULE_FILENAME@','LWGEOM_asText'
@@ -1210,6 +1215,16 @@ RETURNS geometry
 AS 'SELECT CASE WHEN geometrytype($1) = ''GEOMETRYCOLLECTION'' THEN $1
 ELSE NULL END
 ' LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION GeomFromWKB(bytea)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','LWGEOMFromWKB'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATEFUNCTION GeomFromWKB(bytea, int)
+	RETURNS geometry
+	AS 'SELECT setSRID(GeomFromWKB($1), $2)'
+	LANGUAGE 'SQL' WITH (isstrict,iscachable);
 
 ------------------------------------------------------------------------
 -- Misures
