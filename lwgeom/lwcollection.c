@@ -123,7 +123,7 @@ lwcollection_serialize_size(LWCOLLECTION *col)
 
 	for (i=0; i<col->ngeoms; i++)
 	{
-		size += lwgeom_serialize_size(lwcollection_getsubgeom(col, i));
+		size += lwgeom_serialize_size(col->geoms[i]);
 #ifdef DEBUG_CALLS
 		lwnotice("lwcollection_serialize_size[%p]: with geom%d: %d", col, i, size);
 #endif
