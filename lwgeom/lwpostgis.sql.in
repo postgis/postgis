@@ -1119,12 +1119,12 @@ CREATEFUNCTION SetSRID(geometry,int4)
 	
 CREATEFUNCTION AsBinary(geometry)
 	RETURNS bytea
-	AS '@MODULE_FILENAME@','WKBFromLWGEOM'
+	AS '@MODULE_FILENAME@','LWGEOM_asBinary'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION AsBinary(geometry,text)
 	RETURNS bytea
-	AS '@MODULE_FILENAME@','WKBFromLWGEOM'
+	AS '@MODULE_FILENAME@','LWGEOM_asBinary'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION AsText(geometry)
@@ -1702,6 +1702,21 @@ CREATEFUNCTION ndims(geometry)
 	RETURNS smallint
 	AS '@MODULE_FILENAME@', 'LWGEOM_ndims'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATEFUNCTION AsEWKT(geometry)
+	RETURNS TEXT
+	AS '@MODULE_FILENAME@','LWGEOM_asEWKT'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATEFUNCTION AsEWKB(geometry)
+	RETURNS BYTEA
+	AS '@MODULE_FILENAME@','WKBFromLWGEOM'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATEFUNCTION AsEWKB(geometry,text)
+	RETURNS bytea
+	AS '@MODULE_FILENAME@','WKBFromLWGEOM'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 ------------------------------------------------------------------------
 -- CONSTRUCTORS

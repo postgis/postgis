@@ -43,5 +43,15 @@ Datum LWGEOM_same(PG_FUNCTION_ARGS);
 Datum BOX3D_construct(PG_FUNCTION_ARGS);
 Datum BOX2DFLOAT4_ymin(PG_FUNCTION_ARGS);
 
+Datum LWGEOM_force_2d(PG_FUNCTION_ARGS);
+Datum LWGEOM_force_3dm(PG_FUNCTION_ARGS);
+Datum LWGEOM_force_3dz(PG_FUNCTION_ARGS);
+Datum LWGEOM_force_4d(PG_FUNCTION_ARGS);
+Datum LWGEOM_force_collection(PG_FUNCTION_ARGS);
+Datum LWGEOM_force_multi(PG_FUNCTION_ARGS);
+
+Datum LWGEOMFromWKB(PG_FUNCTION_ARGS);
+Datum WKBFromLWGEOM(PG_FUNCTION_ARGS);
+
 
 #endif // !defined _LWGEOM_PG_H 1

@@ -55,6 +55,8 @@ Datum LWGEOM_startpoint_linestring(PG_FUNCTION_ARGS);
 Datum LWGEOM_endpoint_linestring(PG_FUNCTION_ARGS);
 // ---- AsText(geometry)
 Datum LWGEOM_asText(PG_FUNCTION_ARGS);
+// ---- AsBinary(geometry, [XDR|NDR])
+Datum LWGEOM_asBinary(PG_FUNCTION_ARGS);
 // ---- GeometryFromText(text, integer)
 Datum LWGEOM_from_text(PG_FUNCTION_ARGS);
 // ---- IsClosed(geometry)
@@ -733,22 +735,27 @@ PG_FUNCTION_INFO_V1(LWGEOM_asText);
 Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *lwgeom;
+	PG_LWGEOM *ogclwgeom;
 	char *result_cstring;
 	int len;
         char *result,*loc_wkt;
-	//char *semicolonLoc;
+	char *semicolonLoc;
 
 	init_pg_func();
 
 	lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	result_cstring =  unparse_WKT(SERIALIZED_FORM(lwgeom),lwalloc,lwfree);
 
-	//semicolonLoc = strchr(result_cstring,';');
+	/* Force to 2d */
+	ogclwgeom = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall1(
+		LWGEOM_force_2d, PointerGetDatum(lwgeom)));
 
-	////loc points to start of wkt
-	//if (semicolonLoc == NULL) loc_wkt = result_cstring;
-	//else loc_wkt = semicolonLoc +1;
-	loc_wkt = result_cstring;
+	result_cstring =  unparse_WKT(SERIALIZED_FORM(ogclwgeom),lwalloc,lwfree);
+
+	semicolonLoc = strchr(result_cstring,';');
+
+	//loc points to start of wkt
+	if (semicolonLoc == NULL) loc_wkt = result_cstring;
+	else loc_wkt = semicolonLoc +1;
 
 	len = strlen(loc_wkt)+4;
 	result = palloc(len);
@@ -757,6 +764,39 @@ Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 	memcpy(result+4,loc_wkt, len-4);
 
 	pfree(result_cstring);
+	PG_RETURN_POINTER(result);
+}
+
+//convert LWGEOM to wkb (in BINARY format)
+PG_FUNCTION_INFO_V1(LWGEOM_asBinary);
+Datum LWGEOM_asBinary(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *ogclwgeom;
+	char *result;
+
+	init_pg_func();
+
+	/* Force to 2d */
+	ogclwgeom = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall1(
+		LWGEOM_force_2d, PG_GETARG_DATUM(0)));
+	
+	/* Drop SRID */
+	ogclwgeom = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall2(
+		LWGEOM_setSRID, PointerGetDatum(ogclwgeom), -1));
+
+	/* Call WKBFromLWGEOM */
+	if ( (PG_NARGS()>1) && (!PG_ARGISNULL(1)) )
+	{
+		result = (char *)DatumGetPointer(DirectFunctionCall2(
+			WKBFromLWGEOM, PointerGetDatum(ogclwgeom),
+			PG_GETARG_DATUM(1)));
+	}
+	else
+	{
+		result = (char *)DatumGetPointer(DirectFunctionCall1(
+			WKBFromLWGEOM, PointerGetDatum(ogclwgeom)));
+	}
+
 	PG_RETURN_POINTER(result);
 }
 

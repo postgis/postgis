@@ -31,10 +31,6 @@
 void elog_ERROR(const char* string);
 
 
-// needed for OGC conformance
-Datum LWGEOMFromWKB(PG_FUNCTION_ARGS);
-Datum WKBFromLWGEOM(PG_FUNCTION_ARGS);
-
 Datum LWGEOM_in(PG_FUNCTION_ARGS);
 Datum LWGEOM_out(PG_FUNCTION_ARGS);
 Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS);

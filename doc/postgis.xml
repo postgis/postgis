@@ -696,18 +696,52 @@ AND
     <sect1 id="RefObject">
       <title>GIS Objects</title>
 
-      <para>The GIS objects supported by PostGIS are the "Simple Features"
-      defined by the OpenGIS Consortium (OGC). As of version 0.9, PostGIS
-      supports all the objects and functions specified in the OGC "Simple
+      <para>The GIS objects supported by PostGIS are a superset of
+      the "Simple Features" defined by the OpenGIS Consortium (OGC).
+      As of version 0.9, PostGIS supports all the objects and functions
+      specified in the OGC "Simple
       Features for SQL" specification.</para>
 
-      <para>Examples of the text representations of the spatial objects of the
-      features are as follows:</para>
+      <para>Examples of the text representations (WKT) of the spatial
+      objects of the features are as follows:</para>
 
       <itemizedlist>
         <listitem>
-          <para>POINT(0 0) -- XY</para>
+          <para>POINT(0 0)</para>
         </listitem>
+
+        <listitem>
+          <para>LINESTRING(0 0,1 1,1 2)</para>
+        </listitem>
+
+        <listitem>
+          <para>POLYGON((0 0,4 0,4 4,0 4,0 0),(1 1, 2 1, 2 2, 1 2,1 1))</para>
+        </listitem>
+
+        <listitem>
+          <para>MULTIPOINT(0 0,1 2)</para>
+        </listitem>
+
+        <listitem>
+          <para>MULTILINESTRING((0 0,1 1,1 2),(2 3,3 2,5 4))</para>
+        </listitem>
+
+        <listitem>
+          <para>MULTIPOLYGON(((0 0,4 0,4 4,0 4,0 0),(1 1,2 1,2 2,1 2,1 1)),
+	  ((-1 -1,-1 -2,-2 -2,-2 -1,-1 -1)))</para>
+        </listitem>
+
+        <listitem>
+          <para>GEOMETRYCOLLECTION(POINT(2 3),LINESTRING((2 3,3 4)))</para>
+        </listitem>
+
+      </itemizedlist>
+
+      <para>PostGIS extends the standard with support for 3DZ,3DM and 4D
+      coordinates.  Examples of the text representations (EWKT) of the
+      extended spatial objects of the features are as follows:</para>
+
+      <itemizedlist>
 
         <listitem>
           <para>POINT(0 0 0) -- XYZ</para>
@@ -722,16 +756,7 @@ AND
         </listitem>
 
         <listitem>
-          <para>LINESTRING(0 0,1 1,1 2)</para>
-        </listitem>
-
-        <listitem>
-          <para>POLYGON((0 0 0,4 0 0,4 4 0,0 4 0,0 0 0),(1 1 0,2 1 0,2 2 0,1 2
-          0,1 1 0))</para>
-        </listitem>
-
-        <listitem>
-          <para>MULTIPOINT(0 0 0,1 2 1)</para>
+          <para>MULTIPOINTM(0 0 0,1 2 1)</para>
         </listitem>
 
         <listitem>
@@ -740,27 +765,22 @@ AND
         </listitem>
 
         <listitem>
+          <para>POLYGON((0 0 0,4 0 0,4 4 0,0 4 0,0 0 0),(1 1 0,2 1 0,2 2 0,1 2
+          0,1 1 0))</para>
+        </listitem>
+
+        <listitem>
           <para>MULTIPOLYGON(((0 0 0,4 0 0,4 4 0,0 4 0,0 0 0),(1 1 0,2 1 0,2 2
           0,1 2 0,1 1 0)),((-1 -1 0,-1 -2 0,-2 -2 0,-2 -1 0,-1 -1 0)))</para>
         </listitem>
 
         <listitem>
-          <para>GEOMETRYCOLLECTION(POINT(2 3 9),LINESTRING((2 3 4,3 4
+          <para>GEOMETRYCOLLECTIONM(POINT(2 3 9),LINESTRING((2 3 4,3 4
           5)))</para>
         </listitem>
+
       </itemizedlist>
 
-      <para>Note that in the examples above there are features with 
-      2-dimensional, 3-dimensional (XYZ,XYM) and 4-dimensional coordinates.
-      PostGIS supports 2D,3DZ,3DM and 4D coordinates -- if you describe a
-      feature with 2D coordinates when you insert it, the database will
-      return that feature to you with 2D coordinates when you extract it.
-      See the sections on the <link linkend="force_2d">force_2d()</link>,
-      <link linkend="force_3dz">force_3dz()</link>,
-      <link linkend="force_3dm">force_3dm()</link> and
-      <link linkend="force_4d">force_4d()</link> functions for information
-      on converting features to a particular coordinate dimension
-      representation.</para>
 
       <sect2>
         <title>Standard versus Canonical Forms</title>
@@ -793,23 +813,24 @@ VALUES (
         <para>The "canonical form" of the spatial objects in PostgreSQL is a
         text representation which includes all the information necessary to
         construct the object. Unlike the OpenGIS standard forms, it includes
-        the type, coordinate, <emphasis>and</emphasis> SRID information. The
-        canonical form is the default form returned from a SELECT query.
-	Since version 1.0.0 the canonical form is an HEX-encoded WKB with
-	an optional SRID=#; prefix.
+        the type, dimensions, coordinate, <emphasis>and</emphasis> SRID
+	information. The canonical form is the default form returned from a
+	SELECT query.
+	Since version 1.0.0 the canonical form is an HEX-encoded extended
+	WKB (EWKB).
 	The example below shows the difference between the OGC standard and
         PostGIS canonical forms:</para>
 
         <programlisting>db=&gt; SELECT AsText(geom) AS OGCGeom FROM SPATIALTABLE;
 OGCGeom
 -------------------------------------------------
-POINT(-126.4 45.32)
+ POINT(-126.4 45.32)
 (1 row)
 
 db=&gt; SELECT geom AS PostGISGeom FROM thetable;
 PostGISGeom
 -------------------------------------------------
-SRID=312;01010000009A99999999995FC0295C8FC2F5A84640
+ 0101000020380100009A99999999995FC0295C8FC2F5A84640
 (1 row)</programlisting>
       </sect2>
     </sect1>
@@ -3934,7 +3955,7 @@ FROM geometry_table;</literallayout>
 	  <variablelist>
 
 		<varlistentry>
-		  <term>asbinary(geometry,'NDR')</term>
+		  <term>asBinary(geometry,'NDR')</term>
 
 		  <listitem>
 		    <para>Returns the geometry in the OGC "well-known-binary" format,
@@ -3945,7 +3966,7 @@ FROM geometry_table;</literallayout>
 		</varlistentry>
 
 		<varlistentry>
-		  <term>asbinary(geometry,'XDR')</term>
+		  <term>asBinary(geometry,'XDR')</term>
 
 		  <listitem>
 		    <para>Returns the geometry in the OGC "well-known-binary" format,

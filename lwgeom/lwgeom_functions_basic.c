@@ -28,12 +28,6 @@ Datum LWGEOM_length2d_linestring(PG_FUNCTION_ARGS);
 Datum LWGEOM_length_linestring(PG_FUNCTION_ARGS);
 Datum LWGEOM_perimeter2d_poly(PG_FUNCTION_ARGS);
 Datum LWGEOM_perimeter_poly(PG_FUNCTION_ARGS);
-Datum LWGEOM_force_2d(PG_FUNCTION_ARGS);
-Datum LWGEOM_force_3dm(PG_FUNCTION_ARGS);
-Datum LWGEOM_force_3dz(PG_FUNCTION_ARGS);
-Datum LWGEOM_force_4d(PG_FUNCTION_ARGS);
-Datum LWGEOM_force_collection(PG_FUNCTION_ARGS);
-Datum LWGEOM_force_multi(PG_FUNCTION_ARGS);
 Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_maxdistance2d_linestring(PG_FUNCTION_ARGS);
 Datum LWGEOM_translate(PG_FUNCTION_ARGS);
@@ -2546,4 +2540,37 @@ Datum LWGEOM_addpoint(PG_FUNCTION_ARGS)
 	result = pglwgeom_serialize((LWGEOM *)outline);
 	PG_RETURN_POINTER(result);
 
+}
+
+//convert LWGEOM to wwkt (in TEXT format)
+PG_FUNCTION_INFO_V1(LWGEOM_asEWKT);
+Datum LWGEOM_asEWKT(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *lwgeom;
+	PG_LWGEOM *ogclwgeom;
+	char *result_cstring;
+	int len;
+        char *result,*loc_wkt;
+	//char *semicolonLoc;
+
+	init_pg_func();
+
+	lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	result_cstring =  unparse_WKT(SERIALIZED_FORM(lwgeom),lwalloc,lwfree);
+
+	//semicolonLoc = strchr(result_cstring,';');
+
+	////loc points to start of wkt
+	//if (semicolonLoc == NULL) loc_wkt = result_cstring;
+	//else loc_wkt = semicolonLoc +1;
+	loc_wkt = result_cstring;
+
+	len = strlen(loc_wkt)+4;
+	result = palloc(len);
+	memcpy(result, &len, 4);
+
+	memcpy(result+4,loc_wkt, len-4);
+
+	pfree(result_cstring);
+	PG_RETURN_POINTER(result);
 }
