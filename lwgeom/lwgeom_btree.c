@@ -7,20 +7,14 @@
  *
  ***********************************************************/
 
-#include "postgres.h"
-
 #include <math.h>
 #include <float.h>
 #include <string.h>
 #include <stdio.h>
 #include <errno.h>
 
-//#include "access/gist.h"
-//#include "access/itup.h"
-//#include "access/rtree.h"
-
+#include "postgres.h"
 #include "fmgr.h"
-//#include "utils/elog.h"
 
 #include "lwgeom.h"
 
@@ -31,15 +25,19 @@ Datum lwgeom_ge(PG_FUNCTION_ARGS);
 Datum lwgeom_gt(PG_FUNCTION_ARGS);
 Datum lwgeom_cmp(PG_FUNCTION_ARGS);
 
-PG_FUNCTION_INFO_V1(geometry_lt);
+// #define DEBUG
+
+PG_FUNCTION_INFO_V1(lwgeom_lt);
 Datum lwgeom_lt(PG_FUNCTION_ARGS)
 {
-	char *geom1 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	char *geom2 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	char *geom1 = (char *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char *geom2 = (char *) PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	BOX2DFLOAT4 box1;
 	BOX2DFLOAT4 box2;
 
-	//elog(NOTICE, "geometry_lt called");
+#ifdef DEBUG
+	elog(NOTICE, "lwgeom_lt called");
+#endif
 
 	if (lwgeom_getSRID(geom1+4) != lwgeom_getSRID(geom2+4))
 	{
@@ -51,6 +49,8 @@ Datum lwgeom_lt(PG_FUNCTION_ARGS)
 			pfree(geom2);
 		PG_RETURN_NULL();
 	}
+
+	//elog(NOTICE, "SRID check passed");
 
 	getbox2d_p(geom1+4, &box1);
 	getbox2d_p(geom2+4, &box2);
@@ -78,15 +78,17 @@ Datum lwgeom_lt(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(FALSE);
 }
 
-PG_FUNCTION_INFO_V1(geometry_le);
+PG_FUNCTION_INFO_V1(lwgeom_le);
 Datum lwgeom_le(PG_FUNCTION_ARGS)
 {
-	char *geom1 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	char *geom2 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	char *geom1 = (char *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char *geom2 = (char *) PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	BOX2DFLOAT4 box1;
 	BOX2DFLOAT4 box2;
 
-	//elog(NOTICE, "geometry_le called");
+#ifdef DEBUG
+	elog(NOTICE, "lwgeom_le called");
+#endif
 
 	if (lwgeom_getSRID(geom1+4) != lwgeom_getSRID(geom2+4))
 	{
@@ -156,15 +158,17 @@ Datum lwgeom_le(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(TRUE);
 }
 
-PG_FUNCTION_INFO_V1(geometry_eq);
+PG_FUNCTION_INFO_V1(lwgeom_eq);
 Datum lwgeom_eq(PG_FUNCTION_ARGS)
 {
-	char *geom1 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	char *geom2 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	char *geom1 = (char *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char *geom2 = (char *) PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	BOX2DFLOAT4 box1;
 	BOX2DFLOAT4 box2;
 
-	//elog(NOTICE, "geometry_eq called");
+#ifdef DEBUG
+	elog(NOTICE, "lwgeom_eq called");
+#endif
 
 	if (lwgeom_getSRID(geom1+4) != lwgeom_getSRID(geom2+4))
 	{
@@ -214,15 +218,17 @@ Datum lwgeom_eq(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(TRUE);
 }
 
-PG_FUNCTION_INFO_V1(geometry_ge);
+PG_FUNCTION_INFO_V1(lwgeom_ge);
 Datum lwgeom_ge(PG_FUNCTION_ARGS)
 {
-	char *geom1 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	char *geom2 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	char *geom1 = (char *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char *geom2 = (char *) PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	BOX2DFLOAT4 box1;
 	BOX2DFLOAT4 box2;
 
-	//elog(NOTICE, "geometry_ge called");
+#ifdef DEBUG
+	elog(NOTICE, "lwgeom_ge called");
+#endif
 
 	if (lwgeom_getSRID(geom1+4) != lwgeom_getSRID(geom2+4))
 	{
@@ -284,7 +290,7 @@ Datum lwgeom_ge(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(TRUE);
 }
 
-PG_FUNCTION_INFO_V1(geometry_gt);
+PG_FUNCTION_INFO_V1(lwgeom_gt);
 Datum lwgeom_gt(PG_FUNCTION_ARGS)
 {
 	char *geom1 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
@@ -292,7 +298,9 @@ Datum lwgeom_gt(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4 box1;
 	BOX2DFLOAT4 box2;
 
-	//elog(NOTICE, "geometry_gt called");
+#ifdef DEBUG
+	elog(NOTICE, "lwgeom_gt called");
+#endif
 
 	if (lwgeom_getSRID(geom1+4) != lwgeom_getSRID(geom2+4))
 	{
@@ -350,7 +358,7 @@ Datum lwgeom_gt(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(FALSE);
 }
 
-PG_FUNCTION_INFO_V1(geometry_cmp);
+PG_FUNCTION_INFO_V1(lwgeom_cmp);
 Datum lwgeom_cmp(PG_FUNCTION_ARGS)
 {
 	char *geom1 = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
@@ -358,7 +366,9 @@ Datum lwgeom_cmp(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4 box1;
 	BOX2DFLOAT4 box2;
 
-	//elog(NOTICE, "geometry_cmp called");
+#ifdef DEBUG
+	elog(NOTICE, "lwgeom_cmp called");
+#endif
 
 	if (lwgeom_getSRID(geom1+4) != lwgeom_getSRID(geom2+4))
 	{
@@ -431,8 +441,8 @@ Datum lwgeom_cmp(PG_FUNCTION_ARGS)
 /***********************************************************
  *
  * $Log$
- * Revision 1.1  2004/08/19 12:28:30  strk
- * added btree index support
+ * Revision 1.2  2004/08/19 13:10:13  strk
+ * fixed typos
  *
  * (ORDER BY, GROUP BY, DISTINCT)
  *
