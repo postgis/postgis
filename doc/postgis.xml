@@ -4056,6 +4056,16 @@ FROM geometry_table;</literallayout>
         </varlistentry>
 
         <varlistentry>
+          <term>Apply_Grid(geometry, originX, originY, sizeX, sizeY)</term>
+
+          <listitem>
+            <para>Apply the grid defined by its origin and cell size to
+	    the geometry points so that each one falls on a cell.
+            Remove consecutive points falling on the same cell.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
           <term>Segmentize(geometry, maxlength)</term>
 
           <listitem>
