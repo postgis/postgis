@@ -1,7 +1,8 @@
 //compile line for Solaris
 //gcc -g pop.c ../shapelib-1.2.8/shpopen.o ../shapelib-1.2.8/dbfopen.o -o pop
 
-//  usage:   pop  <shapefile to process>  <table name> [-d || -a || -c] [-dump] | psql -h <host> -d <database> -p <port> ...
+
+//  usage:   pop  <shapefile to process>  <table name> <SR_ID> [-d || -a || -c] [-dump] | psql -h <host> -d <database> -p <port> ...
 // -d: drops the table , then recreates it and populates it with current shape file data
 // -a: appends shape file into current table, must be excatly the same table schema
 // -c: creates a new table and populates it, this is the default if you don't specify any options
@@ -14,8 +15,8 @@
 //	for the shape files and PostgreSQL standard types for all attributes of the entity. 
 //
 //	Basically the program determines which type of shape (currently supports: 2d points,2d lines,2d
-//  polygons,3d points, and 3d lines) is in the file and takes appropriate action to read out the attributes.
-
+//      polygons,3d points, and 3d lines) is in the file and takes appropriate
+//      action to read out the attributes.
 
 
 // BUGS:
@@ -37,8 +38,8 @@ int	dump_format = 0; //0=insert statements, 1 = dump
 
 int Insert_attributes(DBFHandle hDBFHandle, char **ARGV, int row);
 
-char	*make_good_string(char *str)
-{
+
+char	*make_good_string(char *str){
 	//find all the tabs and make them \<tab>s
 	// 
 	// 1. find # of tabs
@@ -159,8 +160,9 @@ int PIP( Point P, Point* V, int n )
 
 
 //This function basically deals with the polygon case.
- //it sorts the polys in order of outer,inner,inner, so that inners always come after outers they are within 
- //return value is the number of rings seen so far, used to keep id's unique.
+//it sorts the polys in order of outer,inner,inner, so that inners always come after outers they are within 
+//return value is the number of rings seen so far, used to keep id's unique.
+
 int ring_check(SHPObject* obj, char **ARGV, int rings, DBFHandle hDBFHandle){
 	Point pt,pt2;
 	Ring *Poly;
@@ -246,23 +248,19 @@ int ring_check(SHPObject* obj, char **ARGV, int rings, DBFHandle hDBFHandle){
 				}
 
 
-				//printf("temp2 -> %d for the list in the loop parts = %d  N= %d\n",temp2,obj->nParts,N);			
 				Poly->list = (Point*)malloc(sizeof(Point)*temp2);
 				Poly->next = NULL;
 
 				n=0;
-				//printf("pt is ( %g   %g)\n Poly starts with  (%e  %e)\n",obj->padfX[u],obj->padfY[u],Outer[0].x,Outer[0].y);
 
 			}
 			area=0.0;
 			if((next_ring + 1) == obj->nParts){
-				//printf("go to end of N\n");
 			}else{
 				next_ring++;
 			}
 		}else{
 	
-			//printf(" x---   %g  , y---   %g     u=%d\n",obj->padfX[u],obj->padfY[u],u);
 			Poly->list[n].x = obj->padfX[u];
 			Poly->list[n].y = obj->padfY[u];
 			n++;
@@ -273,7 +271,7 @@ int ring_check(SHPObject* obj, char **ARGV, int rings, DBFHandle hDBFHandle){
 	
 
 
-//Put the inner rings into the list of the outer rings of which they are within
+	//Put the inner rings into the list of the outer rings of which they are within
 	for(u=0; u < in_index; u++){
 		pt.x = Inner[u]->list[0].x;
 		pt.y = Inner[u]->list[0].y;
@@ -300,14 +298,21 @@ int ring_check(SHPObject* obj, char **ARGV, int rings, DBFHandle hDBFHandle){
 	}
 	
 	//start spitting out the sql for ordered entities now.
-	
-			if (dump_format)
-			{
-				printf("%i\tMULTIPOLYGON(",rings );
-			}
-			else
-				printf("\nInsert into %s values('%i','MULTIPOLYGON(",ARGV[2],rings);
+	if (dump_format){
+		printf("%i",rings);
+	}else{
+		printf("\nInsert into %s values('%i'",ARGV[2],rings);
+	}
+
 	rings++;
+	Insert_attributes(hDBFHandle, ARGV,rings-1);
+
+	if (dump_format){
+		printf("%i\tSRID=%s ;MULTIPOLYGON(",rings,ARGV[3] );
+	}else{
+		printf(",GeometryFromText('MULTIPOLYGON(");
+	}
+
 	for(u=0; u < out_index; u++){
 		Poly = Outer[u];
 		if(u==0){
@@ -334,14 +339,11 @@ int ring_check(SHPObject* obj, char **ARGV, int rings, DBFHandle hDBFHandle){
 		}
 		printf(")");
 	}
-	if (dump_format)
-	{
-		printf(")"); 
+	if (dump_format){
+		printf(")\n"); 
+	}else{
+		printf(")',%s) );",ARGV[3]);
 	}
-	else	
-		printf(")'");
-	Insert_attributes(hDBFHandle, ARGV,rings-1);
-
 
 	free(Outer);
 	free(Inner);
@@ -364,16 +366,12 @@ int Insert_attributes(DBFHandle hDBFHandle, char **ARGV, int row){
 		
 	
 	for( i = 0; i < num_fields; i++ ){
-			if (dump_format)
+			if (dump_format){
 				printf("\t%s",make_good_string(DBFReadStringAttribute( hDBFHandle, row, i )) );
-			else
+			}else{
 				printf(",'%s'",protect_quotes_string(DBFReadStringAttribute( hDBFHandle, row, i )) );
+			}
 	}
-	if (!(dump_format) )
-		printf (");\n");
-	else
-		printf("\n");
-	
 	return 1;
 }
 
@@ -381,7 +379,7 @@ int Insert_attributes(DBFHandle hDBFHandle, char **ARGV, int row){
 
 
 // main()     
-//  usage:   pop  <shapefile to process>  <table name> [-d || -a || -c] [-dump]| psql -h <host> -d <database> -p <port> ...
+//  usage:   pop  <shapefile to process> <table name> <SR_ID> <database name> [-d || -a || -c] [-dump]| psql -h <host> -d <database> -p <port> ...
 // -d: drops the table , then recreates it and populates it with current shape file data
 // -a: appends shape file into current table, must be excatly the same table schema
 // -c: creates a new table and populates it, this is the default if you don't specify any options
@@ -411,10 +409,9 @@ main (int ARGC, char **ARGV)
 	DBFFieldType type;
 
 	//display proper usage if incorrect number of arguments given	
-	if (ARGC != 3 && ARGC != 4 && ARGC != 5)
+	if (ARGC != 5 && ARGC != 6 && ARGC != 7)
 	{
-		printf ("usage: pop <shapefile> <table name to create> [-d || -a || -c] [-dump]\n");
-		printf(" usage:   pop  <shapefile to process>  <table name> [-d || -a || -c] [-dump]| psql -h <host> -d <database> -p <port> ...\n");
+		printf(" usage:   pop  <shapefile to process>  <table name> <SR_ID> <database> [-d || -a || -c] [-dump]| psql -h <host> -d <database> -p <port> ...\n");
 		printf(" -d: drops the table , then recreates it and populates it with current shape file data\n");
 		printf(" -a: appends shape file into current table, must be excatly the same table schema\n");
 		printf(" -c: creates a new table and populates it, this is the default if you don't specify any options\n");
@@ -423,31 +420,50 @@ main (int ARGC, char **ARGV)
 		exit (-1);
 	}
 
+	
 	opt = 'c';
 
-	if(ARGC ==4){
-		if(strcmp(ARGV[3], "-d")==0){
+	if(ARGC ==6){
+		if(strcmp(ARGV[5], "-d")==0){
 			opt = 'd';
-		}else if(strcmp(ARGV[3], "-c")==0){
+		}else if(strcmp(ARGV[5], "-c")==0){
 			opt = 'c';
-		}else if(strcmp(ARGV[3], "-a")==0){
+		}else if(strcmp(ARGV[5], "-a")==0){
 			opt = 'a';
-		}else if (strcmp(ARGV[3],"-dump") == 0) {
+		}else if (strcmp(ARGV[5],"-dump") == 0) {
 			dump_format = 1;
 		}else{
-			printf("option %s is not a valid option, use -a, -d, or -c\n",ARGV[3]);
+			printf("option %s is not a valid option, use -a, -d, or -c\n",ARGV[5]);
 		exit(-1);
 		}
 	}else{
 		opt = 'c';
 	}
 
-	if (ARGC==5)
+	if (ARGC==7)
 	{
-		if (strcmp(ARGV[4],"-dump") == 0) 
+		if(strcmp(ARGV[5], "-d")==0){
+			opt = 'd';
+		}else if(strcmp(ARGV[5], "-c")==0){
+			opt = 'c';
+		}else if(strcmp(ARGV[5], "-a")==0){
+			opt = 'a';
+		}else{
+			printf("option(5) %s is not a valid option, use -a, -d, or -c\n",ARGV[5]);
+			exit(-1);
+		}
+
+
+
+
+		if (strcmp(ARGV[6],"-dump") == 0) 
 		{
 			dump_format = 1;
+		}else{
+			printf("option(6) %s is not a valid option, use -dump \n",ARGV[6]);
+			exit(-1);
 		}
+
 	}
 
 	
@@ -458,11 +474,13 @@ main (int ARGC, char **ARGV)
 		printf ("shape is null\n");	
 		exit(-1);
 	}
- 
+
 	if(opt == 'd'){
 		//-------------------------Drop the table--------------------------------
 		//drop the table given
-		printf("drop table %s;",ARGV[2]);
+		printf("select DropGeometryColumn('%s','%s','the_geom');",ARGV[4],ARGV[2]);
+		printf("\ndrop table %s;\n",ARGV[2]);
+
 
 	}
 
@@ -473,7 +491,7 @@ main (int ARGC, char **ARGV)
 		//-------------------------Create the table--------------------------------
 		//create a table for inserting the shapes into with appropriate columns and types
 
-		printf("create table %s (geoid int4, geo_value geometry ",ARGV[2]);
+		printf("create table %s (gid int4 ",ARGV[2]);
 
 		num_fields = DBFGetFieldCount( hDBFHandle );
 		num_records = DBFGetRecordCount(hDBFHandle);
@@ -481,15 +499,14 @@ main (int ARGC, char **ARGV)
 		for(j=0;j<num_fields;j++){
 			type = DBFGetFieldInfo(hDBFHandle, j, name, NULL, NULL);
 			
-			if(strcmp(name,"GEOID")==0 || strcmp(name,"GEO_VALUE")==0){
+			if(strcmp(name,"gid")==0){
 				printf(", %s__2 ",name);
 			}else{
-				//printf("NAME = S\n\n",name);
 				printf(", %s ",name);
 			}
 	
 			if(hDBFHandle->pachFieldType[j] == 'D' ){
-				printf ("varchar(8)");//date type is not supported in API so check for it explicity before the api call.
+				printf ("varchar(8)");//date data-type is not supported in API so check for it explicity before the api call.
 			}else{
 				if(type == FTString){
 					printf ("varchar");
@@ -504,27 +521,48 @@ main (int ARGC, char **ARGV)
 		}
 		printf (");\n");
 		//finished creating the table
+		
+
+
 	}
 
-	if (dump_format)
-	{
-		printf("COPY \"%s\" from stdin;\n",ARGV[2]);
-	}
 
 	SHPGetInfo( hSHPHandle, &num_entities, &phnshapetype, &padminbound[0], &padmaxbound[0]);
 	obj = 	SHPReadObject(hSHPHandle,0);
-	trans=0;	
+	trans=0;
+
+
+	//create the geometry column with an addgeometry call to dave function
+
+
+	printf("select AddGeometryColumn('%s','%s','the_geom',%s,",ARGV[4],ARGV[2],ARGV[3]);
+
+	if( obj->nSHPType == 1 ){  //2d point
+		printf("'MULTIPOINT',2);\n");
+	}else if( obj->nSHPType == 3){	//2d arcs/lines
+		printf("'MULTILINESTRING',2);\n");
+	}else if( obj->nSHPType == 5){	//2d polygons
+		printf("'MULTIPOLYGON',2);\n");
+	}else if( obj->nSHPType == 11){ //3d points
+		printf("'MULTIPOINT',3);\n");
+	}else if( obj->nSHPType == 13){  //3d arcs/lines
+		printf("'MULTILINESTRING',3);\n");
+	}else{
+		printf("'GEOMETRY',3);\n");
+	}
+	
+	if (dump_format){
+			printf("COPY \"%s\" from stdin;\n",ARGV[2]);
+	}
+	
+	
 	//Determine what type of shape is in the file and do appropriate processing
-	if (obj->nVertices == 0)
-	{
-		if (dump_format)
-		{
+	if (obj->nVertices == 0){
+		if (dump_format){
 			printf("\\N");
 			Insert_attributes(hDBFHandle, ARGV,j);//add the attributes of each shape to the insert statement
 			SHPDestroyObject(obj);
-		}
-		else
-		{
+		}else{
 			printf("NULL");
 			Insert_attributes(hDBFHandle, ARGV,j);//add the attributes of each shape to the insert statement
 			SHPDestroyObject(obj);	
@@ -532,6 +570,11 @@ main (int ARGC, char **ARGV)
 	}
 	else 
 	{
+
+
+		obj->nSHPType = 11;  
+
+
 		if( obj->nSHPType == 5 ){  
 	//---------------------------------------------------------------------------------
 	//---------POLYGONS----------------------------------------------------------------
@@ -553,10 +596,10 @@ main (int ARGC, char **ARGV)
 					if (!(dump_format) )
 						printf("begin;");
 				}else{
-					if (!(dump_format) )
+					if (!(dump_format) ){
 						printf("end;\n");
-					if (!(dump_format) )
 						printf("begin;");
+					}
 				}
 				trans=0;
 			}
@@ -564,13 +607,15 @@ main (int ARGC, char **ARGV)
 			// transaction stuff done
 			
 			obj = SHPReadObject(hSHPHandle,j);	//open the next object
+		
+
 			tot_rings = ring_check(obj,ARGV,tot_rings,hDBFHandle);
 			SHPDestroyObject(obj); //close the object
 		}
 
-		if (!(dump_format) )
+		if (!(dump_format) ){
 			printf("end;");	//End the last transaction block
-
+		}
 	
 	}else if( obj->nSHPType == 1){  
 		//---------------------------------------------------------------------
@@ -584,22 +629,31 @@ main (int ARGC, char **ARGV)
 					if (!(dump_format) )
 						printf("begin;");
 				}else{
-					if (!(dump_format) )
+					if (!(dump_format) ){
 						printf("end;\n");
-					if (!(dump_format) )
 						printf("begin;");
+					}
 				}
 				trans=0;
 			}
 			trans++;
 			// transaction stuff done
-			
-			if (dump_format)
-			{
-				printf("%i\tMULTIPOINT(",j);
-			}	
-			else
-				printf("insert into %s values ('%i','MULTIPOINT (",ARGV[2],j); //print out sql statements
+
+			if (dump_format){
+				printf("%i",j);
+			}else{			
+				printf("insert into %s values ('%i'",ARGV[2],j);
+			}
+
+			Insert_attributes(hDBFHandle, ARGV,j); //add the attributes for each entity to the insert statement
+
+
+
+			if (dump_format){
+				printf("\tSRID=%s;MULTIPOINT(",ARGV[3]);
+			}else{
+				printf(",GeometryFromText('MULTIPOINT ("); 
+			}
 			obj = SHPReadObject(hSHPHandle,j);
 			
 			for (u=0;u<obj->nVertices; u++){
@@ -609,21 +663,22 @@ main (int ARGC, char **ARGV)
 					printf("%.15g %.15g",obj->padfX[u],obj->padfY[u]);
 				}
 			}
-			
-			if (dump_format)
-			{
-				printf(")");
+			if (dump_format){
+				printf(")\n");
 
 			}
-			else
-				printf(")'");
-			Insert_attributes(hDBFHandle, ARGV,j); //add the attributes for each entity to the insert statement
-
+			else{
+				printf(")',%s) );\n",ARGV[3]);
+			}
+			
 			SHPDestroyObject(obj);
+
+
+
 		}
-		if (!(dump_format) )
+		if (!(dump_format) ){
 			printf("end;"); //End the last transaction
-		
+		}
 	}else if( obj->nSHPType == 3){
 		//------------------------------------------------------------------------
 		//--------ARCs / LINES----------------------------------------------------
@@ -636,7 +691,7 @@ main (int ARGC, char **ARGV)
 			if(trans == 250 || j==0){
 				if(j==0){
 					if (!(dump_format) )
-						printf("begin;");
+						printf("begin;\n");
 				}else{
 					if (!(dump_format) )
 						printf("end;\n");
@@ -647,17 +702,12 @@ main (int ARGC, char **ARGV)
 			}
 			trans++;
 			//end of transaction stuff
-if (j == 5136)
-{
-	j=5136;
-}
 
-			if (dump_format)
-			{
-				printf("%i\tMULTILINESTRING(",j);
+			if (dump_format){
+				printf("%i",j);
+			}else{
+				printf("insert into %s values ('%i'",ARGV[2],j);
 			}
-			else
-				printf("insert into %s values ('%i','MULTILINESTRING (",ARGV[2],j);
 			obj = SHPReadObject(hSHPHandle,j);
 
 			if(obj->nParts >1){
@@ -666,12 +716,22 @@ if (j == 5136)
 				next_ring = -99;
 			}
 			
+
+			Insert_attributes(hDBFHandle, ARGV,j); //add the attributes of each shape to the insert statement
+
+
+			if (dump_format){
+				printf("\tSRID=%s;MULTILINESTRING(",ARGV[3]);
+			}else{
+				printf(",GeometryFromText('MULTILINESTRING (");
+			}
+
 			//for each vertice write out the coordinates in the insert statement, when there is a new line 
 			//you must end the brackets and start new ones etc.
 			for (u=0;u<obj->nVertices; u++){
 				
 				//check if the next vertice is the start of a new line
-		//		printf("\n\nu+1 = %d, next_ring = %d  index = %d\n",u+1,next_ring,obj->panPartStart[next_ring]);
+		                //printf("\n\nu+1 = %d, next_ring = %d  index = %d\n",u+1,next_ring,obj->panPartStart[next_ring]);
 
 				if(next_ring==-99 && obj->nVertices ==1){	
 					printf("(%.15g %.15g )",obj->padfX[u],obj->padfY[u]);
@@ -698,11 +758,10 @@ if (j == 5136)
 			
 			if (dump_format)
 			{
-				printf(")");
+				printf(")\n");
 			}
 			else
-				printf(")'");
-			Insert_attributes(hDBFHandle, ARGV,j); //add the attributes of each shape to the insert statement
+				printf(")',%s) );\n",ARGV[3]);
 
 			
 			SHPDestroyObject(obj);
@@ -715,7 +774,7 @@ if (j == 5136)
 	
 	}else if( obj->nSHPType == 13){  
 		//---------------------------------------------------------------------
-		//------PolyLineZ(3D lines)--------------------------------------------
+		//------Linez(3D lines)--------------------------------------------
 		
 		begin=0;//initialize the begin flag
 				
@@ -737,12 +796,11 @@ if (j == 5136)
 			trans++;
 			//end transaction stuff
 
-			if (dump_format)
-			{
-				printf("%i\tMULTILINESTRING(",j);
+			if (dump_format){
+				printf("%i",j);
+			}else{
+				printf("insert into %s values ('%i'",ARGV[2],j);
 			}
-			else
-				printf("insert into %s values ('%i','MULTILINESTRING (",ARGV[2],j);
 
 			obj = SHPReadObject(hSHPHandle,j);
 
@@ -750,6 +808,15 @@ if (j == 5136)
 				next_ring = 1;//if there is more than one part, set the next_ring index to one
 			}else{
 				next_ring = -99;
+			}
+
+			Insert_attributes(hDBFHandle, ARGV,j);//add the attributes of each shape to the insert statement
+
+
+			if (dump_format){
+				printf("MULTILINESTRING(");
+			}else{
+				printf(",GeometryFromText('MULTILINESTRING (");
 			}
 
 			//for each vertice write out the coordinates in the insert statement, when there is a new line 
@@ -773,13 +840,11 @@ if (j == 5136)
 				}
 			}	
 			
-			if (dump_format)
-			{
-				printf(")");
+			if (dump_format){
+				printf(")\n");
+			}else{
+				printf(")',%s));\n",ARGV[3]);
 			}
-			else
-				printf(")'");
-			Insert_attributes(hDBFHandle, ARGV,j);//add the attributes of each shape to the insert statement
 
 			
 			SHPDestroyObject(obj);
@@ -799,26 +864,34 @@ if (j == 5136)
 			if(trans == 250 || j==0){
 				if(j==0){
 					if (!(dump_format) )
-						printf("begin;");
+						printf("begin;\n");
 				}else{
 					if (!(dump_format) )
 						printf("end;\n");
 					if (!(dump_format) )
-						printf("begin;");
+						printf("begin;\n");
 				}
 				trans=0;
 			}
 			trans++;
 			//end of transaction stuff
 			
-			if (dump_format)
-			{
-				printf("%i\tPOINT(",j);
+			if (dump_format){
+				printf("%i",j);
+			}else{
+				printf("insert into %s values ('%i'",ARGV[2],j);
 			}
-			else
-				printf("insert into %s values ('%i','POINT (",ARGV[2],j);
 
 			obj = SHPReadObject(hSHPHandle,j);
+
+			Insert_attributes(hDBFHandle, ARGV,j);//add the attributes of each shape to the insert statement
+
+
+			if (dump_format){
+				printf("\tSRID=%s;MULTIPOINT(",ARGV[3]);
+			}else{
+				printf(",GeometryFromText('MULTIPOINT (");
+			}
 			
 			for (u=0;u<obj->nVertices; u++){
 				if (u>0){
@@ -830,11 +903,10 @@ if (j == 5136)
 
 			if (dump_format)
 			{
-				printf(")");
+				printf(")\n");
 			}
 			else
-				printf(")'");
-			Insert_attributes(hDBFHandle, ARGV,j);//add the attributes of each shape to the insert statement
+				printf(")',%s));\n",ARGV[3]);
 
 			
 			SHPDestroyObject(obj);
@@ -856,3 +928,5 @@ if (j == 5136)
 if ((dump_format) )
 	printf("\\.\n");
 }//end main()
+
+

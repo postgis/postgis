@@ -17,6 +17,8 @@ endif
 OBJS = shp2pgsql.o shpopen.o dbfopen.o
 PROG = shp2pgsql
 
+override CPPFLAGS := -g  -I$(srcdir) $(CPPFLAGS) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"'
+
 all: $(PROG)
 
 $(PROG): $(OBJS)
