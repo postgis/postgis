@@ -103,10 +103,14 @@ language, upload the new postgis.sql file, then upload your database dump:
   dropdb yourdatabase
   createdb yourdatabase
   createlang plpgsql yourdatabase
-  psql -f postgis.sql -d yourdatabase
+  psql -f lwpostgis.sql -d yourdatabase
   psql -f dumpfile.sql -d yourdatabase
   vacuumdb -z yourdatabase
 
+You might find the utils/postgis_restore.pl useful. It will
+automatically create a new db, feed it the  lwpostgis.sql file
+and restore all but postgis objects from a 'custom' dump.
+Run with no args to have a usage string printed.
 
 
 USAGE:
