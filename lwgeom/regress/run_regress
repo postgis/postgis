@@ -14,4 +14,5 @@ psql -e lwgeom_reg <../../postgis.sql >& /dev/null
 psql -e lwgeom_reg <../lwgeom.sql >& /dev/null 
 psql -e lwgeom_reg <lwgeom_regress.sql |& grep -v "^INSERT" > lwgeom_regress_out
 diff lwgeom_regress_out lwgeom_regress_expected
+sleep 5
 dropdb lwgeom_reg
