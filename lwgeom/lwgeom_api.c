@@ -309,50 +309,6 @@ BOX3D *combine_boxes(BOX3D *b1, BOX3D *b2)
 	return result;
 }
 
-// returns a real entity so it doesnt leak
-// if this has a pre-built BOX2d, then we use it,
-// otherwise we need to compute it.
-// OBSOLETED!
-BOX2DFLOAT4
-__getbox2d(char *serialized_form)
-{
-	int type = (unsigned char) serialized_form[0];
-	char *loc;
-	BOX2DFLOAT4 result;
-	BOX3D *box3d;
-
-	loc = serialized_form+1;
-
-//lwnotice("getbox2d: type is %d", type);
-
-	if (lwgeom_hasBBOX(type))
-	{
-		//woot - this is easy
-//lwnotice("getbox2d has box");
-		memcpy(&result,loc, sizeof(BOX2DFLOAT4));
-		return result;
-	}
-
-	//we have to actually compute it!
-//lwnotice("getbox2d -- computing bbox");
-	box3d = lw_geom_getBB_simple(serialized_form);
-//lwnotice("lw_geom_getBB_simple got bbox3d(%.15g %.15g,%.15g %.15g)",box3d->xmin,box3d->ymin,box3d->xmax,box3d->ymax);
-
-	if ( ! box3d_to_box2df_p(box3d, &result) )
-	{
-		lwerror("Error converting box3d to box2df");
-	}
-
-	//box = box3d_to_box2df(box3d);
-//lwnotice("box3d made box2d(%.15g %.15g,%.15g %.15g)",box->xmin,box->ymin,box->xmax,box->ymax);
-	//memcpy(&result,box, sizeof(BOX2DFLOAT4));
-	//lwfree(box);
-
-	lwfree(box3d);
-
-	return result;
-}
-
 // returns a pointer to internal storage, or NULL
 // if the serialized form does not have a BBOX.
 BOX2DFLOAT4 *

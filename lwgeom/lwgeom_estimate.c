@@ -1897,7 +1897,6 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 	char *nsp;
 	char *tbl;
 	char *col;
-	LWHISTOGRAM2D *histo;
 	ArrayType *array = NULL;
 	int SPIcode;
 	SPITupleTable *tuptable;
@@ -2007,6 +2006,9 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.14  2004/12/13 12:25:27  strk
+ * Removed obsoleted function and fixed some warnings.
+ *
  * Revision 1.13  2004/12/10 12:35:11  strk
  * implemented estimated_extent() function
  *
