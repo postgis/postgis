@@ -10,6 +10,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.53.2.2  2004/10/14 10:13:28  strk
+ * Added support for user defined query (replacing schema.table)
+ *
  * Revision 1.53.2.1  2004/09/20 15:39:22  strk
  * Fixed a bug in multipolygon handling (failed to reverse Z
  * values when modifying clocwise order)
@@ -179,7 +182,7 @@ typedef unsigned char byte;
 /* Global data */
 PGconn *conn;
 int rowbuflen;
-char *geo_col_name, *table, *shp_file, *schema;
+char *geo_col_name, *table, *shp_file, *schema, *usrquery;
 int type_ary[256];
 char *main_scan_query;
 DBFHandle dbf;
@@ -223,6 +226,8 @@ int is_clockwise(int num_points,double *x,double *y,double *z);
 int is_bigendian(void);
 SHPObject * shape_creator_wrapper(char *str, int idx, SHPHandle shp, int is3d);
 SHPObject * shape_creator_wrapper_WKB(byte *str, int idx);
+static void parse_table(char *spec);
+static int create_usrquerytable(void);
 
 /* WKB functions */
 SHPObject * create_polygon3D_WKB(byte *wkb, int shape_id);
@@ -247,6 +252,7 @@ double popdouble(byte **c);
 void skipdouble(byte **c);
 void dump_wkb(byte *wkb);
 byte * HexDecode(byte *hex);
+
 #define WKB3DOFFSET 0x80000000
 
 
@@ -268,6 +274,7 @@ main(int ARGC, char **ARGV){
 	shape_creator = NULL;
 	table = NULL;
 	schema = NULL;
+	usrquery = NULL;
 	geo_col_name = NULL;
 	shp_file = NULL;
 	main_scan_query = NULL;
@@ -297,6 +304,13 @@ main(int ARGC, char **ARGV){
 	if (PQstatus(conn) == CONNECTION_BAD) {
 		fprintf(stderr, "%s", PQerrorMessage(conn));
 		exit_nicely(conn);
+	}
+
+	/* Create temporary table for user query */
+	if ( usrquery ) {
+		if ( ! create_usrquerytable() ) {
+			exit(2);
+		}
 	}
 
 #ifdef DEBUG
@@ -2269,6 +2283,7 @@ usage(status)
 {
 	printf("RCSID: %s\n", rcsid);
 	printf("USAGE: pgsql2shp [<options>] <database> [<schema>.]<table>\n");
+	printf("       pgsql2shp [<options>] <database> <query>\n");
 	printf("\n");
        	printf("OPTIONS:\n");
        	printf("  -d Set the dump file to 3 dimensions, if this option is not used\n");
@@ -2293,7 +2308,7 @@ usage(status)
 int parse_commandline(int ARGC, char **ARGV)
 {
 	int c, curindex;
-	char buf[256], *ptr;
+	char buf[256];
 
 	buf[255] = '\0'; // just in case...
 
@@ -2350,13 +2365,7 @@ int parse_commandline(int ARGC, char **ARGV)
 		    	snprintf(buf, 255, "PGDATABASE=%s", ARGV[optind]);
 		    	putenv(strdup(buf));
                 }else if(curindex == 1){
-                        table = ARGV[optind];
-			if ( (ptr=strchr(table, '.')) )
-			{
-				*ptr = '\0';
-				schema = table;
-				table = ptr+1;
-			}
+			parse_table(ARGV[optind]);
                 }
                 curindex++;
         }
@@ -2972,3 +2981,53 @@ void skipdouble(byte **c) {
 	*c+=8;
 }
 
+/*
+ * Either get a table (and optionally a schema)
+ * or a query.
+ * A query starts with a "select" or "SELECT" string.
+ */
+static void
+parse_table(char *spec)
+{
+	char *ptr;
+
+	// Spec is a query
+	if ( strstr(spec, "SELECT ") || strstr(spec, "select ") )
+	{
+		usrquery = spec;
+		table = "__pgsql2shp_tmp_table";
+	}
+	else
+	{
+        	table = spec;
+		if ( (ptr=strchr(table, '.')) )
+		{
+			*ptr = '\0';
+			schema = table;
+			table = ptr+1;
+		}
+	}
+}
+
+static int
+create_usrquerytable()
+{
+	char *query;
+	PGresult *res;
+
+	query = malloc(sizeof(table)+sizeof(usrquery)+256);
+	sprintf(query, "CREATE TEMP TABLE \"%s\" AS %s", table, usrquery);
+
+        printf("Preparing table for user query... ");
+	fflush(stdout);
+	res = PQexec(conn, query);
+	free(query);
+	if ( ! res || PQresultStatus(res) != PGRES_COMMAND_OK ) {
+		printf( "Failed: %s\n",
+			PQerrorMessage(conn));
+		return 0;
+	}
+	PQclear(res);
+	printf("Done.\n");
+	return 1;
+}
