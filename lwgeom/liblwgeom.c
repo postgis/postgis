@@ -5,6 +5,7 @@
 #define CONTEXT_PG 0
 #define CONTEXT_SA 1
 
+
 #ifdef STANDALONE
 #define DEFAULT_CONTEXT CONTEXT_SA
 #else
@@ -115,7 +116,13 @@ lwgeom_typename(int type)
 void *
 lwalloc(size_t size)
 {
+#ifdef DEBUG_ALLOCS
+	void *mem = lwalloc_var(size);
+	lwnotice("lwalloc: %d@%p", size, mem);
+	return mem;
+#else // ! DEBUG_ALLOCS
 	return lwalloc_var(size);
+#endif
 }
 
 void *
