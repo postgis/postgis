@@ -27,6 +27,7 @@ PostGIS 1.0.0?
 	- jdbc2: Fixed handling of measured geometries in EWKT.
 	- Reduced memory usage by early releasing query-context palloced one.
 	- Added bool::text cast in lwpostgis.sql
+	- bug fix in GeometryFromText() missing to add a bbox cache.
 
 PostGIS 1.0.0RC2
 2005/01/26
