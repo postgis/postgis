@@ -62,25 +62,6 @@ LANGUAGE 'sql' with (iscachable,isstrict);
 
 
 
---- drop function transform(geometry,integer);
--- given a geometry and a SRID, convert the geometry to the new SRID
---     transform(geometry,new_srid)
-CREATE FUNCTION transform(geometry,integer) returns geometry as
-'BEGIN
-  RETURN transform_geometry( $1 , get_proj4_from_srid(SRID( $1 ) ), get_proj4_from_srid( $2 ), $2  );
- END;
-'
-LANGUAGE 'plpgsql' with (iscachable,isstrict);
-
--- test:
---- trans=# select * from spatial_ref_sys ;
---- srid |   auth_name   | auth_srid | srtext |                                proj4text                                 
---- ------+---------------+-----------+--------+--------------------------------------------------------------------------
----    1 | latlong WGS84 |         1 |        | +proj=longlat +datum=WGS84
----    2 | BC albers     |         2 |        | proj=aea ellps=GRS80 lon_0=-126 lat_0=45 lat_1=50 lat_2=58.5 x_0=1000000
-
--- select transform( 'SRID=1;POINT(-120.8 50.3)', 2);
----   -> 'SRID=2;POINT(1370033.37046971 600755.810968684)'
 
 
 --- DropGeometryColumn(<db name>,<table name>,<column name>)
@@ -270,10 +251,7 @@ create function WKB_in(opaque)
    AS '@MODULE_FILENAME@','WKB_in'
    LANGUAGE 'c' with (isstrict);
 
-create function transform_geometry(geometry,text,text,int)
-	RETURNS geometry
-   AS '@MODULE_FILENAME@','transform_geom'
-   LANGUAGE 'c' with (isstrict,iscachable);
+
 
 
 create function WKB_out(opaque)
@@ -310,10 +288,8 @@ CREATE TYPE CHIP (
 
 
 
-create function geometry(CHIP)
-	RETURNS GEOMETRY
-   AS '@MODULE_FILENAME@','CHIP_to_geom'
-   LANGUAGE 'c' with (isstrict,iscachable);
+
+
 
 CREATE FUNCTION srid(chip)
    RETURNS INT4
@@ -364,6 +340,37 @@ CREATE TYPE GEOMETRY (
 	output =  geometry_out,
 	storage = main
 );
+
+create function transform_geometry(geometry,text,text,int)
+	RETURNS geometry
+   AS '@MODULE_FILENAME@','transform_geom'
+   LANGUAGE 'c' with (isstrict,iscachable);
+
+--- drop function transform(geometry,integer);
+-- given a geometry and a SRID, convert the geometry to the new SRID
+--     transform(geometry,new_srid)
+CREATE FUNCTION transform(geometry,integer) returns geometry as
+'BEGIN
+  RETURN transform_geometry( $1 , get_proj4_from_srid(SRID( $1 ) ), get_proj4_from_srid( $2 ), $2  );
+ END;
+'
+LANGUAGE 'plpgsql' with (iscachable,isstrict);
+
+-- test:
+--- trans=# select * from spatial_ref_sys ;
+--- srid |   auth_name   | auth_srid | srtext |                                proj4text                                 
+--- ------+---------------+-----------+--------+--------------------------------------------------------------------------
+---    1 | latlong WGS84 |         1 |        | +proj=longlat +datum=WGS84
+---    2 | BC albers     |         2 |        | proj=aea ellps=GRS80 lon_0=-126 lat_0=45 lat_1=50 lat_2=58.5 x_0=1000000
+
+-- select transform( 'SRID=1;POINT(-120.8 50.3)', 2);
+---   -> 'SRID=2;POINT(1370033.37046971 600755.810968684)'
+
+create function geometry(CHIP)
+	RETURNS GEOMETRY
+   AS '@MODULE_FILENAME@','CHIP_to_geom'
+   LANGUAGE 'c' with (isstrict,iscachable);
+
 
 
 CREATE FUNCTION box3d(GEOMETRY)
