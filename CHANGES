@@ -1,4 +1,4 @@
-PostGIS 1.0.0
+PostGIS 1.0.0RC6
 ??????
 	- BUGFIX dumper 64bit
 	- BUGFIX in multi()

@@ -4579,6 +4579,41 @@ FROM geometry_table;</literallayout>
 		<title>Release Notes</title>
 
     		<sect1>
+			<title>Release 1.0.0RC6</title>
+			<para>Release date: ???</para>
+
+			<para>Sixth release candidate for 1.0.0.
+			Contains a few bug fixes and cleanups.</para>
+
+			<sect2>
+				<title>Upgrading</title>
+				<para>You need a dump/reload to upgrade
+				from precedent releases. See the <link
+				linkend="upgrading">upgrading</link>
+				chapter for more informations.</para>
+			</sect2>
+
+			<sect2>
+				<title>Library changes</title>
+	<para>BUGFIX in multi()</para>
+	<para>early return [when noop] from multi()</para>
+			</sect2>
+
+			<sect2>
+				<title>Scripts changes</title>
+	<para>dropped {x,y}{min,max}(box2d) functions</para>
+			</sect2>
+
+			<sect2>
+				<title>Other changes</title>
+	<para>BUGFIX in postgis_restore.pl scrip</para>
+	<para>BUGFIX in dumper's 64bit support</para>
+			</sect2>
+
+		</sect1>
+
+
+    		<sect1>
 			<title>Release 1.0.0RC5</title>
 			<para>Release date: 2005/03/25</para>
 
