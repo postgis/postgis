@@ -317,6 +317,13 @@ lwgeom_add(const LWGEOM *to, uint32 where, const LWGEOM *what)
 		return NULL;
 	}
 
+#ifdef DEBUG_CALLS
+	lwnotice("lwgeom_add(%s, %d, %s) called",
+		lwgeom_typename(TYPE_GETTYPE(to->type)),
+		where,
+		lwgeom_typename(TYPE_GETTYPE(what->type)));
+#endif
+
 	switch(TYPE_GETTYPE(to->type))
 	{
 		case POINTTYPE:
@@ -327,10 +334,24 @@ lwgeom_add(const LWGEOM *to, uint32 where, const LWGEOM *what)
 			return (LWGEOM *)lwpoly_add((const LWPOLY *)to, where, what);
 
 		case MULTIPOINTTYPE:
+			return (LWGEOM *)lwmpoint_add((const LWMPOINT *)to,
+				where, what);
+
 		case MULTILINETYPE:
+			return (LWGEOM *)lwmline_add((const LWMLINE *)to,
+				where, what);
+
 		case MULTIPOLYGONTYPE:
-			return (LWGEOM *)lwcollection_add((const LWCOLLECTION *)to, where, what);
+			return (LWGEOM *)lwmpoly_add((const LWMPOLY *)to,
+				where, what);
+
+		case COLLECTIONTYPE:
+			return (LWGEOM *)lwcollection_add(
+				(const LWCOLLECTION *)to, where, what);
+
 		default:
+			lwerror("lwgeom_add: unknown geometry type: %d",
+				TYPE_GETTYPE(to->type));
 			return NULL;
 	}
 }
@@ -415,6 +436,18 @@ lwgeom_dropBBOX(LWGEOM *lwgeom)
 	if ( lwgeom->bbox && ! TYPE_HASBBOX(lwgeom->type) )
 		lwfree(lwgeom->bbox);
 	lwgeom->bbox = NULL;
+}
+
+/*
+ * Ensure there's a box in the LWGEOM.
+ * If the box is already there just return,
+ * else compute it.
+ */
+void
+lwgeom_addBBOX(LWGEOM *lwgeom)
+{
+	if ( lwgeom->bbox ) return;
+	lwgeom->bbox = lwgeom_compute_bbox(lwgeom);
 }
 
 void

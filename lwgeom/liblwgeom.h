@@ -5,9 +5,6 @@
 
 #define INTEGRITY_CHECKS 1
 //#define DEBUG_ALLOCS 1
-
-//liblwgeom.h
-
 //#define DEBUG 1
 //#define DEBUG_CALLS 1
 
@@ -252,6 +249,8 @@ extern void lwgeom_changed(LWGEOM *lwgeom);
 // with the HASBBOX flag and has a bbox, it
 // will be released.
 extern void lwgeom_dropBBOX(LWGEOM *lwgeom);
+// Compute a bbox if not already computed
+extern void lwgeom_addBBOX(LWGEOM *lwgeom);
 extern void lwgeom_dropSRID(LWGEOM *lwgeom);
 
 //-------------------------------------------------------------
@@ -983,6 +982,8 @@ extern LWPOLY *lwpoly_construct(int SRID, BOX2DFLOAT4 *bbox,
 	unsigned int nrings, POINTARRAY **points);
 extern LWCOLLECTION *lwcollection_construct(unsigned int type, int SRID,
 	BOX2DFLOAT4 *bbox, unsigned int ngeoms, LWGEOM **geoms);
+extern LWCOLLECTION *lwcollection_construct_empty(int SRID,
+	char hasZ, char hasM);
 
 // Return a char string with ASCII versionf of type flags
 extern const char *lwgeom_typeflags(unsigned char type);

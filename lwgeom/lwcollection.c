@@ -46,6 +46,22 @@ lwcollection_construct(unsigned int type, int SRID, BOX2DFLOAT4 *bbox,
 	return ret;
 }
 
+LWCOLLECTION *
+lwcollection_construct_empty(int SRID, char hasZ, char hasM);
+{
+	LWCOLLECTION *ret;
+
+	ret = lwalloc(sizeof(LWCOLLECTION));
+	ret->type = lwgeom_makeType_full(hasz, hasm, (SRID!=-1),
+		COLLECTIONTYPE, 0);
+	ret->SRID = SRID;
+	ret->ngeoms = 0;
+	ret->geoms = NULL;
+	ret->bbox = bbox;
+
+	return ret;
+}
+
 
 LWCOLLECTION *
 lwcollection_deserialize(char *srl)
