@@ -23,7 +23,7 @@ endif
 
 OBJS = shpopen.o dbfopen.o getopt.o
 
-override CPPFLAGS := -g -I$(srcdir) -I$(top_builddir)/src/interfaces/libpq $(CPPFLAGS) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"'
+override CPPFLAGS := -I$(srcdir) -I$(top_builddir)/src/interfaces/libpq $(CPPFLAGS) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"'
 
 all: shp2pgsql$(EXE) pgsql2shp$(EXE)
 

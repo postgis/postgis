@@ -1,3 +1,15 @@
+PostGIS 0.7.4
+2003/02/12
+
+- Bug Fixes
+  - Several shp2pgsql enhancements and bugs.
+  - Cleaner compile, fewer warnings.
+  - Better undef support.
+  - Fixed stateplane/feet proj definitions.
+- New Things
+  - Support for PostgreSQL 7.3
+  - Optional spatial index selectivity system
+
 PostGIS 0.7.3
 2002/09/05
 
