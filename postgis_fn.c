@@ -11,6 +11,12 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.33  2004/03/25 00:43:41  dblasby
+ * added function fluffType() that takes POINT LINESTRING or POLYGON
+ * type and converts it to a multi*.
+ * Needs to be integrated into a proper Postgresql function and given an
+ * SQL CREATE FUNCTION
+ *
  * Revision 1.32  2004/02/12 10:34:49  strk
  * changed USE_GEOS check from ifdef / ifndef to if / if !
  *
@@ -2627,7 +2633,7 @@ Datum geom_accum(PG_FUNCTION_ARGS)
 	GEOMETRY *geom;
 	ArrayType *result;
 	Pointer **pointers;
-	MemoryContext oldcontext; 
+	MemoryContext oldcontext;
 
 	datum = PG_GETARG_DATUM(0);
 	if ( (Pointer *)datum == NULL ) {
@@ -2656,7 +2662,7 @@ Datum geom_accum(PG_FUNCTION_ARGS)
 	oldcontext = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
 
 	/* Make a DETOASTED copy of input geometry */
-	geom = (GEOMETRY *)PG_DETOAST_DATUM_COPY(datum); 
+	geom = (GEOMETRY *)PG_DETOAST_DATUM_COPY(datum);
 
 	//elog(NOTICE, "geom_accum: adding %p (nelems=%d)", geom, nelems);
 
@@ -2739,7 +2745,7 @@ Datum collect_garray ( PG_FUNCTION_ARGS )
 		geom = geoms[i];
 
 		/* Skip NULL array elements (are them possible?) */
-		if ( geom == NULL ) continue; 
+		if ( geom == NULL ) continue;
 
 		/* Use first NOT-NULL GEOMETRY as the base */
 		if ( ! result )
@@ -2756,8 +2762,8 @@ Datum collect_garray ( PG_FUNCTION_ARGS )
 	PG_RETURN_NULL();
 			}
 			memcpy(result, geom, geom->size);
-			
-			/* 
+
+			/*
 			 * I belive memory associated with geometries
 			 * in array can be safely removed. Comment
 			 * this out if you get memory faults!
@@ -2769,7 +2775,7 @@ Datum collect_garray ( PG_FUNCTION_ARGS )
 			pfree(geom);
 
 			continue;
-		} 
+		}
 
 		/* Skip geometry if it contains no sub-objects */
 		if ( ! geom->nobjs )
@@ -2792,10 +2798,10 @@ Datum collect_garray ( PG_FUNCTION_ARGS )
 		}
 
 		/*
-		 * Set result is3d flag to true if at least one 
+		 * Set result is3d flag to true if at least one
 		 * of geometries in set has is set to true
 		 */
-		if ( geom->is3d ) is3d = 1; 
+		if ( geom->is3d ) is3d = 1;
 
 		/* Get to sub-objects offset */
 		offsets = (int32 *)(((char *)&(geom->objType[0])) +
@@ -2843,8 +2849,8 @@ Datum collect_garray ( PG_FUNCTION_ARGS )
 	result->is3d = is3d;
 
 	/* Construct bounding volume */
-	bbox = bbox_of_geometry( result ); // make 
-	memcpy( &result->bvol, bbox, sizeof(BOX3D) ); // copy 
+	bbox = bbox_of_geometry( result ); // make
+	memcpy( &result->bvol, bbox, sizeof(BOX3D) ); // copy
 	pfree( bbox ); // release
 
 	PG_RETURN_POINTER( result );
@@ -3037,3 +3043,24 @@ void compressType(GEOMETRY *g)
 	}
 }
 
+// converts single-type (point,linestring,polygon)
+// to multi* types with 1 element
+// ie. POINT(0 0) --> MULTIPOINT(0 0)
+void fluffType(GEOMETRY *g)
+{
+		if (g->type == POINTTYPE)
+		{
+			g->type = MULTIPOINTTYPE;
+			return;
+		}
+		if (g->type == LINETYPE)
+		{
+			g->type = MULTILINETYPE;
+			return;
+		}
+		if (g->type == POLYGONTYPE)
+		{
+			g->type = MULTIPOLYGONTYPE;
+			return;
+		}
+}
