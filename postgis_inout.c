@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.44  2004/06/09 09:08:53  strk
+ * changed index/rindex to strchr/strrchr
+ *
  * Revision 1.43  2004/06/08 15:18:12  strk
  * Deleted prototype for isspace() in postgis.h
  * and included <ctype.h> in postgis_inout.c,
@@ -1661,8 +1664,8 @@ Datum geometry_in(PG_FUNCTION_ARGS)
 				char *last_paren;
 				char *current_paren;
 
-				first_paren= index (str,'(');
-				last_paren = rindex(str,')');
+				first_paren= strchr (str,'(');
+				last_paren = strrchr(str,')');
 
 				if  ( (first_paren == NULL) || (last_paren == NULL) || (first_paren >last_paren) )
 				{
