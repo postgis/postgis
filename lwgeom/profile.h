@@ -6,7 +6,7 @@
 /*
  * Define this to have profiling enabled
  */
-#define PROFILE
+//#define PROFILE
 
 #ifdef PROFILE
 #include <sys/time.h>

@@ -10,6 +10,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.6  2004/09/27 08:26:03  strk
+ * Debugging defines set to NODEBUG.
+ *
  * Revision 1.5  2004/09/16 09:06:12  strk
  * Changed SPI_cursor_open call changes to be used for USE_VERSION > 80
  * (change seems to be intended for future releases)
@@ -59,7 +62,7 @@
  */
 #define STATISTIC_KIND_GEOMETRY 100
 
-#define DEBUG_GEOMETRY_STATS 1
+//#define DEBUG_GEOMETRY_STATS 1
 
 /*
  * Define this if you want to use standard deviation based
