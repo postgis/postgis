@@ -562,8 +562,7 @@ getPoint(POINTARRAY *pa, int n)
 	size = pointArray_ptsize(pa);
 
 	// this does x,y
-	return (POINT2D *)&(pa->serialized_pointlist[size*n]);
-
+	return &(pa->serialized_pointlist[size*n]);
 }
 
 
