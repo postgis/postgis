@@ -313,7 +313,7 @@ int ring_check(SHPObject* obj, char *table, char *sr_id, int rings,DBFHandle hDB
 	Insert_attributes(hDBFHandle,rings-1);
 
 	if (dump_format){
-		printf("%i\tSRID=%s ;MULTIPOLYGON(",rings,sr_id );
+		printf("\tSRID=%s ;MULTIPOLYGON(",sr_id );
 	}else{
 		printf(",GeometryFromText('MULTIPOLYGON(");
 	}
