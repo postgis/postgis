@@ -11,9 +11,11 @@ install: all liblwgeom-install loaderdumper-install
 uninstall: liblwgeom-uninstall loaderdumper-uninstall
 
 clean: liblwgeom-clean loaderdumper-clean
+	rm -f lwpostgis.sql
 
 liblwgeom: 
 	$(MAKE) -C lwgeom
+	cp lwgeom/lwpostgis.sql lwpostgis.sql
 
 liblwgeom-clean:
 	$(MAKE) -C lwgeom clean
