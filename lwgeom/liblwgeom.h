@@ -391,15 +391,21 @@ typedef struct {
 } PG_LWGEOM;
 
 /*
- * Construct a full LWGEOM type (including size header)
+ * Construct a full PG_LWGEOM type (including size header)
  * from a serialized form.
- * The constructed LWGEOM object will be allocated using palloc
+ * The constructed PG_LWGEOM object will be allocated using palloc
  * and the serialized form will be copied.
  * If you specify a SRID other then -1 it will be set.
  * If you request bbox (wantbbox=1) it will be extracted or computed
  * from the serialized form.
  */
 extern PG_LWGEOM *PG_LWGEOM_construct(char *serialized, int SRID, int wantbbox);
+
+/*
+ * Compute bbox of serialized geom
+ */
+extern int compute_serialized_bbox_p(char *serialized_form, BOX2DFLOAT4 *box);
+
 
 /*
  * Evaluate with an heuristic if the provided PG_LWGEOM is worth
@@ -882,8 +888,6 @@ extern float LWGEOM_Minf(float a, float b);
 extern float LWGEOM_Maxf(float a, float b);
 extern double LWGEOM_Mind(double a, double b);
 extern double LWGEOM_Maxd(double a, double b);
-
-extern BOX3D *lw_geom_getBB_simple(char *serialized_form);
 
 extern float  nextDown_f(double d);
 extern float  nextUp_f(double d);

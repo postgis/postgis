@@ -19,7 +19,7 @@
 // This is an implementation of the functions defined in lwgeom.h
 
 //forward decs
-extern  BOX3D *lw_geom_getBB_simple(char *serialized_form);
+extern BOX3D *lw_geom_getBB_simple(char *serialized_form);
 #ifdef DEBUG_EXPLODED
 void checkexplodedsize(char *srl, LWGEOM_EXPLODED *exploded, int alloced, char wantbbox);
 #endif
@@ -1437,6 +1437,26 @@ lw_geom_getBB(char *serialized_form)
 
 	  pfree_inspected(inspected);
 	  return result;
+}
+
+// Compute bounding box of a serialized LWGEOM, even if it is
+// already cached. The computed BOX2DFLOAT4 is stored at
+// the given location, the function returns 0 is the geometry
+// does not have a bounding box (EMPTY GEOM)
+int
+compute_serialized_bbox_p(char *serialized_form, BOX2DFLOAT4 *out)
+{
+	  LWGEOM_INSPECTED *inspected = lwgeom_inspect(serialized_form);
+
+	  BOX3D *result = lw_geom_getBB_inspected(inspected);
+	  if ( ! result ) return 0;
+	  out->xmin = result->xmin;
+	  out->xmax = result->xmax;
+	  out->ymin = result->ymin;
+	  out->ymax = result->ymax;
+	  lwfree(result);
+
+	  return 1;
 }
 
 //dont forget to lwfree() result
