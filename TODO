@@ -6,3 +6,7 @@
 - PgSQL 7.4 support
 - SVG output routines
 - Douglas/Peuker simplification for linestrings
+- Update PgSQL GiST to support row level (recangle level?) locking.
+- Network creation and network operations 
+  (upstream, downstream, least cost path)
+
