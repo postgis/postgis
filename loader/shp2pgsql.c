@@ -12,6 +12,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.43  2003/12/30 12:37:46  strk
+ * Fixed segfault bug reported by Randy George, removed explicit sequence drop
+ *
  * Revision 1.42  2003/12/01 14:27:58  strk
  * added simple malloc wrapper
  *
@@ -574,7 +577,7 @@ int main (int ARGC, char **ARGV){
 	char  name[32];
 	char  *sr_id,*shp_file,*table, *database;
 	char **names;
-	DBFFieldType type;
+	DBFFieldType type = -1;
 	extern char *optarg;
 	extern int optind;
 	opt = ' ';
@@ -671,24 +674,25 @@ int main (int ARGC, char **ARGV){
 		exit(-1);
 	}
 
-	if(opt == 'd'){
+	if(opt == 'd')
+	{
 		//-------------------------Drop the table--------------------------------
-		//drop the table given
-		printf("delete from geometry_columns where f_table_name = '%s';\n",table);
+		printf("select DropGeometryColumn('','%s','the_geom');", table);
 		if ( quoteidentifiers ){
 			printf("\ndrop table \"%s\";\n",table);
-			printf("\ndrop sequence \"%s_%s_seq\";\n",database,table);
 		}else{
 			printf("\ndrop table %s;\n",table);
-			printf("\ndrop sequence %s_%s_seq;\n",database,table);
 		}
 	}
 
 
-	//-------------------------Get the col names to fully specify them in inserts-------------------------------
+	/*
+	 * Get col names and types to fully specify them in inserts
+	 */
 	num_fields = DBFGetFieldCount( hDBFHandle );
 	num_records = DBFGetRecordCount(hDBFHandle);
 	names = malloc((num_fields + 1)*sizeof(char*));
+	types = (DBFFieldType *)malloc((num_fields + 1)*sizeof(char*));
 	col_names = malloc(num_fields * sizeof(char) * 32);
 	if(opt != 'a'){
 		strcpy(col_names, "(gid," );
@@ -699,6 +703,7 @@ int main (int ARGC, char **ARGV){
 	for(j=0;j<num_fields;j++){
 		type = DBFGetFieldInfo(hDBFHandle, j, name, &field_width, &field_precision); 
 		names[j] = malloc ( strlen(name)+3);
+		types[j] = type;
 		strcpy(names[j], name);
 		for(z=0; z < j ; z++){
 			if(strcmp(names[z],name)==0){
@@ -732,49 +737,35 @@ int main (int ARGC, char **ARGV){
 	strcat(col_names, ",the_geom)");
 
 
-	if(opt == 'c' || opt == 'd'){ //if opt is 'a' do nothing, go straight to making inserts
+	//if opt is 'a' do nothing, go straight to making inserts
+	if(opt == 'c' || opt == 'd')
+	{
 
-		//-------------------------Create the table--------------------------------
-		//create a table for inserting the shapes into with appropriate columns and types
+		/* 
+		 * Create a table for inserting the shapes into with appropriate
+		 * columns and types
+		 */
 
 		if ( quoteidentifiers ){
-			printf("create table \"%s\" (gid serial ",table);
+			printf("CREATE TABLE \"%s\" (gid serial", table);
 		}else{
-			printf("create table %s (gid serial ",table);
+			printf("CREATE TABLE %s (gid serial", table);
 		}
 
-		num_fields = DBFGetFieldCount( hDBFHandle );
-		num_records = DBFGetRecordCount(hDBFHandle);
-		names = malloc((num_fields + 1)*sizeof(char*));
-      types = (DBFFieldType *)malloc((num_fields + 1)*sizeof(char*));
-		for(j=0;j<num_fields;j++){
-			type = DBFGetFieldInfo(hDBFHandle, j, name, &field_width, &field_precision); 
-			names[j] = malloc ( strlen(name)+1);
-			types[j] = type;
-			strcpy(names[j], name);
-			for(z=0; z < j ; z++){
-//				printf("\n\n%i-z\n\n",z);
-//				printf("\n\n %s  vs %s from %i-z and %i-j\n\n",names[z],name,z,j);
-				if(strcmp(names[z],name)==0){
-					strcat(name,"__");
-					sprintf(name,"%s%i",name,j);
-					break;
-				}
-			}	
-			if(strcasecmp(name,"gid")==0){
-				printf(", %s__2 ",name);
-			}else{
-				if ( quoteidentifiers ){
-					printf(", \"%s\" ",name);
-				}else{
-					printf(", %s ",name);
-				}
-			}
-	
-			if(hDBFHandle->pachFieldType[j] == 'D' ){
+		for(j=0;j<num_fields;j++)
+		{
+			type = types[j];
 
+			if ( quoteidentifiers ) printf(", \"%s\" ", names[j]);
+			else printf(", %s ", names[j]);
+
+			if(hDBFHandle->pachFieldType[j] == 'D' ) /* Date field */
+			{
 				printf ("varchar(8)");//date data-type is not supported in API so check for it explicity before the api call.
-			}else{
+			}
+			
+			else
+			{
 
 				if(type == FTString){
 					printf ("varchar");
@@ -799,20 +790,19 @@ int main (int ARGC, char **ARGV){
 		}
 		printf (");\n");
 		//finished creating the table
-
 	}
 
 
 
 	SHPGetInfo( hSHPHandle, &num_entities, &phnshapetype, &padminbound[0], &padmaxbound[0]);
-   j=num_entities;
-   while(obj == NULL && j--)
-   {
+	j=num_entities;
+	while(obj == NULL && j--)
+	{
 		obj = SHPReadObject(hSHPHandle,j);
-   }
-   if ( obj == NULL) 
-   {
-      fprintf(stderr, "Shapefile contains %d NULL object(s)\n", num_entities);
+	}
+	if ( obj == NULL) 
+	{
+		fprintf(stderr, "Shapefile contains %d NULL object(s)\n", num_entities);
 		exit(-1);
 	}
 
