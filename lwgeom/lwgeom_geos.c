@@ -36,13 +36,42 @@ Datum centroid(PG_FUNCTION_ARGS);
 
 #if USE_GEOS
 
- /*
-  * Define this to have have many notices printed
-  * during postgis->geos and geos->postgis conversions
-  */
+/*
+ * Define this to have have many notices printed
+ * during postgis->geos and geos->postgis conversions
+ */
 #undef DEBUG_CONVERTER
 #undef DEBUG_POSTGIS2GEOS
 #undef DEBUG_GEOS2POSTGIS
+
+/*
+ * Define this to have profiling enabled
+ */
+#define PROFILE
+
+#ifdef PROFILE
+#include <sys/time.h>
+#define PROF_P2G 0
+#define PROF_G2P 1
+#define PROF_GRUN 2
+struct timeval profstart, profstop;
+long proftime[3];
+#define profstart(x) do { gettimeofday(&profstart, NULL); } while (0);
+#define profstop(x) do { gettimeofday(&profstop, NULL); \
+	proftime[x] = ( profstop.tv_sec*1000000+profstop.tv_usec) - \
+		( profstart.tv_sec*1000000+profstart.tv_usec); \
+	} while (0);
+#define profreport(x) do { \
+	long int conv = proftime[PROF_P2G]+proftime[PROF_G2P]; \
+	long int run = proftime[PROF_GRUN]; \
+	long int tot = conv + run; \
+	int convpercent = (((double)conv/(double)tot)*100); \
+	int runpercent = (((double)run/(double)tot)*100); \
+	elog(NOTICE, "PROF: p2g:%lu g2p:%lu gru:%lu (%d%% conv / %d%% run)", \
+	proftime[PROF_P2G], proftime[PROF_G2P], proftime[PROF_GRUN], \
+	convpercent, runpercent); \
+	} while (0);
+#endif
 
 typedef  struct Geometry Geometry;
 
@@ -243,7 +272,13 @@ Datum geomunion(PG_FUNCTION_ARGS)
 
 //elog(NOTICE,"g1=%s",GEOSasText(g1));
 //elog(NOTICE,"g2=%s",GEOSasText(g2));
+#ifdef PROFILE
+	profstart(PROF_GRUN);
+#endif
 	g3 = GEOSUnion(g1,g2);
+#ifdef PROFILE
+	profstop(PROF_GRUN);
+#endif
 
 //elog(NOTICE,"g3=%s",GEOSasText(g3));
 
@@ -303,7 +338,14 @@ Datum symdifference(PG_FUNCTION_ARGS)
 
 //	elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
 
+#ifdef PROFILE
+	profstart(PROF_GRUN);
+#endif
 	result = GEOS2POSTGIS(g3, is3d);
+#ifdef PROFILE
+	profstop(PROF_GRUN);
+#endif
+
 	if (result == NULL)
 	{
 		GEOSdeleteGeometry(g1);
@@ -335,7 +377,13 @@ Datum boundary(PG_FUNCTION_ARGS)
 		initGEOS(MAXIMUM_ALIGNOF);
 
 		g1 = 	POSTGIS2GEOS(geom1 );
+#ifdef PROFILE
+	profstart(PROF_GRUN);
+#endif
 		g3 =    GEOSBoundary(g1);
+#ifdef PROFILE
+	profstop(PROF_GRUN);
+#endif
 
 	if (g3 == NULL)
 	{
@@ -462,8 +510,8 @@ Datum intersection(PG_FUNCTION_ARGS)
 
 //elog(NOTICE,"intersection() START");
 
-	g1 = POSTGIS2GEOS(geom1 );
-	g2 = POSTGIS2GEOS(geom2 );
+	g1 = POSTGIS2GEOS(geom1);
+	g2 = POSTGIS2GEOS(geom2);
 
 //elog(NOTICE,"               constructed geometrys - calling geos");
 
@@ -479,7 +527,13 @@ Datum intersection(PG_FUNCTION_ARGS)
 //elog(NOTICE,"g1 is valid = %i",GEOSisvalid(g1));
 
 
+#ifdef PROFILE
+	profstart(PROF_GRUN);
+#endif
 	g3 =   GEOSIntersection(g1,g2);
+#ifdef PROFILE
+	profstop(PROF_GRUN);
+#endif
 
 //elog(NOTICE,"               intersection finished");
 
@@ -492,9 +546,7 @@ Datum intersection(PG_FUNCTION_ARGS)
 	}
 
 
-
-
-//	elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
+	//elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
 
 	result = GEOS2POSTGIS(g3, is3d);
 	if (result == NULL)
@@ -533,7 +585,14 @@ Datum difference(PG_FUNCTION_ARGS)
 
 	g1 = POSTGIS2GEOS(geom1);
 	g2 = POSTGIS2GEOS(geom2);
+
+#ifdef PROFILE
+	profstart(PROF_GRUN);
+#endif
 	g3 = GEOSDifference(g1,g2);
+#ifdef PROFILE
+	profstop(PROF_GRUN);
+#endif
 
 	if (g3 == NULL)
 	{
@@ -569,15 +628,22 @@ Datum difference(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(pointonsurface);
 Datum pointonsurface(PG_FUNCTION_ARGS)
 {
-		LWGEOM		*geom1 = (LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	LWGEOM *geom1 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-		Geometry *g1,*g3;
-		LWGEOM *result;
+	Geometry *g1,*g3;
+	LWGEOM *result;
 
-		initGEOS(MAXIMUM_ALIGNOF);
+	initGEOS(MAXIMUM_ALIGNOF);
 
-		g1 = 	POSTGIS2GEOS(geom1 );
-		g3 =    GEOSpointonSurface(g1);
+	g1 = 	POSTGIS2GEOS(geom1 );
+
+#ifdef PROFILE
+	profstart(PROF_GRUN);
+#endif
+	g3 =    GEOSpointonSurface(g1);
+#ifdef PROFILE
+	profstop(PROF_GRUN);
+#endif
 
 	if (g3 == NULL)
 	{
@@ -623,7 +689,14 @@ Datum centroid(PG_FUNCTION_ARGS)
 
 	geosgeom = POSTGIS2GEOS(geom);
 
+#ifdef PROFILE
+	profstart(PROF_GRUN);
+#endif
 	geosresult = GEOSGetCentroid(geosgeom);
+#ifdef PROFILE
+	profstop(PROF_GRUN);
+#endif
+
 	if ( geosresult == NULL )
 	{
 		GEOSdeleteGeometry(geosgeom);
@@ -663,16 +736,23 @@ void errorIfGeometryCollection(LWGEOM *g1, LWGEOM *g2)
 PG_FUNCTION_INFO_V1(isvalid);
 Datum isvalid(PG_FUNCTION_ARGS)
 {
-		LWGEOM		*geom1 = (LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-		bool result;
-		Geometry *g1;
+	LWGEOM		*geom1 = (LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	bool result;
+	Geometry *g1;
 
-		initGEOS(MAXIMUM_ALIGNOF);
+	initGEOS(MAXIMUM_ALIGNOF);
 
-		g1 = 	POSTGIS2GEOS(geom1 );
+	g1 = 	POSTGIS2GEOS(geom1 );
 
-		result = GEOSisvalid(g1);
-		GEOSdeleteGeometry(g1);
+#ifdef PROFILE
+	profstart(PROF_GRUN);
+#endif
+	result = GEOSisvalid(g1);
+#ifdef PROFILE
+	profstop(PROF_GRUN);
+#endif
+
+	GEOSdeleteGeometry(g1);
 	if (result == 2)
 	{
 		elog(ERROR,"GEOS isvalid() threw an error!");
@@ -717,7 +797,14 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	g1 = POSTGIS2GEOS(geom1 );
 	g2 = POSTGIS2GEOS(geom2 );
 
+#ifdef PROFILE
+	profstart(PROF_GRUN);
+#endif
 	result = GEOSrelateOverlaps(g1,g2);
+#ifdef PROFILE
+	profstop(PROF_GRUN);
+#endif
+
 	GEOSdeleteGeometry(g1);
 	GEOSdeleteGeometry(g2);
 	if (result == 2)
@@ -761,7 +848,14 @@ Datum contains(PG_FUNCTION_ARGS)
 	g1 = 	POSTGIS2GEOS(geom1 );
 	g2 = 	POSTGIS2GEOS(geom2 );
 
+#ifdef PROFILE
+	profstart(PROF_GRUN);
+#endif
 	result = GEOSrelateContains(g1,g2);
+#ifdef PROFILE
+	profstop(PROF_GRUN);
+#endif
+
 	GEOSdeleteGeometry(g1);
 	GEOSdeleteGeometry(g2);
 
@@ -805,7 +899,14 @@ Datum within(PG_FUNCTION_ARGS)
 	g1 = 	POSTGIS2GEOS(geom1 );
 	g2 = 	POSTGIS2GEOS(geom2 );
 
+#ifdef PROFILE
+	profstart(PROF_GRUN);
+#endif
 	result = GEOSrelateWithin(g1,g2);
+#ifdef PROFILE
+	profstop(PROF_GRUN);
+#endif
+
 	GEOSdeleteGeometry(g1);
 	GEOSdeleteGeometry(g2);
 
@@ -850,7 +951,13 @@ Datum crosses(PG_FUNCTION_ARGS)
 	g1 = 	POSTGIS2GEOS(geom1 );
 	g2 = 	POSTGIS2GEOS(geom2 );
 
+#ifdef PROFILE
+	profstart(PROF_GRUN);
+#endif
 	result = GEOSrelateCrosses(g1,g2);
+#ifdef PROFILE
+	profstop(PROF_GRUN);
+#endif
 
 	GEOSdeleteGeometry(g1);
 	GEOSdeleteGeometry(g2);
@@ -896,7 +1003,13 @@ Datum intersects(PG_FUNCTION_ARGS)
 	g1 = 	POSTGIS2GEOS(geom1 );
 	g2 = 	POSTGIS2GEOS(geom2 );
 
+#ifdef PROFILE
+	profstart(PROF_GRUN);
+#endif
 	result = GEOSrelateIntersects(g1,g2);
+#ifdef PROFILE
+	profstop(PROF_GRUN);
+#endif
 	GEOSdeleteGeometry(g1);
 	GEOSdeleteGeometry(g2);
 	if (result == 2)
@@ -939,7 +1052,13 @@ Datum touches(PG_FUNCTION_ARGS)
 	g1 = POSTGIS2GEOS(geom1 );
 	g2 = POSTGIS2GEOS(geom2 );
 
+#ifdef PROFILE
+	profstart(PROF_GRUN);
+#endif
 	result = GEOSrelateTouches(g1,g2);
+#ifdef PROFILE
+	profstop(PROF_GRUN);
+#endif
 
 	GEOSdeleteGeometry(g1);
 	GEOSdeleteGeometry(g2);
@@ -984,7 +1103,13 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	g1 = POSTGIS2GEOS(geom1 );
 	g2 = POSTGIS2GEOS(geom2 );
 
+#ifdef PROFILE
+	profstart(PROF_GRUN);
+#endif
 	result = GEOSrelateDisjoint(g1,g2);
+#ifdef PROFILE
+	profstop(PROF_GRUN);
+#endif
 	GEOSdeleteGeometry(g1);
 	GEOSdeleteGeometry(g2);
 
@@ -1017,7 +1142,13 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 	patt =  DatumGetCString(DirectFunctionCall1(textout,
                         PointerGetDatum(PG_GETARG_DATUM(2))));
 
+#ifdef PROFILE
+	profstart(PROF_GRUN);
+#endif
 	result = GEOSrelatePattern(g1,g2,patt);
+#ifdef PROFILE
+	profstop(PROF_GRUN);
+#endif
 	GEOSdeleteGeometry(g1);
 	GEOSdeleteGeometry(g2);
 	pfree(patt);
@@ -1076,7 +1207,13 @@ if ((g1==NULL) || (g2 == NULL))
 //elog(NOTICE,"about to relate()");
 
 
+#ifdef PROFILE
+	profstart(PROF_GRUN);
+#endif
 		relate_str = GEOSrelate(g1, g2);
+#ifdef PROFILE
+	profstop(PROF_GRUN);
+#endif
 
 //elog(NOTICE,"finished relate()");
 
@@ -1138,7 +1275,13 @@ Datum geomequals(PG_FUNCTION_ARGS)
 	g1 = POSTGIS2GEOS(geom1 );
 	g2 = POSTGIS2GEOS(geom2 );
 
+#ifdef PROFILE
+	profstart(PROF_GRUN);
+#endif
 	result = GEOSequals(g1,g2);
+#ifdef PROFILE
+	profstop(PROF_GRUN);
+#endif
 	GEOSdeleteGeometry(g1);
 	GEOSdeleteGeometry(g2);
 
@@ -1168,7 +1311,13 @@ Datum issimple(PG_FUNCTION_ARGS)
 
 	g1 = POSTGIS2GEOS(geom );
 
+#ifdef PROFILE
+	profstart(PROF_GRUN);
+#endif
 	result = GEOSisSimple(g1);
+#ifdef PROFILE
+	profstop(PROF_GRUN);
+#endif
 	GEOSdeleteGeometry(g1);
 
 	if (result == 2)
@@ -1202,7 +1351,13 @@ Datum isring(PG_FUNCTION_ARGS)
 
 	g1 = POSTGIS2GEOS(geom );
 
+#ifdef PROFILE
+	profstart(PROF_GRUN);
+#endif
 	result = GEOSisRing(g1);
+#ifdef PROFILE
+	profstop(PROF_GRUN);
+#endif
 	GEOSdeleteGeometry(g1);
 
 	if (result == 2)
@@ -1449,12 +1604,15 @@ addToExploded_recursive(Geometry *geom, LWGEOM_EXPLODED *exp)
 LWGEOM *
 GEOS2POSTGIS(Geometry *geom, char want3d)
 {
-	char *serialized;
 	LWGEOM *result;
 	LWGEOM_EXPLODED *oexp;
 	int SRID = GEOSGetSRID(geom);
 	int wantbbox = 0; // might as well be 1 ...
 	int size;
+
+#ifdef PROFILE
+	profstart();
+#endif
 
 	// Initialize exploded lwgeom
 	oexp = (LWGEOM_EXPLODED *)palloc(sizeof(LWGEOM_EXPLODED));
@@ -1475,8 +1633,15 @@ GEOS2POSTGIS(Geometry *geom, char want3d)
 	result->size = size;
 	lwexploded_serialize_buf(oexp, wantbbox, SERIALIZED_FORM(result), NULL);
 
+#ifdef PROFILE
+	profstop(PROF_G2P);
+	profreport();
+#endif
+
 	return result;
 }
+
+//-----=POSTGIS2GEOS=
 
 Geometry *
 POSTGIS2GEOS(LWGEOM *geom)
@@ -1485,10 +1650,17 @@ POSTGIS2GEOS(LWGEOM *geom)
 	LWLINE *line;
 	LWPOLY *poly;
 	LWGEOM_EXPLODED *exploded;
-	int type = lwgeom_getType(geom->type);
+	int type;
 	int i, j;
 	Geometry **collected;
 	int ncollected;
+	Geometry *ret=NULL;
+
+#ifdef PROFILE
+	profstart();
+#endif
+
+	type = lwgeom_getType(geom->type);
 
 	switch (type)
 	{
@@ -1497,24 +1669,35 @@ POSTGIS2GEOS(LWGEOM *geom)
 			elog(NOTICE, "POSTGIS2GEOS: it's a point");
 #endif
 			point = lwpoint_deserialize(SERIALIZED_FORM(geom));
-			return PostGIS2GEOS_point(point);
+			ret = PostGIS2GEOS_point(point);
+			break;
 
 		case LINETYPE:
 #ifdef DEBUG_POSTGIS2GEOS
 			elog(NOTICE, "POSTGIS2GEOS: it's a line");
 #endif
 			line = lwline_deserialize(SERIALIZED_FORM(geom));
-			return PostGIS2GEOS_linestring(line);
+			ret = PostGIS2GEOS_linestring(line);
+			break;
 
 		case POLYGONTYPE:
 #ifdef DEBUG_POSTGIS2GEOS
 			elog(NOTICE, "POSTGIS2GEOS: it's a polygon");
 #endif
 			poly = lwpoly_deserialize(SERIALIZED_FORM(geom));
-			return PostGIS2GEOS_polygon(poly);
+			ret = PostGIS2GEOS_polygon(poly);
+			break;
 
 		default:
 			break;
+	}
+
+	if ( ret )
+	{
+#ifdef PROFILE
+		profstop(PROF_P2G);
+#endif
+		return ret;
 	}
 
 #ifdef DEBUG_POSTGIS2GEOS
@@ -1553,8 +1736,14 @@ POSTGIS2GEOS(LWGEOM *geom)
 		collected[j++] = PostGIS2GEOS_polygon(poly);
 	}
 
-	return PostGIS2GEOS_collection(collected, ncollected,
+	ret = PostGIS2GEOS_collection(collected, ncollected,
 		exploded->SRID, exploded->ndims > 2);
+
+#ifdef PROFILE
+	profstop(PROF_P2G);
+#endif
+
+	return ret;
 
 }
 
@@ -1575,6 +1764,11 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 	geosgeom = POSTGIS2GEOS(geom);
 	//if ( (Pointer *)geom != (Pointer *)PG_GETARG_DATUM(0) ) pfree(geom);
 	if ( ! geosgeom ) PG_RETURN_NULL();
+
+#ifdef PROFILE
+	profstart(PROF_GRUN);
+	profstop(PROF_GRUN);
+#endif
 
 	result = GEOS2POSTGIS(geosgeom, lwgeom_ndims(geom->type) > 2);
 	GEOSdeleteGeometry(geosgeom);
