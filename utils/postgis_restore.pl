@@ -18,7 +18,7 @@
 #	  detect wheter or not they are from postgis
 #
 
-exec perl $0
+exec perl $0 $@
 	if (0);
 
 (@ARGV == 3) || die "Usage: perl postgis_restore.pl <postgis.sql> <db> <dump>\nRestore a custom dump (pg_dump -Fc) of a postgis enabled database.\n";
