@@ -291,8 +291,8 @@ SELECT id, name,	AsText(geom) AS geom FROM gtest;</programlisting><para>For more
 	 <sect1 id="RefObject"> 
 		<title>GIS Objects</title> 
 		<para>The GIS objects supported by PostGIS are the "Simple Features"
-		  defined by the OpenGIS Consortium (OGC). Note that PostGIS currently support
-		  the features and the representation APIs, but the various comparison and
+		  defined by the OpenGIS Consortium (OGC). Note that PostGIS currently supports
+		  the features and the representation APIs, but not the various comparison and
 		  convolution operators given in the OGC "Simple Features for SQL"
 		  specification.</para> 
 		<para>Examples of the text representations of the features are as
