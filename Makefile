@@ -16,25 +16,32 @@ endif
 
 test_db = geom_regress
 
+# set PG72 to 1 for postgres >= 7.2
+#PG72 = 1
+
 # shared library parameters
 NAME=postgis
 SO_MAJOR_VERSION=0
 SO_MINOR_VERSION=7
-
 
 #override CPPFLAGS := -I$(srcdir) $(CPPFLAGS)
 # Altered for Cynwin
 override CPPFLAGS := -g  -I$(srcdir) $(CPPFLAGS) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"' -DWANT_PROJECTION 
 override DLLLIBS := $(BE_DLLLIBS) $(DLLLIBS)
 
-OBJS=postgis_debug.o postgis_ops.o postgis_fn.o postgis_inout.o postgis_proj.o postgis_chip.o postgis_transform.o
+# output code and SQL file for postgres >= 7.2 or not?
+ifeq ($(PG72),1)
+	OBJS=postgis_debug.o postgis_ops.o postgis_gist_72.o postgis_fn.o postgis_inout.o postgis_proj.o postgis_chip.o postgis_transform.o
+else
+	OBJS=postgis_debug.o postgis_ops.o postgis_gist.o postgis_fn.o postgis_inout.o postgis_proj.o postgis_chip.o postgis_transform.o
+endif
 
 # Add libraries that libpq depends (or might depend) on into the
 # shared library link.  (The order in which you list them here doesn't
 # matter.)
 SHLIB_LINK = $(filter -L%, $(LDFLAGS)) -lproj
 
-all: all-lib $(NAME).sql $(NAME)_undef.sql loaderdumper
+all: all-lib $(NAME).sql $(NAME).sql $(NAME)_undef.sql loaderdumper
 
 loaderdumper:
 	make -C loader
@@ -42,8 +49,13 @@ loaderdumper:
 # Shared library stuff
 include $(top_srcdir)/src/Makefile.shlib
 
-$(NAME).sql: $(NAME).sql.in
-	sed -e 's:@MODULE_FILENAME@:$(libdir)/$(shlib):g;s:@POSTGIS_VERSION@:$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION):g' < $< > $@
+$(NAME).sql: $(NAME).sql.in $(NAME)_gist_72.sql.in $(NAME)_gist.sql.in
+	sed -e 's:@MODULE_FILENAME@:$(libdir)/$(shlib):g;s:@POSTGIS_VERSION@:$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION):g' < $(NAME).sql.in > $@ 
+	if [ $(PG72) == 1 ]; then \
+		sed -e 's:@MODULE_FILENAME@:$(libdir)/$(shlib):g;s:@POSTGIS_VERSION@:$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION):g' < $(NAME)_gist_72.sql.in >> $(NAME).sql; \
+	else \
+		sed -e 's:@MODULE_FILENAME@:$(libdir)/$(shlib):g;s:@POSTGIS_VERSION@:$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION):g' < $(NAME)_gist.sql.in >> $(NAME).sql; \
+	fi
 
 $(NAME)_undef.sql: $(NAME).sql
 	perl create_undef.pl $< > $@ 

@@ -495,38 +495,6 @@ Datum max_distance(PG_FUNCTION_ARGS);
 Datum collector(PG_FUNCTION_ARGS);
 
 
-//for GIST index
-typedef char* (*BINARY_UNION)(char*, char*, int*);
-typedef float (*SIZE_BOX)(char*);
-typedef Datum (*RDF)(PG_FUNCTION_ARGS);
-
-
-
-
-
-GISTENTRY * ggeometry_compress(PG_FUNCTION_ARGS);
-GEOMETRYKEY *ggeometry_union(PG_FUNCTION_ARGS);
-GIST_SPLITVEC * ggeometry_picksplit(PG_FUNCTION_ARGS);
-bool ggeometry_consistent(PG_FUNCTION_ARGS);
-float * ggeometry_penalty(PG_FUNCTION_ARGS);
-bool * ggeometry_same(PG_FUNCTION_ARGS);
-
-char * ggeometry_binary_union(char *r1, char *r2, int *sizep);
-float size_geometrykey( char *pk );
-
-Datum ggeometry_inter(PG_FUNCTION_ARGS);
-
-/*
-** Common rtree-function (for all ops)
-*/
-char * rtree_union(bytea *entryvec, int *sizep, BINARY_UNION bu);
-float * rtree_penalty(GISTENTRY *origentry, GISTENTRY *newentry, float *result, BINARY_UNION bu, SIZE_BOX sb);
-GIST_SPLITVEC * rtree_picksplit(bytea *entryvec, GIST_SPLITVEC *v, int keylen, BINARY_UNION bu, RDF interop, SIZE_BOX sb);
-bool rtree_internal_consistent(BOX *key, BOX *query, StrategyNumber strategy);
-
-
-GISTENTRY * rtree_decompress(PG_FUNCTION_ARGS);
-
 
 
 /*--------------------------------------------------------------------
