@@ -8,9 +8,9 @@
 
 
 
-#define TWODIMS 00
-#define THREEDIMS 01
-#define FOURDIMS 10
+#define TWODIMS 0
+#define THREEDIMS 1
+#define FOURDIMS 2
 
 typedef struct
 {
@@ -113,12 +113,12 @@ extern int pointArray_ptsize(POINTARRAY *pa);
 
  LWGEOM types are an 8-bit char in this format:
 
-xxSDtttt
+xSDDtttt
 
 WHERE
     x = unused
     S = 4 byte SRID attached (0= not attached (-1), 1= attached)
-    D = dimentionality (0=2d, 1=3d)
+    DD = dimentionality (0=2d, 1=3d, 2= 4d)
     tttt = actual type (as per the WKB type):
 
     enum wkbGeometryType {
@@ -409,6 +409,12 @@ extern void pfree_POINTARRAY(POINTARRAY *pa);
 
 extern uint32 get_uint32(char *loc);
 extern int32 get_int32(char *loc);
+extern void printPA(POINTARRAY *pa);
+extern void printLWLINE(LWLINE *line);
+extern void printLWPOLY(LWPOLY *poly);
+extern void printBYTES(unsigned char *a, int n);
+extern void deparse_hex(unsigned char str, unsigned char *result);
+
 
 //------------------------------------------------------------
 //------------------------------------------------------------

@@ -1,0 +1,47 @@
+BEGIN;
+
+CREATE OR REPLACE FUNCTION lwgeom_in(cstring)
+        RETURNS lwgeom
+        AS '/net/lion/raid/share/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1','LWGEOM_in'
+        LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE OR REPLACE FUNCTION lwgeom_out(lwgeom)
+        RETURNS cstring
+        AS '/net/lion/raid/share/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1','LWGEOM_out'
+        LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE TYPE lwgeom (
+        internallength = variable,
+        input = lwgeom_in,
+        output = lwgeom_out,
+        storage = main
+);
+
+
+CREATE FUNCTION lwgeom(wkb)
+        RETURNS lwgeom
+        AS '/net/lion/raid/share/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1','LWGEOMFromWKB'
+        LANGUAGE 'C' WITH (isstrict,iscachable);
+
+
+CREATE FUNCTION wkb(lwgeom)
+        RETURNS wkb
+        AS '/net/lion/raid/share/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1','WKBFromLWGEOM'
+        LANGUAGE 'C' WITH (isstrict,iscachable);
+
+COMMIT;
+
+
+---- test stuff
+
+select geometry(wkb(lwgeom(asbinary('POINT(1 2)'::geometry))));
+select geometry(wkb(lwgeom(asbinary('POINT(1 2 3)'::geometry))));
+
+select geometry(wkb(lwgeom(asbinary('LINESTRING(1 2, 3 4)'::geometry))));
+select geometry(wkb(lwgeom(asbinary('LINESTRING(1 2 -999, 3 4 -999, 5 6 -999)'::geometry))));
+
+
+select geometry(wkb(lwgeom(asbinary('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))'::geometry))));
+select geometry(wkb(lwgeom(asbinary('POLYGON((0 0 -99, 10 0 -99, 10 10 -99, 0 10 -99, 0 0 -99))'::geometry))));
+
+
