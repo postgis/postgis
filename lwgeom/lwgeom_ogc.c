@@ -672,7 +672,6 @@ Datum LWGEOM_startpoint_linestring(PG_FUNCTION_ARGS)
 	LWLINE *line = NULL;
 	POINTARRAY *pts;
 	LWPOINT *point;
-	char *serializedpoint;
 	PG_LWGEOM *result;
 	int i;
 
@@ -686,7 +685,7 @@ Datum LWGEOM_startpoint_linestring(PG_FUNCTION_ARGS)
 	}
 	pfree_inspected(inspected);
 
-	if ( point == NULL ) {
+	if ( line == NULL ) {
 		PG_FREE_IF_COPY(geom, 0);
 		PG_RETURN_NULL();
 	}
@@ -701,17 +700,12 @@ Datum LWGEOM_startpoint_linestring(PG_FUNCTION_ARGS)
 	// Construct an LWPOINT
 	point = lwpoint_construct(pglwgeom_getSRID(geom), NULL, pts);
 
-	// Serialized the point
-	serializedpoint = lwpoint_serialize(point);
+	// Construct a PG_LWGEOM
+	result = pglwgeom_serialize((LWGEOM *)point);
 
-	// And we construct the line (copy again)
-	result = PG_LWGEOM_construct(serializedpoint, pglwgeom_getSRID(geom),
-		0);
-
-	pfree(point);
-	pfree(serializedpoint);
-	PG_FREE_IF_COPY(geom, 0);
 	lwgeom_release((LWGEOM *)line);
+	lwgeom_release((LWGEOM *)point);
+	PG_FREE_IF_COPY(geom, 0);
 
 	PG_RETURN_POINTER(result);
 }
@@ -726,8 +720,7 @@ Datum LWGEOM_endpoint_linestring(PG_FUNCTION_ARGS)
 	LWGEOM_INSPECTED *inspected;
 	LWLINE *line = NULL;
 	POINTARRAY *pts;
-	LWPOINT *point;
-	char *serializedpoint;
+	LWGEOM *point;
 	PG_LWGEOM *result;
 	int i;
 
@@ -741,7 +734,7 @@ Datum LWGEOM_endpoint_linestring(PG_FUNCTION_ARGS)
 	}
 	pfree_inspected(inspected);
 
-	if ( point == NULL ) {
+	if ( line == NULL ) {
 		PG_FREE_IF_COPY(geom, 0);
 		PG_RETURN_NULL();
 	}
@@ -756,19 +749,14 @@ Datum LWGEOM_endpoint_linestring(PG_FUNCTION_ARGS)
 		TYPE_HASM(line->type), 1);
 
 	// Construct an LWPOINT
-	point = lwpoint_construct(pglwgeom_getSRID(geom), NULL, pts);
+	point = (LWGEOM *)lwpoint_construct(pglwgeom_getSRID(geom), NULL, pts);
 
-	// Serialized the point
-	serializedpoint = lwpoint_serialize(point);
+	// Serialize an PG_LWGEOM
+	result = pglwgeom_serialize(point);
 
-	// And we construct the line (copy again)
-	result = PG_LWGEOM_construct(serializedpoint, pglwgeom_getSRID(geom),
-		0);
-
-	pfree(point);
-	pfree(serializedpoint);
-	PG_FREE_IF_COPY(geom, 0);
+	lwgeom_release(point);
 	lwgeom_release((LWGEOM *)line);
+	PG_FREE_IF_COPY(geom, 0);
 
 	PG_RETURN_POINTER(result);
 }
@@ -780,7 +768,6 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 {
 	text *wkttext = PG_GETARG_TEXT_P(0);
 	char *wkt, fc;
-	int32 SRID;
 	size_t size;
 	PG_LWGEOM *geom;
 	PG_LWGEOM *result = NULL;
