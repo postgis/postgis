@@ -507,6 +507,41 @@ CREATE FUNCTION geomfromtext(geometry,int4)
 	AS '@MODULE_FILENAME@','geometry_from_text'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
+CREATE FUNCTION polygonfromtext(geometry,int4)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','geometry_from_text'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION multipolygonfromtext(geometry,int4)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','geometry_from_text'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION linestringfromtext(geometry,int4)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','geometry_from_text'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION multilinestringfromtext(geometry,int4)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','geometry_from_text'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION pointfromtext(geometry,int4)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','geometry_from_text'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION multipointfromtext(geometry,int4)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','geometry_from_text'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION geometrycollectionfromtext(geometry,int4)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','geometry_from_text'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
 CREATE FUNCTION setSRID(geometry,int4)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text'
