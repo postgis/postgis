@@ -3861,7 +3861,7 @@ FROM geometry_table;</literallayout>
       	<title>Geometry Editors</title>
 	  <variablelist>
 
-        <varlistentry>
+        <varlistentry id="addbbox">
           <term>AddBBOX(geometry)</term>
           <listitem>
             <para>Add bounding box to the geometry. This would make bounding
@@ -3870,7 +3870,7 @@ FROM geometry_table;</literallayout>
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="dropbbox">
           <term>DropBBOX(geometry)</term>
           <listitem>
             <para>Drop the bounding box cache from the geometry.
@@ -4032,6 +4032,13 @@ FROM geometry_table;</literallayout>
 				<term>zmflag(geometry)</term>
 				<listitem>
 					<para>Returns ZM (dimension semantic) flag of the geometries as a small int. Values are: 0=2d, 1=3dm, 2=3dz, 3=4d.  </para>
+				</listitem>
+			</varlistentry>
+
+			<varlistentry id="hasbbox">
+				<term>HasBBOX(geometry)</term>
+				<listitem>
+					<para>Returns TRUE if the bbox of this geometry is cached, FALSE otherwise. Use <link linkend="addbbox">addBBOX()</link> and <link linkend="dropbbox">dropBBOX()</link> to control caching.</para>
 				</listitem>
 			</varlistentry>
 
