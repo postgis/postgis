@@ -979,7 +979,7 @@ InsertPolygon(void)
 			outer->linked++;
 			while(outer->next) outer = outer->next;
 			outer->next = inner;
-			break;
+			continue; // check next hole
 		}
 
 		// The ring wasn't within any outer rings,
@@ -1383,6 +1383,9 @@ utf8 (const char *fromcode, char *inputbuf)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.82  2005/03/14 22:02:31  strk
+ * Fixed holes handling.
+ *
  * Revision 1.81  2005/03/08 11:06:33  strk
  * modernized old-style parameter declarations
  *
