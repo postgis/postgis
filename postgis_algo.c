@@ -10,6 +10,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.3  2004/04/27 13:50:59  strk
+ * Fixed bug in simplify() that was using the square of the given tolerance.
+ *
  * Revision 1.2  2004/01/21 19:04:03  strk
  * Added line_interpolate_point function by jsunday@rochgrp.com
  *
@@ -44,7 +47,7 @@
 
 /*
  * Search farthest point from segment p1-p2
- * returns squared distance an int pointer
+ * returns distance in an int pointer
  */
 void DP_findsplit(POINT3D *pts, int npts, int p1, int p2,
    int *split, double *dist)
@@ -110,8 +113,7 @@ DP_simplify(POINT3D *inpts, int inptsn, POINT3D **outpts, int *outptsn, double e
    int stack[inptsn];		/* recursion stack */
    int sp=-1;              /* recursion stack pointer */
    int p1, split; 
-   double dist_sq;
-   double epsilon_sq = epsilon*epsilon;
+   double dist;
    POINT3D *outpoints;
    int numoutpoints=0;
 
@@ -134,12 +136,12 @@ elog(NOTICE, "DP_simplify: added P0 to simplified point array (size 1)");
    do
    {
 
-      DP_findsplit(inpts, inptsn, p1, stack[sp], &split, &dist_sq);
+      DP_findsplit(inpts, inptsn, p1, stack[sp], &split, &dist);
 #if VERBOSE > 3
-      elog(NOTICE, "DP_simplify: farthest point from P%d-P%d is P%d (dist. %g)", p1, stack[sp], split, sqrt(dist_sq));
+      elog(NOTICE, "DP_simplify: farthest point from P%d-P%d is P%d (dist. %g)", p1, stack[sp], split, dist);
 #endif
 
-      if (dist_sq > epsilon_sq) {
+      if (dist > epsilon) {
          stack[++sp] = split;
       } else {
          /*
