@@ -476,7 +476,31 @@ CREATEFUNCTION probe_geometry_columns() RETURNS text AS
 '
 DECLARE
 	inserted integer;
+	oldcount integer;
+	probed integer;
 BEGIN
+
+	SELECT count(*) INTO oldcount FROM geometry_columns;
+
+	SELECT count(*) INTO probed
+		FROM pg_class c, pg_attribute a, pg_type t, 
+#if USE_VERSION >= 73
+			pg_namespace n,
+#endif
+			pg_constraint sridcheck, pg_constraint typecheck
+		WHERE t.typname = ''geometry''
+		AND a.atttypid = t.oid
+		AND a.attrelid = c.oid
+#if USE_VERSION >= 73
+		AND c.relnamespace = n.oid
+		AND sridcheck.connamespace = n.oid
+		AND typecheck.connamespace = n.oid
+#endif
+		AND sridcheck.conrelid = c.oid
+		AND sridcheck.conname = ''$1''
+		AND typecheck.conrelid = c.oid
+		AND typecheck.conname = ''$2'';
+
 	INSERT INTO geometry_columns SELECT
 		''''::varchar as f_table_catalogue,
 #if USE_VERSION >= 73
@@ -528,7 +552,10 @@ BEGIN
 
 	GET DIAGNOSTICS inserted = ROW_COUNT;
 
-        RETURN ''new records: ''||inserted;
+        RETURN ''probed:''||probed||
+		'' inserted:''||inserted||
+		'' conflicts:''||probed-inserted||
+		'' stale:''||oldcount-probed;
 END
 
 ' LANGUAGE 'plpgsql';
