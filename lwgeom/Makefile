@@ -146,6 +146,8 @@ install-lwgeom-scripts:
 	$(INSTALL_DATA) lwpostgis.sql $(DESTDIR)$(datadir)/contrib/lwpostgis.sql
 	$(INSTALL_DATA) ../spatial_ref_sys.sql $(DESTDIR)$(datadir)/contrib/spatial_ref_sys.sql
 	$(INSTALL_DATA) ../README.postgis $(DESTDIR)$(docdir)/contrib/README.postgis
+	$(INSTALL_DATA) ../doc/man/pgsql2shp.1 $(DESTDIR)$(mandir)/man1/pgsql2shp.1
+	$(INSTALL_DATA) ../doc/man/shp2pgsql.1 $(DESTDIR)$(mandir)/man1/shp2pgsql.1
 
 #- This has been copied from postgresql and adapted
 install-lwgeom-lib: $(shlib)
