@@ -33,19 +33,17 @@ extern unsigned char	parse_hex(char *str);
 extern void deparse_hex(unsigned char str, unsigned char *result);
 extern char *parse_lwgeom_wkt(char *wkt_input);
 
+// needed for OGC conformance
 Datum LWGEOMFromWKB(PG_FUNCTION_ARGS);
 Datum WKBFromLWGEOM(PG_FUNCTION_ARGS);
-
 Datum LWGEOM_in(PG_FUNCTION_ARGS);
 Datum LWGEOM_out(PG_FUNCTION_ARGS);
-
-// needed for OGC conformance
-
 Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS);
 Datum LWGEOM_getBBOX(PG_FUNCTION_ARGS);
-
-
 Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS);
+#if USE_VERSION > 73
+Datum LWGEOM_recv(PG_FUNCTION_ARGS);
+#endif
 
 
 // included here so we can be independent from postgis
