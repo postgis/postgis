@@ -1,5 +1,10 @@
 - AsBinary(geometry, XDR|NDR)
 
+- 4d support in dumper.
+
+- Endiannes honouring in dumper (currently does not specify and does not
+  flip when required).
+
 - size computation functions for deserialized objects
 
 - Implement lwexploded_serialize_buf for speedup of GEOS<=>POSTGIS conversion
