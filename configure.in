@@ -52,6 +52,12 @@ AC_ARG_WITH(pgsql-src,
   fi
 )
 
+dnl Search flex and yacc
+AC_SUBST(FLEX)
+AC_SUBST(YACC)
+AC_PATH_PROG([FLEX], [flex])
+AC_PATH_PROG([YACC], [yacc])
+
 dnl Some final checks
 
 if test $USE_GEOS -gt 0 -a ! -e $GEOS_DIR/bin/geos-config; then
@@ -66,6 +72,14 @@ if ! test -e $PGSQL_SRC/src/Makefile.global; then
 	AC_MSG_ERROR(Can't find \$PGSQL_SRC/src/Makefile.global);
 fi
 
+if test -z "$FLEX"; then
+	AC_MSG_ERROR(Can't find 'flex');
+fi
+
+if test -z "$YACC"; then
+	AC_MSG_ERROR(Can't find 'yacc');
+fi
+
 AC_MSG_RESULT([ USE_GEOS=$USE_GEOS])
 if test $USE_GEOS -gt 0; then
 	AC_MSG_RESULT([ GEOS_DIR=$GEOS_DIR])
@@ -75,5 +89,8 @@ if test $USE_PROJ -gt 0; then
 	AC_MSG_RESULT([ PROJ_DIR=$PROJ_DIR])
 fi
 AC_MSG_RESULT([ PGSQL_SRC=$PGSQL_SRC])
+
+AC_MSG_RESULT([ FLEX=$FLEX])
+AC_MSG_RESULT([ YACC=$YACC])
 
 AC_OUTPUT(Makefile.config)

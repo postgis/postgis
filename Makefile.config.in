@@ -75,6 +75,12 @@ USE_ICONV=0
 # LPATH=/usr/src/postgis
 LPATH=\$$libdir
 
+#
+# Path to flex, yacc
+#
+FLEX ?= @FLEX@
+YACC ?= @YACC@
+
 #---------------------------------------------------------------
 # END OF CONFIGURATION
 #---------------------------------------------------------------
