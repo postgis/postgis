@@ -26,6 +26,7 @@
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
 
+
 #if USE_VERSION >= 80
 
 #include "commands/vacuum.h"
@@ -718,6 +719,18 @@ Datum estimate_lwhistogram2d(PG_FUNCTION_ARGS)
 }
 
 
+// JOIN selectivity in the GiST && operator
+// for all PG versions
+PG_FUNCTION_INFO_V1(LWGEOM_gist_joinsel);
+Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
+{
+#if DEBUG_GEOMETRY_STATS
+	elog(NOTICE, "LWGEOM_gist_joinsel called (returning %f)",
+		DEFAULT_GEOMETRY_JOINSEL);
+#endif
+	PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_JOINSEL);
+}
+
 /**************************** FROM POSTGIS ****************/
 
 
@@ -1310,17 +1323,6 @@ Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS)
 	ReleaseSysCache(stats_tuple);
 	PG_RETURN_FLOAT8(selectivity);
 
-}
-
-// JOIN selectivity in the GiST && operator
-PG_FUNCTION_INFO_V1(LWGEOM_gist_joinsel);
-Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
-{
-#if DEBUG_GEOMETRY_STATS
-	elog(NOTICE, "LWGEOM_gist_joinsel called (returning %f)",
-		DEFAULT_GEOMETRY_JOINSEL);
-#endif
-	PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_JOINSEL);
 }
 
 
@@ -2024,6 +2026,9 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.17  2004/12/17 18:00:33  strk
+ * LWGEOM_gist_joinsel defined for all PG versions
+ *
  * Revision 1.16  2004/12/17 11:07:48  strk
  * Added missing prototype
  *
