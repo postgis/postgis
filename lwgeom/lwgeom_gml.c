@@ -41,7 +41,7 @@ static char *getSRSbySRID(int SRID);
 #define SHOW_DIGS (precision + 8)
 
 /* Globals */
-unsigned int precision;
+int precision;
 
 
 /**
@@ -503,6 +503,9 @@ getSRSbySRID(int SRID)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.8  2004/11/19 17:29:09  strk
+ * precision made of type signed int (for %.*d correct use).
+ *
  * Revision 1.7  2004/10/28 16:23:17  strk
  * More cleanups.
  *
