@@ -122,11 +122,7 @@ lwline_serialize_buf(LWLINE *line, char *buf, size_t *retsize)
 	char hasSRID;
 	char *loc;
 	int ptsize = pointArray_ptsize(line->points);
-
-	if ( ptsize != sizeof(double)*TYPE_NDIMS(line->type) )
-	{
-		lwerror("lwline_serialize_buf: line has %d dims, its pointarray has %d dims", TYPE_NDIMS(line->type), TYPE_NDIMS(line->points->dims));
-	}
+	unsigned int u;
 
 #ifdef DEBUG_CALLS
 	lwnotice("lwline_serialize_buf(%p, %p, %p) called",
@@ -174,9 +170,41 @@ lwline_serialize_buf(LWLINE *line, char *buf, size_t *retsize)
 #endif
 
 	//copy in points
-	memcpy(loc, line->points->serialized_pointlist,
-		ptsize*line->points->npoints);
-	loc += ptsize*line->points->npoints;
+	if (TYPE_NDIMS(line->type) == 3)
+	{
+		if ( TYPE_HASZ(line->type) )
+		{
+			for (u=0; u<line->points->npoints; u++)
+			{
+				getPoint3dz_p(line->points, u, (POINT3DZ *)loc);
+				loc += ptsize;
+			}
+		}
+		else
+		{
+			for (u=0; u<line->points->npoints; u++)
+			{
+				getPoint3dm_p(line->points, u, (POINT3DM *)loc);
+				loc += ptsize;
+			}
+		}
+	}
+	else if (TYPE_NDIMS(line->type) == 2)
+	{
+			for (u=0; u<line->points->npoints; u++)
+			{
+				getPoint2d_p(line->points, u, (POINT2D *)loc);
+				loc+= 16;
+			}
+	}
+	else if (TYPE_NDIMS(line->type) == 4)
+	{
+			for (u=0; u<line->points->npoints; u++)
+			{
+				getPoint4d_p(line->points, u, (POINT4D *)loc);
+				loc+= 32;
+			}
+	}
 
 #ifdef DEBUG
 	lwnotice("lwline_serialize_buf copied serialized_pointlist (%d bytes)",
