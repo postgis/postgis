@@ -29,6 +29,7 @@ postgis.fo: postgis-out.xml
 	xsltproc \
 		--output $@ \
 		--param shade.verbatim 1 \
+		--param section.autolabel 1 \
 		--param chunk.section.depth 0 \
 		/usr/share/sgml/docbook/xsl-stylesheets/fo/docbook.xsl \
 		$<
