@@ -396,7 +396,8 @@ make_lwline(int SRID, unsigned int npoints, LWPOINT **points)
 				lwgeom_typename(TYPE_GETTYPE(points[i]->type)));
 			return NULL;
 		}
-		zmflag = TYPE_GETZM(points[i]->type);
+		if ( TYPE_HASZ(points[i]->type) ) zmflag |= 2;
+		if ( TYPE_HASM(points[i]->type) ) zmflag |= 1;
 		if ( zmflag == 3 ) break;
 	}
 
