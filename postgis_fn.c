@@ -891,9 +891,13 @@ PG_FUNCTION_INFO_V1(force_2d);
 Datum force_2d(PG_FUNCTION_ARGS)
 {
 	GEOMETRY		      *geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GEOMETRY			*result;
 
-	geom->is3d = FALSE;
-	PG_RETURN_POINTER(geom);
+	result = (GEOMETRY *) palloc(geom->size);
+	memcpy(result,geom, geom->size);
+	
+	result->is3d = FALSE;
+	PG_RETURN_POINTER(result);
 }
 
 
@@ -901,9 +905,13 @@ PG_FUNCTION_INFO_V1(force_3d);
 Datum force_3d(PG_FUNCTION_ARGS)
 {
 		GEOMETRY		      *geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+		GEOMETRY			*result;
 
-	geom->is3d = TRUE;
-	PG_RETURN_POINTER(geom);
+	result = (GEOMETRY *) palloc(geom->size);
+	memcpy(result,geom, geom->size);
+
+	result->is3d = TRUE;
+	PG_RETURN_POINTER(result);
 
 }
 
@@ -929,12 +937,20 @@ Datum combine_bbox(PG_FUNCTION_ARGS)
 	if (box3d_ptr == NULL)
 	{
 		geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-		PG_RETURN_POINTER(&(geom->bvol));  // combine_bbox(null, geometry) => geometry->bvol
+
+		box = (BOX3D *) palloc(sizeof(BOX3D)); 
+		memcpy(box, &(geom->bvol), sizeof(BOX3D) );
+
+		PG_RETURN_POINTER(box);  // combine_bbox(null, geometry) => geometry->bvol
 	}
 
 	if (geom_ptr == NULL)
 	{
-		PG_RETURN_POINTER( PG_GETARG_DATUM(0) ); // combine_bbox(BOX3D, null) => BOX3D
+		box = (BOX3D *) palloc(sizeof(BOX3D)); 
+		memcpy(box, (char *) PG_GETARG_DATUM(0) , sizeof(BOX3D) );
+		
+
+		PG_RETURN_POINTER( box ); // combine_bbox(BOX3D, null) => BOX3D
 	}
 
 	//combine_bbox(BOX3D, geometry) => union(BOX3D, geometry->bvol)
@@ -1426,10 +1442,15 @@ Datum geometryn_collection(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(force_collection);
 Datum force_collection(PG_FUNCTION_ARGS)
 {
-		GEOMETRY		      *geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GEOMETRY		      *geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GEOMETRY			*result;
 
-	geom->type = COLLECTIONTYPE;
-	PG_RETURN_POINTER(geom);
+	result = (GEOMETRY *) palloc(geom->size);
+	memcpy(result,geom, geom->size);
+	
+	result->type = COLLECTIONTYPE;
+
+	PG_RETURN_POINTER(result);
 }
 
 
