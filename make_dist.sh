@@ -4,6 +4,12 @@ major=`grep ^SO_MAJOR_VERSION lwgeom/Makefile | cut -d= -f2`
 minor=`grep ^SO_MINOR_VERSION lwgeom/Makefile | cut -d= -f2`
 micro=`grep ^SO_MICRO_VERSION lwgeom/Makefile | cut -d= -f2`
 
+if [ -n "$3" ]; then
+	major=$1
+	minor=$2
+	micro=$3
+fi
+
 tag="pgis_"$major"_"$minor"_"$micro
 version="$major.$minor.$micro"
 package="postgis-$version.tgz"
