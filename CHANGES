@@ -20,9 +20,7 @@ PostGIS 1.0.0?
 	- memory alignment handling
 	- fixed bug in force_collection causing mapserver connector
 	  failures on simple (single) geometry types.
-	- jdbc2: slightly updated makefile - better dependency management
-	  for jar files, additional install and installdir targets, more
-	  comments.
+	- jdbc2: slightly updated makefile
 
 PostGIS 1.0.0RC2
 2005/01/26
