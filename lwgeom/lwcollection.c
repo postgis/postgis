@@ -24,16 +24,16 @@ lwcollection_construct(unsigned int type, int SRID, BOX2DFLOAT4 *bbox,
 	{
 		hasz = TYPE_HASZ(geoms[0]->type);
 		hasm = TYPE_HASM(geoms[0]->type);
+#ifdef CHECK_LWGEOM_ZM
+		zm = TYPE_GETZM(geoms[0]->type);
+		for (i=1; i<ngeoms; i++)
+		{
+			if ( zm != TYPE_GETZM(geoms[i]->type) )
+				lwerror("lwcollection_construct: mixed dimension geometries");
+		}
+#endif
 	}
 
-#ifdef CHECK_LWGEOM_ZM
-	zm = TYPE_GETZM(geoms[0]->type);
-	for (i=1; i<ngeoms; i++)
-	{
-		if ( zm != TYPE_GETZM(geoms[i]->type) )
-			lwerror("lwcollection_construct: mixed dimension geometries");
-	}
-#endif
 
 	ret = lwalloc(sizeof(LWCOLLECTION));
 	ret->type = lwgeom_makeType_full(hasz, hasm, (SRID!=-1),
