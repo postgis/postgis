@@ -268,6 +268,7 @@ while( my $line = <INPUT> )
 		#print "FUNCNAME: [$funcname]\n";
 		my @args = split(",", $2);
 		#print "ARGS: [".@args."]\n";
+		my $wkbinvolved = 0;
 		for (my $i=0; $i<@args; $i++)
 		{
 			$arg = lc($args[$i]);
@@ -279,11 +280,21 @@ while( my $line = <INPUT> )
 				next;
 			}
 			$args[$i] = $arg;
+			$wkbinvolved++ if ( $arg eq 'wkb' );
 		}
+
 		$args = join(', ', @args);
 		#print "ARGS SCALAR: [$args]\n";
 		my $id = $funcname."(".$args.")";
 		#print "ID: [$id]\n";
+
+		# WKB type is obsoleted
+		if ( $wkbinvolved )
+		{
+			print "SKIPPING FUNC $id\n" if $DEBUG;
+			next;
+		}
+
 		if ( $funcname eq 'plpgsql_call_handler' )
 		{
 			print "SKIPPING FUNC $id\n" if $DEBUG;
@@ -296,13 +307,45 @@ while( my $line = <INPUT> )
 			print "SKIPPING FUNC $id\n" if $DEBUG;
 			next;
 		}
-		# This is an old postgis function which might
+
+		# This are old postgis functions which might
 		# still be in a dump
 		if ( $funcname eq 'postgisgistcostestimate' )
 		{
 			print "SKIPPING FUNC $id\n" if $DEBUG;
 			next;
 		}
+		if ( $funcname eq 'wkb_in' || $funcname eq 'wkb_out' )
+		{
+			print "SKIPPING FUNC $id\n" if $DEBUG;
+			next;
+		}
+		if ( $funcname eq 'ggeometry_consistent' ||
+			$funcname eq 'ggeometry_compress' ||
+			$funcname eq 'ggeometry_picksplit' ||
+			$funcname eq 'gbox_picksplit' ||
+			$funcname eq 'ggeometry_union' ||
+			$funcname eq 'gbox_union' ||
+			$funcname eq 'ggeometry_same' ||
+			$funcname eq 'gbox_same' ||
+			$funcname eq 'rtree_decompress' ||
+			$funcname eq 'ggeometry_penalty' ||
+			$funcname eq 'gbox_penalty' ||
+			$id eq 'geometry_union(geometry, geometry)' ||
+			$id eq 'geometry_inter(geometry, geometry)' ||
+			$funcname eq 'geometry_size' )
+		{
+			print "SKIPPING FUNC $id\n" if $DEBUG;
+			next;
+		}
+
+		if ( $id eq 'create_histogram2d(box3d, integer)' ||
+			$id eq 'estimate_histogram2d(histogram2d, box)' )
+		{
+			print "SKIPPING FUNC $id\n" if $DEBUG;
+			next;
+		}
+
 		if ( $funcs{$id} )
 		{
 			print "SKIPPING PGIS FUNC $id\n" if $DEBUG;
@@ -353,7 +396,12 @@ while( my $line = <INPUT> )
 	}
 	elsif ($line =~ / TYPE (.*) .*/)
 	{
-		my $type = $1;
+		my $type = lc($1);
+		if ( $type eq 'wkb' )
+		{
+			print "SKIPPING PGIS TYPE $type\n" if $DEBUG;
+			next;
+		}
 		if ( $types{$type} )
 		{
 			print "SKIPPING PGIS TYPE $type\n" if $DEBUG;
@@ -405,7 +453,12 @@ while( my $line = <INPUT> )
 			print "SKIPPING PGIS FNCAST $id\n" if $DEBUG;
 			next;
 		}
-		if ($arg1 eq 'box3d' || $arg2 eq 'geometry')
+		#if ($arg1 eq 'box3d' || $arg2 eq 'geometry')
+		#{
+			#print "SKIPPING PGIS FNCAST $id\n" if $DEBUG;
+			#next;
+		#}
+		if ($arg1 eq 'wkb' || $arg2 eq 'wkb')
 		{
 			print "SKIPPING PGIS FNCAST $id\n" if $DEBUG;
 			next;
@@ -426,7 +479,12 @@ while( my $line = <INPUT> )
 			print "SKIPPING PGIS CAST $id\n" if $DEBUG;
 			next;
 		}
-		if ($arg1 eq 'box3d' || $arg2 eq 'geometry')
+		#if ($arg1 eq 'box3d' || $arg2 eq 'geometry')
+		#{
+			#print "SKIPPING PGIS CAST $id\n" if $DEBUG;
+			#next;
+		#}
+		if ($arg1 eq 'wkb' || $arg2 eq 'wkb')
 		{
 			print "SKIPPING PGIS CAST $id\n" if $DEBUG;
 			next;
