@@ -33,9 +33,9 @@ OBJS=postgis_debug.o postgis_ops.o postgis_fn.o postgis_inout.o postgis_proj.o
 # matter.)
 SHLIB_LINK = $(filter -L%, $(LDFLAGS))
 
-all: all-lib $(NAME).sql shp2pgsql
+all: all-lib $(NAME).sql loader
 
-shp2pgsql:
+loader:
 	cd loader; make
 
 # Shared library stuff
