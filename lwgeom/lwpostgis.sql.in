@@ -416,7 +416,7 @@ CREATEFUNCTION postgis_gist_sel (internal, oid, internal, int4)
 	LANGUAGE 'C';
 
 #if USE_VERSION == 72
-CREATEFUNCTION postgis_gist_joinsel(opaque, oid,  opaque, smallint)
+CREATEFUNCTION postgis_gist_joinsel(opaque, oid,  opaque)
 #elif USE_VERSION == 73
 CREATEFUNCTION postgis_gist_joinsel(internal, oid,  internal)
 #else
