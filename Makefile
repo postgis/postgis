@@ -17,7 +17,7 @@ endif
 test_db = geom_regress
 
 # set PG72 to 1 for postgres >= 7.2
-#PG72 = 1
+PG72 = 0
 
 # shared library parameters
 NAME=postgis
@@ -51,7 +51,7 @@ include $(top_srcdir)/src/Makefile.shlib
 
 $(NAME).sql: $(NAME).sql.in $(NAME)_gist_72.sql.in $(NAME)_gist.sql.in
 	sed -e 's:@MODULE_FILENAME@:$(libdir)/$(shlib):g;s:@POSTGIS_VERSION@:$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION):g' < $(NAME).sql.in > $@ 
-	if [ $(PG72) == 1 ]; then \
+	if [ $(PG72) -eq 1 ]; then \
 		sed -e 's:@MODULE_FILENAME@:$(libdir)/$(shlib):g;s:@POSTGIS_VERSION@:$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION):g' < $(NAME)_gist_72.sql.in >> $(NAME).sql; \
 	else \
 		sed -e 's:@MODULE_FILENAME@:$(libdir)/$(shlib):g;s:@POSTGIS_VERSION@:$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION):g' < $(NAME)_gist.sql.in >> $(NAME).sql; \
