@@ -2,12 +2,12 @@ BEGIN;
 
 CREATE OR REPLACE FUNCTION lwgeom_in(cstring)
         RETURNS lwgeom
-        AS '/data/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1','LWGEOM_in'
+        AS '@MODULE_FILENAME@','LWGEOM_in'
         LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATE OR REPLACE FUNCTION lwgeom_out(lwgeom)
         RETURNS cstring
-        AS '/data/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1','LWGEOM_out'
+        AS '@MODULE_FILENAME@','LWGEOM_out'
         LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATE TYPE lwgeom (
@@ -19,12 +19,12 @@ CREATE TYPE lwgeom (
 
 CREATE OR REPLACE FUNCTION box2d_in(cstring)
         RETURNS box2d
-        AS '/data/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1','BOX2DFLOAT4_in'
+        AS '@MODULE_FILENAME@','BOX2DFLOAT4_in'
         LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATE OR REPLACE FUNCTION box2d_out(box2d)
         RETURNS cstring
-        AS '/data/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1','BOX2DFLOAT4_out'
+        AS '@MODULE_FILENAME@','BOX2DFLOAT4_out'
         LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATE TYPE box2d (
@@ -36,7 +36,7 @@ CREATE TYPE box2d (
 
 CREATE OR REPLACE FUNCTION box2d(LWGEOM)
         RETURNS box2d
-        AS '/data/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1','LWGEOM_to_BOX2DFLOAT4'
+        AS '@MODULE_FILENAME@','LWGEOM_to_BOX2DFLOAT4'
         LANGUAGE 'C' WITH (isstrict,iscachable);
 
 
@@ -44,7 +44,7 @@ CREATE OR REPLACE FUNCTION box2d(LWGEOM)
         
 CREATE OR REPLACE FUNCTION lwgeom(text)
         RETURNS lwgeom
-        AS '/data/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1','parse_WKT_lwgeom'
+        AS '@MODULE_FILENAME@','parse_WKT_lwgeom'
         LANGUAGE 'C' WITH (isstrict,iscachable);
 
 ---- BOX2D  support functions
@@ -52,42 +52,42 @@ CREATE OR REPLACE FUNCTION lwgeom(text)
 
 CREATE FUNCTION box2d_overleft(box2d, box2d) 
 	RETURNS bool
-	AS '/data/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1'
+	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATE FUNCTION box2d_overright(box2d, box2d) 
 	RETURNS bool
-	AS '/data/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1' 
+	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATE FUNCTION box2d_left(box2d, box2d) 
 	RETURNS bool
-	AS '/data/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1' 
+	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATE FUNCTION box2d_right(box2d, box2d) 
 	RETURNS bool
-	AS '/data/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1' 
+	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATE FUNCTION box2d_contain(box2d, box2d) 
 	RETURNS bool
-	AS '/data/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1'
+	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATE FUNCTION box2d_contained(box2d, box2d) 
 	RETURNS bool
-	AS '/data/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1'
+	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATE FUNCTION box2d_overlap(box2d, box2d) 
 	RETURNS bool
-	AS '/data/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1'
+	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATE FUNCTION box2d_same(box2d, box2d) 
 	RETURNS bool
-	AS '/data/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1' 
+	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATE OPERATOR << (
@@ -144,42 +144,42 @@ CREATE OPERATOR ~ (
 
 CREATE FUNCTION lwgeom_overleft(lwgeom, lwgeom) 
 	RETURNS bool
-	AS '/data/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1'
+	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATE FUNCTION lwgeom_overright(lwgeom, lwgeom) 
 	RETURNS bool
-	AS '/data/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1' 
+	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATE FUNCTION lwgeom_left(lwgeom, lwgeom) 
 	RETURNS bool
-	AS '/data/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1' 
+	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATE FUNCTION lwgeom_right(lwgeom, lwgeom) 
 	RETURNS bool
-	AS '/data/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1' 
+	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATE FUNCTION lwgeom_contain(lwgeom, lwgeom) 
 	RETURNS bool
-	AS '/data/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1'
+	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATE FUNCTION lwgeom_contained(lwgeom, lwgeom) 
 	RETURNS bool
-	AS '/data/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1'
+	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATE FUNCTION lwgeom_overlap(lwgeom, lwgeom) 
 	RETURNS bool
-	AS '/data/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1'
+	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATE FUNCTION lwgeom_same(lwgeom, lwgeom) 
 	RETURNS bool
-	AS '/data/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1' 
+	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATE OPERATOR << (
@@ -236,37 +236,37 @@ CREATE OPERATOR ~ (
 
 CREATE FUNCTION gist_lwgeom_consistent(internal,lwgeom,int4) 
 	RETURNS bool 
-	AS '/data/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1' ,'gist_lwgeom_consistent'
+	AS '@MODULE_FILENAME@' ,'gist_lwgeom_consistent'
 	LANGUAGE 'C';
 
 CREATE FUNCTION gist_lwgeom_compress(internal) 
 	RETURNS internal 
-	AS '/data/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1','gist_lwgeom_compress'
+	AS '@MODULE_FILENAME@','gist_lwgeom_compress'
 	LANGUAGE 'C';
 
 CREATE FUNCTION gist_lwgeom_penalty(internal,internal,internal) 
 	RETURNS internal 
-	AS '/data/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1' ,'lwgeom_box_penalty'
+	AS '@MODULE_FILENAME@' ,'lwgeom_box_penalty'
 	LANGUAGE 'C';
 
 CREATE FUNCTION gist_lwgeom_picksplit(internal, internal) 
 	RETURNS internal 
-	AS '/data/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1' ,'lwgeom_gbox_picksplit'
+	AS '@MODULE_FILENAME@' ,'lwgeom_gbox_picksplit'
 	LANGUAGE 'C';
 
 CREATE FUNCTION gist_lwgeom_union(bytea, internal) 
 	RETURNS internal 
-	AS '/data/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1' ,'lwgeom_box_union'
+	AS '@MODULE_FILENAME@' ,'lwgeom_box_union'
 	LANGUAGE 'C';
 
 CREATE FUNCTION gist_lwgeom_same(box2d, box2d, internal) 
 	RETURNS internal 
-	AS '/data/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1' ,'lwgeom_gbox_same'
+	AS '@MODULE_FILENAME@' ,'lwgeom_gbox_same'
 	LANGUAGE 'C';
 
 CREATE FUNCTION gist_lwgeom_decompress(internal) 
 	RETURNS internal
-	AS '/data/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1' ,'gist_rtree_decompress'
+	AS '@MODULE_FILENAME@' ,'gist_rtree_decompress'
 	LANGUAGE 'C';
 
 
@@ -299,29 +299,29 @@ UPDATE pg_opclass
 
 CREATE FUNCTION addBBOX(lwgeom) 
 	RETURNS lwgeom
-	AS '/data/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1','LWGEOM_addBBOX'
+	AS '@MODULE_FILENAME@','LWGEOM_addBBOX'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 	
 CREATE FUNCTION getSRID(lwgeom) 
 	RETURNS int4
-	AS '/data/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1','LWGEOM_getSRID'
+	AS '@MODULE_FILENAME@','LWGEOM_getSRID'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 	
 CREATE FUNCTION setSRID(lwgeom,int4) 
 	RETURNS lwgeom
-	AS '/data/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1','LWGEOM_setSRID'
+	AS '@MODULE_FILENAME@','LWGEOM_setSRID'
 	LANGUAGE 'C' WITH (isstrict,iscachable);	
 	
 
 CREATE FUNCTION asText(lwgeom)
 	RETURNS TEXT
-	AS '/data/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1','LWGEOM_asText'
+	AS '@MODULE_FILENAME@','LWGEOM_asText'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATE OR REPLACE FUNCTION getbbox(LWGEOM)
         RETURNS box2d
-        AS '/data/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1','LWGEOM_to_BOX2DFLOAT4'
+        AS '@MODULE_FILENAME@','LWGEOM_to_BOX2DFLOAT4'
         LANGUAGE 'C' WITH (isstrict,iscachable);
 
 
@@ -356,24 +356,24 @@ CREATE CAST (wkb as lwgeom) WITH FUNCTION lwgeom(wkb)  AS IMPLICIT ;
 	
 CREATE FUNCTION lwgeom(wkb)
         RETURNS lwgeom
-        AS '/data/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1','LWGEOMFromWKB'
+        AS '@MODULE_FILENAME@','LWGEOMFromWKB'
         LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATE FUNCTION lwgeom(wkb,int4)
         RETURNS lwgeom
-        AS '/data/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1','LWGEOMFromWKB'
+        AS '@MODULE_FILENAME@','LWGEOMFromWKB'
         LANGUAGE 'C' WITH (isstrict,iscachable);
 
 
 
 CREATE FUNCTION wkb(lwgeom)
         RETURNS wkb
-        AS '/data/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1','WKBFromLWGEOM'
+        AS '@MODULE_FILENAME@','WKBFromLWGEOM'
         LANGUAGE 'C' WITH (isstrict,iscachable);
         
 CREATE FUNCTION asbinary(lwgeom)
         RETURNS wkb
-        AS '/data/Refractions/Projects/PostGIS/work_dave2/postgis/lwgeom/liblwgeom.so.0.1','WKBFromLWGEOM'
+        AS '@MODULE_FILENAME@','WKBFromLWGEOM'
         LANGUAGE 'C' WITH (isstrict,iscachable);
 	
 COMMIT;
