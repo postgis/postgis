@@ -43,6 +43,12 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS);
 Datum LWGEOM_numinteriorrings_polygon(PG_FUNCTION_ARGS);
 // ---- PointN(geometry, integer)
 Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS);
+// ---- X(geometry)
+Datum LWGEOM_x_point(PG_FUNCTION_ARGS);
+// ---- Y(geometry)
+Datum LWGEOM_y_point(PG_FUNCTION_ARGS);
+// ---- Z(geometry)
+Datum LWGEOM_z_point(PG_FUNCTION_ARGS);
 
 
 // internal
@@ -467,4 +473,96 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 	pfree(serializedpoint);
 
 	PG_RETURN_POINTER(result);
+}
+
+// X(GEOMETRY) -- find the first POINT(..) in GEOMETRY, returns its X value.
+// Return NULL if there is no POINT(..) in GEOMETRY
+PG_FUNCTION_INFO_V1(LWGEOM_x_point);
+Datum LWGEOM_x_point(PG_FUNCTION_ARGS)
+{
+	LWGEOM *geom;
+	LWGEOM_INSPECTED *inspected;
+	LWPOINT *point = NULL;
+	POINT3D *p;
+	int i;
+
+	geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
+
+	for (i=0; i<inspected->ngeometries; i++)
+	{
+		point = lwgeom_getpoint_inspected(inspected, i);
+		if ( point ) break;
+	}
+	pfree_inspected(inspected);
+
+	if ( point == NULL ) PG_RETURN_NULL();
+
+	// Ok, now we have a point, let's get X
+	p = (POINT3D *)getPoint(point->point, 0);
+
+	PG_RETURN_FLOAT8(p->x);
+}
+
+// Y(GEOMETRY) -- find the first POINT(..) in GEOMETRY, returns its Y value.
+// Return NULL if there is no POINT(..) in GEOMETRY
+PG_FUNCTION_INFO_V1(LWGEOM_y_point);
+Datum LWGEOM_y_point(PG_FUNCTION_ARGS)
+{
+	LWGEOM *geom;
+	LWGEOM_INSPECTED *inspected;
+	LWPOINT *point = NULL;
+	POINT3D *p;
+	int i;
+
+	geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
+
+	for (i=0; i<inspected->ngeometries; i++)
+	{
+		point = lwgeom_getpoint_inspected(inspected, i);
+		if ( point ) break;
+	}
+	pfree_inspected(inspected);
+
+	if ( point == NULL ) PG_RETURN_NULL();
+
+	// Ok, now we have a point, let's get X
+	p = (POINT3D *)getPoint(point->point, 0);
+
+	PG_RETURN_FLOAT8(p->y);
+}
+
+// Z(GEOMETRY) -- find the first POINT(..) in GEOMETRY, returns its Z value.
+// Return NULL if there is no POINT(..) in GEOMETRY.
+// Return 0 if there is no Z in this geometry.
+PG_FUNCTION_INFO_V1(LWGEOM_z_point);
+Datum LWGEOM_z_point(PG_FUNCTION_ARGS)
+{
+	LWGEOM *geom;
+	LWGEOM_INSPECTED *inspected;
+	LWPOINT *point = NULL;
+	POINT3D *p;
+	int i;
+
+	geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+	// if there's no Z return 0
+	if ( lwgeom_ndims(geom->type) < 2 ) PG_RETURN_FLOAT8(0.0);
+
+	inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
+
+	for (i=0; i<inspected->ngeometries; i++)
+	{
+		point = lwgeom_getpoint_inspected(inspected, i);
+		if ( point ) break;
+	}
+	pfree_inspected(inspected);
+
+	if ( point == NULL ) PG_RETURN_NULL();
+
+	// Ok, now we have a point, let's get X
+	p = (POINT3D *)getPoint(point->point, 0);
+
+	PG_RETURN_FLOAT8(p->z);
 }

@@ -11,6 +11,9 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.14  2004/08/24 16:20:10  strk
+-- Added X(), Y() and Z() funx
+--
 -- Revision 1.13  2004/08/24 15:50:04  strk
 -- PointN() ported.
 --
@@ -896,6 +899,21 @@ CREATEFUNCTION GeometryType(geometry)
 CREATEFUNCTION PointN(geometry,integer)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','LWGEOM_pointn_linestring'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION X(geometry)
+	RETURNS float8
+	AS '@MODULE_FILENAME@','LWGEOM_x_point'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION Y(geometry)
+	RETURNS float8
+	AS '@MODULE_FILENAME@','LWGEOM_y_point'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION Z(geometry)
+	RETURNS float8
+	AS '@MODULE_FILENAME@','LWGEOM_z_point'
 	LANGUAGE 'C' WITH (isstrict);
 
 
