@@ -77,6 +77,7 @@ Datum LWGEOM_getSRID(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *pglwgeom=(PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	int srid = pglwgeom_getSRID (pglwgeom);
+	PG_FREE_IF_COPY(pglwgeom,0);
 	PG_RETURN_INT32(srid);
 }
 
@@ -90,6 +91,8 @@ Datum LWGEOM_setSRID(PG_FUNCTION_ARGS)
 
 	result = PG_LWGEOM_construct(SERIALIZED_FORM(geom), newSRID,
 		lwgeom_hasBBOX(geom->type));
+
+	PG_FREE_IF_COPY(geom, 0);
 
 	PG_RETURN_POINTER(result);
 }
@@ -139,6 +142,8 @@ Datum LWGEOM_getTYPE(PG_FUNCTION_ARGS)
 
 	memcpy(text_ob, &size,4); // size of string
 
+	PG_FREE_IF_COPY(lwgeom, 0);
+
 	PG_RETURN_POINTER(text_ob);
 }
 
@@ -177,8 +182,13 @@ lwgeom_numpoints_linestring_recursive(char *serialized)
 
 		npoints = lwgeom_numpoints_linestring_recursive(subgeom);
 		if ( npoints == -1 ) continue;
+
+		pfree_inspected(inspected);	
+
 		return npoints;
 	}
+
+	pfree_inspected(inspected);	
 
 	return -1;
 }
@@ -192,7 +202,12 @@ Datum LWGEOM_numpoints_linestring(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	int32 ret;
 	ret = lwgeom_numpoints_linestring_recursive(SERIALIZED_FORM(geom));
-	if ( ret == -1 ) PG_RETURN_NULL();
+	if ( ret == -1 )
+	{
+		PG_FREE_IF_COPY(geom, 0);
+		PG_RETURN_NULL();
+	}
+	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_INT32(ret);
 }
 
@@ -201,17 +216,18 @@ Datum LWGEOM_numgeometries_collection(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	int type;
+	int32 ret;
 	char *serialized = SERIALIZED_FORM(geom);
 
 	type = lwgeom_getType(geom->type);
 	if ( type >= 4 )
 	{
-		PG_RETURN_INT32(lwgeom_getnumgeometries(serialized));
+		ret = lwgeom_getnumgeometries(serialized);
+		PG_FREE_IF_COPY(geom, 0);
+		PG_RETURN_INT32(ret);
 	}
-	else
-	{
-		PG_RETURN_NULL();
-	}
+	PG_FREE_IF_COPY(geom, 0);
+	PG_RETURN_NULL();
 }
 
 // 1-based offset
@@ -251,6 +267,7 @@ Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS)
 	result = pglwgeom_serialize(subgeom);
 
 	lwgeom_release((LWGEOM *)coll);
+	PG_FREE_IF_COPY(geom, 0);
 
 	PG_RETURN_POINTER(result);
 
@@ -284,14 +301,22 @@ lwgeom_dimension_recursive(char *serialized)
 		else if ( type == COLLECTIONTYPE ) 
 		{
 			subgeom = lwgeom_getsubgeometry_inspected(inspected, i);
-			if ( subgeom == NULL ) return -2;
+			if ( subgeom == NULL ) {
+				pfree_inspected(inspected);
+				return -2;
+			}
 
 			dims = lwgeom_dimension_recursive(subgeom);
 		}
 
-		if ( dims == 2 ) return 2; // nothing can be higher
+		if ( dims == 2 ) { // nothing can be higher
+				pfree_inspected(inspected);
+				return 2;
+		}
 		if ( dims > ret ) ret = dims;
 	}
+
+	pfree_inspected(inspected);
 
 	return ret;
 }
@@ -308,10 +333,12 @@ Datum LWGEOM_dimension(PG_FUNCTION_ARGS)
 	dimension = lwgeom_dimension_recursive(SERIALIZED_FORM(geom));
 	if ( dimension == -1 )
 	{
+		PG_FREE_IF_COPY(geom, 0);
 		elog(ERROR, "Something went wrong in dimension computation");
 		PG_RETURN_NULL();
 	}
 
+	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_INT32(dimension);
 }
 
@@ -357,6 +384,7 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 
 	lwgeom_release((LWGEOM *)line);
 	lwgeom_release((LWGEOM *)poly);
+	PG_FREE_IF_COPY(geom, 0);
 
 
 	PG_RETURN_POINTER(result);
@@ -380,10 +408,18 @@ Datum LWGEOM_numinteriorrings_polygon(PG_FUNCTION_ARGS)
 		if ( poly ) break;
 	}
 
-	if ( poly == NULL ) PG_RETURN_NULL();
+	if ( poly == NULL ) {
+		PG_FREE_IF_COPY(geom, 0);
+		pfree_inspected(inspected);
+		PG_RETURN_NULL();
+	}
 
 	// Ok, now we have a polygon. Here is its number of holes
 	result = poly->nrings-1;
+
+	PG_FREE_IF_COPY(geom, 0);
+	pfree_inspected(inspected);
+	lwgeom_release((LWGEOM *)poly);
 
 	PG_RETURN_INT32(result);
 }
@@ -414,6 +450,7 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 
 	if ( TYPE_GETTYPE(geom->type) != POLYGONTYPE )
 	{
+		PG_FREE_IF_COPY(geom, 0);
 		elog(ERROR, "InteriorRingN: geom is not a polygon");
 		PG_RETURN_NULL();
 	}
@@ -422,6 +459,7 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 	// Ok, now we have a polygon. Let's see if it has enough holes
 	if ( wanted_index >= poly->nrings )
 	{
+		PG_FREE_IF_COPY(geom, 0);
 		lwgeom_release((LWGEOM *)poly);
 		PG_RETURN_NULL();
 	}
@@ -441,6 +479,7 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 
 	lwgeom_release((LWGEOM *)line);
 	lwgeom_release((LWGEOM *)poly);
+	PG_FREE_IF_COPY(geom, 0);
 
 	PG_RETURN_POINTER(result);
 }
@@ -474,12 +513,18 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 		if ( line ) break;
 	}
 
-	if ( line == NULL ) PG_RETURN_NULL();
+	if ( line == NULL ) {
+		pfree_inspected(inspected);
+		PG_FREE_IF_COPY(geom, 0);
+		PG_RETURN_NULL();
+	}
 
 	// Ok, now we have a line. Let's see if it has enough points.
 	if ( wanted_index > line->points->npoints )
 	{
 		pfree_inspected(inspected);
+		PG_FREE_IF_COPY(geom, 0);
+		lwgeom_release((LWGEOM *)line);
 		PG_RETURN_NULL();
 	}
 	pfree_inspected(inspected);
@@ -503,6 +548,8 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 
 	pfree(point);
 	pfree(serializedpoint);
+	lwgeom_release((LWGEOM *)line);
+	PG_FREE_IF_COPY(geom, 0);
 
 	PG_RETURN_POINTER(result);
 }
@@ -528,10 +575,15 @@ Datum LWGEOM_x_point(PG_FUNCTION_ARGS)
 	}
 	pfree_inspected(inspected);
 
-	if ( point == NULL ) PG_RETURN_NULL();
+	if ( point == NULL ) {
+		PG_FREE_IF_COPY(geom, 0);
+		PG_RETURN_NULL();
+	}
 
 	// Ok, now we have a point, let's get X
 	getPoint2d_p(point->point, 0, &p);
+
+	PG_FREE_IF_COPY(geom, 0);
 
 	PG_RETURN_FLOAT8(p.x);
 }
@@ -557,10 +609,15 @@ Datum LWGEOM_y_point(PG_FUNCTION_ARGS)
 	}
 	pfree_inspected(inspected);
 
-	if ( point == NULL ) PG_RETURN_NULL();
+	if ( point == NULL ) {
+		PG_FREE_IF_COPY(geom, 0);
+		PG_RETURN_NULL();
+	}
 
 	// Ok, now we have a point, let's get X
 	getPoint2d_p(point->point, 0, &p);
+
+	PG_FREE_IF_COPY(geom, 0);
 
 	PG_RETURN_FLOAT8(p.y);
 }
@@ -591,10 +648,15 @@ Datum LWGEOM_z_point(PG_FUNCTION_ARGS)
 	}
 	pfree_inspected(inspected);
 
-	if ( point == NULL ) PG_RETURN_NULL();
+	if ( point == NULL ) {
+		PG_FREE_IF_COPY(geom, 0);
+		PG_RETURN_NULL();
+	}
 
 	// Ok, now we have a point, let's get X
 	lwpoint_getPoint3dz_p(point, &p);
+
+	PG_FREE_IF_COPY(geom, 0);
 
 	PG_RETURN_FLOAT8(p.z);
 }
@@ -624,7 +686,10 @@ Datum LWGEOM_startpoint_linestring(PG_FUNCTION_ARGS)
 	}
 	pfree_inspected(inspected);
 
-	if ( line == NULL ) PG_RETURN_NULL();
+	if ( point == NULL ) {
+		PG_FREE_IF_COPY(geom, 0);
+		PG_RETURN_NULL();
+	}
 
 	// Ok, now we have a line. 
 
@@ -645,6 +710,8 @@ Datum LWGEOM_startpoint_linestring(PG_FUNCTION_ARGS)
 
 	pfree(point);
 	pfree(serializedpoint);
+	PG_FREE_IF_COPY(geom, 0);
+	lwgeom_release((LWGEOM *)line);
 
 	PG_RETURN_POINTER(result);
 }
@@ -674,7 +741,11 @@ Datum LWGEOM_endpoint_linestring(PG_FUNCTION_ARGS)
 	}
 	pfree_inspected(inspected);
 
-	if ( line == NULL ) PG_RETURN_NULL();
+	if ( point == NULL ) {
+		PG_FREE_IF_COPY(geom, 0);
+		PG_RETURN_NULL();
+	}
+
 
 	// Ok, now we have a line. 
 
@@ -696,6 +767,8 @@ Datum LWGEOM_endpoint_linestring(PG_FUNCTION_ARGS)
 
 	pfree(point);
 	pfree(serializedpoint);
+	PG_FREE_IF_COPY(geom, 0);
+	lwgeom_release((LWGEOM *)line);
 
 	PG_RETURN_POINTER(result);
 }
@@ -826,6 +899,8 @@ Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 	memcpy(result+4,loc_wkt, len-4);
 
 	pfree(result_cstring);
+	PG_FREE_IF_COPY(lwgeom, 0);
+
 	PG_RETURN_POINTER(result);
 }
 
@@ -901,14 +976,21 @@ Datum LWGEOM_isclosed_linestring(PG_FUNCTION_ARGS)
 		if ( line == NULL ) continue;
 		if ( ! line_is_closed(line) )
 		{
+			lwgeom_release((LWGEOM *)line);
 			pfree_inspected(inspected);
+			PG_FREE_IF_COPY(geom, 0);
 			PG_RETURN_BOOL(FALSE);
 		}
+		lwgeom_release((LWGEOM *)line);
 		linesfound++;
 	}
 	pfree_inspected(inspected);
 
-	if ( ! linesfound ) PG_RETURN_NULL();
+	if ( ! linesfound ) {
+			PG_FREE_IF_COPY(geom, 0);
+			PG_RETURN_NULL();
+	}
+	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_BOOL(TRUE);
 
 }
