@@ -1,5 +1,5 @@
-PostGIS 1.0.0
-??????????
+PostGIS 1.0.0RC5
+2005/03/25
 	- small build scripts refinements
 	- BUGFIX in box3d computation (yes, another!)
 	- BUGFIX in estimated_extent()
