@@ -144,7 +144,7 @@
 			  is available at 
 			  <ulink url="http://www.postgresql.org">http://www.postgresql.org</ulink>.
 			</para> 
-			<para>PostGIS @@LAST_RELEASE_VERSION@@ can be built against PostgreSQL versions 7.1.x, 7.2.x or 7.3.x.
+			<para>PostGIS @@LAST_RELEASE_VERSION@@ can be built against PostgreSQL versions 7.1.0 to 7.4.x.
 			  Earlier versions of PostgreSQL are <emphasis>not</emphasis> supported.
 			</para> 
 			<orderedlist> 
@@ -1214,7 +1214,7 @@ WHERE
 					</listitem> 
 					<listitem> 
 						<para>If vacuuming does not work, you can force the planner to use the index
-						  information by using the "SET =OFF" command. You should only use
+						  information by using the "SET ENABLE_SEQSCAN=OFF" command. You should only use
 						  this command sparingly, and only on spatially indexed queries: generally
 						  speaking, the planner knows better than you do about when to use normal B-Tree
 						  indexes. Once you have run your query, you should consider setting
