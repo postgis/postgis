@@ -3,11 +3,11 @@ LAST_RELEASE_VERSION = 0.8
 
 html: html/index.html
 
-postgis.xml: postgis.xml.in
+postgis-out.xml: postgis.xml
 	cat $< | sed "s/@@LAST_RELEASE_VERSION@@/$(LAST_RELEASE_VERSION)/g" > $@
 
-html/index.html: postgis.xml
+html/index.html: postgis-out.xml
 	jw $(COMMONOPTS) -o html/ $<
 
 clean:
-	#rm -f html/*.html postgis.xml
+	#rm -f html/*.html postgis-out.xml
