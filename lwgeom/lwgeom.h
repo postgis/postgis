@@ -396,7 +396,9 @@ typedef struct
 extern int lwgeom_size_inspected(const LWGEOM_INSPECTED *inspected, int geom_number);
 
 /*
- * This structure is intended to be used for geometry collection construction
+ * This structure is intended to be used for geometry collection construction.
+ * Does not allow specification of collection structure
+ * (serialization chooses the simpler form)
  */
 typedef struct
 {
