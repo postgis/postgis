@@ -62,8 +62,6 @@ CREATE FUNCTION estimate_histogram2d(HISTOGRAM2D,box)
    AS '@MODULE_FILENAME@','estimate_histogram2d'
 	     LANGUAGE 'c'  with (isstrict);
 
-
-
 create function postgisgistcostestimate(opaque,opaque,opaque,opaque,opaque,opaque,opaque,opaque)
    RETURNS opaque
    AS '@MODULE_FILENAME@','postgisgistcostestimate'
