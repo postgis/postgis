@@ -13,7 +13,7 @@ typedef unsigned char uchar;
 #endif
 typedef void* (*allocator)(size_t size);
 typedef void  (*freeor)(void* mem);
-typedef void  (*report_error)(const char* string);
+typedef void  (*report_error)(const char* string, ...);
 
 //typedef unsigned long int4;
 
