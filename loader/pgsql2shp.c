@@ -2733,13 +2733,19 @@ initialize()
 
 
 #ifdef HEXWKB
-				sprintf(buf, "asbinary(\"%s\", 'XDR')",
-					mainscan_flds[i]);
-#else
 				if ( pgis_major_version > 0 )
+				{
+					sprintf(buf, "asEWKB(setSRID(\"%s\", -1), 'XDR')", mainscan_flds[i]);
+				}
+				else
 				{
 					sprintf(buf, "asbinary(\"%s\", 'XDR')",
 						mainscan_flds[i]);
+				}
+#else
+				if ( pgis_major_version > 0 )
+				{
+					sprintf(buf, "asEWKB(setSRID(\"%s\", -1), 'XDR')", mainscan_flds[i]);
 				}
 				else
 				{
@@ -2752,13 +2758,19 @@ initialize()
 			{
 
 #ifdef HEXWKB
-				sprintf(buf, "asbinary(\"%s\", 'NDR')",
-					mainscan_flds[i]);
-#else // ndef HEXWKB
 				if ( pgis_major_version > 0 )
+				{
+					sprintf(buf, "asEWKB(setSRID(\"%s\", -1), 'NDR')", mainscan_flds[i]);
+				}
+				else
 				{
 					sprintf(buf, "asbinary(\"%s\", 'NDR')",
 						mainscan_flds[i]);
+				}
+#else // ndef HEXWKB
+				if ( pgis_major_version > 0 )
+				{
+					sprintf(buf, "asEWKB(setSRID(\"%s\", -1), 'NDR')", mainscan_flds[i]);
 				}
 				else
 				{
@@ -3103,6 +3115,9 @@ create_usrquerytable()
 
 /**********************************************************************
  * $Log$
+ * Revision 1.70  2004/12/22 10:29:09  strk
+ * Drop useless SRID from geometry when downloading EWKB format.
+ *
  * Revision 1.69  2004/12/15 08:46:47  strk
  * Fixed memory leaks depending on input size.
  *
