@@ -540,10 +540,10 @@ ptarray_grid(POINTARRAY *pa, gridspec *grid)
 
 	for (pn=0; pn<pa->npoints; pn++)
 	{
-		getPoint2d_p(pa, pn, &pbuf);
-
 		POINT2D *lastpoint = NULL;
 		POINT2D *lastpoint2 = NULL;
+
+		getPoint2d_p(pa, pn, &pbuf);
 
 		if ( grid->xsize )
 			pbuf.x = rint((pbuf.x - grid->ipx)/grid->xsize) *
