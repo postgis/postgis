@@ -8,6 +8,10 @@
 
 
 
+#define TWODIMS 00
+#define THREEDIMS 01
+#define FOURDIMS 10
+
 typedef struct
 {
 	float xmin;
@@ -42,6 +46,16 @@ typedef struct
 	 double x;
 	 double y;
 } POINT2D;
+
+
+typedef struct
+{
+	 double x;
+	 double y;
+	 double z;
+	 double m;
+} POINT4D;
+
 
 
 // Point array abstracts a lot of the complexity of points and point lists.
@@ -88,6 +102,12 @@ extern POINTARRAY *pointArray_construct(char *points, char is3d, uint32 npoints)
 // if pa is 2d, then box3d's zmin/zmax will be either 0 or NaN
 // dont call on an empty pa
 extern BOX3D *pointArray_bbox(POINTARRAY *pa);
+
+//size of point represeneted in the POINTARRAY
+// 16 for 2d, 24 for 3d, 32 for 4d
+extern int pointArray_ptsize(POINTARRAY *pa);
+
+
 
 /*
 
@@ -181,7 +201,7 @@ typedef struct
 
 // construct a new point.  point will NOT be copied
 // use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
-extern LWPOINT  *lwpoint_construct(char is3d, int SRID, POINT3D *point);
+extern LWPOINT  *lwpoint_construct(char is3d, int SRID, POINTARRAY *point);
 
 // given the LWPOINT serialized form (or a pointer into a muli* one)
 // construct a proper LWPOINT.
@@ -384,6 +404,11 @@ extern void pfree_polygon  (LWPOLY  *poly);
 extern void pfree_POINTARRAY(POINTARRAY *pa);
 
 
+//***********************************************************
+// utility
+
+extern uint32 get_uint32(char *loc);
+extern int32 get_int32(char *loc);
 
 //------------------------------------------------------------
 //------------------------------------------------------------
@@ -502,4 +527,6 @@ extern void pfree_POINTARRAY(POINTARRAY *pa);
 //   POINT3D getPoint3d(POINTARRAY pa, int n);  (for a 2d/3d point and 3d length)
 //   POINT2D getPoint2d(POINTARRAY pa, int n);  (for a 2d/3d point and 2d length)
 // NOTE: make sure your findlength() function knows what to do with z=NaN.
+
+
 

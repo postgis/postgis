@@ -23,8 +23,7 @@ extern float nextUp_f(double d);
 extern double nextDown_d(float d);
 extern double nextUp_d(float d);
 
-extern uint32 get_uint32(char *loc);
-extern int32 get_int32(char *loc);
+
 extern  BOX3D *lw_geom_getBB_simple(char *serialized_form);
 
 
@@ -372,6 +371,15 @@ BOX3D *pointArray_bbox(POINTARRAY *pa)
 	return result;
 }
 
+//size of point represeneted in the POINTARRAY
+// 16 for 2d, 24 for 3d, 32 for 4d
+int pointArray_ptsize(POINTARRAY *pa)
+{
+	if (pa->is3d)
+		return 24;
+	else
+		return 16;
+}
 
 
 //***************************************************************************
@@ -593,10 +601,9 @@ uint32 lwline_findlength(char *serialized_line)
 
 // construct a new point.  point will not be copied
 // use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
-LWPOINT  *lwpoint_construct(char is3d, int SRID, POINT3D *point)
+LWPOINT  *lwpoint_construct(char is3d, int SRID, POINTARRAY *point)
 {
 	LWPOINT *result ;
-	POINTARRAY *pa;
 
 	if (point == NULL)
 		return NULL; // error
@@ -605,9 +612,7 @@ LWPOINT  *lwpoint_construct(char is3d, int SRID, POINT3D *point)
 	result->is3d = is3d;
 	result->SRID = SRID;
 
-	pa =pointArray_construct((char *)point, is3d, 1);
-
-	result->point = pa;
+	result->point = point;
 
 	return result;
 }
@@ -1620,7 +1625,7 @@ void pfree_inspected(LWGEOM_INSPECTED *inspected)
 
 void pfree_point    (LWPOINT *pt)
 {
-	pfree(pt->point);
+	pfree_POINTARRAY(pt->point);
 	pfree(pt);
 }
 
