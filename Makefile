@@ -3,8 +3,15 @@
 #---------------------------------------------------------------
 # Set USE_PROJ to 1 for Proj4 reprojection support
 #
-USE_PROJ=0
+USE_PROJ=1
 PROJ_DIR=/usr/local
+
+#---------------------------------------------------------------
+# Set USE_GEOS to 1 for GEOS spatial predicate and operator
+# support
+#
+USE_GEOS=1
+GEOS_DIR=/usr/local
 
 #---------------------------------------------------------------
 # Set USE_STATS to 1 for new GiST statistics collection support
@@ -66,7 +73,12 @@ ifeq ($(USE_PROJ),1)
 else
 	override CPPFLAGS := -g -I$(srcdir) $(CPPFLAGS) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"' -DUSE_VERSION=$(USE_VERSION)
 endif
+ifeq ($(USE_GEOS),1)
+	override CPPFLAGS := $(CPPFLAGS) -I$(GEOS_DIR)/include/geos -DUSE_GEOS
+endif
 override DLLLIBS := $(BE_DLLLIBS) $(DLLLIBS)
+
+CXXFLAGS=-I$(PROJ_DIR)/include -I$(GEOS_DIR)/include/geos
 
 #---------------------------------------------------------------
 # Add index selectivity to C flags
@@ -86,21 +98,29 @@ else
 	GIST_ESTIMATE=postgis_estimate.o
 endif
 
-OBJS=postgis_debug.o postgis_ops.o postgis_fn.o postgis_inout.o postgis_proj.o postgis_chip.o postgis_transform.o postgis_gist_$(GIST_SUPPORT).o $(GIST_ESTIMATE)
+OBJS=postgis_debug.o postgis_ops.o postgis_fn.o postgis_inout.o postgis_proj.o postgis_chip.o postgis_transform.o postgis_geos.o postgis_geos_wrapper.o postgis_gist_$(GIST_SUPPORT).o $(GIST_ESTIMATE)
 
 #---------------------------------------------------------------
 # Add libraries that libpq depends (or might depend) on into the
 # shared library link.  (The order in which you list them here doesn't
 # matter.)
-SHLIB_LINK=$(filter -L%, $(LDFLAGS)) 
-ifeq ($(USE_PROJ),1)
-	SHLIB_LINK=$(filter -L%, $(LDFLAGS)) $(BE_DLLLIBS) -L$(PROJ_DIR)/lib -lproj
-else
-	SHLIB_LINK=$(filter -L%, $(LDFLAGS)) $(BE_DLLLIBS)
-endif
+
+
+SHLIB_LINK=$(filter -L%, $(LDFLAGS)) $(BE_DLLLIBS) -lstdc++ -L$(PROJ_DIR)/lib -lproj -L$(GEOS_DIR)/lib -lgeos
+#ifeq ($(USE_PROJ),1)
+#	SHLIB_LNK=$(SHLIB_LNK) -L$(PROJ_DIR)/lib -lproj
+#endif
+#ifeq ($(USE_GEOS),1)
+#	SHLIB_LNK=$(SHLIB_LNK) -L$(GEOS_DIR)/lib -lgeos
+#endif
+
 
 #---------------------------------------------------------------
 # Makefile targets
+
+include $(top_srcdir)/src/Makefile.shlib
+
+postgis_geos_wrapper.o: postgis_geos_wrapper.cpp
 
 all: all-lib $(NAME).sql $(NAME).sql $(NAME)_undef.sql loaderdumper
 
@@ -108,7 +128,6 @@ loaderdumper:
 	$(MAKE) -C loader
 
 # Shared library stuff
-include $(top_srcdir)/src/Makefile.shlib
 
 $(NAME).sql: $(NAME)_sql_common.sql.in $(NAME)_sql_$(USE_VERSION)_end.sql.in $(NAME)_sql_$(USE_VERSION)_start.sql.in 
 	cat $(NAME)_sql_$(USE_VERSION)_start.sql.in $(NAME)_sql_common.sql.in $(NAME)_sql_$(USE_VERSION)_end.sql.in | sed -e 's:@MODULE_FILENAME@:$(LPATH)/$(shlib):g;s:@POSTGIS_VERSION@:$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION):g'  > $@ 
