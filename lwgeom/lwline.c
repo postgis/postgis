@@ -376,10 +376,10 @@ lwline_same(const LWLINE *l1, const LWLINE *l2)
 
 /*
  * Construct a LWLINE from an array of LWPOINTs
- * LWLINE dimensions are large enought to host all input dimensions.
+ * LWLINE dimensions are large enough to host all input dimensions.
  */
 LWLINE *
-make_lwline(int SRID, unsigned int npoints, LWPOINT **points)
+lwline_from_lwpointarray(int SRID, unsigned int npoints, LWPOINT **points)
 {
 	int zmflag=0;
 	unsigned int i;
@@ -392,7 +392,7 @@ make_lwline(int SRID, unsigned int npoints, LWPOINT **points)
 	{
 		if ( TYPE_GETTYPE(points[i]->type) != POINTTYPE )
 		{
-			lwerror("make_lwline: invalid input type: %s",
+			lwerror("lwline_from_lwpointarray: invalid input type: %s",
 				lwgeom_typename(TYPE_GETTYPE(points[i]->type)));
 			return NULL;
 		}
@@ -405,7 +405,7 @@ make_lwline(int SRID, unsigned int npoints, LWPOINT **points)
 	pa = ptarray_construct(zmflag&2, zmflag&1, npoints);
 
 #ifdef DEBUG
-	lwnotice("make_lwline: constructed pointarray for %d points, %d zmflag",
+	lwnotice("lwline_from_lwpointarray: constructed pointarray for %d points, %d zmflag",
 		npoints, zmflag);
 #endif
 
@@ -439,7 +439,62 @@ make_lwline(int SRID, unsigned int npoints, LWPOINT **points)
 			break;
 
 		default:
-			lwerror ("make_lwline: unespected ZMflag: %d", zmflag);
+			lwerror ("lwline_from_lwpointarray: unespected ZMflag: %d", zmflag);
+			return NULL;
+	}
+
+	return lwline_construct(SRID, NULL, pa);
+}
+
+/*
+ * Construct a LWLINE from a LWMPOINT
+ */
+LWLINE *
+lwline_from_lwmpoint(int SRID, LWMPOINT *mpoint)
+{
+	unsigned int i;
+	POINTARRAY *pa;
+	char zmflag = TYPE_GETZM(mpoint->type);
+
+	/* Allocate space for output pointarray */
+	pa = ptarray_construct(TYPE_HASZ(mpoint->type),
+		TYPE_HASM(mpoint->type), mpoint->ngeoms);
+
+#ifdef DEBUG
+	lwnotice("lwline_from_lwmpoint: constructed pointarray for %d points, %d zmflag", mpoint->ngeoms, zmflag);
+#endif
+
+	/*
+	 * Fill pointarray
+	 */
+	switch (zmflag)
+	{
+		case 0: // 2d
+			for (i=0; i<mpoint->ngeoms; i++)
+				getPoint2d_p(mpoint->geoms[i]->point, 0,
+					(POINT2D *)getPoint(pa, i));
+			break;
+
+		case 1: // 3dm
+			for (i=0; i<mpoint->ngeoms; i++)
+				getPoint3dm_p(mpoint->geoms[i]->point, 0,
+					(POINT3DM *)getPoint(pa, i));
+			break;
+
+		case 2: // 3dz
+			for (i=0; i<mpoint->ngeoms; i++)
+				getPoint3dz_p(mpoint->geoms[i]->point, 0,
+					(POINT3DZ *)getPoint(pa, i));
+			break;
+
+		case 3: // 4d
+			for (i=0; i<mpoint->ngeoms; i++)
+				getPoint4d_p(mpoint->geoms[i]->point, 0,
+					(POINT4D *)getPoint(pa, i));
+			break;
+
+		default:
+			lwerror ("lwline_from_lwmpoint: unespected ZMflag: %d", zmflag);
 			return NULL;
 	}
 

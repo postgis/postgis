@@ -1,5 +1,5 @@
 - have lwgeom_collect (or lwcollection_construct) use widest dimensions
-  based on input dimensions.
+  based on input dimensions (really?).
 
 - makeline, makepoly: aggregates on single types or functions on multitypes ?
 

@@ -990,7 +990,8 @@ extern LWPOINT *make_lwpoint2d(int SRID, double x, double y);
 extern LWPOINT *make_lwpoint3dz(int SRID, double x, double y, double z);
 extern LWPOINT *make_lwpoint3dm(int SRID, double x, double y, double m);
 extern LWPOINT *make_lwpoint4d(int SRID, double x, double y, double z, double m);
-extern LWLINE *make_lwline(int SRID, unsigned int npoints, LWPOINT **points);
+extern LWLINE *lwline_from_lwpointarray(int SRID, unsigned int npoints, LWPOINT **points);
+extern LWLINE *lwline_from_lwmpoint(int SRID, LWMPOINT *mpoint);
 
 // Return a char string with ASCII versionf of type flags
 extern const char *lwgeom_typeflags(unsigned char type);

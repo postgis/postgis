@@ -53,6 +53,7 @@ Datum LWGEOM_zmflag(PG_FUNCTION_ARGS);
 Datum LWGEOM_makepoint(PG_FUNCTION_ARGS);
 Datum LWGEOM_makepoint3dm(PG_FUNCTION_ARGS);
 Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS);
+Datum LWGEOM_makeline(PG_FUNCTION_ARGS);
 
 
 /*------------------------------------------------------------------*/
@@ -1758,6 +1759,53 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 }
 
 /*
+ * makeline ( GEOMETRY ) returns a LINE formed by
+ * all the points in the in given multipoint.
+ */
+PG_FUNCTION_INFO_V1(LWGEOM_makeline);
+Datum LWGEOM_makeline(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *ingeom, *result;
+	LWLINE *lwline;
+	LWMPOINT *mpoint;
+	size_t size;
+
+#ifdef DEBUG
+	elog(NOTICE, "LWGEOM_makeline called");
+#endif
+
+	/* Get input PG_LWGEOM and deserialize it */
+	ingeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+	if ( TYPE_GETTYPE(ingeom->type) != MULTIPOINTTYPE )
+	{
+		elog(ERROR, "makeline: input must be a multipoint");
+		PG_RETURN_NULL(); // input is not a multipoint
+	}
+
+	mpoint = lwmpoint_deserialize(SERIALIZED_FORM(ingeom));
+	lwline = lwline_from_lwmpoint(-1, mpoint);
+	if ( ! lwline )
+	{
+		elog(ERROR, "makeline: lwline_from_lwmpoint returned NULL");
+		PG_RETURN_NULL();
+	}
+
+	size = lwline_serialize_size(lwline);
+	result = palloc(size+4);
+	result->size = (size+4);
+	lwline_serialize_buf(lwline, SERIALIZED_FORM(result), &size);
+	if ( size != result->size-4 )
+	{
+		lwerror("lwgeom_serialize size:%d, lwgeom_serialize_size:%d",
+			size, result->size-4);
+		PG_RETURN_NULL();
+	}
+
+	PG_RETURN_POINTER(result);
+}
+
+/*
  * makeline_garray ( GEOMETRY[] ) returns a LINE formed by
  * all the point geometries in given array.
  * array elements that are NOT points are discarded..
@@ -1845,7 +1893,7 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 	elog(NOTICE, "LWGEOM_makeline_garray: point elements: %d", npoints);
 #endif
 
-	outlwg = (LWGEOM *)make_lwline(-1, npoints, lwpoints);
+	outlwg = (LWGEOM *)lwline_from_lwpointarray(-1, npoints, lwpoints);
 
 	size = lwgeom_serialize_size(outlwg);
 	//lwnotice("lwgeom_serialize_size returned %d", size);
