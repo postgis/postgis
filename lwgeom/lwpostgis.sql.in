@@ -107,26 +107,6 @@ CREATE TYPE geometry (
         storage = main
 );
 
-CREATEFUNCTION geometryfromtext(geometry)
-        RETURNS geometry
-        AS '@MODULE_FILENAME@','LWGEOM_from_text'
-        LANGUAGE 'C' WITH (isstrict,iscachable);
-
-CREATEFUNCTION geometryfromtext(geometry, int4)
-        RETURNS geometry
-        AS '@MODULE_FILENAME@','LWGEOM_from_text'
-        LANGUAGE 'C' WITH (isstrict,iscachable);
-
-CREATEFUNCTION geomfromtext(geometry)
-RETURNS geometry AS '
-SELECT geometryfromtext($1)
-' LANGUAGE 'SQL' WITH (isstrict,iscachable);
-
-CREATEFUNCTION geomfromtext(geometry, int4)
-RETURNS geometry AS '
-SELECT geometryfromtext($1, $2)
-' LANGUAGE 'SQL' WITH (isstrict,iscachable);
-
 
 -----------------------------------------------------------------------
 --
@@ -822,6 +802,11 @@ CREATEFUNCTION npoints(geometry)
 	AS '@MODULE_FILENAME@', 'LWGEOM_npoints'
 	LANGUAGE 'C' WITH (isstrict);
 
+CREATEFUNCTION nrings(geometry)
+	RETURNS int4
+	AS '@MODULE_FILENAME@', 'LWGEOM_nrings'
+	LANGUAGE 'C' WITH (isstrict);
+
 ------------------------------------------------------------------------
 -- OGC defined
 ------------------------------------------------------------------------
@@ -920,6 +905,161 @@ CREATEFUNCTION GeometryFromText(geometry, int4)
         RETURNS geometry
         AS '@MODULE_FILENAME@','LWGEOM_from_text'
         LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATEFUNCTION GeometryFromText(geometry)
+        RETURNS geometry
+        AS '@MODULE_FILENAME@','LWGEOM_from_text'
+        LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATEFUNCTION GeometryFromText(geometry, int4)
+        RETURNS geometry
+        AS '@MODULE_FILENAME@','LWGEOM_from_text'
+        LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATEFUNCTION GeomFromText(geometry)
+RETURNS geometry AS '
+SELECT geometryfromtext($1)
+' LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION GeomFromText(geometry, int4)
+RETURNS geometry AS '
+SELECT geometryfromtext($1, $2)
+' LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION PointFromText(geometry)
+RETURNS geometry
+AS ' SELECT CASE WHEN geometrytype($1) = ''POINT'' THEN $1
+ELSE NULL END
+' LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION PointFromText(geometry, int4)
+RETURNS geometry
+AS ' SELECT CASE WHEN geometrytype($1) = ''POINT'' THEN setSRID($1,$2)
+ELSE NULL END
+' LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION LineFromText(geometry)
+RETURNS geometry
+AS ' SELECT CASE WHEN geometrytype($1) = ''LINESTRING'' THEN $1
+ELSE NULL END
+' LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION LineFromText(geometry, int4)
+RETURNS geometry
+AS ' SELECT CASE WHEN geometrytype($1) = ''LINESTRING'' THEN setSRID($1,$2)
+ELSE NULL END
+' LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION LineStringFromText(geometry)
+RETURNS geometry
+AS 'SELECT LineFromText($1)'
+LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION LineStringFromText(geometry, int4)
+RETURNS geometry
+AS 'SELECT LineFromText($1, $2)'
+LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION PolyFromText(geometry)
+RETURNS geometry
+AS ' SELECT CASE WHEN geometrytype($1) = ''POLYGON'' THEN $1
+ELSE NULL END
+' LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION PolyFromText(geometry, int4)
+RETURNS geometry
+AS ' SELECT CASE WHEN geometrytype($1) = ''POLYGON'' THEN setSRID($1,$2)
+ELSE NULL END
+' LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION PolygonFromText(geometry, int4)
+RETURNS geometry
+AS 'SELECT PolyFromText($1, $2)'
+LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION PolygonFromText(geometry)
+RETURNS geometry
+AS 'SELECT PolyFromText($1)'
+LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION MLineFromText(geometry, int4)
+RETURNS geometry
+AS 'SELECT CASE WHEN geometrytype($1) = ''MULTILINESTRING'' THEN setSRID($1,$2)
+ELSE NULL END
+' LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION MLineFromText(geometry)
+RETURNS geometry
+AS 'SELECT CASE WHEN geometrytype($1) = ''MULTILINESTRING'' THEN $1
+ELSE NULL END
+' LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION MultiLineStringFromText(geometry)
+RETURNS geometry
+AS 'SELECT MLineFromText($1)'
+LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION MultiLineStringFromText(geometry, int4)
+RETURNS geometry
+AS 'SELECT MLineFromText($1, $2)'
+LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION MPointFromText(geometry, int4)
+RETURNS geometry
+AS 'SELECT CASE WHEN geometrytype($1) = ''MULTIPOINT'' THEN setSRID($1,$2)
+ELSE NULL END
+' LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION MPointFromText(geometry)
+RETURNS geometry
+AS 'SELECT CASE WHEN geometrytype($1) = ''MULTIPOINT'' THEN $1
+ELSE NULL END
+' LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION MultiPointFromText(geometry, int4)
+RETURNS geometry
+AS 'SELECT MPointFromText($1, $2)'
+LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION MultiPointFromText(geometry)
+RETURNS geometry
+AS 'SELECT MPointFromText($1)'
+LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION MPolyFromText(geometry, int4)
+RETURNS geometry
+AS 'SELECT CASE WHEN geometrytype($1) = ''MULTIPOLYGON'' THEN setSRID($1,$2)
+ELSE NULL END
+' LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION MPolyFromText(geometry)
+RETURNS geometry
+AS 'SELECT CASE WHEN geometrytype($1) = ''MULTIPOLYGON'' THEN $1
+ELSE NULL END
+' LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION MultiPolygonFromText(geometry, int4)
+RETURNS geometry
+AS 'SELECT MPolyFromText($1, $2)'
+LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION MultiPolygonFromText(geometry)
+RETURNS geometry
+AS 'SELECT MPolyFromText($1)'
+LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION GeomCollFromText(geometry, int4)
+RETURNS geometry
+AS 'SELECT CASE WHEN geometrytype($1) = ''GEOMETRYCOLLECTION'' THEN
+setSRID($1,$2)
+ELSE NULL END
+' LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION GeomCollFromText(geometry)
+RETURNS geometry
+AS 'SELECT CASE WHEN geometrytype($1) = ''GEOMETRYCOLLECTION'' THEN $1
+ELSE NULL END
+' LANGUAGE 'SQL' WITH (isstrict,iscachable);
 
 ------------------------------------------------------------------------
 -- Misures
@@ -1024,6 +1164,11 @@ CREATEFUNCTION force_3d(geometry)
 CREATEFUNCTION force_collection(geometry) 
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_force_collection'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION multi(geometry) 
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_force_multi'
 	LANGUAGE 'C' WITH (isstrict);
 
 ------------------------------------------------------------------------

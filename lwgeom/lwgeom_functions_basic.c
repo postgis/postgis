@@ -17,6 +17,7 @@ Datum combine_box2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_mem_size(PG_FUNCTION_ARGS);
 Datum LWGEOM_summary(PG_FUNCTION_ARGS);
 Datum LWGEOM_npoints(PG_FUNCTION_ARGS);
+Datum LWGEOM_nrings(PG_FUNCTION_ARGS);
 Datum LWGEOM_area_polygon(PG_FUNCTION_ARGS);
 Datum postgis_uses_stats(PG_FUNCTION_ARGS);
 Datum postgis_scripts_released(PG_FUNCTION_ARGS);
@@ -28,12 +29,14 @@ Datum LWGEOM_perimeter_poly(PG_FUNCTION_ARGS);
 Datum LWGEOM_force_2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_force_3d(PG_FUNCTION_ARGS);
 Datum LWGEOM_force_collection(PG_FUNCTION_ARGS);
+Datum LWGEOM_force_multi(PG_FUNCTION_ARGS);
 Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_maxdistance2d_linestring(PG_FUNCTION_ARGS);
 
 // internal
 char * lwgeom_summary_recursive(char *serialized, int offset);
 int32 lwgeom_npoints_recursive(char *serialized);
+int32 lwgeom_nrings_recursive(char *serialized);
 
 // general utilities (might be moved in lwgeom_api.c)
 double lwgeom_polygon_area(LWPOLY *poly);
@@ -1011,6 +1014,45 @@ lwgeom_npoints_recursive(char *serialized)
 	return npoints;
 }
 
+/*
+ * Recursively count rings in a SERIALIZED lwgeom
+ */
+int32
+lwgeom_nrings_recursive(char *serialized)
+{
+	LWGEOM_INSPECTED *inspected;
+	int i;
+	int nrings=0;
+
+	inspected = lwgeom_inspect(serialized);
+
+	//now have to do a scan of each object
+	for (i=0; i<inspected->ngeometries; i++)
+	{
+		LWPOLY *poly=NULL;
+		char *subgeom=NULL;
+
+		subgeom = lwgeom_getsubgeometry_inspected(inspected, i);
+
+		if ( lwgeom_getType(subgeom[0]) == POLYGONTYPE )
+		{
+			poly = lwpoly_deserialize(subgeom);
+			nrings += poly->nrings;
+			continue;
+		}
+
+		if ( lwgeom_getType(subgeom[0]) == COLLECTIONTYPE )
+		{
+			nrings += lwgeom_nrings_recursive(subgeom);
+			continue;
+		}
+	}
+
+	pfree_inspected(inspected);
+
+	return nrings;
+}
+
 //number of points in an object
 PG_FUNCTION_INFO_V1(LWGEOM_npoints);
 Datum LWGEOM_npoints(PG_FUNCTION_ARGS)
@@ -1021,6 +1063,18 @@ Datum LWGEOM_npoints(PG_FUNCTION_ARGS)
 	npoints = lwgeom_npoints_recursive(SERIALIZED_FORM(geom));
 
 	PG_RETURN_INT32(npoints);
+}
+
+//number of rings in an object
+PG_FUNCTION_INFO_V1(LWGEOM_nrings);
+Datum LWGEOM_nrings(PG_FUNCTION_ARGS)
+{
+	LWGEOM *geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	int32 nrings = 0;
+
+	nrings = lwgeom_nrings_recursive(SERIALIZED_FORM(geom));
+
+	PG_RETURN_INT32(nrings);
 }
 
 // Calculate the area of all the subobj in a polygon
@@ -1541,6 +1595,72 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS)
 	result->size = size;
 
 	result->type = TYPE_SETTYPE(geom->type, COLLECTIONTYPE);
+	iptr = geom->data;
+	optr = result->data;
+
+	// reset size to bare serialized input
+	size = geom->size - 4;
+
+	// transfer bbox
+	if ( lwgeom_hasBBOX(geom->type) )
+	{
+		memcpy(optr, iptr, sizeof(BOX2DFLOAT4));
+		optr += sizeof(BOX2DFLOAT4);
+		iptr += sizeof(BOX2DFLOAT4);
+		size -= sizeof(BOX2DFLOAT4);
+	}
+
+	// transfer SRID
+	if ( lwgeom_hasSRID(geom->type) )
+	{
+		memcpy(optr, iptr, 4);
+		optr += 4;
+		iptr += 4;
+		size -= 4;
+	}
+
+	// write number of geometries (1)
+	memcpy(optr, &nsubgeoms, 4);
+	optr+=4;
+
+	// write type of first geometry w/out BBOX and SRID
+	optr[0] = TYPE_SETHASSRID(geom->type, 0);
+	optr[0] = TYPE_SETHASBBOX(optr[0], 0);
+	optr++;
+
+	// write remaining stuff
+	memcpy(optr, iptr, size);
+
+	PG_RETURN_POINTER(result);
+}
+
+// transform input geometry to a multi* type
+PG_FUNCTION_INFO_V1(LWGEOM_force_multi);
+Datum LWGEOM_force_multi(PG_FUNCTION_ARGS)
+{
+	LWGEOM *geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	LWGEOM *result;
+	int oldtype, newtype;
+	int32 size = 0;
+	char *iptr, *optr;
+	int32 nsubgeoms = 1;
+
+	oldtype = lwgeom_getType(geom->type);
+	
+	// already a multi
+	if ( oldtype >= 4 ) PG_RETURN_POINTER(geom);
+
+	// not a multi*, must add header and 
+	// transfer eventual BBOX and SRID to first object
+
+	newtype = oldtype+3; // see defines
+
+	size = geom->size+5; // 4 for numgeoms, 1 for type
+
+	result = (LWGEOM *)palloc(size); // 4 for numgeoms, 1 for type
+	result->size = size;
+
+	result->type = TYPE_SETTYPE(geom->type, newtype);
 	iptr = geom->data;
 	optr = result->data;
 
