@@ -29,6 +29,7 @@ Datum CHIP_in(PG_FUNCTION_ARGS)
 	int			size;
 	int			t;
 	int			input_str_len;
+	int			datum_size;
 
 //printf("chip_in called\n");
 
@@ -88,7 +89,18 @@ Datum CHIP_in(PG_FUNCTION_ARGS)
 		elog(ERROR,"CHIP_in parser - bad data (endian flag != 1)!");
 		PG_RETURN_NULL();	
 	}
-	if (result->size != (sizeof(CHIP) + 4 * result->width*result->height) )
+	datum_size = 4;
+
+	if ( (result->datatype == 6) || (result->datatype == 7) || (result->datatype == 106) || (result->datatype == 107) )
+	{
+		datum_size = 2;
+	}
+	if ( (result->datatype == 8) || (result->datatype == 108) )
+	{
+		datum_size=1;
+	}
+
+	if (result->size != (sizeof(CHIP) + datum_size * result->width*result->height) )
 	{
 		elog(ERROR,"CHIP_in parser - bad data (actual size != computed size)!");
 		PG_RETURN_NULL();
@@ -175,9 +187,6 @@ Datum compression_chip(PG_FUNCTION_ARGS)
 
 	PG_RETURN_INT32(c->compression);
 }
-
-
-
 
 
 PG_FUNCTION_INFO_V1(height_chip);

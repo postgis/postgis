@@ -192,14 +192,17 @@ typedef struct {
 	char		future[8]; // for future expantion 
 	
 	int32 	datatype;	 // 1 = float32 (XDR), 2 = unsigned int (XDR), 3 = RGBA, 4 = signed integer (XDR)
-					 // 11 = float32(NDR), 22 = unsigned int (NDR), 44 = signed integer (NDR)
+					 // 101 = float32(NDR), 102 = unsigned int (NDR), 104 = signed integer (NDR)
+					// 6 = signed 16 bit (XDR), 7 = unsigned 16 bit(XDR), 8 = unsigned 8(XDR/NDR)
+					// 106 = signed 16 bit (NDR), 107 = unsigned 16 bit (NDR), 108 = unsigned 8 (XDR/NDR) 
 	int32 	height;
 	int32 	width;
 	int32   compression;	// 0 = no compression
 		// this is provided for convenience, it should be set to 
 		//  sizeof(chip) bytes into the struct because the serialized form is:
 		//    <header><data>
-	unsigned int *data;	 	// data[0] = bottm left, data[width] = 1st pixel, 2nd row
+	void *data;	 	// data[0] = bottm left, data[width] = 1st pixel, 2nd row
+						// THIS MAY NOT ACTUALLY BE 32 bit data!!! watch out!
 } CHIP;
 
 
