@@ -1479,11 +1479,24 @@ PG_FUNCTION_INFO_V1(LWGEOM_translate);
 Datum LWGEOM_translate(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+	PG_LWGEOM *oldgeom;
+	char *srl = SERIALIZED_FORM(geom);
+
 	double xoff =  PG_GETARG_FLOAT8(1);
 	double yoff =  PG_GETARG_FLOAT8(2);
 	double zoff =  PG_GETARG_FLOAT8(3);
 
-	lwgeom_translate_recursive(SERIALIZED_FORM(geom), xoff, yoff, zoff);
+	lwgeom_translate_recursive(srl, xoff, yoff, zoff);
+
+	if ( TYPE_HASBBOX(geom->type) ) 
+	{
+		if ( ! compute_serialized_bbox_p(srl, getbox2d_internal(srl)) )
+		{
+			oldgeom = geom;
+			geom = PG_LWGEOM_construct(srl, lwgeom_getSRID(geom), 0);
+			lwfree(oldgeom);
+		}
+	}
 
 	PG_RETURN_POINTER(geom);
 }

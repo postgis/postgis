@@ -240,13 +240,14 @@ lwgeom_transform_recursive(char *geom, PJ *inpj, PJ *outpj)
 PG_FUNCTION_INFO_V1(transform_geom);
 Datum transform_geom(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *geom;
+	PG_LWGEOM *geom, *oldgeom;
 	PG_LWGEOM *result=NULL;
 	PJ *input_pj,*output_pj;
 	char *input_proj4, *output_proj4;
 	text *input_proj4_text;
 	text *output_proj4_text;
 	int32 result_srid ;
+	char *srl;
 
 	result_srid   = PG_GETARG_INT32(3);
 	if (result_srid  == -1)
@@ -309,6 +310,18 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	pj_free(input_pj);
 	pj_free(output_pj);
 	pfree(input_proj4); pfree(output_proj4);
+
+	// Compute bbox if input had one
+	if ( TYPE_HASBBOX(result->type) ) 
+	{
+		srl = SERIALIZED_FORM(result);
+		if ( ! compute_serialized_bbox_p(srl, getbox2d_internal(srl)) )
+		{
+			oldgeom = result;
+			result = PG_LWGEOM_construct(srl, lwgeom_getSRID(result), 0);
+			lwfree(oldgeom);
+		}
+	}
 
 	PG_RETURN_POINTER(result); // new geometry
 }
