@@ -4,12 +4,14 @@ JAR = jar
 MKDIR = mkdir -p
 DELETE = rm -rvf
 
-# configure your postgresql.jar here
+#
+# Make sure you CLASSPATH environmental variable
+# includes your postgresql.jar 
+# 
 
-#CLASSPATH=src/:../../../src/interfaces/jdbc/jars/postgresql.jar
-#CLASSPATH=src/:/usr/share/java/postgresql.jar
-#CLASSPATH=src/:/usr/share/java/postgresql.jar
-CLASSPATH=src/:lib/postgresql-8.0.309.jdbc3.jar
+#CP=src/:../../../src/interfaces/jdbc/jars/postgresql.jar
+#CP=src/:lib/postgresql-8.0.309.jdbc3.jar
+CP = $(CLASSPATH):src/:/usr/share/java/postgresql.jar
 
 SRC=src
 EXAMPLES=examples
@@ -27,7 +29,7 @@ prepare:
 
 
 compile:	prepare
-	$(JAVAC) -classpath $(CLASSPATH) -d $(BUILD)\
+	$(JAVAC) -classpath $(CP) -d $(BUILD)\
 		$(SRC)/examples/Test.java \
 		$(SRC)/examples/TestParser.java \
 		$(SRC)/examples/TestServer.java \
@@ -48,16 +50,16 @@ compile:	prepare
 		$(SRC)/org/postgis/Polygon.java 
 
 test:	compile
-	$(JAVA) -classpath $(BUILD):$(CLASSPATH) $(EXAMPLES)/Test
+	$(JAVA) -classpath $(BUILD):$(CP) $(EXAMPLES)/Test
         
 jtest:	compile
-	$(JAVA) -classpath $(BUILD):$(CLASSPATH) $(EXAMPLES)/TestServer
+	$(JAVA) -classpath $(BUILD):$(CP) $(EXAMPLES)/TestServer
 
 ptestoffline: compile	
-	$(JAVA) -classpath $(BUILD):$(CLASSPATH) $(EXAMPLES)/TestParser offline
+	$(JAVA) -classpath $(BUILD):$(CP) $(EXAMPLES)/TestParser offline
 
 ptest:  compile
-	$(JAVA) -classpath $(BUILD):$(CLASSPATH) $(EXAMPLES)/TestParser
+	$(JAVA) -classpath $(BUILD):$(CP) $(EXAMPLES)/TestParser
 
 clean:  
 	$(DELETE) $(BUILD) postgis.jar postgis_debug.jar
