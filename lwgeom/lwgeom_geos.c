@@ -1716,11 +1716,4 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 	PG_RETURN_NULL(); // never get here
 }
 
-PG_FUNCTION_INFO_V1(centroid);
-Datum centroid(PG_FUNCTION_ARGS)
-{
-	elog(ERROR, "postgis version of centroid calculation not ported yet");
-	PG_RETURN_NULL(); // never get here
-}
-
 #endif // ! USE_GEOS

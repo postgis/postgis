@@ -559,7 +559,7 @@ Datum LWGEOM_z_point(PG_FUNCTION_ARGS)
 	geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	// if there's no Z return 0
-	if ( lwgeom_ndims(geom->type) < 2 ) PG_RETURN_FLOAT8(0.0);
+	if ( lwgeom_ndims(geom->type) < 3 ) PG_RETURN_FLOAT8(0.0);
 
 	inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
 

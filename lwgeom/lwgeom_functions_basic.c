@@ -2334,3 +2334,70 @@ Datum LWGEOM_isempty(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(TRUE);
 	PG_RETURN_BOOL(FALSE);
 }
+
+
+#if ! USE_GEOS
+PG_FUNCTION_INFO_V1(centroid);
+Datum centroid(PG_FUNCTION_ARGS)
+{
+	LWGEOM *geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	int type = lwgeom_getType(geom->type);
+	int ndims = lwgeom_ndims(geom->type);
+	int SRID = lwgeom_getSRID(geom);
+	LWGEOM_EXPLODED *exp = lwgeom_explode(SERIALIZED_FORM(geom));
+	LWPOLY *poly;
+	LWPOINT *point;
+	LWGEOM *result;
+	POINTARRAY *ring;
+	POINT3D *p, cent;
+	int i,j,k;
+	uint32 num_points_tot = 0;
+	char *srl;
+	char wantbbox = 0;
+
+	if  (type != POLYGONTYPE && type != MULTIPOLYGONTYPE)
+		PG_RETURN_NULL();
+
+	//find the centroid
+	for (i=0; i<exp->npolys; i++)
+	{
+		poly = lwpoly_deserialize(exp->polys[i]);
+		for (j=0; j<poly->nrings; j++)
+		{
+			ring = poly->rings[j];
+			for (k=0; k<ring->npoints-1; k++)
+			{
+				p = (POINT3D *)getPoint(ring, k);
+				tot_x += p.x;
+				tot_y += p.y;
+				if ( ring->ndims > 2 ) tot_z += p.z;
+			}
+			num_points_tot += ring->npoints-1;
+		}
+		pfree_polygon(poly);
+	}
+	pfree_exploded(exp);
+
+	// Setup point
+	cent.x = tot_x/num_points_tot;
+	cent.y = tot_y/num_points_tot;
+	cent.z = tot_z/num_points_tot;
+
+	// Construct POINTARRAY (paranoia?)
+	pa = pointArray_construct(&cent, poly->ndims, 1);
+
+	// Construct LWPOINT
+	point = lwpoint_construct(ndims, SRID, pa);
+
+	// Serialize LWPOINT 
+	srl = lwpoint_serialize(point);
+
+	pfree_point(point);
+	pfree_POINTARRAY(pa);
+
+	// Construct output LWGEOM
+	result = LWGEOM_construct(srl, poly->SRID, wantbbox);
+
+	PG_RETURN_POINTER(result);
+}
+#endif // ! USE_GEOS

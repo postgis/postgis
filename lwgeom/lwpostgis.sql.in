@@ -2484,7 +2484,7 @@ CREATEFUNCTION geometry(chip)
 -- 7.3+ explicit casting definitions
 #if USE_VERSION >= 73
 CREATE CAST (geometry AS box2d) WITH FUNCTION box2d(geometry) AS IMPLICIT;
-CREATE CAST (geometry AS box3d) WITH FUNCTION box3d(geometry) AS IMPLICI ;
+CREATE CAST (geometry AS box3d) WITH FUNCTION box3d(geometry) AS IMPLICIT;
 CREATE CAST (geometry AS box) WITH FUNCTION box(geometry) AS IMPLICIT;
 CREATE CAST (box3d AS box2d) WITH FUNCTION box2d(box3d) AS IMPLICIT;
 CREATE CAST (box2d AS box3d) WITH FUNCTION box3d(box2d) AS IMPLICIT;
@@ -2614,15 +2614,41 @@ CREATEFUNCTION overlaps(geometry,geometry)
    AS '@MODULE_FILENAME@'
    LANGUAGE 'C' WITH (isstrict);
 
-CREATEFUNCTION isvalid(geometry)
+CREATEFUNCTION IsValid(geometry)
    RETURNS boolean
-   AS '@MODULE_FILENAME@'
+   AS '@MODULE_FILENAME@', 'isvalid'
    LANGUAGE 'C' WITH (isstrict);
 
-CREATEFUNCTION geosnoop(geometry)
+CREATEFUNCTION GEOSnoop(geometry)
    RETURNS geometry
    AS '@MODULE_FILENAME@', 'GEOSnoop'
    LANGUAGE 'C' WITH (isstrict);
+
+-- This is also available w/out GEOS 
+CREATEFUNCTION Centroid(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION IsRing(geometry)
+	RETURNS boolean
+	AS '@MODULE_FILENAME@'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION PointOnSurface(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@'
+	LANGUAGE 'C' WITH (isstrict);
+	
+CREATEFUNCTION IsSimple(geometry)
+	RETURNS boolean
+	AS '@MODULE_FILENAME@', 'issimple'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATEFUNCTION Equals(geometry,geometry)
+	RETURNS boolean
+	AS '@MODULE_FILENAME@','geomequals'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 ---------------------------------------------------------------
 -- END
