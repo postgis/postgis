@@ -2,6 +2,7 @@
 - WKB support in loader (canonical form is OK)
 
 - lwgeom_clone_deep / lwgeom_release_deep
+  (or maybe should both be always be deep.... )
 
 - LWGEOM editor (insert/append a geom, remove a geom, ....)
 
