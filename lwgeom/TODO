@@ -2,8 +2,6 @@
 
 - Document: makeline, makeline_from_multipoint, makepoint, makepointm
 
-- WKB support in loader (canonical form is OK)
-
 - research on extent() extracting output from an existing index.
 
 - lwgeom_clone_deep / lwgeom_release_deep
