@@ -736,7 +736,7 @@ Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 	char *result_cstring;
 	int len;
         char *result,*loc_wkt;
-	char *semicolonLoc;
+	//char *semicolonLoc;
 
 	init_pg_func();
 

@@ -14,7 +14,7 @@
 #include "lwgeom_pg.h"
 #include "profile.h"
 
-//#define DEBUG
+//#define DEBUG 1
 
 Datum LWGEOM_mem_size(PG_FUNCTION_ARGS);
 Datum LWGEOM_summary(PG_FUNCTION_ARGS);
@@ -1584,8 +1584,13 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 		PG_RETURN_POINTER(result);
 	}
 
+
 	pglwgeom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	pglwgeom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+
+#ifdef DEBUG
+	elog(NOTICE, "LWGEOM_collect(%s, %s): call", lwgeom_typename(TYPE_GETTYPE(pglwgeom1->type)), lwgeom_typename(TYPE_GETTYPE(pglwgeom2->type)));
+#endif
 	
 	if ( lwgeom_getSRID(pglwgeom1) != lwgeom_getSRID(pglwgeom2) )
 	{
@@ -1598,10 +1603,12 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 
 	type1 = TYPE_GETTYPE(lwgeoms[0]->type);
 	type2 = TYPE_GETTYPE(lwgeoms[1]->type);
-	if ( type1 < 4 ) type1+=3;
-	if ( type2 < 4 ) type2+=3;
-	if ( type1 == type2 ) outtype = type1;
+	if ( type1 == type2 && type1 < 4 ) outtype = type1+3;
 	else outtype = COLLECTIONTYPE;
+
+#ifdef DEBUG
+	elog(NOTICE, " outtype = %d", outtype);
+#endif
 
 	outlwg = (LWGEOM *)lwcollection_construct(
 		outtype, lwgeoms[0]->SRID,
@@ -1635,12 +1642,12 @@ PG_FUNCTION_INFO_V1(LWGEOM_accum);
 Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 {
 	ArrayType *array = NULL;
-	int nelems, nbytes;
+	int nelems;
+	int lbs=1;
+	size_t nbytes, oldsize;
 	Datum datum;
 	PG_LWGEOM *geom;
 	ArrayType *result;
-	Pointer **pointers;
-	MemoryContext oldcontext;
 
 #ifdef DEBUG
 	elog(NOTICE, "LWGEOM_accum called");
@@ -1655,6 +1662,7 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 #endif
 	} else {
 		array = (ArrayType *) PG_DETOAST_DATUM_COPY(datum);
+		//array = PG_GETARG_ARRAYTYPE_P(0);
 		nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
 #ifdef DEBUG
 		elog(NOTICE, "geom_accum: array of nelems=%d", nelems);
@@ -1671,16 +1679,9 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 		PG_RETURN_ARRAYTYPE_P(array);
 	}
 
-	/*
-	 * Switch to * flinfo->fcinfo->fn_mcxt
-	 * memory context to be sure both detoasted
-	 * geometry AND array of pointers to it
-	 * last till the call to unite_finalfunc.
-	 */
-	oldcontext = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
-
 	/* Make a DETOASTED copy of input geometry */
-	geom = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(datum);
+	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(datum);
+
 
 	/*
 	 * Might use a more optimized version instead of lwrealloc'ing
@@ -1688,32 +1689,65 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 	 * 		--strk(TODO);
 	 */
 	++nelems;
-	nbytes = ARR_OVERHEAD(1) + sizeof(Pointer *) * nelems;
-	if ( ! array ) {
+	if ( nelems == 1 || ! array ) {
+		nbytes = ARR_OVERHEAD(1)+INTALIGN(geom->size);
+#ifdef DEBUG
+		elog(NOTICE, "geom_accum: adding %p (nelems=%d; nbytes=%d)",
+			geom, nelems, nbytes);
+#endif
 		result = (ArrayType *) lwalloc(nbytes);
+		if ( ! result )
+		{
+			elog(ERROR, "Out of virtual memory");
+			PG_RETURN_NULL();
+		}
+#ifdef DEBUG
+		elog(NOTICE, " %d bytes allocated for array (%d of header, %lu of geom, elemtype: %ld)", nbytes, ARR_OVERHEAD(1), INTALIGN(geom->size), get_fn_expr_argtype(fcinfo->flinfo, 1));
+#endif
 		result->size = nbytes;
 		result->ndim = 1;
-		*((int *) ARR_DIMS(result)) = nelems;
+		result->elemtype = get_fn_expr_argtype(fcinfo->flinfo, 1);
+		memcpy(ARR_DIMS(result), &nelems, sizeof(int));
+		memcpy(ARR_LBOUND(result), &lbs, sizeof(int));
+		memcpy(ARR_DATA_PTR(result), geom, geom->size);
 #ifdef DEBUG
-		elog(NOTICE, "geom_accum: adding %p (nelems=%d)", geom, nelems);
+		elog(NOTICE, " %d bytes memcopied", geom->size);
 #endif
 
 	} else {
-		result = (ArrayType *) lwrealloc(array, nbytes);
-		result->size = nbytes;
-		result->ndim = 1;
-		*((int *) ARR_DIMS(result)) = nelems;
+		oldsize = array->size;
+		nbytes = oldsize + INTALIGN(geom->size);
 #ifdef DEBUG
-		elog(NOTICE, "geom_accum: adding %p (nelems=%d)", geom, nelems);
+		elog(NOTICE, "geom_accum: old array size: %d, adding %d bytes (nelems=%d; nbytes=%lu)", array->size, INTALIGN(geom->size), nelems, nbytes);
 #endif
+		result = (ArrayType *) lwrealloc(array, nbytes);
+		if ( ! result )
+		{
+			elog(ERROR, "Out of virtual memory");
+			PG_RETURN_NULL();
+		}
+#ifdef DEBUG
+		elog(NOTICE, " %d bytes allocated for array", nbytes);
+#endif
+
+#ifdef DEBUG
+		elog(NOTICE, " array start  @ %p", result);
+		elog(NOTICE, " ARR_DATA_PTR @ %p (%d)",
+			ARR_DATA_PTR(result), (char *)ARR_DATA_PTR(result)-(char *)result);
+		elog(NOTICE, " next element @ %p", (char *)result+oldsize);
+#endif
+		result->size = nbytes;
+		memcpy(ARR_DIMS(result), &nelems, sizeof(int));
+#ifdef DEBUG
+		elog(NOTICE, " writing next element starting @ %p",
+			result+oldsize);
+#endif
+		memcpy((char *)result+oldsize, geom, geom->size);
 	}
 
-	pointers = (Pointer **)ARR_DATA_PTR(result);
-	pointers[nelems-1] = (Pointer *)geom;
-
-	/* Go back to previous memory context */
-	MemoryContextSwitchTo(oldcontext);
-
+#ifdef DEBUG
+	elog(NOTICE, " returning");
+#endif
 
 	PG_RETURN_ARRAYTYPE_P(result);
 
@@ -1734,13 +1768,14 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 	Datum datum;
 	ArrayType *array;
 	int nelems;
-	PG_LWGEOM **geoms;
+	//PG_LWGEOM **geoms;
 	PG_LWGEOM *result=NULL;
 	LWGEOM **lwgeoms, *outlwg;
 	size_t size;
 	unsigned int outtype;
 	int i;
-	int SRID;
+	int SRID=-1;
+	size_t offset;
 
 #ifdef DEBUG
 	elog(NOTICE, "LWGEOM_collect_garray called");
@@ -1759,6 +1794,12 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 	/* Get actual ArrayType */
 	array = (ArrayType *) PG_DETOAST_DATUM(datum);
 
+#ifdef DEBUG
+	elog(NOTICE, " array is %d-bytes in size, %d w/out header",
+		array->size, array->size-ARR_OVERHEAD(ARR_NDIM(array)));
+#endif
+
+
 	/* Get number of geometries in array */
 	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
 
@@ -1773,25 +1814,29 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	/* Get pointer to GEOMETRY pointers array */
-	geoms = (PG_LWGEOM **)ARR_DATA_PTR(array);
-
-	/* Get first geometry SRID */
-	SRID = lwgeom_getSRID(geoms[0]);
-
 	/*
 	 * Deserialize all geometries in array into the lwgeoms pointers
 	 * array. Check input types to form output type.
 	 */
 	lwgeoms = palloc(sizeof(LWGEOM *)*nelems);
 	outtype = 0;
+	offset = 0;
 	for (i=0; i<nelems; i++)
 	{
-		unsigned int intype = TYPE_GETTYPE(geoms[i]->type);
-		lwgeoms[i] = lwgeom_deserialize(SERIALIZED_FORM(geoms[i]));
+		PG_LWGEOM *geom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
+		offset += INTALIGN(geom->size);
+
+		unsigned int intype = TYPE_GETTYPE(geom->type);
+		lwgeoms[i] = lwgeom_deserialize(SERIALIZED_FORM(geom));
+#ifdef DEBUG
+	elog(NOTICE, "LWGEOM_collect_garray: geom %d deserialized", i);
+#endif
 
 		// Check SRID homogeneity
-		if ( i ) {
+		if ( ! i ) {
+			/* Get first geometry SRID */
+			SRID = lwgeoms[i]->SRID; 
+		} else {
 			if ( lwgeoms[i]->SRID != SRID )
 			{
 				elog(ERROR,
@@ -1806,7 +1851,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 		// Output type not initialized
 		if ( ! outtype ) {
 			// Input is single, make multi
-			if ( outtype < 4 ) outtype = intype+3;
+			if ( intype < 4 ) outtype = intype+3;
 			// Input is multi, make collection
 			else outtype = COLLECTIONTYPE;
 		}
@@ -1819,6 +1864,10 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 		}
 
 	}
+
+#ifdef DEBUG
+	elog(NOTICE, "LWGEOM_collect_garray: outtype = %d", outtype);
+#endif
 
 	outlwg = (LWGEOM *)lwcollection_construct(
 		outtype, SRID,
@@ -1897,13 +1946,14 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 	Datum datum;
 	ArrayType *array;
 	int nelems;
-	PG_LWGEOM **geoms;
 	PG_LWGEOM *result=NULL;
 	LWPOINT **lwpoints;
 	LWGEOM *outlwg;
 	size_t size;
 	unsigned int npoints;
 	int i;
+	size_t offset;
+	int SRID=-1;
 
 #ifdef DEBUG
 	elog(NOTICE, "LWGEOM_makeline_garray called");
@@ -1940,9 +1990,6 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	/* Get pointer to GEOMETRY pointers array */
-	geoms = (PG_LWGEOM **)ARR_DATA_PTR(array);
-
 	/*
 	 * Deserialize all point geometries in array into the
 	 * lwpoints pointers array.
@@ -1952,11 +1999,30 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 	// possibly more then required
 	lwpoints = palloc(sizeof(LWGEOM *)*nelems);
 	npoints = 0;
+	offset = 0;
 	for (i=0; i<nelems; i++)
 	{
-		if ( TYPE_GETTYPE(geoms[i]->type) != POINTTYPE ) continue;
+		PG_LWGEOM *geom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
+		offset += INTALIGN(geom->size);
+
+		if ( TYPE_GETTYPE(geom->type) != POINTTYPE ) continue;
+
 		lwpoints[npoints++] =
-			lwpoint_deserialize(SERIALIZED_FORM(geoms[i]));
+			lwpoint_deserialize(SERIALIZED_FORM(geom));
+
+		// Check SRID homogeneity
+		if ( npoints == 1 ) {
+			/* Get first geometry SRID */
+			SRID = lwpoints[npoints-1]->SRID; 
+		} else {
+			if ( lwpoints[npoints-1]->SRID != SRID )
+			{
+				elog(ERROR,
+					"Operation on mixed SRID geometries");
+				PG_RETURN_NULL();
+			}
+		}
+
 #ifdef DEBUG
 		elog(NOTICE, "LWGEOM_makeline_garray: element %d deserialized",
 			i);
@@ -1974,7 +2040,7 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 	elog(NOTICE, "LWGEOM_makeline_garray: point elements: %d", npoints);
 #endif
 
-	outlwg = (LWGEOM *)lwline_from_lwpointarray(-1, npoints, lwpoints);
+	outlwg = (LWGEOM *)lwline_from_lwpointarray(SRID, npoints, lwpoints);
 
 	size = lwgeom_serialize_size(outlwg);
 	//lwnotice("lwgeom_serialize_size returned %d", size);

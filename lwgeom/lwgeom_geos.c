@@ -154,9 +154,10 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 	ArrayType *array;
 	int is3d = 0;
 	int nelems, i;
-	PG_LWGEOM **geoms, *result, *pgis_geom;
-	Geometry *g1, *g2, *geos_result;
-	int SRID;
+	PG_LWGEOM *result, *pgis_geom;
+	Geometry *g1, *g2, *geos_result=NULL;
+	int SRID=-1;
+	size_t offset;
 #ifdef DEBUG
 	static int call=1;
 #endif
@@ -180,38 +181,52 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 
 	if ( nelems == 0 ) PG_RETURN_NULL();
 
-	geoms = (PG_LWGEOM **)ARR_DATA_PTR(array);
-
 	/* One-element union is the element itself */
-	if ( nelems == 1 ) PG_RETURN_POINTER(geoms[0]);
+	if ( nelems == 1 ) PG_RETURN_POINTER((PG_LWGEOM *)(ARR_DATA_PTR(array)));
 
 	/* Ok, we really need geos now ;) */
 	initGEOS(MAXIMUM_ALIGNOF);
 
-	if ( TYPE_NDIMS(geoms[0]->type) > 2 ) is3d = 1;
-	SRID = lwgeom_getSRID(geoms[0]);
-	geos_result = POSTGIS2GEOS(geoms[0]);
-	pfree(geoms[0]);
-	for (i=1; i<nelems; i++)
+	offset = 0;
+	for (i=0; i<nelems; i++)
 	{
-		pgis_geom = geoms[i];
-		if ( SRID != lwgeom_getSRID(pgis_geom) )
+		PG_LWGEOM *geom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
+		offset += INTALIGN(geom->size);
+
+		pgis_geom = geom;
+
+#ifdef DEBUG
+		elog(NOTICE, "geom %d @ %p", i, geom);
+#endif
+
+		// Check is3d flag
+		if ( TYPE_NDIMS(geom->type) > 2 ) is3d = 1;
+
+		// Check SRID homogeneity and initialize geos result
+		if ( ! i )
 		{
-	elog(ERROR, "geomunion: operation on mixed SRID geometries");
-	PG_RETURN_NULL();
+			geos_result = POSTGIS2GEOS(geom);
+			SRID = lwgeom_getSRID(geom);
+#ifdef DEBUG
+		elog(NOTICE, "first geom is a %s", lwgeom_typename(TYPE_GETTYPE(geom->type)));
+#endif
+			continue;
+		}
+		else
+		{
+			if ( SRID != lwgeom_getSRID(geom) )
+			{
+				elog(ERROR,
+					"Operation on mixed SRID geometries");
+				PG_RETURN_NULL();
+			}
 		}
 		
 		g1 = POSTGIS2GEOS(pgis_geom);
-		/*
-		 * If we free this memory now we'll have
-		 * more space for the growing result geometry.
-		 * We don't need it anyway.
-		 */
-		pfree(pgis_geom);
 
 #ifdef DEBUG
-		elog(NOTICE, "unite_garray(%d): adding geom %d to union",
-				call, i);
+		elog(NOTICE, "unite_garray(%d): adding geom %d to union (%s)",
+				call, i, lwgeom_typename(TYPE_GETTYPE(geom->type)));
 #endif
 
 		g2 = GEOSUnion(g1,geos_result);
@@ -2328,10 +2343,11 @@ Datum GEOS_polygonize_garray(PG_FUNCTION_ARGS)
 	ArrayType *array;
 	int is3d = 0;
 	unsigned int nelems, i;
-	PG_LWGEOM **geoms, *result;
+	PG_LWGEOM *result;
 	Geometry *geos_result;
 	Geometry **vgeoms;
 	int SRID=-1;
+	size_t offset;
 #ifdef DEBUG
 	static int call=1;
 #endif
@@ -2355,23 +2371,24 @@ Datum GEOS_polygonize_garray(PG_FUNCTION_ARGS)
 
 	if ( nelems == 0 ) PG_RETURN_NULL();
 
-	geoms = (PG_LWGEOM **)ARR_DATA_PTR(array);
-
 	/* Ok, we really need geos now ;) */
 	initGEOS(MAXIMUM_ALIGNOF);
 
 	vgeoms = palloc(sizeof(Geometry *)*nelems);
+	offset = 0;
 	for (i=0; i<nelems; i++)
 	{
-	 	//if ( TYPE_NDIMS(geoms[i]->type) > 2 ) is3d = 1;
-		vgeoms[i] = POSTGIS2GEOS(geoms[i]);
+		PG_LWGEOM *geom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
+		offset += INTALIGN(geom->size);
+
+		vgeoms[i] = POSTGIS2GEOS(geom);
 		if ( ! i )
 		{
-			SRID = lwgeom_getSRID(geoms[i]);
+			SRID = lwgeom_getSRID(geom);
 		}
 		else
 		{
-			if ( SRID != lwgeom_getSRID(geoms[i]) )
+			if ( SRID != lwgeom_getSRID(geom) )
 			{
 	elog(ERROR, "polygonize: operation on mixed SRID geometries");
 	PG_RETURN_NULL();
