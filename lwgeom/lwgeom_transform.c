@@ -282,19 +282,21 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	input_pj = make_project(input_proj4);
 	if ( (input_pj == NULL) || pj_errno)
 	{
-		pfree(input_proj4); pfree(output_proj4);
+		//pfree(input_proj4);
+		pfree(output_proj4);
 		pfree(geom);
-		elog(ERROR,"tranform: couldnt parse proj4 input string");
+		elog(ERROR, "transform: couldn't parse proj4 input string: '%s': %s", input_proj4, pj_strerrno(pj_errno));
 		PG_RETURN_NULL();
 	}
 
 	output_pj = make_project(output_proj4);
 	if ((output_pj == NULL)|| pj_errno)
 	{
-		pfree(input_proj4); pfree(output_proj4);
+		pfree(input_proj4);
+		//pfree(output_proj4);
 		pj_free(input_pj);
 		pfree(geom);
-		elog(ERROR,"tranform: couldnt parse proj4 output string");
+		elog(ERROR, "transform: couldn't parse proj4 output string: '%s': %s", output_proj4, pj_strerrno(pj_errno));
 		PG_RETURN_NULL();
 	}
 
@@ -353,7 +355,7 @@ transform_point(POINT2D *pt, PJ *srcpj, PJ *dstpj)
 
 		if (pj_errno)
 		{
-			elog(ERROR,"transform: couldnt project point: %i (%s)",
+			elog(ERROR,"transform: couldn't project point: %i (%s)",
 				pj_errno,pj_strerrno(pj_errno));
 			return 0;
 		}
