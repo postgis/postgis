@@ -1,3 +1,13 @@
+PostGIS 0.8.1
+2004/01/12
+
+- New Things
+  - Schema support in AddGeometryColumn and loader/dumper
+- Bug Fixes
+  - Memory fixes
+  - GEOS translation fixes
+
+
 PostGIS 0.8.0
 2003/11/24
 
