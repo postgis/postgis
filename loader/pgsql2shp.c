@@ -118,6 +118,7 @@ int main(int ARGC, char **ARGV){
                 printf("  -p <port>  Allows you to specify a database port other than 5432.\n");
                 printf("  -P <password>  Connect to the database with the specified password.\n");
                 printf("  -u <user>  Connect to the database as the specified user.\n");
+                printf("\n");
                 exit (2);
         }
 
