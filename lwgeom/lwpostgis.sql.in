@@ -2685,7 +2685,12 @@ BEGIN
 	cname = ''enforce_srid_''  || column_name;
 
 	-- Drop enforce_srid constraint
+#if USE_VERSION < 73
 	EXECUTE ''ALTER TABLE '' || quote_ident(table_name) ||
+#else
+	EXECUTE ''ALTER TABLE '' || quote_ident(real_schema) ||
+		''.'' || quote_ident(table_name) ||
+#endif
 		'' DROP constraint '' || quote_ident(cname);
 
 	-- Update geometries SRID
@@ -2700,7 +2705,12 @@ BEGIN
 		'', '' || new_srid || '')'';
 
 	-- Reset enforce_srid constraint
+#if USE_VERSION < 73
 	EXECUTE ''ALTER TABLE '' || quote_ident(table_name) ||
+#else
+	EXECUTE ''ALTER TABLE '' || quote_ident(real_schema) ||
+		''.'' || quote_ident(table_name) ||
+#endif
 		'' ADD constraint '' || quote_ident(cname) ||
 		'' CHECK (srid('' || quote_ident(column_name) ||
 		'') = '' || new_srid || '')'';
