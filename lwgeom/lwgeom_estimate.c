@@ -1296,7 +1296,11 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 		histo->ymin, histo->xmax, histo->ymax);
 #endif
 
-	/* Construct box2dfloat4 */
+	/*
+	 * Construct box2dfloat4.
+	 * Must allocate this in upper executor context
+	 * to keep it alive after SPI_finish().
+	 */
 	box = SPI_palloc(sizeof(BOX2DFLOAT4));
 
 	box->xmin = histo->xmin;
@@ -2419,7 +2423,11 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 	elog(NOTICE, " stats array has %d elems", ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array)));
 #endif
 
-	/* Construct box2dfloat4 */
+	/*
+	 * Construct box2dfloat4.
+	 * Must allocate this in upper executor context
+	 * to keep it alive after SPI_finish().
+	 */
 	box = SPI_palloc(sizeof(BOX2DFLOAT4));
 
 	/* Construct the box */
@@ -2447,6 +2455,9 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.28  2005/03/24 16:27:32  strk
+ * Added comments in estimate_allocation() bugfix point.
+ *
  * Revision 1.27  2005/03/24 14:45:50  strk
  * Fixed bug in estimated_extent() returning pointer to a memory allocated in SPI memory context
  *
