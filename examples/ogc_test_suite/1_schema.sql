@@ -155,7 +155,7 @@ CREATE TABLE lakes (
        name              VARCHAR(64)
 --     shore             POLYGON
 );
-SELECT AddGeometryColumn('ogc','lakes','shore','101','POLYGON','2');
+SELECT AddGeometryColumn('lakes','shore','101','POLYGON','2');
 --
 -- Road Segments
 --
@@ -169,7 +169,7 @@ CREATE TABLE road_segments (
        num_lanes         INTEGER
 --     centerline        LINESTRING
 );
-SELECT AddGeometryColumn('ogc','road_segments','centerline','101','LINESTRING','2');
+SELECT AddGeometryColumn('road_segments','centerline','101','LINESTRING','2');
 --
 -- Divided Routes
 --
@@ -182,7 +182,7 @@ CREATE TABLE divided_routes (
        num_lanes         INTEGER
 --     centerlines       MULTILINESTRING
 );
-SELECT AddGeometryColumn('ogc','divided_routes','centerlines','101','MULTILINESTRING','2');
+SELECT AddGeometryColumn('divided_routes','centerlines','101','MULTILINESTRING','2');
 --
 -- Forests
 --
@@ -194,7 +194,7 @@ CREATE TABLE forests (
        name           VARCHAR(64)
 --     boundary       MULTIPOLYGON
 );
-SELECT AddGeometryColumn('ogc','forests','boundary','101','MULTIPOLYGON','2');
+SELECT AddGeometryColumn('forests','boundary','101','MULTIPOLYGON','2');
 --
 -- Bridges
 --
@@ -206,7 +206,7 @@ CREATE TABLE bridges (
        name          VARCHAR(64)
 --     position      POINT
 );
-SELECT AddGeometryColumn('ogc','bridges','position','101','POINT','2');
+SELECT AddGeometryColumn('bridges','position','101','POINT','2');
 --
 -- Streams
 --
@@ -218,7 +218,7 @@ CREATE TABLE streams (
        name            VARCHAR(64)
 --     centerline      LINESTRING
 );
-SELECT AddGeometryColumn('ogc','streams','centerline','101','LINESTRING','2');
+SELECT AddGeometryColumn('streams','centerline','101','LINESTRING','2');
 --
 -- Buildings
 --
@@ -236,8 +236,8 @@ CREATE TABLE buildings (
 --     position        POINT
 --     footprint       POLYGON
 );
-SELECT AddGeometryColumn('ogc','buildings','position','101','POINT','2');
-SELECT AddGeometryColumn('ogc','buildings','footprint','101','POLYGON','2');
+SELECT AddGeometryColumn('buildings','position','101','POINT','2');
+SELECT AddGeometryColumn('buildings','footprint','101','POLYGON','2');
 --
 -- Ponds
 --
@@ -250,7 +250,7 @@ CREATE TABLE ponds (
        type            VARCHAR(64)
 --     shores          MULTIPOYLGON
 );
-SELECT AddGeometryColumn('ogc','ponds','shores','101','MULTIPOLYGON','2');
+SELECT AddGeometryColumn('ponds','shores','101','MULTIPOLYGON','2');
 --
 -- Named Places
 --
@@ -262,7 +262,7 @@ CREATE TABLE named_places (
        name            VARCHAR(64)
 --     boundary        POLYGON
 );
-SELECT AddGeometryColumn('ogc','named_places','boundary','101','POLYGON','2');
+SELECT AddGeometryColumn('named_places','boundary','101','POLYGON','2');
 --
 -- Map Neatline
 --
@@ -273,7 +273,7 @@ CREATE TABLE map_neatlines (
        fid             INTEGER NOT NULL PRIMARY KEY
 --     neatline        POLYGON
 );
-SELECT AddGeometryColumn('ogc','map_neatlines','neatline','101','POLYGON','2');
+SELECT AddGeometryColumn('map_neatlines','neatline','101','POLYGON','2');
 --
 --
 --
