@@ -1585,8 +1585,13 @@ CREATEFUNCTION collector(geometry, geometry)
 	AS '@MODULE_FILENAME@', 'LWGEOM_collect'
 	LANGUAGE 'C';
 
+CREATEFUNCTION collect(geometry, geometry) 
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_collect'
+	LANGUAGE 'C';
+
 CREATE AGGREGATE memcollect(
-	sfunc = collector,
+	sfunc = collect,
 	basetype = geometry,
 	stype = geometry
 	);

@@ -39,6 +39,7 @@ Datum LWGEOM_maxdistance2d_linestring(PG_FUNCTION_ARGS);
 Datum LWGEOM_translate(PG_FUNCTION_ARGS);
 Datum LWGEOM_inside_circle_point(PG_FUNCTION_ARGS);
 Datum LWGEOM_collect(PG_FUNCTION_ARGS);
+Datum LWGEOM_collector(PG_FUNCTION_ARGS);
 Datum LWGEOM_accum(PG_FUNCTION_ARGS);
 Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS);
 Datum LWGEOM_expand(PG_FUNCTION_ARGS);
@@ -1554,8 +1555,70 @@ dump_lwexploded(LWGEOM_EXPLODED *exploded)
 PG_FUNCTION_INFO_V1(LWGEOM_collect);
 Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 {
-	elog(ERROR, "memcollect() is obsoleted, use collect() instead");
-	PG_RETURN_NULL();
+	Pointer geom1_ptr = PG_GETARG_POINTER(0);
+	Pointer geom2_ptr =  PG_GETARG_POINTER(1);
+	PG_LWGEOM *pglwgeom1, *pglwgeom2, *result;
+	LWGEOM *lwgeoms[2], *outlwg;
+	unsigned int type1, type2, outtype;
+	size_t size;
+
+	// return null if both geoms are null
+	if ( (geom1_ptr == NULL) && (geom2_ptr == NULL) )
+	{
+		PG_RETURN_NULL();
+	}
+
+        // return a copy of the second geom if only first geom is null
+	if (geom1_ptr == NULL)
+	{
+		result = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(1));
+		PG_RETURN_POINTER(result);
+	}
+
+        // return a copy of the first geom if only second geom is null
+	if (geom2_ptr == NULL)
+	{
+		result = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+		PG_RETURN_POINTER(result);
+	}
+
+	pglwgeom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	pglwgeom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	
+	if ( lwgeom_getSRID(pglwgeom1) != lwgeom_getSRID(pglwgeom2) )
+	{
+		elog(ERROR, "Operation on two GEOMETRIES with different SRIDs\n");
+		PG_RETURN_NULL();
+	}
+
+	lwgeoms[0] = lwgeom_deserialize(SERIALIZED_FORM(pglwgeom1));
+	lwgeoms[1] = lwgeom_deserialize(SERIALIZED_FORM(pglwgeom2));
+
+	type1 = TYPE_GETTYPE(lwgeoms[0]->type);
+	type2 = TYPE_GETTYPE(lwgeoms[1]->type);
+	if ( type1 < 4 ) type1+=3;
+	if ( type2 < 4 ) type2+=3;
+	if ( type1 == type2 ) outtype = type1;
+	else outtype = COLLECTIONTYPE;
+
+	outlwg = (LWGEOM *)lwcollection_construct(
+		outtype, lwgeoms[0]->SRID,
+		NULL, 2, lwgeoms);
+
+	size = lwgeom_serialize_size(outlwg);
+	//lwnotice("lwgeom_serialize_size returned %d", size);
+	result = palloc(size+4);
+	result->size = (size+4);
+	lwgeom_serialize_buf(outlwg, SERIALIZED_FORM(result), &size);
+	if ( size != result->size-4 )
+	{
+		lwerror("lwgeom_serialize size:%d, lwgeom_serialize_size:%d",
+			size, result->size-4);
+		PG_RETURN_NULL();
+	}
+
+	PG_RETURN_POINTER(result);
+
 }
 
 /*
