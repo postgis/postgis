@@ -153,7 +153,7 @@ extern "C" char GEOSisSimple(Geometry *g1);
 extern "C" char GEOSequals(Geometry *g1, Geometry*g2);
 extern "C" char GEOSisRing(Geometry *g1);
 extern "C" Geometry *GEOSpointonSurface(Geometry *g1);
-extern "C" Geometry *GEOSGetCentroid(Geometry *g1);
+extern "C" Geometry *GEOSGetCentroid(Geometry *g1, int *failure);
 extern "C" void NOTICE_MESSAGE(char *msg);
 extern "C" bool GEOSHasZ(Geometry *g1);
 
@@ -1584,23 +1584,23 @@ const Geometry *GEOSGetInteriorRingN(Geometry *g1,int n)
 	}
 }
 
-Geometry *GEOSGetCentroid(Geometry *g)
+Geometry *GEOSGetCentroid(Geometry *g, int *failure)
 {
 	try{
 		Geometry *ret = g->getCentroid();
-		if ( ret == NULL ) {
-			ret = geomFactory->createGeometryCollection();
-		}
+		*failure = 0;
 		return ret;
 	}
 	catch (GEOSException *ge)
 	{
+		*failure = 1;
 		NOTICE_MESSAGE((char *)ge->toString().c_str());
 		delete ge;
 		return NULL;
 	}
 	catch(...)
 	{
+		*failure = 1;
 		return NULL;
 	}
 }

@@ -82,7 +82,7 @@ extern char GEOSequals(Geometry *g1, Geometry*g2);
 extern char GEOSisSimple(Geometry *g1);
 extern char GEOSisRing(Geometry *g1);
 extern Geometry *GEOSpointonSurface(Geometry *g1);
-extern Geometry *GEOSGetCentroid(Geometry *g);
+extern Geometry *GEOSGetCentroid(Geometry *g, int *failure);
 extern bool GEOSHasZ(Geometry *g1);
 
 extern void GEOSSetSRID(Geometry *g, int SRID);
@@ -963,6 +963,7 @@ Datum centroid(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom, *result;
 	Geometry *geosgeom, *geosresult;
+	int failure;
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
@@ -983,15 +984,18 @@ Datum centroid(PG_FUNCTION_ARGS)
 #ifdef PROFILE
 	profstart(PROF_GRUN);
 #endif
-	geosresult = GEOSGetCentroid(geosgeom);
+	geosresult = GEOSGetCentroid(geosgeom, &failure);
 #ifdef PROFILE
 	profstop(PROF_GRUN);
 #endif
 
 	if ( geosresult == NULL )
 	{
+		if ( failure ) {
+			GEOSdeleteGeometry(geosgeom);
+			elog(ERROR,"GEOS getCentroid() threw an error!");
+		}
 		GEOSdeleteGeometry(geosgeom);
-		elog(ERROR,"GEOS getCentroid() threw an error!");
 		PG_RETURN_NULL(); 
 	}
 
