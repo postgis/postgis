@@ -362,6 +362,8 @@ extern int pointArray_ptsize(const POINTARRAY *pa);
 #define WKBSRIDFLAG 0x20000000
 #define WKBBBOXFLAG 0x10000000
 
+/* These macros work on PG_LWGEOM.type, LWGEOM.type and all its subclasses */
+
 #define TYPE_SETTYPE(c,t) ((c)=(((c)&0xF0)|(t)))
 #define TYPE_SETZM(t,z,m) ((t)=(((t)&0xCF)|((z)<<5)|((m)<<4)))
 #define TYPE_SETHASBBOX(t,b) ((t)=(((t)&0x7F)|((b)<<7)))
