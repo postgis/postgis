@@ -45,7 +45,7 @@ import java.sql.Statement;
  */
 public class TestAutoregister {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) {        
         String dburl = null;
         String dbuser = null;
         String dbpass = null;
@@ -82,21 +82,17 @@ public class TestAutoregister {
             System.exit(1);
         }
 
-        String version = null;
+        int postgisServerMajor = 0;
         try {
-            ResultSet rs = stat.executeQuery("SELECT postgis_version()");
-            rs.next();
-            version = rs.getString(1);
-            if (version == null) {
-                throw new SQLException("postgis_version returned NULL!");
-            }
+            postgisServerMajor = getPostgisMajor(stat);
         } catch (SQLException e) {
             System.out.println("Error fetching PostGIS version: " + e.getMessage());
             System.out.println("Is PostGIS really installed in the database?");
+            // Signal the compiler that code flow ends here.
             System.exit(1);
         }
 
-        System.out.println("PostGIS Version: " + version);
+        System.out.println("PostGIS Version: " + postgisServerMajor);
 
         PGobject result = null;
 
@@ -112,6 +108,9 @@ public class TestAutoregister {
             }
         } catch (SQLException e) {
             System.out.println("Selecting geometry failed: " + e.getMessage());
+            System.exit(1);
+            // Signal the compiler that code flow ends here.
+            return;
         }
 
         /* Test box3d */
@@ -126,10 +125,13 @@ public class TestAutoregister {
             }
         } catch (SQLException e) {
             System.out.println("Selecting box3d failed: " + e.getMessage());
+            System.exit(1);
+            // Signal the compiler that code flow ends here.
+            return;
         }
 
         /* Test box2d if appropriate */
-        if (version.trim().startsWith("0.")) {
+        if (postgisServerMajor<1) {
             System.out.println("PostGIS version is too old, not testing box2d");
         } else {
             try {
@@ -143,9 +145,24 @@ public class TestAutoregister {
                 }
             } catch (SQLException e) {
                 System.out.println("Selecting box2d failed: " + e.getMessage());
+                System.exit(1);
+                // Signal the compiler that code flow ends here.
+                return;
             }
         }
 
         System.out.println("Finished.");
+    }
+
+    public static int getPostgisMajor(Statement stat) throws SQLException {
+        ResultSet rs = stat.executeQuery("SELECT postgis_version()");
+        rs.next();
+        String version = rs.getString(1);
+        if (version == null) {
+            throw new SQLException("postgis_version returned NULL!");
+        }
+        version =  version.trim();
+        int idx = version.indexOf('.');
+        return Integer.parseInt(version.substring(0, idx));
     }
 }

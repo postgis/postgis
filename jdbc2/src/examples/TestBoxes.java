@@ -55,9 +55,11 @@ public class TestBoxes {
     /** How much tests did fail? */
     public static int failcount = 0;
 
-    /** The actual test method */
-    public static void test(String orig, PGobject candidate, Connection[] conns)
-            throws SQLException {
+    /**
+     * The actual test method
+     */
+    public static void test(String orig, PGobject candidate, Connection[] conns,
+            boolean newPostgisOnly) throws SQLException {
 
         System.out.println("Original:  " + orig);
         String redone = candidate.toString();
@@ -95,33 +97,37 @@ public class TestBoxes {
         for (int i = 0; i < conns.length; i++) {
             System.out.println("Testing on connection " + i + ": " + conns[i].getCatalog());
             Statement statement = conns[i].createStatement();
+            if (newPostgisOnly && TestAutoregister.getPostgisMajor(statement) < 1) {
+                System.out.println("PostGIS version is too old, not testing box2d");
+            } else {
 
-            try {
-                PGobject sqlGeom = viaSQL(candidate, statement);
-                System.out.println("SQLin    : " + sqlGeom.toString());
-                if (!candidate.equals(sqlGeom)) {
-                    System.out.println("--- Geometries after SQL are not equal!");
+                try {
+                    PGobject sqlGeom = viaSQL(candidate, statement);
+                    System.out.println("SQLin    : " + sqlGeom.toString());
+                    if (!candidate.equals(sqlGeom)) {
+                        System.out.println("--- Geometries after SQL are not equal!");
+                        failcount++;
+                    } else {
+                        System.out.println("Eq SQL in: yes");
+                    }
+                } catch (SQLException e) {
+                    System.out.println("--- Server side error: " + e.toString());
                     failcount++;
-                } else {
-                    System.out.println("Eq SQL in: yes");
                 }
-            } catch (SQLException e) {
-                System.out.println("--- Server side error: " + e.toString());
-                failcount++;
-            }
 
-            try {
-                PGobject sqlreGeom = viaSQL(recreated, statement);
-                System.out.println("SQLout  :  " + sqlreGeom.toString());
-                if (!candidate.equals(sqlreGeom)) {
-                    System.out.println("--- reparsed Geometries after SQL are not equal!");
+                try {
+                    PGobject sqlreGeom = viaSQL(recreated, statement);
+                    System.out.println("SQLout  :  " + sqlreGeom.toString());
+                    if (!candidate.equals(sqlreGeom)) {
+                        System.out.println("--- reparsed Geometries after SQL are not equal!");
+                        failcount++;
+                    } else {
+                        System.out.println("Eq SQLout: yes");
+                    }
+                } catch (SQLException e) {
+                    System.out.println("--- Server side error: " + e.toString());
                     failcount++;
-                } else {
-                    System.out.println("Eq SQLout: yes");
                 }
-            } catch (SQLException e) {
-                System.out.println("--- Server side error: " + e.toString());
-                failcount++;
             }
             statement.close();
         }
@@ -196,7 +202,7 @@ public class TestBoxes {
         for (int i = 0; i < BOXEN3D.length; i++) {
             try {
                 PGbox3d candidate = new PGbox3d(BOXEN3D[i]);
-                test(BOXEN3D[i], candidate, conns);
+                test(BOXEN3D[i], candidate, conns, false);
             } catch (SQLException e) {
                 System.out.println("--- Instantiation of " + BOXEN3D[i] + "failed:");
                 System.out.println("--- " + e.getMessage());
@@ -207,12 +213,13 @@ public class TestBoxes {
         for (int i = 0; i < BOXEN2D.length; i++) {
             try {
                 PGbox2d candidate = new PGbox2d(BOXEN2D[i]);
-                test(BOXEN2D[i], candidate, conns);
+                test(BOXEN2D[i], candidate, conns, true);
             } catch (SQLException e) {
                 System.out.println("--- Instantiation of " + BOXEN2D[i] + "failed:");
                 System.out.println("--- " + e.getMessage());
                 failcount++;
             }
+
         }
 
         System.out.print("cleaning up...");
@@ -222,5 +229,6 @@ public class TestBoxes {
 
         //System.out.println("Finished.");
         System.out.println("Finished, " + failcount + " tests failed!");
+        System.exit(failcount);
     }
 }

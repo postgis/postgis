@@ -175,20 +175,20 @@ PostGIS server to connect to.
   drop table privileges, the two other tests do not use any table.
   Make shure you have the PostGIS installed in the database.
 
-  Against PostGIS 1.0, none of the online tests should fail. If you
-  test against PostGIS 0.8.1 or 0.9.x, there should be 2 of the box
-  tests failing, due to those releasing not containing the box2d type
-  at all. Additionally, there should be  exactly 22 failures for some
-  empty geometry representations in the parser test.  This is a
-  PostGIS server side problem as the server fails to parse some
-  OpenGIS compliant WKT representations, and it is unlikely to be
-  fixed as users should migrate to PostGIS 1.0.
+  None of the online tests should report any failure. However, some of the
+  tests are skipped against PostGix 0.X servers as 0.8.X and 0.9.X, those
+  are the box2d tests (because this datatype simply is missing on those
+  releases), as well as 22 skipped tests for some geometry representations
+  that those old releases do not support. This is a PostGIS server side
+  problem as the server fails to parse some OpenGIS compliant WKT
+  representations, and structurally (but not geometrically or topologically) 
+  mangles some other geometries. They are unlikely to be fixed in those
+  releases as users should migrate to PostGIS 1.0.
   
   The Autoregister Test needs a pgjdbc version 8.0 or newer, and will
-  refuse to work against older versions. It also will skip the box2d
-  test on PostGIS 0.X releases which lack this datatype.
+  simply do nothing with older pgjdbc versions.
 
-  If you get different failures in the online tests, check whether
+  If you get any failure messages in the online tests, check whether
   your really fulfil the prerequisites above. If yes, please contact
   the PostGIS developer list.
 

@@ -38,32 +38,81 @@ import java.sql.Statement;
 
 public class TestParser {
 
+    public static String ALL = "ALL", ONLY10 = "ONLY10", EQUAL10 = "EQUAL10";
+
     /**
      * Our set of geometries to test.
      */
-    public static final String[] testset = new String[]{
-        "POINT(10 10 20)",
-        "MULTIPOINT(10 10 10, 20 20 20)",
-        "LINESTRING(10 10 20,20 20 20, 50 50 50, 34 34 34)",
-        "POLYGON((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0))",
-        "MULTIPOLYGON(((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)),((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)))",
-        "MULTILINESTRING((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0))",
-        "GEOMETRYCOLLECTION(POINT(10 10 20),POINT(20 20 20))",
-        "GEOMETRYCOLLECTION(LINESTRING(10 10 20,20 20 20, 50 50 50, 34 34 34),LINESTRING(10 10 20,20 20 20, 50 50 50, 34 34 34))",
-        "GEOMETRYCOLLECTION(POLYGON((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)),POLYGON((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)))",
-        "GEOMETRYCOLLECTION(MULTIPOINT(10 10 10, 20 20 20),MULTIPOINT(10 10 10, 20 20 20))",
-        "GEOMETRYCOLLECTION(MULTILINESTRING((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)))",
-        "GEOMETRYCOLLECTION(MULTIPOLYGON(((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)),((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0))),MULTIPOLYGON(((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)),((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0))))",
-        "GEOMETRYCOLLECTION(POINT(10 10 20),LINESTRING(10 10 20,20 20 20, 50 50 50, 34 34 34),POLYGON((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)))",
-        "GEOMETRYCOLLECTION(POINT(10 10 20),MULTIPOINT(10 10 10, 20 20 20),LINESTRING(10 10 20,20 20 20, 50 50 50, 34 34 34),POLYGON((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)),MULTIPOLYGON(((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)),((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0))),MULTILINESTRING((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)))",
-        "GEOMETRYCOLLECTION(EMPTY)", // Old (bad) PostGIS 0.8 Representation
-        "GEOMETRYCOLLECTION EMPTY", // new (correct) representation
-        "POINT EMPTY", // new (correct) representation
-        "LINESTRING EMPTY", // new (correct) representation
-        "POLYGON EMPTY", // new (correct) representation
-        "MULTIPOINT EMPTY", // new (correct) representation
-        "MULTILINESTRING EMPTY", // new (correct) representation
-        "MULTIPOLYGON EMPTY", // new (correct) representation
+    public static final String[][] testset = new String[][]{
+        {
+            ALL,
+            "POINT(10 10 20)"},
+        {
+            ALL,
+            "MULTIPOINT(10 10 10, 20 20 20)"},
+        {
+            ALL,
+            "LINESTRING(10 10 20,20 20 20, 50 50 50, 34 34 34)"},
+        {
+            ALL,
+            "POLYGON((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0))"},
+        {
+            ALL,
+            "MULTIPOLYGON(((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)),((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)))"},
+        {
+            ALL,
+            "MULTILINESTRING((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0))"},
+        {
+            ALL,
+            "GEOMETRYCOLLECTION(POINT(10 10 20),POINT(20 20 20))"},
+        {
+            ALL,
+            "GEOMETRYCOLLECTION(LINESTRING(10 10 20,20 20 20, 50 50 50, 34 34 34),LINESTRING(10 10 20,20 20 20, 50 50 50, 34 34 34))"},
+        {
+            ALL,
+            "GEOMETRYCOLLECTION(POLYGON((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)),POLYGON((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)))"},
+        {
+            ONLY10, // Cannot be parsed by 0.X servers
+            "GEOMETRYCOLLECTION(MULTIPOINT(10 10 10, 20 20 20),MULTIPOINT(10 10 10, 20 20 20))"},
+        {
+            EQUAL10, // PostGIs 0.X "flattens" this geometry, so it is not equal after reparsing.
+            "GEOMETRYCOLLECTION(MULTILINESTRING((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)))"},
+        {
+            EQUAL10,// PostGIs 0.X "flattens" this geometry, so it is not equal after reparsing.
+            "GEOMETRYCOLLECTION(MULTIPOLYGON(((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)),((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0))),MULTIPOLYGON(((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)),((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0))))"},
+        {
+            ALL,
+            "GEOMETRYCOLLECTION(POINT(10 10 20),LINESTRING(10 10 20,20 20 20, 50 50 50, 34 34 34),POLYGON((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)))"},
+        {
+            ONLY10, //Collections that contain both X and MultiX do not work on
+            // PostGIS 0.x
+            "GEOMETRYCOLLECTION(POINT(10 10 20),MULTIPOINT(10 10 10, 20 20 20),LINESTRING(10 10 20,20 20 20, 50 50 50, 34 34 34),POLYGON((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)),MULTIPOLYGON(((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)),((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0))),MULTILINESTRING((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)))"},
+        {
+            ALL, // Old (bad) PostGIS 0.X Representation
+            "GEOMETRYCOLLECTION(EMPTY)"},
+
+        {
+            ALL,// new (correct) representation
+            "GEOMETRYCOLLECTION EMPTY"},
+        {
+            ONLY10,// new (correct) representation - does not work on 0.X
+            "POINT EMPTY"},
+        {
+            ONLY10,// new (correct) representation - does not work on 0.X
+            "LINESTRING EMPTY"},
+        {
+            ONLY10,// new (correct) representation - does not work on 0.X
+            "POLYGON EMPTY"},
+        {
+            ONLY10,// new (correct) representation - does not work on 0.X
+            "MULTIPOINT EMPTY"},
+        {
+            ONLY10,// new (correct) representation - does not work on 0.X
+            "MULTILINESTRING EMPTY"},
+        {
+            ONLY10,// new (correct) representation - does not work on 0.X
+            "MULTIPOLYGON EMPTY"},
+    // end
     };
 
     /** The srid we use for the srid tests */
@@ -76,7 +125,7 @@ public class TestParser {
     public static int failcount = 0;
 
     /** The actual test method */
-    public static void test(String WKT, Connection[] conns) throws SQLException {
+    public static void test(String WKT, Connection[] conns, String flags) throws SQLException {
         System.out.println("Original:  " + WKT);
         Geometry geom = PGgeometry.geomFromString(WKT);
         String parsed = geom.toString();
@@ -94,37 +143,52 @@ public class TestParser {
             System.out.println("Equals:    yes");
         }
         for (int i = 0; i < conns.length; i++) {
-            System.out.println("Testing on connection " + i + ": " + conns[i].getCatalog());
             Statement statement = conns[i].createStatement();
+            int serverPostgisMajor = TestAutoregister.getPostgisMajor(statement);
 
-            try {
-                Geometry sqlGeom = viaSQL(WKT, statement);
-                System.out.println("SQLin    : " + sqlGeom.toString());
-                if (!geom.equals(sqlGeom)) {
-                    System.out.println("--- Geometries after SQL are not equal!");
+            if ((flags == ONLY10) && serverPostgisMajor < 1) {
+                System.out.println("PostGIS server too old, skipping test on connection " + i
+                        + ": " + conns[i].getCatalog());
+            } else {
+                System.out.println("Testing on connection " + i + ": " + conns[i].getCatalog());
+                try {
+                    Geometry sqlGeom = viaSQL(WKT, statement);
+                    System.out.println("SQLin    : " + sqlGeom.toString());
+                    if (!geom.equals(sqlGeom)) {
+                        System.out.println("--- Geometries after SQL are not equal!");
+                        if (flags == EQUAL10 && serverPostgisMajor < 1) {
+                            System.out.println("--- This is expected with PostGIS "
+                                    + serverPostgisMajor + ".X");
+                        } else {
+                            failcount++;
+                        }
+                    } else {
+                        System.out.println("Eq SQL in: yes");
+                    }
+                } catch (SQLException e) {
+                    System.out.println("--- Server side error: " + e.toString());
                     failcount++;
-                } else {
-                    System.out.println("Eq SQL in: yes");
                 }
-            } catch (SQLException e) {
-                System.out.println("--- Server side error: " + e.toString());
-                failcount++;
-            }
 
-            try {
-                Geometry sqlreGeom = viaSQL(parsed, statement);
-                System.out.println("SQLout  :  " + sqlreGeom.toString());
-                if (!geom.equals(sqlreGeom)) {
-                    System.out.println("--- reparsed Geometries after SQL are not equal!");
+                try {
+                    Geometry sqlreGeom = viaSQL(parsed, statement);
+                    System.out.println("SQLout  :  " + sqlreGeom.toString());
+                    if (!geom.equals(sqlreGeom)) {
+                        System.out.println("--- reparsed Geometries after SQL are not equal!");
+                        if (flags == EQUAL10 && serverPostgisMajor < 1) {
+                            System.out.println("--- This is expected with PostGIS "
+                                    + serverPostgisMajor + ".X");
+                        } else {
+                            failcount++;
+                        }
+                    } else {
+                        System.out.println("Eq SQLout: yes");
+                    }
+                } catch (SQLException e) {
+                    System.out.println("--- Server side error: " + e.toString());
                     failcount++;
-                } else {
-                    System.out.println("Eq SQLout: yes");
                 }
-            } catch (SQLException e) {
-                System.out.println("--- Server side error: " + e.toString());
-                failcount++;
             }
-
             statement.close();
         }
         System.out.println("***");
@@ -166,11 +230,11 @@ public class TestParser {
 
         if (args.length == 1 && args[0].equalsIgnoreCase("offline")) {
             System.out.println("Performing only offline tests");
-            dburls = new PGtokenizer("",';');
+            dburls = new PGtokenizer("", ';');
         } else if (args.length == 3) {
             System.out.println("Performing offline and online tests");
-            dburls = new PGtokenizer(args[0],';');
-            
+            dburls = new PGtokenizer(args[0], ';');
+
             dbuser = args[1];
             dbpass = args[2];
         } else {
@@ -196,8 +260,8 @@ public class TestParser {
         System.out.println("***");
 
         for (int i = 0; i < testset.length; i++) {
-            test(testset[i], conns);
-            test(SRIDPREFIX + testset[i], conns);
+            test(testset[i][1], conns, testset[i][0]);
+            test(SRIDPREFIX + testset[i][1], conns, testset[i][0]);
         }
 
         System.out.print("cleaning up...");
