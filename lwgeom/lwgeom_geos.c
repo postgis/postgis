@@ -56,6 +56,7 @@ Datum centroid(PG_FUNCTION_ARGS);
 #define PROF_GRUN 2
 struct timeval profstart, profstop;
 long proftime[3];
+long profipts, profopts;
 #define profstart(x) do { gettimeofday(&profstart, NULL); } while (0);
 #define profstop(x) do { gettimeofday(&profstop, NULL); \
 	proftime[x] = ( profstop.tv_sec*1000000+profstop.tv_usec) - \
@@ -67,9 +68,14 @@ long proftime[3];
 	long int tot = conv + run; \
 	int convpercent = (((double)conv/(double)tot)*100); \
 	int runpercent = (((double)run/(double)tot)*100); \
-	elog(NOTICE, "PROF: p2g:%lu g2p:%lu gru:%lu (%d%% conv / %d%% run)", \
-	proftime[PROF_P2G], proftime[PROF_G2P], proftime[PROF_GRUN], \
-	convpercent, runpercent); \
+	elog(NOTICE, "PROF_DET: npts:%lu+%lu=%lu cnv:%lu+%lu run:%lu", \
+		profipts, profopts, profipts+profopts, \
+		proftime[PROF_P2G], proftime[PROF_G2P], \
+		proftime[PROF_GRUN]); \
+	elog(NOTICE, "PROF_SUMMARY: pts:%lu cnv:%d%% run:%d%%", \
+		profipts+profopts, \
+		convpercent, \
+		runpercent); \
 	} while (0);
 #endif
 
@@ -750,7 +756,7 @@ Datum isvalid(PG_FUNCTION_ARGS)
 	result = GEOSisvalid(g1);
 #ifdef PROFILE
 	profstop(PROF_GRUN);
-	profstart(PROF_G2P); profstop(PROF_G2P);
+	proftime[PROF_G2P]=0; profopts=0;
 	profreport();
 #endif
 
@@ -805,7 +811,7 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	result = GEOSrelateOverlaps(g1,g2);
 #ifdef PROFILE
 	profstop(PROF_GRUN);
-	profstart(PROF_G2P); profstop(PROF_G2P);
+	proftime[PROF_G2P] = 0; profopts=0;
 	profreport();
 #endif
 
@@ -858,7 +864,7 @@ Datum contains(PG_FUNCTION_ARGS)
 	result = GEOSrelateContains(g1,g2);
 #ifdef PROFILE
 	profstop(PROF_GRUN);
-	profstart(PROF_G2P); profstop(PROF_G2P);
+	proftime[PROF_G2P] = 0; profopts=0;
 	profreport();
 #endif
 
@@ -911,7 +917,7 @@ Datum within(PG_FUNCTION_ARGS)
 	result = GEOSrelateWithin(g1,g2);
 #ifdef PROFILE
 	profstop(PROF_GRUN);
-	profstart(PROF_G2P); profstop(PROF_G2P);
+	proftime[PROF_G2P] = 0; profopts=0;
 	profreport();
 #endif
 
@@ -965,7 +971,7 @@ Datum crosses(PG_FUNCTION_ARGS)
 	result = GEOSrelateCrosses(g1,g2);
 #ifdef PROFILE
 	profstop(PROF_GRUN);
-	profstart(PROF_G2P); profstop(PROF_G2P);
+	proftime[PROF_G2P] = 0; profopts=0;
 	profreport();
 #endif
 
@@ -1019,7 +1025,7 @@ Datum intersects(PG_FUNCTION_ARGS)
 	result = GEOSrelateIntersects(g1,g2);
 #ifdef PROFILE
 	profstop(PROF_GRUN);
-	profstart(PROF_G2P); profstop(PROF_G2P);
+	proftime[PROF_G2P] = 0; profopts=0;
 	profreport();
 #endif
 	GEOSdeleteGeometry(g1);
@@ -1070,7 +1076,7 @@ Datum touches(PG_FUNCTION_ARGS)
 	result = GEOSrelateTouches(g1,g2);
 #ifdef PROFILE
 	profstop(PROF_GRUN);
-	profstart(PROF_G2P); profstop(PROF_G2P);
+	proftime[PROF_G2P] = 0; profopts=0;
 	profreport();
 #endif
 
@@ -1123,7 +1129,7 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	result = GEOSrelateDisjoint(g1,g2);
 #ifdef PROFILE
 	profstop(PROF_GRUN);
-	profstart(PROF_G2P); profstop(PROF_G2P);
+	proftime[PROF_G2P] = 0; profopts=0;
 	profreport();
 #endif
 	GEOSdeleteGeometry(g1);
@@ -1164,7 +1170,7 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 	result = GEOSrelatePattern(g1,g2,patt);
 #ifdef PROFILE
 	profstop(PROF_GRUN);
-	profstart(PROF_G2P); profstop(PROF_G2P);
+	proftime[PROF_G2P] = 0; profopts=0;
 	profreport();
 #endif
 	GEOSdeleteGeometry(g1);
@@ -1231,7 +1237,7 @@ if ((g1==NULL) || (g2 == NULL))
 		relate_str = GEOSrelate(g1, g2);
 #ifdef PROFILE
 	profstop(PROF_GRUN);
-	profstart(PROF_G2P); profstop(PROF_G2P);
+	proftime[PROF_G2P] = 0; profopts=0;
 	profreport();
 #endif
 
@@ -1301,7 +1307,7 @@ Datum geomequals(PG_FUNCTION_ARGS)
 	result = GEOSequals(g1,g2);
 #ifdef PROFILE
 	profstop(PROF_GRUN);
-	profstart(PROF_G2P); profstop(PROF_G2P);
+	proftime[PROF_G2P] = 0; profopts=0;
 	profreport();
 #endif
 	GEOSdeleteGeometry(g1);
@@ -1339,7 +1345,7 @@ Datum issimple(PG_FUNCTION_ARGS)
 	result = GEOSisSimple(g1);
 #ifdef PROFILE
 	profstop(PROF_GRUN);
-	profstart(PROF_G2P); profstop(PROF_G2P);
+	proftime[PROF_G2P] = 0; profopts=0;
 	profreport();
 #endif
 	GEOSdeleteGeometry(g1);
@@ -1381,7 +1387,7 @@ Datum isring(PG_FUNCTION_ARGS)
 	result = GEOSisRing(g1);
 #ifdef PROFILE
 	profstop(PROF_GRUN);
-	profstart(PROF_G2P); profstop(PROF_G2P);
+	proftime[PROF_G2P] = 0; profopts = 0;
 	profreport();
 #endif
 	GEOSdeleteGeometry(g1);
@@ -1637,7 +1643,7 @@ GEOS2POSTGIS(Geometry *geom, char want3d)
 	int size;
 
 #ifdef PROFILE
-	profstart();
+	profstart(PROF_G2P);
 #endif
 
 	// Initialize exploded lwgeom
@@ -1661,6 +1667,7 @@ GEOS2POSTGIS(Geometry *geom, char want3d)
 
 #ifdef PROFILE
 	profstop(PROF_G2P);
+	profopts = lwgeom_npoints_recursive(SERIALIZED_FORM(result));
 	profreport();
 #endif
 
@@ -1683,7 +1690,8 @@ POSTGIS2GEOS(LWGEOM *geom)
 	Geometry *ret=NULL;
 
 #ifdef PROFILE
-	profstart();
+	profipts = lwgeom_npoints_recursive(SERIALIZED_FORM(geom));
+	profstart(PROF_P2G);
 #endif
 
 	type = lwgeom_getType(geom->type);
