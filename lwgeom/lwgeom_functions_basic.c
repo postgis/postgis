@@ -48,32 +48,6 @@ int32 lwgeom_npoints_recursive(char *serialized);
 int32 lwgeom_nrings_recursive(char *serialized);
 void dump_lwexploded(LWGEOM_EXPLODED *exploded);
 
-// general utilities (might be moved in lwgeom_api.c)
-double lwgeom_polygon_area(LWPOLY *poly);
-double lwgeom_polygon_perimeter(LWPOLY *poly);
-double lwgeom_polygon_perimeter2d(LWPOLY *poly);
-double lwgeom_pointarray_length2d(POINTARRAY *pts);
-double lwgeom_pointarray_length(POINTARRAY *pts);
-void lwgeom_force2d_recursive(char *serialized, char *optr, int *retsize);
-void lwgeom_force3d_recursive(char *serialized, char *optr, int *retsize);
-double distance2d_pt_pt(POINT2D *p1, POINT2D *p2);
-double distance2d_pt_seg(POINT2D *p, POINT2D *A, POINT2D *B);
-double distance2d_seg_seg(POINT2D *A, POINT2D *B, POINT2D *C, POINT2D *D);
-double distance2d_pt_ptarray(POINT2D *p, POINTARRAY *pa);
-double distance2d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2);
-int pt_in_ring_2d(POINT2D *p, POINTARRAY *ring);
-int pt_in_poly_2d(POINT2D *p, LWPOLY *poly);
-double distance2d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly);
-double distance2d_point_point(LWPOINT *point1, LWPOINT *point2);
-double distance2d_point_line(LWPOINT *point, LWLINE *line);
-double distance2d_line_line(LWLINE *line1, LWLINE *line2);
-double distance2d_point_poly(LWPOINT *point, LWPOLY *poly);
-double distance2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2);
-double distance2d_line_poly(LWLINE *line, LWPOLY *poly);
-double lwgeom_mindistance2d_recursive(char *lw1, char *lw2);
-void lwgeom_translate_recursive(char *serialized, double xoff, double yoff, double zoff);
-void lwgeom_translate_ptarray(POINTARRAY *pa, double xoff, double yoff, double zoff);
-int lwgeom_pt_inside_circle(POINT2D *p, double cx, double cy, double rad);
 
 
 /*------------------------------------------------------------------*/
@@ -826,15 +800,24 @@ lwgeom_summary_recursive(char *serialized, int offset)
 		LWLINE *line=NULL;
 		LWPOINT *point=NULL;
 		LWPOLY *poly=NULL;
-		char *subgeom=NULL;
+		char *subgeom=lwgeom_getsubgeometry_inspected(inspected, j);
+
+		if ( lwgeom_getType(subgeom[0]) == 0 )
+		{
+			size += 32;
+			result = repalloc(result,size);
+			sprintf(tmp,"Object %i is EMPTY()\n", idx++);
+			strcat(result,tmp);
+			continue;
+		}
+
 
 		point = lwgeom_getpoint_inspected(inspected,j);
 		if (point !=NULL)
 		{
-			size += 30;
+			size += 32;
 			result = repalloc(result,size);
-			sprintf(tmp,"Object %i is a POINT()\n",
-				idx++);
+			sprintf(tmp,"Object %i is a POINT()\n", idx++);
 			strcat(result,tmp);
 			continue;
 		}
@@ -842,10 +825,10 @@ lwgeom_summary_recursive(char *serialized, int offset)
 		poly = lwgeom_getpoly_inspected(inspected, j);
 		if (poly !=NULL)
 		{
-			size += 57*(poly->nrings+1);
+			size += 60*(poly->nrings+1);
 			result = repalloc(result,size);
 			sprintf(tmp,"Object %i is a POLYGON() with %i rings\n",
-					idx++, poly->nrings);
+				idx++, poly->nrings);
 			strcat(result,tmp);
 			for (i=0; i<poly->nrings;i++)
 			{
@@ -861,26 +844,16 @@ lwgeom_summary_recursive(char *serialized, int offset)
 		{
 			size += 57;
 			result = repalloc(result,size);
-			sprintf(tmp,
-				"Object %i is a LINESTRING() with %i points\n",
-				idx++, line->points->npoints);
+			sprintf(tmp, "Object %i is a LINESTRING() with %i points\n", idx++, line->points->npoints);
 			strcat(result,tmp);
 			continue;
 		}
 
-		subgeom = lwgeom_getsubgeometry_inspected(inspected, j);
-		if ( subgeom != NULL )
-		{
-			ptr = lwgeom_summary_recursive(subgeom, 1);
-			size += strlen(ptr);
-			result = repalloc(result,size);
-			strcat(result, ptr);
-			pfree(ptr);
-		}
-		else
-		{
-			elog(ERROR, "What ? lwgeom_getsubgeometry_inspected returned NULL??");
-		}
+		ptr = lwgeom_summary_recursive(subgeom, j);
+		size += strlen(ptr);
+		result = repalloc(result,size);
+		strcat(result, ptr);
+		pfree(ptr);
 	}
 
 	pfree_inspected(inspected);
@@ -1894,7 +1867,7 @@ dump_lwexploded(LWGEOM_EXPLODED *exploded)
 // collect( geom, geom ) returns a geometry which contains
 // all the sub_objects from both of the argument geometries
 // returned geometry is the simplest possible, based on the types
-// of the colelct objects
+// of the collected objects
 // ie. if all are of either X or multiX, then a multiX is returned.
 PG_FUNCTION_INFO_V1(LWGEOM_collect);
 Datum LWGEOM_collect(PG_FUNCTION_ARGS)
@@ -2248,8 +2221,14 @@ Datum LWGEOM_expand(PG_FUNCTION_ARGS)
 	LWGEOM *result;
 	char *ser;
 
-	// get geometry box and SRID
-	getbox2d_p(SERIALIZED_FORM(geom), &box);
+	// get geometry box 
+	if ( ! getbox2d_p(SERIALIZED_FORM(geom), &box) )
+	{
+		// must be an EMPTY geometry
+		PG_RETURN_POINTER(geom);
+	}
+
+	// get geometry SRID
 	SRID = lwgeom_getsrid(SERIALIZED_FORM(geom));
 
 	// expand it
@@ -2288,7 +2267,10 @@ Datum LWGEOM_to_BOX(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4 box2d;
 	BOX *result = (BOX *)palloc(sizeof(BOX));
 
-	getbox2d_p(SERIALIZED_FORM(lwgeom), &box2d);
+	if ( ! getbox2d_p(SERIALIZED_FORM(lwgeom), &box2d) )
+	{
+		PG_RETURN_NULL(); // must be the empty geometry
+	}
 	box2df_to_box_p(&box2d, result);
 
 	PG_RETURN_POINTER(result);
@@ -2309,8 +2291,14 @@ Datum LWGEOM_envelope(PG_FUNCTION_ARGS)
 	LWGEOM *result;
 	char *ser;
 
-	// get geometry box and SRID
-	getbox2d_p(SERIALIZED_FORM(geom), &box);
+	// get bounding box 
+	if ( ! getbox2d_p(SERIALIZED_FORM(geom), &box) )
+	{
+		// must be the EMPTY geometry
+		PG_RETURN_POINTER(geom);
+	}
+
+	// get geometry SRID
 	SRID = lwgeom_getsrid(SERIALIZED_FORM(geom));
 
 	// Assign coordinates to POINT2D array

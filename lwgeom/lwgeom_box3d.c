@@ -291,6 +291,7 @@ Datum BOX3D_combine(PG_FUNCTION_ARGS)
 	{
 		lwgeom = (LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 		box = lw_geom_getBB(SERIALIZED_FORM(lwgeom));
+		if ( ! box ) PG_RETURN_NULL(); // must be the empty geom
 		memcpy(result, box, sizeof(BOX3D));
 		PG_RETURN_POINTER(result);
 	}
@@ -304,6 +305,11 @@ Datum BOX3D_combine(PG_FUNCTION_ARGS)
 
 	lwgeom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	box = lw_geom_getBB(SERIALIZED_FORM(lwgeom));
+	if ( ! box ) // must be the empty geom
+	{
+		memcpy(result, (char *)PG_GETARG_DATUM(0), sizeof(BOX3D));
+		PG_RETURN_POINTER(result);
+	}
 
 	a = (BOX3D *)PG_GETARG_DATUM(0);
 	b = box;

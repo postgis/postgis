@@ -376,7 +376,7 @@ BOX2DFLOAT4 getbox2d(char *serialized_form)
 
 
 // same as getbox2d, but modifies box instead of returning result on the stack
-void
+int
 getbox2d_p(char *serialized_form, BOX2DFLOAT4 *box)
 {
 	unsigned char type = (unsigned char) serialized_form[0];
@@ -391,17 +391,22 @@ getbox2d_p(char *serialized_form, BOX2DFLOAT4 *box)
 		//woot - this is easy
 //elog(NOTICE,"getbox2d has box");
 		memcpy(box,loc, sizeof(BOX2DFLOAT4));
-		return ;
+		return 1;
 	}
 
 	//we have to actually compute it!
 //elog(NOTICE,"getbox2d_p:: computing box");
 	box3d = lw_geom_getBB_simple(serialized_form);
+	if ( ! box3d )
+	{
+		return 0;
+	}
 	box2 = box3d_to_box2df(box3d);
 
 	memcpy(box,box2, sizeof(BOX2DFLOAT4));
 	pfree(box3d);
 	pfree(box2);
+	return 1;
 }
 
 //************************************************************************
@@ -759,7 +764,7 @@ int32 get_int32(char *loc)
 // basic LWLINE functions
 
 
-// construct a new LWLINE.  points will be copied
+// construct a new LWLINE.  points will *NOT* be copied
 // use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
 LWLINE *lwline_construct(int ndims, int SRID,  POINTARRAY *points)
 {
@@ -2894,6 +2899,11 @@ lwexploded_serialize(LWGEOM_EXPLODED *exploded, int wantbbox)
 	BOX3D *box3d;
 	char *ser;
 
+	if ( exploded->npoints + exploded->nlines + exploded->npolys == 0 )
+	{
+		return lwgeom_constructempty(exploded->SRID, exploded->ndims);
+	}
+
 	// find size of all geoms.
 	// If BBOX and SRID are included this size could be
 	// larger then needed, but that should not be a problem
@@ -2927,6 +2937,11 @@ lwexploded_serialize(LWGEOM_EXPLODED *exploded, int wantbbox)
 #ifdef DEBUG
 	elog(NOTICE, " computed outtype: %d, ngeoms: %d", outtype, ngeoms);
 #endif
+
+	if ( ! ngeoms )
+	{
+		return lwgeom_constructempty(exploded->SRID, exploded->ndims);
+	}
 
 
 	// For a single geometry just set SRID and BBOX (if requested)

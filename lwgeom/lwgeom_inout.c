@@ -131,54 +131,53 @@ Datum LWGEOM_out(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOMFromWKB);
 Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 {
-		WellKnownBinary   *wkb_input = (WellKnownBinary *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-		char   *wkb_srid_hexized;
-		int    size_result,size_header;
-		int    SRID = -1;
-		char	sridText[100];
-		char	*loc;
-		char	*lwgeom;
-		int t;
+	WellKnownBinary *wkb_input;
+	char   *wkb_srid_hexized;
+	int    size_result,size_header;
+	int    SRID = -1;
+	char	sridText[100];
+	char	*loc;
+	char	*lwgeom;
+	int t;
 
+	wkb_input = (WellKnownBinary *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-				if (  ( PG_NARGS()>1) && ( ! PG_ARGISNULL(1) ))
-					SRID = PG_GETARG_INT32(1);
-				else
-					SRID = -1;
+	if (  ( PG_NARGS()>1) && ( ! PG_ARGISNULL(1) ))
+		SRID = PG_GETARG_INT32(1);
+	else
+		SRID = -1;
 
  //       elog(NOTICE,"LWGEOMFromWKB: entry with SRID=%i",SRID);
 	elog(NOTICE,"wkb => lwgeom CONVERSION");
 
 
-			// convert WKB to hexized WKB string
+	// convert WKB to hexized WKB string
 
+	size_header = sprintf(sridText,"SRID=%i;",SRID);
+	//SRID text size + wkb size (+1 = NULL term)
+	size_result = size_header +  2*(wkb_input->size -4) + 1; 
 
+	wkb_srid_hexized = palloc(size_result);
+	wkb_srid_hexized[0] = 0; // empty
+	strcpy(wkb_srid_hexized, sridText);
+	loc = wkb_srid_hexized + size_header; // points to null in "SRID=#;"
 
+	for (t=0; t< (wkb_input->size -4); t++)
+	{
+		deparse_hex( ((unsigned char *) wkb_input)[4 + t], &loc[t*2]);
+	}
 
-	    size_header = sprintf(sridText,"SRID=%i;",SRID);
-	    size_result = size_header +  2*(wkb_input->size -4) + 1;  //SRID text size + wkb size (+1 = NULL term)
-
-	    wkb_srid_hexized = palloc(size_result);
-	    wkb_srid_hexized[0] = 0; // empty
-	    strcpy(wkb_srid_hexized, sridText);
-	    loc = wkb_srid_hexized + size_header; // points to null in "SRID=#;"
-
-	    for (t=0; t< (wkb_input->size -4); t++)
-		{
-				deparse_hex( ((unsigned char *) wkb_input)[4 + t], &loc[t*2]);
-		}
-
-	    wkb_srid_hexized[size_result-1] = 0; // null term
+	wkb_srid_hexized[size_result-1] = 0; // null term
 
 //elog(NOTICE,"size_header = %i",size_header);
 //elog(NOTICE,"size_result = %i", size_result);
 //elog(NOTICE,"LWGEOMFromWKB :: '%s'", wkb_srid_hexized);
 
-		lwgeom =  parse_lwgeom_wkt(wkb_srid_hexized);
+	lwgeom =  parse_lwgeom_wkt(wkb_srid_hexized);
 
-		pfree(wkb_srid_hexized);
+	pfree(wkb_srid_hexized);
 
-		PG_RETURN_POINTER(lwgeom);
+	PG_RETURN_POINTER(lwgeom);
 }
 
 // WKBFromLWGEOM(lwgeom) --> wkb
@@ -189,7 +188,7 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 	char *lwgeom_input = (char *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	// SRID=#;<hexized wkb>
-	char *hexized_wkb_srid = unparse_WKB(lwgeom_input,palloc_fn,free_fn);
+	char *hexized_wkb_srid = unparse_WKB(lwgeom_input, palloc_fn, free_fn);
 
 	char *hexized_wkb; // hexized_wkb_srid w/o srid
 	char *result; //wkb
@@ -197,41 +196,40 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 	int len_hexized_wkb;
 	int			size_result;
 	char		*semicolonLoc;
-		int t;
+	int t;
 
 //elog(NOTICE, "in WKBFromLWGEOM with WKB = '%s'", hexized_wkb_srid);
 	elog(NOTICE,"lwgeom => wkb CONVERSION");
 
-		hexized_wkb = hexized_wkb_srid;
-		semicolonLoc = strchr(hexized_wkb_srid,';');
+	hexized_wkb = hexized_wkb_srid;
+	semicolonLoc = strchr(hexized_wkb_srid,';');
 
 
-				if (semicolonLoc != NULL)
-				{
-					hexized_wkb = (semicolonLoc+1);
-				}
+	if (semicolonLoc != NULL)
+	{
+		hexized_wkb = (semicolonLoc+1);
+	}
 
 //elog(NOTICE, "in WKBFromLWGEOM with WKB (with no 'SRID=#;' = '%s'", hexized_wkb);
 
+	len_hexized_wkb = strlen(hexized_wkb);
+	size_result = len_hexized_wkb/2 + 4;
+	result = palloc(size_result);
 
-		len_hexized_wkb = strlen(hexized_wkb);
-		size_result = len_hexized_wkb/2 + 4;
-		result = palloc(size_result);
-
-		memcpy(result, &size_result,4); // size header
-
+	memcpy(result, &size_result,4); // size header
 
 
-			// have a hexized string, want to make it binary
 
-		for (t=0; t< (len_hexized_wkb/2); t++)
-		{
-			((unsigned char *) result +4)[t] = 	parse_hex(  hexized_wkb + (t*2) );
-		}
+	// have a hexized string, want to make it binary
 
-		pfree(hexized_wkb_srid);
+	for (t=0; t< (len_hexized_wkb/2); t++)
+	{
+		((unsigned char *) result +4)[t] = parse_hex(  hexized_wkb + (t*2) );
+	}
 
-		PG_RETURN_POINTER(result);
+	pfree(hexized_wkb_srid);
+
+	PG_RETURN_POINTER(result);
 }
 
 
@@ -587,10 +585,4 @@ char *parse_lwgeom_wkt(char *wkt_input)
 	//free(serialized_form);
 	//return result;
 }
-
-
-
-
-
-
 

@@ -229,7 +229,7 @@ typedef struct
 	POINTARRAY    *points; // array of POINT3D
 } LWLINE; //"light-weight line"
 
-// construct a new LWLINE.  points will be copied
+// construct a new LWLINE.  points will *NOT* be copied
 // use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
 extern LWLINE *lwline_construct(int ndims, int SRID, POINTARRAY *points);
 
@@ -504,7 +504,7 @@ extern BOX3D *combine_boxes(BOX3D *b1, BOX3D *b2);
 // if this has a pre-built BOX2d, then we use it,
 // otherwise we need to compute it.
 extern BOX2DFLOAT4 getbox2d(char *serialized_form);
-extern void getbox2d_p(char *serialized_form, BOX2DFLOAT4 *box);
+extern int getbox2d_p(char *serialized_form, BOX2DFLOAT4 *box);
 
 // Expand given box of 'd' units in all directions 
 void expand_box2d(BOX2DFLOAT4 *box, double d);
@@ -702,3 +702,30 @@ extern double nextUp_d(float d);
 #endif
 #define abs(a)			((a) <	(0) ? (-a) : (a))
 
+
+// general utilities 
+double lwgeom_polygon_area(LWPOLY *poly);
+double lwgeom_polygon_perimeter(LWPOLY *poly);
+double lwgeom_polygon_perimeter2d(LWPOLY *poly);
+double lwgeom_pointarray_length2d(POINTARRAY *pts);
+double lwgeom_pointarray_length(POINTARRAY *pts);
+void lwgeom_force2d_recursive(char *serialized, char *optr, int *retsize);
+void lwgeom_force3d_recursive(char *serialized, char *optr, int *retsize);
+double distance2d_pt_pt(POINT2D *p1, POINT2D *p2);
+double distance2d_pt_seg(POINT2D *p, POINT2D *A, POINT2D *B);
+double distance2d_seg_seg(POINT2D *A, POINT2D *B, POINT2D *C, POINT2D *D);
+double distance2d_pt_ptarray(POINT2D *p, POINTARRAY *pa);
+double distance2d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2);
+int pt_in_ring_2d(POINT2D *p, POINTARRAY *ring);
+int pt_in_poly_2d(POINT2D *p, LWPOLY *poly);
+double distance2d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly);
+double distance2d_point_point(LWPOINT *point1, LWPOINT *point2);
+double distance2d_point_line(LWPOINT *point, LWLINE *line);
+double distance2d_line_line(LWLINE *line1, LWLINE *line2);
+double distance2d_point_poly(LWPOINT *point, LWPOLY *poly);
+double distance2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2);
+double distance2d_line_poly(LWLINE *line, LWPOLY *poly);
+double lwgeom_mindistance2d_recursive(char *lw1, char *lw2);
+void lwgeom_translate_recursive(char *serialized, double xoff, double yoff, double zoff);
+void lwgeom_translate_ptarray(POINTARRAY *pa, double xoff, double yoff, double zoff);
+int lwgeom_pt_inside_circle(POINT2D *p, double cx, double cy, double rad);

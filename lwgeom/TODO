@@ -1,4 +1,6 @@
 
+- WKB: what to do with that ? do we want to keep it as a type ?
+
 - Check spheroid misure functions
 	o can't understand if 3d computation works since
 	  I get same result w/ 2d and 3d.

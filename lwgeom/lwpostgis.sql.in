@@ -108,11 +108,6 @@ CREATE TYPE geometry (
 );
 
         
-CREATEFUNCTION geometry(text)
-        RETURNS geometry
-        AS '@MODULE_FILENAME@','parse_WKT_lwgeom'
-        LANGUAGE 'C' WITH (isstrict,iscachable);
-
 -------------------------------------------------------------------
 --  BOX3D TYPE
 -------------------------------------------------------------------
@@ -2419,6 +2414,22 @@ CREATEFUNCTION geometry(box3d)
         LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATE CAST (box3d as geometry) WITH FUNCTION geometry(box3d) AS IMPLICIT ;
+
+CREATEFUNCTION geometry(text)
+        RETURNS geometry
+        AS '@MODULE_FILENAME@','parse_WKT_lwgeom'
+        LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE CAST ( text AS geometry) WITH FUNCTION geometry(text) AS IMPLICIT;
+
+---------------------------------------------------------------
+-- Algorithms
+---------------------------------------------------------------
+
+CREATEFUNCTION simplify(geometry, float8)
+   RETURNS geometry
+   AS '@MODULE_FILENAME@', 'LWGEOM_simplify2d'
+   LANGUAGE 'C' WITH (isstrict);
 
 ---------------------------------------------------------------
 -- END

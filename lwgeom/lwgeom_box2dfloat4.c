@@ -104,7 +104,10 @@ Datum LWGEOM_to_BOX2DFLOAT4(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4 *result;
 
 	result = palloc(sizeof(BOX2DFLOAT4));
-	getbox2d_p(SERIALIZED_FORM(lwgeom), result);
+	if ( ! getbox2d_p(SERIALIZED_FORM(lwgeom), result) )
+	{
+		PG_RETURN_NULL(); // must be the empty geometry
+	}
 	PG_RETURN_POINTER(result);
 }
 
@@ -378,8 +381,8 @@ Datum BOX2DFLOAT4_combine(PG_FUNCTION_ARGS)
 	if (box2d_ptr == NULL)
 	{
 		lwgeom = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-
-		box = getbox2d(lwgeom+4);
+		// empty geom would make getbox2d_p return NULL
+		if ( ! getbox2d_p(lwgeom+4, &box) ) PG_RETURN_NULL();
 		memcpy(result, &box, sizeof(BOX2DFLOAT4));
 		PG_RETURN_POINTER(result);
 	}
@@ -394,7 +397,12 @@ Datum BOX2DFLOAT4_combine(PG_FUNCTION_ARGS)
 	//combine_bbox(BOX3D, geometry) => union(BOX3D, geometry->bvol)
 
 	lwgeom = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-	box = getbox2d(lwgeom+4);
+	if ( ! getbox2d_p(lwgeom+4, &box) )
+	{
+		// must be the empty geom
+		memcpy(result, (char *)PG_GETARG_DATUM(0), sizeof(BOX2DFLOAT4));
+		PG_RETURN_POINTER(result);
+	}
 
 	a = (BOX2DFLOAT4 *)PG_GETARG_DATUM(0);
 	b = &box;
