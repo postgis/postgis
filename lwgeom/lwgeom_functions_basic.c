@@ -2092,7 +2092,7 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 	LWGEOM_EXPLODED *exp1, *exp2, *expcoll;
 	char *serialized_result;
 	int wantbbox = 0;
-	int size;
+	//int size;
 
 	// return null if both geoms are null
 	if ( (geom1_ptr == NULL) && (geom2_ptr == NULL) )
@@ -2292,7 +2292,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 	LWGEOM_EXPLODED *exploded=NULL;
 	int i;
 	int wantbbox = 0; // don't compute a bounding box...
-	int size;
+	//int size;
 	char *serialized_result = NULL;
 
 //elog(NOTICE, "LWGEOM_collect_garray called");
