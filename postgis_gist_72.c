@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.8  2004/03/05 18:16:47  strk
+ * Applied Mark Cave-Ayland patch
+ *
  * Revision 1.7  2004/02/25 13:17:31  strk
  * RTContainedBy and RTOverlap strategries implemented locally with a pgbox_overlap function
  *
@@ -71,14 +74,14 @@ typedef Datum (*RDF)(PG_FUNCTION_ARGS);
 BOX *convert_box3d_to_box(BOX3D *in);
 Datum ggeometry_compress(PG_FUNCTION_ARGS);
 Datum ggeometry_consistent(PG_FUNCTION_ARGS);
-bool rtree_internal_consistent(BOX *key, BOX *query,StrategyNumber strategy);
+static bool rtree_internal_consistent(BOX *key, BOX *query,StrategyNumber strategy);
+static bool rtree_leaf_consistent(BOX *key, BOX *query,StrategyNumber strategy);
 Datum rtree_decompress(PG_FUNCTION_ARGS);
 Datum gbox_union(PG_FUNCTION_ARGS);
 Datum gbox_picksplit(PG_FUNCTION_ARGS);
 Datum gbox_penalty(PG_FUNCTION_ARGS);
 Datum gbox_same(PG_FUNCTION_ARGS);
 static float size_box(Datum box);
-static bool pgbox_overlap(BOX *b1, BOX *b2);
 
 int debug = 0;
 
@@ -159,9 +162,10 @@ Datum ggeometry_consistent(PG_FUNCTION_ARGS)
     StrategyNumber strategy = (StrategyNumber) PG_GETARG_UINT16(2);
     BOX		*thebox;
 	bool result;
-    /*
-    ** if entry is not leaf, use gbox_internal_consistent,
-    ** else use gbox_leaf_consistent
+    
+	/*
+    ** if entry is not leaf, use rtree_internal_consistent,
+    ** else use rtree_leaf_consistent
     */
 
 #ifdef DEBUG_GIST
@@ -174,13 +178,18 @@ Datum ggeometry_consistent(PG_FUNCTION_ARGS)
 
 	thebox = convert_box3d_to_box( &(query->bvol) );
 
-    result = rtree_internal_consistent((BOX *) DatumGetPointer(entry->key), thebox, strategy );
-
+	if (GIST_LEAF(entry))
+		result = rtree_leaf_consistent((BOX *) DatumGetPointer(entry->key), thebox, strategy );    
+	else
+		result = rtree_internal_consistent((BOX *) DatumGetPointer(entry->key), thebox, strategy );
+	
 	PG_FREE_IF_COPY(query, 1);
 	PG_RETURN_BOOL(result);
 }
 
-bool rtree_internal_consistent(BOX *key,
+
+static bool 
+rtree_internal_consistent(BOX *key,
 			BOX *query,
 			StrategyNumber strategy)
 {
@@ -197,24 +206,70 @@ bool rtree_internal_consistent(BOX *key,
       retval = DatumGetBool( DirectFunctionCall2( box_overleft, PointerGetDatum(key), PointerGetDatum(query) ) );
       break;
     case RTOverlapStrategyNumber:
-      retval = pgbox_overlap(key, query);
+      retval = DatumGetBool( DirectFunctionCall2( box_overlap, PointerGetDatum(key), PointerGetDatum(query) ) );
       break;
     case RTOverRightStrategyNumber:
     case RTRightStrategyNumber:
-      retval = DatumGetBool( DirectFunctionCall2( box_right, PointerGetDatum(key), PointerGetDatum(query) ) );
+      retval = DatumGetBool( DirectFunctionCall2( box_overright, PointerGetDatum(key), PointerGetDatum(query) ) );
       break;
     case RTSameStrategyNumber:
     case RTContainsStrategyNumber:
       retval = DatumGetBool( DirectFunctionCall2( box_contain, PointerGetDatum(key), PointerGetDatum(query) ) );
       break;
     case RTContainedByStrategyNumber:
-      retval = pgbox_overlap(key, query);
+      retval = DatumGetBool( DirectFunctionCall2( box_overlap, PointerGetDatum(key), PointerGetDatum(query) ) );
       break;
     default:
       retval = FALSE;
     }
     return(retval);
 }
+
+
+static bool 
+rtree_leaf_consistent(BOX *key,
+			BOX *query,
+			StrategyNumber strategy)
+{
+    bool retval;
+
+#ifdef DEBUG_GIST
+	elog(NOTICE,"GIST: rtree_leaf_consist called\n");
+	fflush( stdout );
+#endif
+
+	switch (strategy)
+	{
+		case RTLeftStrategyNumber:
+			retval = DatumGetBool(DirectFunctionCall2(box_left, PointerGetDatum(key), PointerGetDatum(query)));
+			break;
+		case RTOverLeftStrategyNumber:
+			retval = DatumGetBool(DirectFunctionCall2(box_overleft, PointerGetDatum(key), PointerGetDatum(query)));
+			break;
+		case RTOverlapStrategyNumber:
+			retval = DatumGetBool(DirectFunctionCall2(box_overlap, PointerGetDatum(key), PointerGetDatum(query)));
+			break;
+		case RTOverRightStrategyNumber:
+			retval = DatumGetBool(DirectFunctionCall2(box_overright, PointerGetDatum(key), PointerGetDatum(query)));
+			break;
+		case RTRightStrategyNumber:
+			retval = DatumGetBool(DirectFunctionCall2(box_right, PointerGetDatum(key), PointerGetDatum(query)));
+			break;
+		case RTSameStrategyNumber:
+			retval = DatumGetBool(DirectFunctionCall2(box_same, PointerGetDatum(key), PointerGetDatum(query)));
+			break;
+		case RTContainsStrategyNumber:
+			retval = DatumGetBool(DirectFunctionCall2(box_contain, PointerGetDatum(key), PointerGetDatum(query)));
+			break;
+		case RTContainedByStrategyNumber:
+			retval = DatumGetBool(DirectFunctionCall2(box_contained, PointerGetDatum(key), PointerGetDatum(query)));
+			break;
+		default:
+			retval = FALSE;
+	}
+	return (retval);
+}
+
 
 PG_FUNCTION_INFO_V1(rtree_decompress);
 Datum rtree_decompress(PG_FUNCTION_ARGS)
@@ -570,27 +625,3 @@ size_box(Datum box)
 	else
 		return 0.0;
 }
-
-static bool
-pgbox_overlap(BOX *box1, BOX *box2)
-{
-	bool result;
-
-	result = 
-
-	/*overlap in x*/
-		 ((    FPge(box1->high.x, box2->high.x) &&
-			 FPle(box1->low.x, box2->high.x)) ||
-			(FPge(box2->high.x, box1->high.x) &&
-			 FPle(box2->low.x, box1->high.x)))
-	&&
-	/*overlap in y*/
-	((FPge(box1->high.y, box2->high.y) &&
-	  FPle(box1->low.y, box2->high.y)) ||
-	 (FPge(box2->high.y, box1->high.y) &&
-	  FPle(box2->low.y, box1->high.y)));
-
-	return result;
-}
-
-
