@@ -487,7 +487,7 @@ SELECT AddGeometryColumn('gtest','geom',-1,'LINESTRING',2);</programlisting>
           insert statement. The GIS object itself is formatted using the
           OpenGIS Consortium "well-known text" format:</para>
 
-          <programlisting>INSERT INTO gtest (ID, NAME, GEOM) VALUES (1, 'First Geometry', GeometryFromText('LINESTRING(2 3,4 5,6 5,7 8)', -1));</programlisting>
+          <programlisting>INSERT INTO gtest (ID, NAME, GEOM) VALUES (1, 'First Geometry', GeomFromText('LINESTRING(2 3,4 5,6 5,7 8)', -1));</programlisting>
 
           <para>For more information about other GIS objects, see the <link
           linkend="RefObject">object reference</link>.</para>
@@ -665,9 +665,9 @@ AND
           <programlisting>SELECT * 
 FROM GEOTABLE 
 WHERE 
-  GEOCOLUMN &amp;&amp; Expand(GeometryFromText('POINT(1000 1000)',-1),100)
+  GEOCOLUMN &amp;&amp; Expand(GeomFromText('POINT(1000 1000)',-1),100)
 AND
-  Distance(GeometryFromText('POINT(1000 1000)',-1),GEOCOLUMN) &lt; 100;</programlisting>
+  Distance(GeomFromText('POINT(1000 1000)',-1),GEOCOLUMN) &lt; 100;</programlisting>
         </answer>
       </qandaentry>
 
@@ -803,12 +803,11 @@ AND
   THE_NAME 
 ) 
 VALUES ( 
-  GeometryFromText('POINT(-126.4 45.32)', 312), 
+  GeomFromText('POINT(-126.4 45.32)', 312), 
   'A Place' 
 )</programlisting>
 
-        <para>Note that the "GeometryFromText" function requires an SRID
-        number.</para>
+        <para>Note that the "GeomFromText" function <emphasis>requires</emphasis> an SRID number.</para>
 
         <para>The "canonical form" of the spatial objects in PostgreSQL is a
         text representation which includes all the information necessary to
@@ -1109,12 +1108,12 @@ SELECT AddGeometryColumn( 'roads', 'roads_geom', -1, 'GEOMETRY', 3 );</programli
         might look like this:</para>
 
         <programlisting>BEGIN;
-INSERT INTO ROADS_GEOM (ID,GEOM,NAME ) VALUES (1,GeometryFromText('LINESTRING(191232 243118,191108 243242)',-1),'Jeff Rd'); 
-INSERT INTO ROADS_GEOM (ID,GEOM,NAME ) VALUES (2,GeometryFromText('LINESTRING(189141 244158,189265 244817)',-1),'Geordie Rd'); 
-INSERT INTO ROADS_GEOM (ID,GEOM,NAME ) VALUES (3,GeometryFromText('LINESTRING(192783 228138,192612 229814)',-1),'Paul St'); 
-INSERT INTO ROADS_GEOM (ID,GEOM,NAME ) VALUES (4,GeometryFromText('LINESTRING(189412 252431,189631 259122)',-1),'Graeme Ave'); 
-INSERT INTO ROADS_GEOM (ID,GEOM,NAME ) VALUES (5,GeometryFromText('LINESTRING(190131 224148,190871 228134)',-1),'Phil Tce'); 
-INSERT INTO ROADS_GEOM (ID,GEOM,NAME ) VALUES (6,GeometryFromText('LINESTRING(198231 263418,198213 268322)',-1),'Dave Cres');
+INSERT INTO ROADS_GEOM (ID,GEOM,NAME ) VALUES (1,GeomFromText('LINESTRING(191232 243118,191108 243242)',-1),'Jeff Rd'); 
+INSERT INTO ROADS_GEOM (ID,GEOM,NAME ) VALUES (2,GeomFromText('LINESTRING(189141 244158,189265 244817)',-1),'Geordie Rd'); 
+INSERT INTO ROADS_GEOM (ID,GEOM,NAME ) VALUES (3,GeomFromText('LINESTRING(192783 228138,192612 229814)',-1),'Paul St'); 
+INSERT INTO ROADS_GEOM (ID,GEOM,NAME ) VALUES (4,GeomFromText('LINESTRING(189412 252431,189631 259122)',-1),'Graeme Ave'); 
+INSERT INTO ROADS_GEOM (ID,GEOM,NAME ) VALUES (5,GeomFromText('LINESTRING(190131 224148,190871 228134)',-1),'Phil Tce'); 
+INSERT INTO ROADS_GEOM (ID,GEOM,NAME ) VALUES (6,GeomFromText('LINESTRING(198231 263418,198213 268322)',-1),'Dave Cres');
 COMMIT;</programlisting>
 
         <para>The data file can be piped into PostgreSQL very easily using the
@@ -1278,13 +1277,13 @@ id | geom                                    | name
         <para>Next, you can use these operators in queries. Note that when
         specifying geometries and boxes on the SQL command line, you must
         explicitly turn the string representations into geometries by using
-        the "GeometryFromText()" function. So, for example:</para>
+        the "GeomFromText()" function. So, for example:</para>
 
         <programlisting>SELECT 
   ID, NAME 
 FROM ROADS_GEOM 
 WHERE 
-  GEOM ~= GeometryFromText('LINESTRING(191232 243118,191108 243242)',-1);</programlisting>
+  GEOM ~= GeomFromText('LINESTRING(191232 243118,191108 243242)',-1);</programlisting>
 
         <para>The above query would return the single record from the
         "ROADS_GEOM" table in which the geometry was equal to that
@@ -1299,7 +1298,7 @@ WHERE
   ID, NAME 
 FROM ROADS_GEOM 
 WHERE 
-  GEOM &amp;&amp; GeometryFromText('POLYGON((191232 243117,191232 243119,191234 243117,191232 243117))',-1);</programlisting>
+  GEOM &amp;&amp; GeomFromText('POLYGON((191232 243117,191232 243119,191234 243117,191232 243117))',-1);</programlisting>
 
         <para>The above query will use the bounding box of the polygon for
         comparison purposes.</para>
@@ -1313,7 +1312,7 @@ WHERE
   AsText(GEOM) AS GEOM 
 FROM ROADS_GEOM 
 WHERE 
-  GEOM &amp;&amp; GeometryFromText('BOX3D(191232 243117,191232 243119)'::box3d,-1);</programlisting>
+  GEOM &amp;&amp; GeomFromText('BOX3D(191232 243117,191232 243119)'::box3d,-1);</programlisting>
 
         <para>Note the use of the SRID, to specify the projection of the
         BOX3D. The value -1 is used to indicate no specified SRID.</para>
@@ -1575,7 +1574,7 @@ SELECT UPDATE_GEOMETRY_STATS([table_name], [column_name]);</programlisting></par
         large table:</para>
 
         <programlisting>SELECT the_geom FROM geom_table
-WHERE distance( the_geom, GeometryFromText( 'POINT(100000 200000)', -1 ) ) &lt; 100</programlisting>
+WHERE distance( the_geom, GeomFromText( 'POINT(100000 200000)', -1 ) ) &lt; 100</programlisting>
 
         <para>This query is selecting all the geometries in geom_table which
         are within 100 units of the point (100000, 200000). It will be slow
@@ -1587,7 +1586,7 @@ WHERE distance( the_geom, GeometryFromText( 'POINT(100000 200000)', -1 ) ) &lt; 
 
         <programlisting>SELECT the_geom FROM geom_table
 WHERE the_geom &amp;&amp; 'BOX3D(90900 190900, 100100 200100)'::box3d
-  AND distance( the_geom, GeometryFromText( 'POINT(100000 200000)', -1 ) ) &lt; 100</programlisting>
+  AND distance( the_geom, GeomFromText( 'POINT(100000 200000)', -1 ) ) &lt; 100</programlisting>
 
         <para>This query selects the same geometries, but it does it in a more
         efficient way. Assuming there is a GiST index on the_geom, the query
@@ -3070,20 +3069,7 @@ dimension
           <varlistentry>
             <term>GeomFromText(text,[&lt;srid&gt;])</term>
             <listitem>
-              <para>Makes a Geometry from WKT with the given SRID. If SRID is
-              not give, it defaults to -1.</para>
-
-              <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
-              suite</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>GeometryFromText(text,[&lt;srid&gt;])</term>
-
-            <listitem>
-              <para>Makes a Geometry from WKT with the given SRID. If SRID is
-              not give, it defaults to -1.</para>
+              <para>Makes a Geometry from WKT with the given SRID.</para>
 
               <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
               suite</para>
@@ -3240,7 +3226,7 @@ dimension
           </varlistentry>
 
           <varlistentry>
-            <term>PointFromWKB(text,[&lt;srid&gt;])</term>
+            <term>PointFromWKB(bytea,[&lt;srid&gt;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKB with the given SRID. If SRID is
@@ -3254,7 +3240,7 @@ dimension
           </varlistentry>
 
           <varlistentry>
-            <term>LineFromWKB(text,[&lt;srid&gt;])</term>
+            <term>LineFromWKB(bytea,[&lt;srid&gt;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKB with the given SRID. If SRID is
@@ -3268,7 +3254,7 @@ dimension
           </varlistentry>
 
           <varlistentry>
-            <term>LinestringFromWKB(text,[&lt;srid&gt;])</term>
+            <term>LinestringFromWKB(bytea,[&lt;srid&gt;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKB with the given SRID. If SRID is
@@ -3281,7 +3267,7 @@ dimension
           </varlistentry>
 
           <varlistentry>
-            <term>PolyFromWKB(text,[&lt;srid&gt;])</term>
+            <term>PolyFromWKB(bytea,[&lt;srid&gt;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKB with the given SRID. If SRID is
@@ -3295,7 +3281,7 @@ dimension
           </varlistentry>
 
           <varlistentry>
-            <term>PolygonFromWKB(text,[&lt;srid&gt;])</term>
+            <term>PolygonFromWKB(bytea,[&lt;srid&gt;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKB with the given SRID. If SRID is
@@ -3308,7 +3294,7 @@ dimension
           </varlistentry>
 
           <varlistentry>
-            <term>MPointFromWKB(text,[&lt;srid&gt;])</term>
+            <term>MPointFromWKB(bytea,[&lt;srid&gt;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKB with the given SRID. If SRID is
@@ -3322,7 +3308,7 @@ dimension
           </varlistentry>
 
           <varlistentry>
-            <term>MLineFromWKB(text,[&lt;srid&gt;])</term>
+            <term>MLineFromWKB(bytea,[&lt;srid&gt;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKB with the given SRID. If SRID is
@@ -3336,7 +3322,7 @@ dimension
           </varlistentry>
 
           <varlistentry>
-            <term>MPolyFromWKB(text,[&lt;srid&gt;])</term>
+            <term>MPolyFromWKB(bytea,[&lt;srid&gt;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKB with the given SRID. If SRID is
@@ -3350,7 +3336,7 @@ dimension
           </varlistentry>
 
           <varlistentry>
-            <term>GeomCollFromWKB(text,[&lt;srid&gt;])</term>
+            <term>GeomCollFromWKB(bytea,[&lt;srid&gt;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKB with the given SRID. If SRID is
