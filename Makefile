@@ -24,10 +24,10 @@ endif
 #---------------------------------------------------------------
 # Test the version string and select the correct GiST index
 # bindings.
-ifneq ($(findstring 7.2,$(VERSION)),)
-	USE_PG72=1
-else
+ifneq ($(findstring 7.1,$(VERSION)),)
 	USE_PG72=0
+else
+	USE_PG72=1
 endif
 
 #---------------------------------------------------------------
