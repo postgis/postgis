@@ -66,7 +66,7 @@ ifeq ($(USE_STATS),1)
 	override CFLAGS += -DUSE_STATS
 endif
  
-SA_OBJS=box2d.o ptarray.o lwgeom_api.o lwgeom.o lwpoint.o lwline.o lwpoly.o lwmpoint.o lwmline.o lwmpoly.o lwcollection.o $(GEOS_WRAPPER) wktunparse.o lwgparse.o wktparse.tab.o lex.yy.o
+SA_OBJS=misures.o box2d.o ptarray.o lwgeom_api.o lwgeom.o lwpoint.o lwline.o lwpoly.o lwmpoint.o lwmline.o lwmpoly.o lwcollection.o $(GEOS_WRAPPER) wktunparse.o lwgparse.o wktparse.tab.o lex.yy.o
 OBJS=$(SA_OBJS) liblwgeom.o lwgeom_pg.o lwgeom_debug.o lwgeom_spheroid.o lwgeom_ogc.o lwgeom_functions_analytic.o lwgeom_geos.o lwgeom_inout.o lwgeom_estimate.o lwgeom_functions_basic.o lwgeom_gist.o lwgeom_btree.o lwgeom_transform.o stringBuffer.o lwgeom_box.o lwgeom_box3d.o lwgeom_box2dfloat4.o lwgeom_chip.o lwgeom_svg.o lwgeom_gml.o 
 
 OTHERS=y.output lex.yy.c wktparse.tab.c wktparse.tab.h lwpostgis.sql
@@ -166,4 +166,4 @@ liblwgeom_sa.a: $(SA_OBJS) liblwgeom_sa.o
 
 test: liblwgeom_sa.so liblwgeom_sa.a test.c
 	#$(CC) -o test -L. -llwgeom_sa $(SHLIB_LINK) test.c
-	$(CC) -Wall -g -o test test.c liblwgeom_sa.a 
+	$(CC) -Wall -lm -g -o test test.c liblwgeom_sa.a 
