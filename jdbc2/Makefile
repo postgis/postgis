@@ -82,6 +82,9 @@ POSTGIS_BUILD_CLASSPATH?=$(TEMP)
 COMP_ADDCP?=-classpath
 EXEC_ADDCP?=-classpath
 
+# Class path entry separator, this is : on Linux/Unix and ; on Windows
+CPSEP?=:
+
 # This are used for the online regression tests, override via environment
 # as applicable. The jtest needs table creation privilege in current_schema(),
 # the others only call self contained SELECTs that do not access any tables.
@@ -97,8 +100,8 @@ PGPASS?=guess
 SRCDIR=src
 EXAMPLES=examples
 BUILD=bin
-RUNCP=$(POSTGIS_BUILD_CLASSPATH):postgis.jar
-BUILDCP=$(STUBBUILD):$(POSTGIS_BUILD_CLASSPATH):$(SRCDIR)
+RUNCP=$(POSTGIS_BUILD_CLASSPATH)$(CPSEP)postgis.jar
+BUILDCP=$(STUBBUILD)$(CPSEP)$(POSTGIS_BUILD_CLASSPATH)$(CPSEP)$(SRCDIR)
 
 # All the java files to compile
 SRC= $(SRCDIR)/examples/Test.java \
@@ -246,14 +249,14 @@ $(JTSBUILD):
 
 
 jtscompile: compile stubcompile $(JTSBUILD) $(JTSSRC)
-	$(JAVAC) $(COMP_ADDCP) "$(BUILD):$(CP)" -d $(JTSBUILD) $(JTSSRC) 
+	$(JAVAC) $(COMP_ADDCP) "$(BUILD)$(CPSEP)$(CP)" -d $(JTSBUILD) $(JTSSRC) 
 	touch jtscompile
 	
 jtstestoffline: jtscompile	
-	$(JAVA) $(EXEC_ADDCP) "$(JTSBUILD):$(BUILD):$(CP)" $(EXAMPLES)/JtsTestParser offline
+	$(JAVA) $(EXEC_ADDCP) "$(JTSBUILD)$(CPSEP)$(BUILD)$(CPSEP)$(CP)" $(EXAMPLES)/JtsTestParser offline
 
 jtstest:  jtscompile
-	$(JAVA) -$(EXEC_ADDCP) "$(JTSBUILD):$(BUILD):$(CP)" $(EXAMPLES)/JtsTestParser jdbc:postgres_jts://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
+	$(JAVA) -$(EXEC_ADDCP) "$(JTSBUILD)$(CPSEP)$(BUILD)$(CPSEP)$(CP)" $(EXAMPLES)/JtsTestParser jdbc:postgres_jts://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
 
 postgis_jts.jar: jtscompile $(SRCDIR)/org/postgresql/driverconfig.properties
 	$(JAR) -cf postgis_jts.jar -C $(BUILD) . \
