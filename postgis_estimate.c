@@ -11,6 +11,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.30  2004/08/16 11:03:25  mcayland
+ * Added DLLIMPORT reference to "default_statistics_target" if we are compiling under Win32. This should make it unnecessary to apply Romi's patch to the PostgreSQL source tree when compiling PostgreSQL ready for PostGIS.
+ *
  * Revision 1.29  2004/06/22 16:52:17  strk
  * Standard deviation factor used in histogram extent computation made
  * a compile-time define.
@@ -209,6 +212,13 @@ typedef struct GEOM_STATS_T
 	float4 value[1];
 } GEOM_STATS;
 
+#endif
+
+
+// For Win32 we must declare default_statistics_target as DLLIMPORT *after*
+// including all the relevant header files otherwise we get a link error.
+#if defined(__CYGWIN__) || defined(__MINGW32__)
+extern DLLIMPORT int default_statistics_target;
 #endif
 
 
