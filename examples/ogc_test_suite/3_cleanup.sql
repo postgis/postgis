@@ -4,7 +4,8 @@
 -- OGC will not examine this script for adaptations.
 -- Please add any other cleanup to this script.
 -- 
-DROP TABLE spatial_ref_sys;
+DELETE FROM spatial_ref_sys;
+DELETE FROM geometry_columns;
 DROP TABLE lakes;
 DROP TABLE road_segments;
 DROP TABLE divided_routes;
