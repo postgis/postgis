@@ -579,7 +579,13 @@ Datum convexhull(PG_FUNCTION_ARGS)
 	//elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
 	GEOSSetSRID(g3, SRID);
 
+#ifdef PROFILE
+	profstart(PROF_G2P);
+#endif
 	lwout = lwgeom_from_geometry(g3, TYPE_NDIMS(geom1->type) > 2);
+#ifdef PROFILE
+	profstop(PROF_G2P);
+#endif
 	if (result == NULL)
 	{
 		GEOSdeleteGeometry(g1);
