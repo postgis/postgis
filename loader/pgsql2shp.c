@@ -25,8 +25,8 @@ int num_points(char *str);
 int num_lines(char *str);
 char *scan_to_same_level(char *str);
 int points_per_sublist( char *str, int *npoints, long max_lists);
-
-
+int reverse_points(int num_points,double *x,double *y,double *z);
+int is_clockwise(int num_points,double *x,double *y,double *z);
 
 //main
 //USAGE: pgsql2shp [<options>] <database> <table>
@@ -405,14 +405,14 @@ int main(int ARGC, char **ARGV){
 
 
 	//get what kind of Geometry type is in the table
-	query= (char *)malloc(strlen(table) + strlen("select distinct (geometrytype()) from where NOT geometrytype(geom) = NULL")+18);
+	query= (char *)malloc(strlen(table) + strlen("select distinct (geometrytype()) from where NOT geometrytype(geom) = NULL")+38);
 	strcpy(query, "select distinct (geometrytype(");
 	strcat(query, geo_col_name);
 	strcat(query, ")) from ") ;
 	strcat(query, table);
 	strcat(query," where NOT geometrytype(");
 	strcat(query,geo_col_name);
-	strcat(query,") = NULL");
+	strcat(query,") IS NULL");
 	res3 = PQexec(conn, query);	
 	//printf("\n\n-->%s\n\n",query);
 
@@ -1048,15 +1048,15 @@ int create_multipoints(char *str, SHPHandle shp,int dims){
 	
 	if(dims == 0){
 		if(notnull > 0){
-			obj = SHPCreateSimpleObject(SHPT_MULTIPOINT ,1,x,y,z);
+			obj = SHPCreateSimpleObject(SHPT_MULTIPOINT ,points,x,y,z);
 		}else{
-			obj = SHPCreateSimpleObject(SHPT_NULL ,1,x,y,z);
+			obj = SHPCreateSimpleObject(SHPT_NULL ,points,x,y,z);
 		}
 	}else{
 		if(notnull > 0){
-			obj = SHPCreateSimpleObject(SHPT_MULTIPOINTZ ,1,x,y,z);
+			obj = SHPCreateSimpleObject(SHPT_MULTIPOINTZ ,points,x,y,z);
 		}else{
-			obj = SHPCreateSimpleObject(SHPT_NULL ,1,x,y,z);
+			obj = SHPCreateSimpleObject(SHPT_NULL ,points,x,y,z);
 		}
 	}
 
@@ -1125,17 +1125,30 @@ int create_polygons(char *str,int shape_id, SHPHandle shp,int dims){
 		z = (double *)malloc(sizeof(double) * points[i]);
 
 		notnull = parse_points(str,points[i],x,y,z);
+
 		str = scan_to_same_level(str);
 		part_index[i] = index;
+
+		//if this the first ring it should be clockwise, other rings are holes and should be counter-clockwise
+		if(i ==0){
+			if(is_clockwise(points[i],x,y,z) == 0){
+				reverse_points(points[i],x,y,z);
+			}
+		}else{
+			if(is_clockwise(points[i],x,y,z) == 1){
+				reverse_points(points[i],x,y,z);
+			}
+		}
+
 		for(j=0;j<points[i];j++){
 			totx[index] = x[j];
 			toty[index] = y[j];
 			totz[index] = z[j];
 			index++;
 		}
-		free(x);
-		free(y);
-		free(z);
+//		free(x);
+//		free(y);
+//		free(z);
 	}
 
 	obj = (SHPObject *)malloc(sizeof(SHPObject));
@@ -1270,6 +1283,18 @@ int create_multipolygons(char *str,int shape_id, SHPHandle shp,int dims){
 			notnull = parse_points(str,points[i],x,y,z);
 			str = scan_to_same_level(str);
 			part_index[i] = index;
+
+			//if this the first ring it should be clockwise, other rings are holes and should be counter-clockwise
+	                if(i ==0){
+        	                if(is_clockwise(points[i],x,y,z) == 0){
+                	                reverse_points(points[i],x,y,z);
+                        	}
+	                }else{
+        	                if(is_clockwise(points[i],x,y,z) == 1){
+                	                reverse_points(points[i],x,y,z);
+	                        }
+        	        }
+
 			for(j=0;j<points[i];j++){
 				totx[index] = x[j];
 				toty[index] = y[j];
@@ -1298,7 +1323,7 @@ int create_multipolygons(char *str,int shape_id, SHPHandle shp,int dims){
 		free(toty);
 		free(totz);
 		str -= 1;
-	}//end for (k...
+	}//end for (k < polys... loop
 
 
 	obj	= (SHPObject *)malloc(sizeof(SHPObject));
@@ -1329,3 +1354,60 @@ int create_multipolygons(char *str,int shape_id, SHPHandle shp,int dims){
 	}
 	
 }
+
+
+
+//Reverse the clockwise-ness of the point list...
+int reverse_points(int num_points,double *x,double *y,double *z){
+	
+	int i,j;
+	double temp;
+	j = num_points -1;
+	for(i=0; i <num_points; i++){
+		if(j <= i){
+			break;
+		}
+		temp = x[j];
+		x[j] = x[i];
+		x[i] = temp;
+
+		temp = y[j];
+		y[j] = y[i];
+		y[i] = temp;
+
+		temp = z[j];
+		z[j] = z[i];
+		z[i] = temp;
+
+		j--;
+	}
+	return 1;
+}
+
+//return 1 if the points are in clockwise order
+int is_clockwise(int  num_points,double *x,double *y,double *z){
+	int i;
+	double x_change,y_change,area;
+	double *x_new, *y_new; //the points, translated to the origin for safer accuracy
+
+	x_new = (double *)malloc(sizeof(double) * num_points);	
+	y_new = (double *)malloc(sizeof(double) * num_points);	
+	area=0.0;
+	x_change = x[0];
+	y_change = z[0];
+
+	for(i=0; i < num_points ; i++){
+		x_new[i] = x[i] - x_change;
+		y_new[i] = y[i] - y_change;
+	}
+
+	for(i=0; i < num_points ; i++){
+		area += (x[i] * y[i+1]) - (y[i] * x[i+1]); //calculate the area	
+	}
+	if(area > 0 ){
+		return 0; //counter-clockwise
+	}else{
+		return 1; //clockwise
+	}
+}
+
