@@ -38,7 +38,7 @@ POSTGIS_BUILD_DATE := $(shell date -u "+%Y-%m-%d %H:%M:%S")
 
 #---------------------------------------------------------------
 
-override CFLAGS += -g -fexceptions
+override CFLAGS += -g -O2 -fexceptions
 override CFLAGS += -fPIC
 #override CFLAGS += -I$(srcdir) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"' 
 override CFLAGS += -DUSE_VERSION=$(USE_VERSION)
