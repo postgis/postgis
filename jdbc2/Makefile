@@ -11,7 +11,7 @@ DELETE = rm -rvf
 
 #CP=src/:../../../src/interfaces/jdbc/jars/postgresql.jar
 #CP=src/:lib/postgresql-8.0.309.jdbc3.jar
-CP = $(CLASSPATH):src/:/usr/share/java/postgresql.jar
+CP="$(CLASSPATH):src/:/usr/share/java/postgresql.jar"
 
 SRCDIR=src
 EXAMPLES=examples
