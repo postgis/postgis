@@ -1,6 +1,6 @@
 -- Selected TOC Entries:
 --
-\connect - postgres
+--\connect - postgres
 --
 -- TOC Entry ID 2 (OID 2231457)
 --

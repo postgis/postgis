@@ -1,58 +1,9 @@
-You are now connected as new user postgres.
-CREATE
-
---- test some of the searching capabilities
-
--- GiST index
-
-CREATE INDEX quick_gist on test using gist (the_geom gist_geometry_ops) with (islossy);
-CREATE
-
- select * from test where the_geom && 'BOX3D(125 125,135 135)'::box3d order by num;
- num  |           the_geom           
-------+------------------------------
- 2594 | POINT(130.504303 126.53112)
- 3618 | POINT(130.447205 131.655289)
- 7245 | POINT(128.10466 130.94133)
-(3 rows)
-
-
-set enable_seqscan = off;
-SET VARIABLE
-
- select * from test where the_geom && 'BOX3D(125 125,135 135)'::box3d  order by num;
- num  |           the_geom           
-------+------------------------------
- 2594 | POINT(130.504303 126.53112)
- 3618 | POINT(130.447205 131.655289)
- 7245 | POINT(128.10466 130.94133)
-(3 rows)
-
-
-
---- RTree (not recommended)
-
-CREATE INDEX quick_rt on test using rtree (the_geom rt_geometry_ops);
-CREATE
-set enable_seqscan = on;
-SET VARIABLE
- select * from test where the_geom && 'BOX3D(125 125,135 135)'::box3d order by num;
- num  |           the_geom           
-------+------------------------------
- 2594 | POINT(130.504303 126.53112)
- 3618 | POINT(130.447205 131.655289)
- 7245 | POINT(128.10466 130.94133)
-(3 rows)
-
-set enable_seqscan = off;
-SET VARIABLE
- select * from test where the_geom && 'BOX3D(125 125,135 135)'::box3d  order by num;
- num  |           the_geom           
-------+------------------------------
- 2594 | POINT(130.504303 126.53112)
- 3618 | POINT(130.447205 131.655289)
- 7245 | POINT(128.10466 130.94133)
-(3 rows)
-
-
-
+CREATE TABLE
+CREATE INDEX
+2594|POINT(130.504303 126.53112)
+3618|POINT(130.447205 131.655289)
+7245|POINT(128.10466 130.94133)
+SET
+2594|POINT(130.504303 126.53112)
+3618|POINT(130.447205 131.655289)
+7245|POINT(128.10466 130.94133)

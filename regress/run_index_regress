@@ -1,11 +1,15 @@
-#!/bin/csh
+#!/bin/sh
+
 echo "Running Index Regression"
 echo ""
-createdb geometry_reg
-psql -e geometry_reg <postgis.sql >& /dev/null
 echo "Index Creation will take some time..."
-echo "This test included the unrecommended RTREE index"
 echo ""
-psql -e geometry_reg <regress_index.sql >& regress_index_out
+
+DB=postgis_reg
+createdb $DB > /dev/null
+createlang plpgsql $DB > /dev/null
+psql -f ../lwpostgis.sql $DB > /dev/null 2>&1
+psql -tA < regress_index.sql $DB > regress_index_out 2>&1
 diff regress_index_out regress_index_expected
-dropdb geometry_reg
+sleep 1
+dropdb $DB > /dev/null
