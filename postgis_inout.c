@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.37  2004/04/27 23:47:39  dblasby
+ * minor 3d geometrycollection bug fix
+ *
  * Revision 1.36  2004/01/13 22:14:25  pramsey
  * Changed getint and getdouble used by WKB so that it plays nice with
  * memory alignment (solaris issue).
@@ -2791,6 +2794,9 @@ char *to_wkb_collection(GEOMETRY *geom, bool flip_endian, int32 *end_size)
 
 	result = palloc( total_size +9); // need geometrycollection header
 
+	if (geom->is3d)
+		coll_type += WKB3DOFFSET;
+
 	if (flip_endian)
 	{
 		flip_endian_int32((char *) &coll_type);
@@ -2798,6 +2804,8 @@ char *to_wkb_collection(GEOMETRY *geom, bool flip_endian, int32 *end_size)
 	}
 
 	//could use a memcpy, but...
+
+
 
 	result[0] = byte_order;
 	result[1] = c_type[0];		//type
@@ -4821,3 +4829,5 @@ GEOMETRY *makeNullGeometry(int SRID)
 
 	return result;
 }
+
+
