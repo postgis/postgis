@@ -557,6 +557,11 @@ CREATE FUNCTION geometryfromtext(geometry,int4)
    AS '@MODULE_FILENAME@','geometry_from_text'
 	     LANGUAGE 'c'  with (isstrict,iscachable);
 
+CREATE FUNCTION geomfromtext(geometry,int4)
+   RETURNS geometry
+   AS '@MODULE_FILENAME@','geometry_from_text'
+	     LANGUAGE 'c'  with (isstrict,iscachable);
+
 CREATE FUNCTION setSRID(geometry,int4)
    RETURNS geometry
    AS '@MODULE_FILENAME@','geometry_from_text'
