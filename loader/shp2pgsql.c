@@ -12,6 +12,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.59  2004/07/19 16:24:47  strk
+ * Added -i switch
+ *
  * Revision 1.58  2004/06/22 11:05:46  strk
  * Handled empty strings in numeric fields as '0'es... pg_atoi() does
  * not do this (while atoi() does).
@@ -156,8 +159,11 @@ typedef struct Ring{
 	int		n;		//number of points in list
 } Ring;
 
+
+/* globals */
 int	dump_format = 0; //0=insert statements, 1 = dump
 int	quoteidentifiers = 0;
+int	forceint4 = 0;
 char    opt;
 char    *col_names;
 
@@ -624,7 +630,7 @@ int main (int ARGC, char **ARGV){
 	sr_id =shp_file = table = schema = NULL;
 	obj=NULL;
 
-	while ((c = getopt(ARGC, ARGV, "kcdaDs:")) != EOF){
+	while ((c = getopt(ARGC, ARGV, "kcdaDs:i")) != EOF){
                switch (c) {
                case 'c':
                     if (opt == ' ')
@@ -652,6 +658,9 @@ int main (int ARGC, char **ARGV){
                     break;
                case 'k':
                     quoteidentifiers = 1;
+                    break;
+               case 'i':
+                    forceint4 = 1;
                     break;
                case '?':
                default:              
@@ -712,6 +721,8 @@ int main (int ARGC, char **ARGV){
 		printf("      statments.\n");
 		printf("\n");
 		printf("  -k  Keep postgresql identifiers case.\n");
+		printf("\n");
+		printf("  -i  Use int4 type for all integer dbf fields.\n");
 		exit (2);
         }
 
@@ -1180,26 +1191,43 @@ void create_table()
 			else
 			{
 
-				if(type == FTString){
+				if(type == FTString)
+				{
 					printf ("varchar");
-				}else if(type == FTInteger){
-					if( field_width > 18 ){
-						printf ("numeric(%d,0)",field_width);
-					}else if( field_width > 9){
-						printf ("int8");
-					}else{
+				}
+				else if(type == FTInteger)
+				{
+					if ( forceint4 || field_width <= 9 )
+					{
 						printf ("int4");
 					}
-				}else if(type == FTDouble){
-					if( field_width > 18 ){
-						//printf ("numeric(%d,%d)",field_width, field_precision);
+					else if( field_width > 18 )
+					{
+						printf("numeric(%d,0)",
+							field_width);
+					}
+					else 
+					{
+						printf ("int8");
+					}
+				}
+				else if(type == FTDouble)
+				{
+					if( field_width > 18 )
+					{
 						printf ("numeric");
-					}else{
+					}
+					else
+					{
 						printf ("float8");
 					}
-				}else if(type == FTLogical){
+				}
+				else if(type == FTLogical)
+				{
 					printf ("boolean");
-				}else{
+				}
+				else
+				{
 					printf ("Invalid type in DBF file");
 				}
 			}	
