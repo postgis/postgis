@@ -142,6 +142,12 @@ SHLIB_LINK += $(BE_DLLLIBS)
 
 include $(top_srcdir)/src/Makefile.shlib
 
+wktparse.tab.c: wktparse.y
+	$(YACC) -vd -p lwg_parse_yy wktparse.y
+
+lex.yy.c: wktparse.lex wktparse.tab.c
+	$(FLEX) -Plwg_parse_yy -if -o'lex.yy.c' wktparse.lex 
+
 all: all-lib lwgeom.sql 
 
 # Shared library stuff
