@@ -690,12 +690,28 @@ Datum isvalid(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(overlaps);
 Datum overlaps(PG_FUNCTION_ARGS)
 {
-	LWGEOM *geom1 = (LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	LWGEOM *geom2 = (LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	LWGEOM *geom1 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	LWGEOM *geom2 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	Geometry *g1,*g2;
 	bool result;
+	const BOX2DFLOAT4 *box1, *box2;
 
 	errorIfGeometryCollection(geom1,geom2);
+
+	/*
+	 * short-circuit 1: if geom2 bounding box does not overlap
+	 * geom1 bounding box we can prematurely return FALSE.
+	 * Do the test IFF BOUNDING BOX AVAILABLE.
+	 */
+	if ( (box1=getbox2d_internal(SERIALIZED_FORM(geom1))) &&
+		(box2=getbox2d_internal(SERIALIZED_FORM(geom2))) )
+	{
+		if ( box2->xmax < box1->xmin ) PG_RETURN_BOOL(FALSE);
+		if ( box2->xmin > box1->xmax ) PG_RETURN_BOOL(FALSE);
+		if ( box2->ymax < box1->ymin ) PG_RETURN_BOOL(FALSE);
+		if ( box2->ymin > box2->ymax ) PG_RETURN_BOOL(FALSE);
+	}
+
 	initGEOS(MAXIMUM_ALIGNOF);
 
 	g1 = POSTGIS2GEOS(geom1 );
@@ -722,55 +738,28 @@ Datum contains(PG_FUNCTION_ARGS)
 	LWGEOM *geom2 = (LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	Geometry *g1,*g2;
 	bool result;
-	//POINT3D *testpoint;
-	//POLYGON3D *poly;
+	const BOX2DFLOAT4 *box1, *box2;
 
 	errorIfGeometryCollection(geom1,geom2);
 
 	/*
 	 * short-circuit 1: if geom2 bounding box is not completely inside
-	 * geom1 bounding box we can prematurely return FALSE
+	 * geom1 bounding box we can prematurely return FALSE.
+	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
-// DISABLED ... TODO: use only if bbox is available
-#if 0
-	if ( geom2->bvol.LLB.x < geom1->bvol.LLB.x ) PG_RETURN_BOOL(FALSE);
-	if ( geom2->bvol.URT.x > geom1->bvol.URT.x ) PG_RETURN_BOOL(FALSE);
-	if ( geom2->bvol.LLB.y < geom1->bvol.LLB.y ) PG_RETURN_BOOL(FALSE);
-	if ( geom2->bvol.URT.y > geom1->bvol.URT.y ) PG_RETURN_BOOL(FALSE);
-
-	/*
-	 * short-circuit 2: if geom1 is a polygon and any corner of
-	 * geom2 bounding box is not 'within' geom1 we can prematurely
-	 * return FALSE
-	 */
-	//if ( geom1->type == POLYGONTYPE )
-	//{
-	//	poly = (POLYGON3D *)geom1->objData;
-	//	testpoint.x = geom2->bvol.LLB.x;
-	//	testpoint.y = geom2->bvol.LLB.y;
-	//	if ( !point_within_polygon(&testpoint, poly) )
-	//		PG_RETURN_BOOL(FALSE);
-	//	testpoint.x = geom2->bvol.LLB.x;
-	//	testpoint.y = geom2->bvol.URT.y;
-	//	if ( !point_within_polygon(&testpoint, poly) )
-	//		PG_RETURN_BOOL(FALSE);
-	//	testpoint.x = geom2->bvol.URT.x;
-	//	testpoint.y = geom2->bvol.URT.y;
-	//	if ( !point_within_polygon(&testpoint, poly) )
-	//		PG_RETURN_BOOL(FALSE);
-	//	testpoint.x = geom2->bvol.URT.x;
-	//	testpoint.y = geom2->bvol.LLB.y;
-	//	if ( !point_within_polygon(&testpoint, poly) )
-	//		PG_RETURN_BOOL(FALSE);
-	//}
-#endif
+	if ( (box1=getbox2d_internal(SERIALIZED_FORM(geom1))) &&
+		(box2=getbox2d_internal(SERIALIZED_FORM(geom2))) )
+	{
+		if ( box2->xmin < box1->xmin ) PG_RETURN_BOOL(FALSE);
+		if ( box2->xmax > box1->xmax ) PG_RETURN_BOOL(FALSE);
+		if ( box2->ymin < box1->ymin ) PG_RETURN_BOOL(FALSE);
+		if ( box2->ymax > box1->ymax ) PG_RETURN_BOOL(FALSE);
+	}
 
 	initGEOS(MAXIMUM_ALIGNOF);
 
 	g1 = 	POSTGIS2GEOS(geom1 );
 	g2 = 	POSTGIS2GEOS(geom2 );
-
-
 
 	result = GEOSrelateContains(g1,g2);
 	GEOSdeleteGeometry(g1);
@@ -781,8 +770,6 @@ Datum contains(PG_FUNCTION_ARGS)
 		elog(ERROR,"GEOS contains() threw an error!");
 		PG_RETURN_NULL(); //never get here
 	}
-
-
 
 	PG_RETURN_BOOL(result);
 }
@@ -795,51 +782,26 @@ Datum within(PG_FUNCTION_ARGS)
 	LWGEOM *geom2 = (LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	Geometry *g1,*g2;
 	bool result;
-	//POINT3D testpoint;
-	//POLYGON3D *poly;
+	const BOX2DFLOAT4 *box1, *box2;
 
 	errorIfGeometryCollection(geom1,geom2);
 
-
-// DISABLED ... TODO: use only if bbox is available
-#if 0
 	/*
 	 * short-circuit 1: if geom1 bounding box is not completely inside
-	 * geom2 bounding box we can prematurely return FALSE
+	 * geom2 bounding box we can prematurely return FALSE.
+	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
-	if ( geom1->bvol.LLB.x < geom2->bvol.LLB.x ) PG_RETURN_BOOL(FALSE);
-	if ( geom1->bvol.URT.x > geom2->bvol.URT.x ) PG_RETURN_BOOL(FALSE);
-	if ( geom1->bvol.LLB.y < geom2->bvol.LLB.y ) PG_RETURN_BOOL(FALSE);
-	if ( geom1->bvol.URT.y > geom2->bvol.URT.y ) PG_RETURN_BOOL(FALSE);
-
-	/*
-	 * short-circuit 2: if geom2 is a polygon and any corner of
-	 * geom1 bounding box is not 'within' geom2 we can prematurely
-	 * return FALSE
-	 */
-	//if ( geom2->type == POLYGONTYPE )
-	//{
-	//	poly = (POLYGON3D *)geom2->objData;
-	//	testpoint.x = geom1->bvol.LLB.x;
-	//	testpoint.y = geom1->bvol.LLB.y;
-	//	if ( !point_within_polygon(&testpoint, poly) )
-	//		PG_RETURN_BOOL(FALSE);
-	//	testpoint.x = geom1->bvol.LLB.x;
-	//	testpoint.y = geom1->bvol.URT.y;
-	//	if ( !point_within_polygon(&testpoint, poly) )
-	//		PG_RETURN_BOOL(FALSE);
-	//	testpoint.x = geom1->bvol.URT.x;
-	//	testpoint.y = geom1->bvol.URT.y;
-	//	if ( !point_within_polygon(&testpoint, poly) )
-	//		PG_RETURN_BOOL(FALSE);
-	//	testpoint.x = geom1->bvol.URT.x;
-	//	testpoint.y = geom1->bvol.LLB.y;
-	//	if ( !point_within_polygon(&testpoint, poly) )
-	//		PG_RETURN_BOOL(FALSE);
-	//}
-#endif
+	if ( (box1=getbox2d_internal(SERIALIZED_FORM(geom1))) &&
+		(box2=getbox2d_internal(SERIALIZED_FORM(geom2))) )
+	{
+		if ( box1->xmin < box2->xmin ) PG_RETURN_BOOL(FALSE);
+		if ( box1->xmax > box2->xmax ) PG_RETURN_BOOL(FALSE);
+		if ( box1->ymin < box2->ymin ) PG_RETURN_BOOL(FALSE);
+		if ( box1->ymax > box2->ymax ) PG_RETURN_BOOL(FALSE);
+	}
 
 	initGEOS(MAXIMUM_ALIGNOF);
+
 	g1 = 	POSTGIS2GEOS(geom1 );
 	g2 = 	POSTGIS2GEOS(geom2 );
 
@@ -853,8 +815,6 @@ Datum within(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL(); //never get here
 	}
 
-
-
 	PG_RETURN_BOOL(result);
 }
 
@@ -863,20 +823,32 @@ Datum within(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(crosses);
 Datum crosses(PG_FUNCTION_ARGS)
 {
-	LWGEOM		*geom1 = (LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	LWGEOM		*geom2 = (LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-
-
+	LWGEOM *geom1 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	LWGEOM *geom2 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	Geometry *g1,*g2;
 	bool result;
+	const BOX2DFLOAT4 *box1, *box2;
 
 	errorIfGeometryCollection(geom1,geom2);
+
+	/*
+	 * short-circuit 1: if geom2 bounding box does not overlap
+	 * geom1 bounding box we can prematurely return FALSE.
+	 * Do the test IFF BOUNDING BOX AVAILABLE.
+	 */
+	if ( (box1=getbox2d_internal(SERIALIZED_FORM(geom1))) &&
+		(box2=getbox2d_internal(SERIALIZED_FORM(geom2))) )
+	{
+		if ( box2->xmax < box1->xmin ) PG_RETURN_BOOL(FALSE);
+		if ( box2->xmin > box1->xmax ) PG_RETURN_BOOL(FALSE);
+		if ( box2->ymax < box1->ymin ) PG_RETURN_BOOL(FALSE);
+		if ( box2->ymin > box2->ymax ) PG_RETURN_BOOL(FALSE);
+	}
+
 	initGEOS(MAXIMUM_ALIGNOF);
 
 	g1 = 	POSTGIS2GEOS(geom1 );
 	g2 = 	POSTGIS2GEOS(geom2 );
-
-
 
 	result = GEOSrelateCrosses(g1,g2);
 
@@ -889,8 +861,6 @@ Datum crosses(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL(); //never get here
 	}
 
-
-
 	PG_RETURN_BOOL(result);
 }
 
@@ -899,22 +869,32 @@ Datum crosses(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(intersects);
 Datum intersects(PG_FUNCTION_ARGS)
 {
-	LWGEOM		*geom1 = (LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	LWGEOM		*geom2 = (LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-
+	LWGEOM *geom1 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	LWGEOM *geom2 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	Geometry *g1,*g2;
 	bool result;
-
-
-
+	const BOX2DFLOAT4 *box1, *box2;
 
 	errorIfGeometryCollection(geom1,geom2);
+
+	/*
+	 * short-circuit 1: if geom2 bounding box does not overlap
+	 * geom1 bounding box we can prematurely return FALSE.
+	 * Do the test IFF BOUNDING BOX AVAILABLE.
+	 */
+	if ( (box1=getbox2d_internal(SERIALIZED_FORM(geom1))) &&
+		(box2=getbox2d_internal(SERIALIZED_FORM(geom2))) )
+	{
+		if ( box2->xmax < box1->xmin ) PG_RETURN_BOOL(FALSE);
+		if ( box2->xmin > box1->xmax ) PG_RETURN_BOOL(FALSE);
+		if ( box2->ymax < box1->ymin ) PG_RETURN_BOOL(FALSE);
+		if ( box2->ymin > box2->ymax ) PG_RETURN_BOOL(FALSE);
+	}
+
 	initGEOS(MAXIMUM_ALIGNOF);
 
 	g1 = 	POSTGIS2GEOS(geom1 );
 	g2 = 	POSTGIS2GEOS(geom2 );
-
-
 
 	result = GEOSrelateIntersects(g1,g2);
 	GEOSdeleteGeometry(g1);
@@ -925,8 +905,6 @@ Datum intersects(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL(); //never get here
 	}
 
-
-
 	PG_RETURN_BOOL(result);
 }
 
@@ -934,20 +912,32 @@ Datum intersects(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(touches);
 Datum touches(PG_FUNCTION_ARGS)
 {
-	LWGEOM		*geom1 = (LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	LWGEOM		*geom2 = (LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-
-
+	LWGEOM *geom1 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	LWGEOM *geom2 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	Geometry *g1,*g2;
 	bool result;
+	const BOX2DFLOAT4 *box1, *box2;
 
 	errorIfGeometryCollection(geom1,geom2);
+
+	/*
+	 * short-circuit 1: if geom2 bounding box does not overlap
+	 * geom1 bounding box we can prematurely return FALSE.
+	 * Do the test IFF BOUNDING BOX AVAILABLE.
+	 */
+	if ( (box1=getbox2d_internal(SERIALIZED_FORM(geom1))) &&
+		(box2=getbox2d_internal(SERIALIZED_FORM(geom2))) )
+	{
+		if ( box2->xmax < box1->xmin ) PG_RETURN_BOOL(FALSE);
+		if ( box2->xmin > box1->xmax ) PG_RETURN_BOOL(FALSE);
+		if ( box2->ymax < box1->ymin ) PG_RETURN_BOOL(FALSE);
+		if ( box2->ymin > box2->ymax ) PG_RETURN_BOOL(FALSE);
+	}
+
 	initGEOS(MAXIMUM_ALIGNOF);
 
-	g1 = 	POSTGIS2GEOS(geom1 );
-	g2 = 	POSTGIS2GEOS(geom2 );
-
-
+	g1 = POSTGIS2GEOS(geom1 );
+	g2 = POSTGIS2GEOS(geom2 );
 
 	result = GEOSrelateTouches(g1,g2);
 
@@ -960,8 +950,6 @@ Datum touches(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL(); //never get here
 	}
 
-
-
 	PG_RETURN_BOOL(result);
 }
 
@@ -969,19 +957,32 @@ Datum touches(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(disjoint);
 Datum disjoint(PG_FUNCTION_ARGS)
 {
-	LWGEOM		*geom1 = (LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	LWGEOM		*geom2 = (LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-
-
+	LWGEOM *geom1 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	LWGEOM *geom2 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	Geometry *g1,*g2;
 	bool result;
+	const BOX2DFLOAT4 *box1, *box2;
 
 	errorIfGeometryCollection(geom1,geom2);
+
+	/*
+	 * short-circuit 1: if geom2 bounding box does not overlap
+	 * geom1 bounding box we can prematurely return TRUE.
+	 * Do the test IFF BOUNDING BOX AVAILABLE.
+	 */
+	if ( (box1=getbox2d_internal(SERIALIZED_FORM(geom1))) &&
+		(box2=getbox2d_internal(SERIALIZED_FORM(geom2))) )
+	{
+		if ( box2->xmax < box1->xmin ) PG_RETURN_BOOL(TRUE);
+		if ( box2->xmin > box1->xmax ) PG_RETURN_BOOL(TRUE);
+		if ( box2->ymax < box1->ymin ) PG_RETURN_BOOL(TRUE);
+		if ( box2->ymin > box2->ymax ) PG_RETURN_BOOL(TRUE);
+	}
+
 	initGEOS(MAXIMUM_ALIGNOF);
 
-	g1 = 	POSTGIS2GEOS(geom1 );
-	g2 = 	POSTGIS2GEOS(geom2 );
-
+	g1 = POSTGIS2GEOS(geom1 );
+	g2 = POSTGIS2GEOS(geom2 );
 
 	result = GEOSrelateDisjoint(g1,g2);
 	GEOSdeleteGeometry(g1);
@@ -1110,19 +1111,32 @@ if ((g1==NULL) || (g2 == NULL))
 PG_FUNCTION_INFO_V1(geomequals);
 Datum geomequals(PG_FUNCTION_ARGS)
 {
-	LWGEOM		*geom1 = (LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	LWGEOM		*geom2 = (LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-
-
+	LWGEOM *geom1 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	LWGEOM *geom2 = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	Geometry *g1,*g2;
 	bool result;
+	const BOX2DFLOAT4 *box1, *box2;
 
 	errorIfGeometryCollection(geom1,geom2);
+
+	/*
+	 * short-circuit 1: if geom2 bounding box does not equal
+	 * geom1 bounding box we can prematurely return FALSE.
+	 * Do the test IFF BOUNDING BOX AVAILABLE.
+	 */
+	if ( (box1=getbox2d_internal(SERIALIZED_FORM(geom1))) &&
+		(box2=getbox2d_internal(SERIALIZED_FORM(geom2))) )
+	{
+		if ( box2->xmax != box1->xmax ) PG_RETURN_BOOL(FALSE);
+		if ( box2->xmin != box1->xmin ) PG_RETURN_BOOL(FALSE);
+		if ( box2->ymax != box1->ymax ) PG_RETURN_BOOL(FALSE);
+		if ( box2->ymin != box2->ymin ) PG_RETURN_BOOL(FALSE);
+	}
+
 	initGEOS(MAXIMUM_ALIGNOF);
 
-	g1 = 	POSTGIS2GEOS(geom1 );
-	g2 = 	POSTGIS2GEOS(geom2 );
-
+	g1 = POSTGIS2GEOS(geom1 );
+	g2 = POSTGIS2GEOS(geom2 );
 
 	result = GEOSequals(g1,g2);
 	GEOSdeleteGeometry(g1);
