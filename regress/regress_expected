@@ -53,8 +53,8 @@ ERROR:  parse error - invalid geometry
 ERROR:  parse error - invalid geometry
 ERROR:  parse error - invalid geometry
 ERROR:  parse error - invalid geometry
-ERROR:  polygon has ring where first point != last point
-ERROR:  polygon has ring where first point != last point
+ERROR:  geometry contains non-closed rings
+ERROR:  geometry contains non-closed rings
 ERROR:  parse error - invalid geometry
 ERROR:  parse error - invalid geometry
 ERROR:  parse error - invalid geometry
