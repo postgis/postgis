@@ -7,6 +7,7 @@
  */
 #include "wktparse.h"
 #include <string.h>
+#include <stdio.h>
 
 //To get byte order
 #include <sys/types.h>
@@ -18,7 +19,7 @@ typedef unsigned long int4;
 
 int srid=-1;
 
-static int ferror;
+static int ferror_occured;
 static allocator local_malloc;
 static report_error error_func;
 
@@ -123,7 +124,7 @@ tuple* alloc_tuple(output_func of,size_t size){
 
 void error(const char* err){
 	error_func(err);
-	ferror=1;
+	ferror_occured=1;
 }
 
 void free_tuple(tuple* to_free){
@@ -475,7 +476,7 @@ static const byte to_hex[]  = {
 
 byte strhex_readbyte(const char* in){
 	if ( *in == 0 ){
-		if ( ! ferror){
+		if ( ! ferror_occured){
 			error("invalid wkb");
 		}
 		return 0;
@@ -491,18 +492,27 @@ byte read_wkb_byte(const char** in){
 
 int swap_order;
 
-int4 read_wkb_int(const char** in){
+int4 read_wkb_int(const char** in)
+{
 	int4 ret;
 	byte* pb = (byte*) &ret;
 	int i;
 
-	if( ! swap_order ){
-		for(i=0;i<4;i++){
+
+
+
+	if( ! swap_order )
+	{
+		for(i=0;i<4;i++)
+		{
 			pb[i]=read_wkb_byte(in);
 		}
 	}
-	else{
-		for(i=3;i<=0;i--){
+	else
+	{
+
+		for(i=3;i>=0;i--)
+		{
 			pb[i]=read_wkb_byte(in);
 		}
 
@@ -523,7 +533,8 @@ double read_wbk_double(const char** in,int convert_from_int){
 			}
 		}
 		else{
-			for(i=7;i<=0;i--){
+			for(i=7;i>=0;i--)
+			{
 				pb[i]=read_wkb_byte(in);
 			}
 		}
@@ -538,6 +549,7 @@ double read_wbk_double(const char** in,int convert_from_int){
 void read_wkb_point(const char** b){
 	int i;
 	tuple* p;
+
 
 	if(the_geom.lwgi && the_geom.from_lwgi ){
 		//Special case - reading from lwgi to lwgi
@@ -577,7 +589,7 @@ void read_collection(const char** b,read_col_func f){
 	alloc_counter();
 
 	while(cnt--){
-		if ( ferror )	return;
+		if ( ferror_occured )	return;
 		f(b);
 	}
 
@@ -593,19 +605,22 @@ void parse_wkb(const char** b){
 	byte xdr = read_wkb_byte(b);
 	swap_order=0;
 
-	if ( xdr == 0x01 ){
+	if ( xdr == 0x01 ){  // wkb is in little endian
 		if ( BYTE_ORDER != LITTLE_ENDIAN )
 			swap_order=1;
 	}
-	else if ( xdr == 0x00 ){
+	else if ( xdr == 0x00 ){ // wkb is in big endian
 		if ( BYTE_ORDER == LITTLE_ENDIAN )
 			swap_order=1;
 	}
 
 	type = read_wkb_int(b);
 
+
+
+
 	//quick exit on error
-	if ( ferror ) return;
+	if ( ferror_occured ) return;
 
 	if (type & 0x80000000)
 		the_geom.ndims=3;
@@ -689,13 +704,13 @@ byte* parse_it(const char* geometry,allocator allocfunc,report_error errfunc){
 	local_malloc = allocfunc;
 	error_func=errfunc;
 
-	ferror = 0;
+	ferror_occured = 0;
 
 	init_parser(geometry);
 	lwg_parse_yyparse();
 	close_parser();
 
-	if (ferror)
+	if (ferror_occured)
 		return NULL;
 
 	return make_lwgeom();
