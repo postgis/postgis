@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.37  2003/10/28 16:57:35  strk
+ * Added collect_garray() function.
+ *
  * Revision 1.36  2003/10/28 15:16:17  strk
  * unite_sfunc() from postgis_geos.c renamed to geom_accum() and moved in postgis_fn.c
  *
@@ -580,6 +583,7 @@ Datum transform_geom(PG_FUNCTION_ARGS);
 
 Datum max_distance(PG_FUNCTION_ARGS);
 Datum geom_accum(PG_FUNCTION_ARGS);
+Datum collect_garray(PG_FUNCTION_ARGS);
 Datum collector(PG_FUNCTION_ARGS);
 
 Datum WKBtoBYTEA(PG_FUNCTION_ARGS);

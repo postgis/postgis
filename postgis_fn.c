@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.29  2003/10/28 16:57:35  strk
+ * Added collect_garray() function.
+ *
  * Revision 1.28  2003/10/28 15:16:17  strk
  * unite_sfunc() from postgis_geos.c renamed to geom_accum() and moved in postgis_fn.c
  *
@@ -2675,6 +2678,165 @@ Datum geom_accum(PG_FUNCTION_ARGS)
 
 }
 
+/*
+ * collect_garray ( GEOMETRY[] ) returns a geometry which contains
+ * all the sub_objects from all of the geometries in given array.
+ *
+ * returned geometry is the simplest possible, based on the types
+ * of the collected objects
+ * ie. if all are of either X or multiX, then a multiX is returned
+ * bboxonly types are treated as null geometries (no sub_objects)
+ */
+PG_FUNCTION_INFO_V1( collect_garray );
+Datum collect_garray ( PG_FUNCTION_ARGS )
+{
+	Datum datum;
+	ArrayType *array;
+	int nelems, srid=-1, is3d=0;
+	GEOMETRY **geoms;
+	GEOMETRY *result=NULL, *geom, *tmp;
+	int i, o;
+	BOX3D *bbox;
+
+	/* Get input datum */
+	datum = PG_GETARG_DATUM(0);
+
+	/* Return null on null input */
+	if ( (Pointer *)datum == NULL ) PG_RETURN_NULL();
+
+	/* Get actual ArrayType */
+	array = (ArrayType *) PG_DETOAST_DATUM(datum);
+
+	/* Get number of geometries in array */
+	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
+
+	/* Return null on 0-elements input array */
+	if ( nelems == 0 ) PG_RETURN_NULL();
+
+	/* Get pointer to GEOMETRY pointers array */
+	geoms = (GEOMETRY **)ARR_DATA_PTR(array);
+
+	/* Return the only present element of a 1-element array */
+	if ( nelems == 1 ) PG_RETURN_POINTER(geoms[0]);
+
+	/* Iterate over all geometries in array */
+	for (i=0; i<nelems; i++)
+	{
+		int32 *offsets;
+
+		geom = geoms[i];
+
+		/* Skip NULL array elements (are them possible?) */
+		if ( geom == NULL ) continue; 
+
+		/* Use first NOT-NULL GEOMETRY as the base */
+		if ( ! result )
+		{
+			/* Remember first geometry's SRID for later checks */
+			srid = geom->SRID;
+
+			/* Get first geometry's is3d flag as base is3d */
+			is3d = geom->is3d;
+
+			result = (GEOMETRY *)palloc(geom->size);
+			if ( ! result ) {
+	elog(ERROR, "collect_garray: out of virtual memory");
+	PG_RETURN_NULL();
+			}
+			memcpy(result, geom, geom->size);
+			
+			/* 
+			 * I belive memory associated with geometries
+			 * in array can be safely removed. Comment
+			 * this out if you get memory faults!
+			 * TODO: inspect this (as long as passed
+			 * array is the result of geom_accum this
+			 * is true because geom_accum will DETOAST_COPY
+			 * while for direct user call I do not know)
+			 */
+			pfree(geom);
+
+			continue;
+		} 
+
+		/* Skip geometry if it contains no sub-objects */
+		if ( ! geom->nobjs )
+		{
+			if ( geom->is3d ) is3d = 1; // should I care ?
+			pfree(geom); // se note above
+		 	continue;
+		}
+
+		/*
+		 * If we are here this means we are in front of a
+		 * good (non empty) geometry beside the first
+		 */
+
+		/* Fist let's check for SRID compatibility */
+		if ( geom->SRID != srid )
+		{
+	elog(ERROR, "Operation on GEOMETRIES with different SRIDs");
+	PG_RETURN_NULL();
+		}
+
+		/*
+		 * Set result is3d flag to true if at least one 
+		 * of geometries in set has is set to true
+		 */
+		if ( geom->is3d ) is3d = 1; 
+
+		/* Get to sub-objects offset */
+		offsets = (int32 *)(((char *)&(geom->objType[0])) +
+				sizeof(int32) * geom->nobjs ) ;
+
+		/* Iterate over geometry sub-objects */
+		for (o=0; o<geom->nobjs; o++)
+		{
+			int size, type;
+   			char *obj;
+
+			/* Get object pointer */
+			obj = (char *) geom+offsets[o];
+
+			/* Get object type */
+			type = geom->objType[o];
+
+			/* Get object size (fast way) */
+			if( o == geom->nobjs-1 ) {
+				size = geom->size - offsets[o];
+			} else {
+				size = offsets[o+1] - offsets[o];
+			}
+
+			/*
+			 * Add sub-object to base geometry,
+			 * replace base geometry with new one.
+			 */
+			tmp = add_to_geometry(result, size, obj, type);
+			pfree( result );
+			result = tmp;
+		}
+		pfree(geom); // se note above
+	}
+
+	/* Check we got something in our result */
+	if ( result == NULL ) PG_RETURN_NULL();
+
+	/*
+	 * We should now have a big fat geometry composed of all
+	 * sub-objects from all geometries in array
+	 */
+
+	/* Set is3d flag */
+	result->is3d = is3d;
+
+	/* Construct bounding volume */
+	bbox = bbox_of_geometry( result ); // make 
+	memcpy( &result->bvol, bbox, sizeof(BOX3D) ); // copy 
+	pfree( bbox ); // release
+
+	PG_RETURN_POINTER( result );
+}
 
 // collector( geom, geom ) returns a geometry which contains
 // all the sub_objects from both of the argument geometries
