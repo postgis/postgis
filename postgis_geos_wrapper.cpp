@@ -2,6 +2,9 @@
 
 /*
 * $Log$
+* Revision 1.22  2004/07/01 17:02:26  strk
+* Updated to support latest GEOS API.
+*
 * Revision 1.21  2004/06/16 19:59:36  strk
 * Changed GEOS_VERSION to POSTGIS_GEOS_VERSION to avoid future clashes
 *
@@ -221,7 +224,9 @@ Geometry *PostGIS2GEOS_box3d(BOX3D *box, int SRID)
 		cl->setAt(c, 4);
 
 		g = geomFactory->createLinearRing(cl);
+#if POSTGIS_GEOS_VERSION == 100
 		delete cl;
+#endif
 		if (g==NULL) return NULL;
 		g->setSRID(SRID);
 		return g;
@@ -252,7 +257,9 @@ Geometry *PostGIS2GEOS_collection(Geometry **geoms, int ngeoms,int SRID, bool is
 			subGeos->push_back(geoms[t]);
 		}
 		g = geomFactory->buildGeometry(subGeos);
+#if POSTGIS_GEOS_VERSION == 100
 		delete subGeos;
+#endif
 		if (g==NULL)
 			return NULL;
 		g->setSRID(SRID);
@@ -335,7 +342,9 @@ PostGIS2GEOS_linestring(const LINE3D *line,int SRID, bool is3d)
 			}
 		}
 		Geometry *g = geomFactory->createLineString(coords);
+#if POSTGIS_GEOS_VERSION == 100
 		delete coords;
+#endif
 		if (g==NULL) return NULL;
 		g->setSRID(SRID);
 		return g;
@@ -369,11 +378,9 @@ Geometry *PostGIS2GEOS_multipolygon(POLYGON3D **polygons,int npolys, int SRID, b
 				subPolys->push_back(PostGIS2GEOS_polygon(polygons[t], SRID,is3d ));
 			}
 			g = geomFactory->createMultiPolygon(subPolys);
-#if POSTGIS_GEOS_VERSION > 100
-			for (t=0; t<(int)subPolys->size(); t++)
-				delete (*subPolys)[t];
-#endif
+#if POSTGIS_GEOS_VERSION == 100
 			delete subPolys;
+#endif
 
 			if (g== NULL)
 				return NULL;
@@ -408,13 +415,10 @@ PostGIS2GEOS_multilinestring(const LINE3D **lines, int nlines, int SRID, bool is
 			subLines->push_back(PostGIS2GEOS_linestring(lines[t],
 						SRID,is3d ));
 		}
-		// geometries pointed to by subLines will be owned
-		// by returned MultiLineString object
 		g = geomFactory->createMultiLineString(subLines);
-#if POSTGIS_GEOS_VERSION > 100
-		for (t=0; t<(int)subLines->size(); t++) delete (*subLines)[t];
-#endif
+#if POSTGIS_GEOS_VERSION == 100
 		delete subLines;
+#endif
 		if (g==NULL) return NULL;
 		g->setSRID(SRID);
 		return g;
@@ -444,11 +448,9 @@ Geometry *PostGIS2GEOS_multipoint(POINT3D **points,int npoints, int SRID, bool i
 				subPoints->push_back(PostGIS2GEOS_point(points[t], SRID,is3d ));
 			}
 			g = geomFactory->createMultiPoint(subPoints);
-#if POSTGIS_GEOS_VERSION > 100
-			for (t=0; t<(int)subPoints->size(); t++)
-				delete (*subPoints)[t];
-#endif
+#if POSTGIS_GEOS_VERSION == 100
 			delete subPoints;
+#endif
 			if (g==NULL)
 				return NULL;
 			g->setSRID(SRID);
@@ -510,7 +512,9 @@ Geometry *PostGIS2GEOS_polygon(POLYGON3D *polygon,int SRID, bool is3d)
 				}
 			}
 			outerRing = (LinearRing*) geomFactory->createLinearRing(cl);
+#if POSTGIS_GEOS_VERSION == 100
 			delete cl;
+#endif
 			if (outerRing == NULL)
 				return NULL;
 			outerRing->setSRID(SRID);
@@ -540,7 +544,9 @@ Geometry *PostGIS2GEOS_polygon(POLYGON3D *polygon,int SRID, bool is3d)
 				}
 			}
 			innerRing = (LinearRing *) geomFactory->createLinearRing(cl);
+#if POSTGIS_GEOS_VERSION == 100
 			delete cl;
+#endif
 			if (innerRing == NULL)
 			{
 				delete outerRing;
