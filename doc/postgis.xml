@@ -87,7 +87,7 @@
   </chapter> 
   <chapter> 
 	 <title>Installation</title> 
-	 <sect1><title>Requirements</title><para>PostGIS has the following requirements for building and usage:</para><itemizedlist><listitem><para>A complete configured and built PostgreSQL source code tree.  PostGIS uses definitions from the PostgreSQL configure/build process to conform to the particular platform you are building on. PostgreSQL is available from <ulink url="http://www.postgresql.org">http://www.postgresql.org</ulink></para></listitem><listitem><para>GNU C compiler (<filename>gcc</filename>). Some other ANSI C compilers can be used to compile PostGIS, but we find far fewer problems when compiling with <filename>gcc</filename>.</para></listitem><listitem><para>GNU Make (<filename>gmake</filename> or <filename>make</filename>). For many systems, GNU <filename>make</filename> is the default version of name. Check the version by invoking <filename>make -v</filename>. Other versions of <filename>make</filename> may not like the PostGIS <filename>Makefile</filename>.</para></listitem><listitem><para>(Optional) Proj4 reprojection library. The Proj4 library is used to provide coordinate reprojection support within PostGIS. Proj4 is available for download from <ulink url="http://www.remotesensing.org/proj">http://www.remotesensing.org/proj</ulink>.</para></listitem></itemizedlist></sect1><sect1 id="PGInstall"> 
+	 <sect1><title>Requirements</title><para>PostGIS has the following requirements for building and usage:</para><itemizedlist><listitem><para>A complete configured and built PostgreSQL source code tree.  PostGIS uses definitions from the PostgreSQL configure/build process to conform to the particular platform you are building on. PostgreSQL is available from <ulink url="http://www.postgresql.org">http://www.postgresql.org</ulink>. </para></listitem><listitem><para>GNU C compiler (<filename>gcc</filename>). Some other ANSI C compilers can be used to compile PostGIS, but we find far fewer problems when compiling with <filename>gcc</filename>.</para></listitem><listitem><para>GNU Make (<filename>gmake</filename> or <filename>make</filename>). For many systems, GNU <filename>make</filename> is the default version of make. Check the version by invoking <filename>make -v</filename>. Other versions of <filename>make</filename> may not process the PostGIS <filename>Makefile</filename> properly.</para></listitem><listitem><para>(Optional) Proj4 reprojection library. The Proj4 library is used to provide coordinate reprojection support within PostGIS. Proj4 is available for download from <ulink url="http://www.remotesensing.org/proj">http://www.remotesensing.org/proj</ulink>.</para></listitem></itemizedlist></sect1><sect1 id="PGInstall"> 
 		<title>PostGIS</title> 
 		<para>The PostGIS module is a extension to the PostgreSQL backend server.
 		  As such, PostGIS 0.7 <emphasis>requires</emphasis> a full copy of the PostgreSQL
@@ -112,9 +112,9 @@
 		<listitem> 
 			 <para>Run the compile and install commands. </para> 
 			 <programlisting># make 
-# make install</programlisting></listitem>
+# make install</programlisting><para>All files are installed relative to the PostgreSQL install directory, <filename>[prefix]</filename>.</para><itemizedlist><listitem><para>Libraries are installed <filename>[prefix]/lib/contrib</filename>. </para></listitem><listitem><para>Important support files such as <filename>postgis.sql</filename> are installed in <filename>[prefix]/share/contrib</filename>.  </para></listitem><listitem><para>Loader and dumber binaries are installed <filename>[prefix]/bin</filename>.</para></listitem></itemizedlist></listitem>
 		<listitem><para>PostGIS requires the PL/pgSQL procedural language extension.
-Before loading the postgis.sql file, you must first enable PL/pgSQL. 
+Before loading the <filename>postgis.sql</filename> file, you must first enable PL/pgSQL. 
 You should use the <filename>createlang</filename> command.
 The PostgreSQL 7.1 Programmer's Guide has the details if you want to this
 manually for some reason.
@@ -136,9 +136,10 @@ in your database, destroy the database, create a new one, execute the
 new <filename>postgis.sql</filename> file, then upload your database dump:</para><programlisting># pg_dump -t "*" -f dumpfile.sql yourdatabase
 # dropdb yourdatabase
 # createdb yourdatabase
+# createlang plpgsql yourdatabse
 # psql -f postgis.sql -d yourdatabase
 # psql -f dumpfile.sql -d yourdatabase
-# vacuumdb -z yourdatabase</programlisting><note><para>When upgrading to 0.6, all your geometries will be created with an SRID
+# vacuumdb -z yourdatabase</programlisting><note><para>When upgrading from version 0.5 to 0.6+, all your geometries will be created with an SRID
 of -1. To create valid OpenGIS geometries, you will have to create a
 valid SRID in the SPATIAL_REF_SYS table, and then update your geometries
 to reference the SRID with the following SQL (with the appropriate
@@ -151,25 +152,25 @@ substitutions:</para><programlisting>UPDATE TABLE &lt;table&gt; SET &lt;geocolum
 		  PostGIS.</para> 
 		<orderedlist> 
 		  <listitem> 
-			 <para>Enter the "jdbc" sub-directory of the PostGIS distribution.
+			 <para>Enter the <filename>jdbc</filename> sub-directory of the PostGIS distribution.
 				</para> 
 		  </listitem> 
 		  <listitem> 
 			 <para>Edit the <filename>Makefile</filename> to provide the correct paths of your java
-				compiler (JAVAC) and interpreter (JAVA). </para> 
+				compiler (<varname>JAVAC</varname>) and interpreter (<varname>JAVA</varname>). </para> 
 		  </listitem> 
 		  <listitem> 
-			 <para>Run the "make" command. Copy the <filename>postgis.jar</filename> file to wherever
+			 <para>Run the <filename>make</filename> command. Copy the <filename>postgis.jar</filename> file to wherever
 				you keep your java libraries.</para> 
 		  </listitem> 
 		</orderedlist> 
 	 </sect1> 
 	 <sect1> 
 		<title>Loader/Dumper</title> 
-		<para>The data loader and dumper are built automatically as part of the PostGIS build. To install them, copy them into a directory in your path.</para> 
+		<para>The data loader and dumper are built and installed automatically as part of the PostGIS build.  To build and install them manually:</para> 
 		<programlisting># cd postgis-0.7/loader 
-# cp pgsql2shp /usr/local/bin
-# cp shp2pgsql /usr/local/bin</programlisting><para>The loader is called <filename>shp2pgsql</filename> and converts ESRI Shape files into
+# make
+# make install</programlisting><para>The loader is called <filename>shp2pgsql</filename> and converts ESRI Shape files into
 		  SQL suitable for loading in PostGIS/PostgreSQL.  The dumper is called <filename>pgsql2shp</filename> and converts PostGIS tables into ESRI shape files.</para> 
 	 </sect1> 
   </chapter> 
@@ -192,9 +193,9 @@ substitutions:</para><programlisting>UPDATE TABLE &lt;table&gt; SET &lt;geocolum
 		  </question> 
 		  <answer> 
 			 <para>First, you need to create a table with a column of type
-				"geometry" to hold your GIS data. Connect to your database with "psql" and try
+				"geometry" to hold your GIS data. Connect to your database with <filename>psql</filename> and try
 				the following SQL: </para><programlisting>CREATE TABLE gtest ( ID int4, NAME varchar(20) );
-SELECT AddGeometryColumn('dbname','gtest','geom',-1,'LINESTRING',2);</programlisting><para>If the table creation fails, you probably have not
+SELECT AddGeometryColumn('dbname','gtest','geom',-1,'LINESTRING',2);</programlisting><para>If the geometry column addition fails, you probably have not
 				loaded the PostGIS functions and objects into this database. See the 
 				<link linkend="PGInstall">installation instructions</link>.</para> 
 			 <para>Then, you can insert a geometry into the table using a SQL
@@ -216,16 +217,11 @@ SELECT AddGeometryColumn('dbname','gtest','geom',-1,'LINESTRING',2);</programlis
 		  <answer> 
 			 <para>There are a number of spatial operators available to
 				PostgreSQL, and several of them have been implemented by PostGIS in order to
-				provide indexing support.</para><para>In order to do a spatial query with index support, you must use the "overlap operator" </para><para>However, all the operators have been implemented with
-				the following important simplifying assumption: <emphasis>all features shall be
-				represented by their bounding boxes</emphasis>.</para> 
-			 <para>We recognize that using bounding boxes to proxy for features is
-				a limiting assumption, but it was an important one in moving from the
-				conception of a PostgreSQL spatial database to the implementation. Using
-				bounding boxes makes queries faster, indexes smaller, and operators
-				simpler. Commercial spatial databases use the same assumption -- bounding boxes are important to most indexing schemes.</para> 
+				provide indexing support.</para><para>In order to do a spatial query with index support, you must use the "overlap operator" (&amp;&amp;) which uses the following important simplifying assumption: <emphasis>all features shall be
+				represented by their bounding boxes</emphasis>.</para><para>We recognize that using bounding boxes to proxy for features is
+				a limiting assumption, but it is an important one in providing spatial indexing capabilities. Commercial spatial databases use the same assumption -- bounding boxes are important to most indexing schemes.</para> 
 			 <para>The most important spatial operator from a user's perspective
-				is the "&amp;&amp;" operator, which tests whether one feature's bounding box
+				is the "&amp;&amp;" overlap operator, which tests whether one feature's bounding box
 				overlaps that of another. An example of a spatial query using &amp;&amp; is:</para><programlisting>SELECT id,name FROM GTEST WHERE GEOM &amp;&amp; 'BOX3D(3 4,4	5)'::box3d</programlisting><para>Note that the bounding box used for querying must be
 				explicitly declared as a <varname>box3d</varname> using the "::box3d" casting operation.</para> 
 		  </answer> 
@@ -241,13 +237,10 @@ SELECT AddGeometryColumn('dbname','gtest','geom',-1,'LINESTRING',2);</programlis
 			 <para>To build a spatial index on a table with a <varname>geometry</varname> column,
 				use the "CREATE INDEX" function as follows:</para> 
 			 <programlisting>CREATE INDEX [indexname] ON [tablename]  
-  USING GIST ( [geometrycolumn] gist_geometry_ops) WITH (islossy);</programlisting><para>The "USING GIST" option tells the server to use a GiST
+  USING GIST ( [geometrycolumn] gist_geometry_ops);</programlisting><para>The "USING GIST" option tells the server to use a GiST
 				(Generalized Search Tree) index. The reference to "gist_geometry_ops" tells the
 				server to use a particular set of comparison operators for building the index:
-				the "gist_geometry_ops" are part of the PostGIS extension. Finally, the
-				"islossy" option tells the server that the features being indexed can be
-				proxied by a smaller data structure -- in the case of geometries, the features
-				are represented in the index by their bounding boxes.</para> 
+				the "gist_geometry_ops" are part of the PostGIS extension. </para><note><para>For PostgreSQL version 7.1.x, you can specifically request a "lossy" index by appending WITH (ISLOSSY) to the index creation command.  For PostgreSQL 7.2.x and above all GiST indexes are assumed to be lossy. Lossy indexes uses a proxy object (in the spatial case, a bounding box) for building the index.</para></note> 
 		  </answer> 
 		</qandaentry> 
 		<qandaentry> 
@@ -279,17 +272,19 @@ SELECT AddGeometryColumn('dbname','gtest','geom',-1,'LINESTRING',2);</programlis
 				general):</para> 
 			 <itemizedlist> 
 				<listitem> 
-				  <para>Building an R-Tree index on a large table of geometries can
-					 take over twice as long as a GiST index on the same table.</para> 
-				</listitem> 
-				<listitem> 
 				  <para>R-Tree indexes in PostgreSQL cannot handle features which
 					 are larger than 8K in size. GiST indexes can, using the "lossy" trick of
 					 substituting the bounding box for the feature itself.</para> 
+				</listitem><listitem><para>R-Tree indexes in PostgreSQL are not "null safe", so building an index on a geometry column which contains null geometries will fail.</para> 
 				</listitem> 
 			 </itemizedlist> 
 		  </answer> 
-		</qandaentry><qandaentry><question><para>Why should I use the AddGeometryColumn() function and all the other OpenGIS stuff?</para></question><answer><para>If you do not want to use the OpenGIS support functions, you do not have to. Simply create tables as in older versions, defining your geometry columns in the CREATE statement. All your geometries will have SRIDs of -1, and the OpenGIS meta-data tables will <emphasis>not</emphasis> be filled in properly. For most current applications, this will not matter.</para><para>However, in the future it is likely that client software will use the meta-data tables to interrogate the database about available layers and projections before rendering data. An obvious early example is the Mapserver internet mapping software, which could be altered to interrogate the SPATIAL_REF_SYS table for projection information on the layers it is rendering.</para><para>For these reasons it is probably wise to learn and use the OpenGIS concepts from early on.</para></answer></qandaentry> 
+		</qandaentry><qandaentry><question><para>Why should I use the AddGeometryColumn() function and all the other OpenGIS stuff?</para></question><answer><para>If you do not want to use the OpenGIS support functions, you do not have to. Simply create tables as in older versions, defining your geometry columns in the CREATE statement. All your geometries will have SRIDs of -1, and the OpenGIS meta-data tables will <emphasis>not</emphasis> be filled in properly. For most current applications, this will not matter.</para><para>However, in the future it is likely that client software will use the meta-data tables to interrogate the database about available layers and projections before rendering data. An obvious early example is the Mapserver internet mapping software, which could be altered to interrogate the SPATIAL_REF_SYS table for projection information on the layers it is rendering.</para><para>For these reasons it is probably wise to learn and use the OpenGIS concepts from early on.</para></answer></qandaentry><qandaentry><question><para>What is the best way to find all objects with a radius of another object?</para></question><answer><para>To use the database most efficiently, it is best to do radius queries which combine the radius test with a bounding box test: the bounding box test uses the spatial index, giving fast access to a subset of data which the radius test is then applied to.</para><para>For example, to find all objects with 100 meters of POINT(1000 1000) the following query would work:</para><programlisting>SELECT * 
+FROM GEOTABLE 
+WHERE 
+  GEOM &amp;&amp; GeometryFromText('BOX3D(900 900,1100 1100)',-1)
+AND
+  Distance(GeometryFromText('POINT(1000 1000)',-1),GEOM);</programlisting></answer></qandaentry><qandaentry><question><para>How do I perform a coordinate reprojection as part of a query?</para></question><answer><para>To perform a reprojection, both the source and destination coordinate systems must be defined in the SPATIAL_REF_SYS table, and the geometries being reprojected must already have an SRID set on them.  Once that is done, a reprojection is as simple as referring to the desired destination SRID.</para><programlisting>SELECT Transform(GEOM,4269) FROM GEOTABLE;</programlisting></answer></qandaentry> 
 	 </qandaset> 
   </chapter> 
   <chapter> 
@@ -334,7 +329,7 @@ SELECT AddGeometryColumn('dbname','gtest','geom',-1,'LINESTRING',2);</programlis
 		  2-dimensional and 3-dimensional coordinates. PostGIS supports both 2d and 3d
 		  coordinates -- if you describe a feature with 2D coordinates when you insert
 		  it, the database will return that feature to you with 2D coordinates when you
-		  extract it. See the sections on the 2d() and 3d() functions for information on
+		  extract it. See the sections on the <link linkend="force_2d">force_2d()</link> and <link linkend="force_3d">force_3d()</link> functions for information on
 		  converting features to a particular coordinate dimension representation.</para>
 		
 		<sect2> 
@@ -388,7 +383,8 @@ SRID=123;LINESTRING(-123.741378393049 48.9124018962261,-123.741587115639 48.9123
   SRID INTEGER NOT NULL PRIMARY KEY, 
   AUTH_NAME VARCHAR(256), 
   AUTH_SRID INTEGER, 
-  SRTEXT VARCHAR(2048) 
+  SRTEXT VARCHAR(2048), 
+  PROJ4TEXT VARCHAR(2048)
 )</programlisting> 
 		  <para>The SPATIAL_REF_SYS columns are as follows:</para> 
 		  <variablelist> 
@@ -448,12 +444,12 @@ SRID=123;LINESTRING(-123.741378393049 48.9124018962261,-123.741587115639 48.9123
 					 <ulink url="http://www.opengis.org/techno/specs.htm">http://www.opengis.org/techno/specs.htm</ulink>.</para>
 				  
 				</listitem> 
-			 </varlistentry> 
+			 </varlistentry><varlistentry><term>PROJ4TEXT</term><listitem><para>PostGIS uses the Proj4 library to provide coordinate transformation capabilities.  The <varname>PROJ4TEXT</varname> column contains the Proj4 coordinate definition string for a particular SRID.  For example:</para><programlisting>+proj=utm +zone=10 +ellps=clrk66 +datum=NAD27 +units=m</programlisting><para>For more information about, see the Proj4 web site at <ulink url="http://www.remotesensing.org/proj">http://www.remotesensing.org/proj</ulink>.  The <filename>spatial_ref_sys.sql</filename> file contains both <varname>SRTEXT</varname> and <varname>PROJ4TEXT</varname> definitions for all EPSG projections.</para></listitem>    </varlistentry> 
 		  </variablelist> 
 		</sect2> 
 		<sect2> 
 		  <title>The GEOMETRY_COLUMNS Table</title> 
-		  <para>The GEOMETRY_COLUMNS table definition is as follows:</para> 
+		  <para>The <varname>GEOMETRY_COLUMNS</varname> table definition is as follows:</para> 
 		  <programlisting>CREATE TABLE GEOMETRY_COLUMNS ( 
   F_TABLE_CATALOG VARCHAR(256) NOT NULL, 
   F_TABLE_SCHEMA VARCHAR(256) NOT NULL, 
@@ -562,19 +558,21 @@ SELECT AddGeometryColumn( 'roads_db', 'roads', 'roads_geom',	-1, 'GEOMETRY', 3 )
 			 file full of SQL "INSERT" statements into the SQL terminal monitor.</para> 
 		  <para>A data upload file (<filename>roads.sql</filename> for example) might look like
 			 this:</para> 
-		  <literallayout>INSERT INTO ROADS_GEOM (ID,GEOM,NAME ) VALUES (1,GeometryFromText('LINESTRING(191232 243118,191108 243242)',-1),'Jeff Rd'); 
+		  <programlisting>BEGIN;
+INSERT INTO ROADS_GEOM (ID,GEOM,NAME ) VALUES (1,GeometryFromText('LINESTRING(191232 243118,191108 243242)',-1),'Jeff Rd'); 
 INSERT INTO ROADS_GEOM (ID,GEOM,NAME ) VALUES (2,GeometryFromText('LINESTRING(189141 244158,189265 244817)',-1),'Geordie Rd'); 
 INSERT INTO ROADS_GEOM (ID,GEOM,NAME ) VALUES (3,GeometryFromText('LINESTRING(192783 228138,192612 229814)',-1),'Paul St'); 
 INSERT INTO ROADS_GEOM (ID,GEOM,NAME ) VALUES (4,GeometryFromText('LINESTRING(189412 252431,189631 259122)',-1),'Graeme Ave'); 
 INSERT INTO ROADS_GEOM (ID,GEOM,NAME ) VALUES (5,GeometryFromText('LINESTRING(190131 224148,190871 228134)',-1),'Phil Tce'); 
-INSERT INTO ROADS_GEOM (ID,GEOM,NAME ) VALUES (6,GeometryFromText('LINESTRING(198231 263418,198213 268322)',-1),'Dave Cres');</literallayout> 
+INSERT INTO ROADS_GEOM (ID,GEOM,NAME ) VALUES (6,GeometryFromText('LINESTRING(198231 263418,198213 268322)',-1),'Dave Cres');
+COMMIT;</programlisting> 
 		  <para>The data file can be piped into PostgreSQL very easily using the
 			 "psql" SQL terminal monitor:</para> 
-		  <literallayout>psql -d [database] -f roads.sql</literallayout> 
+		  <programlisting>psql -d [database] -f roads.sql</programlisting> 
 		</sect2> 
 		<sect2> 
 		  <title>Using the Loader</title> 
-		  <para>The data loader converts ESRI Shape files into SQL suitable for
+		  <para>The <filename>shp2pgsql</filename> data loader converts ESRI Shape files into SQL suitable for
 			 insertion into a PostGIS/PostgreSQL database. The loader has several operating
 			 modes distinguished by command line flags:</para> 
 		  <variablelist> 
@@ -601,21 +599,26 @@ INSERT INTO ROADS_GEOM (ID,GEOM,NAME ) VALUES (6,GeometryFromText('LINESTRING(19
 				</listitem> 
 			 </varlistentry> 
 			 <varlistentry> 
-				<term>-dump</term> 
+				<term>-D</term> 
 				<listitem> 
 				  <para>Creates a new table and populates it from the Shape file.
 					 This uses the PostgreSQL "dump" format for the output data and is much faster
 					 to load than the default "insert" SQL format. Use this for very large data
 					 sets.</para> 
 				</listitem> 
+			 </varlistentry><varlistentry> 
+				<term>-s &lt;SRID&gt;</term> 
+				<listitem> 
+				  <para>Creates and populates the geometry tables with the specified SRID.</para> 
+				</listitem> 
 			 </varlistentry> 
 		  </variablelist> 
 		  <para>An example session using the loader to create an input file and
 			 uploading it might look like this:</para> 
-		  <programlisting># shp2pgsql shaperoads roadstable &gt; roads.sql 
+		  <programlisting># shp2pgsql shaperoads roadstable roadsdb &gt; roads.sql 
 # psql -d roadsdb -f roads.sql</programlisting><para>A conversion and upload can be done all in one step using UNIX
 			 pipes:</para> 
-		  <programlisting>shp2pgsql shaperoads roadstable | psql -d roadsdb</programlisting></sect2> 
+		  <programlisting># shp2pgsql shaperoads roadstable roadsdb | psql -d roadsdb</programlisting></sect2> 
 	 </sect1> 
 	 <sect1> 
 		<title>Retrieving GIS Data</title> 
@@ -627,7 +630,7 @@ INSERT INTO ROADS_GEOM (ID,GEOM,NAME ) VALUES (6,GeometryFromText('LINESTRING(19
 		  <para>The most straightforward means of pulling data out of the
 			 database is to use a SQL select query and dump the resulting columns into a
 			 parsable text file:</para> 
-		  <literallayout>db=# SELECT id, AsText(geom) AS geom, name FROM ROADS_GEOM; 
+		  <programlisting>db=# SELECT id, AsText(geom) AS geom, name FROM ROADS_GEOM; 
 id | geom                                    | name 
 ---+-----------------------------------------+-----------
  1 | LINESTRING(191232 243118,191108 243242) | Jeff Rd  
@@ -636,7 +639,8 @@ id | geom                                    | name
  4 | LINESTRING(189412 252431,189631 259122) | Graeme Ave 
  5 | LINESTRING(190131 224148,190871 228134) | Phil Tce 
  6 | LINESTRING(198231 263418,198213 268322) | Dave Cres 
-(6 rows)</literallayout> 
+ 7 | LINESTRING(218421 284121,224123 241231) | Chris Way 
+(6 rows)</programlisting> 
 		  <para>However, there will be times when some kind of restriction is
 			 necessary to cut down the number of fields returned. In the case of
 			 attribute-based restrictions, just use the same SQL syntax as normal with a
@@ -669,30 +673,69 @@ id | geom                                    | name
 		  <para>Next, you can use these operators in queries. Note that when
 			 specifying geometries and boxes on the SQL command line, you must explicitly
 			 turn the string representations into geometries by using the "GeometryFromText()" function. So, for example:</para> 
-		  <literallayout>SELECT ID, NAME FROM ROADS_GEOM 
-  WHERE GEOM ~= GeometryFromText('LINESTRING(191232 243118,191108 243242)',-1);</literallayout> 
+		  <programlisting>SELECT 
+  ID, NAME 
+FROM ROADS_GEOM 
+WHERE 
+  GEOM ~= GeometryFromText('LINESTRING(191232 243118,191108 243242)',-1);</programlisting> 
 		  <para>The above query would return the single record from the
 			 "ROADS_GEOM" table in which the geometry was equal to that value.</para> 
 		  <para>When using the "&amp;&amp;" operator, you can specify either a
 			 BOX3D as the comparison feature or a GEOMETRY. When you specify a GEOMETRY,
 			 however, its bounding box will be used for the comparison.</para> 
-		  <literallayout>SELECT ID, NAME FROM ROADS_GEOM 
-  WHERE GEOM &amp;&amp; GeometryFromText('POLYGON((191232 243117,191232 243119,191234 243117,191232 243117))',-1);</literallayout> 
+		  <programlisting>SELECT 
+  ID, NAME 
+FROM ROADS_GEOM 
+WHERE 
+  GEOM &amp;&amp; GeometryFromText('POLYGON((191232 243117,191232 243119,191234 243117,191232 243117))',-1);</programlisting> 
 		  <para>The above query will use the bounding box of the polygon for
 			 comparison purposes.</para> 
 		  <para>The most common spatial query will probably be a "frame-based"
 			 query, used by client software, like data browsers and web mappers, to grab a
 			 "map frame" worth of data for display. Using a "BOX3D" object for the frame,
 			 such a query looks like this:</para> 
-		  <literallayout>SELECT AsText(GEOM) AS GEOM FROM ROADS_GEOM 
-  WHERE GEOM &amp;&amp; GeometryFromText('BOX3D(191232 243117,191232 243119)'::box3d,-1);</literallayout> 
-		  <para>Note the use of the SRID, to specify the projection of the BOX3D.  The -1 is used to indicate no specified SRID.</para> 
+		  <programlisting>SELECT 
+  AsText(GEOM) AS GEOM 
+FROM ROADS_GEOM 
+WHERE 
+  GEOM &amp;&amp; GeometryFromText('BOX3D(191232 243117,191232 243119)'::box3d,-1);</programlisting><para>Note the use of the SRID, to specify the projection of the BOX3D.  The -1 is used to indicate no specified SRID.</para> 
 		</sect2> 
 		<sect2> 
 		  <title>Using the Dumper</title> 
-		  <para>This section to be written.</para> 
-		</sect2> 
-	 <sect2><title>Using Minnesota Mapserver</title><para>The Minnesota Mapserver is an internet web-mapping server. The latest versions conform to the OpenGIS Web Map Specification.</para><itemizedlist><listitem> <para>The Mapserver homepage is at <ulink url="http://mapserver.gis.umn.edu">http://mapserver.gis.umn.edu</ulink>.</para></listitem><listitem> <para>The OpenGIS Web Map Specification is at <ulink url="http://www.opengis.org/techno/specs/01-047r2.pdf">http://www.opengis.org/techno/specs/01-047r2.pdf</ulink>.</para></listitem></itemizedlist><para>To use PostGIS with Mapserver, you will need to know about how to configure Mapserver, which is beyond the scope of this documentation. This section will cover specific PostGIS issues and configuration details.</para><para>To use PostGIS with Mapserver, you will need:</para><itemizedlist><listitem><para>The latest version of PostGIS.</para></listitem><listitem><para>Version 3.5 of Mapserver. At the date of writing, version 3.5 has not been released, but the CVS version is fully functional with PostGIS.</para></listitem></itemizedlist><para>Mapserver accesses PostGIS/PostgreSQL data like any other PostgreSQL client -- using <filename>libpq</filename>. This means that Mapserver can be installed on any machine with network access to the PostGIS server, as long as the system has the <filename>libpq</filename> PostgreSQL client libraries.</para><orderedlist><listitem><para>Compile and install Mapserver, with whatever options you desire, including the "--with-postgis" configuration option.</para></listitem><listitem><para>In your Mapserver map file, add a PostGIS layer. For example:</para><programlisting>LAYER
+		  <para>The <filename>pgsql2shp</filename> table dumper connects directly to the database and converts a table into a shape file. The basic syntax is:</para> 
+		<programlisting>psql2shp [&lt;options&gt;] &lt;database&gt; &lt;table&gt;</programlisting><para>The commandline options are:</para><variablelist> 
+			 <varlistentry> 
+				<term>-d</term> 
+				<listitem> 
+				  <para>Write a 3-dimensional shape file. The default is to write a 2-dimensional shape file.</para> 
+				</listitem> 
+			 </varlistentry> 
+			 <varlistentry> 
+				<term>-f &lt;filename&gt;</term> 
+				<listitem> 
+				  <para>Write the output to a particular filename.</para> 
+				</listitem> 
+			 </varlistentry> 
+			 <varlistentry> 
+				<term>-h &lt;host&gt;</term> 
+				<listitem> 
+				  <para>The database host to connect to.</para> 
+				</listitem> 
+			 </varlistentry> 
+			 <varlistentry> 
+				<term>-p &lt;port&gt;</term> 
+				<listitem> 
+				  <para>The port to connect to on the database host.</para> 
+				</listitem> 
+			 </varlistentry><varlistentry> 
+				<term>-P &lt;password&gt;</term> 
+				<listitem> 
+				  <para>The password to use when connecting to the database.</para> 
+				</listitem> 
+			 </varlistentry><varlistentry><term>-u &lt;user&gt;</term><listitem><para>The username to use when connecting to the database.</para></listitem></varlistentry><varlistentry><term>-g &lt;geometry column&gt;</term><listitem><para>In the case of tables with multiple geometry columns, the geometry column to use when writing the shape file.</para></listitem></varlistentry> 
+		  </variablelist> 
+		  </sect2> 
+	 <sect2><title>Using Minnesota Mapserver</title><para>The Minnesota Mapserver is an internet web-mapping server. The latest versions conform to the OpenGIS Web Map Specification.</para><itemizedlist><listitem> <para>The Mapserver homepage is at <ulink url="http://mapserver.gis.umn.edu">http://mapserver.gis.umn.edu</ulink>.</para></listitem><listitem> <para>The OpenGIS Web Map Specification is at <ulink url="http://www.opengis.org/techno/specs/01-047r2.pdf">http://www.opengis.org/techno/specs/01-047r2.pdf</ulink>.</para></listitem></itemizedlist><para>To use PostGIS with Mapserver, you will need to know about how to configure Mapserver, which is beyond the scope of this documentation. This section will cover specific PostGIS issues and configuration details.</para><para>To use PostGIS with Mapserver, you will need:</para><itemizedlist><listitem><para>Version 0.6 or newer of PostGIS.</para></listitem><listitem><para>Version 3.5 or newer of Mapserver.</para></listitem></itemizedlist><para>Mapserver accesses PostGIS/PostgreSQL data like any other PostgreSQL client -- using <filename>libpq</filename>. This means that Mapserver can be installed on any machine with network access to the PostGIS server, as long as the system has the <filename>libpq</filename> PostgreSQL client libraries.</para><orderedlist><listitem><para>Compile and install Mapserver, with whatever options you desire, including the "--with-postgis" configuration option.</para></listitem><listitem><para>In your Mapserver map file, add a PostGIS layer. For example:</para><programlisting>LAYER
   CONNECTIONTYPE postgis
   NAME "widehighways"
   # Connect to a remote spatial database
@@ -719,7 +762,9 @@ END</programlisting><para>In the example above, the PostGIS-specific directives 
 is a standard set of keys and values like this (with the default values
 in &lt;&gt;):</para><para>user=&lt;username&gt; password=&lt;password&gt; dbname=&lt;username&gt; hostname=&lt;server&gt; port=&lt;5432&gt;</para><para>An empty connection string is still valid, and any of the key/value
 pairs can be omitted. At a minimum you will generally supply the database
-name and username to connect with.</para></listitem></varlistentry><varlistentry><term>DATA</term><listitem><para>The form of this parameter is "&lt;column&gt; from &lt;tablename&gt;" where the column is the spatial column to be rendered to the name.</para></listitem></varlistentry><varlistentry><term>FILTER</term><listitem><para>The filter must be a valid SQL string corresponding to the logic normally following the "WHERE" keyword in a SQL query. So, for example, to render only roads with 6 or more lanes, use a filter of "num_lanes &gt;= 6".</para></listitem></varlistentry></variablelist></listitem><listitem><para>In your spatial database, ensure you have spatial (GiST) indexes built for any the layers you will be drawing.</para></listitem><listitem><para>If you will be querying your layers using Mapserver you will also need an "oid index".</para><para>Mapserver requires unique identifiers for each spatial record when doing queries, and the PostGIS module of Mapserver uses the PostgreSQL <varname>oid</varname> value to provide these unique identifiers. A side-effect of this is that in order to do fast random access of records during queries, an index on the <varname>oid</varname> is needed. </para><para>To build an "oid index", use the following SQL:</para><programlisting>CREATE INDEX &lt;indexname&gt; ON &lt;tablename&gt; ( oid );</programlisting></listitem></orderedlist></sect2></sect1> 
+name and username to connect with.</para></listitem></varlistentry><varlistentry><term>DATA</term><listitem><para>The form of this parameter is "&lt;column&gt; from &lt;tablename&gt;" where the column is the spatial column to be rendered to the map.</para></listitem></varlistentry><varlistentry><term>FILTER</term><listitem><para>The filter must be a valid SQL string corresponding to the logic normally following the "WHERE" keyword in a SQL query. So, for example, to render only roads with 6 or more lanes, use a filter of "num_lanes &gt;= 6".</para></listitem></varlistentry></variablelist></listitem><listitem><para>In your spatial database, ensure you have spatial (GiST) indexes built for any the layers you will be drawing.</para><programlisting>CREATE INDEX [indexname]
+  ON [tablename] 
+  USING GIST ( [geometrycolumn] GIST_GEOMETRY_OPS );</programlisting></listitem><listitem><para>If you will be querying your layers using Mapserver you will also need an "oid index".</para><para>Mapserver requires unique identifiers for each spatial record when doing queries, and the PostGIS module of Mapserver uses the PostgreSQL <varname>oid</varname> value to provide these unique identifiers. A side-effect of this is that in order to do fast random access of records during queries, an index on the <varname>oid</varname> is needed. </para><para>To build an "oid index", use the following SQL:</para><programlisting>CREATE INDEX [indexname] ON [tablename] ( oid );</programlisting></listitem></orderedlist></sect2></sect1> 
 	 <sect1> 
 		<title>Building Indexes</title> 
 		<para>Indexes are what make using a spatial database for large databases
@@ -744,14 +789,14 @@ name and username to connect with.</para></listitem></varlistentry><varlistentry
 		  <listitem> 
 			 <para> GiST (Generalized Search Trees) indexes break up data into
 				"things to one side", "things which overlap", "things which are inside" and can
-				be used on a wide range of data-types, including GIS data. PostGIS uses GiST
-				indexing to index GIS data.</para> 
+				be used on a wide range of data-types, including GIS data. PostGIS uses an R-Tree index implemented on top of GiST
+				to index GIS data.</para> 
 		  </listitem> 
 		</itemizedlist> 
 		<sect2> 
 		  <title>GiST Indexes</title> 
 		  <para>GiST stands for "Generalized Search Tree" and is a generalized
-			 form of R-Tree indexing. In addition to GIS indexing, GiST is used to speed up
+			 form of indexing. In addition to GIS indexing, GiST is used to speed up
 			 searches on all kinds of irregular data structures (integer arrays, spectral
 			 data, etc) which are not amenable to normal B-Tree indexing.</para> 
 		  <para>Once a GIS data table exceeds a few thousand rows, you will want
@@ -760,15 +805,13 @@ name and username to connect with.</para></listitem></varlistentry><varlistentry
 			 index on the attribute fields).</para> 
 		  <para>The syntax for building a GiST index on a "geometry" column is as
 			 follows:</para> 
-		  <literallayout>CREATE INDEX [indexname] ON [tablename] USING GIST (
-			 [geometryfield] GIST_GEOMETRY_OPS ) WITH ( ISLOSSY ); </literallayout> 
+		  <programlisting>CREATE INDEX [indexname] ON [tablename] 
+  USING GIST ( [geometryfield] GIST_GEOMETRY_OPS ); </programlisting> 
 		  <para>Building a spatial index is a computationally intensive exercise:
 			 on tables of around 1 million rows, on a 300MHz Solaris machine, we have found
-			 building a GiST index takes about 1 hour.</para> 
-		  <para>GiST indexes have two advantages over R-Tree indexes in
-			 PostgreSQL. Firstly, GiST indexes build much faster than R-Trees; we have found
-			 that it takes about 4 times more time to build an R-Tree than a GiST index on
-			 an identical table. Secondly, GiST indexes support the concept of "lossiness"
+			 building a GiST index takes about 1 hour.  After building an index, it is important to force PostgreSQL to collect table statistics, which are used to optimize query plans:</para> 
+		  <programlisting>VACUUM ANALYZE;</programlisting><para>GiST indexes have two advantages over R-Tree indexes in
+			 PostgreSQL. Firstly, GiST indexes are "null safe", meaning they can index columns which include null values. Secondly, GiST indexes support the concept of "lossiness"
 			 which is important when dealing with GIS objects larger than the PostgreSQL 8K
 			 page size. Lossiness allows PostgreSQL to store only the "important" part of an
 			 object in an index -- in the case of GIS objects, just the bounding box. GIS
@@ -805,7 +848,7 @@ name and username to connect with.</para></listitem></varlistentry><varlistentry
 		  </itemizedlist> 
 		</sect2> 
 	 </sect1> 
-	 <sect1> 
+	 <sect1><title>Complex Queries</title><para>The <emphasis>raison d'etre</emphasis> of spatial database functionality is performing queries inside the database which would ordinarily require desktop GIS functionality.  Using PostGIS effectively requires knowing what spatial functions are available, and ensuring that appropriate indexes are in place to provide good performance.</para><para><emphasis>More to come...</emphasis></para></sect1><sect1> 
 		<title>Java Clients (JDBC)</title> 
 		<para>Java clients can access PostGIS "geometry" objects in the
 		  PostgreSQL database either directly as text representations or using the JDBC
@@ -1013,7 +1056,7 @@ if( geom.getType() = Geometry.POLYGON )
 				<para>Return the N'th geometry if the geometry is a
 				  GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING or MULTIPOLYGON. Otherwise, return NULL.</para> 
 			 </listitem> 
-		  </varlistentry><varlistentry><term>Distance(geometry,geometry)</term><listitem><para>Return the cartesian distance between two geometries in projected units.</para></listitem></varlistentry><varlistentry><term>AsText(geometry)</term><listitem><para>Return the Well-Known Text representation of the geometry. For example: POLYGON(0 0,0 1,1 1,1 0,0 0)</para></listitem></varlistentry><varlistentry><term>SRID(geometry)</term><listitem><para>Returns the integer SRID number of the spatial reference system of the geometry.</para></listitem></varlistentry><varlistentry><term>GeometryFromText(varchar, integer)</term><listitem><para>Syntax: GeometryFromText(&lt;geometry&gt;,&lt;SRID&gt;) Convert a Well-Known Text representation of a geometry into a geometry object.</para></listitem></varlistentry><varlistentry><term>SetSRID(geometry)</term><listitem><para>Set the SRID on a geometry to a particular integer value. Useful in constructing bounding boxes for queries.</para></listitem></varlistentry> 
+		  </varlistentry><varlistentry><term>Distance(geometry,geometry)</term><listitem><para>Return the cartesian distance between two geometries in projected units.</para></listitem></varlistentry><varlistentry><term>AsText(geometry)</term><listitem><para>Return the Well-Known Text representation of the geometry. For example: POLYGON(0 0,0 1,1 1,1 0,0 0)</para></listitem></varlistentry><varlistentry><term>SRID(geometry)</term><listitem><para>Returns the integer SRID number of the spatial reference system of the geometry.</para></listitem></varlistentry><varlistentry><term>GeometryFromText(varchar, integer)</term><listitem><para>Syntax: GeometryFromText(&lt;geometry&gt;,&lt;SRID&gt;) Convert a Well-Known Text representation of a geometry into a geometry object.</para></listitem></varlistentry><varlistentry><term>GeomFromText(varchar, integer)</term><listitem><para>As above. A synonym for GeometryFromText.</para></listitem></varlistentry><varlistentry><term>SetSRID(geometry)</term><listitem><para>Set the SRID on a geometry to a particular integer value. Useful in constructing bounding boxes for queries.</para></listitem></varlistentry> 
 		<varlistentry><term>EndPoint(geometry)</term><listitem><para>Returns the last point of the geometry as a point.</para></listitem></varlistentry><varlistentry><term>StartPoint(geometry)</term><listitem><para>Returns the first point of the geometry as a point.</para></listitem></varlistentry><varlistentry><term>Centroid(geometry)</term><listitem><para>Returns the centroid of the geometry as a point.</para></listitem></varlistentry> 
 		  </variablelist> 
 	 </sect1> 
@@ -1101,6 +1144,21 @@ if( geom.getType() = Geometry.POLYGON )
 			 </listitem> 
 		  </varlistentry> 
 		  <varlistentry> 
+			 <term>collect(geometry)</term> 
+			 <listitem> 
+				<para>This function returns a GEOMETRYCOLLECTION object from a set of geometries. The collect() function is an "aggregate" function in the
+				  terminology of PostgreSQL. That means that it operators on lists of data, in
+				  the same way the sum() and mean() functions do.  For example, "SELECT
+				  COLLECT(GEOM) FROM GEOMTABLE GROUP BY ATTRCOLUMN" will return a separate GEOMETRYCOLLECTION for each distinct value of ATTRCOLUMN.</para> 
+			 </listitem> 
+		  </varlistentry> 
+		  <varlistentry> 
+			 <term>distance_spheroid(point, point, spheroid)</term> 
+			 <listitem> 
+				<para>Returns linear distance between two lat/lon points given a particular spheroid. See the explanation of spheroids given for <link linkend="length_spheroid">length_spheroid()</link>. Currently only implemented for points.</para> 
+			 </listitem> 
+		  </varlistentry> 
+		  <varlistentry> 
 			 <term>extent(geometry)</term> 
 			 <listitem> 
 				<para>The extent() function is an "aggregate" function in the
@@ -1118,7 +1176,7 @@ if( geom.getType() = Geometry.POLYGON )
 				  useful for simplifying the WKB representation.</para> 
 			 </listitem> 
 		  </varlistentry> 
-		  <varlistentry> 
+		  <varlistentry id="force_2d"> 
 			 <term>force_2d(geometry)</term> 
 			 <listitem> 
 				<para>Forces the geometries into a "2-dimensional mode" so that all
@@ -1127,7 +1185,7 @@ if( geom.getType() = Geometry.POLYGON )
 				  geometries).</para> 
 			 </listitem> 
 		  </varlistentry> 
-		  <varlistentry> 
+		  <varlistentry id="force_3d"> 
 			 <term>force_3d(geometry)</term> 
 			 <listitem> 
 				<para>Forces the geometries into a "3-dimensional mode" so that all
@@ -1148,7 +1206,7 @@ if( geom.getType() = Geometry.POLYGON )
 				  linestring or multi-linestring.</para> 
 			 </listitem> 
 		  </varlistentry> 
-		  <varlistentry> 
+		  <varlistentry id="length_spheroid"> 
 			 <term>length_spheroid(geometry,spheroid)</term> 
 			 <listitem> 
 				<para>Calculates the length of of a geometry on an elipsoid. This
@@ -1172,6 +1230,12 @@ if( geom.getType() = Geometry.POLYGON )
 				  the elevation into account. This is just like length_spheroid except vertical
 				  coordinates (expressed in the same units as the spheroid axes) are used to
 				  calculate the extra distance vertical displacement adds.</para> 
+			 </listitem> 
+		  </varlistentry> 
+		  <varlistentry> 
+			 <term>max_distance(linestring,linestring)</term> 
+			 <listitem> 
+				<para>Returns the largest distance between two line strings.</para> 
 			 </listitem> 
 		  </varlistentry> 
 		  <varlistentry> 
@@ -1231,6 +1295,12 @@ if( geom.getType() = Geometry.POLYGON )
 			 </listitem> 
 		  </varlistentry> 
 		  <varlistentry> 
+			 <term>transform(geometry,integer)</term> 
+			 <listitem> 
+				<para>Returns a new geometry with its coordinates transformed to the SRID referenced by the integer parameter.  The destination SRID must exist in the SPATIAL_REF_SYS table.</para> 
+			 </listitem> 
+		  </varlistentry> 
+		  <varlistentry> 
 			 <term>translate(geometry,float8,float8,float8)</term> 
 			 <listitem> 
 				<para>Translates the geometry to a new location using the numeric
@@ -1242,6 +1312,17 @@ if( geom.getType() = Geometry.POLYGON )
 			 <listitem> 
 				<para>Returns true if any part of B is within the bounding box of
 				  A.</para> 
+			 </listitem> 
+		  </varlistentry> 
+		<varlistentry> 
+			 <term>xmin(box3d) ymin(box3d) zmin(box3d)</term> 
+			 <listitem> 
+				<para>Returns the requested minima of a bounding box.</para> 
+			 </listitem> 
+		  </varlistentry><varlistentry> 
+			 <term>xmax(box3d) ymax(box3d) zmax(box3d)</term> 
+			 <listitem> 
+				<para>Returns the requested maxima of a bounding box.</para> 
 			 </listitem> 
 		  </varlistentry> 
 		</variablelist> 

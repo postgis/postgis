@@ -1,3 +1,24 @@
+PostGIS 0.7.0
+2002/05/04
+
+- New Things
+  - transform() function provides coordinate reprojection 
+    using proj4 library
+  - spatial_ref_sys.sql has a complete set of proj4 
+    definitions for each EPSG coordinate system
+  - support for PostgreSQL 7.2 GiST index API
+  - refactoring of source code to separate index support
+    functions from other functions
+  - max_distance() function
+  - distance_spheroid() function
+  - collect() aggregate function
+  - xmin(),ymin(),zmin(),xmax(),ymax(),zmax() functions
+- Bug Fixes
+  - transform() more graceful when grid shifts are missing
+  - setsrid() made cachable
+  - patches to loader/dumper
+
+
 PostGIS 0.6.2
 2001/11/07
 

@@ -1,4 +1,12 @@
-CREDITS: 2000/05/25
+CREDITS: 2002/05/04
+
+The core team of PostGIS is from Refractions Research: 
+Dave Blasby, Paul Ramsey, Jeff Lounsbury and Chris Hodgson. 
+All versions include substantial contributions from the 
+core team.
+
+
+VERSION SPECIFIC CREDITS:
 
 Version 0.1 of PostGIS was developed by Refractions Research Inc, of Victora, 
 British Columbia, Canada (http://www.refractions.net), as a research project 
@@ -15,4 +23,8 @@ Version 0.2 of PostGIS includes contributions from:
 Version 0.5 of PostGIS includes contributions from:
   Geographic Data BC (David Skea and Mark Sondheim) with funding and 
   direction on adding calculations on a spheroid to PostGIS.
+
+Version 0.7 of PostGIS includes patches from:
+  Steffen Macke on numerous loader/dumper bugs.
+  Bernhard Reiter on some documentation issues and a loader limit.
 

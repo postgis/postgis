@@ -1,14 +1,14 @@
 PostGIS - Geographic Information Systems Extensions to PostgreSQL
 ~~~~~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-VERSION: 0.6 (2001/09/20)
+VERSION: 0.7 (2002/05/04)
 
 MORE INFORMATION: http://postgis.refractions.net
 
 INTRODUCTION:
-This distribution contains a module which implements GIS simple features, ties 
-the features to rtree indexing, and provides some basic functions for accessing 
-and analyzing geographic data.
+This distribution contains a module which implements GIS simple 
+features, ties the features to rtree indexing, and provides some 
+spatial functions for accessing and analyzing geographic data.
 
 Directory structure:
 
@@ -31,24 +31,33 @@ Makefile and point it at your PostgreSQL source tree. You must have a
 PostgreSQL source tree, and you must have run succesfully built and installed
 it for this to work.
 
-Then run:
+* POSTGRESQL 7.2 SUPPORT: 
+  PostgreSQL 7.1 and 7.2 spatial indexes are *not* compatible. You must
+  compile for one version or the other. To use PostgreSQL 7.2,
+  edit the postgis Makefile and change the USE_PG72 variable to 1.
+
+* PROJ4 SUPPORT: 
+  The Proj4 reproject library is require if you want to use the 
+  transform() function to reproject features within the database.
+  Install Proj4 in the default location.
+  Edit the postgis Makefile and change the USE_PROJ variable to 1.
+
+As root run:
 	
   make
   make install
 
 PostGIS now requires the PL/pgSQL procedural language in order to operate
-correctly. To install PL/pgSQL you should use the createlang script coming
-with postgresql.  (The PostgreSQL 7.1 Programmer's Guide details 
-if you want to this manually for some reason.)
+correctly. To install PL/pgSQL use the 'createlang' program from the PostgreSQL
+installation. (The PostgreSQL Programmer's Guide has details if you want 
+to this manually for some reason.)
+
+As postgres run:
 
   createlang plpgsql yourdatabase
-
-Finally, load the function and object definitions into your database 
-with psql (you must run this as a database user with system privledges):
-
   psql -f postgis.sql -d yourdatabase
 
-Installation should be complete.
+Installation should now be complete.
 
 
 UPGRADING:
@@ -56,17 +65,18 @@ UPGRADING:
 Upgrading PostGIS can be tricky, because the underlying C libraries which 
 support the object types and geometries may have changed between versions.
 To avoid problems when upgrading, you will have to dump all the tables
-in your database, destroy the database, create a new one, upload the
-new postgis.sql file, then upload your database dump:
+in your database, destroy the database, create a new one, add the PL/pgSQL
+language, upload the new postgis.sql file, then upload your database dump:
 
   pg_dump -t "*" -f dumpfile.sql yourdatabase
   dropdb yourdatabase
   createdb yourdatabase
+  createlang plpgsql yourdatabase
   psql -f postgis.sql -d yourdatabase
   psql -f dumpfile.sql -d yourdatabase
   vacuumdb -z yourdatabase
 
-When upgrading to 0.6, all your geometries will be created with an SRID
+When upgrading to 0.6+, all your geometries will be created with an SRID
 of -1. To create valid OpenGIS geometries, you will have to create a 
 valid SRID in the SPATIAL_REF_SYS table, and then update your geometries
 to reference the SRID with the following SQL (with the appropriate
@@ -124,9 +134,9 @@ with an SRID.
   SELECT name,AsText(geopoint) FROM geotest;
 
 
-RTREE vs GIST:
+Spatial Indexes:
 
-PostgreSQL provides support for GiST indexing. The GiST scheme offers 
+PostgreSQL provides support for GiST spatial indexing. The GiST scheme offers 
 indexing even on large objects, using a system of "lossy" indexing where 
 a large object is proxied by a smaller one in the index.  In the case 
 of the PostGIS indexing system, all objects are proxied in the index by 
@@ -137,9 +147,13 @@ You can build a GiST index with:
   CREATE INDEX <indexname> ON <tablename>  
      USING gist ( <geometryfield> gist_geometry_ops ) WITH ( islossy );
 
-Note that PostgreSQL may not use the GiST indexes when performing 
-searches unless *forced* to do so. If you find your system is not
-using the indexes automatically (use 'EXPLAIN' to see the query plan)
+Always run the "VACUUM ANALYZE <tablename>" on your tables after
+creating an index. This gathers statistics which the query planner
+uses to optimize index usage.
+
+Note that PostgreSQL may occasionally not use the GiST indexes when 
+performing searches. If you find your system is not using the 
+indexes automatically (use 'EXPLAIN' to see the query plan)
 you can force index use with the command: 
 
   SET ENABLE_SEQSCAN = OFF
