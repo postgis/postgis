@@ -10,8 +10,21 @@ install: all liblwgeom-install loaderdumper-install
 
 uninstall: liblwgeom-uninstall loaderdumper-uninstall
 
-clean: liblwgeom-clean loaderdumper-clean
-	rm -f lwpostgis.sql
+clean: liblwgeom-clean loaderdumper-clean test-clean
+	@rm -f lwpostgis.sql
+
+maintainer-clean:
+	@echo '------------------------------------------------------'
+	@echo 'This command is intended for maintainers to use; it'
+	@echo 'deletes files that may need special tools to rebuild.'
+	@echo '------------------------------------------------------'
+	$(MAKE) -C lwgeom maintainer-clean
+
+test: liblwgeom
+	$(MAKE) -C regress test
+
+test-clean:
+	$(MAKE) -C regress clean
 
 liblwgeom: 
 	$(MAKE) -C lwgeom
