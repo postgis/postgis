@@ -11,6 +11,10 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.31  2003/07/25 17:08:37  pramsey
+ * Moved Cygwin endian define out of source files into postgis.h common
+ * header file.
+ *
  * Revision 1.30  2003/07/01 18:30:55  pramsey
  * Added CVS revision headers.
  *
@@ -24,8 +28,6 @@
 
 #include "utils/geo_decls.h"
 
-
-
 #define	POINTTYPE	1
 #define	LINETYPE	2
 #define	POLYGONTYPE	3
@@ -34,6 +36,15 @@
 #define	MULTIPOLYGONTYPE	6
 #define	COLLECTIONTYPE	7
 #define	BBOXONLYTYPE	99
+
+/*
+ * Norman Vine found this problem for compiling under cygwin
+ * it defines BYTE_ORDER and LITTLE_ENDIAN
+ */
+
+#ifdef __CYGWIN__
+#include <sys/param.h>       // FOR ENDIAN DEFINES
+#endif
 
 
 //standard definition of an ellipsoid (what wkt calls a spheroid)

@@ -11,6 +11,10 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.23  2003/07/25 17:08:37  pramsey
+ * Moved Cygwin endian define out of source files into postgis.h common
+ * header file.
+ *
  * Revision 1.22  2003/07/08 18:35:54  dblasby
  * changed asbinary_specify() so that it is more aware of TEXT being
  * un-terminated.
@@ -42,14 +46,6 @@
 
 #include "postgis.h"
 #include "utils/elog.h"
-
-
-//Norman Vine found this problem for compiling under cygwin
-//  it defines BYTE_ORDER and LITTLE_ENDIAN
-
-#ifdef __CYGWIN__
-#include <sys/param.h>       // FOR ENDIAN DEFINES
-#endif
 
 
 #define SHOW_DIGS_DOUBLE 15
