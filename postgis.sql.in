@@ -32,8 +32,8 @@ CREATE TYPE SPHEROID (
 CREATE TYPE BOX3D (
 	alignment = double,
 	internallength = 48,
-	input =  SPHEROID_in,
-	output =  SPHEROID_out
+	input = BOX3D_in,
+	output = BOX3D_out
 );
 
 CREATE TYPE WKB (
