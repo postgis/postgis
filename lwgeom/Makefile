@@ -152,7 +152,7 @@ clean distclean maintainer-clean: clean-lib
 	rm -f $(OTHERS)
 	rm -f liblwgeom_sa.o
 	rm -f liblwgeom_sa.so
-	rm -f test
+	rm -f test test.o
 
 liblwgeom_sa.o: liblwgeom.c
 	$(CC) -DSTANDALONE -o $@ -c $<
