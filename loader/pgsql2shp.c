@@ -10,6 +10,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.49  2004/05/13 12:07:13  strk
+ * Other fix in 3d handling - you should now be able to dump as 2d or 3d any 2d or 3d object
+ *
  * Revision 1.48  2004/05/13 11:59:08  strk
  * Fixed bug in 3d features handling.
  *
@@ -382,7 +385,7 @@ shape_creator_wrapper_WKB(byte *str, int idx)
 {
 	byte *ptr = str;
 	uint32 type;
-	//int is3d;
+	int is3d;
 
 	// skip byte order
 	skipbyte(&ptr);
@@ -390,7 +393,7 @@ shape_creator_wrapper_WKB(byte *str, int idx)
 	// get type
 	type = getint(ptr);
 
-	//is3d = type&WKB3DOFFSET;
+	is3d = type&WKB3DOFFSET;
 	type &= ~WKB3DOFFSET;
 
 	switch(type)
@@ -853,7 +856,7 @@ create_multiline3D_WKB (byte *wkb, int shape_id)
 		totpoints += npoints;
 	}
 
-	obj = SHPCreateObject(SHPT_ARC, shape_id, nparts,
+	obj = SHPCreateObject(outshptype, shape_id, nparts,
 		part_index, NULL, totpoints,
 		x, y, z, NULL);
 
@@ -910,7 +913,7 @@ create_multiline2D_WKB (byte *wkb, int shape_id)
 	}
 
 
-	obj = SHPCreateObject(SHPT_ARC, shape_id, nparts,
+	obj = SHPCreateObject(outshptype, shape_id, nparts,
 		part_index, NULL, totpoints,
 		x, y, NULL, NULL);
 
@@ -989,7 +992,7 @@ create_line3D_WKB (byte *wkb, int shape_id)
 		z[pn] = popdouble(&wkb);
 	}
 
-	obj = SHPCreateSimpleObject(SHPT_ARCZ, npoints, x, y, z);
+	obj = SHPCreateSimpleObject(outshptype, npoints, x, y, z);
 	free(x); free(y); free(z);
 
 	return obj;
@@ -1021,7 +1024,7 @@ create_line2D_WKB (byte *wkb, int shape_id)
 		y[pn] = popdouble(&wkb);
 	}
 
-	obj = SHPCreateSimpleObject(SHPT_ARC, npoints, x, y, z);
+	obj = SHPCreateSimpleObject(outshptype, npoints, x, y, z);
 	free(x); free(y); 
 
 	return obj;
@@ -1043,12 +1046,12 @@ create_point3D_WKB(byte *wkb, int shape_id)
 
 	if ( geotype == POINTTYPE )
 	{
-		obj = SHPCreateSimpleObject(SHPT_POINTZ,1,&x,&y,&z);
+		obj = SHPCreateSimpleObject(outshptype,1,&x,&y,&z);
 	}
 	else if ( geotype == MULTIPOINTTYPE )
 	{
 		//fprintf(stderr, "create_point3D_WKB: fluffing to MULTIPOINT\n");
-		obj = SHPCreateSimpleObject(SHPT_MULTIPOINTZ, 1, &x, &y, &z);
+		obj = SHPCreateSimpleObject(outshptype, 1, &x, &y, &z);
 	}
 	else
 	{
@@ -1182,7 +1185,7 @@ create_multipoint3D_WKB(byte *wkb, int shape_id)
 		z[pn]=popdouble(&wkb);
 	}
 
-	obj = SHPCreateSimpleObject(SHPT_MULTIPOINTZ,npoints,x,y,z);
+	obj = SHPCreateSimpleObject(outshptype,npoints,x,y,z);
 	free(x); free(y); free(z);
 
 	return obj;
@@ -1452,7 +1455,7 @@ create_polygon3D_WKB(byte *wkb, int shape_id)
 		totpoints += npoints;
 	}
 
-	obj = SHPCreateObject(SHPT_POLYGONZ, shape_id, nrings,
+	obj = SHPCreateObject(outshptype, shape_id, nrings,
 		part_index, NULL, totpoints,
 		x, y, z, NULL);
 
@@ -1872,7 +1875,7 @@ create_multipolygon3D_WKB(byte *wkb, int shape_id)
 	printf("End of polygons\n");
 #endif
 
-	obj = SHPCreateObject(SHPT_POLYGON, shape_id, nparts,
+	obj = SHPCreateObject(outshptype, shape_id, nparts,
 		part_index, NULL, totpoints,
 		x, y, z, NULL);
 
