@@ -125,7 +125,7 @@ PJ *make_project(char *str1)
 	char  *loc;
 	char 	*str;
 	PJ *result;
-	
+
 
 	if (str1 == NULL)
 		return NULL;
@@ -137,7 +137,7 @@ PJ *make_project(char *str1)
 	strcpy(str,str1);
 
 	//first we split the string into a bunch of smaller strings, based on the " " separator
-	
+
 	params[0] = str; //1st param, we'll null terminate at the " " soon
 
 	loc = str;
@@ -150,23 +150,23 @@ PJ *make_project(char *str1)
 			*loc = 0; // null terminate
 			params[t] = loc +1;
 			loc++; // next char
-			t++; //next param 
+			t++; //next param
 		}
 	}
-	
+
 	if (!(result= pj_init ( t , params)))
 	{
-		pfree(str);	
+		pfree(str);
 		return NULL;
 	}
-	pfree(str);	
+	pfree(str);
 	return result;
 }
 
 
 //tranform_geom( GEOMETRY, TEXT (input proj4), TEXT (input proj4), INT (output srid)
 // tmpPts - if there is a nadgrid error (-38), we re-try the transform on a copy of points.  The transformed points
-//          are in an indeterminate state after the -38 error is thrown.	
+//          are in an indeterminate state after the -38 error is thrown.
 PG_FUNCTION_INFO_V1(transform_geom);
 Datum transform_geom(PG_FUNCTION_ARGS)
 {
@@ -207,17 +207,17 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 		elog(ERROR,"tranform: source SRID = -1");
 		PG_RETURN_NULL();			// no srid, cannot convert
 	}
-	
+
 	if (result_srid   == -1)
 	{
 		pfree(input_proj4); pfree(output_proj4);
-		elog(ERROR,"tranform: destination SRID = -1");	
+		elog(ERROR,"tranform: destination SRID = -1");
 		PG_RETURN_NULL();			// no srid, cannot convert
 	}
 
 	//make input and output projection objects
 	input_pj = make_project(input_proj4);
-	if ( (input_pj == NULL) || pj_errno) 
+	if ( (input_pj == NULL) || pj_errno)
 	{
 		pfree(input_proj4); pfree(output_proj4);
 		elog(ERROR,"tranform: couldnt parse proj4 input string");
@@ -230,7 +230,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 		pfree(input_proj4); pfree(output_proj4);
 		pj_free(input_pj);
 		elog(ERROR,"tranform: couldnt parse proj4 output string");
-		
+
 		PG_RETURN_NULL();
 	}
 	//great, now we have a geometry, and input/output PJ* structs.  Excellent.
@@ -255,7 +255,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 		memcpy(tmpPts, pt, sizeof(POINT3D)*2);
 
 		pj_transform(input_pj,output_pj, 2,3, &pt->x,&pt->y, &pt->z);
-				
+
 		if (pj_errno)
 		{
 			if (pj_errno == -38)  //2nd chance
@@ -270,9 +270,9 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 				pfree(input_proj4); pfree(output_proj4);
 				pj_free(input_pj); pj_free(output_pj);
 				elog(ERROR,"transform: couldnt project bbox point: %i (%s)",pj_errno,pj_strerrno(pj_errno));
-				PG_RETURN_NULL();	
+				PG_RETURN_NULL();
 			}
-					
+
 		}
 		pfree(tmpPts);
 		if (output_pj->is_latlong)
@@ -284,7 +284,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 		offsets1 = (int32 *) ( ((char *) &(result->objType[0] ))+ sizeof(int32) * result->nobjs ) ;
 		for (j=0; j< result->nobjs; j++)		//for each object in geom1
 		{
-			o1 = (char *) result +offsets1[j] ;  
+			o1 = (char *) result +offsets1[j] ;
 			type1=  result->objType[j];
 
 			if (type1 == POINTTYPE)	//point
@@ -311,9 +311,9 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 						pfree(input_proj4); pfree(output_proj4);
 						pj_free(input_pj); pj_free(output_pj);
 						elog(ERROR,"transform: couldnt project point: %i (%s)",pj_errno,pj_strerrno(pj_errno));
-						PG_RETURN_NULL();	
+						PG_RETURN_NULL();
 					}
-					
+
 				}
 				pfree(tmpPts);
 				if (output_pj->is_latlong)
@@ -328,7 +328,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 				tmpPts = palloc(sizeof(POINT3D)*line->npoints );
 				memcpy(tmpPts,&line->points[0], sizeof(POINT3D)*line->npoints);
 
-				pj_transform(input_pj,output_pj, line->npoints ,3, 
+				pj_transform(input_pj,output_pj, line->npoints ,3,
 							&line->points[0].x,&line->points[0].y, &line->points[0].z);
 				if (pj_errno)
 				{
@@ -336,7 +336,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 					{
 						//couldnt do nadshift - do it without the datum
 						memcpy(&line->points[0],tmpPts, sizeof(POINT3D)*line->npoints);
-						pj_transform_nodatum(input_pj,output_pj, line->npoints ,3, 
+						pj_transform_nodatum(input_pj,output_pj, line->npoints ,3,
 							&line->points[0].x,&line->points[0].y, &line->points[0].z);
 					}
 
@@ -346,7 +346,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 						pfree(input_proj4); pfree(output_proj4);
 						pj_free(input_pj); pj_free(output_pj);
 						elog(ERROR,"transform: couldnt project line");
-						PG_RETURN_NULL();	
+						PG_RETURN_NULL();
 					}
 				}
 				pfree(tmpPts);
@@ -371,7 +371,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 
 
 
-				pj_transform(input_pj,output_pj, poly_points,3, 
+				pj_transform(input_pj,output_pj, poly_points,3,
 							&poly_pts[0].x,&poly_pts[0].y, &poly_pts[0].z);
 				if (pj_errno)
 				{
@@ -379,7 +379,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 					{
 						//couldnt do nadshift - do it without the datum
 						memcpy(&poly_pts[0].x,tmpPts, sizeof(POINT3D)*poly_points);
-						pj_transform_nodatum(input_pj,output_pj, poly_points,3, 
+						pj_transform_nodatum(input_pj,output_pj, poly_points,3,
 							&poly_pts[0].x,&poly_pts[0].y, &poly_pts[0].z);
 					}
 
@@ -389,7 +389,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 						pfree(input_proj4); pfree(output_proj4);
 						pj_free(input_pj); pj_free(output_pj);
 						elog(ERROR,"transform: couldnt project polygon");
-						PG_RETURN_NULL();	
+						PG_RETURN_NULL();
 					}
 				}
 				pfree(tmpPts);
@@ -418,17 +418,21 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 }
 
 
-#else   
+#else
 
 	// return the original geometry
 PG_FUNCTION_INFO_V1(transform_geom);
 Datum transform_geom(PG_FUNCTION_ARGS)
 {
-	GEOMETRY		   *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	GEOMETRY		   *result;
 
-	result = (GEOMETRY *) palloc (geom1->size);
-	memcpy(result,geom1, geom1->size);
-	PG_RETURN_POINTER(result);
+	elog(ERROR,"PostGIS transform() called, but support not compiled in.  Modify your makefile to add proj support, remake and re-install");
+
+	//GEOMETRY		   *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	//GEOMETRY		   *result;
+
+	//result = (GEOMETRY *) palloc (geom1->size);
+	//memcpy(result,geom1, geom1->size);
+	///elog(NOTICE,"PostGIS transform
+	//PG_RETURN_POINTER(result);
 }
 #endif
