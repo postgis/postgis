@@ -1,7 +1,7 @@
 PostGIS - Geographic Information Systems Extensions to PostgreSQL
 ~~~~~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-VERSION: 0.7.5 (2003/04/08)
+VERSION: 0.8.0 (2003/08/08)
 
 MORE INFORMATION: http://postgis.refractions.net
 
@@ -31,7 +31,8 @@ To install the module, move this directory to the "contrib" directory of your
 PostgreSQL source installation. Alternately, edit the "top_buildir" in the 
 Makefile and point it at your PostgreSQL source tree. You must have a 
 PostgreSQL source tree, and you must have run succesfully built and installed
-it for this to work.
+it for this to work. 
+SEE THE NOTE ON GEOS SUPPORT BELOW FOR SPECIAL COMPILATION INSTRUCTIONS.
 
 * PROJ4 SUPPORT: 
   The Proj4 reprojection library is required if you want to use the 
@@ -41,7 +42,26 @@ it for this to work.
   and ensure that the PROJ_DIR variable points to your Proj4 
   installation location (/usr/local is the default).
 
-As root run:
+* SPATIAL PREDICATE / GEOS SUPPORT:
+  The GEOS library provides support for exact topological tests
+  such as Touches(), Contains(), Disjoint() and spatial operations
+  such as Intersection(), Union() and Buffer(). 
+  You can download GEOS from http://geos.refractions.net
+  In order to use the GEOS support, you *must* specially compile 
+  your version of PostgreSQL to link the C++ runtime library.
+  To do this, invoke the PgSQL configuration script this way:
+ 
+  LDFLAGS=-lstdc++ ./configure --your-options-go-here
+
+  The initial LDFLAGS variable is passed through to the Makefile and
+  adds the C++ library to the linking stage. 
+  Once you have compiled PgSQL with C++ support, you can enable GEOS
+  support in PostGIS by setting the USE_GEOS variable in the PostGIS
+  Makefile to 1, and ensure that the GEOS_DIR variable points to your
+  GEOS installation location (/usr/local is the default).
+  
+
+To compile PostGIS, as root run:
 	
   make
   make install
