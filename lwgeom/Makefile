@@ -1,16 +1,9 @@
 # Configuration Directives
 
+include ../Makefile.config
+
 #---------------------------------------------------------------
 subdir=contrib/postgis
-#---------------------------------------------------------------
-# Default the root of the PostgreSQL source tree 
-# To use a non-standard location set the PGSQL_SRC environment
-# variable to the appropriate location.
-#
-ifeq (${PGSQL_SRC},) 
-	PGSQL_SRC = ../../..
-endif
-
 #---------------------------------------------------------------
 # Path to library (to be specified in CREATE FUNCTION queries)
 # Defaults to $libdir.
@@ -21,35 +14,10 @@ ifeq (${LPATH},)
 endif
 
 #---------------------------------------------------------------
-top_builddir = ${PGSQL_SRC}
-include $(top_builddir)/src/Makefile.global
-#---------------------------------------------------------------
 # Default missing CXX variable to c++
 # 
 ifeq ($(CXX),) 
 	CXX = c++
-endif
-
-#---------------------------------------------------------------
-# Test the version string and set the USE_VERSION macro
-# appropriately.
-#
-ifneq ($(findstring 7.1,$(VERSION)),)
-	USE_VERSION=71
-else
-	ifneq ($(findstring 7.2,$(VERSION)),)
-		USE_VERSION=72
-	else
-		ifneq ($(findstring 7.3,$(VERSION)),)
-			USE_VERSION=73
-		else
-			ifneq ($(findstring 7.4,$(VERSION)),)
-				USE_VERSION=74
-			else
-				USE_VERSION=80
-			endif
-		endif
-	endif
 endif
 
 #---------------------------------------------------------------

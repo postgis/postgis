@@ -1,3 +1,5 @@
+include ../Makefile.config
+
 #---------------------------------------------------------------
 # Configuration Directives
 #
@@ -23,8 +25,8 @@ ifeq (${LPATH},)
 endif
 
 #---------------------------------------------------------------
-top_builddir = ${PGSQL_SRC}
-include $(top_builddir)/src/Makefile.global
+#top_builddir = ${PGSQL_SRC}
+#include $(top_builddir)/src/Makefile.global
 
 #---------------------------------------------------------------
 # Default missing CXX variable to c++
@@ -150,10 +152,7 @@ include $(top_srcdir)/src/Makefile.shlib
 
 postgis_geos_wrapper.o: postgis_geos_wrapper.cpp
 
-all: $(GEOS_RULES) all-lib postgis.sql postgis_undef.sql loaderdumper
-
-loaderdumper:
-	$(MAKE) -C loader
+all: $(GEOS_RULES) all-lib postgis.sql postgis_undef.sql 
 
 # Shared library stuff
 
@@ -163,15 +162,14 @@ postgis_old.sql: postgis_sql_common.sql.in postgis_sql_$(USE_VERSION)_end.sql.in
 postgis.sql: postgis.sql.in
 	cpp -P -traditional-cpp -DUSE_VERSION=$(USE_VERSION) $< | sed -e 's:@MODULE_FILENAME@:$(MODULE_FILENAME):g;s:@POSTGIS_VERSION@:$(POSTGIS_VERSION):g;s:@POSTGIS_SCRIPTS_VERSION@:$(SCRIPTS_VERSION):g' > $@
 
-postgis_undef.sql: postgis.sql create_undef.pl
-	perl create_undef.pl $< $(USE_VERSION) > $@ 
+postgis_undef.sql: postgis.sql ../create_undef.pl
+	perl ../create_undef.pl $< $(USE_VERSION) > $@ 
 
 install: all installdirs install-postgis-lib
 	$(INSTALL_DATA) postgis.sql $(DESTDIR)$(datadir)
 	$(INSTALL_DATA) postgis_undef.sql $(DESTDIR)$(datadir)
 	$(INSTALL_DATA) spatial_ref_sys.sql $(DESTDIR)$(datadir)
 	$(INSTALL_DATA) README.postgis $(DESTDIR)$(datadir)
-	$(MAKE) DESTDIR=$(DESTDIR) -C loader install
 
 #- This has been copied from postgresql and adapted
 install-postgis-lib: $(shlib)
@@ -195,13 +193,11 @@ detect_geos_version:
 	../geos_version.sh $(GEOS_DIR) > postgis_geos_version.h
 
 installdirs:
-	$(mkinstalldirs) $(docdir)/contrib $(datadir)/contrib $(libdir)
+	$(mkinstalldirs) $(datadir)/contrib $(libdir)
 
 uninstall: uninstall-lib
 	@rm -f $(docdir)/contrib/README.postgis $(datadir)/contrib/postgis.sql
 
 clean distclean maintainer-clean: clean-lib
 	@rm -f $(OBJS) postgis.sql postgis_undef.sql postgis_geos_version.h
-	$(MAKE) -C loader clean
-	$(MAKE) -C doc clean
 
