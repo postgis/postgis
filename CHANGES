@@ -1,3 +1,15 @@
+PostGIS 0.9.1
+2004/12/12
+
+- New Things
+  - Reverse() function
+  - AsSVG() function 
+  - New spatial_ref_sys table
+  - Optional third argument for Buffer()
+- Bug Fixes
+  - shp2pgsql DBF handling small fixes
+  
+
 PostGIS 0.9.0
 2004/09/10
 
