@@ -3595,6 +3595,14 @@ FROM geometry_table;</literallayout>
         </varlistentry>
 
         <varlistentry>
+          <term>distance(geometry, geometry)</term>
+
+          <listitem>
+            <para>Returns the smaller distance between two geometries.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
           <term>max_distance(linestring,linestring)</term>
 
           <listitem>
