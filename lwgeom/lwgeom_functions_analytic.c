@@ -687,7 +687,7 @@ lwpoly_grid(LWPOLY *poly, gridspec *grid)
 		}
 
 #ifdef CHECK_RING_IS_CLOSE
-		getPoint2d_p(newring, 0, &p2);
+		getPoint2d_p(newring, 0, &p1);
 		getPoint2d_p(newring, newring->npoints-1, &p2);
 		if ( ! SAMEPOINT(&p1, &p2) )
 			elog(NOTICE, "After gridding: first point != last point");
