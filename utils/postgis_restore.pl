@@ -16,12 +16,11 @@
 #	- operators from the dump are never restored due to
 #	  the impossibility (for current implementation) to
 #	  detect wheter or not they are from postgis
-#
 
-exec perl $0 $@
+eval "exec perl $0 $@"
 	if (0);
 
-(@ARGV == 3) || die "Usage: perl postgis_restore.pl <postgis.sql> <db> <dump>\nRestore a custom dump (pg_dump -Fc) of a postgis enabled database.\n";
+(@ARGV == 3) || die "Usage: postgis_restore.pl <postgis.sql> <db> <dump>\nRestore a custom dump (pg_dump -Fc) of a postgis enabled database.\n";
 
 $DEBUG=0;
 
@@ -275,6 +274,21 @@ while( my $line = <INPUT> )
 close( INPUT );
 close(OUTPUT);
 
+print "Producing ascii dump $dumpascii\n"; 
+open( INPUT, "pg_restore -L $dumplist $dump |") || die "Can't run pg_restore\n";
+open( OUTPUT, ">$dumpascii") || die "Can't write to $dumpascii\n";
+while( my $line = <INPUT> )
+{
+	$line =~ s/^(SET search_path .*);/\1, public;/; 
+	print OUTPUT $line;
+	# TODO:
+	#  skip postgis operator, checking for basetype
+	#  when implemented operators skip must be disabled
+	#  in the first scan of ToC
+}
+close(INPUT);
+close(OUTPUT);
+
 #exit(1);
 print "Creating db ($dbname)\n";
 `createdb $dbname`;
@@ -282,8 +296,9 @@ print "Adding plpgsql\n";
 `createlang plpgsql $dbname`;
 print "Sourcing $postgissql\n";
 `psql -f $postgissql $dbname`;
-print "Restoring $dump\n";
-`pg_restore -L $dumplist $dump | sed 's/^\\(SET search_path .*\\);/\\1, public;/' > $dumpascii`;
+print "Dropping geometry_columns and spatial_ref_sys\n";
+`psql -c "drop table geometry_columns; drop table spatial_ref_sys;" $dbname`;
+print "Restoring ascii dump $dumpascii\n";
 `psql -f $dumpascii $dbname`;
 exit;
 
