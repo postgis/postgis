@@ -427,7 +427,10 @@ extern uint32 lwexploded_findlength(LWGEOM_EXPLODED *exp, int wantbbox);
 // Serialize an LWGEOM_EXPLODED object.
 // SRID and ndims will be taken from exploded structure.
 // wantbbox will determine result bbox.
-char *lwexploded_serialize(LWGEOM_EXPLODED *exploded, int wantbbox);
+extern char *lwexploded_serialize(LWGEOM_EXPLODED *exploded, int wantbbox);
+
+// Same as lwexploded_serialize but writing to pre-allocated space
+extern void lwexploded_serialize_buf(LWGEOM_EXPLODED *exploded, int wantbbox, char *buf, int *retsize);
 
 // note - for a simple type (ie. point), this will have sub_geom[0] = serialized_form.
 // for multi-geomtries sub_geom[0] will be a few bytes into the serialized form
@@ -501,6 +504,8 @@ extern char *lwgeom_construct(int SRID,int finalType,int ndims, int nsubgeometri
 
 // construct the empty geometry (GEOMETRYCOLLECTION(EMPTY))
 extern char *lwgeom_constructempty(int SRID,int ndims);
+extern void lwgeom_constructempty_buf(int SRID, int ndims, char *buf, int *size);
+int lwgeom_empty_length(int SRID);
 
 // helper function (not for general use)
 // find the size a geometry (or a sub-geometry)
