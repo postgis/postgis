@@ -13,6 +13,7 @@
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
 #include "profile.h"
+#include "wktparse.h"
 
 //#define DEBUG 1
 
@@ -51,6 +52,7 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS);
 Datum LWGEOM_makeline(PG_FUNCTION_ARGS);
 Datum LWGEOM_line_from_mpoint(PG_FUNCTION_ARGS);
 Datum LWGEOM_addpoint(PG_FUNCTION_ARGS);
+Datum LWGEOM_asEWKT(PG_FUNCTION_ARGS);
 
 
 /*------------------------------------------------------------------*/
@@ -2547,7 +2549,6 @@ PG_FUNCTION_INFO_V1(LWGEOM_asEWKT);
 Datum LWGEOM_asEWKT(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *lwgeom;
-	PG_LWGEOM *ogclwgeom;
 	char *result_cstring;
 	int len;
         char *result,*loc_wkt;

@@ -1289,7 +1289,7 @@ ELSE NULL END
 
 CREATEFUNCTION GeomFromWKB(bytea)
 	RETURNS geometry
-	AS '@MODULE_FILENAME@','LWGEOMFromWKB'
+	AS '@MODULE_FILENAME@','LWGEOM_from_WKB'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION GeomFromWKB(bytea, int)
@@ -1716,6 +1716,16 @@ CREATEFUNCTION AsEWKB(geometry)
 CREATEFUNCTION AsEWKB(geometry,text)
 	RETURNS bytea
 	AS '@MODULE_FILENAME@','WKBFromLWGEOM'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATEFUNCTION GeomFromEWKB(bytea)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','LWGEOMFromWKB'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATEFUNCTION GeomFromEWKT(text)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','parse_WKT_lwgeom'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 ------------------------------------------------------------------------

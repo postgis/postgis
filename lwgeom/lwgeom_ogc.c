@@ -59,6 +59,8 @@ Datum LWGEOM_asText(PG_FUNCTION_ARGS);
 Datum LWGEOM_asBinary(PG_FUNCTION_ARGS);
 // ---- GeometryFromText(text, integer)
 Datum LWGEOM_from_text(PG_FUNCTION_ARGS);
+// ---- GeomFromWKB(bytea, integer)
+Datum LWGEOM_from_WKB(PG_FUNCTION_ARGS);
 // ---- IsClosed(geometry)
 Datum LWGEOM_isclosed_linestring(PG_FUNCTION_ARGS);
 
@@ -716,6 +718,11 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 	int32 SRID;
 	PG_LWGEOM *result = NULL;
 
+	if ( lwgeom_getSRID(geom) != -1 || TYPE_GETZM(geom->type) != 0 )
+	{
+		elog(WARNING, "OGC WKT expected, EWKT provided - use GeomFromEWKT() for this");
+	}
+
 	// read user-requested SRID if any
 	if ( PG_NARGS() > 1 )
 	{
@@ -730,6 +737,40 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 
 	PG_RETURN_POINTER(result);
 }
+
+//given wkb and SRID, return a geometry
+PG_FUNCTION_INFO_V1(LWGEOM_from_WKB);
+Datum LWGEOM_from_WKB(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *geom;
+	int32 SRID;
+	PG_LWGEOM *result = NULL;
+
+	geom = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall1(
+		LWGEOMFromWKB, PG_GETARG_DATUM(0)));
+
+	if ( lwgeom_getSRID(geom) != -1 || TYPE_GETZM(geom->type) != 0 )
+	{
+		elog(WARNING, "OGC WKB expected, EWKB provided - use GeometryFromEWKB() for this");
+	}
+
+
+	// read user-requested SRID if any
+	if ( PG_NARGS() > 1 )
+	{
+		SRID = PG_GETARG_INT32(1);
+		if ( SRID != lwgeom_getSRID(geom) )
+		{
+			result = lwgeom_setSRID(geom, SRID);
+			pfree(geom);
+		}
+	}
+
+	if ( ! result )	result = geom;
+
+	PG_RETURN_POINTER(result);
+}
+
 //convert LWGEOM to wkt (in TEXT format)
 PG_FUNCTION_INFO_V1(LWGEOM_asText);
 Datum LWGEOM_asText(PG_FUNCTION_ARGS)
