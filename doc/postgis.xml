@@ -3852,6 +3852,14 @@ FROM geometry_table;</literallayout>
           </listitem>
         </varlistentry>
 
+        <varlistentry>
+          <term>Reverse(geometry)</term>
+
+          <listitem>
+	    <para>Returns the geometry with vertex order reversed.</para>
+          </listitem>
+        </varlistentry>
+
       </variablelist>
     </sect1>
   </chapter>
