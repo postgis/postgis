@@ -3049,9 +3049,8 @@ dimension
             <term>ExteriorRing(geometry)</term>
 
             <listitem>
-              <para>Return the exterior ring of the first polygon in the
-              geometry. Return NULL if there is no polygon in the
-              geometry.</para>
+              <para>Return the exterior ring of the polygon geometry.
+	      Return NULL if the geometry is not a polygon.</para>
             </listitem>
           </varlistentry>
 
