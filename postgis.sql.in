@@ -17,6 +17,7 @@
 #define CREATEFUNCTION CREATE FUNCTION
 #endif
 
+
 BEGIN TRANSACTION;
 
 -- You might have to define the PL/PgSQL language usually done with the
@@ -371,6 +372,12 @@ BEGIN
 			FROM pg_namespace );
 #endif
 
+#if USE_VERSION >= 75
+	-- no linkage to system table needed
+	return "done";
+#endif
+
+	-- fix linking to system tables
 	UPDATE geometry_columns SET
 		attrelid = NULL,
 		varattnum = NULL,
