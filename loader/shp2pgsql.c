@@ -12,6 +12,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.49  2004/03/06 17:35:59  strk
+ * Added rcsid string to usage output
+ *
  * Revision 1.48  2004/02/03 08:37:48  strk
  * schema support added, slightly modified logic used to keep table and schema names cases (always quoted and forced to lower case if not asked to keep original case)
  *
@@ -138,6 +141,9 @@ DBFHandle hDBFHandle);
 char	*protect_quotes_string(char *str);
 int PIP( Point P, Point* V, int n );
 void *safe_malloc(size_t size);
+
+static char rcsid[] =
+  "$Id$";
 
 void *safe_malloc(size_t size)
 {
@@ -668,6 +674,8 @@ int main (int ARGC, char **ARGV){
 
         if (errflg==1) {
 		printf("\n**ERROR** invalid option or command parameters\n");
+		printf("\n");
+		printf("VERSION: %s", rcsid);
 		printf("\n");
 		printf("USAGE: shp2pgsql [<options>] <shapefile> [<schema>.]<table>\n");
 		printf("\n");
