@@ -1540,6 +1540,61 @@ WHERE the_geom &amp;&amp; 'BOX3D(90900 190900, 100100 200100)'::box3d
         this will drastically reduce the number of distance calculations that
         need to be done.</para>
       </sect2>
+
+      <sect2>
+        <title>Examples of Spatial SQL</title>
+
+        <para>The examples in this section will make use of two tables, a
+        table of linear roads, and a table of polygonal municipality
+        boundaries. The table definitions for the <varname>bc_roads</varname>
+        table is:</para>
+
+        <programlisting>  Column    |       Type        |   Description
+------------+-------------------+-------------------
+ gid        | integer           | Unique ID
+ name       | character varying | Road Name
+ type       | character varying | Road Type Number</programlisting>
+
+        <para>The table definition for the <varname>bc_municipality</varname>
+        table is:</para>
+
+        <programlisting>  Column   |       Type        |   Description
+-----------+-------------------+-------------------
+ gid       | integer           | Unique ID
+ code      | integer           | Unique ID
+ name      | character varying | City / Town Name
+ the_geom  | geometry          | Location Geometry (Polygon)</programlisting>
+
+        <qandaset>
+          <qandadiv>
+            <qandaentry>
+              <question>
+                <para>Find all the roads within 1 kilometer of a point.</para>
+              </question>
+
+              <answer>
+                <para>You can answer this question with a very simple piece of
+                SQL:</para>
+
+                <programlisting>SELECT * FROM geom_table WHERE Distance( the_geom, </programlisting>
+              </answer>
+            </qandaentry>
+
+            <qandaentry>
+              <question>
+                <para>Find the length of all roads</para>
+              </question>
+
+              <answer>
+                <para>You can answer this question with a very simple piece of
+                SQL:</para>
+
+                <programlisting>SELECT * FROM geom_table WHERE Distance( the_geom, </programlisting>
+              </answer>
+            </qandaentry>
+          </qandadiv>
+        </qandaset>
+      </sect2>
     </sect1>
 
     <sect1>
