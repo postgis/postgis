@@ -926,7 +926,7 @@ PostGIS2JTS_polygon(const LWPOLY *lwpoly)
 
 	try
 	{
-		Coordinate *c;
+		//Coordinate *c;
 		uint32 t;
 		int ring;
 		Geometry *g;
@@ -982,7 +982,7 @@ PostGIS2JTS_polygon(const LWPOLY *lwpoly)
 		{
 			pa = lwpoly->rings[ring];
 			vc = JvNewObjectArray(pa->npoints,
-				&Coordinate::class$, c);
+				&Coordinate::class$, NULL);
 			if (is3d)
 			{
 				for(t=0; t<pa->npoints; t++)
