@@ -319,25 +319,25 @@ CREATEFUNCTION box2d_intersects(box2d, box2d)
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 
-CREATEFUNCTION xmin(box2d)
-	RETURNS FLOAT4
-	AS '@MODULE_FILENAME@','BOX2DFLOAT4_xmin'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+--CREATEFUNCTION xmin(box2d)
+	--RETURNS FLOAT4
+	--AS '@MODULE_FILENAME@','BOX2DFLOAT4_xmin'
+	--LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
-CREATEFUNCTION ymin(box2d)
-	RETURNS FLOAT4
-	AS '@MODULE_FILENAME@','BOX2DFLOAT4_ymin'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+--CREATEFUNCTION ymin(box2d)
+	--RETURNS FLOAT4
+	--AS '@MODULE_FILENAME@','BOX2DFLOAT4_ymin'
+	--LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
-CREATEFUNCTION xmax(box2d)
-	RETURNS FLOAT4
-	AS '@MODULE_FILENAME@','BOX2DFLOAT4_xmax'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+--CREATEFUNCTION xmax(box2d)
+	--RETURNS FLOAT4
+	--AS '@MODULE_FILENAME@','BOX2DFLOAT4_xmax'
+	--LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
-CREATEFUNCTION ymax(box2d)
-	RETURNS FLOAT4
-	AS '@MODULE_FILENAME@','BOX2DFLOAT4_ymax'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+--CREATEFUNCTION ymax(box2d)
+	--RETURNS FLOAT4
+	--AS '@MODULE_FILENAME@','BOX2DFLOAT4_ymax'
+	--LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- lwgeom  operator support functions
 
