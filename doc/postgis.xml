@@ -3917,6 +3917,16 @@ FROM geometry_table;</literallayout>
           </listitem>
         </varlistentry>
 
+        <varlistentry id="ndims">
+          <term>ndims(geometry)</term>
+
+          <listitem>
+            <para>Returns number of dimensions of the geometry as
+	    a small int. Values are: 2,3 or 4.
+	    </para>
+          </listitem>
+        </varlistentry>
+
 
         <varlistentry>
           <term>mem_size(geometry)</term>

@@ -50,6 +50,7 @@ Datum LWGEOM_reverse(PG_FUNCTION_ARGS);
 Datum LWGEOM_forceRHR_poly(PG_FUNCTION_ARGS);
 Datum LWGEOM_noop(PG_FUNCTION_ARGS);
 Datum LWGEOM_zmflag(PG_FUNCTION_ARGS);
+Datum LWGEOM_ndims(PG_FUNCTION_ARGS);
 Datum LWGEOM_makepoint(PG_FUNCTION_ARGS);
 Datum LWGEOM_makepoint3dm(PG_FUNCTION_ARGS);
 Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS);
@@ -2325,6 +2326,18 @@ Datum LWGEOM_zmflag(PG_FUNCTION_ARGS)
 	type = in->type;
 	if ( TYPE_HASZ(type) ) ret += 2;
 	if ( TYPE_HASM(type) ) ret += 1;
+	PG_RETURN_INT16(ret);
+}
+
+// Return: 2,3 or 4
+PG_FUNCTION_INFO_V1(LWGEOM_ndims);
+Datum LWGEOM_ndims(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *in;
+	int ret;
+
+	in = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+	ret = (TYPE_NDIMS(in->type));
 	PG_RETURN_INT16(ret);
 }
 

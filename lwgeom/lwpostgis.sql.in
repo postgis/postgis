@@ -1653,6 +1653,11 @@ CREATEFUNCTION zmflag(geometry)
 	AS '@MODULE_FILENAME@', 'LWGEOM_zmflag'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
+CREATEFUNCTION ndims(geometry)
+	RETURNS smallint
+	AS '@MODULE_FILENAME@', 'LWGEOM_ndims'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
 ------------------------------------------------------------------------
 -- CONSTRUCTORS
 ------------------------------------------------------------------------
@@ -2282,6 +2287,16 @@ BEGIN
 		column_name || ''" CHECK (SRID('' || quote_ident(column_name) ||
 		'') = '' || new_srid || '')'' ;
 
+	EXECUTE ''ALTER TABLE '' || 
+#if USE_VERSION >= 73
+		quote_ident(real_schema) || ''.'' || quote_ident(table_name)
+#else
+		quote_ident(table_name)
+#endif
+		|| '' ADD CONSTRAINT "enforce_dims_'' || 
+		column_name || ''" CHECK (ndims('' || quote_ident(column_name) ||
+		'') = '' || new_dim || '')'' ;
+
 	IF (not(new_type = ''GEOMETRY'')) THEN
 		EXECUTE ''ALTER TABLE '' || 
 #if USE_VERSION >= 73
@@ -2304,7 +2319,8 @@ BEGIN
 #endif
 		table_name || ''.'' || column_name ||
 		'' SRID:'' || new_srid ||
-		'' TYPE:'' || new_type || ''\n '' ||
+		'' TYPE:'' || new_type || 
+		'' DIMS:'' || new_dim || ''\n '' ||
 		''geometry_column '' || fixgeomres;
 END;
 ' LANGUAGE 'plpgsql' WITH (isstrict);
