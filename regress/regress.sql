@@ -232,3 +232,8 @@ select '136', distance('POINT(0 0)', translate('POINT(0 0)', 5, 12, 0));
 select '137', box3d('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION EMPTY)'::geometry);
 select '138', box3d('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION EMPTY, POINT(0 0))'::geometry);
 
+select '139', asewkt(multi(setsrid('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION EMPTY, POINT(0 0))'::geometry, 2)));
+select '140', asewkt(multi(setsrid('POINT(2 2)'::geometry, 3)));
+select '141', asewkt(multi(setsrid('LINESTRING(2 2, 3 3)'::geometry, 4)));
+select '142', asewkt(multi(setsrid('LINESTRING(2 2, 3 3)'::geometry, 5)));
+select '143', asewkt(multi(setsrid('POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))'::geometry, 6)));
