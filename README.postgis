@@ -25,22 +25,21 @@ Directory structure:
 
 INSTALLATION:
 
+PostGIS is compatible with PostgreSQL 7.1 and above.
+
 To install the module, move this directory to the "contrib" directory of your
 PostgreSQL source installation. Alternately, edit the "top_buildir" in the 
 Makefile and point it at your PostgreSQL source tree. You must have a 
 PostgreSQL source tree, and you must have run succesfully built and installed
 it for this to work.
 
-* POSTGRESQL 7.2 SUPPORT: 
-  PostgreSQL 7.1 and 7.2 spatial indexes are *not* compatible. You must
-  compile for one version or the other. To use PostgreSQL 7.2,
-  edit the postgis Makefile and change the USE_PG72 variable to 1.
-
 * PROJ4 SUPPORT: 
   The Proj4 reproject library is require if you want to use the 
   transform() function to reproject features within the database.
   Install Proj4 in the default location.
-  Edit the postgis Makefile and change the USE_PROJ variable to 1.
+  Edit the postgis Makefile and change the USE_PROJ variable to 1
+  and ensure that the PROJ_DIR variable points to your Proj4 
+  installation location (/usr/local is the default).
 
 As root run:
 	

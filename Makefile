@@ -2,7 +2,8 @@
 
 #---------------------------------------------------------------
 # Set USE_PROJ to 1 for Proj4 reprojection support
-USE_PROJ=0
+USE_PROJ=1
+PROJ_DIR=/usr/local
 
 #---------------------------------------------------------------
 # Set USE_STATS to 1 for new GiST statistics collection support
@@ -32,9 +33,29 @@ endif
 # Test the version string and select the correct GiST index
 # bindings.
 ifneq ($(findstring 7.1,$(VERSION)),)
-	USE_PG72=0
+	USE_VERSION=71
 else
-	USE_PG72=1
+	ifneq ($(findstring 7.2,$(VERSION)),)
+		USE_VERSION=72
+	else
+		USE_VERSION=73
+	endif
+endif
+
+#---------------------------------------------------------------
+# Regression test temporary database.
+TEST_DB=geom_regress
+
+#---------------------------------------------------------------
+# shared library parameters
+NAME=postgis
+SO_MAJOR_VERSION=0
+SO_MINOR_VERSION=7
+
+#override CPPFLAGS := -I$(srcdir) $(CPPFLAGS)
+# Altered for Cynwin
+ifeq ($(USE_PROJ),1)
+	override CPPFLAGS := -g  -I$(PROJ_DIR)/include -I$(srcdir) $(CPPFLAGS) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"' -DUSE_PROJ
 endif
 
 #---------------------------------------------------------------
@@ -56,18 +77,20 @@ else
 endif
 override DLLLIBS := $(BE_DLLLIBS) $(DLLLIBS)
 
-ifeq ($(USE_PG72),1)
-	OBJS=postgis_debug.o postgis_ops.o postgis_fn.o postgis_inout.o postgis_proj.o postgis_chip.o postgis_transform.o postgis_gist_72.o postgis_estimate.o
+ifeq ($(USE_VERSION),71) 
+	GIST_SUPPORT=71
 else
-	OBJS=postgis_debug.o postgis_ops.o postgis_fn.o postgis_inout.o postgis_proj.o postgis_chip.o postgis_transform.o postgis_gist.o
+	GIST_SUPPORT=72
 endif
+
+OBJS=postgis_debug.o postgis_ops.o postgis_fn.o postgis_inout.o postgis_proj.o postgis_chip.o postgis_transform.o postgis_gist_$(GIST_SUPPORT).o
 
 # Add libraries that libpq depends (or might depend) on into the
 # shared library link.  (The order in which you list them here doesn't
 # matter.)
 SHLIB_LINK=$(filter -L%, $(LDFLAGS)) 
 ifeq ($(USE_PROJ),1)
-	SHLIB_LINK=$(filter -L%, $(LDFLAGS)) -lproj
+	SHLIB_LINK=$(filter -L%, $(LDFLAGS)) -L$(PROJ_DIR)/lib -lproj
 else
 	SHLIB_LINK=$(filter -L%, $(LDFLAGS)) 
 endif
@@ -80,13 +103,9 @@ loaderdumper:
 # Shared library stuff
 include $(top_srcdir)/src/Makefile.shlib
 
-$(NAME).sql: $(NAME).sql.in $(NAME)_gist_72.sql.in $(NAME)_gist.sql.in
+$(NAME).sql: $(NAME).sql.in $(NAME)_gist_$(USE_VERSION).sql.in 
 	sed -e 's:@MODULE_FILENAME@:$(libdir)/$(shlib):g;s:@POSTGIS_VERSION@:$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION):g' < $(NAME).sql.in > $@ 
-	if [ $(USE_PG72) -eq 1 ]; then \
-		sed -e 's:@MODULE_FILENAME@:$(libdir)/$(shlib):g;s:@POSTGIS_VERSION@:$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION):g' < $(NAME)_gist_72.sql.in >> $(NAME).sql; \
-	else \
-		sed -e 's:@MODULE_FILENAME@:$(libdir)/$(shlib):g;s:@POSTGIS_VERSION@:$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION):g' < $(NAME)_gist.sql.in >> $(NAME).sql; \
-	fi
+	sed -e 's:@MODULE_FILENAME@:$(libdir)/$(shlib):g;s:@POSTGIS_VERSION@:$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION):g' < $(NAME)_gist_$(USE_VERSION).sql.in >> $(NAME).sql
 
 $(NAME)_undef.sql: $(NAME).sql
 	perl create_undef.pl $< > $@ 
