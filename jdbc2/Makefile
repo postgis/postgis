@@ -23,6 +23,7 @@ PGUSER?=psql
 PGPASS?=guess
 
 SRC= $(SRCDIR)/examples/Test.java \
+		$(SRCDIR)/examples/TestBoxes.java \
 		$(SRCDIR)/examples/TestParser.java \
 		$(SRCDIR)/examples/TestServer.java \
 		$(SRCDIR)/org/postgis/ComposedGeom.java \
@@ -34,8 +35,8 @@ SRC= $(SRCDIR)/examples/Test.java \
 		$(SRCDIR)/org/postgis/MultiLineString.java \
 		$(SRCDIR)/org/postgis/MultiPoint.java \
 		$(SRCDIR)/org/postgis/MultiPolygon.java \
+		$(SRCDIR)/org/postgis/PGbox2d.java \
 		$(SRCDIR)/org/postgis/PGbox3d.java \
-		$(SRCDIR)/org/postgis/PGbox.java \
 		$(SRCDIR)/org/postgis/PGgeometry.java \
 		$(SRCDIR)/org/postgis/PointComposedGeom.java \
 		$(SRCDIR)/org/postgis/Point.java \
@@ -43,7 +44,7 @@ SRC= $(SRCDIR)/examples/Test.java \
 
 
 all:	jar \
-	test
+	offlinetests
 
 jar:	compile
 	$(JAR) -cf postgis.jar -C $(BUILD) . -C $(SRCDIR) org/postgresql/postgresql.properties README	
@@ -69,6 +70,20 @@ ptestoffline: compile
 
 ptest:  compile
 	$(JAVA) -classpath "$(BUILD):$(CP)" $(EXAMPLES)/TestParser jdbc:postgresql_postGIS://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
+
+boxtestoffline: compile	
+	$(JAVA) -classpath "$(BUILD):$(CP)" $(EXAMPLES)/TestBoxes offline
+
+boxtest:  compile
+	$(JAVA) -classpath "$(BUILD):$(CP)" $(EXAMPLES)/TestBoxes jdbc:postgresql_postGIS://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
+
+offlinetests: boxtestoffline ptestoffline test
+
+onlinetests: boxtest ptest jtest
+
+# boxtest and ptest include boxtestoffline and ptestoffline, so we only need
+# to run test in addition to the onlinetests
+alltests: onlinetests test
 
 clean:  
 	$(DELETE) $(BUILD) bin postgis.jar postgis_debug.jar compile

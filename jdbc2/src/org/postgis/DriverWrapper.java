@@ -107,13 +107,15 @@ public class DriverWrapper extends Driver {
         // This is correct for PostgreSQL jdbc drivers up to V7.4
         pgconn.addDataType("geometry", "org.postgis.PGgeometry");
         pgconn.addDataType("box3d", "org.postgis.PGbox3d");
-        pgconn.addDataType("box3d", "org.postgis.PGbox");
+        pgconn.addDataType("box2d", "org.postgis.PGbox2d");
+
         // If you use PostgreSQL jdbc drivers V8.0 or newer, the above
         // methods are deprecated (but still work for now), and you
         // may want to use the two lines below instead.
+
         //pgconn.addDataType("geometry", org.postgis.PGgeometry.class);
         //pgconn.addDataType("box3d", org.postgis.PGbox3d.class);
-        //pgconn.addDataType("box3d", org.postgis.PGBox.class);
+        //pgconn.addDataType("box2d", org.postgis.PGbox2d.class);
     }
 
     /**
