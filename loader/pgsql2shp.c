@@ -10,6 +10,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.44  2004/03/10 18:46:07  strk
+ * Fixed a bug reducing the output shapes from Multipolygon tables.
+ *
  * Revision 1.43  2004/03/06 17:43:06  strk
  * Added RCSID string in usage output
  *
@@ -241,6 +244,9 @@ int main(int ARGC, char **ARGV){
 	rowbuflen=100;
 	is3d = 0;
 	binary = 0;
+#ifdef DEBUG
+	FILE *debug;
+#endif
 
 	if ( getenv("ROWBUFLEN") ) rowbuflen=atoi(getenv("ROWBUFLEN"));
 
@@ -1513,13 +1519,13 @@ create_multipolygon2D_WKB(byte *wkb, int shape_id)
 	uint32 totpoints=0;
 	int *part_index=NULL;
 	uint32 pi;
-	double *x=NULL, *y=NULL, *z=NULL;
+	double *x=NULL, *y=NULL;
 
 	// skip byteOrder and type
 	//printf("byteOrder is %d\n", popbyte(&wkb));
 	//printf("Type is %d", popint(&wkb)); 
 	skipbyte(&wkb); skipint(&wkb);
-	
+
 	/*
 	 * Scan all polygons in multipolygon
 	 */
@@ -1553,7 +1559,6 @@ create_multipolygon2D_WKB(byte *wkb, int shape_id)
 #endif
 
 		// wkb now points at first ring
-		totpoints=0;
 		for (ri=0; ri<nrings; ri++)
 		{
 			uint32 pn; // point number
@@ -1619,7 +1624,7 @@ create_multipolygon2D_WKB(byte *wkb, int shape_id)
 
 	obj = SHPCreateObject(SHPT_POLYGON, shape_id, nparts,
 		part_index, NULL, totpoints,
-		x, y, z, NULL);
+		x, y, NULL, NULL);
 
 #if VERBOSE > 2
 	printf("Object created\n");
@@ -1680,7 +1685,6 @@ create_multipolygon3D_WKB(byte *wkb, int shape_id)
 #endif
 
 		// wkb now points at first ring
-		totpoints=0;
 		for (ri=0; ri<nrings; ri++)
 		{
 			int pn; // point number
