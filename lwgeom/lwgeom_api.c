@@ -883,6 +883,84 @@ if (line == NULL)
 	return result;
 }
 
+// convert this line into its serialize form writing it into
+// the given buffer, and returning number of bytes written into
+// the given int pointer.
+// result's first char will be the 8bit type.  See serialized form doc
+void lwline_serialize_buf(LWLINE *line, char *buf, int *retsize)
+{
+	int size=1;  // type byte
+	char hasSRID;
+	int t;
+	char *loc;
+
+	if (line == NULL)
+		elog(ERROR,"lwline_serialize:: given null line");
+
+	hasSRID = (line->SRID != -1);
+
+	if (hasSRID) size +=4;  //4 byte SRID
+
+	if (line->ndims == 3)
+	{
+		size += 24 * line->points->npoints; //x,y,z
+	}
+	else if (line->ndims == 2)
+	{
+		size += 16 * line->points->npoints; //x,y
+	}
+	else if (line->ndims == 4)
+	{
+			size += 32 * line->points->npoints; //x,y
+	}
+
+	size+=4; // npoints
+
+	buf[0] = (unsigned char) lwgeom_makeType(line->ndims,
+		hasSRID, LINETYPE);
+	loc = buf+1;
+
+	if (hasSRID)
+	{
+		memcpy(loc, &line->SRID, sizeof(int32));
+		loc += 4;
+	}
+
+	memcpy(loc, &line->points->npoints, sizeof(int32));
+	loc +=4;
+	//copy in points
+
+//elog(NOTICE," line serialize - size = %i", size);
+
+	if (line->ndims == 3)
+	{
+		for (t=0; t< line->points->npoints;t++)
+		{
+			getPoint3d_p(line->points, t, loc);
+			loc += 24; // size of a 3d point
+		}
+	}
+	else if (line->ndims == 2)
+	{
+		for (t=0; t< line->points->npoints;t++)
+		{
+			getPoint2d_p(line->points, t, loc);
+			loc += 16; // size of a 2d point
+		}
+	}
+	else if (line->ndims == 4)
+	{
+		for (t=0; t< line->points->npoints;t++)
+		{
+			getPoint4d_p(line->points, t, loc);
+			loc += 32; // size of a 2d point
+		}
+	}
+	//printBYTES((unsigned char *)result, size);
+
+	*retsize = size;
+}
+
 // find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
 BOX3D *lwline_findbbox(LWLINE *line)
 {
@@ -1009,61 +1087,78 @@ LWPOINT *lwpoint_deserialize(char *serialized_form)
 
 }
 
-// convert this line into its serialize form
+// convert this point into its serialize form
 // result's first char will be the 8bit type.  See serialized form doc
 char  *lwpoint_serialize(LWPOINT *point)
 {
-		int size=1;
-		char hasSRID;
-		char * result;
-		char *loc;
+	int size=1;
+	char hasSRID;
+	char * result;
+	char *loc;
 
-		hasSRID = (point->SRID != -1);
+	hasSRID = (point->SRID != -1);
 
-		if (hasSRID)
-			size +=4;  //4 byte SRID
+	if (hasSRID) size +=4;  //4 byte SRID
 
-		if (point->ndims == 3)
-		{
-			size += 24; //x,y,z
-		}
-		else if (point->ndims == 2)
-		{
-			size += 16 ; //x,y,z
-		}
-		else if (point->ndims == 4)
-		{
-			size += 32 ; //x,y,z,m
-		}
+	if (point->ndims == 3) size += 24; //x,y,z
+	else if (point->ndims == 2) size += 16 ; //x,y,z
+	else if (point->ndims == 4) size += 32 ; //x,y,z,m
 
-		result = palloc(size);
+	result = palloc(size);
 
-		result[0] = (unsigned char) lwgeom_makeType(point->ndims,hasSRID, POINTTYPE);
-		loc = result+1;
+	result[0] = (unsigned char) lwgeom_makeType(point->ndims,
+		hasSRID, POINTTYPE);
+	loc = result+1;
 
-		if (hasSRID)
-		{
-			memcpy(loc, &point->SRID, sizeof(int32));
-			loc += 4;
-		}
+	if (hasSRID)
+	{
+		memcpy(loc, &point->SRID, sizeof(int32));
+		loc += 4;
+	}
 
-		//copy in points
+	//copy in points
 
-		if (point->ndims == 3)
-		{
-				getPoint3d_p(point->point, 0, loc);
-		}
-		else if (point->ndims == 2)
-		{
-
-				getPoint2d_p(point->point, 0, loc);
-		}
-		else if (point->ndims == 4)
-		{
-
-			getPoint4d_p(point->point, 0, loc);
-		}
+	if (point->ndims == 3) getPoint3d_p(point->point, 0, loc);
+	else if (point->ndims == 2) getPoint2d_p(point->point, 0, loc);
+	else if (point->ndims == 4) getPoint4d_p(point->point, 0, loc);
 	return result;
+}
+
+// convert this point into its serialize form writing it into
+// the given buffer, and returning number of bytes written into
+// the given int pointer.
+// result's first char will be the 8bit type.  See serialized form doc
+void lwpoint_serialize_buf(LWPOINT *point, char *buf, int *retsize)
+{
+	int size=1;
+	char hasSRID;
+	char *loc;
+
+	hasSRID = (point->SRID != -1);
+
+	if (hasSRID) size +=4;  //4 byte SRID
+
+	if (point->ndims == 3) size += 24; //x,y,z
+	else if (point->ndims == 2) size += 16 ; //x,y,z
+	else if (point->ndims == 4) size += 32 ; //x,y,z,m
+
+	buf[0] = (unsigned char) lwgeom_makeType(point->ndims,
+		hasSRID, POINTTYPE);
+	loc = buf+1;
+
+	if (hasSRID)
+	{
+		memcpy(loc, &point->SRID, sizeof(int32));
+		loc += 4;
+	}
+
+	//copy in points
+
+	if (point->ndims == 3) getPoint3d_p(point->point, 0, loc);
+	else if (point->ndims == 2) getPoint2d_p(point->point, 0, loc);
+	else if (point->ndims == 4) getPoint4d_p(point->point, 0, loc);
+
+	*retsize = size;
 }
 
 // find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
@@ -1332,6 +1427,83 @@ char *lwpoly_serialize(LWPOLY *poly)
 		}
 
 		return result;
+}
+
+// create the serialized form of the polygon writing it into the
+// given buffer, and returning number of bytes written into
+// the given int pointer.
+// result's first char will be the 8bit type.  See serialized form doc
+// points copied
+void lwpoly_serialize_buf(LWPOLY *poly, char *buf, int *retsize)
+{
+	int size=1;  // type byte
+	char hasSRID;
+	int t,u;
+	int total_points = 0;
+	int npoints;
+	char *loc;
+
+	hasSRID = (poly->SRID != -1);
+
+	if (hasSRID) size +=4;  //4 byte SRID
+
+	size += 4; // nrings
+	size += 4*poly->nrings; //npoints/ring
+
+	for (t=0;t<poly->nrings;t++)
+	{
+		total_points  += poly->rings[t]->npoints;
+	}
+	if (poly->ndims == 3) size += 24*total_points;
+	else if (poly->ndims == 2) size += 16*total_points;
+	else if (poly->ndims == 4) size += 32*total_points;
+
+	buf[0] = (unsigned char) lwgeom_makeType(poly->ndims,
+		hasSRID, POLYGONTYPE);
+	loc = buf+1;
+
+	if (hasSRID)
+	{
+		memcpy(loc, &poly->SRID, sizeof(int32));
+		loc += 4;
+	}
+
+	memcpy(loc, &poly->nrings, sizeof(int32));  // nrings
+	loc+=4;
+
+	for (t=0;t<poly->nrings;t++)
+	{
+		POINTARRAY *pa = poly->rings[t];
+		npoints = poly->rings[t]->npoints;
+		memcpy(loc, &npoints, sizeof(int32)); //npoints this ring
+		loc+=4;
+		if (poly->ndims == 3)
+		{
+			for (u=0;u<npoints;u++)
+			{
+				getPoint3d_p(pa, u, loc);
+				loc+= 24;
+			}
+		}
+		else if (poly->ndims == 2)
+		{
+			for (u=0;u<npoints;u++)
+			{
+				getPoint2d_p(pa, u, loc);
+				loc+= 16;
+			}
+		}
+		else if (poly->ndims == 4)
+		{
+			for (u=0;u<npoints;u++)
+			{
+				getPoint4d_p(pa, u, loc);
+				loc+= 32;
+			}
+		}
+	}
+
+	*retsize = size;
 }
 
 

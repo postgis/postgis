@@ -219,6 +219,8 @@ extern LWLINE *lwline_deserialize(char *serialized_form);
 // result's first char will be the 8bit type.  See serialized form doc
 // copies data.
 extern char  *lwline_serialize(LWLINE *line);
+// same as above, writes to buf
+extern void lwline_serialize_buf(LWLINE *line, char *buf, int *size);
 
 // find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
 extern BOX3D *lwline_findbbox(LWLINE *line);
@@ -246,9 +248,11 @@ extern LWPOINT  *lwpoint_construct(int ndims, int SRID, POINTARRAY *point);
 // See serialized form doc
 extern LWPOINT *lwpoint_deserialize(char *serialized_form);
 
-// convert this line into its serialize form
+// convert this point into its serialize form
 // result's first char will be the 8bit type.  See serialized form doc
 extern char  *lwpoint_serialize(LWPOINT *point);
+// same as above, writes to buf
+extern void lwpoint_serialize_buf(LWPOINT *point, char *buf, int *size);
 
 // find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
 extern BOX3D *lwpoint_findbbox(LWPOINT *point);
@@ -287,6 +291,8 @@ extern LWPOLY *lwpoly_deserialize(char *serialized_form);
 // result's first char will be the 8bit type.  See serialized form doc
 // points copied
 extern char *lwpoly_serialize(LWPOLY *poly);
+// same as above, writes to buf
+extern void lwpoly_serialize_buf(LWPOLY *poly, char *buf, int *size);
 
 
 // find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
