@@ -68,7 +68,7 @@ ptestoffline: compile
 	$(JAVA) -classpath "$(BUILD):$(CP)" $(EXAMPLES)/TestParser offline
 
 ptest:  compile
-	$(JAVA) -classpath "$(BUILD):$(CP)" $(EXAMPLES)/TestParser jdbc:postgresql://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
+	$(JAVA) -classpath "$(BUILD):$(CP)" $(EXAMPLES)/TestParser jdbc:postgresql_postGIS://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
 
 clean:  
 	$(DELETE) $(BUILD) bin postgis.jar postgis_debug.jar compile
