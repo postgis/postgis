@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.38  2003/11/19 15:44:51  strk
+ * added prototypes for geometry_{le,ge,cmp}
+ *
  * Revision 1.37  2003/10/28 16:57:35  strk
  * Added collect_garray() function.
  *
@@ -492,8 +495,11 @@ Datum perimeter2d(PG_FUNCTION_ARGS);
 Datum truly_inside(PG_FUNCTION_ARGS);
 
 Datum geometry_lt(PG_FUNCTION_ARGS);
-Datum geometry_gt(PG_FUNCTION_ARGS);
+Datum geometry_le(PG_FUNCTION_ARGS);
 Datum geometry_eq(PG_FUNCTION_ARGS);
+Datum geometry_gt(PG_FUNCTION_ARGS);
+Datum geometry_ge(PG_FUNCTION_ARGS);
+Datum geometry_cmp(PG_FUNCTION_ARGS);
 
 Datum npoints(PG_FUNCTION_ARGS);
 Datum nrings(PG_FUNCTION_ARGS);
