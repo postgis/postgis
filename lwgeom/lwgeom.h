@@ -121,7 +121,7 @@ extern POINT4D getPoint4d(POINTARRAY *pa, int n);
 
 // copies a point from the point array into the parameter point
 // will set point's z=0 (or NaN) if pa is 2d
-// will set point's m=0 (or NaN( if pa is 3d or 2d
+// will set point's m=0 (or NaN) if pa is 3d or 2d
 // NOTE: this will modify the point4d pointed to by 'point'.
 extern void getPoint4d_p(POINTARRAY *pa, int n, char *point);
 
