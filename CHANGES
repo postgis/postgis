@@ -1,3 +1,48 @@
+PostGIS 0.6
+
+- New functions
+  - postgis_version()
+    Return the PostGIS version number.
+  - find_srid(<db/schema>::varchar, <table>::varchar, <column>::varchar)
+    Return the SRID number for a particular column of a database.
+  - AddGeometryColumn(<db/schema>::varchar, <table>::varchar,
+      <column>::varchar, <srid>::integer, <type>::varchar, 
+      <dimension>::integer)
+    Appends a geometry column to an existing table and updates the
+    metadata tables appropriately.
+  - DropGeometryColumn(<db/schema>::varchar, <table>::varchar, 
+      <column>::varchar)
+    Removes a geometry column from an existing spatial table.
+  - Distance(<geom1>::geometry, <geom2>::geometry)
+    Returns the cartesian distance between two geometries.
+  - AsText(<geom>::geometry)
+    Returns the OGC well-known text version of the geometry.
+  - SRID(<geom>::geometry)
+    Returns the integer SRID of the geometry.
+  - GeometryFromText(<geom>::varchar, <srid>::integer)
+    Creates a geometry object given the OGC well-known text and a valid
+    SRID.
+  - SetSRID(<geom>::geometry)
+    Sets the SRID of a geometry to a particular value.
+  - IsClosed(<geom>::geometry)
+    Returns true of first and last points of geometry are coincident.
+  - StartPoint(<geom>::geometry)
+    Returns the first point of a geometry.
+  - EndPoint(<geom>::geometry)
+    Returns the last point of a geometry.
+  - Centroid(<geom>::geometry)
+    Returns the centroid of a geometry.
+- More OpenGIS SFSQL compatibility
+  - SPATIAL_REF_SYS table
+  - GEOMETRY_COLUMNS table
+  - SRID integrity checking
+- Better Mapserver compatibility
+- Minor fixes/changes
+  - Support for WKB in the tables
+  - Miscellaneous bug fixes
+  - Placeholders for precision grid
+
+
 PostGIS 0.5
 
 - New functions

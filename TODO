@@ -1,7 +1,7 @@
-2001/07/20
+2001/09/20
 
 - GML import/export routines
-- Possible re-write to become more OGC compliant (?)
 - Inclusion of OGC simple feature predicate functions for overlaps, 
   intersections, etc.
+  - Port of JTS topology suite to C++
 - Connectivity to commercial GIS software.
