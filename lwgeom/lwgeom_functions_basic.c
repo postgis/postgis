@@ -14,7 +14,6 @@
 
 //#define DEBUG
 
-Datum combine_box2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_mem_size(PG_FUNCTION_ARGS);
 Datum LWGEOM_summary(PG_FUNCTION_ARGS);
 Datum LWGEOM_npoints(PG_FUNCTION_ARGS);
@@ -39,6 +38,8 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS);
 Datum LWGEOM_accum(PG_FUNCTION_ARGS);
 Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS);
 Datum LWGEOM_expand(PG_FUNCTION_ARGS);
+Datum LWGEOM_to_BOX(PG_FUNCTION_ARGS);
+Datum LWGEOM_envelope(PG_FUNCTION_ARGS);
 
 // internal
 char * lwgeom_summary_recursive(char *serialized, int offset);
@@ -776,54 +777,6 @@ lwgeom_pt_inside_circle(POINT2D *p, double cx, double cy, double rad)
 }
 
 /*------------------------------------------------------------------*/
-
-PG_FUNCTION_INFO_V1(combine_box2d);
-Datum combine_box2d(PG_FUNCTION_ARGS)
-{
-	Pointer box2d_ptr = PG_GETARG_POINTER(0);
-	Pointer geom_ptr = PG_GETARG_POINTER(1);
-	BOX2DFLOAT4 *a,*b;
-	char *lwgeom;
-	BOX2DFLOAT4 box, *result;
-
-	if  ( (box2d_ptr == NULL) && (geom_ptr == NULL) )
-	{
-		PG_RETURN_NULL(); // combine_box2d(null,null) => null
-	}
-
-	result = (BOX2DFLOAT4 *)palloc(sizeof(BOX2DFLOAT4));
-
-	if (box2d_ptr == NULL)
-	{
-		lwgeom = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-
-		box = getbox2d(lwgeom+4);
-		memcpy(result, &box, sizeof(BOX2DFLOAT4));
-		PG_RETURN_POINTER(result);
-	}
-
-	// combine_bbox(BOX3D, null) => BOX3D
-	if (geom_ptr == NULL)
-	{
-		memcpy(result, (char *)PG_GETARG_DATUM(0), sizeof(BOX2DFLOAT4));
-		PG_RETURN_POINTER(result);
-	}
-
-	//combine_bbox(BOX3D, geometry) => union(BOX3D, geometry->bvol)
-
-	lwgeom = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-	box = getbox2d(lwgeom+4);
-
-	a = (BOX2DFLOAT4 *)PG_GETARG_DATUM(0);
-	b = &box;
-
-	result->xmax = LWGEOM_Maxf(a->xmax, b->xmax);
-	result->ymax = LWGEOM_Maxf(a->ymax, b->ymax);
-	result->xmin = LWGEOM_Minf(a->xmin, b->xmin);
-	result->ymin = LWGEOM_Minf(a->ymin, b->ymin);
-
-	PG_RETURN_POINTER(result);
-}
 
 //find the size of geometry
 PG_FUNCTION_INFO_V1(LWGEOM_mem_size);
@@ -2300,6 +2253,64 @@ Datum LWGEOM_expand(PG_FUNCTION_ARGS)
 
 	// expand it
 	expand_box2d(&box, d);
+
+	// Assign coordinates to POINT2D array
+	pts[0].x = box.xmin; pts[0].y = box.ymin;
+	pts[1].x = box.xmin; pts[1].y = box.ymax;
+	pts[2].x = box.xmax; pts[2].y = box.ymax;
+	pts[3].x = box.xmax; pts[3].y = box.ymin;
+	pts[4].x = box.xmin; pts[4].y = box.ymin;
+
+	// Construct point array
+	pa[0] = palloc(sizeof(POINTARRAY));
+	pa[0]->serialized_pointlist = (char *)pts;
+	pa[0]->ndims = 2;
+	pa[0]->npoints = 5;
+
+	// Construct polygon
+	poly = lwpoly_construct(2, SRID, 1, pa);
+
+	// Serialize polygon
+	ser = lwpoly_serialize(poly);
+
+	// Construct LWGEOM 
+	result = LWGEOM_construct(ser, SRID, lwgeom_hasBBOX(geom->type));
+	
+	PG_RETURN_POINTER(result);
+}
+
+// Convert geometry to BOX (internal postgres type)
+PG_FUNCTION_INFO_V1(LWGEOM_to_BOX);
+Datum LWGEOM_to_BOX(PG_FUNCTION_ARGS)
+{
+	LWGEOM *lwgeom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	BOX2DFLOAT4 box2d;
+	BOX *result = (BOX *)palloc(sizeof(BOX));
+
+	getbox2d_p(SERIALIZED_FORM(lwgeom), &box2d);
+	box2df_to_box_p(&box2d, result);
+
+	PG_RETURN_POINTER(result);
+}
+
+// makes a polygon of the features bvol - 1st point = LL 3rd=UR
+// 2d only. (3d might be worth adding).
+// create new geometry of type polygon, 1 ring, 5 points
+PG_FUNCTION_INFO_V1(LWGEOM_envelope);
+Datum LWGEOM_envelope(PG_FUNCTION_ARGS)
+{
+	LWGEOM *geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	BOX2DFLOAT4 box;
+	POINT2D *pts = palloc(sizeof(POINT2D)*5);
+	POINTARRAY *pa[1];
+	LWPOLY *poly;
+	int SRID;
+	LWGEOM *result;
+	char *ser;
+
+	// get geometry box and SRID
+	getbox2d_p(SERIALIZED_FORM(geom), &box);
+	SRID = lwgeom_getsrid(SERIALIZED_FORM(geom));
 
 	// Assign coordinates to POINT2D array
 	pts[0].x = box.xmin; pts[0].y = box.ymin;

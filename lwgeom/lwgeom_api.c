@@ -265,6 +265,19 @@ BOX   box2df_to_box(BOX2DFLOAT4 *box)
 	return result;
 }
 
+// convert BOX2D to postgresql BOX
+void
+box2df_to_box_p(BOX2DFLOAT4 *box, BOX *out)
+{
+	if (box == NULL) return;
+
+	out->low.x = nextDown_d(box->xmin);
+	out->low.y = nextDown_d(box->ymin);
+
+	out->high.x = nextUp_d(box->xmax);
+	out->high.y = nextUp_d(box->ymax);
+}
+
 
 // returns a BOX3D that encloses b1 and b2
 // combine_boxes(NULL,A) --> A

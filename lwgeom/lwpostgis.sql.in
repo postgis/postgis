@@ -1300,6 +1300,11 @@ CREATEFUNCTION expand(geometry,float8)
 	AS '@MODULE_FILENAME@', 'LWGEOM_expand'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
+CREATEFUNCTION envelope(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_envelope'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
 ------------------------------------------------------------------------
 
 --
@@ -1308,13 +1313,24 @@ CREATEFUNCTION expand(geometry,float8)
 
 CREATEFUNCTION combine_bbox(box2d,geometry)
 	RETURNS box2d
-	AS '@MODULE_FILENAME@', 'combine_box2d'
+	AS '@MODULE_FILENAME@', 'BOX2DFLOAT4_combine'
 	LANGUAGE 'C';
 
 CREATE AGGREGATE extent(
 	sfunc = combine_bbox,
 	basetype = geometry,
 	stype = box2d
+	);
+
+CREATEFUNCTION combine_bbox(box3d,geometry)
+	RETURNS box3d
+	AS '@MODULE_FILENAME@', 'BOX3D_combine'
+	LANGUAGE 'C';
+
+CREATE AGGREGATE extent3d(
+	sfunc = combine_bbox,
+	basetype = geometry,
+	stype = box3d
 	);
 
 -----------------------------------------------------------------------
@@ -2358,6 +2374,13 @@ CREATEFUNCTION box3d(geometry)
 
 CREATE CAST (geometry as box3d) WITH FUNCTION box3d(geometry) AS IMPLICIT ;
 
+CREATEFUNCTION box(geometry)
+        RETURNS box
+        AS '@MODULE_FILENAME@','LWGEOM_to_BOX'
+        LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE CAST (geometry as box) WITH FUNCTION box(geometry) AS IMPLICIT ;
+
 CREATEFUNCTION box2d(box3d)
         RETURNS box2d
         AS '@MODULE_FILENAME@','BOX3D_to_BOX2DFLOAT4'
@@ -2371,6 +2394,26 @@ CREATEFUNCTION box3d(box2d)
         LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATE CAST (box2d as box3d) WITH FUNCTION box3d(box2d) AS IMPLICIT ;
+
+CREATEFUNCTION box(box3d)
+        RETURNS box
+        AS '@MODULE_FILENAME@','BOX3D_to_BOX'
+        LANGUAGE 'C' WITH (isstrict,iscachable);
+
+-- this is kept for backward-compatibility
+CREATEFUNCTION box3dtobox(box3d)
+        RETURNS box
+        AS 'SELECT box($1)'
+	LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATE CAST (box3d as box) WITH FUNCTION box(box3d) AS IMPLICIT ;
+
+CREATEFUNCTION geometry(box3d)
+        RETURNS geometry
+        AS '@MODULE_FILENAME@','BOX3D_to_LWGEOM'
+        LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE CAST (box3d as geometry) WITH FUNCTION geometry(box3d) AS IMPLICIT ;
 
 ---------------------------------------------------------------
 -- END

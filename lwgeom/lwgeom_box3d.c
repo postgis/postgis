@@ -28,15 +28,17 @@
 Datum BOX3D_in(PG_FUNCTION_ARGS);
 Datum BOX3D_out(PG_FUNCTION_ARGS);
 Datum LWGEOM_to_BOX3D(PG_FUNCTION_ARGS);
+Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS);
 Datum BOX3D_expand(PG_FUNCTION_ARGS);
 Datum BOX3D_to_BOX2DFLOAT4(PG_FUNCTION_ARGS);
-
+Datum BOX3D_to_BOX(PG_FUNCTION_ARGS);
 Datum BOX3D_xmin(PG_FUNCTION_ARGS);
 Datum BOX3D_ymin(PG_FUNCTION_ARGS);
 Datum BOX3D_zmin(PG_FUNCTION_ARGS);
 Datum BOX3D_xmax(PG_FUNCTION_ARGS);
 Datum BOX3D_ymax(PG_FUNCTION_ARGS);
 Datum BOX3D_zmax(PG_FUNCTION_ARGS);
+Datum BOX3D_combine(PG_FUNCTION_ARGS);
 
 /*
  *  BOX3D_in - takes a string rep of BOX3D and returns internal rep
@@ -141,6 +143,53 @@ Datum BOX3D_to_BOX2DFLOAT4(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(out);
 }
 
+PG_FUNCTION_INFO_V1(BOX3D_to_BOX);
+Datum BOX3D_to_BOX(PG_FUNCTION_ARGS)
+{
+	BOX3D *in = (BOX3D *)PG_GETARG_POINTER(0);
+	BOX2DFLOAT4 *box2d = box3d_to_box2df(in);
+	BOX *box = palloc(sizeof(BOX));
+
+	box2df_to_box_p(box2d, box);
+	PG_RETURN_POINTER(box);
+}
+
+PG_FUNCTION_INFO_V1(BOX3D_to_LWGEOM);
+Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
+{
+	BOX3D *box = (BOX3D *)PG_GETARG_POINTER(0);
+	POINT2D *pts = palloc(sizeof(POINT2D)*5);
+	POINTARRAY *pa[1];
+	LWPOLY *poly;
+	int wantbbox = 0;
+	LWGEOM *result;
+	char *ser;
+
+	// Assign coordinates to POINT2D array
+	pts[0].x = box->xmin; pts[0].y = box->ymin;
+	pts[1].x = box->xmin; pts[1].y = box->ymax;
+	pts[2].x = box->xmax; pts[2].y = box->ymax;
+	pts[3].x = box->xmax; pts[3].y = box->ymin;
+	pts[4].x = box->xmin; pts[4].y = box->ymin;
+
+	// Construct point array
+	pa[0] = palloc(sizeof(POINTARRAY));
+	pa[0]->serialized_pointlist = (char *)pts;
+	pa[0]->ndims = 2;
+	pa[0]->npoints = 5;
+
+	// Construct polygon
+	poly = lwpoly_construct(2, -1, 1, pa);
+
+	// Serialize polygon
+	ser = lwpoly_serialize(poly);
+
+	// Construct LWGEOM 
+	result = LWGEOM_construct(ser, -1, wantbbox);
+	
+	PG_RETURN_POINTER(result);
+}
+
 /* Expand given box of 'd' units in all directions */
 void
 expand_box3d(BOX3D *box, double d)
@@ -172,7 +221,6 @@ PG_FUNCTION_INFO_V1(LWGEOM_to_BOX3D);
 Datum LWGEOM_to_BOX3D(PG_FUNCTION_ARGS)
 {
 	LWGEOM *lwgeom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	BOX2DFLOAT4 box;
 	BOX3D *result;
 
 	result = lw_geom_getBB(SERIALIZED_FORM(lwgeom));
@@ -220,4 +268,68 @@ Datum BOX3D_zmax(PG_FUNCTION_ARGS)
 {
 	BOX3D *box = (BOX3D *)PG_GETARG_POINTER(0);
 	PG_RETURN_FLOAT8(box->zmax);
+}
+
+
+PG_FUNCTION_INFO_V1(BOX3D_combine);
+Datum BOX3D_combine(PG_FUNCTION_ARGS)
+{
+	Pointer box3d_ptr = PG_GETARG_POINTER(0);
+	Pointer geom_ptr = PG_GETARG_POINTER(1);
+	BOX3D *a,*b;
+	LWGEOM *lwgeom;
+	BOX3D *box, *result;
+
+	if  ( (box3d_ptr == NULL) && (geom_ptr == NULL) )
+	{
+		PG_RETURN_NULL(); 
+	}
+
+	result = (BOX3D *)palloc(sizeof(BOX3D));
+
+	if (box3d_ptr == NULL)
+	{
+		lwgeom = (LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+		box = lw_geom_getBB(SERIALIZED_FORM(lwgeom));
+		memcpy(result, box, sizeof(BOX3D));
+		PG_RETURN_POINTER(result);
+	}
+
+	// combine_bbox(BOX3D, null) => BOX3D
+	if (geom_ptr == NULL)
+	{
+		memcpy(result, (char *)PG_GETARG_DATUM(0), sizeof(BOX3D));
+		PG_RETURN_POINTER(result);
+	}
+
+	lwgeom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	box = lw_geom_getBB(SERIALIZED_FORM(lwgeom));
+
+	a = (BOX3D *)PG_GETARG_DATUM(0);
+	b = box;
+
+	result->xmax = LWGEOM_Maxd(a->xmax, b->xmax);
+	result->ymax = LWGEOM_Maxd(a->ymax, b->ymax);
+	result->zmax = LWGEOM_Maxd(a->zmax, b->zmax);
+	result->xmin = LWGEOM_Mind(a->xmin, b->xmin);
+	result->ymin = LWGEOM_Mind(a->ymin, b->ymin);
+	result->zmin = LWGEOM_Mind(a->zmin, b->zmin);
+
+	PG_RETURN_POINTER(result);
+}
+
+//min(a,b)
+double LWGEOM_Mind(double a, double b)
+{
+	if (a<b)
+		return a;
+	return b;
+}
+
+//max(a,b)
+double LWGEOM_Maxd(double a, double b)
+{
+	if (b>a)
+		return b;
+	return a;
 }

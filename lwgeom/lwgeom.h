@@ -494,8 +494,9 @@ extern BOX2DFLOAT4 *box_to_box2df(BOX *box);  // postgresql standard type
 
 extern BOX3D box2df_to_box3d(BOX2DFLOAT4 *box);
 extern void box2df_to_box3d_p(BOX2DFLOAT4 *box, BOX3D *box3d);
+extern BOX box2df_to_box(BOX2DFLOAT4 *box);  // postgresql standard type
+extern void box2df_to_box_p(BOX2DFLOAT4 *box, BOX *out); // postgresql standard type
 
-extern BOX   box2df_to_box(BOX2DFLOAT4 *box);  // postgresql standard type
 extern BOX3D *combine_boxes(BOX3D *b1, BOX3D *b2);
 
 
@@ -681,6 +682,8 @@ Datum lwgeom_gbox_picksplit(PG_FUNCTION_ARGS);
 
 extern float LWGEOM_Minf(float a, float b);
 extern float LWGEOM_Maxf(float a, float b);
+extern double LWGEOM_Mind(double a, double b);
+extern double LWGEOM_Maxd(double a, double b);
 
 
 

@@ -33,6 +33,7 @@ Datum BOX2DFLOAT4_xmin(PG_FUNCTION_ARGS);
 Datum BOX2DFLOAT4_ymin(PG_FUNCTION_ARGS);
 Datum BOX2DFLOAT4_xmax(PG_FUNCTION_ARGS);
 Datum BOX2DFLOAT4_ymax(PG_FUNCTION_ARGS);
+Datum BOX2DFLOAT4_combine(PG_FUNCTION_ARGS);
 
 
 
@@ -99,12 +100,11 @@ Datum BOX2DFLOAT4_out(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_to_BOX2DFLOAT4);
 Datum LWGEOM_to_BOX2DFLOAT4(PG_FUNCTION_ARGS)
 {
-	char *lwgeom = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	BOX2DFLOAT4 box, *result;
+	LWGEOM *lwgeom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	BOX2DFLOAT4 *result;
 
-	box = getbox2d(lwgeom+4);
 	result = palloc(sizeof(BOX2DFLOAT4));
-	memcpy(result,&box, sizeof(BOX2DFLOAT4));
+	getbox2d_p(SERIALIZED_FORM(lwgeom), result);
 	PG_RETURN_POINTER(result);
 }
 
@@ -358,3 +358,52 @@ Datum BOX2DFLOAT4_ymax(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4 *box = (BOX2DFLOAT4 *)PG_GETARG_POINTER(0);
 	PG_RETURN_FLOAT4(box->ymax);
 }
+
+PG_FUNCTION_INFO_V1(BOX2DFLOAT4_combine);
+Datum BOX2DFLOAT4_combine(PG_FUNCTION_ARGS)
+{
+	Pointer box2d_ptr = PG_GETARG_POINTER(0);
+	Pointer geom_ptr = PG_GETARG_POINTER(1);
+	BOX2DFLOAT4 *a,*b;
+	char *lwgeom;
+	BOX2DFLOAT4 box, *result;
+
+	if  ( (box2d_ptr == NULL) && (geom_ptr == NULL) )
+	{
+		PG_RETURN_NULL(); // combine_box2d(null,null) => null
+	}
+
+	result = (BOX2DFLOAT4 *)palloc(sizeof(BOX2DFLOAT4));
+
+	if (box2d_ptr == NULL)
+	{
+		lwgeom = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+
+		box = getbox2d(lwgeom+4);
+		memcpy(result, &box, sizeof(BOX2DFLOAT4));
+		PG_RETURN_POINTER(result);
+	}
+
+	// combine_bbox(BOX3D, null) => BOX3D
+	if (geom_ptr == NULL)
+	{
+		memcpy(result, (char *)PG_GETARG_DATUM(0), sizeof(BOX2DFLOAT4));
+		PG_RETURN_POINTER(result);
+	}
+
+	//combine_bbox(BOX3D, geometry) => union(BOX3D, geometry->bvol)
+
+	lwgeom = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	box = getbox2d(lwgeom+4);
+
+	a = (BOX2DFLOAT4 *)PG_GETARG_DATUM(0);
+	b = &box;
+
+	result->xmax = LWGEOM_Maxf(a->xmax, b->xmax);
+	result->ymax = LWGEOM_Maxf(a->ymax, b->ymax);
+	result->xmin = LWGEOM_Minf(a->xmin, b->xmin);
+	result->ymin = LWGEOM_Minf(a->ymin, b->ymin);
+
+	PG_RETURN_POINTER(result);
+}
+
