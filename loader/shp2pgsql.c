@@ -95,48 +95,56 @@ char	*make_good_string(char *str){
 }
 
 char	*protect_quotes_string(char *str){
-	//find all the tabs and make them \<tab>s
+	//find all quotes and make them \quotes
+	//find all '\' and make them '\\'
 	// 
-	// 1. find # of quotes
+	// 1. find # of characters
 	// 2. make new string 
 
 	char	*result;
 	char	*str2;
-	char	*start,*end;
-	int	num_tabs = 0;
+	char	*start, *end1, *end2;
+	int	num_chars = 0;
 
 	str2 =  str;
 
 	while ((str2 = strchr((str2), '\'')) )
 	{
-		if ( (str2 == str) || (str2[-1] != '\\') ) //the previous char isnt a '\'
-			num_tabs ++;
+		//if ( (str2 == str) || (str2[-1] != '\\') ) //the previous char isnt a '\'
+		num_chars ++;
 		str2++;
 	}
-	if (num_tabs == 0)
+	
+	str2 = str;
+	
+	while ((str2 = strchr((str2), '\\')) )
+	{
+		num_chars ++;
+		str2++;
+	}
+	if (num_chars == 0)
 		return str;
 	
-	result =(char *) malloc ( strlen(str) + num_tabs+1);
-	memset(result,0, strlen(str) + num_tabs+1 );
+	result =(char *) malloc ( strlen(str) + num_chars+1);
+	memset(result,0, strlen(str) + num_chars+1 );
 	start = str;
 
-	while((end = strchr((start),'\'')))
+	while((end1 = strchr((start),'\''))||(end2 = strchr((start),'\\')))
 	{
-		if ( (end == str) || (end[-1] != '\\' ) ) //the previous char isnt a '\'
-		{
-
-			strncat(result, start, (end-start));	
-			strcat(result,"\\'");
-			start = end +1;
-		}
-		else
-		{
-			strncat(result, start, (end-start));	
-			strcat(result,"'");	
-			start = end  +1;
-		}
-
+	   
+	  if(end1){
+	    strncat(result, start, (end1-start));
+	    strcat(result, "\\\'");
+	    start = end1+1;
+	  }else{
+	    strncat(result, start, (end2-start));
+	    strcat(result, "\\\\");
+	    start = end2+1;
+	  }
+	    
+	  end1 = 0;
 	}
+	    
 	strcat(result,start);
 	return result;
 }
@@ -399,6 +407,13 @@ int Insert_attributes(DBFHandle hDBFHandle, int row){
 		
 	
 	for( i = 0; i < num_fields; i++ ){
+	         if(DBFIsAttributeNULL( hDBFHandle, row, i)){
+		        if(dump_format){
+		               printf("\tNULL");
+		        }else{
+		               printf(",'NULL'");
+		        }
+		 }else{
 			if (dump_format){
 
 				printf("\t%s",make_good_string((char*)DBFReadStringAttribute( hDBFHandle,row, i )) );
@@ -406,6 +421,7 @@ int Insert_attributes(DBFHandle hDBFHandle, int row){
 
 				printf(",'%s'",protect_quotes_string((char*)DBFReadStringAttribute(hDBFHandle, row, i )) );
 			}
+		 }
 	}
 	return 1;
 }
@@ -555,7 +571,7 @@ int main (int ARGC, char **ARGV){
 					break;
 				}
 			}	
-			if(strcmp(name,"gid")==0){
+			if(strcasecmp(name,"gid")==0){
 				printf(", %s__2 ",name);
 			}else{
 				printf(", %s ",name);
