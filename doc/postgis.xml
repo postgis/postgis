@@ -2981,9 +2981,8 @@ dimension
             </listitem>
           </varlistentry>
 
-          <varlistentry>
+          <varlistentry id="IsClosed">
             <term>IsClosed(geometry)</term>
-
             <listitem>
               <para>Returns true of the geometry start and end points are
               coincident.</para>
@@ -3090,9 +3089,8 @@ dimension
             </listitem>
           </varlistentry>
 
-          <varlistentry>
+          <varlistentry id="GeometryType">
             <term>GeometryType(geometry)</term>
-
             <listitem>
               <para>Returns the type of the geometry as a string. Eg:
               'LINESTRING', 'POLYGON', 'MULTIPOINT', etc.</para>
@@ -3869,7 +3867,6 @@ FROM geometry_table;</literallayout>
 
 		<varlistentry>
 		  <term>MakeLine(geometry, geometry)</term>
-
 		  <listitem>
 		    <para>Creates a Linestring from the two given point
 		    geometries.</para>
@@ -3894,6 +3891,16 @@ FROM geometry_table;</literallayout>
 		  </listitem>
 		</varlistentry>
 
+		<varlistentry>
+		  <term>MakePolygon(linestring, [linestring[]])</term>
+		  <listitem>
+		    <para>Creates a Polygon formed by the given 
+		    shell and array of holes. You can construct
+		    a geometry array using <link linkend="Accum">Accum</link>.
+		    Input geometries must be closed LINESTRINGS (see <link linkend="IsClosed">IsClosed</link> and <link linkend="GeometryType">GeometryType</link>).
+		    </para>
+		  </listitem>
+		</varlistentry>
 
 		<varlistentry>
 		  <term>Polygonize(geometry set)</term>
@@ -4254,8 +4261,8 @@ FROM geometry_table;</literallayout>
           </listitem>
         </varlistentry>
 
-        <varlistentry>
-          <term>accum(geometry set)</term>
+        <varlistentry id="Accum">
+          <term>Accum(geometry set)</term>
 
           <listitem>
             <para>Aggregate. Constructs an array of geometries.</para>
