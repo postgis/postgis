@@ -1,12 +1,13 @@
-OBJS = pop.o shpopen.o dbfopen.o
+OBJS = shp2pgsql.o shpopen.o dbfopen.o
+PROG = shp2pgsql
 
 defailt: all
 
-all: pop
+all: $(PROG)
 
-pop: $(OBJS)
+$(PROG): $(OBJS)
 
 clean:
-	@rm -f $(OBJS) pop
+	@rm -f $(OBJS) $(PROG)
 
 

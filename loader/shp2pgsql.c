@@ -16,7 +16,7 @@
 
 
 
-#include "../shapelib-1.2.8/shapefil.h"
+#include "shapefil.h"
 #include <stdio.h>
 
 typedef struct {double x, y;} Point;
