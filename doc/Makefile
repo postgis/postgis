@@ -1,15 +1,20 @@
 COMMONOPTS = -f docbook -b html -e no-valid
-LAST_RELEASE_VERSION = 1.0.0
+
+# fetch version numbers from central repository
+include ../Version.config
+
+LAST_RELEASE_VERSION = $(SO_MAJOR_VERSION).$(SO_MINOR_VERSION).$(SO_MICRO_VERSION)
 
 XSLBASE?=/usr/share/sgml/docbook/xsl-stylesheets
 
 all: html
 
-postgis-out.xml: postgis.xml
+postgis-out.xml: postgis.xml ../Version.config
 	cat $< | sed "s/@@LAST_RELEASE_VERSION@@/$(LAST_RELEASE_VERSION)/g" > $@
 
 chunked-html: postgis-out.xml
 	xsltproc \
+		--output html/ \
 		--param shade.verbatim 1 \
 		--param chunk.section.depth 0 \
 		--param section.autolabel 1 \
@@ -19,7 +24,7 @@ chunked-html: postgis-out.xml
 		$(XSLBASE)/html/chunk.xsl \
 		$<
 
-html: postgis-out.xml
+html/postgis.html: postgis-out.xml
 	xsltproc \
 		--output html/postgis.html \
 		--param shade.verbatim 1 \
@@ -29,6 +34,8 @@ html: postgis-out.xml
 		--stringparam html.stylesheet style.css \
 		$(XSLBASE)/html/docbook.xsl \
 		$<
+
+html: html/postgis.html
 
 postgis.fo: postgis-out.xml
 	xsltproc \
@@ -56,3 +63,8 @@ clean:
 		postgis.out \
 		postgis.log
 
+maintainer-clean: clean
+	@rm -f html/*.html
+
+
+.PHONY: html 
