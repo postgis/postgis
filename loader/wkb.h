@@ -7,8 +7,8 @@
  */
 #define WKB3DOFFSET 0x80000000
 
-typedef char byte;
-typedef unsigned int uint32;
+typedef unsigned char byte;
+typedef unsigned long int uint32;
 
 typedef struct Point_t {
 	double x;
@@ -78,12 +78,13 @@ typedef struct WKBMultiPolygon_t {
 } WKBMultiPolygon;
 
 typedef struct WKBGeometryCollection_t {
-	byte    byte_order;
+	byte    byteOrder;
 	uint32    wkbType;    // 7
 	uint32    num_wkbGeometries;
 	char    wkbGeometries[1]; // WKBGeometry [num_wkbGeometries];
 } WKBGeometryCollection;
 
+#if 0
 typedef struct WKBGeometry_t {
 	union {
 		WKBPoint    point;
@@ -95,4 +96,22 @@ typedef struct WKBGeometry_t {
 		WKBMultiPolygon    mpolygon;
 	};
 } WKBGeometry;
+#endif
+
+typedef struct WKBGeometry_t {
+	byte    byteOrder;
+	uint32    wkbType;
+} WKBGeometry;
+
+/* Functions prototype */
+char getbyte(char *c);
+void skipbyte(char **c);
+char popbyte(char **c);
+int popint(char **c);
+int getint(char *c);
+void skipint(char **c);
+double popdouble(char **c);
+double getdouble(char *c);
+void skipdouble(char **c);
+void dump_wkb(char *wkb);
 
