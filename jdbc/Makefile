@@ -1,7 +1,7 @@
 JAVAC = javac
 JAVA = java
 JAR = jar
-CLASSPATH = /home/pramsey/geotools/extbin/postgis/lib/postgresql.jar:
+CLASSPATH = ../../../src/interfaces/jdbc/jars/postgresql.jar:.
 
 all: 	ogis \
 	pgobjs \
