@@ -522,7 +522,7 @@ int main (int ARGC, char **ARGV){
 	if(opt == 'd'){
 		//-------------------------Drop the table--------------------------------
 		//drop the table given
-		printf("select DropGeometryColumn('%s','%s','the_geom');",database,table);
+		printf("delete from geometry_columns where f_table_name = '%s';\n",table);
 		printf("\ndrop table %s;\n",table);
 
 
