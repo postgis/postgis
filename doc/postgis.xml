@@ -240,7 +240,7 @@ SELECT AddGeometryColumn('dbname','gtest','geom',-1,'LINESTRING',2);</programlis
   USING GIST ( [geometrycolumn] gist_geometry_ops);</programlisting><para>The "USING GIST" option tells the server to use a GiST
 				(Generalized Search Tree) index. The reference to "gist_geometry_ops" tells the
 				server to use a particular set of comparison operators for building the index:
-				the "gist_geometry_ops" are part of the PostGIS extension. </para><note><para>For PostgreSQL version 7.1.x, you can specifically request a "lossy" index by appending WITH (ISLOSSY) to the index creation command.  For PostgreSQL 7.2.x and above all GiST indexes are assumed to be lossy. Lossy indexes uses a proxy object (in the spatial case, a bounding box) for building the index.</para></note> 
+				the "gist_geometry_ops" are part of the PostGIS extension. </para><para><note>For PostgreSQL version 7.1.x, you can specifically request a "lossy" index by appending WITH (ISLOSSY) to the index creation command.  For PostgreSQL 7.2.x and above all GiST indexes are assumed to be lossy. Lossy indexes uses a proxy object (in the spatial case, a bounding box) for building the index.</note></para> 
 		  </answer> 
 		</qandaentry> 
 		<qandaentry> 
@@ -508,8 +508,8 @@ SRID=123;LINESTRING(-123.741378393049 48.9124018962261,-123.741587115639 48.9123
 					 MULTILINESTRING, MULTIPOLYGON, GEOMETRYCOLLECTION. For heterogeneous
 					 (mixed-type) collections, you can use "GEOMETRY" as the type. </para> 
 				  <note> 
-					 <para>This attribute is (probably) not part of the OpenGIS
-						specification, but is required for ensuring type homogeneity.</para> 
+					 This attribute is (probably) not part of the OpenGIS
+						specification, but is required for ensuring type homogeneity. 
 				  </note> 
 				</listitem> 
 			 </varlistentry> 
