@@ -11,6 +11,10 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.10  2004/08/24 10:01:16  strk
+-- OGC functions (not implemented by GEOS) moved to lwgeom_ogc.c.
+-- Renamed PG-exposed functions to start with LWGEOM
+--
 -- Revision 1.9  2004/08/24 09:34:33  strk
 -- Added npoints,numpoints,numgeometries,geometryn
 --
@@ -821,39 +825,41 @@ CREATEFUNCTION getbbox(geometry)
         AS '@MODULE_FILENAME@','LWGEOM_to_BOX2DFLOAT4'
         LANGUAGE 'C' WITH (isstrict,iscachable);
 
+-- DEBUG
+
 CREATEFUNCTION mem_size(geometry)
 	RETURNS int4
-	AS '@MODULE_FILENAME@', 'lwgeom_mem_size'
+	AS '@MODULE_FILENAME@', 'LWGEOM_mem_size'
 	LANGUAGE 'C' WITH (isstrict);
 
 CREATEFUNCTION summary(geometry)
 	RETURNS text
-	AS '@MODULE_FILENAME@', 'lwgeom_summary'
+	AS '@MODULE_FILENAME@', 'LWGEOM_summary'
 	LANGUAGE 'C' WITH (isstrict);
 
 CREATEFUNCTION npoints(geometry)
 	RETURNS int4
-	AS '@MODULE_FILENAME@', 'lwgeom_npoints'
+	AS '@MODULE_FILENAME@', 'LWGEOM_npoints'
 	LANGUAGE 'C' WITH (isstrict);
 
--- OGC
+------------------------------------------------------------------------
+
 CREATEFUNCTION numpoints(geometry)
 	RETURNS int4
-	AS '@MODULE_FILENAME@', 'lwgeom_numpoints_linestring'
+	AS '@MODULE_FILENAME@', 'LWGEOM_numpoints_linestring'
 	LANGUAGE 'C' WITH (isstrict);
 
--- OGC
 CREATEFUNCTION numgeometries(geometry)
 	RETURNS int4
-	AS '@MODULE_FILENAME@', 'lwgeom_numgeometries_collection'
+	AS '@MODULE_FILENAME@', 'LWGEOM_numgeometries_collection'
 	LANGUAGE 'C' WITH (isstrict);
 
--- OGC
 CREATEFUNCTION geometryn(geometry,integer)
 	RETURNS geometry
-	AS '@MODULE_FILENAME@', 'lwgeom_geometryn_collection'
+	AS '@MODULE_FILENAME@', 'LWGEOM_geometryn_collection'
 	LANGUAGE 'C' WITH (isstrict);
 
+------------------------------------------------------------------------
 
 CREATEFUNCTION geometrytype(geometry)
 	RETURNS text
