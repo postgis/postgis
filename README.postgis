@@ -12,15 +12,16 @@ spatial functions for accessing and analyzing geographic data.
 
 Directory structure:
 
-  ./      Core source code, makefiles and install directions.
-  ./jdbc  Extensions to the PostgreSQL JDBC drivers to support
-          the GIS objects. 
-  ./doc   Documentation on the code, objects and functions 
-          provided. 
-  ./loader  A program to convert ESRI Shape files into SQL text
-          suitable for uploading into a PostGIS/PostgreSQL database.
+  ./          Build scripts and install directions.
+  ./lwgeom    Library source code.
+  ./jdbc      Extensions to the PostgreSQL JDBC drivers to support
+              the GIS objects. 
+  ./doc       Documentation on the code, objects and functions 
+              provided. 
+  ./loader    A program to convert ESRI Shape files into SQL text
+              suitable for uploading into a PostGIS/PostgreSQL database.
   ./examples  Small programs which demonstrate ways of accessing 
-          GIS data.
+              GIS data.
 	        
 
 INSTALLATION:
@@ -28,10 +29,10 @@ INSTALLATION:
 PostGIS is compatible with PostgreSQL 7.1 and above.
 
 To install the module, move this directory to the "contrib" directory of your
-PostgreSQL source installation. Alternately, edit the "top_buildir" in the 
-Makefile and point it at your PostgreSQL source tree. You must have a 
-PostgreSQL source tree, and you must have run succesfully built and installed
-it for this to work. 
+PostgreSQL source installation. Alternately, point PGSQL_SRC at your
+PostgreSQL source tree either in the environment or editing Makefile.config.
+You must have a PostgreSQL source tree, and you must have succesfully
+built and installed it for this to work. 
 
 SEE THE NOTE ON GEOS SUPPORT BELOW FOR SPECIAL COMPILATION INSTRUCTIONS
 
@@ -43,7 +44,7 @@ SEE THE NOTE ON GEOS SUPPORT BELOW FOR SPECIAL COMPILATION INSTRUCTIONS
     http://www.remotesensing.org/proj
 
   Install Proj4 in the default location.
-  Edit the postgis Makefile and change the USE_PROJ variable to 1
+  Edit the postgis Makefile.config and change the USE_PROJ variable to 1
   and ensure that the PROJ_DIR variable points to your Proj4 
   installation location (/usr/local is the default).
 
@@ -64,8 +65,8 @@ SEE THE NOTE ON GEOS SUPPORT BELOW FOR SPECIAL COMPILATION INSTRUCTIONS
   adds the C++ library to the linking stage. 
   Once you have compiled PgSQL with C++ support, you can enable GEOS
   support in PostGIS by setting the USE_GEOS variable in the PostGIS
-  Makefile to 1, and ensure that the GEOS_DIR variable points to your
-  GEOS installation location (/usr/local is the default).
+  Makefile.config to 1, and ensure that the GEOS_DIR variable points
+  to your GEOS installation location (/usr/local is the default).
   
 
 To compile PostGIS, as root run:
