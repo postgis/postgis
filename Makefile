@@ -36,11 +36,11 @@ subdir=contrib/postgis
 ifeq (${PGSQL_SRC},) 
 	top_builddir = ../..
 	include $(top_builddir)/src/Makefile.global
-	LPATH := $$libdir
+	#LPATH := $$libdir
 else
 	top_builddir = ${PGSQL_SRC}
 	include $(top_builddir)/src/Makefile.global
-	LPATH := ${PWD}
+	#LPATH := ${PWD}
 endif
 
 #---------------------------------------------------------------
@@ -74,7 +74,7 @@ endif
 NAME=postgis
 SO_MAJOR_VERSION=0
 SO_MINOR_VERSION=8
-MODULE_FILENAME = $(LPATH)/$(shlib)
+MODULE_FILENAME = $$libdir/../$(shlib)
 #---------------------------------------------------------------
 
 override CFLAGS += -g -fexceptions  
