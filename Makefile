@@ -80,11 +80,13 @@ endif
 #
 ifeq ($(USE_VERSION),71) 
 	GIST_SUPPORT=71
+	GIST_ESTIMATE=
 else
 	GIST_SUPPORT=72
+	GIST_ESTIMATE=postgis_estimate.o
 endif
 
-OBJS=postgis_debug.o postgis_ops.o postgis_fn.o postgis_inout.o postgis_proj.o postgis_chip.o postgis_transform.o postgis_gist_$(GIST_SUPPORT).o postgis_estimate.o
+OBJS=postgis_debug.o postgis_ops.o postgis_fn.o postgis_inout.o postgis_proj.o postgis_chip.o postgis_transform.o postgis_gist_$(GIST_SUPPORT).o $(GIST_ESTIMATE)
 
 #---------------------------------------------------------------
 # Add libraries that libpq depends (or might depend) on into the
