@@ -10,6 +10,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.33  2003/11/26 15:45:53  strk
+ * wkb support for all geom types
+ *
  * Revision 1.32  2003/11/26 14:31:20  strk
  * WKB start to work
  *
@@ -131,6 +134,7 @@ int reverse_points(int num_points,double *x,double *y,double *z);
 int is_clockwise(int num_points,double *x,double *y,double *z);
 
 /* WKB functions */
+typedef unsigned long int uint32;
 int create_polygon3D_WKB(char *wkb, int shape_id, SHPHandle shp, int junk);
 int create_polygon2D_WKB(char *wkb, int shape_id, SHPHandle shp, int junk);
 int create_multipoint2D_WKB(char *wkb, int shape_id, SHPHandle shp, int junk);
@@ -153,6 +157,7 @@ double popdouble(char **c);
 double getdouble(char *c);
 void skipdouble(char **c);
 void dump_wkb(char *wkb);
+char * HexDecode(char *hex);
 #define WKB3DOFFSET 0x80000000
 
 
@@ -832,17 +837,81 @@ int create_lines(char *str,int shape_id, SHPHandle shp,int dims){
 }
 
 int
-create_line2D_WKB(char *str,int shape_id, SHPHandle shp,int junk)
+create_line3D_WKB (char *wkb, int shape_id, SHPHandle shp,int junk)
 {
-	fprintf(stderr, "Line2D WKB unimplemented yet, sorry\n");
-	return 0;
+	double *x=NULL, *y=NULL, *z=NULL;
+	uint32 npoints=0, pn;
+	SHPObject *obj;
+	
+	// skip byteOrder and type
+	skipbyte(&wkb); skipint(&wkb);
+
+	npoints = popint(&wkb);
+
+#if VERBOSE > 2
+	printf("Line %d has %d points\n", li, npoints);
+#endif
+
+	x = malloc(sizeof(double)*(npoints));
+	y = malloc(sizeof(double)*(npoints));
+	z = malloc(sizeof(double)*(npoints));
+
+	/* wkb now points at first point */
+	for (pn=0; pn<npoints; pn++)
+	{
+		x[pn] = popdouble(&wkb);
+		y[pn] = popdouble(&wkb);
+		z[pn] = popdouble(&wkb);
+	}
+
+	obj = SHPCreateSimpleObject(SHPT_ARCZ, npoints, x, y, z);
+	free(x); free(y); free(z);
+
+	if ( SHPWriteObject(shp, -1, obj) == -1) {
+		SHPDestroyObject(obj);
+		return 0;
+	}
+
+	SHPDestroyObject(obj);
+	return 1;
 }
 
 int
-create_line3D_WKB(char *str,int shape_id, SHPHandle shp,int junk)
+create_line2D_WKB (char *wkb, int shape_id, SHPHandle shp,int junk)
 {
-	fprintf(stderr, "Line3D WKB unimplemented yet, sorry\n");
-	return 0;
+	double *x=NULL, *y=NULL, *z=NULL;
+	uint32 npoints=0, pn;
+	SHPObject *obj;
+	
+	// skip byteOrder and type
+	skipbyte(&wkb); skipint(&wkb);
+
+	npoints = popint(&wkb);
+
+#if VERBOSE > 2
+	printf("Line %d has %d points\n", li, npoints);
+#endif
+
+	x = malloc(sizeof(double)*(npoints));
+	y = malloc(sizeof(double)*(npoints));
+
+	/* wkb now points at first point */
+	for (pn=0; pn<npoints; pn++)
+	{
+		x[pn] = popdouble(&wkb);
+		y[pn] = popdouble(&wkb);
+	}
+
+	obj = SHPCreateSimpleObject(SHPT_ARC, npoints, x, y, z);
+	free(x); free(y); 
+
+	if ( SHPWriteObject(shp, -1, obj) == -1) {
+		SHPDestroyObject(obj);
+		return 0;
+	}
+
+	SHPDestroyObject(obj);
+	return 1;
 }
 
 
@@ -1183,8 +1252,8 @@ create_polygon2D_WKB(char *wkb, int shape_id, SHPHandle shp, int junk)
 		int pn;
 		int npoints = popint(&wkb);
 
-		x = realloc(x, sizeof(double)*npoints);
-		y = realloc(y, sizeof(double)*npoints);
+		x = realloc(x, sizeof(double)*(totpoints+npoints));
+		y = realloc(y, sizeof(double)*(totpoints+npoints));
 
 		for (pn=0; pn<npoints; pn++)
 		{
@@ -1197,12 +1266,24 @@ create_polygon2D_WKB(char *wkb, int shape_id, SHPHandle shp, int junk)
 		 * other rings should be counter-clockwise
 		 */
 		if ( !ri ) {
-			if ( ! is_clockwise(npoints, x, y, NULL) ) {
-				reverse_points(npoints, x, y, NULL);
+			if ( ! is_clockwise(npoints, x+totpoints,
+						y+totpoints, NULL) )
+			{
+#if VERBOSE > 2
+				printf("Forcing CW\n");
+#endif
+				reverse_points(npoints, x+totpoints,
+						y+totpoints, NULL);
 			}
 		} else {
-			if ( is_clockwise(npoints, x, y, NULL) ) {
-				reverse_points(npoints, x, y, NULL);
+			if ( is_clockwise(npoints, x+totpoints,
+						y+totpoints, NULL) )
+			{
+#if VERBOSE > 2
+				printf("Forcing CCW\n");
+#endif
+				reverse_points(npoints, x+totpoints,
+						y+totpoints, NULL);
 			}
 		}
 
@@ -1253,9 +1334,9 @@ create_polygon3D_WKB(char *wkb, int shape_id, SHPHandle shp, int junk)
 		int pn;
 		int npoints = popint(&wkb);
 
-		x = realloc(x, sizeof(double)*npoints);
-		y = realloc(y, sizeof(double)*npoints);
-		z = realloc(z, sizeof(double)*npoints);
+		x = realloc(x, sizeof(double)*(totpoints+npoints));
+		y = realloc(y, sizeof(double)*(totpoints+npoints));
+		z = realloc(z, sizeof(double)*(totpoints+npoints));
 
 		for (pn=0; pn<npoints; pn++)
 		{
@@ -1269,12 +1350,22 @@ create_polygon3D_WKB(char *wkb, int shape_id, SHPHandle shp, int junk)
 		 * other rings should be counter-clockwise
 		 */
 		if ( !ri ) {
-			if ( ! is_clockwise(npoints, x, y, NULL) ) {
-				reverse_points(npoints, x, y, NULL);
+			if ( ! is_clockwise(npoints, x+totpoints,
+						y+totpoints, z+totpoints) ) {
+#if VERBOSE > 2
+				printf("Forcing CW\n");
+#endif
+				reverse_points(npoints, x+totpoints,
+						y+totpoints, z+totpoints);
 			}
 		} else {
-			if ( is_clockwise(npoints, x, y, NULL) ) {
-				reverse_points(npoints, x, y, NULL);
+			if ( is_clockwise(npoints, x+totpoints,
+						y+totpoints, z+totpoints) ) {
+#if VERBOSE > 2
+				printf("Forcing CCW\n");
+#endif
+				reverse_points(npoints, x+totpoints,
+						y+totpoints, z+totpoints);
 			}
 		}
 
@@ -1483,11 +1574,11 @@ create_multipolygon2D_WKB(char *wkb, int shape_id, SHPHandle shp, int junk)
 {
 	SHPObject *obj;
 	obj = (SHPObject *)malloc(sizeof(SHPObject));
-	int nrings, nparts;
-	int npolys;
-	int totpoints=0;
+	uint32 nrings, nparts;
+	uint32 npolys;
+	uint32 totpoints=0;
 	int *part_index=NULL;
-	int pi;
+	uint32 pi;
 	double *x=NULL, *y=NULL, *z=NULL;
 
 	// skip byteOrder and type
@@ -1509,7 +1600,7 @@ create_multipolygon2D_WKB(char *wkb, int shape_id, SHPHandle shp, int junk)
 	 */
 	for (pi=0; pi<npolys; pi++)
 	{
-		int ri; // ring index
+		uint32 ri; // ring index
 
 		// skip byteOrder and wkbType
 		skipbyte(&wkb); skipint(&wkb);
@@ -1524,20 +1615,20 @@ create_multipolygon2D_WKB(char *wkb, int shape_id, SHPHandle shp, int junk)
 				sizeof(int)*(nparts+nrings));
 
 #if VERBOSE > 2
-		printf("Polygon %d has %d rings\n", pi, nrings);
+		printf("Polygon %lu has %lu rings\n", pi, nrings);
 #endif
 
 		// wkb now points at first ring
 		totpoints=0;
 		for (ri=0; ri<nrings; ri++)
 		{
-			int pn; // point number
-			int npoints;
+			uint32 pn; // point number
+			uint32 npoints;
 
 			npoints = popint(&wkb);
 
 #if VERBOSE > 2
-			printf("Ring %d has %d points\n", ri, npoints);
+			printf("Ring %lu has %lu points\n", ri, npoints);
 #endif
 
 			x = realloc(x, sizeof(double)*(totpoints+npoints));
@@ -1558,20 +1649,24 @@ create_multipolygon2D_WKB(char *wkb, int shape_id, SHPHandle shp, int junk)
 			 * other rings should be counter-clockwise
 			 */
 			if ( !ri ) {
-				if (!is_clockwise(npoints, x, y, NULL))
+				if (!is_clockwise(npoints, x+totpoints,
+							y+totpoints, NULL))
 				{
 #if VERBOSE > 2
 					printf("Forcing CW\n");
 #endif
-					reverse_points(npoints, x, y, NULL);
+					reverse_points(npoints, x+totpoints,
+							y+totpoints, NULL);
 				}
 			} else {
-				if (is_clockwise(npoints, x, y, NULL))
+				if (is_clockwise(npoints, x+totpoints,
+							y+totpoints, NULL))
 				{
 #if VERBOSE > 2
 					printf("Forcing CCW\n");
 #endif
-					reverse_points(npoints, x, y, NULL);
+					reverse_points(npoints, x+totpoints,
+							y+totpoints, NULL);
 				}
 			}
 
@@ -1622,7 +1717,7 @@ create_multipolygon3D_WKB(char *wkb, int shape_id, SHPHandle shp, int junk)
 	SHPObject *obj;
 	obj = (SHPObject *)malloc(sizeof(SHPObject));
 	int nrings, nparts;
-	int npolys;
+	uint32 npolys;
 	int totpoints=0;
 	int *part_index=NULL;
 	int pi;
@@ -1698,20 +1793,24 @@ create_multipolygon3D_WKB(char *wkb, int shape_id, SHPHandle shp, int junk)
 			 * other rings should be counter-clockwise
 			 */
 			if ( !ri ) {
-				if (!is_clockwise(npoints, x, y, NULL))
+				if (!is_clockwise(npoints, x+totpoints,
+							y+totpoints, NULL))
 				{
 #if VERBOSE > 2
 					printf("Forcing CW\n");
 #endif
-					reverse_points(npoints, x, y, NULL);
+					reverse_points(npoints, x+totpoints,
+							y+totpoints, NULL);
 				}
 			} else {
-				if (is_clockwise(npoints, x, y, NULL))
+				if (is_clockwise(npoints, x+totpoints,
+							y+totpoints, NULL))
 				{
 #if VERBOSE > 2
 					printf("Forcing CCW\n");
 #endif
-					reverse_points(npoints, x, y, NULL);
+					reverse_points(npoints, x+totpoints,
+							y+totpoints, NULL);
 				}
 			}
 
@@ -1922,13 +2021,9 @@ fprintf(stdout, "s"); fflush(stdout);
 		{
 			int junk;
 			char *v = PQgetvalue(res, residx, j);
-
-#if VERBOSE > 2
-			printf("Unescaping bytea... "); fflush(stdout);
-#endif
+			//val = HexDecode(v);
 			val = PQunescapeBytea(v, &junk);
 #if VERBOSE > 2
-			printf("Done (%d bytes).\n", junk);
 			dump_wkb(val);
 #endif
 		}
@@ -2017,7 +2112,7 @@ getGeometryType(char *table, char *geo_col_name)
 		fprintf(stderr, "ERROR: Cannot have multiple geometry types in a shapefile.\nUse option -t(unimplemented currently,sorry...) to specify what type of geometry you want dumped\n\n");
 		return -1;
 	}else{
-		printf("ERROR: Cannot determine geometry type of table. \n");
+		printf("ERROR: Cannot determine geometry type of table.\n");
 		return -1;
 	}
 
@@ -2552,6 +2647,45 @@ getMaxFieldSize(PGconn *conn, char *table, char *fname)
 	size = atoi(PQgetvalue(res, 0, 0));
 	PQclear(res);
 	return size;
+}
+
+/*
+ * Input is a NULL-terminated string.
+ * Output is a binary string.
+ */
+char *
+HexDecode(char *hex)
+{
+	char *ret, *retptr, *hexptr;
+	char byte;
+	int len;
+	
+	len = strlen(hex);
+
+	ret = malloc(len);
+
+	//printf("Decoding %d bytes", len); fflush(stdout);
+	hexptr = hex; retptr = ret;
+	while (len--)
+	{
+		//printf("%c", *hexptr);
+		if ( *hexptr < 58 ) byte = (((*hexptr)-48)<<4);
+		else byte = (((*hexptr)-65)<<4);
+		hexptr++;
+
+		//printf("%c", *hexptr);
+		if ( *hexptr < 58 ) byte |= ((*hexptr)-48);
+		else byte |= ((*hexptr)-65);
+		hexptr++;
+
+		//printf("(%d)", byte);
+
+		*retptr = (char)byte;
+		retptr++;
+	}
+	//printf(" Done.\n");
+
+	return ret;
 }
 
 /*********************************************************************
