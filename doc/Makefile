@@ -1,6 +1,8 @@
 COMMONOPTS = -f docbook -b html -e no-valid
 LAST_RELEASE_VERSION = 1.0.0
 
+XSLBASE?=/usr/share/sgml/docbook/xsl-stylesheets
+
 
 postgis-out.xml: postgis.xml
 	cat $< | sed "s/@@LAST_RELEASE_VERSION@@/$(LAST_RELEASE_VERSION)/g" > $@
@@ -13,7 +15,7 @@ chunked-html: postgis-out.xml
 		--param section.label.includes.component.label 1 \
 		--stringparam html.stylesheet style.css \
 		--stringparam saxon.character.representation decimal \
-		/usr/share/sgml/docbook/xsl-stylesheets/html/chunk.xsl \
+		$(XSLBASE)/html/chunk.xsl \
 		$<
 
 html: postgis-out.xml
@@ -24,7 +26,7 @@ html: postgis-out.xml
 		--param section.label.includes.component.label 1 \
 		--param chunk.section.depth 0 \
 		--stringparam html.stylesheet style.css \
-		/usr/share/sgml/docbook/xsl-stylesheets/html/docbook.xsl \
+		$(XSLBASE)/html/docbook.xsl \
 		$<
 
 postgis.fo: postgis-out.xml
@@ -34,7 +36,7 @@ postgis.fo: postgis-out.xml
 		--param section.autolabel 1 \
 		--param section.label.includes.component.label 1 \
 		--param chunk.section.depth 0 \
-		/usr/share/sgml/docbook/xsl-stylesheets/fo/docbook.xsl \
+		$(XSLBASE)/fo/docbook.xsl \
 		$<
 
 postgis.pdf: postgis.fo
