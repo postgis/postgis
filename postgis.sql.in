@@ -118,7 +118,7 @@ BEGIN
 
 	-- update the given table/column so that it it all NULLS
 
-	EXECUTE ''update ''||table_name||'' set ''||column_name||'' IS NULL'';
+	EXECUTE ''update ''||table_name||'' set ''||column_name||''= NULL'';
 
 	-- add = NULL constraint to given table/column
 
