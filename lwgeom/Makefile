@@ -111,7 +111,7 @@ override CFLAGS += -DPOSTGIS_SCRIPTS_VERSION='"$(SCRIPTS_VERSION)"'
 ifeq ($(USE_GEOS),1)
 	override CFLAGS += -I$(GEOS_DIR)/include -DUSE_GEOS
 	#GEOS_RULES=detect_geos_version
-	GEOS_WRAPPER=../postgis_geos_wrapper.o
+	GEOS_WRAPPER=lwgeom_geos_wrapper.o
 endif
 
 ifeq ($(USE_PROJ),1)

@@ -2691,9 +2691,20 @@ pfree_exploded(LWGEOM_EXPLODED *exploded)
 LWGEOM_EXPLODED *
 lwgeom_explode(char *serialized)
 {
-	LWGEOM_INSPECTED *inspected = lwgeom_inspect(serialized);
+	LWGEOM_INSPECTED *inspected;
 	LWGEOM_EXPLODED *subexploded, *result;
 	int i;
+
+#ifdef DEBUG
+	elog(NOTICE, "lwgeom_explode called");
+#endif
+
+	inspected = lwgeom_inspect(serialized);
+
+
+#ifdef DEBUG
+elog(NOTICE, "lwgeom_explode: serialized inspected");
+#endif
 
 	result = palloc(sizeof(LWGEOM_EXPLODED));
 	result->points = palloc(1);
@@ -2703,10 +2714,6 @@ lwgeom_explode(char *serialized)
 	result->nlines = 0;
 	result->npolys = 0;
 
-#ifdef DEBUG
-	elog(NOTICE, "lwgeom_explode called");
-#endif
-
 	if ( ! inspected->ngeometries )
 	{
 		pfree(result->points);
@@ -2715,9 +2722,7 @@ lwgeom_explode(char *serialized)
 		result->SRID = -1;
 		result->ndims = 0;
 		pfree_inspected(inspected);
-#ifdef DEBUG
 		elog(NOTICE, "lwgeom_explode: no geometries");
-#endif
 		return result;
 	}
 
@@ -2732,8 +2737,11 @@ lwgeom_explode(char *serialized)
 
 		if ( type == POINTTYPE )
 		{
+#ifdef DEBUG
+elog(NOTICE, "lwgeom_explode: it's a point");
+#endif
 			result->points = repalloc(result->points,
-				(result->npoints+1)*sizeof(LWPOINT *));
+				(result->npoints+1)*sizeof(char *));
 			result->points[result->npoints] = subgeom;
 			result->npoints++;
 			continue;
@@ -2741,8 +2749,11 @@ lwgeom_explode(char *serialized)
 
 		if ( type == LINETYPE )
 		{
+#ifdef DEBUG
+elog(NOTICE, "lwgeom_explode: it's a line");
+#endif
 			result->lines = repalloc(result->lines,
-				(result->nlines+1)*sizeof(LWLINE *));
+				(result->nlines+1)*sizeof(char *));
 			result->lines[result->nlines] = subgeom;
 			result->nlines++;
 			continue;
@@ -2750,19 +2761,26 @@ lwgeom_explode(char *serialized)
 
 		if ( type == POLYGONTYPE )
 		{
+#ifdef DEBUG
+elog(NOTICE, "lwgeom_explode: it's a polygon");
+#endif
 			result->polys = repalloc(result->polys,
-				(result->npolys+1)*sizeof(LWPOLY *));
+				(result->npolys+1)*sizeof(char *));
 			result->polys[result->npolys] = subgeom;
 			result->npolys++;
 			continue;
 		}
 
 #ifdef DEBUG
-		elog(NOTICE, "subtype is %d, recursing", type);
+		elog(NOTICE, "type of subgeom %d is %d, recursing", i, type);
 #endif
 
 		// it's a multi geometry, recurse
 		subexploded = lwgeom_explode(subgeom);
+
+#ifdef DEBUG
+		elog(NOTICE, "subgeom %d, exploded: %d point, %d lines, %d polys", i, subexploded->npoints, subexploded->nlines, subexploded->npolys);
+#endif
 
 		// Re-allocate adding space for new exploded geoms
 		// (-1 because 1 was already allocated for the collection)
@@ -2772,21 +2790,36 @@ lwgeom_explode(char *serialized)
 		if ( subexploded->npoints )
 		{
 			result->points = repalloc(result->points,
-				result->npoints+subexploded->npoints-1);
+				sizeof(char *)*(result->npoints+subexploded->npoints-1));
+			if ( ! result )
+				elog(ERROR, "Out of virtual memory");
 
-			memcpy(result->points[result->npoints],
+#ifdef DEBUG
+			elog(NOTICE, "repalloc'ed exploded->points");
+#endif
+
+			memcpy(&(result->points[result->npoints]),
 				subexploded->points,
 				subexploded->npoints*sizeof(char *));
 
+#ifdef DEBUG
+			elog(NOTICE, "memcpied exploded->points");
+#endif
+
 			result->npoints += subexploded->npoints;
+
+#ifdef DEBUG
+			elog(NOTICE, "memcopied %d points from subexploded (exploded points: %d", subexploded->npoints, result->npoints);
+#endif
 		}
 
 		if ( subexploded->nlines )
 		{
 			result->lines = repalloc(result->lines,
-				result->nlines+subexploded->nlines-1);
+				sizeof(char *)*
+				(result->nlines+subexploded->nlines-1));
 
-			memcpy(result->lines[result->nlines],
+			memcpy(&(result->lines[result->nlines]),
 				subexploded->lines,
 				subexploded->nlines*sizeof(char *));
 
@@ -2796,9 +2829,10 @@ lwgeom_explode(char *serialized)
 		if ( subexploded->npolys )
 		{
 			result->polys = repalloc(result->polys,
-				result->npolys+subexploded->npolys-1);
+				sizeof(char *)*
+				(result->npolys+subexploded->npolys-1));
 
-			memcpy(result->polys[result->npolys],
+			memcpy(&(result->polys[result->npolys]),
 				subexploded->polys,
 				subexploded->npolys*sizeof(char *));
 
@@ -2811,6 +2845,10 @@ lwgeom_explode(char *serialized)
 	}
 
 	pfree_inspected(inspected);
+
+#ifdef DEBUG
+elog(NOTICE, "lwgeom_explode: returning");
+#endif
 
 	return result;
 }

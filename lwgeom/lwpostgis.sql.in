@@ -2504,6 +2504,127 @@ CREATEFUNCTION simplify(geometry, float8)
    LANGUAGE 'C' WITH (isstrict);
 
 ---------------------------------------------------------------
+-- GEOS
+---------------------------------------------------------------
+
+CREATEFUNCTION intersection(geometry,geometry)
+   RETURNS geometry
+   AS '@MODULE_FILENAME@','intersection'
+   LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION buffer(geometry,float8)
+   RETURNS geometry
+   AS '@MODULE_FILENAME@','buffer'
+   LANGUAGE 'C' WITH (isstrict);
+   
+CREATEFUNCTION convexhull(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','convexhull'
+	LANGUAGE 'C' WITH (isstrict);
+  
+  
+CREATEFUNCTION difference(geometry,geometry)
+	RETURNS geometry
+        AS '@MODULE_FILENAME@','difference'
+	LANGUAGE 'C' WITH (isstrict);
+   
+CREATEFUNCTION boundary(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','boundary'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION symdifference(geometry,geometry)
+        RETURNS geometry
+        AS '@MODULE_FILENAME@','symdifference'
+   LANGUAGE 'C' WITH (isstrict);
+
+
+CREATEFUNCTION symmetricdifference(geometry,geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','symdifference'
+	LANGUAGE 'C' WITH (isstrict);
+
+
+CREATEFUNCTION GeomUnion(geometry,geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','geomunion'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE AGGREGATE MemGeomUnion (
+	basetype = geometry,
+	sfunc = geomunion,
+	stype = geometry
+	);
+
+CREATEFUNCTION unite_garray (geometry[])
+	RETURNS geometry
+	AS '@MODULE_FILENAME@'
+	LANGUAGE 'C'; 
+
+CREATE AGGREGATE GeomUnion (
+	sfunc = geom_accum,
+	basetype = geometry,
+	stype = geometry[],
+	finalfunc = unite_garray
+	);
+
+
+CREATEFUNCTION relate(geometry,geometry)
+   RETURNS text
+   AS '@MODULE_FILENAME@','relate_full'
+   LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION relate(geometry,geometry,text)
+   RETURNS boolean
+   AS '@MODULE_FILENAME@','relate_pattern'
+   LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION disjoint(geometry,geometry)
+   RETURNS boolean
+   AS '@MODULE_FILENAME@'
+   LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION touches(geometry,geometry)
+   RETURNS boolean
+   AS '@MODULE_FILENAME@'
+   LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION intersects(geometry,geometry)
+   RETURNS boolean
+   AS '@MODULE_FILENAME@'
+   LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION crosses(geometry,geometry)
+   RETURNS boolean
+   AS '@MODULE_FILENAME@'
+   LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION within(geometry,geometry)
+   RETURNS boolean
+   AS '@MODULE_FILENAME@'
+   LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION contains(geometry,geometry)
+   RETURNS boolean
+   AS '@MODULE_FILENAME@'
+   LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION overlaps(geometry,geometry)
+   RETURNS boolean
+   AS '@MODULE_FILENAME@'
+   LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION isvalid(geometry)
+   RETURNS boolean
+   AS '@MODULE_FILENAME@'
+   LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION geosnoop(geometry)
+   RETURNS geometry
+   AS '@MODULE_FILENAME@', 'GEOSnoop'
+   LANGUAGE 'C' WITH (isstrict);
+
+---------------------------------------------------------------
 -- END
 ---------------------------------------------------------------
 

@@ -2,40 +2,11 @@
 
 FUNC: KEEPING FUNCTION: [line_interpolate_point(geometry, double precision)]
 FUNC: KEEPING FUNCTION: [segmentize(geometry, double precision)]
-
 FUNC: KEEPING FUNCTION: [asbinary(geometry)]
 FUNC: KEEPING FUNCTION: [asbinary(geometry, text)]
+FUNC: KEEPING FUNCTION: [centroid(geometry)]  (!GEOS implementation)
 
 --- OBSOLETED ?
 FUNC: KEEPING FUNCTION: [geometry_size(geometry, internal)]
 FUNC: KEEPING FUNCTION: [optimistic_overlap(geometry, geometry, double precision)]
-
---- GEOS
-FUNC: KEEPING FUNCTION: [unite_garray(geometry[])]
-FUNC: KEEPING FUNCTION: [centroid(geometry)]  (Also !GEOS implementation)
-AGGREGATE: KEEPING AGGREGATE [memgeomunion(geometry)]
-AGGREGATE: KEEPING AGGREGATE [geomunion(geometry)]
-FUNC: KEEPING FUNCTION: [isring(geometry)]
-FUNC: KEEPING FUNCTION: [pointonsurface(geometry)]
-FUNC: KEEPING FUNCTION: [buffer(geometry, double precision)]
-FUNC: KEEPING FUNCTION: [contains(geometry, geometry)]
-FUNC: KEEPING FUNCTION: [convexhull(geometry)]
-FUNC: KEEPING FUNCTION: [crosses(geometry, geometry)]
-FUNC: KEEPING FUNCTION: [difference(geometry, geometry)]
-FUNC: KEEPING FUNCTION: [disjoint(geometry, geometry)]
-FUNC: KEEPING FUNCTION: [within(geometry, geometry)]
-FUNC: KEEPING FUNCTION: [symdifference(geometry, geometry)]
-FUNC: KEEPING FUNCTION: [symmetricdifference(geometry, geometry)]
-FUNC: KEEPING FUNCTION: [touches(geometry, geometry)]
-FUNC: KEEPING FUNCTION: [relate(geometry, geometry)]
-FUNC: KEEPING FUNCTION: [relate(geometry, geometry, text)]
-FUNC: KEEPING FUNCTION: [overlaps(geometry, geometry)]
-FUNC: KEEPING FUNCTION: [issimple(geometry)]
-FUNC: KEEPING FUNCTION: [isvalid(geometry)]
-FUNC: KEEPING FUNCTION: [geomunion(geometry, geometry)]
-FUNC: KEEPING FUNCTION: [geosnoop(geometry)]
-FUNC: KEEPING FUNCTION: [intersection(geometry, geometry)]
-FUNC: KEEPING FUNCTION: [intersects(geometry, geometry)]
-FUNC: KEEPING FUNCTION: [equals(geometry, geometry)]
-FUNC: KEEPING FUNCTION: [boundary(geometry)]
 

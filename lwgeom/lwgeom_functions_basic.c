@@ -49,7 +49,6 @@ int32 lwgeom_nrings_recursive(char *serialized);
 void dump_lwexploded(LWGEOM_EXPLODED *exploded);
 
 
-
 /*------------------------------------------------------------------*/
 
 // pt_in_ring_2d(): crossing number test for a point in a polygon

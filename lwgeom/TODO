@@ -1,3 +1,6 @@
+- Implement lwexploded_serialize_buf for speedup of GEOS<=>POSTGIS conversion
+  and more!
+
 - box extractor functions writing to a pointer or returning an actual
   object should probably find a way to return NULL (for empty geometries).
 
