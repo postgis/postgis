@@ -261,7 +261,7 @@ typedef struct
 	POINTARRAY **rings; // list of rings (list of points)
 } LWPOLY; // "light-weight polygon"
 
-// construct a new LWLINE.  arrays (points/points per ring) will NOT be copied
+// construct a new LWPOLY.  arrays (points/points per ring) will NOT be copied
 // use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
 extern LWPOLY *lwpoly_construct(int ndims, int SRID, int nrings,POINTARRAY **points);
 
