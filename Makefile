@@ -92,6 +92,7 @@ override DLLLIBS += $(BE_DLLLIBS)
 
 override CXXFLAGS := $(CFLAGS)
 # memory debug for gcc 2.91, 2.95, 3.0 and 3.1
+# for gcc >= 3.2.2 set GLIBCPP_FORCE_NEW at runtime instead
 #override CXXFLAGS += -D__USE_MALLOC
 
 #---------------------------------------------------------------
