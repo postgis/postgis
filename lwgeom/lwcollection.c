@@ -85,9 +85,15 @@ lwcollection_serialize_buf(LWCOLLECTION *coll, char *buf, size_t *retsize)
 	char *loc;
 	int i;
 
+#ifdef DEBUG_CALLS
+	lwnotice("lwcollection_serialize_buf called (%d with %d elems)",
+		lwgeom_typename(TYPE_GETTYPE(coll->type)), coll->ngeoms);
+#endif
+
 	hasSRID = (coll->SRID != -1);
 
-	buf[0] = (unsigned char) lwgeom_makeType_full(TYPE_NDIMS(coll->type),
+	buf[0] = (unsigned char) lwgeom_makeType_full(
+		TYPE_HASZ(coll->type), TYPE_HASM(coll->type),
 		hasSRID, TYPE_GETTYPE(coll->type), TYPE_HASBBOX(coll->type));
 	loc = buf+1;
 
@@ -121,6 +127,10 @@ lwcollection_serialize_buf(LWCOLLECTION *coll, char *buf, size_t *retsize)
 	}
 
 	if (retsize) *retsize = size;
+
+#ifdef DEBUG_CALLS
+	lwnotice("lwcollection_serialize_buf returning");
+#endif
 }
 
 int
@@ -140,13 +150,13 @@ lwcollection_compute_bbox_p(LWCOLLECTION *col, BOX2DFLOAT4 *box)
 }
 
 LWCOLLECTION *
-lwcollection_construct(int type, int ndims, uint32 SRID, char hasbbox,
+lwcollection_construct(int type, char hasz, char hasm, uint32 SRID, char hasbbox,
 	int ngeoms, LWGEOM **geoms)
 {
 	LWCOLLECTION *ret;
 	ret = lwalloc(sizeof(LWCOLLECTION));
-	ret->type = lwgeom_makeType_full(ndims, (SRID!=-1), COLLECTIONTYPE,
-		hasbbox);
+	ret->type = lwgeom_makeType_full(hasz, hasm, (SRID!=-1),
+		type, hasbbox);
 	ret->SRID = SRID;
 	ret->ngeoms = ngeoms;
 	ret->geoms = geoms;
@@ -200,7 +210,8 @@ lwcollection_add(const LWCOLLECTION *to, uint32 where, const LWGEOM *what)
 		geoms[i+1] = lwgeom_clone(to->geoms[i]);
 	}
 
-	col = lwcollection_construct(COLLECTIONTYPE, TYPE_NDIMS(to->type),
+	col = lwcollection_construct(COLLECTIONTYPE,
+		TYPE_HASZ(to->type), TYPE_HASM(to->type),
 		to->SRID,
 		( TYPE_HASBBOX(what->type) || TYPE_HASBBOX(to->type) ),
 		to->ngeoms+1, geoms);

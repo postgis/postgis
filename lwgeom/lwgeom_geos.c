@@ -1882,7 +1882,7 @@ lwpoint_from_geometry(Geometry *g, char want3d)
 	POINTARRAY *pa;
 	LWPOINT *point;
 	POINT3D *pts;
-	size_t ptsize = want3d ? sizeof(POINT3D) : sizeof(POINT2D);
+	size_t ptsize = want3d ? sizeof(POINT3DZ) : sizeof(POINT2D);
 
 #ifdef DEBUG_GEOS2POSTGIS
 	elog(NOTICE, "lwpoint_from_geometry: point size %d", ptsize);
@@ -1890,7 +1890,7 @@ lwpoint_from_geometry(Geometry *g, char want3d)
 
 	// Construct point array
 	pa = (POINTARRAY *)lwalloc(sizeof(POINTARRAY));
-	pa->ndims = want3d ? 3 : 2;
+	TYPE_SETZM(pa->dims, want3d, 0);
 	pa->npoints = 1;
 
 	// Fill point array
@@ -1900,7 +1900,10 @@ lwpoint_from_geometry(Geometry *g, char want3d)
 	GEOSdeleteChar( (char*) pts);
 
 	// Construct LWPOINT
-	point = lwpoint_construct(pa->ndims, -1, 0, pa);
+	point = lwpoint_construct(
+		TYPE_HASZ(pa->dims),
+		TYPE_HASM(pa->dims),
+		-1, 0, pa);
 
 	return point;
 }
@@ -1925,7 +1928,7 @@ lwline_from_geometry(Geometry *g, char want3d)
 
 	// Construct point array
 	pa = (POINTARRAY *)palloc(sizeof(POINTARRAY));
-	pa->ndims = want3d ? 3 : 2;
+	TYPE_SETZM(pa->dims, want3d, 0);
 	pa->npoints = npoints;
 
 	// Fill point array
@@ -1940,7 +1943,10 @@ lwline_from_geometry(Geometry *g, char want3d)
 	GEOSdeleteChar( (char*) pts);
 
 	// Construct LWPOINT
-	line = lwline_construct(pa->ndims, -1, 0, pa);
+	line = lwline_construct(
+		TYPE_HASZ(pa->dims),
+		TYPE_HASM(pa->dims),
+		-1, 0, pa);
 
 	return line;
 }
@@ -1972,7 +1978,7 @@ lwpoly_from_geometry(Geometry *g, char want3d)
 	npoints = GEOSGetNumCoordinate(GEOSGetExteriorRing(g));
 	rings[0] = (POINTARRAY *)palloc(sizeof(POINTARRAY));
 	pa = rings[0];
-	pa->ndims = ndims;
+	TYPE_SETZM(pa->dims, want3d, 0);
 	pa->npoints = npoints;
 
 	// Fill point array
@@ -1991,7 +1997,7 @@ lwpoly_from_geometry(Geometry *g, char want3d)
 		npoints = GEOSGetNumCoordinate(GEOSGetInteriorRingN(g, j));
 		rings[j+1] = (POINTARRAY *)palloc(sizeof(POINTARRAY));
 		pa = rings[j+1];
-		pa->ndims = ndims;
+		TYPE_SETZM(pa->dims, want3d, 0);
 		pa->npoints = npoints;
 
 		// Fill point array
@@ -2006,7 +2012,10 @@ lwpoly_from_geometry(Geometry *g, char want3d)
 	}
 
 	// Construct LWPOLY
-	poly = lwpoly_construct(pa->ndims, -1, 0, nrings+1, rings);
+	poly = lwpoly_construct(
+		TYPE_HASZ(pa->dims),
+		TYPE_HASM(pa->dims),
+		-1, 0, nrings+1, rings);
 
 	return poly;
 }
@@ -2018,7 +2027,6 @@ lwcollection_from_geometry(Geometry *geom, char want3d)
 	uint32 ngeoms;
 	LWGEOM **geoms;
 	LWCOLLECTION *ret;
-	int ndims = want3d ? 3 : 2;
 	int type = GEOSGeometryTypeId(geom) ;
 	int SRID = GEOSGetSRID(geom);
 	char wantbbox = 0;
@@ -2045,7 +2053,9 @@ lwcollection_from_geometry(Geometry *geom, char want3d)
 #endif
 	}
 
-	ret = lwcollection_construct(type, ndims, SRID,
+	ret = lwcollection_construct(type,
+		want3d, 0, 
+		SRID,
 		wantbbox, ngeoms, geoms);
 	return ret;
 }

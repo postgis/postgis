@@ -9,6 +9,7 @@
 %{
 #include "wktparse.h"
 
+void set_zm(char z, char m);
 %}
 
 %start geometry

@@ -176,11 +176,11 @@ Datum CHIP_to_LWGEOM(PG_FUNCTION_ARGS)
 	// Construct point array
 	pa[0] = palloc(sizeof(POINTARRAY));
 	pa[0]->serialized_pointlist = (char *)pts;
-	pa[0]->ndims = 2;
+	TYPE_SETZM(pa[0]->dims, 0, 0);
 	pa[0]->npoints = 5;
 
 	// Construct polygon
-	poly = lwpoly_construct(2, chip->SRID, wantbbox, 1, pa);
+	poly = lwpoly_construct(0, 0, chip->SRID, wantbbox, 1, pa);
 
 	// Serialize polygon
 	ser = lwpoly_serialize(poly);

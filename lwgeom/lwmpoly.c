@@ -85,7 +85,10 @@ lwmpoly_add(const LWMPOLY *to, uint32 where, const LWGEOM *what)
 	if ( TYPE_GETTYPE(what->type) == POLYGONTYPE ) newtype = MULTIPOLYGONTYPE;
 	else newtype = COLLECTIONTYPE;
 
-	col = lwcollection_construct(newtype, TYPE_NDIMS(to->type), to->SRID,
+	col = lwcollection_construct(newtype,
+		TYPE_HASZ(to->type),
+		TYPE_HASM(to->type),
+		to->SRID,
 		( TYPE_HASBBOX(what->type) || TYPE_HASBBOX(to->type) ),
 		to->ngeoms+1, geoms);
 	

@@ -3,6 +3,9 @@
 
 //liblwgeom.h
 
+#define DEBUG 1
+#define DEBUG_CALLS 1
+
 
 typedef void* (*lwallocator)(size_t size);
 typedef void* (*lwreallocator)(void *mem, size_t size);
@@ -97,14 +100,15 @@ typedef struct
 } SPHEROID;
 
 
-// POINT3D already defined in postgis.h
 // ALL LWGEOM structures will use POINT3D as an abstract point.
 // This means a 2d geometry will be stored as (x,y) in its serialized
 // form, but all functions will work on (x,y,0).  This keeps all the
 // analysis functions simple.
 // NOTE: for GEOS integration, we'll probably set z=NaN
 //        so look out - z might be NaN for 2d geometries!
-typedef struct { double	x,y,z; } POINT3D;
+typedef struct { double	x,y,z; } POINT3DZ;
+typedef struct { double	x,y,z; } POINT3D; // alias for POINT3DZ
+typedef struct { double	x,y,m; } POINT3DM;
 
 
 // type for 2d points.  When you convert this to 3d, the
@@ -134,7 +138,7 @@ typedef struct
     char  *serialized_pointlist; // array of POINT 2D, 3D or 4D.
     				 // probably missaligned.
     				 // points to a double
-    char  ndims; 		 // 2=2d, 3=3d, 4=4d
+    unsigned char  dims; 	 // use TYPE_* macros to handle
     uint32 npoints;
 }  POINTARRAY;
 
@@ -237,18 +241,20 @@ extern POINT4D getPoint4d(const POINTARRAY *pa, int n);
 // copies a point from the point array into the parameter point
 // will set point's z=0 (or NaN) if pa is 2d
 // will set point's m=0 (or NaN) if pa is 3d or 2d
-// NOTE: this will modify the point32d pointed to by 'point'.
-extern void getPoint4d_p(const POINTARRAY *pa, int n, char *point);
+// NOTE: this will modify the point4d pointed to by 'point'.
+extern int getPoint4d_p(const POINTARRAY *pa, int n, POINT4D *point);
 
 // copies a point from the point array into the parameter point
 // will set point's z=0 (or NaN) if pa is 2d
 // NOTE: point is a real POINT3D *not* a pointer
-extern POINT3D getPoint3d(const POINTARRAY *pa, int n);
+extern POINT3DZ getPoint3dz(const POINTARRAY *pa, int n);
+extern POINT3DM getPoint3dm(const POINTARRAY *pa, int n);
 
 // copies a point from the point array into the parameter point
 // will set point's z=0 (or NaN) if pa is 2d
 // NOTE: this will modify the point3d pointed to by 'point'.
-extern void getPoint3d_p(const POINTARRAY *pa, int n, char *point);
+extern int getPoint3dz_p(const POINTARRAY *pa, int n, POINT3DZ *point);
+extern int getPoint3dm_p(const POINTARRAY *pa, int n, POINT3DM *point);
 
 
 // copies a point from the point array into the parameter point
@@ -259,7 +265,7 @@ extern POINT2D getPoint2d(const POINTARRAY *pa, int n);
 // copies a point from the point array into the parameter point
 // z value (if present is not returned)
 // NOTE: this will modify the point2d pointed to by 'point'.
-extern void getPoint2d_p(const POINTARRAY *pa, int n, char *point);
+extern int getPoint2d_p(const POINTARRAY *pa, int n, POINT2D *point);
 
 // get a pointer to nth point of a POINTARRAY
 // You'll need to cast it to appropriate dimensioned point.
@@ -272,9 +278,9 @@ extern char *getPoint(const POINTARRAY *pa, int n);
 
 // constructs a POINTARRAY.
 // NOTE: points is *not* copied, so be careful about modification (can be aligned/missaligned)
-// NOTE: ndims is descriptive - it describes what type of data 'points'
-//       points to.  No data conversion is done.
-extern POINTARRAY *pointArray_construct(char *points, int ndims, uint32 npoints);
+// NOTE: hasz and hasm are descriptive - it describes what type of data
+//	 'points' points to.  No data conversion is done.
+extern POINTARRAY *pointArray_construct(char *points, char hasz, char hasm, uint32 npoints);
 
 //calculate the bounding box of a set of points
 // returns a 3d box
@@ -332,6 +338,7 @@ extern int pointArray_ptsize(const POINTARRAY *pa);
 #define TYPE_HASSRID(t) (((t)&0x40))
 #define TYPE_NDIMS(t) ((((t)&0x20)>>5)+(((t)&0x10)>>4)+2)
 #define TYPE_GETTYPE(t) ((t)&0x0F)
+#define TYPE_GETZM(t) (((t)&0x30)>>4)
 
 extern char lwgeom_hasBBOX(unsigned char type); // true iff B bit set
 extern int  lwgeom_ndims(unsigned char type);   // returns 2,3 or 4
@@ -339,8 +346,8 @@ extern int  lwgeom_hasZ(unsigned char type);    // has Z ?
 extern int  lwgeom_hasM(unsigned char type);    // has M ?
 extern int  lwgeom_getType(unsigned char type); // returns the tttt value
 
-extern unsigned char lwgeom_makeType(int ndims, char hasSRID, int type);
-extern unsigned char lwgeom_makeType_full(int ndims, char hasSRID, int type, char hasBBOX);
+extern unsigned char lwgeom_makeType(char hasZ, char hasM, char hasSRID, int type);
+extern unsigned char lwgeom_makeType_full(char hasZ, char hasM, char hasSRID, int type, char hasBBOX);
 extern char lwgeom_hasSRID(unsigned char type); // true iff S bit is set
 extern char lwgeom_hasBBOX(unsigned char type); // true iff B bit set
 
@@ -395,7 +402,7 @@ extern uint32 lwgeom_size_poly(const char *serialized_line);
 
 // construct a new point.  point will NOT be copied
 // use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
-extern LWPOINT  *lwpoint_construct(int ndims, int SRID, char wantbbox, POINTARRAY *point);
+extern LWPOINT  *lwpoint_construct(char hasZ, char hasM, int SRID, char wantbbox, POINTARRAY *point);
 
 // given the LWPOINT serialized form (or a pointer into a muli* one)
 // construct a proper LWPOINT.
@@ -418,14 +425,16 @@ extern void lwpoint_serialize_buf(LWPOINT *point, char *buf, size_t *size);
 extern BOX3D *lwpoint_findbbox(LWPOINT *point);
 
 // convenience functions to hide the POINTARRAY
-extern POINT2D lwpoint_getPoint2d(const LWPOINT *point);
-extern POINT3D lwpoint_getPoint3d(const LWPOINT *point);
+extern int lwpoint_getPoint2d_p(const LWPOINT *point, POINT2D *out);
+extern int lwpoint_getPoint3dz_p(const LWPOINT *point, POINT3DZ *out);
+extern int lwpoint_getPoint3dm_p(const LWPOINT *point, POINT3DM *out);
+extern int lwpoint_getPoint4d_p(const LWPOINT *point, POINT4D *out);
 
 //--------------------------------------------------------
 
 // construct a new LWLINE.  points will *NOT* be copied
 // use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
-extern LWLINE *lwline_construct(int ndims, int SRID, char wantbbox, POINTARRAY *points);
+extern LWLINE *lwline_construct(char hasz, char hasm, int SRID, char wantbbox, POINTARRAY *points);
 
 // given the LWGEOM serialized form (or a pointer into a muli* one)
 // construct a proper LWLINE.
@@ -451,7 +460,7 @@ extern BOX3D *lwline_findbbox(LWLINE *line);
 
 // construct a new LWPOLY.  arrays (points/points per ring) will NOT be copied
 // use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
-extern LWPOLY *lwpoly_construct(int ndims, int SRID, char wantbbox, int nrings, POINTARRAY **points);
+extern LWPOLY *lwpoly_construct(char hasz, char hasm, int SRID, char wantbbox, int nrings, POINTARRAY **points);
 
 // given the LWPOLY serialized form (or a pointer into a muli* one)
 // construct a proper LWPOLY.
@@ -541,7 +550,7 @@ extern int lwgeom_size_inspected(const LWGEOM_INSPECTED *inspected, int geom_num
 typedef struct
 {
 	int SRID;
-	int ndims;
+	unsigned char dims;
 	uint32 npoints;
 	char **points;
 	uint32 nlines;
@@ -643,12 +652,12 @@ extern int lwgeom_getnumgeometries_inspected(LWGEOM_INSPECTED *inspected);
 //  use SRID=-1 for unknown SRID  (will have 8bit type's S = 0)
 // all subgeometries must have the same SRID
 // if you want to construct an inspected, call this then inspect the result...
-extern char *lwgeom_construct(int SRID,int finalType,int ndims, int nsubgeometries, char **serialized_subs);
+extern char *lwgeom_serialized_construct(int SRID, int finalType, char hasz, char hasm, int nsubgeometries, char **serialized_subs);
 
 
 // construct the empty geometry (GEOMETRYCOLLECTION(EMPTY))
-extern char *lwgeom_constructempty(int SRID,int ndims);
-extern void lwgeom_constructempty_buf(int SRID, int ndims, char *buf, int *size);
+extern char *lwgeom_constructempty(int SRID, char hasz, char hasm);
+extern void lwgeom_constructempty_buf(int SRID, char hasz, char hasm, char *buf, int *size);
 int lwgeom_empty_length(int SRID);
 
 // get the SRID from the LWGEOM
@@ -871,9 +880,10 @@ extern double lwgeom_polygon_perimeter(LWPOLY *poly);
 extern double lwgeom_polygon_perimeter2d(LWPOLY *poly);
 extern double lwgeom_pointarray_length2d(POINTARRAY *pts);
 extern double lwgeom_pointarray_length(POINTARRAY *pts);
-extern void lwgeom_force2d_recursive(char *serialized, char *optr, int *retsize);
-extern void lwgeom_force3d_recursive(char *serialized, char *optr, int *retsize);
-extern void lwgeom_force4d_recursive(char *serialized, char *optr, int *retsize);
+extern void lwgeom_force2d_recursive(char *serialized, char *optr, size_t *retsize);
+extern void lwgeom_force3dz_recursive(char *serialized, char *optr, size_t *retsize);
+extern void lwgeom_force3dm_recursive(char *serialized, char *optr, size_t *retsize);
+extern void lwgeom_force4d_recursive(char *serialized, char *optr, size_t *retsize);
 extern double distance2d_pt_pt(POINT2D *p1, POINT2D *p2);
 extern double distance2d_pt_seg(POINT2D *p, POINT2D *A, POINT2D *B);
 extern double distance2d_seg_seg(POINT2D *A, POINT2D *B, POINT2D *C, POINT2D *D);
@@ -937,7 +947,7 @@ extern LWLINE *lwline_clone(const LWLINE *lwgeom);
 extern LWPOLY *lwpoly_clone(const LWPOLY *lwgeom);
 extern LWCOLLECTION *lwcollection_clone(const LWCOLLECTION *lwgeom);
 
-extern LWCOLLECTION *lwcollection_construct(int type, int ndims, uint32 SRID, char hasbbox, int ngeoms, LWGEOM **geoms);
+extern LWCOLLECTION *lwcollection_construct(int type, char hasz, char hasm, uint32 SRID, char hasbbox, int ngeoms, LWGEOM **geoms);
 
 // Return a char string with ASCII versionf of type flags
 extern const char *lwgeom_typeflags(unsigned char type);

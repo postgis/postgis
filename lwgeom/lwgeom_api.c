@@ -9,7 +9,9 @@
 
 // this will change to NaN when I figure out how to
 // get NaN in a platform-independent way
-#define NO_Z_VALUE 0.0
+#define NO_VALUE 0.0
+#define NO_Z_VALUE NO_VALUE
+#define NO_M_VALUE NO_VALUE
 
 //#define DEBUG 1
 //#define DEBUG_EXPLODED 1
@@ -429,117 +431,136 @@ getbox2d_internal(char *serialized_form)
 POINT4D
 getPoint4d(const POINTARRAY *pa, int n)
 {
-		 POINT4D result;
-		 int size;
-
-		 if ( (n<0) || (n>=pa->npoints))
-		 {
-			 return result; //error
-		 }
-
-		 size = pointArray_ptsize(pa);
-
-		 	// this does x,y
-		 memcpy(&result.x, &pa->serialized_pointlist[size*n],sizeof(double)*2 );
-		 if (pa->ndims >2)
-		 	memcpy(&result.z, &pa->serialized_pointlist[size*n + sizeof(double)*2],sizeof(double) );
-		 else
-		 	result.z = NO_Z_VALUE;
-		 if (pa->ndims >3)
-		 	memcpy(&result.m, &pa->serialized_pointlist[size*n + sizeof(double)*3],sizeof(double) );
-		 else
-		 	result.m = NO_Z_VALUE;
-
-		 return result;
+	POINT4D result;
+	getPoint4d_p(pa, n, &result);
+	return result;
 }
 
 // copies a point from the point array into the parameter point
 // will set point's z=0 (or NaN) if pa is 2d
 // will set point's m=0 (or NaN( if pa is 3d or 2d
 // NOTE: this will modify the point4d pointed to by 'point'.
-void
-getPoint4d_p(const POINTARRAY *pa, int n, char *point)
+int
+getPoint4d_p(const POINTARRAY *pa, int n, POINT4D *point)
 {
-		int size;
+	int size;
+	POINT4D *pt;
 
-		 if ( (n<0) || (n>=pa->npoints))
-		 {
-			 return ; //error
-		 }
+	if ( ! pa ) return 0;
 
-		size = pointArray_ptsize(pa);
+	if ( (n<0) || (n>=pa->npoints))
+	{
+		lwerror("getPoint4d_p: point offset out of range");
+		return 0; //error
+	}
 
-		 	// this does x,y
-		 memcpy(point, &pa->serialized_pointlist[size*n],sizeof(double)*2 );
-		 if (pa->ndims >2)
-		 	memcpy(point+16, &pa->serialized_pointlist[size*n + sizeof(double)*2],sizeof(double) );
-		 else
-		 {
-			 double bad=NO_Z_VALUE;
-			 memcpy(point+16, &bad,sizeof(double) );
-		 	 //point->z = NO_Z_VALUE;
-	 	 }
+	size = pointArray_ptsize(pa);
 
-		 if (pa->ndims >3)
-			memcpy(point+24, &pa->serialized_pointlist[size*n + sizeof(double)*3],sizeof(double) );
-		 else
-		 {
-			 double bad=NO_Z_VALUE;
-			 memcpy(point+24, &bad,sizeof(double) );
-			//point->z = NO_Z_VALUE;
-	 	 }
+	pt = (POINT4D *)getPoint(pa, n);
+
+	// Initialize point
+	point->x = pt->x;
+	point->y = pt->y;
+	point->z = NO_Z_VALUE;
+	point->m = NO_M_VALUE;
+
+	if (TYPE_HASZ(pa->dims))
+	{
+		point->z = pt->z;
+		if (TYPE_HASM(pa->dims))
+		{
+			point->m = pt->m;
+		}
+	}
+	else if (TYPE_HASM(pa->dims))
+	{
+		point->m = pt->z;
+	}
+
+	return 1;
 }
 
 
 
 // copies a point from the point array into the parameter point
 // will set point's z=0 (or NaN) if pa is 2d
-// NOTE: point is a real POINT3D *not* a pointer
-POINT3D
-getPoint3d(const POINTARRAY *pa, int n)
+// NOTE: point is a real POINT3DZ *not* a pointer
+POINT3DZ
+getPoint3dz(const POINTARRAY *pa, int n)
 {
-	POINT3D result;
-	int size;
+	POINT3DZ result;
+	getPoint3dz_p(pa, n, &result);
+	return result;
+}
 
-	if ( (n<0) || (n>=pa->npoints))
-	{
-		return result; //error
-	}
-
-	size = pointArray_ptsize(pa);
-
-	// this does x,y
-	memcpy(&result.x, &pa->serialized_pointlist[size*n],sizeof(double)*2 );
-	if (pa->ndims >2)
-		memcpy(&result.z, &pa->serialized_pointlist[size*n + sizeof(double)*2],sizeof(double) );
-	 else
-	 	result.z = NO_Z_VALUE;
-	 return result;
+// copies a point from the point array into the parameter point
+// will set point's z=0 (or NaN) if pa is 2d
+// NOTE: point is a real POINT3DZ *not* a pointer
+POINT3DM
+getPoint3dm(const POINTARRAY *pa, int n)
+{
+	POINT3DM result;
+	getPoint3dm_p(pa, n, &result);
+	return result;
 }
 
 // copies a point from the point array into the parameter point
 // will set point's z=NO_Z_VALUE if pa is 2d
-// NOTE: this will modify the point3d pointed to by 'point'.
-// we use a char* instead of a POINT3D because we want to use this function
-//  for serialization/de-serialization
-void
-getPoint3d_p(const POINTARRAY *pa, int n, char *point)
+// NOTE: this will modify the point3dz pointed to by 'point'.
+int
+getPoint3dz_p(const POINTARRAY *pa, int n, POINT3DZ *op)
 {
 	int size;
-	POINT3D *op, *ip;
+	POINT4D *ip;
 
-	op = (POINT3D *)point;
+	if ( ! pa ) return 0;
 
 #ifdef DEBUG
-	lwnotice("getPoint3d_p called on array of %d-dimensions / %u pts",
-		pa->ndims, pa->npoints);
-	if ( pa->npoints > 1000 ) lwerror("More then 1000 points in pointarray ??");
+	lwnotice("getPoint3dz_p called on array of %d-dimensions / %u pts",
+		TYPE_NDIMS(pa->dims), pa->npoints);
 #endif
 
 	if ( (n<0) || (n>=pa->npoints))
 	{
 		lwnotice("%d out of numpoint range (%d)", n, pa->npoints);
-		return ; //error
+		return 0; //error
+	}
+
+	size = pointArray_ptsize(pa);
+
+#ifdef DEBUG
+	lwnotice("getPoint3dz_p: point size: %d", size);
+#endif
+
+	ip = (POINT4D *)getPoint(pa, n);
+	op->x = ip->x;
+	op->y = ip->y;
+	if ( TYPE_HASZ(pa->dims) ) op->z = ip->z;
+	else op->z = NO_Z_VALUE;
+
+	return 1;
+}
+
+// copies a point from the point array into the parameter point
+// will set point's m=NO_Z_VALUE if pa has no M
+// NOTE: this will modify the point3dm pointed to by 'point'.
+int
+getPoint3dm_p(const POINTARRAY *pa, int n, POINT3DM *op)
+{
+	int size;
+	POINT4D *ip;
+
+	if ( ! pa ) return 0;
+
+#ifdef DEBUG
+	lwnotice("getPoint3dm_p(%d) called on array of %d-dimensions / %u pts",
+		n, TYPE_NDIMS(pa->dims), pa->npoints);
+#endif
+
+	if ( (n<0) || (n>=pa->npoints))
+	{
+		lwerror("%d out of numpoint range (%d)", n, pa->npoints);
+		return 0; //error
 	}
 
 	size = pointArray_ptsize(pa);
@@ -548,12 +569,21 @@ getPoint3d_p(const POINTARRAY *pa, int n, char *point)
 	lwnotice("getPoint3d_p: point size: %d", size);
 #endif
 
-	ip = (POINT3D *)getPoint(pa, n);
+	ip = (POINT4D *)getPoint(pa, n);
 	op->x = ip->x;
 	op->y = ip->y;
-	if (pa->ndims >2) op->z = ip->z;
-	else op->z = NO_Z_VALUE;
-	return;
+	op->m = NO_M_VALUE;
+
+	if ( TYPE_HASM(pa->dims) )
+	{
+		if ( TYPE_HASZ(pa->dims) )
+		{
+			op->m = ip->m;
+		}
+		else op->m = ip->z;
+	}
+
+	return 1;
 }
 
 
@@ -581,22 +611,24 @@ getPoint2d(const POINTARRAY *pa, int n)
 // copies a point from the point array into the parameter point
 // z value (if present is not returned)
 // NOTE: this will modify the point2d pointed to by 'point'.
-// we use a char* instead of a POINT2D because we want to use this function
-//  for serialization/de-serialization
-void
-getPoint2d_p(const POINTARRAY *pa, int n, char *point)
+int
+getPoint2d_p(const POINTARRAY *pa, int n, POINT2D *point)
 {
 	 int size;
 
+	if ( ! pa ) return 0;
+
 	 if ( (n<0) || (n>=pa->npoints))
 	 {
-		 return; //error
+		 lwerror("getPoint2d_p: point offset out of range");
+		 return 0; //error
 	 }
 
 	 size = pointArray_ptsize(pa);
 
 	 // this does x,y
 	 memcpy(point, &pa->serialized_pointlist[size*n],sizeof(double)*2 );
+	 return 1;
 }
 
 // get a pointer to nth point of a POINTARRAY
@@ -630,15 +662,14 @@ getPoint(const POINTARRAY *pa, int n)
 // NOTE: points is *not* copied, so be careful about modification (can be aligned/missaligned)
 // NOTE: ndims is descriptive - it describes what type of data 'points'
 //       points to.  No data conversion is done.
-POINTARRAY *pointArray_construct(char *points, int ndims, uint32 npoints)
+POINTARRAY *
+pointArray_construct(char *points, char hasz, char hasm, uint32 npoints)
 {
 	POINTARRAY  *pa;
 	pa = (POINTARRAY*)lwalloc(sizeof(POINTARRAY));
 
-	if (ndims>4)
-		lwerror("pointArray_construct:: called with dims = %i", (int) ndims);
-
-	pa->ndims = ndims;
+	pa->dims = 0;
+	TYPE_SETZM(pa->dims, hasz, hasm);
 	pa->npoints = npoints;
 	pa->serialized_pointlist = points;
 
@@ -648,11 +679,12 @@ POINTARRAY *pointArray_construct(char *points, int ndims, uint32 npoints)
 // calculate the bounding box of a set of points
 // returns a lwalloced BOX3D, or NULL on empty array.
 // zmin/zmax values are set to NO_Z_VALUE if not available.
-BOX3D *pointArray_bbox(const POINTARRAY *pa)
+BOX3D *
+pointArray_bbox(const POINTARRAY *pa)
 {
 	int t;
 	BOX3D *result;
-	POINT3D *pt;
+	POINT3DZ pt;
 	int npoints = pa->npoints;
 
 #ifdef DEBUG
@@ -670,31 +702,27 @@ BOX3D *pointArray_bbox(const POINTARRAY *pa)
 
 	result = (BOX3D*)lwalloc(sizeof(BOX3D));
 
-	if ( npoints != pa->npoints) lwerror("Messed up at %s:%d", __FILE__, __LINE__);
-
 	if ( ! result )
 	{
 		lwnotice("Out of virtual memory");
 		return NULL;
 	}
 
-	//getPoint3d_p(pa, 0, (char*)pt);
-	pt = (POINT3D *)getPoint(pa, 0);
+	getPoint3dz_p(pa, 0, &pt);
 
-	if ( npoints != pa->npoints) lwerror("Messed up at %s:%d", __FILE__, __LINE__);
 
 #ifdef DEBUG
 	lwnotice("pointArray_bbox: got point 0");
 #endif
 
-	result->xmin = pt->x;
-	result->xmax = pt->x;
-	result->ymin = pt->y;
-	result->ymax = pt->y;
+	result->xmin = pt.x;
+	result->xmax = pt.x;
+	result->ymin = pt.y;
+	result->ymax = pt.y;
 
-	if ( pa->ndims > 2 ) {
-		result->zmin = pt->z;
-		result->zmax = pt->z;
+	if ( TYPE_HASZ(pa->dims) ) {
+		result->zmin = pt.z;
+		result->zmax = pt.z;
 	} else {
 		result->zmin = NO_Z_VALUE;
 		result->zmax = NO_Z_VALUE;
@@ -705,16 +733,15 @@ BOX3D *pointArray_bbox(const POINTARRAY *pa)
 #endif
 	for (t=1;t<pa->npoints;t++)
 	{
-		//getPoint3d_p(pa,t,(char*)&pt);
-		pt = (POINT3D *)getPoint(pa, t);
-		if (pt->x < result->xmin) result->xmin = pt->x;
-		if (pt->y < result->ymin) result->ymin = pt->y;
-		if (pt->x > result->xmax) result->xmax = pt->x;
-		if (pt->y > result->ymax) result->ymax = pt->y;
+		getPoint3dz_p(pa,t,&pt);
+		if (pt.x < result->xmin) result->xmin = pt.x;
+		if (pt.y < result->ymin) result->ymin = pt.y;
+		if (pt.x > result->xmax) result->xmax = pt.x;
+		if (pt.y > result->ymax) result->ymax = pt.y;
 
-		if ( pa->ndims > 2 ) {
-			if (pt->z > result->zmax) result->zmax = pt->z;
-			if (pt->z < result->zmax) result->zmax = pt->z;
+		if ( TYPE_HASZ(pa->dims) ) {
+			if (pt.z > result->zmax) result->zmax = pt.z;
+			if (pt.z < result->zmax) result->zmax = pt.z;
 		}
 	}
 
@@ -760,13 +787,7 @@ ptarray_compute_bbox_p(const POINTARRAY *pa, BOX2DFLOAT4 *result)
 int
 pointArray_ptsize(const POINTARRAY *pa)
 {
-	if ( pa->ndims < 2 || pa->ndims > 4 )
-	{
-		lwerror("pointArray_ptsize:: ndims isnt 2,3, or 4");
-		return 0; // never get here
-	}
-
-	return sizeof(double)*pa->ndims;
+	return sizeof(double)*TYPE_NDIMS(pa->dims);
 }
 
 
@@ -785,7 +806,7 @@ lwgeom_hasSRID(unsigned char type)
 int
 lwgeom_ndims(unsigned char type)
 {
-	return  TYPE_NDIMS(type);
+	return TYPE_NDIMS(type);
 }
 
 // has M ?
@@ -809,33 +830,31 @@ int  lwgeom_getType(unsigned char type)
 
 
 //construct a type (hasBOX=false)
-unsigned char lwgeom_makeType(int ndims, char hasSRID, int type)
+unsigned char
+lwgeom_makeType(char hasz, char hasm, char hasSRID, int type)
 {
-	return lwgeom_makeType_full(ndims, hasSRID, type, 0);
+	return lwgeom_makeType_full(hasz, hasm, hasSRID, type, 0);
 }
 
 /*
  * Construct a type
  * TODO: needs to be expanded to accept explicit MZ type
  */
-unsigned char lwgeom_makeType_full(int ndims, char hasSRID, int type, char hasBBOX)
+unsigned char
+lwgeom_makeType_full(char hasz, char hasm, char hasSRID, int type, char hasBBOX)
 {
-		unsigned char result = type;
+	unsigned char result = (char)type;
 
-		if (ndims == 3)
-			TYPE_SETZM(result, 1, 0);
-		if (ndims == 4)
-			TYPE_SETZM(result, 1, 1);
-		if (hasSRID)
-			TYPE_SETHASSRID(result, 1);
-		if (hasBBOX)
-			TYPE_SETHASBBOX(result, 1);
+	TYPE_SETZM(result, hasz, hasm);
+	TYPE_SETHASSRID(result, hasSRID);
+	TYPE_SETHASBBOX(result, hasBBOX);
 
 	return result;
 }
 
 //returns true if there's a bbox in this LWGEOM (B bit set)
-char lwgeom_hasBBOX(unsigned char type)
+char
+lwgeom_hasBBOX(unsigned char type)
 {
 	return TYPE_HASBBOX(type);
 }
@@ -965,13 +984,7 @@ lwgeom_inspect(const char *serialized_form)
 
 	type = lwgeom_getType( (unsigned char) serialized_form[0]);
 
-
 	loc = serialized_form+1;
-
-	if (lwgeom_hasBBOX((unsigned char) serialized_form[0]))
-	{
-		loc += sizeof(BOX2DFLOAT4);
-	}
 
 	if ( (type==POINTTYPE) || (type==LINETYPE) || (type==POLYGONTYPE) )
 	{
@@ -988,6 +1001,11 @@ lwgeom_inspect(const char *serialized_form)
 	}
 
 	// its a GeometryCollection or multi* geometry
+
+	if (lwgeom_hasBBOX((unsigned char) serialized_form[0]))
+	{
+		loc += sizeof(BOX2DFLOAT4);
+	}
 
 	if (lwgeom_hasSRID((unsigned char) serialized_form[0]) )
 	{
@@ -1265,7 +1283,8 @@ int lwgeom_getnumgeometries_inspected(LWGEOM_INSPECTED *inspected)
 //  use SRID=-1 for unknown SRID  (will have 8bit type's S = 0)
 // all subgeometries must have the same SRID
 // if you want to construct an inspected, call this then inspect the result...
-extern char *lwgeom_construct(int SRID,int finalType,int ndims, int nsubgeometries, char **serialized_subs)
+char *
+lwgeom_serialized_construct(int SRID, int finalType, char hasz, char hasm, int nsubgeometries, char **serialized_subs)
 {
 	uint32 *lengths;
 	int t;
@@ -1276,7 +1295,7 @@ extern char *lwgeom_construct(int SRID,int finalType,int ndims, int nsubgeometri
 	char *loc;
 
 	if (nsubgeometries == 0)
-		return lwgeom_constructempty(SRID,ndims);
+		return lwgeom_constructempty(SRID, hasz, hasm);
 
 	lengths = lwalloc(sizeof(int32) * nsubgeometries);
 
@@ -1338,7 +1357,7 @@ extern char *lwgeom_construct(int SRID,int finalType,int ndims, int nsubgeometri
 	total_length +=4 ;   // nsubgeometries
 
 	result = lwalloc(total_length);
-	result[0] = (unsigned char) lwgeom_makeType( ndims, SRID != -1,  type);
+	result[0] = (unsigned char) lwgeom_makeType(hasz, hasm, SRID != -1,  type);
 	if (SRID != -1)
 	{
 		memcpy(&result[1],&SRID,4);
@@ -1363,7 +1382,8 @@ extern char *lwgeom_construct(int SRID,int finalType,int ndims, int nsubgeometri
 
 // construct the empty geometry (GEOMETRYCOLLECTION(EMPTY))
 //returns serialized form
-char *lwgeom_constructempty(int SRID,int ndims)
+char *
+lwgeom_constructempty(int SRID, char hasz, char hasm)
 {
 	int size = 0;
 	char *result;
@@ -1377,7 +1397,7 @@ char *lwgeom_constructempty(int SRID,int ndims)
 
 	result = lwalloc(size);
 
-	result[0] =(unsigned char) lwgeom_makeType( ndims, SRID != -1,  COLLECTIONTYPE);
+	result[0] = lwgeom_makeType(hasz, hasm, SRID != -1,  COLLECTIONTYPE);
 	if (SRID != -1)
 	{
 		memcpy(&result[1],&SRID,4);
@@ -1401,11 +1421,11 @@ lwgeom_empty_length(int SRID)
 // construct the empty geometry (GEOMETRYCOLLECTION(EMPTY))
 // writing it into the provided buffer.
 void
-lwgeom_constructempty_buf(int SRID, int ndims, char *buf, int *retsize)
+lwgeom_constructempty_buf(int SRID, char hasz, char hasm, char *buf, int *retsize)
 {
 	int ngeoms = 0;
 
-	buf[0] =(unsigned char) lwgeom_makeType( ndims, SRID != -1,  COLLECTIONTYPE);
+	buf[0] =(unsigned char) lwgeom_makeType( hasz, hasm, SRID != -1,  COLLECTIONTYPE);
 	if (SRID != -1)
 	{
 		memcpy(&buf[1],&SRID,4);
@@ -1500,7 +1520,7 @@ lwgeom_size(const char *serialized_form)
 	}
 
 
-	ngeoms =  get_uint32(loc);
+	ngeoms = get_uint32(loc);
 	loc +=4;
 	result += 4; // numgeoms
 
@@ -1723,30 +1743,31 @@ void pfree_POINTARRAY(POINTARRAY *pa)
 void printPA(POINTARRAY *pa)
 {
 	int t;
-	POINT2D pt2;
-	POINT3D pt3;
-	POINT4D pt4;
+	POINT4D *pt;
+	char *mflag;
 
-	lwnotice("      POINTARRAY{");
-	lwnotice("                 ndims =%i,   ptsize=%i", (int) pa->ndims,pointArray_ptsize(pa));
+	if ( TYPE_HASM(pa->dims) ) mflag = "M";
+	else mflag = "";
+
+	lwnotice("      POINTARRAY%s{", mflag);
+	lwnotice("                 ndims=%i,   ptsize=%i",
+		TYPE_NDIMS(pa->dims), pointArray_ptsize(pa));
 	lwnotice("                 npoints = %i", pa->npoints);
 
 	for (t =0; t<pa->npoints;t++)
 	{
-		if (pa->ndims == 2)
+		pt = (POINT4D *)getPoint(pa,t);
+		if (TYPE_NDIMS(pa->dims) == 2)
 		{
-			pt2 = getPoint2d(pa,t);
-			lwnotice("                    %i : %lf,%lf",t,pt2.x,pt2.y);
+			lwnotice("                    %i : %lf,%lf",t,pt->x,pt->y);
 		}
-		if (pa->ndims == 3)
+		if (TYPE_NDIMS(pa->dims) == 3)
 		{
-			pt3 = getPoint3d(pa,t);
-			lwnotice("                    %i : %lf,%lf,%lf",t,pt3.x,pt3.y,pt3.z);
+			lwnotice("                    %i : %lf,%lf,%lf",t,pt->x,pt->y,pt->z);
 		}
-		if (pa->ndims == 4)
+		if (TYPE_NDIMS(pa->dims) == 4)
 		{
-			pt4 = getPoint4d(pa,t);
-			lwnotice("                    %i : %lf,%lf,%lf,%lf",t,pt3.x,pt4.y,pt4.z,pt4.m);
+			lwnotice("                    %i : %lf,%lf,%lf,%lf",t,pt->x,pt->y,pt->z,pt->m);
 		}
 	}
 
@@ -1850,7 +1871,8 @@ int lwgeom_getSRID(PG_LWGEOM *lwgeom)
 // Set the SRID of a LWGEOM
 // Returns a newly allocated LWGEOM object.
 // Allocation will be done using the lwalloc.
-PG_LWGEOM *lwgeom_setSRID(PG_LWGEOM *lwgeom, int32 newSRID)
+PG_LWGEOM *
+lwgeom_setSRID(PG_LWGEOM *lwgeom, int32 newSRID)
 {
 	unsigned char type = lwgeom->type;
 	int bbox_offset=0; //0=no bbox, otherwise sizeof(BOX2DFLOAT4)
@@ -1875,7 +1897,9 @@ PG_LWGEOM *lwgeom_setSRID(PG_LWGEOM *lwgeom, int32 newSRID)
 		len_new = len + 4;//+4 for SRID
 		result = lwalloc(len_new);
 		memcpy(result, &len_new, 4); // size copy in
-		result->type = lwgeom_makeType_full(lwgeom_ndims(type), 1, lwgeom_getType(type),lwgeom_hasBBOX(type));
+		result->type = lwgeom_makeType_full(
+			TYPE_HASZ(type), TYPE_HASM(type),
+			1, lwgeom_getType(type),lwgeom_hasBBOX(type));
 
 		loc_new = result->data;
 		loc_old = lwgeom->data;
@@ -1943,7 +1967,8 @@ PG_LWGEOM_construct(char *ser, int SRID, int wantbbox)
 	result = lwalloc(size);
 	result->size = size;
 
-	result->type = lwgeom_makeType_full(lwgeom_ndims(ser[0]),
+	result->type = lwgeom_makeType_full(
+		TYPE_HASZ(ser[0]), TYPE_HASM(ser[0]),
 		wantsrid, lwgeom_getType(ser[0]), wantbbox);
 	optr = result->data;
 	if ( wantbbox )
@@ -2009,14 +2034,14 @@ lwnotice("lwgeom_explode: serialized inspected");
 		lwfree(result->lines);
 		lwfree(result->polys);
 		result->SRID = -1;
-		result->ndims = 0;
+		result->dims = inspected->type;
 		pfree_inspected(inspected);
 		//lwnotice("lwgeom_explode: no geometries");
 		return result;
 	}
 
 	result->SRID = lwgeom_getsrid(serialized);
-	result->ndims = lwgeom_ndims(serialized[0]);
+	result->dims = inspected->type; // will use ZM only
 
 	for (i=0; i<inspected->ngeometries; i++)
 	{
@@ -2150,8 +2175,18 @@ lwexploded_sum(LWGEOM_EXPLODED *exp1, LWGEOM_EXPLODED *exp2)
 	LWGEOM_EXPLODED *expcoll;
 	char *loc;
 
-	if ( exp1->ndims != exp2->ndims ) return NULL;
-	if ( exp1->SRID != exp2->SRID ) return NULL;
+	if ( TYPE_GETZM(exp1->dims) != TYPE_GETZM(exp2->dims) )
+	{
+		lwerror("lwexploded_sum: can't sum mixed DIMS geoms (%d/%d)",
+			TYPE_GETZM(exp1->dims), TYPE_GETZM(exp2->dims));
+		return NULL;
+	}
+	if ( exp1->SRID != exp2->SRID )
+	{
+		lwerror("lwexploded_sum: can't sum mixed SRID geoms (%d/%d)",
+			exp1->SRID, exp2->SRID);
+		return NULL;
+	}
 
 	expcoll = lwalloc(sizeof(LWGEOM_EXPLODED));
 
@@ -2200,7 +2235,7 @@ lwexploded_sum(LWGEOM_EXPLODED *exp1, LWGEOM_EXPLODED *exp2)
 		}
 	}
 
-	expcoll->ndims = exp1->ndims;
+	expcoll->dims = exp1->dims;
 	expcoll->SRID = exp1->SRID;
 
 	return expcoll;
@@ -2248,7 +2283,8 @@ lwexploded_serialize_buf(LWGEOM_EXPLODED *exploded, int wantbbox,
 
 	if ( ngeoms == 0 )
 	{
-		lwgeom_constructempty_buf(exploded->SRID, exploded->ndims,
+		lwgeom_constructempty_buf(exploded->SRID,
+			TYPE_HASZ(exploded->dims), TYPE_HASM(exploded->dims),
 			buf, retsize);
 		return;
 	}
@@ -2353,8 +2389,9 @@ lwexploded_serialize_buf(LWGEOM_EXPLODED *exploded, int wantbbox,
 	
 	if ( exploded->npoints > 1 )
 	{
-		loc[0] = lwgeom_makeType_full(exploded->ndims, 0,
-			MULTIPOINTTYPE, 0);
+		loc[0] = lwgeom_makeType_full(
+			TYPE_HASZ(exploded->dims), TYPE_HASM(exploded->dims),
+			0, MULTIPOINTTYPE, 0);
 		loc++;
 		memcpy(loc, &exploded->npoints, 4); // numpoints
 		loc += 4; 
@@ -2372,8 +2409,10 @@ lwexploded_serialize_buf(LWGEOM_EXPLODED *exploded, int wantbbox,
 
 	if ( exploded->nlines > 1 )
 	{
-		loc[0] = lwgeom_makeType_full(exploded->ndims, 0,
-			MULTILINETYPE, 0);
+		loc[0] = lwgeom_makeType_full(
+			TYPE_HASZ(exploded->dims),
+			TYPE_HASM(exploded->dims),
+			0, MULTILINETYPE, 0);
 		loc++;
 		memcpy(loc, &exploded->nlines, 4); // numlines
 		loc += 4; 
@@ -2397,8 +2436,10 @@ lwexploded_serialize_buf(LWGEOM_EXPLODED *exploded, int wantbbox,
 
 	if ( exploded->npolys > 1 )
 	{
-		loc[0] = lwgeom_makeType_full(exploded->ndims, 0,
-			MULTIPOLYGONTYPE, 0);
+		loc[0] = lwgeom_makeType_full(
+			TYPE_HASZ(exploded->dims),
+			TYPE_HASM(exploded->dims),
+			0, MULTIPOLYGONTYPE, 0);
 		loc++;
 		memcpy(loc, &exploded->npolys, 4); // numpolys
 		loc += 4; 
@@ -2424,7 +2465,9 @@ lwexploded_serialize_buf(LWGEOM_EXPLODED *exploded, int wantbbox,
 	if (retsize) *retsize = (loc-buf);
 
 	// Ok. now we need to add type, SRID and bbox 
-	buf[0] = lwgeom_makeType_full(exploded->ndims,
+	buf[0] = lwgeom_makeType_full(
+		TYPE_HASZ(exploded->dims),
+		TYPE_HASM(exploded->dims),
 		(exploded->SRID!=-1), outtype, wantbbox);
 	loc = buf+1;
 

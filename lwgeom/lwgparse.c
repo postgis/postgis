@@ -18,6 +18,8 @@
 #include <netinet/ip.h>
 */
 
+void set_zm(char z, char m);
+void close_parser(void);
 
 static int endian_check_int = 1; // dont modify this!!!
 

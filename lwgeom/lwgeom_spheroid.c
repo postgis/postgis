@@ -284,19 +284,22 @@ double lwgeom_pointarray_length_ellipse(POINTARRAY *pts, SPHEROID *sphere)
 	if ( pts->npoints < 2 ) return 0.0;
 
 	// compute 2d length if 3d is not available
-	if ( pts->ndims < 3 )
+	if ( TYPE_NDIMS(pts->dims) < 3 )
 	{
 		return lwgeom_pointarray_length2d_ellipse(pts, sphere);
 	}
 
 	for (i=0; i<pts->npoints-1;i++)
 	{
-		POINT3D *frm = (POINT3D *)getPoint(pts, i);
-		POINT3D *to = (POINT3D *)getPoint(pts, i+1);
+		POINT3DZ frm;
+		POINT3DZ to;
+		getPoint3dz_p(pts, i, &frm);
+		getPoint3dz_p(pts, i+1, &to);
+
 		double distellips = distance_ellipse(
-			frm->y*M_PI/180.0, frm->x*M_PI/180.0,
-			to->y*M_PI/180.0, to->x*M_PI/180.0, sphere);
-		dist += sqrt(distellips*distellips + (frm->z*frm->z));
+			frm.y*M_PI/180.0, frm.x*M_PI/180.0,
+			to.y*M_PI/180.0, to.x*M_PI/180.0, sphere);
+		dist += sqrt(distellips*distellips + (frm.z*frm.z));
 	}
 	return dist;
 }

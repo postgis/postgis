@@ -11,7 +11,6 @@
  * --strk@keybit.net;
  ***********************************************************************/
 
-#define SAMEPOINT(a,b) ((a)->x==(b)->x&&(a)->y==(b)->y&&(a)->z==(b)->z)
 #define VERBOSE 0
 
 #if VERBOSE > 0
@@ -98,7 +97,7 @@ DP_simplify2d(POINTARRAY *inpts, double epsilon)
 	int p1, split; 
 	double dist;
 	POINTARRAY *outpts;
-	int ptsize = sizeof(double)*inpts->ndims;
+	int ptsize = pointArray_ptsize(inpts);
 
 	p1 = 0;
 	stack[++sp] = inpts->npoints-1;
@@ -109,7 +108,7 @@ DP_simplify2d(POINTARRAY *inpts, double epsilon)
 
 	// allocate space for output POINTARRAY
 	outpts = palloc(sizeof(POINTARRAY));
-	outpts->ndims = inpts->ndims;
+	outpts->dims = inpts->dims;
 	outpts->npoints=1;
 	outpts->serialized_pointlist = (char *)palloc(ptsize*inpts->npoints);
 	memcpy(getPoint(outpts, 0), getPoint(inpts, 0), ptsize);
@@ -176,7 +175,10 @@ simplify2d_lwline(LWLINE *iline, double dist)
 
 	ipts = iline->points;
 	opts = DP_simplify2d(ipts, dist);
-	oline = lwline_construct(ipts->ndims, iline->SRID,
+	oline = lwline_construct(
+		TYPE_HASZ(ipts->dims),
+		TYPE_HASM(ipts->dims),
+		iline->SRID,
 		TYPE_HASBBOX(iline->type), opts);
 
 	return oline;
@@ -378,13 +380,17 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 	if ( distance == 0.0 || distance == 1.0 )
 	{
 		if ( distance == 0.0 )
-			getPoint4d_p(ipa, 0, (char *)&pt);
+			getPoint4d_p(ipa, 0, &pt);
 		else
-			getPoint4d_p(ipa, ipa->npoints-1, (char *)&pt);
+			getPoint4d_p(ipa, ipa->npoints-1, &pt);
 
 		opa = pointArray_construct((char *)&pt,
-			TYPE_NDIMS(line->type), 1);
-		point = lwpoint_construct(TYPE_NDIMS(line->type),
+			TYPE_HASZ(line->type),
+			TYPE_HASM(line->type),
+			1);
+		point = lwpoint_construct(
+			TYPE_HASZ(line->type),
+			TYPE_HASM(line->type),
 			line->SRID, 0, opa);
 		srl = lwpoint_serialize(point);
 		pfree_point(point);
@@ -415,8 +421,12 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 			pt.z = 0;
 			pt.m = 0;
 			opa = pointArray_construct((char *)&pt,
-				TYPE_NDIMS(line->type), 1);
-			point = lwpoint_construct(TYPE_NDIMS(line->type),
+				TYPE_HASZ(line->type),
+				TYPE_HASM(line->type),
+				1);
+			point = lwpoint_construct(
+				TYPE_HASZ(line->type),
+				TYPE_HASM(line->type),
 				line->SRID, 0, opa);
 			srl = lwpoint_serialize(point);
 			pfree_point(point);
@@ -427,9 +437,15 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 
 	/* Return the last point on the line. This shouldn't happen, but
 	 * could if there's some floating point rounding errors. */
-	getPoint4d_p(ipa, ipa->npoints-1, (char *)&pt);
-	opa = pointArray_construct((char *)&pt, TYPE_NDIMS(line->type), 1);
-	point = lwpoint_construct(TYPE_NDIMS(line->type), line->SRID, 0, opa);
+	getPoint4d_p(ipa, ipa->npoints-1, &pt);
+	opa = pointArray_construct((char *)&pt,
+		TYPE_HASZ(line->type),
+		TYPE_HASM(line->type),
+		1);
+	point = lwpoint_construct(
+		TYPE_HASZ(line->type),
+		TYPE_HASM(line->type),
+		line->SRID, 0, opa);
 	srl = lwpoint_serialize(point);
 	pfree_point(point);
 	PG_RETURN_POINTER(PG_LWGEOM_construct(srl, line->SRID, 0));

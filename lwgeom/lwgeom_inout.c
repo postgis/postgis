@@ -511,7 +511,9 @@ Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS)
 	result = palloc(size);// 16 for bbox2d
 
 	memcpy(result,&size,4); // size
-	result->type = lwgeom_makeType_full(lwgeom_ndims(old_type),
+	result->type = lwgeom_makeType_full(
+		TYPE_HASZ(old_type),
+		TYPE_HASM(old_type),
 		lwgeom_hasSRID(old_type), lwgeom_getType(old_type), 1);
 	// copy in bbox
 	memcpy(result->data, &box, sizeof(BOX2DFLOAT4));

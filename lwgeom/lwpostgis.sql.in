@@ -1539,9 +1539,20 @@ CREATEFUNCTION force_2d(geometry)
 	AS '@MODULE_FILENAME@', 'LWGEOM_force_2d'
 	LANGUAGE 'C' WITH (isstrict);
 
+CREATEFUNCTION force_3dz(geometry) 
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_force_3dz'
+	LANGUAGE 'C' WITH (isstrict);
+
+-- an alias for force_3dz
 CREATEFUNCTION force_3d(geometry) 
 	RETURNS geometry
-	AS '@MODULE_FILENAME@', 'LWGEOM_force_3d'
+	AS '@MODULE_FILENAME@', 'LWGEOM_force_3dz'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION force_3dm(geometry) 
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_force_3dm'
 	LANGUAGE 'C' WITH (isstrict);
 
 CREATEFUNCTION force_4d(geometry) 

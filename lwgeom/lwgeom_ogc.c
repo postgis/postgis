@@ -333,7 +333,10 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 	extring = poly->rings[0];
 
 	// This is a LWLINE constructed by exterior ring POINTARRAY
-	line = lwline_construct(TYPE_NDIMS(poly->type), poly->SRID,
+	line = lwline_construct(
+		TYPE_HASZ(poly->type),
+		TYPE_HASM(poly->type),
+		poly->SRID,
 		lwgeom_hasBBOX(geom->type), extring);
 
 	// Now we serialized it (copying data)
@@ -417,7 +420,10 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 	ring = poly->rings[wanted_index+1];
 
 	// This is a LWLINE constructed by exterior ring POINTARRAY
-	line = lwline_construct(TYPE_NDIMS(poly->type), poly->SRID,
+	line = lwline_construct(
+		TYPE_HASZ(poly->type),
+		TYPE_HASM(poly->type),
+		poly->SRID,
 		lwgeom_hasBBOX(geom->type), ring);
 
 	// Now we serialized it (copying data)
@@ -474,11 +480,11 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 
 	// Construct a point array
 	pts = pointArray_construct(getPoint(line->points, wanted_index),
-		line->points->ndims, 1);
+		TYPE_HASZ(line->type), TYPE_HASM(line->type), 1);
 
 	// Construct an LWPOINT
-	point = lwpoint_construct(line->points->ndims, lwgeom_getSRID(geom),
-		lwgeom_hasBBOX(geom->type), pts);
+	point = lwpoint_construct(TYPE_HASZ(line->type), TYPE_HASM(line->type),
+		lwgeom_getSRID(geom), lwgeom_hasBBOX(geom->type), pts);
 
 	// Serialized the point
 	serializedpoint = lwpoint_serialize(point);
@@ -501,7 +507,7 @@ Datum LWGEOM_x_point(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom;
 	LWGEOM_INSPECTED *inspected;
 	LWPOINT *point = NULL;
-	POINT3D *p;
+	POINT2D *p;
 	int i;
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
@@ -517,7 +523,7 @@ Datum LWGEOM_x_point(PG_FUNCTION_ARGS)
 	if ( point == NULL ) PG_RETURN_NULL();
 
 	// Ok, now we have a point, let's get X
-	p = (POINT3D *)getPoint(point->point, 0);
+	p = (POINT2D *)getPoint(point->point, 0);
 
 	PG_RETURN_FLOAT8(p->x);
 }
@@ -530,7 +536,7 @@ Datum LWGEOM_y_point(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom;
 	LWGEOM_INSPECTED *inspected;
 	LWPOINT *point = NULL;
-	POINT3D *p;
+	POINT2D *p;
 	int i;
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
@@ -546,7 +552,7 @@ Datum LWGEOM_y_point(PG_FUNCTION_ARGS)
 	if ( point == NULL ) PG_RETURN_NULL();
 
 	// Ok, now we have a point, let's get X
-	p = (POINT3D *)getPoint(point->point, 0);
+	p = (POINT2D *)getPoint(point->point, 0);
 
 	PG_RETURN_FLOAT8(p->y);
 }
@@ -560,13 +566,13 @@ Datum LWGEOM_z_point(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom;
 	LWGEOM_INSPECTED *inspected;
 	LWPOINT *point = NULL;
-	POINT3D *p;
+	POINT3DZ p;
 	int i;
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	// if there's no Z return 0
-	if ( lwgeom_ndims(geom->type) < 3 ) PG_RETURN_FLOAT8(0.0);
+	if ( ! TYPE_HASZ(geom->type) ) PG_RETURN_FLOAT8(0.0);
 
 	inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
 
@@ -580,9 +586,9 @@ Datum LWGEOM_z_point(PG_FUNCTION_ARGS)
 	if ( point == NULL ) PG_RETURN_NULL();
 
 	// Ok, now we have a point, let's get X
-	p = (POINT3D *)getPoint(point->point, 0);
+	lwpoint_getPoint3dz_p(point, &p);
 
-	PG_RETURN_FLOAT8(p->z);
+	PG_RETURN_FLOAT8(p.z);
 }
 
 // StartPoint(GEOMETRY) -- find the first linestring in GEOMETRY,
@@ -616,10 +622,14 @@ Datum LWGEOM_startpoint_linestring(PG_FUNCTION_ARGS)
 
 	// Construct a point array
 	pts = pointArray_construct(getPoint(line->points, 0),
-		line->points->ndims, 1);
+		TYPE_HASZ(line->type),
+		TYPE_HASM(line->type), 1);
 
 	// Construct an LWPOINT
-	point = lwpoint_construct(line->points->ndims, lwgeom_getSRID(geom),
+	point = lwpoint_construct(
+		TYPE_HASZ(line->type),
+		TYPE_HASM(line->type),
+		lwgeom_getSRID(geom),
 		lwgeom_hasBBOX(geom->type), pts);
 
 	// Serialized the point
@@ -667,10 +677,14 @@ Datum LWGEOM_endpoint_linestring(PG_FUNCTION_ARGS)
 	// Construct a point array
 	pts = pointArray_construct(
 		getPoint(line->points, line->points->npoints-1),
-		line->points->ndims, 1);
+		TYPE_HASZ(line->type),
+		TYPE_HASM(line->type), 1);
 
 	// Construct an LWPOINT
-	point = lwpoint_construct(line->points->ndims, lwgeom_getSRID(geom),
+	point = lwpoint_construct(
+		TYPE_HASZ(line->type),
+		TYPE_HASM(line->type),
+		lwgeom_getSRID(geom),
 		lwgeom_hasBBOX(geom->type), pts);
 
 	// Serialized the point

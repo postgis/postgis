@@ -36,6 +36,7 @@ lwpoint_serialize_buf(LWPOINT *point, char *buf, size_t *retsize)
 	char hasSRID;
 	char *loc;
 
+	//printLWPOINT(point);
 #ifdef DEBUG_CALLS
 	lwnotice("lwpoint_serialize_buf(%p, %p) called", point, buf);
 #endif
@@ -47,7 +48,8 @@ lwpoint_serialize_buf(LWPOINT *point, char *buf, size_t *retsize)
 
 	size += sizeof(double)*TYPE_NDIMS(point->type);
 
-	buf[0] = (unsigned char) lwgeom_makeType_full(TYPE_NDIMS(point->type),
+	buf[0] = (unsigned char) lwgeom_makeType_full(
+		TYPE_HASZ(point->type), TYPE_HASM(point->type),
 		hasSRID, POINTTYPE, TYPE_HASBBOX(point->type));
 	loc = buf+1;
 
@@ -65,9 +67,17 @@ lwpoint_serialize_buf(LWPOINT *point, char *buf, size_t *retsize)
 
 	//copy in points
 
-	if (TYPE_NDIMS(point->type) == 3) getPoint3d_p(point->point, 0, loc);
-	else if (TYPE_NDIMS(point->type) == 2) getPoint2d_p(point->point, 0, loc);
-	else if (TYPE_NDIMS(point->type) == 4) getPoint4d_p(point->point, 0, loc);
+	if (TYPE_NDIMS(point->type) == 3)
+	{
+		if (TYPE_HASZ(point->type))
+			getPoint3dz_p(point->point, 0, (POINT3DZ *)loc);
+		else
+			getPoint3dm_p(point->point, 0, (POINT3DM *)loc);
+	}
+	else if (TYPE_NDIMS(point->type) == 2)
+		getPoint2d_p(point->point, 0, (POINT2D *)loc);
+	else if (TYPE_NDIMS(point->type) == 4)
+		getPoint4d_p(point->point, 0, (POINT4D *)loc);
 
 	if (retsize) *retsize = size;
 }
@@ -96,27 +106,27 @@ lwpoint_findbbox(LWPOINT *point)
 
 // convenience functions to hide the POINTARRAY
 // TODO: obsolete this
-POINT2D
-lwpoint_getPoint2d(const LWPOINT *point)
+int
+lwpoint_getPoint2d_p(const LWPOINT *point, POINT2D *out)
 {
-	POINT2D result;
-
-	if (point == NULL)
-			return result;
-
-	return getPoint2d(point->point,0);
+	return getPoint2d_p(point->point, 0, out);
 }
 
 // convenience functions to hide the POINTARRAY
-POINT3D
-lwpoint_getPoint3d(const LWPOINT *point)
+int
+lwpoint_getPoint3dz_p(const LWPOINT *point, POINT3DZ *out)
 {
-	POINT3D result;
-
-	if (point == NULL)
-			return result;
-
-	return getPoint3d(point->point,0);
+	return getPoint3dz_p(point->point,0,out);
+}
+int
+lwpoint_getPoint3dm_p(const LWPOINT *point, POINT3DM *out)
+{
+	return getPoint3dm_p(point->point,0,out);
+}
+int
+lwpoint_getPoint4d_p(const LWPOINT *point, POINT4D *out)
+{
+	return getPoint4d_p(point->point,0,out);
 }
 
 // find length of this deserialized point
@@ -144,7 +154,7 @@ lwpoint_serialize_size(LWPOINT *point)
 // construct a new point.  point will not be copied
 // use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
 LWPOINT *
-lwpoint_construct(int ndims, int SRID, char wantbbox, POINTARRAY *point)
+lwpoint_construct(char hasZ, char hasM, int SRID, char wantbbox, POINTARRAY *point)
 {
 	LWPOINT *result ;
 
@@ -152,8 +162,8 @@ lwpoint_construct(int ndims, int SRID, char wantbbox, POINTARRAY *point)
 		return NULL; // error
 
 	result = lwalloc(sizeof(LWPOINT));
-	result->type = lwgeom_makeType_full(ndims, (SRID!=-1), POINTTYPE,
-		wantbbox);
+	result->type = lwgeom_makeType_full(hasZ, hasM, (SRID!=-1),
+		POINTTYPE, wantbbox);
 	result->SRID = SRID;
 	result->point = point;
 
@@ -208,7 +218,7 @@ lwpoint_deserialize(char *serialized_form)
 
 	// we've read the type (1 byte) and SRID (4 bytes, if present)
 
-	pa = pointArray_construct(loc, lwgeom_ndims(type), 1);
+	pa = pointArray_construct(loc, TYPE_HASZ(type), TYPE_HASM(type), 1);
 
 	result->point = pa;
 
@@ -292,7 +302,10 @@ lwpoint_add(const LWPOINT *to, uint32 where, const LWGEOM *what)
 	if ( TYPE_GETTYPE(what->type) == POINTTYPE ) newtype = MULTIPOINTTYPE;
 	else newtype = COLLECTIONTYPE;
 
-	col = lwcollection_construct(newtype, TYPE_NDIMS(to->type), to->SRID,
+	col = lwcollection_construct(newtype,
+		TYPE_HASZ(to->type),
+		TYPE_HASM(to->type),
+		to->SRID,
 		( TYPE_HASBBOX(what->type) || TYPE_HASBBOX(to->type) ),
 		2, geoms);
 	

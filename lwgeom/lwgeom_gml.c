@@ -403,7 +403,7 @@ asgml_inspected(LWGEOM_INSPECTED *insp, char *srs)
 static size_t
 pointArray_GMLsize(POINTARRAY *pa)
 {
-	return pa->ndims * pa->npoints * (SHOW_DIGS+(pa->ndims-1));
+	return TYPE_NDIMS(pa->dims) * pa->npoints * (SHOW_DIGS+(TYPE_NDIMS(pa->dims)-1));
 }
 
 static size_t
@@ -415,7 +415,7 @@ pointArray_toGML(POINTARRAY *pa, char *output)
 
 	ptr = output;
 
-	if ( pa->ndims == 2 )
+	if ( ! TYPE_HASZ(pa->dims) )
 	{
 		for (i=0; i<pa->npoints; i++)
 		{
@@ -426,7 +426,7 @@ pointArray_toGML(POINTARRAY *pa, char *output)
 				precision, pt->y);
 		}
 	}
-	else if ( pa->ndims == 3 )
+	else 
 	{
 		for (i=0; i<pa->npoints; i++)
 		{
@@ -436,19 +436,6 @@ pointArray_toGML(POINTARRAY *pa, char *output)
 				precision, pt->x,
 				precision, pt->y,
 				precision, pt->z);
-		}
-	}
-	else if ( pa->ndims == 4 )
-	{
-		for (i=0; i<pa->npoints; i++)
-		{
-			pt = (POINT4D *)getPoint(pa, i);
-			if ( i ) ptr += sprintf(ptr, " ");
-			ptr += sprintf(ptr, "%.*g,%.*g,%.*g,%.*g", 
-				precision, pt->x,
-				precision, pt->y,
-				precision, pt->z,
-				precision, pt->m);
 		}
 	}
 
@@ -515,6 +502,9 @@ getSRSbySRID(int SRID)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.5  2004/10/05 16:28:34  strk
+ * Added ZM dimensions flags knowledge.
+ *
  * Revision 1.4  2004/09/29 10:50:30  strk
  * Big layout change.
  * lwgeom.h is public API
