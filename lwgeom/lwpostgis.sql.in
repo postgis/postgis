@@ -3042,17 +3042,17 @@ BEGIN
 	END IF;
 
 	IF isrid = -1 THEN
-		RAISE EXCEPTION ''Input geometry has unknown SRID'';
+		RAISE EXCEPTION ''Input geometry has unknown (-1) SRID'';
 	END IF;
 
 	SELECT INTO iproj get_proj4_from_srid(isrid);
 	IF iproj IS NULL THEN
-		RAISE EXCEPTION ''Cannot find input SRID in spatial_ref_sys'';
+		RAISE EXCEPTION ''Cannot find input SRID (%) in spatial_ref_sys'', isrid;
 	END IF;
 
 	SELECT INTO oproj get_proj4_from_srid(osrid);
 	IF oproj IS NULL THEN
-		RAISE EXCEPTION ''Cannot find target SRID in spatial_ref_sys'';
+		RAISE EXCEPTION ''Cannot find target SRID (%) in spatial_ref_sys'', osrid;
 	END IF;
 
 	RETURN transform_geometry($1, iproj, oproj, osrid);
