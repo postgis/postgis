@@ -1,0 +1,108 @@
+Possible strategies:
+
+	1) compute bbox if geometry is complex. 
+
+	2) compute bbox if it's a simple operation (some combination
+	   of input bboxes - iff all available)
+
+	3) compute bbox if any input geoms have one
+
+	4) never compute bbox
+
+	5) always compute bbox
+
+We can express the strategies with these labels:
+
+COMPUTE_BBOX:
+        1) FOR_COMPLEX_GEOMS,
+        2) WHEN_SIMPLE,
+        3) TAINTING,
+        4) ALWAYS,
+        5) NEVER
+
+Here is a list of geometry-returning functions with the bbox cache
+strategy they use. Note that current condition matching
+FOR_COMPLEX_GEOMS is that geometrytype(geom) != POINTTYPE.
+
+[ explicit control ]
+	addBBOX(geometry) 
+	dropBBOX(geometry) 
+
+[ AUTOCACHE_BBOX==1 ? FOR_COMPLEX_GEOMS : NEVER ]
+	geometry_in(cstring)
+	geometry_recv(internal)
+	geometry(text)
+	geometry(bytea)
+	GeometryFromText(geometry, SRID)
+	GeomFromWKB(bytea, SRID)
+	GeomFromEWKB(bytea)
+	GeomFromEWKT(text)
+	noop(geometry)
+	polygonize_garray (geometry[])
+	-- GEOS
+	intersection(geometry,geometry)
+	buffer(geometry,float8,[integer])
+	difference(geometry,geometry)
+	boundary(geometry) 
+	symdifference(geometry,geometry)
+	symmetricdifference(geometry,geometry)
+	GeomUnion(geometry,geometry)
+	unite_garray (geometry[])
+	GEOSnoop(geometry)
+	Centroid(geometry)
+	PointOnSurface(geometry)
+
+[ TAINING ]
+	GeometryN(geometry,integer)
+
+	#### could use WHEN_SIMPLE
+	#### translating and transforming an eventually present
+	#### bbox cache in input
+	translate(geometry,float8,float8,[float8])
+	transform(geometry,integer)
+
+	InteriorRingN(geometry,integer) 
+	simplify(geometry, float8)
+
+[ WHEN_SIMPLE (use input bbox if present) ]
+	ExteriorRing(geometry)
+	SetSRID(geometry,int4) 
+	force_2d(geometry) 
+	force_3dz(geometry) 
+	force_3d(geometry) 
+	force_3dm(geometry) 
+	force_4d(geometry) 
+	force_collection(geometry) 
+	multi(geometry) 
+	envelope(geometry)
+	reverse(geometry)
+	ForceRHR(geometry)
+	segmentize(geometry, float8)
+	convexhull(geometry) #### uses FOR_COMPLEX_GEOMS with AUTOCACHE_BBOX=1
+
+[ NEVER ]
+	PointN(geometry,integer)
+	StartPoint(geometry) 
+	EndPoint(geometry) 
+
+	### could use WHEN_SIMPLE computing union of
+	### input bbox (if available or SIMPLE to compute: points)
+	collector(geometry, geometry) 
+	collect(geometry, geometry) 
+	collect_garray (geometry[]) 
+	
+	makePoint(float8, float8, [float8], [float8])
+	makePointM(float8, float8, float8)
+	makeline_garray (geometry[])
+	LineFromMultiPoint(geometry)
+	MakeLine(geometry, geometry)
+	AddPoint(geometry, geometry, [integer])
+	geometry(box2d)
+	geometry(box3d)
+	geometry(chip)
+	line_interpolate_point(geometry, float8)
+	Centroid(geometry) [the version w/out GEOS]
+
+[ ALWAYS ]
+	expand(geometry,float8)
+
