@@ -540,6 +540,7 @@ Datum convexhull(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom1;
 	Geometry *g1, *g3;
 	PG_LWGEOM *result;
+	LWGEOM *lwout;
 	int SRID;
 
 #ifdef PROFILE
@@ -577,7 +578,8 @@ Datum convexhull(PG_FUNCTION_ARGS)
 
 	//elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
 	GEOSSetSRID(g3, SRID);
-	result = GEOS2POSTGIS(g3, TYPE_NDIMS(geom1->type) > 2);
+
+	lwout = lwgeom_from_geometry(g3, TYPE_NDIMS(geom1->type) > 2);
 	if (result == NULL)
 	{
 		GEOSdeleteGeometry(g1);
@@ -585,6 +587,21 @@ Datum convexhull(PG_FUNCTION_ARGS)
 		elog(ERROR,"GEOS convexhull() threw an error (result postgis geometry formation)!");
 		PG_RETURN_NULL(); //never get here
 	}
+
+	/* Have lwgeom bbox point to input one (if any) */
+	lwout->bbox = getbox2d_internal(SERIALIZED_FORM(geom1));
+	/* Mark lwgeom bbox to be externally owned */
+	TYPE_SETHASBBOX(lwout->type, 1);
+
+	result = pglwgeom_serialize(lwout);
+	if (result == NULL)
+	{
+		GEOSdeleteGeometry(g1);
+		GEOSdeleteGeometry(g3);
+		elog(ERROR,"GEOS convexhull() threw an error (result postgis geometry formation)!");
+		PG_RETURN_NULL(); //never get here
+	}
+	lwgeom_release(lwout);
 	GEOSdeleteGeometry(g1);
 	GEOSdeleteGeometry(g3);
 
