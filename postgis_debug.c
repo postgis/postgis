@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.12  2003/09/16 20:27:12  dblasby
+ * added ability to delete geometries.
+ *
  * Revision 1.11  2003/08/08 18:19:20  dblasby
  * Conformance changes.
  * Removed junk from postgis_debug.c and added the first run of the long
@@ -160,7 +163,6 @@ Datum lockcheck (PG_FUNCTION_ARGS)
 {
 	TriggerData *trigdata =      (TriggerData *) fcinfo->context;
 	char		*colname ;
-	char		*locktablename ;
 	int			id;
 	HeapTuple   rettuple;
 	TupleDesc   tupdesc;
@@ -168,6 +170,9 @@ Datum lockcheck (PG_FUNCTION_ARGS)
 	char		*relname;
 	bool		isnull;
 	char		query[1024];
+	int			pk_type_oid;
+	char		*pk_id = NULL;
+
 
 	elog(NOTICE,"in lockcheck()");
 
@@ -191,15 +196,54 @@ Datum lockcheck (PG_FUNCTION_ARGS)
 
 	colname  =       trigdata->tg_trigger->tgargs[0];
 
-	locktablename  = trigdata->tg_trigger->tgargs[1];
 
 
-	elog(NOTICE,"trigger was executed on the relation: '%s', with attribute named '%s', with locktable named '%s'", relname,colname,locktablename);
+
+	elog(NOTICE,"trigger was executed on the relation: '%s', with attribute named '%s', with locktable named '%s'", relname,colname,"authorization_table");
 
 	//get the value
+
+	pk_type_oid =SPI_gettypeid ( tupdesc  , SPI_fnumber(tupdesc,colname));
+	elog(NOTICE,"primary key type # = %i", pk_type_oid  ) ;
+
+	if (pk_type_oid == 23) //int4
+	{
+		int id = (int) DatumGetInt32( SPI_getbinval(rettuple, tupdesc, SPI_fnumber(tupdesc,colname), &isnull) );
+		if (isnull)
+		{
+			elog(ERROR,"lockcheck - column (%s) of table (%s) is null!",colname,relname);
+		}
+		pk_id = palloc(100);
+		sprintf(pk_id,"%i",id);
+	}
+	else if (pk_type_oid == 25) // text
+	{
+		 Datum id = ( SPI_getbinval(rettuple, tupdesc, SPI_fnumber(tupdesc,colname), &isnull) );
+		 if (isnull)
+		 {
+		 			elog(ERROR,"lockcheck - column (%s) of table (%s) is null!",colname,relname);
+		 }
+		 pk_id  = DatumGetCString(DirectFunctionCall1(textout,id));
+
+	}
+	else if (pk_type_oid == 1043) // varchar
+	{
+		Datum id = ( SPI_getbinval(rettuple, tupdesc, SPI_fnumber(tupdesc,colname), &isnull) );
+		 if (isnull)
+		 {
+					elog(ERROR,"lockcheck - column (%s) of table (%s) is null!",colname,relname);
+		 }
+		 pk_id  = DatumGetCString(DirectFunctionCall1(varcharout,id));
+	}
+	else
+	{
+		elog(ERROR,"id column (%s) of table (%s) has to be either int4, text, or varchar.  Its - %s (oid %i)",colname,relname,SPI_gettype ( tupdesc  , SPI_fnumber(tupdesc,colname) ) ,pk_type_oid );
+	}
+
+
 	id = (int) DatumGetInt32( SPI_getbinval(rettuple, tupdesc, SPI_fnumber(tupdesc,colname), &isnull) );
 
-	sprintf(query,"SELECT lock_key FROM %s WHERE expires >= now() AND id = %i", locktablename,id);
+	sprintf(query,"SELECT authid FROM %s WHERE expires >= now() AND tname = '%s' and  fid = '%s'::text", "authorization_table",relname,pk_id);
 	elog(NOTICE,"about to execute :%s", query);
 
 	SPIcode = SPI_exec(query,0);
@@ -228,11 +272,12 @@ Datum lockcheck (PG_FUNCTION_ARGS)
 			elog(NOTICE,"I do not own any locks (no lock table) - I cannot modify the row");
 			//PG_RETURN_NULL();
 			SPI_finish();
-			return NULL;
+			//return NULL;
+			elog(ERROR,"attemted to modify a locked row that I do not have authorization for!");
 		}
 
 
-		sprintf(query,"SELECT * FROM temp_lock_have_table  WHERE xideq(transid , getTransactionID() ) AND lockcode =%s",lockcode);
+		sprintf(query,"SELECT * FROM temp_lock_have_table  WHERE xideq(transid , getTransactionID() ) AND lockcode ='%s'",lockcode);
 		elog(NOTICE,"about to execute :%s", query);
 
 	SPIcode = SPI_exec(query,0);
@@ -249,7 +294,8 @@ Datum lockcheck (PG_FUNCTION_ARGS)
 		elog(NOTICE,"I do not own the lock - I cannot modify the row");
 		//PG_RETURN_NULL();
 		SPI_finish();
-		return NULL;
+		//return NULL;
+			elog(ERROR,"attemted to modify a locked row that I do not have authorization for!");
 	}
 	else
 	{

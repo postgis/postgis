@@ -10,6 +10,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.9  2003/09/16 20:27:12  dblasby
+ * added ability to delete geometries.
+ *
  * Revision 1.8  2003/08/08 18:19:20  dblasby
  * Conformance changes.
  * Removed junk from postgis_debug.c and added the first run of the long
@@ -418,9 +421,28 @@ Datum intersection(PG_FUNCTION_ARGS)
 
 		initGEOS(MAXIMUM_ALIGNOF);
 
+elog(NOTICE,"intersection() START");
+
 		g1 = 	POSTGIS2GEOS(geom1 );
 		g2 = 	POSTGIS2GEOS(geom2 );
+
+elog(NOTICE,"               constructed geometrys - calling geos");
+
+//elog(NOTICE,"g1 = %s",GEOSasText(g1));
+//elog(NOTICE,"g2 = %s",GEOSasText(g2));
+
+
+if (g1==NULL)
+	elog(NOTICE,"g1 is null");
+if (g2==NULL)
+	elog(NOTICE,"g2 is null");
+//elog(NOTICE,"g2 is valid = %i",GEOSisvalid(g2));
+//elog(NOTICE,"g1 is valid = %i",GEOSisvalid(g1));
+
+
 		g3 =    GEOSIntersection(g1,g2);
+
+elog(NOTICE,"               intersection finished");
 
 	if (g3 == NULL)
 	{
@@ -608,10 +630,11 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	g1 = 	POSTGIS2GEOS(geom1 );
 	g2 = 	POSTGIS2GEOS(geom2 );
 
-	GEOSdeleteGeometry(g1);
-	GEOSdeleteGeometry(g2);
+
 
 	result = GEOSrelateOverlaps(g1,g2);
+	GEOSdeleteGeometry(g1);
+	GEOSdeleteGeometry(g2);
 	if (result == 2)
 	{
 		elog(ERROR,"GEOS overlaps() threw an error!");
@@ -639,10 +662,12 @@ Datum contains(PG_FUNCTION_ARGS)
 	g1 = 	POSTGIS2GEOS(geom1 );
 	g2 = 	POSTGIS2GEOS(geom2 );
 
+
+
+	result = GEOSrelateContains(g1,g2);
 	GEOSdeleteGeometry(g1);
 	GEOSdeleteGeometry(g2);
 
-	result = GEOSrelateContains(g1,g2);
 	if (result == 2)
 	{
 		elog(ERROR,"GEOS contains() threw an error!");
@@ -671,9 +696,11 @@ Datum within(PG_FUNCTION_ARGS)
 	g1 = 	POSTGIS2GEOS(geom1 );
 	g2 = 	POSTGIS2GEOS(geom2 );
 
+
+	result = GEOSrelateWithin(g1,g2);
 	GEOSdeleteGeometry(g1);
 	GEOSdeleteGeometry(g2);
-	result = GEOSrelateWithin(g1,g2);
+
 	if (result == 2)
 	{
 		elog(ERROR,"GEOS within() threw an error!");
@@ -703,10 +730,13 @@ Datum crosses(PG_FUNCTION_ARGS)
 	g1 = 	POSTGIS2GEOS(geom1 );
 	g2 = 	POSTGIS2GEOS(geom2 );
 
+
+
+	result = GEOSrelateCrosses(g1,g2);
+
 	GEOSdeleteGeometry(g1);
 	GEOSdeleteGeometry(g2);
 
-	result = GEOSrelateCrosses(g1,g2);
 	if (result == 2)
 	{
 		elog(ERROR,"GEOS crosses() threw an error!");
@@ -726,9 +756,11 @@ Datum intersects(PG_FUNCTION_ARGS)
 	GEOMETRY		*geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	GEOMETRY		*geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
-
 	Geometry *g1,*g2;
 	bool result;
+
+
+
 
 	errorIfGeometryCollection(geom1,geom2);
 	initGEOS(MAXIMUM_ALIGNOF);
@@ -736,10 +768,11 @@ Datum intersects(PG_FUNCTION_ARGS)
 	g1 = 	POSTGIS2GEOS(geom1 );
 	g2 = 	POSTGIS2GEOS(geom2 );
 
-	GEOSdeleteGeometry(g1);
-	GEOSdeleteGeometry(g2);
+
 
 	result = GEOSrelateIntersects(g1,g2);
+	GEOSdeleteGeometry(g1);
+	GEOSdeleteGeometry(g2);
 	if (result == 2)
 	{
 		elog(ERROR,"GEOS intersects() threw an error!");
@@ -768,10 +801,13 @@ Datum touches(PG_FUNCTION_ARGS)
 	g1 = 	POSTGIS2GEOS(geom1 );
 	g2 = 	POSTGIS2GEOS(geom2 );
 
+
+
+	result = GEOSrelateTouches(g1,g2);
+
 	GEOSdeleteGeometry(g1);
 	GEOSdeleteGeometry(g2);
 
-	result = GEOSrelateTouches(g1,g2);
 	if (result == 2)
 	{
 		elog(ERROR,"GEOS touches() threw an error!");

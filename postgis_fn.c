@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.25  2003/09/16 20:27:12  dblasby
+ * added ability to delete geometries.
+ *
  * Revision 1.24  2003/08/08 18:19:20  dblasby
  * Conformance changes.
  * Removed junk from postgis_debug.c and added the first run of the long
@@ -2154,7 +2157,7 @@ Datum startpoint(PG_FUNCTION_ARGS)
 		LINE3D			*line;
 		int32				*offsets1;
 
-	if (geom1->type != LINETYPE)
+	if ( (geom1->type != LINETYPE) && (geom1->type != MULTILINETYPE) )
 		PG_RETURN_NULL();
 
 	offsets1 = (int32 *) ( ((char *) &(geom1->objType[0] ))+ sizeof(int32) * geom1->nobjs ) ;
@@ -2184,7 +2187,7 @@ Datum endpoint(PG_FUNCTION_ARGS)
 
 
 
-	if (geom1->type != LINETYPE)
+	if ( (geom1->type != LINETYPE) && (geom1->type != MULTILINETYPE) )
 		PG_RETURN_NULL();
 
 	offsets1 = (int32 *) ( ((char *) &(geom1->objType[0] ))+ sizeof(int32) * geom1->nobjs ) ;

@@ -797,7 +797,7 @@ Geometry *GEOSpointonSurface(Geometry *g1)
 void GEOSdeleteGeometry(Geometry *a)
 {
 	try{
-		//
+		delete a;
 	}
 	catch(...)
 	{

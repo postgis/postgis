@@ -8,9 +8,12 @@
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of hte GNU General Public Licence. See the COPYING file.
- * 
+ *
  **********************************************************************
  * $Log$
+ * Revision 1.14  2003/09/16 20:27:12  dblasby
+ * added ability to delete geometries.
+ *
  * Revision 1.13  2003/07/01 18:30:55  pramsey
  * Added CVS revision headers.
  *
@@ -183,13 +186,13 @@ PJ *make_project(char *str1)
 }
 
 
-//tranform_geom( GEOMETRY, TEXT (input proj4), TEXT (input proj4), INT (output srid)
+//tranform_geom( GEOMETRY, TEXT (input proj4), TEXT (output proj4), INT (output srid)
 // tmpPts - if there is a nadgrid error (-38), we re-try the transform on a copy of points.  The transformed points
 //          are in an indeterminate state after the -38 error is thrown.
 PG_FUNCTION_INFO_V1(transform_geom);
 Datum transform_geom(PG_FUNCTION_ARGS)
 {
-	GEOMETRY		   *geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GEOMETRY		   *geom ;
 	GEOMETRY		   *result;
 	PJ			   *input_pj,*output_pj;
 
@@ -208,13 +211,21 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 
 
 
-	text	   *input_proj4_text  = (PG_GETARG_TEXT_P(1));
-	text	   *output_proj4_text = (PG_GETARG_TEXT_P(2));
-	int32	   result_srid   = PG_GETARG_INT32(3);
+	text	   *input_proj4_text;
+	text	   *output_proj4_text;
+	int32	   result_srid ;
+
+
+	geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	input_proj4_text  = (PG_GETARG_TEXT_P(1));
+	output_proj4_text = (PG_GETARG_TEXT_P(2));
+	result_srid   = PG_GETARG_INT32(3);
+
 
 	input_proj4 = (char *) palloc(input_proj4_text->vl_len +1-4);
       memcpy(input_proj4,input_proj4_text->vl_dat, input_proj4_text->vl_len-4);
 	input_proj4[input_proj4_text->vl_len-4] = 0; //null terminate
+
 
 	output_proj4 = (char *) palloc(output_proj4_text->vl_len +1-4);
       memcpy(output_proj4,output_proj4_text->vl_dat, output_proj4_text->vl_len-4);
