@@ -177,11 +177,7 @@ uninstall-lwgeom-scripts:
 uninstall: uninstall-lib uninstall-lwgeom-scripts
 
 clean distclean: clean-lib
-	@rm -f $(OBJS) 
-	@rm -f $(OTHERS)
-	@rm -f liblwgeom_sa.o
-	@rm -f liblwgeom_sa.so
-	@rm -f test test.o
+	rm -f *.o *.so *.a test
 
 maintainer-clean: clean
 	rm  -f lex.yy.c wktparse.tab.c wktparse.tab.h
