@@ -3019,7 +3019,6 @@ BEGIN
 		FROM pg_class c, pg_attribute a
 		WHERE c.relname = f_table_name::name
 		AND a.attname = f_geometry_column::name
-		AND c.relnamespace = n.oid
 		AND a.attrelid = c.oid;
 #endif
 
