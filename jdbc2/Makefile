@@ -21,7 +21,7 @@ all:	jar \
 	test
 
 jar:	compile
-	$(JAR) -cf postgis.jar -C $(BUILD) . -C $(SRC) org/postgresql/ postgresql.properties README	
+	$(JAR) -cf postgis.jar -C $(BUILD) . -C $(SRC)/org/postgresql/ postgresql.properties README	
 	$(JAR) -cf postgis_debug.jar -C $(BUILD) . -C $(SRC) . README	
 
 prepare:
