@@ -81,7 +81,7 @@ public class DriverWrapper extends Driver {
         typesAdder = getTypesAdder(this);
         // The debug method is @since 7.2
         if (super.getMajorVersion() > 8 || super.getMinorVersion() > 1) {
-            super.debug("DriverWrapper loaded TypesAdder: " + typesAdder.getClass().getName());
+            Driver.debug("DriverWrapper loaded TypesAdder: " + typesAdder.getClass().getName());
         }
     }
 
