@@ -365,3 +365,11 @@ lwline_segmentize2d(LWLINE *line, double dist)
 	return lwline_construct(line->SRID, line->bbox,
 		ptarray_segmentize2d(line->points, dist));
 }
+
+// check coordinate equality 
+char
+lwline_same(const LWLINE *l1, const LWLINE *l2)
+{
+	return ptarray_same(l1->points, l2->points);
+}
+

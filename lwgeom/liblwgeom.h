@@ -917,7 +917,6 @@ extern double lwgeom_mindistance2d_recursive(char *lw1, char *lw2);
 extern void lwgeom_translate_recursive(char *serialized, double xoff, double yoff, double zoff);
 extern void lwgeom_translate_ptarray(POINTARRAY *pa, double xoff, double yoff, double zoff);
 extern int lwgeom_pt_inside_circle(POINT2D *p, double cx, double cy, double rad);
-extern POINTARRAY *ptarray_segmentize2d(POINTARRAY *ipa, double dist);
 extern int32 lwgeom_npoints(char *serialized);
 extern char ptarray_isccw(const POINTARRAY *pa);
 extern void lwgeom_reverse(LWGEOM *lwgeom);
@@ -940,8 +939,14 @@ extern BOX2DFLOAT4 *box2d_union(BOX2DFLOAT4 *b1, BOX2DFLOAT4 *b2);
 // args may overlap !
 extern int box2d_union_p(BOX2DFLOAT4 *b1, BOX2DFLOAT4 *b2, BOX2DFLOAT4 *ubox);
 extern int lwgeom_compute_bbox_p(LWGEOM *lwgeom, BOX2DFLOAT4 *box);
-// is lwgeom1 geometrically equal to lwgeom2 ?
-char lwgeom_same(LWGEOM *lwgeom1, LWGEOM *lwgeom2);
+
+// Is lwgeom1 geometrically equal to lwgeom2 ?
+char lwgeom_same(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2);
+char ptarray_same(const POINTARRAY *pa1, const POINTARRAY *pa2);
+char lwpoint_same(const LWPOINT *p1, const LWPOINT *p2);
+char lwline_same(const LWLINE *p1, const LWLINE *p2);
+char lwpoly_same(const LWPOLY *p1, const LWPOLY *p2);
+char lwcollection_same(const LWCOLLECTION *p1, const LWCOLLECTION *p2);
 
 // Add 'what' to 'to' at position 'where'.
 // where=0 == prepend
@@ -990,10 +995,14 @@ extern int32 lwgeom_nrings_recursive(char *serialized);
 extern void dump_lwexploded(LWGEOM_EXPLODED *exploded);
 extern void ptarray_reverse(POINTARRAY *pa);
 
+// Ensure every segment is at most 'dist' long.
+// Returned LWGEOM might is unchanged if a POINT.
 extern LWGEOM *lwgeom_segmentize2d(LWGEOM *line, double dist);
+extern POINTARRAY *ptarray_segmentize2d(POINTARRAY *ipa, double dist);
 extern LWLINE *lwline_segmentize2d(LWLINE *line, double dist);
 extern LWPOLY *lwpoly_segmentize2d(LWPOLY *line, double dist);
 extern LWCOLLECTION *lwcollection_segmentize2d(LWCOLLECTION *coll, double dist);
+
 extern unsigned char	parse_hex(char *str);
 extern void deparse_hex(unsigned char str, unsigned char *result);
 extern char *parse_lwgeom_wkt(char *wkt_input);

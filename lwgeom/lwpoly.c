@@ -524,3 +524,19 @@ lwpoly_segmentize2d(LWPOLY *poly, double dist)
 	return lwpoly_construct(poly->SRID, poly->bbox,
 		poly->nrings, newrings);
 }
+
+// check coordinate equality 
+// ring and coordinate order is considered
+char
+lwpoly_same(const LWPOLY *p1, const LWPOLY *p2)
+{
+	unsigned int i;
+
+	if ( p1->nrings != p2->nrings ) return 0;
+	for (i=0; i<p1->nrings; i++)
+	{
+		if ( ! ptarray_same(p1->rings[i], p2->rings[i]) )
+			return 0;
+	}
+	return 1;
+}

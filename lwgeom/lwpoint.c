@@ -356,5 +356,9 @@ lwnotice("lwgeom_size_point: has srid (%d)", result);
 	return result;
 }
 
-
-
+// check coordinate equality 
+char
+lwpoint_same(const LWPOINT *p1, const LWPOINT *p2)
+{
+	return ptarray_same(p1->point, p2->point);
+}

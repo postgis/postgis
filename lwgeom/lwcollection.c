@@ -274,3 +274,20 @@ lwcollection_segmentize2d(LWCOLLECTION *col, double dist)
 	return lwcollection_construct(col->type, col->SRID, col->bbox,
 		col->ngeoms, newgeoms);
 }
+
+// check for same geometry composition
+char
+lwcollection_same(const LWCOLLECTION *c1, const LWCOLLECTION *c2)
+{
+	unsigned int i,j;
+
+	if ( TYPE_GETTYPE(c1->type) != TYPE_GETTYPE(c2->type) ) return 0;
+	if ( c1->ngeoms != c2->ngeoms ) return 0;
+
+	for (i=0; i<c1->ngeoms; i++)
+	{
+		if ( ! lwgeom_same(c1->geoms[0], c2->geoms[1]) )
+			return 0;
+	}
+	return 1;
+}

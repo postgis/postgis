@@ -188,3 +188,23 @@ ptarray_segmentize2d(POINTARRAY *ipa, double dist)
 	return opa;
 }
 
+char
+ptarray_same(const POINTARRAY *pa1, const POINTARRAY *pa2)
+{
+	unsigned int i;
+	size_t ptsize;
+
+	if ( TYPE_GETZM(pa1->dims) != TYPE_GETZM(pa2->dims) ) return 0;
+
+	if ( pa1->npoints != pa2->npoints ) return 0;
+
+	ptsize = pointArray_ptsize(pa1);
+
+	for (i=0; i<pa1->npoints; i++)
+	{
+		if ( memcmp(getPoint(pa1, i), getPoint(pa2, i), ptsize) )
+			return 0;
+	}
+
+	return 1;
+}

@@ -357,7 +357,7 @@ lwgeom_to_wkt(LWGEOM *lwgeom)
 //      + each object in geom1 has a corresponding object in geom2 (see above)
 //
 char
-lwgeom_same(LWGEOM *lwgeom1, LWGEOM *lwgeom2)
+lwgeom_same(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2)
 {
 	if ( TYPE_GETTYPE(lwgeom1->type) != TYPE_GETTYPE(lwgeom2->type) )
 		return 0;
@@ -372,8 +372,30 @@ lwgeom_same(LWGEOM *lwgeom1, LWGEOM *lwgeom2)
 		if ( ! box2d_same(lwgeom1->bbox, lwgeom2->bbox) ) return 0;
 	}
 
-	lwnotice("geometry_same only checked for type,dims and boxes");
-	return 1;
+	// geoms have same type, invoke type-specific function
+	switch(TYPE_GETTYPE(lwgeom1->type))
+	{
+		case POINTTYPE:
+			return lwpoint_same((LWPOINT *)lwgeom1,
+				(LWPOINT *)lwgeom2);
+		case LINETYPE:
+			return lwline_same((LWLINE *)lwgeom1,
+				(LWLINE *)lwgeom2);
+		case POLYGONTYPE:
+			return lwpoly_same((LWPOLY *)lwgeom1,
+				(LWPOLY *)lwgeom2);
+		case MULTIPOINTTYPE:
+		case MULTILINETYPE:
+		case MULTIPOLYGONTYPE:
+		case COLLECTIONTYPE:
+			return lwcollection_same((LWCOLLECTION *)lwgeom1,
+				(LWCOLLECTION *)lwgeom2);
+		default:
+			lwerror("lwgeom_same: unknown geometry type: %d",
+				TYPE_GETTYPE(lwgeom1->type));
+			return 0;
+	}
+
 }
 
 void
