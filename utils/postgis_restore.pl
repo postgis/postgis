@@ -106,10 +106,9 @@ while( my $line = <INPUT>)
 		$aggs{$id} = 1;
 		next;
 	}
-	#if ($line =~ /^create cast \( ([^ ]*) AS ([^ ]*) \)/i)
-	if ($line =~ /create cast \( *([^ ]*) *AS *([^ ]*) *\)/i)
+	if ($line =~ /create cast .* with function *([^ ]*) *\(([^ ]*) *\)/i)
 	{
-		my $id = lc($1).",".lc($2);
+		my $id = lc($1)."(".lc($2).")";
 		print "SQLCAST $id\n";
 		$casts{$id} = 1;
 		next;
@@ -121,7 +120,6 @@ close( INPUT );
 
 print " ".@ops." operators [classes]\n";
 print " ".@aggs." aggregates\n";
-print " ".@casts." casts\n";
 
 #
 # Scan dump list
@@ -154,7 +152,14 @@ while( my $line = <INPUT> )
 		my $id = $funcname."(".$args.")";
 		if ( $funcname eq 'plpgsql_call_handler' )
 		{
-			#print "SKIPPING $funcname($args)\n";
+			print "SKIPPING $funcname($args)\n";
+			next;
+		}
+		# This is an old postgis function which might
+		# still be in a dump
+		if ( $funcname eq 'unite_finalfunc' )
+		{
+			print "SKIPPING $funcname($args)\n";
 			next;
 		}
 		if ( $funcs{$id} )
@@ -185,7 +190,13 @@ while( my $line = <INPUT> )
 		my $id = $name."(".$args.")";
 		if ( $aggs{$id} )
 		{
-			#print "SKIPPING PGIS AGG $id\n";
+			print "SKIPPING PGIS AGG $id\n";
+			next;
+		}
+		# This is an old postgis aggregate
+		if ( $name eq 'fastunion' )
+		{
+			print "SKIPPING old PGIS AGG $id\n";
 			next;
 		}
 		print "KEEPING AGGREGATE [$id]\n";
@@ -222,10 +233,15 @@ while( my $line = <INPUT> )
 		my $arg2 = lc($2);
 		$arg1 =~ s/^public\.//;
 		$arg2 =~ s/^public\.//;
-		my $id = $arg2.",".$arg1;
+		my $id = $arg1."(".$arg2.")";
 		if ( $casts{$id} )
 		{
 			print "SKIPPING PGIS CAST $id\n";
+			next;
+		}
+		if ($arg1 eq 'box3d' || $arg2 eq 'geometry')
+		{
+			print "SKIPPING PGIS type CAST $id\n";
 			next;
 		}
 		print "KEEPING CAST $id\n";
@@ -248,7 +264,7 @@ print "Dropping spatial_ref_sys and geometry_columns\n";
 `psql -c 'DROP TABLE spatial_ref_sys; DROP TABLE geometry_columns' $dbname`;
 print "Restoring $dump\n";
 $dumplist=$dump.".list";
-`pg_restore -L $dumplist -d $dbname $dump`;
+`pg_restore -v -L $dumplist -d $dbname $dump`;
 exit;
 
 
