@@ -234,10 +234,19 @@ for ($i=0; $i<@bps_list; $i++)
 	}
 	$avg_fact = int(($sum_fact/$try)*100)/100;
 
-	print "             (min/max/avg)  \t".
+	print "    $bps    ".
+		"(min/max/avg)  \t".
 		($best_intr)."\t".
 		($best_dist)."\t".
-		"+-".($avg_fact)."\n";
+		($avg_fact)."\n";
+
+	print "    $bps\tworst\t".
+		(($best_dist)*100)."%\t".
+		int(((1/$best_intr)*10000)/100)."%\n";
+
+	print "    $bps\tbest\t".
+		int(((1/$best_dist)*10000)/100)."%\t".
+		(($best_intr)*100)."%\n";
 }
 
 
@@ -333,34 +342,12 @@ sub test_distance
 
 # 
 # $Log$
+# Revision 1.3  2004/09/24 12:20:56  strk
+# Added worst and best percentile for both intersects and distance
+#
 # Revision 1.2  2004/09/24 11:58:01  strk
 # approximated nums to 2 decimal digits
 #
 # Revision 1.1  2004/09/24 11:35:45  strk
 # initial intersects profiler frontend implementation
-#
-# Revision 1.8  2004/03/08 17:21:57  strk
-# changed error computation code to delta/totrows
-#
-# Revision 1.7  2004/03/06 18:02:48  strk
-# Comma-separated bps values accepted
-#
-# Revision 1.6  2004/03/05 21:06:04  strk
-# Added -vacuum switch
-#
-# Revision 1.5  2004/03/05 21:03:18  strk
-# Made the -bps switch specify the exact level(s) at which to run the test
-#
-# Revision 1.4  2004/03/05 16:40:30  strk
-# rewritten split_extent to be more datatype-conservative
-#
-# Revision 1.3  2004/03/05 16:01:02  strk
-# added -bps switch to set maximun query level. reworked command line parsing
-#
-# Revision 1.2  2004/03/05 15:29:35  strk
-# more verbose output
-#
-# Revision 1.1  2004/03/05 11:52:24  strk
-# initial import
-#
 #
