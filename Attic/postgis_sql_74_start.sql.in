@@ -12,6 +12,9 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.2  2003/11/28 11:06:49  strk
+-- Added WKB_recv function for binary WKB input
+--
 -- Revision 1.1  2003/11/11 10:38:23  strk
 -- Postgresql 7.4 enabler scripts.
 --
@@ -104,6 +107,11 @@ CREATE FUNCTION wkb_in(cstring)
 CREATE FUNCTION wkb_out(wkb)
 	RETURNS cstring
 	AS '@MODULE_FILENAME@','WKB_out'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION wkb_recv(internal)
+	RETURNS wkb
+	AS '@MODULE_FILENAME@','WKB_recv'
 	LANGUAGE 'C' WITH (isstrict);
 
 

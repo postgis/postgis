@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.29  2003/11/28 11:06:49  strk
+ * Added WKB_recv function for binary WKB input
+ *
  * Revision 1.28  2003/10/06 18:09:08  dblasby
  * Fixed typo in add_to_geometry().  With very poorly aligned sub-objects, it
  * wouldnt allocate enough memory.  Fixed it so its pesimistic and will allocate
@@ -3535,6 +3538,17 @@ Datum WKB_out(PG_FUNCTION_ARGS)
 	PG_RETURN_CSTRING(result);
 }
 
+
+PG_FUNCTION_INFO_V1(WKB_recv);
+Datum WKB_recv(PG_FUNCTION_ARGS)
+{
+	bytea *in = (bytea *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+        WellKnownBinary *result;
+
+	result = (WellKnownBinary *) palloc(in->vl_len);
+	memcpy(result, in, in->vl_len);
+        PG_RETURN_POINTER(result);
+}
 
 PG_FUNCTION_INFO_V1(WKBtoBYTEA);
 Datum WKBtoBYTEA(PG_FUNCTION_ARGS)

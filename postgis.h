@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.39  2003/11/28 11:06:49  strk
+ * Added WKB_recv function for binary WKB input
+ *
  * Revision 1.38  2003/11/19 15:44:51  strk
  * added prototypes for geometry_{le,ge,cmp}
  *
@@ -558,6 +561,8 @@ Datum postgis_gist_sel(PG_FUNCTION_ARGS);
 
 Datum WKB_in(PG_FUNCTION_ARGS);
 Datum WKB_out(PG_FUNCTION_ARGS);
+
+Datum WKB_recv(PG_FUNCTION_ARGS);
 
 Datum CHIP_in(PG_FUNCTION_ARGS);
 Datum CHIP_out(PG_FUNCTION_ARGS);
