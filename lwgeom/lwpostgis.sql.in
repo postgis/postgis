@@ -3155,6 +3155,16 @@ CREATEFUNCTION apply_grid(geometry, float8, float8, float8, float8)
    AS '@MODULE_FILENAME@', 'LWGEOM_apply_grid'
    LANGUAGE 'C' WITH (isstrict,iscachable);
 
+CREATEFUNCTION apply_grid(geometry, float8, float8)
+   RETURNS geometry
+   AS 'SELECT apply_grid($1, 0, 0, $2, $3)'
+   LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION apply_grid(geometry, float8)
+   RETURNS geometry
+   AS 'SELECT apply_grid($1, 0, 0, $2, $2)'
+   LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
 CREATEFUNCTION line_interpolate_point(geometry, float8)
    RETURNS geometry
    AS '@MODULE_FILENAME@', 'LWGEOM_line_interpolate_point'
