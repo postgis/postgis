@@ -13,6 +13,18 @@
 # from the dump, not the postgis.sql file. When the new installation
 # is agains pgsql7.5+ and dump from pre7.5 this script should probably
 # drop statistic fields from that table.... currently not done.
+#
+# Issues:
+# 	o this script could do less then it does, to allow users
+#	  to further modify edited dump before feeding it to the
+#	  restoring side.
+#
+# Tested on:
+#
+#	pg_dump-734/pg734 => pg_restore-743/pg743
+#	pg_dump-743/pg734 => pg_restore-743/pg743
+#	pg_dump-743/pg743 => pg_restore-743/pg743
+#	
 
 eval "exec perl $0 $@"
 	if (0);
@@ -22,6 +34,7 @@ eval "exec perl $0 $@"
 $DEBUG=1;
 
 my %aggs = {};
+my %fncasts = ();
 my %casts = ();
 my %funcs = {};
 my %types = {};
@@ -47,6 +60,9 @@ while( my $line = <INPUT>)
 {
 	$line =~ s/[\r\n]//g;
 	#print "LINE: $line\n";
+
+	next if $line =~ /^ *--/;
+
 	if ($line =~ /^ *create (or replace)? function ([^ ]*) *\((.*)\)/i)
 	{
 		my $name = lc($2);
@@ -116,13 +132,28 @@ while( my $line = <INPUT>)
 		$aggs{$id} = 1;
 		next;
 	}
-	if ($line =~ /create cast .* with function *([^ ]*) *\(([^ ]*) *\)/i)
+
+	# CAST
+	if ($line =~ /create cast *\( *([^ ]*) *as *([^ )]*) *\) *with function *([^ ]*) *\(([^ ]*) *\)/i)
 	{
-		my $id = lc($1)."(".lc($2).")";
-		print "SQLCAST $id\n" if $DEBUG;
+		my $from = lc($1);
+		my $to = lc($2);
+		my $funcname = lc($3);
+		my $funcarg = lc($4);
+
+		my $id = $funcname."(".$funcarg.")";
+		$fncasts{$id} = 1;
+
+		print "SQLFNCAST $id\n" if $DEBUG;
+
+		my $id = $from.','.$to;
 		$casts{$id} = 1;
+
+		print "SQLCAST $id\n" if $DEBUG;
+
 		next;
 	}
+
 	# OPERATOR CLASS
 	if ($line =~ /create operator class *([^ ]*)/i)
 	{
@@ -131,6 +162,7 @@ while( my $line = <INPUT>)
 		$opclass{$id} = 1;
 		next;
 	}
+
 	# OPERATOR 
 	if ($line =~ /create operator *([^ ]*)/i)
 	{
@@ -170,10 +202,12 @@ while( my $line = <INPUT> )
 	next if $line =~ /^;/;
 	next if $line =~ /^ *--/;
 
-	if ($line =~ / FUNCTION (.*) \((.*)\)/)
+	if ($line =~ / FUNCTION *([^ ]*) *\(([^)]*)\)/)
 	{
 		my $funcname = $1;
+		#print "FUNCNAME: [$funcname]\n";
 		my @args = split(",", $2);
+		#print "ARGS: [".@args."]\n";
 		for (my $i=0; $i<@args; $i++)
 		{
 			$arg = lc($args[$i]);
@@ -187,7 +221,9 @@ while( my $line = <INPUT> )
 			$args[$i] = $arg;
 		}
 		$args = join(', ', @args);
+		#print "ARGS SCALAR: [$args]\n";
 		my $id = $funcname."(".$args.")";
+		print "ID: [$id]\n";
 		if ( $funcname eq 'plpgsql_call_handler' )
 		{
 			print "SKIPPING FUNC $id\n" if $DEBUG;
@@ -281,6 +317,7 @@ while( my $line = <INPUT> )
 		print "KEEPING OPCLASS [$id]\n" if $DEBUG;
 	}
 
+	# CAST def by pg73
 	elsif ($line =~ / CAST *([^ ]*) *\( *([^ )]*) *\)/)
 	{
 		my $arg1 = lc($1);
@@ -288,6 +325,27 @@ while( my $line = <INPUT> )
 		$arg1 =~ s/^public\.//;
 		$arg2 =~ s/^public\.//;
 		my $id = $arg1."(".$arg2.")";
+		if ( $fncasts{$id} )
+		{
+			print "SKIPPING PGIS FNCAST $id\n" if $DEBUG;
+			next;
+		}
+		if ($arg1 eq 'box3d' || $arg2 eq 'geometry')
+		{
+			print "SKIPPING PGIS FNCAST $id\n" if $DEBUG;
+			next;
+		}
+		print "KEEPING FNCAST $id (see CAST)\n" if $DEBUG;
+	}
+
+	# CAST def by pg74
+	elsif ($line =~ / CAST CAST *\(([^ ]*) *AS *([^ )]*) *\)/)
+	{
+		my $arg1 = lc($1);
+		my $arg2 = lc($2);
+		$arg1 =~ s/^public\.//;
+		$arg2 =~ s/^public\.//;
+		my $id = $arg1.",".$arg2;
 		if ( $casts{$id} )
 		{
 			print "SKIPPING PGIS CAST $id\n" if $DEBUG;
@@ -295,7 +353,7 @@ while( my $line = <INPUT> )
 		}
 		if ($arg1 eq 'box3d' || $arg2 eq 'geometry')
 		{
-			print "SKIPPING PGIS type CAST $id\n" if $DEBUG;
+			print "SKIPPING PGIS CAST $id\n" if $DEBUG;
 			next;
 		}
 		print "KEEPING CAST $id\n" if $DEBUG;
@@ -363,28 +421,40 @@ close(INPUT);
 close(OUTPUT);
 
 #exit(1);
+
+#
+# Create the new db and install plpgsql language
+#
 print "Creating db ($dbname)\n";
 `createdb $dbname`;
 print "Adding plpgsql\n";
 `createlang plpgsql $dbname`;
 
+#
+# Open a pipe to the SQL monitor
+#
 open( PSQL, "| psql $dbname") || die "Can't run psql\n";
+
+#
+# Source new postgis.sql
+#
 print "Sourcing $postgissql\n";
-#`psql -f $postgissql $dbname`;
 open(INPUT, "<$postgissql") || die "Can't read $postgissql\n";
 while(<INPUT>) { print PSQL; }
 close(INPUT);
+
+#
+# Drop geometry_columns and spatial_ref_sys
+# (we want version from the dump)
+#
 print "Dropping geometry_columns and spatial_ref_sys\n";
-#`psql -c "drop table geometry_columns; drop table spatial_ref_sys;" $dbname`;
 print PSQL "DROP TABLE geometry_columns;";
 print PSQL "DROP TABLE spatial_ref_sys;";
+
+#
+# Source modified ascii dump
+#
 print "Restoring ascii dump $dumpascii\n";
-#`psql -f $dumpascii $dbname`;
 open(INPUT, "<$dumpascii") || die "Can't read $postgissql\n";
 while(<INPUT>) { print PSQL; }
 close(INPUT);
-exit;
-
-
-1;
-
