@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.26  2003/08/21 16:22:09  dblasby
+ * added patch from strk@freek.keybit.net  for PG_NARGS() not being in 7.2
+ *
  * Revision 1.25  2003/08/08 18:19:20  dblasby
  * Conformance changes.
  * Removed junk from postgis_debug.c and added the first run of the long
@@ -1432,7 +1435,7 @@ Datum geometry_from_text(PG_FUNCTION_ARGS)
 
 	GEOMETRY	*result;
 
-	if (PG_NARGS() >1)
+	if ( ! PG_ARGISNULL(1) )
 		SRID = PG_GETARG_INT32(1);
 	else
 		SRID = -1;
@@ -3780,7 +3783,7 @@ Datum geometryfromWKB_SRID(PG_FUNCTION_ARGS)
 		int bytes_read;
 		GEOMETRY *result;
 
-		if (PG_NARGS() >1)
+		if ( ! PG_ARGISNULL(1) )
 			SRID = PG_GETARG_INT32(1);
 		else
 			SRID = -1;
@@ -3806,7 +3809,7 @@ Datum PointfromWKB_SRID(PG_FUNCTION_ARGS)
 		int SRID;
 		GEOMETRY *geom;
 
-		if (PG_NARGS() >1)
+		if ( ! PG_ARGISNULL(1) )
 			SRID = PG_GETARG_INT32(1);
 		else
 			SRID = -1;
@@ -3829,7 +3832,7 @@ Datum LinefromWKB_SRID(PG_FUNCTION_ARGS)
 		int SRID;
 		GEOMETRY *geom;
 
-		if (PG_NARGS() >1)
+		if ( ! PG_ARGISNULL(1) )
 			SRID = PG_GETARG_INT32(1);
 		else
 			SRID = -1;
@@ -3852,7 +3855,7 @@ Datum PolyfromWKB_SRID(PG_FUNCTION_ARGS)
 		int SRID;
 		GEOMETRY *geom;
 
-		if (PG_NARGS() >1)
+		if ( ! PG_ARGISNULL(1) )
 			SRID = PG_GETARG_INT32(1);
 		else
 			SRID = -1;
@@ -3875,7 +3878,7 @@ Datum MPointfromWKB_SRID(PG_FUNCTION_ARGS)
 		int SRID;
 		GEOMETRY *geom;
 
-		if (PG_NARGS() >1)
+		if ( ! PG_ARGISNULL(1) )
 			SRID = PG_GETARG_INT32(1);
 		else
 			SRID = -1;
@@ -3898,7 +3901,7 @@ Datum MLinefromWKB_SRID(PG_FUNCTION_ARGS)
 		int SRID;
 		GEOMETRY *geom;
 
-		if (PG_NARGS() >1)
+		if ( ! PG_ARGISNULL(1) )
 			SRID = PG_GETARG_INT32(1);
 		else
 			SRID = -1;
@@ -3921,7 +3924,7 @@ Datum MPolyfromWKB_SRID(PG_FUNCTION_ARGS)
 		int SRID;
 		GEOMETRY *geom;
 
-		if (PG_NARGS() >1)
+		if ( ! PG_ARGISNULL(1) )
 			SRID = PG_GETARG_INT32(1);
 		else
 			SRID = -1;
@@ -3944,7 +3947,7 @@ Datum GCfromWKB_SRID(PG_FUNCTION_ARGS)
 		int SRID;
 		GEOMETRY *geom;
 
-		if (PG_NARGS() >1)
+		if ( ! PG_ARGISNULL(1) )
 			SRID = PG_GETARG_INT32(1);
 		else
 			SRID = -1;
@@ -4536,7 +4539,7 @@ Datum geometry_from_text_poly(PG_FUNCTION_ARGS)
 		int SRID;
 		GEOMETRY *geom;
 
-		if (PG_NARGS() >1)
+		if ( ! PG_ARGISNULL(1) )
 			SRID = PG_GETARG_INT32(1);
 		else
 			SRID = -1;
@@ -4559,7 +4562,7 @@ Datum geometry_from_text_line(PG_FUNCTION_ARGS)
 		int SRID;
 		GEOMETRY *geom;
 
-		if (PG_NARGS() >1)
+		if ( ! PG_ARGISNULL(1) )
 			SRID = PG_GETARG_INT32(1);
 		else
 			SRID = -1;
@@ -4583,7 +4586,7 @@ Datum geometry_from_text_point(PG_FUNCTION_ARGS)
 		int SRID;
 		GEOMETRY *geom;
 
-		if (PG_NARGS() >1)
+		if ( ! PG_ARGISNULL(1) )
 			SRID = PG_GETARG_INT32(1);
 		else
 			SRID = -1;
@@ -4606,7 +4609,7 @@ Datum geometry_from_text_mpoint(PG_FUNCTION_ARGS)
 		int SRID;
 		GEOMETRY *geom;
 
-		if (PG_NARGS() >1)
+		if ( ! PG_ARGISNULL(1) )
 			SRID = PG_GETARG_INT32(1);
 		else
 			SRID = -1;
@@ -4629,7 +4632,7 @@ Datum geometry_from_text_mline(PG_FUNCTION_ARGS)
 		int SRID;
 		GEOMETRY *geom;
 
-		if (PG_NARGS() >1)
+		if ( ! PG_ARGISNULL(1) )
 			SRID = PG_GETARG_INT32(1);
 		else
 			SRID = -1;
@@ -4652,7 +4655,7 @@ Datum geometry_from_text_mpoly(PG_FUNCTION_ARGS)
 		int SRID;
 		GEOMETRY *geom;
 
-		if (PG_NARGS() >1)
+		if ( ! PG_ARGISNULL(1) )
 			SRID = PG_GETARG_INT32(1);
 		else
 			SRID = -1;
@@ -4675,7 +4678,7 @@ Datum geometry_from_text_gc(PG_FUNCTION_ARGS)
 		int SRID;
 		GEOMETRY *geom;
 
-		if (PG_NARGS() >1)
+		if ( ! PG_ARGISNULL(1) )
 			SRID = PG_GETARG_INT32(1);
 		else
 			SRID = -1;
