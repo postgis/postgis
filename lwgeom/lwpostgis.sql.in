@@ -3150,6 +3150,11 @@ CREATEFUNCTION simplify(geometry, float8)
    AS '@MODULE_FILENAME@', 'LWGEOM_simplify2d'
    LANGUAGE 'C' WITH (isstrict,iscachable);
 
+CREATEFUNCTION apply_grid(geometry, float8, float8, float8, float8)
+   RETURNS geometry
+   AS '@MODULE_FILENAME@', 'LWGEOM_apply_grid'
+   LANGUAGE 'C' WITH (isstrict,iscachable);
+
 CREATEFUNCTION line_interpolate_point(geometry, float8)
    RETURNS geometry
    AS '@MODULE_FILENAME@', 'LWGEOM_line_interpolate_point'

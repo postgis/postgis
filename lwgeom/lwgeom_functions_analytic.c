@@ -2,6 +2,7 @@
 #include "fmgr.h"
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
+#include "math.h"
 
 /***********************************************************************
  * Simple Douglas-Peucker line simplification. 
@@ -435,4 +436,413 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 }
 /***********************************************************************
  * --jsunday@rochgrp.com;
+ ***********************************************************************/
+
+/***********************************************************************
+ *
+ *  Grid application function for postgis.
+ *
+ *  WHAT IS
+ *  -------
+ *
+ *  This is a grid application function for postgis.
+ *  You use it to stick all of a geometry points to
+ *  a custom grid defined by its origin and cell size
+ *  in geometry units.
+ * 
+ *  Points reduction is obtained by collapsing all
+ *  consecutive points falling on the same grid node and
+ *  removing all consecutive segments S1,S2 having
+ *  S2.startpoint = S1.endpoint and S2.endpoint = S1.startpoint.
+ * 
+ *  ISSUES
+ *  ------
+ * 
+ *  Only 2D is contemplated in grid application.
+ * 
+ *  Consecutive coincident segments removal does not work
+ *  on first/last segments (They are not considered consecutive).
+ * 
+ *  Grid application occurs on a geometry subobject basis, thus no
+ *  points reduction occurs for multipoint geometries.
+ *
+ *  USAGE TIPS
+ *  ----------
+ * 
+ *  Run like this:
+ * 
+ *     SELECT apply_grid(<geometry>, <originX>, <originY>, <sizeX>, <sizeY>);
+ * 
+ *     Grid cells are not visible on a screen as long as the screen
+ *     point size is equal or bigger then the grid cell size.
+ *     This assumption may be used to reduce the number of points in
+ *     a map for a given display scale.
+ * 
+ *     Keeping multiple resolution versions of the same data may be used
+ *     in conjunction with MINSCALE/MAXSCALE keywords of mapserv to speed
+ *     up rendering.
+ * 
+ *     Check also the use of DP simplification to reduce grid visibility.
+ *     I'm still researching about the relationship between grid size and
+ *     DP epsilon values - please tell me if you know more about this.
+ * 
+ * 
+ * --strk@keybit.net;
+ *
+ ***********************************************************************/
+
+#define CHECK_RING_IS_CLOSE
+#define SAMEPOINT(a,b) ((a)->x==(b)->x&&(a)->y==(b)->y)
+
+typedef struct gridspec_t {
+   double ipx;
+   double ipy;
+   double xsize;
+   double ysize;
+} gridspec;
+
+/* Forward declarations */
+LWGEOM *lwgeom_grid(LWGEOM *lwgeom, gridspec *grid);
+LWCOLLECTION *lwcollection_grid(LWCOLLECTION *coll, gridspec *grid);
+LWPOINT * lwpoint_grid(LWPOINT *point, gridspec *grid);
+LWPOLY * lwpoly_grid(LWPOLY *poly, gridspec *grid);
+LWLINE *lwline_grid(LWLINE *line, gridspec *grid);
+POINTARRAY *ptarray_grid(POINTARRAY *pa, gridspec *grid);
+Datum LWGEOM_apply_grid(PG_FUNCTION_ARGS);
+
+/*
+ * Stick an array of points to the given gridspec.
+ * Return "gridded" points in *outpts and their number in *outptsn.
+ *
+ * Two consecutive points falling on the same grid cell are collapsed
+ * into one single point.
+ *
+ */
+POINTARRAY *
+ptarray_grid(POINTARRAY *pa, gridspec *grid)
+{
+	POINT2D pbuf; 
+	int numoutpoints=0;
+	int pn; /* point number */
+	char *opts;
+	POINTARRAY *opa;
+	size_t ptsize;
+
+#if VERBOSE
+	elog(NOTICE, "ptarray_grid called on %p", pa);
+#endif
+
+	ptsize = sizeof(POINT2D);
+
+#if VERBOSE
+	elog(NOTICE, "ptarray_grid: ptsize: %d", ptsize);
+#endif
+
+	opts = (char *)palloc(ptsize * pa->npoints);
+	if ( opts == NULL )
+	{
+		elog(ERROR, "Out of virtual memory");
+		return NULL;
+	}
+
+	for (pn=0; pn<pa->npoints; pn++)
+	{
+		getPoint2d_p(pa, pn, &pbuf);
+
+		POINT2D *lastpoint = NULL;
+		POINT2D *lastpoint2 = NULL;
+
+		if ( grid->xsize )
+			pbuf.x = rint((pbuf.x - grid->ipx)/grid->xsize) *
+				grid->xsize + grid->ipx;
+		if ( grid->ysize )
+			pbuf.y = rint((pbuf.y - grid->ipy)/grid->ysize) *
+				grid->ysize + grid->ipy;
+
+		/* Points have been already drawn */
+		if ( numoutpoints )
+		{
+			lastpoint = (POINT2D *)(opts+((numoutpoints-1)*ptsize));
+
+			/*
+			 * Skip point if falling on the same cell then
+			 * the previous one
+			 */
+			if ( SAMEPOINT(&pbuf, lastpoint) ) continue;
+
+			/*
+			 * Skip this and previous point if they make a
+			 * back_and_forw line.
+			 * WARNING! this migth be a valid reduction only for
+			 * polygons, since a linestring might want to
+			 * preserve that!
+			 */
+			if ( numoutpoints )
+			{
+				lastpoint2 = (POINT2D *)(opts+((numoutpoints-2)*ptsize));
+				if (  SAMEPOINT(&pbuf, lastpoint2) )
+				{
+					numoutpoints--;
+					continue;
+				}
+			}
+		}
+
+		memcpy(opts+(numoutpoints*ptsize), &pbuf, ptsize);
+		numoutpoints++;
+
+	}
+
+	if ( numoutpoints )
+	{
+		/* Srhink allocated memory for outpoints if needed */
+		if ( numoutpoints < pa->npoints )
+		{
+			opts = (char *)repalloc(opts, ptsize*numoutpoints);
+			if ( opts == NULL )
+			{
+				elog(ERROR, "Out of virtual memory");
+				return NULL;
+			}
+		}
+	}
+
+	/*
+	 * This should never happen since no reduction occurs if not
+	 * based on other drawn points
+	 */
+	else
+	{
+		elog(NOTICE, "No points drawn out of %d input points, error?",
+			pa->npoints);
+		pfree(opts);
+		opts = NULL;
+		return NULL;
+	}
+
+	opa = pointArray_construct(opts, 0, 0, numoutpoints);
+
+	return opa;
+}
+
+LWLINE *
+lwline_grid(LWLINE *line, gridspec *grid)
+{
+	LWLINE *oline;
+	POINTARRAY *opa;
+
+	opa = ptarray_grid(line->points, grid);
+
+	/* Skip line3d with less then 2 points */
+	if ( opa->npoints < 2 ) return NULL;
+
+	// TODO: grid bounding box...
+	oline = lwline_construct(line->SRID, NULL, opa);
+
+	return oline;
+}
+
+LWPOLY *
+lwpoly_grid(LWPOLY *poly, gridspec *grid)
+{
+	LWPOLY *opoly;
+	int ri;
+	POINTARRAY **newrings = NULL;
+	int nrings = 0;
+	double minvisiblearea;
+
+	/*
+	 * TODO: control this assertion
+	 * it is assumed that, since the grid size will be a pixel,
+	 * a visible ring should show at least a white pixel inside,
+	 * thus, for a square, that would be grid_xsize*grid_ysize
+	 */
+	minvisiblearea = grid->xsize * grid->ysize;
+
+	nrings = 0;
+
+#ifdef REPORT_RINGS_REDUCTION
+	elog(NOTICE, "grid_polygon3d: applying grid to polygon with %d rings",
+   		poly->nrings);
+#endif
+
+	for (ri=0; ri<poly->nrings; ri++)
+	{
+		POINTARRAY *ring = poly->rings[ri];
+		POINTARRAY *newring;
+
+#ifdef CHECK_RING_IS_CLOSE
+		POINT2D *p1, *p2;
+		p1 = (POINT2D *)getPoint(ring, 0);
+		p2 = (POINT2D *)getPoint(ring, ring->npoints-1);
+		if ( ! SAMEPOINT(p1, p2) )
+			elog(NOTICE, "Before gridding: first point != last point");
+#endif
+
+		newring = ptarray_grid(ring, grid);
+
+		/* Skip ring if not composed by at least 4 pts (3 segments) */
+		if ( newring->npoints < 4 )
+		{
+			pfree(newring);
+#ifdef REPORT_RINGS_ADJUSTMENTS
+			elog(NOTICE, "grid_polygon3d: ring%d skipped ( <4 pts )", ri);
+#endif
+			if ( ri ) continue;
+			else break; /* this is the external ring, no need to work on holes */
+		}
+
+#ifdef CHECK_RING_IS_CLOSE
+		p1 = (POINT2D *)getPoint(newring, 0);
+		p2 = (POINT2D *)getPoint(newring, newring->npoints-1);
+		if ( ! SAMEPOINT(p1, p2) )
+			elog(NOTICE, "After gridding: first point != last point");
+#endif
+
+
+
+#ifdef REPORT_POINTS_REDUCTION
+elog(NOTICE, "grid_polygon3d: ring%d simplified from %d to %d points", ri,
+	ring->npoints, newring->npoints);
+#endif
+
+
+		/*
+		 * Add ring to simplified ring array
+		 * (TODO: dinamic allocation of pts_per_ring)
+		 */
+		if ( ! nrings ) {
+			newrings = palloc(sizeof(POINTARRAY *));
+		} else {
+			newrings = repalloc(newrings, sizeof(POINTARRAY *)*(nrings+1));
+		}
+		if ( ! newrings ) {
+			elog(ERROR, "Out of virtual memory");
+			return NULL;
+		}
+		newrings[nrings++] = newring;
+	}
+
+#ifdef REPORT_RINGS_REDUCTION
+elog(NOTICE, "grid_polygon3d: simplified polygon with %d rings", nrings);
+#endif
+
+	if ( ! nrings ) return NULL;
+
+	opoly = lwpoly_construct(poly->SRID, NULL, nrings, newrings);
+	return opoly;
+}
+
+LWPOINT *
+lwpoint_grid(LWPOINT *point, gridspec *grid)
+{
+	POINT2D *p = (POINT2D *)getPoint(point->point, 0);
+	double x, y;
+	x = rint((p->x - grid->ipx)/grid->xsize) *
+		grid->xsize + grid->ipx;
+	y = rint((p->y - grid->ipy)/grid->ysize) *
+		grid->ysize + grid->ipy;
+
+#if VERBOSE
+	elog(NOTICE, "lwpoint_grid called");
+#endif
+	return make_lwpoint2d(point->SRID, x, y);
+}
+
+LWCOLLECTION *
+lwcollection_grid(LWCOLLECTION *coll, gridspec *grid)
+{
+	unsigned int i;
+	LWGEOM **geoms;
+	unsigned int ngeoms=0;
+
+	geoms = palloc(coll->ngeoms * sizeof(LWGEOM *));
+
+	for (i=0; i<coll->ngeoms; i++)
+	{
+		LWGEOM *g = lwgeom_grid(coll->geoms[i], grid);
+		if ( g ) geoms[ngeoms++] = g;
+	}
+
+	if ( ! ngeoms ) return lwcollection_construct_empty(coll->SRID, 0, 0);
+
+	return lwcollection_construct(TYPE_GETTYPE(coll->type), coll->SRID,
+		NULL, ngeoms, geoms);
+}
+
+LWGEOM *
+lwgeom_grid(LWGEOM *lwgeom, gridspec *grid)
+{
+	switch(TYPE_GETTYPE(lwgeom->type))
+	{
+		case POINTTYPE:
+			return (LWGEOM *)lwpoint_grid((LWPOINT *)lwgeom, grid);
+		case LINETYPE:
+			return (LWGEOM *)lwline_grid((LWLINE *)lwgeom, grid);
+		case POLYGONTYPE:
+			return (LWGEOM *)lwpoly_grid((LWPOLY *)lwgeom, grid);
+		case MULTIPOINTTYPE:
+		case MULTILINETYPE:
+		case MULTIPOLYGONTYPE:
+		case COLLECTIONTYPE:
+			return (LWGEOM *)lwcollection_grid((LWCOLLECTION *)lwgeom, grid);
+		default:
+			elog(ERROR, "lwgeom_grid: Unknown geometry type: %d",
+				TYPE_GETTYPE(lwgeom->type));
+			return NULL;
+	}
+}
+
+PG_FUNCTION_INFO_V1(LWGEOM_apply_grid);
+Datum LWGEOM_apply_grid(PG_FUNCTION_ARGS)
+{
+	Datum datum;
+	PG_LWGEOM *in_geom;
+	LWGEOM *in_lwgeom;
+	PG_LWGEOM *out_geom = NULL;
+	LWGEOM *out_lwgeom;
+	size_t size;
+	gridspec grid;
+
+	if ( PG_ARGISNULL(0) ) PG_RETURN_NULL();
+	datum = PG_GETARG_DATUM(0);
+	in_geom = (PG_LWGEOM *)PG_DETOAST_DATUM(datum);
+
+	if ( PG_ARGISNULL(1) ) PG_RETURN_NULL();
+	grid.ipx = PG_GETARG_FLOAT8(1);
+
+	if ( PG_ARGISNULL(2) ) PG_RETURN_NULL();
+	grid.ipy = PG_GETARG_FLOAT8(2);
+
+	if ( PG_ARGISNULL(3) ) PG_RETURN_NULL();
+	grid.xsize = PG_GETARG_FLOAT8(3);
+
+	if ( PG_ARGISNULL(4) ) PG_RETURN_NULL();
+	grid.ysize = PG_GETARG_FLOAT8(4);
+
+	/* 0-sided grid == grid */
+	if ( grid.xsize == 0 && grid.ysize == 0 ) PG_RETURN_POINTER(in_geom);
+
+	in_lwgeom = lwgeom_deserialize(SERIALIZED_FORM(in_geom));
+
+#if VERBOSE
+	elog(NOTICE, "apply_grid got a %s", lwgeom_typename(TYPE_GETTYPE(in_lwgeom->type)));
+#endif
+
+   	out_lwgeom = lwgeom_grid(in_lwgeom, &grid);
+	if ( out_lwgeom == NULL ) PG_RETURN_NULL();
+
+#if VERBOSE
+	elog(NOTICE, "apply_grid made a %s", lwgeom_typename(TYPE_GETTYPE(out_lwgeom->type)));
+#endif
+
+	size = lwgeom_serialize_size(out_lwgeom);
+	out_geom = palloc(size+4);
+	out_geom->size = size+4;
+	lwgeom_serialize_buf(out_lwgeom, SERIALIZED_FORM(out_geom), NULL);
+
+	PG_RETURN_POINTER(out_geom);
+}
+/***********************************************************************
+ * --strk@keybit.net
  ***********************************************************************/
