@@ -40,6 +40,13 @@ else
 endif
 
 #---------------------------------------------------------------
+# Default missing CXX variable to c++
+# 
+ifeq ($(CXX),) 
+	CXX = c++
+endif
+
+#---------------------------------------------------------------
 # Test the version string and set the USE_VERSION macro
 # appropriately.
 #
