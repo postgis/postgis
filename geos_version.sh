@@ -15,5 +15,5 @@ else
 	geos_version=`printf %d%2.2d $major $minor`
 fi
 cat <<EOF
-#define GEOS_VERSION=$geos_version
+#define GEOS_VERSION $geos_version
 EOF
