@@ -17,6 +17,7 @@
 #include <netinet/ip.h>
 */
 
+
 static int endian_check_int = 1; // dont modify this!!!
 
 #undef LITTLE_ENDIAN
@@ -29,22 +30,6 @@ static char getMachineEndian()
 
 typedef unsigned long int4;
 
-int srid=-1;
-
-static int ferror_occured;
-static allocator local_malloc;
-static report_error error_func;
-
-void set_srid(double d_srid){
-	if ( d_srid >= 0 )
-		d_srid+=0.1;
-	else
-		d_srid-=0.1;
-
-
-	srid=(int)(d_srid+0.1);
-}
-
 typedef struct tag_tuple tuple;
 
 struct tag_outputstate{
@@ -52,8 +37,18 @@ struct tag_outputstate{
 };
 
 typedef struct tag_outputstate output_state;
-
 typedef void (*output_func)(tuple* this,output_state* out);
+typedef void (*read_col_func)(const char**f);
+
+
+
+/* Globals */
+
+int srid=-1;
+
+static int ferror_occured;
+static allocator local_malloc;
+static report_error error_func;
 
 struct tag_tuple{
 	output_func   of;
@@ -97,6 +92,71 @@ struct {
 } the_geom;
 
 tuple* free_list=0;
+int minpoints;
+
+
+/* External functions */
+extern void init_parser(const char *);
+
+/* Prototypes */
+tuple* alloc_tuple(output_func of,size_t size);
+void error(const char* err);
+void free_tuple(tuple* to_free);
+void inc_num(void);
+void alloc_stack_tuple(int type,output_func of,size_t size);
+void check_dims(int num);
+void WRITE_DOUBLES(output_state* out,double* points, int cnt);
+#ifdef SHRINK_INTS
+void WRITE_INT4(output_state * out,int4 val);
+#endif
+void write_size(tuple* this,output_state* out);
+void alloc_lwgeom(int srid);
+void write_point_2(tuple* this,output_state* out);
+void write_point_3(tuple* this,output_state* out);
+void write_point_4(tuple* this,output_state* out);
+void write_point_2i(tuple* this,output_state* out);
+void write_point_3i(tuple* this,output_state* out);
+void write_point_4i(tuple* this,output_state* out);
+void alloc_point_2d(double x,double y);
+void alloc_point_3d(double x,double y,double z);
+void alloc_point_4d(double x,double y,double z,double m);
+void write_type(tuple* this,output_state* out);
+void write_count(tuple* this,output_state* out);
+void write_type_count(tuple* this,output_state* out);
+void alloc_point(void);
+void alloc_linestring(void);
+void alloc_polygon(void);
+void alloc_multipoint(void);
+void alloc_multilinestring(void);
+void alloc_multipolygon(void);
+void alloc_geomertycollection(void);
+void alloc_counter(void);
+void alloc_empty(void);
+byte* make_lwgeom(void);
+int lwg_parse_yyerror(char* s);
+byte strhex_readbyte(const char* in);
+byte read_wkb_byte(const char** in);
+void read_wkb_bytes(const char** in,byte* out, int cnt);
+int4 read_wkb_int(const char** in);
+double read_wbk_double(const char** in,int convert_from_int);
+void read_wkb_point(const char** b);
+void read_collection(const char** b,read_col_func f);
+void read_collection2(const char** b);
+void parse_wkb(const char** b);
+void alloc_wkb(const char* parser);
+byte* parse_it(const char* geometry,allocator allocfunc,report_error errfunc);
+byte* parse_lwg(const char* geometry,allocator allocfunc,report_error errfunc);
+byte* parse_lwgi(const char* geometry,allocator allocfunc,report_error errfunc);
+
+void set_srid(double d_srid){
+	if ( d_srid >= 0 )
+		d_srid+=0.1;
+	else
+		d_srid-=0.1;
+
+
+	srid=(int)(d_srid+0.1);
+}
 
 tuple* alloc_tuple(output_func of,size_t size){
 	tuple* ret = free_list;
@@ -176,8 +236,6 @@ void alloc_stack_tuple(int type,output_func of,size_t size){
 void pop(void){
 	the_geom.stack = the_geom.stack->stack_next;
 }
-
-int minpoints;
 
 void popc(void){
 	if ( the_geom.stack->num < minpoints){
@@ -568,8 +626,6 @@ void read_wkb_point(const char** b){
 	inc_num();
 	check_dims(the_geom.ndims);
 }
-
-typedef void (*read_col_func)(const char**f);
 
 void read_collection(const char** b,read_col_func f){
 	int4 cnt=read_wkb_int(b);
