@@ -656,7 +656,7 @@ create_multiline3D_WKB (byte *wkb)
 {
 	SHPObject *obj;
 	double *x=NULL, *y=NULL, *zm=NULL;
-	int nparts=0, *part_index=NULL, totpoints=0, nlines=0;
+	int *part_index=NULL, totpoints=0, nlines=0;
 	int li;
 	int zmflag;
 
@@ -705,11 +705,11 @@ create_multiline3D_WKB (byte *wkb)
 	}
 
 	if ( zmflag == 1 ) {
-		obj = SHPCreateObject(outshptype, -1, nparts,
+		obj = SHPCreateObject(outshptype, -1, nlines,
 			part_index, NULL, totpoints,
 			x, y, NULL, zm);
 	} else {
-		obj = SHPCreateObject(outshptype, -1, nparts,
+		obj = SHPCreateObject(outshptype, -1, nlines,
 			part_index, NULL, totpoints,
 			x, y, zm, NULL);
 	}
@@ -724,7 +724,7 @@ create_multiline4D_WKB (byte *wkb)
 {
 	SHPObject *obj;
 	double *x=NULL, *y=NULL, *z=NULL, *m=NULL;
-	int nparts=0, *part_index=NULL, totpoints=0, nlines=0;
+	int *part_index=NULL, totpoints=0, nlines=0;
 	int li;
 	int zmflag;
 
@@ -774,7 +774,7 @@ create_multiline4D_WKB (byte *wkb)
 		totpoints += npoints;
 	}
 
-	obj = SHPCreateObject(outshptype, -1, nparts,
+	obj = SHPCreateObject(outshptype, -1, nlines,
 		part_index, NULL, totpoints,
 		x, y, z, m);
 
@@ -787,7 +787,7 @@ SHPObject *
 create_multiline2D_WKB (byte *wkb)
 {
 	double *x=NULL, *y=NULL;
-	int nparts=0, *part_index=NULL, totpoints=0, nlines=0;
+	int *part_index=NULL, totpoints=0, nlines=0;
 	int li;
 	SHPObject *obj;
 	int zmflag;
@@ -835,7 +835,7 @@ create_multiline2D_WKB (byte *wkb)
 	}
 
 
-	obj = SHPCreateObject(outshptype, -1, nparts,
+	obj = SHPCreateObject(outshptype, -1, nlines,
 		part_index, NULL, totpoints,
 		x, y, NULL, NULL);
 
@@ -1402,7 +1402,7 @@ SHPObject *
 create_multipolygon2D_WKB(byte *wkb)
 {
 	SHPObject *obj;
-	uint32 nrings, nparts;
+	uint32 nrings, nparts=0;
 	uint32 npolys;
 	uint32 totpoints=0;
 	int *part_index=NULL;
@@ -1419,7 +1419,6 @@ create_multipolygon2D_WKB(byte *wkb)
 	/*
 	 * Scan all polygons in multipolygon
 	 */
-	nparts = 0;
 	npolys = popint(&wkb);  // num_wkbPolygons
 #if VERBOSE > 2
 	printf("Multipolygon with %lu polygons\n", npolys);
@@ -1530,7 +1529,7 @@ SHPObject *
 create_multipolygon3D_WKB(byte *wkb)
 {
 	SHPObject *obj;
-	int nrings, nparts;
+	int nrings, nparts=0;
 	uint32 npolys;
 	int totpoints=0;
 	int *part_index=NULL;
@@ -1547,7 +1546,6 @@ create_multipolygon3D_WKB(byte *wkb)
 	/*
 	 * Scan all polygons in multipolygon
 	 */
-	nparts = 0;
 	npolys = popint(&wkb);  // num_wkbPolygons
 #if VERBOSE > 2
 	printf("Multipolygon with %lu polygons\n", npolys);
@@ -1671,7 +1669,7 @@ SHPObject *
 create_multipolygon4D_WKB(byte *wkb)
 {
 	SHPObject *obj;
-	int nrings, nparts;
+	int nrings, nparts=0;
 	uint32 npolys;
 	int totpoints=0;
 	int *part_index=NULL;
@@ -1688,7 +1686,6 @@ create_multipolygon4D_WKB(byte *wkb)
 	/*
 	 * Scan all polygons in multipolygon
 	 */
-	nparts = 0;
 	npolys = popint(&wkb);  // num_wkbPolygons
 #if VERBOSE > 2
 	printf("Multipolygon with %lu polygons\n", npolys);
@@ -3119,6 +3116,9 @@ create_usrquerytable()
 
 /**********************************************************************
  * $Log$
+ * Revision 1.72  2005/03/04 14:54:03  strk
+ * Fixed bug in multiline handling.
+ *
  * Revision 1.71  2005/01/31 22:15:22  strk
  * Added maintainer notice, to reduce Jeff-strk mail bounces
  *
