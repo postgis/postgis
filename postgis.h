@@ -477,6 +477,14 @@ Datum factor_chip(PG_FUNCTION_ARGS);
 
 Datum segmentize(PG_FUNCTION_ARGS);
 
+Datum box3d_xmin(PG_FUNCTION_ARGS);
+Datum box3d_ymin(PG_FUNCTION_ARGS);
+Datum box3d_zmin(PG_FUNCTION_ARGS);
+
+Datum box3d_xmax(PG_FUNCTION_ARGS);
+Datum box3d_ymax(PG_FUNCTION_ARGS);
+Datum box3d_zmax(PG_FUNCTION_ARGS);
+
 
 
 Datum transform_geom(PG_FUNCTION_ARGS);

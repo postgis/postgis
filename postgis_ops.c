@@ -1294,3 +1294,47 @@ GISTENTRY *rtree_decompress(PG_FUNCTION_ARGS)
     return((GISTENTRY*)PG_GETARG_POINTER(0));
 }
 
+
+PG_FUNCTION_INFO_V1(box3d_xmin);
+Datum box3d_xmin(PG_FUNCTION_ARGS)
+{
+	BOX3D		   *box1 = (BOX3D *) PG_GETARG_POINTER(0);
+
+	PG_RETURN_FLOAT8(box1->LLB.x);
+}
+
+PG_FUNCTION_INFO_V1(box3d_ymin);
+Datum box3d_ymin(PG_FUNCTION_ARGS)
+{
+	BOX3D		   *box1 = (BOX3D *) PG_GETARG_POINTER(0);
+
+	PG_RETURN_FLOAT8(box1->LLB.y);
+}
+PG_FUNCTION_INFO_V1(box3d_zmin);
+Datum box3d_zmin(PG_FUNCTION_ARGS)
+{
+	BOX3D		   *box1 = (BOX3D *) PG_GETARG_POINTER(0);
+
+	PG_RETURN_FLOAT8(box1->LLB.z);
+}
+PG_FUNCTION_INFO_V1(box3d_xmax);
+Datum box3d_xmax(PG_FUNCTION_ARGS)
+{
+	BOX3D		   *box1 = (BOX3D *) PG_GETARG_POINTER(0);
+
+	PG_RETURN_FLOAT8(box1->URT.x);
+}
+PG_FUNCTION_INFO_V1(box3d_ymax);
+Datum box3d_ymax(PG_FUNCTION_ARGS)
+{
+	BOX3D		   *box1 = (BOX3D *) PG_GETARG_POINTER(0);
+
+	PG_RETURN_FLOAT8(box1->URT.y);
+}
+PG_FUNCTION_INFO_V1(box3d_zmax);
+Datum box3d_zmax(PG_FUNCTION_ARGS)
+{
+	BOX3D		   *box1 = (BOX3D *) PG_GETARG_POINTER(0);
+
+	PG_RETURN_FLOAT8(box1->URT.z);
+}

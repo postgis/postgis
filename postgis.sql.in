@@ -632,6 +632,39 @@ CREATE FUNCTION centroid(GEOMETRY)
    AS '@MODULE_FILENAME@'
    LANGUAGE 'c' with (isstrict);
 
+
+------- bbox ops
+
+CREATE FUNCTION xmin(BOX3D)
+   RETURNS FLOAT8
+   AS '@MODULE_FILENAME@','box3d_xmin'
+   LANGUAGE 'c' with (isstrict,iscachable);
+
+CREATE FUNCTION ymin(BOX3D)
+   RETURNS FLOAT8
+   AS '@MODULE_FILENAME@','box3d_ymin'
+   LANGUAGE 'c' with (isstrict,iscachable);
+
+CREATE FUNCTION zmin(BOX3D)
+   RETURNS FLOAT8
+   AS '@MODULE_FILENAME@','box3d_zmin'
+   LANGUAGE 'c' with (isstrict,iscachable);
+
+CREATE FUNCTION xmax(BOX3D)
+   RETURNS FLOAT8
+   AS '@MODULE_FILENAME@','box3d_xmax'
+   LANGUAGE 'c' with (isstrict,iscachable);
+
+CREATE FUNCTION ymax(BOX3D)
+   RETURNS FLOAT8
+   AS '@MODULE_FILENAME@','box3d_ymax'
+   LANGUAGE 'c' with (isstrict,iscachable);
+
+CREATE FUNCTION zmax(BOX3D)
+   RETURNS FLOAT8
+   AS '@MODULE_FILENAME@','box3d_zmax'
+   LANGUAGE 'c' with (isstrict,iscachable);
+
 ------- Aggregate
 
 CREATE FUNCTION combine_bbox(BOX3D,GEOMETRY)
@@ -696,6 +729,8 @@ CREATE FUNCTION force_3d(GEOMETRY) RETURNS GEOMETRY
 
 CREATE FUNCTION force_collection(GEOMETRY) RETURNS GEOMETRY
         AS '@MODULE_FILENAME@'  LANGUAGE 'c' with (isstrict);
+
+
 
 
 -------- GiST support functions
