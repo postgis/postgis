@@ -74,7 +74,7 @@ lwcollection_deserialize(char *srl)
 
 	if ( type != COLLECTIONTYPE ) 
 	{
-		lwerror("lwmpoly_deserialize called on NON multipoly: %d",
+		lwerror("lwmpoly_deserialize called on NON geometrycollection: %d",
 			type);
 		return NULL;
 	}
