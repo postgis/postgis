@@ -1057,6 +1057,8 @@ create_multipoint4D_WKB(byte *wkb)
 
 	for (pn=0; pn<npoints; pn++)
 	{
+		skipbyte(&wkb); // byteOrder
+		skipint(&wkb);  // wkbType
 		x[pn]=popdouble(&wkb);
 		y[pn]=popdouble(&wkb);
 		z[pn]=popdouble(&wkb);
@@ -1140,6 +1142,7 @@ create_multipoint2D_WKB(byte *wkb)
 		skipint(&wkb);  // wkbType
 		x[pn]=popdouble(&wkb);
 		y[pn]=popdouble(&wkb);
+
 	}
 
 	obj = SHPCreateSimpleObject(outshptype,npoints,x,y,NULL);
@@ -3083,6 +3086,9 @@ create_usrquerytable()
 
 /**********************************************************************
  * $Log$
+ * Revision 1.66  2004/10/17 12:15:10  strk
+ * Bug fixed in multipoint4D creation
+ *
  * Revision 1.65  2004/10/15 08:26:03  strk
  * Fixed handling of mixed dimensioned geometries in source table.
  *
