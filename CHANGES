@@ -1,3 +1,21 @@
+PostGIS 0.8.2
+2004/05/27
+
+- New Things
+  - PgSQL 7.5 Support
+  - Integrated PgSQL 7.5 statistics rathering
+  - Improved schema support
+  - Optional experimental lightweight geometries (LWGEOM)
+    - Faster performance
+    - Lower disk usage
+  - Multi() function to create MULTI* geometries
+  - line_interpolate_point() function for linear referencing
+- Bug Fixes
+  - Minor memory leaks gone
+  - Solaris support cleaner
+  - shp2pgsql/pgsql2shp more corner cases fixed
+  
+
 PostGIS 0.8.1
 2004/01/12
 

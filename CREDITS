@@ -33,4 +33,6 @@ Version 0.7 of PostGIS includes patches from:
 Version 0.8 of PostGIS includes patches from:
   Carl Anderson on schemas
   STRK on numerous bug fixes and enhancements
+  Ralph Mason on WKT parsing for LWGEOM
+  Mark Cave-Ayland with help on PgSQL 7.5 statistics
 

@@ -1,7 +1,7 @@
 PostGIS - Geographic Information Systems Extensions to PostgreSQL
 ~~~~~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-VERSION: 0.8.1 (2004/01/12)
+VERSION: 0.8.2 (2004/05/27)
 
 MORE INFORMATION: http://postgis.refractions.net
 
@@ -171,14 +171,4 @@ You can build a GiST index with:
 Always run the "VACUUM ANALYZE <tablename>" on your tables after
 creating an index. This gathers statistics which the query planner
 uses to optimize index usage.
-
-Note that PostgreSQL may occasionally not use the GiST indexes when 
-performing searches. If you find your system is not using the 
-indexes automatically (use 'EXPLAIN' to see the query plan)
-you can force index use with the command: 
-
-  SET ENABLE_SEQSCAN = OFF
-
-Try doing an EXPLAIN on your query before and after the 'enable_seqscan'
-command to see the different query plans.
 
