@@ -182,15 +182,6 @@ lwgeom_summary_recursive(char *serialized, int offset)
 
 	inspected = lwgeom_inspect(serialized);
 
-	if (0) {
-		size += 57;
-		result = repalloc(result,size);
-		sprintf(tmp,
-			"Geometry (inspected) contains %i subgeoms\n",
-			inspected->ngeometries);
-		strcat(result,tmp);
-	}
-
 	//now have to do a scan of each object
 	for (j=0; j<inspected->ngeometries; j++)
 	{
