@@ -12,6 +12,9 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.23  2003/11/19 17:50:18  strk
+-- missing function definition added (I forgot - sorry)
+--
 -- Revision 1.22  2003/11/19 15:23:27  strk
 -- Fixed wrong COMMUTATOR specifications in '<','>','~=','@' operators,
 -- added new '<=', '>=' operators
@@ -1134,13 +1137,28 @@ CREATE FUNCTION geometry_lt(geometry, geometry)
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C' WITH (isstrict);
 
+CREATE FUNCTION geometry_le(geometry, geometry) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@' 
+	LANGUAGE 'C' WITH (isstrict);
+
 CREATE FUNCTION geometry_gt(geometry, geometry) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@' 
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION geometry_ge(geometry, geometry) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C' WITH (isstrict);
 
 CREATE FUNCTION geometry_eq(geometry, geometry) 
 	RETURNS bool
+	AS '@MODULE_FILENAME@' 
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION geometry_cmp(geometry, geometry) 
+	RETURNS integer
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C' WITH (isstrict);
 
