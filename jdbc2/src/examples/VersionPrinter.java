@@ -124,8 +124,14 @@ public class VersionPrinter {
     public static String getVersionString(String function, Statement stat) {
         try {
             ResultSet rs = stat.executeQuery("SELECT " + function + "()");
-            rs.next();
-            return rs.getString(1).trim();
+            if (rs.next()==false) {
+                return "-- no result --";
+            }
+            String version = rs.getString(1);
+            if (version==null) {
+                return "-- null result --";
+            }
+            return version.trim();
         } catch (SQLException e) {
             return "-- unavailable -- ";
         }
