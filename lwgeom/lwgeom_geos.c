@@ -750,6 +750,8 @@ Datum isvalid(PG_FUNCTION_ARGS)
 	result = GEOSisvalid(g1);
 #ifdef PROFILE
 	profstop(PROF_GRUN);
+	profstart(PROF_G2P); profstop(PROF_G2P);
+	profreport();
 #endif
 
 	GEOSdeleteGeometry(g1);
@@ -803,6 +805,8 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	result = GEOSrelateOverlaps(g1,g2);
 #ifdef PROFILE
 	profstop(PROF_GRUN);
+	profstart(PROF_G2P); profstop(PROF_G2P);
+	profreport();
 #endif
 
 	GEOSdeleteGeometry(g1);
@@ -854,6 +858,8 @@ Datum contains(PG_FUNCTION_ARGS)
 	result = GEOSrelateContains(g1,g2);
 #ifdef PROFILE
 	profstop(PROF_GRUN);
+	profstart(PROF_G2P); profstop(PROF_G2P);
+	profreport();
 #endif
 
 	GEOSdeleteGeometry(g1);
@@ -905,6 +911,8 @@ Datum within(PG_FUNCTION_ARGS)
 	result = GEOSrelateWithin(g1,g2);
 #ifdef PROFILE
 	profstop(PROF_GRUN);
+	profstart(PROF_G2P); profstop(PROF_G2P);
+	profreport();
 #endif
 
 	GEOSdeleteGeometry(g1);
@@ -957,6 +965,8 @@ Datum crosses(PG_FUNCTION_ARGS)
 	result = GEOSrelateCrosses(g1,g2);
 #ifdef PROFILE
 	profstop(PROF_GRUN);
+	profstart(PROF_G2P); profstop(PROF_G2P);
+	profreport();
 #endif
 
 	GEOSdeleteGeometry(g1);
@@ -1009,6 +1019,8 @@ Datum intersects(PG_FUNCTION_ARGS)
 	result = GEOSrelateIntersects(g1,g2);
 #ifdef PROFILE
 	profstop(PROF_GRUN);
+	profstart(PROF_G2P); profstop(PROF_G2P);
+	profreport();
 #endif
 	GEOSdeleteGeometry(g1);
 	GEOSdeleteGeometry(g2);
@@ -1058,6 +1070,8 @@ Datum touches(PG_FUNCTION_ARGS)
 	result = GEOSrelateTouches(g1,g2);
 #ifdef PROFILE
 	profstop(PROF_GRUN);
+	profstart(PROF_G2P); profstop(PROF_G2P);
+	profreport();
 #endif
 
 	GEOSdeleteGeometry(g1);
@@ -1109,6 +1123,8 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	result = GEOSrelateDisjoint(g1,g2);
 #ifdef PROFILE
 	profstop(PROF_GRUN);
+	profstart(PROF_G2P); profstop(PROF_G2P);
+	profreport();
 #endif
 	GEOSdeleteGeometry(g1);
 	GEOSdeleteGeometry(g2);
@@ -1148,6 +1164,8 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 	result = GEOSrelatePattern(g1,g2,patt);
 #ifdef PROFILE
 	profstop(PROF_GRUN);
+	profstart(PROF_G2P); profstop(PROF_G2P);
+	profreport();
 #endif
 	GEOSdeleteGeometry(g1);
 	GEOSdeleteGeometry(g2);
@@ -1213,6 +1231,8 @@ if ((g1==NULL) || (g2 == NULL))
 		relate_str = GEOSrelate(g1, g2);
 #ifdef PROFILE
 	profstop(PROF_GRUN);
+	profstart(PROF_G2P); profstop(PROF_G2P);
+	profreport();
 #endif
 
 //elog(NOTICE,"finished relate()");
@@ -1281,6 +1301,8 @@ Datum geomequals(PG_FUNCTION_ARGS)
 	result = GEOSequals(g1,g2);
 #ifdef PROFILE
 	profstop(PROF_GRUN);
+	profstart(PROF_G2P); profstop(PROF_G2P);
+	profreport();
 #endif
 	GEOSdeleteGeometry(g1);
 	GEOSdeleteGeometry(g2);
@@ -1317,6 +1339,8 @@ Datum issimple(PG_FUNCTION_ARGS)
 	result = GEOSisSimple(g1);
 #ifdef PROFILE
 	profstop(PROF_GRUN);
+	profstart(PROF_G2P); profstop(PROF_G2P);
+	profreport();
 #endif
 	GEOSdeleteGeometry(g1);
 
@@ -1357,6 +1381,8 @@ Datum isring(PG_FUNCTION_ARGS)
 	result = GEOSisRing(g1);
 #ifdef PROFILE
 	profstop(PROF_GRUN);
+	profstart(PROF_G2P); profstop(PROF_G2P);
+	profreport();
 #endif
 	GEOSdeleteGeometry(g1);
 
