@@ -128,6 +128,7 @@ CREATE TYPE geometry (
 	send = geometry_send,
 	receive = geometry_recv,
 #endif
+	delimiter = ':',
 #if USE_VERSION >= 80
 	analyze = geometry_analyze,
 #endif // USE_VERSION >= 80
