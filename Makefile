@@ -160,10 +160,10 @@ postgis_undef.sql: postgis.sql create_undef.pl
 	perl create_undef.pl $< $(USE_VERSION) > $@ 
 
 install: all installdirs install-postgis-lib
-	$(INSTALL_DATA) postgis.sql $(DESTDIR)$(datadir)/contrib
-	$(INSTALL_DATA) postgis_undef.sql $(DESTDIR)$(datadir)/contrib
-	$(INSTALL_DATA) spatial_ref_sys.sql $(DESTDIR)$(datadir)/contrib
-	$(INSTALL_DATA) README.postgis $(DESTDIR)$(datadir)/contrib
+	$(INSTALL_DATA) postgis.sql $(DESTDIR)$(datadir)
+	$(INSTALL_DATA) postgis_undef.sql $(DESTDIR)$(datadir)
+	$(INSTALL_DATA) spatial_ref_sys.sql $(DESTDIR)$(datadir)
+	$(INSTALL_DATA) README.postgis $(DESTDIR)$(datadir)
 	$(MAKE) DESTDIR=$(DESTDIR) -C loader install
 
 #- This has been copied from postgresql and adapted
