@@ -233,7 +233,7 @@ install: jar installdirs
 
 installdirs:
 	@echo Testing for successful inclusion of $(top_makefile)
-	test $(DESTDIR)
+	test $(top_makefile)
 	$(mkinstalldirs) $(DESTDIR)
 
 # Preliminary JTS support
