@@ -1921,14 +1921,14 @@ CREATEFUNCTION estimate_histogram2d(histogram2d,box2d)
 -----------------------------------------------------------------------
 CREATEFUNCTION estimated_extent(text,text,text) RETURNS box2d AS
 	'@MODULE_FILENAME@', 'LWGEOM_estimated_extent'
-	LANGUAGE 'C' _STABLE_STRICT; -- WITH (isstrict);
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
 -----------------------------------------------------------------------
 -- ESTIMATED_EXTENT( <table name>, <column name> )
 -----------------------------------------------------------------------
 CREATEFUNCTION estimated_extent(text,text) RETURNS box2d AS
 	'@MODULE_FILENAME@', 'LWGEOM_estimated_extent'
-	LANGUAGE 'C' _STABLE_STRICT; -- WITH (isstrict);
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
 -----------------------------------------------------------------------
 -- FIND_EXTENT( <schema name>, <table name>, <column name> )
@@ -1947,7 +1947,7 @@ BEGIN
 	END LOOP; 
 END;
 '
-LANGUAGE 'plpgsql' _STABLE_STRICT; -- WITH (isstrict);
+LANGUAGE 'plpgsql' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
 -----------------------------------------------------------------------
 -- FIND_EXTENT( <table name>, <column name> )
@@ -1965,7 +1965,7 @@ BEGIN
 	END LOOP; 
 END;
 '
-LANGUAGE 'plpgsql' _STABLE_STRICT; -- WITH (isstrict);
+LANGUAGE 'plpgsql' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
 -------------------------------------------------------------------
 -- SPATIAL_REF_SYS
@@ -2979,7 +2979,7 @@ BEGIN
   return sr;
 END;
 '
-LANGUAGE 'plpgsql' _STABLE_STRICT; -- WITH (iscachable); 
+LANGUAGE 'plpgsql' _IMMUTABLE_STRICT; -- WITH (iscachable); 
 
 
 ---------------------------------------------------------------
@@ -2988,12 +2988,12 @@ LANGUAGE 'plpgsql' _STABLE_STRICT; -- WITH (iscachable);
 
 CREATEFUNCTION get_proj4_from_srid(integer) RETURNS text AS
 'SELECT proj4text::text FROM spatial_ref_sys WHERE srid= $1' 
-LANGUAGE 'sql' _STABLE_STRICT; -- WITH (iscachable,isstrict);
+LANGUAGE 'sql' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
 CREATEFUNCTION transform_geometry(geometry,text,text,int)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','transform_geom'
-	LANGUAGE 'C' _STABLE_STRICT; -- WITH (isstrict,iscachable);
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 CREATEFUNCTION transform(geometry,integer) RETURNS geometry AS
 '
@@ -3033,7 +3033,7 @@ BEGIN
 
 END;
 '
-LANGUAGE 'plpgsql' _STABLE_STRICT; -- WITH (iscachable,isstrict);
+LANGUAGE 'plpgsql' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
 -----------------------------------------------------------------------
 -- POSTGIS_VERSION()
@@ -3045,7 +3045,7 @@ CREATEFUNCTION postgis_version() RETURNS text
 
 CREATEFUNCTION postgis_proj_version() RETURNS text
 	AS '@MODULE_FILENAME@'
-	LANGUAGE 'C' _STABLE;
+	LANGUAGE 'C' _IMMUTABLE;
 
 CREATEFUNCTION postgis_scripts_installed() RETURNS text
         AS 'SELECT \'@POSTGIS_SCRIPTS_VERSION@\'::text AS version'
@@ -3065,7 +3065,7 @@ CREATEFUNCTION postgis_uses_stats() RETURNS bool
 
 CREATEFUNCTION postgis_geos_version() RETURNS text
 	AS '@MODULE_FILENAME@'
-	LANGUAGE 'C' _STABLE;
+	LANGUAGE 'C' _IMMUTABLE;
 
 CREATEFUNCTION postgis_scripts_build_date() RETURNS text
         AS 'SELECT \'@POSTGIS_BUILD_DATE@\'::text AS version'
@@ -3119,7 +3119,7 @@ BEGIN
 	RETURN fullver;
 END
 '
-LANGUAGE 'plpgsql' _STABLE;
+LANGUAGE 'plpgsql' _IMMUTABLE;
 
 ---------------------------------------------------------------
 -- CASTS
