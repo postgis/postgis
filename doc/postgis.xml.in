@@ -139,12 +139,12 @@
 		<sect1 id="PGInstall"> 
 			<title>PostGIS</title> 
 			<para>The PostGIS module is a extension to the PostgreSQL backend server.
-			  As such, PostGIS 0.7 <emphasis>requires</emphasis> a full copy of the
+			  As such, PostGIS @@LAST_RELEASE_VERSION@@ <emphasis>requires</emphasis> a full copy of the
 			  PostgreSQL source tree in order to compile. The PostgreSQL source code
 			  is available at 
 			  <ulink url="http://www.postgresql.org">http://www.postgresql.org</ulink>.
 			</para> 
-			<para>PostGIS 0.7 can be built against PostgreSQL 7.1.x or PostgreSQL 7.2.x.
+			<para>PostGIS @@LAST_RELEASE_VERSION@@ can be built against PostgreSQL versions 7.1.x, 7.2.x or 7.3.x.
 			  Earlier versions of PostgreSQL are <emphasis>not</emphasis> supported.
 			</para> 
 			<orderedlist> 
@@ -155,12 +155,12 @@
 				</listitem>
 				<listitem> 
 					<para>Retrieve the PostGIS source archive from
-					  <ulink url="http://postgis.refractions.net/postgis-@@LAST_RELEASE_VERSION@@.tar.gz">http://postgis.refractions.net/postgis-0.7.3.tar.gz</ulink>.
+					  <ulink url="http://postgis.refractions.net/postgis-@@LAST_RELEASE_VERSION@@.tar.gz">http://postgis.refractions.net/postgis-@@LAST_RELEASE_VERSION@@.tar.gz</ulink>.
 					  Uncompress and untar the archive in the "contrib" directory of
 					  the PostgreSQL source tree.
 					</para> 
 					<programlisting># cd [postgresql source tree]/contrib 
-# gzip -d -c	postgis-0.7.tar.gz | tar xvf -</programlisting>
+# gzip -d -c	postgis-@@LAST_RELEASE_VERSION@@.tar.gz | tar xvf -</programlisting>
 				</listitem> 
 				<listitem> 
 					<para>Once your PostgreSQL installation is up-to-date, enter the
@@ -350,7 +350,7 @@
 			<para>The data loader and dumper are built and installed automatically
 			  as part of the PostGIS build.  To build and install them manually:
 			</para> 
-			<programlisting># cd postgis-0.7/loader 
+			<programlisting># cd postgis-@@LAST_RELEASE_VERSION@@/loader 
 # make
 # make install</programlisting>
 			<para>The loader is called <filename>shp2pgsql</filename> and converts
