@@ -10,6 +10,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.30  2004/06/16 19:37:54  strk
+ * Added cleanup needed for GEOS > 1.0
+ *
  * Revision 1.29  2004/06/16 18:47:59  strk
  * Added code to detect geos version.
  * Added appropriate includes in geos connectors.
@@ -139,6 +142,7 @@
 #include "access/rtree.h"
 
 #include "utils/builtins.h"
+
 #include "postgis_geos_version.h"
 
  /*
@@ -1382,7 +1386,8 @@ LINE3D *LineFromGeometry(Geometry *g,int *size)
 
 
 
-GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
+GEOMETRY *
+GEOS2POSTGIS(Geometry *g,char want3d)
 {
 	int type = GEOSGeometryTypeId(g) ;
 	GEOMETRY *result = NULL;
@@ -1591,7 +1596,8 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 
 
 //BBOXONLYTYPE -> returns as a 2d polygon
-Geometry *POSTGIS2GEOS(GEOMETRY *g)
+Geometry *
+POSTGIS2GEOS(GEOMETRY *g)
 {
 	POINT3D *pt;
 	LINE3D *line;
@@ -1777,6 +1783,10 @@ Geometry *POSTGIS2GEOS(GEOMETRY *g)
 			elog(NOTICE, "POSTGIS2GEOS: COLLECTION has %d objs, srid %d and is %s 3d", g->nobjs, g->SRID, g->is3d ? "" : "not");
 #endif
 			geos = PostGIS2GEOS_collection(geoms,g->nobjs,g->SRID,g->is3d);
+#if GEOS_VERSION > 100
+			for (t=0; t<g->nobjs; t++)
+				GEOSdeleteGeometry(geoms[t]);
+#endif
 			if (geoms != NULL) pfree(geoms);
 			if (geos == NULL)
 			{

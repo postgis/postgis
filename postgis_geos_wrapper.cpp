@@ -2,6 +2,9 @@
 
 /*
 * $Log$
+* Revision 1.20  2004/06/16 19:37:54  strk
+* Added cleanup needed for GEOS > 1.0
+*
 * Revision 1.19  2004/06/16 18:47:59  strk
 * Added code to detect geos version.
 * Added appropriate includes in geos connectors.
@@ -363,6 +366,10 @@ Geometry *PostGIS2GEOS_multipolygon(POLYGON3D **polygons,int npolys, int SRID, b
 				subPolys->push_back(PostGIS2GEOS_polygon(polygons[t], SRID,is3d ));
 			}
 			g = geomFactory->createMultiPolygon(subPolys);
+#if GEOS_VERSION > 100
+			for (t=0; t<subPolys->size(); t++)
+				delete (*subPolys)[t];
+#endif
 			delete subPolys;
 
 			if (g== NULL)
@@ -401,6 +408,9 @@ PostGIS2GEOS_multilinestring(const LINE3D **lines, int nlines, int SRID, bool is
 		// geometries pointed to by subLines will be owned
 		// by returned MultiLineString object
 		g = geomFactory->createMultiLineString(subLines);
+#if GEOS_VERSION > 100
+		for (t=0; t<subLines->size(); t++) delete (*subLines)[t];
+#endif
 		delete subLines;
 		if (g==NULL) return NULL;
 		g->setSRID(SRID);
@@ -431,6 +441,10 @@ Geometry *PostGIS2GEOS_multipoint(POINT3D **points,int npoints, int SRID, bool i
 				subPoints->push_back(PostGIS2GEOS_point(points[t], SRID,is3d ));
 			}
 			g = geomFactory->createMultiPoint(subPoints);
+#if GEOS_VERSION > 100
+			for (t=0; t<subPoints->size(); t++)
+				delete (*subPoints)[t];
+#endif
 			delete subPoints;
 			if (g==NULL)
 				return NULL;
