@@ -154,7 +154,7 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 	call++;
 #endif
 
-	lwnotice("unite_garray (jts) invoked");
+	//lwnotice("unite_garray (jts) invoked");
 
 	datum = PG_GETARG_DATUM(0);
 
@@ -183,7 +183,7 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 		PG_LWGEOM *geom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
 		offset += INTALIGN(geom->size);
 
-		lwnotice("unite_garray starting iteration %d of %d", i, nelems);
+		//lwnotice("unite_garray starting iteration %d of %d", i, nelems);
 
 		pgis_geom = geom;
 
