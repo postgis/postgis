@@ -409,7 +409,7 @@ int Insert_attributes(DBFHandle hDBFHandle, int row){
 	for( i = 0; i < num_fields; i++ ){
 	         if(DBFIsAttributeNULL( hDBFHandle, row, i)){
 		        if(dump_format){
-		               printf("\tNULL");
+		               printf("\t\\N");
 		        }else{
 		               printf(",NULL");
 		        }
