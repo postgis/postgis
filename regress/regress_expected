@@ -136,3 +136,5 @@ ERROR:  POSTGIS2GEOS conversion failed
 134|0
 135|13
 136|13
+137|
+138|BOX3D(0 0 0,0 0 0)

@@ -228,3 +228,7 @@ select '134', distance('POINT(1 2)', 'POINT(1 2)');
 select '135', distance('POINT(5 0)', 'POINT(10 12)');
 
 select '136', distance('POINT(0 0)', translate('POINT(0 0)', 5, 12, 0));
+
+select '137', box3d('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION EMPTY)'::geometry);
+select '138', box3d('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION EMPTY, POINT(0 0))'::geometry);
+
