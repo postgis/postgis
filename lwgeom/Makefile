@@ -40,7 +40,7 @@ endif
 
 POSTGIS_VERSION = $(SO_MAJOR_VERSION).$(SO_MINOR_VERSION) USE_GEOS=$(USE_GEOS) USE_PROJ=$(USE_PROJ) USE_STATS=$(USE_STATS)
 POSTGIS_LIB_VERSION = $(SO_MAJOR_VERSION).$(SO_MINOR_VERSION).$(SO_MICRO_VERSION)
-POSTGIS_BUILD_DATE := $(shell date -u "+%F %H-%M-%S")
+POSTGIS_BUILD_DATE := $(shell date -u "+%F %H:%M:%S")
 
 
 #---------------------------------------------------------------
@@ -124,7 +124,7 @@ all: $(GEOS_RULES) $(shlib) lwpostgis.sql
 # Shared library stuff
 
 lwpostgis.sql: lwpostgis.sql.in
-	cpp -P -traditional-cpp -DUSE_VERSION=$(USE_VERSION) $< | sed -e 's:@MODULE_FILENAME@:$(MODULE_FILENAME):g;s:@POSTGIS_VERSION@:$(POSTGIS_VERSION):g;s:@POSTGIS_SCRIPTS_VERSION@:$(SCRIPTS_VERSION):g;s:@POSTGIS_BUILD_DATE@:$(POSTGIS_BUILD_DATE):g' | grep -v ^# > $@
+	cpp -P -traditional-cpp -DUSE_VERSION=$(USE_VERSION) $< | sed -e 's:@MODULE_FILENAME@:$(MODULE_FILENAME):g;s:@POSTGIS_VERSION@:$(POSTGIS_VERSION):g;s:@POSTGIS_SCRIPTS_VERSION@:$(SCRIPTS_VERSION):g;s/@POSTGIS_BUILD_DATE@/$(POSTGIS_BUILD_DATE)/g' | grep -v ^# > $@
 	cp lwpostgis.sql ..
 
 install: all installdirs install-lwgeom-lib install-lwgeom-scripts
