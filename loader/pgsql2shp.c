@@ -10,6 +10,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.28  2003/11/20 18:01:26  strk
+ * patch from m.spring@gmx.de
+ *
  * Revision 1.27  2003/11/20 15:27:20  strk
  * Removed some useless strdups.
  * Removed pgtype 22 (int2vector) from the list of integer DBF field types.
@@ -1132,8 +1135,9 @@ addRecord(PGresult *res, int residx, int row)
 		/* Integer attribute */
 		if (type_ary[j] == 1)
 		{
+			int temp;
 			val = (char *)PQgetvalue(res, residx, j);
-			int temp = atoi(val);
+			temp = atoi(val);
 #if VERBOSE > 1
 fprintf(stdout, "i"); fflush(stdout);
 #endif
@@ -1149,8 +1153,9 @@ fprintf(stdout, "i"); fflush(stdout);
 		/* Double attribute */
 		if (type_ary[j] == 2)
 		{
+			double temp;
 			val = PQgetvalue(res, residx, j);
-			double temp = atof(val);
+			temp = atof(val);
 #if VERBOSE > 1
 fprintf(stdout, "d"); fflush(stdout);
 #endif
