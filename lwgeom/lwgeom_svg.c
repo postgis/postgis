@@ -62,6 +62,7 @@ Datum assvg_geometry(PG_FUNCTION_ARGS)
 	}
 		
 	svg = geometry_to_svg(geom, svgrel, precision);
+	if ( ! svg ) PG_RETURN_NULL();
 
 	len = strlen(svg) + 4;
 
@@ -78,7 +79,8 @@ Datum assvg_geometry(PG_FUNCTION_ARGS)
 
 
 //takes a GEOMETRY and returns a SVG representation
-char *geometry_to_svg(PG_LWGEOM *geometry, int svgrel, int precision)
+char *
+geometry_to_svg(PG_LWGEOM *geometry, int svgrel, int precision)
 {
 	char *result;
 	LWGEOM_INSPECTED *inspected;
@@ -92,9 +94,7 @@ char *geometry_to_svg(PG_LWGEOM *geometry, int svgrel, int precision)
 
 	if (lwgeom_getType(geometry->type) == COLLECTIONTYPE)
 	{
-		result = (char *)palloc(64); 
-		sprintf(result, "GEOMETRYCOLLECTION not yet supported");
-		return result;
+		return NULL;
 	}
 
 	result = palloc(size);
@@ -280,6 +280,9 @@ print_svg_path_rel(char *result, POINTARRAY *pa, int precision)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.7  2004/10/27 12:30:53  strk
+ * AsSVG returns NULL on GEOMETRY COLLECTION input.
+ *
  * Revision 1.6  2004/10/25 14:20:57  strk
  * Y axis reverse and relative path fixes from Olivier Courtin.
  *
