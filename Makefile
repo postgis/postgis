@@ -170,4 +170,5 @@ uninstall: uninstall-lib
 clean distclean maintainer-clean: clean-lib
 	@rm -f $(OBJS) postgis.sql postgis_undef.sql
 	$(MAKE) -C loader clean
+	$(MAKE) -C doc clean
 
