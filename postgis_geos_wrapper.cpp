@@ -2,6 +2,11 @@
 
 /*
 * $Log$
+* Revision 1.13  2003/10/24 21:33:21  strk
+* Added GEOSGeometryTypeId(Geometry *) wrapper function.
+* Added GEOSGetCoordinates_Polygon(Polygon *) as an experimental optimized
+* version of GEOSGetCoordinates(Geometry *); More to add ...
+*
 * Revision 1.12  2003/10/24 14:29:53  strk
 * GEOSGetCoordinates() reverted to getCoordinates() call so to be compatible
 * to all type of geometries (not only LineStrings)
@@ -69,6 +74,13 @@ typedef struct
 } POLYGON3D;
 
 
+#define	POINTTYPE	1
+#define	LINETYPE	2
+#define	POLYGONTYPE	3
+#define	MULTIPOINTTYPE	4
+#define	MULTILINETYPE	5
+#define	MULTIPOLYGONTYPE	6
+#define	COLLECTIONTYPE	7
 
 //###########################################################
 
@@ -104,6 +116,7 @@ extern "C" char GEOSisvalid(Geometry *g1);
 extern "C" char *GEOSasText(Geometry *g1);
 extern "C" char GEOSisEmpty(Geometry *g1);
 extern "C" char *GEOSGeometryType(Geometry *g1);
+extern "C" int GEOSGeometryTypeId(Geometry *g1);
 
 
 extern "C" char *throw_exception(Geometry *g);
@@ -118,6 +131,7 @@ extern "C" Geometry *GEOSUnion(Geometry *g1,Geometry *g2);
 
 
 extern "C" POINT3D  *GEOSGetCoordinate(Geometry *g1);
+extern "C" POINT3D  *GEOSGetCoordinates_Polygon(Polygon *g1);
 extern "C" POINT3D  *GEOSGetCoordinates(Geometry *g1);
 extern "C" int      GEOSGetNumCoordinate(Geometry *g1);
 extern "C" const Geometry *GEOSGetGeometryN(Geometry *g1, int n);
@@ -848,6 +862,44 @@ char *GEOSGeometryType(Geometry *g1)
 	}
 }
 
+// Return postgis geometry type index
+int GEOSGeometryTypeId(Geometry *g1)
+{
+	try
+	{
+		GeometryTypeId id = g1->getGeometryTypeId();
+		switch (id)
+		{
+			case GEOS_POINT:
+				return POINTTYPE;
+			case GEOS_LINESTRING:
+				return LINETYPE;
+			case GEOS_POLYGON:
+				return POLYGONTYPE;
+			case GEOS_MULTIPOINT:
+				return MULTIPOINTTYPE;
+			case GEOS_MULTILINESTRING:
+				return MULTILINETYPE;
+			case GEOS_MULTIPOLYGON:
+				return MULTIPOLYGONTYPE;
+			case GEOS_GEOMETRYCOLLECTION:
+				return COLLECTIONTYPE;
+			default:
+				return 0;
+		}
+	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return -1;
+	}
+
+	catch (...)
+	{
+		return -1;
+	}
+}
+
 
 
 
@@ -1088,6 +1140,11 @@ POINT3D  *GEOSGetCoordinate(Geometry *g1)
 // result is an array length g1->getNumCoordinates()
 POINT3D  *GEOSGetCoordinates(Geometry *g1)
 {
+	if ( g1->getGeometryTypeId() == GEOS_POLYGON )
+	{
+		return GEOSGetCoordinates_Polygon((Polygon *)g1);
+	}
+
 	try {
 		int numPoints = g1->getNumPoints();
 		POINT3D *result = (POINT3D*) malloc (sizeof(POINT3D) * numPoints );
@@ -1119,6 +1176,67 @@ POINT3D  *GEOSGetCoordinates(Geometry *g1)
 	}
 
 }
+
+// A somewhat optimized version for polygon types.
+POINT3D  *GEOSGetCoordinates_Polygon(Polygon *g1)
+{
+	try {
+		int t, r, outidx=0;
+		const CoordinateList *cl;
+		Coordinate c;
+		const LineString *lr;
+		int npts, nrings;
+		POINT3D *result;
+		
+		npts = g1->getNumPoints();
+		result = (POINT3D*) malloc (sizeof(POINT3D) * npts);
+		
+		// Exterior ring 
+		lr = g1->getExteriorRing();
+		cl = lr->getCoordinatesRO();
+		npts = lr->getNumPoints();
+		for (t=0; t<npts; t++)
+		{
+			c = cl->getAt(t);
+
+			result[outidx].x = c.x;
+			result[outidx].y = c.y;
+			result[outidx].z = c.z;
+			outidx++;
+		}
+
+		// Interior rings
+		nrings = g1->getNumInteriorRing();
+		for (r=0; r<nrings; r++)
+		{
+			lr = g1->getInteriorRingN(r);
+			cl = lr->getCoordinatesRO();
+			npts = lr->getNumPoints();
+			for (t=0; t<npts; t++)
+			{
+				c = cl->getAt(t);
+				result[outidx].x = c.x;
+				result[outidx].y = c.y;
+				result[outidx].z = c.z;
+				outidx++;
+			}
+		}
+
+		return result;
+	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return NULL;
+	}
+
+	catch(...)
+	{
+		return NULL;
+	}
+
+}
+
 
 
 
