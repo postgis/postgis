@@ -2402,6 +2402,104 @@ if( geom.getType() = Geometry.POLYGON )
     </sect1>
   </chapter>
 
+<chapter> <title>Performance tips</title>
+
+<sect1> <title>Small tables of large geometries</title>
+
+<sect2><title>Problem description</title>
+
+<para>
+Current PostgreSQL versions (including 8.0) suffer from a query
+optimizer weakness regarding TOAST tables. TOAST tables are a kind of
+"extension room" used to store large (in the sense of data size) values
+that do not fit into normal data pages (like long texts, images or
+complex geometries with lots of vertices), see
+http://www.postgresql.org/docs/8.0/static/storage-toast.html for more
+information).
+</para>
+
+<para>
+The problem appears if you happen to have a table with rather large
+geometries, but not too much rows of them (like a table containing the
+boundaries of all european countries in high resolution). Then the table
+itsself is small, but it uses lots of TOAST space. In our example case,
+the table itsself had about 80 rows and used only 3 data pages, but the
+TOAST table used 8225 pages.
+</para>
+
+<para>
+Now issue a query where you use the geometry operator && to search for a
+bounding box that matches only very few of those rows. Now the query
+optimizer sees that the table has only 3 pages and 80 rows. He estimates
+that a sequential scan on such a small table is much faster than using
+an index. And so he decides to ignore the GIST index. Usually, this
+estimation is correct. But in our case, the && operator has to fetch
+every geometry from disk to compare the bounding boxes, thus reading all
+TOAST pages, too.
+</para>
+
+<para>
+To see whether your suffer from this bug, use the "EXPLAIN ANALYZE"
+postgresql command. For more information and the technical details, you
+can read the thread on the postgres performance mailing list:
+http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php
+</para>
+
+</sect2>
+
+<sect2><title>Workarounds</title>
+
+<para>
+The PostgreSQL people are trying to solve this issue by making the query
+estimation TOAST-aware. For now, here are two workarounds:
+</para>
+
+<para>
+The first workaround is to force the query planner to use the index.
+Send "SET enable_seqscan TO off;" to the server before issuing the
+query. This basically forces the query planner to avoid sequential scans
+whenever possible. So it uses the GIST index as usual. But this flag has
+to be set on every connection, and it causes the query planner to make
+misestimations in other cases, so you should "SET enable_seqscan TO on;"
+after the query.
+</para>
+
+<para>
+The second workaround is to make the sequential scan as fast as the
+query planner thinks. This can be achieved by creating an additional
+column that "caches" the bbox, and matching against this. In our
+example, the commands are like:
+</para>
+
+<programlisting>
+SELECT addGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2');
+
+UPDATE mytable set bbox = Envelope(Force_2d(the_geom));
+</programlisting>
+
+<para>
+Now change your query to use the && operator against bbox instead of
+geom_column, like:
+</para>
+
+<programlisting>
+SELECT geom_column FROM mytable WHERE bbox && SetSrid('BOX3D(0 0,1 1)'::box3d,4326);
+</programlisting>
+
+<para>
+Of yourse, if you change or add rows to mytable, you have to keep the
+bbox "in sync". The most transparent way to do this would be triggers,
+but you also can modify your application to keep the bbox column current
+or run the UPDATE query above after every modification.
+</para>
+
+</sect2>
+
+</sect1>
+
+</chapter>
+
+
   <chapter>
     <title>PostGIS Reference</title>
 
