@@ -219,7 +219,7 @@ uninstall: uninstall-lib
 	@rm -f $(docdir)/contrib/README.postgis $(datadir)/contrib/postgis.sql
 
 clean distclean maintainer-clean: clean-lib
-	@rm -f $(OBJS) postgis.sql postgis_undef.sql
+	@rm -f $(OBJS) postgis.sql postgis_undef.sql postgis_geos_version.h
 	$(MAKE) -C loader clean
 	$(MAKE) -C doc clean
 

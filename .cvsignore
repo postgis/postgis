@@ -2,3 +2,4 @@ libpostgis.so.0.8
 postgis.sql
 postgis_undef.sql
 postgis_old.sql
+postgis_geos_version.h
