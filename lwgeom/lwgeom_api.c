@@ -1100,7 +1100,7 @@ void lwline_serialize_buf(LWLINE *line, char *buf, int *retsize)
 	}
 	//printBYTES((unsigned char *)result, size);
 
-	*retsize = size;
+	if (retsize) *retsize = size;
 }
 
 // find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
@@ -1308,7 +1308,7 @@ void lwpoint_serialize_buf(LWPOINT *point, char *buf, int *retsize)
 	else if (point->ndims == 2) getPoint2d_p(point->point, 0, loc);
 	else if (point->ndims == 4) getPoint4d_p(point->point, 0, loc);
 
-	*retsize = size;
+	if (retsize) *retsize = size;
 }
 
 // find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
@@ -1672,7 +1672,7 @@ void lwpoly_serialize_buf(LWPOLY *poly, char *buf, int *retsize)
 		}
 	}
 
-	*retsize = size;
+	if (retsize) *retsize = size;
 }
 
 
@@ -2253,7 +2253,7 @@ lwgeom_constructempty_buf(int SRID, int ndims, char *buf, int *retsize)
 
 	memcpy(buf, &ngeoms, 4);
 
-	*retsize = lwgeom_empty_length(SRID);
+	if (retsize) *retsize = lwgeom_empty_length(SRID);
 }
 
 // helper function (not for general use)
@@ -3104,7 +3104,9 @@ lwexploded_serialize(LWGEOM_EXPLODED *exploded, int wantbbox)
 	int size = lwexploded_findlength(exploded, wantbbox);
 	char *result = palloc(size);
 	lwexploded_serialize_buf(exploded, wantbbox, result, &sizecom);
-	elog(NOTICE, "findlength:%d, serialize_buf:%d", size, sizecom);
+#ifdef DEBUG
+	elog(NOTICE, "lwexploded_serialize: findlength:%d, serialize_buf:%d", size, sizecom);
+#endif
 	return result;
 }
 
@@ -3181,7 +3183,7 @@ lwexploded_serialize_buf(LWGEOM_EXPLODED *exploded, int wantbbox,
 
 		}
 		else {
-			*retsize = 0;
+			if ( retsize ) *retsize = 0;
 			return; // ERROR !!
 		}
 
@@ -3197,7 +3199,7 @@ lwexploded_serialize_buf(LWGEOM_EXPLODED *exploded, int wantbbox,
 			size += sizeof(BOX2DFLOAT4);
 		}
 
-		*retsize = size;
+		if (retsize) *retsize = size;
 		return;
 	}
 
@@ -3307,7 +3309,7 @@ lwexploded_serialize_buf(LWGEOM_EXPLODED *exploded, int wantbbox,
 	}
 
 	// Register now the number of written bytes
-	*retsize = (loc-buf);
+	if (retsize) *retsize = (loc-buf);
 
 	// Ok. now we need to add type, SRID and bbox 
 	buf[0] = lwgeom_makeType_full(exploded->ndims,
