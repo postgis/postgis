@@ -1,5 +1,4 @@
 <?xml version="1.0"?>
-<?xml-stylesheet href="file:///C|/Program%20Files/SoftQuad/XMetaL%202%20Eval/display/docbookx.css" type="text/css"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V3.1//EN">
 <book> 
   <title>PostGIS Manual</title> 
@@ -42,6 +41,11 @@
 				  side objects and index support,  the server side analytical
 				  functions, and the Mapserver connectivity.</para> 
 			 </listitem> 
+		  </varlistentry><varlistentry> 
+			 <term>Chris Hodgson &lt;chodgson@refractions.net&gt;</term> 
+			 <listitem> 
+				<para>Maintains new functions and the 7.2 index bindings.</para> 
+			 </listitem> 
 		  </varlistentry> 
 		  <varlistentry> 
 			 <term>Paul Ramsey &lt;pramsey@refractions.net&gt;</term> 
@@ -83,15 +87,13 @@
   </chapter> 
   <chapter> 
 	 <title>Installation</title> 
-	 <sect1 id="PGInstall"> 
+	 <sect1><title>Requirements</title><para>PostGIS has the following requirements for building and usage:</para><itemizedlist><listitem><para>A complete configured and built PostgreSQL source code tree.  PostGIS uses definitions from the PostgreSQL configure/build process to conform to the particular platform you are building on. PostgreSQL is available from <ulink url="http://www.postgresql.org">http://www.postgresql.org</ulink></para></listitem><listitem><para>GNU C compiler (<filename>gcc</filename>). Some other ANSI C compilers can be used to compile PostGIS, but we find far fewer problems when compiling with <filename>gcc</filename>.</para></listitem><listitem><para>GNU Make (<filename>gmake</filename> or <filename>make</filename>). For many systems, GNU <filename>make</filename> is the default version of name. Check the version by invoking <filename>make -v</filename>. Other versions of <filename>make</filename> may not like the PostGIS <filename>Makefile</filename>.</para></listitem><listitem><para>(Optional) Proj4 reprojection library. The Proj4 library is used to provide coordinate reprojection support within PostGIS. Proj4 is available for download from <ulink url="http://www.remotesensing.org/proj">http://www.remotesensing.org/proj</ulink>.</para></listitem></itemizedlist></sect1><sect1 id="PGInstall"> 
 		<title>PostGIS</title> 
 		<para>The PostGIS module is a extension to the PostgreSQL backend server.
-		  As such, PostGIS 0.6 <emphasis>requires</emphasis> a full copy of the PostgreSQL
-		  7.1.x source tree in order to compile. The PostgreSQL source code is available at 
+		  As such, PostGIS 0.7 <emphasis>requires</emphasis> a full copy of the PostgreSQL
+		   source tree in order to compile. The PostgreSQL source code is available at 
 		  <ulink url="http://www.postgresql.org">http://www.postgresql.org</ulink>.</para> 
-		<para>PostGIS 0.6 has been built and tested against PostgreSQL 7.1.2. It
-		  will probably work with any of the 7.1.x versions. It will
-		  <emphasis>not</emphasis> work with any version prior to 7.1, or with version 7.2 (not yet released at date of writing). The <emphasis>next</emphasis> version,  PostGIS 0.7, will work with PostgreSQL version 7.2.</para> 
+		<para>PostGIS 0.7 can be built against PostgreSQL 7.1.x or PostgreSQL 7.2.x. Earlier versions of PostgreSQL are <emphasis>not</emphasis> supported.</para> 
 		<orderedlist> 
 		  <listitem> 
 			 <para>Before you can compile the postgis server modules, you must
@@ -99,33 +101,33 @@
 		  </listitem> 
 		  <listitem> 
 			 <para>Retrieve the PostGIS source archive from
-				<ulink url="http://postgis.refractions.net/postgis-0.6.tar.gz">http://postgis.refractions.net/postgis-0.6.tar.gz</ulink>. Uncompress and untar the
+				<ulink url="http://postgis.refractions.net/postgis-0.6.tar.gz">http://postgis.refractions.net/postgis-0.7.tar.gz</ulink>. Uncompress and untar the
 				archive in the "contrib" directory of the PostgreSQL source tree.</para> 
 			  
 		  <programlisting># cd [postgresql source tree]/contrib 
-# gzip -d -c	postgis-0.6.tar.gz | tar xvf -</programlisting></listitem> 
+# gzip -d -c	postgis-0.7.tar.gz | tar xvf -</programlisting></listitem> 
 		  <listitem> 
 			 <para>Once your PostgreSQL installation is up-to-date, enter the
-				"postgis" directory, and run the compile and install commands. </para> 
-			 <programlisting># cd ./postgis-0.6 
-# make 
+				"postgis" directory, and edit the <filename>Makefile</filename>.</para><itemizedlist><listitem><para>If you are compiling against PostgreSQL 7.2.x, you must set the <varname>USE_PG72</varname> variable to <emphasis>1</emphasis>.</para></listitem><listitem><para>If want support for coordinate reprojection you must have the Proj4 library installed, and set the <varname>USE_PROJ</varname> variable to <emphasis>1</emphasis>.</para></listitem></itemizedlist></listitem>
+		<listitem> 
+			 <para>Run the compile and install commands. </para> 
+			 <programlisting># make 
 # make install</programlisting></listitem>
-		<listitem><para>
-As of version 0.6, PostGIS requires the PL/pgSQL procedural language extension.
+		<listitem><para>PostGIS requires the PL/pgSQL procedural language extension.
 Before loading the postgis.sql file, you must first enable PL/pgSQL. 
 You should use the <filename>createlang</filename> command.
 The PostgreSQL 7.1 Programmer's Guide has the details if you want to this
 manually for some reason.
-<programlisting>
-# createlang plpgsql [yourdatabase]
-</programlisting>
+<programlisting># createlang plpgsql [yourdatabase]</programlisting>
 </para></listitem> 
 		  <listitem> 
-			 <para>Finally, you
-				must load the PostGIS object and function definitions into your database. </para> 
+			 <para>Now load the PostGIS object and function definitions into your database by loading the <filename>postgis.sql</filename> definitions file. </para> 
 			 <programlisting># psql -d [yourdatabase] -f	postgis.sql</programlisting><para>The PostGIS server extensions are now loaded and ready to
 				use.</para> 
 		  </listitem> 
+		<listitem> 
+			 <para>For a complete set of EPSG coordinate system definition identifiers, you can also load the <filename>spatial_ref_sys.sql</filename> definitions file and populate the <varname>SPATIAL_REF_SYS</varname> table.</para> 
+			 <programlisting># psql -d [yourdatabase] -f	spatial_ref_sys.sql</programlisting></listitem> 
 		</orderedlist> 
 	 <sect2><title>Upgrading</title><para>Upgrading PostGIS can be tricky, because the underlying C libraries which
 support the object types and geometries may have changed between versions.
@@ -164,10 +166,11 @@ substitutions:</para><programlisting>UPDATE TABLE &lt;table&gt; SET &lt;geocolum
 	 </sect1> 
 	 <sect1> 
 		<title>Loader/Dumper</title> 
-		<para>The data loader should compile very easily.</para> 
-		<programlisting># cd postgis-0.6/loader 
-# make</programlisting><para>The loader is called <filename>shp2pgsql</filename> and converts ESRI Shape files into
-		  SQL suitable for loading in PostGIS/PostgreSQL.</para> 
+		<para>The data loader and dumper are built automatically as part of the PostGIS build. To install them, copy them into a directory in your path.</para> 
+		<programlisting># cd postgis-0.7/loader 
+# cp pgsql2shp /usr/local/bin
+# cp shp2pgsql /usr/local/bin</programlisting><para>The loader is called <filename>shp2pgsql</filename> and converts ESRI Shape files into
+		  SQL suitable for loading in PostGIS/PostgreSQL.  The dumper is called <filename>pgsql2shp</filename> and converts PostGIS tables into ESRI shape files.</para> 
 	 </sect1> 
   </chapter> 
   <chapter> 
@@ -197,17 +200,14 @@ SELECT AddGeometryColumn('dbname','gtest','geom',-1,'LINESTRING',2);</programlis
 			 <para>Then, you can insert a geometry into the table using a SQL
 				insert statement. The GIS object itself is formatted using the OpenGIS
 				Consortium "well-known text" format: </para><programlisting>INSERT INTO gtest (ID, NAME,	GEOM) 
-  VALUES (1, 'First Geometry', GeometryFromText('LINESTRING(2 3,4 5,6 5,7 8)', -1));
-
-SELECT id, name,	AsText(geom) AS geom FROM gtest;</programlisting><para>For more information about other GIS objects, see the 
+  VALUES (1, 'First Geometry', GeometryFromText('LINESTRING(2 3,4 5,6 5,7 8)', -1));</programlisting><para>For more information about other GIS objects, see the 
 				<link linkend="RefObject">object reference</link>.</para> 
-			 <para>To view your GIS data in the table: <emphasis></emphasis>. The return value should look
+			 <para>To view your GIS data in the table: </para><programlisting>SELECT id, name,	AsText(geom) AS geom FROM gtest;</programlisting><para>The return value should look
 				something like this:</para> 
-			 <literallayout> id | name           | geom
+			 <programlisting> id | name           | geom
 ----+----------------+-----------------------------
   1 | First Geometry |	LINESTRING(2 3,4 5,6 5,7 8) 
-(1 row)</literallayout> 
-		  </answer> 
+(1 row)</programlisting></answer> 
 		</qandaentry> 
 		<qandaentry> 
 		  <question> 
@@ -216,7 +216,7 @@ SELECT id, name,	AsText(geom) AS geom FROM gtest;</programlisting><para>For more
 		  <answer> 
 			 <para>There are a number of spatial operators available to
 				PostgreSQL, and several of them have been implemented by PostGIS in order to
-				provide indexing support. However, all the operators have been implemented with
+				provide indexing support.</para><para>In order to do a spatial query with index support, you must use the "overlap operator" </para><para>However, all the operators have been implemented with
 				the following important simplifying assumption: <emphasis>all features shall be
 				represented by their bounding boxes</emphasis>.</para> 
 			 <para>We recognize that using bounding boxes to proxy for features is
@@ -273,7 +273,7 @@ SELECT id, name,	AsText(geom) AS geom FROM gtest;</programlisting><para>For more
 			 <para>Why aren't PostgreSQL R-Tree indexes supported?</para> 
 		  </question> 
 		  <answer> 
-			 <para>Early versions of PostGIS used the PostgreSQL R-Tree indexes. However, PostgreSQL R-Trees have been completely discarded since version 0.6, and spatial indexing is provided with an R-Tree-over-GiST scheme.  </para><para>Our tests have shown search speed for native R-Tree and GiST to be comparable.  Native PostgreSQL R-Trees have two limitations which make them undesirable for
+			 <para>Early versions of PostGIS used the PostgreSQL R-Tree indexes. However, PostgreSQL R-Trees have been completely discarded since version 0.6, and spatial indexing is provided with an R-Tree-over-GiST scheme.</para><para>Our tests have shown search speed for native R-Tree and GiST to be comparable.  Native PostgreSQL R-Trees have two limitations which make them undesirable for
 				use with GIS features (note that these limitations
 				are due to the current PostgreSQL native R-Tree implementation, not the R-Tree concept in
 				general):</para> 
@@ -1154,15 +1154,16 @@ if( geom.getType() = Geometry.POLYGON )
 				<para>Calculates the length of of a geometry on an elipsoid. This
 				  is useful if the coordinates of the geometry are in latitude/longitude and a
 				  length is desired without reprojection. The elipsoid is a separate database
-				  type and can be constructed as follows: 
-				  <literallayout> SPHEROID[&lt;NAME&gt;,&lt;SEMI-MAJOR
-					 AXIS&gt;,&lt;INVERSE FLATTENING&gt;] Eg:
-					 SPHEROID["GRS_1980",6378137,298.257222101] </literallayout>An example
+				  type and can be constructed as follows:</para><literallayout>SPHEROID[&lt;NAME&gt;,&lt;SEMI-MAJOR AXIS&gt;,&lt;INVERSE FLATTENING&gt;]</literallayout><para>Eg:</para> 
+			 <literallayout>SPHEROID["GRS_1980",6378137,298.257222101]</literallayout><para>An example
 				  calculation might look like this: 
-				  <literallayout>SELECT
-					 length_spheroid(geometry_column,'SPHEROID["GRS_1980",6378137,298.257222101]')
-					 from geometry_table;</literallayout></para> 
-			 </listitem> 
+				  </para> 
+			 <literallayout>SELECT
+					 length_spheroid(
+            geometry_column,
+            'SPHEROID["GRS_1980",6378137,298.257222101]'
+      )
+					 from geometry_table;</literallayout></listitem> 
 		  </varlistentry> 
 		  <varlistentry> 
 			 <term>length3d_spheroid(geometry,spheroid)</term> 
