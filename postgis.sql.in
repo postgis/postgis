@@ -1719,6 +1719,7 @@ CREATEFUNCTION line_interpolate_point(geometry, float8)
    AS '@MODULE_FILENAME@'
    LANGUAGE 'C' WITH (isstrict);
 
+
 -----------------------------------------
 --  THESE WERE postgis_sql_VER_end.sql.in
 -----------------------------------------
@@ -1900,15 +1901,6 @@ INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
 
 
 #elif USE_VERSION == 72
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- POSTGISCOSTESTIMATE()
---
-
-CREATEFUNCTION postgisgistcostestimate(opaque,opaque,opaque,opaque,opaque,opaque,opaque,opaque)
-   RETURNS opaque
-   AS '@MODULE_FILENAME@','postgisgistcostestimate'
-	   LANGUAGE 'C'  with (isstrict);
 
 --
 -- 7.2 GiST support functions
@@ -2123,13 +2115,6 @@ INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
 
 #elif USE_VERSION == 73
 
-
-
-CREATEFUNCTION postgisgistcostestimate(internal,internal,internal,internal,internal,internal,internal,internal)
-	RETURNS opaque
-	AS '@MODULE_FILENAME@','postgisgistcostestimate'
-	LANGUAGE 'C'  with (isstrict);
-
 --
 -- 7.2 GiST support functions
 --
@@ -2216,12 +2201,6 @@ UPDATE pg_opclass
 
 
 #elif USE_VERSION == 74
-
-
-CREATEFUNCTION postgisgistcostestimate(internal,internal,internal,internal,internal,internal,internal,internal)
-	RETURNS opaque
-	AS '@MODULE_FILENAME@','postgisgistcostestimate'
-	LANGUAGE 'C'  with (isstrict);
 
 --
 -- 7.2 GiST support functions
