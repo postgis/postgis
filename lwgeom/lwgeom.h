@@ -527,6 +527,7 @@ extern BOX3D *lw_geom_getBB_inspected(LWGEOM_INSPECTED *inspected);
 // between float8 and float4 representations.
 
 extern BOX2DFLOAT4 *box3d_to_box2df(BOX3D *box);
+extern int box3d_to_box2df_p(BOX3D *box, BOX2DFLOAT4 *res);
 extern BOX2DFLOAT4 *box_to_box2df(BOX *box);  // postgresql standard type
 
 extern BOX3D box2df_to_box3d(BOX2DFLOAT4 *box);

@@ -181,7 +181,7 @@ BOX2DFLOAT4 *box3d_to_box2df(BOX3D *box)
 
 	if (box == NULL)
 	{
-		elog(NOTICE, "box3d_to_box2df got NUL box");
+		elog(ERROR, "box3d_to_box2df got NUL box");
 		return result;
 	}
 
@@ -192,6 +192,26 @@ BOX2DFLOAT4 *box3d_to_box2df(BOX3D *box)
 	result->ymax = nextUp_f(box->ymax);
 
 	return result;
+}
+
+// Convert BOX3D to BOX2D using pre-allocated BOX2D
+// returned box2d is allocated with 'palloc'
+// return 0 on error (NULL input box)
+int box3d_to_box2df_p(BOX3D *box, BOX2DFLOAT4 *result)
+{
+	if (box == NULL)
+	{
+		elog(NOTICE, "box3d_to_box2df got NUL box");
+		return 0;
+	}
+
+	result->xmin = nextDown_f(box->xmin);
+	result->ymin = nextDown_f(box->ymin);
+
+	result->xmax = nextUp_f(box->xmax);
+	result->ymax = nextUp_f(box->ymax);
+
+	return 1;
 }
 
 
@@ -348,7 +368,6 @@ BOX2DFLOAT4 getbox2d(char *serialized_form)
 	char *loc;
 	BOX2DFLOAT4 result;
 	BOX3D *box3d;
-	BOX2DFLOAT4 *box;
 
 	loc = serialized_form+1;
 
@@ -366,11 +385,19 @@ BOX2DFLOAT4 getbox2d(char *serialized_form)
 //elog(NOTICE,"getbox2d -- computing bbox");
 	box3d = lw_geom_getBB_simple(serialized_form);
 //elog(NOTICE,"lw_geom_getBB_simple got bbox3d(%.15g %.15g,%.15g %.15g)",box3d->xmin,box3d->ymin,box3d->xmax,box3d->ymax);
-	box = box3d_to_box2df(box3d);
+
+	if ( ! box3d_to_box2df_p(box3d, &result) )
+	{
+		elog(ERROR, "Error converting box3d to box2df");
+	}
+
+	//box = box3d_to_box2df(box3d);
 //elog(NOTICE,"box3d made box2d(%.15g %.15g,%.15g %.15g)",box->xmin,box->ymin,box->xmax,box->ymax);
-	memcpy(&result,box, sizeof(BOX2DFLOAT4));
+	//memcpy(&result,box, sizeof(BOX2DFLOAT4));
+	//pfree(box);
+
 	pfree(box3d);
-	pfree(box);
+
 	return result;
 }
 
@@ -381,7 +408,6 @@ getbox2d_p(char *serialized_form, BOX2DFLOAT4 *box)
 	unsigned char type = (unsigned char) serialized_form[0];
 	char *loc;
 	BOX3D *box3d;
-	BOX2DFLOAT4 *box2;
 
 	loc = serialized_form+1;
 
@@ -400,11 +426,18 @@ getbox2d_p(char *serialized_form, BOX2DFLOAT4 *box)
 	{
 		return 0;
 	}
-	box2 = box3d_to_box2df(box3d);
 
-	memcpy(box,box2, sizeof(BOX2DFLOAT4));
+	if ( ! box3d_to_box2df_p(box3d, box) )
+	{
+		return 0;
+	}
+
+	//box2 = box3d_to_box2df(box3d);
+	//memcpy(box,box2, sizeof(BOX2DFLOAT4));
+	//pfree(box2);
+
 	pfree(box3d);
-	pfree(box2);
+
 	return 1;
 }
 
