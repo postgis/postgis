@@ -82,13 +82,10 @@ char *geometry_to_svg(GEOMETRY  *geometry, int svgrel, int precision)
 
 	int		pt_off,size;
 	bool		first_sub_obj = TRUE;
-	int		mem_size,npts;
+	int		npts;
 
 	//elog(NOTICE, "precision is %d", precision);
-
 	size = 30;	//just enough to put in object type
-	//try to limit number of repalloc()s
-	result = (char *) palloc(30); mem_size= 30;
 
 	// TODO BBox, from where is it called?...
 	if (geometry->type == BBOXONLYTYPE)
@@ -96,9 +93,8 @@ char *geometry_to_svg(GEOMETRY  *geometry, int svgrel, int precision)
 		if (svgrel == 1)
 		{
 			// 5 double digits+ "Mhvhz"+ spaces +null
-			mem_size = MAX_DIGS_DOUBLE*5+5+6+1;
-			pfree(result);
-			result = (char *) palloc(mem_size); 
+			size = MAX_DIGS_DOUBLE*5+5+6+1;
+			result = (char *) palloc(size); 
 
 			sprintf(result, "M %.*g %.*g h%.*g v%.*g h%.*g z",
 				precision, 
@@ -117,9 +113,8 @@ char *geometry_to_svg(GEOMETRY  *geometry, int svgrel, int precision)
 		}
 		else
 		{
-			mem_size = MAX_DIGS_DOUBLE*4+3+1;
-			pfree(result);
-			result = (char *) palloc(mem_size); 
+			size = MAX_DIGS_DOUBLE*4+3+1;
+			result = (char *) palloc(size); 
 			// 4 double digits + 3 spaces +null
 
 			sprintf(result, "%.*g %.*g %.*g %.*g",
@@ -138,11 +133,9 @@ geometry->bvol.LLB.y)
 		return result;
 	}
 
-	// no more warnings on compiletime
-	sprintf(result,"%s", "");
-
 	if (geometry->type == COLLECTIONTYPE)
 	{
+		result = (char *)palloc(64); 
 		sprintf(result, "GEOMETRYCOLLECTION not yet supported");
 		return result;
 	}
@@ -151,6 +144,8 @@ geometry->bvol.LLB.y)
 	offsets = (int32 *) ( ((char *) &(geometry->objType[0] ))
 			+ sizeof(int32) * geometry->nobjs ) ;
 
+	result = palloc(size);
+	result[0] = '\0';
 	for(t=0;t<geometry->nobjs; t++)  //for each object
 	{
 		obj = (char *) geometry +offsets[t] ;
@@ -324,6 +319,9 @@ precision){
 
 /**********************************************************************
  * $Log$
+ * Revision 1.2  2004/09/10 13:25:36  strk
+ * fixed a memory fault
+ *
  * Revision 1.1  2004/09/10 12:49:29  strk
  * Included SVG output function, modified to have precision expressed
  * in terms of significant digits.
