@@ -11,6 +11,12 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.43  2004/06/08 15:18:12  strk
+ * Deleted prototype for isspace() in postgis.h
+ * and included <ctype.h> in postgis_inout.c,
+ * which is the only module calling isspace().
+ * This was needed to compile postgis against PG75(CVS).
+ *
  * Revision 1.42  2004/06/03 09:45:57  strk
  * infinite geoms handled in WKB parser
  *
@@ -106,6 +112,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <errno.h>
+#include <ctype.h>
 
 #include "access/gist.h"
 #include "access/itup.h"

@@ -11,6 +11,12 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.45  2004/06/08 15:18:12  strk
+ * Deleted prototype for isspace() in postgis.h
+ * and included <ctype.h> in postgis_inout.c,
+ * which is the only module calling isspace().
+ * This was needed to compile postgis against PG75(CVS).
+ *
  * Revision 1.44  2004/06/03 16:44:56  strk
  * Added expand_geometry - expand(geometry, int8)
  *
@@ -349,8 +355,6 @@ typedef struct histotag
 
 
 //prototypes
-
-     int isspace(int c);
 
 
 /* constructors*/
