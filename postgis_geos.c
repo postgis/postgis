@@ -10,6 +10,10 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.14  2003/10/24 21:52:35  strk
+ * Modified strcmp-based if-else with switch-case in GEOS2POSTGIS()
+ * using new GEOSGeometryTypeId() interface.
+ *
  * Revision 1.13  2003/10/24 08:28:49  strk
  * Fixed memory leak in GEOSGetCoordinates(), made sure that GEOS2POSTGIS
  * free type string even in case of collapsed geoms. Made sure that geomunion
@@ -106,6 +110,7 @@ extern  char GEOSrelateOverlaps(Geometry *g1, Geometry*g2);
 extern char *GEOSasText(Geometry *g1);
 extern char GEOSisEmpty(Geometry *g1);
 extern char *GEOSGeometryType(Geometry *g1);
+extern int GEOSGeometryTypeId(Geometry *g1);
 
 
 extern void GEOSdeleteChar(char *a);
@@ -1163,220 +1168,176 @@ LINE3D *LineFromGeometry(Geometry *g,int *size)
 
 GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 {
-	char *type = GEOSGeometryType(g) ;
+	int type = GEOSGeometryTypeId(g) ;
 	GEOMETRY *result = NULL;
+	POINT3D *pts;
+	LINE3D *line;
 	BOX3D *bbox ;
+	GEOMETRY *geom, *g2, *r;
+	POLYGON3D *poly;
+	GEOMETRY *g_new,*g_old;
+	int ngeoms,t,size;
 
-	if (strcmp(type,"Point") ==0 )
+	switch (type)
 	{
-		POINT3D *pt = GEOSGetCoordinate(g);
+		/* From slower to faster.. compensation rule :) */
 
-		free(type);
+		case COLLECTIONTYPE:
+			//this is more difficult because GEOS allows GCs of GCs
+			ngeoms = GEOSGetNumGeometries(g);
+			if (ngeoms ==0)
+			{
+				result =  makeNullGeometry(GEOSGetSRID(g));
+				return result;
+			}
+			if (ngeoms == 1)
+			{
+				return GEOS2POSTGIS(GEOSGetGeometryN(g,0),
+					want3d);  // short cut!
+			}
+			geom = GEOS2POSTGIS(GEOSGetGeometryN(g,0) , want3d);
+			for (t=1;t<ngeoms;t++)
+			{
+				g2 = GEOS2POSTGIS(GEOSGetGeometryN(g,t),
+					want3d);
+				r = geom;
+				geom = (GEOMETRY *) DatumGetPointer(
+					DirectFunctionCall2(collector,
+					PointerGetDatum(geom),
+					PointerGetDatum(g2)));
+				pfree(r);
+				pfree(g2);
+			}
+			return geom;
 
-		result = make_oneobj_geometry(sizeof(POINT3D),
-						        (char *) pt,
-							   POINTTYPE,  want3d, GEOSGetSRID(g),1.0, 0.0, 0.0
-						);
+		case MULTIPOLYGONTYPE:
+			ngeoms = 	GEOSGetNumGeometries(g);
+			if (ngeoms ==0)
+			{
+				result =  makeNullGeometry(GEOSGetSRID(g));
+				result->type = MULTIPOLYGONTYPE;
+				return result;
+			}
+			for (t=0;t<ngeoms;t++)
+			{
+				poly = PolyFromGeometry(GEOSGetGeometryN(g,t) ,&size);
+				if (t==0)
+				{
+					result = make_oneobj_geometry(size,
+								(char *) poly,
+								   MULTIPOLYGONTYPE,  want3d, GEOSGetSRID(g),1.0, 0.0, 0.0
+							);
+				}
+				else
+				{
+					g_old = result;
+					result = 	add_to_geometry(g_old,size, (char*) poly, POLYGONTYPE);
+					pfree(g_old);
+				}
+				pfree(poly);
+			}
+			// make bounding box
+			bbox = bbox_of_geometry( result );
+			// copy bounding box
+		    	memcpy( &result->bvol, bbox, sizeof(BOX3D) );
+			// free bounding box
+			pfree( bbox );
+			return result;
 
+		case MULTILINETYPE:
+			ngeoms = GEOSGetNumGeometries(g);
+			if (ngeoms ==0)
+			{
+				result =  makeNullGeometry(GEOSGetSRID(g));
+				result->type = MULTILINETYPE;
+				return result;
+			}
+			for (t=0;t<ngeoms;t++)
+			{
+				if (t==0)
+				{
+					line = LineFromGeometry(GEOSGetGeometryN(g,0) ,&size);
+					result = make_oneobj_geometry(size,
+								(char *) line,
+								   MULTILINETYPE,  want3d, GEOSGetSRID(g),1.0, 0.0, 0.0
+							);
+	//elog(NOTICE,"t==0; %s",geometry_to_text(result));
+	//elog(NOTICE,"    size = %i", result->size);
+				}
+				else
+				{
+					line = LineFromGeometry(GEOSGetGeometryN(g,t) ,&size);
+					g_old = result;
+					result = 	add_to_geometry(g_old,size, (char*) line, LINETYPE);
+	//elog(NOTICE,"t>0; %s",geometry_to_text(result));
+	//elog(NOTICE,"    size = %i", result->size);
+					pfree(g_old);
+				}
+			}
+			bbox = bbox_of_geometry( result ); // make bounding box
+			memcpy( &result->bvol, bbox, sizeof(BOX3D) ); // copy bounding box
+			pfree( bbox ); // free bounding box
+	//elog(NOTICE,"end; %s",geometry_to_text(result));
+	//elog(NOTICE,"    size = %i", result->size);
+			return result;
 
-		GEOSdeleteChar( (char*) pt);
-		return result;
-	}
-	else if (strcmp(type,"LineString")==0)
-	{
-		LINE3D	*line;
-		int size;
+		case MULTIPOINTTYPE:
+			g_new = NULL;
+			ngeoms = GEOSGetNumGeometries(g);
+			if (ngeoms ==0)
+			{
+				result =  makeNullGeometry(GEOSGetSRID(g));
+				result->type = MULTIPOINTTYPE;
+				return result;
+			}
+			pts = GEOSGetCoordinates(g);
+			g_old = make_oneobj_geometry(sizeof(POINT3D),
+				(char *) pts, MULTIPOINTTYPE, want3d,
+				GEOSGetSRID(g),1.0, 0.0, 0.0);
+			for (t=1;t<ngeoms;t++)
+			{
+				g_new = add_to_geometry(g_old, sizeof(POINT3D),
+					(char*)&pts[t], POINTTYPE);
+				pfree(g_old);
+				g_old =g_new;
+			}
+			GEOSdeleteChar( (char*) pts);
+			// make bounding box
+			bbox = bbox_of_geometry( g_new );
+			// copy bounding box
+			memcpy( &g_new->bvol, bbox, sizeof(BOX3D) );
+			// free bounding box
+			pfree( bbox );
+			return g_new;
 
-		free(type);
+		case POLYGONTYPE:
+			poly = PolyFromGeometry(g,&size);
+			if (poly == NULL) return NULL;
+			result = make_oneobj_geometry(size,
+				(char *) poly, POLYGONTYPE, want3d,
+				GEOSGetSRID(g),1.0, 0.0, 0.0);
+			return result;
 
-		line = LineFromGeometry(g,&size);
-		if (line == NULL)
+		case LINETYPE:
+			line = LineFromGeometry(g,&size);
+			if (line == NULL) return NULL;
+			result = make_oneobj_geometry(size,
+				(char *) line, LINETYPE, want3d,
+				GEOSGetSRID(g),1.0, 0.0, 0.0);
+			return result;
+
+		case POINTTYPE: 
+			pts = GEOSGetCoordinate(g);
+			result = make_oneobj_geometry(sizeof(POINT3D),
+				(char *) pts, POINTTYPE, want3d,
+				GEOSGetSRID(g), 1.0, 0.0, 0.0);
+			GEOSdeleteChar( (char*) pts);
+			return result;
+
+		default:
 			return NULL;
 
-
-		result = make_oneobj_geometry(size,
-						        (char *) line,
-							   LINETYPE,  want3d, GEOSGetSRID(g),1.0, 0.0, 0.0
-						);
-		return result;
 	}
-	else if (strcmp(type,"Polygon")==0)
-	{
-		int size;
-		POLYGON3D *poly;
-
-		free(type);
-
-		poly = PolyFromGeometry(g,&size);
-		if (poly == NULL)
-			return NULL;
-
-		result = make_oneobj_geometry(size,
-						        (char *) poly,
-							   POLYGONTYPE,  want3d, GEOSGetSRID(g),1.0, 0.0, 0.0
-						);
-		return result;
-	}
-	else if (strcmp(type,"MultiPoint")==0)
-	{
-		int ngeoms,t;
-		POINT3D *pts;
-		GEOMETRY *g_new,*g_old;
-
-		free(type);
-
-		g_new = NULL;
-
-		ngeoms = 	GEOSGetNumGeometries(g);
-		if (ngeoms ==0)
-		{
-			result =  makeNullGeometry(GEOSGetSRID(g));
-			result->type = MULTIPOINTTYPE;
-			return result;
-		}
-		pts = GEOSGetCoordinates(g);
-
-		g_old = make_oneobj_geometry(sizeof(POINT3D),
-						        (char *) pts,
-							   MULTIPOINTTYPE,  want3d, GEOSGetSRID(g),1.0, 0.0, 0.0
-						);
-
-		for (t=1;t<ngeoms;t++)
-		{
-			g_new=	add_to_geometry(g_old,sizeof(POINT3D), (char*)&pts[t], POINTTYPE);
-			pfree(g_old);
-			g_old =g_new;
-		}
-
-		GEOSdeleteChar( (char*) pts);
-
-
-		bbox = bbox_of_geometry( g_new ); // make bounding box
-		memcpy( &g_new->bvol, bbox, sizeof(BOX3D) ); // copy bounding box
-		pfree( bbox ); // free bounding box
-
-		return g_new;
-	}
-	else if (strcmp(type,"MultiLineString")==0)
-	{
-		int ngeoms,t,size;
-		LINE3D *line;
-		GEOMETRY *g_old;
-
-		free(type);
-
-		ngeoms = 	GEOSGetNumGeometries(g);
-		if (ngeoms ==0)
-		{
-			result =  makeNullGeometry(GEOSGetSRID(g));
-			result->type = MULTILINETYPE;
-			return result;
-		}
-		for (t=0;t<ngeoms;t++)
-		{
-			if (t==0)
-			{
-				line = LineFromGeometry(GEOSGetGeometryN(g,0) ,&size);
-				result = make_oneobj_geometry(size,
-						        (char *) line,
-							   MULTILINETYPE,  want3d, GEOSGetSRID(g),1.0, 0.0, 0.0
-						);
-//elog(NOTICE,"t==0; %s",geometry_to_text(result));
-//elog(NOTICE,"    size = %i", result->size);
-			}
-			else
-			{
-				line = LineFromGeometry(GEOSGetGeometryN(g,t) ,&size);
-				g_old = result;
-				result = 	add_to_geometry(g_old,size, (char*) line, LINETYPE);
-//elog(NOTICE,"t>0; %s",geometry_to_text(result));
-//elog(NOTICE,"    size = %i", result->size);
-				pfree(g_old);
-			}
-		}
-		bbox = bbox_of_geometry( result ); // make bounding box
-		memcpy( &result->bvol, bbox, sizeof(BOX3D) ); // copy bounding box
-		pfree( bbox ); // free bounding box
-//elog(NOTICE,"end; %s",geometry_to_text(result));
-//elog(NOTICE,"    size = %i", result->size);
-		return result;
-
-	}
-	else if (strcmp(type,"MultiPolygon")==0)
-	{
-		int ngeoms,t,size;
-		POLYGON3D *poly;
-		GEOMETRY *g_old;
-
-		free(type); // before we forget ;)
-
-		ngeoms = 	GEOSGetNumGeometries(g);
-		if (ngeoms ==0)
-		{
-			result =  makeNullGeometry(GEOSGetSRID(g));
-			result->type = MULTIPOLYGONTYPE;
-			return result;
-		}
-
-		for (t=0;t<ngeoms;t++)
-		{
-			poly = PolyFromGeometry(GEOSGetGeometryN(g,t) ,&size);
-			if (t==0)
-			{
-				result = make_oneobj_geometry(size,
-						        (char *) poly,
-							   MULTIPOLYGONTYPE,  want3d, GEOSGetSRID(g),1.0, 0.0, 0.0
-						);
-			}
-			else
-			{
-				g_old = result;
-				result = 	add_to_geometry(g_old,size, (char*) poly, POLYGONTYPE);
-				pfree(g_old);
-			}
-			pfree(poly);
-		}
-		bbox = bbox_of_geometry( result ); // make bounding box
-	    memcpy( &result->bvol, bbox, sizeof(BOX3D) ); // copy bounding box
-		pfree( bbox ); // free bounding box
-		return result;
-	}
-	else if (strcmp(type,"GeometryCollection")==0)
-	{
-		//this is more difficult because GEOS allows GCs of GCs
-		int ngeoms = 	GEOSGetNumGeometries(g);
-		GEOMETRY *geom, *g2, *r;
-		int t;
-
-		free(type);
-
-		if (ngeoms ==0)
-		{
-			result =  makeNullGeometry(GEOSGetSRID(g));
-			return result;
-		}
-		if (ngeoms == 1)
-		{
-			return GEOS2POSTGIS(GEOSGetGeometryN(g,0) , want3d);  // short cut!
-		}
-		geom = GEOS2POSTGIS(GEOSGetGeometryN(g,0) , want3d);
-		for (t=1;t<ngeoms;t++)
-		{
-			g2 = GEOS2POSTGIS(GEOSGetGeometryN(g,t) , want3d);
-			r = geom;
-			geom = (GEOMETRY *)
-				DatumGetPointer(
-						DirectFunctionCall2(collector,
-								PointerGetDatum(geom),PointerGetDatum(g2)
-							)
-						);
-			pfree(r);
-			pfree(g2);
-		}
-		return geom;
-	}
-	free(type); // Unknown geometry type
-	return NULL;
 }
 
 
