@@ -1719,5 +1719,5 @@ GEOSHasZ(Geometry *g)
 	double az = g->getCoordinate()->z;
 	//sprintf(msg, "ZCoord: %g", az);
 	//NOTICE_MESSAGE(msg);
-	return (isfinite(az) && az != DoubleNotANumber);
+	return (finite(az) && az != DoubleNotANumber);
 }
