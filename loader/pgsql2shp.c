@@ -10,6 +10,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.35  2003/11/26 17:21:00  strk
+ * Made HEXWKB parsing settable at compile time
+ *
  * Revision 1.34  2003/11/26 16:40:41  strk
  * Handled NULLS in wkb parsing, reduced functions args
  *
@@ -98,7 +101,10 @@
  */
 #define VERBOSE 1
 
+/* Define this to try WKB parsing */
 #undef USE_WKB
+/* Define this to use HEX encoding instead of bytea encoding */
+#undef HEXWKB
 
 /* Global data */
 PGconn *conn;
@@ -1907,16 +1913,20 @@ fprintf(stdout, "s"); fflush(stdout);
 		}
 
 #ifdef USE_WKB
+#ifndef HEXWKB
 		{
 			int junk;
 			char *v = PQgetvalue(res, residx, j);
-			//val = HexDecode(v);
 			val = PQunescapeBytea(v, &junk);
 			//printf("Unescaped %d bytes\n", junk);
-#if VERBOSE > 2
-			dump_wkb(val);
-#endif
 		}
+#else
+		char *v = PQgetvalue(res, residx, j);
+		val = HexDecode(v);
+#endif
+#if VERBOSE > 2
+		dump_wkb(val);
+#endif
 #else
 		val = PQgetvalue(res, residx, j);
 #endif
@@ -2495,9 +2505,17 @@ initialize()
 		{
 #ifdef USE_WKB
 #if BYTE_ORDER == LITTLE_ENDIAN
+#ifdef HEXWKB
+			sprintf(buf, "asbinary(\"%s\", 'NDR')",
+#else
 			sprintf(buf, "asbinary(\"%s\", 'NDR')::bytea",
+#endif
+#else
+#ifdef HEXWKB
+			sprintf(buf, "asbinary(\"%s\", 'XDR')",
 #else
 			sprintf(buf, "asbinary(\"%s\", 'XDR')::bytea",
+#endif
 #endif
 					mainscan_flds[i]);
 #else
@@ -2563,22 +2581,41 @@ HexDecode(char *hex)
 	char byte;
 	int len;
 	
-	len = strlen(hex);
+	len = strlen(hex)/2;
 
-	ret = malloc(len);
+	ret = (char *)malloc(len);
 
 	//printf("Decoding %d bytes", len); fflush(stdout);
 	hexptr = hex; retptr = ret;
-	while (len--)
+	while (*hexptr)
 	{
+		/*
+		 * All these checks on WKB correctness
+		 * can be avoided, are only here because
+		 * I keep getting segfaults whereas
+		 * bytea unescaping works fine...
+		 */
+
 		//printf("%c", *hexptr);
-		if ( *hexptr < 58 ) byte = (((*hexptr)-48)<<4);
-		else byte = (((*hexptr)-65)<<4);
+		if ( *hexptr < 58 && *hexptr > 47 )
+			byte = (((*hexptr)-48)<<4);
+		else if ( *hexptr > 64 && *hexptr < 71 )
+			byte = (((*hexptr)-65)<<4);
+		else {
+			fprintf(stderr, "Malformed WKB\n");
+			exit(1);
+		}
 		hexptr++;
 
 		//printf("%c", *hexptr);
-		if ( *hexptr < 58 ) byte |= ((*hexptr)-48);
-		else byte |= ((*hexptr)-65);
+		if ( *hexptr < 58 && *hexptr > 47 )
+			byte |= ((*hexptr)-48);
+		else if ( *hexptr > 64 && *hexptr < 71 )
+			byte |= ((*hexptr)-65);
+		else {
+			fprintf(stderr, "Malformed WKB\n");
+			exit(1);
+		}
 		hexptr++;
 
 		//printf("(%d)", byte);
