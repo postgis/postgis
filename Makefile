@@ -1,7 +1,5 @@
 # Configuration Directives
-#---------------------------------------------------------------
-# Set USE_PG72 to 1 for PostgreSQL version >= 7.2
-USE_PG72=0
+
 #---------------------------------------------------------------
 # Set USE_PROJ to 1 for Proj4 reprojection support
 USE_PROJ=0
@@ -23,6 +21,17 @@ else
 	libdir := ${PWD}
 endif
 
+#---------------------------------------------------------------
+# Test the version string and select the correct GiST index
+# bindings.
+ifneq ($(findstring 7.2,$(VERSION)),)
+	USE_PG72=1
+else
+	USE_PG72=0
+endif
+
+#---------------------------------------------------------------
+# Regression test temporary database.
 TEST_DB=geom_regress
 
 #---------------------------------------------------------------
