@@ -106,7 +106,7 @@ override CFLAGS += -I$(srcdir) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"'
 override CFLAGS += -DUSE_VERSION=$(USE_VERSION)
 
 ifeq ($(USE_GEOS),1)
-	override CFLAGS += -I$(GEOS_DIR)/include/geos -DUSE_GEOS
+	override CFLAGS += -I$(GEOS_DIR)/include -DUSE_GEOS
 endif
 ifeq ($(USE_PROJ),1)
 	override CFLAGS += -I$(PROJ_DIR)/include -DUSE_PROJ 

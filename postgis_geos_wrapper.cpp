@@ -2,6 +2,9 @@
 
 /*
 * $Log$
+* Revision 1.23  2004/07/02 13:33:23  strk
+* Changed GEOS header inclusion mechanism to be more polite
+*
 * Revision 1.22  2004/07/01 17:02:26  strk
 * Updated to support latest GEOS API.
 *
@@ -59,9 +62,9 @@
 #include <iostream>
 #include <fstream>
 
-#include "geom.h"
-#include "util.h"
 #include "postgis_geos_version.h"
+#include "geos/geom.h"
+#include "geos/util.h"
 
 using namespace geos;
 
