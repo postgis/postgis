@@ -1,3 +1,10 @@
+PostGIS 0.6.1
+
+- Bug fixes
+  - Cygwin compilation fix
+  - Improved getopts handling in utility programs
+  - Text casting fixes
+
 PostGIS 0.6
 
 - New functions
