@@ -11,6 +11,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.9  2004/02/23 21:59:16  strk
+ * geometry analyzer builds the histogram
+ *
  * Revision 1.8  2004/02/23 12:18:55  strk
  * added skeleton functions for pg75 stats integration
  *
@@ -81,8 +84,6 @@
 
 #if USE_VERSION >= 75
 
-#define DEBUG_GEOMETRY_STATS 1
-
 #include "commands/vacuum.h"
 
 /*
@@ -97,6 +98,13 @@
  *
  */
 #define STATISTIC_KIND_GEOMETRY 100
+
+#define DEBUG_GEOMETRY_STATS 0
+
+/*
+ * Default geometry selectivity factor
+ */
+#define DEFAULT_GEOMETRY_SEL 0.000005 
 
 typedef struct GEOM_STATS_T
 {
@@ -543,6 +551,7 @@ Datum build_histogram2d(PG_FUNCTION_ARGS)
 
 
 
+#if USE_VERSION < 75
 /*
  * get_restriction_var
  *		Examine the args of a restriction clause to see if it's of the
@@ -608,10 +617,6 @@ get_restriction_var(List *args,
 	return true;
 }
 
-
-
-
-#if USE_VERSION < 75
 //restriction in the GiST && operator
 PG_FUNCTION_INFO_V1(postgis_gist_sel);
 Datum postgis_gist_sel(PG_FUNCTION_ARGS)
@@ -917,125 +922,16 @@ PG_FUNCTION_INFO_V1(postgis_gist_sel);
 Datum postgis_gist_sel(PG_FUNCTION_ARGS)
 {
 	Query *root = (Query *) PG_GETARG_POINTER(0);
-	//	Oid			operator = PG_GETARG_OID(1);
+	Oid operator = PG_GETARG_OID(1);
 	List *args = (List *) PG_GETARG_POINTER(2);
 	int varRelid = PG_GETARG_INT32(3);
-	GEOMETRY *in;
-	BOX *search_box;
-	char sql[1000];
-	SPITupleTable *tuptable;
-	TupleDesc tupdesc ;
-	HeapTuple tuple ;
-	Datum datum;
-	bool isnull;
-	Var *var;
-	Node *other;
-	bool varonleft;
-	Oid relid;
-	int SPIcode;
-	double myest;
 
 #if DEBUG_GEOMETRY_STATS
 	elog(NOTICE, "postgis_gist_sel called");
-	elog(NOTICE, " returning a fixed estimate of 0.000005%%");
+	elog(NOTICE, " returning default geometry selectivity");
 #endif
-	PG_RETURN_FLOAT8(0.000005);
 
-	if (!get_restriction_var(args, varRelid,
-		&var, &other, &varonleft))
-	{
-		//elog(NOTICE,"get_restriction_var FAILED -returning early");
-		PG_RETURN_FLOAT8(0.000005);
-	}
-
-	relid = getrelid(var->varno, root->rtable);
-	if (relid == InvalidOid)
-	{
-		//elog(NOTICE,"getrelid FAILED (invalid oid) -returning early");
-		PG_RETURN_FLOAT8(0.000005);
-	}
-
-	//elog(NOTICE,"operator's oid = %i (this should be GEOMETRY && GEOMETRY)",operator);
-	//elog(NOTICE,"relations' oid = %i (this should be the relation that the && is working on) ",relid);
-	//elog(NOTICE,"varatt oid = %i (basically relations column #) ",var->varattno);
-
-
-	if (IsA(other, Const) &&((Const *) other)->constisnull)
-	{
-		//elog(NOTICE,"other operand of && is NULL - returning early");
-		PG_RETURN_FLOAT8(0.000005);
-	}
-
-	if (IsA(other, Const))
-	{
-		//elog(NOTICE,"The other side of the && is a constant with type (oid) = %i and length %i.  This should be GEOMETRY with length -1 (variable length)",((Const*)other)->consttype,((Const*)other)->constlen);
-	}
-	else
-	{
-		//elog(NOTICE,"the other side of && isnt a constant - returning early");
-		PG_RETURN_FLOAT8(0.000005);
-	}
-
-	//get the BOX thats being searched in
-	in = (GEOMETRY*)PG_DETOAST_DATUM( ((Const*)other)->constvalue );
-	search_box = convert_box3d_to_box(&in->bvol);
-
-	//elog(NOTICE,"requested search box is : (%.15g %.15g, %.15g %.15g)",search_box->low.x,search_box->low.y,search_box->high.x,search_box->high.y);
-
-
-	SPIcode = SPI_connect();
-	if (SPIcode  != SPI_OK_CONNECT)
-	{
-		elog(NOTICE,"postgis_gist_sel: couldnt open a connection to SPI:%i",SPIcode);
-		PG_RETURN_FLOAT8(0.000005) ;
-	}
-
-	sprintf(sql,"SELECT stats FROM GEOMETRY_COLUMNS WHERE attrelid=%u AND varattnum=%i",relid,var->varattno);
-	//elog(NOTICE,"sql:%s",sql);
-	SPIcode = SPI_exec(sql, 1 );
-	if (SPIcode  != SPI_OK_SELECT )
-	{
-		SPI_finish();
-		elog(NOTICE,"postgis_gist_sel: couldnt execute sql via SPI");
-		PG_RETURN_FLOAT8(0.000005) ;
-	}
-
-	if (SPI_processed !=1)
-	{
-		SPI_finish();
-		//elog(NOTICE,"postgis_gist_sel: geometry_columns didnt return a unique value");
-		PG_RETURN_FLOAT8(0.000005) ;
-	}
-
-	tuptable = SPI_tuptable;
-	tupdesc = SPI_tuptable->tupdesc;
-	tuple = tuptable->vals[0];
-	datum = SPI_getbinval(tuple, tupdesc, 1, &isnull);
-	if (isnull)
-	{
-		SPI_finish();
-		//elog(NOTICE,"postgis_gist_sel: geometry_columns returned a null histogram");
-		PG_RETURN_FLOAT8(0.000005) ;
-	}
-
-	//elog(NOTICE,"postgis_gist_sel: checking against estimate_histogram2d");
-	// now we have the histogram, and our search box - use the estimate_histogram2d(histo,box) to get the result!
-	myest = DatumGetFloat8( DirectFunctionCall2( estimate_histogram2d, datum, PointerGetDatum(search_box) ) );
-
-	if ( (myest<0) || (myest!=myest) ) // <0?  or NaN?
-	{
-		//elog(NOTICE,"postgis_gist_sel: got something crazy back from estimate_histogram2d");
-		PG_RETURN_FLOAT8(0.000005) ;
-	}
-
-	SPIcode =SPI_finish();
-	if (SPIcode  != SPI_OK_FINISH )
-	{
-		//elog(NOTICE,"postgis_gist_sel: couldnt disconnect from SPI");
-		PG_RETURN_FLOAT8(0.000005) ;
-	}
-	//elog(NOTICE,"postgis_gist_sel: finished, returning with %lf",myest);
-	PG_RETURN_FLOAT8(myest);
+	PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_SEL);
 }
 
 /*
@@ -1069,6 +965,9 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	BOX3D *sample_extent=NULL;
 	double total_width=0;
 	double total_boxes_area=0;
+	double cell_area;
+	double geow, geoh; // width and height of histogram
+	int bps; // boxesPerSide 
 	/*
 	 * This is where geometry_analyze
 	 * should put its' custom parameters.
@@ -1141,15 +1040,24 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	geomstats->ymax = sample_extent->URT.y;
 	geomstats->boxesPerSide = boxesPerSide;
 	geomstats->avgFeatureArea = total_boxes_area/notnull_cnt;
+	// Initialize all values to 0
+	for (i=0;i<boxesPerSide*boxesPerSide; i++) geomstats->value[i] = 0;
+
 
 #if DEBUG_GEOMETRY_STATS
 	elog(NOTICE, " histo: xmin,ymin: %f,%f",
-									geomstats->xmin, geomstats->ymin);
+		geomstats->xmin, geomstats->ymin);
 	elog(NOTICE, " histo: xmax,ymax: %f,%f",
-									geomstats->xmax, geomstats->ymax);
+		geomstats->xmax, geomstats->ymax);
 	elog(NOTICE, " histo: boxesPerSide: %f", geomstats->boxesPerSide);
 	elog(NOTICE, " histo: avgFeatureArea: %f", geomstats->avgFeatureArea);
 #endif
+
+	geow = geomstats->xmax-geomstats->xmin;
+	geoh = geomstats->ymax-geomstats->ymin;
+	bps = geomstats->boxesPerSide;
+	cell_area = (geow*geoh) / (bps*bps);
+	
 
 	/*
 	 * Second scan:
@@ -1160,14 +1068,71 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	 */
 	for (i=0; i<samplerows; i++)
 	{
-					BOX *box;
-					double box_area;
-					if ( sampleboxes[i] == NULL ) continue;
-					box = (BOX *)sampleboxes[i];
-					box_area = (box->high.x-box->low.x)*(box->high.y-box->low.y);
+		BOX *box;
+		int x_idx_min, x_idx_max, x;
+		int y_idx_min, y_idx_max, y;
+		double intersect_x, intersect_y;
+		double AOI; // area of intersection
+
+		if ( sampleboxes[i] == NULL ) continue;
+		box = (BOX *)sampleboxes[i];
+							
+		/* Find first overlapping column */
+		x_idx_min = (box->low.x-geomstats->xmin) / geow * bps;
+		if (x_idx_min <0) x_idx_min = 0;
+		if (x_idx_min >= bps) x_idx_min = bps-1;
+
+		/* Find first overlapping row */
+		y_idx_min = (box->low.y-geomstats->ymin) / geoh * bps;
+		if (y_idx_min <0) y_idx_min = 0;
+		if (y_idx_min >= bps) y_idx_min = bps-1;
+
+		/* Find last overlapping column */
+		x_idx_max = (box->high.x-geomstats->xmin) / geow * bps;
+		if (x_idx_max <0) x_idx_max = 0;
+		if (x_idx_max >= bps ) x_idx_max = bps-1;
+
+		/* Find last overlapping row */
+		y_idx_max = (box->high.y-geomstats->ymin) / geoh * bps;
+		if (y_idx_max <0) y_idx_max = 0;
+		if (y_idx_max >= bps) y_idx_max = bps-1;
+
+		/*
+		 * the {x,y}_idx_{min,max}
+		 * define the grid squares that the box intersects
+		 */
+		for (y=y_idx_min; y<=y_idx_max; y++)
+		{
+			for (x=x_idx_min; x<=x_idx_max; x++)
+			{
+				intersect_x = min(box->high.x, geomstats->xmin + (x+1) * geow / bps) -
+					max(box->low.x, geomstats->xmin + x * geow / bps );
+				intersect_y = min(box->high.y, geomstats->ymin + (y+1) * geoh / bps) -
+					max(box->low.y, geomstats->ymin+ y * geoh / bps) ;
+				AOI = intersect_x*intersect_y;
+				geomstats->value[x+y*bps] += AOI / cell_area;
+			}
+		}
 	}
-#if DEBUG_GEOMETRY_STATS
-	elog(NOTICE, " histo: values skipped (not implemented yet)");
+
+	/*
+	 * Normalize histogram
+	 */
+	for (i=0;i<boxesPerSide*boxesPerSide; i++)
+		geomstats->value[i] /= samplerows;
+
+#if DEBUG_GEOMETRY_STATS > 1
+	{
+		int x, y;
+		for (x=0; x<bps; x++)
+		{
+			for (y=0; y<bps; y++)
+			{
+				geomstats->value[i] = 0;
+				elog(NOTICE, " histo[%d,%d] = %.15f", x, y, geomstats->value[x+y*bps]);
+			}
+		}
+	}
 #endif
 
 	/*
