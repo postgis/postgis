@@ -10,6 +10,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.19  2003/10/29 13:59:40  strk
+ * Added geoscentroid function.
+ *
  * Revision 1.18  2003/10/28 15:16:17  strk
  * unite_sfunc() from postgis_geos.c renamed to geom_accum() and moved in postgis_fn.c
  *
@@ -169,6 +172,7 @@ extern  char GEOSisSimple(Geometry *g1);
 extern char GEOSisRing(Geometry *g1);
 
 extern Geometry *GEOSpointonSurface(Geometry *g1);
+extern Geometry *GEOSGetCentroid(Geometry *g);
 
 
 Datum relate_full(PG_FUNCTION_ARGS);
@@ -197,6 +201,7 @@ Datum issimple(PG_FUNCTION_ARGS);
 Datum isring(PG_FUNCTION_ARGS);
 Datum geomequals(PG_FUNCTION_ARGS);
 Datum pointonsurface(PG_FUNCTION_ARGS);
+Datum geoscentroid(PG_FUNCTION_ARGS);
 
 
 
@@ -738,6 +743,40 @@ Datum pointonsurface(PG_FUNCTION_ARGS)
 		compressType(result);  // convert multi* to single item if appropriate
 
 		PG_RETURN_POINTER(result);
+}
+
+PG_FUNCTION_INFO_V1(geoscentroid);
+Datum geoscentroid(PG_FUNCTION_ARGS)
+{
+	GEOMETRY *geom, *result;
+	Geometry *geosgeom, *geosresult;
+
+	geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+	initGEOS(MAXIMUM_ALIGNOF);
+
+	geosgeom = POSTGIS2GEOS(geom);
+
+	geosresult = GEOSGetCentroid(geosgeom);
+	if ( geosresult == NULL )
+	{
+		GEOSdeleteGeometry(geosgeom);
+		elog(ERROR,"GEOS getCentroid() threw an error!");
+		PG_RETURN_NULL(); 
+	}
+
+	result = GEOS2POSTGIS(geosresult, geom->is3d);
+	if (result == NULL)
+	{
+		GEOSdeleteGeometry(geosgeom);
+		GEOSdeleteGeometry(geosresult);
+		elog(ERROR,"Error in GEOS-PGIS conversion");
+		PG_RETURN_NULL(); 
+	}
+	GEOSdeleteGeometry(geosgeom);
+	GEOSdeleteGeometry(geosresult);
+
+	PG_RETURN_POINTER(result);
 }
 
 
@@ -1810,6 +1849,13 @@ PG_FUNCTION_INFO_V1(pointonsurface);
 Datum pointonsurface(PG_FUNCTION_ARGS)
 {
 	elog(ERROR,"pointonsurface:: operation not implemented - compile PostGIS with GEOS support");
+	PG_RETURN_NULL(); // never get here
+}
+
+PG_FUNCTION_INFO_V1(pointonsurface);
+Datum geoscentroid(PG_FUNCTION_ARGS)
+{
+	elog(ERROR,"geoscentroid:: operation not implemented - compile PostGIS with GEOS support");
 	PG_RETURN_NULL(); // never get here
 }
 
