@@ -69,8 +69,9 @@ Datum LWGEOM_mem_size(PG_FUNCTION_ARGS)
 	computed_size += 4; // varlena size
 	if ( size != computed_size )
 	{
-		elog(NOTICE, "varlena size (%d) != computed size+4 (%d)",
-				size, computed_size);
+		elog(NOTICE, "varlena size (%lu) != computed size+4 (%lu)",
+				(unsigned long)size,
+				(unsigned long)computed_size);
 	}
 
 	PG_FREE_IF_COPY(geom,0);
