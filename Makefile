@@ -3,14 +3,14 @@
 #---------------------------------------------------------------
 # Set USE_PROJ to 1 for Proj4 reprojection support
 #
-USE_PROJ=1
+USE_PROJ=0
 PROJ_DIR=/usr/local
 
 #---------------------------------------------------------------
 # Set USE_GEOS to 1 for GEOS spatial predicate and operator
 # support
 #
-USE_GEOS=1
+USE_GEOS=0
 GEOS_DIR=/usr/local
 
 #---------------------------------------------------------------
@@ -122,23 +122,23 @@ include $(top_srcdir)/src/Makefile.shlib
 
 postgis_geos_wrapper.o: postgis_geos_wrapper.cpp
 
-all: all-lib $(NAME).sql $(NAME).sql $(NAME)_undef.sql loaderdumper
+all: all-lib postgis.sql postgis.sql postgis_undef.sql loaderdumper
 
 loaderdumper:
 	$(MAKE) -C loader
 
 # Shared library stuff
 
-$(NAME).sql: $(NAME)_sql_common.sql.in $(NAME)_sql_$(USE_VERSION)_end.sql.in $(NAME)_sql_$(USE_VERSION)_start.sql.in 
-	cat $(NAME)_sql_$(USE_VERSION)_start.sql.in $(NAME)_sql_common.sql.in $(NAME)_sql_$(USE_VERSION)_end.sql.in | sed -e 's:@MODULE_FILENAME@:$(LPATH)/$(shlib):g;s:@POSTGIS_VERSION@:$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION):g'  > $@ 
+postgis.sql: postgis_sql_common.sql.in postgis_sql_$(USE_VERSION)_end.sql.in postgis_sql_$(USE_VERSION)_start.sql.in 
+	cat postgis_sql_$(USE_VERSION)_start.sql.in postgis_sql_common.sql.in postgis_sql_$(USE_VERSION)_end.sql.in | sed -e 's:@MODULE_FILENAME@:$(LPATH)/$(shlib):g;s:@POSTGIS_VERSION@:$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION):g'  > $@ 
 
-$(NAME)_undef.sql: $(NAME).sql create_undef.pl
+postgis_undef.sql: postgis.sql create_undef.pl
 	perl create_undef.pl $< $(USE_VERSION) > $@ 
 
 install: all installdirs install-lib
-	$(INSTALL_DATA) $(srcdir)/README.$(NAME)  $(docdir)/contrib
-	$(INSTALL_DATA) $(NAME).sql $(datadir)/contrib
-	$(INSTALL_DATA) $(NAME)_undef.sql $(datadir)/contrib
+	$(INSTALL_DATA) $(srcdir)/README.postgis  $(docdir)/contrib
+	$(INSTALL_DATA) postgis.sql $(datadir)/contrib
+	$(INSTALL_DATA) postgis_undef.sql $(datadir)/contrib
 	$(INSTALL_DATA) spatial_ref_sys.sql $(datadir)/contrib
 	$(INSTALL_DATA) README.postgis $(datadir)/contrib
 	$(MAKE) -C loader install
@@ -147,11 +147,9 @@ installdirs:
 	$(mkinstalldirs) $(docdir)/contrib $(datadir)/contrib $(libdir)
 
 uninstall: uninstall-lib
-	@rm -f $(docdir)/contrib/README.$(NAME) $(datadir)/contrib/$(NAME).sql
+	@rm -f $(docdir)/contrib/README.postgis $(datadir)/contrib/postgis.sql
 
 clean distclean maintainer-clean: clean-lib
-	@rm -f $(OBJS) $(NAME).sql $(NAME)_undef.sql
+	@rm -f $(OBJS) postgis.sql postgis_undef.sql
 	$(MAKE) -C loader clean
 
-test: all
-	csh regress/regress.csh $(TEST_DB)
