@@ -1,6 +1,4 @@
 
-- WKB: what to do with that ? do we want to keep it as a type ?
-
 - size computation functions for deserialized objects
 
 - Implement lwexploded_serialize_buf for speedup of GEOS<=>POSTGIS conversion
