@@ -62,9 +62,40 @@ LANGUAGE 'plpgsql' ;
 -- FIND_SRID( <schema/database>, <table>, <geom col> )
 
 CREATE FUNCTION find_srid(varchar,varchar,varchar) RETURNS int4 AS
-'select SRID from geometry_columns where f_table_schema like $1 || ''%'' and f_table_name = $2 and f_geometry_column = $3' 
-LANGUAGE 'sql' 
-WITH (iscachable,isstrict); 
+'DECLARE
+   schem text;
+   tabl text;
+   sr int4;
+BEGIN
+   IF $1 IS NULL THEN
+      RAISE EXCEPTION ''find_srid() - schema is NULL!'';
+   END IF;
+   IF $2 IS NULL THEN
+      RAISE EXCEPTION ''find_srid() - table name is NULL!'';
+   END IF;
+   IF $3 IS NULL THEN
+      RAISE EXCEPTION ''find_srid() - column name is NULL!'';
+   END IF;
+   schem = $1;
+   tabl = $2;
+-- if the table contains a . and the schema is empty
+-- split the table into a schema and a table
+-- otherwise drop through to default behavior
+   IF ( schem = '''' and tabl LIKE ''%.%'' ) THEN
+     schem = substr(tabl,1,strpos(tabl,''.'')-1);
+     tabl = substr(tabl,length(schem)+2);
+   ELSE
+     schem = schem || ''%'';
+   END IF;
+
+   select SRID into sr from geometry_columns where f_table_schema like schem and f_table_name = tabl and f_geometry_column = $3;
+   IF NOT FOUND THEN
+       RAISE EXCEPTION ''find_srid() - couldnt find the corresponding SRID - is the geometry registered in the GEOMETRY_COLUMNS table?  Is there an uppercase/lowercase missmatch?'';
+   END IF;
+  return sr;
+END;
+'
+LANGUAGE 'plpgsql' WITH (iscachable); 
 
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- GET_PROJ4_FROM_SRID( <srid> )
