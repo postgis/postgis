@@ -145,6 +145,12 @@ JARCONTENTS=-C $(BUILD) org \
 DEBUGJARCONTENTS=-C $(SRCDIR) org \
 		-C $(SRCDIR) examples
 
+# include version numbers from central repository
+include ../Version.config
+VERSION=$(JDBC_MAJOR_VERSION)_$(JDBC_MINOR_VERSION)_$(JDBC_MICRO_VERSION)
+VERSIONPATH=$(BUILD)/org/postgis
+VERSIONTARGET=$(VERSIONPATH)/version.properties
+
 # Preliminary jts support - not stable yet!
 JTSDIR=jtssrc
 JTSBUILD=jtsbin/
@@ -160,6 +166,8 @@ all:	jar \
 	offlinetests
 
 jar:	compile postgis.jar $(DEBUGJAR)
+	$(CP) postgis.jar postgis_$(VERSION).jar
+	$(CP) postgis_debug.jar postgis_debug_$(VERSION).jar
 
 postgis.jar: compile $(SRCDIR)/org/postgresql/driverconfig.properties
 	$(JAR) -cf postgis.jar $(JARCONTENTS)
@@ -178,11 +186,20 @@ $(BUILD):
 $(STUBBUILD):
 	$(MKDIR) $(STUBBUILD)
 
+$(VERSIONPATH): $(BUILD)
+	$(MKDIR) $(VERSIONPATH)
+
+versionstamp: $(SRC) ../Version.in $(VERSIONPATH)
+	echo  >$(VERSIONTARGET) JDBC_MAJOR_VERSION=$(JDBC_MAJOR_VERSION)
+	echo >>$(VERSIONTARGET) JDBC_MINOR_VERSION=$(JDBC_MINOR_VERSION)
+	echo >>$(VERSIONTARGET) JDBC_MICRO_VERSION=$(JDBC_MICRO_VERSION)
+	touch versionstamp
+
 stubcompile: $(STUBBUILD) 
 	$(JAVAC) -d $(STUBBUILD) $(STUBSRC)
 	touch stubcompile
 
-compile: stubcompile $(BUILD) $(SRC)
+compile: stubcompile $(BUILD) $(SRC) versionstamp
 	$(JAVAC) $(COMP_ADDCP) "$(BUILDCP)" -d $(BUILD) $(SRC) 
 	touch compile
 
@@ -221,7 +238,8 @@ alltests: onlinetests test
 
 clean:  
 	$(DELETE) $(BUILD) bin stubbin postgis.jar postgis_debug.jar \
-		compile stubcompile jtscompile $(JTSBUILD) postgis_jts.jar
+		compile stubcompile jtscompile $(JTSBUILD) postgis_jts.jar \
+                versionstamp
 
 # Install - this needs the successfull inclusion of PostgreSQL top
 # level Makefile (which is mandatory for the C part of PostGIS as well).

@@ -15,10 +15,10 @@ endif
 # Shared library parameters.
 #
 NAME=lwgeom
-SO_MAJOR_VERSION=1
-SO_MINOR_VERSION=0
-SO_MICRO_VERSION=0RC3
-SCRIPTS_VERSION=0.2.0
+
+# fetch version numbers from central repository
+include ../Version.config
+
 ifeq (${USE_VERSION},71) 
 	MODULE_FILENAME = $(LPATH)/$(shlib)
 	MODULE_INSTALLDIR = $(libdir)
