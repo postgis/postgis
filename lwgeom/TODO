@@ -1,3 +1,7 @@
+- Check semantic required by OGC functions working on "first geometry
+  of a given type". Is the first geometry be to be seeked inside 
+  collection elements (currently it is not w/ LWGEOM) ?
+
 - proj support functions might need 3d sometimes.
 
 - GiST index creation tests on PG80a segfaults
