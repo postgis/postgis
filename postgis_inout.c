@@ -2490,7 +2490,7 @@ char *to_wkb_collection(GEOMETRY *geom, bool flip_endian, int32 *end_size)
 	pfree( sizes);
 
 		//total size of the wkb 
-	*end_size = total_size;
+	*end_size = total_size+9;
 
 
 
