@@ -1,0 +1,7 @@
+- proj support functions might need 3d sometimes.
+
+- GiST index creation tests on PG80a segfaults
+
+- GEOMETRY && BOX2D, GEOMETRY && BOX3D
+
+- try reducing box2d copies in selectivity estimation funx
