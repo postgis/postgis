@@ -1,8 +1,8 @@
 CREATE TABLE test_data (
     id integer,
     wkt text,
-    wkb_xdr wkb,
-    wkb_ndr wkb
+    wkb_xdr text,
+    wkb_ndr text
 );
 
 
@@ -84,9 +84,9 @@ INSERT INTO test_data VALUES (-13, 'POLYGON((0 0.1 -0.01,0.2 10.3 -0.02,10.4 10.
 
 
 SELECT id,wkt FROM test_data WHERE
-       asText(lwgeom(wkt)) != wkt  OR
-       asText(lwgeom(wkb_xdr)) != wkt OR 
-       asText(lwgeom(wkb_ndr)) != wkt OR
-       ( (asBinary(lwgeom(wkb_ndr)) != wkb_ndr) AND (asBinary(lwgeom(wkb_ndr)) != wkb_xdr)  )  OR
-       ( (asBinary(lwgeom(wkb_xdr)) != wkb_ndr) AND (asBinary(lwgeom(wkb_xdr)) != wkb_xdr)  ) 
-;
+       asText(geometry(wkt)) != wkt  OR
+       asText(geometry(wkb_xdr)) != wkt OR 
+       asText(geometry(wkb_ndr)) != wkt OR
+       asBinary(geometry(wkb_ndr)) != asBinary(geometry(wkb_xdr)) OR
+       asBinary(geometry(wkt)) != asBinary(geometry(wkb_xdr));
+

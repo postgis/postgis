@@ -1,18 +1,21 @@
-#!/bin/csh
+#!/bin/sh
 echo "Running LWGEOM Regression Test..."
 echo ""
-echo "Differences such as 'INSERT 18641077 1' are not important"
+echo "Building a database for testing (postgis_reg)."
+
+DB=postgis_reg
+createdb $DB > /dev/null
+
+echo "Building postgis support in it."
 echo ""
-echo "Building a database for testing (lwgeom_reg) on port 5432."
-echo "Building postgis and lwgeom support in it."
-echo ""
+
+createlang plpgsql $DB > /dev/null
+psql -f ../lwpostgis.sql $DB > /dev/null 2>&1
+
 echo "there shouldnt be any real output produced after this line."
 echo ""
-createdb lwgeom_reg
-createlang plpgsql lwgeom_reg
-psql -e lwgeom_reg <../../postgis.sql >& /dev/null 
-psql -e lwgeom_reg <../lwgeom.sql >& /dev/null 
-psql -e lwgeom_reg <lwgeom_regress.sql |& grep -v "^INSERT" > lwgeom_regress_out
+
+psql -tA < lwgeom_regress.sql $DB 2>&1 | grep -v "^INSERT" > lwgeom_regress_out
 diff lwgeom_regress_out lwgeom_regress_expected
-sleep 5
-dropdb lwgeom_reg
+sleep 1
+dropdb $DB > /dev/null

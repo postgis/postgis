@@ -1,17 +1,1 @@
-CREATE TABLE test_data (
-    id integer,
-    wkt text,
-    wkb_xdr wkb,
-    wkb_ndr wkb
-);
 CREATE TABLE
-SELECT id,wkt FROM test_data WHERE
-       asText(lwgeom(wkt)) != wkt  OR
-       asText(lwgeom(wkb_xdr)) != wkt OR 
-       asText(lwgeom(wkb_ndr)) != wkt OR
-       ( (asBinary(lwgeom(wkb_ndr)) != wkb_ndr) AND (asBinary(lwgeom(wkb_ndr)) != wkb_xdr)  )  OR
-       ( (asBinary(lwgeom(wkb_xdr)) != wkb_ndr) AND (asBinary(lwgeom(wkb_xdr)) != wkb_xdr)  ) 
- id | wkt 
-----+-----
-(0 rows)
-
