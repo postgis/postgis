@@ -1488,6 +1488,16 @@ SELECT UPDATE_GEOMETRY_STATS([table_name], [column_name]);</programlisting></par
               <varname>ENABLE_SEQSCAN</varname>.</para>
             </note>
           </listitem>
+
+          <listitem>
+            <para>If you find the planner wrong about the cost of
+	    sequencial vs index scans try reducing the value of
+	    random_page_cost in postgresql.conf or using SET
+	    random_page_cost=#. Default value for the parameter
+	    is 4, try setting it to 1 or 2. Decrementing the
+	    value makes the planner more inclined of using Index scans.
+            </para>
+          </listitem>
         </itemizedlist>
       </sect2>
     </sect1>
