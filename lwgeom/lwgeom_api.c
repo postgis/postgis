@@ -35,8 +35,6 @@ static uint32 lwgeom_size_point(char *serialized_point);
 static uint32 lwgeom_size_poly(char *serialized_line);
 static int lwgeom_size_inspected(LWGEOM_INSPECTED *inspected, int geom_number);
 
-
-
 //*********************************************************************
 // BOX routines
 
@@ -1117,8 +1115,9 @@ BOX3D *lwline_findbbox(LWLINE *line)
 	return ret;
 }
 
-//find length of this serialized line
-uint32 lwgeom_size_line(char *serialized_line)
+// find length of this serialized line
+uint32
+lwgeom_size_line(char *serialized_line)
 {
 	int type = (unsigned char) serialized_line[0];
 	uint32 result =1;  //type
@@ -1164,12 +1163,25 @@ uint32 lwgeom_size_line(char *serialized_line)
 		return 0; //never get here
 }
 
+// find length of this deserialized line
+uint32
+lwline_size(LWLINE *line)
+{
+	uint32 size = 1;  //type
+
+	if ( line->SRID != -1 ) size += 4; // SRID
+	size += sizeof(double)*line->ndims*line->points->npoints; // points
+
+	return size;
+}
+
 //********************************************************************
 // support for the LWPOINT sub-type
 
 // construct a new point.  point will not be copied
 // use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
-LWPOINT  *lwpoint_construct(int ndims, int SRID, POINTARRAY *point)
+LWPOINT *
+lwpoint_construct(int ndims, int SRID, POINTARRAY *point)
 {
 	LWPOINT *result ;
 
@@ -1189,7 +1201,8 @@ LWPOINT  *lwpoint_construct(int ndims, int SRID, POINTARRAY *point)
 // construct a proper LWPOINT.
 // serialized_form should point to the 8bit type format (with type = 1)
 // See serialized form doc
-LWPOINT *lwpoint_deserialize(char *serialized_form)
+LWPOINT *
+lwpoint_deserialize(char *serialized_form)
 {
 	unsigned char type;
 	LWPOINT *result;
@@ -1241,7 +1254,8 @@ LWPOINT *lwpoint_deserialize(char *serialized_form)
 
 // convert this point into its serialize form
 // result's first char will be the 8bit type.  See serialized form doc
-char  *lwpoint_serialize(LWPOINT *point)
+char *
+lwpoint_serialize(LWPOINT *point)
 {
 	int size=1;
 	char hasSRID;
@@ -1280,7 +1294,8 @@ char  *lwpoint_serialize(LWPOINT *point)
 // the given buffer, and returning number of bytes written into
 // the given int pointer.
 // result's first char will be the 8bit type.  See serialized form doc
-void lwpoint_serialize_buf(LWPOINT *point, char *buf, int *retsize)
+void
+lwpoint_serialize_buf(LWPOINT *point, char *buf, int *retsize)
 {
 	int size=1;
 	char hasSRID;
@@ -1314,7 +1329,8 @@ void lwpoint_serialize_buf(LWPOINT *point, char *buf, int *retsize)
 }
 
 // find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
-BOX3D *lwpoint_findbbox(LWPOINT *point)
+BOX3D *
+lwpoint_findbbox(LWPOINT *point)
 {
 #ifdef DEBUG
 	elog(NOTICE, "lwpoint_findbbox called with point %p", point);
@@ -1335,7 +1351,9 @@ BOX3D *lwpoint_findbbox(LWPOINT *point)
 }
 
 // convenience functions to hide the POINTARRAY
-POINT2D lwpoint_getPoint2d(LWPOINT *point)
+// TODO: obsolete this
+POINT2D
+lwpoint_getPoint2d(LWPOINT *point)
 {
 	POINT2D result;
 
@@ -1346,7 +1364,8 @@ POINT2D lwpoint_getPoint2d(LWPOINT *point)
 }
 
 // convenience functions to hide the POINTARRAY
-POINT3D lwpoint_getPoint3d(LWPOINT *point)
+POINT3D
+lwpoint_getPoint3d(LWPOINT *point)
 {
 	POINT3D result;
 
@@ -1358,7 +1377,8 @@ POINT3D lwpoint_getPoint3d(LWPOINT *point)
 
 
 //find length of this serialized point
-uint32 lwgeom_size_point(char *serialized_point)
+uint32
+lwgeom_size_point(char *serialized_point)
 {
 	uint  result = 1;
 	unsigned char type;
@@ -1419,13 +1439,26 @@ elog(NOTICE, "lwgeom_size_point: returning (%d)", result+32);
 	return 0; //never get here
 }
 
+// find length of this deserialized point
+uint32
+lwpoint_size(LWPOINT *point)
+{
+	uint32 size = 1; // type
+
+	if ( point->SRID != -1 ) size += 4; // SRID
+	size += point->ndims * sizeof(double); // point
+
+	return size; 
+}
+
 
 //********************************************************************
 // basic polygon manipulation
 
 // construct a new LWPOLY.  arrays (points/points per ring) will NOT be copied
 // use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
-LWPOLY *lwpoly_construct(int ndims, int SRID, int nrings,POINTARRAY **points)
+LWPOLY *
+lwpoly_construct(int ndims, int SRID, int nrings,POINTARRAY **points)
 {
 	LWPOLY *result;
 
@@ -1443,7 +1476,8 @@ LWPOLY *lwpoly_construct(int ndims, int SRID, int nrings,POINTARRAY **points)
 // construct a proper LWPOLY.
 // serialized_form should point to the 8bit type format (with type = 3)
 // See serialized form doc
-LWPOLY *lwpoly_deserialize(char *serialized_form)
+LWPOLY *
+lwpoly_deserialize(char *serialized_form)
 {
 
 	LWPOLY *result;
@@ -1519,7 +1553,8 @@ LWPOLY *lwpoly_deserialize(char *serialized_form)
 // create the serialized form of the polygon
 // result's first char will be the 8bit type.  See serialized form doc
 // points copied
-char *lwpoly_serialize(LWPOLY *poly)
+char *
+lwpoly_serialize(LWPOLY *poly)
 {
 	int size=1;  // type byte
 	char hasSRID;
@@ -1605,7 +1640,8 @@ char *lwpoly_serialize(LWPOLY *poly)
 // the given int pointer.
 // result's first char will be the 8bit type.  See serialized form doc
 // points copied
-void lwpoly_serialize_buf(LWPOLY *poly, char *buf, int *retsize)
+void
+lwpoly_serialize_buf(LWPOLY *poly, char *buf, int *retsize)
 {
 	int size=1;  // type byte
 	char hasSRID;
@@ -1679,7 +1715,8 @@ void lwpoly_serialize_buf(LWPOLY *poly, char *buf, int *retsize)
 
 
 // find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
-BOX3D *lwpoly_findbbox(LWPOLY *poly)
+BOX3D *
+lwpoly_findbbox(LWPOLY *poly)
 {
 //	int t;
 
@@ -1703,7 +1740,8 @@ BOX3D *lwpoly_findbbox(LWPOLY *poly)
 }
 
 //find length of this serialized polygon
-uint32 lwgeom_size_poly(char *serialized_poly)
+uint32
+lwgeom_size_poly(char *serialized_poly)
 {
 	uint32 result = 1; // char type
 	uint32 nrings;
@@ -1777,12 +1815,29 @@ uint32 lwgeom_size_poly(char *serialized_poly)
 	return result;
 }
 
+// find length of this deserialized polygon
+uint32
+lwpoly_size(LWPOLY *poly)
+{
+	uint32 size = 1; // type
+	uint32 i;
+
+	if ( poly->SRID != -1 ) size += 4; // SRID
+
+	size += 4; // nrings
+
+	for (i=0; i<poly->nrings; i++)
+	{
+		size += 4; // npoints
+		size += poly->rings[i]->npoints*poly->ndims*sizeof(double);
+	}
+
+	return size;
+}
+
 
 //*************************************************************************
 // multi-geometry support
-
-
-
 // note - for a simple type (ie. point), this will have sub_geom[0] = serialized_form.
 // for multi-geomtries sub_geom[0] will be a few bytes into the serialized form
 // This function just computes the length of each sub-object and pre-caches this info.
@@ -2373,7 +2428,8 @@ int lwgeom_size_subgeom(char *serialized_form, int geom_number)
 
 
 
-int lwgeom_size_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
+int
+lwgeom_size_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
 {
 	return lwgeom_size(inspected->sub_geoms[geom_number]);
 }

@@ -1,6 +1,4 @@
 
-- size computation functions for deserialized objects
-
 - AsBinary(geometry, XDR|NDR)
 
 - Endiannes honouring in dumper (currently does not specify and does not

@@ -2163,7 +2163,6 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 
 	// Now serialized collected LWGEOM_EXPLODED
 	serialized_result = lwexploded_serialize(expcoll, wantbbox);
-	//serialized_result = lwexploded_serialize(exp1, wantbbox);
 	if ( ! serialized_result )
 	{
 		elog(ERROR, "Could not serialize exploded geoms");
@@ -2176,7 +2175,7 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 
 	// And create LWGEOM type (could provide a _buf version of
 	// the serializer instead)
-	size = lwgeom_size(serialized_result);
+	//size = lwgeom_size(serialized_result);
 	result = LWGEOM_construct(serialized_result,
 		lwgeom_getsrid(serialized_result), wantbbox);
 	pfree(serialized_result);
@@ -2411,12 +2410,12 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 
 	// Create LWGEOM type (could provide a _buf version of
 	// the serializer instead)
-	size = lwgeom_size(serialized_result);
+	//size = lwgeom_size(serialized_result);
 	result = LWGEOM_construct(serialized_result,
 		lwgeom_getsrid(serialized_result), wantbbox);
 	pfree(serialized_result);
 
-	PG_RETURN_POINTER( result );
+	PG_RETURN_POINTER(result);
 }
 
 // makes a polygon of the expanded features bvol - 1st point = LL 3rd=UR

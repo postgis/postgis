@@ -281,6 +281,9 @@ extern LWPOINT  *lwpoint_construct(int ndims, int SRID, POINTARRAY *point);
 // See serialized form doc
 extern LWPOINT *lwpoint_deserialize(char *serialized_form);
 
+// Find size this point would get when serialized (no BBOX)
+extern uint32 lwpoint_size(LWPOINT *point);
+
 // convert this point into its serialize form
 // result's first char will be the 8bit type.  See serialized form doc
 extern char  *lwpoint_serialize(LWPOINT *point);
@@ -314,6 +317,9 @@ extern LWLINE *lwline_construct(int ndims, int SRID, POINTARRAY *points);
 // See serialized form doc
 extern LWLINE *lwline_deserialize(char *serialized_form);
 
+// find the size this line would get when serialized (no BBOX)
+extern uint32 lwline_size(LWLINE *line);
+
 // convert this line into its serialize form
 // result's first char will be the 8bit type.  See serialized form doc
 // copies data.
@@ -344,6 +350,9 @@ extern LWPOLY *lwpoly_construct(int ndims, int SRID, int nrings,POINTARRAY **poi
 // serialized_form should point to the 8bit type format (with type = 3)
 // See serialized form doc
 extern LWPOLY *lwpoly_deserialize(char *serialized_form);
+
+// find the size this polygon would get when serialized (no bbox!)
+extern uint32 lwpoly_size(LWPOLY *poly);
 
 // create the serialized form of the polygon
 // result's first char will be the 8bit type.  See serialized form doc
