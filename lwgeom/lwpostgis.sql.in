@@ -2925,11 +2925,19 @@ CREATEFUNCTION AsSVG(geometry)
 -----------------------------------------------------------------------
 -- GML OUTPUT
 -----------------------------------------------------------------------
+-- AsGML(geom, precision, version)
+CREATEFUNCTION AsGML(geometry, int4, int4)
+	RETURNS TEXT
+	AS '@MODULE_FILENAME@','LWGEOM_asGML'
+	LANGUAGE 'C';
+
+-- AsGML(geom, precision) / version=2
 CREATEFUNCTION AsGML(geometry, int4)
 	RETURNS TEXT
 	AS '@MODULE_FILENAME@','LWGEOM_asGML'
 	LANGUAGE 'C';
 
+-- AsGML(geom) / precision=15 version=2
 CREATEFUNCTION AsGML(geometry)
 	RETURNS TEXT
 	AS '@MODULE_FILENAME@','LWGEOM_asGML'
