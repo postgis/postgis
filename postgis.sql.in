@@ -389,7 +389,15 @@ BEGIN
                 AND typecheck.conrelid = c.oid
                 AND typecheck.conname = ''$2''
                 AND sridcheck.consrc ~ srid::text
-                AND typecheck.consrc ~ type::text;
+                AND typecheck.consrc ~ type::text
+                AND NOT EXISTS (
+                        SELECT oid FROM geometry_columns gc
+                        WHERE c.relname::varchar = gc.f_table_name
+#if USE_VERSION >= 73
+                        AND n.nspname::varchar = gc.f_table_schema
+#endif
+                        AND a.attname::varchar = gc.f_geometry_column
+                );
 
 	GET DIAGNOSTICS foundschema = ROW_COUNT;
 #endif
@@ -439,6 +447,78 @@ BEGIN
 END;
 '
 LANGUAGE 'plpgsql' ;
+
+-----------------------------------------------------------------------
+-- PROBE_GEOMETRY_COLUMNS() 
+-----------------------------------------------------------------------
+-- Fill the geometry_columns table with values probed from the system
+-- catalogues. 3d flag can not be probed, it defaults to 2
+--
+-- Note that bogus records already in geometry_columns are not
+-- overridden (a check for schema.table.column is performed), so
+-- to have a fresh probe backup your geometry_column, delete from
+-- it and probe.
+-----------------------------------------------------------------------
+CREATEFUNCTION probe_geometry_columns() RETURNS text AS
+'
+DECLARE
+	inserted integer;
+BEGIN
+	INSERT INTO geometry_columns SELECT
+		''''::varchar as f_table_catalogue,
+#if USE_VERSION >= 73
+		n.nspname::varchar as f_table_schema,
+#else
+		''''::varchar as f_table_schema,
+#endif
+		c.relname::varchar as f_table_name,
+		a.attname::varchar as f_geometry_column,
+		2 as coord_dimension,
+		trim(both  '' =)'' from substr(sridcheck.consrc,
+			strpos(sridcheck.consrc, ''='')))::integer as srid,
+		trim(both '' =)'''''' from substr(typecheck.consrc, 
+			strpos(typecheck.consrc, ''=''),
+			strpos(typecheck.consrc, ''::'')-
+			strpos(typecheck.consrc, ''='')
+			))::varchar as type,
+#if USE_VERSION < 75
+		a.attrelid,
+		a.attnum as varattnum,
+		null::histogram2d as stats
+#endif
+		FROM pg_class c, pg_attribute a, pg_type t, 
+#if USE_VERSION >= 73
+			pg_namespace n,
+#endif
+			pg_constraint sridcheck, pg_constraint typecheck
+		WHERE t.typname = ''geometry''
+		AND a.atttypid = t.oid
+		AND a.attrelid = c.oid
+#if USE_VERSION >= 73
+		AND c.relnamespace = n.oid
+		AND sridcheck.connamespace = n.oid
+		AND typecheck.connamespace = n.oid
+#endif
+		AND sridcheck.conrelid = c.oid
+		AND sridcheck.conname = ''$1''
+		AND typecheck.conrelid = c.oid
+		AND typecheck.conname = ''$2''
+
+                AND NOT EXISTS (
+                        SELECT oid FROM geometry_columns gc
+                        WHERE c.relname::varchar = gc.f_table_name
+#if USE_VERSION >= 73
+                        AND n.nspname::varchar = gc.f_table_schema
+#endif
+                        AND a.attname::varchar = gc.f_geometry_column
+                );
+
+	GET DIAGNOSTICS inserted = ROW_COUNT;
+
+        RETURN ''new records: ''||inserted;
+END
+
+' LANGUAGE 'plpgsql';
 
 -----------------------------------------------------------------------
 -- FIND_EXTENT( <schema name>, <table name>, <column name> )
