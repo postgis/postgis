@@ -16,6 +16,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.4.2.1  2004/10/15 11:50:33  strk
+ * Fixed a bug leaving a spurious byte in AsSVG() output.
+ *
  * Revision 1.4  2004/09/13 14:26:27  strk
  * indentation fix
  *
@@ -65,7 +68,7 @@ Datum assvg_geometry(PG_FUNCTION_ARGS)
 		
 	wkt = geometry_to_svg(geom1, svgrel, precision);
 
-	len = strlen(wkt) + 5;
+	len = strlen(wkt) + 4;
 
 	result= palloc(len);
 	*((int *) result) = len;
@@ -329,6 +332,9 @@ precision){
 
 /**********************************************************************
  * $Log$
+ * Revision 1.4.2.1  2004/10/15 11:50:33  strk
+ * Fixed a bug leaving a spurious byte in AsSVG() output.
+ *
  * Revision 1.4  2004/09/13 14:26:27  strk
  * indentation fix
  *
