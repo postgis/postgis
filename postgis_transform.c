@@ -176,7 +176,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 
 	char				*o1;
 	int32				*offsets1;
-	int				j,type1,i,poly_points;
+	int				j,type1,gtype,i,poly_points;
 
 	POLYGON3D			*poly;
 	LINE3D			*line;
@@ -187,7 +187,8 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	BOX3D				*bbox;
 	POINT3D			*tmpPts;
 
-	
+
+
 	text	   *input_proj4_text  = (PG_GETARG_TEXT_P(1));
 	text	   *output_proj4_text = (PG_GETARG_TEXT_P(2));
 	int32	   result_srid   = PG_GETARG_INT32(3);
@@ -234,9 +235,50 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	}
 	//great, now we have a geometry, and input/output PJ* structs.  Excellent.
 
-		//copy the geometry structure - we're only going to change the points, not the structures
+	//copy the geometry structure - we're only going to change the points, not the structures
 	result = (GEOMETRY *) palloc (geom->size);
 	memcpy(result,geom, geom->size);
+
+	gtype = result->type;
+
+	// allow transformations of the BOX3D type - the loop below won't be entered since for a BOX3D
+	// type result->nobjs will be -1 so we check for it here
+	if (gtype == BBOXONLYTYPE)
+	{
+		bbox = &(result->bvol);
+		pt = (POINT3D *)bbox;
+
+		if (input_pj->is_latlong)
+			to_rad(pt,2);
+
+		tmpPts = palloc(sizeof(POINT3D)*2);
+		memcpy(tmpPts, pt, sizeof(POINT3D)*2);
+
+		pj_transform(input_pj,output_pj, 2,3, &pt->x,&pt->y, &pt->z);
+				
+		if (pj_errno)
+		{
+			if (pj_errno == -38)  //2nd chance
+			{
+				//couldnt do nadshift - do it without the datum
+				memcpy(pt,tmpPts, sizeof(POINT3D)*2);
+				pj_transform_nodatum(input_pj,output_pj, 2 ,3, &pt->x,&pt->y, &pt->z);
+			}
+
+			if (pj_errno)
+			{
+				pfree(input_proj4); pfree(output_proj4);
+				pj_free(input_pj); pj_free(output_pj);
+				elog(ERROR,"transform: couldnt project bbox point: %i (%s)",pj_errno,pj_strerrno(pj_errno));
+				PG_RETURN_NULL();	
+			}
+					
+		}
+		pfree(tmpPts);
+		if (output_pj->is_latlong)
+			to_dec(pt,2);
+
+	}else{
 
 		//handle each sub-geometry
 		offsets1 = (int32 *) ( ((char *) &(result->objType[0] ))+ sizeof(int32) * result->nobjs ) ;
@@ -268,7 +310,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 					{
 						pfree(input_proj4); pfree(output_proj4);
 						pj_free(input_pj); pj_free(output_pj);
-						elog(ERROR,"tranform: couldnt project point: %i (%s)",pj_errno,pj_strerrno(pj_errno));
+						elog(ERROR,"transform: couldnt project point: %i (%s)",pj_errno,pj_strerrno(pj_errno));
 						PG_RETURN_NULL();	
 					}
 					
@@ -303,7 +345,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 
 						pfree(input_proj4); pfree(output_proj4);
 						pj_free(input_pj); pj_free(output_pj);
-						elog(ERROR,"tranform: couldnt project line");
+						elog(ERROR,"transform: couldnt project line");
 						PG_RETURN_NULL();	
 					}
 				}
@@ -346,7 +388,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 
 						pfree(input_proj4); pfree(output_proj4);
 						pj_free(input_pj); pj_free(output_pj);
-						elog(ERROR,"tranform: couldnt project polygon");
+						elog(ERROR,"transform: couldnt project polygon");
 						PG_RETURN_NULL();	
 					}
 				}
@@ -356,15 +398,21 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 			}
 		}
 
+	}
+
 	// clean up
 	pj_free(input_pj);
 	pj_free(output_pj);
 	pfree(input_proj4); pfree(output_proj4);
 
-	result->SRID = result_srid   ;
-	bbox = bbox_of_geometry(result);
-	memcpy(&result->bvol,bbox, sizeof(BOX3D) ); //make bounding box
+	// Generate the bounding box if necessary
+	if (gtype != BBOXONLYTYPE)
+	{
+		bbox = bbox_of_geometry(result);
+		memcpy(&result->bvol,bbox, sizeof(BOX3D) ); //make bounding box
+	}
 
+	result->SRID = result_srid;
 
 	PG_RETURN_POINTER(result); // new geometry
 }
