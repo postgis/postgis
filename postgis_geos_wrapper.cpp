@@ -2,6 +2,9 @@
 
 /*
 * $Log$
+* Revision 1.27  2004/07/22 16:58:08  strk
+* Updated to reflect geos version string split.
+*
 * Revision 1.26  2004/07/22 16:20:10  strk
 * Added postgis_lib_version() and postgis_geos_version()
 *
@@ -140,6 +143,7 @@ extern "C" char GEOSrelateWithin(Geometry *g1, Geometry*g2);
 extern "C" char GEOSrelateContains(Geometry *g1, Geometry*g2);
 extern "C" char GEOSrelateOverlaps(Geometry *g1, Geometry*g2);
 extern "C" char *GEOSversion();
+extern "C" char *GEOSjtsport();
 
 extern "C" Geometry *PostGIS2GEOS_point(POINT3D *point,int SRID, bool is3d);
 extern "C" Geometry *PostGIS2GEOS_linestring(const LINE3D *line,int SRID, bool is3d);
@@ -1517,9 +1521,25 @@ GEOSversion()
 	 * GEOS upgrade needs postgis re-build, so this static
 	 * assignment is not going to be a problem
 	 */
-	char *res = strdup("GEOS 1.0.0 ported from JTS-1.3");
+	char *res = strdup("1.0.0");
 #else
-	string version = geos::version();
+	string version = geosversion();
+	char *res = strdup(version.c_str());
+#endif
+	return res;
+}
+
+char *
+GEOSjtsport()
+{
+#if GEOS_LAST_INTERFACE < 2
+	/*
+	 * GEOS upgrade needs postgis re-build, so this static
+	 * assignment is not going to be a problem
+	 */
+	char *res = strdup("1.3");
+#else
+	string version = jtsport();
 	char *res = strdup(version.c_str());
 #endif
 	return res;

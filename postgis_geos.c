@@ -10,6 +10,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.34  2004/07/22 16:58:08  strk
+ * Updated to reflect geos version string split.
+ *
  * Revision 1.33  2004/07/22 16:20:10  strk
  * Added postgis_lib_version() and postgis_geos_version()
  *
@@ -185,6 +188,7 @@ extern char GEOSisEmpty(Geometry *g1);
 extern char *GEOSGeometryType(Geometry *g1);
 extern int GEOSGeometryTypeId(Geometry *g1);
 extern char *GEOSversion();
+extern char *GEOSjtsport();
 
 
 extern void GEOSdeleteChar(char *a);
