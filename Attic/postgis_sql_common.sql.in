@@ -12,6 +12,9 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.29  2004/03/26 01:07:27  dblasby
+-- changed name of fluffType() to multi().
+--
 -- Revision 1.28  2004/03/26 00:54:09  dblasby
 -- added full support for fluffType(<geom>)
 -- postgis09=# select fluffType('POINT(0 0)');
@@ -783,7 +786,7 @@ CREATE FUNCTION distance_spheroid(geometry,geometry,spheroid)
 --
 -- Generic operations
 --
-CREATE FUNCTION fluffType(geometry)
+CREATE FUNCTION multi(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','fluffType'
 	LANGUAGE 'C' WITH (isstrict);
