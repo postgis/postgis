@@ -302,6 +302,11 @@ Datum build_histogram2d(PG_FUNCTION_ARGS)
     int    sum_area_numb_new =0;
 	int bump=0;
 
+	bool moredata;
+	void *SPIplan;
+	void *SPIportal;
+
+
     xmin = histo->xmin;
     ymin = histo->ymin;
     xmax = histo->xmax;
@@ -331,8 +336,8 @@ Datum build_histogram2d(PG_FUNCTION_ARGS)
 		columnname = DatumGetCString(DirectFunctionCall1(textout,
 	                                                PointerGetDatum(PG_GETARG_DATUM(2))));
 
-	//elog(NOTICE,"Start build_histogram2d with %i items already existing", sum_area_numb);
-	//elog(NOTICE,"table=\"%s\", column = \"%s\"", tablename, columnname);
+	elog(NOTICE,"Start build_histogram2d with %i items already existing", sum_area_numb);
+	elog(NOTICE,"table=\"%s\", column = \"%s\"", tablename, columnname);
 
 
 		SPIcode = SPI_connect();
@@ -347,94 +352,119 @@ Datum build_histogram2d(PG_FUNCTION_ARGS)
 
 			sprintf(sql,"SELECT box(\"%s\") FROM \"%s\"",columnname,tablename);
 			//elog(NOTICE,"executing %s",sql);
+			//SPIcode = SPI_exec(sql, 2147483640 ); // max signed int32
 
-			SPIcode = SPI_exec(sql, 2147483640 ); // max signed int32
-
-			if (SPIcode  != SPI_OK_SELECT )
+			SPIplan = SPI_prepare(sql, 0, NULL);
+			if (SPIplan  == NULL)
 			{
-					elog(ERROR,"build_histogram2d: couldnt execute sql via SPI");
+					elog(ERROR,"build_histogram2d: couldnt create query plan via SPI");
+					PG_RETURN_NULL() ;
+			}
+
+			SPIportal = SPI_cursor_open(NULL, SPIplan, NULL, NULL);
+			if (SPIportal == NULL)
+			{
+					elog(ERROR,"build_histogram2d: couldn't create cursor via SPI");
 					PG_RETURN_NULL() ;
 			}
 
 			//elog(NOTICE,"processing %i records",SPI_processed);
+			moredata = TRUE;
 
-			tuptable = SPI_tuptable;
-			tupdesc = SPI_tuptable->tupdesc;
-			ntuples = SPI_processed;
+			while (moredata==TRUE) {
 
-			cell_area = ( (xmax-xmin)*(ymax-ymin)/(histo->boxesPerSide*histo->boxesPerSide) );
+				SPI_cursor_fetch(SPIportal, TRUE, 50000);
 
-			for (t=0;t<ntuples;t++)
-			{
-				tuple = tuptable->vals[t];
-				datum = SPI_getbinval(tuple, tupdesc, 1, &isnull);
-				if (!(isnull))
-				{
-					box = (BOX *)DatumGetPointer(datum);
-					box_area = (box->high.x-box->low.x)*(box->high.y-box->low.y);
+				tuptable = SPI_tuptable;
+				tupdesc = SPI_tuptable->tupdesc;
+				ntuples = SPI_processed;
 
-					sum_area_new += box_area;
-					sum_area_numb_new ++;
+				if (ntuples > 0) {
 
-					if (box_area > cell_area )
-						box_area = cell_area;
-					if (box_area<0)
-					    box_area =0;  // for precision!
+					cell_area = ( (xmax-xmin)*(ymax-ymin)/(histo->boxesPerSide*histo->boxesPerSide) );
 
-					//check to see which boxes this intersects
-					x_idx_min = (box->low.x-xmin)/(xmax-xmin)*histo->boxesPerSide;
-					if (x_idx_min <0)
-						x_idx_min = 0;
-					if (x_idx_min >= histo->boxesPerSide)
-						x_idx_min = histo->boxesPerSide-1;
-					y_idx_min = (box->low.y-ymin)/(ymax-ymin)*histo->boxesPerSide;
-					if (y_idx_min <0)
-						y_idx_min = 0;
-					if (y_idx_min >= histo->boxesPerSide)
-						y_idx_min = histo->boxesPerSide-1;
-
-					x_idx_max = (box->high.x-xmin)/(xmax-xmin)*histo->boxesPerSide;
-					if (x_idx_max <0)
-						x_idx_max = 0;
-					if (x_idx_max >= histo->boxesPerSide)
-						x_idx_max = histo->boxesPerSide-1;
-					y_idx_max = (box->high.y-ymin)/(ymax-ymin)*histo->boxesPerSide ;
-					if (y_idx_max <0)
-						y_idx_max = 0;
-					if (y_idx_max >= histo->boxesPerSide)
-						y_idx_max = histo->boxesPerSide-1;
-
-					//the {x,y}_idx_{min,max} define the grid squares that the box intersects
-					// if the area of the intersect between the box and the grid square > 5% of
-
-	//elog(NOTICE,"box is : (%.15g,%.15g to %.15g,%.15g)",box->low.x,box->low.y, box->high.x, box->high.y);
-//elog(NOTICE,"        search is in x: %i to %i   y: %i to %i",x_idx_min, x_idx_max, y_idx_min,y_idx_max);
-					for (y= y_idx_min; y<=y_idx_max;y++)
+					for (t=0;t<ntuples;t++)
 					{
-						for (x=x_idx_min;x<= x_idx_max;x++)
+						tuple = tuptable->vals[t];
+						datum = SPI_getbinval(tuple, tupdesc, 1, &isnull);
+						if (!(isnull))
 						{
-								intersect_x = min(box->high.x, xmin+ (x+1) * (xmax-xmin)/histo->boxesPerSide ) -
-											max(box->low.x, xmin+ x*(xmax-xmin)/histo->boxesPerSide ) ;
-								intersect_y = min(box->high.y, ymin+ (y+1) * (ymax-ymin)/histo->boxesPerSide ) -
-											max(box->low.y, ymin+ y*(ymax-ymin)/histo->boxesPerSide ) ;
+							box = (BOX *)DatumGetPointer(datum);
+							box_area = (box->high.x-box->low.x)*(box->high.y-box->low.y);
 
-									// for a point, intersect_x=0, intersect_y=0, box_area =0
-//elog(NOTICE,"x=%i,y=%i, intersect_x= %.15g, intersect_y = %.15g",x,y,intersect_x,intersect_y);
-								if ( (intersect_x>=0) && (intersect_y>=0) )
+							sum_area_new += box_area;
+							sum_area_numb_new ++;
+
+							if (box_area > cell_area )
+								box_area = cell_area;
+							if (box_area<0)
+								box_area =0;  // for precision!
+
+							//check to see which boxes this intersects
+							x_idx_min = (box->low.x-xmin)/(xmax-xmin)*histo->boxesPerSide;
+							if (x_idx_min <0)
+								x_idx_min = 0;
+							if (x_idx_min >= histo->boxesPerSide)
+								x_idx_min = histo->boxesPerSide-1;
+							y_idx_min = (box->low.y-ymin)/(ymax-ymin)*histo->boxesPerSide;
+							if (y_idx_min <0)
+								y_idx_min = 0;
+							if (y_idx_min >= histo->boxesPerSide)
+								y_idx_min = histo->boxesPerSide-1;
+
+							x_idx_max = (box->high.x-xmin)/(xmax-xmin)*histo->boxesPerSide;
+							if (x_idx_max <0)
+								x_idx_max = 0;
+							if (x_idx_max >= histo->boxesPerSide)
+								x_idx_max = histo->boxesPerSide-1;
+							y_idx_max = (box->high.y-ymin)/(ymax-ymin)*histo->boxesPerSide ;
+							if (y_idx_max <0)
+								y_idx_max = 0;
+							if (y_idx_max >= histo->boxesPerSide)
+								y_idx_max = histo->boxesPerSide-1;
+
+							//the {x,y}_idx_{min,max} define the grid squares that the box intersects
+							// if the area of the intersect between the box and the grid square > 5% of
+
+			//elog(NOTICE,"box is : (%.15g,%.15g to %.15g,%.15g)",box->low.x,box->low.y, box->high.x, box->high.y);
+		//elog(NOTICE,"        search is in x: %i to %i   y: %i to %i",x_idx_min, x_idx_max, y_idx_min,y_idx_max);
+							for (y= y_idx_min; y<=y_idx_max;y++)
+							{
+								for (x=x_idx_min;x<= x_idx_max;x++)
 								{
-									area_intersect = intersect_x*intersect_y;
-									if (area_intersect >= box_area*0.05)
-									{
-//elog(NOTICE,"bump");
-										bump++;
-										result->value[x+y*histo->boxesPerSide]++;
-									}
-								}
-						}
-					}
+										intersect_x = min(box->high.x, xmin+ (x+1) * (xmax-xmin)/histo->boxesPerSide ) -
+													max(box->low.x, xmin+ x*(xmax-xmin)/histo->boxesPerSide ) ;
+										intersect_y = min(box->high.y, ymin+ (y+1) * (ymax-ymin)/histo->boxesPerSide ) -
+													max(box->low.y, ymin+ y*(ymax-ymin)/histo->boxesPerSide ) ;
 
-				}
-			}
+											// for a point, intersect_x=0, intersect_y=0, box_area =0
+		//elog(NOTICE,"x=%i,y=%i, intersect_x= %.15g, intersect_y = %.15g",x,y,intersect_x,intersect_y);
+										if ( (intersect_x>=0) && (intersect_y>=0) )
+										{
+											area_intersect = intersect_x*intersect_y;
+											if (area_intersect >= box_area*0.05)
+											{
+		//elog(NOTICE,"bump");
+												bump++;
+												result->value[x+y*histo->boxesPerSide]++;
+											}
+										}
+								}
+							} // End of y
+
+						} // End isnull
+
+					} // End of for loop
+
+				} else {
+						moredata = FALSE;
+				} // End of if ntuples > 0
+
+			} // End of while loop
+
+
+		// Close the cursor
+		SPI_cursor_close(SPIportal);
 
 	    SPIcode =SPI_finish();
 	    if (SPIcode  != SPI_OK_FINISH )
