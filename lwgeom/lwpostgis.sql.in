@@ -1692,7 +1692,7 @@ CREATEFUNCTION makeline_garray (geometry[])
 	AS '@MODULE_FILENAME@', 'LWGEOM_makeline_garray'
 	LANGUAGE 'C';
 
-CREATEFUNCTION line_from_multipoint(geometry)
+CREATEFUNCTION LineFromMultiPoint(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_makeline'
 	LANGUAGE 'C';

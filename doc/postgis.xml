@@ -3734,6 +3734,31 @@ FROM geometry_table;</literallayout>
 		    <para>Creates a LineString from a MultiPoint geometry.</para>
 		  </listitem>
 		</varlistentry>
+
+		<varlistentry>
+		  <term>Collect(geometry set)</term>
+
+		  <listitem>
+		    <para>This function returns a GEOMETRYCOLLECTION or a MULTI object from a set
+		    of geometries. The collect() function is an "aggregate" function
+		    in the terminology of PostgreSQL. That means that it operators on
+		    lists of data, in the same way the sum() and mean() functions do.
+		    For example, "SELECT COLLECT(GEOM) FROM GEOMTABLE GROUP BY
+		    ATTRCOLUMN" will return a separate GEOMETRYCOLLECTION for each
+		    distinct value of ATTRCOLUMN.</para>
+		  </listitem>
+		</varlistentry>
+
+		<varlistentry>
+		  <term>Collect(geometry, geometry)</term>
+
+		  <listitem>
+		    <para>This function returns a geometry being a collection
+		    of two input geometries. Output type can be a MULTI* or 
+		    a GEOMETRYCOLLECTION.</para>
+		  </listitem>
+		</varlistentry>
+
 	  </variablelist>
       </sect2>
 
@@ -3790,30 +3815,6 @@ FROM geometry_table;</literallayout>
 		    distance() queries, to add an index filter to the query.</para>
 		  </listitem>
 		</varlistentry>
-
-		<varlistentry>
-		  <term>collect(geometry set)</term>
-
-		  <listitem>
-		    <para>This function returns a GEOMETRYCOLLECTION object from a set
-		    of geometries. The collect() function is an "aggregate" function
-		    in the terminology of PostgreSQL. That means that it operators on
-		    lists of data, in the same way the sum() and mean() functions do.
-		    For example, "SELECT COLLECT(GEOM) FROM GEOMTABLE GROUP BY
-		    ATTRCOLUMN" will return a separate GEOMETRYCOLLECTION for each
-		    distinct value of ATTRCOLUMN.</para>
-		  </listitem>
-		</varlistentry>
-
-		<varlistentry>
-		  <term>memcollect(geometry set)</term>
-
-		  <listitem>
-		    <para>This does the the same of collect(geometry), only more
-		    memory-friendly (uses less memory and more processor time).</para>
-		  </listitem>
-		</varlistentry>
-
         <varlistentry>
           <term>extent(geometry set)</term>
 
