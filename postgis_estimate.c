@@ -11,6 +11,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.23  2004/06/09 09:35:49  strk
+ * Removed partial pgsql List API copy
+ *
  * Revision 1.22  2004/06/08 17:49:14  strk
  * Fixed to build cleanly agains pg75
  *
@@ -964,41 +967,6 @@ postgisgistcostestimate(PG_FUNCTION_ARGS)
 }
 
 #else // USE_VERSION >= 75
-
-
-/*------------ COPIED AND ADAPTED FROM POSTGRESQL --------*/
-
-/*
- * Locate the n'th cell (counting from 0) of the list.  It is an assertion
- * error if there isn't one.
- */
-static ListCell *
-list_nth_cell(List *list, int n)
-{
-        ListCell *match;
-
-        /* Does the caller actually mean to fetch the tail? */
-        if (n == list->length - 1)
-                return list->tail;
-
-        for (match = list->head; n-- > 0; match = match->next)
-                ;
-
-        return match;
-}
-
-/*
- * Return the data value contained in the n'th element of the
- * specified list. (List elements begin at 0.)
- */
-void *
-list_nth(List *list, int n)
-{
-        return lfirst(list_nth_cell(list, n));
-}
-
-/*------------ END COPIED AND ADAPTED FROM POSTGRESQL --------*/
-
 
 /*
  * This function should return an estimation of the number of
