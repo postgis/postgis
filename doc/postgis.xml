@@ -3066,9 +3066,9 @@ dimension
         <title>Geometry Constructors</title>
 
         <variablelist>
+
           <varlistentry>
             <term>GeomFromText(text,[&lt;srid&gt;])</term>
-
             <listitem>
               <para>Makes a Geometry from WKT with the given SRID. If SRID is
               not give, it defaults to -1.</para>
@@ -3216,7 +3216,7 @@ dimension
           </varlistentry>
 
           <varlistentry>
-            <term>GeomFromWKB(text,[&lt;srid&gt;])</term>
+            <term>GeomFromWKB(bytea,[&lt;srid&gt;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKB with the given SRID. If SRID is
@@ -3228,7 +3228,7 @@ dimension
           </varlistentry>
 
           <varlistentry>
-            <term>GeomFromWKB(text,[&lt;srid&gt;])</term>
+            <term>GeomFromWKB(bytea,[&lt;srid&gt;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKB with the given SRID. If SRID is
@@ -3562,7 +3562,7 @@ dimension
       </sect2>
 
       <sect2>
-        <title>Misurement functions</title>
+        <title>Misurement Functions</title>
 	  <variablelist>
 
 		<varlistentry>
@@ -3702,12 +3702,71 @@ FROM geometry_table;</literallayout>
 
       </sect2>
 
+	<sect2>
+		<title>Geometry Outputs</title>
+		<variablelist>
+
+			<varlistentry>
+				<term>AsBinary(geometry,{'NDR'|'XDR'})</term>
+
+				<listitem>
+					<para>Returns the geometry in the OGC "well-known-binary" format as a bytea, using little-endian (NDR) or big-endian (XDR) encoding. This is useful in binary cursors to pull data out of the database without converting it to a string representation.</para>
+				</listitem>
+			</varlistentry>
+
+			<varlistentry>
+				<term>AsEWKT(geometry)</term>
+				<listitem>
+					<para>Returns a Geometry in EWKT format (as text).</para>
+				</listitem>
+			</varlistentry>
+
+			<varlistentry>
+				<term>AsEWKB(geometry, {'NDR'|'XDR'})</term>
+				<listitem>
+					<para>Returns a Geometry in EWKB format (as bytea) using either little-endian (NDR) or big-endian (XDR) encoding.</para>
+				</listitem>
+			</varlistentry>
+
+			<varlistentry>
+				<term>AsSVG(geometry, [rel], [precision])</term>
+				<listitem>
+					<para>Return the geometry as an SVG path data. Use 1 as second argument to have the path data implemented in terms of relative moves, the default (or 0) uses absolute moves. Third argument may be used to reduce the maximum number of decimal digits used in output (defaults to 15). Point geometries will be rendered as cx/cy when 'rel' arg is 0, x/y when 'rel' is 1.</para>
+				</listitem>
+			</varlistentry>
+
+			<varlistentry>
+				<term>AsGML(geometry, [precision])</term>
+				<listitem>
+					<para>Return the geometry as a GML element.  Second argument may be used to reduce the maximum number of significant digits used in output (defaults to 15).</para>
+				</listitem>
+			</varlistentry>
+
+		</variablelist>
+	</sect2>
+
+
       <sect2>
       	<title>Geometry Constructors</title>
+
 	  <variablelist>
+
+		<varlistentry>
+			<term>GeomFromEWKT(text)</term>
+			<listitem>
+				<para>Makes a Geometry from EWKT.</para>
+			</listitem>
+		</varlistentry>
+
+		<varlistentry>
+			<term>GeomFromEWKB(bytea)</term>
+			<listitem>
+				<para>Makes a Geometry from EWKB.</para>
+			</listitem>
+		</varlistentry>
+
 		<varlistentry>
 		  <term>MakePoint(&lt;x&gt;, &lt;y&gt;, [&lt;z&gt;], [&lt;m&gt;])</term>
-
 		  <listitem>
 		    <para>Creates a 2d,3dz or 4d point geometry.</para>
 		  </listitem>
@@ -3817,7 +3876,7 @@ FROM geometry_table;</literallayout>
 	  <variablelist>
 
         <varlistentry>
-          <term>addBBOX(geometry)</term>
+          <term>AddBBOX(geometry)</term>
           <listitem>
             <para>Add bounding box to the geometry. This would make bounding
 	    box based queries faster, but will increase the size of the
@@ -3826,7 +3885,7 @@ FROM geometry_table;</literallayout>
         </varlistentry>
 
         <varlistentry>
-          <term>dropBBOX(geometry)</term>
+          <term>DropBBOX(geometry)</term>
           <listitem>
             <para>Drop the bounding box cache from the geometry.
 	    This reduces geometry size, but makes bounding-box based
@@ -3835,7 +3894,7 @@ FROM geometry_table;</literallayout>
         </varlistentry>
 
         <varlistentry>
-          <term>force_collection(geometry)</term>
+          <term>Force_collection(geometry)</term>
 
           <listitem>
             <para>Converts the geometry into a GEOMETRYCOLLECTION. This is
@@ -3844,7 +3903,7 @@ FROM geometry_table;</literallayout>
         </varlistentry>
 
         <varlistentry id="force_2d">
-          <term>force_2d(geometry)</term>
+          <term>Force_2d(geometry)</term>
 
           <listitem>
             <para>Forces the geometries into a "2-dimensional mode" so that
@@ -3855,8 +3914,8 @@ FROM geometry_table;</literallayout>
         </varlistentry>
 
         <varlistentry id="force_3dz">
-          <term>force_3dz(geometry)</term>
-          <term>force_3d(geometry)</term>
+          <term>Force_3dz(geometry)</term>
+          <term>Force_3d(geometry)</term>
 
           <listitem>
             <para>Forces the geometries into XYZ mode.</para>
@@ -3864,7 +3923,7 @@ FROM geometry_table;</literallayout>
         </varlistentry>
 
         <varlistentry id="force_3dm">
-          <term>force_3dm(geometry)</term>
+          <term>Force_3dm(geometry)</term>
 
           <listitem>
             <para>Forces the geometries into XYM mode.</para>
@@ -3872,7 +3931,7 @@ FROM geometry_table;</literallayout>
         </varlistentry>
 
         <varlistentry id="force_4d">
-          <term>force_4d(geometry)</term>
+          <term>Force_4d(geometry)</term>
 
           <listitem>
             <para>Forces the geometries into XYZM mode.</para>
@@ -3880,7 +3939,7 @@ FROM geometry_table;</literallayout>
         </varlistentry>
 
         <varlistentry>
-          <term>multi(geometry)</term>
+          <term>Multi(geometry)</term>
 
           <listitem>
             <para>Returns the geometry as a MULTI* geometry. If the geometry
@@ -3889,7 +3948,7 @@ FROM geometry_table;</literallayout>
         </varlistentry>
 
         <varlistentry>
-          <term>transform(geometry,integer)</term>
+          <term>Transform(geometry,integer)</term>
 
           <listitem>
             <para>Returns a new geometry with its coordinates transformed to
@@ -3899,7 +3958,7 @@ FROM geometry_table;</literallayout>
         </varlistentry>
 
         <varlistentry>
-          <term>translate(geometry,float8,float8,float8)</term>
+          <term>Translate(geometry,float8,float8,float8)</term>
 
           <listitem>
             <para>Translates the geometry to a new location using the numeric
@@ -3922,7 +3981,7 @@ FROM geometry_table;</literallayout>
         </varlistentry>
 
         <varlistentry>
-          <term>simplify(geometry, tolerance)</term>
+          <term>Simplify(geometry, tolerance)</term>
 
           <listitem>
             <para>Returns a "simplified" version of the given geometry using
@@ -3936,7 +3995,7 @@ FROM geometry_table;</literallayout>
         </varlistentry>
 
         <varlistentry>
-          <term>segmentize(geometry, maxlength)</term>
+          <term>Segmentize(geometry, maxlength)</term>
 
           <listitem>
             <para>Return a modified [multi]polygon having no ring segment
@@ -3954,42 +4013,68 @@ FROM geometry_table;</literallayout>
 	<title>Misc</title>
 	  <variablelist>
 
-		<varlistentry>
-		  <term>asBinary(geometry,'NDR')</term>
+			<varlistentry>
+				<term>Summary(geometry)</term>
+				<listitem>
+					<para>Returns a text summary of the contents of the geometry.</para>
+				</listitem>
+			</varlistentry>
 
-		  <listitem>
-		    <para>Returns the geometry in the OGC "well-known-binary" format,
-		    using little-endian encoding. This is useful in binary cursors to
-		    pull data out of the database without converting it to a string
-		    representation.</para>
-		  </listitem>
-		</varlistentry>
+			<varlistentry>
+				<term>box2d(geometry)</term>
+				<listitem>
+					<para>Returns a BOX2D representing the maximum extents of the geometry.</para>
+				</listitem>
+			</varlistentry>
 
-		<varlistentry>
-		  <term>asBinary(geometry,'XDR')</term>
+			<varlistentry>
+				<term>box3d(geometry)</term>
+				<listitem>
+					<para>Returns a BOX3D representing the maximum extents of the geometry.</para>
+				</listitem>
+			</varlistentry>
 
-		  <listitem>
-		    <para>Returns the geometry in the OGC "well-known-binary" format,
-		    using big-endian encoding. This is useful in binary cursors to
-		    pull data out of the database without converting it to a string
-		    representation.</para>
-		  </listitem>
-		</varlistentry>
+			<varlistentry>
+				<term>extent(geometry set)</term>
+
+				<listitem>
+					<para>The extent() function is an "aggregate" function in the terminology of PostgreSQL. That means that it operators on lists of data, in the same way the sum() and mean() functions do. For example, "SELECT EXTENT(GEOM) FROM GEOMTABLE" will return a BOX3D giving the maximum extend of all features in the table. Similarly, "SELECT EXTENT(GEOM) FROM GEOMTABLE GROUP BY CATEGORY" will return one extent result for each category.</para>
+				</listitem>
+			</varlistentry>
+
+			<varlistentry id="zmflag">
+				<term>zmflag(geometry)</term>
+				<listitem>
+					<para>Returns ZM (dimension semantic) flag of the geometries as a small int. Values are: 0=2d, 1=3dm, 2=3dz, 3=4d.  </para>
+				</listitem>
+			</varlistentry>
+
+			<varlistentry id="ndims">
+				<term>ndims(geometry)</term>
+				<listitem>
+					<para>Returns number of dimensions of the geometry as a small int. Values are: 2,3 or 4.</para>
+				</listitem>
+			</varlistentry>
+
+			<varlistentry>
+				<term>nrings(geometry)</term>
+				<listitem>
+					<para>If the geometry is a polygon or multi-polygon returns the number of rings.</para>
+				</listitem>
+			</varlistentry>
+
+			<varlistentry>
+				<term>npoints(geometry)</term>
+				<listitem>
+					<para>Returns the number of points in the geometry.</para>
+				</listitem>
+			</varlistentry>
 
 		<varlistentry>
 		  <term>isvalid(geometry)</term>
 
 		  <listitem>
 		    <para>returns true if this geometry is valid.</para>
-		  </listitem>
-		</varlistentry>
-
-		<varlistentry>
-		  <term>box3d(geometry)</term>
-
-		  <listitem>
-		    <para>Returns a BOX3D representing the maximum extents of the
-		    geometry.</para>
 		  </listitem>
 		</varlistentry>
 
@@ -4003,34 +4088,14 @@ FROM geometry_table;</literallayout>
 		    distance() queries, to add an index filter to the query.</para>
 		  </listitem>
 		</varlistentry>
-        <varlistentry>
-          <term>extent(geometry set)</term>
 
-          <listitem>
-            <para>The extent() function is an "aggregate" function in the
-            terminology of PostgreSQL. That means that it operators on lists
-            of data, in the same way the sum() and mean() functions do. For
-            example, "SELECT EXTENT(GEOM) FROM GEOMTABLE" will return a BOX3D
-            giving the maximum extend of all features in the table. Similarly,
-            "SELECT EXTENT(GEOM) FROM GEOMTABLE GROUP BY CATEGORY" will return
-            one extent result for each category.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>estimated_extent([schema], table, geocolumn)</term>
-
-          <listitem>
-            <para>
-	    Return the 'estimated' extent of the given spatial table.
-	    The estimated is taken from the geometry column's statistics
-	    gathered by running VACUUM ANALYZE, and is statistically 
-	    about 95% of 'real' extent. The current schema will be
-	    used if not specified.
-            </para>
-            <para>NOTE: This is only available with PostgreSQL >= 8.0.0</para>
-          </listitem>
-        </varlistentry>
+			<varlistentry>
+				<term>estimated_extent([schema], table, geocolumn)</term>
+				<listitem>
+					<para> Return the 'estimated' extent of the given spatial table.  The estimated is taken from the geometry column's statistics gathered by running VACUUM ANALYZE, and is statistically about 95% of 'real' extent. The current schema will be used if not specified.  </para>
+					<para>NOTE: This is only available with PostgreSQL >= 8.0.0</para>
+				</listitem>
+			</varlistentry>
 
         <varlistentry>
           <term>find_srid(varchar,varchar,varchar)</term>
@@ -4045,26 +4110,6 @@ FROM geometry_table;</literallayout>
           </listitem>
         </varlistentry>
 
-        <varlistentry id="zmflag">
-          <term>zmflag(geometry)</term>
-
-          <listitem>
-            <para>Returns ZM (dimension semantic) flag of the geometries as
-	    a small int. Values are: 0=2d, 1=3dm, 2=3dz, 3=4d.
-	    </para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry id="ndims">
-          <term>ndims(geometry)</term>
-
-          <listitem>
-            <para>Returns number of dimensions of the geometry as
-	    a small int. Values are: 2,3 or 4.
-	    </para>
-          </listitem>
-        </varlistentry>
-
 
         <varlistentry>
           <term>mem_size(geometry)</term>
@@ -4072,23 +4117,6 @@ FROM geometry_table;</literallayout>
           <listitem>
             <para>Returns the amount of space (in bytes) the geometry
             takes.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>nrings(geometry)</term>
-
-          <listitem>
-            <para>If the geometry is a polygon or multi-polygon returns the
-            number of rings.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>npoints(geometry)</term>
-
-          <listitem>
-            <para>Returns the number of points in the geometry.</para>
           </listitem>
         </varlistentry>
 
@@ -4109,15 +4137,6 @@ FROM geometry_table;</literallayout>
             point_inside_circle(&lt;geometry&gt;,&lt;circle_center_x&gt;,&lt;circle_center_y&gt;,&lt;radius&gt;).
             Returns the true if the geometry is a point and is inside the
             circle. Returns false otherwise.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>summary(geometry)</term>
-
-          <listitem>
-            <para>Returns a text summary of the contents of the
-            geometry.</para>
           </listitem>
         </varlistentry>
 
@@ -4147,28 +4166,6 @@ FROM geometry_table;</literallayout>
           </listitem>
         </varlistentry>
 
-        <varlistentry>
-          <term>AsSVG(geometry, [rel], [precision])</term>
-
-          <listitem>
-            <para>Return the geometry as an SVG path data. Use 1 as second
-            argument to have the path data implemented in terms of relative
-            moves, the default (or 0) uses absolute moves. Third argument may
-            be used to reduce the maximum number of decimal digits used in
-            output (defaults to 15). Point geometries will be rendered as
-            cx/cy when 'rel' arg is 0, x/y when 'rel' is 1.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>AsGML(geometry, [precision])</term>
-
-          <listitem>
-            <para>Return the geometry as a GML element.
-            Second argument may be used to reduce the maximum number
-	    of significant digits used in output (defaults to 15).</para>
-          </listitem>
-        </varlistentry>
 
         </variablelist>
       </sect2>
