@@ -4,3 +4,6 @@ test_estimation.pl
 postgis_restore.pl
 	restore a spatial database dump to a (possibly updated)
 	new spatial database.
+
+profile_intersects.pl
+	compares distance()=0 and intersects() timings.
