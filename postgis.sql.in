@@ -2774,4 +2774,23 @@ CREATEFUNCTION estimate_histogram2d(HISTOGRAM2D,box)
 	AS '@MODULE_FILENAME@','estimate_histogram2d'
 	LANGUAGE 'C'  with (isstrict);
 
+
+-----------------------------------------------------------------------
+-- SVG OUTPUT
+-----------------------------------------------------------------------
+CREATEFUNCTION AsSvg(geometry,int4,int4)
+	RETURNS TEXT
+	AS '@MODULE_FILENAME@','assvg_geometry'
+	LANGUAGE 'C';
+
+CREATEFUNCTION AsSvg(geometry,int4)
+	RETURNS TEXT
+	AS '@MODULE_FILENAME@','assvg_geometry'
+	LANGUAGE 'C';
+
+CREATEFUNCTION AsSvg(geometry)
+	RETURNS TEXT
+	AS '@MODULE_FILENAME@','assvg_geometry'
+	LANGUAGE 'C';
+
 END TRANSACTION;
