@@ -117,7 +117,8 @@ Datum LWGEOM_to_BOX2DFLOAT4(PG_FUNCTION_ARGS)
  *		<, >, <=, >=, and == are based on box area.
  *---------------------------------------------------------*/
 
-/*		box_same		-		are two boxes identical?
+/*
+ * box_same - are two boxes identical?
  */
 PG_FUNCTION_INFO_V1(BOX2D_same);
 Datum BOX2D_same(PG_FUNCTION_ARGS)
@@ -131,7 +132,8 @@ Datum BOX2D_same(PG_FUNCTION_ARGS)
 				   FPeq(box1->ymin, box2->ymin));
 }
 
-/*		box_overlap		-		does box1 overlap box2?
+/*
+ * box_overlap - does box1 overlap box2?
  */
 PG_FUNCTION_INFO_V1(BOX2D_overlap);
 Datum BOX2D_overlap(PG_FUNCTION_ARGS)
@@ -155,19 +157,21 @@ Datum BOX2D_overlap(PG_FUNCTION_ARGS)
 }
 
 
-/*		box_overleft	-		is the right edge of box1 to the left of
- *								the right edge of box2?
+/*
+ * box_overleft - is the right edge of box1 to the left of
+ *                the right edge of box2?
  */
  PG_FUNCTION_INFO_V1(BOX2D_overleft);
 Datum BOX2D_overleft(PG_FUNCTION_ARGS)
 {
-	BOX2DFLOAT4		   *box1 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(0);
-	BOX2DFLOAT4		   *box2 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(1);
+	BOX2DFLOAT4 *box1 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(0);
+	BOX2DFLOAT4 *box2 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(1);
 
 	PG_RETURN_BOOL(FPle(box1->xmax, box2->xmax));
 }
 
-/*		box_left		-		is box1 strictly left of box2?
+/* 
+ * box_left - is box1 strictly left of box2?
  */
  PG_FUNCTION_INFO_V1(BOX2D_left);
 Datum BOX2D_left(PG_FUNCTION_ARGS)
@@ -178,7 +182,8 @@ Datum BOX2D_left(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(FPlt(box1->xmax, box2->xmin));
 }
 
-/*		box_right		-		is box1 strictly right of box2?
+/*
+ * box_right - is box1 strictly right of box2?
  */
  PG_FUNCTION_INFO_V1(BOX2D_right);
 Datum BOX2D_right(PG_FUNCTION_ARGS)
@@ -189,8 +194,9 @@ Datum BOX2D_right(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(FPgt(box1->xmin, box2->xmax));
 }
 
-/*		box_overright	-		is the left edge of box1 to the right of
- *								the left edge of box2?
+/* 
+ * box_overright - is the left edge of box1 to the right of
+ *                 the left edge of box2?
  */
  PG_FUNCTION_INFO_V1(BOX2D_overright);
 Datum BOX2D_overright(PG_FUNCTION_ARGS)
@@ -201,8 +207,9 @@ Datum BOX2D_overright(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(FPge(box1->xmin, box2->xmin));
 }
 
-/*		box_overbelow	-		is the bottom edge of box1 below
- *								the bottom edge of box2?
+/* 
+ * box_overbelow - is the bottom edge of box1 below
+ *                 the bottom edge of box2?
  */
  PG_FUNCTION_INFO_V1(BOX2D_overbelow);
 Datum BOX2D_overbelow(PG_FUNCTION_ARGS)
@@ -213,7 +220,8 @@ Datum BOX2D_overbelow(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(FPle(box1->ymin, box2->ymin));
 }
 
-/*		box_below		-		is box1 strictly below box2?
+/*
+ * box_below - is box1 strictly below box2?
  */
  PG_FUNCTION_INFO_V1(BOX2D_below);
 Datum BOX2D_below(PG_FUNCTION_ARGS)
@@ -224,7 +232,8 @@ Datum BOX2D_below(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(FPlt(box1->ymax, box2->ymin));
 }
 
-/*		box_above		-		is box1 strictly above box2?
+/*
+ * box_above - is box1 strictly above box2?
  */
  PG_FUNCTION_INFO_V1(BOX2D_above);
 Datum BOX2D_above(PG_FUNCTION_ARGS)
@@ -235,8 +244,9 @@ Datum BOX2D_above(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(FPgt(box1->ymin, box2->ymax));
 }
 
-/*		box_overabove	-		is the top edge of box1 above
- *								the top edge of box2?
+/*
+ * box_overabove - the top edge of box1 above
+ *                 the top edge of box2?
  */
  PG_FUNCTION_INFO_V1(BOX2D_overabove);
 Datum BOX2D_overabove(PG_FUNCTION_ARGS)
@@ -247,7 +257,8 @@ Datum BOX2D_overabove(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(FPge(box1->ymax, box2->ymax));
 }
 
-/*		box_contained	-		is box1 contained by box2?
+/*
+ * box_contained - is box1 contained by box2?
  */
  PG_FUNCTION_INFO_V1(BOX2D_contained);
 Datum BOX2D_contained(PG_FUNCTION_ARGS)
@@ -261,7 +272,8 @@ Datum BOX2D_contained(PG_FUNCTION_ARGS)
 				   FPge(box1->ymin, box2->ymin));
 }
 
-/*		box_contain		-		does box1 contain box2?
+/*
+ * box_contain - does box1 contain box2?
  */
  PG_FUNCTION_INFO_V1(BOX2D_contain);
 Datum BOX2D_contain(PG_FUNCTION_ARGS)
@@ -303,7 +315,9 @@ Datum BOX2D_intersects(PG_FUNCTION_ARGS)
 }
 
 
-//union of two BOX2Ds
+/*
+ * union of two BOX2Ds
+ */
 PG_FUNCTION_INFO_V1(BOX2D_union);
 Datum BOX2D_union(PG_FUNCTION_ARGS)
 {
@@ -317,7 +331,9 @@ Datum BOX2D_union(PG_FUNCTION_ARGS)
 }
 
 
-//min(a,b)
+/*
+ * min(a,b)
+ */
 float LWGEOM_Minf(float a, float b)
 {
 	if (a<b)
@@ -325,7 +341,9 @@ float LWGEOM_Minf(float a, float b)
 	return b;
 }
 
-//max(a,b)
+/*
+ * max(a,b)
+ */
 float LWGEOM_Maxf(float a, float b)
 {
 	if (b>a) return b;
