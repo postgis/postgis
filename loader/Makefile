@@ -14,15 +14,16 @@ else
 	libdir := ${PWD}
 endif
 
-OBJS = shp2pgsql.o shpopen.o dbfopen.o
-PROG = shp2pgsql
+OBJS = shpopen.o dbfopen.o
 
-override CPPFLAGS := -g  -I$(srcdir) $(CPPFLAGS) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"'
+override CPPFLAGS := -I$(srcdir) -L$(top_builddir)/src/interfaces/libpq -lpq -I$(top_builddir)/src/interfaces/libpq $(CPPFLAGS) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"'
 
-all: $(PROG)
+all: shp2pgsql pgsql2shp
 
-$(PROG): $(OBJS)
+pgsql2shp: $(OBJS)
+
+shp2pgsql: $(OBJS)
 
 clean:
-	@rm -f $(OBJS) $(PROG)
+	@rm -f $(OBJS) shp2pgsql pgsql2shp
 
