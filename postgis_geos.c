@@ -10,6 +10,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.25  2003/12/12 10:28:50  strk
+ * added GEOSnoop OUTPUT debugging info
+ *
  * Revision 1.24  2003/12/12 10:08:24  strk
  * Added GEOSnoop function and some optional debugging output for
  * geos<->postgis converter (define DEBUG_CONVERTER at top postgis_geos.c)
@@ -1779,7 +1782,7 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 
 	geom = (GEOMETRY *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 #ifdef DEBUG_CONVERTER
-	elog(NOTICE, "GEOSnoop: %s", geometry_to_text(geom));
+	elog(NOTICE, "GEOSnoop: IN: %s", geometry_to_text(geom));
 #endif
 
 	geosgeom = POSTGIS2GEOS(geom);
@@ -1787,6 +1790,10 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 
 	result = GEOS2POSTGIS(geosgeom, geom->is3d);
 	GEOSdeleteGeometry(geosgeom);
+
+#ifdef DEBUG_CONVERTER
+	elog(NOTICE, "GEOSnoop: OUT: %s", geometry_to_text(result));
+#endif
 
 	PG_RETURN_POINTER(result);
 }
