@@ -12,6 +12,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.60  2004/07/29 14:10:37  strk
+ * Unability to open a shapefile or dbffile reported more nicely.
+ *
  * Revision 1.59  2004/07/19 16:24:47  strk
  * Added -i switch
  *
@@ -149,6 +152,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include "getopt.h"
 
 typedef struct {double x, y, z;} Point;
@@ -744,9 +750,13 @@ int main (int ARGC, char **ARGV){
 
 	//Open the shp and dbf files
 	hSHPHandle = SHPOpen( shp_file, "rb" );
+	if (hSHPHandle == NULL) {
+		fprintf(stderr, "shape (.shp) or index files (.shx) can not be opened.\n");
+		exit(-1);
+	}
 	hDBFHandle = DBFOpen( shp_file, "rb" );
 	if (hSHPHandle == NULL || hDBFHandle == NULL){
-		fprintf(stderr, "shape is null\n");
+		fprintf(stderr, "dbf file (.dbf) can not be opened.\n");
 		exit(-1);
 	}
 
