@@ -1,9 +1,5 @@
 Todo for PostGIS 1.0 compatible JDBC classes
 
-- Review RADME
-
-- Review Makefile
-
 - Testing
 
 - WKT parsing of M and 4d geometries
@@ -14,20 +10,9 @@ Todo for PostGIS 1.0 compatible JDBC classes
 
 - Test correctness of toString() and getValue() for compatibility reasons
 
-- PGbox3D and newly created PGbox cleanup and tests
-
-- Check whether servertest still works.
-
 - See where the code can be cleaned and leaned.
 
 - Run tests against other PostGIS releases (I did 0.8 and 1.0CVS).
-
-- Evaluate whether and how we should drop ".0" in WKT creation for ordinates 
-  that happen to be integers.
-  
-- Review copyright notices in source files.
-
-- Possibly relicensing under LGPL
 
 - Possibly adding server side code to support plJava
   http://gborg.postgresql.org/project/pljava/projdisplay.php
