@@ -1,8 +1,10 @@
-#include "postgres.h"
+#include <postgres.h>
+
 #include <string.h>
-#include "stdio.h"
-#include <malloc.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <memory.h>
+
 #include "stringBuffer.h"
 
 #define DEFAULT_STR_LENGTH_PADDING 10
