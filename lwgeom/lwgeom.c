@@ -401,3 +401,24 @@ lwgeom_dropSRID(LWGEOM *lwgeom)
 	TYPE_SETHASSRID(lwgeom->type, 0);
 	lwgeom->SRID = -1;
 }
+
+LWGEOM *
+lwgeom_segmentize2d(LWGEOM *lwgeom, double dist)
+{
+	switch(TYPE_GETTYPE(lwgeom->type))
+	{
+		case LINETYPE:
+			return (LWGEOM *)lwline_segmentize2d((LWLINE *)lwgeom,
+				dist);
+		case POLYGONTYPE:
+			return (LWGEOM *)lwpoly_segmentize2d((LWPOLY *)lwgeom,
+				dist);
+		case MULTILINETYPE:
+		case MULTIPOLYGONTYPE:
+		case COLLECTIONTYPE:
+			return (LWGEOM *)lwcollection_segmentize2d(
+				(LWCOLLECTION *)lwgeom, dist);
+		default:
+			return lwgeom;
+	}
+}

@@ -39,3 +39,4 @@ extern LWGEOM lwline_construct(int SRID, char wantbbox, POINTARRAY pa);
 // Spatial functions
 extern void lwgeom_reverse(LWGEOM lwgeom);
 extern void lwgeom_forceRHR(LWGEOM lwgeom);
+extern LWGEOM lwgeom_segmentize2d(LWGEOM lwgeom, double dist);

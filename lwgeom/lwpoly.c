@@ -509,3 +509,18 @@ lwpoly_reverse(LWPOLY *poly)
 	for (i=0; i<poly->nrings; i++)
 		ptarray_reverse(poly->rings[i]);
 }
+
+LWPOLY *
+lwpoly_segmentize2d(LWPOLY *poly, double dist)
+{
+	POINTARRAY **newrings;
+	unsigned int i;
+	
+	newrings = lwalloc(sizeof(POINTARRAY *)*poly->nrings);
+	for (i=0; i<poly->nrings; i++)
+	{
+		newrings[i] = ptarray_segmentize2d(poly->rings[i], dist);
+	}
+	return lwpoly_construct(poly->SRID, poly->bbox,
+		poly->nrings, newrings);
+}

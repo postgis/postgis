@@ -1,4 +1,4 @@
-- port LINESTRING extension to LWGEOM
+- geometry_same implementation
 
 - WKB support in loader (canonical form is OK)
 

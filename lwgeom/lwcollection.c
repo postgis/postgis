@@ -258,3 +258,19 @@ lwcollection_add(const LWCOLLECTION *to, uint32 where, const LWGEOM *what)
 	return (LWGEOM *)col;
 
 }
+
+LWCOLLECTION *
+lwcollection_segmentize2d(LWCOLLECTION *col, double dist)
+{
+	unsigned int i;
+	LWGEOM **newgeoms;
+
+	if ( ! col->ngeoms ) return col;
+
+	newgeoms = lwalloc(sizeof(LWGEOM *)*col->ngeoms);
+	for (i=0; i<col->ngeoms; i++)
+		newgeoms[i] = lwgeom_segmentize2d(col->geoms[i], dist);
+
+	return lwcollection_construct(col->type, col->SRID, col->bbox,
+		col->ngeoms, newgeoms);
+}
