@@ -1932,10 +1932,18 @@ if( geom.getType() = Geometry.POLYGON )
 					</listitem> 
 				</varlistentry> 
 				<varlistentry> 
+					<term>A @ B</term> 
+					<listitem> 
+						<para>The "@" operator returns true if A's bounding box is
+						  completely contained by B's bounding box.
+						</para> 
+					</listitem> 
+				</varlistentry> 
+				<varlistentry> 
 					<term>A ~ B</term> 
 					<listitem> 
-						<para>The "~" operator returns true of A's bounding box is
-						  completely contained by B's bounding box.
+						<para>The "~" operator returns true if A's bounding box
+						  completely contains B's bounding box.
 						</para> 
 					</listitem> 
 				</varlistentry> 
