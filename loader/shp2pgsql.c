@@ -411,7 +411,7 @@ int Insert_attributes(DBFHandle hDBFHandle, int row){
 		        if(dump_format){
 		               printf("\tNULL");
 		        }else{
-		               printf(",'NULL'");
+		               printf(",NULL");
 		        }
 		 }else{
 			if (dump_format){
