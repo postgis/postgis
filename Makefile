@@ -1,7 +1,7 @@
 # Configuration Directives
 #---------------------------------------------------------------
 # Set USE_PG72 to 1 for PostgreSQL version >= 7.2
-USE_PG72=0
+USE_PG72=1
 #---------------------------------------------------------------
 # Set USE_PROJ to 1 for Proj4 reprojection support
 USE_PROJ=0
