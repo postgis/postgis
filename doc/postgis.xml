@@ -4576,9 +4576,196 @@ FROM geometry_table;</literallayout>
 		<title>Release Notes</title>
 
     		<sect1>
-			<title>Release 1.0.0</title>
+			<title>Release 1.0.0RC5</title>
 
-			<para>This is a major postgis release, with internal
+			<para>Fifth release candidate for 1.0.0.
+			Contains a few bug fixes and a improvements.</para>
+
+			<sect2>
+				<title>Upgrading</title>
+
+				<para>If you are upgrading from
+				release 1.0.0RC4 you <emphasis>DO
+				NOT</emphasis> need a dump/reload.</para>
+
+				<para>Upgrading from any other precedent
+				release requires a dump/reload. 
+				See the <link
+				linkend="upgrading">upgrading</link>
+				chapter for more informations.</para>
+			</sect2>
+
+			<sect2>
+				<title>Library changes</title>
+	<para>BUGFIX (segfaulting) in box3d computation (yes, another!).</para>
+	<para>BUGFIX (segfaulting) in estimated_extent().</para>
+			</sect2>
+
+			<sect2>
+				<title>Other changes</title>
+	<para>Small build scripts refinements.</para>
+        <para>Additional performance tips documented.</para>
+			</sect2>
+
+		</sect1>
+
+    		<sect1>
+			<title>Release 1.0.0RC4</title>
+
+			<para>Fourth release candidate for 1.0.0.
+			Contains bug fixes and a few improvements.</para>
+
+			<sect2>
+				<title>Upgrading</title>
+				<para>You need a dump/reload to upgrade
+				from precedent releases. See the <link
+				linkend="upgrading">upgrading</link>
+				chapter for more informations.</para>
+			</sect2>
+
+			<sect2>
+				<title>Library changes</title>
+<para>BUGFIX (segfaulting) in geom_accum().</para>
+<para>BUGFIX in 64bit architectures support.</para>
+<para>BUGFIX in box3d computation function with collections.</para>
+<para>NEW subselects support in selectivity estimator.</para>
+<para>Early return from force_collection.</para>
+<para>Consistency check fix in SnapToGrid().</para>
+<para>Box2d output changed back to 15 significant digits.</para>
+			</sect2>
+
+			<sect2>
+				<title>Scripts changes</title>
+<para>NEW distance_sphere() function.</para>
+<para>Changed get_proj4_from_srid implementation to use PL/PGSQL instead of SQL.</para>
+			</sect2>
+
+			<sect2>
+				<title>Other changes</title>
+<para>BUGFIX in loader and dumper handling of MultiLine shapes</para>
+<para>BUGFIX in loader, skipping all but first hole of polygons.</para>
+<para>jdbc2: code cleanups, Makefile improvements</para>
+<para>FLEX and YACC variables set *after* pgsql Makefile.global is included and only if the pgsql *stripped* version evaulates to the empty string</para>
+<para>Added already generated parser in release</para>
+<para>Build scripts refinements</para>
+<para>improved version handling, central Version.config</para>
+<para>improvements in postgis_restore.pl</para>
+			</sect2>
+
+		</sect1>
+
+    		<sect1>
+			<title>Release 1.0.0RC3</title>
+
+			<para>Third release candidate for 1.0.0.
+			Contains many bug fixes and improvements.</para>
+
+			<sect2>
+				<title>Upgrading</title>
+				<para>You need a dump/reload to upgrade
+				from precedent releases. See the <link
+				linkend="upgrading">upgrading</link>
+				chapter for more informations.</para>
+			</sect2>
+
+			<sect2>
+				<title>Library changes</title>
+	<para>BUGFIX in transform(): missing SRID, better error handling.</para>
+	<para>BUGFIX in memory alignment handling</para>
+	<para>BUGFIX in force_collection() causing mapserver connector failures on simple (single) geometry types.</para>
+	<para>BUGFIX in GeometryFromText() missing to add a bbox cache.</para>
+	<para>reduced precision of box2d output.</para>
+	<para>prefixed DEBUG macros with PGIS_ to avoid clash with pgsql one</para>
+	<para>plugged a leak in GEOS2POSTGIS converter</para>
+	<para>Reduced memory usage by early releasing query-context palloced one.</para>
+			</sect2>
+
+			<sect2>
+				<title>Scripts changes</title>
+	<para>BUGFIX in 72 index bindings.</para>
+	<para>BUGFIX in probe_geometry_columns() to work with PG72 and support multiple geometry columns in a single table</para>
+	<para>NEW bool::text cast</para>
+	<para>Some functions made IMMUTABLE from STABLE, for performance
+	improvement.</para>
+			</sect2>
+
+			<sect2>
+				<title>JDBC changes</title>
+	<para>jdbc2: small patches, box2d/3d tests, revised docs and license.</para>
+	<para>jdbc2: bug fix and testcase in for pgjdbc 8.0 type autoregistration</para>
+	<para>jdbc2: Removed use of jdk1.4 only features to enable build with older jdk releases.</para>
+	<para>jdbc2: Added support for building against pg72jdbc2.jar</para>
+	<para>jdbc2: updated and cleaned makefile</para>
+	<para>jdbc2: added BETA support for jts geometry classes</para>
+	<para>jdbc2: Skip known-to-fail tests against older PostGIS servers.</para>
+	<para>jdbc2: Fixed handling of measured geometries in EWKT.</para>
+			</sect2>
+
+			<sect2>
+				<title>Other changes</title>
+	<para>new performance tips chapter in manual</para>
+	<para>documentation updates: pgsql72 requirement, lwpostgis.sql</para>
+	<para>few changes in autoconf </para>
+	<para>BUILDDATE extraction made more portable</para>
+	<para>fixed spatial_ref_sys.sql to avoid vacuuming the whole
+	database.</para>
+	<para>spatial_ref_sys: changed Paris entries to match the ones
+	distributed with 0.x.</para>
+			</sect2>
+
+		</sect1>
+
+    		<sect1>
+			<title>Release 1.0.0RC2</title>
+
+			<para>Second release candidate for 1.0.0
+			containing bug fixes and a few improvements.</para>
+
+			<sect2>
+				<title>Upgrading</title>
+	
+				<para>You need a dump/reload to upgrade
+				from precedent releases. See the <link
+				linkend="upgrading">upgrading</link>
+				chapter for more informations.</para>
+			</sect2>
+
+			<sect2>
+				<title>Library changes</title>
+
+<para>BUGFIX in pointarray box3d computation</para>
+<para>BUGFIX in distance_spheroid definition</para>
+<para>BUGFIX in transform() missing to update bbox cache</para>
+<para>NEW jdbc driver (jdbc2)</para>
+<para>GEOMETRYCOLLECTION(EMPTY) syntax support for backward compatibility</para>
+<para>Faster binary outputs</para>
+<para>Stricter OGC WKB/WKT constructors</para>
+
+			</sect2>
+
+			<sect2>
+				<title>Scripts changes</title>
+
+<para>More correct STABLE, IMMUTABLE, STRICT uses in lwpostgis.sql</para>
+<para>stricter OGC WKB/WKT constructors</para>
+
+			</sect2>
+
+			<sect2>
+				<title>Other changes</title>
+
+<para>Faster and more robust loader (both i18n and not)</para>
+<para>Initial autoconf script</para>
+
+			</sect2>
+
+		</sect1>
+
+    		<sect1>
+			<title>Release 1.0.0RC1</title>
+
+			<para>This is the first candidate of a
+			major postgis release, with internal
 			storage of postgis types redesigned to be smaller
 			and faster on indexed queries.</para>
 
