@@ -2708,7 +2708,7 @@ FROM geometry_table;</literallayout>
 					<term>postgis_version()</term>
 					<listitem>
 						<para>Returns the version number of the PostGIS functions
-						  installed in this database.
+						  installed in this database (deprecated, use postgis_full_version() instead).
 						</para>
 					</listitem>
 				</varlistentry>
@@ -2751,6 +2751,13 @@ FROM geometry_table;</literallayout>
 					<term>postgis_uses_stats()</term>
 					<listitem>
 						<para>Returns true if STATS usage has been enabled, false otherwise.
+						</para>
+					</listitem>
+				</varlistentry>
+				<varlistentry>
+					<term>postgis_full_version()</term>
+					<listitem>
+						<para>Reports full postgis version and build configuration infos.
 						</para>
 					</listitem>
 				</varlistentry>
