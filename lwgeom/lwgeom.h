@@ -190,11 +190,12 @@ WHERE
 
 
 extern bool lwgeom_hasSRID(unsigned char type); // true iff S bit is set
-extern int  lwgeom_ndims(unsigned char type);    // true iff D bit is set
+extern bool lwgeom_hasBBOX(unsigned char type); // true iff B bit set
+extern int  lwgeom_ndims(unsigned char type);   // returns the DD value
 extern int  lwgeom_getType(unsigned char type); // returns the tttt value
+
 extern unsigned char lwgeom_makeType(int ndims, char hasSRID, int type);
 extern unsigned char lwgeom_makeType_full(int ndims, char hasSRID, int type, bool hasBBOX);
-extern bool lwgeom_hasBBOX(unsigned char type); // true iff B bit set
 
 // all the base types (point/line/polygon) will have a
 // basic constructor, basic de-serializer, basic serializer, and
@@ -621,7 +622,5 @@ extern float LWGEOM_Maxf(float a, float b);
 
 
 extern BOX3D *lw_geom_getBB_simple(char *serialized_form);
-
-
 
 
