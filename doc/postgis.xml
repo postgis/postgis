@@ -95,14 +95,26 @@
         </listitem>
 
         <listitem>
+          <para>More information about the GEOS geometry operations library is
+          available at<ulink url="http://www.remotesensing.org/proj">
+          http://geos.refractions.net</ulink>.</para>
+        </listitem>
+
+        <listitem>
+          <para>More information about the Proj4 reprojection library is
+          available at <ulink
+          url="http://www.remotesensing.org/proj">http://www.remotesensing.org/proj</ulink>.</para>
+        </listitem>
+
+        <listitem>
           <para>More information about the PostgreSQL database server is
           available at the PostgreSQL main site <ulink
           url="http://www.postgresql.org">http://www.postgresql.org</ulink>.</para>
         </listitem>
 
         <listitem>
-          <para>More information about GiST indexing is available at the GiST
-          development site, <ulink
+          <para>More information about GiST indexing is available at the
+          PostgreSQL GiST development site, <ulink
           url="http://www.sai.msu.su/~megera/postgres/gist">http://www.sai.msu.su/~megera/postgres/gist</ulink>.</para>
         </listitem>
 
@@ -157,10 +169,18 @@
         </listitem>
 
         <listitem>
-          <para>(Optional) Proj4 reprojection library. The Proj4 library is
+          <para>(Recommended) Proj4 reprojection library. The Proj4 library is
           used to provide coordinate reprojection support within PostGIS.
           Proj4 is available for download from <ulink
           url="http://www.remotesensing.org/proj">http://www.remotesensing.org/proj</ulink>.</para>
+        </listitem>
+
+        <listitem>
+          <para>(Recommended) GEOS geometry library. The GEOS library is used
+          to provide geometry tests (Touches(), Contains(), Intersects()) and
+          operations (Buffer(), GeomUnion(), Difference()) within PostGIS.
+          GEOS is available for download from <ulink
+          url="http://www.remotesensing.org/proj">http://geos.refractions.net</ulink>.</para>
         </listitem>
       </itemizedlist>
     </sect1>
@@ -180,18 +200,22 @@
 
       <orderedlist>
         <listitem>
-          <para>Before you can compile the postgis server modules, you must
+          <para>Before you can compile the PostGIS server modules, you must
           compile and install the PostgreSQL package.</para>
 
-          <para><emphasis>NOTE</emphasis>: if you plan to use GEOS
-          functionality you might need to link PostgreSQL against the standard
-          C++ library:</para>
+          <note>
+            <para>If you plan to use GEOS functionality you might need to
+            explicitly link PostgreSQL against the standard C++
+            library:</para>
 
-          <programlisting>LDFLAGS=-lstdc++ ./configure YOUR_OPTIONS_HERE</programlisting>
+            <programlisting>LDFLAGS=-lstdc++ ./configure [YOUR OPTIONS HERE]</programlisting>
 
-          <para>This is a workaround for bogus C++ exceptions interaction with
-          older development tools. If you experience weird problems (backend
-          unexpectedly closed or similar things) try that.</para>
+            <para>This is a workaround for bogus C++ exceptions interaction
+            with older development tools. If you experience weird problems
+            (backend unexpectedly closed or similar things) try this trick.
+            This will require recompiling your PostgreSQL from scratch, of
+            course.</para>
+          </note>
         </listitem>
 
         <listitem>
@@ -211,26 +235,19 @@
 
           <itemizedlist>
             <listitem>
-              <para>If you are compiling PostGIS 0.7.2 or earlier against
-              PostgreSQL 7.2.x, you must set the <varname>USE_PG72</varname>
-              variable to <emphasis>1</emphasis>. This is done automatically
-              by newer version of postgis.</para>
-            </listitem>
-
-            <listitem>
               <para>If want support for coordinate reprojection you must have
               the Proj4 library installed, set the <varname>USE_PROJ</varname>
-              variable to <emphasis>1</emphasis>, and eventually adjust
-              <varname>PROJ_DIR</varname> to point to your Proj4 installation
-              directory.</para>
+              variable to <emphasis>1</emphasis>, and adjust the
+              <varname>PROJ_DIR</varname> variable to point to your Proj4
+              installation directory.</para>
             </listitem>
 
             <listitem>
-              <para>If want to use GEOS functionalities you must have the GEOS
+              <para>If want to use GEOS functionality you must have the GEOS
               library installed, set the <varname>USE_GEOS</varname> variable
-              to <emphasis>1</emphasis>, and eventually adjust
-              <varname>GEOS_DIR</varname> to point to your GEOS installation
-              directory.</para>
+              to <emphasis>1</emphasis>, and adjust the
+              <varname>GEOS_DIR</varname> variable to point to your GEOS
+              installation directory.</para>
             </listitem>
           </itemizedlist>
         </listitem>
@@ -305,24 +322,13 @@
         create a new one, execute the new <filename>postgis.sql</filename>
         file, then upload your database dump:</para>
 
-        <programlisting># pg_dump -t "*" -f dumpfile.sql yourdatabase
+        <programlisting># pg_dump -t spatialtable -f dumpfile.sql yourdatabase
 # dropdb yourdatabase
 # createdb yourdatabase
 # createlang plpgsql yourdatabse
 # psql -f postgis.sql -d yourdatabase
 # psql -f dumpfile.sql -d yourdatabase
 # vacuumdb -z yourdatabase</programlisting>
-
-        <note>
-          <para>When upgrading from version 0.5 to 0.6+, all your geometries
-          will be created with an SRID of -1. To create valid OpenGIS
-          geometries, you will have to create a valid SRID in the
-          SPATIAL_REF_SYS table, and then update your geometries to reference
-          the SRID with the following SQL (with the appropriate
-          substitutions:</para>
-
-          <programlisting>UPDATE TABLE &lt;table&gt; SET &lt;geocolumn&gt; = SetSRID(&lt;geocolumn&gt;,&lt;SRID&gt;);</programlisting>
-        </note>
       </sect2>
 
       <sect2>
@@ -336,10 +342,10 @@
             <para>It is easiest if you untar the PostGIS distribution into the
             contrib directory under the PostgreSQL source tree. However, if
             this is not possible for some reason, you can set the
-            <filename>PGSQL_SRC</filename>environment variable to the path to
+            <varname>PGSQL_SRC</varname> environment variable to the path to
             the PostgreSQL source directory. This will allow you to compile
-            PostGIS, but the <filename>make install</filename> may not work,
-            so be prepared to copy the PostGIS library and executable files to
+            PostGIS, but the <command>make install</command> may not work, so
+            be prepared to copy the PostGIS library and executable files to
             the appropriate locations yourself.</para>
           </listitem>
 
@@ -356,6 +362,11 @@
             and run this query:</para>
 
             <programlisting>SELECT version();</programlisting>
+
+            <para>If you are running an RPM based distribution, you can check
+            for the existence of pre-installed packages using the
+            <command>rpm</command> command as follows: <command>rpm -qa | grep
+            postgresql</command></para>
           </listitem>
         </orderedlist>
 
@@ -364,16 +375,8 @@
 
         <orderedlist>
           <listitem>
-            <para>Changing the <filename>USE_PG72=0</filename> line to
-            <filename>USE_PG72=1</filename> if you are using PostgreSQL 7.2 or
-            newer. If this line is incorrect, it will result in a large number
-            of errors being generated either when compiling, or when executing
-            the sql statements in the postgis.sql file.</para>
-          </listitem>
-
-          <listitem>
             <para>If you want to be able to do coordinate reprojections, you
-            must install the Proj.4 library on your system, set the
+            must install the Proj4 library on your system, set the
             <varname>USE_PROJ</varname> variable to 1 and the
             <varname>PROJ_DIR</varname> to your installation prefix in the
             Makefile.</para>
@@ -431,7 +434,7 @@
       <para>The loader is called <filename>shp2pgsql</filename> and converts
       ESRI Shape files into SQL suitable for loading in PostGIS/PostgreSQL.
       The dumper is called <filename>pgsql2shp</filename> and converts PostGIS
-      tables into ESRI shape files.</para>
+      tables into ESRI Shape files.</para>
     </sect1>
   </chapter>
 
@@ -496,31 +499,34 @@ SELECT AddGeometryColumn('dbname','gtest','geom',-1,'LINESTRING',2);</programlis
         </question>
 
         <answer>
-          <para>There are a number of spatial operators available to
-          PostgreSQL, and several of them have been implemented by PostGIS in
-          order to provide indexing support.</para>
+          <para>The same way you construct any other database query, as an SQL
+          combination of return values, functions, and boolean tests.</para>
 
-          <para>In order to do a spatial query with index support, you must
-          use the "overlap operator" (&amp;&amp;) which uses the following
-          important simplifying assumption: <emphasis>all features shall be
-          represented by their bounding boxes</emphasis>.</para>
+          <para>For spatial queries, there are two issues that are important
+          to keep in mind while constructing your query: is there a spatial
+          index you can make use of; and, are you doing expensive calculations
+          on a large number of geometries.</para>
 
-          <para>We recognize that using bounding boxes to proxy for features
-          is a limiting assumption, but it is an important one in providing
-          spatial indexing capabilities. Commercial spatial databases use the
-          same assumption -- bounding boxes are important to most spatial
-          indexing schemes.</para>
+          <para>In general, you will want to use the "intersects operator"
+          (&amp;&amp;) which tests whether the bounding boxes of features
+          intersect. The reason the &amp;&amp; operator is useful is because
+          if a spatial index is available to speed up the test, the &amp;&amp;
+          operator will make use of this. This can make queries much much
+          faster.</para>
 
-          <para>The most important spatial operator from a user's perspective
-          is the "&amp;&amp;" overlap operator, which tests whether one
-          feature's bounding box overlaps that of another. An example of a
-          spatial query using &amp;&amp; is:</para>
+          <para>You will also make use of spatial functions, such as
+          Distance(), Intersects(), Contains() and Within(), among others, to
+          narrow down the results of your search. Most spatial queries include
+          both an indexed test and a spatial function test. The index test
+          serves to limit the number of return tuples to only tuples that
+          <emphasis>might</emphasis> meet the condition of interest. The
+          spatial functions are then use to test the condition exactly.</para>
 
-          <programlisting>SELECT id,name FROM GTEST WHERE GEOM &amp;&amp; 'BOX3D(3 4,4 5)'::box3d</programlisting>
-
-          <para>Note that the bounding box used for querying must be
-          explicitly declared as a <varname>box3d</varname> using the
-          "::box3d" casting operation.</para>
+          <programlisting>SELECT id, the_geom FROM thetable
+WHERE
+  the_geom &amp;&amp; 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'
+AND
+  Contains(the_geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))';</programlisting>
         </answer>
       </qandaentry>
 
@@ -532,27 +538,36 @@ SELECT AddGeometryColumn('dbname','gtest','geom',-1,'LINESTRING',2);</programlis
         <answer>
           <para>Fast queries on large tables is the <emphasis>raison
           d'etre</emphasis> of spatial databases (along with transaction
-          support) so having a good index in important.</para>
+          support) so having a good index is important.</para>
 
           <para>To build a spatial index on a table with a
           <varname>geometry</varname> column, use the "CREATE INDEX" function
           as follows:</para>
 
           <programlisting>CREATE INDEX [indexname] ON [tablename]  
-  USING GIST ( [geometrycolumn] gist_geometry_ops);</programlisting>
+  USING GIST ( [geometrycolumn] );</programlisting>
 
           <para>The "USING GIST" option tells the server to use a GiST
-          (Generalized Search Tree) index. The reference to
-          "gist_geometry_ops" tells the server to use a particular set of
-          comparison operators for building the index: the "gist_geometry_ops"
-          are part of the PostGIS extension. <note>
-              <para>For PostgreSQL version 7.1.x, you can specifically request
-              a "lossy" index by appending WITH (ISLOSSY) to the index
-              creation command. For PostgreSQL 7.2.x and above all GiST
-              indexes are assumed to be lossy. Lossy indexes uses a proxy
-              object (in the spatial case, a bounding box) for building the
-              index.</para>
-            </note></para>
+          (Generalized Search Tree) index.</para>
+
+          <note>
+            <para>For PostgreSQL version 7.1.x, you must specifically request
+            a "lossy" index by appending WITH (ISLOSSY) to the index creation
+            command. For PostgreSQL 7.2.x and above all GiST indexes are
+            assumed to be lossy. Lossy indexes uses a proxy object (in the
+            spatial case, a bounding box) for building the index.</para>
+          </note>
+
+          <para>You should also ensure that the PostgreSQL query planner has
+          enough information about your index to make rational decisions about
+          when to use it. To do this, you have to "gather statistics" on your
+          geometry tables.</para>
+
+          <para>For PostgreSQL 8.0.x and greater, just run the <command>VACUUM
+          ANALYZE</command> command.</para>
+
+          <para>For PostgreSQL 7.4.x and below, run the <command>SELECT
+          UPDATE_GEOMETRY_STATS()</command> command.</para>
         </answer>
       </qandaentry>
 
@@ -626,15 +641,21 @@ SELECT AddGeometryColumn('dbname','gtest','geom',-1,'LINESTRING',2);</programlis
           bounding box test uses the spatial index, giving fast access to a
           subset of data which the radius test is then applied to.</para>
 
+          <para>The <varname>Expand()</varname> function is a handy way of
+          enlarging a bounding box to allow an index search of a region of
+          interest. The combination of a fast access index clause and a slower
+          accurate distance test provides the best combination of speed and
+          precision for this query.</para>
+
           <para>For example, to find all objects with 100 meters of POINT(1000
           1000) the following query would work well:</para>
 
           <programlisting>SELECT * 
 FROM GEOTABLE 
 WHERE 
-  GEOM &amp;&amp; GeometryFromText('BOX3D(900 900,1100 1100)',-1)
+  GEOCOLUMN &amp;&amp; Expand(GeometryFromText('POINT(1000 1000)',-1),100)
 AND
-Distance(GeometryFromText('POINT(1000 1000)',-1),GEOM) &lt; 100;</programlisting>
+  Distance(GeometryFromText('POINT(1000 1000)',-1),GEOCOLUMN) &lt; 100;</programlisting>
         </answer>
       </qandaentry>
 
@@ -1346,9 +1367,9 @@ WHERE
         building an index, it is important to force PostgreSQL to collect
         table statistics, which are used to optimize query plans:</para>
 
-        <para><programlisting> VACUUM ANALYZE [table_name] [column_name];
+        <para><programlisting>VACUUM ANALYZE [table_name] [column_name];
 
--- This is only needed for PostgreSQL &lt; 75 installations
+-- This is only needed for PostgreSQL 7.4 installations and below
 SELECT UPDATE_GEOMETRY_STATS([table_name], [column_name]);</programlisting></para>
 
         <para>GiST indexes have two advantages over R-Tree indexes in
@@ -1381,11 +1402,11 @@ SELECT UPDATE_GEOMETRY_STATS([table_name], [column_name]);</programlisting></par
             <para>Firstly, make sure statistics are gathered about the number
             and distributions of values in a table, to provide the query
             planner with better information to make decisions around index
-            usage. For PostgreSQL &lt; 75 installations this is done by
+            usage. For PostgreSQL 7.4 installations and below this is done by
             running "update_geometry_stats([table_name, column_name])"
             (compute distribution) and "VACUUM ANALYZE [table_name]
             [column_name]" (compute number of values). Starting with
-            PostgreSQL 75 running "VACUUM ANALYZE" will do both operations.
+            PostgreSQL 8.0 running "VACUUM ANALYZE" will do both operations.
             You should regularly vacuum your databases anyways -- many
             PostgreSQL DBAs have "VACUUM" run as an off-peak cron job on a
             regular basis.</para>
@@ -2587,7 +2608,7 @@ dimension
             <para>Update statistics about spatial tables for use by the query
             planner. You will also need to run "VACUUM ANALYZE [table_name]
             [column_name]" for the statistics gathering process to be
-            complete. NOTE: starting with PostgreSQL 75 statistics gathering
+            complete. NOTE: starting with PostgreSQL 8.0 statistics gathering
             is automatically performed running "VACUUM ANALYZE".</para>
           </listitem>
         </varlistentry>
