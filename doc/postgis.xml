@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
 <book>
   <title>PostGIS Manual</title>
 
@@ -13,7 +15,7 @@
         Inc</ulink></orgname>
 
         <address>
-     <street>400 - 1207 Douglas Street</street>
+     <street>Suite 400, 1207 Douglas Street</street>
      <city>Victoria</city>
      <state>British Columbia</state>
      <country>Canada</country>
@@ -26,8 +28,8 @@
       <para>PostGIS is an extension to the PostgreSQL object-relational
       database system which allows GIS (Geographic Information Systems)
       objects to be stored in the database. PostGIS includes support for
-      GiST-based R-Tree spatial indexes, and functions for basic analysis of
-      GIS objects.</para>
+      GiST-based R-Tree spatial indexes, and functions for analysis and
+      processing of GIS objects.</para>
     </abstract>
   </bookinfo>
 
@@ -48,12 +50,12 @@
 
       <variablelist>
         <varlistentry>
-          <term>Dave Blasby &lt;dblasby@refractions.net&gt;</term>
+          <term>Sandro Santilli &lt;strk@refractions.net&gt;</term>
 
           <listitem>
-            <para>The principal developer of PostGIS. Dave maintains the
-            server side objects and index support, the server side analytical
-            functions, and the Mapserver connectivity.</para>
+            <para>Coordinates all bug fixing and maintainance effort,
+            integration of new GEOS functionality, and new function
+            enhancements.</para>
           </listitem>
         </varlistentry>
 
@@ -78,7 +80,17 @@
           <term>Jeff Lounsbury &lt;jeffloun@refractions.net&gt;</term>
 
           <listitem>
-            <para>Maintains the Shape loader/dumper.</para>
+            <para>Original development of the Shape file loader/dumper.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Dave Blasby &lt;dblasby@gmail.com&gt;</term>
+
+          <listitem>
+            <para>The original developer of PostGIS. Dave wrote the server
+            side objects, index bindings, and many of the server side
+            analytical functions.</para>
           </listitem>
         </varlistentry>
       </variablelist>
@@ -685,13 +697,12 @@ AND
       <title>GIS Objects</title>
 
       <para>The GIS objects supported by PostGIS are the "Simple Features"
-      defined by the OpenGIS Consortium (OGC). Note that PostGIS currently
-      supports the features and the representation APIs, but not the various
-      comparison and convolution operators given in the OGC "Simple Features
-      for SQL" specification.</para>
+      defined by the OpenGIS Consortium (OGC). As of version 0.9, PostGIS
+      supports all the objects and functions specified in the OGC "Simple
+      Features for SQL" specification.</para>
 
-      <para>Examples of the text representations of the features are as
-      follows:</para>
+      <para>Examples of the text representations of the spatial objects of the
+      features are as follows:</para>
 
       <itemizedlist>
         <listitem>
@@ -728,8 +739,8 @@ AND
       </itemizedlist>
 
       <para>Note that in the examples above there are features with both
-      2-dimensional and 3-dimensional coordinates. PostGIS supports both 2d
-      and 3d coordinates -- if you describe a feature with 2D coordinates when
+      2-dimensional and 3-dimensional coordinates. PostGIS supports both 2D
+      and 3D coordinates -- if you describe a feature with 2D coordinates when
       you insert it, the database will return that feature to you with 2D
       coordinates when you extract it. See the sections on the <link
       linkend="force_2d">force_2d()</link> and <link
@@ -753,11 +764,14 @@ AND
         a valid insert statement to create and insert a spatial object would
         be:</para>
 
-        <programlisting>INSERT INTO SPATIALTABLE ( THE_GEOM, THE_NAME ) 
+        <programlisting>INSERT INTO SPATIALTABLE ( 
+  THE_GEOM, 
+  THE_NAME 
+) 
 VALUES ( 
-    GeometryFromText('POINT(-126.4 45.32)', 312), 
-    'A Place' 
-  )</programlisting>
+  GeometryFromText('POINT(-126.4 45.32)', 312), 
+  'A Place' 
+)</programlisting>
 
         <para>Note that the "GeometryFromText" function requires an SRID
         number.</para>
@@ -765,10 +779,10 @@ VALUES (
         <para>The "canonical form" of the spatial objects in PostgreSQL is a
         text representation which includes all the information necessary to
         construct the object. Unlike the OpenGIS standard forms, it includes
-        the type, coordinate, and SRID information. The canonical form is the
-        default form returned from a SELECT query. The example below shows the
-        difference between the OGC standard and PostGIS canonical
-        forms:</para>
+        the type, coordinate, <emphasis>and</emphasis> SRID information. The
+        canonical form is the default form returned from a SELECT query. The
+        example below shows the difference between the OGC standard and
+        PostGIS canonical forms:</para>
 
         <programlisting>db=&gt; SELECT AsText(geom) AS OGCGeom FROM thetable;
 OGCGeom
@@ -793,15 +807,18 @@ SRID=123;LINESTRING(-123.741378393049 48.9124018962261,-123.741587115639 48.9123
       consistent, operations such as creating and removing a spatial column
       are carried out through special procedures defined by OpenGIS.</para>
 
-      <para>There are two OpenGIS meta-data tables: SPATIAL_REF_SYS and
-      GEOMETRY_COLUMNS. The SPATIAL_REF_SYS table holds the numeric IDs and
+      <para>There are two OpenGIS meta-data tables:
+      <varname>SPATIAL_REF_SYS</varname> and
+      <varname>GEOMETRY_COLUMNS</varname>. The
+      <varname>SPATIAL_REF_SYS</varname> table holds the numeric IDs and
       textual descriptions of coordinate systems used in the spatial
       database.</para>
 
       <sect2>
         <title>The SPATIAL_REF_SYS Table</title>
 
-        <para>The SPATIAL_REF_SYS table definition is as follows:</para>
+        <para>The <varname>SPATIAL_REF_SYS</varname> table definition is as
+        follows:</para>
 
         <programlisting>CREATE TABLE SPATIAL_REF_SYS ( 
   SRID INTEGER NOT NULL PRIMARY KEY, 
@@ -811,7 +828,8 @@ SRID=123;LINESTRING(-123.741378393049 48.9124018962261,-123.741587115639 48.9123
   PROJ4TEXT VARCHAR(2048)
 )</programlisting>
 
-        <para>The SPATIAL_REF_SYS columns are as follows:</para>
+        <para>The <varname>SPATIAL_REF_SYS</varname> columns are as
+        follows:</para>
 
         <variablelist>
           <varlistentry>
@@ -819,7 +837,7 @@ SRID=123;LINESTRING(-123.741378393049 48.9124018962261,-123.741587115639 48.9123
 
             <listitem>
               <para>An integer value that uniquely identifies the Spatial
-              Referencing System within the database.</para>
+              Referencing System (SRS) within the database.</para>
             </listitem>
           </varlistentry>
 
@@ -829,7 +847,7 @@ SRID=123;LINESTRING(-123.741378393049 48.9124018962261,-123.741587115639 48.9123
             <listitem>
               <para>The name of the standard or standards body that is being
               cited for this reference system. For example, "EPSG" would be a
-              valid AUTH_NAME.</para>
+              valid <varname>AUTH_NAME</varname>.</para>
             </listitem>
           </varlistentry>
 
@@ -838,8 +856,8 @@ SRID=123;LINESTRING(-123.741378393049 48.9124018962261,-123.741587115639 48.9123
 
             <listitem>
               <para>The ID of the Spatial Reference System as defined by the
-              Authority cited in the AUTH_NAME. In the case of EPSG, this is
-              where the EPSG projection code would go.</para>
+              Authority cited in the <varname>AUTH_NAME</varname>. In the case
+              of EPSG, this is where the EPSG projection code would go.</para>
             </listitem>
           </varlistentry>
 
@@ -873,7 +891,10 @@ SRID=123;LINESTRING(-123.741378393049 48.9124018962261,-123.741587115639 48.9123
               url="http://www.opengis.org/techno/interop/EPSG2WKT.TXT">http://www.opengis.org/techno/interop/EPSG2WKT.TXT</ulink>.
               For a discussion of WKT in general, see the OpenGIS "Coordinate
               Transformation Services Implementation Specification" at <ulink
-              url="http://www.opengis.org/techno/specs.htm">http://www.opengis.org/techno/specs.htm</ulink>.</para>
+              url="http://www.opengis.org/techno/specs.htm">http://www.opengis.org/techno/specs.htm</ulink>.
+              For information on the European Petroleum Survey Group (EPSG)
+              and their database of spatial reference systems, see <ulink
+              url="http://epsg.org">http://epsg.org</ulink>.</para>
             </listitem>
           </varlistentry>
 
@@ -925,8 +946,8 @@ SRID=123;LINESTRING(-123.741378393049 48.9124018962261,-123.741587115639 48.9123
               <para>The fully qualified name of the feature table containing
               the geometry column. Note that the terms "catalog" and "schema"
               are Oracle-ish. There is not PostgreSQL analogue of "catalog" so
-              that column is left blank -- for "schema" the database name is
-              used.</para>
+              that column is left blank -- for "schema" the PostgreSQL schema
+              name is used (<varname>public</varname> is the default).</para>
             </listitem>
           </varlistentry>
 
@@ -954,7 +975,7 @@ SRID=123;LINESTRING(-123.741378393049 48.9124018962261,-123.741587115639 48.9123
             <listitem>
               <para>The ID of the spatial reference system used for the
               coordinate geometry in this table. It is a foreign key reference
-              to the SPATIAL_REF_SYS.</para>
+              to the <varname>SPATIAL_REF_SYS</varname>.</para>
             </listitem>
           </varlistentry>
 
@@ -987,24 +1008,24 @@ SRID=123;LINESTRING(-123.741378393049 48.9124018962261,-123.741587115639 48.9123
           <listitem>
             <para>Create a normal non-spatial table.</para>
 
-            <para>For example: CREATE TABLE ROADS_GEOM ( ID int4, NAME
-            varchar(25) )</para>
+            <para>For example: <command>CREATE TABLE ROADS_GEOM ( ID int4,
+            NAME varchar(25) )</command></para>
           </listitem>
 
           <listitem>
             <para>Add a spatial column to the table using the OpenGIS
             "AddGeometryColumn" function. The syntax is:
-            AddGeometryColumn(&lt;db_name&gt;, &lt;table_name&gt;,
+            <command>AddGeometryColumn(&lt;db_name&gt;, &lt;table_name&gt;,
             &lt;column_name&gt;, &lt;srid&gt;, &lt;type&gt;,
-            &lt;dimension&gt;).</para>
+            &lt;dimension&gt;)</command>.</para>
 
-            <para>For example: SELECT AddGeometryColumn('roads_db',
-            'roads_geom', 'geom', 423, 'LINESTRING', 2)</para>
+            <para>For example: <command>SELECT AddGeometryColumn('roads_db',
+            'roads_geom', 'geom', 423, 'LINESTRING', 2)</command></para>
           </listitem>
         </itemizedlist>
 
         <para>Here is an example of SQL used to create a table and add a
-        spatial column (assuming the db is 'parks_db' and that an SRID of 128
+        spatial column (assuming the db is "parks_db" and that an SRID of 128
         exists already):</para>
 
         <programlisting>CREATE TABLE PARKS ( PARK_ID int4, PARK_NAME varchar(128), PARK_DATE date, PARK_TYPE varchar(2) );
@@ -1109,6 +1130,24 @@ COMMIT;</programlisting>
               specified SRID.</para>
             </listitem>
           </varlistentry>
+
+          <varlistentry>
+            <term>-k</term>
+
+            <listitem>
+              <para>Keep column names upper case.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>-i</term>
+
+            <listitem>
+              <para>Coerce all integers to standard 32-bit integers, do not
+              create 64-bit bigints, even if the DBF header signature appears
+              to warrant it.</para>
+            </listitem>
+          </varlistentry>
         </variablelist>
 
         <para>An example session using the loader to create an input file and
@@ -1163,7 +1202,7 @@ id | geom                                    | name
 
             <listitem>
               <para>This operator tells whether the bounding box of one
-              geometry overlaps the bounding box of another.</para>
+              geometry intersects the bounding box of another.</para>
             </listitem>
           </varlistentry>
 
@@ -1302,6 +1341,25 @@ WHERE
               geometry column to use when writing the shape file.</para>
             </listitem>
           </varlistentry>
+
+          <varlistentry>
+            <term>-b </term>
+
+            <listitem>
+              <para>Use a binary cursor. This will help reduce the likelihood
+              of coordinate drift due to conversion to and from WKT format. It
+              will also be slightly faster.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>-r</term>
+
+            <listitem>
+              <para>Raw mode. Do not drop the <varname>gid</varname> field, or
+              escape column names.</para>
+            </listitem>
+          </varlistentry>
         </variablelist>
       </sect2>
     </sect1>
@@ -1309,7 +1367,7 @@ WHERE
     <sect1>
       <title>Building Indexes</title>
 
-      <para>Indexes are what make using a spatial database for large databases
+      <para>Indexes are what make using a spatial database for large data sets
       possible. Without indexing, any search for a feature would require a
       "sequential scan" of every record in the database. Indexing speeds up
       searching by organizing the data into a search tree which can be quickly
@@ -1344,9 +1402,9 @@ WHERE
       <sect2>
         <title>GiST Indexes</title>
 
-        <para>GiST stands for "Generalized Search Tree" and is a generalized
-        form of indexing. In addition to GIS indexing, GiST is used to speed
-        up searches on all kinds of irregular data structures (integer arrays,
+        <para>GiST stands for "Generalized Search Tree" and is a generic form
+        of indexing. In addition to GIS indexing, GiST is used to speed up
+        searches on all kinds of irregular data structures (integer arrays,
         spectral data, etc) which are not amenable to normal B-Tree
         indexing.</para>
 
@@ -1403,28 +1461,31 @@ SELECT UPDATE_GEOMETRY_STATS([table_name], [column_name]);</programlisting></par
             and distributions of values in a table, to provide the query
             planner with better information to make decisions around index
             usage. For PostgreSQL 7.4 installations and below this is done by
-            running "update_geometry_stats([table_name, column_name])"
-            (compute distribution) and "VACUUM ANALYZE [table_name]
-            [column_name]" (compute number of values). Starting with
-            PostgreSQL 8.0 running "VACUUM ANALYZE" will do both operations.
-            You should regularly vacuum your databases anyways -- many
-            PostgreSQL DBAs have "VACUUM" run as an off-peak cron job on a
-            regular basis.</para>
+            running <command>update_geometry_stats([table_name,
+            column_name])</command> (compute distribution) and <command>VACUUM
+            ANALYZE [table_name] [column_name]</command> (compute number of
+            values). Starting with PostgreSQL 8.0 running <command>VACUUM
+            ANALYZE</command> will do both operations. You should regularly
+            vacuum your databases anyways -- many PostgreSQL DBAs have
+            <command>VACUUM</command> run as an off-peak cron job on a regular
+            basis.</para>
           </listitem>
 
           <listitem>
             <para>If vacuuming does not work, you can force the planner to use
-            the index information by using the "SET ENABLE_SEQSCAN=OFF"
-            command. You should only use this command sparingly, and only on
-            spatially indexed queries: generally speaking, the planner knows
-            better than you do about when to use normal B-Tree indexes. Once
-            you have run your query, you should consider setting
-            "ENABLE_SEQSCAN" back on, so that other queries will utilize the
-            planner as normal.</para>
+            the index information by using the <command>SET
+            ENABLE_SEQSCAN=OFF</command> command. You should only use this
+            command sparingly, and only on spatially indexed queries:
+            generally speaking, the planner knows better than you do about
+            when to use normal B-Tree indexes. Once you have run your query,
+            you should consider setting <varname>ENABLE_SEQSCAN</varname> back
+            on, so that other queries will utilize the planner as
+            normal.</para>
 
             <note>
               <para>As of version 0.6, it should not be necessary to force the
-              planner to use the index with "ENABLE_SEQSCAN".</para>
+              planner to use the index with
+              <varname>ENABLE_SEQSCAN</varname>.</para>
             </note>
           </listitem>
         </itemizedlist>
