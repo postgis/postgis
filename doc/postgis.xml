@@ -703,7 +703,7 @@ WHERE
 		<sect2> 
 		  <title>Using the Dumper</title> 
 		  <para>The <filename>pgsql2shp</filename> table dumper connects directly to the database and converts a table into a shape file. The basic syntax is:</para> 
-		<programlisting>psql2shp [&lt;options&gt;] &lt;database&gt; &lt;table&gt;</programlisting><para>The commandline options are:</para><variablelist> 
+		<programlisting>pgsql2shp [&lt;options&gt;] &lt;database&gt; &lt;table&gt;</programlisting><para>The commandline options are:</para><variablelist> 
 			 <varlistentry> 
 				<term>-d</term> 
 				<listitem> 
