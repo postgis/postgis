@@ -7,6 +7,7 @@ postgis-out.xml: postgis.xml
 
 html: postgis-out.xml
 	xsltproc \
+		--output postgis.html \
 		--param shade.verbatim 1 \
 		--param chunk.section.depth 0 \
 		--stringparam html.stylesheet style.css \
