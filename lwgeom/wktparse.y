@@ -118,7 +118,7 @@ point_3d : VALUE VALUE VALUE {alloc_point_3d($1,$2,$3); };
 
 point_4d : VALUE VALUE VALUE VALUE {alloc_point_4d($1,$2,$3,$4); };
 
-empty : EMPTY  {alloc_empty(); } ;
+empty : EMPTY  {alloc_empty(); } | LPAREN EMPTY RPAREN {alloc_empty(); } ;
 %%
 
 
