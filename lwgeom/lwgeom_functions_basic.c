@@ -2173,7 +2173,7 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_accum);
 Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 {
-	ArrayType *array;
+	ArrayType *array = NULL;
 	int nelems, nbytes;
 	Datum datum;
 	PG_LWGEOM *geom;

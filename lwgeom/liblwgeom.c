@@ -11,7 +11,7 @@
 #define DEFAULT_CONTEXT CONTEXT_PG
 
 /* Global variables */
-#if DEFAULT_CONTEXT == SA
+#if DEFAULT_CONTEXT == CONTEXT_SA
 lwallocator lwalloc = default_allocator;
 lwreallocator lwrealloc = default_reallocator;
 lwfreeor lwfree = default_freeor;
