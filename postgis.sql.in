@@ -348,6 +348,38 @@ LANGUAGE 'sql' WITH (iscachable,isstrict);
 
 
 -----------------------------------------------------------------------
+-- RENAME_GEOMETRY_TABLE_CONSTRAINTS()
+-----------------------------------------------------------------------
+-- Rename SRID checks to enforce_srid
+-- Rename TYPE checks to enforce_geotype
+-----------------------------------------------------------------------
+CREATEFUNCTION rename_geometry_table_constraints() RETURNS text
+AS 
+'
+DECLARE
+	fixed_srid integer;
+	fixed_type integer;
+BEGIN
+	UPDATE pg_constraint SET conname = ''enforce_geotype''
+	WHERE consrc like
+	''((geometrytype(%) = ''''%''''::text) OR (% IS NULL))''
+	AND conname != ''enforce_geotype'';
+
+	GET DIAGNOSTICS fixed_type = ROW_COUNT;
+
+	UPDATE pg_constraint SET conname = ''enforce_srid''
+	WHERE consrc like
+	''(srid(% = %)''
+	AND conname != ''enforce_srid'';
+
+	GET DIAGNOSTICS fixed_srid = ROW_COUNT;
+
+        RETURN ''fixed srid_checks:''||fixed_srid||
+		'' type_checks:''||fixed_type;
+END;
+' LANGUAGE 'plpgsql';
+
+-----------------------------------------------------------------------
 -- FIX_GEOMETRY_COLUMNS() 
 -----------------------------------------------------------------------
 -- This function will:
@@ -398,9 +430,12 @@ BEGIN
                 AND c.relnamespace = n.oid
                 AND f_geometry_column::name = a.attname
                 AND sridcheck.conrelid = c.oid
-                AND sridcheck.conname = ''$1''
+                --AND sridcheck.conname = ''$1''
+		AND sridcheck.consrc LIKE ''(srid(% = %)''
                 AND typecheck.conrelid = c.oid
-                AND typecheck.conname = ''$2''
+                --AND typecheck.conname = ''$2''
+		AND typecheck.consrc LIKE
+	''((geometrytype(%) = ''''%''''::text) OR (% IS NULL))''
                 AND sridcheck.consrc ~ textcat('' = '', srid::text)
                 AND typecheck.consrc ~ textcat('' = '''''', type::text)
                 AND NOT EXISTS (
@@ -478,6 +513,7 @@ DECLARE
 	inserted integer;
 	oldcount integer;
 	probed integer;
+	stale integer;
 BEGIN
 
 	SELECT count(*) INTO oldcount FROM geometry_columns;
@@ -497,9 +533,13 @@ BEGIN
 		AND typecheck.connamespace = n.oid
 #endif
 		AND sridcheck.conrelid = c.oid
-		AND sridcheck.conname = ''$1''
+		--AND sridcheck.conname = ''$1''
+		AND sridcheck.consrc LIKE ''(srid(% = %)''
 		AND typecheck.conrelid = c.oid
-		AND typecheck.conname = ''$2'';
+		--AND typecheck.conname = ''$2'';
+		AND typecheck.consrc LIKE
+	''((geometrytype(%) = ''''%''''::text) OR (% IS NULL))''
+		;
 
 	INSERT INTO geometry_columns SELECT
 		''''::varchar as f_table_catalogue,
@@ -537,9 +577,12 @@ BEGIN
 		AND typecheck.connamespace = n.oid
 #endif
 		AND sridcheck.conrelid = c.oid
-		AND sridcheck.conname = ''$1''
+		--AND sridcheck.conname = ''$1''
+		AND sridcheck.consrc LIKE ''(srid(% = %)''
 		AND typecheck.conrelid = c.oid
-		AND typecheck.conname = ''$2''
+		--AND typecheck.conname = ''$2''
+		AND typecheck.consrc LIKE
+	''((geometrytype(%) = ''''%''''::text) OR (% IS NULL))''
 
                 AND NOT EXISTS (
                         SELECT oid FROM geometry_columns gc
@@ -552,10 +595,16 @@ BEGIN
 
 	GET DIAGNOSTICS inserted = ROW_COUNT;
 
+	IF oldcount > probed THEN
+		stale = oldcount-probed;
+	ELSE
+		stale = 0;
+	END IF;
+
         RETURN ''probed:''||probed||
 		'' inserted:''||inserted||
 		'' conflicts:''||probed-inserted||
-		'' stale:''||oldcount-probed;
+		'' stale:''||stale;
 END
 
 ' LANGUAGE 'plpgsql';
