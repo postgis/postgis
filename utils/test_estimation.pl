@@ -1,4 +1,4 @@
-#!/usr/bin/perl 
+#!/usr/bin/perl -w
 
 # $Id$
 
@@ -10,30 +10,67 @@ sub usage
 {
 	local($me) = `basename $0`;
 	chop($me);
-	print STDERR "$me <table> <col> [-v]\n";
+	print STDERR "$me [-v] [-bps <max_bps>] <table> <col>\n";
 }
 
-if ( ! $ARGV[1] ) {
-	&usage();
-	exit 1;
+$BPS=32;
+$TABLE='';
+$COLUMN='';
+for ($i=0; $i<@ARGV; $i++)
+{
+	if ( $ARGV[$i] =~ m/^-/ )
+	{
+		if ( $ARGV[$i] eq '-v' )
+		{
+			$VERBOSE++;
+		}
+		elsif ( $ARGV[$i] eq '-bps' )
+		{
+			$BPS=$ARGV[++$i]
+		}
+		else
+		{
+			print STDERR "Unknown option $ARGV[$i]:\n";
+			usage();
+			exit(1);
+		}
+	}
+	elsif ( ! $TABLE )
+	{
+		$TABLE = $ARGV[$i];
+	}
+	elsif ( ! $COLUMN )
+	{
+		$COLUMN = $ARGV[$i];
+	}
+	else
+	{
+		print STDERR "Too many options:\n";
+		usage();
+		exit(1);
+	}
 }
+
 
 $SCHEMA = 'public';
-$TABLE = $ARGV[0];
+$COLUMN = 'the_geom' if ( $COLUMN eq '' );
 if ( $TABLE =~ /(.*)\.(.*)/ ) 
 {
 	$SCHEMA = $1;
 	$TABLE = $2;
 }
-$COLUMN = $ARGV[1];
-
-$VERBOSE=1 if $ARGV[2] eq '-v';
 
 #connect
 $conn = Pg::connectdb("");
 if ( $conn->status != PGRES_CONNECTION_OK ) {
         print STDERR $conn->errorMessage;
 	exit(1);
+}
+
+if ( $VERBOSE )
+{
+	print "Table: \"$SCHEMA\".\"$TABLE\"\n";
+	print "Column: \"$COLUMN\"\n";
 }
 
 # Get extent
@@ -83,7 +120,7 @@ $ext = \%ext;
 #print "BPS: $bps (".@extents." cells)\n";
 print "  bps\test\treal\tdelta\tmatch_factor\n";
 print "----------------------------------------------------------\n";
-for ($bps=1; $bps<=32; $bps*=2)
+for ($bps=1; $bps<=$BPS; $bps*=2)
 {
 	split_extent($ext, $bps, \@extents);
 
@@ -211,6 +248,9 @@ sub test_extent
 
 # 
 # $Log$
+# Revision 1.3  2004/03/05 16:01:02  strk
+# added -bps switch to set maximun query level. reworked command line parsing
+#
 # Revision 1.2  2004/03/05 15:29:35  strk
 # more verbose output
 #
