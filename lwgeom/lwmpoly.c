@@ -29,6 +29,7 @@ lwmpoly_deserialize(char *srl)
 	result = lwalloc(sizeof(LWMPOLY));
 	result->type = MULTIPOLYGONTYPE;
 	result->SRID = insp->SRID;
+	result->hasbbox = lwgeom_hasBBOX(insp->type);
 	result->ndims = lwgeom_ndims(insp->type);
 	result->ngeoms = insp->ngeometries;
 	result->geoms = lwalloc(sizeof(LWPOLY *)*insp->ngeometries);

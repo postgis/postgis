@@ -123,6 +123,8 @@ typedef struct
 	 double m;
 } POINT4D;
 
+//-----------------------------------------------------------
+
 // Point array abstracts a lot of the complexity of points and point lists.
 // It handles miss-alignment in the serialized form, 2d/3d translation
 //    (2d points converted to 3d will have z=0 or NaN)
@@ -135,6 +137,95 @@ typedef struct
     char  ndims; 		 // 2=2d, 3=3d, 4=4d
     uint32 npoints;
 }  POINTARRAY;
+
+//-----------------------------------------------------------
+
+// LWGEOM (any type)
+typedef struct
+{
+	int type; // POINT|LINE|POLY|MPOINT|MLINE|MPOLY|COLLECTION
+	char ndims; // 2=2d, 3=3d, 4=4d
+	uint32 SRID; // -1 == unneeded
+	char hasbbox; 
+	void *data;
+} LWGEOM;
+
+// POINTYPE
+typedef struct
+{
+	int type; // POINTTYPE
+   	char ndims;
+   	uint32 SRID;	
+	char hasbbox; 
+   	POINTARRAY *point;  // hide 2d/3d (this will be an array of 1 point)
+}  LWPOINT; // "light-weight point"
+
+// LINETYPE
+typedef struct
+{
+	int type; // LINETYPE
+   	char ndims;
+   	uint32 SRID;	
+	char hasbbox; 
+	POINTARRAY    *points; // array of POINT3D
+} LWLINE; //"light-weight line"
+
+// POLYGONTYPE
+typedef struct
+{
+	int type; // POLYGONTYPE
+   	char ndims;
+   	uint32 SRID;	
+	char hasbbox; 
+	int  nrings;
+	POINTARRAY **rings; // list of rings (list of points)
+} LWPOLY; // "light-weight polygon"
+
+// MULTIPOINTTYPE
+typedef struct
+{
+	int type; // MULTIPOINTTYPE
+   	char ndims;
+   	uint32 SRID;	
+	char hasbbox; 
+	int  ngeoms;
+	LWPOINT **geoms;
+} LWMPOINT; 
+
+// MULTILINETYPE
+typedef struct
+{  
+	int type; // MULTILINETYPE
+   	char ndims;
+   	uint32 SRID;	
+	char hasbbox; 
+	int  ngeoms;
+	LWLINE **geoms;
+} LWMLINE; 
+
+// MULTIPOLYGONTYPE
+typedef struct
+{  
+	int type; // MULTIPOLYGONTYPE
+   	char ndims;
+   	uint32 SRID;	
+	char hasbbox; 
+	int  ngeoms;
+	LWPOLY **geoms;
+} LWMPOLY; 
+
+// COLLECTIONTYPE
+typedef struct
+{   
+	int type; // COLLECTIONTYPE
+   	char ndims;
+   	uint32 SRID;	
+	char hasbbox; 
+	int  ngeoms;
+	LWGEOM **geoms;
+} LWCOLLECTION; 
+
+//-------------------------------------------------------------
 
 // copies a point from the point array into the parameter point
 // will set point's z=0 (or NaN) if pa is 2d
@@ -289,14 +380,6 @@ extern uint32 lwgeom_size_poly(const char *serialized_line);
 // bounding box finder and (TODO) serialized form size finder.
 //--------------------------------------------------------
 
-typedef struct
-{
-	int type;
-   	char ndims;	// 2=2d, 3=3d, 4=4d, 5=undef
-   	int SRID;	// spatial ref sys
-   	POINTARRAY *point;  // hide 2d/3d (this will be an array of 1 point)
-}  LWPOINT; // "light-weight point"
-
 // construct a new point.  point will NOT be copied
 // use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
 extern LWPOINT  *lwpoint_construct(int ndims, int SRID, POINTARRAY *point);
@@ -327,14 +410,6 @@ extern POINT3D lwpoint_getPoint3d(const LWPOINT *point);
 
 //--------------------------------------------------------
 
-typedef struct
-{
-	int type;
-	char ndims; // 2=2d, 3=3d, 4=4d, 5=undef
-	int  SRID;   // spatial ref sys -1=none
-	POINTARRAY    *points; // array of POINT3D
-} LWLINE; //"light-weight line"
-
 // construct a new LWLINE.  points will *NOT* be copied
 // use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
 extern LWLINE *lwline_construct(int ndims, int SRID, POINTARRAY *points);
@@ -360,15 +435,6 @@ extern void lwline_serialize_buf(LWLINE *line, char *buf, int *size);
 extern BOX3D *lwline_findbbox(LWLINE *line);
 
 //--------------------------------------------------------
-
-typedef struct
-{
-	int type;
-	int32 SRID;
-	char ndims;
-	int  nrings;
-	POINTARRAY **rings; // list of rings (list of points)
-} LWPOLY; // "light-weight polygon"
 
 // construct a new LWPOLY.  arrays (points/points per ring) will NOT be copied
 // use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
@@ -396,65 +462,20 @@ extern BOX3D *lwpoly_findbbox(LWPOLY *poly);
 
 //--------------------------------------------------------
 
-// MULTIPOINTTYPE
-typedef struct
-{
-	int type;
-	int32 SRID;
-	char ndims;
-	int  ngeoms;
-	LWPOINT **geoms;
-} LWMPOINT; 
 
 extern size_t lwmpoint_serialize_size(LWMPOINT *mpoint);
 extern void lwmpoint_serialize_buf(LWMPOINT *mpoint, char *buf, int *size);
 
-// MULTILINETYPE
-typedef struct
-{  
-	int type;
-	int32 SRID;
-	char ndims;
-	int  ngeoms;
-	LWLINE **geoms;
-} LWMLINE; 
-
 extern size_t lwmline_serialize_size(LWMLINE *mline);
 extern void lwmline_serialize_buf(LWMLINE *mline, char *buf, int *size);
-
-// MULTIPOLYGONTYPE
-typedef struct
-{  
-	int type;
-	int32 SRID;
-	char ndims;
-	int  ngeoms;
-	LWPOLY **geoms;
-} LWMPOLY; 
 
 extern size_t lwmpoly_serialize_size(LWMPOLY *mpoly);
 extern void lwmpoly_serialize_buf(LWMPOLY *mpoly, char *buf, int *size);
 
-// LWGEOM (any type)
-typedef struct
-{
-	int type;
-	void *data;
-} LWGEOM;
 
 extern size_t lwgeom_serialize_size(LWGEOM *geom);
 extern void lwgeom_serialize_buf(LWGEOM *geom, char *buf, int *size);
 extern char *lwgeom_serialize(LWGEOM *geom, char wantbbox);
-
-// COLLECTIONTYPE
-typedef struct
-{   
-	int type;
-	int32 SRID;
-	char ndims;
-	int  ngeoms;
-	LWGEOM **geoms;
-} LWCOLLECTION; 
 
 extern size_t lwcollection_serialize_size(LWCOLLECTION *coll);
 extern void lwcollection_serialize_buf(LWCOLLECTION *mcoll, char *buf, int *size);
@@ -866,5 +887,7 @@ extern void lwline_reverse(LWLINE *line);
 extern void lwpoly_reverse(LWPOLY *poly);
 extern void lwpoly_forceRHR(LWPOLY *poly);
 extern void lwgeom_forceRHR(LWGEOM *lwgeom);
+extern char *lwgeom_summary(LWGEOM *lwgeom, int offset);
+extern const char *lwgeom_typename(int type);
 
 #endif // !defined _LIBLWGEOM_H 

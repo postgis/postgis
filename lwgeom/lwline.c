@@ -49,9 +49,11 @@ LWLINE *lwline_deserialize(char *serialized_form)
 	{
 		//lwnotice("line has bbox");
 		loc += sizeof(BOX2DFLOAT4);
+		result->hasbbox = 1;
 	}
 	else
 	{
+		result->hasbbox = 0;
 		//lwnotice("line has NO bbox");
 	}
 
@@ -108,7 +110,7 @@ if (line == NULL)
 	}
 	else if (line->ndims == 4)
 	{
-			size += 32 * line->points->npoints; //x,y
+		size += 32 * line->points->npoints; //x,y
 	}
 
 

@@ -8,7 +8,8 @@ lwcollection_deserialize(char *srl)
 {
 	LWCOLLECTION *result;
 	LWGEOM_INSPECTED *insp;
-	int type = lwgeom_getType(srl[0]);
+	char typefl = srl[0];
+	int type = lwgeom_getType(typefl);
 	int i;
 
 	if ( type != COLLECTIONTYPE ) 
@@ -22,8 +23,9 @@ lwcollection_deserialize(char *srl)
 
 	result = lwalloc(sizeof(LWCOLLECTION));
 	result->type = COLLECTIONTYPE;
+	result->hasbbox = lwgeom_hasBBOX(typefl);
+	result->ndims = lwgeom_ndims(typefl);
 	result->SRID = insp->SRID;
-	result->ndims = lwgeom_ndims(insp->type);
 	result->ngeoms = insp->ngeometries;
 	result->geoms = lwalloc(sizeof(LWGEOM *)*insp->ngeometries);
 

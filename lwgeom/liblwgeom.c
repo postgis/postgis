@@ -25,6 +25,16 @@ lwreporter lwerror = pg_error;
 lwreporter lwnotice = pg_notice;
 #endif
 
+static char *lwgeomTypeName[] = {
+	"Unknown",
+	"Point",
+	"Line",
+	"Polygon",
+	"MultiPoint",
+	"MultiLine",
+	"MultiPolygon",
+	"GeometryCollection"
+};
 
 void *
 default_allocator(size_t size)
@@ -63,8 +73,8 @@ default_noticereporter(const char *fmt, ...)
 		va_end (ap);
 		return;
 	}
-	va_end(ap);
 	printf("%s", msg);
+	va_end(ap);
 	free(msg);
 }
 
@@ -85,7 +95,13 @@ default_errorreporter(const char *fmt, ...)
 		va_end (ap);
 		return;
 	}
-	va_end(ap);
 	fprintf(stderr, "%s", msg);
+	va_end(ap);
 	free(msg);
+}
+
+const char *
+lwgeom_typename(int type)
+{
+	return lwgeomTypeName[type];
 }

@@ -188,8 +188,10 @@ lwpoint_deserialize(char *serialized_form)
 #ifdef DEBUG
 		lwnotice("lwpoint_deserialize: input has bbox");
 #endif
+		result->hasbbox = 1;
 		loc += sizeof(BOX2DFLOAT4);
 	}
+	else result->hasbbox = 0;
 
 	if ( lwgeom_hasSRID(type))
 	{
@@ -224,6 +226,7 @@ void printLWPOINT(LWPOINT *point)
 {
 	lwnotice("LWPOINT {");
 	lwnotice("    ndims = %i", (int)point->ndims);
+	lwnotice("    BBOX = %i", point->hasbbox ? 1 : 0 );
 	lwnotice("    SRID = %i", (int)point->SRID);
 	printPA(point->point);
 	lwnotice("}");

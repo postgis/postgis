@@ -24,6 +24,7 @@ lwmline_deserialize(char *srl)
 	result->type = MULTILINETYPE;
 	result->SRID = insp->SRID;
 	result->ndims = lwgeom_ndims(insp->type);
+	result->hasbbox = lwgeom_hasBBOX(insp->type);
 	result->ngeoms = insp->ngeometries;
 	result->geoms = lwalloc(sizeof(LWLINE *)*insp->ngeometries);
 

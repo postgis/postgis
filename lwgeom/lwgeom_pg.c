@@ -5,12 +5,19 @@
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
 
+#undef DEBUG
+
 void *
 pg_alloc(size_t size)
 {
 	void * result;
+#ifdef DEBUG
+	lwnotice("  pg_alloc(%d) called", size);
+#endif
 	result = palloc(size);
-	//elog(NOTICE,"  palloc(%d) = %p", size, result);
+#ifdef DEBUG
+	lwnotice("  pg_alloc(%d) returning %p", size, result);
+#endif
 	return result;
 }
 
@@ -18,7 +25,13 @@ void *
 pg_realloc(void *mem, size_t size)
 {
 	void * result;
+#ifdef DEBUG
+	lwnotice("  pg_realloc(%p, %d) called", mem, size);
+#endif
 	result = repalloc(mem, size);
+#ifdef DEBUG
+	lwnotice("  pg_realloc(%p, %d) returning %p", mem, size, result);
+#endif
 	return result;
 }
 
@@ -45,8 +58,8 @@ pg_error(const char *fmt, ...)
 		va_end (ap);
 		return;
 	}
-	va_end(ap);
 	elog(ERROR, "%s", msg);
+	va_end(ap);
 	free(msg);
 }
 
@@ -67,8 +80,8 @@ pg_notice(const char *fmt, ...)
 		va_end (ap);
 		return;
 	}
-	va_end(ap);
 	elog(NOTICE, "%s", msg);
+	va_end(ap);
 	free(msg);
 }
 

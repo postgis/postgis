@@ -49,8 +49,6 @@ Datum LWGEOM_reverse(PG_FUNCTION_ARGS);
 Datum LWGEOM_forceRHR_poly(PG_FUNCTION_ARGS);
 
 // internal
-char * lwgeom_summary_recursive(char *serialized, int offset);
-char * lwgeom_summary(LWGEOM *serialized, int offset);
 int32 lwgeom_nrings_recursive(char *serialized);
 void dump_lwexploded(LWGEOM_EXPLODED *exploded);
 void ptarray_reverse(POINTARRAY *pa);
@@ -832,243 +830,6 @@ Datum LWGEOM_mem_size(PG_FUNCTION_ARGS)
 	PG_RETURN_INT32(size);
 }
 
-char *lwcollection_summary(LWCOLLECTION *collection, int offset);
-char *lwmpoly_summary(LWMPOLY *mpoly, int offset);
-char *lwmline_summary(LWMLINE *mline, int offset);
-char *lwmpoint_summary(LWMPOINT *mpoint, int offset);
-char *lwpoly_summary(LWPOLY *poly, int offset);
-char *lwline_summary(LWLINE *line, int offset);
-char *lwpoint_summary(LWPOINT *point, int offset);
-
-/*
- * Returns an alloced string containing summary for the LWGEOM object
- */
-char *
-lwpoint_summary(LWPOINT *point, int offset)
-{
-	char *result;
-	result = lwalloc(256);
-	sprintf(result, "Object %d is a POINT()\n", offset);
-	return result;
-}
-
-char *
-lwline_summary(LWLINE *line, int offset)
-{
-	char *result;
-	result = lwalloc(32);
-	sprintf(result, "Object %d is a LINE()\n", offset);
-	return result;
-}
-
-char *
-lwpoly_summary(LWPOLY *poly, int offset)
-{
-	char tmp[256];
-	char *result = lwalloc(64*(poly->nrings+1));
-	int i;
-
-	result[0] = '\0';
-	sprintf(tmp, "Object %d is a POLYGON() with %i rings\n",
-		offset, poly->nrings);
-	strcat(result, tmp);
-	for (i=0; i<poly->nrings;i++)
-	{
-		sprintf(tmp,"     + ring %i has %i points\n",
-			i, poly->rings[i]->npoints);
-		strcat(result,tmp);
-	}
-	return result;
-}
-
-char *
-lwmpoint_summary(LWMPOINT *mpoint, int offset)
-{
-	char *result = lwalloc(60);
-	sprintf(result, "Object %d is a MULTIPOINT() with %d points\n",
-		offset, mpoint->ngeoms);
-	return result;
-}
-
-char *
-lwmline_summary(LWMLINE *mline, int offset)
-{
-	char *result = lwalloc(60*(mline->ngeoms+1));
-	sprintf(result, "Object %d is a MULTILINE() with %d lines\n",
-		offset, mline->ngeoms);
-	return result;
-}
-
-char *
-lwmpoly_summary(LWMPOLY *mpoly, int offset)
-{
-	size_t size = 128;
-	char *result = lwalloc(size);
-	char *tmp;
-	int i;
-
-	sprintf(result, "Object %d is a MULTIPOLYGON() with %d polys\n",
-		offset, mpoly->ngeoms);
-
-	for (i=0; i<mpoly->ngeoms; i++)
-	{
-		tmp = lwpoly_summary(mpoly->geoms[i], i);
-		size += strlen(tmp)+1;
-		result = lwrealloc(result, size);
-		strcat(result, tmp);
-		//lwfree(tmp);
-	}
-
-	return result;
-}
-
-
-char *
-lwcollection_summary(LWCOLLECTION *collection, int offset)
-{
-	char *result = lwalloc(60*(collection->ngeoms+1));
-	char *tmp;
-	int i;
-
-	sprintf(result, "Object %d is a COLLECTION() with %d subgeoms\n",
-		offset, collection->ngeoms);
-
-	for (i=0; i<collection->ngeoms; i++)
-	{
-		tmp = lwgeom_summary(lwcollection_getsubgeom(collection, i), i);
-		strcat(result, tmp);
-		lwfree(tmp);
-	}
-
-	return result;
-}
-
-char *
-lwgeom_summary(LWGEOM *lwgeom, int offset)
-{
-	char *result;
-
-	switch (lwgeom->type)
-	{
-		case POINTTYPE:
-			return lwpoint_summary((LWPOINT *)lwgeom, offset);
-
-		case LINETYPE:
-			return lwline_summary((LWLINE *)lwgeom, offset);
-
-		case POLYGONTYPE:
-			return lwpoly_summary((LWPOLY *)lwgeom, offset);
-
-		case MULTIPOINTTYPE:
-			return lwmpoint_summary((LWMPOINT *)lwgeom, offset);
-
-		case MULTILINETYPE:
-			return lwmline_summary((LWMLINE *)lwgeom, offset);
-
-		case MULTIPOLYGONTYPE:
-			return lwmpoly_summary((LWMPOLY *)lwgeom, offset);
-
-		case COLLECTIONTYPE:
-			return lwcollection_summary((LWCOLLECTION *)lwgeom, offset);
-		default:
-			result = palloc(256);
-			sprintf(result, "Object is of unknown type: %d", 
-				lwgeom->type);
-			return result;
-	}
-
-	return NULL;
-}
-
-/*
- * Returns a lwalloced string containing summary for the serialized
- * LWGEOM object
- */
-char *
-lwgeom_summary_recursive(char *serialized, int offset)
-{
-	static int idx = 0;
-	LWGEOM_INSPECTED *inspected;
-	char *result;
-	char *ptr;
-	char tmp[100];
-	int size;
-	int32 j,i;
-
-	size = 1;
-	result = lwalloc(1);
-	result[0] = '\0';
-
-	if ( offset == 0 ) idx = 0;
-
-	inspected = lwgeom_inspect(serialized);
-
-	//now have to do a scan of each object
-	for (j=0; j<inspected->ngeometries; j++)
-	{
-		LWLINE *line=NULL;
-		LWPOINT *point=NULL;
-		LWPOLY *poly=NULL;
-		char *subgeom=lwgeom_getsubgeometry_inspected(inspected, j);
-
-		if ( lwgeom_getType(subgeom[0]) == 0 )
-		{
-			size += 32;
-			result = lwrealloc(result,size);
-			sprintf(tmp,"Object %i is EMPTY()\n", idx++);
-			strcat(result,tmp);
-			continue;
-		}
-
-
-		point = lwgeom_getpoint_inspected(inspected,j);
-		if (point !=NULL)
-		{
-			size += 32;
-			result = lwrealloc(result,size);
-			sprintf(tmp,"Object %i is a POINT()\n", idx++);
-			strcat(result,tmp);
-			continue;
-		}
-
-		poly = lwgeom_getpoly_inspected(inspected, j);
-		if (poly !=NULL)
-		{
-			size += 60*(poly->nrings+1);
-			result = lwrealloc(result,size);
-			sprintf(tmp,"Object %i is a POLYGON() with %i rings\n",
-				idx++, poly->nrings);
-			strcat(result,tmp);
-			for (i=0; i<poly->nrings;i++)
-			{
-				sprintf(tmp,"     + ring %i has %i points\n",
-					i, poly->rings[i]->npoints);
-				strcat(result,tmp);
-			}
-			continue;
-		}
-
-		line = lwgeom_getline_inspected(inspected, j);
-		if (line != NULL)
-		{
-			size += 57;
-			result = lwrealloc(result,size);
-			sprintf(tmp, "Object %i is a LINESTRING() with %i points\n", idx++, line->points->npoints);
-			strcat(result,tmp);
-			continue;
-		}
-
-		ptr = lwgeom_summary_recursive(subgeom, j);
-		size += strlen(ptr);
-		result = lwrealloc(result,size);
-		strcat(result, ptr);
-		lwfree(ptr);
-	}
-
-	pfree_inspected(inspected);
-	return result;
-}
-
 /*
  * Translate a pointarray.
  */
@@ -1161,13 +922,13 @@ Datum LWGEOM_summary(PG_FUNCTION_ARGS)
 
 	lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom));
 
-	//result = lwgeom_summary_recursive(SERIALIZED_FORM(geom), 0);
 	result = lwgeom_summary(lwgeom, 0);
 
 	// create a text obj to return
-	mytext = (text *) lwalloc(VARHDRSZ  + strlen(result) );
-	VARATT_SIZEP(mytext) = VARHDRSZ + strlen(result) ;
-	memcpy(VARDATA(mytext) , result, strlen(result) );
+	mytext = (text *) lwalloc(VARHDRSZ  + strlen(result) + 1);
+	VARATT_SIZEP(mytext) = VARHDRSZ + strlen(result) + 1;
+	VARDATA(mytext)[0] = '\n';
+	memcpy(VARDATA(mytext)+1, result, strlen(result) );
 	lwfree(result);
 	PG_RETURN_POINTER(mytext);
 }

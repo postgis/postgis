@@ -66,6 +66,11 @@ lwpoly_deserialize(char *serialized_form)
 	if (lwgeom_hasBBOX(type))
 	{
 		loc += sizeof(BOX2DFLOAT4);
+		result->hasbbox = 1;
+	}
+	else
+	{
+		result->hasbbox = 0;
 	}
 
 	if ( lwgeom_hasSRID(type))
