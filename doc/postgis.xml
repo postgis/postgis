@@ -2606,8 +2606,11 @@ VACUUM FULL ANALYZE mytable;
 </programlisting>
 
 <para>
-If you run PostgreSQL 7.X, don't forget to use the update_geometry_stats() function 
-afterwards to keep your statistics up to date.
+Note that if you added your geometry column using AddGeometryColumn()
+there'll be a constraint on geometry dimension.
+To bypass it you will need to drop the constraint.
+Remember to update the entry in the geometry_columns table and
+recreate the constraint afterwards.
 </para>
 
 <para>
