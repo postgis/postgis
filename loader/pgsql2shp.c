@@ -10,6 +10,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.39  2003/12/19 18:55:46  strk
+ * substituted setenv() calls with putenv() for Solaris support
+ *
  * Revision 1.38  2003/12/04 19:11:56  strk
  * code cleanup (removed useless and leaking malloc calls)
  *
@@ -2095,6 +2098,9 @@ usage(status)
 int parse_commandline(int ARGC, char **ARGV)
 {
 	int c, curindex;
+	char buf[256];
+
+	buf[255] = '\0'; // just in case...
 
 	/* Parse command line */
         while ((c = getopt(ARGC, ARGV, "bf:h:du:p:P:g:")) != EOF){
@@ -2106,19 +2112,27 @@ int parse_commandline(int ARGC, char **ARGV)
                     shp_file = optarg;
                     break;
                case 'h':
-        	    setenv("PGHOST", optarg, 1);
+        	    //setenv("PGHOST", optarg, 1);
+		    snprintf(buf, 255, "PGHOST=%s", optarg);
+		    putenv(strdup(buf));
                     break;
                case 'd':
 	            is3d = 1;
                     break;		  
                case 'u':
-		    setenv("PGUSER", optarg, 1);
+		    //setenv("PGUSER", optarg, 1);
+		    snprintf(buf, 255, "PGUSER=%s", optarg);
+		    putenv(strdup(buf));
                     break;
                case 'p':
-		    setenv("PGPORT", optarg, 1);
+		    //setenv("PGPORT", optarg, 1);
+		    snprintf(buf, 255, "PGPORT=%s", optarg);
+		    putenv(strdup(buf));
                     break;
 	       case 'P':
-		    setenv("PGPASSWORD", optarg, 1);
+		    //setenv("PGPASSWORD", optarg, 1);
+		    snprintf(buf, 255, "PGPASSWORD=%s", optarg);
+		    putenv(strdup(buf));
 		    break;
 	       case 'g':
 		    geo_col_name = optarg;
@@ -2133,7 +2147,9 @@ int parse_commandline(int ARGC, char **ARGV)
         curindex=0;
         for ( ; optind < ARGC; optind++){
                 if(curindex ==0){
-			setenv("PGDATABASE", ARGV[optind], 1);
+			//setenv("PGDATABASE", ARGV[optind], 1);
+		    	snprintf(buf, 255, "PGDATABASE=%s", ARGV[optind]);
+		    	putenv(strdup(buf));
                 }else if(curindex == 1){
                         table = ARGV[optind];
                 }
