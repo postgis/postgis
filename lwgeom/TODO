@@ -14,9 +14,6 @@
 
 - make IsValid() return GEOS invalidity message if any (as a NOTICE probably)
 
-- OBSOLETE box extractor function (getbox2d) returning an actual
-  object. (return undefined values for empty geometries).
-
 - Check spheroid misure functions
 	o can't understand if 3d computation works since
 	  I get same result w/ 2d and 3d.
