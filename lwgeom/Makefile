@@ -132,7 +132,7 @@ ifeq ($(USE_STATS),1)
 	override CFLAGS += -DUSE_STATS
 endif
  
-OBJS=lwgeom_pg.o lwgeom_spheroid.o lwgeom_api.o lwgeom_ogc.o lwgeom_functions_analytic.o lwgeom_geos.o lwgeom_inout.o lwgeom_estimate.o lwgeom_functions_basic.o lwgeom_gist.o lwgeom_btree.o lwgeom_transform.o stringBuffer.o lwgeom_box3d.o lwgeom_box2dfloat4.o lex.yy.o wktparse.tab.o lwgparse.o wktunparse.o $(GEOS_WRAPPER)
+OBJS=lwgeom_pg.o lwgeom_spheroid.o lwgeom_api.o lwgeom_ogc.o lwgeom_functions_analytic.o lwgeom_geos.o lwgeom_inout.o lwgeom_estimate.o lwgeom_functions_basic.o lwgeom_gist.o lwgeom_btree.o lwgeom_transform.o stringBuffer.o lwgeom_box3d.o lwgeom_box2dfloat4.o lwgeom_chip.o lex.yy.o wktparse.tab.o lwgparse.o wktunparse.o $(GEOS_WRAPPER)
 
 OTHERS=y.output lex.yy.c wktparse.tab.c wktparse.tab.h lwgeom.sql lwpostgis.sql
 

@@ -2,6 +2,7 @@
 
 FUNC: KEEPING FUNCTION: [line_interpolate_point(geometry, double precision)]
 FUNC: KEEPING FUNCTION: [segmentize(geometry, double precision)]
+
 FUNC: KEEPING FUNCTION: [asbinary(geometry)]
 FUNC: KEEPING FUNCTION: [asbinary(geometry, text)]
 
@@ -37,19 +38,4 @@ FUNC: KEEPING FUNCTION: [intersection(geometry, geometry)]
 FUNC: KEEPING FUNCTION: [intersects(geometry, geometry)]
 FUNC: KEEPING FUNCTION: [equals(geometry, geometry)]
 FUNC: KEEPING FUNCTION: [boundary(geometry)]
-
---- CHIP
-FUNC: KEEPING FUNCTION: [chip_in(cstring)]
-FUNC: KEEPING FUNCTION: [chip_out(chip)]
-TYPE: KEEPING TYPE [chip]
-FUNC: KEEPING FUNCTION: [width(chip)]
-FUNC: KEEPING FUNCTION: [height(chip)]
-FUNC: KEEPING FUNCTION: [srid(chip)]
-FUNC: KEEPING FUNCTION: [setsrid(chip, integer)]
-FUNC: KEEPING FUNCTION: [factor(chip)]
-FUNC: KEEPING FUNCTION: [setfactor(chip, real)]
-FUNC: KEEPING FUNCTION: [geometry(chip)]
-FUNC: KEEPING FUNCTION: [datatype(chip)]
-FUNC: KEEPING FUNCTION: [compression(chip)]
-FNCAST: KEEPING FNCAST geometry(chip) (see CAST)
 

@@ -167,10 +167,38 @@ CREATEFUNCTION zmax(box3d)
 	AS '@MODULE_FILENAME@','BOX3D_zmax'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
+-------------------------------------------------------------------
+--  CHIP TYPE
+-------------------------------------------------------------------
+
+#if USE_VERSION < 73
+# define CHIP_IN_REP opaque
+# define CHIP_OUT_REP opaque
+#else
+# define CHIP_IN_REP chip
+# define CHIP_OUT_REP cstring
+#endif
+
+CREATEFUNCTION chip_in(CHIP_OUT_REP)
+	RETURNS CHIP_IN_REP
+	AS '@MODULE_FILENAME@','CHIP_in'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION chip_out(CHIP_IN_REP)
+	RETURNS CHIP_OUT_REP
+	AS '@MODULE_FILENAME@','CHIP_out'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE TYPE chip (
+	alignment = double,
+	internallength = variable,
+	input = chip_in,
+	output = chip_out,
+	storage = extended
+);
+
 -----------------------------------------------------------------------
---
 -- BOX2D
---
 -----------------------------------------------------------------------
 
 CREATEFUNCTION box2d_in(cstring)
@@ -859,6 +887,48 @@ RETURNS geometry
 AS '
  SELECT translate($1, $2, $3, 0)
 ' LANGUAGE 'SQL' WITH (isstrict);
+
+--- CHIP functions
+
+CREATEFUNCTION srid(chip)
+	RETURNS int4
+	AS '@MODULE_FILENAME@','CHIP_getSRID'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION height(chip)
+	RETURNS int4
+	AS '@MODULE_FILENAME@','CHIP_getHeight'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION factor(chip)
+	RETURNS FLOAT4
+	AS '@MODULE_FILENAME@','CHIP_getFactor'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION width(chip)
+	RETURNS int4
+	AS '@MODULE_FILENAME@','CHIP_getWidth'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION datatype(chip)
+	RETURNS int4
+	AS '@MODULE_FILENAME@','CHIP_getDatatype'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION compression(chip)
+	RETURNS int4
+	AS '@MODULE_FILENAME@','CHIP_getCompression'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION setSRID(chip,int4)
+	RETURNS chip
+	AS '@MODULE_FILENAME@','CHIP_setSRID'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATEFUNCTION setFactor(chip,float4)
+	RETURNS chip
+	AS '@MODULE_FILENAME@','CHIP_setFactor'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 ------------------------------------------------------------------------
 -- DEBUG
@@ -2365,35 +2435,25 @@ CREATEFUNCTION box2d(geometry)
         AS '@MODULE_FILENAME@','LWGEOM_to_BOX2DFLOAT4'
         LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE CAST (geometry as box2d) WITH FUNCTION box2d(geometry) AS IMPLICIT ;
-
 CREATEFUNCTION box3d(geometry)
         RETURNS box3d
         AS '@MODULE_FILENAME@','LWGEOM_to_BOX3D'
         LANGUAGE 'C' WITH (isstrict,iscachable);
-
-CREATE CAST (geometry as box3d) WITH FUNCTION box3d(geometry) AS IMPLICIT ;
 
 CREATEFUNCTION box(geometry)
         RETURNS box
         AS '@MODULE_FILENAME@','LWGEOM_to_BOX'
         LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE CAST (geometry as box) WITH FUNCTION box(geometry) AS IMPLICIT ;
-
 CREATEFUNCTION box2d(box3d)
         RETURNS box2d
         AS '@MODULE_FILENAME@','BOX3D_to_BOX2DFLOAT4'
         LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE CAST (box3d as box2d) WITH FUNCTION box2d(box3d) AS IMPLICIT ;
-
 CREATEFUNCTION box3d(box2d)
         RETURNS box3d
         AS '@MODULE_FILENAME@','BOX2DFLOAT4_to_BOX3D'
         LANGUAGE 'C' WITH (isstrict,iscachable);
-
-CREATE CAST (box2d as box3d) WITH FUNCTION box3d(box2d) AS IMPLICIT ;
 
 CREATEFUNCTION box(box3d)
         RETURNS box
@@ -2406,21 +2466,33 @@ CREATEFUNCTION box3dtobox(box3d)
         AS 'SELECT box($1)'
 	LANGUAGE 'SQL' WITH (isstrict,iscachable);
 
-CREATE CAST (box3d as box) WITH FUNCTION box(box3d) AS IMPLICIT ;
-
 CREATEFUNCTION geometry(box3d)
         RETURNS geometry
         AS '@MODULE_FILENAME@','BOX3D_to_LWGEOM'
         LANGUAGE 'C' WITH (isstrict,iscachable);
-
-CREATE CAST (box3d as geometry) WITH FUNCTION geometry(box3d) AS IMPLICIT ;
 
 CREATEFUNCTION geometry(text)
         RETURNS geometry
         AS '@MODULE_FILENAME@','parse_WKT_lwgeom'
         LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE CAST ( text AS geometry) WITH FUNCTION geometry(text) AS IMPLICIT;
+CREATEFUNCTION geometry(chip)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','CHIP_to_LWGEOM'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+-- 7.3+ explicit casting definitions
+#if USE_VERSION >= 73
+CREATE CAST (geometry AS box2d) WITH FUNCTION box2d(geometry) AS IMPLICIT;
+CREATE CAST (geometry AS box3d) WITH FUNCTION box3d(geometry) AS IMPLICI ;
+CREATE CAST (geometry AS box) WITH FUNCTION box(geometry) AS IMPLICIT;
+CREATE CAST (box3d AS box2d) WITH FUNCTION box2d(box3d) AS IMPLICIT;
+CREATE CAST (box2d AS box3d) WITH FUNCTION box3d(box2d) AS IMPLICIT;
+CREATE CAST (box3d AS box) WITH FUNCTION box(box3d) AS IMPLICIT;
+CREATE CAST (box3d AS geometry) WITH FUNCTION geometry(box3d) AS IMPLICIT;
+CREATE CAST (text AS geometry) WITH FUNCTION geometry(text) AS IMPLICIT;
+CREATE CAST (chip AS geometry) WITH FUNCTION geometry(chip) AS IMPLICIT;
+#endif
 
 ---------------------------------------------------------------
 -- Algorithms
