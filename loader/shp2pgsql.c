@@ -24,6 +24,7 @@
 #include "shapefil.h"
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 typedef struct {double x, y;} Point;
 
@@ -57,9 +58,9 @@ char	*make_good_string(char *str){
 	char	*start,*end;
 	int	num_tabs = 0;
 
-	str2 = (str);
+	(str2) = (str);
 
-	while (str2 = strchr((str2), '\t') )
+	while ((str2 = strchr(str2, '\t')) )
 	{
 		if ( (str2 == str) || (str2[-1] != '\\') ) //the previous char isnt a '\'
 			num_tabs ++;
@@ -72,7 +73,7 @@ char	*make_good_string(char *str){
 	memset(result,0, strlen(str) + num_tabs+1 );
 	start = str;
 
-	while(end = strchr((start),'\t'))
+	while((end = strchr((start),'\t')))
 	{
 		if ( (end == str) || (end[-1] != '\\' ) ) //the previous char isnt a '\'
 		{
@@ -105,7 +106,7 @@ char	*protect_quotes_string(char *str){
 
 	str2 =  str;
 
-	while (str2 = strchr((str2), '\'') )
+	while ((str2 = strchr((str2), '\'')) )
 	{
 		if ( (str2 == str) || (str2[-1] != '\\') ) //the previous char isnt a '\'
 			num_tabs ++;
@@ -118,7 +119,7 @@ char	*protect_quotes_string(char *str){
 	memset(result,0, strlen(str) + num_tabs+1 );
 	start = str;
 
-	while(end = strchr((start),'\''))
+	while((end = strchr((start),'\'')))
 	{
 		if ( (end == str) || (end[-1] != '\\' ) ) //the previous char isnt a '\'
 		{
@@ -370,9 +371,11 @@ int Insert_attributes(DBFHandle hDBFHandle, int row){
 	
 	for( i = 0; i < num_fields; i++ ){
 			if (dump_format){
-				printf("\t%s",make_good_string(DBFReadStringAttribute( hDBFHandle, row, i )) );
+
+				printf("\t%s",make_good_string((char*)DBFReadStringAttribute( hDBFHandle,row, i )) );
 			}else{
-				printf(",'%s'",protect_quotes_string(DBFReadStringAttribute( hDBFHandle, row, i )) );
+
+				printf(",'%s'",protect_quotes_string((char*)DBFReadStringAttribute(hDBFHandle, row, i )) );
 			}
 	}
 	return 1;
