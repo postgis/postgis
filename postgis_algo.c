@@ -10,6 +10,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.3.2.1  2004/11/22 18:36:46  strk
+ * Added more verbose output on OutOfMemory condition.
+ *
  * Revision 1.3  2004/04/27 13:50:59  strk
  * Fixed bug in simplify() that was using the square of the given tolerance.
  *
@@ -124,7 +127,12 @@ DP_simplify(POINT3D *inpts, int inptsn, POINT3D **outpts, int *outptsn, double e
    elog(NOTICE, "DP_simplify called");
 #endif
 
-   outpoints = (POINT3D *)palloc( sizeof(POINT3D) * inptsn);
+   outpoints = (POINT3D *)palloc( sizeof(POINT3D) * inptsn );
+   if ( outpoints == NULL )
+   {
+   	elog(ERROR, "Out of virtual memory (%s:%d)",
+	 	__FILE__, __LINE__);
+   }
    memcpy(outpoints, inpts, sizeof(POINT3D));
    numoutpoints++;
 
@@ -146,7 +154,8 @@ elog(NOTICE, "DP_simplify: added P0 to simplified point array (size 1)");
       } else {
          /*
          outpoints = repalloc( outpoints, sizeof(POINT3D) * numoutpoints+1 );
-         if ( outpoints == NULL ) elog(NOTICE, "Out of virtual memory");
+         if ( outpoints == NULL ) elog(NOTICE, "Out of virtual memory (%s:%d)",
+	 	__FILE__, __LINE__);
          */
          memcpy(outpoints+numoutpoints, &(inpts[stack[sp]]),
             sizeof(POINT3D));
@@ -172,7 +181,7 @@ elog(NOTICE, "stack pointer = %d", sp);
    {
       outpoints = (POINT3D *)repalloc(outpoints, sizeof(POINT3D)*numoutpoints);
       if ( outpoints == NULL ) {
-         elog(ERROR, "Out of virtual memory");
+         elog(ERROR, "Out of virtual memory (%s:%d)", __FILE__, __LINE__);
       }
    }
 
@@ -271,18 +280,21 @@ elog(NOTICE, "simplify_polygon3d: ring%d simplified from %d to %d points", ri, i
       if ( ! allptsn ) {
          allptsn = optsn;
          allpts = palloc(sizeof(POINT3D)*allptsn);
+         if ( allpts == NULL ) {
+           elog(ERROR, "Out of virtual memory (%s:%d)", __FILE__, __LINE__);
+           return NULL;
+         }
          memcpy(allpts, opts, sizeof(POINT3D)*optsn);
       } else {
          allptsn += optsn;
          allpts = repalloc(allpts, sizeof(POINT3D)*allptsn);
+         if ( allpts == NULL ) {
+           elog(ERROR, "Out of virtual memory (%s:%d)", __FILE__, __LINE__);
+           return NULL;
+         }
          memcpy(allpts+(allptsn-optsn), opts, sizeof(POINT3D)*optsn);
       }
       pfree(opts);
-
-      if ( ! allpts ) {
-         elog(NOTICE, "Error allocating memory for all ring points");
-         return NULL;
-      }
 
    }
 

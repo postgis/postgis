@@ -12,6 +12,15 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.64.2.3  2004/10/17 12:24:07  strk
+ * Fixed a bug in NULL shape object handling
+ *
+ * Revision 1.64.2.2  2004/10/06 10:12:21  strk
+ * Other separator fixes ( back-port )
+ *
+ * Revision 1.64.2.1  2004/10/06 09:51:01  strk
+ * Back-ported fix for empty-DBF case handling.
+ *
  * Revision 1.64  2004/08/20 08:14:37  strk
  * Whole output wrapped in transaction blocks.
  * Drops are out of transaction, and multiple transactions are used
@@ -494,8 +503,8 @@ int ring_check(SHPObject* obj, char *schema, char *table, char *sr_id)
 		}
 	}
 
-	if (dump_format) printf("\tSRID=%s ;MULTIPOLYGON(",sr_id );
-	else printf(",GeometryFromText('MULTIPOLYGON(");
+	if (dump_format) printf("SRID=%s ;MULTIPOLYGON(",sr_id );
+	else printf("GeometryFromText('MULTIPOLYGON(");
 
 	for(u=0; u < out_index; u++){
 		Poly = Outer[u];
@@ -575,13 +584,13 @@ Insert_attributes(DBFHandle hDBFHandle, int row)
       {
          if(dump_format)
          {
-            if(i) printf("\t");
             printf("\\N");
+            printf("\t");
          }
          else
          {
-            if(i) printf(",");
             printf("NULL");
+            printf(",");
          }
       }
 
@@ -617,11 +626,11 @@ Insert_attributes(DBFHandle hDBFHandle, int row)
          }
  
 			if (dump_format) {
-            if ( i ) printf("\t");
 				printf("%s",make_good_string(val));
+				printf("\t");
 			} else {
-            if ( i ) printf(",");
 				printf("'%s'",protect_quotes_string(val));
+				printf(",");
 			}
 		 }
 	}
@@ -826,13 +835,14 @@ main (int ARGC, char **ARGV)
 	types = (DBFFieldType *)malloc(num_fields*sizeof(int));
 	widths = malloc(num_fields*sizeof(int));
 	precisions = malloc(num_fields*sizeof(int));
-	col_names = malloc(num_fields * sizeof(char) * 32);
+	col_names = malloc((num_fields+2) * sizeof(char) * 32);
 	if(opt != 'a'){
 		strcpy(col_names, "(gid," );
 	}else{
 		strcpy(col_names, "(" );
 	}
 
+	//fprintf(stderr, "Number of fields from DBF: %d\n", num_fields);
 	for(j=0;j<num_fields;j++)
 	{
 		type = DBFGetFieldInfo(hDBFHandle, j, name, &field_width, &field_precision); 
@@ -896,10 +906,9 @@ main (int ARGC, char **ARGV)
 		field_names[j] = malloc ( strlen(name)+3 );
 		strcpy(field_names[j], name);
 
-		if (j) strcat(col_names, ",");
-		sprintf(col_names, "%s\"%s\"", col_names, name);
+		sprintf(col_names, "%s\"%s\",", col_names, name);
 	}
-	sprintf(col_names, "%s, \"%s\")", col_names, geom);
+	sprintf(col_names, "%s\"%s\")", col_names, geom);
 
 
 	SHPGetInfo( hSHPHandle, &num_entities, &phnshapetype, &padminbound[0], &padmaxbound[0]);
@@ -992,11 +1001,11 @@ main (int ARGC, char **ARGV)
 		// ---------- NULL SHAPE -----------------
 		if (obj->nVertices == 0)
 		{
-			if (dump_format) printf("\t\\N\n\\.\n");
-			else printf(", NULL);\n");
+			if (dump_format) printf("\\N\n");
+			else printf("NULL);\n");
 		}
 
-                // ---------POLYGONS (2D or 3d) -----------
+                // --------- POLYGON / POLYGONM / POLYGONZ ------
 	   	else if(( obj->nSHPType == 5 ) || ( obj->nSHPType == 25 )
 			|| ( obj->nSHPType == 15) )
 		{
@@ -1004,12 +1013,12 @@ main (int ARGC, char **ARGV)
 		}
 
 
-		//--------POINTS--------------
+		//-------- POINT / POINTM --------------
 		else if( obj->nSHPType == 1 || obj->nSHPType == 21 )
 		{
 
-			if (dump_format) printf("\tSRID=%s;POINT(",sr_id);
-			else printf(",GeometryFromText('POINT (");
+			if (dump_format) printf("SRID=%s;POINT(",sr_id);
+			else printf("GeometryFromText('POINT (");
 
 			for (u=0;u<obj->nVertices; u++){
 				if (u>0) printf(",");
@@ -1019,7 +1028,7 @@ main (int ARGC, char **ARGV)
 			else printf(")',%s) );\n",sr_id);
 		}
 
-		//--------ARCs / LINES-----------------
+		//-------- POLYLINE / POLYLINEM ------------------
 		else if( obj->nSHPType == 3 || obj->nSHPType == 23 )
 		{
 			/*
@@ -1036,16 +1045,16 @@ main (int ARGC, char **ARGV)
 				fprintf(stderr,
 	"MULTILINESTRING %d as %d vertices, set to NULL\n",
 	j, obj->nVertices);
-				if (dump_format) printf("\t\\N\n");
-				else printf(",NULL);\n");
+				if (dump_format) printf("\\N\n");
+				else printf("NULL);\n");
 
 				SHPDestroyObject(obj);
 
 				continue;
 			}
 
-			if (dump_format) printf("\tSRID=%s;MULTILINESTRING(",sr_id);
-			else printf(",GeometryFromText('MULTILINESTRING (");
+			if (dump_format) printf("SRID=%s;MULTILINESTRING(",sr_id);
+			else printf("GeometryFromText('MULTILINESTRING (");
 
 			//for each vertice write out the coordinates in the insert statement, when there is a new line 
 			//you must end the brackets and start new ones etc.
@@ -1081,11 +1090,11 @@ main (int ARGC, char **ARGV)
 			else printf(")',%s) );\n",sr_id);
 		}
 
-		//--------MULTIPOINTS------------
+		//-------- MULTIPOINT / MULTIPOINTM ------------
 		else if( obj->nSHPType == 8 || obj->nSHPType == 28 )
 		{
-			if (dump_format) printf("\tSRID=%s;MULTIPOINT(",sr_id);
-			else printf(",GeometryFromText('MULTIPOINT ("); 
+			if (dump_format) printf("SRID=%s;MULTIPOINT(",sr_id);
+			else printf("GeometryFromText('MULTIPOINT ("); 
 			
 			for (u=0;u<obj->nVertices; u++){
 				if (u>0) printf(",");
@@ -1096,11 +1105,11 @@ main (int ARGC, char **ARGV)
 			else printf(")',%s) );\n",sr_id);
 		}
 
-		//----------POINTZ----------
+		//---------- POINTZ ----------
 		else if( obj->nSHPType == 11 )
 		{ 
-			if (dump_format) printf("\tSRID=%s;POINT(",sr_id);
-			else printf(",GeometryFromText('POINT ("); 
+			if (dump_format) printf("SRID=%s;POINT(",sr_id);
+			else printf("GeometryFromText('POINT ("); 
 			
 			for (u=0;u<obj->nVertices; u++){
 				if (u>0) printf(",");
@@ -1114,7 +1123,7 @@ main (int ARGC, char **ARGV)
 
 		}
 
-		//------Linez(3D lines)------
+		//------ POLYLINEZ -----------
 		else if( obj->nSHPType == 13 )
 		{  
 			/* Invalid (MULTI)Linestring */
@@ -1123,8 +1132,8 @@ main (int ARGC, char **ARGV)
 				fprintf(stderr,
 	"MULTILINESTRING %d as %d vertices, set to NULL\n",
 	j, obj->nVertices);
-				if (dump_format) printf("\t\\N\n");
-				else printf(",NULL);\n");
+				if (dump_format) printf("\\N\n");
+				else printf("NULL);\n");
 
 				SHPDestroyObject(obj);
 				continue;
@@ -1138,8 +1147,8 @@ main (int ARGC, char **ARGV)
 			else next_ring = -99;
 
 			if (dump_format)
-				printf("\tSRID=%s;MULTILINESTRING(",sr_id);
-			else printf(",GeometryFromText('MULTILINESTRING (");
+				printf("SRID=%s;MULTILINESTRING(",sr_id);
+			else printf("GeometryFromText('MULTILINESTRING (");
 
 			//for each vertice write out the coordinates in the insert statement, when there is a new line 
 			//you must end the brackets and start new ones etc.
@@ -1166,12 +1175,12 @@ main (int ARGC, char **ARGV)
 			else printf(")',%s));\n",sr_id);
 		}
 
-		//------MULTIPOINTZ (3D MULTIPOINTS)---
+		//------ MULTIPOINTZ -----------------------
 		else if( obj->nSHPType == 18 )
 		{
 
-			if (dump_format) printf("\tSRID=%s;MULTIPOINT(",sr_id);
-			else printf(",GeometryFromText('MULTIPOINT (");
+			if (dump_format) printf("SRID=%s;MULTIPOINT(",sr_id);
+			else printf("GeometryFromText('MULTIPOINT (");
 
 			for (u=0;u<obj->nVertices; u++){
 				if (u>0){
