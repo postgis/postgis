@@ -23,10 +23,10 @@ my $version = $ARGV[1];
 
 print "BEGIN;\n";
 
-if ( $version eq "73" ) 
+if ( $version ge "73" ) 
 {
 	print "-- Drop index bindings from system tables\n";
-	print "DROP OPERATOR CLASS gist_geometry_ops USING gist;\n";
+	print "DROP OPERATOR CLASS gist_geometry_ops USING gist CASCADE;\n";
 }
 else 
 {
@@ -43,6 +43,7 @@ while( my $line = <INPUT>)
 {
 	$line =~ s/[\r\n]//g;
 	push (@funcs, $line) if ($line =~ /^create function/i);
+	push (@funcs, $line) if ($line =~ /^create or replace function/i);
 	push (@ops, $line) if ($line =~ /^create operator.*\(/i);
 	push (@aggs, $line) if ($line =~ /^create aggregate/i);
 	push (@types, $line) if ($line =~ /^create type/i);
@@ -78,7 +79,14 @@ foreach my $op (@ops)
 {
 	if ($op =~ /create operator ([^(]+)/i )
 	{
-		print "DROP OPERATOR $1 (geometry,geometry);\n";
+		if ( $version ge "73" ) 
+		{
+			print "DROP OPERATOR $1 (geometry,geometry) CASCADE;\n";
+		}
+		else
+		{
+			print "DROP OPERATOR $1 (geometry,geometry);\n";
+		}
 	}
 	else
 	{
@@ -105,15 +113,15 @@ print "-- Drop all functions.\n";
 
 foreach my $fn (@funcs)
 {
-	if ($fn =~ /create function ([^(]+)\((.*)\)/i )
+	if ($fn =~ /create .* function ([^(]+)\((.*)\)/i )
 	{
 		my $fn_nm = $1;
 		my $fn_arg = $2;
-		if ( $version eq "73" )
+		if ( $version ge "73" )
 		{
-			if ( ! ( $fn_nm =~ /_in/i || $fn_nm =~ /_out/i ) ) 
+			if ( ! ( $fn_nm =~ /_in/i || $fn_nm =~ /_out/i || $fn_nm =~ /_recv/i || $fn_nm =~ /_send/i || $fn_nm =~ /_analyze/i ) ) 
 			{
-				print "DROP FUNCTION $fn_nm ($fn_arg);\n";
+				print "DROP FUNCTION $fn_nm ($fn_arg) CASCADE;\n";
 			} 
 		}
 		else
@@ -133,7 +141,7 @@ foreach my $type (@types)
 {
 	if ($type =~ /create type ([^(]+)/i )
 	{
-		if ( $version eq "73" ) 
+		if ( $version ge "73" ) 
 		{
 			print "DROP TYPE $1 CASCADE;\n";
 		}
