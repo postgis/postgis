@@ -325,12 +325,15 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 		lwgeom_dropBBOX(lwgeom);
 		lwgeom->bbox = lwgeom_compute_bbox(lwgeom);
 		lwgeom->SRID = result_srid;
+		lwgeom_release(lwgeom);
 		result = pglwgeom_serialize(lwgeom);
 	}
 	else
 	{
 		result = PG_LWGEOM_construct(srl, result_srid, 0);
 	}
+
+	pfree(geom);
 
 	PG_RETURN_POINTER(result); // new geometry
 }
