@@ -67,8 +67,8 @@ points where some BBOX caching strategies could be enforced).
 	PointOnSurface(geometry) *LWG*
 
 [ TAINING ]
-	GeometryN(geometry,integer) *SRL*
-	InteriorRingN(geometry,integer) *SRL*
+	GeometryN(geometry,integer) *LWG*
+	InteriorRingN(geometry,integer) *LWG*
 	simplify(geometry, float8) *SRL* *EXP*
 
 	#### could use WHEN_SIMPLE

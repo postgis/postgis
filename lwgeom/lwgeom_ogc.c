@@ -222,8 +222,8 @@ Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS)
 	PG_LWGEOM *result;
 	int type = lwgeom_getType(geom->type);
 	int32 idx;
-	char *serialized;
-	char *subgeom;
+	LWCOLLECTION *coll;
+	LWGEOM *subgeom;
 
 	//elog(NOTICE, "GeometryN called");
 
@@ -235,25 +235,23 @@ Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS)
 	}
 
 	idx = PG_GETARG_INT32(1);
-	serialized = SERIALIZED_FORM(geom);
-
 	idx -= 1; // index is 1-based
+
+	coll = lwcollection_deserialize(SERIALIZED_FORM(geom));
+
 	if ( idx < 0 ) PG_RETURN_NULL();
-	if ( idx >= lwgeom_getnumgeometries(serialized) ) PG_RETURN_NULL();
+	if ( idx >= coll->ngeoms ) PG_RETURN_NULL();
 
-	subgeom = lwgeom_getsubgeometry(serialized, idx);
-	if ( subgeom == NULL )
-	{
-		//elog(NOTICE, "geometryn: subgeom %d does not exist", idx);
-		PG_RETURN_NULL();
-	}
+	subgeom = coll->geoms[idx];
+	subgeom->SRID = coll->SRID;
 
-	// we have it, not it's time to make an PG_LWGEOM
+	//COMPUTE_BBOX==TAINTING
+	if ( coll->bbox ) lwgeom_addBBOX(subgeom);
 
-	// Here is the actual of the line
-	result = PG_LWGEOM_construct(subgeom, lwgeom_getSRID(geom), lwgeom_hasBBOX(geom->type));
+	result = pglwgeom_serialize(subgeom);
 
-	//elog(NOTICE, "geomtryN about to return");
+	lwgeom_release((LWGEOM *)coll);
+
 	PG_RETURN_POINTER(result);
 
 }
@@ -412,45 +410,42 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 
 	wanted_index = PG_GETARG_INT32(1);
 	if ( wanted_index < 1 )
-		PG_RETURN_NULL(); // index out of range
-
-	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
-
-	for (i=0; i<inspected->ngeometries; i++)
 	{
-		poly = lwgeom_getpoly_inspected(inspected, i);
-		if ( poly ) break;
+		//elog(ERROR, "InteriorRingN: ring number is 1-based");
+		PG_RETURN_NULL(); // index out of range
 	}
 
-	if ( poly == NULL ) PG_RETURN_NULL();
+	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+	poly = lwpoly_deserialize(SERIALIZED_FORM(geom));
+	if ( ! poly )
+	{
+		elog(ERROR, "InteriorRingN: geom is not a polygon");
+		PG_RETURN_NULL();
+	}
 
 	// Ok, now we have a polygon. Let's see if it has enough holes
 	if ( wanted_index >= poly->nrings )
 	{
-		pfree_inspected(inspected);
+		lwgeom_release((LWGEOM *)poly);
 		PG_RETURN_NULL();
 	}
-	pfree_inspected(inspected);
 
 	ring = poly->rings[wanted_index];
 
-	// If input geometry did have a bounding box
-	// compute the new one
-	if ( TYPE_HASBBOX(geom->type) ) bbox = ptarray_compute_bbox(ring);
+	// COMPUTE_BBOX==TAINTING
+	if ( poly->bbox ) bbox = ptarray_compute_bbox(ring);
 
 	// This is a LWLINE constructed by interior ring POINTARRAY
 	line = lwline_construct(poly->SRID, bbox, ring);
 
-	// Now we serialized it (copying data)
-	serializedline = lwline_serialize(line);
+	// Copy SRID from polygon
+	line->SRID = poly->SRID;
 
-	// And we construct the line (copy again)
-	result = PG_LWGEOM_construct(serializedline, lwgeom_getSRID(geom),
-		bbox?1:0);
+	result = pglwgeom_serialize(line);
 
-	pfree(serializedline);
-	pfree(line);
+	lwgeom_release((LWGEOM *)line);
+	lwgeom_release((LWGEOM *)poly);
 
 	PG_RETURN_POINTER(result);
 }
