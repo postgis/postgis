@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.26  2003/10/17 16:07:05  dblasby
+ * made isEmpty() return true/false
+ *
  * Revision 1.25  2003/09/16 20:27:12  dblasby
  * added ability to delete geometries.
  *
@@ -2742,8 +2745,8 @@ Datum isempty(PG_FUNCTION_ARGS)
 
 
 	if (geom1->nobjs ==0)
-		PG_RETURN_INT32(1);
-	PG_RETURN_INT32(0);
+		PG_RETURN_BOOL(TRUE);
+	PG_RETURN_BOOL(FALSE);
 }
 
 

@@ -12,6 +12,9 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.16  2003/10/17 16:07:05  dblasby
+-- made isEmpty() return true/false
+--
 -- Revision 1.15  2003/09/04 16:19:06  dblasby
 -- removed truly_inside() function.
 --
@@ -860,7 +863,7 @@ CREATE FUNCTION geomcollfromtext(geometry)
 
 
 CREATE FUNCTION isempty(geometry)
-	RETURNS int
+	RETURNS boolean
 	AS '@MODULE_FILENAME@','isempty'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
