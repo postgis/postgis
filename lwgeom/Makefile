@@ -97,7 +97,7 @@ wktparse.tab.c: wktparse.y
 
 
 lex.yy.c: wktparse.lex wktparse.tab.c
-	$(FLEX) -Plwg_parse_yy -if -o'lex.yy.c' wktparse.lex 
+	$(FLEX) -Plwg_parse_yy -i -f -o'lex.yy.c' wktparse.lex 
 
 lwgeom_geos_wrapper.o: lwgeom_geos_wrapper.cpp
 
