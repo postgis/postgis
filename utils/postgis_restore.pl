@@ -568,6 +568,7 @@ close(OUTPUT);
 #
 print "Creating db ($dbname)\n";
 `createdb $dbname`;
+die "Can't restore in an existing database\n" if ($?);
 print "Adding plpgsql\n";
 `createlang plpgsql $dbname`;
 
