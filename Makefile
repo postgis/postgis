@@ -69,6 +69,13 @@ endif
 override DLLLIBS := $(BE_DLLLIBS) $(DLLLIBS)
 
 #---------------------------------------------------------------
+# Add index selectivity to C flags
+#
+ifeq ($(USE_STATS),1)
+	override CPPFLAGS += -DUSE_STATS
+endif
+ 
+#---------------------------------------------------------------
 # Select proper GiST support C file
 #
 ifeq ($(USE_VERSION),71) 
