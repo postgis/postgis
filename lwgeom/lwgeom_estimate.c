@@ -1570,7 +1570,7 @@ Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS)
 	Query *root = (Query *) PG_GETARG_POINTER(0);
 	//Oid operator = PG_GETARG_OID(1);
 	List *args = (List *) PG_GETARG_POINTER(2);
-	int varRelid = PG_GETARG_INT32(3);
+	//int varRelid = PG_GETARG_INT32(3);
 	Oid relid;
 	HeapTuple stats_tuple;
 	GEOM_STATS *geomstats;
@@ -1652,7 +1652,8 @@ Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS)
 	 * Get pg_statistic row
 	 */
 
-	relid = getrelid(varRelid, root->rtable);
+//	relid = getrelid(varRelid, root->rtable);
+	relid = getrelid(self->varno, root->rtable);
 
 	stats_tuple = SearchSysCache(STATRELATT, ObjectIdGetDatum(relid), Int16GetDatum(self->varattno), 0, 0);
 	if ( ! stats_tuple )
@@ -2446,6 +2447,10 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.26  2005/03/08 09:27:23  strk
+ * RESTRICT selectivity estimator use self->varno instead of varRelid.
+ * Seems to work for subqueries...
+ *
  * Revision 1.25  2005/03/08 09:23:34  strk
  * Fixed debugging lines.
  *
