@@ -759,6 +759,7 @@ double lwgeom_pointarray_length2d(POINTARRAY *pts);
 double lwgeom_pointarray_length(POINTARRAY *pts);
 void lwgeom_force2d_recursive(char *serialized, char *optr, int *retsize);
 void lwgeom_force3d_recursive(char *serialized, char *optr, int *retsize);
+void lwgeom_force4d_recursive(char *serialized, char *optr, int *retsize);
 double distance2d_pt_pt(POINT2D *p1, POINT2D *p2);
 double distance2d_pt_seg(POINT2D *p, POINT2D *A, POINT2D *B);
 double distance2d_seg_seg(POINT2D *A, POINT2D *B, POINT2D *C, POINT2D *D);

@@ -1544,6 +1544,11 @@ CREATEFUNCTION force_3d(geometry)
 	AS '@MODULE_FILENAME@', 'LWGEOM_force_3d'
 	LANGUAGE 'C' WITH (isstrict);
 
+CREATEFUNCTION force_4d(geometry) 
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_force_4d'
+	LANGUAGE 'C' WITH (isstrict);
+
 CREATEFUNCTION force_collection(geometry) 
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_force_collection'

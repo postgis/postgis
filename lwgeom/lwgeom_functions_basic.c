@@ -28,6 +28,7 @@ Datum LWGEOM_perimeter2d_poly(PG_FUNCTION_ARGS);
 Datum LWGEOM_perimeter_poly(PG_FUNCTION_ARGS);
 Datum LWGEOM_force_2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_force_3d(PG_FUNCTION_ARGS);
+Datum LWGEOM_force_4d(PG_FUNCTION_ARGS);
 Datum LWGEOM_force_collection(PG_FUNCTION_ARGS);
 Datum LWGEOM_force_multi(PG_FUNCTION_ARGS);
 Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS);
@@ -1451,7 +1452,7 @@ elog(NOTICE, "lwgeom_force3d_recursive: it's a line, size:%d", *retsize);
 			{
 				POINTARRAY *ring = poly->rings[j];
 				POINTARRAY *nring = palloc(sizeof(POINTARRAY));
-				nring->ndims = 2;
+				nring->ndims = 3;
 				nring->npoints = ring->npoints;
 				nring->serialized_pointlist =
 					palloc(ring->npoints*24);
@@ -1531,6 +1532,176 @@ elog(NOTICE, " elem %d size: %d (tot: %d)", i, size, totsize);
 	*retsize = totsize;
 }
 
+/*
+ * Write to already allocated memory 'optr' a 4d version of
+ * the given serialized form. 
+ * Pad dimensions are set to 0.
+ * Return number bytes written in given int pointer.
+ */
+void
+lwgeom_force4d_recursive(char *serialized, char *optr, int *retsize)
+{
+	LWGEOM_INSPECTED *inspected;
+	int i,j,k;
+	int totsize=0;
+	int size=0;
+	int type;
+	LWPOINT *point = NULL;
+	LWLINE *line = NULL;
+	LWPOLY *poly = NULL;
+	POINTARRAY newpts;
+	POINTARRAY **nrings;
+	char *loc;
+
+		
+#ifdef DEBUG
+	elog(NOTICE, "lwgeom_force4d_recursive: call");
+#endif
+
+	type = lwgeom_getType(serialized[0]);
+
+	if ( type == POINTTYPE )
+	{
+		point = lwpoint_deserialize(serialized);
+		if ( point->ndims < 4 )
+		{
+			newpts.ndims = 4;
+			newpts.npoints = 1;
+			newpts.serialized_pointlist = palloc(sizeof(POINT4D));
+			loc = newpts.serialized_pointlist;
+			getPoint4d_p(point->point, 0, loc);
+			point->point = &newpts;
+		}
+		point->ndims = 4;
+		lwpoint_serialize_buf(point, optr, retsize);
+#ifdef DEBUG
+elog(NOTICE, "lwgeom_force4d_recursive: it's a point, size:%d", *retsize);
+#endif
+		return;
+	}
+
+	if ( type == LINETYPE )
+	{
+#ifdef DEBUG
+elog(NOTICE, "lwgeom_force4d_recursive: it's a line");
+#endif
+		line = lwline_deserialize(serialized);
+		if ( line->ndims < 4 )
+		{
+			newpts.ndims = 4;
+			newpts.npoints = line->points->npoints;
+			newpts.serialized_pointlist = palloc(sizeof(POINT4D)*line->points->npoints);
+			loc = newpts.serialized_pointlist;
+			for (j=0; j<line->points->npoints; j++)
+			{
+				getPoint4d_p(line->points, j, loc);
+				loc+=sizeof(POINT4D);
+			}
+			line->points = &newpts;
+		}
+
+		line->ndims = 4;
+		lwline_serialize_buf(line, optr, retsize);
+#ifdef DEBUG
+elog(NOTICE, "lwgeom_force4d_recursive: it's a line, size:%d", *retsize);
+#endif
+		return;
+	}
+
+	if ( type == POLYGONTYPE )
+	{
+		poly = lwpoly_deserialize(serialized);
+		if ( poly->ndims < 4 )
+		{
+			newpts.ndims = 4;
+			newpts.npoints = 0;
+			newpts.serialized_pointlist = palloc(1);
+			nrings = palloc(sizeof(POINTARRAY *)*poly->nrings);
+			loc = newpts.serialized_pointlist;
+			for (j=0; j<poly->nrings; j++)
+			{
+				POINTARRAY *ring = poly->rings[j];
+				POINTARRAY *nring = palloc(sizeof(POINTARRAY));
+				nring->ndims = 4;
+				nring->npoints = ring->npoints;
+				nring->serialized_pointlist =
+					palloc(ring->npoints*sizeof(POINT4D));
+				loc = nring->serialized_pointlist;
+				for (k=0; k<ring->npoints; k++)
+				{
+					getPoint4d_p(ring, k, loc);
+					loc+=sizeof(POINT4D);
+				}
+				nrings[j] = nring;
+			}
+			poly->rings = nrings;
+		}
+		poly->ndims = 4;
+		lwpoly_serialize_buf(poly, optr, retsize);
+#ifdef DEBUG
+elog(NOTICE, "lwgeom_force4d_recursive: it's a poly, size:%d", *retsize);
+#endif
+		return;
+	}
+
+ 	// OK, this is a collection, so we write down its metadata
+	// first and then call us again
+
+#ifdef DEBUG
+elog(NOTICE, "lwgeom_force4d_recursive: it's a collection (type:%d)", type);
+#endif
+
+	// Add type
+	*optr = lwgeom_makeType_full(4, lwgeom_hasSRID(serialized[0]),
+		type, lwgeom_hasBBOX(serialized[0]));
+	optr++;
+	totsize++;
+	loc=serialized+1;
+
+	// Add BBOX if any
+	if (lwgeom_hasBBOX(serialized[0]))
+	{
+		memcpy(optr, loc, sizeof(BOX2DFLOAT4));
+		optr += sizeof(BOX2DFLOAT4);
+		totsize += sizeof(BOX2DFLOAT4);
+		loc += sizeof(BOX2DFLOAT4);
+	}
+
+	// Add SRID if any
+	if (lwgeom_hasSRID(serialized[0]))
+	{
+		memcpy(optr, loc, 4);
+		optr += 4;
+		totsize += 4;
+		loc += 4;
+	}
+
+	// Add numsubobjects
+	memcpy(optr, loc, 4);
+	optr += 4;
+	totsize += 4;
+
+#ifdef DEBUG
+elog(NOTICE, " collection header size:%d", totsize);
+#endif
+
+	// Now recurse for each suboject
+	inspected = lwgeom_inspect(serialized);
+	for (i=0; i<inspected->ngeometries; i++)
+	{
+		char *subgeom = lwgeom_getsubgeometry_inspected(inspected, i);
+		lwgeom_force4d_recursive(subgeom, optr, &size);
+		totsize += size;
+		optr += size;
+#ifdef DEBUG
+elog(NOTICE, " elem %d size: %d (tot: %d)", i, size, totsize);
+#endif
+	}
+	pfree_inspected(inspected);
+
+	*retsize = totsize;
+}
+
 // transform input geometry to 2d if not 2d already
 PG_FUNCTION_INFO_V1(LWGEOM_force_2d);
 Datum LWGEOM_force_2d(PG_FUNCTION_ARGS)
@@ -1557,7 +1728,7 @@ Datum LWGEOM_force_2d(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-// transform input geometry to 3d if not 2d already
+// transform input geometry to 3d if not 3d already
 PG_FUNCTION_INFO_V1(LWGEOM_force_3d);
 Datum LWGEOM_force_3d(PG_FUNCTION_ARGS)
 {
@@ -1579,6 +1750,35 @@ Datum LWGEOM_force_3d(PG_FUNCTION_ARGS)
 	}
 
 	lwgeom_force3d_recursive(SERIALIZED_FORM(geom),
+		SERIALIZED_FORM(result), &size);
+
+	// we can safely avoid this... memory will be freed at
+	// end of query processing anyway.
+	//result = repalloc(result, size+4);
+
+	result->size = size+4;
+
+	PG_RETURN_POINTER(result);
+}
+
+// transform input geometry to 4d if not 4d already
+PG_FUNCTION_INFO_V1(LWGEOM_force_4d);
+Datum LWGEOM_force_4d(PG_FUNCTION_ARGS)
+{
+	LWGEOM *geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	LWGEOM *result;
+	int olddims;
+	int32 size = 0;
+
+	olddims = lwgeom_ndims(geom->type);
+	
+	// already 4d
+	if ( olddims == 4 ) PG_RETURN_POINTER(geom);
+
+	// allocate double as memory a larger for safety 
+	result = (LWGEOM *) palloc(geom->size*2);
+
+	lwgeom_force4d_recursive(SERIALIZED_FORM(geom),
 		SERIALIZED_FORM(result), &size);
 
 	// we can safely avoid this... memory will be freed at

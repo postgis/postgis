@@ -3572,6 +3572,16 @@ dimension
           </listitem>
         </varlistentry>
 
+        <varlistentry id="force_4d">
+          <term>force_4d(geometry)</term>
+
+          <listitem>
+            <para>Forces the geometries into a "4-dimensional mode" so that
+            all output representations will have the X, Y, Z and M
+            coordinates.</para>
+          </listitem>
+        </varlistentry>
+
         <varlistentry>
           <term>length2d(geometry)</term>
 
