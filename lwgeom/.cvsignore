@@ -5,3 +5,4 @@ wktparse.tab.h
 lex.yy.c
 y.output
 lwpostgis.sql
+postgis_geos_version.h
