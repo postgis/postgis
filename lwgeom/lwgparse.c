@@ -55,18 +55,18 @@ static report_error error_func;
 
 struct tag_tuple{
 	output_func   of;
-	union {
+	union union_tag {
 		double points[4];
 		int4   pointsi[4];
 
-		struct{
+		struct struct_tag {
 			tuple* 	stack_next;
 			int	type;
 			int	num;
 			int	size_here;
-		};
-	};
-	tuple* next;
+		} nn;
+	} uu;
+	struct tag_tuple *next;
 };
 
 struct {
@@ -230,7 +230,7 @@ free_tuple(tuple* to_free)
 void
 inc_num(void)
 {
-	the_geom.stack->num++;
+	the_geom.stack->uu.nn.num++;
 }
 
 /*
@@ -243,26 +243,26 @@ alloc_stack_tuple(int type,output_func of,size_t size)
 	inc_num();
 
 	p = alloc_tuple(of,size);
-	p->stack_next = the_geom.stack;
-	p->type = type;
-	p->size_here = the_geom.alloc_size;
-	p->num = 0;
+	p->uu.nn.stack_next = the_geom.stack;
+	p->uu.nn.type = type;
+	p->uu.nn.size_here = the_geom.alloc_size;
+	p->uu.nn.num = 0;
 	the_geom.stack = p;
 }
 
 void
 pop(void)
 {
-	the_geom.stack = the_geom.stack->stack_next;
+	the_geom.stack = the_geom.stack->uu.nn.stack_next;
 }
 
 void
 popc(void)
 {
-	if ( the_geom.stack->num < minpoints){
+	if ( the_geom.stack->uu.nn.num < minpoints){
 		error("geometry requires more points");
 	}
-	the_geom.stack = the_geom.stack->stack_next;
+	the_geom.stack = the_geom.stack->uu.nn.stack_next;
 }
 
 
@@ -369,45 +369,45 @@ alloc_lwgeom(int srid)
 void
 write_point_2(tuple* this,output_state* out)
 {
-	WRITE_DOUBLES(out,this->points,2);
+	WRITE_DOUBLES(out,this->uu.points,2);
 }
 
 void
 write_point_3(tuple* this,output_state* out)
 {
-	WRITE_DOUBLES(out,this->points,3);
+	WRITE_DOUBLES(out,this->uu.points,3);
 }
 
 void
 write_point_4(tuple* this,output_state* out)
 {
-	WRITE_DOUBLES(out,this->points,4);
+	WRITE_DOUBLES(out,this->uu.points,4);
 }
 
 void
 write_point_2i(tuple* this,output_state* out)
 {
-	WRITE_INT4_REAL_MULTIPLE(out,this->points,2);
+	WRITE_INT4_REAL_MULTIPLE(out,this->uu.points,2);
 }
 
 void
 write_point_3i(tuple* this,output_state* out)
 {
-	WRITE_INT4_REAL_MULTIPLE(out,this->points,3);
+	WRITE_INT4_REAL_MULTIPLE(out,this->uu.points,3);
 }
 
 void
 write_point_4i(tuple* this,output_state* out)
 {
-	WRITE_INT4_REAL_MULTIPLE(out,this->points,4);
+	WRITE_INT4_REAL_MULTIPLE(out,this->uu.points,4);
 }
 
 void
 alloc_point_2d(double x,double y)
 {
 	tuple* p = alloc_tuple(write_point_2,the_geom.lwgi?8:16);
-	p->points[0] = x;
-	p->points[1] = y;
+	p->uu.points[0] = x;
+	p->uu.points[1] = y;
 	inc_num();
 	check_dims(2);
 }
@@ -416,9 +416,9 @@ void
 alloc_point_3d(double x,double y,double z)
 {
 	tuple* p = alloc_tuple(write_point_3,the_geom.lwgi?12:24);
-	p->points[0] = x;
-	p->points[1] = y;
-	p->points[2] = z;
+	p->uu.points[0] = x;
+	p->uu.points[1] = y;
+	p->uu.points[2] = z;
 	inc_num();
 	check_dims(3);
 }
@@ -427,10 +427,10 @@ void
 alloc_point_4d(double x,double y,double z,double m)
 {
 	tuple* p = alloc_tuple(write_point_4,the_geom.lwgi?16:32);
-	p->points[0] = x;
-	p->points[1] = y;
-	p->points[2] = z;
-	p->points[3] = m;
+	p->uu.points[0] = x;
+	p->uu.points[1] = y;
+	p->uu.points[2] = z;
+	p->uu.points[3] = m;
 	inc_num();
 	check_dims(4);
 }
@@ -441,10 +441,10 @@ write_type(tuple* this,output_state* out)
 	byte type=0;
 
 	//Empty handler - switch back
-	if ( this->type == 0xff )
-		this->type = COLLECTIONTYPE;
+	if ( this->uu.nn.type == 0xff )
+		this->uu.nn.type = COLLECTIONTYPE;
 
-	type |= this->type;
+	type |= this->uu.nn.type;
 
 	if (the_geom.ndims) //Support empty
 	{
@@ -468,7 +468,7 @@ write_type(tuple* this,output_state* out)
 void
 write_count(tuple* this,output_state* out)
 {
-	int num = this->num;
+	int num = this->uu.nn.num;
 	WRITE_INT4(out,num);
 }
 
@@ -547,8 +547,8 @@ alloc_empty()
 {
 	tuple* st = the_geom.stack;
 	//Find the last geometry
-	while(st->type == 0){
-		st =st->stack_next;
+	while(st->uu.nn.type == 0){
+		st =st->uu.nn.stack_next;
 	}
 
 	//Reclaim memory
@@ -557,17 +557,17 @@ alloc_empty()
 	//Put an empty geometry collection on the top of the stack
 	st->next=NULL;
 	the_geom.stack=st;
-	the_geom.alloc_size=st->size_here;
+	the_geom.alloc_size=st->uu.nn.size_here;
 
 	//Mark as a empty stop
-	if (st->type != 0xFF){
-		st->type=0xFF;
+	if (st->uu.nn.type != 0xFF){
+		st->uu.nn.type=0xFF;
 		st->of = write_type_count;
 		the_geom.alloc_size+=4;
-		st->size_here=the_geom.alloc_size;
+		st->uu.nn.size_here=the_geom.alloc_size;
 	}
 
-	st->num=0;
+	st->uu.nn.num=0;
 
 }
 
@@ -701,7 +701,7 @@ read_wkb_point(const char** b)
 		}
 
 		for(i=0;i<the_geom.ndims;i++){
-			p->pointsi[i]=read_wkb_int(b);
+			p->uu.pointsi[i]=read_wkb_int(b);
 		}
 	}
 	else{
@@ -714,7 +714,7 @@ read_wkb_point(const char** b)
 		}
 
 		for(i=0;i<the_geom.ndims;i++){
-			p->points[i]=read_wbk_double(b,the_geom.from_lwgi);
+			p->uu.points[i]=read_wbk_double(b,the_geom.from_lwgi);
 		}
 	}
 
