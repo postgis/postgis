@@ -10,6 +10,11 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.32  2004/07/01 17:02:05  strk
+ * Updated to support latest GEOS (actually removed all geos-version related
+ * switches).
+ * Fixed an access to unallocated memory.
+ *
  * Revision 1.31  2004/06/16 19:59:36  strk
  * Changed GEOS_VERSION to POSTGIS_GEOS_VERSION to avoid future clashes
  *
@@ -146,7 +151,7 @@
 
 #include "utils/builtins.h"
 
-#include "postgis_geos_version.h"
+//#include "postgis_geos_version.h"
 
  /*
   * Define this to have have many notices printed
@@ -400,28 +405,29 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geomunion);
 Datum geomunion(PG_FUNCTION_ARGS)
 {
-		GEOMETRY		*geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-		GEOMETRY		*geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	GEOMETRY *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GEOMETRY *geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	int is3d = geom1->is3d || geom2->is3d;
 
-		Geometry *g1,*g2,*g3;
-		GEOMETRY *result;
+	Geometry *g1,*g2,*g3;
+	GEOMETRY *result;
 
-		initGEOS(MAXIMUM_ALIGNOF);
+	initGEOS(MAXIMUM_ALIGNOF);
 //elog(NOTICE,"in geomunion");
 
-		g1 = 	POSTGIS2GEOS(geom1 );
-		g2 = 	POSTGIS2GEOS(geom2 );
+	g1 = POSTGIS2GEOS(geom1);
+	g2 = POSTGIS2GEOS(geom2);
 
 //elog(NOTICE,"g1=%s",GEOSasText(g1));
 //elog(NOTICE,"g2=%s",GEOSasText(g2));
-		g3 =    GEOSUnion(g1,g2);
+	g3 = GEOSUnion(g1,g2);
 
 //elog(NOTICE,"g3=%s",GEOSasText(g3));
 
-		PG_FREE_IF_COPY(geom1, 0);
-		PG_FREE_IF_COPY(geom2, 1);
-		GEOSdeleteGeometry(g1);
-		GEOSdeleteGeometry(g2);
+	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom2, 1);
+	GEOSdeleteGeometry(g1);
+	GEOSdeleteGeometry(g2);
 
 	if (g3 == NULL)
 	{
@@ -431,7 +437,7 @@ Datum geomunion(PG_FUNCTION_ARGS)
 
 //elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
 
-	result = GEOS2POSTGIS(g3, geom1->is3d || geom2->is3d);
+	result = GEOS2POSTGIS(g3, is3d);
 
 	GEOSdeleteGeometry(g3);
 
@@ -1786,10 +1792,6 @@ POSTGIS2GEOS(GEOMETRY *g)
 			elog(NOTICE, "POSTGIS2GEOS: COLLECTION has %d objs, srid %d and is %s 3d", g->nobjs, g->SRID, g->is3d ? "" : "not");
 #endif
 			geos = PostGIS2GEOS_collection(geoms,g->nobjs,g->SRID,g->is3d);
-#if POSTGIS_GEOS_VERSION > 100
-			for (t=0; t<g->nobjs; t++)
-				GEOSdeleteGeometry(geoms[t]);
-#endif
 			if (geoms != NULL) pfree(geoms);
 			if (geos == NULL)
 			{
