@@ -1,6 +1,8 @@
 
 *** PostGIS JDBC Driver extension README / FAQ ***
 
+(C) 2005 Markus Schaber <schabi@logix-tt.com>
+
 $Revision$
 
 * What is it all about? *
@@ -88,6 +90,19 @@ A "make jar" then compiles the code and creates two jar files. The
 "postgis.jar" is for normal usage and deployment, the
 "postgis_debug.jar" additionally  includes the source code, for
 debugging purposes.
+
+
+* It is called jdbc2 - does it work with jdbc3, too? *
+
+The current naming is somehow unfortunate. The directory simply is named
+jdbc2 because it is the successor of Paul Ramsey's original jdbc directory,
+which still exists in CVS. So, the naming does not refer to SUN jdbc
+standard releases jdbc-1, jdbc-2 or jdbc-3. 
+
+Please note that the PostgreSQL JDBC driver itsself is released in
+several flavours for different JDBC relases and sun JDK releases, but
+currently, the same postgis.jar should work with all of them. If not,
+you clearly found a bug, and we kindly ask you to report it.
 
 
 * How do I use it? *
@@ -198,6 +213,13 @@ PostGIS server to connect to.
 There's beta support for the JTS 1.6 geometry implementations instead of the
 native PostGIS classes on the java client side. Simply add jts_1.6.jar to your
 CLASSPATH, "make postgis_jts" and use at your own risk.
+
+
+* How can I contact you? *
+
+Well, the best place are the official PostGIS mailing lists for PostGIS,
+subscription information is linked at:
+  http://postgis.refractions.net/support.php
 
 
 * Phew. That's all? *
