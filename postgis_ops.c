@@ -11,6 +11,10 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.11  2003/11/19 15:26:57  strk
+ * Added geometry_le, geometry_ge, geometry_cmp functions,
+ * modified geometry_lt, geometry_gt, geometry_eq to be consistent.
+ *
  * Revision 1.10  2003/07/25 17:08:37  pramsey
  * Moved Cygwin endian define out of source files into postgis.h common
  * header file.
@@ -285,107 +289,295 @@ bool is_same_line(LINE3D	*l1, LINE3D	*l2)
 }
 
 
+/***********************************************************
+ *
+ * Comparision function for use in Binary Tree searches
+ * (ORDER BY, GROUP BY, DISTINCT)
+ *
+ ***********************************************************/
+
 
 PG_FUNCTION_INFO_V1(geometry_lt);
 Datum geometry_lt(PG_FUNCTION_ARGS)
 {
-	GEOMETRY		   *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	GEOMETRY		   *geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-
+	GEOMETRY *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GEOMETRY *geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	if (geom1->SRID != geom2->SRID)
 	{
-		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
+		elog(ERROR,
+			"Operation on two GEOMETRIES with different SRIDs\n");
 		PG_RETURN_NULL();
 	}
 
-
-	if  (geom1->bvol.LLB.x < geom2->bvol.LLB.x)  
-		PG_RETURN_BOOL(TRUE);
-
-	if ( FPeq(geom1->bvol.LLB.x , geom2->bvol.LLB.x)   )
-	{ 
-		if ( geom1->bvol.LLB.y < geom2->bvol.LLB.y )  
+	if  ( ! FPeq(geom1->bvol.LLB.x , geom2->bvol.LLB.x) ) {
+		if  (geom1->bvol.LLB.x < geom2->bvol.LLB.x)
 			PG_RETURN_BOOL(TRUE);
-
-		if ( FPeq(geom1->bvol.LLB.y , geom2->bvol.LLB.y)   )
-		{ 
-			if ( geom1->bvol.LLB.z < geom2->bvol.LLB.z )  
-				PG_RETURN_BOOL(TRUE);
-			else
-				PG_RETURN_BOOL(TRUE);
-		}
-		else
-		{
-			PG_RETURN_BOOL(FALSE);
-		}
-
 	}
-	else
-	{
-		PG_RETURN_BOOL(FALSE);
+
+	if  ( ! FPeq(geom1->bvol.LLB.y , geom2->bvol.LLB.y) ) {
+		if  (geom1->bvol.LLB.y < geom2->bvol.LLB.y)
+			PG_RETURN_BOOL(TRUE);
 	}
+
+	if  ( ! FPeq(geom1->bvol.LLB.z , geom2->bvol.LLB.z) ) {
+		if  (geom1->bvol.LLB.z < geom2->bvol.LLB.z)
+			PG_RETURN_BOOL(TRUE);
+	}
+
+	if  ( ! FPeq(geom1->bvol.URT.x , geom2->bvol.URT.x) ) {
+		if  (geom1->bvol.URT.x < geom2->bvol.URT.x)
+			PG_RETURN_BOOL(TRUE);
+	}
+
+	if  ( ! FPeq(geom1->bvol.URT.y , geom2->bvol.URT.y) ) {
+		if  (geom1->bvol.URT.y < geom2->bvol.URT.y)
+			PG_RETURN_BOOL(TRUE);
+	}
+
+	if  ( ! FPeq(geom1->bvol.URT.z , geom2->bvol.URT.z) ) {
+		if  (geom1->bvol.URT.z < geom2->bvol.URT.z)
+			PG_RETURN_BOOL(TRUE);
+	}
+
+	PG_RETURN_BOOL(FALSE);
 }
 
-PG_FUNCTION_INFO_V1(geometry_gt);
-Datum geometry_gt(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(geometry_le);
+Datum geometry_le(PG_FUNCTION_ARGS)
 {
-	GEOMETRY		   *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	GEOMETRY		   *geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-
+	GEOMETRY *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GEOMETRY *geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	if (geom1->SRID != geom2->SRID)
 	{
-		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
+		elog(ERROR,
+			"Operation on two GEOMETRIES with different SRIDs\n");
 		PG_RETURN_NULL();
 	}
 
-	if  (geom1->bvol.LLB.x > geom2->bvol.LLB.x)  
-		PG_RETURN_BOOL(TRUE);
-
-	if ( FPeq(geom1->bvol.LLB.x , geom2->bvol.LLB.x)   )
-	{ 
-		if ( geom1->bvol.LLB.y > geom2->bvol.LLB.y )  
+	if  ( ! FPeq(geom1->bvol.LLB.x , geom2->bvol.LLB.x) ) {
+		if  (geom1->bvol.LLB.x < geom2->bvol.LLB.x)
 			PG_RETURN_BOOL(TRUE);
-
-		if ( FPeq(geom1->bvol.LLB.y , geom2->bvol.LLB.y)   )
-		{ 
-			if ( geom1->bvol.LLB.z > geom2->bvol.LLB.z )  
-				PG_RETURN_BOOL(TRUE);
-			else
-				PG_RETURN_BOOL(TRUE);
-		}
-		else
-		{
-			PG_RETURN_BOOL(FALSE);
-		}
-
-	}
-	else
-	{
 		PG_RETURN_BOOL(FALSE);
 	}
+
+	if  ( ! FPeq(geom1->bvol.LLB.y , geom2->bvol.LLB.y) ) {
+		if  (geom1->bvol.LLB.y < geom2->bvol.LLB.y)
+			PG_RETURN_BOOL(TRUE);
+		PG_RETURN_BOOL(FALSE);
+	}
+
+	if  ( ! FPeq(geom1->bvol.LLB.z , geom2->bvol.LLB.z) ) {
+		if  (geom1->bvol.LLB.z < geom2->bvol.LLB.z)
+			PG_RETURN_BOOL(TRUE);
+		PG_RETURN_BOOL(FALSE);
+	}
+
+	if  ( ! FPeq(geom1->bvol.URT.x , geom2->bvol.URT.x) ) {
+		if  (geom1->bvol.URT.x < geom2->bvol.URT.x)
+			PG_RETURN_BOOL(TRUE);
+		PG_RETURN_BOOL(FALSE);
+	}
+
+	if  ( ! FPeq(geom1->bvol.URT.y , geom2->bvol.URT.y) ) {
+		if  (geom1->bvol.URT.y < geom2->bvol.URT.y)
+			PG_RETURN_BOOL(TRUE);
+		PG_RETURN_BOOL(FALSE);
+	}
+
+	if  ( ! FPeq(geom1->bvol.URT.z , geom2->bvol.URT.z) ) {
+		if  (geom1->bvol.URT.z < geom2->bvol.URT.z)
+			PG_RETURN_BOOL(TRUE);
+		PG_RETURN_BOOL(FALSE);
+	}
+
+	PG_RETURN_BOOL(TRUE);
 }
 
 PG_FUNCTION_INFO_V1(geometry_eq);
 Datum geometry_eq(PG_FUNCTION_ARGS)
 {
-	GEOMETRY		   *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	GEOMETRY		   *geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	GEOMETRY *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GEOMETRY *geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	if (geom1->SRID != geom2->SRID)
 	{
-		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
+		elog(ERROR,
+			"Operation on two GEOMETRIES with different SRIDs\n");
 		PG_RETURN_NULL();
 	}
 
-
-	if  ( FPeq(geom1->bvol.LLB.x , geom2->bvol.LLB.x)  && FPeq(geom1->bvol.LLB.y , geom2->bvol.LLB.y)  && FPeq(geom1->bvol.LLB.z , geom2->bvol.LLB.z)  )
-		PG_RETURN_BOOL(TRUE);
-	else
+	if  ( ! FPeq(geom1->bvol.LLB.x , geom2->bvol.LLB.x) ) 
 		PG_RETURN_BOOL(FALSE);
+
+	if  ( ! FPeq(geom1->bvol.LLB.y , geom2->bvol.LLB.y) ) 
+		PG_RETURN_BOOL(FALSE);
+
+	if  ( ! FPeq(geom1->bvol.LLB.z , geom2->bvol.LLB.z) ) 
+		PG_RETURN_BOOL(FALSE);
+
+	if  ( ! FPeq(geom1->bvol.URT.x , geom2->bvol.URT.x) ) 
+		PG_RETURN_BOOL(FALSE);
+
+	if  ( ! FPeq(geom1->bvol.URT.y , geom2->bvol.URT.y) )
+		PG_RETURN_BOOL(FALSE);
+
+	if  ( ! FPeq(geom1->bvol.URT.z , geom2->bvol.URT.z) ) 
+		PG_RETURN_BOOL(FALSE);
+
+	PG_RETURN_BOOL(TRUE);
 }
 
+PG_FUNCTION_INFO_V1(geometry_ge);
+Datum geometry_ge(PG_FUNCTION_ARGS)
+{
+	GEOMETRY *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GEOMETRY *geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+
+	if (geom1->SRID != geom2->SRID)
+	{
+		elog(ERROR,
+			"Operation on two GEOMETRIES with different SRIDs\n");
+		PG_RETURN_NULL();
+	}
+
+	if  ( ! FPeq(geom1->bvol.LLB.x , geom2->bvol.LLB.x) ) {
+		if  (geom1->bvol.LLB.x > geom2->bvol.LLB.x)
+			PG_RETURN_BOOL(TRUE);
+		PG_RETURN_BOOL(FALSE);
+	}
+
+	if  ( ! FPeq(geom1->bvol.LLB.y , geom2->bvol.LLB.y) ) {
+		if  (geom1->bvol.LLB.y > geom2->bvol.LLB.y)
+			PG_RETURN_BOOL(TRUE);
+		PG_RETURN_BOOL(FALSE);
+	}
+
+	if  ( ! FPeq(geom1->bvol.LLB.z , geom2->bvol.LLB.z) ) {
+		if  (geom1->bvol.LLB.z > geom2->bvol.LLB.z)
+			PG_RETURN_BOOL(TRUE);
+		PG_RETURN_BOOL(FALSE);
+	}
+
+	if  ( ! FPeq(geom1->bvol.URT.x , geom2->bvol.URT.x) ) {
+		if  (geom1->bvol.URT.x > geom2->bvol.URT.x)
+			PG_RETURN_BOOL(TRUE);
+		PG_RETURN_BOOL(FALSE);
+	}
+
+	if  ( ! FPeq(geom1->bvol.URT.y , geom2->bvol.URT.y) ) {
+		if  (geom1->bvol.URT.y > geom2->bvol.URT.y)
+			PG_RETURN_BOOL(TRUE);
+		PG_RETURN_BOOL(FALSE);
+	}
+
+	if  ( ! FPeq(geom1->bvol.URT.z , geom2->bvol.URT.z) ) {
+		if  (geom1->bvol.URT.z > geom2->bvol.URT.z)
+			PG_RETURN_BOOL(TRUE);
+		PG_RETURN_BOOL(FALSE);
+	}
+
+	PG_RETURN_BOOL(TRUE);
+}
+
+PG_FUNCTION_INFO_V1(geometry_gt);
+Datum geometry_gt(PG_FUNCTION_ARGS)
+{
+	GEOMETRY *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GEOMETRY *geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+
+	if (geom1->SRID != geom2->SRID)
+	{
+		elog(ERROR,
+			"Operation on two GEOMETRIES with different SRIDs\n");
+		PG_RETURN_NULL();
+	}
+
+	if  ( ! FPeq(geom1->bvol.LLB.x , geom2->bvol.LLB.x) ) {
+		if  (geom1->bvol.LLB.x > geom2->bvol.LLB.x)
+			PG_RETURN_BOOL(TRUE);
+	}
+
+	if  ( ! FPeq(geom1->bvol.LLB.y , geom2->bvol.LLB.y) ) {
+		if  (geom1->bvol.LLB.y > geom2->bvol.LLB.y)
+			PG_RETURN_BOOL(TRUE);
+	}
+
+	if  ( ! FPeq(geom1->bvol.LLB.z , geom2->bvol.LLB.z) ) {
+		if  (geom1->bvol.LLB.z > geom2->bvol.LLB.z)
+			PG_RETURN_BOOL(TRUE);
+	}
+
+	if  ( ! FPeq(geom1->bvol.URT.x , geom2->bvol.URT.x) ) {
+		if  (geom1->bvol.URT.x > geom2->bvol.URT.x)
+			PG_RETURN_BOOL(TRUE);
+	}
+
+	if  ( ! FPeq(geom1->bvol.URT.y , geom2->bvol.URT.y) ) {
+		if  (geom1->bvol.URT.y > geom2->bvol.URT.y)
+			PG_RETURN_BOOL(TRUE);
+	}
+
+	if  ( ! FPeq(geom1->bvol.URT.z , geom2->bvol.URT.z) ) {
+		if  (geom1->bvol.URT.z > geom2->bvol.URT.z)
+			PG_RETURN_BOOL(TRUE);
+	}
+
+	PG_RETURN_BOOL(FALSE);
+}
+
+PG_FUNCTION_INFO_V1(geometry_cmp);
+Datum geometry_cmp(PG_FUNCTION_ARGS)
+{
+	GEOMETRY *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GEOMETRY *geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+
+	if (geom1->SRID != geom2->SRID)
+	{
+		elog(ERROR,
+			"Operation on two GEOMETRIES with different SRIDs\n");
+		PG_RETURN_NULL();
+	}
+
+	if  ( ! FPeq(geom1->bvol.LLB.x , geom2->bvol.LLB.x) ) {
+		if  (geom1->bvol.LLB.x < geom2->bvol.LLB.x)
+			PG_RETURN_INT32(-1);
+		PG_RETURN_INT32(1);
+	}
+
+	if  ( ! FPeq(geom1->bvol.LLB.y , geom2->bvol.LLB.y) ) {
+		if  (geom1->bvol.LLB.y < geom2->bvol.LLB.y)
+			PG_RETURN_INT32(-1);
+		PG_RETURN_INT32(1);
+	}
+
+	if  ( ! FPeq(geom1->bvol.LLB.z , geom2->bvol.LLB.z) ) {
+		if  (geom1->bvol.LLB.z < geom2->bvol.LLB.z)
+			PG_RETURN_INT32(-1);
+		PG_RETURN_INT32(1);
+	}
+
+	if  ( ! FPeq(geom1->bvol.URT.x , geom2->bvol.URT.x) ) {
+		if  (geom1->bvol.URT.x < geom2->bvol.URT.x)
+			PG_RETURN_INT32(-1);
+		PG_RETURN_INT32(1);
+	}
+
+	if  ( ! FPeq(geom1->bvol.URT.y , geom2->bvol.URT.y) ) {
+		if  (geom1->bvol.URT.y < geom2->bvol.URT.y)
+			PG_RETURN_INT32(-1);
+		PG_RETURN_INT32(1);
+	}
+
+	if  ( ! FPeq(geom1->bvol.URT.z , geom2->bvol.URT.z) ) {
+		if  (geom1->bvol.URT.z < geom2->bvol.URT.z)
+			PG_RETURN_INT32(-1);
+		PG_RETURN_INT32(1);
+	}
+
+	PG_RETURN_INT32(0);
+}
 
 
 
