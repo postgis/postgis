@@ -84,9 +84,9 @@ INSERT INTO test_data VALUES (-13, 'POLYGON((0 0.1 -0.01,0.2 10.3 -0.02,10.4 10.
 
 
 SELECT id,wkt FROM test_data WHERE
-       asText(geometry(wkt)) != wkt  OR
-       asText(geometry(wkb_xdr)) != wkt OR 
-       asText(geometry(wkb_ndr)) != wkt OR
+       asEWKT(geometry(wkt)) != wkt  OR
+       asEWKT(geometry(wkb_xdr)) != wkt OR 
+       asEWKT(geometry(wkb_ndr)) != wkt OR
        asBinary(geometry(wkb_ndr)) != asBinary(geometry(wkb_xdr)) OR
        asBinary(geometry(wkt)) != asBinary(geometry(wkb_xdr));
 
