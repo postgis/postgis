@@ -1,0 +1,66 @@
+AC_INIT(README.postgis)
+
+AC_SUBST(USE_GEOS)
+AC_SUBST(GEOS_DIR)
+USE_GEOS=0
+GEOS_DIR=/usr/local
+AC_ARG_WITH(geos, 
+[  --with-geos=DIR         Enable spatial predicate and operator support],
+  if test "$with_geos" != "no"; then
+    USE_GEOS=1
+    if test "$with_geos" != "yes"; then
+       GEOS_DIR=$with_geos
+    fi
+  fi
+)
+
+AC_SUBST(USE_PROJ)
+AC_SUBST(PROJ_DIR)
+USE_PROJ=0
+PROJ_DIR=/usr/local
+AC_ARG_WITH(proj, 
+[  --with-proj=DIR         Enable reprojection support],
+  if test "$with_proj" != "no"; then
+    USE_PROJ=1
+    if test "$with_proj" != "yes"; then
+       PROJ_DIR=$with_proj
+    fi
+  fi
+)
+
+AC_SUBST(PGSQL_SRC)
+PGSQL_SRC=${PWD}/../..
+AC_ARG_WITH(pgsql-src, 
+[  --with-pgsql-src=DIR    Where to find pgsql sources],
+  if test -d "$with_pgsql_src"; then
+    PGSQL_SRC=$with_pgsql_src
+  else
+    AC_MSG_RESULT(*--> $with_pgsql_src is not a directory)
+  fi
+)
+
+dnl Some final checks
+
+if test $USE_GEOS -gt 0 -a ! -e $GEOS_DIR/bin/geos-config; then
+	AC_MSG_ERROR(Can't find \$GEOS_DIR/bin/geos-config);
+fi
+
+if test $USE_PROJ -gt 0 -a ! -e $PROJ_DIR/include/projects.h; then
+	AC_MSG_ERROR(Can't find \$PROJ_DIR/include/projects.h);
+fi
+
+if ! test -e $PGSQL_SRC/src/Makefile.global; then
+	AC_MSG_ERROR(Can't find \$PGSQL_SRC/src/Makefile.global);
+fi
+
+AC_MSG_RESULT([ USE_GEOS=$USE_GEOS])
+if test $USE_GEOS -gt 0; then
+	AC_MSG_RESULT([ GEOS_DIR=$GEOS_DIR])
+fi
+AC_MSG_RESULT([ USE_PROJ=$USE_PROJ])
+if test $USE_PROJ -gt 0; then
+	AC_MSG_RESULT([ PROJ_DIR=$PROJ_DIR])
+fi
+AC_MSG_RESULT([ PGSQL_SRC=$PGSQL_SRC])
+
+AC_OUTPUT(Makefile.config)
