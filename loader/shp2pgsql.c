@@ -12,6 +12,22 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.41  2003/09/29 16:15:22  pramsey
+ * Patch from strk:
+ * - "\t" always preceeded the first value of a dump_format query
+ *   if NULL
+ *
+ * - field values where quoted with (") in dump_format when
+ *   called with -k ( did I introduce that? )
+ *
+ * - Appropriate calls to DBF[..]ReadAttributes based on
+ *   cached attribute types.
+ *
+ * - Assured that *all* shapes are NULL before exiting with
+ *   an error ( I did not check that NULL shapes in the midle
+ *   of the shapefiles are handled, but previous code did
+ *   not check that either ... )
+ *
  * Revision 1.40  2003/09/19 00:37:33  jeffloun
  * fixed a bug that actually tests the first 2 point for pip instead of just thinking I was testing the first two.
  *
@@ -88,6 +104,7 @@ int	dump_format = 0; //0=insert statements, 1 = dump
 int	quoteidentifiers = 0;
 char    opt;
 char    *col_names;
+DBFFieldType *types;
 
 int Insert_attributes(DBFHandle hDBFHandle, int row);
 char	*make_good_string(char *str);
@@ -464,45 +481,60 @@ int ring_check(SHPObject* obj, char *table, char *sr_id, int rings,DBFHandle hDB
 
 //Insert the attributes from the correct row of dbf file
 
-int Insert_attributes(DBFHandle hDBFHandle, int row){
-	int i,num_fields;
+int
+Insert_attributes(DBFHandle hDBFHandle, int row)
+{
+   int i,num_fields;
+   char val[1024];
 
-	num_fields = DBFGetFieldCount( hDBFHandle );
-		
-	
-	for( i = 0; i < num_fields; i++ ){
-	         if(DBFIsAttributeNULL( hDBFHandle, row, i)){
-		        if(dump_format){
-		               printf("\t\\N");
-		        }else{
-				if(i == 0){
-			               printf("NULL");
-				}else{
-			               printf(",NULL");
-				}
-		        }
-		 }else{
-			if (dump_format){
+   num_fields = DBFGetFieldCount( hDBFHandle );
+   for( i = 0; i < num_fields; i++ )
+   {
+      if(DBFIsAttributeNULL( hDBFHandle, row, i))
+      {
+         if(dump_format)
+         {
+				if(i) printf("\t");
+            printf("\\N");
+         }
+         else
+         {
+				if(i) printf(",");
+			   printf("NULL");
+		   }
+      }
 
-				if ( quoteidentifiers ){
-					if(i == 0){
-						printf("\"%s\"",make_good_string((char*)DBFReadStringAttribute( hDBFHandle,row, i )) );
-					}else{
-						printf("\t\"%s\"",make_good_string((char*)DBFReadStringAttribute( hDBFHandle,row, i )) );
-					}
-				}else{
-					if(i == 0){
-						printf("%s",make_good_string((char*)DBFReadStringAttribute( hDBFHandle,row, i )) );
-					}else{
-						printf("\t%s",make_good_string((char*)DBFReadStringAttribute( hDBFHandle,row, i )) );
-					}
-				}
-			}else{
-				if(i == 0){
-					printf("'%s'",protect_quotes_string((char*)DBFReadStringAttribute(hDBFHandle, row, i )) );
-				}else{
-					printf(",'%s'",protect_quotes_string((char*)DBFReadStringAttribute(hDBFHandle, row, i )) );
-				}
+      else /* Attribute NOT NULL */
+      {
+         switch (types[i]) 
+         {
+            case FTString:
+               if ( -1 == snprintf(val, 1024, "%s",
+                     DBFReadStringAttribute(hDBFHandle, row, i)) )
+               {
+                  fprintf(stderr, "Warning: field %d name trucated\n", i);
+                  val[1023] = '\0';
+               }
+               break;
+            case FTInteger:
+               sprintf(val, "%d", DBFReadIntegerAttribute(hDBFHandle, row, i));
+               break;
+            case FTDouble:
+               sprintf(val, "%f", DBFReadDoubleAttribute(hDBFHandle, row, i));
+               break;
+            default:
+               fprintf(stderr,
+                  "Error: field %d has invalid or unknown field type (%d)\n",
+                  i, types[i]);
+               exit(1);
+         }
+ 
+			if (dump_format) {
+            if ( i ) printf("\t");
+				printf("%s",make_good_string(val));
+			} else {
+            if ( i ) printf(",");
+				printf("'%s'",protect_quotes_string(val));
 			}
 		 }
 	}
@@ -698,9 +730,11 @@ int main (int ARGC, char **ARGV){
 		num_fields = DBFGetFieldCount( hDBFHandle );
 		num_records = DBFGetRecordCount(hDBFHandle);
 		names = malloc((num_fields + 1)*sizeof(char*));
+      types = (DBFFieldType *)malloc((num_fields + 1)*sizeof(char*));
 		for(j=0;j<num_fields;j++){
 			type = DBFGetFieldInfo(hDBFHandle, j, name, &field_width, &field_precision); 
 			names[j] = malloc ( strlen(name)+1);
+			types[j] = type;
 			strcpy(names[j], name);
 			for(z=0; z < j ; z++){
 //				printf("\n\n%i-z\n\n",z);
@@ -755,12 +789,15 @@ int main (int ARGC, char **ARGV){
 
 
 	SHPGetInfo( hSHPHandle, &num_entities, &phnshapetype, &padminbound[0], &padmaxbound[0]);
-	if(obj == NULL){
-		obj = 	SHPReadObject(hSHPHandle,0);
-		if(obj == NULL){
-			printf("file exists but contains null shapes");
-			exit(-1);
-		}
+   j=num_entities;
+   while(obj == NULL && j--)
+   {
+		obj = SHPReadObject(hSHPHandle,j);
+   }
+   if ( obj == NULL) 
+   {
+      fprintf(stderr, "Shapefile contains %d NULL object(s)\n", num_entities);
+		exit(-1);
 	}
 
 	trans=0;
