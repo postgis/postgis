@@ -111,6 +111,7 @@ extern Geometry *PostGIS2GEOS_collection(int type, Geometry **geoms, int ngeoms,
 void NOTICE_MESSAGE(char *msg);
 PG_LWGEOM *GEOS2POSTGIS(Geometry *geom, char want3d);
 Geometry * POSTGIS2GEOS(PG_LWGEOM *g);
+Geometry * LWGEOM2GEOS(LWGEOM *g);
 void errorIfGeometryCollection(PG_LWGEOM *g1, PG_LWGEOM *g2);
 LWPOINT *lwpoint_from_geometry(Geometry *g, char want3d);
 LWLINE *lwline_from_geometry(Geometry *g, char want3d);
@@ -1068,6 +1069,7 @@ PG_FUNCTION_INFO_V1(isvalid);
 Datum isvalid(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM	*geom1;
+	LWGEOM *lwgeom;
 	bool result;
 	Geometry *g1;
 
@@ -1082,7 +1084,19 @@ Datum isvalid(PG_FUNCTION_ARGS)
 #ifdef PROFILE
 	profstart(PROF_P2G1);
 #endif
-	g1 = POSTGIS2GEOS(geom1);
+	lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom1));
+	if ( ! lwgeom )
+	{
+		lwerror("unable to deserialize input");
+	}
+	g1 = LWGEOM2GEOS(lwgeom);
+	if ( ! g1 )
+	{
+		lwgeom_release(lwgeom);
+		PG_RETURN_BOOL(FALSE);
+	}
+	lwgeom_release(lwgeom);
+	//g1 = POSTGIS2GEOS(geom1);
 #ifdef PROFILE
 	profstop(PROF_P2G1);
 #endif
