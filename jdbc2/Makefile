@@ -47,7 +47,8 @@ all:	jar \
 
 jar:	compile
 	$(JAR) -cf postgis.jar -C $(BUILD) . -C $(SRCDIR) org/postgresql/postgresql.properties README	
-	$(JAR) -cf postgis_debug.jar -C $(BUILD) . -C $(SRCDIR) . README	
+	$(JAR) -cf postgis_debug.jar -C $(BUILD) . README
+	$(JAR) -uf postgis_debug.jar -C $(SRCDIR) .
 
 $(BUILD):
 	$(MKDIR) $(BUILD)
