@@ -1719,55 +1719,70 @@ CREATEFUNCTION line_interpolate_point(geometry, float8)
    AS '@MODULE_FILENAME@'
    LANGUAGE 'C' WITH (isstrict);
 
-
------------------------------------------
---  THESE WERE postgis_sql_VER_end.sql.in
------------------------------------------
-
-#if USE_VERSION == 71
-
---
+-------------------------------------------------------------------
 -- GiST support functions
---
+-------------------------------------------------------------------
 
-CREATEFUNCTION ggeometry_consistent(opaque,geometry,int4) 
+#if USE_VERSION < 73
+#define OPAQUE_TYPE opaque
+#else
+#define OPAQUE_TYPE internal
+#endif
+
+CREATEFUNCTION ggeometry_consistent(OPAQUE_TYPE,geometry,int4) 
 	RETURNS bool 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
 
-CREATEFUNCTION ggeometry_compress(opaque) 
-	RETURNS opaque 
+CREATEFUNCTION ggeometry_compress(OPAQUE_TYPE) 
+	RETURNS OPAQUE_TYPE 
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C';
 
-CREATEFUNCTION ggeometry_penalty(opaque,opaque,opaque) 
-	RETURNS opaque 
+CREATEFUNCTION rtree_decompress(OPAQUE_TYPE) 
+	RETURNS OPAQUE_TYPE
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
 
-CREATEFUNCTION ggeometry_picksplit(opaque, opaque) 
-	RETURNS opaque 
+#if USE_VERSION == 71
+CREATEFUNCTION ggeometry_penalty(OPAQUE_TYPE,OPAQUE_TYPE,OPAQUE_TYPE) 
+#else
+CREATEFUNCTION gbox_penalty(OPAQUE_TYPE,OPAQUE_TYPE,OPAQUE_TYPE) 
+#endif
+	RETURNS OPAQUE_TYPE 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
 
-CREATEFUNCTION ggeometry_union(bytea, opaque) 
-	RETURNS opaque 
+#if USE_VERSION == 71
+CREATEFUNCTION ggeometry_picksplit(OPAQUE_TYPE, OPAQUE_TYPE) 
+#else
+CREATEFUNCTION gbox_picksplit(OPAQUE_TYPE, OPAQUE_TYPE) 
+#endif
+	RETURNS OPAQUE_TYPE 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
 
-CREATEFUNCTION ggeometry_same(opaque, opaque, opaque) 
-	RETURNS opaque 
+#if USE_VERSION == 71
+CREATEFUNCTION ggeometry_union(bytea, OPAQUE_TYPE) 
+#else
+CREATEFUNCTION gbox_union(bytea, OPAQUE_TYPE) 
+#endif
+	RETURNS OPAQUE_TYPE 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
 
-CREATEFUNCTION rtree_decompress(opaque) 
-	RETURNS opaque
+#if USE_VERSION == 71
+CREATEFUNCTION ggeometry_same(OPAQUE_TYPE, OPAQUE_TYPE, OPAQUE_TYPE) 
+#else
+CREATEFUNCTION gbox_same(box, box, OPAQUE_TYPE) 
+#endif
+	RETURNS OPAQUE_TYPE 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
 
---
+-------------------------------------------------------------------
 -- R-Tree support functions
---
+-------------------------------------------------------------------
 
 CREATEFUNCTION geometry_union(geometry,geometry) 
 	RETURNS geometry 
@@ -1783,6 +1798,13 @@ CREATEFUNCTION geometry_size(geometry,opaque)
 	RETURNS float4 
 	AS '@MODULE_FILENAME@' 
 	LANGUAGE 'C';
+
+
+#if USE_VERSION == 71
+
+--
+-- Create opclass index binding entries.
+--
 
 INSERT INTO pg_opclass (opcname, opcdeftype)
 	SELECT 'gist_geometry_ops', oid
@@ -1899,66 +1921,7 @@ INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
 	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops'
 		AND proname = 'ggeometry_same';
 
-
-#elif USE_VERSION == 72
-
---
--- 7.2 GiST support functions
---
-
-CREATEFUNCTION ggeometry_consistent(opaque,geometry,int4) 
-	RETURNS bool 
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE'C';
-
-CREATEFUNCTION ggeometry_compress(opaque) 
-	RETURNS opaque 
-	AS '@MODULE_FILENAME@'  
-	LANGUAGE'C';
-
-CREATEFUNCTION gbox_penalty(opaque,opaque,opaque) 
-	RETURNS opaque 
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE'C';
-
-CREATEFUNCTION gbox_picksplit(opaque, opaque) 
-	RETURNS opaque 
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE'C';
-
-CREATEFUNCTION gbox_union(bytea, opaque) 
-	RETURNS opaque 
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE'C';
-
-CREATEFUNCTION gbox_same(box, box, opaque) 
-	RETURNS opaque 
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE'C';
-
-CREATEFUNCTION rtree_decompress(opaque) 
-	RETURNS opaque
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE'C';
-
---
--- 7.2 RTREE support functions
---
-
-CREATEFUNCTION geometry_union(geometry,geometry) 
-	RETURNS geometry 
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE'C';
-
-CREATEFUNCTION geometry_inter(geometry,geometry) 
-	RETURNS geometry 
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE'C';
-
-CREATEFUNCTION geometry_size(geometry,opaque) 
-	RETURNS float4 
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE'C';
+#elsif USE_VERSION == 72
 
 --
 -- Create opclass index binding entries.
@@ -2112,69 +2075,10 @@ INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
       and opcname = 'gist_geometry_ops'
       and proname = 'gbox_same';
 
-
-#elif USE_VERSION == 73
-
---
--- 7.2 GiST support functions
---
-
-CREATEFUNCTION ggeometry_consistent(internal,geometry,int4) 
-	RETURNS bool 
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE 'C';
-
-CREATEFUNCTION ggeometry_compress(internal) 
-	RETURNS internal 
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE 'C';
-
-CREATEFUNCTION gbox_penalty(internal,internal,internal) 
-	RETURNS internal 
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE 'C';
-
-CREATEFUNCTION gbox_picksplit(internal, internal) 
-	RETURNS internal 
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE 'C';
-
-CREATEFUNCTION gbox_union(bytea, internal) 
-	RETURNS internal 
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE 'C';
-
-CREATEFUNCTION gbox_same(box, box, internal) 
-	RETURNS internal 
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE 'C';
-
-CREATEFUNCTION rtree_decompress(internal) 
-	RETURNS internal
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE 'C';
+#else // USE_VERSION >= 73
 
 --
--- 7.2 RTREE support functions
---
-
-CREATEFUNCTION geometry_union(geometry,geometry) 
-	RETURNS geometry 
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE 'C';
-
-CREATEFUNCTION geometry_inter(geometry,geometry) 
-	RETURNS geometry 
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE 'C';
-
-CREATEFUNCTION geometry_size(geometry,internal) 
-	RETURNS float4 
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE 'C';
-
---
--- Create opclass index bindings (PG73)
+-- Create opclass index bindings 
 --
 
 CREATE OPERATOR CLASS gist_geometry_ops
@@ -2199,92 +2103,7 @@ UPDATE pg_opclass
 	SET opckeytype = (select oid from pg_type where typname = 'box') 
 	WHERE opcname = 'gist_geometry_ops';
 
-
-#elif USE_VERSION == 74
-
---
--- 7.2 GiST support functions
---
-
-CREATEFUNCTION ggeometry_consistent(internal,geometry,int4) 
-	RETURNS bool 
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE 'C';
-
-CREATEFUNCTION ggeometry_compress(internal) 
-	RETURNS internal 
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE 'C';
-
-CREATEFUNCTION gbox_penalty(internal,internal,internal) 
-	RETURNS internal 
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE 'C';
-
-CREATEFUNCTION gbox_picksplit(internal, internal) 
-	RETURNS internal 
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE 'C';
-
-CREATEFUNCTION gbox_union(bytea, internal) 
-	RETURNS internal 
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE 'C';
-
-CREATEFUNCTION gbox_same(box, box, internal) 
-	RETURNS internal 
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE 'C';
-
-CREATEFUNCTION rtree_decompress(internal) 
-	RETURNS internal
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE 'C';
-
---
--- 7.2 RTREE support functions
---
-
-CREATEFUNCTION geometry_union(geometry,geometry) 
-	RETURNS geometry 
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE 'C';
-
-CREATEFUNCTION geometry_inter(geometry,geometry) 
-	RETURNS geometry 
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE 'C';
-
-CREATEFUNCTION geometry_size(geometry,internal) 
-	RETURNS float4 
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE 'C';
-
---
--- Create opclass index bindings (PG74)
---
-
-CREATE OPERATOR CLASS gist_geometry_ops
-	DEFAULT FOR TYPE geometry USING gist AS
-	OPERATOR	1	<<	RECHECK,
-	OPERATOR	2	&<	RECHECK,
-	OPERATOR	3	&&	RECHECK,
-	OPERATOR	4	&>	RECHECK,
-	OPERATOR	5	>>	RECHECK,
-	OPERATOR	6	~=	RECHECK,
-	OPERATOR	7	~	RECHECK,
-	OPERATOR	8	@	RECHECK,
-	FUNCTION	1	ggeometry_consistent (internal, geometry, int4),
-	FUNCTION	2	gbox_union (bytea, internal),
-	FUNCTION	3	ggeometry_compress (internal),
-	FUNCTION	4	rtree_decompress (internal),
-	FUNCTION	5	gbox_penalty (internal, internal, internal),
-	FUNCTION	6	gbox_picksplit (internal, internal),
-	FUNCTION	7	gbox_same (box, box, internal);
-
-UPDATE pg_opclass 
-	SET opckeytype = (select oid from pg_type where typname = 'box') 
-	WHERE opcname = 'gist_geometry_ops';
+#if USE_VERSION >= 74
 
 CREATE OPERATOR CLASS btree_geometry_ops
 	DEFAULT FOR TYPE geometry USING btree AS
@@ -2295,115 +2114,11 @@ CREATE OPERATOR CLASS btree_geometry_ops
 	OPERATOR	5	> ,
 	FUNCTION	1	geometry_cmp (geometry, geometry);
 
+#endif // USE_VERSION >= 74
 
 
-#elif USE_VERSION == 75
+#endif // USE_VERSION >= 73
 
-
---
--- 7.2 GiST support functions
---
-
-CREATEFUNCTION ggeometry_consistent(internal,geometry,int4) 
-	RETURNS bool 
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE 'C';
-
-CREATEFUNCTION ggeometry_compress(internal) 
-	RETURNS internal 
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE 'C';
-
-CREATEFUNCTION gbox_penalty(internal,internal,internal) 
-	RETURNS internal 
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE 'C';
-
-CREATEFUNCTION gbox_picksplit(internal, internal) 
-	RETURNS internal 
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE 'C';
-
-CREATEFUNCTION gbox_union(bytea, internal) 
-	RETURNS internal 
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE 'C';
-
-CREATEFUNCTION gbox_same(box, box, internal) 
-	RETURNS internal 
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE 'C';
-
-CREATEFUNCTION rtree_decompress(internal) 
-	RETURNS internal
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE 'C';
-
---
--- 7.2 RTREE support functions
---
-
-CREATEFUNCTION geometry_union(geometry,geometry) 
-	RETURNS geometry 
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE 'C';
-
-CREATEFUNCTION geometry_inter(geometry,geometry) 
-	RETURNS geometry 
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE 'C';
-
-CREATEFUNCTION geometry_size(geometry,internal) 
-	RETURNS float4 
-	AS '@MODULE_FILENAME@' 
-	LANGUAGE 'C';
-
---
--- Create opclass index bindings (PG75)
---
-
-CREATE OPERATOR CLASS gist_geometry_ops
-	DEFAULT FOR TYPE geometry USING gist AS
-	OPERATOR	1	<<	RECHECK,
-	OPERATOR	2	&<	RECHECK,
-	OPERATOR	3	&&	RECHECK,
-	OPERATOR	4	&>	RECHECK,
-	OPERATOR	5	>>	RECHECK,
-	OPERATOR	6	~=	RECHECK,
-	OPERATOR	7	~	RECHECK,
-	OPERATOR	8	@	RECHECK,
-	FUNCTION	1	ggeometry_consistent (internal, geometry, int4),
-	FUNCTION	2	gbox_union (bytea, internal),
-	FUNCTION	3	ggeometry_compress (internal),
-	FUNCTION	4	rtree_decompress (internal),
-	FUNCTION	5	gbox_penalty (internal, internal, internal),
-	FUNCTION	6	gbox_picksplit (internal, internal),
-	FUNCTION	7	gbox_same (box, box, internal);
-
-UPDATE pg_opclass 
-	SET opckeytype = (select oid from pg_type where typname = 'box') 
-	WHERE opcname = 'gist_geometry_ops';
-
-CREATE OPERATOR CLASS btree_geometry_ops
-	DEFAULT FOR TYPE geometry USING btree AS
-	OPERATOR	1	< ,
-	OPERATOR	2	<= ,
-	OPERATOR	3	= ,
-	OPERATOR	4	>= ,
-	OPERATOR	5	> ,
-	FUNCTION	1	geometry_cmp (geometry, geometry);
-
-
-
-#endif // USE_VERSION == ...
-
-
----------------------------------------------
---
--- THIS part has been compressed to easly
--- see the differences between pgsql versions
---  
----------------------------------------------
 
 -----------------------------------------------------------------------
 -- 7.3+ explicit casting definitions
