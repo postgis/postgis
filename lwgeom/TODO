@@ -1,3 +1,4 @@
+- serialize, serialize_size needs to check for hasbbox (wantbbox) flag
 
 - Flatten(geometry) 
 
