@@ -30,12 +30,19 @@ static YY_BUFFER_STATE buf_state;
 <INITIAL>01[0-9A-F]* {  lwg_parse_yylval.wkb=lwg_parse_yytext; return WKB;}
 
 <*>POINT 	{ return POINT; }
+<*>POINTM 	{ return POINTM; }
 <*>LINESTRING { return LINESTRING; }
+<*>LINESTRINGM { return LINESTRINGM; }
 <*>POLYGON { return POLYGON; }
+<*>POLYGONM { return POLYGONM; }
 <*>MULTIPOINT { return MULTIPOINT; }
+<*>MULTIPOINTM { return MULTIPOINTM; }
 <*>MULTILINESTRING { return MULTILINESTRING; }
+<*>MULTILINESTRINGM { return MULTILINESTRINGM; }
 <*>MULTIPOLYGON { return MULTIPOLYGON; }
+<*>MULTIPOLYGONM { return MULTIPOLYGONM; }
 <*>GEOMETRYCOLLECTION { return GEOMETRYCOLLECTION; }
+<*>GEOMETRYCOLLECTIONM { return GEOMETRYCOLLECTIONM; }
 <*>SRID { BEGIN(vals_ok); return SRID; }
 <*>EMPTY { return EMPTY; }
 

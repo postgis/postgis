@@ -72,6 +72,8 @@ struct {
 	int	flags;
 	int	srid;
 	int	ndims;
+	int	hasZ;
+	int	hasM;
 	/* create integer version */
 	int lwgi;
 	/* input is integer (wkb only)*/
@@ -149,7 +151,9 @@ byte* parse_it(const char* geometry,allocator allocfunc,report_error errfunc);
 byte* parse_lwg(const char* geometry,allocator allocfunc,report_error errfunc);
 byte* parse_lwgi(const char* geometry,allocator allocfunc,report_error errfunc);
 
-void set_srid(double d_srid){
+void
+set_srid(double d_srid)
+{
 	if ( d_srid >= 0 )
 		d_srid+=0.1;
 	else
@@ -159,7 +163,9 @@ void set_srid(double d_srid){
 	srid=(int)(d_srid+0.1);
 }
 
-tuple* alloc_tuple(output_func of,size_t size){
+tuple *
+alloc_tuple(output_func of,size_t size)
+{
 	tuple* ret = free_list;
 
 	if ( ! ret ){
@@ -195,12 +201,16 @@ tuple* alloc_tuple(output_func of,size_t size){
 	return ret;
 }
 
-static void error(const char* err){
+static void
+error(const char* err)
+{
 	error_func(err);
 	ferror_occured=1;
 }
 
-void free_tuple(tuple* to_free){
+void
+free_tuple(tuple* to_free)
+{
 
 	tuple* list_end = to_free;
 
@@ -215,14 +225,18 @@ void free_tuple(tuple* to_free){
 	free_list = to_free;
 }
 
-void inc_num(void){
+void
+inc_num(void)
+{
 	the_geom.stack->num++;
 }
 
 /*
 	Allocate a 'counting' tuple
 */
-void alloc_stack_tuple(int type,output_func of,size_t size){
+void
+alloc_stack_tuple(int type,output_func of,size_t size)
+{
 	tuple*	p;
 	inc_num();
 
@@ -234,11 +248,15 @@ void alloc_stack_tuple(int type,output_func of,size_t size){
 	the_geom.stack = p;
 }
 
-void pop(void){
+void
+pop(void)
+{
 	the_geom.stack = the_geom.stack->stack_next;
 }
 
-void popc(void){
+void
+popc(void)
+{
 	if ( the_geom.stack->num < minpoints){
 		error("geometry requires more points");
 	}
@@ -246,14 +264,16 @@ void popc(void){
 }
 
 
-void check_dims(int num){
-
+void
+check_dims(int num)
+{
 	if( the_geom.ndims != num){
 		if (the_geom.ndims) {
 			error("Can not mix dimentionality in a geometry");
-		}
-		else{
+		} else {
 			the_geom.ndims = num;
+			if ( num > 2 ) the_geom.hasZ = 1;
+			if ( num > 3 ) the_geom.hasM = 1;
 		}
 	}
 }
@@ -269,7 +289,9 @@ void check_dims(int num){
 	machine
 */
 #ifdef SHRINK_INTS
-void WRITE_INT4(output_state * out,int4 val){
+void
+WRITE_INT4(output_state * out,int4 val)
+{
 	if ( val <= 0x7f ){
 		if ( getMachineEndian() == LITTLE_ENDIAN ){
 			val = (val<<1) | 1;
@@ -293,7 +315,9 @@ void WRITE_INT4(output_state * out,int4 val){
 #endif
 
 
-void WRITE_DOUBLES(output_state* out,double* points, int cnt){
+void
+WRITE_DOUBLES(output_state* out,double* points, int cnt)
+{
 	if ( the_geom.lwgi){
 		int4 vals[4];
 		int i;
@@ -311,15 +335,21 @@ void WRITE_DOUBLES(output_state* out,double* points, int cnt){
 
 }
 
-void write_size(tuple* this,output_state* out){
+void
+write_size(tuple* this,output_state* out)
+{
 	WRITE_INT4_REAL(out,the_geom.alloc_size);
 }
 
-void alloc_lwgeom(int srid){
+void
+alloc_lwgeom(int srid)
+{
 	the_geom.srid=srid;
 	the_geom.alloc_size=0;
 	the_geom.stack=NULL;
 	the_geom.ndims=0;
+	the_geom.hasZ=0;
+	the_geom.hasM=0;
 
 	//Free if used already
 	if ( the_geom.first ){
@@ -334,30 +364,45 @@ void alloc_lwgeom(int srid){
 	the_geom.stack = alloc_tuple(write_size,4);
 }
 
-
-void write_point_2(tuple* this,output_state* out){
+void
+write_point_2(tuple* this,output_state* out)
+{
 	WRITE_DOUBLES(out,this->points,2);
 }
 
-void write_point_3(tuple* this,output_state* out){
+void
+write_point_3(tuple* this,output_state* out)
+{
 	WRITE_DOUBLES(out,this->points,3);
 }
-void write_point_4(tuple* this,output_state* out){
+
+void
+write_point_4(tuple* this,output_state* out)
+{
 	WRITE_DOUBLES(out,this->points,4);
 }
 
-void write_point_2i(tuple* this,output_state* out){
+void
+write_point_2i(tuple* this,output_state* out)
+{
 	WRITE_INT4_REAL_MULTIPLE(out,this->points,2);
 }
 
-void write_point_3i(tuple* this,output_state* out){
+void
+write_point_3i(tuple* this,output_state* out)
+{
 	WRITE_INT4_REAL_MULTIPLE(out,this->points,3);
 }
-void write_point_4i(tuple* this,output_state* out){
+
+void
+write_point_4i(tuple* this,output_state* out)
+{
 	WRITE_INT4_REAL_MULTIPLE(out,this->points,4);
 }
 
-void alloc_point_2d(double x,double y){
+void
+alloc_point_2d(double x,double y)
+{
 	tuple* p = alloc_tuple(write_point_2,the_geom.lwgi?8:16);
 	p->points[0] = x;
 	p->points[1] = y;
@@ -365,7 +410,9 @@ void alloc_point_2d(double x,double y){
 	check_dims(2);
 }
 
-void alloc_point_3d(double x,double y,double z){
+void
+alloc_point_3d(double x,double y,double z)
+{
 	tuple* p = alloc_tuple(write_point_3,the_geom.lwgi?12:24);
 	p->points[0] = x;
 	p->points[1] = y;
@@ -374,7 +421,9 @@ void alloc_point_3d(double x,double y,double z){
 	check_dims(3);
 }
 
-void alloc_point_4d(double x,double y,double z,double m){
+void
+alloc_point_4d(double x,double y,double z,double m)
+{
 	tuple* p = alloc_tuple(write_point_4,the_geom.lwgi?16:32);
 	p->points[0] = x;
 	p->points[1] = y;
@@ -384,7 +433,9 @@ void alloc_point_4d(double x,double y,double z,double m){
 	check_dims(4);
 }
 
-void write_type(tuple* this,output_state* out){
+void
+write_type(tuple* this,output_state* out)
+{
 	byte type=0;
 
 	//Empty handler - switch back
@@ -395,15 +446,7 @@ void write_type(tuple* this,output_state* out){
 
 	if (the_geom.ndims) //Support empty
 	{
-		if ( the_geom.ndims == 3 )
-		{
-			TYPE_SETZM(type, 1, 0);
-		}
-		if ( the_geom.ndims == 4 )
-		{
-			TYPE_SETZM(type, 1, 1);
-		}
-		//type |= ((the_geom.ndims-2) << 4);
+		TYPE_SETZM(type, the_geom.hasZ, the_geom.hasM);
 	}
 
 	if ( the_geom.srid != -1 ){
@@ -420,17 +463,23 @@ void write_type(tuple* this,output_state* out){
 	}
 }
 
-void write_count(tuple* this,output_state* out){
+void
+write_count(tuple* this,output_state* out)
+{
 	int num = this->num;
 	WRITE_INT4(out,num);
 }
 
-void write_type_count(tuple* this,output_state* out){
+void
+write_type_count(tuple* this,output_state* out)
+{
 	write_type(this,out);
 	write_count(this,out);
 }
 
-void alloc_point(void){
+void
+alloc_point(void)
+{
 	if( the_geom.lwgi)
 		alloc_stack_tuple(POINTTYPEI,write_type,1);
 	else
@@ -439,7 +488,9 @@ void alloc_point(void){
 	minpoints=1;
 }
 
-void alloc_linestring(void){
+void
+alloc_linestring(void)
+{
 	if( the_geom.lwgi)
 		alloc_stack_tuple(LINETYPEI,write_type,1);
 	else
@@ -448,7 +499,9 @@ void alloc_linestring(void){
 	minpoints=2;
 }
 
-void alloc_polygon(void){
+void
+alloc_polygon(void)
+{
 	if( the_geom.lwgi)
 		alloc_stack_tuple(POLYGONTYPEI, write_type,1);
 	else
@@ -457,27 +510,39 @@ void alloc_polygon(void){
 	minpoints=3;
 }
 
-void alloc_multipoint(void){
+void
+alloc_multipoint(void)
+{
 	alloc_stack_tuple(MULTIPOINTTYPE,write_type,1);
 }
 
-void alloc_multilinestring(void){
+void
+alloc_multilinestring(void)
+{
 	alloc_stack_tuple(MULTILINETYPE,write_type,1);
 }
 
-void alloc_multipolygon(void){
+void
+alloc_multipolygon(void)
+{
 	alloc_stack_tuple(MULTIPOLYGONTYPE,write_type,1);
 }
 
-void alloc_geomertycollection(void){
+void
+alloc_geomertycollection(void)
+{
 	alloc_stack_tuple(COLLECTIONTYPE,write_type,1);
 }
 
-void alloc_counter(void){
+void
+alloc_counter(void)
+{
 	alloc_stack_tuple(0,write_count,4);
 }
 
-void alloc_empty(){
+void
+alloc_empty()
+{
 	tuple* st = the_geom.stack;
 	//Find the last geometry
 	while(st->type == 0){
@@ -504,7 +569,9 @@ void alloc_empty(){
 
 }
 
-byte* make_lwgeom(){
+byte *
+make_lwgeom()
+{
 	byte* out_c;
 	output_state out;
 	tuple* cur;
@@ -524,7 +591,9 @@ byte* make_lwgeom(){
 	return out_c;
 }
 
-int lwg_parse_yyerror(char* s){
+int
+lwg_parse_yyerror(char* s)
+{
 	error("parse error - invalid geometry");
 	//error_func("parse error - invalid geometry");
 	return 1;
@@ -556,7 +625,9 @@ static const byte to_hex[]  = {
 	255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
 	255,255,255,255,255,255,255,255};
 
-byte strhex_readbyte(const char* in){
+byte
+strhex_readbyte(const char* in)
+{
 	if ( *in == 0 ){
 		if ( ! ferror_occured){
 			error("invalid wkb");
@@ -566,7 +637,9 @@ byte strhex_readbyte(const char* in){
 	return to_hex[(int)*in]<<4 | to_hex[(int)*(in+1)];
 }
 
-byte read_wkb_byte(const char** in){
+byte
+read_wkb_byte(const char** in)
+{
 	byte ret = strhex_readbyte(*in);
 	(*in)+=2;
 	return ret;
@@ -574,7 +647,9 @@ byte read_wkb_byte(const char** in){
 
 int swap_order;
 
-void read_wkb_bytes(const char** in,byte* out, int cnt){
+void
+read_wkb_bytes(const char** in,byte* out, int cnt)
+{
 	if ( ! swap_order ){
 		while(cnt--) *out++ = read_wkb_byte(in);
 	}
@@ -584,13 +659,17 @@ void read_wkb_bytes(const char** in,byte* out, int cnt){
 	}
 }
 
-int4 read_wkb_int(const char** in){
+int4
+read_wkb_int(const char** in)
+{
 	int4 ret;
 	read_wkb_bytes(in,(byte*)&ret,4);
 	return ret;
 }
 
-double read_wbk_double(const char** in,int convert_from_int){
+double
+read_wbk_double(const char** in,int convert_from_int)
+{
 	double ret;
 
 	if ( ! convert_from_int){
@@ -603,7 +682,9 @@ double read_wbk_double(const char** in,int convert_from_int){
  	}
 }
 
-void read_wkb_point(const char** b){
+void
+read_wkb_point(const char** b)
+{
 	int i;
 	tuple* p = NULL;
 
@@ -639,7 +720,9 @@ void read_wkb_point(const char** b){
 	check_dims(the_geom.ndims);
 }
 
-void read_collection(const char** b,read_col_func f){
+void
+read_collection(const char** b,read_col_func f)
+{
 	int4 cnt=read_wkb_int(b);
 	alloc_counter();
 
@@ -651,11 +734,15 @@ void read_collection(const char** b,read_col_func f){
 	pop();
 }
 
-void read_collection2(const char** b){
+void
+read_collection2(const char** b)
+{
 	return read_collection(b,read_wkb_point);
 }
 
-void parse_wkb(const char** b){
+void
+parse_wkb(const char** b)
+{
 	int4 type;
 	byte xdr = read_wkb_byte(b);
 	swap_order=0;
@@ -671,17 +758,22 @@ void parse_wkb(const char** b){
 
 	type = read_wkb_int(b);
 
-
-
-
 	//quick exit on error
 	if ( ferror_occured ) return;
 
 	the_geom.ndims=2;
 	if (type & WKBZOFFSET)
-		the_geom.ndims=3;
+	{
+		the_geom.hasZ = 1;
+		the_geom.ndims++;
+	}
+	else the_geom.hasZ = 0;
 	if (type & WKBMOFFSET)
-		the_geom.ndims=4;
+	{
+		the_geom.hasM = 1;
+		the_geom.ndims++;
+	}
+	else the_geom.hasM = 0;
 
 	type &=0x0f;
 
@@ -746,14 +838,18 @@ void parse_wkb(const char** b){
 }
 
 
-void alloc_wkb(const char* parser){
+void
+alloc_wkb(const char* parser)
+{
 	parse_wkb(&parser);
 }
 
 /*
 	Parse a string and return a LW_GEOM
 */
-byte* parse_it(const char* geometry,allocator allocfunc,report_error errfunc){
+byte *
+parse_it(const char* geometry,allocator allocfunc,report_error errfunc)
+{
 
 	local_malloc = allocfunc;
 	error_func=errfunc;
@@ -770,15 +866,24 @@ byte* parse_it(const char* geometry,allocator allocfunc,report_error errfunc){
 	return make_lwgeom();
 }
 
-byte* parse_lwg(const char* geometry,allocator allocfunc,report_error errfunc){
+byte *
+parse_lwg(const char* geometry,allocator allocfunc,report_error errfunc)
+{
 	the_geom.lwgi=0;
 	return parse_it(geometry,allocfunc,errfunc);
 }
 
-byte* parse_lwgi(const char* geometry,allocator allocfunc,report_error errfunc){
+byte *
+parse_lwgi(const char* geometry,allocator allocfunc,report_error errfunc)
+{
 	the_geom.lwgi=1;
 	return parse_it(geometry,allocfunc,errfunc);
 }
 
-
-
+void
+set_zm(char z, char m)
+{
+	the_geom.hasZ = z;
+	the_geom.hasM = m;
+	the_geom.ndims = 2+z+m;
+}

@@ -167,14 +167,18 @@ byte* output_point(byte* geom,int supress){
 	return geom;
 }
 
-byte* output_single(byte* geom,int supress){
+byte *
+output_single(byte* geom,int supress)
+{
 	write_str("(");
 	geom=output_point(geom,supress);
 	write_str(")");
 	return geom;
 }
 
-byte* output_collection(byte* geom,outfunc func,int supress){
+byte *
+output_collection(byte* geom,outfunc func,int supress)
+{
 	int cnt = read_int(&geom);
 	if ( cnt == 0 ){
 		write_str(" EMPTY");
@@ -192,14 +196,16 @@ byte* output_collection(byte* geom,outfunc func,int supress){
 	return geom;
 }
 
-byte* output_collection_2(byte* geom,int suppress){
+byte *
+output_collection_2(byte* geom,int suppress)
+{
 	return output_collection(geom,output_point,suppress);
 }
 
-byte* output_wkt(byte* geom, int supress);
+byte *output_wkt(byte* geom, int supress);
 
 /* special case for multipoint to supress extra brackets */
-byte* output_multipoint(byte* geom,int suppress){
+byte *output_multipoint(byte* geom,int suppress){
 	unsigned type = *geom & 0x0f;
 	
 	if ( type  == POINTTYPE )
@@ -214,70 +220,114 @@ byte* output_multipoint(byte* geom,int suppress){
 	return output_wkt(geom,suppress);
 }
 
+// Suppress=0 // write TYPE, M, coords
+// Suppress=1 // write TYPE, coords 
+// Suppress=2 // write only coords
 byte *
 output_wkt(byte* geom, int supress)
 {
 
 	unsigned type=*geom++;
 	dims = TYPE_NDIMS(type); //((type & 0x30) >> 4)+2;
+	char writeM=0;
+
+	if ( ! supress && !TYPE_HASZ(type) && TYPE_HASM(type) ) writeM=1;
+
 
 	//Skip the bounding box if there is one
-	//if ( type & 0x80 ){
 	if ( TYPE_HASBBOX(type) )
 	{
 		geom+=16;
 	}
 
-	//if ( type & 0x40 ){
 	if ( TYPE_HASSRID(type) ) {
 		write_str("SRID=");write_int(read_int(&geom));write_str(";");
 	}
 
-	//switch(type & 0x0F){
 	switch(TYPE_GETTYPE(type)) {
 		case POINTTYPE:
-			if ( ! supress) write_str("POINT");
+			if ( supress < 2 )
+			{
+				if (writeM) write_str("POINTM");
+				else write_str("POINT");
+			}
 			geom=output_single(geom,0);
 			break;
 		case LINETYPE:
-			if ( ! supress) write_str("LINESTRING");
+			if ( supress < 2 )
+			{
+				if (writeM) write_str("LINESTRINGM");
+				else write_str("LINESTRING");
+			}
 			geom = output_collection(geom,output_point,0);
 			break;
 		case POLYGONTYPE:
-			if ( ! supress) write_str("POLYGON");
+			if ( supress < 2 )
+			{
+				if (writeM) write_str("POLYGONM");
+				else write_str("POLYGON");
+			}
 			geom = output_collection(geom,output_collection_2,0);
 			break;
 		case MULTIPOINTTYPE:
-			if ( ! supress) write_str("MULTIPOINT");
-			geom = output_collection(geom,output_multipoint,1);
+			if ( supress < 2 )
+			{
+				if (writeM) write_str("MULTIPOINTM");
+				else write_str("MULTIPOINT");
+			}
+			geom = output_collection(geom,output_multipoint,2);
 			break;
 		case MULTILINETYPE:
-			if ( ! supress) write_str("MULTILINESTRING");
-			geom = output_collection(geom,output_wkt,1);
+			if ( supress < 2 )
+			{
+				if (writeM) write_str("MULTILINESTRINGM");
+				else write_str("MULTILINESTRING");
+			}
+			geom = output_collection(geom,output_wkt,2);
 			break;
 		case MULTIPOLYGONTYPE:
-			if ( ! supress) write_str("MULTIPOLYGON");
-			geom = output_collection(geom,output_wkt,1);
+			if ( supress < 2 )
+			{
+				if (writeM) write_str("MULTIPOLYGONM");
+				else write_str("MULTIPOLYGON");
+			}
+			geom = output_collection(geom,output_wkt,2);
 			break;
 		case COLLECTIONTYPE:
-			if ( ! supress) write_str("GEOMETRYCOLLECTION");
-			geom = output_collection(geom,output_wkt,0);
+			if ( supress < 2 )
+			{
+				if (writeM) write_str("GEOMETRYCOLLECTIONM");
+				else write_str("GEOMETRYCOLLECTION");
+			}
+			geom = output_collection(geom,output_wkt,1);
 			break;
 
 		case POINTTYPEI:
-			if ( ! supress) write_str("POINT");
+			if ( supress < 2 )
+			{
+				if (writeM) write_str("POINTM");
+				else write_str("POINT");
+			}
 			lwgi++;
 			geom=output_single(geom,0);
 			lwgi--;
 			break;
 		case LINETYPEI:
-			if ( ! supress) write_str("LINESTRING");
+			if ( supress < 2 )
+			{
+				if (writeM) write_str("LINESTRINGM");
+				else write_str("LINESTRING");
+			}
 			lwgi++;
 			geom = output_collection(geom,output_point,0);
 			lwgi--;
 			break;
 		case POLYGONTYPEI:
-			if ( ! supress) write_str("POLYGON");
+			if ( supress < 2 )
+			{
+				if (writeM) write_str("POLYGONM");
+				else write_str("POLYGON");
+			}
 			lwgi++;
 			geom =output_collection(geom,output_collection_2,0);
 			lwgi--;
@@ -429,7 +479,9 @@ output_wkb(byte* geom)
 	return geom;
 }
 
-char* unparse_WKB(byte* lw_geom,allocator alloc,freeor free){
+char *
+unparse_WKB(byte* lw_geom,allocator alloc,freeor free)
+{
 
 	if (lw_geom==NULL)
 		return NULL;

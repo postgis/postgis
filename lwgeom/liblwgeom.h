@@ -291,7 +291,7 @@ extern int pointArray_ptsize(const POINTARRAY *pa);
  *
  * LWGEOM types are an 8-bit char in this format:
  *
- * BSDDtttt
+ * BSZMtttt
  *
  * WHERE
  *    B = 16 byte BOX2DFLOAT4 follows (probably not aligned) [before SRID]
