@@ -10,6 +10,10 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.52  2004/06/16 13:42:05  strk
+ * Added schema support in getMaxFieldSize.
+ * Added direct support for TIMESTAMP field types (thanks to Steffen Macke).
+ *
  * Revision 1.51  2004/05/13 12:24:15  strk
  * Transformed NULL numeric values to 0 as it was before the introduction
  * of bigint bug workaround.
@@ -187,7 +191,7 @@ SHPObject * (*shape_creator)(char *, int, SHPHandle, int);
 int big_endian = 0;
 
 /* Prototypes */
-int getMaxFieldSize(PGconn *conn, char *table, char *fname);
+int getMaxFieldSize(PGconn *conn, char *schema, char *table, char *fname);
 int parse_commandline(int ARGC, char **ARGV);
 void usage(int exitstatus);
 char *getTableOID(char *table);
@@ -244,7 +248,8 @@ static void exit_nicely(PGconn *conn){
 	exit(1);
 }
 
-int main(int ARGC, char **ARGV){
+int
+main(int ARGC, char **ARGV){
 	char *query=NULL;
 	int row;
 	PGresult *res;
@@ -320,7 +325,7 @@ int main(int ARGC, char **ARGV){
 	} else {
 		sprintf(query, "DECLARE cur CURSOR FOR %s", main_scan_query);
 	}
-fprintf(stderr, "MAINSCAN: %s\n", main_scan_query);
+	//fprintf(stderr, "MAINSCAN: %s\n", main_scan_query);
 	res = PQexec(conn, query);	
 	free(query);
 	if ( ! res || PQresultStatus(res) != PGRES_COMMAND_OK ) {
@@ -2584,12 +2589,21 @@ initialize()
 		}
 
 		/*
+		 * timestamp field, which we store as a string so we need
+		 * more width in the column
+		 */
+		else if(type == 1114)
+		{
+			size = 19;
+		}
+
+		/*
 		 * For variable-sized fields we'll use max size in table
 		 * as dbf field size
 		 */
 		else if(size == -1)
 		{
-			size = getMaxFieldSize(conn, table, fname);
+			size = getMaxFieldSize(conn, schema, table, fname);
 			if ( size == -1 ) return 0;
 			if ( ! size ) size = 32; // might 0 be a good size ?
 		}
@@ -2761,7 +2775,7 @@ initialize()
  * Return -1 on error.
  */
 int
-getMaxFieldSize(PGconn *conn, char *table, char *fname)
+getMaxFieldSize(PGconn *conn, char *schema, char *table, char *fname)
 {
 	int size;
 	char *query;
@@ -2769,9 +2783,22 @@ getMaxFieldSize(PGconn *conn, char *table, char *fname)
 
 	//( this is ugly: don't forget counting the length 
 	// when changing the fixed query strings )
-	query = (char *)malloc(strlen(fname)+strlen(table)+40); 
-	sprintf(query, "select max(octet_length(\"%s\")) from \"%s\"",
-		fname, table);
+
+	if ( schema )
+	{
+		query = (char *)malloc(strlen(fname)+strlen(table)+
+			strlen(schema)+40); 
+		sprintf(query,
+			"select max(octet_length(\"%s\")) from \"%s\".\"%s\"",
+			fname, schema, table);
+	}
+	else
+	{
+		query = (char *)malloc(strlen(fname)+strlen(table)+40); 
+		sprintf(query,
+			"select max(octet_length(\"%s\")) from \"%s\"",
+			fname, table);
+	}
 	res = PQexec(conn, query);
 	free(query);
 	if ( ! res || PQresultStatus(res) != PGRES_TUPLES_OK ) {
