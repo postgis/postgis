@@ -2133,6 +2133,8 @@ lwpoly_from_geometry(Geometry *g, char want3d)
 		ptoff+=npoints;
 	}
 
+	GEOSdeleteChar( (char*) pts);
+
 	// Construct LWPOLY
 	poly = lwpoly_construct(SRID, NULL, nrings+1, rings);
 
