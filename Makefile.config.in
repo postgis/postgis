@@ -86,6 +86,11 @@ LPATH=\$$libdir
 # END OF CONFIGURATION
 #---------------------------------------------------------------
 
+# Use JTS instead of GEOS if available
+ifeq ($(USE_JTS),1)
+	USE_GEOS=0
+endif
+
 subdir=contrib/postgis
 top_builddir = ${PGSQL_SRC}
 include $(top_builddir)/src/Makefile.global
