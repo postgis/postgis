@@ -11,6 +11,12 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.22  2003/07/08 18:35:54  dblasby
+ * changed asbinary_specify() so that it is more aware of TEXT being
+ * un-terminated.
+ *
+ * this is a modified patch from David Garnier <david.garnier@etudier-online.com>.
+ *
  * Revision 1.21  2003/07/01 18:30:55  pramsey
  * Added CVS revision headers.
  *
@@ -2847,7 +2853,14 @@ Datum asbinary_specify(PG_FUNCTION_ARGS)
 		GEOMETRY		      *geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 		 text      			*type = PG_GETARG_TEXT_P(1);
 
-	if  ( ( strcmp(VARDATA(type) ,"xdr") == 0 ) || (strcmp(VARDATA(type) ,"XDR") == 0) )
+
+	if (VARSIZE(type) < 7)  // 4 (size header) + 3 (text length)
+	{
+		elog(ERROR,"asbinary(geometry, <type>) - type should be 'XDR' or 'NDR'.  type length is %i",VARSIZE(type) -4);
+		PG_RETURN_NULL();
+	}
+ 
+	if  ( ( strncmp(VARDATA(type) ,"xdr",3) == 0 ) || (strncmp(VARDATA(type) ,"XDR",3) == 0) )
 	{
 //printf("requested XDR\n");
 		if (BYTE_ORDER == BIG_ENDIAN)
