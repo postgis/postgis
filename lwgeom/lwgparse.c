@@ -569,7 +569,7 @@ alloc_counter(void)
 }
 
 void
-alloc_empty()
+alloc_empty(void)
 {
 	tuple* st = the_geom.stack;
 	//Find the last geometry
@@ -598,7 +598,7 @@ alloc_empty()
 }
 
 uchar *
-make_lwgeom()
+make_lwgeom(void)
 {
 	uchar* out_c;
 	output_state out;

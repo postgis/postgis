@@ -90,13 +90,17 @@ ensure(int chars){
 	}
 }
 
-void to_end(){
+void
+to_end(void)
+{
 	while(*out_pos){
 		out_pos++;
 	}
 }
 
-void write_str(const char* str){
+void
+write_str(const char* str)
+{
 	ensure(32);
 	strcpy(out_pos,str);
 	to_end();
@@ -610,6 +614,9 @@ unparse_WKB(uchar* serialized, allocator alloc, freeor free, char endian, size_t
 
 /******************************************************************
  * $Log$
+ * Revision 1.19  2005/03/10 18:19:16  strk
+ * Made void args explicit to make newer compilers happy
+ *
  * Revision 1.18  2005/02/21 16:16:14  strk
  * Changed byte to uchar to avoid clashes with win32 headers.
  *
