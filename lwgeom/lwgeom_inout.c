@@ -18,7 +18,7 @@
 #include "stringBuffer.h"
 
 
-#define DEBUG
+//#define DEBUG
 
 #include "wktparse.h"
 
@@ -56,6 +56,8 @@ Datum LWGEOM_getBBOX(PG_FUNCTION_ARGS);
 
 Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS);
 
+
+// included here so we can be independent from postgis
 // WKB structure  -- exactly the same as TEXT
 typedef struct Well_known_bin {
     int32 size;             // total size of this structure
@@ -91,6 +93,8 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 		{
 			start =semicolonLoc[1]; // one in
 		}
+
+					// this is included just for redundancy (new parser can handle wkt and wkb)
 
 		if (
 				( (start >= '0') &&  (start <= '9') ) ||
@@ -474,7 +478,7 @@ unsigned char	parse_hex(char *str)
 }
 
 
-
+// for the parser/unparser -- it needs memory management functions
 void *palloc_fn2(size_t size)
 {
 	void * result;
@@ -494,7 +498,7 @@ void free_fn(void *ptr)
 
 
 
-
+//convert LWGEOM to wkt (in TEXT format)
 PG_FUNCTION_INFO_V1(LWGEOM_asText);
 Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 {
@@ -567,6 +571,7 @@ Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS)
 }
 
 
+//for the wkt parser
 
 void elog_ERROR(const char* string)
 {
@@ -581,6 +586,9 @@ void *palloc_fn(size_t size)
 	return result;
 }
 
+
+// parse WKT input
+// parse_WKT_lwgeom(TEXT) -> LWGEOM
 PG_FUNCTION_INFO_V1(parse_WKT_lwgeom);
 Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS)
 {

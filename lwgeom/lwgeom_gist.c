@@ -17,6 +17,8 @@
 #include "lwgeom.h"
 #include "stringBuffer.h"
 
+// implementation GiST support and basic LWGEOM operations (like &&)
+
 
 //#define DEBUG
 //#define DEBUG_GIST
@@ -44,7 +46,7 @@ static bool lwgeom_rtree_leaf_consistent(BOX2DFLOAT4 *key,BOX2DFLOAT4 *query,	St
 
 
 
-
+// for debugging
 int counter_leaf = 0;
 int counter_intern = 0;
 
@@ -297,7 +299,7 @@ Datum gist_lwgeom_compress(PG_FUNCTION_ARGS)
 
 			if (lwgeom_getnumgeometries(in+4) ==0)  // this is the EMPTY geometry
 			{
-elog(NOTICE,"found an empty geometry");
+//elog(NOTICE,"found an empty geometry");
 				// dont bother adding this to the index
 				PG_RETURN_POINTER(entry);
 			}
@@ -375,7 +377,7 @@ Datum gist_lwgeom_consistent(PG_FUNCTION_ARGS)
 	//pfree(box3d);
 		//convert_box3d_to_box_p( &(query->bvol) , &thebox);
 	//thebox = getBOX2D_cache(query);
-  getbox2d_p(query+4, &box);
+    getbox2d_p(query+4, &box);
 
 	if (GIST_LEAF(entry))
 		result = lwgeom_rtree_leaf_consistent((BOX2DFLOAT4 *) DatumGetPointer(entry->key), &box, strategy );
@@ -418,6 +420,7 @@ static bool lwgeom_rtree_internal_consistent(BOX2DFLOAT4 *key,
 
 
 #ifdef DEBUG_GIST5
+//keep track and report info about how many times this is called
 					if (counter_intern == 0)
 					{
 									 elog(NOTICE,"search bounding box is: <%.16g %.16g,%.16g %.16g> - size box2d= %i",
@@ -480,6 +483,8 @@ static bool lwgeom_rtree_leaf_consistent(BOX2DFLOAT4 *key,
 			   		 ((query->ymax>= key->ymax) &&
 			   		  (query->ymin<= key->ymax)));
 #ifdef DEBUG_GIST5
+//keep track and report info about how many times this is called
+
 			   elog(NOTICE,"%i:gist test (leaf) <%.6g %.6g,%.6g %.6g> &&  <%.6g %.6g,%.6g %.6g> --> %i",counter_leaf,key->xmin,key->ymin,key->xmax,key->ymax,
 			   		  						query->xmin,query->ymin,query->xmax,query->ymax,   (int) retval);
 #endif
@@ -569,6 +574,10 @@ Datum lwgeom_box_union(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(pageunion);
 }
 
+
+// size of a box is width*height
+// we do this in double precision because width and height can be very very small
+// and it gives screwy results
 static float size_box2d(Datum box2d)
 {
 
@@ -596,6 +605,10 @@ static float size_box2d(Datum box2d)
 	return result;
 }
 
+// size of a box is width*height
+// we do this in double precision because width and height can be very very small
+// and it gives screwy results
+// this version returns a double
 static double size_box2d_double(Datum box2d);
 static double size_box2d_double(Datum box2d)
 {
@@ -1020,12 +1033,15 @@ elog(NOTICE,aaa);
 	PG_RETURN_POINTER(v);
 }
 
-Datum report_lwgeom_gist_activity(PG_FUNCTION_ARGS);
 
+// debug function
+Datum report_lwgeom_gist_activity(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(report_lwgeom_gist_activity);
 Datum report_lwgeom_gist_activity(PG_FUNCTION_ARGS)
 {
 	elog(NOTICE,"lwgeom gist activity - internal consistency= %i, leaf consistency = %i",counter_intern,counter_leaf);
+	counter_intern =0;  //reset
+	counter_leaf = 0;
 	PG_RETURN_NULL();
 }
 

@@ -7,6 +7,8 @@ echo "Building a database for testing (lwgeom_reg) on port 5432."
 echo "Building postgis and lwgeom support in it."
 echo ""
 echo "there shouldnt be any real output produced after this line."
+echo "NOTE: on solaris machines you will get reports involving 'Inf' and 'Infinity'"
+echo "      this isnt a problem"
 echo ""
 createdb lwgeom_reg
 createlang plpgsql lwgeom_reg

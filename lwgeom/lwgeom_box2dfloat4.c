@@ -18,7 +18,9 @@
 #include "stringBuffer.h"
 
 
-#define DEBUG
+//#define DEBUG
+
+// basic implementation of BOX2D
 
 
 		//forward defs
@@ -28,6 +30,7 @@ Datum LWGEOM_to_BOX2DFLOAT4(PG_FUNCTION_ARGS);
 
 
 
+//parser - "BOX(xmin ymin,xmax ymax)"
 PG_FUNCTION_INFO_V1(BOX2DFLOAT4_in);
 Datum BOX2DFLOAT4_in(PG_FUNCTION_ARGS)
 {
@@ -68,6 +71,7 @@ Datum BOX2DFLOAT4_in(PG_FUNCTION_ARGS)
 		PG_RETURN_POINTER(box);
 }
 
+//writer  "BOX(xmin ymin,xmax ymax)"
 PG_FUNCTION_INFO_V1(BOX2DFLOAT4_out);
 Datum BOX2DFLOAT4_out(PG_FUNCTION_ARGS)
 {
@@ -85,7 +89,7 @@ Datum BOX2DFLOAT4_out(PG_FUNCTION_ARGS)
 }
 
 
-
+//convert a LWGEOM to BOX2D
 PG_FUNCTION_INFO_V1(LWGEOM_to_BOX2DFLOAT4);
 Datum LWGEOM_to_BOX2DFLOAT4(PG_FUNCTION_ARGS)
 {
@@ -248,6 +252,8 @@ Datum box2d_inter(PG_FUNCTION_ARGS)
     PG_RETURN_POINTER(n);
 }
 
+
+//union of two BOX2Ds
 PG_FUNCTION_INFO_V1(box2d_union);
 Datum box2d_union(PG_FUNCTION_ARGS)
 {
@@ -268,7 +274,7 @@ Datum box2d_union(PG_FUNCTION_ARGS)
 }
 
 
-
+//min(a,b)
 float LWGEOM_Minf(float a, float b)
 {
 	if (a<b)
@@ -276,7 +282,7 @@ float LWGEOM_Minf(float a, float b)
 	return b;
 }
 
-
+//max(a,b)
 float LWGEOM_Maxf(float a, float b)
 {
 	if (b>a)

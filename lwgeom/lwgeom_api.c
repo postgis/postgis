@@ -1,4 +1,3 @@
-
 #include "postgres.h"
 
 #include <math.h>
@@ -17,6 +16,11 @@
 
 #include "lwgeom.h"
 
+
+// This is an implementation of the functions defined in lwgeom.h
+
+
+//forward decs
 
 extern float  nextDown_f(double d);
 extern float  nextUp_f(double d);
@@ -74,6 +78,8 @@ do {                                                            \
 } while (0)
 
 
+// returns the next smaller or next larger float
+// from x (in direction of y).
 float nextafterf_custom(float x, float y)
 {
         int32_tt hx,hy,ix,iy;
@@ -170,6 +176,8 @@ double nextUp_d(float d)
 }
 
 
+
+//Connvert BOX3D to BOX2D
 BOX2DFLOAT4 *box3d_to_box2df(BOX3D *box)
 {
 	BOX2DFLOAT4 *result = (BOX2DFLOAT4*) palloc(sizeof(BOX2DFLOAT4));
@@ -187,6 +195,7 @@ BOX2DFLOAT4 *box3d_to_box2df(BOX3D *box)
 }
 
 
+//convert postgresql BOX to BOX2D
 BOX2DFLOAT4 *box_to_box2df(BOX *box)
 {
 	BOX2DFLOAT4 *result = (BOX2DFLOAT4*) palloc(sizeof(BOX2DFLOAT4));
@@ -203,6 +212,7 @@ BOX2DFLOAT4 *box_to_box2df(BOX *box)
 	return result;
 }
 
+// convert BOX2D to BOX3D
 BOX3D box2df_to_box3d(BOX2DFLOAT4 *box)
 {
 	BOX3D result;
@@ -219,6 +229,8 @@ BOX3D box2df_to_box3d(BOX2DFLOAT4 *box)
 	return result;
 }
 
+
+// convert BOX2D to postgresql BOX
 BOX   box2df_to_box(BOX2DFLOAT4 *box)
 {
 	BOX result;
@@ -235,6 +247,11 @@ BOX   box2df_to_box(BOX2DFLOAT4 *box)
 	return result;
 }
 
+
+// returns a BOX3D that encloses b1 and b2
+// combine_boxes(NULL,A) --> A
+// combine_boxes(A,NULL) --> A
+// combine_boxes(A,B) --> A union B
 BOX3D *combine_boxes(BOX3D *b1, BOX3D *b2)
 {
 	BOX3D *result;
@@ -324,6 +341,8 @@ BOX2DFLOAT4 getbox2d(char *serialized_form)
 		return result;
 }
 
+
+// same as getbox2d, but modifies box instead of returning result on the stack
 void getbox2d_p(char *serialized_form, BOX2DFLOAT4 *box)
 {
 			int 	type = (unsigned char) serialized_form[0];
@@ -597,21 +616,27 @@ int pointArray_ptsize(POINTARRAY *pa)
 // basic type handling
 
 
+// returns true if this type says it has an SRID (S bit set)
 bool lwgeom_hasSRID(unsigned char type)
 {
 	return (type & 0x40);
 }
 
+// returns either 2,3, or 4 -- 2=2D, 3=3D, 4=4D
 int lwgeom_ndims(unsigned char type)
 {
 	return  ( (type & 0x30) >>4) +2;
 }
 
+
+// get base type (ie. POLYGONTYPE)
 int  lwgeom_getType(unsigned char type)
 {
 	return (type & 0x0F);
 }
 
+
+//construct a type (hasBOX=false)
 unsigned char lwgeom_makeType(int ndims, char hasSRID, int type)
 {
 	unsigned char result = type;
@@ -626,6 +651,7 @@ unsigned char lwgeom_makeType(int ndims, char hasSRID, int type)
 	return result;
 }
 
+//construct a type
 unsigned char lwgeom_makeType_full(int ndims, char hasSRID, int type, bool hasBBOX)
 {
 		unsigned char result = type;
@@ -642,6 +668,7 @@ unsigned char lwgeom_makeType_full(int ndims, char hasSRID, int type, bool hasBB
 	return result;
 }
 
+//returns true if there's a bbox in this LWGEOM (B bit set)
 bool lwgeom_hasBBOX(unsigned char type)
 {
 	return (type & 0x80);
@@ -1020,6 +1047,7 @@ POINT2D lwpoint_getPoint2d(LWPOINT *point)
 	return getPoint2d(point->point,0);
 }
 
+// convenience functions to hide the POINTARRAY
 POINT3D lwpoint_getPoint3d(LWPOINT *point)
 {
 	POINT3D result;
@@ -1447,6 +1475,10 @@ LWPOINT *lwgeom_getpoint(char *serialized_form, int geom_number)
 	return lwpoint_deserialize(sub_geom);
 }
 
+// 1st geometry has geom_number = 0
+// if the actual sub-geometry isnt a POINT, null is returned (see _gettype()).
+// if there arent enough geometries, return null.
+// this is fine to call on a point (with geom_num=0), multipoint or geometrycollection
 LWPOINT *lwgeom_getpoint_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
 {
 		char *sub_geom;
@@ -1494,6 +1526,10 @@ LWLINE *lwgeom_getline(char *serialized_form, int geom_number)
 	return lwline_deserialize(sub_geom);
 }
 
+// 1st geometry has geom_number = 0
+// if the actual geometry isnt a LINE, null is returned (see _gettype()).
+// if there arent enough geometries, return null.
+// this is fine to call on a line, multiline or geometrycollection
 LWLINE *lwgeom_getline_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
 {
 		char *sub_geom;
@@ -1543,6 +1579,10 @@ LWPOLY *lwgeom_getpoly(char *serialized_form, int geom_number)
 		return lwpoly_deserialize(sub_geom);
 }
 
+// 1st geometry has geom_number = 0
+// if the actual geometry isnt a POLYGON, null is returned (see _gettype()).
+// if there arent enough geometries, return null.
+// this is fine to call on a polygon, multipolygon or geometrycollection
 LWPOLY *lwgeom_getpoly_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
 {
 		char *sub_geom;
@@ -1646,6 +1686,8 @@ int lwgeom_getnumgeometries(char *serialized_form)
 		return get_uint32(loc);
 }
 
+// how many sub-geometries are there?
+//  for point,line,polygon will return 1.
 int lwgeom_getnumgeometries_inspected(LWGEOM_INSPECTED *inspected)
 {
 	return inspected->ngeometries;
@@ -1859,7 +1901,7 @@ int lwgeom_seralizedformlength_inspected(LWGEOM_INSPECTED *inspected, int geom_n
 
 
 //get bounding box of LWGEOM (automatically calls the sub-geometries bbox generators)
-//dont forget to pfree()
+//dont forget to pfree() result
 BOX3D *lw_geom_getBB(char *serialized_form)
 {
 	  LWGEOM_INSPECTED *inspected = lwgeom_inspect(serialized_form);
@@ -1870,6 +1912,7 @@ BOX3D *lw_geom_getBB(char *serialized_form)
 	  return result;
 }
 
+//dont forget to pfree() result
 BOX3D *lw_geom_getBB_simple(char *serialized_form)
 {
 		char type = lwgeom_getType((unsigned char) serialized_form[0]);
@@ -1928,7 +1971,7 @@ BOX3D *lw_geom_getBB_simple(char *serialized_form)
 		loc +=4;
 
 		result = NULL;
-
+			// each sub-type
 		for (t=0;t<ngeoms;t++)
 		{
 			b1 = lw_geom_getBB_simple(loc);
@@ -1952,7 +1995,7 @@ BOX3D *lw_geom_getBB_simple(char *serialized_form)
 }
 
 
-//dont forget to pfree()
+//dont forget to pfree() result
 BOX3D *lw_geom_getBB_inspected(LWGEOM_INSPECTED *inspected)
 {
 		int t;
