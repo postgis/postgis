@@ -55,20 +55,20 @@ $(BUILD):
 
 
 compile: $(BUILD) $(SRC)
-	$(JAVAC) -classpath $(CP) -d $(BUILD) $(SRC) 
+	$(JAVAC) -classpath "$(CP)" -d $(BUILD) $(SRC) 
 	touch compile
 
 test:	compile
-	$(JAVA) -classpath $(BUILD):$(CP) $(EXAMPLES)/Test
+	$(JAVA) -classpath "$(BUILD):$(CP)" $(EXAMPLES)/Test
         
 jtest:	compile
-	$(JAVA) -classpath $(BUILD):$(CP) $(EXAMPLES)/TestServer jdbc:postgresql://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
+	$(JAVA) -classpath "$(BUILD):$(CP)" $(EXAMPLES)/TestServer jdbc:postgresql://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
 
 ptestoffline: compile	
-	$(JAVA) -classpath $(BUILD):$(CP) $(EXAMPLES)/TestParser offline
+	$(JAVA) -classpath "$(BUILD):$(CP)" $(EXAMPLES)/TestParser offline
 
 ptest:  compile
-	$(JAVA) -classpath $(BUILD):$(CP) $(EXAMPLES)/TestParser
+	$(JAVA) -classpath "$(BUILD):$(CP)" $(EXAMPLES)/TestParser jdbc:postgresql://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
 
 clean:  
 	$(DELETE) $(BUILD) bin postgis.jar postgis_debug.jar compile
