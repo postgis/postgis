@@ -883,6 +883,14 @@ Datum translate(PG_FUNCTION_ARGS)
 
 		}
 	}
+	//translate the bounding box as well
+	geom1->bvol.LLB.x += x_off;
+	geom1->bvol.LLB.y += y_off;
+	geom1->bvol.LLB.z += z_off;
+	geom1->bvol.URT.x += x_off;
+	geom1->bvol.URT.y += y_off;
+	geom1->bvol.URT.z += z_off;
+
 	PG_RETURN_POINTER(geom1);
 }
 
