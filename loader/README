@@ -1,0 +1,63 @@
+shp2pgsql - Convert Shape file to PostGIS
+~~~~~~~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+VERSION: 0.5 (2001/07/20)
+
+MORE INFORMATION: http://postgis.refractions.net
+
+INTRODUCTION:
+This program takes in ESRI shape files and output formatted text suitable
+for uploading to the PostGIS/PostgreSQL spatial database using the psql
+terminal monitor.
+
+This application uses functionality from shapelib 1.2.8
+by Frank Warmerdam <warmerda@gdal.velocet.ca> to read from ESRI
+Shape files.
+
+
+INSTALLATION:
+
+To build shp2pgsql just run 'make'.
+Copy the binary wherever you like. :)
+
+
+USAGE:
+
+shp2pgsql <shapefile> <tablename> -d -c -a -dump
+
+The <shapefile> is the name of the shape file, without any extension
+information. For example, 'roads' would be the name of the shapefile 
+comprising the 'roads.shp', 'roads.shx', and 'roads.dbf' files.
+
+The <tablename> is the name of the database table you want the data stored
+in in the database. Within that table, the geometry will be placed in 
+the 'geo_value' column by default.
+
+The options are as follows:
+
+  -d    Delete mode. Delete the database table before uploading the
+        data into a new empty database table in 'insert' format.
+  -c    Create mode. This is the default mode. Create a new table and
+        upload the data into that table in 'insert' format.
+  -a    Append mode. Do not delete the target table or try to create
+        a new table, simple insert the data into the existing table.
+        (A table will have to exist for this to work, it is usually
+        used after a create mode as been run once.)
+  -dump Dump mode. Create a new table and upload the data into that
+        table in 'dump' format. Dump format is used by PostgreSQL for
+	large data dumps and uploads. Use this mode if your upload
+	dataset is very large.
+
+
+EXAMPLES:
+
+Loading directly:
+
+  shp2pgsql roads1 -c | psql -d roadsdatabase
+  shp2pgsql roads2 -a | psql -d roadsdatabase
+
+Saving to an intermiate file:
+
+  shp2pgsql roads1 > roads.sql
+  psql -d roadsdatabase -f roads.sql
+

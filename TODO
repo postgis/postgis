@@ -1,8 +1,7 @@
-2001/06/19
+2001/07/20
 
-- Change function names to be OGC compliant (following the "Simple Features
-  Specification for SQL")
-- Add some more of the OGC spec functions
-- Tie in to simple GIS clients
 - GML import/export routines
-- Document Java code better. Usage example better and perhaps client app.
+- Possible re-write to become more OGC compliant (?)
+- Inclusion of OGC simple feature predicate functions for overlaps, 
+  intersections, etc.
+- Connectivity to commercial GIS software.

@@ -157,7 +157,7 @@ int	WKB_OID;
 	double	*double_val;
 	char		*char_val;
 	char		*wkb_val;
-	char		*table_name = "tt";
+	char		*table_name = "t";
 	char		query_str[1000];
 
     /*
@@ -172,7 +172,7 @@ int	WKB_OID;
         pgport = "5555";                                                
         pgoptions = "user=postgres";                    
         pgtty = NULL;                                                
-        dbName = "test1";
+        dbName = "t2";
 	
 
 
@@ -217,7 +217,9 @@ int	WKB_OID;
      * fetch rows from the pg_database, the system catalog of
      * databases
      */
-	sprintf(query_str, "DECLARE mycursor BINARY CURSOR FOR select interesting, comments, wkb_ndr(the_geom) as wkb from %s",table_name);
+	sprintf(query_str, "DECLARE mycursor BINARY CURSOR FOR select text(num), asbinary(the_geom,'ndr') as wkb from %s",table_name);
+
+	printf(query_str); printf("\n");
 
     res = PQexec(conn, query_str);
 
@@ -271,7 +273,7 @@ int	WKB_OID;
 				double_val = (double *) PQgetvalue(res, row, field);
 				printf("%s: %g\n",field_name,*double_val);	
 			}
-			if (field_type ==1043 )//varchar 
+			if ( (field_type ==1043 ) || (field_type==25) )//varchar 
 			{
 				char_val = (char *) PQgetvalue(res, row, field);
 				printf("%s: %s\n",field_name,char_val);	

@@ -4,15 +4,17 @@
 subdir = contrib/postgis
 
 # Root of the pgsql source tree 
-top_builddir = ../..
-#top_builddir = /data3/postgresql-7.1.2/src
+ifeq (${PGSQL_SRC},) 
+	top_builddir = ../..
+	installlibdir = $(libdir)/contrib
+else
+	top_builddir = ${PGSQL_SRC}
+	installlibdir = ${PWD}
+endif
 
 include $(top_builddir)/src/Makefile.global
 
 test_db = geom_regress
-
-# override libdir to install shlib in contrib not main directory
-libdir := $(libdir)/contrib
 
 # shared library parameters
 NAME=postgis
@@ -24,7 +26,7 @@ SO_MINOR_VERSION=3
 override CPPFLAGS := -g  -I$(srcdir) $(CPPFLAGS) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"'
 override DLLLIBS := $(BE_DLLLIBS) $(DLLLIBS)
 
-OBJS=postgis_debug.o postgis_ops.o postgis_fn.o postgis_inout.o
+OBJS=postgis_debug.o postgis_ops.o postgis_fn.o postgis_inout.o postgis_proj.o
 
 # Add libraries that libpq depends (or might depend) on into the
 # shared library link.  (The order in which you list them here doesn't
@@ -37,17 +39,15 @@ all: all-lib $(NAME).sql
 include $(top_srcdir)/src/Makefile.shlib
 
 $(NAME).sql: $(NAME).sql.in
-	sed -e 's:@MODULE_FILENAME@:$(libdir)/$(shlib):g' < $< > $@
+	sed -e 's:@MODULE_FILENAME@:$(installlibdir)/$(shlib):g' < $< > $@
 
-#$(NAME).sql: $(NAME).sql.in
-#	sed -e 's:@MODULE_FILENAME@:/data1/Refractions/Projects/PostGIS/geom/$(shlib):g' < $< > $@
 
 install: all installdirs install-lib
 	$(INSTALL_DATA) $(srcdir)/README.$(NAME)  $(docdir)/contrib
 	$(INSTALL_DATA) $(NAME).sql $(datadir)/contrib
 
 installdirs:
-	$(mkinstalldirs) $(docdir)/contrib $(datadir)/contrib $(libdir)
+	$(mkinstalldirs) $(docdir)/contrib $(datadir)/contrib $(installlibdir)
 
 uninstall: uninstall-lib
 	@rm -f $(docdir)/contrib/README.$(NAME) $(datadir)/contrib/$(NAME).sql

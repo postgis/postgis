@@ -1,7 +1,7 @@
 PostGIS - Geographic Information Systems Extensions to PostgreSQL
 ~~~~~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-VERSION: 0.2 (2001/06/19)
+VERSION: 0.5 (2001/07/20)
 
 MORE INFORMATION: http://postgis.refractions.net
 
@@ -17,6 +17,8 @@ Directory structure:
 	        the GIS objects. 
 	./doc   Documentation on the code, objects and functions 
 	        provided. 
+	./loader  A program to convert ESRI Shape files into SQL text
+	        suitable for uploading into a PostGIS/PostgreSQL database.
 	./examples  Small programs which demonstrate ways of accessing 
 	        GIS data.
 	        

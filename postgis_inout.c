@@ -1358,6 +1358,7 @@ BOX3D	*bbox_of_geometry(GEOMETRY *geom)
 
 		if (geom->objType[i] == POINTTYPE)
 		{
+//printf("box of a point\n");
 			a_box = bbox_of_point(  (POINT3D *) obj);
 			result= union_box3d(a_box  ,result);
 
@@ -1366,6 +1367,7 @@ BOX3D	*bbox_of_geometry(GEOMETRY *geom)
 		}
 		if (geom->objType[i] == LINETYPE)
 		{
+//printf("box of a line, # points = %i\n",((LINE3D *) obj)->npoints );
 			a_box = bbox_of_line(  (LINE3D *) obj);
 			result = union_box3d(a_box  ,result);
 			if (a_box != NULL)
@@ -1373,6 +1375,7 @@ BOX3D	*bbox_of_geometry(GEOMETRY *geom)
 		}
 		if (geom->objType[i] == POLYGONTYPE)
 		{
+//printf("box of a polygon\n");
 			a_box = bbox_of_polygon(  (POLYGON3D *) obj);
 			result =union_box3d(a_box  ,result);
 			if (a_box != NULL)
@@ -2487,7 +2490,7 @@ char *to_wkb_collection(GEOMETRY *geom, bool flip_endian, int32 *end_size)
 	pfree( sizes);
 
 		//total size of the wkb 
-	*end_size = total_size;
+	*end_size = total_size+9;
 
 
 
@@ -2608,23 +2611,20 @@ char	*to_wkb_sub(GEOMETRY *geom, bool flip_endian, int32 *wkb_size)
 }
 
 
-//convert binary geometry into OGIS well know binary format with XDR (big endian) formating
+//convert binary geometry into OGIS well know binary format with NDR (little endian) formating
 // see http://www.opengis.org/techno/specs/99-049.rtf page 3-24 for specification
 //
 // 3d geometries are encode as in OGR by adding 32768 to the type.  Points are then 24bytes (X,Y,Z)
 // instead of 16 bytes (X,Y)
-
-PG_FUNCTION_INFO_V1(wkb_XDR);
-Datum wkb_XDR(PG_FUNCTION_ARGS)
+//
+//dont do any flipping of endian   asbinary_simple(GEOMETRY)
+PG_FUNCTION_INFO_V1(asbinary_simple);
+Datum asbinary_simple(PG_FUNCTION_ARGS)
 {
 	GEOMETRY		      *geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	if (BYTE_ORDER == BIG_ENDIAN)
-		PG_RETURN_POINTER(to_wkb(geom, FALSE));
-	else
-		PG_RETURN_POINTER(to_wkb(geom, TRUE));
+	PG_RETURN_POINTER(to_wkb(geom, FALSE));
 }
-
 
 
 //convert binary geometry into OGIS well know binary format with NDR (little endian) formating
@@ -2632,15 +2632,283 @@ Datum wkb_XDR(PG_FUNCTION_ARGS)
 //
 // 3d geometries are encode as in OGR by adding 32768 to the type.  Points are then 24bytes (X,Y,Z)
 // instead of 16 bytes (X,Y)
-
-PG_FUNCTION_INFO_V1(wkb_NDR);
-Datum wkb_NDR(PG_FUNCTION_ARGS)
+//
+//flip if required    asbinary_specify(GEOMETRY,'xdr') or asbinary_specify(GEOMETRY,'ndr')
+PG_FUNCTION_INFO_V1(asbinary_specify);
+Datum asbinary_specify(PG_FUNCTION_ARGS)
 {
-	GEOMETRY		      *geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+		GEOMETRY		      *geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+		 text      			*type = PG_GETARG_TEXT_P(1);
 
-	if (BYTE_ORDER == LITTLE_ENDIAN)
-		PG_RETURN_POINTER(to_wkb(geom, FALSE));
+	if  ( ( strcmp(VARDATA(type) ,"xdr") == 0 ) || (strcmp(VARDATA(type) ,"XDR") == 0) )
+	{
+printf("requested XDR\n");
+		if (BYTE_ORDER == BIG_ENDIAN)
+			PG_RETURN_POINTER(to_wkb(geom, FALSE));
+		else
+			PG_RETURN_POINTER(to_wkb(geom, TRUE));
+	}
 	else
-		PG_RETURN_POINTER(to_wkb(geom, TRUE));
+	{
+printf("requested NDR\n");
+		if (BYTE_ORDER == LITTLE_ENDIAN)
+			PG_RETURN_POINTER(to_wkb(geom, FALSE));
+		else
+			PG_RETURN_POINTER(to_wkb(geom, TRUE));
+	}
+}
 
+
+
+
+
+//make a geometry with one obj in it (of size new_obj_size)
+// type should be POINTTYPE, LINETYPE or POLYGONTYPE
+// if you want to change the object's type to something else (ie GEOMETRYCOLLECTION), do
+// that after with geom->type = GEOMETRYCOLLECTION
+// this does  calculate the bvol 
+//
+// do not call this with type = GEOMETRYCOLLECTION
+
+GEOMETRY	*make_oneobj_geometry(int sub_obj_size, char *sub_obj, int type, bool is3d)
+{
+	int size = sizeof(GEOMETRY) + 4 + sub_obj_size ;
+	GEOMETRY	*result = palloc(size);
+	char		*sub_obj_loc;
+	BOX3D		*bbox;
+
+	result->size = size;
+	result->nobjs = 1;
+	result->type = type;
+	result->is3d = is3d;
+
+	result->objType[0] = type;
+	if (type == MULTIPOINTTYPE)
+		result->objType[0] = POINTTYPE;
+	if (type == MULTILINETYPE)
+		result->objType[0] = LINETYPE;
+	if (type == MULTIPOLYGONTYPE)
+		result->objType[0] = POLYGONTYPE;
+
+	if (type == COLLECTIONTYPE)
+	{
+		pfree(result);
+		return(NULL); //error
+	}
+
+	sub_obj_loc = (char *)  &result->objType[2]; 
+	sub_obj_loc  = (char *) MAXALIGN(sub_obj_loc);
+
+	result->objType[1] = sub_obj_loc  - (char *) result; //result->objType[1] is where objOffset is
+
+	//copy in the subobject
+	memcpy(sub_obj_loc , sub_obj, sub_obj_size);
+
+	bbox = bbox_of_geometry(result);
+	memcpy(&result->bvol,bbox, sizeof(BOX3D) ); //make bounding box
+
+	return result;
+}
+
+
+//find the size of the subobject and return it
+int	size_subobject (char *sub_obj, int type)
+{
+	if (type == POINTTYPE)
+	{
+		return (sizeof(POINT3D));
+	}
+	if (type == LINETYPE)
+	{
+		return(sizeof(LINE3D) +  sizeof(POINT3D) * ( ((LINE3D *)sub_obj)->npoints ));
+	}
+	if (type==POLYGONTYPE)
+	{
+		POLYGON3D	*poly = (POLYGON3D *) sub_obj;
+		int		t,points=0;
+		
+		for (t=0;t<poly->nrings;t++)
+		{
+			points += poly->npoints[t];
+		}
+		if  (   ( (long) ( &poly->npoints[poly->nrings] )) == (MAXALIGN(&poly->npoints[poly->nrings] ) ) )
+			return (sizeof(POLYGON3D) + 4*(poly->nrings-1) +  sizeof(POINT3D)*(points-1) );  //no extra align
+		else
+			return (sizeof(POLYGON3D) + 4*(poly->nrings-1) +  sizeof(POINT3D)*(points-1) +4 );
+	}
+
+	return (-1);//unknown sub-object type
+}
+
+
+//produce a new geometry, which is the old geometry with another object stuck in it
+// This will try to make the geometry's type is correct (move POINTTYPE to MULTIPOINTTYPE or 
+//   change to GEOMETRYCOLLECTION)
+//
+// this does NOT calculate the bvol - you should set it with "bbox_of_geometry"
+//
+// type is the type of the subobject
+// do not call this as with type = GEOMETRYCOLLECTION
+//
+// doesnt change the is3d flag
+
+GEOMETRY	*add_to_geometry(GEOMETRY *geom,int sub_obj_size, char *sub_obj, int type)
+{
+	int		size,t;
+	int		size_obj,next_offset;
+	GEOMETRY	*result;
+	int32		*old_offsets, *new_offsets;
+	BOX3D		*bbox;
+
+	//all the offsets could cause re-alignment problems, so need to deal with each on
+	size = geom->size +(4*geom->nobjs +1) /*byte align*/
+			+sub_obj_size + 4 /*ObjType[]*/ +4 /*new offset*/;
+
+	result = (GEOMETRY *) palloc(size);
+	result->size = size;
+	result->is3d = geom->is3d;
+
+
+	//accidently sent in a single-entity type but gave it a multi-entity type
+	//  re-type it as single-entity
+	if (type == MULTIPOINTTYPE)
+		type = POINTTYPE;
+	if (type == MULTILINETYPE)
+		type = LINETYPE;
+	if (type == MULTIPOLYGONTYPE)
+		type = POLYGONTYPE;
+
+
+	//simple conversion
+	if  (geom->type == POINTTYPE)
+	{
+	 	if (type == POINTTYPE)
+			result->type  = MULTIPOINTTYPE;
+		else
+			result->type  = COLLECTIONTYPE;
+	}
+	if  (geom->type == LINETYPE)
+	{
+	 	if (type == LINETYPE)
+			result->type  = MULTILINETYPE;
+		else
+			result->type  = COLLECTIONTYPE;
+	}
+	if  (geom->type == POLYGONTYPE)
+	{
+	 	if (type == POLYGONTYPE)
+			result->type  = MULTIPOLYGONTYPE;
+		else
+			result->type  = COLLECTIONTYPE;
+	}
+	if (geom->type == COLLECTIONTYPE)
+		result->type = COLLECTIONTYPE;
+
+	// now result geometry's type and sub-object's type is okay
+	// we have to setup the geometry
+	
+	result->nobjs = geom->nobjs+1;
+
+	for (t=0; t< geom->nobjs; t++)
+	{
+		result->objType[t] = geom->objType[t];
+	}
+
+//printf("about to copy geomes\n");
+//printf("result is at %p and is %i bytes long\n",result,result->size);
+//printf("geom is at %p and is %i bytes long\n",geom,geom->size);
+
+	old_offsets =& 	geom->objType[geom->nobjs] ; 
+	new_offsets =& 	result->objType[result->nobjs] ; 
+	next_offset = ( (char *) &new_offsets[result->nobjs] ) - ( (char *) result) ;
+	next_offset = MAXALIGN(next_offset);
+
+	//have to re-set the offsets and copy in the sub-object data
+	for (t=0; t< geom->nobjs; t++)
+	{
+		//where is this going to go?
+		new_offsets[t] = next_offset;
+
+		size_obj = 	size_subobject ((char *) (((char *) geom) + old_offsets[t] ), geom->objType[t]);
+
+		next_offset += size_obj;
+		next_offset = MAXALIGN(next_offset); // make sure its aligned properly
+	
+
+//printf("coping %i bytes from %p to %p\n", size_obj,( (char *) geom) + old_offsets[t],((char *) result)  + new_offsets[t]   );
+		memcpy( ((char *) result)  + new_offsets[t] , ( (char *) geom) + old_offsets[t], size_obj);
+//printf("copying done\n");
+
+	}
+	
+//printf("copying in new object\n");
+
+	//now, put in the new data
+	result->objType[ result->nobjs -1 ] = type;
+	new_offsets[ result->nobjs -1 ] = next_offset;
+	memcpy(  ((char *) result)  + new_offsets[result->nobjs-1] ,sub_obj , sub_obj_size);
+
+//printf("calculating bbox\n");
+
+	bbox = bbox_of_geometry(result);
+	memcpy(&result->bvol,bbox, sizeof(BOX3D) ); //make bounding box
+
+//printf("returning\n");
+
+	return result;
+}
+
+
+
+//make a polygon obj
+// size is return in arg "size"
+POLYGON3D	*make_polygon(int nrings, int *pts_per_ring, POINT3D *pts, int npoints, int *size)
+{
+		POLYGON3D	*result;
+		int		t;
+		POINT3D	*inside_poly_pts;
+
+
+	*size = sizeof(POLYGON3D) + 4 /*align*/ 
+				+ 4*(nrings-1)/*npoints struct*/ 
+				+ sizeof(POINT3D) *(npoints-1) /*points struct*/ ;
+
+ 	result= (POLYGON3D *) palloc (*size);
+	result->nrings = nrings;
+
+
+	for (t=0;t<nrings;t++)
+	{
+		result->npoints[t] = pts_per_ring[t];
+	}	
+
+	inside_poly_pts = (POINT3D *) ( (char *)&(result->npoints[result->nrings] )  );
+	inside_poly_pts = (POINT3D *) MAXALIGN(inside_poly_pts);
+
+	memcpy(inside_poly_pts, pts, npoints *sizeof(POINT3D) );
+
+	return result;
+}
+
+void set_point( POINT3D *pt,double x, double y, double z)
+{
+	pt->x = x;
+	pt->y = y;
+	pt->z = z;
+}
+
+//make a line3d object
+// return size of structure in 'size'
+LINE3D	*make_line(int	npoints, POINT3D	*pts, int	*size)
+{
+	LINE3D	*result;
+
+	*size = sizeof(LINE3D) + (npoints-1)*sizeof(POINT3D);
+
+	result= (LINE3D *) palloc (*size);
+
+	result->npoints = npoints;
+	memcpy(	result->points, pts, npoints*sizeof(POINT3D) );
+
+	return result;
 }

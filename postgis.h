@@ -20,6 +20,22 @@
 #define	COLLECTIONTYPE	7
 #define	BBOXONLYTYPE	99
 
+
+//standard definition of an ellipsoid (what wkt calls a spheroid)
+//	f = (a-b)/a
+//	e_sq = (a*a - b*b)/(a*a)
+//	b = a - fa
+typedef struct
+{
+	double	a;	//semimajor axis
+	double	b; 	//semiminor axis
+	double	f;	//flattening
+	double	e;	//eccentricity (first)
+	double	e_sq; //eccentricity (first), squared
+	char		name[20]; //name of ellipse 
+} SPHEROID;
+
+
 /*---------------------------------------------------------------------
  * POINT3D - (x,y,z)
  *            Base type for all geometries
@@ -27,7 +43,7 @@
  *-------------------------------------------------------------------*/
 typedef struct
 {
-	double		x,y,z;
+	double		x,y,z;  //for lat/long   x=long, y=lat
 } POINT3D;
 
 /*---------------------------------------------------------------------
@@ -189,6 +205,10 @@ typedef struct geomkey {
      int isspace(int c);
 
 
+/* constructors*/
+POLYGON3D	*make_polygon(int nrings, int *pts_per_ring, POINT3D *pts, int npoints, int *size);
+void set_point( POINT3D *pt,double x, double y, double z);
+GEOMETRY	*make_oneobj_geometry(int sub_obj_size, char *sub_obj, int type, bool is3d);
 
 void print_box(BOX3D *box);
 void print_box_oneline(BOX3D *box);
@@ -241,7 +261,10 @@ bool	linestring_inside_box(POINT3D *pts, int npoints, BOX3D *box);
 bool polygon_truely_inside(POLYGON3D	*poly, BOX3D *box);
 bool line_truely_inside( LINE3D *line, BOX3D 	*box);
 void	translate_points(POINT3D *pt, int npoints,double x_off, double y_off, double z_off);
-
+int	size_subobject (char *sub_obj, int type);
+GEOMETRY	*add_to_geometry(GEOMETRY *geom,int sub_obj_size, char *sub_obj, int type);
+LINE3D	*make_line(int	npoints, POINT3D	*pts, int	*size);
+char  *print_geometry(GEOMETRY *geom);
 
 void  swap_char(char *a, char*b);
 void	flip_endian_double(char	*dd);
@@ -261,6 +284,18 @@ char	*to_wkb_sub(GEOMETRY *geom, bool flip_endian, int32 *wkb_size);
 void decode_wkb_collection(char *wkb,int	*size);
 void decode_wkb(char *wkb, int *size);
 void dump_bytes( char *a, int numb);
+
+double deltaLongitude(double azimuth, double sigma, double tsm,SPHEROID *sphere);
+double bigA(double u2);
+double bigB(double u2);
+double	distance_ellipse(double lat1, double long1,
+					double lat2, double long2,
+					SPHEROID *sphere);
+double mu2(double azimuth,SPHEROID *sphere);
+
+double length2d_ellipse_linestring(LINE3D	*line, SPHEROID  	*sphere);
+double length3d_ellipse_linestring(LINE3D	*line, SPHEROID  	*sphere);
+
 
 //exposed to psql
 
@@ -304,13 +339,39 @@ Datum numb_sub_objs(PG_FUNCTION_ARGS);
 Datum summary(PG_FUNCTION_ARGS);
 Datum translate(PG_FUNCTION_ARGS);
 
-Datum wkb_XDR(PG_FUNCTION_ARGS);
-Datum wkb_NDR(PG_FUNCTION_ARGS);
+Datum asbinary_specify(PG_FUNCTION_ARGS);
+Datum asbinary_simple(PG_FUNCTION_ARGS);
 
 Datum force_2d(PG_FUNCTION_ARGS);
 Datum force_3d(PG_FUNCTION_ARGS);
+Datum force_collection(PG_FUNCTION_ARGS);
 
 Datum combine_bbox(PG_FUNCTION_ARGS);
+
+Datum dimension(PG_FUNCTION_ARGS);
+Datum geometrytype(PG_FUNCTION_ARGS);
+Datum envelope(PG_FUNCTION_ARGS);
+
+Datum x_point(PG_FUNCTION_ARGS);
+Datum y_point(PG_FUNCTION_ARGS);
+Datum z_point(PG_FUNCTION_ARGS);
+
+Datum numpoints_linestring(PG_FUNCTION_ARGS);
+Datum pointn_linestring(PG_FUNCTION_ARGS);
+
+Datum exteriorring_polygon(PG_FUNCTION_ARGS);
+Datum numinteriorrings_polygon(PG_FUNCTION_ARGS);
+Datum interiorringn_polygon(PG_FUNCTION_ARGS);
+
+Datum numgeometries_collection(PG_FUNCTION_ARGS);
+Datum geometryn_collection(PG_FUNCTION_ARGS);
+
+Datum ellipsoid_out(PG_FUNCTION_ARGS);
+Datum ellipsoid_in(PG_FUNCTION_ARGS);
+Datum length_ellipsoid(PG_FUNCTION_ARGS);
+Datum length3d_ellipsoid(PG_FUNCTION_ARGS);
+
+Datum point_inside_circle(PG_FUNCTION_ARGS);
 
 
 
