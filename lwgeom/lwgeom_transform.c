@@ -262,6 +262,10 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
+	// This call will always copy given geometry
+	result = lwgeom_setSRID(geom, result_srid);
+	PG_FREE_IF_COPY(geom, 0);
+
 	input_proj4_text  = (PG_GETARG_TEXT_P(1));
 	output_proj4_text = (PG_GETARG_TEXT_P(2));
 
@@ -280,7 +284,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	if ( (input_pj == NULL) || pj_errno)
 	{
 		pfree(input_proj4); pfree(output_proj4);
-		PG_FREE_IF_COPY(geom, 0);
+		pfree(result);
 		elog(ERROR,"tranform: couldnt parse proj4 input string");
 		PG_RETURN_NULL();
 	}
@@ -290,15 +294,15 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	{
 		pfree(input_proj4); pfree(output_proj4);
 		pj_free(input_pj);
-		PG_FREE_IF_COPY(geom, 0);
+		pfree(result);
 		elog(ERROR,"tranform: couldnt parse proj4 output string");
 		PG_RETURN_NULL();
 	}
 
 	//great, now we have a geometry, and input/output PJ* structs. 
 	//Excellent.
-	lwgeom_transform_recursive(SERIALIZED_FORM(geom), input_pj, output_pj);
-	result = lwgeom_setSRID(geom, result_srid);
+	lwgeom_transform_recursive(SERIALIZED_FORM(result),
+		input_pj, output_pj);
 
 	// clean up
 	pj_free(input_pj);
