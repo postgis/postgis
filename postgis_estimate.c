@@ -11,6 +11,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.19  2004/03/09 00:21:02  strk
+ * Removed useless code blocks in histogram builder
+ *
  * Revision 1.18  2004/03/09 00:09:56  strk
  * estimator applies a gain of AOI/cell_area on each cell it intersects (reverted to previous behaviour)
  *
@@ -1243,7 +1246,6 @@ Datum postgis_gist_sel(PG_FUNCTION_ARGS)
 #endif
 
 		gain = 1/min(overlapping_cells, avg_feat_cells);
-		//gain = 1;
 		selectivity = value*gain;
 
 #if DEBUG_GEOMETRY_STATS
@@ -1414,8 +1416,6 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		BOX *box;
 		int x_idx_min, x_idx_max, x;
 		int y_idx_min, y_idx_max, y;
-		double intersect_x, intersect_y;
-		double AOI; // area of intersection
 		int numcells=0;
 
 		if ( sampleboxes[i] == NULL ) continue;
@@ -1457,39 +1457,9 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		 */
 		for (y=y_idx_min; y<=y_idx_max; y++)
 		{
-			double cell_xmax = geomstats->xmin+(x+1)*cell_width;
-			double cell_xmin = geomstats->xmin+x*cell_width;
-			double cell_ymax = geomstats->ymin+(y+1)*cell_height;
-			double cell_ymin = geomstats->ymin+y*cell_height;
-
 			for (x=x_idx_min; x<=x_idx_max; x++)
 			{
-
-				cell_xmax = geomstats->xmin+(x+1)*cell_width;
-				cell_xmin = geomstats->xmin+x*cell_width;
-
-				intersect_x = min(box->high.x, cell_xmax) -
-					max(box->low.x, cell_xmin);
-				intersect_y = min(box->high.y, cell_ymax) -
-					max(box->low.y, cell_ymin);
-
-#if DEBUG_GEOMETRY_STATS > 2
-elog(NOTICE, "r=%d c=%d intx=%f inty=%f",
-		y, x, intersect_x, intersect_y);
-#endif
-
-				AOI = intersect_x*intersect_y;
-
-
-				if ( ! AOI ) // must be a point
-				{
-			geomstats->value[x+y*bps] += 1;
-				}
-				else
-				{
-			geomstats->value[x+y*bps] += 1;
-			//geomstats->value[x+y*bps] += AOI / cell_area;
-				}
+				geomstats->value[x+y*bps] += 1;
 				numcells++;
 			}
 		}
