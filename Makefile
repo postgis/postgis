@@ -74,7 +74,7 @@ endif
 NAME=postgis
 SO_MAJOR_VERSION=0
 SO_MINOR_VERSION=8
-
+MODULE_FILENAME = $(LPATH)/$(shlib)
 #---------------------------------------------------------------
 
 override CFLAGS += -g -fexceptions  
@@ -148,7 +148,7 @@ loaderdumper:
 # Shared library stuff
 
 postgis.sql: postgis_sql_common.sql.in postgis_sql_$(USE_VERSION)_end.sql.in postgis_sql_$(USE_VERSION)_start.sql.in 
-	cat postgis_sql_$(USE_VERSION)_start.sql.in postgis_sql_common.sql.in postgis_sql_$(USE_VERSION)_end.sql.in | sed -e 's:@MODULE_FILENAME@:$(LPATH)/$(shlib):g;s:@POSTGIS_VERSION@:$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION) USE_GEOS=$(USE_GEOS) USE_PROJ=$(USE_PROJ) USE_STATS=$(USE_STATS):g'  > $@ 
+	cat postgis_sql_$(USE_VERSION)_start.sql.in postgis_sql_common.sql.in postgis_sql_$(USE_VERSION)_end.sql.in | sed -e 's:@MODULE_FILENAME@:$(MODULE_FILENAME):g;s:@POSTGIS_VERSION@:$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION) USE_GEOS=$(USE_GEOS) USE_PROJ=$(USE_PROJ) USE_STATS=$(USE_STATS):g'  > $@ 
 
 postgis_undef.sql: postgis.sql create_undef.pl
 	perl create_undef.pl $< $(USE_VERSION) > $@ 
