@@ -12,6 +12,9 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.8  2004/01/20 20:10:39  strk
+-- removed bogus comment about missed alter table drop column
+--
 -- Revision 1.7  2003/12/30 10:40:21  strk
 -- For all versions:
 -- Updated fix_geometry_columns to use a more readable format in queries.
@@ -412,7 +415,6 @@ END;
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- DROPGEOMETRYCOLUMN( <schema name>, <table name>, <column name> )
 --
--- There is no ALTER TABLE DROP COLUMN command in postgresql
 -- There is no ALTER TABLE DROP CONSTRAINT command in postgresql
 -- So, we:
 --   1. remove the unwanted geom column reference from the 
