@@ -487,6 +487,7 @@ Datum box3d_zmin(PG_FUNCTION_ARGS);
 Datum box3d_xmax(PG_FUNCTION_ARGS);
 Datum box3d_ymax(PG_FUNCTION_ARGS);
 Datum box3d_zmax(PG_FUNCTION_ARGS);
+Datum box3dtobox(PG_FUNCTION_ARGS);
 
 
 

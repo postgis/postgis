@@ -40,7 +40,7 @@
 #define SHOW_DIGS_DOUBLE 15
 #define MAX_DIGS_DOUBLE (SHOW_DIGS_DOUBLE + 6 + 1 + 3 +1)
 
-// #define DEBUG_GIST
+//#define DEBUG_GIST
 
 //for GIST index
 typedef char* (*BINARY_UNION)(char*, char*, int*);
@@ -52,13 +52,14 @@ BOX *convert_box3d_to_box(BOX3D *in);
 Datum ggeometry_compress(PG_FUNCTION_ARGS);
 Datum ggeometry_consistent(PG_FUNCTION_ARGS);
 bool rtree_internal_consistent(BOX *key, BOX *query,StrategyNumber strategy);
+Datum rtree_decompress(PG_FUNCTION_ARGS);
 Datum gbox_union(PG_FUNCTION_ARGS);
 Datum gbox_picksplit(PG_FUNCTION_ARGS);
 Datum gbox_penalty(PG_FUNCTION_ARGS);
 Datum gbox_same(PG_FUNCTION_ARGS);
-static bool gbox_leaf_consistent(BOX *key, BOX *query, StrategyNumber strategy);
 static float size_box(Datum box);
 
+int debug = 0;
 
 //restriction in the GiST && operator
 PG_FUNCTION_INFO_V1(postgis_gist_sel);
@@ -94,7 +95,7 @@ Datum ggeometry_compress(PG_FUNCTION_ARGS)
 			GEOMETRY *in;
 			BOX	*r;
 
-#ifdef DEBUG_GIST2
+#ifdef DEBUG_GIST
 	printf("GIST: ggeometry_compress called on geometry\n");
 	fflush( stdout );
 #endif
@@ -132,7 +133,7 @@ Datum ggeometry_consistent(PG_FUNCTION_ARGS)
     ** else use gbox_leaf_consistent
     */
 
-#ifdef DEBUG_GIST2
+#ifdef DEBUG_GIST
 	printf("GIST: ggeometry_consistent called\n");
 	fflush( stdout );
 #endif
@@ -154,7 +155,7 @@ bool rtree_internal_consistent(BOX *key,
 {
     bool retval;
 
-#ifdef DEBUG_GIST2
+#ifdef DEBUG_GIST
 	printf("GIST: rtree_internal_consist called\n");
 	fflush( stdout );
 #endif
@@ -204,7 +205,7 @@ Datum gbox_union(PG_FUNCTION_ARGS)
 	BOX		   *cur,
 			   *pageunion;
 
-#ifdef DEBUG_GIST2
+#ifdef DEBUG_GIST
 	printf("GIST: gbox_union called\n");
 	fflush( stdout );
 #endif
@@ -244,7 +245,7 @@ Datum gbox_penalty(PG_FUNCTION_ARGS)
 	Datum		ud;
 	float		tmp1;
 
-#ifdef DEBUG_GIST2
+#ifdef DEBUG_GIST
 	printf("GIST: gbox_penalty called\n");
 	fflush( stdout );
 #endif
@@ -258,13 +259,30 @@ Datum gbox_penalty(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
+typedef struct {
+	BOX 	*key;
+	int 	pos;
+} KBsort;
+
+static int
+compare_KB(const void* a, const void* b) {
+	BOX *abox = ((KBsort*)a)->key; 
+	BOX *bbox = ((KBsort*)b)->key;
+	float sa = (abox->high.x - abox->low.x) * (abox->high.y - abox->low.y);
+	float sb = (bbox->high.x - bbox->low.x) * (bbox->high.y - bbox->low.y);
+
+	if ( sa==sb ) return 0;
+	return ( sa>sb ) ? 1 : -1;
+}
+
 /*
 ** The GiST PickSplit method
 ** New linear algorithm, see 'New Linear Node Splitting Algorithm for R-tree',
 ** C.H.Ang and T.C.Tan
 */
 PG_FUNCTION_INFO_V1(gbox_picksplit);
-Datum gbox_picksplit(PG_FUNCTION_ARGS)
+Datum
+gbox_picksplit(PG_FUNCTION_ARGS)
 {
 	bytea	   *entryvec = (bytea *) PG_GETARG_POINTER(0);
 	GIST_SPLITVEC *v = (GIST_SPLITVEC *) PG_GETARG_POINTER(1);
@@ -288,7 +306,7 @@ Datum gbox_picksplit(PG_FUNCTION_ARGS)
 	OffsetNumber maxoff;
 	int			nbytes;
 
-#ifdef DEBUG_GIST2
+#ifdef DEBUG_GIST
 	printf("GIST: gbox_picksplit called\n");
 	fflush( stdout );
 #endif
@@ -303,26 +321,22 @@ Datum gbox_picksplit(PG_FUNCTION_ARGS)
 	for (i = OffsetNumberNext(FirstOffsetNumber); i <= maxoff; i = OffsetNumberNext(i))
 	{
 		cur = DatumGetBoxP(((GISTENTRY *) VARDATA(entryvec))[i].key);
+		if ( allisequal == true &&  (
+				pageunion.high.x != cur->high.x || 
+				pageunion.high.y != cur->high.y || 
+				pageunion.low.x != cur->low.x || 
+				pageunion.low.y != cur->low.y 
+			) ) 
+			allisequal = false;
+ 
 		if (pageunion.high.x < cur->high.x)
-		{
-			allisequal = false;
 			pageunion.high.x = cur->high.x;
-		}
 		if (pageunion.low.x > cur->low.x)
-		{
-			allisequal = false;
 			pageunion.low.x = cur->low.x;
-		}
 		if (pageunion.high.y < cur->high.y)
-		{
-			allisequal = false;
 			pageunion.high.y = cur->high.y;
-		}
 		if (pageunion.low.y > cur->low.y)
-		{
-			allisequal = false;
 			pageunion.low.y = cur->low.y;
-		}
 	}
 
 	nbytes = (maxoff + 2) * sizeof(OffsetNumber);
@@ -366,7 +380,7 @@ Datum gbox_picksplit(PG_FUNCTION_ARGS)
 	unionB = (BOX *) palloc(sizeof(BOX));
 	unionT = (BOX *) palloc(sizeof(BOX));
 
-#define ADDLIST( list, unionD, pos ) do { \
+#define ADDLIST( list, unionD, pos, num ) do { \
 	if ( pos ) { \
 		if ( unionD->high.x < cur->high.x ) unionD->high.x	= cur->high.x; \
 		if ( unionD->low.x	> cur->low.x  ) unionD->low.x	= cur->low.x; \
@@ -375,7 +389,7 @@ Datum gbox_picksplit(PG_FUNCTION_ARGS)
 	} else { \
 			memcpy( (void*)unionD, (void*) cur, sizeof( BOX ) );  \
 	} \
-	list[pos] = i; \
+	list[pos] = num; \
 	(pos)++; \
 } while(0)
 
@@ -383,17 +397,50 @@ Datum gbox_picksplit(PG_FUNCTION_ARGS)
 	{
 		cur = DatumGetBoxP(((GISTENTRY *) VARDATA(entryvec))[i].key);
 		if (cur->low.x - pageunion.low.x < pageunion.high.x - cur->high.x)
-			ADDLIST(listL, unionL, posL);
+			ADDLIST(listL, unionL, posL,i);
 		else
-			ADDLIST(listR, unionR, posR);
+			ADDLIST(listR, unionR, posR,i);
 		if (cur->low.y - pageunion.low.y < pageunion.high.y - cur->high.y)
-			ADDLIST(listB, unionB, posB);
+			ADDLIST(listB, unionB, posB,i);
 		else
-			ADDLIST(listT, unionT, posT);
+			ADDLIST(listT, unionT, posT,i);
+	}
+
+	/* bad disposition, sort by ascending and resplit */
+	if ( (posR==0 || posL==0) && (posT==0 || posB==0) ) {
+		KBsort *arr = (KBsort*)palloc( sizeof(KBsort) * maxoff );
+		posL = posR = posB = posT = 0;
+		for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i)) {
+			arr[i-1].key = DatumGetBoxP(((GISTENTRY *) VARDATA(entryvec))[i].key);
+			arr[i-1].pos = i;
+		}
+		qsort( arr, maxoff, sizeof(KBsort), compare_KB );
+		for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i)) {
+			cur = arr[i-1].key;
+			if (cur->low.x - pageunion.low.x < pageunion.high.x - cur->high.x)
+				ADDLIST(listL, unionL, posL,arr[i-1].pos);
+			else if ( cur->low.x - pageunion.low.x == pageunion.high.x - cur->high.x ) {
+				if ( posL>posR )
+					ADDLIST(listR, unionR, posR,arr[i-1].pos);
+				else
+					ADDLIST(listL, unionL, posL,arr[i-1].pos);
+			} else
+				ADDLIST(listR, unionR, posR,arr[i-1].pos);
+
+			if (cur->low.y - pageunion.low.y < pageunion.high.y - cur->high.y)
+				ADDLIST(listB, unionB, posB,arr[i-1].pos);
+			else if ( cur->low.y - pageunion.low.y == pageunion.high.y - cur->high.y ) {
+				if ( posB>posT )
+					ADDLIST(listT, unionT, posT,arr[i-1].pos);
+				else
+					ADDLIST(listB, unionB, posB,arr[i-1].pos);
+			} else
+				ADDLIST(listT, unionT, posT,arr[i-1].pos);
+		}
+		pfree(arr);
 	}
 
 	/* which split more optimal? */
-
 	if (Max(posL, posR) < Max(posB, posT))
 		direction = 'x';
 	else if (Max(posL, posR) > Max(posB, posT))
@@ -460,7 +507,7 @@ Datum gbox_same(PG_FUNCTION_ARGS)
 	BOX		   *b2 = (BOX *) PG_GETARG_POINTER(1);
 	bool	   *result = (bool *) PG_GETARG_POINTER(2);
 
-#ifdef DEBUG_GIST2
+#ifdef DEBUG_GIST
 	printf("GIST: gbox_same called\n");
 	fflush( stdout );
 #endif
@@ -472,58 +519,11 @@ Datum gbox_same(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-/*
-** SUPPORT ROUTINES for boxes
-*/
-static bool
-gbox_leaf_consistent(BOX *key,
-					 BOX *query,
-					 StrategyNumber strategy)
-{
-	bool		retval;
-
-#ifdef DEBUG_GIST2
-	printf("GIST: gbox_leaf_consistent called\n");
-	fflush( stdout );
-#endif
-
-	switch (strategy)
-	{
-		case RTLeftStrategyNumber:
-			retval = DatumGetBool(DirectFunctionCall2(box_left, PointerGetDatum(key), PointerGetDatum(query)));
-			break;
-		case RTOverLeftStrategyNumber:
-			retval = DatumGetBool(DirectFunctionCall2(box_overleft, PointerGetDatum(key), PointerGetDatum(query)));
-			break;
-		case RTOverlapStrategyNumber:
-			retval = DatumGetBool(DirectFunctionCall2(box_overlap, PointerGetDatum(key), PointerGetDatum(query)));
-			break;
-		case RTOverRightStrategyNumber:
-			retval = DatumGetBool(DirectFunctionCall2(box_overright, PointerGetDatum(key), PointerGetDatum(query)));
-			break;
-		case RTRightStrategyNumber:
-			retval = DatumGetBool(DirectFunctionCall2(box_right, PointerGetDatum(key), PointerGetDatum(query)));
-			break;
-		case RTSameStrategyNumber:
-			retval = DatumGetBool(DirectFunctionCall2(box_same, PointerGetDatum(key), PointerGetDatum(query)));
-			break;
-		case RTContainsStrategyNumber:
-			retval = DatumGetBool(DirectFunctionCall2(box_contain, PointerGetDatum(key), PointerGetDatum(query)));
-			break;
-		case RTContainedByStrategyNumber:
-			retval = DatumGetBool(DirectFunctionCall2(box_contained, PointerGetDatum(key), PointerGetDatum(query)));
-			break;
-		default:
-			retval = FALSE;
-	}
-	return (retval);
-}
-
 static float
 size_box(Datum box)
 {
 
-#ifdef DEBUG_GIST2
+#ifdef DEBUG_GIST
 	printf("GIST: size_box called\n");
 	fflush( stdout );
 #endif

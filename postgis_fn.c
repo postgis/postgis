@@ -1935,7 +1935,7 @@ Datum distance(PG_FUNCTION_ARGS)
 	GEOMETRY		      *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	GEOMETRY		      *geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	int	g1_i, g2_i;
-	double		dist,this_dist;
+	double		dist,this_dist = 0;
 	bool			dist_set = FALSE; //true once dist makes sense.
 	int32			*offsets1,*offsets2;	
 	int			type1,type2;
@@ -2392,7 +2392,7 @@ PG_FUNCTION_INFO_V1(segmentize);
 Datum segmentize(PG_FUNCTION_ARGS)
 {
 		GEOMETRY		*geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-		GEOMETRY		*result,*result2;
+		GEOMETRY		*result = NULL, *result2;
 		double			maxdist = PG_GETARG_FLOAT8(1);
 		int32			*offsets1,*p_npoints_ring;
 		int				g1_i,r;
@@ -2606,5 +2606,14 @@ Datum box3d_zmax(PG_FUNCTION_ARGS)
 	BOX3D		   *box1 = (BOX3D *) PG_GETARG_POINTER(0);
 
 	PG_RETURN_FLOAT8(box1->URT.z);
+}
+
+PG_FUNCTION_INFO_V1(box3dtobox);
+Datum box3dtobox(PG_FUNCTION_ARGS)
+{
+	BOX3D *box1 = (BOX3D *) PG_GETARG_POINTER(0);
+	BOX *out;
+	out = convert_box3d_to_box(box1);
+	PG_RETURN_POINTER(out);
 }
 

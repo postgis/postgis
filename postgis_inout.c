@@ -2685,7 +2685,7 @@ char	*to_wkb_sub(GEOMETRY *geom, bool flip_endian, int32 *wkb_size)
 {
 
 	char	byte_order;
-	char	*result;
+	char	*result = NULL;
 	int		t;
 	
 
@@ -3233,8 +3233,8 @@ unsigned char	parse_hex(char *str)
 {
 	//do this a little brute force to make it faster
 
-	unsigned char		result_high;
-	unsigned char		result_low;
+	unsigned char		result_high = 0;
+	unsigned char		result_low = 0;
 
 	switch (str[0])
 	{

@@ -674,6 +674,11 @@ CREATE FUNCTION zmax(BOX3D)
    AS '@MODULE_FILENAME@','box3d_zmax'
    LANGUAGE 'c' with (isstrict,iscachable);
 
+CREATE FUNCTION box3dtobox(BOX3D)
+   RETURNS BOX
+   AS '@MODULE_FILENAME@','box3dtobox'
+   LANGUAGE 'c' with (isstrict,iscachable);
+
 ------- Aggregate
 
 CREATE FUNCTION combine_bbox(BOX3D,GEOMETRY)
