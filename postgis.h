@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.40  2004/01/21 19:04:03  strk
+ * Added line_interpolate_point function by jsunday@rochgrp.com
+ *
  * Revision 1.39  2003/11/28 11:06:49  strk
  * Added WKB_recv function for binary WKB input
  *
@@ -633,6 +636,7 @@ Datum geometry_from_text_mline(PG_FUNCTION_ARGS);
 Datum geometry_from_text_gc(PG_FUNCTION_ARGS);
 Datum isempty(PG_FUNCTION_ARGS);
 Datum simplify(PG_FUNCTION_ARGS);
+Datum line_interpolate_point(PG_FUNCTION_ARGS);
 
 /*--------------------------------------------------------------------
  * Useful floating point utilities and constants.

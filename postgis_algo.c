@@ -10,6 +10,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.2  2004/01/21 19:04:03  strk
+ * Added line_interpolate_point function by jsunday@rochgrp.com
+ *
  * Revision 1.1  2003/10/27 10:21:15  strk
  * Initial import.
  *
@@ -403,7 +406,102 @@ Datum simplify(PG_FUNCTION_ARGS)
    simp_geom->type = orig_geom->type;
    PG_RETURN_POINTER(simp_geom);
 }
-
 /***********************************************************************
  * --strk@keybit.net;
+ ***********************************************************************/
+
+/***********************************************************************
+ * Interpolate a point along a line, useful for Geocoding applications
+ * SELECT line_interpolate_point( 'LINESTRING( 0 0, 2 2'::geometry, .5 )
+ * returns POINT( 1 1 )
+ *
+ * -- jsunday@rochgrp.com;
+ ***********************************************************************/
+PG_FUNCTION_INFO_V1(line_interpolate_point);
+Datum line_interpolate_point(PG_FUNCTION_ARGS)
+{
+	GEOMETRY *geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	double distance = PG_GETARG_FLOAT8(1);
+
+	int32 *offsets1;
+	LINE3D *line;
+	POINT3D point;
+	int nsegs, i;
+	double length, slength, tlength;
+
+	if( distance < 0 || distance > 1 ) {
+		elog(ERROR,"line_interpolate_point: 2nd arg isnt within [0,1]");
+		PG_RETURN_NULL();
+	}
+
+	if( geom->type != LINETYPE ) {
+		elog(ERROR,"line_interpolate_point: 1st arg isnt a line");
+		PG_RETURN_NULL();
+	}
+
+	offsets1 = (int32 *) ( ((char *) &(geom->objType[0] )) +
+			sizeof(int32) * geom->nobjs );
+	line = (LINE3D*) ( (char *)geom + offsets1[0] );
+
+	/* If distance is one of the two extremes, return the point on that
+	 * end rather than doing any expensive computations
+	 */
+	if( distance == 0.0 ) {
+		PG_RETURN_POINTER(
+				make_oneobj_geometry(sizeof(POINT3D),
+					/*(char*)&(line->points[0]), POINTTYPE, */
+					(char*)&(line->points[0]), POINTTYPE,
+					geom->is3d, geom->SRID, geom->scale, geom->offsetX, geom->offsetY
+					)
+				);
+	}
+
+	if( distance == 1.0 ) {
+		PG_RETURN_POINTER(
+				make_oneobj_geometry(sizeof(POINT3D),
+					(char*)&(line->points[line->npoints-1]), POINTTYPE, 
+					geom->is3d, geom->SRID, geom->scale, geom->offsetX, geom->offsetY
+					)
+				);
+	}
+
+	/* Interpolate a point on the line */
+	nsegs = line->npoints - 1;
+	length = line_length2d( line );
+	tlength = 0;
+	for( i = 0; i < nsegs; i++ ) {
+		POINT3D *p1, *p2;
+		p1 = &(line->points[i]);
+		p2 = &(line->points[i+1]);
+		/* Find the relative length of this segment */
+		slength = distance_pt_pt( p1, p2 )/length;
+		/* If our target distance is before the total length we've seen
+		 * so far. create a new point some distance down the current
+		 * segment.
+		 */
+		if( distance < tlength + slength ) {
+			double dseg = (distance - tlength) / slength;
+			point.x = (p1->x) + ((p2->x - p1->x) * dseg);
+			point.y = (p1->y) + ((p2->y - p1->y) * dseg);
+			point.z = 0;
+			PG_RETURN_POINTER(
+					make_oneobj_geometry(sizeof(POINT3D),
+						(char*)&point, POINTTYPE, 
+						geom->is3d, geom->SRID, geom->scale, geom->offsetX, geom->offsetY
+						)
+					);
+		}
+		tlength += slength;
+	}
+	/* Return the last point on the line. This shouldn't happen, but
+	 * could if there's some floating point rounding errors. */
+	PG_RETURN_POINTER(
+			make_oneobj_geometry(sizeof(POINT3D),
+				(char*)&(line->points[line->npoints-1]), POINTTYPE, 
+				geom->is3d, geom->SRID, geom->scale, geom->offsetX, geom->offsetY
+				)
+			);
+}
+/***********************************************************************
+ * --jsunday@rochgrp.com;
  ***********************************************************************/
