@@ -2620,6 +2620,128 @@ CREATEFUNCTION DropGeometryTable(varchar) RETURNS text AS
 LANGUAGE 'sql' WITH (isstrict);
 
 -----------------------------------------------------------------------
+-- UPDATEGEOMETRYSRID
+--   <catalogue>, <schema>, <table>, <column>, <srid>
+-----------------------------------------------------------------------
+--
+-- Change SRID of all features in a spatially-enabled table
+--
+-----------------------------------------------------------------------
+CREATEFUNCTION UpdateGeometrySRID(varchar,varchar,varchar,varchar,integer)
+	RETURNS text
+	AS 
+'
+DECLARE
+	catalog_name alias for $1; 
+	schema_name alias for $2;
+	table_name alias for $3;
+	column_name alias for $4;
+	new_srid alias for $5;
+	myrec RECORD;
+	okay boolean;
+	cname varchar;
+	real_schema name;
+
+BEGIN
+
+
+#if USE_VERSION >= 73
+	-- Find, check or fix schema_name
+	IF ( schema_name != '''' ) THEN
+		okay = ''f'';
+
+		FOR myrec IN SELECT nspname FROM pg_namespace WHERE text(nspname) = schema_name LOOP
+			okay := ''t'';
+		END LOOP;
+
+		IF ( okay <> ''t'' ) THEN
+			RAISE EXCEPTION ''Invalid schema name'';
+		ELSE
+			real_schema = schema_name;
+		END IF;
+	ELSE
+		SELECT INTO real_schema current_schema()::text;
+	END IF;
+#endif // USE_VERSION >= 73
+
+ 	-- Find out if the column is in the geometry_columns table
+	okay = ''f'';
+	FOR myrec IN SELECT * from geometry_columns where f_table_schema = text(real_schema) and f_table_name = table_name and f_geometry_column = column_name LOOP
+		okay := ''t'';
+	END LOOP; 
+	IF (okay <> ''t'') THEN 
+		RAISE EXCEPTION ''column not found in geometry_columns table'';
+		RETURN ''f'';
+	END IF;
+
+	-- Update ref from geometry_columns table
+	EXECUTE ''UPDATE geometry_columns SET SRID = '' || new_srid || 
+		'' where f_table_schema = '' ||
+		quote_literal(real_schema) || '' and f_table_name = '' ||
+		quote_literal(table_name)  || '' and f_geometry_column = '' ||
+		quote_literal(column_name);
+	
+	-- Make up constraint name
+	cname = ''enforce_srid_''  || column_name;
+
+	-- Drop enforce_srid constraint
+	EXECUTE ''ALTER TABLE '' || quote_ident(table_name) ||
+		'' DROP constraint '' || quote_ident(cname);
+
+	-- Update geometries SRID
+#if USE_VERSION < 73
+	EXECUTE ''UPDATE '' || quote_ident(table_name) ||
+#else
+	EXECUTE ''UPDATE '' || quote_ident(real_schema) ||
+		''.'' || quote_ident(table_name) ||
+#endif
+		'' SET '' || quote_ident(column_name) ||
+		'' = setSRID('' || quote_ident(column_name) ||
+		'', '' || new_srid || '')'';
+
+	-- Reset enforce_srid constraint
+	EXECUTE ''ALTER TABLE '' || quote_ident(table_name) ||
+		'' ADD constraint '' || quote_ident(cname) ||
+		'' CHECK (srid('' || quote_ident(column_name) ||
+		'') = '' || new_srid || '')'';
+
+	RETURN real_schema || ''.'' || table_name || ''.'' || column_name ||'' SRID changed to '' || new_srid;
+	
+END;
+'
+LANGUAGE 'plpgsql' WITH (isstrict);
+
+-----------------------------------------------------------------------
+-- UPDATEGEOMETRYSRID
+--   <schema>, <table>, <column>, <srid>
+-----------------------------------------------------------------------
+CREATEFUNCTION UpdateGeometrySRID(varchar,varchar,varchar,integer)
+	RETURNS text
+	AS '
+DECLARE
+	ret  text;
+BEGIN
+	SELECT UpdateGeometrySRID('''',$1,$2,$3,$4) into ret;
+	RETURN ret;
+END;
+' LANGUAGE 'plpgsql' WITH (isstrict);
+
+-----------------------------------------------------------------------
+-- UPDATEGEOMETRYSRID
+--   <table>, <column>, <srid>
+-----------------------------------------------------------------------
+CREATEFUNCTION UpdateGeometrySRID(varchar,varchar,integer)
+	RETURNS text
+	AS '
+DECLARE
+	ret  text;
+BEGIN
+	SELECT UpdateGeometrySRID('''','''',$1,$2,$3) into ret;
+	RETURN ret;
+END;
+' LANGUAGE 'plpgsql' WITH (isstrict);
+
+-----------------------------------------------------------------------
 -- UPDATE_GEOMETRY_STATS()
 -----------------------------------------------------------------------
 --
