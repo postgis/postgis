@@ -1568,7 +1568,7 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 #endif
 
 	geosgeom = POSTGIS2GEOS(geom);
-	if ( (Pointer *)geom != (Pointer *)PG_GETARG_DATUM(0) ) pfree(geom);
+	//if ( (Pointer *)geom != (Pointer *)PG_GETARG_DATUM(0) ) pfree(geom);
 	if ( ! geosgeom ) PG_RETURN_NULL();
 
 	result = GEOS2POSTGIS(geosgeom, lwgeom_ndims(geom->type) > 2);
