@@ -12,7 +12,7 @@
 #if GEOS_FIRST_INTERFACE <= 3 && GEOS_LAST_INTERFACE >= 3
 #include "geos/opValid.h"
 #include "geos/opPolygonize.h"
-#endif // GEOS_FIRST_INTERFACE <= 3
+#endif // GEOS_FIRST_INTERFACE <= 3 && GEOS_LAST_INTERFACE >= 3
 
 //#define DEBUG_POSTGIS2GEOS 1
 //#define DEBUG 1
@@ -97,6 +97,7 @@ extern "C" char *GEOSrelate(Geometry *g1, Geometry*g2);
 extern "C" void initGEOS(int maxalign);
 
 
+extern "C" void GEOSSetSRID(Geometry *g, int SRID);
 extern "C" void GEOSdeleteChar(char *a);
 extern "C" void GEOSdeleteGeometry(Geometry *a);
 extern "C" char GEOSrelatePattern(Geometry *g1, Geometry*g2,char *pat);
@@ -150,16 +151,11 @@ extern "C" int GEOSGetNumGeometries(Geometry *g1);
 
 extern "C" char GEOSisSimple(Geometry *g1);
 extern "C" char GEOSequals(Geometry *g1, Geometry*g2);
-
 extern "C" char GEOSisRing(Geometry *g1);
-
 extern "C" Geometry *GEOSpointonSurface(Geometry *g1);
-
 extern "C" Geometry *GEOSGetCentroid(Geometry *g1);
-
 extern "C" void NOTICE_MESSAGE(char *msg);
-
-
+extern "C" bool GEOSHasZ(Geometry *g1);
 
 //###########################################################
 #if GEOS_LAST_INTERFACE < 2
@@ -1303,6 +1299,12 @@ void GEOSdeleteGeometry(Geometry *a)
 	}
 }
 
+void
+GEOSSetSRID(Geometry *g, int SRID)
+{
+	g->setSRID(SRID);
+}
+
 void GEOSdeleteChar(char *a)
 {
 	try{
@@ -1710,4 +1712,8 @@ GEOSjtsport()
 }
 
 
-
+bool 
+GEOSHasZ(Geometry *g)
+{
+	return (g->getCoordinate()->z != DoubleNotANumber);
+}
