@@ -221,9 +221,9 @@ Geometry *PostGIS2GEOS_point(const LWPOINT *lwpoint)
 		Coordinate *c;
 
 		if (is3d)
-			c = new Coordinate(point->x, point->y);
-		else
 			c = new Coordinate(point->x, point->y, point->z);
+		else
+			c = new Coordinate(point->x, point->y);
 		Geometry *g = geomFactory->createPoint(*c);
 		delete c;
 		if (g==NULL)
