@@ -8,5 +8,11 @@ participated in the project:
   Dave Blasby - Core server objects and indexing (the hard stuff!)
   Paul Ramsey - Extensions to the PostgreSQL JDBC driver.
   Jeff Lounsbury - Shape file loader/dumper.
-  
+
+Version 0.2 of PostGIS includes contributions from:
+  Norman Vine on CygWin compilation issues
+
+Version 0.5 of PostGIS includes contributions from:
+  Geographic Data BC (David Skea and Mark Sondheim) with funding and 
+  direction on adding calculations on a spheroid to PostGIS.
 
