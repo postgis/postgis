@@ -1,3 +1,9 @@
+#include <math.h>
+#include <float.h>
+#include "wkbtest.h"
+
+#define WKBZOFFSET 0x80000000
+#define WKBMOFFSET 0x40000000
 
 
 //  DO NOT USE THESE decoding function (except for debugging purposes)
@@ -13,6 +19,7 @@
 // you shouldnt call this function; just call decode_wkb() and it will
 // call this function
 
+//#define DEBUG 1
 
 
 
@@ -51,7 +58,6 @@ void decode_wkb_collection(char *wkb,int	*size)
 	int	total_size=0,sub_size;
 	int	numb_sub,t;
 	bool	first_one = TRUE;
-	
 		
 	if (wkb[0] ==0 )  //big endian
 	{
@@ -104,7 +110,7 @@ void decode_wkb(char *wkb, int *size)
 	uint32	type;
 	uint32	n1,n2,n3,t,u,v;
 	bool	is3d;
-	bool first_one,first_one2,first_one3;
+	bool	first_one,first_one2,first_one3;
 
 	int	offset,offset1;
 	double	x,y,z;
@@ -112,7 +118,9 @@ void decode_wkb(char *wkb, int *size)
 
 
 
-	//printf("decoding wkb\n");
+#if DEBUG
+	printf("decoding wkb\n");
+#endif
 	
 
 	if (wkb[0] ==0 )  //big endian
@@ -130,21 +138,27 @@ void decode_wkb(char *wkb, int *size)
 			flipbytes= 1;
 	}
 	
-	//printf("	+ flipbytes = %i\n", flipbytes);
+#if DEBUG
+	printf("	+ flipbytes = %i\n", flipbytes);
+#endif
 
-	//printf("info about wkb:\n");
+#if DEBUG
+	printf("info about wkb:\n");
+#endif
 	memcpy(&type, wkb+1,4);
 	if (flipbytes)
 		flip_endian_int32( (char *) & type) ;
 	
 	is3d = 0;
  
-	if (type > 1000 )
+	if (type&WKBZOFFSET)
 	{
 		is3d = 1;
-		type = type - 32768;
+		type = type&(~WKBZOFFSET);
 	}
-	//printf("	Type = %i (is3d = %i)\n", type, is3d);
+#if DEBUG
+	printf("	Type = %i (is3d = %i)\n", type, is3d);
+#endif
 	if (type == 1)  //POINT()
 	{
 		printf("POINT(");

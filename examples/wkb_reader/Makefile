@@ -1,18 +1,15 @@
 #
-# Edit the following variables to point to your PostgreSQL
-# client libraries and include files
+# Have pg_config in your PATH
 #
-PG_INC=/usr/include/pgsql
-PG_LIB=/usr/lib
 
 #
 # Below should be fine
 #
-CFLAGS=-I$(PG_INC) -L$(PG_LIB) -lpq
+CFLAGS=-I`pg_config --includedir` -L`pg_config --libdir` -lpq
 
 all: readwkb
 
-readwkb: readwkb.c
+readwkb: readwkb.c printwkb.c
 
 clean:
 	@rm -f readwkb
