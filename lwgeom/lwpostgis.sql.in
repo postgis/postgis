@@ -993,6 +993,12 @@ CREATEFUNCTION distance_spheroid(geometry,geometry,spheroid)
 	AS '@MODULE_FILENAME@','LWGEOM_distance_ellipsoid_point'
 	LANGUAGE 'C' WITH (isstrict);
 
+-- Minimum distance. 2d only.
+CREATEFUNCTION distance(geometry,geometry)
+	RETURNS float8
+	AS '@MODULE_FILENAME@', 'LWGEOM_mindistance2d'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
 
 
 ------------------------------------------------------------------------

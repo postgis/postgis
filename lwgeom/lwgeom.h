@@ -113,6 +113,8 @@ extern void getPoint2d_p(POINTARRAY *pa, int n, char *point);
 // Note that if you cast to a higher dimensional point you'll
 // possibly corrupt the POINTARRAY.
 extern char *getPoint(POINTARRAY *pa, int n);
+//--- here is a macro equivalent, for speed...
+//#define getPoint(x,n) &( (x)->serialized_pointlist[((x)->ndims*8)*(n)] )
 
 
 // constructs a POINTARRAY.
@@ -645,4 +647,11 @@ extern float LWGEOM_Maxf(float a, float b);
 
 extern BOX3D *lw_geom_getBB_simple(char *serialized_form);
 
+
+
+#if ! defined(__MINGW32__)
+#define max(a,b)		((a) >	(b) ? (a) : (b))
+#define min(a,b)		((a) <= (b) ? (a) : (b))
+#endif
+#define abs(a)			((a) <	(0) ? (-a) : (a))
 

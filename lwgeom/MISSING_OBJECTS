@@ -22,10 +22,11 @@ FUNC: KEEPING FUNCTION: [asbinary(geometry, text)]
 FUNC: KEEPING FUNCTION: [nrings(geometry)]
 FUNC: KEEPING FUNCTION: [translate(geometry, double precision, double precision, double precision)]
 FUNC: KEEPING FUNCTION: [envelope(geometry)]
+
 FUNC: KEEPING FUNCTION: [max_distance(geometry, geometry)]
+
 FUNC: KEEPING FUNCTION: [optimistic_overlap(geometry, geometry, double precision)]
 FUNC: KEEPING FUNCTION: [segmentize(geometry, double precision)]
-FUNC: KEEPING FUNCTION: [distance(geometry, geometry)]
 FUNC: KEEPING FUNCTION: [polyfromtext(geometry, integer)]
 FUNC: KEEPING FUNCTION: [polygonfromtext(geometry, integer)]
 FUNC: KEEPING FUNCTION: [polygonfromtext(geometry)]
@@ -67,14 +68,11 @@ FNCAST: KEEPING FNCAST geometry(chip) (see CAST)
 FNCAST: KEEPING FNCAST geometry(box3d) (see CAST)
 FNCAST: KEEPING FNCAST geometry(text) (see CAST)
 FNCAST: KEEPING FNCAST box3dtobox(box3d) (see CAST)
-
 FUNC: KEEPING FUNCTION: [point_inside_circle(geometry, double precision, double precision, double precision)]
-
 FUNC: KEEPING FUNCTION: [centroid(geometry)]
 FUNC: KEEPING FUNCTION: [isring(geometry)]
 FUNC: KEEPING FUNCTION: [pointonsurface(geometry)]
 FUNC: KEEPING FUNCTION: [collector(geometry, geometry)]
-
 FUNC: KEEPING FUNCTION: [intersection(geometry, geometry)]
 FUNC: KEEPING FUNCTION: [buffer(geometry, double precision)]
 FUNC: KEEPING FUNCTION: [convexhull(geometry)]
