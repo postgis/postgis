@@ -2996,9 +2996,43 @@ CREATEFUNCTION transform_geometry(geometry,text,text,int)
 	LANGUAGE 'C' _STABLE_STRICT; -- WITH (isstrict,iscachable);
 
 CREATEFUNCTION transform(geometry,integer) RETURNS geometry AS
-'BEGIN
- RETURN transform_geometry( $1 , get_proj4_from_srid(SRID( $1 ) ), get_proj4_from_srid( $2 ), $2 );
- END;'
+'
+DECLARE
+	iproj text;
+	oproj text;
+	isrid integer;
+	osrid alias for $2;
+	ret geometry;
+BEGIN
+
+	SELECT INTO isrid SRID($1);
+
+	IF osrid = isrid THEN
+		RETURN $1;
+	END IF;
+
+	IF osrid = -1 THEN
+		RAISE EXCEPTION ''-1 is an invalid target SRID'';
+	END IF;
+
+	IF isrid = -1 THEN
+		RAISE EXCEPTION ''Input geometry has unknown SRID'';
+	END IF;
+
+	SELECT INTO iproj get_proj4_from_srid(isrid);
+	IF iproj IS NULL THEN
+		RAISE EXCEPTION ''Cannot find input SRID in spatial_ref_sys'';
+	END IF;
+
+	SELECT INTO oproj get_proj4_from_srid(osrid);
+	IF oproj IS NULL THEN
+		RAISE EXCEPTION ''Cannot find target SRID in spatial_ref_sys'';
+	END IF;
+
+	RETURN transform_geometry($1, iproj, oproj, osrid);
+
+END;
+'
 LANGUAGE 'plpgsql' _STABLE_STRICT; -- WITH (iscachable,isstrict);
 
 -----------------------------------------------------------------------
