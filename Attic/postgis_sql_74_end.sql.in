@@ -12,6 +12,10 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.6  2003/12/23 09:00:12  strk
+-- AddGeometryColumn, DropGeometryColum moved to version-specific scripts.
+-- Schema support enabled for version 73 and 74.
+--
 -- Revision 1.5  2003/12/18 18:07:06  strk
 -- Changed fix_geometry_columns() for PG >= 73 so to set f_table_schema to
 -- the empty string if its value is not a valid pg namespace.
@@ -251,5 +255,6 @@ BEGIN
 END;
 '
 LANGUAGE 'plpgsql' ;
+
 
 END TRANSACTION;
