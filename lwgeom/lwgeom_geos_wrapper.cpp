@@ -1715,5 +1715,9 @@ GEOSjtsport()
 bool 
 GEOSHasZ(Geometry *g)
 {
-	return (g->getCoordinate()->z != DoubleNotANumber);
+	//char msg[256];
+	double az = g->getCoordinate()->z;
+	//sprintf(msg, "ZCoord: %g", az);
+	//NOTICE_MESSAGE(msg);
+	return (isfinite(az));
 }
