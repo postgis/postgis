@@ -640,9 +640,9 @@ CREATE FUNCTION combine_bbox(box3d,geometry)
 
 CREATE AGGREGATE extent(
 	sfunc = combine_bbox,
-	bASetype = geometry,
+	basetype = geometry,
 	stype = box3d
-);
+	);
 
 CREATE FUNCTION collector(geometry,geometry)
 	RETURNS geometry
@@ -651,9 +651,9 @@ CREATE FUNCTION collector(geometry,geometry)
 
 CREATE AGGREGATE collect(
 	sfunc = collector,
-	bASetype = geometry,
+	basetype = geometry,
 	stype = geometry
-);
+	);
 
 --
 -- Operator definitions
