@@ -1,7 +1,7 @@
-CREDITS: 2003/11/24
+CREDITS: 2004/09/10
 
 The core team of PostGIS is from Refractions Research: 
-Dave Blasby, Paul Ramsey, Jeff Lounsbury and Chris Hodgson. 
+Sandro Santilli, Paul Ramsey, Jeff Lounsbury and Chris Hodgson. 
 All versions include substantial contributions from the 
 core team.
 
@@ -13,8 +13,9 @@ British Columbia, Canada (http://www.refractions.net), as a research project
 into using PostgreSQL as a geospatial data-store. The following staff 
 participated in the project:
 
-  Dave Blasby - Core server objects and indexing (the hard stuff!)
-  Paul Ramsey - Extensions to the PostgreSQL JDBC driver.
+  Sandro Santilli - Maintenance and core programming (the new stuff)
+  Dave Blasby - Core server objects and indexing (original contributions)
+  Paul Ramsey - Extensions to the PostgreSQL JDBC driver, doco, web.
   Jeff Lounsbury - Shape file loader/dumper.
 
 Version 0.2 of PostGIS includes contributions from:
@@ -36,3 +37,6 @@ Version 0.8 of PostGIS includes patches from:
   Ralph Mason on WKT parsing for LWGEOM
   Mark Cave-Ayland with help on PgSQL 7.5 statistics
 
+Version 0.9 of PostGIS includes patches from:
+  Klaus Foerster <klaus@svg.cc> on AsSVG()
+  Olivier Courtin <pnine@free.fr> on AsSVG()

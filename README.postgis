@@ -1,7 +1,7 @@
 PostGIS - Geographic Information Systems Extensions to PostgreSQL
 ~~~~~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-VERSION: 0.8.2 (2004/05/27)
+VERSION: 0.9.0 (2004/09/10)
 
 MORE INFORMATION: http://postgis.refractions.net
 
@@ -36,20 +36,25 @@ it for this to work.
 SEE THE NOTE ON GEOS SUPPORT BELOW FOR SPECIAL COMPILATION INSTRUCTIONS
 
 
-* PROJ4 SUPPORT: 
+* PROJ4 SUPPORT (Recommended): 
   The Proj4 reprojection library is required if you want to use the 
   transform() function to reproject features within the database.
+
+    http://www.remotesensing.org/proj
+
   Install Proj4 in the default location.
   Edit the postgis Makefile and change the USE_PROJ variable to 1
   and ensure that the PROJ_DIR variable points to your Proj4 
   installation location (/usr/local is the default).
 
-* SPATIAL PREDICATE / GEOS SUPPORT:
+* SPATIAL PREDICATE / GEOS SUPPORT (Recommended):
   The GEOS library provides support for exact topological tests
   such as Touches(), Contains(), Disjoint() and spatial operations
-  such as Intersection(), Union() and Buffer(). 
-  You can download GEOS from http://geos.refractions.net
-  In order to use the GEOS support, you *must* specially compile 
+  such as Intersection(), Union() and Buffer().  
+
+    http://geos.refractions.net
+
+  In order to use the GEOS support, you may need to specially compile 
   your version of PostgreSQL to link the C++ runtime library.
   To do this, invoke the PgSQL configuration script this way:
  
@@ -97,13 +102,6 @@ language, upload the new postgis.sql file, then upload your database dump:
   psql -f dumpfile.sql -d yourdatabase
   vacuumdb -z yourdatabase
 
-When upgrading to 0.6+, all your geometries will be created with an SRID
-of -1. To create valid OpenGIS geometries, you will have to create a 
-valid SRID in the SPATIAL_REF_SYS table, and then update your geometries
-to reference the SRID with the following SQL (with the appropriate
-substitutions:
-
-  UPDATE <table> SET <geocolumn> = SetSRID(<geocolumn>,<SRID>);
 
 
 USAGE:
@@ -165,8 +163,9 @@ their bounding boxes.
 
 You can build a GiST index with:
 
-  CREATE INDEX <indexname> ON <tablename>  
-     USING gist ( <geometryfield> gist_geometry_ops );
+  CREATE INDEX <indexname> 
+    ON <tablename> 
+    USING GIST ( <geometryfield> );
 
 Always run the "VACUUM ANALYZE <tablename>" on your tables after
 creating an index. This gathers statistics which the query planner
