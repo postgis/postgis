@@ -350,6 +350,19 @@ LANGUAGE 'sql' WITH (iscachable,isstrict);
 -----------------------------------------------------------------------
 -- FIX_GEOMETRY_COLUMNS() 
 -----------------------------------------------------------------------
+-- This function will:
+--
+--	o try to fix the schema of records with an invalid one
+--		(for PG>=73)
+--
+--	o link records to system tables through attrelid and varattnum
+--		(for PG<75)
+--
+--	o delete all records for which no linking was possible
+--		(for PG<75)
+--	
+-- 
+-----------------------------------------------------------------------
 CREATEFUNCTION fix_geometry_columns() RETURNS text
 AS 
 '
@@ -388,8 +401,8 @@ BEGIN
                 AND sridcheck.conname = ''$1''
                 AND typecheck.conrelid = c.oid
                 AND typecheck.conname = ''$2''
-                AND sridcheck.consrc ~ srid::text
-                AND typecheck.consrc ~ type::text
+                AND sridcheck.consrc ~ textcat('' = '', srid::text)
+                AND typecheck.consrc ~ textcat('' = '''''', type::text)
                 AND NOT EXISTS (
                         SELECT oid FROM geometry_columns gc
                         WHERE c.relname::varchar = gc.f_table_name
