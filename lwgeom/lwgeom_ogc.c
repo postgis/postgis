@@ -128,6 +128,9 @@ Datum LWGEOM_getTYPE(PG_FUNCTION_ARGS)
 	else
 		strcpy(result,"UNKNOWN");
 
+	if ( TYPE_HASM(lwgeom->type) && ! TYPE_HASZ(lwgeom->type) )
+		strcat(result, "M");
+
 	size = strlen(result) +4 ;
 
 	memcpy(text_ob, &size,4); // size of string
