@@ -28,7 +28,7 @@ create table spatial_ref_sys (
 	 proj4text varchar(2048) 
 					);
 
--- create the metadata table.  spec, section 3.2.2.1
+-- create the metadata table.  spec, section 3.2.2.1 
 
 create table geometry_columns (
 f_table_catalog varchar(256) not null,
@@ -118,11 +118,11 @@ BEGIN
 
 	-- update the given table/column so that it it all NULLS
 
-	EXECUTE ''update ''||table_name||'' set ''||column_name||''=NULL'';
+	EXECUTE ''update ''||table_name||'' set ''||column_name||'' IS NULL'';
 
 	-- add = NULL constraint to given table/column
 
-	EXECUTE ''ALTER TABLE ''||table_name||'' ADD CHECK (''||column_name||'' = NULL)'';
+	EXECUTE ''ALTER TABLE ''||table_name||'' ADD CHECK (''||column_name||'' IS NULL)'';
 
 	RETURN table_name || ''.'' || column_name ||'' effectively removed.'';
 	
@@ -199,7 +199,7 @@ BEGIN
 		'') = '' || new_srid || '')'' ;
 
 	IF (not(new_type = ''GEOMETRY'')) THEN
-		EXECUTE ''ALTER TABLE '' ||table_name||'' ADD CHECK ( geometrytype(''||column_name||'')=''|| quote_literal(new_type)||'' OR NULL=('' ||column_name ||''))'';
+		EXECUTE ''ALTER TABLE '' ||table_name||'' ADD CHECK ( geometrytype(''||column_name||'')=''|| quote_literal(new_type)||'' OR ('' ||column_name ||'') is null)'';
 	END IF;
 
 	return ''Geometry column '' || column_name || '' added to table ''
