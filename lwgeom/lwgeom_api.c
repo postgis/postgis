@@ -579,7 +579,6 @@ POINT3D getPoint3d(POINTARRAY *pa, int n)
 void getPoint3d_p(POINTARRAY *pa, int n, char *point)
 {
 	int size;
-	double bad=NO_Z_VALUE;
 	POINT3D *op, *ip;
 
 	op = (POINT3D *)point;
@@ -608,37 +607,6 @@ void getPoint3d_p(POINTARRAY *pa, int n, char *point)
 	if (pa->ndims >2) op->z = ip->z;
 	else op->z = NO_Z_VALUE;
 	return;
-
-#ifdef _KEEP_TRASH
-	// this does x,y
-	memcpy(point,
-		&pa->serialized_pointlist[size*n],
-		sizeof(double)*2 );
-
-#ifdef DEBUG
-	elog(NOTICE, "getPoint3d_p: x/y copied");
-#endif
-
-	if (pa->ndims >2)
-	{
-		memcpy(point+sizeof(double)*2,
-			&pa->serialized_pointlist[size*n + sizeof(double)*2],
-			sizeof(double) );
-#ifdef DEBUG
-		elog(NOTICE, "getPoint3d_p: z copied");
-#endif
-	}
-	else
-	{
-		memcpy(point+sizeof(double)*2, &bad, sizeof(double) );
-	 	//point->z = NO_Z_VALUE;
-#ifdef DEBUG
-		elog(NOTICE, "getPoint3d_p: z set to %f", NO_Z_VALUE);
-#endif
- 	}
-
-#endif // _KEEP_TRASH
-
 }
 
 
