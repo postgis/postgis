@@ -1,6 +1,7 @@
 PostGIS 1.0.0
 ??????????
 	- small build scripts refinements
+	- BUGFIX in box3d computation (yes, another!)
 
 PostGIS 1.0.0RC4
 2005/03/18
