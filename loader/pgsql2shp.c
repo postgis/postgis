@@ -160,7 +160,7 @@ int main(int ARGC, char **ARGV){
 		}
 	}
 
-printf(conn_string);
+/* printf(conn_string); */
 
 	/* make a connection to the specified database */
 	sprintf(conn_string,"host=%s %s port=%s dbname=%s",pghost,pgoptions,pgport,dbName);
