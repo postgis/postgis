@@ -9,15 +9,17 @@
 #include <string.h>
 #include <stdio.h>
 
+/*
 //To get byte order
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <netinet/in_systm.h>
 #include <netinet/ip.h>
-
+*/
 
 static int endian_check_int = 1; // dont modify this!!!
 
+#undef LITTLE_ENDIAN
 #define LITTLE_ENDIAN 1
 static char getMachineEndian()
 {
@@ -502,52 +504,27 @@ byte read_wkb_byte(const char** in){
 
 int swap_order;
 
-int4 read_wkb_int(const char** in)
-{
+void read_wkb_bytes(const char** in,byte* out, int cnt){
+	if ( ! swap_order ){
+		while(cnt--) *out++ = read_wkb_byte(in);
+	}
+	else{
+		out += (cnt-1);
+		while(cnt--) *out-- = read_wkb_byte(in);
+	}
+}
+
+int4 read_wkb_int(const char** in){
 	int4 ret;
-	byte* pb = (byte*) &ret;
-	int i;
-
-
-
-
-	if( ! swap_order )
-	{
-		for(i=0;i<4;i++)
-		{
-			pb[i]=read_wkb_byte(in);
-		}
-	}
-	else
-	{
-
-		for(i=3;i>=0;i--)
-		{
-			pb[i]=read_wkb_byte(in);
-		}
-
-	}
-
+	read_wkb_bytes(in,(byte*)&ret,4);
 	return ret;
 }
 
 double read_wbk_double(const char** in,int convert_from_int){
 	double ret;
-	byte* pb = (byte*) &ret;
-	int i;
 
 	if ( ! convert_from_int){
-		if( !swap_order ){
-			for(i=0;i<8;i++){
-				pb[i]=read_wkb_byte(in);
-			}
-		}
-		else{
-			for(i=7;i>=0;i--)
-			{
-				pb[i]=read_wkb_byte(in);
-			}
-		}
+		read_wkb_bytes(in,(byte*)&ret,8);
 		return ret;
 	}else{
 		ret  = read_wkb_int(in);
