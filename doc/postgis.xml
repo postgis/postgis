@@ -2171,6 +2171,12 @@ is simple (does not pass through the same point more than once).
 		<sect1> 
 			<title>Other Functions</title> 
 			<variablelist> 
+				<varlistentry>
+					<term>DropGeometryTable([&lt;schema_name&gt;], &lt;table_name&gt;)</term>
+					<listitem>
+						<para>Drops a table and all its references in geometry_columns. Note: uses current_schema() on schema-aware pgsql installations if schema is not provided.</para>
+					</listitem>
+				</varlistentry> 
 				<varlistentry> 
 					<term>A &amp;&lt; B</term> 
 					<listitem> 
