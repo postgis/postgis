@@ -350,10 +350,10 @@ extern int pointArray_ptsize(const POINTARRAY *pa);
 #define WKBZOFFSET 0x80000000
 #define WKBMOFFSET 0x40000000
 
-#define TYPE_SETTYPE(c,t) ((c)=(((c)&0xF0)|t))
-#define TYPE_SETZM(t,z,m) ((t)=(((t)&0xCF)|(z<<5)|(m<<4)))
-#define TYPE_SETHASBBOX(t,b) ((t)=(((t)&0x7F)|(b<<7)))
-#define TYPE_SETHASSRID(t,s) ((t)=(((t)&0xBF)|(s<<6)))
+#define TYPE_SETTYPE(c,t) ((c)=(((c)&0xF0)|(t)))
+#define TYPE_SETZM(t,z,m) ((t)=(((t)&0xCF)|((z)<<5)|((m)<<4)))
+#define TYPE_SETHASBBOX(t,b) ((t)=(((t)&0x7F)|((b)<<7)))
+#define TYPE_SETHASSRID(t,s) ((t)=(((t)&0xBF)|((s)<<6)))
 
 #define TYPE_HASZ(t) ( ((t)&0x20)>>5 )
 #define TYPE_HASM(t) ( ((t)&0x10)>>4 )
