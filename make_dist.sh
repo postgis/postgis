@@ -47,10 +47,11 @@ echo "Generating documentation"
 owd="$PWD"
 cd "$outdir"/doc
 sleep 2 # wait some time to have 'make' recognize it needs to build html
-make html
+make 
 if [ $? -gt 0 ]; then
 	exit 1
 fi
+make clean # won't drop the html dir
 cd "$owd"
 
 ## generating parser
