@@ -12,6 +12,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.64.2.2  2004/10/06 10:12:21  strk
+ * Other separator fixes ( back-port )
+ *
  * Revision 1.64.2.1  2004/10/06 09:51:01  strk
  * Back-ported fix for empty-DBF case handling.
  *
@@ -578,13 +581,13 @@ Insert_attributes(DBFHandle hDBFHandle, int row)
       {
          if(dump_format)
          {
-            if(i) printf("\t");
             printf("\\N");
+            printf("\t");
          }
          else
          {
-            if(i) printf(",");
             printf("NULL");
+            printf(",");
          }
       }
 
@@ -621,10 +624,10 @@ Insert_attributes(DBFHandle hDBFHandle, int row)
  
 			if (dump_format) {
 				printf("%s",make_good_string(val));
-				if ( i ) printf("\t");
+				printf("\t");
 			} else {
 				printf("'%s'",protect_quotes_string(val));
-				if ( i ) printf(",");
+				printf(",");
 			}
 		 }
 	}
@@ -901,7 +904,6 @@ main (int ARGC, char **ARGV)
 		strcpy(field_names[j], name);
 
 		sprintf(col_names, "%s\"%s\",", col_names, name);
-		if (j) strcat(col_names, ",");
 	}
 	sprintf(col_names, "%s\"%s\")", col_names, geom);
 
