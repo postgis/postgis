@@ -10,6 +10,10 @@
 %{
 #include "wktparse.tab.h"
 
+void init_parser(const char *src);
+void close_parser(void);
+int lwg_parse_yywrap(void);
+
 static YY_BUFFER_STATE buf_state;
    void init_parser(const char *src) { BEGIN(0);buf_state = lwg_parse_yy_scan_string(src); }
    void close_parser() { lwg_parse_yy_delete_buffer(buf_state); }

@@ -19,14 +19,40 @@
 
 static int endian_check_int = 1; // dont modify this!!!
 
-#define LITTLE_ENDIAN 1
+#define LITTLE_ENDIAN_CHECK 1
 static char getMachineEndian()
 {
 	return *((char *) &endian_check_int); // 0 = big endian, 1 = little endian
 }
 
+//-- Typedefs ----------------------------------------------
 
 typedef unsigned long int4;
+typedef byte* (*outfunc)(byte*,int);
+typedef byte* (*outwkbfunc)(byte*);
+
+//-- Prototypes --------------------------------------------
+
+void ensure(int chars);
+void to_end(void);
+void write_str(const char* str);
+void write_double(double val);
+void write_int(int i);
+int4 read_int(byte** geom);
+double read_double(byte** geom);
+byte* output_point(byte* geom,int supress);
+byte* output_single(byte* geom,int supress);
+byte* output_collection(byte* geom,outfunc func,int supress);
+byte* output_collection_2(byte* geom,int suppress);
+byte* output_multipoint(byte* geom,int suppress);
+void write_wkb_bytes(byte* ptr,int cnt);
+byte* output_wkb_point(byte* geom);
+void write_wkb_int(int i);
+byte* output_wkb_collection(byte* geom,outwkbfunc func);
+byte* output_wkb_collection_2(byte* geom);
+byte* output_wkb(byte* geom);
+
+//-- Globals -----------------------------------------------
 
 static int dims;
 static allocator local_malloc;
@@ -35,6 +61,10 @@ static char*  out_start;
 static char*  out_pos;
 static int len;
 static int lwgi;
+
+//----------------------------------------------------------
+
+
 
 void ensure(int chars){
 
@@ -80,7 +110,7 @@ void write_int(int i){
 int4 read_int(byte** geom){
 	int4 ret;
 #ifdef SHRINK_INTS
-	if ( getMachineEndian() == LITTLE_ENDIAN ){
+	if ( getMachineEndian() == LITTLE_ENDIAN_CHECK ){
 		if( (**geom)& 0x01){
 			ret = **geom >>1;
 			(*geom)++;
@@ -98,7 +128,7 @@ int4 read_int(byte** geom){
 	memcpy(&ret,*geom,4);
 
 #ifdef SHRINK_INTS
-	if ( getMachineEndian() == LITTLE_ENDIAN ){
+	if ( getMachineEndian() == LITTLE_ENDIAN_CHECK ){
 		ret >>= 1;
 	}
 #endif
@@ -125,8 +155,6 @@ double read_double(byte** geom){
 	}
 }
            
-typedef byte* (*outfunc)(byte*,int);
-
 byte* output_point(byte* geom,int supress){
 	int i;
 
@@ -290,8 +318,6 @@ byte* output_wkb_point(byte* geom){
 	}
 }
 
-typedef byte* (*outwkbfunc)(byte*);
-
 void write_wkb_int(int i){
 	write_wkb_bytes((byte*)&i,4);
 }
@@ -330,7 +356,7 @@ byte* output_wkb(byte* geom){
 	else if (dims==4)
 		 type |=0x40000000;
 
-	if ( getMachineEndian() != LITTLE_ENDIAN ){
+	if ( getMachineEndian() != LITTLE_ENDIAN_CHECK ){
 		byte endian=0;
 		write_wkb_bytes(&endian,1);
 	}
