@@ -12,8 +12,6 @@
 
 - A linemerge(linestring, linestring)
 
-- make IsValid() return GEOS invalidity message if any (as a NOTICE probably)
-
 - Check spheroid misure functions
 	o can't understand if 3d computation works since
 	  I get same result w/ 2d and 3d.
