@@ -6,7 +6,7 @@
 # database.
 
 #---------------------------------------------------------------
-# Set USE_PROJ to 1 for Proj4 reprojection support
+# Set USE_PROJ to 1 for Proj4 reprojection support (recommended)
 #
 # Reprojection allows you to transform coordinate systems
 # in the database with the Transform() function.
@@ -20,7 +20,7 @@ endif
 
 #---------------------------------------------------------------
 # Set USE_GEOS to 1 for GEOS spatial predicate and operator
-# support
+# support (recommended)
 #
 # GEOS allows you to do exact topological tests, such as
 # Intersects() and Touches(), as well as geometry operations,
