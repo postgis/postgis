@@ -1704,7 +1704,7 @@ if( geom.getType() = Geometry.POLYGON )
 					<term>DropGeometryColumn(varchar, varchar, varchar)</term>
 					<listitem>
 						<para>Syntax: DropGeometryColumn(&lt;schema_name&gt;, &lt;table_name&gt;,
-						  &lt;column_name&gt;). Remove a geometry column from a spatial table. Note that <var>schema_name</var> will need to match the f_schema_name field of the table's row in the geometry_columns table.
+							&lt;column_name&gt;). Remove a geometry column from a spatial table. Note that schema_name will need to match the f_schema_name field of the table's row in the geometry_columns table.
 						</para>
 					</listitem>
 				</varlistentry> 
