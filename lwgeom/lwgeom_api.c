@@ -1854,6 +1854,13 @@ PG_LWGEOM_construct(char *ser, int SRID, int wantbbox)
 	BOX2DFLOAT4 box;
 	PG_LWGEOM *result;
 
+	/* COMPUTE_BBOX FOR_COMPLEX_GEOMS */
+	if ( is_worth_caching_pglwgeom_bbox(ser) ) 
+	{
+		// if ( ! wantbbox ) elog(NOTICE, "PG_LWGEOM_construct forced wantbbox=1 due to rule FOR_COMPLEX_GEOMS");
+		wantbbox=1;
+	}
+
 	size = lwgeom_size(ser);
 	eptr = ser+size; // end of subgeom
 
@@ -2166,8 +2173,11 @@ char *
 lwexploded_serialize(LWGEOM_EXPLODED *exploded, int wantbbox)
 {
 	int sizecom = 0;
-	int size = lwexploded_findlength(exploded, wantbbox);
-	char *result = lwalloc(size);
+	int size;
+	char *result;
+
+	size = lwexploded_findlength(exploded, wantbbox);
+	result = lwalloc(size);
 	lwexploded_serialize_buf(exploded, wantbbox, result, &sizecom);
 #ifdef DEBUG
 	lwnotice("lwexploded_serialize: findlength:%d, serialize_buf:%d", size, sizecom);

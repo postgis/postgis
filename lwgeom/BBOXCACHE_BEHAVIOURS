@@ -33,14 +33,15 @@ points where some BBOX caching strategies could be enforced).
 	**SRL**	Directly works on the serialized geometries,
 		uses internal strategies to construct output.
 
-	*EXP*	Uses deprecated LWEXPLODED, and LWEXPLODED_serialize()
+	*EXP*	Uses LWGEOM_EXPLODED, and lwexploded_serialize()
 
 	*LWG*	Uses LWGEOM, pglwgeom_serialize()
 
 
 AUTOCACHE_BBOX is currently used by all functions using *LWG* 
-(pglwgeom_serialize entry point). Other functions explicitly
-listed in the AUTOCACHE_BBOX section also use it.
+(pglwgeom_serialize entry point) and *SRL* (PG_LWGEOM_construct
+entry point). Other functions explicitly listed in the AUTOCACHE_BBOX
+section also use it.
 	
 
 [ explicit control ]
