@@ -10,6 +10,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.27  2004/02/12 10:34:49  strk
+ * changed USE_GEOS check from ifdef / ifndef to if / if !
+ *
  * Revision 1.26  2003/12/12 12:03:29  strk
  * More debugging output, some code cleanup.
  *
@@ -244,7 +247,7 @@ POLYGON3D *PolyFromGeometry(Geometry *g, int *size);
 LINE3D *LineFromGeometry(Geometry *g, int *size);
 void NOTICE_MESSAGE(char *msg);
 
-#ifdef USE_GEOS
+#if USE_GEOS
 
 //-----------------------------------------------
 // return a GEOS Geometry from a POSTGIS GEOMETRY

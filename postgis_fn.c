@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.32  2004/02/12 10:34:49  strk
+ * changed USE_GEOS check from ifdef / ifndef to if / if !
+ *
  * Revision 1.31  2003/11/11 10:58:43  strk
  * Fixed a typo in envelope()
  *
@@ -2262,7 +2265,7 @@ Datum isclosed(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(TRUE);
 }
 
-#ifndef USE_GEOS
+#if ! USE_GEOS
 PG_FUNCTION_INFO_V1(centroid);
 Datum centroid(PG_FUNCTION_ARGS)
 {
