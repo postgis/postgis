@@ -82,12 +82,20 @@ CREATE TYPE spheroid (
 --  GEOMETRY TYPE (lwgeom)
 -------------------------------------------------------------------
 
-CREATEFUNCTION geometry_in(cstring)
+#if USE_VERSION < 73
+# define GEOMETRY_IN_REP opaque
+# define GEOMETRY_OUT_REP opaque
+#else
+# define GEOMETRY_IN_REP geometry
+# define GEOMETRY_OUT_REP cstring
+#endif
+
+CREATEFUNCTION geometry_in(GEOMETRY_OUT_REP)
         RETURNS geometry
         AS '@MODULE_FILENAME@','LWGEOM_in'
         LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATEFUNCTION geometry_out(geometry)
+CREATEFUNCTION geometry_out(GEOMETRY_IN_REP)
         RETURNS cstring
         AS '@MODULE_FILENAME@','LWGEOM_out'
         LANGUAGE 'C' WITH (isstrict,iscachable);
@@ -220,12 +228,21 @@ CREATE TYPE chip (
 -- BOX2D
 -----------------------------------------------------------------------
 
-CREATEFUNCTION box2d_in(cstring)
+
+#if USE_VERSION < 73
+# define BOX2D_IN_REP opaque
+# define BOX2D_OUT_REP opaque
+#else
+# define BOX2D_IN_REP box2d
+# define BOX2D_OUT_REP cstring
+#endif
+
+CREATEFUNCTION box2d_in(BOX2D_OUT_REP)
         RETURNS box2d
         AS '@MODULE_FILENAME@','BOX2DFLOAT4_in'
         LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATEFUNCTION box2d_out(box2d)
+CREATEFUNCTION box2d_out(BOX2D_IN_REP)
         RETURNS cstring
         AS '@MODULE_FILENAME@','BOX2DFLOAT4_out'
         LANGUAGE 'C' WITH (isstrict,iscachable);
