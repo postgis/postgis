@@ -90,7 +90,7 @@ uninstall: uninstall-lib
 	@rm -f $(docdir)/contrib/README.$(NAME) $(datadir)/contrib/$(NAME).sql
 
 clean distclean maintainer-clean: clean-lib
-	@rm -f $(OBJS) $(NAME).sql
+	@rm -f $(OBJS) $(NAME).sql $(NAME)_undef.sql
 	make -C loader clean
 
 test: all
