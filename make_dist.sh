@@ -12,6 +12,7 @@ fi
 
 tag="pgis_"$major"_"$minor"_"$micro
 version="$major.$minor.$micro"
+version=`echo $version | sed 's/RC/-rc/'`
 package="postgis-$version.tgz"
 outdir="postgis-$version"
 
@@ -40,6 +41,8 @@ echo "Running autoconf"
 owd="$PWD"
 cd "$outdir"
 autoconf
+# remove the autom4te.cache dir, created by autoconf
+rm -Rf autom4te.cache
 cd "$owd"
 
 # generating documentation
