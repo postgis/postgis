@@ -12,6 +12,10 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.38  2003/08/05 16:28:05  jeffloun
+ * Removed the setval for the sequence if the value was going to be 0.
+ * This avoids a warning that occirs when you try to set it to 0.
+ *
  * Revision 1.37  2003/08/01 23:22:44  jeffloun
  * Altered the loader to use a (gid serial) type instead of just a (gid int4).
  * Also the gid is now declared as a primary key.
@@ -630,7 +634,7 @@ int main (int ARGC, char **ARGV){
 	num_fields = DBFGetFieldCount( hDBFHandle );
 	num_records = DBFGetRecordCount(hDBFHandle);
 	names = malloc((num_fields + 1)*sizeof(char*));
-	col_names = malloc(1000);
+	col_names = malloc(num_fields * sizeof(char) * 32);
 	if(opt != 'a'){
 		strcpy(col_names, "(gid," );
 	}else{
@@ -1445,7 +1449,9 @@ int main (int ARGC, char **ARGV){
 	free(col_names);
 	if(opt != 'a'){
 		printf("\nALTER TABLE ONLY %s ADD CONSTRAINT %s_pkey PRIMARY KEY (gid);\n",table,table);
-		printf("SELECT pg_catalog.setval ('%s_gid_seq', %i, true);\n",table, j-1);
+		if(j > 1){
+			printf("SELECT pg_catalog.setval ('%s_gid_seq', %i, true);\n",table, j-1);
+		}
 	}
 
 	return(1);
