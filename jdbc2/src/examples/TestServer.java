@@ -8,14 +8,21 @@ import java.sql.Statement;
 public class TestServer {
 
     public static void main(String[] args) {
+        if (args.length != 4 && args.length != 3) {
+            System.err.println("Usage: java examples/TestServer dburl user pass [tablename]");
+            System.err.println();
+            System.err.println("dburl has the following format:");
+            System.err.println("jdbc:postgresql://HOST:PORT/DATABASENAME");
+            System.err.println("tablename is 'jdbc_test' by default.");
+            System.exit(1);
+        }
+        
         Connection conn;
 
-        String dbname = "tb";
-        String dbuser = "dblasby";
-        String dbpass = "";
-        String dbhost = "ox";
-        String dbport = "5555";
-
+        String dburl = args[0];        
+        String dbuser = args[1];
+        String dbpass = args[2];
+        
         String dbtable = "jdbc_test";
 
         String dropSQL = "drop table " + dbtable;
@@ -28,8 +35,7 @@ public class TestServer {
 
             System.out.println("Creating JDBC connection...");
             Class.forName("org.postgresql.Driver");
-            String url = "jdbc:postgresql://" + dbhost + ":" + dbport + "/" + dbname;
-            conn = DriverManager.getConnection(url, dbuser, dbpass);
+            conn = DriverManager.getConnection(dburl, dbuser, dbpass);
             System.out.println("Adding geometric type entries...");
             ((org.postgresql.PGConnection) conn).addDataType("geometry", "org.postgis.PGgeometry");
             ((org.postgresql.PGConnection) conn).addDataType("box3d", "org.postgis.PGbox3d");
@@ -39,7 +45,7 @@ public class TestServer {
             try {
                 s.execute(dropSQL);
             } catch (Exception e) {
-                e.printStackTrace();
+                System.out.println("Error dropping old table: "+e.getMessage());
             }
             s.execute(createSQL);
             System.out.println("Inserting point...");

@@ -22,6 +22,9 @@ import java.sql.Statement;
 
 public class TestParser {
 
+    /**
+     * Our set of geometries to test.
+     */
     public static final String[] testset = new String[]{
         "POINT(10 10 20)",
         "MULTIPOINT(10 10 10, 20 20 20)",
@@ -47,16 +50,13 @@ public class TestParser {
         "MULTIPOLYGON EMPTY", // new (correct) representation
     };
 
-    public static final String[] testsridset = new String[testset.length];
+    /** The srid we use for the srid tests */
     public static final int SRID = 4326;
 
-    static {
-        String prefix = "SRID=" + SRID + ";";
-        for (int i = 0; i < testset.length; i++) {
-            testsridset[i] = prefix + testset[i];
-        }
-    }
+    /** The string prefix we get for the srid tests */
+    public static final String SRIDPREFIX = "SRID=" + SRID + ";";
 
+    /** The actual test method */
     public static void test(String WKT, Connection[] conns) throws SQLException {
         System.out.println("Original:  " + WKT);
         Geometry geom = PGgeometry.geomFromString(WKT);
@@ -73,7 +73,7 @@ public class TestParser {
             System.out.println("Equals:    yes");
         }
         for (int i = 0; i < conns.length; i++) {
-            System.out.println("Testing on connection " + i + ": "+ conns[i].getCatalog());
+            System.out.println("Testing on connection " + i + ": " + conns[i].getCatalog());
             Statement statement = conns[i].createStatement();
 
             try {
@@ -105,6 +105,7 @@ public class TestParser {
         System.out.println("***");
     }
 
+    /** Pass a geometry representation through the SQL server */
     private static Geometry viaSQL(String rep, Statement stat) throws SQLException {
         ResultSet rs = stat.executeQuery("SELECT geometry_in('" + rep + "')");
         rs.next();
@@ -112,53 +113,57 @@ public class TestParser {
     }
 
     /**
-     * The list of databases to test (can be multiple to test against different
-     * postGIS releases.
-     * 
-     * Currently, all of them need the same username and password
-     */
-
-    public static final String[] databases = new String[]{
-        "jdbc:postgresql_postGIS://localhost:5432/hwgeom",
-        "jdbc:postgresql_postGIS://localhost:5432/lwgeom"};
-
-    public final static String dbuser = "postgistest";
-    public final static String dbpass = "testpostgis";
-
-    /**
      * Connect to the databases
      * 
      * We use DriverWrapper here. For alternatives, see the DriverWrapper
      * Javadoc
+     * 
+     * @param dbuser
      * 
      * @throws ClassNotFoundException
      * 
      * @see org.postgis.DriverWrapper
      *  
      */
-    public static Connection connect(String url) throws SQLException, ClassNotFoundException {
+    public static Connection connect(String url, String dbuser, String dbpass) throws SQLException,
+            ClassNotFoundException {
         Connection conn;
         Class.forName("org.postgis.DriverWrapper");
         conn = DriverManager.getConnection(url, dbuser, dbpass);
         return conn;
     }
 
+    /** Our apps entry point */
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        String[] URLs = databases;
+        String[] dburls;
+        String dbuser = null;
+        String dbpass = null;
 
-        // allow to run offline tests...
         if (args.length == 1 && args[0].equalsIgnoreCase("offline")) {
             System.out.println("Performing only offline tests");
-            URLs = new String[0];
-        } else if (args.length!=0) {
-            System.err.println("usage: java [offline]");
+            dburls = new String[0];
+        } else if (args.length == 3) {
+            System.out.println("Performing offline and online tests");
+            dburls = args[0].split(";");
+            dbuser = args[1];
+            dbpass = args[2];
+        } else {
+            System.err.println("Usage: java examples/TestParser dburls user pass [tablename]");
+            System.err.println("   or: java examples/TestParser offline");
+            System.err.println();
+            System.err.println("dburls has one or more jdbc urls separated by ; in the following format");
+            System.err.println("jdbc:postgresql://HOST:PORT/DATABASENAME");
+            System.err.println("tablename is 'jdbc_test' by default.");
             System.exit(1);
+            // Signal the compiler that code flow ends here.
+            throw new AssertionError();
         }
+
         Connection[] conns;
-        conns = new Connection[URLs.length];
-        for (int i = 0; i < URLs.length; i++) {
-            System.out.println("Creating JDBC connection to " + URLs[i]);
-            conns[i] = connect(URLs[i]);
+        conns = new Connection[dburls.length];
+        for (int i = 0; i < dburls.length; i++) {
+            System.out.println("Creating JDBC connection to " + dburls[i]);
+            conns[i] = connect(dburls[i], dbuser, dbpass);
         }
 
         System.out.println("Performing tests...");
@@ -166,14 +171,14 @@ public class TestParser {
 
         for (int i = 0; i < testset.length; i++) {
             test(testset[i], conns);
-            test(testsridset[i], conns);
+            test(SRIDPREFIX + testset[i], conns);
         }
 
         System.out.print("cleaning up...");
         for (int i = 0; i < conns.length; i++) {
             conns[i].close();
-
         }
+        
         System.out.println("Finished.");
     }
 }
