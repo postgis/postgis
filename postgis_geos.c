@@ -10,6 +10,10 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.10  2003/10/03 16:45:37  dblasby
+ * added pointonsurface() as a sub.  Some memory management fixes/tests.
+ * removed a few NOTICEs.
+ *
  * Revision 1.9  2003/09/16 20:27:12  dblasby
  * added ability to delete geometries.
  *
@@ -191,6 +195,9 @@ Datum geomunion(PG_FUNCTION_ARGS)
 		g1 = 	POSTGIS2GEOS(geom1 );
 		g2 = 	POSTGIS2GEOS(geom2 );
 		g3 =    GEOSUnion(g1,g2);
+
+		//pfree(geom1);
+		//pfree(geom2);
 
 	if (g3 == NULL)
 	{
@@ -421,28 +428,28 @@ Datum intersection(PG_FUNCTION_ARGS)
 
 		initGEOS(MAXIMUM_ALIGNOF);
 
-elog(NOTICE,"intersection() START");
+//elog(NOTICE,"intersection() START");
 
 		g1 = 	POSTGIS2GEOS(geom1 );
 		g2 = 	POSTGIS2GEOS(geom2 );
 
-elog(NOTICE,"               constructed geometrys - calling geos");
+//elog(NOTICE,"               constructed geometrys - calling geos");
 
 //elog(NOTICE,"g1 = %s",GEOSasText(g1));
 //elog(NOTICE,"g2 = %s",GEOSasText(g2));
 
 
-if (g1==NULL)
-	elog(NOTICE,"g1 is null");
-if (g2==NULL)
-	elog(NOTICE,"g2 is null");
+//if (g1==NULL)
+//	elog(NOTICE,"g1 is null");
+//if (g2==NULL)
+//	elog(NOTICE,"g2 is null");
 //elog(NOTICE,"g2 is valid = %i",GEOSisvalid(g2));
 //elog(NOTICE,"g1 is valid = %i",GEOSisvalid(g1));
 
 
 		g3 =    GEOSIntersection(g1,g2);
 
-elog(NOTICE,"               intersection finished");
+//elog(NOTICE,"               intersection finished");
 
 	if (g3 == NULL)
 	{
@@ -1098,7 +1105,6 @@ POLYGON3D *PolyFromGeometry(Geometry *g, int *size)
 
 		GEOSdeleteChar( (char*) pts);
 		return poly;
-
 }
 
 
@@ -1141,6 +1147,7 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 
 
 		GEOSdeleteChar( (char*) pt);
+		free(type);
 		return result;
 	}
 	else if (strcmp(type,"LineString")==0)
@@ -1157,6 +1164,7 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 						        (char *) line,
 							   LINETYPE,  want3d, GEOSGetSRID(g),1.0, 0.0, 0.0
 						);
+		free(type);
 		return result;
 	}
 	else if (strcmp(type,"Polygon")==0)
@@ -1175,6 +1183,7 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 						        (char *) poly,
 							   POLYGONTYPE,  want3d, GEOSGetSRID(g),1.0, 0.0, 0.0
 						);
+		free(type);
 		return result;
 	}
 	else if (strcmp(type,"MultiPoint")==0)
@@ -1212,6 +1221,7 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 		bbox = bbox_of_geometry( g_new ); // make bounding box
 		memcpy( &g_new->bvol, bbox, sizeof(BOX3D) ); // copy bounding box
 		pfree( bbox ); // free bounding box
+		free(type);
 
 		return g_new;
 	}
@@ -1250,6 +1260,7 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 		bbox = bbox_of_geometry( result ); // make bounding box
 		memcpy( &result->bvol, bbox, sizeof(BOX3D) ); // copy bounding box
 		pfree( bbox ); // free bounding box
+		free(type);
 
 		return result;
 
@@ -1289,6 +1300,7 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 		bbox = bbox_of_geometry( result ); // make bounding box
 	    memcpy( &result->bvol, bbox, sizeof(BOX3D) ); // copy bounding box
 		pfree( bbox ); // free bounding box
+		free(type);
 		return result;
 	}
 	else if (strcmp(type,"GeometryCollection")==0)
@@ -1321,6 +1333,7 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 			pfree(r);
 			pfree(g2);
 		}
+		free(type);
 		return geom;
 	}
 	return NULL;
@@ -1659,6 +1672,12 @@ Datum isring(PG_FUNCTION_ARGS)
 	PG_RETURN_NULL(); // never get here
 }
 
+PG_FUNCTION_INFO_V1(pointonsurface);
+Datum pointonsurface(PG_FUNCTION_ARGS)
+{
+	elog(ERROR,"pointonsurface:: operation not implemented - compile PostGIS with GEOS support");
+	PG_RETURN_NULL(); // never get here
+}
 
 #endif
 

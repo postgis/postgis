@@ -254,14 +254,22 @@ Geometry *PostGIS2GEOS_multipolygon(POLYGON3D **polygons,int npolys, int SRID, b
 	try
 	{
 			int t;
-			vector<Geometry *> *subPolys=new vector<Geometry *>;
+			vector<Geometry *> *subPolys=NULL;
 			Geometry *g;
+
+			subPolys=new vector<Geometry *>;
 
 			for (t =0; t< npolys; t++)
 			{
 				subPolys->push_back(PostGIS2GEOS_polygon(polygons[t], SRID,is3d ));
 			}
 			g = geomFactory->createMultiPolygon(subPolys);
+			if (subPolys != NULL)
+			{
+
+				delete subPolys;
+			}
+
 			if (g== NULL)
 				return NULL;
 			g->setSRID(SRID);
@@ -653,7 +661,7 @@ char GEOSisRing(Geometry *g1)
 
 
 
-
+//free the result of this
 char *GEOSGeometryType(Geometry *g1)
 {
 	try
