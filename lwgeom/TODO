@@ -1,6 +1,6 @@
 - find syntax problem with lwgparse.c (tag_tuple...)
 
-- makepoly
+- makepoly: REMOVE DEBUGGING OUTPUT
 
 - Document: makeline, line_from_multipoint, makepoint, makepointm
 
