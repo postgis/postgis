@@ -2708,6 +2708,11 @@ FROM geometry_table;</literallayout>
 						<para>Returns a "simplified" version of the given geometry using the Douglas-Peuker algorithm. Will actually do something only with (multi)lines and (multi)polygons but you can safely call it
 with any kind of geometry. Since simplification occurs on a object-by-object basis you can also feed a GeometryCollection to this function. Note that returned geometry might loose its simplicity (see isSimple)</para>
 					</listitem> 
+				</varlistentry><varlistentry> 
+					<term>line_interpolate_point(geometry, distance)</term> 
+					<listitem> 
+						<para>Interpolates a point along a line. First argument must be a LINESTRING. Second argument is a float between 0 and 1. Returns a point.</para>
+					</listitem> 
 				</varlistentry> 
 			</variablelist>
 		</sect1> 
