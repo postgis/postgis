@@ -37,20 +37,20 @@
 #	pg_dump-800/pg800 => pg_restore-800/pg800
 #
 
-eval "exec perl $0 $@"
+eval "exec perl -w $0 $@"
 	if (0);
 
 (@ARGV == 3) || die "Usage: postgis_restore.pl <postgis.sql> <db> <dump>\nRestore a custom dump (pg_dump -Fc) of a postgis enabled database.\n";
 
 $DEBUG=1;
 
-my %aggs = {};
+my %aggs = ();
 my %fncasts = ();
 my %casts = ();
-my %funcs = {};
-my %types = {};
-my %opclass = {};
-my %ops = {};
+my %funcs = ();
+my %types = ();
+my %opclass = ();
+my %ops = ();
 
 my $postgissql = $ARGV[0];
 my $dbname = $ARGV[1];
@@ -153,7 +153,7 @@ while( my $line = <INPUT>)
 			}
 			last if $subline =~ /;[\t ]*$/;
 		}
-		if ( $type eq undef )
+		if ( ! defined($type) )
 		{
 			print "Could not find base type for aggregate $name\n";
 			print "($line)\n";
@@ -191,7 +191,7 @@ while( my $line = <INPUT>)
 			print "SQLFNCAST $id\n" if $DEBUG;
 		}
 
-		my $id = $from.','.$to;
+		$id = $from.','.$to;
 		$casts{$id} = 1;
 		print "SQLCAST $id\n" if $DEBUG;
 		if ( $from eq 'oldgeometry' || $to eq 'oldgeometry' )
@@ -263,16 +263,36 @@ while( my $line = <INPUT> )
 	next if $line =~ /^;/;
 	next if $line =~ /^ *--/;
 
-	if ($line =~ / FUNCTION *([^ ]*) *\(([^)]*)\)/)
+	if ($line =~ / FUNCTION/)
 	{
-		my $funcname = $1;
-		my @args = split(",", $2);
+		my $funcname;
+		my @args;
+
+		#print "FUNCTION: [$line]\n";
+
+		if ($line =~ / FUNCTION *([^ ]+) *([^ ]+) *\(([^)]*)\)/)
+		{
+			#print " matched 800\n";
+			$funcname = $2;
+			@args = split(",", $3);
+		}
+		elsif ($line =~ / FUNCTION *([^ ]*) *\(([^)]*)\)/)
+		{
+			#print " matched <800\n";
+			my $funcname = $1;
+			my @args = split(",", $2);
+		}
+		else
+		{
+			print " unknown FUNCTION match\n";
+		}
 
 		$funcname =~ s/^"//;
 		$funcname =~ s/"$//;
-		#print "FUNCNAME: [$funcname]\n";
 
-		#print "ARGS: [".@args."]\n";
+		#print "  FUNCNAME: [$funcname]\n";
+		#print "  ARGS: [".@args."]\n";
+
 		my $wkbinvolved = 0;
 		for (my $i=0; $i<@args; $i++)
 		{
@@ -359,10 +379,10 @@ while( my $line = <INPUT> )
 		print "KEEPING FUNCTION: [$id]\n" if $DEBUG;
 		#next;
 	}
-	elsif ($line =~ /CREATE .* AGGREGATE (.*)\((.*)\)/)
+	elsif ($line =~ / AGGREGATE ([^ ]* )?([^ ]*)\((.*)\)/)
 	{
-		my $name = $1;
-		my @args = split(",", $2);
+		my $name = $2;
+		my @args = split(",", $3);
 		for (my $i=0; $i<@args; $i++)
 		{
 			$arg = lc($args[$i]);
@@ -434,9 +454,9 @@ while( my $line = <INPUT> )
 		#next;
 	}
 
-	elsif ($line =~ /CREATE .* OPERATOR CLASS *([^ ]*)/)
+	elsif ($line =~ / OPERATOR CLASS *([^ ]* )?([^ ]*)/)
 	{
-		my $id = lc($1);
+		my $id = lc($2);
 
 		if ( $opclass{$id} )
 		{
@@ -472,11 +492,11 @@ while( my $line = <INPUT> )
 		print "KEEPING FNCAST $id (see CAST)\n" if $DEBUG;
 	}
 
-	# CAST def by pg74
-	elsif ($line =~ / CAST CAST *\(([^ ]*) *AS *([^ )]*) *\)/)
+	# CAST def by pg74 to pg80
+	elsif ($line =~ / CAST ([^ ]* )?CAST *\(([^ ]*) *AS *([^ )]*) *\)/)
 	{
-		my $arg1 = lc($1);
-		my $arg2 = lc($2);
+		my $arg1 = lc($2);
+		my $arg2 = lc($3);
 		$arg1 =~ s/^public\.//;
 		$arg2 =~ s/^public\.//;
 		my $id = $arg1.",".$arg2;
@@ -497,6 +517,7 @@ while( my $line = <INPUT> )
 		}
 		print "KEEPING CAST $id\n" if $DEBUG;
 	}
+
 	print OUTPUT $line;
 #	print "UNANDLED: $line"
 }
