@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.7  2004/02/25 13:17:31  strk
+ * RTContainedBy and RTOverlap strategries implemented locally with a pgbox_overlap function
+ *
  * Revision 1.6  2003/08/08 18:19:20  dblasby
  * Conformance changes.
  * Removed junk from postgis_debug.c and added the first run of the long
@@ -75,6 +78,7 @@ Datum gbox_picksplit(PG_FUNCTION_ARGS);
 Datum gbox_penalty(PG_FUNCTION_ARGS);
 Datum gbox_same(PG_FUNCTION_ARGS);
 static float size_box(Datum box);
+static bool pgbox_overlap(BOX *b1, BOX *b2);
 
 int debug = 0;
 
@@ -193,7 +197,7 @@ bool rtree_internal_consistent(BOX *key,
       retval = DatumGetBool( DirectFunctionCall2( box_overleft, PointerGetDatum(key), PointerGetDatum(query) ) );
       break;
     case RTOverlapStrategyNumber:
-      retval = DatumGetBool( DirectFunctionCall2( box_overlap, PointerGetDatum(key), PointerGetDatum(query) ) );
+      retval = pgbox_overlap(key, query);
       break;
     case RTOverRightStrategyNumber:
     case RTRightStrategyNumber:
@@ -204,7 +208,7 @@ bool rtree_internal_consistent(BOX *key,
       retval = DatumGetBool( DirectFunctionCall2( box_contain, PointerGetDatum(key), PointerGetDatum(query) ) );
       break;
     case RTContainedByStrategyNumber:
-      retval = DatumGetBool( DirectFunctionCall2( box_overlap, PointerGetDatum(key), PointerGetDatum(query) ) );
+      retval = pgbox_overlap(key, query);
       break;
     default:
       retval = FALSE;
@@ -565,6 +569,28 @@ size_box(Datum box)
 	}
 	else
 		return 0.0;
+}
+
+static bool
+pgbox_overlap(BOX *box1, BOX *box2)
+{
+	bool result;
+
+	result = 
+
+	/*overlap in x*/
+		 ((    FPge(box1->high.x, box2->high.x) &&
+			 FPle(box1->low.x, box2->high.x)) ||
+			(FPge(box2->high.x, box1->high.x) &&
+			 FPle(box2->low.x, box1->high.x)))
+	&&
+	/*overlap in y*/
+	((FPge(box1->high.y, box2->high.y) &&
+	  FPle(box1->low.y, box2->high.y)) ||
+	 (FPge(box2->high.y, box1->high.y) &&
+	  FPle(box2->low.y, box1->high.y)));
+
+	return result;
 }
 
 
