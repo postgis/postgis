@@ -464,7 +464,7 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
  * 
  *  Run like this:
  * 
- *     SELECT apply_grid(<geometry>, <originX>, <originY>, <sizeX>, <sizeY>);
+ *     SELECT SnapToGrid(<geometry>, <originX>, <originY>, <sizeX>, <sizeY>);
  * 
  *     Grid cells are not visible on a screen as long as the screen
  *     point size is equal or bigger then the grid cell size.
@@ -501,7 +501,7 @@ LWPOINT * lwpoint_grid(LWPOINT *point, gridspec *grid);
 LWPOLY * lwpoly_grid(LWPOLY *poly, gridspec *grid);
 LWLINE *lwline_grid(LWLINE *line, gridspec *grid);
 POINTARRAY *ptarray_grid(POINTARRAY *pa, gridspec *grid);
-Datum LWGEOM_apply_grid(PG_FUNCTION_ARGS);
+Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS);
 
 /*
  * Stick an array of points to the given gridspec.
@@ -786,8 +786,8 @@ lwgeom_grid(LWGEOM *lwgeom, gridspec *grid)
 	}
 }
 
-PG_FUNCTION_INFO_V1(LWGEOM_apply_grid);
-Datum LWGEOM_apply_grid(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(LWGEOM_snaptogrid);
+Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS)
 {
 	Datum datum;
 	PG_LWGEOM *in_geom;
@@ -819,7 +819,7 @@ Datum LWGEOM_apply_grid(PG_FUNCTION_ARGS)
 	in_lwgeom = lwgeom_deserialize(SERIALIZED_FORM(in_geom));
 
 #if VERBOSE
-	elog(NOTICE, "apply_grid got a %s", lwgeom_typename(TYPE_GETTYPE(in_lwgeom->type)));
+	elog(NOTICE, "SnapToGrid got a %s", lwgeom_typename(TYPE_GETTYPE(in_lwgeom->type)));
 #endif
 
    	out_lwgeom = lwgeom_grid(in_lwgeom, &grid);
@@ -841,7 +841,7 @@ Datum LWGEOM_apply_grid(PG_FUNCTION_ARGS)
 	}
 
 #if VERBOSE
-	elog(NOTICE, "apply_grid made a %s", lwgeom_typename(TYPE_GETTYPE(out_lwgeom->type)));
+	elog(NOTICE, "SnapToGrid made a %s", lwgeom_typename(TYPE_GETTYPE(out_lwgeom->type)));
 #endif
 
 	out_geom = pglwgeom_serialize(out_lwgeom);
