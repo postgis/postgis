@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.31  2003/12/09 11:13:41  strk
+ * WKB_recv: set StringInfo cursor to the end of StringInfo buf as required by postgres backend
+ *
  * Revision 1.30  2003/12/08 17:57:36  strk
  * Binary WKB input function built only when USE_VERSION > 73. Making some modifications based on reported failures
  *
@@ -3546,6 +3549,12 @@ Datum WKB_out(PG_FUNCTION_ARGS)
 
 
 #if USE_VERSION > 73
+/*
+ * This function must advance the StringInfo.cursor pointer
+ * and leave it at the end of StringInfo.buf. If it fails
+ * to do so the backend will raise an exception with message:
+ * ERROR:  incorrect binary data format in bind parameter #
+ */
 PG_FUNCTION_INFO_V1(WKB_recv);
 Datum WKB_recv(PG_FUNCTION_ARGS)
 {
@@ -3556,6 +3565,9 @@ Datum WKB_recv(PG_FUNCTION_ARGS)
 
 	result = (WellKnownBinary *)palloc(buf->len);
 	memcpy(result, buf->data, buf->len);
+
+	/* Set cursor to the end of buffer (so the backend is happy) */
+	buf->cursor = buf->len;
 
 	elog(NOTICE, "WKB_recv end (returning result)");
         PG_RETURN_POINTER(result);
