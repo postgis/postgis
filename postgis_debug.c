@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.13  2003/11/19 18:01:31  strk
+ * CR removed
+ *
  * Revision 1.12  2003/09/16 20:27:12  dblasby
  * added ability to delete geometries.
  *
@@ -316,6 +319,5 @@ Datum getTransactionID(PG_FUNCTION_ARGS)
     TransactionId xid = GetCurrentTransactionId();
     PG_RETURN_DATUM( TransactionIdGetDatum(xid) );
 }
-
 
 
