@@ -14,14 +14,29 @@ fi
 if [ "$version" = "@GEOS_VERSION@" ]; then
 	geos_version=100
 	version="1.0.0"
+	jtsport="1.3"
+	first=1
+	last=1
 else
 	major=`echo $version | sed 's/\..*//'`
 	minor=`echo $version | sed 's/[^\.]*\.\([^.]*\)\.*/\1/'`
+	first=$major
+	last=$(($major+$minor))
 	geos_version=`printf %d%2.2d $major $minor`
+	jtsport=`${geos_dir}/bin/geos-config --jtsport`
 fi
 cat <<EOF
-#define POSTGIS_GEOS_VERSION $geos_version
+#ifndef GEOS_FIRST_INTERFACE
+#define GEOS_FIRST_INTERFACE $first
+#endif
+#ifndef GEOS_LAST_INTERFACE
+#define GEOS_LAST_INTERFACE $last
+#endif
 #ifndef GEOS_VERSION
 #define GEOS_VERSION "$version"
 #endif
+#ifndef GEOS_JTS_PORT
+#define GEOS_JTS_PORT $jtsport
+#endif
+#define POSTGIS_GEOS_VERSION $geos_version
 EOF
