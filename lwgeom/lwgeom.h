@@ -142,6 +142,12 @@ WHERE
 
 */
 
+#define TYPE_SETTYPE(c,t) (((c)&0xF0)|t)
+#define TYPE_SETDIMS(c,d) (((c)&0xCF)|d)
+#define TYPE_SETHASBBOX(c,b) (((c)&0x7F)|b)
+#define TYPE_SETHASSRID(c,s) (((c)&0xBF)|s)
+
+
 // already defined in postgis.h
 
  #define	POINTTYPE	1
