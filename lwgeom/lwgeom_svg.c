@@ -29,6 +29,7 @@ void print_svg_path_abs(char *result, POINTARRAY *pa, int precision);
 void print_svg_path_rel(char *result, POINTARRAY *pa, int precision);
 
 #define SHOW_DIGS_DOUBLE 15
+#define MAX_DOUBLE_PRECISION 15
 #define MAX_DIGS_DOUBLE (SHOW_DIGS_DOUBLE + 6 + 1 + 3 +1)
 
 /**
@@ -42,7 +43,7 @@ Datum assvg_geometry(PG_FUNCTION_ARGS)
 	char *result;
 	int len;
 	int32 svgrel=0;
-	int32 precision=15;
+	int32 precision=MAX_DOUBLE_PRECISION;
 
 	if ( PG_ARGISNULL(0) ) PG_RETURN_NULL();
 
@@ -53,7 +54,12 @@ Datum assvg_geometry(PG_FUNCTION_ARGS)
 			svgrel = PG_GETARG_INT32(1);
 
 	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
+	{
 		precision = PG_GETARG_INT32(2);
+		if ( precision > MAX_DOUBLE_PRECISION )
+			precision = MAX_DOUBLE_PRECISION;
+		else if ( precision < 0 ) precision = 0;
+	}
 		
 	svg = geometry_to_svg(geom, svgrel, precision);
 
@@ -177,28 +183,38 @@ char *geometry_to_svg(PG_LWGEOM *geometry, int svgrel, int precision)
 
 void print_svg_coords(char *result, POINT2D *pt, int precision)
 {
-	char	temp[MAX_DIGS_DOUBLE*3+12];
+	char temp[MAX_DIGS_DOUBLE*3+12];
+	char x[MAX_DIGS_DOUBLE+3];
+	char y[MAX_DIGS_DOUBLE+3];
 
 	if ( (pt == NULL) || (result == NULL) )
 		return;
 
-	sprintf(temp, "x=\"%.*g\" y=\"%.*g\"", 
-			precision, pt->x, 
-			precision, pt->y*-1);
+	sprintf(x, "%.*f", precision, pt->x);
+	trim_trailing_zeros(x);
+	sprintf(y, "%.*f", precision, pt->y);
+	trim_trailing_zeros(y);
+
+	sprintf(temp, "x=\"%s\" y=\"%s\"", x, y);
 	strcat(result,temp);
 }
 
 
 void print_svg_circle(char *result, POINT2D *pt, int precision)
 {
-	char	temp[MAX_DIGS_DOUBLE*3 +12];
+	char temp[MAX_DIGS_DOUBLE*3 +12];
+	char x[MAX_DIGS_DOUBLE+3];
+	char y[MAX_DIGS_DOUBLE+3];
 
 	if ( (pt == NULL) || (result == NULL) )
 		return;
 
-	sprintf(temp, "cx=\"%.*g\" cy=\"%.*g\"", 
-			precision, pt->x, 
-			precision, pt->y*-1);
+	sprintf(x, "%.*f", precision, pt->x);
+	trim_trailing_zeros(x);
+	sprintf(y, "%.*f", precision, pt->y);
+	trim_trailing_zeros(y);
+
+	sprintf(temp, "cx=\"%s\" cy=\"%s\"", x, y);
 	strcat(result,temp);
 }
 
@@ -208,6 +224,8 @@ print_svg_path_abs(char *result, POINTARRAY *pa, int precision)
 {
 	int u;
 	POINT2D *pt;
+	char x[MAX_DIGS_DOUBLE+3];
+	char y[MAX_DIGS_DOUBLE+3];
 
 	result += strlen(result);
 	for (u=0; u<pa->npoints; u++)
@@ -218,9 +236,11 @@ print_svg_path_abs(char *result, POINTARRAY *pa, int precision)
 			result[0] = ' ';
 			result++;
 		}
-		result+= sprintf(result,"%.*g %.*g", 
-				precision, pt->x, 
-				precision, pt->y*-1);
+		sprintf(x, "%.*f", precision, pt->x);
+		trim_trailing_zeros(x);
+		sprintf(y, "%.*f", precision, pt->y);
+		trim_trailing_zeros(y);
+		result+= sprintf(result,"%s %s", x, y);
 	}
 }
 
@@ -230,21 +250,29 @@ print_svg_path_rel(char *result, POINTARRAY *pa, int precision)
 {
 	int u;
 	POINT2D *pt, *lpt;
+	char x[MAX_DIGS_DOUBLE+3];
+	char y[MAX_DIGS_DOUBLE+3];
 
 	result += strlen(result);
 
 	pt = (POINT2D *)getPoint(pa, 0);
-	result += sprintf(result,"%.*g %.*g l", 
-		precision, pt->x, 
-		precision, pt->y*-1);
+
+	sprintf(x, "%.*f", precision, pt->x);
+	trim_trailing_zeros(x);
+	sprintf(y, "%.*f", precision, pt->y);
+	trim_trailing_zeros(y);
+
+	result += sprintf(result,"%s %s l", x, y); 
 
 	lpt = pt;
 	for (u=1; u<pa->npoints; u++)
 	{
 		pt = (POINT2D *)getPoint(pa, u);
-		result+= sprintf(result," %.*g %.*g", 
-				precision, (pt->x-lpt->x), 
-				precision, (pt->y-lpt->y)*-1);
+		sprintf(x, "%.*f", precision, pt->x);
+		trim_trailing_zeros(x);
+		sprintf(y, "%.*f", precision, pt->y);
+		trim_trailing_zeros(y);
+		result+= sprintf(result," %s %s", x, y);
 		lpt = pt;
 	}
 }
@@ -252,6 +280,9 @@ print_svg_path_rel(char *result, POINTARRAY *pa, int precision)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.4  2004/10/15 09:41:22  strk
+ * changed precision semantic back to number of decimal digits
+ *
  * Revision 1.3  2004/09/29 10:50:30  strk
  * Big layout change.
  * lwgeom.h is public API
