@@ -251,8 +251,8 @@ output_wkt(byte* geom, int supress)
 {
 
 	unsigned type=*geom++;
-	dims = TYPE_NDIMS(type); //((type & 0x30) >> 4)+2;
 	char writeM=0;
+	dims = TYPE_NDIMS(type); //((type & 0x30) >> 4)+2;
 
 	if ( ! supress && !TYPE_HASZ(type) && TYPE_HASM(type) ) writeM=1;
 
@@ -557,6 +557,9 @@ unparse_WKB(byte* serialized, allocator alloc, freeor free, unsigned int endian)
 
 /******************************************************************
  * $Log$
+ * Revision 1.12  2004/10/21 19:48:34  strk
+ * Stricter syntax fixes. Reported by Sébastien NICAISE <snicaise@iciatechnologies.com>
+ *
  * Revision 1.11  2004/10/15 07:35:41  strk
  * Fixed a bug introduced by me (byteorder skipped for inner geoms in WKB)
  *

@@ -363,10 +363,11 @@ char *
 lwgeom_to_wkt(LWGEOM *lwgeom)
 {
 	char *serialized = lwgeom_serialize(lwgeom);
+	char *ret;
 	if ( ! serialized ) {
 		lwerror("Error serializing geom %p", lwgeom);
 	}
-	char *ret = unparse_WKT(serialized, lwalloc, lwfree);
+	ret = unparse_WKT(serialized, lwalloc, lwfree);
 	lwfree(serialized);
 	return ret;
 }
