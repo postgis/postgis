@@ -1183,15 +1183,25 @@ WHERE
 				<para>The syntax for building a GiST index on a "geometry" column is as
 				  follows:
 				</para> 
+
+<para>
 				<programlisting>CREATE INDEX [indexname] ON [tablename] 
   USING GIST ( [geometryfield] GIST_GEOMETRY_OPS ); </programlisting> 
+</para>
 				<para>Building a spatial index is a computationally intensive exercise:
 				  on tables of around 1 million rows, on a 300MHz Solaris machine, we have found
 				  building a GiST index takes about 1 hour.  After building an index, it is
 				  important to force PostgreSQL to collect table statistics, which are
 				  used to optimize query plans:
 				</para> 
-				<programlisting>VACUUM ANALYZE;</programlisting>
+
+				<para>
+<programlisting> VACUUM ANALYZE [table_name] [column_name];
+
+-- This is only needed for PostgreSQL < 75 installations
+SELECT UPDATE_GEOMETRY_STATS([table_name], [column_name]);</programlisting>
+				</para>
+
 				<para>GiST indexes have two advantages over R-Tree indexes in
 				  PostgreSQL. Firstly, GiST indexes are "null safe", meaning
 				  they can index columns which include null values. Secondly, GiST
@@ -1217,12 +1227,15 @@ WHERE
 				</para> 
 				<itemizedlist> 
 					<listitem> 
-						<para>Firstly, make sure you run the "VACUUM ANALYZE [tablename]"
-						  command on the tables you are having problems with. "VACUUM ANALYZE" gathers
-						  statistics about the number and distributions of values in a table, to provide
-						  the query planner with better information to make decisions around index
-						  usage. You should regularly vacuum your databases anyways -- many PostgreSQL
-						  DBAs have "VACUUM" run as an off-peak cron job on a regular basis.
+<para>Firstly, make sure statistics are gathered about the number and
+distributions of values in a table, to provide the query planner with
+better information to make decisions around index usage.
+For PostgreSQL < 75 installations this is done by running
+"update_geometry_stats([table_name, column_name])" (compute distribution)
+and "VACUUM ANALYZE [table_name] [column_name]" (compute number of values).
+Starting with PostgreSQL 75 running "VACUUM ANALYZE" will do both operations.
+You should regularly vacuum your databases anyways -- many PostgreSQL
+DBAs have "VACUUM" run as an off-peak cron job on a regular basis.
 						</para> 
 					</listitem> 
 					<listitem> 
@@ -2175,6 +2188,12 @@ is simple (does not pass through the same point more than once).
 					<term>DropGeometryTable([&lt;schema_name&gt;], &lt;table_name&gt;)</term>
 					<listitem>
 						<para>Drops a table and all its references in geometry_columns. Note: uses current_schema() on schema-aware pgsql installations if schema is not provided.</para>
+					</listitem>
+				</varlistentry> 
+				<varlistentry>
+					<term>update_geometry_stats([&lt;table_name&gt;, &lt;column_name&gt;])</term>
+					<listitem>
+						<para>Update statistics about spatial tables for use by the query planner. You will also need to run "VACUUM ANALYZE [table_name] [column_name]" for the statistics gathering process to be complete. NOTE: starting with PostgreSQL 75 statistics gathering is automatically performed running "VACUUM ANALYZE".</para>
 					</listitem>
 				</varlistentry> 
 				<varlistentry> 
