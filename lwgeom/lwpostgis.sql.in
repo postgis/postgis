@@ -558,39 +558,44 @@ CREATE OPERATOR ~ (
 
 -- gist support functions
 
+#if USE_VERSION < 73
+#define OPAQUE_TYPE opaque
+#else
+#define OPAQUE_TYPE internal
+#endif
 
-CREATEFUNCTION LWGEOM_gist_consistent(internal,geometry,int4) 
+CREATEFUNCTION LWGEOM_gist_consistent(OPAQUE_TYPE,geometry,int4) 
 	RETURNS bool 
 	AS '@MODULE_FILENAME@' ,'LWGEOM_gist_consistent'
 	LANGUAGE 'C';
 
-CREATEFUNCTION LWGEOM_gist_compress(internal) 
-	RETURNS internal 
+CREATEFUNCTION LWGEOM_gist_compress(OPAQUE_TYPE) 
+	RETURNS OPAQUE_TYPE 
 	AS '@MODULE_FILENAME@','LWGEOM_gist_compress'
 	LANGUAGE 'C';
 
-CREATEFUNCTION LWGEOM_gist_penalty(internal,internal,internal) 
-	RETURNS internal 
+CREATEFUNCTION LWGEOM_gist_penalty(OPAQUE_TYPE,OPAQUE_TYPE,OPAQUE_TYPE) 
+	RETURNS OPAQUE_TYPE 
 	AS '@MODULE_FILENAME@' ,'LWGEOM_gist_penalty'
 	LANGUAGE 'C';
 
-CREATEFUNCTION LWGEOM_gist_picksplit(internal, internal) 
-	RETURNS internal 
+CREATEFUNCTION LWGEOM_gist_picksplit(OPAQUE_TYPE, OPAQUE_TYPE) 
+	RETURNS OPAQUE_TYPE 
 	AS '@MODULE_FILENAME@' ,'LWGEOM_gist_picksplit'
 	LANGUAGE 'C';
 
-CREATEFUNCTION LWGEOM_gist_union(bytea, internal) 
-	RETURNS internal 
+CREATEFUNCTION LWGEOM_gist_union(bytea, OPAQUE_TYPE) 
+	RETURNS OPAQUE_TYPE 
 	AS '@MODULE_FILENAME@' ,'LWGEOM_gist_union'
 	LANGUAGE 'C';
 
-CREATEFUNCTION LWGEOM_gist_same(box2d, box2d, internal) 
-	RETURNS internal 
+CREATEFUNCTION LWGEOM_gist_same(box2d, box2d, OPAQUE_TYPE) 
+	RETURNS OPAQUE_TYPE 
 	AS '@MODULE_FILENAME@' ,'LWGEOM_gist_same'
 	LANGUAGE 'C';
 
-CREATEFUNCTION LWGEOM_gist_decompress(internal) 
-	RETURNS internal
+CREATEFUNCTION LWGEOM_gist_decompress(OPAQUE_TYPE) 
+	RETURNS OPAQUE_TYPE
 	AS '@MODULE_FILENAME@' ,'LWGEOM_gist_decompress'
 	LANGUAGE 'C';
 
@@ -714,7 +719,8 @@ INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
 	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops'
 		AND proname = 'LWGEOM_gist_same';
 
-#elsif USE_VERSION == 72
+#else
+#if USE_VERSION == 72
 
 --
 -- Create opclass index binding entries for PG72
@@ -899,6 +905,7 @@ UPDATE pg_opclass
 -- TODO: add btree binding...
 
 #endif // USE_VERSION >= 73
+#endif // USE_VERSION != 71
 	
 -- other lwgeom functions
 
