@@ -193,7 +193,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 				{
 					pfree(input_proj4); pfree(output_proj4);
 					pj_free(input_pj); pj_free(output_pj);
-					elog(ERROR,"tranform: couldnt project point");
+					elog(ERROR,"tranform: couldnt project point: %i (%s)",pj_errno,pj_errstr);
 					PG_RETURN_NULL();	
 				}
 				if (output_pj->is_latlong)
