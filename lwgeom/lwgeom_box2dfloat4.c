@@ -110,6 +110,7 @@ Datum LWGEOM_to_BOX2DFLOAT4(PG_FUNCTION_ARGS)
 	{
 		PG_RETURN_NULL(); // must be the empty geometry
 	}
+
 	PG_RETURN_POINTER(result);
 }
 

@@ -174,13 +174,16 @@ lwgeom_transform_recursive(char *geom, PJ *inpj, PJ *outpj)
 		LWLINE *line=NULL;
 		LWPOINT *point=NULL;
 		LWPOLY *poly=NULL;
+		POINT2D p;
 		char *subgeom=NULL;
 
 		point = lwgeom_getpoint_inspected(inspected,j);
 		if (point != NULL)
 		{
-			POINT2D *p = (POINT2D *) getPoint(point->point, 0);
-			transform_point(p, inpj, outpj);
+			getPoint2d_p(point->point, 0, &p);
+			transform_point(&p, inpj, outpj);
+			memcpy(getPoint_internal(point->point, 0),
+				&p, sizeof(POINT2D));
 			continue;
 		}
 
@@ -190,8 +193,10 @@ lwgeom_transform_recursive(char *geom, PJ *inpj, PJ *outpj)
 			POINTARRAY *pts = line->points;
 			for (i=0; i<pts->npoints; i++)
 			{
-				POINT2D *p = (POINT2D *)getPoint(pts, i);
-				transform_point(p, inpj, outpj);
+				getPoint2d_p(pts, i, &p);
+				transform_point(&p, inpj, outpj);
+				memcpy(getPoint_internal(pts, i),
+					&p, sizeof(POINT2D));
 			}
 			continue;
 		}
@@ -205,8 +210,10 @@ lwgeom_transform_recursive(char *geom, PJ *inpj, PJ *outpj)
 				POINTARRAY *pts = poly->rings[i];
 				for (pi=0; pi<pts->npoints; pi++)
 				{
-					POINT2D *p = (POINT2D *)getPoint(pts, pi);
-					transform_point(p, inpj, outpj);
+					getPoint2d_p(pts, pi, &p);
+					transform_point(&p, inpj, outpj);
+					memcpy(getPoint_internal(pts, pi),
+						&p, sizeof(POINT2D));
 				}
 			}
 			continue;

@@ -87,22 +87,28 @@ void
 lwgeom_translate_ptarray(POINTARRAY *pa, double xoff, double yoff, double zoff)
 {
 	int i;
+	POINT3DZ p3d;
+	POINT2D p2d;
 
 	if ( TYPE_HASZ(pa->dims) )
 	{
 		for (i=0; i<pa->npoints; i++) {
-			POINT3DZ *p = (POINT3DZ *)getPoint(pa, i);
-			p->x += xoff;
-			p->y += yoff;
-			p->z += zoff;
+			getPoint3dz_p(pa, i, &p3d);
+			p3d.x += xoff;
+			p3d.y += yoff;
+			p3d.z += zoff;
+			memcpy(getPoint_internal(pa, i), &p3d,
+				sizeof(POINT3DZ));
 		}
 	}
 	else
 	{
 		for (i=0; i<pa->npoints; i++) {
-			POINT2D *p = (POINT2D *)getPoint(pa, i);
-			p->x += xoff;
-			p->y += yoff;
+			getPoint2d_p(pa, i, &p2d);
+			p2d.x += xoff;
+			p2d.y += yoff;
+			memcpy(getPoint_internal(pa, i), &p2d,
+				sizeof(POINT2D));
 		}
 	}
 }
@@ -1400,8 +1406,9 @@ Datum LWGEOM_maxdistance2d_linestring(PG_FUNCTION_ARGS)
 
 	for (i=0; i<line1->points->npoints; i++)
 	{
-		POINT2D *p = (POINT2D *)getPoint(line1->points, i);
-		double dist = distance2d_pt_ptarray(p, line2->points);
+		POINT2D p;
+		getPoint2d_p(line1->points, i, &p);
+		double dist = distance2d_pt_ptarray(&p, line2->points);
 
 		if (dist > maxdist) maxdist = dist;
 	}
@@ -1415,7 +1422,8 @@ Datum LWGEOM_translate(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
 	uchar *srl = SERIALIZED_FORM(geom);
-	BOX2DFLOAT4 *box;
+	BOX2DFLOAT4 box;
+	int hasbbox;
 
 	double xoff =  PG_GETARG_FLOAT8(1);
 	double yoff =  PG_GETARG_FLOAT8(2);
@@ -1424,16 +1432,17 @@ Datum LWGEOM_translate(PG_FUNCTION_ARGS)
 	lwgeom_translate_recursive(srl, xoff, yoff, zoff);
 
 	/* COMPUTE_BBOX WHEN_SIMPLE */
-	if ( (box = getbox2d_internal(srl)) )
+	hasbbox=getbox2d_p(srl, &box);
+	if ( hasbbox )
 	{
-		box->xmin += xoff;
-		box->xmax += xoff;
-		box->ymin += yoff;
-		box->ymax += yoff;
+		box.xmin += xoff;
+		box.xmax += xoff;
+		box.ymin += yoff;
+		box.ymax += yoff;
 	}
 
 	// Construct PG_LWGEOM 
-	geom = PG_LWGEOM_construct(srl, lwgeom_getsrid(srl), box?1:0);
+	geom = PG_LWGEOM_construct(srl, lwgeom_getsrid(srl), hasbbox);
 
 	PG_RETURN_POINTER(geom);
 }
@@ -1446,15 +1455,15 @@ Datum LWGEOM_inside_circle_point(PG_FUNCTION_ARGS)
 	double cy = PG_GETARG_FLOAT8(2);
 	double rr = PG_GETARG_FLOAT8(3);
 	LWPOINT *point;
-	POINT2D *pt;
+	POINT2D pt;
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	point = lwpoint_deserialize(SERIALIZED_FORM(geom));
 	if ( point == NULL ) PG_RETURN_NULL(); // not a point
 
-	pt = (POINT2D *)getPoint(point->point, 0);
+	getPoint2d_p(point->point, 0, &pt);
 
-	PG_RETURN_BOOL(lwgeom_pt_inside_circle(pt, cx, cy, rr));
+	PG_RETURN_BOOL(lwgeom_pt_inside_circle(&pt, cx, cy, rr));
 }
 
 void
@@ -2253,7 +2262,7 @@ Datum centroid(PG_FUNCTION_ARGS)
 	LWPOINT *point;
 	PG_LWGEOM *result;
 	POINTARRAY *ring, *pa;
-	POINT3DZ *p, cent;
+	POINT3DZ p, cent;
 	int i,j,k;
 	uint32 num_points_tot = 0;
 	uchar *srl;
@@ -2272,10 +2281,10 @@ Datum centroid(PG_FUNCTION_ARGS)
 			ring = poly->rings[j];
 			for (k=0; k<ring->npoints-1; k++)
 			{
-				p = (POINT3DZ *)getPoint(ring, k);
-				tot_x += p->x;
-				tot_y += p->y;
-				if ( TYPE_HASZ(ring->dims) ) tot_z += p->z;
+				getPoint3dz_p(ring, k, &p);
+				tot_x += p.x;
+				tot_y += p.y;
+				if ( TYPE_HASZ(ring->dims) ) tot_z += p.z;
 			}
 			num_points_tot += ring->npoints-1;
 		}

@@ -38,7 +38,7 @@ void
 DP_findsplit2d(POINTARRAY *pts, int p1, int p2, int *split, double *dist)
 {
    int k;
-   POINT2D *pa, *pb, *pk;
+   POINT2D pa, pb, pk;
    double tmp;
 
 #if VERBOSE > 4
@@ -51,24 +51,24 @@ elog(NOTICE, "DP_findsplit called");
    if (p1 + 1 < p2)
    {
 
-      pa = (POINT2D *)getPoint(pts, p1);
-      pb = (POINT2D *)getPoint(pts, p2);
+      getPoint2d_p(pts, p1, &pa);
+      getPoint2d_p(pts, p2, &pb);
 
 #if VERBOSE > 4
 elog(NOTICE, "DP_findsplit: P%d(%f,%f) to P%d(%f,%f)",
-   p1, pa->x, pa->y, p2, pb->x, pb->y);
+   p1, pa.x, pa.y, p2, pb.x, pb.y);
 #endif
 
       for (k=p1+1; k<p2; k++)
       {
-         pk = (POINT2D *)getPoint(pts, k);
+         getPoint2d_p(pts, k, &pk);
 
 #if VERBOSE > 4
-elog(NOTICE, "DP_findsplit: P%d(%f,%f)", k, pk->x, pk->y);
+elog(NOTICE, "DP_findsplit: P%d(%f,%f)", k, pk.x, pk.y);
 #endif
 
          /* distance computation */
-         tmp = distance2d_pt_seg(pk, pa, pb);
+         tmp = distance2d_pt_seg(&pk, &pa, &pb);
 
          if (tmp > *dist) 
          {
@@ -114,7 +114,8 @@ DP_simplify2d(POINTARRAY *inpts, double epsilon)
 	outpts->dims = inpts->dims;
 	outpts->npoints=1;
 	outpts->serialized_pointlist = (char *)palloc(ptsize*inpts->npoints);
-	memcpy(getPoint(outpts, 0), getPoint(inpts, 0), ptsize);
+	memcpy(getPoint_internal(outpts, 0), getPoint_internal(inpts, 0),
+		ptsize);
 
 #if VERBOSE > 3
 	elog(NOTICE, "DP_simplify: added P0 to simplified point array (size 1)");
@@ -133,8 +134,8 @@ DP_simplify2d(POINTARRAY *inpts, double epsilon)
 			stack[++sp] = split;
 		} else {
 			outpts->npoints++;
-			memcpy(getPoint(outpts, outpts->npoints-1),
-				getPoint(inpts, stack[sp]),
+			memcpy(getPoint_internal(outpts, outpts->npoints-1),
+				getPoint_internal(inpts, stack[sp]),
 				ptsize);
 #if VERBOSE > 3
 			elog(NOTICE, "DP_simplify: added P%d to simplified point array (size: %d)", stack[sp], outpts->npoints);
@@ -385,13 +386,13 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 	length = lwgeom_pointarray_length2d(ipa);
 	tlength = 0;
 	for( i = 0; i < nsegs; i++ ) {
-		POINT2D *p1, *p2;
+		POINT2D p1, p2;
 
-		p1 = (POINT2D *)getPoint(ipa, i);
-		p2 = (POINT2D *)getPoint(ipa, i+1);
+		getPoint2d_p(ipa, i, &p1);
+		getPoint2d_p(ipa, i+1, &p2);
 
 		/* Find the relative length of this segment */
-		slength = distance2d_pt_pt(p1, p2)/length;
+		slength = distance2d_pt_pt(&p1, &p2)/length;
 
 		/* If our target distance is before the total length we've seen
 		 * so far. create a new point some distance down the current
@@ -399,8 +400,8 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 		 */
 		if( distance < tlength + slength ) {
 			double dseg = (distance - tlength) / slength;
-			pt.x = (p1->x) + ((p2->x - p1->x) * dseg);
-			pt.y = (p1->y) + ((p2->y - p1->y) * dseg);
+			pt.x = (p1.x) + ((p2.x - p1.x) * dseg);
+			pt.y = (p1.y) + ((p2.y - p1.y) * dseg);
 			pt.z = 0;
 			pt.m = 0;
 			opa = pointArray_construct((char *)&pt,
@@ -665,10 +666,10 @@ lwpoly_grid(LWPOLY *poly, gridspec *grid)
 		POINTARRAY *newring;
 
 #ifdef CHECK_RING_IS_CLOSE
-		POINT2D *p1, *p2;
-		p1 = (POINT2D *)getPoint(ring, 0);
-		p2 = (POINT2D *)getPoint(ring, ring->npoints-1);
-		if ( ! SAMEPOINT(p1, p2) )
+		POINT2D p1, p2;
+		getPoint2d_p(ring, 0, &p1);
+		getPoint2d_p(ring, ring->npoints-1, &p2);
+		if ( ! SAMEPOINT(&p1, &p2) )
 			elog(NOTICE, "Before gridding: first point != last point");
 #endif
 
@@ -686,9 +687,9 @@ lwpoly_grid(LWPOLY *poly, gridspec *grid)
 		}
 
 #ifdef CHECK_RING_IS_CLOSE
-		p1 = (POINT2D *)getPoint(newring, 0);
-		p2 = (POINT2D *)getPoint(newring, newring->npoints-1);
-		if ( ! SAMEPOINT(p1, p2) )
+		getPoint2d_p(newring, 0, &p2);
+		getPoint2d_p(newring, newring->npoints-1, &p2);
+		if ( ! SAMEPOINT(&p1, &p2) )
 			elog(NOTICE, "After gridding: first point != last point");
 #endif
 
@@ -729,11 +730,12 @@ elog(NOTICE, "grid_polygon3d: simplified polygon with %d rings", nrings);
 LWPOINT *
 lwpoint_grid(LWPOINT *point, gridspec *grid)
 {
-	POINT2D *p = (POINT2D *)getPoint(point->point, 0);
+	POINT2D p;
+	getPoint2d_p(point->point, 0, &p);
 	double x, y;
-	x = rint((p->x - grid->ipx)/grid->xsize) *
+	x = rint((p.x - grid->ipx)/grid->xsize) *
 		grid->xsize + grid->ipx;
-	y = rint((p->y - grid->ipy)/grid->ysize) *
+	y = rint((p.y - grid->ipy)/grid->ysize) *
 		grid->ysize + grid->ipy;
 
 #if VERBOSE

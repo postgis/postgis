@@ -595,10 +595,15 @@ Datum convexhull(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL(); //never get here
 	}
 
-	/* Have lwgeom bbox point to input one (if any) */
-	lwout->bbox = getbox2d_internal(SERIALIZED_FORM(geom1));
-	/* Mark lwgeom bbox to be externally owned */
-	if ( lwout->bbox ) TYPE_SETHASBBOX(lwout->type, 0);
+	BOX2DFLOAT4 bbox;
+
+	/* Copy input bbox if any */
+	if ( getbox2d_p(SERIALIZED_FORM(geom1), &bbox) )
+	{
+		lwout->bbox = &bbox;
+		/* Mark lwgeom bbox to be externally owned */
+		TYPE_SETHASBBOX(lwout->type, 1);
+	}
 
 	result = pglwgeom_serialize(lwout);
 	if (result == NULL)
@@ -1136,7 +1141,7 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom2;
 	Geometry *g1,*g2;
 	bool result;
-	const BOX2DFLOAT4 *box1, *box2;
+	BOX2DFLOAT4 box1, box2;
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
@@ -1152,13 +1157,13 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	 * geom1 bounding box we can prematurely return FALSE.
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
-	if ( (box1=getbox2d_internal(SERIALIZED_FORM(geom1))) &&
-		(box2=getbox2d_internal(SERIALIZED_FORM(geom2))) )
+	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
+		getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
-		if ( box2->xmax < box1->xmin ) PG_RETURN_BOOL(FALSE);
-		if ( box2->xmin > box1->xmax ) PG_RETURN_BOOL(FALSE);
-		if ( box2->ymax < box1->ymin ) PG_RETURN_BOOL(FALSE);
-		if ( box2->ymin > box2->ymax ) PG_RETURN_BOOL(FALSE);
+		if ( box2.xmax < box1.xmin ) PG_RETURN_BOOL(FALSE);
+		if ( box2.xmin > box1.xmax ) PG_RETURN_BOOL(FALSE);
+		if ( box2.ymax < box1.ymin ) PG_RETURN_BOOL(FALSE);
+		if ( box2.ymin > box2.ymax ) PG_RETURN_BOOL(FALSE);
 	}
 
 	initGEOS(MAXIMUM_ALIGNOF);
@@ -1211,7 +1216,7 @@ Datum contains(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom2;
 	Geometry *g1,*g2;
 	bool result;
-	const BOX2DFLOAT4 *box1, *box2;
+	BOX2DFLOAT4 box1, box2;
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
@@ -1227,13 +1232,13 @@ Datum contains(PG_FUNCTION_ARGS)
 	 * geom1 bounding box we can prematurely return FALSE.
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
-	if ( (box1=getbox2d_internal(SERIALIZED_FORM(geom1))) &&
-		(box2=getbox2d_internal(SERIALIZED_FORM(geom2))) )
+	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
+		getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
-		if ( box2->xmin < box1->xmin ) PG_RETURN_BOOL(FALSE);
-		if ( box2->xmax > box1->xmax ) PG_RETURN_BOOL(FALSE);
-		if ( box2->ymin < box1->ymin ) PG_RETURN_BOOL(FALSE);
-		if ( box2->ymax > box1->ymax ) PG_RETURN_BOOL(FALSE);
+		if ( box2.xmin < box1.xmin ) PG_RETURN_BOOL(FALSE);
+		if ( box2.xmax > box1.xmax ) PG_RETURN_BOOL(FALSE);
+		if ( box2.ymin < box1.ymin ) PG_RETURN_BOOL(FALSE);
+		if ( box2.ymax > box1.ymax ) PG_RETURN_BOOL(FALSE);
 	}
 
 	initGEOS(MAXIMUM_ALIGNOF);
@@ -1286,7 +1291,7 @@ Datum within(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom2;
 	Geometry *g1,*g2;
 	bool result;
-	const BOX2DFLOAT4 *box1, *box2;
+	BOX2DFLOAT4 box1, box2;
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
@@ -1302,13 +1307,13 @@ Datum within(PG_FUNCTION_ARGS)
 	 * geom2 bounding box we can prematurely return FALSE.
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
-	if ( (box1=getbox2d_internal(SERIALIZED_FORM(geom1))) &&
-		(box2=getbox2d_internal(SERIALIZED_FORM(geom2))) )
+	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
+		getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
-		if ( box1->xmin < box2->xmin ) PG_RETURN_BOOL(FALSE);
-		if ( box1->xmax > box2->xmax ) PG_RETURN_BOOL(FALSE);
-		if ( box1->ymin < box2->ymin ) PG_RETURN_BOOL(FALSE);
-		if ( box1->ymax > box2->ymax ) PG_RETURN_BOOL(FALSE);
+		if ( box1.xmin < box2.xmin ) PG_RETURN_BOOL(FALSE);
+		if ( box1.xmax > box2.xmax ) PG_RETURN_BOOL(FALSE);
+		if ( box1.ymin < box2.ymin ) PG_RETURN_BOOL(FALSE);
+		if ( box1.ymax > box2.ymax ) PG_RETURN_BOOL(FALSE);
 	}
 
 	initGEOS(MAXIMUM_ALIGNOF);
@@ -1362,7 +1367,7 @@ Datum crosses(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom2;
 	Geometry *g1,*g2;
 	bool result;
-	const BOX2DFLOAT4 *box1, *box2;
+	BOX2DFLOAT4 box1, box2;
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
@@ -1378,13 +1383,13 @@ Datum crosses(PG_FUNCTION_ARGS)
 	 * geom1 bounding box we can prematurely return FALSE.
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
-	if ( (box1=getbox2d_internal(SERIALIZED_FORM(geom1))) &&
-		(box2=getbox2d_internal(SERIALIZED_FORM(geom2))) )
+	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
+		getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
-		if ( box2->xmax < box1->xmin ) PG_RETURN_BOOL(FALSE);
-		if ( box2->xmin > box1->xmax ) PG_RETURN_BOOL(FALSE);
-		if ( box2->ymax < box1->ymin ) PG_RETURN_BOOL(FALSE);
-		if ( box2->ymin > box2->ymax ) PG_RETURN_BOOL(FALSE);
+		if ( box2.xmax < box1.xmin ) PG_RETURN_BOOL(FALSE);
+		if ( box2.xmin > box1.xmax ) PG_RETURN_BOOL(FALSE);
+		if ( box2.ymax < box1.ymin ) PG_RETURN_BOOL(FALSE);
+		if ( box2.ymin > box2.ymax ) PG_RETURN_BOOL(FALSE);
 	}
 
 	initGEOS(MAXIMUM_ALIGNOF);
@@ -1438,7 +1443,7 @@ Datum intersects(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom2;
 	Geometry *g1,*g2;
 	bool result;
-	const BOX2DFLOAT4 *box1, *box2;
+	BOX2DFLOAT4 box1, box2;
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
@@ -1454,13 +1459,13 @@ Datum intersects(PG_FUNCTION_ARGS)
 	 * geom1 bounding box we can prematurely return FALSE.
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
-	if ( (box1=getbox2d_internal(SERIALIZED_FORM(geom1))) &&
-		(box2=getbox2d_internal(SERIALIZED_FORM(geom2))) )
+	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
+		getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
-		if ( box2->xmax < box1->xmin ) PG_RETURN_BOOL(FALSE);
-		if ( box2->xmin > box1->xmax ) PG_RETURN_BOOL(FALSE);
-		if ( box2->ymax < box1->ymin ) PG_RETURN_BOOL(FALSE);
-		if ( box2->ymin > box2->ymax ) PG_RETURN_BOOL(FALSE);
+		if ( box2.xmax < box1.xmin ) PG_RETURN_BOOL(FALSE);
+		if ( box2.xmin > box1.xmax ) PG_RETURN_BOOL(FALSE);
+		if ( box2.ymax < box1.ymin ) PG_RETURN_BOOL(FALSE);
+		if ( box2.ymin > box2.ymax ) PG_RETURN_BOOL(FALSE);
 	}
 
 	initGEOS(MAXIMUM_ALIGNOF);
@@ -1511,7 +1516,7 @@ Datum touches(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom2;
 	Geometry *g1,*g2;
 	bool result;
-	const BOX2DFLOAT4 *box1, *box2;
+	BOX2DFLOAT4 box1, box2;
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
@@ -1527,13 +1532,13 @@ Datum touches(PG_FUNCTION_ARGS)
 	 * geom1 bounding box we can prematurely return FALSE.
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
-	if ( (box1=getbox2d_internal(SERIALIZED_FORM(geom1))) &&
-		(box2=getbox2d_internal(SERIALIZED_FORM(geom2))) )
+	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
+		getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
-		if ( box2->xmax < box1->xmin ) PG_RETURN_BOOL(FALSE);
-		if ( box2->xmin > box1->xmax ) PG_RETURN_BOOL(FALSE);
-		if ( box2->ymax < box1->ymin ) PG_RETURN_BOOL(FALSE);
-		if ( box2->ymin > box2->ymax ) PG_RETURN_BOOL(FALSE);
+		if ( box2.xmax < box1.xmin ) PG_RETURN_BOOL(FALSE);
+		if ( box2.xmin > box1.xmax ) PG_RETURN_BOOL(FALSE);
+		if ( box2.ymax < box1.ymin ) PG_RETURN_BOOL(FALSE);
+		if ( box2.ymin > box2.ymax ) PG_RETURN_BOOL(FALSE);
 	}
 
 	initGEOS(MAXIMUM_ALIGNOF);
@@ -1586,7 +1591,7 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom2;
 	Geometry *g1,*g2;
 	bool result;
-	const BOX2DFLOAT4 *box1, *box2;
+	BOX2DFLOAT4 box1, box2;
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
@@ -1602,13 +1607,13 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	 * geom1 bounding box we can prematurely return TRUE.
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
-	if ( (box1=getbox2d_internal(SERIALIZED_FORM(geom1))) &&
-		(box2=getbox2d_internal(SERIALIZED_FORM(geom2))) )
+	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
+		getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
-		if ( box2->xmax < box1->xmin ) PG_RETURN_BOOL(TRUE);
-		if ( box2->xmin > box1->xmax ) PG_RETURN_BOOL(TRUE);
-		if ( box2->ymax < box1->ymin ) PG_RETURN_BOOL(TRUE);
-		if ( box2->ymin > box2->ymax ) PG_RETURN_BOOL(TRUE);
+		if ( box2.xmax < box1.xmin ) PG_RETURN_BOOL(TRUE);
+		if ( box2.xmin > box1.xmax ) PG_RETURN_BOOL(TRUE);
+		if ( box2.ymax < box1.ymin ) PG_RETURN_BOOL(TRUE);
+		if ( box2.ymin > box2.ymax ) PG_RETURN_BOOL(TRUE);
 	}
 
 	initGEOS(MAXIMUM_ALIGNOF);
@@ -1820,7 +1825,7 @@ Datum geomequals(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom2;
 	Geometry *g1,*g2;
 	bool result;
-	const BOX2DFLOAT4 *box1, *box2;
+	BOX2DFLOAT4 box1, box2;
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
@@ -1836,13 +1841,13 @@ Datum geomequals(PG_FUNCTION_ARGS)
 	 * geom1 bounding box we can prematurely return FALSE.
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
-	if ( (box1=getbox2d_internal(SERIALIZED_FORM(geom1))) &&
-		(box2=getbox2d_internal(SERIALIZED_FORM(geom2))) )
+	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
+		getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
-		if ( box2->xmax != box1->xmax ) PG_RETURN_BOOL(FALSE);
-		if ( box2->xmin != box1->xmin ) PG_RETURN_BOOL(FALSE);
-		if ( box2->ymax != box1->ymax ) PG_RETURN_BOOL(FALSE);
-		if ( box2->ymin != box2->ymin ) PG_RETURN_BOOL(FALSE);
+		if ( box2.xmax != box1.xmax ) PG_RETURN_BOOL(FALSE);
+		if ( box2.xmin != box1.xmin ) PG_RETURN_BOOL(FALSE);
+		if ( box2.ymax != box1.ymax ) PG_RETURN_BOOL(FALSE);
+		if ( box2.ymin != box2.ymin ) PG_RETURN_BOOL(FALSE);
 	}
 
 	initGEOS(MAXIMUM_ALIGNOF);
@@ -2037,7 +2042,7 @@ lwline_from_geometry(Geometry *g, char want3d)
 	POINTARRAY *pa;
 	LWLINE *line;
 	int npoints;
-	POINT3D *pts, *ip, *op;
+	POINT3D *pts, *ip;
 	int ptsize = want3d ? sizeof(POINT3D) : sizeof(POINT2D);
 	int i;
 	int SRID = GEOSGetSRID(g);
@@ -2060,8 +2065,7 @@ lwline_from_geometry(Geometry *g, char want3d)
 	for (i=0; i<npoints; i++)
 	{
 		ip = &(pts[i]);
-		op = (POINT3D *)getPoint(pa, i);
-		memcpy(op, ip, ptsize);
+		memcpy(getPoint_internal(pa, i), ip, ptsize);
 	}
 	GEOSdeleteChar( (char*) pts);
 
@@ -2081,7 +2085,7 @@ lwpoly_from_geometry(Geometry *g, char want3d)
 	int nrings;
 	int npoints;
 	int i, j;
-	POINT3D *pts, *ip, *op;
+	POINT3D *pts, *ip;
 	int ptoff=0; // point offset inside POINT3D *
 	int ptsize = sizeof(double)*ndims;
 	int SRID = GEOSGetSRID(g);
@@ -2107,8 +2111,7 @@ lwpoly_from_geometry(Geometry *g, char want3d)
 	for (i=0; i<npoints; i++)
 	{
 		ip = &(pts[i+ptoff]);
-		op = (POINT3D *)getPoint(pa, i);
-		memcpy(op, ip, ptsize);
+		memcpy(getPoint_internal(pa, i), ip, ptsize);
 	}
 	ptoff+=npoints;
 
@@ -2126,8 +2129,7 @@ lwpoly_from_geometry(Geometry *g, char want3d)
 		for (i=0; i<npoints; i++)
 		{
 			ip = &(pts[i+ptoff]);
-			op = (POINT3D *)getPoint(pa, i);
-			memcpy(op, ip, ptsize);
+			memcpy(getPoint_internal(pa, i), ip, ptsize);
 		}
 		ptoff+=npoints;
 	}

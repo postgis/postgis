@@ -311,12 +311,12 @@ BOX3D *combine_boxes(BOX3D *b1, BOX3D *b2)
 
 // returns a pointer to internal storage, or NULL
 // if the serialized form does not have a BBOX.
-BOX2DFLOAT4 *
-getbox2d_internal(uchar *srl)
-{
-	if (TYPE_HASBBOX(srl[0])) return (BOX2DFLOAT4 *)(srl+1);
-	else return NULL;
-}
+//BOX2DFLOAT4 *
+//getbox2d_internal(uchar *srl)
+//{
+//	if (TYPE_HASBBOX(srl[0])) return (BOX2DFLOAT4 *)(srl+1);
+//	else return NULL;
+//}
 
 // same as getbox2d, but modifies box instead of returning result on the stack
 int
@@ -401,7 +401,6 @@ int
 getPoint4d_p(const POINTARRAY *pa, int n, POINT4D *point)
 {
 	int size;
-	POINT4D *pt;
 
 	if ( ! pa ) return 0;
 
@@ -411,29 +410,9 @@ getPoint4d_p(const POINTARRAY *pa, int n, POINT4D *point)
 		return 0; //error
 	}
 
+	memset(point, 0, sizeof(POINT3DZ));
 	size = pointArray_ptsize(pa);
-
-	pt = (POINT4D *)getPoint(pa, n);
-
-	// Initialize point
-	point->x = pt->x;
-	point->y = pt->y;
-	point->z = NO_Z_VALUE;
-	point->m = NO_M_VALUE;
-
-	if (TYPE_HASZ(pa->dims))
-	{
-		point->z = pt->z;
-		if (TYPE_HASM(pa->dims))
-		{
-			point->m = pt->m;
-		}
-	}
-	else if (TYPE_HASM(pa->dims))
-	{
-		point->m = pt->z;
-	}
-
+	memcpy(point, getPoint_internal(pa, n), size);
 	return 1;
 }
 
@@ -468,7 +447,6 @@ int
 getPoint3dz_p(const POINTARRAY *pa, int n, POINT3DZ *op)
 {
 	int size;
-	POINT4D *ip;
 
 	if ( ! pa ) return 0;
 
@@ -483,19 +461,17 @@ getPoint3dz_p(const POINTARRAY *pa, int n, POINT3DZ *op)
 		return 0; //error
 	}
 
-	size = pointArray_ptsize(pa);
+	/* initialize point */
+	memset(op, 0, sizeof(POINT3DZ));
 
+	/* copy */
+	size = pointArray_ptsize(pa);
 #ifdef PGIS_DEBUG
 	lwnotice("getPoint3dz_p: point size: %d", size);
 #endif
-
-	ip = (POINT4D *)getPoint(pa, n);
-	op->x = ip->x;
-	op->y = ip->y;
-	if ( TYPE_HASZ(pa->dims) ) op->z = ip->z;
-	else op->z = NO_Z_VALUE;
-
+	memcpy(op, getPoint_internal(pa, n), size);
 	return 1;
+
 }
 
 // copies a point from the point array into the parameter point
@@ -505,7 +481,6 @@ int
 getPoint3dm_p(const POINTARRAY *pa, int n, POINT3DM *op)
 {
 	int size;
-	POINT4D *ip;
 
 	if ( ! pa ) return 0;
 
@@ -520,26 +495,15 @@ getPoint3dm_p(const POINTARRAY *pa, int n, POINT3DM *op)
 		return 0; //error
 	}
 
+	/* initialize point */
+	memset(op, 0, sizeof(POINT3DM));
+
+	/* copy */
 	size = pointArray_ptsize(pa);
-
 #ifdef PGIS_DEBUG
-	lwnotice("getPoint3d_p: point size: %d", size);
+	lwnotice("getPoint3dz_p: point size: %d", size);
 #endif
-
-	ip = (POINT4D *)getPoint(pa, n);
-	op->x = ip->x;
-	op->y = ip->y;
-	op->m = NO_M_VALUE;
-
-	if ( TYPE_HASM(pa->dims) )
-	{
-		if ( TYPE_HASZ(pa->dims) )
-		{
-			op->m = ip->m;
-		}
-		else op->m = ip->z;
-	}
-
+	memcpy(op, getPoint_internal(pa, n), size);
 	return 1;
 }
 
@@ -589,11 +553,10 @@ getPoint2d_p(const POINTARRAY *pa, int n, POINT2D *point)
 }
 
 // get a pointer to nth point of a POINTARRAY
-// You'll need to cast it to appropriate dimensioned point.
-// Note that if you cast to a higher dimensional point you'll
-// possibly corrupt the POINTARRAY.
+// You cannot safely cast this to a real POINT, due to memory alignment
+// constraints. Use getPoint*_p for that.
 uchar *
-getPoint(const POINTARRAY *pa, int n)
+getPoint_internal(const POINTARRAY *pa, int n)
 {
 	int size;
 
@@ -623,12 +586,16 @@ pointArray_construct(uchar *points, char hasz, char hasm,
 	uint32 npoints)
 {
 	POINTARRAY  *pa;
+	size_t size;
 	pa = (POINTARRAY*)lwalloc(sizeof(POINTARRAY));
 
 	pa->dims = 0;
 	TYPE_SETZM(pa->dims, hasz, hasm);
 	pa->npoints = npoints;
-	pa->serialized_pointlist = points;
+
+	size=(2+hasz+hasm)*sizeof(double)*npoints;
+	pa->serialized_pointlist = lwalloc(size);
+	memcpy(pa->serialized_pointlist, points, size);
 
 	return pa;
 }
@@ -1635,7 +1602,7 @@ void pfree_POINTARRAY(POINTARRAY *pa)
 void printPA(POINTARRAY *pa)
 {
 	int t;
-	POINT4D *pt;
+	POINT4D pt;
 	uchar *mflag;
 
 	if ( TYPE_HASM(pa->dims) ) mflag = "M";
@@ -1648,18 +1615,18 @@ void printPA(POINTARRAY *pa)
 
 	for (t =0; t<pa->npoints;t++)
 	{
-		pt = (POINT4D *)getPoint(pa,t);
+		getPoint4d_p(pa, t, &pt);
 		if (TYPE_NDIMS(pa->dims) == 2)
 		{
-			lwnotice("                    %i : %lf,%lf",t,pt->x,pt->y);
+			lwnotice("                    %i : %lf,%lf",t,pt.x,pt.y);
 		}
 		if (TYPE_NDIMS(pa->dims) == 3)
 		{
-			lwnotice("                    %i : %lf,%lf,%lf",t,pt->x,pt->y,pt->z);
+			lwnotice("                    %i : %lf,%lf,%lf",t,pt.x,pt.y,pt.z);
 		}
 		if (TYPE_NDIMS(pa->dims) == 4)
 		{
-			lwnotice("                    %i : %lf,%lf,%lf,%lf",t,pt->x,pt->y,pt->z,pt->m);
+			lwnotice("                    %i : %lf,%lf,%lf,%lf",t,pt.x,pt.y,pt.z,pt.m);
 		}
 	}
 
@@ -2543,13 +2510,13 @@ ptarray_isccw(const POINTARRAY *pa)
 {
 	int i;
 	double area = 0;
-	POINT2D *p1, *p2;
+	POINT2D p1, p2;
 
 	for (i=0; i<pa->npoints-1; i++)
 	{
-		p1 = (POINT2D *)getPoint(pa, i);
-		p2 = (POINT2D *)getPoint(pa, i+1);
-		area += (p1->x * p2->y) - (p1->y * p2->x);
+		getPoint2d_p(pa, i, &p1);
+		getPoint2d_p(pa, i+1, &p2);
+		area += (p1.x * p2.y) - (p1.y * p2.x);
 	}
 	if ( area > 0 ) return 0;
 	else return 1;

@@ -327,7 +327,7 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 	POINTARRAY *extring;
 	LWLINE *line;
 	PG_LWGEOM *result;
-	BOX2DFLOAT4 *bbox;
+	BOX2DFLOAT4 bbox, *bbox2;
 
 	if ( TYPE_GETTYPE(geom->type) != POLYGONTYPE )
 	{
@@ -342,11 +342,13 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 	// If the input geom has a bbox, use it for 
 	// the output geom, as exterior ring makes it up !
 	// COMPUTE_BBOX==WHEN_SIMPLE
-	bbox = getbox2d_internal(SERIALIZED_FORM(geom));
-	if ( bbox ) bbox = box2d_clone(bbox);
+	if ( getbox2d_p(SERIALIZED_FORM(geom), &bbox) )
+	{
+		bbox2 = &bbox;
+	}
 
 	// This is a LWLINE constructed by exterior ring POINTARRAY
-	line = lwline_construct(poly->SRID, bbox, extring);
+	line = lwline_construct(poly->SRID, bbox2, extring);
 
 	// Copy SRID from polygon
 	line->SRID = poly->SRID;
@@ -483,7 +485,8 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 	pfree_inspected(inspected);
 
 	// Construct a point array
-	pts = pointArray_construct(getPoint(line->points, wanted_index-1),
+	pts = pointArray_construct(getPoint_internal(line->points,
+		wanted_index-1),
 		TYPE_HASZ(line->type), TYPE_HASM(line->type), 1);
 
 	// Construct an LWPOINT
@@ -512,7 +515,7 @@ Datum LWGEOM_x_point(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom;
 	LWGEOM_INSPECTED *inspected;
 	LWPOINT *point = NULL;
-	POINT2D *p;
+	POINT2D p;
 	int i;
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
@@ -528,9 +531,9 @@ Datum LWGEOM_x_point(PG_FUNCTION_ARGS)
 	if ( point == NULL ) PG_RETURN_NULL();
 
 	// Ok, now we have a point, let's get X
-	p = (POINT2D *)getPoint(point->point, 0);
+	getPoint2d_p(point->point, 0, &p);
 
-	PG_RETURN_FLOAT8(p->x);
+	PG_RETURN_FLOAT8(p.x);
 }
 
 // Y(GEOMETRY) -- find the first POINT(..) in GEOMETRY, returns its Y value.
@@ -541,7 +544,7 @@ Datum LWGEOM_y_point(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom;
 	LWGEOM_INSPECTED *inspected;
 	LWPOINT *point = NULL;
-	POINT2D *p;
+	POINT2D p;
 	int i;
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
@@ -557,9 +560,9 @@ Datum LWGEOM_y_point(PG_FUNCTION_ARGS)
 	if ( point == NULL ) PG_RETURN_NULL();
 
 	// Ok, now we have a point, let's get X
-	p = (POINT2D *)getPoint(point->point, 0);
+	getPoint2d_p(point->point, 0, &p);
 
-	PG_RETURN_FLOAT8(p->y);
+	PG_RETURN_FLOAT8(p.y);
 }
 
 // Z(GEOMETRY) -- find the first POINT(..) in GEOMETRY, returns its Z value.
@@ -626,7 +629,7 @@ Datum LWGEOM_startpoint_linestring(PG_FUNCTION_ARGS)
 	// Ok, now we have a line. 
 
 	// Construct a point array
-	pts = pointArray_construct(getPoint(line->points, 0),
+	pts = pointArray_construct(getPoint_internal(line->points, 0),
 		TYPE_HASZ(line->type),
 		TYPE_HASM(line->type), 1);
 
@@ -677,7 +680,7 @@ Datum LWGEOM_endpoint_linestring(PG_FUNCTION_ARGS)
 
 	// Construct a point array
 	pts = pointArray_construct(
-		getPoint(line->points, line->points->npoints-1),
+		getPoint_internal(line->points, line->points->npoints-1),
 		TYPE_HASZ(line->type),
 		TYPE_HASM(line->type), 1);
 
@@ -861,16 +864,16 @@ Datum LWGEOM_asBinary(PG_FUNCTION_ARGS)
 
 char line_is_closed(LWLINE *line)
 {
-	POINT4D *sp, *ep;
+	POINT3DZ sp, ep;
 
-	sp = (POINT4D *)getPoint(line->points, 0);
-	ep = (POINT4D *)getPoint(line->points, line->points->npoints-1);
+	getPoint3dz_p(line->points, 0, &sp);
+	getPoint3dz_p(line->points, line->points->npoints-1, &ep);
 
-	if ( sp->x != ep->x ) return 0;
-	if ( sp->y != ep->y ) return 0;
+	if ( sp.x != ep.x ) return 0;
+	if ( sp.y != ep.y ) return 0;
 	if ( TYPE_HASZ(line->type) )
 	{
-		if ( sp->z != ep->z ) return 0;
+		if ( sp.z != ep.z ) return 0;
 	}
 
 	return 1;

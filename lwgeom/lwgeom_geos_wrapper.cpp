@@ -79,7 +79,7 @@ typedef struct
 	POINTARRAY **rings; // list of rings (list of points)
 } LWPOLY; // "light-weight polygon"
 
-extern "C" char *getPoint(POINTARRAY *pa, int n);
+extern "C" int getPoint3dz_p(POINTARRAY *pa, int n, POINT3D *);
 
 //---- End of definitions found in lwgeom.h
 
@@ -221,7 +221,7 @@ Geometry *PostGIS2GEOS_box3d(BOX3D *box, int SRID)
 
 Geometry *PostGIS2GEOS_point(const LWPOINT *lwpoint)
 {
-	POINT3D *point;
+	POINT3D point;
 	int SRID;
 	bool is3d;
 
@@ -237,7 +237,7 @@ Geometry *PostGIS2GEOS_point(const LWPOINT *lwpoint)
 		return NULL;
 	}
 
-	point = (POINT3D *)getPoint(lwpoint->point, 0);
+	getPoint3dz_p(lwpoint->point, 0, &point);
 	SRID = lwpoint->SRID;
 	is3d = TYPE_HASZ(lwpoint->type);
 
@@ -246,9 +246,9 @@ Geometry *PostGIS2GEOS_point(const LWPOINT *lwpoint)
 		Coordinate *c;
 
 		if (is3d)
-			c = new Coordinate(point->x, point->y, point->z);
+			c = new Coordinate(point.x, point.y, point.z);
 		else
-			c = new Coordinate(point->x, point->y);
+			c = new Coordinate(point.x, point.y);
 		Geometry *g = geomFactory->createPoint(*c);
 		delete c;
 		if (g==NULL)
@@ -288,7 +288,7 @@ PostGIS2GEOS_linestring(const LWLINE *lwline)
 	try{
 		uint32 t;
 		Coordinate c;
-		POINT3D *p;
+		POINT3D p;
 
 		//build coordinatelist & pre-allocate space
 #if GEOS_LAST_INTERFACE >= 2
@@ -300,15 +300,15 @@ PostGIS2GEOS_linestring(const LWLINE *lwline)
 		{
 			for (t=0; t<pa->npoints; t++)
 			{
-				p = (POINT3D *)getPoint(pa, t);
+				getPoint3dz_p(pa, t, &p);
 #if GEOS_LAST_INTERFACE >= 2
-				(*vc)[t].x = p->x;
-				(*vc)[t].y = p->y;
-				(*vc)[t].z = p->z;
+				(*vc)[t].x = p.x;
+				(*vc)[t].y = p.y;
+				(*vc)[t].z = p.z;
 #else
-				c.x = p->x;
-				c.y = p->y;
-				c.z = p->z;
+				c.x = p.x;
+				c.y = p.y;
+				c.z = p.z;
 				coords->setAt(c ,t);
 #endif
 			}
@@ -317,14 +317,14 @@ PostGIS2GEOS_linestring(const LWLINE *lwline)
 		{
 			for (t=0; t<pa->npoints; t++)
 			{
-				p = (POINT3D *)getPoint(pa, t);
+				getPoint3dz_p(pa, t, &p);
 #if GEOS_LAST_INTERFACE >= 2
-				(*vc)[t].x = p->x;
-				(*vc)[t].y = p->y;
+				(*vc)[t].x = p.x;
+				(*vc)[t].y = p.y;
 				(*vc)[t].z = DoubleNotANumber;
 #else
-				c.x = p->x;
-				c.y = p->y;
+				c.x = p.x;
+				c.y = p.y;
 				c.z = DoubleNotANumber;
 				coords->setAt(c ,t);
 #endif
@@ -375,7 +375,7 @@ Geometry *PostGIS2GEOS_polygon(const LWPOLY *lwpoly)
 		LinearRing *outerRing;
 		LinearRing *innerRing;
 		CoordinateSequence *cl;
-		POINT3D *p;
+		POINT3D p;
 		vector<Geometry *> *innerRings;
 
 		// make outerRing
@@ -390,15 +390,15 @@ Geometry *PostGIS2GEOS_polygon(const LWPOLY *lwpoly)
 		{
 			for(t=0; t<pa->npoints; t++)
 			{
-				p = (POINT3D *)getPoint(pa, t);
+				getPoint3dz_p(pa, t, &p);
 #if GEOS_LAST_INTERFACE >= 2
-				(*vc)[t].x = p->x;
-				(*vc)[t].y = p->y;
-				(*vc)[t].z = p->z;
+				(*vc)[t].x = p.x;
+				(*vc)[t].y = p.y;
+				(*vc)[t].z = p.z;
 #else
-				c.x = p->x;
-				c.y = p->y;
-				c.z = p->z;
+				c.x = p.x;
+				c.y = p.y;
+				c.z = p.z;
 				cl->setAt( c ,t);
 #endif
 			}
@@ -407,14 +407,14 @@ Geometry *PostGIS2GEOS_polygon(const LWPOLY *lwpoly)
 		{
 			for(t=0; t<pa->npoints; t++)
 			{
-				p = (POINT3D *)getPoint(pa, t);
+				getPoint3dz_p(pa, t, &p);
 #if GEOS_LAST_INTERFACE >= 2
-				(*vc)[t].x = p->x;
-				(*vc)[t].y = p->y;
+				(*vc)[t].x = p.x;
+				(*vc)[t].y = p.y;
 				(*vc)[t].z = DoubleNotANumber;
 #else
-				c.x = p->x;
-				c.y = p->y;
+				c.x = p.x;
+				c.y = p.y;
 				c.z = DoubleNotANumber;
 				cl->setAt(c ,t);
 #endif
@@ -443,15 +443,15 @@ Geometry *PostGIS2GEOS_polygon(const LWPOLY *lwpoly)
 			{
 				for(t=0; t<pa->npoints; t++)
 				{
-					p = (POINT3D *)getPoint(pa, t);
+					getPoint3dz_p(pa, t, &p);
 #if GEOS_LAST_INTERFACE >= 2
-					(*vc)[t].x = p->x;
-					(*vc)[t].y = p->y;
-					(*vc)[t].z = p->z;
+					(*vc)[t].x = p.x;
+					(*vc)[t].y = p.y;
+					(*vc)[t].z = p.z;
 #else
-					c.x = p->x;
-					c.y = p->y;
-					c.z = p->z;
+					c.x = p.x;
+					c.y = p.y;
+					c.z = p.z;
 					cl->setAt(c ,t);
 #endif
 				}
@@ -460,14 +460,14 @@ Geometry *PostGIS2GEOS_polygon(const LWPOLY *lwpoly)
 			{
 				for(t=0; t<pa->npoints; t++)
 				{
-					p = (POINT3D *)getPoint(pa, t);
+					getPoint3dz_p(pa, t, &p);
 #if GEOS_LAST_INTERFACE >= 2
-					(*vc)[t].x = p->x;
-					(*vc)[t].y = p->y;
+					(*vc)[t].x = p.x;
+					(*vc)[t].y = p.y;
 					(*vc)[t].z = DoubleNotANumber;
 #else
-					c.x = p->x;
-					c.y = p->y;
+					c.x = p.x;
+					c.y = p.y;
 					c.z = DoubleNotANumber;
 					cl->setAt(c ,t);
 #endif

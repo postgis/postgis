@@ -16,7 +16,7 @@ int pt_in_ring_2d(POINT2D *p, POINTARRAY *ring)
 {
 	int cn = 0;    // the crossing number counter
 	int i;
-	POINT2D *v1, *v2;
+	POINT2D v1, v2;
 
 #if INTEGRITY_CHECKS
 	POINT2D first, last;
@@ -37,26 +37,26 @@ int pt_in_ring_2d(POINT2D *p, POINTARRAY *ring)
 #endif
 
 	// loop through all edges of the polygon
-	v1 = (POINT2D *)getPoint(ring, 0);
+	getPoint2d_p(ring, 0, &v1);
     	for (i=0; i<ring->npoints-1; i++)
 	{   
 		double vt;
-		v2 = (POINT2D *)getPoint(ring, i+1);
+		getPoint2d_p(ring, i+1, &v2);
 
 		// edge from vertex i to vertex i+1
        		if
 		(
 			// an upward crossing
-			((v1->y <= p->y) && (v2->y > p->y))
+			((v1.y <= p->y) && (v2.y > p->y))
 			// a downward crossing
-       		 	|| ((v1->y > p->y) && (v2->y <= p->y))
+       		 	|| ((v1.y > p->y) && (v2.y <= p->y))
 		)
 	 	{
 
-			vt = (double)(p->y - v1->y) / (v2->y - v1->y);
+			vt = (double)(p->y - v1.y) / (v2.y - v1.y);
 
 			// P.x <intersect
-			if (p->x < v1->x + vt * (v2->x - v1->x))
+			if (p->x < v1.x + vt * (v2.x - v1.x))
 			{
 				// a valid crossing of y=p.y right of p.x
            	     		++cn;
@@ -210,15 +210,15 @@ double distance2d_pt_ptarray(POINT2D *p, POINTARRAY *pa)
 {
 	double result = 0;
 	int t;
-	POINT2D	*start, *end;
+	POINT2D	start, end;
 
-	start = (POINT2D *)getPoint(pa, 0);
+	getPoint2d_p(pa, 0, &start);
 
 	for (t=1; t<pa->npoints; t++)
 	{
 		double dist;
-		end = (POINT2D *)getPoint(pa, t);
-		dist = distance2d_pt_seg(p, start, end);
+		getPoint2d_p(pa, t, &end);
+		dist = distance2d_pt_seg(p, &start, &end);
 		if (t==1) result = dist;
 		else result = LW_MIN(result, dist);
 
@@ -236,27 +236,27 @@ double distance2d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2)
 	double 	result = 99999999999.9;
 	char result_okay = 0; //result is a valid min
 	int t,u;
-	POINT2D	*start,*end;
-	POINT2D	*start2,*end2;
+	POINT2D	start, end;
+	POINT2D	start2, end2;
 
 #ifdef PGIS_DEBUG
 	lwnotice("distance2d_ptarray_ptarray called (points: %d-%d)",
 			l1->npoints, l2->npoints);
 #endif
 
-	start = (POINT2D *)getPoint(l1, 0);
+	getPoint2d_p(l1, 0, &start);
 	for (t=1; t<l1->npoints; t++) //for each segment in L1
 	{
-		end = (POINT2D *)getPoint(l1, t);
+		getPoint2d_p(l1, t, &end);
 
-		start2 = (POINT2D *)getPoint(l2, 0);
+		getPoint2d_p(l2, 0, &start2);
 		for (u=1; u<l2->npoints; u++) //for each segment in L2
 		{
 			double dist;
 
-			end2 = (POINT2D *)getPoint(l2, u);
+			getPoint2d_p(l2, u, &end2);
 
-			dist = distance2d_seg_seg(start, end, start2, end2);
+			dist = distance2d_seg_seg(&start, &end, &start2, &end2);
 //printf("line_line; seg %i * seg %i, dist = %g\n",t,u,dist_this);
 
 			if (result_okay)
@@ -310,7 +310,7 @@ int pt_in_poly_2d(POINT2D *p, LWPOLY *poly)
 // polygon or inside a hole)
 double distance2d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly)
 {
-	POINT2D *pt;
+	POINT2D pt;
 	int i;
 	double mindist = 0;
 
@@ -333,17 +333,17 @@ double distance2d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly)
 
 	// No intersection, have to check if a point is
 	// inside polygon
-	pt = (POINT2D *)getPoint(pa, 0);
+	getPoint2d_p(pa, 0, &pt);
 
 	// Outside outer ring, so min distance to a ring
 	// is the actual min distance
-	if ( ! pt_in_ring_2d(pt, poly->rings[0]) ) return mindist;
+	if ( ! pt_in_ring_2d(&pt, poly->rings[0]) ) return mindist;
 
 	// Its in the outer ring.
 	// Have to check if its inside a hole
 	for (i=1; i<poly->nrings; i++)
 	{
-		if ( pt_in_ring_2d(pt, poly->rings[i]) )
+		if ( pt_in_ring_2d(&pt, poly->rings[i]) )
 		{
 			// Its inside a hole, then the actual
 			// distance is the min ring distance
@@ -356,16 +356,21 @@ double distance2d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly)
 
 double distance2d_point_point(LWPOINT *point1, LWPOINT *point2)
 {
-	POINT2D *p1 = (POINT2D *)getPoint(point1->point, 0);
-	POINT2D *p2 = (POINT2D *)getPoint(point2->point, 0);
-	return distance2d_pt_pt(p1, p2);
+	POINT2D p1;
+	POINT2D p2;
+
+	getPoint2d_p(point1->point, 0, &p1);
+	getPoint2d_p(point2->point, 0, &p2);
+
+	return distance2d_pt_pt(&p1, &p2);
 }
 
 double distance2d_point_line(LWPOINT *point, LWLINE *line)
 {
-	POINT2D *p = (POINT2D *)getPoint(point->point, 0);
+	POINT2D p;
+	getPoint2d_p(point->point, 0, &p);
 	POINTARRAY *pa = line->points;
-	return distance2d_pt_ptarray(p, pa);
+	return distance2d_pt_ptarray(&p, pa);
 }
 
 double distance2d_line_line(LWLINE *line1, LWLINE *line2)
@@ -380,7 +385,8 @@ double distance2d_line_line(LWLINE *line1, LWLINE *line2)
 //    if so, then return dist to hole, else return 0 (point in polygon)
 double distance2d_point_poly(LWPOINT *point, LWPOLY *poly)
 {
-	POINT2D *p = (POINT2D *)getPoint(point->point, 0);
+	POINT2D p;
+	getPoint2d_p(point->point, 0, &p);
 	int i;
 
 #ifdef PGIS_DEBUG
@@ -388,12 +394,12 @@ double distance2d_point_poly(LWPOINT *point, LWPOLY *poly)
 #endif
 
 	// Return distance to outer ring if not inside it
-	if ( ! pt_in_ring_2d(p, poly->rings[0]) )
+	if ( ! pt_in_ring_2d(&p, poly->rings[0]) )
 	{
 #ifdef PGIS_DEBUG
 	lwnotice(" not inside outer-ring");
 #endif
-		return distance2d_pt_ptarray(p, poly->rings[0]);
+		return distance2d_pt_ptarray(&p, poly->rings[0]);
 	}
 
 	// Inside the outer ring.
@@ -403,12 +409,12 @@ double distance2d_point_poly(LWPOINT *point, LWPOLY *poly)
 	for (i=1; i<poly->nrings; i++) 
 	{
 		// Inside a hole. Distance = pt -> ring
-		if ( pt_in_ring_2d(p, poly->rings[i]) )
+		if ( pt_in_ring_2d(&p, poly->rings[i]) )
 		{
 #ifdef PGIS_DEBUG
 			lwnotice(" inside an hole");
 #endif
-			return distance2d_pt_ptarray(p, poly->rings[i]);
+			return distance2d_pt_ptarray(&p, poly->rings[i]);
 		}
 	}
 
@@ -425,7 +431,7 @@ double distance2d_point_poly(LWPOINT *point, LWPOLY *poly)
 // Find min distance ring-to-ring.
 double distance2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2)
 {
-	POINT2D *pt;
+	POINT2D pt;
 	double mindist = 0;
 	int i;
 
@@ -434,12 +440,14 @@ double distance2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2)
 #endif
 
 	// if poly1 inside poly2 return 0
-	pt = (POINT2D *)getPoint(poly1->rings[0], 0);
-	if ( pt_in_poly_2d(pt, poly2) ) return 0.0;  
+	//pt = (POINT2D *)getPoint(poly1->rings[0], 0);
+	getPoint2d_p(poly1->rings[0], 0, &pt);
+	if ( pt_in_poly_2d(&pt, poly2) ) return 0.0;  
 
 	// if poly2 inside poly1 return 0
-	pt = (POINT2D *)getPoint(poly2->rings[0], 0);
-	if ( pt_in_poly_2d(pt, poly1) ) return 0.0;  
+	//pt = (POINT2D *)getPoint(poly2->rings[0], 0);
+	getPoint2d_p(poly2->rings[0], 0, &pt);
+	if ( pt_in_poly_2d(&pt, poly1) ) return 0.0;  
 
 #ifdef PGIS_DEBUG
 	lwnotice("  polys not inside each other");
@@ -477,14 +485,18 @@ double lwgeom_pointarray_length2d(POINTARRAY *pts)
 {
 	double dist = 0.0;
 	int i;
+	POINT2D frm;
+	POINT2D to;
 
 	if ( pts->npoints < 2 ) return 0.0;
 	for (i=0; i<pts->npoints-1;i++)
 	{
-		POINT2D *frm = (POINT2D *)getPoint(pts, i);
-		POINT2D *to = (POINT2D *)getPoint(pts, i+1);
-		dist += sqrt( ( (frm->x - to->x)*(frm->x - to->x) )  +
-				((frm->y - to->y)*(frm->y - to->y) ) );
+		//POINT2D *frm = (POINT2D *)getPoint(pts, i);
+		getPoint2d_p(pts, i, &frm);
+		//POINT2D *to = (POINT2D *)getPoint(pts, i+1);
+		getPoint2d_p(pts, i+1, &to);
+		dist += sqrt( ( (frm.x - to.x)*(frm.x - to.x) )  +
+				((frm.y - to.y)*(frm.y - to.y) ) );
 	}
 	return dist;
 }
@@ -495,6 +507,8 @@ lwgeom_pointarray_length(POINTARRAY *pts)
 {
 	double dist = 0.0;
 	int i;
+	POINT3DZ frm;
+	POINT3DZ to;
 
 	if ( pts->npoints < 2 ) return 0.0;
 
@@ -503,11 +517,13 @@ lwgeom_pointarray_length(POINTARRAY *pts)
 
 	for (i=0; i<pts->npoints-1;i++)
 	{
-		POINT3DZ *frm = (POINT3DZ *)getPoint(pts, i);
-		POINT3DZ *to = (POINT3DZ *)getPoint(pts, i+1);
-		dist += sqrt( ( (frm->x - to->x)*(frm->x - to->x) )  +
-				((frm->y - to->y)*(frm->y - to->y) ) +
-				((frm->z - to->z)*(frm->z - to->z) ) );
+		//POINT3DZ *frm = (POINT3DZ *)getPoint(pts, i);
+		//POINT3DZ *to = (POINT3DZ *)getPoint(pts, i+1);
+		getPoint3dz_p(pts, i, &frm);
+		getPoint3dz_p(pts, i+1, &to);
+		dist += sqrt( ( (frm.x - to.x)*(frm.x - to.x) )  +
+				((frm.y - to.y)*(frm.y - to.y) ) +
+				((frm.z - to.z)*(frm.z - to.z) ) );
 	}
 
 	return dist;
@@ -519,6 +535,8 @@ double lwgeom_polygon_area(LWPOLY *poly)
 {
 	double poly_area=0.0;
 	int i;
+	POINT2D p1;
+	POINT2D p2;
 
 #ifdef PGIS_DEBUG
 	lwnotice("in lwgeom_polygon_area (%d rings)", poly->nrings);
@@ -533,9 +551,11 @@ double lwgeom_polygon_area(LWPOLY *poly)
 //lwnotice(" rings %d has %d points", i, ring->npoints);
 		for (j=0; j<ring->npoints-1; j++)
     		{
-			POINT2D *p1 = (POINT2D *)getPoint(ring, j);
-			POINT2D *p2 = (POINT2D *)getPoint(ring, j+1);
-			ringarea += ( p1->x * p2->y ) - ( p1->y * p2->x );
+			//POINT2D *p1 = (POINT2D *)getPoint(ring, j);
+			//POINT2D *p2 = (POINT2D *)getPoint(ring, j+1);
+			getPoint2d_p(ring, j, &p1);
+			getPoint2d_p(ring, j+1, &p2);
+			ringarea += ( p1.x * p2.y ) - ( p1.y * p2.x );
 		}
 
 		ringarea  /= 2.0;

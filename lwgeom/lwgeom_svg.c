@@ -85,7 +85,7 @@ geometry_to_svg(PG_LWGEOM *geometry, int svgrel, int precision)
 	char *result;
 	LWGEOM_INSPECTED *inspected;
 	int t,u;
-	POINT2D	*pt;
+	POINT2D	pt;
 	int size;
 	int npts;
 
@@ -117,16 +117,16 @@ geometry_to_svg(PG_LWGEOM *geometry, int svgrel, int precision)
 
 			if (t) strcat(result, ",");
 
-			pt = (POINT2D *)getPoint(point->point, 0);
+			getPoint2d_p(point->point, 0, &pt);
 			if (svgrel == 1)
 			{  
 				//render circle
-				print_svg_coords(result, pt, precision);
+				print_svg_coords(result, &pt, precision);
 			}
 			else
 			{  
 				//render circle
-				print_svg_circle(result, pt, precision);
+				print_svg_circle(result, &pt, precision);
 			}
 
 		}
@@ -223,22 +223,22 @@ void
 print_svg_path_abs(char *result, POINTARRAY *pa, int precision)
 {
 	int u;
-	POINT2D *pt;
+	POINT2D pt;
 	char x[MAX_DIGS_DOUBLE+3];
 	char y[MAX_DIGS_DOUBLE+3];
 
 	result += strlen(result);
 	for (u=0; u<pa->npoints; u++)
 	{
-		pt = (POINT2D *)getPoint(pa, u);
+		getPoint2d_p(pa, u, &pt);
 		if (u != 0)
 		{
 			result[0] = ' ';
 			result++;
 		}
-		sprintf(x, "%.*f", precision, pt->x);
+		sprintf(x, "%.*f", precision, pt.x);
 		trim_trailing_zeros(x);
-		sprintf(y, "%.*f", precision, pt->y * -1);
+		sprintf(y, "%.*f", precision, pt.y * -1);
 		trim_trailing_zeros(y);
 		result+= sprintf(result,"%s %s", x, y);
 	}
@@ -249,17 +249,17 @@ void
 print_svg_path_rel(char *result, POINTARRAY *pa, int precision)
 {
 	int u;
-	POINT2D *pt, *lpt;
+	POINT2D pt, lpt;
 	char x[MAX_DIGS_DOUBLE+3];
 	char y[MAX_DIGS_DOUBLE+3];
 
 	result += strlen(result);
 
-	pt = (POINT2D *)getPoint(pa, 0);
+	getPoint2d_p(pa, 0, &pt);
 
-	sprintf(x, "%.*f", precision, pt->x);
+	sprintf(x, "%.*f", precision, pt.x);
 	trim_trailing_zeros(x);
-	sprintf(y, "%.*f", precision, pt->y * -1);
+	sprintf(y, "%.*f", precision, pt.y * -1);
 	trim_trailing_zeros(y);
 
 	result += sprintf(result,"%s %s l", x, y); 
@@ -267,10 +267,10 @@ print_svg_path_rel(char *result, POINTARRAY *pa, int precision)
 	lpt = pt;
 	for (u=1; u<pa->npoints; u++)
 	{
-		pt = (POINT2D *)getPoint(pa, u);
-		sprintf(x, "%.*f", precision, pt->x - lpt->x);
+		getPoint2d_p(pa, u, &pt);
+		sprintf(x, "%.*f", precision, pt.x - lpt.x);
 		trim_trailing_zeros(x);
-		sprintf(y, "%.*f", precision, (pt->y - lpt->y) * -1);
+		sprintf(y, "%.*f", precision, (pt.y - lpt.y) * -1);
 		trim_trailing_zeros(y);
 		result+= sprintf(result," %s %s", x, y);
 		lpt = pt;
@@ -280,6 +280,14 @@ print_svg_path_rel(char *result, POINTARRAY *pa, int precision)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.8  2005/02/10 17:41:55  strk
+ * Dropped getbox2d_internal().
+ * Removed all castings of getPoint() output, which has been renamed
+ * to getPoint_internal() and commented about danger of using it.
+ * Changed SERIALIZED_FORM() macro to use VARDATA() macro.
+ * All this changes are aimed at taking into account memory alignment
+ * constraints which might be the cause of recent crash bug reports.
+ *
  * Revision 1.7  2004/10/27 12:30:53  strk
  * AsSVG returns NULL on GEOMETRY COLLECTION input.
  *

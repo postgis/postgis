@@ -411,7 +411,6 @@ static size_t
 pointArray_toGML(POINTARRAY *pa, char *output)
 {
 	int i;
-	POINT4D *pt;
 	char *ptr;
 
 	ptr = output;
@@ -420,23 +419,25 @@ pointArray_toGML(POINTARRAY *pa, char *output)
 	{
 		for (i=0; i<pa->npoints; i++)
 		{
-			pt = (POINT4D *)getPoint(pa, i);
+			POINT2D pt;
+			getPoint2d_p(pa, i, &pt);
 			if ( i ) ptr += sprintf(ptr, " ");
 			ptr += sprintf(ptr, "%.*g,%.*g",
-				precision, pt->x,
-				precision, pt->y);
+				precision, pt.x,
+				precision, pt.y);
 		}
 	}
 	else 
 	{
 		for (i=0; i<pa->npoints; i++)
 		{
-			pt = (POINT4D *)getPoint(pa, i);
+			POINT4D pt;
+			getPoint4d_p(pa, i, &pt);
 			if ( i ) ptr += sprintf(ptr, " ");
 			ptr += sprintf(ptr, "%.*g,%.*g,%.*g",
-				precision, pt->x,
-				precision, pt->y,
-				precision, pt->z);
+				precision, pt.x,
+				precision, pt.y,
+				precision, pt.z);
 		}
 	}
 
@@ -503,6 +504,14 @@ getSRSbySRID(int SRID)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.10  2005/02/10 17:41:55  strk
+ * Dropped getbox2d_internal().
+ * Removed all castings of getPoint() output, which has been renamed
+ * to getPoint_internal() and commented about danger of using it.
+ * Changed SERIALIZED_FORM() macro to use VARDATA() macro.
+ * All this changes are aimed at taking into account memory alignment
+ * constraints which might be the cause of recent crash bug reports.
+ *
  * Revision 1.9  2005/02/07 13:21:10  strk
  * Replaced DEBUG* macros with PGIS_DEBUG*, to avoid clashes with postgresql DEBUG
  *

@@ -310,21 +310,24 @@ double lwgeom_pointarray_length_ellipse(POINTARRAY *pts, SPHEROID *sphere)
  * Computed 2d length of a POINTARRAY regardless of input dimensions
  * Uses ellipsoidal math to find the distance.
  */
-double lwgeom_pointarray_length2d_ellipse(POINTARRAY *pts, SPHEROID *sphere)
+double
+lwgeom_pointarray_length2d_ellipse(POINTARRAY *pts, SPHEROID *sphere)
 {
 	double dist = 0.0;
 	int i;
+	POINT2D frm;
+	POINT2D to;
 
 	//elog(NOTICE, "lwgeom_pointarray_length2d_ellipse called");
 
 	if ( pts->npoints < 2 ) return 0.0;
 	for (i=0; i<pts->npoints-1;i++)
 	{
-		POINT2D *frm = (POINT2D *)getPoint(pts, i);
-		POINT2D *to = (POINT2D *)getPoint(pts, i+1);
-		dist += distance_ellipse(frm->y*M_PI/180.0,
-			frm->x*M_PI/180.0, to->y*M_PI/180.0,
-			to->x*M_PI/180.0, sphere);
+		getPoint2d_p(pts, i, &frm);
+		getPoint2d_p(pts, i+1, &to);
+		dist += distance_ellipse(frm.y*M_PI/180.0,
+			frm.x*M_PI/180.0, to.y*M_PI/180.0,
+			to.x*M_PI/180.0, sphere);
 	}
 	return dist;
 }
@@ -492,7 +495,7 @@ Datum LWGEOM_distance_ellipsoid_point(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	SPHEROID *sphere = (SPHEROID *)PG_GETARG_POINTER(2);
 	LWPOINT *point1, *point2;
-	POINT2D *p1, *p2;
+	POINT2D p1, p2;
 
 	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
 	{
@@ -514,10 +517,10 @@ Datum LWGEOM_distance_ellipsoid_point(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	p1 = (POINT2D *)getPoint(point1->point, 0);
-	p2 = (POINT2D *)getPoint(point2->point, 0);
-	PG_RETURN_FLOAT8(distance_ellipse(p1->y*M_PI/180.0,
-		p1->x*M_PI/180.0, p2->y*M_PI/180.0,
-		p2->x*M_PI/180.0, sphere));
+	getPoint2d_p(point1->point, 0, &p1);
+	getPoint2d_p(point2->point, 0, &p2);
+	PG_RETURN_FLOAT8(distance_ellipse(p1.y*M_PI/180.0,
+		p1.x*M_PI/180.0, p2.y*M_PI/180.0,
+		p2.x*M_PI/180.0, sphere));
 
 }

@@ -299,7 +299,12 @@ extern int getPoint2d_p(const POINTARRAY *pa, int n, POINT2D *point);
 // You'll need to cast it to appropriate dimensioned point.
 // Note that if you cast to a higher dimensional point you'll
 // possibly corrupt the POINTARRAY.
-extern uchar *getPoint(const POINTARRAY *pa, int n);
+//
+// WARNING: Don't cast this to a POINT !
+// it would not be reliable due to memory alignment constraints 
+//
+extern uchar *getPoint_internal(const POINTARRAY *pa, int n);
+
 //--- here is a macro equivalent, for speed...
 //#define getPoint(x,n) &( (x)->serialized_pointlist[((x)->ndims*8)*(n)] )
 
@@ -424,7 +429,8 @@ char is_worth_caching_lwgeom_bbox(const LWGEOM *);
  * by most functions from an PG_LWGEOM struct.
  * (which is an PG_LWGEOM w/out int32 size casted to char *)
  */
-#define SERIALIZED_FORM(x) ((uchar *)(x))+4
+//#define SERIALIZED_FORM(x) ((uchar *)(x))+4
+#define SERIALIZED_FORM(x) (VARDATA((x)))
 
 
 /*
@@ -731,7 +737,7 @@ extern BOX3D *combine_boxes(BOX3D *b1, BOX3D *b2);
 // Returns a pointer to the BBOX internal to the serialized form.
 // READ-ONLY!
 // Or NULL if serialized form does not have a BBOX
-extern BOX2DFLOAT4 *getbox2d_internal(uchar *serialized_form);
+//extern BOX2DFLOAT4 *getbox2d_internal(uchar *serialized_form);
 
 // this function writes to 'box' and returns 0 if serialized_form
 // does not have a bounding box (empty geom)
@@ -1019,10 +1025,10 @@ extern const uchar *lwgeom_typeflags(uchar type);
 
 // Construct an empty pointarray
 extern POINTARRAY *ptarray_construct(char hasz, char hasm, unsigned int npoints);
-extern POINTARRAY *ptarray_construct2d(uint32 npoints, const POINT2D *pts);
-extern POINTARRAY *ptarray_construct3dz(uint32 npoints, const POINT3DZ *pts);
-extern POINTARRAY *ptarray_construct3dm(uint32 npoints, const POINT3DM *pts);
-extern POINTARRAY *ptarray_construct4d(uint32 npoints, const POINT4D *pts);
+//extern POINTARRAY *ptarray_construct2d(uint32 npoints, const POINT2D *pts);
+//extern POINTARRAY *ptarray_construct3dz(uint32 npoints, const POINT3DZ *pts);
+//extern POINTARRAY *ptarray_construct3dm(uint32 npoints, const POINT3DM *pts);
+//extern POINTARRAY *ptarray_construct4d(uint32 npoints, const POINT4D *pts);
 extern POINTARRAY *ptarray_addPoint(POINTARRAY *pa, uchar *p, size_t pdims, unsigned int where);
 extern int ptarray_isclosed2d(const POINTARRAY *pa);
 

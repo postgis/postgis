@@ -26,73 +26,73 @@ ptarray_construct(char hasz, char hasm, unsigned int npoints)
 
 }
 
-POINTARRAY *
-ptarray_construct2d(uint32 npoints, const POINT2D *pts)
-{
-	POINTARRAY *pa = ptarray_construct(0, 0, npoints);
-	uint32 i;
-
-	for (i=0; i<npoints; i++)
-	{
-		POINT2D *pap = (POINT2D *)getPoint(pa, i);
-		pap->x = pts[i].x;
-		pap->y = pts[i].y;
-	}
-	
-	return pa;
-}
-
-POINTARRAY *
-ptarray_construct3dz(uint32 npoints, const POINT3DZ *pts)
-{
-	POINTARRAY *pa = ptarray_construct(1, 0, npoints);
-	uint32 i;
-
-	for (i=0; i<npoints; i++)
-	{
-		POINT3DZ *pap = (POINT3DZ *)getPoint(pa, i);
-		pap->x = pts[i].x;
-		pap->y = pts[i].y;
-		pap->z = pts[i].z;
-	}
-	
-	return pa;
-}
-
-POINTARRAY *
-ptarray_construct3dm(uint32 npoints, const POINT3DM *pts)
-{
-	POINTARRAY *pa = ptarray_construct(0, 1, npoints);
-	uint32 i;
-
-	for (i=0; i<npoints; i++)
-	{
-		POINT3DM *pap = (POINT3DM *)getPoint(pa, i);
-		pap->x = pts[i].x;
-		pap->y = pts[i].y;
-		pap->m = pts[i].m;
-	}
-	
-	return pa;
-}
-
-POINTARRAY *
-ptarray_construct4d(uint32 npoints, const POINT4D *pts)
-{
-	POINTARRAY *pa = ptarray_construct(0, 1, npoints);
-	uint32 i;
-
-	for (i=0; i<npoints; i++)
-	{
-		POINT4D *pap = (POINT4D *)getPoint(pa, i);
-		pap->x = pts[i].x;
-		pap->y = pts[i].y;
-		pap->z = pts[i].z;
-		pap->m = pts[i].m;
-	}
-	
-	return pa;
-}
+//POINTARRAY *
+//ptarray_construct2d(uint32 npoints, const POINT2D *pts)
+//{
+//	POINTARRAY *pa = ptarray_construct(0, 0, npoints);
+//	uint32 i;
+//
+//	for (i=0; i<npoints; i++)
+//	{
+//		POINT2D *pap = (POINT2D *)getPoint(pa, i);
+//		pap->x = pts[i].x;
+//		pap->y = pts[i].y;
+//	}
+//	
+//	return pa;
+//}
+//
+//POINTARRAY *
+//ptarray_construct3dz(uint32 npoints, const POINT3DZ *pts)
+//{
+//	POINTARRAY *pa = ptarray_construct(1, 0, npoints);
+//	uint32 i;
+//
+//	for (i=0; i<npoints; i++)
+//	{
+//		POINT3DZ *pap = (POINT3DZ *)getPoint(pa, i);
+//		pap->x = pts[i].x;
+//		pap->y = pts[i].y;
+//		pap->z = pts[i].z;
+//	}
+//	
+//	return pa;
+//}
+//
+//POINTARRAY *
+//ptarray_construct3dm(uint32 npoints, const POINT3DM *pts)
+//{
+//	POINTARRAY *pa = ptarray_construct(0, 1, npoints);
+//	uint32 i;
+//
+//	for (i=0; i<npoints; i++)
+//	{
+//		POINT3DM *pap = (POINT3DM *)getPoint(pa, i);
+//		pap->x = pts[i].x;
+//		pap->y = pts[i].y;
+//		pap->m = pts[i].m;
+//	}
+//	
+//	return pa;
+//}
+//
+//POINTARRAY *
+//ptarray_construct4d(uint32 npoints, const POINT4D *pts)
+//{
+//	POINTARRAY *pa = ptarray_construct(0, 1, npoints);
+//	uint32 i;
+//
+//	for (i=0; i<npoints; i++)
+//	{
+//		POINT4D *pap = (POINT4D *)getPoint(pa, i);
+//		pap->x = pts[i].x;
+//		pap->y = pts[i].y;
+//		pap->z = pts[i].z;
+//		pap->m = pts[i].m;
+//	}
+//	
+//	return pa;
+//}
 
 void
 ptarray_reverse(POINTARRAY *pa)
@@ -106,8 +106,8 @@ ptarray_reverse(POINTARRAY *pa)
 	for (i=0; i<=mid; i++)
 	{
 		uchar *from, *to;
-		from = getPoint(pa, i);
-		to = getPoint(pa, (last-i));
+		from = getPoint_internal(pa, i);
+		to = getPoint_internal(pa, (last-i));
 		memcpy((uchar *)&pbuf, to, ptsize);
 		memcpy(to, from, ptsize);
 		memcpy(from, (uchar *)&pbuf, ptsize);
@@ -122,24 +122,26 @@ int
 ptarray_compute_bbox_p(const POINTARRAY *pa, BOX2DFLOAT4 *result)
 {
 	int t;
-	POINT2D *pt;
+	POINT2D pt;
 
 	if (pa->npoints == 0) return 0;
 
-	pt = (POINT2D *)getPoint(pa, 0);
+	//pt = (POINT2D *)getPoint(pa, 0);
+	getPoint2d_p(pa, 0, &pt);
 
-	result->xmin = pt->x;
-	result->xmax = pt->x;
-	result->ymin = pt->y;
-	result->ymax = pt->y;
+	result->xmin = pt.x;
+	result->xmax = pt.x;
+	result->ymin = pt.y;
+	result->ymax = pt.y;
 
 	for (t=1;t<pa->npoints;t++)
 	{
-		pt = (POINT2D *)getPoint(pa, t);
-		if (pt->x < result->xmin) result->xmin = pt->x;
-		if (pt->y < result->ymin) result->ymin = pt->y;
-		if (pt->x > result->xmax) result->xmax = pt->x;
-		if (pt->y > result->ymax) result->ymax = pt->y;
+		//pt = (POINT2D *)getPoint(pa, t);
+		getPoint2d_p(pa, t, &pt);
+		if (pt.x < result->xmin) result->xmin = pt.x;
+		if (pt.y < result->ymin) result->ymin = pt.y;
+		if (pt.x > result->xmax) result->xmax = pt.x;
+		if (pt.y > result->ymax) result->ymax = pt.y;
 	}
 
 	return 1;
@@ -151,27 +153,29 @@ BOX2DFLOAT4 *
 ptarray_compute_bbox(const POINTARRAY *pa)
 {
 	int t;
-	POINT2D *pt;
+	POINT2D pt;
 	BOX2DFLOAT4 *result;
 
 	if (pa->npoints == 0) return NULL;
 
 	result = lwalloc(sizeof(BOX2DFLOAT4));
 
-	pt = (POINT2D *)getPoint(pa, 0);
+	//pt = (POINT2D *)getPoint(pa, 0);
+	getPoint2d_p(pa, 0, &pt);
 
-	result->xmin = pt->x;
-	result->xmax = pt->x;
-	result->ymin = pt->y;
-	result->ymax = pt->y;
+	result->xmin = pt.x;
+	result->xmax = pt.x;
+	result->ymin = pt.y;
+	result->ymax = pt.y;
 
 	for (t=1;t<pa->npoints;t++)
 	{
-		pt = (POINT2D *)getPoint(pa, t);
-		if (pt->x < result->xmin) result->xmin = pt->x;
-		if (pt->y < result->ymin) result->ymin = pt->y;
-		if (pt->x > result->xmax) result->xmax = pt->x;
-		if (pt->y > result->ymax) result->ymax = pt->y;
+		//pt = (POINT2D *)getPoint(pa, t);
+		getPoint2d_p(pa, t, &pt);
+		if (pt.x < result->xmin) result->xmin = pt.x;
+		if (pt.y < result->ymin) result->ymin = pt.y;
+		if (pt.x > result->xmax) result->xmax = pt.x;
+		if (pt.y > result->ymax) result->ymax = pt.y;
 	}
 
 	return result;
@@ -185,7 +189,8 @@ POINTARRAY *
 ptarray_segmentize2d(POINTARRAY *ipa, double dist)
 {
 	double	segdist;
-	POINT4D	*p1, *p2, *ip, *op;
+	POINT4D	p1, p2;
+	void *ip, *op;
 	POINT4D pbuf;
 	POINTARRAY *opa;
 	int maxpoints = ipa->npoints;
@@ -202,28 +207,28 @@ ptarray_segmentize2d(POINTARRAY *ipa, double dist)
 
 	// Add first point
 	opa->npoints++;
-	p1 = (POINT4D *)getPoint(ipa, ipoff);
-	op = (POINT4D *)getPoint(opa, opa->npoints-1);
-	memcpy(op, p1, ptsize); 
+	getPoint4d_p(ipa, ipoff, &p1);
+	op = getPoint_internal(opa, opa->npoints-1);
+	memcpy(op, &p1, ptsize); 
 	ipoff++;
 
 	while (ipoff<ipa->npoints)
 	{
-		p2 = (POINT4D *)getPoint(ipa, ipoff);
+		getPoint4d_p(ipa, ipoff, &p2);
 
-		segdist = distance2d_pt_pt((POINT2D *)p1, (POINT2D *)p2);
+		segdist = distance2d_pt_pt((POINT2D *)&p1, (POINT2D *)&p2);
 
 		if (segdist > dist) // add an intermediate point
 		{
-			pbuf.x = p1->x + (p2->x-p1->x)/segdist * dist;
-			pbuf.y = p1->y + (p2->y-p1->y)/segdist * dist;
+			pbuf.x = p1.x + (p2.x-p1.x)/segdist * dist;
+			pbuf.y = p1.y + (p2.y-p1.y)/segdist * dist;
 			// might also compute z and m if available...
 			ip = &pbuf;
-			p1 = ip;
+			memcpy(&p1, ip, ptsize);
 		}
 		else // copy second point
 		{
-			ip = p2;
+			ip = &p2;
 			p1 = p2;
 			ipoff++;
 		}
@@ -236,7 +241,7 @@ ptarray_segmentize2d(POINTARRAY *ipa, double dist)
 				maxpoints*ptsize
 			);
 		}
-		op = (POINT4D *)getPoint(opa, opa->npoints-1);
+		op = getPoint_internal(opa, opa->npoints-1);
 		memcpy(op, ip, ptsize); 
 	}
 
@@ -257,7 +262,7 @@ ptarray_same(const POINTARRAY *pa1, const POINTARRAY *pa2)
 
 	for (i=0; i<pa1->npoints; i++)
 	{
-		if ( memcmp(getPoint(pa1, i), getPoint(pa2, i), ptsize) )
+		if ( memcmp(getPoint_internal(pa1, i), getPoint_internal(pa2, i), ptsize) )
 			return 0;
 	}
 
@@ -301,14 +306,15 @@ ptarray_addPoint(POINTARRAY *pa, uchar *p, size_t pdims, unsigned int where)
 
 	if ( where )
 	{
-		memcpy(getPoint(ret, 0), getPoint(pa, 0), ptsize*where);
+		memcpy(getPoint_internal(ret, 0), getPoint_internal(pa, 0), ptsize*where);
 	}
 
-	memcpy(getPoint(ret, where), (uchar *)&pbuf, ptsize);
+	memcpy(getPoint_internal(ret, where), (uchar *)&pbuf, ptsize);
 
 	if ( where+1 != ret->npoints )
 	{
-		memcpy(getPoint(ret, where+1), getPoint(pa, where),
+		memcpy(getPoint_internal(ret, where+1),
+			getPoint_internal(pa, where),
 			ptsize*(pa->npoints-where));
 	}
 
@@ -337,9 +343,11 @@ ptarray_clone(const POINTARRAY *in)
 int
 ptarray_isclosed2d(const POINTARRAY *in)
 {
-	POINT2D *p1, *p2;
-	p1 = (POINT2D *)getPoint(in, 0);
-	p2 = (POINT2D *)getPoint(in, in->npoints-1);
-	if ( p1->x != p2->x || p1->y != p2->y ) return 0;
-	else return 1;
+	//POINT2D *p1, *p2;
+	if ( memcmp(getPoint_internal(in, 0), getPoint_internal(in, in->npoints-1), sizeof(POINT2D)) ) return 0;
+	return 1;
+	//p1 = (POINT2D *)getPoint(in, 0);
+	//p2 = (POINT2D *)getPoint(in, in->npoints-1);
+	//if ( p1->x != p2->x || p1->y != p2->y ) return 0;
+	//else return 1;
 }

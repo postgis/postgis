@@ -412,6 +412,8 @@ lwline_from_lwpointarray(int SRID, unsigned int npoints, LWPOINT **points)
 	int zmflag=0;
 	unsigned int i;
 	POINTARRAY *pa;
+	uchar *newpoints, *ptr;
+	size_t ptsize, size;
 
 	/*
 	 * Find output dimensions, check integrity
@@ -429,47 +431,26 @@ lwline_from_lwpointarray(int SRID, unsigned int npoints, LWPOINT **points)
 		if ( zmflag == 3 ) break;
 	}
 
-	/* Allocate space for output pointarray */
-	pa = ptarray_construct(zmflag&2, zmflag&1, npoints);
-
-#ifdef PGIS_DEBUG
-	lwnotice("lwline_from_lwpointarray: constructed pointarray for %d points, %d zmflag",
-		npoints, zmflag);
-#endif
+	if ( zmflag == 0 ) ptsize=2*sizeof(double);
+	else if ( zmflag == 3 ) ptsize=4*sizeof(double);
+	else ptsize=3*sizeof(double);
 
 	/*
-	 * Fill pointarray
+	 * Allocate output points array
 	 */
-	switch (zmflag)
+	size = ptsize*npoints;
+	newpoints = lwalloc(size);
+	memset(newpoints, 0, size);
+
+	ptr=newpoints;
+	for (i=0; i<npoints; i++)
 	{
-		case 0: // 2d
-			for (i=0; i<npoints; i++)
-				getPoint2d_p(points[i]->point, 0,
-					(POINT2D *)getPoint(pa, i));
-			break;
-
-		case 1: // 3dm
-			for (i=0; i<npoints; i++)
-				getPoint3dm_p(points[i]->point, 0,
-					(POINT3DM *)getPoint(pa, i));
-			break;
-
-		case 2: // 3dz
-			for (i=0; i<npoints; i++)
-				getPoint3dz_p(points[i]->point, 0,
-					(POINT3DZ *)getPoint(pa, i));
-			break;
-
-		case 3: // 4d
-			for (i=0; i<npoints; i++)
-				getPoint4d_p(points[i]->point, 0,
-					(POINT4D *)getPoint(pa, i));
-			break;
-
-		default:
-			lwerror ("lwline_from_lwpointarray: unespected ZMflag: %d", zmflag);
-			return NULL;
+		size=pointArray_ptsize(points[i]->point);
+		memcpy(ptr, getPoint_internal(points[i]->point, 0), size);
+		ptr+=ptsize;
 	}
+
+	pa = pointArray_construct(newpoints, zmflag&2, zmflag&1, npoints);
 
 	return lwline_construct(SRID, NULL, pa);
 }
@@ -483,48 +464,33 @@ lwline_from_lwmpoint(int SRID, LWMPOINT *mpoint)
 	unsigned int i;
 	POINTARRAY *pa;
 	char zmflag = TYPE_GETZM(mpoint->type);
+	size_t ptsize, size;
+	uchar *newpoints, *ptr;
 
-	/* Allocate space for output pointarray */
-	pa = ptarray_construct(TYPE_HASZ(mpoint->type),
-		TYPE_HASM(mpoint->type), mpoint->ngeoms);
+	if ( zmflag == 0 ) ptsize=2*sizeof(double);
+	else if ( zmflag == 3 ) ptsize=4*sizeof(double);
+	else ptsize=3*sizeof(double);
+
+	/* Allocate space for output points */
+	size = ptsize*mpoint->ngeoms;
+	newpoints = lwalloc(size);
+	memset(newpoints, 0, size);
+
+	ptr=newpoints;
+	for (i=0; i<mpoint->ngeoms; i++)
+	{
+		memcpy(ptr,
+			getPoint_internal(mpoint->geoms[i]->point, 0),
+			ptsize);
+		ptr+=ptsize;
+	}
+
+	pa = pointArray_construct(newpoints, zmflag&2, zmflag&1,
+		mpoint->ngeoms);
 
 #ifdef PGIS_DEBUG
 	lwnotice("lwline_from_lwmpoint: constructed pointarray for %d points, %d zmflag", mpoint->ngeoms, zmflag);
 #endif
-
-	/*
-	 * Fill pointarray
-	 */
-	switch (zmflag)
-	{
-		case 0: // 2d
-			for (i=0; i<mpoint->ngeoms; i++)
-				getPoint2d_p(mpoint->geoms[i]->point, 0,
-					(POINT2D *)getPoint(pa, i));
-			break;
-
-		case 1: // 3dm
-			for (i=0; i<mpoint->ngeoms; i++)
-				getPoint3dm_p(mpoint->geoms[i]->point, 0,
-					(POINT3DM *)getPoint(pa, i));
-			break;
-
-		case 2: // 3dz
-			for (i=0; i<mpoint->ngeoms; i++)
-				getPoint3dz_p(mpoint->geoms[i]->point, 0,
-					(POINT3DZ *)getPoint(pa, i));
-			break;
-
-		case 3: // 4d
-			for (i=0; i<mpoint->ngeoms; i++)
-				getPoint4d_p(mpoint->geoms[i]->point, 0,
-					(POINT4D *)getPoint(pa, i));
-			break;
-
-		default:
-			lwerror ("lwline_from_lwmpoint: unespected ZMflag: %d", zmflag);
-			return NULL;
-	}
 
 	return lwline_construct(SRID, NULL, pa);
 }
@@ -535,7 +501,8 @@ lwline_addpoint(LWLINE *line, LWPOINT *point, unsigned int where)
 	POINTARRAY *newpa;
 	LWLINE *ret;
 
-	newpa = ptarray_addPoint(line->points, getPoint(point->point, 0),
+	newpa = ptarray_addPoint(line->points,
+		getPoint_internal(point->point, 0),
 		TYPE_NDIMS(point->type), where);
 
 	ret = lwline_construct(line->SRID, NULL, newpa);

@@ -173,21 +173,29 @@ lwpoint_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *point)
 LWPOINT *
 make_lwpoint2d(int SRID, double x, double y)
 {
+	POINT2D p;
 	POINTARRAY *pa = ptarray_construct(0, 0, 1);
-	POINT2D *p = (POINT2D *)getPoint(pa, 0);
-	p->x = x;
-	p->y = y;
+
+	p.x = x;
+	p.y = y;
+
+	memcpy(getPoint_internal(pa, 0), &p, sizeof(POINT2D));
+
 	return lwpoint_construct(SRID, NULL, pa);
 }
 
 LWPOINT *
 make_lwpoint3dz(int SRID, double x, double y, double z)
 {
+	POINT3DZ p;
 	POINTARRAY *pa = ptarray_construct(1, 0, 1);
-	POINT3DZ *p = (POINT3DZ *)getPoint(pa, 0);
-	p->x = x;
-	p->y = y;
-	p->z = z;
+
+	p.x = x;
+	p.y = y;
+	p.z = z;
+
+	memcpy(getPoint_internal(pa, 0), &p, sizeof(POINT3DZ));
+
 	return lwpoint_construct(SRID, NULL, pa);
 }
 
@@ -195,10 +203,14 @@ LWPOINT *
 make_lwpoint3dm(int SRID, double x, double y, double m)
 {
 	POINTARRAY *pa = ptarray_construct(0, 1, 1);
-	POINT3DM *p = (POINT3DM *)getPoint(pa, 0);
-	p->x = x;
-	p->y = y;
-	p->m = m;
+	POINT3DM p;
+
+	p.x = x;
+	p.y = y;
+	p.m = m;
+
+	memcpy(getPoint_internal(pa, 0), &p, sizeof(POINT3DM));
+
 	return lwpoint_construct(SRID, NULL, pa);
 }
 
@@ -206,11 +218,15 @@ LWPOINT *
 make_lwpoint4d(int SRID, double x, double y, double z, double m)
 {
 	POINTARRAY *pa = ptarray_construct(1, 1, 1);
-	POINT4D *p = (POINT4D *)getPoint(pa, 0);
-	p->x = x;
-	p->y = y;
-	p->z = z;
-	p->m = m;
+	POINT4D p;
+	
+	p.x = x;
+	p.y = y;
+	p.z = z;
+	p.m = m;
+
+	memcpy(getPoint_internal(pa, 0), &p, sizeof(POINT4D));
+
 	return lwpoint_construct(SRID, NULL, pa);
 }
 
