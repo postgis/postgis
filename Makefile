@@ -33,14 +33,18 @@ subdir=contrib/postgis
 # To use a non-standard location set the PGSQL_SRC environment
 # variable to the appropriate location.
 #
+ifeq (${LPATH},) 
+	LPATH := \$$libdir
+endif
+
 ifeq (${PGSQL_SRC},) 
 	top_builddir = ../..
 	include $(top_builddir)/src/Makefile.global
-	LPATH := \$$libdir
+	#LPATH := \$$libdir
 else
 	top_builddir = ${PGSQL_SRC}
 	include $(top_builddir)/src/Makefile.global
-	LPATH := ${PWD}
+	#LPATH := ${PWD}
 endif
 
 #---------------------------------------------------------------
