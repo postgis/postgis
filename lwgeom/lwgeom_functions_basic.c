@@ -1287,6 +1287,8 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS)
 	PG_LWGEOM *result;
 	LWGEOM *lwgeoms[1];
 	LWGEOM *lwgeom;
+	int SRID;
+	BOX2DFLOAT4 *bbox;
 
 	// deserialize into lwgeoms[0]
 	lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom));
@@ -1300,9 +1302,13 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS)
 	// single geom, make it a collection
 	else
 	{
+		SRID = lwgeom->SRID;
+		bbox = lwgeom->bbox;
+		lwgeom->SRID = -1;
+		lwgeom->bbox = NULL;
 		lwgeoms[0] = lwgeom;
 		lwgeom = (LWGEOM *)lwcollection_construct(COLLECTIONTYPE,
-			lwgeom->SRID, lwgeom->bbox, 1,
+			SRID, bbox, 1,
 			lwgeoms);
 	}
 
