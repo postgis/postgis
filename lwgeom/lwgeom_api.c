@@ -29,7 +29,7 @@ extern  BOX3D *lw_geom_getBB_simple(char *serialized_form);
 // this will change to NaN when I figure out how to
 // get NaN in a platform-independent way
 
-#define NO_Z_VALUE 0
+#define NO_Z_VALUE 0.0
 
 //#define DEBUG 1
 
@@ -405,23 +405,38 @@ BOX2DFLOAT4 getbox2d(char *serialized_form)
 int
 getbox2d_p(char *serialized_form, BOX2DFLOAT4 *box)
 {
-	unsigned char type = (unsigned char) serialized_form[0];
+	char type = serialized_form[0];
 	char *loc;
 	BOX3D *box3d;
+
+#ifdef DEBUG
+	elog(NOTICE,"getbox2d_p call");
+#endif
 
 	loc = serialized_form+1;
 
 	if (lwgeom_hasBBOX(type))
 	{
 		//woot - this is easy
-//elog(NOTICE,"getbox2d has box");
-		memcpy(box,loc, sizeof(BOX2DFLOAT4));
+#ifdef DEBUG
+		elog(NOTICE,"getbox2d_p: has box");
+#endif
+		memcpy(box, loc, sizeof(BOX2DFLOAT4));
 		return 1;
 	}
+
+#ifdef DEBUG
+	elog(NOTICE,"getbox2d_p: has no box - computing");
+#endif
 
 	//we have to actually compute it!
 //elog(NOTICE,"getbox2d_p:: computing box");
 	box3d = lw_geom_getBB_simple(serialized_form);
+
+#ifdef DEBUG
+	elog(NOTICE, "getbox2d_p: lw_geom_getBB_simple returned %p", box3d);
+#endif
+
 	if ( ! box3d )
 	{
 		return 0;
@@ -431,6 +446,10 @@ getbox2d_p(char *serialized_form, BOX2DFLOAT4 *box)
 	{
 		return 0;
 	}
+
+#ifdef DEBUG
+	elog(NOTICE, "getbox2d_p: box3d converted to box2d");
+#endif
 
 	//box2 = box3d_to_box2df(box3d);
 	//memcpy(box,box2, sizeof(BOX2DFLOAT4));
@@ -531,35 +550,45 @@ void getPoint4d_p(POINTARRAY *pa, int n, char *point)
 // copies a point from the point array into the parameter point
 // will set point's z=0 (or NaN) if pa is 2d
 // NOTE: point is a real POINT3D *not* a pointer
- POINT3D getPoint3d(POINTARRAY *pa, int n)
- {
-	 POINT3D result;
-	 int size;
+POINT3D getPoint3d(POINTARRAY *pa, int n)
+{
+	POINT3D result;
+	int size;
 
-	 if ( (n<0) || (n>=pa->npoints))
-	 {
-		 return result; //error
-	 }
+	if ( (n<0) || (n>=pa->npoints))
+	{
+		return result; //error
+	}
 
-	 size = pointArray_ptsize(pa);
+	size = pointArray_ptsize(pa);
 
-	 	// this does x,y
-	 memcpy(&result.x, &pa->serialized_pointlist[size*n],sizeof(double)*2 );
-	 if (pa->ndims >2)
-	 	memcpy(&result.z, &pa->serialized_pointlist[size*n + sizeof(double)*2],sizeof(double) );
+	// this does x,y
+	memcpy(&result.x, &pa->serialized_pointlist[size*n],sizeof(double)*2 );
+	if (pa->ndims >2)
+		memcpy(&result.z, &pa->serialized_pointlist[size*n + sizeof(double)*2],sizeof(double) );
 	 else
 	 	result.z = NO_Z_VALUE;
 	 return result;
- }
+}
 
 // copies a point from the point array into the parameter point
-// will set point's z=0 (or NaN) if pa is 2d
+// will set point's z=NO_Z_VALUE if pa is 2d
 // NOTE: this will modify the point3d pointed to by 'point'.
 // we use a char* instead of a POINT3D because we want to use this function
 //  for serialization/de-serialization
 void getPoint3d_p(POINTARRAY *pa, int n, char *point)
 {
 	int size;
+	double bad=NO_Z_VALUE;
+	POINT3D *op, *ip;
+
+	op = (POINT3D *)point;
+
+#ifdef DEBUG
+	elog(NOTICE, "getPoint3d_p called on array of %d-dimensions / %u pts",
+		pa->ndims, pa->npoints);
+	if ( pa->npoints > 1000 ) elog(ERROR, "More then 1000 points in pointarray ??");
+#endif
 
 	if ( (n<0) || (n>=pa->npoints))
 	{
@@ -569,20 +598,48 @@ void getPoint3d_p(POINTARRAY *pa, int n, char *point)
 
 	size = pointArray_ptsize(pa);
 
+#ifdef DEBUG
+	elog(NOTICE, "getPoint3d_p: point size: %d", size);
+#endif
+
+	ip = (POINT3D *)getPoint(pa, n);
+	op->x = ip->x;
+	op->y = ip->y;
+	if (pa->ndims >2) op->z = ip->z;
+	else op->z = NO_Z_VALUE;
+	return;
+
+#ifdef _KEEP_TRASH
 	// this does x,y
 	memcpy(point,
 		&pa->serialized_pointlist[size*n],
 		sizeof(double)*2 );
 
+#ifdef DEBUG
+	elog(NOTICE, "getPoint3d_p: x/y copied");
+#endif
+
 	if (pa->ndims >2)
-		memcpy(point+16, &pa->serialized_pointlist[size*n + sizeof(double)*2],sizeof(double) );
+	{
+		memcpy(point+sizeof(double)*2,
+			&pa->serialized_pointlist[size*n + sizeof(double)*2],
+			sizeof(double) );
+#ifdef DEBUG
+		elog(NOTICE, "getPoint3d_p: z copied");
+#endif
+	}
 	else
 	{
-		double bad=NO_Z_VALUE;
-		memcpy(point+16, &bad,sizeof(double) );
+		memcpy(point+sizeof(double)*2, &bad, sizeof(double) );
 	 	//point->z = NO_Z_VALUE;
+#ifdef DEBUG
+		elog(NOTICE, "getPoint3d_p: z set to %f", NO_Z_VALUE);
+#endif
  	}
- }
+
+#endif // _KEEP_TRASH
+
+}
 
 
 // copies a point from the point array into the parameter point
@@ -654,7 +711,7 @@ getPoint(POINTARRAY *pa, int n)
 POINTARRAY *pointArray_construct(char *points, int ndims, uint32 npoints)
 {
 	POINTARRAY  *pa;
-	pa = (POINTARRAY*)palloc(sizeof(pa));
+	pa = (POINTARRAY*)palloc(sizeof(POINTARRAY));
 
 	if (ndims>4)
 		elog(ERROR,"pointArray_construct:: called with dims = %i", (int) ndims);
@@ -666,46 +723,83 @@ POINTARRAY *pointArray_construct(char *points, int ndims, uint32 npoints)
 	return pa;
 }
 
-//calculate the bounding box of a set of points
-// returns a postgresql box
+// calculate the bounding box of a set of points
+// returns a palloced BOX3D, or NULL on empty array.
+// zmin/zmax values are set to NO_Z_VALUE if not available.
 BOX3D *pointArray_bbox(POINTARRAY *pa)
 {
 	int t;
 	BOX3D *result;
-	POINT3D pt;
+	POINT3D *pt;
+	int npoints = pa->npoints;
 
-	result = (BOX3D*) palloc(sizeof(BOX3D));
-
+#ifdef DEBUG
+	elog(NOTICE, "pointArray_bbox call (array has %d points)", pa->npoints);
+#endif
 	if (pa->npoints == 0)
-		return result;
+	{
+#ifdef DEBUG
+		elog(NOTICE, "pointArray_bbox returning NULL");
+#endif
+		return NULL;
+	}
 
-	getPoint3d_p(pa,0,(char*)&pt);
-	result->xmin = pt.x;
-	result->ymin = pt.y;
-	result->zmin = pt.z;
+	if ( npoints != pa->npoints) elog(ERROR, "Messed up at %s:%d", __FILE__, __LINE__);
 
-	result->xmax = pt.x;
-	result->ymax = pt.y;
-	result->zmax = pt.z;
+	result = (BOX3D*)palloc(sizeof(BOX3D));
 
+	if ( npoints != pa->npoints) elog(ERROR, "Messed up at %s:%d", __FILE__, __LINE__);
+
+	if ( ! result )
+	{
+		elog(NOTICE, "Out of virtual memory");
+		return NULL;
+	}
+
+	//getPoint3d_p(pa, 0, (char*)pt);
+	pt = (POINT3D *)getPoint(pa, 0);
+
+	if ( npoints != pa->npoints) elog(ERROR, "Messed up at %s:%d", __FILE__, __LINE__);
+
+#ifdef DEBUG
+	elog(NOTICE, "pointArray_bbox: got point 0");
+#endif
+
+	result->xmin = pt->x;
+	result->xmax = pt->x;
+	result->ymin = pt->y;
+	result->ymax = pt->y;
+
+	if ( pa->ndims > 2 ) {
+		result->zmin = pt->z;
+		result->zmax = pt->z;
+	} else {
+		result->zmin = NO_Z_VALUE;
+		result->zmax = NO_Z_VALUE;
+	}
+
+#ifdef DEBUG
+	elog(NOTICE, "pointArray_bbox: scanning other %d points", pa->npoints);
+#endif
 	for (t=1;t<pa->npoints;t++)
 	{
-		getPoint3d_p(pa,t,(char*)&pt);
-		if (pt.x < result->xmin)
-			result->xmin = pt.x;
-		if (pt.y <
-			result->ymin)
-			result->ymin = pt.y;
-		if (pt.x > result->xmax)
-			result->xmax = pt.x;
-		if (pt.y > result->ymax)
-			result->ymax = pt.y;
+		//getPoint3d_p(pa,t,(char*)&pt);
+		pt = (POINT3D *)getPoint(pa, t);
+		if (pt->x < result->xmin) result->xmin = pt->x;
+		if (pt->y < result->ymin) result->ymin = pt->y;
+		if (pt->x > result->xmax) result->xmax = pt->x;
+		if (pt->y > result->ymax) result->ymax = pt->y;
 
-		if (pt.z > result->zmax)
-			result->zmax = pt.z;
-		if (pt.z < result->zmax)
-			result->zmax = pt.z;
+		if ( pa->ndims > 2 ) {
+			if (pt->z > result->zmax) result->zmax = pt->z;
+			if (pt->z < result->zmax) result->zmax = pt->z;
+		}
 	}
+
+#ifdef DEBUG
+	elog(NOTICE, "pointArray_bbox returning box");
+#endif
+
 	return result;
 }
 
@@ -713,14 +807,13 @@ BOX3D *pointArray_bbox(POINTARRAY *pa)
 // 16 for 2d, 24 for 3d, 32 for 4d
 int pointArray_ptsize(POINTARRAY *pa)
 {
-	if (pa->ndims == 3)
-		return 24;
-	else if (pa->ndims == 2)
-		return 16;
-	else if (pa->ndims == 4)
-		return 32;
-	elog(ERROR,"pointArray_ptsize:: ndims isnt 2,3, or 4");
-	return 0; // never get here
+	if ( pa->ndims < 2 || pa->ndims > 4 )
+	{
+		elog(ERROR,"pointArray_ptsize:: ndims isnt 2,3, or 4");
+		return 0; // never get here
+	}
+
+	return sizeof(double)*pa->ndims;
 }
 
 
@@ -1043,10 +1136,13 @@ void lwline_serialize_buf(LWLINE *line, char *buf, int *retsize)
 // find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
 BOX3D *lwline_findbbox(LWLINE *line)
 {
+	BOX3D *ret;
+
 	if (line == NULL)
 		return NULL;
 
-	return pointArray_bbox(line->points);
+	ret = pointArray_bbox(line->points);
+	return ret;
 }
 
 //find length of this serialized line
@@ -1123,47 +1219,52 @@ LWPOINT  *lwpoint_construct(int ndims, int SRID, POINTARRAY *point)
 // See serialized form doc
 LWPOINT *lwpoint_deserialize(char *serialized_form)
 {
-		unsigned char type;
-		LWPOINT *result;
-		char *loc = NULL;
-		POINTARRAY *pa;
+	unsigned char type;
+	LWPOINT *result;
+	char *loc = NULL;
+	POINTARRAY *pa;
 
-		result = (LWPOINT*) palloc( sizeof(LWPOINT)) ;
+#ifdef DEBUG
+	elog(NOTICE, "lwpoint_deserialize called");
+#endif
 
-		type = (unsigned char) serialized_form[0];
+	result = (LWPOINT*) palloc(sizeof(LWPOINT)) ;
 
+	type = (unsigned char) serialized_form[0];
 
-		if ( lwgeom_getType(type) != POINTTYPE)
-			return NULL;
+	if ( lwgeom_getType(type) != POINTTYPE) return NULL;
 
+	loc = serialized_form+1;
 
+	if (lwgeom_hasBBOX(type))
+	{
+#ifdef DEBUG
+		elog(NOTICE, "lwpoint_deserialize: input has bbox");
+#endif
+		loc += sizeof(BOX2DFLOAT4);
+	}
 
-		loc = serialized_form+1;
+	if ( lwgeom_hasSRID(type))
+	{
+#ifdef DEBUG
+		elog(NOTICE, "lwpoint_deserialize: input has SRID");
+#endif
+		result->SRID = get_int32(loc);
+		loc += 4; // type + SRID
+	}
+	else
+	{
+		result->SRID = -1;
+	}
 
-		if (lwgeom_hasBBOX(type))
-		{
-			loc += sizeof(BOX2DFLOAT4);
-		}
+	// we've read the type (1 byte) and SRID (4 bytes, if present)
 
-		if ( lwgeom_hasSRID(type))
-		{
-			result->SRID = get_int32(loc);
-			loc +=4; // type + SRID
-		}
-		else
-		{
-			result->SRID = -1;
-		}
+	pa = pointArray_construct(loc, lwgeom_ndims(type), 1);
 
-		// we've read the type (1 byte) and SRID (4 bytes, if present)
-
-		pa = pointArray_construct( loc, lwgeom_ndims(type), 1);
-
-		result->point = pa;
-		result->ndims = lwgeom_ndims(type);
+	result->point = pa;
+	result->ndims = lwgeom_ndims(type);
 
 	return result;
-
 }
 
 // convert this point into its serialize form
@@ -1172,7 +1273,7 @@ char  *lwpoint_serialize(LWPOINT *point)
 {
 	int size=1;
 	char hasSRID;
-	char * result;
+	char *result;
 	char *loc;
 
 	hasSRID = (point->SRID != -1);
@@ -1243,8 +1344,20 @@ void lwpoint_serialize_buf(LWPOINT *point, char *buf, int *retsize)
 // find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
 BOX3D *lwpoint_findbbox(LWPOINT *point)
 {
+#ifdef DEBUG
+	elog(NOTICE, "lwpoint_findbbox called with point %p", point);
+#endif
 	if (point == NULL)
-			return NULL;
+	{
+#ifdef DEBUG
+		elog(NOTICE, "lwpoint_findbbox returning NULL");
+#endif
+		return NULL;
+	}
+
+#ifdef DEBUG
+	elog(NOTICE, "lwpoint_findbbox returning pointArray_bbox return");
+#endif
 
 	return pointArray_bbox(point->point);
 }
@@ -1763,14 +1876,14 @@ LWGEOM_INSPECTED *lwgeom_inspect(char *serialized_form)
 	result->sub_geoms = sub_geoms;
 	sub_geoms[0] = loc;
 #ifdef DEBUG
-	elog(NOTICE, "subgeom[0] @ %i", sub_geoms[0]);
+	elog(NOTICE, "subgeom[0] @ %p", sub_geoms[0]);
 #endif
 	for (t=1;t<result->ngeometries; t++)
 	{
 		int sub_length = lwgeom_seralizedformlength(sub_geoms[t-1], -1);//-1 = entire object
 		sub_geoms[t] = sub_geoms[t-1] + sub_length;
 #ifdef DEBUG
-		elog(NOTICE, "subgeom[%d] @ %i (sub_length: %d)",
+		elog(NOTICE, "subgeom[%d] @ %p (sub_length: %d)",
 			t, sub_geoms[t], sub_length);
 #endif
 	}
@@ -2280,7 +2393,7 @@ BOX3D *lw_geom_getBB(char *serialized_form)
 //dont forget to pfree() result
 BOX3D *lw_geom_getBB_simple(char *serialized_form)
 {
-	char type = lwgeom_getType((unsigned char) serialized_form[0]);
+	int type = lwgeom_getType((unsigned char) serialized_form[0]);
 	int t;
 	char *loc;
 	uint32 ngeoms;
@@ -2288,10 +2401,20 @@ BOX3D *lw_geom_getBB_simple(char *serialized_form)
 	BOX3D *b1,*b2;
 	int sub_size;
 
+#ifdef DEBUG
+elog(NOTICE, "lw_geom_getBB_simple called on type %d", type);
+#endif
+
 	if (type == POINTTYPE)
 	{
 		LWPOINT *pt = lwpoint_deserialize(serialized_form);
+#ifdef DEBUG
+elog(NOTICE, "lw_geom_getBB_simple: lwpoint deserialized");
+#endif
 		result = lwpoint_findbbox(pt);
+#ifdef DEBUG
+elog(NOTICE, "lw_geom_getBB_simple: bbox found");
+#endif
 		pfree_point(pt);
 		return result;
 	/*
@@ -2318,12 +2441,19 @@ BOX3D *lw_geom_getBB_simple(char *serialized_form)
 		return result;
 	}
 
-	   loc = serialized_form+1;
+	if ( ! ( type == MULTIPOINTTYPE || type == MULTILINETYPE ||
+		type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE ) )
+	{
+		elog(NOTICE, "lw_geom_getBB_simple called on unknown type %d", type);
+		return NULL;
+	}
 
-		if (lwgeom_hasBBOX((unsigned char) serialized_form[0]))
-		{
-			loc += sizeof(BOX2DFLOAT4);
-		}
+	loc = serialized_form+1;
+
+	if (lwgeom_hasBBOX((unsigned char) serialized_form[0]))
+	{
+		loc += sizeof(BOX2DFLOAT4);
+	}
 
 	if (lwgeom_hasSRID((unsigned char) serialized_form[0]) )
 	{
@@ -2361,34 +2491,35 @@ BOX3D *lw_geom_getBB_simple(char *serialized_form)
 //dont forget to pfree() result
 BOX3D *lw_geom_getBB_inspected(LWGEOM_INSPECTED *inspected)
 {
-		int t;
-		BOX3D *b1,*b2,*result;
+	int t;
+	BOX3D *b1,*b2,*result;
 
-		result = NULL;
+	result = NULL;
 
-		//handle all the multi* and geometrycollections the same
-		    //NOTE: for a geometry collection of GC of GC of GC we will be recursing...
-		for (t=0;t<inspected->ngeometries;t++)
+	// handle all the multi* and geometrycollections the same
+	// NOTE: for a geometry collection of GC of GC of GC
+	// we will be recursing...
+	for (t=0;t<inspected->ngeometries;t++)
+	{
+		b1 = lw_geom_getBB_simple( inspected->sub_geoms[t] );
+
+		//elog(NOTICE,"%i has box :: BBOX3D(%g %g, %g %g)",t,b1->xmin, b1->ymin,b1->xmax, b1->ymax);
+
+		if (result != NULL)
 		{
-			b1 = lw_geom_getBB_simple( inspected->sub_geoms[t] );
-
-//	elog(NOTICE,"%i has box :: BBOX3D(%g %g, %g %g)",t,b1->xmin, b1->ymin,b1->xmax, b1->ymax);
-
-			if (result != NULL)
-			{
-				b2= result;
-				result = combine_boxes(b2, b1);
+			b2= result;
+			result = combine_boxes(b2, b1);
 //	elog(NOTICE,"combined has :: BBOX3D(%g %g, %g %g)",result->xmin, result->ymin,result->xmax, result->ymax);
 
-				pfree(b1);
-				pfree(b2);
-			}
-			else
-			{
-				result = b1;
-			}
-
+			pfree(b1);
+			pfree(b2);
 		}
+		else
+		{
+			result = b1;
+		}
+
+	}
 
 	return result;
 }
