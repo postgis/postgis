@@ -3363,6 +3363,15 @@ dimension
 		</varlistentry>
 
 		<varlistentry>
+		  <term>UpdateGeometrySRID([&lt;schema_name&gt;],
+		  &lt;table_name&gt;, &lt;column_name&gt;, &lt;srid&gt;)</term>
+		  <listitem>
+		    <para>Update the SRID of all features in a geometry column updating constraints and reference in geometry_columns.
+		    Note: uses current_schema() on schema-aware pgsql installations if schema is not provided.</para>
+		  </listitem>
+		</varlistentry>
+
+		<varlistentry>
 		  <term>update_geometry_stats([&lt;table_name&gt;,
 		  &lt;column_name&gt;])</term>
 
