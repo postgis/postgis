@@ -12,6 +12,9 @@
 
 #include "fmgr.h"
 #include "utils/elog.h"
+#if USE_VERSION > 73
+# include "lib/stringinfo.h" // for binary input
+#endif
 
 
 #include "lwgeom.h"
@@ -29,11 +32,6 @@ void elog_ERROR(const char* string);
 extern unsigned char	parse_hex(char *str);
 extern void deparse_hex(unsigned char str, unsigned char *result);
 extern char *parse_lwgeom_wkt(char *wkt_input);
-
-
-// 3d or 4d.  There is NOT a (x,y,m) point type!!!
-#define WKB3DOFFSET 0x80000000
-#define WKB4DOFFSET 0x40000000
 
 Datum LWGEOMFromWKB(PG_FUNCTION_ARGS);
 Datum WKBFromLWGEOM(PG_FUNCTION_ARGS);
@@ -92,7 +90,8 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 	{
 		//its WKB
 		//PG_RETURN_POINTER(parse_lwgeom_serialized_form(str));
-		PG_RETURN_POINTER( parse_lwgeom_wkt(str) );   // this function handles wkt and wkb (in hex-form)
+		// this function handles wkt and wkb (in hex-form)
+		PG_RETURN_POINTER( parse_lwgeom_wkt(str) );  
 	}
 	else if ( (start == 'P') || (start == 'L') || (start == 'M') ||
 		(start == 'G') || (start == 'p') || (start == 'l') ||

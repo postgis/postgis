@@ -104,6 +104,9 @@ CREATE TYPE geometry (
         internallength = variable,
         input = geometry_in,
         output = geometry_out,
+#if USE_VERSION >= 80
+	analyze = geometry_analyze,
+#endif // USE_VERSION >= 80
         storage = main
 );
 
@@ -1052,11 +1055,6 @@ CREATEFUNCTION AsText(geometry)
 	RETURNS TEXT
 	AS '@MODULE_FILENAME@','LWGEOM_asText'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
-
-CREATEFUNCTION GeometryFromText(geometry, int4)
-        RETURNS geometry
-        AS '@MODULE_FILENAME@','LWGEOM_from_text'
-        LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION GeometryFromText(geometry)
         RETURNS geometry
