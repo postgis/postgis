@@ -778,6 +778,8 @@ void
 InsertLineString(int id)
 {
 	int pi; // part index
+	unsigned int subtype = LINETYPE | (wkbtype&WKBZOFFSET) | 
+		(wkbtype&WKBMOFFSET);
 
 	/* Invalid (MULTI)Linestring */
 	if ( obj->nVertices < 2 )
@@ -792,8 +794,12 @@ InsertLineString(int id)
 		return;
 	}
 
-	if (dump_format) printf("SRID=%s;%s(",sr_id,pgtype );
-	else printf("GeometryFromText('%s(", pgtype);
+	if (!dump_format) printf("'");
+	if ( sr_id && sr_id != "-1" ) printf("SRID=%s;", sr_id);
+
+	print_wkb_byte(getEndianByte());
+	print_wkb_int(wkbtype);
+	print_wkb_int(obj->nParts);
 
 	for (pi=0; pi<obj->nParts; pi++)
 	{
@@ -801,64 +807,28 @@ InsertLineString(int id)
 		int vs; // start vertex
 		int ve; // end vertex
 
+		print_wkb_byte(getEndianByte());
+		print_wkb_int(subtype);
+
 		// Set start and end vertexes
 		if ( pi==obj->nParts-1 ) ve = obj->nVertices;
 		else ve = obj->panPartStart[pi+1];
 		vs = obj->panPartStart[pi];
 
-		if (pi) printf(",");
-		printf("(");
-		if ( pgdims == 4 )
+		print_wkb_int(obj->nVertices);
+		for ( vi=vs; vi<ve; vi++)
 		{
-			for ( vi=vs; vi<ve; vi++)
-			{
-				if (vi!=vs) printf(",");
-				printf("%.15g %.15g %.15g %.15g",
-					obj->padfX[vi],
-					obj->padfY[vi],
-					obj->padfZ[vi],
-					obj->padfM[vi]);
-			}
+			print_wkb_double(obj->padfX[vi]);
+			print_wkb_double(obj->padfY[vi]);
+			if ( wkbtype & WKBZOFFSET )
+				print_wkb_double(obj->padfZ[vi]);
+			if ( wkbtype & WKBMOFFSET )
+				print_wkb_double(obj->padfM[vi]);
 		}
-		else if ( pgdims == 2 )
-		{
-			for ( vi=vs; vi<ve; vi++)
-			{
-				if (vi!=vs) printf(",");
-				printf("%.15g %.15g",
-					obj->padfX[vi],
-					obj->padfY[vi]);
-			}
-		}
-		else if ( istypeM )
-		{
-			for ( vi=vs; vi<ve; vi++)
-			{
-				if (vi!=vs) printf(",");
-				printf("%.15g %.15g %.15g",
-					obj->padfX[vi],
-					obj->padfY[vi],
-					obj->padfM[vi]);
-			}
-		}
-		else // LINE3dZ -- should never happen
-		{
-			for ( vi=vs; vi<ve; vi++)
-			{
-				if (vi!=vs) printf(",");
-				printf("%.15g %.15g %.15g",
-					obj->padfX[vi],
-					obj->padfY[vi],
-					obj->padfZ[vi]);
-			}
-		}
-
-		printf(")");
-
 	}
 
-	if (dump_format) printf(")\n");
-	else printf(")',%s));\n",sr_id);
+	if (dump_format) printf("\n");
+	else printf("');\n");
 }
 
 //This function basically deals with the polygon case.
@@ -1358,6 +1328,9 @@ print_wkb_bytes(unsigned char *ptr, unsigned int cnt, size_t size)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.72  2004/10/17 12:59:12  strk
+ * HEXWKB multiline output
+ *
  * Revision 1.71  2004/10/17 12:26:02  strk
  * Point and MultiPoint loaded using HEXWKB.
  *
