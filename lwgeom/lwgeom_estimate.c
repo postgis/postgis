@@ -10,6 +10,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.4  2004/09/14 07:43:00  strk
+ * Updated call to SPI_cursor_open to 8.0 (beta2) interface.
+ *
  * Revision 1.3  2004/08/19 13:54:15  strk
  * cpp checks updated to use 80 instead of 75 for USE_VERSION
  *
@@ -379,7 +382,11 @@ Datum build_lwhistogram2d(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL() ;
 	}
 
+#if USE_VERSION >= 80
+	SPIportal = SPI_cursor_open(NULL, SPIplan, NULL, NULL, 1);
+#else
 	SPIportal = SPI_cursor_open(NULL, SPIplan, NULL, NULL);
+#endif
 	if (SPIportal == NULL)
 	{
 		elog(ERROR,"build_histogram2d: couldn't create cursor via SPI");
