@@ -135,17 +135,17 @@ CREATE FUNCTION envelope(GEOMETRY)
 	     LANGUAGE 'c'  with (isstrict);
 
 CREATE FUNCTION x(GEOMETRY)
-   RETURNS float4
+   RETURNS float8
    AS '@MODULE_FILENAME@','x_point'
 	     LANGUAGE 'c'  with (isstrict);
 
 CREATE FUNCTION y(GEOMETRY)
-   RETURNS float4
+   RETURNS float8
    AS '@MODULE_FILENAME@','y_point'
 	     LANGUAGE 'c'  with (isstrict);
 
 CREATE FUNCTION z(GEOMETRY)
-   RETURNS float4
+   RETURNS float8
    AS '@MODULE_FILENAME@','z_point'
 	     LANGUAGE 'c'  with (isstrict);
 
@@ -185,15 +185,23 @@ CREATE FUNCTION geometryn(GEOMETRY,INTEGER)
    AS '@MODULE_FILENAME@','geometryn_collection'
 	     LANGUAGE 'c'  with (isstrict);
 
+
+CREATE FUNCTION distance(GEOMETRY,GEOMETRY)
+   RETURNS float8
+   AS '@MODULE_FILENAME@'
+	     LANGUAGE 'c'  with (isstrict);
+
+
+
 ------- spheroid calcs
 
 CREATE FUNCTION length_spheroid(GEOMETRY,SPHEROID)
-   RETURNS FLOAT4
+   RETURNS FLOAT8
    AS '@MODULE_FILENAME@','length_ellipsoid'
 	     LANGUAGE 'c'  with (isstrict);
 
 CREATE FUNCTION length3d_spheroid(GEOMETRY,SPHEROID)
-   RETURNS FLOAT4
+   RETURNS FLOAT8
    AS '@MODULE_FILENAME@','length3d_ellipsoid'
 	     LANGUAGE 'c'  with (isstrict);
 
@@ -201,27 +209,27 @@ CREATE FUNCTION length3d_spheroid(GEOMETRY,SPHEROID)
 -------  generic operations
 
 CREATE FUNCTION length3d(GEOMETRY)
-   RETURNS FLOAT4
+   RETURNS FLOAT8
    AS '@MODULE_FILENAME@'
    LANGUAGE 'c' with (isstrict);
 
 CREATE FUNCTION length2d(GEOMETRY)
-   RETURNS FLOAT4
+   RETURNS FLOAT8
    AS '@MODULE_FILENAME@'
    LANGUAGE 'c' with (isstrict);
 
 CREATE FUNCTION area2d(GEOMETRY)
-   RETURNS FLOAT4
+   RETURNS FLOAT8
    AS '@MODULE_FILENAME@'
    LANGUAGE 'c' with (isstrict);
 
 CREATE FUNCTION perimeter3d(GEOMETRY)
-   RETURNS FLOAT4
+   RETURNS FLOAT8
    AS '@MODULE_FILENAME@'
    LANGUAGE 'c' with (isstrict);
 
 CREATE FUNCTION perimeter2d(GEOMETRY)
-   RETURNS FLOAT4
+   RETURNS FLOAT8
    AS '@MODULE_FILENAME@'
    LANGUAGE 'c' with (isstrict);
 

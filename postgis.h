@@ -296,6 +296,17 @@ double mu2(double azimuth,SPHEROID *sphere);
 double length2d_ellipse_linestring(LINE3D	*line, SPHEROID  	*sphere);
 double length3d_ellipse_linestring(LINE3D	*line, SPHEROID  	*sphere);
 
+double distance_pt_pt(POINT3D *p1, POINT3D *p2);
+double distance_pt_line(POINT3D *p1, LINE3D *l2);
+double distance_pt_poly(POINT3D *p1, POLYGON3D *poly2);
+double distance_line_line(LINE3D *l1, LINE3D *l2);
+double distance_line_poly(LINE3D *l1, POLYGON3D *poly2);
+double distance_poly_poly(POLYGON3D *poly1, POLYGON3D *poly2);
+double distance_pt_seg(POINT3D *p, POINT3D *A, POINT3D *B);
+double distance_seg_seg(POINT3D *A, POINT3D *B, POINT3D *C, POINT3D *D);
+bool point_in_poly(POINT3D *p, POLYGON3D *poly);
+
+void print_point_debug(POINT3D *p);
 
 //exposed to psql
 
@@ -372,7 +383,7 @@ Datum length_ellipsoid(PG_FUNCTION_ARGS);
 Datum length3d_ellipsoid(PG_FUNCTION_ARGS);
 
 Datum point_inside_circle(PG_FUNCTION_ARGS);
-
+Datum distance(PG_FUNCTION_ARGS);
 
 
 //for GIST index

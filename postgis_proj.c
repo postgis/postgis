@@ -286,7 +286,7 @@ Datum length_ellipsoid(PG_FUNCTION_ARGS)
 			dist += length2d_ellipse_linestring(line,sphere);
 		}
 	}
-	PG_RETURN_FLOAT4(dist);
+	PG_RETURN_FLOAT8(dist);
 
 
 
@@ -328,7 +328,7 @@ Datum length3d_ellipsoid(PG_FUNCTION_ARGS)
 			dist += length3d_ellipse_linestring(line,sphere);
 		}
 	}
-	PG_RETURN_FLOAT4(dist);
+	PG_RETURN_FLOAT8(dist);
 }
 
 

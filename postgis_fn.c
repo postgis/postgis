@@ -28,6 +28,8 @@
 #include "access/rtree.h"
 
 
+
+
 #include "fmgr.h"
 
 
@@ -137,7 +139,7 @@ Datum length3d(PG_FUNCTION_ARGS)
 			dist += line_length3d(line);
 		}
 	}
-	PG_RETURN_FLOAT4(dist);
+	PG_RETURN_FLOAT8(dist);
 }
 
 //find the "length of a geometry"
@@ -171,7 +173,7 @@ Datum length2d(PG_FUNCTION_ARGS)
 			dist += line_length2d(line);
 		}
 	}
-	PG_RETURN_FLOAT4(dist);
+	PG_RETURN_FLOAT8(dist);
 }
 
 
@@ -244,7 +246,7 @@ Datum area2d(PG_FUNCTION_ARGS)
 			area += polygon_area2d_old(poly);
 		}
 	}
-	PG_RETURN_FLOAT4(area);
+	PG_RETURN_FLOAT8(area);
 }
 
 double 	polygon_perimeter3d(POLYGON3D	*poly1)
@@ -354,7 +356,7 @@ Datum perimeter3d(PG_FUNCTION_ARGS)
 			area += polygon_perimeter3d(poly);
 		}
 	}
-	PG_RETURN_FLOAT4(area);
+	PG_RETURN_FLOAT8(area);
 }
 
 //calculate the perimeter of polys (sum of length of all rings)
@@ -382,7 +384,7 @@ Datum perimeter2d(PG_FUNCTION_ARGS)
 			area += polygon_perimeter2d(poly);
 		}
 	}
-	PG_RETURN_FLOAT4(area);
+	PG_RETURN_FLOAT8(area);
 }
 
 
@@ -1097,7 +1099,7 @@ Datum x_point(PG_FUNCTION_ARGS)
 
 		if (type1 == POINTTYPE)	//point
 		{
-			PG_RETURN_FLOAT4( ((POINT3D *)o)->x) ;
+			PG_RETURN_FLOAT8( ((POINT3D *)o)->x) ;
 		}
 
 	}
@@ -1126,7 +1128,7 @@ Datum y_point(PG_FUNCTION_ARGS)
 
 		if (type1 == POINTTYPE)	//point
 		{
-			PG_RETURN_FLOAT4( ((POINT3D *)o)->y) ;
+			PG_RETURN_FLOAT8( ((POINT3D *)o)->y) ;
 		}
 
 	}
@@ -1155,7 +1157,7 @@ Datum z_point(PG_FUNCTION_ARGS)
 
 		if (type1 == POINTTYPE)	//point
 		{
-			PG_RETURN_FLOAT4( ((POINT3D *)o)->z) ;
+			PG_RETURN_FLOAT8( ((POINT3D *)o)->z) ;
 		}
 
 	}
@@ -1493,4 +1495,506 @@ Datum point_inside_circle(PG_FUNCTION_ARGS)
 
 	}
 	PG_RETURN_BOOL(FALSE);	
+}
+
+
+//distance from p to line A->B
+double distance_pt_seg(POINT3D *p, POINT3D *A, POINT3D *B)
+{
+	double	r,s;
+
+
+	//if start==end, then use pt distance
+	if (  ( A->x == B->x) && (A->y == B->y) )
+		return distance_pt_pt(p,A);
+
+	//otherwise, we use comp.graphics.algorithms Frequently Asked Questions method
+
+	/*(1)     	      AC dot AB 
+                   r = ---------
+                         ||AB||^2 
+		r has the following meaning:
+		r=0 P = A 
+		r=1 P = B 
+		r<0 P is on the backward extension of AB 
+		r>1 P is on the forward extension of AB 
+		0<r<1 P is interior to AB 
+	*/
+
+	r = ( (p->x-A->x) * (B->x-A->x) + (p->y-A->y) * (B->y-A->y) )/( (B->x-A->x)*(B->x-A->x) +(B->y-A->y)*(B->y-A->y) );
+
+	if (r<0)
+		return (distance_pt_pt(p,A));
+	if (r>1)
+		return(distance_pt_pt(p,B));
+	
+
+	/*(2)
+		     (Ay-Cy)(Bx-Ax)-(Ax-Cx)(By-Ay) 
+		s = ----------------------------- 
+		             	L^2 
+		
+		Then the distance from C to P = |s|*L. 
+
+	*/
+
+	s = ((A->y-p->y)*(B->x-A->x)- (A->x-p->x)*(B->y-A->y) )/ ((B->x-A->x)*(B->x-A->x) +(B->y-A->y)*(B->y-A->y) );
+	
+	return abs(s) * sqrt(((B->x-A->x)*(B->x-A->x) +(B->y-A->y)*(B->y-A->y) ));
+}
+
+
+
+// find the distance from AB to CD
+double distance_seg_seg(POINT3D *A, POINT3D *B, POINT3D *C, POINT3D *D)
+{
+
+	double	s_top, s_bot,s;
+	double	r_top, r_bot,r;
+
+
+//printf("seg_seg [%g,%g]->[%g,%g]  by [%g,%g]->[%g,%g]  \n",A->x,A->y,B->x,B->y, C->x,C->y, D->x, D->y);
+		//A and B are the same point
+
+	if (  ( A->x == B->x) && (A->y == B->y) )
+		return distance_pt_seg(A,C,D);
+
+		//U and V are the same point
+
+	if (  ( C->x == D->x) && (C->y == D->y) )
+		return distance_pt_seg(D,A,B);
+
+	// AB and CD are line segments
+	/* from comp.graphics.algo
+
+	Solving the above for r and s yields 
+				(Ay-Cy)(Dx-Cx)-(Ax-Cx)(Dy-Cy) 
+	           r = ----------------------------- (eqn 1) 
+				(Bx-Ax)(Dy-Cy)-(By-Ay)(Dx-Cx)
+
+		 	(Ay-Cy)(Bx-Ax)-(Ax-Cx)(By-Ay) 
+		s = ----------------------------- (eqn 2) 
+			(Bx-Ax)(Dy-Cy)-(By-Ay)(Dx-Cx) 
+	Let P be the position vector of the intersection point, then 
+		P=A+r(B-A) or 
+		Px=Ax+r(Bx-Ax) 
+		Py=Ay+r(By-Ay) 
+	By examining the values of r & s, you can also determine some other limiting conditions: 
+		If 0<=r<=1 & 0<=s<=1, intersection exists 
+		r<0 or r>1 or s<0 or s>1 line segments do not intersect 
+		If the denominator in eqn 1 is zero, AB & CD are parallel 
+		If the numerator in eqn 1 is also zero, AB & CD are collinear. 
+
+	*/
+	r_top = (A->y-C->y)*(D->x-C->x) - (A->x-C->x)*(D->y-C->y) ;
+	r_bot = (B->x-A->x)*(D->y-C->y) - (B->y-A->y)*(D->x-C->x) ;
+
+	s_top = (A->y-C->y)*(B->x-A->x) - (A->x-C->x)*(B->y-A->y);
+	s_bot = (B->x-A->x)*(D->y-C->y) - (B->y-A->y)*(D->x-C->x);
+
+	if  ( (r_bot==0) || (s_bot == 0) )
+	{
+		return ( 
+			min(distance_pt_seg(A,C,D), 
+				min(distance_pt_seg(B,C,D), 
+					min(distance_pt_seg(C,A,B),
+						distance_pt_seg(D,A,B)    ) ) )
+			 );
+	}
+	s = s_top/s_bot;
+	r=  r_top/r_bot;
+
+	if ((r<0) || (r>1) || (s<0) || (s>1) )
+	{
+		//no intersection
+		return ( 
+			min(distance_pt_seg(A,C,D), 
+				min(distance_pt_seg(B,C,D), 
+					min(distance_pt_seg(C,A,B),
+						distance_pt_seg(D,A,B)    ) ) )
+			 );
+		
+	}
+	else 
+		return -0; //intersection exists
+	
+}
+
+
+
+//trivial 
+double distance_pt_pt(POINT3D *p1, POINT3D *p2)
+{
+	//print_point_debug(p1);
+	//print_point_debug(p2);
+	return ( sqrt(  (p2->x - p1->x) * (p2->x - p1->x)  + (p2->y - p1->y) * (p2->y - p1->y)  ) );
+}
+
+
+//search all the segments of line to see which one is closest to p1
+double distance_pt_line(POINT3D *p1, LINE3D *l2)
+{
+	double 	result = 99999999999.9,dist_this;
+	bool		result_okay = FALSE; //result is a valid min
+	int		t;
+	POINT3D	*start,*end;
+
+	start = &(l2->points[0]);
+
+	for (t =1;t<l2->npoints;t++)
+	{
+		end = &(l2->points[t]);
+
+		dist_this = distance_pt_seg(p1, start,end);
+		if (result_okay)
+			result= min(result,dist_this);
+		else
+		{
+			result_okay = TRUE;
+			result = dist_this;
+		}
+
+		start =end;
+	}
+
+	return result;
+}
+
+
+
+// test each segment of l1 against each segment of l2.  Return min
+double distance_line_line(LINE3D *l1, LINE3D *l2)
+{
+
+	double 	result = 99999999999.9,dist_this;
+	bool		result_okay = FALSE; //result is a valid min
+	int		t,u;
+	POINT3D	*start,*end;
+	POINT3D	*start2,*end2;
+
+
+	start = &(l1->points[0]);
+
+	for (t =1;t<l1->npoints;t++)		//for each segment in L1
+	{
+		end = &(l1->points[t]);
+
+		start2 = &(l2->points[0]);
+		
+		for (u=1; u< l2->npoints; u++)	//for each segment in L2
+		{
+			end2 = &(l2->points[u]);
+				
+				dist_this = distance_seg_seg(start,end,start2,end2);
+//printf("line_line; seg %i * seg %i, dist = %g\n",t,u,dist_this);
+
+				if (result_okay)
+					result= min(result,dist_this);
+				else
+				{
+					result_okay = TRUE;
+					result = dist_this;
+				}
+				if (result <=0)
+					return 0;	//intersection
+
+			start2 = end2;
+		}
+		start = end;
+	}
+
+	return result;
+}
+
+
+// 1. see if pt in outer boundary.  if no, then treat the outer ring like a line
+// 2. if in the boundary, test to see if its in a hole.  if so, then return dist to hole
+double distance_pt_poly(POINT3D *p1, POLYGON3D *poly2)
+{
+	POINT3D	*pts; //pts array for polygon
+	double	result;
+	LINE3D	*line;
+	int		junk,t;
+	int		offset;
+
+
+	  		pts = (POINT3D *) ( (char *)&(poly2->npoints[poly2->nrings] )  );
+			pts = (POINT3D *) MAXALIGN(pts);
+
+
+	if (PIP( p1, pts, poly2->npoints[0] ) )
+	{
+		//inside the outer ring.  scan though each of the inner rings looking to
+		// see if its inside.  If not, distance =0.  Otherwise, distance =
+		// pt to ring distance
+
+		offset = poly2->npoints[0]; 	//where ring t starts;
+		for (t=1; t<poly2->nrings;t++)	//foreach inner ring
+		{
+			if (	PIP( p1, &pts[offset], poly2->npoints[t] ) )
+			{
+					//inside a hole.  Distance = pt -> ring
+
+					line = make_line (poly2->npoints[t] , &pts[offset] , &junk);
+					result = distance_pt_line(p1, line);
+					pfree(line);
+					return result;	
+			}
+			offset += poly2->npoints[t];
+		}	
+
+		return 0; //its inside the polygon
+	}
+	else
+	{
+		//outside the outer ring.  Distance = pt -> ring
+
+		line = make_line (poly2->npoints[0] , pts, &junk);
+		result = distance_pt_line(p1, line);
+		pfree(line);
+		return result;
+	}
+
+	
+}
+
+
+// brute force.  Test l1 against each ring.  If there's an intersection then return 0 (crosses boundary)
+// otherwise, test to see if a point inside outer rings of polygon, but not in inner rings. 
+// if so, return 0  (line inside polygon)
+// otherwise return min distance to a ring (could be outside polygon or inside a hole)
+double distance_line_poly(LINE3D *l1, POLYGON3D *poly2)
+{
+	double	min_dist=9999999.0,this_dist;
+	int		t,junk;
+	LINE3D	*line;
+	POINT3D	*pts; //pts array for polygon
+	int		offset;
+
+
+
+	  		pts = (POINT3D *) ( (char *)&(poly2->npoints[poly2->nrings] )  );
+			pts = (POINT3D *) MAXALIGN(pts);
+
+	offset =0;
+	for (t=0;t<poly2->nrings; t++)
+	{
+		line = make_line (poly2->npoints[t] , &pts[offset] , &junk);
+			this_dist = distance_line_line(l1, line);
+		pfree(line);
+
+//printf("line_poly; ring %i dist = %g\n",t,this_dist);
+		if (t==0)
+			min_dist = this_dist;
+		else
+			min_dist = min(min_dist,this_dist);
+
+		if (min_dist <=0)
+			return 0;		//intersection
+
+		offset += poly2->npoints[t];
+	}
+
+	//no intersection, have to check if a point is inside the outer ring
+
+	if (PIP( &l1->points[0], pts, poly2->npoints[0] ) )
+	{
+		//its in the polygon.  Have to check if its inside a hole
+
+//printf("line_poly; inside outer ring\n");
+		offset =poly2->npoints[0] ;
+		for (t=1; t<poly2->nrings;t++)		//foreach inner ring
+		{
+			if (	PIP( &l1->points[0],  &pts[offset], poly2->npoints[t] ) )
+			{
+				//its inside a hole, then the actual distance is the min ring distance
+//printf("line_poly; inside inner ring %i\n",t);				
+				return min_dist;
+			}
+			offset += poly2->npoints[t];
+		}	
+		// not in hole, there for inside the polygon
+		return 0;
+	}
+	else
+	{
+		//not in the outside ring, so min distance to a ring is the actual min distance
+		return min_dist;
+	}
+	
+}
+
+// true if point is in poly (and not in its holes)
+bool point_in_poly(POINT3D *p, POLYGON3D *poly)
+{
+	int	t;
+	POINT3D	*pts1;
+	int		offset;
+	
+		pts1 = (POINT3D *) ( (char *)&(poly->npoints[poly->nrings] )  );
+		pts1 = (POINT3D *) MAXALIGN(pts1);
+
+	if (PIP(p, pts1, poly->npoints[0]))
+	{
+		offset = poly->npoints[0];
+		for (t=1;t<poly->nrings;t++)
+		{
+			if (PIP(p, &pts1[offset], poly->npoints[t]) )
+			{
+				return FALSE; //inside a hole
+			}
+			offset += poly->npoints[t];
+		}
+		return TRUE; //in outer ring, not in holes
+	}
+	else
+		return FALSE; //not in outer ring
+}
+
+// brute force.  
+// test to see if any rings intersect.  if yes, dist =0
+// test to see if one inside the other and if they are inside holes.
+// find min distance ring-to-ring
+double distance_poly_poly(POLYGON3D *poly1, POLYGON3D *poly2)
+{
+	//foreach ring in Poly1
+	// foreach ring in Poly2
+	//   if intersect, return 0
+
+	// if poly1 inside poly2 return 0
+	// if poly2 inside poly1 return 0
+
+	// otherwise return closest approach of rings
+
+	int 	t,junk;
+	POINT3D	*pts1,*pts2;
+	int32		offset1;
+	double	min_dist= 99999999999.9, this_dist;
+	LINE3D	*line;
+
+
+		pts1 = (POINT3D *) ( (char *)&(poly1->npoints[poly1->nrings] )  );
+		pts1 = (POINT3D *) MAXALIGN(pts1);
+		pts2 = (POINT3D *) ( (char *)&(poly2->npoints[poly2->nrings] )  );
+		pts2 = (POINT3D *) MAXALIGN(pts2);
+
+
+			//do this first as its a quick test
+
+		//test if poly1 inside poly2
+	if (point_in_poly(pts1, poly2) )
+		return 0;
+
+		//test if poly2 inside poly1
+	if (point_in_poly(pts2, poly1) )
+		return 0;
+
+
+	offset1 =0;
+	for (t=0; t<poly1->nrings; t++)	//for each ring in poly1
+	{
+		line = make_line (poly1->npoints[t] , &pts1[offset1] , &junk);
+			this_dist = distance_line_poly(line, poly2);
+		pfree(line);
+//printf("poly_poly; ring %i dist = %g\n",t,this_dist);
+		if (t==0)
+			min_dist = this_dist;
+		else
+			min_dist = min(min_dist,this_dist);
+
+		if (min_dist <=0)
+			return 0;		//intersection
+
+
+		offset1 += poly1->npoints[t];
+	}
+
+	//rings do not intersect
+
+	return min_dist;
+}
+
+//minimum distance between objects in geom1 and geom2.  returns null if it doesnt exist (future null-safe version).
+PG_FUNCTION_INFO_V1(distance);
+Datum distance(PG_FUNCTION_ARGS)
+{
+
+	GEOMETRY		      *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GEOMETRY		      *geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	int	g1_i, g2_i;
+	double		dist,this_dist;
+	bool			dist_set = FALSE; //true once dist makes sense.
+	int32			*offsets1,*offsets2;	
+	int			type1,type2;
+	char			*o1,*o2;
+
+	dist = 99999999999999999999.9; //very far
+
+
+	offsets1 = (int32 *) ( ((char *) &(geom1->objType[0] ))+ sizeof(int32) * geom1->nobjs ) ;
+	offsets2 = (int32 *) ( ((char *) &(geom2->objType[0] ))+ sizeof(int32) * geom2->nobjs ) ;
+
+
+	for (g1_i=0; g1_i < geom1->nobjs; g1_i++)
+	{
+		o1 = (char *) geom1 +offsets1[g1_i] ;  
+		type1=  geom1->objType[g1_i];
+		for (g2_i=0; g2_i < geom2->nobjs; g2_i++)
+		{
+			o2 = (char *) geom2 +offsets2[g2_i] ;  
+			type2=  geom2->objType[g2_i];
+
+			if  ( (type1 == POINTTYPE) && (type2 == POINTTYPE) )
+			{
+				this_dist = distance_pt_pt( (POINT3D *)o1, (POINT3D *)o2 );
+			}
+			if  ( (type1 == POINTTYPE) && (type2 == LINETYPE) )
+			{
+				this_dist = distance_pt_line( (POINT3D *)o1, (LINE3D *)o2 );
+			}
+			if  ( (type1 == POINTTYPE) && (type2 == POLYGONTYPE) )
+			{
+				this_dist = distance_pt_poly( (POINT3D *)o1, (POLYGON3D *)o2 );
+			}
+			if  ( (type1 == LINETYPE) && (type2 == LINETYPE) )
+			{
+				this_dist = distance_line_line( (LINE3D *)o1, (LINE3D *)o2 );
+			}
+			if  ( (type1 == LINETYPE) && (type2 == POLYGONTYPE) )
+			{
+				this_dist = distance_line_poly( (LINE3D *)o1, (POLYGON3D *)o2 );
+			}
+			if  ( (type1 == POLYGONTYPE) && (type2 == POLYGONTYPE) )
+			{
+				this_dist = distance_poly_poly( (POLYGON3D *)o1, (POLYGON3D *)o2 );
+			}
+				//trival versions based on above dist(a,b) = dist(b,a)
+
+			if  ( (type1 == LINETYPE) && (type2 == POINTTYPE) )
+			{
+				this_dist = distance_pt_line( (POINT3D *)o2, (LINE3D *)o1 );
+			}	
+			if  ( (type1 == POLYGONTYPE) && (type2 == POINTTYPE) )
+			{
+				this_dist = distance_pt_poly( (POINT3D *)o2, (POLYGON3D *)o1 );
+			}
+			if  ( (type1 == POLYGONTYPE) && (type2 == LINETYPE) )
+			{
+				this_dist = distance_line_poly( (LINE3D *)o2, (POLYGON3D *)o1 );
+			}
+
+			if (dist_set)
+			{
+				dist = min(dist,this_dist);
+			}
+			else
+			{
+				dist = this_dist;
+				dist_set = TRUE;
+			}
+		}
+	}
+	if (dist <0)
+		dist = 0; //computational error
+	PG_RETURN_FLOAT8(dist);
 }

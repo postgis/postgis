@@ -723,3 +723,8 @@ char *print_geometry(GEOMETRY *geom)
 	printf( "%s", text);
 	return text;
 }
+
+void print_point_debug(POINT3D *p)
+{
+	printf("[%g %g %g]\n",p->x,p->y,p->z);
+}
