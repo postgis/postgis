@@ -3346,188 +3346,203 @@ dimension
     </sect1>
 
     <sect1>
-      <title>Other Functions</title>
+      <title>Postgis Extensions</title>
 
-      <variablelist>
+      <sect2>
+      	<title>Management Functions</title>
+	  <variablelist>
+		<varlistentry>
+		  <term>DropGeometryTable([&lt;schema_name&gt;],
+		  &lt;table_name&gt;)</term>
+
+		  <listitem>
+		    <para>Drops a table and all its references in geometry_columns.
+		    Note: uses current_schema() on schema-aware pgsql installations if
+		    schema is not provided.</para>
+		  </listitem>
+		</varlistentry>
+
+		<varlistentry>
+		  <term>update_geometry_stats([&lt;table_name&gt;,
+		  &lt;column_name&gt;])</term>
+
+		  <listitem>
+		    <para>Update statistics about spatial tables for use by the query
+		    planner. You will also need to run "VACUUM ANALYZE [table_name]
+		    [column_name]" for the statistics gathering process to be
+		    complete. NOTE: starting with PostgreSQL 8.0 statistics gathering
+		    is automatically performed running "VACUUM ANALYZE".</para>
+		  </listitem>
+		</varlistentry>
+
         <varlistentry>
-          <term>DropGeometryTable([&lt;schema_name&gt;],
-          &lt;table_name&gt;)</term>
+          <term>postgis_version()</term>
 
           <listitem>
-            <para>Drops a table and all its references in geometry_columns.
-            Note: uses current_schema() on schema-aware pgsql installations if
-            schema is not provided.</para>
+            <para>Returns the version number of the PostGIS functions
+            installed in this database (deprecated, use postgis_full_version()
+            instead).</para>
           </listitem>
         </varlistentry>
 
         <varlistentry>
-          <term>update_geometry_stats([&lt;table_name&gt;,
-          &lt;column_name&gt;])</term>
+          <term>postgis_lib_version()</term>
 
           <listitem>
-            <para>Update statistics about spatial tables for use by the query
-            planner. You will also need to run "VACUUM ANALYZE [table_name]
-            [column_name]" for the statistics gathering process to be
-            complete. NOTE: starting with PostgreSQL 8.0 statistics gathering
-            is automatically performed running "VACUUM ANALYZE".</para>
+            <para>Returns the version number of the PostGIS library.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry>
-          <term>A &amp;&lt; B</term>
+          <term>postgis_scripts_installed()</term>
 
           <listitem>
-            <para>The "&amp;&lt;" operator returns true if A's bounding box
-            overlaps or is to the left of B's bounding box.</para>
+            <para>Returns the version number of the postgis.sql script
+            installed in this database.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry>
-          <term>A &amp;&gt; B</term>
+          <term>postgis_scripts_released()</term>
 
           <listitem>
-            <para>The "&amp;&gt;" operator returns true if A's bounding box
-            overlaps or is to the right of B's bounding box.</para>
+            <para>Returns the version number of the postgis.sql script
+            released with the installed postgis lib.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry>
-          <term>A &lt;&lt; B</term>
+          <term>postgis_geos_version()</term>
 
           <listitem>
-            <para>The "&lt;&lt;" operator returns true if A's bounding box is
-            strictly to the left of B's bounding box.</para>
+            <para>Returns the version number of the GEOS library, or NULL if
+            GEOS support is not enabled.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry>
-          <term>A &gt;&gt; B</term>
+          <term>postgis_proj_version()</term>
 
           <listitem>
-            <para>The "&gt;&gt;" operator returns true if A's bounding box is
-            strictly to the right of B's bounding box.</para>
+            <para>Returns the version number of the PROJ4 library, or NULL if
+            PROJ4 support is not enabled.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry>
-          <term>A ~= B</term>
+          <term>postgis_uses_stats()</term>
 
           <listitem>
-            <para>The "~=" operator is the "same as" operator. It tests actual
-            geometric equality of two features. So if A and B are the same
-            feature, vertex-by-vertex, the operator returns true.</para>
+            <para>Returns true if STATS usage has been enabled, false
+            otherwise.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry>
-          <term>A @ B</term>
+          <term>postgis_full_version()</term>
 
           <listitem>
-            <para>The "@" operator returns true if A's bounding box is
-            completely contained by B's bounding box.</para>
+            <para>Reports full postgis version and build configuration
+            infos.</para>
           </listitem>
         </varlistentry>
 
-        <varlistentry>
-          <term>A ~ B</term>
+	   </variablelist>
 
-          <listitem>
-            <para>The "~" operator returns true if A's bounding box completely
-            contains B's bounding box.</para>
-          </listitem>
-        </varlistentry>
+	</sect2>
 
-        <varlistentry>
-          <term>A &amp;&amp; B</term>
+	<sect2>
+	  <title>Operators</title>
+	    <variablelist>
 
-          <listitem>
-            <para>The "&amp;&amp;" operator is the "overlaps" operator. If A's
-            bounding boux overlaps B's bounding box the operator returns
-            true.</para>
-          </listitem>
-        </varlistentry>
+		<varlistentry>
+		  <term>A &amp;&lt; B</term>
 
-        <varlistentry>
-          <term>area2d(geometry)</term>
+		  <listitem>
+		    <para>The "&amp;&lt;" operator returns true if A's bounding box
+		    overlaps or is to the left of B's bounding box.</para>
+		  </listitem>
+		</varlistentry>
 
-          <listitem>
-            <para>Returns the area of the geometry if it is a polygon or
-            multi-polygon.</para>
-          </listitem>
-        </varlistentry>
+		<varlistentry>
+		  <term>A &amp;&gt; B</term>
 
-        <varlistentry>
-          <term>asbinary(geometry,'NDR')</term>
+		  <listitem>
+		    <para>The "&amp;&gt;" operator returns true if A's bounding box
+		    overlaps or is to the right of B's bounding box.</para>
+		  </listitem>
+		</varlistentry>
 
-          <listitem>
-            <para>Returns the geometry in the OGC "well-known-binary" format,
-            using little-endian encoding. This is useful in binary cursors to
-            pull data out of the database without converting it to a string
-            representation.</para>
-          </listitem>
-        </varlistentry>
+		<varlistentry>
+		  <term>A &lt;&lt; B</term>
 
-        <varlistentry>
-          <term>isvalid(geometry)</term>
+		  <listitem>
+		    <para>The "&lt;&lt;" operator returns true if A's bounding box is
+		    strictly to the left of B's bounding box.</para>
+		  </listitem>
+		</varlistentry>
 
-          <listitem>
-            <para>returns true if this geometry is valid.</para>
-          </listitem>
-        </varlistentry>
+		<varlistentry>
+		  <term>A &gt;&gt; B</term>
 
-        <varlistentry>
-          <term>asbinary(geometry,'XDR')</term>
+		  <listitem>
+		    <para>The "&gt;&gt;" operator returns true if A's bounding box is
+		    strictly to the right of B's bounding box.</para>
+		  </listitem>
+		</varlistentry>
 
-          <listitem>
-            <para>Returns the geometry in the OGC "well-known-binary" format,
-            using big-endian encoding. This is useful in binary cursors to
-            pull data out of the database without converting it to a string
-            representation.</para>
-          </listitem>
-        </varlistentry>
+		<varlistentry>
+		  <term>A ~= B</term>
 
-        <varlistentry>
-          <term>box3d(geometry)</term>
+		  <listitem>
+		    <para>The "~=" operator is the "same as" operator. It tests actual
+		    geometric equality of two features. So if A and B are the same
+		    feature, vertex-by-vertex, the operator returns true.</para>
+		  </listitem>
+		</varlistentry>
 
-          <listitem>
-            <para>Returns a BOX3D representing the maximum extents of the
-            geometry.</para>
-          </listitem>
-        </varlistentry>
+		<varlistentry>
+		  <term>A @ B</term>
 
-        <varlistentry>
-          <term>expand(geometry, float)</term>
+		  <listitem>
+		    <para>The "@" operator returns true if A's bounding box is
+		    completely contained by B's bounding box.</para>
+		  </listitem>
+		</varlistentry>
 
-          <listitem>
-            <para>This function returns a bounding box expanded in all
-            directions from the bounding box of the input geometry, by an
-            amount specified in the second argument. Very useful for
-            distance() queries, to add an index filter to the query.</para>
-          </listitem>
-        </varlistentry>
+		<varlistentry>
+		  <term>A ~ B</term>
 
-        <varlistentry>
-          <term>collect(geometry set)</term>
+		  <listitem>
+		    <para>The "~" operator returns true if A's bounding box completely
+		    contains B's bounding box.</para>
+		  </listitem>
+		</varlistentry>
 
-          <listitem>
-            <para>This function returns a GEOMETRYCOLLECTION object from a set
-            of geometries. The collect() function is an "aggregate" function
-            in the terminology of PostgreSQL. That means that it operators on
-            lists of data, in the same way the sum() and mean() functions do.
-            For example, "SELECT COLLECT(GEOM) FROM GEOMTABLE GROUP BY
-            ATTRCOLUMN" will return a separate GEOMETRYCOLLECTION for each
-            distinct value of ATTRCOLUMN.</para>
-          </listitem>
-        </varlistentry>
+		<varlistentry>
+		  <term>A &amp;&amp; B</term>
 
-        <varlistentry>
-          <term>memcollect(geometry set)</term>
+		  <listitem>
+		    <para>The "&amp;&amp;" operator is the "overlaps" operator. If A's
+		    bounding boux overlaps B's bounding box the operator returns
+		    true.</para>
+		  </listitem>
+		</varlistentry>
+	  </variablelist>
+      </sect2>
 
-          <listitem>
-            <para>This does the the same of collect(geometry), only more
-            memory-friendly (uses less memory and more processor time).</para>
-          </listitem>
-        </varlistentry>
+      <sect2>
+        <title>Misurement functions</title>
+	  <variablelist>
+
+		<varlistentry>
+		  <term>area2d(geometry)</term>
+
+		  <listitem>
+		    <para>Returns the area of the geometry if it is a polygon or
+		    multi-polygon.</para>
+		  </listitem>
+		</varlistentry>
 
         <varlistentry>
           <term>distance_sphere(point, point)</term>
@@ -3550,6 +3565,238 @@ dimension
             Currently only implemented for points.</para>
           </listitem>
         </varlistentry>
+
+        <varlistentry>
+          <term>length2d(geometry)</term>
+
+          <listitem>
+            <para>Returns the 2-dimensional length of the geometry if it is a
+            linestring or multi-linestring.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>length3d(geometry)</term>
+
+          <listitem>
+            <para>Returns the 3-dimensional length of the geometry if it is a
+            linestring or multi-linestring.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="length_spheroid">
+          <term>length_spheroid(geometry,spheroid)</term>
+
+          <listitem>
+            <para>Calculates the length of of a geometry on an elipsoid. This
+            is useful if the coordinates of the geometry are in
+            latitude/longitude and a length is desired without reprojection.
+            The elipsoid is a separate database type and can be constructed as
+            follows:</para>
+
+            <literallayout>SPHEROID[&lt;NAME&gt;,&lt;SEMI-MAJOR AXIS&gt;,&lt;INVERSE FLATTENING&gt;]</literallayout>
+
+            <para>Eg:</para>
+
+            <literallayout>SPHEROID["GRS_1980",6378137,298.257222101]</literallayout>
+
+            <para>An example calculation might look like this:</para>
+
+            <literallayout>SELECT
+ length_spheroid(
+  geometry_column,
+  'SPHEROID["GRS_1980",6378137,298.257222101]'
+ )
+FROM geometry_table;</literallayout>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>length3d_spheroid(geometry,spheroid)</term>
+
+          <listitem>
+            <para>Calculates the length of of a geometry on an elipsoid,
+            taking the elevation into account. This is just like
+            length_spheroid except vertical coordinates (expressed in the same
+            units as the spheroid axes) are used to calculate the extra
+            distance vertical displacement adds.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>distance(geometry, geometry)</term>
+
+          <listitem>
+            <para>Returns the smaller distance between two geometries.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>max_distance(linestring,linestring)</term>
+
+          <listitem>
+            <para>Returns the largest distance between two line
+            strings.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>perimeter(geometry)</term>
+
+          <listitem>
+            <para>Returns the 2-dimensional perimeter of the geometry, if it
+            is a polygon or multi-polygon.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>perimeter2d(geometry)</term>
+
+          <listitem>
+            <para>Returns the 2-dimensional perimeter of the geometry, if it
+            is a polygon or multi-polygon.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>perimeter3d(geometry)</term>
+
+          <listitem>
+            <para>Returns the 3-dimensional perimeter of the geometry, if it
+            is a polygon or multi-polygon.</para>
+          </listitem>
+        </varlistentry>
+
+
+	  </variablelist>
+
+      </sect2>
+
+      <sect2>
+      	<title>Geometry Constructors</title>
+	  <variablelist>
+		<varlistentry>
+		  <term>MakePoint(&lt;x&gt;, &lt;y&gt;, [&lt;z&gt;], [&lt;m&gt;])</term>
+
+		  <listitem>
+		    <para>Creates a 2d,3dz or 4d point geometry.</para>
+		  </listitem>
+		</varlistentry>
+
+		<varlistentry>
+		  <term>MakePointM(&lt;x&gt;, &lt;y&gt;, &lt;m&gt;)</term>
+
+		  <listitem>
+		    <para>Creates a 3dm point geometry.</para>
+		  </listitem>
+		</varlistentry>
+
+		<varlistentry>
+		  <term>MakeLine(geometry set)</term>
+
+		  <listitem>
+		    <para>Creates a Linestring from a set of point geometries.
+		    You might want to use a subselect to order points before
+		    feeding them to this aggregate.</para>
+		  </listitem>
+		</varlistentry>
+
+		<varlistentry>
+		  <term>MakePoly(geometry set)</term>
+
+		  <listitem>
+		    <para>Aggregate. Creates a MultiPolygon from the costituent
+		    linework of a set of geometries. Only available when compiled
+		    agains GEOS >= 2.1.0.</para>
+		  </listitem>
+		</varlistentry>
+
+		<varlistentry>
+		  <term>LineFromMultiPoint(multipoint)</term>
+
+		  <listitem>
+		    <para>Creates a LineString from a MultiPoint geometry.</para>
+		  </listitem>
+		</varlistentry>
+	  </variablelist>
+      </sect2>
+
+      <sect2>
+	<title>Misc</title>
+	  <variablelist>
+
+		<varlistentry>
+		  <term>asbinary(geometry,'NDR')</term>
+
+		  <listitem>
+		    <para>Returns the geometry in the OGC "well-known-binary" format,
+		    using little-endian encoding. This is useful in binary cursors to
+		    pull data out of the database without converting it to a string
+		    representation.</para>
+		  </listitem>
+		</varlistentry>
+
+		<varlistentry>
+		  <term>asbinary(geometry,'XDR')</term>
+
+		  <listitem>
+		    <para>Returns the geometry in the OGC "well-known-binary" format,
+		    using big-endian encoding. This is useful in binary cursors to
+		    pull data out of the database without converting it to a string
+		    representation.</para>
+		  </listitem>
+		</varlistentry>
+
+		<varlistentry>
+		  <term>isvalid(geometry)</term>
+
+		  <listitem>
+		    <para>returns true if this geometry is valid.</para>
+		  </listitem>
+		</varlistentry>
+
+		<varlistentry>
+		  <term>box3d(geometry)</term>
+
+		  <listitem>
+		    <para>Returns a BOX3D representing the maximum extents of the
+		    geometry.</para>
+		  </listitem>
+		</varlistentry>
+
+		<varlistentry>
+		  <term>expand(geometry, float)</term>
+
+		  <listitem>
+		    <para>This function returns a bounding box expanded in all
+		    directions from the bounding box of the input geometry, by an
+		    amount specified in the second argument. Very useful for
+		    distance() queries, to add an index filter to the query.</para>
+		  </listitem>
+		</varlistentry>
+
+		<varlistentry>
+		  <term>collect(geometry set)</term>
+
+		  <listitem>
+		    <para>This function returns a GEOMETRYCOLLECTION object from a set
+		    of geometries. The collect() function is an "aggregate" function
+		    in the terminology of PostgreSQL. That means that it operators on
+		    lists of data, in the same way the sum() and mean() functions do.
+		    For example, "SELECT COLLECT(GEOM) FROM GEOMTABLE GROUP BY
+		    ATTRCOLUMN" will return a separate GEOMETRYCOLLECTION for each
+		    distinct value of ATTRCOLUMN.</para>
+		  </listitem>
+		</varlistentry>
+
+		<varlistentry>
+		  <term>memcollect(geometry set)</term>
+
+		  <listitem>
+		    <para>This does the the same of collect(geometry), only more
+		    memory-friendly (uses less memory and more processor time).</para>
+		  </listitem>
+		</varlistentry>
 
         <varlistentry>
           <term>extent(geometry set)</term>
@@ -3635,72 +3882,6 @@ dimension
 
 
         <varlistentry>
-          <term>length2d(geometry)</term>
-
-          <listitem>
-            <para>Returns the 2-dimensional length of the geometry if it is a
-            linestring or multi-linestring.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>length3d(geometry)</term>
-
-          <listitem>
-            <para>Returns the 3-dimensional length of the geometry if it is a
-            linestring or multi-linestring.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry id="length_spheroid">
-          <term>length_spheroid(geometry,spheroid)</term>
-
-          <listitem>
-            <para>Calculates the length of of a geometry on an elipsoid. This
-            is useful if the coordinates of the geometry are in
-            latitude/longitude and a length is desired without reprojection.
-            The elipsoid is a separate database type and can be constructed as
-            follows:</para>
-
-            <literallayout>SPHEROID[&lt;NAME&gt;,&lt;SEMI-MAJOR AXIS&gt;,&lt;INVERSE FLATTENING&gt;]</literallayout>
-
-            <para>Eg:</para>
-
-            <literallayout>SPHEROID["GRS_1980",6378137,298.257222101]</literallayout>
-
-            <para>An example calculation might look like this:</para>
-
-            <literallayout>SELECT
- length_spheroid(
-  geometry_column,
-  'SPHEROID["GRS_1980",6378137,298.257222101]'
- )
-FROM geometry_table;</literallayout>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>length3d_spheroid(geometry,spheroid)</term>
-
-          <listitem>
-            <para>Calculates the length of of a geometry on an elipsoid,
-            taking the elevation into account. This is just like
-            length_spheroid except vertical coordinates (expressed in the same
-            units as the spheroid axes) are used to calculate the extra
-            distance vertical displacement adds.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>max_distance(linestring,linestring)</term>
-
-          <listitem>
-            <para>Returns the largest distance between two line
-            strings.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
           <term>mem_size(geometry)</term>
 
           <listitem>
@@ -3745,33 +3926,6 @@ FROM geometry_table;</literallayout>
         </varlistentry>
 
         <varlistentry>
-          <term>perimeter(geometry)</term>
-
-          <listitem>
-            <para>Returns the 2-dimensional perimeter of the geometry, if it
-            is a polygon or multi-polygon.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>perimeter2d(geometry)</term>
-
-          <listitem>
-            <para>Returns the 2-dimensional perimeter of the geometry, if it
-            is a polygon or multi-polygon.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>perimeter3d(geometry)</term>
-
-          <listitem>
-            <para>Returns the 3-dimensional perimeter of the geometry, if it
-            is a polygon or multi-polygon.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
           <term>point_inside_circle(geometry,float,float,float)</term>
 
           <listitem>
@@ -3779,78 +3933,6 @@ FROM geometry_table;</literallayout>
             point_inside_circle(&lt;geometry&gt;,&lt;circle_center_x&gt;,&lt;circle_center_y&gt;,&lt;radius&gt;).
             Returns the true if the geometry is a point and is inside the
             circle. Returns false otherwise.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>postgis_version()</term>
-
-          <listitem>
-            <para>Returns the version number of the PostGIS functions
-            installed in this database (deprecated, use postgis_full_version()
-            instead).</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>postgis_lib_version()</term>
-
-          <listitem>
-            <para>Returns the version number of the PostGIS library.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>postgis_scripts_installed()</term>
-
-          <listitem>
-            <para>Returns the version number of the postgis.sql script
-            installed in this database.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>postgis_scripts_released()</term>
-
-          <listitem>
-            <para>Returns the version number of the postgis.sql script
-            released with the installed postgis lib.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>postgis_geos_version()</term>
-
-          <listitem>
-            <para>Returns the version number of the GEOS library, or NULL if
-            GEOS support is not enabled.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>postgis_proj_version()</term>
-
-          <listitem>
-            <para>Returns the version number of the PROJ4 library, or NULL if
-            PROJ4 support is not enabled.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>postgis_uses_stats()</term>
-
-          <listitem>
-            <para>Returns true if STATS usage has been enabled, false
-            otherwise.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>postgis_full_version()</term>
-
-          <listitem>
-            <para>Reports full postgis version and build configuration
-            infos.</para>
           </listitem>
         </varlistentry>
 
@@ -3970,7 +4052,10 @@ FROM geometry_table;</literallayout>
           </listitem>
         </varlistentry>
 
-      </variablelist>
+        </variablelist>
+      </sect2>
+
+
     </sect1>
   </chapter>
 </book>
