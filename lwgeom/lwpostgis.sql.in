@@ -2747,6 +2747,11 @@ CREATEFUNCTION simplify(geometry, float8)
    AS '@MODULE_FILENAME@', 'LWGEOM_simplify2d'
    LANGUAGE 'C' WITH (isstrict);
 
+CREATEFUNCTION line_interpolate_point(geometry, float8)
+   RETURNS geometry
+   AS '@MODULE_FILENAME@', 'LWGEOM_line_interpolate_point'
+   LANGUAGE 'C' WITH (isstrict);
+
 CREATEFUNCTION segmentize(geometry, float8)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_segmentize2d'

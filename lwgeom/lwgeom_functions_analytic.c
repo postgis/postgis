@@ -331,3 +331,99 @@ Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS)
  * --strk@keybit.net;
  ***********************************************************************/
 
+/***********************************************************************
+ * Interpolate a point along a line, useful for Geocoding applications
+ * SELECT line_interpolate_point( 'LINESTRING( 0 0, 2 2'::geometry, .5 )
+ * returns POINT( 1 1 ).
+ * Works in 2d space only.
+ *
+ * Initially written by: jsunday@rochgrp.com
+ * Ported to LWGEOM by: strk@refractions.net
+ ***********************************************************************/
+PG_FUNCTION_INFO_V1(LWGEOM_line_interpolate_point);
+Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
+{
+	LWGEOM *geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	double distance = PG_GETARG_FLOAT8(1);
+	LWLINE *line;
+	LWPOINT *point;
+	POINTARRAY *ipa, *opa;
+	POINT4D pt;
+	char *srl;
+	int nsegs, i;
+	double length, slength, tlength;
+
+	if( distance < 0 || distance > 1 ) {
+		elog(ERROR,"line_interpolate_point: 2nd arg isnt within [0,1]");
+		PG_RETURN_NULL();
+	}
+
+	if( lwgeom_getType(geom->type) != LINETYPE ) {
+		elog(ERROR,"line_interpolate_point: 1st arg isnt a line");
+		PG_RETURN_NULL();
+	}
+
+	line = lwline_deserialize(SERIALIZED_FORM(geom));
+	ipa = line->points;
+
+	/* If distance is one of the two extremes, return the point on that
+	 * end rather than doing any expensive computations
+	 */
+	if ( distance == 0.0 || distance == 1.0 )
+	{
+		if ( distance == 0.0 )
+			getPoint4d_p(ipa, 0, (char *)&pt);
+		else
+			getPoint4d_p(ipa, ipa->npoints-1, (char *)&pt);
+
+		opa = pointArray_construct((char *)&pt, line->ndims, 1);
+		point = lwpoint_construct(line->ndims, line->SRID, opa);
+		srl = lwpoint_serialize(point);
+		pfree_point(point);
+		PG_RETURN_POINTER(LWGEOM_construct(srl, line->SRID, 0));
+	}
+
+	/* Interpolate a point on the line */
+	nsegs = ipa->npoints - 1;
+	length = lwgeom_pointarray_length2d(ipa);
+	tlength = 0;
+	for( i = 0; i < nsegs; i++ ) {
+		POINT2D *p1, *p2;
+
+		p1 = (POINT2D *)getPoint(ipa, i);
+		p2 = (POINT2D *)getPoint(ipa, i+1);
+
+		/* Find the relative length of this segment */
+		slength = distance2d_pt_pt(p1, p2)/length;
+
+		/* If our target distance is before the total length we've seen
+		 * so far. create a new point some distance down the current
+		 * segment.
+		 */
+		if( distance < tlength + slength ) {
+			double dseg = (distance - tlength) / slength;
+			pt.x = (p1->x) + ((p2->x - p1->x) * dseg);
+			pt.y = (p1->y) + ((p2->y - p1->y) * dseg);
+			pt.z = 0;
+			pt.m = 0;
+			opa = pointArray_construct((char *)&pt, line->ndims, 1);
+			point = lwpoint_construct(line->ndims, line->SRID, opa);
+			srl = lwpoint_serialize(point);
+			pfree_point(point);
+			PG_RETURN_POINTER(LWGEOM_construct(srl, line->SRID, 0));
+		}
+		tlength += slength;
+	}
+
+	/* Return the last point on the line. This shouldn't happen, but
+	 * could if there's some floating point rounding errors. */
+	getPoint4d_p(ipa, ipa->npoints-1, (char *)&pt);
+	opa = pointArray_construct((char *)&pt, line->ndims, 1);
+	point = lwpoint_construct(line->ndims, line->SRID, opa);
+	srl = lwpoint_serialize(point);
+	pfree_point(point);
+	PG_RETURN_POINTER(LWGEOM_construct(srl, line->SRID, 0));
+}
+/***********************************************************************
+ * --jsunday@rochgrp.com;
+ ***********************************************************************/
