@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.50.2.1  2004/11/11 09:37:56  strk
+ * Reverse() function back-ported.
+ *
  * Revision 1.50  2004/08/19 06:15:58  strk
  * USE_VERSION gets 80 where it got 75
  *
@@ -687,6 +690,8 @@ Datum postgis_uses_stats(PG_FUNCTION_ARGS);
 Datum postgis_lib_version(PG_FUNCTION_ARGS);
 Datum postgis_geos_version(PG_FUNCTION_ARGS);
 Datum postgis_proj_version(PG_FUNCTION_ARGS);
+Datum postgis_scripts_released(PG_FUNCTION_ARGS);
+Datum HWGEOM_reverse(PG_FUNCTION_ARGS);
 
 /*--------------------------------------------------------------------
  * Useful floating point utilities and constants.

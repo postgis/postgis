@@ -833,6 +833,11 @@ CREATEFUNCTION expand(geometry,float8)
 	AS '@MODULE_FILENAME@','expand_geometry'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
+CREATEFUNCTION Reverse(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','HWGEOM_reverse'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
 --
 -- Functions for converting to WKB
 --
