@@ -70,12 +70,10 @@ top_makefile:=$(PGSQL_SRC)/src/Makefile.global
 # set, we try to guess a default location that works on most unixoid systems.
 
 ifeq (${CLASSPATH},)
-	TEMP=/usr/share/java/postgresql.jar
+	POSTGIS_BUILD_CLASSPATH?=/usr/share/java/postgresql.jar
 else
-	TEMP=${CLASSPATH}
+	POSTGIS_BUILD_CLASSPATH?=${CLASSPATH}
 endif
-
-POSTGIS_BUILD_CLASSPATH?=$(TEMP)
 
 # Set those to --addclasspath for sablevm, to avoid overriding the
 # BOOTCLASSPATH, the first one is for the compiler, the second one for JRE.
