@@ -29,11 +29,18 @@ int points_per_sublist( char *str, int *npoints, long max_lists);
 
 
 //main
-//usage: dump <database> <table_name> <shape_file_name to create> ["2d" || 3d"]
-//database: name of the database on local host
-//table_name: which table to dump
-//shape_file_name: name of shape file which info is dumped into
-//2d or 3d specifies what type of shape file you want, a 2d one or a 3d one. Defaults to 3d if not specifed.
+//USAGE: pgsql2shp [<options>] <database> <table>
+//OPTIONS:
+//  -d Set the dump file to 3 dimensions, if this option is not used
+//     all dumping will be 2d only.
+//  -f <filename>  Use this option to specify the name of the file
+//     to create.
+//  -h <host>  Allows you to specify connection to a database on a
+//     machine other than the localhost.
+//  -p <port>  Allows you to specify a database port other than 5432.
+//  -P <password>  Connect to the database with the specified password.
+//  -u <user>  Connect to the database as the specified user.
+//  -g <geometry_column> Specify the geometry column to be exported.
 
 int main(int ARGC, char **ARGV){
 	char	   *pghost,*pgport,*pgoptions,*dbName,*pgpass,
@@ -59,13 +66,13 @@ int main(int ARGC, char **ARGV){
 	pghost = NULL;
 	shp_file = NULL;
 	pgport = NULL;
-	geovalue_field = 0;
+	geovalue_field = -1;
 	pguser = "";
 	pgpass = "";
 	is3d = 0;
-	errflg =0;
-	OID =0;
-        while ((c = getopt(ARGC, ARGV, "f:h:du:p:P:")) != EOF){
+	errflg = 0;
+	OID = 0;
+        while ((c = getopt(ARGC, ARGV, "f:h:du:p:P:g:")) != EOF){
                switch (c) {
                case 'f':
                     shp_file = optarg;
@@ -84,6 +91,9 @@ int main(int ARGC, char **ARGV){
                     break;
 	       case 'P':
 		    pgpass = optarg;
+		    break;
+	       case 'g':
+		    geo_col_name = optarg;
 		    break;
                case '?':
                     errflg=1;
@@ -118,6 +128,7 @@ int main(int ARGC, char **ARGV){
                 printf("  -p <port>  Allows you to specify a database port other than 5432.\n");
                 printf("  -P <password>  Connect to the database with the specified password.\n");
                 printf("  -u <user>  Connect to the database as the specified user.\n");
+		printf("  -g <geometry_column> Specify the geometry column to be exported.\n");
                 printf("\n");
                 exit (2);
         }
@@ -269,9 +280,13 @@ printf(conn_string);
 			type_ary[i]=2;
 			flds++;
 		}else if(type == OID){
-			type_ary[i]=9; //the geometry type field
-			geovalue_field = i;
-			flds++;
+		        if( geovalue_field == -1){
+			        geovalue_field = i;
+			        flds++;
+			}else if(geo_col_name != NULL && !strcasecmp(geo_col_name, field_name)){
+			        geovalue_field = i;
+			}
+			type_ary[i]=9; //the geometry type field			
 		}else{
 			if(DBFAddField(dbf, field_name,FTString,size,0) == -1)printf("error - Field could not be created.\n");
 			type_ary[i]=3;
@@ -330,36 +345,52 @@ printf(conn_string);
 	strcat(query, "'");
 	res3 = PQexec(conn, query);
 	if(PQntuples(res3) == 1 ){
-		strcpy(table_OID, (PQgetvalue(res3, 0,0)) );
+		strncpy(table_OID, (PQgetvalue(res3, 0,0)), 15 );
 	}else if(PQntuples(res3) == 0 ){
-		printf("ERROR:Cannot determine name of geometry column.\n");
+		printf("ERROR: Cannot determine relation OID.\n");
 		exit_nicely(conn);
 	}else{
-		strcpy(table_OID, (PQgetvalue(res3, 0,0)) );
-		printf("Warning: Multiple geometry columns detected, the program will only dump the first geometry");
-//JL - still need to write in some options to allow choosing a different geom col.
+		strncpy(table_OID, (PQgetvalue(res3, 0,0)), 15 );
+		printf("Warning: Multiple relations detected, the program will only dump the first relation.\n");
 	}	
 
-	//get the name of the geometry column
-	query= (char *)malloc(strlen("select attname from pg_attribute where
-attrelid =  and atttypid = ")+38);
-	strcpy(query, "select attname from pg_attribute where attrelid = ");
-	strcat(query, table_OID);
-	strcat(query, " and atttypid = ");
-	geo_OID = (char *)malloc(34);
-	sprintf(geo_OID,"%i",OID);
-	strcat(query,geo_OID );
+	//get the geometry column
+	if(geo_col_name == NULL){
+	        query= (char *)malloc(strlen("select attname from pg_attribute where attrelid =  and atttypid = ")+38);
+		strcpy(query, "select attname from pg_attribute where attrelid = ");
+		strcat(query, table_OID);
+		strcat(query, " and atttypid = ");
+		geo_OID = (char *)malloc(34);
+		sprintf(geo_OID, "%i", OID);
+		strcat(query, geo_OID );
+	}else{
+	        query = (char *)malloc(strlen("select attname from pg_attribute where attrelid = and atttypid = ")+
+				       strlen("and attname = ''")+strlen(geo_col_name)+38);
+		strcpy(query, "select attname from pg_attribute where attrelid = ");
+		strcat(query, table_OID);
+		strcat(query, " and atttypid = ");
+		geo_OID = (char *)malloc(34);
+		sprintf(geo_OID, "%i", OID);
+		strcat(query, geo_OID );
+		strcat(query, " and attname = '");
+		strcat(query, geo_col_name);
+		strcat(query, "'");
+	}
 	res3 = PQexec(conn, query);	
 	if(PQntuples(res3) == 1 ){
 		geo_col_name = (char *)malloc(strlen(PQgetvalue(res3, 0,0)) +2 );
 		geo_col_name = PQgetvalue(res3,0,0);
 	}else if(PQntuples(res3) == 0 ){
-		printf("ERROR:Cannot determine name of geometry column.\n");
+	        if(geo_col_name == NULL){
+		        printf("ERROR: Cannot determine name of geometry column.\n");
+		}else{
+		        printf("ERROR: Wrong geometry column name.\n");
+		}
 		exit_nicely(conn);
 	}else{
 		geo_col_name = (char *)malloc(strlen(PQgetvalue(res3, 0,0)) +2 );
 		geo_col_name = PQgetvalue(res3,0,0);
-		printf("Warning: Multiple geometry columns detected, the program will only dump the first geometry");
+		printf("Warning: Multiple geometry columns detected, the program will only dump the first geometry.\n");
 	}	
 
 

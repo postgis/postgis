@@ -44,6 +44,7 @@ Options:
 
         -u <user>: Connect to the database as the specified user.
 
+	-g <geometry_column> Specify the geometry column to be exported.
 
 
 EXAMPLES:
