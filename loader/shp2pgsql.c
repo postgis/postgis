@@ -12,6 +12,10 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.58  2004/06/22 11:05:46  strk
+ * Handled empty strings in numeric fields as '0'es... pg_atoi() does
+ * not do this (while atoi() does).
+ *
  * Revision 1.57  2004/05/20 19:21:08  pramsey
  * Fix bug in append mode that filled values into nonexistant gid column.
  *
@@ -556,9 +560,18 @@ Insert_attributes(DBFHandle hDBFHandle, int row)
       {
          switch (types[i]) 
          {
-            case FTString:
             case FTInteger:
             case FTDouble:
+               if ( -1 == snprintf(val, 1024, "%s",
+                     DBFReadStringAttribute(hDBFHandle, row, i)) )
+               {
+                  fprintf(stderr, "Warning: field %d name trucated\n", i);
+                  val[1023] = '\0';
+               }
+	       // pg_atoi() does not do this
+	       if ( val[0] == '\0' ) { val[0] = '0'; val[1] = '\0'; }
+               break;
+            case FTString:
             case FTLogical:
                if ( -1 == snprintf(val, 1024, "%s",
                      DBFReadStringAttribute(hDBFHandle, row, i)) )
