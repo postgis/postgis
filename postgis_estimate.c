@@ -302,6 +302,7 @@ Datum build_histogram2d(PG_FUNCTION_ARGS)
     int    sum_area_numb_new =0;
 	int bump=0;
 
+	int tuplimit = 500000;	// No. of tuples returned on each cursor fetch
 	bool moredata;
 	void *SPIplan;
 	void *SPIportal;
@@ -336,8 +337,8 @@ Datum build_histogram2d(PG_FUNCTION_ARGS)
 		columnname = DatumGetCString(DirectFunctionCall1(textout,
 	                                                PointerGetDatum(PG_GETARG_DATUM(2))));
 
-	elog(NOTICE,"Start build_histogram2d with %i items already existing", sum_area_numb);
-	elog(NOTICE,"table=\"%s\", column = \"%s\"", tablename, columnname);
+	//elog(NOTICE,"Start build_histogram2d with %i items already existing", sum_area_numb);
+	//elog(NOTICE,"table=\"%s\", column = \"%s\"", tablename, columnname);
 
 
 		SPIcode = SPI_connect();
@@ -352,7 +353,6 @@ Datum build_histogram2d(PG_FUNCTION_ARGS)
 
 			sprintf(sql,"SELECT box(\"%s\") FROM \"%s\"",columnname,tablename);
 			//elog(NOTICE,"executing %s",sql);
-			//SPIcode = SPI_exec(sql, 2147483640 ); // max signed int32
 
 			SPIplan = SPI_prepare(sql, 0, NULL);
 			if (SPIplan  == NULL)
@@ -368,18 +368,20 @@ Datum build_histogram2d(PG_FUNCTION_ARGS)
 					PG_RETURN_NULL() ;
 			}
 
-			//elog(NOTICE,"processing %i records",SPI_processed);
+			
 			moredata = TRUE;
-
 			while (moredata==TRUE) {
 
-				SPI_cursor_fetch(SPIportal, TRUE, 50000);
+				//elog(NOTICE,"about to fetch...");
+				SPI_cursor_fetch(SPIportal, TRUE, tuplimit);
 
-				tuptable = SPI_tuptable;
-				tupdesc = SPI_tuptable->tupdesc;
 				ntuples = SPI_processed;
+				//elog(NOTICE,"processing %d records", ntuples);
 
 				if (ntuples > 0) {
+
+					tuptable = SPI_tuptable;
+					tupdesc = SPI_tuptable->tupdesc;
 
 					cell_area = ( (xmax-xmin)*(ymax-ymin)/(histo->boxesPerSide*histo->boxesPerSide) );
 
@@ -456,6 +458,10 @@ Datum build_histogram2d(PG_FUNCTION_ARGS)
 
 					} // End of for loop
 
+					// Free all the results after each fetch, otherwise all tuples stay
+					// in memory until the end of the table...
+					SPI_freetuptable(tuptable);
+
 				} else {
 						moredata = FALSE;
 				} // End of if ntuples > 0
@@ -473,7 +479,7 @@ Datum build_histogram2d(PG_FUNCTION_ARGS)
 					PG_RETURN_NULL() ;
 		}
 
-	//	elog(NOTICE,"finishing up build_histogram2d ");
+		//elog(NOTICE,"finishing up build_histogram2d ");
 
 	//pfree(tablename);
 	//pfree(columnname);
