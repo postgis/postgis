@@ -2357,6 +2357,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 	PG_LWGEOM *result=NULL;
 	LWGEOM **lwgeoms, *outlwg;
 	size_t size;
+	unsigned int outtype;
 	int i;
 
 //elog(NOTICE, "LWGEOM_collect_garray called");
@@ -2389,20 +2390,39 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 
 	/*
 	 * Deserialize all geometries in array into the lwgeoms pointers
-	 * array
+	 * array. Check input types to form output type.
 	 */
 	lwgeoms = palloc(sizeof(LWGEOM *)*nelems);
+	outtype = 0;
 	for (i=0; i<nelems; i++)
 	{
+		unsigned int intype = TYPE_GETTYPE(geoms[i]->type);
 		lwgeoms[i] = lwgeom_deserialize(SERIALIZED_FORM(geoms[i]));
+
+		// Output type not initialized
+		if ( ! outtype ) {
+			// Input is single, make multi
+			if ( outtype < 4 ) outtype = intype+3;
+			// Input is multi, make collection
+			else outtype = COLLECTIONTYPE;
+		}
+
+		// Input type not compatible with output
+		// make output type a collection
+		else if ( outtype != COLLECTIONTYPE && intype != outtype-3 )
+		{
+			outtype = COLLECTIONTYPE;
+		}
+
 	}
 
 	outlwg = (LWGEOM *)lwcollection_construct(
-		COLLECTIONTYPE,
+		outtype,
 		lwgeom_getSRID(geoms[0]),
 		NULL, nelems, lwgeoms);
 
 	size = lwgeom_serialize_size(outlwg);
+	//lwnotice("lwgeom_serialize_size returned %d", size);
 	result = palloc(size+4);
 	result->size = (size+4);
 	lwgeom_serialize_buf(outlwg, SERIALIZED_FORM(result), &size);
