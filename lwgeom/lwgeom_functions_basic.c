@@ -1777,8 +1777,6 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 	elog(NOTICE, " returning");
 #endif
 
-	PG_FREE_IF_COPY(geom, 0);
-
 	PG_RETURN_ARRAYTYPE_P(result);
 
 }
