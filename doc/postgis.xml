@@ -1283,13 +1283,23 @@ COMMIT;</programlisting>
           </varlistentry>
 
           <varlistentry>
+            <term>-p</term>
+
+            <listitem>
+              <para>Only produces the table creation SQL code, without adding 
+              any actual data. This can be used if you need to completely
+              separate the table creation and data loading steps.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
             <term>-D</term>
 
             <listitem>
-              <para>Creates a new table and populates it from the Shape file.
-              This uses the PostgreSQL "dump" format for the output data and
-              is much faster to load than the default "insert" SQL format. Use
-              this for very large data sets.</para>
+              <para>Use the PostgreSQL "dump" format for the output data. This 
+              can be combined with -a, -c and -d. It is much faster to load
+              than the default "insert" SQL format. Use this for very large data
+              sets.</para>
             </listitem>
           </varlistentry>
 
@@ -1333,6 +1343,8 @@ COMMIT;</programlisting>
           </varlistentry>
 
         </variablelist>
+
+        <para>Note that -a, -c, -d and -p are mutually exclusive.</para>
 
         <para>An example session using the loader to create an input file and
         uploading it might look like this:</para>

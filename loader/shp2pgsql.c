@@ -396,12 +396,12 @@ main (int ARGC, char **ARGV)
 	/*
 	 * Generate INSERT or COPY lines
 	 */
-	LoadData();
+	if(opt != 'p') LoadData();
 
 	/*
 	 * If not in 'append' mode update sequence numbering
 	 */
-	if(opt != 'a') UpdateSerials();
+	if(opt != 'a' && opt != 'p') UpdateSerials();
 
 	printf("END;\n"); // End the last transaction
 
@@ -699,13 +699,14 @@ usage(char *me, int exitcode)
 	fprintf(stderr, "OPTIONS:\n");
 	fprintf(stderr, "  -s <srid>  Set the SRID field. If not specified it defaults to -1.\n");
 	fprintf(stderr, "\n");
-	fprintf(stderr, "  (-d|a|c) These are mutually exclusive options:\n");
+	fprintf(stderr, "  (-d|a|c|p) These are mutually exclusive options:\n");
 	fprintf(stderr, "      -d  Drops the table , then recreates it and populates\n");
 	fprintf(stderr, "          it with current shape file data.\n");
 	fprintf(stderr, "      -a  Appends shape file into current table, must be\n");
 	fprintf(stderr, "          exactly the same table schema.\n");
 	fprintf(stderr, "      -c  Creates a new table and populates it, this is the\n");
 	fprintf(stderr, "          default if you do not specify any options.\n");
+ 	fprintf(stderr, "      -p  Prepare mode, only creates the table\n");
 	fprintf(stderr, "\n");
 	fprintf(stderr, "  -g <geometry_column> Specify the name of the geometry column\n");
 	fprintf(stderr, "     (mostly useful in append mode).\n");
@@ -1186,7 +1187,7 @@ ParseCmdline(int ARGC, char **ARGV)
 	extern char *optarg;
 	extern int optind;
 
-	while ((c = getopt(ARGC, ARGV, "kcdaDs:g:iW:w")) != EOF){
+	while ((c = getopt(ARGC, ARGV, "kcdapDs:g:iW:w")) != EOF){
                switch (c) {
                case 'c':
                     if (opt == ' ')
@@ -1203,6 +1204,12 @@ ParseCmdline(int ARGC, char **ARGV)
 	       case 'a':
                     if (opt == ' ')
                          opt ='a';
+                    else
+                         return 0;
+                    break;
+	       case 'p':
+                    if (opt == ' ')
+                         opt ='p';
                     else
                          return 0;
                     break;
@@ -1623,6 +1630,10 @@ utf8 (const char *fromcode, char *inputbuf)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.86  2005/04/06 14:02:08  mschaber
+ * added -p option (prepare mode) that spits out the table schema without
+ * inserting any data.
+ *
  * Revision 1.85  2005/04/06 10:46:10  strk
  * Bugfix in -w (hwgeom) handling of ZM shapefiles.
  * Big reorganizzation of code to easy maintainance.

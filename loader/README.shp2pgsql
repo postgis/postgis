@@ -38,19 +38,23 @@ the data into.
 
 The options are as follows:
 
-(-a || -c || -d) these options are mutually exclusive.
+(-a || -c || -d || -p) these options are mutually exclusive.
 
   -a    Append mode. Do not delete the target table or try to create
         a new table, simple insert the data into the existing table.
         A table will have to exist for this to work, it is usually
-        used after a create mode as been run once.(mutually exclusive
-	with -c and -d)
+        used after a create mode as been run once or after -p. (mutually
+        exclusive with -c, -d and -p)
   -c    Create mode. This is the default mode is no other is specified.
 	Create a new table and upload the data into that table.
-	(mutually exclusive with -a and -d)
+	(mutually eclusive with -a, -d and -p)
   -d    Delete mode. Delete the database table named <tablename>, then
 	create a new one with that name before uploading the data into
-	the new empty database table.(mutually exclusive with -a and -c)
+	the new empty database table. (mutually exclusive with -a, -c 
+        and -p)
+  -p    Prepare mode. Read the table schema from the shape file and 
+        create the new table, but do not insert any data. (mutually
+        exclusive with -a, -c and -d)
 
   -D Dump. When inserting the data into the table use 'dump' format.
 	Dump format is used by PostgreSQL for large data dumps and 

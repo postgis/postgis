@@ -26,8 +26,14 @@ Appends data from the Shape file into the database table. Note that to use this 
 Creates a new table and populates it from the Shape file. This is the default mode.
 
 .TP 
+\fB\-p\fR
+Only produces the table creation SQL code, without adding any actual data. This can
+be used if you need to completely separate the table creation and data loading steps.
+
+.TP 
 \fB\-D\fR
-Use the PostgreSQL "dump" format for the output data. This can be combined with -d, -a and -c and is much faster to load than the default "insert" SQL format. Use this for very large data sets.
+Use the PostgreSQL "dump" format for the output data. This can be combined with -a, -c and -d.
+It is much faster to load than the default "insert" SQL format. Use this for very large data sets.
 
 .TP 
 \fB\-s\fR <\fISRID\fR>
@@ -46,6 +52,9 @@ Coerce all integers to standard 32\-bit integers, do not create 64\-bit bigints,
 Output WKT format, for use with older (0.x) versions of PostGIS.
 Note that this will introduce coordinate drifts and will drop
 M values from shapefiles.
+
+.LP
+Note that -a, -c, -d and -p are mutually exclusive.
 
 .SH "EXAMPLES"
 .LP 
