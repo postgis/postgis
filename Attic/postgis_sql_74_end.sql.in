@@ -12,6 +12,9 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.9  2004/01/20 20:14:17  strk
+-- cleaner comments for DropGeometryColumn
+--
 -- Revision 1.8  2004/01/20 20:10:39  strk
 -- removed bogus comment about missed alter table drop column
 --
@@ -415,25 +418,9 @@ END;
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- DROPGEOMETRYCOLUMN( <schema name>, <table name>, <column name> )
 --
--- There is no ALTER TABLE DROP CONSTRAINT command in postgresql
--- So, we:
---   1. remove the unwanted geom column reference from the 
---      geometry_columns table
---   2. update the table so that the geometry column is all NULLS
---      This is okay since the CHECK srid(geometry) = <srid> is not
---      checked if geometry is NULL (the isstrict attribute on srid())
---   3. add another constraint that the geometry column must be NULL
--- This, effectively kills the geometry column 
---   (a) its not in the geometry_column table
---   (b) it only has nulls in it
---   (c) you cannot add anything to the geom column because it must be NULL
--- 
--- This will screw up if you put a NOT NULL constraint on the geometry 
--- column, so the first thing we must do is remove this constraint (its a 
--- modification of the pg_attribute system table)
+-- Removes geometry column reference from geometry_columns table,
+-- and actually drops the column.
 --
--- We also check to see if the table/column exists in the geometry_columns 
--- table 
 CREATE FUNCTION DropGeometryColumn(varchar,varchar,varchar)
 	RETURNS text
 	AS 
