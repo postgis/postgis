@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.17  2004/06/03 08:19:20  strk
+ * yet another Infinite check used: finite() - which checks for NaN,-Inf,+Inf
+ *
  * Revision 1.16  2004/06/03 08:13:11  strk
  * Simplified INFINITY checks by use of isinf()
  *
@@ -145,7 +148,6 @@ Datum ggeometry_compress(PG_FUNCTION_ARGS)
 {
 	GISTENTRY *entry=(GISTENTRY*)PG_GETARG_POINTER(0);
 	GISTENTRY *retval;
-	double checkinf;
 
 	if ( entry->leafkey)
 	{
@@ -170,9 +172,10 @@ Datum ggeometry_compress(PG_FUNCTION_ARGS)
 				PG_RETURN_POINTER(entry);
 			}
 
-			checkinf = in->bvol.URT.x - in->bvol.URT.y -
-				in->bvol.LLB.x - in->bvol.LLB.y;
-			if ( isnan(checkinf) || isinf(checkinf) )
+			if ( ! finite(in->bvol.URT.x) ||
+				! finite(in->bvol.URT.y) ||
+				! finite(in->bvol.LLB.x) ||
+				! finite(in->bvol.LLB.y) )
 			{
 				//elog(NOTICE, "found infinite geometry");
 				PG_RETURN_POINTER(entry);

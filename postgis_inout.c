@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.41  2004/06/03 08:19:20  strk
+ * yet another Infinite check used: finite() - which checks for NaN,-Inf,+Inf
+ *
  * Revision 1.40  2004/06/03 08:13:11  strk
  * Simplified INFINITY checks by use of isinf()
  *
@@ -331,8 +334,8 @@ bool	parse_points_in_list(char	*str, POINT3D	*points, int32	max_points, bool *is
 			*is3d = TRUE; //found 3 entites (x,y,z)
 		}
 
-		if ( isinf(points[numb_found].x) ||
-			isinf(points[numb_found].y) )
+		if ( ! finite(points[numb_found].x) ||
+			! finite(points[numb_found].y) )
 		{
 			elog(ERROR, "infinite coordinate in geom");
 			return FALSE;
@@ -401,7 +404,7 @@ bool	parse_points_in_list_exact(char	*str, POINT3D	*points, int32	max_points, bo
 				return FALSE; //error occured (nothing parsed)
 			}
 			str = end_of_double;
-			if ( isinf(points[numb_found].x) )
+			if ( ! finite(points[numb_found].x) )
 			{
 				elog(ERROR, "infinite coordinate in geom");
 				return FALSE;
@@ -411,7 +414,7 @@ bool	parse_points_in_list_exact(char	*str, POINT3D	*points, int32	max_points, bo
 			{
 				return FALSE; //error occured (nothing parsed)
 			}
-			if ( isinf(points[numb_found].y) )
+			if ( ! finite(points[numb_found].y) )
 			{
 				elog(ERROR, "infinite coordinate in geom");
 				return FALSE;
@@ -420,7 +423,7 @@ bool	parse_points_in_list_exact(char	*str, POINT3D	*points, int32	max_points, bo
 			points[numb_found].z = strtod(str,&end_of_double); //will be zero if error occured
 			if (!(end_of_double == str))
 			{
-				if ( isinf(points[numb_found].y) )
+				if ( ! finite(points[numb_found].y) )
 				{
 					elog(ERROR, "infinite coordinate in geom");
 					return FALSE;
