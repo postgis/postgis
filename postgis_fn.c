@@ -1989,12 +1989,15 @@ Datum distance(PG_FUNCTION_ARGS)
 			}
 			else
 			{
-				dist = this_dist;
+				dist = this_dist;   //first one through
 				dist_set = TRUE;
 			}
+
+			if (dist <= 0.0)  
+				PG_RETURN_FLOAT8( (double) 0.0); // no need to look for things closer
 		}
 	}
 	if (dist <0)
-		dist = 0; //computational error
+		dist = 0; //computational error, may get -0.00000000001
 	PG_RETURN_FLOAT8(dist);
 }
