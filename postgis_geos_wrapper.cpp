@@ -7,11 +7,7 @@
 #include <iostream>
 #include <fstream>
 
-//#include "geom.h"
-//#include "util.h"
-//#include "graph.h"
-#include "io.h"
-//#include "opRelate.h"
+#include "geom.h"
 
 using namespace geos;
 
