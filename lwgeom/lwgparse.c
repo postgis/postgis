@@ -737,8 +737,9 @@ parse_wkb(const char** b)
 {
 	int4 type;
 	byte xdr = read_wkb_byte(b);
-	swap_order=0;
 	int4 localsrid;
+
+	swap_order=0;
 
 	if ( xdr != getMachineEndian() )
 	{
