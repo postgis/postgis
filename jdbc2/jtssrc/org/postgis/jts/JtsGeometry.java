@@ -40,7 +40,7 @@ import java.sql.SQLException;
 
 public class JtsGeometry extends PGobject {
     /* JDK 1.5 Serialization */
-    private static final long serialVersionUID = 100;
+    private static final long serialVersionUID = 0x100;
 
     Geometry geom;
 
