@@ -34,6 +34,13 @@ USE_GEOS=@USE_GEOS@
 GEOS_DIR=@GEOS_DIR@
 
 #
+# Set USE_JTS to 1 if you have libjts installed. 
+#
+USE_JTS=0
+JTS_INCLUDES=@JTS_INCLUDES@
+JTS_LIBDIR=@JTS_LIBDIR@
+
+#
 # Set USE_STATS to 1 for new GiST statistics collection support
 # Note that this support requires additional columns in 
 # GEOMETRY_COLUMNS, so see the list archives for info or
