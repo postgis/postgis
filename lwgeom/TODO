@@ -1,3 +1,5 @@
+- box extractor functions writing to a pointer or returning an actual
+  object should probably find a way to return NULL (for empty geometries).
 
 - WKB: what to do with that ? do we want to keep it as a type ?
 

@@ -1,7 +1,6 @@
 # This is a list of objects still missing lwgeom support
 
 FUNC: KEEPING FUNCTION: [line_interpolate_point(geometry, double precision)]
-FUNC: KEEPING FUNCTION: [simplify(geometry, double precision)]
 FUNC: KEEPING FUNCTION: [segmentize(geometry, double precision)]
 FUNC: KEEPING FUNCTION: [asbinary(geometry)]
 FUNC: KEEPING FUNCTION: [asbinary(geometry, text)]
