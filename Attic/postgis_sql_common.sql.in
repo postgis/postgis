@@ -12,6 +12,10 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.12  2003/08/01 23:58:08  dblasby
+-- added the functionality to convert GEOS->PostGIS geometries.  Added those geos
+-- functions to postgis.
+--
 -- Revision 1.11  2003/07/01 18:30:55  pramsey
 -- Added CVS revision headers.
 --
@@ -905,6 +909,45 @@ CREATE OPERATOR > (
 --
 -- GEOS Functions
 --
+
+
+CREATE FUNCTION intersection(geometry,geometry)
+   RETURNS geometry
+   AS '@MODULE_FILENAME@','intersection'
+   LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION buffer(geometry,float8)
+   RETURNS geometry
+   AS '@MODULE_FILENAME@','buffer'
+   LANGUAGE 'C' WITH (isstrict);
+   
+   CREATE FUNCTION convexhull(geometry)
+      RETURNS geometry
+      AS '@MODULE_FILENAME@','convexhull'
+   LANGUAGE 'C' WITH (isstrict);
+  
+  
+     CREATE FUNCTION difference(geometry,geometry)
+        RETURNS geometry
+        AS '@MODULE_FILENAME@','difference'
+   LANGUAGE 'C' WITH (isstrict);
+   
+  CREATE FUNCTION boundary(geometry)
+      RETURNS geometry
+      AS '@MODULE_FILENAME@','boundary'
+   LANGUAGE 'C' WITH (isstrict);
+
+   CREATE FUNCTION symdifference(geometry,geometry)
+        RETURNS geometry
+        AS '@MODULE_FILENAME@','symdifference'
+   LANGUAGE 'C' WITH (isstrict);
+   
+      CREATE FUNCTION GeomUnion(geometry,geometry)
+           RETURNS geometry
+           AS '@MODULE_FILENAME@','geomunion'
+   LANGUAGE 'C' WITH (isstrict);
+   
+
 
 CREATE FUNCTION relate(geometry,geometry)
    RETURNS text

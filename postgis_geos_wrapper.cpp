@@ -13,6 +13,8 @@
 #include "io.h"
 //#include "opRelate.h"
 
+using namespace geos;
+
 
 
 //WARNING THIS *MUST* BE SET CORRECTLY.
@@ -86,8 +88,30 @@ extern "C" char GEOSisvalid(Geometry *g1);
 
 
 extern "C" char *GEOSasText(Geometry *g1);
+extern "C" char GEOSisEmpty(Geometry *g1);
+extern "C" char *GEOSGeometryType(Geometry *g1);
+
 
 extern "C" char *throw_exception(Geometry *g);
+
+extern "C" Geometry *GEOSIntersection(Geometry *g1,Geometry *g1);
+extern "C" Geometry *GEOSBuffer(Geometry *g1,double width);
+extern "C" Geometry *GEOSConvexHull(Geometry *g1);
+extern "C" Geometry *GEOSDifference(Geometry *g1,Geometry *g2);
+extern "C" Geometry *GEOSBoundary(Geometry *g1);
+extern "C" Geometry *GEOSSymDifference(Geometry *g1,Geometry *g2);
+extern "C" Geometry *GEOSUnion(Geometry *g1,Geometry *g2);
+
+
+extern "C" POINT3D  *GEOSGetCoordinate(Geometry *g1);
+extern "C" POINT3D  *GEOSGetCoordinates(Geometry *g1);
+extern "C" int      GEOSGetNumCoordinate(Geometry *g1);
+extern "C" Geometry *GEOSGetGeometryN(Geometry *g1, int n);
+extern "C" Geometry *GEOSGetExteriorRing(Geometry *g1);
+extern "C" Geometry *GEOSGetInteriorRingN(Geometry *g1, int n);
+extern "C" int      GEOSGetNumInteriorRings(Geometry *g1);
+extern "C" int      GEOSGetSRID(Geometry *g1);
+extern "C" int      GEOSGetNumGeometries(Geometry *g1);
 
 
 //###########################################################
@@ -204,6 +228,7 @@ Geometry *PostGIS2GEOS_linestring(LINE3D *line,int SRID, bool is3d)
 					c.y = line->points[t].y;
 					c.z = DoubleNotANumber;
 					coords->setAt( c ,t);
+
 				}
 
 			}
@@ -571,6 +596,141 @@ char *GEOSasText(Geometry *g1)
 	}
 }
 
+char GEOSisEmpty(Geometry *g1)
+{
+	try
+	{
+		return g1->isEmpty();
+	}
+	catch (...)
+	{
+		return 2;
+	}
+}
+
+char *GEOSGeometryType(Geometry *g1)
+{
+	try
+	{
+		string s = g1->getGeometryType();
+
+
+		char *result;
+		result = (char*) malloc( s.length() + 1);
+		strcpy(result, s.c_str() );
+		return result;
+	}
+	catch (...)
+	{
+		return NULL;
+	}
+}
+
+
+
+
+//-------------------------------------------------------------------
+// GEOS functions that return geometries
+//-------------------------------------------------------------------
+
+Geometry *GEOSIntersection(Geometry *g1,Geometry *g2)
+{
+	try
+	{
+		Geometry *g3 = g1->intersection(g2);
+		return g3;
+	}
+	catch (...)
+	{
+		return NULL;
+	}
+}
+
+Geometry *GEOSBuffer(Geometry *g1,double width)
+{
+	try
+	{
+		Geometry *g3 = g1->buffer(width);
+		return g3;
+	}
+	catch (...)
+	{
+		return NULL;
+	}
+}
+
+Geometry *GEOSConvexHull(Geometry *g1)
+{
+	try
+	{
+		Geometry *g3 = g1->convexHull();
+		return g3;
+	}
+	catch (...)
+	{
+		return NULL;
+	}
+}
+
+Geometry *GEOSDifference(Geometry *g1,Geometry *g2)
+{
+	try
+	{
+		Geometry *g3 = g1->difference(g2);
+		return g3;
+	}
+	catch (...)
+	{
+		return NULL;
+	}
+}
+
+Geometry *GEOSBoundary(Geometry *g1)
+{
+	try
+	{
+		Geometry *g3 = g1->getBoundary();
+		return g3;
+	}
+	catch (...)
+	{
+		return NULL;
+	}
+}
+
+Geometry *GEOSSymDifference(Geometry *g1,Geometry *g2)
+{
+	try
+	{
+		Geometry *g3 = g1->symDifference(g2);
+		return g3;
+	}
+	catch (...)
+	{
+		return NULL;
+	}
+}
+
+Geometry *GEOSUnion(Geometry *g1,Geometry *g2)
+{
+	try
+	{
+		Geometry *g3 = g1->Union(g2);
+		return g3;
+	}
+	catch (...)
+	{
+		return NULL;
+	}
+}
+
+
+
+
+
+
+
+
 //-------------------------------------------------------------------
 // memory management functions
 //------------------------------------------------------------------
@@ -591,12 +751,161 @@ void GEOSdeleteGeometry(Geometry *a)
 void GEOSdeleteChar(char *a)
 {
 	try{
-	 delete a;
+	   free(a);
 	}
 	catch(...)
 	{
 		// do nothing!
 	}
+}
+
+
+//-------------------------------------------------------------------
+//GEOS => POSTGIS conversions
+//-------------------------------------------------------------------
+
+
+// free the result when done!
+// g1 must be a point
+POINT3D  *GEOSGetCoordinate(Geometry *g1)
+{
+	try{
+		POINT3D		*result = (POINT3D*) malloc (sizeof(POINT3D));
+		Coordinate *c =g1->getCoordinate();
+		
+		result->x = c->x;
+		result->y = c->y;
+		result->z = c->z;
+		return result;
+	}
+	catch(...)
+	{
+		return NULL;
+	}
+	
+}
+
+
+//must free the result when done
+// result is an array length g1->getNumCoordinates()
+// only call on linestrings or linearrings
+POINT3D  *GEOSGetCoordinates(Geometry *g1)
+{
+	try {
+		int numPoints = g1->getNumPoints();
+		POINT3D *result = (POINT3D*) malloc (sizeof(POINT3D) * numPoints );
+		int t;
+		CoordinateList *cl = g1->getCoordinates();
+		Coordinate		c;
+
+		for (t=0;t<numPoints;t++)
+		{
+			c =cl->getAt(t);
+		
+			result[t].x = c.x;
+			result[t].y = c.y;
+			result[t].z = c.z;
+		}
+		
+		return result;
+	}
+	catch(...)
+	{
+		return NULL;
+	}
 
 }
+
+
+
+int      GEOSGetNumCoordinate(Geometry *g1)
+{
+	try{
+		return g1->getNumPoints();
+	}
+	catch(...)
+	{
+		return 0;
+	}
+}
+
+int      GEOSGetNumInteriorRings(Geometry *g1)
+{
+	try{
+		Polygon *p = (Polygon *) g1;
+		return p->getNumInteriorRing();
+	}
+	catch(...)
+	{
+		return 0;
+	}
+}
+
+
+//only call on GCs
+int      GEOSGetNumGeometries(Geometry *g1)
+{
+	try{
+		GeometryCollection *gc = (GeometryCollection *) g1;
+		return gc->getNumGeometries();
+	}
+	catch(...)
+	{
+		return 0;
+	}
+}
+
+
+//call only on GEOMETRYCOLLECTION or MULTI*
+Geometry *GEOSGetGeometryN(Geometry *g1, int n)
+{
+	try{
+		GeometryCollection *gc = (GeometryCollection *) g1;
+		return gc->getGeometryN(n);
+	}
+	catch(...)
+	{
+		return NULL;
+	}
+}
+
+
+//call only on polygon
+Geometry *GEOSGetExteriorRing(Geometry *g1)
+{
+	try{
+		Polygon *p = (Polygon *) g1;
+		return p->getExteriorRing();
+	}
+	catch(...)
+	{
+		return 0;
+	}
+}
+
+//call only on polygon
+Geometry *GEOSGetInteriorRingN(Geometry *g1,int n)
+{
+	try{
+		Polygon *p = (Polygon *) g1;
+		return p->getInteriorRingN(n);
+	}
+	catch(...)
+	{
+		return NULL;
+	}
+}
+
+
+int      GEOSGetSRID(Geometry *g1)
+{
+	try{
+		return g1->getSRID();
+	}
+	catch(...)
+	{
+		return 0;
+	}
+}
+
 
