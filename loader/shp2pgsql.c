@@ -103,7 +103,7 @@ char	*protect_quotes_string(char *str){
 
 	char	*result;
 	char	*str2;
-	char	*start, *end1, *end2;
+	char	*start, *end1, *end2 = NULL;
 	int	num_chars = 0;
 
 	str2 =  str;

@@ -111,14 +111,11 @@ static enum
    whose names are inconsistent.  */
 
 #if __STDC__ || defined(PROTO)
-extern char *getenv(const char *name);
 extern int  strcmp (const char *s1, const char *s2);
 extern int  strncmp(const char *s1, const char *s2, int n);
 
 static int my_strlen(const char *s);
 static char *my_index (const char *str, int chr);
-#else
-extern char *getenv ();
 #endif
 
 static int
@@ -146,6 +143,8 @@ my_index (str, chr)
 }
 
 #endif				/* GNU C library.  */
+
+extern char *getenv(const char *name);
 
 /* Handle permutation of arguments.  */
 

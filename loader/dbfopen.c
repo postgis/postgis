@@ -34,6 +34,12 @@
  ******************************************************************************
  *
  * $Log$
+ * Revision 1.4  2002/10/17 16:45:04  chodgson
+ * - cleaned up all the compiler warnings
+ * - for getopt.c, this involved moving the line:
+ *       extern char *getenv(const char *name);
+ *   outside of the two nested #ifdefs that it was inside, as it is always required (the code that calls it isn't inside any #ifdefs) Perhaps this may break compilation in non-linux/gnu environments?
+ *
  * Revision 1.3  2002/05/04 22:44:04  pramsey
  * Update shapelib references to 1.2.9.
  *
@@ -151,9 +157,6 @@
  * Revision 1.2  1995/08/04  03:14:43  warmerda
  * Added header.
  */
-
-static char rcsid[] = 
-  "$Id$";
 
 #include "shapefil.h"
 
