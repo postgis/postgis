@@ -3692,6 +3692,22 @@ FROM geometry_table;</literallayout>
 		</varlistentry>
 
 		<varlistentry>
+		  <term>MakeBox2D(&lt;LL&gt;, &lt;UR&gt;)</term>
+
+		  <listitem>
+		    <para>Creates a BOX2D defined by the given point geometries.</para>
+		  </listitem>
+		</varlistentry>
+
+		<varlistentry>
+		  <term>MakeBox3D(&lt;LLB&gt;, &lt;URT&gt;)</term>
+
+		  <listitem>
+		    <para>Creates a BOX3D defined by the given point geometries.</para>
+		  </listitem>
+		</varlistentry>
+
+		<varlistentry>
 		  <term>MakeLine(geometry set)</term>
 
 		  <listitem>

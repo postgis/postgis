@@ -1672,6 +1672,16 @@ CREATEFUNCTION makePointM(float8, float8, float8)
 	AS '@MODULE_FILENAME@', 'LWGEOM_makepoint3dm'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
+CREATEFUNCTION makeBox2d(geometry, geometry)
+	RETURNS box2d
+	AS '@MODULE_FILENAME@', 'BOX2DFLOAT4_construct'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATEFUNCTION makeBox3d(geometry, geometry)
+	RETURNS box3d
+	AS '@MODULE_FILENAME@', 'BOX3D_construct'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
 CREATEFUNCTION makeline_garray (geometry[])
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_makeline_garray'

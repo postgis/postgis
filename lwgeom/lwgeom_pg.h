@@ -37,6 +37,8 @@ Datum BOX2D_intersects(PG_FUNCTION_ARGS);
 Datum BOX2D_union(PG_FUNCTION_ARGS);
 
 Datum LWGEOM_same(PG_FUNCTION_ARGS);
+Datum BOX3D_construct(PG_FUNCTION_ARGS);
+Datum BOX2DFLOAT4_ymin(PG_FUNCTION_ARGS);
 
 
 #endif // !defined _LWGEOM_PG_H 1

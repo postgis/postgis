@@ -432,3 +432,33 @@ Datum BOX2DFLOAT4_to_LWGEOM(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
+PG_FUNCTION_INFO_V1(BOX2DFLOAT4_construct);
+Datum BOX2DFLOAT4_construct(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *min = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	PG_LWGEOM *max = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	BOX2DFLOAT4 *result = palloc(sizeof(BOX2DFLOAT4));
+	LWGEOM *minpoint, *maxpoint;
+	POINT2D minp, maxp;
+
+	minpoint = lwgeom_deserialize(SERIALIZED_FORM(min));
+	maxpoint = lwgeom_deserialize(SERIALIZED_FORM(max));
+
+	if ( TYPE_GETTYPE(minpoint->type) != POINTTYPE ||
+		TYPE_GETTYPE(maxpoint->type) != POINTTYPE )
+	{
+		elog(ERROR, "BOX2DFLOAT4_construct: args must be points");
+		PG_RETURN_NULL();
+	}
+	getPoint2d_p(((LWPOINT *)minpoint)->point, 0, &minp);
+	getPoint2d_p(((LWPOINT *)maxpoint)->point, 0, &maxp);
+
+	result->xmax = maxp.x;
+	result->ymax = maxp.y;
+
+	result->xmin = minp.x;
+	result->ymin = minp.y;
+
+	PG_RETURN_POINTER(result);
+}
+
