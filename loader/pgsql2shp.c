@@ -1912,7 +1912,7 @@ addRecord(PGresult *res, int residx, int row)
 	int flds = 0; /* number of dbf field */
 	char *val;
 	char *v;
-	int junk;
+	size_t junk;
 
 	for (j=0; j<nFields; j++)
 	{
@@ -3117,6 +3117,9 @@ create_usrquerytable(void)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.74  2005/03/25 18:43:07  strk
+ * Fixed PQunescapeBytearea argument (might give problems on 64bit archs)
+ *
  * Revision 1.73  2005/03/08 11:06:33  strk
  * modernized old-style parameter declarations
  *
