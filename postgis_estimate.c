@@ -11,6 +11,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.7  2003/11/11 10:14:57  strk
+ * Added support for PG74
+ *
  * Revision 1.6  2003/07/25 17:08:37  pramsey
  * Moved Cygwin endian define out of source files into postgis.h common
  * header file.
@@ -540,9 +543,9 @@ get_restriction_var(List *args,
 	/* Ignore any binary-compatible relabeling */
 
 	if (IsA(left, RelabelType))
-		left = ((RelabelType *) left)->arg;
+		left = (Node *)((RelabelType *) left)->arg;
 	if (IsA(right, RelabelType))
-		right = ((RelabelType *) right)->arg;
+		right = (Node *)((RelabelType *) right)->arg;
 
 	/* Look for the var */
 
@@ -719,7 +722,10 @@ genericcostestimate2(Query *root, RelOptInfo *rel,
 {
 	double		numIndexTuples;
 	double		numIndexPages;
-	List	   *selectivityQuals = indexQuals;
+	List		*selectivityQuals = indexQuals;
+#if USE_VERSION >= 74
+	QualCost	index_qual_cost;
+#endif
 
 
 //elog(NOTICE,"in genericcostestimate");
@@ -749,7 +755,11 @@ genericcostestimate2(Query *root, RelOptInfo *rel,
 
 	/* Estimate the fraction of main-table tuples that will be visited */
 	*indexSelectivity = clauselist_selectivity(root, selectivityQuals,
-											   lfirsti(rel->relids));
+#if USE_VERSION < 74
+		lfirsti(rel->relids));
+#else
+		rel->relid, JOIN_INNER);
+#endif
 
 	/*
 	 * Estimate the number of tuples that will be visited.	We do it in
@@ -805,9 +815,18 @@ genericcostestimate2(Query *root, RelOptInfo *rel,
 	 * the scan.
 	 */
 
+#if USE_VERSION < 74
 	*indexStartupCost = 0;
 	*indexTotalCost = numIndexPages +
-		(cpu_index_tuple_cost + cost_qual_eval(indexQuals)) * numIndexTuples;
+		(cpu_index_tuple_cost + cost_qual_eval(indexQuals)) *
+		numIndexTuples;
+#else
+	cost_qual_eval(&index_qual_cost, indexQuals);
+	*indexStartupCost = index_qual_cost.startup;
+	*indexTotalCost = numIndexPages +
+		(cpu_index_tuple_cost + index_qual_cost.per_tuple) *
+		numIndexTuples;
+#endif
 
 
 	//elog(NOTICE,"cpu_index_tuple_cost = %lf, cost_qual_eval(indexQuals)) = %lf",
