@@ -94,9 +94,9 @@ OBJS=postgis_debug.o postgis_ops.o postgis_fn.o postgis_inout.o postgis_proj.o p
 # matter.)
 SHLIB_LINK=$(filter -L%, $(LDFLAGS)) 
 ifeq ($(USE_PROJ),1)
-	SHLIB_LINK=$(filter -L%, $(LDFLAGS)) -L$(PROJ_DIR)/lib -lproj
+	SHLIB_LINK=$(filter -L%, $(LDFLAGS)) $(BE_DLLLIBS) -L$(PROJ_DIR)/lib -lproj
 else
-	SHLIB_LINK=$(filter -L%, $(LDFLAGS)) 
+	SHLIB_LINK=$(filter -L%, $(LDFLAGS)) $(BE_DLLLIBS)
 endif
 
 #---------------------------------------------------------------
