@@ -2,8 +2,6 @@
 
 - Clean up mapserver connectivity
 - Submit to OpenGIS Consortium for testing
-- Short circuit routines on GEOS functions
-- GML export routines
 - More connectivity to commercial GIS software.
 - Update PgSQL GiST to support row level (recangle level?) locking.
 - Network creation and network operations 
