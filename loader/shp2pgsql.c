@@ -1,8 +1,6 @@
 /**********************************************************************
  * $Id$
  *
- * Author: Jeff Lounsbury, jeffloun@refractions.net
- *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
  * Copyright 2001-2003 Refractions Research Inc.
@@ -17,6 +15,11 @@
  * Specifically designed to insert type 'geometry' (a custom 
  * written PostgreSQL type) for the shape files and PostgreSQL 
  * standard types for all attributes of the entity. 
+ *
+ * Original Author: Jeff Lounsbury, jeffloun@refractions.net
+ *
+ * Maintainer: Sandro Santilli, strk@refractions.net
+ *
  **********************************************************************/
 
 #include "shapefil.h"
@@ -1379,6 +1382,9 @@ utf8 (const char *fromcode, char *inputbuf)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.79  2005/01/31 22:15:22  strk
+ * Added maintainer notice, to reduce Jeff-strk mail bounces
+ *
  * Revision 1.78  2005/01/17 09:21:13  strk
  * Added one more bytes for terminating NULL in utf8 encoder
  *

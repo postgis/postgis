@@ -12,6 +12,10 @@
  *
  * PostGIS to Shapefile converter
  *
+ * Original Author: Jeff Lounsbury, jeffloun@refractions.net
+ *
+ * Maintainer: Sandro Santilli, strk@refractions.net
+ *
  **********************************************************************/
 
 static char rcsid[] =
@@ -3115,6 +3119,9 @@ create_usrquerytable()
 
 /**********************************************************************
  * $Log$
+ * Revision 1.71  2005/01/31 22:15:22  strk
+ * Added maintainer notice, to reduce Jeff-strk mail bounces
+ *
  * Revision 1.70  2004/12/22 10:29:09  strk
  * Drop useless SRID from geometry when downloading EWKB format.
  *
