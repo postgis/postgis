@@ -303,6 +303,10 @@ CREATEFUNCTION postgis_geos_version() RETURNS cstring
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C';
 
+CREATEFUNCTION postgis_proj_version() RETURNS cstring
+	AS '@MODULE_FILENAME@'
+	LANGUAGE 'C';
+
 CREATEFUNCTION postgis_version() RETURNS text
 AS 'SELECT \'@POSTGIS_VERSION@\'::text AS version'
 LANGUAGE 'sql';

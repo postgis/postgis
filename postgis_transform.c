@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.18  2004/07/23 21:24:33  strk
+ * Added postgis_proj_version()
+ *
  * Revision 1.17  2004/07/22 16:20:10  strk
  * Added postgis_lib_version() and postgis_geos_version()
  *
@@ -458,6 +461,13 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result); // new geometry
 }
 
+PG_FUNCTION_INFO_V1(postgis_proj_version);
+Datum postgis_proj_version(PG_FUNCTION_ARGS)
+{
+	char *result = pstrdup(pj_get_release());
+	PG_RETURN_CSTRING(result);
+}
+
 
 #else // ! defined USE_PROJ
 
@@ -475,6 +485,12 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	//memcpy(result,geom1, geom1->size);
 	///elog(NOTICE,"PostGIS transform
 	//PG_RETURN_POINTER(result);
+	PG_RETURN_NULL();
+}
+
+PG_FUNCTION_INFO_V1(postgis_proj_version);
+Datum postgis_proj_version(PG_FUNCTION_ARGS)
+{
 	PG_RETURN_NULL();
 }
 #endif
