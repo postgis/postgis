@@ -14,7 +14,7 @@ else
 	libdir := ${PWD}
 endif
 
-OBJS = shpopen.o dbfopen.o
+OBJS = shpopen.o dbfopen.o getopt.o
 
 override CPPFLAGS := -g -I$(srcdir) -L$(top_builddir)/src/interfaces/libpq -lpq -I$(top_builddir)/src/interfaces/libpq $(CPPFLAGS) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"'
 
