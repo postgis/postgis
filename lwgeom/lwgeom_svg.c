@@ -192,7 +192,7 @@ void print_svg_coords(char *result, POINT2D *pt, int precision)
 
 	sprintf(x, "%.*f", precision, pt->x);
 	trim_trailing_zeros(x);
-	sprintf(y, "%.*f", precision, pt->y);
+	sprintf(y, "%.*f", precision, pt->y * -1);
 	trim_trailing_zeros(y);
 
 	sprintf(temp, "x=\"%s\" y=\"%s\"", x, y);
@@ -211,7 +211,7 @@ void print_svg_circle(char *result, POINT2D *pt, int precision)
 
 	sprintf(x, "%.*f", precision, pt->x);
 	trim_trailing_zeros(x);
-	sprintf(y, "%.*f", precision, pt->y);
+	sprintf(y, "%.*f", precision, pt->y * -1);
 	trim_trailing_zeros(y);
 
 	sprintf(temp, "cx=\"%s\" cy=\"%s\"", x, y);
@@ -238,7 +238,7 @@ print_svg_path_abs(char *result, POINTARRAY *pa, int precision)
 		}
 		sprintf(x, "%.*f", precision, pt->x);
 		trim_trailing_zeros(x);
-		sprintf(y, "%.*f", precision, pt->y);
+		sprintf(y, "%.*f", precision, pt->y * -1);
 		trim_trailing_zeros(y);
 		result+= sprintf(result,"%s %s", x, y);
 	}
@@ -259,7 +259,7 @@ print_svg_path_rel(char *result, POINTARRAY *pa, int precision)
 
 	sprintf(x, "%.*f", precision, pt->x);
 	trim_trailing_zeros(x);
-	sprintf(y, "%.*f", precision, pt->y);
+	sprintf(y, "%.*f", precision, pt->y * -1);
 	trim_trailing_zeros(y);
 
 	result += sprintf(result,"%s %s l", x, y); 
@@ -268,9 +268,9 @@ print_svg_path_rel(char *result, POINTARRAY *pa, int precision)
 	for (u=1; u<pa->npoints; u++)
 	{
 		pt = (POINT2D *)getPoint(pa, u);
-		sprintf(x, "%.*f", precision, pt->x);
+		sprintf(x, "%.*f", precision, pt->x - lpt->x);
 		trim_trailing_zeros(x);
-		sprintf(y, "%.*f", precision, pt->y);
+		sprintf(y, "%.*f", precision, (pt->y - lpt->y) * -1);
 		trim_trailing_zeros(y);
 		result+= sprintf(result," %s %s", x, y);
 		lpt = pt;
@@ -280,6 +280,9 @@ print_svg_path_rel(char *result, POINTARRAY *pa, int precision)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.6  2004/10/25 14:20:57  strk
+ * Y axis reverse and relative path fixes from Olivier Courtin.
+ *
  * Revision 1.5  2004/10/15 11:48:48  strk
  * Fixed a bug making asSVG return a spurious char at the end.
  *
