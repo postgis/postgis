@@ -12,6 +12,10 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.5  2003/12/18 18:07:06  strk
+-- Changed fix_geometry_columns() for PG >= 73 so to set f_table_schema to
+-- the empty string if its value is not a valid pg namespace.
+--
 -- Revision 1.4  2003/11/28 11:25:31  strk
 -- Added explicit geometry as text cast
 --
@@ -227,5 +231,25 @@ CREATE OPERATOR CLASS btree_geometry_ops
 	OPERATOR	5	> ,
 	FUNCTION	1	geometry_cmp (geometry, geometry);
 
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- FIX_GEOMETRY_COLUMNS()
+--
+-- Since 7.3 schema support has been added.
+-- Previous postgis versions used to put the database name in
+-- the schema column. This needs to be fixed, so we set to the
+-- empty string any schema value not existing in pg_namespace
+--
+
+CREATE FUNCTION fix_geometry_columns() RETURNS text
+AS 
+'
+BEGIN
+	EXECUTE ''update geometry_columns set attrelid = (select pg_class.oid AS attrelid from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name), varattnum = (select pg_attribute.attnum from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name)'';
+	EXECUTE ''update geometry_columns set f_table_schema = '''''''' where f_table_schema not in ( select nspname::varchar from pg_namespace )'';
+	RETURN ''geometry_columns table is now linked to the system tables'';
+END;
+'
+LANGUAGE 'plpgsql' ;
 
 END TRANSACTION;

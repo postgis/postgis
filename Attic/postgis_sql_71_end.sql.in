@@ -12,6 +12,10 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.3  2003/12/18 18:07:06  strk
+-- Changed fix_geometry_columns() for PG >= 73 so to set f_table_schema to
+-- the empty string if its value is not a valid pg namespace.
+--
 -- Revision 1.2  2003/07/01 18:30:55  pramsey
 -- Added CVS revision headers.
 --
@@ -191,5 +195,19 @@ INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
 	FROM pg_am am, pg_opclass opcl, pg_proc pro
 	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops'
 		AND proname = 'ggeometry_same';
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- FIX_GEOMETRY_COLUMNS()
+
+CREATE FUNCTION fix_geometry_columns() RETURNS text
+AS 
+'
+BEGIN
+	EXECUTE ''update geometry_columns set attrelid = (select pg_class.oid AS attrelid from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name), varattnum = (select pg_attribute.attnum from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name)'';
+	RETURN ''geometry_columns table is now linked to the system tables'';
+END;
+'
+LANGUAGE 'plpgsql' ;
+
 
 END TRANSACTION;

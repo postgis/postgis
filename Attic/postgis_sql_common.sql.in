@@ -12,6 +12,10 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.25  2003/12/18 18:07:06  strk
+-- Changed fix_geometry_columns() for PG >= 73 so to set f_table_schema to
+-- the empty string if its value is not a valid pg namespace.
+--
 -- Revision 1.24  2003/12/12 10:08:24  strk
 -- Added GEOSnoop function and some optional debugging output for
 -- geos<->postgis converter (define DEBUG_CONVERTER at top postgis_geos.c)
@@ -119,20 +123,7 @@ AS 'SELECT \'@POSTGIS_VERSION@\'::text AS version'
 LANGUAGE 'sql';
 
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- FIX_GEOMETRY_COLUMNS()
-
-CREATE FUNCTION fix_geometry_columns() RETURNS text
-AS 
-'
-BEGIN
-	EXECUTE ''update geometry_columns set attrelid = (select pg_class.oid AS attrelid from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name), varattnum = (select pg_attribute.attnum from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name)'';
-	RETURN ''geometry_columns table is now linked to the system tables'';
-END;
-'
-LANGUAGE 'plpgsql' ;
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- FIND_SRID( <schema/database>, <table>, <geom col> )
+-- FIND_SRID( <schema>, <table>, <geom col> )
 
 CREATE FUNCTION find_srid(varchar,varchar,varchar) RETURNS int4 AS
 'DECLARE
@@ -263,7 +254,7 @@ END;
 -- SRID checks the coord_dimension to make sure its between 0 and 3
 -- should also check the precision grid (future expansion)
 -- also checks to see if the database_name is in the pg_database table.
-
+--
 CREATE FUNCTION AddGeometryColumn(varchar,varchar,varchar,integer,varchar,integer)
 	RETURNS text
 	AS 
