@@ -2281,6 +2281,10 @@ POSTGIS2GEOS(PG_LWGEOM *geom)
 	}
 	ret = LWGEOM2GEOS(lwgeom);
 	lwgeom_release(lwgeom);
+	if ( ! ret )  {
+		lwerror("POSTGIS2GEOS conversion failed");
+		return NULL;
+	}
 	return ret;
 }
 
