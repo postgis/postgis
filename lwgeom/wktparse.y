@@ -8,7 +8,8 @@
 
 %{
 #include "wktparse.h"
-#include "unistd.h"
+#include <unistd.h>
+#include <stdio.h>
 
 void set_zm(char z, char m);
 int lwg_parse_yylex(void);
@@ -48,14 +49,14 @@ geom_point : POINT point | POINTM { set_zm(0, 1); } point ;
 
 point : { alloc_point(); } point_int { pop();} ;
 
-point_int : empty | LPAREN a_point RPAREN;
+point_int : LPAREN a_point RPAREN;
 
 /* MULTIPOINT */
 
 geom_multipoint : MULTIPOINT { alloc_multipoint(); } multipoint  { pop();} | 
 	MULTIPOINTM { set_zm(0, 1); alloc_multipoint(); } multipoint {pop();};
 
-multipoint : empty | { alloc_counter(); } LPAREN multipoint_int RPAREN {pop();} ;
+multipoint : { alloc_counter(); } LPAREN multipoint_int RPAREN {pop();} ;
 
 multipoint_int : mpoint | multipoint_int COMMA mpoint;
 
@@ -68,7 +69,7 @@ geom_linestring : LINESTRING linestring | LINESTRINGM { set_zm(0, 1); } linestri
 
 linestring : { alloc_linestring(); } linestring_1 {pop();} ;
 
-linestring_1 : empty | { alloc_counter(); } LPAREN linestring_int RPAREN {popc(); };
+linestring_1 : { alloc_counter(); } LPAREN linestring_int RPAREN {popc(); };
 
 linestring_int : a_point | linestring_int COMMA a_point;
 
@@ -76,7 +77,7 @@ linestring_int : a_point | linestring_int COMMA a_point;
 
 geom_multilinestring : MULTILINESTRING { alloc_multilinestring(); } multilinestring  { pop();} | MULTILINESTRINGM { set_zm(0, 1); alloc_multilinestring(); } multilinestring { pop(); } ;
 
-multilinestring : empty | { alloc_counter(); } LPAREN multilinestring_int RPAREN{ pop();} ;
+multilinestring : { alloc_counter(); } LPAREN multilinestring_int RPAREN{ pop();} ;
 
 multilinestring_int : linestring | multilinestring_int COMMA linestring;
 
@@ -87,7 +88,7 @@ geom_polygon : POLYGON polygon | POLYGONM { set_zm(0, 1); } polygon ;
 
 polygon : { alloc_polygon(); } polygon_1  { pop();} ;
 
-polygon_1 : empty | { alloc_counter(); } LPAREN polygon_int RPAREN { pop();} ;
+polygon_1 : { alloc_counter(); } LPAREN polygon_int RPAREN { pop();} ;
 
 polygon_int : linestring_1 | polygon_int COMMA linestring_1;
                                                                                                           
@@ -95,7 +96,7 @@ polygon_int : linestring_1 | polygon_int COMMA linestring_1;
 
 geom_multipolygon : MULTIPOLYGON { alloc_multipolygon(); } multipolygon   { pop();} | MULTIPOLYGONM { set_zm(0, 1); alloc_multipolygon(); } multipolygon  { pop();} ;
 
-multipolygon : empty | { alloc_counter(); } LPAREN multipolygon_int RPAREN { pop();} ; 
+multipolygon : { alloc_counter(); } LPAREN multipolygon_int RPAREN { pop();} ; 
 
 multipolygon_int : polygon | multipolygon_int COMMA polygon;
 
@@ -107,7 +108,7 @@ geom_geometrycollection : GEOMETRYCOLLECTION { alloc_geomertycollection(); } geo
 
 geometrycollection : empty | { alloc_counter(); } LPAREN geometrycollection_int RPAREN { pop();} ;
 
-geometrycollection_int  : geometry_int | geometrycollection_int  COMMA geometry_int;
+geometrycollection_int  : empty | geometry_int | geometrycollection_int  COMMA geometry_int;
 
 
 a_point : point_2d | point_3d | point_4d ;
@@ -118,7 +119,7 @@ point_3d : VALUE VALUE VALUE {alloc_point_3d($1,$2,$3); };
 
 point_4d : VALUE VALUE VALUE VALUE {alloc_point_4d($1,$2,$3,$4); };
 
-empty : EMPTY  {alloc_empty(); } | LPAREN EMPTY RPAREN {alloc_empty(); } ;
+empty : EMPTY  {alloc_empty(); };
 %%
 
 
