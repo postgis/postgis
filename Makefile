@@ -94,7 +94,7 @@ POSTGIS_VERSION = $(SO_MAJOR_VERSION).$(SO_MINOR_VERSION) USE_GEOS=$(USE_GEOS) U
 
 #---------------------------------------------------------------
 
-override CFLAGS += -g -fexceptions  
+override CFLAGS += -g -fexceptions 
 override CFLAGS += -I$(srcdir) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"' 
 override CFLAGS += -DUSE_VERSION=$(USE_VERSION)
 
@@ -111,6 +111,10 @@ override CXXFLAGS := $(CFLAGS)
 # memory debug for gcc 2.91, 2.95, 3.0 and 3.1
 # for gcc >= 3.2.2 set GLIBCPP_FORCE_NEW at runtime instead
 #override CXXFLAGS += -D__USE_MALLOC
+
+# this seems to be needed by gcc3.3.2 / Solaris7 combination
+# as reported by  Havard Tveite <havard.tveite@nlh.no>
+override CXXFLAGS += -fPIC
 
 #---------------------------------------------------------------
 # Add index selectivity to C flags
