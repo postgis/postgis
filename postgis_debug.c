@@ -714,3 +714,12 @@ void decode_wkb(char *wkb, int *size)
 }
 
 
+char *print_geometry(GEOMETRY *geom)
+{
+	char	*text;
+
+	text = (char *) DatumGetPointer(DirectFunctionCall1(geometry_out,PointerGetDatum(geom) ) ) ;
+
+	printf( "%s", text);
+	return text;
+}

@@ -970,5 +970,460 @@ Datum combine_bbox(PG_FUNCTION_ARGS)
 }
 
 
+//return 2 for 2d geometries or 3 for 3d geometries
+PG_FUNCTION_INFO_V1(dimension);
+Datum dimension(PG_FUNCTION_ARGS)
+{
+		GEOMETRY		      *geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+	if (geom->is3d)
+		PG_RETURN_INT32(3);
+	else
+		PG_RETURN_INT32(2);
+}
+
+//returns a string representation of this geometry's type
+PG_FUNCTION_INFO_V1(geometrytype);
+Datum geometrytype(PG_FUNCTION_ARGS)
+{
+		GEOMETRY		      *geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+		char				*text_ob = palloc(20+4);
+		char				*result = text_ob+4;
+		int32				size;
+		
+
+	memset(result,0,20);
+
+	if (geom->type == POINTTYPE)
+		strcpy(result,"POINT");
+	if (geom->type == MULTIPOINTTYPE)
+		strcpy(result,"MULTIPOINT");
+
+	if (geom->type == LINETYPE)
+		strcpy(result,"LINESTRING");
+	if (geom->type == MULTILINETYPE)
+		strcpy(result,"MULTILINESTRING");
+
+	if (geom->type == POLYGONTYPE)
+		strcpy(result,"POLYGON");
+	if (geom->type == MULTIPOLYGONTYPE)
+		strcpy(result,"MULTIPOLYGON");
+
+	if (geom->type == COLLECTIONTYPE)
+		strcpy(result,"GEOMETRYCOLLECTION");
+
+	if (strlen(result) == 0)
+		strcpy(result,"UNKNOWN");
+
+	size = strlen(result) +4 ;
+
+	memcpy(text_ob, &size,4); // size of string
+	
+
+	PG_RETURN_POINTER(text_ob);
+
+}
+
+
+//makes a polygon of a features bvol - 1st point = LL 3rd=UR
+// 2d only
+//
+// create new geometry of type polygon, 1 ring, 5 points
+
+PG_FUNCTION_INFO_V1(envelope);
+Datum envelope(PG_FUNCTION_ARGS)
+{
+	GEOMETRY		      *geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GEOMETRY			*result;
+	POLYGON3D			*poly;
+	POINT3D			pts[5];	//5 points around box
+	int				pts_per_ring[1];
+	int				poly_size;
+	
+	//use LLB's z value (we're going to set is3d to false)
+
+	set_point( &pts[0], geom->bvol.LLB.x , geom->bvol.LLB.y , geom->bvol.LLB.z );
+	set_point( &pts[1], geom->bvol.URT.x , geom->bvol.LLB.y , geom->bvol.LLB.z );
+	set_point( &pts[2], geom->bvol.URT.x , geom->bvol.URT.y , geom->bvol.LLB.z );
+	set_point( &pts[3], geom->bvol.LLB.x , geom->bvol.URT.y , geom->bvol.LLB.z );
+	set_point( &pts[4], geom->bvol.LLB.x , geom->bvol.LLB.y , geom->bvol.LLB.z );
+	
+	pts_per_ring[0] = 5; //ring has 5 points
+
+		//make a polygon
+	poly = make_polygon(1, pts_per_ring, pts, 5, &poly_size);
+
+	result = make_oneobj_geometry(poly_size, (char *)poly, POLYGONTYPE, FALSE);
+
+	PG_RETURN_POINTER(result);	
+
+}
+
+//X(GEOMETRY) -- find the first POINT(..) in GEOMETRY, returns its X value.  
+//Return NULL if there is no POINT(..) in GEOMETRY
+PG_FUNCTION_INFO_V1(x_point);
+Datum x_point(PG_FUNCTION_ARGS)
+{
+	GEOMETRY		      *geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char				*o;
+	int				type1,j;
+	int32				*offsets1;
+	
+
+	offsets1 = (int32 *) ( ((char *) &(geom->objType[0] ))+ sizeof(int32) * geom->nobjs ) ;
+
+	//now have to do a scan of each object 
+
+	for (j=0; j< geom->nobjs; j++)		//for each object in geom1
+	{
+		o = (char *) geom +offsets1[j] ;  
+		type1=  geom->objType[j];
+
+		if (type1 == POINTTYPE)	//point
+		{
+			PG_RETURN_FLOAT4( ((POINT3D *)o)->x) ;
+		}
+
+	}
+	PG_RETURN_NULL();	
+}
+
+//Y(GEOMETRY) -- find the first POINT(..) in GEOMETRY, returns its Y value.  
+//Return NULL if there is no POINT(..) in GEOMETRY
+PG_FUNCTION_INFO_V1(y_point);
+Datum y_point(PG_FUNCTION_ARGS)
+{
+	GEOMETRY		      *geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char				*o;
+	int				type1,j;
+	int32				*offsets1;
+	
+
+	offsets1 = (int32 *) ( ((char *) &(geom->objType[0] ))+ sizeof(int32) * geom->nobjs ) ;
+
+	//now have to do a scan of each object 
+
+	for (j=0; j< geom->nobjs; j++)		//for each object in geom1
+	{
+		o = (char *) geom +offsets1[j] ;  
+		type1=  geom->objType[j];
+
+		if (type1 == POINTTYPE)	//point
+		{
+			PG_RETURN_FLOAT4( ((POINT3D *)o)->y) ;
+		}
+
+	}
+	PG_RETURN_NULL();	
+}
+
+//Z(GEOMETRY) -- find the first POINT(..) in GEOMETRY, returns its Z value.  
+//Return NULL if there is no POINT(..) in GEOMETRY
+PG_FUNCTION_INFO_V1(z_point);
+Datum z_point(PG_FUNCTION_ARGS)
+{
+	GEOMETRY		      *geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char				*o;
+	int				type1,j;
+	int32				*offsets1;
+	
+
+	offsets1 = (int32 *) ( ((char *) &(geom->objType[0] ))+ sizeof(int32) * geom->nobjs ) ;
+
+	//now have to do a scan of each object 
+
+	for (j=0; j< geom->nobjs; j++)		//for each object in geom1
+	{
+		o = (char *) geom +offsets1[j] ;  
+		type1=  geom->objType[j];
+
+		if (type1 == POINTTYPE)	//point
+		{
+			PG_RETURN_FLOAT4( ((POINT3D *)o)->z) ;
+		}
+
+	}
+	PG_RETURN_NULL();	
+}
+
+//numpoints(GEOMETRY) -- find the first linestring in GEOMETRY, return
+//the number of points in it.  Return NULL if there is no LINESTRING(..)
+//in GEOMETRY
+PG_FUNCTION_INFO_V1(numpoints_linestring);
+Datum numpoints_linestring(PG_FUNCTION_ARGS)
+{
+	GEOMETRY		      *geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char				*o;
+	int				type1,j;
+	int32				*offsets1;
+	
+	offsets1 = (int32 *) ( ((char *) &(geom->objType[0] ))+ sizeof(int32) * geom->nobjs ) ;
+
+	for (j=0; j< geom->nobjs; j++)		//for each object in geom1
+	{
+		o = (char *) geom +offsets1[j] ;  
+		type1=  geom->objType[j];
+
+		if (type1 == LINETYPE)	//linestring
+		{
+			PG_RETURN_INT32( ((LINE3D *)o)->npoints) ;
+		}
+
+	}
+	PG_RETURN_NULL();	
+}
+
+//pointn(GEOMETRY,INTEGER) -- find the first linestring in GEOMETRY,
+//return the point at index INTEGER (0 is 1st point).  Return NULL if
+//there is no LINESTRING(..) in GEOMETRY or INTEGER is out of bounds.
+// keeps is3d flag
+
+PG_FUNCTION_INFO_V1(pointn_linestring);
+Datum pointn_linestring(PG_FUNCTION_ARGS)
+{
+	GEOMETRY		      *geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	int32				wanted_index =PG_GETARG_INT32(1); 
+	char				*o;
+	int				type1,j;
+	int32				*offsets1;
+	LINE3D			*line;
+
+	
+	offsets1 = (int32 *) ( ((char *) &(geom->objType[0] ))+ sizeof(int32) * geom->nobjs ) ;
+
+	for (j=0; j< geom->nobjs; j++)		//for each object in geom1
+	{
+		o = (char *) geom +offsets1[j] ;  
+		type1=  geom->objType[j];
+
+		if (type1 == LINETYPE)	//linestring
+		{
+			line = (LINE3D *)o;
+			if ( (wanted_index<0) || (wanted_index> (line->npoints-1) ) )
+				PG_RETURN_NULL(); //index out of range
+			//get the point, make a new geometry
+			PG_RETURN_POINTER(
+				make_oneobj_geometry(sizeof(POINT3D), 
+						         (char *)&line->points[wanted_index],
+							   POINTTYPE,  geom->is3d) 
+						);
+		}
+
+	}
+	PG_RETURN_NULL();	
+}
+
+// exteriorRing(GEOMETRY) -- find the first polygon in GEOMETRY, return
+//its exterior ring (as a linestring).  Return NULL if there is no
+//POLYGON(..) in GEOMETRY. 
+
+PG_FUNCTION_INFO_V1(exteriorring_polygon);
+Datum exteriorring_polygon(PG_FUNCTION_ARGS)
+{
+	GEOMETRY		      *geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+	char				*o;
+	int				type1,j;
+	int32				*offsets1;
+	LINE3D			*line;
+	POLYGON3D			*poly;
+	POINT3D			*pts;
+	int				size_line;
+
+	
+	offsets1 = (int32 *) ( ((char *) &(geom->objType[0] ))+ sizeof(int32) * geom->nobjs ) ;
+
+	for (j=0; j< geom->nobjs; j++)		//for each object in geom1
+	{
+		o = (char *) geom +offsets1[j] ;  
+		type1=  geom->objType[j];
+
+		if (type1 == POLYGONTYPE)	//polygon object
+		{
+			poly = (POLYGON3D *)o;
+	  		pts = (POINT3D *) ( (char *)&(poly->npoints[poly->nrings] )  );
+			pts = (POINT3D *) MAXALIGN(pts);
+
+			line = make_line(poly->npoints[0], pts, &size_line);
+
+			//get the ring, make a new geometry
+			PG_RETURN_POINTER(
+				make_oneobj_geometry(size_line,
+						         (char *) line,
+							   LINETYPE,  geom->is3d) 
+						);
+		}
+
+	}
+	PG_RETURN_NULL();
+}
+
+//NumInteriorRings(GEOMETRY) -- find the first polygon in GEOMETRY,
+//return the number of interior rings.  Return NULL if there is no
+//POLYGON(..) in GEOMETRY.
+
+PG_FUNCTION_INFO_V1(numinteriorrings_polygon);
+Datum numinteriorrings_polygon(PG_FUNCTION_ARGS)
+{
+	GEOMETRY		      *geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+	char				*o;
+	int				type1,j;
+	int32				*offsets1;
+	POLYGON3D			*poly;
+
+
+	
+	offsets1 = (int32 *) ( ((char *) &(geom->objType[0] ))+ sizeof(int32) * geom->nobjs ) ;
+
+	for (j=0; j< geom->nobjs; j++)		//for each object in geom1
+	{
+		o = (char *) geom +offsets1[j] ;  
+		type1=  geom->objType[j];
+
+		if (type1 == POLYGONTYPE)	//polygon object
+		{
+			poly = (POLYGON3D *)o;
+	  		PG_RETURN_INT32( poly->nrings -1 ) ;
+		}
+	}
+	PG_RETURN_NULL();
+}
+
+//        InteriorRingN(GEOMETRY,INTEGER) --  find the first polygon in GEOMETRY,
+//return the interior ring at index INTEGER (as a linestring).  Return
+//NULL if there is no POLYGON(..) in GEOMETRY or INTEGER is out of bounds.
+// 1st ring = exerior ring
+
+PG_FUNCTION_INFO_V1(interiorringn_polygon);
+Datum interiorringn_polygon(PG_FUNCTION_ARGS)
+{
+	GEOMETRY		      *geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	int32				wanted_index =PG_GETARG_INT32(1); 
+	char				*o;
+	int				type1,j,t,point_offset;
+	int32				*offsets1;
+	POLYGON3D			*poly;
+	LINE3D			*line;
+	POINT3D			*pts;
+	int				size_line;
+
+	
+	offsets1 = (int32 *) ( ((char *) &(geom->objType[0] ))+ sizeof(int32) * geom->nobjs ) ;
+
+	for (j=0; j< geom->nobjs; j++)		//for each object in geom1
+	{
+		o = (char *) geom +offsets1[j] ;  
+		type1=  geom->objType[j];
+
+		if (type1 == POLYGONTYPE)	//polygon object
+		{
+			poly = (POLYGON3D *)o;
+
+			if ( (wanted_index<0) || (wanted_index> (poly->nrings-2) ) )
+				PG_RETURN_NULL(); //index out of range
+
+			
+	  		pts = (POINT3D *) ( (char *)&(poly->npoints[poly->nrings] )  );
+			pts = (POINT3D *) MAXALIGN(pts);
+
+			//find the 1st point in wanted ring
+			point_offset=0;
+			for (t=0; t< (wanted_index+1); t++)
+			{
+				point_offset += poly->npoints[t];	
+			}
+
+			line = make_line(poly->npoints[wanted_index+1], &pts[point_offset], &size_line);
+
+			//get the ring, make a new geometry
+			PG_RETURN_POINTER(
+				make_oneobj_geometry(size_line,
+						         (char *) line,
+							   LINETYPE,  geom->is3d) 
+						);	  		
+		}
+	}
+	PG_RETURN_NULL();
+}
+
+
+//        numgeometries(GEOMETRY) -- if GEOMETRY is a GEOMETRYCOLLECTION, return
+//the number of geometries in it, otherwise return NULL.
+
+PG_FUNCTION_INFO_V1(numgeometries_collection);
+Datum numgeometries_collection(PG_FUNCTION_ARGS)
+{
+		GEOMETRY		      *geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+		if (geom->type == COLLECTIONTYPE)
+			PG_RETURN_INT32( geom->nobjs ) ;
+		else
+			PG_RETURN_NULL();	
+}
+
+
+//geometryN(GEOMETRY, INTEGER) -- if GEOMETRY is a GEOMETRYCOLLECTION,
+//return the sub-geometry at index INTEGER (0=first geometry), otherwise
+//return NULL.   NOTE: MULTIPOINT, MULTILINESTRING,MULTIPOLYGON are
+//converted to sets of POINT,LINESTRING, and POLYGON so the index may
+//change.
+
+
+PG_FUNCTION_INFO_V1(geometryn_collection);
+Datum geometryn_collection(PG_FUNCTION_ARGS)
+{
+		GEOMETRY		      *geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+		int32				wanted_index =PG_GETARG_INT32(1); 
+		int				type;
+		int32				*offsets1;
+		char				*o;
+
+
+
+	offsets1 = (int32 *) ( ((char *) &(geom->objType[0] ))+ sizeof(int32) * geom->nobjs ) ;
+
+		if (geom->type != COLLECTIONTYPE)
+				PG_RETURN_NULL();			
+
+		if ( (wanted_index <0) || (wanted_index > (geom->nobjs-1) ) )
+			PG_RETURN_NULL();	//bad index
+
+		type = geom->objType[wanted_index];
+		o = (char *) geom +offsets1[wanted_index] ;  
+		
+		if (type == POINTTYPE)
+		{
+				PG_RETURN_POINTER(
+				make_oneobj_geometry(sizeof(POINT3D),
+						         o,
+							   POINTTYPE,  geom->is3d) 
+						);
+		}
+		if (type == LINETYPE)
+		{
+				PG_RETURN_POINTER(
+				make_oneobj_geometry(	size_subobject (o, LINETYPE),
+						         o,
+							   LINETYPE,  geom->is3d) 
+						);
+		}
+		if (type == POLYGONTYPE)
+		{
+				PG_RETURN_POINTER(
+				make_oneobj_geometry(	size_subobject (o, POLYGONTYPE),
+						         o,
+							   POLYGONTYPE,  geom->is3d) 
+						);
+		}
+
+		PG_RETURN_NULL();	
+}
+
+
+
+
+
+
 
 

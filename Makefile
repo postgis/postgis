@@ -4,8 +4,8 @@
 subdir = contrib/postgis
 
 # Root of the pgsql source tree 
-top_builddir = ../..
-#top_builddir = /data3/postgresql-7.1.2/src
+#top_builddir = ../..
+top_builddir = /data3/postgresql-7.1.2/src
 
 include $(top_builddir)/src/Makefile.global
 
@@ -36,11 +36,11 @@ all: all-lib $(NAME).sql
 # Shared library stuff
 include $(top_srcdir)/src/Makefile.shlib
 
-$(NAME).sql: $(NAME).sql.in
-	sed -e 's:@MODULE_FILENAME@:$(libdir)/$(shlib):g' < $< > $@
-
 #$(NAME).sql: $(NAME).sql.in
-#	sed -e 's:@MODULE_FILENAME@:/data1/Refractions/Projects/PostGIS/work_dave/postgis/$(shlib):g' < $< > $@
+#	sed -e 's:@MODULE_FILENAME@:$(libdir)/$(shlib):g' < $< > $@
+
+$(NAME).sql: $(NAME).sql.in
+	sed -e 's:@MODULE_FILENAME@:/data1/Refractions/Projects/PostGIS/work_dave/postgis/$(shlib):g' < $< > $@
 
 install: all installdirs install-lib
 	$(INSTALL_DATA) $(srcdir)/README.$(NAME)  $(docdir)/contrib

@@ -5,12 +5,12 @@ BEGIN TRANSACTION;
 CREATE FUNCTION BOX3D_in(opaque)
    RETURNS BOX3D 
    AS '@MODULE_FILENAME@'
-   LANGUAGE 'c';
+   LANGUAGE 'c' with (isstrict);
 
 CREATE FUNCTION BOX3D_out(opaque)
    RETURNS opaque
    AS '@MODULE_FILENAME@'
-   LANGUAGE 'c';
+   LANGUAGE 'c' with (isstrict);
 
 CREATE TYPE BOX3D (
 	alignment = double,
@@ -31,12 +31,12 @@ CREATE TYPE WKB (
 create function geometry_in(opaque)
 	RETURNS GEOMETRY
    AS '@MODULE_FILENAME@'
-   LANGUAGE 'c';
+   LANGUAGE 'c' with (isstrict);
 
 create function geometry_out(opaque)
 	RETURNS opaque
    AS '@MODULE_FILENAME@'
-   LANGUAGE 'c';
+   LANGUAGE 'c' with (isstrict);
 
 CREATE TYPE GEOMETRY (
 	alignment = double,
@@ -50,24 +50,24 @@ CREATE TYPE GEOMETRY (
 CREATE FUNCTION box3d(GEOMETRY)
    RETURNS BOX3D
    AS '@MODULE_FILENAME@','get_bbox_of_geometry'
-	     LANGUAGE 'c' WITH (iscachable);
+	     LANGUAGE 'c' WITH (iscachable,isstrict);
 
 CREATE FUNCTION geometry(BOX3D)
    RETURNS GEOMETRY
    AS '@MODULE_FILENAME@','get_geometry_of_bbox'
-	     LANGUAGE 'c' WITH (iscachable);
+	     LANGUAGE 'c' WITH (iscachable,isstrict);
 
 --------- functions for converting to wkb
 
-CREATE FUNCTION wkb_NDR(GEOMETRY)
+CREATE FUNCTION asbinary(GEOMETRY)
    RETURNS WKB
-   AS '@MODULE_FILENAME@','wkb_NDR'
-	     LANGUAGE 'c' WITH (iscachable);
+   AS '@MODULE_FILENAME@','asbinary_simple'
+	     LANGUAGE 'c' WITH (iscachable,isstrict);
 
-CREATE FUNCTION wkb_XDR(GEOMETRY)
+CREATE FUNCTION asbinary(GEOMETRY,TEXT)
    RETURNS WKB
-   AS '@MODULE_FILENAME@','wkb_XDR'
-	     LANGUAGE 'c' WITH (iscachable);
+   AS '@MODULE_FILENAME@','asbinary_specify'
+	     LANGUAGE 'c' WITH (iscachable,isstrict);
 
 
 ---- Debug (info) functions
@@ -75,32 +75,98 @@ CREATE FUNCTION wkb_XDR(GEOMETRY)
 CREATE FUNCTION npoints(GEOMETRY)
    RETURNS INT4
    AS '@MODULE_FILENAME@'
-	     LANGUAGE 'c' ;
+	     LANGUAGE 'c'  with (isstrict);
 
 CREATE FUNCTION nrings(GEOMETRY)
    RETURNS INT4
    AS '@MODULE_FILENAME@'
-	     LANGUAGE 'c' ;
+	     LANGUAGE 'c'  with (isstrict) ;
 
 CREATE FUNCTION mem_size(GEOMETRY)
    RETURNS INT4
    AS '@MODULE_FILENAME@'
-	     LANGUAGE 'c' ;
+	     LANGUAGE 'c'  with (isstrict);
 
 CREATE FUNCTION numb_sub_objs(GEOMETRY)
    RETURNS INT4
    AS '@MODULE_FILENAME@'
-	     LANGUAGE 'c' ;
+	     LANGUAGE 'c'  with (isstrict);
 
 CREATE FUNCTION summary(GEOMETRY)
    RETURNS text
    AS '@MODULE_FILENAME@'
-	     LANGUAGE 'c' ;
+	     LANGUAGE 'c'  with (isstrict);
 
 CREATE FUNCTION translate(GEOMETRY,float8,float8,float8)
    RETURNS GEOMETRY
    AS '@MODULE_FILENAME@'
-	     LANGUAGE 'c' ;
+	     LANGUAGE 'c' with (isstrict) ;
+
+CREATE FUNCTION dimension(GEOMETRY)
+   RETURNS INT4
+   AS '@MODULE_FILENAME@'
+	     LANGUAGE 'c' with (isstrict) ;
+
+CREATE FUNCTION geometrytype(GEOMETRY)
+   RETURNS text
+   AS '@MODULE_FILENAME@'
+	     LANGUAGE 'c'  with (isstrict);
+
+CREATE FUNCTION envelope(GEOMETRY)
+   RETURNS geometry
+   AS '@MODULE_FILENAME@'
+	     LANGUAGE 'c'  with (isstrict);
+
+CREATE FUNCTION x(GEOMETRY)
+   RETURNS float4
+   AS '@MODULE_FILENAME@','x_point'
+	     LANGUAGE 'c'  with (isstrict);
+
+CREATE FUNCTION y(GEOMETRY)
+   RETURNS float4
+   AS '@MODULE_FILENAME@','y_point'
+	     LANGUAGE 'c'  with (isstrict);
+
+CREATE FUNCTION z(GEOMETRY)
+   RETURNS float4
+   AS '@MODULE_FILENAME@','z_point'
+	     LANGUAGE 'c'  with (isstrict);
+
+CREATE FUNCTION numpoints(GEOMETRY)
+   RETURNS integer
+   AS '@MODULE_FILENAME@','numpoints_linestring'
+	     LANGUAGE 'c'  with (isstrict);
+
+CREATE FUNCTION pointn(GEOMETRY,INTEGER)
+   RETURNS GEOMETRY
+   AS '@MODULE_FILENAME@','pointn_linestring'
+	     LANGUAGE 'c'  with (isstrict);
+
+CREATE FUNCTION exteriorring(GEOMETRY)
+   RETURNS GEOMETRY
+   AS '@MODULE_FILENAME@','exteriorring_polygon'
+	     LANGUAGE 'c'  with (isstrict);
+
+CREATE FUNCTION numinteriorrings(GEOMETRY)
+   RETURNS INTEGER
+   AS '@MODULE_FILENAME@','numinteriorrings_polygon'
+	     LANGUAGE 'c'  with (isstrict);
+
+CREATE FUNCTION interiorringn(GEOMETRY,INTEGER)
+   RETURNS GEOMETRY
+   AS '@MODULE_FILENAME@','interiorringn_polygon'
+	     LANGUAGE 'c'  with (isstrict);
+
+
+CREATE FUNCTION numgeometries(GEOMETRY)
+   RETURNS INTEGER
+   AS '@MODULE_FILENAME@','numgeometries_collection'
+	     LANGUAGE 'c'  with (isstrict);
+
+CREATE FUNCTION geometryn(GEOMETRY,INTEGER)
+   RETURNS GEOMETRY
+   AS '@MODULE_FILENAME@','geometryn_collection'
+	     LANGUAGE 'c'  with (isstrict);
 
 
 -------  generic operations
@@ -108,32 +174,32 @@ CREATE FUNCTION translate(GEOMETRY,float8,float8,float8)
 CREATE FUNCTION length3d(GEOMETRY)
    RETURNS FLOAT4
    AS '@MODULE_FILENAME@'
-   LANGUAGE 'c';
+   LANGUAGE 'c' with (isstrict);
 
 CREATE FUNCTION length2d(GEOMETRY)
    RETURNS FLOAT4
    AS '@MODULE_FILENAME@'
-   LANGUAGE 'c';
+   LANGUAGE 'c' with (isstrict);
 
 CREATE FUNCTION area2d(GEOMETRY)
    RETURNS FLOAT4
    AS '@MODULE_FILENAME@'
-   LANGUAGE 'c';
+   LANGUAGE 'c' with (isstrict);
 
 CREATE FUNCTION perimeter3d(GEOMETRY)
    RETURNS FLOAT4
    AS '@MODULE_FILENAME@'
-   LANGUAGE 'c';
+   LANGUAGE 'c' with (isstrict);
 
 CREATE FUNCTION perimeter2d(GEOMETRY)
    RETURNS FLOAT4
    AS '@MODULE_FILENAME@'
-   LANGUAGE 'c';
+   LANGUAGE 'c' with (isstrict);
 
 CREATE FUNCTION truly_inside(GEOMETRY,GEOMETRY)
    RETURNS bool
    AS '@MODULE_FILENAME@'
-   LANGUAGE 'c';
+   LANGUAGE 'c' with (isstrict);
 
 ------- Aggregate
 
@@ -153,47 +219,47 @@ CREATE AGGREGATE extent(
 -------  OPERATOR functions
 
 CREATE FUNCTION geometry_overleft(GEOMETRY, GEOMETRY) RETURNS bool
-        AS '@MODULE_FILENAME@' LANGUAGE 'c';
+        AS '@MODULE_FILENAME@' LANGUAGE 'c' with (isstrict);
 
 CREATE FUNCTION geometry_overright(GEOMETRY, GEOMETRY) RETURNS bool
-        AS '@MODULE_FILENAME@' LANGUAGE 'c';
+        AS '@MODULE_FILENAME@' LANGUAGE 'c' with (isstrict);
 
 CREATE FUNCTION geometry_left(GEOMETRY, GEOMETRY) RETURNS bool
-        AS '@MODULE_FILENAME@'  LANGUAGE 'c';
+        AS '@MODULE_FILENAME@'  LANGUAGE 'c' with (isstrict);
 
 CREATE FUNCTION geometry_right(GEOMETRY, GEOMETRY) RETURNS bool
-        AS '@MODULE_FILENAME@' LANGUAGE 'c';
+        AS '@MODULE_FILENAME@' LANGUAGE 'c' with (isstrict);
 
 CREATE FUNCTION geometry_contain(GEOMETRY, GEOMETRY) RETURNS bool
-        AS '@MODULE_FILENAME@'  LANGUAGE 'c';
+        AS '@MODULE_FILENAME@'  LANGUAGE 'c' with (isstrict);
 
 CREATE FUNCTION geometry_contained(GEOMETRY, GEOMETRY) RETURNS bool
-        AS '@MODULE_FILENAME@'  LANGUAGE 'c';
+        AS '@MODULE_FILENAME@'  LANGUAGE 'c' with (isstrict);
 
 CREATE FUNCTION geometry_overlap(GEOMETRY, GEOMETRY) RETURNS bool
-        AS '@MODULE_FILENAME@'  LANGUAGE 'c';
+        AS '@MODULE_FILENAME@'  LANGUAGE 'c' with (isstrict);
 
 CREATE FUNCTION geometry_same(GEOMETRY, GEOMETRY) RETURNS bool
-        AS '@MODULE_FILENAME@'  LANGUAGE 'c';
+        AS '@MODULE_FILENAME@'  LANGUAGE 'c' with (isstrict);
 
 --------- functions for doing sorting-like things (not very usefull)
 
 CREATE FUNCTION geometry_lt(GEOMETRY, GEOMETRY) RETURNS bool
-        AS '@MODULE_FILENAME@'  LANGUAGE 'c';
+        AS '@MODULE_FILENAME@'  LANGUAGE 'c' with (isstrict);
 
 CREATE FUNCTION geometry_gt(GEOMETRY, GEOMETRY) RETURNS bool
-        AS '@MODULE_FILENAME@'  LANGUAGE 'c';
+        AS '@MODULE_FILENAME@'  LANGUAGE 'c' with (isstrict);
 
 CREATE FUNCTION geometry_eq(GEOMETRY, GEOMETRY) RETURNS bool
-        AS '@MODULE_FILENAME@'  LANGUAGE 'c';
+        AS '@MODULE_FILENAME@'  LANGUAGE 'c' with (isstrict);
 
 --------- functions for forcing geometry to be 2d or 3d
 
 CREATE FUNCTION force_2d(GEOMETRY) RETURNS GEOMETRY
-        AS '@MODULE_FILENAME@'  LANGUAGE 'c';
+        AS '@MODULE_FILENAME@'  LANGUAGE 'c' with (isstrict);
 
 CREATE FUNCTION force_3d(GEOMETRY) RETURNS GEOMETRY
-        AS '@MODULE_FILENAME@'  LANGUAGE 'c';
+        AS '@MODULE_FILENAME@'  LANGUAGE 'c' with (isstrict);
 
 
 
