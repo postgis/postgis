@@ -67,9 +67,10 @@ link against those.
 * How do I build it? *
 
 You need a recent pgjdbc driver jar, see the gborg.postgresql link
-above. It is currently tested with 7.4 and 8.0 pgjdbc releases. Note
-that this does not constrain the PostgreSQL server version. As the
-JDBC drivers are downwards compatible against older servers, you can
+above. It is currently tested with 7.3, 7.4 and 8.0 pgjdbc releases.
+(7.2 users see below.) Note that this does not constrain the PostgreSQL 
+server version. As the JDBC drivers are downwards compatible against older 
+servers, and PostgreSQL servers typically accept older clients, you can 
 easily use e. G. a pgjdbc 8.0 against a PostgreSQL 7.3 server.
 
 Make shure the pgjdbc driver is available in your Java CLASSPATH,
@@ -80,6 +81,23 @@ A "make jar" then compiles the code and creates two jar files. The
 "postgis.jar" is for normal usage and deployment, the
 "postgis_debug.jar" additionally  includes the source code, for
 debugging purposes.
+
+
+* What about pgjdbc 7.2? *
+
+Between pgjdbc 7.2 and 7.3, the PostgreSQL guys changed some interfaces.
+While this change improved some things, it also introduced some minor
+source level incompatibilities. If you want to use V7.2, you can apply the
+provided patch file "woody.patch", this makes the source compile and work
+fine with pg72jdbc2.jar.
+
+However, the resulting postgis.jar will only work with pgjdbc7.2, while a
+postgis.jar compiled using 7.3, 7.4 or 8.0 will be compatible to either
+of those newer release. So you may consider updating your pgjdbc version
+instead (remember that you can use a pgjdbc7.3 against a 7.2 server).
+
+For applying and reversing the patch, you can use the convenience make
+targets "woodypatch" and "woodyunpatch".
 
 
 * How do I use it? *

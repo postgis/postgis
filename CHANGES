@@ -15,6 +15,7 @@ PostGIS 1.0.0?
 	- fixed spatial_ref_sys.sql to avoid vacuuming the whole database.
 	- jdbc2: Removed use of jdk1.4 only features to enable build with 
 	  older jdk releases.
+	- jdbc2: Added support for building against pg72jdbc2.jar
 
 PostGIS 1.0.0RC2
 2005/01/26

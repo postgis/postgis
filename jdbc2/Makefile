@@ -25,9 +25,8 @@ DELETE = rm -rvf
 # includes your postgresql.jar 
 # 
 
-#CP=src/:../../../src/interfaces/jdbc/jars/postgresql.jar
-#CP=src/:lib/postgresql-8.0.309.jdbc3.jar
-CP=$(CLASSPATH):src/:/usr/share/java/postgresql.jar
+CLASSPATH?=/usr/share/java/postgresql.jar
+CP=$(CLASSPATH):src/
 
 SRCDIR=src
 EXAMPLES=examples
@@ -109,4 +108,13 @@ alltests: onlinetests test
 
 clean:  
 	$(DELETE) $(BUILD) bin postgis.jar postgis_debug.jar compile
-     
+
+# pgjdbc 7.2 special treating (needed e. G. for woody backport)
+# Calling this rules multiple times does not really hurt, but litter
+# your src directory with some .rej files.
+woodypatch:
+	patch -p0 -N <woody.patch
+
+woodyunpatch:
+	patch -p0 -R -N <woody.patch
+
