@@ -76,8 +76,6 @@ FUNC: KEEPING FUNCTION: [isring(geometry)]
 FUNC: KEEPING FUNCTION: [pointonsurface(geometry)]
 FUNC: KEEPING FUNCTION: [collector(geometry, geometry)]
 
-FUNC: KEEPING FUNCTION: [force_3d(geometry)]
-
 FUNC: KEEPING FUNCTION: [force_collection(geometry)]
 FUNC: KEEPING FUNCTION: [intersection(geometry, geometry)]
 FUNC: KEEPING FUNCTION: [buffer(geometry, double precision)]
