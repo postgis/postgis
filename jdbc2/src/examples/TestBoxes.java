@@ -1,11 +1,26 @@
 /*
- * Test client and server side Parsing of canonical text representations, as
- * well as the PostGisWrapper jdbc extension.
- *
- * (C) 2005 Markus Schaber, logi-track ag, Zürich, Switzerland
- *
- * This file is licensed under the GNU GPL. *** put full notice here ***
- *
+ * Test.java
+ * 
+ * PostGIS extension for PostgreSQL JDBC driver - example and test classes
+ * 
+ * (C) 2004 Paul Ramsey, pramsey@refractions.net
+ * 
+ * (C) 2005 Markus Schaber, schabios@logi-track.com
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+ * Place, Suite 330, Boston, MA 02111-1307 USA or visit the web at
+ * http://www.gnu.org.
+ * 
  * $Id$
  */
 
@@ -121,16 +136,16 @@ public class TestBoxes {
 
     /**
      * Connect to the databases
-     *
+     * 
      * We use DriverWrapper here. For alternatives, see the DriverWrapper
      * Javadoc
-     *
+     * 
      * @param dbuser
-     *
+     * 
      * @throws ClassNotFoundException
-     *
+     * 
      * @see org.postgis.DriverWrapper
-     *
+     *  
      */
     public static Connection connect(String url, String dbuser, String dbpass) throws SQLException,
             ClassNotFoundException {

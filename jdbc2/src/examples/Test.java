@@ -1,3 +1,29 @@
+/*
+ * Test.java
+ * 
+ * PostGIS extension for PostgreSQL JDBC driver - example and test classes
+ * 
+ * (C) 2004 Paul Ramsey, pramsey@refractions.net
+ * 
+ * (C) 2005 Markus Schaber, schabios@logi-track.com
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+ * Place, Suite 330, Boston, MA 02111-1307 USA or visit the web at
+ * http://www.gnu.org.
+ * 
+ * $Id$
+ */
+
 package examples;
 
 import org.postgis.LineString;
@@ -21,51 +47,51 @@ public class Test {
         String lr_str = "(10 10 20,34 34 34, 23 19 23 , 10 10 11)";
 
         System.out.println("LinearRing Test:");
-        System.out.println("\t"+lr_str);
+        System.out.println("\t" + lr_str);
         LinearRing lr = new LinearRing(lr_str);
-        System.out.println("\t"+lr.toString());
+        System.out.println("\t" + lr.toString());
 
         System.out.println();
 
         System.out.println("Point Test:");
-        System.out.println("\t"+ptg_str);
+        System.out.println("\t" + ptg_str);
         Point ptg = new Point(ptg_str);
-        System.out.println("\t"+ptg.toString());
+        System.out.println("\t" + ptg.toString());
 
         System.out.println();
 
         System.out.println("LineString Test:");
-        System.out.println("\t"+lng_str);
+        System.out.println("\t" + lng_str);
         LineString lng = new LineString(lng_str);
-        System.out.println("\t"+lng.toString());
+        System.out.println("\t" + lng.toString());
 
         System.out.println();
 
         System.out.println("Polygon Test:");
-        System.out.println("\t"+plg_str);
+        System.out.println("\t" + plg_str);
         Polygon plg = new Polygon(plg_str);
-        System.out.println("\t"+plg.toString());
+        System.out.println("\t" + plg.toString());
 
         System.out.println();
 
         System.out.println("MultiPolygon Test:");
-        System.out.println("\t"+mplg_str);
+        System.out.println("\t" + mplg_str);
         MultiPolygon mplg = new MultiPolygon(mplg_str);
-        System.out.println("\t"+mplg.toString());
+        System.out.println("\t" + mplg.toString());
 
         System.out.println();
 
         System.out.println("MultiLineString Test:");
-        System.out.println("\t"+mlng_str);
+        System.out.println("\t" + mlng_str);
         MultiLineString mlng = new MultiLineString(mlng_str);
-        System.out.println("\t"+mlng.toString());
+        System.out.println("\t" + mlng.toString());
 
         System.out.println();
 
         System.out.println("PG Test:");
-        System.out.println("\t"+mlng_str);
+        System.out.println("\t" + mlng_str);
         PGgeometry pgf = new PGgeometry(mlng_str);
-        System.out.println("\t"+pgf.toString());
+        System.out.println("\t" + pgf.toString());
 
         System.out.println();
 

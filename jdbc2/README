@@ -50,6 +50,20 @@ PGgeometry.geomFromString() as well as Geometry.toString() to convert
 between WKT strings and geometry objects.
 
 
+* Is it free? *
+
+Yes. The actual Driver extension code is licensed under the GNU LGPL, 
+this allows everyone to include the code in his projects. You do not
+have to pay any license fees, and you can keep your own application 
+code proprietary, but you have to make the PostGIS source code available 
+to any receivers, including any modifications you apply to it. For 
+details, please see the license file COPYING_LGPL.
+
+The Build files and examples are licensed under GNU GPL, just like the
+rest of PostGIS is. This is not LGPL as applications usually do not
+link against those.
+
+
 * How do I build it? *
 
 You need a recent pgjdbc driver jar, see the gborg.postgresql link

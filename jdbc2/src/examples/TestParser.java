@@ -1,10 +1,25 @@
 /*
- * Test client and server side Parsing of canonical text representations, as
- * well as the PostGisWrapper jdbc extension.
+ * Test.java
  * 
- * (C) 2005 Markus Schaber, logi-track ag, Zürich, Switzerland
+ * PostGIS extension for PostgreSQL JDBC driver - example and test classes
  * 
- * This file is licensed under the GNU GPL. *** put full notice here ***
+ * (C) 2004 Paul Ramsey, pramsey@refractions.net
+ * 
+ * (C) 2005 Markus Schaber, schabios@logi-track.com
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+ * Place, Suite 330, Boston, MA 02111-1307 USA or visit the web at
+ * http://www.gnu.org.
  * 
  * $Id$
  */
@@ -187,8 +202,8 @@ public class TestParser {
         for (int i = 0; i < conns.length; i++) {
             conns[i].close();
         }
-        
+
         //System.out.println("Finished.");
-	System.out.println("Finished, " + failcount + " tests failed!");
+        System.out.println("Finished, " + failcount + " tests failed!");
     }
 }

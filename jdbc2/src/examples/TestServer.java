@@ -1,3 +1,29 @@
+/*
+ * Test.java
+ * 
+ * PostGIS extension for PostgreSQL JDBC driver - example and test classes
+ * 
+ * (C) 2004 Paul Ramsey, pramsey@refractions.net
+ * 
+ * (C) 2005 Markus Schaber, schabios@logi-track.com
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+ * Place, Suite 330, Boston, MA 02111-1307 USA or visit the web at
+ * http://www.gnu.org.
+ * 
+ * $Id$
+ */
+
 package examples;
 
 import java.sql.Connection;
@@ -16,13 +42,13 @@ public class TestServer {
             System.err.println("tablename is 'jdbc_test' by default.");
             System.exit(1);
         }
-        
+
         Connection conn;
 
-        String dburl = args[0];        
+        String dburl = args[0];
         String dbuser = args[1];
         String dbpass = args[2];
-        
+
         String dbtable = "jdbc_test";
 
         String dropSQL = "drop table " + dbtable;
@@ -45,7 +71,7 @@ public class TestServer {
             try {
                 s.execute(dropSQL);
             } catch (Exception e) {
-                System.out.println("Error dropping old table: "+e.getMessage());
+                System.out.println("Error dropping old table: " + e.getMessage());
             }
             s.execute(createSQL);
             System.out.println("Inserting point...");
