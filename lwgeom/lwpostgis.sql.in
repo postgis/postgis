@@ -1607,6 +1607,11 @@ CREATEFUNCTION envelope(geometry)
 	AS '@MODULE_FILENAME@', 'LWGEOM_envelope'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
+CREATEFUNCTION reverse(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_reverse'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
 ------------------------------------------------------------------------
 
 --

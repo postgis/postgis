@@ -44,12 +44,15 @@ Datum LWGEOM_to_BOX(PG_FUNCTION_ARGS);
 Datum LWGEOM_envelope(PG_FUNCTION_ARGS);
 Datum LWGEOM_isempty(PG_FUNCTION_ARGS);
 Datum LWGEOM_segmentize2d(PG_FUNCTION_ARGS);
+Datum LWGEOM_reverse(PG_FUNCTION_ARGS);
 
 // internal
 char * lwgeom_summary_recursive(char *serialized, int offset);
 int32 lwgeom_nrings_recursive(char *serialized);
 void dump_lwexploded(LWGEOM_EXPLODED *exploded);
-
+POINTARRAY *ptarray_reverse(const POINTARRAY *pa);
+LWLINE *lwline_reverse(const LWLINE *line);
+LWPOLY *lwpoly_reverse(const LWPOLY *poly);
 
 /*------------------------------------------------------------------*/
 
@@ -750,6 +753,57 @@ lwgeom_pt_inside_circle(POINT2D *p, double cx, double cy, double rad)
 	if ( distance2d_pt_pt(p, &center) < rad ) return 1;
 	else return 0;
 
+}
+
+POINTARRAY *
+ptarray_reverse(const POINTARRAY *ipa)
+{
+	POINTARRAY *opa;
+	uint32 i, j;
+	int ptsize;
+
+	opa = (POINTARRAY *)palloc(sizeof(POINTARRAY));
+	opa->ndims = ipa->ndims;
+	opa->npoints = ipa->npoints;
+	ptsize = pointArray_ptsize(ipa);
+	opa->serialized_pointlist = palloc(ipa->npoints*ptsize);
+
+	for (i=0, j=ipa->npoints-1; i<ipa->npoints; i++, j--)
+	{
+		memcpy(getPoint(opa, j), getPoint(ipa, i), ptsize);
+	}
+
+	return opa;
+}
+
+LWLINE *
+lwline_reverse(const LWLINE *iline)
+{
+	LWLINE *oline;
+	POINTARRAY *rpa = ptarray_reverse(iline->points);
+
+	oline = lwline_construct(iline->ndims, iline->SRID, rpa);
+	return oline;
+}
+
+LWPOLY *
+lwpoly_reverse(const LWPOLY *ipoly)
+{
+	LWPOLY *opoly;
+	POINTARRAY **rpa;
+	int i;
+
+	rpa = palloc(sizeof(POINTARRAY *)*ipoly->nrings);
+
+	for (i=0; i<ipoly->nrings; i++)
+	{
+		rpa[i] = ptarray_reverse(ipoly->rings[i]);
+	}
+
+	opoly = lwpoly_construct(ipoly->ndims, ipoly->SRID,
+		ipoly->nrings, rpa);
+
+	return opoly;
 }
 
 /*------------------------------------------------------------------*/
@@ -2723,6 +2777,58 @@ Datum LWGEOM_segmentize2d(PG_FUNCTION_ARGS)
 	// Construct return value
 	result = LWGEOM_construct(srl, lwgeom_getSRID(geom),
 		lwgeom_hasBBOX(geom->type));
+
+	PG_RETURN_POINTER(result);
+}
+
+// Reverse vertex order of geometry
+PG_FUNCTION_INFO_V1(LWGEOM_reverse);
+Datum LWGEOM_reverse(PG_FUNCTION_ARGS)
+{
+	LWGEOM *geom;
+	LWGEOM *result = NULL;
+	LWGEOM_EXPLODED *exp;
+	int size;
+	int wantbbox;
+	int i;
+
+	geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+	if ( lwgeom_getType(geom->type) == COLLECTIONTYPE )
+	{
+		elog(ERROR, "Collection reversing is not supported");
+		PG_RETURN_NULL();
+	}
+
+	wantbbox = lwgeom_hasBBOX(geom->type);
+	exp = lwgeom_explode(SERIALIZED_FORM(geom));
+
+	for (i=0; i<exp->nlines; i++)
+	{
+		LWLINE *line = lwline_deserialize(exp->lines[i]);
+		LWLINE *rline = lwline_reverse(line);
+		pfree_line(line);
+		exp->lines[i] = lwline_serialize(rline);
+	}
+
+	for (i=0; i<exp->npolys; i++)
+	{
+		LWPOLY *poly = lwpoly_deserialize(exp->polys[i]);
+		LWPOLY *rpoly = lwpoly_reverse(poly);
+		pfree_polygon(poly);
+		exp->polys[i] = lwpoly_serialize(rpoly);
+	}
+
+	size = lwexploded_findlength(exp, wantbbox);
+	result = palloc(size+4);
+	result->size = (size+4);
+	lwexploded_serialize_buf(exp, wantbbox, SERIALIZED_FORM(result), &size);
+	
+	if ( result->size != (size+4) )
+	{
+		elog(ERROR, "lwexploded_serialize_buf wrote %d bytes, lwexploded_findlength returned %d", size, result->size-4);
+		PG_RETURN_NULL();
+	}
 
 	PG_RETURN_POINTER(result);
 }
