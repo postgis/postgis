@@ -1358,6 +1358,19 @@ Datum LWGEOM_force_multi(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeoms[1];
 	LWGEOM *lwgeom;
 	int type;
+	int SRID=-1;
+	BOX2DFLOAT4 *box;
+
+	/*
+	 * This funx is a no-op only if a bbox cache is already present
+	 * in input. If bbox cache is not there we'll need to handle
+	 * automatic bbox addition FOR_COMPLEX_GEOMS.
+	 */
+	if ( TYPE_GETTYPE(geom->type) >= MULTIPOINTTYPE &&
+		TYPE_HASBBOX(geom->type) )
+	{
+		PG_RETURN_POINTER(geom);
+	}
 
 	// deserialize into lwgeoms[0]
 	lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom));
@@ -1367,10 +1380,14 @@ Datum LWGEOM_force_multi(PG_FUNCTION_ARGS)
 	if ( type < MULTIPOINTTYPE )
 	{
 		type += 3;
+		SRID = lwgeom->SRID;
+		box = lwgeom->bbox;
+		lwgeom->SRID=-1;
+		lwgeom->bbox=NULL;
 		lwgeoms[0] = lwgeom;
+		
 		lwgeom = (LWGEOM *)lwcollection_construct(type,
-			lwgeom->SRID, lwgeom->bbox, 1,
-			lwgeoms);
+			SRID, box, 1, lwgeoms);
 	}
 
 
