@@ -178,7 +178,7 @@ DECLARE
 
 BEGIN
 
-	IF (not( (new_type =''geometry'') or (new_type =''GEOMETRYCOLLECTION'') or (new_type =''POINT'')
+	IF (not( (new_type =''GEOMETRY'') or (new_type =''GEOMETRYCOLLECTION'') or (new_type =''POINT'')
 		 or (new_type =''MULTIPOINT'') or 	(new_type =''POLYGON'') or (new_type =''MULTIPOLYGON'') 
 		 or (new_type =''LINESTRING'') or (new_type =''MULTILINESTRING'')) ) THEN		
 		RAISE EXCEPTION ''Invalid type name - valid ones are: GEOMETRY, GEOMETRYCOLLECTION,POINT,MULTIPOINT,POLYGON,MULTIPOLYGON,LINESTRING, or MULTILINESTRING '';
@@ -213,7 +213,7 @@ BEGIN
 	EXECUTE ''ALTER TABLE "'' ||table_name||''" ADD CHECK (SRID("'' || column_name ||
 		''") = '' || new_srid || '')'' ;
 
-	IF (not(new_type = ''geometry'')) THEN
+	IF (not(new_type = ''GEOMETRY'')) THEN
 		EXECUTE ''ALTER TABLE "'' ||table_name||''" ADD CHECK ( geometrytype("''||column_name||''")=''|| quote_literal(new_type)||'' OR ('' ||column_name ||'') is null)'';
 	END IF;
 
