@@ -11,6 +11,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.17  2004/03/04 13:50:45  strk
+ * postgis_gist_sel(): added warnings if search_box goes outside of histogram grid
+ *
  * Revision 1.16  2004/03/04 09:44:57  strk
  * The selectivity estimator does add the full value of each cell it overlaps,
  * regardless of the actual overlapping area. Final gain is not applied
@@ -129,7 +132,7 @@
  */
 #define STATISTIC_KIND_GEOMETRY 100
 
-#define DEBUG_GEOMETRY_STATS 0
+#define DEBUG_GEOMETRY_STATS 1
 
 /*
  * Default geometry selectivity factor
@@ -1092,11 +1095,17 @@ Datum postgis_gist_sel(PG_FUNCTION_ARGS)
 		/* Find first overlapping column */
 		x_idx_min = (box->low.x-geomstats->xmin) / geow * bps;
 		if (x_idx_min < 0) {
+#if DEBUG_GEOMETRY_STATS
+			elog(NOTICE, " search_box overlaps %d columns on the left of histogram grid", -x_idx_min);
+#endif
 			// should increment the value somehow
 			x_idx_min = 0;
 		}
 		if (x_idx_min >= bps)
 		{
+#if DEBUG_GEOMETRY_STATS
+			elog(NOTICE, " search_box overlaps %d columns on the right of histogram grid", x_idx_min-bps+1);
+#endif
 			// should increment the value somehow
 			x_idx_min = bps-1;
 		}
@@ -1105,11 +1114,17 @@ Datum postgis_gist_sel(PG_FUNCTION_ARGS)
 		y_idx_min = (box->low.y-geomstats->ymin) / geoh * bps;
 		if (y_idx_min <0)
 		{
+#if DEBUG_GEOMETRY_STATS
+			elog(NOTICE, " search_box overlaps %d columns on the bottom of histogram grid", -y_idx_min);
+#endif
 			// should increment the value somehow
 			y_idx_min = 0;
 		}
 		if (y_idx_min >= bps)
 		{
+#if DEBUG_GEOMETRY_STATS
+			elog(NOTICE, " search_box overlaps %d columns on the top of histogram grid", y_idx_min-bps+1);
+#endif
 			// should increment the value somehow
 			y_idx_min = bps-1;
 		}
@@ -1220,15 +1235,14 @@ Datum postgis_gist_sel(PG_FUNCTION_ARGS)
 		overlapping_cells = (x_idx_max-x_idx_min+1) *
 			(y_idx_max-y_idx_min+1);
 		avg_feat_cells = geomstats->avgFeatureCells;
+
 #if DEBUG_GEOMETRY_STATS
 	elog(NOTICE, " search_box overlaps %f cells", overlapping_cells);
 	elog(NOTICE, " avg feat overlaps %f cells", avg_feat_cells);
 #endif
 
-		gain = 1;
-
-
-		//selectivity = (float8) value / (float8) min(overlapping_cells, avg_feat_cells);
+		gain = 1/min(overlapping_cells, avg_feat_cells);
+		//gain = 1;
 		selectivity = value*gain;
 
 #if DEBUG_GEOMETRY_STATS
@@ -1471,7 +1485,7 @@ elog(NOTICE, "r=%d c=%d intx=%f inty=%f",
 				}
 				else
 				{
-			geomstats->value[x+y*bps] += AOI / cell_area;
+			geomstats->value[x+y*bps] += 1; //AOI / cell_area;
 				}
 				numcells++;
 			}
