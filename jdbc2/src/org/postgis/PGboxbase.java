@@ -82,12 +82,13 @@ public abstract class PGboxbase extends PGobject {
         int srid = -1;
         value = value.trim();
         if (value.startsWith("SRID=")) {
-            String[] temp = PGgeometry.splitAtFirst(value,';');
+            String[] temp = PGgeometry.splitSRID(value);
             value = temp[1].trim();
             srid = Integer.parseInt(temp[0].substring(5));
         }
-        if (value.startsWith(getPrefix())) {
-            value = value.substring(getPrefix().length());
+        String myPrefix = getPrefix();
+        if (value.startsWith(myPrefix)) {
+            value = value.substring(myPrefix.length());
         }
         PGtokenizer t = new PGtokenizer(PGtokenizer.removePara(value.trim()), ',');
         llb = new Point(t.getToken(0));

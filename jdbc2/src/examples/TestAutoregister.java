@@ -63,7 +63,7 @@ public class TestAutoregister {
         }
 
         System.out.println("Driver version: " + Driver.getVersion());
-        int major = Integer.parseInt(PGgeometry.splitAtFirst(PGgeometry.splitAtFirst(Driver.getVersion().trim(),' ')[1],'.')[0]);
+        int major = new Driver().getMajorVersion();
         if (major < 8) {
             System.out.println("Your pgdjbc " + major
                     + ".X is too old, it does not support autoregistration!");

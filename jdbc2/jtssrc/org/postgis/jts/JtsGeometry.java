@@ -66,7 +66,7 @@ public class JtsGeometry extends PGobject {
         try {
             value = value.trim();
             if (value.startsWith("00") || value.startsWith("01")) {
-                return  bp.parse(value);
+                return bp.parse(value);
             } else {
                 Geometry result;
                 int srid = -1;

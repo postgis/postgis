@@ -68,15 +68,17 @@ public class PGgeometry extends PGobject {
 
         int srid = -1;
 
-        if (value.startsWith("SRID")) {
+        if (value.startsWith(SRIDPREFIX)) {
             //break up geometry into srid and wkt
-            String[] parts = PGgeometry.splitAtFirst(value, ';');
-            value = parts[1];
-            srid = Integer.parseInt(PGgeometry.splitAtFirst(parts[0], '=')[1]);
+            String[] parts = PGgeometry.splitSRID(value);
+            value = parts[1].trim();
+            srid = Integer.parseInt(parts[0].substring(5));
         }
 
         Geometry result;
-        if (value.endsWith("EMPTY")) {
+        if (value.startsWith("00") || value.startsWith("01")) {
+            result = bp.parse(value);
+        } else if (value.endsWith("EMPTY")) {
             // We have a standard conforming representation for an empty
             // geometry which is to be parsed as an empty GeometryCollection.
             result = new GeometryCollection();
@@ -94,8 +96,6 @@ public class PGgeometry extends PGobject {
             result = new Point(value);
         } else if (value.startsWith("GEOMETRYCOLLECTION")) {
             result = new GeometryCollection(value);
-        } else if (value.startsWith("00") || value.startsWith("01")) {
-            result = bp.parse(value);
         } else {
             throw new SQLException("Unknown type: " + value);
         }
@@ -129,6 +129,9 @@ public class PGgeometry extends PGobject {
         return obj;
     }
 
+    /** The prefix that indicates SRID presence */
+    public static final String SRIDPREFIX = "SRID=";
+
     /**
      * Splits a String at the first occurrence of border charachter.
      * 
@@ -137,11 +140,13 @@ public class PGgeometry extends PGobject {
      * backport of his package using DFSG-free compilers. In all the cases we
      * used split() in the org.postgis package, we only needed to split at the
      * first occurence, and thus this code could even be faster.
+     * 
+     * @throws SQLException
      */
-    public static String[] splitAtFirst(String whole, char border) {
-        int index = whole.indexOf(border);
+    public static String[] splitSRID(String whole) throws SQLException {
+        int index = whole.indexOf(';', 5); // sridprefix length is 5
         if (index == -1) {
-            return new String[]{whole};
+            throw new SQLException("Error parsing Geometry - SRID not delimited with ';' ");
         } else {
             return new String[]{
                 whole.substring(0, index),
