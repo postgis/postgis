@@ -3899,8 +3899,9 @@ FROM geometry_table;</literallayout>
 		  <term>Polygonize(geometry set)</term>
 
 		  <listitem>
-		    <para>Aggregate. Creates a MultiPolygon from the costituent
-		    linework of a set of geometries.
+		    <para>Aggregate. Creates a GeometryCollection containing
+		    possible polygons formed from the costituent linework of
+		    a set of geometries.
 		    Only available when compiled against GEOS >= 2.1.0.</para>
 		  </listitem>
 		</varlistentry>
