@@ -1,7 +1,7 @@
 # perl create_undef.pl <postgis.sql>
 # creates a new sql script to delete all the postgis functions et al.
 
-($#ARGV == 1) || die "Usage: perl create_undef.pl <postgis.sql>\nCreates a new SQL script to delete all the PostGIS functions.\n";
+($#ARGV == 1) || die "Usage: perl create_undef.pl <postgis.sql> <pgsql_version #>\nCreates a new SQL script to delete all the PostGIS functions.\n";
 
 # drops are in the following order:
 #	1. Indexing system stuff
