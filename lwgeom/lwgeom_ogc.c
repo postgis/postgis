@@ -327,7 +327,7 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 	POINTARRAY *extring;
 	LWLINE *line;
 	PG_LWGEOM *result;
-	BOX2DFLOAT4 bbox, *bbox2;
+	BOX2DFLOAT4 bbox, *bbox2=NULL;
 
 	if ( TYPE_GETTYPE(geom->type) != POLYGONTYPE )
 	{

@@ -543,6 +543,7 @@ Datum convexhull(PG_FUNCTION_ARGS)
 	PG_LWGEOM *result;
 	LWGEOM *lwout;
 	int SRID;
+	BOX2DFLOAT4 bbox;
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
@@ -594,8 +595,6 @@ Datum convexhull(PG_FUNCTION_ARGS)
 		elog(ERROR,"convexhull() failed to convert GEOS geometry to LWGEOM");
 		PG_RETURN_NULL(); //never get here
 	}
-
-	BOX2DFLOAT4 bbox;
 
 	/* Copy input bbox if any */
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &bbox) )

@@ -731,8 +731,8 @@ LWPOINT *
 lwpoint_grid(LWPOINT *point, gridspec *grid)
 {
 	POINT2D p;
-	getPoint2d_p(point->point, 0, &p);
 	double x, y;
+	getPoint2d_p(point->point, 0, &p);
 	x = rint((p.x - grid->ipx)/grid->xsize) *
 		grid->xsize + grid->ipx;
 	y = rint((p.y - grid->ipy)/grid->ysize) *

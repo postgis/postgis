@@ -1413,8 +1413,10 @@ Datum LWGEOM_maxdistance2d_linestring(PG_FUNCTION_ARGS)
 	for (i=0; i<line1->points->npoints; i++)
 	{
 		POINT2D p;
+		double dist;
+
 		getPoint2d_p(line1->points, i, &p);
-		double dist = distance2d_pt_ptarray(&p, line2->points);
+		dist = distance2d_pt_ptarray(&p, line2->points);
 
 		if (dist > maxdist) maxdist = dist;
 	}
