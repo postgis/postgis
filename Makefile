@@ -209,8 +209,8 @@ endif
 endif # not win
 #----------------------------------------------------------
 
-postgis_geos_version.h:
-	./geos_version.sh $(GEOS_DIR) > $@
+postgis_geos_version.h: geos_version.sh
+	./geos_version.sh $(GEOS_DIR) > $@  
 
 installdirs:
 	$(mkinstalldirs) $(docdir)/contrib $(datadir)/contrib $(libdir)
