@@ -11,6 +11,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.26  2004/06/10 18:54:12  strk
+ * histogram grid size refined to use near-square cells.
+ *
  * Revision 1.25  2004/06/10 15:44:43  strk
  * Added standard deviation based histogram extent refinement
  *
@@ -174,8 +177,9 @@
 
 typedef struct GEOM_STATS_T
 {
-	//boxesPerSide * boxesPerSide = total boxes in grid
-	float4 boxesPerSide;
+	// cols * rows = total boxes in grid
+	float4 cols;
+	float4 rows;
 	
 	// average bounding box area of not-null features 
 	float4 avgFeatureArea;
@@ -985,6 +989,8 @@ postgisgistcostestimate(PG_FUNCTION_ARGS)
  * This function returns an estimate of the selectivity
  * of a search_box looking at data in the GEOM_STATS 
  * structure.
+ *
+ * TODO: handle box dimension collapses
  */
 static float8
 estimate_selectivity(BOX *box, GEOM_STATS *geomstats)
@@ -994,7 +1000,7 @@ estimate_selectivity(BOX *box, GEOM_STATS *geomstats)
 	double intersect_x, intersect_y, AOI;
 	double cell_area, box_area;
 	double geow, geoh; // width and height of histogram
-	int bps; // boxesPerSide 
+	int histocols, historows; // histogram grid size
 	double value;
 	float overlapping_cells;
 	float avg_feat_cells;
@@ -1032,13 +1038,16 @@ estimate_selectivity(BOX *box, GEOM_STATS *geomstats)
 
 	geow = geomstats->xmax-geomstats->xmin;
 	geoh = geomstats->ymax-geomstats->ymin;
-	bps = geomstats->boxesPerSide;
-	cell_area = (geow*geoh) / (bps*bps);
+
+	histocols = geomstats->cols;
+	historows = geomstats->rows;
+
+	cell_area = (geow*geoh) / (histocols*historows);
 	box_area = (box->high.x-box->low.x)*(box->high.y-box->low.y);
 	value = 0;
 
 	/* Find first overlapping column */
-	x_idx_min = (box->low.x-geomstats->xmin) / geow * bps;
+	x_idx_min = (box->low.x-geomstats->xmin) / geow * histocols;
 	if (x_idx_min < 0) {
 #if DEBUG_GEOMETRY_STATS
 		elog(NOTICE, " search_box overlaps %d columns on the left of histogram grid", -x_idx_min);
@@ -1046,17 +1055,17 @@ estimate_selectivity(BOX *box, GEOM_STATS *geomstats)
 		// should increment the value somehow
 		x_idx_min = 0;
 	}
-	if (x_idx_min >= bps)
+	if (x_idx_min >= histocols)
 	{
 #if DEBUG_GEOMETRY_STATS
-		elog(NOTICE, " search_box overlaps %d columns on the right of histogram grid", x_idx_min-bps+1);
+		elog(NOTICE, " search_box overlaps %d columns on the right of histogram grid", x_idx_min-histocols+1);
 #endif
 		// should increment the value somehow
-		x_idx_min = bps-1;
+		x_idx_min = histocols-1;
 	}
 
 	/* Find first overlapping row */
-	y_idx_min = (box->low.y-geomstats->ymin) / geoh * bps;
+	y_idx_min = (box->low.y-geomstats->ymin) / geoh * historows;
 	if (y_idx_min <0)
 	{
 #if DEBUG_GEOMETRY_STATS
@@ -1065,39 +1074,39 @@ estimate_selectivity(BOX *box, GEOM_STATS *geomstats)
 		// should increment the value somehow
 		y_idx_min = 0;
 	}
-	if (y_idx_min >= bps)
+	if (y_idx_min >= historows)
 	{
 #if DEBUG_GEOMETRY_STATS
-		elog(NOTICE, " search_box overlaps %d columns on the top of histogram grid", y_idx_min-bps+1);
+		elog(NOTICE, " search_box overlaps %d columns on the top of histogram grid", y_idx_min-historows+1);
 #endif
 		// should increment the value somehow
-		y_idx_min = bps-1;
+		y_idx_min = historows-1;
 	}
 
 	/* Find last overlapping column */
-	x_idx_max = (box->high.x-geomstats->xmin) / geow * bps;
+	x_idx_max = (box->high.x-geomstats->xmin) / geow * histocols;
 	if (x_idx_max <0)
 	{
 		// should increment the value somehow
 		x_idx_max = 0;
 	}
-	if (x_idx_max >= bps )
+	if (x_idx_max >= histocols )
 	{
 		// should increment the value somehow
-		x_idx_max = bps-1;
+		x_idx_max = histocols-1;
 	}
 
 	/* Find last overlapping row */
-	y_idx_max = (box->high.y-geomstats->ymin) / geoh * bps;
+	y_idx_max = (box->high.y-geomstats->ymin) / geoh * historows;
 	if (y_idx_max <0)
 	{
 		// should increment the value somehow
 		y_idx_max = 0;
 	}
-	if (y_idx_max >= bps)
+	if (y_idx_max >= historows)
 	{
 		// should increment the value somehow
-		y_idx_max = bps-1;
+		y_idx_max = historows-1;
 	}
 
 	/*
@@ -1111,15 +1120,15 @@ estimate_selectivity(BOX *box, GEOM_STATS *geomstats)
 			double val;
 			double gain;
 
-			val = geomstats->value[x+y*bps];
+			val = geomstats->value[x+y*histocols];
 
 			/*
 			 * Of the cell value we get
 			 * only the overlap fraction.
 			 */
 
-			intersect_x = min(box->high.x, geomstats->xmin + (x+1) * geow / bps) - max(box->low.x, geomstats->xmin + x * geow / bps );
-			intersect_y = min(box->high.y, geomstats->ymin + (y+1) * geoh / bps) - max(box->low.y, geomstats->ymin+ y * geoh / bps) ;
+			intersect_x = min(box->high.x, geomstats->xmin + (x+1) * geow / histocols) - max(box->low.x, geomstats->xmin + x * geow / histocols );
+			intersect_y = min(box->high.y, geomstats->ymin + (y+1) * geoh / historows) - max(box->low.y, geomstats->ymin+ y * geoh / historows) ;
 			
 			AOI = intersect_x*intersect_y;
 			gain = AOI/cell_area;
@@ -1127,6 +1136,8 @@ estimate_selectivity(BOX *box, GEOM_STATS *geomstats)
 #if DEBUG_GEOMETRY_STATS > 1
 			elog(NOTICE, " [%d,%d] cell val %.15f",
 					x, y, val);
+			elog(NOTICE, " [%d,%d] AOI %.15f",
+					x, y, AOI);
 			elog(NOTICE, " [%d,%d] gain %.15f",
 					x, y, gain);
 #endif
@@ -1329,7 +1340,8 @@ Datum postgis_gist_sel(PG_FUNCTION_ARGS)
 		geomstats->xmin, geomstats->ymin);
 	elog(NOTICE, " histo: xmax,ymax: %f,%f",
 		geomstats->xmax, geomstats->ymax);
-	elog(NOTICE, " histo: boxesPerSide: %f", geomstats->boxesPerSide);
+	elog(NOTICE, " histo: cols: %f", geomstats->rows);
+	elog(NOTICE, " histo: rows: %f", geomstats->cols);
 	elog(NOTICE, " histo: avgFeatureArea: %f", geomstats->avgFeatureArea);
 	elog(NOTICE, " histo: avgFeatureCells: %f", geomstats->avgFeatureCells);
 #endif
@@ -1394,8 +1406,11 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 #endif
 
 	double geow, geoh; // width and height of histogram
-	int bps; // boxesPerSide  (alias)
-	int boxesPerSide;
+	int histocells;
+	int cols, rows; // histogram grid size
+	BOX histobox;
+
+
 	/*
 	 * This is where geometry_analyze
 	 * should put its' custom parameters.
@@ -1404,15 +1419,16 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	
 	/*
 	 * We'll build an histogram having from 40 to 400 boxesPerSide
+	 * Total number of cells is determined by attribute stat
+	 * target. It can go from  1600 to 160000 (stat target: 10,1000)
 	 */
-	boxesPerSide = sqrt(160*stats->attr->attstattarget);
-
+	histocells = 160*stats->attr->attstattarget;
 
 
 #if DEBUG_GEOMETRY_STATS
 	elog(NOTICE, "compute_geometry_stats called");
 	elog(NOTICE, " samplerows: %d", samplerows);
-	elog(NOTICE, " boxesPerSide: %d", boxesPerSide);
+	elog(NOTICE, " histogram cells: %d", histocells);
 #endif
 
 	sampleboxes = palloc(sizeof(BOX *)*samplerows);
@@ -1511,46 +1527,82 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 
 #endif // USE_STANDARD_DEVIATION
 
+	/*
+	 * Set histogram extent box
+	 */
+#if ! USE_STANDARD_DEVIATION
+	histobox.low.x = sample_extent->LLB.x;
+	histobox.low.y = sample_extent->LLB.y;
+	histobox.high.x = sample_extent->URT.x;
+	histobox.high.y = sample_extent->URT.y;
+#else
+	histobox.low.x = max((avgLOWx - 2 * sdLOWx), sample_extent->LLB.x);
+	histobox.low.y = max((avgLOWy - 2 * sdLOWy), sample_extent->LLB.y);
+	histobox.high.x = min((avgHIGx + 2 * sdHIGx), sample_extent->URT.x); 
+	histobox.high.y = min((avgHIGy + 2 * sdHIGy), sample_extent->URT.y); 
+#endif // USE_STANDARD_DEVIATION
+
+
+	geow = histobox.high.x - histobox.low.x;
+	geoh = histobox.high.y - histobox.low.y;
 
 	/*
-	 * TODO:
-	 *   o refine histogram extent based on standard deviation
-	 *   o compute columns/rows based on sample extent.
-	 *   o handle some corner cases
+	 * Compute histogram cols and rows based on aspect ratio
+	 * of histogram extent
 	 */
+	if ( ! geow && ! geoh )
+	{
+		cols = 1;
+		rows = 1;
+		histocells = 1;
+	}
+	else if ( ! geow )
+	{
+		cols = 1;
+		rows = histocells;
+	}
+	else if ( ! geoh )
+	{
+		cols = histocells;
+		rows = 1;
+	}
+	else
+	{
+		if ( geow<geoh) {
+			cols = ceil(histocells*geow/geoh);
+			rows = ceil(histocells/cols);
+		} else {
+			rows = ceil(histocells*geoh/geow);
+			cols = ceil(histocells/rows);
+		}
+		histocells = cols*rows;
+	}
+#if DEBUG_GEOMETRY_STATS 
+	elog(NOTICE, " computed histogram size (CxR): %dx%d (%d cells)", cols, rows, histocells);
+#endif
+
 
 	/*
 	 * Create the histogram (GEOM_STATS)
 	 */
 	old_context = MemoryContextSwitchTo(stats->anl_context);
-	geom_stats_size=sizeof(GEOM_STATS)+
-		(boxesPerSide*boxesPerSide-1)*sizeof(float4);
+	geom_stats_size=sizeof(GEOM_STATS)+(histocells-1)*sizeof(float4);
 	geomstats = palloc(geom_stats_size);
 	MemoryContextSwitchTo(old_context);
 
-#if ! USE_STANDARD_DEVIATION
-	geomstats->xmin = sample_extent->LLB.x;
-	geomstats->ymin = sample_extent->LLB.y;
-	geomstats->xmax = sample_extent->URT.x;
-	geomstats->ymax = sample_extent->URT.y;
-#else
-	geomstats->xmin = max((avgLOWx - 2 * sdLOWx), sample_extent->LLB.x);
-	geomstats->ymin = max((avgLOWy - 2 * sdLOWy), sample_extent->LLB.y);
-	geomstats->xmax = min((avgHIGx + 2 * sdHIGx), sample_extent->URT.x); 
-	geomstats->ymax = min((avgHIGy + 2 * sdHIGy), sample_extent->URT.y); 
-#endif // USE_STANDARD_DEVIATION
-
-	geomstats->boxesPerSide = boxesPerSide;
 	geomstats->avgFeatureArea = total_boxes_area/notnull_cnt;
+	geomstats->xmin = histobox.low.x;
+	geomstats->ymin = histobox.low.y;
+	geomstats->xmax = histobox.high.x;
+	geomstats->ymax = histobox.high.y;
+	geomstats->cols = cols;
+	geomstats->rows = rows;
+
 	// Initialize all values to 0
-	for (i=0;i<boxesPerSide*boxesPerSide; i++) geomstats->value[i] = 0;
+	for (i=0;i<histocells; i++) geomstats->value[i] = 0;
 
-
-	geow = geomstats->xmax-geomstats->xmin;
-	geoh = geomstats->ymax-geomstats->ymin;
-	bps = geomstats->boxesPerSide;
-	cell_width = geow/bps;
-	cell_height = geoh/bps;
+	cell_width = geow/cols;
+	cell_height = geoh/rows;
 	cell_area = cell_width*cell_height;
 
 #if DEBUG_GEOMETRY_STATS > 2
@@ -1606,24 +1658,24 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 #endif
 							
 		/* Find first overlapping column */
-		x_idx_min = (box->low.x-geomstats->xmin) / geow * bps;
+		x_idx_min = (box->low.x-geomstats->xmin) / geow * cols;
 		if (x_idx_min <0) x_idx_min = 0;
-		if (x_idx_min >= bps) x_idx_min = bps-1;
+		if (x_idx_min >= cols) x_idx_min = cols-1;
 
 		/* Find first overlapping row */
-		y_idx_min = (box->low.y-geomstats->ymin) / geoh * bps;
+		y_idx_min = (box->low.y-geomstats->ymin) / geoh * rows;
 		if (y_idx_min <0) y_idx_min = 0;
-		if (y_idx_min >= bps) y_idx_min = bps-1;
+		if (y_idx_min >= rows) y_idx_min = rows-1;
 
 		/* Find last overlapping column */
-		x_idx_max = (box->high.x-geomstats->xmin) / geow * bps;
+		x_idx_max = (box->high.x-geomstats->xmin) / geow * cols;
 		if (x_idx_max <0) x_idx_max = 0;
-		if (x_idx_max >= bps ) x_idx_max = bps-1;
+		if (x_idx_max >= cols ) x_idx_max = cols-1;
 
 		/* Find last overlapping row */
-		y_idx_max = (box->high.y-geomstats->ymin) / geoh * bps;
+		y_idx_max = (box->high.y-geomstats->ymin) / geoh * rows;
 		if (y_idx_max <0) y_idx_max = 0;
-		if (y_idx_max >= bps) y_idx_max = bps-1;
+		if (y_idx_max >= rows) y_idx_max = rows-1;
 #if DEBUG_GEOMETRY_STATS > 2
 		elog(NOTICE, " feat %d overlaps columns %d-%d, rows %d-%d",
 				i, x_idx_min, x_idx_max, y_idx_min, y_idx_max);
@@ -1637,7 +1689,7 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		{
 			for (x=x_idx_min; x<=x_idx_max; x++)
 			{
-				geomstats->value[x+y*bps] += 1;
+				geomstats->value[x+y*cols] += 1;
 				numcells++;
 			}
 		}
@@ -1659,7 +1711,8 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		geomstats->xmin, geomstats->ymin);
 	elog(NOTICE, " histo: xmax,ymax: %f,%f",
 		geomstats->xmax, geomstats->ymax);
-	elog(NOTICE, " histo: boxesPerSide: %f", geomstats->boxesPerSide);
+	elog(NOTICE, " histo: cols: %f", geomstats->cols);
+	elog(NOTICE, " histo: rows: %f", geomstats->rows);
 	elog(NOTICE, " histo: avgFeatureArea: %f", geomstats->avgFeatureArea);
 	elog(NOTICE, " histo: avgFeatureCells: %f", geomstats->avgFeatureCells);
 #endif
@@ -1672,17 +1725,17 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	 * by the number of samples examined.
 	 *
 	 */
-	for (i=0; i<boxesPerSide*boxesPerSide; i++)
+	for (i=0; i<histocells; i++)
 		geomstats->value[i] /= examinedsamples;
 
 #if DEBUG_GEOMETRY_STATS > 1
 	{
 		int x, y;
-		for (x=0; x<bps; x++)
+		for (x=0; x<cols; x++)
 		{
-			for (y=0; y<bps; y++)
+			for (y=0; y<rows; y++)
 			{
-				elog(NOTICE, " histo[%d,%d] = %.15f", x, y, geomstats->value[x+y*bps]);
+				elog(NOTICE, " histo[%d,%d] = %.15f", x, y, geomstats->value[x+y*cols]);
 			}
 		}
 	}
