@@ -10,6 +10,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.36  2004/07/27 17:51:50  strk
+ * short-circuit test for 'contains'
+ *
  * Revision 1.35  2004/07/27 17:49:59  strk
  * Added short-circuit test for the within function.
  *
@@ -928,6 +931,15 @@ Datum contains(PG_FUNCTION_ARGS)
 	Geometry *g1,*g2;
 	bool result;
 
+	/*
+	 * short-circuit: if geom2 bounding box is not completely inside
+	 * geom1 bounding box we can prematurely return FALSE
+	 */
+	if ( geom2->bvol.LLB.x < geom1->bvol.LLB.x ) PG_RETURN_BOOL(FALSE);
+	if ( geom2->bvol.URT.x > geom1->bvol.URT.x ) PG_RETURN_BOOL(FALSE);
+	if ( geom2->bvol.LLB.y < geom1->bvol.LLB.y ) PG_RETURN_BOOL(FALSE);
+	if ( geom2->bvol.URT.y > geom1->bvol.URT.y ) PG_RETURN_BOOL(FALSE);
+
 	errorIfGeometryCollection(geom1,geom2);
 	initGEOS(MAXIMUM_ALIGNOF);
 
@@ -962,8 +974,8 @@ Datum within(PG_FUNCTION_ARGS)
 
 
 	/*
-	 * short-circuit: if g1 bounding box is not completely inside
-	 * g2 bounding box we can prematurely return FALSE
+	 * short-circuit: if geom1 bounding box is not completely inside
+	 * geom2 bounding box we can prematurely return FALSE
 	 */
 	if ( geom1->bvol.LLB.x < geom2->bvol.LLB.x ) PG_RETURN_BOOL(FALSE);
 	if ( geom1->bvol.URT.x > geom2->bvol.URT.x ) PG_RETURN_BOOL(FALSE);
