@@ -11,6 +11,10 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.29  2004/06/22 16:52:17  strk
+ * Standard deviation factor used in histogram extent computation made
+ * a compile-time define.
+ *
  * Revision 1.28  2004/06/14 07:48:10  strk
  * Histogram extent redefinition after hard deviant removal fixed to be
  * "at most" the standard deviation based computed.
@@ -174,9 +178,12 @@
 
 /*
  * Define this if you want to use standard deviation based
- * histogram extent computation
+ * histogram extent computation. If you do, you can also 
+ * tweak the deviation factor used in computation with
+ * SDFACTOR.
  */
 #define USE_STANDARD_DEVIATION 1
+#define SDFACTOR 2
 
 /*
  * Default geometry selectivity factor
@@ -1562,10 +1569,14 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	elog(NOTICE, "  HIGy - avg:%f sd:%f", avgHIGy, sdHIGy);
 #endif
 
-	histobox.low.x = max((avgLOWx - 2 * sdLOWx), sample_extent->LLB.x);
-	histobox.low.y = max((avgLOWy - 2 * sdLOWy), sample_extent->LLB.y);
-	histobox.high.x = min((avgHIGx + 2 * sdHIGx), sample_extent->URT.x); 
-	histobox.high.y = min((avgHIGy + 2 * sdHIGy), sample_extent->URT.y); 
+	histobox.low.x = max((avgLOWx - SDFACTOR * sdLOWx),
+		sample_extent->LLB.x);
+	histobox.low.y = max((avgLOWy - SDFACTOR * sdLOWy),
+		sample_extent->LLB.y);
+	histobox.high.x = min((avgHIGx + SDFACTOR * sdHIGx),
+		sample_extent->URT.x); 
+	histobox.high.y = min((avgHIGy + SDFACTOR * sdHIGy),
+		sample_extent->URT.y); 
 
 #if DEBUG_GEOMETRY_STATS 
 	elog(NOTICE, " sd_extent: xmin,ymin: %f,%f",
