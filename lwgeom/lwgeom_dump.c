@@ -21,6 +21,8 @@
 #include "profile.h"
 #include "wktparse.h"
 
+#define DEBUG 1
+
 Datum LWGEOM_dump(PG_FUNCTION_ARGS);
 
 typedef struct GEOMDUMPNODE_T {
@@ -53,7 +55,7 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 	TupleTableSlot *slot;
 	HeapTuple tuple;
 	AttInMetadata *attinmeta;
-	MemoryContext oldcontext;
+	MemoryContext oldcontext, newcontext;
 	Datum result;
 	char address[256];
 	char *ptr;
@@ -63,9 +65,9 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 	if (SRF_IS_FIRSTCALL())
 	{
 		funcctx = SRF_FIRSTCALL_INIT();
+		newcontext = funcctx->multi_call_memory_ctx;
 
-		oldcontext = MemoryContextSwitchTo(
-			funcctx->multi_call_memory_ctx);
+		oldcontext = MemoryContextSwitchTo(newcontext);
 
 		pglwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
 		lwgeom = lwgeom_deserialize(SERIALIZED_FORM(pglwgeom));
@@ -115,6 +117,7 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 
 	/* stuff done on every call of the function */
 	funcctx = SRF_PERCALL_SETUP();
+	newcontext = funcctx->multi_call_memory_ctx;
 
 	/* get state */
 	state = funcctx->user_fctx;
@@ -162,10 +165,16 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 			 * of current node, push a new one on the
 			 * stack
 			 */
+
+			oldcontext = MemoryContextSwitchTo(newcontext);
+
 			node = lwalloc(sizeof(GEOMDUMPNODE));
 			node->idx=0;
 			node->geom = (LWCOLLECTION *)lwgeom;
 			PUSH(state, node);
+
+			MemoryContextSwitchTo(oldcontext);
+
 			continue;
 		}
 
