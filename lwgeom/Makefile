@@ -177,7 +177,7 @@ uninstall-lwgeom-scripts:
 uninstall: uninstall-lib uninstall-lwgeom-scripts
 
 clean distclean: clean-lib
-	rm -f *.o *.so *.a test
+	rm -f *.o *.so *.a test postgis_geos_version.h lwpostgis.sql
 
 maintainer-clean: clean
 	rm  -f lex.yy.c wktparse.tab.c wktparse.tab.h

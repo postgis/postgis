@@ -11,7 +11,7 @@ install: all liblwgeom-install loaderdumper-install
 uninstall: liblwgeom-uninstall loaderdumper-uninstall
 
 clean: liblwgeom-clean loaderdumper-clean test-clean
-	@rm -f lwpostgis.sql
+	rm -f lwpostgis.sql
 
 distclean: clean
 	rm -Rf autom4te.cache
