@@ -95,6 +95,8 @@ static float8 estimate_selectivity(BOX2DFLOAT4 *box, GEOM_STATS *geomstats);
 /*
  * Define this to actually DO join selectivity
  * (as contrary to just return the default JOINSEL value)
+ * Note that this is only possible when compiling postgis
+ * against pgsql >= 800
  */
 #define REALLY_DO_JOINSEL 1
 
@@ -725,7 +727,7 @@ Datum estimate_lwhistogram2d(PG_FUNCTION_ARGS)
 }
 
 
-#if ! REALLY_DO_JOINSEL
+#if ! REALLY_DO_JOINSEL || USE_VERSION < 80
 // JOIN selectivity in the GiST && operator
 // for all PG versions
 PG_FUNCTION_INFO_V1(LWGEOM_gist_joinsel);
@@ -738,7 +740,7 @@ Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 	PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_JOINSEL);
 }
 
-#else // REALLY_DO_JOINSEL
+#else // REALLY_DO_JOINSEL && USE_VERSION >= 80
 
 int calculate_column_intersection(BOX2DFLOAT4 *search_box, GEOM_STATS *geomstats1, GEOM_STATS *geomstats2);
 
@@ -2261,6 +2263,9 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.20  2005/01/07 09:52:12  strk
+ * JOINSEL disabled for builds against pgsql<80
+ *
  * Revision 1.19  2004/12/22 17:12:34  strk
  * Added Mark Cave-Ayland implementation of JOIN selectivity estimator.
  *
