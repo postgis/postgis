@@ -259,6 +259,62 @@ CREATE TYPE WKB (
 	storage= extended
 );
 
+create function CHIP_in(opaque)
+	RETURNS CHIP
+   AS '@MODULE_FILENAME@','CHIP_in'
+   LANGUAGE 'c' with (isstrict);
+
+create function CHIP_out(opaque)
+	RETURNS opaque
+   AS '@MODULE_FILENAME@','CHIP_out'
+   LANGUAGE 'c' with (isstrict);
+
+
+CREATE TYPE CHIP (
+	alignment = double,
+	internallength = VARIABLE,
+	input =  CHIP_in,
+	output =  CHIP_out,
+	storage= extended
+);
+
+
+
+create function geometry(CHIP)
+	RETURNS GEOMETRY
+   AS '@MODULE_FILENAME@','CHIP_to_geom'
+   LANGUAGE 'c' with (isstrict,iscachable);
+
+CREATE FUNCTION srid(chip)
+   RETURNS INT4
+   AS '@MODULE_FILENAME@','srid_chip'
+	     LANGUAGE 'c'  with (isstrict);
+
+CREATE FUNCTION height(chip)
+   RETURNS INT4
+   AS '@MODULE_FILENAME@','height_chip'
+	     LANGUAGE 'c'  with (isstrict);
+
+CREATE FUNCTION width(chip)
+   RETURNS INT4
+   AS '@MODULE_FILENAME@','width_chip'
+	     LANGUAGE 'c'  with (isstrict);
+
+CREATE FUNCTION datatype(chip)
+   RETURNS INT4
+   AS '@MODULE_FILENAME@','datatype_chip'
+	     LANGUAGE 'c'  with (isstrict);
+
+CREATE FUNCTION compression(chip)
+   RETURNS INT4
+   AS '@MODULE_FILENAME@','compression_chip'
+	     LANGUAGE 'c'  with (isstrict);
+
+
+CREATE FUNCTION setSRID(chip,int4)
+   RETURNS chip
+   AS '@MODULE_FILENAME@','setsrid_chip'
+	     LANGUAGE 'c'  with (isstrict);
 
 
 create function geometry_in(opaque)
@@ -443,7 +499,7 @@ CREATE FUNCTION geometryfromtext(geometry,int4)
 CREATE FUNCTION setSRID(geometry,int4)
    RETURNS geometry
    AS '@MODULE_FILENAME@','geometry_from_text'
-	     LANGUAGE 'c'  with (isstrict,iscachable);
+	     LANGUAGE 'c'  with (isstrict);
 
 ------- spheroid calcs
 

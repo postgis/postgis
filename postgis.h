@@ -184,6 +184,25 @@ typedef struct
 } GEOMETRY;
 
 
+typedef struct {
+	int32		size;			//postgresql varlength header
+	int32		endian_hint;	// number '1' in the endian of this structure
+	BOX3D		bvol;
+	int32		SRID;
+	char		future[8]; // for future expantion 
+	
+	int32 	datatype;	 // 1 = float32 (XDR), 2 = unsigned int (XDR), 3 = RGBA, 4 = signed integer (XDR)
+					 // 11 = float32(NDR), 22 = unsigned int (NDR), 44 = signed integer (NDR)
+	int32 	height;
+	int32 	width;
+	int32   compression;	// 0 = no compression
+		// this is provided for convenience, it should be set to 
+		//  sizeof(chip) bytes into the struct because the serialized form is:
+		//    <header><data>
+	unsigned int *data;	 	// data[0] = bottm left, data[width] = 1st pixel, 2nd row
+} CHIP;
+
+
 //for GiST indexing
 
 //This is the BOX type from geo_decls.h
@@ -424,6 +443,15 @@ Datum postgis_gist_sel(PG_FUNCTION_ARGS);
 Datum WKB_in(PG_FUNCTION_ARGS);
 Datum WKB_out(PG_FUNCTION_ARGS);
 
+Datum CHIP_in(PG_FUNCTION_ARGS);
+Datum CHIP_out(PG_FUNCTION_ARGS);
+Datum CHIP_to_geom(PG_FUNCTION_ARGS);
+Datum srid_chip(PG_FUNCTION_ARGS);
+Datum setsrid_chip(PG_FUNCTION_ARGS);
+Datum width_chip(PG_FUNCTION_ARGS);
+Datum height_chip(PG_FUNCTION_ARGS);
+Datum datatype_chip(PG_FUNCTION_ARGS);
+Datum compression_chip(PG_FUNCTION_ARGS);
 
 //for GIST index
 typedef char* (*BINARY_UNION)(char*, char*, int*);
