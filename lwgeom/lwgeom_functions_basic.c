@@ -47,6 +47,7 @@ Datum LWGEOM_isempty(PG_FUNCTION_ARGS);
 Datum LWGEOM_segmentize2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_reverse(PG_FUNCTION_ARGS);
 Datum LWGEOM_forceRHR_poly(PG_FUNCTION_ARGS);
+Datum LWGEOM_noop(PG_FUNCTION_ARGS);
 
 // internal
 int32 lwgeom_nrings_recursive(char *serialized);
