@@ -10,6 +10,14 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.7  2003/08/06 19:31:18  dblasby
+ * Added the WKB parser.  Added all the functions like
+ * PolyFromWKB(<WKB>,[<SRID>]).
+ *
+ * Added all the functions like PolyFromText(<WKT>,[<SRID>])
+ *
+ * Minor problem in GEOS library fixed.
+ *
  * Revision 1.6  2003/08/05 18:27:21  dblasby
  * Added null implementations of new GEOS-returning-geometry functions (ie.
  * buffer).
@@ -1000,6 +1008,7 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 {
 	char *type = GEOSGeometryType(g) ;
 	GEOMETRY *result = NULL;
+	BOX3D *bbox ;
 
 	if (strcmp(type,"Point") ==0 )
 	{
@@ -1076,6 +1085,12 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 		}
 
 		GEOSdeleteChar( (char*) pts);
+
+
+		bbox = bbox_of_geometry( g_new ); // make bounding box
+		memcpy( &g_new->bvol, bbox, sizeof(BOX3D) ); // copy bounding box
+		pfree( bbox ); // free bounding box
+
 		return g_new;
 	}
 	else if (strcmp(type,"MultiLineString")==0)
@@ -1108,6 +1123,10 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 				pfree(g_old);
 			}
 		}
+		bbox = bbox_of_geometry( result ); // make bounding box
+		memcpy( &result->bvol, bbox, sizeof(BOX3D) ); // copy bounding box
+		pfree( bbox ); // free bounding box
+
 		return result;
 
 	}
@@ -1141,6 +1160,9 @@ GEOMETRY *GEOS2POSTGIS(Geometry *g,char want3d)
 				pfree(g_old);
 			}
 		}
+		bbox = bbox_of_geometry( result ); // make bounding box
+	    memcpy( &result->bvol, bbox, sizeof(BOX3D) ); // copy bounding box
+		pfree( bbox ); // free bounding box
 		return result;
 	}
 	else if (strcmp(type,"GeometryCollection")==0)

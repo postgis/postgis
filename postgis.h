@@ -8,9 +8,17 @@
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of hte GNU General Public Licence. See the COPYING file.
- * 
+ *
  **********************************************************************
  * $Log$
+ * Revision 1.32  2003/08/06 19:31:18  dblasby
+ * Added the WKB parser.  Added all the functions like
+ * PolyFromWKB(<WKB>,[<SRID>]).
+ *
+ * Added all the functions like PolyFromText(<WKT>,[<SRID>])
+ *
+ * Minor problem in GEOS library fixed.
+ *
  * Revision 1.31  2003/07/25 17:08:37  pramsey
  * Moved Cygwin endian define out of source files into postgis.h common
  * header file.
@@ -411,6 +419,11 @@ char *geometry_to_text(GEOMETRY  *geometry);
 
 BOX3D	*parse_box3d(char *str);
 
+int getint(char *c);
+double getdouble(char *c);
+GEOMETRY *WKBtoGeometry(char *WKB, int length, int *bytes_read);
+
+POINT3D *wkb_linearring(char *WKB,char is3d, char flip_endian, int *numbPoints, int *bytes,int bytes_in_stream);
 
 //exposed to psql
 
@@ -557,6 +570,26 @@ Datum explode_histogram2d(PG_FUNCTION_ARGS);
 Datum estimate_histogram2d(PG_FUNCTION_ARGS);
 
 Datum postgisgistcostestimate(PG_FUNCTION_ARGS);
+
+Datum geometryfromWKB(PG_FUNCTION_ARGS);
+Datum geometryfromWKB_SRID(PG_FUNCTION_ARGS);
+
+Datum PointfromWKB_SRID(PG_FUNCTION_ARGS);
+Datum LinefromWKB_SRID(PG_FUNCTION_ARGS);
+Datum PolyfromWKB_SRID(PG_FUNCTION_ARGS);
+Datum MPointfromWKB_SRID(PG_FUNCTION_ARGS);
+Datum MLinefromWKB_SRID(PG_FUNCTION_ARGS);
+Datum MPolyfromWKB_SRID(PG_FUNCTION_ARGS);
+Datum GCfromWKB_SRID(PG_FUNCTION_ARGS);
+
+
+Datum geometry_from_text_poly(PG_FUNCTION_ARGS);
+Datum geometry_from_text_mpoly(PG_FUNCTION_ARGS);
+Datum geometry_from_text_point(PG_FUNCTION_ARGS);
+Datum geometry_from_text_mpoint(PG_FUNCTION_ARGS);
+Datum geometry_from_text_line(PG_FUNCTION_ARGS);
+Datum geometry_from_text_mline(PG_FUNCTION_ARGS);
+Datum geometry_from_text_gc(PG_FUNCTION_ARGS);
 
 /*--------------------------------------------------------------------
  * Useful floating point utilities and constants.

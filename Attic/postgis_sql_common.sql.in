@@ -12,6 +12,14 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.13  2003/08/06 19:31:18  dblasby
+-- Added the WKB parser.  Added all the functions like
+-- PolyFromWKB(<WKB>,[<SRID>]).
+--
+-- Added all the functions like PolyFromText(<WKT>,[<SRID>])
+--
+-- Minor problem in GEOS library fixed.
+--
 -- Revision 1.12  2003/08/01 23:58:08  dblasby
 -- added the functionality to convert GEOS->PostGIS geometries.  Added those geos
 -- functions to postgis.
@@ -417,7 +425,93 @@ CREATE FUNCTION bytea(wkb)
 	RETURNS bytea
 	AS '@MODULE_FILENAME@','WKBtoBYTEA'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
+	
+CREATE FUNCTION geometry(wkb)
+	RETURNS GEOMETRY
+	AS '@MODULE_FILENAME@','geometryfromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+	
+CREATE FUNCTION GeomFromWKB(wkb)
+	RETURNS GEOMETRY
+	AS '@MODULE_FILENAME@','geometryfromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
 
+CREATE FUNCTION GeomFromWKB(wkb,int)
+	RETURNS GEOMETRY
+	AS '@MODULE_FILENAME@','geometryfromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+	
+CREATE FUNCTION PointFromWKB(wkb,int)
+	RETURNS GEOMETRY
+	AS '@MODULE_FILENAME@','PointfromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATE FUNCTION PointFromWKB(wkb)
+	RETURNS GEOMETRY
+	AS '@MODULE_FILENAME@','PointfromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+	
+CREATE FUNCTION LineFromWKB(wkb,int)
+	RETURNS GEOMETRY
+	AS '@MODULE_FILENAME@','LinefromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATE FUNCTION LineFromWKB(wkb)
+	RETURNS GEOMETRY
+	AS '@MODULE_FILENAME@','LinefromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATE FUNCTION PolyFromWKB(wkb,int)
+	RETURNS GEOMETRY
+	AS '@MODULE_FILENAME@','PolyfromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATE FUNCTION PolyFromWKB(wkb)
+	RETURNS GEOMETRY
+	AS '@MODULE_FILENAME@','PolyfromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATE FUNCTION MPointFromWKB(wkb,int)
+	RETURNS GEOMETRY
+	AS '@MODULE_FILENAME@','MPointfromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATE FUNCTION MPointFromWKB(wkb)
+	RETURNS GEOMETRY
+	AS '@MODULE_FILENAME@','MPointfromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+	
+CREATE FUNCTION MLineFromWKB(wkb,int)
+	RETURNS GEOMETRY
+	AS '@MODULE_FILENAME@','MLinefromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATE FUNCTION MLineFromWKB(wkb)
+	RETURNS GEOMETRY
+	AS '@MODULE_FILENAME@','MLinefromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATE FUNCTION MPolyFromWKB(wkb,int)
+	RETURNS GEOMETRY
+	AS '@MODULE_FILENAME@','MPolyfromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATE FUNCTION MPolyFromWKB(wkb)
+	RETURNS GEOMETRY
+	AS '@MODULE_FILENAME@','MPolyfromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+	
+CREATE FUNCTION GeomCollFromWKB(wkb,int)
+	RETURNS GEOMETRY
+	AS '@MODULE_FILENAME@','GCfromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATE FUNCTION GeomCollFromWKB(wkb)
+	RETURNS GEOMETRY
+	AS '@MODULE_FILENAME@','GCfromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+	
+	
 -- CREATE FUNCTION index_thing(geometry)
 -- RETURNS BOOL
 -- AS '@MODULE_FILENAME@'
@@ -556,51 +650,101 @@ CREATE FUNCTION geometryfromtext(geometry,int4)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
+	
+	
+CREATE FUNCTION geometryfromtext(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','geometry_from_text'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATE FUNCTION geomfromtext(geometry,int4)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION polygonfromtext(geometry,int4)
+CREATE FUNCTION geomfromtext(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geometry_from_text'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION multipolygonfromtext(geometry,int4)
+CREATE FUNCTION polyfromtext(geometry,int4)
 	RETURNS geometry
-	AS '@MODULE_FILENAME@','geometry_from_text'
+	AS '@MODULE_FILENAME@','geometry_from_text_poly'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION linestringfromtext(geometry,int4)
+CREATE FUNCTION mpolyfromtext(geometry,int4)
 	RETURNS geometry
-	AS '@MODULE_FILENAME@','geometry_from_text'
+	AS '@MODULE_FILENAME@','geometry_from_text_mpoly'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION multilinestringfromtext(geometry,int4)
+CREATE FUNCTION linefromtext(geometry,int4)
 	RETURNS geometry
-	AS '@MODULE_FILENAME@','geometry_from_text'
+	AS '@MODULE_FILENAME@','geometry_from_text_line'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION mlinefromtext(geometry,int4)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','geometry_from_text_mline'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATE FUNCTION pointfromtext(geometry,int4)
 	RETURNS geometry
-	AS '@MODULE_FILENAME@','geometry_from_text'
+	AS '@MODULE_FILENAME@','geometry_from_text_point'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION multipointfromtext(geometry,int4)
+CREATE FUNCTION mpointfromtext(geometry,int4)
 	RETURNS geometry
-	AS '@MODULE_FILENAME@','geometry_from_text'
+	AS '@MODULE_FILENAME@','geometry_from_text_mpoint'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
-CREATE FUNCTION geometrycollectionfromtext(geometry,int4)
+CREATE FUNCTION geomcollfromtext(geometry,int4)
 	RETURNS geometry
-	AS '@MODULE_FILENAME@','geometry_from_text'
+	AS '@MODULE_FILENAME@','geometry_from_text_gc'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATE FUNCTION setSRID(geometry,int4)
 	RETURNS geometry
-	AS '@MODULE_FILENAME@','geometry_from_text'
+	AS '@MODULE_FILENAME@','geometry_from_text_gc'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION polyfromtext(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','geometry_from_text_poly'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION mpolyfromtext(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','geometry_from_text_mpoly'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION linefromtext(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','geometry_from_text_line'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION mlinefromtext(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','geometry_from_text_mline'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION pointfromtext(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','geometry_from_text_point'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION mpointfromtext(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','geometry_from_text_mpoint'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION geomcollfromtext(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','geometry_from_text_gc'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+
+
+
 
 --
 -- Special spheroid functions

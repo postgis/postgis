@@ -8,9 +8,17 @@
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of hte GNU General Public Licence. See the COPYING file.
- * 
+ *
  **********************************************************************
  * $Log$
+ * Revision 1.24  2003/08/06 19:31:18  dblasby
+ * Added the WKB parser.  Added all the functions like
+ * PolyFromWKB(<WKB>,[<SRID>]).
+ *
+ * Added all the functions like PolyFromText(<WKT>,[<SRID>])
+ *
+ * Minor problem in GEOS library fixed.
+ *
  * Revision 1.23  2003/07/25 17:08:37  pramsey
  * Moved Cygwin endian define out of source files into postgis.h common
  * header file.
@@ -56,7 +64,7 @@
 //#define DEBUG_GIST2
 
 
-
+#define WKB3DOFFSET 0x80000000
 
 
 void swap_char(char	*a,char *b)
@@ -1411,9 +1419,15 @@ PG_FUNCTION_INFO_V1(geometry_from_text);
 Datum geometry_from_text(PG_FUNCTION_ARGS)
 {
 	GEOMETRY		      *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	int32	   			SRID = PG_GETARG_INT32(1);
+	int32	   			SRID;
 
 	GEOMETRY	*result;
+
+	if (PG_NARGS() >1)
+		SRID = PG_GETARG_INT32(1);
+	else
+		SRID = -1;
+
 
 	result = (GEOMETRY *) palloc(geom1->size);
 	memcpy(result,geom1, geom1->size);
@@ -2071,7 +2085,7 @@ char	*wkb_point(POINT3D *pt,int32 *size, bool flipbytes, char byte_order, bool u
 	if (use3d)
 	{
 		*size = 29;
-		type = 32768 + 1;
+		type = ((unsigned int) WKB3DOFFSET + ((unsigned int)1));
 	}
 	else
 	{
@@ -2125,7 +2139,7 @@ char	*wkb_multipoint(POINT3D *pt,int32 numb_points,int32 *size, bool flipbytes, 
 	if (use3d)
 	{
 		*size = 9 + sub_size_3d*numb_points;
-		type = 32768 + 4;
+		type = WKB3DOFFSET + 4;
 	}
 	else
 	{
@@ -2189,7 +2203,7 @@ char	*wkb_line(LINE3D *line,int32 *size, bool flipbytes, char byte_order,bool us
 	if (use3d)
 	{
 		*size = 9 + 24*numb_points;
-		type = 32768 + 2;
+		type = WKB3DOFFSET + 2;
 	}
 	else
 	{
@@ -2269,7 +2283,7 @@ char	*wkb_multiline(LINE3D **lines,int32 *size, int numb_lines, bool flipbytes, 
 
 	if (use3d)
 	{
-		type = 32768 + 5;
+		type = WKB3DOFFSET + 5;
 	}
 	else
 	{
@@ -2361,7 +2375,7 @@ char	*wkb_polygon(POLYGON3D	*poly,int32 *size, bool flipbytes, char byte_order,b
 	if (use3d)
 	{
 		*size = 9 + 4*poly->nrings + 24*total_points;
-		type = 32768 + 3;
+		type = WKB3DOFFSET + 3;
 	}
 	else
 	{
@@ -2475,7 +2489,7 @@ char	*wkb_multipolygon(POLYGON3D	**polys,int numb_polys,int32 *size, bool flipby
 
 	if (use3d)
 	{
-		type = 32768 + 6;
+		type = WKB3DOFFSET + 6;
 	}
 	else
 	{
@@ -2823,7 +2837,7 @@ char	*to_wkb_sub(GEOMETRY *geom, bool flip_endian, int32 *wkb_size)
 //convert binary geometry into OGIS well know binary format with NDR (little endian) formating
 // see http://www.opengis.org/techno/specs/99-049.rtf page 3-24 for specification
 //
-// 3d geometries are encode as in OGR by adding 32768 to the type.  Points are then 24bytes (X,Y,Z)
+// 3d geometries are encode as in OGR by adding WKB3DOFFSET to the type.  Points are then 24bytes (X,Y,Z)
 // instead of 16 bytes (X,Y)
 //
 //dont do any flipping of endian   asbinary_simple(GEOMETRY)
@@ -2839,7 +2853,7 @@ Datum asbinary_simple(PG_FUNCTION_ARGS)
 //convert binary geometry into OGIS well know binary format with NDR (little endian) formating
 // see http://www.opengis.org/techno/specs/99-049.rtf page 3-24 for specification
 //
-// 3d geometries are encode as in OGR by adding 32768 to the type.  Points are then 24bytes (X,Y,Z)
+// 3d geometries are encode as in OGR by adding WKB3DOFFSET to the type.  Points are then 24bytes (X,Y,Z)
 // instead of 16 bytes (X,Y)
 //
 //flip if required    asbinary_specify(GEOMETRY,'xdr') or asbinary_specify(GEOMETRY,'ndr')
@@ -2855,7 +2869,7 @@ Datum asbinary_specify(PG_FUNCTION_ARGS)
 		elog(ERROR,"asbinary(geometry, <type>) - type should be 'XDR' or 'NDR'.  type length is %i",VARSIZE(type) -4);
 		PG_RETURN_NULL();
 	}
- 
+
 	if  ( ( strncmp(VARDATA(type) ,"xdr",3) == 0 ) || (strncmp(VARDATA(type) ,"XDR",3) == 0) )
 	{
 //printf("requested XDR\n");
@@ -3644,3 +3658,968 @@ Datum histogram2d_out(PG_FUNCTION_ARGS)
 
 }
 
+
+
+int getint(char *c)
+{
+	return *((int*)c);
+}
+
+double getdouble(char *c)
+{
+	return *((double*)c);
+}
+
+//void	flip_endian_double(char	*dd);
+//void		flip_endian_int32(char 	*ii);
+
+
+//select geometry(asbinary('POINT(1 2 3)','XDR'));
+//select geometry(asbinary('POINT(1 2)','XDR'));
+//select geometry(asbinary('POINT(1 2 3)','NDR'));
+//select geometry(asbinary('POINT(1 2)','NDR'));
+
+//select geometry(asbinary('LINESTRING(1 2, 3 4)','XDR'));
+//select geometry(asbinary('LINESTRING(1 2, 3 4)','NDR'));
+//select geometry(asbinary('LINESTRING(1 2 5 , 3 4 6)','XDR'));
+//select geometry(asbinary('LINESTRING(1 2 5 , 3 4 6)','NDR'));
+
+
+//select geometry(asbinary('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))','XDR'));
+//select geometry(asbinary('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))','NDR'));
+//select geometry(asbinary('POLYGON((0 0 0, 10 0, 10 10, 0 10, 0 0))','XDR'));
+//select geometry(asbinary('POLYGON((0 0 0, 10 0, 10 10, 0 10, 0 0))','NDR'));
+
+//select geometry(asbinary('POLYGON((5 5, 15 5, 15 7, 5 7, 5 5 ),(6 6,6.5 6, 6.5 6.5,6 6.5,6 6))','NDR'));
+//select geometry(asbinary('POLYGON((5 5, 15 5, 15 7, 5 7, 5 5 ),(6 6,6.5 6, 6.5 6.5,6 6.5,6 6))','XDR'));
+//select geometry(asbinary('POLYGON((5 5 0, 15 5, 15 7, 5 7, 5 5 ),(6 6,6.5 6, 6.5 6.5,6 6.5,6 6))','NDR'));
+//select geometry(asbinary('POLYGON((5 5 0, 15 5, 15 7, 5 7, 5 5 ),(6 6,6.5 6, 6.5 6.5,6 6.5,6 6))','XDR'));
+
+
+//select geometry(asbinary('MULTIPOINT(0 0, 10 0, 10 10, 0 10, 0 0)','NDR'));
+//select geometry(asbinary('MULTIPOINT(0 0, 10 0, 10 10, 0 10, 0 0 0)','NDR'));
+//select geometry(asbinary('MULTIPOINT(0 0, 10 0, 10 10, 0 10, 0 0)','XDR'));
+//select geometry(asbinary('MULTIPOINT(0 0, 10 0, 10 10, 0 10, 0 0 0)','NDR'));
+
+
+//select geometry(asbinary('MULTILINESTRING((5 5, 10 10),(1 1, 2 2) )','NDR'));
+//select geometry(asbinary('MULTILINESTRING((5 5, 10 10),(1 1, 2 2 0) )','NDR'));
+//select geometry(asbinary('MULTILINESTRING((5 5, 10 10),(1 1, 2 2) )','XDR'));
+//select geometry(asbinary('MULTILINESTRING((5 5, 10 10),(1 1, 2 2 0) )','XDR'));
+
+
+//select geometry(asbinary('MULTIPOLYGON(((5 5, 15 5, 15 7, 5 7, 5 5)),((1 1,1 2,2 2,1 2, 1 1)))','NDR'));
+//select geometry(asbinary('MULTIPOLYGON(((5 5, 15 5, 15 7, 5 7, 5 5)),((1 1,1 2,2 2,1 2, 1 1 0)))','NDR'));
+//select geometry(asbinary('MULTIPOLYGON(((5 5, 15 5, 15 7, 5 7, 5 5)),((1 1,1 2,2 2,1 2, 1 1)))','XDR'));
+//select geometry(asbinary('MULTIPOLYGON(((5 5, 15 5, 15 7, 5 7, 5 5)),((1 1,1 2,2 2,1 2, 1 1 0)))','XDR'));
+
+
+//select geometry(asbinary('GEOMETRYCOLLECTION(POINT(1 2),POINT(3 4))','NDR'));
+//select geometry(asbinary('GEOMETRYCOLLECTION(POINT(1 2 3),LINESTRING(1 2, 3 4),POLYGON((0 0, 10 0, 10 10, 0 10, 0 0)))','NDR'));
+// geometryfromWKB(<WKB>, [<SRID>] )
+PG_FUNCTION_INFO_V1(geometryfromWKB_SRID);
+Datum geometryfromWKB_SRID(PG_FUNCTION_ARGS)
+{
+		char   *wkb_input = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+		int    SRID = PG_GETARG_INT32(1);
+		char *wkb = &wkb_input[4];
+		int wkb_size = *((int *) wkb_input);
+		int bytes_read;
+		GEOMETRY *result;
+
+		if (PG_NARGS() >1)
+			SRID = PG_GETARG_INT32(1);
+		else
+			SRID = -1;
+
+//elog(NOTICE,"geometryfromWKB:: size = %i",wkb_size);
+
+	result = WKBtoGeometry(wkb,wkb_size,&bytes_read);
+
+	if (result == NULL)
+	{
+		PG_RETURN_NULL();
+	}
+	else
+	{
+		result->SRID = SRID;
+		PG_RETURN_POINTER(result);
+	}
+}
+
+PG_FUNCTION_INFO_V1(PointfromWKB_SRID);
+Datum PointfromWKB_SRID(PG_FUNCTION_ARGS)
+{
+		int SRID;
+		GEOMETRY *geom;
+
+		if (PG_NARGS() >1)
+			SRID = PG_GETARG_INT32(1);
+		else
+			SRID = -1;
+
+
+		geom = (GEOMETRY *) DatumGetPointer(
+					DirectFunctionCall2(geometryfromWKB_SRID,
+							PG_GETARG_DATUM(0),Int32GetDatum(SRID)
+						));
+		if (geom->type != POINTTYPE)
+		{
+			elog(ERROR,"PointfromWKB:: WKB isnt POINT");
+		}
+		PG_RETURN_POINTER(geom);
+}
+
+PG_FUNCTION_INFO_V1(LinefromWKB_SRID);
+Datum LinefromWKB_SRID(PG_FUNCTION_ARGS)
+{
+		int SRID;
+		GEOMETRY *geom;
+
+		if (PG_NARGS() >1)
+			SRID = PG_GETARG_INT32(1);
+		else
+			SRID = -1;
+
+
+		geom = (GEOMETRY *) DatumGetPointer(
+					DirectFunctionCall2(geometryfromWKB_SRID,
+							PG_GETARG_DATUM(0),Int32GetDatum(SRID)
+						));
+		if (geom->type != LINETYPE)
+		{
+			elog(ERROR,"LinefromWKB_SRID:: WKB isnt LINESTRING");
+		}
+		PG_RETURN_POINTER(geom);
+}
+
+PG_FUNCTION_INFO_V1(PolyfromWKB_SRID);
+Datum PolyfromWKB_SRID(PG_FUNCTION_ARGS)
+{
+		int SRID;
+		GEOMETRY *geom;
+
+		if (PG_NARGS() >1)
+			SRID = PG_GETARG_INT32(1);
+		else
+			SRID = -1;
+
+
+		geom = (GEOMETRY *) DatumGetPointer(
+					DirectFunctionCall2(geometryfromWKB_SRID,
+							PG_GETARG_DATUM(0),Int32GetDatum(SRID)
+						));
+		if (geom->type != POLYGONTYPE)
+		{
+			elog(ERROR,"PolyfromWKB_SRID:: WKB isnt POLYGON");
+		}
+		PG_RETURN_POINTER(geom);
+}
+
+PG_FUNCTION_INFO_V1(MPointfromWKB_SRID);
+Datum MPointfromWKB_SRID(PG_FUNCTION_ARGS)
+{
+		int SRID;
+		GEOMETRY *geom;
+
+		if (PG_NARGS() >1)
+			SRID = PG_GETARG_INT32(1);
+		else
+			SRID = -1;
+
+
+		geom = (GEOMETRY *) DatumGetPointer(
+					DirectFunctionCall2(geometryfromWKB_SRID,
+							PG_GETARG_DATUM(0),Int32GetDatum(SRID)
+						));
+		if (geom->type != MULTIPOINTTYPE)
+		{
+			elog(ERROR,"MPointfromWKB_SRID:: WKB isnt MULTIPOINT");
+		}
+		PG_RETURN_POINTER(geom);
+}
+
+PG_FUNCTION_INFO_V1(MLinefromWKB_SRID);
+Datum MLinefromWKB_SRID(PG_FUNCTION_ARGS)
+{
+		int SRID;
+		GEOMETRY *geom;
+
+		if (PG_NARGS() >1)
+			SRID = PG_GETARG_INT32(1);
+		else
+			SRID = -1;
+
+
+		geom = (GEOMETRY *) DatumGetPointer(
+					DirectFunctionCall2(geometryfromWKB_SRID,
+							PG_GETARG_DATUM(0),Int32GetDatum(SRID)
+						));
+		if (geom->type != MULTILINETYPE)
+		{
+			elog(ERROR,"MLinefromWKB_SRID:: WKB isnt MULTILINESTRING");
+		}
+		PG_RETURN_POINTER(geom);
+}
+
+PG_FUNCTION_INFO_V1(MPolyfromWKB_SRID);
+Datum MPolyfromWKB_SRID(PG_FUNCTION_ARGS)
+{
+		int SRID;
+		GEOMETRY *geom;
+
+		if (PG_NARGS() >1)
+			SRID = PG_GETARG_INT32(1);
+		else
+			SRID = -1;
+
+
+		geom = (GEOMETRY *) DatumGetPointer(
+					DirectFunctionCall2(geometryfromWKB_SRID,
+							PG_GETARG_DATUM(0),Int32GetDatum(SRID)
+						));
+		if (geom->type != MULTIPOLYGONTYPE)
+		{
+			elog(ERROR,"MPolyfromWKB_SRID:: WKB isnt MULTIPOLYGON");
+		}
+		PG_RETURN_POINTER(geom);
+}
+
+PG_FUNCTION_INFO_V1(GCfromWKB_SRID);
+Datum GCfromWKB_SRID(PG_FUNCTION_ARGS)
+{
+		int SRID;
+		GEOMETRY *geom;
+
+		if (PG_NARGS() >1)
+			SRID = PG_GETARG_INT32(1);
+		else
+			SRID = -1;
+
+
+		geom = (GEOMETRY *) DatumGetPointer(
+					DirectFunctionCall2(geometryfromWKB_SRID,
+							PG_GETARG_DATUM(0),Int32GetDatum(SRID)
+						));
+		if (geom->type != COLLECTIONTYPE)
+		{
+			elog(ERROR,"MPolyfromWKB_SRID:: WKB isnt GEOMETRYCOLLECTION");
+		}
+		PG_RETURN_POINTER(geom);
+}
+
+
+
+
+//convert a WKB (that has length bytes)
+// to a GEOMETRY.  This function read bytes_read bytes during the operation
+//  This function will call itself "recursively" on GeometryCollections
+GEOMETRY *WKBtoGeometry(char *WKB, int length, int *bytes_read)
+{
+			char myByteOrder;
+			char wkbByteOrder;
+			int  wkbType;
+			char	is3d;
+
+*bytes_read = 0;
+if (length<5)
+	elog(ERROR,"WKB:: insufficient bytes in stream");
+
+
+if ( BYTE_ORDER == BIG_ENDIAN )
+	myByteOrder=0;
+else
+	myByteOrder=1;
+
+wkbByteOrder = *(WKB);
+
+if (!( (wkbByteOrder==0) || (wkbByteOrder==1) ))
+{
+	elog(ERROR,"WKB is not valid - endian code = %i", (int) wkbByteOrder);
+	return NULL;
+}
+
+WKB ++; // skip to next byte
+(*bytes_read)++;
+
+if (myByteOrder == wkbByteOrder)
+{
+	wkbType = getint(WKB);
+}
+else
+{
+	flip_endian_int32( WKB );
+	wkbType = getint(WKB);
+}
+WKB += 4;
+(*bytes_read) += 4;
+
+//elog(NOTICE,"my byte order is %i",myByteOrder);
+//elog(NOTICE,"WKB byte order is %i",wkbByteOrder);
+//elog(NOTICE,"WKB type is %i",wkbType);
+
+is3d = 0;
+
+switch (wkbType)
+{
+	case (0x80000000 +1):  //point 3d
+			is3d = 1;
+	case 1:  //point 2d
+			if ( (length-(*bytes_read)) < (16+is3d*8))
+				elog(ERROR,"WKB:: insufficient bytes in stream");
+			{
+				POINT3D pt;
+				if (myByteOrder == wkbByteOrder)
+				{
+					pt.x = getdouble(WKB);
+					WKB+=8;
+					(*bytes_read)+=8;
+					pt.y = getdouble(WKB);
+					WKB+=8;
+					(*bytes_read)+=8;
+					if (is3d)
+					{
+						pt.z = getdouble(WKB);
+						WKB+=8;
+						(*bytes_read)+=8;
+					}
+					else
+					{
+						pt.z=0;
+					}
+				}
+				else
+				{
+					flip_endian_double(WKB);
+					pt.x = getdouble(WKB);
+					WKB+=8;
+					(*bytes_read)+=8;
+					flip_endian_double(WKB);
+					pt.y = getdouble(WKB);
+					WKB+=8;
+					(*bytes_read)+=8;
+					if (is3d)
+					{
+						flip_endian_double(WKB);
+						pt.z = getdouble(WKB);
+						WKB+=8;
+						(*bytes_read)+=8;
+					}
+					else
+					{
+						pt.z =0;
+					}
+				}
+				return make_oneobj_geometry(sizeof(POINT3D),
+											(char *) &pt,
+											POINTTYPE,  is3d, -1,1.0, 0.0, 0.0
+						);
+			}
+
+
+			break;
+	case (0x80000000 +2):  //line 3d
+			is3d = 1;
+	case 2: //line 2d
+			if ( (length-(*bytes_read)) < (4))
+				elog(ERROR,"WKB:: insufficient bytes in stream");
+				{
+						int npoints,t;
+						POINT3D	*pts;
+						int size;
+						LINE3D	*line;
+						if (myByteOrder == wkbByteOrder)
+						{
+							npoints= getint(WKB);
+							WKB+=4;
+							(*bytes_read)+=4;
+							if ( (length-(*bytes_read)) < ((16+is3d*8))*npoints)
+								elog(ERROR,"WKB:: insufficient bytes in stream");
+
+							pts = palloc( npoints *sizeof(POINT3D));
+							for (t=0;t<npoints;t++)
+							{
+								pts[t].x = getdouble(WKB);
+								WKB+=8;
+								(*bytes_read)+=8;
+								pts[t].y = getdouble(WKB);
+								WKB+=8;
+								(*bytes_read)+=8;
+								if (is3d)
+								{
+									pts[t].z = getdouble(WKB);
+									WKB+=8;
+									(*bytes_read)+=8;
+								}
+								else
+								{
+									pts[t].z =0;
+								}
+							}
+							//make_line(int  npoints, POINT3D    *pts, int   *size)
+							line = make_line(npoints, pts,&size);
+							return make_oneobj_geometry(size,
+														(char *) line,
+														LINETYPE,  is3d, -1,1.0, 0.0, 0.0
+											);
+						}
+						else
+						{
+							flip_endian_int32(WKB);
+							npoints= getint(WKB);
+							WKB+=4;
+							(*bytes_read)+=4;
+							if ( (length-(*bytes_read)) < ((16+is3d*8))*npoints)
+								elog(ERROR,"WKB:: insufficient bytes in stream");
+							pts = palloc( npoints *sizeof(POINT3D));
+							for (t=0;t<npoints;t++)
+							{
+								flip_endian_double(WKB);
+								pts[t].x = getdouble(WKB);
+								WKB+=8;
+								(*bytes_read)+=8;
+								flip_endian_double(WKB);
+								pts[t].y = getdouble(WKB);
+								WKB+=8;
+								(*bytes_read)+=8;
+								if (is3d)
+								{
+									flip_endian_double(WKB);
+									pts[t].z = getdouble(WKB);
+									WKB+=8;
+									(*bytes_read)+=8;
+								}
+								else
+								{
+									pts[t].z =0;
+								}
+							}
+							//make_line(int  npoints, POINT3D    *pts, int   *size)
+							line = make_line(npoints, pts,&size);
+							return make_oneobj_geometry(size,
+														(char *) line,
+														LINETYPE,  is3d, -1,1.0, 0.0, 0.0
+												);
+						}
+					}
+			break;
+	case (0x80000000 +3):  //polygon 3d
+			is3d =1;
+	case 3: //polygon
+		if ( (length-(*bytes_read)) < (4))
+				elog(ERROR,"WKB:: insufficient bytes in stream");
+		{
+				int nrings;
+				POINT3D** list_list_points;
+				int32  *points_per_ring;
+				int t;
+				int total_points =0;
+				POLYGON3D *poly;
+				int size;
+				POINT3D *pts;
+				int point_offset;
+
+			if (myByteOrder == wkbByteOrder)
+			{
+				nrings= getint(WKB);
+				WKB+=4;
+				(*bytes_read)+=4;
+				list_list_points = palloc( sizeof(POINT3D*) * nrings);
+				points_per_ring  = palloc( sizeof(int32*) * nrings);
+				for (t=0;t<nrings;t++)
+				{
+					int bytes, numbPoints;
+
+					list_list_points[t] =
+							wkb_linearring(WKB, is3d, 0, &numbPoints, &bytes,length-(*bytes_read));
+					points_per_ring[t] = numbPoints;
+					total_points += numbPoints;
+					WKB += bytes;
+					(*bytes_read)+=bytes;
+				}
+
+			}
+			else
+			{
+				flip_endian_int32(WKB);
+				nrings= getint(WKB);
+				WKB+=4;
+				(*bytes_read)+=4;
+				list_list_points = palloc( sizeof(POINT3D*) * nrings);
+				points_per_ring  = palloc( sizeof(int32*) * nrings);
+				for (t=0;t<nrings;t++)
+				{
+					int bytes, numbPoints;
+
+					list_list_points[t] =
+							wkb_linearring(WKB, is3d, 1, &numbPoints, &bytes,length-(*bytes_read));
+					points_per_ring[t] = numbPoints;
+					total_points += numbPoints;
+					WKB += bytes;
+					(*bytes_read)+=bytes;
+				}
+			}
+			//compact point arrays
+			pts = palloc ( sizeof(POINT3D) * total_points);
+			point_offset  = 0;
+			for (t=0;t<nrings;t++)
+			{
+				memcpy( &pts[point_offset],list_list_points[t], sizeof(POINT3D)*points_per_ring[t]);
+				point_offset += points_per_ring[t];
+			}
+			poly = make_polygon( nrings, points_per_ring, pts, total_points, &size);
+			return make_oneobj_geometry(size,
+										(char *) poly,
+										POLYGONTYPE,  is3d, -1,1.0, 0.0, 0.0
+					);
+		}
+
+			break;
+	case (0x80000000 +4):  //multipoint 3d
+	case 4: //multipoint
+				{
+					int ngeoms,t;
+					GEOMETRY *so_far,*so_far2;
+					GEOMETRY *one_obj;
+
+					int mybytes_read;
+					int other_bytes_read;
+
+					if (myByteOrder != wkbByteOrder)
+					{
+						flip_endian_int32(WKB);
+					}
+					ngeoms= getint(WKB);
+					WKB+=4;
+					(*bytes_read)+=4;
+					if (ngeoms ==0)
+						return NULL;
+
+						mybytes_read = *bytes_read;
+						so_far = WKBtoGeometry(WKB, length - mybytes_read, &other_bytes_read);
+						(*bytes_read) =  mybytes_read + other_bytes_read;
+						WKB += other_bytes_read;
+						so_far->type = MULTIPOINTTYPE;
+
+						if (ngeoms ==1)
+							return so_far;
+
+					for (t=1;t<ngeoms;t++) // already done the first
+					{
+						mybytes_read = *bytes_read;
+						one_obj = WKBtoGeometry(WKB, length - mybytes_read, &other_bytes_read);
+						(*bytes_read) =  mybytes_read + other_bytes_read;
+						WKB += other_bytes_read;
+						so_far2 =
+							(GEOMETRY *) DatumGetPointer(
+										DirectFunctionCall2(collector,
+												PointerGetDatum(so_far),PointerGetDatum(one_obj)
+											)
+									);
+						pfree(one_obj);
+						pfree(so_far);
+						so_far = so_far2;
+					}
+					return so_far;
+				}
+	case (0x80000000 +5):  //multiline 3d
+	case 5: //multiline
+			{
+					int ngeoms,t;
+					GEOMETRY *so_far,*so_far2;
+					GEOMETRY *one_obj;
+
+					int mybytes_read;
+					int other_bytes_read;
+
+					if (myByteOrder != wkbByteOrder)
+					{
+						flip_endian_int32(WKB);
+					}
+					ngeoms= getint(WKB);
+					WKB+=4;
+					(*bytes_read)+=4;
+					if (ngeoms ==0)
+						return NULL;
+
+						mybytes_read = *bytes_read;
+						so_far = WKBtoGeometry(WKB, length - mybytes_read, &other_bytes_read);
+						(*bytes_read) =  mybytes_read + other_bytes_read;
+						WKB += other_bytes_read;
+						so_far->type = MULTILINETYPE;
+
+						if (ngeoms ==1)
+							return so_far;
+
+					for (t=1;t<ngeoms;t++) // already done the first
+					{
+						mybytes_read = *bytes_read;
+						one_obj = WKBtoGeometry(WKB, length - mybytes_read, &other_bytes_read);
+						(*bytes_read) =  mybytes_read + other_bytes_read;
+						WKB += other_bytes_read;
+						so_far2 =
+							(GEOMETRY *) DatumGetPointer(
+										DirectFunctionCall2(collector,
+												PointerGetDatum(so_far),PointerGetDatum(one_obj)
+											)
+									);
+						pfree(one_obj);
+						pfree(so_far);
+						so_far = so_far2;
+					}
+					return so_far;
+				}
+	case (0x80000000 +6):  //multipolygon 3d
+	case 6: //multipolygon
+			{
+				int ngeoms,t;
+				GEOMETRY *so_far,*so_far2;
+				GEOMETRY *one_obj;
+
+				int mybytes_read;
+				int other_bytes_read;
+
+				if (myByteOrder != wkbByteOrder)
+				{
+					flip_endian_int32(WKB);
+				}
+				ngeoms= getint(WKB);
+				WKB+=4;
+				(*bytes_read)+=4;
+				if (ngeoms ==0)
+					return NULL;
+
+					mybytes_read = *bytes_read;
+					so_far = WKBtoGeometry(WKB, length - mybytes_read, &other_bytes_read);
+					(*bytes_read) =  mybytes_read + other_bytes_read;
+					WKB += other_bytes_read;
+					so_far->type = MULTIPOLYGONTYPE;
+
+					if (ngeoms ==1)
+						return so_far;
+
+				for (t=1;t<ngeoms;t++) // already done the first
+				{
+					mybytes_read = *bytes_read;
+					one_obj = WKBtoGeometry(WKB, length - mybytes_read, &other_bytes_read);
+					(*bytes_read) =  mybytes_read + other_bytes_read;
+					WKB += other_bytes_read;
+					so_far2 =
+						(GEOMETRY *) DatumGetPointer(
+									DirectFunctionCall2(collector,
+											PointerGetDatum(so_far),PointerGetDatum(one_obj)
+										)
+								);
+					pfree(one_obj);
+					pfree(so_far);
+					so_far = so_far2;
+				}
+				return so_far;
+			}
+	case (0x80000000 +7):  //geometry collection 3d
+	case 7: //geometry collection
+			{
+				int ngeoms,t;
+				GEOMETRY *so_far,*so_far2;
+				GEOMETRY *one_obj;
+
+				int mybytes_read;
+				int other_bytes_read;
+
+				if (myByteOrder != wkbByteOrder)
+				{
+					flip_endian_int32(WKB);
+				}
+				ngeoms= getint(WKB);
+				WKB+=4;
+				(*bytes_read)+=4;
+				if (ngeoms ==0)
+					return NULL;
+
+					mybytes_read = *bytes_read;
+					so_far = WKBtoGeometry(WKB, length - mybytes_read, &other_bytes_read);
+					(*bytes_read) =  mybytes_read + other_bytes_read;
+					WKB += other_bytes_read;
+					so_far->type = COLLECTIONTYPE;
+
+					if (ngeoms ==1)
+						return so_far;
+
+				for (t=1;t<ngeoms;t++) // already done the first
+				{
+					mybytes_read = *bytes_read;
+					one_obj = WKBtoGeometry(WKB, length - mybytes_read, &other_bytes_read);
+					(*bytes_read) =  mybytes_read + other_bytes_read;
+					WKB += other_bytes_read;
+					so_far2 =
+						(GEOMETRY *) DatumGetPointer(
+									DirectFunctionCall2(collector,
+											PointerGetDatum(so_far),PointerGetDatum(one_obj)
+										)
+								);
+					pfree(one_obj);
+					pfree(so_far);
+					so_far = so_far2;
+				}
+				return so_far;
+			}
+	default:
+		elog(ERROR,"unknown WKB type: %i",wkbType);
+		return NULL;
+}
+return NULL;
+}
+
+// take some wkt (and if its 3d or needs endianflip) and return as list of points
+//  also return the number of points and its size in bytes
+//
+POINT3D *wkb_linearring(char *WKB,char is3d, char flip_endian, int *numbPoints, int *bytes,int bytes_in_stream)
+{
+	int t;
+
+	if (bytes_in_stream < 4)
+		elog(ERROR,"WKB:: insufficient bytes in stream");
+
+	if (flip_endian)
+	{
+		POINT3D	*pts;
+		int npoints;
+
+		flip_endian_int32(WKB);
+		npoints= getint(WKB);
+		WKB+=4;
+		if ( (bytes_in_stream-4) < ((16+is3d*8))*npoints)
+					elog(ERROR,"WKB:: insufficient bytes in stream");
+		pts = palloc( npoints *sizeof(POINT3D));
+		for (t=0;t<npoints;t++)
+		{
+			flip_endian_double(WKB);
+			pts[t].x = getdouble(WKB);
+			WKB+=8;
+			flip_endian_double(WKB);
+			pts[t].y = getdouble(WKB);
+			WKB+=8;
+			if (is3d)
+			{
+				flip_endian_double(WKB);
+				pts[t].z = getdouble(WKB);
+				WKB+=8;
+			}
+			else
+			{
+				pts[t].z =0;
+			}
+		}
+		*numbPoints = npoints;
+		if (is3d)
+		{
+			*bytes = 4+8*3*npoints;
+		}
+		else
+		{
+			*bytes = 4+8*2*npoints;
+		}
+		return pts;
+	}
+	else
+	{
+		POINT3D	*pts;
+		int npoints;
+
+		npoints= getint(WKB);
+		WKB+=4;
+		if ( (bytes_in_stream-4) < ((16+is3d*8))*npoints)
+					elog(ERROR,"WKB:: insufficient bytes in stream");
+		pts = palloc( npoints *sizeof(POINT3D));
+		for (t=0;t<npoints;t++)
+		{
+			pts[t].x = getdouble(WKB);
+			WKB+=8;
+			pts[t].y = getdouble(WKB);
+			WKB+=8;
+			if (is3d)
+			{
+				pts[t].z = getdouble(WKB);
+				WKB+=8;
+			}
+			else
+			{
+				pts[t].z =0;
+			}
+		}
+		*numbPoints = npoints;
+		if (is3d)
+		{
+			*bytes = 4+8*3*npoints;
+		}
+		else
+		{
+			*bytes = 4+8*2*npoints;
+		}
+		return pts;
+	}
+}
+
+
+
+PG_FUNCTION_INFO_V1(geometry_from_text_poly);
+Datum geometry_from_text_poly(PG_FUNCTION_ARGS)
+{
+		int SRID;
+		GEOMETRY *geom;
+
+		if (PG_NARGS() >1)
+			SRID = PG_GETARG_INT32(1);
+		else
+			SRID = -1;
+
+
+		geom = (GEOMETRY *) DatumGetPointer(
+					DirectFunctionCall2(geometry_from_text,
+							PG_GETARG_DATUM(0),Int32GetDatum(SRID)
+						));
+		if (geom->type != POLYGONTYPE)
+		{
+			elog(ERROR,"geometry_from_text_poly:: WKT isnt POLYGON");
+		}
+		PG_RETURN_POINTER(geom);
+}
+
+PG_FUNCTION_INFO_V1(geometry_from_text_line);
+Datum geometry_from_text_line(PG_FUNCTION_ARGS)
+{
+		int SRID;
+		GEOMETRY *geom;
+
+		if (PG_NARGS() >1)
+			SRID = PG_GETARG_INT32(1);
+		else
+			SRID = -1;
+
+
+		geom = (GEOMETRY *) DatumGetPointer(
+					DirectFunctionCall2(geometry_from_text,
+							PG_GETARG_DATUM(0),Int32GetDatum(SRID)
+						));
+		if (geom->type != LINETYPE)
+		{
+			elog(ERROR,"geometry_from_text_line:: WKT isnt LINESTRING");
+		}
+		PG_RETURN_POINTER(geom);
+}
+
+
+PG_FUNCTION_INFO_V1(geometry_from_text_point);
+Datum geometry_from_text_point(PG_FUNCTION_ARGS)
+{
+		int SRID;
+		GEOMETRY *geom;
+
+		if (PG_NARGS() >1)
+			SRID = PG_GETARG_INT32(1);
+		else
+			SRID = -1;
+
+
+		geom = (GEOMETRY *) DatumGetPointer(
+					DirectFunctionCall2(geometry_from_text,
+							PG_GETARG_DATUM(0),Int32GetDatum(SRID)
+						));
+		if (geom->type != POINTTYPE)
+		{
+			elog(ERROR,"geometry_from_text_point:: WKT isnt POINT");
+		}
+		PG_RETURN_POINTER(geom);
+}
+
+PG_FUNCTION_INFO_V1(geometry_from_text_mpoint);
+Datum geometry_from_text_mpoint(PG_FUNCTION_ARGS)
+{
+		int SRID;
+		GEOMETRY *geom;
+
+		if (PG_NARGS() >1)
+			SRID = PG_GETARG_INT32(1);
+		else
+			SRID = -1;
+
+
+		geom = (GEOMETRY *) DatumGetPointer(
+					DirectFunctionCall2(geometry_from_text,
+							PG_GETARG_DATUM(0),Int32GetDatum(SRID)
+						));
+		if (geom->type != MULTIPOINTTYPE)
+		{
+			elog(ERROR,"geometry_from_text_mpoint:: WKT isnt MULTIPOINT");
+		}
+		PG_RETURN_POINTER(geom);
+}
+
+PG_FUNCTION_INFO_V1(geometry_from_text_mline);
+Datum geometry_from_text_mline(PG_FUNCTION_ARGS)
+{
+		int SRID;
+		GEOMETRY *geom;
+
+		if (PG_NARGS() >1)
+			SRID = PG_GETARG_INT32(1);
+		else
+			SRID = -1;
+
+
+		geom = (GEOMETRY *) DatumGetPointer(
+					DirectFunctionCall2(geometry_from_text,
+							PG_GETARG_DATUM(0),Int32GetDatum(SRID)
+						));
+		if (geom->type != MULTILINETYPE)
+		{
+			elog(ERROR,"geometry_from_text_mline:: WKT isnt MULTILINESTRING");
+		}
+		PG_RETURN_POINTER(geom);
+}
+
+PG_FUNCTION_INFO_V1(geometry_from_text_mpoly);
+Datum geometry_from_text_mpoly(PG_FUNCTION_ARGS)
+{
+		int SRID;
+		GEOMETRY *geom;
+
+		if (PG_NARGS() >1)
+			SRID = PG_GETARG_INT32(1);
+		else
+			SRID = -1;
+
+
+		geom = (GEOMETRY *) DatumGetPointer(
+					DirectFunctionCall2(geometry_from_text,
+							PG_GETARG_DATUM(0),Int32GetDatum(SRID)
+						));
+		if (geom->type != MULTIPOLYGONTYPE)
+		{
+			elog(ERROR,"geometry_from_text_mpoly:: WKT isnt MULTIPOLYGON");
+		}
+		PG_RETURN_POINTER(geom);
+}
+
+PG_FUNCTION_INFO_V1(geometry_from_text_gc);
+Datum geometry_from_text_gc(PG_FUNCTION_ARGS)
+{
+		int SRID;
+		GEOMETRY *geom;
+
+		if (PG_NARGS() >1)
+			SRID = PG_GETARG_INT32(1);
+		else
+			SRID = -1;
+
+
+		geom = (GEOMETRY *) DatumGetPointer(
+					DirectFunctionCall2(geometry_from_text,
+							PG_GETARG_DATUM(0),Int32GetDatum(SRID)
+						));
+		if (geom->type != COLLECTIONTYPE)
+		{
+			elog(ERROR,"geometry_from_text_gc:: WKT isnt GEOMETRYCOLLECTION");
+		}
+		PG_RETURN_POINTER(geom);
+}
