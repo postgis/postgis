@@ -84,24 +84,24 @@ lwpoint_serialize_buf(LWPOINT *point, uchar *buf, size_t *retsize)
 
 // find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
 BOX3D *
-lwpoint_findbbox(LWPOINT *point)
+lwpoint_compute_box3d(LWPOINT *point)
 {
 #ifdef PGIS_DEBUG
-	lwnotice("lwpoint_findbbox called with point %p", point);
+	lwnotice("lwpoint_compute_box3d called with point %p", point);
 #endif
 	if (point == NULL)
 	{
 #ifdef PGIS_DEBUG
-		lwnotice("lwpoint_findbbox returning NULL");
+		lwnotice("lwpoint_compute_box3d returning NULL");
 #endif
 		return NULL;
 	}
 
 #ifdef PGIS_DEBUG
-	lwnotice("lwpoint_findbbox returning pointArray_bbox return");
+	lwnotice("lwpoint_compute_box3d returning ptarray_compute_box3d return");
 #endif
 
-	return pointArray_bbox(point->point);
+	return ptarray_compute_box3d(point->point);
 }
 
 // convenience functions to hide the POINTARRAY
@@ -307,9 +307,9 @@ void printLWPOINT(LWPOINT *point)
 }
 
 int
-lwpoint_compute_bbox_p(LWPOINT *point, BOX2DFLOAT4 *box)
+lwpoint_compute_box2d_p(LWPOINT *point, BOX2DFLOAT4 *box)
 {
-	return ptarray_compute_bbox_p(point->point, box);
+	return ptarray_compute_box2d_p(point->point, box);
 }
 
 // Clone LWPOINT object. POINTARRAY is not copied.

@@ -223,14 +223,14 @@ lwline_serialize_buf(LWLINE *line, uchar *buf, size_t *retsize)
 }
 
 // find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
-BOX3D *lwline_findbbox(LWLINE *line)
+BOX3D *
+lwline_compute_box3d(LWLINE *line)
 {
 	BOX3D *ret;
 
-	if (line == NULL)
-		return NULL;
+	if (line == NULL) return NULL;
 
-	ret = pointArray_bbox(line->points);
+	ret = ptarray_compute_box3d(line->points);
 	return ret;
 }
 
@@ -317,9 +317,9 @@ void printLWLINE(LWLINE *line)
 }
 
 int
-lwline_compute_bbox_p(LWLINE *line, BOX2DFLOAT4 *box)
+lwline_compute_box2d_p(LWLINE *line, BOX2DFLOAT4 *box)
 {
-	return ptarray_compute_bbox_p(line->points, box);
+	return ptarray_compute_box2d_p(line->points, box);
 }
 
 // Clone LWLINE object. POINTARRAY is not copied.

@@ -7,19 +7,12 @@
 
 #include "liblwgeom.h"
 
-// this will change to NaN when I figure out how to
-// get NaN in a platform-independent way
-#define NO_VALUE 0.0
-#define NO_Z_VALUE NO_VALUE
-#define NO_M_VALUE NO_VALUE
-
 //#define PGIS_DEBUG 1
 //#define PGIS_DEBUG_EXPLODED 1
 
 // This is an implementation of the functions defined in lwgeom.h
 
 //forward decs
-extern BOX3D *lw_geom_getBB_simple(uchar *serialized_form);
 #ifdef PGIS_DEBUG_EXPLODED
 void checkexplodedsize(uchar *srl, LWGEOM_EXPLODED *exploded, int alloced, char wantbbox);
 #endif
@@ -250,14 +243,15 @@ box2df_to_box3d_p(BOX2DFLOAT4 *box, BOX3D *out)
 
 
 // returns a BOX3D that encloses b1 and b2
-// combine_boxes(NULL,A) --> A
-// combine_boxes(A,NULL) --> A
-// combine_boxes(A,B) --> A union B
-BOX3D *combine_boxes(BOX3D *b1, BOX3D *b2)
+// box3d_union(NULL,A) --> A
+// box3d_union(A,NULL) --> A
+// box3d_union(A,B) --> A union B
+BOX3D *
+box3d_union(BOX3D *b1, BOX3D *b2)
 {
 	BOX3D *result;
 
-	result =(BOX3D*) lwalloc(sizeof(BOX3D));
+	result = lwalloc(sizeof(BOX3D));
 
 	if ( (b1 == NULL) && (b2 == NULL) )
 	{
@@ -268,11 +262,13 @@ BOX3D *combine_boxes(BOX3D *b1, BOX3D *b2)
 	{
 		//return b2
 		memcpy(result, b2, sizeof(BOX3D));
+		return result;
 	}
 	if (b2 == NULL)
 	{
 		//return b1
 		memcpy(result, b1, sizeof(BOX3D));
+		return result;
 	}
 
 	if (b1->xmin < b2->xmin)
@@ -309,6 +305,60 @@ BOX3D *combine_boxes(BOX3D *b1, BOX3D *b2)
 	return result;
 }
 
+// Make given ubox a union of b1 and b2
+int
+box3d_union_p(BOX3D *b1, BOX3D *b2, BOX3D *ubox)
+{
+	if ( (b1 == NULL) && (b2 == NULL) )
+	{
+		return 0;
+	}
+
+	if  (b1 == NULL)
+	{
+		memcpy(ubox, b2, sizeof(BOX3D));
+		return 1;
+	}
+	if (b2 == NULL)
+	{
+		memcpy(ubox, b1, sizeof(BOX3D));
+		return 1;
+	}
+
+	if (b1->xmin < b2->xmin)
+		ubox->xmin = b1->xmin;
+	else
+		ubox->xmin = b2->xmin;
+
+	if (b1->ymin < b2->ymin)
+		ubox->ymin = b1->ymin;
+	else
+		ubox->ymin = b2->ymin;
+
+
+	if (b1->xmax > b2->xmax)
+		ubox->xmax = b1->xmax;
+	else
+		ubox->xmax = b2->xmax;
+
+	if (b1->ymax > b2->ymax)
+		ubox->ymax = b1->ymax;
+	else
+		ubox->ymax = b2->ymax;
+
+	if (b1->zmax > b2->zmax)
+		ubox->zmax = b1->zmax;
+	else
+		ubox->zmax = b2->zmax;
+
+	if (b1->zmin > b2->zmin)
+		ubox->zmin = b1->zmin;
+	else
+		ubox->zmin = b2->zmin;
+
+	return 1;
+}
+
 // returns a pointer to internal storage, or NULL
 // if the serialized form does not have a BBOX.
 //BOX2DFLOAT4 *
@@ -320,17 +370,17 @@ BOX3D *combine_boxes(BOX3D *b1, BOX3D *b2)
 
 // same as getbox2d, but modifies box instead of returning result on the stack
 int
-getbox2d_p(uchar *serialized_form, BOX2DFLOAT4 *box)
+getbox2d_p(uchar *srl, BOX2DFLOAT4 *box)
 {
-	uchar type = serialized_form[0];
+	uchar type = srl[0];
 	uchar *loc;
-	BOX3D *box3d;
+	BOX3D box3d;
 
 #ifdef PGIS_DEBUG
 	lwnotice("getbox2d_p call");
 #endif
 
-	loc = serialized_form+1;
+	loc = srl+1;
 
 	if (lwgeom_hasBBOX(type))
 	{
@@ -347,32 +397,18 @@ getbox2d_p(uchar *serialized_form, BOX2DFLOAT4 *box)
 #endif
 
 	//we have to actually compute it!
-//lwnotice("getbox2d_p:: computing box");
-	box3d = lw_geom_getBB_simple(serialized_form);
+	//lwnotice("getbox2d_p:: computing box");
+	if ( ! compute_serialized_box3d_p(srl, &box3d) ) return 0;
 
 #ifdef PGIS_DEBUG
-	lwnotice("getbox2d_p: lw_geom_getBB_simple returned %p", box3d);
+	lwnotice("getbox2d_p: compute_serialized_box3d returned %p", box3d);
 #endif
 
-	if ( ! box3d )
-	{
-		return 0;
-	}
-
-	if ( ! box3d_to_box2df_p(box3d, box) )
-	{
-		return 0;
-	}
+	if ( ! box3d_to_box2df_p(&box3d, box) ) return 0;
 
 #ifdef PGIS_DEBUG
 	lwnotice("getbox2d_p: box3d converted to box2d");
 #endif
-
-	//box2 = box3d_to_box2df(box3d);
-	//memcpy(box,box2, sizeof(BOX2DFLOAT4));
-	//lwfree(box2);
-
-	lwfree(box3d);
 
 	return 1;
 }
@@ -599,82 +635,6 @@ pointArray_construct(uchar *points, char hasz, char hasm,
 	pa->serialized_pointlist = points;
 
 	return pa;
-}
-
-// calculate the bounding box of a set of points
-// returns a lwalloced BOX3D, or NULL on empty array.
-// zmin/zmax values are set to NO_Z_VALUE if not available.
-BOX3D *
-pointArray_bbox(const POINTARRAY *pa)
-{
-	int t;
-	BOX3D *result;
-	POINT3DZ pt;
-	int npoints = pa->npoints;
-
-#ifdef PGIS_DEBUG
-	lwnotice("pointArray_bbox call (array has %d points)", pa->npoints);
-#endif
-	if (pa->npoints == 0)
-	{
-#ifdef PGIS_DEBUG
-		lwnotice("pointArray_bbox returning NULL");
-#endif
-		return NULL;
-	}
-
-	if ( npoints != pa->npoints) lwerror("Messed up at %s:%d", __FILE__, __LINE__);
-
-	result = (BOX3D*)lwalloc(sizeof(BOX3D));
-
-	if ( ! result )
-	{
-		lwnotice("Out of virtual memory");
-		return NULL;
-	}
-
-	getPoint3dz_p(pa, 0, &pt);
-
-
-#ifdef PGIS_DEBUG
-	lwnotice("pointArray_bbox: got point 0");
-#endif
-
-	result->xmin = pt.x;
-	result->xmax = pt.x;
-	result->ymin = pt.y;
-	result->ymax = pt.y;
-
-	if ( TYPE_HASZ(pa->dims) ) {
-		result->zmin = pt.z;
-		result->zmax = pt.z;
-	} else {
-		result->zmin = NO_Z_VALUE;
-		result->zmax = NO_Z_VALUE;
-	}
-
-#ifdef PGIS_DEBUG
-	lwnotice("pointArray_bbox: scanning other %d points", pa->npoints);
-#endif
-	for (t=1;t<pa->npoints;t++)
-	{
-		getPoint3dz_p(pa,t,&pt);
-		if (pt.x < result->xmin) result->xmin = pt.x;
-		if (pt.y < result->ymin) result->ymin = pt.y;
-		if (pt.x > result->xmax) result->xmax = pt.x;
-		if (pt.y > result->ymax) result->ymax = pt.y;
-
-		if ( TYPE_HASZ(pa->dims) ) {
-			if (pt.z > result->zmax) result->zmax = pt.z;
-			if (pt.z < result->zmin) result->zmin = pt.z;
-		}
-	}
-
-#ifdef PGIS_DEBUG
-	lwnotice("pointArray_bbox returning box");
-#endif
-
-	return result;
 }
 
 
@@ -1402,18 +1362,18 @@ lwgeom_size_inspected(const LWGEOM_INSPECTED *inspected, int geom_number)
 	return lwgeom_size(inspected->sub_geoms[geom_number]);
 }
 
-
-//get bounding box of LWGEOM (automatically calls the sub-geometries bbox generators)
-//dont forget to lwfree() result
-BOX3D *
-lw_geom_getBB(uchar *serialized_form)
+int
+compute_serialized_box3d_p(uchar *srl, BOX3D *out)
 {
-	  LWGEOM_INSPECTED *inspected = lwgeom_inspect(serialized_form);
-
-	  BOX3D *result = lw_geom_getBB_inspected(inspected);
-
-	  pfree_inspected(inspected);
-	  return result;
+	  BOX3D *box = compute_serialized_box3d(srl);
+	  if ( ! box ) return 0;
+	  out->xmin = box->xmin;
+	  out->ymin = box->ymin;
+	  out->zmin = box->zmin;
+	  out->xmax = box->xmax;
+	  out->ymax = box->ymax;
+	  out->zmax = box->zmax;
+	  return 1;
 }
 
 // Compute bounding box of a serialized LWGEOM, even if it is
@@ -1421,11 +1381,9 @@ lw_geom_getBB(uchar *serialized_form)
 // the given location, the function returns 0 is the geometry
 // does not have a bounding box (EMPTY GEOM)
 int
-compute_serialized_bbox_p(uchar *srl, BOX2DFLOAT4 *out)
+compute_serialized_box2d_p(uchar *srl, BOX2DFLOAT4 *out)
 {
-	  LWGEOM_INSPECTED *inspected = lwgeom_inspect(srl);
-
-	  BOX3D *result = lw_geom_getBB_inspected(inspected);
+	  BOX3D *result = compute_serialized_box3d(srl);
 	  if ( ! result ) return 0;
 	  out->xmin = result->xmin;
 	  out->xmax = result->xmax;
@@ -1437,52 +1395,50 @@ compute_serialized_bbox_p(uchar *srl, BOX2DFLOAT4 *out)
 }
 
 //dont forget to lwfree() result
-BOX3D *lw_geom_getBB_simple(uchar *serialized_form)
+BOX3D *
+compute_serialized_box3d(uchar *srl)
 {
-	int type = lwgeom_getType((uchar) serialized_form[0]);
+	int type = lwgeom_getType(srl[0]);
 	int t;
 	uchar *loc;
 	uint32 ngeoms;
 	BOX3D *result;
-	BOX3D *b1,*b2;
+	BOX3D b1;
 	int sub_size;
+	char nboxes=0;
+
+	//lwnotice("compute_serialized_box3d called");
 
 #ifdef PGIS_DEBUG
-lwnotice("lw_geom_getBB_simple called on type %d", type);
+lwnotice("compute_serialized_box3d called on type %d", type);
 #endif
 
 	if (type == POINTTYPE)
 	{
-		LWPOINT *pt = lwpoint_deserialize(serialized_form);
+		LWPOINT *pt = lwpoint_deserialize(srl);
 #ifdef PGIS_DEBUG
-lwnotice("lw_geom_getBB_simple: lwpoint deserialized");
+lwnotice("compute_serialized_box3d: lwpoint deserialized");
 #endif
-		result = lwpoint_findbbox(pt);
+		result = lwpoint_compute_box3d(pt);
 #ifdef PGIS_DEBUG
-lwnotice("lw_geom_getBB_simple: bbox found");
+lwnotice("compute_serialized_box3d: bbox found");
 #endif
 		pfree_point(pt);
 		return result;
-	/*
-		result = lwalloc(sizeof(BOX3D));
-		memcpy(result, serialized_form+1, sizeof(BOX2DFLOAT4));
-		memcpy(((uchar *)result)+24, serialized_form+1, sizeof(BOX2DFLOAT4));
-		return result;
-	*/
 	}
 
 	else if (type == LINETYPE)
 	{
-		LWLINE *line = lwline_deserialize(serialized_form);
-		result = lwline_findbbox(line);
+		LWLINE *line = lwline_deserialize(srl);
+		result = lwline_compute_box3d(line);
 		pfree_line(line);
 		return result;
 
 	}
 	else if (type == POLYGONTYPE)
 	{
-		LWPOLY *poly = lwpoly_deserialize(serialized_form);
-		result = lwpoly_findbbox(poly);
+		LWPOLY *poly = lwpoly_deserialize(srl);
+		result = lwpoly_compute_box3d(poly);
 		pfree_polygon(poly);
 		return result;
 	}
@@ -1490,90 +1446,43 @@ lwnotice("lw_geom_getBB_simple: bbox found");
 	if ( ! ( type == MULTIPOINTTYPE || type == MULTILINETYPE ||
 		type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE ) )
 	{
-		lwnotice("lw_geom_getBB_simple called on unknown type %d", type);
+		lwnotice("compute_serialized_box3d called on unknown type %d", type);
 		return NULL;
 	}
 
-	loc = serialized_form+1;
+	loc = srl+1;
 
-	if (lwgeom_hasBBOX((uchar) serialized_form[0]))
+	if (lwgeom_hasBBOX(srl[0]))
 	{
 		loc += sizeof(BOX2DFLOAT4);
 	}
 
-	if (lwgeom_hasSRID((uchar) serialized_form[0]) )
+	if (lwgeom_hasSRID(srl[0]) )
 	{
 		loc +=4;
 	}
 
-	ngeoms =  get_uint32(loc);
-	loc +=4;
+	ngeoms = get_uint32(loc);
+	loc += 4;
 
+	// each sub-type
 	result = NULL;
-		// each sub-type
-	for (t=0;t<ngeoms;t++)
+	for (t=0; t<ngeoms; t++)
 	{
-		b1 = lw_geom_getBB_simple(loc);
+		if ( ! compute_serialized_box3d_p(loc, &b1) ) continue;
+		if (result) nboxes += box3d_union_p(result, &b1, result);
+		else { 
+			result = lwalloc(sizeof(BOX3D));
+			memcpy(result, &b1, sizeof(BOX3D));
+		}
+
 		sub_size = lwgeom_size(loc);
 		loc += sub_size;
-		if (result != NULL)
-		{
-			b2= result;
-			result = combine_boxes(b2, b1);
-			lwfree(b1);
-			lwfree(b2);
-		}
-		else
-		{
-			result = b1;
-		}
 	}
 
 	return result;
 
 }
-
-
-//dont forget to lwfree() result
-BOX3D *lw_geom_getBB_inspected(LWGEOM_INSPECTED *inspected)
-{
-	int t;
-	BOX3D *b1,*b2,*result;
-
-	result = NULL;
-
-	// handle all the multi* and geometrycollections the same
-	// NOTE: for a geometry collection of GC of GC of GC
-	// we will be recursing...
-	for (t=0;t<inspected->ngeometries;t++)
-	{
-		b1 = lw_geom_getBB_simple( inspected->sub_geoms[t] );
-
-		//lwnotice("%i has box :: BBOX3D(%g %g, %g %g)",t,b1->xmin, b1->ymin,b1->xmax, b1->ymax);
-
-		if (result != NULL)
-		{
-			b2= result;
-			result = combine_boxes(b2, b1);
-//	lwnotice("combined has :: BBOX3D(%g %g, %g %g)",result->xmin, result->ymin,result->xmax, result->ymax);
-
-			lwfree(b1);
-			lwfree(b2);
-		}
-		else
-		{
-			result = b1;
-		}
-
-	}
-
-	return result;
-}
-
-
-
-
-
 
 //****************************************************************
 // memory management -- these only delete the memory associated
@@ -2182,7 +2091,7 @@ lwexploded_serialize_buf(LWGEOM_EXPLODED *exploded, int wantbbox,
 		{
 			buf[0] = loc[0];
 			TYPE_SETHASBBOX(buf[0], 1);
-			box3d = lw_geom_getBB_simple(loc);
+			box3d = compute_serialized_box3d(loc);
 			box2d = box3d_to_box2df(box3d);
 			loc = buf+1;
 			memcpy(loc, box2d, sizeof(BOX2DFLOAT4));
@@ -2315,7 +2224,7 @@ lwexploded_serialize_buf(LWGEOM_EXPLODED *exploded, int wantbbox,
 
 	if ( wantbbox )
 	{
-		box3d = lw_geom_getBB_simple(buf);
+		box3d = compute_serialized_box3d(buf);
 		box2d = box3d_to_box2df(box3d);
 		memcpy(loc, box2d, sizeof(BOX2DFLOAT4));
 		loc += sizeof(BOX2DFLOAT4);
@@ -2459,9 +2368,9 @@ ptarray_isccw(const POINTARRAY *pa)
 }
 
 // returns a BOX2DFLOAT4 that encloses b1 and b2
-// combine_boxes(NULL,A) --> A
-// combine_boxes(A,NULL) --> A
-// combine_boxes(A,B) --> A union B
+// box2d_union(NULL,A) --> A
+// box2d_union(A,NULL) --> A
+// box2d_union(A,B) --> A union B
 BOX2DFLOAT4 *
 box2d_union(BOX2DFLOAT4 *b1, BOX2DFLOAT4 *b2)
 {
@@ -2476,12 +2385,12 @@ box2d_union(BOX2DFLOAT4 *b1, BOX2DFLOAT4 *b2)
 
 	if  (b1 == NULL)
 	{
-		memcpy(result, b2, sizeof(BOX3D));
+		memcpy(result, b2, sizeof(BOX2DFLOAT4));
 		return result;
 	}
 	if (b2 == NULL)
 	{
-		memcpy(result, b1, sizeof(BOX3D));
+		memcpy(result, b1, sizeof(BOX2DFLOAT4));
 		return result;
 	}
 
@@ -2500,10 +2409,10 @@ box2d_union(BOX2DFLOAT4 *b1, BOX2DFLOAT4 *b2)
 	return result;
 }
 
-// combine_boxes(NULL,A) --> A
-// combine_boxes(A,NULL) --> A
-// combine_boxes(A,B) --> A union B
-// ubox may be one of the two args...
+/*
+ * ubox may be one of the two args...
+ * return 1 if done something to ubox, 0 otherwise.
+ */
 int
 box2d_union_p(BOX2DFLOAT4 *b1, BOX2DFLOAT4 *b2, BOX2DFLOAT4 *ubox)
 {
@@ -2514,12 +2423,12 @@ box2d_union_p(BOX2DFLOAT4 *b1, BOX2DFLOAT4 *b2, BOX2DFLOAT4 *ubox)
 
 	if  (b1 == NULL)
 	{
-		memcpy(ubox, b2, sizeof(BOX3D));
+		memcpy(ubox, b2, sizeof(BOX2DFLOAT4));
 		return 1;
 	}
 	if (b2 == NULL)
 	{
-		memcpy(ubox, b1, sizeof(BOX3D));
+		memcpy(ubox, b1, sizeof(BOX2DFLOAT4));
 		return 1;
 	}
 

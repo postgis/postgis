@@ -245,27 +245,15 @@ lwpoly_serialize_buf(LWPOLY *poly, uchar *buf, size_t *retsize)
 
 // find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
 BOX3D *
-lwpoly_findbbox(LWPOLY *poly)
+lwpoly_compute_box3d(LWPOLY *poly)
 {
-//	int t;
-
 	BOX3D *result;
-//	BOX3D *abox,*abox2;
 
-	POINTARRAY *pa = poly->rings[0];   // just need to check outer ring -- interior rings are inside
-	result  = pointArray_bbox(pa);
+	// just need to check outer ring -- interior rings are inside
+	POINTARRAY *pa = poly->rings[0];  
+	result  = ptarray_compute_box3d(pa);
 
-//	for (t=1;t<poly->nrings;t++)
-	//{
-//		pa = poly->rings[t];
-//		abox  = pointArray_bbox(pa);
-//		abox2 = result;
-//		result = combine_boxes( abox, abox2);
-//		lwfree(abox);
-//		lwfree(abox2);
-  //  }
-
-    return result;
+	return result;
 }
 
 //find length of this serialized polygon
@@ -402,16 +390,16 @@ void printLWPOLY(LWPOLY *poly)
 }
 
 int
-lwpoly_compute_bbox_p(LWPOLY *poly, BOX2DFLOAT4 *box)
+lwpoly_compute_box2d_p(LWPOLY *poly, BOX2DFLOAT4 *box)
 {
 	BOX2DFLOAT4 boxbuf;
 	uint32 i;
 
 	if ( ! poly->nrings ) return 0;
-	if ( ! ptarray_compute_bbox_p(poly->rings[0], box) ) return 0;
+	if ( ! ptarray_compute_box2d_p(poly->rings[0], box) ) return 0;
 	for (i=1; i<poly->nrings; i++)
 	{
-		if ( ! ptarray_compute_bbox_p(poly->rings[0], &boxbuf) )
+		if ( ! ptarray_compute_box2d_p(poly->rings[0], &boxbuf) )
 			return 0;
 		if ( ! box2d_union_p(box, &boxbuf, box) )
 			return 0;

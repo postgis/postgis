@@ -467,7 +467,7 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 	ring = poly->rings[wanted_index];
 
 	// COMPUTE_BBOX==TAINTING
-	if ( poly->bbox ) bbox = ptarray_compute_bbox(ring);
+	if ( poly->bbox ) bbox = ptarray_compute_box2d(ring);
 
 	// This is a LWLINE constructed by interior ring POINTARRAY
 	line = lwline_construct(poly->SRID, bbox, ring);

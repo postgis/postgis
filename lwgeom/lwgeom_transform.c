@@ -329,11 +329,11 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	{
 		lwgeom = lwgeom_deserialize(srl);
 		lwgeom_dropBBOX(lwgeom);
-		lwgeom->bbox = lwgeom_compute_bbox(lwgeom);
+		lwgeom->bbox = lwgeom_compute_box2d(lwgeom);
 		lwgeom->SRID = result_srid;
-		lwfree(lwgeom->bbox); 
-		lwgeom_release(lwgeom);
 		result = pglwgeom_serialize(lwgeom);
+		lwgeom_release(lwgeom);
+		if ( lwgeom->bbox ) lwfree(lwgeom->bbox); 
 	}
 	else
 	{

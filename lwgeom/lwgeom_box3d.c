@@ -217,14 +217,20 @@ Datum BOX3D_expand(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-//convert a PG_LWGEOM to BOX3D
+/*
+ * convert a PG_LWGEOM to BOX3D
+ *
+ * NOTE: the bounding box is *always* recomputed as the cache
+ * is a box2d, not a box3d...
+ *
+ */
 PG_FUNCTION_INFO_V1(LWGEOM_to_BOX3D);
 Datum LWGEOM_to_BOX3D(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	BOX3D *result;
 
-	result = lw_geom_getBB(SERIALIZED_FORM(lwgeom));
+	result = compute_serialized_box3d(SERIALIZED_FORM(lwgeom));
 
 	PG_RETURN_POINTER(result);
 }
@@ -290,9 +296,12 @@ Datum BOX3D_combine(PG_FUNCTION_ARGS)
 
 	if (box3d_ptr == NULL)
 	{
-		lwgeom = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-		box = lw_geom_getBB(SERIALIZED_FORM(lwgeom));
-		if ( ! box ) PG_RETURN_NULL(); // must be the empty geom
+		lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+		box = compute_serialized_box3d(SERIALIZED_FORM(lwgeom));
+		if ( ! box ) {
+			PG_FREE_IF_COPY(lwgeom, 1);
+			PG_RETURN_NULL(); // must be the empty geom
+		}
 		memcpy(result, box, sizeof(BOX3D));
 		PG_RETURN_POINTER(result);
 	}
@@ -305,9 +314,10 @@ Datum BOX3D_combine(PG_FUNCTION_ARGS)
 	}
 
 	lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-	box = lw_geom_getBB(SERIALIZED_FORM(lwgeom));
+	box = compute_serialized_box3d(SERIALIZED_FORM(lwgeom));
 	if ( ! box ) // must be the empty geom
 	{
+		PG_FREE_IF_COPY(lwgeom, 1);
 		memcpy(result, (char *)PG_GETARG_DATUM(0), sizeof(BOX3D));
 		PG_RETURN_POINTER(result);
 	}

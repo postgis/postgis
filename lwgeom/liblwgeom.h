@@ -19,6 +19,13 @@ typedef unsigned int uint32;
 typedef int int32;
 #endif
 
+// this will change to NaN when I figure out how to
+// get NaN in a platform-independent way
+#define NO_VALUE 0.0
+#define NO_Z_VALUE NO_VALUE
+#define NO_M_VALUE NO_VALUE
+
+
 /* prototypes */
 void *default_allocator(size_t size);
 void *default_reallocator(void *mem, size_t size);
@@ -315,11 +322,14 @@ extern uchar *getPoint_internal(const POINTARRAY *pa, int n);
 //	 'points' points to.  No data conversion is done.
 extern POINTARRAY *pointArray_construct(uchar *points, char hasz, char hasm, uint32 npoints);
 
-//calculate the bounding box of a set of points
-// returns a 3d box
-// if pa is 2d, then box3d's zmin/zmax will be either 0 or NaN
-// dont call on an empty pa
-extern BOX3D *pointArray_bbox(const POINTARRAY *pa);
+/* 
+ * Calculate the (BOX3D) bounding box of a set of points.
+ * Returns an alloced BOX3D or NULL (for empty geom) in the first form.
+ * Write result in user-provided BOX3D in second form (return 0 if untouched).
+ * If pa is 2d, then box3d's zmin/zmax will be set to NO_Z_VALUE
+ */
+extern BOX3D *ptarray_compute_box3d(const POINTARRAY *pa);
+extern int ptarray_compute_box3d_p(const POINTARRAY *pa, BOX3D *out);
 
 //size of point represeneted in the POINTARRAY
 // 16 for 2d, 24 for 3d, 32 for 4d
@@ -415,7 +425,9 @@ extern PG_LWGEOM *PG_LWGEOM_construct(uchar *serialized, int SRID, int wantbbox)
 /*
  * Compute bbox of serialized geom
  */
-extern int compute_serialized_bbox_p(uchar *serialized_form, BOX2DFLOAT4 *box);
+extern int compute_serialized_box2d_p(uchar *serialized_form, BOX2DFLOAT4 *box);
+extern BOX3D *compute_serialized_box3d(uchar *serialized_form);
+extern int compute_serialized_box3d_p(uchar *serialized_form, BOX3D *box);
 
 
 /*
@@ -470,7 +482,7 @@ extern uchar *lwpoint_serialize(LWPOINT *point);
 extern void lwpoint_serialize_buf(LWPOINT *point, uchar *buf, size_t *size);
 
 // find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
-extern BOX3D *lwpoint_findbbox(LWPOINT *point);
+extern BOX3D *lwpoint_compute_box3d(LWPOINT *point);
 
 // convenience functions to hide the POINTARRAY
 extern int lwpoint_getPoint2d_p(const LWPOINT *point, POINT2D *out);
@@ -499,7 +511,7 @@ extern uchar *lwline_serialize(LWLINE *line);
 extern void lwline_serialize_buf(LWLINE *line, uchar *buf, size_t *size);
 
 // find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
-extern BOX3D *lwline_findbbox(LWLINE *line);
+extern BOX3D *lwline_compute_box3d(LWLINE *line);
 
 //--------------------------------------------------------
 
@@ -522,7 +534,7 @@ extern uchar *lwpoly_serialize(LWPOLY *poly);
 extern void lwpoly_serialize_buf(LWPOLY *poly, uchar *buf, size_t *size);
 
 // find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
-extern BOX3D *lwpoly_findbbox(LWPOLY *poly);
+extern BOX3D *lwpoly_compute_box3d(LWPOLY *poly);
 
 //--------------------------------------------------------
 
@@ -708,10 +720,6 @@ extern int pglwgeom_getSRID(PG_LWGEOM *lwgeom);
 extern int lwgeom_getsrid(uchar *serialized);
 extern PG_LWGEOM *pglwgeom_setSRID(PG_LWGEOM *lwgeom, int32 newSRID);
 
-//get bounding box of LWGEOM (automatically calls the sub-geometries bbox generators)
-extern BOX3D *lw_geom_getBB(uchar *serialized_form);
-extern BOX3D *lw_geom_getBB_inspected(LWGEOM_INSPECTED *inspected);
-
 
 //------------------------------------------------------
 // other stuff
@@ -726,8 +734,8 @@ extern int box3d_to_box2df_p(BOX3D *box, BOX2DFLOAT4 *res);
 extern BOX3D box2df_to_box3d(BOX2DFLOAT4 *box);
 extern void box2df_to_box3d_p(BOX2DFLOAT4 *box, BOX3D *box3d);
 
-extern BOX3D *combine_boxes(BOX3D *b1, BOX3D *b2);
-
+extern BOX3D *box3d_union(BOX3D *b1, BOX3D *b2);
+extern int box3d_union_p(BOX3D *b1, BOX3D *b2, BOX3D *ubox);
 
 // returns a real entity so it doesnt leak
 // if this has a pre-built BOX2d, then we use it,
@@ -951,19 +959,18 @@ extern void lwpoly_forceRHR(LWPOLY *poly);
 extern void lwgeom_forceRHR(LWGEOM *lwgeom);
 extern char *lwgeom_summary(LWGEOM *lwgeom, int offset);
 extern const char *lwgeom_typename(int type);
-extern int ptarray_compute_bbox_p(const POINTARRAY *pa, BOX2DFLOAT4 *result);
-extern BOX2DFLOAT4 *ptarray_compute_bbox(const POINTARRAY *pa);
-extern int lwpoint_compute_bbox_p(LWPOINT *point, BOX2DFLOAT4 *box);
-extern int lwline_compute_bbox_p(LWLINE *line, BOX2DFLOAT4 *box);
-extern int lwpoly_compute_bbox_p(LWPOLY *poly, BOX2DFLOAT4 *box);
-extern int lwcollection_compute_bbox_p(LWCOLLECTION *col, BOX2DFLOAT4 *box);
-extern BOX2DFLOAT4 *lwgeom_compute_bbox(LWGEOM *lwgeom);
-int lwgeom_compute_bbox_p(LWGEOM *lwgeom, BOX2DFLOAT4 *buf);
+extern int ptarray_compute_box2d_p(const POINTARRAY *pa, BOX2DFLOAT4 *result);
+extern BOX2DFLOAT4 *ptarray_compute_box2d(const POINTARRAY *pa);
+extern int lwpoint_compute_box2d_p(LWPOINT *point, BOX2DFLOAT4 *box);
+extern int lwline_compute_box2d_p(LWLINE *line, BOX2DFLOAT4 *box);
+extern int lwpoly_compute_box2d_p(LWPOLY *poly, BOX2DFLOAT4 *box);
+extern int lwcollection_compute_box2d_p(LWCOLLECTION *col, BOX2DFLOAT4 *box);
+extern BOX2DFLOAT4 *lwgeom_compute_box2d(LWGEOM *lwgeom);
 // return alloced memory
 extern BOX2DFLOAT4 *box2d_union(BOX2DFLOAT4 *b1, BOX2DFLOAT4 *b2);
 // args may overlap !
 extern int box2d_union_p(BOX2DFLOAT4 *b1, BOX2DFLOAT4 *b2, BOX2DFLOAT4 *ubox);
-extern int lwgeom_compute_bbox_p(LWGEOM *lwgeom, BOX2DFLOAT4 *box);
+extern int lwgeom_compute_box2d_p(LWGEOM *lwgeom, BOX2DFLOAT4 *box);
 
 // Is lwgeom1 geometrically equal to lwgeom2 ?
 char lwgeom_same(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2);

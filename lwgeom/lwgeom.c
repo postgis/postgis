@@ -168,21 +168,21 @@ lwgeom_reverse(LWGEOM *lwgeom)
 }
 
 int
-lwgeom_compute_bbox_p(LWGEOM *lwgeom, BOX2DFLOAT4 *buf)
+lwgeom_compute_box2d_p(LWGEOM *lwgeom, BOX2DFLOAT4 *buf)
 {
 	switch(TYPE_GETTYPE(lwgeom->type))
 	{
 		case POINTTYPE:
-			return lwpoint_compute_bbox_p((LWPOINT *)lwgeom, buf);
+			return lwpoint_compute_box2d_p((LWPOINT *)lwgeom, buf);
 		case LINETYPE:
-			return lwline_compute_bbox_p((LWLINE *)lwgeom, buf);
+			return lwline_compute_box2d_p((LWLINE *)lwgeom, buf);
 		case POLYGONTYPE:
-			return lwpoly_compute_bbox_p((LWPOLY *)lwgeom, buf);
+			return lwpoly_compute_box2d_p((LWPOLY *)lwgeom, buf);
 		case MULTIPOINTTYPE:
 		case MULTILINETYPE:
 		case MULTIPOLYGONTYPE:
 		case COLLECTIONTYPE:
-			return lwcollection_compute_bbox_p((LWCOLLECTION *)lwgeom, buf);
+			return lwcollection_compute_box2d_p((LWCOLLECTION *)lwgeom, buf);
 	}
 	return 0;
 }
@@ -190,11 +190,14 @@ lwgeom_compute_bbox_p(LWGEOM *lwgeom, BOX2DFLOAT4 *buf)
 //dont forget to lwfree() result
 
 BOX2DFLOAT4 *
-lwgeom_compute_bbox(LWGEOM *lwgeom)
+lwgeom_compute_box2d(LWGEOM *lwgeom)
 {
 	BOX2DFLOAT4 *result = lwalloc(sizeof(BOX2DFLOAT4));
-	if ( lwgeom_compute_bbox_p(lwgeom, result) ) return result;
-	else return NULL;
+	if ( lwgeom_compute_box2d_p(lwgeom, result) ) return result;
+	else  {
+		lwfree(result);
+		return NULL;
+	}
 }
 
 LWPOINT *
@@ -461,7 +464,7 @@ void
 lwgeom_addBBOX(LWGEOM *lwgeom)
 {
 	if ( lwgeom->bbox ) return;
-	lwgeom->bbox = lwgeom_compute_bbox(lwgeom);
+	lwgeom->bbox = lwgeom_compute_box2d(lwgeom);
 }
 
 void

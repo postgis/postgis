@@ -115,18 +115,19 @@ ptarray_reverse(POINTARRAY *pa)
 
 }
 
-// calculate the 2d bounding box of a set of points
-// write result to the provided BOX2DFLOAT4
-// Return 0 if bounding box is NULL (empty geom)
+/*
+ * calculate the 2d bounding box of a set of points
+ * write result to the provided BOX2DFLOAT4
+ * Return 0 if bounding box is NULL (empty geom)
+ */
 int
-ptarray_compute_bbox_p(const POINTARRAY *pa, BOX2DFLOAT4 *result)
+ptarray_compute_box2d_p(const POINTARRAY *pa, BOX2DFLOAT4 *result)
 {
 	int t;
 	POINT2D pt;
 
 	if (pa->npoints == 0) return 0;
 
-	//pt = (POINT2D *)getPoint(pa, 0);
 	getPoint2d_p(pa, 0, &pt);
 
 	result->xmin = pt.x;
@@ -134,9 +135,8 @@ ptarray_compute_bbox_p(const POINTARRAY *pa, BOX2DFLOAT4 *result)
 	result->ymin = pt.y;
 	result->ymax = pt.y;
 
-	for (t=1;t<pa->npoints;t++)
+	for (t=1; t<pa->npoints; t++)
 	{
-		//pt = (POINT2D *)getPoint(pa, t);
 		getPoint2d_p(pa, t, &pt);
 		if (pt.x < result->xmin) result->xmin = pt.x;
 		if (pt.y < result->ymin) result->ymin = pt.y;
@@ -150,7 +150,7 @@ ptarray_compute_bbox_p(const POINTARRAY *pa, BOX2DFLOAT4 *result)
 // calculate the 2d bounding box of a set of points
 // return allocated BOX2DFLOAT4 or NULL (for empty array)
 BOX2DFLOAT4 *
-ptarray_compute_bbox(const POINTARRAY *pa)
+ptarray_compute_box2d(const POINTARRAY *pa)
 {
 	int t;
 	POINT2D pt;
@@ -350,4 +350,132 @@ ptarray_isclosed2d(const POINTARRAY *in)
 	//p2 = (POINT2D *)getPoint(in, in->npoints-1);
 	//if ( p1->x != p2->x || p1->y != p2->y ) return 0;
 	//else return 1;
+}
+
+/*
+ * calculate the BOX3D bounding box of a set of points
+ * returns a lwalloced BOX3D, or NULL on empty array.
+ * zmin/zmax values are set to NO_Z_VALUE if not available.
+ */
+BOX3D *
+ptarray_compute_box3d(const POINTARRAY *pa)
+{
+	int t;
+	BOX3D *result;
+	POINT3DZ pt;
+
+#ifdef PGIS_DEBUG
+	lwnotice("ptarray_compute_box3d call (array has %d points)", pa->npoints);
+#endif
+	if (pa->npoints == 0)
+	{
+#ifdef PGIS_DEBUG
+		lwnotice("ptarray_compute_box3d returning NULL");
+#endif
+		return NULL;
+	}
+
+	result = lwalloc(sizeof(BOX3D));
+
+	getPoint3dz_p(pa, 0, &pt);
+
+#ifdef PGIS_DEBUG
+	lwnotice("ptarray_compute_box3d: got point 0");
+#endif
+
+	result->xmin = pt.x;
+	result->xmax = pt.x;
+	result->ymin = pt.y;
+	result->ymax = pt.y;
+
+	if ( TYPE_HASZ(pa->dims) ) {
+		result->zmin = pt.z;
+		result->zmax = pt.z;
+	} else {
+		result->zmin = NO_Z_VALUE;
+		result->zmax = NO_Z_VALUE;
+	}
+
+#ifdef PGIS_DEBUG
+	lwnotice("ptarray_compute_box3d: scanning other %d points", pa->npoints);
+#endif
+	for (t=1; t<pa->npoints; t++)
+	{
+		getPoint3dz_p(pa,t,&pt);
+		if (pt.x < result->xmin) result->xmin = pt.x;
+		if (pt.y < result->ymin) result->ymin = pt.y;
+		if (pt.x > result->xmax) result->xmax = pt.x;
+		if (pt.y > result->ymax) result->ymax = pt.y;
+
+		if ( TYPE_HASZ(pa->dims) ) {
+			if (pt.z > result->zmax) result->zmax = pt.z;
+			if (pt.z < result->zmin) result->zmin = pt.z;
+		}
+	}
+
+#ifdef PGIS_DEBUG
+	lwnotice("ptarray_compute_box3d returning box");
+#endif
+
+	return result;
+}
+
+/*
+ * calculate the BOX3D bounding box of a set of points
+ * zmin/zmax values are set to NO_Z_VALUE if not available.
+ * write result to the provided BOX3D
+ * Return 0 if bounding box is NULL (empty geom)
+ */
+int
+ptarray_compute_box3d_p(const POINTARRAY *pa, BOX3D *result)
+{
+	int t;
+	POINT3DZ pt;
+
+#ifdef PGIS_DEBUG
+	lwnotice("ptarray_compute_box3d call (array has %d points)", pa->npoints);
+#endif
+	if (pa->npoints == 0) return 0;
+
+	getPoint3dz_p(pa, 0, &pt);
+
+#ifdef PGIS_DEBUG
+	lwnotice("ptarray_compute_box3d: got point 0");
+#endif
+
+	result->xmin = pt.x;
+	result->xmax = pt.x;
+	result->ymin = pt.y;
+	result->ymax = pt.y;
+
+	if ( TYPE_HASZ(pa->dims) ) {
+		result->zmin = pt.z;
+		result->zmax = pt.z;
+	} else {
+		result->zmin = NO_Z_VALUE;
+		result->zmax = NO_Z_VALUE;
+	}
+
+#ifdef PGIS_DEBUG
+	lwnotice("ptarray_compute_box3d: scanning other %d points", pa->npoints);
+#endif
+	for (t=1; t<pa->npoints; t++)
+	{
+		getPoint3dz_p(pa,t,&pt);
+		if (pt.x < result->xmin) result->xmin = pt.x;
+		if (pt.y < result->ymin) result->ymin = pt.y;
+		if (pt.x > result->xmax) result->xmax = pt.x;
+		if (pt.y > result->ymax) result->ymax = pt.y;
+
+		if ( TYPE_HASZ(pa->dims) ) {
+			if (pt.z > result->zmax) result->zmax = pt.z;
+			if (pt.z < result->zmin) result->zmin = pt.z;
+		}
+	}
+
+#ifdef PGIS_DEBUG
+	lwnotice("ptarray_compute_box3d returning box");
+#endif
+
+	return 1;
 }

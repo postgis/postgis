@@ -92,7 +92,7 @@ pg_notice(const char *fmt, ...)
 }
 
 void
-init_pg_func()
+init_pg_func(void)
 {
 	lwalloc_var = pg_alloc;
 	lwrealloc_var = pg_realloc;
@@ -129,7 +129,7 @@ pglwgeom_serialize(LWGEOM *in)
 }
 
 Oid
-getGeometryOID()
+getGeometryOID(void)
 {
 	static Oid OID = InvalidOid;
 	int SPIcode;
