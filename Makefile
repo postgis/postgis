@@ -4,7 +4,7 @@
 #
 #-----------------------------------------------------
 
-all: liblwgeom loaderdumper
+all: liblwgeom loaderdumper utils
 
 install: all liblwgeom-install loaderdumper-install
 
@@ -49,3 +49,8 @@ loaderdumper-install:
 
 loaderdumper-uninstall:
 	$(MAKE) -C loader uninstall
+
+utils:
+	$(MAKE) -C utils
+
+.PHONY: utils
