@@ -90,7 +90,7 @@ driver in your classpath.
 The PostGIS extension must be registered within the JDBC driver.
 There are three ways to do this:
 
-- If you use pgjdbc 8.0, the org/postgresql/postgresql.properties
+- If you use pgjdbc 8.0, the org/postgresql/driverconfig.properties
   file contained in the postgis.jar autoregisters the PostGIS
   extension for the PostGIS data types (geometry, box2d, box3d)
   within the pgjdbc driver.
@@ -138,7 +138,7 @@ third approach if you have several pgjdbc extensions that
 autoregister for the same PostGIS types, as the driver cannot guess
 which extension it should actually use on which connection. The
 current pgjdbc implementation simply parses all
-org/postgresql/postgresql.properties the classloader can find in his
+org/postgresql/driverconfig.properties the classloader can find in his
 classpath, and later definitions override earlier ones.
 
 
@@ -175,6 +175,10 @@ PostGIS server to connect to.
   PostGIS server side problem as the server fails to parse some
   OpenGIS compliant WKT representations, and it is unlikely to be
   fixed as users should migrate to PostGIS 1.0.
+  
+  The Autoregister Test needs a pgjdbc version 8.0 or newer, and will
+  refuse to work against older versions. It also will skip the box2d
+  test on PostGIS 0.X releases which lack this datatype.
 
   If you get different failures in the online tests, check whether
   your really fulfil the prerequisites above. If yes, please contact

@@ -39,6 +39,7 @@ PGUSER?=psql
 PGPASS?=guess
 
 SRC= $(SRCDIR)/examples/Test.java \
+		$(SRCDIR)/examples/TestAutoregister.java \
 		$(SRCDIR)/examples/TestBoxes.java \
 		$(SRCDIR)/examples/TestParser.java \
 		$(SRCDIR)/examples/TestServer.java \
@@ -95,9 +96,12 @@ boxtestoffline: compile
 boxtest:  compile
 	$(JAVA) -classpath "$(BUILD):$(CP)" $(EXAMPLES)/TestBoxes jdbc:postgresql_postGIS://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
 
+autoregistertest:  compile
+	$(JAVA) -classpath "$(BUILD):$(CP)" $(EXAMPLES)/TestAutoregister jdbc:postgresql://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
+
 offlinetests: boxtestoffline ptestoffline test
 
-onlinetests: boxtest ptest jtest
+onlinetests: boxtest ptest jtest autoregistertest
 
 # boxtest and ptest include boxtestoffline and ptestoffline, so we only need
 # to run test in addition to the onlinetests
