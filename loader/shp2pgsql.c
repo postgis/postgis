@@ -12,6 +12,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.44  2003/12/30 13:31:53  strk
+ * made shp2pgsql looser about numeric precisions
+ *
  * Revision 1.43  2003/12/30 12:37:46  strk
  * Fixed segfault bug reported by Randy George, removed explicit sequence drop
  *
@@ -110,7 +113,10 @@ int	dump_format = 0; //0=insert statements, 1 = dump
 int	quoteidentifiers = 0;
 char    opt;
 char    *col_names;
-DBFFieldType *types;
+
+DBFFieldType *types;	/* Fields type, width and precision */
+int 	*widths;
+int 	*precisions;
 
 int Insert_attributes(DBFHandle hDBFHandle, int row);
 char	*make_good_string(char *str);
@@ -691,8 +697,10 @@ int main (int ARGC, char **ARGV){
 	 */
 	num_fields = DBFGetFieldCount( hDBFHandle );
 	num_records = DBFGetRecordCount(hDBFHandle);
-	names = malloc((num_fields + 1)*sizeof(char*));
-	types = (DBFFieldType *)malloc((num_fields + 1)*sizeof(char*));
+	names = malloc(num_fields*sizeof(char*));
+	types = (DBFFieldType *)malloc(num_fields*sizeof(char*));
+	widths = malloc(num_fields*sizeof(int));
+	precisions = malloc(num_fields*sizeof(int));
 	col_names = malloc(num_fields * sizeof(char) * 32);
 	if(opt != 'a'){
 		strcpy(col_names, "(gid," );
@@ -702,8 +710,12 @@ int main (int ARGC, char **ARGV){
 
 	for(j=0;j<num_fields;j++){
 		type = DBFGetFieldInfo(hDBFHandle, j, name, &field_width, &field_precision); 
-		names[j] = malloc ( strlen(name)+3);
+
+//fprintf(stderr, "Field %d (%s) width/decimals: %d/%d\n", j, name, field_width, field_precision);
+		names[j] = malloc ( strlen(name)+3 );
 		types[j] = type;
+		widths[j] = field_width;
+		precisions[j] = field_precision;
 		strcpy(names[j], name);
 		for(z=0; z < j ; z++){
 			if(strcmp(names[z],name)==0){
@@ -755,6 +767,9 @@ int main (int ARGC, char **ARGV){
 		for(j=0;j<num_fields;j++)
 		{
 			type = types[j];
+			field_width = widths[j];
+			field_precision = precisions[j];
+
 
 			if ( quoteidentifiers ) printf(", \"%s\" ", names[j]);
 			else printf(", %s ", names[j]);
@@ -779,7 +794,8 @@ int main (int ARGC, char **ARGV){
 					}
 				}else if(type == FTDouble){
 					if( field_width > 18 ){
-						printf ("numeric(%d,%d)",field_width, field_precision);
+						//printf ("numeric(%d,%d)",field_width, field_precision);
+						printf ("numeric");
 					}else{
 						printf ("float8");
 					}
