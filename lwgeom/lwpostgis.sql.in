@@ -2199,7 +2199,7 @@ BEGIN
 		return ''fail'';
 	END IF;
 
-	IF ( (new_dim >3) or (new_dim <0) ) THEN
+	IF ( (new_dim >4) or (new_dim <0) ) THEN
 		RAISE EXCEPTION ''invalid dimension'';
 		return ''fail'';
 	END IF;
