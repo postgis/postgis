@@ -471,27 +471,6 @@ SELECT AddGeometryColumn('dbname','gtest','geom',-1,'LINESTRING',2);</programlis
 			</qandaentry> 
 			<qandaentry> 
 				<question> 
-					<para>How can I get my search to return things that really are inside
-					  the search box, not just overlapping bounding boxes?
-					</para> 
-				</question> 
-				<answer> 
-					<para>The '&amp;&amp;' operator only checks bounding box overlaps,
-					  but you can use the "truly_inside()" function to get only those
-					  features which <emphasis>actually</emphasis> intersect the search
-					  box. For example, by combining the use of "&amp;&amp;" for a fast
-					  index search and truly_inside() for an accurate final check of the
-					  result set, you can get only those features inside the search box
-					  (note that this <emphasis>only</emphasis> works for search boxes
-					  right now, not any arbitrary geometry):
-				    </para> 
-					<programlisting>SELECT [COLUMN1],[COLUMN2],AsText([GEOMETRYCOLUMN])
-  	FROM [TABLE] WHERE [GEOM_COLUMN] &amp;&amp; [BOX3d] 
-   AND	truly_inside([GEOM_COLUMN],[BOX3d]);</programlisting> 
-				</answer> 
-			</qandaentry> 
-			<qandaentry> 
-				<question> 
 					<para>Why aren't PostgreSQL R-Tree indexes supported?</para> 
 				</question> 
 				<answer> 
@@ -2651,13 +2630,6 @@ FROM geometry_table;</literallayout>
 					<listitem> 
 						<para>Translates the geometry to a new location using the numeric
 						  parameters as offsets. Ie: translate(geom,X,Y,Z).</para> 
-					</listitem> 
-				</varlistentry> 
-				<varlistentry> 
-					<term>truly_inside(geometryA,geometryB)</term> 
-					<listitem> 
-						<para>Returns true if any part of B is within the bounding box of
-						  A.</para> 
 					</listitem> 
 				</varlistentry> 
 				<varlistentry> 
