@@ -119,14 +119,12 @@ double read_double(byte** geom){
 	else{
 		//double ret = *((double*)*geom);
 		double ret;
-
-		memcpy(&ret, *geom, 8);
-
+ 		memcpy(&ret, *geom, 8);
 		(*geom)+=8;
 		return ret;
 	}
 }
-
+           
 typedef byte* (*outfunc)(byte*,int);
 
 byte* output_point(byte* geom,int supress){
@@ -169,6 +167,24 @@ byte* output_collection_2(byte* geom,int suppress){
 	return output_collection(geom,output_point,suppress);
 }
 
+byte* output_wkt(byte* geom, int supress);
+
+/* special case for multipoint to supress extra brackets */
+byte* output_multipoint(byte* geom,int suppress){
+	unsigned type = *geom & 0x0f;
+	
+	if ( type  == POINTTYPE )
+		return output_point(++geom,suppress);
+	else if ( type == POINTTYPEI ){
+		lwgi++;
+		geom=output_point(++geom,0);
+		lwgi--;
+		return geom;
+	}
+	
+	return output_wkt(geom,suppress);
+}
+
 byte* output_wkt(byte* geom, int supress){
 
 	unsigned type=*geom++;
@@ -198,7 +214,7 @@ byte* output_wkt(byte* geom, int supress){
 			break;
 		case MULTIPOINTTYPE:
 			if ( ! supress) write_str("MULTIPOINT");
-			geom = output_collection(geom,output_wkt,1);
+			geom = output_collection(geom,output_multipoint,1);
 			break;
 		case MULTILINETYPE:
 			if ( ! supress) write_str("MULTILINESTRING");
