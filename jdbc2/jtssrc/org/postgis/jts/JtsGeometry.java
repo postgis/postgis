@@ -39,22 +39,26 @@ import java.sql.SQLException;
  */
 
 public class JtsGeometry extends PGobject {
+    /* JDK 1.5 Serialization */
+    private static final long serialVersionUID = 100;
 
     Geometry geom;
 
     final static WKTReader reader = new WKTReader();
     final static JtsBinaryParser bp = new JtsBinaryParser();
 
-
+    /** Constructor called by JDBC drivers */
     public JtsGeometry() {
-        //Constructor called by JDBC drivers
+        setType("geometry");
     }
 
     public JtsGeometry(Geometry geom) {
+        this();
         this.geom = geom;
     }
 
     public JtsGeometry(String value) throws SQLException {
+        this();
         setValue(value);
     }
 
@@ -70,7 +74,7 @@ public class JtsGeometry extends PGobject {
             } else {
                 Geometry result;
                 int srid = -1;
-                //break up geometry into srid and wkt
+                // break up geometry into srid and wkt
                 if (value.startsWith("SRID=")) {
                     String[] temp = value.split(";");
                     value = temp[1].trim();
