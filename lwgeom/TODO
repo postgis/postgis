@@ -5,6 +5,10 @@
  
 - Make GEOS2POSTGIS() avoid flatting
 
+- F linemerge(linestring, linestring)
+
+- A linemerge(linestring, linestring)
+
 - make IsValid() return GEOS invalidity message if any (as a NOTICE probably)
 
 - AsBinary(geometry, XDR|NDR)
