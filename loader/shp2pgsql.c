@@ -68,6 +68,7 @@ int	istypeM;
 int	pgdims;
 unsigned int wkbtype;
 char  	*shp_file;
+int	hwgeom = 0; // old (hwgeom) mode
 #ifdef USE_ICONV
 char	*encoding=NULL;
 #endif
@@ -93,9 +94,12 @@ void *safe_malloc(size_t size);
 void create_table(void);
 void usage(char *me, int exitcode);
 void InsertPoint(void);
+void InsertPointWKT(void);
 void InsertMultiPoint(void);
 void InsertPolygon(void);
+void InsertPolygonWKT(void);
 void InsertLineString(int id);
+void InsertLineStringWKT(int id);
 int parse_cmdline(int ARGC, char **ARGV);
 void SetPgType(void);
 char *dump_ring(Ring *ring);
@@ -608,25 +612,29 @@ main (int ARGC, char **ARGV)
 			case SHPT_POLYGON:
 			case SHPT_POLYGONM:
 			case SHPT_POLYGONZ:
-				InsertPolygon();
+				if ( hwgeom ) InsertPolygonWKT();
+				else InsertPolygon();
 				break;
 
 			case SHPT_POINT:
 			case SHPT_POINTM:
 			case SHPT_POINTZ:
-				InsertPoint();
+				if ( hwgeom ) InsertPointWKT();
+				else InsertPoint();
 				break;
 
 			case SHPT_MULTIPOINT:
 			case SHPT_MULTIPOINTM:
 			case SHPT_MULTIPOINTZ:
-				InsertMultiPoint();
+				if ( hwgeom ) InsertPointWKT();
+				else InsertMultiPoint();
 				break;
 
 			case SHPT_ARC:
 			case SHPT_ARCM:
 			case SHPT_ARCZ:
-				InsertLineString(j);
+				if ( hwgeom ) InsertLineStringWKT(j);
+				else InsertLineString(j);
 				break;
 
 			default:
@@ -792,6 +800,8 @@ usage(char *me, int exitcode)
 	fprintf(stderr, "  -k  Keep postgresql identifiers case.\n");
 	fprintf(stderr, "\n");
 	fprintf(stderr, "  -i  Use int4 type for all integer dbf fields.\n");
+	fprintf(stderr, "\n");
+	fprintf(stderr, "  -w  Use wkt format (for postgis-0.x support - drops M - drifts coordinates).\n");
 #ifdef USE_ICONV
 	fprintf(stderr, "\n");
 	fprintf(stderr, "  -W <ENCODING_NAME> Specify the character encoding of Shape's\n");
@@ -855,6 +865,59 @@ InsertLineString(int id)
 
 	if (dump_format) printf("\n");
 	else printf("');\n");
+}
+
+void
+InsertLineStringWKT(int id)
+{
+	int pi; // part index
+
+	/* Invalid (MULTI)Linestring */
+	if ( obj->nVertices < 2 )
+	{
+		fprintf(stderr,
+			"MULTILINESTRING %d as %d vertices, set to NULL\n",
+			id, obj->nVertices);
+		if (dump_format) printf("\\N\n");
+		else printf("NULL);\n");
+
+		SHPDestroyObject(obj);
+		return;
+	}
+
+	if (dump_format) printf("SRID=%s;MULTILINESTRING(",sr_id);
+	else printf("GeometryFromText('MULTILINESTRING (");
+
+	for (pi=0; pi<obj->nParts; pi++)
+	{
+		int vi; // vertex index
+		int vs; // start vertex
+		int ve; // end vertex
+
+		if (pi) printf(",");
+		printf("(");
+
+		// Set start and end vertexes
+		if ( pi==obj->nParts-1 ) ve = obj->nVertices;
+		else ve = obj->panPartStart[pi+1];
+		vs = obj->panPartStart[pi];
+
+		for ( vi=vs; vi<ve; vi++)
+		{
+			if ( vi ) printf(",");
+			printf("%.15g %.15g",
+				obj->padfX[vi],
+				obj->padfY[vi]);
+			if ( wkbtype & WKBZOFFSET )
+				printf(" %.15g", obj->padfZ[vi]);
+		}
+
+		printf(")");
+				
+	}
+
+	if (dump_format) printf(")\n");
+	else printf(")',%s) );\n",sr_id);
 }
 
 //This function basically deals with the polygon case.
@@ -1053,6 +1116,194 @@ InsertPolygon(void)
 }
 
 void
+InsertPolygonWKT(void)
+{
+	Ring **Outer;    // Pointers to Outer rings
+	int out_index=0; // Count of Outer rings
+	Ring **Inner;    // Pointers to Inner rings
+	int in_index=0;  // Count of Inner rings
+	int pi; // part index
+
+#ifdef DEBUG
+	static int call = -1;
+	call++;
+
+	fprintf(stderr, "InsertPolygon[%d]: allocated space for %d rings\n",
+		call, obj->nParts);
+#endif
+
+	// Allocate initial memory
+	Outer = (Ring**)malloc(sizeof(Ring*)*obj->nParts);
+	Inner = (Ring**)malloc(sizeof(Ring*)*obj->nParts);
+
+	// Iterate over rings dividing in Outers and Inners
+	for (pi=0; pi<obj->nParts; pi++)
+	{
+		int vi; // vertex index
+		int vs; // start index
+		int ve; // end index
+		int nv; // number of vertex
+		double area = 0.0;
+		Ring *ring;
+
+		// Set start and end vertexes
+		if ( pi==obj->nParts-1 ) ve = obj->nVertices;
+		else ve = obj->panPartStart[pi+1];
+		vs = obj->panPartStart[pi];
+
+		// Compute number of vertexes
+		nv = ve-vs;
+
+		// Allocate memory for a ring
+		ring = (Ring*)malloc(sizeof(Ring));
+		ring->list = (Point*)malloc(sizeof(Point)*nv);
+		ring->n = nv;
+		ring->next = NULL;
+		ring->linked = 0;
+
+		// Iterate over ring vertexes
+		for ( vi=vs; vi<ve; vi++)
+		{
+			int vn = vi+1; // next vertex for area
+			if ( vn==ve ) vn = vs;
+
+			ring->list[vi-vs].x = obj->padfX[vi];
+			ring->list[vi-vs].y = obj->padfY[vi];
+			ring->list[vi-vs].z = obj->padfZ[vi];
+			ring->list[vi-vs].m = obj->padfM[vi];
+
+			area += (obj->padfX[vi] * obj->padfY[vn]) -
+				(obj->padfY[vi] * obj->padfX[vn]); 
+		}
+
+		// Close the ring with first vertex 
+		//ring->list[vi].x = obj->padfX[vs];
+		//ring->list[vi].y = obj->padfY[vs];
+		//ring->list[vi].z = obj->padfZ[vs];
+		//ring->list[vi].m = obj->padfM[vs];
+
+		// Clockwise (or single-part). It's an Outer Ring !
+		if(area < 0.0 || obj->nParts ==1) {
+			Outer[out_index] = ring;
+			out_index++;
+		}
+
+		// Counterclockwise. It's an Inner Ring !
+		else {
+			Inner[in_index] = ring;
+			in_index++;
+		}
+	}
+
+#ifdef DEBUG
+	fprintf(stderr, "InsertPolygon[%d]: found %d Outer, %d Inners\n",
+		call, out_index, in_index);
+#endif
+
+	// Put the inner rings into the list of the outer rings
+	// of which they are within
+	for(pi=0; pi<in_index; pi++)
+	{
+		Point pt,pt2;
+		int i;
+		Ring *inner=Inner[pi], *outer=NULL;
+
+		pt.x = inner->list[0].x;
+		pt.y = inner->list[0].y;
+
+		pt2.x = inner->list[1].x;
+		pt2.y = inner->list[1].y;
+
+		for(i=0; i<out_index; i++)
+		{
+			int in;
+
+			in = PIP(pt, Outer[i]->list, Outer[i]->n);
+			if( in || PIP(pt2, Outer[i]->list, Outer[i]->n) )
+			{
+				outer = Outer[i];
+				break;
+			}
+			//fprintf(stderr, "!PIP %s\nOUTE %s\n", dump_ring(inner), dump_ring(Outer[i]));
+		}
+
+		if ( outer )
+		{
+			outer->linked++;
+			while(outer->next) outer = outer->next;
+			outer->next = inner;
+		}
+		else
+		{
+			// The ring wasn't within any outer rings,
+			// assume it is a new outer ring.
+#ifdef DEBUG
+			fprintf(stderr,
+				"InsertPolygon[%d]: hole %d is orphan\n",
+				call, pi);
+#endif
+			Outer[out_index] = inner;
+			out_index++;
+		}
+	}
+
+	if (dump_format) printf("SRID=%s;MULTIPOLYGON(",sr_id );
+	else printf("GeometryFromText('MULTIPOLYGON(");
+
+	// Write the coordinates
+	for(pi=0; pi<out_index; pi++)
+	{
+		Ring *poly;
+
+		poly = Outer[pi];
+
+		if ( pi ) printf(",");
+		printf("(");
+
+		while(poly)
+		{
+			int vi; // vertex index
+
+			printf("(");
+			for(vi=0; vi<poly->n; vi++)
+			{
+				if ( vi ) printf(",");
+				printf("%.15g %.15g",
+					poly->list[vi].x,
+					poly->list[vi].y);
+				if ( wkbtype & WKBZOFFSET )
+					printf(" %.15g", poly->list[vi].z);
+			}
+			printf(")");
+
+			poly = poly->next;
+			if ( poly ) printf(",");
+		}
+
+		printf(")");
+
+	}
+
+	if (dump_format) printf(")\n");
+	else printf(")',%s) );\n",sr_id);
+
+	// Release all memory
+	for(pi=0; pi<out_index; pi++)
+	{
+		Ring *Poly, *temp;
+		Poly = Outer[pi];
+		while(Poly != NULL){
+			temp = Poly;
+			Poly = Poly->next;
+			free(temp->list);
+			free(temp);
+		}
+	}
+	free(Outer);
+	free(Inner);
+}
+
+void
 InsertPoint(void)
 {
 	if (!dump_format) printf("'");
@@ -1067,6 +1318,23 @@ InsertPoint(void)
 
 	if (dump_format) printf("\n");
 	else printf("');\n");
+}
+
+void
+InsertPointWKT(void)
+{
+	unsigned int u;
+	if (dump_format) printf("SRID=%s;POINT(",sr_id);
+	else printf("GeometryFromText('POINT (");
+
+	for (u=0;u<obj->nVertices; u++){
+		if (u>0) printf(",");
+		printf("%.15g %.15g",obj->padfX[u],obj->padfY[u]);
+		if ( wkbtype & WKBZOFFSET ) printf(" %.15g", obj->padfZ[u]);
+	}
+	if (dump_format) printf(")\n");
+	else printf(")',%s) );\n",sr_id);
+
 }
 
 void
@@ -1104,7 +1372,7 @@ parse_cmdline(int ARGC, char **ARGV)
 	int curindex=0;
 	char  *ptr;
 
-	while ((c = getopt(ARGC, ARGV, "kcdaDs:g:iW:")) != EOF){
+	while ((c = getopt(ARGC, ARGV, "kcdaDs:g:iW:w")) != EOF){
                switch (c) {
                case 'c':
                     if (opt == ' ')
@@ -1138,6 +1406,9 @@ parse_cmdline(int ARGC, char **ARGV)
                     break;
                case 'i':
                     forceint4 = 1;
+                    break;
+               case 'w':
+                    hwgeom = 1;
                     break;
 #ifdef USE_ICONV
 		case 'W':
@@ -1385,6 +1656,9 @@ utf8 (const char *fromcode, char *inputbuf)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.84  2005/04/04 20:51:26  strk
+ * Added -w flag to output old (WKT/HWGEOM) sql.
+ *
  * Revision 1.83  2005/03/15 12:24:40  strk
  * hole-in-ring detector made more readable
  *
