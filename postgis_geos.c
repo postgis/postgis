@@ -10,6 +10,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.35  2004/07/27 17:49:59  strk
+ * Added short-circuit test for the within function.
+ *
  * Revision 1.34  2004/07/22 16:58:08  strk
  * Updated to reflect geos version string split.
  *
@@ -952,19 +955,26 @@ Datum contains(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(within);
 Datum within(PG_FUNCTION_ARGS)
 {
-	GEOMETRY		*geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	GEOMETRY		*geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-
-
+	GEOMETRY *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GEOMETRY *geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	Geometry *g1,*g2;
 	bool result;
 
-	errorIfGeometryCollection(geom1,geom2);
-	initGEOS(MAXIMUM_ALIGNOF);
 
+	/*
+	 * short-circuit: if g1 bounding box is not completely inside
+	 * g2 bounding box we can prematurely return FALSE
+	 */
+	if ( geom1->bvol.LLB.x < geom2->bvol.LLB.x ) PG_RETURN_BOOL(FALSE);
+	if ( geom1->bvol.URT.x > geom2->bvol.URT.x ) PG_RETURN_BOOL(FALSE);
+	if ( geom1->bvol.LLB.y < geom2->bvol.LLB.y ) PG_RETURN_BOOL(FALSE);
+	if ( geom1->bvol.URT.y > geom2->bvol.URT.y ) PG_RETURN_BOOL(FALSE);
+
+	errorIfGeometryCollection(geom1,geom2);
+
+	initGEOS(MAXIMUM_ALIGNOF);
 	g1 = 	POSTGIS2GEOS(geom1 );
 	g2 = 	POSTGIS2GEOS(geom2 );
-
 
 	result = GEOSrelateWithin(g1,g2);
 	GEOSdeleteGeometry(g1);
