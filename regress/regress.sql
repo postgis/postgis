@@ -218,3 +218,4 @@ select '128',a ~ b from TEST;
 
 select '129', mem_size(dropBBOX(a)), mem_size(dropBBOX(b)) from TEST;
 
+select '130', geosnoop('POLYGON((0 0, 1 1, 0 0))');
