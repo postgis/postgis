@@ -1180,6 +1180,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_force_3dz);
 Datum LWGEOM_force_3dz(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char *srl;
 	PG_LWGEOM *result;
 	int olddims;
 	size_t size = 0;
@@ -1190,20 +1191,17 @@ Datum LWGEOM_force_3dz(PG_FUNCTION_ARGS)
 	if ( olddims == 3 && TYPE_HASZ(geom->type) ) PG_RETURN_POINTER(geom);
 
 	if ( olddims > 3 ) {
-		result = (PG_LWGEOM *) lwalloc(geom->size);
+		srl = (char *) lwalloc(geom->size);
 	} else {
 		// allocate double as memory a larger for safety 
-		result = (PG_LWGEOM *) lwalloc(geom->size*1.5);
+		srl = (char *) lwalloc(geom->size*1.5);
 	}
 
 	lwgeom_force3dz_recursive(SERIALIZED_FORM(geom),
-		SERIALIZED_FORM(result), &size);
+		srl, &size);
 
-	// we can safely avoid this... memory will be freed at
-	// end of query processing anyway.
-	//result = lwrealloc(result, size+4);
-
-	result->size = size+4;
+	result = PG_LWGEOM_construct(srl, pglwgeom_getSRID(geom),
+		lwgeom_hasBBOX(geom->type));
 
 	PG_RETURN_POINTER(result);
 }
@@ -1212,7 +1210,8 @@ Datum LWGEOM_force_3dz(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_force_3dm);
 Datum LWGEOM_force_3dm(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char *srl;
 	PG_LWGEOM *result;
 	int olddims;
 	size_t size = 0;
@@ -1228,24 +1227,21 @@ Datum LWGEOM_force_3dm(PG_FUNCTION_ARGS)
 		// allocate double as memory a larger for safety 
 		size = geom->size * 1.5;
 	}
-	result = (PG_LWGEOM *)lwalloc(size);
+	srl = (char *)lwalloc(size);
 
 #ifdef DEBUG
 	lwnotice("LWGEOM_force_3dm: allocated %d bytes for result", size);
 #endif
 
 	lwgeom_force3dm_recursive(SERIALIZED_FORM(geom),
-		SERIALIZED_FORM(result), &size);
+		srl, &size);
 
 #ifdef DEBUG
 	lwnotice("LWGEOM_force_3dm: lwgeom_force3dm_recursive returned a %d sized geom", size);
 #endif
 
-	// we can safely avoid this... memory will be freed at
-	// end of query processing anyway.
-	//result = lwrealloc(result, size+4);
-
-	result->size = size+4;
+	result = PG_LWGEOM_construct(srl, pglwgeom_getSRID(geom),
+		lwgeom_hasBBOX(geom->type));
 
 	PG_RETURN_POINTER(result);
 }
@@ -1255,6 +1251,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_force_4d);
 Datum LWGEOM_force_4d(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char *srl;
 	PG_LWGEOM *result;
 	int olddims;
 	size_t size = 0;
@@ -1265,16 +1262,13 @@ Datum LWGEOM_force_4d(PG_FUNCTION_ARGS)
 	if ( olddims == 4 ) PG_RETURN_POINTER(geom);
 
 	// allocate double as memory a larger for safety 
-	result = (PG_LWGEOM *) lwalloc(geom->size*2);
+	srl = (char *)lwalloc(geom->size*2);
 
 	lwgeom_force4d_recursive(SERIALIZED_FORM(geom),
-		SERIALIZED_FORM(result), &size);
+		srl, &size);
 
-	// we can safely avoid this... memory will be freed at
-	// end of query processing anyway.
-	//result = lwrealloc(result, size+4);
-
-	result->size = size+4;
+	result = PG_LWGEOM_construct(srl, pglwgeom_getSRID(geom),
+		lwgeom_hasBBOX(geom->type));
 
 	PG_RETURN_POINTER(result);
 }
@@ -1285,73 +1279,28 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	PG_LWGEOM *result;
-	int oldtype;
-	size_t size = 0;
-	char *iptr, *optr;
-	int32 nsubgeoms = 1;
+	LWGEOM *lwgeoms[1];
+	LWGEOM *lwgeom;
 
-	oldtype = lwgeom_getType(geom->type);
-	
-	// already a collection
-	if ( oldtype == COLLECTIONTYPE ) PG_RETURN_POINTER(geom);
+	// deserialize into lwgeoms[0]
+	lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom));
 
 	// alread a multi*, just make it a collection
-	if ( oldtype > 3 )
+	if ( TYPE_GETTYPE(lwgeom->type) >= MULTIPOINTTYPE )
 	{
-		result = (PG_LWGEOM *)lwalloc(geom->size);
-		result->size = geom->size;
-		result->type = geom->type;
-		TYPE_SETTYPE(result->type, COLLECTIONTYPE);
-		memcpy(result->data, geom->data, geom->size-5);
-		PG_RETURN_POINTER(result);
+		TYPE_SETTYPE(lwgeom->type, COLLECTIONTYPE);
 	}
 
-	// not a multi*, must add header and 
-	// transfer eventual BBOX and SRID to first object
-
-	size = geom->size+5; // 4 for numgeoms, 1 for type
-
-	result = (PG_LWGEOM *)lwalloc(size); // 4 for numgeoms, 1 for type
-	result->size = size;
-
-	result->type = geom->type;
-	TYPE_SETTYPE(result->type, COLLECTIONTYPE);
-	iptr = geom->data;
-	optr = result->data;
-
-	// reset size to bare serialized input
-	size = geom->size - 4;
-
-	// transfer bbox
-	if ( lwgeom_hasBBOX(geom->type) )
+	// single geom, make it a collection
+	else
 	{
-		memcpy(optr, iptr, sizeof(BOX2DFLOAT4));
-		optr += sizeof(BOX2DFLOAT4);
-		iptr += sizeof(BOX2DFLOAT4);
-		size -= sizeof(BOX2DFLOAT4);
+		lwgeoms[0] = lwgeom;
+		lwgeom = (LWGEOM *)lwcollection_construct(COLLECTIONTYPE,
+			lwgeom->SRID, lwgeom->bbox, 1,
+			lwgeoms);
 	}
 
-	// transfer SRID
-	if ( lwgeom_hasSRID(geom->type) )
-	{
-		memcpy(optr, iptr, 4);
-		optr += 4;
-		iptr += 4;
-		size -= 4;
-	}
-
-	// write number of geometries (1)
-	memcpy(optr, &nsubgeoms, 4);
-	optr+=4;
-
-	// write type of first geometry w/out BBOX and SRID
-	optr[0] = geom->type;
-	TYPE_SETHASSRID(optr[0], 0);
-	TYPE_SETHASBBOX(optr[0], 0);
-	optr++;
-
-	// write remaining stuff
-	memcpy(optr, iptr, size);
+	result = pglwgeom_serialize(lwgeom);
 
 	PG_RETURN_POINTER(result);
 }
@@ -1362,64 +1311,26 @@ Datum LWGEOM_force_multi(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	PG_LWGEOM *result;
-	int oldtype, newtype;
-	size_t size = 0;
-	char *iptr, *optr;
-	int32 nsubgeoms = 1;
+	LWGEOM *lwgeoms[1];
+	LWGEOM *lwgeom;
+	int type;
 
-	oldtype = lwgeom_getType(geom->type);
-	
-	// already a multi
-	if ( oldtype >= 4 ) PG_RETURN_POINTER(geom);
+	// deserialize into lwgeoms[0]
+	lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom));
+	type = TYPE_GETTYPE(lwgeom->type);
 
-	// not a multi*, must add header and 
-	// transfer eventual BBOX and SRID to first object
-
-	newtype = oldtype+3; // see defines
-
-	size = geom->size+5; // 4 for numgeoms, 1 for type
-
-	result = (PG_LWGEOM *)lwalloc(size); // 4 for numgeoms, 1 for type
-	result->size = size;
-
-	result->type = geom->type;
-	TYPE_SETTYPE(result->type, newtype);
-	iptr = geom->data;
-	optr = result->data;
-
-	// reset size to bare serialized input
-	size = geom->size - 4;
-
-	// transfer bbox
-	if ( lwgeom_hasBBOX(geom->type) )
+	// single geom, make it a multi
+	if ( type < MULTIPOINTTYPE )
 	{
-		memcpy(optr, iptr, sizeof(BOX2DFLOAT4));
-		optr += sizeof(BOX2DFLOAT4);
-		iptr += sizeof(BOX2DFLOAT4);
-		size -= sizeof(BOX2DFLOAT4);
+		type += 3;
+		lwgeoms[0] = lwgeom;
+		lwgeom = (LWGEOM *)lwcollection_construct(type,
+			lwgeom->SRID, lwgeom->bbox, 1,
+			lwgeoms);
 	}
 
-	// transfer SRID
-	if ( lwgeom_hasSRID(geom->type) )
-	{
-		memcpy(optr, iptr, 4);
-		optr += 4;
-		iptr += 4;
-		size -= 4;
-	}
 
-	// write number of geometries (1)
-	memcpy(optr, &nsubgeoms, 4);
-	optr+=4;
-
-	// write type of first geometry w/out BBOX and SRID
-	optr[0] = geom->type;
-	TYPE_SETHASSRID(optr[0], 0);
-	TYPE_SETHASBBOX(optr[0], 0);
-	optr++;
-
-	// write remaining stuff
-	memcpy(optr, iptr, size);
+	result = pglwgeom_serialize(lwgeom);
 
 	PG_RETURN_POINTER(result);
 }

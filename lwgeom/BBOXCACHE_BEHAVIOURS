@@ -83,15 +83,16 @@ section also use it.
 	ExteriorRing(geometry) *LWG*
 	SetSRID(geometry,int4) *SRL*
 
-	# doesn't change bbox cache status if input is already 2d
+	# WARNING! these don't change bbox cache status if input is already 2d
 	force_2d(geometry) *SRL*
+	force_3dz(geometry) *SRL*
+	force_3d(geometry) *SRL*
+	force_3dm(geometry) *SRL*
+	force_4d(geometry) *SRL*
 
-	force_3dz(geometry) **SRL**
-	force_3d(geometry) **SRL**
-	force_3dm(geometry) **SRL**
-	force_4d(geometry) **SRL**
-	force_collection(geometry) **SRL**
-	multi(geometry) **SRL**
+	force_collection(geometry) *LWG* 
+	multi(geometry) *LWG*
+
 	envelope(geometry) *SRL*
 
 	### computes union of
