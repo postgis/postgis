@@ -22,41 +22,18 @@ Copy the binary wherever you like. :)
 
 USAGE:
 
-pgsql2shp <shapefile> <tablename> -d -c -a -dump
+pgsql2shp <database> <table> <shapefile> <host> <port> <2d|3d>
 
-The <shapefile> is the name of the shape file, without any extension
-information. For example, 'roads' would be the name of the shapefile 
-comprising the 'roads.shp', 'roads.shx', and 'roads.dbf' files.
-
-The <tablename> is the name of the database table you want the data stored
-in in the database. Within that table, the geometry will be placed in 
-the 'geo_value' column by default.
-
-The options are as follows:
-
-  -d    Delete mode. Delete the database table before uploading the
-        data into a new empty database table in 'insert' format.
-  -c    Create mode. This is the default mode. Create a new table and
-        upload the data into that table in 'insert' format.
-  -a    Append mode. Do not delete the target table or try to create
-        a new table, simple insert the data into the existing table.
-        (A table will have to exist for this to work, it is usually
-        used after a create mode as been run once.)
-  -dump Dump mode. Create a new table and upload the data into that
-        table in 'dump' format. Dump format is used by PostgreSQL for
-	large data dumps and uploads. Use this mode if your upload
-	dataset is very large.
+The <database> is the name of the database to connect to.
+The <table> is the table to read spatial data from.
+The <shapefile> is the name of the shapefile to create.
+The <host> is the name or IP address of the server to connect to.
+The <port> is the port number to connect to (5432 is the default).
+The shape file can be either a '2d' or a '3d' shape file.
 
 
 EXAMPLES:
 
-Loading directly:
+  pgsql2shp roadsdatabase roads1 shpfile server6 5432 2d
 
-  shp2pgsql roads1 -c | psql -d roadsdatabase
-  shp2pgsql roads2 -a | psql -d roadsdatabase
-
-Saving to an intermiate file:
-
-  shp2pgsql roads1 > roads.sql
-  psql -d roadsdatabase -f roads.sql
 
