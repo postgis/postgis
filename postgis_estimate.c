@@ -11,6 +11,10 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.31.2.2  2004/09/16 09:06:44  strk
+ * Changed SPI_cursor_open call changes to be used for USE_VERSION > 80
+ * (change seems to be intended for future releases)
+ *
  * Revision 1.31.2.1  2004/09/14 07:44:54  strk
  * Updated SPI_cursor_open interface to support 8.0
  *
@@ -515,7 +519,7 @@ Datum build_histogram2d(PG_FUNCTION_ARGS)
 					PG_RETURN_NULL() ;
 			}
 
-#if USE_VERSION >= 80
+#if USE_VERSION > 80
 		        SPIportal = SPI_cursor_open(NULL, SPIplan, NULL, NULL, 1);
 #else
 		        SPIportal = SPI_cursor_open(NULL, SPIplan, NULL, NULL);
