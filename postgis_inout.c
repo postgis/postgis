@@ -11,6 +11,10 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.36  2004/01/13 22:14:25  pramsey
+ * Changed getint and getdouble used by WKB so that it plays nice with
+ * memory alignment (solaris issue).
+ *
  * Revision 1.35  2003/12/12 18:00:15  strk
  * reverted make_line patch, patched size_subobject instead - the reported bug was caused to their inconsistency
  *
@@ -3807,12 +3811,18 @@ Datum histogram2d_out(PG_FUNCTION_ARGS)
 
 int getint(char *c)
 {
-	return *((int*)c);
+	int i;
+	memcpy( &i, c, 4);
+	return i;
+//return *((int*)c);
 }
 
 double getdouble(char *c)
 {
-	return *((double*)c);
+	double d;
+	memcpy( &d, c, 8);
+	return d;
+//	return *((double*)c);
 }
 
 //void	flip_endian_double(char	*dd);
