@@ -64,7 +64,7 @@ select  astext('GEOMETRYCOLLECTION(MULTILINESTRING( (0 0, 1 1, 2 2, 3 3 , 4 4) )
 select  astext('GEOMETRYCOLLECTION(POINT( 1 2 3), MULTIPOLYGON(  ((0 0 7, 10 0 7, 10 10 7, 0 10 7, 0 0 7)),( (0 0 7, 10 0 7, 10 10 7, 0 10 7, 0 0 7),(5 5 7, 7 5 7, 7 7 7, 5 7 7, 5 5 7) ) ,( (0 0 1, 10 0 1, 10 10 1, 0 10 1, 0 0 1),(5 5 1, 7 5 1, 7 7  1, 5 7 1, 5 5 1),(1 1 1,2 1 1, 2 2 1, 1 2 1, 1 1 1) ) ))'::LWGEOM) as geom;
 select  astext('GEOMETRYCOLLECTION(MULTIPOLYGON(  ((0 0 7, 10 0 7, 10 10 7, 0 10 7, 0 0 7)),( (0 0 7, 10 0 7, 10 10 7, 0 10 7, 0 0 7),(5 5 7, 7 5 7, 7 7  7, 5 7 7, 5 5 7) ) ,( (0 0 1, 10 0 1, 10 10 1, 0 10 1, 0 0 1),(5 5 1, 7 5 1, 7 7  1, 5 7 1, 5 5 1),(1 1 1,2 1 1, 2 2 1, 1 2 1, 1 1 1) ) ),MULTILINESTRING( (0 0 7, 1 1 7, 2 2 7, 3 3  7, 4 4 7),(0 0 7, 1 1 7, 2 2 7, 3 3 7 , 4 4 7),(1 2 3 , 4 5 6 , 7 8 9 , 10 11 12, 13 14 15) ),MULTIPOINT( 1 2 3, 5 6 7, 8 9 10, 11 12 13))'::LWGEOM) as geom;
 
-select  astext('MULTIPOINT( -1 -2 -3, 5.4 6.6 7.77, -5.4 -6.6 -7.77, 1e6 1e-6 -1e6, -1.3e-6 -1.4e-5)'::LWGEOM) as geom;
+select  astext('MULTIPOINT( -1 -2 -3, 5.4 6.6 7.77, -5.4 -6.6 -7.77, 1e6 1e-6 -1e6, -1.3e-6 -1.4e-5 1)'::LWGEOM) as geom;
 
 --- basic datatype (incorrect)
 
