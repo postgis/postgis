@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.10  2004/04/08 17:05:20  dblasby
+ * Somehow the memory leak changes I made got removed - I've re-added them.
+ *
  * Revision 1.9  2004/04/08 17:00:27  dblasby
  * Changed ggeometry_consistent to be aware of NULL queries.  Ie.
  * select * from <table> where the_geom &&  null::geometry;
@@ -89,9 +92,21 @@ Datum gbox_picksplit(PG_FUNCTION_ARGS);
 Datum gbox_penalty(PG_FUNCTION_ARGS);
 Datum gbox_same(PG_FUNCTION_ARGS);
 static float size_box(Datum box);
+extern void convert_box3d_to_box_p(BOX3D *in,BOX *out);
+
 
 int debug = 0;
 
+//puts result in pre-allocated "out"
+void convert_box3d_to_box_p(BOX3D *in,BOX *out)
+{
+
+		out->high.x = in->URT.x;
+		out->high.y = in->URT.y;
+
+		out->low.x = in->LLB.x;
+		out->low.y = in->LLB.y;
+}
 
 
 BOX	*convert_box3d_to_box(BOX3D *in)
@@ -167,7 +182,7 @@ Datum ggeometry_consistent(PG_FUNCTION_ARGS)
     GISTENTRY *entry = (GISTENTRY*) PG_GETARG_POINTER(0);
     GEOMETRY *query ;
     StrategyNumber strategy = (StrategyNumber) PG_GETARG_UINT16(2);
-    BOX		*thebox;
+    BOX		thebox;
 	bool result;
 
 	/*
@@ -193,12 +208,12 @@ Datum ggeometry_consistent(PG_FUNCTION_ARGS)
     if ( ! (DatumGetPointer(entry->key) != NULL && query) )
 		PG_RETURN_BOOL(FALSE);
 
-	thebox = convert_box3d_to_box( &(query->bvol) );
+	convert_box3d_to_box_p( &(query->bvol) , &thebox);
 
 	if (GIST_LEAF(entry))
-		result = rtree_leaf_consistent((BOX *) DatumGetPointer(entry->key), thebox, strategy );
+		result = rtree_leaf_consistent((BOX *) DatumGetPointer(entry->key), &thebox, strategy );
 	else
-		result = rtree_internal_consistent((BOX *) DatumGetPointer(entry->key), thebox, strategy );
+		result = rtree_internal_consistent((BOX *) DatumGetPointer(entry->key), &thebox, strategy );
 
 	PG_FREE_IF_COPY(query, 1);
 	PG_RETURN_BOOL(result);
