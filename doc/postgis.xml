@@ -119,7 +119,7 @@ manually for some reason.
 <programlisting>
 # createlang plpgsql [yourdatabase]
 </programlisting>
-   		</listitem> 
+</para></listitem> 
 		  <listitem> 
 			 <para>Finally, you
 				must load the PostGIS object and function definitions into your database. </para> 
