@@ -11,6 +11,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.31.2.1  2004/09/14 07:44:54  strk
+ * Updated SPI_cursor_open interface to support 8.0
+ *
  * Revision 1.31  2004/08/19 06:15:58  strk
  * USE_VERSION gets 80 where it got 75
  *
@@ -512,7 +515,12 @@ Datum build_histogram2d(PG_FUNCTION_ARGS)
 					PG_RETURN_NULL() ;
 			}
 
-			SPIportal = SPI_cursor_open(NULL, SPIplan, NULL, NULL);
+#if USE_VERSION >= 80
+		        SPIportal = SPI_cursor_open(NULL, SPIplan, NULL, NULL, 1);
+#else
+		        SPIportal = SPI_cursor_open(NULL, SPIplan, NULL, NULL);
+#endif
+					 
 			if (SPIportal == NULL)
 			{
 					elog(ERROR,"build_histogram2d: couldn't create cursor via SPI");
@@ -874,7 +882,7 @@ genericcostestimate2(Query *root, RelOptInfo *rel,
 #endif
 
 
-//elog(NOTICE,"in genericcostestimate");
+elog(NOTICE,"in genericcostestimate");
 
 
 	/*
@@ -915,8 +923,8 @@ genericcostestimate2(Query *root, RelOptInfo *rel,
 	 */
 	numIndexTuples = *indexSelectivity * rel->tuples;
 
-	//elog(NOTICE,"relation has %li pages",rel->pages);
-	//elog(NOTICE,"indexselectivity is %lf, ntuples = %lf, numindexTuples = %lf, index->tuples = %lf",*indexSelectivity, rel->tuples, numIndexTuples,index->tuples);
+	elog(NOTICE,"relation has %li pages",rel->pages);
+	elog(NOTICE,"indexselectivity is %lf, ntuples = %lf, numindexTuples = %lf, index->tuples = %lf",*indexSelectivity, rel->tuples, numIndexTuples,index->tuples);
 
 
 	if (numIndexTuples > index->tuples)
@@ -938,7 +946,7 @@ genericcostestimate2(Query *root, RelOptInfo *rel,
 	 */
 
 
-	 //elog(NOTICE,"index->pages =  %li ",index->pages);
+	 elog(NOTICE,"index->pages =  %li ",index->pages);
 
 	if (index->pages > 1 && index->tuples > 0)
 	{
@@ -950,7 +958,7 @@ genericcostestimate2(Query *root, RelOptInfo *rel,
 		numIndexPages = 1.0;
 
 
-//elog(NOTICE,"numIndexPages =  %lf ",numIndexPages);
+elog(NOTICE,"numIndexPages =  %lf ",numIndexPages);
 	/*
 	 * Compute the index access cost.
 	 *
@@ -975,16 +983,15 @@ genericcostestimate2(Query *root, RelOptInfo *rel,
 #endif
 
 
-	//elog(NOTICE,"cpu_index_tuple_cost = %lf, cost_qual_eval(indexQuals)) = %lf",
-	//	cpu_index_tuple_cost,cost_qual_eval(indexQuals));
+	elog(NOTICE,"cpu_index_tuple_cost = %lf, cost_qual_eval(indexQuals)) = %lf", cpu_index_tuple_cost,cost_qual_eval(indexQuals));
 
-	//elog(NOTICE,"indexTotalCost =  %lf ",*indexTotalCost);
+	elog(NOTICE,"indexTotalCost =  %lf ",*indexTotalCost);
 
 	/*
 	 * Generic assumption about index correlation: there isn't any.
 	 */
 	*indexCorrelation = 0.97;
-	//elog(NOTICE,"indexcorrelation =  %lf ",*indexCorrelation);
+	elog(NOTICE,"indexcorrelation =  %lf ",*indexCorrelation);
 }
 
 
@@ -1001,12 +1008,12 @@ postgisgistcostestimate(PG_FUNCTION_ARGS)
     Selectivity *indexSelectivity = (Selectivity *) PG_GETARG_POINTER(6);
     double     *indexCorrelation = (double *) PG_GETARG_POINTER(7);
 
-//elog(NOTICE,"postgisgistcostestimate was called");
+elog(NOTICE,"postgisgistcostestimate was called");
 
     genericcostestimate2(root, rel, index, indexQuals,
                         indexStartupCost, indexTotalCost,
                         indexSelectivity, indexCorrelation);
-//elog(NOTICE,"postgisgistcostestimate is going to return void");
+elog(NOTICE,"postgisgistcostestimate is going to return void");
 
     PG_RETURN_VOID();
 }
@@ -1515,7 +1522,10 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		sample_extent = union_box3d(&(geom->bvol), sample_extent);
 		
 		// TODO: ask if we need geom or bvol size for stawidth
+		//       probably 'toasted' width...
 		total_width += geom->size;
+		//total_width += sizeof(BOX3D);
+		//total_width += VARSIZE(DatumGetPointer(datum));
 		total_boxes_area += (box->high.x-box->low.x)*(box->high.y-box->low.y);
 
 #if USE_STANDARD_DEVIATION
