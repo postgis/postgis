@@ -3075,12 +3075,12 @@ CREATEFUNCTION geometry(chip)
 
 CREATEFUNCTION geometry(bytea)
 	RETURNS geometry
-	AS '@MODULE_FILENAME@','LWGEOMFromWKB'
+	AS '@MODULE_FILENAME@','LWGEOM_from_bytea'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 CREATEFUNCTION bytea(geometry)
 	RETURNS bytea
-	AS '@MODULE_FILENAME@','WKBFromLWGEOM'
+	AS '@MODULE_FILENAME@','LWGEOM_to_bytea'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
 -- 7.3+ explicit casting definitions

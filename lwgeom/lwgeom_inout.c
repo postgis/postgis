@@ -23,7 +23,7 @@
 #include "stringBuffer.h"
 
 
-//#define DEBUG 1
+#define DEBUG 1
 
 #include "lwgeom_pg.h"
 #include "wktparse.h"
@@ -34,10 +34,14 @@ void elog_ERROR(const char* string);
 // needed for OGC conformance
 Datum LWGEOMFromWKB(PG_FUNCTION_ARGS);
 Datum WKBFromLWGEOM(PG_FUNCTION_ARGS);
+
 Datum LWGEOM_in(PG_FUNCTION_ARGS);
 Datum LWGEOM_out(PG_FUNCTION_ARGS);
 Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS);
 Datum LWGEOM_getBBOX(PG_FUNCTION_ARGS);
+Datum LWGEOM_to_text(PG_FUNCTION_ARGS);
+Datum LWGEOM_to_bytea(PG_FUNCTION_ARGS);
+Datum LWGEOM_from_bytea(PG_FUNCTION_ARGS);
 Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS);
 #if USE_VERSION > 73
 Datum LWGEOM_recv(PG_FUNCTION_ARGS);
@@ -150,6 +154,68 @@ Datum LWGEOM_to_text(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(text_result);
 }
 
+//
+// LWGEOM_to_bytea(LWGEOM)
+// bytea contains canonical binary form, being
+// internal representation with additional byte containing 
+// byte order
+//
+PG_FUNCTION_INFO_V1(LWGEOM_to_bytea);
+Datum LWGEOM_to_bytea(PG_FUNCTION_ARGS)
+{
+	bytea *ret;
+	PG_LWGEOM *pglwg;
+
+	pglwg = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+	ret = (bytea *)palloc(pglwg->size+5);
+	VARATT_SIZEP(ret) = pglwg->size+1;
+	*(VARDATA(ret)) = getMachineEndian();
+	memcpy((void *)(VARDATA(ret)+1), SERIALIZED_FORM(pglwg),
+		pglwg->size-4);
+
+#if DEBUG
+	elog(NOTICE, "LWGEOM_to_bytea returning %d bytes (machine endian: %d)",
+		VARSIZE(ret), getMachineEndian());
+#endif
+
+	PG_RETURN_POINTER(ret);
+}
+
+// LWGEOM_from_bytea(bytea)
+// bytea contains canonical binary form, being
+// internal representation with additional byte containing 
+// byte order
+//
+PG_FUNCTION_INFO_V1(LWGEOM_from_bytea);
+Datum LWGEOM_from_bytea(PG_FUNCTION_ARGS)
+{
+	bytea *in;
+	PG_LWGEOM *ret;
+	char flipbytes=0;
+
+	in = (bytea *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+	ret = (PG_LWGEOM *)palloc(VARSIZE(in)-1);
+	ret->size = VARSIZE(in)-1;
+
+	if ( *(VARDATA(in)) != getMachineEndian() ) flipbytes = 1;
+	if ( flipbytes )
+	{
+		elog(ERROR, "Unable to handle bytes flipping");
+		PG_RETURN_NULL();
+	}
+	else
+	{
+		memcpy(SERIALIZED_FORM(ret), VARDATA(in)+1, VARSIZE(in)-5);
+	}
+
+#if DEBUG
+	elog(NOTICE, "LWGEOM_from_bytea returning %d bytes", ret->size);
+#endif
+
+	PG_RETURN_POINTER(ret);
+}
 
 
 // LWGEOMFromWKB(wkb,  [SRID] )
@@ -419,9 +485,9 @@ Datum LWGEOM_recv(PG_FUNCTION_ARGS)
 	elog(NOTICE, "LWGEOM_recv calling LWGEOMFromWKB");
 #endif
 
-	/* Call slow LWGEOMFromWKB function... */
-	result = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall1(LWGEOMFromWKB,
-		PointerGetDatum(wkb)));
+	/* Call LWGEOM_from_bytea function... */
+	result = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall1(
+		LWGEOM_from_bytea, PointerGetDatum(wkb)));
 
 #ifdef DEBUG
 	elog(NOTICE, "LWGEOM_recv advancing StringInfo buffer");
@@ -445,58 +511,16 @@ Datum LWGEOM_recv(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_send);
 Datum LWGEOM_send(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *lwgeom_input; // SRID=#;<hexized wkb>
-	char *hexized_wkb_srid;
-	char *hexized_wkb; // hexized_wkb_srid w/o srid
-	char *result; //wkb
-	int len_hexized_wkb;
-	int size_result;
-	char *semicolonLoc;
-	int t;
-	text *type;
-	int SRID=-1;
+	PG_LWGEOM *result;
 
 #ifdef DEBUG
 	elog(NOTICE, "LWGEOM_send called");
 #endif
 
-	lwgeom_input = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	hexized_wkb_srid = unparse_WKB(SERIALIZED_FORM(lwgeom_input),
-		lwalloc, lwfree, -1);
+	result = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall1(
+		LWGEOM_to_bytea, PG_GETARG_DATUM(0)));
 
-//elog(NOTICE, "in WKBFromLWGEOM with WKB = '%s'", hexized_wkb_srid);
-
-	hexized_wkb = hexized_wkb_srid;
-	semicolonLoc = strchr(hexized_wkb_srid,';');
-
-
-	if (semicolonLoc != NULL)
-	{
-		SRID=atoi(hexized_wkb+5); // SRID=
-		hexized_wkb = (semicolonLoc+1);
-	}
-
-#ifdef DEBUG
-		elog(NOTICE, "SRID=%d", SRID);
-#endif
-
-//elog(NOTICE, "in WKBFromLWGEOM with WKB (with no 'SRID=#;' = '%s'", hexized_wkb);
-
-	len_hexized_wkb = strlen(hexized_wkb);
-	size_result = len_hexized_wkb/2 + 4;
-	result = palloc(size_result);
-
-	memcpy(result, &size_result,4); // size header
-
-	// have a hexized string, want to make it binary
-	for (t=0; t< (len_hexized_wkb/2); t++)
-	{
-		((unsigned char *) result +4)[t] = parse_hex(  hexized_wkb + (t*2) );
-	}
-
-	pfree(hexized_wkb_srid);
-
-	PG_RETURN_POINTER(result);
+        PG_RETURN_POINTER(result);
 }
 
 #endif // USE_VERSION > 73
