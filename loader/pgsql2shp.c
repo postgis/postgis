@@ -81,7 +81,7 @@ int initShapefile(char *shp_file, PGresult *res);
 int initialize(void);
 int getGeometryOID(PGconn *conn);
 int getGeometryType(char *schema, char *table, char *geo_col_name);
-
+char *shapetypename(int num);
 int parse_points(char *str, int num_points, double *x,double *y,double *z);
 int num_points(char *str);
 int num_lines(char *str);
@@ -186,6 +186,9 @@ main(int ARGC, char **ARGV){
 	if ( ! initialize() ) exit_nicely(conn);
 	fprintf(stdout, "Done (postgis major version: %d).\n",
 		pgis_major_version); 
+
+	printf("Output shape type is: %s\n", shapetypename(outshptype));
+
 
 	/*
 	 * Begin the transaction
@@ -2013,7 +2016,7 @@ usage(status)
 	printf("\n");
        	printf("OPTIONS:\n");
        	printf("  -d Set the dump file to 3 dimensions, if this option is not used\n");
-       	printf("     all dumping will be 2d only.\n");
+       	printf("     all dumping will be 2d only. Specify this option twice for a 4d dump\n");
        	printf("  -f <filename>  Use this option to specify the name of the file\n");
        	printf("     to create.\n");
        	printf("  -h <host>  Allows you to specify connection to a database on a\n");
@@ -2771,8 +2774,49 @@ void skipdouble(byte **c) {
 	*c+=8;
 }
 
+char *
+shapetypename(int num)
+{
+	switch(num)
+	{
+		case SHPT_NULL:
+			return "Null Shape";
+		case SHPT_POINT:
+			return "Point";
+		case SHPT_ARC:
+			return "PolyLine";
+		case SHPT_POLYGON:
+			return "Polygon";
+		case SHPT_MULTIPOINT:
+			return "MultiPoint";
+		case SHPT_POINTZ:
+			return "PointZ";
+		case SHPT_ARCZ:
+			return "PolyLineZ";
+		case SHPT_POLYGONZ:
+			return "PolygonZ";
+		case SHPT_MULTIPOINTZ:
+			return "MultiPointZ";
+		case SHPT_POINTM:
+			return "PointM";
+		case SHPT_ARCM:
+			return "PolyLineM";
+		case SHPT_POLYGONM:
+			return "PolygonM";
+		case SHPT_MULTIPOINTM:
+			return "MultiPointM";
+		case SHPT_MULTIPATCH:
+			return "MultiPatch";
+		default:
+			return "Unknown";
+	}
+}
 /**********************************************************************
  * $Log$
+ * Revision 1.57  2004/09/20 17:11:44  strk
+ * Added -d -d availability notice in help string.
+ * Added user notice about output shape type.
+ *
  * Revision 1.56  2004/09/20 16:33:05  strk
  * Added 4d geometries support.
  * Changelog section moved at bottom file.
