@@ -12,6 +12,10 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.37  2003/08/01 23:22:44  jeffloun
+ * Altered the loader to use a (gid serial) type instead of just a (gid int4).
+ * Also the gid is now declared as a primary key.
+ *
  * Revision 1.36  2003/07/01 18:30:55  pramsey
  * Added CVS revision headers.
  *
@@ -71,6 +75,8 @@ typedef struct Ring{
 
 int	dump_format = 0; //0=insert statements, 1 = dump
 int	quoteidentifiers = 0;
+char    opt;
+char    *col_names;
 
 int Insert_attributes(DBFHandle hDBFHandle, int row);
 char	*make_good_string(char *str);
@@ -351,12 +357,23 @@ int ring_check(SHPObject* obj, char *table, char *sr_id, int rings,DBFHandle hDB
 
 	//start spitting out the sql for ordered entities now.
 	if (dump_format){
-		printf("%i",rings);
+		if(opt != 'a'){
+			printf("%i\t",rings);
+		}
 	}else{
-		if ( quoteidentifiers )
-			printf("\nInsert into \"%s\" values('%i'",table,rings);
-		else
-			printf("\nInsert into %s values('%i'",table,rings);
+		if ( quoteidentifiers ){
+			if(opt == 'a'){
+				printf("\nInsert into \"%s\" %s values(",table,col_names);
+			}else{
+				printf("\nInsert into \"%s\" %s values('%i',",table,col_names,rings);
+			}
+		}else{
+			if(opt == 'a'){
+				printf("\nInsert into %s %s values(",table,col_names);
+			}else{
+				printf("\nInsert into %s %s values('%i',",table,col_names,rings);
+			}
+		}
 	}
 
 	rings++;
@@ -437,9 +454,7 @@ int ring_check(SHPObject* obj, char *table, char *sr_id, int rings,DBFHandle hDB
 //Insert the attributes from the correct row of dbf file
 
 int Insert_attributes(DBFHandle hDBFHandle, int row){
-
 	int i,num_fields;
-
 
 	num_fields = DBFGetFieldCount( hDBFHandle );
 		
@@ -449,18 +464,34 @@ int Insert_attributes(DBFHandle hDBFHandle, int row){
 		        if(dump_format){
 		               printf("\t\\N");
 		        }else{
-		               printf(",NULL");
+				if(i == 0){
+			               printf("NULL");
+				}else{
+			               printf(",NULL");
+				}
 		        }
 		 }else{
 			if (dump_format){
 
-				if ( quoteidentifiers )
-					printf("\t\"%s\"",make_good_string((char*)DBFReadStringAttribute( hDBFHandle,row, i )) );
-				else
-					printf("\t%s",make_good_string((char*)DBFReadStringAttribute( hDBFHandle,row, i )) );
+				if ( quoteidentifiers ){
+					if(i == 0){
+						printf("\"%s\"",make_good_string((char*)DBFReadStringAttribute( hDBFHandle,row, i )) );
+					}else{
+						printf("\t\"%s\"",make_good_string((char*)DBFReadStringAttribute( hDBFHandle,row, i )) );
+					}
+				}else{
+					if(i == 0){
+						printf("%s",make_good_string((char*)DBFReadStringAttribute( hDBFHandle,row, i )) );
+					}else{
+						printf("\t%s",make_good_string((char*)DBFReadStringAttribute( hDBFHandle,row, i )) );
+					}
+				}
 			}else{
-
-				printf(",'%s'",protect_quotes_string((char*)DBFReadStringAttribute(hDBFHandle, row, i )) );
+				if(i == 0){
+					printf("'%s'",protect_quotes_string((char*)DBFReadStringAttribute(hDBFHandle, row, i )) );
+				}else{
+					printf(",'%s'",protect_quotes_string((char*)DBFReadStringAttribute(hDBFHandle, row, i )) );
+				}
 			}
 		 }
 	}
@@ -482,7 +513,6 @@ int main (int ARGC, char **ARGV){
 	int u,j,z,tot_rings,curindex;
 	SHPObject	*obj=NULL;
 	char  name[32];
-	char  opt;
 	char  *sr_id,*shp_file,*table, *database;
 	char **names;
 	DBFFieldType type;
@@ -586,14 +616,61 @@ int main (int ARGC, char **ARGV){
 		//-------------------------Drop the table--------------------------------
 		//drop the table given
 		printf("delete from geometry_columns where f_table_name = '%s';\n",table);
-		if ( quoteidentifiers )
+		if ( quoteidentifiers ){
 			printf("\ndrop table \"%s\";\n",table);
-		else
+			printf("\ndrop sequence \"%s_%s_seq\";\n",database,table);
+		}else{
 			printf("\ndrop table %s;\n",table);
-
-
+			printf("\ndrop sequence %s_%s_seq;\n",database,table);
+		}
 	}
 
+
+	//-------------------------Get the col names to fully specify them in inserts-------------------------------
+	num_fields = DBFGetFieldCount( hDBFHandle );
+	num_records = DBFGetRecordCount(hDBFHandle);
+	names = malloc((num_fields + 1)*sizeof(char*));
+	col_names = malloc(1000);
+	if(opt != 'a'){
+		strcpy(col_names, "(gid," );
+	}else{
+		strcpy(col_names, "(" );
+	}
+
+	for(j=0;j<num_fields;j++){
+		type = DBFGetFieldInfo(hDBFHandle, j, name, &field_width, &field_precision); 
+		names[j] = malloc ( strlen(name)+3);
+		strcpy(names[j], name);
+		for(z=0; z < j ; z++){
+			if(strcmp(names[z],name)==0){
+				strcat(name,"__");
+				sprintf(name,"%s%i",name,j);
+				break;
+			}
+		}	
+		if(strcasecmp(name,"gid")==0){
+			if(j ==0){
+				sprintf(col_names,"%s%s__2",col_names,name);
+			}else{
+				sprintf(col_names,"%s,%s__2",col_names,name);
+			}
+		}else{
+			if ( quoteidentifiers ){
+				if(j ==0){
+					sprintf(col_names,"%s\"%s\"",col_names,name);
+				}else{
+					sprintf(col_names,"%s,\"%s\"",col_names,name);
+				}
+			}else{
+				if(j ==0){
+					sprintf(col_names,"%s%s",col_names,name);
+				}else{
+					sprintf(col_names,"%s,%s",col_names,name);
+				}
+			}
+		}
+	}
+	strcat(col_names, ",the_geom)");
 
 
 	if(opt == 'c' || opt == 'd'){ //if opt is 'a' do nothing, go straight to making inserts
@@ -601,10 +678,11 @@ int main (int ARGC, char **ARGV){
 		//-------------------------Create the table--------------------------------
 		//create a table for inserting the shapes into with appropriate columns and types
 
-		if ( quoteidentifiers )
-			printf("create table \"%s\" (gid int4 ",table);
-		else
-			printf("create table %s (gid int4 ",table);
+		if ( quoteidentifiers ){
+			printf("create table \"%s\" (gid serial ",table);
+		}else{
+			printf("create table %s (gid serial ",table);
+		}
 
 		num_fields = DBFGetFieldCount( hDBFHandle );
 		num_records = DBFGetRecordCount(hDBFHandle);
@@ -625,10 +703,11 @@ int main (int ARGC, char **ARGV){
 			if(strcasecmp(name,"gid")==0){
 				printf(", %s__2 ",name);
 			}else{
-				if ( quoteidentifiers )
+				if ( quoteidentifiers ){
 					printf(", \"%s\" ",name);
-				else
+				}else{
 					printf(", %s ",name);
+				}
 			}
 	
 			if(hDBFHandle->pachFieldType[j] == 'D' ){
@@ -659,8 +738,6 @@ int main (int ARGC, char **ARGV){
 		}
 		printf (");\n");
 		//finished creating the table
-
-
 
 	}
 
@@ -710,7 +787,7 @@ int main (int ARGC, char **ARGV){
 		}
 	}
 	if (dump_format){
-			printf("COPY \"%s\" from stdin;\n",table);
+			printf("COPY \"%s\" %s FROM stdin;\n",table, col_names);
 	}
 	
 
@@ -796,12 +873,23 @@ int main (int ARGC, char **ARGV){
 			// transaction stuff done
 
 			if (dump_format){
-				printf("%i",j);
+				if(opt != 'a'){
+					printf("%i\t",j);
+				}
 			}else{
-				if ( quoteidentifiers )
-					printf("insert into \"%s\" values ('%i'",table,j);
-				else
-					printf("insert into %s values ('%i'",table,j);
+				if ( quoteidentifiers ){
+					if(opt == 'a'){
+						printf("insert into \"%s\" %s values (",table,col_names);
+					}else{
+						printf("insert into \"%s\" %s values ('%i',",table,col_names,j);
+					}
+				}else{
+					if(opt == 'a'){
+						printf("insert into %s %s values (",table,col_names);
+					}else{
+						printf("insert into %s %s values ('%i',",table,col_names,j);
+					}
+				}
 			}
 
 			Insert_attributes(hDBFHandle,j); //add the attributes for each entity to the insert statement
@@ -863,12 +951,23 @@ int main (int ARGC, char **ARGV){
 			//end of transaction stuff
 
 			if (dump_format){
-				printf("%i",j);
+				if(opt != 'a'){				
+					printf("%i\t",j);
+				}
 			}else{
-				if ( quoteidentifiers )
-					printf("insert into \"%s\" values('%i'",table,j);
-				else
-					printf("insert into %s values('%i'",table,j);
+				if ( quoteidentifiers ){
+					if(opt == 'a'){
+						printf("insert into \"%s\" %s values(",table,col_names);
+					}else{
+						printf("insert into \"%s\" %s values('%i',",table,col_names,j);
+					}
+				}else{
+					if(opt == 'a'){
+						printf("insert into %s %s values(",table,col_names);
+					}else{
+						printf("insert into %s %s values('%i',",table,col_names,j);
+					}
+				}
 			}
 			obj = SHPReadObject(hSHPHandle,j);
 
@@ -972,12 +1071,23 @@ int main (int ARGC, char **ARGV){
 			// transaction stuff done
 
 			if (dump_format){
-				printf("%i",j);
+				if(opt != 'a'){
+					printf("%i\t",j);
+				}
 			}else{			
-				if ( quoteidentifiers )
-					printf("insert into \"%s\" values ('%i'",table,j);
-				else
-					printf("insert into %s values ('%i'",table,j);
+				if ( quoteidentifiers ){
+					if(opt == 'a'){
+						printf("insert into \"%s\" %s values (",table,col_names);
+					}else{
+						printf("insert into \"%s\" %s values ('%i',",table,col_names,j);
+					}
+				}else{
+					if(opt == 'a'){
+						printf("insert into %s %s values (",table,col_names);
+					}else{
+						printf("insert into %s %s values ('%i',",table,col_names,j);
+					}
+				}
 			}
 
 			Insert_attributes(hDBFHandle,j); //add the attributes for each entity to the insert statement
@@ -1037,12 +1147,23 @@ int main (int ARGC, char **ARGV){
 			// transaction stuff done
 
 			if (dump_format){
-				printf("%i",j);
+				if(opt != 'a'){
+					printf("%i\t",j);
+				}
 			}else{			
-				if ( quoteidentifiers )
-					printf("insert into \"%s\" values ('%i'",table,j);
-				else
-					printf("insert into %s values ('%i'",table,j);
+				if ( quoteidentifiers ){
+					if(opt == 'a'){
+						printf("insert into \"%s\" %s values (",table,col_names);
+					}else{
+						printf("insert into \"%s\" %s values ('%i',",table,col_names,j);
+					}
+				}else{
+					if(opt == 'a'){
+						printf("insert into %s %s values (",table,col_names);
+					}else{
+						printf("insert into %s %s values ('%i',",table,col_names,j);
+					}
+				}
 			}
 
 			Insert_attributes(hDBFHandle,j); //add the attributes for each entity to the insert statement
@@ -1104,12 +1225,23 @@ int main (int ARGC, char **ARGV){
 			//end transaction stuff
 
 			if (dump_format){
-				printf("%i",j);
+				if(opt != 'a'){
+					printf("%i\t",j);
+				}
 			}else{
-				if ( quoteidentifiers )
-					printf("insert into \"%s\" values ('%i'",table,j);
-				else
-					printf("insert into %s values ('%i'",table,j);
+				if ( quoteidentifiers ){
+					if(opt == 'a'){
+						printf("insert into \"%s\" %s values (",table,col_names);
+					}else{
+						printf("insert into \"%s\" %s values ('%i',",table,col_names,j);
+					}
+				}else{
+					if(opt == 'a'){
+						printf("insert into %s %s values (",table,col_names);
+					}else{
+						printf("insert into %s %s values ('%i',",table,col_names,j);
+					}
+				}
 			}
 
 			obj = SHPReadObject(hSHPHandle,j);
@@ -1246,12 +1378,23 @@ int main (int ARGC, char **ARGV){
 			//end of transaction stuff
 
 			if (dump_format){
-				printf("%i",j);
+				if(opt != 'a'){
+					printf("%i\t",j);
+				}
 			}else{
-				if ( quoteidentifiers )
-					printf("insert into \"%s\" values('%i'",table,j);
-				else
-					printf("insert into %s values('%i'",table,j);
+				if ( quoteidentifiers ){
+					if(opt == 'a'){
+						printf("insert into \"%s\" %s values(",table,col_names);
+					}else{
+						printf("insert into \"%s\" %s values('%i',",table,col_names,j);
+					}
+				}else{
+					if(opt == 'a'){
+						printf("insert into %s %s values(",table,col_names);
+					}else{
+						printf("insert into %s %s values('%i',",table,col_names,j);
+					}
+				}
 			}
 
 			obj = SHPReadObject(hSHPHandle,j);
@@ -1299,8 +1442,11 @@ int main (int ARGC, char **ARGV){
 		printf("\\.\n");
 
 	}
+	free(col_names);
+	if(opt != 'a'){
+		printf("\nALTER TABLE ONLY %s ADD CONSTRAINT %s_pkey PRIMARY KEY (gid);\n",table,table);
+		printf("SELECT pg_catalog.setval ('%s_gid_seq', %i, true);\n",table, j-1);
+	}
+
 	return(1);
 }//end main()
-
-
-
