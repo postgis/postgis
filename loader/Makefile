@@ -16,13 +16,15 @@ endif
 
 OBJS = shpopen.o dbfopen.o getopt.o
 
-override CPPFLAGS := -g -I$(srcdir) -L$(top_builddir)/src/interfaces/libpq -lpq -I$(top_builddir)/src/interfaces/libpq $(CPPFLAGS) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"'
+override CPPFLAGS := -g -I$(srcdir) -I$(top_builddir)/src/interfaces/libpq $(CPPFLAGS) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"'
 
 all: shp2pgsql pgsql2shp
 
-pgsql2shp: $(OBJS)
+pgsql2shp: $(OBJS) pgsql2shp.o
+	$(CC) $(CFLAGS) $(OBJS) pgsql2shp.o $(libpq) $(LDFLAGS) $(LIBS) -o $@ 
 
-shp2pgsql: $(OBJS)
+shp2pgsql: $(OBJS) shp2pgsql.o
+	$(CC) $(CFLAGS) $(OBJS) shp2pgsql.o $(libpq) $(LDFLAGS) $(LIBS) -o $@ 
 
 clean:
 	@rm -f $(OBJS) shp2pgsql pgsql2shp
