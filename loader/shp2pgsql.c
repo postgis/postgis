@@ -12,6 +12,10 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.39  2003/08/17 19:00:14  pramsey
+ * Change sequence handling to respect versions prior to 7.3. Patch from
+ * strk.
+ *
  * Revision 1.38  2003/08/05 16:28:05  jeffloun
  * Removed the setval for the sequence if the value was going to be 0.
  * This avoids a warning that occirs when you try to set it to 0.
@@ -1450,7 +1454,12 @@ int main (int ARGC, char **ARGV){
 	if(opt != 'a'){
 		printf("\nALTER TABLE ONLY %s ADD CONSTRAINT %s_pkey PRIMARY KEY (gid);\n",table,table);
 		if(j > 1){
+#if USE_VERSION > 72
 			printf("SELECT pg_catalog.setval ('%s_gid_seq', %i, true);\n",table, j-1);
+#else
+			printf("SELECT setval ('%s_gid_seq', %i, true);\n",table, j-1);
+#endif
+
 		}
 	}
 

@@ -23,7 +23,23 @@ endif
 
 OBJS = shpopen.o dbfopen.o getopt.o
 
-override CPPFLAGS := -I$(srcdir) -I$(top_builddir)/src/interfaces/libpq $(CPPFLAGS) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"'
+#---------------------------------------------------------------
+# Test the version string and set the USE_VERSION macro
+# appropriately.
+#
+ifneq ($(findstring 7.1,$(VERSION)),)
+	USE_VERSION=71
+else
+	ifneq ($(findstring 7.2,$(VERSION)),)
+                USE_VERSION=72
+	else
+                USE_VERSION=73
+	endif
+endif
+
+#---------------------------------------------------------------
+
+override CPPFLAGS := -I$(srcdir) -I$(top_builddir)/src/interfaces/libpq $(CPPFLAGS) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"' -DUSE_VERSION=$(USE_VERSION)
 
 all: shp2pgsql$(EXE) pgsql2shp$(EXE)
 
