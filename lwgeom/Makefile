@@ -82,6 +82,8 @@ endif
 NAME=lwgeom
 SO_MAJOR_VERSION=0
 SO_MINOR_VERSION=1
+SO_MICRO_VERSION=2
+SCRIPTS_VERSION=0.0.1
 ifeq (${USE_VERSION},71) 
 	MODULE_FILENAME = $(LPATH)/$(shlib)
 	MODULE_INSTALLDIR = $(libdir)
@@ -95,6 +97,7 @@ endif
 #---------------------------------------------------------------
 
 POSTGIS_VERSION = $(SO_MAJOR_VERSION).$(SO_MINOR_VERSION) USE_GEOS=$(USE_GEOS) USE_PROJ=$(USE_PROJ) USE_STATS=$(USE_STATS)
+POSTGIS_LIB_VERSION = $(SO_MAJOR_VERSION).$(SO_MINOR_VERSION).$(SO_MICRO_VERSION)
 
 #---------------------------------------------------------------
 
@@ -127,7 +130,7 @@ endif
 
 OBJS=lwgeom_api.o lwgeom_functions_analytic.o lwgeom_geos.o lwgeom_inout.o lwgeom_estimate.o lwgeom_functions_basic.o lwgeom_gist.o lwgeom_btree.o lwgeom_transform.o stringBuffer.o lwgeom_box2dfloat4.o lex.yy.o wktparse.tab.o lwgparse.o wktunparse.o 
 
-OTHERS=y.output lex.yy.c wktparse.tab.c wktparse.tab.h lwgeom.sql
+OTHERS=y.output lex.yy.c wktparse.tab.c wktparse.tab.h lwgeom.sql lwpostgis.sql
 
 
 #---------------------------------------------------------------
@@ -158,12 +161,14 @@ wktparse.tab.c: wktparse.y
 lex.yy.c: wktparse.lex wktparse.tab.c
 	$(FLEX) -Plwg_parse_yy -if -o'lex.yy.c' wktparse.lex 
 
-all: all-lib lwgeom.sql 
+all: all-lib lwgeom.sql lwpostgis.sql
 
 # Shared library stuff
 
-lwgeom.sql:	lwgeom.sql.in
-	#cat lwgeom.sql.in | sed -e 's:@MODULE_FILENAME@:$(MODULE_FILENAME):g;s:@POSTGIS_VERSION@:$(POSTGIS_VERSION):g'  > $@ 
+lwgeom.sql: lwgeom.sql.in
+	cpp -P -traditional-cpp -DUSE_VERSION=$(USE_VERSION) $< | sed -e 's:@MODULE_FILENAME@:$(MODULE_FILENAME):g;s:@POSTGIS_VERSION@:$(POSTGIS_VERSION):g;s:@POSTGIS_SCRIPTS_VERSION@:$(SCRIPTS_VERSION):g' > $@
+
+lwpostgis.sql: lwpostgis.sql.in
 	cpp -P -traditional-cpp -DUSE_VERSION=$(USE_VERSION) $< | sed -e 's:@MODULE_FILENAME@:$(MODULE_FILENAME):g;s:@POSTGIS_VERSION@:$(POSTGIS_VERSION):g;s:@POSTGIS_SCRIPTS_VERSION@:$(SCRIPTS_VERSION):g' > $@
 
 install: all installdirs install-lwgeom-lib
