@@ -401,6 +401,13 @@ Datum expand_bbox(PG_FUNCTION_ARGS);
 Datum srid_geom(PG_FUNCTION_ARGS);
 Datum geometry_from_text(PG_FUNCTION_ARGS);
 
+Datum startpoint(PG_FUNCTION_ARGS);
+
+Datum endpoint(PG_FUNCTION_ARGS);
+Datum isclosed(PG_FUNCTION_ARGS);
+
+Datum centroid(PG_FUNCTION_ARGS);
+
 //for GIST index
 typedef char* (*BINARY_UNION)(char*, char*, int*);
 typedef float (*SIZE_BOX)(char*);

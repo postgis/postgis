@@ -24,7 +24,7 @@ f_table_name    varchar(256) not null,
 f_geometry_column varchar(256) not null,
 coord_dimension  integer NOT NULL,
 srid	 	integer NOT NULL,
-type	 	integer NOT NULL,
+type	 	varchar(30) NOT NULL,
 CONSTRAINT GC_PK primary key ( f_table_catalog,f_table_schema, f_table_name,f_geometry_column)
 ) ;
 
@@ -97,11 +97,12 @@ END;
 -- select DropGeometryColumn('new_test','test_table','mygeom');
 
 
----select AddGeometryColumn('new_test','tt','new_geom2',2,0,3);
----drop function AddGeometryColumn(varchar,varchar,varchar,integer,integer,integer);
+drop function AddGeometryColumn(varchar,varchar,varchar,integer,varchar,integer);
 
 --- AddGeometryColumn(<db name>,<table name>,<column name>, <srid>, <type>,<dim>)
---- only type available is 0 GEOMETRY_GENERIC, so its ignored (for future expansion)
+--- type can be one of GEOMETRY, GEOMETRYCOLLECTION,POINT,MULTIPOINT,POLYGON,
+--- MULTIPOLYGON,LINESTRING, or MULTILINESTRING 
+--- types (except GEOMETRY) are checked for consistency using a CHECK constraint
 --- uses SQL ALTER TABLE command to add the geometry column to the table
 --- added a row to geometry_columns with info (catalog = '', schema = <db name>)
 --- addes a constraint on the table that all the geometries MUST have the same SRID
@@ -109,7 +110,7 @@ END;
 --- should also check the precision grid (future expansion)
 ---  also checks to see if the database_name is in the pg_database table
 
-CREATE FUNCTION AddGeometryColumn(varchar,varchar,varchar,integer,integer,integer)
+CREATE FUNCTION AddGeometryColumn(varchar,varchar,varchar,integer,varchar,integer)
 	RETURNS text
 	AS 
 '
@@ -126,13 +127,16 @@ DECLARE
 	db_name_ok   boolean;
 
 BEGIN
-	IF ( (new_dim >3) or (new_dim <0) ) THEN
-		RAISE EXCEPTION ''invalid dimension'';
+
+	IF (not( (new_type =''GEOMETRY'') or (new_type =''GEOMETRYCOLLECTION'')  or (new_type =''POINT'')
+		  or (new_type =''MULTIPOINT'') or 	(new_type =''POLYGON'')  or (new_type =''MULTIPOLYGON'')  
+		  or (new_type =''LINESTRING'')  or (new_type =''MULTILINESTRING'')   ) ) THEN		
+		RAISE EXCEPTION ''invalid type name - valid ones are: GEOMETRY, GEOMETRYCOLLECTION,POINT,MULTIPOINT,POLYGON,MULTIPOLYGON,LINESTRING, or MULTILINESTRING  '';
 		return ''fail'';
 	END IF;
 
-	IF (new_type <> 0) THEN
-		RAISE EXCEPTION ''invalid type'';
+	IF ( (new_dim >3) or (new_dim <0) ) THEN
+		RAISE EXCEPTION ''invalid dimension'';
 		return ''fail'';
 	END IF;
 
@@ -151,18 +155,24 @@ BEGIN
 	EXECUTE ''INSERT INTO 	geometry_columns VALUES ('' || quote_literal('''') || '','' ||
 			 quote_literal(database_name) || '','' || quote_literal(table_name) || '','' ||
 			 quote_literal(column_name) || '','' ||
-			 new_dim ||'',''||new_srid||'',''||new_type||'')'';
+			 new_dim ||'',''||new_srid||'',''||quote_literal(new_type)||'')'';
 
 
  
 	EXECUTE ''ALTER TABLE '' ||table_name||'' ADD CHECK (SRID('' || column_name ||
 		'') = '' || new_srid || '')'' ;
+
+	IF (not(new_type = ''GEOMETRY'')) THEN
+		EXECUTE ''ALTER TABLE '' ||table_name||'' ADD CHECK ( geometrytype(''||column_name||'')=''|| quote_literal(new_type)||'')'';
+	END IF;
+
 	return ''Geometry column '' || column_name || '' added to table ''
-			||table_name ||'' with a SRID of ''||new_srid;	
+			||table_name ||'' with a SRID of ''||new_srid || '' and type ''||new_type;	
 END;
 '
 	LANGUAGE 'plpgsql' with (isstrict);
 
+---select AddGeometryColumn('new_test','tt','new_geom3',2,'GEOMETRY',3);
 
 
 
@@ -401,7 +411,7 @@ CREATE FUNCTION length3d(GEOMETRY)
    AS '@MODULE_FILENAME@'
    LANGUAGE 'c' with (isstrict);
 
-CREATE FUNCTION length2d(GEOMETRY)
+CREATE FUNCTION length(GEOMETRY)
    RETURNS FLOAT8
    AS '@MODULE_FILENAME@'
    LANGUAGE 'c' with (isstrict);
@@ -416,7 +426,7 @@ CREATE FUNCTION perimeter3d(GEOMETRY)
    AS '@MODULE_FILENAME@'
    LANGUAGE 'c' with (isstrict);
 
-CREATE FUNCTION perimeter2d(GEOMETRY)
+CREATE FUNCTION perimeter(GEOMETRY)
    RETURNS FLOAT8
    AS '@MODULE_FILENAME@'
    LANGUAGE 'c' with (isstrict);
@@ -431,6 +441,25 @@ CREATE FUNCTION point_inside_circle(GEOMETRY,float8,float8,float8)
    AS '@MODULE_FILENAME@'
    LANGUAGE 'c' with (isstrict);
 
+CREATE FUNCTION startpoint(GEOMETRY)
+   RETURNS GEOMETRY
+   AS '@MODULE_FILENAME@'
+   LANGUAGE 'c' with (isstrict);
+
+CREATE FUNCTION endpoint(GEOMETRY)
+   RETURNS GEOMETRY
+   AS '@MODULE_FILENAME@'
+   LANGUAGE 'c' with (isstrict);
+
+CREATE FUNCTION isclosed(GEOMETRY)
+   RETURNS boolean
+   AS '@MODULE_FILENAME@'
+   LANGUAGE 'c' with (isstrict);
+
+CREATE FUNCTION centroid(GEOMETRY)
+   RETURNS GEOMETRY
+   AS '@MODULE_FILENAME@'
+   LANGUAGE 'c' with (isstrict);
 
 ------- Aggregate
 

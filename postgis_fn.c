@@ -1374,13 +1374,18 @@ Datum interiorringn_polygon(PG_FUNCTION_ARGS)
 
 //        numgeometries(GEOMETRY) -- if GEOMETRY is a GEOMETRYCOLLECTION, return
 //the number of geometries in it, otherwise return NULL.
+//		if GEOMETRY is a MULTI* type, return the number of sub-types in it.
 
 PG_FUNCTION_INFO_V1(numgeometries_collection);
 Datum numgeometries_collection(PG_FUNCTION_ARGS)
 {
 		GEOMETRY		      *geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-		if (geom->type == COLLECTIONTYPE)
+		if  ( (geom->type == COLLECTIONTYPE) || 
+		      (geom->type == MULTIPOINTTYPE) || 
+			(geom->type == MULTILINETYPE) || 
+			(geom->type == MULTIPOLYGONTYPE)
+		    )
 			PG_RETURN_INT32( geom->nobjs ) ;
 		else
 			PG_RETURN_NULL();	
@@ -1392,6 +1397,7 @@ Datum numgeometries_collection(PG_FUNCTION_ARGS)
 //return NULL.   NOTE: MULTIPOINT, MULTILINESTRING,MULTIPOLYGON are
 //converted to sets of POINT,LINESTRING, and POLYGON so the index may
 //change.
+// if GEOMETRY is a MULTI* type, return the Nth sub-geometry
 
 
 PG_FUNCTION_INFO_V1(geometryn_collection);
@@ -1407,8 +1413,13 @@ Datum geometryn_collection(PG_FUNCTION_ARGS)
 
 	offsets1 = (int32 *) ( ((char *) &(geom->objType[0] ))+ sizeof(int32) * geom->nobjs ) ;
 
-		if (geom->type != COLLECTIONTYPE)
+		if  (!(( (geom->type == COLLECTIONTYPE) || 
+		      (geom->type == MULTIPOINTTYPE) || 
+			(geom->type == MULTILINETYPE) || 
+			(geom->type == MULTIPOLYGONTYPE)
+		    )))
 				PG_RETURN_NULL();			
+
 
 		if ( (wanted_index <0) || (wanted_index > (geom->nobjs-1) ) )
 			PG_RETURN_NULL();	//bad index
@@ -2032,4 +2043,153 @@ Datum expand_bbox(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
+//startpoint(geometry) :- if geometry is a linestring, return the first
+//point.  Otherwise, return NULL.
 
+PG_FUNCTION_INFO_V1(startpoint);
+Datum startpoint(PG_FUNCTION_ARGS)
+{
+		GEOMETRY		      *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+		POINT3D			*pt;
+		LINE3D			*line;
+		int32				*offsets1;
+
+	if (geom1->type != LINETYPE)
+		PG_RETURN_NULL();
+
+	offsets1 = (int32 *) ( ((char *) &(geom1->objType[0] ))+ sizeof(int32) * geom1->nobjs ) ;
+
+
+	line = (LINE3D *) ( (char *) geom1 +offsets1[0]);
+
+	pt = &line->points[0];  
+	
+	PG_RETURN_POINTER(
+				make_oneobj_geometry(sizeof(POINT3D),
+						         (char *) pt,
+							   POINTTYPE,  geom1->is3d, geom1->SRID, geom1->scale, geom1->offsetX, geom1->offsetY) 
+				);
+}
+
+//endpoint(geometry) :- if geometry is a linestring, return the last
+//point.  Otherwise, return NULL.
+
+PG_FUNCTION_INFO_V1(endpoint);
+Datum endpoint(PG_FUNCTION_ARGS)
+{
+		GEOMETRY		      *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+		POINT3D			*pt;
+		LINE3D			*line;
+		int32				*offsets1;
+
+
+
+	if (geom1->type != LINETYPE)
+		PG_RETURN_NULL();
+
+	offsets1 = (int32 *) ( ((char *) &(geom1->objType[0] ))+ sizeof(int32) * geom1->nobjs ) ;
+
+
+	line = (LINE3D *) ( (char *) geom1 +offsets1[0]);
+
+
+	pt = &line->points[line->npoints-1];  
+	
+	PG_RETURN_POINTER(
+				make_oneobj_geometry(sizeof(POINT3D),
+						         (char *) pt,
+							   POINTTYPE,  geom1->is3d, geom1->SRID, geom1->scale, geom1->offsetX, geom1->offsetY) 
+				);
+}
+
+
+
+//isclosed(geometry) :- if geometry is a linestring then returns 
+//startpoint == endpoint.  If its not a linestring then return NULL.  If
+//its a multilinestring, return true only if all the sub-linestrings have
+//startpoint=endpoint.
+//calculations always done in 3d (even if you do a force2d)
+
+
+PG_FUNCTION_INFO_V1(isclosed);
+Datum isclosed(PG_FUNCTION_ARGS)
+{
+		GEOMETRY		      *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+		POINT3D			*pt1,*pt2;
+		LINE3D			*line;
+		int32				*offsets1;
+		int				t;
+
+	if  (!((geom1->type == LINETYPE) || (geom1->type == MULTILINETYPE) ))
+		PG_RETURN_NULL();
+
+	offsets1 = (int32 *) ( ((char *) &(geom1->objType[0] ))+ sizeof(int32) * geom1->nobjs ) ;
+
+
+	for (t=0; t< geom1->nobjs; t++)
+	{
+		line = (LINE3D *) ( (char *) geom1 +offsets1[t]);
+		pt1 = &line->points[0];  
+		pt2 = &line->points[line->npoints-1];  
+		
+		if ( (pt1->x != pt2->x) || (pt1->y != pt2->y) || (pt1->z != pt2->z) )
+			PG_RETURN_BOOL(FALSE);	
+	}
+	PG_RETURN_BOOL(TRUE);
+}
+
+PG_FUNCTION_INFO_V1(centroid);
+Datum centroid(PG_FUNCTION_ARGS)
+{
+		GEOMETRY		      *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+		int32				*offsets1;
+		POINT3D			*pts,*cent;
+		POLYGON3D			*poly;
+		int				t,v;
+		int				num_points,num_points_tot;
+		double			tot_x,tot_y,tot_z;
+		GEOMETRY			*result;
+		
+
+
+	offsets1 = (int32 *) ( ((char *) &(geom1->objType[0] ))+ sizeof(int32) * geom1->nobjs ) ;
+
+	if  (!((geom1->type == POLYGONTYPE) || (geom1->type == MULTIPOLYGONTYPE) ))
+		PG_RETURN_NULL();
+
+	//find the centroid 
+	num_points_tot = 0;
+		tot_x = 0; tot_y =0; tot_z=0;
+	
+	for (t=0;t<geom1->nobjs;t++)
+	{
+		poly = (POLYGON3D *) ( (char *) geom1 +offsets1[t]);	
+		pts = (POINT3D *) ( (char *)&(poly->npoints[poly->nrings] )  );
+		pts = (POINT3D *) MAXALIGN(pts);
+		num_points =poly->npoints[0];
+
+		// just do the outer ring
+	//	for (u=0;u<poly->nrings;u++)
+	//	{
+	//		num_points += poly->npoints[u];
+	//	}
+
+		num_points_tot += num_points-1; //last point = 1st point
+		for (v=0;v<num_points-1;v++)
+		{
+			tot_x  += pts[v].x;	
+			tot_y  += pts[v].y;
+			tot_z  += pts[v].z;		
+		}
+	}
+	cent = palloc(sizeof(POINT3D));
+	set_point(cent, tot_x/num_points_tot, tot_y/num_points_tot,tot_z/num_points_tot);
+	 result = (
+				make_oneobj_geometry(sizeof(POINT3D),
+						         (char *) cent,
+							   POINTTYPE,  geom1->is3d, geom1->SRID, geom1->scale, geom1->offsetX, geom1->offsetY) 
+				);
+	pfree(cent);
+	PG_RETURN_POINTER(result);
+
+}
