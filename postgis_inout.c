@@ -1512,6 +1512,37 @@ Datum geometry_in(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL() ;
 	}
 
+	// handle the 2 variants of MULTIPOINT - 'MULTIPOINT(0 0, 1 1)'::geometry and 'MULTIPOINT( (0 0), (1 1))'::geometry;
+
+		// we cheat - if its the 2nd variant, we replace the internal parethesis with spaces!
+			if (strstr(str,"MULTIPOINT") != NULL )
+			{
+				//its a multipoint - replace any internal parenthesis with spaces
+				char *first_paren;
+				char *last_paren;
+				char *current_paren;
+
+				first_paren= index (str,'(');
+				last_paren = rindex(str,')');
+
+				if  ( (first_paren == NULL) || (last_paren == NULL) || (first_paren >last_paren) )
+				{
+						elog(ERROR,"couldnt parse objects in GEOMETRY (parenthesis related)\n");
+						PG_RETURN_NULL() ;
+				}
+				//now we can just got through the string
+				for (current_paren = (first_paren+1); current_paren <(last_paren);current_paren++)
+				{
+					if ( (current_paren[0] ==')') || (current_paren[0]=='(') )
+					{
+						current_paren[0] = ' ';
+					}
+				}
+
+			}
+
+
+//elog (NOTICE,"in:%s\n", str);
 
 //printf("geometry_in got string ''\n");
 
