@@ -157,17 +157,17 @@ include $(top_srcdir)/src/Makefile.shlib
 
 postgis_geos_wrapper.o: postgis_geos_wrapper.cpp
 
-all: all-lib postgis.sql postgis.sql postgis_undef.sql loaderdumper postgis_new.sql
+all: all-lib postgis.sql postgis_old.sql postgis_undef.sql loaderdumper
 
 loaderdumper:
 	$(MAKE) -C loader
 
 # Shared library stuff
 
-postgis.sql: postgis_sql_common.sql.in postgis_sql_$(USE_VERSION)_end.sql.in postgis_sql_$(USE_VERSION)_start.sql.in 
+postgis_old.sql: postgis_sql_common.sql.in postgis_sql_$(USE_VERSION)_end.sql.in postgis_sql_$(USE_VERSION)_start.sql.in 
 	cat postgis_sql_$(USE_VERSION)_start.sql.in postgis_sql_common.sql.in postgis_sql_$(USE_VERSION)_end.sql.in | sed -e 's:@MODULE_FILENAME@:$(MODULE_FILENAME):g;s:@POSTGIS_VERSION@:$(POSTGIS_VERSION):g'  > $@ 
 
-postgis_new.sql: postgis.sql.in
+postgis.sql: postgis.sql.in
 	cpp -P -traditional-cpp -DUSE_VERSION=$(USE_VERSION) $< | sed -e 's:@MODULE_FILENAME@:$(MODULE_FILENAME):g;s:@POSTGIS_VERSION@:$(POSTGIS_VERSION):g' > $@
 
 postgis_undef.sql: postgis.sql create_undef.pl
