@@ -3,14 +3,14 @@
 #---------------------------------------------------------------
 # Set USE_PROJ to 1 for Proj4 reprojection support
 #
-USE_PROJ=0
+USE_PROJ=1
 PROJ_DIR=/usr/local
 
 #---------------------------------------------------------------
 # Set USE_GEOS to 1 for GEOS spatial predicate and operator
 # support
 #
-USE_GEOS=0
+USE_GEOS=1
 GEOS_DIR=/usr/local
 
 #---------------------------------------------------------------
@@ -66,11 +66,11 @@ override CFLAGS += -g
 override CFLAGS += -I$(srcdir) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"' 
 override CFLAGS += -DUSE_VERSION=$(USE_VERSION)
 
-ifeq ($(USE_PROJ),1)
-	override CFLAGS += -I$(PROJ_DIR)/include -DUSE_PROJ 
-endif
 ifeq ($(USE_GEOS),1)
 	override CFLAGS += -I$(GEOS_DIR)/include/geos -DUSE_GEOS
+endif
+ifeq ($(USE_PROJ),1)
+	override CFLAGS += -I$(PROJ_DIR)/include -DUSE_PROJ 
 endif
 
 override DLLLIBS += $(BE_DLLLIBS) 
@@ -107,13 +107,12 @@ OBJS=postgis_debug.o postgis_ops.o postgis_fn.o postgis_inout.o postgis_proj.o p
 # matter.)
 
 SHLIB_LINK = $(filter -L%, $(LDFLAGS)) 
+ifeq ($(USE_GEOS),1)
+	SHLIB_LINK += -lstdc++ -L$(GEOS_DIR)/lib -lgeos
+endif
 ifeq ($(USE_PROJ),1)
 	SHLIB_LINK += -L$(PROJ_DIR)/lib -lproj
 endif
-ifeq ($(USE_GEOS),1)
-	SHLIB_LINK += -L$(GEOS_DIR)/lib -lgeos
-endif
-SHLIB_LINK += -lstdc++ 
 SHLIB_LINK += $(BE_DLLLIBS) 
 
 #---------------------------------------------------------------
