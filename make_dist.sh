@@ -35,6 +35,13 @@ rm -f "$outdir"/make_dist
 #echo "Removing regress tests"
 #rm -Rf $outdir/regress
 
+# generating configure script
+echo "Running autoconf"
+owd="$PWD"
+cd "$outdir"
+autoconf
+cd "$owd"
+
 # generating documentation
 echo "Generating documentation"
 owd="$PWD"
