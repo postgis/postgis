@@ -33,6 +33,8 @@ CREATEFUNCTION dump(geometry)
 #include "profile.h"
 #include "wktparse.h"
 
+Datum LWGEOM_dump(PG_FUNCTION_ARGS);
+
 typedef struct GEOMDUMPNODE_T {
 	int idx;
 	LWCOLLECTION *geom;
@@ -78,35 +80,25 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 			funcctx->multi_call_memory_ctx);
 
 		pglwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
-		if ( TYPE_GETTYPE(pglwgeom->type) < MULTIPOINTTYPE )
-		{
-			lwgeom = lwgeom_deserialize(
-				SERIALIZED_FORM(pglwgeom));
-			/*
-			 * Write state the user context
-			 */
-			state = lwalloc(sizeof(GEOMDUMPSTATE));
-			state->stacklen=0;
-			state->root = lwgeom;
-			funcctx->user_fctx = state;
-		}
-		else
-		{
-			lwcoll = lwcollection_deserialize(
-				SERIALIZED_FORM(pglwgeom));
+		lwgeom = lwgeom_deserialize(SERIALIZED_FORM(pglwgeom));
 
+		/* Create function state */
+		state = lwalloc(sizeof(GEOMDUMPSTATE));
+		state->root = lwgeom;
+		state->stacklen=0;
+
+		if ( TYPE_GETTYPE(lwgeom->type) >= MULTIPOINTTYPE )
+		{
 			/*
-			 * Write state the user context
+			 * Push a GEOMDUMPNODE on the state stack
 			 */
 			node = lwalloc(sizeof(GEOMDUMPNODE));
 			node->idx=0;
-			node->geom = lwcoll;
-			state = lwalloc(sizeof(GEOMDUMPSTATE));
-			state->root = (LWGEOM *)lwcoll;
-			state->stacklen=0;
+			node->geom = (LWCOLLECTION *)lwgeom;
 			PUSH(state, node);
-			funcctx->user_fctx = state;
 		}
+
+		funcctx->user_fctx = state;
 
 		/*
 		 * Build a tuple description for an
@@ -124,8 +116,8 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 		funcctx->slot = slot;
 
 		/*
-		 * generate attribute metadata needed later to produce tuples from
-		 * raw C strings
+		 * generate attribute metadata needed later to produce
+		 * tuples from raw C strings
 		 */
 		attinmeta = TupleDescGetAttInMetadata(tupdesc);
 		funcctx->attinmeta = attinmeta;
@@ -144,7 +136,7 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 	if ( TYPE_GETTYPE(state->root->type) < MULTIPOINTTYPE )
 	{
 		values[0] = "{}";
-		values[1] = lwgeom_to_hexwkb(lwgeom, -1);
+		values[1] = lwgeom_to_hexwkb(state->root, -1);
 		tuple = BuildTupleFromCStrings(funcctx->attinmeta, values);
 		result = TupleGetDatum(funcctx->slot, tuple);
 
@@ -182,7 +174,6 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 			 * of current node, push a new one on the
 			 * stack
 			 */
-			node->idx;
 			node = lwalloc(sizeof(GEOMDUMPNODE));
 			node->idx=0;
 			node->geom = (LWCOLLECTION *)lwgeom;
@@ -196,9 +187,6 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 
 	lwgeom->SRID = state->root->SRID;
 
-	//pglwgeom = pglwgeom_serialize(lwgeom);
-	//result = PointerGetDatum(pglwgeom);
-	//lwnotice("%s", address);
 	values[0] = address;
 	values[1] = lwgeom_to_hexwkb(lwgeom, -1);
 	tuple = BuildTupleFromCStrings(funcctx->attinmeta, values);
