@@ -90,3 +90,7 @@ SELECT id,wkt FROM test_data WHERE
        asBinary(geometry(wkb_ndr)) != asBinary(geometry(wkb_xdr)) OR
        asBinary(geometry(wkt)) != asBinary(geometry(wkb_xdr));
 
+
+SELECT extent(geometry(wkb_ndr)) from test_data;
+SELECT extent3d(geometry(wkb_ndr)) from test_data;
+SELECT mem_size(collect(force_2d(geometry(wkb_ndr)))) from test_data;
