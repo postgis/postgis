@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.27  2003/10/17 16:12:23  dblasby
+ * Made Envelope() CW instead of CCW.
+ *
  * Revision 1.26  2003/10/17 16:07:05  dblasby
  * made isEmpty() return true/false
  *
@@ -1161,11 +1164,12 @@ Datum envelope(PG_FUNCTION_ARGS)
 
 	//use LLB's z value (we're going to set is3d to false)
 
-	set_point( &pts[0], geom->bvol.LLB.x , geom->bvol.LLB.y , geom->bvol.LLB.z );
-	set_point( &pts[1], geom->bvol.URT.x , geom->bvol.LLB.y , geom->bvol.LLB.z );
-	set_point( &pts[2], geom->bvol.URT.x , geom->bvol.URT.y , geom->bvol.LLB.z );
-	set_point( &pts[3], geom->bvol.LLB.x , geom->bvol.URT.y , geom->bvol.LLB.z );
+		//0,1,2,3,4 --> CCW order,  4,3,2,1,0 --> CW order
 	set_point( &pts[4], geom->bvol.LLB.x , geom->bvol.LLB.y , geom->bvol.LLB.z );
+	set_point( &pts[3], geom->bvol.URT.x , geom->bvol.LLB.y , geom->bvol.LLB.z );
+	set_point( &pts[2], geom->bvol.URT.x , geom->bvol.URT.y , geom->bvol.LLB.z );
+	set_point( &pts[2], geom->bvol.LLB.x , geom->bvol.URT.y , geom->bvol.LLB.z );
+	set_point( &pts[1], geom->bvol.LLB.x , geom->bvol.LLB.y , geom->bvol.LLB.z );
 
 	pts_per_ring[0] = 5; //ring has 5 points
 
