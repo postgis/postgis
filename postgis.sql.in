@@ -1,0 +1,3984 @@
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- 
+-- $Id$
+--
+-- PostGIS - Spatial Types for PostgreSQL
+-- http://postgis.refractions.net
+-- Copyright 2001-2003 Refractions Research Inc.
+--
+-- This is free software; you can redistribute and/or modify it under
+-- the terms of hte GNU General Public Licence. See the COPYING file.
+--  
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+BEGIN TRANSACTION;
+
+-- You might have to define the PL/PgSQL language usually done with the
+-- changelang script.
+
+-- Here's some hokey code to test to see if PL/PgSQL is installed
+-- if it is, you get a message "PL/PgSQL is installed" 
+-- otherwise it will give a big error message.
+
+(select 'PL/PgSQL is installed.' as message from pg_language where lanname='plpgsql') union (select 'You must install PL/PgSQL before running this SQL file,\nor you will get an error. To install PL/PgSQL run:\n\tcreatelang plpgsql <dbname>'::text as message) order by message limit 1;
+
+
+-----------------------------------------
+--  THESE WERE postgis_sql_VER_start.sql.in
+-----------------------------------------
+
+#if USE_VERSION == 71
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--  HISTOGRAM2D
+
+CREATE FUNCTION histogram2d_in(opaque)
+	RETURNS opaque
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION histogram2d_out(opaque)
+	RETURNS opaque
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE TYPE histogram2d (
+	alignment = double,
+	internallength = variable,
+	input = histogram2d_in,
+	output = histogram2d_out,
+	storage = main
+);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--  BOX3D
+
+CREATE FUNCTION box3d_in(opaque)
+	RETURNS opaque 
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION box3d_out(opaque)
+	RETURNS opaque
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE TYPE box3d (
+	alignment = double,
+	internallength = 48,
+	input = box3d_in,
+	output = box3d_out
+);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--  SPHEROID
+
+CREATE FUNCTION spheroid_in(opaque)
+	RETURNS opaque 
+	AS MODULE_FILENAME,'ellipsoid_in'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION spheroid_out(opaque)
+	RETURNS opaque
+	AS MODULE_FILENAME,'ellipsoid_out'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE TYPE spheroid (
+	alignment = double,
+	internallength = 65,
+	input = spheroid_in,
+	output = spheroid_out
+);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--  WKB
+
+CREATE FUNCTION wkb_in(opaque)
+	RETURNS opaque
+	AS MODULE_FILENAME,'WKB_in'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION wkb_out(opaque)
+	RETURNS opaque
+	AS MODULE_FILENAME,'WKB_out'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE TYPE wkb (
+	internallength = variable,
+	input = wkb_in,
+	output = wkb_out,
+	storage = extended
+);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--  CHIP
+
+CREATE FUNCTION chip_in(opaque)
+	RETURNS opaque
+	AS MODULE_FILENAME,'CHIP_in'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION chip_out(opaque)
+	RETURNS opaque
+	AS MODULE_FILENAME,'CHIP_out'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE TYPE chip (
+	alignment = double,
+	internallength = variable,
+	input = chip_in,
+	output = chip_out,
+	storage = extended
+);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--  GEOMETRY
+
+CREATE FUNCTION geometry_in(opaque)
+	RETURNS opaque
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION geometry_out(opaque)
+	RETURNS opaque
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE TYPE geometry (
+	alignment = double,
+	internallength = variable,
+	input = geometry_in,
+	output = geometry_out,
+	storage = main
+);
+
+--
+-- GiST Selectivity Function
+--
+
+CREATE FUNCTION postgis_gist_sel(oid, oid, int2, opaque, int4)
+	RETURNS float8
+	AS MODULE_FILENAME
+	LANGUAGE 'C';
+
+#elif USE_VERSION == 72
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--  HISTOGRAM2D
+
+CREATE FUNCTION histogram2d_in(opaque)
+	RETURNS opaque
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION histogram2d_out(opaque)
+	RETURNS opaque
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE TYPE histogram2d (
+	alignment = double,
+	internallength = variable,
+	input = histogram2d_in,
+	output = histogram2d_out,
+	storage = main
+);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--  BOX3D
+
+CREATE FUNCTION box3d_in(opaque)
+	RETURNS opaque 
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION box3d_out(opaque)
+	RETURNS opaque
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE TYPE box3d (
+	alignment = double,
+	internallength = 48,
+	input = box3d_in,
+	output = box3d_out
+);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--  SPHEROID
+
+CREATE FUNCTION spheroid_in(opaque)
+	RETURNS opaque 
+	AS MODULE_FILENAME,'ellipsoid_in'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION spheroid_out(opaque)
+	RETURNS opaque
+	AS MODULE_FILENAME,'ellipsoid_out'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE TYPE spheroid (
+	alignment = double,
+	internallength = 65,
+	input = spheroid_in,
+	output = spheroid_out
+);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--  WKB
+
+CREATE FUNCTION wkb_in(opaque)
+	RETURNS opaque
+	AS MODULE_FILENAME,'WKB_in'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION wkb_out(opaque)
+	RETURNS opaque
+	AS MODULE_FILENAME,'WKB_out'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE TYPE wkb (
+	internallength = variable,
+	input = wkb_in,
+	output = wkb_out,
+	storage = extended
+);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--  CHIP
+
+CREATE FUNCTION chip_in(opaque)
+	RETURNS opaque
+	AS MODULE_FILENAME,'CHIP_in'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION chip_out(opaque)
+	RETURNS opaque
+	AS MODULE_FILENAME,'CHIP_out'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE TYPE chip (
+	alignment = double,
+	internallength = variable,
+	input = chip_in,
+	output = chip_out,
+	storage = extended
+);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--  GEOMETRY
+
+CREATE FUNCTION geometry_in(opaque)
+	RETURNS opaque
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION geometry_out(opaque)
+	RETURNS opaque
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE TYPE geometry (
+	alignment = double,
+	internallength = variable,
+	input = geometry_in,
+	output = geometry_out,
+	storage = main
+);
+
+-- 
+-- GiST Selectivity Function
+--
+
+CREATE FUNCTION postgis_gist_sel(opaque, oid,  opaque, int4)
+	RETURNS float8
+	AS MODULE_FILENAME
+	LANGUAGE'C';
+
+#elif USE_VERSION == 73
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--  HISTOGRAM2D
+
+CREATE FUNCTION histogram2d_in(cstring)
+	RETURNS histogram2d
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION histogram2d_out(histogram2d)
+	RETURNS cstring
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE TYPE histogram2d (
+	alignment = double,
+	internallength = variable,
+	input = histogram2d_in,
+	output = histogram2d_out,
+	storage = main
+);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--  BOX3D
+
+CREATE FUNCTION box3d_in(cstring)
+	RETURNS box3d 
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION box3d_out(box3d)
+	RETURNS cstring
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE TYPE box3d (
+	alignment = double,
+	internallength = 48,
+	input = box3d_in,
+	output = box3d_out
+);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--  SPHEROID
+
+CREATE FUNCTION spheroid_in(cstring)
+	RETURNS spheroid 
+	AS MODULE_FILENAME,'ellipsoid_in'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION spheroid_out(spheroid)
+	RETURNS cstring
+	AS MODULE_FILENAME,'ellipsoid_out'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE TYPE spheroid (
+	alignment = double,
+	internallength = 65,
+	input = spheroid_in,
+	output = spheroid_out
+);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--  WKB
+
+CREATE FUNCTION wkb_in(cstring)
+	RETURNS wkb
+	AS MODULE_FILENAME,'WKB_in'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION wkb_out(wkb)
+	RETURNS cstring
+	AS MODULE_FILENAME,'WKB_out'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE TYPE wkb (
+	internallength = variable,
+	input = wkb_in,
+	output = wkb_out,
+	storage = extended
+);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--  CHIP
+
+CREATE FUNCTION chip_in(cstring)
+	RETURNS chip
+	AS MODULE_FILENAME,'CHIP_in'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION chip_out(chip)
+	RETURNS cstring
+	AS MODULE_FILENAME,'CHIP_out'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE TYPE chip (
+	alignment = double,
+	internallength = variable,
+	input = chip_in,
+	output = chip_out,
+	storage = extended
+);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--  GEOMETRY
+
+CREATE FUNCTION geometry_in(cstring)
+	RETURNS geometry
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION geometry_out(geometry)
+	RETURNS cstring
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE TYPE geometry (
+	alignment = double,
+	internallength = variable,
+	input = geometry_in,
+	output = geometry_out,
+	storage = main
+);
+
+--
+-- GiST selectivity function
+--
+
+CREATE FUNCTION postgis_gist_sel (internal, oid, internal, int4)
+	RETURNS float8
+	AS MODULE_FILENAME
+	LANGUAGE 'C';
+
+#elif USE_VERSION == 74
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--  HISTOGRAM2D
+
+CREATE FUNCTION histogram2d_in(cstring)
+	RETURNS histogram2d
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION histogram2d_out(histogram2d)
+	RETURNS cstring
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE TYPE histogram2d (
+	alignment = double,
+	internallength = variable,
+	input = histogram2d_in,
+	output = histogram2d_out,
+	storage = main
+);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--  BOX3D
+
+CREATE FUNCTION box3d_in(cstring)
+	RETURNS box3d 
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION box3d_out(box3d)
+	RETURNS cstring
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE TYPE box3d (
+	alignment = double,
+	internallength = 48,
+	input = box3d_in,
+	output = box3d_out
+);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--  SPHEROID
+
+CREATE FUNCTION spheroid_in(cstring)
+	RETURNS spheroid 
+	AS MODULE_FILENAME,'ellipsoid_in'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION spheroid_out(spheroid)
+	RETURNS cstring
+	AS MODULE_FILENAME,'ellipsoid_out'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE TYPE spheroid (
+	alignment = double,
+	internallength = 65,
+	input = spheroid_in,
+	output = spheroid_out
+);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--  WKB
+
+CREATE FUNCTION wkb_in(cstring)
+	RETURNS wkb
+	AS MODULE_FILENAME,'WKB_in'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION wkb_out(wkb)
+	RETURNS cstring
+	AS MODULE_FILENAME,'WKB_out'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION wkb_recv(internal)
+	RETURNS wkb
+	AS MODULE_FILENAME,'WKB_recv'
+	LANGUAGE 'C' WITH (isstrict);
+
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--  CHIP
+
+CREATE FUNCTION chip_in(cstring)
+	RETURNS chip
+	AS MODULE_FILENAME,'CHIP_in'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION chip_out(chip)
+	RETURNS cstring
+	AS MODULE_FILENAME,'CHIP_out'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE TYPE chip (
+	alignment = double,
+	internallength = variable,
+	input = chip_in,
+	output = chip_out,
+	storage = extended
+);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--  GEOMETRY
+
+CREATE FUNCTION geometry_in(cstring)
+	RETURNS geometry
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION geometry_out(geometry)
+	RETURNS cstring
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE TYPE geometry (
+	alignment = double,
+	internallength = variable,
+	input = geometry_in,
+	output = geometry_out,
+	storage = main
+);
+
+--
+-- GiST selectivity function
+--
+
+CREATE FUNCTION postgis_gist_sel (internal, oid, internal, int4)
+	RETURNS float8
+	AS MODULE_FILENAME
+	LANGUAGE 'C';
+
+
+#elif USE_VERSION == 75
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--  HISTOGRAM2D
+
+CREATE FUNCTION histogram2d_in(cstring)
+	RETURNS histogram2d
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION histogram2d_out(histogram2d)
+	RETURNS cstring
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE TYPE histogram2d (
+	alignment = double,
+	internallength = variable,
+	input = histogram2d_in,
+	output = histogram2d_out,
+	storage = main
+);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--  BOX3D
+
+CREATE FUNCTION box3d_in(cstring)
+	RETURNS box3d 
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION box3d_out(box3d)
+	RETURNS cstring
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE TYPE box3d (
+	alignment = double,
+	internallength = 48,
+	input = box3d_in,
+	output = box3d_out
+);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--  SPHEROID
+
+CREATE FUNCTION spheroid_in(cstring)
+	RETURNS spheroid 
+	AS MODULE_FILENAME,'ellipsoid_in'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION spheroid_out(spheroid)
+	RETURNS cstring
+	AS MODULE_FILENAME,'ellipsoid_out'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE TYPE spheroid (
+	alignment = double,
+	internallength = 65,
+	input = spheroid_in,
+	output = spheroid_out
+);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--  WKB
+
+CREATE FUNCTION wkb_in(cstring)
+	RETURNS wkb
+	AS MODULE_FILENAME,'WKB_in'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION wkb_out(wkb)
+	RETURNS cstring
+	AS MODULE_FILENAME,'WKB_out'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION wkb_recv(internal)
+	RETURNS wkb
+	AS MODULE_FILENAME,'WKB_recv'
+	LANGUAGE 'C' WITH (isstrict);
+
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--  CHIP
+
+CREATE FUNCTION chip_in(cstring)
+	RETURNS chip
+	AS MODULE_FILENAME,'CHIP_in'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION chip_out(chip)
+	RETURNS cstring
+	AS MODULE_FILENAME,'CHIP_out'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE TYPE chip (
+	alignment = double,
+	internallength = variable,
+	input = chip_in,
+	output = chip_out,
+	storage = extended
+);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--  GEOMETRY
+
+CREATE FUNCTION geometry_in(cstring)
+	RETURNS geometry
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION geometry_out(geometry)
+	RETURNS cstring
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION geometry_analyze(internal)
+	RETURNS bool
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE TYPE geometry (
+	alignment = double,
+	internallength = variable,
+	input = geometry_in,
+	output = geometry_out,
+	storage = main,
+	analyze = geometry_analyze
+);
+
+--
+-- GiST selectivity function
+--
+
+CREATE FUNCTION postgis_gist_sel (internal, oid, internal, int4)
+	RETURNS float8
+	AS MODULE_FILENAME
+	LANGUAGE 'C';
+
+
+
+#endif // USE_VERSION == ...
+
+---------------------------------------
+--  THIS WAS postgis_sql_common.sql.in
+---------------------------------------
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- SPATIAL_REF_SYS
+
+CREATE TABLE spatial_ref_sys (
+	 srid integer not null primary key,
+	 auth_name varchar(256), 
+	 auth_srid integer, 
+	 srtext varchar(2048),
+	 proj4text varchar(2048) 
+);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- GEOMETRY_COLUMNS
+
+CREATE TABLE geometry_columns (
+	f_table_catalog varchar(256) not null,
+	f_table_schema varchar(256) not null,
+	f_table_name varchar(256) not null,
+	f_geometry_column varchar(256) not null,
+	coord_dimension integer not null,
+	srid integer not null,
+	type varchar(30) not null,
+	attrelid oid,
+	varattnum int,
+	stats histogram2d,
+	CONSTRAINT geometry_columns_pk primary key ( 
+		f_table_catalog, 
+		f_table_schema, 
+		f_table_name, 
+		f_geometry_column ) );
+
+--
+-- Workaround for old user defined variable length datatype 
+-- default value bug. Should not be necessary > 7.2
+-- 
+
+UPDATE pg_type SET typdefault = NULL WHERE typname = 'wkb';
+UPDATE pg_type SET typdefault = NULL WHERE typname = 'geometry';
+UPDATE pg_type SET typdefault = NULL WHERE typname = 'histogram2d';
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- POSTGIS_VERSION()
+
+CREATE FUNCTION postgis_version() RETURNS text
+AS 'SELECT 'POSTGIS_VERSION'::text AS version'
+LANGUAGE 'sql';
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- FIND_SRID( <schema>, <table>, <geom col> )
+
+CREATE FUNCTION find_srid(varchar,varchar,varchar) RETURNS int4 AS
+'DECLARE
+   schem text;
+   tabl text;
+   sr int4;
+BEGIN
+   IF $1 IS NULL THEN
+      RAISE EXCEPTION ''find_srid() - schema is NULL!'';
+   END IF;
+   IF $2 IS NULL THEN
+      RAISE EXCEPTION ''find_srid() - table name is NULL!'';
+   END IF;
+   IF $3 IS NULL THEN
+      RAISE EXCEPTION ''find_srid() - column name is NULL!'';
+   END IF;
+   schem = $1;
+   tabl = $2;
+-- if the table contains a . and the schema is empty
+-- split the table into a schema and a table
+-- otherwise drop through to default behavior
+   IF ( schem = '''' and tabl LIKE ''%.%'' ) THEN
+     schem = substr(tabl,1,strpos(tabl,''.'')-1);
+     tabl = substr(tabl,length(schem)+2);
+   ELSE
+     schem = schem || ''%'';
+   END IF;
+
+   select SRID into sr from geometry_columns where f_table_schema like schem and f_table_name = tabl and f_geometry_column = $3;
+   IF NOT FOUND THEN
+       RAISE EXCEPTION ''find_srid() - couldnt find the corresponding SRID - is the geometry registered in the GEOMETRY_COLUMNS table?  Is there an uppercase/lowercase missmatch?'';
+   END IF;
+  return sr;
+END;
+'
+LANGUAGE 'plpgsql' WITH (iscachable); 
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- GET_PROJ4_FROM_SRID( <srid> )
+
+CREATE FUNCTION get_proj4_from_srid(integer) RETURNS text AS
+'SELECT proj4text::text FROM spatial_ref_sys WHERE srid= $1' 
+LANGUAGE 'sql' WITH (iscachable,isstrict);
+
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- FIND_EXTENT( <table name>, <column name> )
+
+CREATE FUNCTION find_extent(text,text) RETURNS box3d AS
+'
+DECLARE
+	tablename alias for $1;
+	columnname alias for $2;
+	okay boolean;
+ myrec RECORD;
+
+BEGIN
+	FOR myrec IN EXECUTE ''SELECT extent("''||columnname||''") FROM "''||tablename||''"'' LOOP
+		return myrec.extent;
+	END LOOP; 
+END;
+'
+LANGUAGE 'plpgsql' WITH (isstrict);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- TRANSFORM ( <geometry>, <srid> )
+--
+-- Test:
+--
+-- trans=# select * from spatial_ref_sys ;
+--
+--  srid |   auth_name   | auth_srid | srtext | proj4text 
+-- ------+---------------+-----------+--------+--------------------------------------------------------------------------
+--     1 | latlong WGS84 |         1 |        | +proj=longlat +datum=WGS84
+--     2 | BC albers     |         2 |        | proj=aea ellps=GRS80 lon_0=-126 lat_0=45 lat_1=50 lat_2=58.5 x_0=1000000
+--
+-- select transform( 'SRID=1;POINT(-120.8 50.3)', 2);
+--      -> 'SRID=2;POINT(1370033.37046971 600755.810968684)'
+--
+
+CREATE FUNCTION transform_geometry(geometry,text,text,int)
+	RETURNS geometry
+	AS MODULE_FILENAME,'transform_geom'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION transform(geometry,integer) RETURNS geometry AS
+'BEGIN
+ RETURN transform_geometry( $1 , get_proj4_from_srid(SRID( $1 ) ), get_proj4_from_srid( $2 ), $2 );
+ END;'
+LANGUAGE 'plpgsql' WITH (iscachable,isstrict);
+
+
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- COMMON FUNCTIONS
+
+CREATE FUNCTION srid(chip)
+	RETURNS int4
+	AS MODULE_FILENAME,'srid_chip'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION height(chip)
+	RETURNS int4
+	AS MODULE_FILENAME,'height_chip'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION factor(chip)
+	RETURNS FLOAT4
+	AS MODULE_FILENAME,'factor_chip'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION width(chip)
+	RETURNS int4
+	AS MODULE_FILENAME,'width_chip'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION datatype(chip)
+	RETURNS int4
+	AS MODULE_FILENAME,'datatype_chip'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION compression(chip)
+	RETURNS int4
+	AS MODULE_FILENAME,'compression_chip'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION setSRID(chip,int4)
+	RETURNS chip
+	AS MODULE_FILENAME,'setsrid_chip'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION setfactor(chip,float4)
+	RETURNS chip
+	AS MODULE_FILENAME,'setfactor_chip'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION geometry(CHIP)
+	RETURNS geometry
+	AS MODULE_FILENAME,'CHIP_to_geom'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION box3d(geometry)
+	RETURNS box3d
+	AS MODULE_FILENAME,'get_bbox_of_geometry'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATE FUNCTION box(geometry)
+	RETURNS BOX
+	AS MODULE_FILENAME,'geometry2box'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATE FUNCTION geometry(box3d)
+	RETURNS geometry
+	AS MODULE_FILENAME,'get_geometry_of_bbox'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATE FUNCTION geometry(text)
+	RETURNS geometry
+	AS MODULE_FILENAME,'geometry_text'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATE FUNCTION expand(box3d,float8)
+	RETURNS box3d
+	AS MODULE_FILENAME,'expand_bbox'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+--
+-- Functions for converting to WKB
+--
+
+CREATE FUNCTION asbinary(geometry)
+	RETURNS wkb
+	AS MODULE_FILENAME,'asbinary_simple'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATE FUNCTION asbinary(geometry,TEXT)
+	RETURNS wkb
+	AS MODULE_FILENAME,'asbinary_specify'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATE FUNCTION bytea(wkb)
+	RETURNS bytea
+	AS MODULE_FILENAME,'WKBtoBYTEA'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+	
+CREATE FUNCTION geometry(wkb)
+	RETURNS GEOMETRY
+	AS MODULE_FILENAME,'geometryfromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+	
+CREATE FUNCTION GeomFromWKB(wkb)
+	RETURNS GEOMETRY
+	AS MODULE_FILENAME,'geometryfromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATE FUNCTION GeomFromWKB(wkb,int)
+	RETURNS GEOMETRY
+	AS MODULE_FILENAME,'geometryfromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+	
+CREATE FUNCTION PointFromWKB(wkb,int)
+	RETURNS GEOMETRY
+	AS MODULE_FILENAME,'PointfromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATE FUNCTION PointFromWKB(wkb)
+	RETURNS GEOMETRY
+	AS MODULE_FILENAME,'PointfromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+	
+CREATE FUNCTION LineFromWKB(wkb,int)
+	RETURNS GEOMETRY
+	AS MODULE_FILENAME,'LinefromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATE FUNCTION LineFromWKB(wkb)
+	RETURNS GEOMETRY
+	AS MODULE_FILENAME,'LinefromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+
+CREATE FUNCTION LinestringFromWKB(wkb,int)
+	RETURNS GEOMETRY
+	AS MODULE_FILENAME,'LinefromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATE FUNCTION LinestringFromWKB(wkb)
+	RETURNS GEOMETRY
+	AS MODULE_FILENAME,'LinefromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+	
+CREATE FUNCTION PolyFromWKB(wkb,int)
+	RETURNS GEOMETRY
+	AS MODULE_FILENAME,'PolyfromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATE FUNCTION PolyFromWKB(wkb)
+	RETURNS GEOMETRY
+	AS MODULE_FILENAME,'PolyfromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+	
+CREATE FUNCTION PolygonFromWKB(wkb,int)
+	RETURNS GEOMETRY
+	AS MODULE_FILENAME,'PolyfromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATE FUNCTION PolygonFromWKB(wkb)
+	RETURNS GEOMETRY
+	AS MODULE_FILENAME,'PolyfromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+
+CREATE FUNCTION MPointFromWKB(wkb,int)
+	RETURNS GEOMETRY
+	AS MODULE_FILENAME,'MPointfromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATE FUNCTION MPointFromWKB(wkb)
+	RETURNS GEOMETRY
+	AS MODULE_FILENAME,'MPointfromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+
+CREATE FUNCTION MultiPointFromWKB(wkb,int)
+	RETURNS GEOMETRY
+	AS MODULE_FILENAME,'MPointfromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATE FUNCTION MultiPointFromWKB(wkb)
+	RETURNS GEOMETRY
+	AS MODULE_FILENAME,'MPointfromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATE FUNCTION MultiLineFromWKB(wkb,int)
+	RETURNS GEOMETRY
+	AS MODULE_FILENAME,'MLinefromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATE FUNCTION MultiLineFromWKB(wkb)
+	RETURNS GEOMETRY
+	AS MODULE_FILENAME,'MLinefromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+	
+	
+CREATE FUNCTION MLineFromWKB(wkb,int)
+	RETURNS GEOMETRY
+	AS MODULE_FILENAME,'MLinefromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATE FUNCTION MLineFromWKB(wkb)
+	RETURNS GEOMETRY
+	AS MODULE_FILENAME,'MLinefromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATE FUNCTION MPolyFromWKB(wkb,int)
+	RETURNS GEOMETRY
+	AS MODULE_FILENAME,'MPolyfromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATE FUNCTION MPolyFromWKB(wkb)
+	RETURNS GEOMETRY
+	AS MODULE_FILENAME,'MPolyfromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+	
+CREATE FUNCTION MultiPolyFromWKB(wkb,int)
+	RETURNS GEOMETRY
+	AS MODULE_FILENAME,'MPolyfromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATE FUNCTION MultiPolyFromWKB(wkb)
+	RETURNS GEOMETRY
+	AS MODULE_FILENAME,'MPolyfromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+
+	
+CREATE FUNCTION GeomCollFromWKB(wkb,int)
+	RETURNS GEOMETRY
+	AS MODULE_FILENAME,'GCfromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATE FUNCTION GeomCollFromWKB(wkb)
+	RETURNS GEOMETRY
+	AS MODULE_FILENAME,'GCfromWKB_SRID'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+	
+	
+-- CREATE FUNCTION index_thing(geometry)
+-- RETURNS BOOL
+-- AS MODULE_FILENAME
+-- LANGUAGE 'C' WITH (isstrict);
+
+--
+-- Debugging functions
+--
+
+CREATE FUNCTION npoints(geometry)
+	RETURNS int4
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION nrings(geometry)
+	RETURNS int4
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict) ;
+
+CREATE FUNCTION mem_size(geometry)
+	RETURNS int4
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+
+CREATE FUNCTION summary(geometry)
+	RETURNS text
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION translate(geometry,float8,float8,float8)
+	RETURNS geometry
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict) ;
+
+CREATE FUNCTION dimension(geometry)
+	RETURNS int4
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict) ;
+
+CREATE FUNCTION geometrytype(geometry)
+	RETURNS text
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION envelope(geometry)
+	RETURNS geometry
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION x(geometry)
+	RETURNS float8
+	AS MODULE_FILENAME,'x_point'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION y(geometry)
+	RETURNS float8
+	AS MODULE_FILENAME,'y_point'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION z(geometry)
+	RETURNS float8
+	AS MODULE_FILENAME,'z_point'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION numpoints(geometry)
+	RETURNS integer
+	AS MODULE_FILENAME,'numpoints_linestring'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION pointn(geometry,integer)
+	RETURNS geometry
+	AS MODULE_FILENAME,'pointn_linestring'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION exteriorring(geometry)
+	RETURNS geometry
+	AS MODULE_FILENAME,'exteriorring_polygon'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION numinteriorrings(geometry)
+	RETURNS integer
+	AS MODULE_FILENAME,'numinteriorrings_polygon'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION interiorringn(geometry,integer)
+	RETURNS geometry
+	AS MODULE_FILENAME,'interiorringn_polygon'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION numgeometries(geometry)
+	RETURNS integer
+	AS MODULE_FILENAME,'numgeometries_collection'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION geometryn(geometry,integer)
+	RETURNS geometry
+	AS MODULE_FILENAME,'geometryn_collection'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION max_distance(geometry,geometry)
+	RETURNS float8
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION optimistic_overlap(geometry,geometry,FLOAT8)
+	RETURNS BOOL
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION segmentize(geometry,FLOAT8)
+	RETURNS geometry
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION distance(geometry,geometry)
+	RETURNS float8
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION astext(geometry)
+	RETURNS TEXT
+	AS MODULE_FILENAME,'astext_geometry'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION srid(geometry)
+	RETURNS int4
+	AS MODULE_FILENAME,'srid_geom'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION geometryfromtext(geometry,int4)
+	RETURNS geometry
+	AS MODULE_FILENAME,'geometry_from_text'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+	
+	
+CREATE FUNCTION geometryfromtext(geometry)
+	RETURNS geometry
+	AS MODULE_FILENAME,'geometry_from_text'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION geomfromtext(geometry,int4)
+	RETURNS geometry
+	AS MODULE_FILENAME,'geometry_from_text'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION geomfromtext(geometry)
+	RETURNS geometry
+	AS MODULE_FILENAME,'geometry_from_text'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION polyfromtext(geometry,int4)
+	RETURNS geometry
+	AS MODULE_FILENAME,'geometry_from_text_poly'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION polygonfromtext(geometry,int4)
+	RETURNS geometry
+	AS MODULE_FILENAME,'geometry_from_text_poly'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION polygonfromtext(geometry)
+	RETURNS geometry
+	AS MODULE_FILENAME,'geometry_from_text_poly'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+	
+CREATE FUNCTION mpolyfromtext(geometry,int4)
+	RETURNS geometry
+	AS MODULE_FILENAME,'geometry_from_text_mpoly'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION linefromtext(geometry,int4)
+	RETURNS geometry
+	AS MODULE_FILENAME,'geometry_from_text_line'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+	
+CREATE FUNCTION mlinefromtext(geometry,int4)
+	RETURNS geometry
+	AS MODULE_FILENAME,'geometry_from_text_mline'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION multilinestringfromtext(geometry,int4)
+	RETURNS geometry
+	AS MODULE_FILENAME,'geometry_from_text_mline'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION multilinestringfromtext(geometry)
+	RETURNS geometry
+	AS MODULE_FILENAME,'geometry_from_text_mline'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+	
+CREATE FUNCTION pointfromtext(geometry,int4)
+	RETURNS geometry
+	AS MODULE_FILENAME,'geometry_from_text_point'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION mpointfromtext(geometry,int4)
+	RETURNS geometry
+	AS MODULE_FILENAME,'geometry_from_text_mpoint'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION multipointfromtext(geometry,int4)
+	RETURNS geometry
+	AS MODULE_FILENAME,'geometry_from_text_mpoint'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION multipointfromtext(geometry)
+	RETURNS geometry
+	AS MODULE_FILENAME,'geometry_from_text_mpoint'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+	
+CREATE FUNCTION geomcollfromtext(geometry,int4)
+	RETURNS geometry
+	AS MODULE_FILENAME,'geometry_from_text_gc'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION setSRID(geometry,int4)
+	RETURNS geometry
+	AS MODULE_FILENAME,'geometry_from_text'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION polyfromtext(geometry)
+	RETURNS geometry
+	AS MODULE_FILENAME,'geometry_from_text_poly'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+
+CREATE FUNCTION mpolyfromtext(geometry)
+	RETURNS geometry
+	AS MODULE_FILENAME,'geometry_from_text_mpoly'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION multipolygonfromtext(geometry)
+	RETURNS geometry
+	AS MODULE_FILENAME,'geometry_from_text_mpoly'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION multipolygonfromtext(geometry,int)
+	RETURNS geometry
+	AS MODULE_FILENAME,'geometry_from_text_mpoly'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+	
+CREATE FUNCTION linefromtext(geometry)
+	RETURNS geometry
+	AS MODULE_FILENAME,'geometry_from_text_line'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+	
+CREATE FUNCTION linestringfromtext(geometry)
+	RETURNS geometry
+	AS MODULE_FILENAME,'geometry_from_text_line'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION linestringfromtext(geometry,int)
+	RETURNS geometry
+	AS MODULE_FILENAME,'geometry_from_text_line'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION mlinefromtext(geometry)
+	RETURNS geometry
+	AS MODULE_FILENAME,'geometry_from_text_mline'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION pointfromtext(geometry)
+	RETURNS geometry
+	AS MODULE_FILENAME,'geometry_from_text_point'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION mpointfromtext(geometry)
+	RETURNS geometry
+	AS MODULE_FILENAME,'geometry_from_text_mpoint'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION geomcollfromtext(geometry)
+	RETURNS geometry
+	AS MODULE_FILENAME,'geometry_from_text_gc'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+
+CREATE FUNCTION isempty(geometry)
+	RETURNS boolean
+	AS MODULE_FILENAME,'isempty'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION issimple(geometry)
+	RETURNS boolean
+	AS MODULE_FILENAME,'issimple'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+	
+
+CREATE FUNCTION equals(geometry,geometry)
+	RETURNS boolean
+	AS MODULE_FILENAME,'geomequals'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+
+--
+-- Special spheroid functions
+--
+
+CREATE FUNCTION length_spheroid(geometry,spheroid)
+	RETURNS FLOAT8
+	AS MODULE_FILENAME,'length_ellipsoid'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION length3d_spheroid(geometry,spheroid)
+	RETURNS FLOAT8
+	AS MODULE_FILENAME,'length3d_ellipsoid'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION distance_spheroid(geometry,geometry,spheroid)
+	RETURNS FLOAT8
+	AS MODULE_FILENAME,'distance_ellipsoid'
+	LANGUAGE 'C' WITH (isstrict);
+
+--
+-- Generic operations
+--
+
+CREATE FUNCTION length3d(geometry)
+	RETURNS FLOAT8
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION length(geometry)
+	RETURNS FLOAT8
+	AS MODULE_FILENAME,'length2d'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION area2d(geometry)
+	RETURNS FLOAT8
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION area(geometry)
+	RETURNS FLOAT8
+	AS MODULE_FILENAME,'area2d'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION perimeter3d(geometry)
+	RETURNS FLOAT8
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION perimeter(geometry)
+	RETURNS FLOAT8
+	AS MODULE_FILENAME,'perimeter2d'
+	LANGUAGE 'C' WITH (isstrict);
+
+---CREATE FUNCTION truly_inside(geometry,geometry)
+---	RETURNS bool
+---	AS MODULE_FILENAME
+---	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION point_inside_circle(geometry,float8,float8,float8)
+	RETURNS bool
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION startpoint(geometry)
+	RETURNS geometry
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION endpoint(geometry)
+	RETURNS geometry
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION isclosed(geometry)
+	RETURNS boolean
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION centroid(geometry)
+	RETURNS geometry
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+	
+CREATE FUNCTION isring(geometry)
+	RETURNS boolean
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION pointonsurface(geometry)
+	RETURNS geometry
+	AS MODULE_FILENAME
+	LANGUAGE 'C' WITH (isstrict);
+	
+
+--
+-- BBox operations
+--
+
+CREATE FUNCTION xmin(box3d)
+	RETURNS FLOAT8
+	AS MODULE_FILENAME,'box3d_xmin'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION ymin(box3d)
+	RETURNS FLOAT8
+	AS MODULE_FILENAME,'box3d_ymin'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION zmin(box3d)
+	RETURNS FLOAT8
+	AS MODULE_FILENAME,'box3d_zmin'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION xmax(box3d)
+	RETURNS FLOAT8
+	AS MODULE_FILENAME,'box3d_xmax'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION ymax(box3d)
+	RETURNS FLOAT8
+	AS MODULE_FILENAME,'box3d_ymax'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION zmax(box3d)
+	RETURNS FLOAT8
+	AS MODULE_FILENAME,'box3d_zmax'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION box3dtobox(box3d)
+	RETURNS BOX
+	AS MODULE_FILENAME,'box3dtobox'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+--
+-- Aggregate functions
+--
+
+CREATE FUNCTION geom_accum (geometry[],geometry)
+	RETURNS geometry[]
+	AS MODULE_FILENAME
+	LANGUAGE 'C';
+
+CREATE FUNCTION combine_bbox(box3d,geometry)
+	RETURNS box3d
+	AS MODULE_FILENAME
+	LANGUAGE 'C';
+
+CREATE AGGREGATE extent(
+	sfunc = combine_bbox,
+	basetype = geometry,
+	stype = box3d
+	);
+
+CREATE FUNCTION collector(geometry,geometry)
+	RETURNS geometry
+	AS MODULE_FILENAME
+	LANGUAGE 'C';
+
+CREATE AGGREGATE memcollect(
+	sfunc = collector,
+	basetype = geometry,
+	stype = geometry
+	);
+
+CREATE FUNCTION collect_garray (geometry[])
+        RETURNS geometry
+        AS MODULE_FILENAME
+        LANGUAGE 'C';
+
+CREATE AGGREGATE collect (
+	sfunc = geom_accum,
+	basetype = geometry,
+	stype = geometry[],
+	finalfunc = collect_garray
+	);
+
+
+--
+-- Operator definitions
+--
+
+CREATE FUNCTION geometry_overleft(geometry, geometry) 
+	RETURNS bool
+	AS MODULE_FILENAME 
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION geometry_overright(geometry, geometry) 
+	RETURNS bool
+	AS MODULE_FILENAME 
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION geometry_left(geometry, geometry) 
+	RETURNS bool
+	AS MODULE_FILENAME 
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION geometry_right(geometry, geometry) 
+	RETURNS bool
+	AS MODULE_FILENAME 
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION geometry_contain(geometry, geometry) 
+	RETURNS bool
+	AS MODULE_FILENAME 
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION geometry_contained(geometry, geometry) 
+	RETURNS bool
+	AS MODULE_FILENAME 
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION geometry_overlap(geometry, geometry) 
+	RETURNS bool
+	AS MODULE_FILENAME 
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION geometry_same(geometry, geometry) 
+	RETURNS bool
+	AS MODULE_FILENAME 
+	LANGUAGE 'C' WITH (isstrict);
+
+--
+-- Sorting functions
+--
+
+CREATE FUNCTION geometry_lt(geometry, geometry) 
+	RETURNS bool
+	AS MODULE_FILENAME 
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION geometry_le(geometry, geometry) 
+	RETURNS bool
+	AS MODULE_FILENAME 
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION geometry_gt(geometry, geometry) 
+	RETURNS bool
+	AS MODULE_FILENAME 
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION geometry_ge(geometry, geometry) 
+	RETURNS bool
+	AS MODULE_FILENAME 
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION geometry_eq(geometry, geometry) 
+	RETURNS bool
+	AS MODULE_FILENAME 
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION geometry_cmp(geometry, geometry) 
+	RETURNS integer
+	AS MODULE_FILENAME 
+	LANGUAGE 'C' WITH (isstrict);
+
+--
+-- Two dimensional to three dimensional forces
+-- 
+
+CREATE FUNCTION force_2d(geometry) 
+	RETURNS geometry
+	AS MODULE_FILENAME 
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION force_3d(geometry) 
+	RETURNS geometry
+	AS MODULE_FILENAME 
+	LANGUAGE 'C' WITH (isstrict);
+
+--
+-- Force collection
+--
+
+CREATE FUNCTION force_collection(geometry) 
+	RETURNS geometry
+	AS MODULE_FILENAME 
+	LANGUAGE 'C' WITH (isstrict);
+
+-- 
+-- Operator definitions
+--
+
+CREATE OPERATOR << (
+   LEFTARG = GEOMETRY, RIGHTARG = GEOMETRY, PROCEDURE = geometry_left,
+   COMMUTATOR = '>>',
+   RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+CREATE OPERATOR &< (
+   LEFTARG = GEOMETRY, RIGHTARG = GEOMETRY, PROCEDURE = geometry_overleft,
+   COMMUTATOR = '&>',
+   RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+CREATE OPERATOR && (
+   LEFTARG = GEOMETRY, RIGHTARG = GEOMETRY, PROCEDURE = geometry_overlap,
+   COMMUTATOR = '&&',
+   RESTRICT = postgis_gist_sel, JOIN = positionjoinsel
+);
+
+CREATE OPERATOR &> (
+   LEFTARG = GEOMETRY, RIGHTARG = GEOMETRY, PROCEDURE = geometry_overright,
+   COMMUTATOR = '&<',
+   RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+CREATE OPERATOR >> (
+   LEFTARG = GEOMETRY, RIGHTARG = GEOMETRY, PROCEDURE = geometry_right,
+   COMMUTATOR = '<<',
+   RESTRICT = positionsel, JOIN = positionjoinsel
+);
+
+CREATE OPERATOR ~= (
+   LEFTARG = GEOMETRY, RIGHTARG = GEOMETRY, PROCEDURE = geometry_same,
+   COMMUTATOR = '~=', 
+   RESTRICT = eqsel, JOIN = eqjoinsel
+);
+
+CREATE OPERATOR @ (
+   LEFTARG = GEOMETRY, RIGHTARG = GEOMETRY, PROCEDURE = geometry_contained,
+   COMMUTATOR = '~',
+   RESTRICT = contsel, JOIN = contjoinsel
+);
+
+CREATE OPERATOR ~ (
+   LEFTARG = GEOMETRY, RIGHTARG = GEOMETRY, PROCEDURE = geometry_contain,
+   COMMUTATOR = '@',
+   RESTRICT = contsel, JOIN = contjoinsel
+);
+
+--
+-- Sorting operators for Btree
+--
+
+CREATE OPERATOR < (
+   LEFTARG = GEOMETRY, RIGHTARG = GEOMETRY, PROCEDURE = geometry_lt,
+   COMMUTATOR = '>', NEGATOR = '>=',
+   RESTRICT = contsel, JOIN = contjoinsel
+);
+
+CREATE OPERATOR <= (
+   LEFTARG = GEOMETRY, RIGHTARG = GEOMETRY, PROCEDURE = geometry_le,
+   COMMUTATOR = '>=', NEGATOR = '>',
+   RESTRICT = contsel, JOIN = contjoinsel
+);
+
+CREATE OPERATOR = (
+   LEFTARG = GEOMETRY, RIGHTARG = GEOMETRY, PROCEDURE = geometry_eq,
+   COMMUTATOR = '=', -- we might implement a faster negator here
+   RESTRICT = contsel, JOIN = contjoinsel
+);
+
+CREATE OPERATOR >= (
+   LEFTARG = GEOMETRY, RIGHTARG = GEOMETRY, PROCEDURE = geometry_ge,
+   COMMUTATOR = '<=', NEGATOR = '<',
+   RESTRICT = contsel, JOIN = contjoinsel
+);
+CREATE OPERATOR > (
+   LEFTARG = GEOMETRY, RIGHTARG = GEOMETRY, PROCEDURE = geometry_gt,
+   COMMUTATOR = '<', NEGATOR = '<=',
+   RESTRICT = contsel, JOIN = contjoinsel
+);
+
+--
+-- GEOS Functions
+--
+
+
+CREATE FUNCTION intersection(geometry,geometry)
+   RETURNS geometry
+   AS MODULE_FILENAME,'intersection'
+   LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION buffer(geometry,float8)
+   RETURNS geometry
+   AS MODULE_FILENAME,'buffer'
+   LANGUAGE 'C' WITH (isstrict);
+   
+   CREATE FUNCTION convexhull(geometry)
+      RETURNS geometry
+      AS MODULE_FILENAME,'convexhull'
+   LANGUAGE 'C' WITH (isstrict);
+  
+  
+     CREATE FUNCTION difference(geometry,geometry)
+        RETURNS geometry
+        AS MODULE_FILENAME,'difference'
+   LANGUAGE 'C' WITH (isstrict);
+   
+  CREATE FUNCTION boundary(geometry)
+      RETURNS geometry
+      AS MODULE_FILENAME,'boundary'
+   LANGUAGE 'C' WITH (isstrict);
+
+   CREATE FUNCTION symdifference(geometry,geometry)
+        RETURNS geometry
+        AS MODULE_FILENAME,'symdifference'
+   LANGUAGE 'C' WITH (isstrict);
+
+
+CREATE FUNCTION symmetricdifference(geometry,geometry)
+	RETURNS geometry
+	AS MODULE_FILENAME,'symdifference'
+	LANGUAGE 'C' WITH (isstrict);
+
+
+CREATE FUNCTION GeomUnion(geometry,geometry)
+	RETURNS geometry
+	AS MODULE_FILENAME,'geomunion'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE AGGREGATE MemGeomUnion (
+	basetype = geometry,
+	sfunc = geomunion,
+	stype = geometry
+	);
+
+CREATE FUNCTION unite_garray (geometry[])
+	RETURNS geometry
+	AS MODULE_FILENAME
+	LANGUAGE 'C'; 
+
+CREATE AGGREGATE GeomUnion (
+	sfunc = geom_accum,
+	basetype = geometry,
+	stype = geometry[],
+	finalfunc = unite_garray
+	);
+
+
+CREATE FUNCTION relate(geometry,geometry)
+   RETURNS text
+   AS MODULE_FILENAME,'relate_full'
+   LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION relate(geometry,geometry,text)
+   RETURNS boolean
+   AS MODULE_FILENAME,'relate_pattern'
+   LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION disjoint(geometry,geometry)
+   RETURNS boolean
+   AS MODULE_FILENAME
+   LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION touches(geometry,geometry)
+   RETURNS boolean
+   AS MODULE_FILENAME
+   LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION intersects(geometry,geometry)
+   RETURNS boolean
+   AS MODULE_FILENAME
+   LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION crosses(geometry,geometry)
+   RETURNS boolean
+   AS MODULE_FILENAME
+   LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION within(geometry,geometry)
+   RETURNS boolean
+   AS MODULE_FILENAME
+   LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION contains(geometry,geometry)
+   RETURNS boolean
+   AS MODULE_FILENAME
+   LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION overlaps(geometry,geometry)
+   RETURNS boolean
+   AS MODULE_FILENAME
+   LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION isvalid(geometry)
+   RETURNS boolean
+   AS MODULE_FILENAME
+   LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION geosnoop(geometry)
+   RETURNS geometry
+   AS MODULE_FILENAME, 'GEOSnoop'
+   LANGUAGE 'C' WITH (isstrict);
+   
+
+--
+-- Algorithms
+--
+
+CREATE FUNCTION simplify(geometry, float8)
+   RETURNS geometry
+   AS MODULE_FILENAME
+   LANGUAGE 'C' WITH (isstrict);
+
+CREATE FUNCTION line_interpolate_point(geometry, float8)
+   RETURNS geometry
+   AS MODULE_FILENAME
+   LANGUAGE 'C' WITH (isstrict);
+
+-----------------------------------------
+--  THESE WERE postgis_sql_VER_end.sql.in
+-----------------------------------------
+
+#if USE_VERSION == 71
+
+--
+-- GiST support functions
+--
+
+CREATE FUNCTION ggeometry_consistent(opaque,geometry,int4) 
+	RETURNS bool 
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+CREATE FUNCTION ggeometry_compress(opaque) 
+	RETURNS opaque 
+	AS MODULE_FILENAME
+	LANGUAGE 'C';
+
+CREATE FUNCTION ggeometry_penalty(opaque,opaque,opaque) 
+	RETURNS opaque 
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+CREATE FUNCTION ggeometry_picksplit(opaque, opaque) 
+	RETURNS opaque 
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+CREATE FUNCTION ggeometry_union(bytea, opaque) 
+	RETURNS opaque 
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+CREATE FUNCTION ggeometry_same(opaque, opaque, opaque) 
+	RETURNS opaque 
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+CREATE FUNCTION rtree_decompress(opaque) 
+	RETURNS opaque
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+--
+-- R-Tree support functions
+--
+
+CREATE FUNCTION geometry_union(geometry,geometry) 
+	RETURNS geometry 
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+CREATE FUNCTION geometry_inter(geometry,geometry) 
+	RETURNS geometry 
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+CREATE FUNCTION geometry_size(geometry,opaque) 
+	RETURNS float4 
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+INSERT INTO pg_opclass (opcname, opcdeftype)
+	SELECT 'gist_geometry_ops', oid
+	FROM pg_type
+	WHERE typname = 'geometry';
+
+SELECT o.oid AS opoid, o.oprname
+	INTO TABLE rt_ops_tmp
+	FROM pg_operator o, pg_type t
+	WHERE o.oprleft = t.oid AND t.typname = 'geometry';
+
+-- box_left
+INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy) 
+	SELECT am.oid, opcl.oid, c.opoid, 1
+	FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
+	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops' 
+		AND c.oprname = '<<';
+
+-- box_overleft
+INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy) 
+	SELECT am.oid, opcl.oid, c.opoid, 2
+	FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
+	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops' 
+		AND c.oprname = '&<';
+
+-- box_overlap
+INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy) 
+	SELECT am.oid, opcl.oid, c.opoid, 3
+	FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
+	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops' 
+		AND c.oprname = '&&';
+
+-- box_overright
+INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy) 
+	SELECT am.oid, opcl.oid, c.opoid, 4
+	FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
+	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops' 
+		AND c.oprname = '&>';
+
+-- box_right
+INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy)
+	SELECT am.oid, opcl.oid, c.opoid, 5
+	FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
+	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops' 
+		AND c.oprname = '>>';
+
+-- box_same
+INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy) 
+	SELECT am.oid, opcl.oid, c.opoid, 6
+	FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
+	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops' 
+		AND c.oprname = '~=';
+
+-- box_contains
+INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy)
+	SELECT am.oid, opcl.oid, c.opoid, 7
+	FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
+	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops' 
+		AND c.oprname = '~';
+
+-- box_contained
+INSERT INTO pg_amop (amopid, amopclaid, amopopr, amopstrategy)
+	SELECT am.oid, opcl.oid, c.opoid, 8
+	FROM pg_am am, pg_opclass opcl, rt_ops_tmp c
+	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops' 
+		AND c.oprname = '@';
+
+DROP TABLE rt_ops_tmp;
+
+--
+-- Add the entries to amproc for the support methods.
+-- Note the amprocnum numbers associated with each are specific!
+--
+
+INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
+	SELECT am.oid, opcl.oid, pro.oid, 1
+	FROM pg_am am, pg_opclass opcl, pg_proc pro
+	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops'
+		AND proname = 'ggeometry_consistent';
+
+INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
+	SELECT am.oid, opcl.oid, pro.oid, 2
+	FROM pg_am am, pg_opclass opcl, pg_proc pro
+	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops'
+		AND proname = 'ggeometry_union';
+
+INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
+	SELECT am.oid, opcl.oid, pro.oid, 3
+	FROM pg_am am, pg_opclass opcl, pg_proc pro
+	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops'
+		AND proname = 'ggeometry_compress';
+
+INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
+	SELECT am.oid, opcl.oid, pro.oid, 4
+	FROM pg_am am, pg_opclass opcl, pg_proc pro
+	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops'
+		AND proname = 'rtree_decompress';
+
+INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
+	SELECT am.oid, opcl.oid, pro.oid, 5
+	FROM pg_am am, pg_opclass opcl, pg_proc pro
+	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops'
+		AND proname = 'ggeometry_penalty';
+
+INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
+	SELECT am.oid, opcl.oid, pro.oid, 6
+	FROM pg_am am, pg_opclass opcl, pg_proc pro
+	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops'
+		AND proname = 'ggeometry_picksplit';
+
+INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
+	SELECT am.oid, opcl.oid, pro.oid, 7
+	FROM pg_am am, pg_opclass opcl, pg_proc pro
+	WHERE amname = 'gist' AND opcname = 'gist_geometry_ops'
+		AND proname = 'ggeometry_same';
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- FIX_GEOMETRY_COLUMNS()
+
+CREATE FUNCTION fix_geometry_columns() RETURNS text
+AS 
+'
+BEGIN
+        UPDATE geometry_columns SET attrelid = (                                                SELECT c.oid AS attrelid FROM pg_class c, pg_attribute a                        WHERE c.relname = geometry_columns.f_table_name::name                           AND a.attrelid = c.oid                                                          AND a.attname = geometry_columns.f_geometry_column::name
+                );
+                                                                                        UPDATE geometry_columns SET varattnum = (                                               SELECT a.attnum FROM pg_class c, pg_attribute a                                 WHERE c.relname = geometry_columns.f_table_name::name                           AND a.attrelid = c.oid                                                          AND a.attname = geometry_columns.f_geometry_column::name
+                );
+
+        RETURN ''geometry_columns table is now linked to the system tables'';
+END;
+'
+LANGUAGE 'plpgsql' ;
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- ADDGEOMETRYCOLUMN ( 
+--      <catalog>, <schema>, <table name>, <column name>, 
+--      <srid>, <type>, <dim> )
+--
+-- Type can be one of geometry, GEOMETRYCOLLECTION, POINT, MULTIPOINT, POLYGON,
+-- MULTIPOLYGON, LINESTRING, or MULTILINESTRING.
+--
+-- Types (except geometry) are checked for consistency using a CHECK constraint
+-- uses SQL ALTER TABLE command to add the geometry column to the table.
+-- Addes a row to geometry_columns.
+-- Addes a constraint on the table that all the geometries MUST have the same 
+-- SRID. Checks the coord_dimension to make sure its between 0 and 3.
+-- Should also check the precision grid (future expansion).
+-- Calls fix_geometry_columns() at the end.
+--
+CREATE FUNCTION AddGeometryColumn(varchar,varchar,varchar,varchar,integer,varchar,integer)
+	RETURNS text
+	AS 
+'
+DECLARE
+	catalog_name alias for $1;
+	schema_name alias for $2;
+	table_name alias for $3;
+	column_name alias for $4;
+	new_srid alias for $5;
+	new_type alias for $6;
+	new_dim alias for $7;
+
+BEGIN
+
+	IF ( not ( (new_type =''GEOMETRY'') or
+		   (new_type =''GEOMETRYCOLLECTION'') or
+		   (new_type =''POINT'') or 
+		   (new_type =''MULTIPOINT'') or
+		   (new_type =''POLYGON'') or
+		   (new_type =''MULTIPOLYGON'') or
+		   (new_type =''LINESTRING'') or
+		   (new_type =''MULTILINESTRING'')) )
+	THEN
+		RAISE EXCEPTION ''Invalid type name - valid ones are: 
+			GEOMETRY, GEOMETRYCOLLECTION, POINT, 
+			MULTIPOINT, POLYGON, MULTIPOLYGON, 
+			LINESTRING, or MULTILINESTRING '';
+		return ''fail'';
+	END IF;
+
+	IF ( (new_dim >3) or (new_dim <0) ) THEN
+		RAISE EXCEPTION ''invalid dimension'';
+		return ''fail'';
+	END IF;
+
+	EXECUTE ''ALTER TABLE '' || quote_ident(table_name) || 
+		'' ADD COLUMN '' || quote_ident(column_name) || 
+		'' geometry '';
+
+	EXECUTE ''INSERT INTO geometry_columns VALUES ('' ||
+		quote_literal('''') || '','' ||
+		quote_literal('''') || '','' ||
+		quote_literal(table_name) || '','' ||
+		quote_literal(column_name) || '','' ||
+		new_dim || '','' || new_srid || '','' ||
+		quote_literal(new_type) || '')'';
+
+	EXECUTE ''select fix_geometry_columns()'';
+
+	EXECUTE ''ALTER TABLE '' || quote_ident(table_name) ||
+		'' ADD CHECK (SRID('' || quote_ident(column_name) ||
+		'') = '' || new_srid || '')'' ;
+
+	IF (not(new_type = ''GEOMETRY'')) THEN
+		EXECUTE ''ALTER TABLE '' || quote_ident(table_name) ||
+		'' ADD CHECK (geometrytype('' ||
+		quote_ident(column_name) || '')='' ||
+		quote_literal(new_type) || '' OR ('' ||
+		quote_ident(column_name) || '') is null)'';
+	END IF;
+
+	return ''Geometry column '' || column_name || '' added to table ''
+		|| table_name || '' WITH a SRID of '' || new_srid ||
+		'' and type '' || new_type;
+END;
+' LANGUAGE 'plpgsql' WITH (isstrict);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- ADDGEOMETRYCOLUMN ( <schema>, <table>, <column>, <srid>, <type>, <dim> )
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+CREATE FUNCTION AddGeometryColumn(varchar,varchar,varchar,integer,varchar,integer) RETURNS text AS '
+DECLARE
+	ret  text;
+BEGIN
+	SELECT AddGeometryColumn('''',$1,$2,$3,$4,$5,$6) into ret;
+	RETURN ret;
+END;
+' LANGUAGE 'plpgsql' WITH (isstrict);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- DROPGEOMETRYCOLUMN( <schema name>, <table name>, <column name> )
+--
+-- There is no ALTER TABLE DROP COLUMN command in postgresql
+-- There is no ALTER TABLE DROP CONSTRAINT command in postgresql
+-- So, we:
+--   1. remove the unwanted geom column reference from the 
+--      geometry_columns table
+--   2. update the table so that the geometry column is all NULLS
+--      This is okay since the CHECK srid(geometry) = <srid> is not
+--      checked if geometry is NULL (the isstrict attribute on srid())
+--   3. add another constraint that the geometry column must be NULL
+-- This, effectively kills the geometry column 
+--   (a) its not in the geometry_column table
+--   (b) it only has nulls in it
+--   (c) you cannot add anything to the geom column because it must be NULL
+-- 
+-- This will screw up if you put a NOT NULL constraint on the geometry 
+-- column, so the first thing we must do is remove this constraint (its a 
+-- modification of the pg_attribute system table)
+--
+-- We also check to see if the table/column exists in the geometry_columns 
+-- table 
+
+CREATE FUNCTION DropGeometryColumn(varchar,varchar,varchar)
+	RETURNS text
+	AS 
+'
+DECLARE
+	schema_name alias for $1;
+	table_name alias for $2;
+	column_name alias for $3;
+	myrec RECORD;
+	okay boolean;
+BEGIN
+ 	-- first we find out if the column is in the geometry_columns table
+	okay = ''f'';
+	FOR myrec IN SELECT * from geometry_columns where f_table_schema = schema_name and f_table_name = table_name and f_geometry_column = column_name LOOP
+		okay := ''t'';
+	END LOOP; 
+	IF (okay <> ''t'') THEN 
+		RAISE EXCEPTION ''column not found in geometry_columns table'';
+		return ''f'';
+	END IF;
+	
+	-- ensure the geometry column does not have a NOT NULL attribute
+	EXECUTE ''update pg_attribute set attnotnull = false from pg_class where pg_attribute.attrelid = pg_class.oid and pg_class.relname = '' || quote_literal(table_name) ||'' and pg_attribute.attname = '' || quote_literal(column_name);
+
+	-- remove ref from geometry_columns table
+	EXECUTE ''delete from geometry_columns where f_table_schema = '' || quote_literal(database_name) ||
+		 '' and f_table_name = '' || quote_literal(table_name) || 
+		 '' and f_geometry_column = '' || quote_literal(column_name );
+
+	-- update the given table/column so that it it all NULLS
+
+	EXECUTE ''update "''||table_name||''" set "''||column_name||''"= NULL'';
+
+	-- add = NULL constraint to given table/column
+
+	EXECUTE ''ALTER TABLE "''||table_name||''" ADD CHECK ("''||column_name||''" IS NULL)'';
+
+	RETURN table_name || ''.'' || column_name ||'' effectively removed.'';
+	
+END;
+'
+LANGUAGE 'plpgsql' WITH (isstrict);
+
+#elif USE_VERSION == 72
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- UPDATE_GEOMETRY_STATS()
+
+CREATE FUNCTION update_geometry_stats() RETURNS text
+AS
+'
+BEGIN
+	EXECUTE ''update geometry_columns set attrelid = (select pg_class.oid AS attrelid from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name  and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_GEOMETRY_column::name),  varattnum = (select pg_attribute.attnum from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_GEOMETRY_column::name)'';
+	execute ''update geometry_columns set stats = (build_histogram2d( create_histogram2d(find_extent(f_table_name,f_GEOMETRY_column),40 ),f_table_name::text, f_GEOMETRY_column::text))  '';	
+	return ''done'';
+END;
+'
+LANGUAGE 'plpgsql' ;
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- UPDATE_GEOMETRY_STATS( <table>, <column> )
+
+CREATE FUNCTION update_geometry_stats(varchar,varchar) RETURNS text
+AS
+'
+DECLARE
+	tablename aliAS for $1;
+	columnname aliAS for $2;
+
+BEGIN
+	EXECUTE ''update geometry_columns set attrelid = (select pg_class.oid AS attrelid from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name  and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_GEOMETRY_column::name),  varattnum = (select pg_attribute.attnum from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_GEOMETRY_column::name)'';
+	execute ''update geometry_columns set stats = (build_histogram2d( create_histogram2d(find_extent(''|| quote_literal(tablename) || '',''||quote_literal(columnname) ||''),40 ),''|| quote_literal(tablename) || ''::text,''||quote_literal(columnname) ||''::text )) WHERE f_table_name=''|| quote_literal(tablename) || ''and f_GEOMETRY_column=''||quote_literal(columnname) ;	
+	return ''done'';
+END;
+'
+LANGUAGE 'plpgsql' ;
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- CREATE_HISTOGRAM2D( <box>, <size> )
+--
+-- Returns a histgram with 0s in all the boxes.
+
+CREATE FUNCTION create_histogram2d(box3d,int)
+   RETURNS histogram2d
+   AS MODULE_FILENAME,'create_histogram2d'
+	   LANGUAGE 'C'  with (isstrict);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- BUILD_HISTOGRAM2D( <histogram2d>, <tablename>, <columnname> )
+--
+
+CREATE FUNCTION build_histogram2d (HISTOGRAM2D,text,text)
+   RETURNS histogram2d
+   AS MODULE_FILENAME,'build_histogram2d'
+	   LANGUAGE 'C'  with (isstrict);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- EXPLODE_HISTOGRAM2D( <histogram2d>, <tablename> )
+--
+
+CREATE FUNCTION explode_histogram2d (HISTOGRAM2D,text)
+   RETURNS histogram2d
+   AS MODULE_FILENAME,'explode_histogram2d'
+	   LANGUAGE 'C'  with (isstrict);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- ESTIMATE_HISTOGRAM2D( <histogram2d>, <box> )
+--
+
+CREATE FUNCTION estimate_histogram2d(HISTOGRAM2D,box)
+   RETURNS float8
+   AS MODULE_FILENAME,'estimate_histogram2d'
+	   LANGUAGE 'C'  with (isstrict);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- POSTGISCOSTESTIMATE()
+--
+
+CREATE FUNCTION postgisgistcostestimate(opaque,opaque,opaque,opaque,opaque,opaque,opaque,opaque)
+   RETURNS opaque
+   AS MODULE_FILENAME,'postgisgistcostestimate'
+	   LANGUAGE 'C'  with (isstrict);
+
+--
+-- 7.2 GiST support functions
+--
+
+CREATE FUNCTION ggeometry_consistent(opaque,geometry,int4) 
+	RETURNS bool 
+	AS MODULE_FILENAME 
+	LANGUAGE'C';
+
+CREATE FUNCTION ggeometry_compress(opaque) 
+	RETURNS opaque 
+	AS MODULE_FILENAME  
+	LANGUAGE'C';
+
+CREATE FUNCTION gbox_penalty(opaque,opaque,opaque) 
+	RETURNS opaque 
+	AS MODULE_FILENAME 
+	LANGUAGE'C';
+
+CREATE FUNCTION gbox_picksplit(opaque, opaque) 
+	RETURNS opaque 
+	AS MODULE_FILENAME 
+	LANGUAGE'C';
+
+CREATE FUNCTION gbox_union(bytea, opaque) 
+	RETURNS opaque 
+	AS MODULE_FILENAME 
+	LANGUAGE'C';
+
+CREATE FUNCTION gbox_same(box, box, opaque) 
+	RETURNS opaque 
+	AS MODULE_FILENAME 
+	LANGUAGE'C';
+
+CREATE FUNCTION rtree_decompress(opaque) 
+	RETURNS opaque
+	AS MODULE_FILENAME 
+	LANGUAGE'C';
+
+--
+-- 7.2 RTREE support functions
+--
+
+CREATE FUNCTION geometry_union(geometry,geometry) 
+	RETURNS geometry 
+	AS MODULE_FILENAME 
+	LANGUAGE'C';
+
+CREATE FUNCTION geometry_inter(geometry,geometry) 
+	RETURNS geometry 
+	AS MODULE_FILENAME 
+	LANGUAGE'C';
+
+CREATE FUNCTION geometry_size(geometry,opaque) 
+	RETURNS float4 
+	AS MODULE_FILENAME 
+	LANGUAGE'C';
+
+--
+-- Create opclass index binding entries.
+--
+
+INSERT INTO pg_opclass (opcamid, opcname, opcintype, opcdefault, opckeytype)
+    VALUES (
+        (SELECT oid FROM pg_am WHERE amname = 'gist'),
+        'gist_geometry_ops',
+        (SELECT oid FROM pg_type WHERE typname = 'geometry'),
+        true,
+        (SELECT oid FROM pg_type WHERE typname = 'box'));
+
+-- drop table rt_ops_tmp;
+
+SELECT o.oid AS opoid, o.oprname
+	INTO TABLE rt_ops_tmp
+	FROM pg_operator o, pg_type t
+	WHERE o.oprleft = t.oid 
+		AND t.typname = 'geometry';
+
+-- poly_left
+INSERT INTO pg_amop (amopclaid, amopstrategy, amopreqcheck, amopopr) 
+   SELECT opcl.oid, 1, true, c.opoid
+   FROM pg_opclass opcl, rt_ops_tmp c
+   WHERE
+      opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
+      and opcname = 'gist_geometry_ops' 
+      and c.oprname = '<<';
+
+-- poly_overleft
+INSERT INTO pg_amop (amopclaid, amopstrategy, amopreqcheck, amopopr) 
+   SELECT opcl.oid, 2, true, c.opoid
+   FROM pg_opclass opcl, rt_ops_tmp c
+   WHERE
+      opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
+      and opcname = 'gist_geometry_ops' 
+      and c.oprname = '&<';
+
+-- poly_overlap
+INSERT INTO pg_amop (amopclaid, amopstrategy, amopreqcheck, amopopr) 
+   SELECT opcl.oid, 3, true, c.opoid
+   FROM pg_opclass opcl, rt_ops_tmp c
+   WHERE
+      opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
+      and opcname = 'gist_geometry_ops' 
+      and c.oprname = '&&';
+
+-- poly_overright
+INSERT INTO pg_amop (amopclaid, amopstrategy, amopreqcheck, amopopr) 
+   SELECT opcl.oid, 4, true, c.opoid
+   FROM pg_opclass opcl, rt_ops_tmp c
+   WHERE
+      opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
+      and opcname = 'gist_geometry_ops' 
+      and c.oprname = '&>';
+
+-- poly_right
+INSERT INTO pg_amop (amopclaid, amopstrategy, amopreqcheck, amopopr)
+   SELECT opcl.oid, 5, true, c.opoid
+   FROM pg_opclass opcl, rt_ops_tmp c
+   WHERE
+      opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
+      and opcname = 'gist_geometry_ops' 
+      and c.oprname = '>>';
+
+-- poly_same
+INSERT INTO pg_amop (amopclaid, amopstrategy, amopreqcheck, amopopr) 
+   SELECT opcl.oid, 6, true, c.opoid
+   FROM pg_opclass opcl, rt_ops_tmp c
+   WHERE
+      opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
+      and opcname = 'gist_geometry_ops' 
+      and c.oprname = '~=';
+
+-- poly_contains
+INSERT INTO pg_amop (amopclaid, amopstrategy, amopreqcheck, amopopr)
+   SELECT opcl.oid, 7, true, c.opoid
+   FROM pg_opclass opcl, rt_ops_tmp c
+   WHERE
+      opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
+      and opcname = 'gist_geometry_ops' 
+      and c.oprname = '~';
+
+-- poly_contained
+INSERT INTO pg_amop (amopclaid, amopstrategy, amopreqcheck, amopopr)
+   SELECT opcl.oid, 8, true, c.opoid
+   FROM pg_opclass opcl, rt_ops_tmp c
+   WHERE
+      opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
+      and opcname = 'gist_geometry_ops' 
+      and c.oprname = '@';
+
+DROP TABLE rt_ops_tmp;
+
+-- add the entries to amproc for the support methods
+-- note the amprocnum numbers associated with each are specific!
+INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
+   SELECT opcl.oid, 1, pro.oid
+   FROM pg_opclass opcl, pg_proc pro
+   WHERE
+      opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
+      and opcname = 'gist_geometry_ops'
+      and proname = 'ggeometry_consistent';
+
+INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
+   SELECT opcl.oid, 2, pro.oid
+   FROM pg_opclass opcl, pg_proc pro
+   WHERE
+      opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
+      and opcname = 'gist_geometry_ops'
+      and proname = 'gbox_union';
+
+INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
+   SELECT opcl.oid, 3, pro.oid
+   FROM pg_opclass opcl, pg_proc pro
+   WHERE
+      opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
+      and opcname = 'gist_geometry_ops'
+      and proname = 'ggeometry_compress';
+
+INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
+   SELECT opcl.oid, 4, pro.oid
+   FROM pg_opclass opcl, pg_proc pro
+   WHERE
+      opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
+      and opcname = 'gist_geometry_ops'
+      and proname = 'rtree_decompress';
+
+INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
+   SELECT opcl.oid, 5, pro.oid
+   FROM pg_opclass opcl, pg_proc pro
+   WHERE
+      opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
+      and opcname = 'gist_geometry_ops'
+      and proname = 'gbox_penalty';
+
+INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
+   SELECT opcl.oid, 6, pro.oid
+   FROM pg_opclass opcl, pg_proc pro
+   WHERE
+      opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
+      and opcname = 'gist_geometry_ops'
+      and proname = 'gbox_picksplit';
+
+INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
+   SELECT opcl.oid, 7, pro.oid
+   FROM pg_opclass opcl, pg_proc pro
+   WHERE
+      opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
+      and opcname = 'gist_geometry_ops'
+      and proname = 'gbox_same';
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- FIX_GEOMETRY_COLUMNS()
+
+CREATE FUNCTION fix_geometry_columns() RETURNS text
+AS 
+'
+BEGIN
+
+        UPDATE geometry_columns SET attrelid = (                                                SELECT c.oid AS attrelid FROM pg_class c, pg_attribute a                        WHERE c.relname = geometry_columns.f_table_name::name                           AND a.attrelid = c.oid                                                          AND a.attname = geometry_columns.f_geometry_column::name
+                );
+                                                                                        UPDATE geometry_columns SET varattnum = (                                               SELECT a.attnum FROM pg_class c, pg_attribute a                                 WHERE c.relname = geometry_columns.f_table_name::name                           AND a.attrelid = c.oid                                                          AND a.attname = geometry_columns.f_geometry_column::name
+                );
+
+        RETURN ''geometry_columns table is now linked to the system tables'';
+
+END;
+'
+LANGUAGE 'plpgsql' ;
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- ADDGEOMETRYCOLUMN ( 
+--      <catalog>, <schema>, <table name>, <column name>, 
+--      <srid>, <type>, <dim> )
+--
+-- Type can be one of geometry, GEOMETRYCOLLECTION, POINT, MULTIPOINT, POLYGON,
+-- MULTIPOLYGON, LINESTRING, or MULTILINESTRING.
+--
+-- Types (except geometry) are checked for consistency using a CHECK constraint
+-- uses SQL ALTER TABLE command to add the geometry column to the table.
+-- Addes a row to geometry_columns.
+-- Addes a constraint on the table that all the geometries MUST have the same 
+-- SRID. Checks the coord_dimension to make sure its between 0 and 3.
+-- Should also check the precision grid (future expansion).
+-- Calls fix_geometry_columns() at the end.
+--
+CREATE FUNCTION AddGeometryColumn(varchar,varchar,varchar,varchar,integer,varchar,integer)
+	RETURNS text
+	AS 
+'
+DECLARE
+	catalog_name alias for $1;
+	schema_name alias for $2;
+	table_name alias for $3;
+	column_name alias for $4;
+	new_srid alias for $5;
+	new_type alias for $6;
+	new_dim alias for $7;
+
+BEGIN
+
+	IF ( not ( (new_type =''GEOMETRY'') or
+		   (new_type =''GEOMETRYCOLLECTION'') or
+		   (new_type =''POINT'') or 
+		   (new_type =''MULTIPOINT'') or
+		   (new_type =''POLYGON'') or
+		   (new_type =''MULTIPOLYGON'') or
+		   (new_type =''LINESTRING'') or
+		   (new_type =''MULTILINESTRING'')) )
+	THEN
+		RAISE EXCEPTION ''Invalid type name - valid ones are: 
+			GEOMETRY, GEOMETRYCOLLECTION, POINT, 
+			MULTIPOINT, POLYGON, MULTIPOLYGON, 
+			LINESTRING, or MULTILINESTRING '';
+		return ''fail'';
+	END IF;
+
+	IF ( (new_dim >3) or (new_dim <0) ) THEN
+		RAISE EXCEPTION ''invalid dimension'';
+		return ''fail'';
+	END IF;
+
+	EXECUTE ''ALTER TABLE '' || quote_ident(table_name) || 
+		'' ADD COLUMN '' || quote_ident(column_name) || 
+		'' geometry '';
+
+	EXECUTE ''INSERT INTO geometry_columns VALUES ('' ||
+		quote_literal('''') || '','' ||
+		quote_literal('''') || '','' ||
+		quote_literal(table_name) || '','' ||
+		quote_literal(column_name) || '','' ||
+		new_dim || '','' || new_srid || '','' ||
+		quote_literal(new_type) || '')'';
+
+	EXECUTE ''select fix_geometry_columns()'';
+
+	EXECUTE ''ALTER TABLE '' || quote_ident(table_name) ||
+		'' ADD CHECK (SRID('' || quote_ident(column_name) ||
+		'') = '' || new_srid || '')'' ;
+
+	IF (not(new_type = ''GEOMETRY'')) THEN
+		EXECUTE ''ALTER TABLE '' || quote_ident(table_name) ||
+		'' ADD CHECK (geometrytype('' ||
+		quote_ident(column_name) || '')='' ||
+		quote_literal(new_type) || '' OR ('' ||
+		quote_ident(column_name) || '') is null)'';
+	END IF;
+
+	return ''Geometry column '' || column_name || '' added to table ''
+		|| table_name || '' WITH a SRID of '' || new_srid ||
+		'' and type '' || new_type;
+END;
+' LANGUAGE 'plpgsql' WITH (isstrict);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- ADDGEOMETRYCOLUMN ( <schema>, <table>, <column>, <srid>, <type>, <dim> )
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+CREATE FUNCTION AddGeometryColumn(varchar,varchar,varchar,integer,varchar,integer) RETURNS text AS '
+DECLARE
+	ret  text;
+BEGIN
+	SELECT AddGeometryColumn('''',$1,$2,$3,$4,$5,$6) into ret;
+	RETURN ret;
+END;
+' LANGUAGE 'plpgsql' WITH (isstrict);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- DROPGEOMETRYCOLUMN( <schema name>, <table name>, <column name> )
+--
+-- There is no ALTER TABLE DROP COLUMN command in postgresql
+-- There is no ALTER TABLE DROP CONSTRAINT command in postgresql
+-- So, we:
+--   1. remove the unwanted geom column reference from the 
+--      geometry_columns table
+--   2. update the table so that the geometry column is all NULLS
+--      This is okay since the CHECK srid(geometry) = <srid> is not
+--      checked if geometry is NULL (the isstrict attribute on srid())
+--   3. add another constraint that the geometry column must be NULL
+-- This, effectively kills the geometry column 
+--   (a) its not in the geometry_column table
+--   (b) it only has nulls in it
+--   (c) you cannot add anything to the geom column because it must be NULL
+-- 
+-- This will screw up if you put a NOT NULL constraint on the geometry 
+-- column, so the first thing we must do is remove this constraint (its a 
+-- modification of the pg_attribute system table)
+--
+-- We also check to see if the table/column exists in the geometry_columns 
+-- table 
+
+CREATE FUNCTION DropGeometryColumn(varchar,varchar,varchar)
+	RETURNS text
+	AS 
+'
+DECLARE
+	schema_name alias for $1;
+	table_name alias for $2;
+	column_name alias for $3;
+	myrec RECORD;
+	okay boolean;
+BEGIN
+ 	-- first we find out if the column is in the geometry_columns table
+	okay = ''f'';
+	FOR myrec IN SELECT * from geometry_columns where f_table_schema = schema_name and f_table_name = table_name and f_geometry_column = column_name LOOP
+		okay := ''t'';
+	END LOOP; 
+	IF (okay <> ''t'') THEN 
+		RAISE EXCEPTION ''column not found in geometry_columns table'';
+		return ''f'';
+	END IF;
+	
+	-- ensure the geometry column does not have a NOT NULL attribute
+	EXECUTE ''update pg_attribute set attnotnull = false from pg_class where pg_attribute.attrelid = pg_class.oid and pg_class.relname = '' || quote_literal(table_name) ||'' and pg_attribute.attname = '' || quote_literal(column_name);
+
+	-- remove ref from geometry_columns table
+	EXECUTE ''delete from geometry_columns where f_table_schema = '' || quote_literal(database_name) ||
+		 '' and f_table_name = '' || quote_literal(table_name) || 
+		 '' and f_geometry_column = '' || quote_literal(column_name );
+
+	-- update the given table/column so that it it all NULLS
+
+	EXECUTE ''update "''||table_name||''" set "''||column_name||''"= NULL'';
+
+	-- add = NULL constraint to given table/column
+
+	EXECUTE ''ALTER TABLE "''||table_name||''" ADD CHECK ("''||column_name||''" IS NULL)'';
+
+	RETURN table_name || ''.'' || column_name ||'' effectively removed.'';
+	
+END;
+'
+LANGUAGE 'plpgsql' WITH (isstrict);
+
+#elif USE_VERSION == 73
+
+--
+-- 7.3 explicit casting definitions
+--
+
+CREATE CAST ( chip AS geometry ) WITH FUNCTION geometry(chip) AS IMPLICIT;
+CREATE CAST ( geometry AS box3d ) WITH FUNCTION box3d(geometry) AS IMPLICIT;
+CREATE CAST ( geometry AS box ) WITH FUNCTION box(geometry) AS IMPLICIT;
+CREATE CAST ( box3d AS geometry ) WITH FUNCTION geometry(box3d) AS IMPLICIT;
+CREATE CAST ( text AS geometry) WITH FUNCTION geometry(text) AS IMPLICIT;
+CREATE CAST ( wkb AS bytea ) WITH FUNCTION bytea(wkb) AS IMPLICIT;
+CREATE CAST ( box3d AS box ) WITH FUNCTION box3dtobox(box3d);
+CREATE CAST ( geometry AS text ) WITH FUNCTION astext(geometry);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- UPDATE_GEOMETRY_STATS()
+
+CREATE FUNCTION update_geometry_stats() 
+RETURNS text
+AS
+'
+BEGIN
+	EXECUTE ''update geometry_columns set attrelid = (select pg_class.oid AS attrelid from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name  and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name),  varattnum = (select pg_attribute.attnum from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name)'';
+	execute ''update geometry_columns set stats = (build_histogram2d( create_histogram2d(find_extent(f_table_name,f_geometry_column),40 ),f_table_name::text, f_geometry_column::text))  '';	
+	return ''done'';
+END;
+'
+LANGUAGE 'plpgsql' ;
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- UPDATE_GEOMETRY_STATS( <table>, <column> )
+
+CREATE FUNCTION update_geometry_stats(varchar,varchar) 
+RETURNS text
+AS
+'
+DECLARE
+	tablename aliAS for $1;
+	columnname aliAS for $2;
+
+BEGIN
+	EXECUTE ''update geometry_columns set attrelid = (select pg_class.oid AS attrelid from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name  and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name),  varattnum = (select pg_attribute.attnum from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name)'';
+	execute ''update geometry_columns set stats = (build_histogram2d( create_histogram2d(find_extent(''|| quote_literal(tablename) || '',''||quote_literal(columnname) ||''),40 ),''|| quote_literal(tablename) || ''::text,''||quote_literal(columnname) ||''::text )) WHERE f_table_name=''|| quote_literal(tablename) || ''and f_geometry_column=''||quote_literal(columnname) ;	
+	return ''done'';
+END;
+'
+LANGUAGE 'plpgsql' ;
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- CREATE_HISTOGRAM2D( <box>, <size> )
+--
+-- Returns a histgram with 0s in all the boxes.
+
+CREATE FUNCTION create_histogram2d(box3d,int)
+	RETURNS histogram2d
+	AS MODULE_FILENAME,'create_histogram2d'
+	LANGUAGE 'C'  with (isstrict);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- BUILD_HISTOGRAM2D( <histogram2d>, <tablename>, <columnname> )
+--
+
+CREATE FUNCTION build_histogram2d (histogram2d, text, text)
+	RETURNS histogram2d
+	AS MODULE_FILENAME,'build_histogram2d'
+	LANGUAGE 'C'  with (isstrict);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- EXPLODE_HISTOGRAM2D( <histogram2d>, <tablename> )
+--
+
+CREATE FUNCTION explode_histogram2d (histogram2d, text)
+	RETURNS histogram2d
+	AS MODULE_FILENAME,'explode_histogram2d'
+	LANGUAGE 'C'  with (isstrict);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- ESTIMATE_HISTOGRAM2D( <histogram2d>, <box> )
+--
+
+CREATE FUNCTION estimate_histogram2d(histogram2d,box)
+	RETURNS float8
+	AS MODULE_FILENAME,'estimate_histogram2d'
+	LANGUAGE 'C'  with (isstrict);
+
+CREATE FUNCTION postgisgistcostestimate(internal,internal,internal,internal,internal,internal,internal,internal)
+	RETURNS opaque
+	AS MODULE_FILENAME,'postgisgistcostestimate'
+	LANGUAGE 'C'  with (isstrict);
+
+--
+-- 7.2 GiST support functions
+--
+
+CREATE FUNCTION ggeometry_consistent(internal,geometry,int4) 
+	RETURNS bool 
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+CREATE FUNCTION ggeometry_compress(internal) 
+	RETURNS internal 
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+CREATE FUNCTION gbox_penalty(internal,internal,internal) 
+	RETURNS internal 
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+CREATE FUNCTION gbox_picksplit(internal, internal) 
+	RETURNS internal 
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+CREATE FUNCTION gbox_union(bytea, internal) 
+	RETURNS internal 
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+CREATE FUNCTION gbox_same(box, box, internal) 
+	RETURNS internal 
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+CREATE FUNCTION rtree_decompress(internal) 
+	RETURNS internal
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+--
+-- 7.2 RTREE support functions
+--
+
+CREATE FUNCTION geometry_union(geometry,geometry) 
+	RETURNS geometry 
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+CREATE FUNCTION geometry_inter(geometry,geometry) 
+	RETURNS geometry 
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+CREATE FUNCTION geometry_size(geometry,internal) 
+	RETURNS float4 
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+--
+-- Create opclass index bindings
+--
+
+CREATE OPERATOR CLASS gist_geometry_ops
+	DEFAULT FOR TYPE geometry USING gist AS
+	OPERATOR	1	<< ,
+	OPERATOR	2	&< ,
+	OPERATOR	3	&& ,
+	OPERATOR	4	&> ,
+	OPERATOR	5	>> ,
+	OPERATOR	6	~= ,
+	OPERATOR	7	~ ,
+	OPERATOR	8	@ ,
+	FUNCTION	1	ggeometry_consistent (internal, geometry, int4),
+	FUNCTION	2	gbox_union (bytea, internal),
+	FUNCTION	3	ggeometry_compress (internal),
+	FUNCTION	4	rtree_decompress (internal),
+	FUNCTION	5	gbox_penalty (internal, internal, internal),
+	FUNCTION	6	gbox_picksplit (internal, internal),
+	FUNCTION	7	gbox_same (box, box, internal);
+
+UPDATE pg_opclass 
+	SET opckeytype = (select oid from pg_type where typname = 'box') 
+	WHERE opcname = 'gist_geometry_ops';
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- FIX_GEOMETRY_COLUMNS()
+--
+-- Since 7.3 schema support has been added.
+-- Previous postgis versions used to put the database name in
+-- the schema column. This needs to be fixed, so we set to the
+-- empty string any schema value not existing in pg_namespace
+--
+
+CREATE FUNCTION fix_geometry_columns() RETURNS text
+AS 
+'
+BEGIN
+	-- it would be better to find the correct schema name
+	UPDATE geometry_columns SET f_table_schema = ''public''
+		WHERE f_table_schema is NULL or f_table_schema NOT IN
+		( SELECT nspname::varchar FROM pg_namespace );
+
+	UPDATE geometry_columns SET attrelid = (
+		SELECT c.oid 
+		FROM pg_class c, pg_attribute a, pg_namespace n
+		WHERE c.relname = geometry_columns.f_table_name::name
+		AND a.attrelid = c.oid AND c.relnamespace = n.oid
+		AND a.attname = geometry_columns.f_geometry_column::name
+		AND n.nspname = geometry_columns.f_table_schema::name
+		);
+	
+	UPDATE geometry_columns SET varattnum = (
+		SELECT a.attnum
+		FROM pg_class c, pg_attribute a, pg_namespace n
+		WHERE n.nspname = geometry_columns.f_table_schema::name
+		AND c.relname = geometry_columns.f_table_name::name
+		AND a.attname = geometry_columns.f_geometry_column::name
+		AND a.attrelid = c.oid AND c.relnamespace = n.oid
+		);
+
+	RETURN ''geometry_columns table is now linked to the system tables'';
+
+END;
+'
+LANGUAGE 'plpgsql' ;
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- ADDGEOMETRYCOLUMN ( 
+--      <catalog>, <schema>, <table name>, <column name>, 
+--      <srid>, <type>, <dim> )
+--
+-- Type can be one of geometry, GEOMETRYCOLLECTION, POINT, MULTIPOINT, POLYGON,
+-- MULTIPOLYGON, LINESTRING, or MULTILINESTRING.
+--
+-- Types (except geometry) are checked for consistency using a CHECK constraint
+-- uses SQL ALTER TABLE command to add the geometry column to the table.
+-- Addes a row to geometry_columns.
+-- Addes a constraint on the table that all the geometries MUST have the same 
+-- SRID. Checks the coord_dimension to make sure its between 0 and 3.
+-- Should also check the precision grid (future expansion).
+-- Calls fix_geometry_columns() at the end.
+--
+CREATE FUNCTION AddGeometryColumn(varchar,varchar,varchar,varchar,integer,varchar,integer)
+	RETURNS text
+	AS 
+'
+DECLARE
+	catalog_name alias for $1;
+	schema_name alias for $2;
+	table_name alias for $3;
+	column_name alias for $4;
+	new_srid alias for $5;
+	new_type alias for $6;
+	new_dim alias for $7;
+
+	rec RECORD;
+	schema_ok bool;
+	real_schema name;
+BEGIN
+
+	IF ( not ( (new_type =''GEOMETRY'') or
+		   (new_type =''GEOMETRYCOLLECTION'') or
+		   (new_type =''POINT'') or 
+		   (new_type =''MULTIPOINT'') or
+		   (new_type =''POLYGON'') or
+		   (new_type =''MULTIPOLYGON'') or
+		   (new_type =''LINESTRING'') or
+		   (new_type =''MULTILINESTRING'')) )
+	THEN
+		RAISE EXCEPTION ''Invalid type name - valid ones are: 
+			GEOMETRY, GEOMETRYCOLLECTION, POINT, 
+			MULTIPOINT, POLYGON, MULTIPOLYGON, 
+			LINESTRING, or MULTILINESTRING '';
+		RETURN ''fail'';
+	END IF;
+
+	IF ( (new_dim >3) or (new_dim <0) ) THEN
+		RAISE EXCEPTION ''invalid dimension'';
+		RETURN ''fail'';
+	END IF;
+
+	IF ( schema_name != '''' ) THEN
+		schema_ok = ''f'';
+		FOR rec IN SELECT nspname FROM pg_namespace WHERE text(nspname) = schema_name LOOP
+			schema_ok := ''t'';
+		END LOOP;
+
+		if ( schema_ok <> ''t'' ) THEN
+			RAISE NOTICE ''Invalid schema name - using current_schema()'';
+			SELECT current_schema() into real_schema;
+		ELSE
+			real_schema = schema_name;
+		END IF;
+
+	ELSE
+		SELECT current_schema() into real_schema;
+	END IF;
+
+	EXECUTE ''ALTER TABLE '' || quote_ident(real_schema) ||
+		''.'' || quote_ident(table_name) || 
+		'' ADD COLUMN '' || quote_ident(column_name) || 
+		'' geometry '';
+
+	EXECUTE ''ALTER TABLE '' || quote_ident(real_schema) ||
+		''.'' || quote_ident(table_name) || 
+		'' ADD CHECK (SRID('' || quote_ident(column_name) ||
+		'') = '' || new_srid || '')'' ;
+
+	IF (not(new_type = ''GEOMETRY'')) THEN
+		EXECUTE ''ALTER TABLE '' || quote_ident(real_schema) ||
+			''.'' || quote_ident(table_name) || 
+			'' ADD CHECK (geometrytype('' ||
+			quote_ident(column_name) || '')='' ||
+			quote_literal(new_type) || '' OR ('' ||
+			quote_ident(column_name) || '') is null)'';
+	END IF;
+
+	EXECUTE ''INSERT INTO geometry_columns VALUES ('' ||
+		quote_literal('''') || '','' ||
+		quote_literal(real_schema) || '','' ||
+		quote_literal(table_name) || '','' ||
+		quote_literal(column_name) || '','' ||
+		new_dim || '','' || new_srid || '','' ||
+		quote_literal(new_type) || '')'';
+
+	EXECUTE ''select fix_geometry_columns()'';
+	--SELECT fix_geometry_columns();
+
+	return ''Geometry column '' || column_name || '' added to table ''
+		|| real_schema || ''.'' || table_name || '' WITH a SRID of '' || new_srid ||
+		'' and type '' || new_type;
+END;
+' LANGUAGE 'plpgsql' WITH (isstrict);
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- ADDGEOMETRYCOLUMN ( <schema>, <table>, <column>, <srid>, <type>, <dim> )
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+CREATE FUNCTION AddGeometryColumn(varchar,varchar,varchar,integer,varchar,integer) RETURNS text AS '
+DECLARE
+	ret  text;
+BEGIN
+	SELECT AddGeometryColumn('''',$1,$2,$3,$4,$5,$6) into ret;
+	RETURN ret;
+END;
+' LANGUAGE 'plpgsql' WITH (isstrict);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- DROPGEOMETRYCOLUMN( <schema name>, <table name>, <column name> )
+--
+-- Removes geometry column reference from geometry_columns table,
+-- and actually drops the column.
+--
+CREATE FUNCTION DropGeometryColumn(varchar,varchar,varchar)
+	RETURNS text
+	AS 
+'
+DECLARE
+	schema_name alias for $1;
+	table_name alias for $2;
+	column_name alias for $3;
+	
+	myrec RECORD;
+	real_schema name;
+	okay boolean;
+	query text;
+
+BEGIN
+
+
+	-- Find, check or fix schema_name
+	IF ( schema_name != '''' ) THEN
+		okay = ''f'';
+
+		FOR myrec IN SELECT nspname FROM pg_namespace WHERE text(nspname) = schema_name LOOP
+			okay := ''t'';
+		END LOOP;
+
+		IF ( okay <> ''t'' ) THEN
+			RAISE NOTICE ''Invalid schema name - using current_schema()'';
+			SELECT current_schema() into real_schema;
+		ELSE
+			real_schema = schema_name;
+		END IF;
+	ELSE
+		SELECT current_schema() into real_schema;
+	END IF;
+
+ 	-- first we find out if the column is in the geometry_columns table
+	okay = ''f'';
+	FOR myrec IN SELECT * from geometry_columns where f_table_schema = text(real_schema) and f_table_name = table_name and f_geometry_column = column_name LOOP
+		okay := ''t'';
+	END LOOP; 
+	IF (okay <> ''t'') THEN 
+		RAISE EXCEPTION ''column not found in geometry_columns table'';
+		RETURN ''f'';
+	END IF;
+
+	
+	-- Remove ref from geometry_columns table
+	EXECUTE ''delete from geometry_columns where f_table_schema = '' ||
+		quote_literal(real_schema) || '' and f_table_name = '' ||
+		quote_literal(table_name)  || '' and f_geometry_column = '' ||
+		quote_literal(column_name);
+
+	-- Remove table column
+	EXECUTE ''ALTER TABLE '' || quote_ident(real_schema) || ''.'' ||
+		quote_ident(table_name) || '' DROP COLUMN '' ||
+		quote_ident(column_name);
+
+
+	RETURN real_schema || ''.'' || table_name || ''.'' || column_name ||'' effectively removed.'';
+	
+END;
+'
+LANGUAGE 'plpgsql' WITH (isstrict);
+
+#elif USE_VERSION == 74
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--  WKB
+
+-- this has been moved here at _end from _start 
+-- because we need the definition of function bytea
+-- found in _common 
+CREATE TYPE wkb (
+	internallength = variable,
+	input = wkb_in,
+	output = wkb_out,
+	storage = extended,
+	send = bytea,
+	receive = wkb_recv
+);
+
+--
+-- 7.3 explicit casting definitions
+--
+
+CREATE CAST ( chip AS geometry ) WITH FUNCTION geometry(chip) AS IMPLICIT;
+CREATE CAST ( geometry AS box3d ) WITH FUNCTION box3d(geometry) AS IMPLICIT;
+CREATE CAST ( geometry AS box ) WITH FUNCTION box(geometry) AS IMPLICIT;
+CREATE CAST ( box3d AS geometry ) WITH FUNCTION geometry(box3d) AS IMPLICIT;
+CREATE CAST ( text AS geometry) WITH FUNCTION geometry(text) AS IMPLICIT;
+CREATE CAST ( wkb AS bytea ) WITH FUNCTION bytea(wkb) AS IMPLICIT;
+CREATE CAST ( box3d AS box ) WITH FUNCTION box3dtobox(box3d);
+CREATE CAST ( geometry AS text ) WITH FUNCTION astext(geometry);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- UPDATE_GEOMETRY_STATS()
+
+CREATE FUNCTION update_geometry_stats() 
+RETURNS text
+AS
+'
+BEGIN
+	EXECUTE ''update geometry_columns set attrelid = (select pg_class.oid AS attrelid from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name  and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name),  varattnum = (select pg_attribute.attnum from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name)'';
+	execute ''update geometry_columns set stats = (build_histogram2d( create_histogram2d(find_extent(f_table_name,f_geometry_column),40 ),f_table_name::text, f_geometry_column::text))  '';	
+	return ''done'';
+END;
+'
+LANGUAGE 'plpgsql' ;
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- UPDATE_GEOMETRY_STATS( <table>, <column> )
+
+CREATE FUNCTION update_geometry_stats(varchar,varchar) 
+RETURNS text
+AS
+'
+DECLARE
+	tablename aliAS for $1;
+	columnname aliAS for $2;
+
+BEGIN
+	EXECUTE ''update geometry_columns set attrelid = (select pg_class.oid AS attrelid from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name  and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name),  varattnum = (select pg_attribute.attnum from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name)'';
+	execute ''update geometry_columns set stats = (build_histogram2d( create_histogram2d(find_extent(''|| quote_literal(tablename) || '',''||quote_literal(columnname) ||''),40 ),''|| quote_literal(tablename) || ''::text,''||quote_literal(columnname) ||''::text )) WHERE f_table_name=''|| quote_literal(tablename) || ''and f_geometry_column=''||quote_literal(columnname) ;	
+	return ''done'';
+END;
+'
+LANGUAGE 'plpgsql' ;
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- CREATE_HISTOGRAM2D( <box>, <size> )
+--
+-- Returns a histgram with 0s in all the boxes.
+
+CREATE FUNCTION create_histogram2d(box3d,int)
+	RETURNS histogram2d
+	AS MODULE_FILENAME,'create_histogram2d'
+	LANGUAGE 'C'  with (isstrict);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- BUILD_HISTOGRAM2D( <histogram2d>, <tablename>, <columnname> )
+--
+
+CREATE FUNCTION build_histogram2d (histogram2d, text, text)
+	RETURNS histogram2d
+	AS MODULE_FILENAME,'build_histogram2d'
+	LANGUAGE 'C'  with (isstrict);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- EXPLODE_HISTOGRAM2D( <histogram2d>, <tablename> )
+--
+
+CREATE FUNCTION explode_histogram2d (histogram2d, text)
+	RETURNS histogram2d
+	AS MODULE_FILENAME,'explode_histogram2d'
+	LANGUAGE 'C'  with (isstrict);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- ESTIMATE_HISTOGRAM2D( <histogram2d>, <box> )
+--
+
+CREATE FUNCTION estimate_histogram2d(histogram2d,box)
+	RETURNS float8
+	AS MODULE_FILENAME,'estimate_histogram2d'
+	LANGUAGE 'C'  with (isstrict);
+
+CREATE FUNCTION postgisgistcostestimate(internal,internal,internal,internal,internal,internal,internal,internal)
+	RETURNS opaque
+	AS MODULE_FILENAME,'postgisgistcostestimate'
+	LANGUAGE 'C'  with (isstrict);
+
+--
+-- 7.2 GiST support functions
+--
+
+CREATE FUNCTION ggeometry_consistent(internal,geometry,int4) 
+	RETURNS bool 
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+CREATE FUNCTION ggeometry_compress(internal) 
+	RETURNS internal 
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+CREATE FUNCTION gbox_penalty(internal,internal,internal) 
+	RETURNS internal 
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+CREATE FUNCTION gbox_picksplit(internal, internal) 
+	RETURNS internal 
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+CREATE FUNCTION gbox_union(bytea, internal) 
+	RETURNS internal 
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+CREATE FUNCTION gbox_same(box, box, internal) 
+	RETURNS internal 
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+CREATE FUNCTION rtree_decompress(internal) 
+	RETURNS internal
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+--
+-- 7.2 RTREE support functions
+--
+
+CREATE FUNCTION geometry_union(geometry,geometry) 
+	RETURNS geometry 
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+CREATE FUNCTION geometry_inter(geometry,geometry) 
+	RETURNS geometry 
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+CREATE FUNCTION geometry_size(geometry,internal) 
+	RETURNS float4 
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+--
+-- Create opclass index bindings
+--
+
+CREATE OPERATOR CLASS gist_geometry_ops
+	DEFAULT FOR TYPE geometry USING gist AS
+	OPERATOR	1	<< ,
+	OPERATOR	2	&< ,
+	OPERATOR	3	&& ,
+	OPERATOR	4	&> ,
+	OPERATOR	5	>> ,
+	OPERATOR	6	~= ,
+	OPERATOR	7	~ ,
+	OPERATOR	8	@ ,
+	FUNCTION	1	ggeometry_consistent (internal, geometry, int4),
+	FUNCTION	2	gbox_union (bytea, internal),
+	FUNCTION	3	ggeometry_compress (internal),
+	FUNCTION	4	rtree_decompress (internal),
+	FUNCTION	5	gbox_penalty (internal, internal, internal),
+	FUNCTION	6	gbox_picksplit (internal, internal),
+	FUNCTION	7	gbox_same (box, box, internal);
+
+UPDATE pg_opclass 
+	SET opckeytype = (select oid from pg_type where typname = 'box') 
+	WHERE opcname = 'gist_geometry_ops';
+
+CREATE OPERATOR CLASS btree_geometry_ops
+	DEFAULT FOR TYPE geometry USING btree AS
+	OPERATOR	1	< ,
+	OPERATOR	2	<= ,
+	OPERATOR	3	= ,
+	OPERATOR	4	>= ,
+	OPERATOR	5	> ,
+	FUNCTION	1	geometry_cmp (geometry, geometry);
+
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- FIX_GEOMETRY_COLUMNS()
+--
+-- Since 7.3 schema support has been added.
+-- Previous postgis versions used to put the database name in
+-- the schema column. This needs to be fixed, so we set to the
+-- empty string any schema value not existing in pg_namespace
+--
+
+CREATE FUNCTION fix_geometry_columns() RETURNS text
+AS 
+'
+BEGIN
+	-- it would be better to find the correct schema name
+	UPDATE geometry_columns SET f_table_schema = ''public''
+		WHERE f_table_schema is NULL or f_table_schema NOT IN
+		( SELECT nspname::varchar FROM pg_namespace );
+
+	UPDATE geometry_columns SET attrelid = (
+		SELECT c.oid 
+		FROM pg_class c, pg_attribute a, pg_namespace n
+		WHERE c.relname = geometry_columns.f_table_name::name
+		AND a.attrelid = c.oid AND c.relnamespace = n.oid
+		AND a.attname = geometry_columns.f_geometry_column::name
+		AND n.nspname = geometry_columns.f_table_schema::name
+		);
+	
+	UPDATE geometry_columns SET varattnum = (
+		SELECT a.attnum
+		FROM pg_class c, pg_attribute a, pg_namespace n
+		WHERE n.nspname = geometry_columns.f_table_schema::name
+		AND c.relname = geometry_columns.f_table_name::name
+		AND a.attname = geometry_columns.f_geometry_column::name
+		AND a.attrelid = c.oid AND c.relnamespace = n.oid
+		);
+
+	RETURN ''geometry_columns table is now linked to the system tables'';
+
+
+END;
+'
+LANGUAGE 'plpgsql' ;
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- ADDGEOMETRYCOLUMN ( 
+--      <catalog>, <schema>, <table name>, <column name>, 
+--      <srid>, <type>, <dim> )
+--
+-- Type can be one of geometry, GEOMETRYCOLLECTION, POINT, MULTIPOINT, POLYGON,
+-- MULTIPOLYGON, LINESTRING, or MULTILINESTRING.
+--
+-- Types (except geometry) are checked for consistency using a CHECK constraint
+-- uses SQL ALTER TABLE command to add the geometry column to the table.
+-- Addes a row to geometry_columns.
+-- Addes a constraint on the table that all the geometries MUST have the same 
+-- SRID. Checks the coord_dimension to make sure its between 0 and 3.
+-- Should also check the precision grid (future expansion).
+-- Calls fix_geometry_columns() at the end.
+--
+CREATE FUNCTION AddGeometryColumn(varchar,varchar,varchar,varchar,integer,varchar,integer)
+	RETURNS text
+	AS 
+'
+DECLARE
+	catalog_name alias for $1;
+	schema_name alias for $2;
+	table_name alias for $3;
+	column_name alias for $4;
+	new_srid alias for $5;
+	new_type alias for $6;
+	new_dim alias for $7;
+
+	rec RECORD;
+	schema_ok bool;
+	real_schema name;
+BEGIN
+
+	IF ( not ( (new_type =''GEOMETRY'') or
+		   (new_type =''GEOMETRYCOLLECTION'') or
+		   (new_type =''POINT'') or 
+		   (new_type =''MULTIPOINT'') or
+		   (new_type =''POLYGON'') or
+		   (new_type =''MULTIPOLYGON'') or
+		   (new_type =''LINESTRING'') or
+		   (new_type =''MULTILINESTRING'')) )
+	THEN
+		RAISE EXCEPTION ''Invalid type name - valid ones are: 
+			GEOMETRY, GEOMETRYCOLLECTION, POINT, 
+			MULTIPOINT, POLYGON, MULTIPOLYGON, 
+			LINESTRING, or MULTILINESTRING '';
+		RETURN ''fail'';
+	END IF;
+
+	IF ( (new_dim >3) or (new_dim <0) ) THEN
+		RAISE EXCEPTION ''invalid dimension'';
+		RETURN ''fail'';
+	END IF;
+
+	IF ( schema_name != '''' ) THEN
+		schema_ok = ''f'';
+		FOR rec IN SELECT nspname FROM pg_namespace WHERE text(nspname) = schema_name LOOP
+			schema_ok := ''t'';
+		END LOOP;
+
+		if ( schema_ok <> ''t'' ) THEN
+			RAISE NOTICE ''Invalid schema name - using current_schema()'';
+			SELECT current_schema() into real_schema;
+		ELSE
+			real_schema = schema_name;
+		END IF;
+
+	ELSE
+		SELECT current_schema() into real_schema;
+	END IF;
+
+	EXECUTE ''ALTER TABLE '' || quote_ident(real_schema) ||
+		''.'' || quote_ident(table_name) || 
+		'' ADD COLUMN '' || quote_ident(column_name) || 
+		'' geometry '';
+
+	EXECUTE ''ALTER TABLE '' || quote_ident(real_schema) ||
+		''.'' || quote_ident(table_name) || 
+		'' ADD CHECK (SRID('' || quote_ident(column_name) ||
+		'') = '' || new_srid || '')'' ;
+
+	IF (not(new_type = ''GEOMETRY'')) THEN
+		EXECUTE ''ALTER TABLE '' || quote_ident(real_schema) ||
+			''.'' || quote_ident(table_name) || 
+			'' ADD CHECK (geometrytype('' ||
+			quote_ident(column_name) || '')='' ||
+			quote_literal(new_type) || '' OR ('' ||
+			quote_ident(column_name) || '') is null)'';
+	END IF;
+
+	EXECUTE ''INSERT INTO geometry_columns VALUES ('' ||
+		quote_literal('''') || '','' ||
+		quote_literal(real_schema) || '','' ||
+		quote_literal(table_name) || '','' ||
+		quote_literal(column_name) || '','' ||
+		new_dim || '','' || new_srid || '','' ||
+		quote_literal(new_type) || '')'';
+
+	EXECUTE ''select fix_geometry_columns()'';
+	--SELECT fix_geometry_columns();
+
+	return ''Geometry column '' || column_name || '' added to table ''
+		|| real_schema || ''.'' || table_name || '' WITH a SRID of '' || new_srid ||
+		'' and type '' || new_type;
+END;
+' LANGUAGE 'plpgsql' WITH (isstrict);
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- ADDGEOMETRYCOLUMN ( <schema>, <table>, <column>, <srid>, <type>, <dim> )
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+CREATE FUNCTION AddGeometryColumn(varchar,varchar,varchar,integer,varchar,integer) RETURNS text AS '
+DECLARE
+	ret  text;
+BEGIN
+	SELECT AddGeometryColumn('''',$1,$2,$3,$4,$5,$6) into ret;
+	RETURN ret;
+END;
+' LANGUAGE 'plpgsql' WITH (isstrict);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- DROPGEOMETRYCOLUMN( <schema name>, <table name>, <column name> )
+--
+-- Removes geometry column reference from geometry_columns table,
+-- and actually drops the column.
+--
+CREATE FUNCTION DropGeometryColumn(varchar,varchar,varchar)
+	RETURNS text
+	AS 
+'
+DECLARE
+	schema_name alias for $1;
+	table_name alias for $2;
+	column_name alias for $3;
+	
+	myrec RECORD;
+	real_schema name;
+	okay boolean;
+	query text;
+
+BEGIN
+
+
+	-- Find, check or fix schema_name
+	IF ( schema_name != '''' ) THEN
+		okay = ''f'';
+
+		FOR myrec IN SELECT nspname FROM pg_namespace WHERE text(nspname) = schema_name LOOP
+			okay := ''t'';
+		END LOOP;
+
+		IF ( okay <> ''t'' ) THEN
+			RAISE NOTICE ''Invalid schema name - using current_schema()'';
+			SELECT current_schema() into real_schema;
+		ELSE
+			real_schema = schema_name;
+		END IF;
+	ELSE
+		SELECT current_schema() into real_schema;
+	END IF;
+
+ 	-- first we find out if the column is in the geometry_columns table
+	okay = ''f'';
+	FOR myrec IN SELECT * from geometry_columns where f_table_schema = text(real_schema) and f_table_name = table_name and f_geometry_column = column_name LOOP
+		okay := ''t'';
+	END LOOP; 
+	IF (okay <> ''t'') THEN 
+		RAISE EXCEPTION ''column not found in geometry_columns table'';
+		RETURN ''f'';
+	END IF;
+
+	
+	-- Remove ref from geometry_columns table
+	EXECUTE ''delete from geometry_columns where f_table_schema = '' ||
+		quote_literal(real_schema) || '' and f_table_name = '' ||
+		quote_literal(table_name)  || '' and f_geometry_column = '' ||
+		quote_literal(column_name);
+
+	-- Remove table column
+	EXECUTE ''ALTER TABLE '' || quote_ident(real_schema) || ''.'' ||
+		quote_ident(table_name) || '' DROP COLUMN '' ||
+		quote_ident(column_name);
+
+
+	RETURN real_schema || ''.'' || table_name || ''.'' || column_name ||'' effectively removed.'';
+	
+END;
+'
+LANGUAGE 'plpgsql' WITH (isstrict);
+
+#elif USE_VERSION == 75
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--  WKB
+
+-- this has been moved here at _end from _start 
+-- because we need the definition of function bytea
+-- found in _common 
+CREATE TYPE wkb (
+	internallength = variable,
+	input = wkb_in,
+	output = wkb_out,
+	storage = extended,
+	send = bytea,
+	receive = wkb_recv
+);
+
+--
+-- 7.3 explicit casting definitions
+--
+
+CREATE CAST ( chip AS geometry ) WITH FUNCTION geometry(chip) AS IMPLICIT;
+CREATE CAST ( geometry AS box3d ) WITH FUNCTION box3d(geometry) AS IMPLICIT;
+CREATE CAST ( geometry AS box ) WITH FUNCTION box(geometry) AS IMPLICIT;
+CREATE CAST ( box3d AS geometry ) WITH FUNCTION geometry(box3d) AS IMPLICIT;
+CREATE CAST ( text AS geometry) WITH FUNCTION geometry(text) AS IMPLICIT;
+CREATE CAST ( wkb AS bytea ) WITH FUNCTION bytea(wkb) AS IMPLICIT;
+CREATE CAST ( box3d AS box ) WITH FUNCTION box3dtobox(box3d);
+CREATE CAST ( geometry AS text ) WITH FUNCTION astext(geometry);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- UPDATE_GEOMETRY_STATS()
+
+CREATE FUNCTION update_geometry_stats() 
+RETURNS text
+AS
+'
+BEGIN
+	EXECUTE ''update geometry_columns set attrelid = (select pg_class.oid AS attrelid from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name  and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name),  varattnum = (select pg_attribute.attnum from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name)'';
+	execute ''update geometry_columns set stats = (build_histogram2d( create_histogram2d(find_extent(f_table_name,f_geometry_column),40 ),f_table_name::text, f_geometry_column::text))  '';	
+	return ''done'';
+END;
+'
+LANGUAGE 'plpgsql' ;
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- UPDATE_GEOMETRY_STATS( <table>, <column> )
+
+CREATE FUNCTION update_geometry_stats(varchar,varchar) 
+RETURNS text
+AS
+'
+DECLARE
+	tablename aliAS for $1;
+	columnname aliAS for $2;
+
+BEGIN
+	EXECUTE ''update geometry_columns set attrelid = (select pg_class.oid AS attrelid from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name  and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name),  varattnum = (select pg_attribute.attnum from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name)'';
+	execute ''update geometry_columns set stats = (build_histogram2d( create_histogram2d(find_extent(''|| quote_literal(tablename) || '',''||quote_literal(columnname) ||''),40 ),''|| quote_literal(tablename) || ''::text,''||quote_literal(columnname) ||''::text )) WHERE f_table_name=''|| quote_literal(tablename) || ''and f_geometry_column=''||quote_literal(columnname) ;	
+	return ''done'';
+END;
+'
+LANGUAGE 'plpgsql' ;
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- CREATE_HISTOGRAM2D( <box>, <size> )
+--
+-- Returns a histgram with 0s in all the boxes.
+
+CREATE FUNCTION create_histogram2d(box3d,int)
+	RETURNS histogram2d
+	AS MODULE_FILENAME,'create_histogram2d'
+	LANGUAGE 'C'  with (isstrict);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- BUILD_HISTOGRAM2D( <histogram2d>, <tablename>, <columnname> )
+--
+
+CREATE FUNCTION build_histogram2d (histogram2d, text, text)
+	RETURNS histogram2d
+	AS MODULE_FILENAME,'build_histogram2d'
+	LANGUAGE 'C'  with (isstrict);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- EXPLODE_HISTOGRAM2D( <histogram2d>, <tablename> )
+--
+
+CREATE FUNCTION explode_histogram2d (histogram2d, text)
+	RETURNS histogram2d
+	AS MODULE_FILENAME,'explode_histogram2d'
+	LANGUAGE 'C'  with (isstrict);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- ESTIMATE_HISTOGRAM2D( <histogram2d>, <box> )
+--
+
+CREATE FUNCTION estimate_histogram2d(histogram2d,box)
+	RETURNS float8
+	AS MODULE_FILENAME,'estimate_histogram2d'
+	LANGUAGE 'C'  with (isstrict);
+
+--
+-- 7.2 GiST support functions
+--
+
+CREATE FUNCTION ggeometry_consistent(internal,geometry,int4) 
+	RETURNS bool 
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+CREATE FUNCTION ggeometry_compress(internal) 
+	RETURNS internal 
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+CREATE FUNCTION gbox_penalty(internal,internal,internal) 
+	RETURNS internal 
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+CREATE FUNCTION gbox_picksplit(internal, internal) 
+	RETURNS internal 
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+CREATE FUNCTION gbox_union(bytea, internal) 
+	RETURNS internal 
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+CREATE FUNCTION gbox_same(box, box, internal) 
+	RETURNS internal 
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+CREATE FUNCTION rtree_decompress(internal) 
+	RETURNS internal
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+--
+-- 7.2 RTREE support functions
+--
+
+CREATE FUNCTION geometry_union(geometry,geometry) 
+	RETURNS geometry 
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+CREATE FUNCTION geometry_inter(geometry,geometry) 
+	RETURNS geometry 
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+CREATE FUNCTION geometry_size(geometry,internal) 
+	RETURNS float4 
+	AS MODULE_FILENAME 
+	LANGUAGE 'C';
+
+--
+-- Create opclass index bindings
+--
+
+CREATE OPERATOR CLASS gist_geometry_ops
+	DEFAULT FOR TYPE geometry USING gist AS
+	OPERATOR	1	<< ,
+	OPERATOR	2	&< ,
+	OPERATOR	3	&& ,
+	OPERATOR	4	&> ,
+	OPERATOR	5	>> ,
+	OPERATOR	6	~= ,
+	OPERATOR	7	~ ,
+	OPERATOR	8	@ ,
+	FUNCTION	1	ggeometry_consistent (internal, geometry, int4),
+	FUNCTION	2	gbox_union (bytea, internal),
+	FUNCTION	3	ggeometry_compress (internal),
+	FUNCTION	4	rtree_decompress (internal),
+	FUNCTION	5	gbox_penalty (internal, internal, internal),
+	FUNCTION	6	gbox_picksplit (internal, internal),
+	FUNCTION	7	gbox_same (box, box, internal);
+
+UPDATE pg_opclass 
+	SET opckeytype = (select oid from pg_type where typname = 'box') 
+	WHERE opcname = 'gist_geometry_ops';
+
+CREATE OPERATOR CLASS btree_geometry_ops
+	DEFAULT FOR TYPE geometry USING btree AS
+	OPERATOR	1	< ,
+	OPERATOR	2	<= ,
+	OPERATOR	3	= ,
+	OPERATOR	4	>= ,
+	OPERATOR	5	> ,
+	FUNCTION	1	geometry_cmp (geometry, geometry);
+
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- FIX_GEOMETRY_COLUMNS()
+--
+-- Since 7.3 schema support has been added.
+-- Previous postgis versions used to put the database name in
+-- the schema column. This needs to be fixed, so we set to the
+-- empty string any schema value not existing in pg_namespace
+--
+
+CREATE FUNCTION fix_geometry_columns() RETURNS text
+AS 
+'
+BEGIN
+	-- it would be better to find the correct schema name
+	UPDATE geometry_columns SET f_table_schema = ''public''
+		WHERE f_table_schema is NULL or f_table_schema NOT IN
+		( SELECT nspname::varchar FROM pg_namespace );
+
+	UPDATE geometry_columns SET attrelid = (
+		SELECT c.oid 
+		FROM pg_class c, pg_attribute a, pg_namespace n
+		WHERE c.relname = geometry_columns.f_table_name::name
+		AND a.attrelid = c.oid AND c.relnamespace = n.oid
+		AND a.attname = geometry_columns.f_geometry_column::name
+		AND n.nspname = geometry_columns.f_table_schema::name
+		);
+	
+	UPDATE geometry_columns SET varattnum = (
+		SELECT a.attnum
+		FROM pg_class c, pg_attribute a, pg_namespace n
+		WHERE n.nspname = geometry_columns.f_table_schema::name
+		AND c.relname = geometry_columns.f_table_name::name
+		AND a.attname = geometry_columns.f_geometry_column::name
+		AND a.attrelid = c.oid AND c.relnamespace = n.oid
+		);
+
+	RETURN ''geometry_columns table is now linked to the system tables'';
+
+
+END;
+'
+LANGUAGE 'plpgsql' ;
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- ADDGEOMETRYCOLUMN ( 
+--      <catalog>, <schema>, <table name>, <column name>, 
+--      <srid>, <type>, <dim> )
+--
+-- Type can be one of geometry, GEOMETRYCOLLECTION, POINT, MULTIPOINT, POLYGON,
+-- MULTIPOLYGON, LINESTRING, or MULTILINESTRING.
+--
+-- Types (except geometry) are checked for consistency using a CHECK constraint
+-- uses SQL ALTER TABLE command to add the geometry column to the table.
+-- Addes a row to geometry_columns.
+-- Addes a constraint on the table that all the geometries MUST have the same 
+-- SRID. Checks the coord_dimension to make sure its between 0 and 3.
+-- Should also check the precision grid (future expansion).
+-- Calls fix_geometry_columns() at the end.
+--
+CREATE FUNCTION AddGeometryColumn(varchar,varchar,varchar,varchar,integer,varchar,integer)
+	RETURNS text
+	AS 
+'
+DECLARE
+	catalog_name alias for $1;
+	schema_name alias for $2;
+	table_name alias for $3;
+	column_name alias for $4;
+	new_srid alias for $5;
+	new_type alias for $6;
+	new_dim alias for $7;
+
+	rec RECORD;
+	schema_ok bool;
+	real_schema name;
+BEGIN
+
+	IF ( not ( (new_type =''GEOMETRY'') or
+		   (new_type =''GEOMETRYCOLLECTION'') or
+		   (new_type =''POINT'') or 
+		   (new_type =''MULTIPOINT'') or
+		   (new_type =''POLYGON'') or
+		   (new_type =''MULTIPOLYGON'') or
+		   (new_type =''LINESTRING'') or
+		   (new_type =''MULTILINESTRING'')) )
+	THEN
+		RAISE EXCEPTION ''Invalid type name - valid ones are: 
+			GEOMETRY, GEOMETRYCOLLECTION, POINT, 
+			MULTIPOINT, POLYGON, MULTIPOLYGON, 
+			LINESTRING, or MULTILINESTRING '';
+		RETURN ''fail'';
+	END IF;
+
+	IF ( (new_dim >3) or (new_dim <0) ) THEN
+		RAISE EXCEPTION ''invalid dimension'';
+		RETURN ''fail'';
+	END IF;
+
+	IF ( schema_name != '''' ) THEN
+		schema_ok = ''f'';
+		FOR rec IN SELECT nspname FROM pg_namespace WHERE text(nspname) = schema_name LOOP
+			schema_ok := ''t'';
+		END LOOP;
+
+		if ( schema_ok <> ''t'' ) THEN
+			RAISE NOTICE ''Invalid schema name - using current_schema()'';
+			SELECT current_schema() into real_schema;
+		ELSE
+			real_schema = schema_name;
+		END IF;
+
+	ELSE
+		SELECT current_schema() into real_schema;
+	END IF;
+
+	EXECUTE ''ALTER TABLE '' || quote_ident(real_schema) ||
+		''.'' || quote_ident(table_name) || 
+		'' ADD COLUMN '' || quote_ident(column_name) || 
+		'' geometry '';
+
+	EXECUTE ''ALTER TABLE '' || quote_ident(real_schema) ||
+		''.'' || quote_ident(table_name) || 
+		'' ADD CHECK (SRID('' || quote_ident(column_name) ||
+		'') = '' || new_srid || '')'' ;
+
+	IF (not(new_type = ''GEOMETRY'')) THEN
+		EXECUTE ''ALTER TABLE '' || quote_ident(real_schema) ||
+			''.'' || quote_ident(table_name) || 
+			'' ADD CHECK (geometrytype('' ||
+			quote_ident(column_name) || '')='' ||
+			quote_literal(new_type) || '' OR ('' ||
+			quote_ident(column_name) || '') is null)'';
+	END IF;
+
+	EXECUTE ''INSERT INTO geometry_columns VALUES ('' ||
+		quote_literal('''') || '','' ||
+		quote_literal(real_schema) || '','' ||
+		quote_literal(table_name) || '','' ||
+		quote_literal(column_name) || '','' ||
+		new_dim || '','' || new_srid || '','' ||
+		quote_literal(new_type) || '')'';
+
+	EXECUTE ''select fix_geometry_columns()'';
+	--SELECT fix_geometry_columns();
+
+	return ''Geometry column '' || column_name || '' added to table ''
+		|| real_schema || ''.'' || table_name || '' WITH a SRID of '' || new_srid ||
+		'' and type '' || new_type;
+END;
+' LANGUAGE 'plpgsql' WITH (isstrict);
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- ADDGEOMETRYCOLUMN ( <schema>, <table>, <column>, <srid>, <type>, <dim> )
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+CREATE FUNCTION AddGeometryColumn(varchar,varchar,varchar,integer,varchar,integer) RETURNS text AS '
+DECLARE
+	ret  text;
+BEGIN
+	SELECT AddGeometryColumn('''',$1,$2,$3,$4,$5,$6) into ret;
+	RETURN ret;
+END;
+' LANGUAGE 'plpgsql' WITH (isstrict);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- DROPGEOMETRYCOLUMN( <schema name>, <table name>, <column name> )
+--
+-- Removes geometry column reference from geometry_columns table,
+-- and actually drops the column.
+--
+CREATE FUNCTION DropGeometryColumn(varchar,varchar,varchar)
+	RETURNS text
+	AS 
+'
+DECLARE
+	schema_name alias for $1;
+	table_name alias for $2;
+	column_name alias for $3;
+	
+	myrec RECORD;
+	real_schema name;
+	okay boolean;
+	query text;
+
+BEGIN
+
+
+	-- Find, check or fix schema_name
+	IF ( schema_name != '''' ) THEN
+		okay = ''f'';
+
+		FOR myrec IN SELECT nspname FROM pg_namespace WHERE text(nspname) = schema_name LOOP
+			okay := ''t'';
+		END LOOP;
+
+		IF ( okay <> ''t'' ) THEN
+			RAISE NOTICE ''Invalid schema name - using current_schema()'';
+			SELECT current_schema() into real_schema;
+		ELSE
+			real_schema = schema_name;
+		END IF;
+	ELSE
+		SELECT current_schema() into real_schema;
+	END IF;
+
+ 	-- first we find out if the column is in the geometry_columns table
+	okay = ''f'';
+	FOR myrec IN SELECT * from geometry_columns where f_table_schema = text(real_schema) and f_table_name = table_name and f_geometry_column = column_name LOOP
+		okay := ''t'';
+	END LOOP; 
+	IF (okay <> ''t'') THEN 
+		RAISE EXCEPTION ''column not found in geometry_columns table'';
+		RETURN ''f'';
+	END IF;
+
+	
+	-- Remove ref from geometry_columns table
+	EXECUTE ''delete from geometry_columns where f_table_schema = '' ||
+		quote_literal(real_schema) || '' and f_table_name = '' ||
+		quote_literal(table_name)  || '' and f_geometry_column = '' ||
+		quote_literal(column_name);
+
+	-- Remove table column
+	EXECUTE ''ALTER TABLE '' || quote_ident(real_schema) || ''.'' ||
+		quote_ident(table_name) || '' DROP COLUMN '' ||
+		quote_ident(column_name);
+
+
+	RETURN real_schema || ''.'' || table_name || ''.'' || column_name ||'' effectively removed.'';
+	
+END;
+'
+LANGUAGE 'plpgsql' WITH (isstrict);
+
+
+#endif // USE_VERSION == ...
+
+END TRANSACTION;
