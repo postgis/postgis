@@ -12,6 +12,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.52  2004/03/10 17:35:16  strk
+ * removed just-introduced bug
+ *
  * Revision 1.51  2004/03/10 17:23:56  strk
  * code cleanup, fixed a bug missing to transform 'gid' to 'gid__2' in shapefile attribute name
  *
@@ -798,7 +801,6 @@ int main (int ARGC, char **ARGV){
 		strcpy(names[j], name);
 
 		if (j) strcat(col_names, ",");
-		else sprintf(col_names, "(");
 		sprintf(col_names, "%s\"%s\"", col_names, name);
 	}
 	strcat(col_names, ",the_geom)");
