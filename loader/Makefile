@@ -39,7 +39,7 @@ endif
 
 #---------------------------------------------------------------
 
-override CPPFLAGS := -g -I$(srcdir) -I$(top_builddir)/src/interfaces/libpq $(CPPFLAGS) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"' -DUSE_VERSION=$(USE_VERSION)
+override CFLAGS := -g -I.. -I$(srcdir) -I$(top_builddir)/src/interfaces/libpq $(CFLAGS) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"' -DUSE_VERSION=$(USE_VERSION)
 
 all: shp2pgsql$(EXE) pgsql2shp$(EXE)
 
