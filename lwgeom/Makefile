@@ -46,10 +46,18 @@ override CFLAGS += -DPOSTGIS_LIB_VERSION='"$(POSTGIS_LIB_VERSION)"'
 override CFLAGS += -DPOSTGIS_SCRIPTS_VERSION='"$(SCRIPTS_VERSION)"'
 override CFLAGS += -DPOSTGIS_BUILD_DATE='"$(POSTGIS_BUILD_DATE)"'
 
+JTS_OBJ=lwgeom_nojts.o
 ifeq ($(USE_GEOS),1)
 	override CFLAGS += -I$(GEOS_DIR)/include -DUSE_GEOS
 	GEOS_RULES=detect_geos_version
 	GEOS_WRAPPER=lwgeom_geos_wrapper.o
+	JTS_OBJ=lwgeom_geos.o
+endif
+
+ifeq ($(USE_JTS),1)
+	override CFLAGS += -I$(JTS_INCLUDES) -DUSE_JTS
+	JTS_WRAPPER=lwgeom_jts_wrapper.o
+	JTS_OBJ=lwgeom_jts.o
 endif
 
 ifeq ($(USE_PROJ),1)
@@ -72,8 +80,8 @@ ifeq ($(USE_STATS),1)
 	override CFLAGS += -DUSE_STATS
 endif
  
-SA_OBJS=measures.o box2d.o ptarray.o lwgeom_api.o lwgeom.o lwpoint.o lwline.o lwpoly.o lwmpoint.o lwmline.o lwmpoly.o lwcollection.o $(GEOS_WRAPPER) wktunparse.o lwgparse.o wktparse.tab.o lex.yy.o vsprintf.o
-OBJS=$(SA_OBJS) liblwgeom.o lwgeom_pg.o lwgeom_debug.o lwgeom_spheroid.o lwgeom_ogc.o lwgeom_functions_analytic.o lwgeom_geos.o lwgeom_inout.o lwgeom_estimate.o lwgeom_functions_basic.o lwgeom_gist.o lwgeom_btree.o lwgeom_transform.o stringBuffer.o lwgeom_box.o lwgeom_box3d.o lwgeom_box2dfloat4.o lwgeom_chip.o lwgeom_svg.o lwgeom_gml.o lwgeom_triggers.o lwgeom_dump.o
+SA_OBJS=measures.o box2d.o ptarray.o lwgeom_api.o lwgeom.o lwpoint.o lwline.o lwpoly.o lwmpoint.o lwmline.o lwmpoly.o lwcollection.o $(GEOS_WRAPPER) $(JTS_WRAPPER) wktunparse.o lwgparse.o wktparse.tab.o lex.yy.o vsprintf.o
+OBJS=$(SA_OBJS) liblwgeom.o lwgeom_pg.o lwgeom_debug.o lwgeom_spheroid.o lwgeom_ogc.o lwgeom_functions_analytic.o $(JTS_OBJ) lwgeom_inout.o lwgeom_estimate.o lwgeom_functions_basic.o lwgeom_gist.o lwgeom_btree.o lwgeom_transform.o stringBuffer.o lwgeom_box.o lwgeom_box3d.o lwgeom_box2dfloat4.o lwgeom_chip.o lwgeom_svg.o lwgeom_gml.o lwgeom_triggers.o lwgeom_dump.o
 
 #OTHERS=y.output lex.yy.c wktparse.tab.c wktparse.tab.h lwpostgis.sql
 OTHERS=y.output lwpostgis.sql
@@ -87,6 +95,9 @@ OTHERS=y.output lwpostgis.sql
 SHLIB_LINK = $(filter -L%, $(LDFLAGS)) 
 ifeq ($(USE_GEOS),1)
 	SHLIB_LINK += -lstdc++ -L$(GEOS_DIR)/lib -lgeos
+endif
+ifeq ($(USE_JTS),1)
+	SHLIB_LINK += -lgcj -ljts -lstdc++ -L$(JTS_LIBDIR) 
 endif
 ifeq ($(USE_PROJ),1)
 	SHLIB_LINK += -L$(PROJ_DIR)/lib -lproj
@@ -107,9 +118,15 @@ wktparse.tab.c: wktparse.y
 lex.yy.c: wktparse.lex wktparse.tab.c
 	$(FLEX) -Plwg_parse_yy -i -f -o'lex.yy.c' wktparse.lex 
 
+lwgeom_jts_wrapper.o: lwgeom_jts_wrapper.cpp
+
 lwgeom_geos_wrapper.o: lwgeom_geos_wrapper.cpp
 
 lwgeom_geos.o: lwgeom_geos.c profile.h
+
+lwgeom_jts.o: lwgeom_jts.c profile.h
+
+lwgeom_nojts.o: lwgeom_nojts.c
 
 lwgeom_functions_basic.o: lwgeom_functions_basic.c profile.h
 
@@ -119,12 +136,14 @@ all: $(GEOS_RULES) $(shlib) lwpostgis.sql
 
 lwpostgis.sql: lwpostgis.sql.in
 	cpp -P -traditional-cpp -DUSE_VERSION=$(USE_VERSION) $< | sed -e 's:@MODULE_FILENAME@:$(MODULE_FILENAME):g;s:@POSTGIS_VERSION@:$(POSTGIS_VERSION):g;s:@POSTGIS_SCRIPTS_VERSION@:$(SCRIPTS_VERSION):g;s/@POSTGIS_BUILD_DATE@/$(POSTGIS_BUILD_DATE)/g' | grep -v ^# > $@
-	cp lwpostgis.sql ..
+	cp $@ ..
 
 install: all installdirs install-lwgeom-lib install-lwgeom-scripts
 
 install-lwgeom-scripts:
-	$(INSTALL_DATA) lwpostgis.sql $(DESTDIR)$(datadir)/lwpostgis.sql
+	$(INSTALL_DATA) lwpostgis.sql $(DESTDIR)$(datadir)/contrib/lwpostgis.sql
+	$(INSTALL_DATA) ../spatial_ref_sys.sql $(DESTDIR)$(datadir)/contrib/spatial_ref_sys.sql
+	$(INSTALL_DATA) ../README.postgis $(DESTDIR)$(docdir)/contrib/README.postgis
 
 #- This has been copied from postgresql and adapted
 install-lwgeom-lib: $(shlib)
@@ -151,7 +170,9 @@ installdirs:
 	$(mkinstalldirs) $(libdir)
 
 uninstall-lwgeom-scripts:
-	rm -f $(DESTDIR)$(datadir)/lwpostgis.sql
+	rm -f $(DESTDIR)$(datadir)/contrib/lwpostgis.sql
+	rm -f $(DESTDIR)$(datadir)/contrib/spatial_ref_sys.sql
+	rm -f $(DESTDIR)$(docdir)/contrib/README.postgis
 
 uninstall: uninstall-lib uninstall-lwgeom-scripts
 
