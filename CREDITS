@@ -1,4 +1,4 @@
-CREDITS: 2002/05/04
+CREDITS: 2003/11/24
 
 The core team of PostGIS is from Refractions Research: 
 Dave Blasby, Paul Ramsey, Jeff Lounsbury and Chris Hodgson. 
@@ -30,4 +30,7 @@ Version 0.7 of PostGIS includes patches from:
   Mark Cave-Ayland on truly_inside().
   STRK on shp2pgsql improvements
 
+Version 0.8 of PostGIS includes patches from:
+  Carl Anderson on schemas
+  STRK on numerous bug fixes and enhancements
 

@@ -1,7 +1,7 @@
 PostGIS - Geographic Information Systems Extensions to PostgreSQL
 ~~~~~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-VERSION: 0.8.0 (2003/08/08)
+VERSION: 0.8.0 (2003/11/24)
 
 MORE INFORMATION: http://postgis.refractions.net
 
@@ -32,7 +32,9 @@ PostgreSQL source installation. Alternately, edit the "top_buildir" in the
 Makefile and point it at your PostgreSQL source tree. You must have a 
 PostgreSQL source tree, and you must have run succesfully built and installed
 it for this to work. 
-SEE THE NOTE ON GEOS SUPPORT BELOW FOR SPECIAL COMPILATION INSTRUCTIONS.
+
+SEE THE NOTE ON GEOS SUPPORT BELOW FOR SPECIAL COMPILATION INSTRUCTIONS
+
 
 * PROJ4 SUPPORT: 
   The Proj4 reprojection library is required if you want to use the 

@@ -1,11 +1,9 @@
-2003/10/20
+2003/11/20
 
 - GML import/export routines
 - Connectivity to commercial GIS software.
 - Re-write WKT input/output functions to be faster
-- PgSQL 7.4 support
 - SVG output routines
-- Douglas/Peuker simplification for linestrings
 - Update PgSQL GiST to support row level (recangle level?) locking.
 - Network creation and network operations 
   (upstream, downstream, least cost path)
