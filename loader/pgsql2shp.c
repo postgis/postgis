@@ -10,6 +10,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.48  2004/05/13 11:59:08  strk
+ * Fixed bug in 3d features handling.
+ *
  * Revision 1.47  2004/04/21 09:13:15  strk
  * Attribute names escaping mechanism added. You should now
  * be able to dump a shapefile equal to the one loaded.
@@ -379,7 +382,7 @@ shape_creator_wrapper_WKB(byte *str, int idx)
 {
 	byte *ptr = str;
 	uint32 type;
-	int is3d;
+	//int is3d;
 
 	// skip byte order
 	skipbyte(&ptr);
@@ -387,7 +390,8 @@ shape_creator_wrapper_WKB(byte *str, int idx)
 	// get type
 	type = getint(ptr);
 
-	is3d = type&WKB3DOFFSET;
+	//is3d = type&WKB3DOFFSET;
+	type &= ~WKB3DOFFSET;
 
 	switch(type)
 	{
@@ -426,7 +430,7 @@ shape_creator_wrapper_WKB(byte *str, int idx)
 				return create_multipoint2D_WKB(str, idx);
 
 		default:
-			fprintf(stderr, "Unknown WKB type (%lu) - (%s:%d)\n",
+			fprintf(stderr, "Unknown WKB type (%8.8lx) - (%s:%d)\n",
 				type, __FILE__, __LINE__);
 			return NULL;
 	}
