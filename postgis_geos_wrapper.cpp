@@ -2,6 +2,9 @@
 
 /*
 * $Log$
+* Revision 1.17  2003/12/12 13:34:20  strk
+* added missing 'const' in prototypes
+*
 * Revision 1.16  2003/12/12 12:03:30  strk
 * More debugging output, some code cleanup.
 *
@@ -110,10 +113,10 @@ extern "C" char GEOSrelateOverlaps(Geometry *g1, Geometry*g2);
 
 
 extern "C" Geometry *PostGIS2GEOS_point(POINT3D *point,int SRID, bool is3d);
-extern "C" Geometry *PostGIS2GEOS_linestring(LINE3D *line,int SRID, bool is3d);
+extern "C" Geometry *PostGIS2GEOS_linestring(const LINE3D *line,int SRID, bool is3d);
 extern "C" Geometry *PostGIS2GEOS_polygon(POLYGON3D *polygon,int SRID, bool is3d);
 extern "C" Geometry *PostGIS2GEOS_multipolygon(POLYGON3D **polygons,int npolys, int SRID, bool is3d);
-extern "C" Geometry *PostGIS2GEOS_multilinestring(LINE3D **lines,int nlines, int SRID, bool is3d);
+extern "C" Geometry *PostGIS2GEOS_multilinestring(const LINE3D **lines,int nlines, int SRID, bool is3d);
 extern "C" Geometry *PostGIS2GEOS_multipoint(POINT3D **points,int npoints, int SRID, bool is3d);
 
 extern "C" Geometry *PostGIS2GEOS_box3d(BOX3D *box, int SRID);
@@ -322,7 +325,7 @@ PostGIS2GEOS_linestring(const LINE3D *line,int SRID, bool is3d)
 	}
 }
 
-	//polygons is an array of pointers to polygons
+//polygons is an array of pointers to polygons
 Geometry *PostGIS2GEOS_multipolygon(POLYGON3D **polygons,int npolys, int SRID, bool is3d)
 {
 	try
