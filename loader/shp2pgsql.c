@@ -12,6 +12,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.64.2.3  2004/10/17 12:24:07  strk
+ * Fixed a bug in NULL shape object handling
+ *
  * Revision 1.64.2.2  2004/10/06 10:12:21  strk
  * Other separator fixes ( back-port )
  *
@@ -998,7 +1001,7 @@ main (int ARGC, char **ARGV)
 		// ---------- NULL SHAPE -----------------
 		if (obj->nVertices == 0)
 		{
-			if (dump_format) printf("\\N\n\\.\n");
+			if (dump_format) printf("\\N\n");
 			else printf("NULL);\n");
 		}
 
