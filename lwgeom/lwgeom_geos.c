@@ -2331,7 +2331,7 @@ Datum GEOS_polygonize_garray(PG_FUNCTION_ARGS)
 	PG_LWGEOM **geoms, *result;
 	Geometry *geos_result;
 	Geometry **vgeoms;
-	int SRID;
+	int SRID=-1;
 #ifdef DEBUG
 	static int call=1;
 #endif
