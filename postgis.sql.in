@@ -17,7 +17,6 @@
 #define CREATEFUNCTION CREATE FUNCTION
 #endif
 
-
 BEGIN TRANSACTION;
 
 -- You might have to define the PL/PgSQL language usually done with the
@@ -2568,7 +2567,7 @@ BEGIN
 #else
 		quote_ident(table_name)
 #endif
-		|| '' ADD CHECK (SRID('' || quote_ident(column_name) ||
+		|| '' ADD CONSTRAINT enforce_srid CHECK (SRID('' || quote_ident(column_name) ||
 		'') = '' || new_srid || '')'' ;
 
 	IF (not(new_type = ''GEOMETRY'')) THEN
@@ -2578,7 +2577,7 @@ BEGIN
 #else
 		quote_ident(table_name)
 #endif
-		|| '' ADD CHECK (geometrytype('' ||
+		|| '' ADD CONSTRAINT enforce_geotype CHECK (geometrytype('' ||
 		quote_ident(column_name) || '')='' ||
 		quote_literal(new_type) || '' OR ('' ||
 		quote_ident(column_name) || '') is null)'';
