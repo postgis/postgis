@@ -5,10 +5,12 @@
   createdb ogc
   createlang plpgsql ogc
   psql ogc < postgis.sql
-  psql ogc < 1_schema.sql
-  ...
-  psql ogc < 3_cleanup.sql
+
+  psql -a -f 1_schema.sql >& 1_output.txt
+  psql -a -f 2_queries.sql >& 2_output.txt
+  psql -a -f 3_cleanup.sql >& 3_output.txt
 
 - Load the test files in order. File 2 has the actual tests, with the
   correct answers for each test in the comments.
+
 
