@@ -43,41 +43,12 @@ static bool lwgeom_rtree_internal_consistent(BOX2DFLOAT4 *key,BOX2DFLOAT4 *query
 static bool lwgeom_rtree_leaf_consistent(BOX2DFLOAT4 *key,BOX2DFLOAT4 *query,	StrategyNumber strategy);
 
 
-static char *bbox_cache_index =NULL;
-static BOX2DFLOAT4 *bbox_cache_value = NULL;
-static BOX2DFLOAT4 *getBOX2D_cache(char *lwgeom);
-static int counter = 0;
-static int counter2 = 0;
-static int counter1 = 0;
+
 
 int counter_leaf = 0;
 int counter_intern = 0;
 
-static BOX2DFLOAT4 *getBOX2D_cache(char *lwgeom)
-{
-	if (bbox_cache_index != lwgeom)
-	{
-			BOX2DFLOAT4 box;
 
-#ifdef DEBUG_GIST4
-		elog(NOTICE,"GIST: getBOX2D_cache -- cache miss %i times",counter);
-		counter++;
-#endif
-
-			if (bbox_cache_value == NULL)
-			   	bbox_cache_value = malloc(sizeof(BOX2DFLOAT4)); // initial value
-
-			box = getbox2d(lwgeom+4);
-
-			memcpy(bbox_cache_value, &box, sizeof(BOX2DFLOAT4));
-			bbox_cache_index = lwgeom;
-			return bbox_cache_value;
-	}
-	else
-	{
-		return bbox_cache_value;
-	}
-}
 
 // all the lwgeom_<same,overlpa,overleft,left,right,overright,contained,contain>
 //  work the same.
@@ -375,7 +346,7 @@ Datum gist_lwgeom_consistent(PG_FUNCTION_ARGS)
     StrategyNumber strategy = (StrategyNumber) PG_GETARG_UINT16(2);
    // BOX		thebox;
 	bool result;
-	BOX2DFLOAT4 *thebox;
+
 	BOX2DFLOAT4  box;
 
 	/*
@@ -666,7 +637,6 @@ Datum lwgeom_box_penalty(PG_FUNCTION_ARGS)
 	GISTENTRY  *newentry = (GISTENTRY *) PG_GETARG_POINTER(1);
 	float	   *result = (float *) PG_GETARG_POINTER(2);
 	Datum		ud;
-	BOX2DFLOAT4	*b1, *b2;
 	double		tmp1;
 
 
