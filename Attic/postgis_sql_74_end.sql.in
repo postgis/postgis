@@ -12,6 +12,9 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.2  2003/11/19 15:29:21  strk
+-- Added default btree operator class for PG7.4
+--
 -- Revision 1.1  2003/11/11 10:38:23  strk
 -- Postgresql 7.4 enabler scripts.
 --
@@ -206,5 +209,15 @@ CREATE OPERATOR CLASS gist_geometry_ops
 UPDATE pg_opclass 
 	SET opckeytype = (select oid from pg_type where typname = 'box') 
 	WHERE opcname = 'gist_geometry_ops';
+
+CREATE OPERATOR CLASS btree_geometry_ops
+	DEFAULT FOR TYPE geometry USING btree AS
+	OPERATOR	1	< ,
+	OPERATOR	2	<= ,
+	OPERATOR	3	= ,
+	OPERATOR	4	>= ,
+	OPERATOR	5	> ,
+	FUNCTION	1	geometry_cmp (geometry, geometry);
+
 
 END TRANSACTION;
