@@ -60,7 +60,7 @@ int	dump_format = 0; //0=insert statements, 1 = dump
 int	quoteidentifiers = 0;
 int	forceint4 = 0;
 char    opt = ' ';
-char    *col_names;
+char    *col_names = NULL;
 char	*pgtype;
 int	istypeM = 0;
 int	pgdims;
@@ -109,7 +109,7 @@ void ReleasePolygons(Ring **polys, int npolys);
 void DropTable(char *schema, char *table, char *geom);
 void GetFieldsSpec(void);
 void LoadData(void);
-void UpdateSerials(void);
+void UpdateSequence(void);
 void OpenShape(void);
 void LowerCase(char *s);
 void Cleanup(void);
@@ -398,11 +398,6 @@ main (int ARGC, char **ARGV)
 	 */
 	if(opt != 'p') LoadData();
 
-	/*
-	 * If not in 'append' mode update sequence numbering
-	 */
-	if(opt != 'a' && opt != 'p') UpdateSerials();
-
 	printf("END;\n"); // End the last transaction
 
 
@@ -453,8 +448,11 @@ OpenShape(void)
 
 }
 
+/*
+ * Not used
+ */
 void
-UpdateSerials(void)
+UpdateSequence(void)
 {
 	if ( schema )
 	{
@@ -618,17 +616,6 @@ LoadData(void)
 			{
 		  		printf("INSERT INTO \"%s\" %s VALUES (",
 					table, col_names);
-			}
-			if(opt != 'a')
-			{
-				printf("'%d',", j);
-			}
-		}
-		else
-		{
-			if(opt != 'a')
-			{
-				printf("%d\t", j);
 			}
 		}
 		Insert_attributes(hDBFHandle,j);
@@ -1507,11 +1494,7 @@ GetFieldsSpec(void)
 	widths = malloc(num_fields*sizeof(int));
 	precisions = malloc(num_fields*sizeof(int));
 	col_names = malloc((num_fields+2) * sizeof(char) * 32);
-	if(opt != 'a'){
-		strcpy(col_names, "(gid," );
-	}else{
-		strcpy(col_names, "(" );
-	}
+	strcpy(col_names, "(" );
 
 	//fprintf(stderr, "Number of fields from DBF: %d\n", num_fields);
 	for(j=0;j<num_fields;j++)
@@ -1630,6 +1613,9 @@ utf8 (const char *fromcode, char *inputbuf)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.87  2005/04/06 14:16:43  strk
+ * Removed manual update of gid field.
+ *
  * Revision 1.86  2005/04/06 14:02:08  mschaber
  * added -p option (prepare mode) that spits out the table schema without
  * inserting any data.
