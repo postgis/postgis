@@ -10,6 +10,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.26  2003/11/18 14:58:47  strk
+ * default row buffer lenght set to 100
+ *
  * Revision 1.25  2003/11/18 14:39:26  strk
  * Some more structuring. Initialization routine moved out of main loop.
  * Preparing dumper for WKB parsing.
@@ -133,7 +136,7 @@ int main(int ARGC, char **ARGV){
 	geo_col_name = NULL;
 	shp_file = NULL;
 	main_scan_query = NULL;
-	rowbuflen=1;
+	rowbuflen=100;
 	is3d = 0;
 
 	if ( getenv("ROWBUFLEN") ) rowbuflen=atoi(getenv("ROWBUFLEN"));
