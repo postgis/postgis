@@ -541,7 +541,7 @@ PG_FUNCTION_INFO_V1(postgis_gist_sel);
 Datum postgis_gist_sel(PG_FUNCTION_ARGS)
 {
 		Query	   *root = (Query *) PG_GETARG_POINTER(0);
-		Oid			operator = PG_GETARG_OID(1);
+	//	Oid			operator = PG_GETARG_OID(1);
 		List	   *args = (List *) PG_GETARG_POINTER(2);
 		int			varRelid = PG_GETARG_INT32(3);
 		GEOMETRY	*in;
@@ -563,6 +563,10 @@ Datum postgis_gist_sel(PG_FUNCTION_ARGS)
 		int SPIcode;
 
 		double myest;
+
+#ifndef USE_STATS
+	PG_RETURN_FLOAT8(0.000005);
+#endif
 
 		  //PG_RETURN_FLOAT8(0.000005);
 
