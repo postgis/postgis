@@ -75,7 +75,9 @@ if ( $res->resultStatus != PGRES_COMMAND_OK )  {
 
 @extents = ( \%ext );
 
-print "Type: $TYPE\n";
+print "  Type: $TYPE\n";
+print "Extent: ".print_extent(\%ext)."\n" if ($VERBOSE);
+
 
 $ext = \%ext;
 #print "BPS: $bps (".@extents." cells)\n";
@@ -165,16 +167,17 @@ sub split_extent
 	@$stack = ();
 	for ($x=$ext->{'xmin'}; $x<$ext->{'xmax'}; $x += $cell_width)
 	{
-		#print "X: $x\n";
 		for ($y=$ext->{'ymin'}; $y<$ext->{'ymax'}; $y += $cell_height)
 		{
 			local(%cell);
-			#print "Y: $y\n";
 			$cell{'xmin'} = $x;
 			$cell{'ymin'} = $y;
 			$cell{'xmax'} = $x+$cell_width;
 			$cell{'ymax'} = $y+$cell_height;
 			#print "PUSH\n";
+
+			print "cell: ".print_extent(\%cell)."\n" if ($VERBOSE);
+			#print "Y: $y\n" if ($VERBOSE);
 			push(@$stack, \%cell);
 		}
 	}
@@ -208,6 +211,9 @@ sub test_extent
 
 # 
 # $Log$
+# Revision 1.2  2004/03/05 15:29:35  strk
+# more verbose output
+#
 # Revision 1.1  2004/03/05 11:52:24  strk
 # initial import
 #
