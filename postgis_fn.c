@@ -2488,7 +2488,9 @@ Datum segmentize(PG_FUNCTION_ARGS)
 // collector( geom, geom ) returns a geometry which contains
 // all the sub_objects from both of the argument geometries
 
-// returned geometry is always a geomtry collection
+// returned geometry is the simplest possible, based on the types
+// of the colelct objects 
+// ie. if all are of either X or multiX, then a multiX is returned
 // bboxonly types are treated as null geometries (no sub_objects)
 PG_FUNCTION_INFO_V1( collector );
 Datum collector( PG_FUNCTION_ARGS )
@@ -2511,7 +2513,6 @@ Datum collector( PG_FUNCTION_ARGS )
 		geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 		result = (GEOMETRY *)palloc( geom2->size );
 		memcpy( result, geom2, geom2->size );
-		result->type = COLLECTIONTYPE;
 		PG_RETURN_POINTER(result);
 	}
 
@@ -2521,7 +2522,6 @@ Datum collector( PG_FUNCTION_ARGS )
 		geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 		result = (GEOMETRY *)palloc( geom1->size );
 		memcpy( result, geom1, geom1->size );
-		result->type = COLLECTIONTYPE;
 		PG_RETURN_POINTER(result);
 	}
 
@@ -2534,8 +2534,7 @@ Datum collector( PG_FUNCTION_ARGS )
 	}
 	result = (GEOMETRY *)palloc( geom1->size );
 	memcpy( result, geom1, geom1->size );
-	result->type = COLLECTIONTYPE;
-
+		
 	offsets2 = (int32 *)( ((char *)&(geom2->objType[0])) + sizeof( int32 ) * geom2->nobjs ) ;
 
 	for (i=0; i<geom2->nobjs; i++)

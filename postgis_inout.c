@@ -2979,22 +2979,22 @@ GEOMETRY	*add_to_geometry(GEOMETRY *geom,int sub_obj_size, char *sub_obj, int ty
 		type = POLYGONTYPE;
 
 
-	//simple conversion
-	if  (geom->type == POINTTYPE)
+	// change to the simplest possible type that supports the type being added
+	if  (geom->type == POINTTYPE || geom->type == MULTIPOINTTYPE)
 	{
 	 	if (type == POINTTYPE)
 			result->type  = MULTIPOINTTYPE;
 		else
 			result->type  = COLLECTIONTYPE;
 	}
-	if  (geom->type == LINETYPE)
+	if  (geom->type == LINETYPE || geom->type == MULTILINETYPE)
 	{
 	 	if (type == LINETYPE)
 			result->type  = MULTILINETYPE;
 		else
 			result->type  = COLLECTIONTYPE;
 	}
-	if  (geom->type == POLYGONTYPE)
+	if  (geom->type == POLYGONTYPE || geom->type == MULTIPOLYGONTYPE)
 	{
 	 	if (type == POLYGONTYPE)
 			result->type  = MULTIPOLYGONTYPE;
