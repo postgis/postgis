@@ -1,11 +1,12 @@
+
+- AsBinary(geometry, XDR|NDR)
+
 - WKB support in loader (canonical form is OK)
 
 - lwgeom_clone_deep / lwgeom_release_deep
   (or maybe should both be always be deep.... )
 
 - LWGEOM editor (insert/append a geom, remove a geom, ....)
-
-- Make collect() avoid flatting
  
 - Flatten(geometry) 
 
@@ -14,8 +15,6 @@
 - A linemerge(linestring, linestring)
 
 - make IsValid() return GEOS invalidity message if any (as a NOTICE probably)
-
-- AsBinary(geometry, XDR|NDR)
 
 - Endiannes honouring in dumper (currently does not specify and does not
   flip when required). Depends on AsBinary() item above.
