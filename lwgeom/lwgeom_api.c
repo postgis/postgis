@@ -698,7 +698,7 @@ pointArray_bbox(const POINTARRAY *pa)
 
 		if ( TYPE_HASZ(pa->dims) ) {
 			if (pt.z > result->zmax) result->zmax = pt.z;
-			if (pt.z < result->zmax) result->zmax = pt.z;
+			if (pt.z < result->zmin) result->zmin = pt.z;
 		}
 	}
 
