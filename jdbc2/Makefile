@@ -109,12 +109,14 @@ STUBSRC= $(STUBDIR)/org/postgresql/Connection.java \
 	 $(STUBDIR)/org/postgresql/PGConnection.java
 
 # What to put into the JAR files:
-JARCONTENTS=-C $(BUILD) . \
-	       -C $(SRCDIR) org/postgresql/driverconfig.properties \
-	       -C . README COPYING_LGPL \
-	       -C .. COPYING
+JARCONTENTS=-C $(BUILD) org \
+		-C $(BUILD) examples \
+		-C $(SRCDIR) org/postgresql/driverconfig.properties \
+		-C . README COPYING_LGPL \
+		-C .. COPYING
 
-DEBUGJARCONTENTS=-C $(SRCDIR) .
+DEBUGJARCONTENTS=-C $(SRCDIR) org \
+		-C $(SRCDIR) examples
 
 # Preliminary jts support - not stable yet!
 JTSDIR=jtssrc
