@@ -323,7 +323,6 @@ public class TestParser {
         for (int i = 0; i < dburls.getSize(); i++) {
             System.out.println("Creating JDBC connection to " + dburls.getToken(i));
             conns[i] = connect(dburls.getToken(i), dbuser, dbpass);
-            ((PGConnection) conns[i]).addDataType("geometry", "org.postgis.PGgeometry");
         }
 
         System.out.println("Performing tests...");
