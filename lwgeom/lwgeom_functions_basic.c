@@ -2779,10 +2779,9 @@ Datum centroid(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	int type = lwgeom_getType(geom->type);
-	int ndims = lwgeom_ndims(geom->type);
 	int SRID = lwgeom_getSRID(geom);
 	LWGEOM_EXPLODED *exp = lwgeom_explode(SERIALIZED_FORM(geom));
-	LWPOLY *poly;
+	LWPOLY *poly=NULL;
 	LWPOINT *point;
 	PG_LWGEOM *result;
 	POINTARRAY *ring, *pa;
@@ -2822,10 +2821,10 @@ Datum centroid(PG_FUNCTION_ARGS)
 	cent.z = tot_z/num_points_tot;
 
 	// Construct POINTARRAY (paranoia?)
-	pa = pointArray_construct(&cent, poly->ndims, 1);
+	pa = pointArray_construct((char *)&cent, 1, 0, 1);
 
 	// Construct LWPOINT
-	point = lwpoint_construct(ndims, SRID, wantbbox, pa);
+	point = lwpoint_construct(1, 0, SRID, wantbbox, pa);
 
 	// Serialize LWPOINT 
 	srl = lwpoint_serialize(point);
@@ -2834,7 +2833,7 @@ Datum centroid(PG_FUNCTION_ARGS)
 	pfree_POINTARRAY(pa);
 
 	// Construct output PG_LWGEOM
-	result = PG_LWGEOM_construct(srl, poly->SRID, wantbbox);
+	result = PG_LWGEOM_construct(srl, SRID, wantbbox);
 
 	PG_RETURN_POINTER(result);
 }
