@@ -55,10 +55,8 @@ int counter_intern = 0;
 //  work the same.
 //  1. get lwgeom1
 //  2. get lwgeom2
-//  3. get box3d for lwgeom1
-//  4. get box3d for lwgeom2
-//  5. convert box3d (for lwgeom1) to BOX2DFLOAT4
-//  6. convert box3d (for lwgeom2) to BOX2DFLOAT4
+//  3. get box2d for lwgeom1
+//  4. get box2d for lwgeom2
 //  7. call the appropriate BOX2DFLOAT4 function
 //  8. return result;
 
@@ -273,15 +271,25 @@ Datum gist_lwgeom_compress(PG_FUNCTION_ARGS)
 
 	if ( entry->leafkey)
 	{
+#ifdef DEBUG_GIST4
+		elog(NOTICE,"GIST: gist_lwgeom_compress got a leafkey");
+#endif
 		retval = palloc(sizeof(GISTENTRY));
 		if ( DatumGetPointer(entry->key) != NULL )
 		{
+#ifdef DEBUG_GIST4
+		elog(NOTICE,"GIST: gist_lwgeom_compress got a non-NULL key");
+#endif
 
 			char *in; // lwgeom serialized
 			BOX2DFLOAT4 *rr;
 
 			// lwgeom serialized form
 			in = (char*)PG_DETOAST_DATUM(entry->key);
+
+#ifdef DEBUG_GIST4
+		elog(NOTICE,"GIST: gist_lwgeom_compress detoasted entry->key: %s", unparse_WKT(in, malloc, free));
+#endif
 
 			if (in == NULL)
 				PG_RETURN_POINTER(entry);
@@ -294,9 +302,25 @@ Datum gist_lwgeom_compress(PG_FUNCTION_ARGS)
 				PG_RETURN_POINTER(entry);
 			}
 
+#ifdef DEBUG_GIST4
+		elog(NOTICE,"GIST: gist_lwgeom_compress got numgeometries");
+#endif
+
 			rr = (BOX2DFLOAT4*) palloc(sizeof(BOX2DFLOAT4));
-			getbox2d_p(in+4, rr);
+			if ( ! getbox2d_p(in+4, rr) )
+			{
+#ifdef DEBUG_GIST4
+				elog(NOTICE,
+					"found an empty geometry (cannot get box2d)");
+#endif
+				// dont bother adding this to the index
+				PG_RETURN_POINTER(entry);
+			}
 			//memcpy(rr,&r,sizeof(BOX2DFLOAT4));
+
+#ifdef DEBUG_GIST4
+		elog(NOTICE,"GIST: gist_lwgeom_compress got box2d");
+#endif
 
 			if ( ! finite(rr->xmin) ||
 				! finite(rr->ymin) ||
@@ -316,7 +340,7 @@ Datum gist_lwgeom_compress(PG_FUNCTION_ARGS)
 
 			if ( in != (char*)DatumGetPointer(entry->key) )
 			{
-				pfree( in );  // PG_FREE_IF_COPY
+				pfree(in);  // PG_FREE_IF_COPY
 			}
 
 			gistentryinit(*retval, PointerGetDatum(rr),
@@ -327,12 +351,18 @@ Datum gist_lwgeom_compress(PG_FUNCTION_ARGS)
 		}
 		else
 		{
+#ifdef DEBUG_GIST4
+		elog(NOTICE,"GIST: gist_lwgeom_compress got a NULL key");
+#endif
 			gistentryinit(*retval, (Datum) 0, entry->rel,
-				entry->page, entry->offset, 0,FALSE);
+				entry->page, entry->offset, 0, FALSE);
 		}
 	}
 	else
 	{
+#ifdef DEBUG_GIST4
+		elog(NOTICE,"GIST: gist_lwgeom_compress got a non-leafkey");
+#endif
 		retval = entry;
 	}
 
