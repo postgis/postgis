@@ -332,7 +332,7 @@ printf(conn_string);
 		}
 	
 	}
-	printf("DBF tuple - %d added\n",i-1);
+	printf("DBF tuple - %d added\n",i);
 
 	if(flds==0){
 		printf("WARNING: There were no fields in the database. The DBF was not created properly, please add a field to the database and try again.");
