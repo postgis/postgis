@@ -841,7 +841,7 @@ InsertLineString(int id)
 		else ve = obj->panPartStart[pi+1];
 		vs = obj->panPartStart[pi];
 
-		print_wkb_int(obj->nVertices);
+		print_wkb_int(ve-vs);
 		for ( vi=vs; vi<ve; vi++)
 		{
 			print_wkb_double(obj->padfX[vi]);
@@ -1382,6 +1382,9 @@ utf8 (const char *fromcode, char *inputbuf)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.80  2005/03/04 14:48:22  strk
+ * Applied patch from Jonne Savolainen fixing multilines handling
+ *
  * Revision 1.79  2005/01/31 22:15:22  strk
  * Added maintainer notice, to reduce Jeff-strk mail bounces
  *
