@@ -28,6 +28,7 @@ Datum combine_box2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_mem_size(PG_FUNCTION_ARGS);
 Datum LWGEOM_summary(PG_FUNCTION_ARGS);
 Datum LWGEOM_npoints(PG_FUNCTION_ARGS);
+Datum LWGEOM_area2d(PG_FUNCTION_ARGS);
 Datum postgis_uses_stats(PG_FUNCTION_ARGS);
 Datum postgis_scripts_released(PG_FUNCTION_ARGS);
 Datum postgis_lib_version(PG_FUNCTION_ARGS);
@@ -36,6 +37,7 @@ Datum postgis_lib_version(PG_FUNCTION_ARGS);
 // internal
 char * lwgeom_summary_recursive(char *serialized, int offset);
 int32 lwgeom_npoints_recursive(char *serialized);
+double lwgeom_polygon_area2d(LWPOLY *poly);
 
 /*------------------------------------------------------------------*/
 
@@ -312,3 +314,65 @@ Datum LWGEOM_npoints(PG_FUNCTION_ARGS)
 	PG_RETURN_INT32(npoints);
 }
 
+//find the 2d area of the outer ring - sum (area 2d of inner rings)
+// Could use a more numerically stable calculator...
+double lwgeom_polygon_area2d(LWPOLY *poly)
+{
+	double poly_area=0.0;
+	int i;
+
+//elog(NOTICE,"in lwgeom_polygon_area2d (%d rings)", poly->nrings);
+
+	for (i=0; i<poly->nrings; i++)
+	{
+		int j;
+		POINTARRAY *ring = poly->rings[i];
+		double ringarea = 0.0;
+
+//elog(NOTICE," rings %d has %d points", i, ring->npoints);
+		for (j=0; j<ring->npoints-1; j++)
+    		{
+			POINT2D *p1 = (POINT2D *)getPoint(ring, j);
+			POINT2D *p2 = (POINT2D *)getPoint(ring, j+1);
+			ringarea += ( p1->x * p2->y ) - ( p1->y * p2->x );
+		}
+
+		ringarea  /= 2.0;
+//elog(NOTICE," ring 1 has area %lf",ringarea);
+		ringarea  = fabs(ringarea );
+		if (i != 0)	//outer
+			ringarea  = -1.0*ringarea ; // its a hole
+
+		poly_area += ringarea;
+	}
+
+	return poly_area;
+}
+
+// Calculate the area of all the subobj in a polygon
+// area(point) = 0
+// area (line) = 0
+// area(polygon) = find its 2d area
+PG_FUNCTION_INFO_V1(LWGEOM_area2d);
+Datum LWGEOM_area2d(PG_FUNCTION_ARGS)
+{
+	LWGEOM *geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	LWGEOM_INSPECTED *inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
+	LWPOLY *poly;
+	double area = 0.0;
+	int i;
+
+//elog(NOTICE, "in LWGEOM_area2d");
+
+	for (i=0; i<inspected->ngeometries; i++)
+	{
+		poly = lwgeom_getpoly_inspected(inspected, i);
+		if ( poly == NULL ) continue;
+		area += lwgeom_polygon_area2d(poly);
+//elog(NOTICE, " LWGEOM_area2d found a poly (%f)", area);
+	}
+	
+	pfree_inspected(inspected);
+
+	PG_RETURN_FLOAT8(area);
+}

@@ -69,8 +69,6 @@ FUNC: KEEPING FUNCTION: [combine_bbox(box3d, geometry)]
 
 FUNC: KEEPING FUNCTION: [length3d(geometry)]
 FUNC: KEEPING FUNCTION: [length(geometry)]
-FUNC: KEEPING FUNCTION: [area2d(geometry)]
-FUNC: KEEPING FUNCTION: [area(geometry)]
 FUNC: KEEPING FUNCTION: [perimeter3d(geometry)]
 FUNC: KEEPING FUNCTION: [perimeter(geometry)]
 

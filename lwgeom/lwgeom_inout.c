@@ -20,6 +20,7 @@
 
 #define DEBUG
 
+#include "lwgeom_pg.h"
 #include "wktparse.h"
 
 void elog_ERROR(const char* string);
@@ -27,13 +28,7 @@ void elog_ERROR(const char* string);
 
 extern unsigned char	parse_hex(char *str);
 extern void deparse_hex(unsigned char str, unsigned char *result);
-
-
 extern char *parse_lwgeom_wkt(char *wkt_input);
-
-static void *palloc_fn(size_t size);
-static void free_fn(void *ptr);
-
 
 
 // 3d or 4d.  There is NOT a (x,y,m) point type!!!
@@ -47,9 +42,6 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS);
 Datum LWGEOM_out(PG_FUNCTION_ARGS);
 
 // needed for OGC conformance
-Datum LWGEOM_from_text(PG_FUNCTION_ARGS);
-
-Datum LWGEOM_asText(PG_FUNCTION_ARGS);
 
 Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS);
 Datum LWGEOM_getBBOX(PG_FUNCTION_ARGS);
@@ -242,29 +234,6 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 		PG_RETURN_POINTER(result);
 }
 
-//given wkt and SRID, return a geometry
-//actually we cheat, postgres will convert the string to a geometry for us...
-PG_FUNCTION_INFO_V1(LWGEOM_from_text);
-Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
-{
-	LWGEOM *geom = (LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
-	int32 SRID;
-	LWGEOM *result = NULL;
-
-	// read user-requested SRID if any
-	if ( PG_NARGS() > 1 )
-	{
-		SRID = PG_GETARG_INT32(1);
-		if ( SRID != lwgeom_getSRID(geom) )
-		{
-			result = lwgeom_setSRID(geom, SRID);
-			pfree(geom);
-		}
-	}
-	if ( ! result )	result = geom;
-
-	PG_RETURN_POINTER(result);
-}
 
 
 
@@ -503,34 +472,6 @@ unsigned char	parse_hex(char *str)
 	return (unsigned char) ((result_high<<4) + result_low);
 }
 
-//convert LWGEOM to wkt (in TEXT format)
-PG_FUNCTION_INFO_V1(LWGEOM_asText);
-Datum LWGEOM_asText(PG_FUNCTION_ARGS)
-{
-	char *lwgeom = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	char *result_cstring =  unparse_WKT(lwgeom,palloc_fn,free_fn);
-	int len;
-
-        char *result,*loc_wkt;
-	char *semicolonLoc;
-
-	semicolonLoc = strchr(result_cstring,';');
-
-	//loc points to start of wkt
-	if (semicolonLoc == NULL) loc_wkt = result_cstring;
-	else loc_wkt = semicolonLoc +1;
-
-	len = strlen(loc_wkt)+4;
-	result = palloc(len);
-	memcpy(result, &len, 4);
-
-	memcpy(result+4,loc_wkt, len-4);
-
-	pfree(result_cstring);
-	PG_RETURN_POINTER(result);
-}
-
-
 // puts a bbox inside the geometry
 PG_FUNCTION_INFO_V1(LWGEOM_addBBOX);
 Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS)
@@ -583,21 +524,6 @@ void elog_ERROR(const char* string)
 {
 	elog(ERROR,string);
 }
-
-static void free_fn(void *ptr)
-{
-	//elog(NOTICE,"  pfree(%p)", ptr);
-	pfree(ptr);
-}
-
-static void *palloc_fn(size_t size)
-{
-	void * result;
-	result = palloc(size);
-	//elog(NOTICE,"  palloc(%d) = %p", size, result);
-	return result;
-}
-
 
 // parse WKT input
 // parse_WKT_lwgeom(TEXT) -> LWGEOM

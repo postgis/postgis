@@ -11,6 +11,10 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.16  2004/08/25 07:29:32  strk
+-- Moved some OGC functions from lwgeom_inout.c to lwgeom_ogc.c.
+-- Added area2d (area) to lwgeom_functions_basic.c
+--
 -- Revision 1.15  2004/08/24 16:33:41  strk
 -- Added StartPoint(), EndPoint()
 --
@@ -129,11 +133,6 @@ CREATE TYPE geometry (
 );
 
 CREATEFUNCTION geometryfromtext(geometry)
-        RETURNS geometry
-        AS '@MODULE_FILENAME@','LWGEOM_from_text'
-        LANGUAGE 'C' WITH (isstrict,iscachable);
-
-CREATEFUNCTION geometryfromtext(geometry, int4)
         RETURNS geometry
         AS '@MODULE_FILENAME@','LWGEOM_from_text'
         LANGUAGE 'C' WITH (isstrict,iscachable);
@@ -819,28 +818,14 @@ CREATEFUNCTION getSRID(geometry)
 	AS '@MODULE_FILENAME@','LWGEOM_getSRID'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
--- defined for backward compatibility
-CREATEFUNCTION SRID(geometry) 
-	RETURNS int4
-	AS '@MODULE_FILENAME@','LWGEOM_getSRID'
-	LANGUAGE 'C' WITH (isstrict,iscachable);
-	
-CREATEFUNCTION setSRID(geometry,int4) 
-	RETURNS geometry
-	AS '@MODULE_FILENAME@','LWGEOM_setSRID'
-	LANGUAGE 'C' WITH (isstrict,iscachable);	
-	
-CREATEFUNCTION asText(geometry)
-	RETURNS TEXT
-	AS '@MODULE_FILENAME@','LWGEOM_asText'
-	LANGUAGE 'C' WITH (isstrict,iscachable);
-
 CREATEFUNCTION getbbox(geometry)
         RETURNS box2d
         AS '@MODULE_FILENAME@','LWGEOM_to_BOX2DFLOAT4'
         LANGUAGE 'C' WITH (isstrict,iscachable);
 
+------------------------------------------------------------------------
 -- DEBUG
+------------------------------------------------------------------------
 
 CREATEFUNCTION mem_size(geometry)
 	RETURNS int4
@@ -857,6 +842,8 @@ CREATEFUNCTION npoints(geometry)
 	AS '@MODULE_FILENAME@', 'LWGEOM_npoints'
 	LANGUAGE 'C' WITH (isstrict);
 
+------------------------------------------------------------------------
+-- OGC defined
 ------------------------------------------------------------------------
 
 CREATEFUNCTION NumPoints(geometry)
@@ -929,6 +916,39 @@ CREATEFUNCTION EndPoint(geometry)
 	AS '@MODULE_FILENAME@', 'LWGEOM_endpoint_linestring'
 	LANGUAGE 'C' WITH (isstrict);
 
+CREATEFUNCTION SRID(geometry) 
+	RETURNS int4
+	AS '@MODULE_FILENAME@','LWGEOM_getSRID'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+	
+CREATEFUNCTION SetSRID(geometry,int4) 
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','LWGEOM_setSRID'
+	LANGUAGE 'C' WITH (isstrict,iscachable);	
+	
+CREATEFUNCTION AsText(geometry)
+	RETURNS TEXT
+	AS '@MODULE_FILENAME@','LWGEOM_asText'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATEFUNCTION GeometryFromText(geometry, int4)
+        RETURNS geometry
+        AS '@MODULE_FILENAME@','LWGEOM_from_text'
+        LANGUAGE 'C' WITH (isstrict,iscachable);
+
+------------------------------------------------------------------------
+-- Misures
+------------------------------------------------------------------------
+
+CREATEFUNCTION area2d(geometry)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@', 'LWGEOM_area2d'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION area(geometry)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@','LWGEOM_area2d'
+	LANGUAGE 'C' WITH (isstrict);
 
 
 ------------------------------------------------------------------------

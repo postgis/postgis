@@ -15,6 +15,7 @@
 
 
 #include "lwgeom.h"
+#include "lwgeom_pg.h"
 
 
 //#define DEBUG
@@ -53,7 +54,10 @@ Datum LWGEOM_z_point(PG_FUNCTION_ARGS);
 Datum LWGEOM_startpoint_linestring(PG_FUNCTION_ARGS);
 // ---- EndPoint(geometry)
 Datum LWGEOM_endpoint_linestring(PG_FUNCTION_ARGS);
-
+// ---- AsText(geometry)
+Datum LWGEOM_asText(PG_FUNCTION_ARGS);
+// ---- GeometryFromText(text, integer)
+Datum LWGEOM_from_text(PG_FUNCTION_ARGS);
 
 // internal
 int32 lwgeom_numpoints_linestring_recursive(char *serialized);
@@ -671,3 +675,54 @@ Datum LWGEOM_endpoint_linestring(PG_FUNCTION_ARGS)
 
 	PG_RETURN_POINTER(result);
 }
+
+//given wkt and SRID, return a geometry
+//actually we cheat, postgres will convert the string to a geometry for us...
+PG_FUNCTION_INFO_V1(LWGEOM_from_text);
+Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
+{
+	LWGEOM *geom = (LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+	int32 SRID;
+	LWGEOM *result = NULL;
+
+	// read user-requested SRID if any
+	if ( PG_NARGS() > 1 )
+	{
+		SRID = PG_GETARG_INT32(1);
+		if ( SRID != lwgeom_getSRID(geom) )
+		{
+			result = lwgeom_setSRID(geom, SRID);
+			pfree(geom);
+		}
+	}
+	if ( ! result )	result = geom;
+
+	PG_RETURN_POINTER(result);
+}
+//convert LWGEOM to wkt (in TEXT format)
+PG_FUNCTION_INFO_V1(LWGEOM_asText);
+Datum LWGEOM_asText(PG_FUNCTION_ARGS)
+{
+	char *lwgeom = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char *result_cstring =  unparse_WKT(lwgeom,palloc_fn,free_fn);
+	int len;
+
+        char *result,*loc_wkt;
+	char *semicolonLoc;
+
+	semicolonLoc = strchr(result_cstring,';');
+
+	//loc points to start of wkt
+	if (semicolonLoc == NULL) loc_wkt = result_cstring;
+	else loc_wkt = semicolonLoc +1;
+
+	len = strlen(loc_wkt)+4;
+	result = palloc(len);
+	memcpy(result, &len, 4);
+
+	memcpy(result+4,loc_wkt, len-4);
+
+	pfree(result_cstring);
+	PG_RETURN_POINTER(result);
+}
+
