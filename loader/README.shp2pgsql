@@ -1,7 +1,7 @@
 shp2pgsql - Convert Shape file to PostGIS
 ~~~~~~~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-VERSION: 0.5 (2001/07/20)
+VERSION: 0.6 (2001/10/01)
 
 MORE INFORMATION: http://postgis.refractions.net
 
@@ -23,7 +23,7 @@ Copy the binary wherever you like. :)
 
 USAGE:
 
-shp2pgsql <shapefile> <tablename> -d -c -a -dump
+shp2pgsql [<options>] <shapefile> <tablename> <database name>
 
 The <shapefile> is the name of the shape file, without any extension
 information. For example, 'roads' would be the name of the shapefile 
@@ -33,31 +33,40 @@ The <tablename> is the name of the database table you want the data stored
 in in the database. Within that table, the geometry will be placed in 
 the 'geo_value' column by default.
 
+The <database name> is the name of the database you are going to put the
+the data into.
+
 The options are as follows:
 
-  -d    Delete mode. Delete the database table before uploading the
-        data into a new empty database table in 'insert' format.
-  -c    Create mode. This is the default mode. Create a new table and
-        upload the data into that table in 'insert' format.
+(-a || -c || -d) these options are mutually exclusive.
+
   -a    Append mode. Do not delete the target table or try to create
         a new table, simple insert the data into the existing table.
-        (A table will have to exist for this to work, it is usually
-        used after a create mode as been run once.)
-  -dump Dump mode. Create a new table and upload the data into that
-        table in 'dump' format. Dump format is used by PostgreSQL for
-	large data dumps and uploads. Use this mode if your upload
-	dataset is very large.
+        A table will have to exist for this to work, it is usually
+        used after a create mode as been run once.(mutually exclusive
+	with -c and -d)
+  -c    Create mode. This is the default mode is no other is specified.
+	Create a new table and upload the data into that table.
+	(mutually exclusive with -a and -d)
+  -d    Delete mode. Delete the database table named <tablename>, then
+	create a new one with that name before uploading the data into
+	the new empty database table.(mutually exclusive with -a and -c)
+
+  -D Dump. When inserting the data into the table use 'dump' format.
+	Dump format is used by PostgreSQL for large data dumps and 
+	uploads. Use this mode if your upload dataset is very large.
+	(you may still specify -a,-c or -d in conjunction with -D)
 
 
 EXAMPLES:
 
 Loading directly:
 
-  shp2pgsql roads1 -c | psql -d roadsdatabase
-  shp2pgsql roads2 -a | psql -d roadsdatabase
+  shp2pgsql -c roads1 roads_table my_db | psql -d my_db
+  shp2pgsql -a roads2 roads_table my_db | psql -d my_db
 
-Saving to an intermiate file:
+Saving to an intermiate file using the 'dump' format:
 
-  shp2pgsql roads1 > roads.sql
-  psql -d roadsdatabase -f roads.sql
+  shp2pgsql -D roads1 roads_table my_db > roads.sql
+  psql -d my_db -f roads.sql
 
