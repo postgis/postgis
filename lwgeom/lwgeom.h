@@ -398,11 +398,11 @@ typedef struct
 {
 	int SRID;
 	int ndims;
-	int npoints;
+	uint32 npoints;
 	char **points;
-	int nlines;
+	uint32 nlines;
 	char **lines;
-	int npolys;
+	uint32 npolys;
 	char **polys;
 } LWGEOM_EXPLODED;
 
@@ -416,7 +416,13 @@ LWGEOM_EXPLODED * lwexploded_sum(LWGEOM_EXPLODED *exp1, LWGEOM_EXPLODED *exp2);
  * This function recursively scan the given serialized geometry
  * and returns a list of _all_ subgeoms in it (deep-first)
  */
-LWGEOM_EXPLODED *lwgeom_explode(char *serialized);
+extern LWGEOM_EXPLODED *lwgeom_explode(char *serialized);
+
+/*
+ * Return the length of the serialized form corresponding
+ * to this exploded structure.
+ */
+extern uint32 lwexploded_findlength(LWGEOM_EXPLODED *exp, int wantbbox);
 
 // Serialize an LWGEOM_EXPLODED object.
 // SRID and ndims will be taken from exploded structure.

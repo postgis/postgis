@@ -17,13 +17,16 @@
 #include "lwgeom.h"
 
 
+//#define DEBUG 1
+//#define DEBUG_EXPLODED 1
+
 // This is an implementation of the functions defined in lwgeom.h
 
 //forward decs
-
-
-
 extern  BOX3D *lw_geom_getBB_simple(char *serialized_form);
+#ifdef DEBUG_EXPLODED
+void checkexplodedsize(char *srl, LWGEOM_EXPLODED *exploded, int alloced, char wantbbox);
+#endif
 
 
 // this will change to NaN when I figure out how to
@@ -31,7 +34,6 @@ extern  BOX3D *lw_geom_getBB_simple(char *serialized_form);
 
 #define NO_Z_VALUE 0.0
 
-//#define DEBUG 1
 
 //*********************************************************************
 // BOX routines
@@ -3122,12 +3124,6 @@ lwexploded_serialize(LWGEOM_EXPLODED *exploded, int wantbbox)
 	elog(NOTICE, " computed outtype: %d, ngeoms: %d", outtype, ngeoms);
 #endif
 
-	if ( ! ngeoms )
-	{
-		return lwgeom_constructempty(exploded->SRID, exploded->ndims);
-	}
-
-
 	// For a single geometry just set SRID and BBOX (if requested)
 	if ( ngeoms < 2 )
 	{
@@ -3167,10 +3163,16 @@ lwexploded_serialize(LWGEOM_EXPLODED *exploded, int wantbbox)
 			loc += sizeof(BOX2DFLOAT4);
 			memcpy(loc, (ser+1), size-1);
 			pfree(ser);
+#ifdef DEBUG_EXPLODED
+checkexplodedsize(result, exploded, size+4, wantbbox);
+#endif
 			return result;
 		}
 		else
 		{
+#ifdef DEBUG_EXPLODED
+checkexplodedsize(ser, exploded, -1, wantbbox);
+#endif
 			return ser;
 		}
 	}
@@ -3320,7 +3322,106 @@ lwexploded_serialize(LWGEOM_EXPLODED *exploded, int wantbbox)
 	}
 	elog(NOTICE, " numgeoms: %d", lwgeom_getnumgeometries(result));
 #endif
-		
+
+#ifdef DEBUG_EXPLODED
+checkexplodedsize(result, exploded, size*2, wantbbox);
+#endif
+
 	return result;
+}
+
+#ifdef DEBUG_EXPLODED
+void
+checkexplodedsize(char *srl, LWGEOM_EXPLODED *exp, int alloced, char wantbbox)
+{
+	elog(NOTICE, "exploded len: serialized:%d computed:%d alloced:%d",
+		lwgeom_seralizedformlength_simple(srl),
+		lwexploded_findlength(exp, wantbbox),
+		alloced);
+}
+#endif
+
+uint32
+lwexploded_findlength(LWGEOM_EXPLODED *exploded, int wantbbox)
+{
+	uint32 size=0;
+	char ntypes=0;
+	uint32 i;
+	
+
+	// find sum of sizes of all geoms.
+	// substract size of eventually embedded SRID and BBOXes
+	if ( exploded->npoints )
+	{
+		ntypes++;
+		for (i=0; i<exploded->npoints; i++)
+		{
+			size += lwpoint_findlength(exploded->points[i]);
+			if ( lwgeom_hasBBOX(exploded->points[i][0]) )
+				size -= sizeof(BOX2DFLOAT4);
+			if ( lwgeom_hasSRID(exploded->points[i][0]) )
+				size -= 4;
+		}
+		// add multigeom header size
+		if ( exploded->npoints > 1 )
+		{
+			size += 1; // type
+			size += 4; // numgeometries
+		}
+	}
+	if ( exploded->nlines )
+	{
+		ntypes++;
+		for (i=0; i<exploded->nlines; i++)
+		{
+			size += lwline_findlength(exploded->lines[i]);
+			if ( lwgeom_hasBBOX(exploded->lines[i][0]) )
+				size -= sizeof(BOX2DFLOAT4);
+			if ( lwgeom_hasSRID(exploded->lines[i][0]) )
+				size -= 4;
+		}
+		// add multigeom header size
+		if ( exploded->nlines > 1 )
+		{
+			size += 1; // type
+			size += 4; // numgeometries
+		}
+	}
+	if ( exploded->npolys )
+	{
+		ntypes++;
+		for (i=0; i<exploded->npolys; i++)
+		{
+			size += lwpoly_findlength(exploded->polys[i]);
+			if ( lwgeom_hasBBOX(exploded->polys[i][0]) )
+				size -= sizeof(BOX2DFLOAT4);
+			if ( lwgeom_hasSRID(exploded->polys[i][0]) )
+				size -= 4;
+		}
+		// add multigeom header size
+		if ( exploded->npolys > 1 )
+		{
+			size += 1; // type
+			size += 4; // numgeometries
+		}
+	}
+
+	/* structure is empty */
+	if ( ! ntypes ) return 0;
+
+	/* multi-typed geom (collection), add collection header */
+	if ( ntypes > 1 )
+	{
+		size += 1; // type
+		size += 4; // numgeometries
+	}
+
+	/*
+	 * Add BBOX and SRID if required
+	 */
+	if ( exploded->SRID != -1 ) size += 4;
+	if ( wantbbox ) size += sizeof(BOX2DFLOAT4);
+
+	return size;
 }
 
