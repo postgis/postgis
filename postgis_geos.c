@@ -10,6 +10,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.31  2004/06/16 19:59:36  strk
+ * Changed GEOS_VERSION to POSTGIS_GEOS_VERSION to avoid future clashes
+ *
  * Revision 1.30  2004/06/16 19:37:54  strk
  * Added cleanup needed for GEOS > 1.0
  *
@@ -1783,7 +1786,7 @@ POSTGIS2GEOS(GEOMETRY *g)
 			elog(NOTICE, "POSTGIS2GEOS: COLLECTION has %d objs, srid %d and is %s 3d", g->nobjs, g->SRID, g->is3d ? "" : "not");
 #endif
 			geos = PostGIS2GEOS_collection(geoms,g->nobjs,g->SRID,g->is3d);
-#if GEOS_VERSION > 100
+#if POSTGIS_GEOS_VERSION > 100
 			for (t=0; t<g->nobjs; t++)
 				GEOSdeleteGeometry(geoms[t]);
 #endif
@@ -1825,8 +1828,6 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 
 	PG_RETURN_POINTER(result);
 }
-
-
 
 //----------------------------------------------------------------------------
 // NULL implementation here
@@ -2010,6 +2011,13 @@ PG_FUNCTION_INFO_V1(GEOSnoop);
 Datum GEOSnoop(PG_FUNCTION_ARGS)
 {
 	elog(ERROR,"GEOSnoop:: operation not implemented - compile PostGIS with GEOS support");
+	PG_RETURN_NULL();
+}
+
+PG_FUNCTION_INFO_V1(GEOSversion);
+Datum GEOSversion(PG_FUNCTION_ARGS)
+{
+	elog(ERROR,"GEOSversion:: operation not implemented - compile PostGIS with GEOS support");
 	PG_RETURN_NULL();
 }
 
