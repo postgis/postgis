@@ -1454,6 +1454,7 @@ GEOS2POSTGIS(Geometry *geom, char want3d)
 	LWGEOM_EXPLODED *oexp;
 	int SRID = GEOSGetSRID(geom);
 	int wantbbox = 0; // might as well be 1 ...
+	int size;
 
 	// Initialize exploded lwgeom
 	oexp = (LWGEOM_EXPLODED *)palloc(sizeof(LWGEOM_EXPLODED));
@@ -1466,10 +1467,14 @@ GEOS2POSTGIS(Geometry *geom, char want3d)
 	oexp->npolys = 0;
 	oexp->polys = palloc(sizeof(char *));
 
-
 	addToExploded_recursive(geom, oexp);
-	serialized = lwexploded_serialize(oexp, wantbbox);
-	result = LWGEOM_construct(serialized, SRID, wantbbox);
+
+	size = lwexploded_findlength(oexp, wantbbox);
+	size += 4; // postgresql size header
+	result = palloc(size);
+	result->size = size;
+	lwexploded_serialize_buf(oexp, wantbbox, SERIALIZED_FORM(result), NULL);
+
 	return result;
 }
 
