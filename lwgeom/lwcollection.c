@@ -295,7 +295,8 @@ lwcollection_segmentize2d(LWCOLLECTION *col, double dist)
 char
 lwcollection_same(const LWCOLLECTION *c1, const LWCOLLECTION *c2)
 {
-	unsigned int i;
+	unsigned int i, j;
+	char *hit;
 
 #if DEBUG_CALLS
 	lwnotice("lwcollection_same called");
@@ -304,10 +305,23 @@ lwcollection_same(const LWCOLLECTION *c1, const LWCOLLECTION *c2)
 	if ( TYPE_GETTYPE(c1->type) != TYPE_GETTYPE(c2->type) ) return 0;
 	if ( c1->ngeoms != c2->ngeoms ) return 0;
 
+	hit = (char *)lwalloc(sizeof(char)*c1->ngeoms);
+	memset(hit, 0, sizeof(char)*c1->ngeoms);
+
 	for (i=0; i<c1->ngeoms; i++)
 	{
-		if ( ! lwgeom_same(c1->geoms[i], c2->geoms[i]) )
-			return 0;
+		char found=0;
+		for (j=0; j<c2->ngeoms; j++)
+		{
+			if ( hit[j] ) continue;
+			if ( lwgeom_same(c1->geoms[i], c2->geoms[j]) )
+			{
+				hit[j] = 1;
+				found=1;
+				break;
+			}
+		}
+		if ( ! found ) return 0;
 	}
 	return 1;
 }
