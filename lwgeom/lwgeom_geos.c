@@ -34,6 +34,7 @@ Datum pointonsurface(PG_FUNCTION_ARGS);
 Datum GEOSnoop(PG_FUNCTION_ARGS);
 Datum postgis_geos_version(PG_FUNCTION_ARGS);
 Datum centroid(PG_FUNCTION_ARGS);
+Datum GEOS_makepoly_garray(PG_FUNCTION_ARGS);
 
 
 
@@ -48,6 +49,7 @@ Datum centroid(PG_FUNCTION_ARGS);
 #define DEBUG_POSTGIS2GEOS 1
 #define DEBUG_GEOS2POSTGIS 1
 #endif // DEBUG_CONVERTER
+#define DEBUG 1
 
 typedef  struct Geometry Geometry;
 
@@ -91,6 +93,7 @@ extern int      GEOSGetNumCoordinate(Geometry *g1);
 extern Geometry	*GEOSGetGeometryN(Geometry *g1, int n);
 extern Geometry	*GEOSGetExteriorRing(Geometry *g1);
 extern Geometry	*GEOSGetInteriorRingN(Geometry *g1,int n);
+extern Geometry *GEOSpolygonize(Geometry **geoms, unsigned int ngeoms);
 extern int	GEOSGetNumInteriorRings(Geometry *g1);
 extern int      GEOSGetSRID(Geometry *g1);
 extern int      GEOSGetNumGeometries(Geometry *g1);
@@ -2239,6 +2242,76 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
+PG_FUNCTION_INFO_V1(GEOS_makepoly_garray);
+Datum GEOS_makepoly_garray(PG_FUNCTION_ARGS)
+{
+	Datum datum;
+	ArrayType *array;
+	int is3d = 0;
+	unsigned int nelems, i;
+	PG_LWGEOM **geoms, *result, *pgis_geom;
+	Geometry *geos_result;
+	Geometry **vgeoms;
+#ifdef DEBUG
+	static int call=1;
+#endif
+
+#ifdef DEBUG
+	call++;
+#endif
+
+	datum = PG_GETARG_DATUM(0);
+
+	/* Null array, null geometry (should be empty?) */
+	if ( (Pointer *)datum == NULL ) PG_RETURN_NULL();
+
+	array = (ArrayType *) PG_DETOAST_DATUM(datum);
+
+	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
+
+#ifdef DEBUG
+	elog(NOTICE, "GEOS_makepoly_garray: number of elements: %d", nelems);
+#endif
+
+	if ( nelems == 0 ) PG_RETURN_NULL();
+
+	geoms = (PG_LWGEOM **)ARR_DATA_PTR(array);
+
+	/* Ok, we really need geos now ;) */
+	initGEOS(MAXIMUM_ALIGNOF);
+
+	vgeoms = palloc(sizeof(Geometry *)*nelems);
+	for (i=0; i<nelems; i++)
+	{
+	 	//if ( TYPE_NDIMS(geoms[i]->type) > 2 ) is3d = 1;
+		vgeoms[i] = POSTGIS2GEOS(geoms[i]);
+	}
+
+#ifdef DEBUG
+	elog(NOTICE, "GEOS_makepoly_garray: invoking GEOSpolygonize");
+#endif
+
+	geos_result = GEOSpolygonize(vgeoms, nelems);
+#ifdef DEBUG
+	elog(NOTICE, "GEOS_makepoly_garray: GEOSpolygonize returned");
+#endif
+	//pfree(vgeoms);
+	if ( ! geos_result ) PG_RETURN_NULL();
+
+	result = GEOS2POSTGIS(geos_result, is3d);
+	GEOSdeleteGeometry(geos_result);
+	if ( result == NULL )
+	{
+		elog(ERROR, "GEOS2POSTGIS returned an error");
+		PG_RETURN_NULL(); //never get here
+	}
+
+	//compressType(result);
+
+	PG_RETURN_POINTER(result);
+
+}
+
 #else // ! USE_GEOS
 
 PG_FUNCTION_INFO_V1(postgis_geos_version);
@@ -2385,6 +2458,13 @@ PG_FUNCTION_INFO_V1(unite_garray);
 Datum unite_garray(PG_FUNCTION_ARGS)
 {
 	elog(ERROR,"unite_garray:: operation not implemented - compile PostGIS with GEOS support");
+	PG_RETURN_NULL(); // never get here
+}
+
+PG_FUNCTION_INFO_V1(GEOS_makepoly_garray);
+Datum GEOS_makepoly_garray(PG_FUNCTION_ARGS)
+{
+	elog(ERROR,"GEOS_makepoly_garray:: operation not implemented - compile PostGIS with GEOS support");
 	PG_RETURN_NULL(); // never get here
 }
 

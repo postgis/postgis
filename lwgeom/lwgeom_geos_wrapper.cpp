@@ -9,8 +9,12 @@
 #include "postgis_geos_version.h"
 #include "geos/geom.h"
 #include "geos/util.h"
+#if GEOS_FIRST_INTERFACE <= 3 
+#include "geos/opPolygonize.h"
+#endif // GEOS_FIRST_INTERFACE <= 3
 
 //#define DEBUG_POSTGIS2GEOS 1
+#define DEBUG 1
 
 using namespace geos;
 
@@ -102,6 +106,7 @@ extern "C" char GEOSrelateCrosses(Geometry *g1, Geometry*g2);
 extern "C" char GEOSrelateWithin(Geometry *g1, Geometry*g2);
 extern "C" char GEOSrelateContains(Geometry *g1, Geometry*g2);
 extern "C" char GEOSrelateOverlaps(Geometry *g1, Geometry*g2);
+extern "C" Geometry *GEOSpolygonize(Geometry **geoms, unsigned int ngeoms);
 extern "C" char *GEOSversion();
 extern "C" char *GEOSjtsport();
 
@@ -1578,6 +1583,65 @@ Geometry *GEOSGetCentroid(Geometry *g)
 	}
 }
 
+#if GEOS_FIRST_INTERFACE <= 3 && GEOS_LAST_INTERFACE >= 3
+Geometry *GEOSpolygonize(Geometry **g, unsigned int ngeoms)
+{
+	unsigned int i;
+	Geometry *multipoly = NULL;
+
+	// construct vector
+	vector<Geometry *> *geoms = new vector<Geometry *>(ngeoms);
+	for (i=0; i<ngeoms; i++) (*geoms)[i] = g[i];
+
+#if DEBUG
+	NOTICE_MESSAGE("geometry vector constructed");
+#endif
+
+	try{
+		// Polygonize
+		Polygonizer plgnzr;
+		plgnzr.add(geoms);
+#if DEBUG
+	NOTICE_MESSAGE("geometry vector added to polygonizer");
+#endif
+
+		vector<Polygon *>*polys = plgnzr.getPolygons();
+
+#if DEBUG
+	NOTICE_MESSAGE("output polygons got");
+#endif
+
+		delete geoms;
+
+#if DEBUG
+	NOTICE_MESSAGE("geometry vector deleted");
+#endif
+
+		geoms = new vector<Geometry *>(polys->size());
+		for (i=0; i<polys->size(); i++) (*geoms)[i] = (*polys)[i];
+		multipoly = geomFactory->createMultiPolygon(geoms);
+	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		delete ge;
+		return NULL;
+	}
+	catch(...)
+	{
+		return NULL;
+	}
+
+	return multipoly;
+}
+#else // ! (GEOS_FIRST_INTERFACE <= 3 && GEOS_LAST_INTERFACE >= 3)
+Geometry *GEOSpolygonize(Geometry **g, unsigned int ngeoms)
+{
+	NOTICE_MESSAGE("GEOS library does not support required interface 3");
+	return NULL;
+}
+#endif // ! (GEOS_FIRST_INTERFACE <= 3 && GEOS_LAST_INTERFACE >= 3)
+
 
 int      GEOSGetSRID(Geometry *g1)
 {
@@ -1628,5 +1692,6 @@ GEOSjtsport()
 #endif
 	return res;
 }
+
 
 
