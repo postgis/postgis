@@ -31,9 +31,9 @@ echo "Removing .cvsignore and make_dist files"
 find "$outdir" -name .cvsignore -exec rm {} \;
 rm -f "$outdir"/make_dist
 
-# remove regress tests
-echo "Removing regress tests"
-rm -Rf $outdir/regress
+## remove regress tests
+#echo "Removing regress tests"
+#rm -Rf $outdir/regress
 
 # generating documentation
 echo "Generating documentation"
