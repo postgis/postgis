@@ -2878,6 +2878,25 @@ CREATEFUNCTION Equals(geometry,geometry)
 	AS '@MODULE_FILENAME@','geomequals'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
+-----------------------------------------------------------------------
+-- SVG OUTPUT
+-----------------------------------------------------------------------
+CREATEFUNCTION AsSvg(geometry,int4,int4)
+	RETURNS TEXT
+	AS '@MODULE_FILENAME@','assvg_geometry'
+	LANGUAGE 'C';
+
+CREATEFUNCTION AsSvg(geometry,int4)
+	RETURNS TEXT
+	AS '@MODULE_FILENAME@','assvg_geometry'
+	LANGUAGE 'C';
+
+CREATEFUNCTION AsSvg(geometry)
+	RETURNS TEXT
+	AS '@MODULE_FILENAME@','assvg_geometry'
+	LANGUAGE 'C';
+
+
 ---------------------------------------------------------------
 -- END
 ---------------------------------------------------------------
