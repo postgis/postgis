@@ -8,108 +8,86 @@
 
 --- basic datatypes (correct)
 
-select  'POINT( 1 2 )'::GEOMETRY as geom;
-select  'POINT( 1 2 3)'::GEOMETRY as geom;
+select astext('POINT( 1 2 )'::GEOMETRY) as geom;
+select astext('POINT( 1 2 3)'::GEOMETRY) as geom;
 
-select  'LINESTRING( 0 0, 1 1, 2 2, 3 3 , 4 4)'::GEOMETRY as geom;
-select  'LINESTRING( 0 0 0 , 1 1 1 , 2 2 2 , 3 3 3, 4 4 4)'::GEOMETRY as geom;
-select  'LINESTRING( 1 2 3 , 4 5 6 , 7 8 9 , 10 11 12, 13 14 15)'::GEOMETRY as geom;
+select astext('LINESTRING( 0 0, 1 1, 2 2, 3 3 , 4 4)'::GEOMETRY) as geom;
+select astext('LINESTRING( 0 0 0 , 1 1 1 , 2 2 2 , 3 3 3, 4 4 4)'::GEOMETRY) as geom;
+select astext('LINESTRING( 1 2 3 , 4 5 6 , 7 8 9 , 10 11 12, 13 14 15)'::GEOMETRY) as geom;
 
-select  'POLYGON( (0 0, 10 0, 10 10, 0 10, 0 0) )'::GEOMETRY as geom;
-select  'POLYGON( (0 0 1 , 10 0 1, 10 10 1, 0 10 1, 0 0 1) )'::GEOMETRY as geom;
-select  'POLYGON( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7, 5 5) )'::GEOMETRY as geom;
-select  'POLYGON( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7, 5 5),(1 1,2 1, 2 2, 1 2, 1 1) )'::GEOMETRY as geom;
-select  'POLYGON( (0 0 1, 10 0 1, 10 10 1, 0 10 1, 0 0 1),(5 5 1, 7 5 1, 7 7 1 , 5 7 1, 5 5 1) )'::GEOMETRY as geom;
-select  'POLYGON( (0 0 1, 10 0 1, 10 10 1, 0 10 1, 0 0 1),(5 5 1, 7 5 1, 7 7  1, 5 7 1, 5 5 1),(1 1 1,2 1 1, 2 2 1, 1 2 1, 1 1 1) )'::GEOMETRY as geom;
+select astext('POLYGON( (0 0, 10 0, 10 10, 0 10, 0 0) )'::GEOMETRY) as geom;
+select astext('POLYGON( (0 0 1 , 10 0 1, 10 10 1, 0 10 1, 0 0 1) )'::GEOMETRY) as geom;
+select astext('POLYGON( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7, 5 5) )'::GEOMETRY) as geom;
+select astext('POLYGON( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7, 5 5),(1 1,2 1, 2 2, 1 2, 1 1) )'::GEOMETRY) as geom;
+select astext('POLYGON( (0 0 1, 10 0 1, 10 10 1, 0 10 1, 0 0 1),(5 5 1, 7 5 1, 7 7 1 , 5 7 1, 5 5 1) )'::GEOMETRY) as geom;
+select astext('POLYGON( (0 0 1, 10 0 1, 10 10 1, 0 10 1, 0 0 1),(5 5 1, 7 5 1, 7 7  1, 5 7 1, 5 5 1),(1 1 1,2 1 1, 2 2 1, 1 2 1, 1 1 1) )'::GEOMETRY) as geom;
 
-select  'GEOMETRYCOLLECTION(POINT( 1 2 ))'::GEOMETRY as geom;
-select  'GEOMETRYCOLLECTION(POINT( 1 2 3))'::GEOMETRY as geom;
-select  'GEOMETRYCOLLECTION(LINESTRING( 0 0, 1 1, 2 2, 3 3 , 4 4))'::GEOMETRY as geom;
-select  'GEOMETRYCOLLECTION(LINESTRING( 1 2 3 , 4 5 6 , 7 8 9 , 10 11 12, 13 14 15))'::GEOMETRY as geom;
-select  'GEOMETRYCOLLECTION(POLYGON( (0 0 1, 10 0 1, 10 10 1, 0 10 1, 0 0 1),(5 5 1, 7 5 1, 7 7 1 , 5 7 1, 5 5 1) ))'::GEOMETRY as geom;
-select  'GEOMETRYCOLLECTION(POINT( 1 2 ),POINT( 1 2 3) )'::GEOMETRY as geom;
-select  'GEOMETRYCOLLECTION(LINESTRING( 0 0, 1 1, 2 2, 3 3 , 4 4),POINT( 1 2 3) )'::GEOMETRY as geom;
-select  'GEOMETRYCOLLECTION(POINT( 1 2 ),LINESTRING( 0 0, 1 1, 2 2, 3 3 , 4 4) )'::GEOMETRY as geom;
-select  'GEOMETRYCOLLECTION(POINT( 1 2 ),POINT( 1 2 3),LINESTRING( 1 2 3 , 4 5 6 , 7 8 9 , 10 11 12, 13 14 15) )'::GEOMETRY as geom;
-select  'GEOMETRYCOLLECTION(POINT( 1 2 ),POINT( 1 2 3),LINESTRING( 1 2 3 , 4 5 6 , 7 8 9 , 10 11 12, 13 14 15),POLYGON( (0 0, 10 0, 10 10, 0 10, 0 0) )  )'::GEOMETRY as geom;
-select  'GEOMETRYCOLLECTION(POINT( 1 2 ),POINT( 1 2 3),POLYGON( (0 0 1, 10 0 1, 10 10 1, 0 10 1, 0 0 1),(5 5 1, 7 5 1, 7 7  1, 5 7 1, 5 5 1),(1 1 1,2 1 1, 2 2 1, 1 2 1, 1 1 1) ) )'::GEOMETRY as geom;
+select astext('GEOMETRYCOLLECTION(POINT( 1 2 ))'::GEOMETRY);
+select astext('GEOMETRYCOLLECTION(POINT( 1 2 3))'::GEOMETRY);
+select astext('GEOMETRYCOLLECTION(LINESTRING( 0 0, 1 1, 2 2, 3 3 , 4 4))'::GEOMETRY);
+select astext('GEOMETRYCOLLECTION(LINESTRING( 1 2 3 , 4 5 6 , 7 8 9 , 10 11 12, 13 14 15))'::GEOMETRY);
+select astext('GEOMETRYCOLLECTION(POLYGON( (0 0 1, 10 0 1, 10 10 1, 0 10 1, 0 0 1),(5 5 1, 7 5 1, 7 7 1 , 5 7 1, 5 5 1) ))'::GEOMETRY);
+select astext('GEOMETRYCOLLECTION(POINT( 1 2 ),POINT( 1 2 3) )'::GEOMETRY);
+select astext('GEOMETRYCOLLECTION(LINESTRING( 0 0, 1 1, 2 2, 3 3 , 4 4),POINT( 1 2 3) )'::GEOMETRY);
+select astext('GEOMETRYCOLLECTION(POINT( 1 2 ),LINESTRING( 0 0, 1 1, 2 2, 3 3 , 4 4) )'::GEOMETRY);
+select astext('GEOMETRYCOLLECTION(POINT( 1 2 ),POINT( 1 2 3),LINESTRING( 1 2 3 , 4 5 6 , 7 8 9 , 10 11 12, 13 14 15) )'::GEOMETRY);
+select astext('GEOMETRYCOLLECTION(POINT( 1 2 ),POINT( 1 2 3),LINESTRING( 1 2 3 , 4 5 6 , 7 8 9 , 10 11 12, 13 14 15),POLYGON( (0 0, 10 0, 10 10, 0 10, 0 0) )  )'::GEOMETRY);
+select astext('GEOMETRYCOLLECTION(POINT( 1 2 ),POINT( 1 2 3),POLYGON( (0 0 1, 10 0 1, 10 10 1, 0 10 1, 0 0 1),(5 5 1, 7 5 1, 7 7  1, 5 7 1, 5 5 1),(1 1 1,2 1 1, 2 2 1, 1 2 1, 1 1 1) ) )'::GEOMETRY);
 
-select  'MULTIPOINT( 1 2)'::GEOMETRY as geom;
-select  'MULTIPOINT( 1 2 3)'::GEOMETRY as geom;
-select  'MULTIPOINT( 1 2, 3 4, 5 6)'::GEOMETRY as geom;
-select  'MULTIPOINT( 1 2 3, 5 6 7, 8 9 10, 11 12 13)'::GEOMETRY as geom;
-select  'MULTIPOINT( 1 2, 1 2 3, 4 5, 6 7 8)'::GEOMETRY as geom;
-select  'MULTIPOINT( 1 2 3,4 5)'::GEOMETRY as geom;
+select astext('MULTIPOINT( 1 2)'::GEOMETRY) as geom;
+select astext('MULTIPOINT( 1 2 3)'::GEOMETRY) as geom;
+select astext('MULTIPOINT( 1 2, 3 4, 5 6)'::GEOMETRY) as geom;
+select astext('MULTIPOINT( 1 2 3, 5 6 7, 8 9 10, 11 12 13)'::GEOMETRY) as geom;
+select astext('MULTIPOINT( 1 2, 1 2 3, 4 5, 6 7 8)'::GEOMETRY) as geom;
+select astext('MULTIPOINT( 1 2 3,4 5)'::GEOMETRY) as geom;
 
-select  'MULTILINESTRING( (0 0, 1 1, 2 2, 3 3 , 4 4) )'::GEOMETRY as geom;
-select  'MULTILINESTRING( (0 0, 1 1, 2 2, 3 3 , 4 4),(0 0, 1 1, 2 2, 3 3 , 4 4))'::GEOMETRY as geom;
-select  'MULTILINESTRING( (0 0, 1 1, 2 2, 3 3 , 4 4),(0 0, 1 1, 2 2, 3 3 , 4 4),(1 2 3 , 4 5 6 , 7 8 9 , 10 11 12, 13 14 15) )'::GEOMETRY as geom;
-select  'MULTILINESTRING( (1 2 3 , 4 5 6 , 7 8 9 , 10 11 12, 13 14 15),(0 0, 1 1, 2 2, 3 3 , 4 4),(0 0, 1 1, 2 2, 3 3 , 4 4))'::GEOMETRY as geom;
+select astext('MULTILINESTRING( (0 0, 1 1, 2 2, 3 3 , 4 4) )'::GEOMETRY) as geom;
+select astext('MULTILINESTRING( (0 0, 1 1, 2 2, 3 3 , 4 4),(0 0, 1 1, 2 2, 3 3 , 4 4))'::GEOMETRY) as geom;
+select astext('MULTILINESTRING( (0 0, 1 1, 2 2, 3 3 , 4 4),(0 0, 1 1, 2 2, 3 3 , 4 4),(1 2 3 , 4 5 6 , 7 8 9 , 10 11 12, 13 14 15) )'::GEOMETRY) as geom;
+select astext('MULTILINESTRING( (1 2 3 , 4 5 6 , 7 8 9 , 10 11 12, 13 14 15),(0 0, 1 1, 2 2, 3 3 , 4 4),(0 0, 1 1, 2 2, 3 3 , 4 4))'::GEOMETRY) as geom;
 
-select  'MULTIPOLYGON( ((0 0, 10 0, 10 10, 0 10, 0 0)) )'::GEOMETRY as geom;
-select  'MULTIPOLYGON( ((0 0, 10 0, 10 10, 0 10, 0 0)),( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7, 5 5) ) )'::GEOMETRY as geom;
-select  'MULTIPOLYGON(  ((0 0, 10 0, 10 10, 0 10, 0 0)),( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7, 5 5) ) ,( (0 0 1, 10 0 1, 10 10 1, 0 10 1, 0 0 1),(5 5 1, 7 5 1, 7 7  1, 5 7 1, 5 5 1),(1 1 1,2 1 1, 2 2 1, 1 2 1, 1 1 1) ) )'::GEOMETRY as geom;
+select astext('MULTIPOLYGON( ((0 0, 10 0, 10 10, 0 10, 0 0)) )'::GEOMETRY) as geom;
+select astext('MULTIPOLYGON( ((0 0, 10 0, 10 10, 0 10, 0 0)),( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7, 5 5) ) )'::GEOMETRY) as geom;
+select astext('MULTIPOLYGON(  ((0 0, 10 0, 10 10, 0 10, 0 0)),( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7, 5 5) ) ,( (0 0 1, 10 0 1, 10 10 1, 0 10 1, 0 0 1),(5 5 1, 7 5 1, 7 7  1, 5 7 1, 5 5 1),(1 1 1,2 1 1, 2 2 1, 1 2 1, 1 1 1) ) )'::GEOMETRY) as geom;
 
 
-select  'GEOMETRYCOLLECTION(MULTIPOINT( 1 2))'::GEOMETRY as geom;
-select  'GEOMETRYCOLLECTION(MULTIPOINT( 1 2 3))'::GEOMETRY as geom;
-select  'GEOMETRYCOLLECTION(MULTIPOINT( 1 2 3, 5 6 7, 8 9 10, 11 12 13))'::GEOMETRY as geom;
-select  'GEOMETRYCOLLECTION(MULTILINESTRING( (0 0, 1 1, 2 2, 3 3 , 4 4) ))'::GEOMETRY as geom;
-select  'GEOMETRYCOLLECTION(MULTILINESTRING( (1 2 3 , 4 5 6 , 7 8 9 , 10 11 12, 13 14 15),(0 0, 1 1, 2 2, 3 3 , 4 4),(0 0, 1 1, 2 2, 3 3 , 4 4)))'::GEOMETRY as geom;
-select  'GEOMETRYCOLLECTION(MULTIPOLYGON(  ((0 0, 10 0, 10 10, 0 10, 0 0)),( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7, 5 5) ) ,( (0 0 1, 10 0 1, 10 10 1, 0 10 1, 0 0 1),(5 5 1, 7 5 1, 7 7  1, 5 7 1, 5 5 1),(1 1 1,2 1 1, 2 2 1, 1 2 1, 1 1 1) ) ))'::GEOMETRY as geom;
-select  'GEOMETRYCOLLECTION(POINT( 1 2 ),MULTIPOINT( 1 2 3))'::GEOMETRY as geom;
-select  'GEOMETRYCOLLECTION(MULTIPOINT( 1 2, 3 4, 5 6),POINT( 1 2 3))'::GEOMETRY as geom;
-select  'GEOMETRYCOLLECTION(POINT( 1 2 3),MULTILINESTRING( (0 0, 1 1, 2 2, 3 3 , 4 4) ))'::GEOMETRY as geom;
-select  'GEOMETRYCOLLECTION(MULTILINESTRING( (0 0, 1 1, 2 2, 3 3 , 4 4) ),POINT( 1 2 3))'::GEOMETRY as geom;
-select  'GEOMETRYCOLLECTION(POINT( 1 2 3), MULTIPOLYGON(  ((0 0, 10 0, 10 10, 0 10, 0 0)),( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7, 5 5) ) ,( (0 0 1, 10 0 1, 10 10 1, 0 10 1, 0 0 1),(5 5 1, 7 5 1, 7 7  1, 5 7 1, 5 5 1),(1 1 1,2 1 1, 2 2 1, 1 2 1, 1 1 1) ) ))'::GEOMETRY as geom;
-select  'GEOMETRYCOLLECTION(MULTIPOLYGON(  ((0 0, 10 0, 10 10, 0 10, 0 0)),( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7, 5 5) ) ,( (0 0 1, 10 0 1, 10 10 1, 0 10 1, 0 0 1),(5 5 1, 7 5 1, 7 7  1, 5 7 1, 5 5 1),(1 1 1,2 1 1, 2 2 1, 1 2 1, 1 1 1) ) ),MULTILINESTRING( (0 0, 1 1, 2 2, 3 3 , 4 4),(0 0, 1 1, 2 2, 3 3 , 4 4),(1 2 3 , 4 5 6 , 7 8 9 , 10 11 12, 13 14 15) ),MULTIPOINT( 1 2 3, 5 6 7, 8 9 10, 11 12 13))'::GEOMETRY as geom;
+select astext('GEOMETRYCOLLECTION(MULTIPOINT( 1 2))'::GEOMETRY);
+select astext('GEOMETRYCOLLECTION(MULTIPOINT( 1 2 3))'::GEOMETRY);
+select astext('GEOMETRYCOLLECTION(MULTIPOINT( 1 2 3, 5 6 7, 8 9 10, 11 12 13))'::GEOMETRY);
+select astext('GEOMETRYCOLLECTION(MULTILINESTRING( (0 0, 1 1, 2 2, 3 3 , 4 4) ))'::GEOMETRY);
+select astext('GEOMETRYCOLLECTION(MULTILINESTRING( (1 2 3 , 4 5 6 , 7 8 9 , 10 11 12, 13 14 15),(0 0, 1 1, 2 2, 3 3 , 4 4),(0 0, 1 1, 2 2, 3 3 , 4 4)))'::GEOMETRY);
+select astext('GEOMETRYCOLLECTION(MULTIPOLYGON(  ((0 0, 10 0, 10 10, 0 10, 0 0)),( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7, 5 5) ) ,( (0 0 1, 10 0 1, 10 10 1, 0 10 1, 0 0 1),(5 5 1, 7 5 1, 7 7  1, 5 7 1, 5 5 1),(1 1 1,2 1 1, 2 2 1, 1 2 1, 1 1 1) ) ))'::GEOMETRY);
+select astext('GEOMETRYCOLLECTION(POINT( 1 2 ),MULTIPOINT( 1 2 3))'::GEOMETRY);
+select astext('GEOMETRYCOLLECTION(MULTIPOINT( 1 2, 3 4, 5 6),POINT( 1 2 3))'::GEOMETRY);
+select astext('GEOMETRYCOLLECTION(POINT( 1 2 3),MULTILINESTRING( (0 0, 1 1, 2 2, 3 3 , 4 4) ))'::GEOMETRY);
+select astext('GEOMETRYCOLLECTION(MULTILINESTRING( (0 0, 1 1, 2 2, 3 3 , 4 4) ),POINT( 1 2 3))'::GEOMETRY);
+select astext('GEOMETRYCOLLECTION(POINT( 1 2 3), MULTIPOLYGON(  ((0 0, 10 0, 10 10, 0 10, 0 0)),( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7, 5 5) ) ,( (0 0 1, 10 0 1, 10 10 1, 0 10 1, 0 0 1),(5 5 1, 7 5 1, 7 7  1, 5 7 1, 5 5 1),(1 1 1,2 1 1, 2 2 1, 1 2 1, 1 1 1) ) ))'::GEOMETRY);
+select astext('GEOMETRYCOLLECTION(MULTIPOLYGON(  ((0 0, 10 0, 10 10, 0 10, 0 0)),( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7, 5 5) ) ,( (0 0 1, 10 0 1, 10 10 1, 0 10 1, 0 0 1),(5 5 1, 7 5 1, 7 7  1, 5 7 1, 5 5 1),(1 1 1,2 1 1, 2 2 1, 1 2 1, 1 1 1) ) ),MULTILINESTRING( (0 0, 1 1, 2 2, 3 3 , 4 4),(0 0, 1 1, 2 2, 3 3 , 4 4),(1 2 3 , 4 5 6 , 7 8 9 , 10 11 12, 13 14 15) ),MULTIPOINT( 1 2 3, 5 6 7, 8 9 10, 11 12 13))'::GEOMETRY);
 
-select  'MULTIPOINT( -1 -2 -3, 5.4 6.6 7.77, -5.4 -6.6 -7.77, 1e6 1e-6 -1e6, -1.3e-6 -1.4e-5)'::GEOMETRY as geom;
+select astext('MULTIPOINT( -1 -2 -3, 5.4 6.6 7.77, -5.4 -6.6 -7.77, 1e6 1e-6 -1e6, -1.3e-6 -1.4e-5)'::GEOMETRY) as geom;
 
+select  astext('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(1 1) ))'::GEOMETRY) as geom;
 --- basic datatype (incorrect)
 
-begin;
 select  'POINT()'::GEOMETRY as geom;
-rollback;
-begin;
 select  'POINT(1)'::GEOMETRY as geom;
-rollback;
-begin;
 select  'POINT(,)'::GEOMETRY as geom;
-rollback;
-begin;
 select  'MULTIPOINT(,)'::GEOMETRY as geom;
-rollback;
-begin;
 select  'POINT(a b)'::GEOMETRY as geom;
-rollback;
-begin;
 select  'MULTIPOINT()'::GEOMETRY as geom;
-rollback;
-begin;
-select  'GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(1 1) ))'::GEOMETRY as geom;
-rollback;
-begin;
-select  'POLYGON( (0 0, 10 0, 10 10, 0 10) )'::GEOMETRY as geom;
-rollback;
-begin;
-select  'POLYGON( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7) )'::GEOMETRY as geom;
-rollback;
-begin;
-select  'MULTILINESTRING((0 0, 1 1),(0 0, 1 1, 2 2,) )'::GEOMETRY as geom;
-rollback;
+select  astext('POLYGON( (0 0, 10 0, 10 10, 0 10) )'::GEOMETRY);
+select  astext('POLYGON( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7) )'::GEOMETRY);
+select  astext('MULTILINESTRING((0 0, 1 1),(0 0, 1 1, 2 2,) )'::GEOMETRY);
 
 
 --- funny results
 
-select  'POINT(1 2 3, 4 5 6)'::GEOMETRY as geom;
-select  'POINT(1 2 3 4 5 6 7)'::GEOMETRY as geom;
-
-select  'LINESTRING(1 1)'::GEOMETRY as geom;
-select  'POINT( 1e700 0)'::GEOMETRY as geom;
-select  'POINT( -1e700 0)'::GEOMETRY as geom;
-
-select 'MULTIPOINT(1 1, 2 2'::GEOMETRY as geom;
+select astext('POINT(1 2 3, 4 5 6)'::GEOMETRY);
+select astext('POINT(1 2 3 4 5 6 7)'::GEOMETRY);
+select astext('LINESTRING(1 1)'::GEOMETRY);
+select astext('POINT( 1e700 0)'::GEOMETRY);
+select astext('POINT( -1e700 0)'::GEOMETRY);
+select astext('MULTIPOINT(1 1, 2 2'::GEOMETRY);
 
 
 --- is_same() testing
@@ -247,4 +225,3 @@ select a ~ b from TEST;
 select  mem_size(a), mem_size(b) from TEST;
 
 drop table TEST;
-
