@@ -1,5 +1,5 @@
 COMMONOPTS = -f docbook -b html -e no-valid
-LAST_RELEASE_VERSION = 1.0.0RC1
+LAST_RELEASE_VERSION = 1.0.0
 
 
 postgis-out.xml: postgis.xml
