@@ -10,6 +10,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.53.2.4  2004/12/15 08:53:52  strk
+ * Plugged leak depending on input size.
+ *
  * Revision 1.53.2.3  2004/10/17 12:15:32  strk
  * Fixed a bug in multipoint3D_WKB creation
  *
@@ -1979,8 +1982,10 @@ int is_clockwise(int  num_points,double *x,double *y,double *z){
 		area += (x[i] * y[i+1]) - (y[i] * x[i+1]); //calculate the area	
 	}
 	if(area > 0 ){
+		free(x_new); free(y_new);
 		return 0; //counter-clockwise
 	}else{
+		free(x_new); free(y_new);
 		return 1; //clockwise
 	}
 }
