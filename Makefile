@@ -1,7 +1,17 @@
+#---------------------------------------------------------------
 # Configuration Directives
+#
+# We recommend that you install the Proj4 and GEOS libraries
+# referenced below to get the most use out of your PostGIS
+# database.
 
 #---------------------------------------------------------------
 # Set USE_PROJ to 1 for Proj4 reprojection support
+#
+# Reprojection allows you to transform coordinate systems
+# in the database with the Transform() function.
+#
+# Download from: http://www.remotesensing.org/proj
 #
 USE_PROJ=1
 ifeq (${PROJ_DIR},) 
@@ -11,6 +21,12 @@ endif
 #---------------------------------------------------------------
 # Set USE_GEOS to 1 for GEOS spatial predicate and operator
 # support
+#
+# GEOS allows you to do exact topological tests, such as
+# Intersects() and Touches(), as well as geometry operations,
+# such as Buffer(), GeomUnion() and Difference().
+#
+# Download from: http://geos.refractions.net
 #
 USE_GEOS=1
 ifeq (${GEOS_DIR},) 
