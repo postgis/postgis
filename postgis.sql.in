@@ -12,11 +12,28 @@ CREATE FUNCTION BOX3D_out(opaque)
    AS '@MODULE_FILENAME@'
    LANGUAGE 'c' with (isstrict);
 
+CREATE FUNCTION SPHEROID_in(opaque)
+   RETURNS SPHEROID 
+   AS '@MODULE_FILENAME@','ellipsoid_in'
+   LANGUAGE 'c' with (isstrict,iscachable);
+
+CREATE FUNCTION SPHEROID_out(opaque)
+   RETURNS opaque
+   AS '@MODULE_FILENAME@','ellipsoid_out'
+   LANGUAGE 'c' with (isstrict);
+
+CREATE TYPE SPHEROID (
+	alignment = double,
+	internallength = 65,
+	input =  SPHEROID_in,
+	output =  SPHEROID_out
+);
+
 CREATE TYPE BOX3D (
 	alignment = double,
 	internallength = 48,
-	input =  BOX3D_in,
-	output =  BOX3D_out
+	input =  SPHEROID_in,
+	output =  SPHEROID_out
 );
 
 CREATE TYPE WKB (
@@ -166,6 +183,18 @@ CREATE FUNCTION numgeometries(GEOMETRY)
 CREATE FUNCTION geometryn(GEOMETRY,INTEGER)
    RETURNS GEOMETRY
    AS '@MODULE_FILENAME@','geometryn_collection'
+	     LANGUAGE 'c'  with (isstrict);
+
+------- spheroid calcs
+
+CREATE FUNCTION length_spheroid(GEOMETRY,SPHEROID)
+   RETURNS FLOAT4
+   AS '@MODULE_FILENAME@','length_ellipsoid'
+	     LANGUAGE 'c'  with (isstrict);
+
+CREATE FUNCTION length3d_spheroid(GEOMETRY,SPHEROID)
+   RETURNS FLOAT4
+   AS '@MODULE_FILENAME@','length3d_ellipsoid'
 	     LANGUAGE 'c'  with (isstrict);
 
 

@@ -26,7 +26,7 @@ SO_MINOR_VERSION=3
 override CPPFLAGS := -g  -I$(srcdir) $(CPPFLAGS) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"'
 override DLLLIBS := $(BE_DLLLIBS) $(DLLLIBS)
 
-OBJS=postgis_debug.o postgis_ops.o postgis_fn.o postgis_inout.o
+OBJS=postgis_debug.o postgis_ops.o postgis_fn.o postgis_inout.o postgis_proj.o
 
 # Add libraries that libpq depends (or might depend) on into the
 # shared library link.  (The order in which you list them here doesn't

@@ -20,6 +20,22 @@
 #define	COLLECTIONTYPE	7
 #define	BBOXONLYTYPE	99
 
+
+//standard definition of an ellipsoid (what wkt calls a spheroid)
+//	f = (a-b)/a
+//	e_sq = (a*a - b*b)/(a*a)
+//	b = a - fa
+typedef struct
+{
+	double	a;	//semimajor axis
+	double	b; 	//semiminor axis
+	double	f;	//flattening
+	double	e;	//eccentricity (first)
+	double	e_sq; //eccentricity (first), squared
+	char		name[20]; //name of ellipse 
+} SPHEROID;
+
+
 /*---------------------------------------------------------------------
  * POINT3D - (x,y,z)
  *            Base type for all geometries
@@ -27,7 +43,7 @@
  *-------------------------------------------------------------------*/
 typedef struct
 {
-	double		x,y,z;
+	double		x,y,z;  //for lat/long   x=long, y=lat
 } POINT3D;
 
 /*---------------------------------------------------------------------
@@ -269,6 +285,18 @@ void decode_wkb_collection(char *wkb,int	*size);
 void decode_wkb(char *wkb, int *size);
 void dump_bytes( char *a, int numb);
 
+double deltaLongitude(double azimuth, double sigma, double tsm,SPHEROID *sphere);
+double bigA(double u2);
+double bigB(double u2);
+double	distance_ellipse(double lat1, double long1,
+					double lat2, double long2,
+					SPHEROID *sphere);
+double mu2(double azimuth,SPHEROID *sphere);
+
+double length2d_ellipse_linestring(LINE3D	*line, SPHEROID  	*sphere);
+double length3d_ellipse_linestring(LINE3D	*line, SPHEROID  	*sphere);
+
+
 //exposed to psql
 
 Datum box3d_in(PG_FUNCTION_ARGS);
@@ -336,6 +364,11 @@ Datum interiorringn_polygon(PG_FUNCTION_ARGS);
 
 Datum numgeometries_collection(PG_FUNCTION_ARGS);
 Datum geometryn_collection(PG_FUNCTION_ARGS);
+
+Datum ellipsoid_out(PG_FUNCTION_ARGS);
+Datum ellipsoid_in(PG_FUNCTION_ARGS);
+Datum length_ellipsoid(PG_FUNCTION_ARGS);
+Datum length3d_ellipsoid(PG_FUNCTION_ARGS);
 
 
 
