@@ -1,3 +1,39 @@
+PostGIS 0.5
+
+- New functions
+  - Dimension()
+  - GeometryType()
+  - Envelope() 
+  - X(), Y(), Z()
+  - NumPoints()
+  - PointN()
+  - ExteriorRing()
+  - NumInteriorRings()
+  - InteriorRingN()
+  - NumGeometries()
+  - GeometryN()
+  - Length_Spheroid()
+  - Length3D_Spheroid()
+  - AsBinary() + XDR and NDR variants
+  - force_collection()
+- Removed functions
+  - wkb_ndr()
+  - wkb_xdr()
+- New Objects
+  - SPHEROID(<NAME>,<SEMIMAJOR AXIS>,<INVERSE FLATTENING>)
+    To be used with the length_spheroid functions for accurate
+    length calculations on lat/lon data.
+- Minor bug fixes
+- Internal Functions
+  - Extra constructors to make geometry manipulation easier
+- Structural Reorganization
+  - Broke postgis.c up into four new files
+    postgis_debug.c -- debugging functions
+    postgis_fn.c -- generic functions (like length())
+    postgis_ops.c -- operators and indexing functions
+    postgis_inout.c -- type support functions and data conversion functions
+
+
 PostGIS 0.2
 2001/06/19
 
