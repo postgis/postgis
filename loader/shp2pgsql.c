@@ -4,6 +4,13 @@
  * Author: Jeff Lounsbury, jeffloun@refractions.net
  *
  * $Log$
+ * Revision 1.35  2003/06/18 16:30:56  pramsey
+ * It seems that invalid geometries where in the shapefile (as far as shapelib
+ * let shp2pgsql know). LINEZ objects with less then 2 vertices. I've
+ * patched shp2pgsql to recognized such an inconsistence and use a NULL
+ * geometry for that record printing a warning on stderr.
+ * <strk@freek.keybit.net>
+ *
  * Revision 1.34  2003/04/14 18:01:42  pramsey
  * Patch for optional case sensitivity respect. From strk.
  *
@@ -863,6 +870,22 @@ int main (int ARGC, char **ARGV){
 
 			Insert_attributes(hDBFHandle,j); //add the attributes of each shape to the insert statement
 
+			/* Invalid (MULTI)Linestring */
+			if ( obj->nVertices < 2 )
+			{
+				fprintf(stderr,
+	"MULTILINESTRING %d as %d vertices, set to NULL\n",
+	j, obj->nVertices);
+				if (dump_format){
+		               		printf("\t\\N\n");
+				}else{
+					printf(",NULL);\n");
+				}
+
+				SHPDestroyObject(obj);
+
+				continue;
+			}
 
 			if (dump_format){
 				printf("\tSRID=%s;MULTILINESTRING(",sr_id);
@@ -1088,9 +1111,26 @@ int main (int ARGC, char **ARGV){
 
 			Insert_attributes(hDBFHandle,j);//add the attributes of each shape to the insert statement
 
+			/* Invalid (MULTI)Linestring */
+			if ( obj->nVertices < 2 )
+			{
+				fprintf(stderr,
+	"MULTILINESTRING %d as %d vertices, set to NULL\n",
+	j, obj->nVertices);
+				if (dump_format){
+		               		printf("\t\\N\n");
+				}else{
+					printf(",NULL);\n");
+				}
+
+				SHPDestroyObject(obj);
+
+				continue;
+			}
+
 
 			if (dump_format){
-				printf("MULTILINESTRING(");
+				printf("\tSRID=%s;MULTILINESTRING(",sr_id);
 			}else{
 				printf(",GeometryFromText('MULTILINESTRING (");
 			}
