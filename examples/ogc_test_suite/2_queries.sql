@@ -597,7 +597,7 @@ WHERE name = 'Route 75';
 --
 --================================
 --
-SELECT GeometryN(centerlines, 2)
+SELECT AsText(GeometryN(centerlines, 2))
 FROM divided_routes 
 WHERE name = 'Route 75';
 --
@@ -902,7 +902,7 @@ WHERE bridges.name = 'Cam Bridge' AND named_places.name = 'Ashton';
 --
 --================================
 --
-SELECT Intersection(centerline, shore)
+SELECT AsText(Intersection(centerline, shore))
 FROM streams, lakes 
 WHERE streams.name = 'Cam Stream' AND lakes.name = 'Blue Lake';
 --
