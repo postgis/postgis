@@ -12,13 +12,6 @@ ifeq ($(CXX),)
 endif
 
 #---------------------------------------------------------------
-# Default missing YACC variable to c++
-# 
-ifeq ($(YACC),) 
-	YACC = yacc
-endif
-
-#---------------------------------------------------------------
 # Shared library parameters.
 #
 NAME=lwgeom
