@@ -11,6 +11,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.13  2004/02/29 21:53:42  strk
+ * bug fix in postgis_gist_sel (for PG75): SysCache is not released if not acquired
+ *
  * Revision 1.12  2004/02/26 16:42:59  strk
  * Fixed bugs reported by Mark Cave-Ayland <m.cave-ayland@webbased.co.uk>.
  * Re-introduced previously removed estimate value incrementation by
@@ -1018,7 +1021,6 @@ Datum postgis_gist_sel(PG_FUNCTION_ARGS)
 #if DEBUG_GEOMETRY_STATS
 		elog(NOTICE, " SearchSysCache returned NULL - ret.def.");
 #endif
-		ReleaseSysCache(stats_tuple);
 		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_SEL);
 	}
 
@@ -1046,7 +1048,7 @@ Datum postgis_gist_sel(PG_FUNCTION_ARGS)
 		geomstats->xmax, geomstats->ymax);
 	elog(NOTICE, " histo: boxesPerSide: %f", geomstats->boxesPerSide);
 	elog(NOTICE, " histo: avgFeatureArea: %f", geomstats->avgFeatureArea);
-	elog(NOTICE, " histo: avgFeatureCells: %d", geomstats->avgFeatureCells);
+	elog(NOTICE, " histo: avgFeatureCells: %f", geomstats->avgFeatureCells);
 #endif
 
 	/*
