@@ -38,6 +38,7 @@ extern LWGEOM make_lwpoint2d(int SRID, double x, double y);
 extern LWGEOM make_lwpoint3dz(int SRID, double x, double y, double z);
 extern LWGEOM make_lwpoint3dm(int SRID, double x, double y, double m);
 extern LWGEOM make_lwpoint4d(int SRID, double x, double y, double z, double m);
+extern LWGEOM make_lwline(int SRID, unsigned int npoints, LWGEOM *points);
 
 // Spatial functions
 extern void lwgeom_reverse(LWGEOM lwgeom);

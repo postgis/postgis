@@ -373,3 +373,52 @@ lwline_same(const LWLINE *l1, const LWLINE *l2)
 	return ptarray_same(l1->points, l2->points);
 }
 
+/*
+ * Construct a LWLINE from an array of LWPOINTs
+ * LWLINE dimensions are large enought to host all input dimensions.
+ */
+LWLINE *
+make_lwline(int SRID, unsigned int npoints, LWPOINT **points)
+{
+	int zmflag=0;
+	unsigned int i;
+	POINTARRAY *pa;
+
+	/*
+	 * Find output dimensions
+	 */
+	for (i=0; i<npoints; i++)
+	{
+		zmflag = TYPE_GETZM(points[i]->type);
+		if ( zmflag == 3 ) break;
+	}
+
+	/* Allocate space for output pointarray */
+	pa = ptarray_construct(zmflag&2, zmflag&1, npoints);
+
+	/*
+	 * Fill pointarray
+	 */
+	switch (zmflag)
+	{
+		case 0: // 2d
+			for (i=0; i<npoints; i++)
+				getPoint2d_p(points[i]->point, 0,
+					(POINT2D *)getPoint(pa, i));
+		case 1: // 3dm
+			for (i=0; i<npoints; i++)
+				getPoint3dm_p(points[i]->point, 0,
+					(POINT3DM *)getPoint(pa, i));
+		case 2: // 3dz
+			for (i=0; i<npoints; i++)
+				getPoint3dz_p(points[i]->point, 0,
+					(POINT3DZ *)getPoint(pa, i));
+		default: // 4d
+			for (i=0; i<npoints; i++)
+				getPoint4d_p(points[i]->point, 0,
+					(POINT4D *)getPoint(pa, i));
+	}
+
+	return lwline_construct(SRID, NULL, pa);
+}
+

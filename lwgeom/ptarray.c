@@ -39,6 +39,58 @@ ptarray_construct2d(uint32 npoints, const POINT2D *pts)
 	return pa;
 }
 
+POINTARRAY *
+ptarray_construct3dz(uint32 npoints, const POINT3DZ *pts)
+{
+	POINTARRAY *pa = ptarray_construct(1, 0, npoints);
+	uint32 i;
+
+	for (i=0; i<npoints; i++)
+	{
+		POINT3DZ *pap = (POINT3DZ *)getPoint(pa, i);
+		pap->x = pts[i].x;
+		pap->y = pts[i].y;
+		pap->z = pts[i].z;
+	}
+	
+	return pa;
+}
+
+POINTARRAY *
+ptarray_construct3dm(uint32 npoints, const POINT3DM *pts)
+{
+	POINTARRAY *pa = ptarray_construct(0, 1, npoints);
+	uint32 i;
+
+	for (i=0; i<npoints; i++)
+	{
+		POINT3DM *pap = (POINT3DM *)getPoint(pa, i);
+		pap->x = pts[i].x;
+		pap->y = pts[i].y;
+		pap->m = pts[i].m;
+	}
+	
+	return pa;
+}
+
+POINTARRAY *
+ptarray_construct4d(uint32 npoints, const POINT4D *pts)
+{
+	POINTARRAY *pa = ptarray_construct(0, 1, npoints);
+	uint32 i;
+
+	for (i=0; i<npoints; i++)
+	{
+		POINT4D *pap = (POINT4D *)getPoint(pa, i);
+		pap->x = pts[i].x;
+		pap->y = pts[i].y;
+		pap->z = pts[i].z;
+		pap->m = pts[i].m;
+	}
+	
+	return pa;
+}
+
 void
 ptarray_reverse(POINTARRAY *pa)
 {

@@ -51,7 +51,8 @@ Datum LWGEOM_forceRHR_poly(PG_FUNCTION_ARGS);
 Datum LWGEOM_noop(PG_FUNCTION_ARGS);
 Datum LWGEOM_zmflag(PG_FUNCTION_ARGS);
 Datum LWGEOM_makepoint(PG_FUNCTION_ARGS);
-Datum LWGEOM_makepointm(PG_FUNCTION_ARGS);
+Datum LWGEOM_makepoint3dm(PG_FUNCTION_ARGS);
+Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS);
 
 
 /*------------------------------------------------------------------*/
@@ -1736,6 +1737,93 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
+/*
+ * makeline_garray ( GEOMETRY[] ) returns a LINE formed by
+ * all the point geometries in given array.
+ * array elements that are NOT points are discarded..
+ */
+PG_FUNCTION_INFO_V1(LWGEOM_makeline_garray);
+Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
+{
+	Datum datum;
+	ArrayType *array;
+	int nelems;
+	PG_LWGEOM **geoms;
+	PG_LWGEOM *result=NULL;
+	LWPOINT **lwpoints;
+	LWGEOM *outlwg;
+	size_t size;
+	unsigned int npoints;
+	int i;
+
+//elog(NOTICE, "LWGEOM_makeline_garray called");
+
+	/* Get input datum */
+	datum = PG_GETARG_DATUM(0);
+
+	/* Return null on null input */
+	if ( (Pointer *)datum == NULL )
+	{
+		elog(NOTICE, "NULL input");
+		PG_RETURN_NULL();
+	}
+
+	/* Get actual ArrayType */
+	array = (ArrayType *) PG_DETOAST_DATUM(datum);
+
+	/* Get number of geometries in array */
+	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
+
+	/* Return null on 0-elements input array */
+	if ( nelems == 0 )
+	{
+		elog(NOTICE, "0 elements input array");
+		PG_RETURN_NULL();
+	}
+
+	/* Get pointer to GEOMETRY pointers array */
+	geoms = (PG_LWGEOM **)ARR_DATA_PTR(array);
+
+	/*
+	 * Deserialize all point geometries in array into the
+	 * lwpoints pointers array.
+	 * Count actual number of points.
+	 */
+	
+	// possibly more then required
+	lwpoints = palloc(sizeof(LWGEOM *)*nelems);
+	npoints = 0;
+	for (i=0; i<nelems; i++)
+	{
+		if ( TYPE_GETTYPE(geoms[i]->type) != POINTTYPE ) continue;
+		lwpoints[npoints++] =
+			lwpoint_deserialize(SERIALIZED_FORM(geoms[i]));
+	}
+
+	/* Return null on 0-points input array */
+	if ( npoints == 0 )
+	{
+		elog(NOTICE, "No points in input array");
+		PG_RETURN_NULL();
+	}
+
+	outlwg = (LWGEOM *)make_lwline(-1, npoints, lwpoints);
+
+	size = lwgeom_serialize_size(outlwg);
+	//lwnotice("lwgeom_serialize_size returned %d", size);
+	result = palloc(size+4);
+	result->size = (size+4);
+	lwgeom_serialize_buf(outlwg, SERIALIZED_FORM(result), &size);
+	if ( size != result->size-4 )
+	{
+		lwerror("lwgeom_serialize size:%d, lwgeom_serialize_size:%d",
+			size, result->size-4);
+		PG_RETURN_NULL();
+	}
+
+	PG_RETURN_POINTER(result);
+}
+
 // makes a polygon of the expanded features bvol - 1st point = LL 3rd=UR
 // 2d only. (3d might be worth adding).
 // create new geometry of type polygon, 1 ring, 5 points
@@ -2117,7 +2205,6 @@ PG_FUNCTION_INFO_V1(LWGEOM_makepoint3dm);
 Datum LWGEOM_makepoint3dm(PG_FUNCTION_ARGS)
 {
 	double x,y,m;
-	int SRID;
 	LWPOINT *point;
 	PG_LWGEOM *result;
 	size_t size;
@@ -2126,7 +2213,7 @@ Datum LWGEOM_makepoint3dm(PG_FUNCTION_ARGS)
 	y = PG_GETARG_FLOAT8(1);
 	m = PG_GETARG_FLOAT8(2);
 
-	point = make_lwpoint3dm(SRID, x, y, m);
+	point = make_lwpoint3dm(-1, x, y, m);
 
 	size = lwpoint_serialize_size(point);
 	result = (PG_LWGEOM *)palloc(size+4);

@@ -1652,17 +1652,17 @@ CREATEFUNCTION zmflag(geometry)
 -- CONSTRUCTORS
 ------------------------------------------------------------------------
 
-CREATEFUNCTION makepoint(float8, float8)
+CREATEFUNCTION makePoint(float8, float8)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_makepoint'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
-CREATEFUNCTION makepoint(float8, float8, float8)
+CREATEFUNCTION makePoint(float8, float8, float8)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_makepoint'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
-CREATEFUNCTION makepoint(float8, float8, float8, float8)
+CREATEFUNCTION makePoint(float8, float8, float8, float8)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_makepoint'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
@@ -1671,6 +1671,18 @@ CREATEFUNCTION makePointM(float8, float8, float8)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_makepoint3dm'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATEFUNCTION makeline_garray (geometry[])
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_makeline_garray'
+	LANGUAGE 'C';
+
+CREATE AGGREGATE makeLine (
+	sfunc = geom_accum,
+	basetype = geometry,
+	stype = geometry[],
+	finalfunc = makeline_garray
+	);
 
 ------------------------------------------------------------------------
 
