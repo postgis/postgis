@@ -146,7 +146,7 @@ endif # not win
 #----------------------------------------------------------
 
 detect_geos_version: 
-	../geos_version.sh $(GEOS_DIR) > postgis_geos_version.h
+	sh ../geos_version.sh $(GEOS_DIR) > postgis_geos_version.h
 
 installdirs:
 	$(mkinstalldirs) $(libdir)
