@@ -15,7 +15,6 @@ clean: liblwgeom-clean loaderdumper-clean
 
 liblwgeom: 
 	$(MAKE) -C lwgeom
-	cp lwgeom/lwpostgis.sql lwpostgis.sql
 
 liblwgeom-clean:
 	$(MAKE) -C lwgeom clean
