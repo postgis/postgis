@@ -147,6 +147,6 @@ uninstall-lwgeom-scripts:
 uninstall: uninstall-lib uninstall-lwgeom-scripts
 
 clean distclean maintainer-clean: clean-lib
-	@rm -f $(OBJS) 
+	rm -f $(OBJS) 
 	rm -f $(OTHERS)
 
