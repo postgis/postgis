@@ -2254,7 +2254,7 @@ getGeometryMaxDims(char *schema, char *table, char *geo_col_name)
 }
 
 void
-usage(status)
+usage(int status)
 {
 	printf("RCSID: %s\n", rcsid);
 	printf("USAGE: pgsql2shp [<options>] <database> [<schema>.]<table>\n");
@@ -2350,7 +2350,7 @@ parse_commandline(int ARGC, char **ARGV)
 }
 
 int
-get_postgis_major_version()
+get_postgis_major_version(void)
 {
 	PGresult *res;
 	char *version;
@@ -2377,7 +2377,7 @@ get_postgis_major_version()
  * type array.
  */
 int
-initialize()
+initialize(void)
 {
 	PGresult *res;
 	char *query;
@@ -2938,7 +2938,8 @@ HexDecode(byte *hex)
 	return ret;
 }
 
-int is_bigendian()
+int
+is_bigendian(void)
 {
 	int test = 1;
 
@@ -3092,7 +3093,7 @@ parse_table(char *spec)
 }
 
 static int
-create_usrquerytable()
+create_usrquerytable(void)
 {
 	char *query;
 	PGresult *res;
@@ -3116,6 +3117,9 @@ create_usrquerytable()
 
 /**********************************************************************
  * $Log$
+ * Revision 1.73  2005/03/08 11:06:33  strk
+ * modernized old-style parameter declarations
+ *
  * Revision 1.72  2005/03/04 14:54:03  strk
  * Fixed bug in multiline handling.
  *

@@ -672,7 +672,7 @@ main (int ARGC, char **ARGV)
 }//end main()
 
 void
-create_table()
+create_table(void)
 {
 	int j;
 	int field_precision, field_width;
@@ -861,7 +861,7 @@ InsertLineString(int id)
 //it sorts the polys in order of outer,inner,inner, so that inners
 //always come after outers they are within 
 void
-InsertPolygon()
+InsertPolygon(void)
 {
 	Ring **Outer;    // Pointers to Outer rings
 	int out_index=0; // Count of Outer rings
@@ -1051,7 +1051,7 @@ InsertPolygon()
 }
 
 void
-InsertPoint()
+InsertPoint(void)
 {
 	if (!dump_format) printf("'");
 	if ( sr_id && sr_id != "-1" ) printf("SRID=%s;", sr_id);
@@ -1068,7 +1068,7 @@ InsertPoint()
 }
 
 void
-InsertMultiPoint()
+InsertMultiPoint(void)
 {
 	unsigned int u;
 	unsigned int subtype = POINTTYPE | (wkbtype&WKBZOFFSET) | 
@@ -1182,7 +1182,7 @@ parse_cmdline(int ARGC, char **ARGV)
 
 
 void
-SetPgType()
+SetPgType(void)
 {
 	switch(shpfiletype)
 	{
@@ -1282,7 +1282,8 @@ static char outchr[]={"0123456789ABCDEF"};
 
 static int endian_check_int = 1; // dont modify this!!!
 
-static char getEndianByte()
+static char
+getEndianByte(void)
 {
 	// 0 = big endian, 1 = little endian
 	if ( *((char *) &endian_check_int) ) return 1;
@@ -1382,6 +1383,9 @@ utf8 (const char *fromcode, char *inputbuf)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.81  2005/03/08 11:06:33  strk
+ * modernized old-style parameter declarations
+ *
  * Revision 1.80  2005/03/04 14:48:22  strk
  * Applied patch from Jonne Savolainen fixing multilines handling
  *
