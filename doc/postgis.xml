@@ -1909,8 +1909,9 @@ intersection of this Geometry with anotherGeometry.
 					<para>OGC SPEC s2.1.1.1</para>
 				</listitem> 
 				</varlistentry> 
+<!-- Should this be documented? -->
 				<varlistentry> 
-				<term>geomunion(geometry,geometry)</term> 
+				<term>GeomUnion(geometry,geometry)</term> 
 				<listitem> 
 					<para> Returns a geometry that represents the point set union of
 this Geometry with anotherGeometry.
@@ -1919,6 +1920,24 @@ this Geometry with anotherGeometry.
 					<para>Do not call with a GeometryCollection as an argument</para>
 					<para>NOTE: this is renamed from "union" because union is an SQL reserved word</para>
 					<para>OGC SPEC s2.1.1.1</para>
+				</listitem> 
+				</varlistentry> 
+				<varlistentry> 
+				<term>GeomUnion(geometry set)</term> 
+				<listitem> 
+					<para> Returns a geometry that represents the point set union of
+this all Geometries in given set.
+					</para> 
+					<para>Performed by the GEOS module</para>
+					<para>Do not call with a GeometryCollection in the argument set</para>
+					<para>Not explicitly defined in OGC SPEC</para>
+				</listitem> 
+				</varlistentry> 
+				<varlistentry> 
+				<term>memGeomUnion(geometry set)</term> 
+				<listitem> 
+					<para>Same as the above, only memory-friendly (uses less memory and more processor time). 
+					</para> 
 				</listitem> 
 				</varlistentry> 
 				<varlistentry> 
@@ -2132,6 +2151,7 @@ is simple (does not pass through the same point more than once).
 					<term>Centroid(geometry)</term>
 					<listitem>
 						<para>Returns the centroid of the geometry as a point.</para>
+						<para>Computation will be more accurate if performed by the GEOS module (enabled at compile time).</para>
 					</listitem>
 				</varlistentry> 
 			</variablelist>
@@ -2460,7 +2480,7 @@ is simple (does not pass through the same point more than once).
 					</listitem> 
 				</varlistentry> 
 				<varlistentry> 
-					<term>collect(geometry)</term> 
+					<term>collect(geometry set)</term> 
 					<listitem> 
 						<para>This function returns a GEOMETRYCOLLECTION object from a set
 						  of geometries. The collect() function is an "aggregate" function in
@@ -2469,6 +2489,14 @@ is simple (does not pass through the same point more than once).
 						  For example, "SELECT COLLECT(GEOM) FROM GEOMTABLE GROUP BY ATTRCOLUMN"
 						  will return a separate GEOMETRYCOLLECTION for each distinct value
 						  of ATTRCOLUMN.
+						</para> 
+					</listitem> 
+				</varlistentry> 
+				<varlistentry> 
+					<term>mem_collect(geometry set)</term> 
+					<listitem> 
+						<para>This does the the same of collect(geometry), only more
+						memory-friendly (uses less memory and more processor time).
 						</para> 
 					</listitem> 
 				</varlistentry> 
@@ -2483,7 +2511,7 @@ is simple (does not pass through the same point more than once).
 					</listitem> 
 				</varlistentry> 
 				<varlistentry> 
-					<term>extent(geometry)</term> 
+					<term>extent(geometry set)</term> 
 					<listitem> 
 						<para>The extent() function is an "aggregate" function in the
 						  terminology of PostgreSQL. That means that it operators on lists of data, in
