@@ -10,6 +10,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.46  2004/04/21 07:38:34  strk
+ * Memory allocated for main_scan_query was not enough when using binary cursor. Fixed
+ *
  * Revision 1.45  2004/03/29 10:20:48  strk
  * Fixed a bug in WKB parsing for Multipoints.
  * Fixed a bug in -d handling for WKB.
@@ -2664,7 +2667,7 @@ initialize()
 
 	tmpint = strlen(table)+2;
 	for (i=0; i<mainscan_nflds; i++)
-		tmpint += strlen(mainscan_flds[i])+2;
+		tmpint += strlen(mainscan_flds[i])+32;
 	main_scan_query = (char *)malloc(tmpint+256);
 
 	sprintf(main_scan_query, "SELECT ");
