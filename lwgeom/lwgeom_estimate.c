@@ -1797,7 +1797,7 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	for (i=0; i<samplerows; i++)
 	{
 		Datum datum;
-		char *geom;
+		PG_LWGEOM *geom;
 		BOX2DFLOAT4 box;
 
 		datum = fetchfunc(stats, i, &isnull);
@@ -1810,9 +1810,9 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 			continue;
 		}
 
-		geom = (char *) PG_DETOAST_DATUM(datum);
+		geom = (PG_LWGEOM *)PG_DETOAST_DATUM(datum);
 
-		if ( ! getbox2d_p(geom+4, &box) )
+		if ( ! getbox2d_p(SERIALIZED_FORM(geom), &box) )
 		{
 			// Skip empty geometry
 #if DEBUG_GEOMETRY_STATS 
@@ -1839,7 +1839,6 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		 * Cache bounding box
 		 * TODO: reduce BOX2DFLOAT4 copies
 		 */
-		//box = convert_box3d_to_box(&(geom->bvol));
 		sampleboxes[notnull_cnt] = palloc(sizeof(BOX2DFLOAT4));
 		memcpy(sampleboxes[notnull_cnt], &box, sizeof(BOX2DFLOAT4));
 
@@ -1864,7 +1863,7 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		}
 		
 		// TODO: ask if we need geom or bvol size for stawidth
-		total_width += (int32)*geom;
+		total_width += geom->size;
 		total_boxes_area += (box.xmax-box.xmin)*(box.ymax-box.ymin);
 
 #if USE_STANDARD_DEVIATION
@@ -2455,6 +2454,9 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.29  2005/03/25 09:34:25  strk
+ * code cleanup
+ *
  * Revision 1.28  2005/03/24 16:27:32  strk
  * Added comments in estimate_allocation() bugfix point.
  *
