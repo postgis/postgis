@@ -2907,21 +2907,33 @@ CREATEFUNCTION Equals(geometry,geometry)
 -----------------------------------------------------------------------
 -- SVG OUTPUT
 -----------------------------------------------------------------------
-CREATEFUNCTION AsSvg(geometry,int4,int4)
+CREATEFUNCTION AsSVG(geometry,int4,int4)
 	RETURNS TEXT
 	AS '@MODULE_FILENAME@','assvg_geometry'
 	LANGUAGE 'C';
 
-CREATEFUNCTION AsSvg(geometry,int4)
+CREATEFUNCTION AsSVG(geometry,int4)
 	RETURNS TEXT
 	AS '@MODULE_FILENAME@','assvg_geometry'
 	LANGUAGE 'C';
 
-CREATEFUNCTION AsSvg(geometry)
+CREATEFUNCTION AsSVG(geometry)
 	RETURNS TEXT
 	AS '@MODULE_FILENAME@','assvg_geometry'
 	LANGUAGE 'C';
 
+-----------------------------------------------------------------------
+-- GML OUTPUT
+-----------------------------------------------------------------------
+CREATEFUNCTION AsGML(geometry, int4)
+	RETURNS TEXT
+	AS '@MODULE_FILENAME@','LWGEOM_asGML'
+	LANGUAGE 'C';
+
+CREATEFUNCTION AsGML(geometry)
+	RETURNS TEXT
+	AS '@MODULE_FILENAME@','LWGEOM_asGML'
+	LANGUAGE 'C';
 
 ---------------------------------------------------------------
 -- END
