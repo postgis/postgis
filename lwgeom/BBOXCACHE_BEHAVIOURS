@@ -36,6 +36,11 @@ points where some BBOX caching strategies could be enforced).
 	*EXP*	Uses deprecated LWEXPLODED, and LWEXPLODED_serialize()
 
 	*LWG*	Uses LWGEOM, pglwgeom_serialize()
+
+
+AUTOCACHE_BBOX is currently used by all functions using *LWG* 
+(pglwgeom_serialize entry point). Other functions explicitly
+listed in the AUTOCACHE_BBOX section also use it.
 	
 
 [ explicit control ]
@@ -90,6 +95,12 @@ points where some BBOX caching strategies could be enforced).
 	multi(geometry) **SRL**
 	envelope(geometry) *SRL*
 
+	### computes union of
+	### input bbox (if all available)
+	collect(geometry, geometry) *LWG*
+	collect_garray (geometry[]) *LWG*
+	
+
 	## These use LWGEOM as a mean to access and modigy SERIALIZED form
 	reverse(geometry) *LWG* **SRL**
 	ForceRHR(geometry) *LWG* **SRL**
@@ -104,11 +115,6 @@ points where some BBOX caching strategies could be enforced).
 	StartPoint(geometry) *SRL*
 	EndPoint(geometry) *SRL*
 
-	### could use WHEN_SIMPLE computing union of
-	### input bbox (if available or SIMPLE to compute: points)
-	collect(geometry, geometry) *LWG*
-	collect_garray (geometry[]) *LWG*
-	
 	makePoint(float8, float8, [float8], [float8]) *LWG*
 	makePointM(float8, float8, float8) *LWG*
 	makeline_garray (geometry[]) *LWG*

@@ -106,6 +106,13 @@ pglwgeom_serialize(LWGEOM *in)
 	size_t size;
 	PG_LWGEOM *result;
 
+#if AUTOCACHE_BBOX
+	if ( ! in->bbox && is_worth_caching_lwgeom_bbox(in) )
+	{
+		lwgeom_addBBOX(in);
+	}
+#endif
+
 	size = lwgeom_serialize_size(in) + VARHDRSZ;
 	//lwnotice("lwgeom_serialize_size returned %d", size-VARHDRSZ);
 	result = palloc(size);

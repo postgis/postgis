@@ -1572,6 +1572,7 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 	PG_LWGEOM *pglwgeom1, *pglwgeom2, *result;
 	LWGEOM *lwgeoms[2], *outlwg;
 	unsigned int type1, type2, outtype;
+	BOX2DFLOAT4 *box=NULL;
 
 	// return null if both geoms are null
 	if ( (geom1_ptr == NULL) && (geom2_ptr == NULL) )
@@ -1619,9 +1620,25 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 	elog(NOTICE, " outtype = %d", outtype);
 #endif
 
+	/* COMPUTE_BBOX WHEN_SIMPLE */
+	if ( lwgeoms[0]->bbox && lwgeoms[1]->bbox )
+	{
+		box = palloc(sizeof(BOX2DFLOAT4));
+		box->xmin = LW_MIN(lwgeoms[0]->bbox->xmin, lwgeoms[1]->bbox->xmin);
+		box->ymin = LW_MIN(lwgeoms[0]->bbox->ymin, lwgeoms[1]->bbox->ymin);
+		box->xmax = LW_MAX(lwgeoms[0]->bbox->xmax, lwgeoms[1]->bbox->xmax);
+		box->ymax = LW_MAX(lwgeoms[0]->bbox->ymax, lwgeoms[1]->bbox->ymax);
+	}
+
+	/* Drop input geometries bbox and SRID */
+	lwgeom_dropBBOX(lwgeoms[0]);
+	lwgeom_dropSRID(lwgeoms[0]);
+	lwgeom_dropBBOX(lwgeoms[1]);
+	lwgeom_dropSRID(lwgeoms[1]);
+
 	outlwg = (LWGEOM *)lwcollection_construct(
 		outtype, lwgeoms[0]->SRID,
-		NULL, 2, lwgeoms);
+		box, 2, lwgeoms);
 
 	result = pglwgeom_serialize(outlwg);
 
@@ -1773,6 +1790,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 	int i;
 	int SRID=-1;
 	size_t offset;
+	BOX2DFLOAT4 *box=NULL;
 
 #ifdef DEBUG
 	elog(NOTICE, "LWGEOM_collect_garray called");
@@ -1829,18 +1847,45 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 	elog(NOTICE, "LWGEOM_collect_garray: geom %d deserialized", i);
 #endif
 
-		// Check SRID homogeneity
-		if ( ! i ) {
+		if ( ! i )
+		{
 			/* Get first geometry SRID */
 			SRID = lwgeoms[i]->SRID; 
-		} else {
+
+			/* COMPUTE_BBOX WHEN_SIMPLE */
+			if ( lwgeoms[i]->bbox ) {
+				box = palloc(sizeof(BOX2DFLOAT4));
+				memcpy(box, lwgeoms[i]->bbox, sizeof(BOX2DFLOAT4));
+			}
+		}
+		else
+		{
+			// Check SRID homogeneity
 			if ( lwgeoms[i]->SRID != SRID )
 			{
 				elog(ERROR,
 					"Operation on mixed SRID geometries");
 				PG_RETURN_NULL();
 			}
+
+			/* COMPUTE_BBOX WHEN_SIMPLE */
+			if ( box )
+			{
+				if ( lwgeoms[i]->bbox )
+				{
+					box->xmin = LW_MIN(box->xmin, lwgeoms[i]->bbox->xmin);
+					box->ymin = LW_MIN(box->ymin, lwgeoms[i]->bbox->ymin);
+					box->xmax = LW_MAX(box->xmax, lwgeoms[i]->bbox->xmax);
+					box->ymax = LW_MAX(box->ymax, lwgeoms[i]->bbox->ymax);
+				}
+				else
+				{
+					pfree(box);
+					box = NULL;
+				}
+			}
 		}
+
 
 		lwgeom_dropSRID(lwgeoms[i]);
 		lwgeom_dropBBOX(lwgeoms[i]);
@@ -1868,7 +1913,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 
 	outlwg = (LWGEOM *)lwcollection_construct(
 		outtype, SRID,
-		NULL, nelems, lwgeoms);
+		box, nelems, lwgeoms);
 
 	result = pglwgeom_serialize(outlwg);
 
