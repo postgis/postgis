@@ -84,7 +84,16 @@ SRC= $(SRCDIR)/examples/Test.java \
 STUBDIR=stubs
 STUBBUILD=stubbin/
 STUBSRC= $(STUBDIR)/org/postgresql/Connection.java \
-	$(STUBDIR)/org/postgresql/PGConnection.java
+	 $(STUBDIR)/org/postgresql/PGConnection.java
+
+JTSDIR=jtssrc
+JTSBUILD=jtsbin/
+JTSSRC= $(JTSDIR)/examples/JtsTestParser.java \
+	$(JTSDIR)/org/postgis/jts/JtsBinaryParser.java \
+	$(JTSDIR)/org/postgis/jts/JtsGeometry.java \
+	$(JTSDIR)/org/postgis/jts/JtsGisWrapper.java \
+	$(JTSDIR)/org/postgis/jts/JtsWrapper.java \
+	
 
 # Now the makefile targets that do the work:
 
@@ -146,7 +155,8 @@ onlinetests: boxtest ptest jtest autoregistertest
 alltests: onlinetests test
 
 clean:  
-	$(DELETE) $(BUILD) bin stubbin postgis.jar postgis_debug.jar compile stubcompile
+	$(DELETE) $(BUILD) bin stubbin postgis.jar postgis_debug.jar \
+		compile stubcompile jtscompile $(JTSBUILD) postgis_jts.jar
 
 # The following two targets are needed for debian build, but may be hepful
 # for someone else, too.
@@ -160,3 +170,31 @@ installdirs:
 	@echo Testing for successful inclusion of $(top_makefile)
 	test $(DESTDIR)
 	$(mkinstalldirs) $(DESTDIR)
+
+# Preliminary JTS support
+
+postgis_jts: postgis_jts.jar jtstestoffline
+	@echo "Warning! This is beta code. Use at your own risk."
+
+$(JTSBUILD):
+	$(MKDIR) $(JTSBUILD)
+
+
+jtscompile: compile stubcompile $(JTSBUILD) $(JTSSRC)
+	$(JAVAC) -classpath "$(BUILD):$(CP)" -d $(JTSBUILD) $(JTSSRC) 
+	touch jtscompile
+	
+jtstestoffline: jtscompile	
+	$(JAVA) -classpath "$(JTSBUILD):$(BUILD):$(CP)" $(EXAMPLES)/JtsTestParser offline
+
+jtstest:  jtscompile
+	$(JAVA) -classpath "$(JTSBUILD):$(BUILD):$(CP)" $(EXAMPLES)/JtsTestParser jdbc:postgres_jts://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
+
+postgis_jts.jar: jtscompile $(SRCDIR)/org/postgresql/driverconfig.properties
+	$(JAR) -cf postgis_jts.jar -C $(BUILD) . \
+	       -C $(SRCDIR) org/postgresql/driverconfig.properties \
+	       README COPYING_LGPL -C .. COPYING
+	$(JAR) -uf postgis_jts.jar -C $(JTSBUILD) .
+
+
+	

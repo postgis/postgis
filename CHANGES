@@ -22,6 +22,7 @@ PostGIS 1.0.0?
 	  failures on simple (single) geometry types.
 	- jdbc2: slightly updated makefile
 	- plugged a leak in GEOS2POSTGIS converter
+	- jdbc2: added BETA support for jts geometry classes
 
 PostGIS 1.0.0RC2
 2005/01/26
