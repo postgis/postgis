@@ -9,7 +9,7 @@
 #include "postgis_geos_version.h"
 #include "geos/geom.h"
 #include "geos/util.h"
-#if GEOS_FIRST_INTERFACE <= 3 
+#if GEOS_FIRST_INTERFACE <= 3 && GEOS_LAST_INTERFACE >= 3
 #include "geos/opPolygonize.h"
 #endif // GEOS_FIRST_INTERFACE <= 3
 
