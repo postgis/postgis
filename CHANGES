@@ -1,3 +1,15 @@
+PostGIS 0.7.5
+2003/04/08
+
+- Bug Fixes
+  - shp2pgsql 
+    - Z coordinate handling
+    - M coordinate handling
+    - Ring handling fixed in some cases
+    - Support for large numbers in attribute tables
+  - Some obscure operators fixed
+  - Some cygwin build improvements
+
 PostGIS 0.7.4
 2003/02/12
 
