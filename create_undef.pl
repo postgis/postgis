@@ -1,127 +1,159 @@
 # perl create_undef.pl <postgis.sql>
 # creates a new sql script to delete all the postgis functions et al.
 
-($#ARGV == 0) || die "usage: perl create_undef.pl <postgis.sql>\ncreates a new sql script to delete all the postgis functions et al.";
-
+($#ARGV == 1) || die "Usage: perl create_undef.pl <postgis.sql>\nCreates a new SQL script to delete all the PostGIS functions.\n";
 
 # drops are in the following order:
 #	1. Indexing system stuff
 #	2. Meta datatables <not done>
-#	3. Aggregates  - must be of type geometry
-#	4. Operators   - must be of type op(geometry,geometry)
+#	3. Aggregates 
+#	3. Casts
+#	4. Operators 
 #	5. Functions
 #	6. Types
 #	7. Tables
 
-@aggs =();
-@funcs = ();
-@types = ();
-@ops = ();
+my @aggs = ();
+my @casts = ();
+my @funcs = ();
+my @types = ();
+my @ops = ();
+
+my $version = $ARGV[1];
+
+print "BEGIN;\n";
+
+if ( $version eq "73" ) 
+{
+	print "-- Drop index bindings from system tables\n";
+	print "DROP OPERATOR CLASS gist_geometry_ops USING gist;\n";
+}
+else 
+{
+	print "-- Drop index bindings from system tables\n";
+	print "DELETE FROM pg_amproc WHERE amopclaid = (SELECT oid FROM pg_opclass WHERE opcname = 'gist_geometry_ops');\n";
+	print "DELETE FROM pg_amop WHERE amopclaid = (SELECT oid FROM pg_opclass WHERE opcname = 'gist_geometry_ops');\n";
+	print "DELETE FROM pg_opclass WHERE opcname = 'gist_geometry_ops';\n";
+}
 
 
-open( INPUT,$ARGV[0]) || die "couldnt open file: $ARGV[0]";
+open( INPUT, $ARGV[0] ) || die "Couldn't open file: $ARGV[0]\n";
 
-
-	print "begin;\n";
-	print "--- indexing meta table stuff\n";
-	print "delete from pg_amproc where amopclaid = (select oid from pg_opclass where opcname = 'gist_geometry_ops');\n";
-	print "delete from pg_amop where amopclaid = (select oid from pg_opclass where opcname = 'gist_geometry_ops');\n";
-	print "delete from pg_opclass where opcname = 'gist_geometry_ops';\n";
-
-
-	while( $line = <INPUT>)
-	{
-		
-		if ($line =~ /^create function/i)
-		{
-			push (@funcs, $line);
-		}
-		if ($line =~ /^create operator/i)
-		{
-			push (@ops, $line);
-		}
-		if ($line =~ /^create AGGREGATE/i)
-		{
-			push (@aggs, $line);
-		}
-		if ($line =~ /^create type/i)
-		{
-			push (@types, $line);
-		}
-	}
-
-	#now have all the info, do the deletions
-
-	print "--- AGGREGATEs\n";
-
-	foreach $agg (@aggs)
-	{
-		if ($agg =~ /create AGGREGATE ([^(]+)/i )
-		{
-			print "drop AGGREGATE $1 geometry;\n";
-		}
-		else
-		{
-			die "couldnt parse line: $line\n";
-		}
-	}
-
-	print "--- operators\n";
-
-	foreach $op (@ops)
-	{
-		if ($op =~ /create operator ([^(]+)/i )
-		{
-			print "drop operator $1 (geometry,geometry);\n";
-		}
-		else
-		{
-			die "couldnt parse line: $line\n";
-		}
-	}
-
-	
-	print "--- functions\n";
-
-	foreach $fn (@funcs)
-	{
-		chomp($fn); chomp($fn);
-
-		
-		if ($fn =~ /create function ([^(]+)\(([^()]*)\)/i )
-		{
-			print "drop function $1 ($2);\n";
-		}
-		else
-		{
-			die "couldnt parse line: $line\n";
-		}
-	}
-
-	print "--- types\n";
-
-	foreach $type (@types)
-	{
-		if ($type =~ /create type ([^(]+)/i )
-		{
-			print "drop type $1;\n";
-		}
-		else
-		{
-			die "couldnt parse line: $line\n";
-		}
-	}
-
-	print "----tables\n";
-	print "drop table spatial_ref_sys;\n";
-	print "drop table geometry_columns;\n";
-	print "\n";
-
-
-	print "end;\n";
-
+while( my $line = <INPUT>)
+{
+	$line =~ s/[\r\n]//g;
+	push (@funcs, $line) if ($line =~ /^create function/i);
+	push (@ops, $line) if ($line =~ /^create operator.*\(/i);
+	push (@aggs, $line) if ($line =~ /^create aggregate/i);
+	push (@types, $line) if ($line =~ /^create type/i);
+	push (@casts, $line) if ($line =~ /^create cast/i);
+}
 
 close( INPUT );
+
+print "-- Drop all aggregates.\n";
+
+foreach my $agg (@aggs)
+{
+	if ( $agg =~ /create aggregate\s*(\w+)\s*\(/i )
+	{
+		if ( $version eq "71" ) 
+		{
+			print "DROP AGGREGATE $1 geometry;\n";
+		}
+		else 
+		{
+			print "DROP AGGREGATE $1 ( geometry );\n";
+		}
+	}
+	else
+	{
+		die "Couldn't parse line: $agg\n";
+	}
+}
+
+print "-- Drop all operators.\n";
+
+foreach my $op (@ops)
+{
+	if ($op =~ /create operator ([^(]+)/i )
+	{
+		print "DROP OPERATOR $1 (geometry,geometry);\n";
+	}
+	else
+	{
+		die "Couldn't parse line: $op\n";
+	}
+}
+
+	
+print "-- Drop all casts.\n";
+
+foreach my $cast (@casts)
+{
+	if ($cast =~ /create cast\s*\((.+?)\)/i )
+	{
+		print "DROP CAST ($1);\n";
+	}
+	else
+	{
+		die "Couldn't parse line: $cast\n";
+	}
+}
+
+print "-- Drop all functions.\n";
+
+foreach my $fn (@funcs)
+{
+	if ($fn =~ /create function ([^(]+)\((.*)\)/i )
+	{
+		my $fn_nm = $1;
+		my $fn_arg = $2;
+		if ( $version eq "73" )
+		{
+			if ( ! ( $fn_nm =~ /_in/i || $fn_nm =~ /_out/i ) ) 
+			{
+				print "DROP FUNCTION $fn_nm ($fn_arg);\n";
+			} 
+		}
+		else
+		{
+			print "DROP FUNCTION $fn_nm ($fn_arg);\n";
+		}
+	}
+	else
+	{
+		die "Couldn't parse line: $fn\n";
+	}
+}
+
+print "-- Drop all types.\n";
+
+foreach my $type (@types)
+{
+	if ($type =~ /create type ([^(]+)/i )
+	{
+		if ( $version eq "73" ) 
+		{
+			print "DROP TYPE $1 CASCADE;\n";
+		}
+		else 
+		{
+			print "DROP TYPE $1;\n";
+		}
+	}
+	else
+	{
+		die "Couldn't parse line: $type\n";
+	}
+}
+
+print "-- Drop all tables.\n";
+print "DROP TABLE spatial_ref_sys;\n";
+print "DROP TABLE geometry_columns;\n";
+print "\n";
+
+print "COMMIT;\n";
 
 1;
 
