@@ -19,9 +19,6 @@
 
 // This is an implementation of the functions defined in lwgeom.h
 
-static LWGEOM_allocator internal_allocator = malloc;
-
-
 //forward decs
 
 extern float  nextDown_f(double d);
@@ -696,7 +693,7 @@ uint32 get_uint32(char *loc)
 {
 	uint32 result;
 
-	memcpy(&result,loc, sizeof(uint32));
+	memcpy(&result, loc, sizeof(uint32));
 	return result;
 }
 
@@ -739,11 +736,9 @@ LWLINE *lwline_deserialize(char *serialized_form)
 	uint32 npoints;
 	POINTARRAY *pa;
 
-	result = (LWLINE*) palloc( sizeof(LWLINE)) ;
+	result = (LWLINE*) palloc(sizeof(LWLINE)) ;
 
 	type = (unsigned char) serialized_form[0];
-
-
 	if ( lwgeom_getType(type) != LINETYPE)
 	{
 		elog(ERROR,"lwline_deserialize: attempt to deserialize a line when its not really a line");
@@ -753,21 +748,31 @@ LWLINE *lwline_deserialize(char *serialized_form)
 	loc = serialized_form+1;
 
 	if (lwgeom_hasBBOX(type))
+	{
+		//elog(NOTICE, "line has bbox");
 		loc += sizeof(BOX2DFLOAT4);
+	}
+	else
+	{
+		//elog(NOTICE, "line has NO bbox");
+	}
 
 	if ( lwgeom_hasSRID(type))
 	{
+		//elog(NOTICE, "line has srid");
 		result->SRID = get_int32(loc);
 		loc +=4; // type + SRID
 	}
 	else
 	{
+		//elog(NOTICE, "line has NO srid");
 		result->SRID = -1;
 	}
 
 	// we've read the type (1 byte) and SRID (4 bytes, if present)
 
 	npoints = get_uint32(loc);
+	//elog(NOTICE, "line npoints = %d", npoints);
 	loc +=4;
 	pa = pointArray_construct( loc, lwgeom_ndims(type), npoints);
 
@@ -1408,7 +1413,7 @@ LWGEOM_INSPECTED *lwgeom_inspect(char *serialized_form)
 
 	result->serialized_form = serialized_form;
 	result->type = (unsigned char) serialized_form[0];
-    result->SRID = -1; // assume
+	result->SRID = -1; // assume
 
 	type = lwgeom_getType( (unsigned char) serialized_form[0]);
 
@@ -1424,36 +1429,35 @@ LWGEOM_INSPECTED *lwgeom_inspect(char *serialized_form)
 	{
 		if (lwgeom_hasSRID((unsigned char) serialized_form[0]) )
 		{
-			result->SRID=  get_int32(loc);
+			result->SRID = get_int32(loc);
 		}
 		//simple geometry (point/line/polygon)-- not multi!
 		result->ngeometries = 1;
 		sub_geoms = (char**) palloc(sizeof(char*));
 		sub_geoms[0] = serialized_form;
 		result->sub_geoms = sub_geoms;
-		return result;
 	}
 	else
 	{
-			if (lwgeom_hasSRID((unsigned char) serialized_form[0]) )
-			{
-				result->SRID=  get_int32(loc);
-				loc += 4;
-			}
-			//its a GeometryCollection or multi* geometry
-			result->ngeometries = get_uint32(loc);
-			loc +=4;
-			sub_geoms = (char**) palloc(sizeof(char*) * result->ngeometries );
-			result->sub_geoms = sub_geoms;
-			sub_geoms[0] = loc;
-			for (t=1;t<result->ngeometries; t++)
-			{
-				int sub_length = lwgeom_seralizedformlength(sub_geoms[t-1], -1);//-1 = entire object
-				sub_geoms[t] = sub_geoms[t-1] + sub_length;
-			}
-
-			return result;
+		if (lwgeom_hasSRID((unsigned char) serialized_form[0]) )
+		{
+			result->SRID=  get_int32(loc);
+			loc += 4;
+		}
+		//its a GeometryCollection or multi* geometry
+		result->ngeometries = get_uint32(loc);
+		loc +=4;
+		sub_geoms = (char**) palloc(sizeof(char*) * result->ngeometries );
+		result->sub_geoms = sub_geoms;
+		sub_geoms[0] = loc;
+		for (t=1;t<result->ngeometries; t++)
+		{
+			int sub_length = lwgeom_seralizedformlength(sub_geoms[t-1], -1);//-1 = entire object
+			sub_geoms[t] = sub_geoms[t-1] + sub_length;
+		}
 	}
+
+	return result;
 
 }
 
@@ -1547,7 +1551,6 @@ LWLINE *lwgeom_getline_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
 		char *sub_geom;
 		unsigned char type;
 
-
 		sub_geom = lwgeom_getsubgeometry_inspected(inspected, geom_number);
 
 		if (sub_geom == NULL)
@@ -1557,7 +1560,6 @@ LWLINE *lwgeom_getline_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
 		type = lwgeom_getType((unsigned char) sub_geom[0]);
 		if (type != LINETYPE)
 			return NULL;
-
 
 		return lwline_deserialize(sub_geom);
 }
@@ -1663,10 +1665,10 @@ char lwgeom_getsubtype(char *serialized_form, int geom_number)
 }
 char lwgeom_getsubtype_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
 {
-		if ((geom_number <0) || (geom_number >= inspected->ngeometries) )
-			return 99;
+	if ((geom_number <0) || (geom_number >= inspected->ngeometries) )
+		return 99;
 
-		return inspected->sub_geoms[geom_number][0]; // 1st byte is type
+	return inspected->sub_geoms[geom_number][0]; // 1st byte is type
 }
 
 
@@ -2236,7 +2238,7 @@ int lwgeom_getSRID(LWGEOM *lwgeom)
 
 // Set the SRID of a LWGEOM
 // Returns a newly allocated LWGEOM object.
-// Allocation will be done using the internal_allocator.
+// Allocation will be done using the palloc.
 LWGEOM *lwgeom_setSRID(LWGEOM *lwgeom, int32 newSRID)
 {
 	unsigned char type = lwgeom->type;
@@ -2253,14 +2255,14 @@ LWGEOM *lwgeom_setSRID(LWGEOM *lwgeom, int32 newSRID)
 	if (lwgeom_hasSRID(type))
 	{
 		//we create a new one and copy the SRID in
-		result = internal_allocator(len);
+		result = palloc(len);
 		memcpy(result, lwgeom, len);
 		memcpy(result->data+bbox_offset, &newSRID,4);
 	}
 	else  // need to add one
 	{
 		len_new = len + 4;//+4 for SRID
-		result = internal_allocator(len_new);
+		result = palloc(len_new);
 		memcpy(result, &len_new, 4); // size copy in
 		result->type = lwgeom_makeType_full(lwgeom_ndims(type), true, lwgeom_getType(type),lwgeom_hasBBOX(type));
 
@@ -2288,16 +2290,4 @@ LWGEOM *lwgeom_setSRID(LWGEOM *lwgeom, int32 newSRID)
 		// TODO: add SRID presence flag in type.
 	}
 	return result;
-}
-
-/*
- * Set an allocator function.
- * Return current allocator function.
- */
-LWGEOM_allocator
-LWGEOM_setAllocator(LWGEOM_allocator newallocator)
-{
-	LWGEOM_allocator oldalloc = internal_allocator;
-	internal_allocator = newallocator;
-	return oldalloc;
 }

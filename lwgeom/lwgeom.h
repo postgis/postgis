@@ -7,11 +7,6 @@
 #include "utils/geo_decls.h"
 
 
-// This will be used to 
-typedef void* (*LWGEOM_allocator)(size_t size);
-
-LWGEOM_allocator LWGEOM_setAllocator(LWGEOM_allocator);
-
 typedef struct
 {
 	float xmin;
