@@ -2096,7 +2096,7 @@ is simple (does not pass through the same point more than once).
 						  GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING or
 						  MULTIPOLYGON. Otherwise, return NULL.
 						</para> 
-						<para>0 is 1st geometry</para>
+						<para>1 is 1st geometry</para>
 					</listitem> 
 				</varlistentry>
 				<varlistentry>
