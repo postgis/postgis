@@ -1197,6 +1197,23 @@ CREATE AGGREGATE memcollect(
 	stype = geometry
 	);
 
+CREATEFUNCTION geom_accum (geometry[],geometry)
+	RETURNS geometry[]
+	AS '@MODULE_FILENAME@', 'LWGEOM_accum'
+	LANGUAGE 'C';
+
+CREATEFUNCTION collect_garray (geometry[])
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_collect_garray'
+	LANGUAGE 'C';
+
+CREATE AGGREGATE collect (
+	sfunc = geom_accum,
+	basetype = geometry,
+	stype = geometry[],
+	finalfunc = collect_garray
+	);
+
 ------------------------------------------------------------------------
 
 --

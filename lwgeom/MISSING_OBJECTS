@@ -8,10 +8,6 @@ FUNC: KEEPING FUNCTION: [asbinary(geometry, text)]
 FUNC: KEEPING FUNCTION: [boundary(geometry)]
 FUNC: KEEPING FUNCTION: [box(geometry)]
 
-FUNC: KEEPING FUNCTION: [geom_accum(geometry[], geometry)]
-FUNC: KEEPING FUNCTION: [collect_garray(geometry[])]
-AGGREGATE: KEEPING AGGREGATE [collect(geometry)]
-
 FUNC: KEEPING FUNCTION: [envelope(geometry)]
 FUNC: KEEPING FUNCTION: [equals(geometry, geometry)]
 FUNC: KEEPING FUNCTION: [expand(geometry, double precision)]

@@ -8,6 +8,7 @@
 
 #include "fmgr.h"
 #include "utils/elog.h"
+#include "utils/array.h"
 
 #include "lwgeom.h"
 
@@ -35,6 +36,8 @@ Datum LWGEOM_maxdistance2d_linestring(PG_FUNCTION_ARGS);
 Datum LWGEOM_translate(PG_FUNCTION_ARGS);
 Datum LWGEOM_inside_circle_point(PG_FUNCTION_ARGS);
 Datum LWGEOM_collect(PG_FUNCTION_ARGS);
+Datum LWGEOM_accum(PG_FUNCTION_ARGS);
+Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS);
 
 // internal
 char * lwgeom_summary_recursive(char *serialized, int offset);
@@ -1931,7 +1934,6 @@ dump_lwexploded(LWGEOM_EXPLODED *exploded)
 		}
 	}
 
-	return 0;
 }
 
 // collect( geom, geom ) returns a geometry which contains
@@ -2045,4 +2047,232 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 
 	//elog(ERROR, "Not implemented yet");
 	PG_RETURN_POINTER(result);
+}
+
+/*
+ * This is a geometry array constructor
+ * for use as aggregates sfunc.
+ * Will have as input an array of Geometry pointers and a Geometry.
+ * Will DETOAST given geometry and put a pointer to it
+ * in the given array. DETOASTED value is first copied
+ * to a safe memory context to avoid premature deletion.
+ */
+PG_FUNCTION_INFO_V1(LWGEOM_accum);
+Datum LWGEOM_accum(PG_FUNCTION_ARGS)
+{
+	ArrayType *array;
+	int nelems, nbytes;
+	Datum datum;
+	LWGEOM *geom;
+	ArrayType *result;
+	Pointer **pointers;
+	MemoryContext oldcontext;
+
+//elog(NOTICE, "LWGEOM_accum called");
+
+	datum = PG_GETARG_DATUM(0);
+	if ( (Pointer *)datum == NULL ) {
+		array = NULL;
+		nelems = 0;
+		//elog(NOTICE, "geom_accum: NULL array, nelems=%d", nelems);
+	} else {
+		array = (ArrayType *) PG_DETOAST_DATUM_COPY(datum);
+		nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
+	}
+
+	datum = PG_GETARG_DATUM(1);
+	// Do nothing, return state array
+	if ( (Pointer *)datum == NULL )
+	{
+		//elog(NOTICE, "geom_accum: NULL geom, nelems=%d", nelems);
+		PG_RETURN_ARRAYTYPE_P(array);
+	}
+
+	/*
+	 * Switch to * flinfo->fcinfo->fn_mcxt
+	 * memory context to be sure both detoasted
+	 * geometry AND array of pointers to it
+	 * last till the call to unite_finalfunc.
+	 */
+	oldcontext = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
+
+	/* Make a DETOASTED copy of input geometry */
+	geom = (LWGEOM *)PG_DETOAST_DATUM_COPY(datum);
+
+	//elog(NOTICE, "geom_accum: adding %p (nelems=%d)", geom, nelems);
+
+	/*
+	 * Might use a more optimized version instead of repalloc'ing
+	 * at every iteration. This is not the bottleneck anyway.
+	 * 		--strk(TODO);
+	 */
+	++nelems;
+	nbytes = ARR_OVERHEAD(1) + sizeof(Pointer *) * nelems;
+	if ( ! array ) {
+		result = (ArrayType *) palloc(nbytes);
+		result->size = nbytes;
+		result->ndim = 1;
+		*((int *) ARR_DIMS(result)) = nelems;
+	} else {
+		result = (ArrayType *) repalloc(array, nbytes);
+		result->size = nbytes;
+		result->ndim = 1;
+		*((int *) ARR_DIMS(result)) = nelems;
+	}
+
+	pointers = (Pointer **)ARR_DATA_PTR(result);
+	pointers[nelems-1] = (Pointer *)geom;
+
+	/* Go back to previous memory context */
+	MemoryContextSwitchTo(oldcontext);
+
+
+	PG_RETURN_ARRAYTYPE_P(result);
+
+}
+
+/*
+ * collect_garray ( GEOMETRY[] ) returns a geometry which contains
+ * all the sub_objects from all of the geometries in given array.
+ *
+ * returned geometry is the simplest possible, based on the types
+ * of the collected objects
+ * ie. if all are of either X or multiX, then a multiX is returned
+ * bboxonly types are treated as null geometries (no sub_objects)
+ */
+PG_FUNCTION_INFO_V1(LWGEOM_collect_garray);
+Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
+{
+	Datum datum;
+	ArrayType *array;
+	int nelems, srid=-1;
+	LWGEOM **geoms;
+	LWGEOM *result=NULL, *geom;
+	LWGEOM_EXPLODED *exploded=NULL;
+	int i;
+	int wantbbox = 0; // don't compute a bounding box...
+	int size;
+	char *serialized_result = NULL;
+
+//elog(NOTICE, "LWGEOM_collect_garray called");
+
+	/* Get input datum */
+	datum = PG_GETARG_DATUM(0);
+
+	/* Return null on null input */
+	if ( (Pointer *)datum == NULL )
+	{
+		elog(NOTICE, "NULL input");
+		PG_RETURN_NULL();
+	}
+
+	/* Get actual ArrayType */
+	array = (ArrayType *) PG_DETOAST_DATUM(datum);
+
+	/* Get number of geometries in array */
+	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
+
+	/* Return null on 0-elements input array */
+	if ( nelems == 0 )
+	{
+		elog(NOTICE, "0 elements input array");
+		PG_RETURN_NULL();
+	}
+
+	/* Get pointer to GEOMETRY pointers array */
+	geoms = (LWGEOM **)ARR_DATA_PTR(array);
+
+	/* Return the only present element of a 1-element array */
+	if ( nelems == 1 ) PG_RETURN_POINTER(geoms[0]);
+
+	/* Iterate over all geometries in array */
+	for (i=0; i<nelems; i++)
+	{
+		LWGEOM_EXPLODED *subexp, *tmpexp;
+
+		geom = geoms[i];
+
+		/* Skip NULL array elements (are them possible?) */
+		if ( geom == NULL ) continue;
+
+		/* Use first NOT-NULL GEOMETRY as the base */
+		if ( ! exploded )
+		{
+			/* Remember first geometry's SRID for later checks */
+			srid = lwgeom_getSRID(geom);
+
+			exploded = lwgeom_explode(SERIALIZED_FORM(geom));
+			if ( ! exploded ) {
+	elog(ERROR, "collect_garray: out of virtual memory");
+	PG_RETURN_NULL();
+			}
+
+			continue;
+		}
+
+		/* Skip geometry if it contains no sub-objects */
+		if ( ! lwgeom_getnumgeometries(SERIALIZED_FORM(geom)) )
+		{
+			pfree(geom); // se note above
+		 	continue;
+		}
+
+		/*
+		 * If we are here this means we are in front of a
+		 * good (non empty) geometry beside the first
+		 */
+
+		/* Fist let's check for SRID compatibility */
+		if ( lwgeom_getSRID(geom) != srid )
+		{
+	elog(ERROR, "Operation on GEOMETRIES with different SRIDs (need %d, have %d)", srid, lwgeom_getSRID(geom));
+	PG_RETURN_NULL();
+		}
+
+		subexp = lwgeom_explode(SERIALIZED_FORM(geom));
+
+		tmpexp = lwexploded_sum(exploded, subexp);
+		if ( ! tmpexp )
+		{
+	elog(ERROR, "Out of virtual memory");
+	PG_RETURN_NULL();
+		}
+		pfree_exploded(subexp);
+		pfree_exploded(exploded);
+		exploded = tmpexp;
+
+	}
+
+	/* Check we got something in our result */
+	if ( exploded == NULL )
+	{
+		elog(NOTICE, "NULL exploded");
+		PG_RETURN_NULL();
+	}
+
+	/*
+	 * We should now have a big fat exploded geometry
+	 * with of all sub-objects from all geometries in array
+	 */
+
+	// Now serialized collected LWGEOM_EXPLODED
+	serialized_result = lwexploded_serialize(exploded, wantbbox);
+	if ( ! serialized_result )
+	{
+		elog(ERROR, "Could not serialize exploded geoms");
+		pfree_exploded(exploded);
+		PG_RETURN_NULL();
+	}
+
+	// now we could release all memory associated with geometries
+	// in the array.... TODO.
+
+	// Create LWGEOM type (could provide a _buf version of
+	// the serializer instead)
+	size = lwgeom_seralizedformlength_simple(serialized_result);
+	result = LWGEOM_construct(serialized_result,
+		lwgeom_getsrid(serialized_result), wantbbox);
+	pfree(serialized_result);
+
+	PG_RETURN_POINTER( result );
 }
