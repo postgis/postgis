@@ -33,18 +33,14 @@ public class Version {
     /** The minor version */
     public static final int MINOR = 0;
 
-    /** The micro version */
-    public static final int MICRO = 0;
-
     /**
-     * Prerelease identifier, like "RC3" or "pre5" - is guaranteed to be the
-     * emtpy String on stable releases
+     * The micro version, usually a number including possibly textual suffixes
+     * like RC3.
      */
-    public static final String PREREL_SUFFIX = "RC4";
+    public static final String MICRO = "0RC4";
 
     /** Full version for human reading - code should use the constants above */
-    public static final String FULL = "PostGIS JDBC V" + MAJOR + "." + MINOR + "." + MICRO
-            + PREREL_SUFFIX;
+    public static final String FULL = "PostGIS JDBC V" + MAJOR + "." + MINOR + "." + MICRO;
 
     public static void main(String[] args) {
         System.out.println(FULL);
