@@ -13,6 +13,7 @@ PostGIS 1.0.0RC4
 	- improved version handling, central Version.config
         - added distance_sphere function 
 	- subselects support in selectivity estimator 
+	- bug fixes for 64bit architectures
 
 PostGIS 1.0.0RC3
 2005/02/24
