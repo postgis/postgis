@@ -12,6 +12,9 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.19  2003/11/05 18:26:54  strk
+-- Added fast collect() and geomunion() aggregates implementations
+--
 -- Revision 1.18  2003/10/28 11:18:27  strk
 -- Added Algorithms section and simplify() enabler code
 --
@@ -1022,6 +1025,11 @@ CREATE FUNCTION box3dtobox(box3d)
 -- Aggregate functions
 --
 
+CREATE FUNCTION geom_accum (geometry[],geometry)
+	RETURNS geometry[]
+	AS '@MODULE_FILENAME@'
+	LANGUAGE 'C';
+
 CREATE FUNCTION combine_bbox(box3d,geometry)
 	RETURNS box3d
 	AS '@MODULE_FILENAME@'
@@ -1038,11 +1046,24 @@ CREATE FUNCTION collector(geometry,geometry)
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C';
 
-CREATE AGGREGATE collect(
+CREATE AGGREGATE memcollect(
 	sfunc = collector,
 	basetype = geometry,
 	stype = geometry
 	);
+
+CREATE FUNCTION collect_garray (geometry[])
+        RETURNS geometry
+        AS '@MODULE_FILENAME@'
+        LANGUAGE 'C';
+
+CREATE AGGREGATE collect (
+	sfunc = geom_accum,
+	basetype = geometry,
+	stype = geometry[],
+	finalfunc = collect_garray
+	);
+
 
 --
 -- Operator definitions
@@ -1235,23 +1256,36 @@ CREATE FUNCTION buffer(geometry,float8)
         RETURNS geometry
         AS '@MODULE_FILENAME@','symdifference'
    LANGUAGE 'C' WITH (isstrict);
-   
-   
-     CREATE FUNCTION symmetricdifference(geometry,geometry)
-          RETURNS geometry
-          AS '@MODULE_FILENAME@','symdifference'
-     LANGUAGE 'C' WITH (isstrict);
-   
-   
-      CREATE FUNCTION GeomUnion(geometry,geometry)
-           RETURNS geometry
-           AS '@MODULE_FILENAME@','geomunion'
-   LANGUAGE 'C' WITH (isstrict);
 
-CREATE AGGREGATE unite (
+
+CREATE FUNCTION symmetricdifference(geometry,geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','symdifference'
+	LANGUAGE 'C' WITH (isstrict);
+
+
+CREATE FUNCTION GeomUnion(geometry,geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','geomunion'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATE AGGREGATE MemGeomUnion (
 	basetype = geometry,
 	sfunc = geomunion,
-	stype = geometry );
+	stype = geometry
+	);
+
+CREATE FUNCTION unite_garray (geometry[])
+	RETURNS geometry
+	AS '@MODULE_FILENAME@'
+	LANGUAGE 'C'; 
+
+CREATE AGGREGATE GeomUnion (
+	sfunc = geom_accum,
+	basetype = geometry,
+	stype = geometry[],
+	finalfunc = unite_garray
+	);
 
 
 CREATE FUNCTION relate(geometry,geometry)
