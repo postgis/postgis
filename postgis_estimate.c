@@ -11,6 +11,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.18  2004/03/09 00:09:56  strk
+ * estimator applies a gain of AOI/cell_area on each cell it intersects (reverted to previous behaviour)
+ *
  * Revision 1.17  2004/03/04 13:50:45  strk
  * postgis_gist_sel(): added warnings if search_box goes outside of histogram grid
  *
@@ -1171,15 +1174,13 @@ Datum postgis_gist_sel(PG_FUNCTION_ARGS)
 				/*
 				 * Of the cell value we get
 				 * only the overlap fraction.
-				 * I guess we can overlook this,
-				 * we are not that precise anyway.
 				 */
+
 				intersect_x = min(box->high.x, geomstats->xmin + (x+1) * geow / bps) - max(box->low.x, geomstats->xmin + x * geow / bps );
 				intersect_y = min(box->high.y, geomstats->ymin + (y+1) * geoh / bps) - max(box->low.y, geomstats->ymin+ y * geoh / bps) ;
 				
 				AOI = intersect_x*intersect_y;
-				//gain = AOI/cell_area;
-				gain = 1;
+				gain = AOI/cell_area;
 
 #if DEBUG_GEOMETRY_STATS > 1
 				elog(NOTICE, " [%d,%d] cell val %.15f",
@@ -1463,6 +1464,7 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 
 			for (x=x_idx_min; x<=x_idx_max; x++)
 			{
+
 				cell_xmax = geomstats->xmin+(x+1)*cell_width;
 				cell_xmin = geomstats->xmin+x*cell_width;
 
@@ -1485,7 +1487,8 @@ elog(NOTICE, "r=%d c=%d intx=%f inty=%f",
 				}
 				else
 				{
-			geomstats->value[x+y*bps] += 1; //AOI / cell_area;
+			geomstats->value[x+y*bps] += 1;
+			//geomstats->value[x+y*bps] += AOI / cell_area;
 				}
 				numcells++;
 			}
