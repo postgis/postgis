@@ -3562,6 +3562,19 @@ FROM geometry_table;</literallayout>
             point.</para>
           </listitem>
         </varlistentry>
+
+        <varlistentry>
+          <term>segmentize(geometry, maxlength)</term>
+
+          <listitem>
+            <para>Return a modified [multi]polygon having no ring segment
+	    longer then the given distance. Interpolated points will
+	    have Z and M values (if needed) set to 0. Distance computation
+	    is performed in 2d only.
+            </para>
+          </listitem>
+        </varlistentry>
+
       </variablelist>
     </sect1>
   </chapter>
