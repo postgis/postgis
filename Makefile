@@ -40,7 +40,7 @@ $(NAME).sql: $(NAME).sql.in
 	sed -e 's:@MODULE_FILENAME@:$(libdir)/$(shlib):g' < $< > $@
 
 #$(NAME).sql: $(NAME).sql.in
-#	sed -e 's:@MODULE_FILENAME@:/data1/Refractions/Projects/PostGIS/geom/$(shlib):g' < $< > $@
+#	sed -e 's:@MODULE_FILENAME@:/data1/Refractions/Projects/PostGIS/work_dave/postgis/$(shlib):g' < $< > $@
 
 install: all installdirs install-lib
 	$(INSTALL_DATA) $(srcdir)/README.$(NAME)  $(docdir)/contrib
