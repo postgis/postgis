@@ -324,23 +324,71 @@
         </listitem>
       </orderedlist>
 
-      <sect2>
+      <sect2 id="upgrading">
         <title>Upgrading</title>
 
-        <para>Upgrading PostGIS can be tricky, because the underlying C
-        libraries which support the object types and geometries may have
-        changed between versions. To avoid problems when upgrading, you will
-        have to dump all the tables in your database, destroy the database,
-        create a new one, execute the new <filename>lwpostgis.sql</filename>
-        file, then upload your database dump:</para>
+	<para>
+Upgrading PostGIS can be tricky, because the underlying C libraries which 
+support the object types and geometries may have changed between versions.
+	</para>
 
-        <programlisting># pg_dump -t spatialtable -f dumpfile.sql yourdatabase
-# dropdb yourdatabase
-# createdb yourdatabase
-# createlang plpgsql yourdatabse
-# psql -f lwpostgis.sql -d yourdatabase
-# psql -f dumpfile.sql -d yourdatabase
-# vacuumdb -z yourdatabase</programlisting>
+	<para>
+For this purpose PostGIS provides an utility script to restore a dump
+produced with the pg_dump -Fc command. It is experimental so redirecting
+its output to a file will help in case of problems. The procedure is
+as follow:
+	</para>
+
+	<programlisting>
+	# Create a "custom-format" dump of the database you want
+	# to upgrade (let's call it "olddb")
+	$ pg_dump -Fc olddb olddb.dump
+
+	# Restore the dump contextually upgrading postgis into
+	# a new database. The new database doesn't have to exist.
+	# Let's call it "newdb"
+	$ sh utils/postgis_restore.pl lwpostgis.sql newdb olddb.dump &gt; restore.log
+
+	# Check that all restored dump objects really had to be restored from dump
+	# and do not conflict with the ones defined in lwpostgis.sql
+	$ grep ^KEEPING restore.log | less
+
+	# If upgrading from PostgreSQL &lt; 7.5 to &gt;= 7.5 you might want to 
+	# drop the attrelid, varattnum and stats columns in the geometry_columns
+	# table, which are no-more needed. Keeping them won't hurt.
+	# !!! DROPPING THEM WHEN REALLY NEEDED WILL DO HURT !!!!
+	$ psql newdb -c "ALTER TABLE geometry_columns DROP attrelid"
+	$ psql newdb -c "ALTER TABLE geometry_columns DROP varattnum"
+	$ psql newdb -c "ALTER TABLE geometry_columns DROP stats"
+
+	# spatial_ref_sys table is restore from the dump, to ensure your custom
+	# additions are kept, but the distributed one might contain modification
+	# so you should backup your entries, drop the table and source the new one.
+	# If you did make additions we assume you know how to backup them before
+	# upgrading the table. Replace of it with the new one is done like this:
+	$ psql newdb
+	newdb=&gt; drop table spatial_ref_sys;
+	DROP
+	newdb=&gt; \i spatial_ref_sys.sql
+	</programlisting>
+
+	<para>
+Following is the "old" procedure description. IT SHOULD BE AVOIDED if possible,
+as it will leave in the database many spurious functions. It is kept in this document
+as a "backup" in case postgis_restore.pl won't work for you:
+	</para>
+
+	<programlisting>
+	pg_dump -t "*" -f dumpfile.sql yourdatabase
+	dropdb yourdatabase
+	createdb yourdatabase
+	createlang plpgsql yourdatabase
+	psql -f lwpostgis.sql -d yourdatabase
+	psql -f dumpfile.sql -d yourdatabase
+	vacuumdb -z yourdatabase
+	</programlisting>
+
+
       </sect2>
 
       <sect2>
@@ -4459,9 +4507,9 @@ FROM geometry_table;</literallayout>
 				<title>Upgrading</title>
 
 				<para>You need a dump/reload to upgrade
-				from precedent releases. Take a look at
-				utils/postgis_restore.pl for a convenient
-				way to do so.</para>
+				from precedent releases. See the <link
+				linkend="upgrading">upgrading</link>
+				chapter for more informations.</para>
 			</sect2>
 
 			<sect2>
