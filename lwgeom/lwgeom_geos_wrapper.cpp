@@ -260,16 +260,26 @@ PostGIS2GEOS_linestring(const LWLINE *lwline)
 		POINT3D *p;
 
 		//build coordinatelist & pre-allocate space
+#if GEOS_LAST_INTERFACE >= 2
+		vector<Coordinate> *vc = new vector<Coordinate>(pa->npoints);
+#else
 		DefaultCoordinateSequence  *coords = new DefaultCoordinateSequence(pa->npoints);
+#endif
 		if (is3d)
 		{
 			for (t=0; t<pa->npoints; t++)
 			{
 				p = (POINT3D *)getPoint(pa, t);
+#if GEOS_LAST_INTERFACE >= 2
+				(*vc)[t].x = p->x;
+				(*vc)[t].y = p->y;
+				(*vc)[t].z = p->z;
+#else
 				c.x = p->x;
 				c.y = p->y;
 				c.z = p->z;
 				coords->setAt(c ,t);
+#endif
 			}
 		}
 		else  //make 2d points
@@ -277,12 +287,21 @@ PostGIS2GEOS_linestring(const LWLINE *lwline)
 			for (t=0; t<pa->npoints; t++)
 			{
 				p = (POINT3D *)getPoint(pa, t);
+#if GEOS_LAST_INTERFACE >= 2
+				(*vc)[t].x = p->x;
+				(*vc)[t].y = p->y;
+				(*vc)[t].z = DoubleNotANumber;
+#else
 				c.x = p->x;
 				c.y = p->y;
 				c.z = DoubleNotANumber;
 				coords->setAt(c ,t);
+#endif
 			}
 		}
+#if GEOS_LAST_INTERFACE >= 2
+		CoordinateSequence *coords = DefaultCoordinateSequenceFactory::instance()->create(vc);
+#endif
 		Geometry *g = geomFactory->createLineString(coords);
 #if GEOS_LAST_INTERFACE < 2
 		delete coords;
@@ -318,22 +337,33 @@ Geometry *PostGIS2GEOS_polygon(const LWPOLY *lwpoly)
 		Geometry *g;
 		LinearRing *outerRing;
 		LinearRing *innerRing;
-		DefaultCoordinateSequence *cl;
+		CoordinateSequence *cl;
 		POINT3D *p;
-		vector<Geometry *> *innerRings=new vector<Geometry *>;
+		vector<Geometry *> *innerRings;
+		vector<Coordinate> *vc;
 
 		// make outerRing
 		pa = lwpoly->rings[0];
+#if GEOS_LAST_INTERFACE >= 2
+		vc = new vector<Coordinate>(pa->npoints);
+#else
 		cl = new DefaultCoordinateSequence(pa->npoints);
+#endif
 		if (is3d)
 		{
 			for(t=0; t<pa->npoints; t++)
 			{
 				p = (POINT3D *)getPoint(pa, t);
+#if GEOS_LAST_INTERFACE >= 2
+				(*vc)[t].x = p->x;
+				(*vc)[t].y = p->y;
+				(*vc)[t].z = p->z;
+#else
 				c.x = p->x;
 				c.y = p->y;
 				c.z = p->z;
 				cl->setAt( c ,t);
+#endif
 			}
 		}
 		else
@@ -341,12 +371,21 @@ Geometry *PostGIS2GEOS_polygon(const LWPOLY *lwpoly)
 			for(t=0; t<pa->npoints; t++)
 			{
 				p = (POINT3D *)getPoint(pa, t);
+#if GEOS_LAST_INTERFACE >= 2
+				(*vc)[t].x = p->x;
+				(*vc)[t].y = p->y;
+				(*vc)[t].z = DoubleNotANumber;
+#else
 				c.x = p->x;
 				c.y = p->y;
 				c.z = DoubleNotANumber;
 				cl->setAt(c ,t);
+#endif
 			}
 		}
+#if GEOS_LAST_INTERFACE >= 2
+		cl = DefaultCoordinateSequenceFactory::instance()->create(vc);
+#endif
 		outerRing = (LinearRing*) geomFactory->createLinearRing(cl);
 #if GEOS_LAST_INTERFACE < 2
 		delete cl;
@@ -354,19 +393,30 @@ Geometry *PostGIS2GEOS_polygon(const LWPOLY *lwpoly)
 		if (outerRing == NULL) return NULL;
 		outerRing->setSRID(SRID);
 
+		innerRings=new vector<Geometry *>(lwpoly->nrings-1);
 		for(ring=1; ring<lwpoly->nrings; ring++)
 		{
 			pa = lwpoly->rings[ring];
+#if GEOS_LAST_INTERFACE >= 2
+			vector<Coordinate> *vc = new vector<Coordinate>(pa->npoints);
+#else
 			cl = new DefaultCoordinateSequence(pa->npoints);
+#endif
 			if (is3d)
 			{
 				for(t=0; t<pa->npoints; t++)
 				{
 					p = (POINT3D *)getPoint(pa, t);
+#if GEOS_LAST_INTERFACE >= 2
+					(*vc)[t].x = p->x;
+					(*vc)[t].y = p->y;
+					(*vc)[t].z = p->z;
+#else
 					c.x = p->x;
 					c.y = p->y;
 					c.z = p->z;
 					cl->setAt(c ,t);
+#endif
 				}
 			}
 			else
@@ -374,12 +424,21 @@ Geometry *PostGIS2GEOS_polygon(const LWPOLY *lwpoly)
 				for(t=0; t<pa->npoints; t++)
 				{
 					p = (POINT3D *)getPoint(pa, t);
+#if GEOS_LAST_INTERFACE >= 2
+					(*vc)[t].x = p->x;
+					(*vc)[t].y = p->y;
+					(*vc)[t].z = DoubleNotANumber;
+#else
 					c.x = p->x;
 					c.y = p->y;
 					c.z = DoubleNotANumber;
 					cl->setAt(c ,t);
+#endif
 				}
 			}
+#if GEOS_LAST_INTERFACE >= 2
+			CoordinateSequence *cl = DefaultCoordinateSequenceFactory::instance()->create(vc);
+#endif
 			innerRing = (LinearRing *) geomFactory->createLinearRing(cl);
 #if GEOS_LAST_INTERFACE < 2
 			delete cl;
@@ -390,7 +449,7 @@ Geometry *PostGIS2GEOS_polygon(const LWPOLY *lwpoly)
 				return NULL;
 			}
 			innerRing->setSRID(SRID);
-			innerRings->push_back(innerRing);
+			(*innerRings)[ring-1] = innerRing;
 		}
 
 		g = geomFactory->createPolygon(outerRing, innerRings);
@@ -419,11 +478,11 @@ Geometry *PostGIS2GEOS_multipoint(LWPOINT *const *const geoms, uint32 ngeoms, in
 		vector<Geometry *> *subGeoms=NULL;
 		Geometry *g;
 
-		subGeoms=new vector<Geometry *>;
+		subGeoms=new vector<Geometry *>(ngeoms);
 
 		for (t=0; t<ngeoms; t++)
 		{
-			subGeoms->push_back(PostGIS2GEOS_point(geoms[t]));
+			(*subGeoms)[t] = PostGIS2GEOS_point(geoms[t]);
 		}
 		g = geomFactory->createMultiPoint(subGeoms);
 #if GEOS_LAST_INTERFACE < 2
@@ -456,11 +515,11 @@ Geometry *PostGIS2GEOS_multilinestring(LWLINE *const *const geoms, uint32 ngeoms
 		vector<Geometry *> *subGeoms=NULL;
 		Geometry *g;
 
-		subGeoms=new vector<Geometry *>;
+		subGeoms=new vector<Geometry *>(ngeoms);
 
 		for (t=0; t<ngeoms; t++)
 		{
-			subGeoms->push_back(PostGIS2GEOS_linestring(geoms[t]));
+			(*subGeoms)[t] = PostGIS2GEOS_linestring(geoms[t]);
 		}
 		g = geomFactory->createMultiLineString(subGeoms);
 #if GEOS_LAST_INTERFACE < 2
@@ -493,11 +552,11 @@ Geometry *PostGIS2GEOS_multipolygon(LWPOLY *const *const polygons, uint32 npolys
 		vector<Geometry *> *subPolys=NULL;
 		Geometry *g;
 
-		subPolys=new vector<Geometry *>;
+		subPolys=new vector<Geometry *>(npolys);
 
 		for (t =0; t< npolys; t++)
 		{
-			subPolys->push_back(PostGIS2GEOS_polygon(polygons[t]));
+			(*subPolys)[t] = PostGIS2GEOS_polygon(polygons[t]);
 		}
 		g = geomFactory->createMultiPolygon(subPolys);
 #if GEOS_LAST_INTERFACE < 2
@@ -528,11 +587,11 @@ Geometry *PostGIS2GEOS_collection(Geometry **geoms, int ngeoms, int SRID, bool i
 	{
 		Geometry *g;
 		int t;
-		vector<Geometry *> *subGeos=new vector<Geometry *>;
+		vector<Geometry *> *subGeos=new vector<Geometry *>(ngeoms);
 
-		for (t =0; t< ngeoms; t++)
+		for (t =0; t<ngeoms; t++)
 		{
-			subGeos->push_back(geoms[t]);
+			(*subGeos)[t] = geoms[t];
 		}
 		g = geomFactory->buildGeometry(subGeos);
 #if GEOS_LAST_INTERFACE < 2
