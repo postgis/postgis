@@ -449,6 +449,7 @@ lwgeom_dropBBOX(LWGEOM *lwgeom)
 	if ( lwgeom->bbox && ! TYPE_HASBBOX(lwgeom->type) )
 		lwfree(lwgeom->bbox);
 	lwgeom->bbox = NULL;
+	TYPE_SETHASBBOX(lwgeom->type, 0);
 }
 
 /*
