@@ -10,6 +10,10 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.50  2004/05/13 12:13:01  strk
+ * Used DBFWriteAttributeDirectly interface for writing attributes.
+ * This way we are not affected by shapelib long-integer bug.
+ *
  * Revision 1.49  2004/05/13 12:07:13  strk
  * Other fix in 3d handling - you should now be able to dump as 2d or 3d any 2d or 3d object
  *
@@ -1997,63 +2001,14 @@ addRecord(PGresult *res, int residx, int row)
 	{
 		SHPObject *obj;
 
-		/* Integer attribute */
-		if (type_ary[j] == 1)
-		{
-			int temp;
-			if ( PQgetisnull(res, residx, j) ) {
-				temp = 0;
-			} else {
-				val = (char *)PQgetvalue(res, residx, j);
-				temp = atoi(val);
-			}
-#if VERBOSE > 1
-fprintf(stdout, "i"); fflush(stdout);
-#endif
-			if (!DBFWriteIntegerAttribute(dbf, row, flds, temp))
-			{
-				fprintf(stderr, "error(int) - Record could not be created\n");
-				return 0;
-			}
-			flds++;
-			continue;
-		}
-		
-		/* Double attribute */
-		if (type_ary[j] == 2)
-		{
-			double temp;
-			if ( PQgetisnull(res, residx, j) ) {
-				temp = 0;
-			} else {
-				val = PQgetvalue(res, residx, j);
-				temp = atof(val);
-			}
-#if VERBOSE > 1
-fprintf(stdout, "d"); fflush(stdout);
-#endif
-			if (!DBFWriteDoubleAttribute(dbf, row, flds, temp))
-			{
-				fprintf(stderr, "error(double) - Record could "
-						"not be created\n");
-				return 0;
-			}
-			flds++;
-			continue;
-		}
-
 		/* Default (not geometry) attribute */
 		if (type_ary[j] != 9)
 		{
-			if ( PQgetisnull(res, residx, j) ) {
-				val = "";
-			} else {
-				val = PQgetvalue(res, residx, j);
-			}
+			val = PQgetvalue(res, residx, j);
 #if VERBOSE > 1
 fprintf(stdout, "s"); fflush(stdout);
 #endif
-			if(!DBFWriteStringAttribute(dbf, row, flds, val))
+			if(!DBFWriteAttributeDirectly(dbf, row, flds, val))
 			{
 				printf("error(string) - Record could not be "
 						"created\n");
