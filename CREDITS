@@ -8,10 +8,10 @@ core team.
 
 VERSION SPECIFIC CREDITS:
 
-Version 0.1 of PostGIS was developed by Refractions Research Inc, of Victora, 
-British Columbia, Canada (http://www.refractions.net), as a research project 
-into using PostgreSQL as a geospatial data-store. The following staff 
-participated in the project:
+PostGIS is developed by Refractions Research Inc, of Victora, 
+British Columbia, Canada (http://www.refractions.net), as an ongoing project 
+in using PostgreSQL as a geospatial data-store. The following contributors 
+have participated in the project:
 
   Sandro Santilli - Maintenance and core programming (the new stuff)
   Dave Blasby - Core server objects and indexing (original contributions)

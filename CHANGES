@@ -1,3 +1,20 @@
+PostGIS 1.0.0
+2004/12/16
+
+- New Things
+  - Objects are all now "lightweight" with a smaller disk
+    and index representation. Large databases should see a moderate
+    to large performance increase.
+  - Some new functions (AsGML())
+  - Objects now have a hexidecimal canonical representation.
+    To see a "user friendly" version of the objects use the
+    AsText() function.
+  - The loader and dumper use the hexidecimal canonical representation,
+    so coordinate drift due to floating point string parsing is now
+    eliminated.
+- Bug Fixes
+  - Numerous small fixes.
+
 PostGIS 0.9.0
 2004/09/10
 

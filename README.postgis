@@ -1,7 +1,7 @@
 PostGIS - Geographic Information Systems Extensions to PostgreSQL
 ~~~~~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-VERSION: 0.9.0 (2004/09/10)
+VERSION: 1.0.0 (2004/12/16)
 
 MORE INFORMATION: http://postgis.refractions.net
 
@@ -19,19 +19,23 @@ Directory structure:
   ./doc       Documentation on the code, objects and functions 
               provided. 
   ./loader    A program to convert ESRI Shape files into SQL text
-              suitable for uploading into a PostGIS/PostgreSQL database.
+              suitable for uploading into a PostGIS/PostgreSQL database
+              and a program for converting PostGIS spatial tables into
+              Shape files..
   ./examples  Small programs which demonstrate ways of accessing 
               GIS data.
 	        
 
 INSTALLATION:
 
-PostGIS is compatible with PostgreSQL 7.1 and above.
+PostGIS is compatible with PostgreSQL 7.2 and above.
 
 To install the module, move this directory to the "contrib" directory of your
 PostgreSQL source installation. Alternately, point PGSQL_SRC at your
-PostgreSQL source tree either in the environment or editing Makefile.config.
-You must have a PostgreSQL source tree, and you must have succesfully
+PostgreSQL source tree either in an environment variable or editing 
+Makefile.config.
+
+You *must* have a PostgreSQL source tree, and you *must* have succesfully
 built and installed it for this to work. 
 
 SEE THE NOTE ON GEOS SUPPORT BELOW FOR SPECIAL COMPILATION INSTRUCTIONS
@@ -55,7 +59,7 @@ SEE THE NOTE ON GEOS SUPPORT BELOW FOR SPECIAL COMPILATION INSTRUCTIONS
 
     http://geos.refractions.net
 
-  In order to use the GEOS support, you may need to specially compile 
+  In order to use the GEOS support, you *may* need to specially compile 
   your version of PostgreSQL to link the C++ runtime library.
   To do this, invoke the PgSQL configuration script this way:
  

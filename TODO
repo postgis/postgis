@@ -1,9 +1,10 @@
-2004/09/10
+2004/12/16
 
 - Clean up mapserver connectivity
 - Submit to OpenGIS Consortium for testing
-- More connectivity to commercial GIS software.
-- Update PgSQL GiST to support row level (recangle level?) locking.
+- Update PgSQL GiST to support row level (rectangle level?) locking.
 - Network creation and network operations 
   (upstream, downstream, least cost path)
+- Standardized handling for topology and coverages with 
+  support functions.
 
