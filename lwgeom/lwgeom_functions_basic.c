@@ -1468,6 +1468,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_translate);
 Datum LWGEOM_translate(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+	PG_LWGEOM *ret;
 	uchar *srl = SERIALIZED_FORM(geom);
 	BOX2DFLOAT4 box;
 	int hasbbox;
@@ -1489,11 +1490,12 @@ Datum LWGEOM_translate(PG_FUNCTION_ARGS)
 	}
 
 	// Construct PG_LWGEOM 
-	geom = PG_LWGEOM_construct(srl, lwgeom_getsrid(srl), hasbbox);
+	ret = PG_LWGEOM_construct(srl, lwgeom_getsrid(srl), hasbbox);
 
-	PG_FREE_IF_COPY(geom, 0);
+	// Release copy of detoasted input.
+	pfree(geom);
 
-	PG_RETURN_POINTER(geom);
+	PG_RETURN_POINTER(ret);
 }
 
 PG_FUNCTION_INFO_V1(LWGEOM_inside_circle_point);
