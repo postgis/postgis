@@ -10,6 +10,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.43  2004/03/06 17:43:06  strk
+ * Added RCSID string in usage output
+ *
  * Revision 1.42  2004/02/09 18:49:23  strk
  * byte endiannes detected empirically
  *
@@ -91,6 +94,9 @@
  * Added CVS substitution strings for logging.
  *
  **********************************************************************/
+
+static char rcsid[] =
+  "$Id$";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -2097,6 +2103,7 @@ getGeometryType(char *schema, char *table, char *geo_col_name)
 void
 usage(status)
 {
+	printf("RCSID: %s\n", rcsid);
 	printf("USAGE: pgsql2shp [<options>] <database> [<schema>.]<table>\n");
 	printf("\n");
        	printf("OPTIONS:\n");

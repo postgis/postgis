@@ -12,6 +12,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.50  2004/03/06 17:43:06  strk
+ * Added RCSID string in usage output
+ *
  * Revision 1.49  2004/03/06 17:35:59  strk
  * Added rcsid string to usage output
  *
@@ -675,8 +678,7 @@ int main (int ARGC, char **ARGV){
         if (errflg==1) {
 		printf("\n**ERROR** invalid option or command parameters\n");
 		printf("\n");
-		printf("VERSION: %s", rcsid);
-		printf("\n");
+		printf("RCSID: %s\n", rcsid);
 		printf("USAGE: shp2pgsql [<options>] <shapefile> [<schema>.]<table>\n");
 		printf("\n");
 		printf("OPTIONS:\n");
