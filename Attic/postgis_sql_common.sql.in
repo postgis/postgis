@@ -12,6 +12,9 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.15  2003/09/04 16:19:06  dblasby
+-- removed truly_inside() function.
+--
 -- Revision 1.14  2003/08/08 18:19:20  dblasby
 -- Conformance changes.
 -- Removed junk from postgis_debug.c and added the first run of the long
@@ -926,10 +929,10 @@ CREATE FUNCTION perimeter(geometry)
 	AS '@MODULE_FILENAME@','perimeter2d'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION truly_inside(geometry,geometry)
-	RETURNS bool
-	AS '@MODULE_FILENAME@'
-	LANGUAGE 'C' WITH (isstrict);
+---CREATE FUNCTION truly_inside(geometry,geometry)
+---	RETURNS bool
+---	AS '@MODULE_FILENAME@'
+---	LANGUAGE 'C' WITH (isstrict);
 
 CREATE FUNCTION point_inside_circle(geometry,float8,float8,float8)
 	RETURNS bool
