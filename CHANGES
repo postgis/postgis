@@ -1,6 +1,7 @@
 PostGIS 1.0.0
 	- NEW manual pages for loader/dumper
 	- NEW shp2pgsql support for old (HWGEOM) postgis versions
+	- NEW -p flag for shp2pgsql
 	- BUGFIX in transform() releasing random memory address
 	- BUGFIX in force_3dm() allocating less memory then required
 
