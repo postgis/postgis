@@ -12,6 +12,17 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.5  2003/12/30 10:40:21  strk
+-- For all versions:
+-- Updated fix_geometry_columns to use a more readable format in queries.
+--
+-- For PG >= 73:
+-- Updated fix_geometry_columns() to consider schema when fixing attrelid and
+-- varattnum, also changed empty value to 'public' string for records with
+-- an invalid schema specification.
+-- Updated DropGeometryColumn to actually issue the
+-- ALTER TABLE DROP COLUMN query.
+--
 -- Revision 1.4  2003/12/23 09:00:12  strk
 -- AddGeometryColumn, DropGeometryColum moved to version-specific scripts.
 -- Schema support enabled for version 73 and 74.
@@ -207,8 +218,12 @@ CREATE FUNCTION fix_geometry_columns() RETURNS text
 AS 
 '
 BEGIN
-	EXECUTE ''update geometry_columns set attrelid = (select pg_class.oid AS attrelid from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name), varattnum = (select pg_attribute.attnum from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name)'';
-	RETURN ''geometry_columns table is now linked to the system tables'';
+        UPDATE geometry_columns SET attrelid = (                                                SELECT c.oid AS attrelid FROM pg_class c, pg_attribute a                        WHERE c.relname = geometry_columns.f_table_name::name                           AND a.attrelid = c.oid                                                          AND a.attname = geometry_columns.f_geometry_column::name
+                );
+                                                                                        UPDATE geometry_columns SET varattnum = (                                               SELECT a.attnum FROM pg_class c, pg_attribute a                                 WHERE c.relname = geometry_columns.f_table_name::name                           AND a.attrelid = c.oid                                                          AND a.attname = geometry_columns.f_geometry_column::name
+                );
+
+        RETURN ''geometry_columns table is now linked to the system tables'';
 END;
 '
 LANGUAGE 'plpgsql' ;

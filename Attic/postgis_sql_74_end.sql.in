@@ -12,6 +12,17 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.7  2003/12/30 10:40:21  strk
+-- For all versions:
+-- Updated fix_geometry_columns to use a more readable format in queries.
+--
+-- For PG >= 73:
+-- Updated fix_geometry_columns() to consider schema when fixing attrelid and
+-- varattnum, also changed empty value to 'public' string for records with
+-- an invalid schema specification.
+-- Updated DropGeometryColumn to actually issue the
+-- ALTER TABLE DROP COLUMN query.
+--
 -- Revision 1.6  2003/12/23 09:00:12  strk
 -- AddGeometryColumn, DropGeometryColum moved to version-specific scripts.
 -- Schema support enabled for version 73 and 74.
@@ -249,12 +260,243 @@ CREATE FUNCTION fix_geometry_columns() RETURNS text
 AS 
 '
 BEGIN
-	EXECUTE ''update geometry_columns set attrelid = (select pg_class.oid AS attrelid from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name), varattnum = (select pg_attribute.attnum from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name)'';
-	EXECUTE ''update geometry_columns set f_table_schema = '''''''' where f_table_schema not in ( select nspname::varchar from pg_namespace )'';
+	-- it would be better to find the correct schema name
+	UPDATE geometry_columns SET f_table_schema = ''public''
+		WHERE f_table_schema is NULL or f_table_schema NOT IN
+		( SELECT nspname::varchar FROM pg_namespace );
+
+	UPDATE geometry_columns SET attrelid = (
+		SELECT c.oid 
+		FROM pg_class c, pg_attribute a, pg_namespace n
+		WHERE c.relname = geometry_columns.f_table_name::name
+		AND a.attrelid = c.oid AND c.relnamespace = n.oid
+		AND a.attname = geometry_columns.f_geometry_column::name
+		AND n.nspname = geometry_columns.f_table_schema::name
+		);
+	
+	UPDATE geometry_columns SET varattnum = (
+		SELECT a.attnum
+		FROM pg_class c, pg_attribute a, pg_namespace n
+		WHERE n.nspname = geometry_columns.f_table_schema::name
+		AND c.relname = geometry_columns.f_table_name::name
+		AND a.attname = geometry_columns.f_geometry_column::name
+		AND a.attrelid = c.oid AND c.relnamespace = n.oid
+		);
+
 	RETURN ''geometry_columns table is now linked to the system tables'';
+
+
 END;
 '
 LANGUAGE 'plpgsql' ;
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- ADDGEOMETRYCOLUMN ( 
+--      <catalog>, <schema>, <table name>, <column name>, 
+--      <srid>, <type>, <dim> )
+--
+-- Type can be one of geometry, GEOMETRYCOLLECTION, POINT, MULTIPOINT, POLYGON,
+-- MULTIPOLYGON, LINESTRING, or MULTILINESTRING.
+--
+-- Types (except geometry) are checked for consistency using a CHECK constraint
+-- uses SQL ALTER TABLE command to add the geometry column to the table.
+-- Addes a row to geometry_columns.
+-- Addes a constraint on the table that all the geometries MUST have the same 
+-- SRID. Checks the coord_dimension to make sure its between 0 and 3.
+-- Should also check the precision grid (future expansion).
+-- Calls fix_geometry_columns() at the end.
+--
+CREATE FUNCTION AddGeometryColumn(varchar,varchar,varchar,varchar,integer,varchar,integer)
+	RETURNS text
+	AS 
+'
+DECLARE
+	catalog_name alias for $1;
+	schema_name alias for $2;
+	table_name alias for $3;
+	column_name alias for $4;
+	new_srid alias for $5;
+	new_type alias for $6;
+	new_dim alias for $7;
+
+	rec RECORD;
+	schema_ok bool;
+	real_schema name;
+BEGIN
+
+	IF ( not ( (new_type =''GEOMETRY'') or
+		   (new_type =''GEOMETRYCOLLECTION'') or
+		   (new_type =''POINT'') or 
+		   (new_type =''MULTIPOINT'') or
+		   (new_type =''POLYGON'') or
+		   (new_type =''MULTIPOLYGON'') or
+		   (new_type =''LINESTRING'') or
+		   (new_type =''MULTILINESTRING'')) )
+	THEN
+		RAISE EXCEPTION ''Invalid type name - valid ones are: 
+			GEOMETRY, GEOMETRYCOLLECTION, POINT, 
+			MULTIPOINT, POLYGON, MULTIPOLYGON, 
+			LINESTRING, or MULTILINESTRING '';
+		RETURN ''fail'';
+	END IF;
+
+	IF ( (new_dim >3) or (new_dim <0) ) THEN
+		RAISE EXCEPTION ''invalid dimension'';
+		RETURN ''fail'';
+	END IF;
+
+	IF ( schema_name != '''' ) THEN
+		schema_ok = ''f'';
+		FOR rec IN SELECT nspname FROM pg_namespace WHERE text(nspname) = schema_name LOOP
+			schema_ok := ''t'';
+		END LOOP;
+
+		if ( schema_ok <> ''t'' ) THEN
+			RAISE NOTICE ''Invalid schema name - using current_schema()'';
+			SELECT current_schema() into real_schema;
+		ELSE
+			real_schema = schema_name;
+		END IF;
+
+	ELSE
+		SELECT current_schema() into real_schema;
+	END IF;
+
+	EXECUTE ''ALTER TABLE '' || quote_ident(real_schema) ||
+		''.'' || quote_ident(table_name) || 
+		'' ADD COLUMN '' || quote_ident(column_name) || 
+		'' geometry '';
+
+	EXECUTE ''ALTER TABLE '' || quote_ident(real_schema) ||
+		''.'' || quote_ident(table_name) || 
+		'' ADD CHECK (SRID('' || quote_ident(column_name) ||
+		'') = '' || new_srid || '')'' ;
+
+	IF (not(new_type = ''GEOMETRY'')) THEN
+		EXECUTE ''ALTER TABLE '' || quote_ident(real_schema) ||
+			''.'' || quote_ident(table_name) || 
+			'' ADD CHECK (geometrytype('' ||
+			quote_ident(column_name) || '')='' ||
+			quote_literal(new_type) || '' OR ('' ||
+			quote_ident(column_name) || '') is null)'';
+	END IF;
+
+	EXECUTE ''INSERT INTO geometry_columns VALUES ('' ||
+		quote_literal('''') || '','' ||
+		quote_literal(real_schema) || '','' ||
+		quote_literal(table_name) || '','' ||
+		quote_literal(column_name) || '','' ||
+		new_dim || '','' || new_srid || '','' ||
+		quote_literal(new_type) || '')'';
+
+	EXECUTE ''select fix_geometry_columns()'';
+	--SELECT fix_geometry_columns();
+
+	return ''Geometry column '' || column_name || '' added to table ''
+		|| real_schema || ''.'' || table_name || '' WITH a SRID of '' || new_srid ||
+		'' and type '' || new_type;
+END;
+' LANGUAGE 'plpgsql' WITH (isstrict);
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- ADDGEOMETRYCOLUMN ( <schema>, <table>, <column>, <srid>, <type>, <dim> )
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+CREATE FUNCTION AddGeometryColumn(varchar,varchar,varchar,integer,varchar,integer) RETURNS text AS '
+DECLARE
+	ret  text;
+BEGIN
+	SELECT AddGeometryColumn('''',$1,$2,$3,$4,$5,$6) into ret;
+	RETURN ret;
+END;
+' LANGUAGE 'plpgsql' WITH (isstrict);
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- DROPGEOMETRYCOLUMN( <schema name>, <table name>, <column name> )
+--
+-- There is no ALTER TABLE DROP COLUMN command in postgresql
+-- There is no ALTER TABLE DROP CONSTRAINT command in postgresql
+-- So, we:
+--   1. remove the unwanted geom column reference from the 
+--      geometry_columns table
+--   2. update the table so that the geometry column is all NULLS
+--      This is okay since the CHECK srid(geometry) = <srid> is not
+--      checked if geometry is NULL (the isstrict attribute on srid())
+--   3. add another constraint that the geometry column must be NULL
+-- This, effectively kills the geometry column 
+--   (a) its not in the geometry_column table
+--   (b) it only has nulls in it
+--   (c) you cannot add anything to the geom column because it must be NULL
+-- 
+-- This will screw up if you put a NOT NULL constraint on the geometry 
+-- column, so the first thing we must do is remove this constraint (its a 
+-- modification of the pg_attribute system table)
+--
+-- We also check to see if the table/column exists in the geometry_columns 
+-- table 
+CREATE FUNCTION DropGeometryColumn(varchar,varchar,varchar)
+	RETURNS text
+	AS 
+'
+DECLARE
+	schema_name alias for $1;
+	table_name alias for $2;
+	column_name alias for $3;
+	
+	myrec RECORD;
+	real_schema name;
+	okay boolean;
+	query text;
+
+BEGIN
+
+
+	-- Find, check or fix schema_name
+	IF ( schema_name != '''' ) THEN
+		okay = ''f'';
+
+		FOR myrec IN SELECT nspname FROM pg_namespace WHERE text(nspname) = schema_name LOOP
+			okay := ''t'';
+		END LOOP;
+
+		IF ( okay <> ''t'' ) THEN
+			RAISE NOTICE ''Invalid schema name - using current_schema()'';
+			SELECT current_schema() into real_schema;
+		ELSE
+			real_schema = schema_name;
+		END IF;
+	ELSE
+		SELECT current_schema() into real_schema;
+	END IF;
+
+ 	-- first we find out if the column is in the geometry_columns table
+	okay = ''f'';
+	FOR myrec IN SELECT * from geometry_columns where f_table_schema = text(real_schema) and f_table_name = table_name and f_geometry_column = column_name LOOP
+		okay := ''t'';
+	END LOOP; 
+	IF (okay <> ''t'') THEN 
+		RAISE EXCEPTION ''column not found in geometry_columns table'';
+		RETURN ''f'';
+	END IF;
+
+	
+	-- Remove ref from geometry_columns table
+	EXECUTE ''delete from geometry_columns where f_table_schema = '' ||
+		quote_literal(real_schema) || '' and f_table_name = '' ||
+		quote_literal(table_name)  || '' and f_geometry_column = '' ||
+		quote_literal(column_name);
+
+	-- Remove table column
+	EXECUTE ''ALTER TABLE '' || quote_ident(real_schema) || ''.'' ||
+		quote_ident(table_name) || '' DROP COLUMN '' ||
+		quote_ident(column_name);
+
+
+	RETURN real_schema || ''.'' || table_name || ''.'' || column_name ||'' effectively removed.'';
+	
+END;
+'
+LANGUAGE 'plpgsql' WITH (isstrict);
+
+
 
 
 END TRANSACTION;

@@ -12,6 +12,17 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.8  2003/12/30 10:40:21  strk
+-- For all versions:
+-- Updated fix_geometry_columns to use a more readable format in queries.
+--
+-- For PG >= 73:
+-- Updated fix_geometry_columns() to consider schema when fixing attrelid and
+-- varattnum, also changed empty value to 'public' string for records with
+-- an invalid schema specification.
+-- Updated DropGeometryColumn to actually issue the
+-- ALTER TABLE DROP COLUMN query.
+--
 -- Revision 1.7  2003/12/23 09:00:12  strk
 -- AddGeometryColumn, DropGeometryColum moved to version-specific scripts.
 -- Schema support enabled for version 73 and 74.
@@ -216,9 +227,31 @@ CREATE FUNCTION fix_geometry_columns() RETURNS text
 AS 
 '
 BEGIN
-	EXECUTE ''update geometry_columns set attrelid = (select pg_class.oid AS attrelid from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name), varattnum = (select pg_attribute.attnum from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name)'';
-	EXECUTE ''update geometry_columns set f_table_schema = '''''''' where f_table_schema not in ( select nspname::varchar from pg_namespace )'';
+	-- it would be better to find the correct schema name
+	UPDATE geometry_columns SET f_table_schema = ''public''
+		WHERE f_table_schema is NULL or f_table_schema NOT IN
+		( SELECT nspname::varchar FROM pg_namespace );
+
+	UPDATE geometry_columns SET attrelid = (
+		SELECT c.oid 
+		FROM pg_class c, pg_attribute a, pg_namespace n
+		WHERE c.relname = geometry_columns.f_table_name::name
+		AND a.attrelid = c.oid AND c.relnamespace = n.oid
+		AND a.attname = geometry_columns.f_geometry_column::name
+		AND n.nspname = geometry_columns.f_table_schema::name
+		);
+	
+	UPDATE geometry_columns SET varattnum = (
+		SELECT a.attnum
+		FROM pg_class c, pg_attribute a, pg_namespace n
+		WHERE n.nspname = geometry_columns.f_table_schema::name
+		AND c.relname = geometry_columns.f_table_name::name
+		AND a.attname = geometry_columns.f_geometry_column::name
+		AND a.attrelid = c.oid AND c.relnamespace = n.oid
+		);
+
 	RETURN ''geometry_columns table is now linked to the system tables'';
+
 END;
 '
 LANGUAGE 'plpgsql' ;
@@ -411,27 +444,17 @@ BEGIN
 	END IF;
 
 	
-	-- ensure the geometry column does not have a NOT NULL attribute
-	query = ''update pg_attribute set attnotnull = false from pg_class, pg_namespace where pg_attribute.attrelid = pg_class.oid and pg_class.relname = '' || quote_literal(table_name) ||'' and pg_attribute.attname = '' || quote_literal(column_name) || '' and pg_class.relnamespace = pg_namespace.oid and pg_namespace.nspname = '' || quote_literal(real_schema);
-	EXECUTE query;
-
-	-- remove ref from geometry_columns table
+	-- Remove ref from geometry_columns table
 	EXECUTE ''delete from geometry_columns where f_table_schema = '' ||
 		quote_literal(real_schema) || '' and f_table_name = '' ||
 		quote_literal(table_name)  || '' and f_geometry_column = '' ||
 		quote_literal(column_name);
 
-	-- update the given table/column so that it it all NULLS
-
-	EXECUTE ''UPDATE '' || quote_ident(real_schema) || ''.'' ||
-		quote_ident(table_name) || '' set '' || quote_ident(column_name) ||
-		'' = NULL'';
-
-	-- add = NULL constraint to given table/column
-
+	-- Remove table column
 	EXECUTE ''ALTER TABLE '' || quote_ident(real_schema) || ''.'' ||
-		quote_ident(table_name) || '' ADD CHECK ('' || 
-		quote_ident(column_name) || '' IS NULL)'';
+		quote_ident(table_name) || '' DROP COLUMN '' ||
+		quote_ident(column_name);
+
 
 	RETURN real_schema || ''.'' || table_name || ''.'' || column_name ||'' effectively removed.'';
 	
