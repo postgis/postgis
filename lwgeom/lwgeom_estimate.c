@@ -18,7 +18,6 @@
 #include <ctype.h>
 
 #include "postgres.h"
-#include "utils/geo_decls.h"
 #include "executor/spi.h"
 #include "fmgr.h"
 #include "parser/parsetree.h"
@@ -54,7 +53,7 @@
  * SDFACTOR.
  */
 #define USE_STANDARD_DEVIATION 1
-#define SDFACTOR 2
+#define SDFACTOR 3.25
 
 typedef struct GEOM_STATS_T
 {
@@ -1705,12 +1704,12 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	 */
 	for (i=0; i<notnull_cnt; i++)
 	{
-		BOX *box;
+		BOX2DFLOAT4 *box;
 		int x_idx_min, x_idx_max, x;
 		int y_idx_min, y_idx_max, y;
 		int numcells=0;
 
-		box = (BOX *)sampleboxes[i];
+		box = (BOX2DFLOAT4 *)sampleboxes[i];
 		if ( ! box ) continue; // hard deviant..
 
 		/* give backend a chance of interrupting us */
@@ -1718,27 +1717,27 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 
 #if DEBUG_GEOMETRY_STATS > 2
 		elog(NOTICE, " feat %d box is %f %f, %f %f",
-				i, box->high.x, box->high.y,
-				box->low.x, box->low.y);
+				i, box->xmax, box->ymax,
+				box->xmin, box->ymin);
 #endif
 							
 		/* Find first overlapping column */
-		x_idx_min = (box->low.x-geomstats->xmin) / geow * cols;
+		x_idx_min = (box->xmin-geomstats->xmin) / geow * cols;
 		if (x_idx_min <0) x_idx_min = 0;
 		if (x_idx_min >= cols) x_idx_min = cols-1;
 
 		/* Find first overlapping row */
-		y_idx_min = (box->low.y-geomstats->ymin) / geoh * rows;
+		y_idx_min = (box->ymin-geomstats->ymin) / geoh * rows;
 		if (y_idx_min <0) y_idx_min = 0;
 		if (y_idx_min >= rows) y_idx_min = rows-1;
 
 		/* Find last overlapping column */
-		x_idx_max = (box->high.x-geomstats->xmin) / geow * cols;
+		x_idx_max = (box->xmax-geomstats->xmin) / geow * cols;
 		if (x_idx_max <0) x_idx_max = 0;
 		if (x_idx_max >= cols ) x_idx_max = cols-1;
 
 		/* Find last overlapping row */
-		y_idx_max = (box->high.y-geomstats->ymin) / geoh * rows;
+		y_idx_max = (box->ymax-geomstats->ymin) / geoh * rows;
 		if (y_idx_max <0) y_idx_max = 0;
 		if (y_idx_max >= rows) y_idx_max = rows-1;
 #if DEBUG_GEOMETRY_STATS > 2
@@ -2026,6 +2025,9 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.18  2004/12/21 12:21:45  mcayland
+ * Fixed bug in pass 4 where sample boxes were referred as BOXs and not BOX2DFLOAT4. Also increased SDFACTOR to 3.25
+ *
  * Revision 1.17  2004/12/17 18:00:33  strk
  * LWGEOM_gist_joinsel defined for all PG versions
  *
