@@ -2,6 +2,10 @@
 
 /*
 * $Log$
+* Revision 1.12  2003/10/24 14:29:53  strk
+* GEOSGetCoordinates() reverted to getCoordinates() call so to be compatible
+* to all type of geometries (not only LineStrings)
+*
 * Revision 1.11  2003/10/24 08:28:50  strk
 * Fixed memory leak in GEOSGetCoordinates(), made sure that GEOS2POSTGIS
 * free type string even in case of collapsed geoms. Made sure that geomunion
@@ -1082,15 +1086,13 @@ POINT3D  *GEOSGetCoordinate(Geometry *g1)
 
 //must free the result when done
 // result is an array length g1->getNumCoordinates()
-// only call on linestrings or linearrings
 POINT3D  *GEOSGetCoordinates(Geometry *g1)
 {
 	try {
 		int numPoints = g1->getNumPoints();
 		POINT3D *result = (POINT3D*) malloc (sizeof(POINT3D) * numPoints );
 		int t;
-		LineString *ls = (LineString *)g1;
-		const CoordinateList *cl = ls->getCoordinatesRO();
+		CoordinateList *cl = g1->getCoordinates();
 		Coordinate		c;
 
 		for (t=0;t<numPoints;t++)
@@ -1102,6 +1104,7 @@ POINT3D  *GEOSGetCoordinates(Geometry *g1)
 			result[t].z = c.z;
 		}
 
+		delete cl;
 		return result;
 	}
 	catch (GEOSException *ge)
