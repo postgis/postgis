@@ -11,6 +11,11 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.20  2004/03/15 17:07:05  strk
+ * Added calls to vacuum_delay_point() to give backend a chance of
+ * interrupting geometry stats computation.
+ * Set default DEBUG_GEOMETRY_STATS to 0.
+ *
  * Revision 1.19  2004/03/09 00:21:02  strk
  * Removed useless code blocks in histogram builder
  *
@@ -138,7 +143,7 @@
  */
 #define STATISTIC_KIND_GEOMETRY 100
 
-#define DEBUG_GEOMETRY_STATS 1
+#define DEBUG_GEOMETRY_STATS 0
 
 /*
  * Default geometry selectivity factor
@@ -1042,7 +1047,7 @@ Datum postgis_gist_sel(PG_FUNCTION_ARGS)
 	if ( ! stats_tuple )
 	{
 #if DEBUG_GEOMETRY_STATS
-		elog(NOTICE, " SearchSysCache returned NULL - ret.def.");
+		elog(NOTICE, " No statistics, returning default estimate");
 #endif
 		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_SEL);
 	}
@@ -1352,6 +1357,9 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		}
 		notnull_cnt++;
 
+		/* give backend a chance of interrupting us */
+		vacuum_delay_point();
+
 		geom = (GEOMETRY *) PG_DETOAST_DATUM(datum);
 		box = convert_box3d_to_box(&(geom->bvol));
 		sampleboxes[i] = box;
@@ -1361,7 +1369,6 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		// TODO: ask if we need geom or bvol size for stawidth
 		total_width += geom->size;
 		total_boxes_area += (box->high.x-box->low.x)*(box->high.y-box->low.y);
-
 	}
 
 	if ( ! notnull_cnt ) {
@@ -1420,6 +1427,9 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 
 		if ( sampleboxes[i] == NULL ) continue;
 		box = (BOX *)sampleboxes[i];
+
+		/* give backend a chance of interrupting us */
+		vacuum_delay_point();
 
 #if DEBUG_GEOMETRY_STATS > 2
 		elog(NOTICE, " feat %d box is %f %f, %f %f",
