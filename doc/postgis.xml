@@ -2712,6 +2712,34 @@ FROM geometry_table;</literallayout>
 						</para>
 					</listitem>
 				</varlistentry>
+				<varlistentry>
+					<term>postgis_lib_version()</term>
+					<listitem>
+						<para>Returns the version number of the PostGIS library.
+						</para>
+					</listitem>
+				</varlistentry>
+				<varlistentry>
+					<term>postgis_geos_version()</term>
+					<listitem>
+						<para>Returns the version number of the GEOS library, or NULL if GEOS support is not enabled.
+						</para>
+					</listitem>
+				</varlistentry>
+				<varlistentry>
+					<term>postgis_proj_version()</term>
+					<listitem>
+						<para>Returns the version number of the PROJ4 library, or NULL if PROJ4 support is not enabled.
+						</para>
+					</listitem>
+				</varlistentry>
+				<varlistentry>
+					<term>postgis_uses_stats()</term>
+					<listitem>
+						<para>Returns true if STATS usage has been enabled, false otherwise.
+						</para>
+					</listitem>
+				</varlistentry>
 				<varlistentry> 
 					<term>summary(geometry)</term> 
 					<listitem> 

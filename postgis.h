@@ -11,6 +11,11 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.49  2004/07/28 13:37:43  strk
+ * Added postgis_uses_stats and postgis_scripts_version.
+ * Experimented with PIP short-circuit in within/contains functions.
+ * Documented new version functions.
+ *
  * Revision 1.48  2004/07/23 21:24:33  strk
  * Added postgis_proj_version()
  *
@@ -424,7 +429,7 @@ void	translate_points(POINT3D *pt, int npoints,double x_off, double y_off, doubl
 int	size_subobject (char *sub_obj, int type);
 GEOMETRY	*add_to_geometry(GEOMETRY *geom,int sub_obj_size, char *sub_obj, int type);
 LINE3D	*make_line(int	npoints, POINT3D	*pts, int	*size);
-
+//bool point_within_polygon(POINT3D *, POLYGON3D *);
 
 void  swap_char(char *a, char*b);
 void	flip_endian_double(char	*dd);
@@ -675,6 +680,7 @@ Datum simplify(PG_FUNCTION_ARGS);
 Datum line_interpolate_point(PG_FUNCTION_ARGS);
 
 Datum fluffType(PG_FUNCTION_ARGS);
+Datum postgis_uses_stats(PG_FUNCTION_ARGS);
 Datum postgis_lib_version(PG_FUNCTION_ARGS);
 Datum postgis_geos_version(PG_FUNCTION_ARGS);
 Datum postgis_proj_version(PG_FUNCTION_ARGS);

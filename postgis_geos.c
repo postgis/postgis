@@ -10,6 +10,11 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.37  2004/07/28 13:37:43  strk
+ * Added postgis_uses_stats and postgis_scripts_version.
+ * Experimented with PIP short-circuit in within/contains functions.
+ * Documented new version functions.
+ *
  * Revision 1.36  2004/07/27 17:51:50  strk
  * short-circuit test for 'contains'
  *
@@ -924,15 +929,17 @@ Datum overlaps(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(contains);
 Datum contains(PG_FUNCTION_ARGS)
 {
-	GEOMETRY		*geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	GEOMETRY		*geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-
-
+	GEOMETRY *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GEOMETRY *geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	Geometry *g1,*g2;
 	bool result;
+	//POINT3D *testpoint;
+	//POLYGON3D *poly;
+
+	errorIfGeometryCollection(geom1,geom2);
 
 	/*
-	 * short-circuit: if geom2 bounding box is not completely inside
+	 * short-circuit 1: if geom2 bounding box is not completely inside
 	 * geom1 bounding box we can prematurely return FALSE
 	 */
 	if ( geom2->bvol.LLB.x < geom1->bvol.LLB.x ) PG_RETURN_BOOL(FALSE);
@@ -940,7 +947,32 @@ Datum contains(PG_FUNCTION_ARGS)
 	if ( geom2->bvol.LLB.y < geom1->bvol.LLB.y ) PG_RETURN_BOOL(FALSE);
 	if ( geom2->bvol.URT.y > geom1->bvol.URT.y ) PG_RETURN_BOOL(FALSE);
 
-	errorIfGeometryCollection(geom1,geom2);
+	/*
+	 * short-circuit 2: if geom1 is a polygon and any corner of
+	 * geom2 bounding box is not 'within' geom1 we can prematurely
+	 * return FALSE
+	 */
+	//if ( geom1->type == POLYGONTYPE )
+	//{
+	//	poly = (POLYGON3D *)geom1->objData;
+	//	testpoint.x = geom2->bvol.LLB.x;
+	//	testpoint.y = geom2->bvol.LLB.y;
+	//	if ( !point_within_polygon(&testpoint, poly) )
+	//		PG_RETURN_BOOL(FALSE);
+	//	testpoint.x = geom2->bvol.LLB.x;
+	//	testpoint.y = geom2->bvol.URT.y;
+	//	if ( !point_within_polygon(&testpoint, poly) )
+	//		PG_RETURN_BOOL(FALSE);
+	//	testpoint.x = geom2->bvol.URT.x;
+	//	testpoint.y = geom2->bvol.URT.y;
+	//	if ( !point_within_polygon(&testpoint, poly) )
+	//		PG_RETURN_BOOL(FALSE);
+	//	testpoint.x = geom2->bvol.URT.x;
+	//	testpoint.y = geom2->bvol.LLB.y;
+	//	if ( !point_within_polygon(&testpoint, poly) )
+	//		PG_RETURN_BOOL(FALSE);
+	//}
+
 	initGEOS(MAXIMUM_ALIGNOF);
 
 	g1 = 	POSTGIS2GEOS(geom1 );
@@ -971,10 +1003,14 @@ Datum within(PG_FUNCTION_ARGS)
 	GEOMETRY *geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	Geometry *g1,*g2;
 	bool result;
+	//POINT3D testpoint;
+	//POLYGON3D *poly;
+
+	errorIfGeometryCollection(geom1,geom2);
 
 
 	/*
-	 * short-circuit: if geom1 bounding box is not completely inside
+	 * short-circuit 1: if geom1 bounding box is not completely inside
 	 * geom2 bounding box we can prematurely return FALSE
 	 */
 	if ( geom1->bvol.LLB.x < geom2->bvol.LLB.x ) PG_RETURN_BOOL(FALSE);
@@ -982,7 +1018,33 @@ Datum within(PG_FUNCTION_ARGS)
 	if ( geom1->bvol.LLB.y < geom2->bvol.LLB.y ) PG_RETURN_BOOL(FALSE);
 	if ( geom1->bvol.URT.y > geom2->bvol.URT.y ) PG_RETURN_BOOL(FALSE);
 
-	errorIfGeometryCollection(geom1,geom2);
+#if 1
+	/*
+	 * short-circuit 2: if geom2 is a polygon and any corner of
+	 * geom1 bounding box is not 'within' geom2 we can prematurely
+	 * return FALSE
+	 */
+	//if ( geom2->type == POLYGONTYPE )
+	//{
+	//	poly = (POLYGON3D *)geom2->objData;
+	//	testpoint.x = geom1->bvol.LLB.x;
+	//	testpoint.y = geom1->bvol.LLB.y;
+	//	if ( !point_within_polygon(&testpoint, poly) )
+	//		PG_RETURN_BOOL(FALSE);
+	//	testpoint.x = geom1->bvol.LLB.x;
+	//	testpoint.y = geom1->bvol.URT.y;
+	//	if ( !point_within_polygon(&testpoint, poly) )
+	//		PG_RETURN_BOOL(FALSE);
+	//	testpoint.x = geom1->bvol.URT.x;
+	//	testpoint.y = geom1->bvol.URT.y;
+	//	if ( !point_within_polygon(&testpoint, poly) )
+	//		PG_RETURN_BOOL(FALSE);
+	//	testpoint.x = geom1->bvol.URT.x;
+	//	testpoint.y = geom1->bvol.LLB.y;
+	//	if ( !point_within_polygon(&testpoint, poly) )
+	//		PG_RETURN_BOOL(FALSE);
+	//}
+#endif
 
 	initGEOS(MAXIMUM_ALIGNOF);
 	g1 = 	POSTGIS2GEOS(geom1 );

@@ -11,6 +11,11 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.38  2004/07/28 13:37:43  strk
+ * Added postgis_uses_stats and postgis_scripts_version.
+ * Experimented with PIP short-circuit in within/contains functions.
+ * Documented new version functions.
+ *
  * Revision 1.37  2004/07/22 16:20:10  strk
  * Added postgis_lib_version() and postgis_geos_version()
  *
@@ -752,6 +757,31 @@ bool line_truely_inside( LINE3D *line, BOX3D 	*box)
 {
 	return	linestring_inside_box(&line->points[0], line->npoints, box);
 }
+
+// is point inside polygon surface ?
+//bool point_within_polygon(POINT3D *point, POLYGON3D *poly)
+//{
+//	POINT3D *ring;
+//	int ringpoints;
+//	int ri; // ring index
+//
+//	// if point is outside the shell return false.
+//	ring = (POINT3D *) ( (char *)&(poly->npoints[poly->nrings] )  );
+//	ringpoints = poly->npoints[0];
+//	if ( !PIP(point, ring, ringpoints) ) return FALSE;
+//
+//	// if point is inside any hole return false.
+//	//ring += ringpoints*sizeof(POINT3D);
+//	//for (ri=1; ri<poly->nrings; ri++)
+//	//{
+//	//	ringpoints = poly->npoints[ri];
+//	//	if ( PIP(point, ring, ringpoints) ) return FALSE;
+//	//	ring += ringpoints*sizeof(POINT3D);
+//	//}
+//
+//	// return true
+//	return TRUE;
+//}
 
 //is anything in geom1 really inside the the bvol (2d only) defined in geom2?
 // send each object to its proper handler
@@ -3145,4 +3175,14 @@ Datum postgis_lib_version(PG_FUNCTION_ARGS)
 {
 	char *result = pstrdup(POSTGIS_LIB_VERSION);
 	PG_RETURN_CSTRING(result);
+}
+
+PG_FUNCTION_INFO_V1(postgis_uses_stats);
+Datum postgis_uses_stats(PG_FUNCTION_ARGS)
+{
+#ifdef USE_STATS
+	PG_RETURN_BOOL(TRUE);
+#else
+	PG_RETURN_BOOL(FALSE);
+#endif
 }
