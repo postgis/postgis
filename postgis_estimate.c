@@ -11,6 +11,12 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.16  2004/03/04 09:44:57  strk
+ * The selectivity estimator does add the full value of each cell it overlaps,
+ * regardless of the actual overlapping area. Final gain is not applied
+ * (formerly 1 / minimun between average feature cells occupation and
+ *  search_box cells occupation)
+ *
  * Revision 1.15  2004/03/03 21:59:48  strk
  * added check to keep selectivity value in the range of validity (suggested by m.cave)
  *
@@ -1073,6 +1079,7 @@ Datum postgis_gist_sel(PG_FUNCTION_ARGS)
 		double value;
 		float overlapping_cells;
 		float avg_feat_cells;
+		double gain;
 
 		box = search_box;
 		geow = geomstats->xmax-geomstats->xmin;
@@ -1142,6 +1149,7 @@ Datum postgis_gist_sel(PG_FUNCTION_ARGS)
 			for (x=x_idx_min; x<=x_idx_max; x++)
 			{
 				double val;
+				double gain;
 
 				val = geomstats->value[x+y*bps];
 
@@ -1155,7 +1163,17 @@ Datum postgis_gist_sel(PG_FUNCTION_ARGS)
 				intersect_y = min(box->high.y, geomstats->ymin + (y+1) * geoh / bps) - max(box->low.y, geomstats->ymin+ y * geoh / bps) ;
 				
 				AOI = intersect_x*intersect_y;
-				val *= AOI/cell_area;
+				//gain = AOI/cell_area;
+				gain = 1;
+
+#if DEBUG_GEOMETRY_STATS > 1
+				elog(NOTICE, " [%d,%d] cell val %.15f",
+						x, y, val);
+				elog(NOTICE, " [%d,%d] gain %.15f",
+						x, y, gain);
+#endif
+
+				val *= gain;
 
 #if DEBUG_GEOMETRY_STATS > 1
 				elog(NOTICE, " [%d,%d] adding %.15f to value",
@@ -1206,7 +1224,18 @@ Datum postgis_gist_sel(PG_FUNCTION_ARGS)
 	elog(NOTICE, " search_box overlaps %f cells", overlapping_cells);
 	elog(NOTICE, " avg feat overlaps %f cells", avg_feat_cells);
 #endif
-		selectivity = (float8) value / (float8) min(overlapping_cells, avg_feat_cells);
+
+		gain = 1;
+
+
+		//selectivity = (float8) value / (float8) min(overlapping_cells, avg_feat_cells);
+		selectivity = value*gain;
+
+#if DEBUG_GEOMETRY_STATS
+		elog(NOTICE, " SUM(ov_histo_cells)=%f", value);
+		elog(NOTICE, " gain=%f", gain);
+		elog(NOTICE, " selectivity=%f", selectivity);
+#endif
 
 		/* prevent rounding overflows */
 		if (selectivity > 1.0) selectivity = 1.0;
@@ -1258,6 +1287,8 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	double total_boxes_area=0;
 	int total_boxes_cells=0;
 	double cell_area;
+	double cell_width;
+	double cell_height;
 	double geow, geoh; // width and height of histogram
 	int bps; // boxesPerSide  (alias)
 	int boxesPerSide;
@@ -1344,7 +1375,14 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	geow = geomstats->xmax-geomstats->xmin;
 	geoh = geomstats->ymax-geomstats->ymin;
 	bps = geomstats->boxesPerSide;
-	cell_area = (geow*geoh) / (bps*bps);
+	cell_width = geow/bps;
+	cell_height = geoh/bps;
+	cell_area = cell_width*cell_height;
+
+#if DEBUG_GEOMETRY_STATS > 2
+	elog(NOTICE, "cell_width: %f", cell_width);
+	elog(NOTICE, "cell_height: %f", cell_height);
+#endif
 	
 
 	/*
@@ -1404,13 +1442,29 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		 */
 		for (y=y_idx_min; y<=y_idx_max; y++)
 		{
+			double cell_xmax = geomstats->xmin+(x+1)*cell_width;
+			double cell_xmin = geomstats->xmin+x*cell_width;
+			double cell_ymax = geomstats->ymin+(y+1)*cell_height;
+			double cell_ymin = geomstats->ymin+y*cell_height;
+
 			for (x=x_idx_min; x<=x_idx_max; x++)
 			{
-				intersect_x = min(box->high.x, geomstats->xmin + (x+1) * geow / bps) -
-					max(box->low.x, geomstats->xmin + x * geow / bps );
-				intersect_y = min(box->high.y, geomstats->ymin + (y+1) * geoh / bps) -
-					max(box->low.y, geomstats->ymin+ y * geoh / bps) ;
+				cell_xmax = geomstats->xmin+(x+1)*cell_width;
+				cell_xmin = geomstats->xmin+x*cell_width;
+
+				intersect_x = min(box->high.x, cell_xmax) -
+					max(box->low.x, cell_xmin);
+				intersect_y = min(box->high.y, cell_ymax) -
+					max(box->low.y, cell_ymin);
+
+#if DEBUG_GEOMETRY_STATS > 2
+elog(NOTICE, "r=%d c=%d intx=%f inty=%f",
+		y, x, intersect_x, intersect_y);
+#endif
+
 				AOI = intersect_x*intersect_y;
+
+
 				if ( ! AOI ) // must be a point
 				{
 			geomstats->value[x+y*bps] += 1;
