@@ -14,9 +14,10 @@
 #include <stdio.h>
 //TO get byte order
 #include <sys/types.h>
-#include <netinet/in.h>
-#include <netinet/in_systm.h>
-#include <netinet/ip.h>
+#include <sys/param.h>
+//#include <netinet/in.h>
+//#include <netinet/in_systm.h>
+//#include <netinet/ip.h>
 
 #include "liblwgeom.h"
 
@@ -557,6 +558,10 @@ unparse_WKB(byte* serialized, allocator alloc, freeor free, unsigned int endian)
 
 /******************************************************************
  * $Log$
+ * Revision 1.13  2004/10/25 12:27:33  strk
+ * Removed useless network type includes,
+ * Added param.h include for BYTE_ORDER defines under win32.
+ *
  * Revision 1.12  2004/10/21 19:48:34  strk
  * Stricter syntax fixes. Reported by Sébastien NICAISE <snicaise@iciatechnologies.com>
  *
