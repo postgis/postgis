@@ -1,6 +1,8 @@
 PostGIS 1.0.0
 ??????
 	- BUGFIX dumper 64bit
+	- BUGFIX in multi()
+	- early return [when noop] from multi()
 
 PostGIS 1.0.0RC5
 2005/03/25
