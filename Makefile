@@ -1,10 +1,8 @@
 # Configuration Directives
-#---------------------------------------------------------------
-# Set USE_PG72 to 1 for PostgreSQL version >= 7.2
-USE_PG72=0
+
 #---------------------------------------------------------------
 # Set USE_PROJ to 1 for Proj4 reprojection support
-USE_PROJ=1
+USE_PROJ=0
 
 #---------------------------------------------------------------
 subdir=contrib/postgis
@@ -23,6 +21,17 @@ else
 	libdir := ${PWD}
 endif
 
+#---------------------------------------------------------------
+# Test the version string and select the correct GiST index
+# bindings.
+ifneq ($(findstring 7.1,$(VERSION)),)
+	USE_PG72=0
+else
+	USE_PG72=1
+endif
+
+#---------------------------------------------------------------
+# Regression test temporary database.
 TEST_DB=geom_regress
 
 #---------------------------------------------------------------
@@ -43,7 +52,7 @@ override DLLLIBS := $(BE_DLLLIBS) $(DLLLIBS)
 ifeq ($(USE_PG72),1)
 	OBJS=postgis_debug.o postgis_ops.o postgis_fn.o postgis_inout.o postgis_proj.o postgis_chip.o postgis_transform.o postgis_gist_72.o postgis_estimate.o
 else
-	OBJS=postgis_debug.o postgis_ops.o postgis_fn.o postgis_inout.o postgis_proj.o postgis_chip.o postgis_transform.o postgis_gist.o 
+	OBJS=postgis_debug.o postgis_ops.o postgis_fn.o postgis_inout.o postgis_proj.o postgis_chip.o postgis_transform.o postgis_gist.o
 endif
 
 # Add libraries that libpq depends (or might depend) on into the
