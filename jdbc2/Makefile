@@ -79,7 +79,8 @@ SRC= $(SRCDIR)/examples/Test.java \
 		$(SRCDIR)/org/postgis/PGgeometry.java \
 		$(SRCDIR)/org/postgis/PointComposedGeom.java \
 		$(SRCDIR)/org/postgis/Point.java \
-		$(SRCDIR)/org/postgis/Polygon.java 
+		$(SRCDIR)/org/postgis/Polygon.java \
+		$(SRCDIR)/org/postgis/Version.java 
 
 STUBDIR=stubs
 STUBBUILD=stubbin/
