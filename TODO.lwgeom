@@ -1,6 +1,6 @@
 - AsBinary(geometry, XDR|NDR)
 
-- 4d support in dumper.
+- 4d and WKB support in loader.
 
 - Endiannes honouring in dumper (currently does not specify and does not
   flip when required).
