@@ -2,6 +2,9 @@
 
 /*
 * $Log$
+* Revision 1.14  2003/10/29 13:58:28  strk
+* Added GEOSGetCentroid() function
+*
 * Revision 1.13  2003/10/24 21:33:21  strk
 * Added GEOSGeometryTypeId(Geometry *) wrapper function.
 * Added GEOSGetCoordinates_Polygon(Polygon *) as an experimental optimized
@@ -147,6 +150,8 @@ extern "C" char GEOSequals(Geometry *g1, Geometry*g2);
 extern "C" char GEOSisRing(Geometry *g1);
 
 extern "C" Geometry *GEOSpointonSurface(Geometry *g1);
+
+extern "C" Geometry *GEOSGetCentroid(Geometry *g1);
 
 extern "C" void NOTICE_MESSAGE(char *msg);
 
@@ -1341,6 +1346,23 @@ const Geometry *GEOSGetInteriorRingN(Geometry *g1,int n)
 	try{
 		Polygon *p = (Polygon *) g1;
 		return p->getInteriorRingN(n);
+	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		return NULL;
+	}
+
+	catch(...)
+	{
+		return NULL;
+	}
+}
+
+Geometry *GEOSGetCentroid(Geometry *g)
+{
+	try{
+		return g->getCentroid();
 	}
 	catch (GEOSException *ge)
 	{
