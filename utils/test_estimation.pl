@@ -1,6 +1,12 @@
 #!/usr/bin/perl -w
 
 # $Id$
+# 
+# TODO:
+#
+#	accept a finer boxesPerSide specification
+#	eg. 1-3 or 1-32/5
+#
 
 use Pg;
 
@@ -10,10 +16,9 @@ sub usage
 {
 	local($me) = `basename $0`;
 	chop($me);
-	print STDERR "$me [-v] [-bps <max_bps>] <table> <col>\n";
+	print STDERR "$me [-v] [-vacuum] [-bps <bps>[,<bps>]] <table> <col>\n";
 }
 
-$BPS=32;
 $TABLE='';
 $COLUMN='';
 for ($i=0; $i<@ARGV; $i++)
@@ -26,8 +31,8 @@ for ($i=0; $i<@ARGV; $i++)
 		}
 		elsif ( $ARGV[$i] eq '-bps' )
 		{
-			$BPS=int(abs($ARGV[++$i]));
-			push(@bps_list, $BPS);
+			$bps_spec = $ARGV[++$i];
+			push(@bps_list, split(',', $bps_spec));
 		}
 		elsif ( $ARGV[$i] eq '-vacuum' )
 		{
@@ -133,7 +138,6 @@ print "Extent: ".print_extent(\%ext)."\n" if ($VERBOSE);
 print "  bps\test\treal\tdelta\tmatch_factor\n";
 print "----------------------------------------------------------\n";
 
-#for ($bps=1; $bps<=$BPS; $bps*=2)
 for ($i=0; $i<@bps_list; $i++)
 {
 	$bps=$bps_list[$i];
@@ -260,6 +264,9 @@ sub test_extent
 
 # 
 # $Log$
+# Revision 1.7  2004/03/06 18:02:48  strk
+# Comma-separated bps values accepted
+#
 # Revision 1.6  2004/03/05 21:06:04  strk
 # Added -vacuum switch
 #
