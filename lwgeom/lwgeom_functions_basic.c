@@ -1572,7 +1572,6 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 	PG_LWGEOM *pglwgeom1, *pglwgeom2, *result;
 	LWGEOM *lwgeoms[2], *outlwg;
 	unsigned int type1, type2, outtype;
-	size_t size;
 
 	// return null if both geoms are null
 	if ( (geom1_ptr == NULL) && (geom2_ptr == NULL) )
@@ -1624,20 +1623,9 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 		outtype, lwgeoms[0]->SRID,
 		NULL, 2, lwgeoms);
 
-	size = lwgeom_serialize_size(outlwg);
-	//lwnotice("lwgeom_serialize_size returned %d", size);
-	result = palloc(size+4);
-	result->size = (size+4);
-	lwgeom_serialize_buf(outlwg, SERIALIZED_FORM(result), &size);
-	if ( size != result->size-4 )
-	{
-		lwerror("lwgeom_serialize size:%d, lwgeom_serialize_size:%d",
-			size, result->size-4);
-		PG_RETURN_NULL();
-	}
+	result = pglwgeom_serialize(outlwg);
 
 	PG_RETURN_POINTER(result);
-
 }
 
 /*
@@ -1781,7 +1769,6 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 	//PG_LWGEOM **geoms;
 	PG_LWGEOM *result=NULL;
 	LWGEOM **lwgeoms, *outlwg;
-	size_t size;
 	unsigned int outtype;
 	int i;
 	int SRID=-1;
@@ -1883,17 +1870,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 		outtype, SRID,
 		NULL, nelems, lwgeoms);
 
-	size = lwgeom_serialize_size(outlwg);
-	//lwnotice("lwgeom_serialize_size returned %d", size);
-	result = palloc(size+4);
-	result->size = (size+4);
-	lwgeom_serialize_buf(outlwg, SERIALIZED_FORM(result), &size);
-	if ( size != result->size-4 )
-	{
-		lwerror("lwgeom_serialize size:%d, lwgeom_serialize_size:%d",
-			size, result->size-4);
-		PG_RETURN_NULL();
-	}
+	result = pglwgeom_serialize(outlwg);
 
 	PG_RETURN_POINTER(result);
 }
@@ -1908,7 +1885,6 @@ Datum LWGEOM_line_from_mpoint(PG_FUNCTION_ARGS)
 	PG_LWGEOM *ingeom, *result;
 	LWLINE *lwline;
 	LWMPOINT *mpoint;
-	size_t size;
 
 #ifdef DEBUG
 	elog(NOTICE, "LWGEOM_makeline called");
@@ -1931,16 +1907,7 @@ Datum LWGEOM_line_from_mpoint(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	size = lwline_serialize_size(lwline);
-	result = palloc(size+4);
-	result->size = (size+4);
-	lwline_serialize_buf(lwline, SERIALIZED_FORM(result), &size);
-	if ( size != result->size-4 )
-	{
-		lwerror("lwgeom_serialize size:%d, lwgeom_serialize_size:%d",
-			size, result->size-4);
-		PG_RETURN_NULL();
-	}
+	result = pglwgeom_serialize((LWGEOM *)lwline);
 
 	PG_RETURN_POINTER(result);
 }
@@ -1959,7 +1926,6 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 	PG_LWGEOM *result=NULL;
 	LWPOINT **lwpoints;
 	LWGEOM *outlwg;
-	size_t size;
 	unsigned int npoints;
 	int i;
 	size_t offset;
@@ -2052,17 +2018,7 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 
 	outlwg = (LWGEOM *)lwline_from_lwpointarray(SRID, npoints, lwpoints);
 
-	size = lwgeom_serialize_size(outlwg);
-	//lwnotice("lwgeom_serialize_size returned %d", size);
-	result = palloc(size+4);
-	result->size = (size+4);
-	lwgeom_serialize_buf(outlwg, SERIALIZED_FORM(result), &size);
-	if ( size != result->size-4 )
-	{
-		lwerror("lwgeom_serialize size:%d, lwgeom_serialize_size:%d",
-			size, result->size-4);
-		PG_RETURN_NULL();
-	}
+	result = pglwgeom_serialize(outlwg);
 
 	PG_RETURN_POINTER(result);
 }
@@ -2319,7 +2275,6 @@ Datum LWGEOM_segmentize2d(PG_FUNCTION_ARGS)
 	PG_LWGEOM *outgeom, *ingeom;
 	double dist;
 	LWGEOM *inlwgeom, *outlwgeom;
-	size_t size, retsize;
 
 	ingeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	dist = PG_GETARG_FLOAT8(1);
@@ -2331,16 +2286,7 @@ Datum LWGEOM_segmentize2d(PG_FUNCTION_ARGS)
 
 	inlwgeom = lwgeom_deserialize(SERIALIZED_FORM(ingeom));
 	outlwgeom = lwgeom_segmentize2d(inlwgeom, dist);
-
-	size = lwgeom_serialize_size(outlwgeom);
-	outgeom = palloc(size+4);
-	outgeom->size = size+4;
-	lwgeom_serialize_buf(outlwgeom, SERIALIZED_FORM(outgeom), &retsize);
-
-	if ( size != retsize )
-	{
-		lwerror ("lwgeom_serialize_buf returned size(%d) != lwgeom_serialize_size (%d)", retsize, size);
-	}
+	outgeom = pglwgeom_serialize(outlwgeom);
 
 	PG_RETURN_POINTER(outgeom);
 }
@@ -2381,7 +2327,6 @@ Datum LWGEOM_noop(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *in, *out;
 	LWGEOM *lwgeom;
-	size_t size, retsize;
 
 	in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
@@ -2389,15 +2334,7 @@ Datum LWGEOM_noop(PG_FUNCTION_ARGS)
 
 	lwnotice("Deserialized: %s", lwgeom_summary(lwgeom, 0));
 
-	size = lwgeom_serialize_size(lwgeom);
-	out = palloc(size+4);
-	out->size = size+4;
-	lwgeom_serialize_buf(lwgeom, SERIALIZED_FORM(out), &retsize);
-
-	if ( size != retsize )
-	{
-		lwerror ("lwgeom_serialize_buf returned size(%d) != lwgeom_serialize_size (%d)", retsize, size);
-	}
+	out = pglwgeom_serialize(lwgeom);
 
 	PG_RETURN_POINTER(out);
 }
@@ -2478,7 +2415,6 @@ Datum LWGEOM_makepoint(PG_FUNCTION_ARGS)
 	double x,y,z,m;
 	LWPOINT *point;
 	PG_LWGEOM *result;
-	size_t size;
 
 	x = PG_GETARG_FLOAT8(0);
 	y = PG_GETARG_FLOAT8(1);
@@ -2499,10 +2435,7 @@ Datum LWGEOM_makepoint(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	size = lwpoint_serialize_size(point);
-	result = (PG_LWGEOM *)palloc(size+4);
-	result->size = (size+4);
-	lwpoint_serialize_buf(point, SERIALIZED_FORM(result), NULL);
+	result = pglwgeom_serialize((LWGEOM *)point);
 
 	PG_RETURN_POINTER(result);
 }
@@ -2513,18 +2446,13 @@ Datum LWGEOM_makepoint3dm(PG_FUNCTION_ARGS)
 	double x,y,m;
 	LWPOINT *point;
 	PG_LWGEOM *result;
-	size_t size;
 
 	x = PG_GETARG_FLOAT8(0);
 	y = PG_GETARG_FLOAT8(1);
 	m = PG_GETARG_FLOAT8(2);
 
 	point = make_lwpoint3dm(-1, x, y, m);
-
-	size = lwpoint_serialize_size(point);
-	result = (PG_LWGEOM *)palloc(size+4);
-	result->size = (size+4);
-	lwpoint_serialize_buf(point, SERIALIZED_FORM(result), NULL);
+	result = pglwgeom_serialize((LWGEOM *)point);
 
 	PG_RETURN_POINTER(result);
 }
