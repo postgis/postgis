@@ -315,6 +315,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 		lwgeom = lwgeom_deserialize(srl);
 		lwgeom_dropBBOX(lwgeom);
 		lwgeom->bbox = lwgeom_compute_bbox(lwgeom);
+		lwgeom->SRID = result_srid;
 		result = pglwgeom_serialize(lwgeom);
 	}
 	else
