@@ -2,7 +2,7 @@
  * Geometric types for Postgis
  *
  * point3d, line3d, and polygon3d are the base types.
- * 
+ *
  * Everything is stored in a geometry3d, which is just a conglomeration
  * of the base types (and a little bit of other info).
  */
@@ -34,7 +34,7 @@ typedef struct
 	double	f;	//flattening
 	double	e;	//eccentricity (first)
 	double	e_sq; //eccentricity (first), squared
-	char		name[20]; //name of ellipse 
+	char		name[20]; //name of ellipse
 } SPHEROID;
 
 
@@ -78,7 +78,7 @@ typedef struct
 typedef struct
 {
 	int32 	npoints; // how many points in the line
-	int32 	junk;	   // double-word alignment	
+	int32 	junk;	   // double-word alignment
 	POINT3D  	points[1]; // array of actual points
 } LINE3D;
 
@@ -93,7 +93,7 @@ typedef struct
  *  where the 1st 4 byes of filler[] is npoints[0] the next 4 bytes
  *  are npoints[1], etc...
  *
- *  points[0] is either at filler[ 4 * nrings] 
+ *  points[0] is either at filler[ 4 * nrings]
  *            or at filler [ 4* nrings + 4]
  *		  Which ever one is double-word-aligned
  *-------------------------------------------------------------------*/
@@ -101,7 +101,7 @@ typedef struct
 {
 	int32 	nrings;	 // how many rings in this polygon
 	int32		npoints[1]; //how many points in each ring
-	/* could be 4 byes of filler here to make sure points[] is 
+	/* could be 4 byes of filler here to make sure points[] is
          double-word aligned*/
 	POINT3D  	points[1]; // array of actual points
 } POLYGON3D;
@@ -112,18 +112,18 @@ typedef struct
  *
  *		Geometries are collections of simple geometry types
  *		(point, line, polygon).
- *	
+ *
  *		A Point is a geometry with a single point in it.
  *		A MultiPoint is a geometry with a list of 'point' in it.
  *		A Line is a geometry with a single line in it.
  *		A MultiLine is a geometry with a list of 'line' in it.
  *		A Polygon is a geometry with a single polygon in it.
  *		A MultiPolygon is a geometry with a list of 'polygon' in it.
- *		A Collection is a geometry with a (mixed) list of 
+ *		A Collection is a geometry with a (mixed) list of
  *				point, line, and polygon.
  *
  * 		The bvol is the bounding volume of all the subobjects.
- *		
+ *
  *		is3d is true if the original data was sent in a 3d data.
  *		2d data is 3d data with z=0.0.
  *
@@ -147,23 +147,23 @@ typedef struct
  *
  *	In reality the structure looks like:
  *		int32 	size;
- *		int32		type;	
+ *		int32		type;
  * 		bool		is3d;
  *		<there is almost certainly some type of padding here>
- *		BOX3D		bvol;	
+ *		BOX3D		bvol;
  *		int32		nobjs;
  *		char		data[...];
  *
  * 	AND:
  *		&objType[0] = &data[0]
- *		&objType[1] = &data[4] 
+ *		&objType[1] = &data[4]
  *			...
  *		&obgOffset[0] = &data[ 4* nobjs]
  *		&obgOffset[1] = &data[ 4* nobjs + 4]
  *			...
  *		&objData[0] = &GEOMETRY + objOffset[0]  //always double-word aligned
  *		&objData[1] = &GEOMETRY + objOffset[1]  //always double-word aligned
- *			...	
+ *			...
  *
  * 	ALL GEOMETRY COLUMNS IN YOUR DATABASE SHOULD BE OF THIS TYPE
  *-------------------------------------------------------------------*/
@@ -194,7 +194,7 @@ typedef struct chiptag
 
 	BOX3D	 bvol;
 	int	 SRID;
-	char	 future[4];	
+	char	 future[4];
 	float  factor;           //usually 1.0.  Integer values are multiplied by this number
                               //to get the actual height value (for sub-meter accuracy
 					//height data).
@@ -207,10 +207,10 @@ typedef struct chiptag
 								//     0x80 = new value
 								//     0x7F = nodata
 
-		// this is provided for convenience, it should be set to 
+		// this is provided for convenience, it should be set to
 		//  sizeof(chip) bytes into the struct because the serialized form is:
 		//    <header><data>
-		// NULL when serialized	
+		// NULL when serialized
 	void  *data;	 	// data[0] = bottm left, data[width] = 1st pixel, 2nd row (uncompressed)
 } CHIP;
 
@@ -218,11 +218,11 @@ typedef struct chiptag
 //for GiST indexing
 
 //This is the BOX type from geo_decls.h
-// Its included here for the GiST index. 
+// Its included here for the GiST index.
 //  Originally, we used BOXONLYTYPE geometries as our keys, but after
 //   Oleg and teodor (http://www.sai.msu.su/~megera/postgres/gist/)
 //   have released a more generic rtree/gist index for geo_decls.h polygon
-//   type.  I am using a slightly modified version of this, so 
+//   type.  I am using a slightly modified version of this, so
 //   it will be easier to maintain.
 //
 //   Their indexing is based on the BOX object, so we include it here.
@@ -230,10 +230,10 @@ typedef struct chiptag
 
 // ONLY FOR INDEXING
 typedef struct geomkey {
-	int32 size; /* size in varlena terms */ 
+	int32 size; /* size in varlena terms */
 	BOX	key;
 	int32	SRID; //spatial reference system identifier
-} GEOMETRYKEY; 
+} GEOMETRYKEY;
 
 
 // WKB structure  -- exactly the same as TEXT
@@ -243,7 +243,7 @@ typedef struct Well_known_bin {
 } WellKnownBinary;
 
 
-//prototypes 
+//prototypes
 
      int isspace(int c);
 
@@ -496,12 +496,12 @@ Datum transform_geom(PG_FUNCTION_ARGS);
 Datum max_distance(PG_FUNCTION_ARGS);
 Datum collector(PG_FUNCTION_ARGS);
 
-
+Datum WKBtoBYTEA(PG_FUNCTION_ARGS);
 
 
 /*--------------------------------------------------------------------
  * Useful floating point utilities and constants.
- * from postgres geo_decls.c 
+ * from postgres geo_decls.c
  * EPSILON modified to be more "double" friendly
  *-------------------------------------------------------------------*/
 
@@ -509,7 +509,7 @@ Datum collector(PG_FUNCTION_ARGS);
 
 // from contrib/cube/cube.c
 
-#define max(a,b)		((a) >	(b) ? (a) : (b)) 
+#define max(a,b)		((a) >	(b) ? (a) : (b))
 #define min(a,b)		((a) <= (b) ? (a) : (b))
 #define abs(a)			((a) <	(0) ? (-a) : (a))
 

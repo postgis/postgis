@@ -416,7 +416,10 @@ CREATE FUNCTION asbinary(GEOMETRY,TEXT)
    AS '@MODULE_FILENAME@','asbinary_specify'
 	     LANGUAGE 'c' WITH (iscachable,isstrict);
 
-
+CREATE FUNCTION bytea(WKB)
+   RETURNS bytea
+   AS '@MODULE_FILENAME@','WKBtoBYTEA'
+	     LANGUAGE 'c' WITH (iscachable,isstrict);
 ---- Debug (info) functions
 
 

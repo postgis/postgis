@@ -2,11 +2,11 @@
  postGIS - geometric types for postgres
 
  This software is copyrighted (2001).
- 
+
  This is free software; you can redistribute it and/or modify
  it under the GNU General Public Licence.  See the file "COPYING".
 
- More Info?  See the documentation, join the mailing list 
+ More Info?  See the documentation, join the mailing list
  (postgis@yahoogroups.com), or see the web page
  (http://postgis.refractions.net).
 
@@ -36,7 +36,7 @@
 
 
 //Norman Vine found this problem for compiling under cygwin
-//  it defines BYTE_ORDER and LITTLE_ENDIAN 
+//  it defines BYTE_ORDER and LITTLE_ENDIAN
 
 #ifdef __CYGWIN__
 #include <sys/param.h>       // FOR ENDIAN DEFINES
@@ -147,8 +147,8 @@ void swap(double *d1, double *d2)
 //  1. scan ahead looking for "("
 //  2. find "," until hit a ")"
 //  3. return number of points found
-//	
-// NOTE: doesnt actually parse the points, so if the 
+//
+// NOTE: doesnt actually parse the points, so if the
 //       str contains an invalid geometry, this could give
 // 	   back the wrong answer.
 //
@@ -167,14 +167,14 @@ int	numb_points_in_list(char	*str)
 	//look ahead for the "("
 
 	str = strchr(str,'(') ;
-	
+
 	if ( (str == NULL) || (str[1] == 0) )  // str[0] = '(';
 	{
 		return 0;  //either didnt find "(" or its at the end of the string
 	}
 
 	keep_going = TRUE;
-	while (keep_going) 
+	while (keep_going)
 	{
 		str=strpbrk(str,",)");  // look for a "," or ")"
 		keep_going = (str != NULL);
@@ -188,7 +188,7 @@ int	numb_points_in_list(char	*str)
 			else	//str[0] = ","
 			{
 				points_found++;
-				str++; //move 1 char forward	
+				str++; //move 1 char forward
 			}
 		}
 	}
@@ -196,7 +196,7 @@ int	numb_points_in_list(char	*str)
 }
 
 //Actually parse the points in a list
-//  "(1 2 3, 4 5 6),(7 8, 9 10, 11 12 13)" => 
+//  "(1 2 3, 4 5 6),(7 8, 9 10, 11 12 13)" =>
 //			points[0] = {1,2,3} and points[1] = {4,5,6}
 //		(2nd list is not parsed)
 //
@@ -223,7 +223,7 @@ bool	parse_points_in_list(char	*str, POINT3D	*points, int32	max_points, bool *is
 	//look ahead for the "("
 
 	str = strchr(str,'(') ;
-	
+
 	if ( (str == NULL) || (str[1] == 0) )  // str[0] = '(';
 	{
 		return FALSE;  //either didnt find "(" or its at the end of the string
@@ -231,14 +231,14 @@ bool	parse_points_in_list(char	*str, POINT3D	*points, int32	max_points, bool *is
 	str++;  //move forward one char
 
 	keep_going = TRUE;
-	while (keep_going) 
+	while (keep_going)
 	{
 		//attempt to get the point
 	      	num_entities = sscanf(str,"%le %le %le",  &(points[numb_found].x),
 									      &(points[numb_found].y),
 								     	      &(points[numb_found].z));
 
-			if (num_entities !=3) 
+			if (num_entities !=3)
 			{
 				if (num_entities !=2 )
 				{
@@ -247,9 +247,9 @@ bool	parse_points_in_list(char	*str, POINT3D	*points, int32	max_points, bool *is
 				}
 				else
 				{
-					points[numb_found].z = 0.0; //2d (only found x,y - set z =0.0)	
+					points[numb_found].z = 0.0; //2d (only found x,y - set z =0.0)
 				}
-			}	
+			}
 			else
 			{
 				*is3d = TRUE; //found 3 entites (x,y,z)
@@ -263,12 +263,12 @@ bool	parse_points_in_list(char	*str, POINT3D	*points, int32	max_points, bool *is
 			str++;
 		keep_going =  ( (str != NULL) && (str[0] != ')' ) && (numb_found < max_points)  );
 	}
-	return TRUE; 
+	return TRUE;
 }
 
 
 //Actually parse the points in a list
-//  "(1 2 3, 4 5 6),(7 8, 9 10, 11 12 13)" => 
+//  "(1 2 3, 4 5 6),(7 8, 9 10, 11 12 13)" =>
 //			points[0] = {1,2,3} and points[1] = {4,5,6}
 //		(2nd list is not parsed)
 //
@@ -278,14 +278,14 @@ bool	parse_points_in_list(char	*str, POINT3D	*points, int32	max_points, bool *is
 //
 // returns true if everything parses okay, otherwise false
 //
-// THIS IS EXACTLY the same as parse_points_in_list(), but returns FALSE if 
+// THIS IS EXACTLY the same as parse_points_in_list(), but returns FALSE if
 // the number of points parsed is != max_points
 
 bool	parse_points_in_list_exact(char	*str, POINT3D	*points, int32	max_points, bool *is3d)
 {
 	bool	keep_going;
 	int	numb_found= 0;
-	
+
 	char	*end_of_double;
 
 	if ( (str == NULL) || (str[0] == 0)  || (max_points <0) || (points == NULL) )
@@ -299,7 +299,7 @@ bool	parse_points_in_list_exact(char	*str, POINT3D	*points, int32	max_points, bo
 	//look ahead for the "("
 
 	str = strchr(str,'(') ;
-	
+
 	if ( (str == NULL) || (str[1] == 0) )  // str[0] = '(';
 	{
 		return FALSE;  //either didnt find "(" or its at the end of the string
@@ -307,13 +307,13 @@ bool	parse_points_in_list_exact(char	*str, POINT3D	*points, int32	max_points, bo
 	str++;  //move forward one char
 
 	keep_going = TRUE;
-	while (keep_going) 
+	while (keep_going)
 	{
 		//attempt to get the point
 
 			//scanf is slow, so we use strtod()
 
-			
+
 			points[numb_found].x = strtod(str,&end_of_double);
 			if (end_of_double == str)
 			{
@@ -341,7 +341,7 @@ bool	parse_points_in_list_exact(char	*str, POINT3D	*points, int32	max_points, bo
 			str++;
 		keep_going =  ( (str != NULL) && (str[0] != ')' ) && (numb_found < max_points)  );
 	}
-	return (numb_found == max_points); 
+	return (numb_found == max_points);
 }
 
 
@@ -355,7 +355,7 @@ bool	parse_points_in_list_exact(char	*str, POINT3D	*points, int32	max_points, bo
 //				  for every ")", depth (nesting) decreases by 1
 // if find a "(" at depth 1, then there is a sub list
 //
-// example: 
+// example:
 //      "(((..),(..)),((..)))"
 //depth  12333223332112333210
 //        +           +         increase here
@@ -435,7 +435,7 @@ bool	points_per_sublist( char *str, int32 *npoints, int32 max_lists)
 			{
 				if (current_depth==2)
 				{
-					npoints[current_list] ++;	
+					npoints[current_list] ++;
 				}
 			}
 
@@ -515,11 +515,11 @@ BOX3D	*parse_box3d(char *str)
 		str++;
 //printf( "box3d_in gets '%s'\n",str);
 
-	if (strstr(str,"BOX3D") !=  str ) 
+	if (strstr(str,"BOX3D") !=  str )
 	{
 		 elog(ERROR,"BOX3D parser - doesnt start with BOX3D");
 		 pfree(bbox);
-		 return NULL;	
+		 return NULL;
 	}
 
 	if ((npoints = numb_points_in_list(str)) != 2)
@@ -537,8 +537,8 @@ BOX3D	*parse_box3d(char *str)
 		elog(ERROR,"box3d: couldnt parse: '%s'\n",str);
 		pfree(bbox);
 		return NULL;
-	}	
-	
+	}
+
 
 	//validate corners so LLB is mins of x,y,z and URT is maxs x,y,z
 	if (	bbox->LLB.x > bbox->URT.x)
@@ -547,7 +547,7 @@ BOX3D	*parse_box3d(char *str)
 	}
 	if (	bbox->LLB.y > bbox->URT.y)
 	{
-		swap ( &bbox->LLB.y , &bbox->URT.y ); 
+		swap ( &bbox->LLB.y , &bbox->URT.y );
 	}
 	if (	bbox->LLB.z > bbox->URT.z)
 	{
@@ -600,9 +600,9 @@ Datum box3d_out(PG_FUNCTION_ARGS)
 }
 
 /***************************************************************
- * these functions return the number of sub-objects inside a 
+ * these functions return the number of sub-objects inside a
  * sub-portion of a string.
- * 
+ *
  * LINESTRING(), POLYGON(), POINT() allways have 1 sub object
  *
  * MULTIPOLYGON() MULTILINESTRING() MULTIPOINT() will have a variable number of sub-parts
@@ -657,10 +657,10 @@ int objects_inside_multipolygon(char *str)
 //  result = sum of ( number of objects in each of the collection's sub-objects )
 //
 // EX:   'GEOMETRYCOLLECTION( POINT(1 2 3),
-//	POINT (4 5 6) ),  
-//	LINESTRING(3 4 5,1 2 3,5 6 0), 
-//	MULTILINESTRING((3 4 5,1 2 3,5 6 0)),  
-//	MULTIPOINT(1 2 3),  
+//	POINT (4 5 6) ),
+//	LINESTRING(3 4 5,1 2 3,5 6 0),
+//	MULTILINESTRING((3 4 5,1 2 3,5 6 0)),
+//	MULTIPOINT(1 2 3),
 //	MULTILINESTRING((3 4 5,1 2 3,5 6 0),(1 2 0,4 5 0,6 7 0,99 99 0)),
 //	MULTIPOLYGON ((  (3 4 5,1 2 3,5 6),(1 2, 4 5, 6 7)  ), ( (11 11, 22 22, 33 33),(44 44, 55 55, 66 66) ) )'
 //
@@ -674,7 +674,7 @@ int objects_inside_collection(char *str)
 	int		sub_size = 0;
 
 	//skip past the "geometrycollection" at begining of string
-	str += 18; 
+	str += 18;
 	if (strstr(str, "GEOMETRYCOLLECTION") != NULL)
 		return -1; // collection inside collection; bad boy!
 
@@ -688,7 +688,7 @@ int objects_inside_collection(char *str)
 		//scan for a letter  (all objs start with M, P, or L
 		str = strpbrk(str,"MPL"); //search for MULTI*, POLY*, POIN*
 		if (str != NULL)
-		{	
+		{
 			//object found
 			sub_size = objects_inside(str); //how many in this object
 			if (sub_size == -1)
@@ -733,7 +733,7 @@ int objects_inside(char *str)
 	if (((loc = strstr(str,"MULTIPOLYGON")) != NULL) && (loc < parenth) )
 		return objects_inside_multipolygon(str);
 
-	//base types 
+	//base types
 	if (((loc = strstr(str,"POINT")) != NULL) && (loc < parenth) )
 		return objects_inside_point(str);
 	if (((loc = strstr(str,"LINESTRING")) != NULL) && (loc < parenth) )
@@ -831,7 +831,7 @@ bool parse_objects_inside_multipoint(int32 *obj_size,char **objs, int32 *obj_typ
 		obj_types[*offset+t] = POINTTYPE;
 		obj_size[*offset+t] = sizeof(POINT3D);
 	}
-	
+
 	//actually do the parsing into a temporary list
 	result = parse_points_in_list_exact(str, pts , npoints, is3d);
 
@@ -878,7 +878,7 @@ bool parse_objects_inside_line(int32 *obj_size,char **objs, int32 *obj_types, in
 	}
 
 
-	
+
 							// -1 because object already has 1 point in it
 		objs[*offset] = palloc (sizeof(LINE3D) + sizeof(POINT3D)*(num_points-1) );
 		memset(objs[*offset], 0, sizeof(LINE3D) + sizeof(POINT3D)*(num_points-1)  ); // zero memory
@@ -902,7 +902,7 @@ bool parse_objects_inside_line(int32 *obj_size,char **objs, int32 *obj_types, in
 	}
 
 	if (add_point)
-	{	
+	{
 		memcpy( &(( (LINE3D*) objs[*offset]) ->points[1])   , &(( (LINE3D*) objs[*offset]) ->points[0])  , sizeof(POINT3D) );
 	}
 
@@ -932,7 +932,7 @@ bool parse_objects_inside_multiline(int32 *obj_size,char **objs, int32 *obj_type
 
 	if (num_lines ==0)
 		return TRUE;	//can be nothing
-	
+
 
 	if (*offset >= nobjs)
 		return FALSE;     //too many objs found
@@ -983,7 +983,7 @@ bool parse_objects_inside_polygon(int32 *obj_size,char **objs, int32 *obj_types,
 
 		//find out how many rings there are
 	num_rings = find_outer_list_length(str);
-	
+
 	if (num_rings <1)
 		return FALSE; // must have at least one ring
 
@@ -1005,7 +1005,7 @@ bool parse_objects_inside_polygon(int32 *obj_size,char **objs, int32 *obj_types,
 			return FALSE;
 		}
 	}
-	
+
 		//now we can allocate the structure
 
 
@@ -1029,7 +1029,7 @@ bool parse_objects_inside_polygon(int32 *obj_size,char **objs, int32 *obj_types,
 
 	polygon->nrings = num_rings;
 
-		pts = (POINT3D *)  &(polygon->npoints[num_rings]); //pts[] is just past the end of npoints[]	
+		pts = (POINT3D *)  &(polygon->npoints[num_rings]); //pts[] is just past the end of npoints[]
 
 			// make sure its double-word aligned
 
@@ -1044,11 +1044,11 @@ bool parse_objects_inside_polygon(int32 *obj_size,char **objs, int32 *obj_types,
 	{
 		//set num points in this obj
 		polygon->npoints[t] = npoints[t]; // set # pts in this ring
-		
+
 			//use exact because it will screw up otherwise
 //printf("about to parse the actual points in ring #%i with %i points:\n",t,npoints[t]);
-		result = parse_points_in_list_exact(str, 
-					&pts[points_offset], 
+		result = parse_points_in_list_exact(str,
+					&pts[points_offset],
 					npoints[t], is3d);
 //printf("	+done parsing points\n");
 
@@ -1059,10 +1059,10 @@ bool parse_objects_inside_polygon(int32 *obj_size,char **objs, int32 *obj_types,
 			pfree(npoints);
 			return FALSE;	//relay error
 		}
-		
+
 		//first and last point are the same
 		if (!  (FPeq(pts[points_offset].x , pts[points_offset + npoints[t]-1].x  )
-			 &&FPeq(pts[points_offset].y , pts[points_offset + npoints[t]-1].y   )  
+			 &&FPeq(pts[points_offset].y , pts[points_offset + npoints[t]-1].y   )
 			 &&FPeq(pts[points_offset].z , pts[points_offset + npoints[t]-1].z   )    )   )
 		{
 			elog(ERROR,"polygon has ring where first point != last point");
@@ -1105,7 +1105,7 @@ bool parse_objects_inside_multipolygon(int32 *obj_size,char **objs, int32 *obj_t
 		return FALSE;
 
 	if (num_polys ==0)
-		return TRUE;	//ask for nothing, get nothing	
+		return TRUE;	//ask for nothing, get nothing
 
 	if (*offset >= nobjs)
 		return FALSE;     //too many objs found
@@ -1179,7 +1179,7 @@ bool parse_objects(int32 *obj_size,char **objs,int32	*obj_types,int32 nobjs,char
 
 
 	return FALSE; //invalid
-	
+
 }
 
 
@@ -1198,7 +1198,7 @@ bool parse_objects_inside_collection(int32 *obj_size,char **objs, int32 *obj_typ
 		//scan for a letter
 		str = strpbrk(str,"MPL"); //search for MULTI*, POLY*, POIN*
 		if (str != NULL)
-		{	
+		{
 			//object found
 			result = parse_objects(obj_size,objs,obj_types,nobjs,str, offset, is3d);
 
@@ -1229,7 +1229,7 @@ BOX3D	*bbox_of_point(POINT3D *pt)
 	the_box->URT.x = pt->x;
 	the_box->URT.y = pt->y;
 	the_box->URT.z = pt->z;
-	
+
 	return the_box;
 }
 
@@ -1247,10 +1247,10 @@ BOX3D	*bbox_of_polygon(POLYGON3D *polygon)
 
 	if (numb_points <1)
 		return NULL;
-	
+
 	pts = (POINT3D *) ( (char *)&(polygon->npoints[polygon->nrings] )  );
 	pts = (POINT3D *) MAXALIGN(pts);
-	
+
 	the_box = bbox_of_point(&pts[0]);
 
 	for (i=1; i<numb_points;i++)
@@ -1367,7 +1367,7 @@ BOX3D	*bbox_of_geometry(GEOMETRY *geom)
 	//for each sub-object
 	for(i=0; i<geom->nobjs;i++)
 	{
-		obj = (char *) geom +offsets[i] ;  
+		obj = (char *) geom +offsets[i] ;
 
 
 		if (geom->objType[i] == POINTTYPE)
@@ -1394,13 +1394,13 @@ BOX3D	*bbox_of_geometry(GEOMETRY *geom)
 			result =union_box3d(a_box  ,result);
 			if (a_box != NULL)
 				pfree (a_box);
-		}	
+		}
 	}
 	return result;
 }
 
 
-//given wkt and SRID, return a geometry 
+//given wkt and SRID, return a geometry
 //actually we cheat, postgres will convert the string to a geometry for us...
 PG_FUNCTION_INFO_V1(geometry_from_text);
 Datum geometry_from_text(PG_FUNCTION_ARGS)
@@ -1431,7 +1431,7 @@ Datum geometry_from_text(PG_FUNCTION_ARGS)
 // 1. Find information on how many sub-object there are
 // 2. create a group of sub-object and populate them
 // 3. make a large structure & populate with all the above info.
-// 
+//
 //
 PG_FUNCTION_INFO_V1(geometry_in);
 Datum geometry_in(PG_FUNCTION_ARGS)
@@ -1462,7 +1462,7 @@ Datum geometry_in(PG_FUNCTION_ARGS)
 		str++;
 
 	//test to see if it starts with a SRID=
-	
+
 	SRID = -1;
 	scale = offx = offy = 0;
 
@@ -1482,15 +1482,15 @@ Datum geometry_in(PG_FUNCTION_ARGS)
 			str++;
 	}
 
-	if (strstr(str,"BOX3D") != NULL ) // bbox only 
+	if (strstr(str,"BOX3D") != NULL ) // bbox only
 	{
 
-			
+
 		mybox = parse_box3d(str);
 
 		if (mybox == NULL)
 			PG_RETURN_NULL() ;
-		
+
 		geometry = (GEOMETRY *) palloc(sizeof(GEOMETRY));
 		geometry->size = sizeof(GEOMETRY);
 		geometry->type = BBOXONLYTYPE;
@@ -1511,7 +1511,7 @@ Datum geometry_in(PG_FUNCTION_ARGS)
 		elog(ERROR,"couldnt parse objects in GEOMETRY (null string)\n");
 		PG_RETURN_NULL() ;
 	}
-	
+
 
 //printf("geometry_in got string ''\n");
 
@@ -1525,8 +1525,8 @@ Datum geometry_in(PG_FUNCTION_ARGS)
 //printf("geometry_in determins that there are %i sub-objects\n",nobjs);
 
 	//allocate enough space for info structures
-	
-	
+
+
 	objs = palloc(sizeof( char *) * nobjs);
 	memset(objs, 0, sizeof( char *) * nobjs);
 
@@ -1590,13 +1590,13 @@ Datum geometry_in(PG_FUNCTION_ARGS)
 	}
 
 		//size = object size + space for object type & offset array and possible double-word boundary stuff
-	entire_size = entire_size + sizeof(int32) *nobjs*2 + nobjs*4; 
+	entire_size = entire_size + sizeof(int32) *nobjs*2 + nobjs*4;
 	geometry = (GEOMETRY *) palloc (entire_size);
 
 	geometry->size = entire_size;
 
 	//set collection type.  Need to differentiate between
- 	//  geometrycollection and (say) multipoint 
+ 	//  geometrycollection and (say) multipoint
 
 	if (   strstr(str, "GEOMETRYCOLLECTION") != NULL  )
 		geometry->type = COLLECTIONTYPE;
@@ -1628,7 +1628,7 @@ Datum geometry_in(PG_FUNCTION_ARGS)
 		next_loc += sizeof(int32) * 2* nobjs;
 
 		next_loc = MAXALIGN(next_loc);
-		
+
 
 
 		//where is the offsets array
@@ -1665,7 +1665,7 @@ Datum geometry_in(PG_FUNCTION_ARGS)
 		memcpy( &geometry->bvol, the_bbox, sizeof(BOX3D) );
 		pfree(the_bbox);
 	}
-	
+
 
 //printf("returning from geometry_in, nobjs = %i\n", nobjs);
 
@@ -1679,7 +1679,7 @@ Datum geometry_in(PG_FUNCTION_ARGS)
 
 PG_FUNCTION_INFO_V1(srid_geom);
 Datum srid_geom(PG_FUNCTION_ARGS)
-{ 
+{
 	GEOMETRY		   *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	PG_RETURN_INT32(geom1->SRID);
@@ -1709,7 +1709,7 @@ Datum geometry_out(PG_FUNCTION_ARGS)
 		pfree(wkt);
 
 		PG_RETURN_CSTRING(result);
-		
+
 }
 
 //Take internal rep of geometry, output string
@@ -1725,7 +1725,7 @@ Datum astext_geometry(PG_FUNCTION_ARGS)
 
 
 	len = strlen(wkt) + 5;
-		
+
 	result= palloc(len);
 	*((int *) result) = len;
 
@@ -1751,7 +1751,7 @@ char *geometry_to_text(GEOMETRY  *geometry)
 	POLYGON3D	*polygon;
 	LINE3D	*line;
 	POINT3D	*point;
-	
+
 	int		pt_off,size;
 	bool		briefmode= TRUE; // ie. dont print out "POINT3D(..)", just print out the ".." part
 	bool 		is3d;
@@ -1802,16 +1802,16 @@ char *geometry_to_text(GEOMETRY  *geometry)
 		briefmode = FALSE;
 		multi_obj = FALSE;
 	}
-	
+
 		//where are the objects?
 	offsets = (int32 *) ( ((char *) &(geometry->objType[0] ))+ sizeof(int32) * geometry->nobjs ) ;
 
 	is3d = geometry->is3d;
 
-	
+
 	for(t=0;t<geometry->nobjs; t++)  //for each object
 	{
-		obj = (char *) geometry +offsets[t] ;  
+		obj = (char *) geometry +offsets[t] ;
 
 		if (geometry->objType[t] == 1)   //POINT
 		{
@@ -1822,14 +1822,14 @@ char *geometry_to_text(GEOMETRY  *geometry)
 				result = repalloc(result, size );  //make memory bigger
 				if (!(first_sub_obj))
 				{
-					strcat(result,",");	
+					strcat(result,",");
 				}
 				else
 				{
 					first_sub_obj = FALSE;
 				}
 				print_point(result, point,is3d);  //render point
-				if (t == (geometry->nobjs-1)) 
+				if (t == (geometry->nobjs-1))
 					strcat(result,")");	// need to close object?
 			}
 			else
@@ -1853,7 +1853,7 @@ char *geometry_to_text(GEOMETRY  *geometry)
 				result = repalloc(result, size );
 				if (!(first_sub_obj))
 				{
-					strcat(result,",");	
+					strcat(result,",");
 				}
 				else
 				{
@@ -1889,24 +1889,24 @@ char *geometry_to_text(GEOMETRY  *geometry)
 					size += 7 + polygon->nrings *3+9;
 					result = repalloc(result, size );
 					strcat(result,"POLYGON");
-				}	
+				}
 				else
 				{
 					size += 7 + polygon->nrings *3;
 					result = repalloc(result, size );
 				}
-				
+
 				//need to separate objects?
 				if (!(first_sub_obj))
 				{
-					strcat(result,",");	
+					strcat(result,",");
 				}
 				else
 				{
 					first_sub_obj = FALSE;
 				}
 
-				
+
 				strcat(result,"(");	//begin poly
 
 				pt_off = 0;	//where is the first point in this ring?
@@ -1915,14 +1915,14 @@ char *geometry_to_text(GEOMETRY  *geometry)
 				pts = (POINT3D *) ( (char *)&(polygon->npoints[polygon->nrings] )  );
 				pts = (POINT3D *) MAXALIGN(pts);
 
-				
+
 				npts = 0;
-				for (u=0; u< polygon->nrings ; u++)  
+				for (u=0; u< polygon->nrings ; u++)
 					npts += polygon->npoints[u];
 
 				size += (MAX_DIGS_DOUBLE*3+3) * npts + 5* polygon->nrings;
 				result = repalloc(result, size );
-				
+
 				for (u=0; u< polygon->nrings ; u++)  //for each ring
 				{
 //printf("making ring #%i in obj, %i\n",u,t);
@@ -1945,7 +1945,7 @@ char *geometry_to_text(GEOMETRY  *geometry)
 		{
 			first_sub_obj = TRUE;
 		}
-		
+
 	}
 
 	if (!(briefmode))
@@ -1969,7 +1969,7 @@ Datum get_bbox_of_geometry(PG_FUNCTION_ARGS)
 	GEOMETRY  *geom = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	BOX3D	 *result;
-	
+
 	//make a copy of it
 
 	result = palloc ( sizeof(BOX3D) );
@@ -1986,7 +1986,7 @@ Datum get_geometry_of_bbox(PG_FUNCTION_ARGS)
 {
 	BOX3D  *bbox = (BOX3D *) PG_GETARG_POINTER(0);
 	GEOMETRY  *geom   ;
-	
+
 	//make a copy of it
 
 	geom = palloc ( sizeof(GEOMETRY) );
@@ -2009,7 +2009,7 @@ Datum get_geometry_of_bbox(PG_FUNCTION_ARGS)
 //*****************************************************************
 //WKB does not do any padding or alignment!
 
-// in general these function take 
+// in general these function take
 //	1. geometry item or list
 //	2. if the endian-ness should be changed (flipbytes)
 //	3. byte_order - 0=big endian (XDR) 1= little endian (NDR)
@@ -2029,18 +2029,18 @@ Datum get_geometry_of_bbox(PG_FUNCTION_ARGS)
 char	*wkb_point(POINT3D *pt,int32 *size, bool flipbytes, char byte_order, bool use3d)
 {
 	char		*result ;
-	uint32	type ; 
+	uint32	type ;
 	char		*c_type = (char *) &type;
 
 	if (use3d)
 	{
-		*size = 29; 
-		type = 32768 + 1;	
+		*size = 29;
+		type = 32768 + 1;
 	}
 	else
 	{
-		*size = 21; 
-		type =  1;	
+		*size = 21;
+		type =  1;
 	}
 
 	result = palloc (*size);
@@ -2082,19 +2082,19 @@ char	*wkb_multipoint(POINT3D *pt,int32 numb_points,int32 *size, bool flipbytes, 
 	int32		junk;
 	const int		sub_size_3d = 29;
 	const int		sub_size_2d = 21;
-	
+
 
 
 
 	if (use3d)
 	{
-		*size = 9 + sub_size_3d*numb_points; 
-		type = 32768 + 4;	
+		*size = 9 + sub_size_3d*numb_points;
+		type = 32768 + 4;
 	}
 	else
 	{
-		*size = 9 + sub_size_2d*numb_points; 
-		type =  4;	
+		*size = 9 + sub_size_2d*numb_points;
+		type =  4;
 	}
 
 
@@ -2122,13 +2122,13 @@ char	*wkb_multipoint(POINT3D *pt,int32 numb_points,int32 *size, bool flipbytes, 
 	for (t=0; t<numb_points;t++)  //for each point
 	{
 		if (use3d)
-			memcpy(&result[9+ t*sub_size_3d], 
-					wkb_point(&pt[t],&junk,  flipbytes,  byte_order,use3d)    
+			memcpy(&result[9+ t*sub_size_3d],
+					wkb_point(&pt[t],&junk,  flipbytes,  byte_order,use3d)
 						, sub_size_3d);
 		else
-			memcpy(&result[9+ t*sub_size_2d], 
-					wkb_point(&pt[t],&junk,  flipbytes,  byte_order,use3d) 
-							, sub_size_2d);	
+			memcpy(&result[9+ t*sub_size_2d],
+					wkb_point(&pt[t],&junk,  flipbytes,  byte_order,use3d)
+							, sub_size_2d);
 	}
 
 	return result;
@@ -2140,8 +2140,8 @@ char	*wkb_multipoint(POINT3D *pt,int32 numb_points,int32 *size, bool flipbytes, 
 char	*wkb_line(LINE3D *line,int32 *size, bool flipbytes, char byte_order,bool use3d, char *mem)
 {
 	char *result;
-	uint32	type ; 	
-	
+	uint32	type ;
+
 	char		*c_type = (char *) &type;
 	int		t;
 
@@ -2152,13 +2152,13 @@ char	*wkb_line(LINE3D *line,int32 *size, bool flipbytes, char byte_order,bool us
 
 	if (use3d)
 	{
-		*size = 9 + 24*numb_points; 
-		type = 32768 + 2;	
+		*size = 9 + 24*numb_points;
+		type = 32768 + 2;
 	}
 	else
 	{
-		*size = 9 + 16*numb_points; 
-		type =  2;	
+		*size = 9 + 16*numb_points;
+		type =  2;
 	}
 
 
@@ -2174,7 +2174,7 @@ char	*wkb_line(LINE3D *line,int32 *size, bool flipbytes, char byte_order,bool us
 	else
 		result = mem;
 
-	result[0] = byte_order;	
+	result[0] = byte_order;
 	result[1] = c_type[0];		//type
 	result[2] = c_type[1];
 	result[3] = c_type[2];
@@ -2225,7 +2225,7 @@ char	*wkb_multiline(LINE3D **lines,int32 *size, int numb_lines, bool flipbytes, 
 	char	*result,*new_spot;
 
 
-	uint32	type ; 	
+	uint32	type ;
 	char		*c_type = (char *) &type;
 
 	uint32	nlines = numb_lines;
@@ -2233,11 +2233,11 @@ char	*wkb_multiline(LINE3D **lines,int32 *size, int numb_lines, bool flipbytes, 
 
 	if (use3d)
 	{
-		type = 32768 + 5;	
+		type = 32768 + 5;
 	}
 	else
 	{
-		type =  5;	
+		type =  5;
 	}
 
 	if (flipbytes)
@@ -2251,15 +2251,15 @@ char	*wkb_multiline(LINE3D **lines,int32 *size, int numb_lines, bool flipbytes, 
 	{
 		total_points += lines[t]->npoints;
 	}
-	
+
 
 	if (use3d)
 	{
-		total_size = 9+ 9*numb_lines + 24*total_points;	
+		total_size = 9+ 9*numb_lines + 24*total_points;
 	}
 	else
 	{
-		total_size = 9 + 9*numb_lines + 16*total_points;		
+		total_size = 9 + 9*numb_lines + 16*total_points;
 	}
 
 	*size = total_size;
@@ -2268,7 +2268,7 @@ char	*wkb_multiline(LINE3D **lines,int32 *size, int numb_lines, bool flipbytes, 
 
 
 
-	result[0] = byte_order;	
+	result[0] = byte_order;
 	result[1] = c_type[0];		//type
 	result[2] = c_type[1];
 	result[3] = c_type[2];
@@ -2280,7 +2280,7 @@ char	*wkb_multiline(LINE3D **lines,int32 *size, int numb_lines, bool flipbytes, 
 	result[8] = c_nlines[3];
 
 
-	
+
 	new_spot = result + 9;//where to put the next linestring
 
 		for (t=0;t<numb_lines;t++)  //for each linestring
@@ -2296,7 +2296,7 @@ char	*wkb_multiline(LINE3D **lines,int32 *size, int numb_lines, bool flipbytes, 
 char	*wkb_polygon(POLYGON3D	*poly,int32 *size, bool flipbytes, char byte_order,bool use3d, char *mem)
 {
 	int	t, u,total_points =0;
-	uint32	type ; 	
+	uint32	type ;
 	char		*c_type = (char *) &type;
 	uint32	numRings,npoints;
 	char		*c_numRings = (char *) &numRings;
@@ -2312,7 +2312,7 @@ char	*wkb_polygon(POLYGON3D	*poly,int32 *size, bool flipbytes, char byte_order,b
 	pts = (POINT3D *) ( (char *)&(poly->npoints[poly->nrings] )  );
 	pts = (POINT3D *) MAXALIGN(pts);
 
-	
+
 
 	numRings = poly->nrings;
 
@@ -2338,16 +2338,16 @@ char	*wkb_polygon(POLYGON3D	*poly,int32 *size, bool flipbytes, char byte_order,b
 	else
 		result = mem;
 
-	
+
 	if (flipbytes)
 	{
 		flip_endian_int32((char *) &type);
 		flip_endian_int32((char *) &numRings);
 	}
 
-	
 
-	result[0] = byte_order;	
+
+	result[0] = byte_order;
 	result[1] = c_type[0];		//type
 	result[2] = c_type[1];
 	result[3] = c_type[2];
@@ -2358,7 +2358,7 @@ char	*wkb_polygon(POLYGON3D	*poly,int32 *size, bool flipbytes, char byte_order,b
 	result[7] = c_numRings[2];
 	result[8] = c_numRings[3];
 
-	
+
 	if (use3d)
 	{
 		offset = 9; //where the actual linearring structure is going
@@ -2400,7 +2400,7 @@ char	*wkb_polygon(POLYGON3D	*poly,int32 *size, bool flipbytes, char byte_order,b
 			result[offset+1] = c_npoints[1];
 			result[offset+2] = c_npoints[2];
 			result[offset+3] = c_npoints[3];
-				
+
 				for (u=0;u<poly->npoints[t];u++)
 				{
 					memcpy(&result[offset+4 + u*16], &pts[point_offset+u], 16);
@@ -2410,7 +2410,7 @@ char	*wkb_polygon(POLYGON3D	*poly,int32 *size, bool flipbytes, char byte_order,b
 						flip_endian_double((char *) &result[offset+4+u*16+8] );
 					}
 				}
-			
+
 			point_offset += poly->npoints[t];
 			offset +=  4 +  poly->npoints[t]* 16;
 		}
@@ -2439,11 +2439,11 @@ char	*wkb_multipolygon(POLYGON3D	**polys,int numb_polys,int32 *size, bool flipby
 
 	if (use3d)
 	{
-		type = 32768 + 6;	
+		type = 32768 + 6;
 	}
 	else
 	{
-		type =  6;	
+		type =  6;
 	}
 
 
@@ -2465,22 +2465,22 @@ char	*wkb_multipolygon(POLYGON3D	**polys,int numb_polys,int32 *size, bool flipby
 			total_points += polys[t]->npoints[u];
 		}
 	}
-	
+
 
 	if (use3d)
 	{
-		total_size =9 +  9*numb_polys + 24*total_points + 4*total_rings;	
+		total_size =9 +  9*numb_polys + 24*total_points + 4*total_rings;
 	}
 	else
 	{
-		total_size = 9 + 9*numb_polys + 16*total_points + 4*total_rings;		
+		total_size = 9 + 9*numb_polys + 16*total_points + 4*total_rings;
 	}
 
 	*size = total_size;
 
 	result = palloc (total_size);
 
-	result[0] = byte_order;	
+	result[0] = byte_order;
 	result[1] = c_type[0];		//type
 	result[2] = c_type[1];
 	result[3] = c_type[2];
@@ -2505,17 +2505,17 @@ char	*wkb_multipolygon(POLYGON3D	**polys,int numb_polys,int32 *size, bool flipby
 }
 
 
-//passes work off to the correct function 
+//passes work off to the correct function
 // then makes a simple postgres type - the first 4 bytes is an int32 with the size of the structure
 // and the rest is the wkb info.
-// 
+//
 // 3d-ness is determined by looking at the is3d flag in the GEOMETRY structure
 
 char	*to_wkb(GEOMETRY *geom, bool flip_endian)
 {
 	char	*result, *sub_result;
 	int 	size;
-	
+
 	if (geom->type == COLLECTIONTYPE)
 	{
 		sub_result=	to_wkb_collection(geom,  flip_endian, &size);
@@ -2534,7 +2534,7 @@ char	*to_wkb(GEOMETRY *geom, bool flip_endian)
 		memcpy(result+4, sub_result, size-4);
 		memcpy(result, &size, 4);
 		pfree(sub_result);
-		return result;	
+		return result;
 	}
 
 }
@@ -2547,7 +2547,7 @@ char *to_wkb_collection(GEOMETRY *geom, bool flip_endian, int32 *end_size)
 	int	*sizes;
 	int	t;
 	int32		*offsets1;
-	
+
 	int32		type;
 	int		total_size =0;
 	int		offset;
@@ -2598,11 +2598,11 @@ char *to_wkb_collection(GEOMETRY *geom, bool flip_endian, int32 *end_size)
 
 	for (t=0; t<=geom->nobjs; t++)	//for each part of the collections, do the work in another function
 	{
-		type = geom->objType[t];		
+		type = geom->objType[t];
 
 		if (type == POINTTYPE)
 		{
-			sub_result[t] = (  wkb_point((POINT3D *) ((char *) geom +offsets1[t] ) , 
+			sub_result[t] = (  wkb_point((POINT3D *) ((char *) geom +offsets1[t] ) ,
 					&sub_size, flip_endian, byte_order, geom->is3d));
 			sizes[t] = sub_size;
 			total_size += sub_size;
@@ -2611,7 +2611,7 @@ char *to_wkb_collection(GEOMETRY *geom, bool flip_endian, int32 *end_size)
 		if (type == LINETYPE)
 		{
 
-			sub_result[t] = (  wkb_line((LINE3D *) ((char *) geom +offsets1[t] ) , 
+			sub_result[t] = (  wkb_line((LINE3D *) ((char *) geom +offsets1[t] ) ,
 				 &sub_size, flip_endian, byte_order, geom->is3d, NULL));
 			sizes[t] = sub_size;
 			total_size += sub_size;
@@ -2619,7 +2619,7 @@ char *to_wkb_collection(GEOMETRY *geom, bool flip_endian, int32 *end_size)
 		if (type == POLYGONTYPE)
 		{
 
-			sub_result[t] = (  wkb_polygon((POLYGON3D *) ((char *) geom +offsets1[t] ) , 
+			sub_result[t] = (  wkb_polygon((POLYGON3D *) ((char *) geom +offsets1[t] ) ,
 				 &sub_size, flip_endian, byte_order, geom->is3d, NULL));
 			sizes[t] = sub_size;
 			total_size += sub_size;
@@ -2628,7 +2628,7 @@ char *to_wkb_collection(GEOMETRY *geom, bool flip_endian, int32 *end_size)
 
 	result = palloc( total_size +9); // need geometrycollection header
 
-	if (flip_endian)  
+	if (flip_endian)
 	{
 		flip_endian_int32((char *) &coll_type);
 		flip_endian_int32((char *) &nobj);
@@ -2636,7 +2636,7 @@ char *to_wkb_collection(GEOMETRY *geom, bool flip_endian, int32 *end_size)
 
 	//could use a memcpy, but...
 
-	result[0] = byte_order;	
+	result[0] = byte_order;
 	result[1] = c_type[0];		//type
 	result[2] = c_type[1];
 	result[3] = c_type[2];
@@ -2646,7 +2646,7 @@ char *to_wkb_collection(GEOMETRY *geom, bool flip_endian, int32 *end_size)
 	result[6] = c_nobj[1];
 	result[7] = c_nobj[2];
 	result[8] = c_nobj[3];
-	
+
 
 	offset =9;  //start after the geometrycollection header
 
@@ -2662,7 +2662,7 @@ char *to_wkb_collection(GEOMETRY *geom, bool flip_endian, int32 *end_size)
 	pfree( sub_result);
 	pfree( sizes);
 
-		//total size of the wkb 
+		//total size of the wkb
 	*end_size = total_size+9;
 
 
@@ -2675,7 +2675,7 @@ char *to_wkb_collection(GEOMETRY *geom, bool flip_endian, int32 *end_size)
 //convert geometry to WKB, flipping endian if appropriate
 //
 //  This handles POINT, LINESTRING, POLYGON, MULTIPOINT,MULTILINESTRING, MULTIPOLYGON
-//  
+//
 // GEOMETRYCOLLECTION is not handled by this function see to_wkb_collection()
 //
 // flip_endian - request an endian swap (relative to current machine)
@@ -2687,7 +2687,7 @@ char	*to_wkb_sub(GEOMETRY *geom, bool flip_endian, int32 *wkb_size)
 	char	byte_order;
 	char	*result = NULL;
 	int		t;
-	
+
 
 	int32		*offsets1;
 	LINE3D	**linelist;
@@ -2718,7 +2718,7 @@ char	*to_wkb_sub(GEOMETRY *geom, bool flip_endian, int32 *wkb_size)
 		}
 	}
 
-	// for searching in the geom struct	
+	// for searching in the geom struct
 	offsets1 = (int32 *) ( ((char *) &(geom->objType[0] ))+ sizeof(int32) * geom->nobjs ) ;
 
 
@@ -2727,21 +2727,21 @@ char	*to_wkb_sub(GEOMETRY *geom, bool flip_endian, int32 *wkb_size)
 	if (geom->type == POINTTYPE)
 	{
 
-		result = (  wkb_point((POINT3D *) ((char *) geom +offsets1[0] ) , 
+		result = (  wkb_point((POINT3D *) ((char *) geom +offsets1[0] ) ,
 					wkb_size, flip_endian, byte_order, geom->is3d));
 	}
 
 	if (geom->type == MULTIPOINTTYPE)
 	{
 
-		result = (  wkb_multipoint((POINT3D *) ((char *) geom +offsets1[0] ) , 
+		result = (  wkb_multipoint((POINT3D *) ((char *) geom +offsets1[0] ) ,
 				geom->nobjs,	wkb_size, flip_endian, byte_order, geom->is3d));
 	}
 
 	if (geom->type == LINETYPE)
 	{
 
-		result = (  wkb_line((LINE3D *) ((char *) geom +offsets1[0] ) , 
+		result = (  wkb_line((LINE3D *) ((char *) geom +offsets1[0] ) ,
 				 wkb_size, flip_endian, byte_order, geom->is3d, NULL));
 	}
 
@@ -2761,7 +2761,7 @@ char	*to_wkb_sub(GEOMETRY *geom, bool flip_endian, int32 *wkb_size)
 	if (geom->type == POLYGONTYPE)
 	{
 
-		result = (  wkb_polygon((POLYGON3D *) ((char *) geom +offsets1[0] ) , 
+		result = (  wkb_polygon((POLYGON3D *) ((char *) geom +offsets1[0] ) ,
 				 wkb_size, flip_endian, byte_order, geom->is3d, NULL));
 	}
 
@@ -2843,7 +2843,7 @@ Datum geometry_text(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 	input = &input[4];
-	PG_RETURN_POINTER ( 
+	PG_RETURN_POINTER (
 		DatumGetPointer(	DirectFunctionCall1(geometry_in,PointerGetDatum(input)))
 			);
 
@@ -2855,8 +2855,8 @@ Datum geometry_text(PG_FUNCTION_ARGS)
 // type should be POINTTYPE, LINETYPE or POLYGONTYPE
 // if you want to change the object's type to something else (ie GEOMETRYCOLLECTION), do
 // that after with geom->type = GEOMETRYCOLLECTION
-// this does  calculate the bvol 
-// 
+// this does  calculate the bvol
+//
 // sets the SRID and grid info to the given values
 //
 // do not call this with type = GEOMETRYCOLLECTION
@@ -2893,7 +2893,7 @@ GEOMETRY	*make_oneobj_geometry(int sub_obj_size, char *sub_obj, int type, bool i
 		return(NULL); //error
 	}
 
-	sub_obj_loc = (char *)  &result->objType[2]; 
+	sub_obj_loc = (char *)  &result->objType[2];
 	sub_obj_loc  = (char *) MAXALIGN(sub_obj_loc);
 
 	result->objType[1] = sub_obj_loc  - (char *) result; //result->objType[1] is where objOffset is
@@ -2923,7 +2923,7 @@ int	size_subobject (char *sub_obj, int type)
 	{
 		POLYGON3D	*poly = (POLYGON3D *) sub_obj;
 		int		t,points=0;
-		
+
 		for (t=0;t<poly->nrings;t++)
 		{
 			points += poly->npoints[t];
@@ -2939,7 +2939,7 @@ int	size_subobject (char *sub_obj, int type)
 
 
 //produce a new geometry, which is the old geometry with another object stuck in it
-// This will try to make the geometry's type is correct (move POINTTYPE to MULTIPOINTTYPE or 
+// This will try to make the geometry's type is correct (move POINTTYPE to MULTIPOINTTYPE or
 //   change to GEOMETRYCOLLECTION)
 //
 // this does NOT calculate the bvol - you should set it with "bbox_of_geometry"
@@ -3006,7 +3006,7 @@ GEOMETRY	*add_to_geometry(GEOMETRY *geom,int sub_obj_size, char *sub_obj, int ty
 
 	// now result geometry's type and sub-object's type is okay
 	// we have to setup the geometry
-	
+
 	result->nobjs = geom->nobjs+1;
 
 	for (t=0; t< geom->nobjs; t++)
@@ -3018,8 +3018,8 @@ GEOMETRY	*add_to_geometry(GEOMETRY *geom,int sub_obj_size, char *sub_obj, int ty
 //printf("result is at %p and is %i bytes long\n",result,result->size);
 //printf("geom is at %p and is %i bytes long\n",geom,geom->size);
 
-	old_offsets =& 	geom->objType[geom->nobjs] ; 
-	new_offsets =& 	result->objType[result->nobjs] ; 
+	old_offsets =& 	geom->objType[geom->nobjs] ;
+	new_offsets =& 	result->objType[result->nobjs] ;
 	next_offset = ( (char *) &new_offsets[result->nobjs] ) - ( (char *) result) ;
 	next_offset = MAXALIGN(next_offset);
 
@@ -3033,14 +3033,14 @@ GEOMETRY	*add_to_geometry(GEOMETRY *geom,int sub_obj_size, char *sub_obj, int ty
 
 		next_offset += size_obj;
 		next_offset = MAXALIGN(next_offset); // make sure its aligned properly
-	
+
 
 //printf("coping %i bytes from %p to %p\n", size_obj,( (char *) geom) + old_offsets[t],((char *) result)  + new_offsets[t]   );
 		memcpy( ((char *) result)  + new_offsets[t] , ( (char *) geom) + old_offsets[t], size_obj);
 //printf("copying done\n");
 
 	}
-	
+
 //printf("copying in new object\n");
 
 	//now, put in the new data
@@ -3064,8 +3064,8 @@ POLYGON3D	*make_polygon(int nrings, int *pts_per_ring, POINT3D *pts, int npoints
 		POINT3D	*inside_poly_pts;
 
 
-	*size = sizeof(POLYGON3D) + 4 /*align*/ 
-				+ 4*(nrings-1)/*npoints struct*/ 
+	*size = sizeof(POLYGON3D) + 4 /*align*/
+				+ 4*(nrings-1)/*npoints struct*/
 				+ sizeof(POINT3D) *(npoints-1) /*points struct*/ ;
 
  	result= (POLYGON3D *) palloc (*size);
@@ -3075,7 +3075,7 @@ POLYGON3D	*make_polygon(int nrings, int *pts_per_ring, POINT3D *pts, int npoints
 	for (t=0;t<nrings;t++)
 	{
 		result->npoints[t] = pts_per_ring[t];
-	}	
+	}
 
 	inside_poly_pts = (POINT3D *) ( (char *)&(result->npoints[result->nrings] )  );
 	inside_poly_pts = (POINT3D *) MAXALIGN(inside_poly_pts);
@@ -3108,7 +3108,7 @@ LINE3D	*make_line(int	npoints, POINT3D	*pts, int	*size)
 	return result;
 }
 
-//given one byte, populate result with two byte representing 
+//given one byte, populate result with two byte representing
 // the hex number
 // ie deparse_hex( 255, mystr)
 //		-> mystr[0] = 'F' and mystr[1] = 'F'
@@ -3117,7 +3117,7 @@ void deparse_hex(unsigned char str, unsigned char *result)
 {
 	int	input_high;
 	int  input_low;
-	
+
 	input_high = (str>>4);
 	input_low = (str & 0x0F);
 
@@ -3365,12 +3365,12 @@ Datum WKB_in(PG_FUNCTION_ARGS)
  	if (strspn(str,"0123456789ABCDEF") != strlen(str) )
 	{
 		elog(ERROR,"WKB_in parser - input contains bad characters.  Should only have '0123456789ABCDEF'!");
-		PG_RETURN_NULL();	
+		PG_RETURN_NULL();
 	}
 	size = (input_str_len/2) + 4;
 	result = (WellKnownBinary *) palloc(size);
 	result->size = size;
-	
+
 	for (t=0;t<input_str_len/2;t++)
 	{
 		((unsigned char *)result)[t+4] = parse_hex( &str[t*2]) ;
@@ -3396,9 +3396,20 @@ Datum WKB_out(PG_FUNCTION_ARGS)
 
 	for (t=0; t< (WKB->size -4); t++)
 	{
-		deparse_hex( ((unsigned char *) WKB)[4 + t], &result[t*2]);			
+		deparse_hex( ((unsigned char *) WKB)[4 + t], &result[t*2]);
 	}
-	PG_RETURN_CSTRING(result);	
+	PG_RETURN_CSTRING(result);
 }
 
 
+PG_FUNCTION_INFO_V1(WKBtoBYTEA);
+Datum WKBtoBYTEA(PG_FUNCTION_ARGS)
+{
+		WellKnownBinary		      *WKB = (WellKnownBinary *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+		bytea					  *result;
+
+		result = (bytea*) palloc(WKB->size);
+		memcpy(result,WKB, WKB->size);
+
+		PG_RETURN_POINTER(result);
+}
