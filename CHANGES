@@ -1,3 +1,12 @@
+PostGIS 0.6.2
+
+- New Things
+  - spatial_ref_sys.sql complete set of SRID and WKT
+  - generate postgis_undef.sql automatically at build
+- Bug fixes
+  - Memory problem in shp2pgsql
+  - Compilation problems with shp2pgsql
+
 PostGIS 0.6.1
 
 - Bug fixes
