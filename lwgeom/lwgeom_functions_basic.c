@@ -1716,12 +1716,18 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 			elog(ERROR, "Out of virtual memory");
 			PG_RETURN_NULL();
 		}
-#ifdef DEBUG
-		elog(NOTICE, " %d bytes allocated for array (%d of header, %lu of geom, elemtype: %ld)", nbytes, ARR_OVERHEAD(1), INTALIGN(geom->size), get_fn_expr_argtype(fcinfo->flinfo, 1));
-#endif
+
 		result->size = nbytes;
 		result->ndim = 1;
+/*
+ * TODO: PG73 require array to contain ->elemtype, but
+ * does not contain the argument types in FmgrInfo.
+ * We need a way to obtain 'geometry' type oid.
+ */
+
+#if USE_VERSION > 73
 		result->elemtype = get_fn_expr_argtype(fcinfo->flinfo, 1);
+#endif
 		memcpy(ARR_DIMS(result), &nelems, sizeof(int));
 		memcpy(ARR_LBOUND(result), &lbs, sizeof(int));
 		memcpy(ARR_DATA_PTR(result), geom, geom->size);
