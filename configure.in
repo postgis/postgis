@@ -18,12 +18,11 @@ if test -z "$GEOS_DIR"; then
 	GEOS_DIR=/usr/local
 fi
 AC_ARG_WITH(geos, 
-[  --with-geos=PATH        enable spatial predicate and operator support
-                          PATH is path to geos-config ],
+[  --with-geos[[=DIR]]         enable spatial predicate and operator support],
   if test "$with_geos" != "no"; then
     USE_GEOS=1
     if test "$with_geos" != "yes"; then
-       GEOS_DIR=`$with_geos --prefix`
+       GEOS_DIR=$with_geos
     else
        GEOS_DIR=`geos-config --prefix`
     fi
@@ -39,7 +38,7 @@ if test -z "$PROJ_DIR"; then
 	PROJ_DIR=/usr/local
 fi
 AC_ARG_WITH(proj, 
-[  --with-proj=DIR         enable reprojection support],
+[  --with-proj[[=DIR]]         enable reprojection support],
   if test "$with_proj" != "no"; then
     USE_PROJ=1
     if test "$with_proj" != "yes"; then
@@ -70,15 +69,15 @@ AC_PATH_PROG([YACC], [yacc])
 dnl Some final checks
 
 if test $USE_GEOS -gt 0 -a ! -e $GEOS_DIR/bin/geos-config; then
-	AC_MSG_ERROR(Can't find \$GEOS_DIR/bin/geos-config);
+	AC_MSG_ERROR(Can't find $GEOS_DIR/bin/geos-config);
 fi
 
 if test $USE_PROJ -gt 0 -a ! -e $PROJ_DIR/include/projects.h; then
-	AC_MSG_ERROR(Can't find \$PROJ_DIR/include/projects.h);
+	AC_MSG_ERROR(Can't find $PROJ_DIR/include/projects.h);
 fi
 
 if ! test -e $PGSQL_SRC/src/Makefile.global; then
-	AC_MSG_ERROR(Can't find \$PGSQL_SRC/src/Makefile.global);
+	AC_MSG_ERROR(Can't find $PGSQL_SRC/src/Makefile.global);
 fi
 
 if test -z "$FLEX"; then
