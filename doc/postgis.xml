@@ -383,7 +383,7 @@ db=#
 			 index on the attribute fields).</para>
 		  <para>The syntax for building a GiST index on a "geometry" column is as
 			 follows:</para><literallayout>CREATE INDEX [indexname] ON [tablename] USING GIST 
-    ( [geometryfield] GIS_GEOMETRY_OPS ) WITH ( ISLOSSY );</literallayout>
+    ( [geometryfield] GIST_GEOMETRY_OPS ) WITH ( ISLOSSY );</literallayout>
 		  <para>Building a spatial index is a computationally intensive exercise:
 			 on tables of around 1 million rows, on a 300MHz Solaris machine, we have found
 			 building a GiST index takes about 1 hour.</para>
