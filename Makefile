@@ -13,11 +13,16 @@ uninstall: liblwgeom-uninstall loaderdumper-uninstall
 clean: liblwgeom-clean loaderdumper-clean test-clean
 	@rm -f lwpostgis.sql
 
+distclean: clean
+	rm -Rf autom4te.cache
+	rm -f config.log config.cache config.status
+
 maintainer-clean:
 	@echo '------------------------------------------------------'
 	@echo 'This command is intended for maintainers to use; it'
 	@echo 'deletes files that may need special tools to rebuild.'
 	@echo '------------------------------------------------------'
+	$(MAKE) distclean
 	$(MAKE) -C lwgeom maintainer-clean
 
 test: liblwgeom
