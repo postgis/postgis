@@ -7,7 +7,7 @@
 -- Copyright 2001-2003 Refractions Research Inc.
 --
 -- This is free software; you can redistribute and/or modify it under
--- the terms of hte GNU General Public Licence. See the COPYING file.
+-- the terms of the GNU General Public Licence. See the COPYING file.
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -23,22 +23,24 @@ BEGIN TRANSACTION;
 (select 'PL/PgSQL is installed.' as message from pg_language where lanname='plpgsql') union (select 'You must install PL/PgSQL before running this SQL file,\nor you will get an error. To install PL/PgSQL run:\n\tcreatelang plpgsql <dbname>'::text as message) order by message limit 1;
 
 
------------------------------------------
---  THESE WERE postgis_sql_VER_start.sql.in
------------------------------------------
-
-#if USE_VERSION == 71
-
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --  HISTOGRAM2D
 
-CREATE FUNCTION histogram2d_in(opaque)
-	RETURNS opaque
+#if USE_VERSION < 73
+# define HISTOGRAM_IN_REP opaque
+# define HISTOGRAM_OUT_REP opaque
+#else
+# define HISTOGRAM_IN_REP histogram2d
+# define HISTOGRAM_OUT_REP cstring
+#endif
+
+CREATE FUNCTION histogram2d_in(HISTOGRAM_OUT_REP)
+	RETURNS HISTOGRAM_IN_REP
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
 
-CREATE FUNCTION histogram2d_out(opaque)
-	RETURNS opaque
+CREATE FUNCTION histogram2d_out(HISTOGRAM_IN_REP)
+	RETURNS HISTOGRAM_OUT_REP
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' WITH (isstrict);
 
@@ -49,6 +51,14 @@ CREATE TYPE histogram2d (
 	output = histogram2d_out,
 	storage = main
 );
+
+
+-----------------------------------------
+--  THESE WERE postgis_sql_VER_start.sql.in
+-----------------------------------------
+
+
+#if USE_VERSION == 71
 
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --  BOX3D
@@ -164,27 +174,6 @@ CREATE FUNCTION postgis_gist_sel(oid, oid, int2, opaque, int4)
 #elif USE_VERSION == 72
 
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
---  HISTOGRAM2D
-
-CREATE FUNCTION histogram2d_in(opaque)
-	RETURNS opaque
-	AS '@MODULE_FILENAME@'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATE FUNCTION histogram2d_out(opaque)
-	RETURNS opaque
-	AS '@MODULE_FILENAME@'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATE TYPE histogram2d (
-	alignment = double,
-	internallength = variable,
-	input = histogram2d_in,
-	output = histogram2d_out,
-	storage = main
-);
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --  BOX3D
 
 CREATE FUNCTION box3d_in(opaque)
@@ -296,27 +285,6 @@ CREATE FUNCTION postgis_gist_sel(opaque, oid,  opaque, int4)
 	LANGUAGE'C';
 
 #elif USE_VERSION == 73
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
---  HISTOGRAM2D
-
-CREATE FUNCTION histogram2d_in(cstring)
-	RETURNS histogram2d
-	AS '@MODULE_FILENAME@'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATE FUNCTION histogram2d_out(histogram2d)
-	RETURNS cstring
-	AS '@MODULE_FILENAME@'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATE TYPE histogram2d (
-	alignment = double,
-	internallength = variable,
-	input = histogram2d_in,
-	output = histogram2d_out,
-	storage = main
-);
 
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --  BOX3D
@@ -432,27 +400,6 @@ CREATE FUNCTION postgis_gist_sel (internal, oid, internal, int4)
 #elif USE_VERSION == 74
 
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
---  HISTOGRAM2D
-
-CREATE FUNCTION histogram2d_in(cstring)
-	RETURNS histogram2d
-	AS '@MODULE_FILENAME@'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATE FUNCTION histogram2d_out(histogram2d)
-	RETURNS cstring
-	AS '@MODULE_FILENAME@'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATE TYPE histogram2d (
-	alignment = double,
-	internallength = variable,
-	input = histogram2d_in,
-	output = histogram2d_out,
-	storage = main
-);
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --  BOX3D
 
 CREATE FUNCTION box3d_in(cstring)
@@ -564,27 +511,6 @@ CREATE FUNCTION postgis_gist_sel (internal, oid, internal, int4)
 
 
 #elif USE_VERSION == 75
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
---  HISTOGRAM2D
-
-CREATE FUNCTION histogram2d_in(cstring)
-	RETURNS histogram2d
-	AS '@MODULE_FILENAME@'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATE FUNCTION histogram2d_out(histogram2d)
-	RETURNS cstring
-	AS '@MODULE_FILENAME@'
-	LANGUAGE 'C' WITH (isstrict);
-
-CREATE TYPE histogram2d (
-	alignment = double,
-	internallength = variable,
-	input = histogram2d_in,
-	output = histogram2d_out,
-	storage = main
-);
 
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --  BOX3D
@@ -855,8 +781,27 @@ END;
 '
 LANGUAGE 'plpgsql' ;
 
+-----------------------------------------------------------------------
+-- FIND_EXTENT( <schema name>, <table name>, <column name> )
 
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+CREATE FUNCTION find_extent(text,text,text) RETURNS box3d AS
+'
+DECLARE
+	schemaname alias for $1;
+	tablename alias for $2;
+	columnname alias for $3;
+	okay boolean;
+ myrec RECORD;
+
+BEGIN
+	FOR myrec IN EXECUTE ''SELECT extent("''||columnname||''") FROM "''||schemaname||''"."''||tablename||''"'' LOOP
+		return myrec.extent;
+	END LOOP; 
+END;
+'
+LANGUAGE 'plpgsql' WITH (isstrict);
+
+-----------------------------------------------------------------------
 -- FIND_EXTENT( <table name>, <column name> )
 
 CREATE FUNCTION find_extent(text,text) RETURNS box3d AS
@@ -2122,75 +2067,6 @@ INSERT INTO pg_amproc (amid, amopclaid, amproc, amprocnum)
 #elif USE_VERSION == 72
 
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- UPDATE_GEOMETRY_STATS()
-
-CREATE FUNCTION update_geometry_stats() RETURNS text
-AS
-'
-BEGIN
-	EXECUTE ''update geometry_columns set attrelid = (select pg_class.oid AS attrelid from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name  and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_GEOMETRY_column::name),  varattnum = (select pg_attribute.attnum from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_GEOMETRY_column::name)'';
-	execute ''update geometry_columns set stats = (build_histogram2d( create_histogram2d(find_extent(f_table_name,f_GEOMETRY_column),40 ),f_table_name::text, f_GEOMETRY_column::text))  '';	
-	return ''done'';
-END;
-'
-LANGUAGE 'plpgsql' ;
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- UPDATE_GEOMETRY_STATS( <table>, <column> )
-
-CREATE FUNCTION update_geometry_stats(varchar,varchar) RETURNS text
-AS
-'
-DECLARE
-	tablename aliAS for $1;
-	columnname aliAS for $2;
-
-BEGIN
-	EXECUTE ''update geometry_columns set attrelid = (select pg_class.oid AS attrelid from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name  and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_GEOMETRY_column::name),  varattnum = (select pg_attribute.attnum from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_GEOMETRY_column::name)'';
-	execute ''update geometry_columns set stats = (build_histogram2d( create_histogram2d(find_extent(''|| quote_literal(tablename) || '',''||quote_literal(columnname) ||''),40 ),''|| quote_literal(tablename) || ''::text,''||quote_literal(columnname) ||''::text )) WHERE f_table_name=''|| quote_literal(tablename) || ''and f_GEOMETRY_column=''||quote_literal(columnname) ;	
-	return ''done'';
-END;
-'
-LANGUAGE 'plpgsql' ;
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- CREATE_HISTOGRAM2D( <box>, <size> )
---
--- Returns a histgram with 0s in all the boxes.
-
-CREATE FUNCTION create_histogram2d(box3d,int)
-   RETURNS histogram2d
-   AS '@MODULE_FILENAME@','create_histogram2d'
-	   LANGUAGE 'C'  with (isstrict);
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- BUILD_HISTOGRAM2D( <histogram2d>, <tablename>, <columnname> )
---
-
-CREATE FUNCTION build_histogram2d (HISTOGRAM2D,text,text)
-   RETURNS histogram2d
-   AS '@MODULE_FILENAME@','build_histogram2d'
-	   LANGUAGE 'C'  with (isstrict);
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- EXPLODE_HISTOGRAM2D( <histogram2d>, <tablename> )
---
-
-CREATE FUNCTION explode_histogram2d (HISTOGRAM2D,text)
-   RETURNS histogram2d
-   AS '@MODULE_FILENAME@','explode_histogram2d'
-	   LANGUAGE 'C'  with (isstrict);
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- ESTIMATE_HISTOGRAM2D( <histogram2d>, <box> )
---
-
-CREATE FUNCTION estimate_histogram2d(HISTOGRAM2D,box)
-   RETURNS float8
-   AS '@MODULE_FILENAME@','estimate_histogram2d'
-	   LANGUAGE 'C'  with (isstrict);
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- POSTGISCOSTESTIMATE()
 --
 
@@ -2425,76 +2301,6 @@ CREATE CAST ( wkb AS bytea ) WITH FUNCTION bytea(wkb) AS IMPLICIT;
 CREATE CAST ( box3d AS box ) WITH FUNCTION box3dtobox(box3d);
 CREATE CAST ( geometry AS text ) WITH FUNCTION astext(geometry);
 
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- UPDATE_GEOMETRY_STATS()
-
-CREATE FUNCTION update_geometry_stats() 
-RETURNS text
-AS
-'
-BEGIN
-	EXECUTE ''update geometry_columns set attrelid = (select pg_class.oid AS attrelid from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name  and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name),  varattnum = (select pg_attribute.attnum from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name)'';
-	execute ''update geometry_columns set stats = (build_histogram2d( create_histogram2d(find_extent(f_table_name,f_geometry_column),40 ),f_table_name::text, f_geometry_column::text))  '';	
-	return ''done'';
-END;
-'
-LANGUAGE 'plpgsql' ;
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- UPDATE_GEOMETRY_STATS( <table>, <column> )
-
-CREATE FUNCTION update_geometry_stats(varchar,varchar) 
-RETURNS text
-AS
-'
-DECLARE
-	tablename aliAS for $1;
-	columnname aliAS for $2;
-
-BEGIN
-	EXECUTE ''update geometry_columns set attrelid = (select pg_class.oid AS attrelid from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name  and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name),  varattnum = (select pg_attribute.attnum from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name)'';
-	execute ''update geometry_columns set stats = (build_histogram2d( create_histogram2d(find_extent(''|| quote_literal(tablename) || '',''||quote_literal(columnname) ||''),40 ),''|| quote_literal(tablename) || ''::text,''||quote_literal(columnname) ||''::text )) WHERE f_table_name=''|| quote_literal(tablename) || ''and f_geometry_column=''||quote_literal(columnname) ;	
-	return ''done'';
-END;
-'
-LANGUAGE 'plpgsql' ;
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- CREATE_HISTOGRAM2D( <box>, <size> )
---
--- Returns a histgram with 0s in all the boxes.
-
-CREATE FUNCTION create_histogram2d(box3d,int)
-	RETURNS histogram2d
-	AS '@MODULE_FILENAME@','create_histogram2d'
-	LANGUAGE 'C'  with (isstrict);
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- BUILD_HISTOGRAM2D( <histogram2d>, <tablename>, <columnname> )
---
-
-CREATE FUNCTION build_histogram2d (histogram2d, text, text)
-	RETURNS histogram2d
-	AS '@MODULE_FILENAME@','build_histogram2d'
-	LANGUAGE 'C'  with (isstrict);
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- EXPLODE_HISTOGRAM2D( <histogram2d>, <tablename> )
---
-
-CREATE FUNCTION explode_histogram2d (histogram2d, text)
-	RETURNS histogram2d
-	AS '@MODULE_FILENAME@','explode_histogram2d'
-	LANGUAGE 'C'  with (isstrict);
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- ESTIMATE_HISTOGRAM2D( <histogram2d>, <box> )
---
-
-CREATE FUNCTION estimate_histogram2d(histogram2d,box)
-	RETURNS float8
-	AS '@MODULE_FILENAME@','estimate_histogram2d'
-	LANGUAGE 'C'  with (isstrict);
 
 CREATE FUNCTION postgisgistcostestimate(internal,internal,internal,internal,internal,internal,internal,internal)
 	RETURNS opaque
@@ -2615,77 +2421,6 @@ CREATE CAST ( text AS geometry) WITH FUNCTION geometry(text) AS IMPLICIT;
 CREATE CAST ( wkb AS bytea ) WITH FUNCTION bytea(wkb) AS IMPLICIT;
 CREATE CAST ( box3d AS box ) WITH FUNCTION box3dtobox(box3d);
 CREATE CAST ( geometry AS text ) WITH FUNCTION astext(geometry);
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- UPDATE_GEOMETRY_STATS()
-
-CREATE FUNCTION update_geometry_stats() 
-RETURNS text
-AS
-'
-BEGIN
-	EXECUTE ''update geometry_columns set attrelid = (select pg_class.oid AS attrelid from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name  and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name),  varattnum = (select pg_attribute.attnum from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name)'';
-	execute ''update geometry_columns set stats = (build_histogram2d( create_histogram2d(find_extent(f_table_name,f_geometry_column),40 ),f_table_name::text, f_geometry_column::text))  '';	
-	return ''done'';
-END;
-'
-LANGUAGE 'plpgsql' ;
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- UPDATE_GEOMETRY_STATS( <table>, <column> )
-
-CREATE FUNCTION update_geometry_stats(varchar,varchar) 
-RETURNS text
-AS
-'
-DECLARE
-	tablename aliAS for $1;
-	columnname aliAS for $2;
-
-BEGIN
-	EXECUTE ''update geometry_columns set attrelid = (select pg_class.oid AS attrelid from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name  and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name),  varattnum = (select pg_attribute.attnum from pg_class,pg_attribute where relname =geometry_columns.f_table_name::name and pg_attribute.attrelid = pg_class.oid and pg_attribute.attname = geometry_columns.f_geometry_column::name)'';
-	execute ''update geometry_columns set stats = (build_histogram2d( create_histogram2d(find_extent(''|| quote_literal(tablename) || '',''||quote_literal(columnname) ||''),40 ),''|| quote_literal(tablename) || ''::text,''||quote_literal(columnname) ||''::text )) WHERE f_table_name=''|| quote_literal(tablename) || ''and f_geometry_column=''||quote_literal(columnname) ;	
-	return ''done'';
-END;
-'
-LANGUAGE 'plpgsql' ;
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- CREATE_HISTOGRAM2D( <box>, <size> )
---
--- Returns a histgram with 0s in all the boxes.
-
-CREATE FUNCTION create_histogram2d(box3d,int)
-	RETURNS histogram2d
-	AS '@MODULE_FILENAME@','create_histogram2d'
-	LANGUAGE 'C'  with (isstrict);
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- BUILD_HISTOGRAM2D( <histogram2d>, <tablename>, <columnname> )
---
-
-CREATE FUNCTION build_histogram2d (histogram2d, text, text)
-	RETURNS histogram2d
-	AS '@MODULE_FILENAME@','build_histogram2d'
-	LANGUAGE 'C'  with (isstrict);
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- EXPLODE_HISTOGRAM2D( <histogram2d>, <tablename> )
---
-
-CREATE FUNCTION explode_histogram2d (histogram2d, text)
-	RETURNS histogram2d
-	AS '@MODULE_FILENAME@','explode_histogram2d'
-	LANGUAGE 'C'  with (isstrict);
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- ESTIMATE_HISTOGRAM2D( <histogram2d>, <box> )
---
-
-CREATE FUNCTION estimate_histogram2d(histogram2d,box)
-	RETURNS float8
-	AS '@MODULE_FILENAME@','estimate_histogram2d'
-	LANGUAGE 'C'  with (isstrict);
 
 CREATE FUNCTION postgisgistcostestimate(internal,internal,internal,internal,internal,internal,internal,internal)
 	RETURNS opaque
@@ -2816,67 +2551,6 @@ CREATE CAST ( text AS geometry) WITH FUNCTION geometry(text) AS IMPLICIT;
 CREATE CAST ( wkb AS bytea ) WITH FUNCTION bytea(wkb) AS IMPLICIT;
 CREATE CAST ( box3d AS box ) WITH FUNCTION box3dtobox(box3d);
 CREATE CAST ( geometry AS text ) WITH FUNCTION astext(geometry);
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- UPDATE_GEOMETRY_STATS()
---
--- This is no more needed, running ANALYZE will store
--- geometry attributes statistics in system tables.
--- It is kept for back compatibility, will raise a message.
---
-
-CREATE FUNCTION update_geometry_stats() 
-RETURNS text
-AS
-'
-	SELECT ''update_geometry_stats() has been obsoleted. Statistics are automatically built running the ANALYZE command''::text
-'
-LANGUAGE 'sql' ;
-
-CREATE FUNCTION update_geometry_stats(varchar,varchar) 
-RETURNS text
-AS
-'
-	SELECT update_geometry_stats();
-'
-LANGUAGE 'sql' ;
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- CREATE_HISTOGRAM2D( <box>, <size> )
---
--- Returns a histgram with 0s in all the boxes.
-
-CREATE FUNCTION create_histogram2d(box3d,int)
-	RETURNS histogram2d
-	AS '@MODULE_FILENAME@','create_histogram2d'
-	LANGUAGE 'C'  with (isstrict);
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- BUILD_HISTOGRAM2D( <histogram2d>, <tablename>, <columnname> )
---
-
-CREATE FUNCTION build_histogram2d (histogram2d, text, text)
-	RETURNS histogram2d
-	AS '@MODULE_FILENAME@','build_histogram2d'
-	LANGUAGE 'C'  with (isstrict);
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- EXPLODE_HISTOGRAM2D( <histogram2d>, <tablename> )
---
-
-CREATE FUNCTION explode_histogram2d (histogram2d, text)
-	RETURNS histogram2d
-	AS '@MODULE_FILENAME@','explode_histogram2d'
-	LANGUAGE 'C'  with (isstrict);
-
--- - - - - - - - - - - - - - - - - - - - - - - - - - - -
--- ESTIMATE_HISTOGRAM2D( <histogram2d>, <box> )
---
-
-CREATE FUNCTION estimate_histogram2d(histogram2d,box)
-	RETURNS float8
-	AS '@MODULE_FILENAME@','estimate_histogram2d'
-	LANGUAGE 'C'  with (isstrict);
 
 --
 -- 7.2 GiST support functions
@@ -3278,6 +2952,165 @@ BEGIN
 END;
 ' LANGUAGE 'plpgsql' WITH (isstrict);
 
+
 -----------------------------------------------------------------------
+-- UPDATE_GEOMETRY_STATS()
+-----------------------------------------------------------------------
+--
+-- Only meaningful for PG<75.
+-- Gather statisticts about geometry columns for use
+-- with cost estimator.
+--
+-- It is defined also for PG>=75 for back-compatibility
+--
+-----------------------------------------------------------------------
+#if USE_VERSION >= 75
+CREATE FUNCTION update_geometry_stats() RETURNS text
+AS ' SELECT ''update_geometry_stats() has been obsoleted. Statistics are automatically built running the ANALYZE command''::text' LANGUAGE 'sql';
+#else // USE_VERSION < 75
+CREATE FUNCTION update_geometry_stats() RETURNS text
+AS
+'
+
+BEGIN
+
+	UPDATE geometry_columns SET
+		attrelid = NULL,
+		varattnum = NULL,
+		stats = NULL;
+
+	UPDATE geometry_columns SET
+		attrelid = c.oid,
+		varattnum = a.attnum,
+#if USE_VERSION >= 73
+		stats = (build_histogram2d(create_histogram2d(
+			find_extent(f_table_schema, f_table_name, f_geometry_column), 40), f_table_schema, f_table_name, f_geometry_column))
+		FROM pg_class c, pg_attribute a, pg_namespace n
+		WHERE n.nspname = f_table_schema::name
+		AND c.relname = f_table_name::name
+		AND a.attname = f_geometry_column::name
+		AND c.relnamespace = n.oid
+		AND a.attrelid = c.oid;
+#else // USE_VERSION < 73 
+		stats = (build_histogram2d(create_histogram2d(
+			find_extent(f_table_name, f_geometry_column),
+			40), f_table_name, f_geometry_column))
+		FROM pg_class c, pg_attribute a
+		WHERE c.relname = f_table_name::name
+		AND a.attname = f_geometry_column::name
+		AND c.relnamespace = n.oid
+		AND a.attrelid = c.oid;
+#endif
+
+	return ''done'';
+END;
+'
+LANGUAGE 'plpgsql' ;
+#endif // USE_VERSION < 75
+
+-----------------------------------------------------------------------
+-- UPDATE_GEOMETRY_STATS( <table>, <column> )
+-----------------------------------------------------------------------
+--
+-- Only meaningful for PG<75.
+-- Gather statisticts about a geometry column for use
+-- with cost estimator.
+--
+-- It is defined also for PG>=75 for back-compatibility
+--
+-----------------------------------------------------------------------
+#if USE_VERSION >= 75
+CREATE FUNCTION update_geometry_stats(varchar,varchar) RETURNS text
+AS 'SELECT update_geometry_stats();' LANGUAGE 'sql' ;
+#else
+CREATE FUNCTION update_geometry_stats(varchar,varchar) RETURNS text
+AS
+'
+DECLARE
+	tablename aliAS for $1;
+	columnname aliAS for $2;
+
+BEGIN
+
+	EXECUTE ''UPDATE geometry_columns set
+		attrelid = (
+			SELECT pg_class.oid AS attrelid
+			FROM pg_class, pg_attribute
+			WHERE relname = geometry_columns.f_table_name::name
+			AND pg_attribute.attrelid = pg_class.oid
+			AND pg_attribute.attname = geometry_columns.f_GEOMETRY_column::name),
+		varattnum = (
+			SELECT pg_attribute.attnum
+			FROM pg_class,pg_attribute
+			WHERE relname = geometry_columns.f_table_name::name
+			AND pg_attribute.attrelid = pg_class.oid
+			AND pg_attribute.attname = geometry_columns.f_GEOMETRY_column::name),
+		stats = (build_histogram2d(create_histogram2d(
+			find_extent(''|| quote_literal(tablename) ||
+				'',''||quote_literal(columnname) ||''),40 
+				),''|| quote_literal(tablename) || ''::text,
+				''||quote_literal(columnname) ||''::text ))
+		
+		WHERE f_table_name=''|| quote_literal(tablename) || ''
+		AND f_GEOMETRY_column=''||quote_literal(columnname) ; '';
+
+	return ''done'';
+END;
+'
+LANGUAGE 'plpgsql' ;
+#endif  // USE_VERSION < 75
+
+-----------------------------------------------------------------------
+-- CREATE_HISTOGRAM2D( <box>, <size> )
+-----------------------------------------------------------------------
+--
+-- Returns a histgram with 0s in all the boxes.
+--
+-----------------------------------------------------------------------
+CREATE FUNCTION create_histogram2d(box3d,int)
+	RETURNS histogram2d
+	AS '@MODULE_FILENAME@','create_histogram2d'
+	LANGUAGE 'C'  with (isstrict);
+
+-----------------------------------------------------------------------
+-- BUILD_HISTOGRAM2D( <histogram2d>, <tablename>, <columnname> )
+-----------------------------------------------------------------------
+CREATE FUNCTION build_histogram2d (histogram2d,text,text)
+	RETURNS histogram2d
+	AS '@MODULE_FILENAME@','build_histogram2d'
+	LANGUAGE 'C'  with (isstrict);
+
+#if USE_VERSION >= 73
+-----------------------------------------------------------------------
+-- BUILD_HISTOGRAM2D(<histogram2d>,<schema>,<tablename>,<columnname>)
+-----------------------------------------------------------------------
+-- This is a wrapper to the omonimous schema unaware function,
+-- thanks to Carl Anderson for the idea.
+-----------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION build_histogram2d (histogram2d,text,text,text)
+RETURNS histogram2d
+AS '
+BEGIN
+	EXECUTE ''SET search_path = ''||$2||'',public'';
+	RETURN public.build_histogram2d($1,$3,$4);
+END
+' LANGUAGE 'plpgsql'  with (isstrict);
+#endif // USE_VERSION >= 73
+
+-----------------------------------------------------------------------
+-- EXPLODE_HISTOGRAM2D( <histogram2d>, <tablename> )
+-----------------------------------------------------------------------
+CREATE FUNCTION explode_histogram2d (HISTOGRAM2D,text)
+	RETURNS histogram2d
+	AS '@MODULE_FILENAME@','explode_histogram2d'
+	LANGUAGE 'C'  with (isstrict);
+
+-----------------------------------------------------------------------
+-- ESTIMATE_HISTOGRAM2D( <histogram2d>, <box> )
+-----------------------------------------------------------------------
+CREATE FUNCTION estimate_histogram2d(HISTOGRAM2D,box)
+	RETURNS float8
+	AS '@MODULE_FILENAME@','estimate_histogram2d'
+	LANGUAGE 'C'  with (isstrict);
 
 END TRANSACTION;
