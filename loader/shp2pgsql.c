@@ -12,6 +12,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.54  2004/05/13 06:38:39  strk
+ * DBFReadStringValue always used to workaround shapelib bug with int values.
+ *
  * Revision 1.53  2004/04/21 09:13:15  strk
  * Attribute names escaping mechanism added. You should now
  * be able to dump a shapefile equal to the one loaded.
@@ -558,21 +561,15 @@ Insert_attributes(DBFHandle hDBFHandle, int row)
          switch (types[i]) 
          {
             case FTString:
+            case FTInteger:
+            case FTDouble:
+            case FTLogical:
                if ( -1 == snprintf(val, 1024, "%s",
                      DBFReadStringAttribute(hDBFHandle, row, i)) )
                {
                   fprintf(stderr, "Warning: field %d name trucated\n", i);
                   val[1023] = '\0';
                }
-               break;
-            case FTInteger:
-               sprintf(val, "%d", DBFReadIntegerAttribute(hDBFHandle, row, i));
-               break;
-            case FTDouble:
-               sprintf(val, "%f", DBFReadDoubleAttribute(hDBFHandle, row, i));
-               break;
-            case FTLogical:
-               sprintf(val, "%s", DBFReadLogicalAttribute(hDBFHandle, row, i));
                break;
             default:
                fprintf(stderr,
