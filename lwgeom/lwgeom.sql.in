@@ -330,6 +330,29 @@ commit;
 begin;
 -- extra conversions (might not work if there's no postgis install)
 
+CREATE FUNCTION lwgeom(wkb,int4)
+        RETURNS lwgeom
+        AS '@MODULE_FILENAME@','LWGEOMFromWKB'
+        LANGUAGE 'C' WITH (isstrict,iscachable);
+
+
+
+CREATE FUNCTION wkb(lwgeom)
+        RETURNS wkb
+        AS '@MODULE_FILENAME@','WKBFromLWGEOM'
+        LANGUAGE 'C' WITH (isstrict,iscachable);
+        
+CREATE FUNCTION asbinary(lwgeom)
+        RETURNS wkb
+        AS '@MODULE_FILENAME@','WKBFromLWGEOM'
+        LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATE FUNCTION lwgeom(wkb)
+        RETURNS lwgeom
+        AS '@MODULE_FILENAME@','LWGEOMFromWKB'
+        LANGUAGE 'C' WITH (isstrict,iscachable);
+        
+
 CREATE FUNCTION geometry(lwgeom)
 	RETURNS geometry
 	AS 
@@ -354,27 +377,8 @@ CREATE CAST (lwgeom as box2d) WITH FUNCTION box2d(lwgeom)  AS IMPLICIT ;
 CREATE CAST (lwgeom as wkb) WITH FUNCTION wkb(lwgeom)  AS IMPLICIT ;
 CREATE CAST (wkb as lwgeom) WITH FUNCTION lwgeom(wkb)  AS IMPLICIT ;
 	
-CREATE FUNCTION lwgeom(wkb)
-        RETURNS lwgeom
-        AS '@MODULE_FILENAME@','LWGEOMFromWKB'
-        LANGUAGE 'C' WITH (isstrict,iscachable);
-
-CREATE FUNCTION lwgeom(wkb,int4)
-        RETURNS lwgeom
-        AS '@MODULE_FILENAME@','LWGEOMFromWKB'
-        LANGUAGE 'C' WITH (isstrict,iscachable);
 
 
-
-CREATE FUNCTION wkb(lwgeom)
-        RETURNS wkb
-        AS '@MODULE_FILENAME@','WKBFromLWGEOM'
-        LANGUAGE 'C' WITH (isstrict,iscachable);
-        
-CREATE FUNCTION asbinary(lwgeom)
-        RETURNS wkb
-        AS '@MODULE_FILENAME@','WKBFromLWGEOM'
-        LANGUAGE 'C' WITH (isstrict,iscachable);
 	
 COMMIT;
 
