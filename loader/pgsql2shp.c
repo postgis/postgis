@@ -56,7 +56,7 @@ typedef unsigned char byte;
 /* Global data */
 PGconn *conn;
 int rowbuflen;
-char *geo_col_name, *table, *shp_file, *schema;
+char *geo_col_name, *table, *shp_file, *schema, *usrquery;
 int type_ary[256];
 char *main_scan_query;
 DBFHandle dbf;
@@ -95,6 +95,8 @@ int is_clockwise(int num_points,double *x,double *y,double *z);
 int is_bigendian(void);
 SHPObject * shape_creator_wrapper_WKB(byte *str, int idx);
 int get_postgis_major_version(void);
+static void parse_table(char *spec);
+static int create_usrquerytable();
 
 /* WKB functions */
 SHPObject * create_polygon2D_WKB(byte *wkb);
@@ -148,6 +150,7 @@ main(int ARGC, char **ARGV)
 	shape_creator = NULL;
 	table = NULL;
 	schema = NULL;
+	usrquery = NULL;
 	geo_col_name = NULL;
 	shp_file = NULL;
 	main_scan_query = NULL;
@@ -173,7 +176,6 @@ main(int ARGC, char **ARGV)
 		usage(2);
 	}
 
-
 	/* Use table name as shapefile name */
         if(shp_file == NULL) shp_file = table;
 
@@ -182,6 +184,13 @@ main(int ARGC, char **ARGV)
 	if (PQstatus(conn) == CONNECTION_BAD) {
 		printf( "%s", PQerrorMessage(conn));
 		exit_nicely(conn);
+	}
+
+	/* Create temporary table for user query */
+	if ( usrquery ) {
+		if ( ! create_usrquerytable() ) {
+			exit(2);
+		}
 	}
 
 #ifdef DEBUG
@@ -2165,6 +2174,7 @@ usage(status)
 {
 	printf("RCSID: %s\n", rcsid);
 	printf("USAGE: pgsql2shp [<options>] <database> [<schema>.]<table>\n");
+	printf("       pgsql2shp [<options>] <database> <query>\n");
 	printf("\n");
        	printf("OPTIONS:\n");
        	printf("  -f <filename>  Use this option to specify the name of the file\n");
@@ -2184,12 +2194,13 @@ usage(status)
 }
 
 /* Parse command line parameters */
-int parse_commandline(int ARGC, char **ARGV)
+int
+parse_commandline(int ARGC, char **ARGV)
 {
 	int c, curindex;
-	char buf[256], *ptr;
+	char buf[1024];
 
-	buf[255] = '\0'; // just in case...
+	buf[1023] = '\0'; // just in case...
 
 	/* Parse command line */
         while ((c = getopt(ARGC, ARGV, "bf:h:du:p:P:g:r")) != EOF){
@@ -2239,23 +2250,18 @@ int parse_commandline(int ARGC, char **ARGV)
         }
 
         curindex=0;
-        for ( ; optind < ARGC; optind++){
-                if(curindex ==0){
+        for (; optind<ARGC; optind++){
+                if (curindex == 0) {
 			//setenv("PGDATABASE", ARGV[optind], 1);
 		    	snprintf(buf, 255, "PGDATABASE=%s", ARGV[optind]);
 		    	putenv(strdup(buf));
                 }else if(curindex == 1){
-                        table = ARGV[optind];
-			if ( (ptr=strchr(table, '.')) )
-			{
-				*ptr = '\0';
-				schema = table;
-				table = ptr+1;
-			}
+			parse_table(ARGV[optind]);
+
                 }
                 curindex++;
         }
-        if(curindex != 2) return 0;
+        if (curindex < 2) return 0;
 	return 1;
 }
 
@@ -2956,8 +2962,63 @@ shapetypename(int num)
 			return "Unknown";
 	}
 }
+
+/*
+ * Either get a table (and optionally a schema)
+ * or a query.
+ * A query starts with a "select" or "SELECT" string.
+ */
+static void
+parse_table(char *spec)
+{
+	char *ptr;
+
+	// Spec is a query
+	if ( strstr(spec, "SELECT ") || strstr(spec, "select ") )
+	{
+		usrquery = spec;
+		table = "__pgsql2shp_tmp_table";
+	}
+	else
+	{
+        	table = spec;
+		if ( (ptr=strchr(table, '.')) )
+		{
+			*ptr = '\0';
+			schema = table;
+			table = ptr+1;
+		}
+	}
+}
+
+static int
+create_usrquerytable()
+{
+	char *query;
+	PGresult *res;
+
+	query = malloc(sizeof(table)+sizeof(usrquery)+256);
+	sprintf(query, "CREATE TEMP TABLE \"%s\" AS %s", table, usrquery);
+
+        printf("Preparing table for user query... ");
+	fflush(stdout);
+	res = PQexec(conn, query);
+	free(query);
+	if ( ! res || PQresultStatus(res) != PGRES_COMMAND_OK ) {
+		printf( "Failed: %s\n",
+			PQerrorMessage(conn));
+		return 0;
+	}
+	PQclear(res);
+	printf("Done.\n");
+	return 1;
+}
+
 /**********************************************************************
  * $Log$
+ * Revision 1.64  2004/10/14 09:59:51  strk
+ * Added support for user query (replacing schema.table)
+ *
  * Revision 1.63  2004/10/11 14:34:40  strk
  * Added endiannes specification for postgis-1.0.0+
  *
