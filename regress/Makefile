@@ -15,7 +15,3 @@ test-ogc:
 	@./run_ogc_regress
 
 clean:
-	rm -f $(TMPDIR)/regress_out
-	rm -f $(TMPDIR)/lwgeom_regress_out
-	rm -f $(TMPDIR)/regress_index_out
-	rm -f $(TMPDIR)/regress_ogc_out

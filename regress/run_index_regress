@@ -1,19 +1,22 @@
 #!/bin/sh
 
-echo "Running Index Regression"
-echo ""
-echo "Index Creation will take some time..."
-echo ""
-
 if [ -z "$TMPDIR" ]; then
 	TMPDIR=/tmp
 fi
+
+OUTFILE="${TMPDIR}/regress_index_out_$$"
+
+echo "Running Index Regression."
+echo "Output file is: '${OUTFILE}'"
+echo ""
+echo "Index Creation will take some time..."
+echo ""
 
 DB=postgis_reg
 createdb $DB > /dev/null
 createlang plpgsql $DB > /dev/null
 psql -f ../lwpostgis.sql $DB > /dev/null 2>&1
-psql -tA < regress_index.sql $DB > "${TMPDIR}/regress_index_out" 2>&1
-diff regress_index_expected "${TMPDIR}/regress_index_out"
+psql -tA < regress_index.sql $DB > "${OUTFILE}" 2>&1
+diff regress_index_expected "${OUTFILE}"
 sleep 1
 dropdb $DB > /dev/null
