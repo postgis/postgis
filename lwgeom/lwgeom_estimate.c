@@ -74,7 +74,9 @@ typedef struct GEOM_STATS_T
 	float4 value[1];
 } GEOM_STATS;
 
-#endif
+Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS);
+
+#endif // USE_VERSION >= 80
 
 #define SHOW_DIGS_DOUBLE 15
 #define MAX_DIGS_DOUBLE (SHOW_DIGS_DOUBLE + 6 + 1 + 3 +1)
@@ -1879,14 +1881,135 @@ Datum LWGEOM_analyze(PG_FUNCTION_ARGS)
 	/* Indicate we are done successfully */
 	PG_RETURN_BOOL(true);
 }
+
+/*
+ * Return the estimated extent of the table
+ * looking at gathered statistics (or NULL if
+ * no statistics have been gathered).
+ */
+PG_FUNCTION_INFO_V1(LWGEOM_estimated_extent);
+Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
+{
+	text *txnsp = PG_GETARG_TEXT_P(0);
+	text *txtbl = PG_GETARG_TEXT_P(1);
+	text *txcol = PG_GETARG_TEXT_P(2);
+	char *query;
+	char *nsp;
+	char *tbl;
+	char *col;
+	LWHISTOGRAM2D *histo;
+	ArrayType *array = NULL;
+	int SPIcode;
+	SPITupleTable *tuptable;
+	TupleDesc tupdesc ;
+	HeapTuple tuple ;
+	bool isnull;
+	BOX2DFLOAT4 *box;
+
+#if DEBUG_GEOMETRY_STATS
+	elog(NOTICE, "LWGEOM_estimated_extent called");
+#endif
+
+
+	/* Connect to SPI manager */
+	SPIcode = SPI_connect();
+	if (SPIcode != SPI_OK_CONNECT)
+	{
+		elog(ERROR, "LWGEOM_estimated_extent: couldnt open a connection to SPI");
+		PG_RETURN_NULL() ;
+	}
+
+	nsp = palloc(VARSIZE(txnsp)+1);
+	tbl = palloc(VARSIZE(txtbl)+1);
+	col = palloc(VARSIZE(txcol)+1);
+	memcpy(nsp, VARATT_DATA(txnsp), VARSIZE(txnsp)-VARHDRSZ);
+	nsp[VARSIZE(txnsp)-VARHDRSZ]='\0';
+	memcpy(tbl, VARATT_DATA(txtbl), VARSIZE(txtbl)-VARHDRSZ);
+	tbl[VARSIZE(txtbl)-VARHDRSZ]='\0';
+	memcpy(col, VARATT_DATA(txcol), VARSIZE(txcol)-VARHDRSZ);
+	col[VARSIZE(txcol)-VARHDRSZ]='\0';
+
+#if DEBUG_GEOMETRY_STATS
+	elog(NOTICE, " schema:%s table:%s column:%s", nsp, tbl, col);
+#endif
+
+	query = palloc(VARSIZE(txnsp)+VARSIZE(txtbl)+VARSIZE(txcol)+516);
+
+	sprintf(query, "SELECT s.stanumbers1[5:8] FROM pg_statistic s, pg_class c, pg_attribute a, pg_namespace n WHERE c.relname = '%s' AND a.attrelid = c.oid AND a.attname = '%s' AND n.nspname = '%s' AND c.relnamespace = n.oid AND s.starelid=c.oid AND s.staattnum = a.attnum AND staattnum = attnum", tbl, col, nsp);
+
+#if DEBUG_GEOMETRY_STATS > 1
+	elog(NOTICE, " query: %s", query);
+#endif
+
+	SPIcode = SPI_exec(query, 1);
+	if (SPIcode != SPI_OK_SELECT )
+	{
+		SPI_finish();
+		elog(ERROR,"LWGEOM_estimated_extent: couldnt execute sql via SPI");
+		PG_RETURN_NULL();
+	}
+	if (SPI_processed != 1)
+	{
+		SPI_finish();
+#if DEBUG_GEOMETRY_STATS
+		elog(ERROR, " %d stat rows", SPI_processed);
+#endif
+		PG_RETURN_NULL() ;
+	}
+
+	tuptable = SPI_tuptable;
+	tupdesc = SPI_tuptable->tupdesc;
+	tuple = tuptable->vals[0];
+	array = (ArrayType *)SPI_getbinval(tuple, tupdesc, 1, &isnull);
+	if (isnull)
+	{
+		SPI_finish();
+#if DEBUG_GEOMETRY_STATS
+		elog(NOTICE, " stats are NULL");
+#endif
+		PG_RETURN_NULL();
+	}
+	if ( ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array)) != 4 )
+	{
+		elog(ERROR, " corrupted histogram");
+		PG_RETURN_NULL();
+	}
+
+#if DEBUG_GEOMETRY_STATS
+	elog(NOTICE, " stats array has %d elems", ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array)));
+#endif
+
+	/* Construct box2dfloat4 */
+	box = palloc(sizeof(BOX2DFLOAT4));
+
+	/* Construct the box */
+	memcpy(box, ARR_DATA_PTR(array), sizeof(BOX2DFLOAT4));
+
+#if DEBUG_GEOMETRY_STATS
+	elog(NOTICE, " histogram extent = %g %g, %g %g", box->xmin,
+		box->ymin, box->xmax, box->ymax);
+#endif
+
+	SPIcode = SPI_finish();
+	if (SPIcode != SPI_OK_FINISH )
+	{
+		elog(ERROR, "LWGEOM_estimated_extent: couldnt disconnect from SPI");
+	}
+
+	/* TODO: enlarge the box by some factor */
+
+	PG_RETURN_POINTER(box);
+}
 	
 
-
-#endif
+#endif // USE_VERSION >= 80
 
 
 /**********************************************************************
  * $Log$
+ * Revision 1.13  2004/12/10 12:35:11  strk
+ * implemented estimated_extent() function
+ *
  * Revision 1.12  2004/11/04 11:40:08  strk
  * Renamed max/min/avg macros to LW_MAX, LW_MIN, LW_AVG.
  *
