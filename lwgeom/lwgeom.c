@@ -5,130 +5,126 @@
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
 
-#define CONTEXT_PG 0
-#define CONTEXT_STANDALONE 1
-
-/* Define this to the default context liblwgeom runs with */
-#define DEFAULT_CONTEXT CONTEXT_PG
-
-
-/* globals */
-#if DEFAULT_CONTEXT == CONTEXT_PG
-lwallocator lwalloc = pg_alloc;
-lwreallocator lwrealloc = pg_realloc;
-lwfreeor lwfree = pg_free;
-lwreporter lwerror = pg_error;
-lwreporter lwnotice = pg_notice;
-#else
-lwallocator lwalloc = default_allocator;
-lwreallocator lwrealloc = default_reallocator;
-lwfreeor lwfree = default_freeor;
-lwreporter lwerror = default_errorreporter;
-lwreporter lwnotice = default_noticereporter;
-#endif
-
 LWGEOM *
 lwgeom_deserialize(char *srl)
 {
-	LWGEOM *result;
 	int type = lwgeom_getType(srl[0]);
 
-	result = lwalloc(sizeof(LWGEOM));
-	result->type = type;
 	switch (type)
 	{
 		case POINTTYPE:
-			result->point = lwpoint_deserialize(srl);
-			break;
+			return (LWGEOM *)lwpoint_deserialize(srl);
 		case LINETYPE:
-			result->line = lwline_deserialize(srl);
-			break;
+			return (LWGEOM *)lwline_deserialize(srl);
 		case POLYGONTYPE:
-			result->poly = lwpoly_deserialize(srl);
-			break;
+			return (LWGEOM *)lwpoly_deserialize(srl);
 		case MULTIPOINTTYPE:
-			result->mpoint = lwmpoint_deserialize(srl);
-			break;
+			return (LWGEOM *)lwmpoint_deserialize(srl);
 		case MULTILINETYPE:
-			result->mline = lwmline_deserialize(srl);
-			break;
+			return (LWGEOM *)lwmline_deserialize(srl);
 		case MULTIPOLYGONTYPE:
-			result->mpoly = lwmpoly_deserialize(srl);
-			break;
+			return (LWGEOM *)lwmpoly_deserialize(srl);
 		case COLLECTIONTYPE:
-			result->collection = lwcollection_deserialize(srl);
-			break;
+			return (LWGEOM *)lwcollection_deserialize(srl);
 		default:
 			lwerror("Unknown geometry type: %d", type);
 			return NULL;
 	}
 
-	return result;
 }
 
-void *
-default_allocator(size_t size)
+size_t
+lwgeom_serialize_size(LWGEOM *lwgeom)
 {
-	void * result;
-	result = malloc(size);
-	return result;
-}
+	int type = lwgeom->type;
+	size_t size;
 
-void *
-default_reallocator(void *mem, size_t size)
-{
-	void * result;
-	result = realloc(mem, size);
-	return result;
-}
-
-void
-default_errorreporter(const char *fmt, ...)
-{
-	char *msg;
-	va_list ap;
-
-	va_start (ap, fmt);
-
-	/*
-	* This is a GNU extension.
-	* Dunno how to handle errors here.
-	*/
-	if (!vasprintf (&msg, fmt, ap))
+	switch (type)
 	{
-		va_end (ap);
-		return;
+		case POINTTYPE:
+			size = lwpoint_serialize_size((LWPOINT *)lwgeom);
+		case LINETYPE:
+			size = lwline_serialize_size((LWLINE *)lwgeom);
+		case POLYGONTYPE:
+			size = lwpoly_serialize_size((LWPOLY *)lwgeom);
+		case MULTIPOINTTYPE:
+			size = lwmpoint_serialize_size((LWMPOINT *)lwgeom);
+		case MULTILINETYPE:
+			size = lwmline_serialize_size((LWMLINE *)lwgeom);
+		case MULTIPOLYGONTYPE:
+			size = lwmpoly_serialize_size((LWMPOLY *)lwgeom);
+		case COLLECTIONTYPE:
+			size = lwcollection_serialize_size((LWCOLLECTION *)lwgeom);
+		default:
+			lwerror("Unknown geometry type: %d", type);
+			return 0;
 	}
-	va_end(ap);
-	fprintf(stderr, "%s", msg);
-	free(msg);
+
+	return size;
 }
 
 void
-default_noticereporter(const char *fmt, ...)
+lwgeom_serialize_buf(LWGEOM *lwgeom, char *buf, int *retsize)
 {
-	char *msg;
-	va_list ap;
+	int type = lwgeom->type;
+	int size;
 
-	va_start (ap, fmt);
-
-	/*
-	* This is a GNU extension.
-	* Dunno how to handle errors here.
-	*/
-	if (!vasprintf (&msg, fmt, ap))
+	switch (type)
 	{
-		va_end (ap);
-		return;
+		case POINTTYPE:
+			lwpoint_serialize_buf((LWPOINT *)lwgeom, buf, &size);
+			break;
+		case LINETYPE:
+			lwline_serialize_buf((LWLINE *)lwgeom, buf, &size);
+			break;
+		case POLYGONTYPE:
+			lwpoly_serialize_buf((LWPOLY *)lwgeom, buf, &size);
+			break;
+		case MULTIPOINTTYPE:
+			lwmpoint_serialize_buf((LWMPOINT *)lwgeom, buf, &size);
+			break;
+		case MULTILINETYPE:
+			lwmline_serialize_buf((LWMLINE *)lwgeom, buf, &size);
+			break;
+		case MULTIPOLYGONTYPE:
+			lwmpoly_serialize_buf((LWMPOLY *)lwgeom, buf, &size);
+			break;
+		case COLLECTIONTYPE:
+			lwcollection_serialize_buf((LWCOLLECTION *)lwgeom, buf, &size);
+			break;
+		default:
+			lwerror("Unknown geometry type: %d", type);
+			return;
 	}
-	va_end(ap);
-	fprintf(stderr, "%s", msg);
-	free(msg);
+	*retsize = size;
+	return;
 }
 
-void
-default_freeor(void *ptr)
+char *
+lwgeom_serialize(LWGEOM *lwgeom, char wantbbox)
 {
-	free(ptr);
+	size_t size = lwgeom_serialize_size(lwgeom);
+	size_t retsize;
+	char *loc;
+
+	if ( wantbbox ) size += sizeof(BOX2DFLOAT4);
+
+	char *serialized = lwalloc(size);
+
+	if ( wantbbox ) loc = serialized + sizeof(BOX2DFLOAT4);
+	else loc = serialized;
+
+	lwgeom_serialize_buf(lwgeom, loc, &retsize);
+
+#ifdef DEBUG
+	if ( wantbbox ) retsize += 4;
+	if ( retsize != size )
+	{
+		lwerror("lwgeom_serialize: computed size %d, returned size %d",
+			size, retsize);
+	}
+#endif
+
+	return serialized;
 }
 

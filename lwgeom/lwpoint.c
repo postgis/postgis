@@ -127,10 +127,10 @@ lwpoint_getPoint3d(const LWPOINT *point)
 }
 
 // find length of this deserialized point
-uint32
-lwpoint_size(LWPOINT *point)
+size_t
+lwpoint_serialize_size(LWPOINT *point)
 {
-	uint32 size = 1; // type
+	size_t size = 1; // type
 
 	if ( point->SRID != -1 ) size += 4; // SRID
 	size += point->ndims * sizeof(double); // point
@@ -149,6 +149,7 @@ lwpoint_construct(int ndims, int SRID, POINTARRAY *point)
 		return NULL; // error
 
 	result = lwalloc(sizeof(LWPOINT));
+	result->type = POINTTYPE;
 	result->ndims = ndims;
 	result->SRID = SRID;
 
@@ -178,6 +179,7 @@ lwpoint_deserialize(char *serialized_form)
 	type = (unsigned char) serialized_form[0];
 
 	if ( lwgeom_getType(type) != POINTTYPE) return NULL;
+	result->type = POINTTYPE;
 
 	loc = serialized_form+1;
 

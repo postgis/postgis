@@ -44,7 +44,6 @@ typedef struct
         double xmax, ymax, zmax;
 } BOX3D;
 
-
 typedef struct chiptag
 {
 	int size; //unused (for use by postgresql)
@@ -292,6 +291,7 @@ extern uint32 lwgeom_size_poly(const char *serialized_line);
 
 typedef struct
 {
+	int type;
    	char ndims;	// 2=2d, 3=3d, 4=4d, 5=undef
    	int SRID;	// spatial ref sys
    	POINTARRAY *point;  // hide 2d/3d (this will be an array of 1 point)
@@ -309,7 +309,7 @@ extern LWPOINT  *lwpoint_construct(int ndims, int SRID, POINTARRAY *point);
 extern LWPOINT *lwpoint_deserialize(char *serialized_form);
 
 // Find size this point would get when serialized (no BBOX)
-extern uint32 lwpoint_size(LWPOINT *point);
+extern size_t lwpoint_serialize_size(LWPOINT *point);
 
 // convert this point into its serialize form
 // result's first char will be the 8bit type.  See serialized form doc
@@ -329,7 +329,8 @@ extern POINT3D lwpoint_getPoint3d(const LWPOINT *point);
 
 typedef struct
 {
-	char  ndims; // 2=2d, 3=3d, 4=4d, 5=undef
+	int type;
+	char ndims; // 2=2d, 3=3d, 4=4d, 5=undef
 	int  SRID;   // spatial ref sys -1=none
 	POINTARRAY    *points; // array of POINT3D
 } LWLINE; //"light-weight line"
@@ -345,7 +346,7 @@ extern LWLINE *lwline_construct(int ndims, int SRID, POINTARRAY *points);
 extern LWLINE *lwline_deserialize(char *serialized_form);
 
 // find the size this line would get when serialized (no BBOX)
-extern uint32 lwline_size(LWLINE *line);
+extern size_t lwline_serialize_size(LWLINE *line);
 
 // convert this line into its serialize form
 // result's first char will be the 8bit type.  See serialized form doc
@@ -362,6 +363,7 @@ extern BOX3D *lwline_findbbox(LWLINE *line);
 
 typedef struct
 {
+	char type;
 	int32 SRID;
 	char ndims;
 	int  nrings;
@@ -379,7 +381,7 @@ extern LWPOLY *lwpoly_construct(int ndims, int SRID, int nrings,POINTARRAY **poi
 extern LWPOLY *lwpoly_deserialize(char *serialized_form);
 
 // find the size this polygon would get when serialized (no bbox!)
-extern uint32 lwpoly_size(LWPOLY *poly);
+extern size_t lwpoly_serialize_size(LWPOLY *poly);
 
 // create the serialized form of the polygon
 // result's first char will be the 8bit type.  See serialized form doc
@@ -397,59 +399,73 @@ extern BOX3D *lwpoly_findbbox(LWPOLY *poly);
 // MULTIPOINTTYPE
 typedef struct
 {
+	int type;
 	int32 SRID;
 	char ndims;
 	int  npoints;
 	LWPOINT **points;
 } LWMPOINT; 
 
+extern size_t lwmpoint_serialize_size(LWMPOINT *mpoint);
+extern void lwmpoint_serialize_buf(LWMPOINT *mpoint, char *buf, int *size);
+
 // MULTILINETYPE
 typedef struct
-{
+{  
+	int type;
 	int32 SRID;
 	char ndims;
 	int  nlines;
 	LWLINE **lines;
 } LWMLINE; 
 
+extern size_t lwmline_serialize_size(LWMLINE *mline);
+extern void lwmline_serialize_buf(LWMLINE *mline, char *buf, int *size);
+
 // MULTIPOLYGONTYPE
 typedef struct
-{
+{  
+	int type;
 	int32 SRID;
 	char ndims;
 	int  npolys;
 	LWPOLY **polys;
 } LWMPOLY; 
 
-// COLLECTIONTYPE
-typedef struct
-{
-	int32 SRID;
-	char ndims;
-	int  ngeoms;
-	struct LWGEOM **geoms;
-} LWCOLLECTION; 
+extern size_t lwmpoly_serialize_size(LWMPOLY *mpoly);
+extern void lwmpoly_serialize_buf(LWMPOLY *mpoly, char *buf, int *size);
 
 // LWGEOM (any type)
 typedef struct
 {
-	char type;
-	union {
-		LWPOINT *point;
-		LWMPOINT *mpoint;
-		LWLINE *line;
-		LWMLINE *mline;
-		LWPOLY *poly;
-		LWMPOLY *mpoly;
-		LWCOLLECTION *collection;
-	};
+	int type;
+	void *data;
 } LWGEOM;
+
+extern size_t lwgeom_serialize_size(LWGEOM *geom);
+extern void lwgeom_serialize_buf(LWGEOM *geom, char *buf, int *size);
+extern char *lwgeom_serialize(LWGEOM *geom, char wantbbox);
+
+// COLLECTIONTYPE
+typedef struct
+{   
+	int type;
+	int32 SRID;
+	char ndims;
+	int  ngeoms;
+	LWGEOM **geoms;
+} LWCOLLECTION; 
+
+extern size_t lwcollection_serialize_size(LWCOLLECTION *coll);
+extern void lwcollection_serialize_buf(LWCOLLECTION *mcoll, char *buf, int *size);
 
 LWGEOM *lwgeom_deserialize(char *serializedform);
 LWMPOINT *lwmpoint_deserialize(char *serializedform);
 LWMLINE *lwmline_deserialize(char *serializedform);
 LWMPOLY *lwmpoly_deserialize(char *serializedform);
 LWCOLLECTION *lwcollection_deserialize(char *serializedform);
+LWGEOM *lwcollection_getsubgeom(LWCOLLECTION *, int);
+
 
 //------------------------------------------------------
 

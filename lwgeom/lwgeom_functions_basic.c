@@ -50,6 +50,7 @@ Datum LWGEOM_forceRHR_poly(PG_FUNCTION_ARGS);
 
 // internal
 char * lwgeom_summary_recursive(char *serialized, int offset);
+char * lwgeom_summary(LWGEOM *serialized, int offset);
 int32 lwgeom_nrings_recursive(char *serialized);
 void dump_lwexploded(LWGEOM_EXPLODED *exploded);
 POINTARRAY *ptarray_reverse(const POINTARRAY *pa);
@@ -765,11 +766,11 @@ ptarray_reverse(const POINTARRAY *ipa)
 	uint32 i, j;
 	int ptsize;
 
-	opa = (POINTARRAY *)palloc(sizeof(POINTARRAY));
+	opa = (POINTARRAY *)lwalloc(sizeof(POINTARRAY));
 	opa->ndims = ipa->ndims;
 	opa->npoints = ipa->npoints;
 	ptsize = pointArray_ptsize(ipa);
-	opa->serialized_pointlist = palloc(ipa->npoints*ptsize);
+	opa->serialized_pointlist = lwalloc(ipa->npoints*ptsize);
 
 	for (i=0, j=ipa->npoints-1; i<ipa->npoints; i++, j--)
 	{
@@ -796,7 +797,7 @@ lwpoly_reverse(const LWPOLY *ipoly)
 	POINTARRAY **rpa;
 	int i;
 
-	rpa = palloc(sizeof(POINTARRAY *)*ipoly->nrings);
+	rpa = lwalloc(sizeof(POINTARRAY *)*ipoly->nrings);
 
 	for (i=0; i<ipoly->nrings; i++)
 	{
@@ -817,7 +818,7 @@ lwpoly_forceRHR(const LWPOLY *ipoly)
 	int i;
 	POINTARRAY *opa;
 
-	rpa = palloc(sizeof(POINTARRAY *)*ipoly->nrings);
+	rpa = lwalloc(sizeof(POINTARRAY *)*ipoly->nrings);
 
 	if ( ptarray_isccw(ipoly->rings[0]) )
 	{
@@ -862,8 +863,156 @@ Datum LWGEOM_mem_size(PG_FUNCTION_ARGS)
 	PG_RETURN_INT32(size);
 }
 
+char *lwcollection_summary(LWCOLLECTION *collection, int offset);
+char *lwmpoly_summary(LWMPOLY *mpoly, int offset);
+char *lwmline_summary(LWMLINE *mline, int offset);
+char *lwmpoint_summary(LWMPOINT *mpoint, int offset);
+char *lwpoly_summary(LWPOLY *poly, int offset);
+char *lwline_summary(LWLINE *line, int offset);
+char *lwpoint_summary(LWPOINT *point, int offset);
+
 /*
- * Returns a palloced string containing summary for the serialized
+ * Returns an alloced string containing summary for the LWGEOM object
+ */
+char *
+lwpoint_summary(LWPOINT *point, int offset)
+{
+	char *result;
+	result = lwalloc(256);
+	sprintf(result, "Object %d is a POINT()\n", offset);
+	return result;
+}
+
+char *
+lwline_summary(LWLINE *line, int offset)
+{
+	char *result;
+	result = lwalloc(32);
+	sprintf(result, "Object %d is a LINE()\n", offset);
+	return result;
+}
+
+char *
+lwpoly_summary(LWPOLY *poly, int offset)
+{
+	char tmp[256];
+	char *result = lwalloc(64*(poly->nrings+1));
+	int i;
+
+	result[0] = '\0';
+	sprintf(tmp, "Object %d is a POLYGON() with %i rings\n",
+		offset, poly->nrings);
+	strcat(result, tmp);
+	for (i=0; i<poly->nrings;i++)
+	{
+		sprintf(tmp,"     + ring %i has %i points\n",
+			i, poly->rings[i]->npoints);
+		strcat(result,tmp);
+	}
+	return result;
+}
+
+char *
+lwmpoint_summary(LWMPOINT *mpoint, int offset)
+{
+	char *result = lwalloc(60);
+	sprintf(result, "Object %d is a MULTIPOINT() with %d points\n",
+		offset, mpoint->npoints);
+	return result;
+}
+
+char *
+lwmline_summary(LWMLINE *mline, int offset)
+{
+	char *result = lwalloc(60*(mline->nlines+1));
+	sprintf(result, "Object %d is a MULTILINE() with %d lines\n",
+		offset, mline->nlines);
+	return result;
+}
+
+char *
+lwmpoly_summary(LWMPOLY *mpoly, int offset)
+{
+	size_t size = 128;
+	char *result = lwalloc(size);
+	char *tmp;
+	int i;
+
+	sprintf(result, "Object %d is a MULTIPOLYGON() with %d polys\n",
+		offset, mpoly->npolys);
+
+	for (i=0; i<mpoly->npolys; i++)
+	{
+		tmp = lwpoly_summary(mpoly->polys[i], i);
+		size += strlen(tmp)+1;
+		result = lwrealloc(result, size);
+		strcat(result, tmp);
+		//lwfree(tmp);
+	}
+
+	return result;
+}
+
+
+char *
+lwcollection_summary(LWCOLLECTION *collection, int offset)
+{
+	char *result = lwalloc(60*(collection->ngeoms+1));
+	char *tmp;
+	int i;
+
+	sprintf(result, "Object %d is a COLLECTION() with %d subgeoms\n",
+		offset, collection->ngeoms);
+
+	for (i=0; i<collection->ngeoms; i++)
+	{
+		tmp = lwgeom_summary(lwcollection_getsubgeom(collection, i), i);
+		strcat(result, tmp);
+		lwfree(tmp);
+	}
+
+	return result;
+}
+
+char *
+lwgeom_summary(LWGEOM *lwgeom, int offset)
+{
+	char *result;
+
+	switch (lwgeom->type)
+	{
+		case POINTTYPE:
+			return lwpoint_summary((LWPOINT *)lwgeom, offset);
+
+		case LINETYPE:
+			return lwline_summary((LWLINE *)lwgeom, offset);
+
+		case POLYGONTYPE:
+			return lwpoly_summary((LWPOLY *)lwgeom, offset);
+
+		case MULTIPOINTTYPE:
+			return lwmpoint_summary((LWMPOINT *)lwgeom, offset);
+
+		case MULTILINETYPE:
+			return lwmline_summary((LWMLINE *)lwgeom, offset);
+
+		case MULTIPOLYGONTYPE:
+			return lwmpoly_summary((LWMPOLY *)lwgeom, offset);
+
+		case COLLECTIONTYPE:
+			return lwcollection_summary((LWCOLLECTION *)lwgeom, offset);
+		default:
+			result = palloc(256);
+			sprintf(result, "Object is of unknown type: %d", 
+				lwgeom->type);
+			return result;
+	}
+
+	return NULL;
+}
+
+/*
+ * Returns a lwalloced string containing summary for the serialized
  * LWGEOM object
  */
 char *
@@ -878,7 +1027,7 @@ lwgeom_summary_recursive(char *serialized, int offset)
 	int32 j,i;
 
 	size = 1;
-	result = palloc(1);
+	result = lwalloc(1);
 	result[0] = '\0';
 
 	if ( offset == 0 ) idx = 0;
@@ -896,7 +1045,7 @@ lwgeom_summary_recursive(char *serialized, int offset)
 		if ( lwgeom_getType(subgeom[0]) == 0 )
 		{
 			size += 32;
-			result = repalloc(result,size);
+			result = lwrealloc(result,size);
 			sprintf(tmp,"Object %i is EMPTY()\n", idx++);
 			strcat(result,tmp);
 			continue;
@@ -907,7 +1056,7 @@ lwgeom_summary_recursive(char *serialized, int offset)
 		if (point !=NULL)
 		{
 			size += 32;
-			result = repalloc(result,size);
+			result = lwrealloc(result,size);
 			sprintf(tmp,"Object %i is a POINT()\n", idx++);
 			strcat(result,tmp);
 			continue;
@@ -917,7 +1066,7 @@ lwgeom_summary_recursive(char *serialized, int offset)
 		if (poly !=NULL)
 		{
 			size += 60*(poly->nrings+1);
-			result = repalloc(result,size);
+			result = lwrealloc(result,size);
 			sprintf(tmp,"Object %i is a POLYGON() with %i rings\n",
 				idx++, poly->nrings);
 			strcat(result,tmp);
@@ -934,7 +1083,7 @@ lwgeom_summary_recursive(char *serialized, int offset)
 		if (line != NULL)
 		{
 			size += 57;
-			result = repalloc(result,size);
+			result = lwrealloc(result,size);
 			sprintf(tmp, "Object %i is a LINESTRING() with %i points\n", idx++, line->points->npoints);
 			strcat(result,tmp);
 			continue;
@@ -942,9 +1091,9 @@ lwgeom_summary_recursive(char *serialized, int offset)
 
 		ptr = lwgeom_summary_recursive(subgeom, j);
 		size += strlen(ptr);
-		result = repalloc(result,size);
+		result = lwrealloc(result,size);
 		strcat(result, ptr);
-		pfree(ptr);
+		lwfree(ptr);
 	}
 
 	pfree_inspected(inspected);
@@ -1037,14 +1186,20 @@ Datum LWGEOM_summary(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	char *result;
 	text *mytext;
+	LWGEOM *lwgeom;
 
-	result = lwgeom_summary_recursive(SERIALIZED_FORM(geom), 0);
+	init_pg_func();
+
+	lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom));
+
+	//result = lwgeom_summary_recursive(SERIALIZED_FORM(geom), 0);
+	result = lwgeom_summary(lwgeom, 0);
 
 	// create a text obj to return
-	mytext = (text *) palloc(VARHDRSZ  + strlen(result) );
+	mytext = (text *) lwalloc(VARHDRSZ  + strlen(result) );
 	VARATT_SIZEP(mytext) = VARHDRSZ + strlen(result) ;
 	memcpy(VARDATA(mytext) , result, strlen(result) );
-	pfree(result);
+	lwfree(result);
 	PG_RETURN_POINTER(mytext);
 }
 
@@ -1053,7 +1208,7 @@ Datum postgis_lib_version(PG_FUNCTION_ARGS)
 {
 	char *ver = POSTGIS_LIB_VERSION;
 	text *result;
-	result = (text *) palloc(VARHDRSZ  + strlen(ver));
+	result = (text *) lwalloc(VARHDRSZ  + strlen(ver));
 	VARATT_SIZEP(result) = VARHDRSZ + strlen(ver) ;
 	memcpy(VARDATA(result), ver, strlen(ver));
 	PG_RETURN_POINTER(result);
@@ -1064,7 +1219,7 @@ Datum postgis_scripts_released(PG_FUNCTION_ARGS)
 {
 	char *ver = POSTGIS_SCRIPTS_VERSION;
 	text *result;
-	result = (text *) palloc(VARHDRSZ  + strlen(ver));
+	result = (text *) lwalloc(VARHDRSZ  + strlen(ver));
 	VARATT_SIZEP(result) = VARHDRSZ + strlen(ver) ;
 	memcpy(VARDATA(result), ver, strlen(ver));
 	PG_RETURN_POINTER(result);
@@ -1487,7 +1642,7 @@ lwgeom_force3d_recursive(char *serialized, char *optr, int *retsize)
 		{
 			newpts.ndims = 3;
 			newpts.npoints = 1;
-			newpts.serialized_pointlist = palloc(sizeof(POINT3D));
+			newpts.serialized_pointlist = lwalloc(sizeof(POINT3D));
 			loc = newpts.serialized_pointlist;
 			getPoint3d_p(point->point, 0, loc);
 			point->point = &newpts;
@@ -1510,7 +1665,7 @@ elog(NOTICE, "lwgeom_force3d_recursive: it's a line");
 		{
 			newpts.ndims = 3;
 			newpts.npoints = line->points->npoints;
-			newpts.serialized_pointlist = palloc(24*line->points->npoints);
+			newpts.serialized_pointlist = lwalloc(24*line->points->npoints);
 			loc = newpts.serialized_pointlist;
 			for (j=0; j<line->points->npoints; j++)
 			{
@@ -1535,17 +1690,17 @@ elog(NOTICE, "lwgeom_force3d_recursive: it's a line, size:%d", *retsize);
 		{
 			newpts.ndims = 3;
 			newpts.npoints = 0;
-			newpts.serialized_pointlist = palloc(1);
-			nrings = palloc(sizeof(POINTARRAY *)*poly->nrings);
+			newpts.serialized_pointlist = lwalloc(1);
+			nrings = lwalloc(sizeof(POINTARRAY *)*poly->nrings);
 			loc = newpts.serialized_pointlist;
 			for (j=0; j<poly->nrings; j++)
 			{
 				POINTARRAY *ring = poly->rings[j];
-				POINTARRAY *nring = palloc(sizeof(POINTARRAY));
+				POINTARRAY *nring = lwalloc(sizeof(POINTARRAY));
 				nring->ndims = 3;
 				nring->npoints = ring->npoints;
 				nring->serialized_pointlist =
-					palloc(ring->npoints*24);
+					lwalloc(ring->npoints*24);
 				loc = nring->serialized_pointlist;
 				for (k=0; k<ring->npoints; k++)
 				{
@@ -1657,7 +1812,7 @@ lwgeom_force4d_recursive(char *serialized, char *optr, int *retsize)
 		{
 			newpts.ndims = 4;
 			newpts.npoints = 1;
-			newpts.serialized_pointlist = palloc(sizeof(POINT4D));
+			newpts.serialized_pointlist = lwalloc(sizeof(POINT4D));
 			loc = newpts.serialized_pointlist;
 			getPoint4d_p(point->point, 0, loc);
 			point->point = &newpts;
@@ -1680,7 +1835,7 @@ elog(NOTICE, "lwgeom_force4d_recursive: it's a line");
 		{
 			newpts.ndims = 4;
 			newpts.npoints = line->points->npoints;
-			newpts.serialized_pointlist = palloc(sizeof(POINT4D)*line->points->npoints);
+			newpts.serialized_pointlist = lwalloc(sizeof(POINT4D)*line->points->npoints);
 			loc = newpts.serialized_pointlist;
 			for (j=0; j<line->points->npoints; j++)
 			{
@@ -1705,17 +1860,17 @@ elog(NOTICE, "lwgeom_force4d_recursive: it's a line, size:%d", *retsize);
 		{
 			newpts.ndims = 4;
 			newpts.npoints = 0;
-			newpts.serialized_pointlist = palloc(1);
-			nrings = palloc(sizeof(POINTARRAY *)*poly->nrings);
+			newpts.serialized_pointlist = lwalloc(1);
+			nrings = lwalloc(sizeof(POINTARRAY *)*poly->nrings);
 			loc = newpts.serialized_pointlist;
 			for (j=0; j<poly->nrings; j++)
 			{
 				POINTARRAY *ring = poly->rings[j];
-				POINTARRAY *nring = palloc(sizeof(POINTARRAY));
+				POINTARRAY *nring = lwalloc(sizeof(POINTARRAY));
 				nring->ndims = 4;
 				nring->npoints = ring->npoints;
 				nring->serialized_pointlist =
-					palloc(ring->npoints*sizeof(POINT4D));
+					lwalloc(ring->npoints*sizeof(POINT4D));
 				loc = nring->serialized_pointlist;
 				for (k=0; k<ring->npoints; k++)
 				{
@@ -1804,14 +1959,14 @@ Datum LWGEOM_force_2d(PG_FUNCTION_ARGS)
 	if ( lwgeom_ndims(geom->type) == 2 ) PG_RETURN_POINTER(geom);
 
 	// allocate a larger for safety and simplicity
-	result = (PG_LWGEOM *) palloc(geom->size);
+	result = (PG_LWGEOM *) lwalloc(geom->size);
 
 	lwgeom_force2d_recursive(SERIALIZED_FORM(geom),
 		SERIALIZED_FORM(result), &size);
 
 	// we can safely avoid this... memory will be freed at
 	// end of query processing anyway.
-	//result = repalloc(result, size+4);
+	//result = lwrealloc(result, size+4);
 
 	result->size = size+4;
 
@@ -1833,10 +1988,10 @@ Datum LWGEOM_force_3d(PG_FUNCTION_ARGS)
 	if ( olddims == 3 ) PG_RETURN_POINTER(geom);
 
 	if ( olddims > 3 ) {
-		result = (PG_LWGEOM *) palloc(geom->size);
+		result = (PG_LWGEOM *) lwalloc(geom->size);
 	} else {
 		// allocate double as memory a larger for safety 
-		result = (PG_LWGEOM *) palloc(geom->size*1.5);
+		result = (PG_LWGEOM *) lwalloc(geom->size*1.5);
 	}
 
 	lwgeom_force3d_recursive(SERIALIZED_FORM(geom),
@@ -1844,7 +1999,7 @@ Datum LWGEOM_force_3d(PG_FUNCTION_ARGS)
 
 	// we can safely avoid this... memory will be freed at
 	// end of query processing anyway.
-	//result = repalloc(result, size+4);
+	//result = lwrealloc(result, size+4);
 
 	result->size = size+4;
 
@@ -1866,14 +2021,14 @@ Datum LWGEOM_force_4d(PG_FUNCTION_ARGS)
 	if ( olddims == 4 ) PG_RETURN_POINTER(geom);
 
 	// allocate double as memory a larger for safety 
-	result = (PG_LWGEOM *) palloc(geom->size*2);
+	result = (PG_LWGEOM *) lwalloc(geom->size*2);
 
 	lwgeom_force4d_recursive(SERIALIZED_FORM(geom),
 		SERIALIZED_FORM(result), &size);
 
 	// we can safely avoid this... memory will be freed at
 	// end of query processing anyway.
-	//result = repalloc(result, size+4);
+	//result = lwrealloc(result, size+4);
 
 	result->size = size+4;
 
@@ -1899,7 +2054,7 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS)
 	// alread a multi*, just make it a collection
 	if ( oldtype > 3 )
 	{
-		result = (PG_LWGEOM *)palloc(geom->size);
+		result = (PG_LWGEOM *)lwalloc(geom->size);
 		result->size = geom->size;
 		result->type = TYPE_SETTYPE(geom->type, COLLECTIONTYPE);
 		memcpy(result->data, geom->data, geom->size-5);
@@ -1911,7 +2066,7 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS)
 
 	size = geom->size+5; // 4 for numgeoms, 1 for type
 
-	result = (PG_LWGEOM *)palloc(size); // 4 for numgeoms, 1 for type
+	result = (PG_LWGEOM *)lwalloc(size); // 4 for numgeoms, 1 for type
 	result->size = size;
 
 	result->type = TYPE_SETTYPE(geom->type, COLLECTIONTYPE);
@@ -1977,7 +2132,7 @@ Datum LWGEOM_force_multi(PG_FUNCTION_ARGS)
 
 	size = geom->size+5; // 4 for numgeoms, 1 for type
 
-	result = (PG_LWGEOM *)palloc(size); // 4 for numgeoms, 1 for type
+	result = (PG_LWGEOM *)lwalloc(size); // 4 for numgeoms, 1 for type
 	result->size = size;
 
 	result->type = TYPE_SETTYPE(geom->type, newtype);
@@ -2330,19 +2485,19 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 	//elog(NOTICE, "geom_accum: adding %p (nelems=%d)", geom, nelems);
 
 	/*
-	 * Might use a more optimized version instead of repalloc'ing
+	 * Might use a more optimized version instead of lwrealloc'ing
 	 * at every iteration. This is not the bottleneck anyway.
 	 * 		--strk(TODO);
 	 */
 	++nelems;
 	nbytes = ARR_OVERHEAD(1) + sizeof(Pointer *) * nelems;
 	if ( ! array ) {
-		result = (ArrayType *) palloc(nbytes);
+		result = (ArrayType *) lwalloc(nbytes);
 		result->size = nbytes;
 		result->ndim = 1;
 		*((int *) ARR_DIMS(result)) = nelems;
 	} else {
-		result = (ArrayType *) repalloc(array, nbytes);
+		result = (ArrayType *) lwrealloc(array, nbytes);
 		result->size = nbytes;
 		result->ndim = 1;
 		*((int *) ARR_DIMS(result)) = nelems;
@@ -2514,7 +2669,7 @@ Datum LWGEOM_expand(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	double d = PG_GETARG_FLOAT8(1);
 	BOX2DFLOAT4 box;
-	POINT2D *pts = palloc(sizeof(POINT2D)*5);
+	POINT2D *pts = lwalloc(sizeof(POINT2D)*5);
 	POINTARRAY *pa[1];
 	LWPOLY *poly;
 	int SRID;
@@ -2542,7 +2697,7 @@ Datum LWGEOM_expand(PG_FUNCTION_ARGS)
 	pts[4].x = box.xmin; pts[4].y = box.ymin;
 
 	// Construct point array
-	pa[0] = palloc(sizeof(POINTARRAY));
+	pa[0] = lwalloc(sizeof(POINTARRAY));
 	pa[0]->serialized_pointlist = (char *)pts;
 	pa[0]->ndims = 2;
 	pa[0]->npoints = 5;
@@ -2565,7 +2720,7 @@ Datum LWGEOM_to_BOX(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	BOX2DFLOAT4 box2d;
-	BOX *result = (BOX *)palloc(sizeof(BOX));
+	BOX *result = (BOX *)lwalloc(sizeof(BOX));
 
 	if ( ! getbox2d_p(SERIALIZED_FORM(lwgeom), &box2d) )
 	{
@@ -2584,7 +2739,7 @@ Datum LWGEOM_envelope(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	BOX2DFLOAT4 box;
-	POINT2D *pts = palloc(sizeof(POINT2D)*5);
+	POINT2D *pts = lwalloc(sizeof(POINT2D)*5);
 	POINTARRAY *pa[1];
 	LWPOLY *poly;
 	int SRID;
@@ -2609,7 +2764,7 @@ Datum LWGEOM_envelope(PG_FUNCTION_ARGS)
 	pts[4].x = box.xmin; pts[4].y = box.ymin;
 
 	// Construct point array
-	pa[0] = palloc(sizeof(POINTARRAY));
+	pa[0] = lwalloc(sizeof(POINTARRAY));
 	pa[0]->serialized_pointlist = (char *)pts;
 	pa[0]->ndims = 2;
 	pa[0]->npoints = 5;
@@ -2723,10 +2878,10 @@ segmentize2d_ptarray(POINTARRAY *ipa, double dist)
 	pbuf.x = pbuf.y = pbuf.z = pbuf.m = 0;
 
 	// Initial storage
-	opa = (POINTARRAY *)palloc(ptsize * maxpoints);
+	opa = (POINTARRAY *)lwalloc(ptsize * maxpoints);
 	opa->ndims = ipa->ndims;
 	opa->npoints = 0;
-	opa->serialized_pointlist = (char *)palloc(maxpoints*ptsize);
+	opa->serialized_pointlist = (char *)lwalloc(maxpoints*ptsize);
 
 	// Add first point
 	opa->npoints++;
@@ -2759,7 +2914,7 @@ segmentize2d_ptarray(POINTARRAY *ipa, double dist)
 		// Add point
 		if ( ++(opa->npoints) > maxpoints ) {
 			maxpoints *= 1.5;
-			opa->serialized_pointlist = (char *)repalloc(
+			opa->serialized_pointlist = (char *)lwrealloc(
 				opa->serialized_pointlist,
 				maxpoints*ptsize
 			);
@@ -2856,7 +3011,7 @@ Datum LWGEOM_reverse(PG_FUNCTION_ARGS)
 	}
 
 	size = lwexploded_findlength(exp, wantbbox);
-	result = palloc(size+4);
+	result = lwalloc(size+4);
 	result->size = (size+4);
 	lwexploded_serialize_buf(exp, wantbbox, SERIALIZED_FORM(result), &size);
 	
@@ -2900,7 +3055,7 @@ Datum LWGEOM_forceRHR_poly(PG_FUNCTION_ARGS)
 	}
 
 	size = lwexploded_findlength(exp, wantbbox);
-	result = palloc(size+4);
+	result = lwalloc(size+4);
 	result->size = (size+4);
 	lwexploded_serialize_buf(exp, wantbbox, SERIALIZED_FORM(result), &size);
 	

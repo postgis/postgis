@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "liblwgeom.h"
 
 LWMLINE *
@@ -20,6 +21,7 @@ lwmline_deserialize(char *srl)
 	insp = lwgeom_inspect(srl);
 
 	result = lwalloc(sizeof(LWMLINE));
+	result->type = MULTILINETYPE;
 	result->SRID = insp->SRID;
 	result->ndims = lwgeom_ndims(insp->type);
 	result->nlines = insp->ngeometries;
@@ -39,3 +41,58 @@ lwmline_deserialize(char *srl)
 	return result;
 }
 
+// find serialized size of this mline
+size_t
+lwmline_serialize_size(LWMLINE *mline)
+{
+	size_t size = 5; // type + nsubgeoms
+	int i;
+
+	if ( mline->SRID != -1 ) size += 4; // SRID
+
+	for (i=0; i<mline->nlines; i++)
+		size += lwline_serialize_size(mline->lines[i]);
+
+	return size; 
+}
+
+// convert this multiline into its serialize form writing it into
+// the given buffer, and returning number of bytes written into
+// the given int pointer.
+void
+lwmline_serialize_buf(LWMLINE *mline, char *buf, int *retsize)
+{
+	int size=1; // type 
+	int subsize=0;
+	char hasSRID;
+	char *loc;
+	int i;
+
+	hasSRID = (mline->SRID != -1);
+
+	buf[0] = (unsigned char) lwgeom_makeType(mline->ndims,
+		hasSRID, MULTILINETYPE);
+	loc = buf+1;
+
+	// Add SRID if requested
+	if (hasSRID)
+	{
+		memcpy(loc, &mline->SRID, 4);
+		size += 4; 
+		loc += 4;
+	}
+
+	// Write number of subgeoms
+	memcpy(loc, &mline->nlines, 4);
+	size += 4;
+	loc += 4;
+
+	// Serialize subgeoms
+	for (i=0; i<mline->nlines; i++)
+	{
+		lwline_serialize_buf(mline->lines[i], loc, &subsize);
+		size += subsize;
+	}
+
+	if (retsize) *retsize = size;
+}

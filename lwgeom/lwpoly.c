@@ -13,6 +13,7 @@ lwpoly_construct(int ndims, int SRID, int nrings,POINTARRAY **points)
 	LWPOLY *result;
 
 	result = (LWPOLY*) lwalloc(sizeof(LWPOLY));
+	result->type = POLYGONTYPE;
 	result->ndims = ndims;
 	result->SRID = SRID;
 	result->nrings = nrings;
@@ -46,8 +47,9 @@ lwpoly_deserialize(char *serialized_form)
 
 	result = (LWPOLY*) lwalloc(sizeof(LWPOLY));
 
-
 	type = (unsigned  char) serialized_form[0];
+	result->type = POLYGONTYPE;
+
 	ndims = lwgeom_ndims(type);
 	loc = serialized_form;
 
@@ -366,10 +368,10 @@ lwgeom_size_poly(const char *serialized_poly)
 }
 
 // find length of this deserialized polygon
-uint32
-lwpoly_size(LWPOLY *poly)
+size_t
+lwpoly_serialize_size(LWPOLY *poly)
 {
-	uint32 size = 1; // type
+	size_t size = 1; // type
 	uint32 i;
 
 	if ( poly->SRID != -1 ) size += 4; // SRID

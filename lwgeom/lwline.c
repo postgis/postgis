@@ -12,6 +12,7 @@ LWLINE *lwline_construct(int ndims, int SRID,  POINTARRAY *points)
 	LWLINE *result;
 	result = (LWLINE*) lwalloc( sizeof(LWLINE));
 
+	result->type = LINETYPE;
 	result->ndims =ndims;
 	result->SRID = SRID;
 	result->points = points;
@@ -34,6 +35,8 @@ LWLINE *lwline_deserialize(char *serialized_form)
 	result = (LWLINE*) lwalloc(sizeof(LWLINE)) ;
 
 	type = (unsigned char) serialized_form[0];
+	result->type = LINETYPE;
+
 	if ( lwgeom_getType(type) != LINETYPE)
 	{
 		lwerror("lwline_deserialize: attempt to deserialize a line when its not really a line");
@@ -247,10 +250,10 @@ BOX3D *lwline_findbbox(LWLINE *line)
 }
 
 // find length of this deserialized line
-uint32
-lwline_size(LWLINE *line)
+size_t
+lwline_serialize_size(LWLINE *line)
 {
-	uint32 size = 1;  //type
+	size_t size = 1;  //type
 
 	if ( line->SRID != -1 ) size += 4; // SRID
 	size += sizeof(double)*line->ndims*line->points->npoints; // points
