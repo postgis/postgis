@@ -122,6 +122,7 @@ Datum build_lwhistogram2d(PG_FUNCTION_ARGS);
 Datum explode_lwhistogram2d(PG_FUNCTION_ARGS);
 Datum estimate_lwhistogram2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS);
+Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS);
 #if USE_VERSION >= 80
 Datum LWGEOM_analyze(PG_FUNCTION_ARGS);
 #endif
@@ -2023,6 +2024,9 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.16  2004/12/17 11:07:48  strk
+ * Added missing prototype
+ *
  * Revision 1.15  2004/12/13 14:03:07  strk
  * Initial skeleton on join selectivity estimator.
  * Current estimators application for box2d && box2d operator.
