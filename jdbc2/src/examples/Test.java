@@ -21,39 +21,53 @@ public class Test {
         String lr_str = "(10 10 20,34 34 34, 23 19 23 , 10 10 11)";
 
         System.out.println("LinearRing Test:");
-        System.out.println(lr_str);
+        System.out.println("\t"+lr_str);
         LinearRing lr = new LinearRing(lr_str);
-        System.out.println(lr.toString());
+        System.out.println("\t"+lr.toString());
+
+        System.out.println();
 
         System.out.println("Point Test:");
-        System.out.println(ptg_str);
+        System.out.println("\t"+ptg_str);
         Point ptg = new Point(ptg_str);
-        System.out.println(ptg.toString());
+        System.out.println("\t"+ptg.toString());
+
+        System.out.println();
 
         System.out.println("LineString Test:");
-        System.out.println(lng_str);
+        System.out.println("\t"+lng_str);
         LineString lng = new LineString(lng_str);
-        System.out.println(lng.toString());
+        System.out.println("\t"+lng.toString());
+
+        System.out.println();
 
         System.out.println("Polygon Test:");
-        System.out.println(plg_str);
+        System.out.println("\t"+plg_str);
         Polygon plg = new Polygon(plg_str);
-        System.out.println(plg.toString());
+        System.out.println("\t"+plg.toString());
+
+        System.out.println();
 
         System.out.println("MultiPolygon Test:");
-        System.out.println(mplg_str);
+        System.out.println("\t"+mplg_str);
         MultiPolygon mplg = new MultiPolygon(mplg_str);
-        System.out.println(mplg.toString());
+        System.out.println("\t"+mplg.toString());
+
+        System.out.println();
 
         System.out.println("MultiLineString Test:");
-        System.out.println(mlng_str);
+        System.out.println("\t"+mlng_str);
         MultiLineString mlng = new MultiLineString(mlng_str);
-        System.out.println(mlng.toString());
+        System.out.println("\t"+mlng.toString());
+
+        System.out.println();
 
         System.out.println("PG Test:");
-        System.out.println(mlng_str);
+        System.out.println("\t"+mlng_str);
         PGgeometry pgf = new PGgeometry(mlng_str);
-        System.out.println(pgf.toString());
+        System.out.println("\t"+pgf.toString());
+
+        System.out.println();
 
         System.out.println("finished");
     }
