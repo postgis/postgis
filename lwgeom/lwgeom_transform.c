@@ -256,17 +256,13 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	geom = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom = (PG_LWGEOM *)  PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
 	if (pglwgeom_getSRID(geom) == -1)
 	{
-		PG_FREE_IF_COPY(geom, 0);
+		pfree(geom);
 		elog(ERROR,"tranform: source SRID = -1");
 		PG_RETURN_NULL();
 	}
-
-	// This call will always copy given geometry
-	result = pglwgeom_setSRID(geom, result_srid);
-	PG_FREE_IF_COPY(geom, 0);
 
 	input_proj4_text  = (PG_GETARG_TEXT_P(1));
 	output_proj4_text = (PG_GETARG_TEXT_P(2));
@@ -286,7 +282,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	if ( (input_pj == NULL) || pj_errno)
 	{
 		pfree(input_proj4); pfree(output_proj4);
-		pfree(result);
+		pfree(geom);
 		elog(ERROR,"tranform: couldnt parse proj4 input string");
 		PG_RETURN_NULL();
 	}
@@ -296,13 +292,13 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	{
 		pfree(input_proj4); pfree(output_proj4);
 		pj_free(input_pj);
-		pfree(result);
+		pfree(geom);
 		elog(ERROR,"tranform: couldnt parse proj4 output string");
 		PG_RETURN_NULL();
 	}
 
 	/* now we have a geometry, and input/output PJ structs. */
-	lwgeom_transform_recursive(SERIALIZED_FORM(result),
+	lwgeom_transform_recursive(SERIALIZED_FORM(geom),
 		input_pj, output_pj);
 
 	/* clean up */
@@ -310,17 +306,10 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	pj_free(output_pj);
 	pfree(input_proj4); pfree(output_proj4);
 
-	/* Compute bbox if input had one */
-	if ( TYPE_HASBBOX(result->type) ) 
-	{
-		srl = SERIALIZED_FORM(result);
-		if ( ! compute_serialized_bbox_p(srl, getbox2d_internal(srl)) )
-		{
-			oldgeom = result;
-			result = PG_LWGEOM_construct(srl, pglwgeom_getSRID(result), 0);
-			lwfree(oldgeom);
-		}
-	}
+	/* Compute bbox if input had one (COMPUTE_BBOX TAINTING) */
+	srl = SERIALIZED_FORM(geom);
+	result = PG_LWGEOM_construct(srl, result_srid,
+		TYPE_HASBBOX(geom->type));
 
 	PG_RETURN_POINTER(result); // new geometry
 }

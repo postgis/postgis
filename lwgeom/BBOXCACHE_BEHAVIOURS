@@ -76,10 +76,7 @@ section also use it.
 	GeometryN(geometry,integer) *LWG*
 	InteriorRingN(geometry,integer) *LWG*
 	simplify(geometry, float8) *LWG*
-
-	#### could use WHEN_SIMPLE
-	#### transforming an eventually present bbox cache in input
-	transform(geometry,integer) **SRL**
+	transform(geometry,integer) *SRL*
 
 [ WHEN_SIMPLE (use input bbox if present) ]
 	noop(geometry) *LWG*
