@@ -256,12 +256,17 @@ printf(conn_string);
 		}
 		if(size==-1 && type != OID){ //-1 represents variable size in postgres, this should not occur, but use 32 bytes in case it does
 			
-			query1 = (char *)malloc(60); //hardcoded size for the following query
-			strcpy(query1,"select max(octet_length(");
+			//( this is ugly: don't forget counting the length 
+			// when changing the fixed query strings )
+			query1 = (char *)malloc(
+			  24+strlen(PQfname(res, i))+8+strlen(table)+1 ); 
+			
+			strncpy(query1,"select max(octet_length(",24+1);
 			strcat(query1,PQfname(res, i));
-			strcat(query1,")) from ");
+			strncat(query1,")) from ",8);
 			strcat(query1,table);
 			res2 = PQexec(conn, query1);			
+
 			free(query1);
 			if(PQntuples(res2) > 0 ){
 				char *temp_int = (char *)PQgetvalue(res2, 0, 0);
