@@ -229,6 +229,7 @@ install: jar installdirs
 	test $(DESTDIR)
 	test $(INSTALL_DATA)
 	$(INSTALL_DATA) postgis.jar $(DESTDIR)
+	$(INSTALL_DATA) postgis_debug.jar $(DESTDIR)
 
 installdirs:
 	@echo Testing for successful inclusion of $(top_makefile)
