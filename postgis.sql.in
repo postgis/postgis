@@ -357,24 +357,46 @@ DECLARE
 	result text;
 	linked integer;
 	deleted integer;
+#if USE_VERSION >= 73
+	foundschema integer;
+#endif
 BEGIN
 
 #if USE_VERSION >= 73
 	-- Since 7.3 schema support has been added.
 	-- Previous postgis versions used to put the database name in
-	-- the schema column. This needs to be fixed, so we set to 
-	-- "public" any schema value not existing in pg_namespace
-	--
-	-- it would be better to find the correct schema name
-	UPDATE geometry_columns SET f_table_schema = ''public''
-		WHERE f_table_schema is NULL or f_table_schema = ''''
-		OR f_table_schema NOT IN ( SELECT nspname::varchar
-			FROM pg_namespace );
+	-- the schema column. This needs to be fixed, so we try to 
+	-- set the correct schema for each geometry_colums record
+	-- looking at table, column, type and srid.
+	UPDATE geometry_columns SET f_table_schema = n.nspname
+		FROM pg_namespace n, pg_class c, pg_attribute a,
+			pg_constraint sridcheck, pg_constraint typecheck
+                WHERE ( f_table_schema is NULL
+		OR f_table_schema = ''''
+                OR f_table_schema NOT IN (
+                        SELECT nspname::varchar
+                        FROM pg_namespace nn, pg_class cc, pg_attribute aa
+                        WHERE cc.relnamespace = nn.oid
+                        AND cc.relname = f_table_name::name
+                        AND aa.attrelid = cc.oid
+                        AND aa.attname = f_geometry_column::name))
+                AND f_table_name::name = c.relname
+                AND c.oid = a.attrelid
+                AND c.relnamespace = n.oid
+                AND f_geometry_column::name = a.attname
+                AND sridcheck.conrelid = c.oid
+                AND sridcheck.conname = ''$1''
+                AND typecheck.conrelid = c.oid
+                AND typecheck.conname = ''$2''
+                AND sridcheck.consrc ~ srid::text
+                AND typecheck.consrc ~ type::text;
+
+	GET DIAGNOSTICS foundschema = ROW_COUNT;
 #endif
 
 #if USE_VERSION >= 75
 	-- no linkage to system table needed
-	return ''done.'';
+	return ''schemafixes:''||foundschema::text;
 #endif
 
 	-- fix linking to system tables
@@ -405,8 +427,12 @@ BEGIN
 
 	GET DIAGNOSTICS deleted = ROW_COUNT;
 
-	result = ''link:'' || linked::text || '' '' ||
-		''del:'' || deleted::text;
+	result = 
+#if USE_VERSION >= 73
+		'' schemafixes:'' || foundschema::text ||
+#endif
+		'' linked:'' || linked::text || 
+		'' deleted:'' || deleted::text;
 
 	return result;
 
