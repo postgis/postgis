@@ -116,7 +116,7 @@ lwgeom_geos.o: lwgeom_geos.c profile.h
 
 lwgeom_functions_basic.o: lwgeom_functions_basic.c profile.h
 
-all: $(GEOS_RULES) all-lib lwpostgis.sql
+all: $(GEOS_RULES) $(shlib) lwpostgis.sql
 
 # Shared library stuff
 
@@ -178,3 +178,6 @@ liblwgeom_sa.a: $(SA_OBJS) liblwgeom_sa.o
 test: liblwgeom_sa.so liblwgeom_sa.a test.c
 	#$(CC) -o test -L. -llwgeom_sa $(SHLIB_LINK) test.c
 	$(CC) -Wall -lm -g -o test test.c liblwgeom_sa.a 
+
+tsort:
+	lorder $(SA_OBJS) | tsort
