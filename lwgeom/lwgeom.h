@@ -503,7 +503,10 @@ extern BOX3D *combine_boxes(BOX3D *b1, BOX3D *b2);
 // returns a real entity so it doesnt leak
 // if this has a pre-built BOX2d, then we use it,
 // otherwise we need to compute it.
+// WARNING! the EMPTY geom will result in a random BOX2D returned
 extern BOX2DFLOAT4 getbox2d(char *serialized_form);
+// this function writes to 'box' and returns 0 if serialized_form
+// does not have a bounding box (empty geom)
 extern int getbox2d_p(char *serialized_form, BOX2DFLOAT4 *box);
 
 // Expand given box of 'd' units in all directions 
