@@ -16,6 +16,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.4.2.2  2004/10/27 12:34:01  strk
+ * AsSVG returns NULL on unsupported GEOMETRYCOLLECTION.
+ *
  * Revision 1.4.2.1  2004/10/15 11:50:33  strk
  * Fixed a bug leaving a spurious byte in AsSVG() output.
  *
@@ -67,6 +70,7 @@ Datum assvg_geometry(PG_FUNCTION_ARGS)
 		precision = PG_GETARG_INT32(2);
 		
 	wkt = geometry_to_svg(geom1, svgrel, precision);
+	if ( ! wkt ) PG_RETURN_NULL();
 
 	len = strlen(wkt) + 4;
 
@@ -148,9 +152,7 @@ geometry->bvol.LLB.y)
 
 	if (geometry->type == COLLECTIONTYPE)
 	{
-		result = (char *)palloc(64); 
-		sprintf(result, "GEOMETRYCOLLECTION not yet supported");
-		return result;
+		return NULL;
 	}
 
 	//where are the objects?
@@ -332,6 +334,9 @@ precision){
 
 /**********************************************************************
  * $Log$
+ * Revision 1.4.2.2  2004/10/27 12:34:01  strk
+ * AsSVG returns NULL on unsupported GEOMETRYCOLLECTION.
+ *
  * Revision 1.4.2.1  2004/10/15 11:50:33  strk
  * Fixed a bug leaving a spurious byte in AsSVG() output.
  *
