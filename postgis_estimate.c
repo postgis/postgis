@@ -1,4 +1,3 @@
-
 /**********************************************************************
  * $Id$
  *
@@ -9,119 +8,6 @@
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
  * 
- **********************************************************************
- * $Log$
- * Revision 1.31.2.4  2004/10/13 13:39:21  strk
- * Cleanup (some elogs made it unbuildable agains PG<8)
- *
- * Revision 1.31.2.3  2004/10/05 21:58:21  strk
- * Yet another change in SPI_cursor_open (you'll need at least 8.0.0beta3
- *
- * Revision 1.31.2.2  2004/09/16 09:06:44  strk
- * Changed SPI_cursor_open call changes to be used for USE_VERSION > 80
- * (change seems to be intended for future releases)
- *
- * Revision 1.31.2.1  2004/09/14 07:44:54  strk
- * Updated SPI_cursor_open interface to support 8.0
- *
- * Revision 1.31  2004/08/19 06:15:58  strk
- * USE_VERSION gets 80 where it got 75
- *
- * Revision 1.30  2004/08/16 11:03:25  mcayland
- * Added DLLIMPORT reference to "default_statistics_target" if we are compiling under Win32. This should make it unnecessary to apply Romi's patch to the PostgreSQL source tree when compiling PostgreSQL ready for PostGIS.
- *
- * Revision 1.29  2004/06/22 16:52:17  strk
- * Standard deviation factor used in histogram extent computation made
- * a compile-time define.
- *
- * Revision 1.28  2004/06/14 07:48:10  strk
- * Histogram extent redefinition after hard deviant removal fixed to be
- * "at most" the standard deviation based computed.
- *
- * Revision 1.27  2004/06/11 11:38:57  strk
- * Infinite geometries handling.
- * Histogram extent re-computation after 'hard deviant' features removal.
- *
- * Revision 1.26  2004/06/10 18:54:12  strk
- * histogram grid size refined to use near-square cells.
- *
- * Revision 1.25  2004/06/10 15:44:43  strk
- * Added standard deviation based histogram extent refinement
- *
- * Revision 1.24  2004/06/10 13:42:17  strk
- * Separated the estimator code in an estimate_selectivity() function.
- * Handled complete contaiment and complete miss of histogram by searc box.
- *
- * Revision 1.23  2004/06/09 09:35:49  strk
- * Removed partial pgsql List API copy
- *
- * Revision 1.22  2004/06/08 17:49:14  strk
- * Fixed to build cleanly agains pg75
- *
- * Revision 1.21  2004/04/28 22:26:02  pramsey
- * Fixed spelling mistake in header text.
- *
- * Revision 1.20  2004/03/15 17:07:05  strk
- * Added calls to vacuum_delay_point() to give backend a chance of
- * interrupting geometry stats computation.
- * Set default DEBUG_GEOMETRY_STATS to 0.
- *
- * Revision 1.19  2004/03/09 00:21:02  strk
- * Removed useless code blocks in histogram builder
- *
- * Revision 1.18  2004/03/09 00:09:56  strk
- * estimator applies a gain of AOI/cell_area on each cell it intersects (reverted to previous behaviour)
- *
- * Revision 1.17  2004/03/04 13:50:45  strk
- * postgis_gist_sel(): added warnings if search_box goes outside of histogram grid
- *
- * Revision 1.16  2004/03/04 09:44:57  strk
- * The selectivity estimator does add the full value of each cell it overlaps,
- * regardless of the actual overlapping area. Final gain is not applied
- * (formerly 1 / minimun between average feature cells occupation and
- *  search_box cells occupation)
- *
- * Revision 1.15  2004/03/03 21:59:48  strk
- * added check to keep selectivity value in the range of validity (suggested by m.cave)
- *
- * Revision 1.14  2004/03/01 16:02:41  strk
- * histogram's boxesPerSide computed as a function of the column's statistic target
- *
- * Revision 1.13  2004/02/29 21:53:42  strk
- * bug fix in postgis_gist_sel (for PG75): SysCache is not released if not acquired
- *
- * Revision 1.12  2004/02/26 16:42:59  strk
- * Fixed bugs reported by Mark Cave-Ayland <m.cave-ayland@webbased.co.uk>.
- * Re-introduced previously removed estimate value incrementation by
- * the fractional part of each of the cells' value computed as the fraction
- * of overlapping area.
- *
- * Revision 1.11  2004/02/25 12:00:32  strk
- * Added handling for point features in histogram creation (add 1 instead of AOI/cell_area when AOI is 0).
- * Fixed a wrong cast of BOX3D to BOX (called the convertion func).
- * Added some comments and an implementation on how to change evaluation
- * based on the average feature and search box cells occupation.
- *
- * Revision 1.10  2004/02/25 00:46:26  strk
- * initial version of && selectivity estimation for PG75
- *
- * Revision 1.9  2004/02/23 21:59:16  strk
- * geometry analyzer builds the histogram
- *
- * Revision 1.8  2004/02/23 12:18:55  strk
- * added skeleton functions for pg75 stats integration
- *
- * Revision 1.7  2003/11/11 10:14:57  strk
- * Added support for PG74
- *
- * Revision 1.6  2003/07/25 17:08:37  pramsey
- * Moved Cygwin endian define out of source files into postgis.h common
- * header file.
- *
- * Revision 1.5  2003/07/01 18:30:55  pramsey
- * Added CVS revision headers.
- *
- *
  **********************************************************************/
 
  // If you're modifiying this file you should read the postgis mail list as it has
@@ -193,7 +79,7 @@
  */
 #define STATISTIC_KIND_GEOMETRY 100
 
-#define DEBUG_GEOMETRY_STATS 1
+#define DEBUG_GEOMETRY_STATS 0
 
 /*
  * Define this if you want to use standard deviation based
@@ -1948,3 +1834,22 @@ Datum geometry_analyze(PG_FUNCTION_ARGS)
 #endif
 
 
+/**********************************************************************
+ * $Log$
+ * Revision 1.31.2.5  2004/10/13 13:53:01  strk
+ * Changed DEBUG define off by default, trimmed Log lines and moved at EOF
+ *
+ * Revision 1.31.2.4  2004/10/13 13:39:21  strk
+ * Cleanup (some elogs made it unbuildable agains PG<8)
+ *
+ * Revision 1.31.2.3  2004/10/05 21:58:21  strk
+ * Yet another change in SPI_cursor_open (you'll need at least 8.0.0beta3
+ *
+ * Revision 1.31.2.2  2004/09/16 09:06:44  strk
+ * Changed SPI_cursor_open call changes to be used for USE_VERSION > 80
+ * (change seems to be intended for future releases)
+ *
+ * Revision 1.31.2.1  2004/09/14 07:44:54  strk
+ * Updated SPI_cursor_open interface to support 8.0
+ *
+ **********************************************************************/
