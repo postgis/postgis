@@ -47,10 +47,12 @@ char *
 lwpoint_summary(LWPOINT *point, int offset)
 {
 	char *result;
-	result = lwalloc(128+offset);
 	char pad[offset+1];
+
 	memset(pad, ' ', offset);
 	pad[offset] = '\0';
+
+	result = lwalloc(128+offset);
 
 	sprintf(result, "%s%s[%s]\n",
 		pad, lwgeom_typename(TYPE_GETTYPE(point->type)),
@@ -62,10 +64,12 @@ char *
 lwline_summary(LWLINE *line, int offset)
 {
 	char *result;
-	result = lwalloc(128+offset);
 	char pad[offset+1];
+
 	memset(pad, ' ', offset);
 	pad[offset] = '\0';
+
+	result = lwalloc(128+offset);
 
 	sprintf(result, "%s%s[%s] with %d points\n",
 		pad, lwgeom_typename(TYPE_GETTYPE(line->type)),

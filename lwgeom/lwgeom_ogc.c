@@ -710,7 +710,11 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 	PG_LWGEOM *result = NULL;
 
 	// read user-requested SRID if any
+#if USE_VERSION < 73
+	if ( fcinfo->nargs > 1 )
+#else
 	if ( PG_NARGS() > 1 )
+#endif
 	{
 		SRID = PG_GETARG_INT32(1);
 		if ( SRID != lwgeom_getSRID(geom) )
@@ -730,14 +734,13 @@ Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 	char *lwgeom;
 	char *result_cstring;
 	int len;
+        char *result,*loc_wkt;
+	char *semicolonLoc;
 
 	init_pg_func();
 
 	lwgeom = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	result_cstring =  unparse_WKT(lwgeom,lwalloc,lwfree);
-
-        char *result,*loc_wkt;
-	char *semicolonLoc;
 
 	semicolonLoc = strchr(result_cstring,';');
 

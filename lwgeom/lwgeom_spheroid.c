@@ -293,10 +293,12 @@ double lwgeom_pointarray_length_ellipse(POINTARRAY *pts, SPHEROID *sphere)
 	{
 		POINT3DZ frm;
 		POINT3DZ to;
+		double distellips;
+
 		getPoint3dz_p(pts, i, &frm);
 		getPoint3dz_p(pts, i+1, &to);
 
-		double distellips = distance_ellipse(
+		distellips = distance_ellipse(
 			frm.y*M_PI/180.0, frm.x*M_PI/180.0,
 			to.y*M_PI/180.0, to.x*M_PI/180.0, sphere);
 		dist += sqrt(distellips*distellips + (frm.z*frm.z));
