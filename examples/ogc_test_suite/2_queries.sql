@@ -805,9 +805,9 @@ WHERE forests.name = 'Green Forest' AND named_places.name = 'Ashton';
 --
 --================================
 --
-SELECT Cross(road_segment.centerline, divided_routes.centerlines)
-FROM road_segment, divided_routes 
-WHERE road_segment.fid = 102 AND divided_routes.name = 'Route 75';
+SELECT Cross(road_segments.centerline, divided_routes.centerlines)
+FROM road_segments, divided_routes 
+WHERE road_segments.fid = 102 AND divided_routes.name = 'Route 75';
 --
 --================================
 -- Conformance Item T43	
@@ -823,9 +823,9 @@ WHERE road_segment.fid = 102 AND divided_routes.name = 'Route 75';
 --
 --================================
 --
-SELECT Intersects(road_segment.centerline, divided_routes.centerlines)
-FROM road_segment, divided_routes 
-WHERE road_segment.fid = 102 AND divided_routes.name = 'Route 75';
+SELECT Intersects(road_segments.centerline, divided_routes.centerlines)
+FROM road_segments, divided_routes 
+WHERE road_segments.fid = 102 AND divided_routes.name = 'Route 75';
 --
 --================================
 -- Conformance Item T44	
@@ -933,7 +933,7 @@ WHERE named_places.name = 'Ashton' AND forests.name = 'Green Forest';
 --
 SELECT Union(shore, boundary)
 FROM lakes, named_places 
-WHERE lakes.name = 'Blue Lake' AND named_places.name = Ashton';
+WHERE lakes.name = 'Blue Lake' AND named_places.name = 'Ashton';
 --
 --================================
 -- Conformance Item T50	
@@ -972,7 +972,7 @@ WHERE lakes.name = 'Blue Lake' OR named_places.name = 'Ashton';
 --
 SELECT count(*)
 FROM buildings, bridges
-WHERE Contains(Buffer(bridges.position, 15.0), buildings.footprint) = 1;
+WHERE Contains(Buffer(bridges.position, 15.0), buildings.footprint);
 --
 --================================
 -- Conformance Item T52	
