@@ -425,6 +425,8 @@ CREATEFUNCTION postgis_gist_sel (internal, oid, internal, int4)
 CREATEFUNCTION postgis_gist_joinsel(oid, oid, int2, opaque, smallint)
 #elif USE_VERSION == 72
 CREATEFUNCTION postgis_gist_joinsel(opaque, oid,  opaque, smallint)
+#elif USE_VERSION == 73
+CREATEFUNCTION postgis_gist_joinsel(internal, oid,  internal)
 #else
 CREATEFUNCTION postgis_gist_joinsel(internal, oid, internal, smallint)
 #endif
