@@ -16,6 +16,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.4  2004/09/13 14:26:27  strk
+ * indentation fix
+ *
  * Revision 1.3  2004/09/10 16:16:31  pramsey
  * Added Log tag to header.
  *
@@ -30,9 +33,8 @@ Datum assvg_geometry(PG_FUNCTION_ARGS);
 char *geometry_to_svg(GEOMETRY  *geometry, int svgrel, int precision);
 void print_svg_coords(char *result, POINT3D *pt, int precision);
 void print_svg_circle(char *result, POINT3D *pt, int precision);
-void print_svg_path_abs(char *result, POINT3D *pt ,int npoints, int
-precision); void print_svg_path_rel(char *result, POINT3D *pt ,int
-npoints, int precision);
+void print_svg_path_abs(char *result, POINT3D *pt, int npoints, int precision);
+void print_svg_path_rel(char *result, POINT3D *pt, int npoints, int precision);
 
 #define SHOW_DIGS_DOUBLE 15
 #define MAX_DIGS_DOUBLE (SHOW_DIGS_DOUBLE + 6 + 1 + 3 +1)
@@ -327,6 +329,9 @@ precision){
 
 /**********************************************************************
  * $Log$
+ * Revision 1.4  2004/09/13 14:26:27  strk
+ * indentation fix
+ *
  * Revision 1.3  2004/09/10 16:16:31  pramsey
  * Added Log tag to header.
  *
