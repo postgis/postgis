@@ -1226,6 +1226,204 @@ CREATEFUNCTION GeomFromWKB(bytea, int)
 	AS 'SELECT setSRID(GeomFromWKB($1), $2)'
 	LANGUAGE 'SQL' WITH (isstrict,iscachable);
 
+CREATEFUNCTION PointFromWKB(geometry, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype($1) = ''POINT'' THEN setSRID($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION PointFromWKB(geometry)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype($1) = ''POINT'' THEN $1
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION LineFromWKB(geometry, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype($1) = ''LINESTRING'' THEN setSRID($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION LineFromWKB(geometry)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype($1) = ''LINESTRING'' THEN $1
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION LinestringFromWKB(geometry, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype($1) = ''LINESTRING'' THEN setSRID($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION LinestringFromWKB(geometry)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype($1) = ''LINESTRING'' THEN $1
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION PolyFromWKB(geometry, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype($1) = ''POLYGON'' THEN setSRID($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION PolyFromWKB(geometry)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype($1) = ''POLYGON'' THEN $1
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION PolygonFromWKB(geometry, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype($1) = ''POLYGON'' THEN setSRID($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION PolygonFromWKB(geometry)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype($1) = ''POLYGON'' THEN $1
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION MPointFromWKB(geometry, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype($1) = ''MULTIPOINT'' THEN setSRID($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION MPointFromWKB(geometry)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype($1) = ''MULTIPOINT'' THEN $1
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION MultiPointFromWKB(geometry, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype($1) = ''MULTIPOINT'' THEN setSRID($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION MultiPointFromWKB(geometry)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype($1) = ''MULTIPOINT'' THEN $1
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION MultiLineFromWKB(geometry, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype($1) = ''MULTILINESTRING''
+	THEN setSRID($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION MultiLineFromWKB(geometry)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype($1) = ''MULTILINESTRING'' THEN $1
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION MLineFromWKB(geometry, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype($1) = ''MULTILINESTRING''
+	THEN setSRID($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION MLineFromWKB(geometry)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype($1) = ''MULTILINESTRING'' THEN $1
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION MPolyFromWKB(geometry, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype($1) = ''MULTIPOLYGON'' THEN
+	setSRID($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION MPolyFromWKB(geometry)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype($1) = ''MULTIPOLYGON'' THEN $1
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION MultiPolyFromWKB(geometry, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype($1) = ''MULTIPOLYGON'' THEN
+	setSRID($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION MultiPolyFromWKB(geometry)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype($1) = ''MULTIPOLYGON'' THEN $1
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION GeomCollFromWKB(geometry, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype($1) = ''GEOMETRYCOLLECTION'' THEN
+	setSRID($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
+CREATEFUNCTION GeomCollFromWKB(geometry)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype($1) = ''GEOMETRYCOLLECTION'' THEN
+	$1
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' WITH (isstrict,iscachable);
+
 ------------------------------------------------------------------------
 -- Misures
 ------------------------------------------------------------------------
@@ -2494,6 +2692,16 @@ CREATEFUNCTION geometry(chip)
 	AS '@MODULE_FILENAME@','CHIP_to_LWGEOM'
 	LANGUAGE 'C' WITH (isstrict,iscachable);
 
+CREATEFUNCTION geometry(bytea)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','LWGEOMFromWKB'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
+CREATEFUNCTION bytea(geometry)
+	RETURNS bytea
+	AS '@MODULE_FILENAME@','WKBFromLWGEOM'
+	LANGUAGE 'C' WITH (isstrict,iscachable);
+
 -- 7.3+ explicit casting definitions
 #if USE_VERSION >= 73
 CREATE CAST (geometry AS box2d) WITH FUNCTION box2d(geometry) AS IMPLICIT;
@@ -2505,6 +2713,8 @@ CREATE CAST (box3d AS box) WITH FUNCTION box(box3d) AS IMPLICIT;
 CREATE CAST (box3d AS geometry) WITH FUNCTION geometry(box3d) AS IMPLICIT;
 CREATE CAST (text AS geometry) WITH FUNCTION geometry(text) AS IMPLICIT;
 CREATE CAST (chip AS geometry) WITH FUNCTION geometry(chip) AS IMPLICIT;
+CREATE CAST (bytea AS geometry) WITH FUNCTION geometry(bytea) AS IMPLICIT;
+CREATE CAST (geometry AS bytea) WITH FUNCTION bytea(geometry) AS IMPLICIT;
 #endif
 
 ---------------------------------------------------------------
