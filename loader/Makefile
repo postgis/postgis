@@ -50,8 +50,8 @@ shp2pgsql$(EXE): $(OBJS) shp2pgsql.o
 	$(CC) $(CFLAGS) $(OBJS) shp2pgsql.o $(LDFLAGS) -o $@ 
 
 install: all
-	$(INSTALL_PROGRAM) pgsql2shp$(EXE) $(bindir)/pgsql2shp$(EXE)
-	$(INSTALL_PROGRAM) shp2pgsql$(EXE) $(bindir)/shp2pgsql$(EXE)
+	$(INSTALL_PROGRAM) pgsql2shp$(EXE) $(DESTDIR)$(bindir)/pgsql2shp$(EXE)
+	$(INSTALL_PROGRAM) shp2pgsql$(EXE) $(DESTDIR)$(bindir)/shp2pgsql$(EXE)
 
 clean:
 	@rm -f $(OBJS) shp2pgsql.o pgsql2shp.o shp2pgsql$(EXE) pgsql2shp$(EXE)
