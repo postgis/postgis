@@ -23,6 +23,7 @@ Datum LWGEOM_npoints(PG_FUNCTION_ARGS);
 Datum LWGEOM_nrings(PG_FUNCTION_ARGS);
 Datum LWGEOM_area_polygon(PG_FUNCTION_ARGS);
 Datum postgis_uses_stats(PG_FUNCTION_ARGS);
+Datum postgis_autocache_bbox(PG_FUNCTION_ARGS);
 Datum postgis_scripts_released(PG_FUNCTION_ARGS);
 Datum postgis_lib_version(PG_FUNCTION_ARGS);
 Datum LWGEOM_length2d_linestring(PG_FUNCTION_ARGS);
@@ -215,6 +216,17 @@ Datum postgis_uses_stats(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(FALSE);
 #endif
 }
+
+PG_FUNCTION_INFO_V1(postgis_autocache_bbox);
+Datum postgis_autocache_bbox(PG_FUNCTION_ARGS)
+{
+#ifdef AUTOCACHE_BBOX
+	PG_RETURN_BOOL(TRUE);
+#else
+	PG_RETURN_BOOL(FALSE);
+#endif
+}
+
 
 /*
  * Recursively count points in a SERIALIZED lwgeom
@@ -1499,6 +1511,9 @@ Datum LWGEOM_translate(PG_FUNCTION_ARGS)
 		box->ymax += yoff;
 	}
 
+	// Construct PG_LWGEOM 
+	geom = PG_LWGEOM_construct(srl, lwgeom_getsrid(srl), box?1:0);
+
 	PG_RETURN_POINTER(geom);
 }
 
@@ -2190,7 +2205,6 @@ Datum LWGEOM_expand(PG_FUNCTION_ARGS)
 	LWPOLY *poly;
 	int SRID;
 	PG_LWGEOM *result;
-	char *ser;
 
 	// get geometry box 
 	if ( ! getbox2d_p(SERIALIZED_FORM(geom), &box) )
@@ -2221,11 +2235,8 @@ Datum LWGEOM_expand(PG_FUNCTION_ARGS)
 	// Construct polygon 
 	poly = lwpoly_construct(SRID, box2d_clone(&box), 1, pa);
 
-	// Serialize polygon
-	ser = lwpoly_serialize(poly);
-
 	// Construct PG_LWGEOM 
-	result = PG_LWGEOM_construct(ser, SRID, 1);
+	result = pglwgeom_serialize((LWGEOM *)poly);
 	
 	PG_RETURN_POINTER(result);
 }
