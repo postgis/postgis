@@ -3516,3 +3516,19 @@ lwexploded_findlength(LWGEOM_EXPLODED *exploded, int wantbbox)
 	return size;
 }
 
+bool
+ptarray_isccw(const POINTARRAY *pa)
+{
+	int i;
+	double area = 0;
+	POINT2D *p1, *p2;
+
+	for (i=0; i<pa->npoints-1; i++)
+	{
+		p1 = (POINT2D *)getPoint(pa, i);
+		p2 = (POINT2D *)getPoint(pa, i+1);
+		area += (p1->x * p2->y) - (p1->y * p2->x);
+	}
+	if ( area > 0 ) return 0;
+	else return 1;
+}
