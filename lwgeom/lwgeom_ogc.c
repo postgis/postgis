@@ -69,10 +69,6 @@ int32 lwgeom_numpoints_linestring_recursive(char *serialized);
 int32 lwgeom_dimension_recursive(char *serialized);
 char line_is_closed(LWLINE *line);
 
-#if USE_VERSION < 73
-#define WARNING NOTICE
-#endif
-
 /*------------------------------------------------------------------*/
 
 // getSRID(lwgeom) :: int4

@@ -5,6 +5,7 @@
 #include "utils/geo_decls.h"
 #include "fmgr.h"
 #include "liblwgeom.h"
+#include "pgsql_compat.h"
 
 #ifndef PG_NARGS
 #define PG_NARGS() (fcinfo->nargs)
