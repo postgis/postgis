@@ -10,6 +10,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.11  2004/10/27 11:02:24  strk
+ * Removed another getbox2d() call.
+ *
  * Revision 1.10  2004/10/25 17:07:09  strk
  * Obsoleted getbox2d(). Use getbox2d_p() or getbox2d_internal() instead.
  *
@@ -883,7 +886,14 @@ Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS)
 	in = (char *)PG_DETOAST_DATUM( ((Const*)other)->constvalue );
 
 	//search_box = convert_box3d_to_box(&in->bvol);
-	search_box = getbox2d(in+4);
+	if ( ! getbox2d_p(in+4, &search_box) )
+	{
+		// empty geom
+#if DEBUG_GEOMETRY_STATS 
+		elog(NOTICE, "search box is EMPTY");
+#endif
+		PG_RETURN_FLOAT8(0.0);
+	}
 
 	//elog(NOTICE,"requested search box is : (%.15g %.15g, %.15g %.15g)",search_box->xmin,search_box->ymin,search_box->xmax,search_box->ymax);
 
