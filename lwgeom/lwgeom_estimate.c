@@ -74,7 +74,6 @@ typedef struct GEOM_STATS_T
 	float4 value[1];
 } GEOM_STATS;
 
-Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS);
 static float8 estimate_selectivity(BOX2DFLOAT4 *box, GEOM_STATS *geomstats);
 
 #endif // USE_VERSION >= 80
@@ -132,6 +131,7 @@ Datum explode_lwhistogram2d(PG_FUNCTION_ARGS);
 Datum estimate_lwhistogram2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS);
 Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS);
+Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS);
 #if USE_VERSION >= 80
 Datum LWGEOM_analyze(PG_FUNCTION_ARGS);
 #endif
@@ -1171,6 +1171,18 @@ Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS)
         PG_RETURN_FLOAT8(myest);
 }
 
+/*
+ * Return the extent of the table
+ * looking at gathered statistics (or NULL if
+ * no statistics have been gathered).
+ */
+PG_FUNCTION_INFO_V1(LWGEOM_estimated_extent);
+Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
+{
+	elog(ERROR, "estimated_extent() not implemented yet for PG<80");
+	PG_RETURN_NULL();
+}
+
 #else // USE_VERSION >= 80
 
 /*
@@ -2147,13 +2159,13 @@ Datum LWGEOM_analyze(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_estimated_extent);
 Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 {
-	text *txnsp = PG_GETARG_TEXT_P(0);
-	text *txtbl = PG_GETARG_TEXT_P(1);
-	text *txcol = PG_GETARG_TEXT_P(2);
+	text *txnsp = NULL;
+	text *txtbl = NULL;
+	text *txcol = NULL;
+	char *nsp = NULL;
+	char *tbl = NULL;
+	char *col = NULL;
 	char *query;
-	char *nsp;
-	char *tbl;
-	char *col;
 	ArrayType *array = NULL;
 	int SPIcode;
 	SPITupleTable *tuptable;
@@ -2161,11 +2173,28 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 	HeapTuple tuple ;
 	bool isnull;
 	BOX2DFLOAT4 *box;
+	size_t querysize;
+
+	if ( PG_NARGS() == 3 )
+	{
+		txnsp = PG_GETARG_TEXT_P(0);
+		txtbl = PG_GETARG_TEXT_P(1);
+		txcol = PG_GETARG_TEXT_P(2);
+	}
+	else if ( PG_NARGS() == 2 )
+	{
+		txtbl = PG_GETARG_TEXT_P(0);
+		txcol = PG_GETARG_TEXT_P(1);
+	}
+	else
+	{
+		elog(ERROR, "estimated_extent() called with wrong number of arguments");
+		PG_RETURN_NULL();
+	}
 
 #if DEBUG_GEOMETRY_STATS
 	elog(NOTICE, "LWGEOM_estimated_extent called");
 #endif
-
 
 	/* Connect to SPI manager */
 	SPIcode = SPI_connect();
@@ -2175,23 +2204,44 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL() ;
 	}
 
-	nsp = palloc(VARSIZE(txnsp)+1);
+	querysize = VARSIZE(txtbl)+VARSIZE(txcol)+516;
+
+	if ( txnsp ) {
+		nsp = palloc(VARSIZE(txnsp)+1);
+		memcpy(nsp, VARATT_DATA(txnsp), VARSIZE(txnsp)-VARHDRSZ);
+		nsp[VARSIZE(txnsp)-VARHDRSZ]='\0';
+		querysize += VARSIZE(txnsp);
+	} else {
+		querysize += 32; // current_schema()
+	}
+
 	tbl = palloc(VARSIZE(txtbl)+1);
-	col = palloc(VARSIZE(txcol)+1);
-	memcpy(nsp, VARATT_DATA(txnsp), VARSIZE(txnsp)-VARHDRSZ);
-	nsp[VARSIZE(txnsp)-VARHDRSZ]='\0';
 	memcpy(tbl, VARATT_DATA(txtbl), VARSIZE(txtbl)-VARHDRSZ);
 	tbl[VARSIZE(txtbl)-VARHDRSZ]='\0';
+
+	col = palloc(VARSIZE(txcol)+1);
 	memcpy(col, VARATT_DATA(txcol), VARSIZE(txcol)-VARHDRSZ);
 	col[VARSIZE(txcol)-VARHDRSZ]='\0';
 
 #if DEBUG_GEOMETRY_STATS
-	elog(NOTICE, " schema:%s table:%s column:%s", nsp, tbl, col);
+	if ( txnsp ) {
+		elog(NOTICE, " schema:%s table:%s column:%s", nsp, tbl, col);
+	} else {
+		elog(NOTICE, " schema:current_schema() table:%s column:%s",
+			tbl, col);
+	}
 #endif
 
-	query = palloc(VARSIZE(txnsp)+VARSIZE(txtbl)+VARSIZE(txcol)+516);
+	query = palloc(querysize);
 
-	sprintf(query, "SELECT s.stanumbers1[5:8] FROM pg_statistic s, pg_class c, pg_attribute a, pg_namespace n WHERE c.relname = '%s' AND a.attrelid = c.oid AND a.attname = '%s' AND n.nspname = '%s' AND c.relnamespace = n.oid AND s.starelid=c.oid AND s.staattnum = a.attnum AND staattnum = attnum", tbl, col, nsp);
+	if ( txnsp )
+	{
+		sprintf(query, "SELECT s.stanumbers1[5:8] FROM pg_statistic s, pg_class c, pg_attribute a, pg_namespace n WHERE c.relname = '%s' AND a.attrelid = c.oid AND a.attname = '%s' AND n.nspname = '%s' AND c.relnamespace = n.oid AND s.starelid=c.oid AND s.staattnum = a.attnum AND staattnum = attnum", tbl, col, nsp);
+	}
+	else
+	{
+		sprintf(query, "SELECT s.stanumbers1[5:8] FROM pg_statistic s, pg_class c, pg_attribute a, pg_namespace n WHERE c.relname = '%s' AND a.attrelid = c.oid AND a.attname = '%s' AND n.nspname = current_schema() AND c.relnamespace = n.oid AND s.starelid=c.oid AND s.staattnum = a.attnum AND staattnum = attnum", tbl, col);
+	}
 
 #if DEBUG_GEOMETRY_STATS > 1
 	elog(NOTICE, " query: %s", query);
@@ -2208,7 +2258,7 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 	{
 		SPI_finish();
 #if DEBUG_GEOMETRY_STATS
-		elog(ERROR, " %d stat rows", SPI_processed);
+		elog(NOTICE, " %d stat rows", SPI_processed);
 #endif
 		PG_RETURN_NULL() ;
 	}
@@ -2263,6 +2313,9 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.21  2005/01/13 17:41:40  strk
+ * estimated_extent() prepared for future expansion (support of pre-800 PGSQL)
+ *
  * Revision 1.20  2005/01/07 09:52:12  strk
  * JOINSEL disabled for builds against pgsql<80
  *

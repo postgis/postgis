@@ -1835,7 +1835,6 @@ CREATEFUNCTION estimate_histogram2d(histogram2d,box2d)
 	AS '@MODULE_FILENAME@','estimate_lwhistogram2d'
 	LANGUAGE 'C'  with (isstrict);
 
-#if USE_VERSION >= 80
 -----------------------------------------------------------------------
 -- ESTIMATED_EXTENT( <schema name>, <table name>, <column name> )
 -----------------------------------------------------------------------
@@ -1847,10 +1846,8 @@ CREATEFUNCTION estimated_extent(text,text,text) RETURNS box2d AS
 -- ESTIMATED_EXTENT( <table name>, <column name> )
 -----------------------------------------------------------------------
 CREATEFUNCTION estimated_extent(text,text) RETURNS box2d AS
-'SELECT estimated_extent(current_schema()::text, $1, $2)'
-LANGUAGE 'SQL' WITH (isstrict);
-
-#endif // USE_VERSION >= 80
+	'@MODULE_FILENAME@', 'LWGEOM_estimated_extent'
+	LANGUAGE 'C' with (isstrict);
 
 -----------------------------------------------------------------------
 -- FIND_EXTENT( <schema name>, <table name>, <column name> )
