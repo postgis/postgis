@@ -11,6 +11,13 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.9  2004/04/08 17:00:27  dblasby
+ * Changed ggeometry_consistent to be aware of NULL queries.  Ie.
+ * select * from <table> where the_geom &&  null::geometry;
+ *
+ * This tends to happen when you're joining two tables using && and the table
+ * has NULLs in it.
+ *
  * Revision 1.8  2004/03/05 18:16:47  strk
  * Applied Mark Cave-Ayland patch
  *
@@ -158,15 +165,25 @@ PG_FUNCTION_INFO_V1(ggeometry_consistent);
 Datum ggeometry_consistent(PG_FUNCTION_ARGS)
 {
     GISTENTRY *entry = (GISTENTRY*) PG_GETARG_POINTER(0);
-    GEOMETRY *query = (GEOMETRY*) PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+    GEOMETRY *query ;
     StrategyNumber strategy = (StrategyNumber) PG_GETARG_UINT16(2);
     BOX		*thebox;
 	bool result;
-    
+
 	/*
     ** if entry is not leaf, use rtree_internal_consistent,
     ** else use rtree_leaf_consistent
     */
+
+   if (   ( (Pointer *) PG_GETARG_DATUM(1) ) == NULL)
+    {
+		//elog(NOTICE,"ggeometry_consistent:: got null query!");
+		PG_RETURN_BOOL(false); // null query - this is screwy!
+	}
+
+	query = (GEOMETRY*) PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+
+
 
 #ifdef DEBUG_GIST
 	elog(NOTICE,"GIST: ggeometry_consistent called\n");
@@ -179,16 +196,16 @@ Datum ggeometry_consistent(PG_FUNCTION_ARGS)
 	thebox = convert_box3d_to_box( &(query->bvol) );
 
 	if (GIST_LEAF(entry))
-		result = rtree_leaf_consistent((BOX *) DatumGetPointer(entry->key), thebox, strategy );    
+		result = rtree_leaf_consistent((BOX *) DatumGetPointer(entry->key), thebox, strategy );
 	else
 		result = rtree_internal_consistent((BOX *) DatumGetPointer(entry->key), thebox, strategy );
-	
+
 	PG_FREE_IF_COPY(query, 1);
 	PG_RETURN_BOOL(result);
 }
 
 
-static bool 
+static bool
 rtree_internal_consistent(BOX *key,
 			BOX *query,
 			StrategyNumber strategy)
@@ -226,7 +243,7 @@ rtree_internal_consistent(BOX *key,
 }
 
 
-static bool 
+static bool
 rtree_leaf_consistent(BOX *key,
 			BOX *query,
 			StrategyNumber strategy)
