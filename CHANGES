@@ -1,4 +1,5 @@
 PostGIS 0.6.2
+2001/11/07
 
 - New Things
   - spatial_ref_sys.sql complete set of SRID and WKT
@@ -7,14 +8,18 @@ PostGIS 0.6.2
   - Memory problem in shp2pgsql
   - Compilation problems with shp2pgsql
 
+
 PostGIS 0.6.1
+2001/10/15
 
 - Bug fixes
   - Cygwin compilation fix
   - Improved getopts handling in utility programs
   - Text casting fixes
 
+
 PostGIS 0.6
+2001/09/19
 
 - New functions
   - postgis_version()
@@ -60,6 +65,7 @@ PostGIS 0.6
 
 
 PostGIS 0.5
+2001/07/20
 
 - New functions
   - Dimension()
