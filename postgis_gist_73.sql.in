@@ -98,7 +98,7 @@ create function geometry_union(GEOMETRY,GEOMETRY) returns GEOMETRY
 as '@MODULE_FILENAME@'   language 'C';
 create function geometry_inter(GEOMETRY,GEOMETRY) returns GEOMETRY 
 as '@MODULE_FILENAME@'   language 'C';
-create function geometry_size(GEOMETRY,opaque) returns float4 
+create function geometry_size(GEOMETRY,internal) returns float4 
 as '@MODULE_FILENAME@'   language 'C';
 
 ---------Create actual operators
