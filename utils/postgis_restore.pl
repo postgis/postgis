@@ -11,23 +11,20 @@
 # from the dump, not the postgis.sql file. When the new installation
 # is agains pgsql7.5+ and dump from pre7.5 this script should probably
 # drop statistic fields from that table.... currently not done.
-#
-# Known issues:
-#	- operators from the dump are never restored due to
-#	  the impossibility (for current implementation) to
-#	  detect wheter or not they are from postgis
 
 eval "exec perl $0 $@"
 	if (0);
 
 (@ARGV == 3) || die "Usage: postgis_restore.pl <postgis.sql> <db> <dump>\nRestore a custom dump (pg_dump -Fc) of a postgis enabled database.\n";
 
-$DEBUG=0;
+$DEBUG=1;
 
 my %aggs = {};
 my %casts = ();
 my %funcs = {};
 my %types = {};
+my %opclass = {};
+my %ops = {};
 
 my $postgissql = $ARGV[0];
 my $dbname = $ARGV[1];
@@ -124,7 +121,37 @@ while( my $line = <INPUT>)
 		$casts{$id} = 1;
 		next;
 	}
-	#push (@ops, $line) if ($line =~ /^create operator.*\(/i);
+	# OPERATOR CLASS
+	if ($line =~ /create operator class *([^ ]*)/i)
+	{
+		my $id = lc($1);
+		print "SQLOPCLASS $id\n" if $DEBUG;
+		$opclass{$id} = 1;
+		next;
+	}
+	# OPERATOR 
+	if ($line =~ /create operator *([^ ]*)/i)
+	{
+		my $name = ($1);
+		my $larg = undef;
+		my $rarg = undef;
+		while( my $subline = <INPUT>)
+		{
+			last if $subline =~ /\);/;
+			if ( $subline =~ /leftarg *= *([^ ,]*)/i )
+			{
+				$larg=lc($1);
+			}
+			if ( $subline =~ /rightarg *= *([^ ,]*)/i )
+			{
+				$rarg=lc($1);
+			}
+		}
+		my $id = $name.','.$larg.','.$rarg;
+		print "SQLOP $id\n" if $DEBUG;
+		$ops{$id} = 1;
+		next;
+	}
 }
 close( INPUT );
 #exit;
@@ -161,19 +188,19 @@ while( my $line = <INPUT> )
 		my $id = $funcname."(".$args.")";
 		if ( $funcname eq 'plpgsql_call_handler' )
 		{
-			print "SKIPPING $id\n" if $DEBUG;
+			print "SKIPPING FUNC $id\n" if $DEBUG;
 			next;
 		}
 		# This is an old postgis function which might
 		# still be in a dump
 		if ( $funcname eq 'unite_finalfunc' )
 		{
-			print "SKIPPING $id\n" if $DEBUG;
+			print "SKIPPING FUNC $id\n" if $DEBUG;
 			next;
 		}
 		if ( $funcs{$id} )
 		{
-			print "SKIPPING PGIS $id\n" if $DEBUG;
+			print "SKIPPING PGIS FUNC $id\n" if $DEBUG;
 			next;
 		}
 		print "KEEPING FUNCTION: [$id]\n" if $DEBUG;
@@ -224,7 +251,7 @@ while( my $line = <INPUT> )
 	}
 	elsif ($line =~ / PROCEDURAL LANGUAGE plpgsql/)
 	{
-		print "SKIPPING plpgsql\n" if $DEBUG;
+		print "SKIPPING PROCLANG plpgsql\n" if $DEBUG;
 		next;
 	}
 
@@ -240,12 +267,16 @@ while( my $line = <INPUT> )
 		#next;
 	}
 
-	# Will skip all operators (there is no way to tell from a dump
-	# list which types the operator works on
-	elsif ($line =~ / OPERATOR /)
+	elsif ($line =~ / OPERATOR CLASS *([^ ]*)/)
 	{
-		print "SKIPPING operator\n" if $DEBUG;
-		next;
+		my $id = lc($1);
+
+		if ( $opclass{$id} )
+		{
+			print "SKIPPING PGIS OPCLASS $id\n" if $DEBUG;
+			next;
+		}
+		print "KEEPING OPCLASS [$id]\n" if $DEBUG;
 	}
 
 	elsif ($line =~ / CAST *([^ ]*) *\( *([^ )]*) *\)/)
@@ -265,8 +296,7 @@ while( my $line = <INPUT> )
 			print "SKIPPING PGIS type CAST $id\n" if $DEBUG;
 			next;
 		}
-		#print "KEEPING CAST $id\n";
-		#next;
+		print "KEEPING CAST $id\n" if $DEBUG;
 	}
 	print OUTPUT $line;
 #	print "UNANDLED: $line"
@@ -279,7 +309,48 @@ open( INPUT, "pg_restore -L $dumplist $dump |") || die "Can't run pg_restore\n";
 open( OUTPUT, ">$dumpascii") || die "Can't write to $dumpascii\n";
 while( my $line = <INPUT> )
 {
-	$line =~ s/^(SET search_path .*);/\1, public;/; 
+	next if $line =~ /^ *--/;
+
+	if ( $line =~ /^SET search_path/ )
+	{
+		$line =~ s/; *$/, public;/; 
+	}
+
+	elsif ( $line =~ /OPERATOR CLASS /)
+	{
+	}
+
+	elsif ( $line =~ /OPERATOR *([^ ,]*)/)
+	{
+		my $name = $1;
+		my $larg = undef;
+		my $rarg = undef;
+		my @sublines = ($line);
+		while( my $subline = <INPUT>)
+		{
+			last if $subline =~ /\);/;
+			if ( $subline =~ /leftarg *= *([^ ,]*)/i )
+			{
+				$larg=lc($1);
+				$larg =~ s/^public\.//;
+			}
+			if ( $subline =~ /rightarg *= *([^ ,]*)/i )
+			{
+				$rarg=lc($1);
+				$rarg =~ s/^public\.//;
+			}
+			push(@sublines, $subline);
+		}
+		my $id = $name.','.$larg.','.$rarg;
+		if ( $ops{$id} )
+		{
+			print "SKIPPING PGIS OP $id\n" if $DEBUG;
+			next;
+		}
+		print "KEEPING OP $id\n" if $DEBUG;
+		print OUTPUT @sublines;
+	}
+
 	print OUTPUT $line;
 	# TODO:
 	#  skip postgis operator, checking for basetype
