@@ -33,8 +33,13 @@ Datum lwgeom_summary(PG_FUNCTION_ARGS);
 Datum postgis_uses_stats(PG_FUNCTION_ARGS);
 Datum postgis_scripts_released(PG_FUNCTION_ARGS);
 Datum postgis_lib_version(PG_FUNCTION_ARGS);
+Datum lwgeom_npoints(PG_FUNCTION_ARGS);
+Datum lwgeom_numpoints_linestring(PG_FUNCTION_ARGS);
+Datum lwgeom_numgeometries_collection(PG_FUNCTION_ARGS);
 
 char * lwgeom_summary_recursive(char *serialized, int offset);
+int32 lwgeom_npoints_recursive(char *serialized);
+int32 lwgeom_numpoints_linestring_recursive(char *serialized);
 
 // getSRID(lwgeom) :: int4
 PG_FUNCTION_INFO_V1(LWGEOM_getSRID);
@@ -302,4 +307,180 @@ Datum postgis_uses_stats(PG_FUNCTION_ARGS)
 #else
 	PG_RETURN_BOOL(FALSE);
 #endif
+}
+
+/*
+ * Recursively count points in a SERIALIZED lwgeom
+ */
+int32
+lwgeom_npoints_recursive(char *serialized)
+{
+	LWGEOM_INSPECTED *inspected = lwgeom_inspect(serialized);
+	int i, j;
+	int npoints=0;
+
+	//now have to do a scan of each object
+	for (i=0; i<inspected->ngeometries; i++)
+	{
+		LWLINE *line=NULL;
+		LWPOINT *point=NULL;
+		LWPOLY *poly=NULL;
+		char *subgeom=NULL;
+
+		point = lwgeom_getpoint_inspected(inspected, i);
+		if (point !=NULL)
+		{
+			npoints++;
+			continue;
+		}
+
+		poly = lwgeom_getpoly_inspected(inspected, i);
+		if (poly !=NULL)
+		{
+			for (j=0; j<poly->nrings; j++)
+			{
+				npoints += poly->rings[j]->npoints;
+			}
+			continue;
+		}
+
+		line = lwgeom_getline_inspected(inspected, i);
+		if (line != NULL)
+		{
+			npoints += line->points->npoints;
+			continue;
+		}
+
+		subgeom = lwgeom_getsubgeometry_inspected(inspected, i);
+		if ( subgeom != NULL )
+		{
+			npoints += lwgeom_npoints_recursive(subgeom);
+		}
+		else
+		{
+	elog(ERROR, "What ? lwgeom_getsubgeometry_inspected returned NULL??");
+		}
+	}
+	return npoints;
+}
+
+//number of points in an object
+PG_FUNCTION_INFO_V1(lwgeom_npoints);
+Datum lwgeom_npoints(PG_FUNCTION_ARGS)
+{
+	LWGEOM *geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	int32 npoints = 0;
+
+	npoints = lwgeom_npoints_recursive(SERIALIZED_FORM(geom));
+
+	PG_RETURN_INT32(npoints);
+}
+
+// Find first linestring in serialized geometry and return
+// the number of points in it. If no linestrings are found
+// return -1.
+int32
+lwgeom_numpoints_linestring_recursive(char *serialized)
+{
+	LWGEOM_INSPECTED *inspected = lwgeom_inspect(serialized);
+	int i;
+
+	for (i=0; i<inspected->ngeometries; i++)
+	{
+		int32 npoints;
+		int type;
+		LWLINE *line=NULL;
+		char *subgeom;
+
+		line = lwgeom_getline_inspected(inspected, i);
+		if (line != NULL)
+		{
+			return line->points->npoints;
+		}
+
+		subgeom = lwgeom_getsubgeometry_inspected(inspected, i);
+		if ( subgeom == NULL )
+		{
+	elog(ERROR, "What ? lwgeom_getsubgeometry_inspected returned NULL??");
+		}
+
+		type = lwgeom_getType(subgeom[0]);
+
+		// MULTILINESTRING && GEOMETRYCOLLECTION are worth checking
+		if ( type != 7 && type != 5 ) continue;
+
+		npoints = lwgeom_numpoints_linestring_recursive(subgeom);
+		if ( npoints == -1 ) continue;
+		return npoints;
+	}
+
+	return -1;
+}
+
+//numpoints(GEOMETRY) -- find the first linestring in GEOMETRY, return
+//the number of points in it.  Return NULL if there is no LINESTRING(..)
+//in GEOMETRY
+PG_FUNCTION_INFO_V1(lwgeom_numpoints_linestring);
+Datum lwgeom_numpoints_linestring(PG_FUNCTION_ARGS)
+{
+	LWGEOM *geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	int32 ret;
+	ret = lwgeom_numpoints_linestring_recursive(SERIALIZED_FORM(geom));
+	if ( ret == -1 ) PG_RETURN_NULL();
+	PG_RETURN_INT32(ret);
+}
+
+PG_FUNCTION_INFO_V1(lwgeom_numgeometries_collection);
+Datum lwgeom_numgeometries_collection(PG_FUNCTION_ARGS)
+{
+	LWGEOM *geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	int type;
+	char *serialized = SERIALIZED_FORM(geom);
+
+	type = lwgeom_getType(geom->type);
+	if ( type >= 4 )
+	{
+		PG_RETURN_INT32(lwgeom_getnumgeometries(serialized));
+	}
+	else
+	{
+		PG_RETURN_NULL();
+	}
+}
+
+PG_FUNCTION_INFO_V1(lwgeom_geometryn_collection);
+Datum lwgeom_geometryn_collection(PG_FUNCTION_ARGS)
+{
+	LWGEOM *geom = (LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	LWGEOM *result;
+	int size;
+	int type = lwgeom_getType(geom->type);
+	int32 idx;
+	char *serialized;
+	char *subgeom;
+
+	// call is valid on multi* geoms only
+	if ( type < 4 )
+	{
+		//elog(NOTICE, "geometryn: geom is of type %d, requires >=4", type);
+		PG_RETURN_NULL();
+	}
+
+	idx = PG_GETARG_INT32(1);
+	serialized = SERIALIZED_FORM(geom);
+
+	subgeom = lwgeom_getsubgeometry(serialized, idx);
+	if ( subgeom == NULL )
+	{
+		//elog(NOTICE, "geometryn: subgeom %d does not exist", idx);
+		PG_RETURN_NULL();
+	}
+
+	// we have it, not it's time to make an LWGEOM
+	size = lwgeom_seralizedformlength_simple(subgeom);
+	result = palloc(size);
+	memcpy(result, &size, 4);
+	memcpy(SERIALIZED_FORM(result), subgeom, size);
+	PG_RETURN_POINTER(result);
+
 }

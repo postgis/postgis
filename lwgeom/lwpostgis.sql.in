@@ -11,6 +11,9 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- $Log$
+-- Revision 1.9  2004/08/24 09:34:33  strk
+-- Added npoints,numpoints,numgeometries,geometryn
+--
 -- Revision 1.8  2004/08/23 15:57:56  strk
 -- versioning functions completed
 --
@@ -808,7 +811,6 @@ CREATEFUNCTION setSRID(geometry,int4)
 	AS '@MODULE_FILENAME@','LWGEOM_setSRID'
 	LANGUAGE 'C' WITH (isstrict,iscachable);	
 	
-
 CREATEFUNCTION asText(geometry)
 	RETURNS TEXT
 	AS '@MODULE_FILENAME@','LWGEOM_asText'
@@ -827,6 +829,29 @@ CREATEFUNCTION mem_size(geometry)
 CREATEFUNCTION summary(geometry)
 	RETURNS text
 	AS '@MODULE_FILENAME@', 'lwgeom_summary'
+	LANGUAGE 'C' WITH (isstrict);
+
+CREATEFUNCTION npoints(geometry)
+	RETURNS int4
+	AS '@MODULE_FILENAME@', 'lwgeom_npoints'
+	LANGUAGE 'C' WITH (isstrict);
+
+-- OGC
+CREATEFUNCTION numpoints(geometry)
+	RETURNS int4
+	AS '@MODULE_FILENAME@', 'lwgeom_numpoints_linestring'
+	LANGUAGE 'C' WITH (isstrict);
+
+-- OGC
+CREATEFUNCTION numgeometries(geometry)
+	RETURNS int4
+	AS '@MODULE_FILENAME@', 'lwgeom_numgeometries_collection'
+	LANGUAGE 'C' WITH (isstrict);
+
+-- OGC
+CREATEFUNCTION geometryn(geometry,integer)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'lwgeom_geometryn_collection'
 	LANGUAGE 'C' WITH (isstrict);
 
 
