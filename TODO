@@ -2,7 +2,6 @@
 
 - Clean up mapserver connectivity
 - Submit to OpenGIS Consortium for testing
-- Migrate to LWGEOM as default geometry
 - Short circuit routines on GEOS functions
 - GML export routines
 - More connectivity to commercial GIS software.
