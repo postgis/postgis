@@ -53,6 +53,7 @@ Datum LWGEOM_makeline(PG_FUNCTION_ARGS);
 Datum LWGEOM_line_from_mpoint(PG_FUNCTION_ARGS);
 Datum LWGEOM_addpoint(PG_FUNCTION_ARGS);
 Datum LWGEOM_asEWKT(PG_FUNCTION_ARGS);
+Datum LWGEOM_hasBBOX(PG_FUNCTION_ARGS);
 
 
 /*------------------------------------------------------------------*/
@@ -2400,11 +2401,19 @@ Datum LWGEOM_zmflag(PG_FUNCTION_ARGS)
 	unsigned char type;
 	int ret = 0;
 
-	in = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+	in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	type = in->type;
 	if ( TYPE_HASZ(type) ) ret += 2;
 	if ( TYPE_HASM(type) ) ret += 1;
 	PG_RETURN_INT16(ret);
+}
+
+PG_FUNCTION_INFO_V1(LWGEOM_hasBBOX);
+Datum LWGEOM_hasBBOX(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *in;
+	in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	PG_RETURN_BOOL(lwgeom_hasBBOX(in->type));
 }
 
 // Return: 2,3 or 4
@@ -2575,3 +2584,4 @@ Datum LWGEOM_asEWKT(PG_FUNCTION_ARGS)
 	pfree(result_cstring);
 	PG_RETURN_POINTER(result);
 }
+
