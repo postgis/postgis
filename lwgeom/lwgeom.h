@@ -542,9 +542,16 @@ extern BOX3D *combine_boxes(BOX3D *b1, BOX3D *b2);
 // otherwise we need to compute it.
 // WARNING! the EMPTY geom will result in a random BOX2D returned
 extern BOX2DFLOAT4 getbox2d(char *serialized_form);
+
 // this function writes to 'box' and returns 0 if serialized_form
 // does not have a bounding box (empty geom)
 extern int getbox2d_p(char *serialized_form, BOX2DFLOAT4 *box);
+
+// this function returns a pointer to the 'internal' bounding
+// box of a serialized-form geometry. If the geometry does
+// not have an embedded bounding box the function returns NULL.
+// READ-ONLY!
+extern const BOX2DFLOAT4 * getbox2d_internal(char *serialized_form);
 
 // Expand given box of 'd' units in all directions 
 void expand_box2d(BOX2DFLOAT4 *box, double d);

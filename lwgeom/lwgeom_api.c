@@ -374,7 +374,6 @@ BOX2DFLOAT4 getbox2d(char *serialized_form)
 	return result;
 }
 
-
 // same as getbox2d, but modifies box instead of returning result on the stack
 int
 getbox2d_p(char *serialized_form, BOX2DFLOAT4 *box)
@@ -407,6 +406,21 @@ getbox2d_p(char *serialized_form, BOX2DFLOAT4 *box)
 	pfree(box3d);
 	pfree(box2);
 	return 1;
+}
+
+// this function returns a pointer to the 'internal' bounding
+// box of a serialized-form geometry. If the geometry does
+// not have an embedded bounding box the function returns NULL.
+// READ-ONLY!
+const BOX2DFLOAT4 *
+getbox2d_internal(char *serialized_form)
+{
+	unsigned char type = (unsigned char) serialized_form[0];
+
+	// No embedded bounding box ...
+	if (!lwgeom_hasBBOX(type)) return NULL;
+
+	return (BOX2DFLOAT4 *)(serialized_form+1);
 }
 
 //************************************************************************
