@@ -499,7 +499,7 @@ CREATE FUNCTION geometryfromtext(geometry,int4)
 CREATE FUNCTION setSRID(geometry,int4)
    RETURNS geometry
    AS '@MODULE_FILENAME@','geometry_from_text'
-	     LANGUAGE 'c'  with (isstrict);
+	     LANGUAGE 'c'  with (isstrict,iscachable);
 
 ------- spheroid calcs
 
