@@ -1,4 +1,14 @@
+
 - All tests must be run in a database named 'ogc' in order for the 
   AddGeometryColumn() function calls to work.
+
+  createdb ogc
+  createlang plpgsql ogc
+  psql ogc < postgis.sql
+  psql ogc < 1_schema.sql
+  ...
+  psql ogc < 3_cleanup.sql
+
 - Load the test files in order. File 2 has the actual tests, with the
   correct answers for each test in the comments.
+
