@@ -883,11 +883,9 @@ extern double nextUp_d(float d);
 
 
 
-//#if ! defined(__MINGW32__)
-#define max(a,b)		((a) >	(b) ? (a) : (b))
-#define min(a,b)		((a) <= (b) ? (a) : (b))
-//#endif
-#define abs(a)			((a) <	(0) ? (-a) : (a))
+#define LW_MAX(a,b)	((a) >	(b) ? (a) : (b))
+#define LW_MIN(a,b)	((a) <= (b) ? (a) : (b))
+#define LW_ABS(a)	((a) <	(0) ? (-a) : (a))
 
 
 // general utilities 

@@ -8,47 +8,6 @@
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
  * 
- **********************************************************************
- * $Log$
- * Revision 1.11  2004/10/27 11:02:24  strk
- * Removed another getbox2d() call.
- *
- * Revision 1.10  2004/10/25 17:07:09  strk
- * Obsoleted getbox2d(). Use getbox2d_p() or getbox2d_internal() instead.
- *
- * Revision 1.9  2004/10/08 13:20:54  strk
- *
- * Changed LWGEOM structure to point to an actual BOX2DFLOAT4.
- * Renamed most function to reflect a TYPE_method naming convention.
- * (you'll need a dump/reload for it to work)
- * Added more manipulation functions.
- *
- * Revision 1.8  2004/10/05 21:54:48  strk
- * Yes another change in SPI_cursor_open
- *
- * Revision 1.7  2004/09/29 10:50:30  strk
- * Big layout change.
- * lwgeom.h is public API
- * liblwgeom.h is private header
- * lwgeom_pg.h is for PG-links
- * lw<type>.c contains type-specific functions
- *
- * Revision 1.6  2004/09/27 08:26:03  strk
- * Debugging defines set to NODEBUG.
- *
- * Revision 1.5  2004/09/16 09:06:12  strk
- * Changed SPI_cursor_open call changes to be used for USE_VERSION > 80
- * (change seems to be intended for future releases)
- *
- * Revision 1.4  2004/09/14 07:43:00  strk
- * Updated call to SPI_cursor_open to 8.0 (beta2) interface.
- *
- * Revision 1.3  2004/08/19 13:54:15  strk
- * cpp checks updated to use 80 instead of 75 for USE_VERSION
- *
- * Revision 1.2  2004/08/19 13:18:01  strk
- * Added selectivity estimation
- *
  **********************************************************************/
 
 #include <math.h>
@@ -1926,3 +1885,22 @@ Datum LWGEOM_analyze(PG_FUNCTION_ARGS)
 #endif
 
 
+/**********************************************************************
+ * $Log$
+ * Revision 1.12  2004/11/04 11:40:08  strk
+ * Renamed max/min/avg macros to LW_MAX, LW_MIN, LW_AVG.
+ *
+ * Revision 1.11  2004/10/27 11:02:24  strk
+ * Removed another getbox2d() call.
+ *
+ * Revision 1.10  2004/10/25 17:07:09  strk
+ * Obsoleted getbox2d(). Use getbox2d_p() or getbox2d_internal() instead.
+ *
+ * Revision 1.9  2004/10/08 13:20:54  strk
+ *
+ * Changed LWGEOM structure to point to an actual BOX2DFLOAT4.
+ * Renamed most function to reflect a TYPE_method naming convention.
+ * (you'll need a dump/reload for it to work)
+ * Added more manipulation functions.
+ *
+ **********************************************************************/

@@ -100,7 +100,7 @@ double distance2d_pt_seg(POINT2D *p, POINT2D *A, POINT2D *B)
 	s = ( (A->y-p->y)*(B->x-A->x)- (A->x-p->x)*(B->y-A->y) ) /
 		( (B->x-A->x)*(B->x-A->x) +(B->y-A->y)*(B->y-A->y) );
 
-	return abs(s) * sqrt(
+	return LW_ABS(s) * sqrt(
 		(B->x-A->x)*(B->x-A->x) + (B->y-A->y)*(B->y-A->y)
 		);
 }
@@ -158,9 +158,9 @@ double distance2d_seg_seg(POINT2D *A, POINT2D *B, POINT2D *C, POINT2D *D)
 	if  ( (r_bot==0) || (s_bot == 0) )
 	{
 		return (
-			min(distance2d_pt_seg(A,C,D),
-				min(distance2d_pt_seg(B,C,D),
-					min(distance2d_pt_seg(C,A,B),
+			LW_MIN(distance2d_pt_seg(A,C,D),
+				LW_MIN(distance2d_pt_seg(B,C,D),
+					LW_MIN(distance2d_pt_seg(C,A,B),
 						distance2d_pt_seg(D,A,B))
 				)
 			)
@@ -173,9 +173,9 @@ double distance2d_seg_seg(POINT2D *A, POINT2D *B, POINT2D *C, POINT2D *D)
 	{
 		//no intersection
 		return (
-			min(distance2d_pt_seg(A,C,D),
-				min(distance2d_pt_seg(B,C,D),
-					min(distance2d_pt_seg(C,A,B),
+			LW_MIN(distance2d_pt_seg(A,C,D),
+				LW_MIN(distance2d_pt_seg(B,C,D),
+					LW_MIN(distance2d_pt_seg(C,A,B),
 						distance2d_pt_seg(D,A,B))
 				)
 			)
@@ -203,7 +203,7 @@ double distance2d_pt_ptarray(POINT2D *p, POINTARRAY *pa)
 		end = (POINT2D *)getPoint(pa, t);
 		dist = distance2d_pt_seg(p, start, end);
 		if (t==1) result = dist;
-		else result = min(result, dist);
+		else result = LW_MIN(result, dist);
 
 		if ( result == 0 ) return 0;
 
@@ -243,7 +243,7 @@ double distance2d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2)
 //printf("line_line; seg %i * seg %i, dist = %g\n",t,u,dist_this);
 
 			if (result_okay)
-				result = min(result,dist);
+				result = LW_MIN(result,dist);
 			else
 			{
 				result_okay = 1;
@@ -304,7 +304,7 @@ double distance2d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly)
 	for (i=0; i<poly->nrings; i++)
 	{
 		double dist = distance2d_ptarray_ptarray(pa, poly->rings[i]);
-		if (i) mindist = min(mindist, dist);
+		if (i) mindist = LW_MIN(mindist, dist);
 		else mindist = dist;
 #ifdef DEBUG
 	elog(NOTICE, " distance from ring %d: %f, mindist: %f",
@@ -434,7 +434,7 @@ double distance2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2)
 	for (i=0; i<poly1->nrings; i++)
 	{
 		double dist = distance2d_ptarray_poly(poly1->rings[i], poly2);
-		if (i) mindist = min(mindist, dist);
+		if (i) mindist = LW_MIN(mindist, dist);
 		else mindist = dist;
 
 #ifdef DEBUG
@@ -521,7 +521,7 @@ double lwgeom_polygon_area(LWPOLY *poly)
 
 		ringarea  /= 2.0;
 //elog(NOTICE," ring 1 has area %lf",ringarea);
-		ringarea  = fabs(ringarea );
+		ringarea  = fabs(ringarea);
 		if (i != 0)	//outer
 			ringarea  = -1.0*ringarea ; // its a hole
 
@@ -583,7 +583,7 @@ lwgeom_mindistance2d_recursive(char *lw1, char *lw2)
 			dist = lwgeom_mindistance2d_recursive(g1, lw2);
 			if ( dist == 0 ) return 0.0; // can't be closer
 			if ( mindist == -1 ) mindist = dist;
-			else mindist = min(dist, mindist);
+			else mindist = LW_MIN(dist, mindist);
 			continue;
 		}
 
@@ -670,7 +670,7 @@ lwgeom_mindistance2d_recursive(char *lw1, char *lw2)
 			}
 
 			if (mindist == -1 ) mindist = dist;
-			else mindist = min(dist, mindist);
+			else mindist = LW_MIN(dist, mindist);
 
 #ifdef DEBUG
 		elog(NOTICE, "dist %d-%d: %f - mindist: %f",
