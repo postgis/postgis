@@ -65,6 +65,7 @@ SRC= $(SRCDIR)/examples/Test.java \
 		$(SRCDIR)/examples/TestBoxes.java \
 		$(SRCDIR)/examples/TestParser.java \
 		$(SRCDIR)/examples/TestServer.java \
+		$(SRCDIR)/examples/VersionPrinter.java \
 		$(SRCDIR)/org/postgis/ComposedGeom.java \
 		$(SRCDIR)/org/postgis/DriverWrapper.java \
 		$(SRCDIR)/org/postgis/GeometryCollection.java \
@@ -150,6 +151,10 @@ autoregistertest:  compile
 offlinetests: boxtestoffline ptestoffline test
 
 onlinetests: boxtest ptest jtest autoregistertest
+
+# Print all available versions
+versions:  compile
+	$(JAVA) -classpath "$(BUILD):$(CP)" $(EXAMPLES)/VersionPrinter jdbc:postgresql://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
 
 # boxtest and ptest include boxtestoffline and ptestoffline, so we only need
 # to run test in addition to the onlinetests
