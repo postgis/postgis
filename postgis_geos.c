@@ -10,6 +10,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.17  2003/10/28 10:59:55  strk
+ * handled NULL state array in unite_finalfunc, cleaned up some spurios code
+ *
  * Revision 1.16  2003/10/27 23:44:54  strk
  * unite_sfunc made always copy input array in long lived memory context.
  * It should now work with safer memory.
@@ -253,7 +256,7 @@ Datum unite_sfunc(PG_FUNCTION_ARGS)
 	ArrayType *array;
 	int nelems, nbytes;
 	Datum datum;
-	GEOMETRY *geom, *tmpgeom;
+	GEOMETRY *geom;
 	ArrayType *result;
 	Pointer **pointers;
 	MemoryContext oldcontext; 
@@ -274,7 +277,9 @@ Datum unite_sfunc(PG_FUNCTION_ARGS)
 	// Do nothing, return state array
 	if ( (Pointer *)datum == NULL )
 	{
+#ifdef DEBUG
 		elog(NOTICE, "unite_sfunc: NULL geom, nelems=%d", nelems);
+#endif
 		PG_RETURN_ARRAYTYPE_P(array);
 	}
 
@@ -337,6 +342,7 @@ Datum unite_sfunc(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(unite_finalfunc);
 Datum unite_finalfunc(PG_FUNCTION_ARGS)
 {
+	Datum datum;
 	ArrayType *array;
 	int is3d = 0;
 	int nelems, i;
@@ -350,11 +356,18 @@ Datum unite_finalfunc(PG_FUNCTION_ARGS)
 	call++;
 #endif
 
-	array = (ArrayType *) PG_GETARG_ARRAYTYPE_P(0);
+	datum = PG_GETARG_DATUM(0);
+
+	/* Null array, null geometry (should be empty?) */
+	if ( (Pointer *)datum == NULL ) PG_RETURN_NULL();
+
+	array = (ArrayType *) PG_DETOAST_DATUM(datum);
 
 	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
 
-	//elog(NOTICE, "unite_finalfunc: number of elements: %d", nelems);
+#ifdef DEBUG
+	elog(NOTICE, "unite_finalfunc: number of elements: %d", nelems);
+#endif
 
 	if ( nelems == 0 ) PG_RETURN_NULL();
 
