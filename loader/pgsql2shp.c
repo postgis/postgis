@@ -10,6 +10,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.29  2003/11/21 23:51:14  pramsey
+ * Added Cygwin endian definition include to fix windows compile.
+ *
  * Revision 1.28  2003/11/20 18:01:26  strk
  * patch from m.spring@gmx.de
  *
@@ -58,6 +61,10 @@
 #include "libpq-fe.h"
 #include "shapefil.h"
 #include "getopt.h"
+
+#ifdef __CYGWIN__
+#include <sys/param.h>       
+#endif
 
 #define	POINTTYPE	1
 #define	LINETYPE	2
