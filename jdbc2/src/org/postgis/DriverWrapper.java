@@ -67,9 +67,43 @@ public class DriverWrapper extends Driver {
     private static final String POSTGRES_PROTOCOL = "jdbc:postgresql:";
     private static final String POSTGIS_PROTOCOL = "jdbc:postgresql_postGIS:";
     public static final String REVISION = "$Revision$";
+    public final TypesAdder typesAdder;
 
-    public DriverWrapper() {
+    /**
+     * Default constructor.
+     * 
+     * This also loads the appropriate TypesAdder for our SQL Driver instance.
+     * 
+     * @throws SQLException
+     */
+    public DriverWrapper() throws SQLException {
         super();
+        typesAdder = getTypesAdder(this);
+        // The debug method is @since 7.2
+        if (super.getMajorVersion() > 8 || super.getMinorVersion() > 1) {
+            super.debug("DriverWrapper loaded TypesAdder: " + typesAdder.getClass().getName());
+        }
+    }
+
+    protected static TypesAdder getTypesAdder(Driver d) throws SQLException {
+        if (d.getMajorVersion() == 7) {
+            if (d.getMinorVersion() >= 3) {
+                return loadTypesAdder(74);
+            } else {
+                return loadTypesAdder(72);
+            }
+        } else {
+            return loadTypesAdder(80);
+        }
+    }
+
+    private static TypesAdder loadTypesAdder(int i) throws SQLException {
+        try {
+            Class klass = Class.forName("org.postgis.DriverWrapper$TypesAdder" + i);
+            return (TypesAdder) klass.newInstance();
+        } catch (Exception e) {
+            throw new SQLException("Cannot create TypesAdder instance! " + e.getMessage());
+        }
     }
 
     static {
@@ -96,37 +130,8 @@ public class DriverWrapper extends Driver {
     public java.sql.Connection connect(String url, Properties info) throws SQLException {
         url = mangleURL(url);
         Connection result = super.connect(url, info);
-        addGISTypes((PGConnection) result);
+        typesAdder.addGT(result);
         return result;
-    }
-
-    /**
-     * adds the JTS/PostGIS Data types to a PG Connection.
-     */
-    public static void addGISTypes(PGConnection pgconn) {
-        // This is correct for PostgreSQL jdbc drivers up to V7.4
-        pgconn.addDataType("geometry", "org.postgis.PGgeometry");
-        pgconn.addDataType("box3d", "org.postgis.PGbox3d");
-        pgconn.addDataType("box2d", "org.postgis.PGbox2d");
-
-        // If you use PostgreSQL jdbc drivers V8.0 or newer, the above
-        // methods are deprecated (but still work for now), and you
-        // may want to use the two lines below instead.
-
-        //pgconn.addDataType("geometry", org.postgis.PGgeometry.class);
-        //pgconn.addDataType("box3d", org.postgis.PGbox3d.class);
-        //pgconn.addDataType("box2d", org.postgis.PGbox2d.class);
-    }
-
-    /**
-     * Mangles the PostGIS URL to return the original PostGreSQL URL
-     */
-    public static String mangleURL(String url) throws SQLException {
-        if (url.startsWith(POSTGIS_PROTOCOL)) {
-            return POSTGRES_PROTOCOL + url.substring(POSTGIS_PROTOCOL.length());
-        } else {
-            throw new SQLException("Unknown protocol or subprotocol in url " + url);
-        }
     }
 
     /**
@@ -148,28 +153,84 @@ public class DriverWrapper extends Driver {
     }
 
     /**
-     * Gets the underlying drivers major version number
-     * 
-     * @return the drivers major version number
-     */
-
-    public int getMajorVersion() {
-        return super.getMajorVersion();
-    }
-
-    /**
-     * Get the underlying drivers minor version number
-     * 
-     * @return the drivers minor version number
-     */
-    public int getMinorVersion() {
-        return super.getMinorVersion();
-    }
-
-    /**
      * Returns our own CVS version plus postgres Version
      */
     public static String getVersion() {
         return "PostGisWrapper " + REVISION + ", wrapping " + Driver.getVersion();
+    }
+
+    /*
+     * Here follows the addGISTypes() stuff. This is a little tricky because the
+     * pgjdbc people had several, partially incompatible API changes during 7.2
+     * and 8.0. We still want to support all those releases, however.
+     *  
+     */
+    /**
+     * adds the JTS/PostGIS Data types to a PG 7.3+ Connection. If you use
+     * PostgreSQL jdbc drivers V8.0 or newer, those methods are deprecated due
+     * to some class loader problems (but still work for now), and you may want
+     * to use the method below instead.
+     *  
+     */
+    public static void addGISTypes(PGConnection pgconn) {
+        pgconn.addDataType("geometry", "org.postgis.PGgeometry");
+        pgconn.addDataType("box3d", "org.postgis.PGbox3d");
+        pgconn.addDataType("box2d", "org.postgis.PGbox2d");
+    }
+
+    /**
+     * adds the JTS/PostGIS Data types to a PG 8.0+ Connection.
+     */
+    public static void addGISTypes80(PGConnection pgconn) throws SQLException {
+        pgconn.addDataType("geometry", org.postgis.PGgeometry.class);
+        pgconn.addDataType("box3d", org.postgis.PGbox3d.class);
+        pgconn.addDataType("box2d", org.postgis.PGbox2d.class);
+    }
+
+    /**
+     * adds the JTS/PostGIS Data types to a PG 7.2 Connection.
+     */
+    public static void addGISTypes72(org.postgresql.Connection pgconn) {
+        pgconn.addDataType("geometry", "org.postgis.PGgeometry");
+        pgconn.addDataType("box3d", "org.postgis.PGbox3d");
+        pgconn.addDataType("box2d", "org.postgis.PGbox2d");
+    }
+
+    /**
+     * Mangles the PostGIS URL to return the original PostGreSQL URL
+     */
+    public static String mangleURL(String url) throws SQLException {
+        if (url.startsWith(POSTGIS_PROTOCOL)) {
+            return POSTGRES_PROTOCOL + url.substring(POSTGIS_PROTOCOL.length());
+        } else {
+            throw new SQLException("Unknown protocol or subprotocol in url " + url);
+        }
+    }
+
+    /** Base class for the three typewrapper implementations */
+    protected static abstract class TypesAdder {
+        public abstract void addGT(java.sql.Connection conn) throws SQLException;
+    }
+
+    /** addGISTypes for V7.3 and V7.4 pgjdbc */
+    protected static final class TypesAdder74 extends TypesAdder {
+        public void addGT(java.sql.Connection conn) {
+            addGISTypes((PGConnection) conn);
+        }
+    }
+
+    /** addGISTypes for V7.2 pgjdbc */
+    protected static class TypesAdder72 extends TypesAdder {
+        public void addGT(java.sql.Connection conn) {
+            addGISTypes72((org.postgresql.Connection) conn);
+
+        }
+    }
+
+    /** addGISTypes for V8.0 (and hopefully newer) pgjdbc */
+    protected static class TypesAdder80 extends TypesAdder {
+        public void addGT(java.sql.Connection conn) throws SQLException {
+            addGISTypes80((PGConnection) conn);
+        }
     }
 }

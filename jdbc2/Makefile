@@ -30,7 +30,7 @@ CP=$(CLASSPATH):src/
 
 SRCDIR=src
 EXAMPLES=examples
-BUILD=bin/make
+BUILD=bin
 PGHOST?=localhost
 PGPORT?=5432
 PGDATABASE?=jdbc_test
@@ -58,6 +58,11 @@ SRC= $(SRCDIR)/examples/Test.java \
 		$(SRCDIR)/org/postgis/Point.java \
 		$(SRCDIR)/org/postgis/Polygon.java 
 
+STUBDIR=stubs
+STUBBUILD=stubbin/
+STUBSRC= $(STUBDIR)/org/postgresql/Connection.java \
+	$(STUBDIR)/org/postgresql/PGConnection.java
+
 
 all:	jar \
 	offlinetests
@@ -72,9 +77,15 @@ jar:	compile
 $(BUILD):
 	$(MKDIR) $(BUILD)
 
+$(STUBBUILD):
+	$(MKDIR) $(STUBBUILD)
 
-compile: $(BUILD) $(SRC)
-	$(JAVAC) -classpath "$(CP)" -d $(BUILD) $(SRC) 
+stubcompile: $(STUBBUILD) 
+	$(JAVAC) -d $(STUBBUILD) $(STUBSRC)
+	touch stubcompile
+
+compile: stubcompile $(BUILD) $(SRC)
+	$(JAVAC) -classpath "$(STUBBUILD):$(CP)" -d $(BUILD) $(SRC) 
 	touch compile
 
 test:	compile
@@ -107,7 +118,7 @@ onlinetests: boxtest ptest jtest autoregistertest
 alltests: onlinetests test
 
 clean:  
-	$(DELETE) $(BUILD) bin postgis.jar postgis_debug.jar compile
+	$(DELETE) $(BUILD) bin stubbin postgis.jar postgis_debug.jar compile stubcompile
 
 # pgjdbc 7.2 special treating (needed e. G. for woody backport)
 # Calling this rules multiple times does not really hurt, but litter

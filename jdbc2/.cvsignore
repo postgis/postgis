@@ -2,3 +2,5 @@ bin
 compile
 postgis.jar
 postgis_debug.jar
+stubbin
+stubcompile

@@ -63,8 +63,18 @@ public class TestServer {
             Class.forName("org.postgresql.Driver");
             conn = DriverManager.getConnection(dburl, dbuser, dbpass);
             System.out.println("Adding geometric type entries...");
-            ((org.postgresql.PGConnection) conn).addDataType("geometry", "org.postgis.PGgeometry");
-            ((org.postgresql.PGConnection) conn).addDataType("box3d", "org.postgis.PGbox3d");
+            // magic trickery to be pgjdbc 7.2 compatible
+            // This works due to the late binding of data types in most java VMs. As
+            // this is more a demo source than a real-world app, we can risk this
+            // problem.
+            if (conn.getClass().getName().equals("org.postgresql.jdbc2.Connection")) {
+                ((org.postgresql.Connection) conn).addDataType("geometry", "org.postgis.PGgeometry");
+                ((org.postgresql.Connection) conn).addDataType("box3d", "org.postgis.PGbox3d");
+            } else {
+                ((org.postgresql.PGConnection) conn).addDataType("geometry",
+                        "org.postgis.PGgeometry");
+                ((org.postgresql.PGConnection) conn).addDataType("box3d", "org.postgis.PGbox3d");
+            }
             Statement s = conn.createStatement();
             System.out.println("Creating table with geometric types...");
             //table might not yet exist

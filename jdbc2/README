@@ -10,7 +10,7 @@ world, JDBC allows java applications to transparently use different
 JDBC compliant databases without any source code changes. PostgreSQL,
 the database PostGIS  is written for, comes with a driver that
 follows this specification. For downloads and more info, see:
-http://gborg.postgresql.org/project/pgjdbc/projdisplay.php
+http://jdbc.postgresql.org/download.html
 
 The purpose of the JDBC Driver extension is to give the PostgreSQL
 JDBC driver some understanding of the PostGIS data types (Geometry,
@@ -66,9 +66,16 @@ link against those.
 
 * How do I build it? *
 
-You need a recent pgjdbc driver jar, see the gborg.postgresql link
-above. It is currently tested with 7.3, 7.4 and 8.0 pgjdbc releases.
-(7.2 users see below.) Note that this does not constrain the PostgreSQL 
+You need a recent pgjdbc driver jar, see the download link from above.
+It is currently tested and supported with 7.2, 7.3, 7.4 and 8.0 pgjdbc
+releases. Those are exactly the releases that are currently supported by 
+PostgreSQL server guys. 
+
+The current PostGIS jdbc release is also reported to run (but not compile)
+against the postgresql jdbc7.1-1.2.jar, but this is not supported, as well as 
+PostGIS itsself does not support 7.1 any more.
+
+Note that your pgjdbc driver version does not constrain the PostgreSQL 
 server version. As the JDBC drivers are downwards compatible against older 
 servers, and PostgreSQL servers typically accept older clients, you can 
 easily use e. G. a pgjdbc 8.0 against a PostgreSQL 7.3 server.
@@ -81,23 +88,6 @@ A "make jar" then compiles the code and creates two jar files. The
 "postgis.jar" is for normal usage and deployment, the
 "postgis_debug.jar" additionally  includes the source code, for
 debugging purposes.
-
-
-* What about pgjdbc 7.2? *
-
-Between pgjdbc 7.2 and 7.3, the PostgreSQL guys changed some interfaces.
-While this change improved some things, it also introduced some minor
-source level incompatibilities. If you want to use V7.2, you can apply the
-provided patch file "woody.patch", this makes the source compile and work
-fine with pg72jdbc2.jar.
-
-However, the resulting postgis.jar will only work with pgjdbc7.2, while a
-postgis.jar compiled using 7.3, 7.4 or 8.0 will be compatible to either
-of those newer release. So you may consider updating your pgjdbc version
-instead (remember that you can use a pgjdbc7.3 against a 7.2 server).
-
-For applying and reversing the patch, you can use the convenience make
-targets "woodypatch" and "woodyunpatch".
 
 
 * How do I use it? *
