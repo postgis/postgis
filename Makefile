@@ -3,14 +3,14 @@
 #---------------------------------------------------------------
 # Set USE_PROJ to 1 for Proj4 reprojection support
 #
-USE_PROJ=1
+USE_PROJ=0
 PROJ_DIR=/usr/local
 
 #---------------------------------------------------------------
 # Set USE_GEOS to 1 for GEOS spatial predicate and operator
 # support
 #
-USE_GEOS=1
+USE_GEOS=0
 GEOS_DIR=/usr/local
 
 #---------------------------------------------------------------
@@ -54,37 +54,34 @@ else
 endif
 
 #---------------------------------------------------------------
-# Regression test temporary database.
-#
-TEST_DB=geom_regress
-
-#---------------------------------------------------------------
 # Shared library parameters.
 #
 NAME=postgis
 SO_MAJOR_VERSION=0
-SO_MINOR_VERSION=7
+SO_MINOR_VERSION=8
 
 #---------------------------------------------------------------
-# override CPPFLAGS := -I$(srcdir) $(CPPFLAGS)
-# Altered for Cynwin
+
+override CFLAGS += -g
+override CFLAGS += -I$(srcdir) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"' 
+override CFLAGS += -DUSE_VERSION=$(USE_VERSION)
+
 ifeq ($(USE_PROJ),1)
-	override CPPFLAGS := -g -I$(PROJ_DIR)/include -I$(srcdir) $(CPPFLAGS) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"' -DUSE_PROJ -DUSE_VERSION=$(USE_VERSION)
-else
-	override CPPFLAGS := -g -I$(srcdir) $(CPPFLAGS) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"' -DUSE_VERSION=$(USE_VERSION)
+	override CFLAGS += -I$(PROJ_DIR)/include -DUSE_PROJ 
 endif
 ifeq ($(USE_GEOS),1)
-	override CPPFLAGS := $(CPPFLAGS) -I$(GEOS_DIR)/include/geos -DUSE_GEOS
+	override CFLAGS += -I$(GEOS_DIR)/include/geos -DUSE_GEOS
 endif
-override DLLLIBS := $(BE_DLLLIBS) $(DLLLIBS)
 
-CXXFLAGS=-I$(PROJ_DIR)/include -I$(GEOS_DIR)/include/geos
+override DLLLIBS += $(BE_DLLLIBS) 
+
+override CXXFLAGS := $(CFLAGS)
 
 #---------------------------------------------------------------
 # Add index selectivity to C flags
 #
 ifeq ($(USE_STATS),1)
-	override CPPFLAGS += -DUSE_STATS
+	override CFLAGS += -DUSE_STATS
 endif
  
 #---------------------------------------------------------------
@@ -98,22 +95,26 @@ else
 	GIST_ESTIMATE=postgis_estimate.o
 endif
 
-OBJS=postgis_debug.o postgis_ops.o postgis_fn.o postgis_inout.o postgis_proj.o postgis_chip.o postgis_transform.o postgis_geos.o postgis_geos_wrapper.o postgis_gist_$(GIST_SUPPORT).o $(GIST_ESTIMATE)
+ifeq ($(USE_GEOS),1)
+	GEOS_WRAPPER=postgis_geos_wrapper.o
+endif
+
+OBJS=postgis_debug.o postgis_ops.o postgis_fn.o postgis_inout.o postgis_proj.o postgis_chip.o postgis_transform.o postgis_gist_$(GIST_SUPPORT).o $(GIST_ESTIMATE) postgis_geos.o $(GEOS_WRAPPER)
 
 #---------------------------------------------------------------
 # Add libraries that libpq depends (or might depend) on into the
 # shared library link.  (The order in which you list them here doesn't
 # matter.)
 
-
-SHLIB_LINK=$(filter -L%, $(LDFLAGS)) $(BE_DLLLIBS) -lstdc++ -L$(PROJ_DIR)/lib -lproj -L$(GEOS_DIR)/lib -lgeos
-#ifeq ($(USE_PROJ),1)
-#	SHLIB_LNK=$(SHLIB_LNK) -L$(PROJ_DIR)/lib -lproj
-#endif
-#ifeq ($(USE_GEOS),1)
-#	SHLIB_LNK=$(SHLIB_LNK) -L$(GEOS_DIR)/lib -lgeos
-#endif
-
+SHLIB_LINK = $(filter -L%, $(LDFLAGS)) 
+ifeq ($(USE_PROJ),1)
+	SHLIB_LINK += -L$(PROJ_DIR)/lib -lproj
+endif
+ifeq ($(USE_GEOS),1)
+	SHLIB_LINK += -L$(GEOS_DIR)/lib -lgeos
+endif
+SHLIB_LINK += -lstdc++ 
+SHLIB_LINK += $(BE_DLLLIBS) 
 
 #---------------------------------------------------------------
 # Makefile targets

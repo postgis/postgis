@@ -434,5 +434,6 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	//memcpy(result,geom1, geom1->size);
 	///elog(NOTICE,"PostGIS transform
 	//PG_RETURN_POINTER(result);
+	PG_RETURN_NULL();
 }
 #endif
