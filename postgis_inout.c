@@ -1439,6 +1439,7 @@ Datum geometry_in(PG_FUNCTION_ARGS)
 		int		nitems;
 		int32		SRID;
 		double	scale,offx,offy;
+		BOX3D	*mybox;
 
 //printf("str=%s\n",str);
 
@@ -1467,8 +1468,31 @@ Datum geometry_in(PG_FUNCTION_ARGS)
 			str++;
 	}
 
-	if (strcmp(str,"NULL")==0)
-		PG_RETURN_NULL() ;
+	if (strstr(str,"BOX3D") != NULL ) // bbox only 
+	{
+
+			
+		mybox = (BOX3D*) 	DatumGetPointer(	DirectFunctionCall1(box3d_in,PointerGetDatum(str)));
+
+		if (mybox == NULL)
+			PG_RETURN_NULL() ;
+		
+		geometry = (GEOMETRY *) palloc(sizeof(GEOMETRY));
+		geometry->size = sizeof(GEOMETRY);
+		geometry->type = BBOXONLYTYPE;
+		geometry->nobjs = -1;
+		geometry->SRID = SRID;
+		geometry->scale = 1.0;
+		geometry->offsetX = 0.0;
+		geometry->offsetY = 0.0;
+		memcpy(&(geometry->bvol),mybox, sizeof(BOX3D) );
+
+		pfree(mybox);
+		PG_RETURN_POINTER(geometry);
+
+		
+
+	}
 
 
 	if ((str==NULL) || (strlen(str) == 0) )
@@ -1732,7 +1756,12 @@ char *geometry_to_text(GEOMETRY  *geometry)
 
 	if (geometry->type == BBOXONLYTYPE)
 	{
-		strcpy(result,"NULL");
+			mem_size = MAX_DIGS_DOUBLE*6+5+2+4+5+1;
+			pfree(result);
+			result = (char *) palloc(size); //double digits+ "BOX3D"+ "()" + commas +null
+			sprintf(result, "BOX3D(%.15g %.15g %.15g,%.15g %.15g %.15g)",
+					geometry->bvol.LLB.x,geometry->bvol.LLB.y,geometry->bvol.LLB.z,
+					geometry->bvol.URT.x,geometry->bvol.URT.y,geometry->bvol.URT.z);
 		return result;
 	}
 
