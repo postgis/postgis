@@ -4,6 +4,10 @@
  * Author: Jeff Lounsbury, jeffloun@refractions.net
  *
  * $Log$
+ * Revision 1.32  2003/03/07 16:39:53  pramsey
+ * M-handling patch and some Z-recognition too.
+ * From strk@freek.keybit.net.
+ *
  * Revision 1.31  2003/02/15 00:27:14  jeffloun
  * added more type checking into the create table statment.
  * Now uses int8, and numeric types if the columns definitions are too big
@@ -632,6 +636,14 @@ int main (int ARGC, char **ARGV){
 	//create the geometry column with an addgeometry call to dave's function
 	if(opt != 'a'){
 		printf("select AddGeometryColumn('%s','%s','the_geom','%s',",database,table,sr_id);
+		}else if( obj->nSHPType == 21){ // PointM
+			printf("'POINT',2);\n");
+		}else if( obj->nSHPType == 23){  // PolyLineM
+			printf("'MULTILINESTRING',2);\n");
+		}else if( obj->nSHPType == 25){  // PolygonM
+			printf("'MULTIPOLYGON',2);\n");
+		}else if( obj->nSHPType == 28){ // MultiPointM
+		         printf("'MULTIPOINT',2);\n");
 
 		if( obj->nSHPType == 1 ){  //2d point
 			printf("'POINT',2);\n");
@@ -675,7 +687,7 @@ int main (int ARGC, char **ARGV){
 
 	   //Determine what type of shape is in the file and do appropriate processing
 
-	   if(( obj->nSHPType == 5 ) || ( obj->nSHPType == 15 )){
+	   if(( obj->nSHPType == 5 ) || ( obj->nSHPType == 25 )){
            //---------------------------------------------------------------------------------
            //---------POLYGONS----------------------------------------------------------------
 
@@ -717,7 +729,7 @@ int main (int ARGC, char **ARGV){
 			printf("end;");	//End the last transaction block
 		}
 
-	}else if( obj->nSHPType == 1){
+	}else if( obj->nSHPType == 1 || obj->nSHPType == 21 ){
 		//---------------------------------------------------------------------
 		//----------POINTS-----------------------------------------------------
 
@@ -779,7 +791,7 @@ int main (int ARGC, char **ARGV){
 		if (!(dump_format) ){
 			printf("end;"); //End the last transaction
 		}
-	}else if( obj->nSHPType == 3){
+	}else if( obj->nSHPType == 3 || obj->nSHPType == 23 ){
 		//------------------------------------------------------------------------
 		//--------ARCs / LINES----------------------------------------------------
 
@@ -871,7 +883,7 @@ int main (int ARGC, char **ARGV){
 			printf("end;");//end the last transaction
 		
 
-	}else if( obj->nSHPType == 8){
+	}else if( obj->nSHPType == 8 || obj->nSHPType == 28 ){
 		//---------------------------------------------------------------------
 		//----------MULTIPOINTS------------------------------------------------
 
@@ -933,7 +945,7 @@ int main (int ARGC, char **ARGV){
 		if (!(dump_format) ){
 			printf("end;"); //End the last transaction
 		}
-	}else if( obj->nSHPType == 11){  
+	}else if( obj->nSHPType == 11 ){  
 		//---------------------------------------------------------------------
 		//----------POINTZ-----------------------------------------------------
 
@@ -995,7 +1007,7 @@ int main (int ARGC, char **ARGV){
 		if (!(dump_format) ){
 			printf("end;"); //End the last transaction
 		}
-	}else if( obj->nSHPType == 13){  
+	}else if( obj->nSHPType == 13 ){  
 		//---------------------------------------------------------------------
 		//------Linez(3D lines)--------------------------------------------
 		
@@ -1119,7 +1131,7 @@ int main (int ARGC, char **ARGV){
 		}
 
 
-	}else if( obj->nSHPType == 18){
+	}else if( obj->nSHPType == 18 ){
 		//---------------------------------------------------------------------------
 		//------MULTIPOINTZ (3D MULTIPOINTS)-----------------------------------------
 
