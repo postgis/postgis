@@ -63,7 +63,11 @@ else
 		ifneq ($(findstring 7.3,$(VERSION)),)
 			USE_VERSION=73
 		else
-			USE_VERSION=74
+			ifneq ($(findstring 7.4,$(VERSION)),)
+				USE_VERSION=74
+			else
+				USE_VERSION=75
+			endif
 		endif
 	endif
 endif
