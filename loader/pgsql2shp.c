@@ -10,6 +10,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.40  2003/12/27 13:30:23  strk
+ * Added schema specification support
+ *
  * Revision 1.39  2003/12/19 18:55:46  strk
  * substituted setenv() calls with putenv() for Solaris support
  *
@@ -124,7 +127,7 @@ typedef unsigned char byte;
 /* Global data */
 PGconn *conn;
 int rowbuflen;
-char *geo_col_name, *table, *shp_file;
+char *geo_col_name, *table, *shp_file, *schema;
 int type_ary[256];
 char *main_scan_query;
 DBFHandle dbf;
@@ -147,7 +150,7 @@ int addRecord(PGresult *res, int residx, int row);
 int initShapefile(char *shp_file, PGresult *res);
 int initialize(void);
 int getGeometryOID(PGconn *conn);
-int getGeometryType(char *table, char *geo_col_name);
+int getGeometryType(char *schema, char *table, char *geo_col_name);
 SHPObject *create_lines(char *str,int shape_id, SHPHandle shp,int dims);
 SHPObject *create_multilines(char *str,int shape_id, SHPHandle shp,int dims);
 SHPObject *create_points(char *str,int shape_id, SHPHandle shp,int dims);
@@ -219,6 +222,7 @@ int main(int ARGC, char **ARGV){
 	geotype=-1;
 	shape_creator = NULL;
 	table = NULL;
+	schema = NULL;
 	geo_col_name = NULL;
 	shp_file = NULL;
 	main_scan_query = NULL;
@@ -278,7 +282,7 @@ int main(int ARGC, char **ARGV){
 	} else {
 		sprintf(query, "DECLARE cur CURSOR FOR %s", main_scan_query);
 	}
-fprintf(stderr, "MAINSCAN: %s\n", main_scan_query);
+//fprintf(stderr, "MAINSCAN: %s\n", main_scan_query);
 	res = PQexec(conn, query);	
 	free(query);
 	if ( ! res || PQresultStatus(res) != PGRES_COMMAND_OK ) {
@@ -2032,14 +2036,25 @@ getTableOID(char *table)
  * Return  0 on unknown or unsupported geometry type
  */
 int
-getGeometryType(char *table, char *geo_col_name)
+getGeometryType(char *schema, char *table, char *geo_col_name)
 {
 	char query[1024];
 	PGresult *res;
 	char *geo_str; // the geometry type string
 
 	//get what kind of Geometry type is in the table
-	sprintf(query, "SELECT DISTINCT geometrytype(\"%s\") FROM \"%s\" WHERE NOT geometrytype(\"%s\") IS NULL", geo_col_name, table, geo_col_name);
+	if ( schema )
+	{
+		sprintf(query, "SELECT DISTINCT geometrytype(\"%s\") "
+			"FROM \"%s\".\"%s\" WHERE NOT geometrytype(\"%s\") "
+			"IS NULL", geo_col_name, schema, table, geo_col_name);
+	}
+	else
+	{
+		sprintf(query, "SELECT DISTINCT geometrytype(\"%s\") "
+			"FROM \"%s\" WHERE NOT geometrytype(\"%s\") IS NULL",
+			geo_col_name, table, geo_col_name);
+	}
 
 	//printf("\n\n-->%s\n\n",query);
 	res = PQexec(conn, query);	
@@ -2076,7 +2091,7 @@ getGeometryType(char *table, char *geo_col_name)
 void
 usage(status)
 {
-	printf("USAGE: pgsql2shp [<options>] <database> <table>\n");
+	printf("USAGE: pgsql2shp [<options>] <database> [<schema>.]<table>\n");
 	printf("\n");
        	printf("OPTIONS:\n");
        	printf("  -d Set the dump file to 3 dimensions, if this option is not used\n");
@@ -2098,7 +2113,7 @@ usage(status)
 int parse_commandline(int ARGC, char **ARGV)
 {
 	int c, curindex;
-	char buf[256];
+	char buf[256], *ptr;
 
 	buf[255] = '\0'; // just in case...
 
@@ -2152,6 +2167,12 @@ int parse_commandline(int ARGC, char **ARGV)
 		    	putenv(strdup(buf));
                 }else if(curindex == 1){
                         table = ARGV[optind];
+			if ( (ptr=strchr(table, '.')) )
+			{
+				*ptr = '\0';
+				schema = table;
+				table = ptr+1;
+			}
                 }
                 curindex++;
         }
@@ -2175,14 +2196,32 @@ initialize()
 	int geom_fld = -1;
 	char *mainscan_flds[256];
 	int mainscan_nflds=0;
+	int size;
 
 	/* Query user attributes name, type and size */
-	query = (char *)malloc(sizeof(table)+256);
+
+	size = strlen(table);
+	if ( schema ) size += strlen(schema);
+	size += 256;
+
+	query = (char *)malloc(size);
 	if ( ! query ) return 0; // out of virtual memory
-	sprintf(query, "SELECT a.attname, a.atttypid, a.attlen FROM "
+
+	if ( schema )
+	{
+		sprintf(query, "SELECT a.attname, a.atttypid, a.attlen FROM "
+			"pg_attribute a, pg_class c, pg_namespace n WHERE "
+			"n.nspname = '%s' AND a.attrelid = c.oid AND "
+			"a.attnum > 0 AND c.relname = '%s'", schema, table);
+	}
+	else
+	{
+		sprintf(query, "SELECT a.attname, a.atttypid, a.attlen FROM "
 			"pg_attribute a, pg_class c WHERE "
 			"a.attrelid = c.oid and a.attnum > 0 AND "
 			"c.relname = '%s'", table);
+	}
+
 
 	/* Exec query */
 	//fprintf(stderr, "Attribute query:\n%s\n", query);
@@ -2204,6 +2243,7 @@ initialize()
 		fprintf(stderr, "Could not create dbf file\n");
 		return 0;
 	}
+
 
 	/* Get geometry oid */
 	geo_oid = getGeometryOID(conn);
@@ -2385,7 +2425,7 @@ initialize()
 		 * We now create the appropriate shape (shp) file.
 		 * And set the shape creator function.
 		 */
-		geotype = getGeometryType(table, geo_col_name);
+		geotype = getGeometryType(schema, table, geo_col_name);
 		if ( geotype == -1 ) return 0;
 
 		switch (geotype)
@@ -2583,7 +2623,16 @@ initialize()
 
 		strcat(main_scan_query, buf);
 	}
-	sprintf(buf, " FROM \"%s\"", table);
+
+	if ( schema )
+	{
+		sprintf(buf, " FROM \"%s\".\"%s\"", schema, table);
+	}
+	else
+	{
+		sprintf(buf, " FROM \"%s\"", table);
+	}
+
 	strcat(main_scan_query, buf);
 
 	PQclear(res);
