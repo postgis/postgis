@@ -52,6 +52,7 @@ install: all installdirs install-lib
 	$(INSTALL_DATA) $(NAME).sql $(datadir)/contrib
 	$(INSTALL_DATA) $(NAME)_undef.sql $(datadir)/contrib
 	$(INSTALL_DATA) spatial_ref_sys.sql $(datadir)/contrib
+	$(INSTALL_DATA) README.postgis $(datadir)/contrib
 
 installdirs:
 	$(mkinstalldirs) $(docdir)/contrib $(datadir)/contrib $(libdir)
