@@ -772,7 +772,7 @@ name and username to connect with.</para></listitem></varlistentry><varlistentry
 		<sect2> 
 		  <title>Using Indexes</title> 
 		  <para>Ordinarily, indexes invisibly speed up data access: once the
-			 index is built, the query planner tranparently decides when to use index
+			 index is built, the query planner transparently decides when to use index
 			 information to speed up a query plan. Unfortunately, the PostgreSQL query
 			 planner does not optimize the use of  GiST indexes well, so sometimes searches which should use a spatial index instead default to a sequence
 			 scan of the whole table.</para> 
