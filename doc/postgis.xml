@@ -699,8 +699,19 @@ AND
       <para>The GIS objects supported by PostGIS are a superset of
       the "Simple Features" defined by the OpenGIS Consortium (OGC).
       As of version 0.9, PostGIS supports all the objects and functions
-      specified in the OGC "Simple
-      Features for SQL" specification.</para>
+      specified in the OGC "Simple Features for SQL" specification.</para>
+
+      <para>PostGIS extends the standard with support for 3DZ,3DM and 4D
+      coordinates.</para>
+
+      <sect2>
+        <title>OpenGIS WKB and WKT</title>
+
+        <para>The OpenGIS specification defines two standard ways of
+        expressing spatial objects: the Well-Known Text (WKT) form and
+	the Well-Known Binary (WKB) form. Both WKT and WKB include
+	information about the type of the object and the
+        coordinates which form the object.</para>
 
       <para>Examples of the text representations (WKT) of the spatial
       objects of the features are as follows:</para>
@@ -737,14 +748,71 @@ AND
 
       </itemizedlist>
 
-      <para>PostGIS extends the standard with support for 3DZ,3DM and 4D
-      coordinates.  Examples of the text representations (EWKT) of the
+
+        <para>The OpenGIS specification also requires that the
+        internal storage format of spatial objects include a spatial
+        referencing system identifier (SRID). The SRID is required when
+        creating spatial objects for insertion into the database.</para>
+
+<para>
+Input/Output of these formats are available using the following
+interfaces:
+</para>
+
+	<programlisting>
+	bytea WKB = asBinary(geometry);
+	text WKT = asText(geometry);
+	geometry = GeomFromWKB(bytea WKB, SRID); 
+	geometry = GeometryFromText(text WKT, SRID);
+	</programlisting>
+
+	<para> For example, a valid insert statement to create and insert an OGC spatial object would be:</para>
+
+        <programlisting>
+	INSERT INTO SPATIALTABLE ( 
+		  THE_GEOM, 
+		  THE_NAME 
+	) 
+	VALUES ( 
+		  GeomFromText('POINT(-126.4 45.32)', 312), 
+		  'A Place' 
+	)</programlisting>
+
+
+      </sect2>
+
+	<sect2>
+        <title>PostGIS EWKB, EWKT and Canonical Forms</title>
+
+
+<para>
+OGC formats only support 2d geometries, and the associated SRID
+is *never* embedded in the input/output representations.
+</para>
+
+<para>
+Postgis extended formats are currently superset of OGC one (every
+valid WKB/WKT is a valid EWKB/EWKT) but this might vary in the
+future, specifically if OGC comes out with a new format conflicting
+with our extensions. Thus you SHOULD NOT rely on this feature!
+</para>
+
+<para>
+Postgis EWKB/EWKT add 3dm,3dz,4d coordinates support and embedded
+SRID information.
+</para>
+
+      <para>Examples of the text representations (EWKT) of the
       extended spatial objects of the features are as follows:</para>
 
       <itemizedlist>
 
         <listitem>
           <para>POINT(0 0 0) -- XYZ</para>
+        </listitem>
+
+        <listitem>
+          <para>SRID=32632;POINT(0 0) -- XY with SRID</para>
         </listitem>
 
         <listitem>
@@ -756,7 +824,7 @@ AND
         </listitem>
 
         <listitem>
-          <para>MULTIPOINTM(0 0 0,1 2 1)</para>
+          <para>SRID=4326;MULTIPOINTM(0 0 0,1 2 1) -- XYM with SRID</para>
         </listitem>
 
         <listitem>
@@ -775,62 +843,70 @@ AND
         </listitem>
 
         <listitem>
-          <para>GEOMETRYCOLLECTIONM(POINT(2 3 9),LINESTRING((2 3 4,3 4
+          <para>GEOMETRYCOLLECTIONM(POINTM(2 3 9),LINESTRINGM((2 3 4,3 4
           5)))</para>
         </listitem>
 
       </itemizedlist>
 
 
-      <sect2>
-        <title>Standard versus Canonical Forms</title>
+<para>
+Input/Output of these formats are available using the following
+interfaces:
+</para>
 
-        <para>The OpenGIS specification defines two standard ways of
-        expressing spatial objects: the Well-Known Text (WKT) form (shown in
-        the previous section) and the Well-Known Binary (WKB) form. Both WKT
-        and WKB include information about the type of the object and the
-        coordinates which form the object.</para>
+	<programlisting>
+	bytea EWKB = asEWKB(geometry);
+	text EWKT = asEWKT(geometry);
+	geometry = GeomFromEWKB(bytea EWKB);
+	geometry = GeomFromEWKT(text EWKT);
+	</programlisting>
 
-        <para>However, the OpenGIS specification also requires that the
-        internal storage format of spatial objects include a spatial
-        referencing system identifier (SRID). The SRID is required when
-        creating spatial objects for insertion into the database. For example,
-        a valid insert statement to create and insert a spatial object would
-        be:</para>
+<para>
+For example, a valid insert statement to create and insert a PostGIS spatial object would be:
+</para>
 
-        <programlisting>INSERT INTO SPATIALTABLE ( 
-  THE_GEOM, 
-  THE_NAME 
-) 
-VALUES ( 
-  GeomFromText('POINT(-126.4 45.32)', 312), 
-  'A Place' 
-)</programlisting>
+        <programlisting>
+	INSERT INTO SPATIALTABLE ( 
+		  THE_GEOM, 
+		  THE_NAME 
+	) 
+	VALUES ( 
+		  GeomFromEWKT('SRID=312;POINTM(-126.4 45.32 15)'), 
+		  'A Place' 
+	)</programlisting>
 
-        <para>Note that the "GeomFromText" function <emphasis>requires</emphasis> an SRID number.</para>
+<para>
+The "canonical forms" of a PostgreSQL type are the representations
+you get with a simple query (without any function call) and the one
+which is guaranteed to be accepted with a simple insert, update or
+copy. For the postgis 'geometry' type these are:
 
-        <para>The "canonical form" of the spatial objects in PostgreSQL is a
-        text representation which includes all the information necessary to
-        construct the object. Unlike the OpenGIS standard forms, it includes
-        the type, dimensions, coordinate, <emphasis>and</emphasis> SRID
-	information. The canonical form is the default form returned from a
-	SELECT query.
-	Since version 1.0.0 the canonical form is an HEX-encoded extended
-	WKB (EWKB).
-	The example below shows the difference between the OGC standard and
-        PostGIS canonical forms:</para>
+	<programlisting>
+	- Output -
+	binary: EWKB
+	 ascii: HEXEWKB (EWKB in hex form)
 
-        <programlisting>db=&gt; SELECT AsText(geom) AS OGCGeom FROM SPATIALTABLE;
-OGCGeom
--------------------------------------------------
- POINT(-126.4 45.32)
-(1 row)
+	- Input -
+	binary: EWKB
+	 ascii: HEXEWKB|EWKT
+	</programlisting>
+</para>
 
-db=&gt; SELECT geom AS PostGISGeom FROM thetable;
-PostGISGeom
--------------------------------------------------
- 0101000020380100009A99999999995FC0295C8FC2F5A84640
-(1 row)</programlisting>
+<para>
+For example this statement reads EWKT and returns HEXEWKB in the
+process of canonical ascii input/output:
+</para>
+
+        <programlisting>
+	=# SELECT 'SRID=4;POINT(0 0)'::geometry;
+			      geometry
+	----------------------------------------------------
+	 01010000200400000000000000000000000000000000000000
+	(1 row)
+	</programlisting>
+
+
       </sect2>
     </sect1>
 
