@@ -22,11 +22,11 @@ subdir=contrib/postgis
 ifeq (${PGSQL_SRC},) 
 	top_builddir = ../..
 	include $(top_builddir)/src/Makefile.global
-	libdir := $$libdir
+	LPATH := $$libdir
 else
 	top_builddir = ${PGSQL_SRC}
 	include $(top_builddir)/src/Makefile.global
-	libdir := ${PWD}
+	LPATH := ${PWD}
 endif
 
 #---------------------------------------------------------------
@@ -104,8 +104,8 @@ loaderdumper:
 include $(top_srcdir)/src/Makefile.shlib
 
 $(NAME).sql: $(NAME).sql.in $(NAME)_gist_$(USE_VERSION).sql.in 
-	sed -e 's:@MODULE_FILENAME@:$(libdir)/$(shlib):g;s:@POSTGIS_VERSION@:$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION):g' < $(NAME).sql.in > $@ 
-	sed -e 's:@MODULE_FILENAME@:$(libdir)/$(shlib):g;s:@POSTGIS_VERSION@:$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION):g' < $(NAME)_gist_$(USE_VERSION).sql.in >> $(NAME).sql
+	sed -e 's:@MODULE_FILENAME@:$(LPATH)/$(shlib):g;s:@POSTGIS_VERSION@:$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION):g' < $(NAME).sql.in > $@ 
+	sed -e 's:@MODULE_FILENAME@:$(LPATH)/$(shlib):g;s:@POSTGIS_VERSION@:$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION):g' < $(NAME)_gist_$(USE_VERSION).sql.in >> $(NAME).sql
 
 $(NAME)_undef.sql: $(NAME).sql
 	perl create_undef.pl $< > $@ 
