@@ -2436,6 +2436,8 @@ Datum LWGEOM_reverse(PG_FUNCTION_ARGS)
 	lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom));
 	lwgeom_reverse(lwgeom);
 
+	geom = pglwgeom_serialize(lwgeom);
+
 	PG_RETURN_POINTER(geom);
 }
 
@@ -2450,6 +2452,8 @@ Datum LWGEOM_forceRHR_poly(PG_FUNCTION_ARGS)
 
 	lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom));
 	lwgeom_forceRHR(lwgeom);
+
+	geom = pglwgeom_serialize(lwgeom);
 
 	PG_RETURN_POINTER(geom);
 }

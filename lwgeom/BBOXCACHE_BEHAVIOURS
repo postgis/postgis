@@ -101,8 +101,8 @@ section also use it.
 	translate(geometry,float8,float8,[float8]) *SRL*
 
 	## These use LWGEOM as a mean to access and modify SERIALIZED form
-	reverse(geometry) *LWG* **SRL**
-	ForceRHR(geometry) *LWG* **SRL**
+	reverse(geometry) *LWG* 
+	ForceRHR(geometry) *LWG* 
 
 	segmentize(geometry, float8) *LWG*
 
