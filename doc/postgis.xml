@@ -1212,9 +1212,11 @@ SELECT AddGeometryColumn( 'roads', 'roads_geom', -1, 'GEOMETRY', 3 );</programli
       <sect2>
         <title>Ensuring OpenGIS compliancy of geometries</title>
 
-        <para>Most of the PostGIS functions rely on the assumption that your geometry data conforms
-        to the OpenGIS Simple Feature Specification. To check whether your geometries are valid
-        in this sense, you can use the isvalid() function:</para>
+        <para>Most of the functions implemented by the GEOS library
+	rely on the assumption that your geometries are valid
+        as specified by the OpenGIS Simple Feature Specification.
+	To check validity of geometries you can use the
+	<link linkend="IsValid">isvalid()</link> function:</para>
 
         <programlisting>gisdb=# select isvalid('LINESTRING(0 0, 1 1)'), isvalid('LINESTRING(0 0,0 0)');
  isvalid | isvalid
@@ -1235,8 +1237,16 @@ SELECT AddGeometryColumn( 'roads', 'roads_geom', -1, 'GEOMETRY', 3 );</programli
         uses, and you should contact the PostGIS developers. The same is true if an PostGIS returns
         an invalid geometry for valid input.</para>
 
-        <programlisting>CREATE TABLE roads ( ROAD_ID int4, ROAD_NAME varchar(128) ); 
-SELECT AddGeometryColumn( 'roads', 'roads_geom', -1, 'GEOMETRY', 3 );</programlisting>
+	<note>
+	<para>
+	Strictly compliant OGC geometries cannot have Z or M values.
+	The <link linkend="IsValid">IsValid()</link> function won't
+	consider higher dimensioned geometries invalid ! Invocations
+	of AddGeometryColumn() will add a constraint checking geometry
+	dimensions, so it is enough to specify 2 there.
+	</para>
+	</note>
+
       </sect2>    
     </sect1>
 
@@ -4516,7 +4526,7 @@ FROM geometry_table;</literallayout>
 				</listitem>
 			</varlistentry>
 
-		<varlistentry>
+		<varlistentry id="IsValid">
 		  <term>isvalid(geometry)</term>
 
 		  <listitem>
