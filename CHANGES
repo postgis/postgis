@@ -4,6 +4,7 @@ PostGIS 1.0.0
 	- NEW -p flag for shp2pgsql
 	- BUGFIX in transform() releasing random memory address
 	- BUGFIX in force_3dm() allocating less memory then required
+	- NEW chapter about OGC compliancy enforcement
 
 PostGIS 1.0.0RC6
 2005/03/30
