@@ -1216,7 +1216,7 @@ SELECT AddGeometryColumn( 'roads', 'roads_geom', -1, 'GEOMETRY', 3 );</programli
 	rely on the assumption that your geometries are valid
         as specified by the OpenGIS Simple Feature Specification.
 	To check validity of geometries you can use the
-	<link linkend="IsValid">isvalid()</link> function:</para>
+	<link linkend="IsValid">IsValid()</link> function:</para>
 
         <programlisting>gisdb=# select isvalid('LINESTRING(0 0, 1 1)'), isvalid('LINESTRING(0 0,0 0)');
  isvalid | isvalid
@@ -1234,16 +1234,17 @@ SELECT AddGeometryColumn( 'roads', 'roads_geom', -1, 'GEOMETRY', 3 );</programli
         <para>If you encounter any strange error messages such as "GEOS Intersection() threw an 
         error!" or "JTS Intersection() threw an error!" when calling PostGIS functions with valid
         input geometries, you likely found an error in either PostGIS or one of the libraries it
-        uses, and you should contact the PostGIS developers. The same is true if an PostGIS returns
+        uses, and you should contact the PostGIS developers. The same is true if a PostGIS function returns
         an invalid geometry for valid input.</para>
 
 	<note>
 	<para>
 	Strictly compliant OGC geometries cannot have Z or M values.
 	The <link linkend="IsValid">IsValid()</link> function won't
-	consider higher dimensioned geometries invalid ! Invocations
-	of AddGeometryColumn() will add a constraint checking geometry
-	dimensions, so it is enough to specify 2 there.
+	consider higher dimensioned geometries invalid! Invocations
+	of <link linkend="AddGeometryColumn">AddGeometryColumn()</link>
+        will add a constraint checking geometry dimensions, so it is
+        enough to specify 2 there.
 	</para>
 	</note>
 
@@ -2706,7 +2707,7 @@ dimension(the_geom)>2" skips re-writing of geometries that already are in 2D.
         <title>Management Functions</title>
 
         <variablelist>
-          <varlistentry>
+          <varlistentry id="AddGeometryColumn">
             <term>AddGeometryColumn(varchar, varchar, varchar, integer,
             varchar, integer)</term>
 
