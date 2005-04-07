@@ -1208,6 +1208,36 @@ SELECT AddGeometryColumn('parks', 'park_geom', 128, 'MULTIPOLYGON', 2 );</progra
         <programlisting>CREATE TABLE roads ( ROAD_ID int4, ROAD_NAME varchar(128) ); 
 SELECT AddGeometryColumn( 'roads', 'roads_geom', -1, 'GEOMETRY', 3 );</programlisting>
       </sect2>
+
+      <sect2>
+        <title>Ensuring OpenGIS compliancy of geometries</title>
+
+        <para>Most of the PostGIS functions rely on the assumption that your geometry data conforms
+        to the OpenGIS Simple Feature Specification. To check whether your geometries are valid
+        in this sense, you can use the isvalid() function:</para>
+
+        <programlisting>gisdb=# select isvalid('LINESTRING(0 0, 1 1)'), isvalid('LINESTRING(0 0,0 0)');
+ isvalid | isvalid
+---------+---------
+ t       | f</programlisting>
+        
+        
+        <para>By default, PostGIS does not apply this validity check on geometry input, because
+        testing for validity needs lots of CPU time for complex geometries, especially polygons.
+        If you do not trust your data sources, you can manually enforce such a check to your tables
+        by adding a check constraint:</para>
+
+        <programlisting>ALTER TABLE mytable ADD CONSTRAINT geometry_valid_check CHECK (isvalid(the_geom));</programlisting>
+
+        <para>If you encounter any strange error messages such as "GEOS Intersection() threw an 
+        error!" or "JTS Intersection() threw an error!" when calling PostGIS functions with valid
+        input geometries, you likely found an error in either PostGIS or one of the libraries it
+        uses, and you should contact the PostGIS developers. The same is true if an PostGIS returns
+        an invalid geometry for valid input.</para>
+
+        <programlisting>CREATE TABLE roads ( ROAD_ID int4, ROAD_NAME varchar(128) ); 
+SELECT AddGeometryColumn( 'roads', 'roads_geom', -1, 'GEOMETRY', 3 );</programlisting>
+      </sect2>    
     </sect1>
 
     <sect1>
