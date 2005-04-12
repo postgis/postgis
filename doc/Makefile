@@ -5,7 +5,7 @@ include ../Version.config
 
 LAST_RELEASE_VERSION = $(SO_MAJOR_VERSION).$(SO_MINOR_VERSION).$(SO_MICRO_VERSION)
 
-XSLBASE=/usr/share/sgml/docbook/xsl-stylesheets
+XSLBASE?=/usr/share/sgml/docbook/xsl-stylesheets
 #XSLBASE = /usr/share/xml/docbook/stylesheet/nwalsh
 
 all: html
