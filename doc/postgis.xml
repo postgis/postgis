@@ -93,6 +93,20 @@
             analytical functions.</para>
           </listitem>
         </varlistentry>
+
+        <varlistentry>
+          <term>Other contributors</term>
+
+          <listitem>
+            <para>
+		In alphabetical order: 
+		Carl Anderson, David Techer, 
+		IIDA Tetsushi, Gerald Fenoy, Kris Jurka,
+		Mark Cave-Ayland, Markus Schaber,
+		Ralph Mason.
+            </para>
+          </listitem>
+        </varlistentry>
       </variablelist>
     </sect1>
 
@@ -4973,19 +4987,6 @@ FROM geometry_table;</literallayout>
 				UTF8 support in loader.
 				</para>
 
-			</sect2>
-
-			<sect2>
-				<title>Credits</title>
-
-				<para>
-				This release includes contributions from
-				(in alphabetical order):
-				Carl Anderson, David Blasby, David Techer, 
-				IIDA Tetsushi,
-				Kris Jurka, Mark Cave-Ayland, Markus Schaber,
-				Ralph Mason.
-				</para>
 			</sect2>
 		</sect1>
 	</appendix>
