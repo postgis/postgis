@@ -4641,7 +4641,7 @@ FROM geometry_table;</literallayout>
     </sect1>
   </chapter>
 
-	<chapter>
+	<appendix>
 		<title>Release Notes</title>
 
     		<sect1>
@@ -4981,11 +4981,12 @@ FROM geometry_table;</literallayout>
 				<para>
 				This release includes contributions from
 				(in alphabetical order):
-				Carl Anderson, David Blasby, IIDA Tetsushi,
+				Carl Anderson, David Blasby, David Techer, 
+				IIDA Tetsushi,
 				Kris Jurka, Mark Cave-Ayland, Markus Schaber,
 				Ralph Mason.
 				</para>
 			</sect2>
 		</sect1>
-	</chapter>
+	</appendix>
 </book>
