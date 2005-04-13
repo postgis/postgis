@@ -8,7 +8,11 @@ SHELL = /bin/sh
 subdir = contrib/postgis/loader
 EXE = 
 
-ifeq ($(findstring CYGWIN,$(shell uname)),CYGWIN)
+UNAME = $(shell uname)
+ifeq ($(findstring CYGWIN,$(UNAME)),CYGWIN)
+	EXE = .exe
+endif
+ifeq ($(findstring MINGW,$(UNAME)),MINGW)
 	EXE = .exe
 endif
 
