@@ -165,15 +165,16 @@ make_good_string(char *str)
 
 	ptr = str;
 
-	while (*ptr++) {
+	while (*ptr) {
 		if ( *ptr == '\t' || *ptr == '\\' ) toescape++;
+		ptr++;
 	}
 
 	if (toescape == 0) return str;
 
 	size = ptr-str+toescape;
 
-	result = calloc(1,size);
+	result = calloc(1, size);
 
 	optr=result;
 	ptr=str;
@@ -217,8 +218,9 @@ protect_quotes_string(char *str)
 
 	ptr = str;
 
-	while (*ptr++) {
+	while (*ptr) {
 		if ( *ptr == '\'' || *ptr == '\\' ) toescape++;
+		ptr++;
 	}
 
 	if (toescape == 0) return str;
@@ -1613,6 +1615,9 @@ utf8 (const char *fromcode, char *inputbuf)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.88  2005/04/14 12:58:59  strk
+ * Applied patch by Gino Lucrezi fixing bug in string escaping code.
+ *
  * Revision 1.87  2005/04/06 14:16:43  strk
  * Removed manual update of gid field.
  *
