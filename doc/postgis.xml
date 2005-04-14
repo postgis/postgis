@@ -101,8 +101,8 @@
             <para>
 		In alphabetical order: 
 		Alex Bodnaru, Carl Anderson, David Techer, 
-		IIDA Tetsushi, Gerald Fenoy, Kris Jurka,
-		Mark Cave-Ayland, Markus Schaber,
+		IIDA Tetsushi, Gerald Fenoy, Gino Lucrezi,
+		Kris Jurka, Mark Cave-Ayland, Markus Schaber,
 		Ralph Mason.
             </para>
           </listitem>
@@ -4663,8 +4663,10 @@ FROM geometry_table;</literallayout>
 			<para>Release date: 2005/04/??</para>
 
 			<para>Final 1.0.0 release.
-			Contains a few bug fixes in the library
-			and a few improvements in the loader.</para>
+			Contains a few bug fixes, some improvements
+			in the loader (most notably support for older
+			postgis versions), and more docs.
+			</para>
 
 			<sect2>
 				<title>Upgrading</title>
@@ -4688,10 +4690,12 @@ FROM geometry_table;</literallayout>
 
 			<sect2>
 				<title>Other changes/additions</title>
+	<para>BUGFIX in shp2pgsql escape of values starting with tab or single-quote</para>
 	<para>NEW manual pages for loader/dumper</para>
 	<para>NEW shp2pgsql support for old (HWGEOM) postgis versions</para>
 	<para>NEW -p (prepare) flag for shp2pgsql</para>
 	<para>NEW manual chapter about OGC compliancy enforcement</para>
+	<para>NEW autoconf support for JTS lib</para>
 			</sect2>
 
 		</sect1>

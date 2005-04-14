@@ -5,6 +5,8 @@ PostGIS 1.0.0
 	- BUGFIX in transform() releasing random memory address
 	- BUGFIX in force_3dm() allocating less memory then required
 	- NEW chapter about OGC compliancy enforcement
+	- BUGFIX in shp2pgsql escape of values starting with "'" or "\t" 
+	- NEW autoconf support for JTS lib
 
 PostGIS 1.0.0RC6
 2005/03/30
