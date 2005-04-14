@@ -1,3 +1,5 @@
+- copy bbox on deserializzation (for memory alignment constraints)
+
 - lwgeom_clone_deep / lwgeom_release_deep
   (or maybe should both be always be deep.... )
 
