@@ -1,13 +1,13 @@
 AC_INIT(README.postgis)
 
-dnl AC_ARG_ENABLE(autoconf, [  --enable-autoconf       really use autoconf],
-dnl 	AC_MSG_RESULT(Using autoconf),
-dnl 	AC_MSG_ERROR([
-dnl 
-dnl Autoconf-based configuration is not widely tested.
-dnl If you want to use it anyway specify --enable-autoconf.
-dnl ])
-dnl )
+AC_ARG_ENABLE(autoconf, [  --enable-autoconf       really use autoconf],
+ 	AC_MSG_RESULT(Using autoconf),
+ 	AC_MSG_ERROR([
+ 
+ Autoconf-based configuration is not widely tested.
+ If you want to use it anyway specify --enable-autoconf.
+ ])
+ )
 
 
 dnl
