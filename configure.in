@@ -1,104 +1,151 @@
 AC_INIT(README.postgis)
 
-AC_ARG_ENABLE(autoconf, [  --enable-autoconf       really use autoconf],
-	AC_MSG_RESULT(Using autoconf),
-	AC_MSG_ERROR([
+dnl AC_ARG_ENABLE(autoconf, [  --enable-autoconf       really use autoconf],
+dnl 	AC_MSG_RESULT(Using autoconf),
+dnl 	AC_MSG_ERROR([
+dnl 
+dnl Autoconf-based configuration is not widely tested.
+dnl If you want to use it anyway specify --enable-autoconf.
+dnl ])
+dnl )
 
-Autoconf-based configuration is not widely tested.
-If you want to use it anyway specify --enable-autoconf.
-])
-)
+
+dnl
+dnl Test for GEOS
+dnl
 
 AC_SUBST(USE_GEOS)
 AC_SUBST(GEOS_DIR)
-if test -z "$USE_GEOS"; then
-	USE_GEOS=0
-fi
-if test -z "$GEOS_DIR"; then
-	GEOS_DIR=/usr/local
-fi
+USE_GEOS=0
+GEOS_DIR=
 AC_ARG_WITH(geos, 
-[  --with-geos[[=DIR]]         enable spatial predicate and operator support],
-  if test "$with_geos" != "no"; then
-    USE_GEOS=1
-    if test "$with_geos" != "yes"; then
-       GEOS_DIR=$with_geos
-    else
-       GEOS_DIR=`geos-config --prefix`
-    fi
-  fi
+[  --with-geos[[=ARG]]       enable spatial predicates and operators using GEOS (ARG=path to geos-config)],
+	if test "$with_geos" != "no"; then
+		USE_GEOS=1
+		if test "$with_geos" != "yes"; then
+			if ! test -e "$with_geos"; then
+	AC_MSG_ERROR([ARG of --with-geos is not an (executable) file]);
+			else
+				GEOSCONFIG="$with_geos"
+			fi
+		fi
+	fi
 )
+if test $USE_GEOS -gt 0; then
+	if test -z "$GEOSCONFIG"; then
+		AC_PATH_PROG([GEOSCONFIG], [geos-config])
+		if test -z "$GEOSCONFIG"; then
+			AC_MSG_ERROR([Can't find geos-config]);
+		fi
+	fi
+	GEOS_DIR=`$GEOSCONFIG --prefix`
+fi
 
 AC_SUBST(USE_PROJ)
 AC_SUBST(PROJ_DIR)
-if test -z "$USE_PROJ"; then
-	USE_PROJ=0
-fi
-if test -z "$PROJ_DIR"; then
-	PROJ_DIR=/usr/local
+USE_PROJ=0
+PROJ_DIR=
+AC_PATH_PROG([PROJ], [proj])
+if test -n "$PROJ"; then
+	USE_PROJ=1
+	PROJ_DIR=`dirname $PROJ`/..
 fi
 AC_ARG_WITH(proj, 
-[  --with-proj[[=DIR]]         enable reprojection support],
-  if test "$with_proj" != "no"; then
-    USE_PROJ=1
-    if test "$with_proj" != "yes"; then
-       PROJ_DIR=$with_proj
-    fi
-  fi
+	[  --with-proj[[=DIR]]       enable reprojection support],
+	if test "$with_proj" = "no"; then
+		USE_PROJ=0
+	else
+		if test "$with_proj" != "yes"; then
+			PROJ_DIR=$with_proj
+		fi
+	fi
 )
-
-AC_SUBST(PGSQL_SRC)
-if test -z "$PGSQL_SRC"; then
-	PGSQL_SRC=${PWD}/../..
+if test $USE_PROJ -gt 0; then
+	if ! test -e $PROJ_DIR/include/projects.h; then
+		AC_MSG_ERROR([Can't find proj dir.]);
+	fi
 fi
+
+PGSQL_SRC=${PWD}/../..
+AC_SUBST(PGSQL_SRC)
 AC_ARG_WITH(pgsql-src, 
-[  --with-pgsql-src=DIR    where to find pgsql sources],
-  if test -d "$with_pgsql_src"; then
-    PGSQL_SRC=$with_pgsql_src
-  else
-    AC_MSG_RESULT(*--> $with_pgsql_src is not a directory)
-  fi
+	[  --with-pgsql-src=DIR    where to find pgsql sources],
+    	PGSQL_SRC=$with_pgsql_src
+	)
+if ! test -e $PGSQL_SRC/src/Makefile.global; then
+	AC_MSG_ERROR([ Can't find (configured) PGSQL sources. ]);
+fi
+
+
+AC_SUBST(USE_JTS)
+AC_SUBST(JTS_INCLUDES)
+AC_SUBST(JTS_LIBDIR)
+USE_JTS=0
+JTS_INCLUDES=
+JTS_INCLUDES=
+AC_ARG_WITH(jts, 
+[  --with-jts[[=ARG]]        use JTS for spatial predicates and operators (ARG=path to jts-config)],
+	if test "$with_jts" != "no"; then
+		USE_JTS=1
+		if test "$with_jts" != "yes"; then
+			if ! test -e "$with_jts"; then
+	AC_MSG_ERROR([ARG of --with-jts is not an (executable) file]);
+			else
+				JTSCONFIG=$with_jts
+			fi
+		fi
+	fi
 )
+if test $USE_JTS -gt 0; then
+	if test -z "$JTSCONFIG"; then
+		AC_PATH_PROG([JTSCONFIG], [jts-config])
+		if test -z "$JTSCONFIG"; then
+			AC_MSG_ERROR([Can't find jts-config]);
+		fi
+	fi
+	JTS_INCLUDES=`$JTSCONFIG --includedir`
+	JTS_LIBDIR=`$JTSCONFIG --libdir`
+fi
+
 
 dnl Search flex and yacc
+
 AC_SUBST(FLEX)
-AC_SUBST(YACC)
 AC_PATH_PROG([FLEX], [flex])
-AC_PATH_PROG([YACC], [yacc])
-
-dnl Some final checks
-
-if test $USE_GEOS -gt 0 -a ! -e $GEOS_DIR/bin/geos-config; then
-	AC_MSG_ERROR(Can't find $GEOS_DIR/bin/geos-config);
-fi
-
-if test $USE_PROJ -gt 0 -a ! -e $PROJ_DIR/include/projects.h; then
-	AC_MSG_ERROR(Can't find $PROJ_DIR/include/projects.h);
-fi
-
-if ! test -e $PGSQL_SRC/src/Makefile.global; then
-	AC_MSG_ERROR(Can't find $PGSQL_SRC/src/Makefile.global);
-fi
-
 if test -z "$FLEX"; then
 	AC_MSG_ERROR(Can't find 'flex');
 fi
 
+AC_SUBST(YACC)
+AC_PATH_PROG([YACC], [yacc])
 if test -z "$YACC"; then
 	AC_MSG_ERROR(Can't find 'yacc');
 fi
 
-AC_MSG_RESULT([ USE_GEOS=$USE_GEOS])
-if test $USE_GEOS -gt 0; then
-	AC_MSG_RESULT([ GEOS_DIR=$GEOS_DIR])
-fi
-AC_MSG_RESULT([ USE_PROJ=$USE_PROJ])
-if test $USE_PROJ -gt 0; then
-	AC_MSG_RESULT([ PROJ_DIR=$PROJ_DIR])
-fi
-AC_MSG_RESULT([ PGSQL_SRC=$PGSQL_SRC])
 
-AC_MSG_RESULT([ FLEX=$FLEX])
-AC_MSG_RESULT([ YACC=$YACC])
+dnl if test $USE_JTS -gt 0; then
+dnl	AC_MSG_RESULT([ GEOS disabled, using JTS.]);
+dnl	USE_GEOS=0
+dnl fi
+
+AC_MSG_RESULT([ ])
+AC_MSG_RESULT([ SUMMARY])
+AC_MSG_RESULT([ -------])
+AC_MSG_RESULT([ PGSQL: src=$PGSQL_SRC])
+
+if test $USE_JTS -gt 0; then
+	AC_MSG_RESULT([   JTS: includedir=$JTS_INCLUDES libdir=$JTS_LIBDIR])
+fi
+if test $USE_GEOS -gt 0; then
+	AC_MSG_RESULT([  GEOS: dir=$GEOS_DIR])
+fi
+if test $USE_PROJ -gt 0; then
+	AC_MSG_RESULT([  PROJ: dir=$PROJ_DIR])
+fi
+
+dnl AC_MSG_RESULT([  FLEX:  path=$FLEX])
+dnl AC_MSG_RESULT([  YACC:  path=$YACC])
+
+AC_MSG_RESULT([ ])
 
 AC_OUTPUT(Makefile.config)
