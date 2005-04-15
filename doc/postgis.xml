@@ -260,7 +260,7 @@
         <listitem>
           <para>Once your PostgreSQL installation is up-to-date, enter the
           "postgis" directory, and edit the
-          <filename>Makefile</filename>.</para>
+          <filename>Makefile.config</filename> file.</para>
 
           <itemizedlist>
             <listitem>
@@ -448,7 +448,7 @@ as a "backup" in case postgis_restore.pl won't work for you:
         </orderedlist>
 
         <para>Also check that you have made any necessary changes to the top
-        of the Makefile. This includes:</para>
+        of the Makefile.config. This includes:</para>
 
         <orderedlist>
           <listitem>
@@ -456,7 +456,7 @@ as a "backup" in case postgis_restore.pl won't work for you:
             must install the Proj4 library on your system, set the
             <varname>USE_PROJ</varname> variable to 1 and the
             <varname>PROJ_DIR</varname> to your installation prefix in the
-            Makefile.</para>
+            Makefile.config.</para>
           </listitem>
 
           <listitem>
@@ -464,7 +464,7 @@ as a "backup" in case postgis_restore.pl won't work for you:
             install the GEOS library on your system, and set the
             <varname>USE_GEOS</varname> to 1 and the
             <varname>GEOS_DIR</varname> to your installation prefix in the
-            Makefile.</para>
+            Makefile.config</para>
           </listitem>
         </orderedlist>
       </sect2>
