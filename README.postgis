@@ -22,8 +22,8 @@ Directory structure:
               suitable for uploading into a PostGIS/PostgreSQL database
               and a program for converting PostGIS spatial tables into
               Shape files..
-  ./examples  Small programs which demonstrate ways of accessing 
-              GIS data.
+  ./extras    Small programs which demonstrate ways of accessing 
+              GIS data and other contributed code.
 	        
 
 INSTALLATION:
