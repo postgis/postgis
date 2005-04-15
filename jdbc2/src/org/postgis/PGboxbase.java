@@ -6,7 +6,7 @@
  * 
  * (C) 2004 Paul Ramsey, pramsey@refractions.net
  * 
- * (C) 2005 Markus Schaber, markus@schabi.de
+ * (C) 2005 Markus Schaber, markus.schaber@logix-tt.com
  * 
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -38,6 +38,8 @@ import java.sql.SQLException;
  */
 
 public abstract class PGboxbase extends PGobject {
+    /* JDK 1.5 Serialization */
+    private static final long serialVersionUID = 0x100;
 
     /**
      * The lower left bottom corner of the box.
@@ -54,7 +56,7 @@ public abstract class PGboxbase extends PGobject {
      * 
      * I use an abstract method here so we do not need to replicate the String
      * object in every instance.
-     *  
+     * 
      */
     public abstract String getPrefix();
 
@@ -145,7 +147,7 @@ public abstract class PGboxbase extends PGobject {
      * 
      * As the Server always returns Box3D with three dimensions, z==0 equals
      * dimensions==2
-     *  
+     * 
      */
     protected static boolean compareLazyDim(Point first, Point second) {
         return first.x == second.x

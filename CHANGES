@@ -1,3 +1,12 @@
+PostGIS 1.1.0CVS
+	- jdbc2 works:
+	  + Makefile improvements
+	  + JTS support improvements
+	  + Improved regression test system
+	  + Basic consistency check method for geometry collections
+	  + Support for (Hex)(E)wkb
+	  + Autoprobing DriverWrapper for HexWKB / EWKT switching
+
 PostGIS 1.0.0
 	- NEW manual pages for loader/dumper
 	- NEW shp2pgsql support for old (HWGEOM) postgis versions

@@ -3,7 +3,7 @@
  * 
  * PostGIS extension for PostgreSQL JDBC driver - example and test classes
  * 
- * (C) 2005 Markus Schaber, markus@schabi.de
+ * (C) 2005 Markus Schaber, markus.schaber@logix-tt.com
  * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -45,7 +45,7 @@ import java.sql.Statement;
  */
 public class TestAutoregister {
 
-    public static void main(String[] args) {        
+    public static void main(String[] args) {
         String dburl = null;
         String dbuser = null;
         String dbpass = null;
@@ -67,13 +67,13 @@ public class TestAutoregister {
         try {
             major = new Driver().getMajorVersion();
         } catch (Exception e) {
-            System.err.println("Cannot create Driver instance: "+e.getMessage());
+            System.err.println("Cannot create Driver instance: " + e.getMessage());
             System.exit(1);
             return;
         }
 
         if (major < 8) {
-            System.out.println("Your pgdjbc " + major
+            System.err.println("Your pgdjbc " + major
                     + ".X is too old, it does not support autoregistration!");
             return;
         }
@@ -85,8 +85,8 @@ public class TestAutoregister {
             conn = DriverManager.getConnection(dburl, dbuser, dbpass);
             stat = conn.createStatement();
         } catch (SQLException e) {
-            System.out.println("Connection initialization failed, aborting.");
-            e.printStackTrace(System.out);
+            System.err.println("Connection initialization failed, aborting.");
+            e.printStackTrace();
             System.exit(1);
         }
 
@@ -94,8 +94,8 @@ public class TestAutoregister {
         try {
             postgisServerMajor = getPostgisMajor(stat);
         } catch (SQLException e) {
-            System.out.println("Error fetching PostGIS version: " + e.getMessage());
-            System.out.println("Is PostGIS really installed in the database?");
+            System.err.println("Error fetching PostGIS version: " + e.getMessage());
+            System.err.println("Is PostGIS really installed in the database?");
             // Signal the compiler that code flow ends here.
             System.exit(1);
         }
@@ -115,7 +115,7 @@ public class TestAutoregister {
                 System.out.println("PGgeometry failed!");
             }
         } catch (SQLException e) {
-            System.out.println("Selecting geometry failed: " + e.getMessage());
+            System.err.println("Selecting geometry failed: " + e.getMessage());
             System.exit(1);
             // Signal the compiler that code flow ends here.
             return;
@@ -132,15 +132,16 @@ public class TestAutoregister {
                 System.out.println("Box3d failed!");
             }
         } catch (SQLException e) {
-            System.out.println("Selecting box3d failed: " + e.getMessage());
+            System.err.println("Selecting box3d failed: " + e.getMessage());
             System.exit(1);
             // Signal the compiler that code flow ends here.
             return;
         }
 
         /* Test box2d if appropriate */
-        if (postgisServerMajor<1) {
-            System.out.println("PostGIS version is too old, not testing box2d");
+        if (postgisServerMajor < 1) {
+            System.out.println("PostGIS version is too old, skipping box2ed test");
+            System.err.println("PostGIS version is too old, skipping box2ed test");
         } else {
             try {
                 ResultSet rs = stat.executeQuery("SELECT 'BOX(1 2,3 4)'::box2d");
@@ -152,7 +153,7 @@ public class TestAutoregister {
                     System.out.println("Box2d failed! " + result.getClass().getName());
                 }
             } catch (SQLException e) {
-                System.out.println("Selecting box2d failed: " + e.getMessage());
+                System.err.println("Selecting box2d failed: " + e.getMessage());
                 System.exit(1);
                 // Signal the compiler that code flow ends here.
                 return;
@@ -160,6 +161,8 @@ public class TestAutoregister {
         }
 
         System.out.println("Finished.");
+        // If we finished up to here without exitting, we passed all tests.
+        System.err.println("TestAutoregister.java finished without errors.");
     }
 
     public static int getPostgisMajor(Statement stat) throws SQLException {
@@ -169,7 +172,7 @@ public class TestAutoregister {
         if (version == null) {
             throw new SQLException("postgis_version returned NULL!");
         }
-        version =  version.trim();
+        version = version.trim();
         int idx = version.indexOf('.');
         return Integer.parseInt(version.substring(0, idx));
     }

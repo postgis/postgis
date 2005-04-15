@@ -1,7 +1,7 @@
 # PostGIS Makefile
 
 # (C) 2004 Paul Ramsey, pramsey@refractions.net
-# (C) 2005 Markus Schaber, markus@schabi.de
+# (C) 2005 Markus Schaber, markus.schaber@logix-tt.com
 # (C) 2005 Sandro Santilli, strk@refractions.net
 # (C) 2005 Alex Bodnaru, alexbodn@012.net.il
 
@@ -27,7 +27,7 @@
 
 # Configure the helper executables used during build.
 
-JAVAC?=javac
+JAVAC?=javac -target 1.2 -source 1.2
 JAVA?=java
 JAR?=jar
 MKDIR?=mkdir -p
@@ -91,6 +91,12 @@ PGPORT?=5432
 PGDATABASE?=jdbc_test
 PGUSER?=psql
 PGPASS?=guess
+PGURL?=//$(PGHOST):$(PGPORT)/$(PGDATABASE)
+
+# Where to put the output from regression tests. If you want to have it on
+# stdout, set TESTOUT to the empty string. Be careful - this will be deleted
+# by "make clean".
+TESTOUTPUT?=test.log
 
 ### Config variable section ends ###
 
@@ -110,6 +116,8 @@ SRC= $(SRCDIR)/examples/Test.java \
 		$(SRCDIR)/examples/VersionPrinter.java \
 		$(SRCDIR)/org/postgis/ComposedGeom.java \
 		$(SRCDIR)/org/postgis/DriverWrapper.java \
+		$(SRCDIR)/org/postgis/DriverWrapperAutoprobe.java \
+		$(SRCDIR)/org/postgis/DriverWrapperLW.java \
 		$(SRCDIR)/org/postgis/GeometryCollection.java \
 		$(SRCDIR)/org/postgis/Geometry.java \
 		$(SRCDIR)/org/postgis/LinearRing.java \
@@ -121,12 +129,16 @@ SRC= $(SRCDIR)/examples/Test.java \
 		$(SRCDIR)/org/postgis/PGbox3d.java \
 		$(SRCDIR)/org/postgis/PGboxbase.java \
 		$(SRCDIR)/org/postgis/PGgeometry.java \
+		$(SRCDIR)/org/postgis/PGgeometryLW.java \
 		$(SRCDIR)/org/postgis/PointComposedGeom.java \
 		$(SRCDIR)/org/postgis/Point.java \
 		$(SRCDIR)/org/postgis/Polygon.java \
 		$(SRCDIR)/org/postgis/binary/BinaryParser.java \
+		$(SRCDIR)/org/postgis/binary/BinaryWriter.java \
 		$(SRCDIR)/org/postgis/binary/ByteGetter.java \
+		$(SRCDIR)/org/postgis/binary/ByteSetter.java \
 		$(SRCDIR)/org/postgis/binary/ValueGetter.java \
+		$(SRCDIR)/org/postgis/binary/ValueSetter.java \
 		$(SRCDIR)/org/postgis/Version.java 
 
 # The pgjdbc 7.2/7.4/8.0 compatibility stub stuff
@@ -151,14 +163,21 @@ VERSION=$(JDBC_MAJOR_VERSION)_$(JDBC_MINOR_VERSION)_$(JDBC_MICRO_VERSION)
 VERSIONPATH=$(BUILD)/org/postgis
 VERSIONTARGET=$(VERSIONPATH)/version.properties
 
+# Output redirect for tests
+TESTRD= >>$(TESTOUTPUT) 
+
 # Preliminary jts support - not stable yet!
 JTSDIR=jtssrc
 JTSBUILD=jtsbin/
 JTSSRC= $(JTSDIR)/examples/JtsTestParser.java \
 	$(JTSDIR)/org/postgis/jts/JtsBinaryParser.java \
+	$(JTSDIR)/org/postgis/jts/JtsBinaryWriter.java \
 	$(JTSDIR)/org/postgis/jts/JtsGeometry.java \
 	$(JTSDIR)/org/postgis/jts/JtsGisWrapper.java \
 	$(JTSDIR)/org/postgis/jts/JtsWrapper.java \
+
+
+JTSPATH=$(JTSBUILD)$(CPSEP)$(BUILD)$(CPSEP)$(RUNCP)
 
 # Now the makefile targets that do the work:
 
@@ -204,33 +223,38 @@ compile: stubcompile $(BUILD) $(SRC) versionstamp
 	touch compile
 
 test:	postgis.jar
-	$(JAVA) $(EXEC_ADDCP) "$(RUNCP)" $(EXAMPLES)/Test
+	$(JAVA) $(EXEC_ADDCP) "$(RUNCP)" $(EXAMPLES)/Test $(TESTRD) 
         
 jtest:	postgis.jar
-	$(JAVA) $(EXEC_ADDCP) "$(RUNCP)" $(EXAMPLES)/TestServer jdbc:postgresql://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
+	$(JAVA) $(EXEC_ADDCP) "$(RUNCP)" $(EXAMPLES)/TestServer $(TESTRD) \
+	 jdbc:postgresql:$(PGURL) $(PGUSER) $(PGPASS)
 
 ptestoffline: postgis.jar	
-	$(JAVA) $(EXEC_ADDCP) "$(RUNCP)" $(EXAMPLES)/TestParser offline
+	$(JAVA) $(EXEC_ADDCP) "$(RUNCP)" $(EXAMPLES)/TestParser $(TESTRD)  offline
 
 ptest:  postgis.jar
-	$(JAVA) $(EXEC_ADDCP) "$(RUNCP)" $(EXAMPLES)/TestParser jdbc:postgresql_postGIS://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
+	$(JAVA) $(EXEC_ADDCP) "$(RUNCP)" $(EXAMPLES)/TestParser $(TESTRD) \
+	 "jdbc:postgresql_postGIS:$(PGURL);jdbc:postgresql_autogis:$(PGURL)" \
+	 $(PGUSER) $(PGPASS)
 
 boxtestoffline: postgis.jar	
-	$(JAVA) $(EXEC_ADDCP) "$(RUNCP)" $(EXAMPLES)/TestBoxes offline
+	$(JAVA) $(EXEC_ADDCP) "$(RUNCP)" $(EXAMPLES)/TestBoxes $(TESTRD)  offline
 
 boxtest:  postgis.jar
-	$(JAVA) $(EXEC_ADDCP) "$(RUNCP)" $(EXAMPLES)/TestBoxes jdbc:postgresql_postGIS://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
+	$(JAVA) $(EXEC_ADDCP) "$(RUNCP)" $(EXAMPLES)/TestBoxes $(TESTRD) \
+	 jdbc:postgresql_postGIS:$(PGURL) $(PGUSER) $(PGPASS)
 
 autoregistertest:  postgis.jar
-	$(JAVA) $(EXEC_ADDCP) "$(RUNCP)" $(EXAMPLES)/TestAutoregister jdbc:postgresql://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
-
-offlinetests: boxtestoffline ptestoffline test
-
-onlinetests: boxtest ptest jtest autoregistertest
+	$(JAVA) $(EXEC_ADDCP) "$(RUNCP)" $(EXAMPLES)/TestAutoregister $(TESTRD) \
+	 jdbc:postgresql:$(PGURL) $(PGUSER) $(PGPASS)
 
 # Print all available versions
 versions:  postgis.jar
 	$(JAVA) $(EXEC_ADDCP) "$(RUNCP)" $(EXAMPLES)/VersionPrinter jdbc:postgresql://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
+
+offlinetests: boxtestoffline ptestoffline test
+
+onlinetests: boxtest ptest jtest autoregistertest
 
 # boxtest and ptest include boxtestoffline and ptestoffline, so we only need
 # to run test in addition to the onlinetests
@@ -239,9 +263,11 @@ alltests: onlinetests test
 clean:  
 	$(DELETE) $(BUILD) bin stubbin postgis.jar postgis_debug.jar \
 		compile stubcompile jtscompile $(JTSBUILD) postgis_jts.jar \
-                versionstamp \
+		versionstamp \
+		$(TESTOUTPUT) \
 		postgis_$(VERSION).jar \
-		postgis_debug_$(VERSION).jar
+		postgis_debug_$(VERSION).jar \
+		postgis_jts_$(VERSION).jar
 
 # Install - this needs the successfull inclusion of PostgreSQL top
 # level Makefile (which is mandatory for the C part of PostGIS as well).
@@ -266,20 +292,21 @@ $(JTSBUILD):
 
 
 jtscompile: compile stubcompile $(JTSBUILD) $(JTSSRC)
-	$(JAVAC) $(COMP_ADDCP) "$(BUILD)$(CPSEP)$(CP)" -d $(JTSBUILD) $(JTSSRC) 
+	$(JAVAC) $(COMP_ADDCP) "$(BUILD)$(CPSEP)$(BUILDCP)" -d $(JTSBUILD) $(JTSSRC) 
 	touch jtscompile
 	
 jtstestoffline: jtscompile	
-	$(JAVA) $(EXEC_ADDCP) "$(JTSBUILD)$(CPSEP)$(BUILD)$(CPSEP)$(CP)" $(EXAMPLES)/JtsTestParser offline
+	$(JAVA) $(EXEC_ADDCP) "$(JTSPATH)" $(EXAMPLES)/JtsTestParser offline
 
-jtstest:  jtscompile
-	$(JAVA) -$(EXEC_ADDCP) "$(JTSBUILD)$(CPSEP)$(BUILD)$(CPSEP)$(CP)" $(EXAMPLES)/JtsTestParser jdbc:postgres_jts://$(PGHOST):$(PGPORT)/$(PGDATABASE) $(PGUSER) $(PGPASS)
+jtstest: jtscompile
+	$(JAVA) $(EXEC_ADDCP) "$(JTSPATH)" $(EXAMPLES)/JtsTestParser $(TESTRD) \
+	jdbc:postgres_jts:$(PGURL) $(PGUSER) $(PGPASS)
 
-postgis_jts.jar: jtscompile $(SRCDIR)/org/postgresql/driverconfig.properties
-	$(JAR) -cf postgis_jts.jar -C $(BUILD) . \
-	       -C $(SRCDIR) org/postgresql/driverconfig.properties \
-	       README COPYING_LGPL -C .. COPYING
+postgis_jts.jar: postgis.jar jtscompile $(SRCDIR)/org/postgresql/driverconfig.properties
+	$(CP) postgis.jar postgis_jts.jar
 	$(JAR) -uf postgis_jts.jar -C $(JTSBUILD) .
+	$(CP) postgis_jts.jar postgis_jts_$(VERSION).jar
+	
 
 
 	

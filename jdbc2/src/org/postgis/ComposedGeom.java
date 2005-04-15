@@ -5,7 +5,7 @@
  * 
  * (C) 2004 Paul Ramsey, pramsey@refractions.net
  * 
- * (C) 2005 Markus Schaber, markus@schabi.de
+ * (C) 2005 Markus Schaber, markus.schaber@logix-tt.com
  * 
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -37,11 +37,14 @@ import java.util.Iterator;
  * 
  * In fact, this currently are all Geometry subclasses except Point.
  * 
- * @author schabi
+ * @author markus.schaber@logix-tt.com
  * 
- *  
+ * 
  */
 public abstract class ComposedGeom extends Geometry {
+    /* JDK 1.5 Serialization */
+    private static final long serialVersionUID = 0x100;
+
     public static final Geometry[] EMPTY = new Geometry[0];
 
     /**
@@ -62,6 +65,10 @@ public abstract class ComposedGeom extends Geometry {
         return subgeoms[index];
     }
 
+    public int numGeoms() {
+        return subgeoms.length;
+    }
+    
     protected ComposedGeom(int type, Geometry[] geoms) {
         this(type);
         this.subgeoms = geoms;
@@ -231,5 +238,27 @@ public abstract class ComposedGeom extends Geometry {
             nohash = false;
         }
         return hashcode;
+    }
+
+    public boolean checkConsistency() {
+        if (super.checkConsistency()) {
+            if (isEmpty()) {
+                return true;
+            }
+            // cache to avoid getMember opcode
+            int _dimension = this.dimension;
+            boolean _haveMeasure = this.haveMeasure;
+            int _srid = this.srid;
+            for (int i = 0; i < subgeoms.length; i++) {
+                Geometry sub = subgeoms[i];
+                if (!(sub.checkConsistency() && sub.dimension == _dimension
+                        && sub.haveMeasure == _haveMeasure && sub.srid == _srid)) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 }

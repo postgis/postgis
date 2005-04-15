@@ -5,7 +5,7 @@
  * 
  * (C) 2004 Paul Ramsey, pramsey@refractions.net
  * 
- * (C) 2005 Markus Schaber, markus@schabi.de
+ * (C) 2005 Markus Schaber, markus.schaber@logix-tt.com
  * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -63,10 +63,17 @@ public class TestServer {
             Class.forName("org.postgresql.Driver");
             conn = DriverManager.getConnection(dburl, dbuser, dbpass);
             System.out.println("Adding geometric type entries...");
-            // magic trickery to be pgjdbc 7.2 compatible
-            // This works due to the late binding of data types in most java VMs. As
-            // this is more a demo source than a real-world app, we can risk this
-            // problem.
+            /*
+             * magic trickery to be pgjdbc 7.2 compatible
+             * 
+             * This works due to the late binding of data types in most java
+             * VMs. As this is more a demo source than a real-world app, we can
+             * risk breaking on exotic VMs here. Real-world apps usually do not
+             * suffer from this problem as they do not have to support such a
+             * wide range of different pgjdbc releases, or they can use the
+             * approach from org.postgis.DriverWrapper (which we do not use here
+             * intentionally to have a test for the other ways to do it).
+             */
             if (conn.getClass().getName().equals("org.postgresql.jdbc2.Connection")) {
                 ((org.postgresql.Connection) conn).addDataType("geometry", "org.postgis.PGgeometry");
                 ((org.postgresql.Connection) conn).addDataType("box3d", "org.postgis.PGbox3d");
@@ -77,7 +84,7 @@ public class TestServer {
             }
             Statement s = conn.createStatement();
             System.out.println("Creating table with geometric types...");
-            //table might not yet exist
+            // table might not yet exist
             try {
                 s.execute(dropSQL);
             } catch (Exception e) {
@@ -101,9 +108,9 @@ public class TestServer {
             s.close();
             conn.close();
         } catch (Exception e) {
+            System.err.println("Aborted due to error:");
             e.printStackTrace();
+            System.exit(1);
         }
-
     }
-
 }

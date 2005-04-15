@@ -5,7 +5,7 @@
  * 
  * (C) 2004 Paul Ramsey, pramsey@refractions.net
  * 
- * (C) 2005 Markus Schaber, markus@schabi.de
+ * (C) 2005 Markus Schaber, markus.schaber@logix-tt.com
  * 
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -263,5 +263,10 @@ public class Point extends Geometry {
         default :
             throw new IllegalArgumentException("Illegal dimension of Point" + this.dimension);
         }
+    }
+
+    public boolean checkConsistency() {
+        return super.checkConsistency() && (this.dimension == 3 || this.z == 0.0)
+                && (this.haveMeasure || this.m == 0.0);
     }
 }

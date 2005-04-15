@@ -5,3 +5,6 @@ stubbin
 stubcompile
 jtscompile
 versionstamp
+test.log
+jtsbin
+eclipsebin

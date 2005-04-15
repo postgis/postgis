@@ -3,7 +3,7 @@
  * 
  * Binary Parser for JTS - relies on org.postgis V1.0.0+ package.
  * 
- * (C) 2005 Markus Schaber, markus@schabi.de
+ * (C) 2005 Markus Schaber, markus.schaber@logix-tt.com
  * 
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -54,7 +54,7 @@ import org.postgis.binary.ByteGetter.StringByteGetter;
  * (bytes), so we cannot even get or build Geometries with more than approx.
  * 2^28 coordinates (8 bytes each).
  * 
- * @author Markus Schaber <markus@schabi.de>
+ * @author Markus Schaber, markus.schaber@logix-tt.com
  *  
  */
 public class JtsBinaryParser {
@@ -101,13 +101,13 @@ public class JtsBinaryParser {
 
     /** Parse a geometry starting at offset. */
     protected Geometry parseGeometry(ValueGetter data) {
-        byte endian = data.getByte(); //skip and test endian flag
+        byte endian = data.getByte(); // skip and test endian flag
         if (endian != data.endian) {
             throw new IllegalArgumentException("Endian inconsistency!");
         }
         int typeword = data.getInt();
 
-        int realtype = typeword & 0x1FFFFFFF; //cut off high flag bits
+        int realtype = typeword & 0x1FFFFFFF; // cut off high flag bits
 
         boolean haveZ = (typeword & 0x80000000) != 0;
         boolean haveM = (typeword & 0x40000000) != 0;
@@ -164,7 +164,7 @@ public class JtsBinaryParser {
             result = geofac.createPoint(new Coordinate(X, Y));
         }
 
-        if (haveM) { //skip M value
+        if (haveM) { // skip M value
             data.getDouble();
         }
 
@@ -194,7 +194,7 @@ public class JtsBinaryParser {
             for (int d = 0; d < dims; d++) {
                 cs.setOrdinate(i, d, data.getDouble());
             }
-            if (haveM) { //skip M value
+            if (haveM) { // skip M value
                 data.getDouble();
             }
         }
@@ -216,7 +216,7 @@ public class JtsBinaryParser {
     }
 
     private Polygon parsePolygon(ValueGetter data, boolean haveZ, boolean haveM) {
-        int holecount = data.getInt()-1;        
+        int holecount = data.getInt() - 1;
         LinearRing[] rings = new LinearRing[holecount];
         LinearRing shell = parseLinearRing(data, haveZ, haveM);
         for (int i = 0; i < holecount; i++) {

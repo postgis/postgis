@@ -5,7 +5,7 @@
  * 
  * (C) 2004 Paul Ramsey, pramsey@refractions.net
  * 
- * (C) 2005 Markus Schaber, markus@schabi.de
+ * (C) 2005 Markus Schaber, markus.schaber@logix-tt.com
  * 
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -32,7 +32,7 @@ import java.sql.SQLException;
  * Geometry Collection class WARNING: Currently only implements empty
  * collections
  * 
- * @author schabi
+ * @author markus.schaber@logix-tt.com
  * 
  * $Id$
  */
@@ -73,5 +73,9 @@ public class GeometryCollection extends ComposedGeom {
             SB.append(',');
             subgeoms[i].outerWKT(SB, false);
         }
+    }
+
+    public Geometry[] getGeometries() {
+        return subgeoms;
     }
 }

@@ -3,7 +3,7 @@
  * 
  * PostGIS extension for PostgreSQL JDBC driver - example and test classes
  * 
- * (C) 2005 Markus Schaber, markus@schabi.de
+ * (C) 2005 Markus Schaber, markus.schaber@logix-tt.com
  * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -56,7 +56,7 @@ public class VersionPrinter {
         try {
             d = new Driver();
         } catch (Exception e) {
-            System.err.println("Cannot create Driver instance: "+e.getMessage());
+            System.err.println("Cannot create Driver instance: " + e.getMessage());
             System.exit(1);
             return;
         }
@@ -76,15 +76,15 @@ public class VersionPrinter {
             // Signal the compiler that code flow ends here.
             return;
         }
-        
+
         printHeading("PostGIS jdbc client code");
-        printVersionString("getFullVersion",Version.getFullVersion());
+        printVersionString("getFullVersion", Version.getFullVersion());
 
         printHeading("PGJDBC Driver");
         printVersionString("getVersion", Driver.getVersion());
         printVersionString("getMajorVersion", d.getMajorVersion());
         printVersionString("getMinorVersion", d.getMinorVersion());
-       
+
         if (stat == null) {
             System.out.println("No online version available.");
         }
@@ -105,7 +105,7 @@ public class VersionPrinter {
         if (makeemptyline) {
             System.out.println();
         }
-        System.out.println("** "+heading+" **");
+        System.out.println("** " + heading + " **");
         makeemptyline = true;
     }
 

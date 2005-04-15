@@ -1,4 +1,4 @@
-liblwgeom.so.*
+liblwgeom.so*
 lwgeom.sql
 y.output
 lwpostgis.sql

@@ -5,7 +5,7 @@
  * 
  * (C) 2004 Paul Ramsey, pramsey@refractions.net
  * 
- * (C) 2005 Markus Schaber, markus@schabi.de
+ * (C) 2005 Markus Schaber, markus.schaber@logix-tt.com
  * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -29,6 +29,8 @@ package examples;
 import org.postgis.Geometry;
 import org.postgis.PGgeometry;
 import org.postgis.binary.BinaryParser;
+import org.postgis.binary.BinaryWriter;
+import org.postgis.binary.ValueSetter;
 import org.postgresql.util.PGtokenizer;
 
 import java.sql.Connection;
@@ -195,6 +197,9 @@ public class TestParser {
     /** How much tests did fail? */
     public static int failcount = 0;
 
+    private static BinaryParser bp = new BinaryParser();
+    private static final BinaryWriter bw = new BinaryWriter();
+
     /** The actual test method */
     public static void test(String WKT, Connection[] conns, String flags) throws SQLException {
         System.out.println("Original:  " + WKT);
@@ -213,6 +218,49 @@ public class TestParser {
         } else {
             System.out.println("Equals:    yes");
         }
+
+        String hexNWKT = bw.writeHexed(regeom, ValueSetter.NDR.NUMBER);
+        System.out.println("NDRHex:    " + hexNWKT);
+        regeom = PGgeometry.geomFromString(hexNWKT);
+        System.out.println("ReNDRHex:  " + regeom.toString());
+        if (!geom.equals(regeom)) {
+            System.out.println("--- Geometries are not equal!");
+            failcount++;
+        } else {
+            System.out.println("Equals:    yes");
+        }
+
+        String hexXWKT = bw.writeHexed(regeom, ValueSetter.XDR.NUMBER);
+        System.out.println("XDRHex:    " + hexXWKT);
+        regeom = PGgeometry.geomFromString(hexXWKT);
+        System.out.println("ReXDRHex:  " + regeom.toString());
+        if (!geom.equals(regeom)) {
+            System.out.println("--- Geometries are not equal!");
+            failcount++;
+        } else {
+            System.out.println("Equals:    yes");
+        }
+
+        byte[] NWKT = bw.writeBinary(regeom, ValueSetter.NDR.NUMBER);
+        regeom = bp.parse(NWKT);
+        System.out.println("NDR:       " + regeom.toString());
+        if (!geom.equals(regeom)) {
+            System.out.println("--- Geometries are not equal!");
+            failcount++;
+        } else {
+            System.out.println("Equals:    yes");
+        }
+
+        byte[] XWKT = bw.writeBinary(regeom, ValueSetter.XDR.NUMBER);
+        regeom = bp.parse(XWKT);
+        System.out.println("XDR:       " + regeom.toString());
+        if (!geom.equals(regeom)) {
+            System.out.println("--- Geometries are not equal!");
+            failcount++;
+        } else {
+            System.out.println("Equals:    yes");
+        }
+
         for (int i = 0; i < conns.length; i++) {
             Connection connection = conns[i];
             Statement statement = connection.createStatement();
@@ -283,27 +331,103 @@ public class TestParser {
                 // asEWKT() function is not present on PostGIS 0.X, and the test
                 // is pointless as 0.X uses EWKT as canonical rep so the same
                 // functionality was already tested above.
-                if (serverPostgisMajor >= 1) {
-                    Geometry sqlGeom = ewktViaSQL(WKT, statement);
-                    System.out.println("asEWKT  : " + sqlGeom.toString());
-                    if (!geom.equals(sqlGeom)) {
-                        System.out.println("--- Geometries after EWKT SQL are not equal!");
-                        failcount++;
-                    } else {
-                        System.out.println("asEWKT in: yes");
+                try {
+                    if (serverPostgisMajor >= 1) {
+                        Geometry sqlGeom = ewktViaSQL(WKT, statement);
+                        System.out.println("asEWKT   : " + sqlGeom.toString());
+                        if (!geom.equals(sqlGeom)) {
+                            System.out.println("--- Geometries after EWKT SQL are not equal!");
+                            failcount++;
+                        } else {
+                            System.out.println("equal   : yes");
+                        }
                     }
+                } catch (SQLException e) {
+                    System.out.println("--- Server side error: " + e.toString());
+                    failcount++;
                 }
+
                 // asEWKB() function is not present on PostGIS 0.X.
-                if (serverPostgisMajor >= 1) {
-                    Geometry sqlGeom = ewkbViaSQL(WKT, statement);
-                    System.out.println("asEWKB  : " + sqlGeom.toString());
-                    if (!geom.equals(sqlGeom)) {
-                        System.out.println("--- Geometries after EWKB SQL are not equal!");
-                        failcount++;
-                    } else {
-                        System.out.println("asEWKB in: yes");
+                try {
+                    if (serverPostgisMajor >= 1) {
+                        Geometry sqlGeom = ewkbViaSQL(WKT, statement);
+                        System.out.println("asEWKB   : " + sqlGeom.toString());
+                        if (!geom.equals(sqlGeom)) {
+                            System.out.println("--- Geometries after EWKB SQL are not equal!");
+                            failcount++;
+                        } else {
+                            System.out.println("equal    : yes");
+                        }
                     }
+                } catch (SQLException e) {
+                    System.out.println("--- Server side error: " + e.toString());
+                    failcount++;
                 }
+
+                // HexEWKB parsing is not present on PostGIS 0.X.
+                try {
+                    if (serverPostgisMajor >= 1) {
+                        Geometry sqlGeom = viaSQL(hexNWKT, statement);
+                        System.out.println("hexNWKT:   " + sqlGeom.toString());
+                        if (!geom.equals(sqlGeom)) {
+                            System.out.println("--- Geometries after EWKB SQL are not equal!");
+                            failcount++;
+                        } else {
+                            System.out.println("equal    : yes");
+                        }
+                    }
+                } catch (SQLException e) {
+                    System.out.println("--- Server side error: " + e.toString());
+                    failcount++;
+                }
+                try {
+                    if (serverPostgisMajor >= 1) {
+                        Geometry sqlGeom = viaSQL(hexXWKT, statement);
+                        System.out.println("hexXWKT:   " + sqlGeom.toString());
+                        if (!geom.equals(sqlGeom)) {
+                            System.out.println("--- Geometries after EWKB SQL are not equal!");
+                            failcount++;
+                        } else {
+                            System.out.println("equal    : yes");
+                        }
+                    }
+                } catch (SQLException e) {
+                    System.out.println("--- Server side error: " + e.toString());
+                    failcount++;
+                }
+
+                // Canonical binary input is not present before 1.0
+                try {
+                    if (serverPostgisMajor >= 1) {
+                        Geometry sqlGeom = binaryViaSQL(NWKT, connection);
+                        System.out.println("NWKT:      " + sqlGeom.toString());
+                        if (!geom.equals(sqlGeom)) {
+                            System.out.println("--- Geometries after EWKB SQL are not equal!");
+                            failcount++;
+                        } else {
+                            System.out.println("equal    : yes");
+                        }
+                    }
+                } catch (SQLException e) {
+                    System.out.println("--- Server side error: " + e.toString());
+                    failcount++;
+                }
+                try {
+                    if (serverPostgisMajor >= 1) {
+                        Geometry sqlGeom = binaryViaSQL(XWKT, connection);
+                        System.out.println("XWKT:      " + sqlGeom.toString());
+                        if (!geom.equals(sqlGeom)) {
+                            System.out.println("--- Geometries after EWKB SQL are not equal!");
+                            failcount++;
+                        } else {
+                            System.out.println("equal    : yes");
+                        }
+                    }
+                } catch (SQLException e) {
+                    System.out.println("--- Server side error: " + e.toString());
+                    failcount++;
+                }
+
             }
             statement.close();
         }
@@ -317,7 +441,10 @@ public class TestParser {
         return ((PGgeometry) rs.getObject(1)).getGeometry();
     }
 
-    /** Pass a geometry representation through the SQL server via prepared statement*/
+    /**
+     * Pass a geometry representation through the SQL server via prepared
+     * statement
+     */
     private static Geometry viaPrepSQL(Geometry geom, Connection conn) throws SQLException {
         PreparedStatement prep = conn.prepareStatement("SELECT ?::geometry");
         PGgeometry wrapper = new PGgeometry(geom);
@@ -336,14 +463,22 @@ public class TestParser {
         return PGgeometry.geomFromString(resrep);
     }
 
-    private static BinaryParser bp = new BinaryParser();
-
     /** Pass a geometry representation through the SQL server via EWKB */
     private static Geometry ewkbViaSQL(String rep, Statement stat) throws SQLException {
         ResultSet rs = stat.executeQuery("SELECT asEWKB(geometry_in('" + rep + "'))");
         rs.next();
         byte[] resrep = rs.getBytes(1);
         return bp.parse(resrep);
+    }
+
+    /** Pass a EWKB geometry representation through the server */
+    private static Geometry binaryViaSQL(byte[] rep, Connection conn) throws SQLException {
+        PreparedStatement prep = conn.prepareStatement("SELECT ?::bytea::geometry");
+        prep.setBytes(1, rep);
+        ResultSet rs = prep.executeQuery();
+        rs.next();
+        PGgeometry resultwrapper = ((PGgeometry) rs.getObject(1));
+        return resultwrapper.getGeometry();
     }
 
     /**
@@ -354,21 +489,24 @@ public class TestParser {
      * 
      * @param dbuser
      * 
-     * @throws ClassNotFoundException
-     * 
      * @see org.postgis.DriverWrapper
      * 
      */
-    public static Connection connect(String url, String dbuser, String dbpass) throws SQLException,
-            ClassNotFoundException {
+    public static Connection connect(String url, String dbuser, String dbpass) throws SQLException {
         Connection conn;
-        Class.forName("org.postgis.DriverWrapper");
         conn = DriverManager.getConnection(url, dbuser, dbpass);
         return conn;
     }
 
+    public static void loadDrivers() throws ClassNotFoundException {
+        Class.forName("org.postgis.DriverWrapper");
+        Class.forName("org.postgis.DriverWrapperAutoprobe");
+    }
+
     /** Our apps entry point */
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
+        loadDrivers();
+
         PGtokenizer dburls;
         String dbuser = null;
         String dbpass = null;
@@ -414,7 +552,8 @@ public class TestParser {
             conns[i].close();
         }
 
-        // System.out.println("Finished.");
         System.out.println("Finished, " + failcount + " tests failed!");
+        System.err.println("Finished, " + failcount + " tests failed!");
+        System.exit(failcount);
     }
 }

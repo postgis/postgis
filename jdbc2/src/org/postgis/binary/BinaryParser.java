@@ -3,7 +3,7 @@
  * 
  * PostGIS extension for PostgreSQL JDBC driver - Binary Parser
  * 
- * (C) 2005 Markus Schaber, markus@schabi.de
+ * (C) 2005 Markus Schaber, markus.schaber@logix-tt.com
  * 
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -36,8 +36,7 @@ import org.postgis.binary.ByteGetter.BinaryByteGetter;
 import org.postgis.binary.ByteGetter.StringByteGetter;
 
 /**
- * Parse binary representation of geometries. Currently, only text rep (hexed)
- * implementation is tested.
+ * Parse binary representation of geometries.
  * 
  * It should be easy to add char[] and CharSequence ByteGetter instances,
  * although the latter one is not compatible with older jdks.
@@ -47,7 +46,7 @@ import org.postgis.binary.ByteGetter.StringByteGetter;
  * (bytes), so we cannot even get or build Geometries with more than approx.
  * 2^28 coordinates (8 bytes each).
  * 
- * @author Markus Schaber <markus@schabi.de>
+ * @author Markus Schaber <markus.schaber@logix-tt.com>
  *  
  */
 public class BinaryParser {
@@ -93,13 +92,13 @@ public class BinaryParser {
 
     /** Parse a geometry starting at offset. */
     protected Geometry parseGeometry(ValueGetter data) {
-        byte endian = data.getByte(); //skip and test endian flag
+        byte endian = data.getByte(); // skip and test endian flag
         if (endian != data.endian) {
             throw new IllegalArgumentException("Endian inconsistency!");
         }
         int typeword = data.getInt();
 
-        int realtype = typeword & 0x1FFFFFFF; //cut off high flag bits
+        int realtype = typeword & 0x1FFFFFFF; // cut off high flag bits
 
         boolean haveZ = (typeword & 0x80000000) != 0;
         boolean haveM = (typeword & 0x40000000) != 0;
@@ -134,7 +133,7 @@ public class BinaryParser {
             result1 = parseCollection(data);
             break;
         default :
-            throw new IllegalArgumentException("Unknown Geometry Type!");
+            throw new IllegalArgumentException("Unknown Geometry Type: " + realtype);
         }
 
         Geometry result = result1;

@@ -5,7 +5,7 @@
  * 
  * (C) 2004 Paul Ramsey, pramsey@refractions.net
  * 
- * (C) 2005 Markus Schaber, markus@schabi.de
+ * (C) 2005 Markus Schaber, markus.schaber@logix-tt.com
  * 
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -22,16 +22,20 @@
  * http://www.gnu.org.
  * 
  * $Id$
- */package org.postgis;
+ */
+
+package org.postgis;
 
 import java.io.Serializable;
 
 /** The base class of all geometries */
 public abstract class Geometry implements Serializable {
+    /* JDK 1.5 Serialization */
+    private static final long serialVersionUID = 0x100;
 
     // OpenGIS Geometry types as defined in the OGC WKB Spec
     // (May we replace this with an ENUM as soon as JDK 1.5
-    //  has gained widespread usage?)
+    // has gained widespread usage?)
 
     /** Fake type for linear ring */
     public static final int LINEARRING = 0;
@@ -140,15 +144,14 @@ public abstract class Geometry implements Serializable {
      * geometry specific equals implementation
      */
     public boolean equals(Geometry other) {
-        boolean firstline = (other != null) && (this.dimension == other.dimension) && (this.type == other.type);
+        boolean firstline = (other != null) && (this.dimension == other.dimension)
+                && (this.type == other.type);
         boolean sridequals = (this.srid == other.srid);
         boolean measEquals = (this.haveMeasure == other.haveMeasure);
         boolean secondline = sridequals && measEquals;
         boolean classequals = other.getClass().equals(this.getClass());
         boolean equalsintern = this.equalsintern(other);
-        boolean result = firstline
-                && secondline
-                && classequals && equalsintern;
+        boolean result = firstline && secondline && classequals && equalsintern;
         return result;
     }
 
@@ -246,7 +249,7 @@ public abstract class Geometry implements Serializable {
     public final void outerWKT(StringBuffer sb) {
         outerWKT(sb, true);
     }
-    
+
     /**
      * Render the WKT without the type name, but including the brackets into the
      * StringBuffer
@@ -270,6 +273,24 @@ public abstract class Geometry implements Serializable {
         StringBuffer sb = new StringBuffer();
         mediumWKT(sb);
         return sb.toString();
+    }
+
+    /**
+     * Do some internal consistency checks on the geometry.
+     * 
+     * Currently, all Geometries must have a valid dimension (2 or 3) and a
+     * valid type. 2-dimensional Points must have Z=0.0, as well as non-measured
+     * Points must have m=0.0. Composed geometries must have all equal SRID,
+     * dimensionality and measures, as well as that they do not contain NULL or
+     * inconsistent subgeometries.
+     * 
+     * BinaryParser and WKTParser should only generate consistent geometries.
+     * BinaryWriter may produce invalid results on inconsistent geometries.
+     * 
+     * @return true if all checks are passed.
+     */
+    public boolean checkConsistency() {
+        return (dimension >= 2 && dimension <= 3) && (type >= 0 && type <= 7);
     }
 
 }

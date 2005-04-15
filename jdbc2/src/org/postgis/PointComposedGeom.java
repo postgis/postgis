@@ -5,7 +5,7 @@
  * 
  * (C) 2004 Paul Ramsey, pramsey@refractions.net
  * 
- * (C) 2005 Markus Schaber, markus@schabi.de
+ * (C) 2005 Markus Schaber, markus.schaber@logix-tt.com
  * 
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -31,11 +31,13 @@ import java.sql.SQLException;
  * PointComposedGeom - base class for all composed geoms that contain only
  * points.
  * 
- * @author schabi
- *  
+ * @author markus.schaber@logix-tt.com
+ * 
  */
 
 public abstract class PointComposedGeom extends ComposedGeom {
+    /* JDK 1.5 Serialization */
+    private static final long serialVersionUID = 0x100;
 
     protected PointComposedGeom(int type) {
         super(type);
@@ -48,7 +50,7 @@ public abstract class PointComposedGeom extends ComposedGeom {
     public PointComposedGeom(int type, String value) throws SQLException {
         this(type, value, false);
     }
-    
+
     public PointComposedGeom(int type, String value, boolean haveM) throws SQLException {
         super(type, value, haveM);
     }

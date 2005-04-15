@@ -1,10 +1,7 @@
 /*
- * PGbox3d.java
+ * PGgeometryLW.java
  * 
- * PostGIS extension for PostgreSQL JDBC driver - bounding box model
- * 
- * 
- * (C) 2004 Paul Ramsey, pramsey@refractions.net
+ * PostGIS extension for PostgreSQL JDBC driver - PGobject LWGeometry Wrapper
  * 
  * (C) 2005 Markus Schaber, markus.schaber@logix-tt.com
  * 
@@ -27,33 +24,43 @@
 
 package org.postgis;
 
+import org.postgis.binary.BinaryWriter;
+
 import java.sql.SQLException;
 
-public class PGbox3d extends PGboxbase {
+/**
+ * This is a subclas of PGgeometry that uses hex encoded EWKB to communicate
+ * with the backend, which is much more efficient, but only works with Lwgeom
+ * enabled PostGIS (1.0.0 and up).
+ */
+
+public class PGgeometryLW extends PGgeometry {
     /* JDK 1.5 Serialization */
     private static final long serialVersionUID = 0x100;
+    
+    BinaryWriter bw = new BinaryWriter();
 
-    public PGbox3d() {
+    public PGgeometryLW() {
         super();
     }
 
-    public PGbox3d(Point llb, Point urt) {
-        super(llb, urt);
+    public PGgeometryLW(Geometry geom) {
+        super(geom);
     }
 
-    public PGbox3d(String value) throws SQLException {
+    public PGgeometryLW(String value) throws SQLException {
         super(value);
     }
 
-    public String getPrefix() {
-        return ("BOX3D");
+    public String toString() {
+        return geom.toString();
     }
 
-    public String getPGtype() {
-        return ("box3d");
+    public String getValue() {
+        return bw.writeHexed(geom);
     }
 
-    protected PGboxbase newInstance() {
-        return new PGbox3d();
+    public Object clone() {
+        return new PGgeometryLW(geom);
     }
 }

@@ -5,7 +5,7 @@
  * 
  * (C) 2004 Paul Ramsey, pramsey@refractions.net
  * 
- * (C) 2005 Markus Schaber, markus@schabi.de
+ * (C) 2005 Markus Schaber, markus.schaber@logix-tt.com
  * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -41,7 +41,7 @@ public class TestBoxes {
 
     /** Our test candidates: */
     public static final String[] BOXEN3D = new String[]{
-        "BOX3D(1 2 3,4 5 6)", //3d variant
+        "BOX3D(1 2 3,4 5 6)", // 3d variant
         "BOX3D(1 2,4 5)"// 2d variant
     };
     public static final String[] BOXEN2D = new String[]{"BOX(1 2,3 4)"};
@@ -152,7 +152,7 @@ public class TestBoxes {
      * @throws ClassNotFoundException
      * 
      * @see org.postgis.DriverWrapper
-     *  
+     * 
      */
     public static Connection connect(String url, String dbuser, String dbpass) throws SQLException,
             ClassNotFoundException {
@@ -227,8 +227,8 @@ public class TestBoxes {
             conns[i].close();
         }
 
-        //System.out.println("Finished.");
         System.out.println("Finished, " + failcount + " tests failed!");
+        System.err.println("Finished, " + failcount + " tests failed!");
         System.exit(failcount);
     }
 }

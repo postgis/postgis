@@ -1,6 +1,8 @@
 Todo for PostGIS 1.0 compatible JDBC classes
+$Id$
 
-- Testing
+- even more Testing, especialy against different postgis, 
+  pgjdbc and postgresql releases.
 
 - Handling of length() - esp. with modifying the geometries
 
@@ -10,7 +12,10 @@ Todo for PostGIS 1.0 compatible JDBC classes
 
 - See where the code can be cleaned and leaned.
 
-- Run tests against other PostGIS releases (I did 0.8 and 1.0CVS).
+- Finish JTS support
+
+- Creating a sane extension interface for pgjdbc that allows binary
+  transfers and convince upstream to use it, then create support for it.
 
 - Possibly adding server side code to support plJava
   http://gborg.postgresql.org/project/pljava/projdisplay.php

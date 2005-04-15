@@ -4,7 +4,7 @@
  * Allows transparent usage of JTS Geometry classes via PostgreSQL JDBC driver
  * connected to a PostGIS enabled PostgreSQL server.
  * 
- * (C) 2005 Markus Schaber, markus@schabi.de
+ * (C) 2005 Markus Schaber, markus.schaber@logix-tt.com
  * 
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -43,8 +43,8 @@ import java.util.Properties;
  * Simply replace the "jdbc:postgresql:" with a "jdbc:postgresql_postGIS" in the
  * jdbc URL.
  * 
- * @author schabi
- *  
+ * @author markus.schaber@logix-tt.com
+ * 
  */
 public class JtsGisWrapper extends Driver {
 

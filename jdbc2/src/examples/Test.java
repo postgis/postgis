@@ -5,7 +5,7 @@
  * 
  * (C) 2004 Paul Ramsey, pramsey@refractions.net
  * 
- * (C) 2005 Markus Schaber, markus@schabi.de
+ * (C) 2005 Markus Schaber, markus.schaber@logix-tt.com
  * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -96,6 +96,7 @@ public class Test {
         System.out.println();
 
         System.out.println("finished");
+        // If we reached here without any exception, we passed all tests.
+        System.err.println("Test.java finished without errors.");
     }
 }
-

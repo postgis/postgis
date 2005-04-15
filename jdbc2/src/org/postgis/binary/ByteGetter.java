@@ -3,7 +3,7 @@
  * 
  * PostGIS extension for PostgreSQL JDBC driver - Binary Parser
  * 
- * (C) 2005 Markus Schaber, markus@schabi.de
+ * (C) 2005 Markus Schaber, markus.schaber@logix-tt.com
  * 
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -26,7 +26,7 @@ package org.postgis.binary;
 
 public abstract class ByteGetter {
     /**
-     * Get ab byte.
+     * Get a byte.
      * 
      * @return The result is returned as Int to eliminate sign problems when
      *         or'ing several values together.
@@ -41,7 +41,7 @@ public abstract class ByteGetter {
         }
 
         public int get(int index) {
-            return array[index] & 0xFF; //mask out sign-extended bits.
+            return array[index] & 0xFF; // mask out sign-extended bits.
         }
     }
 

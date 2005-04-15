@@ -5,7 +5,7 @@
  * 
  * (C) 2004 Paul Ramsey, pramsey@refractions.net
  * 
- * (C) 2005 Markus Schaber, markus@schabi.de
+ * (C) 2005 Markus Schaber, markus.schaber@logix-tt.com
  * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -159,7 +159,7 @@ public class JtsTestParser {
      * @throws ClassNotFoundException
      * 
      * @see org.postgis.DriverWrapper
-     *  
+     * 
      */
     public static Connection connect(String url, String dbuser, String dbpass) throws SQLException,
             ClassNotFoundException {
@@ -216,7 +216,7 @@ public class JtsTestParser {
             conns[i].close();
         }
 
-        //System.out.println("Finished.");
+        // System.out.println("Finished.");
         System.out.println("Finished, " + failcount + " tests failed!");
     }
 }
