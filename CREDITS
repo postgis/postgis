@@ -41,3 +41,6 @@ Version 0.9 of PostGIS includes patches from:
   Klaus Foerster <klaus@svg.cc> on AsSVG()
   Olivier Courtin <pnine@free.fr> on AsSVG()
   Bruno Wolff III on the distance_sphere algorithm
+
+See the postgis manual for more contributors.
+
