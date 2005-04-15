@@ -6,3 +6,6 @@ postgis_geos_version.h
 lwpostgis.sql
 .classpath
 .project
+config.log
+config.status
+configure
