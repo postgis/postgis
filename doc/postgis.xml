@@ -4689,7 +4689,7 @@ FROM geometry_table;</literallayout>
 				<title>Library changes</title>
 	<para>BUGFIX in transform() releasing random memory address</para>
 	<para>BUGFIX in force_3dm() allocating less memory then required</para>
-	<para>BUGFIX in join selectivity estimator (defaults, leaks, tuplecount)</para>
+	<para>BUGFIX in join selectivity estimator (defaults, leaks, tuplecount, sd)</para>
 			</sect2>
 
 			<sect2>

@@ -1945,10 +1945,10 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		sdHIGx += (box->xmax - avgHIGx) * (box->xmax - avgHIGx);
 		sdHIGy += (box->ymax - avgHIGy) * (box->ymax - avgHIGy);
 	}
-	sdLOWx = sqrt(sdLOWx/(notnull_cnt-1));
-	sdLOWy = sqrt(sdLOWy/(notnull_cnt-1));
-	sdHIGx = sqrt(sdHIGx/(notnull_cnt-1));
-	sdHIGy = sqrt(sdHIGy/(notnull_cnt-1));
+	sdLOWx = sqrt(sdLOWx/notnull_cnt);
+	sdLOWy = sqrt(sdLOWy/notnull_cnt);
+	sdHIGx = sqrt(sdHIGx/notnull_cnt);
+	sdHIGy = sqrt(sdHIGy/notnull_cnt);
 
 #if DEBUG_GEOMETRY_STATS 
 	elog(NOTICE, " standard deviations:");
@@ -2482,6 +2482,9 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.29.2.2  2005/04/18 14:12:59  strk
+ * Slightly changed standard deviation computation to be more corner-case-friendly.
+ *
  * Revision 1.29.2.1  2005/04/18 10:57:01  strk
  * Applied patched by Ron Mayer fixing memory leakages and invalid results
  * in join selectivity estimator. Fixed some return to use default JOIN
