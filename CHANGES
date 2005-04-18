@@ -8,6 +8,7 @@ PostGIS 1.1.0CVS
 	  + Autoprobing DriverWrapper for HexWKB / EWKT switching
 
 PostGIS 1.0.0
+2005/04/19
 	- NEW manual pages for loader/dumper
 	- NEW shp2pgsql support for old (HWGEOM) postgis versions
 	- NEW -p flag for shp2pgsql
