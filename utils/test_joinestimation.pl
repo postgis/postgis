@@ -83,8 +83,8 @@ $SCHEMA2 = 'public';
 $COLUMN2 = 'the_geom' if ( $COLUMN2 eq '' );
 if ( $TABLE2 =~ /(.*)\.(.*)/ ) 
 {
-	$SCHEMA1 = $1;
-	$TABLE1 = $2;
+	$SCHEMA2 = $1;
+	$TABLE2 = $2;
 }
 
 #connect
@@ -256,6 +256,9 @@ sub get_num_rows
 
 # 
 # $Log$
+# Revision 1.3  2005/04/18 13:50:14  strk
+# Fixed bug in table2 schema parsing.
+#
 # Revision 1.2  2004/12/23 14:48:25  strk
 # Fixed help string, and added a TODO item
 #
