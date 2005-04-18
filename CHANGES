@@ -17,7 +17,7 @@ PostGIS 1.0.0
 	- BUGFIX in shp2pgsql escape of values starting with "'" or "\t" 
 	- NEW autoconf support for JTS lib
 	- BUGFIX in estimator testers (support for LWGEOM and schema parsing)
-	- BUGFIX in join selectivity estimator (defaults, leaks, tuplecount)
+	- BUGFIX in join selectivity estimator (defaults, leaks, tuplecount, sd)
 
 PostGIS 1.0.0RC6
 2005/03/30
