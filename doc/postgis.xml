@@ -260,7 +260,7 @@
         <listitem>
           <para>Once your PostgreSQL installation is up-to-date, enter the
           "postgis" directory, and edit the
-          <filename>Makefile</filename>.</para>
+          <filename>Makefile.config</filename> file.</para>
 
           <itemizedlist>
             <listitem>
@@ -448,7 +448,7 @@ as a "backup" in case postgis_restore.pl won't work for you:
         </orderedlist>
 
         <para>Also check that you have made any necessary changes to the top
-        of the Makefile. This includes:</para>
+        of the Makefile.config. This includes:</para>
 
         <orderedlist>
           <listitem>
@@ -456,7 +456,7 @@ as a "backup" in case postgis_restore.pl won't work for you:
             must install the Proj4 library on your system, set the
             <varname>USE_PROJ</varname> variable to 1 and the
             <varname>PROJ_DIR</varname> to your installation prefix in the
-            Makefile.</para>
+            Makefile.config.</para>
           </listitem>
 
           <listitem>
@@ -464,7 +464,7 @@ as a "backup" in case postgis_restore.pl won't work for you:
             install the GEOS library on your system, and set the
             <varname>USE_GEOS</varname> to 1 and the
             <varname>GEOS_DIR</varname> to your installation prefix in the
-            Makefile.</para>
+            Makefile.config</para>
           </listitem>
         </orderedlist>
       </sect2>
@@ -4663,7 +4663,7 @@ FROM geometry_table;</literallayout>
 
     		<sect1>
 			<title>Release 1.0.0</title>
-			<para>Release date: 2005/04/??</para>
+			<para>Release date: 2005/04/19</para>
 
 			<para>Final 1.0.0 release.
 			Contains a few bug fixes, some improvements
@@ -4689,6 +4689,7 @@ FROM geometry_table;</literallayout>
 				<title>Library changes</title>
 	<para>BUGFIX in transform() releasing random memory address</para>
 	<para>BUGFIX in force_3dm() allocating less memory then required</para>
+	<para>BUGFIX in join selectivity estimator (defaults, leaks, tuplecount, sd)</para>
 			</sect2>
 
 			<sect2>
@@ -4699,6 +4700,7 @@ FROM geometry_table;</literallayout>
 	<para>NEW -p (prepare) flag for shp2pgsql</para>
 	<para>NEW manual chapter about OGC compliancy enforcement</para>
 	<para>NEW autoconf support for JTS lib</para>
+	<para>BUGFIX in estimator testers (support for LWGEOM and schema parsing)</para>
 			</sect2>
 
 		</sect1>

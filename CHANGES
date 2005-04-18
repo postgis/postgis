@@ -1,4 +1,5 @@
 PostGIS 1.0.0
+2005/04/19
 	- NEW manual pages for loader/dumper
 	- NEW shp2pgsql support for old (HWGEOM) postgis versions
 	- NEW -p flag for shp2pgsql
@@ -7,6 +8,8 @@ PostGIS 1.0.0
 	- NEW chapter about OGC compliancy enforcement
 	- BUGFIX in shp2pgsql escape of values starting with "'" or "\t" 
 	- NEW autoconf support for JTS lib
+	- BUGFIX in estimator testers (support for LWGEOM and schema parsing)
+	- BUGFIX in join selectivity estimator (defaults, leaks, tuplecount, sd)
 
 PostGIS 1.0.0RC6
 2005/03/30
