@@ -4689,6 +4689,7 @@ FROM geometry_table;</literallayout>
 				<title>Library changes</title>
 	<para>BUGFIX in transform() releasing random memory address</para>
 	<para>BUGFIX in force_3dm() allocating less memory then required</para>
+	<para>BUGFIX in join selectivity estimator (defaults, leaks, tuplecount)</para>
 			</sect2>
 
 			<sect2>
@@ -4699,6 +4700,7 @@ FROM geometry_table;</literallayout>
 	<para>NEW -p (prepare) flag for shp2pgsql</para>
 	<para>NEW manual chapter about OGC compliancy enforcement</para>
 	<para>NEW autoconf support for JTS lib</para>
+	<para>BUGFIX in estimator testers (support for LWGEOM and schema parsing)</para>
 			</sect2>
 
 		</sect1>
