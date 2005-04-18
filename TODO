@@ -8,3 +8,30 @@
 - Standardized handling for topology and coverages with 
   support functions.
 
+======================================
+Following is TODO list for release 1.1
+======================================
+Mon Apr 18 16:21:00 CEST 2005
+======================================
+
+- Full autoconf support / PG sources dependency drop
+
+- Selectivity estimation code merge (+- pgsql-8.0.0)
+	+ fix invalid stats computation (currently keeps the previously
+	  computed ones, shoudl instead wipe them out - possibly a
+	  pgsql bug).
+
+- Special threatment of SRID=-1, dims=-1, type=GEOMETRY
+  in geometry_columns
+
+- Better upgrade mechanism
+
+- Pre-8.0 port of new estimator code
+
+- Better regression tests (single load, multi operations)
+
+- contrib/ dir with WFSLocks and packaging files ?
+
+- shp2pgsql switch that spits out the code to create a GIST
+  index on the geometric column, as requested by Christian
+  Graefe.
