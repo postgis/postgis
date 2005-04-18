@@ -61,14 +61,6 @@ USE_STATS=1
 AUTOCACHE_BBOX=1
 
 #
-# Root of the PostgreSQL source tree 
-# If you are not building from within postgresql 'contrib' directory
-# set the PGSQL_SRC either below or in the environment (an absolute path).
-#
-# PGSQL_SRC=/usr/src/postgresql
-PGSQL_SRC=@PGSQL_SRC@
-
-#
 # Set USE_ICONV to 1 if you want the loader (shp2pgsql)
 # to support UTF-8 output.
 #
@@ -82,6 +74,54 @@ USE_ICONV=0
 # LPATH=/usr/src/postgis
 LPATH=\$$libdir
 
+#
+# PGSQL
+#
+PGCONFIG=@PGCONFIG@
+PGFEINCLUDES=@PGFEINCLUDES@
+PGBEINCLUDES=@PGBEINCLUDES@
+PGFELIBS=@PGFELIBS@
+
+#
+# Docbook
+#
+XSLBASE=@XSLBASE@
+
+#
+# Compilers
+#
+CC=@CC@
+CXX=@CXX@
+
+#
+# Other programs
+#
+FLEX=@FLEX@
+YACC=@YACC@
+INSTALL=@INSTALL@
+INSTALL_DATA=$(INSTALL) -m 644
+INSTALL_BIN=$(INSTALL) -m 755
+INSTALL_LIB=$(INSTALL) -m 644
+
+#
+# PATHS
+#
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+datadir=@datadir@
+mandir=@mandir@
+docdir=@docdir@
+libdir=@libdir@
+libexecdir=@libexecdir@
+MODULE_INSTALLDIR=@MODULE_INSTALLDIR@
+
+#
+# DLL 
+#
+DLSUFFIX=@DLSUFFIX@
+DLFLAGS=@DLFLAGS@
+
 #---------------------------------------------------------------
 # END OF CONFIGURATION
 #---------------------------------------------------------------
@@ -91,25 +131,11 @@ ifeq ($(USE_JTS),1)
 	USE_GEOS=0
 endif
 
-subdir=contrib/postgis
-top_builddir = ${PGSQL_SRC}
-include $(top_builddir)/src/Makefile.global
-
-#
-# This needs to be defined after PGSQL Makefile.global
-# has been sources as it redefines FLEX
-#
-ifeq ($(strip $(FLEX)),)
-    FLEX = flex
-endif
-ifeq ($(strip $(YACC)),)
-    YACC = yacc
-endif
-
 #---------------------------------------------------------------
 # Test the version string and set the USE_VERSION macro
 # appropriately.
 #
+VERSION=$(shell $(PGCONFIG) --version)
 ifneq ($(findstring 7.1,$(VERSION)),)
 	USE_VERSION=71
 else

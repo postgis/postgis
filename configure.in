@@ -1,13 +1,50 @@
 AC_INIT(README.postgis)
 
-AC_ARG_ENABLE(autoconf, [  --enable-autoconf       really use autoconf],
- 	AC_MSG_RESULT(Using autoconf),
- 	AC_MSG_ERROR([
- 
- Autoconf-based configuration is not widely tested.
- If you want to use it anyway specify --enable-autoconf.
- ])
- )
+dnl AC_ARG_ENABLE(autoconf, [  --enable-autoconf       really use autoconf],
+dnl  	AC_MSG_RESULT(Using autoconf),
+dnl  	AC_MSG_ERROR([
+dnl  
+dnl  Autoconf-based configuration is not widely tested.
+dnl  If you want to use it anyway specify --enable-autoconf.
+dnl  ])
+dnl  )
+
+dnl
+dnl Compilers
+dnl
+AC_PROG_CC
+AC_PROG_CXX
+
+dnl
+dnl Search for pg_config and setup pgsql stuff
+dnl
+AC_SUBST(PGCONFIG)
+PGCONFIG=
+AC_ARG_WITH(pgsql, 
+[  --with-pgsql[[=ARG]]      build for a specific pgsql version
+                          [[ARG=path to pg_config]]],
+	if test "$with_pgsql" != "no" -a "$with_pgsql" != "yes"; then
+		if ! test -x "$with_pgsql"; then
+			AC_MSG_ERROR([$with_pgsql is not an executable file]);
+		fi
+		PGCONFIG="$with_pgsql"
+	fi
+)
+if test -z "$PGCONFIG"; then
+	AC_PATH_PROG([PGCONFIG], [pg_config])
+fi
+if test -z "$PGCONFIG"; then
+	AC_MSG_ERROR([PostgreSQL is required by PostGIS]);
+fi
+AC_SUBST(PGFEINCLUDES)
+AC_SUBST(PGBEINCLUDES)
+AC_SUBST(PGFELIBS)
+AC_SUBST(MODULE_INSTALLDIR)
+PGFEINCLUDES="-I`${PGCONFIG} --includedir`"
+PGFELIBS="-L`${PGCONFIG} --libdir` -lpq"
+PGBEINCLUDES="-I`${PGCONFIG} --includedir-server`"
+MODULE_INSTALLDIR="`${PGCONFIG} --pkglibdir`"
+
 
 
 dnl
@@ -19,7 +56,8 @@ AC_SUBST(GEOS_DIR)
 USE_GEOS=0
 GEOS_DIR=
 AC_ARG_WITH(geos, 
-[  --with-geos[[=ARG]]       enable spatial predicates and operators using GEOS (ARG=path to geos-config)],
+[  --with-geos[[=ARG]]       enable spatial predicates and operators using GEOS
+                          [[ARG=path to geos-config]]],
 	if test "$with_geos" != "no"; then
 		USE_GEOS=1
 		if test "$with_geos" != "yes"; then
@@ -66,17 +104,6 @@ if test $USE_PROJ -gt 0; then
 	fi
 fi
 
-PGSQL_SRC=${PWD}/../..
-AC_SUBST(PGSQL_SRC)
-AC_ARG_WITH(pgsql-src, 
-	[  --with-pgsql-src=DIR    where to find pgsql sources],
-    	PGSQL_SRC=$with_pgsql_src
-	)
-if ! test -e $PGSQL_SRC/src/Makefile.global; then
-	AC_MSG_ERROR([ Can't find (configured) PGSQL sources. ]);
-fi
-
-
 AC_SUBST(USE_JTS)
 AC_SUBST(JTS_INCLUDES)
 AC_SUBST(JTS_LIBDIR)
@@ -84,7 +111,8 @@ USE_JTS=0
 JTS_INCLUDES=
 JTS_INCLUDES=
 AC_ARG_WITH(jts, 
-[  --with-jts[[=ARG]]        use JTS for spatial predicates and operators (ARG=path to jts-config)],
+[  --with-jts[[=ARG]]        use JTS for spatial predicates and operators
+                          [[ARG=path to jts-config]]],
 	if test "$with_jts" != "no"; then
 		USE_JTS=1
 		if test "$with_jts" != "yes"; then
@@ -107,9 +135,9 @@ if test $USE_JTS -gt 0; then
 	JTS_LIBDIR=`$JTSCONFIG --libdir`
 fi
 
-
+dnl
 dnl Search flex and yacc
-
+dnl
 AC_SUBST(FLEX)
 AC_PATH_PROG([FLEX], [flex])
 if test -z "$FLEX"; then
@@ -122,30 +150,82 @@ if test -z "$YACC"; then
 	AC_MSG_ERROR(Can't find 'yacc');
 fi
 
+dnl
+dnl Find 'install'
+dnl
+AC_PATH_PROG([INSTALL], [install])
+if test -z "$INSTALL"; then
+	AC_MSG_ERROR(Can't find 'install');
+fi
+
+dnl
+dnl DL stuff
+dnl
+AC_SUBST(DLSUFFIX)
+AC_SUBST(DLFLAGS)
+DLSUFFIX=.so
+DLFLAGS=-shared
+
+AC_SUBST(docdir)
+docdir='${prefix}/doc'
+AC_ARG_WITH(docdir,
+[  --with-docdir=DIR       install the documentation in DIR [[PREFIX/doc]]],
+	if test "$with_docdir" = "yes"; then
+		AC_MSG_ERROR([option --with-docdir requires an argument])
+	fi
+	if test "$with_docdir" = "no"; then
+        	docdir=""
+	else
+		docdir="$with_docdir"
+	fi
+)
+
+
+dnl
+dnl Find 'html/docbook.xsl'
+dnl
+AC_SUBST(XSLBASE)
+XSLBASE=
+SEARCHPATH="
+	/usr/share/sgml/docbook/xsl-stylesheets 
+	/usr/share/xml/docbook/stylesheet/nwalsh
+"
+for p in ${SEARCHPATH}; do
+	if test -r ${p}/html/docbook.xsl; then
+		XSLBASE=${p}
+		break
+	fi
+done
+
 
 dnl if test $USE_JTS -gt 0; then
 dnl	AC_MSG_RESULT([ GEOS disabled, using JTS.]);
 dnl	USE_GEOS=0
 dnl fi
 
+AC_OUTPUT(Makefile.config)
+
 AC_MSG_RESULT([ ])
 AC_MSG_RESULT([ SUMMARY])
-AC_MSG_RESULT([ -------])
-AC_MSG_RESULT([ PGSQL: src=$PGSQL_SRC])
+AC_MSG_RESULT([ -------------------------------------------------------])
+AC_MSG_RESULT([ ])
+AC_MSG_RESULT([   PGSQL: $PGCONFIG])
 
 if test $USE_JTS -gt 0; then
-	AC_MSG_RESULT([   JTS: includedir=$JTS_INCLUDES libdir=$JTS_LIBDIR])
+	AC_MSG_RESULT([     JTS: includedir=$JTS_INCLUDES libdir=$JTS_LIBDIR])
 fi
 if test $USE_GEOS -gt 0; then
-	AC_MSG_RESULT([  GEOS: dir=$GEOS_DIR])
+	AC_MSG_RESULT([    GEOS: $GEOSCONFIG])
 fi
 if test $USE_PROJ -gt 0; then
-	AC_MSG_RESULT([  PROJ: dir=$PROJ_DIR])
+	AC_MSG_RESULT([    PROJ: dir=$PROJ_DIR])
 fi
-
 dnl AC_MSG_RESULT([  FLEX:  path=$FLEX])
 dnl AC_MSG_RESULT([  YACC:  path=$YACC])
 
+AC_MSG_RESULT([  ])
+AC_MSG_RESULT([  PREFIX: $prefix])
+
+AC_MSG_RESULT([ -------------------------------------------------------])
 AC_MSG_RESULT([ ])
 
-AC_OUTPUT(Makefile.config)

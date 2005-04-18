@@ -1,12 +1,13 @@
 COMMONOPTS = -f docbook -b html -e no-valid
 
-# fetch version numbers from central repository
+include ../Makefile.config
 include ../Version.config
 
 LAST_RELEASE_VERSION = $(SO_MAJOR_VERSION).$(SO_MINOR_VERSION).$(SO_MICRO_VERSION)
 
-XSLBASE?=/usr/share/sgml/docbook/xsl-stylesheets
+#XSLBASE?=/usr/share/sgml/docbook/xsl-stylesheets
 #XSLBASE = /usr/share/xml/docbook/stylesheet/nwalsh
+
 
 all: html
 
@@ -68,5 +69,17 @@ maintainer-clean: clean
 	@rm -f html/*.html
 
 install: html/postgis.html man/shp2pgsql.1 man/pgsql2shp.1
+	@mkdir -p $(docdir)/postgis/
+	@mkdir -p $(mandir)/man1
+	$(INSTALL_DATA) html/postgis.html $(docdir)/postgis/postgis.html
+	$(INSTALL_DATA) man/pgsql2shp.1 $(mandir)/man1/pgsql2shp.1
+	$(INSTALL_DATA) man/shp2pgsql.1 $(mandir)/man1/shp2pgsql.1
+	$(INSTALL_DATA) ../README.postgis $(docdir)/postgis/README.postgis
+
+uninstall:
+	rm -f $(docdir)/postgis/postgis.html
+	rm -f $(docdir)/postgis/README.postgis
+	rm -f $(mandir)/man1/shp2pgsql.1
+	rm -f $(mandir)/man1/pgsql2shp.1
 
 .PHONY: html 

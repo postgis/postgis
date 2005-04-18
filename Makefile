@@ -6,9 +6,9 @@
 
 all: liblwgeom loaderdumper utils
 
-install: all liblwgeom-install loaderdumper-install
+install: all liblwgeom-install loaderdumper-install dox-install
 
-uninstall: liblwgeom-uninstall loaderdumper-uninstall
+uninstall: liblwgeom-uninstall loaderdumper-uninstall dox-uninstall
 
 clean: liblwgeom-clean loaderdumper-clean test-clean
 	rm -f lwpostgis.sql
@@ -55,6 +55,12 @@ loaderdumper-install:
 
 loaderdumper-uninstall:
 	$(MAKE) -C loader uninstall
+
+dox-install:
+	$(MAKE) -C doc install
+
+dox-uninstall:
+	$(MAKE) -C doc uninstall
 
 utils:
 	$(MAKE) -C utils

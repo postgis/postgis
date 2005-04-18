@@ -1,8 +1,6 @@
 # Configuration Directives
 include ../Makefile.config
-
-#---------------------------------------------------------------
-subdir=contrib/postgis
+include ../Version.config
 
 #---------------------------------------------------------------
 # Default missing CXX variable to c++
@@ -15,17 +13,12 @@ endif
 # Shared library parameters.
 #
 NAME=lwgeom
+SHLIB           = lib$(NAME)$(DLSUFFIX).$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION)
+SHLIB_MAJOR     = lib$(NAME)$(DLSUFFIX).$(SO_MAJOR_VERSION)
+SHLIB_BARE      = lib$(NAME)$(DLSUFFIX)
+SHLIB_LINK 	= $(DLFLAGS) 
 
-# fetch version numbers from central repository
-include ../Version.config
-
-ifeq (${USE_VERSION},71) 
-	MODULE_FILENAME = $(LPATH)/$(shlib)
-	MODULE_INSTALLDIR = $(libdir)
-else
-	MODULE_FILENAME = $(LPATH)/$(shlib)
-	MODULE_INSTALLDIR = $(pkglibdir)
-endif
+MODULE_FILENAME = $(LPATH)/$(SHLIB)
 
 #---------------------------------------------------------------
 # Postgis version and build date
@@ -52,21 +45,22 @@ ifeq ($(USE_GEOS),1)
 	GEOS_RULES=detect_geos_version
 	GEOS_WRAPPER=lwgeom_geos_wrapper.o
 	JTS_OBJ=lwgeom_geos.o
+	SHLIB_LINK += -lstdc++ -L$(GEOS_DIR)/lib -lgeos
 endif
 
 ifeq ($(USE_JTS),1)
 	override CFLAGS += -I$(JTS_INCLUDES) -DUSE_JTS
 	JTS_WRAPPER=lwgeom_jts_wrapper.o
 	JTS_OBJ=lwgeom_jts.o
+	SHLIB_LINK += -lgcj -ljts -lstdc++ -L$(JTS_LIBDIR) 
 endif
 
 ifeq ($(USE_PROJ),1)
 	override CFLAGS += -I$(PROJ_DIR)/include -DUSE_PROJ 
+	SHLIB_LINK += -L$(PROJ_DIR)/lib -lproj
 endif
 
-override CFLAGS += -I$(PROJ_DIR)/include -DAUTOCACHE_BBOX=$(AUTOCACHE_BBOX) 
-
-override DLLLIBS += $(BE_DLLLIBS) 
+override CFLAGS += $(PGBEINCLUDES) -DAUTOCACHE_BBOX=$(AUTOCACHE_BBOX) 
 
 override CXXFLAGS := $(CFLAGS)
 # memory debug for gcc 2.91, 2.95, 3.0 and 3.1
@@ -81,6 +75,7 @@ ifeq ($(USE_STATS),1)
 endif
  
 SA_OBJS=measures.o box2d.o ptarray.o lwgeom_api.o lwgeom.o lwpoint.o lwline.o lwpoly.o lwmpoint.o lwmline.o lwmpoly.o lwcollection.o $(GEOS_WRAPPER) $(JTS_WRAPPER) wktunparse.o lwgparse.o wktparse.tab.o lex.yy.o vsprintf.o
+
 OBJS=$(SA_OBJS) liblwgeom.o lwgeom_pg.o lwgeom_debug.o lwgeom_spheroid.o lwgeom_ogc.o lwgeom_functions_analytic.o $(JTS_OBJ) lwgeom_inout.o lwgeom_estimate.o lwgeom_functions_basic.o lwgeom_gist.o lwgeom_btree.o lwgeom_transform.o stringBuffer.o lwgeom_box.o lwgeom_box3d.o lwgeom_box2dfloat4.o lwgeom_chip.o lwgeom_svg.o lwgeom_gml.o lwgeom_triggers.o lwgeom_dump.o
 
 #OTHERS=y.output lex.yy.c wktparse.tab.c wktparse.tab.h lwpostgis.sql
@@ -88,26 +83,12 @@ OTHERS=y.output lwpostgis.sql ../lwpostgis.sql postgis_geos_version.h
 
 
 #---------------------------------------------------------------
-# Add libraries that libpq depends (or might depend) on into the
-# shared library link.  (The order in which you list them here doesn't
-# matter.)
-
-SHLIB_LINK = $(filter -L%, $(LDFLAGS)) 
-ifeq ($(USE_GEOS),1)
-	SHLIB_LINK += -lstdc++ -L$(GEOS_DIR)/lib -lgeos
-endif
-ifeq ($(USE_JTS),1)
-	SHLIB_LINK += -lgcj -ljts -lstdc++ -L$(JTS_LIBDIR) 
-endif
-ifeq ($(USE_PROJ),1)
-	SHLIB_LINK += -L$(PROJ_DIR)/lib -lproj
-endif
-SHLIB_LINK += $(BE_DLLLIBS) 
-
-#---------------------------------------------------------------
 # Makefile targets
 
-include $(top_srcdir)/src/Makefile.shlib
+all: $(GEOS_RULES) $(SHLIB) ../lwpostgis.sql
+
+$(SHLIB): $(OBJS)
+	$(CC) $(SHLIB_LINK) -o $(SHLIB) $(OBJS)
 
 wktparse.tab.c: wktparse.y
 	$(YACC) -vd -p lwg_parse_yy wktparse.y
@@ -130,8 +111,6 @@ lwgeom_nojts.o: lwgeom_nojts.c
 
 lwgeom_functions_basic.o: lwgeom_functions_basic.c profile.h
 
-all: $(GEOS_RULES) $(shlib) ../lwpostgis.sql
-
 # Shared library stuff
 
 ../lwpostgis.sql: lwpostgis.sql
@@ -140,47 +119,49 @@ all: $(GEOS_RULES) $(shlib) ../lwpostgis.sql
 lwpostgis.sql: lwpostgis.sql.in
 	cpp -P -traditional-cpp -DUSE_VERSION=$(USE_VERSION) $< | sed -e 's:@MODULE_FILENAME@:$(MODULE_FILENAME):g;s:@POSTGIS_VERSION@:$(POSTGIS_VERSION):g;s:@POSTGIS_SCRIPTS_VERSION@:$(SCRIPTS_VERSION):g;s/@POSTGIS_BUILD_DATE@/$(POSTGIS_BUILD_DATE)/g' | grep -v '^#' > $@
 
-install: all installdirs install-lwgeom-lib install-lwgeom-scripts
+install: all install-lwgeom-lib install-lwgeom-scripts
 
 install-lwgeom-scripts:
-	$(INSTALL_DATA) lwpostgis.sql $(DESTDIR)$(datadir)/contrib/lwpostgis.sql
-	$(INSTALL_DATA) ../spatial_ref_sys.sql $(DESTDIR)$(datadir)/contrib/spatial_ref_sys.sql
-	$(INSTALL_DATA) ../README.postgis $(DESTDIR)$(docdir)/contrib/README.postgis
-	$(INSTALL_DATA) ../doc/man/pgsql2shp.1 $(DESTDIR)$(mandir)/man1/pgsql2shp.1
-	$(INSTALL_DATA) ../doc/man/shp2pgsql.1 $(DESTDIR)$(mandir)/man1/shp2pgsql.1
+	@mkdir -p $(datadir)/postgis
+	$(INSTALL_DATA) lwpostgis.sql $(datadir)/postgis/lwpostgis.sql
+	$(INSTALL_DATA) ../spatial_ref_sys.sql $(datadir)/postgis/spatial_ref_sys.sql
 
 #- This has been copied from postgresql and adapted
-install-lwgeom-lib: $(shlib)
-	$(INSTALL_SHLIB) $< $(DESTDIR)$(MODULE_INSTALLDIR)/$(shlib)
-ifneq ($(PORTNAME), win)
-ifneq ($(shlib), lib$(NAME)$(DLSUFFIX).$(SO_MAJOR_VERSION))
-	cd $(DESTDIR)$(MODULE_INSTALLDIR) && \
-	rm -f lib$(NAME)$(DLSUFFIX).$(SO_MAJOR_VERSION) && \
-	$(LN_S) $(shlib) lib$(NAME)$(DLSUFFIX).$(SO_MAJOR_VERSION)
-endif
-ifneq ($(shlib), lib$(NAME)$(DLSUFFIX))
-	cd $(DESTDIR)$(MODULE_INSTALLDIR) && \
-	rm -f lib$(NAME)$(DLSUFFIX) && \
-	$(LN_S) $(shlib) lib$(NAME)$(DLSUFFIX)
-endif
+install-lwgeom-lib: $(SHLIB)
+	@mkdir -p $(MODULE_INSTALLDIR)
+	$(INSTALL_LIB) $< $(MODULE_INSTALLDIR)/$(SHLIB)
 
+ifneq ($(PORTNAME), win)
+ifneq ($(SHLIB), $(SHLIB_MAJOR))
+	cd $(MODULE_INSTALLDIR) && \
+	rm -f $(SHLIB_MAHOR) && \
+	ln -sf $(SHLIB) $(SHLIB_MAJOR)
+endif
+ifneq ($(SHLIB), lib$(NAME)$(DLSUFFIX))
+	cd $(MODULE_INSTALLDIR) && \
+	rm -f $(SHLIB_BARE) && \
+	ln -sf $(SHLIB) $(SHLIB_BARE)
+endif
 endif # not win
+
+uninstall-lib: 
+	rm -f $(MODULE_INSTALLDIR)/$(SHLIB)
+	rm -f $(MODULE_INSTALLDIR)/$(SHLIB_MAJOR)
+	rm -f $(MODULE_INSTALLDIR)/$(SHLIB_BARE)
+
 #----------------------------------------------------------
 
 detect_geos_version: 
 	sh ../geos_version.sh $(GEOS_DIR) > postgis_geos_version.h
 
-installdirs:
-	$(mkinstalldirs) $(DESTDIR)$(MODULE_INSTALLDIR)
-	$(mkinstalldirs) $(DESTDIR)$(datadir)/contrib
-	$(mkinstalldirs) $(DESTDIR)$(docdir)/contrib
-
 uninstall-lwgeom-scripts:
-	rm -f $(DESTDIR)$(datadir)/contrib/lwpostgis.sql
-	rm -f $(DESTDIR)$(datadir)/contrib/spatial_ref_sys.sql
-	rm -f $(DESTDIR)$(docdir)/contrib/README.postgis
+	rm -f $(datadir)/postgis/lwpostgis.sql
+	rm -f $(datadir)/postgis/spatial_ref_sys.sql
 
 uninstall: uninstall-lib uninstall-lwgeom-scripts
+
+clean-lib:
+	rm -f $(SHAREDLIB)
 
 clean distclean: clean-lib
 	rm -f *.o *.so *.a test $(OTHERS)
@@ -199,7 +180,6 @@ liblwgeom_sa.a: $(SA_OBJS) liblwgeom_sa.o
 
 
 test: liblwgeom_sa.so liblwgeom_sa.a test.c
-	#$(CC) -o test -L. -llwgeom_sa $(SHLIB_LINK) test.c
 	$(CC) -Wall -lm -g -o test test.c liblwgeom_sa.a 
 
 tsort:
