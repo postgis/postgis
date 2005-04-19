@@ -40,10 +40,10 @@ AC_SUBST(PGFEINCLUDES)
 AC_SUBST(PGBEINCLUDES)
 AC_SUBST(PGFELIBS)
 AC_SUBST(MODULE_INSTALLDIR)
+AC_SUBST(LPATH)
 PGFEINCLUDES="-I`${PGCONFIG} --includedir`"
 PGFELIBS="-L`${PGCONFIG} --libdir` -lpq"
 PGBEINCLUDES="-I`${PGCONFIG} --includedir-server`"
-MODULE_INSTALLDIR="`${PGCONFIG} --pkglibdir`"
 
 
 
@@ -198,10 +198,33 @@ for p in ${SEARCHPATH}; do
 done
 
 
-dnl if test $USE_JTS -gt 0; then
-dnl	AC_MSG_RESULT([ GEOS disabled, using JTS.]);
-dnl	USE_GEOS=0
-dnl fi
+if test $USE_JTS -gt 0; then
+dnl	AC_MSG_RESULT([ GEOS disabled, using JTS.])
+	USE_GEOS=0
+fi
+
+if test "${prefix}" = "NONE"; then
+ 	prefix=/usr/local
+ 	for v in `${PGCONFIG} --configure`; do
+ 		strip=`echo $v | sed "s/'//g"`
+ 		var=`echo "$strip" | cut -d= -f1`
+ 		if test "$var" = "--prefix"; then
+ 			prefix=`echo "$strip" | cut -d= -f2`
+ 		fi
+ 	done
+ 	exec_prefix='${prefix}'
+ 	docdir='${prefix}/doc/postgresql/contrib'
+ 	datadir='${prefix}/share/postgresql/contrib'
+ 	mandir='${prefix}/man'
+ 	bindir='${exec_prefix}/bin'
+ 	MODULE_INSTALLDIR="`${PGCONFIG} --pkglibdir`"
+ 	LPATH='\$$libdir'
+else
+ 	docdir=$docdir/postgis
+ 	datadir=$datadir/postgis
+ 	MODULE_INSTALLDIR=$libexecdir
+ 	LPATH=$libexecdir
+fi
 
 AC_OUTPUT(Makefile.config)
 
@@ -224,13 +247,13 @@ dnl AC_MSG_RESULT([  FLEX:  path=$FLEX])
 dnl AC_MSG_RESULT([  YACC:  path=$YACC])
 
 AC_MSG_RESULT([  ])
-AC_MSG_RESULT([      PREFIX: $prefix])
-AC_MSG_RESULT([  EXECPREFIX: $exec_prefix])
-AC_MSG_RESULT([         DOC: $docdir/postgis])
-AC_MSG_RESULT([        DATA: $datadir/postgis])
-AC_MSG_RESULT([         MAN: $mandir])
-AC_MSG_RESULT([         BIN: $bindir])
-AC_MSG_RESULT([         EXT: $MODULE_INSTALLDIR])
+AC_MSG_RESULT([   PREFIX: $prefix])
+AC_MSG_RESULT([  EPREFIX: $exec_prefix])
+AC_MSG_RESULT([      DOC: $docdir])
+AC_MSG_RESULT([     DATA: $datadir])
+AC_MSG_RESULT([      MAN: $mandir])
+AC_MSG_RESULT([      BIN: $bindir])
+AC_MSG_RESULT([      EXT: $MODULE_INSTALLDIR])
 
 AC_MSG_RESULT([ -------------------------------------------------------])
 AC_MSG_RESULT([ ])

@@ -67,14 +67,6 @@ AUTOCACHE_BBOX=1
 USE_ICONV=0
 
 #
-# Path to library (to be specified in CREATE FUNCTION queries)
-# Defaults to $libdir.
-# Set LPATH below or in the environment to change it.
-#
-# LPATH=/usr/src/postgis
-LPATH=\$$libdir
-
-#
 # PGSQL
 #
 PGCONFIG=@PGCONFIG@
@@ -101,7 +93,7 @@ YACC=@YACC@
 INSTALL=@INSTALL@ -c
 INSTALL_DATA=$(INSTALL) -m 644
 INSTALL_BIN=$(INSTALL) -m 755
-INSTALL_LIB=$(INSTALL) -m 644
+INSTALL_LIB=$(INSTALL) -m 755
 
 #
 # PATHS
@@ -115,6 +107,7 @@ docdir=@docdir@
 libdir=@libdir@
 libexecdir=@libexecdir@
 MODULE_INSTALLDIR=@MODULE_INSTALLDIR@
+LPATH=@LPATH@
 
 #
 # DLL 
