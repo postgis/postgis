@@ -253,7 +253,11 @@ AC_MSG_RESULT([      DOC: $docdir])
 AC_MSG_RESULT([     DATA: $datadir])
 AC_MSG_RESULT([      MAN: $mandir])
 AC_MSG_RESULT([      BIN: $bindir])
-AC_MSG_RESULT([      EXT: $MODULE_INSTALLDIR])
+if test "$MODULE_INSTALLDIR" = "$LPATH"; then
+	AC_MSG_RESULT([      EXT: $MODULE_INSTALLDIR])
+else
+	AC_MSG_RESULT([      EXT: $MODULE_INSTALLDIR ($LPATH)])
+fi
 
 AC_MSG_RESULT([ -------------------------------------------------------])
 AC_MSG_RESULT([ ])
