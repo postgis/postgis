@@ -4,18 +4,18 @@
 #
 #-----------------------------------------------------
 
-all: liblwgeom loaderdumper utils
+all: liblwgeom loaderdumper utils docs Makefile.config
 
-install: all liblwgeom-install loaderdumper-install dox-install
+install: all liblwgeom-install loaderdumper-install docs-install
 
-uninstall: liblwgeom-uninstall loaderdumper-uninstall dox-uninstall
+uninstall: liblwgeom-uninstall loaderdumper-uninstall docs-uninstall
 
 clean: liblwgeom-clean loaderdumper-clean test-clean
 	rm -f lwpostgis.sql
 
 distclean: clean
 	rm -Rf autom4te.cache
-	rm -f config.log config.cache config.status
+	rm -f config.log config.cache config.status Makefile.config
 
 maintainer-clean:
 	@echo '------------------------------------------------------'
@@ -32,7 +32,7 @@ test: liblwgeom
 test-clean:
 	$(MAKE) -C regress clean
 
-liblwgeom: 
+liblwgeom: Makefile.config
 	$(MAKE) -C lwgeom
 
 liblwgeom-clean:
@@ -44,7 +44,7 @@ liblwgeom-install:
 liblwgeom-uninstall:
 	$(MAKE) -C lwgeom uninstall
 
-loaderdumper:
+loaderdumper: Makefile.config
 	$(MAKE) -C loader
 
 loaderdumper-clean:
@@ -56,13 +56,25 @@ loaderdumper-install:
 loaderdumper-uninstall:
 	$(MAKE) -C loader uninstall
 
-dox-install:
+docs: Makefile.config
+	$(MAKE) -C doc 
+
+docs-install:
 	$(MAKE) -C doc install
 
-dox-uninstall:
+docs-uninstall:
 	$(MAKE) -C doc uninstall
 
 utils:
 	$(MAKE) -C utils
+
+configure: configure.in
+	./autogen.sh
+
+config.status: configure
+	./configure
+
+Makefile.config: Makefile.config.in config.status
+	./config.status
 
 .PHONY: utils
