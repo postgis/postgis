@@ -161,7 +161,7 @@ uninstall-lwgeom-scripts:
 uninstall: uninstall-lib uninstall-lwgeom-scripts
 
 clean-lib:
-	rm -f $(SHAREDLIB)
+	rm -f $(SHLIB) $(SHLIB_MAJOR) $(SHLIB_BARE)
 
 clean distclean: clean-lib
 	rm -f *.o *.so *.a test $(OTHERS)
