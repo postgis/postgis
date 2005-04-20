@@ -825,8 +825,13 @@ CREATE OPERATOR CLASS gist_geometry_ops
         FUNCTION        7        LWGEOM_gist_same (box2d, box2d, internal);
 
 UPDATE pg_opclass 
-	SET opckeytype = (select oid from pg_type where typname = 'box2d') 
-	WHERE opcname = 'gist_geometry_ops';
+	SET opckeytype = (SELECT oid FROM pg_type 
+                          WHERE typname = 'box2d' 
+                          AND typnamespace = (SELECT oid FROM pg_namespace 
+                                              WHERE nspname=current_schema())) 
+	WHERE opcname = 'gist_geometry_ops' 
+        AND opcnamespace = (SELECT oid from pg_namespace 
+                            WHERE nspname=current_schema());
 	
 -- TODO: add btree binding...
 
