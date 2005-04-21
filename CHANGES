@@ -1,6 +1,7 @@
 PostGIS 1.0.1
 ?????
 	- BUGFIX in shp2pgql escape functions
+	- BUGFIX in 3d computation of lenght_spheroid
 	- better support for concurrent postgis in multiple schemas
 	- documentation fixes
 
