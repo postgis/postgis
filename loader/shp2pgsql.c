@@ -172,7 +172,7 @@ make_good_string(char *str)
 
 	if (toescape == 0) return str;
 
-	size = ptr-str+toescape;
+	size = ptr-str+toescape+1;
 
 	result = calloc(1, size);
 
@@ -225,7 +225,7 @@ protect_quotes_string(char *str)
 
 	if (toescape == 0) return str;
 	
-	size = ptr-str+toescape;
+	size = ptr-str+toescape+1;
 
 	result = calloc(1, size);
 
@@ -1615,6 +1615,9 @@ utf8 (const char *fromcode, char *inputbuf)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.89  2005/04/21 09:08:34  strk
+ * Applied patch from Ron Mayer fixing a segfault in string escaper funx
+ *
  * Revision 1.88  2005/04/14 12:58:59  strk
  * Applied patch by Gino Lucrezi fixing bug in string escaping code.
  *
