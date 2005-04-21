@@ -1,3 +1,9 @@
+PostGIS 1.0.1
+?????
+	- BUGFIX in shp2pgql escape functions
+	- better support for concurrent postgis in multiple schemas
+	- documentation fixes
+
 PostGIS 1.0.0
 2005/04/19
 	- NEW manual pages for loader/dumper
