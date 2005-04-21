@@ -7,6 +7,7 @@ PostGIS 1.1.0CVS
 	  + Support for (Hex)(E)wkb
 	  + Autoprobing DriverWrapper for HexWKB / EWKT switching
 	- BUGFIX in shp2pgql escape functions
+	- BUGFIX in 3d computation of lenght_spheroid
 	- better support for concurrent postgis in multiple schemas
 	- documentation fixes
 	- full autoconf-based configuration
