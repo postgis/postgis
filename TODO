@@ -35,3 +35,15 @@ Mon Apr 18 16:21:00 CEST 2005
 - shp2pgsql switch that spits out the code to create a GIST
   index on the geometric column, as requested by Christian
   Graefe.
+
+- line_calculate_proportion(line, point)
+
+    Returns a float, representing the proportional distance the
+    point is located along the line.
+
+- line_interpolate_line(geometry, proportion, direction)
+
+    Returns a line, representing the subset of the input line
+    that is the proportional distance along the line. Direction
+    determines what end to measure from. (??)
+
