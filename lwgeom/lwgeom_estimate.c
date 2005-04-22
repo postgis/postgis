@@ -984,6 +984,9 @@ Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_JOINSEL);
 	}
 
+	if ( rows_returned > total_tuples )
+		PG_RETURN_FLOAT8(1.0);
+
 	PG_RETURN_FLOAT8(rows_returned / total_tuples);
 }
 
@@ -2482,6 +2485,9 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.32  2005/04/22 01:07:09  strk
+ * Fixed bug in join selectivity estimator returning invalid estimates (>1)
+ *
  * Revision 1.31  2005/04/18 14:12:43  strk
  * Slightly changed standard deviation computation to be more corner-case-friendly.
  *
