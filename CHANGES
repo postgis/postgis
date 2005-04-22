@@ -11,6 +11,7 @@ PostGIS 1.1.0CVS
 	- better support for concurrent postgis in multiple schemas
 	- documentation fixes
 	- full autoconf-based configuration
+	- BUGFIX in join selectivity estimator returning invalid estimates (>1)
 
 PostGIS 1.0.0
 2005/04/19
