@@ -4,6 +4,7 @@ PostGIS 1.0.1
 	- BUGFIX in 3d computation of lenght_spheroid
 	- better support for concurrent postgis in multiple schemas
 	- documentation fixes
+	- BUGFIX in join selectivity estimator returning invalid estimates (>1)
 
 PostGIS 1.0.0
 2005/04/19
