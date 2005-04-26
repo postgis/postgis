@@ -36,7 +36,7 @@ GEOS_DIR=@GEOS_DIR@
 #
 # Set USE_JTS to 1 if you have libjts installed. 
 #
-USE_JTS=0
+USE_JTS=@USE_JTS@
 JTS_INCLUDES=@JTS_INCLUDES@
 JTS_LIBDIR=@JTS_LIBDIR@
 
