@@ -53,13 +53,25 @@ public class VersionPrinter {
     public static void main(String[] args) {
         Statement stat = null;
         Driver d;
+
+    	// Print PostGIS version
+        printHeading("PostGIS jdbc client code");
+        printVersionString("getFullVersion", Version.getFullVersion());
+
+    	// Print PGJDBC Versions
+        printHeading("PGJDBC Driver");
+        printVersionString("getVersion", Driver.getVersion());
         try {
             d = new Driver();
         } catch (Exception e) {
             System.err.println("Cannot create Driver instance: " + e.getMessage());
             System.exit(1);
             return;
-        }
+        }	
+        printVersionString("getMajorVersion", d.getMajorVersion());
+        printVersionString("getMinorVersion", d.getMinorVersion());
+
+    	// Print PostgreSQL server versions
         if (args.length == 3) {
             Connection conn = null;
             try {
@@ -77,14 +89,6 @@ public class VersionPrinter {
             return;
         }
 
-        printHeading("PostGIS jdbc client code");
-        printVersionString("getFullVersion", Version.getFullVersion());
-
-        printHeading("PGJDBC Driver");
-        printVersionString("getVersion", Driver.getVersion());
-        printVersionString("getMajorVersion", d.getMajorVersion());
-        printVersionString("getMinorVersion", d.getMinorVersion());
-
         if (stat == null) {
             System.out.println("No online version available.");
         }
@@ -92,6 +96,7 @@ public class VersionPrinter {
         printHeading("PostgreSQL Server");
         printVersionString("version", stat);
 
+    	// Print PostGIS versions
         printHeading("PostGIS Server");
         for (int i = 0; i < GISVERSIONS.length; i++) {
             printVersionString(GISVERSIONS[i], stat);
