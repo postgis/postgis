@@ -47,3 +47,6 @@ Mon Apr 18 16:21:00 CEST 2005
     that is the proportional distance along the line. Direction
     determines what end to measure from. (??)
 
+- MakeValidShape() to remove consecutive vertexes and any eventual
+  other cleanup aimed at making pgsql2shp produce "valid" Shapefiles.
+
