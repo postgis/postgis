@@ -24,6 +24,7 @@ maintainer-clean:
 	@echo '------------------------------------------------------'
 	$(MAKE) distclean
 	$(MAKE) -C lwgeom maintainer-clean
+	$(MAKE) -C jdbc2 maintainer-clean
 	rm -f configure
 
 test: liblwgeom

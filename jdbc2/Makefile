@@ -248,7 +248,7 @@ clean:
 		postgis_debug_$(VERSION).jar \
 		postgis_jts_$(VERSION).jar
 
-distclean: clean
+maintainer-clean: clean
 	$(DELETE) $(SRCCONF)
 
 
