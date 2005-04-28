@@ -4,13 +4,13 @@
 #
 #-----------------------------------------------------
 
-all: liblwgeom loaderdumper utils docs Makefile.config
+all: Makefile.config liblwgeom loaderdumper utils docs 
 
 install: all liblwgeom-install loaderdumper-install docs-install
 
 uninstall: liblwgeom-uninstall loaderdumper-uninstall docs-uninstall
 
-clean: liblwgeom-clean loaderdumper-clean test-clean
+clean: Makefile.config liblwgeom-clean loaderdumper-clean test-clean 
 	rm -f lwpostgis.sql
 
 distclean: clean
