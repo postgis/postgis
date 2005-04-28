@@ -110,7 +110,7 @@ BUILDCP=$(STUBBUILD)$(CPSEP)$(POSTGIS_BUILD_CLASSPATH)$(CPSEP)$(SRCDIR)
 # Get the list of all source files
 SRCCONF=sources.inc
 
--include $(SRCCONF)
+include $(SRCCONF)
 
 # The pgjdbc 7.2/7.4/8.0 compatibility stub stuff
 STUBDIR=stubs
@@ -161,8 +161,7 @@ $(SRCCONF):
 	@echo >>$(SRCCONF) STUBSRC= $(shell find $(STUBDIR)/ -name '*.java')
 	@echo >>$(SRCCONF) 
 	@echo >>$(SRCCONF) JTSSRC = $(shell find $(JTSDIR)/ -name '*.java')
-	@echo Regenerated $(SRCCONF), please re-run make.
-	exit 1
+	@echo Regenerated $(SRCCONF).
 
 # Packing the archives
 
