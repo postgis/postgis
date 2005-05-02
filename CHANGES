@@ -5,6 +5,7 @@ PostGIS 1.0.1
 	- better support for concurrent postgis in multiple schemas
 	- documentation fixes
 	- BUGFIX in join selectivity estimator returning invalid estimates (>1)
+	- jdbc2: compile with "-target 1.2 -source 1.2" by default
 
 PostGIS 1.0.0
 2005/04/19
