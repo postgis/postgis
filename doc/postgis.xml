@@ -2770,7 +2770,7 @@ dimension(the_geom)>2" skips re-writing of geometries that already are in 2D.
 
         <variablelist>
           <varlistentry>
-            <term>Distance(geometry,geometry)</term>
+            <term>Distance(geometry, geometry)</term>
 
             <listitem>
               <para>Return the cartesian distance between two geometries in
@@ -2779,13 +2779,13 @@ dimension(the_geom)>2" skips re-writing of geometries that already are in 2D.
           </varlistentry>
 
           <varlistentry>
-            <term>Equals(geometry,geometry)</term>
+            <term>Equals(geometry, geometry)</term>
 
             <listitem>
-              <para>Returns 1 (TRUE) if this Geometry is "spatially equal" to
-              anotherGeometry. Use this for a 'better' answer than '='. equals
-              ('LINESTRING(0 0, 10 10)','LINESTRING(0 0, 5 5, 10 10)') is
-              true.</para>
+              <para>Returns 1 (TRUE) if the given Geometries are
+	      "spatially equal". Use this for a 'better' answer than '='.
+	      equals('LINESTRING(0 0, 10 10)','LINESTRING(0 0, 5 5, 10 10)')
+	      is true.</para>
 
               <para>Performed by the GEOS module</para>
 
@@ -2794,11 +2794,11 @@ dimension(the_geom)>2" skips re-writing of geometries that already are in 2D.
           </varlistentry>
 
           <varlistentry>
-            <term>Disjoint(geometry,geometry)</term>
+            <term>Disjoint(geometry, geometry)</term>
 
             <listitem>
-              <para>Returns 1 (TRUE) if this Geometry is "spatially disjoint"
-              from anotherGeometry.</para>
+              <para>Returns 1 (TRUE) if the Geometries are "spatially disjoint".
+	      </para>
 
               <para>Performed by the GEOS module</para>
 
@@ -2814,11 +2814,11 @@ dimension(the_geom)>2" skips re-writing of geometries that already are in 2D.
           </varlistentry>
 
           <varlistentry>
-            <term>Intersects(geometry,geometry)</term>
+            <term>Intersects(geometry, geometry)</term>
 
             <listitem>
-              <para>Returns 1 (TRUE) if this Geometry "spatially intersects"
-              anotherGeometry.</para>
+              <para>Returns 1 (TRUE) if the Geometries "spatially intersect".
+              </para>
 
               <para>Performed by the GEOS module</para>
 
@@ -2834,11 +2834,11 @@ dimension(the_geom)>2" skips re-writing of geometries that already are in 2D.
           </varlistentry>
 
           <varlistentry>
-            <term>Touches(geometry,geometry)</term>
+            <term>Touches(geometry, geometry)</term>
 
             <listitem>
-              <para>Returns 1 (TRUE) if this Geometry "spatially touches"
-              anotherGeometry.</para>
+              <para>Returns 1 (TRUE) if the Geometries "spatially touch".
+              </para>
 
               <para>Performed by the GEOS module</para>
 
@@ -2855,11 +2855,11 @@ dimension(the_geom)>2" skips re-writing of geometries that already are in 2D.
           </varlistentry>
 
           <varlistentry>
-            <term>Crosses(geometry,geometry)</term>
+            <term>Crosses(geometry, geometry)</term>
 
             <listitem>
-              <para>Returns 1 (TRUE) if this Geometry "spatially crosses"
-              anotherGeometry.</para>
+              <para>Returns 1 (TRUE) if the Geometries "spatially cross".
+              </para>
 
               <para>Performed by the GEOS module</para>
 
@@ -2875,11 +2875,11 @@ dimension(the_geom)>2" skips re-writing of geometries that already are in 2D.
           </varlistentry>
 
           <varlistentry>
-            <term>Within(geometry,geometry)</term>
+            <term>Within(geometry A, geometry B)</term>
 
             <listitem>
-              <para>Returns 1 (TRUE) if this Geometry is "spatially within"
-              anotherGeometry.</para>
+              <para>Returns 1 (TRUE) if Geometry A is "spatially within"
+              Geometry B.</para>
 
               <para>Performed by the GEOS module</para>
 
@@ -2895,11 +2895,11 @@ dimension(the_geom)>2" skips re-writing of geometries that already are in 2D.
           </varlistentry>
 
           <varlistentry>
-            <term>Overlaps(geometry,geometry)</term>
+            <term>Overlaps(geometry, geometry)</term>
 
             <listitem>
-              <para>Returns 1 (TRUE) if this Geometry is "spatially
-              overlapping" anotherGeometry.</para>
+              <para>Returns 1 (TRUE) if the Geometries "spatially
+              overlap".</para>
 
               <para>Performed by the GEOS module</para>
 
@@ -2914,11 +2914,11 @@ dimension(the_geom)>2" skips re-writing of geometries that already are in 2D.
           </varlistentry>
 
           <varlistentry>
-            <term>Contains(geometry,geometry)</term>
+            <term>Contains(geometry A, geometry B)</term>
 
             <listitem>
-              <para>Returns 1 (TRUE) if this Geometry is "spatially contains"
-              anotherGeometry.</para>
+              <para>Returns 1 (TRUE) if Geometry A "spatially contains"
+              Geometry B.</para>
 
               <para>Performed by the GEOS module</para>
 
@@ -2929,16 +2929,16 @@ dimension(the_geom)>2" skips re-writing of geometries that already are in 2D.
               boolean, not an integer.</para>
 
               <para>OGC SPEC s2.1.1.2 // s2.1.13.3 - same as
-              within(geometry,geometry)</para>
+              within(geometry B, geometry A)</para>
             </listitem>
           </varlistentry>
 
           <varlistentry>
-            <term>Intersects(geometry,geometry)</term>
+            <term>Intersects(geometry, geometry)</term>
 
             <listitem>
-              <para>Returns 1 (TRUE) if this Geometry is "spatially
-              intersects" anotherGeometry.</para>
+              <para>Returns 1 (TRUE) if the Geometries "spatially
+              intersect".</para>
 
               <para>Performed by the GEOS module</para>
 
@@ -2949,12 +2949,12 @@ dimension(the_geom)>2" skips re-writing of geometries that already are in 2D.
               boolean, not an integer.</para>
 
               <para>OGC SPEC s2.1.1.2 // s2.1.13.3 - NOT
-              disjoint(geometry,geometry)</para>
+              disjoint(geometry, geometry)</para>
             </listitem>
           </varlistentry>
 
           <varlistentry>
-            <term>Relate(geometry,geometry, intersectionPatternMatrix)</term>
+            <term>Relate(geometry, geometry, intersectionPatternMatrix)</term>
 
             <listitem>
               <para>Returns 1 (TRUE) if this Geometry is spatially related to
@@ -2975,7 +2975,7 @@ dimension(the_geom)>2" skips re-writing of geometries that already are in 2D.
           </varlistentry>
 
           <varlistentry>
-            <term>Relate(geometry,geometry)</term>
+            <term>Relate(geometry, geometry)</term>
 
             <listitem>
               <para>returns the DE-9IM (dimensionally extended
@@ -3060,7 +3060,7 @@ dimension(the_geom)>2" skips re-writing of geometries that already are in 2D.
           </varlistentry>
 
           <varlistentry>
-            <term>Buffer(geometry,double,[integer])</term>
+            <term>Buffer(geometry, double, [integer])</term>
 
             <listitem>
               <para>Returns a geometry that represents all points whose
@@ -3093,11 +3093,11 @@ dimension(the_geom)>2" skips re-writing of geometries that already are in 2D.
           </varlistentry>
 
           <varlistentry>
-            <term>Intersection(geometry,geometry)</term>
+            <term>Intersection(geometry, geometry)</term>
 
             <listitem>
               <para>Returns a geometry that represents the point set
-              intersection of this Geometry with anotherGeometry.</para>
+              intersection of the Geometies.</para>
 
               <para>Performed by the GEOS module</para>
 
@@ -3109,11 +3109,11 @@ dimension(the_geom)>2" skips re-writing of geometries that already are in 2D.
           </varlistentry>
 
           <varlistentry>
-            <term>SymDifference(geometry,geometry)</term>
+            <term>SymDifference(geometry A, geometry B)</term>
 
             <listitem>
               <para>Returns a geometry that represents the point set symmetric
-              difference of this Geometry with anotherGeometry.</para>
+              difference of Geometry A with Geometry B.</para>
 
               <para>Performed by the GEOS module</para>
 
@@ -3125,11 +3125,11 @@ dimension(the_geom)>2" skips re-writing of geometries that already are in 2D.
           </varlistentry>
 
           <varlistentry>
-            <term>Difference(geometry,geometry)</term>
+            <term>Difference(geometry A, geometry B)</term>
 
             <listitem>
               <para>Returns a geometry that represents the point set symmetric
-              difference of this Geometry with anotherGeometry.</para>
+              difference of Geometry A with Geometry B.</para>
 
               <para>Performed by the GEOS module</para>
 
@@ -3141,11 +3141,11 @@ dimension(the_geom)>2" skips re-writing of geometries that already are in 2D.
           </varlistentry>
 
           <varlistentry>
-            <term>GeomUnion(geometry,geometry)</term>
+            <term>GeomUnion(geometry, geometry)</term>
 
             <listitem>
               <para>Returns a geometry that represents the point set union of
-              this Geometry with anotherGeometry.</para>
+              the Geometries.</para>
 
               <para>Performed by the GEOS module</para>
 
