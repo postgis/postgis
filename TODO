@@ -36,6 +36,8 @@ Mon Apr 18 16:21:00 CEST 2005
   index on the geometric column, as requested by Christian
   Graefe.
 
+- pgsql2shp keep identifiers case (-k switch)
+
 - line_calculate_proportion(line, point)
 
     Returns a float, representing the proportional distance the
@@ -50,3 +52,5 @@ Mon Apr 18 16:21:00 CEST 2005
 - MakeValidShape() to remove consecutive vertexes and any eventual
   other cleanup aimed at making pgsql2shp produce "valid" Shapefiles.
 
+
+- OGC polygon constructors
