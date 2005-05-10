@@ -1987,7 +1987,8 @@ CREATE TABLE geometry_columns (
 		f_table_catalog, 
 		f_table_schema, 
 		f_table_name, 
-		f_geometry_column ) );
+		f_geometry_column )
+) WITH OIDS;
 
 -----------------------------------------------------------------------
 -- RENAME_GEOMETRY_TABLE_CONSTRAINTS()
