@@ -359,7 +359,7 @@ as follow:
 	<programlisting>
 	# Create a "custom-format" dump of the database you want
 	# to upgrade (let's call it "olddb")
-	$ pg_dump -Fc olddb olddb.dump
+	$ pg_dump -Fc olddb &gt; olddb.dump
 
 	# Restore the dump contextually upgrading postgis into
 	# a new database. The new database doesn't have to exist.
@@ -384,7 +384,7 @@ as follow:
 	# If you did make additions we assume you know how to backup them before
 	# upgrading the table. Replace of it with the new one is done like this:
 	$ psql newdb
-	newdb=&gt; drop table spatial_ref_sys;
+	newdb=&gt; delete from spatial_ref_sys; 
 	DROP
 	newdb=&gt; \i spatial_ref_sys.sql
 	</programlisting>
