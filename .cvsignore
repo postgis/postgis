@@ -1,3 +1,4 @@
+Makefile.config
 libpostgis.so.0.8
 postgis.sql
 postgis_undef.sql
