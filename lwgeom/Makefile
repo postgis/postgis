@@ -13,7 +13,13 @@ endif
 # Shared library parameters.
 #
 NAME=lwgeom
-SHLIB           = lib$(NAME)$(DLSUFFIX).$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION)
+
+ifeq ($(findstring MINGW,$(HOST_OS)),MINGW)
+SHLIB = lib$(NAME).$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION)$(DLSUFFIX)
+else
+SHLIB = lib$(NAME)$(DLSUFFIX).$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION)
+endif
+
 SHLIB_MAJOR     = lib$(NAME)$(DLSUFFIX).$(SO_MAJOR_VERSION)
 SHLIB_BARE      = lib$(NAME)$(DLSUFFIX)
 SHLIB_LINK 	= $(DLFLAGS) 
@@ -88,7 +94,13 @@ OTHERS=y.output lwpostgis.sql ../lwpostgis.sql postgis_geos_version.h
 all: $(GEOS_RULES) $(SHLIB) ../lwpostgis.sql
 
 $(SHLIB): $(OBJS)
+ifeq ($(findstring MINGW,$(HOST_OS)),MINGW)
+	dlltool --export-all  --output-def lwgeom.def $(OBJS)
+	dllwrap  -o $@ --dllname $@ --def lwgeom.def $(OBJS) $(SHLIB_LINK) $(PGBELIBS)
+	dlltool --dllname $@  --def lwgeom.def --output-lib liblwgeom.a
+else
 	$(CC) $(SHLIB_LINK) -o $(SHLIB) $(OBJS)
+endif
 
 wktparse.tab.c: wktparse.y
 	$(YACC) -vd -p lwg_parse_yy wktparse.y

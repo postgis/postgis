@@ -3,18 +3,6 @@ include ../Makefile.config
 #
 # PostGIS Loader Makefile
 #
-SHELL = /bin/sh
-
-subdir = contrib/postgis/loader
-EXE = 
-
-UNAME = $(shell uname)
-ifeq ($(findstring CYGWIN,$(UNAME)),CYGWIN)
-	EXE = .exe
-endif
-ifeq ($(findstring MINGW,$(UNAME)),MINGW)
-	EXE = .exe
-endif
 
 OBJS = shpopen.o dbfopen.o getopt.o
 
@@ -32,7 +20,7 @@ pgsql2shp.o: pgsql2shp.c
 	$(CC) $(CFLAGS) $(PGFEINCLUDES) -c $<
 
 pgsql2shp$(EXE): $(OBJS) pgsql2shp.o PQunescapeBytea.o
-	$(CC) $(CFLAGS) $(PGFELIBS) $(OBJS) PQunescapeBytea.o pgsql2shp.o $(LDFLAGS) -o $@ 
+	$(CC) $(CFLAGS) $(OBJS) PQunescapeBytea.o pgsql2shp.o $(LDFLAGS) $(PGFELIBS) -o $@ 
 
 shp2pgsql$(EXE): $(OBJS) shp2pgsql.o
 	$(CC) $(CFLAGS) $(OBJS) shp2pgsql.o $(LDFLAGS) -o $@ 

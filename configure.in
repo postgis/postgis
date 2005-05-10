@@ -16,6 +16,12 @@ AC_PROG_CC
 AC_PROG_CXX
 
 dnl
+dnl host operating system
+dnl
+AC_CANONICAL_HOST
+host_os=`echo $ac_cv_host | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\3/'`
+
+dnl
 dnl Search for pg_config and setup pgsql stuff
 dnl
 AC_SUBST(PGCONFIG)
@@ -39,13 +45,13 @@ fi
 AC_SUBST(PGFEINCLUDES)
 AC_SUBST(PGBEINCLUDES)
 AC_SUBST(PGFELIBS)
+AC_SUBST(PGBELIBS)
 AC_SUBST(MODULE_INSTALLDIR)
 AC_SUBST(LPATH)
 PGFEINCLUDES="-I`${PGCONFIG} --includedir`"
 PGFELIBS="-L`${PGCONFIG} --libdir` -lpq"
+PGBELIBS="-L`${PGCONFIG} --libdir` -lpostgres"
 PGBEINCLUDES="-I`${PGCONFIG} --includedir-server`"
-
-
 
 dnl
 dnl Test for GEOS
@@ -160,14 +166,6 @@ if test -z "$INSTALL"; then
 	AC_MSG_ERROR(Can't find 'install');
 fi
 
-dnl
-dnl DL stuff
-dnl
-AC_SUBST(DLSUFFIX)
-AC_SUBST(DLFLAGS)
-DLSUFFIX=.so
-DLFLAGS=-shared
-
 AC_SUBST(docdir)
 docdir='${prefix}/doc'
 AC_ARG_WITH(docdir,
@@ -228,11 +226,38 @@ else
  	LPATH=$libexecdir
 fi
 
+#
+# OS-specific settings
+#
+AC_SUBST(DLSUFFIX)
+AC_SUBST(DLFLAGS)
+AC_SUBST(EXE)
+AC_SUBST(HOST_OS)
+
+HOST_OS=$host_os
+DLSUFFIX=.so
+DLFLAGS=-shared
+EXE=
+case $host_os in
+	*mingw*)
+		PGBEINCLUDES="$PGBEINCLUDES $PGBEINCLUDES/port/win32
+		PGFELIBS="$PGFELIBS $PGFELIBS/libpq.dll
+		DLSUFFIX=.dll
+		DLFLAGS=
+		EXE = .exe
+		;;
+esac
+
+
+
+
 AC_OUTPUT(Makefile.config)
 
 AC_MSG_RESULT([ ])
 AC_MSG_RESULT([ SUMMARY])
 AC_MSG_RESULT([ -------------------------------------------------------])
+AC_MSG_RESULT([ ])
+AC_MSG_RESULT([ HOST_OS: $host_os])
 AC_MSG_RESULT([ ])
 AC_MSG_RESULT([   PGSQL: $PGCONFIG])
 
