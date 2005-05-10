@@ -55,11 +55,18 @@ AC_SUBST(USE_GEOS)
 AC_SUBST(GEOS_DIR)
 USE_GEOS=0
 GEOS_DIR=
+
+AC_PATH_PROG([GEOSCONFIG], [geos-config])
+if test -n "$GEOSCONFIG"; then
+	USE_GEOS=1
+fi
+
 AC_ARG_WITH(geos, 
 [  --with-geos[[=ARG]]       enable spatial predicates and operators using GEOS
                           [[ARG=path to geos-config]]],
-	if test "$with_geos" != "no"; then
-		USE_GEOS=1
+	if test "$with_geos" = "no"; then
+		USE_GEOS=0
+	else
 		if test "$with_geos" != "yes"; then
 			if ! test -e "$with_geos"; then
 	AC_MSG_ERROR([ARG of --with-geos is not an (executable) file]);
@@ -69,13 +76,8 @@ AC_ARG_WITH(geos,
 		fi
 	fi
 )
+
 if test $USE_GEOS -gt 0; then
-	if test -z "$GEOSCONFIG"; then
-		AC_PATH_PROG([GEOSCONFIG], [geos-config])
-		if test -z "$GEOSCONFIG"; then
-			AC_MSG_ERROR([Can't find geos-config]);
-		fi
-	fi
 	GEOS_DIR=`$GEOSCONFIG --prefix`
 fi
 
