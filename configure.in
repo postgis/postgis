@@ -240,11 +240,11 @@ DLFLAGS=-shared
 EXE=
 case $host_os in
 	*mingw*)
-		PGBEINCLUDES="$PGBEINCLUDES $PGBEINCLUDES/port/win32
-		PGFELIBS="$PGFELIBS $PGFELIBS/libpq.dll
+		PGBEINCLUDES="$PGBEINCLUDES $PGBEINCLUDES/port/win32"
+		PGFELIBS="$PGFELIBS $PGFELIBS/libpq.dll"
 		DLSUFFIX=.dll
 		DLFLAGS=
-		EXE = .exe
+		EXE=.exe
 		;;
 esac
 
