@@ -14,7 +14,7 @@ endif
 #
 NAME=lwgeom
 
-ifeq ($(findstring MINGW,$(HOST_OS)),MINGW)
+ifeq ($(findstring mingw,$(HOST_OS)),mingw)
 SHLIB = lib$(NAME).$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION)$(DLSUFFIX)
 else
 SHLIB = lib$(NAME)$(DLSUFFIX).$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION)
@@ -94,7 +94,7 @@ OTHERS=y.output lwpostgis.sql ../lwpostgis.sql postgis_geos_version.h
 all: $(GEOS_RULES) $(SHLIB) ../lwpostgis.sql
 
 $(SHLIB): $(OBJS)
-ifeq ($(findstring MINGW,$(HOST_OS)),MINGW)
+ifeq ($(findstring mingw,$(HOST_OS)),mingw)
 	dlltool --export-all  --output-def lwgeom.def $(OBJS)
 	dllwrap  -o $@ --dllname $@ --def lwgeom.def $(OBJS) $(SHLIB_LINK) $(PGBELIBS)
 	dlltool --dllname $@  --def lwgeom.def --output-lib liblwgeom.a
