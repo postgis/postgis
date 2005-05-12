@@ -189,6 +189,7 @@ XSLBASE=
 SEARCHPATH="
 	/usr/share/sgml/docbook/xsl-stylesheets 
 	/usr/share/xml/docbook/stylesheet/nwalsh
+	/usr/share/sgml/docbook/stylesheet/xsl/nwalsh
 "
 for p in ${SEARCHPATH}; do
 	if test -r ${p}/html/docbook.xsl; then
@@ -241,7 +242,7 @@ EXE=
 case $host_os in
 	*mingw*)
 		PGBEINCLUDES="$PGBEINCLUDES $PGBEINCLUDES/port/win32"
-		PGFELIBS="$PGFELIBS $PGFELIBS/libpq.dll"
+		PGFELIBS="$(echo $(${PGCONFIG} --libdir))/libpq.dll"
 		DLSUFFIX=.dll
 		DLFLAGS=
 		EXE=.exe
