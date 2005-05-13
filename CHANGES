@@ -1,4 +1,5 @@
 PostGIS 1.1.0CVS
+	- New -k switch for pgsql2shp
 	- jdbc2 works:
 	  + Makefile improvements
 	  + JTS support improvements

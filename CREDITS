@@ -47,5 +47,8 @@ Version 1.0.0 of PostGIS includes code from:
         operators, join estimator and general testing and support.
   Markus Schaber <markus@schabi.de> author of the jdbc2 interface
 
+Version 1.1.0 of PostGIS includes patches from:
+  Obe, Regina <robe.dnd@cityofboston.gov> with -k switch for pgsql2shp.
+
 See the postgis manual for more contributors.
 
