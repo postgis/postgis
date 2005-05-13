@@ -73,6 +73,7 @@ int dswitchprovided;
 int includegid;
 int unescapedattrs;
 int binary;
+int keep_fieldname_case;
 SHPObject * (*shape_creator)(byte *, int);
 int big_endian = 0;
 int pgis_major_version;
@@ -166,6 +167,7 @@ main(int ARGC, char **ARGV)
 	includegid=0;
 	unescapedattrs=0;
 	binary = 0;
+	keep_fieldname_case = 0;
 #ifdef DEBUG
 	FILE *debug;
 #endif
@@ -2272,7 +2274,8 @@ usage(int status)
 	printf("  -b Use a binary cursor.\n");
 	printf("  -r Raw mode. Do not assume table has been created by \n");
 	printf("     the loader. This would not unescape attribute names\n");
-	printf("     and will not skip the 'gid' attribute.");
+	printf("     and will not skip the 'gid' attribute.\n");
+	printf("  -k Keep postgresql identifiers case.\n");
        	printf("\n");
        	exit (status);
 }
@@ -2287,50 +2290,52 @@ parse_commandline(int ARGC, char **ARGV)
 	buf[1023] = '\0'; // just in case...
 
 	/* Parse command line */
-        while ((c = getopt(ARGC, ARGV, "bf:h:du:p:P:g:r")) != EOF){
-               switch (c) {
-               case 'b':
-                    binary = 1;
-                    break;
-               case 'f':
-                    shp_file = optarg;
-                    break;
-               case 'h':
-        	    //setenv("PGHOST", optarg, 1);
-		    snprintf(buf, 255, "PGHOST=%s", optarg);
-		    putenv(strdup(buf));
-                    break;
-               case 'd':
-                    dswitchprovided = 1;
-		    outtype = 'z';
-                    break;		  
-               case 'r':
-	            includegid = 1;
-		    unescapedattrs = 1;
-                    break;		  
-               case 'u':
-		    //setenv("PGUSER", optarg, 1);
-		    snprintf(buf, 255, "PGUSER=%s", optarg);
-		    putenv(strdup(buf));
-                    break;
-               case 'p':
-		    //setenv("PGPORT", optarg, 1);
-		    snprintf(buf, 255, "PGPORT=%s", optarg);
-		    putenv(strdup(buf));
-                    break;
-	       case 'P':
-		    //setenv("PGPASSWORD", optarg, 1);
-		    snprintf(buf, 255, "PGPASSWORD=%s", optarg);
-		    putenv(strdup(buf));
-		    break;
-	       case 'g':
-		    geo_col_name = optarg;
-		    break;
-               case '?':
-                    return 0;
-               default:
-		    return 0;
-               }
+        while ((c = getopt(ARGC, ARGV, "bf:h:du:p:P:g:rk")) != EOF){
+		switch (c) {
+			case 'b':
+				binary = 1;
+				break;
+			case 'f':
+				shp_file = optarg;
+				break;
+			case 'h':
+				//setenv("PGHOST", optarg, 1);
+				snprintf(buf, 255, "PGHOST=%s", optarg);
+				putenv(strdup(buf));
+				break;
+			case 'd':
+				dswitchprovided = 1;
+				outtype = 'z';
+				break;		  
+			case 'r':
+				includegid = 1;
+				unescapedattrs = 1;
+				break;		  
+			case 'u':
+				//setenv("PGUSER", optarg, 1);
+				snprintf(buf, 255, "PGUSER=%s", optarg);
+				putenv(strdup(buf));
+				break;
+			case 'p':
+				//setenv("PGPORT", optarg, 1);
+				snprintf(buf, 255, "PGPORT=%s", optarg);
+				putenv(strdup(buf));
+				break;
+			case 'P':
+				//setenv("PGPASSWORD", optarg, 1);
+				snprintf(buf, 255, "PGPASSWORD=%s", optarg);
+				putenv(strdup(buf));
+				break;
+			case 'g':
+				geo_col_name = optarg;
+				break;
+			case 'k':
+				keep_fieldname_case = 1;
+				break;
+			case '?':
+			default:
+				return 0;
+		}
         }
 
         curindex=0;
@@ -2547,16 +2552,21 @@ initialize(void)
 		}
 
 
-		/* make UPPERCASE */
-		for(j=0; j < strlen(field_name); j++)
-			field_name[j] = toupper(field_name[j]);
+		/* make UPPERCASE if keep_fieldname_case = 0 */
+		if (keep_fieldname_case == 0)
+			for(j=0; j<strlen(field_name); j++)
+				field_name[j] = toupper(field_name[j]);
 
 		/* 
 		 * make sure the fields all have unique names,
 		 * 10-digit limit on dbf names...
 		 */
-		for(j=0;j<i;j++)
+		for(j=0; j<i; j++)
 		{
+			/*
+			 * TODO: check out if should be case-insensitive
+			 * here since we might be running in -k mode
+			 */
 			if(strncmp(field_name, PQgetvalue(res, j, 0),10) == 0)
 			{
 		printf("\nWarning: Field '%s' has first 10 characters which "
@@ -2632,7 +2642,7 @@ initialize(void)
 //printf( "FIELD_NAME: %s, SIZE: %d\n", field_name, size);
 		
 		/* generic type (use string representation) */
-		if(DBFAddField(dbf, field_name,FTString,size,0) == -1)
+		if(DBFAddField(dbf, field_name, FTString, size, 0) == -1)
 		{
 			printf( "error - Field could not "
 					"be created.\n");
@@ -3117,6 +3127,9 @@ create_usrquerytable(void)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.75  2005/05/13 14:06:24  strk
+ * Applied patch from Obe, Regina to keep identifiers case.
+ *
  * Revision 1.74  2005/03/25 18:43:07  strk
  * Fixed PQunescapeBytearea argument (might give problems on 64bit archs)
  *
