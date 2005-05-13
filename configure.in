@@ -46,12 +46,14 @@ AC_SUBST(PGFEINCLUDES)
 AC_SUBST(PGBEINCLUDES)
 AC_SUBST(PGFELIBS)
 AC_SUBST(PGBELIBS)
+AC_SUBST(PGBIN)
 AC_SUBST(MODULE_INSTALLDIR)
 AC_SUBST(LPATH)
 PGFEINCLUDES="-I`${PGCONFIG} --includedir`"
 PGFELIBS="-L`${PGCONFIG} --libdir` -lpq"
 PGBELIBS="-L$( echo $(${PGCONFIG} --libdir)) -lpostgres"
 PGBEINCLUDES="-I`${PGCONFIG} --includedir-server`"
+PGBIN="$(${PGCONFIG} --bindir)"
 
 dnl
 dnl Test for GEOS
@@ -246,6 +248,9 @@ case $host_os in
 		DLSUFFIX=.dll
 		DLFLAGS=
 		EXE=.exe
+		;;
+	*darwin*)
+		DLFLAGS="-no-cpp-precomp -flat_namespace -undefined suppress -multiply_defined suppress"
 		;;
 esac
 

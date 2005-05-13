@@ -79,7 +79,7 @@ override CXXFLAGS := $(CFLAGS)
 ifeq ($(USE_STATS),1)
 	override CFLAGS += -DUSE_STATS
 endif
- 
+
 SA_OBJS=measures.o box2d.o ptarray.o lwgeom_api.o lwgeom.o lwpoint.o lwline.o lwpoly.o lwmpoint.o lwmline.o lwmpoly.o lwcollection.o $(GEOS_WRAPPER) $(JTS_WRAPPER) wktunparse.o lwgparse.o wktparse.tab.o lex.yy.o vsprintf.o
 
 OBJS=$(SA_OBJS) liblwgeom.o lwgeom_pg.o lwgeom_debug.o lwgeom_spheroid.o lwgeom_ogc.o lwgeom_functions_analytic.o $(JTS_OBJ) lwgeom_inout.o lwgeom_estimate.o lwgeom_functions_basic.o lwgeom_gist.o lwgeom_btree.o lwgeom_transform.o stringBuffer.o lwgeom_box.o lwgeom_box3d.o lwgeom_box2dfloat4.o lwgeom_chip.o lwgeom_svg.o lwgeom_gml.o lwgeom_triggers.o lwgeom_dump.o
@@ -99,8 +99,13 @@ ifeq ($(findstring mingw,$(HOST_OS)),mingw)
 	dllwrap  -o $@ --dllname $@ --def lwgeom.def $(OBJS) $(SHLIB_LINK) $(PGBELIBS)
 	dlltool --dllname $@  --def lwgeom.def --output-lib liblwgeom.a
 else
-	$(CC) $(SHLIB_LINK) -o $(SHLIB) $(OBJS)
+ifeq ($(findstring darwin,$(HOST_OS)),darwin)
+	$(CC) $(SHLIB_LINK) -o $(SHLIB) -bundle $(OBJS) -bundle_loader $(PGBIN)/postgres
+else
+	$(CC) $(SHLIB_LINK) -o $(SHLIB) $(OBJS) 
 endif
+endif
+
 
 wktparse.tab.c: wktparse.y
 	$(YACC) -vd -p lwg_parse_yy wktparse.y
