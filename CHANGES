@@ -1,5 +1,4 @@
 PostGIS 1.1.0CVS
-	- New -k switch for pgsql2shp
 	- jdbc2 works:
 	  + Makefile improvements
 	  + JTS support improvements
@@ -17,6 +16,8 @@ PostGIS 1.0.1
 	- documentation fixes
 	- BUGFIX in join selectivity estimator returning invalid estimates (>1)
 	- jdbc2: compile with "-target 1.2 -source 1.2" by default
+	- NEW support for custom createdb options in postgis_restore.pl
+	- NEW -k switch for pgsql2shp
 
 PostGIS 1.0.0
 2005/04/19
