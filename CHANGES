@@ -6,6 +6,8 @@ PostGIS 1.0.1
 	- documentation fixes
 	- BUGFIX in join selectivity estimator returning invalid estimates (>1)
 	- jdbc2: compile with "-target 1.2 -source 1.2" by default
+	- NEW -k switch for pgsql2shp
+	- NEW support for custom createdb options in postgis_restore.pl
 
 PostGIS 1.0.0
 2005/04/19
