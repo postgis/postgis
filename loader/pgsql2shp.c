@@ -2370,7 +2370,6 @@ get_postgis_major_version(void)
 		exit(1);
 	}
 
-	res = PQexec(conn, query);
 	version = PQgetvalue(res, 0, 0);
 	ver = atoi(version);
 	PQclear(res);
@@ -2395,6 +2394,8 @@ initialize(void)
 	int mainscan_nflds=0;
 	int size;
 	int gidfound=0;
+	char *dbf_flds[256];
+	int dbf_nfields=0;
 
 	/* Detect postgis version */
 	pgis_major_version = get_postgis_major_version();
@@ -2504,7 +2505,7 @@ initialize(void)
 			 * This is exactly the geometry privided
 			 * by the user.
 			 */
-			else if (!strcmp(geo_col_name,fname))
+			else if (!strcmp(geo_col_name, fname))
 			{
 				geom_fld = mainscan_nflds;
 				type_ary[mainscan_nflds]=9; 
@@ -2538,46 +2539,37 @@ initialize(void)
 		 * becomes __xmin when escaped
 		 */
 
+		/* Limit dbf field name to 10-digits */
+		strncpy(field_name, ptr, 10);
+		field_name[10] = 0;
 
-		if(strlen(ptr) <32) strcpy(field_name, ptr);
-		else
+		/* 
+		 * make sure the fields all have unique names,
+		 */
+		tmpint=1;
+		for(j=0; j<dbf_nfields; j++)
 		{
-			/*
-			 * TODO: you find an appropriate name if
-			 * running in RAW mode
-			 */
-			printf("dbf attribute name %s is too long, must be "
-				"less than 32 characters.\n", ptr);
-			return 0;
+			if(!strncasecmp(field_name, dbf_flds[j], 10))
+			{
+				sprintf(field_name,"%.7s_%.2d",
+					ptr,
+					tmpint++);
+				j=-1; continue;
+			}
 		}
-
 
 		/* make UPPERCASE if keep_fieldname_case = 0 */
 		if (keep_fieldname_case == 0)
 			for(j=0; j<strlen(field_name); j++)
 				field_name[j] = toupper(field_name[j]);
 
-		/* 
-		 * make sure the fields all have unique names,
-		 * 10-digit limit on dbf names...
-		 */
-		for(j=0; j<i; j++)
-		{
-			/*
-			 * TODO: check out if should be case-insensitive
-			 * here since we might be running in -k mode
-			 */
-			if(strncmp(field_name, PQgetvalue(res, j, 0),10) == 0)
-			{
-		printf("\nWarning: Field '%s' has first 10 characters which "
-			"duplicate a previous field name's.\n"
-			"Renaming it to be: '",field_name);
-				strncpy(field_name,field_name,9);
-				field_name[9] = 0;
-				sprintf(field_name,"%s%d",field_name,i);
-				printf("%s'\n\n",field_name);
-			}
+		if ( strcasecmp(fname, field_name) ) {
+			fprintf(stderr, "Warning, field %s renamed to %s\n",
+				fname, field_name);
 		}
+
+		//fprintf(stderr, "DBFfield: %s\n", field_name);
+		dbf_flds[dbf_nfields++] = strdup(field_name);
 
 		/*
 		 * Find appropriate type of dbf attributes
@@ -2586,7 +2578,7 @@ initialize(void)
 		/* integer type */
 		if(type == 20 || type == 21 || type == 23)
 		{
-			if(DBFAddField(dbf, field_name,FTInteger,16,0) == -1)
+			if(DBFAddField(dbf, field_name, FTInteger,16,0) == -1)
 			{
 				printf( "error - Field could not "
 					"be created.\n");
@@ -2651,6 +2643,9 @@ initialize(void)
 		type_ary[mainscan_nflds]=3;
 		mainscan_flds[mainscan_nflds++] = fname;
 	}
+
+	/* Release dbf field memory */
+	for (i=0; i<dbf_nfields; i++) free(dbf_flds[i]);
 
 	/*
 	 * If no geometry has been found
@@ -3127,6 +3122,10 @@ create_usrquerytable(void)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.76  2005/05/16 17:22:43  strk
+ * Fixed DBF field names handling as for clashes avoiding.
+ * pgsql field renames are warned.
+ *
  * Revision 1.75  2005/05/13 14:06:24  strk
  * Applied patch from Obe, Regina to keep identifiers case.
  *
