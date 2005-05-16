@@ -40,7 +40,7 @@
 eval "exec perl -w $0 $@"
 	if (0);
 
-(@ARGV == 3) || die "Usage: postgis_restore.pl <postgis.sql> <db> <dump>\nRestore a custom dump (pg_dump -Fc) of a postgis enabled database.\n";
+(@ARGV >= 3) || die "Usage: postgis_restore.pl <postgis.sql> <db> <dump> [<createdb_options>]\nRestore a custom dump (pg_dump -Fc) of a postgis enabled database.\n";
 
 $DEBUG=1;
 
@@ -98,15 +98,19 @@ my %obsoleted_function = (
 	'unite_finalfunc', 1
 );
 
-my $postgissql = $ARGV[0];
-my $dbname = $ARGV[1];
-my $dump = $ARGV[2];
+my $postgissql = $ARGV[0]; shift(@ARGV);
+my $dbname = $ARGV[0]; shift(@ARGV);
+my $dump = $ARGV[0]; shift(@ARGV);
+my $createdb_opt = '';
 my $dumplist=$dump.".list";
 my $dumpascii=$dump.".ascii";
+
+$createdb_opt = join(' ', @ARGV) if @ARGV;
 
 print "postgis.sql is $postgissql\n";
 print "dbname is $dbname\n";
 print "dumpfile is $dump\n";
+print "database creation options: $createdb_opt\n" if $createdb_opt;
 
 #
 # Scan postgis.sql
@@ -595,8 +599,8 @@ close(OUTPUT);
 # Create the new db and install plpgsql language
 #
 print "Creating db ($dbname)\n";
-`createdb $dbname`;
-die "Can't restore in an existing database\n" if ($?);
+`createdb $dbname $createdb_opt`;
+die "Database creation failed\n" if ($?);
 print "Adding plpgsql\n";
 `createlang plpgsql $dbname`;
 
