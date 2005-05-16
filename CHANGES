@@ -18,6 +18,7 @@ PostGIS 1.0.1
 	- jdbc2: compile with "-target 1.2 -source 1.2" by default
 	- NEW support for custom createdb options in postgis_restore.pl
 	- NEW -k switch for pgsql2shp
+	- BUGFIX in pgsql2shp attribute names unicity enforcement
 
 PostGIS 1.0.0
 2005/04/19
