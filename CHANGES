@@ -9,6 +9,7 @@ PostGIS 1.0.1
 	- NEW -k switch for pgsql2shp
 	- NEW support for custom createdb options in postgis_restore.pl
 	- BUGFIX in pgsql2shp attribute names unicity enforcement
+	- BUGFIX in Paris projections definitions
 
 PostGIS 1.0.0
 2005/04/19
