@@ -2755,7 +2755,7 @@ dimension(the_geom)>2" skips re-writing of geometries that already are in 2D.
           </varlistentry>
 
           <varlistentry>
-            <term>SetSRID(geometry)</term>
+            <term>SetSRID(geometry, integer)</term>
 
             <listitem>
               <para>Set the SRID on a geometry to a particular integer value.
