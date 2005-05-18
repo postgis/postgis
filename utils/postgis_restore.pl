@@ -36,13 +36,14 @@
 #	pg_dump-743/pg743 => pg_restore-800/pg800
 #	pg_dump-800/pg800 => pg_restore-800/pg800
 #
-
 eval "exec perl -w $0 $@"
 	if (0);
 
+use strict;
+
 (@ARGV >= 3) || die "Usage: postgis_restore.pl <postgis.sql> <db> <dump> [<createdb_options>]\nRestore a custom dump (pg_dump -Fc) of a postgis enabled database.\n";
 
-$DEBUG=1;
+my $DEBUG=1;
 
 my %aggs = ();
 my %fncasts = ();
@@ -131,7 +132,7 @@ while( my $line = <INPUT>)
 		my $geomfound = 0;
 		for (my $i=0; $i<@args; $i++)
 		{
-			$arg = lc($args[$i]);
+			my $arg = lc($args[$i]);
 			#print "ARG1: [$arg]\n";
 			$arg =~ s/^ *//;
 			$arg =~ s/ *$//;
@@ -166,7 +167,7 @@ while( my $line = <INPUT>)
 		{
 			for (my $i=0; $i<@args; $i++)
 			{
-				$arg = $args[$i];
+				my $arg = $args[$i];
 				$arg = 'geometry' if ($arg eq 'oldgeometry');
 				$args[$i] = $arg;
 			}
@@ -346,7 +347,7 @@ while( my $line = <INPUT> )
 		my $wkbinvolved = 0;
 		for (my $i=0; $i<@args; $i++)
 		{
-			$arg = lc($args[$i]);
+			my $arg = lc($args[$i]);
 			$arg =~ s/^ *//;
 			$arg =~ s/ *$//;
 			$arg =~ s/^public.//;
@@ -358,7 +359,7 @@ while( my $line = <INPUT> )
 			$wkbinvolved++ if ( $arg eq 'wkb' );
 		}
 
-		$args = join(', ', @args);
+		my $args = join(', ', @args);
 		#print "ARGS SCALAR: [$args]\n";
 		my $id = $funcname."(".$args.")";
 		#print "ID: [$id]\n";
@@ -396,7 +397,7 @@ while( my $line = <INPUT> )
 		my @args = split(",", $3);
 		for (my $i=0; $i<@args; $i++)
 		{
-			$arg = lc($args[$i]);
+			my $arg = lc($args[$i]);
 			$arg =~ s/^ *//;
 			$arg =~ s/ *$//;
 			$arg =~ s/^public.//;
@@ -406,7 +407,7 @@ while( my $line = <INPUT> )
 			}
 			$args[$i] = $arg;
 		}
-		$args = join(', ', @args);
+		my $args = join(', ', @args);
 		my $id = $name."(".$args.")";
 		if ( $aggs{$id} )
 		{

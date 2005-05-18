@@ -20,6 +20,7 @@ PostGIS 1.0.1
 	- NEW -k switch for pgsql2shp
 	- BUGFIX in pgsql2shp attribute names unicity enforcement
 	- BUGFIX in Paris projections definitions
+	- postgis_restore.pl cleanups
 
 PostGIS 1.0.0
 2005/04/19
