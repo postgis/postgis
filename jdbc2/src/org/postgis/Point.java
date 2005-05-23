@@ -47,15 +47,16 @@ public class Point extends Geometry {
 
     protected boolean equalsintern(Geometry otherg) {
         Point other = (Point) otherg;
-        boolean xequals = x == other.x;
-        boolean zequals = ((dimension == 2) || (z == other.z));
-        boolean mequals = ((haveMeasure == false) || (m == other.m));
-        boolean result = xequals && yequals(other) && zequals && mequals;
-        return result;
+        return equals(other);
     }
 
-    private boolean yequals(Point other) {
-        return y == other.y;
+    public final boolean equals(Point other) {
+        boolean xequals = x == other.x;
+        boolean yequals = y == other.y;
+        boolean zequals = ((dimension == 2) || (z == other.z));
+        boolean mequals = ((haveMeasure == false) || (m == other.m));
+        boolean result = xequals && yequals && zequals && mequals;
+        return result;
     }
 
     public Point getPoint(int index) {
