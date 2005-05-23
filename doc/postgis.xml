@@ -4662,6 +4662,49 @@ FROM geometry_table;</literallayout>
 		<title>Release Notes</title>
 
     		<sect1>
+			<title>Release 1.0.1</title>
+			<para>Release date: 2005/??/??</para>
+
+			<para>
+			Contains a few bug fixes and some improvements.
+			</para>
+
+			<sect2>
+				<title>Upgrading</title>
+
+				<para>If you are upgrading from
+				release 1.0.0RC6 or up you <emphasis>DO
+				NOT</emphasis> need a dump/reload.</para>
+
+				<para>Upgrading from older releases
+				requires a dump/reload. 
+				See the <link
+				linkend="upgrading">upgrading</link>
+				chapter for more informations.</para>
+			</sect2>
+
+			<sect2>
+				<title>Library changes</title>
+	<para>BUGFIX in 3d computation of lenght_spheroid()</para>
+	<para>BUGFIX in join selectivity estimator</para>
+			</sect2>
+
+			<sect2>
+				<title>Other changes/additions</title>
+	<para>BUGFIX in shp2pgql escape functions</para>
+	<para>better support for concurrent postgis in multiple schemas</para>
+	<para>documentation fixes</para>
+	<para>jdbc2: compile with "-target 1.2 -source 1.2" by default</para>
+	<para>NEW -k switch for pgsql2shp</para>
+	<para>NEW support for custom createdb options in postgis_restore.pl</para>
+	<para>BUGFIX in pgsql2shp attribute names unicity enforcement</para>
+	<para>BUGFIX in Paris projections definitions</para>
+	<para>postgis_restore.pl cleanups</para>
+			</sect2>
+
+		</sect1>
+
+    		<sect1>
 			<title>Release 1.0.0</title>
 			<para>Release date: 2005/04/19</para>
 
