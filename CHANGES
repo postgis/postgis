@@ -9,7 +9,7 @@ PostGIS 1.1.0CVS
 	- full autoconf-based configuration
 
 PostGIS 1.0.1
-?????
+2005/05/24
 	- BUGFIX in shp2pgql escape functions
 	- BUGFIX in 3d computation of lenght_spheroid
 	- better support for concurrent postgis in multiple schemas
