@@ -1,5 +1,5 @@
 /*
- * Test.java
+ * JtsTestParser.java
  * 
  * PostGIS extension for PostgreSQL JDBC driver - example and test classes
  * 
