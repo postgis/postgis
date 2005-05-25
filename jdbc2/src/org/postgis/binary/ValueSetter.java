@@ -69,6 +69,11 @@ public abstract class ValueSetter {
         setLong(bitrep);
     }
 
+    public String toString() {
+        String[] buff = getClass().getName().split("\\.");
+        return buff[buff.length-1]+"('"+(data==null?"NULL":data.toString()+"')");
+    }
+    
     public static class XDR extends ValueSetter {
         public static final byte NUMBER = 0;
 

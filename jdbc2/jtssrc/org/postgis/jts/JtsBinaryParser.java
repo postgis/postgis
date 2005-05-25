@@ -58,7 +58,7 @@ import org.postgis.binary.ByteGetter.StringByteGetter;
  *  
  */
 public class JtsBinaryParser {
-    final static GeometryFactory geofac = new GeometryFactory();
+    protected final GeometryFactory geofac = new GeometryFactory();
 
     /**
      * Get the appropriate ValueGetter for my endianness
@@ -118,6 +118,7 @@ public class JtsBinaryParser {
         if (haveS) {
             srid = data.getInt();
         }
+        
         Geometry result1;
         switch (realtype) {
         case org.postgis.Geometry.POINT :

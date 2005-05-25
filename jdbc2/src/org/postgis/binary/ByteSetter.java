@@ -46,6 +46,14 @@ public abstract class ByteSetter {
         public byte[] result() {
             return array;
         }
+        
+        public String toString() {
+            char[] arr = new char[array.length];
+            for (int i=0; i<array.length; i++) {
+                arr[i] = (char)(array[i]&0xFF);
+            }
+            return new String(arr);
+        }
     }
 
     public static class StringByteSetter extends ByteSetter {
@@ -67,6 +75,10 @@ public abstract class ByteSetter {
         }
 
         public String result() {
+            return new String(rep);
+        }
+        
+        public String toString() {
             return new String(rep);
         }
     }

@@ -40,7 +40,7 @@ import java.util.Properties;
  * This method currently works with J2EE DataSource implementations, and with
  * DriverManager framework.
  * 
- * Simply replace the "jdbc:postgresql:" with a "jdbc:postgresql_postGIS" in the
+ * Simply replace the "jdbc:postgresql:" with a "jdbc:postgresql_JTS" in the
  * jdbc URL.
  * 
  * @author markus.schaber@logix-tt.com

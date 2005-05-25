@@ -38,7 +38,7 @@ import org.postgis.binary.ValueSetter;
 
 /**
  * Create binary representation of geometries. Currently, only text rep (hexed)
- * implementation is tested.
+ * implementation is tested. Supports only 2 dimensional geometries.
  * 
  * It should be easy to add char[] and CharSequence ByteGetter instances,
  * although the latter one is not compatible with older jdks.
@@ -114,29 +114,29 @@ public class JtsBinaryWriter {
 
     /** Parse a geometry starting at offset. */
     protected void writeGeometry(Geometry geom, ValueSetter dest) {
-        if (geom.getDimension() < 2 || geom.getDimension() > 4) {
-            throw new IllegalArgumentException("Unsupported geometry dimensionality: "
-                    + geom.getDimension());
+        final int dimension = getCoordDim(geom);
+        if (dimension < 2 || dimension > 4) {
+            throw new IllegalArgumentException("Unsupported geometry dimensionality: " + dimension);
         }
         // write endian flag
         dest.setByte(dest.endian);
 
         // write typeword
-        int plaintype = getWKBType(geom);
+        final int plaintype = getWKBType(geom);
         int typeword = plaintype;
-        if (geom.getDimension() == 3 || geom.getDimension() == 4) {
-            typeword &= 0x80000000;
+        if (dimension == 3 || dimension == 4) {
+            typeword |= 0x80000000;
         }
-        if (geom.getDimension() == 4) {
-            typeword &= 0x40000000;
+        if (dimension == 4) {
+            typeword |= 0x40000000;
         }
-        if (geom.getSRID() != -1) {
-            typeword &= 0x20000000;
+        if (checkSrid(geom)) {
+            typeword |= 0x20000000;
         }
 
         dest.setInt(typeword);
 
-        if (geom.getSRID() != -1) {
+        if (checkSrid(geom)) {
             dest.setInt(geom.getSRID());
         }
 
@@ -193,7 +193,7 @@ public class JtsBinaryWriter {
      * ordinates and measure. Used by writeGeometry.
      */
     private void writePoint(Point geom, ValueSetter dest) {
-        writeCoordinates(geom.getCoordinateSequence(), geom.getDimension(), dest);
+        writeCoordinates(geom.getCoordinateSequence(), getCoordDim(geom), dest);
     }
 
     /**
@@ -219,7 +219,8 @@ public class JtsBinaryWriter {
     }
 
     private void writeLineString(LineString geom, ValueSetter dest) {
-        writeCoordinates(geom.getCoordinateSequence(), geom.getDimension(), dest);
+        dest.setInt(geom.getNumPoints());
+        writeCoordinates(geom.getCoordinateSequence(), getCoordDim(geom), dest);
     }
 
     private void writePolygon(Polygon geom, ValueSetter dest) {
@@ -231,25 +232,24 @@ public class JtsBinaryWriter {
     }
 
     private void writeMultiLineString(MultiLineString geom, ValueSetter dest) {
-        dest.setInt(geom.getNumGeometries());
-        for (int i = 0; i < geom.getNumGeometries(); i++) {
-            writeLineString((LineString) geom.getGeometryN(i), dest);
-        }
+        writeGeometryArray(geom, dest);
     }
 
     private void writeMultiPolygon(MultiPolygon geom, ValueSetter dest) {
-        dest.setInt(geom.getNumGeometries());
-        for (int i = 0; i < geom.getNumGeometries(); i++) {
-            writePolygon((Polygon) geom.getGeometryN(i), dest);
-        }
+        writeGeometryArray(geom, dest);
     }
 
     private void writeCollection(GeometryCollection geom, ValueSetter dest) {
+        writeGeometryArray(geom, dest);
+    }
+    
+    private void writeGeometryArray(Geometry geom, ValueSetter dest) {
         dest.setInt(geom.getNumGeometries());
         for (int i = 0; i < geom.getNumGeometries(); i++) {
             writeGeometry(geom.getGeometryN(i), dest);
         }
     }
+    
 
     /** Estimate how much bytes a geometry will need in WKB. */
     protected int estimateBytes(Geometry geom) {
@@ -261,7 +261,7 @@ public class JtsBinaryWriter {
         // write typeword
         result += 4;
 
-        if (geom.getSRID() != -1) {
+        if (checkSrid(geom)) {
             result += 4;
         }
 
@@ -293,8 +293,15 @@ public class JtsBinaryWriter {
         return result;
     }
 
+    private boolean checkSrid(Geometry geom) {
+        final int srid = geom.getSRID();
+        // SRID is default 0 with jts geometries
+        final boolean result = srid != -1 && srid != 0;
+        return result;
+    }
+
     private int estimatePoint(Point geom) {
-        return 8 * geom.getDimension();
+        return 8*getCoordDim(geom);
     }
 
     /** Write an Array of "full" Geometries */
@@ -338,9 +345,11 @@ public class JtsBinaryWriter {
     }
 
     private int estimateLineString(LineString geom) {
-        return estimatePointArray(geom.getNumGeometries(), (Point) (geom.getNumGeometries() > 0
-                ? geom.getGeometryN(0)
-                : null));
+        if (geom == null || geom.getNumGeometries() == 0) {
+            return 0;
+        } else {
+            return estimatePointArray(geom.getNumPoints(), geom.getStartPoint());
+        }
     }
 
     private int estimatePolygon(Polygon geom) {
@@ -366,5 +375,15 @@ public class JtsBinaryWriter {
     private int estimateCollection(GeometryCollection geom) {
         // 4-byte count + subgeometries
         return 4 + estimateGeometryArray(geom);
+    }
+
+    public static final int getCoordDim(Geometry geom) {
+        // TODO: Fix geometries with more dimensions
+        //geom.getFactory().getCoordinateSequenceFactory()
+        if (geom == null) {
+            return 0;
+        } else {
+            return 2;
+        }
     }
 }

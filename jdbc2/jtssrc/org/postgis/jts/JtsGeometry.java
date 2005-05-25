@@ -33,7 +33,8 @@ import org.postgresql.util.PGobject;
 import java.sql.SQLException;
 
 /**
- * JTS Geometry SQL wrapper
+ * JTS Geometry SQL wrapper. Supports PostGIS 1.x (lwgeom hexwkb) for writing
+ * and both PostGIS 0.x (EWKT) and 1.x (lwgeom hexwkb) for reading.
  * 
  * @author Markus Schaber
  */
@@ -46,6 +47,7 @@ public class JtsGeometry extends PGobject {
 
     final static WKTReader reader = new WKTReader();
     final static JtsBinaryParser bp = new JtsBinaryParser();
+    final static JtsBinaryWriter bw = new JtsBinaryWriter();
 
     /** Constructor called by JDBC drivers */
     public JtsGeometry() {
@@ -99,7 +101,7 @@ public class JtsGeometry extends PGobject {
     }
 
     public String getValue() {
-        return geom.toString();
+        return bw.writeHexed(getGeometry());
     }
 
     public Object clone() {

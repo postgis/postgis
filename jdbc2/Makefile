@@ -133,7 +133,7 @@ VERSIONPATH=$(BUILD)/org/postgis
 VERSIONTARGET=$(VERSIONPATH)/version.properties
 
 # Output redirect for tests
-TESTRD= >>$(TESTOUTPUT) 
+TESTRD?= >>$(TESTOUTPUT) 
 
 # Preliminary jts support - not stable yet!
 JTSDIR=jtssrc
@@ -278,7 +278,7 @@ jtscompile: compile stubcompile $(JTSBUILD) $(SRCCONF) $(JTSSRC)
 	touch jtscompile
 	
 jtstestoffline: jtscompile	
-	$(JAVA) $(EXEC_ADDCP) "$(JTSPATH)" $(EXAMPLES)/JtsTestParser offline
+	$(JAVA) $(EXEC_ADDCP) "$(JTSPATH)" $(EXAMPLES)/JtsTestParser $(TESTRD) offline
 
 jtstest: jtscompile
 	$(JAVA) $(EXEC_ADDCP) "$(JTSPATH)" $(EXAMPLES)/JtsTestParser $(TESTRD) \
