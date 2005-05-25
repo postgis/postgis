@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <errno.h>
+#include <endian.h>
 
 
 #include <libpq-fe.h>
@@ -20,7 +21,7 @@ typedef char bool;
 
 void decode_wkb(char *wkb, int *size);
 
-
+/*
 //we need to know the endian of the client machine.  This is
 // taken from postgres's os.h file 
 
@@ -48,4 +49,4 @@ void decode_wkb(char *wkb, int *size);
 #define          BYTE_ORDER              LITTLE_ENDIAN
 #endif
 #endif
-
+*/
