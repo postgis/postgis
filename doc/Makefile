@@ -69,17 +69,17 @@ maintainer-clean: clean
 	@rm -f html/*.html
 
 install: html/postgis.html man/shp2pgsql.1 man/pgsql2shp.1
-	@mkdir -p $(docdir)
-	@mkdir -p $(mandir)/man1
-	$(INSTALL_DATA) html/postgis.html $(docdir)/postgis.html
-	$(INSTALL_DATA) man/pgsql2shp.1 $(mandir)/man1/pgsql2shp.1
-	$(INSTALL_DATA) man/shp2pgsql.1 $(mandir)/man1/shp2pgsql.1
-	$(INSTALL_DATA) ../README.postgis $(docdir)/README.postgis
+	@mkdir -p $(DESTDIR)$(docdir)
+	@mkdir -p $(DESTDIR)$(mandir)/man1
+	$(INSTALL_DATA) html/postgis.html $(DESTDIR)$(docdir)/postgis.html
+	$(INSTALL_DATA) man/pgsql2shp.1 $(DESTDIR)$(mandir)/man1/pgsql2shp.1
+	$(INSTALL_DATA) man/shp2pgsql.1 $(DESTDIR)$(mandir)/man1/shp2pgsql.1
+	$(INSTALL_DATA) ../README.postgis $(DESTDIR)$(docdir)/README.postgis
 
 uninstall:
-	rm -f $(docdir)/postgis/postgis.html
-	rm -f $(docdir)/postgis/README.postgis
-	rm -f $(mandir)/man1/shp2pgsql.1
-	rm -f $(mandir)/man1/pgsql2shp.1
+	rm -f $(DESTDIR)$(docdir)/postgis/postgis.html
+	rm -f $(DESTDIR)$(docdir)/postgis/README.postgis
+	rm -f $(DESTDIR)$(mandir)/man1/shp2pgsql.1
+	rm -f $(DESTDIR)$(mandir)/man1/pgsql2shp.1
 
 .PHONY: html 

@@ -40,18 +40,6 @@ CP?=cp
 # variable to postgis_debug.fastjar and JAR (above) to fastjar.
 DEBUGJAR?=postgis_debug.jar
 
-# Find our postgresql build directory - needed for "make installdirs" and 
-# "make install" that are used by the debian packaging process. As everything
-# else works without Makefile.global, we don't abort on inclusion failure
-# and use late checking iside those rules instead.
-ifeq (${PGSQL_SRC},)
-	PGSQL_SRC=../../..
-endif
-
-top_builddir:=$(PGSQL_SRC)
-top_makefile:=$(PGSQL_SRC)/src/Makefile.global
--include $(top_makefile)
-
 # Make sure our classpath includes your postgresql.jar. This is somehow
 # difficult because some JREs (e. G. those on debian woody or sablevm) seem
 # to forget their own system classes (aka bootclasspath) as soon as _any_
@@ -128,6 +116,7 @@ DEBUGJARCONTENTS=-C $(SRCDIR) org \
 
 # include version numbers from central repository
 include ../Version.config
+include ../Makefile.config
 VERSION=$(JDBC_MAJOR_VERSION)_$(JDBC_MINOR_VERSION)_$(JDBC_MICRO_VERSION)
 VERSIONPATH=$(BUILD)/org/postgis
 VERSIONTARGET=$(VERSIONPATH)/version.properties
@@ -252,18 +241,12 @@ maintainer-clean: clean
 	$(DELETE) $(SRCCONF)
 
 
-# Install - this needs the successfull inclusion of PostgreSQL top
-# level Makefile (which is mandatory for the C part of PostGIS as well).
 install: jar installdirs
-	@echo Testing for successful inclusion of $(top_makefile)
-	test $(top_makefile)
 	$(INSTALL_DATA) postgis.jar $(DESTDIR)
 	$(INSTALL_DATA) postgis_debug.jar $(DESTDIR)
 
 installdirs:
-	@echo Testing for successful inclusion of $(top_makefile)
-	test $(top_makefile)
-	$(mkinstalldirs) $(DESTDIR)
+	@mkdir -p $(DESTDIR)
 
 # Preliminary JTS support
 

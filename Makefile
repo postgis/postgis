@@ -10,21 +10,22 @@ install: all liblwgeom-install loaderdumper-install docs-install
 
 uninstall: liblwgeom-uninstall loaderdumper-uninstall docs-uninstall
 
-clean: Makefile.config liblwgeom-clean loaderdumper-clean test-clean 
+clean: Makefile.config liblwgeom-clean loaderdumper-clean docs-clean test-clean 
 	rm -f lwpostgis.sql
 
 distclean: clean
 	rm -Rf autom4te.cache
 	rm -f config.log config.cache config.status Makefile.config
 
-maintainer-clean:
+maintainer-clean: Makefile.config
 	@echo '------------------------------------------------------'
 	@echo 'This command is intended for maintainers to use; it'
 	@echo 'deletes files that may need special tools to rebuild.'
 	@echo '------------------------------------------------------'
-	$(MAKE) distclean
+	$(MAKE) -C doc maintainer-clean
 	$(MAKE) -C lwgeom maintainer-clean
 	$(MAKE) -C jdbc2 maintainer-clean
+	$(MAKE) distclean
 	rm -f configure
 
 test: liblwgeom
@@ -34,7 +35,7 @@ test-clean:
 	$(MAKE) -C regress clean
 
 liblwgeom: Makefile.config
-	$(MAKE) -C lwgeom
+	$(MAKE) -C lwgeom all
 
 liblwgeom-clean:
 	$(MAKE) -C lwgeom clean
@@ -59,6 +60,10 @@ loaderdumper-uninstall:
 
 docs: Makefile.config
 	$(MAKE) -C doc 
+
+docs-clean: Makefile.config
+	$(MAKE) -C doc clean
+
 
 docs-install:
 	$(MAKE) -C doc install

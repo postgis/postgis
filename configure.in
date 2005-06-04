@@ -14,12 +14,12 @@ dnl Compilers
 dnl
 AC_PROG_CC
 AC_PROG_CXX
+AC_PROG_LN_S
 
 dnl
 dnl host operating system
 dnl
 AC_CANONICAL_HOST
-host_os=`echo $ac_cv_host | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\3/'`
 
 dnl
 dnl Search for pg_config and setup pgsql stuff
@@ -47,6 +47,7 @@ AC_SUBST(PGBEINCLUDES)
 AC_SUBST(PGFELIBS)
 AC_SUBST(PGBELIBS)
 AC_SUBST(PGBIN)
+AC_SUBST(PGTEMPLATE)
 AC_SUBST(MODULE_INSTALLDIR)
 AC_SUBST(LPATH)
 PGFEINCLUDES="-I`${PGCONFIG} --includedir`"
@@ -54,6 +55,69 @@ PGFELIBS="-L`${PGCONFIG} --libdir` -lpq"
 PGBELIBS="-L$( echo $(${PGCONFIG} --libdir)) -lpostgres"
 PGBEINCLUDES="-I`${PGCONFIG} --includedir-server`"
 PGBIN="$(${PGCONFIG} --bindir)"
+AC_MSG_CHECKING([which template to use])
+
+PGTEMPLATE="$(${PGCONFIG} --configure | \
+             awk 'BEGIN {RS = " "; FS = "=";} \
+		          { \
+			        if (match($1,"--with-template")) \
+					{ \
+						gsub("'\''$", "", $2); \
+						print $2; \
+					} \
+				}' \
+			)"
+template=$PGTEMPLATE
+
+case $host_os in
+     aix*) template=aix ;;
+    beos*) template=beos ;;
+    bsdi*) template=bsdi ;;
+  cygwin*) template=cygwin ;;
+  darwin*) template=darwin ;;
+    dgux*) template=dgux ;;
+ freebsd*) template=freebsd ;;
+    hpux*) template=hpux ;;
+    irix*) template=irix ;;
+ linux*|gnu*|k*bsd*-gnu)
+           template=linux ;;
+   mingw*) template=win32 ;;
+  netbsd*) template=netbsd ;;
+nextstep*) template=nextstep ;;
+ openbsd*) template=openbsd ;;
+     osf*) template=osf ;;
+     qnx*) template=qnx4 ;;
+     sco*) template=sco ;;
+ solaris*) template=solaris ;;
+   sunos*) template=sunos4 ;;
+ sysv4.2*)
+        case $host_vendor in
+          univel) template=univel ;;
+        esac ;;
+   sysv4*) template=svr4 ;;
+   sysv5*) template=unixware ;;
+  ultrix*) template=ultrix4 ;;
+esac
+
+  if test x"$template" = x"" ; then
+    AC_MSG_ERROR([[
+*******************************************************************
+PostgreSQL has apparently not been ported to your platform yet.
+To try a manual configuration, look into the src/template directory
+for a similar platform and use the '--with-template=' option.
+
+Please also contact <pgsql-ports@postgresql.org> to see about
+rectifying this.  Include the above 'checking host system type...'
+line.
+*******************************************************************
+]])
+  fi
+
+AC_MSG_RESULT([$template])
+
+PORTNAME=$template
+AC_SUBST(PORTNAME)
+
 
 dnl
 dnl Test for GEOS
@@ -169,7 +233,7 @@ if test -z "$INSTALL"; then
 fi
 
 AC_SUBST(docdir)
-docdir='${prefix}/doc'
+docdir='${prefix}/share/doc'
 AC_ARG_WITH(docdir,
 [  --with-docdir=DIR       install the documentation in DIR [[PREFIX/doc]]],
 	if test "$with_docdir" = "yes"; then
@@ -216,10 +280,32 @@ if test "${prefix}" = "NONE"; then
  		fi
  	done
  	exec_prefix='${prefix}'
- 	docdir='${prefix}/doc/postgresql/contrib'
+	if test "${docdir}" = ""; then
+ 		docdir="$(${PGCONFIG} --configure | \
+             awk 'BEGIN {RS = " "; FS = "=";} \
+		          { \
+			        if (match($1,"--docdir")) \
+					{ \
+						gsub("'\''$", "", $2); \
+						print $2"/postgresql/contrib"; \
+					} \
+				}' \
+			)"
+	fi
  	datadir='${prefix}/share/postgresql/contrib'
- 	mandir='${prefix}/man'
- 	bindir='${exec_prefix}/bin'
+	if test "${mandir}" = ""; then
+ 		mandir="$(${PGCONFIG} --configure | \
+             awk 'BEGIN {RS = " "; FS = "=";} \
+		          { \
+			        if (match($1,"--mandir")) \
+					{ \
+						gsub("'\''$", "", $2); \
+						print $2; \
+					} \
+				}' \
+			)"
+	fi
+ 	bindir="$(${PGCONFIG} --bindir)"
  	MODULE_INSTALLDIR="`${PGCONFIG} --pkglibdir`"
  	LPATH='\$$libdir'
 else
@@ -237,6 +323,8 @@ AC_SUBST(DLFLAGS)
 AC_SUBST(EXE)
 AC_SUBST(HOST_OS)
 
+#host_os=`echo $ac_cv_host | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\3/'`
+
 HOST_OS=$host_os
 DLSUFFIX=.so
 DLFLAGS=-shared
@@ -253,7 +341,6 @@ case $host_os in
 		DLFLAGS="-no-cpp-precomp -flat_namespace -undefined suppress -multiply_defined suppress"
 		;;
 esac
-
 
 
 
@@ -280,6 +367,7 @@ dnl AC_MSG_RESULT([  FLEX:  path=$FLEX])
 dnl AC_MSG_RESULT([  YACC:  path=$YACC])
 
 AC_MSG_RESULT([  ])
+AC_MSG_RESULT([ PORTNAME: $PORTNAME])
 AC_MSG_RESULT([   PREFIX: $prefix])
 AC_MSG_RESULT([  EPREFIX: $exec_prefix])
 AC_MSG_RESULT([      DOC: $docdir])

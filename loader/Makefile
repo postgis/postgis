@@ -26,14 +26,14 @@ shp2pgsql$(EXE): $(OBJS) shp2pgsql.o
 	$(CC) $(CFLAGS) $(OBJS) shp2pgsql.o $(LDFLAGS) -o $@ 
 
 install: all
-	@mkdir -p $(bindir)
-	$(INSTALL_BIN) pgsql2shp$(EXE) $(bindir)/pgsql2shp$(EXE)
-	$(INSTALL_BIN) shp2pgsql$(EXE) $(bindir)/shp2pgsql$(EXE)
+	@mkdir -p $(DESTDIR)$(bindir)
+	$(INSTALL_BIN) pgsql2shp$(EXE) $(DESTDIR)$(bindir)/pgsql2shp$(EXE)
+	$(INSTALL_BIN) shp2pgsql$(EXE) $(DESTDIR)$(bindir)/shp2pgsql$(EXE)
 
 uninstall:
-	rm -f $(bindir)/pgsql2shp$(EXE)
-	rm -f $(bindir)/shp2pgsql$(EXE)
+	rm -f $(DESTDIR)$(bindir)/pgsql2shp$(EXE)
+	rm -f $(DESTDIR)$(bindir)/shp2pgsql$(EXE)
 
 clean:
-	rm -f $(OBJS) shp2pgsql.o pgsql2shp.o shp2pgsql$(EXE) pgsql2shp$(EXE)
+	rm -f $(OBJS) shp2pgsql.o pgsql2shp.o PQunescapeBytea.o shp2pgsql$(EXE) pgsql2shp$(EXE)
 
