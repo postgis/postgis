@@ -4,9 +4,9 @@
 #
 #-----------------------------------------------------
 
-all: Makefile.config liblwgeom loaderdumper utils docs 
+all: Makefile.config liblwgeom loaderdumper utils 
 
-install: all liblwgeom-install loaderdumper-install docs-install
+install: all liblwgeom-install loaderdumper-install 
 
 uninstall: liblwgeom-uninstall loaderdumper-uninstall docs-uninstall
 
