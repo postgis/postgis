@@ -87,13 +87,13 @@ OBJS=$(SA_OBJS) liblwgeom.o lwgeom_pg.o lwgeom_debug.o lwgeom_spheroid.o lwgeom_
 #OTHERS=y.output lex.yy.c wktparse.tab.c wktparse.tab.h lwpostgis.sql
 OTHERS=y.output lwpostgis.sql ../lwpostgis.sql postgis_geos_version.h
 
+all: $(GEOS_RULES) ../lwpostgis.sql all-shared-lib
+
 enable_shared=yes
 include Makefile.shlib
 
 #---------------------------------------------------------------
 # Makefile targets
-
-all: $(GEOS_RULES) ../lwpostgis.sql all-shared-lib
 
 wktparse.tab.c: wktparse.y
 	$(YACC) -vd -p lwg_parse_yy wktparse.y
