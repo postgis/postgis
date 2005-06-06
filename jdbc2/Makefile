@@ -114,9 +114,13 @@ JARCONTENTS=-C $(BUILD) org \
 DEBUGJARCONTENTS=-C $(SRCDIR) org \
 		-C $(SRCDIR) examples
 
-# include version numbers from central repository
+# include version numbers
 include ../Version.config
-include ../Makefile.config
+
+# include configuration from central repository, only needed for install
+# and installdirs targets, not for building itsself.
+-include ../Makefile.config
+
 VERSION=$(JDBC_MAJOR_VERSION)_$(JDBC_MINOR_VERSION)_$(JDBC_MICRO_VERSION)
 VERSIONPATH=$(BUILD)/org/postgis
 VERSIONTARGET=$(VERSIONPATH)/version.properties
@@ -242,6 +246,8 @@ maintainer-clean: clean
 
 
 install: jar installdirs
+	@echo Testing for successful inclusion of ../Makefile.config
+	test ../Makefile.config
 	$(INSTALL_DATA) postgis.jar $(DESTDIR)
 	$(INSTALL_DATA) postgis_debug.jar $(DESTDIR)
 
