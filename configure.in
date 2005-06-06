@@ -16,6 +16,18 @@ AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_LN_S
 
+
+dnl
+dnl iconv support (might fail in case of non-default iconv installation)
+dnl
+AC_SUBST(USE_ICONV)
+USE_ICONV=
+AC_CHECK_HEADER(iconv.h,
+   USE_ICONV=1,
+   AC_MSG_WARN(utf8 encoding disabled)
+)
+
+
 dnl
 dnl host operating system
 dnl
@@ -56,7 +68,6 @@ PGBELIBS="-L$( echo $(${PGCONFIG} --libdir)) -lpostgres"
 PGBEINCLUDES="-I`${PGCONFIG} --includedir-server`"
 PGBIN="$(${PGCONFIG} --bindir)"
 AC_MSG_CHECKING([which template to use])
-
 PGTEMPLATE="$(${PGCONFIG} --configure | \
              awk 'BEGIN {RS = " "; FS = "=";} \
 		          { \

@@ -64,7 +64,7 @@ AUTOCACHE_BBOX=1
 # Set USE_ICONV to 1 if you want the loader (shp2pgsql)
 # to support UTF-8 output.
 #
-USE_ICONV=0
+USE_ICONV=@USE_ICONV@
 
 #
 # PGSQL
