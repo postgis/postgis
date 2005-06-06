@@ -870,16 +870,19 @@ CREATEFUNCTION translate(geometry,float8,float8)
 	AS ' SELECT translate($1, $2, $3, 0) '
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.1.0CVS
 CREATEFUNCTION scale(geometry,float8,float8,float8)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_scale'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict) ;
 
+-- Availability: 1.1.0CVS
 CREATEFUNCTION scale(geometry,float8,float8)
 	RETURNS geometry
 	AS ' SELECT scale($1, $2, $3, 1) '
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.1.0CVS
 CREATEFUNCTION transscale(geometry,float8,float8,float8,float8)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_transscale'
