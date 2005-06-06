@@ -4410,7 +4410,27 @@ FROM geometry_table;</literallayout>
 
           <listitem>
             <para>Translates the geometry to a new location using the numeric
-            parameters as offsets. Ie: translate(geom,X,Y,Z).</para>
+            parameters as offsets. Ie: translate(geom, X, Y, Z).</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>scale(geometry,float8,float8,float8)</term>
+
+          <listitem>
+            <para>scales the geometry to a new size by multiplying the
+            ordinates with the parameters. Ie: scale(geom, Xfactor, Yfactor, Zfactor).</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>transscale(geometry,float8,float8,float8,float8)</term>
+
+          <listitem>
+            <para>First, translates the geometry using the first two floats, then scales it 
+	        using the second two floats, working in 2D only. Using 
+		transscale(geom, X, Y, XFactor, YFactor) effectively is an efficient shortcut 
+		for scale(translate(geom,X,Y,0),Xfactor,YFactor,1).</para>
           </listitem>
         </varlistentry>
 

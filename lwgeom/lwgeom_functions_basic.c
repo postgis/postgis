@@ -34,6 +34,8 @@ Datum LWGEOM_perimeter_poly(PG_FUNCTION_ARGS);
 Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_maxdistance2d_linestring(PG_FUNCTION_ARGS);
 Datum LWGEOM_translate(PG_FUNCTION_ARGS);
+Datum LWGEOM_scale(PG_FUNCTION_ARGS);
+Datum LWGEOM_transscale(PG_FUNCTION_ARGS);
 Datum LWGEOM_inside_circle_point(PG_FUNCTION_ARGS);
 Datum LWGEOM_collect(PG_FUNCTION_ARGS);
 Datum LWGEOM_accum(PG_FUNCTION_ARGS);
@@ -166,6 +168,192 @@ lwgeom_translate_recursive(uchar *serialized,
 			elog(ERROR, "lwgeom_getsubgeometry_inspected returned NULL??");
 		}
 		lwgeom_translate_recursive(subgeom, xoff, yoff, zoff);
+	}
+
+	pfree_inspected(inspected);
+}
+
+/*
+ * Scale a pointarray.
+ */
+void
+lwgeom_scale_ptarray(POINTARRAY *pa, double xfac, double yfac, double zfac)
+{
+	int i;
+	POINT3DZ p3d;
+	POINT2D p2d;
+
+	if ( TYPE_HASZ(pa->dims) )
+	{
+		for (i=0; i<pa->npoints; i++) {
+			getPoint3dz_p(pa, i, &p3d);
+			p3d.x *= xfac;
+			p3d.y *= yfac;
+			p3d.z *= zfac;
+			memcpy(getPoint_internal(pa, i), &p3d,
+				sizeof(POINT3DZ));
+		}
+	}
+	else
+	{
+		for (i=0; i<pa->npoints; i++) {
+			getPoint2d_p(pa, i, &p2d);
+			p2d.x *= xfac;
+			p2d.y *= yfac;
+			memcpy(getPoint_internal(pa, i), &p2d,
+				sizeof(POINT2D));
+		}
+	}
+}
+
+void
+lwgeom_scale_recursive(uchar *serialized,
+	double xfac, double yfac, double zfac)
+{
+	LWGEOM_INSPECTED *inspected;
+	int i, j;
+
+	inspected = lwgeom_inspect(serialized);
+
+	// scan each object translating it
+	for (i=0; i<inspected->ngeometries; i++)
+	{
+		LWLINE *line=NULL;
+		LWPOINT *point=NULL;
+		LWPOLY *poly=NULL;
+		uchar *subgeom=NULL;
+
+		point = lwgeom_getpoint_inspected(inspected, i);
+		if (point !=NULL)
+		{
+			lwgeom_scale_ptarray(point->point,
+				xfac, yfac, zfac);
+			lwgeom_release((LWGEOM *)point);
+			continue;
+		}
+
+		poly = lwgeom_getpoly_inspected(inspected, i);
+		if (poly !=NULL)
+		{
+			for (j=0; j<poly->nrings; j++)
+			{
+				lwgeom_scale_ptarray(poly->rings[j],
+					xfac, yfac, zfac);
+			}
+			lwgeom_release((LWGEOM *)poly);
+			continue;
+		}
+
+		line = lwgeom_getline_inspected(inspected, i);
+		if (line != NULL)
+		{
+			lwgeom_scale_ptarray(line->points,
+				xfac, yfac, zfac);
+			lwgeom_release((LWGEOM *)line);
+			continue;
+		}
+
+		subgeom = lwgeom_getsubgeometry_inspected(inspected, i);
+		if ( subgeom == NULL )
+		{
+			elog(ERROR, "lwgeom_getsubgeometry_inspected returned NULL??");
+		}
+		lwgeom_scale_recursive(subgeom, xfac, yfac, zfac);
+	}
+
+	pfree_inspected(inspected);
+}
+
+/*
+ * Transscale a pointarray.
+ */
+void
+lwgeom_transscale_ptarray(POINTARRAY *pa, double xoff, double yoff, double xfac, double yfac)
+{
+	int i;
+	POINT3DZ p3d;
+	POINT2D p2d;
+
+	if ( TYPE_HASZ(pa->dims) )
+	{
+		for (i=0; i<pa->npoints; i++) {
+			getPoint3dz_p(pa, i, &p3d);
+			p3d.x += xoff;
+			p3d.x *= xfac;
+			p3d.y += yoff;
+			p3d.y *= yfac;
+			/* Do nothing for z here */
+			memcpy(getPoint_internal(pa, i), &p3d,
+				sizeof(POINT3DZ));
+		}
+	}
+	else
+	{
+		for (i=0; i<pa->npoints; i++) {
+			getPoint2d_p(pa, i, &p2d);
+			p2d.x += xoff;
+			p2d.x *= xfac;
+			p2d.y += yoff;
+			p2d.y *= yfac;
+			memcpy(getPoint_internal(pa, i), &p2d,
+				sizeof(POINT2D));
+		}
+	}
+}
+
+void
+lwgeom_transscale_recursive(uchar *serialized,
+	double xoff, double yoff, double xfac, double yfac)
+{
+	LWGEOM_INSPECTED *inspected;
+	int i, j;
+
+	inspected = lwgeom_inspect(serialized);
+
+	// scan each object translating it
+	for (i=0; i<inspected->ngeometries; i++)
+	{
+		LWLINE *line=NULL;
+		LWPOINT *point=NULL;
+		LWPOLY *poly=NULL;
+		uchar *subgeom=NULL;
+
+		point = lwgeom_getpoint_inspected(inspected, i);
+		if (point !=NULL)
+		{
+			lwgeom_transscale_ptarray(point->point,
+				xoff, yoff, xfac, yfac);
+			lwgeom_release((LWGEOM *)point);
+			continue;
+		}
+
+		poly = lwgeom_getpoly_inspected(inspected, i);
+		if (poly !=NULL)
+		{
+			for (j=0; j<poly->nrings; j++)
+			{
+				lwgeom_transscale_ptarray(poly->rings[j],
+					xoff, yoff, xfac, yfac);
+			}
+			lwgeom_release((LWGEOM *)poly);
+			continue;
+		}
+
+		line = lwgeom_getline_inspected(inspected, i);
+		if (line != NULL)
+		{
+			lwgeom_transscale_ptarray(line->points,
+				xoff, yoff, xfac, yfac);
+			lwgeom_release((LWGEOM *)line);
+			continue;
+		}
+
+		subgeom = lwgeom_getsubgeometry_inspected(inspected, i);
+		if ( subgeom == NULL )
+		{
+			elog(ERROR, "lwgeom_getsubgeometry_inspected returned NULL??");
+		}
+		lwgeom_transscale_recursive(subgeom, xoff, yoff, xfac, yfac);
 	}
 
 	pfree_inspected(inspected);
@@ -1507,6 +1695,81 @@ Datum LWGEOM_translate(PG_FUNCTION_ARGS)
 		box.xmax += xoff;
 		box.ymin += yoff;
 		box.ymax += yoff;
+	}
+
+	// Construct PG_LWGEOM 
+	ret = PG_LWGEOM_construct(srl, lwgeom_getsrid(srl), hasbbox);
+
+	// Release copy of detoasted input.
+	pfree(geom);
+
+	PG_RETURN_POINTER(ret);
+}
+
+//scale geometry
+PG_FUNCTION_INFO_V1(LWGEOM_scale);
+Datum LWGEOM_scale(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+	PG_LWGEOM *ret;
+	uchar *srl = SERIALIZED_FORM(geom);
+	BOX2DFLOAT4 box;
+	int hasbbox;
+
+	double xfac =  PG_GETARG_FLOAT8(1);
+	double yfac =  PG_GETARG_FLOAT8(2);
+	double zfac =  PG_GETARG_FLOAT8(3);
+
+	lwgeom_scale_recursive(srl, xfac, yfac, zfac);
+
+	/* COMPUTE_BBOX WHEN_SIMPLE */
+	hasbbox=getbox2d_p(srl, &box);
+	if ( hasbbox )
+	{
+		box.xmin *= xfac;
+		box.xmax *= xfac;
+		box.ymin *= yfac;
+		box.ymax *= yfac;
+	}
+
+	// Construct PG_LWGEOM 
+	ret = PG_LWGEOM_construct(srl, lwgeom_getsrid(srl), hasbbox);
+
+	// Release copy of detoasted input.
+	pfree(geom);
+
+	PG_RETURN_POINTER(ret);
+}
+
+//transscale geometry
+PG_FUNCTION_INFO_V1(LWGEOM_transscale);
+Datum LWGEOM_transscale(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+	PG_LWGEOM *ret;
+	uchar *srl = SERIALIZED_FORM(geom);
+	BOX2DFLOAT4 box;
+	int hasbbox;
+
+	double xoff =  PG_GETARG_FLOAT8(1);
+	double yoff =  PG_GETARG_FLOAT8(2);
+	double xfac =  PG_GETARG_FLOAT8(3);
+	double yfac =  PG_GETARG_FLOAT8(4);
+
+	lwgeom_transscale_recursive(srl, xoff, yoff, xfac, yfac);
+
+	/* COMPUTE_BBOX WHEN_SIMPLE */
+	hasbbox=getbox2d_p(srl, &box);
+	if ( hasbbox )
+	{
+		box.xmin += xoff;
+		box.xmax += xoff;
+		box.ymin += yoff;
+		box.ymax += yoff;
+		box.xmin *= xfac;
+		box.xmax *= xfac;
+		box.ymin *= yfac;
+		box.ymax *= yfac;
 	}
 
 	// Construct PG_LWGEOM 

@@ -7,6 +7,7 @@ PostGIS 1.1.0CVS
 	  + Support for (Hex)(E)wkb
 	  + Autoprobing DriverWrapper for HexWKB / EWKT switching
 	- full autoconf-based configuration
+	- added scale() and transscale() companion methods to translate()
 
 PostGIS 1.0.1
 2005/05/24
