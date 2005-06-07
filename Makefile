@@ -35,7 +35,7 @@ test-clean:
 	$(MAKE) -C regress clean
 
 liblwgeom: Makefile.config
-	$(MAKE) -C lwgeom all
+	$(MAKE) -C lwgeom 
 
 liblwgeom-clean:
 	$(MAKE) -C lwgeom clean
