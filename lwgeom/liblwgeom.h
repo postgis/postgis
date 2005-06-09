@@ -1005,6 +1005,7 @@ extern int ptarray_isclosed2d(const POINTARRAY *pa);
 
 extern int32 lwgeom_nrings_recursive(uchar *serialized);
 extern void ptarray_reverse(POINTARRAY *pa);
+extern POINTARRAY *ptarray_substring(POINTARRAY *, double, double);
 
 // Ensure every segment is at most 'dist' long.
 // Returned LWGEOM might is unchanged if a POINT.

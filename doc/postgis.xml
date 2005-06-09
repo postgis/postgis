@@ -4415,22 +4415,28 @@ FROM geometry_table;</literallayout>
         </varlistentry>
 
         <varlistentry>
-          <term>scale(geometry,float8,float8,float8)</term>
+          <term>Scale(geometry,float8,float8,float8)</term>
 
           <listitem>
             <para>scales the geometry to a new size by multiplying the
             ordinates with the parameters. Ie: scale(geom, Xfactor, Yfactor, Zfactor).</para>
+		<para>
+			Availability: 1.1.0
+		</para>
           </listitem>
         </varlistentry>
 
         <varlistentry>
-          <term>transscale(geometry,float8,float8,float8,float8)</term>
+          <term>TransScale(geometry,float8,float8,float8,float8)</term>
 
           <listitem>
             <para>First, translates the geometry using the first two floats, then scales it 
 	        using the second two floats, working in 2D only. Using 
 		transscale(geom, X, Y, XFactor, YFactor) effectively is an efficient shortcut 
 		for scale(translate(geom,X,Y,0),Xfactor,YFactor,1).</para>
+		<para>
+			Availability: 1.1.0
+		</para>
           </listitem>
         </varlistentry>
 
@@ -4495,6 +4501,41 @@ FROM geometry_table;</literallayout>
 
 	  </variablelist>
       </sect2>
+
+      <sect2>
+	<title>Linear Referencing</title>
+
+	<variablelist>
+
+        <varlistentry>
+          <term>line_interpolate_point(geometry, proportion)</term>
+
+          <listitem>
+            <para>Interpolates a point along a line. First argument must be a
+            LINESTRING. Second argument is a float between 0 and 1. Returns a
+            point.</para>
+          </listitem>
+        </varlistentry>
+
+
+        <varlistentry>
+          <term>line_substring(geometry, start, end)</term>
+
+          <listitem>
+            	<para>
+		Return a linestring being a substring of the input one starting
+		and ending at the given fractions of total length. Second
+		and third arguments are float8 values between 0 and 1.
+		</para>
+		<para>
+			Availability: 1.1.0
+		</para>
+          </listitem>
+        </varlistentry>
+
+	</variablelist>
+
+	</sect2>
 
       <sect2>
 	<title>Misc</title>
@@ -4652,16 +4693,6 @@ FROM geometry_table;</literallayout>
           </listitem>
         </varlistentry>
 
-        <varlistentry>
-          <term>line_interpolate_point(geometry, proportion)</term>
-
-          <listitem>
-            <para>Interpolates a point along a line. First argument must be a
-            LINESTRING. Second argument is a float between 0 and 1. Returns a
-            point.</para>
-          </listitem>
-        </varlistentry>
-
         <varlistentry id="Accum">
           <term>Accum(geometry set)</term>
 
@@ -4673,6 +4704,7 @@ FROM geometry_table;</literallayout>
 
         </variablelist>
       </sect2>
+
 
 
     </sect1>

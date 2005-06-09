@@ -41,12 +41,6 @@ Tue May 24 18:55:46 CEST 2005
     Returns a float, representing the proportional distance the
     point is located along the line.
 
-- line_interpolate_line(geometry, proportion, direction)
-
-    Returns a line, representing the subset of the input line
-    that is the proportional distance along the line. Direction
-    determines what end to measure from. (??)
-
 - MakeValidShape() to remove consecutive vertexes and any eventual
   other cleanup aimed at making pgsql2shp produce "valid" Shapefiles.
 

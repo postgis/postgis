@@ -853,3 +853,43 @@ Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS)
 /***********************************************************************
  * --strk@keybit.net
  ***********************************************************************/
+
+Datum LWGEOM_line_substring(PG_FUNCTION_ARGS);
+
+PG_FUNCTION_INFO_V1(LWGEOM_line_substring);
+Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	double from = PG_GETARG_FLOAT8(1);
+	double to = PG_GETARG_FLOAT8(2);
+	LWLINE *iline;
+	LWLINE *oline;
+	POINTARRAY *ipa, *opa;
+	PG_LWGEOM *ret;
+
+	if( from < 0 || from > 1 ) {
+		elog(ERROR,"line_interpolate_point: 2nd arg isnt within [0,1]");
+		PG_RETURN_NULL();
+	}
+
+	if( to < 0 || to > 1 ) {
+		elog(ERROR,"line_interpolate_point: 3rd arg isnt within [0,1]");
+		PG_RETURN_NULL();
+	}
+
+	if( lwgeom_getType(geom->type) != LINETYPE ) {
+		elog(ERROR,"line_interpolate_point: 1st arg isnt a line");
+		PG_RETURN_NULL();
+	}
+
+	iline = lwline_deserialize(SERIALIZED_FORM(geom));
+	ipa = iline->points;
+
+	opa = ptarray_substring(ipa, from, to);
+
+	oline = lwline_construct(iline->SRID, 0, opa);
+	ret = pglwgeom_serialize((LWGEOM *)oline);
+	PG_FREE_IF_COPY(geom, 0);
+	lwgeom_release((LWGEOM *)oline);
+	PG_RETURN_POINTER(ret);
+}

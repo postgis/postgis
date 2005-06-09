@@ -479,3 +479,92 @@ ptarray_compute_box3d_p(const POINTARRAY *pa, BOX3D *result)
 
 	return 1;
 }
+
+POINTARRAY *
+ptarray_substring(POINTARRAY *ipa, double from, double to)
+{
+	POINTARRAY *opa;
+	int nopts=0;
+	uchar *opts;
+	uchar *optsptr;
+	POINT4D pt;
+	POINT2D p1, p2;
+	int nsegs, i;
+	int ptsize;
+	double length, slength, tlength;
+	int state = 0; // 0=before, 1=inside, 2=after
+
+	/* Allocate memory for a full copy of input points */
+	ptsize=TYPE_NDIMS(ipa->dims)*sizeof(double);
+	opts = lwalloc(ptsize*ipa->npoints);
+	optsptr = opts;
+
+	/* Interpolate a point on the line */
+	nsegs = ipa->npoints - 1;
+	length = lwgeom_pointarray_length2d(ipa);
+
+	//lwnotice("Total length: %g", length);
+
+	from = length*from;
+	to = length*to;
+
+	//lwnotice("From/To: %g/%g", from, to);
+
+	tlength = 0;
+	getPoint2d_p(ipa, 0, &p1);
+	for( i = 0; i < nsegs; i++ ) {
+
+		getPoint2d_p(ipa, i+1, &p2);
+
+		/* Find the relative length of this segment */
+		slength = distance2d_pt_pt(&p1, &p2);
+
+		/*
+		 * If our target distance is before the total length we've seen
+		 * so far. create a new point some distance down the current
+		 * segment.
+		 */
+		if ( state == 0 )
+		{
+			if ( from < tlength + slength ) {
+				double dseg = (from - tlength) / slength;
+				pt.x = (p1.x) + ((p2.x - p1.x) * dseg);
+				pt.y = (p1.y) + ((p2.y - p1.y) * dseg);
+				pt.z = 0; pt.m = 0;
+				memcpy(optsptr, &pt, ptsize);
+				optsptr+=ptsize;
+				nopts++; state++;
+			}
+		}
+
+		if ( state == 1 )
+		{
+			if ( to < tlength + slength ) {
+				double dseg = (to - tlength) / slength;
+				pt.x = (p1.x) + ((p2.x - p1.x) * dseg);
+				pt.y = (p1.y) + ((p2.y - p1.y) * dseg);
+				pt.z = 0; pt.m = 0;
+				memcpy(optsptr, &pt, ptsize);
+				optsptr+=ptsize;
+				nopts++; break;
+			} else {
+				memcpy(optsptr, &p2, ptsize);
+				optsptr+=ptsize;
+				nopts++;
+			}
+		}
+
+
+		tlength += slength;
+		memcpy(&p1, &p2, sizeof(POINT2D));
+	}
+
+	//lwnotice("Out of loop, constructing ptarray with %d points", nopts);
+
+	opa = pointArray_construct(opts,
+		TYPE_HASZ(ipa->dims),
+		TYPE_HASM(ipa->dims),
+		nopts);
+
+	return opa;
+}
