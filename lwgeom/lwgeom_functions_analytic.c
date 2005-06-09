@@ -920,6 +920,11 @@ Datum LWGEOM_line_locate_point(PG_FUNCTION_ARGS)
 		elog(ERROR,"line_locate_point: 2st arg isnt a point");
 		PG_RETURN_NULL();
 	}
+	if ( pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2) )
+	{
+		elog(ERROR, "Operation on two geometries with different SRIDs");
+		PG_RETURN_NULL();
+	}
 
 	lwline = lwline_deserialize(SERIALIZED_FORM(geom1));
 	lwpoint = lwpoint_deserialize(SERIALIZED_FORM(geom2));
