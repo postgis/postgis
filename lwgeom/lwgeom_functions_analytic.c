@@ -877,6 +877,11 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
+	if ( from > to ) {
+		elog(ERROR, "2nd arg must be smaller then 3rd arg");
+		PG_RETURN_NULL();
+	}
+
 	if( lwgeom_getType(geom->type) != LINETYPE ) {
 		elog(ERROR,"line_interpolate_point: 1st arg isnt a line");
 		PG_RETURN_NULL();
