@@ -898,3 +898,36 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 	lwgeom_release((LWGEOM *)oline);
 	PG_RETURN_POINTER(ret);
 }
+
+Datum LWGEOM_line_locate_point(PG_FUNCTION_ARGS);
+
+PG_FUNCTION_INFO_V1(LWGEOM_line_locate_point);
+Datum LWGEOM_line_locate_point(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	PG_LWGEOM *geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	LWLINE *lwline;
+	LWPOINT *lwpoint;
+	POINTARRAY *pa;
+	POINT2D p;
+	double ret;
+
+	if( lwgeom_getType(geom1->type) != LINETYPE ) {
+		elog(ERROR,"line_locate_point: 1st arg isnt a line");
+		PG_RETURN_NULL();
+	}
+	if( lwgeom_getType(geom2->type) != POINTTYPE ) {
+		elog(ERROR,"line_locate_point: 2st arg isnt a point");
+		PG_RETURN_NULL();
+	}
+
+	lwline = lwline_deserialize(SERIALIZED_FORM(geom1));
+	lwpoint = lwpoint_deserialize(SERIALIZED_FORM(geom2));
+
+	pa = lwline->points;
+	lwpoint_getPoint2d_p(lwpoint, &p);
+
+	ret = ptarray_locate_point(pa, &p);
+
+	PG_RETURN_FLOAT8(ret);
+}

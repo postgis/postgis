@@ -36,11 +36,6 @@ Tue May 24 18:55:46 CEST 2005
   index on the geometric column, as requested by Christian
   Graefe.
 
-- line_calculate_proportion(line, point)
-
-    Returns a float, representing the proportional distance the
-    point is located along the line.
-
 - MakeValidShape() to remove consecutive vertexes and any eventual
   other cleanup aimed at making pgsql2shp produce "valid" Shapefiles.
 

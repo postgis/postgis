@@ -3323,6 +3323,11 @@ CREATEFUNCTION line_substring(geometry, float8, float8)
    AS '@MODULE_FILENAME@', 'LWGEOM_line_substring'
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+CREATEFUNCTION line_locate_point(geometry, geometry)
+   RETURNS float8
+   AS '@MODULE_FILENAME@', 'LWGEOM_line_locate_point'
+   LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
 CREATEFUNCTION segmentize(geometry, float8)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_segmentize2d'

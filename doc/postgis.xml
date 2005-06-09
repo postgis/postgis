@@ -4508,7 +4508,7 @@ FROM geometry_table;</literallayout>
 	<variablelist>
 
         <varlistentry>
-          <term>line_interpolate_point(geometry, proportion)</term>
+          <term>line_interpolate_point(linestring, proportion)</term>
 
           <listitem>
             <para>Interpolates a point along a line. First argument must be a
@@ -4519,13 +4519,27 @@ FROM geometry_table;</literallayout>
 
 
         <varlistentry>
-          <term>line_substring(geometry, start, end)</term>
+          <term>line_substring(linestring, start, end)</term>
 
           <listitem>
             	<para>
 		Return a linestring being a substring of the input one starting
 		and ending at the given fractions of total length. Second
 		and third arguments are float8 values between 0 and 1.
+		</para>
+		<para>
+			Availability: 1.1.0
+		</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>line_locate_point(linestring, point)</term>
+
+          <listitem>
+            	<para>
+		Returns a float, representing the proportional distance the
+		point is located along the line.
 		</para>
 		<para>
 			Availability: 1.1.0

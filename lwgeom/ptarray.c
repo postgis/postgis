@@ -512,7 +512,9 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 
 	tlength = 0;
 	getPoint2d_p(ipa, 0, &p1);
-	for( i = 0; i < nsegs; i++ ) {
+	for( i = 0; i < nsegs; i++ )
+	{
+		double dseg;
 
 		getPoint2d_p(ipa, i+1, &p2);
 
@@ -527,7 +529,7 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 		if ( state == 0 )
 		{
 			if ( from < tlength + slength ) {
-				double dseg = (from - tlength) / slength;
+				dseg = (from - tlength) / slength;
 				pt.x = (p1.x) + ((p2.x - p1.x) * dseg);
 				pt.y = (p1.y) + ((p2.y - p1.y) * dseg);
 				pt.z = 0; pt.m = 0;
@@ -540,7 +542,7 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 		if ( state == 1 )
 		{
 			if ( to < tlength + slength ) {
-				double dseg = (to - tlength) / slength;
+				dseg = (to - tlength) / slength;
 				pt.x = (p1.x) + ((p2.x - p1.x) * dseg);
 				pt.y = (p1.y) + ((p2.y - p1.y) * dseg);
 				pt.z = 0; pt.m = 0;
@@ -567,4 +569,106 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 		nopts);
 
 	return opa;
+}
+
+/*
+ * Write into the *ret argument coordinates of the closes point on
+ * the given segment to the reference input point.
+ */
+closest_point_on_segment(POINT2D *p, POINT2D *A, POINT2D *B, POINT2D *ret)
+{
+	double r, tlen, f;
+
+	if (  ( A->x == B->x) && (A->y == B->y) )
+	{
+		*ret = *A;
+		return;
+	}
+
+	// we use comp.graphics.algorithms Frequently Asked Questions method
+
+	/*(1)     	AC dot AB
+                   r = ----------
+                         ||AB||^2
+		r has the following meaning:
+		r=0 P = A
+		r=1 P = B
+		r<0 P is on the backward extension of AB
+		r>1 P is on the forward extension of AB
+		0<r<1 P is interior to AB
+	*/
+	r = ( (p->x-A->x) * (B->x-A->x) + (p->y-A->y) * (B->y-A->y) )/( (B->x-A->x)*(B->x-A->x) +(B->y-A->y)*(B->y-A->y) );
+
+	if (r<0) {
+		*ret = *A; return;
+	}
+	if (r>1) {
+		*ret = *B;
+		return;
+	}
+
+	ret->x = A->x + ( (B->x - A->x) * r );
+	ret->y = A->y + ( (B->y - A->y) * r );
+}
+
+/*
+ * Given a point, returns the location of closest point on pointarray
+ */
+double
+ptarray_locate_point(POINTARRAY *pa, POINT2D *p)
+{
+	double mindist;
+	double tlen, plen;
+	int t, seg;
+	POINT2D	start, end;
+	POINT2D proj;
+
+	getPoint2d_p(pa, 0, &start);
+	for (t=1; t<pa->npoints; t++)
+	{
+		double dist;
+		getPoint2d_p(pa, t, &end);
+		dist = distance2d_pt_seg(p, &start, &end);
+
+		if (t==1 || dist < mindist ) {
+			mindist = dist;
+			seg=t;
+		}
+
+		if ( mindist == 0 ) break;
+
+		start = end;
+	}
+
+	/*
+	 * If mindist is not 0 we need to project the 
+	 * point on the closest segment.
+	 */
+	if ( mindist > 0 )
+	{
+		getPoint2d_p(pa, seg-1, &start);
+		getPoint2d_p(pa, seg, &end);
+		closest_point_on_segment(p, &start, &end, &proj);
+	} else {
+		proj = *p;
+	}
+
+	//lwnotice("Closest point on segment: %g,%g", proj.x, proj.y);
+
+	tlen = lwgeom_pointarray_length2d(pa);
+
+	plen=0;
+	getPoint2d_p(pa, 0, &start);
+	for (t=1; t<seg; t++, start=end)
+	{
+		getPoint2d_p(pa, t+1, &end);
+		plen += distance2d_pt_pt(&start, &end);
+		//lwnotice("Segment %d made plen %g", t, plen);
+	}
+
+	plen+=distance2d_pt_pt(&proj, &start);
+
+	//lwnotice("plen %g, tlen %g", plen, tlen);
+
+	return plen/tlen;
 }
