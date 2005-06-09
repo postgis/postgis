@@ -16,7 +16,7 @@ Tue May 24 18:55:46 CEST 2005
 
 + Better upgrade mechanism
 
-- Full autoconf support / PG sources dependency drop
+* Full autoconf support / PG sources dependency drop
 
 - Selectivity estimation code merge (+- pgsql-8.0.0)
 	+ fix invalid stats computation (currently keeps the previously
@@ -25,8 +25,6 @@ Tue May 24 18:55:46 CEST 2005
 
 - Special threatment of SRID=-1, dims=-1, type=GEOMETRY
   in geometry_columns
-
-- Pre-8.0 port of new estimator code
 
 - Better regression tests (single load, multi operations)
 
