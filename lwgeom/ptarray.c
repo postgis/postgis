@@ -632,7 +632,7 @@ ptarray_locate_point(POINTARRAY *pa, POINT2D *p)
 
 		if (t==1 || dist < mindist ) {
 			mindist = dist;
-			seg=t;
+			seg=t-1;
 		}
 
 		if ( mindist == 0 ) break;
@@ -640,14 +640,16 @@ ptarray_locate_point(POINTARRAY *pa, POINT2D *p)
 		start = end;
 	}
 
+	//lwnotice("Closest segment: %d", seg);
+
 	/*
 	 * If mindist is not 0 we need to project the 
 	 * point on the closest segment.
 	 */
 	if ( mindist > 0 )
 	{
-		getPoint2d_p(pa, seg-1, &start);
-		getPoint2d_p(pa, seg, &end);
+		getPoint2d_p(pa, seg, &start);
+		getPoint2d_p(pa, seg+1, &end);
 		closest_point_on_segment(p, &start, &end, &proj);
 	} else {
 		proj = *p;
@@ -656,6 +658,7 @@ ptarray_locate_point(POINTARRAY *pa, POINT2D *p)
 	//lwnotice("Closest point on segment: %g,%g", proj.x, proj.y);
 
 	tlen = lwgeom_pointarray_length2d(pa);
+	//lwnotice("tlen %g", tlen);
 
 	plen=0;
 	getPoint2d_p(pa, 0, &start);
@@ -669,6 +672,7 @@ ptarray_locate_point(POINTARRAY *pa, POINT2D *p)
 	plen+=distance2d_pt_pt(&proj, &start);
 
 	//lwnotice("plen %g, tlen %g", plen, tlen);
+	//lwnotice("mindist: %g", mindist);
 
 	return plen/tlen;
 }
