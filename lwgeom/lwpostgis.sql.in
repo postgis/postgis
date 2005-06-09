@@ -411,7 +411,6 @@ CREATE OPERATOR CLASS btree_geometry_ops
 	FUNCTION	1	geometry_cmp (geometry, geometry);
 
 #endif
-// USE_VERSION >= 74
 
 
 -------------------------------------------------------------------
@@ -810,7 +809,6 @@ INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
       and proname = 'lwgeom_gist_same';
 
 #else
-// USE_VERSION >= 73
 
 --
 -- Create opclass index bindings for PG>=73
@@ -850,7 +848,6 @@ UPDATE pg_opclass
 -- TODO: add btree binding...
 
 #endif
-// USE_VERSION >= 73
 	
 -- other lwgeom functions
 
@@ -1855,7 +1852,6 @@ CREATEFUNCTION dump(geometry)
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 #endif
-// USE_VERSION > 72
 
 ------------------------------------------------------------------------
 
@@ -1922,7 +1918,6 @@ END
 '
 LANGUAGE 'plpgsql' _STABLE_STRICT; -- WITH (isstrict);
 #endif
-// USE_VERSION >= 73
 
 -----------------------------------------------------------------------
 -- EXPLODE_HISTOGRAM2D( <histogram2d>, <tablename> )
@@ -2111,7 +2106,6 @@ BEGIN
 
 	GET DIAGNOSTICS foundschema = ROW_COUNT;
 #endif
-// USE_VERSION >= 73
 
 #if USE_VERSION >= 80
 	-- no linkage to system table needed
@@ -2212,14 +2206,12 @@ BEGIN
 		AND typecheck.consrc LIKE
 	''((geometrytype(''||a.attname||'') = ''''%''''::text) OR (% IS NULL))''
 #else
-// USE_VERSION < 73
 		AND sridcheck.rcrelid = c.oid
 		AND sridcheck.rcsrc LIKE ''(srid(''||a.attname||'') = %)''
 		AND typecheck.rcrelid = c.oid
 		AND typecheck.rcsrc LIKE
 	''((geometrytype(''||a.attname||'') = ''''%''''::text) OR (% IS NULL))''
 #endif
-// USE_VERSION < 73
 		;
 
 	INSERT INTO geometry_columns SELECT
@@ -2275,14 +2267,12 @@ BEGIN
 		AND typecheck.consrc LIKE
 	''((geometrytype(''||a.attname||'') = ''''%''''::text) OR (% IS NULL))''
 #else
-// USE_VERSION < 73
 		AND sridcheck.rcrelid = c.oid
 		AND sridcheck.rcsrc LIKE ''(srid(''||a.attname||'') = %)''
 		AND typecheck.rcrelid = c.oid
 		AND typecheck.rcsrc LIKE
 	''((geometrytype(''||a.attname||'') = ''''%''''::text) OR (% IS NULL))''
 #endif
-// USE_VERSION < 73
 
                 AND NOT EXISTS (
                         SELECT oid FROM geometry_columns gc
@@ -2582,7 +2572,6 @@ BEGIN
 #else
 	real_schema = schema_name;
 #endif
-// USE_VERSION >= 73
 
  	-- Find out if the column is in the geometry_columns table
 	okay = ''f'';
@@ -2692,7 +2681,6 @@ BEGIN
 		real_schema = schema_name;
 	END IF;
 #endif
-// USE_VERSION >= 73
 
 	-- Remove refs from geometry_columns table
 	EXECUTE ''DELETE FROM geometry_columns WHERE '' ||
@@ -2788,7 +2776,6 @@ BEGIN
 		SELECT INTO real_schema current_schema()::text;
 	END IF;
 #endif
-// USE_VERSION >= 73
 
  	-- Find out if the column is in the geometry_columns table
 	okay = ''f'';
@@ -2894,7 +2881,6 @@ LANGUAGE 'plpgsql' _VOLATILE_STRICT; -- WITH (isstrict);
 CREATEFUNCTION update_geometry_stats() RETURNS text
 AS ' SELECT ''update_geometry_stats() has been obsoleted. Statistics are automatically built running the ANALYZE command''::text' LANGUAGE 'sql';
 #else
-// USE_VERSION < 80
 CREATEFUNCTION update_geometry_stats()
 RETURNS text
 AS
@@ -2916,7 +2902,6 @@ BEGIN
 		AND c.relname = f_table_name::name
 		AND c.relnamespace = n.oid
 #else
-// USE_VERSION < 73 
 		stats = (build_histogram2d(create_histogram2d(
 			find_extent(f_table_name, f_geometry_column),
 			40), f_table_name, f_geometry_column))
@@ -2936,7 +2921,6 @@ END;
 '
 LANGUAGE 'plpgsql' _VOLATILE_STRICT; 
 #endif
-// USE_VERSION < 80
 
 -----------------------------------------------------------------------
 -- UPDATE_GEOMETRY_STATS( <table>, <column> )
@@ -2981,7 +2965,6 @@ BEGIN
 			AND c.relnamespace = n.oid
 			AND a.attrelid = c.oid
 #else
-// USE_VERSION < 73 
 			stats = (build_histogram2d(create_histogram2d(
 				find_extent(f_table_name, f_geometry_column),
 				40), f_table_name, f_geometry_column))
@@ -3004,7 +2987,6 @@ END;
 LANGUAGE 'plpgsql' _VOLATILE_STRICT;
 
 #endif 
-// USE_VERSION < 80
 
 -----------------------------------------------------------------------
 -- FIND_SRID( <schema>, <table>, <geom col> )
