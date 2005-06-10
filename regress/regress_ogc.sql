@@ -18,6 +18,7 @@ SELECT 'contains', contains('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))','POINT(5 5)
 SELECT 'overlaps', overlaps('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))','POINT(5 5)');
 SELECT 'isvalid', isvalid('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');
 SELECT 'isvalid', isvalid('POLYGON((0 0, 0 10, 10 10, -5 10, 10 0, 0 0))');
+SELECT 'isvalid', isvalid('GEOMETRYCOLLECTION EMPTY');
 SELECT 'intersection', astext(intersection('LINESTRING(0 10, 0 -10)', 'LINESTRING(0 0, 1 1)'));
 SELECT 'difference', astext(difference('LINESTRING(0 10, 0 -10)', 'LINESTRING(0 2, 0 -2)'));
 SELECT 'boundary', astext(boundary('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0),(2 2, 2 4, 4 4, 4 2, 2 2))'));

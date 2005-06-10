@@ -18,6 +18,7 @@ contains|t
 overlaps|f
 isvalid|t
 isvalid|f
+isvalid|t
 intersection|POINT(0 0)
 difference|MULTILINESTRING((0 10,0 2),(0 -2,0 -10))
 boundary|MULTILINESTRING((0 0,0 10,10 10,10 0,0 0),(2 2,2 4,4 4,4 2,2 2))
