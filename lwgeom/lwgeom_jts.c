@@ -34,7 +34,7 @@ Datum pointonsurface(PG_FUNCTION_ARGS);
 Datum JTSnoop(PG_FUNCTION_ARGS);
 Datum postgis_geos_version(PG_FUNCTION_ARGS);
 Datum centroid(PG_FUNCTION_ARGS);
-Datum JTS_polygonize_garray(PG_FUNCTION_ARGS);
+Datum polygonize_garray(PG_FUNCTION_ARGS);
 
 
 
@@ -2483,8 +2483,8 @@ Datum JTSnoop(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-PG_FUNCTION_INFO_V1(JTS_polygonize_garray);
-Datum JTS_polygonize_garray(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(polygonize_garray);
+Datum polygonize_garray(PG_FUNCTION_ARGS)
 {
 	Datum datum;
 	ArrayType *array;
@@ -2513,7 +2513,7 @@ Datum JTS_polygonize_garray(PG_FUNCTION_ARGS)
 	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
 
 #ifdef PGIS_DEBUG
-	elog(NOTICE, "JTS_polygonize_garray: number of elements: %d", nelems);
+	elog(NOTICE, "polygonize_garray: number of elements: %d", nelems);
 #endif
 
 	if ( nelems == 0 ) PG_RETURN_NULL();
@@ -2545,12 +2545,12 @@ Datum JTS_polygonize_garray(PG_FUNCTION_ARGS)
 	}
 
 #ifdef PGIS_DEBUG
-	elog(NOTICE, "JTS_polygonize_garray: invoking JTSpolygonize");
+	elog(NOTICE, "polygonize_garray: invoking JTSpolygonize");
 #endif
 
 	geos_result = JTSpolygonize(vgeoms, nelems);
 #ifdef PGIS_DEBUG
-	elog(NOTICE, "JTS_polygonize_garray: JTSpolygonize returned");
+	elog(NOTICE, "polygonize_garray: JTSpolygonize returned");
 #endif
 	//pfree(vgeoms);
 	if ( ! geos_result ) {
@@ -2571,14 +2571,6 @@ Datum JTS_polygonize_garray(PG_FUNCTION_ARGS)
 
 	PG_RETURN_POINTER(result);
 
-}
-
-Datum GEOS_polygonize_garray(PG_FUNCTION_ARGS);
-PG_FUNCTION_INFO_V1(GEOS_polygonize_garray);
-Datum GEOS_polygonize_garray(PG_FUNCTION_ARGS)
-{
-	elog(NOTICE, "GEOS support is disabled, use JTS_polygonize_garray instead");
-	PG_RETURN_NULL();
 }
 
 Datum GEOSnoop(PG_FUNCTION_ARGS);
@@ -2608,6 +2600,9 @@ Datum postgis_jts_version(PG_FUNCTION_ARGS)
 	VARATT_SIZEP(result) = VARHDRSZ + strlen(ver) ;
 	memcpy(VARDATA(result), ver, strlen(ver));
 	free(ver);
+
+	finishJTS();
+
 	PG_RETURN_POINTER(result);
 }
 

@@ -197,11 +197,11 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 	PG_RETURN_NULL(); // never get here
 }
 
-Datum GEOS_polygonize_garray(PG_FUNCTION_ARGS);
-PG_FUNCTION_INFO_V1(GEOS_polygonize_garray);
-Datum GEOS_polygonize_garray(PG_FUNCTION_ARGS)
+Datum polygonize_garray(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(polygonize_garray);
+Datum polygonize_garray(PG_FUNCTION_ARGS)
 {
-	elog(ERROR,"JTS_polygonize_garray:: operation not implemented - compile PostGIS with JTS or GEOS support");
+	elog(ERROR,"polygonize_garray:: operation not implemented - compile PostGIS with JTS or GEOS support");
 	PG_RETURN_NULL(); // never get here
 }
 

@@ -1832,7 +1832,7 @@ CREATEFUNCTION MakePolygon(geometry)
 
 CREATEFUNCTION polygonize_garray (geometry[])
 	RETURNS geometry
-	AS '@MODULE_FILENAME@', 'GEOS_polygonize_garray'
+	AS '@MODULE_FILENAME@', 'polygonize_garray'
 	LANGUAGE 'C' _IMMUTABLE_STRICT;
 
 CREATE AGGREGATE polygonize (
