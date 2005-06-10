@@ -53,6 +53,27 @@ while(<INPUT>)
 			last if m/^\s*LANGUAGE '/;
 		}
 	}
+
+#	# This code handles aggregates by dropping and recreating them.
+#	# The DROP would fail on aggregates as they would not exist
+#	# in old postgis installations, thus we avoid this until we
+#	# find a better strategy.
+#
+#	if (m/^create aggregate (.*) *\(/i)
+#	{
+#		my $aggname = $1;
+#		my $basetype = 'unknown';
+#		my $def = $_;
+#		while(<INPUT>)
+#		{
+#			$def .= $_;
+#			$basetype = $1 if (m/basetype *= *([^,]*) *,/);
+#			last if m/\);/;
+#		}
+#		print "DROP AGGREGATE $aggname($basetype);\n";
+#		print "$def";
+#	}
+
 }
 
 close( INPUT );
