@@ -155,6 +155,7 @@ AC_ARG_WITH(geos,
 	AC_MSG_ERROR([ARG of --with-geos is not an (executable) file]);
 			else
 				GEOSCONFIG="$with_geos"
+				USE_GEOS=1
 			fi
 		fi
 	fi
