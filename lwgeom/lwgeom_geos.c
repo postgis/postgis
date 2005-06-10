@@ -33,6 +33,7 @@ Datum geomequals(PG_FUNCTION_ARGS);
 Datum pointonsurface(PG_FUNCTION_ARGS);
 Datum GEOSnoop(PG_FUNCTION_ARGS);
 Datum postgis_geos_version(PG_FUNCTION_ARGS);
+Datum postgis_jts_version(PG_FUNCTION_ARGS);
 Datum centroid(PG_FUNCTION_ARGS);
 Datum GEOS_polygonize_garray(PG_FUNCTION_ARGS);
 
@@ -2507,6 +2508,12 @@ Datum JTSnoop(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(JTSnoop);
 Datum JTSnoop(PG_FUNCTION_ARGS)
 {
-	elog(NOTICE, "JTS support is disabled, use GEOSnoop instead");
+	elog(ERROR, "JTS support is disabled");
+	PG_RETURN_NULL();
+}
+
+PG_FUNCTION_INFO_V1(postgis_jts_version);
+Datum postgis_jts_version(PG_FUNCTION_ARGS)
+{
 	PG_RETURN_NULL();
 }

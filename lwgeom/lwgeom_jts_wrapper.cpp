@@ -6,7 +6,7 @@
 
 #pragma GCC java_exceptions
 
-#include "jts.h"
+#include <jts.h>
 #include <java/lang/String.h>
 #include <java/lang/System.h>
 #include <java/io/PrintStream.h>
@@ -16,6 +16,7 @@
 
 using namespace com::vividsolutions::jts::geom;
 using namespace com::vividsolutions::jts::io;
+using namespace com::vividsolutions::jts;
 using namespace java::lang;
 using namespace std;
 
@@ -166,9 +167,10 @@ initJTS(noticefunc nf)
 	{
 		JvCreateJavaVM(NULL);
 		JvAttachCurrentThread(NULL, NULL);	
-		//JvInitClass(&Geometry::class$);
-		//JvInitClass(&GeometryFactory::class$);
-		//JvInitClass(&Coordinate::class$);
+		JvInitClass(&Geometry::class$);
+		JvInitClass(&GeometryFactory::class$);
+		JvInitClass(&Coordinate::class$);
+		JvInitClass(&JTSVersion::class$);
 
 		// NOTE: SRID will have to be changed after geometry creation
 		jtsGeomFactory = new GeometryFactory( new PrecisionModel(), -1);
@@ -768,8 +770,11 @@ JTSGetSRID(Geometry *g1)
 char *
 JTSversion()
 {
-	char *res = strdup("unknown");
-	return res;
+	//char *res = strdup("unknown");
+        JTSVersion *v = JTSVersion::CURRENT_VERSION;
+        if ( ! v ) return "UNDEFINED";
+        return StringToChar(v->toString());
+	//return res;
 }
 
 bool 

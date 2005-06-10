@@ -14,6 +14,13 @@ Datum postgis_geos_version(PG_FUNCTION_ARGS)
 	PG_RETURN_NULL();
 }
 
+Datum postgis_jts_version(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(postgis_jts_version);
+Datum postgis_jts_version(PG_FUNCTION_ARGS)
+{
+	PG_RETURN_NULL();
+}
+
 Datum intersection(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(intersection);
 Datum intersection(PG_FUNCTION_ARGS)

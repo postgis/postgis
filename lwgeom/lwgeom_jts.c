@@ -2585,7 +2585,7 @@ Datum GEOSnoop(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(GEOSnoop);
 Datum GEOSnoop(PG_FUNCTION_ARGS)
 {
-	elog(NOTICE, "GEOS support is disabled, use JTSnoop instead");
+	elog(ERROR, "GEOS support is disabled");
 	PG_RETURN_NULL();
 }
 
@@ -2593,5 +2593,21 @@ PG_FUNCTION_INFO_V1(postgis_geos_version);
 Datum postgis_geos_version(PG_FUNCTION_ARGS)
 {
 	PG_RETURN_NULL();
+}
+
+PG_FUNCTION_INFO_V1(postgis_jts_version);
+Datum postgis_jts_version(PG_FUNCTION_ARGS)
+{
+	char *ver;
+	text *result;
+
+	initJTS(lwnotice);
+
+	ver = JTSversion();
+	result = (text *) palloc(VARHDRSZ  + strlen(ver));
+	VARATT_SIZEP(result) = VARHDRSZ + strlen(ver) ;
+	memcpy(VARDATA(result), ver, strlen(ver));
+	free(ver);
+	PG_RETURN_POINTER(result);
 }
 
