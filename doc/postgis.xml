@@ -357,7 +357,7 @@ bring to an unstable or unsable system.
 	</para>
 
 	<para>
-Since postgis version 0.9.x You can check your installation state
+Since postgis version 0.9.0 You can check your installation state
 using <link linkend="postgis_full_version">postgis_full_version()</link>.
 The function will warn you with a "need proc upgrade" message if a mismatch
 is found.
@@ -3919,6 +3919,11 @@ dimension
           <listitem>
             <para>Returns the version number of the JTS library, or NULL if
             JTS support is not enabled.</para>
+
+		<para>
+	Availability: 1.1.0
+		</para>
+
           </listitem>
         </varlistentry>
 
@@ -3946,6 +3951,8 @@ dimension
           <listitem>
             <para>Reports full postgis version and build configuration
             infos.</para>
+
+		<para>Availability: 0.9.0</para>
           </listitem>
         </varlistentry>
 
