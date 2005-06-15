@@ -1,5 +1,6 @@
 PostGIS 1.0.2cvs
 ????
+	- Fault tolerant btree ops
 
 PostGIS 1.0.1
 2005/05/24
