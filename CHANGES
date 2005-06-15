@@ -1,3 +1,8 @@
+PostGIS 0.9.2cvs
+????
+  - Leak plugged in dumper
+  - fault-tolerant btree ops
+
 PostGIS 0.9.1
 2004/12/12
 

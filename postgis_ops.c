@@ -11,6 +11,9 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.13.2.1  2005/06/15 16:01:17  strk
+ * fault tolerant btree ops
+ *
  * Revision 1.13  2004/04/28 22:26:02  pramsey
  * Fixed spelling mistake in header text.
  *
@@ -302,6 +305,16 @@ bool is_same_line(LINE3D	*l1, LINE3D	*l2)
  *
  ***********************************************************/
 
+#if USE_VERSION == 72
+#define BTREE_SRID_MISMATCH_SEVERITY NOTICE
+#else
+#if USE_VERSION < 80
+#define BTREE_SRID_MISMATCH_SEVERITY WARNING
+#else
+#define BTREE_SRID_MISMATCH_SEVERITY ERROR
+#endif
+#endif
+
 
 PG_FUNCTION_INFO_V1(geometry_lt);
 Datum geometry_lt(PG_FUNCTION_ARGS)
@@ -311,11 +324,12 @@ Datum geometry_lt(PG_FUNCTION_ARGS)
 
 	//elog(NOTICE, "geometry_lt called");
 
+	// ERROR not used in pg<800 to avoid failure of 'analyze' operation
 	if (geom1->SRID != geom2->SRID)
 	{
-		elog(ERROR,
+		elog(BTREE_SRID_MISMATCH_SEVERITY,
 			"Operation on two GEOMETRIES with different SRIDs\n");
-		PG_RETURN_NULL();
+		//PG_RETURN_NULL();
 	}
 
 	if  ( ! FPeq(geom1->bvol.LLB.x , geom2->bvol.LLB.x) ) {
@@ -363,9 +377,9 @@ Datum geometry_le(PG_FUNCTION_ARGS)
 	{
 		if ( (Pointer *)PG_GETARG_DATUM(0) != (Pointer *)geom1 ) pfree(geom1);
 		if ( (Pointer *)PG_GETARG_DATUM(1) != (Pointer *)geom2 ) pfree(geom2);
-		elog(ERROR,
+		elog(BTREE_SRID_MISMATCH_SEVERITY,
 			"Operation on two GEOMETRIES with different SRIDs\n");
-		PG_RETURN_NULL();
+		//PG_RETURN_NULL();
 	}
 
 	if  ( ! FPeq(geom1->bvol.LLB.x , geom2->bvol.LLB.x) ) {
@@ -458,9 +472,9 @@ Datum geometry_eq(PG_FUNCTION_ARGS)
 	{
 		if ( (Pointer *)PG_GETARG_DATUM(0) != (Pointer *)geom1 ) pfree(geom1);
 		if ( (Pointer *)PG_GETARG_DATUM(1) != (Pointer *)geom2 ) pfree(geom2);
-		elog(ERROR,
+		elog(BTREE_SRID_MISMATCH_SEVERITY,
 			"Operation on two GEOMETRIES with different SRIDs\n");
-		PG_RETURN_NULL();
+		//PG_RETURN_NULL();
 	}
 
 	if  ( ! FPeq(geom1->bvol.LLB.x , geom2->bvol.LLB.x) ) 
@@ -523,9 +537,9 @@ Datum geometry_ge(PG_FUNCTION_ARGS)
 	{
 		if ( (Pointer *)PG_GETARG_DATUM(0) != (Pointer *)geom1 ) pfree(geom1);
 		if ( (Pointer *)PG_GETARG_DATUM(1) != (Pointer *)geom2 ) pfree(geom2);
-		elog(ERROR,
+		elog(BTREE_SRID_MISMATCH_SEVERITY,
 			"Operation on two GEOMETRIES with different SRIDs\n");
-		PG_RETURN_NULL();
+		//PG_RETURN_NULL();
 	}
 
 	if  ( ! FPeq(geom1->bvol.LLB.x , geom2->bvol.LLB.x) ) {
@@ -608,9 +622,9 @@ Datum geometry_gt(PG_FUNCTION_ARGS)
 			pfree(geom1);
 		if ( (Pointer *)PG_GETARG_DATUM(1) != (Pointer *)geom2 )
 			pfree(geom2);
-		elog(ERROR,
+		elog(BTREE_SRID_MISMATCH_SEVERITY,
 			"Operation on two GEOMETRIES with different SRIDs\n");
-		PG_RETURN_NULL();
+		//PG_RETURN_NULL();
 	}
 
 	if  ( ! FPeq(geom1->bvol.LLB.x , geom2->bvol.LLB.x) ) {
@@ -687,9 +701,9 @@ Datum geometry_cmp(PG_FUNCTION_ARGS)
 			pfree(geom1);
 		if ( (Pointer *)PG_GETARG_DATUM(1) != (Pointer *)geom2 )
 			pfree(geom2);
-		elog(ERROR,
+		elog(BTREE_SRID_MISMATCH_SEVERITY,
 			"Operation on two GEOMETRIES with different SRIDs\n");
-		PG_RETURN_NULL();
+		//PG_RETURN_NULL();
 	}
 
 	if  ( ! FPeq(geom1->bvol.LLB.x , geom2->bvol.LLB.x) ) {
