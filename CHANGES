@@ -12,6 +12,7 @@ PostGIS 1.1.0CVS
 	- NEW line_substring() function
 	- NEW line_locate_point() function
 	- JTS support improvements
+	- Fault tolerant btree ops
 
 PostGIS 1.0.1
 2005/05/24
