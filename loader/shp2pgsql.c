@@ -59,6 +59,7 @@ typedef struct Ring {
 int	dump_format = 0; //0=insert statements, 1 = dump
 int	quoteidentifiers = 0;
 int	forceint4 = 0;
+int	createindex = 0;
 char    opt = ' ';
 char    *col_names = NULL;
 char	*pgtype;
@@ -90,6 +91,7 @@ char *protect_quotes_string(char *str);
 int PIP( Point P, Point* V, int n );
 void *safe_malloc(size_t size);
 void CreateTable(void);
+void CreateIndex(void);
 void usage(char *me, int exitcode);
 void InsertPoint(void);
 void InsertPointWKT(void);
@@ -396,6 +398,11 @@ main (int ARGC, char **ARGV)
 	if(opt != 'a') CreateTable();
 
 	/*
+	 * Create GiST index if requested
+	 */
+	if(createindex) CreateIndex();
+
+	/*
 	 * Generate INSERT or COPY lines
 	 */
 	if(opt != 'p') LoadData();
@@ -567,6 +574,22 @@ CreateTable(void)
 }
 
 void
+CreateIndex(void)
+{
+	/* 
+	 * Create gist index
+	 */
+	if ( schema )
+	{
+		printf("CREATE INDEX \"%s_%s_gist\" ON \"%s\".\"%s\" using gist (\"%s\" gist_geometry_ops);\n", table, geom, schema, table, geom);
+	}
+	else
+	{
+		printf("CREATE INDEX \"%s_%s_gist\" ON \"%s\" using gist (\"%s\" gist_geometry_ops);\n", table, geom, table, geom);
+	}
+}
+
+void
 LoadData(void)
 {
 	int j, trans=0;
@@ -706,6 +729,8 @@ usage(char *me, int exitcode)
 	fprintf(stderr, "  -k  Keep postgresql identifiers case.\n");
 	fprintf(stderr, "\n");
 	fprintf(stderr, "  -i  Use int4 type for all integer dbf fields.\n");
+	fprintf(stderr, "\n");
+	fprintf(stderr, "  -I  Create a GiST index on the geometry column.\n");
 	fprintf(stderr, "\n");
 	fprintf(stderr, "  -w  Use wkt format (for postgis-0.x support - drops M - drifts coordinates).\n");
 #ifdef USE_ICONV
@@ -1176,7 +1201,7 @@ ParseCmdline(int ARGC, char **ARGV)
 	extern char *optarg;
 	extern int optind;
 
-	while ((c = getopt(ARGC, ARGV, "kcdapDs:g:iW:w")) != EOF){
+	while ((c = getopt(ARGC, ARGV, "kcdapDs:g:iW:wI")) != EOF){
                switch (c) {
                case 'c':
                     if (opt == ' ')
@@ -1216,6 +1241,9 @@ ParseCmdline(int ARGC, char **ARGV)
                     break;
                case 'i':
                     forceint4 = 1;
+                    break;
+               case 'I':
+                    createindex = 1;
                     break;
                case 'w':
                     hwgeom = 1;
@@ -1615,6 +1643,9 @@ utf8 (const char *fromcode, char *inputbuf)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.90  2005/06/16 17:55:58  strk
+ * Added -I switch for GiST index creation in loader
+ *
  * Revision 1.89  2005/04/21 09:08:34  strk
  * Applied patch from Ron Mayer fixing a segfault in string escaper funx
  *

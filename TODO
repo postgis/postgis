@@ -30,10 +30,6 @@ Tue May 24 18:55:46 CEST 2005
 
 - debian packaging conf files
 
-- shp2pgsql switch that spits out the code to create a GIST
-  index on the geometric column, as requested by Christian
-  Graefe.
-
 - MakeValidShape() to remove consecutive vertexes and any eventual
   other cleanup aimed at making pgsql2shp produce "valid" Shapefiles.
 
