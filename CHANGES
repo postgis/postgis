@@ -14,6 +14,7 @@ PostGIS 1.1.0CVS
 	- JTS support improvements
 	- Fault tolerant btree ops
 	- NEW -I (index) switch in shp2pgsql
+	- Memory Leak fix in pg_error
 
 PostGIS 1.0.1
 2005/05/24
