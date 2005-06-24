@@ -7,6 +7,7 @@
   (upstream, downstream, least cost path)
 - Standardized handling for topology and coverages with 
   support functions.
+- casts between PostGIS and PostgreSQL geometry classes
 
 ======================================
 Following is TODO list for release 1.1
