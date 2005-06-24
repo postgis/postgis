@@ -592,10 +592,6 @@ Datum LWGEOM_gist_consistent(PG_FUNCTION_ARGS)
 	bool result;
 	BOX2DFLOAT4  box;
 
-	/*
-	 * if entry is not leaf, use rtree_internal_consistent,
-	 * else use rtree_leaf_consistent
-	 */
 #ifdef PGIS_DEBUG_CALLS
 	elog(NOTICE,"GIST: LWGEOM_gist_consistent called");
 #endif
@@ -614,10 +610,16 @@ Datum LWGEOM_gist_consistent(PG_FUNCTION_ARGS)
 
 	getbox2d_p(query+4, &box);
 
-	if (GIST_LEAF(entry))
-		result = lwgeom_rtree_leaf_consistent((BOX2DFLOAT4 *)
-			DatumGetPointer(entry->key), &box, strategy );
-	else
+	/*
+	 * Since the operators are marked lossy anyway, we can just use
+	 * rtree_internal_consistent even at leaf nodes.  (This works
+	 * in part because the index entries are bounding Boxes not polygons.)
+	 */
+
+	//if (GIST_LEAF(entry))
+	//	result = lwgeom_rtree_leaf_consistent((BOX2DFLOAT4 *)
+	//		DatumGetPointer(entry->key), &box, strategy );
+	//else
 		result = lwgeom_rtree_internal_consistent(
 			(BOX2DFLOAT4 *) DatumGetPointer(entry->key),
 			&box, strategy );
@@ -639,11 +641,13 @@ lwgeom_rtree_internal_consistent(BOX2DFLOAT4 *key, BOX2DFLOAT4 *query,
 #endif
 
 	switch(strategy) {
-    case RTLeftStrategyNumber:
-    case RTOverLeftStrategyNumber:
-      retval = DatumGetBool( DirectFunctionCall2( BOX2D_overleft, PointerGetDatum(key), PointerGetDatum(query) ) );
-      break;
-    case RTOverlapStrategyNumber:  //optimized for speed
+		case RTLeftStrategyNumber:
+			retval = !DatumGetBool( DirectFunctionCall2( BOX2D_overright, PointerGetDatum(key), PointerGetDatum(query) ) );
+			break;
+		case RTOverLeftStrategyNumber:
+			retval = !DatumGetBool( DirectFunctionCall2( BOX2D_right, PointerGetDatum(key), PointerGetDatum(query) ) );
+			break;
+		case RTOverlapStrategyNumber:  //optimized for speed
 
         retval = (((key->xmax>= query->xmax) &&
 			 (key->xmin <= query->xmax)) ||
@@ -670,33 +674,41 @@ lwgeom_rtree_internal_consistent(BOX2DFLOAT4 *key, BOX2DFLOAT4 *query,
 
 elog(NOTICE,"%i:(int)<%.8g %.8g,%.8g %.8g>&&<%.8g %.8g,%.8g %.8g> %i",counter_intern,key->xmin,key->ymin,key->xmax,key->ymax,
 		  						query->xmin,query->ymin,query->xmax,query->ymax,   (int) retval);
-#endif
 			counter_intern++;
-		  return(retval);
-      break;
-    case RTOverRightStrategyNumber:
-    case RTRightStrategyNumber:
-      retval = DatumGetBool( DirectFunctionCall2( BOX2D_overright, PointerGetDatum(key), PointerGetDatum(query) ) );
-      break;
-	case RTOverBelowStrategyNumber:
-	case RTBelowStrategyNumber:
-      retval = DatumGetBool( DirectFunctionCall2( BOX2D_overbelow, PointerGetDatum(key), PointerGetDatum(query) ) );
-      break;
-	case RTAboveStrategyNumber:
-	case RTOverAboveStrategyNumber:
-      retval = DatumGetBool( DirectFunctionCall2( BOX2D_overabove, PointerGetDatum(key), PointerGetDatum(query) ) );
-      break;
-    case RTSameStrategyNumber:
-    case RTContainsStrategyNumber:
-      retval = DatumGetBool( DirectFunctionCall2( BOX2D_contain, PointerGetDatum(key), PointerGetDatum(query) ) );
-      break;
-    case RTContainedByStrategyNumber:
-      retval = DatumGetBool( DirectFunctionCall2( BOX2D_overlap, PointerGetDatum(key), PointerGetDatum(query) ) );
-      break;
-    default:
-      retval = FALSE;
-    }
-    return(retval);
+#endif
+
+			return(retval);
+			break;
+
+		case RTOverRightStrategyNumber:
+			retval = !DatumGetBool( DirectFunctionCall2( BOX2D_left, PointerGetDatum(key), PointerGetDatum(query) ) );
+			break;
+		case RTRightStrategyNumber:
+			retval = !DatumGetBool( DirectFunctionCall2( BOX2D_overleft, PointerGetDatum(key), PointerGetDatum(query) ) );
+			break;
+		case RTOverBelowStrategyNumber:
+			retval = !DatumGetBool( DirectFunctionCall2( BOX2D_above, PointerGetDatum(key), PointerGetDatum(query) ) );
+			break;
+		case RTBelowStrategyNumber:
+			retval = !DatumGetBool( DirectFunctionCall2( BOX2D_above, PointerGetDatum(key), PointerGetDatum(query) ) );
+			break;
+		case RTAboveStrategyNumber:
+			retval = !DatumGetBool( DirectFunctionCall2( BOX2D_overbelow, PointerGetDatum(key), PointerGetDatum(query) ) );
+			break;
+		case RTOverAboveStrategyNumber:
+			retval = !DatumGetBool( DirectFunctionCall2( BOX2D_below, PointerGetDatum(key), PointerGetDatum(query) ) );
+			break;
+		case RTSameStrategyNumber:
+		case RTContainsStrategyNumber:
+			retval = DatumGetBool( DirectFunctionCall2( BOX2D_contain, PointerGetDatum(key), PointerGetDatum(query) ) );
+			break;
+		case RTContainedByStrategyNumber:
+			retval = DatumGetBool( DirectFunctionCall2( BOX2D_overlap, PointerGetDatum(key), PointerGetDatum(query) ) );
+			break;
+		default:
+			retval = FALSE;
+	}
+	return(retval);
 }
 
 
