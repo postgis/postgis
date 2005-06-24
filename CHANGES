@@ -15,6 +15,8 @@ PostGIS 1.1.0CVS
 	- Fault tolerant btree ops
 	- NEW -I (index) switch in shp2pgsql
 	- Memory Leak fix in pg_error
+	- Rtree index fix. See:
+	  http://archives.postgresql.org/pgsql-hackers/2005-06/msg01108.php
 
 PostGIS 1.0.1
 2005/05/24
