@@ -136,16 +136,15 @@ Datum postgis_geos_version(PG_FUNCTION_ARGS)
 }
 
 
+#define UNITE_USING_BUFFER  1
+
+#ifndef UNITE_USING_BUFFER
 /*
- * This is the final function for union/fastunite/geomunion
- * aggregate (still discussing the name). Will have
- * as input an array of Geometry pointers.
+ * This is the final function for GeomUnion
+ * aggregate. Will have as input an array of Geometries.
  * Will iteratively call GEOSUnion on the GEOS-converted
  * versions of them and return PGIS-converted version back.
  * Changing combination order *might* speed up performance.
- *
- * Geometries in the array are pfree'd as soon as possible.
- *
  */
 PG_FUNCTION_INFO_V1(unite_garray);
 Datum unite_garray(PG_FUNCTION_ARGS)
@@ -165,6 +164,8 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 #ifdef PGIS_DEBUG
 	call++;
 #endif
+
+	//lwnotice("GEOS incremental union");
 
 	datum = PG_GETARG_DATUM(0);
 
@@ -255,6 +256,113 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 
 }
+
+#else // def UNITE_USING_BUFFER
+
+/*
+ * This is the final function for GeomUnion
+ * aggregate. Will have as input an array of Geometries.
+ * Builds a GEOMETRYCOLLECTION from input and call
+ * GEOSBuffer(collection, 0) on the GEOS-converted
+ * versions of it. Returns PGIS-converted version back.
+ */
+PG_FUNCTION_INFO_V1(unite_garray);
+Datum unite_garray(PG_FUNCTION_ARGS)
+{
+	Datum datum;
+	ArrayType *array;
+	int is3d = 0;
+	int nelems, i;
+	PG_LWGEOM *result, *pgis_geom;
+	LWGEOM **lwgeoms, *collection;
+	Geometry *g1, *geos_result=NULL;
+	int SRID=-1;
+	size_t offset;
+#ifdef PGIS_DEBUG
+	static int call=1;
+#endif
+
+#ifdef PGIS_DEBUG
+	call++;
+#endif
+
+	//lwnotice("GEOS buffer union");
+
+	datum = PG_GETARG_DATUM(0);
+
+	/* Null array, null geometry (should be empty?) */
+	if ( (Pointer *)datum == NULL ) PG_RETURN_NULL();
+
+	array = (ArrayType *) PG_DETOAST_DATUM(datum);
+
+	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
+
+#ifdef PGIS_DEBUG
+	elog(NOTICE, "unite_garray: number of elements: %d", nelems);
+#endif
+
+	if ( nelems == 0 ) PG_RETURN_NULL();
+
+	/* One-element union is the element itself */
+	if ( nelems == 1 ) PG_RETURN_POINTER((PG_LWGEOM *)(ARR_DATA_PTR(array)));
+
+	lwgeoms = lwalloc(sizeof(LWGEOM *)*nelems);
+
+	offset = 0;
+	for (i=0; i<nelems; i++)
+	{
+		PG_LWGEOM *geom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
+		offset += INTALIGN(geom->size);
+
+		pgis_geom = geom;
+
+		// Check is3d flag
+		if ( TYPE_NDIMS(geom->type) > 2 ) is3d = 1;
+
+		// Check SRID homogeneity 
+		if ( ! i ) SRID = pglwgeom_getSRID(geom);
+		else if ( SRID != pglwgeom_getSRID(geom) )
+			lwerror("Operation on mixed SRID geometries");
+		
+		lwgeoms[i] = lwgeom_deserialize(SERIALIZED_FORM(pgis_geom));
+
+	}
+
+	/* Let's build a GEOMETRYCOLLECTION */
+	collection = (LWGEOM *)lwcollection_construct(COLLECTIONTYPE, -1,
+		NULL, nelems, lwgeoms);
+
+	/* Ok, we really need geos now ;) */
+	initGEOS(MAXIMUM_ALIGNOF);
+
+	g1 = LWGEOM2GEOS(collection);
+
+	/* we don't need these anymore */
+	lwgeom_release(collection);
+
+	geos_result = GEOSBuffer(g1, 0, 0);
+	if ( geos_result == NULL )
+	{
+		GEOSdeleteGeometry(g1);
+		lwerror("GEOS buffer() threw an error!");
+	}
+	GEOSdeleteGeometry(g1);
+	GEOSSetSRID(geos_result, SRID);
+
+	result = GEOS2POSTGIS(geos_result, is3d);
+	GEOSdeleteGeometry(geos_result);
+	if ( result == NULL )
+	{
+		lwerror("GEOS2POSTGIS returned an error");
+	}
+
+	//compressType(result);
+
+	PG_RETURN_POINTER(result);
+
+}
+
+#endif // def UNITE_USING_BUFFER
 
 
 //select geomunion('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))','POLYGON((5 5, 15 5, 15 7, 5 7, 5 5))');

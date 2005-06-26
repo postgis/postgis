@@ -127,9 +127,15 @@ LWGEOM *JTS2LWGEOM(JTSGeometry *g, char want3d);
 
 
 /*
- * This is the final function for union/fastunite/geomunion
- * aggregate (still discussing the name). Will have
- * as input an array of JTSGeometry objects.
+ * Using BUFFER(0) version of unite_garray takes
+ * processing to a segfault (after spending a lot of time!)
+ */
+#undef UNITE_USING_BUFFER 
+
+#ifndef UNITE_USING_BUFFER
+/*
+ * This is the final function for geomunion
+ * aggregate. Will have as input an array of Geometries.
  * Will iteratively call JTSUnion on the JTS-converted
  * versions of them and return PGIS-converted version back.
  * Changing combination order *might* speed up performance.
@@ -154,7 +160,7 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 	call++;
 #endif
 
-	//lwnotice("unite_garray (jts) invoked");
+	lwnotice("JTS incremental union");
 
 	datum = PG_GETARG_DATUM(0);
 
@@ -253,6 +259,114 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 
 }
+
+#else // def UNITE_USING_BUFFER
+
+/*
+ * This is the final function for GeomUnion
+ * aggregate. Will have as input an array of Geometries.
+ * Builds a GEOMETRYCOLLECTION from input and call
+ * JTSBuffer(collection, 0) on the JTS-converted
+ * versions of it. Returns PGIS-converted version back.
+ */
+PG_FUNCTION_INFO_V1(unite_garray);
+Datum unite_garray(PG_FUNCTION_ARGS)
+{
+	Datum datum;
+	ArrayType *array;
+	int is3d = 0;
+	int nelems, i;
+	PG_LWGEOM *result, *pgis_geom;
+	LWGEOM **lwgeoms, *collection;
+	JTSGeometry *g1, *geos_result=NULL;
+	int SRID=-1;
+	size_t offset;
+#ifdef PGIS_DEBUG
+	static int call=1;
+#endif
+
+#ifdef PGIS_DEBUG
+	call++;
+#endif
+
+	lwnotice("JTS buffer union");
+
+	datum = PG_GETARG_DATUM(0);
+
+	/* Null array, null geometry (should be empty?) */
+	if ( (Pointer *)datum == NULL ) PG_RETURN_NULL();
+
+	array = (ArrayType *) PG_DETOAST_DATUM(datum);
+
+	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
+
+#ifdef PGIS_DEBUG
+	elog(NOTICE, "unite_garray: number of elements: %d", nelems);
+#endif
+
+	if ( nelems == 0 ) PG_RETURN_NULL();
+
+	/* One-element union is the element itself */
+	if ( nelems == 1 ) PG_RETURN_POINTER((PG_LWGEOM *)(ARR_DATA_PTR(array)));
+
+	lwgeoms = lwalloc(sizeof(LWGEOM *)*nelems);
+
+	offset = 0;
+	for (i=0; i<nelems; i++)
+	{
+		PG_LWGEOM *geom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
+		offset += INTALIGN(geom->size);
+
+		pgis_geom = geom;
+
+		// Check is3d flag
+		if ( TYPE_NDIMS(geom->type) > 2 ) is3d = 1;
+
+		// Check SRID homogeneity 
+		if ( ! i ) SRID = pglwgeom_getSRID(geom);
+		else if ( SRID != pglwgeom_getSRID(geom) )
+			lwerror("Operation on mixed SRID geometries");
+		
+		lwgeoms[i] = lwgeom_deserialize(SERIALIZED_FORM(pgis_geom));
+
+	}
+
+	/* Let's build a GEOMETRYCOLLECTION */
+	collection = (LWGEOM *)lwcollection_construct(COLLECTIONTYPE, -1,
+		NULL, nelems, lwgeoms);
+
+	/* Ok, we really need JTS now */
+	initJTS(lwnotice);
+
+	g1 = LWGEOM2JTS(collection);
+
+	/* we don't need these anymore */
+	lwgeom_release(collection);
+
+	geos_result = JTSBuffer(g1, 0, 0);
+	g1=NULL;
+	if ( geos_result == NULL )
+	{
+		finishJTS();
+		lwerror("GEOS buffer() threw an error!");
+	}
+	JTSSetSRID(geos_result, SRID);
+
+	result = JTS2POSTGIS(geos_result, is3d);
+	geos_result=NULL;
+
+	finishJTS();
+
+	if ( result == NULL )
+		lwerror("JTS2POSTGIS returned an error");
+
+	//compressType(result);
+
+	PG_RETURN_POINTER(result);
+
+}
+
+#endif // def UNITE_USING_BUFFER
 
 
 //select geomunion('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))','POLYGON((5 5, 15 5, 15 7, 5 7, 5 5))');
