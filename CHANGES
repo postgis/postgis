@@ -17,6 +17,7 @@ PostGIS 1.1.0CVS
 	- Memory Leak fix in pg_error
 	- Rtree index fix. See:
 	  http://archives.postgresql.org/pgsql-hackers/2005-06/msg01108.php
+	- GeomUnion improvements
 
 PostGIS 1.0.1
 2005/05/24

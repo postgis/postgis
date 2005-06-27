@@ -136,7 +136,7 @@ Datum postgis_geos_version(PG_FUNCTION_ARGS)
 }
 
 
-#define UNITE_USING_BUFFER  1
+#define UNITE_USING_BUFFER 1
 
 #ifndef UNITE_USING_BUFFER
 /*
@@ -259,6 +259,13 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 
 #else // def UNITE_USING_BUFFER
 
+// Fuzzy way of finding out how many points to stuff
+// in each chunk: 680 * Mb of memory
+//
+// The example below is for about 32 MB (fuzzy pragmatic check)
+//
+#define MAXGEOMSPOINTS 21760
+
 /*
  * This is the final function for GeomUnion
  * aggregate. Will have as input an array of Geometries.
@@ -272,9 +279,9 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 	Datum datum;
 	ArrayType *array;
 	int is3d = 0;
-	int nelems, i;
-	PG_LWGEOM *result, *pgis_geom;
-	LWGEOM **lwgeoms, *collection;
+	int nelems, i, ngeoms, npoints;
+	PG_LWGEOM *result=NULL;
+	Geometry **geoms, *collection;
 	Geometry *g1, *geos_result=NULL;
 	int SRID=-1;
 	size_t offset;
@@ -306,15 +313,18 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 	/* One-element union is the element itself */
 	if ( nelems == 1 ) PG_RETURN_POINTER((PG_LWGEOM *)(ARR_DATA_PTR(array)));
 
-	lwgeoms = lwalloc(sizeof(LWGEOM *)*nelems);
+	geoms = lwalloc(sizeof(Geometry *)*nelems);
 
-	offset = 0;
-	for (i=0; i<nelems; i++)
+	/* We need geos here */
+	initGEOS(MAXIMUM_ALIGNOF);
+
+	offset = 0; i=0;
+	ngeoms = 0; npoints=0;
+//lwnotice("Nelems %d, MAXGEOMSPOINST %d", nelems, MAXGEOMSPOINTS);
+	while (!result) 
 	{
 		PG_LWGEOM *geom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
 		offset += INTALIGN(geom->size);
-
-		pgis_geom = geom;
 
 		// Check is3d flag
 		if ( TYPE_NDIMS(geom->type) > 2 ) is3d = 1;
@@ -323,38 +333,73 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 		if ( ! i ) SRID = pglwgeom_getSRID(geom);
 		else if ( SRID != pglwgeom_getSRID(geom) )
 			lwerror("Operation on mixed SRID geometries");
-		
-		lwgeoms[i] = lwgeom_deserialize(SERIALIZED_FORM(pgis_geom));
 
+		geoms[ngeoms] =
+			g1 = POSTGIS2GEOS(geom);
+			//lwgeom_deserialize(SERIALIZED_FORM(geom));
+
+		npoints += GEOSGetNumCoordinate(geoms[ngeoms]);
+
+		++ngeoms;
+		++i;
+
+//lwnotice("Loop %d, npoints: %d", i, npoints);
+
+		/*
+		 * Maximum count of geometry points reached
+		 * or end of them, collect and buffer(0).
+		 */
+		if ( (npoints>=MAXGEOMSPOINTS && ngeoms>1) || i==nelems)
+		{
+//lwnotice(" CHUNK (ngeoms:%d, npoints:%d, left:%d)", ngeoms, npoints, nelems-i);
+
+			//collection = (LWGEOM *)
+			//	lwcollection_construct(COLLECTIONTYPE,
+			//	-1, NULL, ngeoms, lwgeoms);
+			collection = PostGIS2GEOS_collection(COLLECTIONTYPE,
+				geoms, ngeoms, -1, is3d);
+
+			//g1 = LWGEOM2GEOS(collection);
+
+			//lwgeom_release(collection);
+
+			//geos_result = GEOSBuffer(g1, 0, 0);
+			geos_result = GEOSBuffer(collection, 0, 0);
+			if ( geos_result == NULL )
+			{
+				GEOSdeleteGeometry(g1);
+				lwerror("GEOS buffer() threw an error!");
+			}
+			//GEOSdeleteGeometry(g1);
+			GEOSdeleteGeometry(collection);
+
+//lwnotice(" Buffer() executed");
+
+			/*
+			 * If there are no other geoms in input
+			 * we've finished, otherwise we push
+			 * the result back on the input stack.
+			 */
+			if ( i == nelems )
+			{
+//lwnotice("  Final result points: %d", GEOSGetNumCoordinate(geos_result));
+				GEOSSetSRID(geos_result, SRID);
+				result = GEOS2POSTGIS(geos_result, is3d);
+				GEOSdeleteGeometry(geos_result);
+//lwnotice(" Result computed");
+			}
+			else
+			{
+				//lwgeoms = lwalloc(sizeof(LWGEOM *)*MAXGEOMS);
+				//lwgeoms[0] = lwgeom_from_geometry(geos_result, is3d);
+				geoms[0] = geos_result;
+				ngeoms=1;
+				npoints = GEOSGetNumCoordinate(geoms[0]);
+//lwnotice("  Result pushed back on lwgeoms array (npoints:%d)", npoints);
+			}
+		}
 	}
 
-	/* Let's build a GEOMETRYCOLLECTION */
-	collection = (LWGEOM *)lwcollection_construct(COLLECTIONTYPE, -1,
-		NULL, nelems, lwgeoms);
-
-	/* Ok, we really need geos now ;) */
-	initGEOS(MAXIMUM_ALIGNOF);
-
-	g1 = LWGEOM2GEOS(collection);
-
-	/* we don't need these anymore */
-	lwgeom_release(collection);
-
-	geos_result = GEOSBuffer(g1, 0, 0);
-	if ( geos_result == NULL )
-	{
-		GEOSdeleteGeometry(g1);
-		lwerror("GEOS buffer() threw an error!");
-	}
-	GEOSdeleteGeometry(g1);
-	GEOSSetSRID(geos_result, SRID);
-
-	result = GEOS2POSTGIS(geos_result, is3d);
-	GEOSdeleteGeometry(geos_result);
-	if ( result == NULL )
-	{
-		lwerror("GEOS2POSTGIS returned an error");
-	}
 
 	//compressType(result);
 
