@@ -6,6 +6,7 @@ PostGIS 1.1.0CVS
 	  + Basic consistency check method for geometry collections
 	  + Support for (Hex)(E)wkb
 	  + Autoprobing DriverWrapper for HexWKB / EWKT switching
+	  + fix compile problems in ValueSetter for ancient jdk releases.
 	- full autoconf-based configuration
 	- added scale() and transscale() companion methods to translate()
 	- initial implementation of postgis_proc_upgrade script

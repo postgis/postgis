@@ -70,8 +70,10 @@ public abstract class ValueSetter {
     }
 
     public String toString() {
-        String[] buff = getClass().getName().split("\\.");
-        return buff[buff.length-1]+"('"+(data==null?"NULL":data.toString()+"')");
+        String name = getClass().getName();
+        int pointpos = name.lastIndexOf('.');
+        String klsName = name.substring(pointpos+1);
+        return klsName+"('"+(data==null?"NULL":data.toString()+"')");
     }
     
     public static class XDR extends ValueSetter {
