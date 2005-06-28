@@ -7,6 +7,9 @@
 #include "postgres.h"
 #include "access/gist.h"
 #include "access/itup.h"
+#if USE_VERSION > 80
+#include "access/rtree.h"
+#endif
 #include "fmgr.h"
 #include "utils/elog.h"
 
@@ -49,7 +52,7 @@ Datum LWGEOM_gist_picksplit(PG_FUNCTION_ARGS);
 
 static float size_box2d(Datum box);
 
-static bool lwgeom_rtree_internal_consistent(BOX2DFLOAT4 *key,BOX2DFLOAT4 *query,StrategyNumber strategy);
+static bool lwgeom_rtree_internal_consistent(BOX2DFLOAT4 *key, BOX2DFLOAT4 *query, StrategyNumber strategy);
 static bool lwgeom_rtree_leaf_consistent(BOX2DFLOAT4 *key,BOX2DFLOAT4 *query,	StrategyNumber strategy);
 
 
