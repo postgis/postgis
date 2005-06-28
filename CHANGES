@@ -6,6 +6,7 @@ PostGIS 1.0.2cvs
 	  http://archives.postgresql.org/pgsql-hackers/2005-06/msg01108.php
 	- Chunked GeomUnion implementation (much faster)
 	- Support for postgresql 8.1
+	- Cleaner build scripts: avoided mix of CFLAGS and CXXFLAGS
 
 PostGIS 1.0.1
 2005/05/24
