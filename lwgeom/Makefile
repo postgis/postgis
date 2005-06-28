@@ -37,8 +37,8 @@ POSTGIS_BUILD_DATE := $(shell date -u "+%Y-%m-%d %H:%M:%S")
 
 #---------------------------------------------------------------
 
-override CFLAGS += -g -O2 -fexceptions
-override CFLAGS += -fPIC
+CSTAR_FLAGS = -g -O2 -fPIC -fexceptions
+
 #override CFLAGS += -I$(srcdir) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"' 
 override CFLAGS += -DUSE_VERSION=$(USE_VERSION)
 override CFLAGS += -DPOSTGIS_LIB_VERSION='"$(POSTGIS_LIB_VERSION)"'
@@ -47,7 +47,8 @@ override CFLAGS += -DPOSTGIS_BUILD_DATE='"$(POSTGIS_BUILD_DATE)"'
 
 JTS_OBJ=lwgeom_nojts.o
 ifeq ($(USE_GEOS),1)
-	override CFLAGS += -I$(GEOS_DIR)/include -DUSE_GEOS
+	CXXFLAGS += -I$(GEOS_DIR)/include 
+	CSTAR_FLAGS += -DUSE_GEOS
 	GEOS_RULES=detect_geos_version
 	GEOS_WRAPPER=lwgeom_geos_wrapper.o
 	JTS_OBJ=lwgeom_geos.o
@@ -55,7 +56,8 @@ ifeq ($(USE_GEOS),1)
 endif
 
 ifeq ($(USE_JTS),1)
-	override CFLAGS += -I$(JTS_INCLUDES) -DUSE_JTS
+	CXXFLAGS += -I$(JTS_INCLUDES)
+	CSTAR_FLAGS += -DUSE_JTS
 	JTS_WRAPPER=lwgeom_jts_wrapper.o
 	JTS_OBJ=lwgeom_jts.o
 	SHLIB_LINK += -lgcj -ljts -lstdc++ -L$(JTS_LIBDIR) 
@@ -68,7 +70,6 @@ endif
 
 override CFLAGS += $(PGBEINCLUDES) -DAUTOCACHE_BBOX=$(AUTOCACHE_BBOX) 
 
-override CXXFLAGS := $(CFLAGS)
 # memory debug for gcc 2.91, 2.95, 3.0 and 3.1
 # for gcc >= 3.2.2 set GLIBCPP_FORCE_NEW at runtime instead
 #override CXXFLAGS += -D__USE_MALLOC
@@ -79,6 +80,9 @@ override CXXFLAGS := $(CFLAGS)
 ifeq ($(USE_STATS),1)
 	override CFLAGS += -DUSE_STATS
 endif
+
+override CFLAGS += $(CSTAR_FLAGS)
+override CXXFLAGS += $(CSTAR_FLAGS)
 
 SA_OBJS=measures.o box2d.o ptarray.o lwgeom_api.o lwgeom.o lwpoint.o lwline.o lwpoly.o lwmpoint.o lwmline.o lwmpoly.o lwcollection.o $(GEOS_WRAPPER) $(JTS_WRAPPER) wktunparse.o lwgparse.o wktparse.tab.o lex.yy.o vsprintf.o
 
