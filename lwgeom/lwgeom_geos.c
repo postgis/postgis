@@ -9,6 +9,14 @@
 #include "profile.h"
 #include "wktparse.h"
 
+// Fuzzy way of finding out how many points to stuff
+// in each chunk: 680 * Mb of memory
+//
+// The example below is for about 32 MB (fuzzy pragmatic check)
+//
+#define UNITE_USING_BUFFER 1
+#define MAXGEOMSPOINTS 21760
+
 Datum relate_full(PG_FUNCTION_ARGS);
 Datum relate_pattern(PG_FUNCTION_ARGS);
 Datum disjoint(PG_FUNCTION_ARGS);
@@ -136,7 +144,6 @@ Datum postgis_geos_version(PG_FUNCTION_ARGS)
 }
 
 
-#define UNITE_USING_BUFFER 1
 
 #ifndef UNITE_USING_BUFFER
 /*
@@ -258,13 +265,6 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 }
 
 #else // def UNITE_USING_BUFFER
-
-// Fuzzy way of finding out how many points to stuff
-// in each chunk: 680 * Mb of memory
-//
-// The example below is for about 32 MB (fuzzy pragmatic check)
-//
-#define MAXGEOMSPOINTS 21760
 
 /*
  * This is the final function for GeomUnion
