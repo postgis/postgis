@@ -38,9 +38,8 @@ POSTGIS_BUILD_DATE := $(shell date -u "+%Y-%m-%d %H:%M:%S")
 
 #---------------------------------------------------------------
 
-override CFLAGS += -g -O2 -fexceptions
-override CFLAGS += -fPIC
-#override CFLAGS += -I$(srcdir) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"' 
+CSTAR_FLAGS = -g -O2 -fPIC -fexceptions
+
 override CFLAGS += -DUSE_VERSION=$(USE_VERSION)
 override CFLAGS += -DPOSTGIS_LIB_VERSION='"$(POSTGIS_LIB_VERSION)"'
 override CFLAGS += -DPOSTGIS_SCRIPTS_VERSION='"$(SCRIPTS_VERSION)"'
@@ -48,14 +47,16 @@ override CFLAGS += -DPOSTGIS_BUILD_DATE='"$(POSTGIS_BUILD_DATE)"'
 
 JTS_OBJ=lwgeom_nojts.o
 ifeq ($(USE_GEOS),1)
-	override CFLAGS += -I$(GEOS_DIR)/include -DUSE_GEOS
+	CXXFLAGS += -I$(GEOS_DIR)/include 
+	CSTAR_FLAGS += -DUSE_GEOS
 	GEOS_RULES=detect_geos_version
 	GEOS_WRAPPER=lwgeom_geos_wrapper.o
 	JTS_OBJ=lwgeom_geos.o
 endif
 
 ifeq ($(USE_JTS),1)
-	override CFLAGS += -I$(JTS_INCLUDES) -DUSE_JTS
+	CXXFLAGS += -I$(JTS_INCLUDES)
+	CSTAR_FLAGS += -DUSE_JTS
 	JTS_WRAPPER=lwgeom_jts_wrapper.o
 	JTS_OBJ=lwgeom_jts.o
 endif
@@ -68,7 +69,9 @@ override CFLAGS += -I$(PROJ_DIR)/include -DAUTOCACHE_BBOX=$(AUTOCACHE_BBOX)
 
 override DLLLIBS += $(BE_DLLLIBS) 
 
-override CXXFLAGS := $(CFLAGS)
+override CFLAGS += $(CSTAR_FLAGS)
+override CXXFLAGS += $(CSTAR_FLAGS)
+
 # memory debug for gcc 2.91, 2.95, 3.0 and 3.1
 # for gcc >= 3.2.2 set GLIBCPP_FORCE_NEW at runtime instead
 #override CXXFLAGS += -D__USE_MALLOC

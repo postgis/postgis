@@ -841,9 +841,9 @@ Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 	if ( ! stats1_tuple )
 	{
 #if DEBUG_GEOMETRY_STATS
-		elog(NOTICE, " No statistics, returning default estimate");
+		elog(NOTICE, " No statistics, returning default geometry join selectivity");
 #endif
-		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_SEL);
+		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_JOINSEL);
 	}
 
 	
@@ -853,10 +853,10 @@ Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 		(float4 **)&geomstats1, &geomstats1_nvalues) )
 	{
 #if DEBUG_GEOMETRY_STATS
-		elog(NOTICE, " STATISTIC_KIND_GEOMETRY stats not found - returning default geometry selectivity");
+		elog(NOTICE, " STATISTIC_KIND_GEOMETRY stats not found - returning default geometry join selectivity");
 #endif
 		ReleaseSysCache(stats1_tuple);
-		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_SEL);
+		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_JOINSEL);
 	}
 
 
@@ -865,9 +865,12 @@ Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 	if ( ! stats2_tuple )
 	{
 #if DEBUG_GEOMETRY_STATS
-		elog(NOTICE, " No statistics, returning default estimate");
+		elog(NOTICE, " No statistics, returning default geometry join selectivity");
 #endif
-		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_SEL);
+		free_attstatsslot(0, NULL, 0, (float *)geomstats1,
+			geomstats1_nvalues);
+		ReleaseSysCache(stats1_tuple);
+		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_JOINSEL);
 	}
 
 
@@ -876,10 +879,13 @@ Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 		(float4 **)&geomstats2, &geomstats2_nvalues) )
 	{
 #if DEBUG_GEOMETRY_STATS
-		elog(NOTICE, " STATISTIC_KIND_GEOMETRY stats not found - returning default geometry selectivity");
+		elog(NOTICE, " STATISTIC_KIND_GEOMETRY stats not found - returning default geometry join selectivity");
 #endif
+		free_attstatsslot(0, NULL, 0, (float *)geomstats1,
+			geomstats1_nvalues);
 		ReleaseSysCache(stats2_tuple);
-		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_SEL);
+		ReleaseSysCache(stats1_tuple);
+		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_JOINSEL);
 	}
 
 
@@ -962,6 +968,24 @@ Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 	elog(NOTICE, "Rows from rel2: %f", num2_tuples * selectivity2);
 	elog(NOTICE, "Estimated rows returned: %f", rows_returned);
 #endif
+
+	/*
+	 * One (or both) tuple count is zero...
+	 * We return default selectivity estimate.
+	 * We could probably attempt at an estimate
+	 * w/out looking at tables tuple count, with
+	 * a function of selectivity1, selectivity2.
+	 */
+	if ( ! total_tuples )
+	{
+#if DEBUG_GEOMETRY_STATS
+	elog(NOTICE, "Total tuples == 0, returning default join selectivity");
+#endif
+		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_JOINSEL);
+	}
+
+	if ( rows_returned > total_tuples )
+		PG_RETURN_FLOAT8(1.0);
 
 	PG_RETURN_FLOAT8(rows_returned / total_tuples);
 }
@@ -1329,7 +1353,9 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
  * of a search_box looking at data in the GEOM_STATS 
  * structure.
  *
- * TODO: handle box dimension collapses
+ * TODO: handle box dimension collapses (probably should be handled
+ * by the statistic generator, avoiding GEOM_STATS with collapsed
+ * dimensions)
  */
 static float8
 estimate_selectivity(BOX2DFLOAT4 *box, GEOM_STATS *geomstats)
@@ -1380,6 +1406,11 @@ estimate_selectivity(BOX2DFLOAT4 *box, GEOM_STATS *geomstats)
 
 	histocols = geomstats->cols;
 	historows = geomstats->rows;
+
+#if DEBUG_GEOMETRY_STATS
+	elog(NOTICE, " histogram has %d cols, %d rows", histocols, historows);
+	elog(NOTICE, " histogram geosize is %fx%f", geow, geoh);
+#endif
 
 	cell_area = (geow*geoh) / (histocols*historows);
 	//box_area = (box->high.x-box->low.x)*(box->high.y-box->low.y);
@@ -1917,10 +1948,10 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		sdHIGx += (box->xmax - avgHIGx) * (box->xmax - avgHIGx);
 		sdHIGy += (box->ymax - avgHIGy) * (box->ymax - avgHIGy);
 	}
-	sdLOWx = sqrt(sdLOWx/(notnull_cnt-1));
-	sdLOWy = sqrt(sdLOWy/(notnull_cnt-1));
-	sdHIGx = sqrt(sdHIGx/(notnull_cnt-1));
-	sdHIGy = sqrt(sdHIGy/(notnull_cnt-1));
+	sdLOWx = sqrt(sdLOWx/notnull_cnt);
+	sdLOWy = sqrt(sdLOWy/notnull_cnt);
+	sdHIGx = sqrt(sdHIGx/notnull_cnt);
+	sdHIGy = sqrt(sdHIGy/notnull_cnt);
 
 #if DEBUG_GEOMETRY_STATS 
 	elog(NOTICE, " standard deviations:");
@@ -2454,6 +2485,17 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.29.2.3  2005/04/22 01:05:41  strk
+ * Fixed bug in join selectivity estimator returning invalid estimates (>1)
+ *
+ * Revision 1.29.2.2  2005/04/18 14:12:59  strk
+ * Slightly changed standard deviation computation to be more corner-case-friendly.
+ *
+ * Revision 1.29.2.1  2005/04/18 10:57:01  strk
+ * Applied patched by Ron Mayer fixing memory leakages and invalid results
+ * in join selectivity estimator. Fixed some return to use default JOIN
+ * selectivity estimate instead of default RESTRICT selectivity estimate.
+ *
  * Revision 1.29  2005/03/25 09:34:25  strk
  * code cleanup
  *
