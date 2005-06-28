@@ -775,7 +775,11 @@ calculate_column_intersection(BOX2DFLOAT4 *search_box, GEOM_STATS *geomstats1, G
 PG_FUNCTION_INFO_V1(LWGEOM_gist_joinsel);
 Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 {
+#if USE_VERSION < 81
 	Query *root = (Query *) PG_GETARG_POINTER(0);
+#else
+	PlannerInfo *root = (PlannerInfo *) PG_GETARG_POINTER(0);
+#endif
 	//Oid operator = PG_GETARG_OID(1);
 	List *args = (List *) PG_GETARG_POINTER(2);
 	JoinType jointype = (JoinType) PG_GETARG_INT16(3);
@@ -828,9 +832,14 @@ Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 	}
 
 	var1 = (Var *)arg1;
-	relid1 = getrelid(var1->varno, root->rtable);
 	var2 = (Var *)arg2;
+#if USE_VERSION < 81
+	relid1 = getrelid(var1->varno, root->rtable);
 	relid2 = getrelid(var2->varno, root->rtable);
+#else
+	relid1 = getrelid(var1->varno, root->parse->rtable);
+	relid2 = getrelid(var2->varno, root->parse->rtable);
+#endif
 
 #if DEBUG_GEOMETRY_STATS
 	elog(NOTICE, "Working with relations oids: %d %d", relid1, relid2);
@@ -1602,7 +1611,11 @@ elog(NOTICE, " avg feat overlaps %f cells", avg_feat_cells);
 PG_FUNCTION_INFO_V1(LWGEOM_gist_sel);
 Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS)
 {
+#if USE_VERSION < 81
 	Query *root = (Query *) PG_GETARG_POINTER(0);
+#else
+	PlannerInfo *root = (PlannerInfo *) PG_GETARG_POINTER(0);
+#endif
 	//Oid operator = PG_GETARG_OID(1);
 	List *args = (List *) PG_GETARG_POINTER(2);
 	//int varRelid = PG_GETARG_INT32(3);
@@ -1687,8 +1700,12 @@ Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS)
 	 * Get pg_statistic row
 	 */
 
+#if USE_VERSION < 81
 //	relid = getrelid(varRelid, root->rtable);
 	relid = getrelid(self->varno, root->rtable);
+#else
+	relid = getrelid(self->varno, root->parse->rtable);
+#endif
 
 	stats_tuple = SearchSysCache(STATRELATT, ObjectIdGetDatum(relid), Int16GetDatum(self->varattno), 0, 0);
 	if ( ! stats_tuple )
@@ -2485,6 +2502,9 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.29.2.4  2005/06/28 22:00:05  strk
+ * Fixed extimators to work with postgresql 8.1.x
+ *
  * Revision 1.29.2.3  2005/04/22 01:05:41  strk
  * Fixed bug in join selectivity estimator returning invalid estimates (>1)
  *
