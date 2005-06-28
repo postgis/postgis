@@ -29,6 +29,16 @@ Datum lwgeom_cmp(PG_FUNCTION_ARGS);
 
 //#define PGIS_DEBUG
 
+#if USE_VERSION == 72
+#define BTREE_SRID_MISMATCH_SEVERITY NOTICE
+#else
+#if USE_VERSION < 80
+#define BTREE_SRID_MISMATCH_SEVERITY WARNING
+#else
+#define BTREE_SRID_MISMATCH_SEVERITY ERROR
+#endif
+#endif
+
 PG_FUNCTION_INFO_V1(lwgeom_lt);
 Datum lwgeom_lt(PG_FUNCTION_ARGS)
 {
@@ -43,7 +53,7 @@ Datum lwgeom_lt(PG_FUNCTION_ARGS)
 
 	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
 	{
-		elog(ERROR,
+		elog(BTREE_SRID_MISMATCH_SEVERITY,
 			"Operation on two GEOMETRIES with different SRIDs\n");
 		if ( (Pointer *)PG_GETARG_DATUM(0) != (Pointer *)geom1 )
 			pfree(geom1);
@@ -100,7 +110,7 @@ Datum lwgeom_le(PG_FUNCTION_ARGS)
 
 	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
 	{
-		elog(ERROR,
+		elog(BTREE_SRID_MISMATCH_SEVERITY,
 			"Operation on two GEOMETRIES with different SRIDs\n");
 		if ( (Pointer *)PG_GETARG_DATUM(0) != (Pointer *)geom1 )
 			pfree(geom1);
@@ -180,7 +190,7 @@ Datum lwgeom_eq(PG_FUNCTION_ARGS)
 
 	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
 	{
-		elog(ERROR,
+		elog(BTREE_SRID_MISMATCH_SEVERITY,
 			"Operation on two GEOMETRIES with different SRIDs\n");
 		if ( (Pointer *)PG_GETARG_DATUM(0) != (Pointer *)geom1 )
 			pfree(geom1);
@@ -240,7 +250,7 @@ Datum lwgeom_ge(PG_FUNCTION_ARGS)
 
 	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
 	{
-		elog(ERROR,
+		elog(BTREE_SRID_MISMATCH_SEVERITY,
 			"Operation on two GEOMETRIES with different SRIDs\n");
 		if ( (Pointer *)PG_GETARG_DATUM(0) != (Pointer *)geom1 )
 			pfree(geom1);
@@ -312,7 +322,7 @@ Datum lwgeom_gt(PG_FUNCTION_ARGS)
 
 	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
 	{
-		elog(ERROR,
+		elog(BTREE_SRID_MISMATCH_SEVERITY,
 			"Operation on two GEOMETRIES with different SRIDs\n");
 		if ( (Pointer *)PG_GETARG_DATUM(0) != (Pointer *)geom1 )
 			pfree(geom1);
@@ -380,7 +390,7 @@ Datum lwgeom_cmp(PG_FUNCTION_ARGS)
 
 	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
 	{
-		elog(ERROR,
+		elog(BTREE_SRID_MISMATCH_SEVERITY,
 			"Operation on two GEOMETRIES with different SRIDs\n");
 		if ( (Pointer *)PG_GETARG_DATUM(0) != (Pointer *)geom1 )
 			pfree(geom1);
@@ -449,6 +459,9 @@ Datum lwgeom_cmp(PG_FUNCTION_ARGS)
 /***********************************************************
  *
  * $Log$
+ * Revision 1.7.2.1  2005/06/15 16:04:31  strk
+ * fault tolerant btree ops
+ *
  * Revision 1.7  2005/02/07 13:21:10  strk
  * Replaced DEBUG* macros with PGIS_DEBUG*, to avoid clashes with postgresql DEBUG
  *
