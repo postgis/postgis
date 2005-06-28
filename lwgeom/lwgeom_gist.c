@@ -613,16 +613,10 @@ Datum LWGEOM_gist_consistent(PG_FUNCTION_ARGS)
 
 	getbox2d_p(query+4, &box);
 
-	/*
-	 * Since the operators are marked lossy anyway, we can just use
-	 * rtree_internal_consistent even at leaf nodes.  (This works
-	 * in part because the index entries are bounding Boxes not polygons.)
-	 */
-
-	//if (GIST_LEAF(entry))
-	//	result = lwgeom_rtree_leaf_consistent((BOX2DFLOAT4 *)
-	//		DatumGetPointer(entry->key), &box, strategy );
-	//else
+	if (GIST_LEAF(entry))
+		result = lwgeom_rtree_leaf_consistent((BOX2DFLOAT4 *)
+			DatumGetPointer(entry->key), &box, strategy );
+	else
 		result = lwgeom_rtree_internal_consistent(
 			(BOX2DFLOAT4 *) DatumGetPointer(entry->key),
 			&box, strategy );
