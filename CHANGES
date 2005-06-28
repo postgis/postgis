@@ -5,6 +5,7 @@ PostGIS 1.0.2cvs
 	- Rtree index fix. See:
 	  http://archives.postgresql.org/pgsql-hackers/2005-06/msg01108.php
 	- Chunked GeomUnion implementation (much faster)
+	- Support for postgresql 8.1
 
 PostGIS 1.0.1
 2005/05/24
