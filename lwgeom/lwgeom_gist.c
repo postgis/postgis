@@ -693,7 +693,7 @@ elog(NOTICE,"%i:(int)<%.8g %.8g,%.8g %.8g>&&<%.8g %.8g,%.8g %.8g> %i",counter_in
 			retval = !DatumGetBool( DirectFunctionCall2( BOX2D_above, PointerGetDatum(key), PointerGetDatum(query) ) );
 			break;
 		case RTBelowStrategyNumber:
-			retval = !DatumGetBool( DirectFunctionCall2( BOX2D_above, PointerGetDatum(key), PointerGetDatum(query) ) );
+			retval = !DatumGetBool( DirectFunctionCall2( BOX2D_overabove, PointerGetDatum(key), PointerGetDatum(query) ) );
 			break;
 		case RTAboveStrategyNumber:
 			retval = !DatumGetBool( DirectFunctionCall2( BOX2D_overbelow, PointerGetDatum(key), PointerGetDatum(query) ) );
