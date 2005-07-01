@@ -1,0 +1,25 @@
+This package was debianized by Alex Bodnaru <alexbodn@012.net.il> on
+Sun,  7 Nov 2004 23:39:53 +0200.
+
+It was downloaded from http://postgis.refractions.net
+
+Upstream Authors: See /@main_prefix@/share/doc/libpostgis#SOVER#/CREDITS
+
+License: 
+
+   This package is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; version 2 dated June, 1991.
+
+   This package is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this package; if not, write to the Free Software
+   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+   02111-1307, USA.
+
+On Debian GNU/Linux systems, the complete text of the GNU General
+Public License can be found in `/@main_prefix@/share/common-licenses/GPL'.

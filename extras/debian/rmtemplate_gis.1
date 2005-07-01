@@ -1,0 +1,46 @@
+.TH "rmtemplate_gis" "1" "" "Roberto Boati" "Postgis utilities"
+.SH "NAME"
+.LP 
+rmtemplate_gis \- Delete Postgis template in a PostgreSQL server.
+.SH "SYNTAX"
+.LP 
+rmtemplate_gis [\fIoption\fP]
+.SH "DESCRIPTION"
+.LP 
+This program deletes a template database Postgis.
+.br 
+It requires to be run by root, or by PostgreSQL superuser (postgres).
+.br 
+PostgreSQL should be running.
+.SH "OPTIONS"
+.LP 
+.TP 
+\fB\-\-template=\fR<\fItemplate_name\fP>
+.TP 
+\fB\-\-help\fR
+Output help information and exit.
+Set template name to be <\fItemplate_name\fP>, it defaults to <\fItemplate_gis\fP>
+.SH "ENVIRONMENT"
+.TP 
+.B TEMPLATEDB
+If
+.RB $ TEMPLATEDB
+is set, its value is used as the default template name.
+.SH "EXAMPLES"
+.TP 
+.LP 
+To run this program the standard way, you can simply type:
+.LP 
+# \fBrmtemplate\_gis\fR
+.LP 
+Alternatively you can specify also a template name to delete:
+.LP 
+# \fBrmtemplate\_gis \-\-template=template\_postgis\fR
+.SH "AUTHORS"
+.LP 
+Alex Bodnaru <alexbodn@012.net.il>
+.br 
+Roberto Boati <roberto.boati@daisyred.com>
+.SH "SEE ALSO"
+.LP 
+createdb.postgis(1), mktemplate_gis(1)

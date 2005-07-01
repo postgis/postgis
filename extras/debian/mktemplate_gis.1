@@ -1,0 +1,64 @@
+.TH "mktemplate_gis" "1" "" "Roberto Boati" "Postgis utilities"
+.SH "NAME"
+.LP 
+mktemplate_gis \- Create Postgis template in a PostgreSQL server.
+.SH "SYNTAX"
+.LP 
+mktemplate_gis [\fIoption\fP]
+.SH "DESCRIPTION"
+.LP 
+This program create a template database for working with Postgis geometries.
+.br 
+It requires to be run by root, or by PostgreSQL superuser (DBA), but once created, any user with createdb permissions can create and manage a spatial enabled database with \fBcreatedb.postgis\fR.
+.br 
+PostgreSQL should be running.
+.SH "OPTIONS"
+.LP 
+.TP 
+\fB\-\-user=\fR<\fIdbowner\fP>
+Creates a database template owned by <\fIdbowner\fP>.
+.TP 
+\fB\-\-template=\fR<\fItemplate_name\fP>
+Set template name to be <\fItemplate_name\fP>, it defaults to <\fItemplate_gis\fP>
+.TP 
+\fB\-\-dba=\fR<\fIdba_name\fP>
+DBA is required to perform template database building. Set DBA name to be <\fIdba_name\fP>, it defaults to <\fIpostgres\fP>
+.TP 
+\fB\-\-force\-sudo\fR
+By default, non root users have no sudo rights. But if the user knows of having the sudo right to DBA, this parameter should be passed.
+.TP 
+\fB\-\-help\fR
+Output help information and exit.
+.SH "ENVIRONMENT"
+.TP 
+.B TEMPLATEDB
+If
+.RB $ TEMPLATEDB
+is set, its value is used as the default template name.
+.TP 
+.B GRUSER
+If
+.RB $ GRUSER
+is set, its value is used as the default user to own the template.
+.TP 
+.B DBAUSER
+If
+.RB $ DBAUSER
+is set, its value is used as the default DBA for building the template.
+.SH "EXAMPLES"
+.LP 
+To run this program the standard way, you can simply type:
+.LP 
+# \fBmktemplate\_gis\fR
+.LP 
+Alternatively you can specify also a template name to create and the database superuser:
+.LP 
+# \fBmktemplate\_gis \-\-user=postgres \-\-template=template\_postgis\fR
+.SH "AUTHORS"
+.LP 
+Alex Bodnaru <alexbodn@012.net.il>
+.br 
+Roberto Boati <roberto.boati@daisyred.com>
+.SH "SEE ALSO"
+.LP 
+createdb.postgis(1), rmtemplate_gis(1)

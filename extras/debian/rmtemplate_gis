@@ -1,0 +1,36 @@
+#!/bin/sh
+
+#drop template_gis, since it depends on the current postgis version only
+#it may be used to drop any postgresql template, by supplying argument
+
+if [ -z "$TEMPLATEDB" ]; then
+    TDB="template_gis"
+fi
+		
+for ARGVN in $1 $2 ; do
+    if [ `expr substr $ARGVN 1 11` = "--template=" ]; then
+        TDB=`echo $ARGVN | sed -e s/^--template=//`
+#        TDB=${ARGVN:11}
+    elif [ -n $ARGVN ]; then
+        echo "Usage of `basename $0`"
+        echo "Supply argument --template=templatename of the template to create"
+        echo "default will be taken from \$TEMPLATEDB"
+        echo "and if not defined: template_gis"
+        exit 1
+	fi
+done
+																											
+processes=`ps -A | grep '\<[p]ostmaster\>'`
+
+SUDO="sudo -u postgres"
+
+if [ "$processes" ]; then
+	db_update=`$SUDO psql -d template1 -c "UPDATE pg_database SET datistemplate = FALSE WHERE datname = '$TDB';" 2>&1`
+	if [ "$db_update" = "UPDATE 1" ]; then
+		$SUDO dropdb $TDB 2>&1 > /dev/null
+	else
+		echo "$TDB could not be accessed. it may not exist"
+	fi
+else
+	echo "error removing $TDB: postgresql is not running"
+fi

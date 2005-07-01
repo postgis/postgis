@@ -1,0 +1,80 @@
+Source: postgis
+Section: science
+Priority: optional
+Maintainer: Alex Bodnaru <alexbodn@012.net.il>
+Build-Depends: debhelper (>= 4.0.0), devscripts, gawk | awk, binutils | binutils-multiarch, libgeos-dev, proj, postgresql-dev (>= 7.2.0), libpgjava, gcj | java-compiler, fastjar
+Standards-Version: 3.6.1
+
+Package: libpostgis#SOVER#
+Section: libs
+Priority: optional
+Provides: libpostgis
+Conflicts: postgis
+Architecture: any
+Depends: ${shlibs:Depends}, libgeos2 (>= 2.1.1), postgresql (>= @pg_majdotmin@.0), postgresql-contrib (>= @pg_majdotmin@.0), sudo
+Conflicts: postgresql (>> @pg_majdotmin@.99)
+Suggests: libpostgis-doc (= ${Source-Version})
+Description: geographic objects support for PostgreSQL
+ PostGIS adds support for geographic objects to the 
+ PostgreSQL object-relational database. In effect, 
+ PostGIS "spatially enables" the PostgreSQL server, 
+ allowing it to be used as a backend spatial database 
+ for geographic information systems (GIS), much like 
+ ESRI's SDE or Oracle's Spatial extension. PostGIS 
+ follows the OpenGIS "Simple Features Specification 
+ for SQL" and will be submitted for conformance 
+ testing at version 1.0.
+
+Package: libpostgis-doc
+Section: doc
+Priority: optional
+Architecture: all
+Description: geographic objects support for PostgreSQL. Documentation
+ PostGIS adds support for geographic objects to the 
+ PostgreSQL object-relational database. In effect, 
+ PostGIS "spatially enables" the PostgreSQL server, 
+ allowing it to be used as a backend spatial database 
+ for geographic information systems (GIS), much like 
+ ESRI's SDE or Oracle's Spatial extension. PostGIS 
+ follows the OpenGIS "Simple Features Specification 
+ for SQL" and will be submitted for conformance 
+ testing at version 1.0.
+ This package contains documentation for PostGIS.
+
+Package: libpostgis-java
+Section: science
+Priority: optional
+Architecture: all
+Depends: libpgjava
+Recommends: libpostgis
+Replaces: libpostgis-jdbc, libpostgisjava
+Description: geographic objects support for PostgreSQL. JDBC
+ PostGIS adds support for geographic objects to the 
+ PostgreSQL object-relational database. In effect, 
+ PostGIS "spatially enables" the PostgreSQL server, 
+ allowing it to be used as a backend spatial database 
+ for geographic information systems (GIS), much like 
+ ESRI's SDE or Oracle's Spatial extension. PostGIS 
+ follows the OpenGIS "Simple Features Specification 
+ for SQL" and will be submitted for conformance 
+ testing at version 1.0.
+ This package adds JDBC support.
+
+Package: libpostgis-java-debug
+Section: devel
+Priority: optional
+Architecture: all
+Depends: libpgjava
+Recommends: libpostgis
+Replaces: libpostgis-jdbc, libpostgisjava
+Description: geographic objects support for PostgreSQL. JDBC
+ PostGIS adds support for geographic objects to the 
+ PostgreSQL object-relational database. In effect, 
+ PostGIS "spatially enables" the PostgreSQL server, 
+ allowing it to be used as a backend spatial database 
+ for geographic information systems (GIS), much like 
+ ESRI's SDE or Oracle's Spatial extension. PostGIS 
+ follows the OpenGIS "Simple Features Specification 
+ for SQL" and will be submitted for conformance 
+ testing at version 1.0.
+ This package adds JDBC support, with debug facilities.

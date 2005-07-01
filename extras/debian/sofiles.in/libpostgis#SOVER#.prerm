@@ -1,0 +1,8 @@
+#!/bin/sh
+
+#DEBHELPER#
+if [ "$1" = "upgrade" -o "$1" = "remove" ]; then
+    rm -f /@pg_bindir@/pgsql2shp
+    rm -f /@pg_bindir@/shp2pgsql
+    /@main_bin@/rmtemplate_gis
+fi

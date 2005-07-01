@@ -1,0 +1,63 @@
+postgis for Debian
+------------------
+
+ -- Alex Bodnaru <alexbodn@012.net.il>, Sun,  7 Nov 2004 23:39:53 +0200
+
+in the belief that packaging should not be an additional heavy burden on the 
+upstream developers, this package is been made in close conformance with the 
+upstream installation scheme. changes i've proposed to the upstream makefiles 
+are of general benefit (not especially for debian).
+
+postgis dependency on postgresql consists of a few configuration files, and the 
+include files for the server and client postgresql api's. here, the include 
+files are pointing to where debian has those installed, and the other files 
+are been copied from the source tree of the relevant postgresql distribution, 
+as updated by postgresql configure.
+the installed postgresql api version can be determined automatically, and thus 
+the postgresql configuration will be automatically selected.
+the debian/pgsql##_src directories contain files from the original postgresql 
+source for it's various versions, and those files are copyrighted differently. 
+see debian/COPYRIGHT.pgsql##_src.
+if you are adding pgsql##_src for a new version, please replace eventual host 
+specific variables, like CC=i386-linux-gcc, with their generic counterparts, 
+like gcc here.
+if you happen to experiment with a postgresql source tree not represented here, 
+or that it's api include files are not been installed the way debian would 
+(pg_config --includedir), please make a link debian/pgsql_src to your own 
+postgresql source tree root, or define PGSQL_SRC as for upstream postgis.
+another facility for postgis programmers using debian: if you have configured 
+and installed postgresql-dev at a custom location, please set PG_CONFIG_PATH to 
+the location of pg_config (PG_CONFIG_PATH should end with '/'), and thus the 
+correct include files will be found. in this case, you should copy the 
+appropriate files from the postgresql source to debian/pgsql${pg_version}_src, 
+instead of those provided here (which apply to default debian installation of 
+postgresql).
+
+the installation process is creating a template database named template_gis,
+that may be used to automaticaly create postgis enabled databases. the template 
+database may be made manually at a later time, if postgis installation process 
+will not detect a running postgresql server.
+
+the resulting packages will have the library SONAME included in their names, so
+that upgrading will not break older files. thus, the user will allways create 
+databases with the newest installed postgis, while databases based 
+upon older versions will still work with their own postgis version, until 
+explicitly upgraded. in a vision, that every postgis database will create and 
+install a package, dependent on postgis at the SONAME version when the database 
+was created, older postgis may be removed only after the user has upgraded every
+dependent database.
+
+to install from the sources, please do:
+zcat $location/postgis_$version.diff.gz | patch -p1; chmod ug+x debian/rules, 
+being in the root of your current postgis distribution.
+
+to perform the tests, your current $USER should have creating database privilege,
+and should have received at least select permissions on the tables that come with
+postgis: geometry_columns and spatial_ref_sys. to automatically grant superuser
+privileges on postgis tables only, become root or postgres, and run 
+mktemplate_gis --user=$USERNAME.
+grant create database privilege to the same user, separately.
+
+please direct any problems and questions on this package (but not on the 
+upstream software) to me,
+alexbodn@012.net.il, or roberto.boati@gmail.com

@@ -1,0 +1,105 @@
+#!/bin/sh
+
+#create a template database, named template_gis by default,
+#and grant ownership or full privileges to the postgis tables to a user, postgres by default
+
+if [ -z "$TEMPLATEDB" ]; then
+    TDB="template_gis"
+fi
+if [ -z "$GRUSER" ]; then
+    GRUSER="postgres"
+fi
+if [ -z "$DBAUSER" ]; then
+    DBAUSER="postgres"
+fi
+
+for ARGVN in $1 $2 $3 $4 ; do
+    if [ `expr substr $ARGVN 1 7` = "--user=" ]; then
+		GRUSER=`echo $ARGVN | sed -e s/^--user=//`
+    elif [ `expr substr $ARGVN 1 11` = "--template=" ]; then
+	 	TDB=`echo $ARGVN | sed -e s/^--template=//`
+	elif [ `expr substr $ARGVN 1 6` = "--dba=" ]; then
+		DBAUSER=`echo $ARGVN | sed -e s/^--dba=//`
+	elif [ "$ARGVN" = "--force-sudo" ]; then
+		FORCE_SUDO="true"
+    elif [ -n $ARGVN ]; then
+        echo "Usage of `basename $0`"
+        echo "Supply arguments as follows"
+        echo "--user=username to own or be grant privileges on databases created from template"
+		echo "       default will be taken from \$GRUSER"
+        echo "       and if not defined: postgres"
+        echo "--template=templatename of the template to create"
+        echo "           default will be taken from \$TEMPLATEDB"
+        echo "           and if not defined: template_gis"
+		echo "--dba=dbaname of the dba to run programs as"
+		echo "      default will be taken from \$DBAUSER"
+		echo "      and if it's not defined: postgres"
+		echo "--force-sudo : set this if you know you are allowed to sudo dba for such missions."
+		echo "You must usually be either root, or a postgresql supervisor in order to use `basename $0`"
+        exit 1
+    fi
+done
+
+GRUSER=`echo $GRUSER | awk '{print tolower($0);}'`
+
+processes=`ps -A | grep '\<[p]ostmaster\>'`
+
+AMIDBA=`psql -At -d template1 -c "select usename from pg_user where usesuper = true and usename = '$USER';" 2>&1`
+if [ ! "$AMIDBA" = "$USER" ]; then
+	if [ ! "$USER" = "root" ] && [ ! "$FORCE_SUDO" = "true" ]; then
+		echo "Sorry, `basename $0` was meant to be executed as root, or by a dba user"
+		echo "If you know you can sudo to user $DBAUSER, please add a --force parameter."
+		echo "But it will be much better if you could su $DBAUSER, instead."
+		exit 1
+	else
+		SUDO="sudo -u $DBAUSER"
+		ISDBAPGUSER=`$SUDO psql -At -d template1 -c "select usename from pg_user where usesuper = true and usename = '$DBAUSER';" 2>&1`
+		ISDBASYSUSER=`cat /etc/passwd | awk -F : '{print $1}' | grep ^$DBAUSER$`
+		if [ ! "$ISDBAPGUSER" = "$DBAUSER" ]; then
+			echo "either $DBAUSER is not a dba, or you cannot sudo -u $DBAUSER"
+			exit 1
+		fi
+		if [ ! "$ISDBASYSUSER" = "$DBAUSER" ]; then
+			echo "$DBAUSER is not a user, so there is no way to sudo"
+			exit 1
+		fi
+	fi
+fi
+
+if [ "$processes" ]; then
+    db_update=`$SUDO psql -d template1 -c "UPDATE pg_database SET datistemplate = FALSE WHERE datname = '$TDB'" 2>&1`
+	if [ "$db_update" = "UPDATE 1" ]; then
+	    $SUDO dropdb $TDB 2>&1 > /dev/null
+	fi
+	db_create=`$SUDO createdb $TDB 2>&1`
+	if [ "$db_create" = "CREATE DATABASE" ]; then
+		GRID=`$SUDO psql -d template1 -At -c "select usesysid from pg_user where usename='$GRUSER';"`
+        if [ -n "$GRID" ]; then
+			$SUDO psql -d $TDB -c "UPDATE pg_database SET datdba = $GRID WHERE datname = '$TDB';" 2>&1 > /dev/null
+        fi
+		if [ -x /usr/bin/createlang ]; then
+			$SUDO /usr/bin/createlang plpgsql $TDB 2>&1 > /dev/null
+		fi
+		$SUDO psql -d $TDB -f /@pg_datadir@/lwpostgis.sql 2>&1 | cat > /dev/null
+		$SUDO psql -d $TDB -f /@pg_datadir@/spatial_ref_sys.sql 2>&1 | cat > /dev/null
+		#pseudo tables for postgresql 7.2 and 7.4. feel free to add more, for other postgresql versions
+		PSEUDO_TABLES="'pg_xactlock', 'sql_features', 'sql_implementation_info', 'sql_languages', 
+					   'sql_packages', 'sql_sizing', 'sql_sizing_profiles'"
+		TABLES=`$SUDO psql -d $TDB -At -c "select tablename from pg_tables where tablename not in ($PSEUDO_TABLES);"`
+	    if [ -n "$GRID" ]; then
+			for TABLE in $TABLES ; do
+		        $SUDO psql -d $TDB -c "alter table $TABLE owner to $GRUSER;" 2>&1 > /dev/null
+			done
+	    else #maybe public, or group
+	        $SUDO psql -d $TDB -c "grant all privileges on table spatial_ref_sys to $GRUSER;" 2>&1 > /dev/null
+	        $SUDO psql -d $TDB -c "grant all privileges on table geometry_columns to $GRUSER;" 2>&1 > /dev/null
+	    fi
+		$SUDO psql -d $TDB -c "VACUUM FULL FREEZE;" 2>&1 > /dev/null
+		$SUDO psql -d $TDB -c "UPDATE pg_database SET datistemplate = TRUE WHERE datname = '$TDB';" 2>&1 > /dev/null
+		$SUDO psql -d $TDB -c "UPDATE pg_database SET datallowconn = FALSE WHERE datname = '$TDB';" 2>&1 > /dev/null
+	else
+		echo "$db_create"
+	fi
+else
+	echo "error installing $TDB: postgresql is not running."
+fi
