@@ -1,11 +1,12 @@
-PostGIS 1.0.2cvs
-????
+PostGIS 1.0.2
+2005/07/04
 	- Fault tolerant btree ops
 	- Memory Leak fix in pg_error
 	- Rtree index fix. See:
 	  http://archives.postgresql.org/pgsql-hackers/2005-06/msg01108.php
 	- Support for postgresql 8.1
 	- Cleaner build scripts: avoided mix of CFLAGS and CXXFLAGS
+	- NEW -I switch for pgsql2shp (GiST index)
 
 PostGIS 1.0.1
 2005/05/24
