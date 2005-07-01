@@ -9,14 +9,6 @@
 #include "profile.h"
 #include "wktparse.h"
 
-// Fuzzy way of finding out how many points to stuff
-// in each chunk: 680 * Mb of memory
-//
-// The example below is for about 32 MB (fuzzy pragmatic check)
-//
-#define UNITE_USING_BUFFER 1
-#define MAXGEOMSPOINTS 21760
-
 Datum relate_full(PG_FUNCTION_ARGS);
 Datum relate_pattern(PG_FUNCTION_ARGS);
 Datum disjoint(PG_FUNCTION_ARGS);
@@ -143,7 +135,6 @@ Datum postgis_geos_version(PG_FUNCTION_ARGS)
 }
 
 
-#ifndef UNITE_USING_BUFFER
 /*
  * This is the final function for union/fastunite/geomunion
  * aggregate (still discussing the name). Will have
@@ -263,152 +254,6 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 
 }
-
-#else // def UNITE_USING_BUFFER
-
-/*
- * This is the final function for GeomUnion
- * aggregate. Will have as input an array of Geometries.
- * Builds a GEOMETRYCOLLECTION from input and call
- * GEOSBuffer(collection, 0) on the GEOS-converted
- * versions of it. Returns PGIS-converted version back.
- */
-PG_FUNCTION_INFO_V1(unite_garray);
-Datum unite_garray(PG_FUNCTION_ARGS)
-{
-	Datum datum;
-	ArrayType *array;
-	int is3d = 0;
-	int nelems, i, ngeoms, npoints;
-	PG_LWGEOM *result=NULL;
-	Geometry **geoms, *collection;
-	Geometry *g1, *geos_result=NULL;
-	int SRID=-1;
-	size_t offset;
-#ifdef PGIS_DEBUG
-	static int call=1;
-#endif
-
-#ifdef PGIS_DEBUG
-	call++;
-#endif
-
-	//lwnotice("GEOS buffer union");
-
-	datum = PG_GETARG_DATUM(0);
-
-	/* Null array, null geometry (should be empty?) */
-	if ( (Pointer *)datum == NULL ) PG_RETURN_NULL();
-
-	array = (ArrayType *) PG_DETOAST_DATUM(datum);
-
-	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
-
-#ifdef PGIS_DEBUG
-	elog(NOTICE, "unite_garray: number of elements: %d", nelems);
-#endif
-
-	if ( nelems == 0 ) PG_RETURN_NULL();
-
-	/* One-element union is the element itself */
-	if ( nelems == 1 ) PG_RETURN_POINTER((PG_LWGEOM *)(ARR_DATA_PTR(array)));
-
-	geoms = lwalloc(sizeof(Geometry *)*nelems);
-
-	/* We need geos here */
-	initGEOS(MAXIMUM_ALIGNOF);
-
-	offset = 0; i=0;
-	ngeoms = 0; npoints=0;
-//lwnotice("Nelems %d, MAXGEOMSPOINST %d", nelems, MAXGEOMSPOINTS);
-	while (!result) 
-	{
-		PG_LWGEOM *geom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
-		offset += INTALIGN(geom->size);
-
-		// Check is3d flag
-		if ( TYPE_NDIMS(geom->type) > 2 ) is3d = 1;
-
-		// Check SRID homogeneity 
-		if ( ! i ) SRID = pglwgeom_getSRID(geom);
-		else if ( SRID != pglwgeom_getSRID(geom) )
-			lwerror("Operation on mixed SRID geometries");
-
-		geoms[ngeoms] =
-			g1 = POSTGIS2GEOS(geom);
-			//lwgeom_deserialize(SERIALIZED_FORM(geom));
-
-		npoints += GEOSGetNumCoordinate(geoms[ngeoms]);
-
-		++ngeoms;
-		++i;
-
-//lwnotice("Loop %d, npoints: %d", i, npoints);
-
-		/*
-		 * Maximum count of geometry points reached
-		 * or end of them, collect and buffer(0).
-		 */
-		if ( (npoints>=MAXGEOMSPOINTS && ngeoms>1) || i==nelems)
-		{
-//lwnotice(" CHUNK (ngeoms:%d, npoints:%d, left:%d)", ngeoms, npoints, nelems-i);
-
-			//collection = (LWGEOM *)
-			//	lwcollection_construct(COLLECTIONTYPE,
-			//	-1, NULL, ngeoms, lwgeoms);
-			collection = PostGIS2GEOS_collection(COLLECTIONTYPE,
-				geoms, ngeoms, -1, is3d);
-
-			//g1 = LWGEOM2GEOS(collection);
-
-			//lwgeom_release(collection);
-
-			//geos_result = GEOSBuffer(g1, 0, 0);
-			geos_result = GEOSBuffer(collection, 0, 0);
-			if ( geos_result == NULL )
-			{
-				GEOSdeleteGeometry(g1);
-				lwerror("GEOS buffer() threw an error!");
-			}
-			//GEOSdeleteGeometry(g1);
-			GEOSdeleteGeometry(collection);
-
-//lwnotice(" Buffer() executed");
-
-			/*
-			 * If there are no other geoms in input
-			 * we've finished, otherwise we push
-			 * the result back on the input stack.
-			 */
-			if ( i == nelems )
-			{
-//lwnotice("  Final result points: %d", GEOSGetNumCoordinate(geos_result));
-				GEOSSetSRID(geos_result, SRID);
-				result = GEOS2POSTGIS(geos_result, is3d);
-				GEOSdeleteGeometry(geos_result);
-//lwnotice(" Result computed");
-			}
-			else
-			{
-				//lwgeoms = lwalloc(sizeof(LWGEOM *)*MAXGEOMS);
-				//lwgeoms[0] = lwgeom_from_geometry(geos_result, is3d);
-				geoms[0] = geos_result;
-				ngeoms=1;
-				npoints = GEOSGetNumCoordinate(geoms[0]);
-//lwnotice("  Result pushed back on lwgeoms array (npoints:%d)", npoints);
-			}
-		}
-	}
-
-
-	//compressType(result);
-
-	PG_RETURN_POINTER(result);
-
-}
-
-#endif // def UNITE_USING_BUFFER
-
 
 //select geomunion('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))','POLYGON((5 5, 15 5, 15 7, 5 7, 5 5))');
 PG_FUNCTION_INFO_V1(geomunion);
