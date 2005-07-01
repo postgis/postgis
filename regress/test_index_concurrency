@@ -1,0 +1,59 @@
+#!/bin/sh
+
+if [ -z "$TMPDIR" ]; then
+	TMPDIR=/tmp
+fi
+
+OUTFILE="${TMPDIR}/regress_index_out_$$"
+
+echo "Running GiST concurrency Regression."
+
+DB=postgis_reg
+export PGDATABASE=$DB
+
+if [ "$1" = "prepare" ]; then
+	echo ""
+	echo "Index Creation will take some time..."
+	echo ""
+
+	createdb > /dev/null
+	createlang plpgsql > /dev/null
+	psql -f ../lwpostgis.sql > /dev/null 2>&1
+
+	psql -f regress_lots_of_points.sql 
+	psql -c "INSERT INTO test SELECT num+5000, translate(the_geom, 1, 1, 0) FROM test"
+	psql -c "INSERT INTO test SELECT num+10000, translate(the_geom, -1, -1) FROM test"
+	psql -c "CREATE INDEX quick_gist on test using gist (the_geom)" 
+else
+if [ "$1" = "run" ]; then
+
+if [ -n "$2" ]; then
+	NUMCLIENTS=$2
+else
+	NUMCLIENTS=3
+fi
+
+
+o=$((1000/$NUMCLIENTS))
+f=0
+t=$o
+	# Concurrent clients:
+	echo "Concurrent clients: $NUMCLIENTS"
+	for n in `seq 1 $NUMCLIENTS`; do
+
+echo "update test set num=-num WHERE the_geom && 'BOX3D($f $f,$t $t)'::box3d;" | psql &
+f=$((f+o))
+t=$((t+o))
+	done
+
+	wait
+	
+else
+if [ "$1" = "drop" ]; then
+	dropdb $DB > /dev/null
+else
+	echo "Usage: $0 prepare | run [nclients] | drop"
+fi
+fi
+fi
+

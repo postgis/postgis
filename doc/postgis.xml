@@ -155,7 +155,7 @@
 
         <listitem>
           <para>The "<ulink
-          url="http://www.opengis.org/techno/specs/99-049.pdf">Simple Features
+          url="http://www.opengis.org/docs/99-049.pdf">Simple Features
           for Specification for SQL</ulink>" is available at the OpenGIS
           Consortium web site: <ulink
           url="http://www.opengis.org">http://www.opengis.org</ulink>.</para>
@@ -260,7 +260,7 @@
         <listitem>
           <para>Once your PostgreSQL installation is up-to-date, enter the
           "postgis" directory, and edit the
-          <filename>Makefile</filename>.</para>
+          <filename>Makefile.config</filename> file.</para>
 
           <itemizedlist>
             <listitem>
@@ -359,7 +359,7 @@ as follow:
 	<programlisting>
 	# Create a "custom-format" dump of the database you want
 	# to upgrade (let's call it "olddb")
-	$ pg_dump -Fc olddb olddb.dump
+	$ pg_dump -Fc olddb &gt; olddb.dump
 
 	# Restore the dump contextually upgrading postgis into
 	# a new database. The new database doesn't have to exist.
@@ -384,7 +384,7 @@ as follow:
 	# If you did make additions we assume you know how to backup them before
 	# upgrading the table. Replace of it with the new one is done like this:
 	$ psql newdb
-	newdb=&gt; drop table spatial_ref_sys;
+	newdb=&gt; delete from spatial_ref_sys; 
 	DROP
 	newdb=&gt; \i spatial_ref_sys.sql
 	</programlisting>
@@ -448,7 +448,7 @@ as a "backup" in case postgis_restore.pl won't work for you:
         </orderedlist>
 
         <para>Also check that you have made any necessary changes to the top
-        of the Makefile. This includes:</para>
+        of the Makefile.config. This includes:</para>
 
         <orderedlist>
           <listitem>
@@ -456,7 +456,7 @@ as a "backup" in case postgis_restore.pl won't work for you:
             must install the Proj4 library on your system, set the
             <varname>USE_PROJ</varname> variable to 1 and the
             <varname>PROJ_DIR</varname> to your installation prefix in the
-            Makefile.</para>
+            Makefile.config.</para>
           </listitem>
 
           <listitem>
@@ -464,7 +464,7 @@ as a "backup" in case postgis_restore.pl won't work for you:
             install the GEOS library on your system, and set the
             <varname>USE_GEOS</varname> to 1 and the
             <varname>GEOS_DIR</varname> to your installation prefix in the
-            Makefile.</para>
+            Makefile.config</para>
           </listitem>
         </orderedlist>
       </sect2>
@@ -1518,7 +1518,7 @@ WHERE
   AsText(GEOM) AS GEOM 
 FROM ROADS_GEOM 
 WHERE 
-  GEOM &amp;&amp; GeomFromText('BOX3D(191232 243117,191232 243119)'::box3d,-1);</programlisting>
+  GEOM &amp;&amp; SetSRID('BOX3D(191232 243117,191232 243119)'::box3d,-1);</programlisting>
 
         <para>Note the use of the SRID, to specify the projection of the
         BOX3D. The value -1 is used to indicate no specified SRID.</para>
@@ -2755,7 +2755,7 @@ dimension(the_geom)>2" skips re-writing of geometries that already are in 2D.
           </varlistentry>
 
           <varlistentry>
-            <term>SetSRID(geometry)</term>
+            <term>SetSRID(geometry, integer)</term>
 
             <listitem>
               <para>Set the SRID on a geometry to a particular integer value.
@@ -2770,7 +2770,7 @@ dimension(the_geom)>2" skips re-writing of geometries that already are in 2D.
 
         <variablelist>
           <varlistentry>
-            <term>Distance(geometry,geometry)</term>
+            <term>Distance(geometry, geometry)</term>
 
             <listitem>
               <para>Return the cartesian distance between two geometries in
@@ -2779,13 +2779,13 @@ dimension(the_geom)>2" skips re-writing of geometries that already are in 2D.
           </varlistentry>
 
           <varlistentry>
-            <term>Equals(geometry,geometry)</term>
+            <term>Equals(geometry, geometry)</term>
 
             <listitem>
-              <para>Returns 1 (TRUE) if this Geometry is "spatially equal" to
-              anotherGeometry. Use this for a 'better' answer than '='. equals
-              ('LINESTRING(0 0, 10 10)','LINESTRING(0 0, 5 5, 10 10)') is
-              true.</para>
+              <para>Returns 1 (TRUE) if the given Geometries are
+	      "spatially equal". Use this for a 'better' answer than '='.
+	      equals('LINESTRING(0 0, 10 10)','LINESTRING(0 0, 5 5, 10 10)')
+	      is true.</para>
 
               <para>Performed by the GEOS module</para>
 
@@ -2794,11 +2794,11 @@ dimension(the_geom)>2" skips re-writing of geometries that already are in 2D.
           </varlistentry>
 
           <varlistentry>
-            <term>Disjoint(geometry,geometry)</term>
+            <term>Disjoint(geometry, geometry)</term>
 
             <listitem>
-              <para>Returns 1 (TRUE) if this Geometry is "spatially disjoint"
-              from anotherGeometry.</para>
+              <para>Returns 1 (TRUE) if the Geometries are "spatially disjoint".
+	      </para>
 
               <para>Performed by the GEOS module</para>
 
@@ -2814,11 +2814,11 @@ dimension(the_geom)>2" skips re-writing of geometries that already are in 2D.
           </varlistentry>
 
           <varlistentry>
-            <term>Intersects(geometry,geometry)</term>
+            <term>Intersects(geometry, geometry)</term>
 
             <listitem>
-              <para>Returns 1 (TRUE) if this Geometry "spatially intersects"
-              anotherGeometry.</para>
+              <para>Returns 1 (TRUE) if the Geometries "spatially intersect".
+              </para>
 
               <para>Performed by the GEOS module</para>
 
@@ -2834,11 +2834,11 @@ dimension(the_geom)>2" skips re-writing of geometries that already are in 2D.
           </varlistentry>
 
           <varlistentry>
-            <term>Touches(geometry,geometry)</term>
+            <term>Touches(geometry, geometry)</term>
 
             <listitem>
-              <para>Returns 1 (TRUE) if this Geometry "spatially touches"
-              anotherGeometry.</para>
+              <para>Returns 1 (TRUE) if the Geometries "spatially touch".
+              </para>
 
               <para>Performed by the GEOS module</para>
 
@@ -2855,11 +2855,11 @@ dimension(the_geom)>2" skips re-writing of geometries that already are in 2D.
           </varlistentry>
 
           <varlistentry>
-            <term>Crosses(geometry,geometry)</term>
+            <term>Crosses(geometry, geometry)</term>
 
             <listitem>
-              <para>Returns 1 (TRUE) if this Geometry "spatially crosses"
-              anotherGeometry.</para>
+              <para>Returns 1 (TRUE) if the Geometries "spatially cross".
+              </para>
 
               <para>Performed by the GEOS module</para>
 
@@ -2875,11 +2875,11 @@ dimension(the_geom)>2" skips re-writing of geometries that already are in 2D.
           </varlistentry>
 
           <varlistentry>
-            <term>Within(geometry,geometry)</term>
+            <term>Within(geometry A, geometry B)</term>
 
             <listitem>
-              <para>Returns 1 (TRUE) if this Geometry is "spatially within"
-              anotherGeometry.</para>
+              <para>Returns 1 (TRUE) if Geometry A is "spatially within"
+              Geometry B.</para>
 
               <para>Performed by the GEOS module</para>
 
@@ -2895,11 +2895,11 @@ dimension(the_geom)>2" skips re-writing of geometries that already are in 2D.
           </varlistentry>
 
           <varlistentry>
-            <term>Overlaps(geometry,geometry)</term>
+            <term>Overlaps(geometry, geometry)</term>
 
             <listitem>
-              <para>Returns 1 (TRUE) if this Geometry is "spatially
-              overlapping" anotherGeometry.</para>
+              <para>Returns 1 (TRUE) if the Geometries "spatially
+              overlap".</para>
 
               <para>Performed by the GEOS module</para>
 
@@ -2914,11 +2914,11 @@ dimension(the_geom)>2" skips re-writing of geometries that already are in 2D.
           </varlistentry>
 
           <varlistentry>
-            <term>Contains(geometry,geometry)</term>
+            <term>Contains(geometry A, geometry B)</term>
 
             <listitem>
-              <para>Returns 1 (TRUE) if this Geometry is "spatially contains"
-              anotherGeometry.</para>
+              <para>Returns 1 (TRUE) if Geometry A "spatially contains"
+              Geometry B.</para>
 
               <para>Performed by the GEOS module</para>
 
@@ -2929,16 +2929,16 @@ dimension(the_geom)>2" skips re-writing of geometries that already are in 2D.
               boolean, not an integer.</para>
 
               <para>OGC SPEC s2.1.1.2 // s2.1.13.3 - same as
-              within(geometry,geometry)</para>
+              within(geometry B, geometry A)</para>
             </listitem>
           </varlistentry>
 
           <varlistentry>
-            <term>Intersects(geometry,geometry)</term>
+            <term>Intersects(geometry, geometry)</term>
 
             <listitem>
-              <para>Returns 1 (TRUE) if this Geometry is "spatially
-              intersects" anotherGeometry.</para>
+              <para>Returns 1 (TRUE) if the Geometries "spatially
+              intersect".</para>
 
               <para>Performed by the GEOS module</para>
 
@@ -2949,12 +2949,12 @@ dimension(the_geom)>2" skips re-writing of geometries that already are in 2D.
               boolean, not an integer.</para>
 
               <para>OGC SPEC s2.1.1.2 // s2.1.13.3 - NOT
-              disjoint(geometry,geometry)</para>
+              disjoint(geometry, geometry)</para>
             </listitem>
           </varlistentry>
 
           <varlistentry>
-            <term>Relate(geometry,geometry, intersectionPatternMatrix)</term>
+            <term>Relate(geometry, geometry, intersectionPatternMatrix)</term>
 
             <listitem>
               <para>Returns 1 (TRUE) if this Geometry is spatially related to
@@ -2975,7 +2975,7 @@ dimension(the_geom)>2" skips re-writing of geometries that already are in 2D.
           </varlistentry>
 
           <varlistentry>
-            <term>Relate(geometry,geometry)</term>
+            <term>Relate(geometry, geometry)</term>
 
             <listitem>
               <para>returns the DE-9IM (dimensionally extended
@@ -3060,7 +3060,7 @@ dimension(the_geom)>2" skips re-writing of geometries that already are in 2D.
           </varlistentry>
 
           <varlistentry>
-            <term>Buffer(geometry,double,[integer])</term>
+            <term>Buffer(geometry, double, [integer])</term>
 
             <listitem>
               <para>Returns a geometry that represents all points whose
@@ -3093,11 +3093,11 @@ dimension(the_geom)>2" skips re-writing of geometries that already are in 2D.
           </varlistentry>
 
           <varlistentry>
-            <term>Intersection(geometry,geometry)</term>
+            <term>Intersection(geometry, geometry)</term>
 
             <listitem>
               <para>Returns a geometry that represents the point set
-              intersection of this Geometry with anotherGeometry.</para>
+              intersection of the Geometies.</para>
 
               <para>Performed by the GEOS module</para>
 
@@ -3109,11 +3109,11 @@ dimension(the_geom)>2" skips re-writing of geometries that already are in 2D.
           </varlistentry>
 
           <varlistentry>
-            <term>SymDifference(geometry,geometry)</term>
+            <term>SymDifference(geometry A, geometry B)</term>
 
             <listitem>
               <para>Returns a geometry that represents the point set symmetric
-              difference of this Geometry with anotherGeometry.</para>
+              difference of Geometry A with Geometry B.</para>
 
               <para>Performed by the GEOS module</para>
 
@@ -3125,11 +3125,11 @@ dimension(the_geom)>2" skips re-writing of geometries that already are in 2D.
           </varlistentry>
 
           <varlistentry>
-            <term>Difference(geometry,geometry)</term>
+            <term>Difference(geometry A, geometry B)</term>
 
             <listitem>
               <para>Returns a geometry that represents the point set symmetric
-              difference of this Geometry with anotherGeometry.</para>
+              difference of Geometry A with Geometry B.</para>
 
               <para>Performed by the GEOS module</para>
 
@@ -3141,11 +3141,11 @@ dimension(the_geom)>2" skips re-writing of geometries that already are in 2D.
           </varlistentry>
 
           <varlistentry>
-            <term>GeomUnion(geometry,geometry)</term>
+            <term>GeomUnion(geometry, geometry)</term>
 
             <listitem>
               <para>Returns a geometry that represents the point set union of
-              this Geometry with anotherGeometry.</para>
+              the Geometries.</para>
 
               <para>Performed by the GEOS module</para>
 
@@ -4662,8 +4662,89 @@ FROM geometry_table;</literallayout>
 		<title>Release Notes</title>
 
     		<sect1>
+			<title>Release 1.0.2</title>
+			<para>Release date: 2005/07/04</para>
+
+			<para>
+			Contains a few bug fixes and improvements.
+			</para>
+
+			<sect2>
+				<title>Upgrading</title>
+
+				<para>If you are upgrading from
+				release 1.0.0RC6 or up you <emphasis>DO
+				NOT</emphasis> need a dump/reload.</para>
+
+				<para>Upgrading from older releases
+				requires a dump/reload. 
+				See the <link
+				linkend="upgrading">upgrading</link>
+				chapter for more informations.</para>
+			</sect2>
+
+			<sect2>
+				<title>Bug fixes</title>
+	<para>Fault tolerant btree ops</para>
+	<para>Memory leak plugged in pg_error</para>
+	<para>Rtree index fix</para>
+	<para>Cleaner build scripts (avoided mix of CFLAGS and CXXFLAGS)</para>
+			</sect2>
+
+			<sect2>
+				<title>Improvements</title>
+	<para>New index creation capabilities in loader (-I switch)</para>
+	<para>Initial support for postgresql 8.1dev</para>
+			</sect2>
+
+		</sect1>
+
+    		<sect1>
+			<title>Release 1.0.1</title>
+			<para>Release date: 2005/05/24</para>
+
+			<para>
+			Contains a few bug fixes and some improvements.
+			</para>
+
+			<sect2>
+				<title>Upgrading</title>
+
+				<para>If you are upgrading from
+				release 1.0.0RC6 or up you <emphasis>DO
+				NOT</emphasis> need a dump/reload.</para>
+
+				<para>Upgrading from older releases
+				requires a dump/reload. 
+				See the <link
+				linkend="upgrading">upgrading</link>
+				chapter for more informations.</para>
+			</sect2>
+
+			<sect2>
+				<title>Library changes</title>
+	<para>BUGFIX in 3d computation of lenght_spheroid()</para>
+	<para>BUGFIX in join selectivity estimator</para>
+			</sect2>
+
+			<sect2>
+				<title>Other changes/additions</title>
+	<para>BUGFIX in shp2pgql escape functions</para>
+	<para>better support for concurrent postgis in multiple schemas</para>
+	<para>documentation fixes</para>
+	<para>jdbc2: compile with "-target 1.2 -source 1.2" by default</para>
+	<para>NEW -k switch for pgsql2shp</para>
+	<para>NEW support for custom createdb options in postgis_restore.pl</para>
+	<para>BUGFIX in pgsql2shp attribute names unicity enforcement</para>
+	<para>BUGFIX in Paris projections definitions</para>
+	<para>postgis_restore.pl cleanups</para>
+			</sect2>
+
+		</sect1>
+
+    		<sect1>
 			<title>Release 1.0.0</title>
-			<para>Release date: 2005/04/??</para>
+			<para>Release date: 2005/04/19</para>
 
 			<para>Final 1.0.0 release.
 			Contains a few bug fixes, some improvements
@@ -4689,6 +4770,7 @@ FROM geometry_table;</literallayout>
 				<title>Library changes</title>
 	<para>BUGFIX in transform() releasing random memory address</para>
 	<para>BUGFIX in force_3dm() allocating less memory then required</para>
+	<para>BUGFIX in join selectivity estimator (defaults, leaks, tuplecount, sd)</para>
 			</sect2>
 
 			<sect2>
@@ -4699,6 +4781,7 @@ FROM geometry_table;</literallayout>
 	<para>NEW -p (prepare) flag for shp2pgsql</para>
 	<para>NEW manual chapter about OGC compliancy enforcement</para>
 	<para>NEW autoconf support for JTS lib</para>
+	<para>BUGFIX in estimator testers (support for LWGEOM and schema parsing)</para>
 			</sect2>
 
 		</sect1>
