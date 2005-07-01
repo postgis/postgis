@@ -4694,7 +4694,7 @@ FROM geometry_table;</literallayout>
 			<sect2>
 				<title>Improvements</title>
 	<para>New index creation capabilities in loader (-I switch)</para>
-	<para>Initial support for postgresql 8.1</para>
+	<para>Initial support for postgresql 8.1dev</para>
 			</sect2>
 
 		</sect1>

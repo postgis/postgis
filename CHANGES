@@ -4,7 +4,7 @@ PostGIS 1.0.2
 	- Memory Leak fix in pg_error
 	- Rtree index fix. See:
 	  http://archives.postgresql.org/pgsql-hackers/2005-06/msg01108.php
-	- Support for postgresql 8.1
+        - Initial support for postgresql 8.1dev
 	- Cleaner build scripts: avoided mix of CFLAGS and CXXFLAGS
 	- NEW -I switch for pgsql2shp (GiST index)
 
