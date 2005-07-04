@@ -13,14 +13,17 @@ PostGIS 1.1.0CVS
 	- NEW line_substring() function
 	- NEW line_locate_point() function
 	- JTS support improvements
-	- NEW -I (index) switch in shp2pgsql
+	- Chunked GeomUnion implementation (much faster)
+
+PostGIS 1.0.2
+2005/07/04
 	- Fault tolerant btree ops
 	- Memory Leak fix in pg_error
 	- Rtree index fix. See:
 	  http://archives.postgresql.org/pgsql-hackers/2005-06/msg01108.php
-	- Chunked GeomUnion implementation (much faster)
-	- Support for postgresql 8.1
+        - Initial support for postgresql 8.1dev
 	- Cleaner build scripts: avoided mix of CFLAGS and CXXFLAGS
+	- NEW -I switch for pgsql2shp (GiST index)
 
 PostGIS 1.0.1
 2005/05/24
