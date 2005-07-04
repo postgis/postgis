@@ -98,6 +98,7 @@ INSTALL=@INSTALL@ -c
 INSTALL_DATA=$(INSTALL) -m 644
 INSTALL_BIN=$(INSTALL) -m 755
 INSTALL_LIB=$(INSTALL) -m 755
+INSTALL_SHLIB=$(INSTALL_LIB)
 
 #
 # PATHS
@@ -108,10 +109,10 @@ bindir=@bindir@
 datadir=@datadir@
 mandir=@mandir@
 docdir=@docdir@
-libdir=@libdir@
 libexecdir=@libexecdir@
-MODULE_INSTALLDIR=@MODULE_INSTALLDIR@
+libdir=@libdir@
 LPATH=@LPATH@
+
 #
 # DLL 
 #

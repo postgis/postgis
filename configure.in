@@ -74,7 +74,6 @@ AC_SUBST(PGFELIBS)
 AC_SUBST(PGBELIBS)
 AC_SUBST(PGBIN)
 AC_SUBST(PGTEMPLATE)
-AC_SUBST(MODULE_INSTALLDIR)
 AC_SUBST(LPATH)
 PGFEINCLUDES="-I`${PGCONFIG} --includedir`"
 PGFELIBS="-L`${PGCONFIG} --libdir` -lpq"
@@ -332,12 +331,12 @@ if test "${prefix}" = "NONE"; then
 			)"
 	fi
  	bindir="$(${PGCONFIG} --bindir)"
- 	MODULE_INSTALLDIR="`${PGCONFIG} --pkglibdir`"
+ 	libdir="`${PGCONFIG} --pkglibdir`"
  	LPATH='\$$libdir'
 else
  	docdir=$docdir/postgis
  	datadir=$datadir/postgis
- 	MODULE_INSTALLDIR=$libexecdir
+ 	libdir=$libexecdir
  	LPATH=$libexecdir
 fi
 
@@ -402,9 +401,9 @@ AC_MSG_RESULT([     DATA: $datadir])
 AC_MSG_RESULT([      MAN: $mandir])
 AC_MSG_RESULT([      BIN: $bindir])
 if test "$MODULE_INSTALLDIR" = "$LPATH"; then
-	AC_MSG_RESULT([      EXT: $MODULE_INSTALLDIR])
+	AC_MSG_RESULT([      EXT: $libdir])
 else
-	AC_MSG_RESULT([      EXT: $MODULE_INSTALLDIR ($LPATH)])
+	AC_MSG_RESULT([      EXT: $libdir ($LPATH)])
 fi
 
 AC_MSG_RESULT([ -------------------------------------------------------])

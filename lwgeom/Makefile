@@ -13,18 +13,7 @@ endif
 # Shared library parameters.
 #
 NAME=lwgeom
-
-ifeq ($(findstring mingw,$(HOST_OS)),mingw)
-SHLIB = lib$(NAME).$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION)$(DLSUFFIX)
-else
-SHLIB = lib$(NAME)$(DLSUFFIX).$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION)
-endif
-
-SHLIB_MAJOR     = lib$(NAME)$(DLSUFFIX).$(SO_MAJOR_VERSION)
-SHLIB_BARE      = lib$(NAME)$(DLSUFFIX)
 SHLIB_LINK 	= $(DLFLAGS) 
-
-MODULE_FILENAME = $(LPATH)/$(SHLIB)
 
 #---------------------------------------------------------------
 # Postgis version and build date
@@ -95,6 +84,8 @@ all: $(GEOS_RULES) ../lwpostgis.sql all-shared-lib
 enable_shared=yes
 include Makefile.shlib
 
+MODULE_FILENAME = $(LPATH)/$(shlib)
+
 #---------------------------------------------------------------
 # Makefile targets
 
@@ -127,39 +118,12 @@ lwgeom_functions_basic.o: lwgeom_functions_basic.c profile.h
 lwpostgis.sql: lwpostgis.sql.in
 	cpp -P -traditional-cpp -DUSE_VERSION=$(USE_VERSION) $< | sed -e 's:@MODULE_FILENAME@:$(MODULE_FILENAME):g;s:@POSTGIS_VERSION@:$(POSTGIS_VERSION):g;s:@POSTGIS_SCRIPTS_VERSION@:$(SCRIPTS_VERSION):g;s/@POSTGIS_BUILD_DATE@/$(POSTGIS_BUILD_DATE)/g' | grep -v '^#' > $@
 
-install: all install-lwgeom-lib install-lwgeom-scripts
+install: all install-lib-shared install-lwgeom-scripts
 
 install-lwgeom-scripts:
 	@mkdir -p $(DESTDIR)$(datadir)
 	$(INSTALL_DATA) lwpostgis.sql $(DESTDIR)$(datadir)/lwpostgis.sql
 	$(INSTALL_DATA) ../spatial_ref_sys.sql $(DESTDIR)$(datadir)/spatial_ref_sys.sql
-
-#- This has been copied from postgresql and adapted
-install-lwgeom-lib: $(SHLIB)
-	@mkdir -p $(DESTDIR)$(MODULE_INSTALLDIR)
-	$(INSTALL_LIB) $(SHLIB) $(DESTDIR)$(MODULE_INSTALLDIR)/$(SHLIB)
-
-ifneq ($(PORTNAME), cygwin)
-ifneq ($(PORTNAME), win32)
-ifneq ($(PORTNAME), win)
-ifneq ($(SHLIB), $(SHLIB_MAJOR))
-	cd $(DESTDIR)$(MODULE_INSTALLDIR) && \
-	rm -f $(SHLIB_MAJOR) && \
-	ln -sf $(SHLIB) $(SHLIB_MAJOR)
-endif
-ifneq ($(SHLIB), lib$(NAME)$(DLSUFFIX))
-	cd $(DESTDIR)$(MODULE_INSTALLDIR) && \
-	rm -f $(SHLIB_BARE) && \
-	ln -sf $(SHLIB) $(SHLIB_BARE)
-endif
-endif # not win
-endif # not win32
-endif # not cygwin
-
-uninstall-lwgeom-lib: 
-	rm -f $(DESTDIR)$(MODULE_INSTALLDIR)/$(SHLIB)
-	rm -f $(DESTDIR)$(MODULE_INSTALLDIR)/$(SHLIB_MAJOR)
-	rm -f $(DESTDIR)$(MODULE_INSTALLDIR)/$(SHLIB_BARE)
 
 #----------------------------------------------------------
 
@@ -170,10 +134,9 @@ uninstall-lwgeom-scripts:
 	rm -f $(DESTDIR)$(datadir)/postgis/lwpostgis.sql
 	rm -f $(DESTDIR)$(datadir)/postgis/spatial_ref_sys.sql
 
-uninstall: uninstall-lwgeom-lib uninstall-lwgeom-scripts
+uninstall: uninstall-lib uninstall-lwgeom-scripts
 
-clean-lwgeom-lib:
-	rm -f $(SHLIB) $(SHLIB_MAJOR) $(SHLIB_BARE)
+clean-lwgeom-lib: clean-lib
 
 clean distclean: clean-lwgeom-lib
 	rm -f *.o *.so *.a test $(OTHERS)
