@@ -21,10 +21,12 @@ dnl
 dnl iconv support (might fail in case of non-default iconv installation)
 dnl
 AC_SUBST(USE_ICONV)
-USE_ICONV=
-AC_CHECK_HEADER(iconv.h,
-   USE_ICONV=1,
-   AC_MSG_WARN(utf8 encoding disabled)
+USE_ICONV=0
+AC_ARG_WITH(iconv, 
+[  --with-iconv            enable unicode support],
+	if test "$with_iconv" != "no"; then
+		USE_ICONV=1
+	fi
 )
 
 
