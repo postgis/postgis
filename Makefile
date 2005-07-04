@@ -16,6 +16,7 @@ clean: Makefile.config liblwgeom-clean loaderdumper-clean docs-clean test-clean
 distclean: clean
 	rm -Rf autom4te.cache
 	rm -f config.log config.cache config.status Makefile.config
+	rm -f config.h
 
 maintainer-clean: Makefile.config
 	@echo '------------------------------------------------------'
@@ -80,7 +81,10 @@ configure: configure.in
 config.status: configure
 	./configure
 
-Makefile.config: Makefile.config.in config.status
+Makefile.config: Makefile.config.in config.status 
+	./config.status
+
+config.h: config.h.in config.status
 	./config.status
 
 .PHONY: utils

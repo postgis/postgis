@@ -22,6 +22,7 @@
  *
  **********************************************************************/
 
+#include "../config.h"
 #include "shapefil.h"
 #include <stdio.h>
 #include <string.h>
@@ -32,6 +33,10 @@
 #include <unistd.h>
 #include <errno.h>
 #include "getopt.h"
+#ifdef HAVE_ICONV_H
+#include <iconv.h>
+#endif
+
 
 #define	POINTTYPE	1
 #define	LINETYPE	2
@@ -1597,8 +1602,6 @@ GetFieldsSpec(void)
 
 #ifdef USE_ICONV
 
-#include <iconv.h>
-
 char *
 utf8 (const char *fromcode, char *inputbuf)
 {
@@ -1643,6 +1646,9 @@ utf8 (const char *fromcode, char *inputbuf)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.91  2005/07/04 09:47:03  strk
+ * Added conservative iconv detection code
+ *
  * Revision 1.90  2005/06/16 17:55:58  strk
  * Added -I switch for GiST index creation in loader
  *
