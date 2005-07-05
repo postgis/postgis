@@ -243,6 +243,11 @@ if test -z "$FLEX"; then
 	AC_MSG_ERROR(Can't find 'flex');
 fi
 
+AC_SUBST(DLLWRAP)
+AC_PATH_PROG([DLLWRAP], [dllwrap])
+AC_SUBST(DLLTOOL)
+AC_PATH_PROG([DLLTOOL], [dlltool])
+
 AC_SUBST(YACC)
 AC_PATH_PROG([YACC], [yacc])
 if test -z "$YACC"; then
@@ -359,7 +364,7 @@ case $host_os in
 		PGBEINCLUDES="$PGBEINCLUDES $PGBEINCLUDES/port/win32"
 		PGFELIBS="$(echo $(${PGCONFIG} --libdir))/libpq.dll"
 		DLSUFFIX=.dll
-		DLFLAGS=
+		DLFLAGS='${PGBELIBS}'
 		EXE=.exe
 		;;
 	*darwin*)

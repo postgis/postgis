@@ -118,6 +118,9 @@ LPATH=@LPATH@
 #
 DLSUFFIX=@DLSUFFIX@
 DLFLAGS=@DLFLAGS@
+# these are for win32 and cygwin platforms
+DLLTOOL=@DLLTOOL@
+DLLWRAP=@DLLWRAP@
 
 #
 # EXE
