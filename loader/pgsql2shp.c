@@ -3103,7 +3103,7 @@ create_usrquerytable(void)
 	char *query;
 	PGresult *res;
 
-	query = malloc(sizeof(table)+sizeof(usrquery)+256);
+	query = malloc(strlen(table)+strlen(usrquery)+32);
 	sprintf(query, "CREATE TEMP TABLE \"%s\" AS %s", table, usrquery);
 
         printf("Preparing table for user query... ");
@@ -3122,6 +3122,9 @@ create_usrquerytable(void)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.77  2005/07/12 16:19:35  strk
+ * Fixed bug in user query handling, reported by Andrew Seales
+ *
  * Revision 1.76  2005/05/16 17:22:43  strk
  * Fixed DBF field names handling as for clashes avoiding.
  * pgsql field renames are warned.

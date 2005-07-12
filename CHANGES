@@ -15,6 +15,10 @@ PostGIS 1.1.0CVS
 	- JTS support improvements
 	- Chunked GeomUnion implementation (much faster)
 
+PostGIS 1.0.3
+????/??/??
+	- Bugfix in dumper handling of user-defined queries 
+
 PostGIS 1.0.2
 2005/07/04
 	- Fault tolerant btree ops
