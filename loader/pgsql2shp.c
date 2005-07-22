@@ -3004,14 +3004,14 @@ byte popbyte(byte **c) {
 }
 
 uint32 popint(byte **c) {
-	uint32 i;
+	uint32 i=0;
 	memcpy(&i, *c, 4);
 	*c+=4;
 	return i;
 }
 
 uint32 getint(byte *c) {
-	uint32 i;
+	uint32 i=0;
 	memcpy(&i, c, 4);
 	return i;
 }
@@ -3021,7 +3021,7 @@ void skipint(byte **c) {
 }
 
 double popdouble(byte **c) {
-	double d;
+	double d=0.0;
 	memcpy(&d, *c, 8);
 	*c+=8;
 	return d;
@@ -3122,6 +3122,9 @@ create_usrquerytable(void)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.74.2.4  2005/07/22 19:20:49  strk
+ * Fixed bug in {get,pop}{int,double} for 64bit archs
+ *
  * Revision 1.74.2.3  2005/07/12 16:19:29  strk
  * Fixed bug in user query handling, reported by Andrew Seales
  *
