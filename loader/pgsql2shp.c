@@ -10,6 +10,10 @@
  * 
  **********************************************************************
  * $Log$
+ * Revision 1.53.2.5  2005/07/22 14:35:58  strk
+ * Fixed getint/getdouble functions for WKB handling to initialize
+ * target variables to 0 in order to support 64bit archs.
+ *
  * Revision 1.53.2.4  2004/12/15 08:53:52  strk
  * Plugged leak depending on input size.
  *
@@ -2964,14 +2968,14 @@ byte popbyte(byte **c) {
 }
 
 uint32 popint(byte **c) {
-	uint32 i;
+	uint32 i=0;
 	memcpy(&i, *c, 4);
 	*c+=4;
 	return i;
 }
 
 uint32 getint(byte *c) {
-	uint32 i;
+	uint32 i=0;
 	memcpy(&i, c, 4);
 	return i;
 }
@@ -2981,7 +2985,7 @@ void skipint(byte **c) {
 }
 
 double popdouble(byte **c) {
-	double d;
+	double d=0.0;
 	memcpy(&d, *c, 8);
 	*c+=8;
 	return d;
