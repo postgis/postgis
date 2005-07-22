@@ -36,7 +36,7 @@
 //--------------------------------------------------------------------------
 
 #include "access/heapam.h"
-#include "catalog/catname.h"
+//#include "catalog/catname.h"
 #include "catalog/pg_operator.h"
 #include "catalog/pg_proc.h"
 #include "catalog/pg_statistic.h"
@@ -629,7 +629,11 @@ get_restriction_var(List *args,
 PG_FUNCTION_INFO_V1(postgis_gist_sel);
 Datum postgis_gist_sel(PG_FUNCTION_ARGS)
 {
+#if USE_VERSION < 81
 		Query	   *root = (Query *) PG_GETARG_POINTER(0);
+#else
+		PlannerInfo *root = (PlannerInfo *) PG_GETARG_POINTER(0);
+#endif
 	//	Oid			operator = PG_GETARG_OID(1);
 		List	   *args = (List *) PG_GETARG_POINTER(2);
 		int			varRelid = PG_GETARG_INT32(3);
@@ -668,7 +672,11 @@ Datum postgis_gist_sel(PG_FUNCTION_ARGS)
 			PG_RETURN_FLOAT8(0.000005);
 		}
 
+#if USE_VERSION < 81
 		relid = getrelid(var->varno, root->rtable);
+#else
+		relid = getrelid(var->varno, root->parse->rtable);
+#endif
 		if (relid == InvalidOid)
 		{
 			//elog(NOTICE,"getrelid FAILED (invalid oid) -returning early");
@@ -1836,6 +1844,9 @@ Datum geometry_analyze(PG_FUNCTION_ARGS)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.31.2.6  2005/07/22 14:49:00  strk
+ * Back-ported pgsql 8.1 support patches
+ *
  * Revision 1.31.2.5  2004/10/13 13:53:01  strk
  * Changed DEBUG define off by default, trimmed Log lines and moved at EOF
  *
