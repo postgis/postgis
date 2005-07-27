@@ -1521,6 +1521,9 @@ GetFieldsSpec(void)
 	char  name[MAXFIELDNAMELEN];
 	char  name2[MAXFIELDNAMELEN];
 	DBFFieldType type = -1;
+#ifdef USE_ICONV
+	char *utf8str;
+#endif
 
 	num_fields = DBFGetFieldCount( hDBFHandle );
 	num_records = DBFGetRecordCount(hDBFHandle);
@@ -1540,6 +1543,17 @@ GetFieldsSpec(void)
 		types[j] = type;
 		widths[j] = field_width;
 		precisions[j] = field_precision;
+
+#ifdef USE_ICONV
+		if ( encoding )
+		{
+			utf8str = utf8(encoding, name);
+			if ( ! utf8str ) exit(1);
+			strcpy(name, utf8str);
+			free(utf8str);
+		}
+#endif
+
 
 		/*
 		 * Make field names lowercase unless asked to
@@ -1577,7 +1591,7 @@ GetFieldsSpec(void)
 			}
 		}	
 
-		field_names[j] = malloc ( strlen(name)+3 );
+		field_names[j] = malloc (strlen(name)+1);
 		strcpy(field_names[j], name);
 
 		sprintf(col_names, "%s\"%s\",", col_names, name);
@@ -1633,6 +1647,9 @@ utf8 (const char *fromcode, char *inputbuf)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.88.2.5  2005/07/27 02:47:06  strk
+ * Support for multibyte field names in loader
+ *
  * Revision 1.88.2.4  2005/07/27 02:34:29  strk
  * Minor cleanups in loader
  *
