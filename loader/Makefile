@@ -31,9 +31,21 @@ ifneq ($(findstring 7.1,$(VERSION)),)
 	USE_VERSION=71
 else
 	ifneq ($(findstring 7.2,$(VERSION)),)
-                USE_VERSION=72
+		USE_VERSION=72
 	else
-                USE_VERSION=73
+		ifneq ($(findstring 7.3,$(VERSION)),)
+			USE_VERSION=73
+		else
+			ifneq ($(findstring 7.4,$(VERSION)),)
+				USE_VERSION=74
+			else
+				ifneq ($(findstring 8.0,$(VERSION)),)
+					USE_VERSION=80
+				else
+					USE_VERSION=81
+				endif
+			endif
+		endif
 	endif
 endif
 

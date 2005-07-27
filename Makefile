@@ -89,7 +89,11 @@ else
 			ifneq ($(findstring 7.4,$(VERSION)),)
 				USE_VERSION=74
 			else
-				USE_VERSION=80
+				ifneq ($(findstring 8.0,$(VERSION)),)
+					USE_VERSION=80
+				else
+					USE_VERSION=81
+				endif
 			endif
 		endif
 	endif
@@ -101,7 +105,7 @@ endif
 NAME=postgis
 SO_MAJOR_VERSION=0
 SO_MINOR_VERSION=9
-SO_MICRO_VERSION=1
+SO_MICRO_VERSION=2
 SCRIPTS_VERSION=0.0.1
 ifeq (${USE_VERSION}, 71) 
 	MODULE_FILENAME = $(LPATH)/$(shlib)
