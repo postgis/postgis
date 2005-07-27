@@ -22,6 +22,7 @@ PostGIS 1.0.3
 	- Bugfix in dumper handling of user-defined queries 
 	- Bugfix in create_undef.pl script
 	- Small performance improvement in canonical input function
+	- Minor cleanups in loader
 	- Severe bugfix in lwgeom's 2d bounding box computation
 
 PostGIS 1.0.2
