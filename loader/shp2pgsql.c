@@ -1156,8 +1156,8 @@ void
 InsertPointWKT(void)
 {
 	unsigned int u;
-	if (dump_format) printf("SRID=%s;POINT(",sr_id);
-	else printf("GeometryFromText('POINT (");
+	if (dump_format) printf("SRID=%s;%s(", sr_id, pgtype);
+	else printf("GeometryFromText('%s(", pgtype);
 
 	for (u=0;u<obj->nVertices; u++){
 		if (u>0) printf(",");
@@ -1646,6 +1646,9 @@ utf8 (const char *fromcode, char *inputbuf)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.92  2005/07/27 02:07:01  strk
+ * Fixed handling of POINT types as WKT (-w) in loader
+ *
  * Revision 1.91  2005/07/04 09:47:03  strk
  * Added conservative iconv detection code
  *
