@@ -290,7 +290,12 @@ CREATE TABLE geometry_columns (
 		f_table_catalog, 
 		f_table_schema, 
 		f_table_name, 
-		f_geometry_column ) );
+		f_geometry_column )
+)
+#if USE_VERSION > 71
+WITH OIDS
+#endif
+;
 
 -----------------------------------------------------------------------
 -- POSTGIS_VERSION()
