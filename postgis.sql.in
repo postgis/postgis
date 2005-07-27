@@ -290,7 +290,12 @@ CREATE TABLE geometry_columns (
 		f_table_catalog, 
 		f_table_schema, 
 		f_table_name, 
-		f_geometry_column ) );
+		f_geometry_column )
+)
+#if USE_VERSION > 71
+WITH OIDS
+#endif
+;
 
 -----------------------------------------------------------------------
 -- POSTGIS_VERSION()
@@ -466,6 +471,7 @@ CREATEFUNCTION fix_geometry_columns() RETURNS text
 AS 
 '
 DECLARE
+	mislinked record;
 	result text;
 	linked integer;
 	deleted integer;
@@ -523,27 +529,34 @@ BEGIN
 #endif
 
 	-- fix linking to system tables
-	UPDATE geometry_columns SET
-		attrelid = NULL,
-		varattnum = NULL,
-		stats = NULL;
-
-	UPDATE geometry_columns SET
-		attrelid = c.oid,
-		varattnum = a.attnum
+	SELECT 0 INTO linked;
+	FOR mislinked in
+		SELECT gc.oid as gcrec,
+			a.attrelid as attrelid, a.attnum as attnum
+                FROM geometry_columns gc, pg_class c,
 #if USE_VERSION >= 73
-		FROM pg_class c, pg_attribute a, pg_namespace n
-		WHERE n.nspname = f_table_schema::name
-		AND c.relname = f_table_name::name
-		AND c.relnamespace = n.oid
-#else // USE_VERSION < 73 
-		FROM pg_class c, pg_attribute a
-		WHERE c.relname = f_table_name::name
+		pg_namespace n, pg_attribute a
+#else
+		pg_attribute a
 #endif
-		AND a.attname = f_geometry_column::name
-		AND a.attrelid = c.oid;
-	
-	GET DIAGNOSTICS linked = ROW_COUNT;
+                WHERE ( gc.attrelid IS NULL OR gc.attrelid != a.attrelid 
+			OR gc.varattnum IS NULL OR gc.varattnum != a.attnum)
+#if USE_VERSION >= 73
+                AND n.nspname = gc.f_table_schema::name
+                AND c.relnamespace = n.oid
+#endif
+                AND c.relname = gc.f_table_name::name
+                AND a.attname = f_geometry_column::name
+                AND a.attrelid = c.oid
+	LOOP
+		UPDATE geometry_columns SET
+			attrelid = mislinked.attrelid,
+			varattnum = mislinked.attnum,
+			stats = NULL
+			WHERE geometry_columns.oid = mislinked.gcrec;
+		SELECT linked+1 INTO linked;
+	END LOOP; 
+
 
 	-- remove stale records
 	DELETE FROM geometry_columns WHERE attrelid IS NULL;
@@ -624,9 +637,9 @@ BEGIN
 			strpos(typecheck.consrc, ''=''),
 			strpos(typecheck.consrc, ''::'')-
 			strpos(typecheck.consrc, ''='')
-			))::varchar as type,
+			))::varchar as type
 #if USE_VERSION < 80
-		a.attrelid,
+		, a.attrelid,
 		a.attnum as varattnum,
 		null::histogram2d as stats
 #endif
@@ -823,6 +836,11 @@ CREATEFUNCTION expand(box3d,float8)
 CREATEFUNCTION expand(geometry,float8)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','expand_geometry'
+	LANGUAGE 'C' WITH (iscachable,isstrict);
+
+CREATEFUNCTION Reverse(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','HWGEOM_reverse'
 	LANGUAGE 'C' WITH (iscachable,isstrict);
 
 --
@@ -1664,7 +1682,12 @@ CREATEFUNCTION buffer(geometry,float8)
    RETURNS geometry
    AS '@MODULE_FILENAME@','buffer'
    LANGUAGE 'C' WITH (isstrict);
-   
+
+CREATEFUNCTION buffer(geometry,float8,integer)
+   RETURNS geometry
+   AS '@MODULE_FILENAME@','buffer'
+   LANGUAGE 'C' WITH (isstrict);
+
 CREATEFUNCTION convexhull(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','convexhull'
@@ -2773,5 +2796,24 @@ CREATEFUNCTION estimate_histogram2d(HISTOGRAM2D,box)
 	RETURNS float8
 	AS '@MODULE_FILENAME@','estimate_histogram2d'
 	LANGUAGE 'C'  with (isstrict);
+
+
+-----------------------------------------------------------------------
+-- SVG OUTPUT
+-----------------------------------------------------------------------
+CREATEFUNCTION AsSvg(geometry,int4,int4)
+	RETURNS TEXT
+	AS '@MODULE_FILENAME@','assvg_geometry'
+	LANGUAGE 'C';
+
+CREATEFUNCTION AsSvg(geometry,int4)
+	RETURNS TEXT
+	AS '@MODULE_FILENAME@','assvg_geometry'
+	LANGUAGE 'C';
+
+CREATEFUNCTION AsSvg(geometry)
+	RETURNS TEXT
+	AS '@MODULE_FILENAME@','assvg_geometry'
+	LANGUAGE 'C';
 
 END TRANSACTION;

@@ -10,6 +10,12 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.39.2.2  2004/10/13 18:50:15  strk
+ * Added third argument in buffer() func.
+ *
+ * Revision 1.39.2.1  2004/09/16 08:07:00  strk
+ * Added missing binary predicates short-circuit tests.
+ *
  * Revision 1.39  2004/08/23 15:37:16  strk
  * Changed SCRIPTS_VERSION to 0.0.1
  *
@@ -241,7 +247,7 @@ extern int	GEOSGetNumInteriorRings(Geometry *g1);
 extern int      GEOSGetSRID(Geometry *g1);
 extern int      GEOSGetNumGeometries(Geometry *g1);
 
-extern  Geometry *GEOSBuffer(Geometry *g1,double width);
+extern  Geometry *GEOSBuffer(Geometry *g1,double width,int quadsegs);
 extern  Geometry *GEOSConvexHull(Geometry *g1);
 extern  Geometry *GEOSDifference(Geometry *g1,Geometry *g2);
 extern  Geometry *GEOSBoundary(Geometry *g1);
@@ -612,15 +618,20 @@ Datum convexhull(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(buffer);
 Datum buffer(PG_FUNCTION_ARGS)
 {
-		GEOMETRY		*geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-		double			size   = PG_GETARG_FLOAT8(1);
-		Geometry *g1,*g3;
-		GEOMETRY *result;
+	GEOMETRY *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	double size   = PG_GETARG_FLOAT8(1);
+	int quadsegs = 8;
+	Geometry *g1,*g3;
+	GEOMETRY *result;
 
-		initGEOS(MAXIMUM_ALIGNOF);
+	if ( PG_NARGS() > 2 ) quadsegs = PG_GETARG_INT32(2);
 
-		g1 = 	POSTGIS2GEOS(geom1 );
-		g3 =    GEOSBuffer(g1,size);
+	//elog(NOTICE, "nargs:%d Quadsegs: %d", PG_NARGS(), quadsegs);
+
+	initGEOS(MAXIMUM_ALIGNOF);
+
+	g1 = POSTGIS2GEOS(geom1 );
+	g3 = GEOSBuffer(g1,size,quadsegs);
 
 
 	if (g3 == NULL)
@@ -905,14 +916,24 @@ Datum isvalid(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(overlaps);
 Datum overlaps(PG_FUNCTION_ARGS)
 {
-	GEOMETRY		*geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	GEOMETRY		*geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	GEOMETRY *geom1 = (GEOMETRY *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GEOMETRY *geom2 = (GEOMETRY *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 
 	Geometry *g1,*g2;
 	bool result;
 
 	errorIfGeometryCollection(geom1,geom2);
+
+	/*
+	 * short-circuit 1: if geom2 bounding box does not overlap
+	 * geom1 bounding box we can prematurely return FALSE
+	 */
+	if ( geom2->bvol.URT.x < geom1->bvol.LLB.x ) PG_RETURN_BOOL(FALSE);
+	if ( geom2->bvol.LLB.x > geom1->bvol.URT.x ) PG_RETURN_BOOL(FALSE);
+	if ( geom2->bvol.URT.y < geom1->bvol.LLB.y ) PG_RETURN_BOOL(FALSE);
+	if ( geom2->bvol.LLB.y > geom1->bvol.URT.y ) PG_RETURN_BOOL(FALSE);
+
 	initGEOS(MAXIMUM_ALIGNOF);
 
 	g1 = 	POSTGIS2GEOS(geom1 );
@@ -1078,14 +1099,24 @@ Datum within(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(crosses);
 Datum crosses(PG_FUNCTION_ARGS)
 {
-	GEOMETRY		*geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	GEOMETRY		*geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	GEOMETRY *geom1 = (GEOMETRY *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GEOMETRY *geom2 = (GEOMETRY *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 
 	Geometry *g1,*g2;
 	bool result;
 
 	errorIfGeometryCollection(geom1,geom2);
+
+	/*
+	 * short-circuit 1: if geom2 bounding box does not overlap
+	 * geom1 bounding box we can prematurely return FALSE
+	 */
+	if ( geom2->bvol.URT.x < geom1->bvol.LLB.x ) PG_RETURN_BOOL(FALSE);
+	if ( geom2->bvol.LLB.x > geom1->bvol.URT.x ) PG_RETURN_BOOL(FALSE);
+	if ( geom2->bvol.URT.y < geom1->bvol.LLB.y ) PG_RETURN_BOOL(FALSE);
+	if ( geom2->bvol.LLB.y > geom1->bvol.URT.y ) PG_RETURN_BOOL(FALSE);
+
 	initGEOS(MAXIMUM_ALIGNOF);
 
 	g1 = 	POSTGIS2GEOS(geom1 );
@@ -1114,16 +1145,23 @@ Datum crosses(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(intersects);
 Datum intersects(PG_FUNCTION_ARGS)
 {
-	GEOMETRY		*geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	GEOMETRY		*geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	GEOMETRY *geom1 = (GEOMETRY *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GEOMETRY *geom2 = (GEOMETRY *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	Geometry *g1,*g2;
 	bool result;
 
-
-
-
 	errorIfGeometryCollection(geom1,geom2);
+
+	/*
+	 * short-circuit 1: if geom2 bounding box does not overlap
+	 * geom1 bounding box we can prematurely return FALSE
+	 */
+	if ( geom2->bvol.URT.x < geom1->bvol.LLB.x ) PG_RETURN_BOOL(FALSE);
+	if ( geom2->bvol.LLB.x > geom1->bvol.URT.x ) PG_RETURN_BOOL(FALSE);
+	if ( geom2->bvol.URT.y < geom1->bvol.LLB.y ) PG_RETURN_BOOL(FALSE);
+	if ( geom2->bvol.LLB.y > geom1->bvol.URT.y ) PG_RETURN_BOOL(FALSE);
+
 	initGEOS(MAXIMUM_ALIGNOF);
 
 	g1 = 	POSTGIS2GEOS(geom1 );
@@ -1149,14 +1187,23 @@ Datum intersects(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(touches);
 Datum touches(PG_FUNCTION_ARGS)
 {
-	GEOMETRY		*geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	GEOMETRY		*geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-
+	GEOMETRY *geom1 = (GEOMETRY *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GEOMETRY *geom2 = (GEOMETRY *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	Geometry *g1,*g2;
 	bool result;
 
 	errorIfGeometryCollection(geom1,geom2);
+
+	/*
+	 * short-circuit 1: if geom2 bounding box does not overlap
+	 * geom1 bounding box we can prematurely return FALSE
+	 */
+	if ( geom2->bvol.URT.x < geom1->bvol.LLB.x ) PG_RETURN_BOOL(FALSE);
+	if ( geom2->bvol.LLB.x > geom1->bvol.URT.x ) PG_RETURN_BOOL(FALSE);
+	if ( geom2->bvol.URT.y < geom1->bvol.LLB.y ) PG_RETURN_BOOL(FALSE);
+	if ( geom2->bvol.LLB.y > geom1->bvol.URT.y ) PG_RETURN_BOOL(FALSE);
+
 	initGEOS(MAXIMUM_ALIGNOF);
 
 	g1 = 	POSTGIS2GEOS(geom1 );
@@ -1184,14 +1231,24 @@ Datum touches(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(disjoint);
 Datum disjoint(PG_FUNCTION_ARGS)
 {
-	GEOMETRY		*geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	GEOMETRY		*geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	GEOMETRY *geom1 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GEOMETRY *geom2 = (GEOMETRY *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 
 	Geometry *g1,*g2;
 	bool result;
 
 	errorIfGeometryCollection(geom1,geom2);
+
+	/*
+	 * short-circuit 1: if geom2 bounding box does not overlap
+	 * geom1 bounding box we can prematurely return TRUE
+	 */
+	if ( geom2->bvol.URT.x < geom1->bvol.LLB.x ) PG_RETURN_BOOL(TRUE);
+	if ( geom2->bvol.LLB.x > geom1->bvol.URT.x ) PG_RETURN_BOOL(TRUE);
+	if ( geom2->bvol.URT.y < geom1->bvol.LLB.y ) PG_RETURN_BOOL(TRUE);
+	if ( geom2->bvol.LLB.y > geom1->bvol.URT.y ) PG_RETURN_BOOL(TRUE);
+
 	initGEOS(MAXIMUM_ALIGNOF);
 
 	g1 = 	POSTGIS2GEOS(geom1 );
@@ -1335,10 +1392,20 @@ Datum geomequals(PG_FUNCTION_ARGS)
 	bool result;
 
 	errorIfGeometryCollection(geom1,geom2);
+
+	/*
+	 * short-circuit 1: if geom2 bounding box does not equal
+	 * geom1 bounding box we can prematurely return FALSE
+	 */
+	if ( geom2->bvol.URT.x != geom1->bvol.URT.x ) PG_RETURN_BOOL(FALSE);
+	if ( geom2->bvol.LLB.x != geom1->bvol.LLB.x ) PG_RETURN_BOOL(FALSE);
+	if ( geom2->bvol.URT.y != geom1->bvol.URT.y ) PG_RETURN_BOOL(FALSE);
+	if ( geom2->bvol.LLB.y != geom1->bvol.LLB.y ) PG_RETURN_BOOL(FALSE);
+
 	initGEOS(MAXIMUM_ALIGNOF);
 
-	g1 = 	POSTGIS2GEOS(geom1 );
-	g2 = 	POSTGIS2GEOS(geom2 );
+	g1 = POSTGIS2GEOS(geom1 );
+	g2 = POSTGIS2GEOS(geom2 );
 
 
 	result = GEOSequals(g1,g2);

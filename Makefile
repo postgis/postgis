@@ -6,7 +6,7 @@
 # database.
 
 #---------------------------------------------------------------
-# Set USE_PROJ to 1 for Proj4 reprojection support
+# Set USE_PROJ to 1 for Proj4 reprojection support (recommended)
 #
 # Reprojection allows you to transform coordinate systems
 # in the database with the Transform() function.
@@ -20,7 +20,7 @@ endif
 
 #---------------------------------------------------------------
 # Set USE_GEOS to 1 for GEOS spatial predicate and operator
-# support
+# support (recommended)
 #
 # GEOS allows you to do exact topological tests, such as
 # Intersects() and Touches(), as well as geometry operations,
@@ -89,7 +89,11 @@ else
 			ifneq ($(findstring 7.4,$(VERSION)),)
 				USE_VERSION=74
 			else
-				USE_VERSION=80
+				ifneq ($(findstring 8.0,$(VERSION)),)
+					USE_VERSION=80
+				else
+					USE_VERSION=81
+				endif
 			endif
 		endif
 	endif
@@ -100,7 +104,7 @@ endif
 #
 NAME=postgis
 SO_MAJOR_VERSION=0
-SO_MINOR_VERSION=8
+SO_MINOR_VERSION=9
 SO_MICRO_VERSION=2
 SCRIPTS_VERSION=0.0.1
 ifeq (${USE_VERSION}, 71) 
@@ -167,7 +171,7 @@ ifeq ($(USE_GEOS),1)
 	GEOS_WRAPPER=postgis_geos_wrapper.o
 endif
 
-OBJS=postgis_debug.o postgis_ops.o postgis_fn.o postgis_inout.o postgis_proj.o postgis_chip.o postgis_transform.o postgis_gist_$(GIST_SUPPORT).o $(GIST_ESTIMATE) postgis_geos.o $(GEOS_WRAPPER) postgis_algo.o
+OBJS=postgis_debug.o postgis_ops.o postgis_fn.o postgis_inout.o postgis_proj.o postgis_chip.o postgis_transform.o postgis_svg.o postgis_gist_$(GIST_SUPPORT).o $(GIST_ESTIMATE) postgis_geos.o $(GEOS_WRAPPER) postgis_algo.o
 
 #---------------------------------------------------------------
 # Add libraries that libpq depends (or might depend) on into the

@@ -1,4 +1,3 @@
-
 /**********************************************************************
  * $Id$
  *
@@ -8,86 +7,6 @@
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
- *
- **********************************************************************
- * $Log$
- * Revision 1.40  2004/08/26 16:55:09  strk
- * max_distance() raises an 'unimplemented yet' error.
- *
- * Revision 1.39  2004/07/28 16:10:59  strk
- * Changed all version functions to return text.
- * Renamed postgis_scripts_version() to postgis_scripts_installed()
- * Added postgis_scripts_released().
- * Added postgis_full_version().
- *
- * Revision 1.38  2004/07/28 13:37:43  strk
- * Added postgis_uses_stats and postgis_scripts_version.
- * Experimented with PIP short-circuit in within/contains functions.
- * Documented new version functions.
- *
- * Revision 1.37  2004/07/22 16:20:10  strk
- * Added postgis_lib_version() and postgis_geos_version()
- *
- * Revision 1.36  2004/06/03 16:44:56  strk
- * Added expand_geometry - expand(geometry, int8)
- *
- * Revision 1.35  2004/04/28 22:26:02  pramsey
- * Fixed spelling mistake in header text.
- *
- * Revision 1.34  2004/03/26 00:54:09  dblasby
- * added full support for fluffType(<geom>)
- * postgis09=# select fluffType('POINT(0 0)');
- *         flufftype
- * 		-------------------------
- * 		 SRID=-1;MULTIPOINT(0 0)
- *
- * Revision 1.33  2004/03/25 00:43:41  dblasby
- * added function fluffType() that takes POINT LINESTRING or POLYGON
- * type and converts it to a multi*.
- * Needs to be integrated into a proper Postgresql function and given an
- * SQL CREATE FUNCTION
- *
- * Revision 1.32  2004/02/12 10:34:49  strk
- * changed USE_GEOS check from ifdef / ifndef to if / if !
- *
- * Revision 1.31  2003/11/11 10:58:43  strk
- * Fixed a typo in envelope()
- *
- * Revision 1.30  2003/10/29 15:53:10  strk
- * geoscentroid() removed. both geos and pgis versions are called 'centroid'.
- * only one version will be compiled based on USE_GEOS flag.
- *
- * Revision 1.29  2003/10/28 16:57:35  strk
- * Added collect_garray() function.
- *
- * Revision 1.28  2003/10/28 15:16:17  strk
- * unite_sfunc() from postgis_geos.c renamed to geom_accum() and moved in postgis_fn.c
- *
- * Revision 1.27  2003/10/17 16:12:23  dblasby
- * Made Envelope() CW instead of CCW.
- *
- * Revision 1.26  2003/10/17 16:07:05  dblasby
- * made isEmpty() return true/false
- *
- * Revision 1.25  2003/09/16 20:27:12  dblasby
- * added ability to delete geometries.
- *
- * Revision 1.24  2003/08/08 18:19:20  dblasby
- * Conformance changes.
- * Removed junk from postgis_debug.c and added the first run of the long
- * transaction locking support.  (this will change - dont use it)
- * conformance tests were corrected
- * some dos cr/lf removed
- * empty geometries i.e. GEOMETRYCOLLECT(EMPTY) added (with indexing support)
- * pointN(<linestring>,1) now returns the first point (used to return 2nd)
- *
- * Revision 1.23  2003/07/25 17:08:37  pramsey
- * Moved Cygwin endian define out of source files into postgis.h common
- * header file.
- *
- * Revision 1.22  2003/07/01 18:30:55  pramsey
- * Added CVS revision headers.
- *
  *
  **********************************************************************/
 
@@ -128,6 +47,7 @@
 
 
 
+static void reverse_points(POINT3D *pts, int32 npoints);
 
 /**************************************************************************
  * GENERAL PURPOSE GEOMETRY FUNCTIONS
@@ -2615,7 +2535,8 @@ POINT3D	*segmentize_ring(POINT3D	*points, double dist, int num_points_in, int *n
 // select segmentize('POLYGON((0 0, 0 10, 5 5, 0 0))',1);
 
 //segmentize(GEOMETRY P1, double maxlen)
-//given a [multi-]polygon, return a new polygon with each segment at most a given length
+//given a [multi-]polygon or [multi-]linestring, return a new polygon or 
+//linestring with each segment at most a given length
 PG_FUNCTION_INFO_V1(segmentize);
 Datum segmentize(PG_FUNCTION_ARGS)
 {
@@ -2623,8 +2544,9 @@ Datum segmentize(PG_FUNCTION_ARGS)
 		GEOMETRY		*result = NULL, *result2;
 		double			maxdist = PG_GETARG_FLOAT8(1);
 		int32			*offsets1,*p_npoints_ring;
-		int				g1_i,r;
+		int			g1_i,r;
 		POLYGON3D		*p,*poly;
+		LINE3D			*l,*line;
 		POINT3D			*polypts;
 		int				num_polypts;
 		POINT3D			*all_polypts;
@@ -2638,33 +2560,92 @@ Datum segmentize(PG_FUNCTION_ARGS)
 	first_one = 1;
 
 
-	if ( (geom1->type != POLYGONTYPE) &&  (geom1->type != MULTIPOLYGONTYPE) )
+	if ( (geom1->type == POLYGONTYPE) ||  (geom1->type == MULTIPOLYGONTYPE) )
 	{
-		elog(ERROR,"segmentize: 1st arg isnt a [multi-]polygon\n");
-		PG_RETURN_NULL();
-	}
-
-
-
-	offsets1 = (int32 *) ( ((char *) &(geom1->objType[0] ))+ sizeof(int32) * geom1->nobjs ) ;
-
-	for (g1_i=0; g1_i < geom1->nobjs; g1_i++)
-	{
-
-		all_num_polypts = 0;
-		all_num_polypts_max = 1000;
-		all_polypts = (POINT3D *) palloc (sizeof(POINT3D) * all_num_polypts_max );
-
-		p = (POLYGON3D*)((char *) geom1 +offsets1[g1_i]) ;  // the polygon
-
-		p_npoints_ring = (int32 *) palloc(sizeof(int32) * p->nrings);
-
-		p_points = (POINT3D *) ( (char *)&(p->npoints[p->nrings] )  );
-		p_points = (POINT3D *) MAXALIGN(p_points);
-
-		for (r=0;r<p->nrings;r++)  //foreach ring in the polygon
+		offsets1 = (int32 *) ( ((char *) &(geom1->objType[0] ))+ sizeof(int32) * geom1->nobjs ) ;
+	
+		for (g1_i=0; g1_i < geom1->nobjs; g1_i++)
 		{
-			polypts = segmentize_ring(p_points, maxdist, p->npoints[r], &num_polypts);
+	
+			all_num_polypts = 0;
+			all_num_polypts_max = 1000;
+			all_polypts = (POINT3D *) palloc (sizeof(POINT3D) * all_num_polypts_max );
+	
+			p = (POLYGON3D*)((char *) geom1 +offsets1[g1_i]) ;  // the polygon
+	
+			p_npoints_ring = (int32 *) palloc(sizeof(int32) * p->nrings);
+	
+			p_points = (POINT3D *) ( (char *)&(p->npoints[p->nrings] )  );
+			p_points = (POINT3D *) MAXALIGN(p_points);
+	
+			for (r=0;r<p->nrings;r++)  //foreach ring in the polygon
+			{
+				polypts = segmentize_ring(p_points, maxdist, p->npoints[r], &num_polypts);
+				if ( (all_num_polypts + num_polypts) < all_num_polypts_max )
+				{
+					//just add
+					memcpy( &all_polypts[all_num_polypts], polypts, sizeof(POINT3D) *num_polypts );
+					all_num_polypts += num_polypts;
+				}
+				else
+				{
+					//need more space
+					new_size = all_num_polypts_max + num_polypts + 1000;
+					rr = (POINT3D*) palloc(sizeof(POINT3D) * new_size);
+					memcpy(rr,all_polypts, sizeof(POINT3D) *all_num_polypts);
+					memcpy(&rr[all_num_polypts], polypts , sizeof(POINT3D) *num_polypts);
+					pfree(all_polypts);
+					all_polypts = rr;
+					all_num_polypts += num_polypts;
+				}
+				//set points in ring value
+				pfree(polypts);
+				p_npoints_ring[r] = num_polypts;
+			} //for each ring
+	
+			poly = make_polygon(p->nrings, p_npoints_ring, all_polypts, all_num_polypts, &poly_size);
+	
+			if (first_one)
+			{
+				first_one = 0;
+				result = make_oneobj_geometry(poly_size, (char *)poly, POLYGONTYPE, FALSE,geom1->SRID, geom1->scale, geom1->offsetX, geom1->offsetY);
+				pfree(poly);
+				pfree(all_polypts);
+			}
+			else
+			{
+				result2 = add_to_geometry(result,poly_size, (char *) poly, POLYGONTYPE);
+				bbox = bbox_of_geometry( result2 ); // make bounding box
+				memcpy( &result2->bvol, bbox, sizeof(BOX3D) ); // copy bounding box
+				pfree(bbox); // free bounding box
+				pfree(result);
+				result = result2;
+				pfree(poly);
+				pfree(all_polypts);
+			}
+	
+		} // foreach polygon
+		PG_RETURN_POINTER(result);
+	} 
+	if ( (geom1->type == LINETYPE) ||  (geom1->type == MULTILINETYPE) ) 
+	{
+		offsets1 = (int32 *) ( ((char *) &(geom1->objType[0] ))+ sizeof(int32) * geom1->nobjs ) ;
+	
+		for (g1_i=0; g1_i < geom1->nobjs; g1_i++)
+		{
+	
+			all_num_polypts = 0;
+			all_num_polypts_max = 1000;
+			all_polypts = (POINT3D *) palloc (sizeof(POINT3D) * all_num_polypts_max );
+	
+			l = (LINE3D*)((char *) geom1 +offsets1[g1_i]) ;  // the line
+	
+			p_npoints_ring = (int32 *) palloc(sizeof(int32) * l->npoints);
+	
+			p_points = (POINT3D *) (l->points);
+			p_points = (POINT3D *) MAXALIGN(p_points);
+				
+			polypts = segmentize_ring(p_points, maxdist, l->npoints, &num_polypts);
 			if ( (all_num_polypts + num_polypts) < all_num_polypts_max )
 			{
 				//just add
@@ -2684,32 +2665,36 @@ Datum segmentize(PG_FUNCTION_ARGS)
 			}
 			//set points in ring value
 			pfree(polypts);
-			p_npoints_ring[r] = num_polypts;
-		} //for each ring
+	
+			line = make_line(all_num_polypts, all_polypts, &poly_size);
+	
+			if (first_one)
+			{
+				first_one = 0;
+				result = make_oneobj_geometry(poly_size, (char *)line, LINETYPE, FALSE,geom1->SRID, geom1->scale, geom1->offsetX, geom1->offsetY);
+				pfree(line);
+				pfree(all_polypts);
+			}
+			else
+			{
+				result2 = add_to_geometry(result,poly_size, (char *) line, LINETYPE);
+				bbox = bbox_of_geometry( result2 ); // make bounding box
+				memcpy( &result2->bvol, bbox, sizeof(BOX3D) ); // copy bounding box
+				pfree(bbox); // free bounding box
+				pfree(result);
+				result = result2;
+				pfree(line);
+				pfree(all_polypts);
+			}
+	
+		} // foreach line
+		PG_RETURN_POINTER(result);
+	} else 
+	{
+		elog(ERROR,"segmentize: 1st arg isnt a [multi-]polygon or [multi-]linestring\n");
+		PG_RETURN_NULL();
+	}
 
-		poly = make_polygon(p->nrings, p_npoints_ring, all_polypts, all_num_polypts, &poly_size);
-
-		if (first_one)
-		{
-			first_one = 0;
-			result = make_oneobj_geometry(poly_size, (char *)poly, POLYGONTYPE, FALSE,geom1->SRID, geom1->scale, geom1->offsetX, geom1->offsetY);
-			pfree(poly);
-			pfree(all_polypts);
-		}
-		else
-		{
-			result2 = add_to_geometry(result,poly_size, (char *) poly, POLYGONTYPE);
-			bbox = bbox_of_geometry( result2 ); // make bounding box
-			memcpy( &result2->bvol, bbox, sizeof(BOX3D) ); // copy bounding box
-			pfree(bbox); // free bounding box
-			pfree(result);
-			result = result2;
-			pfree(poly);
-			pfree(all_polypts);
-		}
-
-	} // foreach polygon
-	PG_RETURN_POINTER(result);
 }
 
 /*
@@ -3213,3 +3198,154 @@ Datum postgis_uses_stats(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(FALSE);
 #endif
 }
+
+// Reverse vertex order of geometry
+PG_FUNCTION_INFO_V1(HWGEOM_reverse);
+Datum HWGEOM_reverse(PG_FUNCTION_ARGS)
+{
+	GEOMETRY *geom = (GEOMETRY *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+	int32 *offsets, type, i;
+	char *o;
+	LINE3D *line;
+	POLYGON3D *poly;
+
+	offsets = (int32 *) (((char *) &(geom->objType[0] ))+ sizeof(int32) * geom->nobjs);
+
+	for (i=0; i<geom->nobjs; i++) //for each object in geom1
+	{
+		int32 ring;
+		POINT3D	*pts;
+
+		o = (char *)geom+offsets[i];
+		type = geom->objType[i];
+		if (type == LINETYPE)	//LINESTRING
+		{
+			line = (LINE3D *) o;
+			reverse_points(&line->points[0], line->npoints);
+		}
+		else if (type == POLYGONTYPE) //POLYGON
+		{
+			poly = (POLYGON3D *) o;
+
+			pts = (POINT3D *)
+				((char *)&(poly->npoints[poly->nrings]));
+			for (ring = 0; ring < poly->nrings; ring++)
+			{
+				reverse_points(pts, poly->npoints[ring]);
+				pts += poly->npoints[ring];
+			}
+		}
+	}
+
+	PG_RETURN_POINTER(geom);
+}
+
+static void
+reverse_points(POINT3D *pts, int32 npoints)
+{
+	int32 i;
+	int32 last = npoints-1;
+	int32 mid = last/2;
+
+	if ( npoints == 1 ) return; // noting to reverse
+
+	for (i=0; i<=mid; i++)
+	{
+		POINT3D pbuf, *frm, *to;
+		frm = &(pts[i]);
+		to = &(pts[last-i]);
+		memcpy(&pbuf, to, sizeof(POINT3D));
+		memcpy(to, frm, sizeof(POINT3D));
+		memcpy(frm, &pbuf, sizeof(POINT3D));
+	}
+
+}
+
+
+/**********************************************************************
+ * $Log$
+ * Revision 1.40.2.2  2004/11/11 09:37:56  strk
+ * Reverse() function back-ported.
+ *
+ * Revision 1.40.2.1  2004/10/09 15:16:10  strk
+ * Applied Steffen Macke <sdteffen@gmail.com> LINESTRING patch for segmentize().
+ *
+ * Revision 1.40  2004/08/26 16:55:09  strk
+ * max_distance() raises an 'unimplemented yet' error.
+ *
+ * Revision 1.39  2004/07/28 16:10:59  strk
+ * Changed all version functions to return text.
+ * Renamed postgis_scripts_version() to postgis_scripts_installed()
+ * Added postgis_scripts_released().
+ * Added postgis_full_version().
+ *
+ * Revision 1.38  2004/07/28 13:37:43  strk
+ * Added postgis_uses_stats and postgis_scripts_version.
+ * Experimented with PIP short-circuit in within/contains functions.
+ * Documented new version functions.
+ *
+ * Revision 1.37  2004/07/22 16:20:10  strk
+ * Added postgis_lib_version() and postgis_geos_version()
+ *
+ * Revision 1.36  2004/06/03 16:44:56  strk
+ * Added expand_geometry - expand(geometry, int8)
+ *
+ * Revision 1.35  2004/04/28 22:26:02  pramsey
+ * Fixed spelling mistake in header text.
+ *
+ * Revision 1.34  2004/03/26 00:54:09  dblasby
+ * added full support for fluffType(<geom>)
+ * postgis09=# select fluffType('POINT(0 0)');
+ *         flufftype
+ * 		-------------------------
+ * 		 SRID=-1;MULTIPOINT(0 0)
+ *
+ * Revision 1.33  2004/03/25 00:43:41  dblasby
+ * added function fluffType() that takes POINT LINESTRING or POLYGON
+ * type and converts it to a multi*.
+ * Needs to be integrated into a proper Postgresql function and given an
+ * SQL CREATE FUNCTION
+ *
+ * Revision 1.32  2004/02/12 10:34:49  strk
+ * changed USE_GEOS check from ifdef / ifndef to if / if !
+ *
+ * Revision 1.31  2003/11/11 10:58:43  strk
+ * Fixed a typo in envelope()
+ *
+ * Revision 1.30  2003/10/29 15:53:10  strk
+ * geoscentroid() removed. both geos and pgis versions are called 'centroid'.
+ * only one version will be compiled based on USE_GEOS flag.
+ *
+ * Revision 1.29  2003/10/28 16:57:35  strk
+ * Added collect_garray() function.
+ *
+ * Revision 1.28  2003/10/28 15:16:17  strk
+ * unite_sfunc() from postgis_geos.c renamed to geom_accum() and moved in postgis_fn.c
+ *
+ * Revision 1.27  2003/10/17 16:12:23  dblasby
+ * Made Envelope() CW instead of CCW.
+ *
+ * Revision 1.26  2003/10/17 16:07:05  dblasby
+ * made isEmpty() return true/false
+ *
+ * Revision 1.25  2003/09/16 20:27:12  dblasby
+ * added ability to delete geometries.
+ *
+ * Revision 1.24  2003/08/08 18:19:20  dblasby
+ * Conformance changes.
+ * Removed junk from postgis_debug.c and added the first run of the long
+ * transaction locking support.  (this will change - dont use it)
+ * conformance tests were corrected
+ * some dos cr/lf removed
+ * empty geometries i.e. GEOMETRYCOLLECT(EMPTY) added (with indexing support)
+ * pointN(<linestring>,1) now returns the first point (used to return 2nd)
+ *
+ * Revision 1.23  2003/07/25 17:08:37  pramsey
+ * Moved Cygwin endian define out of source files into postgis.h common
+ * header file.
+ *
+ * Revision 1.22  2003/07/01 18:30:55  pramsey
+ * Added CVS revision headers.
+ *
+ *
+ **********************************************************************/

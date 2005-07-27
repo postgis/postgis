@@ -11,6 +11,10 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.45.2.1  2005/07/22 14:35:58  strk
+ * Fixed getint/getdouble functions for WKB handling to initialize
+ * target variables to 0 in order to support 64bit archs.
+ *
  * Revision 1.45  2004/08/11 17:07:26  strk
  * Fixed a bug in non-finite Z check
  *
@@ -3872,7 +3876,7 @@ Datum histogram2d_out(PG_FUNCTION_ARGS)
 
 int getint(char *c)
 {
-	int i;
+	int i=0;
 	memcpy( &i, c, 4);
 	return i;
 //return *((int*)c);
@@ -3880,7 +3884,7 @@ int getint(char *c)
 
 double getdouble(char *c)
 {
-	double d;
+	double d=0.0;
 	memcpy( &d, c, 8);
 	return d;
 //	return *((double*)c);

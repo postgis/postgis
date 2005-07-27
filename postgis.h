@@ -1,4 +1,3 @@
-
 /**********************************************************************
  * $Id$
  *
@@ -8,93 +7,6 @@
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of hte GNU General Public Licence. See the COPYING file.
- *
- **********************************************************************
- * $Log$
- * Revision 1.50  2004/08/19 06:15:58  strk
- * USE_VERSION gets 80 where it got 75
- *
- * Revision 1.49  2004/07/28 13:37:43  strk
- * Added postgis_uses_stats and postgis_scripts_version.
- * Experimented with PIP short-circuit in within/contains functions.
- * Documented new version functions.
- *
- * Revision 1.48  2004/07/23 21:24:33  strk
- * Added postgis_proj_version()
- *
- * Revision 1.47  2004/07/22 16:20:09  strk
- * Added postgis_lib_version() and postgis_geos_version()
- *
- * Revision 1.46  2004/06/09 09:06:55  strk
- * Added Romi's Win32 patches.
- *
- * Revision 1.45  2004/06/08 15:18:12  strk
- * Deleted prototype for isspace() in postgis.h
- * and included <ctype.h> in postgis_inout.c,
- * which is the only module calling isspace().
- * This was needed to compile postgis against PG75(CVS).
- *
- * Revision 1.44  2004/06/03 16:44:56  strk
- * Added expand_geometry - expand(geometry, int8)
- *
- * Revision 1.43  2004/03/26 00:54:09  dblasby
- * added full support for fluffType(<geom>)
- * postgis09=# select fluffType('POINT(0 0)');
- *         flufftype
- * 		-------------------------
- * 		 SRID=-1;MULTIPOINT(0 0)
- *
- * Revision 1.42  2004/02/23 12:18:55  strk
- * added skeleton functions for pg75 stats integration
- *
- * Revision 1.41  2004/01/25 19:33:00  pramsey
- * Test commit on new CVS archive.
- *
- * Revision 1.40  2004/01/21 19:04:03  strk
- * Added line_interpolate_point function by jsunday@rochgrp.com
- *
- * Revision 1.39  2003/11/28 11:06:49  strk
- * Added WKB_recv function for binary WKB input
- *
- * Revision 1.38  2003/11/19 15:44:51  strk
- * added prototypes for geometry_{le,ge,cmp}
- *
- * Revision 1.37  2003/10/28 16:57:35  strk
- * Added collect_garray() function.
- *
- * Revision 1.36  2003/10/28 15:16:17  strk
- * unite_sfunc() from postgis_geos.c renamed to geom_accum() and moved in postgis_fn.c
- *
- * Revision 1.35  2003/10/28 11:16:46  strk
- * Added postgis_algo.c prototypes
- *
- * Revision 1.34  2003/10/16 16:35:42  dblasby
- * added #include <sys/types.h> for people using freeBSD (strk@keybit.net patch)
- *
- * Revision 1.33  2003/08/08 18:19:20  dblasby
- * Conformance changes.
- * Removed junk from postgis_debug.c and added the first run of the long
- * transaction locking support.  (this will change - dont use it)
- * conformance tests were corrected
- * some dos cr/lf removed
- * empty geometries i.e. GEOMETRYCOLLECT(EMPTY) added (with indexing support)
- * pointN(<linestring>,1) now returns the first point (used to return 2nd)
- *
- * Revision 1.32  2003/08/06 19:31:18  dblasby
- * Added the WKB parser.  Added all the functions like
- * PolyFromWKB(<WKB>,[<SRID>]).
- *
- * Added all the functions like PolyFromText(<WKT>,[<SRID>])
- *
- * Minor problem in GEOS library fixed.
- *
- * Revision 1.31  2003/07/25 17:08:37  pramsey
- * Moved Cygwin endian define out of source files into postgis.h common
- * header file.
- *
- * Revision 1.30  2003/07/01 18:30:55  pramsey
- * Added CVS revision headers.
- *
  *
  **********************************************************************/
 
@@ -687,6 +599,8 @@ Datum postgis_uses_stats(PG_FUNCTION_ARGS);
 Datum postgis_lib_version(PG_FUNCTION_ARGS);
 Datum postgis_geos_version(PG_FUNCTION_ARGS);
 Datum postgis_proj_version(PG_FUNCTION_ARGS);
+Datum postgis_scripts_released(PG_FUNCTION_ARGS);
+Datum HWGEOM_reverse(PG_FUNCTION_ARGS);
 
 /*--------------------------------------------------------------------
  * Useful floating point utilities and constants.
@@ -704,4 +618,35 @@ Datum postgis_proj_version(PG_FUNCTION_ARGS);
 #endif
 #define abs(a)			((a) <	(0) ? (-a) : (a))
 
+#ifndef PG_NARGS
+#define PG_NARGS() (fcinfo->nargs)
+#endif // ndef PG_NARGS
+
+
+/**********************************************************************
+ * $Log$
+ * Revision 1.50.2.2  2004/11/24 10:46:32  strk
+ * Added definition of PG_NARGS for PG < 7.3
+ *
+ * Revision 1.50.2.1  2004/11/11 09:37:56  strk
+ * Reverse() function back-ported.
+ *
+ * Revision 1.50  2004/08/19 06:15:58  strk
+ * USE_VERSION gets 80 where it got 75
+ *
+ * Revision 1.49  2004/07/28 13:37:43  strk
+ * Added postgis_uses_stats and postgis_scripts_version.
+ * Experimented with PIP short-circuit in within/contains functions.
+ * Documented new version functions.
+ *
+ * Revision 1.48  2004/07/23 21:24:33  strk
+ * Added postgis_proj_version()
+ *
+ * Revision 1.47  2004/07/22 16:20:09  strk
+ * Added postgis_lib_version() and postgis_geos_version()
+ *
+ * Revision 1.46  2004/06/09 09:06:55  strk
+ * Added Romi's Win32 patches.
+ *
+ **********************************************************************/
 

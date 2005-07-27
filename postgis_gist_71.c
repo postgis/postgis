@@ -11,6 +11,9 @@
  *
  **********************************************************************
  * $Log$
+ * Revision 1.4.2.1  2005/06/25 11:50:55  strk
+ * Back-ported rtree indexing fix
+ *
  * Revision 1.4  2004/04/28 22:26:02  pramsey
  * Fixed spelling mistake in header text.
  *
@@ -551,40 +554,45 @@ GIST_SPLITVEC *rtree_picksplit(bytea *entryvec, GIST_SPLITVEC *v, int keylen, BI
     return( v );
 }
 
-
-bool rtree_internal_consistent(BOX *key,
+static bool
+rtree_internal_consistent(BOX *key,
 			BOX *query,
 			StrategyNumber strategy)
 {
-    bool retval;
+	bool retval;
 
-#ifdef DEBUG_GIST2
-	printf("GIST: rtree_internal_consist called\n");
+#ifdef DEBUG_GIST
+	elog(NOTICE,"GIST: rtree_internal_consist called\n");
+	fflush( stdout );
 #endif
 
-    switch(strategy) {
-    case RTLeftStrategyNumber:
-    case RTOverLeftStrategyNumber:
-      retval = DatumGetBool( DirectFunctionCall2( box_overleft, PointerGetDatum(key), PointerGetDatum(query) ) );
-      break;
-    case RTOverlapStrategyNumber:
-      retval = DatumGetBool( DirectFunctionCall2( box_overlap, PointerGetDatum(key), PointerGetDatum(query) ) );
-      break;
-    case RTOverRightStrategyNumber:
-    case RTRightStrategyNumber:
-      retval = DatumGetBool( DirectFunctionCall2( box_right, PointerGetDatum(key), PointerGetDatum(query) ) );
-      break;
-    case RTSameStrategyNumber:
-    case RTContainsStrategyNumber:
-      retval = DatumGetBool( DirectFunctionCall2( box_contain, PointerGetDatum(key), PointerGetDatum(query) ) );
-      break;
-    case RTContainedByStrategyNumber:
-      retval = DatumGetBool( DirectFunctionCall2( box_overlap, PointerGetDatum(key), PointerGetDatum(query) ) );
-      break;
-    default:
-      retval = FALSE;
-    }
-    return(retval);
+	switch(strategy) {
+		case RTLeftStrategyNumber:
+			retval = !DatumGetBool( DirectFunctionCall2( box_overright, PointerGetDatum(key), PointerGetDatum(query) ) );
+			break;
+		case RTOverLeftStrategyNumber:
+			retval = !DatumGetBool( DirectFunctionCall2( box_right, PointerGetDatum(key), PointerGetDatum(query) ) );
+			break;
+		case RTOverlapStrategyNumber:
+			retval = DatumGetBool( DirectFunctionCall2( box_overlap, PointerGetDatum(key), PointerGetDatum(query) ) );
+			break;
+		case RTOverRightStrategyNumber:
+			retval = !DatumGetBool( DirectFunctionCall2( box_left, PointerGetDatum(key), PointerGetDatum(query) ) );
+			break;
+		case RTRightStrategyNumber:
+			retval = !DatumGetBool( DirectFunctionCall2( box_overleft, PointerGetDatum(key), PointerGetDatum(query) ) );
+			break;
+		case RTSameStrategyNumber:
+		case RTContainsStrategyNumber:
+			retval = DatumGetBool( DirectFunctionCall2( box_contain, PointerGetDatum(key), PointerGetDatum(query) ) );
+			break;
+		case RTContainedByStrategyNumber:
+			retval = DatumGetBool( DirectFunctionCall2( box_overlap, PointerGetDatum(key), PointerGetDatum(query) ) );
+			break;
+			default:
+			retval = FALSE;
+	}
+	return(retval);
 }
 
 PG_FUNCTION_INFO_V1(rtree_decompress);

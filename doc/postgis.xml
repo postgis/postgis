@@ -446,7 +446,7 @@
       <para>The loader is called <filename>shp2pgsql</filename> and converts
       ESRI Shape files into SQL suitable for loading in PostGIS/PostgreSQL.
       The dumper is called <filename>pgsql2shp</filename> and converts PostGIS
-      tables into ESRI Shape files.</para>
+      tables (or queries) into ESRI Shape files.</para>
     </sect1>
   </chapter>
 
@@ -1274,10 +1274,12 @@ WHERE
         <title>Using the Dumper</title>
 
         <para>The <filename>pgsql2shp</filename> table dumper connects
-        directly to the database and converts a table into a shape file. The
+        directly to the database and converts a table (possibly created
+	by use query) into a shape file. The
         basic syntax is:</para>
 
-        <programlisting>pgsql2shp [&lt;options&gt;] &lt;database&gt; &lt;table&gt;</programlisting>
+        <programlisting>pgsql2shp [&lt;options&gt;] &lt;database&gt; [&lt;schema&gt;.]&lt;table&gt;</programlisting>
+        <programlisting>pgsql2shp [&lt;options&gt;] &lt;database&gt; &lt;query&gt;</programlisting>
 
         <para>The commandline options are:</para>
 
@@ -1487,6 +1489,16 @@ SELECT UPDATE_GEOMETRY_STATS([table_name], [column_name]);</programlisting></par
               planner to use the index with
               <varname>ENABLE_SEQSCAN</varname>.</para>
             </note>
+          </listitem>
+
+          <listitem>
+            <para>If you find the planner wrong about the cost of
+	    sequencial vs index scans try reducing the value of
+	    random_page_cost in postgresql.conf or using SET
+	    random_page_cost=#. Default value for the parameter
+	    is 4, try setting it to 1 or 2. Decrementing the
+	    value makes the planner more inclined of using Index scans.
+            </para>
           </listitem>
         </itemizedlist>
       </sect2>
@@ -2583,12 +2595,15 @@ dimension
         </varlistentry>
 
         <varlistentry>
-          <term>buffer(geometry,double)</term>
+          <term>buffer(geometry,double,[integer])</term>
 
           <listitem>
-            <para>Returns a geometry that represents all points whose distance
-            from this Geometry is less than or equal to distance. Calculations
-            are in the Spatial Reference System of this Geometry.</para>
+              <para>Returns a geometry that represents all points whose
+              distance from this Geometry is less than or equal to distance.
+              Calculations are in the Spatial Reference System of this
+              Geometry. The optional third parameter sets the
+	      number of segment used to approximate a quarter circle
+	      (defaults to 8).</para>
 
             <para>Performed by the GEOS module</para>
 
@@ -3580,6 +3595,14 @@ FROM geometry_table;</literallayout>
         </varlistentry>
 
         <varlistentry>
+          <term>distance(geometry, geometry)</term>
+
+          <listitem>
+            <para>Returns the smaller distance between two geometries.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
           <term>max_distance(linestring,linestring)</term>
 
           <listitem>
@@ -3811,6 +3834,32 @@ FROM geometry_table;</literallayout>
             performed in 2d only.</para>
           </listitem>
         </varlistentry>
+
+        <varlistentry>
+          <term>AsSVG(geometry, [rel], [precision])</term>
+
+          <listitem>
+            <para>Return the geometry as an SVG path data. 
+	    Use 1 as second argument to have the path data
+	    implemented in terms of relative moves, the
+	    default (or 0) uses absolute moves.
+	    Third argument may be used to reduce the maximum
+	    number of significant digits used in output
+	    (defaults to 15).
+	    Point geometries will be rendered as cx/cy when
+	    'rel' arg is 0, x/y when 'rel' is 1.
+            </para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Reverse(geometry)</term>
+
+          <listitem>
+	    <para>Returns the geometry with vertex order reversed.</para>
+          </listitem>
+        </varlistentry>
+
       </variablelist>
     </sect1>
   </chapter>
