@@ -1,5 +1,6 @@
 PostGIS 1.0.3
 ????/??/??
+	- Bugfix in WKT (-w) POINT handling in loader
 	- Bugfix in dumper on 64bit machines
 	- Bugfix in dumper handling of user-defined queries 
 	- Bugfix in create_undef.pl script
