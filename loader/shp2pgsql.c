@@ -1511,10 +1511,15 @@ DropTable(char *schema, char *table, char *geom)
 void
 GetFieldsSpec(void)
 {
+/*
+ * Shapefile (dbf) field name are at most 10chars + 1 NULL.
+ * Postgresql field names are at most 63 bytes + 1 NULL.
+ */
+#define MAXFIELDNAMELEN 64
 	int field_precision, field_width;
 	int j, z;
-	char  name[64];
-	char  name2[64];
+	char  name[MAXFIELDNAMELEN];
+	char  name2[MAXFIELDNAMELEN];
 	DBFFieldType type = -1;
 
 	num_fields = DBFGetFieldCount( hDBFHandle );
@@ -1523,7 +1528,7 @@ GetFieldsSpec(void)
 	types = (DBFFieldType *)malloc(num_fields*sizeof(int));
 	widths = malloc(num_fields*sizeof(int));
 	precisions = malloc(num_fields*sizeof(int));
-	col_names = malloc((num_fields+2) * sizeof(char) * 32);
+	col_names = malloc((num_fields+2) * sizeof(char) * MAXFIELDNAMELEN);
 	strcpy(col_names, "(" );
 
 	//fprintf(stderr, "Number of fields from DBF: %d\n", num_fields);
@@ -1540,28 +1545,14 @@ GetFieldsSpec(void)
 		 * Make field names lowercase unless asked to
 		 * keep identifiers case.
 		 */
-		if ( ! quoteidentifiers ) {
-			for(z=0; z<strlen(name) ;z++)
-				name[z] = tolower(name[z]);
-		}
+		if ( ! quoteidentifiers ) LowerCase(name);
 
 		/*
 		 * Escape names starting with the
-		 * escape char (_)
+		 * escape char (_), those named 'gid'
+		 * or after pgsql reserved attribute names
 		 */
-		if( name[0]=='_' )
-		{
-			strcpy(name2+2, name);
-			name2[0] = '_';
-			name2[1] = '_';
-			strcpy(name, name2);
-		}
-
-		/*
-		 * Escape attributes named 'gid'
-		 * and pgsql reserved attribute names
-		 */
-		else if(
+		if( name[0]=='_' ||
 			! strcmp(name,"gid") ||
 			! strcmp(name, "tableoid") ||
 			! strcmp(name, "cmax") ||
@@ -1569,8 +1560,8 @@ GetFieldsSpec(void)
 			! strcmp(name, "cmin") ||
 			! strcmp(name, "primary") ||
 			! strcmp(name, "oid") ||
-			! strcmp(name, "ctid")
-		) {
+			! strcmp(name, "ctid") )
+		{
 			strcpy(name2+2, name);
 			name2[0] = '_';
 			name2[1] = '_';
@@ -1585,7 +1576,6 @@ GetFieldsSpec(void)
 				break;
 			}
 		}	
-
 
 		field_names[j] = malloc ( strlen(name)+3 );
 		strcpy(field_names[j], name);
@@ -1643,6 +1633,9 @@ utf8 (const char *fromcode, char *inputbuf)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.88.2.4  2005/07/27 02:34:29  strk
+ * Minor cleanups in loader
+ *
  * Revision 1.88.2.3  2005/07/27 02:05:20  strk
  * Fixed handling of POINT types as WKT (-w) in loader
  *
