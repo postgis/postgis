@@ -68,7 +68,7 @@ public abstract class ComposedGeom extends Geometry {
     public int numGeoms() {
         return subgeoms.length;
     }
-    
+
     protected ComposedGeom(int type, Geometry[] geoms) {
         this(type);
         this.subgeoms = geoms;
@@ -82,7 +82,8 @@ public abstract class ComposedGeom extends Geometry {
 
     protected ComposedGeom(int type, String value, boolean haveM) throws SQLException {
         super(type);
-        value = value.trim();
+        value = initSRID(value);
+
         String typestring = getTypeString();
         if (value.indexOf(typestring) == 0) {
             int pfxlen = typestring.length();

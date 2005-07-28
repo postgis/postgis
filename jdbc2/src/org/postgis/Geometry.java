@@ -293,4 +293,24 @@ public abstract class Geometry implements Serializable {
         return (dimension >= 2 && dimension <= 3) && (type >= 0 && type <= 7);
     }
 
+    /**
+     * Splits the SRID=4711; part of a EWKT rep if present and sets the srid.
+     * 
+     * @returns value without the SRID=4711; part
+     */
+    protected String initSRID(String value) {
+        value = value.trim();
+        if (value.startsWith("SRID=")) {
+            int index = value.indexOf(';', 5); // sridprefix length is 5
+            if (index == -1) {
+                throw new IllegalArgumentException(
+                        "Error parsing Geometry - SRID not delimited with ';' ");
+            } else {
+                this.srid = Integer.parseInt(value.substring(5, index));
+                return value.substring(index + 1).trim();
+            }
+        } else {
+            return value;
+        }
+    }
 }

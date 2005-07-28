@@ -144,7 +144,8 @@ public class Point extends Geometry {
      */
     protected Point(String value, boolean haveM) throws SQLException {
         this();
-        value = value.trim();
+        value = initSRID(value);
+
         if (value.indexOf("POINTM") == 0) {
             haveM = true;
             value = value.substring(6).trim();
