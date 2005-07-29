@@ -70,6 +70,30 @@ my %obsoleted_function = (
 	'geomcollfromtext', 1,
 	'geometryfromtext', 1,
 	'geomfromtext', 1,
+	'pointfromwkb(geometry, integer)', 1,
+	'pointfromwkb(geometry)', 1,
+	'linefromwkb(geometry, integer)', 1,
+	'linefromwkb(geometry)', 1,
+	'linestringfromwkb(geometry, integer)', 1,
+	'linestringfromwkb(geometry)', 1,
+	'polyfromwkb(geometry, integer)', 1,
+	'polyfromwkb(geometry)', 1,
+	'polygonfromwkb(geometry, integer)', 1,
+	'polygonfromwkb(geometry)', 1,
+	'mpointfromwkb(geometry, integer)', 1,
+	'mpointfromwkb(geometry)', 1,
+	'multipointfromwkb(geometry, integer)', 1,
+	'multipointfromwkb(geometry)', 1,
+	'multilinefromwkb(geometry, integer)', 1,
+	'multilinefromwkb(geometry)', 1,
+	'mlinefromwkb(geometry, integer)', 1,
+	'mlinefromwkb(geometry)', 1,
+	'mpolyfromwkb(geometry, integer)', 1,
+	'mpolyfromwkb(geometry)', 1,
+	'multipolyfromwkb(geometry, integer)', 1,
+	'multipolyfromwkb(geometry)', 1,
+	'geomcollfromwkb(geometry, integer)', 1,
+	'geomcollfromwkb(geometry)', 1,
 	'wkb_in', 1,
 	'wkb_out', 1,
 	'wkb_recv', 1,
@@ -96,7 +120,22 @@ my %obsoleted_function = (
 	'xmax(box2d)', 1,
 	'ymax(box2d)', 1,
 	'optimistic_overlap', 1,
-	'unite_finalfunc', 1
+	'unite_finalfunc', 1,
+	'numb_sub_objs(geometry)', 1,
+	'truly_inside(geometry, geometry)', 1
+);
+
+# This are old postgis operators which might
+# still be in a dump
+my %obsoleted_ops = (
+	'>>,box2d,box2d', 1,
+	'<<,box2d,box2d', 1,
+	'&>,box2d,box2d', 1,
+	'&<,box2d,box2d', 1,
+	'&&,box2d,box2d', 1,
+	'~=,box2d,box2d', 1,
+	'~,box2d,box2d', 1,
+	'@,box2d,box2d', 1
 );
 
 my $postgissql = $ARGV[0]; shift(@ARGV);
@@ -321,17 +360,17 @@ while( my $line = <INPUT> )
 
 		#print "FUNCTION: [$line]\n";
 
-		if ($line =~ / FUNCTION *([^ ]+) *([^ ]+) *\(([^)]*)\)/)
+		if ($line =~ / FUNCTION *([^ ]*) *\(([^)]*)\)/)
+		{
+			#print " matched <800\n";
+			$funcname = $1;
+			@args = split(",", $2);
+		}
+		elsif ($line =~ / FUNCTION *([^ ]+) *([^ ]+) *\(([^)]*)\)/)
 		{
 			#print " matched 800\n";
 			$funcname = $2;
 			@args = split(",", $3);
-		}
-		elsif ($line =~ / FUNCTION *([^ ]*) *\(([^)]*)\)/)
-		{
-			#print " matched <800\n";
-			my $funcname = $1;
-			my @args = split(",", $2);
 		}
 		else
 		{
@@ -448,7 +487,7 @@ while( my $line = <INPUT> )
 		print "KEEPING TYPE [$type]\n" if $DEBUG;
 		#next;
 	}
-	elsif ($line =~ / PROCEDURAL LANGUAGE plpgsql/)
+	elsif ($line =~ / PROCEDURAL LANGUAGE (public )?plpgsql/)
 	{
 		print "SKIPPING PROCLANG plpgsql\n" if $DEBUG;
 		next;
@@ -466,7 +505,14 @@ while( my $line = <INPUT> )
 		#next;
 	}
 
-	elsif ($line =~ / OPERATOR CLASS *([^ ]* )?([^ ]*)/)
+	#
+	# pg_restore-7.4:
+	# 354; 11038762 OPERATOR CLASS btree_geometry_ops strk
+	#
+	# pg_restore-8.0:
+	# 354; 0 11038762 OPERATOR CLASS public btree_geometry_ops strk
+	#
+	elsif ($line =~ / OPERATOR CLASS +([^ ]+ )?([^ ]+) ([^ ]+)/)
 	{
 		my $id = lc($2);
 
@@ -574,12 +620,21 @@ while( my $line = <INPUT> )
 				$rarg =~ s/^.*\.//;
 			}
 		}
+
 		my $id = $name.','.$larg.','.$rarg;
+
+		if ( $obsoleted_ops{$id} )
+		{
+			print "SKIPPING OBSOLETED FUNC $id\n" if $DEBUG;
+			next;
+		}
+
 		if ( $ops{$id} )
 		{
 			print "SKIPPING PGIS OP $id\n" if $DEBUG;
 			next;
 		}
+
 		print "KEEPING OP $id\n" if $DEBUG;
 		print OUTPUT @sublines;
 		next;
@@ -591,7 +646,7 @@ while( my $line = <INPUT> )
 	#  when implemented operators skip must be disabled
 	#  in the first scan of ToC
 }
-close(INPUT);
+close(INPUT) || die "pg_restore call failed\n";
 close(OUTPUT);
 
 #exit(1);
