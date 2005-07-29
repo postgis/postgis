@@ -12,3 +12,7 @@ postgis_proc_upgrade.pl
 
 profile_intersects.pl
 	compares distance()=0 and intersects() timings.
+
+rebuild_bbox_caches.pl
+	force recomputation of all geometry bounding boxes
+	in a database, reindexing and analyzing as needed.
