@@ -200,13 +200,14 @@ get_geometry_columns
 	if ( check_has_schema($conn) )
 	{
 		$query = "select n.nspname as schema, c.relname as tbl, a.attname as col from pg_class c, pg_namespace n, pg_attribute a, pg_type t WHERE c.relnamespace = n.oid and a.attrelid = c.oid and a.atttypid = t.oid and t.typname = 'geometry' and c.relkind = 'r'";
+		$query .= " ORDER BY schema, tbl, col";
 	}
 	else
 	{
 		$query = "select NULL as schema, c.relname as tbl, a.attname as col from pg_class c, pg_attribute a, pg_type t WHERE a.attrelid = c.oid and a.atttypid = t.oid and t.typname = 'geometry' and relkind = 'r'";
+		$query .= " ORDER BY tbl, col";
 	}
 
-	$query .= " ORDER BY schema, tbl, col";
 
 	local($res) = $conn->exec($query);
 	if ( $res->resultStatus != PGRES_TUPLES_OK )  {
@@ -222,6 +223,9 @@ get_geometry_columns
 
 # 
 # $Log$
+# Revision 1.1.2.2  2005/07/29 12:24:00  strk
+# Fixed support for pre-schema postgresql installations
+#
 # Revision 1.1.2.1  2005/07/29 11:46:16  strk
 # Initial implementation of geometries bbox cache recomputation script
 #
