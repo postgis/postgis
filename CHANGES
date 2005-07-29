@@ -26,6 +26,8 @@ PostGIS 1.0.3
 	- Small performance improvement in canonical input function
 	- Minor cleanups in loader
 	- Support for multibyte field names in loader
+	- Improvement in the postgis_restore.pl script
+	- New rebuild_bbox_caches.pl util script
 
 PostGIS 1.0.2
 2005/07/04
