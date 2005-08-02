@@ -345,12 +345,43 @@
         <title>Upgrading</title>
 
 	<para>
-Upgrading PostGIS can be tricky, because the underlying C libraries which 
-support the object types and geometries may have changed between versions.
+Upgrading PostGIS can be tricky, because it is composed by both a shared
+library and a set of definitions that are stored in the host database.
 	</para>
 
 	<para>
-For this purpose PostGIS provides an utility script to restore a dump
+When the set of definitions changes (new objects, or procedural language
+functions modifications) it is not always easy to have them replace the
+old ones. Having a mismatch between definitions and implementations can
+bring to an unstable or unsable system.
+	</para>
+
+	<para>
+Since postgis version 0.9.0 You can check your installation state
+using <link linkend="postgis_full_version">postgis_full_version()</link>.
+The function will warn you with a "need proc upgrade" message if a mismatch
+is found.
+	</para>
+
+	<para>
+Before attempting to upgrade postgis, it is always worth to backup
+your data. If you use the -Fc flag to pg_dump you will always be able
+to restore the dump with an HARD UPGRADE.
+	</para>
+
+	<sect3 id="hard_upgrade">
+		<title>Hard upgrade</title>
+
+	<para>
+By HARD UPGRADE we intend full dump/reload of postgis-enabled databases.
+You need an HARD UPGRADE when postgis objects' internal storage
+changes or when SOFT UPGRADE is not possible.
+The <link linkend="release_notes">Release Notes</link> appendix reports for each version wheter you need a
+dump/reload (HARD UPGRADE) to upgrade.
+	</para>
+
+	<para>
+PostGIS provides an utility script to restore a dump
 produced with the pg_dump -Fc command. It is experimental so redirecting
 its output to a file will help in case of problems. The procedure is
 as follow:
@@ -389,10 +420,61 @@ as follow:
 	newdb=&gt; \i spatial_ref_sys.sql
 	</programlisting>
 
+	</sect3>
+
+	<sect3 id="soft_upgrade">
+		<title>Soft upgrade</title>
+
+	<para>
+By SOFT UPGRADE we intend a live replacement of objects definitions.
+This is only possible in certain circumstances as not all objects
+are replaceable in a live system.
+	</para>
+
+	<para>
+To know wheter a SOFT UPGRADE should work for you refer to your new
+version section in the <link linkend="release_notes">Release Notes</link>
+appendix of this manual. 
+	</para>
+
+	<para>
+The <link linkend="postgis_full_version">postgis_full_version()</link>
+function will also show you current state
+and by that you should be able to find out wheter or not SOFT UPGRADE
+will be possible. You should look at the DBPROC and RELPROC values.
+DBPROC are the procedures stored in the database, RELPROC are the
+procedures expected by the shared library (RELeased PROCedures).
+Their values represent SCRIPTS versions. If they don't match the
+function will warn you with a message: "needs proc upgrade".
+	</para>
+
+	<para>
+Soft (proc) upgrade will only be possible when the DBPROC and RELPROC
+versions share MAJOR and MINOR numbers. If this is the case you can
+try to use the utils/postgis_proc_upgrade.pl script. Note that the
+script will check for this itself so you should be safe attempting
+w/out checking it manually. Here is how you do:
+	</para>
+
+	<programlisting>
+
+	$ make install # DON'T DO IT IF WITHOUT BACKING UP YOUR DATA !  
+
+	$ utils/postgis_proc_upgrade.pl lwpostgis.sql | psql &lt;db&gt;  
+
+	</programlisting>
+
+	</sect3>
+
+	
+
+	<sect3 id="hack_upgrade">
+		<title>Old method</title>
+
 	<para>
 Following is the "old" procedure description. IT SHOULD BE AVOIDED if possible,
 as it will leave in the database many spurious functions. It is kept in this document
-as a "backup" in case postgis_restore.pl won't work for you:
+as a "backup" in case HARD UPGRADE or SOFT UPGRADE won't work for you:
 	</para>
 
 	<programlisting>
@@ -404,6 +486,8 @@ as a "backup" in case postgis_restore.pl won't work for you:
 	psql -f dumpfile.sql -d yourdatabase
 	vacuumdb -z yourdatabase
 	</programlisting>
+
+	</sect3>
 
 
       </sect2>
@@ -3830,6 +3914,20 @@ dimension
         </varlistentry>
 
         <varlistentry>
+          <term>postgis_jts_version()</term>
+
+          <listitem>
+            <para>Returns the version number of the JTS library, or NULL if
+            JTS support is not enabled.</para>
+
+		<para>
+	Availability: 1.1.0
+		</para>
+
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
           <term>postgis_proj_version()</term>
 
           <listitem>
@@ -3847,12 +3945,14 @@ dimension
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="postgis_full_version">
           <term>postgis_full_version()</term>
 
           <listitem>
             <para>Reports full postgis version and build configuration
             infos.</para>
+
+		<para>Availability: 0.9.0</para>
           </listitem>
         </varlistentry>
 
@@ -4658,7 +4758,7 @@ FROM geometry_table;</literallayout>
     </sect1>
   </chapter>
 
-	<appendix>
+	<appendix id="release_notes">
 		<title>Release Notes</title>
 
     		<sect1>
