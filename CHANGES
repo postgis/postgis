@@ -1,5 +1,5 @@
 PostGIS 1.0.3
-????/??/??
+2005/08/08
 	- Severe bugfix in lwgeom's 2d bounding box computation
 	- Bugfix in WKT (-w) POINT handling in loader
 	- Bugfix in dumper on 64bit machines
