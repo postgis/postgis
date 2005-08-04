@@ -15,9 +15,9 @@ Following is TODO list for release 1.1
 Tue May 24 18:55:46 CEST 2005
 ======================================
 
-+ Better upgrade mechanism
+- LineMerge interface
 
-* Full autoconf support / PG sources dependency drop
++ Better upgrade mechanism
 
 - Selectivity estimation code merge (+- pgsql-8.0.0)
 	+ fix invalid stats computation (currently keeps the previously
@@ -29,11 +29,7 @@ Tue May 24 18:55:46 CEST 2005
 
 - Better regression tests (single load, multi operations)
 
-- debian packaging conf files
-
 - MakeValidShape() to remove consecutive vertexes and any eventual
   other cleanup aimed at making pgsql2shp produce "valid" Shapefiles.
 
 - OGC polygon constructors
-
-- pgsql standard geometric types casts 
