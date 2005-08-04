@@ -416,6 +416,12 @@ while( my $line = <INPUT> )
 			next;
 		}
 
+		if ( $funcname eq 'plpgsql_validator' )
+		{
+			print "SKIPPING FUNC $id\n" if $DEBUG;
+			next;
+		}
+
 		if ( $obsoleted_function{$funcname} || $obsoleted_function{$id} )
 		{
 			print "SKIPPING OBSOLETED FUNC $id\n" if $DEBUG;
