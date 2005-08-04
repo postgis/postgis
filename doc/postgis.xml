@@ -4828,6 +4828,64 @@ FROM geometry_table;</literallayout>
 		<title>Release Notes</title>
 
     		<sect1>
+			<title>Release 1.0.3</title>
+			<para>Release date: 2005/08/08</para>
+
+			<para>
+Contains some bug fixes - <emphasis>including a severe one affecting
+correctness of stored geometries</emphasis> - and a few improvements.
+			</para>
+
+			<sect2>
+				<title>Upgrading</title>
+
+				<para>
+Due to a bug in a bounding box computation routine, the upgrade procedure
+requires special attention, as bounding boxes cached in the database could
+be incorrect.
+				</para>
+
+				<para>
+An <link linkend="hard_upgrade">hard upgrade</link> procedure (dump/reload)
+will force recomputation of all bounding boxes (not included in dumps).
+This is <emphasis>required</emphasis> if upgrading from releases prior
+to 1.0.0RC6.
+				</para>
+
+				<para>
+If you are upgrading from versions 1.0.0RC6 or up, this release includes a
+perl script (utils/rebuild_bbox_caches.pl) to force recomputation of
+geometries' bounding boxes and invoke all operations required to propagate
+eventual changes in them (geometry statistics update, reindexing).
+Invoke the script after a make install (run with no args for syntax help).
+Optionally run utils/postgis_proc_upgrade.pl to refresh postgis procedures
+and functions signatures (see <link linkend="soft_upgrade">Soft upgrade</link>).
+				</para>
+
+
+			</sect2>
+
+			<sect2>
+				<title>Bug fixes</title>
+	<para>Severe bugfix in lwgeom's 2d bounding box computation</para>
+	<para>Bugfix in WKT (-w) POINT handling in loader</para>
+	<para>Bugfix in dumper on 64bit machines</para>
+	<para>Bugfix in dumper handling of user-defined queries </para>
+	<para>Bugfix in create_undef.pl script</para>
+			</sect2>
+
+			<sect2>
+				<title>Improvements</title>
+	<para>Small performance improvement in canonical input function</para>
+	<para>Minor cleanups in loader</para>
+	<para>Support for multibyte field names in loader</para>
+	<para>Improvement in the postgis_restore.pl script</para>
+	<para>New rebuild_bbox_caches.pl util script</para>
+			</sect2>
+
+		</sect1>
+
+    		<sect1>
 			<title>Release 1.0.2</title>
 			<para>Release date: 2005/07/04</para>
 
