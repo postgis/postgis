@@ -697,4 +697,4 @@ print "Restoring ascii dump $dumpascii\n";
 open(INPUT, "<$dumpascii") || die "Can't read $postgissql\n";
 while(<INPUT>) { print PSQL; }
 close(INPUT);
-close(PSQL);
+close(PSQL) || die "psql run failed\n"
