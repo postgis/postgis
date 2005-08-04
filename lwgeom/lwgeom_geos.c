@@ -255,7 +255,6 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 
 }
 
-
 //select geomunion('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))','POLYGON((5 5, 15 5, 15 7, 5 7, 5 5))');
 PG_FUNCTION_INFO_V1(geomunion);
 Datum geomunion(PG_FUNCTION_ARGS)

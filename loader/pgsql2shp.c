@@ -73,6 +73,7 @@ int dswitchprovided;
 int includegid;
 int unescapedattrs;
 int binary;
+int keep_fieldname_case;
 SHPObject * (*shape_creator)(byte *, int);
 int big_endian = 0;
 int pgis_major_version;
@@ -166,6 +167,7 @@ main(int ARGC, char **ARGV)
 	includegid=0;
 	unescapedattrs=0;
 	binary = 0;
+	keep_fieldname_case = 0;
 #ifdef DEBUG
 	FILE *debug;
 #endif
@@ -2272,7 +2274,8 @@ usage(int status)
 	printf("  -b Use a binary cursor.\n");
 	printf("  -r Raw mode. Do not assume table has been created by \n");
 	printf("     the loader. This would not unescape attribute names\n");
-	printf("     and will not skip the 'gid' attribute.");
+	printf("     and will not skip the 'gid' attribute.\n");
+	printf("  -k Keep postgresql identifiers case.\n");
        	printf("\n");
        	exit (status);
 }
@@ -2287,50 +2290,52 @@ parse_commandline(int ARGC, char **ARGV)
 	buf[1023] = '\0'; // just in case...
 
 	/* Parse command line */
-        while ((c = getopt(ARGC, ARGV, "bf:h:du:p:P:g:r")) != EOF){
-               switch (c) {
-               case 'b':
-                    binary = 1;
-                    break;
-               case 'f':
-                    shp_file = optarg;
-                    break;
-               case 'h':
-        	    //setenv("PGHOST", optarg, 1);
-		    snprintf(buf, 255, "PGHOST=%s", optarg);
-		    putenv(strdup(buf));
-                    break;
-               case 'd':
-                    dswitchprovided = 1;
-		    outtype = 'z';
-                    break;		  
-               case 'r':
-	            includegid = 1;
-		    unescapedattrs = 1;
-                    break;		  
-               case 'u':
-		    //setenv("PGUSER", optarg, 1);
-		    snprintf(buf, 255, "PGUSER=%s", optarg);
-		    putenv(strdup(buf));
-                    break;
-               case 'p':
-		    //setenv("PGPORT", optarg, 1);
-		    snprintf(buf, 255, "PGPORT=%s", optarg);
-		    putenv(strdup(buf));
-                    break;
-	       case 'P':
-		    //setenv("PGPASSWORD", optarg, 1);
-		    snprintf(buf, 255, "PGPASSWORD=%s", optarg);
-		    putenv(strdup(buf));
-		    break;
-	       case 'g':
-		    geo_col_name = optarg;
-		    break;
-               case '?':
-                    return 0;
-               default:
-		    return 0;
-               }
+        while ((c = getopt(ARGC, ARGV, "bf:h:du:p:P:g:rk")) != EOF){
+		switch (c) {
+			case 'b':
+				binary = 1;
+				break;
+			case 'f':
+				shp_file = optarg;
+				break;
+			case 'h':
+				//setenv("PGHOST", optarg, 1);
+				snprintf(buf, 255, "PGHOST=%s", optarg);
+				putenv(strdup(buf));
+				break;
+			case 'd':
+				dswitchprovided = 1;
+				outtype = 'z';
+				break;		  
+			case 'r':
+				includegid = 1;
+				unescapedattrs = 1;
+				break;		  
+			case 'u':
+				//setenv("PGUSER", optarg, 1);
+				snprintf(buf, 255, "PGUSER=%s", optarg);
+				putenv(strdup(buf));
+				break;
+			case 'p':
+				//setenv("PGPORT", optarg, 1);
+				snprintf(buf, 255, "PGPORT=%s", optarg);
+				putenv(strdup(buf));
+				break;
+			case 'P':
+				//setenv("PGPASSWORD", optarg, 1);
+				snprintf(buf, 255, "PGPASSWORD=%s", optarg);
+				putenv(strdup(buf));
+				break;
+			case 'g':
+				geo_col_name = optarg;
+				break;
+			case 'k':
+				keep_fieldname_case = 1;
+				break;
+			case '?':
+			default:
+				return 0;
+		}
         }
 
         curindex=0;
@@ -2365,7 +2370,6 @@ get_postgis_major_version(void)
 		exit(1);
 	}
 
-	res = PQexec(conn, query);
 	version = PQgetvalue(res, 0, 0);
 	ver = atoi(version);
 	PQclear(res);
@@ -2390,6 +2394,8 @@ initialize(void)
 	int mainscan_nflds=0;
 	int size;
 	int gidfound=0;
+	char *dbf_flds[256];
+	int dbf_nfields=0;
 
 	/* Detect postgis version */
 	pgis_major_version = get_postgis_major_version();
@@ -2499,7 +2505,7 @@ initialize(void)
 			 * This is exactly the geometry privided
 			 * by the user.
 			 */
-			else if (!strcmp(geo_col_name,fname))
+			else if (!strcmp(geo_col_name, fname))
 			{
 				geom_fld = mainscan_nflds;
 				type_ary[mainscan_nflds]=9; 
@@ -2533,41 +2539,37 @@ initialize(void)
 		 * becomes __xmin when escaped
 		 */
 
-
-		if(strlen(ptr) <32) strcpy(field_name, ptr);
-		else
-		{
-			/*
-			 * TODO: you find an appropriate name if
-			 * running in RAW mode
-			 */
-			printf("dbf attribute name %s is too long, must be "
-				"less than 32 characters.\n", ptr);
-			return 0;
-		}
-
-
-		/* make UPPERCASE */
-		for(j=0; j < strlen(field_name); j++)
-			field_name[j] = toupper(field_name[j]);
+		/* Limit dbf field name to 10-digits */
+		strncpy(field_name, ptr, 10);
+		field_name[10] = 0;
 
 		/* 
 		 * make sure the fields all have unique names,
-		 * 10-digit limit on dbf names...
 		 */
-		for(j=0;j<i;j++)
+		tmpint=1;
+		for(j=0; j<dbf_nfields; j++)
 		{
-			if(strncmp(field_name, PQgetvalue(res, j, 0),10) == 0)
+			if(!strncasecmp(field_name, dbf_flds[j], 10))
 			{
-		printf("\nWarning: Field '%s' has first 10 characters which "
-			"duplicate a previous field name's.\n"
-			"Renaming it to be: '",field_name);
-				strncpy(field_name,field_name,9);
-				field_name[9] = 0;
-				sprintf(field_name,"%s%d",field_name,i);
-				printf("%s'\n\n",field_name);
+				sprintf(field_name,"%.7s_%.2d",
+					ptr,
+					tmpint++);
+				j=-1; continue;
 			}
 		}
+
+		/* make UPPERCASE if keep_fieldname_case = 0 */
+		if (keep_fieldname_case == 0)
+			for(j=0; j<strlen(field_name); j++)
+				field_name[j] = toupper(field_name[j]);
+
+		if ( strcasecmp(fname, field_name) ) {
+			fprintf(stderr, "Warning, field %s renamed to %s\n",
+				fname, field_name);
+		}
+
+		//fprintf(stderr, "DBFfield: %s\n", field_name);
+		dbf_flds[dbf_nfields++] = strdup(field_name);
 
 		/*
 		 * Find appropriate type of dbf attributes
@@ -2576,7 +2578,7 @@ initialize(void)
 		/* integer type */
 		if(type == 20 || type == 21 || type == 23)
 		{
-			if(DBFAddField(dbf, field_name,FTInteger,16,0) == -1)
+			if(DBFAddField(dbf, field_name, FTInteger,16,0) == -1)
 			{
 				printf( "error - Field could not "
 					"be created.\n");
@@ -2632,7 +2634,7 @@ initialize(void)
 //printf( "FIELD_NAME: %s, SIZE: %d\n", field_name, size);
 		
 		/* generic type (use string representation) */
-		if(DBFAddField(dbf, field_name,FTString,size,0) == -1)
+		if(DBFAddField(dbf, field_name, FTString, size, 0) == -1)
 		{
 			printf( "error - Field could not "
 					"be created.\n");
@@ -2641,6 +2643,9 @@ initialize(void)
 		type_ary[mainscan_nflds]=3;
 		mainscan_flds[mainscan_nflds++] = fname;
 	}
+
+	/* Release dbf field memory */
+	for (i=0; i<dbf_nfields; i++) free(dbf_flds[i]);
 
 	/*
 	 * If no geometry has been found
@@ -2999,14 +3004,14 @@ byte popbyte(byte **c) {
 }
 
 uint32 popint(byte **c) {
-	uint32 i;
+	uint32 i=0;
 	memcpy(&i, *c, 4);
 	*c+=4;
 	return i;
 }
 
 uint32 getint(byte *c) {
-	uint32 i;
+	uint32 i=0;
 	memcpy(&i, c, 4);
 	return i;
 }
@@ -3016,7 +3021,7 @@ void skipint(byte **c) {
 }
 
 double popdouble(byte **c) {
-	double d;
+	double d=0.0;
 	memcpy(&d, *c, 8);
 	*c+=8;
 	return d;
@@ -3098,7 +3103,7 @@ create_usrquerytable(void)
 	char *query;
 	PGresult *res;
 
-	query = malloc(sizeof(table)+sizeof(usrquery)+256);
+	query = malloc(strlen(table)+strlen(usrquery)+32);
 	sprintf(query, "CREATE TEMP TABLE \"%s\" AS %s", table, usrquery);
 
         printf("Preparing table for user query... ");
@@ -3117,6 +3122,18 @@ create_usrquerytable(void)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.74.2.4  2005/07/22 19:20:49  strk
+ * Fixed bug in {get,pop}{int,double} for 64bit archs
+ *
+ * Revision 1.74.2.3  2005/07/12 16:19:29  strk
+ * Fixed bug in user query handling, reported by Andrew Seales
+ *
+ * Revision 1.74.2.2  2005/05/16 17:51:17  strk
+ * BUGFIX in attribute names unicity enforcement
+ *
+ * Revision 1.74.2.1  2005/05/16 08:03:29  strk
+ * Back-ported -k patch
+ *
  * Revision 1.74  2005/03/25 18:43:07  strk
  * Fixed PQunescapeBytearea argument (might give problems on 64bit archs)
  *

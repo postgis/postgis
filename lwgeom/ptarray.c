@@ -125,24 +125,27 @@ ptarray_compute_box2d_p(const POINTARRAY *pa, BOX2DFLOAT4 *result)
 {
 	int t;
 	POINT2D pt;
+	BOX3D box;
 
 	if (pa->npoints == 0) return 0;
 
 	getPoint2d_p(pa, 0, &pt);
 
-	result->xmin = pt.x;
-	result->xmax = pt.x;
-	result->ymin = pt.y;
-	result->ymax = pt.y;
+	box.xmin = pt.x;
+	box.xmax = pt.x;
+	box.ymin = pt.y;
+	box.ymax = pt.y;
 
 	for (t=1; t<pa->npoints; t++)
 	{
 		getPoint2d_p(pa, t, &pt);
-		if (pt.x < result->xmin) result->xmin = pt.x;
-		if (pt.y < result->ymin) result->ymin = pt.y;
-		if (pt.x > result->xmax) result->xmax = pt.x;
-		if (pt.y > result->ymax) result->ymax = pt.y;
+		if (pt.x < box.xmin) box.xmin = pt.x;
+		if (pt.y < box.ymin) box.ymin = pt.y;
+		if (pt.x > box.xmax) box.xmax = pt.x;
+		if (pt.y > box.ymax) box.ymax = pt.y;
 	}
+
+	box3d_to_box2df_p(&box, result);
 
 	return 1;
 }

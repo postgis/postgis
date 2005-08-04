@@ -1,4 +1,42 @@
+PostGIS 1.0.3
+2005/08/08
+	- Severe bugfix in lwgeom's 2d bounding box computation
+	- Bugfix in WKT (-w) POINT handling in loader
+	- Bugfix in dumper on 64bit machines
+	- Bugfix in dumper handling of user-defined queries 
+	- Bugfix in create_undef.pl script
+	- Small performance improvement in canonical input function
+	- Minor cleanups in loader
+	- Support for multibyte field names in loader
+	- Improvement in the postgis_restore.pl script
+	- New rebuild_bbox_caches.pl util script
+
+PostGIS 1.0.2
+2005/07/04
+	- Fault tolerant btree ops
+	- Memory Leak fix in pg_error
+	- Rtree index fix. See:
+	  http://archives.postgresql.org/pgsql-hackers/2005-06/msg01108.php
+        - Initial support for postgresql 8.1dev
+	- Cleaner build scripts: avoided mix of CFLAGS and CXXFLAGS
+	- NEW -I switch for pgsql2shp (GiST index)
+
+PostGIS 1.0.1
+2005/05/24
+	- BUGFIX in shp2pgql escape functions
+	- BUGFIX in 3d computation of lenght_spheroid
+	- better support for concurrent postgis in multiple schemas
+	- documentation fixes
+	- BUGFIX in join selectivity estimator returning invalid estimates (>1)
+	- jdbc2: compile with "-target 1.2 -source 1.2" by default
+	- NEW -k switch for pgsql2shp
+	- NEW support for custom createdb options in postgis_restore.pl
+	- BUGFIX in pgsql2shp attribute names unicity enforcement
+	- BUGFIX in Paris projections definitions
+	- postgis_restore.pl cleanups
+
 PostGIS 1.0.0
+2005/04/19
 	- NEW manual pages for loader/dumper
 	- NEW shp2pgsql support for old (HWGEOM) postgis versions
 	- NEW -p flag for shp2pgsql
@@ -7,6 +45,8 @@ PostGIS 1.0.0
 	- NEW chapter about OGC compliancy enforcement
 	- BUGFIX in shp2pgsql escape of values starting with "'" or "\t" 
 	- NEW autoconf support for JTS lib
+	- BUGFIX in estimator testers (support for LWGEOM and schema parsing)
+	- BUGFIX in join selectivity estimator (defaults, leaks, tuplecount, sd)
 
 PostGIS 1.0.0RC6
 2005/03/30

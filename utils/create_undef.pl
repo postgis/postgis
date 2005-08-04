@@ -1,3 +1,6 @@
+eval "exec perl -w $0 $@"
+	if (0);
+
 # perl create_undef.pl <postgis.sql>
 # creates a new sql script to delete all the postgis functions et al.
 
@@ -140,7 +143,7 @@ print "-- Drop all types.\n";
 
 foreach my $type (@types)
 {
-	if ($type =~ /create type ([^(]+)/i )
+	if ($type =~ /create type (\w+)/i )
 	{
 		if ( $version ge "73" ) 
 		{

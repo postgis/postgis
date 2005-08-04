@@ -66,20 +66,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_in);
 Datum LWGEOM_in(PG_FUNCTION_ARGS)
 {
 	char *str = PG_GETARG_CSTRING(0);
- 	char *semicolonLoc,start;
 	PG_LWGEOM *ret;
-
-	//determine if its WKB or WKT
-
-	semicolonLoc = strchr(str,';');
-	if (semicolonLoc == NULL)
-	{
-		start=str[0];
-	}
-	else
-	{
-		start=semicolonLoc[1]; // one in
-	}
 
 	// will handle both EWKB and EWKT
 	ret = (PG_LWGEOM *)parse_lwgeom_wkt(str);
