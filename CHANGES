@@ -16,6 +16,9 @@ PostGIS 1.1.0CVS
 	- JTS support improvements
 	- Chunked GeomUnion implementation (much faster)
 
+PostGIS 1.0.4
+	- Segfault fix in transform() handling of proj4 errors
+
 PostGIS 1.0.3
 2005/08/08
 	- Severe bugfix in lwgeom's 2d bounding box computation
