@@ -1,5 +1,6 @@
 PostGIS 1.0.4
 	- Segfault fix in transform() handling of proj4 errors
+	- Fixed some proj4 texts in spatial_ref_sys (missing +proj)
 
 PostGIS 1.0.3
 2005/08/08
