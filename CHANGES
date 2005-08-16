@@ -13,6 +13,7 @@ PostGIS 1.1.0CVS
 	- initial implementation of postgis_proc_upgrade script
 	- NEW line_substring() function
 	- NEW line_locate_point() function
+	- New M(point) function
 	- JTS support improvements
 	- Chunked GeomUnion implementation (much faster)
 

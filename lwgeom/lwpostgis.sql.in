@@ -1030,6 +1030,11 @@ CREATEFUNCTION Z(geometry)
 	AS '@MODULE_FILENAME@','LWGEOM_z_point'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+CREATEFUNCTION M(geometry)
+	RETURNS float8
+	AS '@MODULE_FILENAME@','LWGEOM_m_point'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
 CREATEFUNCTION StartPoint(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_startpoint_linestring'

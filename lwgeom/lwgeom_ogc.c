@@ -49,6 +49,8 @@ Datum LWGEOM_x_point(PG_FUNCTION_ARGS);
 Datum LWGEOM_y_point(PG_FUNCTION_ARGS);
 // ---- Z(geometry)
 Datum LWGEOM_z_point(PG_FUNCTION_ARGS);
+// ---- M(geometry)
+Datum LWGEOM_m_point(PG_FUNCTION_ARGS);
 // ---- StartPoint(geometry)
 Datum LWGEOM_startpoint_linestring(PG_FUNCTION_ARGS);
 // ---- EndPoint(geometry)
@@ -659,6 +661,45 @@ Datum LWGEOM_z_point(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom, 0);
 
 	PG_RETURN_FLOAT8(p.z);
+}
+
+// M(GEOMETRY) -- find the first POINT(..) in GEOMETRY, returns its M value.
+// Return NULL if there is no POINT(..) in GEOMETRY.
+// Return 0 if there is no M in this geometry.
+PG_FUNCTION_INFO_V1(LWGEOM_m_point);
+Datum LWGEOM_m_point(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *geom;
+	LWGEOM_INSPECTED *inspected;
+	LWPOINT *point = NULL;
+	POINT3DM p;
+	int i;
+
+	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+	// if there's no M return 0
+	if ( ! TYPE_HASM(geom->type) ) PG_RETURN_FLOAT8(0.0);
+
+	inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
+
+	for (i=0; i<inspected->ngeometries; i++)
+	{
+		point = lwgeom_getpoint_inspected(inspected, i);
+		if ( point ) break;
+	}
+	pfree_inspected(inspected);
+
+	if ( point == NULL ) {
+		PG_FREE_IF_COPY(geom, 0);
+		PG_RETURN_NULL();
+	}
+
+	// Ok, now we have a point, let's get M
+	lwpoint_getPoint3dm_p(point, &p);
+
+	PG_FREE_IF_COPY(geom, 0);
+
+	PG_RETURN_FLOAT8(p.m);
 }
 
 // StartPoint(GEOMETRY) -- find the first linestring in GEOMETRY,
