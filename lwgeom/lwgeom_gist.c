@@ -95,8 +95,14 @@ Datum LWGEOM_overlap(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4 box1;
 	BOX2DFLOAT4 box2;
 
+#ifdef PGIS_DEBUG_CALLS
+	elog(NOTICE,"GIST: LWGEOM_overlap --entry");
+#endif
+
 	if ( lwgeom_getsrid(lwgeom1+4) != lwgeom_getsrid(lwgeom2+4) )
 	{
+		PG_FREE_IF_COPY(lwgeom1, 0);
+        	PG_FREE_IF_COPY(lwgeom2, 1);
 		elog(ERROR, "Operation on two geometries with different SRIDs");
 		PG_RETURN_NULL();
 	}
@@ -104,6 +110,8 @@ Datum LWGEOM_overlap(PG_FUNCTION_ARGS)
 
 	if ( ! (getbox2d_p(lwgeom1+4, &box1) && getbox2d_p(lwgeom2+4, &box2)) )
 	{
+		PG_FREE_IF_COPY(lwgeom1, 0);
+        	PG_FREE_IF_COPY(lwgeom2, 1);
 		// One or both are empty geoms
         	PG_RETURN_BOOL(FALSE);
 	}
@@ -146,12 +154,16 @@ Datum LWGEOM_overleft(PG_FUNCTION_ARGS)
 
 	if ( lwgeom_getsrid(lwgeom1+4) != lwgeom_getsrid(lwgeom2+4) )
 	{
+		PG_FREE_IF_COPY(lwgeom1, 0);
+		PG_FREE_IF_COPY(lwgeom2, 1);
 		elog(ERROR, "Operation on two geometries with different SRIDs");
 		PG_RETURN_NULL();
 	}
 
 	if ( ! (getbox2d_p(lwgeom1+4, &box1) && getbox2d_p(lwgeom2+4, &box2)) )
 	{
+		PG_FREE_IF_COPY(lwgeom1, 0);
+		PG_FREE_IF_COPY(lwgeom2, 1);
 		PG_RETURN_BOOL(FALSE);
 	}
 
@@ -180,12 +192,16 @@ Datum LWGEOM_left(PG_FUNCTION_ARGS)
 
 	if ( lwgeom_getsrid(lwgeom1+4) != lwgeom_getsrid(lwgeom2+4) )
 	{
+		PG_FREE_IF_COPY(lwgeom1, 0);
+		PG_FREE_IF_COPY(lwgeom2, 1);
 		elog(ERROR, "Operation on two geometries with different SRIDs");
 		PG_RETURN_NULL();
 	}
 
 	if ( ! (getbox2d_p(lwgeom1+4, &box1) && getbox2d_p(lwgeom2+4, &box2)) )
 	{
+		PG_FREE_IF_COPY(lwgeom1, 0);
+		PG_FREE_IF_COPY(lwgeom2, 1);
 		PG_RETURN_BOOL(FALSE);
 	}
 
@@ -214,12 +230,16 @@ Datum LWGEOM_right(PG_FUNCTION_ARGS)
 
 	if ( lwgeom_getsrid(lwgeom1+4) != lwgeom_getsrid(lwgeom2+4) )
 	{
+		PG_FREE_IF_COPY(lwgeom1, 0);
+		PG_FREE_IF_COPY(lwgeom2, 1);
 		elog(ERROR, "Operation on two geometries with different SRIDs");
 		PG_RETURN_NULL();
 	}
 
 	if ( ! (getbox2d_p(lwgeom1+4, &box1) && getbox2d_p(lwgeom2+4, &box2)) )
 	{
+		PG_FREE_IF_COPY(lwgeom1, 0);
+		PG_FREE_IF_COPY(lwgeom2, 1);
 		PG_RETURN_BOOL(FALSE);
 	}
 
@@ -248,12 +268,16 @@ Datum LWGEOM_overright(PG_FUNCTION_ARGS)
 
 	if ( lwgeom_getsrid(lwgeom1+4) != lwgeom_getsrid(lwgeom2+4) )
 	{
+		PG_FREE_IF_COPY(lwgeom1, 0);
+		PG_FREE_IF_COPY(lwgeom2, 1);
 		elog(ERROR, "Operation on two geometries with different SRIDs");
 		PG_RETURN_NULL();
 	}
 
 	if ( ! (getbox2d_p(lwgeom1+4, &box1) && getbox2d_p(lwgeom2+4, &box2)) )
 	{
+		PG_FREE_IF_COPY(lwgeom1, 0);
+		PG_FREE_IF_COPY(lwgeom2, 1);
 		PG_RETURN_BOOL(FALSE);
 	}
 
@@ -282,12 +306,16 @@ Datum LWGEOM_overbelow(PG_FUNCTION_ARGS)
 
 	if ( lwgeom_getsrid(lwgeom1+4) != lwgeom_getsrid(lwgeom2+4) )
 	{
+		PG_FREE_IF_COPY(lwgeom1, 0);
+		PG_FREE_IF_COPY(lwgeom2, 1);
 		elog(ERROR, "Operation on two geometries with different SRIDs");
 		PG_RETURN_NULL();
 	}
 
 	if ( ! (getbox2d_p(lwgeom1+4, &box1) && getbox2d_p(lwgeom2+4, &box2)) )
 	{
+		PG_FREE_IF_COPY(lwgeom1, 0);
+		PG_FREE_IF_COPY(lwgeom2, 1);
 		PG_RETURN_BOOL(FALSE);
 	}
 
@@ -316,12 +344,16 @@ Datum LWGEOM_below(PG_FUNCTION_ARGS)
 
 	if ( lwgeom_getsrid(lwgeom1+4) != lwgeom_getsrid(lwgeom2+4) )
 	{
+		PG_FREE_IF_COPY(lwgeom1, 0);
+		PG_FREE_IF_COPY(lwgeom2, 1);
 		elog(ERROR, "Operation on two geometries with different SRIDs");
 		PG_RETURN_NULL();
 	}
 
 	if ( ! (getbox2d_p(lwgeom1+4, &box1) && getbox2d_p(lwgeom2+4, &box2)) )
 	{
+		PG_FREE_IF_COPY(lwgeom1, 0);
+		PG_FREE_IF_COPY(lwgeom2, 1);
 		PG_RETURN_BOOL(FALSE);
 	}
 
@@ -350,12 +382,16 @@ Datum LWGEOM_above(PG_FUNCTION_ARGS)
 
 	if ( lwgeom_getsrid(lwgeom1+4) != lwgeom_getsrid(lwgeom2+4) )
 	{
+		PG_FREE_IF_COPY(lwgeom1, 0);
+		PG_FREE_IF_COPY(lwgeom2, 1);
 		elog(ERROR, "Operation on two geometries with different SRIDs");
 		PG_RETURN_NULL();
 	}
 
 	if ( ! (getbox2d_p(lwgeom1+4, &box1) && getbox2d_p(lwgeom2+4, &box2)) )
 	{
+		PG_FREE_IF_COPY(lwgeom1, 0);
+		PG_FREE_IF_COPY(lwgeom2, 1);
 		PG_RETURN_BOOL(FALSE);
 	}
 
@@ -418,12 +454,16 @@ Datum LWGEOM_contained(PG_FUNCTION_ARGS)
 
 	if ( lwgeom_getsrid(lwgeom1+4) != lwgeom_getsrid(lwgeom2+4) )
 	{
+		PG_FREE_IF_COPY(lwgeom1, 0);
+		PG_FREE_IF_COPY(lwgeom2, 1);
 		elog(ERROR, "Operation on two geometries with different SRIDs");
 		PG_RETURN_NULL();
 	}
 
 	if ( ! (getbox2d_p(lwgeom1+4, &box1) && getbox2d_p(lwgeom2+4, &box2)) )
 	{
+		PG_FREE_IF_COPY(lwgeom1, 0);
+		PG_FREE_IF_COPY(lwgeom2, 1);
 		PG_RETURN_BOOL(FALSE);
 	}
 
@@ -452,12 +492,16 @@ Datum LWGEOM_contain(PG_FUNCTION_ARGS)
 
 	if ( lwgeom_getsrid(lwgeom1+4) != lwgeom_getsrid(lwgeom2+4) )
 	{
+		PG_FREE_IF_COPY(lwgeom1, 0);
+		PG_FREE_IF_COPY(lwgeom2, 1);
 		elog(ERROR, "Operation on two geometries with different SRIDs");
 		PG_RETURN_NULL();
 	}
 
 	if ( ! (getbox2d_p(lwgeom1+4, &box1) && getbox2d_p(lwgeom2+4, &box2)) )
 	{
+		PG_FREE_IF_COPY(lwgeom1, 0);
+		PG_FREE_IF_COPY(lwgeom2, 1);
 		PG_RETURN_BOOL(FALSE);
 	}
 
@@ -474,6 +518,9 @@ Datum LWGEOM_contain(PG_FUNCTION_ARGS)
 // These functions are taken from the postgis_gist_72.c file
 
 
+/*
+ * GiST Compress methods for geometry
+ */
 PG_FUNCTION_INFO_V1(LWGEOM_gist_compress);
 Datum LWGEOM_gist_compress(PG_FUNCTION_ARGS)
 {
@@ -484,7 +531,7 @@ Datum LWGEOM_gist_compress(PG_FUNCTION_ARGS)
 	elog(NOTICE,"GIST: LWGEOM_gist_compress called");
 #endif
 
-	if ( entry->leafkey)
+	if (entry->leafkey)
 	{
 #ifdef PGIS_DEBUG_GIST4
 		elog(NOTICE,"GIST: LWGEOM_gist_compress got a leafkey");
@@ -496,67 +543,50 @@ Datum LWGEOM_gist_compress(PG_FUNCTION_ARGS)
 		elog(NOTICE,"GIST: LWGEOM_gist_compress got a non-NULL key");
 #endif
 
-			char *in; // lwgeom serialized
+			PG_LWGEOM *in; // lwgeom serialized
 			BOX2DFLOAT4 *rr;
 
 			// lwgeom serialized form
-			in = (char*)PG_DETOAST_DATUM(entry->key);
+			in = (PG_LWGEOM*)PG_DETOAST_DATUM(entry->key);
 
 #ifdef PGIS_DEBUG_GIST4
 		elog(NOTICE,"GIST: LWGEOM_gist_compress detoasted entry->key: %s", unparse_WKT(in+4, malloc, free));
 #endif
 
 			if (in == NULL)
-				PG_RETURN_POINTER(entry);
-
-			// this is the EMPTY geometry
-			if (lwgeom_getnumgeometries(in+4) ==0) 
 			{
-//elog(NOTICE,"found an empty geometry");
-				// dont bother adding this to the index
+				elog(ERROR, "PG_DETOAST_DATUM(<notnull>) returned NULL ??");
 				PG_RETURN_POINTER(entry);
 			}
-
-#ifdef PGIS_DEBUG_GIST4
-		elog(NOTICE,"GIST: LWGEOM_gist_compress got numgeometries");
-#endif
 
 			rr = (BOX2DFLOAT4*) palloc(sizeof(BOX2DFLOAT4));
-			if ( ! getbox2d_p(in+4, rr) )
-			{
-#ifdef PGIS_DEBUG_GIST4
-				elog(NOTICE,
-					"found an empty geometry (cannot get box2d)");
-#endif
-				// dont bother adding this to the index
-				PG_RETURN_POINTER(entry);
-			}
-			//memcpy(rr,&r,sizeof(BOX2DFLOAT4));
 
-#ifdef PGIS_DEBUG_GIST4
-		elog(NOTICE,"GIST: LWGEOM_gist_compress got box2d");
-#endif
-
-			if ( ! finite(rr->xmin) ||
+			if (	! getbox2d_p(SERIALIZED_FORM(in), rr) ||
+				! finite(rr->xmin) ||
 				! finite(rr->ymin) ||
 				! finite(rr->xmax) ||
 				! finite(rr->ymax) )
 			{
-				elog(NOTICE, "found infinite geometry");
+#ifdef PGIS_DEBUG_GIST4
+			elog(NOTICE, "found empty or infinite geometry");
+#endif
 				pfree(rr);
+				if (in!=(PG_LWGEOM*)DatumGetPointer(entry->key))
+					pfree(in);  // PG_FREE_IF_COPY
 				PG_RETURN_POINTER(entry);
 			}
+
+#ifdef PGIS_DEBUG_GIST4
+			elog(NOTICE,"GIST: LWGEOM_gist_compress got box2d");
+#endif
 
 
 #ifdef PGIS_DEBUG_GIST2
 	elog(NOTICE,"GIST: LWGEOM_gist_compress -- got box2d BOX(%.15g %.15g,%.15g %.15g)", rr->xmin, rr->ymin, rr->xmax, rr->ymax);
 #endif
-			//r = convert_box3d_to_box(&in->bvol);
 
-			if ( in != (char*)DatumGetPointer(entry->key) )
-			{
+			if (in != (PG_LWGEOM*)DatumGetPointer(entry->key))
 				pfree(in);  // PG_FREE_IF_COPY
-			}
 
 			gistentryinit(*retval, PointerGetDatum(rr),
 				entry->rel, entry->page,
@@ -572,6 +602,7 @@ Datum LWGEOM_gist_compress(PG_FUNCTION_ARGS)
 			gistentryinit(*retval, (Datum) 0, entry->rel,
 				entry->page, entry->offset, 0, FALSE);
 		}
+
 	}
 	else
 	{
@@ -589,9 +620,8 @@ PG_FUNCTION_INFO_V1(LWGEOM_gist_consistent);
 Datum LWGEOM_gist_consistent(PG_FUNCTION_ARGS)
 {
 	GISTENTRY *entry = (GISTENTRY*) PG_GETARG_POINTER(0);
-	char *query ; // lwgeom serialized form
+	PG_LWGEOM *query ; // lwgeom serialized form
 	StrategyNumber strategy = (StrategyNumber) PG_GETARG_UINT16(2);
-	// BOX		thebox;
 	bool result;
 	BOX2DFLOAT4  box;
 
@@ -605,13 +635,20 @@ Datum LWGEOM_gist_consistent(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(false); // null query - this is screwy!
 	}
 
-	query = (char*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-
+	query = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	if ( ! (DatumGetPointer(entry->key) != NULL && query) )
+	{
+		PG_FREE_IF_COPY(query, 1);
+		elog(ERROR, "LWGEOM_gist_consistent got either NULL query or entry->key");
 		PG_RETURN_BOOL(FALSE);
+	}
 
-	getbox2d_p(query+4, &box);
+	if ( ! getbox2d_p(SERIALIZED_FORM(query), &box) )
+	{
+		PG_FREE_IF_COPY(query, 1);
+		PG_RETURN_BOOL(FALSE);
+	}
 
 	if (GIST_LEAF(entry))
 		result = lwgeom_rtree_leaf_consistent((BOX2DFLOAT4 *)
@@ -621,7 +658,6 @@ Datum LWGEOM_gist_consistent(PG_FUNCTION_ARGS)
 			(BOX2DFLOAT4 *) DatumGetPointer(entry->key),
 			&box, strategy );
 
-	//pfree(thebox);
 	PG_FREE_IF_COPY(query, 1);
 	PG_RETURN_BOOL(result);
 }
@@ -955,27 +991,9 @@ Datum LWGEOM_gist_penalty(PG_FUNCTION_ARGS)
 		pfree(DatumGetPointer(ud));
 
 	*result = tmp1 - size_box2d_double(origentry->key);
-/*
-	if ( (*result <0) && (*result > -0.00001))
-		*result = 0;
-	if ( (*result >0) && (*result < 0.00001))
-		*result = 0;
-
-*/
 
 #ifdef PGIS_DEBUG_GIST6
 	elog(NOTICE,"GIST: LWGEOM_gist_penalty called and returning %.15g", *result);
-	if (*result<0)
-	{
-		BOX2DFLOAT4 *a, *b,*c;
-		a = (BOX2DFLOAT4*) DatumGetPointer(origentry->key);
-		b = (BOX2DFLOAT4*) DatumGetPointer(newentry->key);
-		//c = (BOX2DFLOAT4*) DatumGetPointer(DirectFunctionCall2(BOX2D_union, origentry->key, newentry->key));
-		c = BOX2D_union(origentry->key, newentry->key);
-		//elog(NOTICE,"LWGEOM_gist_penalty -- a = <%.16g %.16g,%.16g %.16g>", a->xmin, a->ymin, a->xmax, a->ymax);
-		//elog(NOTICE,"LWGEOM_gist_penalty -- b = <%.16g %.16g,%.16g %.16g>", b->xmin, b->ymin, b->xmax, b->ymax);
-		//elog(NOTICE,"LWGEOM_gist_penalty -- c = <%.16g %.16g,%.16g %.16g>", c->xmin, c->ymin, c->xmax, c->ymax);
-	}
 #endif
 
 	PG_RETURN_POINTER(result);
@@ -1003,9 +1021,9 @@ compare_KB(const void* a, const void* b) {
 PG_FUNCTION_INFO_V1(LWGEOM_gist_same);
 Datum LWGEOM_gist_same(PG_FUNCTION_ARGS)
 {
-	BOX2DFLOAT4		   *b1 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(0);
-	BOX2DFLOAT4		   *b2 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(1);
-	bool	   *result = (bool *) PG_GETARG_POINTER(2);
+	BOX2DFLOAT4 *b1 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(0);
+	BOX2DFLOAT4 *b2 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(1);
+	bool *result = (bool *)PG_GETARG_POINTER(2);
 
 #ifdef PGIS_DEBUG_CALLS
 	elog(NOTICE,"GIST: LWGEOM_gist_same called");
@@ -1020,7 +1038,6 @@ Datum LWGEOM_gist_same(PG_FUNCTION_ARGS)
 
 
 
-
 /*
 ** The GiST PickSplit method
 ** New linear algorithm, see 'New Linear Node Splitting Algorithm for R-tree',
@@ -1030,36 +1047,28 @@ PG_FUNCTION_INFO_V1(LWGEOM_gist_picksplit);
 Datum LWGEOM_gist_picksplit(PG_FUNCTION_ARGS)
 {
 #if USE_VERSION < 80
-	bytea	   *entryvec = (bytea *) PG_GETARG_POINTER(0);
+	bytea *entryvec = (bytea *) PG_GETARG_POINTER(0);
 #else
   	GistEntryVector	*entryvec = (GistEntryVector *) PG_GETARG_POINTER(0);
 #endif
 	GIST_SPLITVEC *v = (GIST_SPLITVEC *) PG_GETARG_POINTER(1);
 	OffsetNumber i;
-	OffsetNumber *listL,
-			   *listR,
-			   *listB,
-			   *listT;
-	BOX2DFLOAT4		   *unionL,
-			   *unionR,
-			   *unionB,
-			   *unionT;
-	int			posL,
-				posR,
-				posB,
-				posT;
-	BOX2DFLOAT4			pageunion;
-	BOX2DFLOAT4		   *cur;
-	char		direction = ' ';
-	bool		allisequal = true;
+	OffsetNumber *listL, *listR, *listB, *listT;
+	BOX2DFLOAT4 *unionL, *unionR, *unionB, *unionT;
+	int posL, posR, posB, posT;
+	BOX2DFLOAT4 pageunion;
+	BOX2DFLOAT4 *cur;
+	char direction = ' ';
+	bool allisequal = true;
 	OffsetNumber maxoff;
-	int			nbytes;
+	int nbytes;
 
 #ifdef PGIS_DEBUG_CALLS
 	elog(NOTICE,"GIST: LWGEOM_gist_picksplit called");
 #endif
 
 	posL = posR = posB = posT = 0;
+
 #if USE_VERSION < 80
 	maxoff = ((VARSIZE(entryvec) - VARHDRSZ) / sizeof(GISTENTRY)) - 1;
 	cur = (BOX2DFLOAT4*) DatumGetPointer(((GISTENTRY *) VARDATA(entryvec))[FirstOffsetNumber].key);
@@ -1152,8 +1161,6 @@ elog(NOTICE," AllIsEqual!");
 			PG_RETURN_POINTER(v);
 		}
 	}
-
-
 
 
 	listB = (OffsetNumber *) palloc(nbytes);
@@ -1256,6 +1263,11 @@ elog(NOTICE,"   unionB is: <%.16g %.16g,%.16g %.16g>", unionB->xmin, unionB->ymi
 		sizeLR = size_box2d(interLR);
 		sizeBT = size_box2d(interBT);
 
+		if ( DatumGetPointer(interLR) != NULL )
+			pfree(DatumGetPointer(interLR));
+		if ( DatumGetPointer(interBT) != NULL )
+			pfree(DatumGetPointer(interBT));
+
 		if (sizeLR < sizeBT)
 			direction = 'x';
 		else
@@ -1277,29 +1289,29 @@ elog(NOTICE,"   unionB is: <%.16g %.16g,%.16g %.16g>", unionB->xmin, unionB->ymi
 		v->spl_rdatum = PointerGetDatum(unionR);
 
 #ifdef PGIS_DEBUG_GIST6
-elog(NOTICE,"   split direction was '%c'", direction);
-elog(NOTICE,"   posL = %i, posR=%i", posL,posR);
-elog(NOTICE,"   posL's (nleft) offset numbers:");
-{
-		char		aaa[5000],bbb[100];
-		aaa[0] =0;
+	{
+		char aaa[5000],bbb[100];
+		aaa[0] = 0;
 
-for (i=0;i<posL;i++)
-{
-	sprintf(bbb," %i", listL[i]);
-	strcat(aaa,bbb);
-}
-elog(NOTICE,aaa);
-aaa[0]=0;
-elog(NOTICE,"   posR's (nright) offset numbers:");
-for (i=0;i<posR;i++)
-{
-	sprintf(bbb," %i", listR[i]);
-	strcat(aaa,bbb);
-}
-elog(NOTICE,aaa);
-}
+		elog(NOTICE,"   split direction was '%c'", direction);
+		elog(NOTICE,"   posL = %i, posR=%i", posL,posR);
+		elog(NOTICE,"   posL's (nleft) offset numbers:");
 
+		for (i=0;i<posL;i++)
+		{
+			sprintf(bbb," %i", listL[i]);
+			strcat(aaa,bbb);
+		}
+		elog(NOTICE,aaa);
+		aaa[0]=0;
+		elog(NOTICE,"   posR's (nright) offset numbers:");
+		for (i=0;i<posR;i++)
+		{
+			sprintf(bbb," %i", listR[i]);
+			strcat(aaa,bbb);
+		}
+		elog(NOTICE,aaa);
+	}
 #endif
 
 
@@ -1319,27 +1331,29 @@ elog(NOTICE,aaa);
 		v->spl_rdatum = PointerGetDatum(unionT);
 
 #ifdef PGIS_DEBUG_GIST6
-elog(NOTICE,"   split direction was '%c'", direction);
-elog(NOTICE,"   posB = %i, posT=%i", posB,posT);
-elog(NOTICE,"   posB's (nleft) offset numbers:");
-{
-	char		aaa[5000],bbb[100];
-	aaa[0] =0;
-for (i=0;i<posB;i++)
-{
-	sprintf(bbb," %i", listB[i]);
-	strcat(aaa,bbb);
-}
-elog(NOTICE,aaa);
-aaa[0]=0;
-elog(NOTICE,"   posT's (nright) offset numbers:");
-for (i=0;i<posT;i++)
-{
-	sprintf(bbb," %i", listT[i]);
-	strcat(aaa,bbb);
-}
-elog(NOTICE,aaa);
-}
+	{
+		char aaa[5000],bbb[100];
+		aaa[0]=0;
+
+		elog(NOTICE,"   split direction was '%c'", direction);
+		elog(NOTICE,"   posB = %i, posT=%i", posB,posT);
+		elog(NOTICE,"   posB's (nleft) offset numbers:");
+
+		for (i=0;i<posB;i++)
+		{
+			sprintf(bbb," %i", listB[i]);
+			strcat(aaa,bbb);
+		}
+		elog(NOTICE,aaa);
+		aaa[0]=0;
+		elog(NOTICE,"   posT's (nright) offset numbers:");
+		for (i=0;i<posT;i++)
+		{
+			sprintf(bbb," %i", listT[i]);
+			strcat(aaa,bbb);
+		}
+		elog(NOTICE,aaa);
+	}
 #endif
 
 
