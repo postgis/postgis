@@ -430,6 +430,7 @@ void
 OpenShape(void)
 {
 	int j;
+	SHPObject *obj=NULL;
 
 	hSHPHandle = SHPOpen( shp_file, "rb" );
 	if (hSHPHandle == NULL) {
@@ -445,9 +446,17 @@ OpenShape(void)
 	SHPGetInfo(hSHPHandle, &num_entities, &shpfiletype, NULL, NULL);
 
 	/* Check we have at least a not-null geometry */
-	j=num_entities;
-	while( ( obj == NULL || obj->nVertices == 0 ) && j--)
+	for (j=0; j<num_entities; j++)
+	{
 		obj = SHPReadObject(hSHPHandle,j);
+		if ( obj && obj->nVertices > 0 ) {
+			SHPDestroyObject(obj);
+			break;
+		}
+		SHPDestroyObject(obj);
+		obj=NULL;
+	}
+
 	if ( obj == NULL) 
 	{
 		fprintf(stderr, "Shapefile contains %d NULL object(s)\n",
@@ -1410,11 +1419,12 @@ dump_ring(Ring *ring)
 {
 	char *buf = malloc(256*ring->n);
 	int i;
+
+	buf[0] = '\0';
 	for (i=0; i<ring->n; i++)
 	{
-		if (i) sprintf(buf, "%s,", buf);
-		sprintf(buf, "%s%g %g",
-			buf,
+		if (i) strcat(buf, ",");
+		sprintf(buf+strlen(buf), "%g %g",
 			ring->list[i].x,
 			ring->list[i].y);
 	}
@@ -1586,7 +1596,7 @@ GetFieldsSpec(void)
 		for(z=0; z < j ; z++){
 			if(strcmp(field_names[z],name)==0){
 				strcat(name,"__");
-				sprintf(name,"%s%i",name,j);
+				sprintf(name+strlen(name),"%i",j);
 				break;
 			}
 		}	
@@ -1594,9 +1604,14 @@ GetFieldsSpec(void)
 		field_names[j] = malloc (strlen(name)+1);
 		strcpy(field_names[j], name);
 
-		sprintf(col_names, "%s\"%s\",", col_names, name);
+		/*sprintf(col_names, "%s\"%s\",", col_names, name);*/
+		strcat(col_names, "\"");
+		strcat(col_names, name);
+		strcat(col_names, "\",");
 	}
-	sprintf(col_names, "%s\"%s\")", col_names, geom);
+	/*sprintf(col_names, "%s\"%s\")", col_names, geom);*/
+	strcat(col_names, geom);
+	strcat(col_names, ")");
 }
 
 #ifdef USE_ICONV
@@ -1647,6 +1662,10 @@ utf8 (const char *fromcode, char *inputbuf)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.88.2.6  2005/08/29 11:48:42  strk
+ * Fixed sprintf() calls to avoid overlapping memory,
+ * reworked not-null objects existance check to reduce startup costs.
+ *
  * Revision 1.88.2.5  2005/07/27 02:47:06  strk
  * Support for multibyte field names in loader
  *
