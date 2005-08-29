@@ -2168,7 +2168,7 @@ LANGUAGE 'plpgsql' _VOLATILE;
 -- PROBE_GEOMETRY_COLUMNS() 
 -----------------------------------------------------------------------
 -- Fill the geometry_columns table with values probed from the system
--- catalogues. 3d flag can not be probed, it defaults to 2
+-- catalogues. 3d flag cannot be probed, it defaults to 2
 --
 -- Note that bogus records already in geometry_columns are not
 -- overridden (a check for schema.table.column is performed), so
