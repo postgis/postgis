@@ -345,7 +345,7 @@ extern int pointArray_ptsize(const POINTARRAY *pa);
  * WHERE
  *    B = 16 byte BOX2DFLOAT4 follows (probably not aligned) [before SRID]
  *    S = 4 byte SRID attached (0= not attached (-1), 1= attached)
- *    ZM = dimentionality (hasZ, hasM)
+ *    ZM = dimensionality (hasZ, hasM)
  *    tttt = actual type (as per the WKB type):
  *
  *    enum wkbGeometryType {
