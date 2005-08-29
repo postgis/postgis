@@ -2,7 +2,8 @@ PostGIS 1.0.4
 	- Segfault fix in transform() handling of proj4 errors
 	- Fixed some proj4 texts in spatial_ref_sys (missing +proj)
 	- GiST indexing cleanup
-	- Loader: fixed string functions usage, reworked NULL objects check
+	- Loader: fixed string functions usage, reworked NULL objects check,
+	  fixed segfault on MULTILINESTRING input.
 
 PostGIS 1.0.3
 2005/08/08

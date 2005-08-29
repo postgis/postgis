@@ -766,7 +766,6 @@ InsertLineString(int id)
 		if (dump_format) printf("\\N\n");
 		else printf("NULL);\n");
 
-		SHPDestroyObject(obj);
 		return;
 	}
 
@@ -821,7 +820,6 @@ InsertLineStringWKT(int id)
 		if (dump_format) printf("\\N\n");
 		else printf("NULL);\n");
 
-		SHPDestroyObject(obj);
 		return;
 	}
 
@@ -1662,6 +1660,9 @@ utf8 (const char *fromcode, char *inputbuf)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.88.2.7  2005/08/29 22:36:14  strk
+ * Removed premature object destruction in InsertLineString{WKT,} causing segfault
+ *
  * Revision 1.88.2.6  2005/08/29 11:48:42  strk
  * Fixed sprintf() calls to avoid overlapping memory,
  * reworked not-null objects existance check to reduce startup costs.
