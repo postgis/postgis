@@ -618,7 +618,6 @@ pointArray_construct(uchar *points, char hasz, char hasm,
 	uint32 npoints)
 {
 	POINTARRAY  *pa;
-	size_t size;
 	pa = (POINTARRAY*)lwalloc(sizeof(POINTARRAY));
 
 	pa->dims = 0;
