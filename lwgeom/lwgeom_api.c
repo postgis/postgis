@@ -622,12 +622,9 @@ pointArray_construct(uchar *points, char hasz, char hasm,
 	pa = (POINTARRAY*)lwalloc(sizeof(POINTARRAY));
 
 	pa->dims = 0;
-	TYPE_SETZM(pa->dims, hasz, hasm);
+	TYPE_SETZM(pa->dims, hasz?1:0, hasm?1:0);
 	pa->npoints = npoints;
 
-	size=(2+hasz+hasm)*sizeof(double)*npoints;
-	//pa->serialized_pointlist = lwalloc(size);
-	//memcpy(pa->serialized_pointlist, points, size);
 	pa->serialized_pointlist = points;
 
 	return pa;

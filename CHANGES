@@ -4,6 +4,7 @@ PostGIS 1.0.4
 	- GiST indexing cleanup
 	- Loader: fixed string functions usage, reworked NULL objects check,
 	  fixed segfault on MULTILINESTRING input.
+	- Fixed bug in MakeLine dimension handling
 
 PostGIS 1.0.3
 2005/08/08
