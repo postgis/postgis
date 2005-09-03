@@ -1357,15 +1357,17 @@ lwgeom_size_inspected(const LWGEOM_INSPECTED *inspected, int geom_number)
 int
 compute_serialized_box3d_p(uchar *srl, BOX3D *out)
 {
-	  BOX3D *box = compute_serialized_box3d(srl);
-	  if ( ! box ) return 0;
-	  out->xmin = box->xmin;
-	  out->ymin = box->ymin;
-	  out->zmin = box->zmin;
-	  out->xmax = box->xmax;
-	  out->ymax = box->ymax;
-	  out->zmax = box->zmax;
-	  return 1;
+	BOX3D *box = compute_serialized_box3d(srl);
+	if ( ! box ) return 0;
+	out->xmin = box->xmin;
+	out->ymin = box->ymin;
+	out->zmin = box->zmin;
+	out->xmax = box->xmax;
+	out->ymax = box->ymax;
+	out->zmax = box->zmax;
+	lwfree(box);
+
+	return 1;
 }
 
 // Compute bounding box of a serialized LWGEOM, even if it is
