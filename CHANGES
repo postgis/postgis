@@ -26,6 +26,7 @@ PostGIS 1.0.4
 	  fixed segfault on MULTILINESTRING input.
 	- Fixed bug in MakeLine dimension handling
 	- Looser syntax acceptance in box3d parser
+	- Documentation improvements
 
 PostGIS 1.0.3
 2005/08/08

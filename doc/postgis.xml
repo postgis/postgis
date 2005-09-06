@@ -3411,7 +3411,10 @@ dimension
               GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING or MULTIPOLYGON.
               Otherwise, return NULL.</para>
 
-              <para>1 is 1st geometry</para>
+		<note> <para>
+		Index is 1-based as for OGC specs since version 0.8.0.
+		Previous versions implemented this as 0-based instead.
+		</para></note>
             </listitem>
           </varlistentry>
 
@@ -3432,6 +3435,10 @@ dimension
               <para>Return the N'th point in the first linestring in the
               geometry. Return NULL if there is no linestring in the
               geometry.</para>
+		<note> <para>
+		Index is 1-based as for OGC specs since version 0.8.0.
+		Previous versions implemented this as 0-based instead.
+		</para></note>
             </listitem>
           </varlistentry>
 
@@ -3460,7 +3467,11 @@ dimension
             <listitem>
               <para>Return the N'th interior ring of the polygon geometry.
 	      Return NULL if the geometry is not a polygon or the given
-	      N is out of range (1-based).</para>
+	      N is out of range.</para>
+		<note> <para>
+		Index is 1-based as for OGC specs since version 0.8.0.
+		Previous versions implemented this as 0-based instead.
+		</para></note>
             </listitem>
           </varlistentry>
 
