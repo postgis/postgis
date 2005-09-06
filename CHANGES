@@ -25,6 +25,7 @@ PostGIS 1.0.4
 	- Loader: fixed string functions usage, reworked NULL objects check,
 	  fixed segfault on MULTILINESTRING input.
 	- Fixed bug in MakeLine dimension handling
+	- Looser syntax acceptance in box3d parser
 
 PostGIS 1.0.3
 2005/08/08
