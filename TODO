@@ -33,3 +33,13 @@ Tue May 24 18:55:46 CEST 2005
   other cleanup aimed at making pgsql2shp produce "valid" Shapefiles.
 
 - OGC polygon constructors
+
+
+2005/09/07 - some other ideas for future features
+
+- Add findsrid() functions that find good carthesian projection
+  srids for a given geometry.
+  
+- Treat geometries without SRID=-1 as compatible with all other
+  geometries in geometry operations
+
