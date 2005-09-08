@@ -28,6 +28,7 @@ PostGIS 1.0.4
 	- Looser syntax acceptance in box3d parser
 	- Documentation improvements
 	- More robust selectivity estimator
+	- Minor speedup in distance()
 
 PostGIS 1.0.3
 2005/08/08
