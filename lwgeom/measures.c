@@ -459,15 +459,21 @@ double distance2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2)
 	//   if intersect, return 0
 	for (i=0; i<poly1->nrings; i++)
 	{
-		double dist = distance2d_ptarray_poly(poly1->rings[i], poly2);
-		if (i) mindist = LW_MIN(mindist, dist);
-		else mindist = dist;
+		int j;
+		for (j=0; j<poly2->nrings; j++)
+		{
+			double d = distance2d_ptarray_ptarray(poly1->rings[i],
+				poly2->rings[j]);
+			if ( d <= 0 ) return 0.0;
+
+			if (i) mindist = LW_MIN(mindist, d);
+			else mindist = d;
+		}
 
 #ifdef PGIS_DEBUG
-		lwnotice("  ring%d dist: %f, mindist: %f", i, dist, mindist);
+		lwnotice("  ring%d dist: %f, mindist: %f", i, d, mindist);
 #endif
 
-		if ( mindist <= 0 ) return 0.0; // intersection
 	}
 
 	// otherwise return closest approach of rings (no intersection)
