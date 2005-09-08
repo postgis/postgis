@@ -363,7 +363,6 @@ ptarray_isclosed2d(const POINTARRAY *in)
 BOX3D *
 ptarray_compute_box3d(const POINTARRAY *pa)
 {
-	int t;
 	BOX3D *result = lwalloc(sizeof(BOX3D));
 
 	if ( ! ptarray_compute_box3d_p(pa, result) )
