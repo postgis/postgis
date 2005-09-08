@@ -1577,6 +1577,14 @@ elog(NOTICE, " search_box overlaps %f cells", overlapping_cells);
 elog(NOTICE, " avg feat overlaps %f cells", avg_feat_cells);
 #endif
 
+	if ( ! overlapping_cells )
+	{
+#if DEBUG_GEOMETRY_STATS
+		elog(NOTICE, " no overlapping cells, returning 0.0");
+#endif
+		return 0.0;
+	}
+
 	gain = 1/LW_MIN(overlapping_cells, avg_feat_cells);
 	selectivity = value*gain;
 
@@ -2502,6 +2510,9 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.29.2.5  2005/09/08 19:26:10  strk
+ * Handled search_box outside of histogram_box case in selectivity estimator
+ *
  * Revision 1.29.2.4  2005/06/28 22:00:05  strk
  * Fixed extimators to work with postgresql 8.1.x
  *

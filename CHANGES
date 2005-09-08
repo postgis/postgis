@@ -8,6 +8,7 @@ PostGIS 1.0.4
 	- Fixed bug in MakeLine dimension handling
 	- Looser syntax acceptance in box3d parser
 	- Documentation improvements
+	- More robust selectivity estimator 
 
 PostGIS 1.0.3
 2005/08/08
