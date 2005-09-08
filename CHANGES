@@ -10,6 +10,7 @@ PostGIS 1.0.4
 	- Documentation improvements
 	- More robust selectivity estimator 
 	- Minor speedup in distance()
+	- Minor cleanups 
 
 PostGIS 1.0.3
 2005/08/08

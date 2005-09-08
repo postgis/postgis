@@ -364,61 +364,13 @@ BOX3D *
 ptarray_compute_box3d(const POINTARRAY *pa)
 {
 	int t;
-	BOX3D *result;
-	POINT3DZ pt;
+	BOX3D *result = lwalloc(sizeof(BOX3D));
 
-#ifdef PGIS_DEBUG
-	lwnotice("ptarray_compute_box3d call (array has %d points)", pa->npoints);
-#endif
-	if (pa->npoints == 0)
+	if ( ! ptarray_compute_box3d_p(pa, result) )
 	{
-#ifdef PGIS_DEBUG
-		lwnotice("ptarray_compute_box3d returning NULL");
-#endif
+		lwfree(result);
 		return NULL;
 	}
-
-	result = lwalloc(sizeof(BOX3D));
-
-	getPoint3dz_p(pa, 0, &pt);
-
-#ifdef PGIS_DEBUG
-	lwnotice("ptarray_compute_box3d: got point 0");
-#endif
-
-	result->xmin = pt.x;
-	result->xmax = pt.x;
-	result->ymin = pt.y;
-	result->ymax = pt.y;
-
-	if ( TYPE_HASZ(pa->dims) ) {
-		result->zmin = pt.z;
-		result->zmax = pt.z;
-	} else {
-		result->zmin = NO_Z_VALUE;
-		result->zmax = NO_Z_VALUE;
-	}
-
-#ifdef PGIS_DEBUG
-	lwnotice("ptarray_compute_box3d: scanning other %d points", pa->npoints);
-#endif
-	for (t=1; t<pa->npoints; t++)
-	{
-		getPoint3dz_p(pa,t,&pt);
-		if (pt.x < result->xmin) result->xmin = pt.x;
-		if (pt.y < result->ymin) result->ymin = pt.y;
-		if (pt.x > result->xmax) result->xmax = pt.x;
-		if (pt.y > result->ymax) result->ymax = pt.y;
-
-		if ( TYPE_HASZ(pa->dims) ) {
-			if (pt.z > result->zmax) result->zmax = pt.z;
-			if (pt.z < result->zmin) result->zmin = pt.z;
-		}
-	}
-
-#ifdef PGIS_DEBUG
-	lwnotice("ptarray_compute_box3d returning box");
-#endif
 
 	return result;
 }
