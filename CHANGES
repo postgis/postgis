@@ -18,6 +18,7 @@ PostGIS 1.1.0CVS
 	- Chunked GeomUnion implementation (much faster)
 
 PostGIS 1.0.4
+2005/09/12
 	- Memory leak plugged in GiST indexing
 	- Segfault fix in transform() handling of proj4 errors
 	- Fixed some proj4 texts in spatial_ref_sys (missing +proj)
@@ -29,7 +30,8 @@ PostGIS 1.0.4
 	- Documentation improvements
 	- More robust selectivity estimator
 	- Minor speedup in distance()
-	- Minor cleanups()
+	- Minor cleanups
+	- Fixed bug in translate() corrupting output bounding box
 
 PostGIS 1.0.3
 2005/08/08

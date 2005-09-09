@@ -1688,13 +1688,14 @@ Datum LWGEOM_translate(PG_FUNCTION_ARGS)
 	lwgeom_translate_recursive(srl, xoff, yoff, zoff);
 
 	/* COMPUTE_BBOX WHEN_SIMPLE */
-	hasbbox=getbox2d_p(srl, &box);
-	if ( hasbbox )
+	if ( lwgeom_hasBBOX(geom->type) )
 	{
+		getbox2d_p(srl, &box);
 		box.xmin += xoff;
 		box.xmax += xoff;
 		box.ymin += yoff;
 		box.ymax += yoff;
+		memcpy(srl+1, &box, sizeof(BOX2DFLOAT4));
 	}
 
 	// Construct PG_LWGEOM 
