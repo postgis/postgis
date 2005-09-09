@@ -4837,6 +4837,7 @@ for large spatial tables.
 	<para>Fixed some proj4 texts in spatial_ref_sys (missing +proj)</para>
 	<para>Loader: fixed string functions usage, reworked NULL objects check, fixed segfault on MULTILINESTRING input.</para>
 	<para>Fixed bug in MakeLine dimension handling</para>
+	<para>Fixed bug in translate() corrupting output bounding box</para>
 			</sect2>
 
 			<sect2>

@@ -12,6 +12,7 @@ PostGIS 1.0.4
 	- More robust selectivity estimator 
 	- Minor speedup in distance()
 	- Minor cleanups 
+	- Fixed bug in translate() corrupting output bounding box
 
 PostGIS 1.0.3
 2005/08/08
