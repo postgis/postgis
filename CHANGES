@@ -1,4 +1,5 @@
 PostGIS 1.0.4
+2005/09/12
 	- Memory leak plugged in GiST indexing
 	- Segfault fix in transform() handling of proj4 errors
 	- Fixed some proj4 texts in spatial_ref_sys (missing +proj)

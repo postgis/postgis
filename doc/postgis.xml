@@ -4797,6 +4797,61 @@ FROM geometry_table;</literallayout>
 		<title>Release Notes</title>
 
     		<sect1>
+			<title>Release 1.0.4</title>
+			<para>Release date: 2005/09/12</para>
+
+			<para>
+Contains important bug fixes and a few improvements. In particular, it
+fixes a memory leak preventing successful build of GiST indexes
+for large spatial tables.
+			</para>
+
+			<sect2>
+				<title>Upgrading</title>
+
+				<para>If you are upgrading from
+				release 1.0.3 you <emphasis>DO
+				NOT</emphasis> need a dump/reload.
+				</para>
+
+				<para>If you are upgrading from
+				a release <emphasis>between 1.0.0RC6 and
+				1.0.2</emphasis> (inclusive) and really want
+				a live upgrade read the <link
+				linkend="rel_1.0.3_upgrading">upgrade
+				section</link> of the 1.0.3 release notes
+				chapter.
+				</para>
+
+				<para>
+				Upgrade from any release prior to 1.0.0RC6
+				requires an <link linkend="hard_upgrade">hard
+				upgrade</link>.
+				</para>
+			</sect2>
+
+			<sect2>
+				<title>Bug fixes</title>
+	<para>Memory leak plugged in GiST indexing</para>
+	<para>Segfault fix in transform() handling of proj4 errors</para>
+	<para>Fixed some proj4 texts in spatial_ref_sys (missing +proj)</para>
+	<para>Loader: fixed string functions usage, reworked NULL objects check, fixed segfault on MULTILINESTRING input.</para>
+	<para>Fixed bug in MakeLine dimension handling</para>
+			</sect2>
+
+			<sect2>
+				<title>Improvements</title>
+	<para>Documentation improvements</para>
+	<para>More robust selectivity estimator </para>
+	<para>Minor speedup in distance()</para>
+	<para>Minor cleanups </para>
+	<para>GiST indexing cleanup</para>
+	<para>Looser syntax acceptance in box3d parser</para>
+			</sect2>
+
+		</sect1>
+
+    		<sect1>
 			<title>Release 1.0.3</title>
 			<para>Release date: 2005/08/08</para>
 
@@ -4805,7 +4860,7 @@ Contains some bug fixes - <emphasis>including a severe one affecting
 correctness of stored geometries</emphasis> - and a few improvements.
 			</para>
 
-			<sect2>
+			<sect2 id="rel_1.0.3_upgrading">
 				<title>Upgrading</title>
 
 				<para>
