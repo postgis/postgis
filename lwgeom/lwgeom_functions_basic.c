@@ -1500,7 +1500,8 @@ Datum LWGEOM_translate(PG_FUNCTION_ARGS)
 	lwgeom_translate_recursive(srl, xoff, yoff, zoff);
 
 	/* COMPUTE_BBOX WHEN_SIMPLE */
-	if ( lwgeom_hasBBOX(geom->type) )
+	hasbbox = lwgeom_hasBBOX(geom->type);
+	if ( hasbbox )
 	{
 		getbox2d_p(srl, &box);
 		box.xmin += xoff;
