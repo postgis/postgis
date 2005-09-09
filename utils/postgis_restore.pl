@@ -36,13 +36,14 @@
 #	pg_dump-743/pg743 => pg_restore-800/pg800
 #	pg_dump-800/pg800 => pg_restore-800/pg800
 #
-
 eval "exec perl -w $0 $@"
 	if (0);
 
-(@ARGV == 3) || die "Usage: postgis_restore.pl <postgis.sql> <db> <dump>\nRestore a custom dump (pg_dump -Fc) of a postgis enabled database.\n";
+use strict;
 
-$DEBUG=1;
+(@ARGV >= 3) || die "Usage: postgis_restore.pl <postgis.sql> <db> <dump> [<createdb_options>]\nRestore a custom dump (pg_dump -Fc) of a postgis enabled database.\n";
+
+my $DEBUG=1;
 
 my %aggs = ();
 my %fncasts = ();
@@ -69,6 +70,30 @@ my %obsoleted_function = (
 	'geomcollfromtext', 1,
 	'geometryfromtext', 1,
 	'geomfromtext', 1,
+	'pointfromwkb(geometry, integer)', 1,
+	'pointfromwkb(geometry)', 1,
+	'linefromwkb(geometry, integer)', 1,
+	'linefromwkb(geometry)', 1,
+	'linestringfromwkb(geometry, integer)', 1,
+	'linestringfromwkb(geometry)', 1,
+	'polyfromwkb(geometry, integer)', 1,
+	'polyfromwkb(geometry)', 1,
+	'polygonfromwkb(geometry, integer)', 1,
+	'polygonfromwkb(geometry)', 1,
+	'mpointfromwkb(geometry, integer)', 1,
+	'mpointfromwkb(geometry)', 1,
+	'multipointfromwkb(geometry, integer)', 1,
+	'multipointfromwkb(geometry)', 1,
+	'multilinefromwkb(geometry, integer)', 1,
+	'multilinefromwkb(geometry)', 1,
+	'mlinefromwkb(geometry, integer)', 1,
+	'mlinefromwkb(geometry)', 1,
+	'mpolyfromwkb(geometry, integer)', 1,
+	'mpolyfromwkb(geometry)', 1,
+	'multipolyfromwkb(geometry, integer)', 1,
+	'multipolyfromwkb(geometry)', 1,
+	'geomcollfromwkb(geometry, integer)', 1,
+	'geomcollfromwkb(geometry)', 1,
 	'wkb_in', 1,
 	'wkb_out', 1,
 	'wkb_recv', 1,
@@ -95,18 +120,37 @@ my %obsoleted_function = (
 	'xmax(box2d)', 1,
 	'ymax(box2d)', 1,
 	'optimistic_overlap', 1,
-	'unite_finalfunc', 1
+	'unite_finalfunc', 1,
+	'numb_sub_objs(geometry)', 1,
+	'truly_inside(geometry, geometry)', 1
 );
 
-my $postgissql = $ARGV[0];
-my $dbname = $ARGV[1];
-my $dump = $ARGV[2];
+# This are old postgis operators which might
+# still be in a dump
+my %obsoleted_ops = (
+	'>>,box2d,box2d', 1,
+	'<<,box2d,box2d', 1,
+	'&>,box2d,box2d', 1,
+	'&<,box2d,box2d', 1,
+	'&&,box2d,box2d', 1,
+	'~=,box2d,box2d', 1,
+	'~,box2d,box2d', 1,
+	'@,box2d,box2d', 1
+);
+
+my $postgissql = $ARGV[0]; shift(@ARGV);
+my $dbname = $ARGV[0]; shift(@ARGV);
+my $dump = $ARGV[0]; shift(@ARGV);
+my $createdb_opt = '';
 my $dumplist=$dump.".list";
 my $dumpascii=$dump.".ascii";
+
+$createdb_opt = join(' ', @ARGV) if @ARGV;
 
 print "postgis.sql is $postgissql\n";
 print "dbname is $dbname\n";
 print "dumpfile is $dump\n";
+print "database creation options: $createdb_opt\n" if $createdb_opt;
 
 #
 # Scan postgis.sql
@@ -127,7 +171,7 @@ while( my $line = <INPUT>)
 		my $geomfound = 0;
 		for (my $i=0; $i<@args; $i++)
 		{
-			$arg = lc($args[$i]);
+			my $arg = lc($args[$i]);
 			#print "ARG1: [$arg]\n";
 			$arg =~ s/^ *//;
 			$arg =~ s/ *$//;
@@ -162,7 +206,7 @@ while( my $line = <INPUT>)
 		{
 			for (my $i=0; $i<@args; $i++)
 			{
-				$arg = $args[$i];
+				my $arg = $args[$i];
 				$arg = 'geometry' if ($arg eq 'oldgeometry');
 				$args[$i] = $arg;
 			}
@@ -316,17 +360,17 @@ while( my $line = <INPUT> )
 
 		#print "FUNCTION: [$line]\n";
 
-		if ($line =~ / FUNCTION *([^ ]+) *([^ ]+) *\(([^)]*)\)/)
+		if ($line =~ / FUNCTION *([^ ]*) *\(([^)]*)\)/)
+		{
+			#print " matched <800\n";
+			$funcname = $1;
+			@args = split(",", $2);
+		}
+		elsif ($line =~ / FUNCTION *([^ ]+) *([^ ]+) *\(([^)]*)\)/)
 		{
 			#print " matched 800\n";
 			$funcname = $2;
 			@args = split(",", $3);
-		}
-		elsif ($line =~ / FUNCTION *([^ ]*) *\(([^)]*)\)/)
-		{
-			#print " matched <800\n";
-			my $funcname = $1;
-			my @args = split(",", $2);
 		}
 		else
 		{
@@ -342,7 +386,7 @@ while( my $line = <INPUT> )
 		my $wkbinvolved = 0;
 		for (my $i=0; $i<@args; $i++)
 		{
-			$arg = lc($args[$i]);
+			my $arg = lc($args[$i]);
 			$arg =~ s/^ *//;
 			$arg =~ s/ *$//;
 			$arg =~ s/^public.//;
@@ -354,7 +398,7 @@ while( my $line = <INPUT> )
 			$wkbinvolved++ if ( $arg eq 'wkb' );
 		}
 
-		$args = join(', ', @args);
+		my $args = join(', ', @args);
 		#print "ARGS SCALAR: [$args]\n";
 		my $id = $funcname."(".$args.")";
 		#print "ID: [$id]\n";
@@ -367,6 +411,12 @@ while( my $line = <INPUT> )
 		}
 
 		if ( $funcname eq 'plpgsql_call_handler' )
+		{
+			print "SKIPPING FUNC $id\n" if $DEBUG;
+			next;
+		}
+
+		if ( $funcname eq 'plpgsql_validator' )
 		{
 			print "SKIPPING FUNC $id\n" if $DEBUG;
 			next;
@@ -392,7 +442,7 @@ while( my $line = <INPUT> )
 		my @args = split(",", $3);
 		for (my $i=0; $i<@args; $i++)
 		{
-			$arg = lc($args[$i]);
+			my $arg = lc($args[$i]);
 			$arg =~ s/^ *//;
 			$arg =~ s/ *$//;
 			$arg =~ s/^public.//;
@@ -402,7 +452,7 @@ while( my $line = <INPUT> )
 			}
 			$args[$i] = $arg;
 		}
-		$args = join(', ', @args);
+		my $args = join(', ', @args);
 		my $id = $name."(".$args.")";
 		if ( $aggs{$id} )
 		{
@@ -443,7 +493,7 @@ while( my $line = <INPUT> )
 		print "KEEPING TYPE [$type]\n" if $DEBUG;
 		#next;
 	}
-	elsif ($line =~ / PROCEDURAL LANGUAGE plpgsql/)
+	elsif ($line =~ / PROCEDURAL LANGUAGE (public )?plpgsql/)
 	{
 		print "SKIPPING PROCLANG plpgsql\n" if $DEBUG;
 		next;
@@ -461,7 +511,14 @@ while( my $line = <INPUT> )
 		#next;
 	}
 
-	elsif ($line =~ / OPERATOR CLASS *([^ ]* )?([^ ]*)/)
+	#
+	# pg_restore-7.4:
+	# 354; 11038762 OPERATOR CLASS btree_geometry_ops strk
+	#
+	# pg_restore-8.0:
+	# 354; 0 11038762 OPERATOR CLASS public btree_geometry_ops strk
+	#
+	elsif ($line =~ / OPERATOR CLASS +([^ ]+ )?([^ ]+) ([^ ]+)/)
 	{
 		my $id = lc($2);
 
@@ -569,12 +626,21 @@ while( my $line = <INPUT> )
 				$rarg =~ s/^.*\.//;
 			}
 		}
+
 		my $id = $name.','.$larg.','.$rarg;
+
+		if ( $obsoleted_ops{$id} )
+		{
+			print "SKIPPING OBSOLETED FUNC $id\n" if $DEBUG;
+			next;
+		}
+
 		if ( $ops{$id} )
 		{
 			print "SKIPPING PGIS OP $id\n" if $DEBUG;
 			next;
 		}
+
 		print "KEEPING OP $id\n" if $DEBUG;
 		print OUTPUT @sublines;
 		next;
@@ -586,7 +652,7 @@ while( my $line = <INPUT> )
 	#  when implemented operators skip must be disabled
 	#  in the first scan of ToC
 }
-close(INPUT);
+close(INPUT) || die "pg_restore call failed\n";
 close(OUTPUT);
 
 #exit(1);
@@ -595,8 +661,8 @@ close(OUTPUT);
 # Create the new db and install plpgsql language
 #
 print "Creating db ($dbname)\n";
-`createdb $dbname`;
-die "Can't restore in an existing database\n" if ($?);
+`createdb $dbname $createdb_opt`;
+die "Database creation failed\n" if ($?);
 print "Adding plpgsql\n";
 `createlang plpgsql $dbname`;
 
@@ -631,4 +697,4 @@ print "Restoring ascii dump $dumpascii\n";
 open(INPUT, "<$dumpascii") || die "Can't read $postgissql\n";
 while(<INPUT>) { print PSQL; }
 close(INPUT);
-close(PSQL);
+close(PSQL) || die "psql run failed\n"

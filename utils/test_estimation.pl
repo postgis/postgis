@@ -111,11 +111,25 @@ $SRID = $res->getvalue(0, 0);
 
 
 # parse extent
-$EXTENT =~ /^BOX3D\((.*) (.*) (.*),(.*) (.*) (.*)\)$/;
-$ext{xmin} = $1;
-$ext{ymin} = $2;
-$ext{xmax} = $4;
-$ext{ymax} = $5;
+if ( $EXTENT =~ /^BOX3D\((.*) (.*) (.*),(.*) (.*) (.*)\)$/ ) 
+{
+	$ext{xmin} = $1;
+	$ext{ymin} = $2;
+	$ext{xmax} = $4;
+	$ext{ymax} = $5;
+}
+elsif ( $EXTENT =~ /^BOX\((.*) (.*),(.*) (.*)\)$/ ) 
+{
+	$ext{xmin} = $1;
+	$ext{ymin} = $2;
+	$ext{xmax} = $3;
+	$ext{ymax} = $4;
+}
+else
+{
+	print STDERR "Couldn't parse EXTENT: $EXTENT\n";
+	exit(1);
+}
 
 # vacuum analyze table
 if ( $VACUUM )
@@ -251,9 +265,9 @@ sub test_extent
 	# Test whole extent query
 	$query = 'explain analyze select oid from "'.
 		$SCHEMA.'"."'.$TABLE.'" WHERE "'.$COLUMN.'" && '.
-		"'SRID=$SRID;BOX3D(".$ext->{'xmin'}." ".
+		"setSRID('BOX3D(".$ext->{'xmin'}." ".
 		$ext->{'ymin'}.", ".$ext->{'xmax'}." ".
-		$ext->{'ymax'}.")'";
+		$ext->{'ymax'}.")'::BOX3D, $SRID)";
 	$res = $conn->exec($query);
 	if ( $res->resultStatus != PGRES_TUPLES_OK )  {
 		print STDERR $conn->errorMessage;
@@ -272,6 +286,9 @@ sub test_extent
 
 # 
 # $Log$
+# Revision 1.8.4.1  2005/04/18 13:28:19  strk
+# Fixed to work against LWGEOM installations
+#
 # Revision 1.8  2004/03/08 17:21:57  strk
 # changed error computation code to delta/totrows
 #

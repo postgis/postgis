@@ -70,12 +70,12 @@ Datum BOX3D_in(PG_FUNCTION_ARGS)
 		 PG_RETURN_NULL();
 	}
 
-	nitems = sscanf(str,"BOX3D(%le %le %le,%le %le %le)",
+	nitems = sscanf(str,"BOX3D(%le %le %le ,%le %le %le)",
 		&box->xmin, &box->ymin, &box->zmin,
 		&box->xmax, &box->ymax, &box->zmax);
 	if (nitems != 6 )
 	{
-		nitems = sscanf(str,"BOX3D(%le %le,%le %le)",
+		nitems = sscanf(str,"BOX3D(%le %le ,%le %le)",
 			&box->xmin, &box->ymin, &box->xmax, &box->ymax);
 		if (nitems != 4)
 		{

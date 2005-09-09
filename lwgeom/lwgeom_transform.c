@@ -294,7 +294,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	input_pj = make_project(input_proj4);
 	if ( (input_pj == NULL) || pj_errno)
 	{
-		//pfree(input_proj4);
+		//pfree(input_proj4); // we need this for error reporting
 		pfree(output_proj4);
 		pfree(geom);
 		elog(ERROR, "transform: couldn't parse proj4 input string: '%s': %s", input_proj4, pj_strerrno(pj_errno));
@@ -305,8 +305,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	output_pj = make_project(output_proj4);
 	if ((output_pj == NULL)|| pj_errno)
 	{
-		pfree(input_proj4);
-		//pfree(output_proj4);
+		//pfree(output_proj4); // we need this for error reporting
 		pj_free(input_pj);
 		pfree(geom);
 		elog(ERROR, "transform: couldn't parse proj4 output string: '%s': %s", output_proj4, pj_strerrno(pj_errno));

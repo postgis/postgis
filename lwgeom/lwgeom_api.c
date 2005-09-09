@@ -618,16 +618,12 @@ pointArray_construct(uchar *points, char hasz, char hasm,
 	uint32 npoints)
 {
 	POINTARRAY  *pa;
-	size_t size;
 	pa = (POINTARRAY*)lwalloc(sizeof(POINTARRAY));
 
 	pa->dims = 0;
-	TYPE_SETZM(pa->dims, hasz, hasm);
+	TYPE_SETZM(pa->dims, hasz?1:0, hasm?1:0);
 	pa->npoints = npoints;
 
-	size=(2+hasz+hasm)*sizeof(double)*npoints;
-	//pa->serialized_pointlist = lwalloc(size);
-	//memcpy(pa->serialized_pointlist, points, size);
 	pa->serialized_pointlist = points;
 
 	return pa;
@@ -1361,15 +1357,17 @@ lwgeom_size_inspected(const LWGEOM_INSPECTED *inspected, int geom_number)
 int
 compute_serialized_box3d_p(uchar *srl, BOX3D *out)
 {
-	  BOX3D *box = compute_serialized_box3d(srl);
-	  if ( ! box ) return 0;
-	  out->xmin = box->xmin;
-	  out->ymin = box->ymin;
-	  out->zmin = box->zmin;
-	  out->xmax = box->xmax;
-	  out->ymax = box->ymax;
-	  out->zmax = box->zmax;
-	  return 1;
+	BOX3D *box = compute_serialized_box3d(srl);
+	if ( ! box ) return 0;
+	out->xmin = box->xmin;
+	out->ymin = box->ymin;
+	out->zmin = box->zmin;
+	out->xmax = box->xmax;
+	out->ymax = box->ymax;
+	out->zmax = box->zmax;
+	lwfree(box);
+
+	return 1;
 }
 
 // Compute bounding box of a serialized LWGEOM, even if it is
