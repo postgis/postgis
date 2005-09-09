@@ -1725,13 +1725,15 @@ Datum LWGEOM_scale(PG_FUNCTION_ARGS)
 	lwgeom_scale_recursive(srl, xfac, yfac, zfac);
 
 	/* COMPUTE_BBOX WHEN_SIMPLE */
-	hasbbox=getbox2d_p(srl, &box);
+	hasbbox = lwgeom_hasBBOX(geom->type);
 	if ( hasbbox )
 	{
+		getbox2d_p(srl, &box);
 		box.xmin *= xfac;
 		box.xmax *= xfac;
 		box.ymin *= yfac;
 		box.ymax *= yfac;
+		memcpy(srl+1, &box, sizeof(BOX2DFLOAT4));
 	}
 
 	// Construct PG_LWGEOM 
@@ -1761,9 +1763,10 @@ Datum LWGEOM_transscale(PG_FUNCTION_ARGS)
 	lwgeom_transscale_recursive(srl, xoff, yoff, xfac, yfac);
 
 	/* COMPUTE_BBOX WHEN_SIMPLE */
-	hasbbox=getbox2d_p(srl, &box);
+	hasbbox = lwgeom_hasBBOX(geom->type);
 	if ( hasbbox )
 	{
+		getbox2d_p(srl, &box);
 		box.xmin += xoff;
 		box.xmax += xoff;
 		box.ymin += yoff;
@@ -1772,6 +1775,7 @@ Datum LWGEOM_transscale(PG_FUNCTION_ARGS)
 		box.xmax *= xfac;
 		box.ymin *= yfac;
 		box.ymax *= yfac;
+		memcpy(srl+1, &box, sizeof(BOX2DFLOAT4));
 	}
 
 	// Construct PG_LWGEOM 
