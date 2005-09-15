@@ -2304,7 +2304,6 @@ DECLARE
 	schema_ok bool;
 	real_schema name;
 #endif
-	fixgeomres text;
 
 BEGIN
 
@@ -2444,8 +2443,6 @@ BEGIN
 		quote_ident(column_name) || '') is null)'';
 	END IF;
 
-	SELECT fix_geometry_columns() INTO fixgeomres;
-
 	return 
 #if USE_VERSION >= 73
 		real_schema || ''.'' || 
@@ -2453,8 +2450,7 @@ BEGIN
 		table_name || ''.'' || column_name ||
 		'' SRID:'' || new_srid ||
 		'' TYPE:'' || new_type || 
-		'' DIMS:'' || new_dim || ''\n '' ||
-		''geometry_column '' || fixgeomres;
+		'' DIMS:'' || new_dim || ''\n ''; 
 END;
 '
 LANGUAGE 'plpgsql' _VOLATILE_STRICT; -- WITH (isstrict);
@@ -2858,10 +2854,7 @@ AS
 DECLARE
 	result text;
 	stated integer;
-	fixres text;
 BEGIN
-
-	SELECT fix_geometry_columns() INTO fixres;
 
 	UPDATE geometry_columns SET
 #if USE_VERSION >= 73
@@ -2884,7 +2877,7 @@ BEGIN
 
 	GET DIAGNOSTICS stated = ROW_COUNT;
 
-	result = fixres || '' stats:'' || stated::text;
+	result = ''stats:'' || stated::text;
 
 	return result;
 END;
@@ -2915,10 +2908,7 @@ DECLARE
 	columnname aliAS for $2;
 	stated integer;
 	result text;
-	fixres text;
 BEGIN
-
-	SELECT fix_geometry_columns() INTO fixres;
 
 	EXECUTE ''UPDATE geometry_columns SET
 #if USE_VERSION >= 73
@@ -2949,7 +2939,7 @@ BEGIN
 
 	GET DIAGNOSTICS stated = ROW_COUNT;
 
-	result = fixres || '' stats:'' || stated::text;
+	result = ''stats:'' || stated::text;
 
 	return result;
 END;
