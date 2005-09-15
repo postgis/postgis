@@ -3508,9 +3508,8 @@ dimension
             <term>X(geometry)</term>
 
             <listitem>
-              <para>Find and return the X coordinate of the first point in the
-              geometry. Return NULL if there is no point in the
-              geometry.</para>
+              <para>Return the X coordinate of the point, or NULL
+	      if the geometry is not a point.</para>
             </listitem>
           </varlistentry>
 
@@ -3518,9 +3517,8 @@ dimension
             <term>Y(geometry)</term>
 
             <listitem>
-              <para>Find and return the Y coordinate of the first point in the
-              geometry. Return NULL if there is no point in the
-              geometry.</para>
+              <para>Return the Y coordinate of the point, or NULL
+	      if the geometry is not a point.</para>
             </listitem>
           </varlistentry>
 
@@ -3528,11 +3526,23 @@ dimension
             <term>Z(geometry)</term>
 
             <listitem>
-              <para>Find and return the Z coordinate of the first point in the
-              geometry. Return NULL if there is no point in the
-              geometry.</para>
+              <para>Return the Z coordinate of the point, or NULL
+	      if the geometry is not a point.</para>
             </listitem>
           </varlistentry>
+
+          <varlistentry>
+            <term>M(geometry)</term>
+
+            <listitem>
+              <para>Return the M coordinate of the point, or NULL
+	      if the geometry is not a point.</para>
+		<note><para>This is not (yet) part of the OGC spec,
+		but is listed here to complete the point coordinate
+	        extractor function list.</para></note>
+            </listitem>
+          </varlistentry>
+
         </variablelist>
       </sect2>
 
@@ -4955,7 +4965,7 @@ for large spatial tables.
 
 		</sect1>
 
-    		<sect1>
+    		<sect1 id="rel_1.0.3_upgrading">
 			<title>Release 1.0.3</title>
 			<para>Release date: 2005/08/08</para>
 
