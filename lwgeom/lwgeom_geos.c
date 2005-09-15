@@ -9,12 +9,17 @@
 #include "profile.h"
 #include "wktparse.h"
 
+//
+// WARNING: buffer-based GeomUnion has been disabled due to
+//          limitations in the GEOS code (it would only work
+//	    against polygons)
+//
 // Fuzzy way of finding out how many points to stuff
 // in each chunk: 680 * Mb of memory
 //
 // The example below is for about 32 MB (fuzzy pragmatic check)
 //
-#define UNITE_USING_BUFFER 1
+#define UNITE_USING_BUFFER 0
 #define MAXGEOMSPOINTS 21760
 
 Datum relate_full(PG_FUNCTION_ARGS);
