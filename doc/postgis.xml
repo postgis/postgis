@@ -4859,6 +4859,43 @@ FROM geometry_table;</literallayout>
     </sect1>
   </chapter>
 
+	<chapter>
+		<title>Reporting Bugs</title>
+
+		<para>
+	Reporting bugs effectively is a fundamental way to help PostGIS
+	development. The most effective bug report is that enabling 
+	PostGIS developers to reproduce it, so it would ideally contain
+	a script triggering it and every information reguarding the
+	environment in which it was detected. Good enough info can
+	be extracted running <code>SELECT postgis_full_version()</code>
+	[for postgis] and <code>SELECT version()</code> [for postgresql].
+		</para>
+
+		<para>
+	If you aren't using latest release, it's worth taking a look
+	at its <ulink
+	url="http://postgis.refractions.net/CHANGES.txt">release
+	changelog</ulink> first, to find out if your bug has already been
+	fixed.
+		</para>
+
+		<para>
+	Using the <ulink url="http://postgis.refractions.net/bugs/">PostGIS
+	bug tracker</ulink> will ensure your reports are not discarded, and
+	will keep you informed on it's handling process. Before reporting
+	a new bug please query the database to see if it is a known one, and
+	if it is please add any new information you have about it.
+		</para>
+
+		<para>
+	You might want to read Simon Tatham's paper about <ulink
+	url="http://www.chiark.greenend.org.uk/~sgtatham/bugs.html">How
+	to Report Bugs Effectively</ulink> before filing a new report.
+		</para>
+
+	</chapter>
+
 	<appendix id="release_notes">
 		<title>Release Notes</title>
 
