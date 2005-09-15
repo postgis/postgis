@@ -17,6 +17,11 @@ PostGIS 1.1.0CVS
 	- JTS support improvements
 	- Chunked GeomUnion implementation (much faster)
 
+PostGIS 1.0.5CVS
+	- New "Reporting Bugs" chapter in manual
+	- Removed automatic call to fix_geometry_columns in
+	  AddGeometryColumns() and update_geometry_stats()
+
 PostGIS 1.0.4
 2005/09/09
 	- Memory leak plugged in GiST indexing
