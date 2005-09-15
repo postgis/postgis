@@ -4374,16 +4374,6 @@ FROM geometry_table;</literallayout>
 		</varlistentry>
 
 		<varlistentry>
-		  <term>AddPoint(linestring, point, [&lt;position&gt;])</term>
-
-		  <listitem>
-		    <para>Adds a point to a LineString at position &lt;pos&gt;.
-		    Third parameter can be omitted or set to -1 for appending.
-		    </para>
-		  </listitem>
-		</varlistentry>
-
-		<varlistentry>
 		  <term>MakePolygon(linestring, [linestring[]])</term>
 		  <listitem>
 		    <para>Creates a Polygon formed by the given 
@@ -4475,6 +4465,16 @@ FROM geometry_table;</literallayout>
 	    queries slower.</para>
           </listitem>
         </varlistentry>
+
+	<varlistentry>
+	  <term>AddPoint(linestring, point, [&lt;position&gt;])</term>
+
+	  <listitem>
+	    <para>Adds a point to a LineString at position &lt;pos&gt;.
+	    Third parameter can be omitted or set to -1 for appending.
+	    </para>
+	  </listitem>
+	</varlistentry>
 
         <varlistentry>
           <term>Force_collection(geometry)</term>
