@@ -8,12 +8,12 @@ PostGIS 1.1.0CVS
 	  + Autoprobing DriverWrapper for HexWKB / EWKT switching
 	  + fix compile problems in ValueSetter for ancient jdk releases.
 	  + fix EWKT constructors to accept SRID=4711; representation
-	- full autoconf-based configuration
-	- added scale() and transscale() companion methods to translate()
-	- initial implementation of postgis_proc_upgrade script
+	- Full autoconf-based configuration
+	- Initial implementation of postgis_proc_upgrade script
+	- NEW scale() and transscale() companion methods to translate()
 	- NEW line_substring() function
 	- NEW line_locate_point() function
-	- New M(point) function
+	- NEW M(point) function
 	- JTS support improvements
 	- Removed automatic call to fix_geometry_columns() in
 	  AddGeometryColumns() and update_geometry_stats()
