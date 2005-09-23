@@ -68,7 +68,7 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 	char *str = PG_GETARG_CSTRING(0);
 	PG_LWGEOM *ret;
 
-	// will handle both EWKB and EWKT
+	// will handle both HEXEWKB and EWKT
 	ret = (PG_LWGEOM *)parse_lwgeom_wkt(str);
 
 	if ( is_worth_caching_pglwgeom_bbox(ret) )
@@ -129,8 +129,15 @@ Datum LWGEOM_to_text(PG_FUNCTION_ARGS)
 // LWGEOMFromWKB(wkb,  [SRID] )
 // NOTE: wkb is in *binary* not hex form.
 //
-// NOTE: this function is unoptimized, as it convert binary
-// form to hex form and then calls the unparser ...
+// NOTE: this function parses EWKB (extended form)
+//       which also contains SRID info. When the SRID
+//	 argument is provided it will override any SRID
+//	 info found in EWKB format.
+//
+// NOTE: this function is *unoptimized* as will copy
+//       the object when adding SRID and when adding BBOX.
+//	 additionally, it suffers from the non-optimal
+//	 pglwgeom_from_ewkb function.
 //
 PG_FUNCTION_INFO_V1(LWGEOMFromWKB);
 Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
@@ -141,57 +148,27 @@ Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 	int    SRID = -1;
 	char	sridText[100];
 	char	*loc;
-	PG_LWGEOM *lwgeom;
+	PG_LWGEOM *lwgeom, *lwgeom2;
 	int t;
 
 	wkb_input = (WellKnownBinary *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
+	lwgeom2 = pglwgeom_from_ewkb(VARDATA(wkb_input),
+		VARSIZE(wkb_input)-VARHDRSZ);
+
 	if (  ( PG_NARGS()>1) && ( ! PG_ARGISNULL(1) ))
-		SRID = PG_GETARG_INT32(1);
-	else
-		SRID = -1;
-
-#ifdef PGIS_DEBUG
-	elog(NOTICE,"LWGEOMFromWKB: entry with SRID=%i",SRID);
-#endif
-
-	// convert WKB to hexized WKB string
-
-	size_header = sprintf(sridText,"SRID=%i;",SRID);
-	//SRID text size + wkb size (+1 = NULL term)
-	size_result = size_header +  2*(wkb_input->size-VARHDRSZ) + 1; 
-
-	wkb_srid_hexized = palloc(size_result);
-	wkb_srid_hexized[0] = 0; // empty
-	strcpy(wkb_srid_hexized, sridText);
-	loc = wkb_srid_hexized + size_header; // points to null in "SRID=#;"
-
-	for (t=0; t< (wkb_input->size -VARHDRSZ); t++)
 	{
-		deparse_hex( ((uchar *) wkb_input)[4 + t], &loc[t*2]);
+		SRID = PG_GETARG_INT32(1);
+		lwgeom = pglwgeom_setSRID(lwgeom2, SRID);
+		lwfree(lwgeom2);
 	}
-
-	wkb_srid_hexized[size_result-1] = 0; // null term
-
-#ifdef PGIS_DEBUG
-	elog(NOTICE,"size_header = %i",size_header);
-	elog(NOTICE,"size_result = %i", size_result);
-	elog(NOTICE,"LWGEOMFromWKB :: '%s'", wkb_srid_hexized);
-#endif
-
-	lwgeom = (PG_LWGEOM *)parse_lwgeom_wkt(wkb_srid_hexized);
-
-	pfree(wkb_srid_hexized);
+	else lwgeom = lwgeom2;
 
 	if ( is_worth_caching_pglwgeom_bbox(lwgeom) )
 	{
 		lwgeom = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall1(
 			LWGEOM_addBBOX, PointerGetDatum(lwgeom)));
 	}
-
-#ifdef PGIS_DEBUG
-	elog(NOTICE, "LWGEOMFromWKB returning %s", unparse_WKB(SERIALIZED_FORM(lwgeom), pg_alloc, pg_free, -1, NULL, 1));
-#endif
 
 	PG_RETURN_POINTER(lwgeom);
 }
