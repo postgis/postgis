@@ -143,13 +143,7 @@ PG_FUNCTION_INFO_V1(LWGEOMFromWKB);
 Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 {
 	WellKnownBinary *wkb_input;
-	char   *wkb_srid_hexized;
-	int    size_result,size_header;
-	int    SRID = -1;
-	char	sridText[100];
-	char	*loc;
 	PG_LWGEOM *lwgeom, *lwgeom2;
-	int t;
 
 	wkb_input = (WellKnownBinary *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
@@ -158,8 +152,7 @@ Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 
 	if (  ( PG_NARGS()>1) && ( ! PG_ARGISNULL(1) ))
 	{
-		SRID = PG_GETARG_INT32(1);
-		lwgeom = pglwgeom_setSRID(lwgeom2, SRID);
+		lwgeom = pglwgeom_setSRID(lwgeom2, PG_GETARG_INT32(1));
 		lwfree(lwgeom2);
 	}
 	else lwgeom = lwgeom2;
