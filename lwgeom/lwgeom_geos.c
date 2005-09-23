@@ -49,6 +49,7 @@ Datum postgis_geos_version(PG_FUNCTION_ARGS);
 Datum postgis_jts_version(PG_FUNCTION_ARGS);
 Datum centroid(PG_FUNCTION_ARGS);
 Datum polygonize_garray(PG_FUNCTION_ARGS);
+Datum linemerge_garray(PG_FUNCTION_ARGS);
 
 
 
@@ -108,6 +109,7 @@ extern Geometry	*GEOSGetGeometryN(Geometry *g1, int n);
 extern Geometry	*GEOSGetExteriorRing(Geometry *g1);
 extern Geometry	*GEOSGetInteriorRingN(Geometry *g1,int n);
 extern Geometry *GEOSpolygonize(Geometry **geoms, unsigned int ngeoms);
+extern Geometry *GEOSLineMerge(Geometry **geoms, unsigned int ngeoms);
 extern int	GEOSGetNumInteriorRings(Geometry *g1);
 extern int      GEOSGetSRID(Geometry *g1);
 extern int      GEOSGetNumGeometries(Geometry *g1);
@@ -2643,6 +2645,92 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 	geos_result = GEOSpolygonize(vgeoms, nelems);
 #ifdef PGIS_DEBUG
 	elog(NOTICE, "polygonize_garray: GEOSpolygonize returned");
+#endif
+	//pfree(vgeoms);
+	if ( ! geos_result ) PG_RETURN_NULL();
+
+	GEOSSetSRID(geos_result, SRID);
+	result = GEOS2POSTGIS(geos_result, is3d);
+	GEOSdeleteGeometry(geos_result);
+	if ( result == NULL )
+	{
+		elog(ERROR, "GEOS2POSTGIS returned an error");
+		PG_RETURN_NULL(); //never get here
+	}
+
+	//compressType(result);
+
+	PG_RETURN_POINTER(result);
+
+}
+
+PG_FUNCTION_INFO_V1(linemerge_garray);
+Datum linemerge_garray(PG_FUNCTION_ARGS)
+{
+	Datum datum;
+	ArrayType *array;
+	int is3d = 0;
+	unsigned int nelems, i;
+	PG_LWGEOM *result;
+	Geometry *geos_result;
+	Geometry **vgeoms;
+	int SRID=-1;
+	size_t offset;
+#ifdef PGIS_DEBUG
+	static int call=1;
+#endif
+
+#ifdef PGIS_DEBUG
+	call++;
+#endif
+
+	datum = PG_GETARG_DATUM(0);
+
+	/* Null array, null geometry (should be empty?) */
+	if ( (Pointer *)datum == NULL ) PG_RETURN_NULL();
+
+	array = (ArrayType *) PG_DETOAST_DATUM(datum);
+
+	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
+
+#ifdef PGIS_DEBUG
+	elog(NOTICE, "linemerge_garray: number of elements: %d", nelems);
+#endif
+
+	if ( nelems == 0 ) PG_RETURN_NULL();
+
+	/* Ok, we really need geos now ;) */
+	initGEOS(MAXIMUM_ALIGNOF);
+
+	vgeoms = palloc(sizeof(Geometry *)*nelems);
+	offset = 0;
+	for (i=0; i<nelems; i++)
+	{
+		PG_LWGEOM *geom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
+		offset += INTALIGN(geom->size);
+
+		vgeoms[i] = POSTGIS2GEOS(geom);
+		if ( ! i )
+		{
+			SRID = pglwgeom_getSRID(geom);
+		}
+		else
+		{
+			if ( SRID != pglwgeom_getSRID(geom) )
+			{
+	elog(ERROR, "linemerge: operation on mixed SRID geometries");
+	PG_RETURN_NULL();
+			}
+		}
+	}
+
+#ifdef PGIS_DEBUG
+	elog(NOTICE, "linemerge_garray: invoking GEOSlinemerge");
+#endif
+
+	geos_result = GEOSLineMerge(vgeoms, nelems);
+#ifdef PGIS_DEBUG
+	elog(NOTICE, "linemerge_garray: GEOSLineMerge returned");
 #endif
 	//pfree(vgeoms);
 	if ( ! geos_result ) PG_RETURN_NULL();

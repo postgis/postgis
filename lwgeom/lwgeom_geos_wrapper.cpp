@@ -12,6 +12,7 @@
 #if GEOS_FIRST_INTERFACE <= 3 && GEOS_LAST_INTERFACE >= 3
 #include "geos/opValid.h"
 #include "geos/opPolygonize.h"
+#include "geos/opLinemerge.h"
 #endif // GEOS_FIRST_INTERFACE <= 3 && GEOS_LAST_INTERFACE >= 3
 
 //#define DEBUG_POSTGIS2GEOS 1
@@ -109,6 +110,7 @@ extern "C" char GEOSrelateWithin(Geometry *g1, Geometry*g2);
 extern "C" char GEOSrelateContains(Geometry *g1, Geometry*g2);
 extern "C" char GEOSrelateOverlaps(Geometry *g1, Geometry*g2);
 extern "C" Geometry *GEOSpolygonize(Geometry **geoms, unsigned int ngeoms);
+extern "C" Geometry *GEOSLineMerge(Geometry **geoms, unsigned int ngeoms);
 extern "C" char *GEOSversion();
 extern "C" char *GEOSjtsport();
 
@@ -1658,8 +1660,57 @@ Geometry *GEOSpolygonize(Geometry **g, unsigned int ngeoms)
 
 	return out;
 }
+
+Geometry *
+GEOSLineMerge(Geometry **g, unsigned int ngeoms)
+{
+	unsigned int i;
+	Geometry *out = NULL;
+
+
+#if DEBUG
+	NOTICE_MESSAGE("geometry vector constructed");
+#endif
+
+	try{
+		// LineMerge
+		LineMerger lmrgr;
+
+		for (i=0; i<ngeoms; i++) lmrgr.add(g[i]);
+#if DEBUG
+	NOTICE_MESSAGE("all geometries added to LineMerger");
+#endif
+
+		vector<LineString *>*lines = lmrgr.getMergedLineStrings();
+
+#if DEBUG
+	NOTICE_MESSAGE("output lines got");
+#endif
+
+		vector<Geometry *>*geoms = new vector<Geometry *>(lines->size());
+		for (i=0; i<lines->size(); i++) (*geoms)[i] = (*lines)[i];
+		out = geomFactory->createGeometryCollection(geoms);
+	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		delete ge;
+		return NULL;
+	}
+	catch(...)
+	{
+		return NULL;
+	}
+
+	return out;
+}
 #else // ! (GEOS_FIRST_INTERFACE <= 3 && GEOS_LAST_INTERFACE >= 3)
 Geometry *GEOSpolygonize(Geometry **g, unsigned int ngeoms)
+{
+	NOTICE_MESSAGE("GEOS library does not support required interface 3");
+	return NULL;
+}
+Geometry *GEOSLimeMerge(Geometry **g, unsigned int ngeoms)
 {
 	NOTICE_MESSAGE("GEOS library does not support required interface 3");
 	return NULL;
