@@ -6,13 +6,14 @@
 #include <errno.h>
 
 #include "liblwgeom.h"
+#include "wktparse.h"
 
 //#define PGIS_DEBUG 1
 
 // This is an implementation of the functions defined in lwgeom.h
 
 //forward decs
-extern uchar *parse_lwg(const char* geometry, lwallocator allocfunc, lwreporter errfunc);
+//extern uchar *parse_lwg(const char* geometry, lwallocator allocfunc, lwreporter errfunc);
 
 //*********************************************************************
 // BOX routines
@@ -1673,6 +1674,17 @@ pglwgeom_from_ewkb(uchar *ewkb, size_t ewkblen)
 	lwfree(hexewkb);
 
 	return ret;
+}
+
+/*
+ * Return the EWKB (binary) representation for a PG_LWGEOM.
+ */
+char *
+pglwgeom_to_ewkb(PG_LWGEOM *geom, char byteorder, size_t *outsize)
+{
+	uchar *srl = &(geom->type);
+	return unparse_WKB(srl, lwalloc, lwfree,
+		byteorder, outsize, 0);
 }
 
 // Set the SRID of a PG_LWGEOM

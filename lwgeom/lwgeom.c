@@ -387,6 +387,27 @@ lwgeom_to_hexwkb(LWGEOM *lwgeom, unsigned int byteorder)
 	return hexwkb;
 }
 
+/*
+ * Return an alloced string
+ */
+uchar *
+lwgeom_to_ewkb(LWGEOM *lwgeom, char byteorder, size_t *outsize)
+{
+	uchar *serialized = lwgeom_serialize(lwgeom);
+	char *hexwkb = unparse_WKB(serialized, lwalloc, lwfree,
+		byteorder, outsize, 0);
+	lwfree(serialized);
+	return hexwkb;
+}
+
+LWGEOM *
+lwgeom_from_ewkb(uchar *ewkb, size_t size)
+{
+	uchar *pglwgeom = (uchar *)pglwgeom_from_ewkb(ewkb, size);
+	LWGEOM *ret = lwgeom_deserialize(pglwgeom+4);
+	return ret;
+}
+
 // geom1 same as geom2
 //  iff
 //      + have same type                                                        //      + have same # objects

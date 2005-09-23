@@ -33,6 +33,8 @@ typedef struct LWGEOM_T *LWGEOM;
 extern char *lwgeom_to_wkt(LWGEOM lwgeom);
 extern char *lwgeom_to_ewkt(LWGEOM lwgeom);
 extern char *lwgeom_to_hexwkb(LWGEOM lwgeom, unsigned int byteorder);
+extern uchar *lwgeom_to_ewkb(char *ewkb, size_t size);
+extern LWGEOM lwgeom_from_ewkb(uchar *ewkb, size_t ewkblen);
 
 // Construction
 extern LWGEOM make_lwpoint2d(int SRID, double x, double y);

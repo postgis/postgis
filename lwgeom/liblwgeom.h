@@ -677,8 +677,6 @@ extern int pglwgeom_getSRID(PG_LWGEOM *lwgeom);
 extern int lwgeom_getsrid(uchar *serialized);
 extern PG_LWGEOM *pglwgeom_setSRID(PG_LWGEOM *lwgeom, int32 newSRID);
 
-extern PG_LWGEOM *pglwgeom_from_ewkb(uchar *ewkb, size_t ewkblen);
-
 
 //------------------------------------------------------
 // other stuff
@@ -1021,8 +1019,13 @@ extern LWCOLLECTION *lwcollection_segmentize2d(LWCOLLECTION *coll, double dist);
 extern uchar parse_hex(char *str);
 extern void deparse_hex(uchar str, uchar *result);
 extern uchar *parse_lwgeom_wkt(char *wkt_input);
+
 extern char *lwgeom_to_ewkt(LWGEOM *lwgeom);
 extern char *lwgeom_to_hexwkb(LWGEOM *lwgeom, unsigned int byteorder);
+extern LWGEOM *lwgeom_from_ewkb(uchar *ewkb, size_t ewkblen);
+extern uchar *lwgeom_to_ewkb(LWGEOM *lwgeom, char byteorder, size_t *ewkblen);
+extern PG_LWGEOM *pglwgeom_from_ewkb(uchar *ewkb, size_t ewkblen);
+extern char *pglwgeom_to_ewkb(PG_LWGEOM *geom, char byteorder, size_t *ewkblen);
 
 extern void *lwalloc(size_t size);
 extern void *lwrealloc(void *mem, size_t size);
