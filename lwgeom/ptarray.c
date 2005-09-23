@@ -529,9 +529,10 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
  * Write into the *ret argument coordinates of the closes point on
  * the given segment to the reference input point.
  */
+void
 closest_point_on_segment(POINT2D *p, POINT2D *A, POINT2D *B, POINT2D *ret)
 {
-	double r, tlen, f;
+	double r;
 
 	if (  ( A->x == B->x) && (A->y == B->y) )
 	{
@@ -571,9 +572,9 @@ closest_point_on_segment(POINT2D *p, POINT2D *A, POINT2D *B, POINT2D *ret)
 double
 ptarray_locate_point(POINTARRAY *pa, POINT2D *p)
 {
-	double mindist;
+	double mindist=-1;
 	double tlen, plen;
-	int t, seg;
+	int t, seg=-1;
 	POINT2D	start, end;
 	POINT2D proj;
 
