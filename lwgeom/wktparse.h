@@ -6,6 +6,9 @@
  *
  */
 
+#ifndef _WKTPARSE_H
+#define _WKTPARSE_H
+
 #include <stdlib.h>
 
 #ifndef _LIBLWGEOM_H
@@ -73,4 +76,4 @@ char* unparse_WKB(uchar* serialized, allocator alloc,freeor free, char endian, s
 int lwg_parse_yyparse(void);
 int lwg_parse_yyerror(char* s);
 
-
+#endif // _WKTPARSE_H
