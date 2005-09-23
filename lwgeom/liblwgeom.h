@@ -677,6 +677,8 @@ extern int pglwgeom_getSRID(PG_LWGEOM *lwgeom);
 extern int lwgeom_getsrid(uchar *serialized);
 extern PG_LWGEOM *pglwgeom_setSRID(PG_LWGEOM *lwgeom, int32 newSRID);
 
+extern PG_LWGEOM *pglwgeom_from_ewkb(uchar *ewkb, size_t ewkblen);
+
 
 //------------------------------------------------------
 // other stuff

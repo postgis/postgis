@@ -1633,7 +1633,8 @@ lwgeom_getsrid(uchar *serialized)
 
 // get the SRID from the LWGEOM
 // none present => -1
-int pglwgeom_getSRID(PG_LWGEOM *lwgeom)
+int
+pglwgeom_getSRID(PG_LWGEOM *lwgeom)
 {
 	uchar type = lwgeom->type;
 	uchar *loc = lwgeom->data;
@@ -1646,6 +1647,32 @@ int pglwgeom_getSRID(PG_LWGEOM *lwgeom)
 	}
 
 	return get_int32(loc);
+}
+
+/*
+ * Make a PG_LWGEOM object from a WKB binary representation.
+ * Currently unoptimized as it will convert WKB to HEXWKB first.
+ */
+PG_LWGEOM *
+pglwgeom_from_ewkb(uchar *ewkb, size_t ewkblen)
+{
+	PG_LWGEOM *ret;
+	char *hexewkb;
+	size_t hexewkblen = ewkblen*2;
+	int i;
+
+	hexewkb = lwalloc(hexewkblen+1);
+	for (i=0; i<ewkblen; i++)
+	{
+		deparse_hex(ewkb[i], &hexewkb[i*2]);
+	}
+	hexewkb[hexewkblen] = '\0';
+
+	ret = (PG_LWGEOM *)parse_lwgeom_wkt(hexewkb);
+
+	lwfree(hexewkb);
+
+	return ret;
 }
 
 // Set the SRID of a PG_LWGEOM
