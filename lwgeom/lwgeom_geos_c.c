@@ -49,6 +49,7 @@ Datum postgis_geos_version(PG_FUNCTION_ARGS);
 Datum postgis_jts_version(PG_FUNCTION_ARGS);
 Datum centroid(PG_FUNCTION_ARGS);
 Datum polygonize_garray(PG_FUNCTION_ARGS);
+Datum linemerge(PG_FUNCTION_ARGS);
 
 
 
@@ -2333,6 +2334,81 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 
 	PG_RETURN_POINTER(result);
 
+}
+
+PG_FUNCTION_INFO_V1(linemerge);
+Datum linemerge(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM	*geom1;
+	double	size;
+	GEOSGeom g1,g3;
+	PG_LWGEOM *result;
+	int quadsegs = 8; // the default
+
+#ifdef PROFILE
+	profstart(PROF_QRUN);
+#endif
+
+	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+	initGEOS(lwnotice, lwerror);
+
+#ifdef PROFILE
+	profstart(PROF_P2G1);
+#endif
+	g1 = POSTGIS2GEOS(geom1);
+#ifdef PROFILE
+	profstop(PROF_P2G1);
+#endif
+
+#ifdef PROFILE
+	profstart(PROF_GRUN);
+#endif
+	g3 = GEOSLineMerge(g1);
+#ifdef PROFILE
+	profstop(PROF_GRUN);
+#endif
+
+	if (g3 == NULL)
+	{
+		elog(ERROR,"GEOS LineMerge() threw an error!");
+		GEOSGeom_destroy(g1);
+		PG_RETURN_NULL(); //never get here
+	}
+
+
+//	elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
+
+	GEOSSetSRID(g3, pglwgeom_getSRID(geom1));
+
+#ifdef PROFILE
+	profstart(PROF_G2P);
+#endif
+	result = GEOS2POSTGIS(g3, TYPE_NDIMS(geom1->type) > 2);
+#ifdef PROFILE
+	profstop(PROF_G2P);
+#endif
+	if (result == NULL)
+	{
+		GEOSGeom_destroy(g1);
+		GEOSGeom_destroy(g3);
+		elog(ERROR,"GEOS LineMerge() threw an error (result postgis geometry formation)!");
+		PG_RETURN_NULL(); //never get here
+	}
+	GEOSGeom_destroy(g1);
+	GEOSGeom_destroy(g3);
+
+
+	//compressType(result);  // convert multi* to single item if appropriate
+
+#ifdef PROFILE
+	profstop(PROF_QRUN);
+	profreport("geos",geom1, NULL, result);
+#endif
+
+	PG_FREE_IF_COPY(geom1, 0);
+
+	PG_RETURN_POINTER(result);
 }
 
 Datum JTSnoop(PG_FUNCTION_ARGS);
