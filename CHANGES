@@ -14,6 +14,7 @@ PostGIS 1.1.0CVS
 	- NEW line_substring() function
 	- NEW line_locate_point() function
 	- NEW M(point) function
+	- NEW LineMerge(geometry) function
 	- JTS support improvements
 	- Removed automatic call to fix_geometry_columns() in
 	  AddGeometryColumns() and update_geometry_stats()
