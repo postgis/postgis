@@ -1840,9 +1840,9 @@ CREATEFUNCTION polygonize_garray (geometry[])
 	AS '@MODULE_FILENAME@', 'polygonize_garray'
 	LANGUAGE 'C' _IMMUTABLE_STRICT;
 
-CREATEFUNCTION linemerge_garray (geometry[])
+CREATEFUNCTION LineMerge(geometry)
 	RETURNS geometry
-	AS '@MODULE_FILENAME@', 'linemerge_garray'
+	AS '@MODULE_FILENAME@', 'linemerge'
 	LANGUAGE 'C' _IMMUTABLE_STRICT;
 
 CREATE AGGREGATE polygonize (

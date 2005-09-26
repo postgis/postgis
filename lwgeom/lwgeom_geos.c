@@ -109,7 +109,7 @@ extern Geometry	*GEOSGetGeometryN(Geometry *g1, int n);
 extern Geometry	*GEOSGetExteriorRing(Geometry *g1);
 extern Geometry	*GEOSGetInteriorRingN(Geometry *g1,int n);
 extern Geometry *GEOSpolygonize(Geometry **geoms, unsigned int ngeoms);
-extern Geometry *GEOSLineMerge(Geometry **geoms, unsigned int ngeoms);
+extern Geometry *GEOSLineMerge(Geometry *geoms);
 extern int	GEOSGetNumInteriorRings(Geometry *g1);
 extern int      GEOSGetSRID(Geometry *g1);
 extern int      GEOSGetNumGeometries(Geometry *g1);
@@ -2664,90 +2664,79 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 
 }
 
-PG_FUNCTION_INFO_V1(linemerge_garray);
-Datum linemerge_garray(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(linemerge);
+Datum linemerge(PG_FUNCTION_ARGS)
 {
-	Datum datum;
-	ArrayType *array;
-	int is3d = 0;
-	unsigned int nelems, i;
+	PG_LWGEOM	*geom1;
+	double	size;
+	Geometry *g1,*g3;
 	PG_LWGEOM *result;
-	Geometry *geos_result;
-	Geometry **vgeoms;
-	int SRID=-1;
-	size_t offset;
-#ifdef PGIS_DEBUG
-	static int call=1;
+	int quadsegs = 8; // the default
+
+#ifdef PROFILE
+	profstart(PROF_QRUN);
 #endif
 
-#ifdef PGIS_DEBUG
-	call++;
-#endif
+	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	datum = PG_GETARG_DATUM(0);
-
-	/* Null array, null geometry (should be empty?) */
-	if ( (Pointer *)datum == NULL ) PG_RETURN_NULL();
-
-	array = (ArrayType *) PG_DETOAST_DATUM(datum);
-
-	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
-
-#ifdef PGIS_DEBUG
-	elog(NOTICE, "linemerge_garray: number of elements: %d", nelems);
-#endif
-
-	if ( nelems == 0 ) PG_RETURN_NULL();
-
-	/* Ok, we really need geos now ;) */
 	initGEOS(MAXIMUM_ALIGNOF);
 
-	vgeoms = palloc(sizeof(Geometry *)*nelems);
-	offset = 0;
-	for (i=0; i<nelems; i++)
-	{
-		PG_LWGEOM *geom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
-		offset += INTALIGN(geom->size);
-
-		vgeoms[i] = POSTGIS2GEOS(geom);
-		if ( ! i )
-		{
-			SRID = pglwgeom_getSRID(geom);
-		}
-		else
-		{
-			if ( SRID != pglwgeom_getSRID(geom) )
-			{
-	elog(ERROR, "linemerge: operation on mixed SRID geometries");
-	PG_RETURN_NULL();
-			}
-		}
-	}
-
-#ifdef PGIS_DEBUG
-	elog(NOTICE, "linemerge_garray: invoking GEOSlinemerge");
+#ifdef PROFILE
+	profstart(PROF_P2G1);
+#endif
+	g1 = POSTGIS2GEOS(geom1);
+#ifdef PROFILE
+	profstop(PROF_P2G1);
 #endif
 
-	geos_result = GEOSLineMerge(vgeoms, nelems);
-#ifdef PGIS_DEBUG
-	elog(NOTICE, "linemerge_garray: GEOSLineMerge returned");
+#ifdef PROFILE
+	profstart(PROF_GRUN);
 #endif
-	//pfree(vgeoms);
-	if ( ! geos_result ) PG_RETURN_NULL();
+	g3 = GEOSLineMerge(g1);
+#ifdef PROFILE
+	profstop(PROF_GRUN);
+#endif
 
-	GEOSSetSRID(geos_result, SRID);
-	result = GEOS2POSTGIS(geos_result, is3d);
-	GEOSdeleteGeometry(geos_result);
-	if ( result == NULL )
+	if (g3 == NULL)
 	{
-		elog(ERROR, "GEOS2POSTGIS returned an error");
+		elog(ERROR,"GEOS LineMerge() threw an error!");
+		GEOSdeleteGeometry(g1);
 		PG_RETURN_NULL(); //never get here
 	}
 
-	//compressType(result);
+
+//	elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
+
+	GEOSSetSRID(g3, pglwgeom_getSRID(geom1));
+
+#ifdef PROFILE
+	profstart(PROF_G2P);
+#endif
+	result = GEOS2POSTGIS(g3, TYPE_NDIMS(geom1->type) > 2);
+#ifdef PROFILE
+	profstop(PROF_G2P);
+#endif
+	if (result == NULL)
+	{
+		GEOSdeleteGeometry(g1);
+		GEOSdeleteGeometry(g3);
+		elog(ERROR,"GEOS buffer() threw an error (result postgis geometry formation)!");
+		PG_RETURN_NULL(); //never get here
+	}
+	GEOSdeleteGeometry(g1);
+	GEOSdeleteGeometry(g3);
+
+
+	//compressType(result);  // convert multi* to single item if appropriate
+
+#ifdef PROFILE
+	profstop(PROF_QRUN);
+	profreport("geos",geom1, NULL, result);
+#endif
+
+	PG_FREE_IF_COPY(geom1, 0);
 
 	PG_RETURN_POINTER(result);
-
 }
 
 Datum JTSnoop(PG_FUNCTION_ARGS);

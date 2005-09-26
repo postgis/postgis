@@ -110,7 +110,7 @@ extern "C" char GEOSrelateWithin(Geometry *g1, Geometry*g2);
 extern "C" char GEOSrelateContains(Geometry *g1, Geometry*g2);
 extern "C" char GEOSrelateOverlaps(Geometry *g1, Geometry*g2);
 extern "C" Geometry *GEOSpolygonize(Geometry **geoms, unsigned int ngeoms);
-extern "C" Geometry *GEOSLineMerge(Geometry **geoms, unsigned int ngeoms);
+extern "C" Geometry *GEOSLineMerge(Geometry *geoms);
 extern "C" char *GEOSversion();
 extern "C" char *GEOSjtsport();
 
@@ -870,6 +870,7 @@ char *GEOSrelate(Geometry *g1, Geometry*g2)
 		s= im->toString();
 		result = (char*) malloc( s.length() + 1);
 		strcpy(result, s.c_str() );
+		delete im;
 
 		return result;
 	}
@@ -1286,7 +1287,8 @@ Geometry *GEOSpointonSurface(Geometry *g1)
 
 
 //BUG:: this leaks memory, but delete kills the PrecisionModel for ALL the geometries
-void GEOSdeleteGeometry(Geometry *a)
+void
+GEOSdeleteGeometry(Geometry *a)
 {
 	try{
 		delete a;
@@ -1645,6 +1647,7 @@ Geometry *GEOSpolygonize(Geometry **g, unsigned int ngeoms)
 
 		geoms = new vector<Geometry *>(polys->size());
 		for (i=0; i<polys->size(); i++) (*geoms)[i] = (*polys)[i];
+		delete polys;
 		out = geomFactory->createGeometryCollection(geoms);
 	}
 	catch (GEOSException *ge)
@@ -1662,24 +1665,16 @@ Geometry *GEOSpolygonize(Geometry **g, unsigned int ngeoms)
 }
 
 Geometry *
-GEOSLineMerge(Geometry **g, unsigned int ngeoms)
+GEOSLineMerge(Geometry *g)
 {
 	unsigned int i;
 	Geometry *out = NULL;
-
-
-#if DEBUG
-	NOTICE_MESSAGE("geometry vector constructed");
-#endif
 
 	try{
 		// LineMerge
 		LineMerger lmrgr;
 
-		for (i=0; i<ngeoms; i++) lmrgr.add(g[i]);
-#if DEBUG
-	NOTICE_MESSAGE("all geometries added to LineMerger");
-#endif
+		lmrgr.add(g);
 
 		vector<LineString *>*lines = lmrgr.getMergedLineStrings();
 
@@ -1689,7 +1684,9 @@ GEOSLineMerge(Geometry **g, unsigned int ngeoms)
 
 		vector<Geometry *>*geoms = new vector<Geometry *>(lines->size());
 		for (i=0; i<lines->size(); i++) (*geoms)[i] = (*lines)[i];
-		out = geomFactory->createGeometryCollection(geoms);
+		delete lines;
+		out = geomFactory->buildGeometry(geoms);
+		//out = geomFactory->createGeometryCollection(geoms);
 	}
 	catch (GEOSException *ge)
 	{
