@@ -35,6 +35,7 @@ Datum JTSnoop(PG_FUNCTION_ARGS);
 Datum postgis_geos_version(PG_FUNCTION_ARGS);
 Datum centroid(PG_FUNCTION_ARGS);
 Datum polygonize_garray(PG_FUNCTION_ARGS);
+Datum linemerge(PG_FUNCTION_ARGS);
 
 
 
@@ -101,7 +102,8 @@ extern int      JTSGetNumCoordinate(JTSGeometry *g1);
 extern JTSGeometry	*JTSGetGeometryN(JTSGeometry *g1, int n);
 extern JTSGeometry	*JTSGetExteriorRing(JTSGeometry *g1);
 extern JTSGeometry	*JTSGetInteriorRingN(JTSGeometry *g1,int n);
-extern JTSGeometry *JTSpolygonize(JTSGeometry **geoms, unsigned int ngeoms);
+extern JTSGeometry *JTSPolygonize(JTSGeometry **geoms, unsigned int ngeoms);
+extern JTSGeometry *JTSLineMerge(JTSGeometry *geoms);
 extern int	JTSGetNumInteriorRings(JTSGeometry *g1);
 extern int      JTSGetSRID(JTSGeometry *g1);
 extern int      JTSGetNumGeometries(JTSGeometry *g1);
@@ -455,7 +457,7 @@ Datum geomunion(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport("geos",geom1, geom2, result);
+	profreport("jts",geom1, geom2, result);
 #endif
 
 	PG_FREE_IF_COPY(geom1, 0);
@@ -547,7 +549,7 @@ Datum symdifference(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport("geos",geom1, geom2, result);
+	profreport("jts",geom1, geom2, result);
 #endif
 
 	PG_FREE_IF_COPY(geom1, 0);
@@ -623,7 +625,7 @@ Datum boundary(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport("geos",geom1, NULL, result);
+	profreport("jts",geom1, NULL, result);
 #endif
 
 	PG_FREE_IF_COPY(geom1, 0);
@@ -718,7 +720,7 @@ Datum convexhull(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport("geos",geom1, NULL, result);
+	profreport("jts",geom1, NULL, result);
 #endif
 
 	PG_FREE_IF_COPY(geom1, 0);
@@ -795,7 +797,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport("geos",geom1, NULL, result);
+	profreport("jts",geom1, NULL, result);
 #endif
 
 	PG_FREE_IF_COPY(geom1, 0);
@@ -908,7 +910,7 @@ Datum intersection(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport("geos",geom1, geom2, result);
+	profreport("jts",geom1, geom2, result);
 #endif
 
 	PG_FREE_IF_COPY(geom1, 0);
@@ -1000,7 +1002,7 @@ Datum difference(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport("geos",geom1, geom2, result);
+	profreport("jts",geom1, geom2, result);
 #endif
 
 	PG_FREE_IF_COPY(geom1, 0);
@@ -1070,7 +1072,7 @@ Datum pointonsurface(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport("geos",geom1, NULL, result);
+	profreport("jts",geom1, NULL, result);
 #endif
 
 	PG_FREE_IF_COPY(geom1, 0);
@@ -1138,7 +1140,7 @@ Datum centroid(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport("geos",geom, NULL, result);
+	profreport("jts",geom, NULL, result);
 #endif
 
 	PG_FREE_IF_COPY(geom, 0);
@@ -1218,7 +1220,7 @@ Datum isvalid(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport("geos",geom1, NULL, NULL);
+	profreport("jts",geom1, NULL, NULL);
 #endif
 
 	PG_FREE_IF_COPY(geom1, 0);
@@ -1296,7 +1298,7 @@ Datum overlaps(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport("geos",geom1, geom2, NULL);
+	profreport("jts",geom1, geom2, NULL);
 #endif
 
 	PG_FREE_IF_COPY(geom1, 0);
@@ -1374,7 +1376,7 @@ Datum contains(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport("geos",geom1, geom2, NULL);
+	profreport("jts",geom1, geom2, NULL);
 #endif
 
 	PG_FREE_IF_COPY(geom1, 0);
@@ -1451,7 +1453,7 @@ Datum within(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport("geos",geom1, geom2, NULL);
+	profreport("jts",geom1, geom2, NULL);
 #endif
 
 	PG_FREE_IF_COPY(geom1, 0);
@@ -1529,7 +1531,7 @@ Datum crosses(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport("geos",geom1, geom2, NULL);
+	profreport("jts",geom1, geom2, NULL);
 #endif
 
 	PG_FREE_IF_COPY(geom1, 0);
@@ -1682,7 +1684,7 @@ Datum touches(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport("geos",geom1, geom2, NULL);
+	profreport("jts",geom1, geom2, NULL);
 #endif
 
 	PG_FREE_IF_COPY(geom1, 0);
@@ -1759,7 +1761,7 @@ Datum disjoint(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport("geos",geom1, geom2, NULL);
+	profreport("jts",geom1, geom2, NULL);
 #endif
 
 	PG_FREE_IF_COPY(geom1, 0);
@@ -1826,7 +1828,7 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport("geos",geom1, geom2, NULL);
+	profreport("jts",geom1, geom2, NULL);
 #endif
 
 	PG_FREE_IF_COPY(geom1, 0);
@@ -1926,7 +1928,7 @@ Datum relate_full(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport("geos",geom1, geom2, NULL);
+	profreport("jts",geom1, geom2, NULL);
 #endif
 
 	PG_FREE_IF_COPY(geom1, 0);
@@ -2004,7 +2006,7 @@ Datum geomequals(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport("geos",geom1, geom2, NULL);
+	profreport("jts",geom1, geom2, NULL);
 #endif
 
 	PG_FREE_IF_COPY(geom1, 0);
@@ -2059,7 +2061,7 @@ Datum issimple(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport("geos",geom, NULL, NULL);
+	profreport("jts",geom, NULL, NULL);
 #endif
 
 	PG_FREE_IF_COPY(geom, 0);
@@ -2118,7 +2120,7 @@ Datum isring(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport("geos",geom, NULL, NULL);
+	profreport("jts",geom, NULL, NULL);
 #endif
 
 	PG_FREE_IF_COPY(geom, 0);
@@ -2662,7 +2664,7 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 	elog(NOTICE, "polygonize_garray: invoking JTSpolygonize");
 #endif
 
-	geos_result = JTSpolygonize(vgeoms, nelems);
+	geos_result = JTSPolygonize(vgeoms, nelems);
 #ifdef PGIS_DEBUG
 	elog(NOTICE, "polygonize_garray: JTSpolygonize returned");
 #endif
@@ -2685,6 +2687,75 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 
 	PG_RETURN_POINTER(result);
 
+}
+
+PG_FUNCTION_INFO_V1(linemerge);
+Datum linemerge(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM	*geom1;
+	double	size;
+	JTSGeometry *g1,*g3;
+	PG_LWGEOM *result;
+	int quadsegs = 8; // the default
+
+#ifdef PROFILE
+	profstart(PROF_QRUN);
+#endif
+
+	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+	initJTS(lwnotice);
+
+#ifdef PROFILE
+	profstart(PROF_P2G1);
+#endif
+	g1 = POSTGIS2JTS(geom1);
+#ifdef PROFILE
+	profstop(PROF_P2G1);
+#endif
+
+#ifdef PROFILE
+	profstart(PROF_GRUN);
+#endif
+	g3 = JTSLineMerge(g1);
+#ifdef PROFILE
+	profstop(PROF_GRUN);
+#endif
+
+	if (g3 == NULL)
+	{
+		elog(ERROR,"JTS LineMerge() threw an error!");
+		PG_RETURN_NULL(); //never get here
+	}
+
+
+//	elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
+
+	JTSSetSRID(g3, pglwgeom_getSRID(geom1));
+
+#ifdef PROFILE
+	profstart(PROF_G2P);
+#endif
+	result = JTS2POSTGIS(g3, TYPE_NDIMS(geom1->type) > 2);
+#ifdef PROFILE
+	profstop(PROF_G2P);
+#endif
+	if (result == NULL)
+	{
+		elog(ERROR,"JTS LineMerge() threw an error (result postgis geometry formation)!");
+		PG_RETURN_NULL(); //never get here
+	}
+
+	//compressType(result);  // convert multi* to single item if appropriate
+
+#ifdef PROFILE
+	profstop(PROF_QRUN);
+	profreport("jts",geom1, NULL, result);
+#endif
+
+	PG_FREE_IF_COPY(geom1, 0);
+
+	PG_RETURN_POINTER(result);
 }
 
 Datum GEOSnoop(PG_FUNCTION_ARGS);

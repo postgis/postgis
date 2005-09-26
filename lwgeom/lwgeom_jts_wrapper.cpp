@@ -106,7 +106,8 @@ extern "C" char JTSrelateCrosses(Geometry *g1, Geometry*g2);
 extern "C" char JTSrelateWithin(Geometry *g1, Geometry*g2);
 extern "C" char JTSrelateContains(Geometry *g1, Geometry*g2);
 extern "C" char JTSrelateOverlaps(Geometry *g1, Geometry*g2);
-extern "C" Geometry *JTSpolygonize(Geometry **geoms, unsigned int ngeoms);
+extern "C" Geometry *JTSPolygonize(Geometry **geoms, unsigned int ngeoms);
+extern "C" Geometry *JTSLineMerge(Geometry *geoms);
 extern "C" char *JTSversion();
 extern "C" char *JTSjtsport();
 extern "C" int JTSGeometryTypeId(Geometry *g1);
@@ -737,9 +738,16 @@ JTSGetInteriorRingN(Geometry *g1,int n)
 }
 
 Geometry *
-JTSpolygonize(Geometry **g, unsigned int ngeoms)
+JTSPolygonize(Geometry **g, unsigned int ngeoms)
 {
-	NOTICE_MESSAGE("JTS polygonize unimplemented");
+	NOTICE_MESSAGE("JTS Polygonize unimplemented");
+	return NULL;
+}
+
+Geometry *
+JTSLineMerge(Geometry *g)
+{
+	NOTICE_MESSAGE("JTS LineMerge unimplemented");
 	return NULL;
 }
 
