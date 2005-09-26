@@ -16,6 +16,7 @@ PostGIS 1.1.0CVS
 	- NEW M(point) function
 	- NEW LineMerge(geometry) function
 	- JTS support improvements
+	- Initial GEOS C-API support
 	- Removed automatic call to fix_geometry_columns() in
 	  AddGeometryColumns() and update_geometry_stats()
 
