@@ -205,6 +205,14 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 	PG_RETURN_NULL(); // never get here
 }
 
+Datum linemerge(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(linemerge);
+Datum linemerge(PG_FUNCTION_ARGS)
+{
+	elog(ERROR,"linemerge:: operation not implemented - compile PostGIS with JTS or GEOS support");
+	PG_RETURN_NULL(); // never get here
+}
+
 Datum JTSnoop(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(JTSnoop);
 Datum JTSnoop(PG_FUNCTION_ARGS)
