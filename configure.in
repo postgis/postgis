@@ -149,7 +149,9 @@ dnl
 
 AC_SUBST(USE_GEOS)
 AC_SUBST(GEOS_DIR)
+AC_SUBST(USE_GEOS_CAPI)
 USE_GEOS=0
+USE_GEOS_CAPI=0
 GEOS_DIR=
 
 AC_PATH_PROG([GEOSCONFIG], [geos-config])
@@ -171,6 +173,13 @@ AC_ARG_WITH(geos,
 				USE_GEOS=1
 			fi
 		fi
+	fi
+)
+
+AC_ARG_WITH(geos-capi, 
+[  --with-geos-capi        enable use of GEOS C API ],
+	if test "$with_geos_capi" != "no"; then
+		USE_GEOS_CAPI=1
 	fi
 )
 
@@ -390,7 +399,11 @@ if test $USE_JTS -gt 0; then
 	AC_MSG_RESULT([     JTS: includedir=$JTS_INCLUDES libdir=$JTS_LIBDIR])
 fi
 if test $USE_GEOS -gt 0; then
-	AC_MSG_RESULT([    GEOS: $GEOSCONFIG])
+	if test $USE_GEOS_CAPI -gt 0; then
+		AC_MSG_RESULT([    GEOS: $GEOSCONFIG (with C-API)])
+	else
+		AC_MSG_RESULT([    GEOS: $GEOSCONFIG])
+	fi
 fi
 if test $USE_PROJ -gt 0; then
 	AC_MSG_RESULT([    PROJ: dir=$PROJ_DIR])
