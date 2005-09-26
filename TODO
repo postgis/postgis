@@ -16,6 +16,7 @@ Tue May 24 18:55:46 CEST 2005
 ======================================
 
 - LineMerge interface
+	(done for GEOS, should do for GEOS-CAPI and JTS)
 
 + Better upgrade mechanism
 
