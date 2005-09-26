@@ -33,7 +33,7 @@ PROJ_DIR=@PROJ_DIR@
 USE_GEOS=@USE_GEOS@
 GEOS_DIR=@GEOS_DIR@
 # EXPERIMENTAL! use geos C-API (only available with GEOS-3.x.x and up)
-USE_GEOS_CAPI=0
+USE_GEOS_CAPI=@USE_GEOS_CAPI@
 
 #
 # Set USE_JTS to 1 if you have libjts installed. 
