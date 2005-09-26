@@ -4398,10 +4398,17 @@ FROM geometry_table;</literallayout>
 		  <term>Polygonize(geometry set)</term>
 
 		  <listitem>
-		    <para>Aggregate. Creates a GeometryCollection containing
-		    possible polygons formed from the costituent linework of
-		    a set of geometries.
-		    Only available when compiled against GEOS >= 2.1.0.</para>
+
+		<para>
+			Aggregate. Creates a GeometryCollection containing
+			possible polygons formed from the costituent linework
+			of a set of geometries.
+		</para>
+
+		<para>
+		    Availability: 1.0.0RC1 - requires GEOS >= 2.1.0.
+		</para>
+
 		  </listitem>
 		</varlistentry>
 
@@ -4642,6 +4649,23 @@ FROM geometry_table;</literallayout>
             performed in 2d only.</para>
           </listitem>
         </varlistentry>
+
+		<varlistentry>
+		  <term>LineMerge(geometry)</term>
+
+		  <listitem>
+
+		<para>
+			Returns a (set of) LineString(s) formed by sewing
+			togheter costituent linework of input.
+		</para>
+
+		<para>
+			Availability: 1.1.0 - requires GEOS >= 2.1.0
+		</para>
+
+		  </listitem>
+		</varlistentry>
 
 
 	  </variablelist>
