@@ -49,7 +49,7 @@ Datum postgis_geos_version(PG_FUNCTION_ARGS);
 Datum postgis_jts_version(PG_FUNCTION_ARGS);
 Datum centroid(PG_FUNCTION_ARGS);
 Datum polygonize_garray(PG_FUNCTION_ARGS);
-Datum linemerge_garray(PG_FUNCTION_ARGS);
+Datum linemerge(PG_FUNCTION_ARGS);
 
 
 
@@ -2720,7 +2720,7 @@ Datum linemerge(PG_FUNCTION_ARGS)
 	{
 		GEOSdeleteGeometry(g1);
 		GEOSdeleteGeometry(g3);
-		elog(ERROR,"GEOS buffer() threw an error (result postgis geometry formation)!");
+		elog(ERROR,"GEOS LineMerge() threw an error (result postgis geometry formation)!");
 		PG_RETURN_NULL(); //never get here
 	}
 	GEOSdeleteGeometry(g1);
