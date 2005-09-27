@@ -1,0 +1,11 @@
+--- jdbc2/Makefile.old	2005-03-30 18:24:40.000000000 +0300
++++ jdbc2/Makefile	2005-04-16 18:43:00.984765168 +0300
+@@ -147,7 +148,7 @@
+ 
+ # include version numbers from central repository
+ include ../Version.config
+-VERSION=$(JDBC_MAJOR_VERSION)_$(JDBC_MINOR_VERSION)_$(JDBC_MICRO_VERSION)
++VERSION=$(JDBC_MAJOR_VERSION).$(JDBC_MINOR_VERSION).$(JDBC_MICRO_VERSION)
+ VERSIONPATH=$(BUILD)/org/postgis
+ VERSIONTARGET=$(VERSIONPATH)/version.properties
+ 
