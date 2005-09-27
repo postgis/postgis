@@ -2211,7 +2211,9 @@ POSTGIS2GEOS(PG_LWGEOM *pglwgeom)
 	lwfree(wkb);
 
 	wkb = GEOSGeomToWKT(geom);
+#ifdef PGIS_DEBUG_CONVERTER
 	lwnotice("GEOS geom: %s", wkb);
+#endif
 
 	return geom;
 }
