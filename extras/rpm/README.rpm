@@ -71,7 +71,10 @@ utils:		Build the RPM with perl utils (default value is 1)
 To use these defines, invoke a rebuild like this:
 rpm --rebuild --define 'jdbc2 0 ' --define 'utils' postgis-1.0.4-1.src.rpm
 
-This line would disable the jdbc2 and utils, if reqeusted.
+This line would disable the jdbc2 and utils, if requested.
+
+Please note that the spec file needs some patches to PostGIS source tree to build, so you 
+may need to download them via CVS before rebuilding the package.
 
 MORE INFORMATION
 -------------------------------------------------------------------------------
