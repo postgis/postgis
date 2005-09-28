@@ -2143,6 +2143,9 @@ lwgeom_from_geometry(GEOSGeom geom, char want3d)
 	char *wkb;
 	LWGEOM *lwgeom;
 
+	if ( want3d ) GEOS_setWKBOutputDims(3);
+	else GEOS_setWKBOutputDims(2);
+
 	wkb = GEOSGeomToWKB_buf(geom, &size);
 	lwgeom = lwgeom_from_ewkb(wkb, size);
 
@@ -2155,6 +2158,9 @@ GEOS2POSTGIS(GEOSGeom geom, char want3d)
 	size_t size;
 	char *wkb;
 	PG_LWGEOM *pglwgeom, *ret;
+
+	if ( want3d ) GEOS_setWKBOutputDims(3);
+	else GEOS_setWKBOutputDims(2);
 
 	wkb = GEOSGeomToWKB_buf(geom, &size);
 	pglwgeom = pglwgeom_from_ewkb(wkb, size);
