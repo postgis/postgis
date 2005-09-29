@@ -121,7 +121,7 @@ include ../Version.config
 # and installdirs targets, not for building itsself.
 -include ../Makefile.config
 
-VERSION=$(JDBC_MAJOR_VERSION)_$(JDBC_MINOR_VERSION)_$(JDBC_MICRO_VERSION)
+VERSION=$(JDBC_MAJOR_VERSION).$(JDBC_MINOR_VERSION).$(JDBC_MICRO_VERSION)
 VERSIONPATH=$(BUILD)/org/postgis
 VERSIONTARGET=$(VERSIONPATH)/version.properties
 
