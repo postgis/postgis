@@ -19,7 +19,7 @@
 //
 // The example below is for about 32 MB (fuzzy pragmatic check)
 //
-#define UNITE_USING_BUFFER 0
+//#define UNITE_USING_BUFFER 1
 #define MAXGEOMSPOINTS 21760
 
 Datum relate_full(PG_FUNCTION_ARGS);
@@ -2752,3 +2752,4 @@ Datum postgis_jts_version(PG_FUNCTION_ARGS)
 {
 	PG_RETURN_NULL();
 }
+
