@@ -187,7 +187,7 @@ make_good_string(char *str)
 	*optr='\0';
 
 #ifdef USE_ICONV
-	free(str);
+	if ( encoding ) free(str);
 #endif
 
 	return result;
@@ -240,7 +240,7 @@ protect_quotes_string(char *str)
 	*optr='\0';
 
 #ifdef USE_ICONV
-	free(str);
+	if ( encoding ) free(str);
 #endif
 
 	return result;
@@ -1660,6 +1660,9 @@ utf8 (const char *fromcode, char *inputbuf)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.88.2.8  2005/09/30 08:59:21  strk
+ * Fixed release of stack memory occurring when shp2pgsql is compiled with USE_ICONV defined, an attribute value needs to be escaped and no -W is used
+ *
  * Revision 1.88.2.7  2005/08/29 22:36:14  strk
  * Removed premature object destruction in InsertLineString{WKT,} causing segfault
  *
