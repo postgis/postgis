@@ -1,8 +1,8 @@
-README.rpm
+README
 -----------------------------------------------------------------------------
 Version 1.0.4, for PostGIS RPM Set
 Devrim Gunduz <devrim@gunduz.org>
-Sep 28, 2005
+Oct 04, 2005
 -----------------------------------------------------------------------------
 
 INTRODUCTION
@@ -18,6 +18,29 @@ If you want to stay up-to-date on the PostGIS core itself, use the community
 RPMS. These RPMs are kept up2date.
 
 PostGIS RPM is installed as every RPM, so it is not mentioned in here.
+
+BUILDING RPMS
+-----------------------------------------------------------------------------
+To build RPMs, you'll need the following:
+* The source tarball of PostGIS.
+* PostGIS spec (see extras/rpm/spec for the file)
+* Some patches/sources from CVS (see extras/rpm/patches for the files)
+
+Please note that you'll need some development tools for building PostGIS. You'll 
+be prompted for this prerequisites.
+
+Here is a basic guide for building RPMs:
+
+1. Move the patches/sources and source tarball into /usr/src/redhat/SOURCES
+2. Next, move the spec file under /usr/src/redhat/SPECS
+3. Run the following command:
+  rpmbuild -bb postgis.spec
+This will build RPMs for you. 
+
+The RPMs will be placed under /usr/src/redhat/RPMS/i386/
+If you specify an explicit target while rpmbuild, then the directory may change:
+Command: rpmbuild -bb --target i686 postgis.spec
+Resulting directory:  /usr/src/redhat/RPMS/i686/
 
 RPM FILE LOCATIONS.
 -----------------------------------------------------------------------------
@@ -83,6 +106,4 @@ You can get more information at http://www.PostGIS.org
 Please help make this packaging better -- let me know if you find problems, or
 better ways of doing things.  You can reach us by e-mail at
 postgis-devel@PostGIS.org .
-
------------------------------------------------------------------------------
 
