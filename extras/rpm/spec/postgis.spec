@@ -11,7 +11,6 @@ Group:		Applications/Databases
 Source0:	http://postgis.refractions.net/download/%{name}-%{version}.tar.gz
 Source2:	postgis-jdbcdedectver.sh
 Source4:	filter-requires-perl-Pg.sh
-Patch10:	postgis-jdbc2-makefile.patch
 Vendor:		The PostGIS Project
 URL:		http://postgis.refractions.net/
 BuildRequires:	postgresql-devel,proj-devel, geos-devel >= 2.1.1
@@ -50,7 +49,6 @@ The postgis-utils package provides the utilities for PostGIS.
 %setup -q -n %{name}-%{version}
 
 %if %jdbc2
-%patch10 -p0
 export MAKEFILE_DIR=/usr/src/redhat/BUILD/%{name}-%{version}/jdbc2
 sh %{SOURCE2}
 %endif
@@ -118,12 +116,15 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Oct 03 2005 - Devrim GUNDUZ <devrim@gunduz.org>
+- Removed postgis-jdbc2-makefile.patch (applied to -head)
+
 * Tue Sep 27 2005 - Devrim GUNDUZ <devrim@gunduz.org>
 - Update to 1.0.4
-                                                                                                    
+
 * Sun Apr 20 2005 - Devrim GUNDUZ <devrim@gunuz.org>
 - 1.0.0 Gold
-                                                                                                    
+
 * Sun Apr 17 2005 - Devrim GUNDUZ <devrim@gunuz.org>
 - Modified the spec file so that we can build JDBC2 RPMs...
 - Added -utils RPM to package list.
