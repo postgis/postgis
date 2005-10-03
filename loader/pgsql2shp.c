@@ -2414,7 +2414,8 @@ initialize(void)
 
 	if ( schema )
 	{
-		sprintf(query, "SELECT a.attname, a.atttypid, a.attlen FROM "
+		sprintf(query, "SELECT a.attname, a.atttypid, a.attlen, "
+			"a.atttypmod FROM "
 			"pg_attribute a, pg_class c, pg_namespace n WHERE "
 			"n.nspname = '%s' AND a.attrelid = c.oid AND "
 			"n.oid = c.relnamespace AND "
@@ -2423,7 +2424,8 @@ initialize(void)
 	}
 	else
 	{
-		sprintf(query, "SELECT a.attname, a.atttypid, a.attlen FROM "
+		sprintf(query, "SELECT a.attname, a.atttypid, a.attlen, "
+			"a.atttypmod FROM "
 			"pg_attribute a, pg_class c WHERE "
 			"a.attrelid = c.oid and a.attnum > 0 AND "
 			"a.atttypid != 0 AND "
@@ -2471,7 +2473,7 @@ initialize(void)
 	for (i=0; i<PQntuples(res); i++)
 	{
 		int j;
-		int type, size;
+		int type, size, mod;
 		char *fname; // pgsql attribute name
 		char *ptr;
 		char field_name[32]; // dbf version of field name
@@ -2479,6 +2481,7 @@ initialize(void)
 		fname = PQgetvalue(res, i, 0);
 		type = atoi(PQgetvalue(res, i, 1));
 		size = atoi(PQgetvalue(res, i, 2));
+		mod = atoi(PQgetvalue(res, i, 3));
 
 //printf( "A: %s, T: %d, S: %d\n", fname, type, size);
 		/*
@@ -2627,9 +2630,20 @@ initialize(void)
 		 */
 		else if(size == -1)
 		{
-			size = getMaxFieldSize(conn, schema, table, fname);
-			if ( size == -1 ) return 0;
-			if ( ! size ) size = 32; // might 0 be a good size ?
+			if ( (type == 1042 || type == 1043) && mod != -1 )
+			{
+				size = mod-3; // 4 is header size, we
+				              // keep 1 for terminating 
+				              // NULL.
+			}
+			else
+			{
+				size = getMaxFieldSize(conn, schema,
+					table, fname);
+				if ( size == -1 ) return 0;
+				if ( ! size ) size = 32;
+				// might 0 be a good size ?
+			}
 		}
 //printf( "FIELD_NAME: %s, SIZE: %d\n", field_name, size);
 		
@@ -3122,6 +3136,11 @@ create_usrquerytable(void)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.79  2005/10/03 18:08:55  strk
+ * Stricter string attributes lenght handling. DBF header will be used
+ * to set varchar maxlenght, (var)char typmod will be used to set DBF header
+ * len.
+ *
  * Revision 1.78  2005/07/22 19:15:28  strk
  * Fixed bug in {get,pop}{int,double} for 64bit archs
  *

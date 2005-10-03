@@ -531,7 +531,8 @@ CreateTable(void)
 
 			if(type == FTString)
 			{
-				printf ("varchar");
+				// do not need space for terminating NULL
+				printf ("varchar(%d)", field_width-1);
 			}
 			else if(type == FTInteger)
 			{
@@ -1665,6 +1666,11 @@ utf8 (const char *fromcode, char *inputbuf)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.99  2005/10/03 18:08:55  strk
+ * Stricter string attributes lenght handling. DBF header will be used
+ * to set varchar maxlenght, (var)char typmod will be used to set DBF header
+ * len.
+ *
  * Revision 1.98  2005/10/03 07:45:58  strk
  * Issued a warning when -W is specified and no UTF8 support has been compiled in.
  *
