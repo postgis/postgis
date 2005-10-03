@@ -1473,6 +1473,14 @@ COMMIT;</programlisting>
           </varlistentry>
 
           <varlistentry>
+            <term>-I</term>
+
+            <listitem>
+              <para>Create a GiST index on the geometry column.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
             <term>-w</term>
 
             <listitem>
@@ -1481,6 +1489,21 @@ COMMIT;</programlisting>
               Note  that this will introduce coordinate drifts and will drop M
               values from shapefiles.
               </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>-W &lt;encoding&gt;</term>
+
+            <listitem>
+		<para>
+Specify encoding of the input data (dbf file).
+When used, all attributes of the dbf are converted from the specified
+encoding to UTF8. The resulting SQL output will contain a <code>SET
+CLIENT_ENCODING to UTF8</code> command, so that the backend will be able
+to reconvert from UTF8 to whatever encoding the database is configured
+to use internally.
+		</para>
             </listitem>
           </varlistentry>
 
