@@ -1,26 +1,29 @@
-%define pg_version	%(rpm -q --queryformat '%{VERSION}' postgresql-devel)
-%{!?jdbc2:%define jdbc2 1}
+%define pg_version      %(rpm -q --queryformat '%{VERSION}' postgresql-devel)
+%{!?jdbc2:%define jdbc2 0}
 %{!?utils:%define utils 1}
 
-Summary:	Geographic Information Systems Extensions to PostgreSQL
-Name:		postgis
-Version:	1.0.4
-Release:	1
-License:	GPL v2
-Group:		Applications/Databases
-Source0:	http://postgis.refractions.net/download/%{name}-%{version}.tar.gz
-Source2:	postgis-jdbcdedectver.sh
-Source4:	filter-requires-perl-Pg.sh
-Vendor:		The PostGIS Project
-URL:		http://postgis.refractions.net/
-BuildRequires:	postgresql-devel,proj-devel, geos-devel >= 2.1.1
-Requires:	postgresql = %{pg_version} geos proj 
-BuildRoot:	%{tmpdir}/%{name}-%{version}-%{release}-%(id -u -n)
+Summary:        Geographic Information Systems Extensions to PostgreSQL
+Name:           postgis
+Version:        1.0.4
+Release:        1
+License:        GPL v2
+Group:          Applications/Databases
+Source0:        http://postgis.refractions.net/download/%{name}-%{version}.tar.gz
+Source2:       postgis-jdbcdedectver.sh
+Source4:        filter-requires-perl-Pg.sh
+Vendor:         The PostGIS Project
+URL:            http://postgis.refractions.net/
+BuildRequires:  postgresql-devel,proj-devel, geos-devel >= 2.1.1
+Requires:       postgresql = %{pg_version} geos proj
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 %description
-This package contains a module which implements GIS simple features,
-ties the features to rtree indexing, and provides some spatial
-functions for accessing and analyzing geographic data.
+PostGIS adds support for geographic objects to the PostgreSQL object-relational
+database. In effect, PostGIS "spatially enables" the PostgreSQL server,
+allowing it to be used as a backend spatial database for geographic information
+systems (GIS), much like ESRI's SDE or Oracle's Spatial extension. PostGIS
+follows the OpenGIS "Simple Features Specification for SQL" and will be
+submitted for conformance testing at version 1.0.
 
 %if %jdbc2
 %package jdbc2
@@ -28,7 +31,7 @@ Summary: The JDBC2 driver for PostGIS
 Group: Applications/Interfaces
 Provides: %{name}_%{version}.jar
 Requires: postgis
-
+                                                                                                    
 %description jdbc2
 The postgis-jdbc2 package provides the essential jdbc2 driver for PostGIS.
 %endif
@@ -38,44 +41,32 @@ The postgis-jdbc2 package provides the essential jdbc2 driver for PostGIS.
 Summary: The utils for PostGIS
 Group: Applications/Interfaces
 Requires: postgis, perl-DBD-Pg
-
+                                                                                                    
 %description utils
 The postgis-utils package provides the utilities for PostGIS.
 %endif
-
+                                                                                                    
 %define __perl_requires %{SOURCE4}
 
 %prep
-%setup -q -n %{name}-%{version}
+%setup -q
+
+%build
+make %{?_smp_mflags} PGXS=1 PGSQL_SRC=/usr/lib/pgsql/pgxs LPATH=\$\(pkglibdir\) shlib="%{name}.so"  'CFLAGS=-Wno-pointer-sign '
 
 %if %jdbc2
 export MAKEFILE_DIR=/usr/src/redhat/BUILD/%{name}-%{version}/jdbc2
 sh %{SOURCE2}
-%endif
-
-%build
-./configure --with-geos --with-proj --enable-autoconf
-
-%{__make} \
-	libdir=%{_libdir}/pgsql \
-	shlib="%{name}.so"
-
-%if %jdbc2
  make -C jdbc2
 %endif
-
+                                                                                                    
 %if %utils
  make -C utils
 %endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_libdir}/pgsql,%{_bindir}}
-
-%{__make} -C loader install \
-	bindir=$RPM_BUILD_ROOT%{_bindir} \
-	INSTALL_PROGRAM=install
-
+make install DESTDIR=$RPM_BUILD_ROOT PGXS=1 PGSQL_SRC=/usr/lib/pgsql/pgxs
 install lwgeom/%{name}.so $RPM_BUILD_ROOT%{_libdir}/pgsql
 
 %if %jdbc2
@@ -84,7 +75,7 @@ install lwgeom/%{name}.so $RPM_BUILD_ROOT%{_libdir}/pgsql
   install -d $RPM_BUILD_ROOT/usr/share/java
   install -m 755 jdbc2/%{name}_%{version}.jar $RPM_BUILD_ROOT/usr/share/java
 %endif
-
+                                                                                                    
 %if %utils
  install -d $RPM_BUILD_ROOT/usr/bin
  install -m 755 utils/*.pl $RPM_BUILD_ROOT/usr/bin
@@ -93,18 +84,20 @@ install lwgeom/%{name}.so $RPM_BUILD_ROOT%{_libdir}/pgsql
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post
-%postun
-
-%files 
+%files
 %defattr(644,root,root,755)
-%doc CHANGES CREDITS README.postgis TODO doc/html examples/wkb_reader loader/README.* *.sql doc/postgis.xml  doc/ZMSgeoms.txt loader/README.pgsql2shp loader/README.shp2pgsql
+%doc CHANGES CREDITS README.postgis TODO doc/html examples/wkb_reader loader/README.* *.sql doc/postgis.xml  doc/ZMSgeoms.txt 
 %attr(755,root,root) %{_bindir}/*
-%attr(755,root,root) %{_libdir}/pgsql/%{name}.so
+%attr(755,root,root) %{_libdir}/pgsql/*.so*
+%attr(755,root,root) %{_mandir}/man1/*
+%attr(755,root,root) /usr/share/pgsql/contrib/*
+%attr(755,root,root) %{_docdir}/pgsql/contrib/README.postgis
 
+%if %jdbc2
 %files jdbc2
 %defattr(644,root,root,755)
 %attr(755,root,root) /usr/share/java/%{name}_%{version}.jar
+%endif
 
 %if %utils
 %files utils
@@ -113,18 +106,25 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) /usr/bin/test_estimation.pl
 %attr(755,root,root) /usr/bin/postgis_restore.pl
 %attr(755,root,root) /usr/bin/test_joinestimation.pl
+%attr(755,root,root) %{_bindir}/create_undef.pl
+%attr(755,root,root) %{_bindir}/postgis_proc_upgrade.pl
+%attr(755,root,root) %{_bindir}/profile_intersects.pl
+%attr(755,root,root) %{_bindir}/rebuild_bbox_caches.pl
 %endif
 
 %changelog
 * Mon Oct 03 2005 - Devrim GUNDUZ <devrim@gunduz.org>
+- Make PostGIS build against pgxs so that we don't need PostgreSQL sources.
+- Fixed all build errors except jdbc (so, defaulted to 0)
+- Added new files under %utils
 - Removed postgis-jdbc2-makefile.patch (applied to -head)
-
+                                                                                                    
 * Tue Sep 27 2005 - Devrim GUNDUZ <devrim@gunduz.org>
 - Update to 1.0.4
-
+                                                                                                    
 * Sun Apr 20 2005 - Devrim GUNDUZ <devrim@gunuz.org>
 - 1.0.0 Gold
-
+                                                                                                    
 * Sun Apr 17 2005 - Devrim GUNDUZ <devrim@gunuz.org>
 - Modified the spec file so that we can build JDBC2 RPMs...
 - Added -utils RPM to package list.
@@ -136,4 +136,3 @@ rm -rf $RPM_BUILD_ROOT
 - Initial RPM build
 - Fixed libdir so that PostgreSQL installations will not complain about it.
 - Enabled --with-geos and modified the old spec.
-
