@@ -749,7 +749,7 @@ usage(char *me, int exitcode)
 	fprintf(stderr, "  -w  Use wkt format (for postgis-0.x support - drops M - drifts coordinates).\n");
 #ifdef USE_ICONV
 	fprintf(stderr, "\n");
-	fprintf(stderr, "  -W <ENCODING_NAME> Specify the character encoding of Shape's\n");
+	fprintf(stderr, "  -W <encoding> Specify the character encoding of Shape's\n");
 	fprintf(stderr, "     attribute column. (default : \"ASCII\")\n");
 #endif
 	exit (exitcode);
@@ -1260,11 +1260,13 @@ ParseCmdline(int ARGC, char **ARGV)
                case 'w':
                     hwgeom = 1;
                     break;
-#ifdef USE_ICONV
 		case 'W':
+#ifdef USE_ICONV
                     encoding = optarg;
-                    break;
+#else
+		    fprintf(stderr, "WARNING: the -W switch will have no effect. UTF8 disabled at compile time\n");
 #endif
+                    break;
                case '?':
                default:              
 		return 0;
@@ -1663,6 +1665,9 @@ utf8 (const char *fromcode, char *inputbuf)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.98  2005/10/03 07:45:58  strk
+ * Issued a warning when -W is specified and no UTF8 support has been compiled in.
+ *
  * Revision 1.97  2005/09/30 08:59:29  strk
  * Fixed release of stack memory occurring when shp2pgsql is compiled with USE_ICONV defined, an attribute value needs to be escaped and no -W is used
  *
