@@ -2262,7 +2262,7 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	stats->stanumbers[0] = (float4 *)geomstats;
 	stats->numnumbers[0] = geom_stats_size/sizeof(float4);
 
-	stats->stanullfrac = null_cnt/samplerows;
+	stats->stanullfrac = (float4)null_cnt/samplerows;
 	stats->stawidth = total_width/notnull_cnt;
 	stats->stadistinct = -1.0;
 
@@ -2271,7 +2271,7 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		stats->stakind[0]);
 	elog(NOTICE, " out: slot 0: op %d (InvalidOid)", stats->staop[0]);
 	elog(NOTICE, " out: slot 0: numnumbers %d", stats->numnumbers[0]);
-	elog(NOTICE, " out: null fraction: %d/%d", null_cnt, samplerows);
+	elog(NOTICE, " out: null fraction: %d/%d=%g", null_cnt, samplerows, stats->stanullfrac);
 	elog(NOTICE, " out: average width: %d bytes", stats->stawidth);
 	elog(NOTICE, " out: distinct values: all (no check done)");
 #endif
@@ -2510,6 +2510,9 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.35  2005/10/10 16:19:16  strk
+ * Fixed null values fraction computation in geometry analyzer as suggested by Michael Fuhr
+ *
  * Revision 1.34  2005/09/08 19:26:22  strk
  * Handled search_box outside of histogram_box case in selectivity estimator
  *
