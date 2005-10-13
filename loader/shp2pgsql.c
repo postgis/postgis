@@ -415,7 +415,7 @@ main (int ARGC, char **ARGV)
 	printf("END;\n"); // End the last transaction
 
 
-	return(1);
+	return 0; 
 }//end main()
 
 void
@@ -1666,6 +1666,9 @@ utf8 (const char *fromcode, char *inputbuf)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.100  2005/10/13 13:40:20  strk
+ * Fixed return code from shp2pgsql
+ *
  * Revision 1.99  2005/10/03 18:08:55  strk
  * Stricter string attributes lenght handling. DBF header will be used
  * to set varchar maxlenght, (var)char typmod will be used to set DBF header
