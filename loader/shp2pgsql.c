@@ -410,7 +410,7 @@ main (int ARGC, char **ARGV)
 	printf("END;\n"); // End the last transaction
 
 
-	return(1);
+	return 0; 
 }//end main()
 
 void
@@ -1660,6 +1660,9 @@ utf8 (const char *fromcode, char *inputbuf)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.88.2.9  2005/10/13 13:40:15  strk
+ * Fixed return code from shp2pgsql
+ *
  * Revision 1.88.2.8  2005/09/30 08:59:21  strk
  * Fixed release of stack memory occurring when shp2pgsql is compiled with USE_ICONV defined, an attribute value needs to be escaped and no -W is used
  *
