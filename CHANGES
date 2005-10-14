@@ -19,6 +19,7 @@ PostGIS 1.1.0CVS
 	- Initial GEOS C-API support
 	- Removed automatic call to fix_geometry_columns() in
 	  AddGeometryColumns() and update_geometry_stats()
+	- Initial support for topology modelling
 
 PostGIS 1.0.5CVS
 	- New "Reporting Bugs" chapter in manual
