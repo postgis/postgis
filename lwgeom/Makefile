@@ -26,7 +26,7 @@ POSTGIS_BUILD_DATE := $(shell date -u "+%Y-%m-%d %H:%M:%S")
 
 #---------------------------------------------------------------
 
-CSTAR_FLAGS = -g -O2 -fPIC -fexceptions
+CSTAR_FLAGS = -Wall -g -O2 -fPIC -fexceptions
 
 override CFLAGS += -DUSE_VERSION=$(USE_VERSION)
 override CFLAGS += -DPOSTGIS_LIB_VERSION='"$(POSTGIS_LIB_VERSION)"'
