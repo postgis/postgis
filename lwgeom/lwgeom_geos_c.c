@@ -131,7 +131,7 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 	if ( nelems == 1 ) PG_RETURN_POINTER((PG_LWGEOM *)(ARR_DATA_PTR(array)));
 
 	/* Ok, we really need geos now ;) */
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 	offset = 0;
 	for (i=0; i<nelems; i++)
@@ -254,7 +254,7 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 	geoms = lwalloc(sizeof(GEOSGeom )*nelems);
 
 	/* We need geos here */
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 	offset = 0; i=0;
 	ngeoms = 0; npoints=0;
@@ -367,7 +367,7 @@ Datum geomunion(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 //elog(NOTICE,"in geomunion");
 
 #ifdef PROFILE
@@ -469,7 +469,7 @@ Datum symdifference(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 #ifdef PROFILE
 	profstart(PROF_P2G1);
@@ -557,7 +557,7 @@ Datum boundary(PG_FUNCTION_ARGS)
 
 	SRID = pglwgeom_getSRID(geom1);
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 #ifdef PROFILE
 	profstart(PROF_P2G1);
@@ -637,7 +637,7 @@ Datum convexhull(PG_FUNCTION_ARGS)
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	SRID = pglwgeom_getSRID(geom1);
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 #ifdef PROFILE
 	profstart(PROF_P2G1);
@@ -732,7 +732,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 	size = PG_GETARG_FLOAT8(1);
 	if ( PG_NARGS() > 2 ) quadsegs = PG_GETARG_INT32(2);
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 #ifdef PROFILE
 	profstart(PROF_P2G1);
@@ -819,7 +819,7 @@ Datum intersection(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 //elog(NOTICE,"intersection() START");
 
@@ -939,7 +939,7 @@ Datum difference(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 #ifdef PROFILE
 	profstart(PROF_P2G1);
@@ -1024,7 +1024,7 @@ Datum pointonsurface(PG_FUNCTION_ARGS)
 
 	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 #ifdef PROFILE
 	profstart(PROF_P2G1);
@@ -1095,7 +1095,7 @@ Datum centroid(PG_FUNCTION_ARGS)
 
 	geom = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 #ifdef PROFILE
 	profstart(PROF_P2G1);
@@ -1178,7 +1178,7 @@ Datum isvalid(PG_FUNCTION_ARGS)
 
 	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 #ifdef PROFILE
 	profstart(PROF_P2G1);
@@ -1262,7 +1262,7 @@ Datum overlaps(PG_FUNCTION_ARGS)
 		if ( box2.ymin > box2.ymax ) PG_RETURN_BOOL(FALSE);
 	}
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 #ifdef PROFILE
 	profstart(PROF_P2G1);
@@ -1340,7 +1340,7 @@ Datum contains(PG_FUNCTION_ARGS)
 		if ( box2.ymax > box1.ymax ) PG_RETURN_BOOL(FALSE);
 	}
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 #ifdef PROFILE
 	profstart(PROF_P2G1);
@@ -1418,7 +1418,7 @@ Datum within(PG_FUNCTION_ARGS)
 		if ( box1.ymax > box2.ymax ) PG_RETURN_BOOL(FALSE);
 	}
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 #ifdef PROFILE
 	profstart(PROF_P2G1);
@@ -1497,7 +1497,7 @@ Datum crosses(PG_FUNCTION_ARGS)
 		if ( box2.ymin > box2.ymax ) PG_RETURN_BOOL(FALSE);
 	}
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 #ifdef PROFILE
 	profstart(PROF_P2G1);
@@ -1576,7 +1576,7 @@ Datum intersects(PG_FUNCTION_ARGS)
 		if ( box2.ymin > box2.ymax ) PG_RETURN_BOOL(FALSE);
 	}
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 #ifdef PROFILE
 	profstart(PROF_P2G1);
@@ -1652,7 +1652,7 @@ Datum touches(PG_FUNCTION_ARGS)
 		if ( box2.ymin > box2.ymax ) PG_RETURN_BOOL(FALSE);
 	}
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 #ifdef PROFILE
 	profstart(PROF_P2G1);
@@ -1730,7 +1730,7 @@ Datum disjoint(PG_FUNCTION_ARGS)
 		if ( box2.ymin > box2.ymax ) PG_RETURN_BOOL(TRUE);
 	}
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 #ifdef PROFILE
 	profstart(PROF_P2G1);
@@ -1793,7 +1793,7 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 
 	errorIfGeometryCollection(geom1,geom2);
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 #ifdef PROFILE
 	profstart(PROF_P2G1);
@@ -1865,7 +1865,7 @@ Datum relate_full(PG_FUNCTION_ARGS)
 	errorIfGeometryCollection(geom1,geom2);
 
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 //elog(NOTICE,"GEOS init()");
 
@@ -1973,7 +1973,7 @@ Datum geomequals(PG_FUNCTION_ARGS)
 		if ( box2.ymin != box2.ymin ) PG_RETURN_BOOL(FALSE);
 	}
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 #ifdef PROFILE
 	profstart(PROF_P2G1);
@@ -2033,7 +2033,7 @@ Datum issimple(PG_FUNCTION_ARGS)
 	if (lwgeom_getnumgeometries(SERIALIZED_FORM(geom)) == 0)
 		PG_RETURN_BOOL(true);
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 	//elog(NOTICE,"GEOS init()");
 
@@ -2091,7 +2091,7 @@ Datum isring(PG_FUNCTION_ARGS)
 	if (lwgeom_getnumgeometries(SERIALIZED_FORM(geom)) == 0)
 		PG_RETURN_BOOL(false);
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 	//elog(NOTICE,"GEOS init()");
 
@@ -2234,7 +2234,7 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 	GEOSGeom geosgeom;
 	PG_LWGEOM *result;
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 #ifdef PGIS_DEBUG_CONVERTER
@@ -2297,7 +2297,7 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 	if ( nelems == 0 ) PG_RETURN_NULL();
 
 	/* Ok, we really need geos now ;) */
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 	vgeoms = palloc(sizeof(GEOSGeom )*nelems);
 	offset = 0;
@@ -2351,10 +2351,8 @@ PG_FUNCTION_INFO_V1(linemerge);
 Datum linemerge(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM	*geom1;
-	double	size;
 	GEOSGeom g1,g3;
 	PG_LWGEOM *result;
-	int quadsegs = 8; // the default
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
@@ -2362,7 +2360,7 @@ Datum linemerge(PG_FUNCTION_ARGS)
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	initGEOS(lwnotice, lwerror);
+	initGEOS(lwnotice, lwnotice);
 
 #ifdef PROFILE
 	profstart(PROF_P2G1);
