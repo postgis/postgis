@@ -99,7 +99,7 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 	int is3d = 0;
 	int nelems, i;
 	PG_LWGEOM *result, *pgis_geom;
-	GEOSGeom g1, g2, *geos_result=NULL;
+	GEOSGeom g1, g2, geos_result=NULL;
 	int SRID=-1;
 	size_t offset;
 #ifdef PGIS_DEBUG
@@ -2215,6 +2215,9 @@ POSTGIS2GEOS(PG_LWGEOM *pglwgeom)
 	wkb = pglwgeom_to_ewkb(pglwgeom, getMachineEndian(), &size);
 	geom = GEOSGeomFromWKB_buf(wkb, size);
 	lwfree(wkb);
+	if ( ! geom ) {
+		lwerror("POSTGIS2GEOS conversion failed");
+	}
 
 	wkb = GEOSGeomToWKT(geom);
 #ifdef PGIS_DEBUG_CONVERTER
