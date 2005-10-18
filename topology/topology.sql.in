@@ -2695,7 +2695,7 @@ LANGUAGE 'plpgsql' _VOLATILE;
 --  ST_NewEdgesSplit(atopology, anedge, apoint)
 --
 CREATEFUNCTION topology.ST_NewEdgesSplit(varchar, integer, geometry)
-	RETURNS TEXT AS
+	RETURNS INTEGER AS
 '
 DECLARE
 	atopology ALIAS FOR $1;
@@ -2932,9 +2932,10 @@ BEGIN
 			
 	END LOOP;
 
-	RETURN ''Edge '' || anedge 
-		|| '' split in edges '' || edgeid1
-		|| '' and '' || edgeid2 || '' by node '' || nodeid;
+	RAISE NOTICE ''Edge % split in edges % and % by node %'',
+		anedge, edgeid1, edgeid2, nodeid;
+
+	RETURN nodeid; 
 END
 '
 LANGUAGE 'plpgsql' _VOLATILE;
