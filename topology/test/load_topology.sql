@@ -44,6 +44,9 @@ INSERT INTO city_data.face(face_id) VALUES(6); -- F6
 INSERT INTO city_data.face(face_id) VALUES(7); -- F7
 INSERT INTO city_data.face(face_id) VALUES(8); -- F8
 
+-- UPDATE Face id sequence
+SELECT setval('city_data.face_face_id_seq', 8);
+
 -- 2B. Insert data into <topology_name>.NODE table.
 -- N1
 INSERT INTO city_data.node(node_id, geom, containing_face) 
@@ -111,6 +114,9 @@ INSERT INTO city_data.node(node_id, geom, containing_face)
 -- N22
 INSERT INTO city_data.node(node_id, geom, containing_face) 
 	VALUES(22, 'POINT(13 35)', NULL);
+
+-- UPDATE Node id sequence
+SELECT setval('city_data.node_node_id_seq', 22);
 
 -- 2C. Insert data into <topology_name>.EDGE table.
 -- E1
@@ -185,6 +191,9 @@ INSERT INTO city_data.edge VALUES(25, 21, 22, -25, 25, 1, 1,
 -- E26
 INSERT INTO city_data.edge VALUES(26, 20, 20, 26, -26, 9, 1,
   'LINESTRING(4 31, 7 31, 7 34, 4 34, 4 31)');
+
+-- UPDATE Edge id sequence
+SELECT setval('city_data.edge_data_edge_id_seq', 26);
 
 -- 3. Create feature tables  
 

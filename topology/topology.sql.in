@@ -132,9 +132,17 @@
 --  
 --   ST_AddIsoEdge
 --  	Complete
+--
+--   ST_RemoveIsoEdge
+--	Complete, exceptions untested
 --  
 --   ST_ChangeEdgeGeom
 --  	Complete
+--
+--   ST_NewEdgesSplit
+--	Complete, exceptions untested
+--	this also updates the Relation table
+--	TODO: add entries to the History table ?
 --  
 --   ST_GetFaceEdges
 --  	Unimplemented (C seems appropriate)
@@ -2606,6 +2614,331 @@ END
 '
 LANGUAGE 'plpgsql' _VOLATILE;
 --} ST_RemoveIsoNode
+
+--{
+-- Topo-Geo and Topo-Net 3: Routine Details
+-- X.3.7 
+--
+--  ST_RemoveIsoEdge(atopology, anedge)
+--
+CREATEFUNCTION topology.ST_RemoveIsoEdge(varchar, integer)
+	RETURNS TEXT AS
+'
+DECLARE
+	atopology ALIAS FOR $1;
+	anedge ALIAS FOR $2;
+	edge RECORD;
+	rec RECORD;
+	ok BOOL;
+BEGIN
+
+	--
+	-- Atopology and anedge are required
+	-- 
+	IF atopology IS NULL OR anedge IS NULL THEN
+		RAISE EXCEPTION
+		 ''SQL/MM Spatial exception - null argument'';
+	END IF;
+
+	--
+	-- Check node existance
+	-- 
+	ok = false;
+	FOR edge IN EXECUTE ''SELECT * FROM ''
+		|| quote_ident(atopology) || ''.edge_data '' ||
+		'' WHERE edge_id =  '' || anedge
+	LOOP
+		ok = true;
+	END LOOP;
+	IF NOT ok THEN
+		RAISE EXCEPTION
+		  ''SQL/MM Spatial exception - non-existent edge'';
+	END IF;
+
+	--
+	-- Check node isolation
+	-- 
+	IF edge.left_face != edge.right_face THEN
+		RAISE EXCEPTION
+		  ''SQL/MM Spatial exception - not isolated edge'';
+	END IF;
+
+	FOR rec IN EXECUTE ''SELECT * FROM ''
+		|| quote_ident(atopology) || ''.edge_data '' 
+		|| '' WHERE edge_id !=  '' || anedge
+		|| '' AND ( start_node = '' || edge.start_node
+		|| '' OR start_node = '' || edge.end_node
+		|| '' OR end_node = '' || edge.start_node
+		|| '' OR end_node = '' || edge.end_node
+		|| '' ) ''
+	LOOP
+		RAISE EXCEPTION
+		  ''SQL/MM Spatial exception - not isolated edge'';
+	END LOOP;
+
+	--
+	-- Delete the edge
+	--
+	EXECUTE ''DELETE FROM '' || quote_ident(atopology) || ''.edge_data ''
+		|| '' WHERE edge_id = '' || anedge;
+
+	RETURN ''Isolated edge '' || anedge || '' removed'';
+END
+'
+LANGUAGE 'plpgsql' _VOLATILE;
+--} ST_RemoveIsoEdge
+
+--{
+-- Topo-Geo and Topo-Net 3: Routine Details
+-- X.3.8 
+--
+--  ST_NewEdgesSplit(atopology, anedge, apoint)
+--
+CREATEFUNCTION topology.ST_NewEdgesSplit(varchar, integer, geometry)
+	RETURNS TEXT AS
+'
+DECLARE
+	atopology ALIAS FOR $1;
+	anedge ALIAS FOR $2;
+	apoint ALIAS FOR $3;
+	oldedge RECORD;
+	rec RECORD;
+	tmp integer;
+	topoid integer;
+	nodeid integer;
+	nodepos float8;
+	edgeid1 integer;
+	edgeid2 integer;
+	edge1 geometry;
+	edge2 geometry;
+	ok BOOL;
+BEGIN
+
+	--
+	-- All args required
+	-- 
+	IF atopology IS NULL OR anedge IS NULL OR apoint IS NULL THEN
+		RAISE EXCEPTION
+		 ''SQL/MM Spatial exception - null argument'';
+	END IF;
+
+	--
+	-- Check node existance
+	-- 
+	ok = false;
+	FOR oldedge IN EXECUTE ''SELECT * FROM ''
+		|| quote_ident(atopology) || ''.edge_data '' ||
+		'' WHERE edge_id =  '' || anedge
+	LOOP
+		ok = true;
+	END LOOP;
+	IF NOT ok THEN
+		RAISE EXCEPTION
+		  ''SQL/MM Spatial exception - non-existent edge'';
+	END IF;
+
+	--
+	-- Check that given point is Within(anedge.geom)
+	-- 
+	IF NOT within(apoint, oldedge.geom) THEN
+		RAISE EXCEPTION
+		  ''SQL/MM Spatial exception - point not on edge'';
+	END IF;
+
+	--
+	-- Check if a coincident node already exists
+	--
+	FOR rec IN EXECUTE ''SELECT node_id FROM ''
+		|| quote_ident(atopology) || ''.node '' ||
+		''WHERE geom && '' || quote_literal(apoint) || ''::geometry''
+		||'' AND x(geom) = x(''||quote_literal(apoint)||''::geometry)''
+		||'' AND y(geom) = y(''||quote_literal(apoint)||''::geometry)''
+	LOOP
+		RAISE EXCEPTION
+		 ''SQL/MM Spatial exception - coincident node'';
+	END LOOP;
+
+	--
+	-- Get new node id
+	--
+	FOR rec IN EXECUTE ''SELECT nextval('''''' ||
+		atopology || ''.node_node_id_seq'''')''
+	LOOP
+		nodeid = rec.nextval;
+	END LOOP;
+
+	--RAISE NOTICE ''Next node id = % '', nodeid;
+
+	--
+	-- Add the new node 
+	--
+	EXECUTE ''INSERT INTO '' || quote_ident(atopology)
+		|| ''.node(node_id, geom) 
+		VALUES(''||nodeid||'',''||quote_literal(apoint)||
+		'')'';
+
+	--
+	-- Delete the old edge
+	--
+	EXECUTE ''DELETE FROM '' || quote_ident(atopology) || ''.edge_data ''
+		|| '' WHERE edge_id = '' || anedge;
+
+	--
+	-- Compute new edges
+	--
+	nodepos = line_locate_point(oldedge.geom, apoint);
+	edge1 = line_substring(oldedge.geom, 0, nodepos);
+	edge2 = line_substring(oldedge.geom, nodepos, 1);
+
+	--
+	-- Get ids for the new edges 
+	--
+	FOR rec IN EXECUTE ''SELECT nextval('''''' ||
+		atopology || ''.edge_data_edge_id_seq'''')''
+	LOOP
+		edgeid1 = rec.nextval;
+	END LOOP;
+	FOR rec IN EXECUTE ''SELECT nextval('''''' ||
+		atopology || ''.edge_data_edge_id_seq'''')''
+	LOOP
+		edgeid2 = rec.nextval;
+	END LOOP;
+
+	--RAISE NOTICE ''EdgeId1 % EdgeId2 %'', edgeid1, edgeid2;
+
+	--
+	-- Insert the two new edges
+	--
+	EXECUTE ''INSERT INTO '' || quote_ident(atopology)
+		|| ''.edge VALUES(''
+		||edgeid1||'',''||oldedge.start_node
+		||'',''||nodeid
+		||'',''||edgeid2
+		||'',''||oldedge.next_right_edge
+		||'',''||oldedge.left_face
+		||'',''||oldedge.right_face
+		||'',''||quote_literal(edge1)
+		||'')'';
+
+	EXECUTE ''INSERT INTO '' || quote_ident(atopology)
+		|| ''.edge VALUES(''
+		||edgeid2||'',''||nodeid
+		||'',''||oldedge.end_node
+		||'',''||oldedge.next_left_edge
+		||'',-''||edgeid1
+		||'',''||oldedge.left_face
+		||'',''||oldedge.right_face
+		||'',''||quote_literal(edge2)
+		||'')'';
+
+	--
+	-- Update all next edge references to match new layout
+	--
+
+	EXECUTE ''UPDATE '' || quote_ident(atopology)
+		|| ''.edge_data SET next_right_edge = ''
+		|| edgeid2
+		|| '',''
+		|| '' abs_next_right_edge = '' || edgeid2
+		|| '' WHERE next_right_edge = '' || anedge;
+	EXECUTE ''UPDATE '' || quote_ident(atopology)
+		|| ''.edge_data SET next_right_edge = ''
+		|| -edgeid1
+		|| '',''
+		|| '' abs_next_right_edge = '' || edgeid1
+		|| '' WHERE next_right_edge = '' || -anedge;
+
+	EXECUTE ''UPDATE '' || quote_ident(atopology)
+		|| ''.edge_data SET next_left_edge = ''
+		|| edgeid1
+		|| '',''
+		|| '' abs_next_left_edge = '' || edgeid1
+		|| '' WHERE next_left_edge = '' || anedge;
+	EXECUTE ''UPDATE '' || quote_ident(atopology)
+		|| ''.edge_data SET ''
+		|| '' next_left_edge = '' || -edgeid2
+		|| '',''
+		|| '' abs_next_left_edge = '' || edgeid2
+		|| '' WHERE next_left_edge = '' || -anedge;
+
+	-- Get topology id
+        SELECT id FROM topology.topology into topoid
+                WHERE name = atopology;
+
+	--
+	-- Update references in the Relation table.
+	-- We only take into considerations non-hierarchical
+	-- TopoGeometry here, for obvious reasons.
+	--
+	FOR rec IN EXECUTE ''SELECT r.* FROM ''
+		|| quote_ident(atopology)
+		|| ''.relation r, topology.layer l ''
+		|| '' WHERE ''
+		|| '' l.topology_id = '' || topoid
+		|| '' AND l.level = 0 ''
+		|| '' AND l.layer_id = r.layer_id ''
+		|| '' AND abs(r.element_id) = '' || anedge
+		|| '' AND r.element_type = 2''
+	LOOP
+		RAISE NOTICE ''TopoGeometry % in layer % contains the edge being split'', rec.topogeo_id, rec.layer_id;
+
+		-- Delete old reference
+		EXECUTE ''DELETE FROM '' || quote_ident(atopology)
+			|| ''.relation ''
+			|| '' WHERE ''
+			|| ''layer_id = '' || rec.layer_id
+			|| '' AND ''
+			|| ''topogeo_id = '' || rec.topogeo_id
+			|| '' AND ''
+			|| ''element_type = '' || rec.element_type
+			|| '' AND ''
+			|| ''abs(element_id) = '' || anedge;
+
+		-- Add new reference to edge1
+		IF rec.element_id < 0 THEN
+			tmp = -edgeid1;
+		ELSE
+			tmp = edgeid1;
+		END IF;
+		EXECUTE ''INSERT INTO '' || quote_ident(atopology)
+			|| ''.relation ''
+			|| '' VALUES( ''
+			|| rec.topogeo_id
+			|| '',''
+			|| rec.layer_id
+			|| '',''
+			|| tmp
+			|| '',''
+			|| rec.element_type
+			|| '')'';
+
+		-- Add new reference to edge2
+		IF rec.element_id < 0 THEN
+			tmp = -edgeid2;
+		ELSE
+			tmp = edgeid2;
+		END IF;
+		EXECUTE ''INSERT INTO '' || quote_ident(atopology)
+			|| ''.relation ''
+			|| '' VALUES( ''
+			|| rec.topogeo_id
+			|| '',''
+			|| rec.layer_id
+			|| '',''
+			|| tmp
+			|| '',''
+			|| rec.element_type
+			|| '')'';
+			
+	END LOOP;
+
+	RETURN ''Edge '' || anedge 
+		|| '' split in edges '' || edgeid1
+		|| '' and '' || edgeid2 || '' by node '' || nodeid;
+END
+'
+LANGUAGE 'plpgsql' _VOLATILE;
+--} ST_NewEdgesSplit
 
 --{
 -- Topo-Geo and Topo-Net 3: Routine Details
