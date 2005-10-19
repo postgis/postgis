@@ -2693,10 +2693,8 @@ PG_FUNCTION_INFO_V1(linemerge);
 Datum linemerge(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM	*geom1;
-	double	size;
 	JTSGeometry *g1,*g3;
 	PG_LWGEOM *result;
-	int quadsegs = 8; // the default
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
