@@ -15,6 +15,8 @@ SELECT topology.AddTopoGeometryColumn('city_data', 'features',
 	1 -- the land_parcles
 );
 
+SELECT AddGeometryColumn('features','big_parcels','the_geom',-1,'MULTIPOLYGON',2);
+
 INSERT INTO features.big_parcels VALUES ('P1P2', -- Feature name
   topology.CreateTopoGeom(
     'city_data', -- Topology name
@@ -36,13 +38,6 @@ INSERT INTO features.big_parcels VALUES ('F3F6', -- Feature name
     (SELECT layer_id FROM topology.layer WHERE table_name = 'big_parcels'),
     '{{6,1},{7,1}}')); -- F3 and F6
 
-INSERT INTO features.big_parcels VALUES ('F3F6', -- Feature name
-  topology.CreateTopoGeom(
-    'city_data', -- Topology name
-    3, -- Topology geometry type (polygon/multipolygon)
-    (SELECT layer_id FROM topology.layer WHERE table_name = 'big_parcels'),
-    '{{7,1},{6,1}}')); -- F3 and F6
-
 SELECT feature_name, astext(topology.geometry(feature)) from features.big_parcels;
 
 SELECT a.feature_name, b.feature_name
@@ -61,6 +56,8 @@ SELECT topology.AddTopoGeometryColumn('city_data', 'features',
 	'big_signs', 'feature', 'POINT',
 	2 -- the traffic_signs
 );
+
+SELECT AddGeometryColumn('features','big_signs','the_geom',-1,'MULTIPOINT',2);
 
 INSERT INTO features.big_signs VALUES ('S1S2', -- Feature name
   topology.CreateTopoGeom(
