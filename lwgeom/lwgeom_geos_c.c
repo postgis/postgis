@@ -2158,22 +2158,21 @@ GEOS2POSTGIS(GEOSGeom geom, char want3d)
 	size_t size;
 	char *wkb;
 	PG_LWGEOM *pglwgeom, *ret;
+	int SRID;
 
 	if ( want3d ) GEOS_setWKBOutputDims(3);
 	else GEOS_setWKBOutputDims(2);
 
 	wkb = GEOSGeomToWKB_buf(geom, &size);
+	if ( ! wkb )
+	{
+		lwerror("GEOS failed to export WKB");
+	}
 	pglwgeom = pglwgeom_from_ewkb(wkb, size);
-
 	if ( ! pglwgeom )
 	{
-		lwerror("GEOS2POSTGIS: lwgeom_from_geometry returned NULL");
-		return NULL;
+		lwerror("GEOS2POSTGIS: lwgeom_from_ewkb returned NULL");
 	}
-
-#ifdef PGIS_DEBUG_GEOS2POSTGIS
-	lwnotice("GEOS2POSTGIS: lwgeom_from_geometry returned a %s", lwgeom_summary(lwgeom, 0)); 
-#endif
 
 	if ( is_worth_caching_pglwgeom_bbox(pglwgeom) )
 	{
@@ -2213,14 +2212,18 @@ POSTGIS2GEOS(PG_LWGEOM *pglwgeom)
 	GEOSGeom geom;
 
 	wkb = pglwgeom_to_ewkb(pglwgeom, getMachineEndian(), &size);
+	if ( ! wkb )
+	{
+		lwerror("Postgis failed to export EWKB %s:%d", __FILE__, __LINE__);
+	}
 	geom = GEOSGeomFromWKB_buf(wkb, size);
 	lwfree(wkb);
 	if ( ! geom ) {
 		lwerror("POSTGIS2GEOS conversion failed");
 	}
 
-	wkb = GEOSGeomToWKT(geom);
 #ifdef PGIS_DEBUG_CONVERTER
+	wkb = GEOSGeomToWKT(geom);
 	lwnotice("GEOS geom: %s", wkb);
 #endif
 
