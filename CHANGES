@@ -8,6 +8,7 @@ PostGIS 1.1.0CVS
 	  + Autoprobing DriverWrapper for HexWKB / EWKT switching
 	  + fix compile problems in ValueSetter for ancient jdk releases.
 	  + fix EWKT constructors to accept SRID=4711; representation
+	  + added preliminary read-only support for java2d geometries
 	- Full autoconf-based configuration
 	- Initial implementation of postgis_proc_upgrade script
 	- NEW scale() and transscale() companion methods to translate()
