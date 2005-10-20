@@ -50,7 +50,7 @@ import java.util.Properties;
 public class Java2DWrapper extends Driver {
 
     private static final String POSTGRES_PROTOCOL = "jdbc:postgresql:";
-    private static final String POSTGIS_PROTOCOL = "jdbc:postgis_j2d:";
+    public static final String POSTGIS_PROTOCOL = "jdbc:postgis_j2d:";
     public static final String REVISION = "$Revision$";
 
     public Java2DWrapper() {
@@ -90,7 +90,7 @@ public class Java2DWrapper extends Driver {
      * @throws SQLException 
      */
     public static void addGISTypes(PGConnection pgconn) throws SQLException {
-        pgconn.addDataType("geometry", Java2DWrapper.class);
+        pgconn.addDataType("geometry", PGShapeGeometry.class);
         pgconn.addDataType("box3d", org.postgis.PGbox3d.class);
         pgconn.addDataType("box2d", org.postgis.PGbox2d.class);
     }

@@ -57,10 +57,13 @@ public class PGShapeGeometry extends PGobject implements Shape {
     final static ShapeBinaryParser parser = new ShapeBinaryParser();
 
     private GeneralPath path = new GeneralPath();
+    
+    private int srid;
 
-    public PGShapeGeometry(GeneralPath path) {
+    private PGShapeGeometry(GeneralPath path) {
         setType("geometry");
         this.path = path;
+        path.setWindingRule(GeneralPath.WIND_EVEN_ODD);
     }
 
     /** Constructor called by JDBC drivers */
@@ -74,7 +77,8 @@ public class PGShapeGeometry extends PGobject implements Shape {
     }
 
     public void setValue(String value) throws SQLException {
-        parser.parse(value, path);
+        path.reset();
+        srid = parser.parse(value, path);
     }
 
     public String toString() {
@@ -96,6 +100,11 @@ public class PGShapeGeometry extends PGobject implements Shape {
         return false;
     }
 
+    public int getSRID() {
+        return srid;
+    }
+    
+    // followin are the java2d Shape method implementations...
     public boolean contains(double x, double y) {
         return path.contains(x, y);
     }
