@@ -280,18 +280,18 @@ public class DriverWrapper extends Driver {
     /** addGISTypes for V7.2 pgjdbc */
     protected static class TypesAdder72 extends TypesAdder {
         public void addGeometries(Connection conn) {
-            PGConnection pgconn = (PGConnection) conn;
+            org.postgresql.Connection pgconn = (org.postgresql.Connection) conn;
             pgconn.addDataType("geometry", "org.postgis.PGgeometry");
         }
 
         public void addBoxen(Connection conn) {
-            PGConnection pgconn = (PGConnection) conn;
+            org.postgresql.Connection pgconn = (org.postgresql.Connection) conn;
             pgconn.addDataType("box3d", "org.postgis.PGbox3d");
             pgconn.addDataType("box2d", "org.postgis.PGbox2d");
         }
 
         public void addBinaryGeometries(Connection conn) {
-            PGConnection pgconn = (PGConnection) conn;
+            org.postgresql.Connection pgconn = (org.postgresql.Connection) conn;
             pgconn.addDataType("geometry", "org.postgis.PGgeometryLW");
         }
     }
