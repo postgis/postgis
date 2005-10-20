@@ -1,0 +1,138 @@
+/*
+ * PGShapeGeometry.java
+ * 
+ * Allows PostGIS data to be read directly into a java2d shape
+ * 
+ * (C) 2005 Markus Schaber, markus.schaber@logix-tt.com
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 2.1 of the License.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA or visit the web at
+ * http://www.gnu.org.
+ * 
+ * $Id$
+ */
+
+package org.postgis.java2d;
+
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.geom.*;
+import java.sql.SQLException;
+
+import org.postgresql.util.PGobject;
+
+/**
+ * PostGIS Java2D geometry implementation (read-only).
+ * 
+ * Supports PostGIS 1.x (lwgeom hexwkb).
+ * 
+ * As the java.awt.Shape methods are implemented by using a
+ * java.awt.geom.GeneralPath object, they have the same semantics.
+ * 
+ * Points are translated into MoveTo vertices, (Multi)LineStrings into a
+ * sequence of a single MoveTo and multiple LineTo vertices, and Polygon
+ * rings into a sequence of a single MoveTo, multiple LineTo and a Close vertex.
+ * 
+ * @see java.awt.geom.GeneralPath
+ * @see java.awt.Shape
+ * @see org.postgresql.util.PGobject
+ * 
+ * @author Markus Schaber
+ */
+
+public class PGShapeGeometry extends PGobject implements Shape {
+    /* JDK 1.5 Serialization */
+    private static final long serialVersionUID = 0x100;
+
+    final static ShapeBinaryParser parser = new ShapeBinaryParser();
+
+    private GeneralPath path = new GeneralPath();
+
+    public PGShapeGeometry(GeneralPath path) {
+        setType("geometry");
+        this.path = path;
+    }
+
+    /** Constructor called by JDBC drivers */
+    public PGShapeGeometry() {
+        this(new GeneralPath());
+    }
+
+    public PGShapeGeometry(String value) throws SQLException {
+        this();
+        setValue(value);
+    }
+
+    public void setValue(String value) throws SQLException {
+        parser.parse(value, path);
+    }
+
+    public String toString() {
+        return "PGShapeGeometry " + path.toString();
+    }
+
+    public String getValue() {
+        // TODO...
+        return null;
+    }
+
+    public Object clone() {
+        return new PGShapeGeometry((GeneralPath) path.clone());
+    }
+
+    public boolean equals(Object obj) {
+        if (obj instanceof PGShapeGeometry)
+            return ((PGShapeGeometry) obj).path.equals(path);
+        return false;
+    }
+
+    public boolean contains(double x, double y) {
+        return path.contains(x, y);
+    }
+
+    public boolean contains(double x, double y, double w, double h) {
+        return path.contains(x, y, w, h);
+    }
+
+    public boolean intersects(double x, double y, double w, double h) {
+        return path.intersects(x, y, w, h);
+    }
+
+    public Rectangle getBounds() {
+        return path.getBounds();
+    }
+
+    public boolean contains(Point2D p) {
+        return path.contains(p);
+    }
+
+    public Rectangle2D getBounds2D() {
+        return path.getBounds2D();
+    }
+
+    public boolean contains(Rectangle2D r) {
+        return path.contains(r);
+    }
+
+    public boolean intersects(Rectangle2D r) {
+        return path.intersects(r);
+    }
+
+    public PathIterator getPathIterator(AffineTransform at) {
+        return path.getPathIterator(at);
+    }
+
+    public PathIterator getPathIterator(AffineTransform at, double flatness) {
+        return path.getPathIterator(at, flatness); 
+    }
+}
