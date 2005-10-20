@@ -93,15 +93,10 @@ public class JtsWrapper extends Driver {
 
     /**
      * adds the JTS/PostGIS Data types to a PG Connection.
+     * @throws SQLException 
      */
-    public static void addGISTypes(PGConnection pgconn) {
-        // Add data type up to PostgreSQL jdbc driver V7.4
-        pgconn.addDataType("geometry", "org.postgis.jts.JtsGeometry");
-
-        // Use the following for PostgreSQL jdbc driver V8.0 or newer
-        // The above way still works, but is deprecated.
-        // pgconn.addDataType("geometry",
-        // org.postgis.jts.JtsGeometry.class);
+    public static void addGISTypes(PGConnection pgconn) throws SQLException {
+        pgconn.addDataType("geometry", org.postgis.jts.JtsGeometry.class);
     }
 
     /**

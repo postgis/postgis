@@ -23,24 +23,13 @@
  */
 package org.postgis.jts;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.CoordinateSequence;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryCollection;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.MultiLineString;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.geom.impl.PackedCoordinateSequence;
-
 import org.postgis.binary.ByteGetter;
 import org.postgis.binary.ValueGetter;
 import org.postgis.binary.ByteGetter.BinaryByteGetter;
 import org.postgis.binary.ByteGetter.StringByteGetter;
+
+import com.vividsolutions.jts.geom.*;
+import com.vividsolutions.jts.geom.impl.PackedCoordinateSequence;
 
 /**
  * Parse binary representation of geometries. Currently, only text rep (hexed)
@@ -55,10 +44,9 @@ import org.postgis.binary.ByteGetter.StringByteGetter;
  * 2^28 coordinates (8 bytes each).
  * 
  * @author Markus Schaber, markus.schaber@logix-tt.com
- *  
+ * 
  */
 public class JtsBinaryParser {
-    protected final GeometryFactory geofac = new GeometryFactory();
 
     /**
      * Get the appropriate ValueGetter for my endianness
@@ -101,6 +89,11 @@ public class JtsBinaryParser {
 
     /** Parse a geometry starting at offset. */
     protected Geometry parseGeometry(ValueGetter data) {
+        return parseGeometry(data, null);
+    }
+
+    /** Parse with a known geometry factory */
+    protected Geometry parseGeometry(ValueGetter data, GeometryFactory geofac) {
         byte endian = data.getByte(); // skip and test endian flag
         if (endian != data.endian) {
             throw new IllegalArgumentException("Endian inconsistency!");
@@ -113,48 +106,50 @@ public class JtsBinaryParser {
         boolean haveM = (typeword & 0x40000000) != 0;
         boolean haveS = (typeword & 0x20000000) != 0;
 
-        int srid = -1;
+        // srid defaults to 0 in jts
+        int srid = 0;
 
         if (haveS) {
             srid = data.getInt();
         }
-        
-        Geometry result1;
+
+        if (geofac == null) {
+            geofac = new GeometryFactory(JtsGeometry.prec, srid, JtsGeometry.csfac);
+        } else if (geofac.getSRID() != srid) {
+            throw new IllegalArgumentException("Inconsistent srids in complex geometry: " + srid
+                    + ", " + geofac.getSRID());
+        }
+        Geometry result;
         switch (realtype) {
-        case org.postgis.Geometry.POINT :
-            result1 = parsePoint(data, haveZ, haveM);
-            break;
-        case org.postgis.Geometry.LINESTRING :
-            result1 = parseLineString(data, haveZ, haveM);
-            break;
-        case org.postgis.Geometry.POLYGON :
-            result1 = parsePolygon(data, haveZ, haveM);
-            break;
-        case org.postgis.Geometry.MULTIPOINT :
-            result1 = parseMultiPoint(data);
-            break;
-        case org.postgis.Geometry.MULTILINESTRING :
-            result1 = parseMultiLineString(data);
-            break;
-        case org.postgis.Geometry.MULTIPOLYGON :
-            result1 = parseMultiPolygon(data);
-            break;
-        case org.postgis.Geometry.GEOMETRYCOLLECTION :
-            result1 = parseCollection(data);
-            break;
-        default :
-            throw new IllegalArgumentException("Unknown Geometry Type!");
+            case org.postgis.Geometry.POINT :
+                result = parsePoint(data, haveZ, haveM, geofac);
+                break;
+            case org.postgis.Geometry.LINESTRING :
+                result = parseLineString(data, haveZ, haveM, geofac);
+                break;
+            case org.postgis.Geometry.POLYGON :
+                result = parsePolygon(data, haveZ, haveM, geofac);
+                break;
+            case org.postgis.Geometry.MULTIPOINT :
+                result = parseMultiPoint(data, geofac);
+                break;
+            case org.postgis.Geometry.MULTILINESTRING :
+                result = parseMultiLineString(data, geofac);
+                break;
+            case org.postgis.Geometry.MULTIPOLYGON :
+                result = parseMultiPolygon(data, geofac);
+                break;
+            case org.postgis.Geometry.GEOMETRYCOLLECTION :
+                result = parseCollection(data, geofac);
+                break;
+            default :
+                throw new IllegalArgumentException("Unknown Geometry Type!");
         }
 
-        Geometry result = result1;
-
-        if (haveS) {
-            result.setSRID(srid);
-        }
         return result;
     }
 
-    private Point parsePoint(ValueGetter data, boolean haveZ, boolean haveM) {
+    private Point parsePoint(ValueGetter data, boolean haveZ, boolean haveM, GeometryFactory geofac) {
         double X = data.getDouble();
         double Y = data.getDouble();
         Point result;
@@ -202,45 +197,48 @@ public class JtsBinaryParser {
         return cs;
     }
 
-    private MultiPoint parseMultiPoint(ValueGetter data) {
+    private MultiPoint parseMultiPoint(ValueGetter data, GeometryFactory geofac) {
         Point[] points = new Point[data.getInt()];
         parseGeometryArray(data, points);
         return geofac.createMultiPoint(points);
     }
 
-    private LineString parseLineString(ValueGetter data, boolean haveZ, boolean haveM) {
+    private LineString parseLineString(ValueGetter data, boolean haveZ, boolean haveM,
+            GeometryFactory geofac) {
         return geofac.createLineString(parseCS(data, haveZ, haveM));
     }
 
-    private LinearRing parseLinearRing(ValueGetter data, boolean haveZ, boolean haveM) {
+    private LinearRing parseLinearRing(ValueGetter data, boolean haveZ, boolean haveM,
+            GeometryFactory geofac) {
         return geofac.createLinearRing(parseCS(data, haveZ, haveM));
     }
 
-    private Polygon parsePolygon(ValueGetter data, boolean haveZ, boolean haveM) {
+    private Polygon parsePolygon(ValueGetter data, boolean haveZ, boolean haveM,
+            GeometryFactory geofac) {
         int holecount = data.getInt() - 1;
         LinearRing[] rings = new LinearRing[holecount];
-        LinearRing shell = parseLinearRing(data, haveZ, haveM);
+        LinearRing shell = parseLinearRing(data, haveZ, haveM, geofac);
         for (int i = 0; i < holecount; i++) {
-            rings[i] = parseLinearRing(data, haveZ, haveM);
+            rings[i] = parseLinearRing(data, haveZ, haveM, geofac);
         }
         return geofac.createPolygon(shell, rings);
     }
 
-    private MultiLineString parseMultiLineString(ValueGetter data) {
+    private MultiLineString parseMultiLineString(ValueGetter data, GeometryFactory geofac) {
         int count = data.getInt();
         LineString[] strings = new LineString[count];
         parseGeometryArray(data, strings);
         return geofac.createMultiLineString(strings);
     }
 
-    private MultiPolygon parseMultiPolygon(ValueGetter data) {
+    private MultiPolygon parseMultiPolygon(ValueGetter data, GeometryFactory geofac) {
         int count = data.getInt();
         Polygon[] polys = new Polygon[count];
         parseGeometryArray(data, polys);
         return geofac.createMultiPolygon(polys);
     }
 
-    private GeometryCollection parseCollection(ValueGetter data) {
+    private GeometryCollection parseCollection(ValueGetter data, GeometryFactory geofac) {
         int count = data.getInt();
         Geometry[] geoms = new Geometry[count];
         parseGeometryArray(data, geoms);

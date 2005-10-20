@@ -25,12 +25,16 @@
 
 package org.postgis.jts;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.io.WKTReader;
+import java.sql.SQLException;
 
 import org.postgresql.util.PGobject;
 
-import java.sql.SQLException;
+import com.vividsolutions.jts.geom.CoordinateSequenceFactory;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.PrecisionModel;
+import com.vividsolutions.jts.geom.impl.PackedCoordinateSequenceFactory;
+import com.vividsolutions.jts.io.WKTReader;
 
 /**
  * JTS Geometry SQL wrapper. Supports PostGIS 1.x (lwgeom hexwkb) for writing
@@ -45,9 +49,10 @@ public class JtsGeometry extends PGobject {
 
     Geometry geom;
 
-    final static WKTReader reader = new WKTReader();
     final static JtsBinaryParser bp = new JtsBinaryParser();
     final static JtsBinaryWriter bw = new JtsBinaryWriter();
+    final static PrecisionModel prec = new PrecisionModel();
+    final static CoordinateSequenceFactory csfac = PackedCoordinateSequenceFactory.DOUBLE_FACTORY;
 
     /** Constructor called by JDBC drivers */
     public JtsGeometry() {
@@ -82,8 +87,9 @@ public class JtsGeometry extends PGobject {
                     value = temp[1].trim();
                     srid = Integer.parseInt(temp[0].substring(5));
                 }
+                final GeometryFactory factory = new GeometryFactory(prec, srid, csfac);
+                final WKTReader reader = new WKTReader(factory);
                 result = reader.read(value);
-                result.setSRID(srid);
                 return result;
             }
         } catch (Exception E) {

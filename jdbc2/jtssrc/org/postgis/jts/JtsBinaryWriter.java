@@ -137,7 +137,7 @@ public class JtsBinaryWriter {
         dest.setInt(typeword);
 
         if (checkSrid(geom)) {
-            dest.setInt(geom.getSRID());
+            dest.setInt(geom.getFactory().getSRID());
         }
 
         switch (plaintype) {
@@ -294,7 +294,7 @@ public class JtsBinaryWriter {
     }
 
     private boolean checkSrid(Geometry geom) {
-        final int srid = geom.getSRID();
+        final int srid = geom.getFactory().getSRID();
         // SRID is default 0 with jts geometries
         final boolean result = srid != -1 && srid != 0;
         return result;

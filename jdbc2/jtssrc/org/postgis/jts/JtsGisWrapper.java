@@ -86,13 +86,13 @@ public class JtsGisWrapper extends Driver {
 
     /**
      * adds the JTS/PostGIS Data types to a PG Connection.
+     * 
+     * @throws SQLException
      */
-    public static void addGISTypes(PGConnection pgconn) {
-        pgconn.addDataType("geometry", "org.postgis.jts.JtsGeometry");
-        pgconn.addDataType("box3d", "org.postgis.PGbox3d");
-        //pgconn.addDataType("geometry",
-        // org.postgis.jts.JtsGeometry.class);
-        //pgconn.addDataType("box3d", org.postgis.PGbox3d.class);
+    public static void addGISTypes(PGConnection pgconn) throws SQLException {
+        pgconn.addDataType("geometry", org.postgis.jts.JtsGeometry.class);
+        pgconn.addDataType("box3d", org.postgis.PGbox3d.class);
+        pgconn.addDataType("box2d", org.postgis.PGbox2d.class);
     }
 
     /**
