@@ -27,6 +27,7 @@ PostGIS 1.0.5CVS
 	- Segfault fix in shp2pgsql (utf8 encoding)
 	- Fixed computation of null values fraction in analyzer
 	- Fixed return code of shp2pgsql
+	- Fixed handling of trailing dots in dbf numerical attributes
 
 PostGIS 1.0.4
 2005/09/09
