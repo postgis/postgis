@@ -40,8 +40,8 @@ import org.postgresql.util.PGobject;
  * java.awt.geom.GeneralPath object, they have the same semantics.
  * 
  * Points are translated into MoveTo vertices, (Multi)LineStrings into a
- * sequence of a single MoveTo and multiple LineTo vertices, and Polygon
- * rings into a sequence of a single MoveTo, multiple LineTo and a Close vertex.
+ * sequence of a single MoveTo and multiple LineTo vertices, and Polygon rings
+ * into a sequence of a single MoveTo, multiple LineTo and a Close vertex.
  * 
  * @see java.awt.geom.GeneralPath
  * @see java.awt.Shape
@@ -56,28 +56,35 @@ public class PGShapeGeometry extends PGobject implements Shape {
 
     final static ShapeBinaryParser parser = new ShapeBinaryParser();
 
-    private GeneralPath path = new GeneralPath();
-    
+    private final GeneralPath path;
+
     private int srid;
 
-    private PGShapeGeometry(GeneralPath path) {
+    /**
+     * Constructor called by JDBC drivers. call setValue afterwards to fill with
+     * Geometry data.
+     * 
+     */
+    public PGShapeGeometry() {
+        setType("geometry");
+        path = new GeneralPath();
+    }
+
+    /** Construct directly from a General Path */
+    public PGShapeGeometry(GeneralPath path, int srid) {
         setType("geometry");
         this.path = path;
-        path.setWindingRule(GeneralPath.WIND_EVEN_ODD);
+        this.srid = srid;
     }
 
-    /** Constructor called by JDBC drivers */
-    public PGShapeGeometry() {
-        this(new GeneralPath());
-    }
-
+    /** Reads the HexWKB representation */
     public PGShapeGeometry(String value) throws SQLException {
         this();
         setValue(value);
     }
 
+    /** Reads the HexWKB representation */
     public void setValue(String value) throws SQLException {
-        path.reset();
         srid = parser.parse(value, path);
     }
 
@@ -90,10 +97,6 @@ public class PGShapeGeometry extends PGobject implements Shape {
         return null;
     }
 
-    public Object clone() {
-        return new PGShapeGeometry((GeneralPath) path.clone());
-    }
-
     public boolean equals(Object obj) {
         if (obj instanceof PGShapeGeometry)
             return ((PGShapeGeometry) obj).path.equals(path);
@@ -103,7 +106,7 @@ public class PGShapeGeometry extends PGobject implements Shape {
     public int getSRID() {
         return srid;
     }
-    
+
     // followin are the java2d Shape method implementations...
     public boolean contains(double x, double y) {
         return path.contains(x, y);
@@ -142,6 +145,6 @@ public class PGShapeGeometry extends PGobject implements Shape {
     }
 
     public PathIterator getPathIterator(AffineTransform at, double flatness) {
-        return path.getPathIterator(at, flatness); 
+        return path.getPathIterator(at, flatness);
     }
 }
