@@ -174,6 +174,5 @@ public class TestJava2d {
 
         public void windowOpened(WindowEvent e) {//
         }
-
     }
 }

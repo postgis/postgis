@@ -25,6 +25,8 @@
 
 package org.postgis.jts;
 
+import gnu.trove.TIntObjectHashMap;
+
 import java.sql.SQLException;
 
 import org.postgresql.util.PGobject;
@@ -54,6 +56,27 @@ public class JtsGeometry extends PGobject {
     final static PrecisionModel prec = new PrecisionModel();
     final static CoordinateSequenceFactory csfac = PackedCoordinateSequenceFactory.DOUBLE_FACTORY;
 
+    private static TIntObjectHashMap readers = new TIntObjectHashMap();
+    private static TIntObjectHashMap factories = new TIntObjectHashMap();
+
+    static synchronized GeometryFactory getFactory(int SRID) {
+        GeometryFactory factory = (GeometryFactory) factories.get(SRID);
+        if (factory == null) {
+            factory = new GeometryFactory(prec, SRID, csfac);
+            readers.put(SRID, factory);
+        }
+        return factory;
+    }
+
+    static synchronized WKTReader getReader(int SRID) {
+        WKTReader reader = (WKTReader) readers.get(SRID);
+        if (reader == null) {
+            reader = new WKTReader(getFactory(SRID));
+            readers.put(SRID, reader);
+        }
+        return reader;
+    }
+
     /** Constructor called by JDBC drivers */
     public JtsGeometry() {
         setType("geometry");
@@ -80,16 +103,16 @@ public class JtsGeometry extends PGobject {
                 return bp.parse(value);
             } else {
                 Geometry result;
-                int srid = -1;
+                // no srid := 0 in JTS world
+                int srid = 0;
                 // break up geometry into srid and wkt
                 if (value.startsWith("SRID=")) {
                     String[] temp = value.split(";");
                     value = temp[1].trim();
                     srid = Integer.parseInt(temp[0].substring(5));
                 }
-                final GeometryFactory factory = new GeometryFactory(prec, srid, csfac);
-                final WKTReader reader = new WKTReader(factory);
-                result = reader.read(value);
+
+                result = getReader(srid).read(value);
                 return result;
             }
         } catch (Exception E) {

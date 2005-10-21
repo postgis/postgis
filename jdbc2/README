@@ -10,7 +10,7 @@ $Revision$
 JDBC is an database driver specification for Java. Like ODBC in the C
 world, JDBC allows java applications to transparently use different
 JDBC compliant databases without any source code changes. PostgreSQL,
-the database PostGIS  is written for, comes with a driver that
+the database PostGIS is written for, comes with a driver that
 follows this specification. For downloads and more info, see:
 http://jdbc.postgresql.org/download.html
 
@@ -26,7 +26,7 @@ database via the PreparedStatement.setObject() method.
 
 Currently, the code is tested with PostGIS 0.8.1, 0.9.1. 0.9.2 and
 1.0.0. It supports both the new hex-encoded EWKB canonical text
-representation used by  PostGIS 1.0.0 lwgeom code, and the old, less
+representation used by PostGIS 1.0.0 lwgeom code, and the old, less
 efficient WKT like representation used by previous releases when
 reading data from the server. When sending data to the server, it
 currently always uses the latter form, which is compatible to all

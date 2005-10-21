@@ -114,7 +114,7 @@ public class JtsBinaryParser {
         }
 
         if (geofac == null) {
-            geofac = new GeometryFactory(JtsGeometry.prec, srid, JtsGeometry.csfac);
+            geofac = JtsGeometry.getFactory(srid);
         } else if (geofac.getSRID() != srid) {
             throw new IllegalArgumentException("Inconsistent srids in complex geometry: " + srid
                     + ", " + geofac.getSRID());
