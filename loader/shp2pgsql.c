@@ -312,6 +312,7 @@ Insert_attributes(DBFHandle hDBFHandle, int row)
                }
 	       // pg_atoi() does not do this
 	       if ( val[0] == '\0' ) { val[0] = '0'; val[1] = '\0'; }
+	       if ( val[strlen(val)-1] == '.' ) val[strlen(val)-1] = '\0';
                break;
             case FTString:
             case FTLogical:
@@ -1660,6 +1661,10 @@ utf8 (const char *fromcode, char *inputbuf)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.88.2.10  2005/10/21 11:34:25  strk
+ * Applied patch by Lars Roessiger handling numerical values with a trailing decima
+ * l dot
+ *
  * Revision 1.88.2.9  2005/10/13 13:40:15  strk
  * Fixed return code from shp2pgsql
  *
