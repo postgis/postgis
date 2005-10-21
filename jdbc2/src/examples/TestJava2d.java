@@ -51,7 +51,7 @@ public class TestJava2d {
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
 
         if (args.length != 5) {
-            System.err.println("Usage: java examples/TestServer dburl user pass tablename column");
+            System.err.println("Usage: java examples/TestJava2D dburl user pass tablename column");
             System.err.println();
             System.err.println("dburl has the following format:");
             System.err.println(Java2DWrapper.POSTGIS_PROTOCOL + "//HOST:PORT/DATABASENAME");
