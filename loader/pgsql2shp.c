@@ -2578,10 +2578,56 @@ initialize(void)
 		 * Find appropriate type of dbf attributes
 		 */
 
-		/* integer type */
-		if(type == 20 || type == 21 || type == 23)
+		/* int2 type */
+		if ( type == 21 )
 		{
-			if(DBFAddField(dbf, field_name, FTInteger,16,0) == -1)
+			/* 
+			 * Longest text representation for
+			 * an int2 type (16bit) is 6 bytes
+			 * (-32768)
+			 */
+			if ( DBFAddField(dbf, field_name, FTInteger,
+				6, 0) == -1 )
+			{
+				printf( "error - Field could not "
+					"be created.\n");
+				return 0;
+			}
+			type_ary[mainscan_nflds]=1;
+			mainscan_flds[mainscan_nflds++] = fname;
+			continue;
+		}
+
+		/* int4 type */
+		if ( type == 23 )
+		{
+			/* 
+			 * Longest text representation for
+			 * an int4 type (32bit) is 11 bytes
+			 * (-2147483648)
+			 */
+			if ( DBFAddField(dbf, field_name, FTInteger,
+				11, 0) == -1 )
+			{
+				printf( "error - Field could not "
+					"be created.\n");
+				return 0;
+			}
+			type_ary[mainscan_nflds]=1;
+			mainscan_flds[mainscan_nflds++] = fname;
+			continue;
+		}
+
+		/* int8 type */
+		if ( type == 20 )
+		{
+			/* 
+			 * Longest text representation for
+			 * an int8 type (64bit) is 20 bytes
+			 * (-9223372036854775808)
+			 */
+			if ( DBFAddField(dbf, field_name, FTInteger,
+				20, 0) == -1 )
 			{
 				printf( "error - Field could not "
 					"be created.\n");
@@ -2592,7 +2638,15 @@ initialize(void)
 			continue;
 		}
 		
-		/* double type */
+		/*
+		 * double or numeric types:
+  		 *    700: float4
+		 *    701: float8
+		 *   1700: numeric
+		 *
+		 *
+		 * TODO: stricter handling of sizes
+		 */
 		if(type == 700 || type == 701 || type == 1700 )
 		{
 			if(DBFAddField(dbf, field_name,FTDouble,32,10) == -1)
@@ -2625,16 +2679,20 @@ initialize(void)
 		}
 
 		/*
-		 * For variable-sized fields we'll use max size in table
-		 * as dbf field size
+		 * For variable-sized fields we'll use either 
+		 * maximum allowed size (atttypmod) or max actual
+		 * attribute value in table.
 		 */
 		else if(size == -1)
 		{
+			/*
+			 * 1042 is bpchar,  1043 is varchar
+			 * mod is maximum allowed size, including
+			 * header which contains *real* size.
+			 */
 			if ( (type == 1042 || type == 1043) && mod != -1 )
 			{
-				size = mod-3; // 4 is header size, we
-				              // keep 1 for terminating 
-				              // NULL.
+				size = mod-4; // 4 is header size
 			}
 			else
 			{
@@ -3136,6 +3194,12 @@ create_usrquerytable(void)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.80  2005/10/24 11:30:59  strk
+ * Fixed a bug in string attributes handling truncating values of maximum
+ * allowed length, curtesy of Lars Roessiger.
+ * Reworked integer attributes handling to be stricter in dbf->sql mapping
+ * and to allow for big int8 values in sql->dbf conversion
+ *
  * Revision 1.79  2005/10/03 18:08:55  strk
  * Stricter string attributes lenght handling. DBF header will be used
  * to set varchar maxlenght, (var)char typmod will be used to set DBF header

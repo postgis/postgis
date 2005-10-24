@@ -520,7 +520,7 @@ CreateTable(void)
 		field_width = widths[j];
 		field_precision = precisions[j];
 
-		printf(", \"%s\" ", field_names[j]);
+		printf(",\n\"%s\" ", field_names[j]);
 
 		if(hDBFHandle->pachFieldType[j] == 'D' ) /* Date field */
 		{
@@ -532,23 +532,31 @@ CreateTable(void)
 
 			if(type == FTString)
 			{
-				// do not need space for terminating NULL
-				printf ("varchar(%d)", field_width-1);
+				// use DBF attribute size as maximum width
+				printf ("varchar(%d)", field_width);
 			}
 			else if(type == FTInteger)
 			{
-				if ( forceint4 || field_width <= 9 )
+				if ( forceint4 )
 				{
 					printf ("int4");
 				}
-				else if( field_width > 18 )
+				else if  ( field_width <= 6 )
 				{
-					printf("numeric(%d,0)",
-						field_width);
+					printf ("int2");
+				}
+				else if  ( field_width <= 11 )
+				{
+					printf ("int4");
+				}
+				else if  ( field_width <= 20 )
+				{
+					printf ("int8");
 				}
 				else 
 				{
-					printf ("int8");
+					printf("numeric(%d,0)",
+						field_width);
 				}
 			}
 			else if(type == FTDouble)
@@ -1667,6 +1675,12 @@ utf8 (const char *fromcode, char *inputbuf)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.102  2005/10/24 11:30:59  strk
+ * Fixed a bug in string attributes handling truncating values of maximum
+ * allowed length, curtesy of Lars Roessiger.
+ * Reworked integer attributes handling to be stricter in dbf->sql mapping
+ * and to allow for big int8 values in sql->dbf conversion
+ *
  * Revision 1.101  2005/10/21 11:33:55  strk
  * Applied patch by Lars Roessiger handling numerical values with a trailing decima
  * l dot
