@@ -21,6 +21,7 @@ PostGIS 1.1.0CVS
 	- Removed automatic call to fix_geometry_columns() in
 	  AddGeometryColumns() and update_geometry_stats()
 	- Initial support for topology modelling
+	- Stricter mapping between DBF and SQL integer and string attributes
 
 PostGIS 1.0.5CVS
 	- New "Reporting Bugs" chapter in manual
@@ -28,7 +29,6 @@ PostGIS 1.0.5CVS
 	- Fixed computation of null values fraction in analyzer
 	- Fixed return code of shp2pgsql
 	- Fixed handling of trailing dots in dbf numerical attributes
-	- Stricter mapping between DBF and SQL integer and string attributes
 
 PostGIS 1.0.4
 2005/09/09
