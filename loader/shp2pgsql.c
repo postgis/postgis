@@ -515,7 +515,7 @@ CreateTable(void)
 		field_width = widths[j];
 		field_precision = precisions[j];
 
-		printf(",\n\"%s\" ", field_names[j]);
+		printf(", \"%s\" ", field_names[j]);
 
 		if(hDBFHandle->pachFieldType[j] == 'D' ) /* Date field */
 		{
@@ -527,31 +527,22 @@ CreateTable(void)
 
 			if(type == FTString)
 			{
-				// use DBF attribute size as maximum width
-				printf ("varchar(%d)", field_width);
+				printf ("varchar");
 			}
 			else if(type == FTInteger)
 			{
-				if ( forceint4 )
+				if ( forceint4 || field_width <= 9 )
 				{
 					printf ("int4");
 				}
-				else if  ( field_width <= 5 )
-				{
-					printf ("int2");
-				}
-				else if  ( field_width <= 10 )
-				{
-					printf ("int4");
-				}
-				else if  ( field_width <= 19 )
-				{
-					printf ("int8");
-				}
-				else 
+				else if( field_width > 18 )
 				{
 					printf("numeric(%d,0)",
 						field_width);
+				}
+				else 
+				{
+					printf ("int8");
 				}
 			}
 			else if(type == FTDouble)
@@ -1670,6 +1661,10 @@ utf8 (const char *fromcode, char *inputbuf)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.88.2.13  2005/10/24 16:12:41  strk
+ * Reverted backport of stricter INTEGER and STRING attributes handling.
+ * The change is too big to appear in the 1.0 branch.
+ *
  * Revision 1.88.2.12  2005/10/24 15:54:16  strk
  * fixed wrong assumption about maximum size of integer attributes (width is maximum size of text representation)
  *

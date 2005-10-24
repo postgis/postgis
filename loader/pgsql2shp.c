@@ -2414,8 +2414,7 @@ initialize(void)
 
 	if ( schema )
 	{
-		sprintf(query, "SELECT a.attname, a.atttypid, a.attlen, "
-			"a.atttypmod FROM "
+		sprintf(query, "SELECT a.attname, a.atttypid, a.attlen FROM "
 			"pg_attribute a, pg_class c, pg_namespace n WHERE "
 			"n.nspname = '%s' AND a.attrelid = c.oid AND "
 			"n.oid = c.relnamespace AND "
@@ -2424,8 +2423,7 @@ initialize(void)
 	}
 	else
 	{
-		sprintf(query, "SELECT a.attname, a.atttypid, a.attlen, "
-			"a.atttypmod FROM "
+		sprintf(query, "SELECT a.attname, a.atttypid, a.attlen FROM "
 			"pg_attribute a, pg_class c WHERE "
 			"a.attrelid = c.oid and a.attnum > 0 AND "
 			"a.atttypid != 0 AND "
@@ -2473,7 +2471,7 @@ initialize(void)
 	for (i=0; i<PQntuples(res); i++)
 	{
 		int j;
-		int type, size, mod;
+		int type, size;
 		char *fname; // pgsql attribute name
 		char *ptr;
 		char field_name[32]; // dbf version of field name
@@ -2481,7 +2479,6 @@ initialize(void)
 		fname = PQgetvalue(res, i, 0);
 		type = atoi(PQgetvalue(res, i, 1));
 		size = atoi(PQgetvalue(res, i, 2));
-		mod = atoi(PQgetvalue(res, i, 3));
 
 //printf( "A: %s, T: %d, S: %d\n", fname, type, size);
 		/*
@@ -2578,56 +2575,10 @@ initialize(void)
 		 * Find appropriate type of dbf attributes
 		 */
 
-		/* int2 type */
-		if ( type == 21 )
+		/* integer type */
+		if(type == 20 || type == 21 || type == 23)
 		{
-			/* 
-			 * Longest text representation for
-			 * an int2 type (16bit) is 6 bytes
-			 * (-32768)
-			 */
-			if ( DBFAddField(dbf, field_name, FTInteger,
-				6, 0) == -1 )
-			{
-				printf( "error - Field could not "
-					"be created.\n");
-				return 0;
-			}
-			type_ary[mainscan_nflds]=1;
-			mainscan_flds[mainscan_nflds++] = fname;
-			continue;
-		}
-
-		/* int4 type */
-		if ( type == 23 )
-		{
-			/* 
-			 * Longest text representation for
-			 * an int4 type (32bit) is 11 bytes
-			 * (-2147483648)
-			 */
-			if ( DBFAddField(dbf, field_name, FTInteger,
-				11, 0) == -1 )
-			{
-				printf( "error - Field could not "
-					"be created.\n");
-				return 0;
-			}
-			type_ary[mainscan_nflds]=1;
-			mainscan_flds[mainscan_nflds++] = fname;
-			continue;
-		}
-
-		/* int8 type */
-		if ( type == 20 )
-		{
-			/* 
-			 * Longest text representation for
-			 * an int8 type (64bit) is 20 bytes
-			 * (-9223372036854775808)
-			 */
-			if ( DBFAddField(dbf, field_name, FTInteger,
-				20, 0) == -1 )
+			if(DBFAddField(dbf, field_name, FTInteger,16,0) == -1)
 			{
 				printf( "error - Field could not "
 					"be created.\n");
@@ -2638,15 +2589,7 @@ initialize(void)
 			continue;
 		}
 		
-		/*
-		 * double or numeric types:
-  		 *    700: float4
-		 *    701: float8
-		 *   1700: numeric
-		 *
-		 *
-		 * TODO: stricter handling of sizes
-		 */
+		/* double type */
 		if(type == 700 || type == 701 || type == 1700 )
 		{
 			if(DBFAddField(dbf, field_name,FTDouble,32,10) == -1)
@@ -2679,29 +2622,14 @@ initialize(void)
 		}
 
 		/*
-		 * For variable-sized fields we'll use either 
-		 * maximum allowed size (atttypmod) or max actual
-		 * attribute value in table.
+		 * For variable-sized fields we'll use max size in table
+		 * as dbf field size
 		 */
 		else if(size == -1)
 		{
-			/*
-			 * 1042 is bpchar,  1043 is varchar
-			 * mod is maximum allowed size, including
-			 * header which contains *real* size.
-			 */
-			if ( (type == 1042 || type == 1043) && mod != -1 )
-			{
-				size = mod-4; // 4 is header size
-			}
-			else
-			{
-				size = getMaxFieldSize(conn, schema,
-					table, fname);
-				if ( size == -1 ) return 0;
-				if ( ! size ) size = 32;
-				// might 0 be a good size ?
-			}
+			size = getMaxFieldSize(conn, schema, table, fname);
+			if ( size == -1 ) return 0;
+			if ( ! size ) size = 32; // might 0 be a good size ?
 		}
 //printf( "FIELD_NAME: %s, SIZE: %d\n", field_name, size);
 		
@@ -3194,6 +3122,10 @@ create_usrquerytable(void)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.74.2.6  2005/10/24 16:12:41  strk
+ * Reverted backport of stricter INTEGER and STRING attributes handling.
+ * The change is too big to appear in the 1.0 branch.
+ *
  * Revision 1.74.2.5  2005/10/24 11:31:27  strk
  * Backported stricter STRING and INTEGER attributes handling.
  *
