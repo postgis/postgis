@@ -536,15 +536,15 @@ CreateTable(void)
 				{
 					printf ("int4");
 				}
-				else if  ( field_width <= 6 )
+				else if  ( field_width <= 5 )
 				{
 					printf ("int2");
 				}
-				else if  ( field_width <= 11 )
+				else if  ( field_width <= 10 )
 				{
 					printf ("int4");
 				}
-				else if  ( field_width <= 20 )
+				else if  ( field_width <= 19 )
 				{
 					printf ("int8");
 				}
@@ -1670,6 +1670,9 @@ utf8 (const char *fromcode, char *inputbuf)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.88.2.12  2005/10/24 15:54:16  strk
+ * fixed wrong assumption about maximum size of integer attributes (width is maximum size of text representation)
+ *
  * Revision 1.88.2.11  2005/10/24 11:31:27  strk
  * Backported stricter STRING and INTEGER attributes handling.
  *
