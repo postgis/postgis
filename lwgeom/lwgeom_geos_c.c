@@ -9,6 +9,8 @@
 #include "wktparse.h"
 #include "geos_c.h"
 
+//#define WKB_CONVERSION 1
+
 //
 // WARNING: buffer-based GeomUnion has been disabled due to
 //          limitations in the GEOS code (it would only work
@@ -64,10 +66,11 @@ Datum linemerge(PG_FUNCTION_ARGS);
 #endif // PGIS_DEBUG_CONVERTER
 //#define PGIS_DEBUG 1
 
-LWGEOM *lwgeom_from_geometry(GEOSGeom geom, char want3d);
+LWGEOM *GEOS2LWGEOM(GEOSGeom geom, char want3d);
 PG_LWGEOM *GEOS2POSTGIS(GEOSGeom geom, char want3d);
 GEOSGeom POSTGIS2GEOS(PG_LWGEOM *g);
 GEOSGeom LWGEOM2GEOS(LWGEOM *g);
+
 void errorIfGeometryCollection(PG_LWGEOM *g1, PG_LWGEOM *g2);
 
 PG_FUNCTION_INFO_V1(postgis_geos_version);
@@ -320,7 +323,7 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 			else
 			{
 				//lwgeoms = lwalloc(sizeof(LWGEOM *)*MAXGEOMS);
-				//lwgeoms[0] = lwgeom_from_geometry(geos_result, is3d);
+				//lwgeoms[0] = GEOS2LWGEOM(geos_result, is3d);
 				geoms[0] = geos_result;
 				ngeoms=1;
 				npoints = GEOSGetNumCoordinate(geoms[0]);
@@ -669,7 +672,7 @@ Datum convexhull(PG_FUNCTION_ARGS)
 #ifdef PROFILE
 	profstart(PROF_G2P);
 #endif
-	lwout = lwgeom_from_geometry(g3, TYPE_NDIMS(geom1->type) > 2);
+	lwout = GEOS2LWGEOM(g3, TYPE_NDIMS(geom1->type) > 2);
 #ifdef PROFILE
 	profstop(PROF_G2P);
 #endif
@@ -2134,10 +2137,11 @@ Datum isring(PG_FUNCTION_ARGS)
 
 //-----=GEOS2POSTGIS=
 
+#ifdef WKB_CONVERSION
 
 // Return an LWGEOM from a GEOSGeom
 LWGEOM *
-lwgeom_from_geometry(GEOSGeom geom, char want3d)
+GEOS2LWGEOM(GEOSGeom geom, char want3d)
 {
 	size_t size;
 	char *wkb;
@@ -2158,7 +2162,6 @@ GEOS2POSTGIS(GEOSGeom geom, char want3d)
 	size_t size;
 	char *wkb;
 	PG_LWGEOM *pglwgeom, *ret;
-	int SRID;
 
 	if ( want3d ) GEOS_setWKBOutputDims(3);
 	else GEOS_setWKBOutputDims(2);
@@ -2188,9 +2191,158 @@ GEOS2POSTGIS(GEOSGeom geom, char want3d)
 	return ret;
 }
 
+#else // !ndef WKB_CONVERSION
+
+/* Return a POINTARRAY from a GEOSCoordSeq */
+POINTARRAY *
+ptarray_from_GEOSCoordSeq(GEOSCoordSeq cs, char want3d)
+{
+	unsigned int dims=2;
+	unsigned int size, i, ptsize;
+	uchar *points, *ptr;
+	POINTARRAY *ret;
+
+	if ( ! GEOSCoordSeq_getSize(cs, &size) )
+			lwerror("Exception thrown");
+
+	if ( want3d )
+	{
+		if ( ! GEOSCoordSeq_getDimensions(cs, &dims) )
+			lwerror("Exception thrown");
+		if ( dims > 3 ) dims = 3; // forget higher dimensions (if any)
+	}
+
+	ptsize = sizeof(double)*dims;
+
+	ret = ptarray_construct((dims==3), 0, size);
+
+	points = ret->serialized_pointlist;
+	ptr = points;
+	for (i=0; i<size; i++)
+	{
+		POINT3DZ point;
+		GEOSCoordSeq_getX(cs, i, &(point.x));
+		GEOSCoordSeq_getY(cs, i, &(point.y));
+		if ( dims >= 3 ) GEOSCoordSeq_getZ(cs, i, &(point.z));
+		memcpy(ptr, &point, ptsize);
+	}
+
+	return ret;
+}
+
+// Return an LWGEOM from a Geometry
+LWGEOM *
+GEOS2LWGEOM(GEOSGeom geom, char want3d)
+{
+	int type = GEOSGeomTypeId(geom) ;
+	bool hasZ = GEOSHasZ(geom);
+	int SRID = GEOSGetSRID(geom);
+
+	if ( ! hasZ )
+	{
+		if ( want3d )
+		{
+			//elog(NOTICE, "Geometry has no Z, won't provide one");
+			want3d = 0;
+		}
+	}
+
+#ifdef PGIS_DEBUG_GEOS2POSTGIS
+	lwnotice("lwgeom_from_geometry: it's a %s", lwgeom_typename(type));
+#endif
+	switch (type)
+	{
+		GEOSCoordSeq cs;
+		POINTARRAY *pa, **ppaa;
+		GEOSGeom g;
+		LWGEOM **geoms;
+		unsigned int i, ngeoms;
+
+		case GEOS_POINT:
+			cs = GEOSGeom_getCoordSeq(geom);
+			pa = ptarray_from_GEOSCoordSeq(cs, want3d);
+			return (LWGEOM *)lwpoint_construct(SRID, NULL, pa);
+			
+		case GEOS_LINESTRING:
+		case GEOS_LINEARRING:
+			cs = GEOSGeom_getCoordSeq(geom);
+			pa = ptarray_from_GEOSCoordSeq(cs, want3d);
+			return (LWGEOM *)lwline_construct(SRID, NULL, pa);
+
+		case GEOS_POLYGON:
+			ngeoms = GEOSGetNumInteriorRings(geom);
+			ppaa = lwalloc(sizeof(POINTARRAY *)*(ngeoms+1));
+			g = GEOSGetExteriorRing(geom);
+			cs = GEOSGeom_getCoordSeq(g);
+			ppaa[0] = ptarray_from_GEOSCoordSeq(cs, want3d);
+			for (i=0; i<ngeoms; i++)
+			{
+				g = GEOSGetInteriorRingN(geom, i);
+				cs = GEOSGeom_getCoordSeq(g);
+				ppaa[i+1] = ptarray_from_GEOSCoordSeq(cs,
+					want3d);
+			}
+			return (LWGEOM *)lwpoly_construct(SRID, NULL,
+				ngeoms+1, ppaa);
+
+		case GEOS_MULTIPOINT:
+		case GEOS_MULTILINESTRING:
+		case GEOS_MULTIPOLYGON:
+		case GEOS_GEOMETRYCOLLECTION:
+			ngeoms = GEOSGetNumGeometries(geom);
+			geoms = lwalloc(sizeof(LWGEOM *)*ngeoms);
+			for (i=0; i<ngeoms; i++)
+			{
+				g = GEOSGetGeometryN(geom, i);
+				geoms[i] = GEOS2LWGEOM(g, want3d);
+			}
+			return (LWGEOM *)lwcollection_construct(type,
+				SRID, NULL, ngeoms, geoms);
+
+		default:
+			lwerror("GEOS2LWGEOM: unknown geometry type: %d", type);
+			return NULL;
+
+	}
+
+}
+
+
+PG_LWGEOM *
+GEOS2POSTGIS(GEOSGeom geom, char want3d)
+{
+	LWGEOM *lwgeom;
+	PG_LWGEOM *result;
+
+	lwgeom = GEOS2LWGEOM(geom, want3d);
+	if ( ! lwgeom )
+	{
+		lwerror("GEOS2POSTGIS: GEOS2LWGEOM returned NULL");
+		return NULL;
+	}
+
+#ifdef PGIS_DEBUG_GEOS2POSTGIS
+	lwnotice("GEOS2POSTGIS: GEOS2LWGEOM returned a %s", lwgeom_summary(lwgeom, 0)); 
+#endif
+
+	if ( is_worth_caching_lwgeom_bbox(lwgeom) )
+	{
+		lwgeom_addBBOX(lwgeom);
+	}
+
+	result = pglwgeom_serialize(lwgeom);
+
+	return result;
+}
+
+#endif // def WKB_CONVERSION
+
 //-----=POSTGIS2GEOS=
 
-GEOSGeom LWGEOM2GEOS(LWGEOM *lwgeom);
+
+#ifdef WKB_CONVERSION
+
+GEOSGeom LWGEOM2GEOS(LWGEOM *);
 
 GEOSGeom 
 LWGEOM2GEOS(LWGEOM *lwgeom)
@@ -2229,6 +2381,133 @@ POSTGIS2GEOS(PG_LWGEOM *pglwgeom)
 
 	return geom;
 }
+
+#else // ndef WKB_CONVERSION
+
+GEOSCoordSeq ptarray_to_GEOSCoordSeq(POINTARRAY *);
+GEOSGeom LWGEOM2GEOS(LWGEOM *lwgeom);
+
+GEOSCoordSeq
+ptarray_to_GEOSCoordSeq(POINTARRAY *pa)
+{
+	unsigned int dims = 2;
+	unsigned int size, i;
+	POINT3DZ p;
+	GEOSCoordSeq sq;
+
+	if ( TYPE_HASZ(pa->dims) ) dims = 3;
+	size = pa->npoints;
+
+	sq = GEOSCoordSeq_create(size, dims);
+	if ( ! sq ) lwerror("Error creating GEOS Coordinate Sequence");
+
+	for (i=0; i<size; i++)
+	{
+		getPoint3dz_p(pa, i, &p);
+		GEOSCoordSeq_setX(sq, i, p.x);
+		GEOSCoordSeq_setY(sq, i, p.y);
+		if ( dims == 3 ) GEOSCoordSeq_setZ(sq, i, p.z);
+	}
+	return sq;
+}
+
+GEOSGeom
+LWGEOM2GEOS(LWGEOM *lwgeom)
+{
+	GEOSCoordSeq sq;
+	GEOSGeom g, shell, *geoms;
+	unsigned int ngeoms, i;
+	int type = TYPE_GETTYPE(lwgeom->type);
+	int geostype;
+
+	switch (type)
+	{
+		LWPOINT *lwp;
+		LWPOLY *lwpoly;
+		LWLINE *lwl;
+		LWCOLLECTION *lwc;
+
+		case POINTTYPE:
+			lwp = (LWPOINT *)lwgeom;
+			sq = ptarray_to_GEOSCoordSeq(lwp->point);
+			g = GEOSGeom_createPoint(sq);
+			if ( ! g ) lwerror("Exception in LWGEOM2GEOS");
+			GEOSSetSRID(g, lwgeom->SRID);
+			return g;
+		case LINETYPE:
+			lwl = (LWLINE *)lwgeom;
+			sq = ptarray_to_GEOSCoordSeq(lwl->points);
+			g = GEOSGeom_createLineString(sq);
+			if ( ! g ) lwerror("Exception in LWGEOM2GEOS");
+			GEOSSetSRID(g, lwgeom->SRID);
+			return g;
+		case POLYGONTYPE:
+			lwpoly = (LWPOLY *)lwgeom;
+			sq = ptarray_to_GEOSCoordSeq(lwpoly->rings[0]);
+			shell = GEOSGeom_createLinearRing(sq);
+			ngeoms = lwpoly->nrings-1;
+			geoms = malloc(sizeof(GEOSGeom *)*ngeoms);
+			for (i=1; i<=ngeoms; i++)
+			{
+				sq = ptarray_to_GEOSCoordSeq(lwpoly->rings[i]);
+				geoms[i-1] = GEOSGeom_createLinearRing(sq);
+			}
+			g = GEOSGeom_createPolygon(shell, geoms, ngeoms);
+			if ( ! g ) lwerror("Exception in LWGEOM2GEOS");
+			GEOSSetSRID(g, lwgeom->SRID);
+			free(geoms);
+			return g;
+		case MULTIPOINTTYPE:
+		case MULTILINETYPE:
+		case MULTIPOLYGONTYPE:
+		case COLLECTIONTYPE:
+			if ( type == MULTIPOINTTYPE )
+				geostype = GEOS_MULTIPOINT;
+			else if ( type == MULTILINETYPE )
+				geostype = GEOS_MULTILINESTRING;
+			else if ( type == MULTIPOLYGONTYPE )
+				geostype = GEOS_MULTIPOLYGON;
+			else
+				geostype = GEOS_MULTIPOLYGON;
+
+			lwc = (LWCOLLECTION *)lwgeom;
+			ngeoms = lwc->ngeoms;
+			geoms = malloc(sizeof(GEOSGeom *)*ngeoms);
+
+			for (i=0; i<ngeoms; i++)
+				geoms[i] = LWGEOM2GEOS(lwc->geoms[i]);
+			g = GEOSGeom_createCollection(geostype, geoms, ngeoms);
+			if ( ! g ) lwerror("Exception in LWGEOM2GEOS");
+			GEOSSetSRID(g, lwgeom->SRID);
+			free(geoms);
+			return g;
+
+		default:
+			lwerror("Unknown geometry type: %d", type);
+			return NULL;
+	}
+}
+
+GEOSGeom 
+POSTGIS2GEOS(PG_LWGEOM *pglwgeom)
+{
+	GEOSGeom ret;
+	LWGEOM *lwgeom = lwgeom_deserialize(SERIALIZED_FORM(pglwgeom));
+	if ( ! lwgeom )
+	{
+		lwerror("POSTGIS2GEOS: unable to deserialize input");
+		return NULL;
+	}
+	ret = LWGEOM2GEOS(lwgeom);
+	lwgeom_release(lwgeom);
+	if ( ! ret )  {
+		lwerror("POSTGIS2GEOS conversion failed");
+		return NULL;
+	}
+	return ret;
+}
+
+#endif // WKB_CONVERSION
 
 PG_FUNCTION_INFO_V1(GEOSnoop);
 Datum GEOSnoop(PG_FUNCTION_ARGS)
