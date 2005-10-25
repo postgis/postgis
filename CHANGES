@@ -16,6 +16,8 @@ PostGIS 1.1.0CVS
 	- NEW line_locate_point() function
 	- NEW M(point) function
 	- NEW LineMerge(geometry) function
+	- NEW shift_longitude(geometry) function
+	- NEW azimuth(geometry) function
 	- JTS support improvements
 	- Initial GEOS C-API support
 	- Removed automatic call to fix_geometry_columns() in
