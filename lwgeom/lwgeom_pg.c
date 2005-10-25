@@ -122,6 +122,12 @@ pglwgeom_serialize(LWGEOM *in)
 	return result;
 }
 
+LWGEOM *
+pglwgeom_deserialize(PG_LWGEOM *in)
+{
+	return lwgeom_deserialize(SERIALIZED_FORM(in));
+}
+
 Oid
 getGeometryOID(void)
 {
