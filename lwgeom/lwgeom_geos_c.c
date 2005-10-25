@@ -2202,15 +2202,30 @@ ptarray_from_GEOSCoordSeq(GEOSCoordSeq cs, char want3d)
 	uchar *points, *ptr;
 	POINTARRAY *ret;
 
+#ifdef PGIS_DEBUG_GEOS2POSTGIS 
+	lwnotice("ptarray_fromGEOSCoordSeq called");
+#endif
+
 	if ( ! GEOSCoordSeq_getSize(cs, &size) )
 			lwerror("Exception thrown");
+
+#ifdef PGIS_DEBUG_GEOS2POSTGIS 
+	lwnotice(" GEOSCoordSeq size: %d", size);
+#endif
 
 	if ( want3d )
 	{
 		if ( ! GEOSCoordSeq_getDimensions(cs, &dims) )
 			lwerror("Exception thrown");
+#ifdef PGIS_DEBUG_GEOS2POSTGIS 
+		lwnotice(" GEOSCoordSeq dimensions: %d", dims);
+#endif
 		if ( dims > 3 ) dims = 3; // forget higher dimensions (if any)
 	}
+
+#ifdef PGIS_DEBUG_GEOS2POSTGIS 
+	lwnotice(" output dimensions: %d", dims);
+#endif
 
 	ptsize = sizeof(double)*dims;
 
@@ -2225,6 +2240,7 @@ ptarray_from_GEOSCoordSeq(GEOSCoordSeq cs, char want3d)
 		GEOSCoordSeq_getY(cs, i, &(point.y));
 		if ( dims >= 3 ) GEOSCoordSeq_getZ(cs, i, &(point.z));
 		memcpy(ptr, &point, ptsize);
+		ptr += ptsize;
 	}
 
 	return ret;
@@ -2247,9 +2263,6 @@ GEOS2LWGEOM(GEOSGeom geom, char want3d)
 		}
 	}
 
-#ifdef PGIS_DEBUG_GEOS2POSTGIS
-	lwnotice("lwgeom_from_geometry: it's a %s", lwgeom_typename(type));
-#endif
 	switch (type)
 	{
 		GEOSCoordSeq cs;
@@ -2259,17 +2272,26 @@ GEOS2LWGEOM(GEOSGeom geom, char want3d)
 		unsigned int i, ngeoms;
 
 		case GEOS_POINT:
+#ifdef PGIS_DEBUG_GEOS2POSTGIS
+	lwnotice("lwgeom_from_geometry: it's a Point");
+#endif
 			cs = GEOSGeom_getCoordSeq(geom);
 			pa = ptarray_from_GEOSCoordSeq(cs, want3d);
 			return (LWGEOM *)lwpoint_construct(SRID, NULL, pa);
 			
 		case GEOS_LINESTRING:
 		case GEOS_LINEARRING:
+#ifdef PGIS_DEBUG_GEOS2POSTGIS
+	lwnotice("lwgeom_from_geometry: it's a LineString or LinearRing");
+#endif
 			cs = GEOSGeom_getCoordSeq(geom);
 			pa = ptarray_from_GEOSCoordSeq(cs, want3d);
 			return (LWGEOM *)lwline_construct(SRID, NULL, pa);
 
 		case GEOS_POLYGON:
+#ifdef PGIS_DEBUG_GEOS2POSTGIS
+	lwnotice("lwgeom_from_geometry: it's a Polygon");
+#endif
 			ngeoms = GEOSGetNumInteriorRings(geom);
 			ppaa = lwalloc(sizeof(POINTARRAY *)*(ngeoms+1));
 			g = GEOSGetExteriorRing(geom);
@@ -2289,6 +2311,9 @@ GEOS2LWGEOM(GEOSGeom geom, char want3d)
 		case GEOS_MULTILINESTRING:
 		case GEOS_MULTIPOLYGON:
 		case GEOS_GEOMETRYCOLLECTION:
+#ifdef PGIS_DEBUG_GEOS2POSTGIS
+	lwnotice("lwgeom_from_geometry: it's a Collection or Multi");
+#endif
 			ngeoms = GEOSGetNumGeometries(geom);
 			geoms = lwalloc(sizeof(LWGEOM *)*ngeoms);
 			for (i=0; i<ngeoms; i++)
@@ -2404,6 +2429,9 @@ ptarray_to_GEOSCoordSeq(POINTARRAY *pa)
 	for (i=0; i<size; i++)
 	{
 		getPoint3dz_p(pa, i, &p);
+#ifdef PGIS_DEBUG_CONVERTER
+lwnotice("Point: %g,%g", p.x, p.y);
+#endif
 		GEOSCoordSeq_setX(sq, i, p.x);
 		GEOSCoordSeq_setY(sq, i, p.y);
 		if ( dims == 3 ) GEOSCoordSeq_setZ(sq, i, p.z);
@@ -2419,6 +2447,13 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 	unsigned int ngeoms, i;
 	int type = TYPE_GETTYPE(lwgeom->type);
 	int geostype;
+#ifdef PGIS_DEBUG_POSTGIS2GEOS 
+	char *wkt;
+#endif
+
+#ifdef PGIS_DEBUG_POSTGIS2GEOS 
+	lwnotice("LWGEOM2GEOS got a type %d", type);
+#endif
 
 	switch (type)
 	{
@@ -2432,31 +2467,33 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 			sq = ptarray_to_GEOSCoordSeq(lwp->point);
 			g = GEOSGeom_createPoint(sq);
 			if ( ! g ) lwerror("Exception in LWGEOM2GEOS");
-			GEOSSetSRID(g, lwgeom->SRID);
-			return g;
+			break;
 		case LINETYPE:
 			lwl = (LWLINE *)lwgeom;
 			sq = ptarray_to_GEOSCoordSeq(lwl->points);
 			g = GEOSGeom_createLineString(sq);
 			if ( ! g ) lwerror("Exception in LWGEOM2GEOS");
-			GEOSSetSRID(g, lwgeom->SRID);
-			return g;
+			break;
+
 		case POLYGONTYPE:
 			lwpoly = (LWPOLY *)lwgeom;
 			sq = ptarray_to_GEOSCoordSeq(lwpoly->rings[0]);
 			shell = GEOSGeom_createLinearRing(sq);
+	if ( ! shell )
+	lwerror("LWGEOM2GEOS: exception during polygon shell conversion");
 			ngeoms = lwpoly->nrings-1;
 			geoms = malloc(sizeof(GEOSGeom *)*ngeoms);
 			for (i=1; i<=ngeoms; i++)
 			{
 				sq = ptarray_to_GEOSCoordSeq(lwpoly->rings[i]);
 				geoms[i-1] = GEOSGeom_createLinearRing(sq);
+	if ( ! geoms[i-1] )
+	lwerror("LWGEOM2GEOS: exception during polygon hole conversion");
 			}
 			g = GEOSGeom_createPolygon(shell, geoms, ngeoms);
 			if ( ! g ) lwerror("Exception in LWGEOM2GEOS");
-			GEOSSetSRID(g, lwgeom->SRID);
 			free(geoms);
-			return g;
+			break;
 		case MULTIPOINTTYPE:
 		case MULTILINETYPE:
 		case MULTIPOLYGONTYPE:
@@ -2478,14 +2515,23 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 				geoms[i] = LWGEOM2GEOS(lwc->geoms[i]);
 			g = GEOSGeom_createCollection(geostype, geoms, ngeoms);
 			if ( ! g ) lwerror("Exception in LWGEOM2GEOS");
-			GEOSSetSRID(g, lwgeom->SRID);
 			free(geoms);
-			return g;
+			break;
 
 		default:
 			lwerror("Unknown geometry type: %d", type);
 			return NULL;
 	}
+
+	GEOSSetSRID(g, lwgeom->SRID);
+
+#ifdef PGIS_DEBUG_POSTGIS2GEOS 
+	wkt = GEOSGeomToWKT(g);
+	lwnotice("LWGEOM2GEOS: GEOSGeom: %s", wkt);
+	free(wkt);
+#endif
+
+	return g;
 }
 
 GEOSGeom 
