@@ -59,6 +59,7 @@ Datum LWGEOM_line_from_mpoint(PG_FUNCTION_ARGS);
 Datum LWGEOM_addpoint(PG_FUNCTION_ARGS);
 Datum LWGEOM_asEWKT(PG_FUNCTION_ARGS);
 Datum LWGEOM_hasBBOX(PG_FUNCTION_ARGS);
+Datum LWGEOM_azimuth(PG_FUNCTION_ARGS);
 
 
 /*------------------------------------------------------------------*/
@@ -3009,3 +3010,63 @@ Datum LWGEOM_asEWKT(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
+/*
+ * Compute the azimuth of segment defined by the two
+ * given Point geometries.
+ * Return NULL on exception (same point).
+ * Return radians otherwise.
+ */
+PG_FUNCTION_INFO_V1(LWGEOM_azimuth);
+Datum LWGEOM_azimuth(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *geom;
+	LWPOINT *lwpoint;
+	POINT2D p1, p2;
+	double result;
+
+	init_pg_func();
+
+	/* Extract first point */
+	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	lwpoint = lwpoint_deserialize(SERIALIZED_FORM(geom));
+	if ( ! lwpoint )
+	{
+		PG_FREE_IF_COPY(geom, 0);
+		lwerror("Argument must be POINT geometries");
+		PG_RETURN_NULL();
+	}
+	if ( ! getPoint2d_p(lwpoint->point, 0, &p1) )
+	{
+		PG_FREE_IF_COPY(geom, 0);
+		lwerror("Error extracting point");
+		PG_RETURN_NULL();
+	}
+	lwgeom_release((LWGEOM *)lwpoint);
+	PG_FREE_IF_COPY(geom, 0);
+
+	/* Extract second point */
+	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	lwpoint = lwpoint_deserialize(SERIALIZED_FORM(geom));
+	if ( ! lwpoint )
+	{
+		PG_FREE_IF_COPY(geom, 1);
+		lwerror("Argument must be POINT geometries");
+		PG_RETURN_NULL();
+	}
+	if ( ! getPoint2d_p(lwpoint->point, 0, &p2) )
+	{
+		PG_FREE_IF_COPY(geom, 1);
+		lwerror("Error extracting point");
+		PG_RETURN_NULL();
+	}
+	lwgeom_release((LWGEOM *)lwpoint);
+	PG_FREE_IF_COPY(geom, 1);
+
+	/* Compute azimuth */
+	if ( ! azimuth_pt_pt(&p1, &p2, &result) )
+	{
+		PG_RETURN_NULL();
+	}
+
+	PG_RETURN_FLOAT8(result);
+}

@@ -904,6 +904,7 @@ extern double distance2d_line_line(LWLINE *line1, LWLINE *line2);
 extern double distance2d_point_poly(LWPOINT *point, LWPOLY *poly);
 extern double distance2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2);
 extern double distance2d_line_poly(LWLINE *line, LWPOLY *poly);
+extern int azimuth_pt_pt(POINT2D *p1, POINT2D *p2, double *ret);
 extern double lwgeom_mindistance2d_recursive(uchar *lw1, uchar *lw2);
 extern void lwgeom_translate_recursive(uchar *serialized, double xoff, double yoff, double zoff);
 extern void lwgeom_translate_ptarray(POINTARRAY *pa, double xoff, double yoff, double zoff);

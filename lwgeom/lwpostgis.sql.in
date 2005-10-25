@@ -1605,6 +1605,11 @@ CREATEFUNCTION point_inside_circle(geometry,float8,float8,float8)
 	AS '@MODULE_FILENAME@', 'LWGEOM_inside_circle_point'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+CREATEFUNCTION azimuth(geometry,geometry)
+	RETURNS float8
+	AS '@MODULE_FILENAME@', 'LWGEOM_azimuth'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
 
 ------------------------------------------------------------------------
 -- MISC

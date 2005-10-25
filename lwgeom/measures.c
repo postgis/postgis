@@ -748,3 +748,56 @@ lwgeom_pt_inside_circle(POINT2D *p, double cx, double cy, double rad)
 
 }
 
+/*
+ * Compute the azimuth of segment AB in radians.
+ * Return 0 on exception (same point), 1 otherwise.
+ */
+int
+azimuth_pt_pt(POINT2D *A, POINT2D *B, double *d)
+{
+	if ( A->x == B->x )
+	{
+		if ( A->y < B->y ) *d=0.0;
+		else if ( A->y > B->y ) *d=M_PI; 
+		else return 0;
+		return 1;
+	}
+
+	if ( A->y == B->y )
+	{
+		if ( A->x < B->x ) *d=M_PI/2; 
+		else if ( A->x > B->x ) *d=M_PI+(M_PI/2);
+		else return 0;
+		return 1;
+	}
+
+	if ( A->x < B->x )
+	{
+		if ( A->y < B->y )
+		{
+			*d=atan(fabs(A->x - B->x) / fabs(A->y - B->y) );
+		}
+		else /* ( A->y > B->y )  - equality case handled above */
+		{
+			*d=atan(fabs(A->y - B->y) / fabs(A->x - B->x) )
+				+ (M_PI/2);
+		}
+	}
+
+	else /* ( A->x > B->x ) - equality case handled above */
+	{
+		if ( A->y > B->y )
+		{
+			*d=atan(fabs(A->x - B->x) / fabs(A->y - B->y) )
+				+ M_PI;
+		}
+		else /* ( A->y < B->y )  - equality case handled above */
+		{
+			*d=atan(fabs(A->y - B->y) / fabs(A->x - B->x) )
+				+ (M_PI+(M_PI/2));
+		}
+	}
+
+	return 1;
+}
+
