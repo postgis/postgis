@@ -933,6 +933,7 @@ extern BOX2DFLOAT4 *box2d_union(BOX2DFLOAT4 *b1, BOX2DFLOAT4 *b2);
 // args may overlap !
 extern int box2d_union_p(BOX2DFLOAT4 *b1, BOX2DFLOAT4 *b2, BOX2DFLOAT4 *ubox);
 extern int lwgeom_compute_box2d_p(LWGEOM *lwgeom, BOX2DFLOAT4 *box);
+void lwgeom_longitude_shift(LWGEOM *lwgeom);
 
 // Is lwgeom1 geometrically equal to lwgeom2 ?
 char lwgeom_same(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2);
@@ -1002,6 +1003,7 @@ extern POINTARRAY *ptarray_construct(char hasz, char hasm, unsigned int npoints)
 //extern POINTARRAY *ptarray_construct4d(uint32 npoints, const POINT4D *pts);
 extern POINTARRAY *ptarray_addPoint(POINTARRAY *pa, uchar *p, size_t pdims, unsigned int where);
 extern int ptarray_isclosed2d(const POINTARRAY *pa);
+extern void ptarray_longitude_shift(POINTARRAY *pa);
 
 extern int32 lwgeom_nrings_recursive(uchar *serialized);
 extern void ptarray_reverse(POINTARRAY *pa);
@@ -1038,5 +1040,6 @@ extern void trim_trailing_zeros(char *num);
 #define XDR 0
 #define NDR 1
 extern char getMachineEndian(void);
+
 
 #endif // !defined _LIBLWGEOM_H 

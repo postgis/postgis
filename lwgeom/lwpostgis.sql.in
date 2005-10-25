@@ -900,6 +900,12 @@ CREATEFUNCTION transscale(geometry,float8,float8,float8,float8)
 	AS '@MODULE_FILENAME@', 'LWGEOM_transscale'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict) ;
 
+-- Availability: 1.1.0CVS
+CREATEFUNCTION shift_longitude(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_longitude_shift'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict) ;
+
 --- CHIP functions
 
 CREATEFUNCTION srid(chip)

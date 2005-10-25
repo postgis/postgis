@@ -515,3 +515,41 @@ lwgeom_segmentize2d(LWGEOM *lwgeom, double dist)
 			return lwgeom;
 	}
 }
+
+void
+lwgeom_longitude_shift(LWGEOM *lwgeom)
+{
+	int i;
+	switch(TYPE_GETTYPE(lwgeom->type))
+	{
+		LWPOINT *point;
+		LWLINE *line;
+		LWPOLY *poly;
+		LWCOLLECTION *coll;
+
+		case POINTTYPE:
+			point = (LWPOINT *)lwgeom;
+			ptarray_longitude_shift(point->point);
+			return;
+		case LINETYPE:
+			line = (LWLINE *)lwgeom;
+			ptarray_longitude_shift(line->points);
+			return;
+		case POLYGONTYPE:
+			poly = (LWPOLY *)lwgeom;
+			for (i=0; i<poly->nrings; i++)
+				ptarray_longitude_shift(poly->rings[i]);
+			return;
+		case MULTILINETYPE:
+		case MULTIPOLYGONTYPE:
+		case COLLECTIONTYPE:
+			coll = (LWCOLLECTION *)lwgeom;
+			for (i=0; i<coll->ngeoms; i++)
+				lwgeom_longitude_shift(coll->geoms[i]);
+			return;
+		default:
+			lwerror("%s:%d: unknown geom type: %d",
+				__FILE__, __LINE__,
+				TYPE_GETTYPE(lwgeom->type));
+	}
+}

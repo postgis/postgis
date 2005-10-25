@@ -631,3 +631,28 @@ ptarray_locate_point(POINTARRAY *pa, POINT2D *p)
 
 	return plen/tlen;
 }
+
+/*
+ * Longitude shift for a pointarray.
+ *  Y remains the same
+ *  X is converted:
+ *	 from -180..180 to 0..360
+ *	 from 0..360 to -180..180
+ *  X < 0 becomes X + 360
+ *  X > 180 becomes X - 360
+ */
+void
+ptarray_longitude_shift(POINTARRAY *pa)
+{
+	int i;
+	double x;
+
+	for (i=0; i<pa->npoints; i++) {
+		memcpy(&x, getPoint_internal(pa, i), sizeof(double));
+		if ( x < 0 ) x+= 360;
+		else if ( x > 180 ) x -= 360;
+		memcpy(getPoint_internal(pa, i), &x, sizeof(double));
+	}
+}
+
+

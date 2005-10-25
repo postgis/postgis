@@ -1708,6 +1708,41 @@ Datum LWGEOM_translate(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(ret);
 }
 
+/*
+ * Longitude shift:
+ *  Y remains the same
+ *  X is converted:
+ *	 from -180..180 to 0..360
+ *	 from 0..360 to -180..180
+ */
+PG_FUNCTION_INFO_V1(LWGEOM_longitude_shift);
+Datum LWGEOM_longitude_shift(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *geom;
+	LWGEOM *lwgeom;
+	PG_LWGEOM *ret;
+
+	geom = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+	lwgeom = pglwgeom_deserialize(geom);
+
+	/* Drop bbox, will be recomputed */
+	lwgeom_dropBBOX(lwgeom);
+	
+	/* Modify geometry */
+	lwgeom_longitude_shift(lwgeom);
+
+	/* Construct PG_LWGEOM */
+	ret = pglwgeom_serialize(lwgeom);
+
+	/* Release deserialized geometry */
+	lwgeom_release(lwgeom);
+
+	/* Release detoasted geometry */
+	pfree(geom);
+
+	PG_RETURN_POINTER(ret);
+}
+
 //scale geometry
 PG_FUNCTION_INFO_V1(LWGEOM_scale);
 Datum LWGEOM_scale(PG_FUNCTION_ARGS)
