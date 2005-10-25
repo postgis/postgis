@@ -3023,6 +3023,7 @@ Datum LWGEOM_azimuth(PG_FUNCTION_ARGS)
 	LWPOINT *lwpoint;
 	POINT2D p1, p2;
 	double result;
+	int SRID;
 
 	init_pg_func();
 
@@ -3035,6 +3036,7 @@ Datum LWGEOM_azimuth(PG_FUNCTION_ARGS)
 		lwerror("Argument must be POINT geometries");
 		PG_RETURN_NULL();
 	}
+	SRID = lwpoint->SRID;
 	if ( ! getPoint2d_p(lwpoint->point, 0, &p1) )
 	{
 		PG_FREE_IF_COPY(geom, 0);
@@ -3051,6 +3053,12 @@ Datum LWGEOM_azimuth(PG_FUNCTION_ARGS)
 	{
 		PG_FREE_IF_COPY(geom, 1);
 		lwerror("Argument must be POINT geometries");
+		PG_RETURN_NULL();
+	}
+	if ( lwpoint->SRID != SRID )
+	{
+		PG_FREE_IF_COPY(geom, 1);
+		lwerror("Operation on mixed SRID geometries");
 		PG_RETURN_NULL();
 	}
 	if ( ! getPoint2d_p(lwpoint->point, 0, &p2) )
