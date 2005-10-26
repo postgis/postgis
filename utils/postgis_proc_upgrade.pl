@@ -5,11 +5,15 @@ eval "exec perl -w $0 $@"
 
 use strict;
 
-($#ARGV == 0) || die "Usage: perl postgis_funxupgrade.pl <postgis.sql>\nCreates a new SQL script to upgrade all of the PostGIS functions.\n";
+($#ARGV == 0) ||
+die "Usage: perl postgis_funxupgrade.pl <postgis.sql> [<schema>]\nCreates a new SQL script to upgrade all of the PostGIS functions.\n"
+	if ( @ARGV < 1 || @ARGV > 2 );
 
 my $NEWVERSION = "UNDEF";
 
 print "BEGIN;\n";
+
+print "SET search_path TO $ARGV[1];\n" if @ARGV>1;
 
 open( INPUT, $ARGV[0] ) || die "Couldn't open file: $ARGV[0]\n";
 
