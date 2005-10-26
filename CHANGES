@@ -31,6 +31,7 @@ PostGIS 1.0.5CVS
 	- Fixed computation of null values fraction in analyzer
 	- Fixed return code of shp2pgsql
 	- Fixed handling of trailing dots in dbf numerical attributes
+	- Schema aware postgis_proc_upgrade.pl
 
 PostGIS 1.0.4
 2005/09/09
