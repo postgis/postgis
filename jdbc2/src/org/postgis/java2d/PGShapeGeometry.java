@@ -41,7 +41,9 @@ import org.postgresql.util.PGobject;
  * 
  * Points are translated into MoveTo vertices, (Multi)LineStrings into a
  * sequence of a single MoveTo and multiple LineTo vertices, and Polygon rings
- * into a sequence of a single MoveTo, multiple LineTo and a Close vertex.
+ * into a sequence of a single MoveTo, multiple LineTo and a Close vertex. To
+ * allow correct Polygon filling, our PathIterators have
+ * GeneralPath.WIND_EVEN_ODD as winding rule.
  * 
  * @see java.awt.geom.GeneralPath
  * @see java.awt.Shape
@@ -67,7 +69,7 @@ public class PGShapeGeometry extends PGobject implements Shape {
      */
     public PGShapeGeometry() {
         setType("geometry");
-        path = new GeneralPath();
+        path = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
     }
 
     /** Construct directly from a General Path */
@@ -83,7 +85,12 @@ public class PGShapeGeometry extends PGobject implements Shape {
         setValue(value);
     }
 
-    /** Reads the HexWKB representation */
+    /**
+     * Reads the HexWKB representation - to be called by the jdbc drivers. Be
+     * shure to call this only once and if you used the PGShapeGeometry()
+     * constructor without parameters. In all other cases, behaviour is
+     * undefined.
+     */
     public void setValue(String value) throws SQLException {
         srid = parser.parse(value, path);
     }
@@ -92,8 +99,8 @@ public class PGShapeGeometry extends PGobject implements Shape {
         return "PGShapeGeometry " + path.toString();
     }
 
+    /** We currently have read-only support, so this method returns null */
     public String getValue() {
-        // TODO...
         return null;
     }
 
@@ -103,11 +110,12 @@ public class PGShapeGeometry extends PGobject implements Shape {
         return false;
     }
 
+    /** Return the SRID or -1 if none was available*/
     public int getSRID() {
         return srid;
     }
 
-    // followin are the java2d Shape method implementations...
+    // following are the java2d Shape method implementations...
     public boolean contains(double x, double y) {
         return path.contains(x, y);
     }
