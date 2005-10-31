@@ -45,6 +45,9 @@ import org.postgresql.util.PGobject;
  * allow correct Polygon filling, our PathIterators have
  * GeneralPath.WIND_EVEN_ODD as winding rule.
  * 
+ * BUG: MultiPoints or Points in a Geometry Collection currently don't work as
+ * expected, as GeneralPath objects "optimize" multiple MoveTo vertices away.
+ * 
  * @see java.awt.geom.GeneralPath
  * @see java.awt.Shape
  * @see org.postgresql.util.PGobject
@@ -110,7 +113,7 @@ public class PGShapeGeometry extends PGobject implements Shape {
         return false;
     }
 
-    /** Return the SRID or -1 if none was available*/
+    /** Return the SRID or -1 if none was available */
     public int getSRID() {
         return srid;
     }
