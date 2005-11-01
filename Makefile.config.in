@@ -89,6 +89,7 @@ XSLBASE=@XSLBASE@
 #
 CC=@CC@
 CXX=@CXX@
+ELF_SYSTEM=@ELF_SYS@
 
 #
 # Other programs
