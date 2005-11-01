@@ -430,9 +430,6 @@ Cleanup(void)
 void
 OpenShape(void)
 {
-	int j;
-	SHPObject *obj=NULL;
-
 	hSHPHandle = SHPOpen( shp_file, "rb" );
 	if (hSHPHandle == NULL) {
 		fprintf(stderr, "%s: shape (.shp) or index files (.shx) can not be opened.\n", shp_file);
@@ -445,26 +442,6 @@ OpenShape(void)
 		exit(-1);
 	}
 	SHPGetInfo(hSHPHandle, &num_entities, &shpfiletype, NULL, NULL);
-
-	/* Check we have at least a not-null geometry */
-	for (j=0; j<num_entities; j++)
-	{
-		obj = SHPReadObject(hSHPHandle,j);
-		if ( obj && obj->nVertices > 0 ) {
-			SHPDestroyObject(obj);
-			break;
-		}
-		SHPDestroyObject(obj);
-		obj=NULL;
-	}
-
-	if ( obj == NULL) 
-	{
-		fprintf(stderr, "Shapefile contains %d NULL object(s)\n",
-			num_entities);
-		exit(-1);
-	}
-
 }
 
 /*
@@ -639,6 +616,10 @@ LoadData(void)
 
 		//open the next object
 		obj = SHPReadObject(hSHPHandle,j);
+		if ( ! obj ) {
+			fprintf(stderr, "Error reading shape\n");
+			exit(1);
+		}
 
 		if (!dump_format)
 		{
@@ -1661,6 +1642,9 @@ utf8 (const char *fromcode, char *inputbuf)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.88.2.14  2005/11/01 11:53:18  strk
+ * Dropped initial scan of shapefile - we don't check for all-null geometries anymore. Added check of return from SHPReadObject
+ *
  * Revision 1.88.2.13  2005/10/24 16:12:41  strk
  * Reverted backport of stricter INTEGER and STRING attributes handling.
  * The change is too big to appear in the 1.0 branch.
