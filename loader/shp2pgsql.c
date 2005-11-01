@@ -60,6 +60,13 @@ typedef struct Ring {
 	unsigned int linked; // number of "next" rings
 } Ring;
 
+/* Values for null_policy global */
+enum {
+	insert_null,
+	skip_null,
+	abort_on_null
+};
+
 /* globals */
 int	dump_format = 0; //0=insert statements, 1 = dump
 int	quoteidentifiers = 0;
@@ -76,6 +83,7 @@ int	hwgeom = 0; // old (hwgeom) mode
 #ifdef USE_ICONV
 char	*encoding=NULL;
 #endif
+int null_policy = insert_null;
 
 DBFFieldType *types;	/* Fields type, width and precision */
 SHPHandle  hSHPHandle;
@@ -116,7 +124,6 @@ void ReleasePolygons(Ring **polys, int npolys);
 void DropTable(char *schema, char *table, char *geom);
 void GetFieldsSpec(void);
 void LoadData(void);
-void UpdateSequence(void);
 void OpenShape(void);
 void LowerCase(char *s);
 void Cleanup(void);
@@ -451,45 +458,25 @@ OpenShape(void)
 	}
 	SHPGetInfo(hSHPHandle, &num_entities, &shpfiletype, NULL, NULL);
 
-	/* Check we have at least a not-null geometry */
-	for (j=0; j<num_entities; j++)
+	if ( null_policy == abort_on_null )
 	{
-		obj = SHPReadObject(hSHPHandle,j);
-		if ( obj && obj->nVertices > 0 ) {
+		for (j=0; j<num_entities; j++)
+		{
+			obj = SHPReadObject(hSHPHandle,j);
+			if ( ! obj )
+			{
+		fprintf(stderr, "Error reading shape object %d\n", j);
+		exit(1);
+			}
+			if ( obj->nVertices == 0 )
+			{
+		fprintf(stderr, "Empty geometries found, aborted.\n");
+		exit(1);
+			}
 			SHPDestroyObject(obj);
-			break;
-		}
-		SHPDestroyObject(obj);
-		obj=NULL;
-	}
-
-	if ( obj == NULL) 
-	{
-		fprintf(stderr, "Shapefile contains %d NULL object(s)\n",
-			num_entities);
-		exit(-1);
-	}
-
-}
-
-/*
- * Not used
- */
-void
-UpdateSequence(void)
-{
-	if ( schema )
-	{
-		if(num_entities>1){
-			printf("SELECT setval('\"%s\".\"%s_gid_seq\"', %i, true);\n", schema, table, num_entities-1);
 		}
 	}
-	else
-	{
-		if(num_entities>1){
-			printf("SELECT setval('\"%s_gid_seq\"', %i, true);\n", table, num_entities-1);
-		}
-	}
+
 }
 
 void
@@ -653,6 +640,17 @@ LoadData(void)
 
 		//open the next object
 		obj = SHPReadObject(hSHPHandle,j);
+		if ( ! obj )
+		{
+			fprintf(stderr, "Error reading shape object %d\n", j);
+			exit(1);
+		}
+
+		if ( null_policy == skip_null && obj->nVertices == 0 )
+		{
+			SHPDestroyObject(obj);
+			continue;
+		}
 
 		if (!dump_format)
 		{
@@ -762,6 +760,8 @@ usage(char *me, int exitcode)
 	fprintf(stderr, "  -W <encoding> Specify the character encoding of Shape's\n");
 	fprintf(stderr, "     attribute column. (default : \"ASCII\")\n");
 #endif
+	fprintf(stderr, "\n");
+	fprintf(stderr, "  -N <policy> Specify NULL geometries handling policy (insert,skip,abort)\n");
 	exit (exitcode);
 }
 
@@ -1223,7 +1223,7 @@ ParseCmdline(int ARGC, char **ARGV)
 	extern char *optarg;
 	extern int optind;
 
-	while ((c = getopt(ARGC, ARGV, "kcdapDs:g:iW:wI")) != EOF){
+	while ((c = getopt(ARGC, ARGV, "kcdapDs:g:iW:wIN:")) != EOF){
                switch (c) {
                case 'c':
                     if (opt == ' ')
@@ -1276,6 +1276,23 @@ ParseCmdline(int ARGC, char **ARGV)
 #else
 		    fprintf(stderr, "WARNING: the -W switch will have no effect. UTF8 disabled at compile time\n");
 #endif
+                    break;
+		case 'N':
+			switch (optarg[0])
+			{	
+				case 'a':
+					null_policy = abort_on_null;
+					break;
+				case 'i':
+					null_policy = insert_null;
+					break;
+				case 's':
+					null_policy = skip_null;
+					break;
+				default:
+					fprintf(stderr, "Unsupported NULL geometry handling policy.\nValid policies: insert, skip, abort\n");
+					exit(1);
+			}
                     break;
                case '?':
                default:              
@@ -1675,6 +1692,9 @@ utf8 (const char *fromcode, char *inputbuf)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.104  2005/11/01 09:25:47  strk
+ * Reworked NULL geometries handling code letting user specify policy (insert,skip,abort). Insert is the default.
+ *
  * Revision 1.103  2005/10/24 15:54:22  strk
  * fixed wrong assumption about maximum size of integer attributes (width is maximum size of text representation)
  *
