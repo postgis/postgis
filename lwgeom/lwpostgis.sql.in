@@ -3062,11 +3062,12 @@ CREATEFUNCTION transform_geometry(geometry,text,text,int)
 CREATEFUNCTION transform(geometry,integer) RETURNS geometry AS
 '
 DECLARE
-	iproj text;
-	oproj text;
+	iproj text := NULL;
+	oproj text := NULL;
 	isrid integer;
 	osrid alias for $2;
 	ret geometry;
+	rec RECORD;
 BEGIN
 
 	SELECT INTO isrid SRID($1);
@@ -3082,13 +3083,21 @@ BEGIN
 	IF isrid = -1 THEN
 		RAISE EXCEPTION ''Input geometry has unknown (-1) SRID'';
 	END IF;
+	
+	FOR rec IN SELECT srid, proj4text FROM spatial_ref_sys
+		WHERE srid = isrid OR srid = osrid
+	LOOP
+		IF rec.srid = isrid THEN
+			iproj = rec.proj4text;
+		ELSE
+			oproj = rec.proj4text;
+		END IF;
+	END LOOP;
 
-	SELECT INTO iproj get_proj4_from_srid(isrid);
 	IF iproj IS NULL THEN
 		RAISE EXCEPTION ''Cannot find input SRID (%) in spatial_ref_sys'', isrid;
 	END IF;
 
-	SELECT INTO oproj get_proj4_from_srid(osrid);
 	IF oproj IS NULL THEN
 		RAISE EXCEPTION ''Cannot find target SRID (%) in spatial_ref_sys'', osrid;
 	END IF;
