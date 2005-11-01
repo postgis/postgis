@@ -10,7 +10,6 @@ PostGIS 1.1.0CVS
 	  + fix EWKT constructors to accept SRID=4711; representation
 	  + added preliminary read-only support for java2d geometries
 	- Full autoconf-based configuration
-	- Initial implementation of postgis_proc_upgrade script
 	- NEW scale() and transscale() companion methods to translate()
 	- NEW line_substring() function
 	- NEW line_locate_point() function
@@ -31,7 +30,7 @@ PostGIS 1.0.5CVS
 	- Fixed computation of null values fraction in analyzer
 	- Fixed return code of shp2pgsql
 	- Fixed handling of trailing dots in dbf numerical attributes
-	- Schema aware postgis_proc_upgrade.pl
+	- Schema aware postgis_proc_upgrade.pl, support for pgsql 7.2.1
 
 PostGIS 1.0.4
 2005/09/09
@@ -48,6 +47,7 @@ PostGIS 1.0.4
 	- Minor speedup in distance()
 	- Minor cleanups
 	- Fixed bug in translate() corrupting output bounding box
+	- Initial implementation of postgis_proc_upgrade script
 
 PostGIS 1.0.3
 2005/08/08
