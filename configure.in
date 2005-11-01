@@ -201,6 +201,7 @@ AC_ARG_WITH(proj,
 	if test "$with_proj" = "no"; then
 		USE_PROJ=0
 	else
+		USE_PROJ=1
 		if test "$with_proj" != "yes"; then
 			PROJ_DIR=$with_proj
 		fi
