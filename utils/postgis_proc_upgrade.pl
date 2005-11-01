@@ -99,8 +99,8 @@ DECLARE
 BEGIN
 	SELECT into old_scripts postgis_scripts_installed();
 	SELECT into new_scripts ''NEWVERSION'';
-	SELECT into old_majmin substring(old_scripts from ''[^\.]*\.[^\.]*'');
-	SELECT into new_majmin substring(new_scripts from ''[^\.]*\.[^\.]*'');
+	SELECT into old_majmin substring(old_scripts from 1 for 4);
+	SELECT into new_majmin substring(new_scripts from 1 for 4);
 
 	IF old_majmin != new_majmin THEN
 		RAISE EXCEPTION ''Scripts upgrade from version % to version % requires a dump/reload. See postgis manual for instructions'', old_scripts, new_scripts;
