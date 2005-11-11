@@ -153,26 +153,22 @@ lwpoly_serialize(LWPOLY *poly)
 void
 lwpoly_serialize_buf(LWPOLY *poly, uchar *buf, size_t *retsize)
 {
-	int size=1;  // type byte
+	size_t size=1;  // type byte
 	char hasSRID;
-	int t,u;
-	int total_points = 0;
-	int npoints;
+	int t;
 	uchar *loc;
+	int ptsize;
 
 #ifdef PGIS_DEBUG_CALLS
 	lwnotice("lwpoly_serialize_buf called");
 #endif
 
+	ptsize = sizeof(double)*TYPE_NDIMS(poly->type);
+
 	hasSRID = (poly->SRID != -1);
 
 	size += 4; // nrings
 	size += 4*poly->nrings; //npoints/ring
-
-	for (t=0;t<poly->nrings;t++) {
-		total_points  += poly->rings[t]->npoints;
-	}
-	size += sizeof(double)*TYPE_NDIMS(poly->type)*total_points;
 
 	buf[0] = (uchar) lwgeom_makeType_full(
 		TYPE_HASZ(poly->type), TYPE_HASM(poly->type),
@@ -199,44 +195,24 @@ lwpoly_serialize_buf(LWPOLY *poly, uchar *buf, size_t *retsize)
 	for (t=0;t<poly->nrings;t++)
 	{
 		POINTARRAY *pa = poly->rings[t];
-		npoints = poly->rings[t]->npoints;
-		memcpy(loc, &npoints, sizeof(int32)); //npoints this ring
+		size_t pasize;
+		uint32 npoints;
+
+		if ( TYPE_GETZM(poly->type) != TYPE_GETZM(pa->dims) )
+			lwerror("Dimensions mismatch in lwpoly");
+
+		npoints = pa->npoints;
+
+		memcpy(loc, &npoints, sizeof(uint32)); //npoints this ring
 		loc+=4;
-		if (TYPE_NDIMS(poly->type) == 3)
-		{
-			if ( TYPE_HASZ(poly->type) )
-			{
-				for (u=0;u<npoints;u++)
-				{
-					getPoint3dz_p(pa, u, (POINT3DZ *)loc);
-					loc+= 24;
-				}
-			}
-			else
-			{
-				for (u=0;u<npoints;u++)
-				{
-					getPoint3dm_p(pa, u, (POINT3DM *)loc);
-					loc+= 24;
-				}
-			}
-		}
-		else if (TYPE_NDIMS(poly->type) == 2)
-		{
-			for (u=0;u<npoints;u++)
-			{
-				getPoint2d_p(pa, u, (POINT2D *)loc);
-				loc+= 16;
-			}
-		}
-		else if (TYPE_NDIMS(poly->type) == 4)
-		{
-			for (u=0;u<npoints;u++)
-			{
-				getPoint4d_p(pa, u, (POINT4D *)loc);
-				loc+= 32;
-			}
-		}
+
+		pasize = npoints*ptsize;
+		size += pasize;
+
+		// copy points
+		memcpy(loc, getPoint_internal(pa, 0), pasize);
+		loc += pasize;
+
 	}
 
 	if (retsize) *retsize = size;

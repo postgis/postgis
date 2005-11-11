@@ -35,6 +35,10 @@ lwpoint_serialize_buf(LWPOINT *point, uchar *buf, size_t *retsize)
 	int size=1;
 	char hasSRID;
 	uchar *loc;
+	int ptsize = pointArray_ptsize(point->point);
+
+	if ( TYPE_GETZM(point->type) != TYPE_GETZM(point->point->dims) )
+		lwerror("Dimensions mismatch in lwpoint");
 
 	//printLWPOINT(point);
 #ifdef PGIS_DEBUG_CALLS
@@ -66,18 +70,7 @@ lwpoint_serialize_buf(LWPOINT *point, uchar *buf, size_t *retsize)
 	}
 
 	//copy in points
-
-	if (TYPE_NDIMS(point->type) == 3)
-	{
-		if (TYPE_HASZ(point->type))
-			getPoint3dz_p(point->point, 0, (POINT3DZ *)loc);
-		else
-			getPoint3dm_p(point->point, 0, (POINT3DM *)loc);
-	}
-	else if (TYPE_NDIMS(point->type) == 2)
-		getPoint2d_p(point->point, 0, (POINT2D *)loc);
-	else if (TYPE_NDIMS(point->type) == 4)
-		getPoint4d_p(point->point, 0, (POINT4D *)loc);
+	memcpy(loc, getPoint_internal(point->point, 0), ptsize);
 
 	if (retsize) *retsize = size;
 }
