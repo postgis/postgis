@@ -442,7 +442,7 @@ getPoint4d_p(const POINTARRAY *pa, int n, POINT4D *point)
 		return 0; //error
 	}
 
-	memset(point, 0, sizeof(POINT3DZ));
+	memset(point, 0, sizeof(POINT4D));
 	size = pointArray_ptsize(pa);
 	memcpy(point, getPoint_internal(pa, n), size);
 	return 1;
