@@ -94,3 +94,7 @@ SELECT id,wkt FROM test_data WHERE
 SELECT extent(geometry(wkb_ndr)) from test_data;
 SELECT extent3d(geometry(wkb_ndr)) from test_data;
 SELECT mem_size(collect(force_2d(geometry(wkb_ndr)))) from test_data;
+SELECT mem_size(collect(force_3dz(geometry(wkb_ndr)))) from test_data;
+SELECT mem_size(collect(force_4d(force_2d(geometry(wkb_ndr))))) from test_data;
+SELECT mem_size(collect(force_3dm(geometry(wkb_ndr)))) from test_data;
+SELECT mem_size(collect(force_2d(force_4d(force_3dm(force_3dz(force_2d(geometry(wkb_ndr)))))))) from test_data;
