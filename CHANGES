@@ -32,6 +32,8 @@ PostGIS 1.0.5CVS
 	- Fixed handling of trailing dots in dbf numerical attributes
 	- Schema aware postgis_proc_upgrade.pl, support for pgsql 7.2.1
 	- Fixed a small bug in the getPoint4d_p() low-level function
+	- Fixed memory alignment problems
+	- Speedup of serializer functions
 
 PostGIS 1.0.4
 2005/09/09
