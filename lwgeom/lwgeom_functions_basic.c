@@ -182,7 +182,7 @@ Datum LWGEOM_summary(PG_FUNCTION_ARGS)
 
 	init_pg_func();
 
-	lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom));
+	lwgeom = pglwgeom_deserialize(geom);
 
 	result = lwgeom_summary(lwgeom, 0);
 
@@ -2483,7 +2483,7 @@ Datum LWGEOM_noop(PG_FUNCTION_ARGS)
 
 	in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	lwgeom = lwgeom_deserialize(SERIALIZED_FORM(in));
+	lwgeom = pglwgeom_deserialize(in);
 
 	//lwnotice("Deserialized: %s", lwgeom_summary(lwgeom, 0));
 
@@ -2565,8 +2565,8 @@ Datum LWGEOM_same(PG_FUNCTION_ARGS)
 	}
 
 	// ok, deserialize.
-	lwg1 = lwgeom_deserialize(SERIALIZED_FORM(g1));
-	lwg2 = lwgeom_deserialize(SERIALIZED_FORM(g2));
+	lwg1 = pglwgeom_deserialize(g1);
+	lwg2 = pglwgeom_deserialize(g2);
 
 	// invoke appropriate function
 	result = lwgeom_same(lwg1, lwg2);
