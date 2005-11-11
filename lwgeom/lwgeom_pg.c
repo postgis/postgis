@@ -95,6 +95,12 @@ init_pg_func(void)
 	lwnotice = pg_notice;
 }
 
+LWGEOM *
+pglwgeom_deserialize(PG_LWGEOM *in)
+{
+	return lwgeom_deserialize(SERIALIZED_FORM(in));
+}
+
 PG_LWGEOM *
 pglwgeom_serialize(LWGEOM *in)
 {
