@@ -1,3 +1,6 @@
+PostGIS 0.9.3
+  - Fixed bug in postgresql 8.1 support
+
 PostGIS 0.9.2
 2005/07/27
   - BUGFIX in dumper and GeomFromWKB to support 64bit archs

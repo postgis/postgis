@@ -25,7 +25,10 @@
 #include "access/itup.h"
 #include "access/rtree.h"
 
+#include "postgres.h"
+#include "executor/spi.h"
 #include "fmgr.h"
+#include "parser/parsetree.h"
 
 #include "postgis.h"
 #include "utils/elog.h"
@@ -1151,10 +1154,14 @@ elog(NOTICE, " avg feat overlaps %f cells", avg_feat_cells);
 PG_FUNCTION_INFO_V1(postgis_gist_sel);
 Datum postgis_gist_sel(PG_FUNCTION_ARGS)
 {
-	Query *root = (Query *) PG_GETARG_POINTER(0);
+#if USE_VERSION < 81
+	Query	   *root = (Query *) PG_GETARG_POINTER(0);
+#else
+	PlannerInfo *root = (PlannerInfo *) PG_GETARG_POINTER(0);
+#endif
 	//Oid operator = PG_GETARG_OID(1);
 	List *args = (List *) PG_GETARG_POINTER(2);
-	int varRelid = PG_GETARG_INT32(3);
+	//int varRelid = PG_GETARG_INT32(3);
 	Oid relid;
 	HeapTuple stats_tuple;
 	GEOM_STATS *geomstats;
@@ -1229,7 +1236,12 @@ Datum postgis_gist_sel(PG_FUNCTION_ARGS)
 	 * Get pg_statistic row
 	 */
 
-	relid = getrelid(varRelid, root->rtable);
+#if USE_VERSION < 81
+        relid = getrelid(self->varno, root->rtable);
+#else
+        relid = getrelid(self->varno, root->parse->rtable);
+#endif
+
 
 	stats_tuple = SearchSysCache(STATRELATT, ObjectIdGetDatum(relid), Int16GetDatum(self->varattno), 0, 0);
 	if ( ! stats_tuple )
@@ -1844,6 +1856,9 @@ Datum geometry_analyze(PG_FUNCTION_ARGS)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.31.2.7  2005/11/13 08:55:15  strk
+ * Backported fixes for PostgreSQL 8.1 support.
+ *
  * Revision 1.31.2.6  2005/07/22 14:49:00  strk
  * Back-ported pgsql 8.1 support patches
  *
