@@ -90,7 +90,11 @@ lwpoly_deserialize(uchar *serialized_form)
 	loc = serialized_form+1;
 
 	if (lwgeom_hasBBOX(type)) {
-		result->bbox = (BOX2DFLOAT4 *)loc;
+#ifdef PGIS_DEBUG
+		lwnotice("lwpoly_deserialize: input has bbox");
+#endif
+		result->bbox = lwalloc(sizeof(BOX2DFLOAT4));
+		memcpy(result->bbox, loc, sizeof(BOX2DFLOAT4));
 		loc += sizeof(BOX2DFLOAT4);
 	} else {
 		result->bbox = NULL;
@@ -391,8 +395,7 @@ lwpoly_clone(const LWPOLY *g)
 	memcpy(ret, g, sizeof(LWPOLY));
 	ret->rings = lwalloc(sizeof(POINTARRAY *)*g->nrings);
 	memcpy(ret->rings, g->rings, sizeof(POINTARRAY *)*g->nrings);
-	if ( g->bbox && ! TYPE_HASBBOX(g->type) )
-		ret->bbox = box2d_clone(g->bbox);
+	if ( g->bbox ) ret->bbox = box2d_clone(g->bbox);
 	return ret;
 }
 

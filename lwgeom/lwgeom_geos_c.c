@@ -687,9 +687,7 @@ Datum convexhull(PG_FUNCTION_ARGS)
 	/* Copy input bbox if any */
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &bbox) )
 	{
-		lwout->bbox = &bbox;
-		/* Mark lwgeom bbox to be externally owned */
-		TYPE_SETHASBBOX(lwout->type, 1);
+		lwout->bbox = box2d_clone(&bbox);
 	}
 
 	result = pglwgeom_serialize(lwout);
