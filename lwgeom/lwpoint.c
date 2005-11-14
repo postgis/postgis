@@ -241,7 +241,7 @@ lwpoint_deserialize(uchar *serialized_form)
 
 	result = (LWPOINT*) lwalloc(sizeof(LWPOINT)) ;
 
-	type = (uchar) serialized_form[0];
+	type = serialized_form[0];
 
 	if ( lwgeom_getType(type) != POINTTYPE) return NULL;
 	result->type = type;
@@ -253,7 +253,8 @@ lwpoint_deserialize(uchar *serialized_form)
 #ifdef PGIS_DEBUG
 		lwnotice("lwpoint_deserialize: input has bbox");
 #endif
-		result->bbox = (BOX2DFLOAT4 *)loc;
+		result->bbox = lwalloc(sizeof(BOX2DFLOAT4));
+		memcpy(result->bbox, loc, sizeof(BOX2DFLOAT4));
 		loc += sizeof(BOX2DFLOAT4);
 	}
 	else
@@ -314,8 +315,7 @@ lwpoint_clone(const LWPOINT *g)
 	lwnotice("lwpoint_clone called");
 #endif
 	memcpy(ret, g, sizeof(LWPOINT));
-	if ( g->bbox && ! TYPE_HASBBOX(g->type) )
-		ret->bbox = box2d_clone(g->bbox);
+	if ( g->bbox ) ret->bbox = box2d_clone(g->bbox);
 	return ret;
 }
 

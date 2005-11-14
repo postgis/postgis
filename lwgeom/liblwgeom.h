@@ -955,7 +955,7 @@ LWGEOM *lwcollection_add(const LWCOLLECTION *to, uint32 where, const LWGEOM *wha
 
 // Clone an LWGEOM
 // pointarray are not copied.
-// BBOXes are copied only if HASBBOX flag is 0 (meaning bbox ownership)
+// BBOXes are copied 
 extern LWGEOM *lwgeom_clone(const LWGEOM *lwgeom);
 extern LWPOINT *lwpoint_clone(const LWPOINT *lwgeom);
 extern LWLINE *lwline_clone(const LWLINE *lwgeom);

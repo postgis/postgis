@@ -57,8 +57,11 @@ lwline_deserialize(uchar *serialized_form)
 
 	if (lwgeom_hasBBOX(type))
 	{
-		//lwnotice("line has bbox");
-		result->bbox = (BOX2DFLOAT4 *)loc;
+#ifdef PGIS_DEBUG
+		lwnotice("lwline_deserialize: input has bbox");
+#endif
+		result->bbox = lwalloc(sizeof(BOX2DFLOAT4));
+		memcpy(result->bbox, loc, sizeof(BOX2DFLOAT4));
 		loc += sizeof(BOX2DFLOAT4);
 	}
 	else
@@ -301,8 +304,7 @@ lwline_clone(const LWLINE *g)
 {
 	LWLINE *ret = lwalloc(sizeof(LWLINE));
 	memcpy(ret, g, sizeof(LWLINE));
-	if ( g->bbox && ! TYPE_HASBBOX(g->type) )
-		ret->bbox = box2d_clone(g->bbox);
+	if ( g->bbox ) ret->bbox = box2d_clone(g->bbox);
 	return ret;
 }
 

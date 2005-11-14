@@ -87,7 +87,11 @@ lwcollection_deserialize(uchar *srl)
 	result->geoms = lwalloc(sizeof(LWGEOM *)*insp->ngeometries);
 
 	if (lwgeom_hasBBOX(srl[0]))
-		result->bbox = (BOX2DFLOAT4 *)(srl+1);
+	{
+		//result->bbox = (BOX2DFLOAT4 *)(srl+1);
+		result->bbox = lwalloc(sizeof(BOX2DFLOAT4));
+		memcpy(result->bbox, srl+1, sizeof(BOX2DFLOAT4));
+	}
 	else result->bbox = NULL;
 
 
@@ -223,8 +227,7 @@ lwcollection_clone(const LWCOLLECTION *g)
 	{
 		ret->geoms[i] = lwgeom_clone(g->geoms[i]);
 	}
-	if ( g->bbox && ! TYPE_HASBBOX(g->type) )
-		ret->bbox = box2d_clone(g->bbox);
+	if ( g->bbox ) ret->bbox = box2d_clone(g->bbox);
 	return ret;
 }
 
