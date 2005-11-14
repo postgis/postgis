@@ -176,16 +176,23 @@ AC_ARG_WITH(geos,
 	fi
 )
 
-AC_ARG_WITH(geos-capi, 
-[  --with-geos-capi        enable use of GEOS C API ],
-	if test "$with_geos_capi" != "no"; then
-		USE_GEOS_CAPI=1
-	fi
-)
-
 if test $USE_GEOS -gt 0; then
 	GEOS_DIR=`$GEOSCONFIG --prefix`
+	GEOS_MAJOR=`$GEOSCONFIG --version | cut -d. -f1`
+	if test "$GEOS_MAJOR" = "@GEOS_VERSION@"; then
+		GEOS_MAJOR = 1
+	fi
+	if test $GEOS_MAJOR -gt 2; then
+		USE_GEOS_CAPI=1
+	fi
 fi
+
+dnl AC_ARG_WITH(geos-capi, 
+dnl [  --with-geos-capi        enable use of GEOS C API ],
+dnl 	if test "$with_geos_capi" != "no"; then
+dnl 		USE_GEOS_CAPI=1
+dnl 	fi
+dnl )
 
 AC_SUBST(USE_PROJ)
 AC_SUBST(PROJ_DIR)
