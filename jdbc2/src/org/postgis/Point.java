@@ -83,16 +83,21 @@ public class Point extends Geometry {
 
     /**
      * The X coordinate of the point.
+     * In most long/lat systems, this is the longitude.
      */
     public double x;
 
     /**
      * The Y coordinate of the point.
+     * In most long/lat systems, this is the latitude.
      */
     public double y;
 
     /**
      * The Z coordinate of the point.
+     * In most long/lat systems, this is a radius from the 
+     * center of the earth, or the height / elevation over
+     * the ground.
      */
     public double z;
 
@@ -105,6 +110,11 @@ public class Point extends Geometry {
         super(POINT);
     }
 
+    /** Constructs a new Point
+     * @param x the longitude / x ordinate
+     * @param y the latitude / y ordinate
+     * @param z the radius / height / elevation / z ordinate
+     */
     public Point(double x, double y, double z) {
         this();
         this.x = x;
@@ -113,6 +123,10 @@ public class Point extends Geometry {
         dimension = 3;
     }
 
+    /** Constructs a new Point
+     * @param x the longitude / x ordinate
+     * @param y the latitude / y ordinate
+     */
     public Point(double x, double y) {
         this();
         this.x = x;
