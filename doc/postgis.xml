@@ -104,9 +104,8 @@
 		Carl Anderson, David Skea, David Techer, 
 		IIDA Tetsushi, Geographic Data BC, Gerald Fenoy,
 		Gino Lucrezi, Klaus Foerster, Kris Jurka, Mark Cave-Ayland,
-		Mark Sondheim, Markus Schaber, Nikita Shulga, Norman Vine, 
-		Olivier Courtin, Ralph Mason,
-		Steffen Macke.
+		Mark Sondheim, Markus Schaber, Michael Fuhr, Nikita Shulga,
+		Norman Vine, Olivier Courtin, Ralph Mason, Steffen Macke.
             </para>
           </listitem>
         </varlistentry>
@@ -4969,6 +4968,69 @@ FROM geometry_table;</literallayout>
 
 	<appendix id="release_notes">
 		<title>Release Notes</title>
+
+    		<sect1>
+			<title>Release 1.0.5</title>
+			<para>Release date: 2005/11/25</para>
+
+			<para>
+Contains memory-alignment fixes in the library, a segfault fix in loader's
+handling of UTF8 attributes and a few improvements and cleanups.
+			</para>
+
+			<note><para>
+Return code of shp2pgsl changed from previous releases to conform to unix
+standards (return 0 on success).
+			</para></note>
+
+			<sect2>
+				<title>Upgrading</title>
+
+				<para>If you are upgrading from
+				release 1.0.3 or later you <emphasis>DO
+				NOT</emphasis> need a dump/reload.
+				</para>
+
+				<para>If you are upgrading from
+				a release <emphasis>between 1.0.0RC6 and
+				1.0.2</emphasis> (inclusive) and really want
+				a live upgrade read the <link
+				linkend="rel_1.0.3_upgrading">upgrade
+				section</link> of the 1.0.3 release notes
+				chapter.
+				</para>
+
+				<para>
+				Upgrade from any release prior to 1.0.0RC6
+				requires an <link linkend="hard_upgrade">hard
+				upgrade</link>.
+				</para>
+			</sect2>
+
+			<sect2>
+				<title>Library changes</title>
+	<para>Fixed memory alignment problems</para>
+	<para>Fixed computation of null values fraction in analyzer</para>
+	<para>Fixed a small bug in the getPoint4d_p() low-level function</para>
+	<para>Speedup of serializer functions</para>
+			</sect2>
+
+			<sect2>
+				<title>Loader changes</title>
+	<para>Fixed return code of shp2pgsql</para>
+	<para>Fixed back-compatibility issue in loader (load of null shapefiles)</para>
+	<para>Fixed handling of trailing dots in dbf numerical attributes</para>
+	<para>Segfault fix in shp2pgsql (utf8 encoding)</para>
+			</sect2>
+
+			<sect2>
+				<title>Other changes</title>
+	<para>Schema aware postgis_proc_upgrade.pl, support for pgsql 7.2+</para>
+	<para>New "Reporting Bugs" chapter in manual</para>
+			</sect2>
+
+
+		</sect1>
 
     		<sect1>
 			<title>Release 1.0.4</title>
