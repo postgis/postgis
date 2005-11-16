@@ -4719,6 +4719,9 @@ FROM geometry_table;</literallayout>
             <para>Interpolates a point along a line. First argument must be a
             LINESTRING. Second argument is a float between 0 and 1. Returns a
             point.</para>
+		<para>
+			Availability: 0.8.2
+		</para>
           </listitem>
         </varlistentry>
 
