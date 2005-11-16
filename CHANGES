@@ -1,10 +1,11 @@
 PostGIS 1.0.5CVS
+2005/11/25
 	- New "Reporting Bugs" chapter in manual
 	- Segfault fix in shp2pgsql (utf8 encoding)
 	- Fixed computation of null values fraction in analyzer
 	- Fixed return code of shp2pgsql
 	- Fixed handling of trailing dots in dbf numerical attributes
-	- Schema aware postgis_proc_upgrade.pl, support for pgsql 7.2.1
+	- Schema aware postgis_proc_upgrade.pl, support for pgsql 7.2+
 	- Fixed back-compatibility issue in loader (load of null shapefiles)
 	- Fixed a small bug in the getPoint4d_p() low-level function
 	- Fixed memory alignment problems
