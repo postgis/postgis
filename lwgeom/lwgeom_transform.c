@@ -420,12 +420,6 @@ void AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 #endif
 		AddPJHashEntry(PJMemoryContext, projection);
 		
-		// Add the item to the portal cache
-		if (PROJ4Cache->PROJ4SRSCacheCount == PROJ4_CACHE_ITEMS)
-		{
-			DeleteFromPROJ4SRSCache(PROJ4Cache, PROJ4Cache->PROJ4SRSCache[0].srid);
-		}
-
 		PROJ4Cache->PROJ4SRSCache[PROJ4Cache->PROJ4SRSCacheCount].srid = srid;
 		PROJ4Cache->PROJ4SRSCache[PROJ4Cache->PROJ4SRSCacheCount].projection = projection;
 		PROJ4Cache->PROJ4SRSCache[PROJ4Cache->PROJ4SRSCacheCount].projection_mcxt = PJMemoryContext;
