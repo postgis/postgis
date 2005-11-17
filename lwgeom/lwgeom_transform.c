@@ -369,7 +369,7 @@ void AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
                 HeapTuple tuple = tuptable->vals[0];
 
 		// Make a projection object out of it
-		proj_str = palloc(strlen(SPI_getvalue(tuple, tupdesc, 1)));
+		proj_str = palloc(strlen(SPI_getvalue(tuple, tupdesc, 1)) + 1);
 		strcpy(proj_str, SPI_getvalue(tuple, tupdesc, 1));
 		projection = make_project(proj_str);
 
@@ -405,7 +405,7 @@ void AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 #if PROJ4_CACHE_DEBUG
 		elog(NOTICE, "AddToPROJ4SRSCache: adding SRID %d with proj4text \"%s\" to query cache at index %d", srid, proj_str, PROJ4Cache->PROJ4SRSCacheCount);
 #endif
-		PJMemoryContext = MemoryContextCreate(T_MemoryContext, 8192,
+		PJMemoryContext = MemoryContextCreate(T_AllocSetContext, 8192,
 					&PROJ4SRSCacheContextMethods,
 					PROJ4Cache->PROJ4SRSCacheContext,
 					"PROJ4 PJ Memory Context");
