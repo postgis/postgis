@@ -3059,54 +3059,11 @@ CREATEFUNCTION transform_geometry(geometry,text,text,int)
 	AS '@MODULE_FILENAME@','transform_geom'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
-CREATEFUNCTION transform(geometry,integer) RETURNS geometry AS
-'
-DECLARE
-	iproj text := NULL;
-	oproj text := NULL;
-	isrid integer;
-	osrid alias for $2;
-	ret geometry;
-	rec RECORD;
-BEGIN
+CREATEFUNCTION transform(geometry,integer)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','transform'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
-	SELECT INTO isrid SRID($1);
-
-	IF osrid = isrid THEN
-		RETURN $1;
-	END IF;
-
-	IF osrid = -1 THEN
-		RAISE EXCEPTION ''-1 is an invalid target SRID'';
-	END IF;
-
-	IF isrid = -1 THEN
-		RAISE EXCEPTION ''Input geometry has unknown (-1) SRID'';
-	END IF;
-	
-	FOR rec IN SELECT srid, proj4text FROM spatial_ref_sys
-		WHERE srid = isrid OR srid = osrid
-	LOOP
-		IF rec.srid = isrid THEN
-			iproj = rec.proj4text;
-		ELSE
-			oproj = rec.proj4text;
-		END IF;
-	END LOOP;
-
-	IF iproj IS NULL THEN
-		RAISE EXCEPTION ''Cannot find input SRID (%) in spatial_ref_sys'', isrid;
-	END IF;
-
-	IF oproj IS NULL THEN
-		RAISE EXCEPTION ''Cannot find target SRID (%) in spatial_ref_sys'', osrid;
-	END IF;
-
-	RETURN transform_geometry($1, iproj, oproj, osrid);
-
-END;
-'
-LANGUAGE 'plpgsql' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
 -----------------------------------------------------------------------
 -- POSTGIS_VERSION()
