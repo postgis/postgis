@@ -768,7 +768,6 @@ Datum transform(PG_FUNCTION_ARGS)
 		lwgeom->bbox = lwgeom_compute_box2d(lwgeom);
 		lwgeom->SRID = result_srid;
 		result = pglwgeom_serialize(lwgeom);
-		if ( lwgeom->bbox ) lwfree(lwgeom->bbox); 
 		lwgeom_release(lwgeom);
 	}
 	else
@@ -867,7 +866,6 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 		lwgeom->bbox = lwgeom_compute_box2d(lwgeom);
 		lwgeom->SRID = result_srid;
 		result = pglwgeom_serialize(lwgeom);
-		if ( lwgeom->bbox ) lwfree(lwgeom->bbox); 
 		lwgeom_release(lwgeom);
 	}
 	else
