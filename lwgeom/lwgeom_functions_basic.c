@@ -203,7 +203,7 @@ Datum postgis_lib_version(PG_FUNCTION_ARGS)
 {
 	char *ver = POSTGIS_LIB_VERSION;
 	text *result;
-	result = (text *) lwalloc(VARHDRSZ  + strlen(ver));
+	result = lwalloc(VARHDRSZ  + strlen(ver));
 	VARATT_SIZEP(result) = VARHDRSZ + strlen(ver) ;
 	memcpy(VARDATA(result), ver, strlen(ver));
 	PG_RETURN_POINTER(result);
@@ -214,7 +214,7 @@ Datum postgis_lib_build_date(PG_FUNCTION_ARGS)
 {
 	char *ver = POSTGIS_BUILD_DATE;
 	text *result;
-	result = (text *) lwalloc(VARHDRSZ  + strlen(ver));
+	result = lwalloc(VARHDRSZ  + strlen(ver));
 	VARATT_SIZEP(result) = VARHDRSZ + strlen(ver) ;
 	memcpy(VARDATA(result), ver, strlen(ver));
 	PG_RETURN_POINTER(result);
@@ -225,7 +225,7 @@ Datum postgis_scripts_released(PG_FUNCTION_ARGS)
 {
 	char *ver = POSTGIS_SCRIPTS_VERSION;
 	text *result;
-	result = (text *) lwalloc(VARHDRSZ  + strlen(ver));
+	result = lwalloc(VARHDRSZ  + strlen(ver));
 	VARATT_SIZEP(result) = VARHDRSZ + strlen(ver) ;
 	memcpy(VARDATA(result), ver, strlen(ver));
 	PG_RETURN_POINTER(result);
