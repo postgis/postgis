@@ -129,6 +129,7 @@ void DeleteFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid);
 // Memory context cache functions
 static void PROJ4SRSCacheInit(MemoryContext context);
 static void PROJ4SRSCacheDelete(MemoryContext context);
+static void PROJ4SRSCacheCheck(MemoryContext context);
 
 
 // Memory context definition must match the current version of PostgreSQL
@@ -141,7 +142,7 @@ static MemoryContextMethods PROJ4SRSCacheContextMethods = {
  	NULL,
  	PROJ4SRSCacheDelete
 #ifdef MEMORY_CONTEXT_CHECKING
- 	,NULL
+ 	,PROJ4SRSCacheCheck
 #endif
 };
 #endif
@@ -157,7 +158,7 @@ static MemoryContextMethods PROJ4SRSCacheContextMethods = {
 	NULL,
 	NULL
 #ifdef MEMORY_CONTEXT_CHECKING
- 	,NULL
+ 	,PROJ4SRSCacheCheck
 #endif
 };
 #endif
@@ -174,7 +175,7 @@ static MemoryContextMethods PROJ4SRSCacheContextMethods = {
 	NULL,
 	NULL
 #ifdef MEMORY_CONTEXT_CHECKING
-	,NULL
+	,PROJ4SRSCacheCheck
 #endif
 };
 #endif
@@ -206,6 +207,12 @@ PROJ4SRSCacheDelete(MemoryContext context)
 
 	// Remove the hash entry as it is no longer needed
 	DeletePJHashEntry(context);
+}
+
+static void
+PROJ4SRSCacheCheck(MemoryContext context)
+{
+	// Do nothing - stub required for when PostgreSQL is compiled with MEMORY_CONTEXT_CHECKING defined
 }
 
 
