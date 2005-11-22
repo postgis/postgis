@@ -152,7 +152,7 @@ lwcollection_serialize_buf(LWCOLLECTION *coll, uchar *buf, size_t *retsize)
 	int i;
 
 #ifdef PGIS_DEBUG_CALLS
-	lwnotice("lwcollection_serialize_buf called (%d with %d elems)",
+	lwnotice("lwcollection_serialize_buf called (%s with %d elems)",
 		lwgeom_typename(TYPE_GETTYPE(coll->type)), coll->ngeoms);
 #endif
 
