@@ -238,4 +238,9 @@ select '141', asewkt(multi(setsrid('LINESTRING(2 2, 3 3)'::geometry, 4)));
 select '142', asewkt(multi(setsrid('LINESTRING(2 2, 3 3)'::geometry, 5)));
 select '143', asewkt(multi(setsrid('POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))'::geometry, 6)));
 
+select '144', asewkt(force_3dm('POINT(1 2 3)'));
+select '145', asewkt(force_3dz('POINTM(1 2 3)'));
+select '146', asewkt(force_4d('POINTM(1 2 3)'));
+select '147', asewkt(force_4d('POINT(1 2 3)'));
+
 select '144', asewkt(linemerge('GEOMETRYCOLLECTION(LINESTRING(0 0, 1 1), LINESTRING(4 4, 1 1), LINESTRING(-5 -5, 0 0))'::geometry));

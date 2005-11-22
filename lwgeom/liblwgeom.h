@@ -269,7 +269,7 @@ extern void lwgeom_dropSRID(LWGEOM *lwgeom);
 
 // copies a point from the point array into the parameter point
 // will set point's z=0 (or NaN) if pa is 2d
-// will set point's m=0 (or NaN( if pa is 3d or 2d
+// will set point's m=0 (or NaN) if pa is 3d or 2d
 // NOTE: point is a real POINT3D *not* a pointer
 extern POINT4D getPoint4d(const POINTARRAY *pa, int n);
 
