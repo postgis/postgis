@@ -10,6 +10,7 @@ PostGIS 1.0.5CVS
 	- Fixed a small bug in the getPoint4d_p() low-level function
 	- Fixed memory alignment problems
 	- Speedup of serializer functions
+	- Bug fix in force_4d, force_3dm and force_3dz functions
 
 PostGIS 1.0.4
 2005/09/09

@@ -4873,6 +4873,7 @@ standards (return 0 on success).
 	<para>Fixed computation of null values fraction in analyzer</para>
 	<para>Fixed a small bug in the getPoint4d_p() low-level function</para>
 	<para>Speedup of serializer functions</para>
+	<para>Fixed a bug in force_3dm(), force_3dz() and force_4d()</para>
 			</sect2>
 
 			<sect2>
