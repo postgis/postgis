@@ -546,33 +546,24 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-// X(GEOMETRY) -- find the first POINT(..) in GEOMETRY, returns its X value.
-// Return NULL if there is no POINT(..) in GEOMETRY
+/*
+ * X(GEOMETRY) -- return X value of the point.
+ * Raise an error if input is not a point.
+ */
 PG_FUNCTION_INFO_V1(LWGEOM_x_point);
 Datum LWGEOM_x_point(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom;
-	LWGEOM_INSPECTED *inspected;
 	LWPOINT *point = NULL;
 	POINT2D p;
-	int i;
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
 
-	for (i=0; i<inspected->ngeometries; i++)
-	{
-		point = lwgeom_getpoint_inspected(inspected, i);
-		if ( point ) break;
-	}
-	pfree_inspected(inspected);
+	if ( TYPE_GETTYPE(geom->type) != POINTTYPE )
+		lwerror("Argument to X() must be a point");
 
-	if ( point == NULL ) {
-		PG_FREE_IF_COPY(geom, 0);
-		PG_RETURN_NULL();
-	}
+	point = lwgeom_getpoint(SERIALIZED_FORM(geom), 0);
 
-	// Ok, now we have a point, let's get X
 	getPoint2d_p(point->point, 0, &p);
 
 	PG_FREE_IF_COPY(geom, 0);
@@ -580,33 +571,24 @@ Datum LWGEOM_x_point(PG_FUNCTION_ARGS)
 	PG_RETURN_FLOAT8(p.x);
 }
 
-// Y(GEOMETRY) -- find the first POINT(..) in GEOMETRY, returns its Y value.
-// Return NULL if there is no POINT(..) in GEOMETRY
+/*
+ * Y(GEOMETRY) -- return Y value of the point.
+ * Raise an error if input is not a point.
+ */
 PG_FUNCTION_INFO_V1(LWGEOM_y_point);
 Datum LWGEOM_y_point(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom;
-	LWGEOM_INSPECTED *inspected;
 	LWPOINT *point = NULL;
 	POINT2D p;
-	int i;
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
 
-	for (i=0; i<inspected->ngeometries; i++)
-	{
-		point = lwgeom_getpoint_inspected(inspected, i);
-		if ( point ) break;
-	}
-	pfree_inspected(inspected);
+	if ( TYPE_GETTYPE(geom->type) != POINTTYPE )
+		lwerror("Argument to Y() must be a point");
 
-	if ( point == NULL ) {
-		PG_FREE_IF_COPY(geom, 0);
-		PG_RETURN_NULL();
-	}
+	point = lwgeom_getpoint(SERIALIZED_FORM(geom), 0);
 
-	// Ok, now we have a point, let's get X
 	getPoint2d_p(point->point, 0, &p);
 
 	PG_FREE_IF_COPY(geom, 0);
@@ -614,39 +596,29 @@ Datum LWGEOM_y_point(PG_FUNCTION_ARGS)
 	PG_RETURN_FLOAT8(p.y);
 }
 
-// Z(GEOMETRY) -- find the first POINT(..) in GEOMETRY, returns its Z value.
-// Return NULL if there is no POINT(..) in GEOMETRY.
-// Return NULL if there is no Z in this geometry.
+/*
+ * Z(GEOMETRY) -- return Z value of the point.
+ * Return NULL if there is no Z in the point.
+ * Raise an error if input is not a point.
+ */
 PG_FUNCTION_INFO_V1(LWGEOM_z_point);
 Datum LWGEOM_z_point(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom;
-	LWGEOM_INSPECTED *inspected;
 	LWPOINT *point = NULL;
 	POINT3DZ p;
-	int i;
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	// if there's no Z return NULL
+	if ( TYPE_GETTYPE(geom->type) != POINTTYPE )
+		lwerror("Argument to Z() must be a point");
+
+	point = lwgeom_getpoint(SERIALIZED_FORM(geom), 0);
+
+	/* no Z in input */
 	if ( ! TYPE_HASZ(geom->type) ) PG_RETURN_NULL();
 
-	inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
-
-	for (i=0; i<inspected->ngeometries; i++)
-	{
-		point = lwgeom_getpoint_inspected(inspected, i);
-		if ( point ) break;
-	}
-	pfree_inspected(inspected);
-
-	if ( point == NULL ) {
-		PG_FREE_IF_COPY(geom, 0);
-		PG_RETURN_NULL();
-	}
-
-	// Ok, now we have a point, let's get X
-	lwpoint_getPoint3dz_p(point, &p);
+	getPoint3dz_p(point->point, 0, &p);
 
 	PG_FREE_IF_COPY(geom, 0);
 
@@ -660,32 +632,20 @@ PG_FUNCTION_INFO_V1(LWGEOM_m_point);
 Datum LWGEOM_m_point(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom;
-	LWGEOM_INSPECTED *inspected;
 	LWPOINT *point = NULL;
 	POINT3DM p;
-	int i;
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	// if there's no M return NULL
-	if ( ! TYPE_HASM(geom->type) ) PG_RETURN_NULL();
+	if ( TYPE_GETTYPE(geom->type) != POINTTYPE )
+		lwerror("Argument to M() must be a point");
 
-	inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
+	point = lwgeom_getpoint(SERIALIZED_FORM(geom), 0);
 
-	for (i=0; i<inspected->ngeometries; i++)
-	{
-		point = lwgeom_getpoint_inspected(inspected, i);
-		if ( point ) break;
-	}
-	pfree_inspected(inspected);
+	/* no M in input */
+	if ( ! TYPE_HASM(point->type) ) PG_RETURN_NULL();
 
-	if ( point == NULL ) {
-		PG_FREE_IF_COPY(geom, 0);
-		PG_RETURN_NULL();
-	}
-
-	// Ok, now we have a point, let's get M
-	lwpoint_getPoint3dm_p(point, &p);
+	getPoint3dm_p(point->point, 0, &p);
 
 	PG_FREE_IF_COPY(geom, 0);
 
