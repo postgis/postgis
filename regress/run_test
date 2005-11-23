@@ -1,5 +1,21 @@
 #!/bin/sh
 
+DB=postgis_reg
+
+###################################################
+#
+# Usage ./run_test <testname>
+#
+# Create the spatial database 'postgis_reg'
+# (or whatever $DB is set to) if it doesn't
+# already exist.
+#
+# Run the <testname>.sql script
+# Diff output against <testname>_expected
+#
+#
+###################################################
+
 if [ -z "$TMPDIR" ]; then
 	TMPDIR=/tmp
 fi
@@ -11,7 +27,15 @@ fi
 TEST="$1"
 OUTFILE="${TMPDIR}/regress_${TEST}_out_$$"
 
-DB=postgis_reg
+if [ ! -r "${TEST}.sql" ]; then
+	echo "Can't read ${TEST}.sql" >&2
+	exit 1;
+fi
+
+if [ ! -r "${TEST}_expected" ]; then
+	echo "Can't read ${TEST}.sql" >&2
+	exit 1;
+fi
 
 db_exists=`psql -l | grep -w ${DB}`
 if [ -z "$db_exists" ]; then
