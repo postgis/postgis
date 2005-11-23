@@ -99,3 +99,5 @@ SELECT mem_size(collect(force_4d(force_2d(geometry(wkb_ndr))))) from test_data;
 SELECT mem_size(collect(force_3dm(geometry(wkb_ndr)))) from test_data;
 SELECT mem_size(collect(force_2d(force_4d(force_3dm(force_3dz(force_2d(geometry(wkb_ndr)))))))) from test_data;
 SELECT line_locate_point('LINESTRING(709243.393033887 163969.752725768,708943.240904444 163974.593889146,708675.634380651 163981.832927298)', 'POINT(705780 15883)');
+
+DROP TABLE test_data;

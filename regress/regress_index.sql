@@ -13,4 +13,4 @@ set enable_seqscan = off;
 
  select num,astext(the_geom) from test where the_geom && 'BOX3D(125 125,135 135)'::box3d  order by num;
 
-
+DROP TABLE test;

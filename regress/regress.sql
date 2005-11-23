@@ -245,34 +245,5 @@ select '147', asewkt(force_4d('POINT(1 2 3)'));
 
 select '144', asewkt(linemerge('GEOMETRYCOLLECTION(LINESTRING(0 0, 1 1), LINESTRING(4 4, 1 1), LINESTRING(-5 -5, 0 0))'::geometry));
 
---------------------------------
--- LRS functions
---------------------------------
-
--- No M value
-select '2d',asewkt(locate_along_measure('POINT(1 2)', 1));
-select '3dz',asewkt(locate_along_measure('POINT(1 2 3)', 1));
-
--- Points
-select 'PNTM_1',asewkt(locate_along_measure('POINTM(1 2 3)', 1));
-select 'PNTM_2',asewkt(locate_along_measure('POINTM(1 2 3)', 3));
-select 'PNTM_3',asewkt(locate_between_measures('POINTM(1 2 3)', 2, 3));
-select 'PNTM_4',asewkt(locate_between_measures('POINTM(1 2 3)', 3, 4));
-select 'PNTM_5',asewkt(locate_between_measures('POINTM(1 2 4.00001)', 3, 4));
-
--- Multipoints
-select 'MPNT_1',asewkt(locate_between_measures('MULTIPOINTM(1 2 2)', 2, 5));
-select 'MPNT_2', asewkt(locate_between_measures('MULTIPOINTM(1 2 8, 2 2 5, 2 1 0)', 2, 5));
-select 'MPNT_3', asewkt(locate_between_measures('MULTIPOINTM(1 2 8, 2 2 5.1, 2 1 0)', 2, 5));
-select 'MPNT_4', asewkt(locate_between_measures('MULTIPOINTM(1 2 8, 2 2 5, 2 1 0)', 4, 8));
-
-
--- Collections
-select 'COLL_1', asewkt(locate_between_measures('GEOMETRYCOLLECTION(MULTIPOINTM(1 2 8, 2 2 5.0, 2 1 0),MULTIPOINT(0 0 1))', 2, 5));
-
--- Linestrings
-select 'LINEZM_1', asewkt(locate_between_measures('LINESTRING(0 10 100 0, 0 0 0 10)', 2, 18));
-select 'LINEZM_2', asewkt(locate_between_measures('LINESTRING(0 10 0 0, 0 0 100 10)', 2, 18));
-select 'LINEZM_3', asewkt(locate_between_measures('LINESTRING(0 10 100 0, 0 0 0 10, 10 0 0 0)', 2, 18));
-select 'LINEZM_4', asewkt(locate_between_measures('LINESTRING(0 10 100 0, 0 0 0 20, 10 0 0 0)', 2, 18));
-select 'LINEZM_5', asewkt(locate_between_measures('LINESTRING(0 10 100 0, 0 0 0 20, 0 10 10 40, 10 0 0 0)', 2, 18));
+-- Drop test table
+DROP table test;

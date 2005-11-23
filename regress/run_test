@@ -1,0 +1,37 @@
+#!/bin/sh
+
+if [ -z "$TMPDIR" ]; then
+	TMPDIR=/tmp
+fi
+
+if [ -z "$1" ]; then
+	echo "Usage: $0 <test>" >&2
+	exit 1;
+fi
+TEST="$1"
+OUTFILE="${TMPDIR}/regress_${TEST}_out_$$"
+
+DB=postgis_reg
+
+db_exists=`psql -l | grep -w ${DB}`
+if [ -z "$db_exists" ]; then
+	echo
+	echo "Creating spatial db ${DB} " 
+
+	createdb $DB > /dev/null
+	createlang plpgsql $DB > /dev/null
+	psql -f ../lwpostgis.sql $DB > /dev/null 2>&1
+fi
+
+echo
+echo "Running test '${TEST}'"
+echo "Output file is: '${OUTFILE}'"
+echo 
+echo "       expected:'<'     obtained:'>'"
+echo
+
+psql -tA < "${TEST}.sql" $DB 2>&1 | grep -v INSERT > "${OUTFILE}"
+diff "${TEST}_expected" "${OUTFILE}"
+#sleep 1
+#dropdb $DB > /dev/null
+exit 0
