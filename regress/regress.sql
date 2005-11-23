@@ -223,6 +223,11 @@ select '130', geosnoop('POLYGON((0 0, 1 1, 0 0))');
 select '131', X('POINT(1 2)');
 select '132', Y('POINT(1 2)');
 select '133', Z('POINT(1 2)');
+select '133a', Z('POINT(1 2 3)');
+select '133b', Z('POINTM(1 2 3)');
+select '133c', M('POINT(1 2)');
+select '133d', M('POINTM(1 2 4)');
+select '133e', M('POINT(1 2 4)');
 
 select '134', distance('POINT(1 2)', 'POINT(1 2)');
 select '135', distance('POINT(5 0)', 'POINT(10 12)');

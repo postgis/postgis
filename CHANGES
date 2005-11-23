@@ -23,6 +23,8 @@ PostGIS 1.1.0CVS
 	  AddGeometryColumns() and update_geometry_stats()
 	- Initial support for topology modelling
 	- Stricter mapping between DBF and SQL integer and string attributes
+	- Changed M() and Z() functions to return NULL if requested
+	  dimension is not available
 
 PostGIS 1.0.5CVS
 2005/11/25

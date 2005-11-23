@@ -616,7 +616,7 @@ Datum LWGEOM_y_point(PG_FUNCTION_ARGS)
 
 // Z(GEOMETRY) -- find the first POINT(..) in GEOMETRY, returns its Z value.
 // Return NULL if there is no POINT(..) in GEOMETRY.
-// Return 0 if there is no Z in this geometry.
+// Return NULL if there is no Z in this geometry.
 PG_FUNCTION_INFO_V1(LWGEOM_z_point);
 Datum LWGEOM_z_point(PG_FUNCTION_ARGS)
 {
@@ -628,8 +628,8 @@ Datum LWGEOM_z_point(PG_FUNCTION_ARGS)
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	// if there's no Z return 0
-	if ( ! TYPE_HASZ(geom->type) ) PG_RETURN_FLOAT8(0.0);
+	// if there's no Z return NULL
+	if ( ! TYPE_HASZ(geom->type) ) PG_RETURN_NULL();
 
 	inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
 
@@ -655,7 +655,7 @@ Datum LWGEOM_z_point(PG_FUNCTION_ARGS)
 
 // M(GEOMETRY) -- find the first POINT(..) in GEOMETRY, returns its M value.
 // Return NULL if there is no POINT(..) in GEOMETRY.
-// Return 0 if there is no M in this geometry.
+// Return NULL if there is no M in this geometry.
 PG_FUNCTION_INFO_V1(LWGEOM_m_point);
 Datum LWGEOM_m_point(PG_FUNCTION_ARGS)
 {
@@ -667,8 +667,8 @@ Datum LWGEOM_m_point(PG_FUNCTION_ARGS)
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	// if there's no M return 0
-	if ( ! TYPE_HASM(geom->type) ) PG_RETURN_FLOAT8(0.0);
+	// if there's no M return NULL
+	if ( ! TYPE_HASM(geom->type) ) PG_RETURN_NULL();
 
 	inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
 
