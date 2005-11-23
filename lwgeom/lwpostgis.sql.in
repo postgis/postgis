@@ -3283,6 +3283,15 @@ CREATEFUNCTION SnapToGrid(geometry, float8)
    AS 'SELECT SnapToGrid($1, 0, 0, $2, $2)'
    LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+CREATEFUNCTION segmentize(geometry, float8)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_segmentize2d'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+---------------------------------------------------------------
+-- LRS
+---------------------------------------------------------------
+
 CREATEFUNCTION line_interpolate_point(geometry, float8)
    RETURNS geometry
    AS '@MODULE_FILENAME@', 'LWGEOM_line_interpolate_point'
@@ -3298,10 +3307,15 @@ CREATEFUNCTION line_locate_point(geometry, geometry)
    AS '@MODULE_FILENAME@', 'LWGEOM_line_locate_point'
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
-CREATEFUNCTION segmentize(geometry, float8)
+CREATEFUNCTION locate_between_measures(geometry, float8, float8)
 	RETURNS geometry
-	AS '@MODULE_FILENAME@', 'LWGEOM_segmentize2d'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+	AS '@MODULE_FILENAME@', 'LWGEOM_locate_between_m'
+	LANGUAGE 'C' _IMMUTABLE_STRICT;
+
+CREATEFUNCTION locate_along_measure(geometry, float8)
+	RETURNS geometry
+	AS 'SELECT locate_between_measures($1, $2, $2)'
+	LANGUAGE 'sql' _IMMUTABLE_STRICT;
 
 ---------------------------------------------------------------
 -- GEOS

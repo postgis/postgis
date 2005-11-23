@@ -385,6 +385,8 @@ extern int pointArray_ptsize(const POINTARRAY *pa);
 #define TYPE_HASSRID(t) ( (((t)&0x40))>>6 )
 #define TYPE_NDIMS(t) ((((t)&0x20)>>5)+(((t)&0x10)>>4)+2)
 #define TYPE_GETTYPE(t) ((t)&0x0F)
+
+/* 0x02==Z 0x01==M */
 #define TYPE_GETZM(t) (((t)&0x30)>>4)
 
 extern char lwgeom_hasBBOX(uchar type); // true iff B bit set
