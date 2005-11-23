@@ -239,9 +239,10 @@ dynptarray_addPoint4d(DYNPTARRAY *dpa, POINT4D *p4d, int allow_duplicates)
 	POINTARRAY *pa=dpa->pa;
 	POINT4D tmp;
 
-	if ( ! allow_duplicates && pa->npoints > 1 )
+	if ( ! allow_duplicates && pa->npoints > 0 )
 	{
 		getPoint4d_p(pa, pa->npoints-1, &tmp);
+
 		/*
 		 * return 0 and do nothing else if previous point in list is
 		 * equal to this one  (4D equality)
@@ -333,7 +334,7 @@ ptarray_locate_between_m(POINTARRAY *ipa, double m0, double m1)
 			}
 
 #if DEBUG
-			lwnotice(" adding new point %g,%g,%g,%g", p2.x, p2.y, p2.z, p2.m);
+			lwnotice(" 1 adding new point %g,%g,%g,%g", p2.x, p2.y, p2.z, p2.m);
 #endif
 			dynptarray_addPoint4d(dpa, &p2, 0);
 #if DEBUG
@@ -360,7 +361,7 @@ ptarray_locate_between_m(POINTARRAY *ipa, double m0, double m1)
 		 * In any case we add the second point (w/out allowin duplicates)
 		 */
 #if DEBUG
-		lwnotice(" adding new point %g,%g,%g,%g", p2.x, p2.y, p2.z, p2.m);
+		lwnotice(" 2 adding new point %g,%g,%g,%g", p2.x, p2.y, p2.z, p2.m);
 #endif
 		dynptarray_addPoint4d(dpa, &p2, 0);
 
