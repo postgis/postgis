@@ -17,7 +17,7 @@
 #include "math.h"
 
 #define DEBUG 0
-#define DEBUG_INERPOLATION 0
+#define DEBUG_INTERPOLATION 0
 
 Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS);
 
@@ -142,6 +142,22 @@ clip_seg_by_m_range(POINT4D *p1, POINT4D *p2, double m0, double m1)
 
 		if ( swapped ) ret |= 0x0100;
 		else ret |= 0x0010;
+	}
+
+	/*
+	 * if m0 and m1 have the same value
+	 * avoid computation of second point to
+	 * reduce rouding problems with floating
+	 * numbers.
+	 *
+	 * The two points must be equal anyway.
+	 */
+	if ( m0 == m1 )
+	{
+		memcpy(p2, p1, sizeof(POINT4D));
+		if ( swapped ) ret |= 0x0010;
+		else ret |= 0x0100;
+		return ret;
 	}
 
 	/* 
@@ -409,10 +425,14 @@ lwpoint_locate_between_m(LWPOINT *lwpoint, double m0, double m1)
 
 /*
  * Line is assumed to have an M value.
+ *
  * Return NULL if no parts of the line are in the given range (inclusive)
+ *
  * Return an LWCOLLECTION with LWLINES and LWPOINT being consecutive
  * and isolated points on the line falling in the range.
- * Points are interpolated.
+ *
+ * X,Y and Z (if present) ordinates are interpolated.
+ *
  */
 static LWGEOM *
 lwline_locate_between_m(LWLINE *lwline_in, double m0, double m1)
@@ -421,6 +441,10 @@ lwline_locate_between_m(LWLINE *lwline_in, double m0, double m1)
 	int i;
 	LWGEOM **geoms;
 	int ngeoms;
+	int outtype;
+	int typeflag=0; /* see flags below */
+	const int pointflag=0x01;
+	const int lineflag=0x10;
 
 #if DEBUG
 	lwnotice("lwline_locate_between called for lwline %x", lwline_in);
@@ -462,6 +486,7 @@ lwline_locate_between_m(LWLINE *lwline_in, double m0, double m1)
 			lwpoint->bbox=NULL;
 			lwpoint->point=pa;
 			geoms[i]=(LWGEOM *)lwpoint;
+			typeflag|=pointflag;
 		}
 
 		/* This is a line */
@@ -478,6 +503,7 @@ lwline_locate_between_m(LWLINE *lwline_in, double m0, double m1)
 			lwline->bbox=NULL;
 			lwline->points=pa;
 			geoms[i]=(LWGEOM *)lwline;
+			typeflag|=lineflag;
 		}
 
 		/* This is a bug */
@@ -488,8 +514,20 @@ lwline_locate_between_m(LWLINE *lwline_in, double m0, double m1)
 
 	}
 
-	return (LWGEOM *)lwcollection_construct(COLLECTIONTYPE,
-		lwline_in->SRID, NULL, ngeoms, geoms);
+	if ( ngeoms == 1 )
+	{
+		return geoms[0];
+	}
+	else
+	{
+		/* Choose best type */
+		if ( typeflag == 1 ) outtype=MULTIPOINTTYPE;
+		else if ( typeflag == 2 ) outtype=MULTILINETYPE;
+		else outtype = COLLECTIONTYPE;
+
+		return (LWGEOM *)lwcollection_construct(outtype,
+			lwline_in->SRID, NULL, ngeoms, geoms);
+	}
 }
 
 /*
@@ -555,6 +593,7 @@ lwgeom_locate_between_m(LWGEOM *lwin, double m0, double m1)
 		/* Polygon types are not supported */
 		case POLYGONTYPE:
 		case MULTIPOLYGONTYPE:
+			lwerror("Areal geometries are not supported by locate_between_measures");
 			return NULL;
 	}
 
@@ -568,6 +607,7 @@ lwgeom_locate_between_m(LWGEOM *lwin, double m0, double m1)
  *
  * Implements SQL/MM ST_LocateBetween(measure, measure) method.
  * See ISO/IEC CD 13249-3:200x(E)
+ *
  */
 PG_FUNCTION_INFO_V1(LWGEOM_locate_between_m);
 Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
@@ -594,11 +634,13 @@ Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
 	}
 
 	/*
-	 * Return NULL if input is a polygon, a multipolygon or a collection
+	 * Raise an error if input is a polygon, a multipolygon
+	 * or a collection
 	 */
 	type=lwgeom_getType(gin->type);
 	if ( type == POLYGONTYPE || type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE )
 	{
+		lwerror("Areal or Collection types are not supported");
 		PG_RETURN_NULL();
 	}
 

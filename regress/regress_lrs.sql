@@ -22,4 +22,4 @@ select 'LINEZM_2', asewkt(locate_between_measures('LINESTRING(0 10 0 0, 0 0 100 
 select 'LINEZM_3', asewkt(locate_between_measures('LINESTRING(0 10 100 0, 0 0 0 10, 10 0 0 0)', 2, 18));
 select 'LINEZM_4', asewkt(locate_between_measures('LINESTRING(0 10 100 0, 0 0 0 20, 10 0 0 0)', 2, 18));
 select 'LINEZM_5', asewkt(locate_between_measures('LINESTRING(0 10 100 0, 0 0 0 20, 0 10 10 40, 10 0 0 0)', 2, 18));
-
+select 'LINEZM_6', asewkt(locate_between_measures('LINESTRING(0 10 10 40, 10 0 0 0)', 2, 2));
