@@ -254,7 +254,7 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 	/* One-element union is the element itself */
 	if ( nelems == 1 ) PG_RETURN_POINTER((PG_LWGEOM *)(ARR_DATA_PTR(array)));
 
-	geoms = lwalloc(sizeof(GEOSGeom )*nelems);
+	geoms = lwalloc(sizeof(GEOSGeom)*nelems);
 
 	/* We need geos here */
 	initGEOS(lwnotice, lwnotice);
@@ -2428,7 +2428,7 @@ ptarray_to_GEOSCoordSeq(POINTARRAY *pa)
 	{
 		getPoint3dz_p(pa, i, &p);
 #ifdef PGIS_DEBUG_CONVERTER
-lwnotice("Point: %g,%g", p.x, p.y);
+lwnotice("Point: %g,%g,%g", p.x, p.y, p.z);
 #endif
 		GEOSCoordSeq_setX(sq, i, p.x);
 		GEOSCoordSeq_setY(sq, i, p.y);
@@ -2450,7 +2450,7 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 #endif
 
 #ifdef PGIS_DEBUG_POSTGIS2GEOS 
-	lwnotice("LWGEOM2GEOS got a type %d", type);
+	lwnotice("LWGEOM2GEOS got a %s", lwgeom_typename(type));
 #endif
 
 	switch (type)
@@ -2480,8 +2480,8 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 	if ( ! shell )
 	lwerror("LWGEOM2GEOS: exception during polygon shell conversion");
 			ngeoms = lwpoly->nrings-1;
-			geoms = malloc(sizeof(GEOSGeom *)*ngeoms);
-			for (i=1; i<=ngeoms; i++)
+			geoms = malloc(sizeof(GEOSGeom)*ngeoms);
+			for (i=1; i<lwpoly->nrings; ++i)
 			{
 				sq = ptarray_to_GEOSCoordSeq(lwpoly->rings[i]);
 				geoms[i-1] = GEOSGeom_createLinearRing(sq);
@@ -2507,10 +2507,12 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 
 			lwc = (LWCOLLECTION *)lwgeom;
 			ngeoms = lwc->ngeoms;
-			geoms = malloc(sizeof(GEOSGeom *)*ngeoms);
+			geoms = malloc(sizeof(GEOSGeom)*ngeoms);
 
-			for (i=0; i<ngeoms; i++)
+			for (i=0; i<ngeoms; ++i)
+			{
 				geoms[i] = LWGEOM2GEOS(lwc->geoms[i]);
+			}
 			g = GEOSGeom_createCollection(geostype, geoms, ngeoms);
 			if ( ! g ) lwerror("Exception in LWGEOM2GEOS");
 			free(geoms);
@@ -2625,7 +2627,7 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 	/* Ok, we really need geos now ;) */
 	initGEOS(lwnotice, lwnotice);
 
-	vgeoms = palloc(sizeof(GEOSGeom )*nelems);
+	vgeoms = palloc(sizeof(GEOSGeom)*nelems);
 	offset = 0;
 	for (i=0; i<nelems; i++)
 	{
