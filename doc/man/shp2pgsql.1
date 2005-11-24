@@ -40,6 +40,10 @@ It is much faster to load than the default "insert" SQL format. Use this for ver
 Creates and populates the geometry tables with the specified SRID.
 
 .TP 
+\fB\-g\fR <\fIgeometry_column\fR>
+Specify the name of the geometry column (mostly useful in append mode).
+
+.TP 
 \fB\-k\fR
 Keep idendifiers case (column, schema and attributes). Note that attributes in Shapefile are usually all UPPERCASE.
 
@@ -61,6 +65,10 @@ If this option is used the output will be encoded in UTF-8.
 .TP 
 \fB\-I\fR
 Create a GiST index on the geometry column. 
+
+.TP 
+\fB\-N\fR <\fIpolicy\fR>
+Specify NULL geometries handling policy (insert,skip,abort).
 
 .LP
 Note that -a, -c, -d and -p are mutually exclusive.
