@@ -1,4 +1,4 @@
-PostGIS 1.0.5CVS
+PostGIS 1.0.5
 2005/11/25
 	- New "Reporting Bugs" chapter in manual
 	- Segfault fix in shp2pgsql (utf8 encoding)
