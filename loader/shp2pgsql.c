@@ -59,6 +59,7 @@ typedef struct Ring {
 int	dump_format = 0; //0=insert statements, 1 = dump
 int	quoteidentifiers = 0;
 int	forceint4 = 0;
+int	createindex = 0;
 char    opt = ' ';
 char    *col_names = NULL;
 char	*pgtype;
@@ -90,6 +91,7 @@ char *protect_quotes_string(char *str);
 int PIP( Point P, Point* V, int n );
 void *safe_malloc(size_t size);
 void CreateTable(void);
+void CreateIndex(void);
 void usage(char *me, int exitcode);
 void InsertPoint(void);
 void InsertPointWKT(void);
@@ -172,7 +174,7 @@ make_good_string(char *str)
 
 	if (toescape == 0) return str;
 
-	size = ptr-str+toescape;
+	size = ptr-str+toescape+1;
 
 	result = calloc(1, size);
 
@@ -185,7 +187,7 @@ make_good_string(char *str)
 	*optr='\0';
 
 #ifdef USE_ICONV
-	free(str);
+	if ( encoding ) free(str);
 #endif
 
 	return result;
@@ -225,7 +227,7 @@ protect_quotes_string(char *str)
 
 	if (toescape == 0) return str;
 	
-	size = ptr-str+toescape;
+	size = ptr-str+toescape+1;
 
 	result = calloc(1, size);
 
@@ -238,7 +240,7 @@ protect_quotes_string(char *str)
 	*optr='\0';
 
 #ifdef USE_ICONV
-	free(str);
+	if ( encoding ) free(str);
 #endif
 
 	return result;
@@ -310,6 +312,7 @@ Insert_attributes(DBFHandle hDBFHandle, int row)
                }
 	       // pg_atoi() does not do this
 	       if ( val[0] == '\0' ) { val[0] = '0'; val[1] = '\0'; }
+	       if ( val[strlen(val)-1] == '.' ) val[strlen(val)-1] = '\0';
                break;
             case FTString:
             case FTLogical:
@@ -396,6 +399,11 @@ main (int ARGC, char **ARGV)
 	if(opt != 'a') CreateTable();
 
 	/*
+	 * Create GiST index if requested
+	 */
+	if(createindex) CreateIndex();
+
+	/*
 	 * Generate INSERT or COPY lines
 	 */
 	if(opt != 'p') LoadData();
@@ -403,7 +411,7 @@ main (int ARGC, char **ARGV)
 	printf("END;\n"); // End the last transaction
 
 
-	return(1);
+	return 0; 
 }//end main()
 
 void
@@ -422,8 +430,6 @@ Cleanup(void)
 void
 OpenShape(void)
 {
-	int j;
-
 	hSHPHandle = SHPOpen( shp_file, "rb" );
 	if (hSHPHandle == NULL) {
 		fprintf(stderr, "%s: shape (.shp) or index files (.shx) can not be opened.\n", shp_file);
@@ -436,18 +442,6 @@ OpenShape(void)
 		exit(-1);
 	}
 	SHPGetInfo(hSHPHandle, &num_entities, &shpfiletype, NULL, NULL);
-
-	/* Check we have at least a not-null geometry */
-	j=num_entities;
-	while( ( obj == NULL || obj->nVertices == 0 ) && j--)
-		obj = SHPReadObject(hSHPHandle,j);
-	if ( obj == NULL) 
-	{
-		fprintf(stderr, "Shapefile contains %d NULL object(s)\n",
-			num_entities);
-		exit(-1);
-	}
-
 }
 
 /*
@@ -567,6 +561,22 @@ CreateTable(void)
 }
 
 void
+CreateIndex(void)
+{
+	/* 
+	 * Create gist index
+	 */
+	if ( schema )
+	{
+		printf("CREATE INDEX \"%s_%s_gist\" ON \"%s\".\"%s\" using gist (\"%s\" gist_geometry_ops);\n", table, geom, schema, table, geom);
+	}
+	else
+	{
+		printf("CREATE INDEX \"%s_%s_gist\" ON \"%s\" using gist (\"%s\" gist_geometry_ops);\n", table, geom, table, geom);
+	}
+}
+
+void
 LoadData(void)
 {
 	int j, trans=0;
@@ -606,6 +616,10 @@ LoadData(void)
 
 		//open the next object
 		obj = SHPReadObject(hSHPHandle,j);
+		if ( ! obj ) {
+			fprintf(stderr, "Error reading shape\n");
+			exit(1);
+		}
 
 		if (!dump_format)
 		{
@@ -707,6 +721,8 @@ usage(char *me, int exitcode)
 	fprintf(stderr, "\n");
 	fprintf(stderr, "  -i  Use int4 type for all integer dbf fields.\n");
 	fprintf(stderr, "\n");
+	fprintf(stderr, "  -I  Create a GiST index on the geometry column.\n");
+	fprintf(stderr, "\n");
 	fprintf(stderr, "  -w  Use wkt format (for postgis-0.x support - drops M - drifts coordinates).\n");
 #ifdef USE_ICONV
 	fprintf(stderr, "\n");
@@ -732,7 +748,6 @@ InsertLineString(int id)
 		if (dump_format) printf("\\N\n");
 		else printf("NULL);\n");
 
-		SHPDestroyObject(obj);
 		return;
 	}
 
@@ -787,7 +802,6 @@ InsertLineStringWKT(int id)
 		if (dump_format) printf("\\N\n");
 		else printf("NULL);\n");
 
-		SHPDestroyObject(obj);
 		return;
 	}
 
@@ -1126,8 +1140,8 @@ void
 InsertPointWKT(void)
 {
 	unsigned int u;
-	if (dump_format) printf("SRID=%s;POINT(",sr_id);
-	else printf("GeometryFromText('POINT (");
+	if (dump_format) printf("SRID=%s;%s(", sr_id, pgtype);
+	else printf("GeometryFromText('%s(", pgtype);
 
 	for (u=0;u<obj->nVertices; u++){
 		if (u>0) printf(",");
@@ -1176,7 +1190,7 @@ ParseCmdline(int ARGC, char **ARGV)
 	extern char *optarg;
 	extern int optind;
 
-	while ((c = getopt(ARGC, ARGV, "kcdapDs:g:iW:w")) != EOF){
+	while ((c = getopt(ARGC, ARGV, "kcdapDs:g:iW:wI")) != EOF){
                switch (c) {
                case 'c':
                     if (opt == ' ')
@@ -1216,6 +1230,9 @@ ParseCmdline(int ARGC, char **ARGV)
                     break;
                case 'i':
                     forceint4 = 1;
+                    break;
+               case 'I':
+                    createindex = 1;
                     break;
                case 'w':
                     hwgeom = 1;
@@ -1382,11 +1399,12 @@ dump_ring(Ring *ring)
 {
 	char *buf = malloc(256*ring->n);
 	int i;
+
+	buf[0] = '\0';
 	for (i=0; i<ring->n; i++)
 	{
-		if (i) sprintf(buf, "%s,", buf);
-		sprintf(buf, "%s%g %g",
-			buf,
+		if (i) strcat(buf, ",");
+		sprintf(buf+strlen(buf), "%g %g",
 			ring->list[i].x,
 			ring->list[i].y);
 	}
@@ -1483,11 +1501,19 @@ DropTable(char *schema, char *table, char *geom)
 void
 GetFieldsSpec(void)
 {
+/*
+ * Shapefile (dbf) field name are at most 10chars + 1 NULL.
+ * Postgresql field names are at most 63 bytes + 1 NULL.
+ */
+#define MAXFIELDNAMELEN 64
 	int field_precision, field_width;
 	int j, z;
-	char  name[64];
-	char  name2[64];
+	char  name[MAXFIELDNAMELEN];
+	char  name2[MAXFIELDNAMELEN];
 	DBFFieldType type = -1;
+#ifdef USE_ICONV
+	char *utf8str;
+#endif
 
 	num_fields = DBFGetFieldCount( hDBFHandle );
 	num_records = DBFGetRecordCount(hDBFHandle);
@@ -1495,7 +1521,7 @@ GetFieldsSpec(void)
 	types = (DBFFieldType *)malloc(num_fields*sizeof(int));
 	widths = malloc(num_fields*sizeof(int));
 	precisions = malloc(num_fields*sizeof(int));
-	col_names = malloc((num_fields+2) * sizeof(char) * 32);
+	col_names = malloc((num_fields+2) * sizeof(char) * MAXFIELDNAMELEN);
 	strcpy(col_names, "(" );
 
 	//fprintf(stderr, "Number of fields from DBF: %d\n", num_fields);
@@ -1508,32 +1534,29 @@ GetFieldsSpec(void)
 		widths[j] = field_width;
 		precisions[j] = field_precision;
 
+#ifdef USE_ICONV
+		if ( encoding )
+		{
+			utf8str = utf8(encoding, name);
+			if ( ! utf8str ) exit(1);
+			strcpy(name, utf8str);
+			free(utf8str);
+		}
+#endif
+
+
 		/*
 		 * Make field names lowercase unless asked to
 		 * keep identifiers case.
 		 */
-		if ( ! quoteidentifiers ) {
-			for(z=0; z<strlen(name) ;z++)
-				name[z] = tolower(name[z]);
-		}
+		if ( ! quoteidentifiers ) LowerCase(name);
 
 		/*
 		 * Escape names starting with the
-		 * escape char (_)
+		 * escape char (_), those named 'gid'
+		 * or after pgsql reserved attribute names
 		 */
-		if( name[0]=='_' )
-		{
-			strcpy(name2+2, name);
-			name2[0] = '_';
-			name2[1] = '_';
-			strcpy(name, name2);
-		}
-
-		/*
-		 * Escape attributes named 'gid'
-		 * and pgsql reserved attribute names
-		 */
-		else if(
+		if( name[0]=='_' ||
 			! strcmp(name,"gid") ||
 			! strcmp(name, "tableoid") ||
 			! strcmp(name, "cmax") ||
@@ -1541,8 +1564,8 @@ GetFieldsSpec(void)
 			! strcmp(name, "cmin") ||
 			! strcmp(name, "primary") ||
 			! strcmp(name, "oid") ||
-			! strcmp(name, "ctid")
-		) {
+			! strcmp(name, "ctid") )
+		{
 			strcpy(name2+2, name);
 			name2[0] = '_';
 			name2[1] = '_';
@@ -1553,18 +1576,22 @@ GetFieldsSpec(void)
 		for(z=0; z < j ; z++){
 			if(strcmp(field_names[z],name)==0){
 				strcat(name,"__");
-				sprintf(name,"%s%i",name,j);
+				sprintf(name+strlen(name),"%i",j);
 				break;
 			}
 		}	
 
-
-		field_names[j] = malloc ( strlen(name)+3 );
+		field_names[j] = malloc (strlen(name)+1);
 		strcpy(field_names[j], name);
 
-		sprintf(col_names, "%s\"%s\",", col_names, name);
+		/*sprintf(col_names, "%s\"%s\",", col_names, name);*/
+		strcat(col_names, "\"");
+		strcat(col_names, name);
+		strcat(col_names, "\",");
 	}
-	sprintf(col_names, "%s\"%s\")", col_names, geom);
+	/*sprintf(col_names, "%s\"%s\")", col_names, geom);*/
+	strcat(col_names, geom);
+	strcat(col_names, ")");
 }
 
 #ifdef USE_ICONV
@@ -1615,6 +1642,56 @@ utf8 (const char *fromcode, char *inputbuf)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.88.2.14  2005/11/01 11:53:18  strk
+ * Dropped initial scan of shapefile - we don't check for all-null geometries anymore. Added check of return from SHPReadObject
+ *
+ * Revision 1.88.2.13  2005/10/24 16:12:41  strk
+ * Reverted backport of stricter INTEGER and STRING attributes handling.
+ * The change is too big to appear in the 1.0 branch.
+ *
+ * Revision 1.88.2.12  2005/10/24 15:54:16  strk
+ * fixed wrong assumption about maximum size of integer attributes (width is maximum size of text representation)
+ *
+ * Revision 1.88.2.11  2005/10/24 11:31:27  strk
+ * Backported stricter STRING and INTEGER attributes handling.
+ *
+ * Revision 1.99  2005/10/03 18:08:55  strk
+ * Stricter string attributes lenght handling. DBF header will be used
+ * to set varchar maxlenght, (var)char typmod will be used to set DBF header
+ * len.
+ *
+ * Revision 1.88.2.10  2005/10/21 11:34:25  strk
+ * Applied patch by Lars Roessiger handling numerical values with a trailing decima
+ * l dot
+ *
+ * Revision 1.88.2.9  2005/10/13 13:40:15  strk
+ * Fixed return code from shp2pgsql
+ *
+ * Revision 1.88.2.8  2005/09/30 08:59:21  strk
+ * Fixed release of stack memory occurring when shp2pgsql is compiled with USE_ICONV defined, an attribute value needs to be escaped and no -W is used
+ *
+ * Revision 1.88.2.7  2005/08/29 22:36:14  strk
+ * Removed premature object destruction in InsertLineString{WKT,} causing segfault
+ *
+ * Revision 1.88.2.6  2005/08/29 11:48:42  strk
+ * Fixed sprintf() calls to avoid overlapping memory,
+ * reworked not-null objects existance check to reduce startup costs.
+ *
+ * Revision 1.88.2.5  2005/07/27 02:47:06  strk
+ * Support for multibyte field names in loader
+ *
+ * Revision 1.88.2.4  2005/07/27 02:34:29  strk
+ * Minor cleanups in loader
+ *
+ * Revision 1.88.2.3  2005/07/27 02:05:20  strk
+ * Fixed handling of POINT types as WKT (-w) in loader
+ *
+ * Revision 1.88.2.2  2005/07/01 14:22:40  strk
+ * backported -I switch
+ *
+ * Revision 1.88.2.1  2005/04/21 09:07:41  strk
+ * Applied patch from Ron Mayer fixing a segfault in string escaper funx
+ *
  * Revision 1.88  2005/04/14 12:58:59  strk
  * Applied patch by Gino Lucrezi fixing bug in string escaping code.
  *

@@ -7,6 +7,11 @@
 
 #include "liblwgeom.h"
 
+/*
+ * Lower this to reduce integrity checks
+ */
+#define PARANOIA_LEVEL 1
+
 //#define PGIS_DEBUG 1
 
 // This is an implementation of the functions defined in lwgeom.h
@@ -426,14 +431,16 @@ getPoint4d(const POINTARRAY *pa, int n)
 }
 
 // copies a point from the point array into the parameter point
-// will set point's z=0 (or NaN) if pa is 2d
-// will set point's m=0 (or NaN( if pa is 3d or 2d
+// will set point's z=NO_Z_VALUE  if pa is 2d
+// will set point's m=NO_M_VALUE  if pa is 3d or 2d
 // NOTE: this will modify the point4d pointed to by 'point'.
 int
-getPoint4d_p(const POINTARRAY *pa, int n, POINT4D *point)
+getPoint4d_p(const POINTARRAY *pa, int n, POINT4D *op)
 {
-	int size;
+	uchar *ptr;
+	int zmflag;
 
+#if PARANOIA_LEVEL > 0
 	if ( ! pa ) return 0;
 
 	if ( (n<0) || (n>=pa->npoints))
@@ -441,11 +448,41 @@ getPoint4d_p(const POINTARRAY *pa, int n, POINT4D *point)
 		lwerror("getPoint4d_p: point offset out of range");
 		return 0; //error
 	}
+#endif
 
-	memset(point, 0, sizeof(POINT3DZ));
-	size = pointArray_ptsize(pa);
-	memcpy(point, getPoint_internal(pa, n), size);
+	/* Get a pointer to nth point offset and zmflag */
+	ptr=getPoint_internal(pa, n);
+	zmflag=TYPE_GETZM(pa->dims);
+
+	switch (zmflag)
+	{
+		case 0: // 2d 
+			memcpy(op, ptr, sizeof(POINT2D));
+			op->m=NO_M_VALUE;
+			op->z=NO_Z_VALUE;
+			break;
+
+		case 3: // ZM
+			memcpy(op, ptr, sizeof(POINT4D));
+			break;
+
+		case 2: // Z
+			memcpy(op, ptr, sizeof(POINT3DZ));
+			op->m=NO_M_VALUE;
+			break;
+
+		case 1: // M
+			memcpy(op, ptr, sizeof(POINT3DM));
+			op->m=op->z; // we use Z as temporary storage
+			op->z=NO_Z_VALUE;
+			break;
+
+		default:
+			lwerror("Unkown ZM flag ??");
+	}
+
 	return 1;
+
 }
 
 
@@ -478,64 +515,109 @@ getPoint3dm(const POINTARRAY *pa, int n)
 int
 getPoint3dz_p(const POINTARRAY *pa, int n, POINT3DZ *op)
 {
-	int size;
+	uchar *ptr;
 
+#if PARANOIA_LEVEL > 0
 	if ( ! pa ) return 0;
-
-#ifdef PGIS_DEBUG
-	lwnotice("getPoint3dz_p called on array of %d-dimensions / %u pts",
-		TYPE_NDIMS(pa->dims), pa->npoints);
-#endif
 
 	if ( (n<0) || (n>=pa->npoints))
 	{
 		lwnotice("%d out of numpoint range (%d)", n, pa->npoints);
 		return 0; //error
 	}
-
-	/* initialize point */
-	memset(op, 0, sizeof(POINT3DZ));
-
-	/* copy */
-	size = pointArray_ptsize(pa);
-#ifdef PGIS_DEBUG
-	lwnotice("getPoint3dz_p: point size: %d", size);
 #endif
-	memcpy(op, getPoint_internal(pa, n), size);
+
+#ifdef PGIS_DEBUG
+	lwnotice("getPoint3dz_p called on array of %d-dimensions / %u pts",
+		TYPE_NDIMS(pa->dims), pa->npoints);
+#endif
+
+	/* Get a pointer to nth point offset */
+	ptr=getPoint_internal(pa, n);
+
+	/*
+	 * if input POINTARRAY has the Z, it is always
+	 * at third position so make a single copy
+	 */
+	if ( TYPE_HASZ(pa->dims) )
+	{
+		memcpy(op, ptr, sizeof(POINT3DZ));
+	}
+
+	/*
+	 * Otherwise copy the 2d part and initialize
+	 * Z to NO_Z_VALUE
+	 */
+	else
+	{
+		memcpy(op, ptr, sizeof(POINT2D));
+		op->z=NO_Z_VALUE;
+	}
+
 	return 1;
 
 }
 
 // copies a point from the point array into the parameter point
-// will set point's m=NO_Z_VALUE if pa has no M
+// will set point's m=NO_M_VALUE if pa has no M
 // NOTE: this will modify the point3dm pointed to by 'point'.
 int
 getPoint3dm_p(const POINTARRAY *pa, int n, POINT3DM *op)
 {
-	int size;
+	uchar *ptr;
+	int zmflag;
 
+#if PARANOIA_LEVEL > 0
 	if ( ! pa ) return 0;
-
-#ifdef PGIS_DEBUG
-	lwnotice("getPoint3dm_p(%d) called on array of %d-dimensions / %u pts",
-		n, TYPE_NDIMS(pa->dims), pa->npoints);
-#endif
 
 	if ( (n<0) || (n>=pa->npoints))
 	{
 		lwerror("%d out of numpoint range (%d)", n, pa->npoints);
 		return 0; //error
 	}
+#endif 
 
-	/* initialize point */
-	memset(op, 0, sizeof(POINT3DM));
-
-	/* copy */
-	size = pointArray_ptsize(pa);
 #ifdef PGIS_DEBUG
-	lwnotice("getPoint3dz_p: point size: %d", size);
+	lwnotice("getPoint3dm_p(%d) called on array of %d-dimensions / %u pts",
+		n, TYPE_NDIMS(pa->dims), pa->npoints);
 #endif
-	memcpy(op, getPoint_internal(pa, n), size);
+
+
+	/* Get a pointer to nth point offset and zmflag */
+	ptr=getPoint_internal(pa, n);
+	zmflag=TYPE_GETZM(pa->dims);
+
+	/*
+	 * if input POINTARRAY has the M and NO Z,
+	 * we can issue a single memcpy
+	 */
+	if ( zmflag == 1 )
+	{
+		memcpy(op, ptr, sizeof(POINT3DM));
+		return 1;
+	}
+
+	/*
+	 * Otherwise copy the 2d part and 
+	 * initialize M to NO_M_VALUE
+	 */
+	memcpy(op, ptr, sizeof(POINT2D));
+
+	/*
+	 * Then, if input has Z skip it and
+	 * copy next double, otherwise initialize
+	 * M to NO_M_VALUE
+	 */
+	if ( zmflag == 3 )
+	{
+		ptr+=sizeof(POINT3DZ);
+		memcpy(&(op->m), ptr, sizeof(double));
+	}
+	else
+	{
+		op->m=NO_M_VALUE;
+	}
+
 	return 1;
 }
 
@@ -547,17 +629,7 @@ POINT2D
 getPoint2d(const POINTARRAY *pa, int n)
 {
 	POINT2D result;
-	int size;
-
-	if ( (n<0) || (n>=pa->npoints))
-	{
-		return result; //error
-	}
-
-	size = pointArray_ptsize(pa);
-
-	// this does x,y
-	memcpy(&result.x, &pa->serialized_pointlist[size*n],sizeof(double)*2 );
+	getPoint2d_p(pa, n, &result);
 	return result;
 }
 
@@ -567,21 +639,19 @@ getPoint2d(const POINTARRAY *pa, int n)
 int
 getPoint2d_p(const POINTARRAY *pa, int n, POINT2D *point)
 {
-	 int size;
-
+#if PARANOIA_LEVEL > 0
 	if ( ! pa ) return 0;
 
-	 if ( (n<0) || (n>=pa->npoints))
-	 {
-		 lwerror("getPoint2d_p: point offset out of range");
-		 return 0; //error
-	 }
+	if ( (n<0) || (n>=pa->npoints))
+	{
+		lwerror("getPoint2d_p: point offset out of range");
+		return 0; //error
+	}
+#endif
 
-	 size = pointArray_ptsize(pa);
-
-	 // this does x,y
-	 memcpy(point, &pa->serialized_pointlist[size*n],sizeof(double)*2 );
-	 return 1;
+	// this does x,y
+	memcpy(point, getPoint_internal(pa, n), sizeof(POINT2D));
+	return 1;
 }
 
 // get a pointer to nth point of a POINTARRAY
@@ -592,6 +662,7 @@ getPoint_internal(const POINTARRAY *pa, int n)
 {
 	int size;
 
+#if PARANOIA_LEVEL > 0
 	if ( pa == NULL ) {
 		lwerror("getPoint got NULL pointarray");
 		return NULL;
@@ -601,6 +672,7 @@ getPoint_internal(const POINTARRAY *pa, int n)
 	{
 		return NULL; //error
 	}
+#endif
 
 	size = pointArray_ptsize(pa);
 
@@ -618,16 +690,12 @@ pointArray_construct(uchar *points, char hasz, char hasm,
 	uint32 npoints)
 {
 	POINTARRAY  *pa;
-	size_t size;
 	pa = (POINTARRAY*)lwalloc(sizeof(POINTARRAY));
 
 	pa->dims = 0;
-	TYPE_SETZM(pa->dims, hasz, hasm);
+	TYPE_SETZM(pa->dims, hasz?1:0, hasm?1:0);
 	pa->npoints = npoints;
 
-	size=(2+hasz+hasm)*sizeof(double)*npoints;
-	//pa->serialized_pointlist = lwalloc(size);
-	//memcpy(pa->serialized_pointlist, points, size);
 	pa->serialized_pointlist = points;
 
 	return pa;
@@ -1361,15 +1429,17 @@ lwgeom_size_inspected(const LWGEOM_INSPECTED *inspected, int geom_number)
 int
 compute_serialized_box3d_p(uchar *srl, BOX3D *out)
 {
-	  BOX3D *box = compute_serialized_box3d(srl);
-	  if ( ! box ) return 0;
-	  out->xmin = box->xmin;
-	  out->ymin = box->ymin;
-	  out->zmin = box->zmin;
-	  out->xmax = box->xmax;
-	  out->ymax = box->ymax;
-	  out->zmax = box->zmax;
-	  return 1;
+	BOX3D *box = compute_serialized_box3d(srl);
+	if ( ! box ) return 0;
+	out->xmin = box->xmin;
+	out->ymin = box->ymin;
+	out->zmin = box->zmin;
+	out->xmax = box->xmax;
+	out->ymax = box->ymax;
+	out->zmax = box->zmax;
+	lwfree(box);
+
+	return 1;
 }
 
 // Compute bounding box of a serialized LWGEOM, even if it is

@@ -270,7 +270,7 @@ check_dims(int num)
 {
 	if( the_geom.ndims != num){
 		if (the_geom.ndims) {
-			error("Can not mix dimentionality in a geometry");
+			error("Can not mix dimensionality in a geometry");
 		} else {
 			the_geom.ndims = num;
 			if ( num > 2 ) the_geom.hasZ = 1;

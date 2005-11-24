@@ -52,7 +52,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom;
 	char *gml;
-	char *result;
+	text *result;
 	int len;
 	int version = 2;
 	char *srs;
@@ -94,16 +94,16 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	gml = geometry_to_gml(SERIALIZED_FORM(geom), srs);
 	PG_FREE_IF_COPY(geom, 0);
 
-	len = strlen(gml) + 5;
+	len = strlen(gml) + VARHDRSZ;
 
 	result = palloc(len);
-	*((int *) result) = len;
+	VARATT_SIZEP(result) = len;
 
-	memcpy(result+4, gml, len-4);
+	memcpy(VARDATA(result), gml, len-VARHDRSZ);
 
 	pfree(gml);
 
-	PG_RETURN_CSTRING(result);
+	PG_RETURN_POINTER(result);
 }
 
 // takes a GEOMETRY and returns a GML representation
@@ -504,6 +504,10 @@ getSRSbySRID(int SRID)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.10.2.1  2005/11/18 10:16:14  strk
+ * Removed casts on lwalloc return.
+ * Used varlena macros when appropriate.
+ *
  * Revision 1.10  2005/02/10 17:41:55  strk
  * Dropped getbox2d_internal().
  * Removed all castings of getPoint() output, which has been renamed

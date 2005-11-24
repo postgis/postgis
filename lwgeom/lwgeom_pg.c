@@ -50,23 +50,17 @@ pg_free(void *ptr)
 void
 pg_error(const char *fmt, ...)
 {
-	char *msg;
+#define ERRMSG_MAXLEN 256
+
+	char errmsg[ERRMSG_MAXLEN+1];
 	va_list ap;
 
 	va_start (ap, fmt);
+	vsnprintf (errmsg, ERRMSG_MAXLEN, fmt, ap);
+	va_end (ap);
 
-	/*
-	 * This is a GNU extension.
-	 * Dunno how to handle errors here.
-	 */
-	if (!vasprintf (&msg, fmt, ap))
-	{
-		va_end (ap);
-		return;
-	}
-	elog(ERROR, "%s", msg);
-	va_end(ap);
-	free(msg);
+	errmsg[ERRMSG_MAXLEN]='\0';
+	elog(ERROR, "%s", errmsg);
 }
 
 void
@@ -99,6 +93,12 @@ init_pg_func(void)
 	lwfree_var = pg_free;
 	lwerror = pg_error;
 	lwnotice = pg_notice;
+}
+
+LWGEOM *
+pglwgeom_deserialize(PG_LWGEOM *in)
+{
+	return lwgeom_deserialize(SERIALIZED_FORM(in));
 }
 
 PG_LWGEOM *
