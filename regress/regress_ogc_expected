@@ -17,6 +17,7 @@ contains|f
 contains|t
 overlaps|f
 isvalid|t
+NOTICE:  Self-intersection
 isvalid|f
 isvalid|t
 intersection|POINT(0 0)
