@@ -84,7 +84,6 @@ lwcollection_deserialize(uchar *srl)
 	result->type = typefl;
 	result->SRID = insp->SRID;
 	result->ngeoms = insp->ngeometries;
-	result->geoms = lwalloc(sizeof(LWGEOM *)*insp->ngeometries);
 
 	if (lwgeom_hasBBOX(srl[0]))
 	{
@@ -95,9 +94,14 @@ lwcollection_deserialize(uchar *srl)
 	else result->bbox = NULL;
 
 
-	for (i=0; i<insp->ngeometries; i++)
+	if ( insp->ngeometries )
 	{
-		result->geoms[i] = lwgeom_deserialize(insp->sub_geoms[i]);
+		result->geoms = lwalloc(sizeof(LWGEOM *)*insp->ngeometries);
+		for (i=0; i<insp->ngeometries; i++)
+		{
+			result->geoms[i] =
+				lwgeom_deserialize(insp->sub_geoms[i]);
+		}
 	}
 
 	return result;
