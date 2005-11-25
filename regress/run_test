@@ -49,11 +49,14 @@ fi
 
 libver=`psql -tAc "select postgis_lib_version()" $DB`
 libbuilddate=`psql -tAc "select postgis_lib_build_date()" $DB`
+pgsqlver=`psql -tAc "select version()" $DB`
+
 
 echo
 echo " Running test: '${TEST}' "
-echo "  Postgis lib: $libver - $libbuilddate"
-echo "  Output file: '${OUTFILE}'"
+echo " $pgsqlver"
+echo " Postgis lib: $libver - $libbuilddate"
+echo " Output file: '${OUTFILE}'"
 echo 
 echo "       expected:'<'     obtained:'>'"
 echo
