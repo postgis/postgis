@@ -47,9 +47,13 @@ if [ -z "$db_exists" ]; then
 	psql -f ../lwpostgis.sql $DB > /dev/null 2>&1
 fi
 
+libver=`psql -tAc "select postgis_lib_version()" $DB`
+libbuilddate=`psql -tAc "select postgis_lib_build_date()" $DB`
+
 echo
-echo "Running test '${TEST}'"
-echo "Output file is: '${OUTFILE}'"
+echo " Running test: '${TEST}' "
+echo "  Postgis lib: $libver - $libbuilddate"
+echo "  Output file: '${OUTFILE}'"
 echo 
 echo "       expected:'<'     obtained:'>'"
 echo
