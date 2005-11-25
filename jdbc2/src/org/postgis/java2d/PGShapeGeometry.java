@@ -36,17 +36,22 @@ import org.postgresql.util.PGobject;
  * 
  * Supports PostGIS 1.x (lwgeom hexwkb).
  * 
- * As the java.awt.Shape methods are implemented by using a
+ * As the java.awt.Shape methods currently are implemented by using a
  * java.awt.geom.GeneralPath object, they have the same semantics.
  * 
- * Points are translated into MoveTo vertices, (Multi)LineStrings into a
- * sequence of a single MoveTo and multiple LineTo vertices, and Polygon rings
- * into a sequence of a single MoveTo, multiple LineTo and a Close vertex. To
- * allow correct Polygon filling, our PathIterators have
- * GeneralPath.WIND_EVEN_ODD as winding rule.
+ * BUG/TODO: MultiPoints or Points in a Geometry Collection currently don't work
+ * as expected, as some GeneralPath implementations throw away adjacent MoveTo
+ * commands as an optimization (e. G. sun 1.5 and ibm 1.5). Points thus are
+ * translated into MoveTo() followed by a closePath. This may change when we
+ * implement our own path logics. We have to evaluate whether Graphics2D renders
+ * a single MoveTo command as a single "brush tip", or we need the closePath()
+ * command nevertheless to get any drawing. Maybe we need a LineTo() to the same
+ * coordinages instead.
  * 
- * BUG: MultiPoints or Points in a Geometry Collection currently don't work as
- * expected, as GeneralPath objects "optimize" multiple MoveTo vertices away.
+ * (Multi)LineStrings are translated into a sequence of a single MoveTo and
+ * multiple LineTo vertices, and Polygon rings into a sequence of a single
+ * MoveTo, multiple LineTo and a closePath command. To allow correct Polygon
+ * filling, our PathIterators have GeneralPath.WIND_EVEN_ODD as winding rule.
  * 
  * @see java.awt.geom.GeneralPath
  * @see java.awt.Shape

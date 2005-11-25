@@ -144,6 +144,7 @@ public class ShapeBinaryParser {
 
     private void parsePoint(ValueGetter data, boolean haveZ, boolean haveM, GeneralPath path) {
         path.moveTo((float) data.getDouble(), (float) data.getDouble());
+        path.closePath();
         skipZM(data, haveZ, haveM);
     }
 

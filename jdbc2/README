@@ -69,18 +69,21 @@ link against those.
 * How do I build it? *
 
 You need a recent pgjdbc driver jar, see the download link from above.
-It is currently tested and supported with 7.2, 7.3, 7.4 and 8.0 pgjdbc
-releases. Those are exactly the releases that are currently supported by 
-PostgreSQL server guys. 
+It is currently tested and supported with 7.2, 7.3, 7.4, 8.0 and 8.1 pgjdbc
+releases. Apart 7.2, those are exactly the releases that are currently 
+supported by PostgreSQL server guys.
 
 The current PostGIS jdbc release is also reported to run (but not compile)
 against the postgresql jdbc7.1-1.2.jar, but this is not supported, as well as 
-PostGIS itsself does not support 7.1 any more.
+current PostGIS itsself does not support 7.1 servers any more.
 
 Note that your pgjdbc driver version does not constrain the PostgreSQL 
 server version. As the JDBC drivers are downwards compatible against older 
 servers, and PostgreSQL servers typically accept older clients, you can 
-easily use e. G. a pgjdbc 8.0 against a PostgreSQL 7.3 server.
+easily use e. G. a pgjdbc 8.0 against a PostgreSQL 7.3 server. To benefit
+from optimizations and bugfixes, it is generally suggested to use the 
+newest stable pgjdbc build that is documented to work against your 
+server release.
 
 Make shure the pgjdbc driver is available in your Java CLASSPATH,
 either by setting the environment variable, or by editing the
@@ -88,7 +91,7 @@ Makefile.
 
 A "make jar" then compiles the code and creates two jar files. The
 "postgis.jar" is for normal usage and deployment, the
-"postgis_debug.jar" additionally  includes the source code, for
+"postgis_debug.jar" additionally includes the source code, for
 debugging purposes.
 
 
