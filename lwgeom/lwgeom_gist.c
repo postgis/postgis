@@ -8,7 +8,7 @@
 #include "access/gist.h"
 #include "access/itup.h"
 #if USE_VERSION > 80
-#include "access/rtree.h"
+#include "access/skey.h"
 #endif
 #include "fmgr.h"
 #include "utils/elog.h"

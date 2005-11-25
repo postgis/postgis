@@ -2101,7 +2101,7 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 	 */
 	++nelems;
 	if ( nelems == 1 || ! array ) {
-		nbytes = ARR_OVERHEAD(1)+INTALIGN(geom->size);
+		nbytes = ARR_OVERHEAD_NONULLS(1)+INTALIGN(geom->size);
 #ifdef PGIS_DEBUG
 		elog(NOTICE, "geom_accum: adding %p (nelems=%d; nbytes=%d)",
 			geom, nelems, nbytes);
@@ -2118,6 +2118,9 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 
 #if USE_VERSION > 72
 		result->elemtype = oid;
+#endif
+#if USE_VERSION > 81
+		result->dataoffset = 0;
 #endif
 		memcpy(ARR_DIMS(result), &nelems, sizeof(int));
 		memcpy(ARR_LBOUND(result), &lbs, sizeof(int));
@@ -2208,7 +2211,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 
 #ifdef PGIS_DEBUG
 	elog(NOTICE, " array is %d-bytes in size, %d w/out header",
-		array->size, array->size-ARR_OVERHEAD(ARR_NDIM(array)));
+		array->size, array->size-ARR_OVERHEAD_NONULLS(ARR_NDIM(array)));
 #endif
 
 
