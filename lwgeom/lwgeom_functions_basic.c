@@ -2524,6 +2524,11 @@ Datum LWGEOM_segmentize2d(PG_FUNCTION_ARGS)
 
 	inlwgeom = lwgeom_deserialize(SERIALIZED_FORM(ingeom));
 	outlwgeom = lwgeom_segmentize2d(inlwgeom, dist);
+
+	// Copy input bounding box if any
+	if ( inlwgeom->bbox )
+		outlwgeom->bbox = box2d_clone(inlwgeom->bbox);
+
 	outgeom = pglwgeom_serialize(outlwgeom);
 
 	PG_FREE_IF_COPY(ingeom, 0);

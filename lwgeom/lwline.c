@@ -366,7 +366,7 @@ lwline_reverse(LWLINE *line)
 LWLINE *
 lwline_segmentize2d(LWLINE *line, double dist)
 {
-	return lwline_construct(line->SRID, line->bbox,
+	return lwline_construct(line->SRID, NULL,
 		ptarray_segmentize2d(line->points, dist));
 }
 
