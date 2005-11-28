@@ -246,3 +246,5 @@ select '147', asewkt(force_4d('POINT(1 2 3)'));
 select '148', astext(segmentize('LINESTRING(0 0, 10 0)', 5));
 
 select '150', asewkt(force_collection(setsrid('POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))'::geometry, 6)));
+
+select '151', geom_accum(NULL, NULL);
