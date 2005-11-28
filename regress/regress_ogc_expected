@@ -1,5 +1,6 @@
 buffer|POLYGON((1 0,0.707106781202421 -0.707106781170674,4.48965921677393e-11 -1,-0.707106781138927 -0.707106781234168,-1 -8.97931843354786e-11,-0.707106781265914 0.707106781107181,-1.34689776503218e-10 1,0.707106781075434 0.707106781297661,1 0))
 geomunion|MULTIPOINT(0 0,1 1)
+unite_garray|MULTIPOINT(2 3,0 0)
 convexhull|POLYGON((0 0,0 10,10 10,10 0,0 0))
 relate|F0FFFF102
 relate|t
@@ -17,7 +18,9 @@ contains|f
 contains|t
 overlaps|f
 isvalid|t
+NOTICE:  Self-intersection
 isvalid|f
+isvalid|t
 intersection|POINT(0 0)
 difference|MULTILINESTRING((0 10,0 2),(0 -2,0 -10))
 boundary|MULTILINESTRING((0 0,0 10,10 10,10 0,0 0),(2 2,2 4,4 4,4 2,2 2))
@@ -26,3 +29,4 @@ issimple|t
 equals|t
 pointonsurface|POINT(5 5)
 centroid|POINT(5.08333333333333 5.08333333333333)
+exteriorring|LINESTRING(52 18,66 23,73 9,48 6,52 18)

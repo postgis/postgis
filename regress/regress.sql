@@ -242,3 +242,5 @@ select '144', asewkt(force_3dm('POINT(1 2 3)'));
 select '145', asewkt(force_3dz('POINTM(1 2 3)'));
 select '146', asewkt(force_4d('POINTM(1 2 3)'));
 select '147', asewkt(force_4d('POINT(1 2 3)'));
+
+select '148', astext(segmentize('LINESTRING(0 0, 10 0)', 5));
