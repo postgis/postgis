@@ -1429,6 +1429,7 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS)
 	else
 	{
 		SRID = lwgeom->SRID;
+		/* We transfer bbox ownership from input to output */
 		bbox = lwgeom->bbox;
 		lwgeom->SRID = -1;
 		lwgeom->bbox = NULL;
@@ -1477,6 +1478,7 @@ Datum LWGEOM_force_multi(PG_FUNCTION_ARGS)
 	{
 		type += 3;
 		SRID = lwgeom->SRID;
+		/* We transfer bbox ownership from input to output */
 		box = lwgeom->bbox;
 		lwgeom->SRID=-1;
 		lwgeom->bbox=NULL;
@@ -1950,8 +1952,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 
 			/* COMPUTE_BBOX WHEN_SIMPLE */
 			if ( lwgeoms[i]->bbox ) {
-				box = palloc(sizeof(BOX2DFLOAT4));
-				memcpy(box, lwgeoms[i]->bbox, sizeof(BOX2DFLOAT4));
+				box = box2d_clone(lwgeoms[i]->bbox);
 			}
 		}
 		else
