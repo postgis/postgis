@@ -488,7 +488,7 @@ lwpoly_segmentize2d(LWPOLY *poly, double dist)
 	{
 		newrings[i] = ptarray_segmentize2d(poly->rings[i], dist);
 	}
-	return lwpoly_construct(poly->SRID, poly->bbox,
+	return lwpoly_construct(poly->SRID, NULL,
 		poly->nrings, newrings);
 }
 

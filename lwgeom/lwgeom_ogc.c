@@ -355,6 +355,7 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 	POINTARRAY *extring;
 	LWLINE *line;
 	PG_LWGEOM *result;
+	BOX2DFLOAT4 *bbox=NULL;
 
 	if ( TYPE_GETTYPE(geom->type) != POLYGONTYPE )
 	{
@@ -369,7 +370,8 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 	// This is a LWLINE constructed by exterior ring POINTARRAY
 	// If the input geom has a bbox, use it for 
 	// the output geom, as exterior ring makes it up !
-	line = lwline_construct(poly->SRID, poly->bbox, extring);
+	if ( poly->bbox ) bbox=box2d_clone(poly->bbox);
+	line = lwline_construct(poly->SRID, bbox, extring);
 
 	result = pglwgeom_serialize((LWGEOM *)line);
 

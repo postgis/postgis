@@ -294,7 +294,7 @@ lwcollection_segmentize2d(LWCOLLECTION *col, double dist)
 	for (i=0; i<col->ngeoms; i++)
 		newgeoms[i] = lwgeom_segmentize2d(col->geoms[i], dist);
 
-	return lwcollection_construct(col->type, col->SRID, col->bbox,
+	return lwcollection_construct(col->type, col->SRID, NULL,
 		col->ngeoms, newgeoms);
 }
 
