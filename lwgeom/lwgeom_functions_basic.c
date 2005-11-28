@@ -15,7 +15,7 @@
 #include "profile.h"
 #include "wktparse.h"
 
-//#define PGIS_DEBUG 1
+/*#define PGIS_DEBUG 1*/
 
 Datum LWGEOM_mem_size(PG_FUNCTION_ARGS);
 Datum LWGEOM_summary(PG_FUNCTION_ARGS);
@@ -2092,11 +2092,15 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 #ifdef PGIS_DEBUG
 		elog(NOTICE, "geom_accum: NULL geom, nelems=%d", nelems);
 #endif
+		if ( array == NULL ) PG_RETURN_NULL();
 		PG_RETURN_ARRAYTYPE_P(array);
 	}
 
 	/* Make a DETOASTED copy of input geometry */
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(datum);
+#ifdef PGIS_DEBUG
+	elog(NOTICE, "geom_accum: detoasted geom: %x", geom);
+#endif
 
 	/*
 	 * Might use a more optimized version instead of lwrealloc'ing
