@@ -21,21 +21,22 @@ void pg_free(void *ptr);
 void pg_error(const char *msg, ...);
 void pg_notice(const char *msg, ...);
 
-// Serialize/deserialize a PG_LWGEOM (postgis datatype)
+/* Serialize/deserialize a PG_LWGEOM (postgis datatype) */
 PG_LWGEOM *pglwgeom_serialize(LWGEOM *lwgeom);
 LWGEOM *pglwgeom_deserialize(PG_LWGEOM *pglwgeom);
 
 extern Oid getGeometryOID(void);
 
-// call this as first thing of any PG function
+/* call this as first thing of any PG function */
 void init_pg_func(void);
 
-// PG-dependant
-extern BOX2DFLOAT4 *box_to_box2df(BOX *box);  // postgresql standard type
+/* PG-dependant */
+/* BOX is postgresql standard type */
+extern BOX2DFLOAT4 *box_to_box2df(BOX *box);  
 extern BOX box2df_to_box(BOX2DFLOAT4 *box);
-extern void box2df_to_box_p(BOX2DFLOAT4 *box, BOX *out); // postgresql standard type
+extern void box2df_to_box_p(BOX2DFLOAT4 *box, BOX *out);
 
-// PG-exposed
+/* PG-exposed */
 Datum BOX2D_same(PG_FUNCTION_ARGS);
 Datum BOX2D_overlap(PG_FUNCTION_ARGS);
 Datum BOX2D_overleft(PG_FUNCTION_ARGS);
@@ -69,4 +70,4 @@ Datum LWGEOM_getBBOX(PG_FUNCTION_ARGS);
 Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS);
 Datum LWGEOM_dropBBOX(PG_FUNCTION_ARGS);
 
-#endif // !defined _LWGEOM_PG_H 1
+#endif /* !defined _LWGEOM_PG_H 1 */

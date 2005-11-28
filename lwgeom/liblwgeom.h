@@ -5,10 +5,13 @@
 #include "compat.h"
 
 #define INTEGRITY_CHECKS 1
-//#define DEBUG_ALLOCS 1
-//#define DEBUG 1
-//#define DEBUG_CALLS 1
+/* #define DEBUG_ALLOCS 1 */
+/* #define PGIS_DEBUG 1 */
+/* #define DEBUG_CALLS 1 */
 
+/*
+ * Memory management function types
+ */
 typedef void* (*lwallocator)(size_t size);
 typedef void* (*lwreallocator)(void *mem, size_t size);
 typedef void (*lwfreeor)(void* mem);
@@ -19,8 +22,10 @@ typedef unsigned int uint32;
 typedef int int32;
 #endif
 
-// this will change to NaN when I figure out how to
-// get NaN in a platform-independent way
+/*
+ * this will change to NaN when I figure out how to
+ * get NaN in a platform-independent way
+ */
 #define NO_VALUE 0.0
 #define NO_Z_VALUE NO_VALUE
 #define NO_M_VALUE NO_VALUE
@@ -40,7 +45,7 @@ extern lwfreeor lwfree_var;
 extern lwreporter lwerror;
 extern lwreporter lwnotice;
 
-//-----------------------------------------------------------------
+/******************************************************************/
 
 typedef unsigned char uchar;
 
@@ -60,37 +65,42 @@ typedef struct
 
 typedef struct chiptag
 {
-	int size; //unused (for use by postgresql)
+	int size; /* unused (for use by postgresql) */
 
-	int endian_hint;  // the number 1 in the endian of this datastruct
+	int endian_hint; /* the number 1 in the endian of this datastruct */
 
 	BOX3D bvol;
 	int SRID;
 	char future[4];
-	float factor;	// Usually 1.0.
-			// Integer values are multiplied by this number
-			// to get the actual height value
-			// (for sub-meter accuracy height data).
+	float factor;	/* Usually 1.0.
+			 * Integer values are multiplied by this number
+			 * to get the actual height value
+			 * (for sub-meter accuracy height data).
+			 */
 
-	int datatype;	// 1 = float32,
-			// 5 = 24bit integer,
-			// 6 = 16bit integer (short)
-			// 101 = float32 (NDR),
-			// 105 = 24bit integer (NDR),
-			// 106=16bit int (NDR)
-
+	int datatype;	/* 1 = float32,
+			 * 5 = 24bit integer,
+			 * 6 = 16bit integer (short)
+			 * 101 = float32 (NDR),
+			 * 105 = 24bit integer (NDR),
+			 * 106=16bit int (NDR)
+			 */
 	int height;
 	int width;
-	int compression;	// 0 = no compression, 1 = differencer
-				// 0x80 = new value
-				// 0x7F = nodata
+	int compression;	/* 0 = no compression, 1 = differencer
+				 * 0x80 = new value
+				 * 0x7F = nodata
+				 */
 
-	// this is provided for convenience, it should be set to
-	//  sizeof(chip) bytes into the struct because the serialized form is:
-	//    <header><data>
-	// NULL when serialized
-	void  *data;	// data[0] = bottm left,
-			// data[width] = 1st pixel, 2nd row (uncompressed)
+	/*
+	 * this is provided for convenience, it should be set to
+	 *  sizeof(chip) bytes into the struct because the serialized form is:
+	 *    <header><data>
+	 * NULL when serialized
+	 */
+	void  *data;	/* data[0] = bottm left,
+			 * data[width] = 1st pixel, 2nd row (uncompressed)
+			 */
 
 } CHIP;
 
@@ -102,28 +112,32 @@ typedef struct chiptag
  */
 typedef struct
 {
-	double	a;	//semimajor axis
-	double	b; 	//semiminor axis
-	double	f;	//flattening
-	double	e;	//eccentricity (first)
-	double	e_sq;	//eccentricity (first), squared
-	char		name[20]; //name of ellipse
+	double	a;	/* semimajor axis */
+	double	b; 	/* semiminor axis */
+	double	f;	/* flattening     */
+	double	e;	/* eccentricity (first) */
+	double	e_sq;	/* eccentricity (first), squared */
+	char	name[20]; /* name of ellipse */
 } SPHEROID;
 
 
-// ALL LWGEOM structures will use POINT3D as an abstract point.
-// This means a 2d geometry will be stored as (x,y) in its serialized
-// form, but all functions will work on (x,y,0).  This keeps all the
-// analysis functions simple.
-// NOTE: for GEOS integration, we'll probably set z=NaN
-//        so look out - z might be NaN for 2d geometries!
+/*
+ * ALL LWGEOM structures will use POINT3D as an abstract point.
+ * This means a 2d geometry will be stored as (x,y) in its serialized
+ * form, but all functions will work on (x,y,0).  This keeps all the
+ * analysis functions simple.
+ * NOTE: for GEOS integration, we'll probably set z=NaN
+ *        so look out - z might be NaN for 2d geometries!
+ */
 typedef struct { double	x,y,z; } POINT3DZ;
-typedef struct { double	x,y,z; } POINT3D; // alias for POINT3DZ
+typedef struct { double	x,y,z; } POINT3D; /* alias for POINT3DZ */
 typedef struct { double	x,y,m; } POINT3DM;
 
 
-// type for 2d points.  When you convert this to 3d, the
-//   z component will be either 0 or NaN.
+/*
+ * type for 2d points.  When you convert this to 3d, the
+ *   z component will be either 0 or NaN.
+ */
 typedef struct
 {
 	 double x;
@@ -138,12 +152,14 @@ typedef struct
 	 double m;
 } POINT4D;
 
-//-----------------------------------------------------------
+/******************************************************************/
 
-// Point array abstracts a lot of the complexity of points and point lists.
-// It handles miss-alignment in the serialized form, 2d/3d translation
-//    (2d points converted to 3d will have z=0 or NaN)
-// DONT MIX 2D and 3D POINTS!  *EVERYTHING* is either one or the other
+/*
+ * Point array abstracts a lot of the complexity of points and point lists.
+ * It handles miss-alignment in the serialized form, 2d/3d translation
+ *    (2d points converted to 3d will have z=0 or NaN)
+ * DONT MIX 2D and 3D POINTS!  *EVERYTHING* is either one or the other
+ */
 typedef struct
 {
     /* array of POINT 2D, 3D or 4D. probably missaligned. */
@@ -155,46 +171,49 @@ typedef struct
     uint32 npoints;
 }  POINTARRAY;
 
-//-----------------------------------------------------------
+/******************************************************************
+ *
+ * LWGEOM (any type)
+ *
+ ******************************************************************/
 
-// LWGEOM (any type)
 typedef struct
 {
 	uchar type; 
 	BOX2DFLOAT4 *bbox;
-	uint32 SRID; // -1 == unneeded
+	uint32 SRID; /* -1 == unneeded */
 	void *data;
 } LWGEOM;
 
-// POINTYPE
+/* POINTYPE */
 typedef struct
 {
-	uchar type; // POINTTYPE
+	uchar type; /* POINTTYPE */
 	BOX2DFLOAT4 *bbox;
    	uint32 SRID;	
-   	POINTARRAY *point;  // hide 2d/3d (this will be an array of 1 point)
-}  LWPOINT; // "light-weight point"
+   	POINTARRAY *point;  /* hide 2d/3d (this will be an array of 1 point) */
+}  LWPOINT; /* "light-weight point" */
 
-// LINETYPE
+/* LINETYPE */
 typedef struct
 {
-	uchar type; // LINETYPE
+	uchar type; /* LINETYPE */
 	BOX2DFLOAT4 *bbox;
    	uint32 SRID;	
-	POINTARRAY    *points; // array of POINT3D
-} LWLINE; //"light-weight line"
+	POINTARRAY    *points; /* array of POINT3D */
+} LWLINE; /* "light-weight line" */
 
-// POLYGONTYPE
+/* POLYGONTYPE */
 typedef struct
 {
-	uchar type; // POLYGONTYPE
+	uchar type; /* POLYGONTYPE */
 	BOX2DFLOAT4 *bbox;
    	uint32 SRID;	
 	int  nrings;
-	POINTARRAY **rings; // list of rings (list of points)
-} LWPOLY; // "light-weight polygon"
+	POINTARRAY **rings; /* list of rings (list of points) */
+} LWPOLY; /* "light-weight polygon" */
 
-// MULTIPOINTTYPE
+/* MULTIPOINTTYPE */
 typedef struct
 {
 	uchar type; 
@@ -204,7 +223,7 @@ typedef struct
 	LWPOINT **geoms;
 } LWMPOINT; 
 
-// MULTILINETYPE
+/* MULTILINETYPE */
 typedef struct
 {  
 	uchar type; 
@@ -214,7 +233,7 @@ typedef struct
 	LWLINE **geoms;
 } LWMLINE; 
 
-// MULTIPOLYGONTYPE
+/* MULTIPOLYGONTYPE */
 typedef struct
 {  
 	uchar type; 
@@ -224,7 +243,7 @@ typedef struct
 	LWPOLY **geoms;
 } LWMPOLY; 
 
-// COLLECTIONTYPE
+/* COLLECTIONTYPE */
 typedef struct
 {   
 	uchar type; 
@@ -234,7 +253,7 @@ typedef struct
 	LWGEOM **geoms;
 } LWCOLLECTION; 
 
-// Casts LWGEOM->LW* (return NULL if cast is illegal)
+/* Casts LWGEOM->LW* (return NULL if cast is illegal) */
 extern LWMPOLY *lwgeom_as_lwmpoly(LWGEOM *lwgeom);
 extern LWMLINE *lwgeom_as_lwmline(LWGEOM *lwgeom);
 extern LWMPOINT *lwgeom_as_lwmpoint(LWGEOM *lwgeom);
@@ -243,7 +262,7 @@ extern LWPOLY *lwgeom_as_lwpoly(LWGEOM *lwgeom);
 extern LWLINE *lwgeom_as_lwline(LWGEOM *lwgeom);
 extern LWPOINT *lwgeom_as_lwpoint(LWGEOM *lwgeom);
 
-// Casts LW*->LWGEOM (always cast)
+/* Casts LW*->LWGEOM (always cast) */
 extern LWGEOM *lwmpoly_as_lwgeom(LWMPOLY *obj);
 extern LWGEOM *lwmline_as_lwgeom(LWMLINE *obj);
 extern LWGEOM *lwmpoint_as_lwgeom(LWMPOINT *obj);
@@ -252,75 +271,98 @@ extern LWGEOM *lwpoly_as_lwgeom(LWPOLY *obj);
 extern LWGEOM *lwline_as_lwgeom(LWLINE *obj);
 extern LWGEOM *lwpoint_as_lwgeom(LWPOINT *obj);
 
-// Call this function everytime LWGEOM coordinates 
-// change so to invalidate bounding box
+/*
+ * Call this function everytime LWGEOM coordinates 
+ * change so to invalidate bounding box
+ */
 extern void lwgeom_changed(LWGEOM *lwgeom);
 
-// Call this function to drop BBOX and SRID
-// from LWGEOM. If LWGEOM type is *not* flagged
-// with the HASBBOX flag and has a bbox, it
-// will be released.
+/*
+ * Call this function to drop BBOX and SRID
+ * from LWGEOM. If LWGEOM type is *not* flagged
+ * with the HASBBOX flag and has a bbox, it
+ * will be released.
+ */
 extern void lwgeom_dropBBOX(LWGEOM *lwgeom);
-// Compute a bbox if not already computed
+
+/* Compute a bbox if not already computed */
 extern void lwgeom_addBBOX(LWGEOM *lwgeom);
+
 extern void lwgeom_dropSRID(LWGEOM *lwgeom);
 
-//-------------------------------------------------------------
+/******************************************************************/
 
-// copies a point from the point array into the parameter point
-// will set point's z=0 (or NaN) if pa is 2d
-// will set point's m=0 (or NaN) if pa is 3d or 2d
-// NOTE: point is a real POINT3D *not* a pointer
+/*
+ * copies a point from the point array into the parameter point
+ * will set point's z=0 (or NaN) if pa is 2d
+ * will set point's m=0 (or NaN) if pa is 3d or 2d
+ * NOTE: point is a real POINT3D *not* a pointer
+ */
 extern POINT4D getPoint4d(const POINTARRAY *pa, int n);
 
-// copies a point from the point array into the parameter point
-// will set point's z=0 (or NaN) if pa is 2d
-// will set point's m=0 (or NaN) if pa is 3d or 2d
-// NOTE: this will modify the point4d pointed to by 'point'.
+/*
+ * copies a point from the point array into the parameter point
+ * will set point's z=0 (or NaN) if pa is 2d
+ * will set point's m=0 (or NaN) if pa is 3d or 2d
+ * NOTE: this will modify the point4d pointed to by 'point'.
+ */
 extern int getPoint4d_p(const POINTARRAY *pa, int n, POINT4D *point);
 
-// copies a point from the point array into the parameter point
-// will set point's z=0 (or NaN) if pa is 2d
-// NOTE: point is a real POINT3D *not* a pointer
+/*
+ * copies a point from the point array into the parameter point
+ * will set point's z=0 (or NaN) if pa is 2d
+ * NOTE: point is a real POINT3D *not* a pointer
+ */
 extern POINT3DZ getPoint3dz(const POINTARRAY *pa, int n);
 extern POINT3DM getPoint3dm(const POINTARRAY *pa, int n);
 
-// copies a point from the point array into the parameter point
-// will set point's z=0 (or NaN) if pa is 2d
-// NOTE: this will modify the point3d pointed to by 'point'.
+/*
+ * copies a point from the point array into the parameter point
+ * will set point's z=0 (or NaN) if pa is 2d
+ * NOTE: this will modify the point3d pointed to by 'point'.
+ */
 extern int getPoint3dz_p(const POINTARRAY *pa, int n, POINT3DZ *point);
 extern int getPoint3dm_p(const POINTARRAY *pa, int n, POINT3DM *point);
 
 
-// copies a point from the point array into the parameter point
-// z value (if present is not returned)
-// NOTE: point is a real POINT3D *not* a pointer
+/*
+ * copies a point from the point array into the parameter point
+ * z value (if present is not returned)
+ * NOTE: point is a real POINT3D *not* a pointer
+ */
 extern POINT2D getPoint2d(const POINTARRAY *pa, int n);
 
-// copies a point from the point array into the parameter point
-// z value (if present is not returned)
-// NOTE: this will modify the point2d pointed to by 'point'.
+/*
+ * copies a point from the point array into the parameter point
+ * z value (if present is not returned)
+ * NOTE: this will modify the point2d pointed to by 'point'.
+ */
 extern int getPoint2d_p(const POINTARRAY *pa, int n, POINT2D *point);
 
-// get a pointer to nth point of a POINTARRAY
-// You'll need to cast it to appropriate dimensioned point.
-// Note that if you cast to a higher dimensional point you'll
-// possibly corrupt the POINTARRAY.
-//
-// WARNING: Don't cast this to a POINT !
-// it would not be reliable due to memory alignment constraints 
-//
+/*
+ * get a pointer to nth point of a POINTARRAY
+ * You'll need to cast it to appropriate dimensioned point.
+ * Note that if you cast to a higher dimensional point you'll
+ * possibly corrupt the POINTARRAY.
+ *
+ * WARNING: Don't cast this to a POINT !
+ * it would not be reliable due to memory alignment constraints 
+ */
 extern uchar *getPoint_internal(const POINTARRAY *pa, int n);
 
-//--- here is a macro equivalent, for speed...
-//#define getPoint(x,n) &( (x)->serialized_pointlist[((x)->ndims*8)*(n)] )
+/* --- here is a macro equivalent, for speed... */
+/* #define getPoint(x,n) &( (x)->serialized_pointlist[((x)->ndims*8)*(n)] ) */
 
 
-// constructs a POINTARRAY.
-// NOTE: points is *not* copied, so be careful about modification (can be aligned/missaligned)
-// NOTE: hasz and hasm are descriptive - it describes what type of data
-//	 'points' points to.  No data conversion is done.
-extern POINTARRAY *pointArray_construct(uchar *points, char hasz, char hasm, uint32 npoints);
+/*
+ * constructs a POINTARRAY.
+ * NOTE: points is *not* copied, so be careful about modification
+ * (can be aligned/missaligned)
+ * NOTE: hasz and hasm are descriptive - it describes what type of data
+ *	 'points' points to.  No data conversion is done.
+ */
+extern POINTARRAY *pointArray_construct(uchar *points, char hasz, char hasm,
+	uint32 npoints);
 
 /* 
  * Calculate the (BOX3D) bounding box of a set of points.
@@ -331,34 +373,13 @@ extern POINTARRAY *pointArray_construct(uchar *points, char hasz, char hasm, uin
 extern BOX3D *ptarray_compute_box3d(const POINTARRAY *pa);
 extern int ptarray_compute_box3d_p(const POINTARRAY *pa, BOX3D *out);
 
-//size of point represeneted in the POINTARRAY
-// 16 for 2d, 24 for 3d, 32 for 4d
+/*
+ * size of point represeneted in the POINTARRAY
+ * 16 for 2d, 24 for 3d, 32 for 4d
+ */
 extern int pointArray_ptsize(const POINTARRAY *pa);
 
 
-/*
- *
- * LWGEOM types are an 8-bit char in this format:
- *
- * BSZMtttt
- *
- * WHERE
- *    B = 16 byte BOX2DFLOAT4 follows (probably not aligned) [before SRID]
- *    S = 4 byte SRID attached (0= not attached (-1), 1= attached)
- *    ZM = dimensionality (hasZ, hasM)
- *    tttt = actual type (as per the WKB type):
- *
- *    enum wkbGeometryType {
- *        wkbPoint = 1,
- *        wkbLineString = 2,
- *        wkbPolygon = 3,
- *        wkbMultiPoint = 4,
- *        wkbMultiLineString = 5,
- *        wkbMultiPolygon = 6,
- *        wkbGeometryCollection = 7
- *    };
- *
- */
 #define	POINTTYPE	1
 #define	LINETYPE	2
 #define	POLYGONTYPE	3
@@ -389,16 +410,16 @@ extern int pointArray_ptsize(const POINTARRAY *pa);
 /* 0x02==Z 0x01==M */
 #define TYPE_GETZM(t) (((t)&0x30)>>4)
 
-extern char lwgeom_hasBBOX(uchar type); // true iff B bit set
-extern int  lwgeom_ndims(uchar type);   // returns 2,3 or 4
-extern int  lwgeom_hasZ(uchar type);    // has Z ?
-extern int  lwgeom_hasM(uchar type);    // has M ?
-extern int  lwgeom_getType(uchar type); // returns the tttt value
+extern char lwgeom_hasBBOX(uchar type); /* true iff B bit set     */
+extern int  lwgeom_ndims(uchar type);   /* returns 2,3 or 4       */
+extern int  lwgeom_hasZ(uchar type);    /* has Z ?                */
+extern int  lwgeom_hasM(uchar type);    /* has M ?                */
+extern int  lwgeom_getType(uchar type); /* returns the tttt value */
 
 extern uchar lwgeom_makeType(char hasZ, char hasM, char hasSRID, int type);
 extern uchar lwgeom_makeType_full(char hasZ, char hasM, char hasSRID, int type, char hasBBOX);
-extern char lwgeom_hasSRID(uchar type); // true iff S bit is set
-extern char lwgeom_hasBBOX(uchar type); // true iff B bit set
+extern char lwgeom_hasSRID(uchar type); /* true iff S bit is set */
+extern char lwgeom_hasBBOX(uchar type); /* true iff B bit set    */
 
 
 
@@ -408,8 +429,8 @@ extern char lwgeom_hasBBOX(uchar type); // true iff B bit set
  */
 typedef struct {
 	uint32 size;
-	uchar type; // encodes ndims, type, bbox presence,
-			    // srid presence
+	uchar type; /* encodes ndims, type, bbox presence,
+		       srid presence */
 	uchar data[1];
 } PG_LWGEOM;
 
@@ -422,7 +443,8 @@ typedef struct {
  * If you request bbox (wantbbox=1) it will be extracted or computed
  * from the serialized form.
  */
-extern PG_LWGEOM *PG_LWGEOM_construct(uchar *serialized, int SRID, int wantbbox);
+extern PG_LWGEOM *PG_LWGEOM_construct(uchar *serialized, int SRID,
+	int wantbbox);
 
 /*
  * Compute bbox of serialized geom
@@ -445,7 +467,7 @@ char is_worth_caching_lwgeom_bbox(const LWGEOM *);
  * by most functions from an PG_LWGEOM struct.
  * (which is an PG_LWGEOM w/out int32 size casted to char *)
  */
-//#define SERIALIZED_FORM(x) ((uchar *)(x))+4
+/*#define SERIALIZED_FORM(x) ((uchar *)(x))+4*/
 #define SERIALIZED_FORM(x) (VARDATA((x)))
 
 
@@ -460,86 +482,113 @@ extern size_t lwgeom_size_point(const uchar *serialized_point);
 extern size_t lwgeom_size_poly(const uchar *serialized_line);
 
 
-//--------------------------------------------------------
-// all the base types (point/line/polygon) will have a
-// basic constructor, basic de-serializer, basic serializer,
-// bounding box finder and (TODO) serialized form size finder.
-//--------------------------------------------------------
+/*--------------------------------------------------------
+ * all the base types (point/line/polygon) will have a
+ * basic constructor, basic de-serializer, basic serializer,
+ * bounding box finder and (TODO) serialized form size finder.
+ *--------------------------------------------------------*/
 
-// given the LWPOINT serialized form (or a pointer into a muli* one)
-// construct a proper LWPOINT.
-// serialized_form should point to the 8bit type format (with type = 1)
-// Returns NULL if serialized form is not a point.
-// See serialized form doc
+/*
+ * given the LWPOINT serialized form (or a pointer into a muli* one)
+ * construct a proper LWPOINT.
+ * serialized_form should point to the 8bit type format (with type = 1)
+ * Returns NULL if serialized form is not a point.
+ * See serialized form doc
+ */
 extern LWPOINT *lwpoint_deserialize(uchar *serialized_form);
 
-// Find size this point would get when serialized (no BBOX)
+/*
+ * Find size this point would get when serialized (no BBOX)
+ */
 extern size_t lwpoint_serialize_size(LWPOINT *point);
 
-// convert this point into its serialize form
-// result's first char will be the 8bit type.  See serialized form doc
+/*
+ * convert this point into its serialize form
+ * result's first char will be the 8bit type. 
+ * See serialized form doc
+ */
 extern uchar *lwpoint_serialize(LWPOINT *point);
 
-// same as above, writes to buf
+/* same as above, writes to buf */
 extern void lwpoint_serialize_buf(LWPOINT *point, uchar *buf, size_t *size);
 
-// find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
+/*
+ * find bounding box (standard one) 
+ * zmin=zmax=0 if 2d (might change to NaN)
+ */
 extern BOX3D *lwpoint_compute_box3d(LWPOINT *point);
 
-// convenience functions to hide the POINTARRAY
+/*
+ * convenience functions to hide the POINTARRAY
+ */
 extern int lwpoint_getPoint2d_p(const LWPOINT *point, POINT2D *out);
 extern int lwpoint_getPoint3dz_p(const LWPOINT *point, POINT3DZ *out);
 extern int lwpoint_getPoint3dm_p(const LWPOINT *point, POINT3DM *out);
 extern int lwpoint_getPoint4d_p(const LWPOINT *point, POINT4D *out);
 
-//--------------------------------------------------------
+/******************************************************************
+ * LWLINE functions
+ ******************************************************************/
 
-
-// given the LWGEOM serialized form (or a pointer into a muli* one)
-// construct a proper LWLINE.
-// serialized_form should point to the 8bit type format (with type = 2)
-// See serialized form doc
+/*
+ * given the LWGEOM serialized form (or a pointer into a muli* one)
+ * construct a proper LWLINE.
+ * serialized_form should point to the 8bit type format (with type = 2)
+ * See SERIALIZED_FORM doc
+ */
 extern LWLINE *lwline_deserialize(uchar *serialized_form);
 
-// find the size this line would get when serialized (no BBOX)
+/* find the size this line would get when serialized */
 extern size_t lwline_serialize_size(LWLINE *line);
 
-// convert this line into its serialize form
-// result's first char will be the 8bit type.  See serialized form doc
-// copies data.
+/*
+ * convert this line into its serialize form
+ * result's first char will be the 8bit type.  See serialized form doc
+ * copies data.
+ */
 extern uchar *lwline_serialize(LWLINE *line);
 
-// same as above, writes to buf
+/* same as above, writes to buf */
 extern void lwline_serialize_buf(LWLINE *line, uchar *buf, size_t *size);
 
-// find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
+/*
+ * find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
+ */
 extern BOX3D *lwline_compute_box3d(LWLINE *line);
 
-//--------------------------------------------------------
+/******************************************************************
+ * LWPOLY functions
+ ******************************************************************/
 
-
-// given the LWPOLY serialized form (or a pointer into a muli* one)
-// construct a proper LWPOLY.
-// serialized_form should point to the 8bit type format (with type = 3)
-// See serialized form doc
+/*
+ * given the LWPOLY serialized form (or a pointer into a muli* one)
+ * construct a proper LWPOLY.
+ * serialized_form should point to the 8bit type format (with type = 3)
+ * See SERIALIZED_FORM doc
+ */
 extern LWPOLY *lwpoly_deserialize(uchar *serialized_form);
 
-// find the size this polygon would get when serialized (no bbox!)
+/* find the size this polygon would get when serialized */
 extern size_t lwpoly_serialize_size(LWPOLY *poly);
 
-// create the serialized form of the polygon
-// result's first char will be the 8bit type.  See serialized form doc
-// points copied
+/*
+ * create the serialized form of the polygon
+ * result's first char will be the 8bit type.  See serialized form doc
+ * points copied
+ */
 extern uchar *lwpoly_serialize(LWPOLY *poly);
 
-// same as above, writes to buf
+/* same as above, writes to buf */
 extern void lwpoly_serialize_buf(LWPOLY *poly, uchar *buf, size_t *size);
 
-// find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
+/*
+ * find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
+ */
 extern BOX3D *lwpoly_compute_box3d(LWPOLY *poly);
 
-//--------------------------------------------------------
-
+/******************************************************************
+ * LWGEOM functions
+ ******************************************************************/
 
 extern size_t lwgeom_serialize_size(LWGEOM *geom);
 extern size_t lwcollection_serialize_size(LWCOLLECTION *coll);
@@ -547,17 +596,24 @@ extern void lwgeom_serialize_buf(LWGEOM *geom, uchar *buf, size_t *size);
 extern uchar *lwgeom_serialize(LWGEOM *geom);
 extern void lwcollection_serialize_buf(LWCOLLECTION *mcoll, uchar *buf, size_t *size);
 
-//-----------------------------------------------------
-
-// Deserialize an lwgeom serialized form.
-// The deserialized (recursive) structure will store
-// pointers to the serialized form (POINTARRAYs).
+/*
+ * Deserialize an lwgeom serialized form.
+ * The deserialized (recursive) structure will store
+ * pointers to the serialized form (POINTARRAYs).
+ */
 LWGEOM *lwgeom_deserialize(uchar *serializedform);
 
-// Release memory associated with LWGEOM.
-// POINTARRAYs are not released as they are usually
-// pointers to user-managed memory.
+/*
+ * Release memory associated with LWGEOM.
+ * POINTARRAYs are not released as they are usually
+ * pointers to user-managed memory.
+ * BBOX is released.
+ */
 void lwgeom_release(LWGEOM *lwgeom);
+
+/******************************************************************
+ * LWMULTIx and LWCOLLECTION functions
+ ******************************************************************/
 
 LWMPOINT *lwmpoint_deserialize(uchar *serializedform);
 LWMLINE *lwmline_deserialize(uchar *serializedform);
@@ -565,127 +621,154 @@ LWMPOLY *lwmpoly_deserialize(uchar *serializedform);
 LWCOLLECTION *lwcollection_deserialize(uchar *serializedform);
 LWGEOM *lwcollection_getsubgeom(LWCOLLECTION *, int);
 
-
-//------------------------------------------------------
-
-//------------------------------------------------------
-// Multi-geometries
-//
-// These are all handled equivelently so its easy to write iterator code.
-//  NOTE NOTE: you can hand in a non-multigeometry to most of these functions
-//             and get usual behavior (ie. get geometry 0 on a POINT
-//	       will return the point).
-//             This makes coding even easier since you dont have to necessarily
-//             differenciate between the multi* and non-multi geometries.
-//
-// NOTE: these usually work directly off the serialized form, so
-//	they're a little more difficult to handle (and slower)
-// NOTE NOTE: the get functions maybe slow, so we may want to have an "analysed"
-//            lwgeom that would just have pointer to the start of each sub-geometry.
-//------------------------------------------------------
+/******************************************************************
+ * SERIALIZED FORM functions
+ ******************************************************************/
 
 
+/******************************************************************
+ * Multi-geometries
+ *
+ * These are all handled equivelently so its easy to write iterator code.
+ *  NOTE NOTE: you can hand in a non-multigeometry to most of these functions
+ *             and get usual behavior (ie. get geometry 0 on a POINT
+ *	       will return the point).
+ *             This makes coding even easier since you dont have to necessarily
+ *             differenciate between the multi* and non-multi geometries.
+ *
+ * NOTE: these usually work directly off the serialized form, so
+ *	they're a little more difficult to handle (and slower)
+ * NOTE NOTE: the get functions maybe slow, so we may want to have an
+ *            "analysed" lwgeom that would just have pointer to the start
+ *            of each sub-geometry.
+ *
+ ******************************************************************/
 
-// use this version for speed.  READ-ONLY!
+/* use this version for speed.  READ-ONLY! */
 typedef struct
 {
 	int   SRID;
-	const uchar *serialized_form; // orginal structure
-	uchar  type;            // 8-bit type for the LWGEOM
-	int ngeometries;     	// number of sub-geometries
-	uchar **sub_geoms;  // list of pointers (into serialized_form) of the sub-geoms
+	const uchar *serialized_form; /* orginal structure */
+	uchar  type;        /* 8-bit type for the LWGEOM */
+	int ngeometries;    /* number of sub-geometries */
+	uchar **sub_geoms;  /* list of pointers (into serialized_form)
+			       of the sub-geoms */
 } LWGEOM_INSPECTED;
 
-extern int lwgeom_size_inspected(const LWGEOM_INSPECTED *inspected, int geom_number);
+extern int lwgeom_size_inspected(const LWGEOM_INSPECTED *inspected,
+	int geom_number);
 
-// note - for a simple type (ie. point), this will have sub_geom[0] = serialized_form.
-// for multi-geomtries sub_geom[0] will be a few bytes into the serialized form
-// This function just computes the length of each sub-object and pre-caches this info.
-// For a geometry collection of multi* geometries, you can inspect the sub-components
-// as well.
+/*
+ * note - for a simple type (ie. point), this will have
+ * sub_geom[0] = serialized_form.
+ * for multi-geomtries sub_geom[0] will be a few bytes into the
+ * serialized form.
+ * This function just computes the length of each sub-object and
+ * pre-caches this info.
+ * For a geometry collection of multi* geometries, you can inspect
+ * the sub-components as well.
+ */
 extern LWGEOM_INSPECTED *lwgeom_inspect(const uchar *serialized_form);
 
 
-// 1st geometry has geom_number = 0
-// if the actual sub-geometry isnt a POINT, null is returned (see _gettype()).
-// if there arent enough geometries, return null.
-// this is fine to call on a point (with geom_num=0), multipoint or geometrycollection
+/*
+ * 1st geometry has geom_number = 0
+ * if the actual sub-geometry isnt a POINT, null is returned (see _gettype()).
+ * if there arent enough geometries, return null.
+ * this is fine to call on a point (with geom_num=0), multipoint
+ * or geometrycollection
+ */
 extern LWPOINT *lwgeom_getpoint(uchar *serialized_form, int geom_number);
 extern LWPOINT *lwgeom_getpoint_inspected(LWGEOM_INSPECTED *inspected, int geom_number);
 
-// 1st geometry has geom_number = 0
-// if the actual geometry isnt a LINE, null is returned (see _gettype()).
-// if there arent enough geometries, return null.
-// this is fine to call on a line, multiline or geometrycollection
+/*
+ * 1st geometry has geom_number = 0
+ * if the actual geometry isnt a LINE, null is returned (see _gettype()).
+ * if there arent enough geometries, return null.
+ * this is fine to call on a line, multiline or geometrycollection
+ */
 extern LWLINE *lwgeom_getline(uchar *serialized_form, int geom_number);
 extern LWLINE *lwgeom_getline_inspected(LWGEOM_INSPECTED *inspected, int geom_number);
 
-// 1st geometry has geom_number = 0
-// if the actual geometry isnt a POLYGON, null is returned (see _gettype()).
-// if there arent enough geometries, return null.
-// this is fine to call on a polygon, multipolygon or geometrycollection
+/*
+ * 1st geometry has geom_number = 0
+ * if the actual geometry isnt a POLYGON, null is returned (see _gettype()).
+ * if there arent enough geometries, return null.
+ * this is fine to call on a polygon, multipolygon or geometrycollection
+ */
 extern LWPOLY *lwgeom_getpoly(uchar *serialized_form, int geom_number);
 extern LWPOLY *lwgeom_getpoly_inspected(LWGEOM_INSPECTED *inspected, int geom_number);
 
-// this gets the serialized form of a sub-geometry
-// 1st geometry has geom_number = 0
-// if this isnt a multi* geometry, and geom_number ==0 then it returns
-// itself
-// returns null on problems.
-// in the future this is how you would access a muli* portion of a
-// geometry collection.
-//    GEOMETRYCOLLECTION(MULTIPOINT(0 0, 1 1), LINESTRING(0 0, 1 1))
-//   ie. lwgeom_getpoint( lwgeom_getsubgeometry( serialized, 0), 1)
-//           --> POINT(1 1)
-// you can inspect the sub-geometry as well if you wish.
+/*
+ * this gets the serialized form of a sub-geometry
+ * 1st geometry has geom_number = 0
+ * if this isnt a multi* geometry, and geom_number ==0 then it returns
+ * itself
+ * returns null on problems.
+ * in the future this is how you would access a muli* portion of a
+ * geometry collection.
+ *    GEOMETRYCOLLECTION(MULTIPOINT(0 0, 1 1), LINESTRING(0 0, 1 1))
+ *   ie. lwgeom_getpoint( lwgeom_getsubgeometry( serialized, 0), 1)
+ *           --> POINT(1 1)
+ * you can inspect the sub-geometry as well if you wish.
+ */
 extern uchar *lwgeom_getsubgeometry(const uchar *serialized_form, int geom_number);
 extern uchar *lwgeom_getsubgeometry_inspected(LWGEOM_INSPECTED *inspected, int geom_number);
 
 
-// 1st geometry has geom_number = 0
-//  use geom_number = -1 to find the actual type of the serialized form.
-//    ie lwgeom_gettype( <'MULTIPOINT(0 0, 1 1)'>, -1)
-//                 --> multipoint
-//   ie lwgeom_gettype( <'MULTIPOINT(0 0, 1 1)'>, 0)
-//                 --> point
-// gets the 8bit type of the geometry at location geom_number
+/*
+ * 1st geometry has geom_number = 0
+ *  use geom_number = -1 to find the actual type of the serialized form.
+ *    ie lwgeom_gettype( <'MULTIPOINT(0 0, 1 1)'>, -1)
+ *                 --> multipoint
+ *   ie lwgeom_gettype( <'MULTIPOINT(0 0, 1 1)'>, 0)
+ *                 --> point
+ * gets the 8bit type of the geometry at location geom_number
+ */
 extern uchar lwgeom_getsubtype(uchar *serialized_form, int geom_number);
 extern uchar lwgeom_getsubtype_inspected(LWGEOM_INSPECTED *inspected, int geom_number);
 
 
-// how many sub-geometries are there?
-//  for point,line,polygon will return 1.
+/*
+ * how many sub-geometries are there?
+ *  for point,line,polygon will return 1.
+ */
 extern int lwgeom_getnumgeometries(uchar *serialized_form);
 extern int lwgeom_getnumgeometries_inspected(LWGEOM_INSPECTED *inspected);
 
 
 
-// set finalType to COLLECTIONTYPE or 0 (0 means choose a best type)
-//   (ie. give it 2 points and ask it to be a multipoint)
-//  use SRID=-1 for unknown SRID  (will have 8bit type's S = 0)
-// all subgeometries must have the same SRID
-// if you want to construct an inspected, call this then inspect the result...
+/*
+ * set finalType to COLLECTIONTYPE or 0 (0 means choose a best type)
+ *   (ie. give it 2 points and ask it to be a multipoint)
+ *  use SRID=-1 for unknown SRID  (will have 8bit type's S = 0)
+ * all subgeometries must have the same SRID
+ * if you want to construct an inspected, call this then inspect the result...
+ */
 extern uchar *lwgeom_serialized_construct(int SRID, int finalType, char hasz, char hasm, int nsubgeometries, uchar **serialized_subs);
 
 
-// construct the empty geometry (GEOMETRYCOLLECTION(EMPTY))
+/* construct the empty geometry (GEOMETRYCOLLECTION(EMPTY)) */
 extern uchar *lwgeom_constructempty(int SRID, char hasz, char hasm);
 extern void lwgeom_constructempty_buf(int SRID, char hasz, char hasm, uchar *buf, size_t *size);
 size_t lwgeom_empty_length(int SRID);
 
-// get the SRID from the LWGEOM
-// none present => -1
+/*
+ * get the SRID from the LWGEOM
+ * none present => -1
+ */
 extern int pglwgeom_getSRID(PG_LWGEOM *lwgeom);
 extern int lwgeom_getsrid(uchar *serialized);
 extern PG_LWGEOM *pglwgeom_setSRID(PG_LWGEOM *lwgeom, int32 newSRID);
 
 
-//------------------------------------------------------
-// other stuff
-
-// handle the double-to-float conversion.  The results of this
-// will usually be a slightly bigger box because of the difference
-// between float8 and float4 representations.
+/*------------------------------------------------------
+ * other stuff
+ *
+ * handle the double-to-float conversion.  The results of this
+ * will usually be a slightly bigger box because of the difference
+ * between float8 and float4 representations.
+ */
 
 extern BOX2DFLOAT4 *box3d_to_box2df(BOX3D *box);
 extern int box3d_to_box2df_p(BOX3D *box, BOX2DFLOAT4 *res);
@@ -696,33 +779,33 @@ extern void box2df_to_box3d_p(BOX2DFLOAT4 *box, BOX3D *box3d);
 extern BOX3D *box3d_union(BOX3D *b1, BOX3D *b2);
 extern int box3d_union_p(BOX3D *b1, BOX3D *b2, BOX3D *ubox);
 
-// returns a real entity so it doesnt leak
-// if this has a pre-built BOX2d, then we use it,
-// otherwise we need to compute it.
-// WARNING! the EMPTY geom will result in a random BOX2D returned
-// OBSOLETED for this reason
-//extern BOX2DFLOAT4 getbox2d(uchar *serialized_form);
+/*
+ * Returns a pointer to the BBOX internal to the serialized form.
+ * READ-ONLY!
+ * Or NULL if serialized form does not have a BBOX
+ * OBSOLETED to avoid memory alignment problems.
+ */
+/*extern BOX2DFLOAT4 *getbox2d_internal(uchar *serialized_form);*/
 
-// Returns a pointer to the BBOX internal to the serialized form.
-// READ-ONLY!
-// Or NULL if serialized form does not have a BBOX
-//extern BOX2DFLOAT4 *getbox2d_internal(uchar *serialized_form);
-
-// this function writes to 'box' and returns 0 if serialized_form
-// does not have a bounding box (empty geom)
+/*
+ * this function writes to 'box' and returns 0 if serialized_form
+ * does not have a bounding box (empty geom)
+ */
 extern int getbox2d_p(uchar *serialized_form, BOX2DFLOAT4 *box);
 
-// Expand given box of 'd' units in all directions 
+/* Expand given box of 'd' units in all directions */
 void expand_box2d(BOX2DFLOAT4 *box, double d);
 void expand_box3d(BOX3D *box, double d);
 
-// Check if to boxes are equal (considering FLOAT approximations)
+/* Check if to boxes are equal (considering FLOAT approximations) */
 char box2d_same(BOX2DFLOAT4 *box1, BOX2DFLOAT4 *box2);
 
-//****************************************************************
-// memory management -- these only delete the memory associated
-//  directly with the structure - NOT the stuff pointing into
-//  the original de-serialized info
+/****************************************************************
+ * memory management -- these only delete the memory associated
+ *  directly with the structure - NOT the stuff pointing into
+ *  the original de-serialized info
+ ****************************************************************/
+
 
 extern void pfree_inspected(LWGEOM_INSPECTED *inspected);
 extern void pfree_point    (LWPOINT *pt);
@@ -731,8 +814,9 @@ extern void pfree_polygon  (LWPOLY  *poly);
 extern void pfree_POINTARRAY(POINTARRAY *pa);
 
 
-//***********************************************************
-// utility
+/****************************************************************
+ * utility
+ ****************************************************************/
 
 extern uint32 get_uint32(const uchar *loc);
 extern int32 get_int32(const uchar *loc);
@@ -744,125 +828,6 @@ extern void printLWPOLY(LWPOLY *poly);
 extern void printBYTES(uchar *a, int n);
 extern void printMULTI(uchar *serialized);
 extern void printType(uchar str);
-
-
-//------------------------------------------------------------
-//------------------------------------------------------------
-// On serialized form  (see top for the 8bit type implementation)
-
-// NOTE: contrary to the original proposal, bounding boxes are *never*
-//       included in the geometry.  You must either refer to the index
-//       or compute it on demand.
-
-
-// The serialized form is always a stream of bytes.  The first four are always
-// the memory size of the LWGEOM (including the 4 byte memory size).
-
-// The easiest way to describe the serialed form is with examples:
-// (more examples are available in the postgis mailing list)
-
-//3D point w/o bounding box::
-//<int32> size = 29 bytes
-//<char> type:  S=0,D=1, tttt= 1
-//<double> X
-//<double> Y
-//<double> Z
-
-//2D line String
-//<int32> size = ...
-//<char> type:  S=0,D=0, tttt= 2
-//<uint32> npoints
-//<double> X0
-//<double> Y0
-//<double> X1
-//<double> Y1
-//<double> X2
-//<double> Y2
-//...
-
-//3D polygon w/o bounding box
-//<int32> size = ...
-//<char> type:  S=0,D=0, tttt= 3
-//<uint32> nrings
-//<uint32> npoints in ring0
-//<double> X0
-//<double> Y0
-//<double> X1
-//<double> Y1
-//<double> X2
-//<double> Y2
-//...
-//<uint32> npoints in ring1
-//<double> X0
-//<double> Y0
-//<double> X1
-//<double> Y1
-//<double> X2
-//<double> Y2
-//...
-//...
-
-
-// the multi* representations are very simple
-
-//<int32> size = ...
-//<char> type:  ... with  tttt= <multi* or geometrycollection>
-//<int32> ngeometries
-// <geometry zero, serialized form>
-// <geometry one, serialized form>
-// <geometry two, serialzied form>
-// ...
-
-
-
-// see implementation for more exact details.
-
-
-//----------------------------------------------------------------
-// example function (computes total length of the lines in a LWGEOM).
-//   This works for a LINESTRING, MULTILINESTRING, OR GEOMETRYCOLLECTION
-
-
-
-// 	  char *serialized_form = (char *)  [[get from database]]
-//
-//    double total_length_so_far = 0;
-//    for (int t=0;t< lwgeom_getnumgeometries(serialized_form) ; t++)
-//    {
-//         LWLINE *line = lwgeom_getline(serialized_form, t);
-//         if (line != NULL)
-//		   {
-//		        double length = findlength( POINT_ARRAY(line->points) ); //2d/3d aware
-//         	    total_length_so_far + = length;
-//         }
-//    }
-//    return total_length_so_far;
-
-
-// using the LWGEOM_INSPECTED way:
-
-
-// 	  char *serialized_form = (char *)  [[get from datbase]]
-//    LWGEOM_INSPECTED inspected_geom = lwgeom_inspect(serialized_form);
-//
-//    double total_length_so_far = 0;
-//    for (int t=0;t< lwgeom_getnumgeometries(inspected_geom) ; t++)
-//    {
-//         LWLINE *line = lwgeom_getline(inspected_geom, t);
-//         if (line != NULL)
-//		   {
-//		         double length = findlength( POINT_ARRAY(line->points) ); //2d/3d aware
-//         	    total_length_so_far + = length;
-//         }
-//    }
-//    return total_length_so_far;
-
-
-// the findlength() function could be written like based on functions like:
-//
-//   POINT3D getPoint3d(POINTARRAY pa, int n);  (for a 2d/3d point and 3d length)
-//   POINT2D getPoint2d(POINTARRAY pa, int n);  (for a 2d/3d point and 2d length)
-// NOTE: make sure your findlength() function knows what to do with z=NaN.
 
 
 extern float LWGEOM_Minf(float a, float b);
@@ -882,7 +847,7 @@ extern double nextUp_d(float d);
 #define LW_ABS(a)	((a) <	(0) ? (-a) : (a))
 
 
-// general utilities 
+/* general utilities */
 extern double lwgeom_polygon_area(LWPOLY *poly);
 extern double lwgeom_polygon_perimeter(LWPOLY *poly);
 extern double lwgeom_polygon_perimeter2d(LWPOLY *poly);
@@ -931,14 +896,16 @@ extern int lwline_compute_box2d_p(LWLINE *line, BOX2DFLOAT4 *box);
 extern int lwpoly_compute_box2d_p(LWPOLY *poly, BOX2DFLOAT4 *box);
 extern int lwcollection_compute_box2d_p(LWCOLLECTION *col, BOX2DFLOAT4 *box);
 extern BOX2DFLOAT4 *lwgeom_compute_box2d(LWGEOM *lwgeom);
-// return alloced memory
+
+/* return alloced memory */
 extern BOX2DFLOAT4 *box2d_union(BOX2DFLOAT4 *b1, BOX2DFLOAT4 *b2);
-// args may overlap !
+
+/* args may overlap ! */
 extern int box2d_union_p(BOX2DFLOAT4 *b1, BOX2DFLOAT4 *b2, BOX2DFLOAT4 *ubox);
 extern int lwgeom_compute_box2d_p(LWGEOM *lwgeom, BOX2DFLOAT4 *box);
 void lwgeom_longitude_shift(LWGEOM *lwgeom);
 
-// Is lwgeom1 geometrically equal to lwgeom2 ?
+/* Is lwgeom1 geometrically equal to lwgeom2 ? */
 char lwgeom_same(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2);
 char ptarray_same(const POINTARRAY *pa1, const POINTARRAY *pa2);
 char lwpoint_same(const LWPOINT *p1, const LWPOINT *p2);
@@ -946,11 +913,13 @@ char lwline_same(const LWLINE *p1, const LWLINE *p2);
 char lwpoly_same(const LWPOLY *p1, const LWPOLY *p2);
 char lwcollection_same(const LWCOLLECTION *p1, const LWCOLLECTION *p2);
 
-// Add 'what' to 'to' at position 'where'.
-// where=0 == prepend
-// where=-1 == append
-// Mix of dimensions is not allowed (TODO: allow it?).
-// Returns a newly allocated LWGEOM (with NO BBOX)
+/*
+ * Add 'what' to 'to' at position 'where'.
+ * where=0 == prepend
+ * where=-1 == append
+ * Mix of dimensions is not allowed (TODO: allow it?).
+ * Returns a newly allocated LWGEOM (with NO BBOX)
+ */
 extern LWGEOM *lwgeom_add(const LWGEOM *to, uint32 where, const LWGEOM *what);
 
 LWGEOM *lwpoint_add(const LWPOINT *to, uint32 where, const LWGEOM *what);
@@ -961,9 +930,11 @@ LWGEOM *lwmline_add(const LWMLINE *to, uint32 where, const LWGEOM *what);
 LWGEOM *lwmpoint_add(const LWMPOINT *to, uint32 where, const LWGEOM *what);
 LWGEOM *lwcollection_add(const LWCOLLECTION *to, uint32 where, const LWGEOM *what);
 
-// Clone an LWGEOM
-// pointarray are not copied.
-// BBOXes are copied 
+/*
+ * Clone an LWGEOM
+ * pointarray are not copied.
+ * BBOXes are copied 
+ */
 extern LWGEOM *lwgeom_clone(const LWGEOM *lwgeom);
 extern LWPOINT *lwpoint_clone(const LWPOINT *lwgeom);
 extern LWLINE *lwline_clone(const LWLINE *lwgeom);
@@ -972,8 +943,10 @@ extern LWCOLLECTION *lwcollection_clone(const LWCOLLECTION *lwgeom);
 extern BOX2DFLOAT4 *box2d_clone(const BOX2DFLOAT4 *lwgeom);
 extern POINTARRAY *ptarray_clone(const POINTARRAY *ptarray);
 
-// Geometry constructors
-// Take ownership of arguments
+/*
+ * Geometry constructors
+ * Take ownership of arguments
+ */
 extern LWPOINT  *lwpoint_construct(int SRID, BOX2DFLOAT4 *bbox,
 	POINTARRAY *point);
 extern LWLINE *lwline_construct(int SRID, BOX2DFLOAT4 *bbox,
@@ -985,7 +958,7 @@ extern LWCOLLECTION *lwcollection_construct(unsigned int type, int SRID,
 extern LWCOLLECTION *lwcollection_construct_empty(int SRID,
 	char hasZ, char hasM);
 
-// Other constructors
+/* Other constructors */
 extern LWPOINT *make_lwpoint2d(int SRID, double x, double y);
 extern LWPOINT *make_lwpoint3dz(int SRID, double x, double y, double z);
 extern LWPOINT *make_lwpoint3dm(int SRID, double x, double y, double m);
@@ -995,17 +968,25 @@ extern LWLINE *lwline_from_lwmpoint(int SRID, LWMPOINT *mpoint);
 extern LWLINE *lwline_addpoint(LWLINE *line, LWPOINT *point, unsigned int where);
 extern LWPOLY *lwpoly_from_lwlines(const LWLINE *shell, unsigned int nholes, const LWLINE **holes);
 
-// Return a char string with ASCII versionf of type flags
+/* Return a char string with ASCII versionf of type flags */
 extern const uchar *lwgeom_typeflags(uchar type);
 
-// Construct an empty pointarray
-extern POINTARRAY *ptarray_construct(char hasz, char hasm, unsigned int npoints);
-//extern POINTARRAY *ptarray_construct2d(uint32 npoints, const POINT2D *pts);
-//extern POINTARRAY *ptarray_construct3dz(uint32 npoints, const POINT3DZ *pts);
-//extern POINTARRAY *ptarray_construct3dm(uint32 npoints, const POINT3DM *pts);
-//extern POINTARRAY *ptarray_construct4d(uint32 npoints, const POINT4D *pts);
-extern POINTARRAY *ptarray_addPoint(POINTARRAY *pa, uchar *p, size_t pdims, unsigned int where);
+/* Construct an empty pointarray */
+extern POINTARRAY *ptarray_construct(char hasz, char hasm,
+	unsigned int npoints);
+
+/*
+ * extern POINTARRAY *ptarray_construct2d(uint32 npoints, const POINT2D *pts);
+ * extern POINTARRAY *ptarray_construct3dz(uint32 npoints, const POINT3DZ *pts);
+ * extern POINTARRAY *ptarray_construct3dm(uint32 npoints, const POINT3DM *pts);
+ * extern POINTARRAY *ptarray_construct4d(uint32 npoints, const POINT4D *pts);
+ */
+
+extern POINTARRAY *ptarray_addPoint(POINTARRAY *pa, uchar *p, size_t pdims,
+	unsigned int where);
+
 extern int ptarray_isclosed2d(const POINTARRAY *pa);
+
 extern void ptarray_longitude_shift(POINTARRAY *pa);
 
 extern int32 lwgeom_nrings_recursive(uchar *serialized);
@@ -1013,8 +994,10 @@ extern void ptarray_reverse(POINTARRAY *pa);
 extern POINTARRAY *ptarray_substring(POINTARRAY *, double, double);
 extern double ptarray_locate_point(POINTARRAY *, POINT2D *);
 
-// Ensure every segment is at most 'dist' long.
-// Returned LWGEOM might is unchanged if a POINT.
+/*
+ * Ensure every segment is at most 'dist' long.
+ * Returned LWGEOM might is unchanged if a POINT.
+ */
 extern LWGEOM *lwgeom_segmentize2d(LWGEOM *line, double dist);
 extern POINTARRAY *ptarray_segmentize2d(POINTARRAY *ipa, double dist);
 extern LWLINE *lwline_segmentize2d(LWLINE *line, double dist);
@@ -1045,4 +1028,4 @@ extern void trim_trailing_zeros(char *num);
 extern char getMachineEndian(void);
 
 
-#endif // !defined _LIBLWGEOM_H 
+#endif /* !defined _LIBLWGEOM_H  */

@@ -4,4 +4,4 @@
 #define WARNING NOTICE
 #endif
 
-#endif // _PGSQL_COMPAT_H
+#endif /* _PGSQL_COMPAT_H */

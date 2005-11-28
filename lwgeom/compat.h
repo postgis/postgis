@@ -4,4 +4,4 @@
 #include <stdarg.h>
 
 int  vasprintf(char  **strp,  const  char *format, va_list ap);
-#endif // _COMPAT_H
+#endif /* _COMPAT_H */
