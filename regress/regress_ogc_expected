@@ -29,3 +29,4 @@ issimple|t
 equals|t
 pointonsurface|POINT(5 5)
 centroid|POINT(5.08333333333333 5.08333333333333)
+exteriorring|LINESTRING(52 18,66 23,73 9,48 6,52 18)

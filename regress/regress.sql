@@ -248,7 +248,9 @@ select '145', asewkt(force_3dz('POINTM(1 2 3)'));
 select '146', asewkt(force_4d('POINTM(1 2 3)'));
 select '147', asewkt(force_4d('POINT(1 2 3)'));
 
-select '144', asewkt(linemerge('GEOMETRYCOLLECTION(LINESTRING(0 0, 1 1), LINESTRING(4 4, 1 1), LINESTRING(-5 -5, 0 0))'::geometry));
+select '148', astext(segmentize('LINESTRING(0 0, 10 0)', 5));
+
+select '149', asewkt(linemerge('GEOMETRYCOLLECTION(LINESTRING(0 0, 1 1), LINESTRING(4 4, 1 1), LINESTRING(-5 -5, 0 0))'::geometry));
 
 -- Drop test table
 DROP table test;
