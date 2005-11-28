@@ -254,5 +254,7 @@ select '149', asewkt(linemerge('GEOMETRYCOLLECTION(LINESTRING(0 0, 1 1), LINESTR
 
 select '150', asewkt(force_collection(setsrid('POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))'::geometry, 6)));
 
+select '151', geom_accum(NULL, NULL);
+
 -- Drop test table
 DROP table test;
