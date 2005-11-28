@@ -1488,6 +1488,7 @@ Datum LWGEOM_force_multi(PG_FUNCTION_ARGS)
 
 
 	result = pglwgeom_serialize(lwgeom);
+	lwgeom_release(lwgeom);
 
 	PG_FREE_IF_COPY(geom, 0);
 
