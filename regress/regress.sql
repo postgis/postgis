@@ -252,5 +252,7 @@ select '148', astext(segmentize('LINESTRING(0 0, 10 0)', 5));
 
 select '149', asewkt(linemerge('GEOMETRYCOLLECTION(LINESTRING(0 0, 1 1), LINESTRING(4 4, 1 1), LINESTRING(-5 -5, 0 0))'::geometry));
 
+select '150', asewkt(force_collection(setsrid('POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))'::geometry, 6)));
+
 -- Drop test table
 DROP table test;
