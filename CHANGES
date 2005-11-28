@@ -2,6 +2,7 @@ PostGIS 1.0.6CVS
 	- Fixed palloc(0) call in collection deserializer (only gives
 	  problem with --enable-cassert)
 	- Fixed bbox cache handling bugs
+	- Fixed geom_accum(NULL, NULL) segfault
 
 PostGIS 1.0.5
 2005/11/25
