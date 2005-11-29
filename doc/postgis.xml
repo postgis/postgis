@@ -3530,8 +3530,8 @@ dimension
             <term>X(geometry)</term>
 
             <listitem>
-              <para>Return the X coordinate of the point, or NULL
-	      if the geometry is not a point.</para>
+              <para>Return the X coordinate of the point.
+	      Input must be a point.</para>
             </listitem>
           </varlistentry>
 
@@ -3539,8 +3539,8 @@ dimension
             <term>Y(geometry)</term>
 
             <listitem>
-              <para>Return the Y coordinate of the point, or NULL
-	      if the geometry is not a point.</para>
+              <para>Return the Y coordinate of the point.
+	      Input must be a point.</para>
             </listitem>
           </varlistentry>
 
@@ -3548,8 +3548,9 @@ dimension
             <term>Z(geometry)</term>
 
             <listitem>
-              <para>Return the Z coordinate of the point, or NULL
-	      if the geometry is not a point.</para>
+              <para>Return the Z coordinate of the point,
+	      or NULL if not available.
+	      Input must be a point.</para>
             </listitem>
           </varlistentry>
 
@@ -3557,8 +3558,10 @@ dimension
             <term>M(geometry)</term>
 
             <listitem>
-              <para>Return the M coordinate of the point, or NULL
-	      if the geometry is not a point.</para>
+              <para>Return the M coordinate of the point, 
+	      or NULL if not available.
+	      Input must be a point.</para>
+
 		<note><para>This is not (yet) part of the OGC spec,
 		but is listed here to complete the point coordinate
 	        extractor function list.</para></note>
