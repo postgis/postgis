@@ -17,6 +17,8 @@ PostGIS 1.1.0CVS
 	- NEW LineMerge(geometry) function
 	- NEW shift_longitude(geometry) function
 	- NEW azimuth(geometry) function
+	- NEW locate_along_measure(geometry, float8) function
+	- NEW locate_between_measures(geometry, float8, float8) function
 	- JTS support improvements
 	- Initial GEOS C-API support
 	- Removed automatic call to fix_geometry_columns() in
@@ -26,6 +28,7 @@ PostGIS 1.1.0CVS
 	- Changed M() and Z() functions to return NULL if requested
 	  dimension is not available
 	- Initial support for postgresql 8.2
+	- Much faster transform() function, caching proj4 objects
 
 PostGIS 1.0.6CVS
 	- Fixed palloc(0) call in collection deserializer (only gives
