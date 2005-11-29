@@ -181,8 +181,13 @@ if test $USE_GEOS -gt 0; then
 	GEOS_MAJOR=`$GEOSCONFIG --version | cut -d. -f1`
 	if test "$GEOS_MAJOR" = "@GEOS_VERSION@"; then
 		GEOS_MAJOR = 1
+		GEOS_MINOR = 0
+	else
+		GEOS_MINOR=`$GEOSCONFIG --version | cut -d. -f2`
 	fi
 	if test $GEOS_MAJOR -gt 2; then
+		USE_GEOS_CAPI=1
+	elif test $GEOS_MAJOR -eq 2 -a $GEOS_MINOR -ge 2; then
 		USE_GEOS_CAPI=1
 	fi
 fi
