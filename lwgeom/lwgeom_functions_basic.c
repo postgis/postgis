@@ -2766,6 +2766,14 @@ Datum LWGEOM_addpoint(PG_FUNCTION_ARGS)
 	}
 
 	line = lwline_deserialize(SERIALIZED_FORM(pglwg1));
+
+	if ( where == -1 ) where = line->points->npoints;
+	else if ( (unsigned int)where > line->points->npoints )
+	{
+		elog(ERROR, "Invalid offset");
+		PG_RETURN_NULL();
+	}
+
 	point = lwpoint_deserialize(SERIALIZED_FORM(pglwg2));
 
 	outline = lwline_addpoint(line, point, where);
