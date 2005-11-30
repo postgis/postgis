@@ -3,6 +3,7 @@ PostGIS 1.0.6CVS
 	  problem with --enable-cassert)
 	- Fixed bbox cache handling bugs
 	- Fixed geom_accum(NULL, NULL) segfault
+	- Initial support for postgresql 8.2
 
 PostGIS 1.0.5
 2005/11/25

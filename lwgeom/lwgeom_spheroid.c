@@ -21,7 +21,6 @@
 
 #include "access/gist.h"
 #include "access/itup.h"
-#include "access/rtree.h"
 
 
 #include "fmgr.h"
