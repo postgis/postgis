@@ -33,7 +33,7 @@ if [ ! -r "${TEST}.sql" ]; then
 fi
 
 if [ ! -r "${TEST}_expected" ]; then
-	echo "Can't read ${TEST}.sql" >&2
+	echo "Can't read ${TEST}_expected" >&2
 	exit 1;
 fi
 
