@@ -27,7 +27,6 @@ PostGIS 1.1.0CVS
 	- Stricter mapping between DBF and SQL integer and string attributes
 	- Changed M() and Z() functions to return NULL if requested
 	  dimension is not available
-	- Initial support for postgresql 8.2
 	- Much faster transform() function, caching proj4 objects
 
 PostGIS 1.0.6CVS
@@ -35,6 +34,7 @@ PostGIS 1.0.6CVS
 	  problem with --enable-cassert)
 	- Fixed bbox cache handling bugs
 	- Fixed geom_accum(NULL, NULL) segfault
+	- Initial support for postgresql 8.2
 
 PostGIS 1.0.5
 2005/11/25
