@@ -291,6 +291,13 @@ ptarray_addPoint(POINTARRAY *pa, uchar *p, size_t pdims, unsigned int where)
 		return NULL;
 	}
 
+	if ( where > pa->npoints )
+	{
+		lwerror("ptarray_addPoint: offset out of range (%d)",
+			where);
+		return NULL;
+	}
+
 #if PGIS_DEBUG
 	lwnotice("ptarray_addPoint: called with a %dD point");
 #endif
