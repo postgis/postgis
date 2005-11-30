@@ -1,6 +1,6 @@
 TMPDIR?=/tmp
 
-test: test-common test-index test-lwgeom test-ogc
+test: test-common test-index test-lwgeom test-ogc test-proj
 
 test-lwgeom:
 	@./run_lwgeom_regress
@@ -13,5 +13,8 @@ test-index:
 
 test-ogc:
 	@./run_ogc_regress
+
+test-proj:
+	@./run_proj_regress
 
 clean:
