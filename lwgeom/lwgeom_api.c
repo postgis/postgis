@@ -655,6 +655,37 @@ getPoint2d_p(const POINTARRAY *pa, int n, POINT2D *point)
 	return 1;
 }
 
+/*
+ * set point N to the given value
+ * NOTE that the pointarray can be of any
+ * dimension, the appropriate ordinate values
+ * will be extracted from it
+ *
+ */
+void
+setPoint4d(POINTARRAY *pa, int n, POINT4D *p4d)
+{
+	uchar *ptr=getPoint_internal(pa, n);
+	switch ( TYPE_GETZM(pa->dims) )
+	{
+		case 3:
+			memcpy(ptr, p4d, sizeof(POINT4D));
+			break;
+		case 2:
+			memcpy(ptr, p4d, sizeof(POINT3DZ));
+			break;
+		case 1:
+			memcpy(ptr, p4d, sizeof(POINT2D));
+			ptr+=sizeof(POINT2D);
+			memcpy(ptr, &(p4d->m), sizeof(double));
+			break;
+		case 0:
+			memcpy(ptr, p4d, sizeof(POINT2D));
+			break;
+	}
+}
+
+
 // get a pointer to nth point of a POINTARRAY
 // You cannot safely cast this to a real POINT, due to memory alignment
 // constraints. Use getPoint*_p for that.

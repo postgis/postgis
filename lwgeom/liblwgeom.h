@@ -171,6 +171,36 @@ typedef struct
     uint32 npoints;
 }  POINTARRAY;
 
+
+/*
+ * Use the following to build pointarrays
+ * when number of points in output is not 
+ * known in advance
+ */
+typedef struct {
+	POINTARRAY *pa;
+	size_t ptsize;
+	size_t capacity; /* given in points */
+} DYNPTARRAY;
+
+/* Create a new dynamic pointarray */
+extern DYNPTARRAY *dynptarray_create(size_t initial_capacity, int dims);
+
+/*
+ * Add a POINT4D to the dynamic pointarray.
+ *
+ * The dynamic pointarray may be of any dimension, only
+ * accepted dimensions will be copied.
+ *
+ * If allow_duplicates is set to 0 (false) a check
+ * is performed to see if last point in array is equal to the
+ * provided one. NOTE that the check is 4d based, with missing
+ * ordinates in the pointarray set to NO_Z_VALUE and NO_M_VALUE
+ * respectively.
+ */
+extern int dynptarray_addPoint4d(DYNPTARRAY *dpa, POINT4D *p4d,
+	int allow_duplicates);
+
 /******************************************************************
  *
  * LWGEOM (any type)
@@ -338,6 +368,15 @@ extern POINT2D getPoint2d(const POINTARRAY *pa, int n);
  * NOTE: this will modify the point2d pointed to by 'point'.
  */
 extern int getPoint2d_p(const POINTARRAY *pa, int n, POINT2D *point);
+
+/*
+ * set point N to the given value
+ * NOTE that the pointarray can be of any
+ * dimension, the appropriate ordinate values
+ * will be extracted from it
+ *
+ */
+extern void setPoint4d(POINTARRAY *pa, int n, POINT4D *p4d);
 
 /*
  * get a pointer to nth point of a POINTARRAY

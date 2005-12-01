@@ -3,7 +3,8 @@
 
 #include "liblwgeom.h"
 
-//#define PGIS_DEBUG 1
+/*#define PGIS_DEBUG_CALLS 1*/
+/*#define PGIS_DEBUG 1*/
 
 POINTARRAY *
 ptarray_construct(char hasz, char hasm, unsigned int npoints)
@@ -283,6 +284,11 @@ ptarray_addPoint(POINTARRAY *pa, uchar *p, size_t pdims, unsigned int where)
 	POINTARRAY *ret;
 	POINT4D pbuf;
 	size_t ptsize = pointArray_ptsize(pa);
+
+#ifdef PGIS_DEBUG_CALLS
+	lwnotice("ptarray_addPoint: pa %x p %x size %d where %d",
+		pa, p, pdims, where);
+#endif
 
 	if ( pdims < 2 || pdims > 4 )
 	{
@@ -662,4 +668,62 @@ ptarray_longitude_shift(POINTARRAY *pa)
 	}
 }
 
+DYNPTARRAY *
+dynptarray_create(size_t initial_capacity, int dims)
+{
+	DYNPTARRAY *ret=lwalloc(sizeof(DYNPTARRAY));
 
+	if ( initial_capacity < 1 ) initial_capacity=1;
+
+	ret->pa=lwalloc(sizeof(POINTARRAY));
+	ret->pa->dims=dims;
+	ret->ptsize=pointArray_ptsize(ret->pa);
+	ret->capacity=initial_capacity;
+	ret->pa->serialized_pointlist=lwalloc(ret->ptsize*ret->capacity);
+	ret->pa->npoints=0;
+
+	return ret;
+}
+
+/*
+ * Add a POINT4D to the dynamic pointarray.
+ *
+ * The dynamic pointarray may be of any dimension, only
+ * accepted dimensions will be copied.
+ *
+ * If allow_duplicates is set to 0 (false) a check
+ * is performed to see if last point in array is equal to the
+ * provided one. NOTE that the check is 4d based, with missing
+ * ordinates in the pointarray set to NO_Z_VALUE and NO_M_VALUE
+ * respectively.
+ */
+int
+dynptarray_addPoint4d(DYNPTARRAY *dpa, POINT4D *p4d, int allow_duplicates)
+{
+	POINTARRAY *pa=dpa->pa;
+	POINT4D tmp;
+
+	if ( ! allow_duplicates && pa->npoints > 0 )
+	{
+		getPoint4d_p(pa, pa->npoints-1, &tmp);
+
+		/*
+		 * return 0 and do nothing else if previous point in list is
+		 * equal to this one  (4D equality)
+		 */
+		if ( ! memcmp(p4d, &tmp, sizeof(POINT4D)) ) return 0;
+	}
+
+	++pa->npoints;
+	if ( pa->npoints > dpa->capacity )
+	{
+		dpa->capacity*=2;
+		pa->serialized_pointlist = lwrealloc(
+			pa->serialized_pointlist,
+			dpa->capacity*dpa->ptsize);
+	}
+
+	setPoint4d(pa, pa->npoints-1, p4d);
+
+	return 1;
+}

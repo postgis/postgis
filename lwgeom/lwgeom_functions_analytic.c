@@ -1,3 +1,15 @@
+/**********************************************************************
+ * $Id$
+ *
+ * PostGIS - Spatial Types for PostgreSQL
+ * http://postgis.refractions.net
+ * Copyright 2001-2005 Refractions Research Inc.
+ *
+ * This is free software; you can redistribute and/or modify it under
+ * the terms of the GNU General Public Licence. See the COPYING file.
+ * 
+ **********************************************************************/
+
 #include "postgres.h"
 #include "fmgr.h"
 #include "liblwgeom.h"
@@ -491,8 +503,12 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 typedef struct gridspec_t {
    double ipx;
    double ipy;
+   double ipz;
+   double ipm;
    double xsize;
    double ysize;
+   double zsize;
+   double msize;
 } gridspec;
 
 /* Forward declarations */
@@ -515,106 +531,44 @@ Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS);
 POINTARRAY *
 ptarray_grid(POINTARRAY *pa, gridspec *grid)
 {
-	POINT2D pbuf; 
-	int numoutpoints=0;
-	int pn; /* point number */
-	char *opts;
+	POINT4D pbuf; 
+	int ipn, opn; /* point numbers (input/output) */
+	DYNPTARRAY *dpa;
 	POINTARRAY *opa;
-	size_t ptsize;
 
 #if VERBOSE
 	elog(NOTICE, "ptarray_grid called on %p", pa);
 #endif
 
-	ptsize = sizeof(POINT2D);
+	dpa=dynptarray_create(pa->npoints, pa->dims);
 
-#if VERBOSE
-	elog(NOTICE, "ptarray_grid: ptsize: %d", ptsize);
-#endif
-
-	opts = (char *)palloc(ptsize * pa->npoints);
-	if ( opts == NULL )
+	for (ipn=0, opn=0; ipn<pa->npoints; ++ipn)
 	{
-		elog(ERROR, "Out of virtual memory");
-		return NULL;
-	}
 
-	for (pn=0; pn<pa->npoints; pn++)
-	{
-		POINT2D *lastpoint = NULL;
-		POINT2D *lastpoint2 = NULL;
-
-		getPoint2d_p(pa, pn, &pbuf);
+		getPoint4d_p(pa, ipn, &pbuf);
 
 		if ( grid->xsize )
 			pbuf.x = rint((pbuf.x - grid->ipx)/grid->xsize) *
 				grid->xsize + grid->ipx;
+
 		if ( grid->ysize )
 			pbuf.y = rint((pbuf.y - grid->ipy)/grid->ysize) *
 				grid->ysize + grid->ipy;
 
-		/* Points have been already drawn */
-		if ( numoutpoints )
-		{
-			lastpoint = (POINT2D *)(opts+((numoutpoints-1)*ptsize));
+		if ( TYPE_HASZ(pa->dims) && grid->zsize )
+			pbuf.z = rint((pbuf.z - grid->ipz)/grid->zsize) *
+				grid->zsize + grid->ipz;
 
-			/*
-			 * Skip point if falling on the same cell then
-			 * the previous one
-			 */
-			if ( SAMEPOINT(&pbuf, lastpoint) ) continue;
+		if ( TYPE_HASM(pa->dims) && grid->msize )
+			pbuf.m = rint((pbuf.m - grid->ipm)/grid->msize) *
+				grid->msize + grid->ipm;
 
-			/*
-			 * Skip this and previous point if they make a
-			 * back_and_forw line.
-			 * WARNING! this migth be a valid reduction only for
-			 * polygons, since a linestring might want to
-			 * preserve that!
-			 */
-			if ( numoutpoints )
-			{
-				lastpoint2 = (POINT2D *)(opts+((numoutpoints-2)*ptsize));
-				if (  SAMEPOINT(&pbuf, lastpoint2) )
-				{
-					numoutpoints--;
-					continue;
-				}
-			}
-		}
-
-		memcpy(opts+(numoutpoints*ptsize), &pbuf, ptsize);
-		numoutpoints++;
+		dynptarray_addPoint4d(dpa, &pbuf, 0);
 
 	}
 
-	if ( numoutpoints )
-	{
-		/* Srhink allocated memory for outpoints if needed */
-		if ( numoutpoints < pa->npoints )
-		{
-			opts = (char *)repalloc(opts, ptsize*numoutpoints);
-			if ( opts == NULL )
-			{
-				elog(ERROR, "Out of virtual memory");
-				return NULL;
-			}
-		}
-	}
-
-	/*
-	 * This should never happen since no reduction occurs if not
-	 * based on other drawn points
-	 */
-	else
-	{
-		elog(NOTICE, "No points drawn out of %d input points, error?",
-			pa->npoints);
-		pfree(opts);
-		opts = NULL;
-		return NULL;
-	}
-
-	opa = pointArray_construct(opts, 0, 0, numoutpoints);
+	opa = dpa->pa;
+	lwfree(dpa);
 
 	return opa;
 }
@@ -730,18 +684,19 @@ elog(NOTICE, "grid_polygon3d: simplified polygon with %d rings", nrings);
 LWPOINT *
 lwpoint_grid(LWPOINT *point, gridspec *grid)
 {
-	POINT2D p;
-	double x, y;
-	getPoint2d_p(point->point, 0, &p);
-	x = rint((p.x - grid->ipx)/grid->xsize) *
-		grid->xsize + grid->ipx;
-	y = rint((p.y - grid->ipy)/grid->ysize) *
-		grid->ysize + grid->ipy;
+	LWPOINT *opoint;
+	POINTARRAY *opa;
+
+	opa = ptarray_grid(point->point, grid);
+
+	// TODO: grid bounding box ?
+	opoint = lwpoint_construct(point->SRID, NULL, opa);
 
 #if VERBOSE
 	elog(NOTICE, "lwpoint_grid called");
 #endif
-	return make_lwpoint2d(point->SRID, x, y);
+
+	return opoint;
 }
 
 LWCOLLECTION *
@@ -814,6 +769,9 @@ Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS)
 
 	if ( PG_ARGISNULL(4) ) PG_RETURN_NULL();
 	grid.ysize = PG_GETARG_FLOAT8(4);
+
+	/* Do not support gridding Z and M values for now */
+	grid.ipz=grid.ipm=grid.zsize=grid.msize=0;
 
 	/* 0-sided grid == grid */
 	if ( grid.xsize == 0 && grid.ysize == 0 ) PG_RETURN_POINTER(in_geom);
