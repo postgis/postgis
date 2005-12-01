@@ -61,7 +61,12 @@ echo
 echo "       expected:'<'     obtained:'>'"
 echo
 
-psql -tA < "${TEST}.sql" $DB 2>&1 | grep -v INSERT > "${OUTFILE}"
+psql -tA < "${TEST}.sql" $DB 2>&1 | grep -v ^INSERT \
+	| grep -v ^UPDATE \
+	| grep -v ^DROP \
+	| grep -v ^CREATE \
+	| grep -v ^SET \
+	> "${OUTFILE}"
 diff "${TEST}_expected" "${OUTFILE}"
 #sleep 1
 #dropdb $DB > /dev/null

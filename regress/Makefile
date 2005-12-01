@@ -1,6 +1,8 @@
 TMPDIR?=/tmp
 
-test: test-common test-index test-lwgeom test-ogc test-lrs test-proj
+all: tests clean
+
+tests: test-common test-index test-lwgeom test-ogc test-lrs test-proj
 
 test-lwgeom:
 	@./run_test lwgeom_regress
@@ -22,3 +24,4 @@ test-proj:
 
 
 clean:
+	dropdb postgis_reg
