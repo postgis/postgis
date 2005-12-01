@@ -1,6 +1,6 @@
 TMPDIR?=/tmp
 
-all: tests clean
+all: tests cleanup
 
 tests: test-common test-index test-lwgeom test-ogc test-lrs test-proj
 
@@ -23,5 +23,7 @@ test-proj:
 	@./run_test regress_proj
 
 
-clean:
+cleanup:
 	dropdb postgis_reg
+
+clean:
