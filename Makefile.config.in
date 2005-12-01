@@ -32,7 +32,7 @@ PROJ_DIR=@PROJ_DIR@
 #
 USE_GEOS=@USE_GEOS@
 GEOS_DIR=@GEOS_DIR@
-# EXPERIMENTAL! use geos C-API (only available with GEOS-3.x.x and up)
+# EXPERIMENTAL! use geos C-API (only available with GEOS-2.2.x and up)
 USE_GEOS_CAPI=@USE_GEOS_CAPI@
 
 #
