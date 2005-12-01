@@ -1,8 +1,8 @@
 TMPDIR?=/tmp
 
-all: tests cleanup
+all: test cleanup
 
-tests: test-common test-index test-lwgeom test-ogc test-lrs test-proj
+test: test-common test-index test-lwgeom test-ogc test-lrs test-proj
 
 test-lwgeom:
 	@./run_test lwgeom_regress
