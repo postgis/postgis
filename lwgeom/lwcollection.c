@@ -220,18 +220,30 @@ lwcollection_compute_box2d_p(LWCOLLECTION *col, BOX2DFLOAT4 *box)
 	return 1;
 }
 
-// Clone LWCOLLECTION object. POINTARRAY are not copied.
+/*
+ * Clone LWCOLLECTION object. POINTARRAY are not copied.
+ * Bbox is cloned if present in input.
+ */
 LWCOLLECTION *
 lwcollection_clone(const LWCOLLECTION *g)
 {
 	uint32 i;
 	LWCOLLECTION *ret = lwalloc(sizeof(LWCOLLECTION));
 	memcpy(ret, g, sizeof(LWCOLLECTION));
-	for (i=0; i<g->ngeoms; i++)
+	if ( g->ngeoms > 0 )
 	{
-		ret->geoms[i] = lwgeom_clone(g->geoms[i]);
+		ret->geoms = lwalloc(sizeof(LWGEOM *)*g->ngeoms);
+		for (i=0; i<g->ngeoms; i++)
+		{
+			ret->geoms[i] = lwgeom_clone(g->geoms[i]);
+		}
+		if ( g->bbox ) ret->bbox = box2d_clone(g->bbox);
 	}
-	if ( g->bbox ) ret->bbox = box2d_clone(g->bbox);
+	else
+	{
+		ret->bbox = NULL; // empty collection
+		ret->geoms = NULL;
+	}
 	return ret;
 }
 

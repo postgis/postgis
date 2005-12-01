@@ -36,6 +36,7 @@ PostGIS 1.0.6CVS
 	- Fixed geom_accum(NULL, NULL) segfault
 	- Initial support for postgresql 8.2
 	- Fixed segfault in addPoint()
+	- Fixed short-allocation in lwcollection_clone()
 
 PostGIS 1.0.5
 2005/11/25
