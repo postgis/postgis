@@ -185,3 +185,11 @@ getMachineEndian(void)
 }
 
 
+void
+errorIfSRIDMismatch(int srid1, int srid2)
+{
+	if ( srid1 != srid2 )
+	{
+		lwerror("Operation on mixed SRID geometries");
+	}
+}
