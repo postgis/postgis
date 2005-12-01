@@ -511,8 +511,9 @@ lwgeom_segmentize2d(LWGEOM *lwgeom, double dist)
 		case COLLECTIONTYPE:
 			return (LWGEOM *)lwcollection_segmentize2d(
 				(LWCOLLECTION *)lwgeom, dist);
+
 		default:
-			return lwgeom;
+			return lwgeom_clone(lwgeom);
 	}
 }
 
