@@ -21,7 +21,8 @@ OBJS = shpopen.o dbfopen.o getopt.o PQunescapeBytea.o
 #---------------------------------------------------------------
 
 ifeq ($(USE_ICONV),1)
-	override CFLAGS += -DUSE_ICONV
+	override CFLAGS += -DUSE_ICONV $(ICONV_CFLAGS)
+	override LDFLAGS += $(ICONV_LDFLAGS)
 endif
 
 override CFLAGS := -g -Wall -I.. -I$(srcdir) -I$(top_builddir)/src/interfaces/libpq $(CFLAGS) -DFRONTEND -DSYSCONFDIR='"$(sysconfdir)"' -DUSE_VERSION=$(USE_VERSION)
