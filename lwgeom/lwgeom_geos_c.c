@@ -163,12 +163,7 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 		}
 		else
 		{
-			if ( SRID != pglwgeom_getSRID(geom) )
-			{
-				elog(ERROR,
-					"Operation on mixed SRID geometries");
-				PG_RETURN_NULL();
-			}
+			errorIfSRIDMismatch(SRID, pglwgeom_getSRID(geom));
 		}
 		
 		g1 = POSTGIS2GEOS(pgis_geom);
@@ -272,8 +267,7 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 
 		// Check SRID homogeneity 
 		if ( ! i ) SRID = pglwgeom_getSRID(geom);
-		else if ( SRID != pglwgeom_getSRID(geom) )
-			lwerror("Operation on mixed SRID geometries");
+		else errorIfSRIDMismatch(SRID, pglwgeom_getSRID(geom));
 
 		geoms[ngeoms] =
 			g1 = POSTGIS2GEOS(geom);
@@ -364,11 +358,7 @@ Datum geomunion(PG_FUNCTION_ARGS)
 		( TYPE_NDIMS(geom2->type) > 2 );
 
 	SRID = pglwgeom_getSRID(geom1);
-	if ( SRID != pglwgeom_getSRID(geom2) )
-	{
-		elog(ERROR, "Operation on two geometries with different SRIDs");
-		PG_RETURN_NULL();
-	}
+	errorIfSRIDMismatch(SRID, pglwgeom_getSRID(geom2));
 
 	initGEOS(lwnotice, lwnotice);
 //elog(NOTICE,"in geomunion");
@@ -466,11 +456,7 @@ Datum symdifference(PG_FUNCTION_ARGS)
 		( TYPE_NDIMS(geom2->type) > 2 );
 
 	SRID = pglwgeom_getSRID(geom1);
-	if ( SRID != pglwgeom_getSRID(geom2) )
-	{
-		elog(ERROR, "Operation on two geometries with different SRIDs");
-		PG_RETURN_NULL();
-	}
+	errorIfSRIDMismatch(SRID, pglwgeom_getSRID(geom2));
 
 	initGEOS(lwnotice, lwnotice);
 
@@ -814,11 +800,7 @@ Datum intersection(PG_FUNCTION_ARGS)
 		( TYPE_NDIMS(geom2->type) > 2 );
 
 	SRID = pglwgeom_getSRID(geom1);
-	if ( SRID != pglwgeom_getSRID(geom2) )
-	{
-		elog(ERROR, "Operation on two geometries with different SRIDs");
-		PG_RETURN_NULL();
-	}
+	errorIfSRIDMismatch(SRID, pglwgeom_getSRID(geom2));
 
 	initGEOS(lwnotice, lwnotice);
 
@@ -934,11 +916,7 @@ Datum difference(PG_FUNCTION_ARGS)
 		( TYPE_NDIMS(geom2->type) > 2 );
 
 	SRID = pglwgeom_getSRID(geom1);
-	if ( SRID != pglwgeom_getSRID(geom2) )
-	{
-		elog(ERROR, "Operation on two geometries with different SRIDs");
-		PG_RETURN_NULL();
-	}
+	errorIfSRIDMismatch(SRID, pglwgeom_getSRID(geom2));
 
 	initGEOS(lwnotice, lwnotice);
 
@@ -1248,6 +1226,7 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	errorIfGeometryCollection(geom1,geom2);
+	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
 
 	/*
 	 * short-circuit 1: if geom2 bounding box does not overlap
@@ -1326,6 +1305,7 @@ Datum contains(PG_FUNCTION_ARGS)
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	errorIfGeometryCollection(geom1,geom2);
+	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
 
 	/*
 	 * short-circuit 1: if geom2 bounding box is not completely inside
@@ -1404,6 +1384,7 @@ Datum within(PG_FUNCTION_ARGS)
 	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	errorIfGeometryCollection(geom1,geom2);
+	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
 
 	/*
 	 * short-circuit 1: if geom1 bounding box is not completely inside
@@ -1483,6 +1464,7 @@ Datum crosses(PG_FUNCTION_ARGS)
 	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	errorIfGeometryCollection(geom1,geom2);
+	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
 
 	/*
 	 * short-circuit 1: if geom2 bounding box does not overlap
@@ -1562,6 +1544,7 @@ Datum intersects(PG_FUNCTION_ARGS)
 	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	errorIfGeometryCollection(geom1,geom2);
+	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
 
 	/*
 	 * short-circuit 1: if geom2 bounding box does not overlap
@@ -1638,6 +1621,7 @@ Datum touches(PG_FUNCTION_ARGS)
 	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	errorIfGeometryCollection(geom1,geom2);
+	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
 
 	/*
 	 * short-circuit 1: if geom2 bounding box does not overlap
@@ -1716,6 +1700,7 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	errorIfGeometryCollection(geom1,geom2);
+	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
 
 	/*
 	 * short-circuit 1: if geom2 bounding box does not overlap
@@ -1793,6 +1778,7 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	errorIfGeometryCollection(geom1,geom2);
+	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
 
 	initGEOS(lwnotice, lwnotice);
 
@@ -1864,6 +1850,7 @@ Datum relate_full(PG_FUNCTION_ARGS)
 	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	errorIfGeometryCollection(geom1,geom2);
+	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
 
 
 	initGEOS(lwnotice, lwnotice);
@@ -1959,6 +1946,7 @@ Datum geomequals(PG_FUNCTION_ARGS)
 	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	errorIfGeometryCollection(geom1,geom2);
+	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
 
 	/*
 	 * short-circuit 1: if geom2 bounding box does not equal

@@ -1027,5 +1027,6 @@ extern void trim_trailing_zeros(char *num);
 #define NDR 1
 extern char getMachineEndian(void);
 
+void errorIfSRIDMismatch(int srid1, int srid2);
 
 #endif /* !defined _LIBLWGEOM_H  */
