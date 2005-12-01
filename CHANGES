@@ -6,6 +6,7 @@ PostGIS 1.0.6CVS
 	- Initial support for postgresql 8.2
 	- Fixed segfault in addPoint()
 	- Fixed short-allocation in lwcollection_clone()
+	- Fixed bug in segmentize()
 
 PostGIS 1.0.5
 2005/11/25
