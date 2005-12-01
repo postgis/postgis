@@ -1707,7 +1707,7 @@ Geometry *GEOSpolygonize(Geometry **g, unsigned int ngeoms)
 	NOTICE_MESSAGE("GEOS library does not support required interface 3");
 	return NULL;
 }
-Geometry *GEOSLimeMerge(Geometry **g, unsigned int ngeoms)
+Geometry *GEOSLineMerge(Geometry *g)
 {
 	NOTICE_MESSAGE("GEOS library does not support required interface 3");
 	return NULL;
