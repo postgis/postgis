@@ -114,7 +114,16 @@ typedef struct struct_PJHashEntry
 
 
 // PJ Hash API
+#if USE_VERSION == 72
+long mcxt_ptr_hash(void *key, int keysize);
+#endif
+#if USE_VERSION == 73
+uint32 mcxt_ptr_hash(void *key, int keysize);
+#endif
+#if USE_VERSION > 73
 uint32 mcxt_ptr_hash(const void *key, Size keysize);
+#endif
+
 static HTAB *CreatePJHash(void);
 static void AddPJHashEntry(MemoryContext mcxt, PJ *projection);
 static PJ *GetPJHashEntry(MemoryContext mcxt);
@@ -228,11 +237,20 @@ PROJ4SRSCacheCheck(MemoryContext context)
 // A version of tag_hash - we specify this here as the implementation has changed over
 // the years....
 
+#if USE_VERSION == 72
+long mcxt_ptr_hash(void *key, int keysize)
+#endif
+#if USE_VERSION == 73
+uint32 mcxt_ptr_hash(void *key, int keysize)
+#endif
+#if USE_VERSION > 73
 uint32 mcxt_ptr_hash(const void *key, Size keysize)
+#endif
 {
 	uint32 hashval;
 
-	hashval = DatumGetUInt32(hash_any((const unsigned char *) key, (int) keysize));
+	//hashval = DatumGetUInt32(hash_any((const unsigned char *) key, (int) keysize));
+	hashval = DatumGetUInt32(hash_any(key, keysize));
 
 	return hashval;
 }
