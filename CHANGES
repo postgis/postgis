@@ -40,6 +40,7 @@ PostGIS 1.0.6CVS
 	- Fixed short-allocation in lwcollection_clone()
 	- Fixed bug in segmentize()
 	- Added missing SRID mismatch checks in GEOS ops
+	- Fixed bbox computation of SnapToGrid output
 
 PostGIS 1.0.5
 2005/11/25
