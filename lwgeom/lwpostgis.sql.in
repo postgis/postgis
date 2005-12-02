@@ -3268,20 +3268,29 @@ CREATEFUNCTION simplify(geometry, float8)
    AS '@MODULE_FILENAME@', 'LWGEOM_simplify2d'
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- SnapToGrid(input, xoff, yoff, xsize, ysize)
 CREATEFUNCTION SnapToGrid(geometry, float8, float8, float8, float8)
    RETURNS geometry
    AS '@MODULE_FILENAME@', 'LWGEOM_snaptogrid'
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- SnapToGrid(input, xsize, ysize) # offsets=0
 CREATEFUNCTION SnapToGrid(geometry, float8, float8)
    RETURNS geometry
    AS 'SELECT SnapToGrid($1, 0, 0, $2, $3)'
    LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- SnapToGrid(input, size) # xsize=ysize=size, offsets=0
 CREATEFUNCTION SnapToGrid(geometry, float8)
    RETURNS geometry
    AS 'SELECT SnapToGrid($1, 0, 0, $2, $2)'
    LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- SnapToGrid(input, point_offsets, xsize, ysize, zsize, msize)
+CREATEFUNCTION SnapToGrid(geometry, geometry, float8, float8, float8, float8)
+   RETURNS geometry
+   AS '@MODULE_FILENAME@', 'LWGEOM_snaptogrid_pointoff'
+   LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 CREATEFUNCTION segmentize(geometry, float8)
 	RETURNS geometry
