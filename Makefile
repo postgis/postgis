@@ -1,90 +1,22 @@
-#-----------------------------------------------------
-#
-# Configuration directives are in Makefile.config
-#
-#-----------------------------------------------------
 
-all: Makefile.config liblwgeom loaderdumper utils 
+# this file copied and adapted from PostgreSQL source
+# to allow easy build on BSD systems
 
-install: all liblwgeom-install loaderdumper-install 
-
-uninstall: liblwgeom-uninstall loaderdumper-uninstall docs-uninstall
-
-clean: Makefile.config liblwgeom-clean loaderdumper-clean docs-clean test-clean 
-	rm -f lwpostgis.sql
-
-distclean: clean
-	rm -Rf autom4te.cache
-	rm -f config.log config.cache config.status Makefile.config
-	rm -f config.h
-
-maintainer-clean: Makefile.config
-	@echo '------------------------------------------------------'
-	@echo 'This command is intended for maintainers to use; it'
-	@echo 'deletes files that may need special tools to rebuild.'
-	@echo '------------------------------------------------------'
-	$(MAKE) -C doc maintainer-clean
-	$(MAKE) -C lwgeom maintainer-clean
-	$(MAKE) -C jdbc2 maintainer-clean
-	$(MAKE) distclean
-	rm -f configure
-
-test: liblwgeom
-	$(MAKE) -C regress test
-
-test-clean:
-	$(MAKE) -C regress clean
-
-liblwgeom: Makefile.config
-	$(MAKE) -C lwgeom 
-
-liblwgeom-clean:
-	$(MAKE) -C lwgeom clean
-
-liblwgeom-install:
-	$(MAKE) -C lwgeom install
-
-liblwgeom-uninstall:
-	$(MAKE) -C lwgeom uninstall
-
-loaderdumper: Makefile.config
-	$(MAKE) -C loader
-
-loaderdumper-clean:
-	$(MAKE) -C loader clean
-
-loaderdumper-install:
-	$(MAKE) -C loader install
-
-loaderdumper-uninstall:
-	$(MAKE) -C loader uninstall
-
-docs: Makefile.config
-	$(MAKE) -C doc 
-
-docs-clean: Makefile.config
-	$(MAKE) -C doc clean
-
-
-docs-install:
-	$(MAKE) -C doc install
-
-docs-uninstall:
-	$(MAKE) -C doc uninstall
-
-utils:
-	$(MAKE) -C utils
-
-configure: configure.in
-	./autogen.sh
-
-config.status: configure
-	./configure
-
-Makefile.config: Makefile.config.in config.status 
-	./config.status
-
-config.h: config.h.in config.status
-	./config.status
-
-.PHONY: utils
+all check install installdirs install-all-headers installcheck uninstall dep depend clean distclean maintainer-clean:
+	@IFS=':' ; \
+	 for dir in $$PATH; do \
+	   for prog in gmake gnumake make; do \
+	     if [ -f $$dir/$$prog ] && ( $$dir/$$prog -f /dev/null --version 2>/dev/null | grep GNU >/dev/null 2>&1 ) ; then \
+	       GMAKE=$$dir/$$prog; \
+	       break 2; \
+	     fi; \
+	   done; \
+	 done; \
+	\
+	 if [ x"$${GMAKE+set}" = xset ]; then \
+	   echo "Using GNU make found at $${GMAKE}"; \
+	   $${GMAKE} $@ ; \
+	 else \
+	   echo "You must use GNU make to build PostGIS." ; \
+	   false; \
+	 fi
