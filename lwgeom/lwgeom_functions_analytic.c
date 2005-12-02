@@ -752,7 +752,7 @@ Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS)
 	PG_LWGEOM *out_geom = NULL;
 	LWGEOM *out_lwgeom;
 	gridspec grid;
-	BOX2DFLOAT4 *box;
+	BOX3D box3d;
 
 	if ( PG_ARGISNULL(0) ) PG_RETURN_NULL();
 	datum = PG_GETARG_DATUM(0);
@@ -788,16 +788,18 @@ Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS)
 	/* COMPUTE_BBOX WHEN_SIMPLE */
 	if ( in_lwgeom->bbox )
 	{
-		box = palloc(sizeof(BOX2DFLOAT4));
-		box->xmin = rint((in_lwgeom->bbox->xmin - grid.ipx)/grid.xsize)
+		box2df_to_box3d_p(in_lwgeom->bbox, &box3d);
+
+		box3d.xmin = rint((box3d.xmin - grid.ipx)/grid.xsize)
 			* grid.xsize + grid.ipx;
-		box->xmax = rint((in_lwgeom->bbox->xmax - grid.ipx)/grid.xsize)
+		box3d.xmax = rint((box3d.xmax - grid.ipx)/grid.xsize)
 			* grid.xsize + grid.ipx;
-		box->ymin = rint((in_lwgeom->bbox->ymin - grid.ipy)/grid.ysize)
+		box3d.ymin = rint((box3d.ymin - grid.ipy)/grid.ysize)
 			* grid.ysize + grid.ipy;
-		box->ymax = rint((in_lwgeom->bbox->ymax - grid.ipy)/grid.ysize)
+		box3d.ymax = rint((box3d.ymax - grid.ipy)/grid.ysize)
 			* grid.ysize + grid.ipy;
-		out_lwgeom->bbox = box;
+
+		out_lwgeom->bbox = box3d_to_box2df(&box3d);
 	}
 
 #if VERBOSE
