@@ -167,11 +167,13 @@ box3d_to_box2df(BOX3D *box)
 {
 	BOX2DFLOAT4 *result = (BOX2DFLOAT4*) lwalloc(sizeof(BOX2DFLOAT4));
 
+#if PARANOIA_LEVEL > 0
 	if (box == NULL)
 	{
 		lwerror("box3d_to_box2df got NUL box");
-		return result;
+		return NULL;
 	}
+#endif
 
 	result->xmin = nextDown_f(box->xmin);
 	result->ymin = nextDown_f(box->ymin);
@@ -188,11 +190,13 @@ box3d_to_box2df(BOX3D *box)
 int
 box3d_to_box2df_p(BOX3D *box, BOX2DFLOAT4 *result)
 {
+#if PARANOIA_LEVEL > 0
 	if (box == NULL)
 	{
-		lwnotice("box3d_to_box2df got NUL box");
+		lwerror("box3d_to_box2df got NUL box");
 		return 0;
 	}
+#endif
 
 	result->xmin = nextDown_f(box->xmin);
 	result->ymin = nextDown_f(box->ymin);
