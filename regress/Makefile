@@ -24,6 +24,6 @@ test-proj:
 
 
 cleanup:
-	dropdb postgis_reg
+	@sleep 1; dropdb postgis_reg
 
 clean:
