@@ -29,6 +29,7 @@ PostGIS 1.1.0CVS
 	  dimension is not available
 	- Much faster transform() function, caching proj4 objects
 	- SnapToGrid doesn't discard higher dimensions
+	- NEW SnapToGrid(geometry, point offset, xsize, ysize, zsize, msize)
 
 PostGIS 1.0.6CVS
 	- Fixed palloc(0) call in collection deserializer (only gives
