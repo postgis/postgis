@@ -511,6 +511,7 @@ typedef struct gridspec_t {
    double msize;
 } gridspec;
 
+
 /* Forward declarations */
 LWGEOM *lwgeom_grid(LWGEOM *lwgeom, gridspec *grid);
 LWCOLLECTION *lwcollection_grid(LWCOLLECTION *coll, gridspec *grid);
@@ -519,6 +520,29 @@ LWPOLY * lwpoly_grid(LWPOLY *poly, gridspec *grid);
 LWLINE *lwline_grid(LWLINE *line, gridspec *grid);
 POINTARRAY *ptarray_grid(POINTARRAY *pa, gridspec *grid);
 Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS);
+Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS);
+static int grid_isNull(const gridspec *grid);
+static void grid_print(const gridspec *grid, lwreporter printer);
+
+/* A NULL grid is a grid in which size in all dimensions is 0 */
+static int
+grid_isNull(const gridspec *grid)
+{
+	if ( grid->xsize==0 &&
+		grid->ysize==0 &&
+		grid->zsize==0 &&
+		grid->msize==0 ) return 1;
+	else return 0;
+}
+
+/* Print grid using given reporter */
+static void
+grid_print(const gridspec *grid, lwreporter printer)
+{
+	printer("GRID(%g %g %g %g, %g %g %g %g)",
+		grid->ipx, grid->ipy, grid->ipz, grid->ipm,
+		grid->xsize, grid->ysize, grid->zsize, grid->msize);
+}
 
 /*
  * Stick an array of points to the given gridspec.
@@ -773,8 +797,11 @@ Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS)
 	/* Do not support gridding Z and M values for now */
 	grid.ipz=grid.ipm=grid.zsize=grid.msize=0;
 
-	/* 0-sided grid == grid */
-	if ( grid.xsize == 0 && grid.ysize == 0 ) PG_RETURN_POINTER(in_geom);
+	/* Return input geometry if grid is null */
+	if ( grid_isNull(&grid) )
+	{
+		PG_RETURN_POINTER(in_geom);
+	}
 
 	in_lwgeom = lwgeom_deserialize(SERIALIZED_FORM(in_geom));
 
@@ -810,6 +837,97 @@ Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS)
 
 	PG_RETURN_POINTER(out_geom);
 }
+
+PG_FUNCTION_INFO_V1(LWGEOM_snaptogrid_pointoff);
+Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS)
+{
+	Datum datum;
+	PG_LWGEOM *in_geom, *in_point;
+	LWGEOM *in_lwgeom;
+	LWPOINT *in_lwpoint;
+	PG_LWGEOM *out_geom = NULL;
+	LWGEOM *out_lwgeom;
+	gridspec grid;
+	BOX3D box3d;
+	POINT4D offsetpoint;
+
+	if ( PG_ARGISNULL(0) ) PG_RETURN_NULL();
+	datum = PG_GETARG_DATUM(0);
+	in_geom = (PG_LWGEOM *)PG_DETOAST_DATUM(datum);
+
+	if ( PG_ARGISNULL(1) ) PG_RETURN_NULL();
+	datum = PG_GETARG_DATUM(1);
+	in_point = (PG_LWGEOM *)PG_DETOAST_DATUM(datum);
+	in_lwpoint = lwpoint_deserialize(SERIALIZED_FORM(in_point));
+	if ( in_lwpoint == NULL )
+	{
+		lwerror("Offset geometry must be a point");
+	}
+
+	if ( PG_ARGISNULL(2) ) PG_RETURN_NULL();
+	grid.xsize = PG_GETARG_FLOAT8(2);
+
+	if ( PG_ARGISNULL(3) ) PG_RETURN_NULL();
+	grid.ysize = PG_GETARG_FLOAT8(3);
+
+	if ( PG_ARGISNULL(4) ) PG_RETURN_NULL();
+	grid.zsize = PG_GETARG_FLOAT8(4);
+
+	if ( PG_ARGISNULL(5) ) PG_RETURN_NULL();
+	grid.msize = PG_GETARG_FLOAT8(5);
+
+	/* Take offsets from point geometry */
+	getPoint4d_p(in_lwpoint->point, 0, &offsetpoint);
+	grid.ipx = offsetpoint.x;
+	grid.ipy = offsetpoint.y;
+	if (TYPE_HASZ(in_lwpoint->type) ) grid.ipz = offsetpoint.z;
+	else grid.ipz=0;
+	if (TYPE_HASM(in_lwpoint->type) ) grid.ipm = offsetpoint.m;
+	else grid.ipm=0;
+
+	//grid_print(&grid, lwnotice);
+
+	/* Return input geometry if grid is null */
+	if ( grid_isNull(&grid) )
+	{
+		PG_RETURN_POINTER(in_geom);
+	}
+
+	in_lwgeom = lwgeom_deserialize(SERIALIZED_FORM(in_geom));
+
+#if VERBOSE
+	elog(NOTICE, "SnapToGrid got a %s", lwgeom_typename(TYPE_GETTYPE(in_lwgeom->type)));
+#endif
+
+   	out_lwgeom = lwgeom_grid(in_lwgeom, &grid);
+	if ( out_lwgeom == NULL ) PG_RETURN_NULL();
+
+	/* COMPUTE_BBOX WHEN_SIMPLE */
+	if ( in_lwgeom->bbox )
+	{
+		box2df_to_box3d_p(in_lwgeom->bbox, &box3d);
+
+		box3d.xmin = rint((box3d.xmin - grid.ipx)/grid.xsize)
+			* grid.xsize + grid.ipx;
+		box3d.xmax = rint((box3d.xmax - grid.ipx)/grid.xsize)
+			* grid.xsize + grid.ipx;
+		box3d.ymin = rint((box3d.ymin - grid.ipy)/grid.ysize)
+			* grid.ysize + grid.ipy;
+		box3d.ymax = rint((box3d.ymax - grid.ipy)/grid.ysize)
+			* grid.ysize + grid.ipy;
+
+		out_lwgeom->bbox = box3d_to_box2df(&box3d);
+	}
+
+#if VERBOSE
+	elog(NOTICE, "SnapToGrid made a %s", lwgeom_typename(TYPE_GETTYPE(out_lwgeom->type)));
+#endif
+
+	out_geom = pglwgeom_serialize(out_lwgeom);
+
+	PG_RETURN_POINTER(out_geom);
+}
+
 /***********************************************************************
  * --strk@keybit.net
  ***********************************************************************/
