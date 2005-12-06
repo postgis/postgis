@@ -4,7 +4,7 @@
 
 Summary:        Geographic Information Systems Extensions to PostgreSQL
 Name:           postgis
-Version:        1.0.6
+Version:        1.1.0
 Release:        1
 License:        GPL v2
 Group:          Applications/Databases
@@ -114,7 +114,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Tue Dec 06 2005 - Devrim GUNDUZ <devrim@gunduz.org>
-- Update to 1.0.6
+- Update to 1.1.0
 
 * Mon Oct 03 2005 - Devrim GUNDUZ <devrim@gunduz.org>
 - Make PostGIS build against pgxs so that we don't need PostgreSQL sources.
