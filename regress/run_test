@@ -51,6 +51,13 @@ libver=`psql -tAc "select postgis_lib_version()" $DB`
 libbuilddate=`psql -tAc "select postgis_lib_build_date()" $DB`
 pgsqlver=`psql -tAc "select version()" $DB`
 
+if [ -z "$libver" ]; then
+	echo
+	echo "Something went wrong (no postgis installed in $DB" 
+	echo
+	exit 1
+fi
+
 
 echo
 echo " Running test: '${TEST}' "
