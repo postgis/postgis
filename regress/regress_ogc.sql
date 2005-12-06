@@ -30,3 +30,9 @@ SELECT 'pointonsurface', astext(pointonsurface('POLYGON((0 0, 0 10, 10 10, 10 0,
 SELECT 'centroid', astext(centroid('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0),(2 2, 2 4, 4 4, 4 2, 2 2))'));
 SELECT 'exteriorring', astext(exteriorring(PolygonFromText('POLYGON((52 18,66 23,73 9,48 6,52 18),(59 18,67 18,67 13,59 13,59 18))')));
 
+--- postgis-devel/2005-December/001784.html
+select 'intersects', intersects(
+   polygonfromtext('POLYGON((0.0 0.0,1.0 0.0,1.0 1.0,1.0 0.0,0.0 0.0))'),
+      polygonfromtext('POLYGON((0.0 2.0,1.0 2.0,1.0 3.0,0.0 3.0,0.0 2.0))')
+      );
+
