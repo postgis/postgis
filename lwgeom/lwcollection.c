@@ -84,16 +84,24 @@ lwcollection_deserialize(uchar *srl)
 	result->type = typefl;
 	result->SRID = insp->SRID;
 	result->ngeoms = insp->ngeometries;
-	result->geoms = lwalloc(sizeof(LWGEOM *)*insp->ngeometries);
 
 	if (lwgeom_hasBBOX(srl[0]))
-		result->bbox = (BOX2DFLOAT4 *)(srl+1);
+	{
+		//result->bbox = (BOX2DFLOAT4 *)(srl+1);
+		result->bbox = lwalloc(sizeof(BOX2DFLOAT4));
+		memcpy(result->bbox, srl+1, sizeof(BOX2DFLOAT4));
+	}
 	else result->bbox = NULL;
 
 
-	for (i=0; i<insp->ngeometries; i++)
+	if ( insp->ngeometries )
 	{
-		result->geoms[i] = lwgeom_deserialize(insp->sub_geoms[i]);
+		result->geoms = lwalloc(sizeof(LWGEOM *)*insp->ngeometries);
+		for (i=0; i<insp->ngeometries; i++)
+		{
+			result->geoms[i] =
+				lwgeom_deserialize(insp->sub_geoms[i]);
+		}
 	}
 
 	return result;
@@ -148,7 +156,7 @@ lwcollection_serialize_buf(LWCOLLECTION *coll, uchar *buf, size_t *retsize)
 	int i;
 
 #ifdef PGIS_DEBUG_CALLS
-	lwnotice("lwcollection_serialize_buf called (%d with %d elems)",
+	lwnotice("lwcollection_serialize_buf called (%s with %d elems)",
 		lwgeom_typename(TYPE_GETTYPE(coll->type)), coll->ngeoms);
 #endif
 
@@ -212,19 +220,30 @@ lwcollection_compute_box2d_p(LWCOLLECTION *col, BOX2DFLOAT4 *box)
 	return 1;
 }
 
-// Clone LWCOLLECTION object. POINTARRAY are not copied.
+/*
+ * Clone LWCOLLECTION object. POINTARRAY are not copied.
+ * Bbox is cloned if present in input.
+ */
 LWCOLLECTION *
 lwcollection_clone(const LWCOLLECTION *g)
 {
 	uint32 i;
 	LWCOLLECTION *ret = lwalloc(sizeof(LWCOLLECTION));
 	memcpy(ret, g, sizeof(LWCOLLECTION));
-	for (i=0; i<g->ngeoms; i++)
+	if ( g->ngeoms > 0 )
 	{
-		ret->geoms[i] = lwgeom_clone(g->geoms[i]);
+		ret->geoms = lwalloc(sizeof(LWGEOM *)*g->ngeoms);
+		for (i=0; i<g->ngeoms; i++)
+		{
+			ret->geoms[i] = lwgeom_clone(g->geoms[i]);
+		}
+		if ( g->bbox ) ret->bbox = box2d_clone(g->bbox);
 	}
-	if ( g->bbox && ! TYPE_HASBBOX(g->type) )
-		ret->bbox = box2d_clone(g->bbox);
+	else
+	{
+		ret->bbox = NULL; // empty collection
+		ret->geoms = NULL;
+	}
 	return ret;
 }
 
@@ -287,7 +306,7 @@ lwcollection_segmentize2d(LWCOLLECTION *col, double dist)
 	for (i=0; i<col->ngeoms; i++)
 		newgeoms[i] = lwgeom_segmentize2d(col->geoms[i], dist);
 
-	return lwcollection_construct(col->type, col->SRID, col->bbox,
+	return lwcollection_construct(col->type, col->SRID, NULL,
 		col->ngeoms, newgeoms);
 }
 

@@ -40,7 +40,7 @@ Datum assvg_geometry(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom;
 	char *svg;
-	char *result;
+	text *result;
 	int len;
 	int32 svgrel=0;
 	int32 precision=MAX_DOUBLE_PRECISION;
@@ -64,17 +64,17 @@ Datum assvg_geometry(PG_FUNCTION_ARGS)
 	svg = geometry_to_svg(geom, svgrel, precision);
 	if ( ! svg ) PG_RETURN_NULL();
 
-	len = strlen(svg) + 4;
+	len = strlen(svg) + VARHDRSZ;
 
-	result= palloc(len);
-	*((int *) result) = len;
+	result = palloc(len);
+	VARATT_SIZEP(result) = len;
 
-	memcpy(result +4, svg, len-4);
+	memcpy(VARDATA(result), svg, len-VARHDRSZ);
 
 	pfree(svg);
 	PG_FREE_IF_COPY(geom, 0);
 
-	PG_RETURN_CSTRING(result);
+	PG_RETURN_POINTER(result);
 }
 
 
@@ -280,6 +280,10 @@ print_svg_path_rel(char *result, POINTARRAY *pa, int precision)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.8.2.1  2005/11/18 10:16:14  strk
+ * Removed casts on lwalloc return.
+ * Used varlena macros when appropriate.
+ *
  * Revision 1.8  2005/02/10 17:41:55  strk
  * Dropped getbox2d_internal().
  * Removed all castings of getPoint() output, which has been renamed

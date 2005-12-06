@@ -1,4 +1,86 @@
+PostGIS 1.0.6
+2005/12/06
+	- Fixed palloc(0) call in collection deserializer (only gives
+	  problem with --enable-cassert)
+	- Fixed bbox cache handling bugs
+	- Fixed geom_accum(NULL, NULL) segfault
+	- Initial support for postgresql 8.2
+	- Fixed segfault in addPoint()
+	- Fixed short-allocation in lwcollection_clone()
+	- Fixed bug in segmentize()
+	- Added missing SRID mismatch checks in GEOS ops
+	- Fixed bbox computation of SnapToGrid output
+
+PostGIS 1.0.5
+2005/11/25
+	- New "Reporting Bugs" chapter in manual
+	- Segfault fix in shp2pgsql (utf8 encoding)
+	- Fixed computation of null values fraction in analyzer
+	- Fixed return code of shp2pgsql
+	- Fixed handling of trailing dots in dbf numerical attributes
+	- Schema aware postgis_proc_upgrade.pl, support for pgsql 7.2+
+	- Fixed back-compatibility issue in loader (load of null shapefiles)
+	- Fixed a small bug in the getPoint4d_p() low-level function
+	- Fixed memory alignment problems
+	- Speedup of serializer functions
+	- Bug fix in force_4d, force_3dm and force_3dz functions
+
+PostGIS 1.0.4
+2005/09/09
+	- Memory leak plugged in GiST indexing
+	- Segfault fix in transform() handling of proj4 errors
+	- Fixed some proj4 texts in spatial_ref_sys (missing +proj)
+	- GiST indexing cleanup
+	- Loader: fixed string functions usage, reworked NULL objects check,
+	  fixed segfault on MULTILINESTRING input.
+	- Fixed bug in MakeLine dimension handling
+	- Looser syntax acceptance in box3d parser
+	- Documentation improvements
+	- More robust selectivity estimator 
+	- Minor speedup in distance()
+	- Minor cleanups 
+	- Fixed bug in translate() corrupting output bounding box
+	- Initial implementation of postgis_proc_upgrade script
+
+PostGIS 1.0.3
+2005/08/08
+	- Severe bugfix in lwgeom's 2d bounding box computation
+	- Bugfix in WKT (-w) POINT handling in loader
+	- Bugfix in dumper on 64bit machines
+	- Bugfix in dumper handling of user-defined queries 
+	- Bugfix in create_undef.pl script
+	- Small performance improvement in canonical input function
+	- Minor cleanups in loader
+	- Support for multibyte field names in loader
+	- Improvement in the postgis_restore.pl script
+	- New rebuild_bbox_caches.pl util script
+
+PostGIS 1.0.2
+2005/07/04
+	- Fault tolerant btree ops
+	- Memory Leak fix in pg_error
+	- Rtree index fix. See:
+	  http://archives.postgresql.org/pgsql-hackers/2005-06/msg01108.php
+        - Initial support for postgresql 8.1dev
+	- Cleaner build scripts: avoided mix of CFLAGS and CXXFLAGS
+	- NEW -I switch for pgsql2shp (GiST index)
+
+PostGIS 1.0.1
+2005/05/24
+	- BUGFIX in shp2pgql escape functions
+	- BUGFIX in 3d computation of lenght_spheroid
+	- better support for concurrent postgis in multiple schemas
+	- documentation fixes
+	- BUGFIX in join selectivity estimator returning invalid estimates (>1)
+	- jdbc2: compile with "-target 1.2 -source 1.2" by default
+	- NEW -k switch for pgsql2shp
+	- NEW support for custom createdb options in postgis_restore.pl
+	- BUGFIX in pgsql2shp attribute names unicity enforcement
+	- BUGFIX in Paris projections definitions
+	- postgis_restore.pl cleanups
+
 PostGIS 1.0.0
+2005/04/19
 	- NEW manual pages for loader/dumper
 	- NEW shp2pgsql support for old (HWGEOM) postgis versions
 	- NEW -p flag for shp2pgsql
@@ -7,6 +89,8 @@ PostGIS 1.0.0
 	- NEW chapter about OGC compliancy enforcement
 	- BUGFIX in shp2pgsql escape of values starting with "'" or "\t" 
 	- NEW autoconf support for JTS lib
+	- BUGFIX in estimator testers (support for LWGEOM and schema parsing)
+	- BUGFIX in join selectivity estimator (defaults, leaks, tuplecount, sd)
 
 PostGIS 1.0.0RC6
 2005/03/30

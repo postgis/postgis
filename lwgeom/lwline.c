@@ -57,8 +57,11 @@ lwline_deserialize(uchar *serialized_form)
 
 	if (lwgeom_hasBBOX(type))
 	{
-		//lwnotice("line has bbox");
-		result->bbox = (BOX2DFLOAT4 *)loc;
+#ifdef PGIS_DEBUG
+		lwnotice("lwline_deserialize: input has bbox");
+#endif
+		result->bbox = lwalloc(sizeof(BOX2DFLOAT4));
+		memcpy(result->bbox, loc, sizeof(BOX2DFLOAT4));
 		loc += sizeof(BOX2DFLOAT4);
 	}
 	else
@@ -121,8 +124,8 @@ lwline_serialize_buf(LWLINE *line, uchar *buf, size_t *retsize)
 {
 	char hasSRID;
 	uchar *loc;
-	int ptsize = pointArray_ptsize(line->points);
-	unsigned int u;
+	int ptsize;
+	size_t size;
 
 #ifdef PGIS_DEBUG_CALLS
 	lwnotice("lwline_serialize_buf(%p, %p, %p) called",
@@ -131,6 +134,11 @@ lwline_serialize_buf(LWLINE *line, uchar *buf, size_t *retsize)
 
 	if (line == NULL)
 		lwerror("lwline_serialize:: given null line");
+
+	if ( TYPE_GETZM(line->type) != TYPE_GETZM(line->points->dims) )
+		lwerror("Dimensions mismatch in lwline");
+
+	ptsize = pointArray_ptsize(line->points);
 
 	hasSRID = (line->SRID != -1);
 
@@ -170,41 +178,9 @@ lwline_serialize_buf(LWLINE *line, uchar *buf, size_t *retsize)
 #endif
 
 	//copy in points
-	if (TYPE_NDIMS(line->type) == 3)
-	{
-		if ( TYPE_HASZ(line->type) )
-		{
-			for (u=0; u<line->points->npoints; u++)
-			{
-				getPoint3dz_p(line->points, u, (POINT3DZ *)loc);
-				loc += ptsize;
-			}
-		}
-		else
-		{
-			for (u=0; u<line->points->npoints; u++)
-			{
-				getPoint3dm_p(line->points, u, (POINT3DM *)loc);
-				loc += ptsize;
-			}
-		}
-	}
-	else if (TYPE_NDIMS(line->type) == 2)
-	{
-			for (u=0; u<line->points->npoints; u++)
-			{
-				getPoint2d_p(line->points, u, (POINT2D *)loc);
-				loc+= 16;
-			}
-	}
-	else if (TYPE_NDIMS(line->type) == 4)
-	{
-			for (u=0; u<line->points->npoints; u++)
-			{
-				getPoint4d_p(line->points, u, (POINT4D *)loc);
-				loc+= 32;
-			}
-	}
+	size = line->points->npoints*ptsize;
+	memcpy(loc, getPoint_internal(line->points, 0), size);
+	loc += size;
 
 #ifdef PGIS_DEBUG
 	lwnotice("lwline_serialize_buf copied serialized_pointlist (%d bytes)",
@@ -328,8 +304,7 @@ lwline_clone(const LWLINE *g)
 {
 	LWLINE *ret = lwalloc(sizeof(LWLINE));
 	memcpy(ret, g, sizeof(LWLINE));
-	if ( g->bbox && ! TYPE_HASBBOX(g->type) )
-		ret->bbox = box2d_clone(g->bbox);
+	if ( g->bbox ) ret->bbox = box2d_clone(g->bbox);
 	return ret;
 }
 
@@ -391,7 +366,7 @@ lwline_reverse(LWLINE *line)
 LWLINE *
 lwline_segmentize2d(LWLINE *line, double dist)
 {
-	return lwline_construct(line->SRID, line->bbox,
+	return lwline_construct(line->SRID, NULL,
 		ptarray_segmentize2d(line->points, dist));
 }
 

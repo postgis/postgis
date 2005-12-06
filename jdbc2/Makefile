@@ -27,7 +27,7 @@
 
 # Configure the helper executables used during build.
 
-JAVAC?=javac
+JAVAC?=javac -target 1.2 -source 1.2
 JAVA?=java
 JAR?=jar
 MKDIR?=mkdir -p

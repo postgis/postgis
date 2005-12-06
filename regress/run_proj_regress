@@ -1,0 +1,22 @@
+#!/bin/sh
+
+if [ -z "$TMPDIR" ]; then
+	TMPDIR=/tmp
+fi
+
+OUTFILE="${TMPDIR}/regress_proj_out$$"
+
+echo "Running PROJ Regression Test..."
+echo "Output file is: '${OUTFILE}'"
+echo 
+echo "       expected:'<'     obtained:'>'"
+echo
+
+DB=postgis_reg
+createdb $DB > /dev/null
+createlang plpgsql $DB > /dev/null
+psql -f ../lwpostgis.sql $DB > /dev/null 2>&1
+psql -tA < regress_proj.sql $DB 2>&1 | grep -v INSERT > "${OUTFILE}"
+diff regress_proj_expected "${OUTFILE}"
+sleep 1
+dropdb $DB > /dev/null

@@ -269,6 +269,9 @@ lwgeom_release(LWGEOM *lwgeom)
 		lwerror("lwgeom_release: someone called on 0x0");
 #endif
 
+	// Drop bounding box (always a copy)
+	if ( lwgeom->bbox ) lwfree(lwgeom->bbox);
+
 	// Collection
 	if ( (col=lwgeom_as_lwcollection(lwgeom)) )
 	{
@@ -438,10 +441,7 @@ lwgeom_same(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2)
 void
 lwgeom_changed(LWGEOM *lwgeom)
 {
-	// HASBBOX flag on LWGEOM type means the BBOX is not
-	// owned by LWGEOM
-	if ( lwgeom->bbox && ! TYPE_HASBBOX(lwgeom->type) )
-		lwfree(lwgeom->bbox);
+	if ( lwgeom->bbox ) lwfree(lwgeom->bbox);
 	lwgeom->bbox = NULL;
 	TYPE_SETHASBBOX(lwgeom->type, 0);
 }
@@ -449,8 +449,7 @@ lwgeom_changed(LWGEOM *lwgeom)
 void
 lwgeom_dropBBOX(LWGEOM *lwgeom)
 {
-	if ( lwgeom->bbox && ! TYPE_HASBBOX(lwgeom->type) )
-		lwfree(lwgeom->bbox);
+	if ( lwgeom->bbox ) lwfree(lwgeom->bbox);
 	lwgeom->bbox = NULL;
 	TYPE_SETHASBBOX(lwgeom->type, 0);
 }
@@ -465,6 +464,7 @@ lwgeom_addBBOX(LWGEOM *lwgeom)
 {
 	if ( lwgeom->bbox ) return;
 	lwgeom->bbox = lwgeom_compute_box2d(lwgeom);
+	TYPE_SETHASBBOX(lwgeom->type, 1);
 }
 
 void
@@ -490,7 +490,8 @@ lwgeom_segmentize2d(LWGEOM *lwgeom, double dist)
 		case COLLECTIONTYPE:
 			return (LWGEOM *)lwcollection_segmentize2d(
 				(LWCOLLECTION *)lwgeom, dist);
+
 		default:
-			return lwgeom;
+			return lwgeom_clone(lwgeom);
 	}
 }

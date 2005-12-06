@@ -269,7 +269,7 @@ extern void lwgeom_dropSRID(LWGEOM *lwgeom);
 
 // copies a point from the point array into the parameter point
 // will set point's z=0 (or NaN) if pa is 2d
-// will set point's m=0 (or NaN( if pa is 3d or 2d
+// will set point's m=0 (or NaN) if pa is 3d or 2d
 // NOTE: point is a real POINT3D *not* a pointer
 extern POINT4D getPoint4d(const POINTARRAY *pa, int n);
 
@@ -345,7 +345,7 @@ extern int pointArray_ptsize(const POINTARRAY *pa);
  * WHERE
  *    B = 16 byte BOX2DFLOAT4 follows (probably not aligned) [before SRID]
  *    S = 4 byte SRID attached (0= not attached (-1), 1= attached)
- *    ZM = dimentionality (hasZ, hasM)
+ *    ZM = dimensionality (hasZ, hasM)
  *    tttt = actual type (as per the WKB type):
  *
  *    enum wkbGeometryType {
@@ -955,7 +955,7 @@ LWGEOM *lwcollection_add(const LWCOLLECTION *to, uint32 where, const LWGEOM *wha
 
 // Clone an LWGEOM
 // pointarray are not copied.
-// BBOXes are copied only if HASBBOX flag is 0 (meaning bbox ownership)
+// BBOXes are copied 
 extern LWGEOM *lwgeom_clone(const LWGEOM *lwgeom);
 extern LWPOINT *lwpoint_clone(const LWPOINT *lwgeom);
 extern LWLINE *lwline_clone(const LWLINE *lwgeom);
@@ -1027,5 +1027,7 @@ extern void trim_trailing_zeros(char *num);
 #define XDR 0
 #define NDR 1
 extern char getMachineEndian(void);
+
+extern void errorIfSRIDMismatch(int srid1, int srid2);
 
 #endif // !defined _LIBLWGEOM_H 

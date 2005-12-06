@@ -8,7 +8,6 @@
 
 #include "access/gist.h"
 #include "access/itup.h"
-#include "access/rtree.h"
 
 #include "fmgr.h"
 #include "utils/elog.h"
@@ -354,7 +353,7 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 	POINTARRAY *extring;
 	LWLINE *line;
 	PG_LWGEOM *result;
-	BOX2DFLOAT4 bbox, *bbox2=NULL;
+	BOX2DFLOAT4 *bbox=NULL;
 
 	if ( TYPE_GETTYPE(geom->type) != POLYGONTYPE )
 	{
@@ -366,19 +365,11 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 	// Ok, now we have a polygon. Here is its exterior ring.
 	extring = poly->rings[0];
 
+	// This is a LWLINE constructed by exterior ring POINTARRAY
 	// If the input geom has a bbox, use it for 
 	// the output geom, as exterior ring makes it up !
-	// COMPUTE_BBOX==WHEN_SIMPLE
-	if ( getbox2d_p(SERIALIZED_FORM(geom), &bbox) )
-	{
-		bbox2 = &bbox;
-	}
-
-	// This is a LWLINE constructed by exterior ring POINTARRAY
-	line = lwline_construct(poly->SRID, bbox2, extring);
-
-	// Copy SRID from polygon
-	line->SRID = poly->SRID;
+	if ( poly->bbox ) bbox=box2d_clone(poly->bbox);
+	line = lwline_construct(poly->SRID, bbox, extring);
 
 	result = pglwgeom_serialize((LWGEOM *)line);
 
