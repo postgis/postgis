@@ -5018,6 +5018,59 @@ FROM geometry_table;</literallayout>
 		<title>Release Notes</title>
 
     		<sect1>
+			<title>Release 1.0.6</title>
+			<para>Release date: 2005/12/06</para>
+
+			<para>
+Contains a few bug fixes and improvements.
+			</para>
+
+			<sect2>
+				<title>Upgrading</title>
+
+				<para>If you are upgrading from
+				release 1.0.3 or later you <emphasis>DO
+				NOT</emphasis> need a dump/reload.
+				</para>
+
+				<para>If you are upgrading from
+				a release <emphasis>between 1.0.0RC6 and
+				1.0.2</emphasis> (inclusive) and really want
+				a live upgrade read the <link
+				linkend="rel_1.0.3_upgrading">upgrade
+				section</link> of the 1.0.3 release notes
+				chapter.
+				</para>
+
+				<para>
+				Upgrade from any release prior to 1.0.0RC6
+				requires an <link linkend="hard_upgrade">hard
+				upgrade</link>.
+				</para>
+			</sect2>
+
+			<sect2>
+				<title>Bug fixes</title>
+	<para>Fixed palloc(0) call in collection deserializer (only gives problem with --enable-cassert)</para>
+	<para>Fixed bbox cache handling bugs</para>
+	<para>Fixed geom_accum(NULL, NULL) segfault</para>
+	<para>Fixed segfault in addPoint()</para>
+	<para>Fixed short-allocation in lwcollection_clone()</para>
+	<para>Fixed bug in segmentize()</para>
+	<para>Fixed bbox computation of SnapToGrid output</para>
+			</sect2>
+
+			<sect2>
+				<title>Improvements</title>
+	<para>Initial support for postgresql 8.2</para>
+	<para>Added missing SRID mismatch checks in GEOS ops</para>
+
+			</sect2>
+
+
+		</sect1>
+
+    		<sect1>
 			<title>Release 1.0.5</title>
 			<para>Release date: 2005/11/25</para>
 
