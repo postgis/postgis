@@ -49,7 +49,6 @@ use strict;
 my $DEBUG=1;
 
 my %aggs = ();
-my %fncasts = ();
 my %casts = ();
 my %funcs = ();
 my %types = ();
@@ -155,6 +154,39 @@ print "dbname is $dbname\n";
 print "dumpfile is $dump\n";
 print "database creation options: $createdb_opt\n" if $createdb_opt;
 
+
+#
+# Canonicalize type names (they change between dump versions).
+# Here we also strip schema qualification
+#
+sub
+canonicalize_typename
+{
+	my $arg=shift;
+
+	# Lower case
+	$arg = lc($arg);
+
+	# Trim whitespaces
+	$arg =~ s/^ *//;
+	$arg =~ s/ *$//;
+
+	# Strip schema qualification
+	#$arg =~ s/^public.//;
+	$arg =~ s/^.*\.//;
+
+	# Handle type name changes
+	if ( $arg eq 'opaque' ) {
+		$arg = 'internal';
+	} elsif ( $arg eq 'boolean' ) {
+		$arg = 'bool';
+	} elsif ( $arg eq 'oldgeometry' ) {
+		$arg = 'geometry';
+	}
+
+	return $arg;
+}
+
 #
 # Scan postgis.sql
 #
@@ -193,6 +225,10 @@ while( my $line = <INPUT>)
 			}
 			if ( $arg eq 'varchar' ) {
 				$args[$i] = 'character varying';
+				next;
+			}
+			if ( $arg eq 'boolean' ) {
+				$args[$i] = 'bool';
 				next;
 			}
 			if ( $arg eq 'opaque' ) {
@@ -268,34 +304,18 @@ while( my $line = <INPUT>)
 	# CAST
 	if ($line =~ /create cast *\( *([^ ]*) *as *([^ )]*) *\) *with function *([^ ]*) *\(([^ ]*) *\)/i)
 	{
-		my $from = lc($1);
-		my $to = lc($2);
-		my $funcname = lc($3);
-		my $funcarg = lc($4);
+		my $from = canonicalize_typename($1);
+		my $to = canonicalize_typename($2);
+		my $funcname = canonicalize_typename($3);
+		my $funcarg = canonicalize_typename($4);
 
-		my $id = $funcname."(".$funcarg.")";
-		$fncasts{$id} = 1;
+		my $id = $funcarg.'.'.$funcname;
+		$casts{$id} = 1;
 		print "SQLFNCAST $id\n" if $DEBUG;
-		if ( $funcarg eq 'oldgeometry' )
-		{
-			$funcarg = 'geometry';
-			my $id = $funcname."(".$funcarg.")";
-			$fncasts{$id} = 1;
-			print "SQLFNCAST $id\n" if $DEBUG;
-		}
 
 		$id = $from.','.$to;
 		$casts{$id} = 1;
 		print "SQLCAST $id\n" if $DEBUG;
-		if ( $from eq 'oldgeometry' || $to eq 'oldgeometry' )
-		{
-			$from = 'geometry' if $from eq 'geometry';
-			$to = 'geometry' if $to eq 'geometry';
-			my $id = $from.','.$to;
-			$casts{$id} = 1;
-			print "SQLCAST $id\n" if $DEBUG;
-		}
-
 
 		next;
 	}
@@ -389,14 +409,7 @@ while( my $line = <INPUT> )
 		my $wkbinvolved = 0;
 		for (my $i=0; $i<@args; $i++)
 		{
-			my $arg = lc($args[$i]);
-			$arg =~ s/^ *//;
-			$arg =~ s/ *$//;
-			$arg =~ s/^public.//;
-			if ( $arg eq 'opaque' ) {
-				$args[$i] = 'internal';
-				next;
-			}
+			my $arg = canonicalize_typename($args[$i]);
 			$args[$i] = $arg;
 			$wkbinvolved++ if ( $arg eq 'wkb' );
 		}
@@ -445,15 +458,7 @@ while( my $line = <INPUT> )
 		my @args = split(",", $3);
 		for (my $i=0; $i<@args; $i++)
 		{
-			my $arg = lc($args[$i]);
-			$arg =~ s/^ *//;
-			$arg =~ s/ *$//;
-			$arg =~ s/^public.//;
-			if ( $arg eq 'opaque' ) {
-				$args[$i] = 'internal';
-				next;
-			}
-			$args[$i] = $arg;
+			$args[$i] = canonicalize_typename($args[$i]);
 		}
 		my $args = join(', ', @args);
 		my $id = $name."(".$args.")";
@@ -479,10 +484,9 @@ while( my $line = <INPUT> )
 		print "KEEPING AGGREGATE [$id]\n" if $DEBUG;
 		#next;
 	}
-	elsif ($line =~ / TYPE (.*) .*/)
+	elsif ($line =~ / TYPE ([^ ]+ )?([^ ]*) .*/)
 	{
-		my $type = lc($1);
-		$type =~ s/^public.//;
+		my $type = canonicalize_typename($2);
 		if ( $type eq 'wkb' )
 		{
 			print "SKIPPING PGIS TYPE $type\n" if $DEBUG;
@@ -533,57 +537,69 @@ while( my $line = <INPUT> )
 		print "KEEPING OPCLASS [$id]\n" if $DEBUG;
 	}
 
-	# CAST def by pg73
-	elsif ($line =~ / CAST *([^ ]*) *\( *([^ )]*) *\)/)
+	# casts were implicit in PG72 
+	elsif ($line =~ / CAST /)
 	{
-		my $arg1 = lc($1);
-		my $arg2 = lc($2);
-		$arg1 =~ s/^public\.//;
-		$arg2 =~ s/^public\.//;
-		my $id = $arg1."(".$arg2.")";
-		if ( $fncasts{$id} )
-		{
-			print "SKIPPING PGIS FNCAST $id\n" if $DEBUG;
-			next;
-		}
-		#if ($arg1 eq 'box3d' || $arg2 eq 'geometry')
-		#{
-			#print "SKIPPING PGIS FNCAST $id\n" if $DEBUG;
-			#next;
-		#}
-		if ($arg1 eq 'wkb' || $arg2 eq 'wkb')
-		{
-			print "SKIPPING PGIS FNCAST $id\n" if $DEBUG;
-			next;
-		}
-		print "KEEPING FNCAST $id (see CAST)\n" if $DEBUG;
-	}
 
-	# CAST def by pg74 to pg80
-	elsif ($line =~ / CAST ([^ ]* )?CAST *\(([^ ]*) *AS *([^ )]*) *\)/)
-	{
-		my $arg1 = lc($2);
-		my $arg2 = lc($3);
-		$arg1 =~ s/^public\.//;
-		$arg2 =~ s/^public\.//;
-		my $id = $arg1.",".$arg2;
-		if ( $casts{$id} )
+		my $arg1=undef;
+		my $arg2=undef;
+
+		#
+		# CAST def by pg_restore 80,81 on pg_dump 73
+		#
+		# 734_800; 0 00000 CAST public box2d (public.box3d) 
+		# 734_810; 0 00000 CAST public box2d (public.box3d) 
+		#
+		if ($line =~ / CAST *([^ ]+) ([^ ]+) *\( *([^ )]+) *\)/)
 		{
-			print "SKIPPING PGIS CAST $id\n" if $DEBUG;
-			next;
+			$arg1 = canonicalize_typename($3);
+			$arg2 = canonicalize_typename($2);
 		}
-		#if ($arg1 eq 'box3d' || $arg2 eq 'geometry')
-		#{
-			#print "SKIPPING PGIS CAST $id\n" if $DEBUG;
-			#next;
-		#}
-		if ($arg1 eq 'wkb' || $arg2 eq 'wkb')
+
+		#
+		# CAST def by pg_restore 73,74 on pg_dump 73
+		#
+		# 734_743; 00000 CAST box2d (public.box3d) 
+		# 734_734; 00000 CAST box2d (public.box3d) 
+		#
+		elsif ($line =~ / CAST *([^ ]*) *\( *([^ )]*) *\)/)
 		{
-			print "SKIPPING PGIS CAST $id\n" if $DEBUG;
-			next;
+			$arg1 = canonicalize_typename($2);
+			$arg2 = canonicalize_typename($1);
 		}
-		print "KEEPING CAST $id\n" if $DEBUG;
-	}
+
+		#
+		# CAST def by pg_restore 81 on pg_dump 81
+		#
+		# 810_810; 0000 00000 CAST pg_catalog CAST (boolean AS text) 
+		#
+		elsif ($line =~ / CAST [^ ]* CAST \(([^ ]*) AS ([^ )]*)\)/)
+		{
+			$arg1 = canonicalize_typename($1);
+			$arg2 = canonicalize_typename($2);
+		}
+
+		if (defined($arg1) && defined($arg2))
+		{
+			my $id = $arg1.",".$arg2;
+			if ( $casts{$id} )
+			{
+				print "SKIPPING PGIS CAST $id\n" if $DEBUG;
+				next;
+			}
+			if ($arg1 eq 'wkb' || $arg2 eq 'wkb')
+			{
+				print "SKIPPING PGIS CAST $id\n" if $DEBUG;
+				next;
+			}
+			print "KEEPING CAST $id (see CAST)\n" if $DEBUG;
+		}
+		else
+		{
+			print "KEEPING CAST (unknown def): $line\n";
+		}
+
+	} # CAST
 
 	print OUTPUT $line;
 #	print "UNANDLED: $line"
@@ -609,8 +625,7 @@ while( my $line = <INPUT> )
 
 	elsif ( $line =~ /CREATE OPERATOR *([^ ,]*)/)
 	{
-		my $name = lc($1);
-		$name =~ s/^.*\.//;
+		my $name = canonicalize_typename($1);
 		my $larg = undef;
 		my $rarg = undef;
 		my @sublines = ($line);
@@ -620,13 +635,11 @@ while( my $line = <INPUT> )
 			last if $subline =~ /;[\t ]*$/;
 			if ( $subline =~ /leftarg *= *([^ ,]*)/i )
 			{
-				$larg=lc($1);
-				$larg =~ s/^.*\.//;
+				$larg=canonicalize_typename($1);
 			}
 			if ( $subline =~ /rightarg *= *([^ ,]*)/i )
 			{
-				$rarg=lc($1);
-				$rarg =~ s/^.*\.//;
+				$rarg=canonicalize_typename($1);
 			}
 		}
 
@@ -689,9 +702,8 @@ close(INPUT);
 print "Dropping geometry_columns and spatial_ref_sys\n";
 print PSQL "DROP TABLE geometry_columns;";
 print PSQL "DROP TABLE spatial_ref_sys;";
-#print "Now source $dumpascii manually\n";
-#exit(1);
-
+print "Now source $dumpascii manually\n";
+exit(1);
 
 #
 # Source modified ascii dump
