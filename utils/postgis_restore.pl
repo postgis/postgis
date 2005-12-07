@@ -13,6 +13,9 @@
 # from the dump, not the postgis.sql file. When the new installation
 # is agains pgsql7.5+ and dump from pre7.5 this script should probably
 # drop statistic fields from that table.... currently not done.
+# Also, when upgrading to pgsq8.1+ (from <8.1) the oid column of
+# geometry_columns  will be dropped, while it is needed for
+# postgis opearations.
 #
 # Issues:
 #	o Some obsoleted functions would not be present in the
