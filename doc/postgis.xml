@@ -110,6 +110,20 @@
             </para>
           </listitem>
         </varlistentry>
+
+        <varlistentry>
+          <term>Important Support Libraries</term>
+          <listitem>
+            <para>The <ulink url="http://geos.refractions.net">GEOS</ulink>
+            geometry operations library, and the algorithmic work of 
+            Martin Davis &lt;mbdavis@vividsolutions.com&gt; of Vivid Solutions
+            in making it all work.</para>
+            <para>The <ulink url="http://proj4.maptools.org">Proj4</ulink>
+            cartographic projection library, and the work of Gerald Evenden
+            and Frank Warmerdam in creating and maintaining it.</para>
+           </listitem>
+        </varlistentry>
+
       </variablelist>
     </sect1>
 
