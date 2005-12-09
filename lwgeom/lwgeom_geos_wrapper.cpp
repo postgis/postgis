@@ -1644,6 +1644,7 @@ Geometry *GEOSpolygonize(Geometry **g, unsigned int ngeoms)
 		geoms = new vector<Geometry *>(polys->size());
 		for (i=0; i<polys->size(); i++) (*geoms)[i] = (*polys)[i];
 		out = geomFactory->createGeometryCollection(geoms);
+		delete polys;
 	}
 	catch (GEOSException *ge)
 	{
@@ -1722,6 +1723,7 @@ bool
 GEOSHasZ(Geometry *g)
 {
 	//char msg[256];
+	if ( g->isEmpty() ) return false;
 	double az = g->getCoordinate()->z;
 	//sprintf(msg, "ZCoord: %g", az);
 	//NOTICE_MESSAGE(msg);
