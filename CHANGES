@@ -1,35 +1,45 @@
 PostGIS 1.1.0CVS
+
+	- New functions:
+		- scale() and transscale() companion methods to translate()
+		- line_substring() 
+		- line_locate_point()
+		- M(point) 
+		- LineMerge(geometry) 
+		- shift_longitude(geometry) 
+		- azimuth(geometry) 
+		- locate_along_measure(geometry, float8) 
+		- locate_between_measures(geometry, float8, float8) 
+		- SnapToGrid by point offset (up to 4d support)
+
+	- Function semantic changes:
+		- SnapToGrid doesn't discard higher dimensions
+		- Changed Z() function to return NULL if requested
+	  	  dimension is not available
+
+	- Peformance improvements:
+		- Much faster transform() function, caching proj4 objects
+		- Removed automatic call to fix_geometry_columns() in
+	  	  AddGeometryColumns() and update_geometry_stats()
+
 	- jdbc2 works:
-	  + Makefile improvements
-	  + JTS support improvements
-	  + Improved regression test system
-	  + Basic consistency check method for geometry collections
-	  + Support for (Hex)(E)wkb
-	  + Autoprobing DriverWrapper for HexWKB / EWKT switching
-	  + fix compile problems in ValueSetter for ancient jdk releases.
-	  + fix EWKT constructors to accept SRID=4711; representation
-	  + added preliminary read-only support for java2d geometries
-	- Full autoconf-based configuration
-	- NEW scale() and transscale() companion methods to translate()
-	- NEW line_substring() function
-	- NEW line_locate_point() function
-	- NEW M(point) function
-	- NEW LineMerge(geometry) function
-	- NEW shift_longitude(geometry) function
-	- NEW azimuth(geometry) function
-	- NEW locate_along_measure(geometry, float8) function
-	- NEW locate_between_measures(geometry, float8, float8) function
-	- JTS support improvements
-	- Initial GEOS C-API support
-	- Removed automatic call to fix_geometry_columns() in
-	  AddGeometryColumns() and update_geometry_stats()
-	- Initial support for topology modelling
-	- Stricter mapping between DBF and SQL integer and string attributes
-	- Changed M() and Z() functions to return NULL if requested
-	  dimension is not available
-	- Much faster transform() function, caching proj4 objects
-	- SnapToGrid doesn't discard higher dimensions
-	- NEW SnapToGrid(geometry, point offset, xsize, ysize, zsize, msize)
+		- Makefile improvements
+		- JTS support improvements
+		- Improved regression test system
+		- Basic consistency check method for geometry collections
+		- Support for (Hex)(E)wkb
+		- Autoprobing DriverWrapper for HexWKB / EWKT switching
+		- fix compile problems in ValueSetter for ancient jdk releases.
+		- fix EWKT constructors to accept SRID=4711; representation
+		- added preliminary read-only support for java2d geometries
+	
+	- Other changes:
+		- Full autoconf-based configuration
+		- JTS support improvements
+		- GEOS C-API support
+		- Initial support for topology modelling
+		- Stricter mapping between DBF and SQL integer and
+		  string attributes
 
 PostGIS 1.0.7CVS
 	- Fixed memory leak in polygonize()
