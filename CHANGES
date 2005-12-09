@@ -31,6 +31,9 @@ PostGIS 1.1.0CVS
 	- SnapToGrid doesn't discard higher dimensions
 	- NEW SnapToGrid(geometry, point offset, xsize, ysize, zsize, msize)
 
+PostGIS 1.0.7CVS
+	- Fixed memory leak in polygonize()
+
 PostGIS 1.0.6
 2005/12/06
 	- Fixed palloc(0) call in collection deserializer (only gives

@@ -2629,7 +2629,9 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 #ifdef PGIS_DEBUG
 	elog(NOTICE, "polygonize_garray: GEOSpolygonize returned");
 #endif
-	//pfree(vgeoms);
+	for (i=0; i<nelems; ++i) GEOSdeleteGeometry(vgeoms[i]);
+	pfree(vgeoms);
+
 	if ( ! geos_result ) PG_RETURN_NULL();
 
 	GEOSSetSRID(geos_result, SRID);

@@ -1770,6 +1770,7 @@ bool
 GEOSHasZ(Geometry *g)
 {
 	//char msg[256];
+	if ( g->isEmpty() ) return false;
 	double az = g->getCoordinate()->z;
 	//sprintf(msg, "ZCoord: %g", az);
 	//NOTICE_MESSAGE(msg);
