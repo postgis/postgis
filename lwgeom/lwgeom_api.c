@@ -483,7 +483,7 @@ getPoint4d_p(const POINTARRAY *pa, int n, POINT4D *op)
 			break;
 
 		default:
-			lwerror("Unkown ZM flag ??");
+			lwerror("Unknown ZM flag ??");
 	}
 
 	return 1;
