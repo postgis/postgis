@@ -57,6 +57,9 @@ while [ -n "$1" ]; do
 
 	TEST="$1"; shift;
 
+	# catch a common mistake (strip trailing .sql)
+	TEST=`echo "$TEST" | sed 's/\.sql$//'`
+
 	OUTFILE="${TMPDIR}/regress_${TEST}_out_$$"
 
 	echo
