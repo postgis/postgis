@@ -11,6 +11,9 @@ PostGIS 1.1.0CVS
 		- locate_along_measure(geometry, float8) 
 		- locate_between_measures(geometry, float8, float8) 
 		- SnapToGrid by point offset (up to 4d support)
+		- BuildArea(any_geometry) 
+		- OGC BdPolyFromText(linestring_wkt, srid) 
+		- OGC BdMPolyFromText(linestring_wkt, srid)
 
 	- Function semantic changes:
 		- SnapToGrid doesn't discard higher dimensions
@@ -36,10 +39,11 @@ PostGIS 1.1.0CVS
 	- Other changes:
 		- Full autoconf-based configuration
 		- JTS support improvements
-		- GEOS C-API support
+		- GEOS C-API support (2.2.0 and higher)
 		- Initial support for topology modelling
 		- Stricter mapping between DBF and SQL integer and
 		  string attributes
+		- Wider and cleaner regression test suite
 
 PostGIS 1.0.7CVS
 	- Fixed memory leak in polygonize()

@@ -973,545 +973,6 @@ CREATEFUNCTION nrings(geometry)
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
 ------------------------------------------------------------------------
--- OGC defined
-------------------------------------------------------------------------
-
-CREATEFUNCTION NumPoints(geometry)
-	RETURNS int4
-	AS '@MODULE_FILENAME@', 'LWGEOM_numpoints_linestring'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
-
-CREATEFUNCTION NumGeometries(geometry)
-	RETURNS int4
-	AS '@MODULE_FILENAME@', 'LWGEOM_numgeometries_collection'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
-
-CREATEFUNCTION GeometryN(geometry,integer)
-	RETURNS geometry
-	AS '@MODULE_FILENAME@', 'LWGEOM_geometryn_collection'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
-
-CREATEFUNCTION Dimension(geometry)
-	RETURNS int4
-	AS '@MODULE_FILENAME@', 'LWGEOM_dimension'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
-
-CREATEFUNCTION ExterioRring(geometry)
-	RETURNS geometry
-	AS '@MODULE_FILENAME@','LWGEOM_exteriorring_polygon'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
-
-CREATEFUNCTION NumInteriorRings(geometry)
-	RETURNS integer
-	AS '@MODULE_FILENAME@','LWGEOM_numinteriorrings_polygon'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
-
-CREATEFUNCTION InteriorRingN(geometry,integer)
-	RETURNS geometry
-	AS '@MODULE_FILENAME@','LWGEOM_interiorringn_polygon'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
-
-CREATEFUNCTION GeometryType(geometry)
-	RETURNS text
-	AS '@MODULE_FILENAME@', 'LWGEOM_getTYPE'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
-
-CREATEFUNCTION PointN(geometry,integer)
-	RETURNS geometry
-	AS '@MODULE_FILENAME@','LWGEOM_pointn_linestring'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
-
-CREATEFUNCTION X(geometry)
-	RETURNS float8
-	AS '@MODULE_FILENAME@','LWGEOM_x_point'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
-
-CREATEFUNCTION Y(geometry)
-	RETURNS float8
-	AS '@MODULE_FILENAME@','LWGEOM_y_point'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
-
-CREATEFUNCTION Z(geometry)
-	RETURNS float8
-	AS '@MODULE_FILENAME@','LWGEOM_z_point'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
-
-CREATEFUNCTION M(geometry)
-	RETURNS float8
-	AS '@MODULE_FILENAME@','LWGEOM_m_point'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
-
-CREATEFUNCTION StartPoint(geometry)
-	RETURNS geometry
-	AS '@MODULE_FILENAME@', 'LWGEOM_startpoint_linestring'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
-
-CREATEFUNCTION EndPoint(geometry)
-	RETURNS geometry
-	AS '@MODULE_FILENAME@', 'LWGEOM_endpoint_linestring'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
-
-CREATEFUNCTION IsClosed(geometry)
-	RETURNS boolean
-	AS '@MODULE_FILENAME@', 'LWGEOM_isclosed_linestring'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
-
-CREATEFUNCTION IsEmpty(geometry)
-	RETURNS boolean
-	AS '@MODULE_FILENAME@', 'LWGEOM_isempty'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
-
-CREATEFUNCTION SRID(geometry) 
-	RETURNS int4
-	AS '@MODULE_FILENAME@','LWGEOM_getSRID'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-	
-CREATEFUNCTION SetSRID(geometry,int4) 
-	RETURNS geometry
-	AS '@MODULE_FILENAME@','LWGEOM_setSRID'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);	
-	
-CREATEFUNCTION AsBinary(geometry)
-	RETURNS bytea
-	AS '@MODULE_FILENAME@','LWGEOM_asBinary'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION AsBinary(geometry,text)
-	RETURNS bytea
-	AS '@MODULE_FILENAME@','LWGEOM_asBinary'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION AsText(geometry)
-	RETURNS TEXT
-	AS '@MODULE_FILENAME@','LWGEOM_asText'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION GeometryFromText(text)
-        RETURNS geometry
-        AS '@MODULE_FILENAME@','LWGEOM_from_text'
-        LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION GeometryFromText(text, int4)
-        RETURNS geometry
-        AS '@MODULE_FILENAME@','LWGEOM_from_text'
-        LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION GeomFromText(text)
-	RETURNS geometry AS 'SELECT geometryfromtext($1)'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION GeomFromText(text, int4)
-	RETURNS geometry AS 'SELECT geometryfromtext($1, $2)'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION PointFromText(text)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromText($1)) = ''POINT''
-	THEN GeomFromText($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION PointFromText(text, int4)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromText($1, $2)) = ''POINT''
-	THEN GeomFromText($1,$2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION LineFromText(text)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromText($1)) = ''LINESTRING''
-	THEN GeomFromText($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION LineFromText(text, int4)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromText($1, $2)) = ''LINESTRING''
-	THEN GeomFromText($1,$2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION LineStringFromText(text)
-	RETURNS geometry
-	AS 'SELECT LineFromText($1)'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION LineStringFromText(text, int4)
-	RETURNS geometry
-	AS 'SELECT LineFromText($1, $2)'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION PolyFromText(text)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromText($1)) = ''POLYGON''
-	THEN GeomFromText($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION PolyFromText(text, int4)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromText($1, $2)) = ''POLYGON''
-	THEN GeomFromText($1,$2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION PolygonFromText(text, int4)
-	RETURNS geometry
-	AS 'SELECT PolyFromText($1, $2)'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION PolygonFromText(text)
-	RETURNS geometry
-	AS 'SELECT PolyFromText($1)'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION MLineFromText(text, int4)
-	RETURNS geometry
-	AS '
-	SELECT CASE
-	WHEN geometrytype(GeomFromText($1, $2)) = ''MULTILINESTRING''
-	THEN GeomFromText($1,$2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION MLineFromText(text)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromText($1)) = ''MULTILINESTRING''
-	THEN GeomFromText($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION MultiLineStringFromText(text)
-	RETURNS geometry
-	AS 'SELECT MLineFromText($1)'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION MultiLineStringFromText(text, int4)
-	RETURNS geometry
-	AS 'SELECT MLineFromText($1, $2)'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION MPointFromText(text, int4)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromText($1,$2)) = ''MULTIPOINT''
-	THEN GeomFromText($1,$2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION MPointFromText(text)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromText($1)) = ''MULTIPOINT''
-	THEN GeomFromText($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION MultiPointFromText(text, int4)
-	RETURNS geometry
-	AS 'SELECT MPointFromText($1, $2)'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION MultiPointFromText(text)
-	RETURNS geometry
-	AS 'SELECT MPointFromText($1)'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION MPolyFromText(text, int4)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromText($1, $2)) = ''MULTIPOLYGON''
-	THEN GeomFromText($1,$2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION MPolyFromText(text)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromText($1)) = ''MULTIPOLYGON''
-	THEN GeomFromText($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION MultiPolygonFromText(text, int4)
-	RETURNS geometry
-	AS 'SELECT MPolyFromText($1, $2)'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION MultiPolygonFromText(text)
-	RETURNS geometry
-	AS 'SELECT MPolyFromText($1)'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION GeomCollFromText(text, int4)
-	RETURNS geometry
-	AS '
-	SELECT CASE
-	WHEN geometrytype(GeomFromText($1, $2)) = ''GEOMETRYCOLLECTION''
-	THEN GeomFromText($1,$2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION GeomCollFromText(text)
-	RETURNS geometry
-	AS '
-	SELECT CASE
-	WHEN geometrytype(GeomFromText($1)) = ''GEOMETRYCOLLECTION''
-	THEN GeomFromText($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION GeomFromWKB(bytea)
-	RETURNS geometry
-	AS '@MODULE_FILENAME@','LWGEOM_from_WKB'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION GeomFromWKB(bytea, int)
-	RETURNS geometry
-	AS 'SELECT setSRID(GeomFromWKB($1), $2)'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION PointFromWKB(bytea, int)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''POINT''
-	THEN GeomFromWKB($1, $2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION PointFromWKB(bytea)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''POINT''
-	THEN GeomFromWKB($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION LineFromWKB(bytea, int)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''LINESTRING''
-	THEN GeomFromWKB($1, $2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION LineFromWKB(bytea)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''LINESTRING''
-	THEN GeomFromWKB($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION LinestringFromWKB(bytea, int)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''LINESTRING''
-	THEN GeomFromWKB($1, $2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION LinestringFromWKB(bytea)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''LINESTRING''
-	THEN GeomFromWKB($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION PolyFromWKB(bytea, int)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''POLYGON''
-	THEN GeomFromWKB($1, $2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION PolyFromWKB(bytea)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''POLYGON''
-	THEN GeomFromWKB($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION PolygonFromWKB(bytea, int)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1,$2)) = ''POLYGON''
-	THEN GeomFromWKB($1, $2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION PolygonFromWKB(bytea)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''POLYGON''
-	THEN GeomFromWKB($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION MPointFromWKB(bytea, int)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1,$2)) = ''MULTIPOINT''
-	THEN GeomFromWKB($1, $2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION MPointFromWKB(bytea)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''MULTIPOINT''
-	THEN GeomFromWKB($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION MultiPointFromWKB(bytea, int)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1,$2)) = ''MULTIPOINT''
-	THEN GeomFromWKB($1, $2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION MultiPointFromWKB(bytea)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''MULTIPOINT''
-	THEN GeomFromWKB($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION MultiLineFromWKB(bytea, int)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''MULTILINESTRING''
-	THEN GeomFromWKB($1, $2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION MultiLineFromWKB(bytea)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''MULTILINESTRING''
-	THEN GeomFromWKB($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION MLineFromWKB(bytea, int)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''MULTILINESTRING''
-	THEN GeomFromWKB($1, $2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION MLineFromWKB(bytea)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''MULTILINESTRING''
-	THEN GeomFromWKB($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION MPolyFromWKB(bytea, int)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''MULTIPOLYGON''
-	THEN GeomFromWKB($1, $2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION MPolyFromWKB(bytea)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''MULTIPOLYGON''
-	THEN GeomFromWKB($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION MultiPolyFromWKB(bytea, int)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''MULTIPOLYGON''
-	THEN GeomFromWKB($1, $2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION MultiPolyFromWKB(bytea)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''MULTIPOLYGON''
-	THEN GeomFromWKB($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION GeomCollFromWKB(bytea, int)
-	RETURNS geometry
-	AS '
-	SELECT CASE
-	WHEN geometrytype(GeomFromWKB($1, $2)) = ''GEOMETRYCOLLECTION''
-	THEN GeomFromWKB($1, $2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-CREATEFUNCTION GeomCollFromWKB(bytea)
-	RETURNS geometry
-	AS '
-	SELECT CASE
-	WHEN geometrytype(GeomFromWKB($1)) = ''GEOMETRYCOLLECTION''
-	THEN GeomFromWKB($1)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-------------------------------------------------------------------------
 -- Misures
 ------------------------------------------------------------------------
 
@@ -1844,6 +1305,11 @@ CREATEFUNCTION MakePolygon(geometry, geometry[])
 CREATEFUNCTION MakePolygon(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_makepoly'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
+
+CREATEFUNCTION BuildArea(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_buildarea'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
 CREATEFUNCTION polygonize_garray (geometry[])
@@ -3521,6 +2987,623 @@ CREATEFUNCTION AsGML(geometry)
 	RETURNS TEXT
 	AS '@MODULE_FILENAME@','LWGEOM_asGML'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+------------------------------------------------------------------------
+-- OGC defined
+------------------------------------------------------------------------
+
+CREATEFUNCTION NumPoints(geometry)
+	RETURNS int4
+	AS '@MODULE_FILENAME@', 'LWGEOM_numpoints_linestring'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+CREATEFUNCTION NumGeometries(geometry)
+	RETURNS int4
+	AS '@MODULE_FILENAME@', 'LWGEOM_numgeometries_collection'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+CREATEFUNCTION GeometryN(geometry,integer)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_geometryn_collection'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+CREATEFUNCTION Dimension(geometry)
+	RETURNS int4
+	AS '@MODULE_FILENAME@', 'LWGEOM_dimension'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+CREATEFUNCTION ExterioRring(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','LWGEOM_exteriorring_polygon'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+CREATEFUNCTION NumInteriorRings(geometry)
+	RETURNS integer
+	AS '@MODULE_FILENAME@','LWGEOM_numinteriorrings_polygon'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+CREATEFUNCTION InteriorRingN(geometry,integer)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','LWGEOM_interiorringn_polygon'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+CREATEFUNCTION GeometryType(geometry)
+	RETURNS text
+	AS '@MODULE_FILENAME@', 'LWGEOM_getTYPE'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+CREATEFUNCTION PointN(geometry,integer)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','LWGEOM_pointn_linestring'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+CREATEFUNCTION X(geometry)
+	RETURNS float8
+	AS '@MODULE_FILENAME@','LWGEOM_x_point'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+CREATEFUNCTION Y(geometry)
+	RETURNS float8
+	AS '@MODULE_FILENAME@','LWGEOM_y_point'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+CREATEFUNCTION Z(geometry)
+	RETURNS float8
+	AS '@MODULE_FILENAME@','LWGEOM_z_point'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+CREATEFUNCTION M(geometry)
+	RETURNS float8
+	AS '@MODULE_FILENAME@','LWGEOM_m_point'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+CREATEFUNCTION StartPoint(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_startpoint_linestring'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+CREATEFUNCTION EndPoint(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_endpoint_linestring'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+CREATEFUNCTION IsClosed(geometry)
+	RETURNS boolean
+	AS '@MODULE_FILENAME@', 'LWGEOM_isclosed_linestring'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+CREATEFUNCTION IsEmpty(geometry)
+	RETURNS boolean
+	AS '@MODULE_FILENAME@', 'LWGEOM_isempty'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+CREATEFUNCTION SRID(geometry) 
+	RETURNS int4
+	AS '@MODULE_FILENAME@','LWGEOM_getSRID'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+	
+CREATEFUNCTION SetSRID(geometry,int4) 
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','LWGEOM_setSRID'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);	
+	
+CREATEFUNCTION AsBinary(geometry)
+	RETURNS bytea
+	AS '@MODULE_FILENAME@','LWGEOM_asBinary'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION AsBinary(geometry,text)
+	RETURNS bytea
+	AS '@MODULE_FILENAME@','LWGEOM_asBinary'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION AsText(geometry)
+	RETURNS TEXT
+	AS '@MODULE_FILENAME@','LWGEOM_asText'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION GeometryFromText(text)
+        RETURNS geometry
+        AS '@MODULE_FILENAME@','LWGEOM_from_text'
+        LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION GeometryFromText(text, int4)
+        RETURNS geometry
+        AS '@MODULE_FILENAME@','LWGEOM_from_text'
+        LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION GeomFromText(text)
+	RETURNS geometry AS 'SELECT geometryfromtext($1)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION GeomFromText(text, int4)
+	RETURNS geometry AS 'SELECT geometryfromtext($1, $2)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION PointFromText(text)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromText($1)) = ''POINT''
+	THEN GeomFromText($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION PointFromText(text, int4)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromText($1, $2)) = ''POINT''
+	THEN GeomFromText($1,$2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION LineFromText(text)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromText($1)) = ''LINESTRING''
+	THEN GeomFromText($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION LineFromText(text, int4)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromText($1, $2)) = ''LINESTRING''
+	THEN GeomFromText($1,$2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION LineStringFromText(text)
+	RETURNS geometry
+	AS 'SELECT LineFromText($1)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION LineStringFromText(text, int4)
+	RETURNS geometry
+	AS 'SELECT LineFromText($1, $2)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION PolyFromText(text)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromText($1)) = ''POLYGON''
+	THEN GeomFromText($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION PolyFromText(text, int4)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromText($1, $2)) = ''POLYGON''
+	THEN GeomFromText($1,$2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION PolygonFromText(text, int4)
+	RETURNS geometry
+	AS 'SELECT PolyFromText($1, $2)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION PolygonFromText(text)
+	RETURNS geometry
+	AS 'SELECT PolyFromText($1)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION MLineFromText(text, int4)
+	RETURNS geometry
+	AS '
+	SELECT CASE
+	WHEN geometrytype(GeomFromText($1, $2)) = ''MULTILINESTRING''
+	THEN GeomFromText($1,$2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION MLineFromText(text)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromText($1)) = ''MULTILINESTRING''
+	THEN GeomFromText($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION MultiLineStringFromText(text)
+	RETURNS geometry
+	AS 'SELECT MLineFromText($1)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION MultiLineStringFromText(text, int4)
+	RETURNS geometry
+	AS 'SELECT MLineFromText($1, $2)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION MPointFromText(text, int4)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromText($1,$2)) = ''MULTIPOINT''
+	THEN GeomFromText($1,$2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION MPointFromText(text)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromText($1)) = ''MULTIPOINT''
+	THEN GeomFromText($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION MultiPointFromText(text, int4)
+	RETURNS geometry
+	AS 'SELECT MPointFromText($1, $2)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION MultiPointFromText(text)
+	RETURNS geometry
+	AS 'SELECT MPointFromText($1)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION MPolyFromText(text, int4)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromText($1, $2)) = ''MULTIPOLYGON''
+	THEN GeomFromText($1,$2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION MPolyFromText(text)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromText($1)) = ''MULTIPOLYGON''
+	THEN GeomFromText($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION MultiPolygonFromText(text, int4)
+	RETURNS geometry
+	AS 'SELECT MPolyFromText($1, $2)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION MultiPolygonFromText(text)
+	RETURNS geometry
+	AS 'SELECT MPolyFromText($1)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION GeomCollFromText(text, int4)
+	RETURNS geometry
+	AS '
+	SELECT CASE
+	WHEN geometrytype(GeomFromText($1, $2)) = ''GEOMETRYCOLLECTION''
+	THEN GeomFromText($1,$2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION GeomCollFromText(text)
+	RETURNS geometry
+	AS '
+	SELECT CASE
+	WHEN geometrytype(GeomFromText($1)) = ''GEOMETRYCOLLECTION''
+	THEN GeomFromText($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION GeomFromWKB(bytea)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','LWGEOM_from_WKB'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION GeomFromWKB(bytea, int)
+	RETURNS geometry
+	AS 'SELECT setSRID(GeomFromWKB($1), $2)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION PointFromWKB(bytea, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''POINT''
+	THEN GeomFromWKB($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION PointFromWKB(bytea)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''POINT''
+	THEN GeomFromWKB($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION LineFromWKB(bytea, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''LINESTRING''
+	THEN GeomFromWKB($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION LineFromWKB(bytea)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''LINESTRING''
+	THEN GeomFromWKB($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION LinestringFromWKB(bytea, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''LINESTRING''
+	THEN GeomFromWKB($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION LinestringFromWKB(bytea)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''LINESTRING''
+	THEN GeomFromWKB($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION PolyFromWKB(bytea, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''POLYGON''
+	THEN GeomFromWKB($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION PolyFromWKB(bytea)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''POLYGON''
+	THEN GeomFromWKB($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION PolygonFromWKB(bytea, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1,$2)) = ''POLYGON''
+	THEN GeomFromWKB($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION PolygonFromWKB(bytea)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''POLYGON''
+	THEN GeomFromWKB($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION MPointFromWKB(bytea, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1,$2)) = ''MULTIPOINT''
+	THEN GeomFromWKB($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION MPointFromWKB(bytea)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''MULTIPOINT''
+	THEN GeomFromWKB($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION MultiPointFromWKB(bytea, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1,$2)) = ''MULTIPOINT''
+	THEN GeomFromWKB($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION MultiPointFromWKB(bytea)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''MULTIPOINT''
+	THEN GeomFromWKB($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION MultiLineFromWKB(bytea, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''MULTILINESTRING''
+	THEN GeomFromWKB($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION MultiLineFromWKB(bytea)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''MULTILINESTRING''
+	THEN GeomFromWKB($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION MLineFromWKB(bytea, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''MULTILINESTRING''
+	THEN GeomFromWKB($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION MLineFromWKB(bytea)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''MULTILINESTRING''
+	THEN GeomFromWKB($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION MPolyFromWKB(bytea, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''MULTIPOLYGON''
+	THEN GeomFromWKB($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION MPolyFromWKB(bytea)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''MULTIPOLYGON''
+	THEN GeomFromWKB($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION MultiPolyFromWKB(bytea, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''MULTIPOLYGON''
+	THEN GeomFromWKB($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION MultiPolyFromWKB(bytea)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''MULTIPOLYGON''
+	THEN GeomFromWKB($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION GeomCollFromWKB(bytea, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE
+	WHEN geometrytype(GeomFromWKB($1, $2)) = ''GEOMETRYCOLLECTION''
+	THEN GeomFromWKB($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION GeomCollFromWKB(bytea)
+	RETURNS geometry
+	AS '
+	SELECT CASE
+	WHEN geometrytype(GeomFromWKB($1)) = ''GEOMETRYCOLLECTION''
+	THEN GeomFromWKB($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+--
+-- SFSQL 1.1
+--
+-- BdPolyFromText(multiLineStringTaggedText String, SRID Integer): Polygon
+--
+--  Construct a Polygon given an arbitrary
+--  collection of closed linestrings as a
+--  MultiLineString text representation.
+--
+-- This is a PLPGSQL function rather then an SQL function
+-- To avoid double call of BuildArea (one to get GeometryType
+-- and another to actual return, in a CASE WHEN construct).
+-- Also, we profit from plpgsql to RAISE exceptions.
+--
+CREATE OR REPLACE FUNCTION BdPolyFromText(text, integer)
+RETURNS geometry
+AS '
+DECLARE
+	geomtext alias for $1;
+	srid alias for $2;
+	mline geometry;
+	geom geometry;
+BEGIN
+	mline := MultiLineStringFromText(geomtext, srid);
+
+	IF mline IS NULL
+	THEN
+		RAISE EXCEPTION ''Input is not a MultiLinestring'';
+	END IF;
+
+	geom := BuildArea(mline);
+
+	IF GeometryType(geom) != ''POLYGON''
+	THEN
+		RAISE EXCEPTION ''Input returns more then a single polygon, try using BdMPolyFromText instead'';
+	END IF;
+
+	RETURN geom;
+END;
+'
+LANGUAGE 'plpgsql' IMMUTABLE STRICT; 
+
+--
+-- SFSQL 1.1
+--
+-- BdMPolyFromText(multiLineStringTaggedText String, SRID Integer): MultiPolygon
+--
+--  Construct a MultiPolygon given an arbitrary
+--  collection of closed linestrings as a
+--  MultiLineString text representation.
+--
+-- This is a PLPGSQL function rather then an SQL function
+-- To raise an exception in case of invalid input.
+--
+CREATEFUNCTION BdMPolyFromText(text, integer)
+RETURNS geometry
+AS '
+DECLARE
+	geomtext alias for $1;
+	srid alias for $2;
+	mline geometry;
+	geom geometry;
+BEGIN
+	mline := MultiLineStringFromText(geomtext, srid);
+
+	IF mline IS NULL
+	THEN
+		RAISE EXCEPTION ''Input is not a MultiLinestring'';
+	END IF;
+
+	geom := multi(BuildArea(mline));
+
+	RETURN geom;
+END;
+'
+LANGUAGE 'plpgsql' IMMUTABLE STRICT; 
+
 
 ---------------------------------------------------------------
 -- END

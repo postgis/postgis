@@ -156,8 +156,16 @@ extern "C" char GEOSequals(Geometry *g1, Geometry*g2);
 extern "C" char GEOSisRing(Geometry *g1);
 extern "C" Geometry *GEOSpointonSurface(Geometry *g1);
 extern "C" Geometry *GEOSGetCentroid(Geometry *g1, int *failure);
-extern "C" void NOTICE_MESSAGE(char *msg);
+extern "C" void NOTICE_MESSAGE(const char *msg);
 extern "C" bool GEOSHasZ(Geometry *g1);
+
+/*
+ * Returned Polygon will takes ownership of all args
+ * Taken from GEOS CAPI
+ */
+extern "C" Geometry *GEOSCreatePolygon(Geometry *shell, Geometry **holes, 
+	unsigned int nholes);
+extern "C" Geometry *GEOSCloneGeometry(const Geometry *g);
 
 //###########################################################
 #if GEOS_LAST_INTERFACE < 2
@@ -210,7 +218,7 @@ Geometry *PostGIS2GEOS_box3d(BOX3D *box, int SRID)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete cl;
 		return NULL;
 	}
@@ -260,7 +268,7 @@ Geometry *PostGIS2GEOS_point(const LWPOINT *lwpoint)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return NULL;
 	}
@@ -345,7 +353,7 @@ PostGIS2GEOS_linestring(const LWLINE *lwline)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return NULL;
 	}
@@ -498,7 +506,7 @@ Geometry *PostGIS2GEOS_polygon(const LWPOLY *lwpoly)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return NULL;
 	}
@@ -535,7 +543,7 @@ Geometry *PostGIS2GEOS_multipoint(LWPOINT **geoms, uint32 ngeoms, int SRID, bool
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return NULL;
 	}
@@ -572,7 +580,7 @@ Geometry *PostGIS2GEOS_multilinestring(LWLINE **geoms, uint32 ngeoms, int SRID, 
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return NULL;
 	}
@@ -609,7 +617,7 @@ Geometry *PostGIS2GEOS_multipolygon(LWPOLY **polygons, uint32 npolys, int SRID, 
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return NULL;
 	}
@@ -669,7 +677,7 @@ Geometry *PostGIS2GEOS_collection(int type, Geometry **geoms, int ngeoms, int SR
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return NULL;
 	}
@@ -695,7 +703,7 @@ char GEOSrelateDisjoint(Geometry *g1, Geometry*g2)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return 2;
 	}
@@ -714,7 +722,7 @@ char GEOSrelateTouches(Geometry *g1, Geometry*g2)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return 2;
 	}
@@ -734,7 +742,7 @@ char GEOSrelateIntersects(Geometry *g1, Geometry*g2)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return 2;
 	}
@@ -754,7 +762,7 @@ char GEOSrelateCrosses(Geometry *g1, Geometry*g2)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return 2;
 	}
@@ -774,7 +782,7 @@ char GEOSrelateWithin(Geometry *g1, Geometry*g2)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return 2;
 	}
@@ -798,7 +806,7 @@ char GEOSrelateContains(Geometry *g1, Geometry*g2)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return 2;
 	}
@@ -818,7 +826,7 @@ char GEOSrelateOverlaps(Geometry *g1, Geometry*g2)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return 2;
 	}
@@ -844,7 +852,7 @@ char GEOSrelatePattern(Geometry *g1, Geometry*g2,char *pat)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return 2;
 	}
@@ -876,7 +884,7 @@ char *GEOSrelate(Geometry *g1, Geometry*g2)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return NULL;
 	}
@@ -908,7 +916,7 @@ char GEOSisvalid(Geometry *g1)
 			TopologyValidationError *err = ivo.getValidationError();
 			if ( err ) {
 				string errmsg = err->getMessage();
-				NOTICE_MESSAGE((char *)errmsg.c_str());
+				NOTICE_MESSAGE(errmsg.c_str());
 			}
 		}
 #else // GEOS_INTERFACE 3 not supported
@@ -918,7 +926,7 @@ char GEOSisvalid(Geometry *g1)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return 2;
 	}
@@ -944,7 +952,7 @@ char GEOSequals(Geometry *g1, Geometry*g2)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return 2;
 	}
@@ -971,7 +979,7 @@ char *GEOSasText(Geometry *g1)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return NULL;
 	}
@@ -990,7 +998,7 @@ char GEOSisEmpty(Geometry *g1)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return 2;
 	}
@@ -1009,7 +1017,7 @@ char GEOSisSimple(Geometry *g1)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return 2;
 	}
@@ -1028,7 +1036,7 @@ char GEOSisRing(Geometry *g1)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return 2;
 	}
@@ -1056,7 +1064,7 @@ char *GEOSGeometryType(Geometry *g1)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return NULL;
 	}
@@ -1098,7 +1106,7 @@ int GEOSGeometryTypeId(Geometry *g1)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return -1;
 	}
@@ -1125,7 +1133,7 @@ Geometry *GEOSIntersection(Geometry *g1,Geometry *g2)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return NULL;
 	}
@@ -1146,7 +1154,7 @@ GEOSBuffer(Geometry *g1, double width, int quadrantsegments)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return NULL;
 	}
@@ -1166,7 +1174,7 @@ Geometry *GEOSConvexHull(Geometry *g1)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return NULL;
 	}
@@ -1186,7 +1194,7 @@ Geometry *GEOSDifference(Geometry *g1,Geometry *g2)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return NULL;
 	}
@@ -1206,7 +1214,7 @@ Geometry *GEOSBoundary(Geometry *g1)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return NULL;
 	}
@@ -1226,7 +1234,7 @@ Geometry *GEOSSymDifference(Geometry *g1,Geometry *g2)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return NULL;
 	}
@@ -1246,7 +1254,7 @@ Geometry *GEOSUnion(Geometry *g1,Geometry *g2)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return NULL;
 	}
@@ -1266,7 +1274,7 @@ Geometry *GEOSpointonSurface(Geometry *g1)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return NULL;
 	}
@@ -1295,7 +1303,7 @@ GEOSdeleteGeometry(Geometry *a)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		//return NULL;
 	}
@@ -1319,7 +1327,7 @@ void GEOSdeleteChar(char *a)
 	}
 	catch (GEOSException *ge) // ???
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		//return NULL;
 	}
@@ -1351,7 +1359,7 @@ POINT3D  *GEOSGetCoordinate(Geometry *g1)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return NULL;
 	}
@@ -1394,7 +1402,7 @@ POINT3D  *GEOSGetCoordinates(Geometry *g1)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return NULL;
 	}
@@ -1455,7 +1463,7 @@ POINT3D  *GEOSGetCoordinates_Polygon(Polygon *g1)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return NULL;
 	}
@@ -1477,7 +1485,7 @@ int      GEOSGetNumCoordinate(Geometry *g1)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return 0;
 	}
@@ -1496,7 +1504,7 @@ int      GEOSGetNumInteriorRings(Geometry *g1)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return 0;
 	}
@@ -1517,7 +1525,7 @@ int      GEOSGetNumGeometries(Geometry *g1)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return 0;
 	}
@@ -1538,7 +1546,7 @@ const Geometry *GEOSGetGeometryN(Geometry *g1, int n)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return NULL;
 	}
@@ -1559,7 +1567,7 @@ const Geometry *GEOSGetExteriorRing(Geometry *g1)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return 0;
 	}
@@ -1579,7 +1587,7 @@ const Geometry *GEOSGetInteriorRingN(Geometry *g1,int n)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return NULL;
 	}
@@ -1600,7 +1608,7 @@ Geometry *GEOSGetCentroid(Geometry *g, int *failure)
 	catch (GEOSException *ge)
 	{
 		*failure = 1;
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return NULL;
 	}
@@ -1652,7 +1660,7 @@ Geometry *GEOSpolygonize(Geometry **g, unsigned int ngeoms)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return NULL;
 	}
@@ -1690,7 +1698,7 @@ GEOSLineMerge(Geometry *g)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return NULL;
 	}
@@ -1722,7 +1730,7 @@ int      GEOSGetSRID(Geometry *g1)
 	}
 	catch (GEOSException *ge)
 	{
-		NOTICE_MESSAGE((char *)ge->toString().c_str());
+		NOTICE_MESSAGE(ge->toString().c_str());
 		delete ge;
 		return 0;
 	}
@@ -1775,4 +1783,76 @@ GEOSHasZ(Geometry *g)
 	//sprintf(msg, "ZCoord: %g", az);
 	//NOTICE_MESSAGE(msg);
 	return (finite(az) && az != DoubleNotANumber);
+}
+
+
+/*
+ * Returned Polygon will takes ownership of all args
+ * Taken from GEOS CAPI
+ */
+Geometry *
+GEOSCreatePolygon(Geometry *shell, Geometry **holes, 
+	unsigned int nholes)
+{
+	try
+	{
+		vector<Geometry *> *vholes=new vector<Geometry *>(holes, holes+nholes);
+		LinearRing *nshell = dynamic_cast<LinearRing *>(shell);
+		if ( ! nshell )
+		{
+			NOTICE_MESSAGE("Shell is not LinearRing");
+			return NULL;
+		}
+		return geomFactory->createPolygon(nshell, vholes);
+	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE(ge->toString().c_str());
+		delete ge;
+		return NULL;
+	}
+	catch (std::exception &e)
+	{
+		NOTICE_MESSAGE(e.what());
+		return NULL;
+	}
+
+	catch (...)
+	{
+		NOTICE_MESSAGE("Unknown exception thrown");
+		return NULL;
+	}
+}
+
+Geometry *
+GEOSCloneGeometry(const Geometry *g)
+{
+	try { 
+		/*
+		 * GEOS up to 2.2.1 did not properly cloned
+		 * LinearRing objects, so we handle it here
+		 */
+		if ( typeid(*g) == typeid(LinearRing) )
+		{
+			return new LinearRing((LinearRing&)*g);
+		}
+		return g->clone();
+	}
+	catch (GEOSException *ge)
+	{
+		NOTICE_MESSAGE(ge->toString().c_str());
+		delete ge;
+		return NULL;
+	}
+	catch (std::exception &e)
+	{
+		NOTICE_MESSAGE(e.what());
+		return NULL;
+	}
+
+	catch (...)
+	{
+		NOTICE_MESSAGE("Unknown exception thrown");
+		return NULL;
+	}
 }

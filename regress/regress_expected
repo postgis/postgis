@@ -128,7 +128,7 @@ ERROR:  parse error - invalid geometry
 128|f
 129|34009|34009
 NOTICE:  IllegalArgumentException: Number of points must be 0 or >3
-ERROR:  LWGEOM2GEOS: exception during polygon shell conversion
+ERROR:  POSTGIS2GEOS conversion failed
 131|1
 132|2
 133|

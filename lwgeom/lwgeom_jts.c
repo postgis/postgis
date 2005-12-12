@@ -35,6 +35,8 @@ Datum JTSnoop(PG_FUNCTION_ARGS);
 Datum postgis_geos_version(PG_FUNCTION_ARGS);
 Datum centroid(PG_FUNCTION_ARGS);
 Datum polygonize_garray(PG_FUNCTION_ARGS);
+Datum polygonize_garray(PG_FUNCTION_ARGS);
+Datum LWGEOM_buildarea(PG_FUNCTION_ARGS);
 Datum linemerge(PG_FUNCTION_ARGS);
 
 
@@ -2775,3 +2777,9 @@ Datum postgis_jts_version(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
+PG_FUNCTION_INFO_V1(LWGEOM_buildarea);
+Datum LWGEOM_buildarea(PG_FUNCTION_ARGS)
+{
+	elog(ERROR,"BuildArea: operation not implemented in JTS wrapper - compile PostGIS with GEOS support");
+	PG_RETURN_NULL(); // never get here
+}

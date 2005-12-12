@@ -228,3 +228,11 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 	elog(ERROR,"GEOSnoop:: operation not implemented - compile PostGIS with GEOS support");
 	PG_RETURN_NULL(); // never get here
 }
+
+Datum LWGEOM_buildarea(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(LWGEOM_buildarea);
+Datum LWGEOM_buildarea(PG_FUNCTION_ARGS)
+{
+	elog(ERROR,"BuildArea: operation not implemented - compile PostGIS with JTS or GEOS support");
+	PG_RETURN_NULL(); // never get here
+}

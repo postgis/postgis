@@ -9,6 +9,17 @@
 #include "wktparse.h"
 #include "geos_c.h"
 
+/*
+ * Define this to have have many notices printed
+ * during postgis->geos and geos->postgis conversions
+ */
+//#define PGIS_DEBUG_CONVERTER 1
+#ifdef PGIS_DEBUG_CONVERTER
+#define PGIS_DEBUG_POSTGIS2GEOS 1
+#define PGIS_DEBUG_GEOS2POSTGIS 1
+#endif // PGIS_DEBUG_CONVERTER
+//#define PGIS_DEBUG 1
+
 //#define WKB_CONVERSION 1
 
 //
@@ -51,20 +62,9 @@ Datum postgis_geos_version(PG_FUNCTION_ARGS);
 Datum postgis_jts_version(PG_FUNCTION_ARGS);
 Datum centroid(PG_FUNCTION_ARGS);
 Datum polygonize_garray(PG_FUNCTION_ARGS);
+Datum LWGEOM_buildarea(PG_FUNCTION_ARGS);
 Datum linemerge(PG_FUNCTION_ARGS);
 
-
-
-/*
- * Define this to have have many notices printed
- * during postgis->geos and geos->postgis conversions
- */
-//#define PGIS_DEBUG_CONVERTER 1
-#ifdef PGIS_DEBUG_CONVERTER
-#define PGIS_DEBUG_POSTGIS2GEOS 1
-#define PGIS_DEBUG_GEOS2POSTGIS 1
-#endif // PGIS_DEBUG_CONVERTER
-//#define PGIS_DEBUG 1
 
 LWGEOM *GEOS2LWGEOM(GEOSGeom geom, char want3d);
 PG_LWGEOM *GEOS2POSTGIS(GEOSGeom geom, char want3d);
@@ -149,7 +149,7 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 #endif
 
 		// Check is3d flag
-		if ( TYPE_NDIMS(geom->type) > 2 ) is3d = 1;
+		if ( TYPE_HASZ(geom->type) ) is3d = 1;
 
 		// Check SRID homogeneity and initialize geos result
 		if ( ! i )
@@ -263,7 +263,7 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 		offset += INTALIGN(geom->size);
 
 		// Check is3d flag
-		if ( TYPE_NDIMS(geom->type) > 2 ) is3d = 1;
+		if ( TYPE_HASZ(geom->type) ) is3d = 1;
 
 		// Check SRID homogeneity 
 		if ( ! i ) SRID = pglwgeom_getSRID(geom);
@@ -354,8 +354,8 @@ Datum geomunion(PG_FUNCTION_ARGS)
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
-	is3d = ( TYPE_NDIMS(geom1->type) > 2 ) ||
-		( TYPE_NDIMS(geom2->type) > 2 );
+	is3d = ( TYPE_HASZ(geom1->type) ) ||
+		( TYPE_HASZ(geom2->type) );
 
 	SRID = pglwgeom_getSRID(geom1);
 	errorIfSRIDMismatch(SRID, pglwgeom_getSRID(geom2));
@@ -452,8 +452,8 @@ Datum symdifference(PG_FUNCTION_ARGS)
 	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
-	is3d = ( TYPE_NDIMS(geom1->type) > 2 ) ||
-		( TYPE_NDIMS(geom2->type) > 2 );
+	is3d = ( TYPE_HASZ(geom1->type) ) ||
+		( TYPE_HASZ(geom2->type) );
 
 	SRID = pglwgeom_getSRID(geom1);
 	errorIfSRIDMismatch(SRID, pglwgeom_getSRID(geom2));
@@ -578,7 +578,7 @@ Datum boundary(PG_FUNCTION_ARGS)
 #ifdef PROFILE
 	profstart(PROF_G2P);
 #endif
-	result = GEOS2POSTGIS(g3, TYPE_NDIMS(geom1->type) > 2);
+	result = GEOS2POSTGIS(g3, TYPE_HASZ(geom1->type));
 #ifdef PROFILE
 	profstart(PROF_P2G1);
 #endif
@@ -658,7 +658,7 @@ Datum convexhull(PG_FUNCTION_ARGS)
 #ifdef PROFILE
 	profstart(PROF_G2P);
 #endif
-	lwout = GEOS2LWGEOM(g3, TYPE_NDIMS(geom1->type) > 2);
+	lwout = GEOS2LWGEOM(g3, TYPE_HASZ(geom1->type));
 #ifdef PROFILE
 	profstop(PROF_G2P);
 #endif
@@ -752,7 +752,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 #ifdef PROFILE
 	profstart(PROF_G2P);
 #endif
-	result = GEOS2POSTGIS(g3, TYPE_NDIMS(geom1->type) > 2);
+	result = GEOS2POSTGIS(g3, TYPE_HASZ(geom1->type));
 #ifdef PROFILE
 	profstop(PROF_G2P);
 #endif
@@ -796,8 +796,8 @@ Datum intersection(PG_FUNCTION_ARGS)
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
-	is3d = ( TYPE_NDIMS(geom1->type) > 2 ) ||
-		( TYPE_NDIMS(geom2->type) > 2 );
+	is3d = ( TYPE_HASZ(geom1->type) ) ||
+		( TYPE_HASZ(geom2->type) );
 
 	SRID = pglwgeom_getSRID(geom1);
 	errorIfSRIDMismatch(SRID, pglwgeom_getSRID(geom2));
@@ -912,8 +912,8 @@ Datum difference(PG_FUNCTION_ARGS)
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
-	is3d = ( TYPE_NDIMS(geom1->type) > 2 ) ||
-		( TYPE_NDIMS(geom2->type) > 2 );
+	is3d = ( TYPE_HASZ(geom1->type) ) ||
+		( TYPE_HASZ(geom2->type) );
 
 	SRID = pglwgeom_getSRID(geom1);
 	errorIfSRIDMismatch(SRID, pglwgeom_getSRID(geom2));
@@ -1034,7 +1034,7 @@ Datum pointonsurface(PG_FUNCTION_ARGS)
 #ifdef PROFILE
 	profstart(PROF_G2P);
 #endif
-	result = GEOS2POSTGIS(g3, (TYPE_NDIMS(geom1->type) > 2));
+	result = GEOS2POSTGIS(g3, TYPE_HASZ(geom1->type));
 #ifdef PROFILE
 	profstop(PROF_G2P);
 #endif
@@ -1104,7 +1104,7 @@ Datum centroid(PG_FUNCTION_ARGS)
 #ifdef PROFILE
 	profstart(PROF_G2P);
 #endif
-	result = GEOS2POSTGIS(geosresult, (TYPE_NDIMS(geom->type) > 2));
+	result = GEOS2POSTGIS(geosresult, TYPE_HASZ(geom->type));
 #ifdef PROFILE
 	profstop(PROF_G2P);
 #endif
@@ -2465,19 +2465,19 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 			lwpoly = (LWPOLY *)lwgeom;
 			sq = ptarray_to_GEOSCoordSeq(lwpoly->rings[0]);
 			shell = GEOSGeom_createLinearRing(sq);
-	if ( ! shell )
-	lwerror("LWGEOM2GEOS: exception during polygon shell conversion");
+	if ( ! shell ) return NULL;
+	//lwerror("LWGEOM2GEOS: exception during polygon shell conversion");
 			ngeoms = lwpoly->nrings-1;
 			geoms = malloc(sizeof(GEOSGeom)*ngeoms);
 			for (i=1; i<lwpoly->nrings; ++i)
 			{
 				sq = ptarray_to_GEOSCoordSeq(lwpoly->rings[i]);
 				geoms[i-1] = GEOSGeom_createLinearRing(sq);
-	if ( ! geoms[i-1] )
-	lwerror("LWGEOM2GEOS: exception during polygon hole conversion");
+	if ( ! geoms[i-1] ) return NULL;
+	//lwerror("LWGEOM2GEOS: exception during polygon hole conversion");
 			}
 			g = GEOSGeom_createPolygon(shell, geoms, ngeoms);
-			if ( ! g ) lwerror("Exception in LWGEOM2GEOS");
+			if ( ! g ) return NULL;
 			free(geoms);
 			break;
 		case MULTIPOINTTYPE:
@@ -2500,9 +2500,10 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 			for (i=0; i<ngeoms; ++i)
 			{
 				geoms[i] = LWGEOM2GEOS(lwc->geoms[i]);
+				if ( ! geoms[i] ) return NULL;
 			}
 			g = GEOSGeom_createCollection(geostype, geoms, ngeoms);
-			if ( ! g ) lwerror("Exception in LWGEOM2GEOS");
+			if ( ! g ) return NULL;
 			free(geoms);
 			break;
 
@@ -2565,7 +2566,7 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 	profstop(PROF_GRUN);
 #endif
 
-	result = GEOS2POSTGIS(geosgeom, TYPE_NDIMS(geom->type) > 2);
+	result = GEOS2POSTGIS(geosgeom, TYPE_HASZ(geom->type));
 	GEOSGeom_destroy(geosgeom);
 
 #ifdef PGIS_DEBUG_CONVERTER
@@ -2711,7 +2712,7 @@ Datum linemerge(PG_FUNCTION_ARGS)
 #ifdef PROFILE
 	profstart(PROF_G2P);
 #endif
-	result = GEOS2POSTGIS(g3, TYPE_NDIMS(geom1->type) > 2);
+	result = GEOS2POSTGIS(g3, TYPE_HASZ(geom1->type));
 #ifdef PROFILE
 	profstop(PROF_G2P);
 #endif
@@ -2750,4 +2751,158 @@ PG_FUNCTION_INFO_V1(postgis_jts_version);
 Datum postgis_jts_version(PG_FUNCTION_ARGS)
 {
 	PG_RETURN_NULL();
+}
+
+/*
+ * Take a geometry and return an areal geometry
+ * (Polygon or MultiPolygon).
+ * Actually a wrapper around GEOSpolygonize, 
+ * transforming the resulting collection into
+ * a valid polygonzl Geometry.
+ */
+PG_FUNCTION_INFO_V1(LWGEOM_buildarea);
+Datum LWGEOM_buildarea(PG_FUNCTION_ARGS)
+{
+	int is3d = 0;
+	unsigned int i, ngeoms;
+	PG_LWGEOM *result;
+	LWGEOM *lwg;
+	GEOSGeom geos_result, shp;
+	GEOSGeom vgeoms[1];
+	int SRID=-1;
+#ifdef PGIS_DEBUG
+	static int call=1;
+#endif
+
+#ifdef PGIS_DEBUG
+	call++;
+#endif
+
+	//lwnotice("buildarea called");
+
+	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	SRID = pglwgeom_getSRID(geom);
+	is3d = TYPE_HASZ(geom->type);
+
+#ifdef PGIS_DEBUG
+	lwnotice("LWGEOM_buildarea got geom @ %x", geom);
+#endif
+
+	initGEOS(lwnotice, lwnotice);
+
+	vgeoms[0] = POSTGIS2GEOS(geom);
+	geos_result = GEOSPolygonize(vgeoms, 1);
+	GEOSGeom_destroy(vgeoms[0]);
+
+#ifdef PGIS_DEBUG
+	lwnotice("GEOSpolygonize returned @ %x", geos_result);
+#endif
+
+	/* Null return from GEOSpolygonize */
+	if ( ! geos_result ) PG_RETURN_NULL();
+
+	/*
+	 * We should now have a collection
+	 */
+#if PARANOIA_LEVEL > 0
+	if ( GEOSGeometryTypeId(geos_result) != COLLECTIONTYPE )
+	{
+		GEOSGeom_destroy(geos_result);
+		lwerror("Unexpected return from GEOSpolygonize");
+		PG_RETURN_NULL();
+	}
+#endif
+
+	ngeoms = GEOSGetNumGeometries(geos_result);
+
+#ifdef PGIS_DEBUG
+	lwnotice("GEOSpolygonize: ngeoms in polygonize output: %d", ngeoms);
+#endif
+
+	/*
+	 * No geometries in collection, return NULL
+	 */
+	if ( ngeoms == 0 ) 
+	{
+		GEOSGeom_destroy(geos_result);
+		PG_RETURN_NULL();
+	}
+
+	/*
+	 * Return first geometry if we only have one in collection,
+	 * to avoid the unnecessary Geometry clone below.
+	 */
+	if ( ngeoms == 1 )
+	{
+		shp = GEOSGetGeometryN(geos_result, 0);
+		lwg = GEOS2LWGEOM(shp, is3d);
+		lwg->SRID = SRID;
+		result = pglwgeom_serialize(lwg);
+		lwgeom_release(lwg);
+		GEOSGeom_destroy(geos_result);
+		PG_RETURN_POINTER(result);
+	}
+
+	/* 
+	 * Iteratively invoke symdifference on outer rings
+	 * as suggested by Carl Anderson:
+	 * postgis-devel/2005-December/001805.html
+	 */
+	shp = NULL;
+	for (i=0; i<ngeoms; ++i)
+	{
+		GEOSGeom extring, tmp;
+		GEOSCoordSeq sq;
+
+		/*
+		 * Construct a Polygon from geometry i exterior ring
+		 * We don't use GEOSGeom_clone on the ExteriorRing
+		 * due to a bug in CAPI contained in GEOS 2.2 branch
+		 * failing to properly return a LinearRing from
+		 * a LinearRing clone.
+		 */
+		sq=GEOSCoordSeq_clone(GEOSGeom_getCoordSeq(
+			GEOSGetExteriorRing(GEOSGetGeometryN( geos_result, i))
+			));
+		extring = GEOSGeom_createPolygon(
+				GEOSGeom_createLinearRing(sq),
+				NULL, 0
+				);
+
+		if ( extring == NULL ) // exception
+		{
+			lwerror("GEOSCreatePolygon threw an exception");
+			PG_RETURN_NULL();
+		}
+
+		if ( shp == NULL )
+		{
+			shp = extring;
+		}
+		else
+		{
+			tmp = GEOSSymDifference(shp, extring);
+			GEOSGeom_destroy(shp);
+			GEOSGeom_destroy(extring);
+			shp = tmp;
+		}
+	}
+
+	GEOSGeom_destroy(geos_result);
+
+	GEOSSetSRID(shp, SRID);
+	result = GEOS2POSTGIS(shp, is3d);
+	GEOSGeom_destroy(shp);
+
+#if PARANOIA_LEVEL > 0
+	if ( result == NULL )
+	{
+		lwerror("serialization error");
+		PG_RETURN_NULL(); //never get here
+	}
+
+#endif
+
+	PG_RETURN_POINTER(result);
+
 }

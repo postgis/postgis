@@ -3873,6 +3873,62 @@ dimension
               <para>throws an error if WKB is not a GEOMETRYCOLLECTION</para>
             </listitem>
           </varlistentry>
+
+          <varlistentry id="BdPolyFromText">
+            <term>BdPolyFromText(text WKT, integer SRID)</term>
+
+            <listitem>
+		<para>
+		Construct a Polygon given an arbitrary
+		collection of closed linestrings as a
+		MultiLineString text representation.
+		</para>
+
+		<para>
+	      Throws an error if WKT is not a MULTILINESTRING.
+	      Throws an error if output is a MULTIPOLYGON; use <link
+	      linkend="BdMPolyFromText">BdMPolyFromText</link> in
+	      that case, or see 
+		<link linkend="BuildArea">BuildArea()</link>
+		for a postgis-specific approach.
+		</para>
+
+              <para>OGC SFSQL 1.1 - 3.2.6.2</para>
+
+		<para>
+		    Availability: 1.1.0 - requires GEOS >= 2.1.0.
+		</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry id="BdMPolyFromText">
+            <term>BdMPolyFromText(text WKT, integer SRID)</term>
+
+            <listitem>
+		<para>
+		Construct a MultiPolygon given an arbitrary
+		collection of closed linestrings as a
+		MultiLineString text representation.
+		</para>
+		<para>
+                Throws an error if WKT is not a MULTILINESTRING.
+		Forces MULTIPOLYGON output even when result is really
+		only composed by a single POLYGON; use <link
+		linkend="BdPolyFromText">BdPolyFromText</link> if you're sure
+		a single POLYGON will result from
+		operation, or see
+		<link linkend="BuildArea">BuildArea()</link>
+		for a postgis-specific approach.
+		</para>
+
+              <para>OGC SFSQL 1.1 - 3.2.6.2</para>
+
+		<para>
+		    Availability: 1.1.0 - requires GEOS >= 2.1.0.
+		</para>
+            </listitem>
+          </varlistentry>
+
         </variablelist>
       </sect2>
     </sect1>
@@ -4446,6 +4502,26 @@ FROM geometry_table;</literallayout>
 		    a geometry array using <link linkend="Accum">Accum</link>.
 		    Input geometries must be closed LINESTRINGS (see <link linkend="IsClosed">IsClosed</link> and <link linkend="GeometryType">GeometryType</link>).
 		    </para>
+		  </listitem>
+		</varlistentry>
+
+		<varlistentry id="BuildArea">
+		  <term>BuildArea(geometry)</term>
+		  <listitem>
+		    <para>Creates an areal geometry formed by the costituent
+		    linework of given geometry. The return type can
+		    be a Polygon or MultiPolygon, depending on input.
+		    If the input lineworks do not form polygons NULL is
+		    returned.
+		    </para>
+
+		    <para>
+		    See also <link linkend="BdPolyFromText">BdPolyFromText</link> and <link linkend="BdMPolyFromText">BdMPolyFromText</link> - wrappers to this function with standard OGC interface.
+		    </para>
+
+		<para>
+		    Availability: 1.1.0 - requires GEOS >= 2.1.0.
+		</para>
 		  </listitem>
 		</varlistentry>
 

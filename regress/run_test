@@ -4,7 +4,7 @@ DB=postgis_reg
 
 ###################################################
 #
-# Usage ./run_test <testname>
+# Usage ./run_test <testname> [<testname>]
 #
 # Create the spatial database 'postgis_reg'
 # (or whatever $DB is set to) if it doesn't
@@ -21,19 +21,7 @@ if [ -z "$TMPDIR" ]; then
 fi
 
 if [ -z "$1" ]; then
-	echo "Usage: $0 <test>" >&2
-	exit 1;
-fi
-TEST="$1"
-OUTFILE="${TMPDIR}/regress_${TEST}_out_$$"
-
-if [ ! -r "${TEST}.sql" ]; then
-	echo "Can't read ${TEST}.sql" >&2
-	exit 1;
-fi
-
-if [ ! -r "${TEST}_expected" ]; then
-	echo "Can't read ${TEST}_expected" >&2
+	echo "Usage: $0 <test> [<test>]" >&2
 	exit 1;
 fi
 
@@ -58,23 +46,59 @@ if [ -z "$libver" ]; then
 	exit 1
 fi
 
-
-echo
-echo " Running test: '${TEST}' "
 echo " $pgsqlver"
 echo " Postgis lib: $libver - $libbuilddate"
-echo " Output file: '${OUTFILE}'"
-echo 
-echo "       expected:'<'     obtained:'>'"
-echo
 
-psql -tA < "${TEST}.sql" $DB 2>&1 | grep -v "^INSERT" \
-	| grep -v "^UPDATE" \
-	| grep -v "^DROP" \
-	| grep -v "^CREATE" \
-	| grep -v "^SET" \
-	> "${OUTFILE}"
-diff "${TEST}_expected" "${OUTFILE}"
+RUN=0
+SKIP=0
+FAIL=0
+SUCCESS=0
+while [ -n "$1" ]; do
+
+	TEST="$1"; shift;
+
+	OUTFILE="${TMPDIR}/regress_${TEST}_out_$$"
+
+	if [ ! -r "${TEST}.sql" ]; then
+		echo "Can't read ${TEST}.sql, skipping test" >&2
+		SKIPPED=$(($SKIPPED+1))
+		continue
+	fi
+
+	if [ ! -r "${TEST}_expected" ]; then
+		echo "Can't read ${TEST}_expected, skipping test" >&2
+		SKIPPED=$(($SKIPPED+1))
+		continue
+	fi
+
+	echo
+	echo " Running test: '${TEST}' "
+	echo " Output file: '${OUTFILE}'"
+	echo 
+	echo "       expected:'<'     obtained:'>'"
+	echo
+
+	psql -tA < "${TEST}.sql" $DB 2>&1 | grep -v "^INSERT" \
+		| grep -v "^UPDATE" \
+		| grep -v "^DROP" \
+		| grep -v "^CREATE" \
+		| grep -v "^SET" \
+		> "${OUTFILE}"
+
+	if diff "${TEST}_expected" "${OUTFILE}"; then
+		SUCCESS=$((SUCCESS+1))
+	else
+		FAIL=$((FAIL+1))
+	fi
+	RUN=$((RUN+1))
+
+done
+
+echo "Run tests: $RUN"
+#echo "Skipped: $SKIP"
+echo "Successful: $SUCCESS"
+echo "Failed: $FAIL"
+
 #sleep 1
 #dropdb $DB > /dev/null
-exit 0
+
