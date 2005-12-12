@@ -59,24 +59,24 @@ while [ -n "$1" ]; do
 
 	OUTFILE="${TMPDIR}/regress_${TEST}_out_$$"
 
+	echo
+
 	if [ ! -r "${TEST}.sql" ]; then
-		echo "Can't read ${TEST}.sql, skipping test" >&2
-		SKIPPED=$(($SKIPPED+1))
+		echo " Skipping test: '${TEST}' (can't read ${TEST}.sql)"
+		SKIP=`expr $SKIP + 1`
 		continue
 	fi
 
 	if [ ! -r "${TEST}_expected" ]; then
-		echo "Can't read ${TEST}_expected, skipping test" >&2
-		SKIPPED=$(($SKIPPED+1))
+		echo " Skipping test: '${TEST}' (can't read ${TEST}_expected)"
+		SKIP=`expr $SKIP + 1`
 		continue
 	fi
 
-	echo
 	echo " Running test: '${TEST}' "
 	echo " Output file: '${OUTFILE}'"
 	echo 
 	echo "       expected:'<'     obtained:'>'"
-	echo
 
 	psql -tA < "${TEST}.sql" $DB 2>&1 | grep -v "^INSERT" \
 		| grep -v "^UPDATE" \
@@ -86,16 +86,18 @@ while [ -n "$1" ]; do
 		> "${OUTFILE}"
 
 	if diff "${TEST}_expected" "${OUTFILE}"; then
-		SUCCESS=$((SUCCESS+1))
+		SUCCESS=`expr $SUCCESS + 1`
 	else
-		FAIL=$((FAIL+1))
+		FAIL=`expr $FAIL + 1`
 	fi
-	RUN=$((RUN+1))
+	RUN=`expr $RUN + 1`
+
+	echo
 
 done
 
 echo "Run tests: $RUN"
-#echo "Skipped: $SKIP"
+echo "Skipped: $SKIP"
 echo "Successful: $SUCCESS"
 echo "Failed: $FAIL"
 
