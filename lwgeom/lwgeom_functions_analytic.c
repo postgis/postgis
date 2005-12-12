@@ -522,7 +522,9 @@ POINTARRAY *ptarray_grid(POINTARRAY *pa, gridspec *grid);
 Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS);
 Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS);
 static int grid_isNull(const gridspec *grid);
+#if VERBOSE
 static void grid_print(const gridspec *grid, lwreporter printer);
+#endif
 
 /* A NULL grid is a grid in which size in all dimensions is 0 */
 static int
@@ -535,6 +537,7 @@ grid_isNull(const gridspec *grid)
 	else return 0;
 }
 
+#if VERBOSE
 /* Print grid using given reporter */
 static void
 grid_print(const gridspec *grid, lwreporter printer)
@@ -543,6 +546,7 @@ grid_print(const gridspec *grid, lwreporter printer)
 		grid->ipx, grid->ipy, grid->ipz, grid->ipm,
 		grid->xsize, grid->ysize, grid->zsize, grid->msize);
 }
+#endif
 
 /*
  * Stick an array of points to the given gridspec.
@@ -885,7 +889,9 @@ Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS)
 	if (TYPE_HASM(in_lwpoint->type) ) grid.ipm = offsetpoint.m;
 	else grid.ipm=0;
 
-	//grid_print(&grid, lwnotice);
+#if VERBOSE
+	grid_print(&grid, lwnotice);
+#endif
 
 	/* Return input geometry if grid is null */
 	if ( grid_isNull(&grid) )
