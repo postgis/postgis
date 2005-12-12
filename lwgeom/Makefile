@@ -36,7 +36,7 @@ override CFLAGS += -DPOSTGIS_BUILD_DATE='"$(POSTGIS_BUILD_DATE)"'
 JTS_OBJ=lwgeom_nojts.o
 ifeq ($(USE_GEOS),1)
 	CSTAR_FLAGS += -DUSE_GEOS
-	GEOS_RULES=detect_geos_version
+	GEOS_RULES=
 	ifeq ($(USE_GEOS_CAPI),1)
 		CSTAR_FLAGS += -I$(GEOS_DIR)/include 
 		GEOS_WRAPPER=
@@ -47,6 +47,7 @@ ifeq ($(USE_GEOS),1)
 		GEOS_WRAPPER=lwgeom_geos_wrapper.o
 		JTS_OBJ=lwgeom_geos.o
 		SHLIB_LINK += -lstdc++ -L$(GEOS_DIR)/lib -lgeos
+		GEOS_RULES=detect_geos_version
 	endif
 endif
 
