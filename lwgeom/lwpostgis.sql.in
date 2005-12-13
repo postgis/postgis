@@ -1295,9 +1295,9 @@ CREATEFUNCTION RemovePoint(geometry, integer)
 	AS '@MODULE_FILENAME@', 'LWGEOM_removepoint'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
-CREATEFUNCTION ReplacePoint(geometry, integer, geometry)
+CREATEFUNCTION SetPoint(geometry, integer, geometry)
 	RETURNS geometry
-	AS '@MODULE_FILENAME@', 'LWGEOM_replacepoint'
+	AS '@MODULE_FILENAME@', 'LWGEOM_setpoint_linestring'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
 CREATE AGGREGATE makeline (

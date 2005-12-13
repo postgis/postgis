@@ -58,7 +58,7 @@ Datum LWGEOM_makepoly(PG_FUNCTION_ARGS);
 Datum LWGEOM_line_from_mpoint(PG_FUNCTION_ARGS);
 Datum LWGEOM_addpoint(PG_FUNCTION_ARGS);
 Datum LWGEOM_removepoint(PG_FUNCTION_ARGS);
-Datum LWGEOM_replacepoint(PG_FUNCTION_ARGS);
+Datum LWGEOM_setpoint_linestring(PG_FUNCTION_ARGS);
 Datum LWGEOM_asEWKT(PG_FUNCTION_ARGS);
 Datum LWGEOM_hasBBOX(PG_FUNCTION_ARGS);
 Datum LWGEOM_azimuth(PG_FUNCTION_ARGS);
@@ -3140,8 +3140,8 @@ Datum LWGEOM_removepoint(PG_FUNCTION_ARGS)
 
 }
 
-PG_FUNCTION_INFO_V1(LWGEOM_replacepoint);
-Datum LWGEOM_replacepoint(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(LWGEOM_setpoint_linestring);
+Datum LWGEOM_setpoint_linestring(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *pglwg1, *pglwg2, *result;
 	LWGEOM *lwg;

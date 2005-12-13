@@ -4641,7 +4641,7 @@ FROM geometry_table;</literallayout>
 	</varlistentry>
 
 	<varlistentry>
-	  <term>ReplacePoint(linestring, N, point)</term>
+	  <term>SetPoint(linestring, N, point)</term>
 	  <listitem>
 		<para>
 			Replace point N of linestring with given point.
