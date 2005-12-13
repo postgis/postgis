@@ -346,7 +346,6 @@ POINTARRAY *
 ptarray_removePoint(POINTARRAY *pa, unsigned int which)
 {
 	POINTARRAY *ret;
-	POINT4D pbuf;
 	size_t ptsize = pointArray_ptsize(pa);
 
 #ifdef PGIS_DEBUG_CALLS
