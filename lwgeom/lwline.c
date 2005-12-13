@@ -484,3 +484,25 @@ lwline_addpoint(LWLINE *line, LWPOINT *point, unsigned int where)
 
 	return ret;
 }
+
+LWLINE *
+lwline_removepoint(LWLINE *line, unsigned int index)
+{
+	POINTARRAY *newpa;
+	LWLINE *ret;
+
+	newpa = ptarray_removePoint(line->points, index);
+
+	ret = lwline_construct(line->SRID, NULL, newpa);
+
+	return ret;
+}
+
+/*
+ * Note: input will be changed, make sure you have permissions for this.
+ */
+void
+lwline_setPoint4d(LWLINE *line, unsigned int index, POINT4D *newpoint)
+{
+	setPoint4d(line->points, index, newpoint);
+}

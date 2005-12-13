@@ -57,6 +57,8 @@ Datum LWGEOM_makeline(PG_FUNCTION_ARGS);
 Datum LWGEOM_makepoly(PG_FUNCTION_ARGS);
 Datum LWGEOM_line_from_mpoint(PG_FUNCTION_ARGS);
 Datum LWGEOM_addpoint(PG_FUNCTION_ARGS);
+Datum LWGEOM_removepoint(PG_FUNCTION_ARGS);
+Datum LWGEOM_replacepoint(PG_FUNCTION_ARGS);
 Datum LWGEOM_asEWKT(PG_FUNCTION_ARGS);
 Datum LWGEOM_hasBBOX(PG_FUNCTION_ARGS);
 Datum LWGEOM_azimuth(PG_FUNCTION_ARGS);
@@ -3090,6 +3092,105 @@ Datum LWGEOM_addpoint(PG_FUNCTION_ARGS)
 	lwgeom_release((LWGEOM *)point);
 	lwgeom_release((LWGEOM *)line);
 	lwgeom_release((LWGEOM *)outline);
+
+	PG_RETURN_POINTER(result);
+
+}
+
+PG_FUNCTION_INFO_V1(LWGEOM_removepoint);
+Datum LWGEOM_removepoint(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *pglwg1, *result;
+	LWLINE *line, *outline;
+	unsigned int which;
+
+	pglwg1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	which = PG_GETARG_INT32(1);
+
+	if ( ! TYPE_GETTYPE(pglwg1->type) == LINETYPE )
+	{
+		elog(ERROR, "First argument must be a LINESTRING");
+		PG_RETURN_NULL();
+	}
+
+	line = lwline_deserialize(SERIALIZED_FORM(pglwg1));
+
+	if ( which > line->points->npoints-1 )
+	{
+		elog(ERROR, "Point index out of range (%d..%d)", 0, line->points->npoints-1);
+		PG_RETURN_NULL();
+	}
+
+	if ( line->points->npoints < 3 )
+	{
+		elog(ERROR, "Can't remove points from a single segment line");
+		PG_RETURN_NULL();
+	}
+
+	outline = lwline_removepoint(line, which);
+
+	result = pglwgeom_serialize((LWGEOM *)outline);
+
+	// Release memory
+	PG_FREE_IF_COPY(pglwg1, 0);
+	lwgeom_release((LWGEOM *)line);
+	lwgeom_release((LWGEOM *)outline);
+
+	PG_RETURN_POINTER(result);
+
+}
+
+PG_FUNCTION_INFO_V1(LWGEOM_replacepoint);
+Datum LWGEOM_replacepoint(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *pglwg1, *pglwg2, *result;
+	LWGEOM *lwg;
+	LWLINE *line;
+	LWPOINT *lwpoint;
+	POINT4D newpoint;
+	unsigned int which;
+
+	/* we copy input as we're going to modify it */
+	pglwg1 = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+
+	which = PG_GETARG_INT32(1);
+	pglwg2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(2));
+
+
+	/* Extract a POINT4D from the point */
+	lwg = pglwgeom_deserialize(pglwg2);
+	lwpoint = lwgeom_as_lwpoint(lwg);
+	if ( ! lwpoint )
+	{
+		elog(ERROR, "Third argument must be a POINT");
+		PG_RETURN_NULL();
+	}
+	getPoint4d_p(lwpoint->point, 0, &newpoint);
+	lwgeom_release((LWGEOM *)lwpoint);
+	PG_FREE_IF_COPY(pglwg2, 2);
+
+	lwg = pglwgeom_deserialize(pglwg1);
+	line = lwgeom_as_lwline(lwg);
+	if ( ! line )
+	{
+		elog(ERROR, "First argument must be a LINESTRING");
+		PG_RETURN_NULL();
+	}
+	if ( which > line->points->npoints-1 )
+	{
+		elog(ERROR, "Point index out of range (%d..%d)", 0, line->points->npoints-1);
+		PG_RETURN_NULL();
+	}
+
+	/*
+	 * This will change pointarray of the serialized pglwg1,
+	 */
+	lwline_setPoint4d(line, which, &newpoint);
+	result = pglwgeom_serialize((LWGEOM *)line);
+
+	// Release memory
+	pfree(pglwg1); // we forced copy, POINARRAY is released now
+	lwgeom_release((LWGEOM *)line);
 
 	PG_RETURN_POINTER(result);
 

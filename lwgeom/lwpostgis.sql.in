@@ -1290,6 +1290,16 @@ CREATEFUNCTION AddPoint(geometry, geometry, integer)
 	AS '@MODULE_FILENAME@', 'LWGEOM_addpoint'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
+CREATEFUNCTION RemovePoint(geometry, integer)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_removepoint'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
+
+CREATEFUNCTION ReplacePoint(geometry, integer, geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_replacepoint'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
+
 CREATE AGGREGATE makeline (
 	sfunc = geom_accum,
 	basetype = geometry,

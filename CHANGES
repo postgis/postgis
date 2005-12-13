@@ -14,6 +14,8 @@ PostGIS 1.1.0CVS
 		- BuildArea(any_geometry) 
 		- OGC BdPolyFromText(linestring_wkt, srid) 
 		- OGC BdMPolyFromText(linestring_wkt, srid)
+		- RemovePoint(linestring, offset)
+		- ReplacePoint(linestring, offset, point)
 
 	- Function semantic changes:
 		- SnapToGrid doesn't discard higher dimensions
@@ -44,9 +46,6 @@ PostGIS 1.1.0CVS
 		- Stricter mapping between DBF and SQL integer and
 		  string attributes
 		- Wider and cleaner regression test suite
-
-PostGIS 1.0.7CVS
-	- Fixed memory leak in polygonize()
 
 PostGIS 1.0.6
 2005/12/06

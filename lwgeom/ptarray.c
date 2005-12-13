@@ -337,6 +337,56 @@ ptarray_addPoint(POINTARRAY *pa, uchar *p, size_t pdims, unsigned int where)
 	return ret;
 }
 
+/*
+ * Remove a point from a pointarray.
+ * 'which' is the offset (starting at 0)
+ * Returned pointarray is newly allocated
+ */
+POINTARRAY *
+ptarray_removePoint(POINTARRAY *pa, unsigned int which)
+{
+	POINTARRAY *ret;
+	POINT4D pbuf;
+	size_t ptsize = pointArray_ptsize(pa);
+
+#ifdef PGIS_DEBUG_CALLS
+	lwnotice("ptarray_removePoint: pa %x p %x size %d where %d",
+		pa, p, pdims, where);
+#endif
+
+#if PARANOIA_LEVEL > 0
+	if ( which > pa->npoints-1 )
+	{
+		lwerror("ptarray_removePoint: offset (%d) out of range (%d..%d)",
+			which, 0, pa->npoints-1);
+		return NULL;
+	}
+
+	if ( pa->npoints < 3 )
+	{
+		lwerror("ptarray_removePointe: can't remove a point from a 2-vertex POINTARRAY");
+	}
+#endif
+
+	ret = ptarray_construct(TYPE_HASZ(pa->dims),
+		TYPE_HASM(pa->dims), pa->npoints-1);
+	
+	/* copy initial part */
+	if ( which )
+	{
+		memcpy(getPoint_internal(ret, 0), getPoint_internal(pa, 0), ptsize*which);
+	}
+
+	/* copy final part */
+	if ( which < pa->npoints-2 )
+	{
+		memcpy(getPoint_internal(ret, which), getPoint_internal(pa, which+1),
+			ptsize*(pa->npoints-which-1));
+	}
+
+	return ret;
+}
+
 /* 
  * Clone a pointarray 
  */

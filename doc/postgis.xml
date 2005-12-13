@@ -4621,9 +4621,35 @@ FROM geometry_table;</literallayout>
 	  <term>AddPoint(linestring, point, [&lt;position&gt;])</term>
 
 	  <listitem>
-	    <para>Adds a point to a LineString at position &lt;pos&gt;.
+	    <para>Adds a point to a LineString before point &lt;pos&gt;
+	    (0-based index).
 	    Third parameter can be omitted or set to -1 for appending.
 	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>RemovePoint(linestring, offset)</term>
+	  <listitem>
+		<para>
+			Removes point from a linestring. Offset is 0-based.
+		</para>
+		<para>
+			Availability: 1.1.0
+		</para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>ReplacePoint(linestring, N, point)</term>
+	  <listitem>
+		<para>
+			Replace point N of linestring with given point.
+			Index is 0-based.
+		</para>
+		<para>
+			Availability: 1.1.0
+		</para>
 	  </listitem>
 	</varlistentry>
 

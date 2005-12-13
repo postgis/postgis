@@ -1005,6 +1005,8 @@ extern LWPOINT *make_lwpoint4d(int SRID, double x, double y, double z, double m)
 extern LWLINE *lwline_from_lwpointarray(int SRID, unsigned int npoints, LWPOINT **points);
 extern LWLINE *lwline_from_lwmpoint(int SRID, LWMPOINT *mpoint);
 extern LWLINE *lwline_addpoint(LWLINE *line, LWPOINT *point, unsigned int where);
+extern LWLINE *lwline_removepoint(LWLINE *line, unsigned int which);
+extern void lwline_setPoint4d(LWLINE *line, unsigned int which, POINT4D *newpoint);
 extern LWPOLY *lwpoly_from_lwlines(const LWLINE *shell, unsigned int nholes, const LWLINE **holes);
 
 /* Return a char string with ASCII versionf of type flags */
@@ -1023,6 +1025,7 @@ extern POINTARRAY *ptarray_construct(char hasz, char hasm,
 
 extern POINTARRAY *ptarray_addPoint(POINTARRAY *pa, uchar *p, size_t pdims,
 	unsigned int where);
+extern POINTARRAY *ptarray_removePoint(POINTARRAY *pa, unsigned int where);
 
 extern int ptarray_isclosed2d(const POINTARRAY *pa);
 
