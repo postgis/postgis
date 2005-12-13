@@ -1,5 +1,6 @@
 PostGIS 1.0.7CVS
 	- Fixed memory leak in polygonize()
+	- Fixed bug in lwgeom_as_anytype cast funcions
 
 PostGIS 1.0.6
 2005/12/06

@@ -203,21 +203,24 @@ lwgeom_compute_box2d(LWGEOM *lwgeom)
 LWPOINT *
 lwgeom_as_lwpoint(LWGEOM *lwgeom)
 {
-	if ( lwgeom->type == POINTTYPE ) return (LWPOINT *)lwgeom;
+	if ( TYPE_GETTYPE(lwgeom->type) == POINTTYPE )
+		return (LWPOINT *)lwgeom;
 	else return NULL;
 }
 
 LWLINE *
 lwgeom_as_lwline(LWGEOM *lwgeom)
 {
-	if ( lwgeom->type == LINETYPE ) return (LWLINE *)lwgeom;
+	if ( TYPE_GETTYPE(lwgeom->type) == LINETYPE )
+		return (LWLINE *)lwgeom;
 	else return NULL;
 }
 
 LWPOLY *
 lwgeom_as_lwpoly(LWGEOM *lwgeom)
 {
-	if ( lwgeom->type == POLYGONTYPE ) return (LWPOLY *)lwgeom;
+	if ( TYPE_GETTYPE(lwgeom->type) == POLYGONTYPE )
+		return (LWPOLY *)lwgeom;
 	else return NULL;
 }
 
@@ -232,21 +235,24 @@ lwgeom_as_lwcollection(LWGEOM *lwgeom)
 LWMPOINT *
 lwgeom_as_lwmpoint(LWGEOM *lwgeom)
 {
-	if ( lwgeom->type == MULTIPOINTTYPE ) return (LWMPOINT *)lwgeom;
+	if ( TYPE_GETTYPE(lwgeom->type) == MULTIPOINTTYPE )
+		return (LWMPOINT *)lwgeom;
 	else return NULL;
 }
 
 LWMLINE *
 lwgeom_as_lwmline(LWGEOM *lwgeom)
 {
-	if ( lwgeom->type == MULTILINETYPE ) return (LWMLINE *)lwgeom;
+	if ( TYPE_GETTYPE(lwgeom->type) == MULTILINETYPE )
+		return (LWMLINE *)lwgeom;
 	else return NULL;
 }
 
 LWMPOLY *
 lwgeom_as_lwmpoly(LWGEOM *lwgeom)
 {
-	if ( lwgeom->type == MULTIPOLYGONTYPE ) return (LWMPOLY *)lwgeom;
+	if ( TYPE_GETTYPE(lwgeom->type) == MULTIPOLYGONTYPE )
+		return (LWMPOLY *)lwgeom;
 	else return NULL;
 }
 
