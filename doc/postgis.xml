@@ -4452,29 +4452,6 @@ FROM geometry_table;</literallayout>
 		  </listitem>
 		</varlistentry>
 
-        <varlistentry id="line_interpolate_point">
-          <term>line_interpolate_point(linestring, location)</term>
-
-          <listitem>
-		<para>
-		Interpolates a point along a line. First argument must be a
-            	LINESTRING. Second argument is a float8 between 0 and 1
-		representing fraction of total
-		<link linkend="length2d">2d length</link> the point has
-		to be located.
-		</para>
-
-		<para>
-		See <link linkend="line_locate_point">line_locate_point()</link>
-		for computing the line location nearest to a Point.
-		</para>
-
-		<para>
-			Availability: 0.8.2
-		</para>
-          </listitem>
-        </varlistentry>
-
 
 		<varlistentry>
 		  <term>MakeBox2D(&lt;LL&gt;, &lt;UR&gt;)</term>
@@ -4517,27 +4494,6 @@ FROM geometry_table;</literallayout>
 		    <para>Creates a LineString from a MultiPoint geometry.</para>
 		  </listitem>
 		</varlistentry>
-
-        <varlistentry id="line_substring">
-          <term>line_substring(linestring, start, end)</term>
-
-          <listitem>
-            	<para>
-		Return a linestring being a substring of the input one starting
-		and ending at the given fractions of total 2d length. Second
-		and third arguments are float8 values between 0 and 1.
-		</para>
-
-		<para>
-		See <link linkend="line_locate_point">line_locate_point()</link>
-		for computing the line location nearest to a Point.
-		</para>
-
-		<para>
-			Availability: 1.1.0
-		</para>
-          </listitem>
-        </varlistentry>
 
 
 
@@ -4883,6 +4839,71 @@ FROM geometry_table;</literallayout>
 
 	<variablelist>
 
+        <varlistentry id="line_interpolate_point">
+          <term>line_interpolate_point(linestring, location)</term>
+
+          <listitem>
+		<para>
+		Interpolates a point along a line. First argument must be a
+            	LINESTRING. Second argument is a float8 between 0 and 1
+		representing fraction of total
+		<link linkend="length2d">2d length</link> the point has
+		to be located.
+		</para>
+
+		<para>
+		See <link linkend="line_locate_point">line_locate_point()</link>
+		for computing the line location nearest to a Point.
+		</para>
+
+		<para>
+			Availability: 0.8.2
+		</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="line_substring">
+          <term>line_substring(linestring, start, end)</term>
+
+          <listitem>
+            	<para>
+		Return a linestring being a substring of the input one starting
+		and ending at the given fractions of total 2d length. Second
+		and third arguments are float8 values between 0 and 1.
+		</para>
+
+		<para>
+		See <link linkend="line_locate_point">line_locate_point()</link>
+		for computing the line location nearest to a Point.
+		</para>
+
+		<para>
+			Availability: 1.1.0
+		</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="line_locate_point">
+          <term>line_locate_point(LineString, Point)</term>
+          <listitem>
+            	<para>
+		Returns a float between 0 and 1 representing 
+		the location of the closest point on LineString
+		to the given Point, as a fraction of
+		total <link linkend="length2d">2d line</link> length.
+		</para>
+
+		<para>
+	You can use the returned location to extract a Point (<link linkend="line_interpolate_point">line_interpolate_point</link>) or a substring (<link linkend="line_substring">line_substring</link>).
+		</para>
+
+		<para>
+			Availability: 1.1.0
+		</para>
+          </listitem>
+        </varlistentry>
+
+
         <varlistentry>
           <term>locate_along_measure(geometry, float8)</term>
 
@@ -5090,26 +5111,6 @@ FROM geometry_table;</literallayout>
 
           <listitem>
             <para>Aggregate. Constructs an array of geometries.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry id="line_locate_point">
-          <term>line_locate_point(LineString, Point)</term>
-          <listitem>
-            	<para>
-		Returns a float between 0 and 1 representing 
-		the location of the closest point on LineString
-		to the given Point, as a fraction of
-		total <link linkend="length2d">2d line</link> length.
-		</para>
-
-		<para>
-	You can use the returned location to extract a Point (<link linkend="line_interpolate_point">line_interpolate_point</link>) or a substring (<link linkend="line_substring">line_substring</link>).
-		</para>
-
-		<para>
-			Availability: 1.1.0
-		</para>
           </listitem>
         </varlistentry>
 
