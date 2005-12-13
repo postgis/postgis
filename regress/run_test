@@ -36,6 +36,8 @@ if [ -z "$db_exists" ]; then
 fi
 
 libver=`psql -tAc "select postgis_lib_version()" $DB`
+geosver=`psql -tAc "select postgis_geos_version()" $DB`
+jtsver=`psql -tAc "select postgis_jts_version()" $DB`
 libbuilddate=`psql -tAc "select postgis_lib_build_date()" $DB`
 pgsqlver=`psql -tAc "select version()" $DB`
 
@@ -47,7 +49,13 @@ if [ -z "$libver" ]; then
 fi
 
 echo " $pgsqlver"
-echo " Postgis lib: $libver - $libbuilddate"
+echo " Postgis $libver - $libbuilddate"
+if [ -n "$geosver" ]; then
+	echo " GEOS $geosver"
+fi
+if [ -n "$jtsver" ]; then
+	echo " JTS $jtsver"
+fi
 
 RUN=0
 SKIP=0
