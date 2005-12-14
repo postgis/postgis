@@ -10,10 +10,17 @@
 - casts between PostGIS and PostgreSQL geometry classes
 
 ======================================
-Following is TODO list for release 1.1
+2005/12/14 - other random items 
 ======================================
-Tue May 24 18:55:46 CEST 2005
-======================================
+
+- Add findsrid() functions that find good carthesian projection
+  srids for a given geometry.
+  
+- Treat geometries without SRID=-1 as compatible with all other
+  geometries in geometry operations
+
+- Special threatment of SRID=-1, dims=-1, type=GEOMETRY
+  in geometry_columns
 
 - LineMerge and Polygonize* interfaces for JTS
 
@@ -26,17 +33,4 @@ Tue May 24 18:55:46 CEST 2005
 
 - MakeValidShape() to remove consecutive vertexes and any eventual
   other cleanup aimed at making pgsql2shp produce "valid" Shapefiles.
-
-======================================
-2005/09/07 - some other ideas for future features
-======================================
-
-- Add findsrid() functions that find good carthesian projection
-  srids for a given geometry.
-  
-- Treat geometries without SRID=-1 as compatible with all other
-  geometries in geometry operations
-
-- Special threatment of SRID=-1, dims=-1, type=GEOMETRY
-  in geometry_columns
 
