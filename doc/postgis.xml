@@ -30,6 +30,7 @@
       objects to be stored in the database. PostGIS includes support for
       GiST-based R-Tree spatial indexes, and functions for analysis and
       processing of GIS objects.</para>
+      <para>This is the manual for version @@LAST_RELEASE_VERSION@@</para>
     </abstract>
   </bookinfo>
 
@@ -189,11 +190,12 @@
 
       <itemizedlist>
         <listitem>
-          <para>A complete configured and built PostgreSQL source code tree.
-          PostGIS uses definitions from the PostgreSQL configure/build process
-          to conform to the particular platform you are building on.
+          <para>
+	  A complete installation of PostgreSQL (including server headers).
           PostgreSQL is available from <ulink
-          url="http://www.postgresql.org">http://www.postgresql.org</ulink>.</para>
+          url="http://www.postgresql.org">http://www.postgresql.org</ulink>.
+	  Version 7.2 or higher is required.
+	  </para>
         </listitem>
 
         <listitem>
@@ -233,12 +235,12 @@
 
       <para>The PostGIS module is a extension to the PostgreSQL backend
       server. As such, PostGIS @@LAST_RELEASE_VERSION@@
-      <emphasis>requires</emphasis> a full copy of the PostgreSQL source tree
+      <emphasis>requires</emphasis> full PostgreSQL server headers access
       in order to compile. The PostgreSQL source code is available at <ulink
       url="http://www.postgresql.org">http://www.postgresql.org</ulink>.</para>
 
       <para>PostGIS @@LAST_RELEASE_VERSION@@ can be built against PostgreSQL
-      versions 7.2.0 to 7.4.x. Earlier versions of PostgreSQL are
+      versions 7.2.0 or higher. Earlier versions of PostgreSQL are
       <emphasis>not</emphasis> supported.</para>
 
       <orderedlist>
@@ -273,24 +275,27 @@
 
         <listitem>
           <para>Once your PostgreSQL installation is up-to-date, enter the
-          "postgis" directory, and edit the
-          <filename>Makefile.config</filename> file.</para>
+          "postgis" directory, and run:
+<programlisting># ./configure</programlisting>
+	  </para>
 
           <itemizedlist>
             <listitem>
-              <para>If want support for coordinate reprojection you must have
-              the Proj4 library installed, set the <varname>USE_PROJ</varname>
-              variable to <emphasis>1</emphasis>, and adjust the
-              <varname>PROJ_DIR</varname> variable to point to your Proj4
-              installation directory.</para>
+		<para>
+		If want support for coordinate reprojection you must have
+		the Proj4 library installed. If ./configure didn't find
+		it try using <code>--with-proj=PATH</code>
+		switch specify a specific Proj4 installation directory.
+		</para>
             </listitem>
 
             <listitem>
-              <para>If want to use GEOS functionality you must have the GEOS
-              library installed, set the <varname>USE_GEOS</varname> variable
-              to <emphasis>1</emphasis>, and adjust the
-              <varname>GEOS_DIR</varname> variable to point to your GEOS
-              installation directory.</para>
+		<para>
+		If want to use GEOS functionality you must have the GEOS
+		library installed. If ./configure didn't find it try
+		using <code>--with-proj=PATH</code> to specify geos-config
+		full path.
+		</para>
             </listitem>
           </itemizedlist>
         </listitem>
@@ -301,13 +306,13 @@
           <programlisting># make 
 # make install</programlisting>
 
-          <para>All files are installed relative to the PostgreSQL install
-          directory, <filename>[prefix]</filename>.</para>
+          <para>All files are installed using information provided
+	  by <filename>pg_config</filename>.
 
           <itemizedlist>
             <listitem>
               <para>Libraries are installed
-              <filename>[prefix]/lib/contrib</filename>.</para>
+              <filename>[pkglibdir]/lib/contrib</filename>.</para>
             </listitem>
 
             <listitem>
@@ -318,7 +323,7 @@
 
             <listitem>
               <para>Loader and dumber binaries are installed in
-              <filename>[prefix]/bin</filename>.</para>
+              <filename>[bindir]/</filename>.</para>
             </listitem>
           </itemizedlist>
         </listitem>
@@ -374,7 +379,8 @@ bring to an unstable or unsable system.
 Since postgis version 0.9.0 You can check your installation state
 using <link linkend="postgis_full_version">postgis_full_version()</link>.
 The function will warn you with a "need proc upgrade" message if a mismatch
-is found.
+is found. Also, it will see you if your database is still using an older
+postgis library (NOTE: this is not true for postgis_version()).
 	</para>
 
 	<para>
