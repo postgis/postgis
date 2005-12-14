@@ -322,7 +322,7 @@
             </listitem>
 
             <listitem>
-              <para>Loader and dumber binaries are installed in
+              <para>Loader and dumper binaries are installed in
               <filename>[bindir]/</filename>.</para>
             </listitem>
           </itemizedlist>
