@@ -1,4 +1,7 @@
-SELECT 'buffer', astext(buffer('POINT(0 0)', 1, 2));
+-- Ouput is snapped to grid to account for small floating numbers
+-- differences between architectures
+SELECT 'buffer', astext(SnapToGrid(buffer('POINT(0 0)', 1, 2), 1.0e-14));
+
 SELECT 'geomunion', astext(geomunion('POINT(0 0)', 'POINT(1 1)'));
 SELECT 'unite_garray', astext(unite_garray(geom_accum('{POINT(0 0)}', 'POINT(2 3)')));
 SELECT 'convexhull', asewkt(convexhull('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0),(2 2, 2 4, 4 4, 4 2, 2 2))'));
