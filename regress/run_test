@@ -48,6 +48,7 @@ if [ -z "$libver" ]; then
 	exit 1
 fi
 
+echo
 echo " $pgsqlver"
 echo " Postgis $libver - $libbuilddate"
 if [ -n "$geosver" ]; then
@@ -56,6 +57,10 @@ fi
 if [ -n "$jtsver" ]; then
 	echo " JTS $jtsver"
 fi
+
+echo 
+echo "Running tests"
+echo
 
 RUN=0
 SKIP=0
@@ -69,25 +74,22 @@ while [ -n "$1" ]; do
 	TEST=`echo "$TEST" | sed 's/\.sql$//'`
 
 	OUTFILE="${TMPDIR}/regress_${TEST}_out_$$"
+	DIFFILE="${TMPDIR}/regress_${TEST}_diff_$$"
 
-	echo
+	printf %20s " ${TEST}: "
+	#echo -ne " ${TEST}:\t"
 
 	if [ ! -r "${TEST}.sql" ]; then
-		echo " Skipping test: '${TEST}' (can't read ${TEST}.sql)"
+		echo "Skipped (can't read ${TEST}.sql)"
 		SKIP=`expr $SKIP + 1`
 		continue
 	fi
 
 	if [ ! -r "${TEST}_expected" ]; then
-		echo " Skipping test: '${TEST}' (can't read ${TEST}_expected)"
+		echo " Skipped (can't read ${TEST}_expected)"
 		SKIP=`expr $SKIP + 1`
 		continue
 	fi
-
-	echo " Running test: '${TEST}' "
-	echo " Output file: '${OUTFILE}'"
-	echo 
-	echo "       expected:'<'     obtained:'>'"
 
 	psql -tA < "${TEST}.sql" $DB 2>&1 | grep -v "^INSERT" \
 		| grep -v "^UPDATE" \
@@ -96,19 +98,22 @@ while [ -n "$1" ]; do
 		| grep -v "^SET" \
 		> "${OUTFILE}"
 
-	if diff "${TEST}_expected" "${OUTFILE}"; then
+	if diff "${TEST}_expected" "${OUTFILE}" > ${DIFFILE}; then
 		SUCCESS=`expr $SUCCESS + 1`
+		echo "Ok."
+		rm "${OUTFILE}" "${DIFFILE}" # we don't need these anymore
 	else
 		FAIL=`expr $FAIL + 1`
+		echo "Failed (diff ${DIFFILE})" # expected:'<'     obtained:'>'"
+		rm "${OUTFILE}" # diff is enough
 	fi
 	RUN=`expr $RUN + 1`
 
-	echo
-
 done
 
+echo
 echo "Run tests: $RUN"
-echo "Skipped: $SKIP"
+#echo "Skipped: $SKIP"
 echo "Successful: $SUCCESS"
 echo "Failed: $FAIL"
 

@@ -14,6 +14,6 @@ test:
 	@./run_test $(TESTS)
 
 cleanup:
-	@sleep 1; dropdb postgis_reg
+	@sleep 1; dropdb postgis_reg > /dev/null
 
 clean:
