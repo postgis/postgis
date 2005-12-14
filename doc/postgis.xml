@@ -307,7 +307,7 @@
 # make install</programlisting>
 
           <para>All files are installed using information provided
-	  by <filename>pg_config</filename>.
+	  by <filename>pg_config</filename></para>
 
           <itemizedlist>
             <listitem>
