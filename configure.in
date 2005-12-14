@@ -318,6 +318,28 @@ for p in ${SEARCHPATH}; do
 	fi
 done
 
+dnl
+dnl Search for other binaries needed to build docs
+dnl
+AC_PATH_PROG([XSLTPROC], [xsltproc])
+AC_PATH_PROG([PDFXMLTEX], [pdfxmltex])
+AC_PATH_PROG([JW], [jw])
+AC_SUBST(XSLTPROC)
+AC_SUBST(PDFXMLTEX)
+AC_SUBST(JW)
+
+DOC_RULE=requirements_not_met
+if test -n "${XSLBASE}"; then
+	if test -n "${XSLTPROC}"; then
+		DOC_RULE=html/postgis.html
+	else
+		if test -n "${JW}"; then
+			DOC_RULE=jw
+		fi
+	fi
+fi
+AC_SUBST(DOC_RULE)
+
 
 if test $USE_JTS -gt 0; then
 dnl	AC_MSG_RESULT([ GEOS disabled, using JTS.])

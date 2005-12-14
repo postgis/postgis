@@ -5,17 +5,22 @@ include ../Version.config
 
 LAST_RELEASE_VERSION = $(SO_MAJOR_VERSION).$(SO_MINOR_VERSION).$(SO_MICRO_VERSION)
 
-#XSLBASE?=/usr/share/sgml/docbook/xsl-stylesheets
-#XSLBASE = /usr/share/xml/docbook/stylesheet/nwalsh
+all: $(DOC_RULE)
 
-
-all: html
+requirements_not_met:
+	@echo
+	@echo "Docs building requires 'xsltproc' or 'jw'."
+	@echo "Configuration tool could not find any, either install"
+	@echo "them or refer to online manual:"
+	@echo
+	@echo "  http://postgis.refractions.net/docs"
+	@echo
 
 postgis-out.xml: postgis.xml ../Version.config
 	cat $< | sed "s/@@LAST_RELEASE_VERSION@@/$(LAST_RELEASE_VERSION)/g" > $@
 
 chunked-html: postgis-out.xml
-	xsltproc \
+	$(XSLTPROC) \
 		--output html/ \
 		--param shade.verbatim 1 \
 		--param chunk.section.depth 0 \
@@ -27,7 +32,7 @@ chunked-html: postgis-out.xml
 		$<
 
 html/postgis.html: postgis-out.xml
-	xsltproc \
+	$(XSLTPROC) \
 		--output html/postgis.html \
 		--param shade.verbatim 1 \
 		--param section.autolabel 1 \
@@ -40,7 +45,7 @@ html/postgis.html: postgis-out.xml
 html: html/postgis.html
 
 postgis.fo: postgis-out.xml
-	xsltproc \
+	$(XSLTPROC) \
 		--output $@ \
 		--param shade.verbatim 1 \
 		--param section.autolabel 1 \
@@ -50,11 +55,11 @@ postgis.fo: postgis-out.xml
 		$<
 
 postgis.pdf: postgis.fo
-	pdfxmltex $< > /dev/null ; \
-	pdfxmltex $< > /dev/null
+	$(PDFXMLTEX) $< > /dev/null ; \
+	$(PDFXMLTEX) $< > /dev/null
 
 jw: postgis-out.xml
-	jw $(COMMONOPTS) -o html/ postgis-out.xml
+	$(JW) $(COMMONOPTS) -o html/ postgis-out.xml
 
 clean:
 	@rm -f \
