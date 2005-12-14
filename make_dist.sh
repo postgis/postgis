@@ -1,20 +1,30 @@
 #!/bin/sh
 
-major=`grep ^SO_MAJOR_VERSION Version.config | cut -d= -f2`
-minor=`grep ^SO_MINOR_VERSION Version.config | cut -d= -f2`
-micro=`grep ^SO_MICRO_VERSION Version.config | cut -d= -f2`
+#
+# USAGE:
+#
+# -- postgis-cvs.tar.gz postgis-regress-cvs.tar.gz
+# sh make_dist.sh
+#
+# -- postgis-1.1.0.tar.gz postgis-regress-1.1.0.tar.gz
+# sh make_dist.sh 1.1.0
+#
+# NOTE: will not work prior to 1.1.0
+#
+#
 
-if [ -n "$3" ]; then
-	major=$1
-	minor=$2
-	micro=$3
+tag=HEAD
+version=cvs
+
+if [ -n "$1" ]; then
+	version="$1"
+	version=`echo $version | sed 's/RC/-rc/'`
+	tag=pgis_`echo "$version" | sed 's/\./_/g'`
 fi
 
-tag="pgis_"$major"_"$minor"_"$micro
-version="$major.$minor.$micro"
-version=`echo $version | sed 's/RC/-rc/'`
-package="postgis-$version.tgz"
 outdir="postgis-$version"
+package="postgis-$version.tar.gz"
+regress_package="postgis-regress-$version.tar.gz"
 
 if [ -d "$outdir" ]; then
 	echo "Output directory $outdir already exist"
@@ -27,22 +37,17 @@ if [ $? -gt 0 ]; then
 	exit 1
 fi
 
-# remove .cvsignore
-echo "Removing .cvsignore and make_dist files"
+# remove .cvsignore, make_dist.sh 
+echo "Removing .cvsignore and make_dist.sh files"
 find "$outdir" -name .cvsignore -exec rm {} \;
-rm -f "$outdir"/make_dist
-
-## remove regress tests
-#echo "Removing regress tests"
-#rm -Rf $outdir/regress
+rm -f "$outdir"/make_dist.sh
 
 # generating configure script
-echo "Running autoconf"
+echo "Running autogen.sh; ./configure"
 owd="$PWD"
 cd "$outdir"
-autoconf
-# remove the autom4te.cache dir, created by autoconf
-rm -Rf autom4te.cache
+./autogen.sh
+./configure
 cd "$owd"
 
 # generating documentation
@@ -67,11 +72,19 @@ cd "$owd"
 #fi
 #cd "$owd"
 
-echo "Generating tar file"
-tar czf "$package" "$outdir"
+# Run make distclean
+echo "Running make distclean"
+owd="$PWD"
+cd "$outdir"
+make distclean
+cd "$owd"
+
+echo "Generating $regress_package file"
+tar czf "$regress_package" "${outdir}/regress"
+
+echo "Generating $package file"
+tar czf "$package" --exclude='*/regress/*' "$outdir"
 
 #echo "Cleaning up"
 #rm -Rf "$outdir"
 
-echo "Package file is $package"
-echo "Package dir is $outdir"
