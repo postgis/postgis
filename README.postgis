@@ -1,11 +1,10 @@
 PostGIS - Geographic Information Systems Extensions to PostgreSQL
 ~~~~~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-VERSION: 1.0.0 (2005/01/13)
+VERSION: 1.1.0 (2005/12/??)
 
 MORE INFORMATION: http://postgis.refractions.net
 
-INTRODUCTION:
 This distribution contains a module which implements GIS simple 
 features, ties the features to rtree indexing, and provides some 
 spatial functions for accessing and analyzing geographic data.
@@ -14,201 +13,18 @@ Directory structure:
 
   ./          Build scripts and install directions.
   ./lwgeom    Library source code.
-  ./jdbc      Extensions to the PostgreSQL JDBC drivers to support
+  ./jdbc2     Extensions to the PostgreSQL JDBC drivers to support
               the GIS objects. 
-  ./doc       Documentation on the code, objects and functions 
-              provided. 
+  ./doc       PostGIS Documentation 
   ./loader    A program to convert ESRI Shape files into SQL text
               suitable for uploading into a PostGIS/PostgreSQL database
               and a program for converting PostGIS spatial tables into
               Shape files..
-  ./extras    Small programs which demonstrate ways of accessing 
-              GIS data and other contributed code.
+  ./utils     Utility scripts for PostGIS (upgrade, profiling, ...)
+  ./extras    Various pieces that didn't belong to mainstream
+	      (package management specfiles, WFS_locks, sample wkb parser)
+  ./regress   Regression tests
 	        
 
-INSTALLATION:
-
-PostGIS is compatible with PostgreSQL 7.2 and above.
-
-To install the module, move this directory to the "contrib" directory of your
-PostgreSQL source installation. Alternately, point PGSQL_SRC at your
-PostgreSQL source tree either in an environment variable or editing 
-Makefile.config.
-
-You *must* have a PostgreSQL source tree, and you *must* have succesfully
-built and installed it for this to work. 
-
-SEE THE NOTE ON GEOS SUPPORT BELOW FOR SPECIAL COMPILATION INSTRUCTIONS
-
-
-* PROJ4 SUPPORT (Recommended): 
-  The Proj4 reprojection library is required if you want to use the 
-  transform() function to reproject features within the database.
-
-    http://www.remotesensing.org/proj
-
-  Install Proj4 in the default location.
-  Edit the postgis Makefile.config and change the USE_PROJ variable to 1
-  and ensure that the PROJ_DIR variable points to your Proj4 
-  installation location (/usr/local is the default).
-
-* SPATIAL PREDICATE / GEOS SUPPORT (Recommended):
-  The GEOS library provides support for exact topological tests
-  such as Touches(), Contains(), Disjoint() and spatial operations
-  such as Intersection(), Union() and Buffer().  
-
-    http://geos.refractions.net
-
-  In order to use the GEOS support, you *may* need to specially compile 
-  your version of PostgreSQL to link the C++ runtime library.
-  To do this, invoke the PgSQL configuration script this way:
- 
-  LDFLAGS=-lstdc++ ./configure --your-options-go-here
-
-  The initial LDFLAGS variable is passed through to the Makefile and
-  adds the C++ library to the linking stage. 
-  Once you have compiled PgSQL with C++ support, you can enable GEOS
-  support in PostGIS by setting the USE_GEOS variable in the PostGIS
-  Makefile.config to 1, and ensure that the GEOS_DIR variable points
-  to your GEOS installation location (/usr/local is the default).
-  
-
-To compile PostGIS, as root run:
-	
-  make
-  make install
-
-PostGIS now requires the PL/pgSQL procedural language in order to operate
-correctly. To install PL/pgSQL use the 'createlang' program from the PostgreSQL
-installation. (The PostgreSQL Programmer's Guide has details if you want 
-to this manually for some reason.)
-
-As postgres run:
-
-  createlang plpgsql yourdatabase
-  psql -f lwpostgis.sql -d yourdatabase
-
-Installation should now be complete.
-
-
-UPGRADING:
-
-Upgrading PostGIS can be tricky, because the underlying C libraries which 
-support the object types and geometries may have changed between versions.
-
-For this purpose PostGIS provides an utility script to restore a dump
-produced with the pg_dump -Fc command. It is experimental so redirecting
-its output to a file will help in case of problems. The procedure is
-as follow:
-
-	# Create a "custom-format" dump of the database you want
-	# to upgrade (let's call it "olddb")
-	$ pg_dump -Fc olddb olddb.dump
-
-	# Restore the dump contextually upgrading postgis into
-	# a new database. The new database doesn't have to exist.
-	# Let's call it "newdb"
-	$ sh utils/postgis_restore.pl lwpostgis.sql newdb olddb.dump > restore.log
-
-	# Check that all restored dump objects really had to be restored from dump
-	# and do not conflict with the ones defined in lwpostgis.sql
-	$ grep ^KEEPING restore.log | less
-
-	# If upgrading from PostgreSQL < 7.5 to >= 7.5 you might want to 
-	# drop the attrelid, varattnum and stats columns in the geometry_columns
-	# table, which are no-more needed. Keeping them won't hurt.
-	# !!! DROPPING THEM WHEN REALLY NEEDED WILL DO HURT !!!!
-	$ psql newdb -c "ALTER TABLE geometry_columns DROP attrelid"
-	$ psql newdb -c "ALTER TABLE geometry_columns DROP varattnum"
-	$ psql newdb -c "ALTER TABLE geometry_columns DROP stats"
-
-	# spatial_ref_sys table is restore from the dump, to ensure your custom
-	# additions are kept, but the distributed one might contain modification
-	# so you should backup your entries, drop the table and source the new one.
-	# If you did make additions we assume you know how to backup them before
-	# upgrading the table. Replace of it with the new one is done like this:
-	$ psql newdb
-	newdb=> drop table spatial_ref_sys;
-	DROP
-	newdb=> \i spatial_ref_sys.sql
-
-Following is the "old" procedure description. IT SHOULD BE AVOIDED if possible,
-as it will leave in the database many spurious functions. It is kept in this document
-as a "backup" in case postgis_restore.pl won't work for you:
-
-	pg_dump -t "*" -f dumpfile.sql yourdatabase
-	dropdb yourdatabase
-	createdb yourdatabase
-	createlang plpgsql yourdatabase
-	psql -f lwpostgis.sql -d yourdatabase
-	psql -f dumpfile.sql -d yourdatabase
-	vacuumdb -z yourdatabase
-
-
-USAGE:
-
-Try the following example SQL statements to create non-OpenGIS tables and 
-geometries:
-
-  CREATE TABLE geom_test ( gid int4, geom geometry,name varchar(25) );
-  INSERT INTO geom_test ( gid, geom, name ) 
-    VALUES ( 1, 'POLYGON((0 0 0,0 5 0,5 5 0,5 0 0,0 0 0))', '3D Square');
-  INSERT INTO geom_test ( gid, geom, name ) 
-    VALUES ( 2, 'LINESTRING(1 1 1,5 5 5,7 7 5)', '3D Line' );
-  INSERT INTO geom_test ( gid, geom, name )
-    VALUES ( 3, 'MULTIPOINT(3 4,8 9)', '2D Aggregate Point' );
-  SELECT * from geom_test WHERE geom && 'BOX3D(2 2 0,3 3 0)'::box3d;
-
-The following SQL creates proper OpenGIS entries in the SPATIAL_REF_SYS
-and GEOMETRY_COLUMNS tables, and ensures that all geometries are created
-with an SRID.
-
-  INSERT INTO SPATIAL_REF_SYS
-    ( SRID, AUTH_NAME, AUTH_SRID, SRTEXT ) VALUES
-    ( 1, 'EPSG', 4269,
-      'GEOGCS["NAD83",
-        DATUM[
-          "North_American_Datum_1983",
-          SPHEROID[
-          "GRS 1980",
-          6378137,
-          298.257222101
-        ]
-      ],
-      PRIMEM["Greenwich",0],
-      UNIT["degree",0.0174532925199433]]'
-    );
-
-  CREATE TABLE geotest (
-    id INT4,
-    name VARCHAR(32)
-    );
-
-  SELECT AddGeometryColumn('db','geotest','geopoint',1,'POINT',2);
-
-  INSERT INTO geotest (id, name, geopoint)
-    VALUES (1, 'Olympia', GeometryFromText('POINT(-122.90 46.97)',1));
-  INSERT INTO geotest (id, name, geopoint)
-    VALUES (2, 'Renton', GeometryFromText('POINT(-122.22 47.50)',1));
-
-  SELECT name,AsText(geopoint) FROM geotest;
-
-
-Spatial Indexes:
-
-PostgreSQL provides support for GiST spatial indexing. The GiST scheme offers 
-indexing even on large objects, using a system of "lossy" indexing where 
-a large object is proxied by a smaller one in the index.  In the case 
-of the PostGIS indexing system, all objects are proxied in the index by 
-their bounding boxes.
-
-You can build a GiST index with:
-
-  CREATE INDEX <indexname> 
-    ON <tablename> 
-    USING GIST ( <geometryfield> );
-
-Always run the "VACUUM ANALYZE <tablename>" on your tables after
-creating an index. This gathers statistics which the query planner
-uses to optimize index usage.
-
+See PostGIS Manual (doc/html/postgis.html) for build, installation
+and usage instructions.
