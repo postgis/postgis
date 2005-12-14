@@ -1,9 +1,15 @@
-COMMONOPTS = -f docbook -b html -e no-valid
-
 include ../Makefile.config
 include ../Version.config
 
 LAST_RELEASE_VERSION = $(SO_MAJOR_VERSION).$(SO_MINOR_VERSION).$(SO_MICRO_VERSION)
+
+COMMONOPTS = -f docbook -b html -e no-valid
+XSLTPROC_COMMONOPTS = --param section.autolabel 1 \
+	--param section.label.includes.component.label 1 \
+	--param chunk.section.depth 0 
+XSLTPROC_HTMLOPTS = \
+	--stringparam html.stylesheet style.css \
+
 
 all: $(DOC_RULE)
 
@@ -20,39 +26,25 @@ postgis-out.xml: postgis.xml ../Version.config
 	cat $< | sed "s/@@LAST_RELEASE_VERSION@@/$(LAST_RELEASE_VERSION)/g" > $@
 
 chunked-html: postgis-out.xml
-	$(XSLTPROC) \
+	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) $(XSLTPROC_HTMLOPTS) \
 		--output html/ \
-		--param shade.verbatim 1 \
-		--param chunk.section.depth 0 \
-		--param section.autolabel 1 \
-		--param section.label.includes.component.label 1 \
-		--stringparam html.stylesheet style.css \
 		--stringparam saxon.character.representation decimal \
 		$(XSLBASE)/html/chunk.xsl \
 		$<
 
 html/postgis.html: postgis-out.xml
-	$(XSLTPROC) \
+	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
 		--output html/postgis.html \
-		--param shade.verbatim 1 \
-		--param section.autolabel 1 \
-		--param section.label.includes.component.label 1 \
-		--param chunk.section.depth 0 \
-		--stringparam html.stylesheet style.css \
 		$(XSLBASE)/html/docbook.xsl \
 		$<
 
-html: html/postgis.html
-
 postgis.fo: postgis-out.xml
-	$(XSLTPROC) \
+	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
 		--output $@ \
-		--param shade.verbatim 1 \
-		--param section.autolabel 1 \
-		--param section.label.includes.component.label 1 \
-		--param chunk.section.depth 0 \
 		$(XSLBASE)/fo/docbook.xsl \
 		$<
+
+html: html/postgis.html
 
 postgis.pdf: postgis.fo
 	$(PDFXMLTEX) $< > /dev/null ; \
