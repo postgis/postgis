@@ -2,7 +2,6 @@
 
 - Clean up mapserver connectivity
 - Submit to OpenGIS Consortium for testing
-- Update PgSQL GiST to support row level (rectangle level?) locking.
 - Network creation and network operations 
   (upstream, downstream, least cost path)
 - Standardized handling for topology and coverages with 
