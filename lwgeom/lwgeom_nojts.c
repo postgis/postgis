@@ -236,3 +236,91 @@ Datum LWGEOM_buildarea(PG_FUNCTION_ARGS)
 	elog(ERROR,"BuildArea: operation not implemented - compile PostGIS with JTS or GEOS support");
 	PG_RETURN_NULL(); // never get here
 }
+
+LWGEOM *lwgeom_centroid(LWGEOM *in);
+
+LWGEOM *
+lwgeom_centroid(LWGEOM *in)
+{
+	int type = lwgeom_getType(in->type);
+	LWPOLY *poly;
+	LWPOINT *point;
+	LWMPOLY *mpoly;
+	POINTARRAY *ring, *pa;
+	POINT3DZ p, *cent;
+	int i,j,k;
+	uint32 num_points_tot = 0;
+	double tot_x=0, tot_y=0, tot_z=0;
+
+	if (type == POLYGONTYPE)
+	{
+		poly = (LWPOLY*)in;
+		for (j=0; j<poly->nrings; j++)
+		{
+			ring = poly->rings[j];
+			for (k=0; k<ring->npoints-1; k++)
+			{
+				getPoint3dz_p(ring, k, &p);
+				tot_x += p.x;
+				tot_y += p.y;
+				if ( TYPE_HASZ(ring->dims) ) tot_z += p.z;
+			}
+			num_points_tot += ring->npoints-1;
+		}
+	}
+	else if ( type == MULTIPOLYGONTYPE )
+	{
+		mpoly = (LWMPOLY*)in;
+		for (i=0; i<mpoly->ngeoms; i++)
+		{
+			poly = mpoly->geoms[i];
+			for (j=0; j<poly->nrings; j++)
+			{
+				ring = poly->rings[j];
+				for (k=0; k<ring->npoints-1; k++)
+				{
+					getPoint3dz_p(ring, k, &p);
+					tot_x += p.x;
+					tot_y += p.y;
+					if ( TYPE_HASZ(ring->dims) ) tot_z += p.z;
+				}
+				num_points_tot += ring->npoints-1;
+			}
+		}
+	}
+	else
+	{
+		return NULL;
+	}
+
+	// Setup point
+	cent = lwalloc(sizeof(POINT3DZ));
+	cent->x = tot_x/num_points_tot;
+	cent->y = tot_y/num_points_tot;
+	cent->z = tot_z/num_points_tot;
+
+	// Construct POINTARRAY (paranoia?)
+	pa = pointArray_construct((uchar *)cent, 1, 0, 1);
+
+	// Construct LWPOINT
+	point = lwpoint_construct(in->SRID, NULL, pa);
+
+	return (LWGEOM *)point;
+}
+
+Datum centroid(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(centroid);
+Datum centroid(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	LWGEOM *lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom));
+	LWGEOM *centroid = lwgeom_centroid(lwgeom);
+	PG_LWGEOM *ret;
+
+	lwgeom_release(lwgeom);
+	if ( ! centroid ) PG_RETURN_NULL();
+	ret = pglwgeom_serialize(centroid);
+	lwgeom_release((LWGEOM *)centroid);
+	PG_FREE_IF_COPY(geom, 0);
+	PG_RETURN_POINTER(ret);
+}

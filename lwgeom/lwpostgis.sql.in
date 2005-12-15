@@ -2546,8 +2546,8 @@ CREATEFUNCTION transform(geometry,integer)
 -----------------------------------------------------------------------
 
 CREATEFUNCTION postgis_version() RETURNS text
-        AS 'SELECT \'@POSTGIS_VERSION@\'::text AS version'
-        LANGUAGE 'sql' _IMMUTABLE;
+	AS '@MODULE_FILENAME@'
+	LANGUAGE 'C' _IMMUTABLE;
 
 CREATEFUNCTION postgis_proj_version() RETURNS text
 	AS '@MODULE_FILENAME@'

@@ -46,6 +46,8 @@ PostGIS 1.1.0CVS
 		- Stricter mapping between DBF and SQL integer and
 		  string attributes
 		- Wider and cleaner regression test suite
+		- postgis_version() made a C function
+		- produced lwpostgis_upgrade.sql as part of the build process
 
 PostGIS 1.0.6
 2005/12/06
