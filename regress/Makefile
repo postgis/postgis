@@ -2,10 +2,14 @@ TMPDIR?=/tmp
 
 include ../Makefile.config
 
-TESTS=regress regress_index lwgeom_regress regress_lrs regress_proj removepoint setpoint
+TESTS=regress regress_index lwgeom_regress regress_lrs removepoint setpoint
 
 ifeq ($(USE_GEOS),1)
 	TESTS += regress_ogc regress_bdpoly
+endif
+
+ifeq ($(USE_PROJ),1)
+	TESTS += regress_proj
 endif
 
 all: test cleanup
