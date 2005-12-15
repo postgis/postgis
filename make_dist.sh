@@ -3,10 +3,10 @@
 #
 # USAGE:
 #
-# -- postgis-cvs.tar.gz postgis-regress-cvs.tar.gz
+# -- postgis-cvs.tar.gz 
 # sh make_dist.sh
 #
-# -- postgis-1.1.0.tar.gz postgis-regress-1.1.0.tar.gz
+# -- postgis-1.1.0.tar.gz 
 # sh make_dist.sh 1.1.0
 #
 # NOTE: will not work prior to 1.1.0
@@ -24,7 +24,6 @@ fi
 
 outdir="postgis-$version"
 package="postgis-$version.tar.gz"
-regress_package="postgis-regress-$version.tar.gz"
 
 if [ -d "$outdir" ]; then
 	echo "Output directory $outdir already exist"
@@ -79,11 +78,8 @@ cd "$outdir"
 make distclean
 cd "$owd"
 
-echo "Generating $regress_package file"
-tar czf "$regress_package" "${outdir}/regress"
-
 echo "Generating $package file"
-tar czf "$package" --exclude='*/regress/*' "$outdir"
+tar czf "$package" "$outdir"
 
 #echo "Cleaning up"
 #rm -Rf "$outdir"
