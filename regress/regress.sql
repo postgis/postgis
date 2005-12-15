@@ -85,8 +85,10 @@ select '58', asewkt('MULTILINESTRING((0 0, 1 1),(0 0, 1 1, 2 2,) )'::GEOMETRY);
 select '59',asewkt('POINT(1 2 3, 4 5 6)'::GEOMETRY);
 select '60',asewkt('POINT(1 2 3 4 5 6 7)'::GEOMETRY);
 select '61',asewkt('LINESTRING(1 1)'::GEOMETRY);
-select '62',replace(asewkt('POINT( 1e700 0)'::GEOMETRY), 'Infinity', 'inf');
-select '63',replace(asewkt('POINT( -1e700 0)'::GEOMETRY), 'Infinity', 'inf');
+--select '62',replace(asewkt('POINT( 1e700 0)'::GEOMETRY), 'Infinity', 'inf');
+--select '63',replace(asewkt('POINT( -1e700 0)'::GEOMETRY), 'Infinity', 'inf');
+select '62',asewkt('POINT( 1e700 0)'::GEOMETRY);
+select '63',asewkt('POINT( -1e700 0)'::GEOMETRY);
 select '64',asewkt('MULTIPOINT(1 1, 2 2'::GEOMETRY);
 
 

@@ -97,6 +97,7 @@ while [ -n "$1" ]; do
 		| grep -v "^DROP" \
 		| grep -v "^CREATE" \
 		| grep -v "^SET" \
+		| sed 's/Infinite/inf/g;s/Inf/inf/g' \
 		> "${OUTFILE}"
 
 	if diff "${TEST}_expected" "${OUTFILE}" > ${DIFFILE}; then
