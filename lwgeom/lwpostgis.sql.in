@@ -3577,7 +3577,7 @@ BEGIN
 	RETURN geom;
 END;
 '
-LANGUAGE 'plpgsql' IMMUTABLE STRICT; 
+LANGUAGE 'plpgsql' _IMMUTABLE_STRICT; 
 
 --
 -- SFSQL 1.1
@@ -3612,7 +3612,7 @@ BEGIN
 	RETURN geom;
 END;
 '
-LANGUAGE 'plpgsql' IMMUTABLE STRICT; 
+LANGUAGE 'plpgsql' _IMMUTABLE_STRICT; 
 
 
 ---------------------------------------------------------------
