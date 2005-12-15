@@ -1,3 +1,8 @@
+---
+--- Tests for GEOS/JTS implemented functions
+---
+---
+
 -- Ouput is snapped to grid to account for small floating numbers
 -- differences between architectures
 SELECT 'buffer', astext(SnapToGrid(buffer('POINT(0 0)', 1, 2), 1.0e-14));
@@ -16,6 +21,9 @@ SELECT 'crosses', crosses('LINESTRING(0 10, 0 -10)', 'LINESTRING(-4 0, 1 1)');
 SELECT 'within', within('POINT(5 5)', 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');
 SELECT 'within', within('POINT(0 0)', 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');
 SELECT 'within', within('POINT(-1 0)', 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');
+-- moved here from regress.sql
+select 'within119', within('LINESTRING(-1 -1, -1 101, 101 101, 101 -1)'::GEOMETRY,'BOX3D(0 0, 100 100)'::BOX3D);
+select 'within120', within('LINESTRING(-1 -1, -1 100, 101 100, 101 -1)'::GEOMETRY,'BOX3D(0 0, 100 100)'::BOX3D);
 SELECT 'contains', contains('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))','POINT(-1 0)');
 SELECT 'contains', contains('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))','POINT(0 0)');
 SELECT 'contains', contains('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))','POINT(5 5)');
@@ -36,10 +44,13 @@ SELECT 'polygonize_garray', astext(polygonize_garray('{0102000000020000000000000
 
 SELECT 'polygonize_garray', astext(geometryn(polygonize_garray('{LINESTRING(0 0, 10 0):LINESTRING(10 0, 10 10):LINESTRING(10 10, 0 10):LINESTRING(0 10, 0 0)}'), 1));
 
+select 'linemerge149', asewkt(linemerge('GEOMETRYCOLLECTION(LINESTRING(0 0, 1 1), LINESTRING(4 4, 1 1), LINESTRING(-5 -5, 0 0))'::geometry));
+
 --- postgis-devel/2005-December/001784.html
 select 'intersects', intersects(
    polygonfromtext('POLYGON((0.0 0.0,1.0 0.0,1.0 1.0,1.0 0.0,0.0 0.0))'),
       polygonfromtext('POLYGON((0.0 2.0,1.0 2.0,1.0 3.0,0.0 3.0,0.0 2.0))')
       );
 
+select '130', geosnoop('POLYGON((0 0, 1 1, 0 0))');
 

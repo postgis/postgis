@@ -13,6 +13,8 @@ crosses|t
 within|t
 within|f
 within|f
+within119|f
+within120|f
 contains|f
 contains|f
 contains|t
@@ -32,4 +34,7 @@ centroid|POINT(5.08333333333333 5.08333333333333)
 exteriorring|LINESTRING(52 18,66 23,73 9,48 6,52 18)
 polygonize_garray|GEOMETRYCOLLECTION EMPTY
 polygonize_garray|POLYGON((10 0,0 0,0 10,10 10,10 0))
+linemerge149|LINESTRING(-5 -5,0 0,1 1,4 4)
 intersects|f
+NOTICE:  IllegalArgumentException: Number of points must be 0 or >3
+ERROR:  POSTGIS2GEOS conversion failed

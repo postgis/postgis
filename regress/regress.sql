@@ -194,8 +194,6 @@ select '118', length3d('MULTILINESTRING((0 0 0, 1 1 1),(0 0 0, 1 1 1, 2 2 2) )':
 
 ---selection
 
-select '119', within('LINESTRING(-1 -1, -1 101, 101 101, 101 -1)'::GEOMETRY,'BOX3D(0 0, 100 100)'::BOX3D);
-select '120', within('LINESTRING(-1 -1, -1 100, 101 100, 101 -1)'::GEOMETRY,'BOX3D(0 0, 100 100)'::BOX3D);
 
 
 --- TOAST testing
@@ -219,8 +217,6 @@ select '127',a @ b from TEST;
 select '128',a ~ b from TEST; 
 
 select '129', mem_size(dropBBOX(a)), mem_size(dropBBOX(b)) from TEST;
-
-select '130', geosnoop('POLYGON((0 0, 1 1, 0 0))');
 
 select '131', X('POINT(1 2)');
 select '132', Y('POINT(1 2)');
@@ -252,7 +248,6 @@ select '147', asewkt(force_4d('POINT(1 2 3)'));
 
 select '148', astext(segmentize('LINESTRING(0 0, 10 0)', 5));
 
-select '149', asewkt(linemerge('GEOMETRYCOLLECTION(LINESTRING(0 0, 1 1), LINESTRING(4 4, 1 1), LINESTRING(-5 -5, 0 0))'::geometry));
 
 select '150', asewkt(force_collection(setsrid('POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))'::geometry, 6)));
 
