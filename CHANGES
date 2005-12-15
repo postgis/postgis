@@ -40,6 +40,7 @@ PostGIS 1.1.0CVS
 	
 	- Other changes:
 		- Full autoconf-based configuration
+		- PostgreSQL source dependency relief
 		- JTS support improvements
 		- GEOS C-API support (2.2.0 and higher)
 		- Initial support for topology modelling
@@ -48,6 +49,7 @@ PostGIS 1.1.0CVS
 		- Wider and cleaner regression test suite
 		- postgis_version() made a C function
 		- produced lwpostgis_upgrade.sql as part of the build process
+		- old jdbc code removed from release
 
 PostGIS 1.0.6
 2005/12/06
