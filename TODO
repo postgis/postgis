@@ -18,6 +18,8 @@
 - Unbound Release version from library version.
 - postgis_version() and postgis_full_version() cleanups
 - Clearly define Versioning strategy.
+- Remove references to "OLD UPGRADE METHOD" from manual
+  and Readme (if still there)
 
 ======================================
 2005/12/14 - other random items 
