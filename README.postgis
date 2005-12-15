@@ -116,8 +116,8 @@ run, succeeded, failed. If you have any failure please
 file a bug report using the online bug tracker:
 http://postgis.refractions.net/bugs.
 
-SPATIAL DATABASE CREATION
--------------------------
+CREATING NEW SPATIAL DATABASES
+------------------------------
 
 PostGIS support must be enabled for each database that requires
 its usage. This is done by feeding the lwpostgis.sql (the enabler script)
@@ -132,20 +132,42 @@ manually for some reason.)
 So, as postgres run:
 
   createlang plpgsql yourdatabase
-  psql -f lwpostgis.sql -d yourdatabase
+  psql -f lwpostgis.sql -d your_database
 
 Your database should now be spatially enabled.
 
-UPGRADE
--------
+UPGRADING EXISTING SPATIAL DATABASES
+------------------------------------
 
-Upgrading PostGIS can be tricky, because the underlying C libraries which 
-support the object types and geometries may have changed between versions.
+Upgrading existing spatial databases can be tricky as it requires
+replacement or introduction of new PostGIS object definitions.
+
+Unfortunately not all definitions can be easily replaced in 
+a live database, so sometimes your best bet is a dump/reload
+process. 
+
+PostGIS provides a SOFT UPGRADE procedure for minor or bugfix
+releases, and an HARD UPGRADE procedure for major releases.
+
+--- SOFT UPGRADE ---
+
+Soft upgrade simply consists of sourcing the lwpostgis_upgrade.sql
+script in your spatial databases:
+
+  psql -f lwpostgis_upgrade.sql -d your_spatial_database
+
+If full procedures replacement is not possible the script
+will abort and you will be warned about HARD UPGRADE being required,
+so don't esitate to try this first.
+
+--- HARD UPGRADE ---
+
+Hard upgrade is a special handling of a PostgreSQL dump/restore procedure.
+Special handling is required since PostGIS object definitions will be part
+of the dump, but instead of the old ones you want the new one restored.
 
 For this purpose PostGIS provides an utility script to restore a dump
-produced with the pg_dump -Fc command. It is experimental so redirecting
-its output to a file will help in case of problems. The procedure is
-as follow:
+in "custom" format. Hard upgrade procedure is as follows:
 
 	# Create a "custom-format" dump of the database you want
 	# to upgrade (let's call it "olddb")
@@ -177,18 +199,6 @@ as follow:
 	newdb=> drop table spatial_ref_sys;
 	DROP
 	newdb=> \i spatial_ref_sys.sql
-
-Following is the "old" procedure description. IT SHOULD BE AVOIDED if possible,
-as it will leave in the database many spurious functions. It is kept in this document
-as a "backup" in case postgis_restore.pl won't work for you:
-
-	pg_dump -t "*" -f dumpfile.sql yourdatabase
-	dropdb yourdatabase
-	createdb yourdatabase
-	createlang plpgsql yourdatabase
-	psql -f lwpostgis.sql -d yourdatabase
-	psql -f dumpfile.sql -d yourdatabase
-	vacuumdb -z yourdatabase
 
 
 USAGE
