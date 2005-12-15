@@ -36,17 +36,18 @@ if [ -z "$db_exists" ]; then
 fi
 
 libver=`psql -tAc "select postgis_lib_version()" $DB`
+
+if [ -z "$libver" ]; then
+	echo
+	echo "Something went wrong (no postgis installed in $DB)" 
+	echo
+	exit 1
+fi
+
 geosver=`psql -tAc "select postgis_geos_version()" $DB`
 jtsver=`psql -tAc "select postgis_jts_version()" $DB`
 libbuilddate=`psql -tAc "select postgis_lib_build_date()" $DB`
 pgsqlver=`psql -tAc "select version()" $DB`
-
-if [ -z "$libver" ]; then
-	echo
-	echo "Something went wrong (no postgis installed in $DB" 
-	echo
-	exit 1
-fi
 
 echo
 echo " $pgsqlver"
