@@ -9,6 +9,17 @@
 - casts between PostGIS and PostgreSQL geometry classes
 
 ======================================
+2005/12/16 - PostGIS 1.1.0 closeup
+======================================
+
+- Drop jdbc (old code) and rename jdbc2 to jdbc
+- Take a decision about regress tests package split
+- Fix MODULE_FILENAME (postgis-devel/2005-December/001855.html)
+- Unbound Release version from library version.
+- postgis_version() and postgis_full_version() cleanups
+- Clearly define Versioning strategy.
+
+======================================
 2005/12/14 - other random items 
 ======================================
 
