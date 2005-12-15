@@ -125,7 +125,7 @@ lwgeom_functions_basic.o: lwgeom_functions_basic.c profile.h
 # Shared library stuff
 
 ../lwpostgis_upgrade.sql: ../lwpostgis.sql
-	perl ../utils/postgis_proc_upgrade.pl ../lwpostgis.sql > ../lwpostgis_upgrade.sql
+	$(PERL) ../utils/postgis_proc_upgrade.pl ../lwpostgis.sql > ../lwpostgis_upgrade.sql
 
 ../lwpostgis.sql: lwpostgis.sql.in
 	cpp -P -traditional-cpp -DUSE_VERSION=$(USE_VERSION) $< | sed -e 's:@MODULE_FILENAME@:$(MODULE_FILENAME):g;s:@POSTGIS_VERSION@:$(POSTGIS_VERSION):g;s:@POSTGIS_SCRIPTS_VERSION@:$(SCRIPTS_VERSION):g;s/@POSTGIS_BUILD_DATE@/$(POSTGIS_BUILD_DATE)/g' | grep -v '^#' > $@

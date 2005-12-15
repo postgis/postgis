@@ -286,6 +286,15 @@ dnl fi
 AC_SUBST(INSTALL)
 INSTALL=$( echo ${PWD} )/install-sh
 
+dnl
+dnl Search perl
+dnl
+AC_SUBST(PERL)
+AC_PATH_PROG([PERL], [perl])
+if test -z "$PERL"; then
+	AC_MSG_ERROR(Can't find 'perl');
+fi
+
 AC_SUBST(docdir)
 docdir='${prefix}/share/doc'
 AC_ARG_WITH(docdir,
