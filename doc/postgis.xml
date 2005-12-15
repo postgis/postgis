@@ -1938,7 +1938,6 @@ WHERE the_geom &amp;&amp; 'BOX3D(90900 190900, 100100 200100)'::box3d
  the_geom  | geometry          | Location Geometry (Polygon)</programlisting>
 
         <qandaset>
-          <qandadiv>
             <qandaentry>
               <question>
                 <para>What is the total length of all roads, expressed in
@@ -2105,7 +2104,6 @@ WHERE the_geom &amp;&amp; 'BOX3D(90900 190900, 100100 200100)'::box3d
 (1 row)</programlisting>
               </answer>
             </qandaentry>
-          </qandadiv>
         </qandaset>
       </sect2>
     </sect1>
@@ -2276,7 +2274,6 @@ END</programlisting>
         <title>Frequently Asked Questions</title>
 
         <qandaset>
-          <qandadiv>
             <qandaentry>
               <question>
                 <para>When I use an <varname>EXPRESSION</varname> in my map
@@ -2357,7 +2354,6 @@ postgis# VACUUM ANALYZE;                  -- For PGSQL &gt;= 8.0</programlisting
                 <programlisting>postgis# CREATE INDEX geotable_oid_idx ON geotable (oid);</programlisting>
               </answer>
             </qandaentry>
-          </qandadiv>
         </qandaset>
       </sect2>
 
