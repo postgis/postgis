@@ -134,7 +134,8 @@ install: all install-lib-shared install-lwgeom-scripts
 
 install-lwgeom-scripts:
 	@mkdir -p $(DESTDIR)$(datadir)
-	$(INSTALL_DATA) lwpostgis.sql $(DESTDIR)$(datadir)/lwpostgis.sql
+	$(INSTALL_DATA) ../lwpostgis.sql $(DESTDIR)$(datadir)/lwpostgis.sql
+	$(INSTALL_DATA) ../lwpostgis_upgrade.sql $(DESTDIR)$(datadir)/lwpostgis_upgrade.sql
 	$(INSTALL_DATA) ../spatial_ref_sys.sql $(DESTDIR)$(datadir)/spatial_ref_sys.sql
 
 #----------------------------------------------------------
@@ -144,6 +145,7 @@ detect_geos_version:
 
 uninstall-lwgeom-scripts:
 	rm -f $(DESTDIR)$(datadir)/postgis/lwpostgis.sql
+	rm -f $(DESTDIR)$(datadir)/postgis/lwpostgis_upgrade.sql
 	rm -f $(DESTDIR)$(datadir)/postgis/spatial_ref_sys.sql
 
 uninstall: uninstall-lib uninstall-lwgeom-scripts
