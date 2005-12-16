@@ -94,7 +94,7 @@ all: $(GEOS_RULES) ../lwpostgis.sql ../lwpostgis_upgrade.sql all-shared-lib
 enable_shared=yes
 include Makefile.shlib
 
-MODULE_FILENAME = $(LPATH)/$(shlib_major)
+MODULE_FILENAME = $(LPATH)/$(shlib)
 
 #---------------------------------------------------------------
 # Makefile targets
