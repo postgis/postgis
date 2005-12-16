@@ -12,10 +12,9 @@
 2005/12/16 - PostGIS 1.1.0 closeup
 ======================================
 
-- Carefully check utils/postgis_proc_upgrade.pl ability
-  at detecting wheter a soft upgrade will do.
+- TEST TEST TEST (upgrades mainly)
 
-- Rename jdbc2 to jdbc ? How about history ?
+- Remove type-punned warnings given by gcc-3.3 ?
 
 ======================================
 2005/12/14 - other random items 
