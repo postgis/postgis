@@ -5198,7 +5198,8 @@ Alex Bodnaru helped with PostgreSQL source dependency relief and
 provided Debian specfiles.  Michael Fuhr tested new things on Solaris arch.
 David Techer and Gerald Fenoy helped testing GEOS C-API connector.
 Hartmut Tschauner provided code for the azimuth() function. 
-Devrim GUNDUZ provided RPM specfiles.
+Devrim GUNDUZ provided RPM specfiles. Carl Anderson helped with
+the new area building functions.
 See the <link linkend="credits">credits</link> section for more names.
 				</para>
 			</sect2>
