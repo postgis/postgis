@@ -124,7 +124,7 @@ lwgeom_functions_basic.o: lwgeom_functions_basic.c profile.h
 
 # Shared library stuff
 
-../lwpostgis_upgrade.sql: ../lwpostgis.sql
+../lwpostgis_upgrade.sql: ../lwpostgis.sql ../utils/postgis_proc_upgrade.pl
 	$(PERL) ../utils/postgis_proc_upgrade.pl ../lwpostgis.sql > ../lwpostgis_upgrade.sql
 
 ../lwpostgis.sql: lwpostgis.sql.in
