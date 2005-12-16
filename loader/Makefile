@@ -10,6 +10,7 @@ OBJS = shpopen.o dbfopen.o getopt.o
 
 ifeq ($(USE_ICONV),1)
 	override CFLAGS += -DUSE_ICONV
+	override LDFLAGS += $(ICONV_LDFLAGS)
 endif
 
 override CFLAGS := -g -Wall -I.. $(CFLAGS) -DUSE_VERSION=$(USE_VERSION)

@@ -22,6 +22,8 @@ dnl
 dnl iconv support (might fail in case of non-default iconv installation)
 dnl
 AC_SUBST(USE_ICONV)
+AC_SUBST(ICONV_LDFLAGS)
+ICONV_LDFLAGS=
 USE_ICONV=1
 AC_ARG_WITH(iconv, 
 [  --without-iconv         disable unicode support],
@@ -31,10 +33,15 @@ AC_ARG_WITH(iconv,
 )
 
 if test "$USE_ICONV" = 1; then
-	AC_CHECK_LIB(c, iconv_open,
+	AC_CHECK_LIB(iconv, iconv_open,
 		USE_ICONV=1
+		ICONV_LDFLAGS=-liconv
 		,
-		USE_ICONV=0
+		AC_CHECK_LIB(iconv, iconv_open,
+			USE_ICONV=1
+			,
+			USE_ICONV=0
+		)
 	)
 fi
 
@@ -472,7 +479,7 @@ fi
 if test $USE_PROJ -gt 0; then
 	AC_MSG_RESULT([    PROJ: dir=$PROJ_DIR])
 fi
-AC_MSG_RESULT([   ICONV: $USE_ICONV])
+AC_MSG_RESULT([   ICONV: $USE_ICONV $ICONV_LDFLAGS])
 dnl AC_MSG_RESULT([  FLEX:  path=$FLEX])
 dnl AC_MSG_RESULT([  YACC:  path=$YACC])
 
