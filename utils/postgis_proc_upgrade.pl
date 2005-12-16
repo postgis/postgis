@@ -1,5 +1,20 @@
 #/bin/sh
 
+#
+# This script produces an .sql file containing
+# CREATE OR REPLACE calls for each function
+# in lwpostgis.sql
+#
+# In addition, the transaction contains
+# a check for Major postgis_lib_version() 
+# to match the one contained in lwpostgis.sql
+#
+# This never happens by just running make install
+# as MODULE_FILENAME contains SO_MAJOR under
+# all architectures.
+#
+#
+
 eval "exec perl -w $0 $@"
 	if (0);
 
@@ -97,8 +112,8 @@ AS '
 DECLARE
 	old_scripts text;
 	new_scripts text;
-	old_majmin text;
-	new_majmin text;
+	old_maj text;
+	new_maj text;
 BEGIN
 	--
 	-- This uses postgis_lib_version() rather then
@@ -114,10 +129,10 @@ BEGIN
 	-- 
 	SELECT into old_scripts postgis_lib_version();
 	SELECT into new_scripts ''NEWVERSION'';
-	SELECT into old_majmin substring(old_scripts from 1 for 4);
-	SELECT into new_majmin substring(new_scripts from 1 for 4);
+	SELECT into old_maj substring(old_scripts from 1 for 2);
+	SELECT into new_maj substring(new_scripts from 1 for 2);
 
-	IF old_majmin != new_majmin THEN
+	IF old_maj != new_maj THEN
 		RAISE EXCEPTION ''Scripts upgrade from version % to version % requires a dump/reload. See postgis manual for instructions'', old_scripts, new_scripts;
 	ELSE
 		RETURN ''Scripts versions checked for upgrade: ok'';
