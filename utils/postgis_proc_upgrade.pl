@@ -100,6 +100,18 @@ DECLARE
 	old_majmin text;
 	new_majmin text;
 BEGIN
+	--
+	-- This uses postgis_lib_version() rather then
+	-- postgis_scripts_installed() as in 1.0 because
+	-- in the 1.0 => 1.1 transition that would result
+	-- in an impossible upgrade:
+	--
+	--   from 0.3.0 to 1.1.0
+	--
+	-- Next releases will still be ok as
+	-- postgis_lib_version() and postgis_scripts_installed()
+	-- would both return actual PostGIS release number.
+	-- 
 	SELECT into old_scripts postgis_lib_version();
 	SELECT into new_scripts ''NEWVERSION'';
 	SELECT into old_majmin substring(old_scripts from 1 for 4);
