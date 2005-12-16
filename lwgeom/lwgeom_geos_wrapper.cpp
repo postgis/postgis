@@ -5,6 +5,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <typeinfo>
 
 #include "postgis_geos_version.h"
 #include "geos/geom.h"
