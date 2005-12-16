@@ -46,7 +46,7 @@
     (coverages, surfaces, networks), desktop user interface tools for viewing
     and editing GIS data, and web-based access tools.</para>
 
-    <sect1>
+    <sect1 id="credits">
       <title>Credits</title>
 
       <variablelist>
@@ -5171,6 +5171,145 @@ FROM geometry_table;</literallayout>
 	<appendix id="release_notes">
 		<title>Release Notes</title>
 
+    		<sect1>
+			<title>Release 1.1.0</title>
+			<para>Release date: 2005/12/21</para>
+
+			<para>
+This is a Minor release, containing many improvements and new things.
+Most notably: build procedure greatly simplified; transform() performance
+drastically improved; more stable GEOS connectivity (CAPI support);
+lots of new functions; draft topology support.
+			</para>
+
+			<para>
+It is <emphasis>highly recommended</emphasis> that you upgrade to GEOS-2.2.x
+before installing PostGIS, this will ensure future GEOS upgrades won't
+require a rebuild of the PostGIS library.
+			</para>
+
+			<sect2>
+				<title>Credits</title>
+
+				<para>
+This release includes code from Mark Cave Ayland for caching of proj4
+objects. Markus Schaber added many improvements in his JDBC2 code.
+Alex Bodnaru helped with PostgreSQL source dependency relief and
+provided Debian specfiles.  Michael Fuhr tested new things on Solaris arch.
+David Techer and Gerald Fenoy helped testing GEOS C-API connector.
+Hartmut Tschauner provided code for the azimuth() function. 
+Devrim GUNDUZ provided RPM specfiles.
+See the <link linkend="credits">credits</link> section for more names.
+				</para>
+			</sect2>
+
+			<sect2>
+				<title>Upgrading</title>
+
+				<para>
+If you are upgrading from release 1.0.3 or later you <emphasis>DO
+NOT</emphasis> need a dump/reload.
+Simply sourcing the new lwpostgis_upgrade.sql script in all your
+existing databases will work.
+See the <link linkend="soft_upgrade">soft upgrade</link> chapter
+for more informations.
+				</para>
+
+				<para>
+If you are upgrading from a release <emphasis>between 1.0.0RC6 and
+1.0.2</emphasis> (inclusive) and really want a live upgrade read the
+<link linkend="rel_1.0.3_upgrading">upgrade section</link> of the 1.0.3
+release notes chapter.
+				</para>
+
+				<para>
+Upgrade from any release prior to 1.0.0RC6 requires an
+<link linkend="hard_upgrade">hard upgrade</link>.
+				</para>
+			</sect2>
+
+			<sect2>
+				<title>New functions</title>
+<para>scale() and transscale() companion methods to translate()</para>
+<para>line_substring() </para>
+<para>line_locate_point()</para>
+<para>M(point) </para>
+<para>LineMerge(geometry) </para>
+<para>shift_longitude(geometry) </para>
+<para>azimuth(geometry) </para>
+<para>locate_along_measure(geometry, float8) </para>
+<para>locate_between_measures(geometry, float8, float8) </para>
+<para>SnapToGrid by point offset (up to 4d support)</para>
+<para>BuildArea(any_geometry) </para>
+<para>OGC BdPolyFromText(linestring_wkt, srid) </para>
+<para>OGC BdMPolyFromText(linestring_wkt, srid)</para>
+<para>RemovePoint(linestring, offset)</para>
+<para>ReplacePoint(linestring, offset, point)</para>
+			</sect2>
+
+			<sect2>
+				<title>Bug fixes</title>
+<para>Fixed memory leak in polygonize()</para>
+<para>Fixed bug in lwgeom_as_anytype cast funcions</para>
+<para>
+Fixed USE_GEOS, USE_PROJ and USE_STATS elements of postgis_version()
+output to always reflect library state.
+</para>
+			</sect2>
+
+			<sect2>
+				<title>Function semantic changes</title>
+<para>SnapToGrid doesn't discard higher dimensions</para>
+<para>Changed Z() function to return NULL if requested dimension is not available</para>
+			</sect2>
+
+			<sect2>
+				<title>Performance improvements</title>
+<para>
+Much faster transform() function, caching proj4 objects
+</para>
+<para>
+Removed automatic call to fix_geometry_columns() in
+AddGeometryColumns() and update_geometry_stats()
+</para>
+			</sect2>
+
+			<sect2>
+				<title>JDBC2 works</title>
+<para>Makefile improvements</para>
+<para>JTS support improvements</para>
+<para>Improved regression test system</para>
+<para>Basic consistency check method for geometry collections</para>
+<para>Support for (Hex)(E)wkb</para>
+<para>Autoprobing DriverWrapper for HexWKB / EWKT switching</para>
+<para>fix compile problems in ValueSetter for ancient jdk releases.</para>
+<para>fix EWKT constructors to accept SRID=4711; representation</para>
+<para>added preliminary read-only support for java2d geometries</para>
+			</sect2>
+
+			<sect2>
+				<title>Other new things</title>
+<para>
+Full autoconf-based configuration, with PostgreSQL source dependency relief
+</para>
+<para>GEOS C-API support (2.2.0 and higher)</para>
+<para>Initial support for topology modelling</para>
+<para>Debian and RPM specfiles</para>
+<para>New lwpostgis_upgrade.sql script</para>
+			</sect2>
+
+			<sect2>
+				<title>Other changes</title>
+<para>JTS support improvements</para>
+<para>Stricter mapping between DBF and SQL integer and string attributes</para>
+<para>Wider and cleaner regression test suite</para>
+<para>old jdbc code removed from release</para>
+<para>obsoleted direct use of postgis_proc_upgrade.pl</para>
+<para>scripts version unified with release version</para>
+			</sect2>
+
+
+		</sect1>
     		<sect1>
 			<title>Release 1.0.6</title>
 			<para>Release date: 2005/12/06</para>

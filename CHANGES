@@ -1,4 +1,5 @@
-PostGIS 1.1.0CVS
+PostGIS 1.1.0
+2005/12/21
 
 	- New functions:
 		- scale() and transscale() companion methods to translate()
@@ -16,6 +17,13 @@ PostGIS 1.1.0CVS
 		- OGC BdMPolyFromText(linestring_wkt, srid)
 		- RemovePoint(linestring, offset)
 		- ReplacePoint(linestring, offset, point)
+
+	- Bug fixes:
+		- Fixed memory leak in polygonize()
+		- Fixed bug in lwgeom_as_anytype cast funcions
+		- Fixed USE_GEOS, USE_PROJ and USE_STATS elements
+		  of postgis_version() output to always reflect
+		  library state.
 
 	- Function semantic changes:
 		- SnapToGrid doesn't discard higher dimensions
@@ -38,17 +46,19 @@ PostGIS 1.1.0CVS
 		- fix EWKT constructors to accept SRID=4711; representation
 		- added preliminary read-only support for java2d geometries
 	
-	- Other changes:
-		- Full autoconf-based configuration
-		- PostgreSQL source dependency relief
-		- JTS support improvements
+	- Other new things:
+		- Full autoconf-based configuration, with
+		  PostgreSQL source dependency relief
 		- GEOS C-API support (2.2.0 and higher)
 		- Initial support for topology modelling
+		- Debian and RPM specfiles
+		- New lwpostgis_upgrade.sql script
+
+	- Other changes:
+		- JTS support improvements
 		- Stricter mapping between DBF and SQL integer and
 		  string attributes
 		- Wider and cleaner regression test suite
-		- postgis_version() made a C function
-		- produced lwpostgis_upgrade.sql as part of the build process
 		- old jdbc code removed from release
 		- obsoleted direct use of postgis_proc_upgrade.pl
 		- scripts version unified with release version
