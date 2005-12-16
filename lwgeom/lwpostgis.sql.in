@@ -11,14 +11,11 @@
 --  
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --
--- WARNING: Any change in this file must be evaluated for
---          deciding the SCRIPTS_VERSION upgrade in Version.config
---          Changes which can be imported using the
---          utils/postgis_proc_upgrade.pl script are COMPATIBLE
---          and only require a MICRO version increment.
---          All other changes are NOT COMPATILBLE and require a
---          MINOR or MAJOR increment (difference between the two
---          is not defined yet).
+-- WARNING: Any change in this file must be evaluated for compatibility.
+--          Changes cleanly handled by lwpostgis_uptrade.sql are fine,
+--	    other changes will require a bump in Major version.
+--	    Currently only function replaceble by CREATE OR REPLACE
+--	    are cleanly handled.
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
