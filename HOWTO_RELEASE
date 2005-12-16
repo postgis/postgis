@@ -26,6 +26,6 @@ Release procedure
    been reported.
 3) Add release notes in doc/postgis.xml
 4) Tag pgis_MAJ_MIN_MIC
-5) Run sh make_dist.sh
+5) Run: sh make_dist.sh MAJ.MIN.MIC
 6) Publish
 7) Announce 
