@@ -12,14 +12,10 @@
 2005/12/16 - PostGIS 1.1.0 closeup
 ======================================
 
-- Drop jdbc (old code) and rename jdbc2 to jdbc
-- Take a decision about regress tests package split
-- Fix MODULE_FILENAME (postgis-devel/2005-December/001855.html)
-- Unbound Release version from library version.
-- postgis_version() and postgis_full_version() cleanups
-- Clearly define Versioning strategy.
-- Remove references to "OLD UPGRADE METHOD" from manual
-  and Readme (if still there)
+- Carefully check utils/postgis_proc_upgrade.pl ability
+  at detecting wheter a soft upgrade will do.
+
+- Rename jdbc2 to jdbc ? How about history ?
 
 ======================================
 2005/12/14 - other random items 
