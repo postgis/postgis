@@ -6,7 +6,7 @@ eval "exec perl -w $0 $@"
 use strict;
 
 ($#ARGV == 0) ||
-die "Usage: perl postgis_funxupgrade.pl <postgis.sql> [<schema>]\nCreates a new SQL script to upgrade all of the PostGIS functions.\n"
+die "Usage: perl postgis_proc_upgrade.pl <postgis.sql> [<schema>]\nCreates a new SQL script to upgrade all of the PostGIS functions.\n"
 	if ( @ARGV < 1 || @ARGV > 2 );
 
 my $NEWVERSION = "UNDEF";
@@ -20,11 +20,14 @@ open( INPUT, $ARGV[0] ) || die "Couldn't open file: $ARGV[0]\n";
 FUNC:
 while(<INPUT>)
 {
+	#
+	# Since 1.1.0 scripts/lib/release versions are the same
+	#
 	if (m/^create or replace function postgis_scripts_installed()/i)
 	{
 		while(<INPUT>)
 		{
-			if ( m/SELECT .'(\d\.\d\.\d).'::text/i )
+			if ( m/SELECT .'(\d\.\d\..*).'::text/i )
 			{
 				$NEWVERSION = $1;
 				last FUNC;
@@ -88,7 +91,7 @@ print "COMMIT;\n";
 
 __END__
 
-CREATE OR REPLACE FUNCTION postgis_script_version_check()
+CREATE OR REPLACE FUNCTION postgis_major_version_check()
 RETURNS text
 AS '
 DECLARE
@@ -97,7 +100,7 @@ DECLARE
 	old_majmin text;
 	new_majmin text;
 BEGIN
-	SELECT into old_scripts postgis_scripts_installed();
+	SELECT into old_scripts postgis_lib_version();
 	SELECT into new_scripts ''NEWVERSION'';
 	SELECT into old_majmin substring(old_scripts from 1 for 4);
 	SELECT into new_majmin substring(new_scripts from 1 for 4);
@@ -111,6 +114,6 @@ END
 '
 LANGUAGE 'plpgsql';
 
-SELECT postgis_script_version_check();
+SELECT postgis_major_version_check();
 
-DROP FUNCTION postgis_script_version_check();
+DROP FUNCTION postgis_major_version_check();

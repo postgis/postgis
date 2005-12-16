@@ -50,6 +50,8 @@ PostGIS 1.1.0CVS
 		- postgis_version() made a C function
 		- produced lwpostgis_upgrade.sql as part of the build process
 		- old jdbc code removed from release
+		- obsoleted direct use of postgis_proc_upgrade.pl
+		- scripts version unified with release version
 
 PostGIS 1.0.6
 2005/12/06

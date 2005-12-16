@@ -2553,6 +2553,12 @@ CREATEFUNCTION postgis_proj_version() RETURNS text
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' _IMMUTABLE;
 
+--
+-- IMPORTANT:
+-- Starting at 1.1.0 this function is used by postgis_proc_upgrade.pl
+-- to extract version of postgis being installed.
+-- Do not modify this w/out also changing postgis_proc_upgrade.pl
+--
 CREATEFUNCTION postgis_scripts_installed() RETURNS text
         AS 'SELECT \'@POSTGIS_SCRIPTS_VERSION@\'::text AS version'
         LANGUAGE 'sql' _IMMUTABLE;
@@ -2561,6 +2567,7 @@ CREATEFUNCTION postgis_lib_version() RETURNS text
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' _IMMUTABLE; -- a new lib will require a new session
 
+-- NOTE: starting at 1.1.0 this is the same of postgis_lib_version()
 CREATEFUNCTION postgis_scripts_released() RETURNS text
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' _IMMUTABLE;
@@ -2625,8 +2632,8 @@ BEGIN
 		fullver = fullver || \' USE_STATS\';
 	END IF;
 
-	fullver = fullver || \' DBPROC="\' || dbproc || \'"\';
-	fullver = fullver || \' RELPROC="\' || relproc || \'"\';
+	-- fullver = fullver || \' DBPROC="\' || dbproc || \'"\';
+	-- fullver = fullver || \' RELPROC="\' || relproc || \'"\';
 
 	IF dbproc != relproc THEN
 		fullver = fullver || \' (needs proc upgrade)\';
