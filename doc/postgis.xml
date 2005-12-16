@@ -363,25 +363,21 @@
       <sect2 id="upgrading">
         <title>Upgrading</title>
 
-	<para>
-Upgrading PostGIS can be tricky, because it is composed by both a shared
-library and a set of definitions that are stored in the host database.
-	</para>
+<para>
+Upgrading existing spatial databases can be tricky as it requires
+replacement or introduction of new PostGIS object definitions.
+</para>
 
-	<para>
-When the set of definitions changes (new objects, or procedural language
-functions modifications) it is not always easy to have them replace the
-old ones. Having a mismatch between definitions and implementations can
-bring to an unstable or unsable system.
-	</para>
+<para>
+Unfortunately not all definitions can be easily replaced in 
+a live database, so sometimes your best bet is a dump/reload
+process. 
+</para>
 
-	<para>
-Since postgis version 0.9.0 You can check your installation state
-using <link linkend="postgis_full_version">postgis_full_version()</link>.
-The function will warn you with a "need proc upgrade" message if a mismatch
-is found. Also, it will see you if your database is still using an older
-postgis library (NOTE: this is not true for postgis_version()).
-	</para>
+<para>
+PostGIS provides a SOFT UPGRADE procedure for minor or bugfix
+releases, and an HARD UPGRADE procedure for major releases.
+</para>
 
 	<para>
 Before attempting to upgrade postgis, it is always worth to backup
@@ -392,44 +388,29 @@ to restore the dump with an HARD UPGRADE.
 	<sect3 id="soft_upgrade">
 		<title>Soft upgrade</title>
 
-	<para>
-By SOFT UPGRADE we intend a live replacement of objects definitions.
-This is only possible in certain circumstances as not all objects
-are replaceable in a live system.
-	</para>
+<para>
+Soft upgrade consists of sourcing the lwpostgis_upgrade.sql
+script in your spatial database:
+</para>
 
-	<para>
-To know wheter a SOFT UPGRADE should work for you refer to your new
-version section in the <link linkend="release_notes">Release Notes</link>
-appendix of this manual. 
-	</para>
+<programlisting>psql -f lwpostgis_upgrade.sql -d your_spatial_database</programlisting>
 
-	<para>
-The <link linkend="postgis_full_version">postgis_full_version()</link>
-function will also show you current state
-and by that you should be able to find out wheter or not SOFT UPGRADE
-will be possible. You should look at the DBPROC and RELPROC values.
-DBPROC are the procedures stored in the database, RELPROC are the
-procedures expected by the shared library (RELeased PROCedures).
-Their values represent SCRIPTS versions. If they don't match the
-function will warn you with a message: "needs proc upgrade".
-	</para>
+<para>
+If a soft upgrade is not possible the script will abort and 
+you will be warned about HARD UPGRADE being required,
+so do not hesitate to try a soft upgrade first.
+</para>
 
-	<para>
-Soft (proc) upgrade will only be possible when the DBPROC and RELPROC
-versions share MAJOR and MINOR numbers. If this is the case you can
-try to use the utils/postgis_proc_upgrade.pl script. Note that the
-script will check for this itself so you should be safe attempting
-w/out checking it manually. Here is how you do:
-	</para>
+<note>
+<para>
+If you can't find the <filename>lwpostgis_upgrade.sql</filename> file
+you are probably using a version prior to 1.1 and must generate that
+file by yourself. This is done with the following command:
+</para>
 
-	<programlisting>
+<programlisting>utils/postgis_proc_upgrade.pl lwpostgis.sql > lwpostgis_upgrade.sql</programlisting>
+</note>
 
-	$ make install # DON'T DO IT IF WITHOUT BACKING UP YOUR DATA !  
-
-	$ utils/postgis_proc_upgrade.pl lwpostgis.sql | psql &lt;db&gt;  
-
-	</programlisting>
 
 	</sect3>
 
@@ -3955,13 +3936,17 @@ dimension
           <term>postgis_version()</term>
 
           <listitem>
-            <para>Returns the version number of the PostGIS functions
-            installed in this database (deprecated, use postgis_full_version()
-            instead).</para>
+		<para>Returns PostGIS version number and compile-time options</para>
+
+		<note><para>
+		Prior to version 1.1.0 this was a procedural function, thus possibly
+		returning inaccurate information (in case of incomplete database upgrades).
+		</para></note>
+
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="postgis_lib_version">
           <term>postgis_lib_version()</term>
           <listitem>
             <para>Returns the version number of the PostGIS library.</para>
@@ -3995,23 +3980,42 @@ dimension
           <term>postgis_scripts_installed()</term>
 
           <listitem>
-            <para>Returns the version number of the lwpostgis.sql script
-            installed in this database.</para>
+		<para>
+		Returns version of the postgis scripts
+		installed in this database.
+		</para>
+
+		<note> <para>
+		If the output of this function doesn't match the output of
+		<link linkend="postgis_scripts_released">postgis_scripts_released()</link>
+		you probably missed to properly upgrade an existing database.
+		See the <link linkend="upgrading">Upgrading</link> section for more info.
+		</para></note>
+
 		<para>
 	Availability: 0.9.0
 		</para>
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="postgis_scripts_released">
           <term>postgis_scripts_released()</term>
 
           <listitem>
             <para>Returns the version number of the lwpostgis.sql script
             released with the installed postgis lib.</para>
+
+		<note> <para>
+		Starting with version 1.1.0 this function returns the same
+		value of <link linkend="postgis_lib_version">postgis_lib_version()</link>.
+		Kept for backward compatibility.
+		</para></note>
+
 		<para>
-	Availability: 0.9.0
+	Availability: 0.9.0 
 		</para>
+
+
           </listitem>
         </varlistentry>
 
