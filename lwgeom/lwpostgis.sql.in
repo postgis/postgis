@@ -2633,7 +2633,7 @@ BEGIN
 	-- fullver = fullver || \' RELPROC="\' || relproc || \'"\';
 
 	IF dbproc != relproc THEN
-		fullver = fullver || \' (needs proc upgrade)\';
+		fullver = fullver || \' (procs \' || dbproc || \' upgrade)\';
 	END IF;
 
 	RETURN fullver;
