@@ -3,7 +3,7 @@
 
 (C) 2005 Markus Schaber <markus.schaber@logix-tt.com>
 
-$Revision$
+$Id $
 
 * What is it all about? *
 
@@ -70,12 +70,13 @@ link against those.
 
 You need a recent pgjdbc driver jar, see the download link from above.
 It is currently tested and supported with 7.2, 7.3, 7.4, 8.0 and 8.1 pgjdbc
-releases. Apart 7.2, those are exactly the releases that are currently 
-supported by PostgreSQL server guys.
+releases. Those are the same PostgreSQL releases that are supported by the
+PostGIS server-side C code, and apart from 7.2, the same as currently 
+supported by PostgreSQL server developers.
 
 The current PostGIS jdbc release is also reported to run (but not compile)
 against the postgresql jdbc7.1-1.2.jar, but this is not supported, as well as 
-current PostGIS itsself does not support 7.1 servers any more.
+current PostGIS backend itsself does not support 7.1 servers any more.
 
 Note that your pgjdbc driver version does not constrain the PostgreSQL 
 server version. As the JDBC drivers are downwards compatible against older 
@@ -97,10 +98,14 @@ debugging purposes.
 
 * It is called jdbc2 - does it work with jdbc3, too? *
 
+To make it short: The naming does not refer to SUN jdbc standard releases 
+jdbc-1, jdbc-2 or jdbc-3. 
+
 The current naming is somehow unfortunate. The directory simply is named
 jdbc2 because it is the successor of Paul Ramsey's original jdbc directory,
-which still exists in CVS. So, the naming does not refer to SUN jdbc
-standard releases jdbc-1, jdbc-2 or jdbc-3. 
+which used to exist parallel in the CVS repository. As CVS does its best
+to hinder useful version tracking across file renames, the name was kept
+even after removal of the original jdbc subproject. 
 
 Please note that the PostgreSQL JDBC driver itsself is released in
 several flavours for different JDBC relases and sun JDK releases, but
@@ -110,7 +115,7 @@ you clearly found a bug, and we kindly ask you to report it.
 If you run into troubles, make shure that you use the newest pgjdbc build.
 Especially pre releases are known to contain bugs (that's why they are pre
 releases), and e. G. 8.0 build 309 contained some problems that are fixed
-in 8.0 build 301.
+in 8.0 build 313.
 
 
 * How do I use it? *
