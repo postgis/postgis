@@ -372,7 +372,7 @@ pg_eprefix='${prefix}'
 pg_docdir='${prefix}/share/doc'
 pg_datadir='${prefix}/share'
 pg_mandir='${prefix}/man'
-pg_bindir='${eprefix}/bin'
+pg_bindir='${exec_prefix}/bin'
 pg_pkglibdir="`${PGCONFIG} --pkglibdir`"
 for v in `${PGCONFIG} --configure`; do
 	strip=`echo $v | sed "s/'//g"`
