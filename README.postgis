@@ -109,7 +109,7 @@ TESTING
 
 To run PostGIS regression tests, as postgres run:
 
-	make regress
+	make test
 
 Final lines of output contain a summary of test results:
 run, succeeded, failed. If you have any failure please
