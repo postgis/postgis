@@ -98,7 +98,7 @@ while [ -n "$1" ]; do
 	fi
 
 	# Use intermediate file to prevent MingW buffering problems
-	psql -tA < "${TEST}.sql" $DB 2>&1 &> ${TMPFILE}
+	psql -tA < "${TEST}.sql" $DB > ${TMPFILE} 2>&1
 	cat ${TMPFILE} \
 		| grep -v "^$" \
 		| grep -v "^INSERT" \
@@ -107,6 +107,7 @@ while [ -n "$1" ]; do
 		| grep -v "^CREATE" \
 		| grep -v "^SET" \
 		| sed 's/Infinity/inf/g;s/Inf/inf/g;s/1\.#INF/inf/g' \
+		| sed 's/[eE]\([+-]\)0\+\([0-9]\+\)/e\1\2/g' \
 		> "${OUTFILE}"
 	rm ${TMPFILE}
 
