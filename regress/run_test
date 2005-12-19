@@ -79,6 +79,7 @@ while [ -n "$1" ]; do
 	TEST=`echo "$TEST" | sed 's/\.sql$//'`
 
 	OUTFILE="${TMPDIR}/regress_${TEST}_out_$$"
+	TMPFILE="${TMPDIR}/regress_${TEST}_tmp_$$"
 	DIFFILE="${TMPDIR}/regress_${TEST}_diff_$$"
 
 	printf %20s " ${TEST}: "
@@ -96,13 +97,18 @@ while [ -n "$1" ]; do
 		continue
 	fi
 
-	psql -tA < "${TEST}.sql" $DB 2>&1 | grep -v "^INSERT" \
+	# Use intermediate file to prevent MingW buffering problems
+	psql -tA < "${TEST}.sql" $DB 2>&1 &> ${TMPFILE}
+	cat ${TMPFILE} \
+		| grep -v "^$" \
+		| grep -v "^INSERT" \
 		| grep -v "^UPDATE" \
 		| grep -v "^DROP" \
 		| grep -v "^CREATE" \
 		| grep -v "^SET" \
-		| sed 's/Infinity/inf/g;s/Inf/inf/g' \
+		| sed 's/Infinity/inf/g;s/Inf/inf/g;s/1\.#INF/inf/g' \
 		> "${OUTFILE}"
+	rm ${TMPFILE}
 
 	if diff "${TEST}_expected" "${OUTFILE}" > ${DIFFILE}; then
 		SUCCESS=`expr $SUCCESS + 1`
