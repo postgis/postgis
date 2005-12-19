@@ -213,7 +213,8 @@ PROJ_DIR=
 AC_PATH_PROG([PROJ], [proj])
 if test -n "$PROJ"; then
 	USE_PROJ=1
-	PROJ_DIR=`dirname $PROJ`/..
+	PROJ_DIR=`dirname ${PROJ}`/..
+	owd=$PWD; cd ${PROJ_DIR}; PROJ_DIR=$PWD; cd $owd;
 fi
 AC_ARG_WITH(proj, 
 	[  --with-proj[[=DIR]]       enable reprojection support],
@@ -305,17 +306,14 @@ fi
 AC_SUBST(docdir)
 docdir='${prefix}/share/doc'
 AC_ARG_WITH(docdir,
-[  --with-docdir=DIR       install the documentation in DIR [[PREFIX/doc]]],
+[  --with-docdir=DIR       install the documentation in DIR [[PREFIX/share/doc]]],
 	if test "$with_docdir" = "yes"; then
 		AC_MSG_ERROR([option --with-docdir requires an argument])
 	fi
-	if test "$with_docdir" = "no"; then
-        	docdir=""
-	else
+	if test "$with_docdir" != "no"; then
 		docdir="$with_docdir"
 	fi
 )
-
 
 dnl
 dnl Find 'html/docbook.xsl'
@@ -362,49 +360,85 @@ dnl	AC_MSG_RESULT([ GEOS disabled, using JTS.])
 	USE_GEOS=0
 fi
 
-if test "${prefix}" = "NONE"; then
- 	prefix=/usr/local
- 	for v in `${PGCONFIG} --configure`; do
- 		strip=`echo $v | sed "s/'//g"`
- 		var=`echo "$strip" | cut -d= -f1`
- 		if test "$var" = "--prefix"; then
- 			prefix=`echo "$strip" | cut -d= -f2`
- 		fi
- 	done
- 	exec_prefix='${prefix}'
-	if test "${docdir}" = ""; then
- 		docdir="$(${PGCONFIG} --configure | \
-             awk 'BEGIN {RS = " "; FS = "=";} \
-		          { \
-			        if (match($1,"--docdir")) \
-					{ \
-						gsub("'\''$", "", $2); \
-						print $2"/postgresql/contrib"; \
-					} \
-				}' \
-			)"
+#
+# Extract PostgreSQL paths from pg_config
+##
+
+#
+# Prefix (pg_prefix)
+#
+pg_prefix=/usr/local
+pg_eprefix='${prefix}'
+pg_docdir='${prefix}/share/doc'
+pg_datadir='${prefix}/share'
+pg_mandir='${prefix}/man'
+pg_bindir='${eprefix}/bin'
+pg_pkglibdir="`${PGCONFIG} --pkglibdir`"
+for v in `${PGCONFIG} --configure`; do
+	strip=`echo $v | sed "s/'//g"`
+	var=`echo "$strip" | cut -d= -f1`
+	if test "$var" = "--prefix"; then
+		pg_prefix=`echo "$strip" | cut -d= -f2`
+	elif test "$var" = "--exec-prefix"; then
+		pg_eprefix=`echo "$strip" | cut -d= -f2`
+	elif test "$var" = "--docdir"; then
+		pg_docdir=`echo "$strip" | cut -d= -f2`
+	elif test "$var" = "--with-docdir"; then
+		pg_docdir=`echo "$strip" | cut -d= -f2`
+	elif test "$var" = "--datadir"; then
+		pg_datadir=`echo "$strip" | cut -d= -f2`
+	elif test "$var" = "--mandir"; then
+		pg_mandir=`echo "$strip" | cut -d= -f2`
+	elif test "$var" = "--bindir"; then
+		pg_bindir=`echo "$strip" | cut -d= -f2`
 	fi
- 	datadir='${prefix}/share/postgresql/contrib'
-	if test "${mandir}" = ""; then
- 		mandir="$(${PGCONFIG} --configure | \
-             awk 'BEGIN {RS = " "; FS = "=";} \
-		          { \
-			        if (match($1,"--mandir")) \
-					{ \
-						gsub("'\''$", "", $2); \
-						print $2; \
-					} \
-				}' \
-			)"
-	fi
- 	bindir="$(${PGCONFIG} --bindir)"
- 	libdir="`${PGCONFIG} --pkglibdir`"
- 	LPATH='\$$libdir'
+done
+
+# Use new layout by default
+use_new_layout=0
+
+if test "$prefix" != 'NONE'; then
+	use_new_layout=1
+fi
+
+if test "${use_new_layout}" = "1"; then
+	LPATH=$libdir
 else
- 	docdir=$docdir/postgis
- 	datadir=$datadir/postgis
- 	libdir=$libexecdir
- 	LPATH=$libexecdir
+
+	#
+	# Use old layout: everything under PGSQL paths
+	# Note: still allow override by user, this is
+	#       done checking each variable against its
+	#	default value, if it has a different
+	#	value do not use PGSQL versions
+	#
+
+	if test "$prefix" = 'NONE'; then
+		prefix=${pg_prefix}
+	fi
+
+	if test "$docdir" = '${prefix}/share/doc'; then
+		docdir=${pg_docdir}
+	fi
+
+	if test "$datadir" = '${prefix}/share'; then
+		datadir=${pg_datadir}/postgresql/contrib
+	fi
+
+	if test "$mandir" = '${prefix}/man'; then
+		mandir=${pg_mandir}
+	fi
+
+	if test "$bindir" = '${exec_prefix}/bin'; then
+		bindir=${pg_bindir}
+	fi
+
+	if test "$libdir" = '${exec_prefix}/lib'; then
+		libdir=${pg_pkglibdir}
+		LPATH='\$$libdir'
+	else
+		LPATH=$libdir
+	fi
 fi
 
 #
