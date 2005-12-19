@@ -29,7 +29,7 @@ maintainer-clean: Makefile.config
 	$(MAKE) distclean
 	rm -f configure
 
-test: liblwgeom
+test: 
 	$(MAKE) -C regress test
 
 test-clean:
