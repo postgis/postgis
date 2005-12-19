@@ -144,9 +144,9 @@ detect_geos_version:
 	sh ../geos_version.sh $(GEOS_DIR) > postgis_geos_version.h
 
 uninstall-lwgeom-scripts:
-	rm -f $(DESTDIR)$(datadir)/postgis/lwpostgis.sql
-	rm -f $(DESTDIR)$(datadir)/postgis/lwpostgis_upgrade.sql
-	rm -f $(DESTDIR)$(datadir)/postgis/spatial_ref_sys.sql
+	rm -f $(DESTDIR)$(datadir)/lwpostgis.sql
+	rm -f $(DESTDIR)$(datadir)/lwpostgis_upgrade.sql
+	rm -f $(DESTDIR)$(datadir)/spatial_ref_sys.sql
 
 uninstall: uninstall-lib uninstall-lwgeom-scripts
 
