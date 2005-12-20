@@ -107,7 +107,7 @@ while [ -n "$1" ]; do
 		| grep -v "^CREATE" \
 		| grep -v "^SET" \
 		| sed 's/Infinity/inf/g;s/Inf/inf/g;s/1\.#INF/inf/g' \
-		| sed 's/[eE]\([+-]\)0\+\([0-9]\+\)/e\1\2/g' \
+		| sed 's/[eE]\([+-]\)0\{1,\}\([0-9]\{1,\}\)/e\1\2/g' \
 		> "${OUTFILE}"
 	rm ${TMPFILE}
 
