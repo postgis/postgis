@@ -87,68 +87,6 @@ PGFELIBS="-L`${PGCONFIG} --libdir` -lpq"
 PGBELIBS="-L`${PGCONFIG} --libdir` -lpostgres"
 PGBEINCLUDES="-I`${PGCONFIG} --includedir-server`"
 PGBIN="`${PGCONFIG} --bindir`"
-AC_MSG_CHECKING([which template to use])
-PGTEMPLATE="`${PGCONFIG} --configure | \
-             awk 'BEGIN {RS = " "; FS = "=";} \
-		          { \
-			        if (match($1,"--with-template")) \
-					{ \
-						gsub("'\''$", "", $2); \
-						print $2; \
-					} \
-				}' \
-			`"
-template=$PGTEMPLATE
-
-case $host_os in
-     aix*) template=aix ;;
-    beos*) template=beos ;;
-    bsdi*) template=bsdi ;;
-  cygwin*) template=cygwin ;;
-  darwin*) template=darwin ;;
-    dgux*) template=dgux ;;
- freebsd*) template=freebsd ;;
-    hpux*) template=hpux ;;
-    irix*) template=irix ;;
- linux*|gnu*|k*bsd*-gnu)
-           template=linux ;;
-   mingw*) template=win32 ;;
-  netbsd*) template=netbsd ;;
-nextstep*) template=nextstep ;;
- openbsd*) template=openbsd ;;
-     osf*) template=osf ;;
-     qnx*) template=qnx4 ;;
-     sco*) template=sco ;;
- solaris*) template=solaris ;;
-   sunos*) template=sunos4 ;;
- sysv4.2*)
-        case $host_vendor in
-          univel) template=univel ;;
-        esac ;;
-   sysv4*) template=svr4 ;;
-   sysv5*) template=unixware ;;
-  ultrix*) template=ultrix4 ;;
-esac
-
-  if test x"$template" = x"" ; then
-    AC_MSG_ERROR([[
-*******************************************************************
-PostgreSQL has apparently not been ported to your platform yet.
-To try a manual configuration, look into the src/template directory
-for a similar platform and use the '--with-template=' option.
-
-Please also contact <pgsql-ports@postgresql.org> to see about
-rectifying this.  Include the above 'checking host system type...'
-line.
-*******************************************************************
-]])
-  fi
-
-AC_MSG_RESULT([$template])
-
-PORTNAME=$template
-AC_SUBST(PORTNAME)
-
 
 dnl
 dnl Test for GEOS
@@ -391,6 +329,8 @@ for v in `${PGCONFIG} --configure`; do
 		pg_mandir=`echo "$strip" | cut -d= -f2`
 	elif test "$var" = "--bindir"; then
 		pg_bindir=`echo "$strip" | cut -d= -f2`
+	elif test "$var" = "--with-template"; then
+		PGTEMPLATE=`echo "$strip" | cut -d= -f2`
 	fi
 done
 
@@ -441,6 +381,61 @@ else
 	fi
 fi
 
+# --with-template parsing is done in the single
+# pg_config --configure scan above
+AC_MSG_CHECKING([which template to use])
+template=$PGTEMPLATE
+
+case $host_os in
+     aix*) template=aix ;;
+    beos*) template=beos ;;
+    bsdi*) template=bsdi ;;
+  cygwin*) template=cygwin ;;
+  darwin*) template=darwin ;;
+    dgux*) template=dgux ;;
+ freebsd*) template=freebsd ;;
+    hpux*) template=hpux ;;
+    irix*) template=irix ;;
+ linux*|gnu*|k*bsd*-gnu)
+           template=linux ;;
+   mingw*) template=win32 ;;
+  netbsd*) template=netbsd ;;
+nextstep*) template=nextstep ;;
+ openbsd*) template=openbsd ;;
+     osf*) template=osf ;;
+     qnx*) template=qnx4 ;;
+     sco*) template=sco ;;
+ solaris*) template=solaris ;;
+   sunos*) template=sunos4 ;;
+ sysv4.2*)
+        case $host_vendor in
+          univel) template=univel ;;
+        esac ;;
+   sysv4*) template=svr4 ;;
+   sysv5*) template=unixware ;;
+  ultrix*) template=ultrix4 ;;
+esac
+
+  if test x"$template" = x"" ; then
+    AC_MSG_ERROR([[
+*******************************************************************
+PostgreSQL has apparently not been ported to your platform yet.
+To try a manual configuration, look into the src/template directory
+for a similar platform and use the '--with-template=' option.
+
+Please also contact <pgsql-ports@postgresql.org> to see about
+rectifying this.  Include the above 'checking host system type...'
+line.
+*******************************************************************
+]])
+  fi
+
+AC_MSG_RESULT([$template])
+
+PORTNAME=$template
+AC_SUBST(PORTNAME)
+
+
 #
 # OS-specific settings
 #
@@ -449,8 +444,7 @@ AC_SUBST(DLFLAGS)
 AC_SUBST(EXE)
 AC_SUBST(HOST_OS)
 
-#host_os=`echo $ac_cv_host | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\3/'`
-
+# host_os is defined by AC_CANONICAL_HOST
 HOST_OS=$host_os
 DLSUFFIX=.so
 DLFLAGS=-shared
