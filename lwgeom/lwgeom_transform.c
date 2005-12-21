@@ -929,6 +929,8 @@ transform_point(POINT2D *pt, PJ *srcpj, PJ *dstpj)
 	{
 		if (pj_errno == -38)  //2nd chance
 		{
+			elog(WARNING, "transform: %i (%s)",
+				pj_errno, pj_strerrno(pj_errno));
 			//couldnt do nadshift - do it without the datum
 			pj_transform_nodatum(srcpj, dstpj, 1, 2,
 				&(pt->x), &(pt->y), NULL);
@@ -937,7 +939,7 @@ transform_point(POINT2D *pt, PJ *srcpj, PJ *dstpj)
 		if (pj_errno)
 		{
 			elog(ERROR,"transform: couldn't project point: %i (%s)",
-				pj_errno,pj_strerrno(pj_errno));
+				pj_errno, pj_strerrno(pj_errno));
 			return 0;
 		}
 	}
