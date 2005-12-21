@@ -84,11 +84,11 @@ AC_SUBST(PGTEMPLATE)
 AC_SUBST(LPATH)
 PGFEINCLUDES="-I`${PGCONFIG} --includedir`"
 PGFELIBS="-L`${PGCONFIG} --libdir` -lpq"
-PGBELIBS="-L$( echo $(${PGCONFIG} --libdir)) -lpostgres"
+PGBELIBS="-L`${PGCONFIG} --libdir` -lpostgres"
 PGBEINCLUDES="-I`${PGCONFIG} --includedir-server`"
-PGBIN="$(${PGCONFIG} --bindir)"
+PGBIN="`${PGCONFIG} --bindir`"
 AC_MSG_CHECKING([which template to use])
-PGTEMPLATE="$(${PGCONFIG} --configure | \
+PGTEMPLATE="`${PGCONFIG} --configure | \
              awk 'BEGIN {RS = " "; FS = "=";} \
 		          { \
 			        if (match($1,"--with-template")) \
@@ -97,7 +97,7 @@ PGTEMPLATE="$(${PGCONFIG} --configure | \
 						print $2; \
 					} \
 				}' \
-			)"
+			`"
 template=$PGTEMPLATE
 
 case $host_os in
@@ -292,7 +292,7 @@ dnl if test -z "$INSTALL"; then
 dnl 	AC_MSG_ERROR(Can't find 'install');
 dnl fi
 AC_SUBST(INSTALL)
-INSTALL=$( echo ${PWD} )/install-sh
+INSTALL="${PWD}/install-sh"
 
 dnl
 dnl Search perl
@@ -458,7 +458,7 @@ EXE=
 case $host_os in
 	*mingw*)
 		PGBEINCLUDES="$PGBEINCLUDES $PGBEINCLUDES/port/win32"
-		PGFELIBS="$(echo $(${PGCONFIG} --libdir))/libpq.dll"
+		PGFELIBS="`${PGCONFIG} --libdir`/libpq.dll"
 		DLSUFFIX=.dll
 		DLFLAGS='${PGBELIBS}'
 		EXE=.exe
