@@ -5,7 +5,7 @@
 Summary:        Geographic Information Systems Extensions to PostgreSQL
 Name:           postgis
 Version:        1.1.0
-Release:        1
+Release:        2
 License:        GPL v2
 Group:          Applications/Databases
 Source0:        http://postgis.refractions.net/download/%{name}-%{version}.tar.gz
@@ -15,7 +15,7 @@ Vendor:         The PostGIS Project
 URL:            http://postgis.refractions.net/
 BuildRequires:  postgresql-devel,proj-devel, geos-devel >= 2.1.1
 Requires:       postgresql = %{pg_version} geos proj
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-%(%{__id_u} -n)
 
 %description
 PostGIS adds support for geographic objects to the PostgreSQL object-relational
@@ -68,6 +68,8 @@ sh %{SOURCE2}
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT PGXS=1 PGSQL_SRC=/usr/lib/pgsql/pgxs
 install lwgeom/%{name}.so $RPM_BUILD_ROOT%{_libdir}/pgsql
+install -d  $RPM_BUILD_ROOT/usr/share/pgsql/postgresql/contrib/
+install -m 755 *.sql $RPM_BUILD_ROOT/usr/share/pgsql/postgresql/contrib/
 
 %if %jdbc2
 # JDBC2
@@ -86,12 +88,11 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc CHANGES CREDITS README.postgis TODO doc/html examples/wkb_reader loader/README.* *.sql doc/postgis.xml  doc/ZMSgeoms.txt 
+%doc CHANGES CREDITS README.postgis TODO doc/html loader/README.* *.sql doc/postgis.xml  doc/ZMSgeoms.txt 
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_libdir}/pgsql/*.so*
-%attr(755,root,root) %{_mandir}/man1/*
-%attr(755,root,root) /usr/share/pgsql/contrib/*
-%attr(755,root,root) %{_docdir}/pgsql/contrib/README.postgis
+#%attr(755,root,root) %{_mandir}/man1/*
+%attr(755,root,root) /usr/share/pgsql/postgresql/contrib/*
 
 %if %jdbc2
 %files jdbc2
@@ -102,17 +103,18 @@ rm -rf $RPM_BUILD_ROOT
 %if %utils
 %files utils
 %defattr(644,root,root,755)
-%attr(755,root,root) /usr/bin/profile_intersects.pl
-%attr(755,root,root) /usr/bin/test_estimation.pl
-%attr(755,root,root) /usr/bin/postgis_restore.pl
-%attr(755,root,root) /usr/bin/test_joinestimation.pl
 %attr(755,root,root) %{_bindir}/create_undef.pl
-%attr(755,root,root) %{_bindir}/postgis_proc_upgrade.pl
+%attr(755,root,root) %{_bindir}/test_estimation.pl
+%attr(755,root,root) %{_bindir}/test_joinestimation.pl
+%attr(755,root,root) %{_bindir}/postgis_restore.pl
 %attr(755,root,root) %{_bindir}/profile_intersects.pl
-%attr(755,root,root) %{_bindir}/rebuild_bbox_caches.pl
+
 %endif
 
 %changelog
+* Tue Dec 22 2005 - Devrim GUNDUZ <devrim@commandprompt.com> 1.1.0-2
+- Final fixes for 1.1.0
+
 * Tue Dec 06 2005 - Devrim GUNDUZ <devrim@gunduz.org>
 - Update to 1.1.0
 
