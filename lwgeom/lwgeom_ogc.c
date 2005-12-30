@@ -1,3 +1,15 @@
+/**********************************************************************
+ * $Id$
+ *
+ * PostGIS - Spatial Types for PostgreSQL
+ * http://postgis.refractions.net
+ * Copyright 2001-2005 Refractions Research Inc.
+ *
+ * This is free software; you can redistribute and/or modify it under
+ * the terms of the GNU General Public Licence. See the COPYING file.
+ * 
+ **********************************************************************/
+
 #include "postgres.h"
 
 #include <math.h>
@@ -16,63 +28,63 @@
 #include "lwgeom_pg.h"
 
 
-//#define PGIS_DEBUG
+/*#define PGIS_DEBUG */
 
 #include "wktparse.h"
 
-// ---- SRID(geometry)
+/* ---- SRID(geometry) */
 Datum LWGEOM_getSRID(PG_FUNCTION_ARGS);
-// ---- SetSRID(geometry, integer)
+/* ---- SetSRID(geometry, integer) */
 Datum LWGEOM_setSRID(PG_FUNCTION_ARGS);
-// ---- GeometryType(geometry)
+/* ---- GeometryType(geometry) */
 Datum LWGEOM_getTYPE(PG_FUNCTION_ARGS);
-// ---- NumPoints(geometry)
+/* ---- NumPoints(geometry) */
 Datum LWGEOM_numpoints_linestring(PG_FUNCTION_ARGS);
-// ---- NumGeometries(geometry)
+/* ---- NumGeometries(geometry) */
 Datum LWGEOM_numgeometries_collection(PG_FUNCTION_ARGS);
-// ---- GeometryN(geometry, integer)
+/* ---- GeometryN(geometry, integer) */
 Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS);
-// ---- Dimension(geometry)
+/* ---- Dimension(geometry) */
 Datum LWGEOM_dimension(PG_FUNCTION_ARGS);
-// ---- ExteriorRing(geometry)
+/* ---- ExteriorRing(geometry) */
 Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS);
-// ---- InteriorRingN(geometry, integer)
+/* ---- InteriorRingN(geometry, integer) */
 Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS);
-// ---- NumInteriorRings(geometry)
+/* ---- NumInteriorRings(geometry) */
 Datum LWGEOM_numinteriorrings_polygon(PG_FUNCTION_ARGS);
-// ---- PointN(geometry, integer)
+/* ---- PointN(geometry, integer) */
 Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS);
-// ---- X(geometry)
+/* ---- X(geometry) */
 Datum LWGEOM_x_point(PG_FUNCTION_ARGS);
-// ---- Y(geometry)
+/* ---- Y(geometry) */
 Datum LWGEOM_y_point(PG_FUNCTION_ARGS);
-// ---- Z(geometry)
+/* ---- Z(geometry) */
 Datum LWGEOM_z_point(PG_FUNCTION_ARGS);
-// ---- M(geometry)
+/* ---- M(geometry) */
 Datum LWGEOM_m_point(PG_FUNCTION_ARGS);
-// ---- StartPoint(geometry)
+/* ---- StartPoint(geometry) */
 Datum LWGEOM_startpoint_linestring(PG_FUNCTION_ARGS);
-// ---- EndPoint(geometry)
+/* ---- EndPoint(geometry) */
 Datum LWGEOM_endpoint_linestring(PG_FUNCTION_ARGS);
-// ---- AsText(geometry)
+/* ---- AsText(geometry) */
 Datum LWGEOM_asText(PG_FUNCTION_ARGS);
-// ---- AsBinary(geometry, [XDR|NDR])
+/* ---- AsBinary(geometry, [XDR|NDR]) */
 Datum LWGEOM_asBinary(PG_FUNCTION_ARGS);
-// ---- GeometryFromText(text, integer)
+/* ---- GeometryFromText(text, integer) */
 Datum LWGEOM_from_text(PG_FUNCTION_ARGS);
-// ---- GeomFromWKB(bytea, integer)
+/* ---- GeomFromWKB(bytea, integer) */
 Datum LWGEOM_from_WKB(PG_FUNCTION_ARGS);
-// ---- IsClosed(geometry)
+/* ---- IsClosed(geometry) */
 Datum LWGEOM_isclosed_linestring(PG_FUNCTION_ARGS);
 
-// internal
-int32 lwgeom_numpoints_linestring_recursive(char *serialized);
-int32 lwgeom_dimension_recursive(char *serialized);
+/* internal */
+static int32 lwgeom_numpoints_linestring_recursive(const uchar *serialized);
+static int32 lwgeom_dimension_recursive(const uchar *serialized);
 char line_is_closed(LWLINE *line);
 
 /*------------------------------------------------------------------*/
 
-// getSRID(lwgeom) :: int4
+/* getSRID(lwgeom) :: int4 */
 PG_FUNCTION_INFO_V1(LWGEOM_getSRID);
 Datum LWGEOM_getSRID(PG_FUNCTION_ARGS)
 {
@@ -82,7 +94,7 @@ Datum LWGEOM_getSRID(PG_FUNCTION_ARGS)
 	PG_RETURN_INT32(srid);
 }
 
-//setSRID(lwgeom, int4) :: lwgeom
+/* setSRID(lwgeom, int4) :: lwgeom */
 PG_FUNCTION_INFO_V1(LWGEOM_setSRID);
 Datum LWGEOM_setSRID(PG_FUNCTION_ARGS)
 {
@@ -98,7 +110,7 @@ Datum LWGEOM_setSRID(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-//returns a string representation of this geometry's type
+/* returns a string representation of this geometry's type */
 PG_FUNCTION_INFO_V1(LWGEOM_getTYPE);
 Datum LWGEOM_getTYPE(PG_FUNCTION_ARGS)
 {
@@ -114,7 +126,7 @@ Datum LWGEOM_getTYPE(PG_FUNCTION_ARGS)
 	text_ob = lwalloc(20+4);
 	result = text_ob+4;
 
-	//type = lwgeom_getType(*(lwgeom+4));
+	/*type = lwgeom_getType(*(lwgeom+4)); */
 	type = lwgeom_getType(lwgeom->type);
 
 	memset(result, 0, 20);
@@ -141,18 +153,20 @@ Datum LWGEOM_getTYPE(PG_FUNCTION_ARGS)
 
 	size = strlen(result) +4 ;
 
-	memcpy(text_ob, &size,4); // size of string
+	memcpy(text_ob, &size,4); /* size of string */
 
 	PG_FREE_IF_COPY(lwgeom, 0);
 
 	PG_RETURN_POINTER(text_ob);
 }
 
-// Find first linestring in serialized geometry and return
-// the number of points in it. If no linestrings are found
-// return -1.
-int32
-lwgeom_numpoints_linestring_recursive(char *serialized)
+/*
+ * Find first linestring in serialized geometry and return
+ * the number of points in it. If no linestrings are found
+ * return -1.
+ */
+static int32
+lwgeom_numpoints_linestring_recursive(const uchar *serialized)
 {
 	LWGEOM_INSPECTED *inspected = lwgeom_inspect(serialized);
 	int i;
@@ -162,7 +176,7 @@ lwgeom_numpoints_linestring_recursive(char *serialized)
 		int32 npoints;
 		int type;
 		LWLINE *line=NULL;
-		char *subgeom;
+		uchar *subgeom;
 
 		line = lwgeom_getline_inspected(inspected, i);
 		if (line != NULL)
@@ -178,7 +192,7 @@ lwgeom_numpoints_linestring_recursive(char *serialized)
 
 		type = lwgeom_getType(subgeom[0]);
 
-		// MULTILINESTRING && GEOMETRYCOLLECTION are worth checking
+		/* MULTILINESTRING && GEOMETRYCOLLECTION are worth checking */
 		if ( type != 7 && type != 5 ) continue;
 
 		npoints = lwgeom_numpoints_linestring_recursive(subgeom);
@@ -194,9 +208,11 @@ lwgeom_numpoints_linestring_recursive(char *serialized)
 	return -1;
 }
 
-//numpoints(GEOMETRY) -- find the first linestring in GEOMETRY, return
-//the number of points in it.  Return NULL if there is no LINESTRING(..)
-//in GEOMETRY
+/* 
+ * numpoints(GEOMETRY) -- find the first linestring in GEOMETRY, return
+ * the number of points in it.  Return NULL if there is no LINESTRING(..)
+ * in GEOMETRY
+ */
 PG_FUNCTION_INFO_V1(LWGEOM_numpoints_linestring);
 Datum LWGEOM_numpoints_linestring(PG_FUNCTION_ARGS)
 {
@@ -218,7 +234,7 @@ Datum LWGEOM_numgeometries_collection(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	int type;
 	int32 ret;
-	char *serialized = SERIALIZED_FORM(geom);
+	uchar *serialized = SERIALIZED_FORM(geom);
 
 	type = lwgeom_getType(geom->type);
 	if ( type >= 4 )
@@ -231,7 +247,7 @@ Datum LWGEOM_numgeometries_collection(PG_FUNCTION_ARGS)
 	PG_RETURN_NULL();
 }
 
-// 1-based offset
+/* 1-based offset */
 PG_FUNCTION_INFO_V1(LWGEOM_geometryn_collection);
 Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS)
 {
@@ -242,17 +258,17 @@ Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS)
 	LWCOLLECTION *coll;
 	LWGEOM *subgeom;
 
-	//elog(NOTICE, "GeometryN called");
+	/* elog(NOTICE, "GeometryN called"); */
 
-	// call is valid on multi* geoms only
+	/* call is valid on multi* geoms only */
 	if ( type < 4 )
 	{
-		//elog(NOTICE, "geometryn: geom is of type %d, requires >=4", type);
+		/* elog(NOTICE, "geometryn: geom is of type %d, requires >=4", type); */
 		PG_RETURN_NULL();
 	}
 
 	idx = PG_GETARG_INT32(1);
-	idx -= 1; // index is 1-based
+	idx -= 1; /* index is 1-based */
 
 	coll = (LWCOLLECTION *)lwgeom_deserialize(SERIALIZED_FORM(geom));
 
@@ -262,7 +278,7 @@ Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS)
 	subgeom = coll->geoms[idx];
 	subgeom->SRID = coll->SRID;
 
-	//COMPUTE_BBOX==TAINTING
+	/* COMPUTE_BBOX==TAINTING */
 	if ( coll->bbox ) lwgeom_addBBOX(subgeom);
 
 	result = pglwgeom_serialize(subgeom);
@@ -274,12 +290,14 @@ Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS)
 
 }
 
-//returns 0 for points, 1 for lines, 2 for polygons.
-//returns max dimension for a collection.
-//returns -1 for the empty geometry (TODO)
-//returns -2 on error
-int32
-lwgeom_dimension_recursive(char *serialized)
+/*
+ * returns 0 for points, 1 for lines, 2 for polygons.
+ * returns max dimension for a collection.
+ * returns -1 for the empty geometry (TODO)
+ * returns -2 on error
+ */
+static int32
+lwgeom_dimension_recursive(const uchar *serialized)
 {
 	LWGEOM_INSPECTED *inspected;
 	int ret = -1;
@@ -288,7 +306,7 @@ lwgeom_dimension_recursive(char *serialized)
 	inspected = lwgeom_inspect(serialized);
 	for (i=0; i<inspected->ngeometries; i++)
 	{
-		char *subgeom;
+		uchar *subgeom;
 		char typeflags = lwgeom_getsubtype_inspected(inspected, i);
 		int type = lwgeom_getType(typeflags);
 		int dims=-1;
@@ -310,7 +328,7 @@ lwgeom_dimension_recursive(char *serialized)
 			dims = lwgeom_dimension_recursive(subgeom);
 		}
 
-		if ( dims == 2 ) { // nothing can be higher
+		if ( dims == 2 ) { /* nothing can be higher */
 				pfree_inspected(inspected);
 				return 2;
 		}
@@ -322,9 +340,11 @@ lwgeom_dimension_recursive(char *serialized)
 	return ret;
 }
 
-//returns 0 for points, 1 for lines, 2 for polygons.
-//returns max dimension for a collection.
-//returns -1 for the empty geometry (TODO)
+/*
+ * returns 0 for points, 1 for lines, 2 for polygons.
+ * returns max dimension for a collection.
+ * returns -1 for the empty geometry (TODO)
+ */
 PG_FUNCTION_INFO_V1(LWGEOM_dimension);
 Datum LWGEOM_dimension(PG_FUNCTION_ARGS)
 {
@@ -344,9 +364,11 @@ Datum LWGEOM_dimension(PG_FUNCTION_ARGS)
 }
 
 
-// exteriorRing(GEOMETRY) -- find the first polygon in GEOMETRY, return
-// its exterior ring (as a linestring).
-// Return NULL if there is no POLYGON(..) in (first level of) GEOMETRY.
+/*
+ * exteriorRing(GEOMETRY) -- find the first polygon in GEOMETRY, return
+ * its exterior ring (as a linestring).
+ * Return NULL if there is no POLYGON(..) in (first level of) GEOMETRY.
+ */
 PG_FUNCTION_INFO_V1(LWGEOM_exteriorring_polygon);
 Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 {
@@ -364,12 +386,14 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 	}
 	poly = lwpoly_deserialize(SERIALIZED_FORM(geom));
 
-	// Ok, now we have a polygon. Here is its exterior ring.
+	/* Ok, now we have a polygon. Here is its exterior ring. */
 	extring = poly->rings[0];
 
-	// This is a LWLINE constructed by exterior ring POINTARRAY
-	// If the input geom has a bbox, use it for 
-	// the output geom, as exterior ring makes it up !
+	/*
+	 * This is a LWLINE constructed by exterior ring POINTARRAY
+	 * If the input geom has a bbox, use it for 
+	 * the output geom, as exterior ring makes it up !
+	 */
 	if ( poly->bbox ) bbox=box2d_clone(poly->bbox);
 	line = lwline_construct(poly->SRID, bbox, extring);
 
@@ -383,9 +407,11 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-// NumInteriorRings(GEOMETRY) -- find the first polygon in GEOMETRY, return
-// the number of its interior rings (holes).
-// Return NULL if there is no POLYGON(..) in (first level of) GEOMETRY.
+/*
+ * NumInteriorRings(GEOMETRY) -- find the first polygon in GEOMETRY, return
+ * the number of its interior rings (holes).
+ * Return NULL if there is no POLYGON(..) in (first level of) GEOMETRY.
+ */
 PG_FUNCTION_INFO_V1(LWGEOM_numinteriorrings_polygon);
 Datum LWGEOM_numinteriorrings_polygon(PG_FUNCTION_ARGS)
 {
@@ -407,7 +433,7 @@ Datum LWGEOM_numinteriorrings_polygon(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	// Ok, now we have a polygon. Here is its number of holes
+	/* Ok, now we have a polygon. Here is its number of holes */
 	result = poly->nrings-1;
 
 	PG_FREE_IF_COPY(geom, 0);
@@ -417,10 +443,12 @@ Datum LWGEOM_numinteriorrings_polygon(PG_FUNCTION_ARGS)
 	PG_RETURN_INT32(result);
 }
 
-// InteriorRingN(GEOMETRY) -- find the first polygon in GEOMETRY, return
-// its Nth interior ring (as a linestring).
-// Return NULL if there is no POLYGON(..) in (first level of) GEOMETRY.
-// Index is 1-based
+/*
+ * InteriorRingN(GEOMETRY) -- find the first polygon in GEOMETRY, return
+ * its Nth interior ring (as a linestring).
+ * Return NULL if there is no POLYGON(..) in (first level of) GEOMETRY.
+ * Index is 1-based
+ */
 PG_FUNCTION_INFO_V1(LWGEOM_interiorringn_polygon);
 Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 {
@@ -435,8 +463,8 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 	wanted_index = PG_GETARG_INT32(1);
 	if ( wanted_index < 1 )
 	{
-		//elog(ERROR, "InteriorRingN: ring number is 1-based");
-		PG_RETURN_NULL(); // index out of range
+		/* elog(ERROR, "InteriorRingN: ring number is 1-based"); */
+		PG_RETURN_NULL(); /* index out of range */
 	}
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
@@ -449,7 +477,7 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 	}
 	poly = lwpoly_deserialize(SERIALIZED_FORM(geom));
 
-	// Ok, now we have a polygon. Let's see if it has enough holes
+	/* Ok, now we have a polygon. Let's see if it has enough holes */
 	if ( wanted_index >= poly->nrings )
 	{
 		PG_FREE_IF_COPY(geom, 0);
@@ -459,13 +487,13 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 
 	ring = poly->rings[wanted_index];
 
-	// COMPUTE_BBOX==TAINTING
+	/* COMPUTE_BBOX==TAINTING */
 	if ( poly->bbox ) bbox = ptarray_compute_box2d(ring);
 
-	// This is a LWLINE constructed by interior ring POINTARRAY
+	/* This is a LWLINE constructed by interior ring POINTARRAY */
 	line = lwline_construct(poly->SRID, bbox, ring);
 
-	// Copy SRID from polygon
+	/* Copy SRID from polygon */
 	line->SRID = poly->SRID;
 
 	result = pglwgeom_serialize((LWGEOM *)line);
@@ -477,9 +505,11 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-// PointN(GEOMETRY,INTEGER) -- find the first linestring in GEOMETRY,
-// return the point at index INTEGER (1 is 1st point).  Return NULL if
-// there is no LINESTRING(..) in GEOMETRY or INTEGER is out of bounds.
+/*
+ * PointN(GEOMETRY,INTEGER) -- find the first linestring in GEOMETRY,
+ * return the point at index INTEGER (1 is 1st point).  Return NULL if
+ * there is no LINESTRING(..) in GEOMETRY or INTEGER is out of bounds.
+ */
 PG_FUNCTION_INFO_V1(LWGEOM_pointn_linestring);
 Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 {
@@ -489,13 +519,13 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 	LWLINE *line = NULL;
 	POINTARRAY *pts;
 	LWPOINT *point;
-	char *serializedpoint;
+	uchar *serializedpoint;
 	PG_LWGEOM *result;
 	int i;
 
 	wanted_index = PG_GETARG_INT32(1);
 	if ( wanted_index < 1 )
-		PG_RETURN_NULL(); // index out of range
+		PG_RETURN_NULL(); /* index out of range */
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
@@ -512,7 +542,7 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	// Ok, now we have a line. Let's see if it has enough points.
+	/* Ok, now we have a line. Let's see if it has enough points. */
 	if ( wanted_index > line->points->npoints )
 	{
 		pfree_inspected(inspected);
@@ -522,20 +552,21 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 	}
 	pfree_inspected(inspected);
 
-	// Construct a point array
+	/* Construct a point array */
 	pts = pointArray_construct(getPoint_internal(line->points,
 		wanted_index-1),
 		TYPE_HASZ(line->type), TYPE_HASM(line->type), 1);
 
-	// Construct an LWPOINT
+	/* Construct an LWPOINT */
 	point = lwpoint_construct(pglwgeom_getSRID(geom),
 		NULL, pts);
 
-	// Serialized the point
+	/* Serialized the point */
 	serializedpoint = lwpoint_serialize(point);
 
-	// And we construct the line
-	// TODO: use serialize_buf above, instead ..
+	/* And we construct the line
+	 * TODO: use serialize_buf above, instead ..
+	 */
 	result = PG_LWGEOM_construct(serializedpoint,
 		pglwgeom_getSRID(geom), 0);
 
@@ -626,9 +657,10 @@ Datum LWGEOM_z_point(PG_FUNCTION_ARGS)
 	PG_RETURN_FLOAT8(p.z);
 }
 
-// M(GEOMETRY) -- find the first POINT(..) in GEOMETRY, returns its M value.
-// Return NULL if there is no POINT(..) in GEOMETRY.
-// Return NULL if there is no M in this geometry.
+/* M(GEOMETRY) -- find the first POINT(..) in GEOMETRY, returns its M value.
+ * Return NULL if there is no POINT(..) in GEOMETRY.
+ * Return NULL if there is no M in this geometry.
+ */
 PG_FUNCTION_INFO_V1(LWGEOM_m_point);
 Datum LWGEOM_m_point(PG_FUNCTION_ARGS)
 {
@@ -653,9 +685,10 @@ Datum LWGEOM_m_point(PG_FUNCTION_ARGS)
 	PG_RETURN_FLOAT8(p.m);
 }
 
-// StartPoint(GEOMETRY) -- find the first linestring in GEOMETRY,
-// return the first point.
-// Return NULL if there is no LINESTRING(..) in GEOMETRY 
+/* StartPoint(GEOMETRY) -- find the first linestring in GEOMETRY,
+ * return the first point.
+ * Return NULL if there is no LINESTRING(..) in GEOMETRY 
+ */
 PG_FUNCTION_INFO_V1(LWGEOM_startpoint_linestring);
 Datum LWGEOM_startpoint_linestring(PG_FUNCTION_ARGS)
 {
@@ -682,17 +715,17 @@ Datum LWGEOM_startpoint_linestring(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	// Ok, now we have a line. 
+	/* Ok, now we have a line.  */
 
-	// Construct a point array
+	/* Construct a point array */
 	pts = pointArray_construct(getPoint_internal(line->points, 0),
 		TYPE_HASZ(line->type),
 		TYPE_HASM(line->type), 1);
 
-	// Construct an LWPOINT
+	/* Construct an LWPOINT */
 	point = lwpoint_construct(pglwgeom_getSRID(geom), NULL, pts);
 
-	// Construct a PG_LWGEOM
+	/* Construct a PG_LWGEOM */
 	result = pglwgeom_serialize((LWGEOM *)point);
 
 	lwgeom_release((LWGEOM *)line);
@@ -702,9 +735,10 @@ Datum LWGEOM_startpoint_linestring(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-// EndPoint(GEOMETRY) -- find the first linestring in GEOMETRY,
-// return the last point.
-// Return NULL if there is no LINESTRING(..) in GEOMETRY 
+/* EndPoint(GEOMETRY) -- find the first linestring in GEOMETRY,
+ * return the last point.
+ * Return NULL if there is no LINESTRING(..) in GEOMETRY 
+ */
 PG_FUNCTION_INFO_V1(LWGEOM_endpoint_linestring);
 Datum LWGEOM_endpoint_linestring(PG_FUNCTION_ARGS)
 {
@@ -732,18 +766,18 @@ Datum LWGEOM_endpoint_linestring(PG_FUNCTION_ARGS)
 	}
 
 
-	// Ok, now we have a line. 
+	/* Ok, now we have a line.  */
 
-	// Construct a point array
+	/* Construct a point array */
 	pts = pointArray_construct(
 		getPoint_internal(line->points, line->points->npoints-1),
 		TYPE_HASZ(line->type),
 		TYPE_HASM(line->type), 1);
 
-	// Construct an LWPOINT
+	/* Construct an LWPOINT */
 	point = (LWGEOM *)lwpoint_construct(pglwgeom_getSRID(geom), NULL, pts);
 
-	// Serialize an PG_LWGEOM
+	/* Serialize an PG_LWGEOM */
 	result = pglwgeom_serialize(point);
 
 	lwgeom_release(point);
@@ -753,8 +787,13 @@ Datum LWGEOM_endpoint_linestring(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-//given wkt and SRID, return a geometry
-//actually we cheat, postgres will convert the string to a geometry for us...
+/*
+ * Given an OGC WKT (and optionally a SRID) 
+ * return a geometry.
+ * Note that this is a a stricter version
+ * of geometry_in, where we refuse to
+ * accept (HEX)WKB or EWKT.
+ */
 PG_FUNCTION_INFO_V1(LWGEOM_from_text);
 Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 {
@@ -767,7 +806,7 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 
 	size = VARSIZE(wkttext)-VARHDRSZ;
 
-	//lwnotice("size: %d", size);
+	/*lwnotice("size: %d", size); */
 
 	if ( size < 10 )
 	{
@@ -776,8 +815,13 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 	}
 
 	fc=*(VARDATA(wkttext));
-	// 'S' is accepted for backward compatibility, a WARNING
-	// is issued later.
+
+	/*
+	 * 'S' is accepted for backward compatibility, a WARNING
+	 * is issued later.
+	 *
+	 * TODO: reject 'SRID=x;..' form...
+	 */
 	if ( fc!='P' && fc!='L' && fc!='M' && fc!='G' && fc!='S' )
 	{
 		lwerror("Invalid OGC WKT (does not start with P,L,M or G)");
@@ -788,7 +832,7 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 	memcpy(wkt, VARDATA(wkttext), size);
 	wkt[size]='\0';
 
-	//lwnotice("wkt: [%s]", wkt);
+	/* lwnotice("wkt: [%s]", wkt); */
 
 	geom = (PG_LWGEOM *)parse_lwgeom_wkt(wkt);
 
@@ -799,7 +843,7 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 		elog(WARNING, "OGC WKT expected, EWKT provided - use GeomFromEWKT() for this");
 	}
 
-	// read user-requested SRID if any
+	/* read user-requested SRID if any */
 	if ( PG_NARGS() > 1 ) lwgeom->SRID = PG_GETARG_INT32(1);
 
 	result = pglwgeom_serialize(lwgeom);
@@ -810,7 +854,14 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-//given wkb and SRID, return a geometry
+/*
+ * Given an OGC WKB (and optionally a SRID)
+ * return a geometry.
+ *
+ * Note that this is a wrapper around 
+ * LWGEOMFromWKB, where we refuse to
+ * accept EWKB.
+ */
 PG_FUNCTION_INFO_V1(LWGEOM_from_WKB);
 Datum LWGEOM_from_WKB(PG_FUNCTION_ARGS)
 {
@@ -827,7 +878,7 @@ Datum LWGEOM_from_WKB(PG_FUNCTION_ARGS)
 	}
 
 
-	// read user-requested SRID if any
+	/* read user-requested SRID if any */
 	if ( PG_NARGS() > 1 )
 	{
 		SRID = PG_GETARG_INT32(1);
@@ -843,7 +894,7 @@ Datum LWGEOM_from_WKB(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-//convert LWGEOM to wkt (in TEXT format)
+/* convert LWGEOM to wkt (in TEXT format) */
 PG_FUNCTION_INFO_V1(LWGEOM_asText);
 Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 {
@@ -866,7 +917,7 @@ Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 
 	semicolonLoc = strchr(result_cstring,';');
 
-	//loc points to start of wkt
+	/* loc points to start of wkt */
 	if (semicolonLoc == NULL) loc_wkt = result_cstring;
 	else loc_wkt = semicolonLoc +1;
 
@@ -883,7 +934,7 @@ Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-//convert LWGEOM to wkb (in BINARY format)
+/* convert LWGEOM to wkb (in BINARY format) */
 PG_FUNCTION_INFO_V1(LWGEOM_asBinary);
 Datum LWGEOM_asBinary(PG_FUNCTION_ARGS)
 {
@@ -933,10 +984,12 @@ char line_is_closed(LWLINE *line)
 	return 1;
 }
 
-// IsClosed(GEOMETRY) if geometry is a linestring then returns
-// startpoint == endpoint.  If its not a linestring then return NULL.
-// If it's a collection containing multiple linestrings,
-// return true only if all the linestrings have startpoint=endpoint.
+/*
+ * IsClosed(GEOMETRY) if geometry is a linestring then returns
+ * startpoint == endpoint.  If its not a linestring then return NULL.
+ * If it's a collection containing multiple linestrings,
+ * return true only if all the linestrings have startpoint=endpoint.
+ */
 PG_FUNCTION_INFO_V1(LWGEOM_isclosed_linestring);
 Datum LWGEOM_isclosed_linestring(PG_FUNCTION_ARGS)
 {

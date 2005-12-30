@@ -2,18 +2,20 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-//#include "lwgeom_pg.h"
+/*#include "lwgeom_pg.h"*/
 #include "liblwgeom.h"
 #include "wktparse.h"
 
-//#define PGIS_DEBUG_CALLS 1
+/*#define PGIS_DEBUG_CALLS 1*/
 
 LWGEOM *
 lwgeom_deserialize(uchar *srl)
 {
 	int type = lwgeom_getType(srl[0]);
 
-	//lwnotice("lwgeom_deserialize got %s", lwgeom_typename(type));
+#ifdef PGIS_DEBUG_CALLS
+	lwnotice("lwgeom_deserialize got %s", lwgeom_typename(type));
+#endif
 
 	switch (type)
 	{
@@ -120,7 +122,7 @@ lwgeom_serialize(LWGEOM *lwgeom)
 	return serialized;
 }
 
-// Force Right-hand-rule on LWGEOM polygons
+/* Force Right-hand-rule on LWGEOM polygons */
 void
 lwgeom_forceRHR(LWGEOM *lwgeom)
 {
@@ -142,7 +144,7 @@ lwgeom_forceRHR(LWGEOM *lwgeom)
 	}
 }
 
-// Reverse vertex order of LWGEOM
+/* Reverse vertex order of LWGEOM */
 void
 lwgeom_reverse(LWGEOM *lwgeom)
 {
@@ -187,8 +189,9 @@ lwgeom_compute_box2d_p(LWGEOM *lwgeom, BOX2DFLOAT4 *buf)
 	return 0;
 }
 
-//dont forget to lwfree() result
-
+/*
+ * dont forget to lwfree() result
+ */
 BOX2DFLOAT4 *
 lwgeom_compute_box2d(LWGEOM *lwgeom)
 {
@@ -275,10 +278,10 @@ lwgeom_release(LWGEOM *lwgeom)
 		lwerror("lwgeom_release: someone called on 0x0");
 #endif
 
-	// Drop bounding box (always a copy)
+	/* Drop bounding box (always a copy) */
 	if ( lwgeom->bbox ) lwfree(lwgeom->bbox);
 
-	// Collection
+	/* Collection */
 	if ( (col=lwgeom_as_lwcollection(lwgeom)) )
 	{
 		for (i=0; i<col->ngeoms; i++)
@@ -288,12 +291,12 @@ lwgeom_release(LWGEOM *lwgeom)
 		lwfree(lwgeom);
 	}
 
-	// Single element
+	/* Single element */
 	else lwfree(lwgeom);
 
 }
 
-// Clone an LWGEOM object. POINTARRAY are not copied.
+/* Clone an LWGEOM object. POINTARRAY are not copied. */
 LWGEOM *
 lwgeom_clone(const LWGEOM *lwgeom)
 {
@@ -315,11 +318,14 @@ lwgeom_clone(const LWGEOM *lwgeom)
 	}
 }
 
-// Add 'what' to 'to' at position 'where'.
-// where=0 == prepend
-// where=-1 == append
-// Appended-to LWGEOM gets a new type based on new condition.
-// Mix of dimensions is not allowed (TODO: allow it?).
+/*
+ * Add 'what' to 'to' at position 'where'
+ *
+ * where=0 == prepend
+ * where=-1 == append
+ * Appended-to LWGEOM gets a new type based on new condition.
+ * Mix of dimensions is not allowed (TODO: allow it?).
+ */
 LWGEOM *
 lwgeom_add(const LWGEOM *to, uint32 where, const LWGEOM *what)
 {
@@ -403,26 +409,59 @@ uchar *
 lwgeom_to_ewkb(LWGEOM *lwgeom, char byteorder, size_t *outsize)
 {
 	uchar *serialized = lwgeom_serialize(lwgeom);
-	char *hexwkb = unparse_WKB(serialized, lwalloc, lwfree,
+
+	/*
+	 * We cast return to "unsigned" char as we are
+	 * requesting a "binary" output, not HEX
+	 * (last argument set to 0)
+	 */
+	uchar *hexwkb = (uchar *)unparse_WKB(serialized, lwalloc, lwfree,
 		byteorder, outsize, 0);
 	lwfree(serialized);
 	return hexwkb;
 }
 
+/*
+ * Make an LWGEOM object from a EWKB binary representation.
+ * Currently highly unoptimized as it:
+ * 	- convert EWKB to HEXEWKB 
+ *	- construct PG_LWGEOM
+ *	- deserialize it
+ */
 LWGEOM *
 lwgeom_from_ewkb(uchar *ewkb, size_t size)
 {
-	uchar *pglwgeom = (uchar *)pglwgeom_from_ewkb(ewkb, size);
-	LWGEOM *ret = lwgeom_deserialize(pglwgeom+4);
+	size_t hexewkblen = size*2;
+	char *hexewkb;
+	long int i;
+	uchar *pglwgeom; /* This is a PG_LWGEOM */
+	LWGEOM *ret;
+
+	/* "HEXify" the EWKB */
+	hexewkb = lwalloc(hexewkblen+1);
+	for (i=0; i<size; ++i) deparse_hex(ewkb[i], &hexewkb[i*2]);
+	hexewkb[hexewkblen] = '\0';
+
+	/* Rely on grammar parser to construct a PG_LWGEOM */
+	pglwgeom = parse_lwgeom_wkt(hexewkb);
+
+	/* Free intermediate HEXified representation */
+	lwfree(hexewkb);
+
+	/* Deserialize */
+	ret = lwgeom_deserialize(pglwgeom+4);
+
 	return ret;
 }
 
-// geom1 same as geom2
-//  iff
-//      + have same type                                                        //      + have same # objects
-//      + have same bvol
-//      + each object in geom1 has a corresponding object in geom2 (see above)
-//
+/*
+ * geom1 same as geom2
+ *  iff
+ *      + have same type 
+ *	+ have same # objects
+ *      + have same bvol
+ *      + each object in geom1 has a corresponding object in geom2 (see above)
+ */
 char
 lwgeom_same(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2)
 {
@@ -432,14 +471,14 @@ lwgeom_same(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2)
 	if ( TYPE_GETZM(lwgeom1->type) != TYPE_GETZM(lwgeom2->type) )
 		return 0;
 
-	// Check boxes if both already computed 
+	/* Check boxes if both already computed  */
 	if ( lwgeom1->bbox && lwgeom2->bbox )
 	{
-		//lwnotice("bbox1:%p, bbox2:%p", lwgeom1->bbox, lwgeom2->bbox);
+		/*lwnotice("bbox1:%p, bbox2:%p", lwgeom1->bbox, lwgeom2->bbox);*/
 		if ( ! box2d_same(lwgeom1->bbox, lwgeom2->bbox) ) return 0;
 	}
 
-	// geoms have same type, invoke type-specific function
+	/* geoms have same type, invoke type-specific function */
 	switch(TYPE_GETTYPE(lwgeom1->type))
 	{
 		case POINTTYPE:

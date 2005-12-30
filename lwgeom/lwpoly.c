@@ -1,16 +1,17 @@
-// basic LWPOLY manipulation
+/* basic LWPOLY manipulation */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "liblwgeom.h"
 
-//#define PGIS_DEBUG_CALLS 1
+/*#define PGIS_DEBUG_CALLS 1 */
 
 #define CHECK_POLY_RINGS_ZM 1
 
-// construct a new LWPOLY.  arrays (points/points per ring) will NOT be copied
-// use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
+/* construct a new LWPOLY.  arrays (points/points per ring) will NOT be copied
+ * use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
+ */
 LWPOLY *
 lwpoly_construct(int SRID, BOX2DFLOAT4 *bbox, unsigned int nrings, POINTARRAY **points)
 {
@@ -47,10 +48,12 @@ lwpoly_construct(int SRID, BOX2DFLOAT4 *bbox, unsigned int nrings, POINTARRAY **
 }
 
 
-// given the LWPOLY serialized form (or a pointer into a muli* one)
-// construct a proper LWPOLY.
-// serialized_form should point to the 8bit type format (with type = 3)
-// See serialized form doc
+/*
+ * given the LWPOLY serialized form (or a pointer into a muli* one)
+ * construct a proper LWPOLY.
+ * serialized_form should point to the 8bit type format (with type = 3)
+ * See serialized form doc
+ */
 LWPOLY *
 lwpoly_deserialize(uchar *serialized_form)
 {
@@ -60,7 +63,7 @@ lwpoly_deserialize(uchar *serialized_form)
 	int ndims, hasz, hasm;
 	uint32 npoints;
 	uchar type;
-	char  *loc;
+	uchar *loc;
 	int t;
 
 	if (serialized_form == NULL)
@@ -71,7 +74,7 @@ lwpoly_deserialize(uchar *serialized_form)
 
 	result = (LWPOLY*) lwalloc(sizeof(LWPOLY));
 
-	type = (unsigned  char) serialized_form[0];
+	type = serialized_form[0];
 	result->type = type;
 
 	ndims = TYPE_NDIMS(type);
@@ -103,7 +106,7 @@ lwpoly_deserialize(uchar *serialized_form)
 	if ( lwgeom_hasSRID(type))
 	{
 		result->SRID = get_int32(loc);
-		loc +=4; // type + SRID
+		loc +=4; /* type + SRID */
 	}
 	else
 	{
@@ -117,7 +120,7 @@ lwpoly_deserialize(uchar *serialized_form)
 
 	for (t =0;t<nrings;t++)
 	{
-		//read in a single ring and make a PA
+		/* read in a single ring and make a PA */
 		npoints = get_uint32(loc);
 		loc +=4;
 
@@ -128,9 +131,11 @@ lwpoly_deserialize(uchar *serialized_form)
 	return result;
 }
 
-// create the serialized form of the polygon
-// result's first char will be the 8bit type.  See serialized form doc
-// points copied
+/*
+ * create the serialized form of the polygon
+ * result's first char will be the 8bit type.  See serialized form doc
+ * points copied
+ */
 uchar *
 lwpoly_serialize(LWPOLY *poly)
 {
@@ -149,15 +154,17 @@ lwpoly_serialize(LWPOLY *poly)
 	return result;
 }
 
-// create the serialized form of the polygon writing it into the
-// given buffer, and returning number of bytes written into
-// the given int pointer.
-// result's first char will be the 8bit type.  See serialized form doc
-// points copied
+/*
+ * create the serialized form of the polygon writing it into the
+ * given buffer, and returning number of bytes written into
+ * the given int pointer.
+ * result's first char will be the 8bit type.  See serialized form doc
+ * points copied
+ */
 void
 lwpoly_serialize_buf(LWPOLY *poly, uchar *buf, size_t *retsize)
 {
-	size_t size=1;  // type byte
+	size_t size=1;  /* type byte */
 	char hasSRID;
 	int t;
 	uchar *loc;
@@ -171,8 +178,8 @@ lwpoly_serialize_buf(LWPOLY *poly, uchar *buf, size_t *retsize)
 
 	hasSRID = (poly->SRID != -1);
 
-	size += 4; // nrings
-	size += 4*poly->nrings; //npoints/ring
+	size += 4; /* nrings */
+	size += 4*poly->nrings; /* npoints/ring */
 
 	buf[0] = (uchar) lwgeom_makeType_full(
 		TYPE_HASZ(poly->type), TYPE_HASM(poly->type),
@@ -182,7 +189,7 @@ lwpoly_serialize_buf(LWPOLY *poly, uchar *buf, size_t *retsize)
 	if (poly->bbox)
 	{
 		memcpy(loc, poly->bbox, sizeof(BOX2DFLOAT4));
-		size += sizeof(BOX2DFLOAT4); // bvol
+		size += sizeof(BOX2DFLOAT4); /* bvol */
 		loc += sizeof(BOX2DFLOAT4);
 	}
 
@@ -190,10 +197,10 @@ lwpoly_serialize_buf(LWPOLY *poly, uchar *buf, size_t *retsize)
 	{
 		memcpy(loc, &poly->SRID, sizeof(int32));
 		loc += 4;
-		size +=4;  //4 byte SRID
+		size +=4;  /* 4 byte SRID */
 	}
 
-	memcpy(loc, &poly->nrings, sizeof(int32));  // nrings
+	memcpy(loc, &poly->nrings, sizeof(int32));  /* nrings */
 	loc+=4;
 
 	for (t=0;t<poly->nrings;t++)
@@ -207,13 +214,13 @@ lwpoly_serialize_buf(LWPOLY *poly, uchar *buf, size_t *retsize)
 
 		npoints = pa->npoints;
 
-		memcpy(loc, &npoints, sizeof(uint32)); //npoints this ring
+		memcpy(loc, &npoints, sizeof(uint32)); /* npoints this ring */
 		loc+=4;
 
 		pasize = npoints*ptsize;
 		size += pasize;
 
-		// copy points
+		/* copy points */
 		memcpy(loc, getPoint_internal(pa, 0), pasize);
 		loc += pasize;
 
@@ -223,24 +230,24 @@ lwpoly_serialize_buf(LWPOLY *poly, uchar *buf, size_t *retsize)
 }
 
 
-// find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
+/* find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN) */
 BOX3D *
 lwpoly_compute_box3d(LWPOLY *poly)
 {
 	BOX3D *result;
 
-	// just need to check outer ring -- interior rings are inside
+	/* just need to check outer ring -- interior rings are inside */
 	POINTARRAY *pa = poly->rings[0];  
 	result  = ptarray_compute_box3d(pa);
 
 	return result;
 }
 
-//find length of this serialized polygon
+/* find length of this serialized polygon */
 size_t
 lwgeom_size_poly(const uchar *serialized_poly)
 {
-	uint32 result = 1; // char type
+	uint32 result = 1; /* char type */
 	uint32 nrings;
 	int ndims;
 	int t;
@@ -276,7 +283,7 @@ lwgeom_size_poly(const uchar *serialized_poly)
 #ifdef PGIS_DEBUG
 		lwnotice("lwgeom_size_poly: has srid");
 #endif
-		loc +=4; // type + SRID
+		loc +=4; /* type + SRID */
 		result += 4;
 	}
 
@@ -288,7 +295,7 @@ lwgeom_size_poly(const uchar *serialized_poly)
 
 	for (t =0;t<nrings;t++)
 	{
-		//read in a single ring and make a PA
+		/* read in a single ring and make a PA */
 		npoints = get_uint32(loc);
 		loc += 4;
 		result += 4;
@@ -312,14 +319,14 @@ lwgeom_size_poly(const uchar *serialized_poly)
 	return result;
 }
 
-// find length of this deserialized polygon
+/* find length of this deserialized polygon */
 size_t
 lwpoly_serialize_size(LWPOLY *poly)
 {
-	size_t size = 1; // type
+	size_t size = 1; /* type */
 	uint32 i;
 
-	if ( poly->SRID != -1 ) size += 4; // SRID
+	if ( poly->SRID != -1 ) size += 4; /* SRID */
 	if ( poly->bbox ) size += sizeof(BOX2DFLOAT4);
 
 #ifdef PGIS_DEBUG_CALLS
@@ -327,11 +334,11 @@ lwpoly_serialize_size(LWPOLY *poly)
 			poly, poly->nrings);
 #endif
 
-	size += 4; // nrings
+	size += 4; /* nrings */
 
 	for (i=0; i<poly->nrings; i++)
 	{
-		size += 4; // npoints
+		size += 4; /* npoints */
 		size += poly->rings[i]->npoints*TYPE_NDIMS(poly->type)*sizeof(double);
 	}
 
@@ -387,7 +394,7 @@ lwpoly_compute_box2d_p(LWPOLY *poly, BOX2DFLOAT4 *box)
 	return 1;
 }
 
-// Clone LWLINE object. POINTARRAY are not copied, it's ring array is.
+/* Clone LWLINE object. POINTARRAY are not copied, it's ring array is. */
 LWPOLY *
 lwpoly_clone(const LWPOLY *g)
 {
@@ -399,10 +406,12 @@ lwpoly_clone(const LWPOLY *g)
 	return ret;
 }
 
-// Add 'what' to this poly at position 'where'.
-// where=0 == prepend
-// where=-1 == append
-// Returns a MULTIPOLYGON or a GEOMETRYCOLLECTION
+/*
+ * Add 'what' to this poly at position 'where'.
+ * where=0 == prepend
+ * where=-1 == append
+ * Returns a MULTIPOLYGON or a GEOMETRYCOLLECTION
+ */
 LWGEOM *
 lwpoly_add(const LWPOLY *to, uint32 where, const LWGEOM *what)
 {
@@ -416,28 +425,29 @@ lwpoly_add(const LWPOLY *to, uint32 where, const LWGEOM *what)
 		return NULL;
 	}
 
-	// dimensions compatibility are checked by caller
+	/* dimensions compatibility are checked by caller */
 
-	// Construct geoms array
+	/* Construct geoms array */
 	geoms = lwalloc(sizeof(LWGEOM *)*2);
-	if ( where == -1 ) // append
+	if ( where == -1 ) /* append */
 	{
 		geoms[0] = lwgeom_clone((LWGEOM *)to);
 		geoms[1] = lwgeom_clone(what);
 	}
-	else // prepend
+	else /* prepend */
 	{
 		geoms[0] = lwgeom_clone(what);
 		geoms[1] = lwgeom_clone((LWGEOM *)to);
 	}
-	// reset SRID and wantbbox flag from component types
+
+	/* reset SRID and wantbbox flag from component types */
 	geoms[0]->SRID = geoms[1]->SRID = -1;
 	TYPE_SETHASSRID(geoms[0]->type, 0);
 	TYPE_SETHASSRID(geoms[1]->type, 0);
 	TYPE_SETHASBBOX(geoms[0]->type, 0);
 	TYPE_SETHASBBOX(geoms[1]->type, 0);
 
-	// Find appropriate geom type
+	/* Find appropriate geom type */
 	if ( TYPE_GETTYPE(what->type) == POLYGONTYPE ) newtype = MULTIPOLYGONTYPE;
 	else newtype = COLLECTIONTYPE;
 
@@ -492,8 +502,10 @@ lwpoly_segmentize2d(LWPOLY *poly, double dist)
 		poly->nrings, newrings);
 }
 
-// check coordinate equality 
-// ring and coordinate order is considered
+/*
+ * check coordinate equality 
+ * ring and coordinate order is considered
+ */
 char
 lwpoly_same(const LWPOLY *p1, const LWPOLY *p2)
 {

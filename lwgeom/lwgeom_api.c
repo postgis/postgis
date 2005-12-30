@@ -968,14 +968,14 @@ lwgeom_getpoint(uchar *serialized_form, int geom_number)
 // this is fine to call on a point (with geom_num=0), multipoint or geometrycollection
 LWPOINT *lwgeom_getpoint_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
 {
-	char *sub_geom;
+	uchar *sub_geom;
 	uchar type;
 
 	sub_geom = lwgeom_getsubgeometry_inspected(inspected, geom_number);
 
 	if (sub_geom == NULL) return NULL;
 
-	type = lwgeom_getType( (uchar) sub_geom[0]);
+	type = lwgeom_getType(sub_geom[0]);
 	if (type != POINTTYPE) return NULL;
 
 	return lwpoint_deserialize(sub_geom);
@@ -1037,7 +1037,7 @@ LWPOLY *
 lwgeom_getpoly(uchar *serialized_form, int geom_number)
 {
 	uchar type = lwgeom_getType((uchar)serialized_form[0]);
-	char *sub_geom;
+	uchar *sub_geom;
 
 	if ((type == POLYGONTYPE)  && (geom_number == 0))
 	{
@@ -1051,7 +1051,7 @@ lwgeom_getpoly(uchar *serialized_form, int geom_number)
 	sub_geom = lwgeom_getsubgeometry(serialized_form, geom_number);
 	if (sub_geom == NULL) return NULL;
 
-	type = lwgeom_getType((uchar) sub_geom[0]);
+	type = lwgeom_getType(sub_geom[0]);
 	if (type != POLYGONTYPE) return NULL;
 
 	return lwpoly_deserialize(sub_geom);
@@ -1063,14 +1063,14 @@ lwgeom_getpoly(uchar *serialized_form, int geom_number)
 // this is fine to call on a polygon, multipolygon or geometrycollection
 LWPOLY *lwgeom_getpoly_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
 {
-	char *sub_geom;
+	uchar *sub_geom;
 	uchar type;
 
 	sub_geom = lwgeom_getsubgeometry_inspected(inspected, geom_number);
 
 	if (sub_geom == NULL) return NULL;
 
-	type = lwgeom_getType((uchar) sub_geom[0]);
+	type = lwgeom_getType(sub_geom[0]);
 	if (type != POLYGONTYPE) return NULL;
 
 	return lwpoly_deserialize(sub_geom);
@@ -1091,7 +1091,7 @@ uchar *
 lwgeom_getsubgeometry(const uchar *serialized_form, int geom_number)
 {
 	//major cheat!!
-	char * result;
+	uchar *result;
 	LWGEOM_INSPECTED *inspected = lwgeom_inspect(serialized_form);
 
 	result = lwgeom_getsubgeometry_inspected(inspected, geom_number);
@@ -1631,7 +1631,7 @@ void printPA(POINTARRAY *pa)
 {
 	int t;
 	POINT4D pt;
-	uchar *mflag;
+	char *mflag;
 
 	if ( TYPE_HASM(pa->dims) ) mflag = "M";
 	else mflag = "";
@@ -1739,156 +1739,6 @@ lwgeom_getsrid(uchar *serialized)
 	return get_int32(loc);
 }
 
-// get the SRID from the LWGEOM
-// none present => -1
-int
-pglwgeom_getSRID(PG_LWGEOM *lwgeom)
-{
-	uchar type = lwgeom->type;
-	uchar *loc = lwgeom->data;
-
-	if ( ! lwgeom_hasSRID(type)) return -1;
-
-	if (lwgeom_hasBBOX(type))
-	{
-		loc += sizeof(BOX2DFLOAT4);
-	}
-
-	return get_int32(loc);
-}
-
-/*
- * Make a PG_LWGEOM object from a WKB binary representation.
- * Currently unoptimized as it will convert WKB to HEXWKB first.
- */
-PG_LWGEOM *
-pglwgeom_from_ewkb(uchar *ewkb, size_t ewkblen)
-{
-	PG_LWGEOM *ret;
-	char *hexewkb;
-	size_t hexewkblen = ewkblen*2;
-	int i;
-
-	hexewkb = lwalloc(hexewkblen+1);
-	for (i=0; i<ewkblen; i++)
-	{
-		deparse_hex(ewkb[i], &hexewkb[i*2]);
-	}
-	hexewkb[hexewkblen] = '\0';
-
-	ret = (PG_LWGEOM *)parse_lwgeom_wkt(hexewkb);
-
-	lwfree(hexewkb);
-
-	return ret;
-}
-
-/*
- * Return the EWKB (binary) representation for a PG_LWGEOM.
- */
-char *
-pglwgeom_to_ewkb(PG_LWGEOM *geom, char byteorder, size_t *outsize)
-{
-	uchar *srl = &(geom->type);
-	return unparse_WKB(srl, lwalloc, lwfree,
-		byteorder, outsize, 0);
-}
-
-// Set the SRID of a PG_LWGEOM
-// Returns a newly allocated PG_LWGEOM object.
-// Allocation will be done using the lwalloc.
-PG_LWGEOM *
-pglwgeom_setSRID(PG_LWGEOM *lwgeom, int32 newSRID)
-{
-	uchar type = lwgeom->type;
-	int bbox_offset=0; //0=no bbox, otherwise sizeof(BOX2DFLOAT4)
-	int len,len_new,len_left;
-	PG_LWGEOM *result;
-	uchar *loc_new, *loc_old;
-
-	if (lwgeom_hasBBOX(type))
-		bbox_offset = sizeof(BOX2DFLOAT4);
-
-	len = lwgeom->size;
-
-	if (lwgeom_hasSRID(type))
-	{
-		if ( newSRID != -1 ) {
-			//we create a new one and copy the SRID in
-			result = lwalloc(len);
-			memcpy(result, lwgeom, len);
-			memcpy(result->data+bbox_offset, &newSRID,4);
-		} else {
-			//we create a new one dropping the SRID
-			result = lwalloc(len-4);
-			result->size = len-4;
-			result->type = lwgeom_makeType_full(
-				TYPE_HASZ(type), TYPE_HASM(type),
-				0, lwgeom_getType(type),
-				lwgeom_hasBBOX(type));
-			loc_new = result->data;
-			loc_old = lwgeom->data;
-			len_left = len-4-1;
-
-			// handle bbox (if there)
-			if (lwgeom_hasBBOX(type))
-			{
-				memcpy(loc_new, loc_old, sizeof(BOX2DFLOAT4));
-				loc_new += sizeof(BOX2DFLOAT4);
-				loc_old += sizeof(BOX2DFLOAT4);
-				len_left -= sizeof(BOX2DFLOAT4);
-			}
-
-			// skip SRID, copy the remaining
-			loc_old += 4;
-			len_left -= 4;
-			memcpy(loc_new, loc_old, len_left);
-
-		}
-
-	}
-	else 
-	{
-		// just copy input, already w/out a SRID
-		if ( newSRID == -1 ) {
-			result = lwalloc(len);
-			memcpy(result, lwgeom, len);
-		}
-		// need to add one
-		else {
-			len_new = len + 4;//+4 for SRID
-			result = lwalloc(len_new);
-			memcpy(result, &len_new, 4); // size copy in
-			result->type = lwgeom_makeType_full(
-				TYPE_HASZ(type), TYPE_HASM(type),
-				1, lwgeom_getType(type),lwgeom_hasBBOX(type));
-
-			loc_new = result->data;
-			loc_old = lwgeom->data;
-
-			len_left = len -4-1;// old length - size - type
-
-			// handle bbox (if there)
-
-			if (lwgeom_hasBBOX(type))
-			{
-				memcpy(loc_new, loc_old, sizeof(BOX2DFLOAT4)) ;//copy in bbox
-				loc_new += sizeof(BOX2DFLOAT4);
-				loc_old += sizeof(BOX2DFLOAT4);
-				len_left -= sizeof(BOX2DFLOAT4);
-			}
-
-			//put in SRID
-
-			memcpy(loc_new, &newSRID,4);
-			loc_new +=4;
-			memcpy(loc_new, loc_old, len_left);
-		}
-	}
-	return result;
-}
-
-
 char
 ptarray_isccw(const POINTARRAY *pa)
 {
@@ -1986,7 +1836,7 @@ box2d_union_p(BOX2DFLOAT4 *b1, BOX2DFLOAT4 *b2, BOX2DFLOAT4 *ubox)
 	return 1;
 }
 
-const uchar *
+const char *
 lwgeom_typeflags(uchar type)
 {
 	static char flags[5];
@@ -2122,117 +1972,18 @@ parse_hex(char *str)
 //		-> mystr[0] = 'F' and mystr[1] = 'F'
 // no error checking done
 void
-deparse_hex(uchar str, uchar *result)
+deparse_hex(uchar str, char *result)
 {
 	int	input_high;
 	int  input_low;
+	static char outchr[]={"0123456789ABCDEF" };
 
 	input_high = (str>>4);
 	input_low = (str & 0x0F);
 
-	switch (input_high)
-	{
-		case 0:
-			result[0] = '0';
-			break;
-		case 1:
-			result[0] = '1';
-			break;
-		case 2:
-			result[0] = '2';
-			break;
-		case 3:
-			result[0] = '3';
-			break;
-		case 4:
-			result[0] = '4';
-			break;
-		case 5:
-			result[0] = '5';
-			break;
-		case 6:
-			result[0] = '6';
-			break;
-		case 7:
-			result[0] = '7';
-			break;
-		case 8:
-			result[0] = '8';
-			break;
-		case 9:
-			result[0] = '9';
-			break;
-		case 10:
-			result[0] = 'A';
-			break;
-		case 11:
-			result[0] = 'B';
-			break;
-		case 12:
-			result[0] = 'C';
-			break;
-		case 13:
-			result[0] = 'D';
-			break;
-		case 14:
-			result[0] = 'E';
-			break;
-		case 15:
-			result[0] = 'F';
-			break;
-	}
+	result[0] = outchr[input_high];
+	result[1] = outchr[input_low];
 
-	switch (input_low)
-	{
-		case 0:
-			result[1] = '0';
-			break;
-		case 1:
-			result[1] = '1';
-			break;
-		case 2:
-			result[1] = '2';
-			break;
-		case 3:
-			result[1] = '3';
-			break;
-		case 4:
-			result[1] = '4';
-			break;
-		case 5:
-			result[1] = '5';
-			break;
-		case 6:
-			result[1] = '6';
-			break;
-		case 7:
-			result[1] = '7';
-			break;
-		case 8:
-			result[1] = '8';
-			break;
-		case 9:
-			result[1] = '9';
-			break;
-		case 10:
-			result[1] = 'A';
-			break;
-		case 11:
-			result[1] = 'B';
-			break;
-		case 12:
-			result[1] = 'C';
-			break;
-		case 13:
-			result[1] = 'D';
-			break;
-		case 14:
-			result[1] = 'E';
-			break;
-		case 15:
-			result[1] = 'F';
-			break;
-	}
 }
 
 uchar *

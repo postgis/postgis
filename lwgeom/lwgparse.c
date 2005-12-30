@@ -12,7 +12,7 @@
 #include "wktparse.h"
 
 /*
-//To get byte order
+ * To get byte order
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <netinet/in_systm.h>
@@ -31,8 +31,8 @@ struct tag_outputstate{
 };
 
 typedef struct tag_outputstate output_state;
-typedef void (*output_func)(tuple* this,output_state* out);
-typedef void (*read_col_func)(const uchar**f);
+typedef void (*output_func)(tuple* this, output_state* out);
+typedef void (*read_col_func)(const char **f);
 
 
 
@@ -94,7 +94,7 @@ double *first_point=NULL;
 double *last_point=NULL;
 
 /* External functions */
-extern void init_parser(const uchar *);
+extern void init_parser(const char *);
 
 /* Prototypes */
 tuple* alloc_tuple(output_func of,size_t size);
@@ -131,19 +131,19 @@ void alloc_geomertycollection(void);
 void alloc_counter(void);
 void alloc_empty(void);
 uchar* make_lwgeom(void);
-uchar strhex_readbyte(const uchar* in);
-uchar read_wkb_byte(const uchar** in);
-void read_wkb_bytes(const uchar** in,uchar* out, int cnt);
-int4 read_wkb_int(const uchar** in);
-double read_wkb_double(const uchar** in,int convert_from_int);
-void read_wkb_point(const uchar** b);
-void read_collection(const uchar** b,read_col_func f);
-void read_collection2(const uchar** b);
-void parse_wkb(const uchar** b);
-void alloc_wkb(const uchar* parser);
-uchar* parse_it(const uchar* geometry,allocator allocfunc,report_error errfunc);
-uchar* parse_lwg(const uchar* geometry,allocator allocfunc,report_error errfunc);
-uchar* parse_lwgi(const uchar* geometry,allocator allocfunc,report_error errfunc);
+uchar strhex_readbyte(const char *in);
+uchar read_wkb_byte(const char **in);
+void read_wkb_bytes(const char **in, uchar* out, int cnt);
+int4 read_wkb_int(const char **in);
+double read_wkb_double(const char **in, int convert_from_int);
+void read_wkb_point(const char **b);
+void read_collection(const char **b, read_col_func f);
+void read_collection2(const char **b);
+void parse_wkb(const char **b);
+void alloc_wkb(const char *parser);
+uchar* parse_it(const char* geometry, allocator allocfunc, report_error errfunc);
+uchar* parse_lwg(const char* geometry, allocator allocfunc, report_error errfunc);
+uchar* parse_lwgi(const char* geometry, allocator allocfunc, report_error errfunc);
 
 void
 set_srid(double d_srid)
@@ -352,7 +352,7 @@ alloc_lwgeom(int srid)
 	the_geom.hasZ=0;
 	the_geom.hasM=0;
 
-	//Free if used already
+	/* Free if used already */
 	if ( the_geom.first ){
 		free_tuple(the_geom.first);
 		the_geom.first=the_geom.last=NULL;
@@ -463,13 +463,13 @@ write_type(tuple* this,output_state* out)
 {
 	uchar type=0;
 
-	//Empty handler - switch back
+	/* Empty handler - switch back */
 	if ( this->uu.nn.type == 0xff )
 		this->uu.nn.type = COLLECTIONTYPE;
 
 	type |= this->uu.nn.type;
 
-	if (the_geom.ndims) //Support empty
+	if (the_geom.ndims) /* Support empty */
 	{
 		TYPE_SETZM(type, the_geom.hasZ, the_geom.hasM);
 	}
@@ -482,7 +482,7 @@ write_type(tuple* this,output_state* out)
 	out->pos++;
 
 	if ( the_geom.srid != -1 ){
-		//Only the first geometry will have a srid attached
+		/* Only the first geometry will have a srid attached */
 		WRITE_INT4(out,the_geom.srid);
 		the_geom.srid = -1;
 	}
@@ -572,20 +572,20 @@ void
 alloc_empty(void)
 {
 	tuple* st = the_geom.stack;
-	//Find the last geometry
+	/* Find the last geometry */
 	while(st->uu.nn.type == 0){
 		st =st->uu.nn.stack_next;
 	}
 
-	//Reclaim memory
+	/* Reclaim memory */
 	free_tuple(st->next);
 
-	//Put an empty geometry collection on the top of the stack
+	/* Put an empty geometry collection on the top of the stack */
 	st->next=NULL;
 	the_geom.stack=st;
 	the_geom.alloc_size=st->uu.nn.size_here;
 
-	//Mark as a empty stop
+	/* Mark as a empty stop */
 	if (st->uu.nn.type != 0xFF){
 		st->uu.nn.type=0xFF;
 		st->of = write_type_count;
@@ -612,7 +612,7 @@ make_lwgeom(void)
 		cur=cur->next;
 	}
 
-	//if ints shrink then we need to rewrite the size smaller
+	/* if ints shrink then we need to rewrite the size smaller */
 	out.pos = out_c;
 	write_size(NULL,&out);
 
@@ -623,7 +623,7 @@ int
 lwg_parse_yyerror(char* s)
 {
 	error("parse error - invalid geometry");
-	//error_func("parse error - invalid geometry");
+	/* error_func("parse error - invalid geometry"); */
 	return 1;
 }
 
@@ -654,7 +654,7 @@ static const uchar to_hex[]  = {
 	255,255,255,255,255,255,255,255};
 
 uchar
-strhex_readbyte(const uchar* in)
+strhex_readbyte(const char* in)
 {
 	if ( *in == 0 ){
 		if ( ! ferror_occured){
@@ -666,7 +666,7 @@ strhex_readbyte(const uchar* in)
 }
 
 uchar
-read_wkb_byte(const uchar** in)
+read_wkb_byte(const char** in)
 {
 	uchar ret = strhex_readbyte(*in);
 	(*in)+=2;
@@ -676,7 +676,7 @@ read_wkb_byte(const uchar** in)
 int swap_order;
 
 void
-read_wkb_bytes(const uchar** in,uchar* out, int cnt)
+read_wkb_bytes(const char** in, uchar* out, int cnt)
 {
 	if ( ! swap_order ){
 		while(cnt--) *out++ = read_wkb_byte(in);
@@ -688,7 +688,7 @@ read_wkb_bytes(const uchar** in,uchar* out, int cnt)
 }
 
 int4
-read_wkb_int(const uchar** in)
+read_wkb_int(const char** in)
 {
 	int4 ret=0;
 	read_wkb_bytes(in,(uchar*)&ret,4);
@@ -696,7 +696,7 @@ read_wkb_int(const uchar** in)
 }
 
 double
-read_wkb_double(const uchar** in,int convert_from_int)
+read_wkb_double(const char** in, int convert_from_int)
 {
 	double ret=0;
 
@@ -711,15 +711,17 @@ read_wkb_double(const uchar** in,int convert_from_int)
 }
 
 void
-read_wkb_point(const uchar** b)
+read_wkb_point(const char **b)
 {
 	int i;
 	tuple* p = NULL;
 
 
 	if(the_geom.lwgi && the_geom.from_lwgi ){
-		//Special case - reading from lwgi to lwgi
-		//we don't want to go via doubles in the middle.
+		/*
+		 * Special case - reading from lwgi to lwgi
+		 * we don't want to go via doubles in the middle.
+		 */
 		switch(the_geom.ndims){
 			case 2: p=alloc_tuple(write_point_2i,8); break;
 			case 3: p=alloc_tuple(write_point_3i,12); break;
@@ -749,7 +751,7 @@ read_wkb_point(const uchar** b)
 }
 
 void
-read_collection(const uchar** b,read_col_func f)
+read_collection(const char **b, read_col_func f)
 {
 	int4 cnt=read_wkb_int(b);
 	alloc_counter();
@@ -763,13 +765,13 @@ read_collection(const uchar** b,read_col_func f)
 }
 
 void
-read_collection2(const uchar** b)
+read_collection2(const char **b)
 {
-	return read_collection(b,read_wkb_point);
+	read_collection(b, read_wkb_point);
 }
 
 void
-parse_wkb(const uchar** b)
+parse_wkb(const char **b)
 {
 	int4 type;
 	uchar xdr = read_wkb_byte(b);
@@ -784,7 +786,7 @@ parse_wkb(const uchar** b)
 
 	type = read_wkb_int(b);
 
-	//quick exit on error
+	/* quick exit on error */
 	if ( ferror_occured ) return;
 
 	the_geom.ndims=2;
@@ -803,7 +805,7 @@ parse_wkb(const uchar** b)
 
 	if (type & WKBSRIDFLAG )
 	{
-		// local (in-EWKB) srid spec overrides SRID=#; 
+		/* local (in-EWKB) srid spec overrides SRID=#; */
 		localsrid = read_wkb_int(b);
 		if ( localsrid != -1 )
 		{
@@ -822,7 +824,7 @@ parse_wkb(const uchar** b)
 			alloc_stack_tuple(type,write_type,1);
 	}
 	else{
-		//If we are writing lwg and are reading wbki
+		/* If we are writing lwg and are reading wbki */
 		int4 towrite=type;
 		if (towrite > COLLECTIONTYPE ){
 			towrite-=9;
@@ -876,7 +878,7 @@ parse_wkb(const uchar** b)
 
 
 void
-alloc_wkb(const uchar* parser)
+alloc_wkb(const char *parser)
 {
 	parse_wkb(&parser);
 }
@@ -885,7 +887,7 @@ alloc_wkb(const uchar* parser)
 	Parse a string and return a LW_GEOM
 */
 uchar *
-parse_it(const uchar* geometry,allocator allocfunc,report_error errfunc)
+parse_it(const char *geometry, allocator allocfunc, report_error errfunc)
 {
 
 	local_malloc = allocfunc;
@@ -904,14 +906,14 @@ parse_it(const uchar* geometry,allocator allocfunc,report_error errfunc)
 }
 
 uchar *
-parse_lwg(const uchar* geometry,allocator allocfunc,report_error errfunc)
+parse_lwg(const char* geometry,allocator allocfunc,report_error errfunc)
 {
 	the_geom.lwgi=0;
 	return parse_it(geometry,allocfunc,errfunc);
 }
 
 uchar *
-parse_lwgi(const uchar* geometry,allocator allocfunc,report_error errfunc)
+parse_lwgi(const char* geometry,allocator allocfunc,report_error errfunc)
 {
 	the_geom.lwgi=1;
 	return parse_it(geometry,allocfunc,errfunc);

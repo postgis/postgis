@@ -18,14 +18,14 @@ typedef void* (*allocator)(size_t size);
 typedef void  (*freeor)(void* mem);
 typedef void  (*report_error)(const char* string, ...);
 
-//typedef unsigned long int4;
+/*typedef unsigned long int4;*/
 
 
 /* How much memory is allocated at a time(bytes) for tuples */
 #define ALLOC_CHUNKS 8192
 
 /* to shrink ints less than 0x7f to 1 byte */
-//#define SHRINK_INTS
+/* #define SHRINK_INTS */
 
 #define	POINTTYPE	1
 #define	LINETYPE	2
@@ -41,6 +41,14 @@ typedef void  (*report_error)(const char* string, ...);
 #define POLYGONTYPEI  12
 
 extern int srid;
+
+/*
+
+   These functions are used by  the
+   generated parser and are not meant
+   for public use
+
+*/
 
 void set_srid(double srid);
 void alloc_lwgeom(int srid);
@@ -63,17 +71,18 @@ void alloc_counter(void);
 void pop(void);
 void popc(void);
 
-void alloc_wkb(const uchar* parser);
+void alloc_wkb(const char* parser);
+
 /*
 	Use these functions to parse and unparse lwgeoms
 	You are responsible for freeing the returned memory.
 */
 
-uchar* parse_lwg(const uchar* wkt,allocator allocfunc,report_error errfunc);
-uchar* parse_lwgi(const uchar* wkt,allocator allocfunc,report_error errfunc);
+uchar* parse_lwg(const char* wkt,allocator allocfunc,report_error errfunc);
+uchar* parse_lwgi(const char* wkt,allocator allocfunc,report_error errfunc);
 char* unparse_WKT(uchar* serialized, allocator alloc,freeor free);
 char* unparse_WKB(uchar* serialized, allocator alloc,freeor free, char endian, size_t *outsize, uchar hexform);
 int lwg_parse_yyparse(void);
 int lwg_parse_yyerror(char* s);
 
-#endif // _WKTPARSE_H
+#endif /* _WKTPARSE_H */

@@ -507,7 +507,7 @@ char is_worth_caching_lwgeom_bbox(const LWGEOM *);
  * (which is an PG_LWGEOM w/out int32 size casted to char *)
  */
 /*#define SERIALIZED_FORM(x) ((uchar *)(x))+4*/
-#define SERIALIZED_FORM(x) (VARDATA((x)))
+#define SERIALIZED_FORM(x) ((uchar *)VARDATA((x)))
 
 
 /*
@@ -796,9 +796,7 @@ size_t lwgeom_empty_length(int SRID);
  * get the SRID from the LWGEOM
  * none present => -1
  */
-extern int pglwgeom_getSRID(PG_LWGEOM *lwgeom);
 extern int lwgeom_getsrid(uchar *serialized);
-extern PG_LWGEOM *pglwgeom_setSRID(PG_LWGEOM *lwgeom, int32 newSRID);
 
 
 /*------------------------------------------------------
@@ -1010,7 +1008,7 @@ extern void lwline_setPoint4d(LWLINE *line, unsigned int which, POINT4D *newpoin
 extern LWPOLY *lwpoly_from_lwlines(const LWLINE *shell, unsigned int nholes, const LWLINE **holes);
 
 /* Return a char string with ASCII versionf of type flags */
-extern const uchar *lwgeom_typeflags(uchar type);
+extern const char *lwgeom_typeflags(uchar type);
 
 /* Construct an empty pointarray */
 extern POINTARRAY *ptarray_construct(char hasz, char hasm,
@@ -1047,15 +1045,13 @@ extern LWPOLY *lwpoly_segmentize2d(LWPOLY *line, double dist);
 extern LWCOLLECTION *lwcollection_segmentize2d(LWCOLLECTION *coll, double dist);
 
 extern uchar parse_hex(char *str);
-extern void deparse_hex(uchar str, uchar *result);
+extern void deparse_hex(uchar str, char *result);
 extern uchar *parse_lwgeom_wkt(char *wkt_input);
 
 extern char *lwgeom_to_ewkt(LWGEOM *lwgeom);
 extern char *lwgeom_to_hexwkb(LWGEOM *lwgeom, unsigned int byteorder);
 extern LWGEOM *lwgeom_from_ewkb(uchar *ewkb, size_t ewkblen);
 extern uchar *lwgeom_to_ewkb(LWGEOM *lwgeom, char byteorder, size_t *ewkblen);
-extern PG_LWGEOM *pglwgeom_from_ewkb(uchar *ewkb, size_t ewkblen);
-extern char *pglwgeom_to_ewkb(PG_LWGEOM *geom, char byteorder, size_t *ewkblen);
 
 extern void *lwalloc(size_t size);
 extern void *lwrealloc(void *mem, size_t size);

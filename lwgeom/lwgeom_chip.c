@@ -13,10 +13,6 @@
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
 
-// External functions (what's again the reason for using explicit hex form ?)
-extern void deparse_hex(uchar str, uchar *result);
-extern uchar parse_hex(char *str);
-
 // Internal funcs
 void swap_char(char *a,char *b);
 void flip_endian_double(char *d);

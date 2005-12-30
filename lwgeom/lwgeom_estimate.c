@@ -25,7 +25,7 @@
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
 
-//#define DEBUG_GEOMETRY_STATS 1
+/*#define DEBUG_GEOMETRY_STATS 1*/
 
 
 #if USE_VERSION >= 80
@@ -57,26 +57,31 @@
 
 typedef struct GEOM_STATS_T
 {
-	// cols * rows = total boxes in grid
+	/* cols * rows = total boxes in grid */
 	float4 cols;
 	float4 rows;
 	
-	// average bounding box area of not-null features 
+	/* average bounding box area of not-null features */
 	float4 avgFeatureArea;
 
-	// average number of histogram cells
-	// covered by the sample not-null features
+	/*
+	 * average number of histogram cells
+	 * covered by the sample not-null features
+	 */
 	float4 avgFeatureCells;
 
-	// BOX of area
+	/* BOX of area */
 	float4 xmin,ymin, xmax, ymax;
-	// variable length # of floats for histogram
+
+	/*
+	 * variable length # of floats for histogram
+	 */
 	float4 value[1];
 } GEOM_STATS;
 
 static float8 estimate_selectivity(BOX2DFLOAT4 *box, GEOM_STATS *geomstats);
 
-#endif // USE_VERSION >= 80
+#endif /* USE_VERSION >= 80 */
 
 #define SHOW_DIGS_DOUBLE 15
 #define MAX_DIGS_DOUBLE (SHOW_DIGS_DOUBLE + 6 + 1 + 3 +1)
@@ -99,25 +104,26 @@ static float8 estimate_selectivity(BOX2DFLOAT4 *box, GEOM_STATS *geomstats);
  */
 #define REALLY_DO_JOINSEL 1
 
-// --------------------------------------------
-// lwhistogram2d type
-
-// 2d histogram is a bounding box with a bunch of cells in it.
-// The cells will have width (xmax-xmin)/boxesPerSide
-//                 and height(ymax-ymin)/boxesPerSide
-// The first box is the ll corner's box, the send is directly to the right
-//   (row-major).
-//
-//  Size of structure is:
-//        4 (size) + 32 (box) + 4 (boxesPerSide) +
-//		    boxesPerSide*boxesPerSide*4 (data)
+/* --------------------------------------------
+ * lwhistogram2d type
+ *
+ * 2d histogram is a bounding box with a bunch of cells in it.
+ * The cells will have width (xmax-xmin)/boxesPerSide
+ *                 and height(ymax-ymin)/boxesPerSide
+ * The first box is the ll corner's box, the send is directly to the right
+ *   (row-major).
+ *
+ *  Size of structure is:
+ *        4 (size) + 32 (box) + 4 (boxesPerSide) +
+ *		    boxesPerSide*boxesPerSide*4 (data)
+ */
 typedef struct histotag
 {
-	int32 size;	  // postgres variable-length type requirement
-	int boxesPerSide; // boxesPerSide * boxesPerSide = total boxes in grid
-	double avgFeatureArea; // average bbox area of features in this histogram
-	double xmin,ymin, xmax, ymax; // BOX of area
-	unsigned int value[1]; // variable length # of ints for histogram
+	int32 size;	  /* postgres variable-length type requirement */
+	int boxesPerSide; /* boxesPerSide * boxesPerSide = total boxes in grid */
+	double avgFeatureArea; /* average bbox area of features in this histogram */
+	double xmin,ymin, xmax, ymax; /* BOX of area */
+	unsigned int value[1]; /* variable length # of ints for histogram */
 } LWHISTOGRAM2D;
 
 Datum lwhistogram2d_in(PG_FUNCTION_ARGS);
@@ -133,10 +139,12 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS);
 Datum LWGEOM_analyze(PG_FUNCTION_ARGS);
 #endif
 
-//text form of LWHISTOGRAM2D is:
-// 'HISTOGRAM2D(xmin,ymin,xmax,ymax,boxesPerSide;value[0],value[1],...')
-//    note the ";" in the middle (for easy parsing)
-//  I dont expect anyone to actually create one by hand
+/* 
+ * text form of LWHISTOGRAM2D is:
+ * 'HISTOGRAM2D(xmin,ymin,xmax,ymax,boxesPerSide;value[0],value[1],...')
+ *    note the ";" in the middle (for easy parsing)
+ *  I dont expect anyone to actually create one by hand
+ */
 PG_FUNCTION_INFO_V1(lwhistogram2d_in);
 Datum lwhistogram2d_in(PG_FUNCTION_ARGS)
 {
@@ -149,7 +157,7 @@ Datum lwhistogram2d_in(PG_FUNCTION_ARGS)
 	char *str2,*str3;
 	long datum;
 
-	//elog(NOTICE, "lwhistogram2d parser called");
+	/*elog(NOTICE, "lwhistogram2d parser called");*/
 
 	int t;
 
@@ -195,15 +203,15 @@ Datum lwhistogram2d_in(PG_FUNCTION_ARGS)
 
 	for (t=0;t<boxesPerSide*boxesPerSide;t++)
 	{
-		datum = strtol(str2,&str3,10); // str2=start of int, str3=end of int, base 10
-		// str3 points to "," or ")"
+		datum = strtol(str2,&str3,10); /* str2=start of int, str3=end of int, base 10 */
+		/* str3 points to "," or ")" */
 		if (str3[0] ==0)
 		{
 			elog(ERROR, "lwhistogram2d parser - histogram values prematurely ended!\n");
 			PG_RETURN_NULL() ;
 		}
 		histo->value[t] = (unsigned int) datum;
-		str2= str3+1; //move past the "," or ")"
+		str2= str3+1; /* move past the "," or ")" */
 	}
 	histo->xmin = xmin;
 	histo->xmax = xmax;
@@ -217,7 +225,7 @@ Datum lwhistogram2d_in(PG_FUNCTION_ARGS)
 
 
 
-//text version
+/* text version */
 PG_FUNCTION_INFO_V1(lwhistogram2d_out);
 Datum lwhistogram2d_out(PG_FUNCTION_ARGS)
 {
@@ -230,13 +238,13 @@ Datum lwhistogram2d_out(PG_FUNCTION_ARGS)
 	size = 26+6*MAX_DIGS_DOUBLE + histo->boxesPerSide*histo->boxesPerSide* (MAX_DIGS_DOUBLE+1);
 	result = palloc(size);
 
-	//elog(NOTICE, "result@%x", result);
-
 	sprintf(result,"HISTOGRAM2D(%.15g,%.15g,%.15g,%.15g,%i,%.15g;",
 		histo->xmin,histo->ymin,histo->xmax,histo->ymax,histo->boxesPerSide,histo->avgFeatureArea );
 
-	//elog(NOTICE,"so far: %s",result);
-	//elog(NOTICE,"buffsize=%i, size=%i",size,histo->size);
+#if PGIS_DEBUG
+	elog(NOTICE,"so far: %s",result);
+	elog(NOTICE,"buffsize=%i, size=%i",size,histo->size);
+#endif
 
 	for (t=0;t<histo->boxesPerSide*histo->boxesPerSide;t++)
 	{
@@ -246,19 +254,21 @@ Datum lwhistogram2d_out(PG_FUNCTION_ARGS)
 	}
 
 	strcat(result,")");
-	//elog(NOTICE,"about to return string (len=%i): -%s-",strlen(result),result);
-	//elog(NOTICE, "result@%x", result);
+#if PGIS_DEBUG
+	elog(NOTICE,"about to return string (len=%i): -%s-",strlen(result),result);
+	elog(NOTICE, "result@%x", result);
+#endif
 
 
 	PG_RETURN_CSTRING(result);
 }
 
-//create_lwhistogram2d(BOX2D, boxesPerSide)
-// returns a histgram with 0s in all the boxes.
+/*create_lwhistogram2d(BOX2D, boxesPerSide)*/
+/* returns a histgram with 0s in all the boxes.*/
 PG_FUNCTION_INFO_V1(create_lwhistogram2d);
 Datum create_lwhistogram2d(PG_FUNCTION_ARGS)
 {
-	//BOX3D  *bbox = (BOX3D *) PG_GETARG_POINTER(0);
+	/*BOX3D  *bbox = (BOX3D *) PG_GETARG_POINTER(0);*/
 	BOX2DFLOAT4 *bbox = (BOX2DFLOAT4 *)PG_GETARG_DATUM(0);
 	int32	boxesPerSide = PG_GETARG_INT32(1);
 	LWHISTOGRAM2D *histo;
@@ -289,14 +299,16 @@ Datum create_lwhistogram2d(PG_FUNCTION_ARGS)
 		histo->value[t] = 0;
 	}
 
-	//elog(NOTICE,"create_lwhistogram2d returning");
+	/*elog(NOTICE,"create_lwhistogram2d returning");*/
 
 	PG_RETURN_POINTER(histo);
 }
 
-//build_histogram2d (LWHISTOGRAM2D, tablename, columnname)
-// executes the SPI 'SELECT box3d(columnname) FROM tablename'
-// and sticks all the results in the histogram
+/* 
+ * build_histogram2d (LWHISTOGRAM2D, tablename, columnname)
+ * executes the SPI 'SELECT box3d(columnname) FROM tablename'
+ * and sticks all the results in the histogram
+ */
 PG_FUNCTION_INFO_V1(build_lwhistogram2d);
 Datum build_lwhistogram2d(PG_FUNCTION_ARGS)
 {
@@ -326,12 +338,12 @@ Datum build_lwhistogram2d(PG_FUNCTION_ARGS)
 	int    sum_area_numb_new =0;
 	int bump=0;
 
-	int tuplimit = 500000;	// No. of tuples returned on each cursor fetch
+	int tuplimit = 500000;	/* No. of tuples returned on each cursor fetch */
 	bool moredata;
 	void *SPIplan;
 	void *SPIportal;
 
-	//elog(NOTICE,"build_lwhistogram2d called");
+	/*elog(NOTICE,"build_lwhistogram2d called");*/
 
 	xmin = histo->xmin;
 	ymin = histo->ymin;
@@ -367,8 +379,10 @@ Datum build_lwhistogram2d(PG_FUNCTION_ARGS)
 	columnname = DatumGetCString(DirectFunctionCall1(textout,
 		PointerGetDatum(PG_GETARG_DATUM(2))));
 
-	//elog(NOTICE,"Start build_histogram2d with %i items already existing", sum_area_numb);
-	//elog(NOTICE,"table=\"%s\", column = \"%s\"", tablename, columnname);
+#if DEBUG_GEOMETRY_STATS
+	elog(NOTICE,"Start build_histogram2d with %i items already existing", sum_area_numb);
+	elog(NOTICE,"table=\"%s\", column = \"%s\"", tablename, columnname);
+#endif
 
 
 	SPIcode = SPI_connect();
@@ -381,7 +395,7 @@ Datum build_lwhistogram2d(PG_FUNCTION_ARGS)
 
 
 	sprintf(sql,"SELECT box2d(\"%s\") FROM \"%s\"",columnname,tablename);
-	//elog(NOTICE,"executing %s",sql);
+	/*elog(NOTICE,"executing %s",sql);*/
 
 	SPIplan = SPI_prepare(sql, 0, NULL);
 	if (SPIplan  == NULL)
@@ -406,11 +420,16 @@ Datum build_lwhistogram2d(PG_FUNCTION_ARGS)
 	while (moredata==TRUE)
 	{
 
-		//elog(NOTICE,"about to fetch...");
+#if DEBUG_GEOMETRY_STATS
+		elog(NOTICE,"about to fetch...");
+#endif
 		SPI_cursor_fetch(SPIportal, TRUE, tuplimit);
 
 		ntuples = SPI_processed;
-		//elog(NOTICE,"processing %d records", ntuples);
+
+#if DEBUG_GEOMETRY_STATS
+		elog(NOTICE,"processing %d records", ntuples);
+#endif
 
 		if (ntuples > 0) {
 
@@ -426,7 +445,6 @@ Datum build_lwhistogram2d(PG_FUNCTION_ARGS)
 				if (!(isnull))
 				{
 					box = (BOX2DFLOAT4 *)DatumGetPointer(datum);
-					//box_area = (box->high.x-box->low.x)*(box->high.y-box->low.y);
 					box_area = (box->xmax-box->xmin)*(box->ymax-box->ymin);
 
 					sum_area_new += box_area;
@@ -435,78 +453,86 @@ Datum build_lwhistogram2d(PG_FUNCTION_ARGS)
 					if (box_area > cell_area )
 						box_area = cell_area;
 					if (box_area<0)
-						box_area =0;  // for precision!
+						box_area =0;  /* for precision! */
 
-					//check to see which boxes this intersects
-					//x_idx_min = (box->low->x-xmin)/(xmax-xmin)*histo->boxesPerSide;
+					/* check to see which boxes this intersects */
 					x_idx_min = (box->xmin-xmin)/(xmax-xmin)*histo->boxesPerSide;
 					if (x_idx_min <0)
 						x_idx_min = 0;
 					if (x_idx_min >= histo->boxesPerSide)
 						x_idx_min = histo->boxesPerSide-1;
-					//y_idx_min = (box->low.y-ymin)/(ymax-ymin)*histo->boxesPerSide;
 					y_idx_min = (box->ymin-ymin)/(ymax-ymin)*histo->boxesPerSide;
 					if (y_idx_min <0)
 						y_idx_min = 0;
 					if (y_idx_min >= histo->boxesPerSide)
 						y_idx_min = histo->boxesPerSide-1;
 
-					//x_idx_max = (box->high.x-xmin)/(xmax-xmin)*histo->boxesPerSide;
 					x_idx_max = (box->xmax-xmin)/(xmax-xmin)*histo->boxesPerSide;
 					if (x_idx_max <0)
 						x_idx_max = 0;
 					if (x_idx_max >= histo->boxesPerSide)
 						x_idx_max = histo->boxesPerSide-1;
-					//y_idx_max = (box->high.y-ymin)/(ymax-ymin)*histo->boxesPerSide ;
 					y_idx_max = (box->ymax-ymin)/(ymax-ymin)*histo->boxesPerSide ;
 					if (y_idx_max <0)
 						y_idx_max = 0;
 					if (y_idx_max >= histo->boxesPerSide)
 						y_idx_max = histo->boxesPerSide-1;
 
-					//the {x,y}_idx_{min,max} define the grid squares that the box intersects
-					// if the area of the intersect between the box and the grid square > 5% of
+					/*
+					 * the {x,y}_idx_{min,max} define the grid squares that the box intersects
+					 * if the area of the intersect between the box and the grid square > 5% of
+					 */
 
-	//elog(NOTICE,"box is : (%.15g,%.15g to %.15g,%.15g)",box->low.x,box->low.y, box->high.x, box->high.y);
-//elog(NOTICE,"        search is in x: %i to %i   y: %i to %i",x_idx_min, x_idx_max, y_idx_min,y_idx_max);
+#if DEBUG_GEOMETRY_STATS
+	elog(NOTICE,"box is : (%.15g,%.15g to %.15g,%.15g)",box->low.x,box->low.y, box->high.x, box->high.y);
+	elog(NOTICE,"        search is in x: %i to %i   y: %i to %i",x_idx_min, x_idx_max, y_idx_min,y_idx_max);
+#endif
+
 					for (y= y_idx_min; y<=y_idx_max;y++)
 					{
 						for (x=x_idx_min;x<= x_idx_max;x++)
 						{
-							intersect_x = LW_MIN(box->xmax, xmin+ (x+1) * (xmax-xmin)/histo->boxesPerSide ) - LW_MAX(box->xmin, xmin+ x*(xmax-xmin)/histo->boxesPerSide ) ;
+							intersect_x = LW_MIN(box->xmax, xmin+ (x+1) * (xmax-xmin)/histo->boxesPerSide ) - LW_MAX(box->xmin, xmin + x*(xmax-xmin)/histo->boxesPerSide ) ;
+
 							intersect_y = LW_MIN(box->ymax, ymin+ (y+1) * (ymax-ymin)/histo->boxesPerSide ) - LW_MAX(box->ymin, ymin+ y*(ymax-ymin)/histo->boxesPerSide ) ;
 
-							// for a point, intersect_x=0, intersect_y=0, box_area =0
-//elog(NOTICE,"x=%i,y=%i, intersect_x= %.15g, intersect_y = %.15g",x,y,intersect_x,intersect_y);
+							/* for a point, intersect_x=0, intersect_y=0, box_area =0*/
+#if DEBUG_GEOMETRY_STATS
+elog(NOTICE,"x=%i,y=%i, intersect_x= %.15g, intersect_y = %.15g",x,y,intersect_x,intersect_y);
+#endif
 							if ( (intersect_x>=0) && (intersect_y>=0) )
 							{
 								area_intersect = intersect_x*intersect_y;
 								if (area_intersect >= box_area*0.05)
 								{
-//elog(NOTICE,"bump");
+#if DEBUG_GEOMETRY_STATS
+elog(NOTICE,"bump");
+#endif
 									bump++;
 									result->value[x+y*histo->boxesPerSide]++;
 								}
 							}
 						}
-					} // End of y
+					} /* End of y */
 
-				} // End isnull
+				} /* End isnull */
 
-			} // End of for loop
+			} /* End of for loop */
 
-			// Free all the results after each fetch, otherwise all tuples stay
-			// in memory until the end of the table...
+			/*
+			 * Free all the results after each fetch, otherwise all tuples stay
+			 * in memory until the end of the table...
+			 */
 			SPI_freetuptable(tuptable);
 
 		} else {
 				moredata = FALSE;
-		} // End of if ntuples > 0
+		} /* End of if ntuples > 0 */
 
-	} // End of while loop
+	} /* End of while loop */
 
 
-	// Close the cursor
+	/* Close the cursor */
 	SPI_cursor_close(SPIportal);
 
 	SPIcode =SPI_finish();
@@ -516,31 +542,38 @@ Datum build_lwhistogram2d(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL() ;
 	}
 
-	//elog(NOTICE,"finishing up build_histogram2d ");
+#if DEBUG_GEOMETRY_STATS
+	elog(NOTICE,"finishing up build_histogram2d ");
+#endif
 
-	//pfree(tablename);
-	//pfree(columnname);
+	/*pfree(tablename);*/
+	/*pfree(columnname);*/
 
 	total = 0;
 	for(t=0;t<histo->boxesPerSide*histo->boxesPerSide;t++)
 	{
 		total+=result->value[t];
 	}
-	//elog(NOTICE ,"histogram finishes with %i items in it - acutally added %i rows and %i bumps\n",total,sum_area_numb_new,bump);
-	//elog(NOTICE,"done build_histogram2d ");
+
+#if DEBUG_GEOMETRY_STATS
+	elog(NOTICE ,"histogram finishes with %i items in it - acutally added %i rows and %i bumps\n",total,sum_area_numb_new,bump);
+	elog(NOTICE,"done build_histogram2d ");
+#endif
 
 
-	//re-calculate statistics on avg bbox size
+	/* re-calculate statistics on avg bbox size */
 	if (sum_area_numb_new >0)
 		result->avgFeatureArea = (sum_area_new+sum_area)/((double)(sum_area_numb_new+sum_area_numb));
 
 	PG_RETURN_POINTER(result) ;
 }
 
-//explode_lwhistogram2d(histogram2d, tablename::text)
-// executes CREATE TABLE tablename (the_geom geometry, id int, hits int, percent float)
-// then populates it
-//  DOES NOT UPDATE GEOMETRY_COLUMNS
+/*
+ * explode_lwhistogram2d(histogram2d, tablename::text)
+ * executes CREATE TABLE tablename (the_geom geometry, id int, hits int, percent float)
+ * then populates it
+ * DOES NOT UPDATE GEOMETRY_COLUMNS
+ */
 PG_FUNCTION_INFO_V1(explode_lwhistogram2d);
 Datum explode_lwhistogram2d(PG_FUNCTION_ARGS)
 {
@@ -578,7 +611,7 @@ Datum explode_lwhistogram2d(PG_FUNCTION_ARGS)
 
 		sprintf(sql,"CREATE TABLE %s (the_geom geometry, id int, hits int, percent float)",tablename);
 
-		SPIcode = SPI_exec(sql, 2147483640 ); // max signed int32
+		SPIcode = SPI_exec(sql, 2147483640 ); /* max signed int32 */
 
 			if (SPIcode  != SPI_OK_UTILITY )
 			{
@@ -599,9 +632,8 @@ Datum explode_lwhistogram2d(PG_FUNCTION_ARGS)
 						histo->xmin + x*cellx,     histo->ymin+y*celly
 						);
 						sprintf(sql,"INSERT INTO %s VALUES('%s'::geometry,%i,%i,%.15g)",tablename,geom,t,histo->value[t],histo->value[t]/((double)total)*100.0);
-//elog(NOTICE,"SQL:%s",sql);
 						t++;
-						SPIcode = SPI_exec(sql, 2147483640 ); // max signed int32
+						SPIcode = SPI_exec(sql, 2147483640 ); /* max signed int32 */
 						if (SPIcode  != SPI_OK_INSERT )
 						{
 								elog(ERROR,"explode_histogram2d: couldnt insert into");
@@ -620,16 +652,17 @@ Datum explode_lwhistogram2d(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(histo) ;
 }
 
-//estimate_histogram2d(histogram2d, box2d)
-// returns a % estimate of the # of features that will be returned by that box query
-//
-//For each grid cell that intersects the query box
-//	  Calculate area of intersection (AOI)
-//    IF AOI < avgFeatureArea THEN set AOI = avgFeatureArea
-//    SUM AOI/area-of-cell*value-of-cell
-//
-// change : instead of avgFeatureArea, use avgFeatureArea or 10% of a grid cell (whichever is smaller)
-
+/* 
+ * estimate_histogram2d(histogram2d, box2d)
+ * returns a % estimate of the # of features that will be returned by that box query
+ *
+ * For each grid cell that intersects the query box
+ *	  Calculate area of intersection (AOI)
+ *    IF AOI < avgFeatureArea THEN set AOI = avgFeatureArea
+ *    SUM AOI/area-of-cell*value-of-cell
+ *
+ * change : instead of avgFeatureArea, use avgFeatureArea or 10% of a grid cell (whichever is smaller)
+ */
 PG_FUNCTION_INFO_V1(estimate_lwhistogram2d);
 Datum estimate_lwhistogram2d(PG_FUNCTION_ARGS)
 {
@@ -662,16 +695,18 @@ Datum estimate_lwhistogram2d(PG_FUNCTION_ARGS)
 	}
 
 
-//elog(NOTICE,"start estimate_histogram2d: ");
-//elog(NOTICE,"box is : (%.15g,%.15g to %.15g,%.15g)",box->low.x,box->low.y, box->high.x, box->high.y);
+#if DEBUG_GEOMETRY_STATS
+elog(NOTICE,"start estimate_histogram2d: ");
+elog(NOTICE,"box is : (%.15g,%.15g to %.15g,%.15g)",box->low.x,box->low.y, box->high.x, box->high.y);
+#endif
 
-	//box_area = (box->high.x-box->low.x)*(box->high.y-box->low.y);
 	box_area = (box->xmax-box->xmin)*(box->ymax-box->ymin);
 
-	if (box_area<0) box_area = 0;  // for precision!
+	if (box_area<0) box_area = 0;  /* for precision! */
 
-	//check to see which boxes this intersects
-	//x_idx_min = (box->low.x-xmin)/(xmax-xmin)*histo->boxesPerSide;
+	/*
+	 * check to see which boxes this intersects
+	 */
 	x_idx_min = (box->xmin-xmin)/(xmax-xmin)*histo->boxesPerSide;
 	if (x_idx_min <0) x_idx_min = 0;
 	if (x_idx_min >= histo->boxesPerSide)
@@ -690,10 +725,12 @@ Datum estimate_lwhistogram2d(PG_FUNCTION_ARGS)
 	if (y_idx_max >= histo->boxesPerSide)
 		y_idx_max = histo->boxesPerSide-1;
 
-	//the {x,y}_idx_{min,max} define the grid squares that the box intersects
+	/* The {x,y}_idx_{min,max} define the grid squares that the box intersects */
 
+#if DEBUG_GEOMETRY_STATS
+elog(NOTICE," search is in x: %i to %i   y: %i to %i",x_idx_min, x_idx_max, y_idx_min,y_idx_max);
+#endif
 
-//elog(NOTICE," search is in x: %i to %i   y: %i to %i",x_idx_min, x_idx_max, y_idx_min,y_idx_max);
 	for (y= y_idx_min; y<=y_idx_max;y++)
 	{
 		for (x=x_idx_min;x<= x_idx_max;x++)
@@ -701,8 +738,8 @@ Datum estimate_lwhistogram2d(PG_FUNCTION_ARGS)
 			intersect_x = LW_MIN(box->xmax, xmin+ (x+1) * (xmax-xmin)/histo->boxesPerSide ) - LW_MAX(box->xmin, xmin+ x*(xmax-xmin)/histo->boxesPerSide ) ;
 			intersect_y = LW_MIN(box->ymax, ymin+ (y+1) * (ymax-ymin)/histo->boxesPerSide ) - LW_MAX(box->ymin, ymin+ y*(ymax-ymin)/histo->boxesPerSide ) ;
 
-// for a point, intersect_x=0, intersect_y=0, box_area =0
-//elog(NOTICE,"x=%i,y=%i, intersect_x= %.15g, intersect_y = %.15g",x,y,intersect_x,intersect_y);
+/* for a point, intersect_x=0, intersect_y=0, box_area =0 */
+/* elog(NOTICE,"x=%i,y=%i, intersect_x= %.15g, intersect_y = %.15g",x,y,intersect_x,intersect_y); */
 			if ( (intersect_x>=0) && (intersect_y>=0) )
 			{
 				AOI = intersect_x*intersect_y;
@@ -728,8 +765,10 @@ Datum estimate_lwhistogram2d(PG_FUNCTION_ARGS)
 
 
 #if ! REALLY_DO_JOINSEL || USE_VERSION < 80
-// JOIN selectivity in the GiST && operator
-// for all PG versions
+/*
+ * JOIN selectivity in the GiST && operator
+ * for all PG versions
+ */
 PG_FUNCTION_INFO_V1(LWGEOM_gist_joinsel);
 Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 {
@@ -740,7 +779,7 @@ Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 	PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_JOINSEL);
 }
 
-#else // REALLY_DO_JOINSEL && USE_VERSION >= 80
+#else /* REALLY_DO_JOINSEL && USE_VERSION >= 80 */
 
 int calculate_column_intersection(BOX2DFLOAT4 *search_box, GEOM_STATS *geomstats1, GEOM_STATS *geomstats2);
 
@@ -770,8 +809,10 @@ calculate_column_intersection(BOX2DFLOAT4 *search_box, GEOM_STATS *geomstats1, G
 	return -1;
 }
 
-// JOIN selectivity in the GiST && operator
-// for all PG versions
+/*
+ * JOIN selectivity in the GiST && operator
+ * for all PG versions
+ */
 PG_FUNCTION_INFO_V1(LWGEOM_gist_joinsel);
 Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 {
@@ -780,7 +821,7 @@ Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 #else
 	PlannerInfo *root = (PlannerInfo *) PG_GETARG_POINTER(0);
 #endif
-	//Oid operator = PG_GETARG_OID(1);
+	/* Oid operator = PG_GETARG_OID(1); */
 	List *args = (List *) PG_GETARG_POINTER(2);
 	JoinType jointype = (JoinType) PG_GETARG_INT16(3);
 
@@ -999,7 +1040,7 @@ Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 	PG_RETURN_FLOAT8(rows_returned / total_tuples);
 }
 
-#endif // REALLY_DO_JOINSEL
+#endif /* REALLY_DO_JOINSEL */
 
 /**************************** FROM POSTGIS ****************/
 
@@ -1065,7 +1106,7 @@ get_restriction_var(List *args, int varRelid, Var **var,
 	return true;
 }
 
-//restriction in the GiST && operator
+/* restriction in the GiST && operator */
 PG_FUNCTION_INFO_V1(LWGEOM_gist_sel);
 Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS)
 {
@@ -1095,57 +1136,72 @@ Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS)
 	PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_SEL);
 #endif
 
-	//elog(NOTICE,"LWGEOM_gist_sel was called");
+#if DEBUG_GEOMETRY_STATS
+	elog(NOTICE,"LWGEOM_gist_sel was called");
+#endif
 
 	if (!get_restriction_var(args, varRelid, &var, &other, &varonleft))
 	{
-		//elog(NOTICE,"get_restriction_var FAILED -returning early");
+#if DEBUG_GEOMETRY_STATS
+		elog(NOTICE,"get_restriction_var FAILED -returning early");
+#endif
 		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_SEL);
 	}
 
 	relid = getrelid(var->varno, root->rtable);
 	if (relid == InvalidOid)
 	{
-		//elog(NOTICE,"getrelid FAILED (invalid oid) -returning early");
+#if DEBUG_GEOMETRY_STATS
+		elog(NOTICE,"getrelid FAILED (invalid oid) -returning early");
+#endif
 		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_SEL);
 	}
 
-	//elog(NOTICE,"operator's oid = %i (this should be GEOMETRY && GEOMETRY)",operator);
-	//elog(NOTICE,"relations' oid = %i (this should be the relation that the && is working on) ",relid);
-	//elog(NOTICE,"varatt oid = %i (basically relations column #) ",var->varattno);
+#if DEBUG_GEOMETRY_STATS
+	elog(NOTICE,"operator's oid = %i (this should be GEOMETRY && GEOMETRY)",operator);
+	elog(NOTICE,"relations' oid = %i (this should be the relation that the && is working on) ",relid);
+	elog(NOTICE,"varatt oid = %i (basically relations column #) ",var->varattno);
+#endif
 
 
 	if (IsA(other, Const) &&((Const *) other)->constisnull)
 	{
-		//elog(NOTICE,"other operand of && is NULL - returning early");
+#if DEBUG_GEOMETRY_STATS
+		elog(NOTICE,"other operand of && is NULL - returning early");
+#endif
 		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_SEL);
 	}
 
 	if (IsA(other, Const))
 	{
-		//elog(NOTICE,"The other side of the && is a constant with type (oid) = %i and length %i.  This should be GEOMETRY with length -1 (variable length)",((Const*)other)->consttype,((Const*)other)->constlen);
+#if DEBUG_GEOMETRY_STATS
+		elog(NOTICE,"The other side of the && is a constant with type (oid) = %i and length %i.  This should be GEOMETRY with length -1 (variable length)",((Const*)other)->consttype,((Const*)other)->constlen);
+#endif
 
 	}
 	else
 	{
-		//elog(NOTICE,"the other side of && isnt a constant - returning early");
+#if DEBUG_GEOMETRY_STATS
+		elog(NOTICE,"the other side of && isnt a constant - returning early");
+#endif
 		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_SEL);
 	}
 
-	//get the BOX thats being searched in
+	/* get the BOX thats being searched in */
 	in = (char *)PG_DETOAST_DATUM( ((Const*)other)->constvalue );
 
-	//search_box = convert_box3d_to_box(&in->bvol);
 	if ( ! getbox2d_p(in+4, &search_box) )
 	{
-		// empty geom
+		/* empty geom */
 #if DEBUG_GEOMETRY_STATS 
 		elog(NOTICE, "search box is EMPTY");
 #endif
 		PG_RETURN_FLOAT8(0.0);
 	}
 
-	//elog(NOTICE,"requested search box is : (%.15g %.15g, %.15g %.15g)",search_box->xmin,search_box->ymin,search_box->xmax,search_box->ymax);
+#if DEBUG_GEOMETRY_STATS 
+	elog(NOTICE,"requested search box is : (%.15g %.15g, %.15g %.15g)",search_box->xmin,search_box->ymin,search_box->xmax,search_box->ymax);
+#endif
 
 
 	SPIcode = SPI_connect();
@@ -1156,7 +1212,9 @@ Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS)
 	}
 
 	sprintf(sql,"SELECT stats FROM GEOMETRY_COLUMNS WHERE attrelid=%u AND varattnum=%i",relid,var->varattno);
-	//elog(NOTICE,"sql:%s",sql);
+#if DEBUG_GEOMETRY_STATS 
+	elog(NOTICE,"sql:%s",sql);
+#endif
 	SPIcode = SPI_exec(sql, 1 );
 	if (SPIcode  != SPI_OK_SELECT )
 	{
@@ -1168,7 +1226,9 @@ Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS)
 	if (SPI_processed !=1)
 	{
 		SPI_finish();
-		//elog(NOTICE,"LWGEOM_gist_sel: geometry_columns didnt return a unique value");
+#if DEBUG_GEOMETRY_STATS 
+		elog(NOTICE,"LWGEOM_gist_sel: geometry_columns didnt return a unique value");
+#endif
 		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_SEL) ;
 	}
 
@@ -1179,28 +1239,38 @@ Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS)
 	if (isnull)
 	{
 		SPI_finish();
-		//elog(NOTICE,"LWGEOM_gist_sel: geometry_columns returned a null histogram");
+#if DEBUG_GEOMETRY_STATS 
+		elog(NOTICE,"LWGEOM_gist_sel: geometry_columns returned a null histogram");
+#endif
 		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_SEL) ;
 	}
-//elog(NOTICE,"LWGEOM_gist_sel: checking against estimate_histogram2d");
+#if DEBUG_GEOMETRY_STATS 
+elog(NOTICE,"LWGEOM_gist_sel: checking against estimate_histogram2d");
+#endif
 
-	// now we have the histogram, and our search box - use the estimate_histogram2d(histo,box) to get the result!
+	/* now we have the histogram, and our search box - use the estimate_histogram2d(histo,box) to get the result! */
 	myest = DatumGetFloat8( DirectFunctionCall2( estimate_lwhistogram2d, datum, PointerGetDatum(&search_box) ) );
 
-	if ( (myest<0) || (myest!=myest) ) // <0?  or NaN?
+	if ( (myest<0) || (myest!=myest) ) /* <0?  or NaN? */
 	{
-		//elog(NOTICE,"LWGEOM_gist_sel: got something crazy back from estimate_histogram2d");
+#if DEBUG_GEOMETRY_STATS 
+		elog(NOTICE,"LWGEOM_gist_sel: got something crazy back from estimate_histogram2d");
+#endif
 		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_SEL) ;
 	}
 
 	SPIcode =SPI_finish();
 	if (SPIcode  != SPI_OK_FINISH )
 	{
-		//elog(NOTICE,"LWGEOM_gist_sel: couldnt disconnect from SPI");
+#if DEBUG_GEOMETRY_STATS 
+		elog(NOTICE,"LWGEOM_gist_sel: couldnt disconnect from SPI");
+#endif
 		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_SEL) ;
 	}
 
-//elog(NOTICE,"LWGEOM_gist_sel: finished, returning with %lf",myest);
+#if DEBUG_GEOMETRY_STATS 
+elog(NOTICE,"LWGEOM_gist_sel: finished, returning with %lf",myest);
+#endif
         PG_RETURN_FLOAT8(myest);
 }
 
@@ -1355,7 +1425,7 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(box);
 }
 
-#else // USE_VERSION >= 80
+#else /* USE_VERSION >= 80 */
 
 /*
  * This function returns an estimate of the selectivity
@@ -1373,8 +1443,8 @@ estimate_selectivity(BOX2DFLOAT4 *box, GEOM_STATS *geomstats)
 	int x_idx_min, x_idx_max, y_idx_min, y_idx_max;
 	double intersect_x, intersect_y, AOI;
 	double cell_area, box_area;
-	double geow, geoh; // width and height of histogram
-	int histocols, historows; // histogram grid size
+	double geow, geoh; /* width and height of histogram */
+	int histocols, historows; /* histogram grid size */
 	double value;
 	float overlapping_cells;
 	float avg_feat_cells;
@@ -1422,7 +1492,6 @@ estimate_selectivity(BOX2DFLOAT4 *box, GEOM_STATS *geomstats)
 #endif
 
 	cell_area = (geow*geoh) / (histocols*historows);
-	//box_area = (box->high.x-box->low.x)*(box->high.y-box->low.y);
 	box_area = (box->xmax-box->xmin)*(box->ymax-box->ymin);
 	value = 0;
 
@@ -1432,7 +1501,7 @@ estimate_selectivity(BOX2DFLOAT4 *box, GEOM_STATS *geomstats)
 #if DEBUG_GEOMETRY_STATS
 		elog(NOTICE, " search_box overlaps %d columns on the left of histogram grid", -x_idx_min);
 #endif
-		// should increment the value somehow
+		/* should increment the value somehow */
 		x_idx_min = 0;
 	}
 	if (x_idx_min >= histocols)
@@ -1440,7 +1509,7 @@ estimate_selectivity(BOX2DFLOAT4 *box, GEOM_STATS *geomstats)
 #if DEBUG_GEOMETRY_STATS
 		elog(NOTICE, " search_box overlaps %d columns on the right of histogram grid", x_idx_min-histocols+1);
 #endif
-		// should increment the value somehow
+		/* should increment the value somehow */
 		x_idx_min = histocols-1;
 	}
 
@@ -1451,7 +1520,7 @@ estimate_selectivity(BOX2DFLOAT4 *box, GEOM_STATS *geomstats)
 #if DEBUG_GEOMETRY_STATS
 		elog(NOTICE, " search_box overlaps %d columns on the bottom of histogram grid", -y_idx_min);
 #endif
-		// should increment the value somehow
+		/* should increment the value somehow */
 		y_idx_min = 0;
 	}
 	if (y_idx_min >= historows)
@@ -1459,35 +1528,33 @@ estimate_selectivity(BOX2DFLOAT4 *box, GEOM_STATS *geomstats)
 #if DEBUG_GEOMETRY_STATS
 		elog(NOTICE, " search_box overlaps %d columns on the top of histogram grid", y_idx_min-historows+1);
 #endif
-		// should increment the value somehow
+		/* should increment the value somehow */
 		y_idx_min = historows-1;
 	}
 
 	/* Find last overlapping column */
-	//x_idx_max = (box->high.x-geomstats->xmin) / geow * histocols;
 	x_idx_max = (box->xmax-geomstats->xmin) / geow * histocols;
 	if (x_idx_max <0)
 	{
-		// should increment the value somehow
+		/* should increment the value somehow */
 		x_idx_max = 0;
 	}
 	if (x_idx_max >= histocols )
 	{
-		// should increment the value somehow
+		/* should increment the value somehow */
 		x_idx_max = histocols-1;
 	}
 
 	/* Find last overlapping row */
-	//y_idx_max = (box->high.y-geomstats->ymin) / geoh * historows;
 	y_idx_max = (box->ymax-geomstats->ymin) / geoh * historows;
 	if (y_idx_max <0)
 	{
-		// should increment the value somehow
+		/* should increment the value somehow */
 		y_idx_max = 0;
 	}
 	if (y_idx_max >= historows)
 	{
-		// should increment the value somehow
+		/* should increment the value somehow */
 		y_idx_max = historows-1;
 	}
 
@@ -1624,16 +1691,16 @@ Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS)
 #else
 	PlannerInfo *root = (PlannerInfo *) PG_GETARG_POINTER(0);
 #endif
-	//Oid operator = PG_GETARG_OID(1);
+	/* Oid operator = PG_GETARG_OID(1); */
 	List *args = (List *) PG_GETARG_POINTER(2);
-	//int varRelid = PG_GETARG_INT32(3);
+	/* int varRelid = PG_GETARG_INT32(3); */
 	Oid relid;
 	HeapTuple stats_tuple;
 	GEOM_STATS *geomstats;
 	int geomstats_nvalues=0;
 	Node *other;
 	Var *self;
-	char *in;
+	uchar *in;
 	BOX2DFLOAT4 search_box;
 	float8 selectivity=0;
 
@@ -1691,7 +1758,7 @@ Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS)
 	 * Convert the constant to a BOX
 	 */
 
-	in = (char *)PG_DETOAST_DATUM( ((Const*)other)->constvalue );
+	in = (uchar *)PG_DETOAST_DATUM( ((Const*)other)->constvalue );
 	if ( ! getbox2d_p(in+4, &search_box) )
 	{
 #if DEBUG_GEOMETRY_STATS 
@@ -1709,7 +1776,7 @@ Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS)
 	 */
 
 #if USE_VERSION < 81
-//	relid = getrelid(varRelid, root->rtable);
+/*	relid = getrelid(varRelid, root->rtable); */
 	relid = getrelid(self->varno, root->rtable);
 #else
 	relid = getrelid(self->varno, root->parse->rtable);
@@ -1811,16 +1878,16 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	double sdLOWx=0, sdLOWy=0, sdHIGx=0, sdHIGy=0;
 	BOX2DFLOAT4 *newhistobox=NULL;
 #endif
-	double geow, geoh; // width and height of histogram
+	double geow, geoh; /* width and height of histogram */
 	int histocells;
-	int cols, rows; // histogram grid size
+	int cols, rows; /* histogram grid size */
 	BOX2DFLOAT4 histobox;
 
 	/*
 	 * This is where geometry_analyze
 	 * should put its' custom parameters.
 	 */
-	//void *mystats = stats->extra_data;
+	/* void *mystats = stats->extra_data; */
 	
 	/*
 	 * We'll build an histogram having from 40 to 400 boxesPerSide
@@ -1870,7 +1937,7 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 
 		if ( ! getbox2d_p(SERIALIZED_FORM(geom), &box) )
 		{
-			// Skip empty geometry
+			/* Skip empty geometry */
 #if DEBUG_GEOMETRY_STATS 
 			elog(NOTICE, " skipped empty geometry %d", i);
 #endif
@@ -1918,7 +1985,7 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 				box.ymin);
 		}
 		
-		// TODO: ask if we need geom or bvol size for stawidth
+		/* TODO: ask if we need geom or bvol size for stawidth */
 		total_width += geom->size;
 		total_boxes_area += (box.xmax-box.xmin)*(box.ymax-box.ymin);
 
@@ -2054,7 +2121,7 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		histobox.ymax = newhistobox->ymax;
 
 
-#else // ! USE_STANDARD_DEVIATION
+#else /* ! USE_STANDARD_DEVIATION */
 
 	/*
 	 * Set histogram extent box
@@ -2063,7 +2130,7 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	histobox.ymin = sample_extent->ymin;
 	histobox.xmax = sample_extent->xmax;
 	histobox.ymax = sample_extent->ymax;
-#endif // USE_STANDARD_DEVIATION
+#endif /* USE_STANDARD_DEVIATION */
 
 
 #if DEBUG_GEOMETRY_STATS 
@@ -2122,7 +2189,7 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	geomstats->cols = cols;
 	geomstats->rows = rows;
 
-	// Initialize all values to 0
+	/* Initialize all values to 0 */
 	for (i=0;i<histocells; i++) geomstats->value[i] = 0;
 
 	cell_width = geow/cols;
@@ -2153,7 +2220,7 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		int numcells=0;
 
 		box = (BOX2DFLOAT4 *)sampleboxes[i];
-		if ( ! box ) continue; // hard deviant..
+		if ( ! box ) continue; /* hard deviant.. */
 
 		/* give backend a chance of interrupting us */
 		vacuum_delay_point();
@@ -2201,9 +2268,11 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 			}
 		}
 
-		// before adding to the total cells
-		// we could decide if we really 
-		// want this feature to count
+		/*
+		 * before adding to the total cells
+		 * we could decide if we really 
+		 * want this feature to count
+		 */
 		total_boxes_cells += numcells;
 
 		examinedsamples++;
@@ -2221,7 +2290,7 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		return;
 	}
 
-	// what about null features (TODO) ?
+	/* what about null features (TODO) ? */
 	geomstats->avgFeatureCells = (float4)total_boxes_cells/examinedsamples;
 
 #if DEBUG_GEOMETRY_STATS
@@ -2329,8 +2398,10 @@ Datum LWGEOM_analyze(PG_FUNCTION_ARGS)
 	 * There might be a reason not to analyze this column
 	 * (can we detect the absence of an index?)
 	 */
-	//elog(NOTICE, "compute_geometry_stats not implemented yet");
-	//PG_RETURN_BOOL(false);
+#if 0
+	elog(NOTICE, "compute_geometry_stats not implemented yet");
+	PG_RETURN_BOOL(false);
+#endif
 
 	/* Setup the minimum rows and the algorithm function */
 	stats->minrows = 300 * stats->attr->attstattarget;
@@ -2405,7 +2476,7 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 		nsp[VARSIZE(txnsp)-VARHDRSZ]='\0';
 		querysize += VARSIZE(txnsp);
 	} else {
-		querysize += 32; // current_schema()
+		querysize += 32; /* current_schema() */
 	}
 
 	tbl = palloc(VARSIZE(txtbl)+1);
@@ -2505,11 +2576,19 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 }
 	
 
-#endif // USE_VERSION >= 80
+#endif /* USE_VERSION >= 80 */
 
 
 /**********************************************************************
  * $Log$
+ * Revision 1.36  2005/12/30 17:40:37  strk
+ * Moved PG_LWGEOM WKB I/O and SRID get/set funx
+ * from lwgeom_api.c to lwgeom_pg.c.
+ * Made lwgeom_from_ewkb directly invoke grammar parser rather then invoke
+ * the PG_LWGEOM-specific function.
+ * Cleaned up signedness-related and comments-related warnings for the files
+ * being committed (more to do on other files)
+ *
  * Revision 1.35  2005/10/10 16:19:16  strk
  * Fixed null values fraction computation in geometry analyzer as suggested by Michael Fuhr
  *

@@ -121,11 +121,11 @@ DP_simplify2d(POINTARRAY *inpts, double epsilon)
 	elog(NOTICE, "DP_simplify called input has %d pts and %d dims (ptsize: %d)", inpts->npoints, inpts->ndims, ptsize);
 #endif
 
-	// allocate space for output POINTARRAY
+	/* allocate space for output POINTARRAY */
 	outpts = palloc(sizeof(POINTARRAY));
 	outpts->dims = inpts->dims;
 	outpts->npoints=1;
-	outpts->serialized_pointlist = (char *)palloc(ptsize*inpts->npoints);
+	outpts->serialized_pointlist = palloc(ptsize*inpts->npoints);
 	memcpy(getPoint_internal(outpts, 0), getPoint_internal(inpts, 0),
 		ptsize);
 
@@ -167,7 +167,7 @@ DP_simplify2d(POINTARRAY *inpts, double epsilon)
 	 */
 	if ( outpts->npoints < inpts->npoints )
 	{
-		outpts->serialized_pointlist = (char *)repalloc(
+		outpts->serialized_pointlist = repalloc(
 			outpts->serialized_pointlist,
 			ptsize*outpts->npoints);
 		if ( outpts->serialized_pointlist == NULL ) {
@@ -196,7 +196,6 @@ simplify2d_lwline(const LWLINE *iline, double dist)
 	return oline;
 }
 
-// TODO
 LWPOLY *
 simplify2d_lwpoly(const LWPOLY *ipoly, double dist)
 {
@@ -356,7 +355,7 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 	LWPOINT *point;
 	POINTARRAY *ipa, *opa;
 	POINT4D pt;
-	char *srl;
+	uchar *srl;
 	int nsegs, i;
 	double length, slength, tlength;
 
@@ -383,7 +382,7 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 		else
 			getPoint4d_p(ipa, ipa->npoints-1, &pt);
 
-		opa = pointArray_construct((char *)&pt,
+		opa = pointArray_construct((uchar *)&pt,
 			TYPE_HASZ(line->type),
 			TYPE_HASM(line->type),
 			1);
@@ -416,7 +415,7 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 			pt.y = (p1.y) + ((p2.y - p1.y) * dseg);
 			pt.z = 0;
 			pt.m = 0;
-			opa = pointArray_construct((char *)&pt,
+			opa = pointArray_construct((uchar *)&pt,
 				TYPE_HASZ(line->type),
 				TYPE_HASM(line->type),
 				1);
@@ -431,7 +430,7 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 	/* Return the last point on the line. This shouldn't happen, but
 	 * could if there's some floating point rounding errors. */
 	getPoint4d_p(ipa, ipa->npoints-1, &pt);
-	opa = pointArray_construct((char *)&pt,
+	opa = pointArray_construct((uchar *)&pt,
 		TYPE_HASZ(line->type),
 		TYPE_HASM(line->type),
 		1);
@@ -612,7 +611,7 @@ lwline_grid(LWLINE *line, gridspec *grid)
 	/* Skip line3d with less then 2 points */
 	if ( opa->npoints < 2 ) return NULL;
 
-	// TODO: grid bounding box...
+	/* TODO: grid bounding box... */
 	oline = lwline_construct(line->SRID, NULL, opa);
 
 	return oline;
@@ -717,7 +716,7 @@ lwpoint_grid(LWPOINT *point, gridspec *grid)
 
 	opa = ptarray_grid(point->point, grid);
 
-	// TODO: grid bounding box ?
+	/* TODO: grid bounding box ? */
 	opoint = lwpoint_construct(point->SRID, NULL, opa);
 
 #if VERBOSE
