@@ -164,7 +164,7 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 	LWPOLY *poly;
 	int wantbbox = 0;
 	PG_LWGEOM *result;
-	char *ser;
+	uchar *ser;
 
 	// Assign coordinates to POINT2D array
 	pts[0].x = box->xmin; pts[0].y = box->ymin;
@@ -175,7 +175,7 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 
 	// Construct point array
 	pa[0] = palloc(sizeof(POINTARRAY));
-	pa[0]->serialized_pointlist = (char *)pts;
+	pa[0]->serialized_pointlist = (uchar *)pts;
 	TYPE_SETZM(pa[0]->dims, 0, 0);
 	pa[0]->npoints = 5;
 

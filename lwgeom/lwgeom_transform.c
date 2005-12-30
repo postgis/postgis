@@ -64,7 +64,7 @@ void to_rad(POINT2D *pt);
 void to_dec(POINT2D *pt);
 int pj_transform_nodatum(PJ *srcdefn, PJ *dstdefn, long point_count, int point_offset, double *x, double *y, double *z );
 int transform_point(POINT2D *pt, PJ *srcdefn, PJ *dstdefn);
-int lwgeom_transform_recursive(char *geom, PJ *inpj, PJ *outpj);
+static int lwgeom_transform_recursive(uchar *geom, PJ *inpj, PJ *outpj);
 
 
 // PROJ4 SRS Cache debugging (uncomment to debug)
@@ -207,7 +207,7 @@ PROJ4SRSCacheDelete(MemoryContext context)
 	projection = GetPJHashEntry(context);
 
 	if (!projection)
-		elog(ERROR, "PROJ4SRSCacheDelete: Trying to delete non-existant projection object with MemoryContext key (%p)", context);
+		elog(ERROR, "PROJ4SRSCacheDelete: Trying to delete non-existant projection object with MemoryContext key (%p)", (void *)context);
 
 #if PROJ4_CACHE_DEBUG
 	elog(NOTICE, "PROJ4SRSCacheDelete: deleting projection object (%p) with MemoryContext key (%p)", projection, context);
@@ -285,7 +285,8 @@ static void AddPJHashEntry(MemoryContext mcxt, PJ *projection)
 	}
 	else
 	{
-		elog(ERROR, "AddPJHashEntry: PROJ4 projection object already exists for this MemoryContext (%p)", mcxt);
+		elog(ERROR, "AddPJHashEntry: PROJ4 projection object already exists for this MemoryContext (%p)",
+			(void *)mcxt);
 	}
 }
 
@@ -318,7 +319,7 @@ static void DeletePJHashEntry(MemoryContext mcxt)
 	he->projection = NULL;
 
 	if (!he)
-		elog(ERROR, "DeletePJHashEntry: There was an error removing the PROJ4 projection object from this MemoryContext (%p)", mcxt);
+		elog(ERROR, "DeletePJHashEntry: There was an error removing the PROJ4 projection object from this MemoryContext (%p)", (void *)mcxt);
 }
 
 
@@ -619,8 +620,8 @@ make_project(char *str1)
  * Transform given SERIALIZED geometry
  * from inpj projection to outpj projection
  */
-int
-lwgeom_transform_recursive(char *geom, PJ *inpj, PJ *outpj)
+static int
+lwgeom_transform_recursive(uchar *geom, PJ *inpj, PJ *outpj)
 {
 	LWGEOM_INSPECTED *inspected = lwgeom_inspect(geom);
 	int j, i;
@@ -631,7 +632,7 @@ lwgeom_transform_recursive(char *geom, PJ *inpj, PJ *outpj)
 		LWPOINT *point=NULL;
 		LWPOLY *poly=NULL;
 		POINT2D p;
-		char *subgeom=NULL;
+		uchar *subgeom=NULL;
 
 		point = lwgeom_getpoint_inspected(inspected,j);
 		if (point != NULL)
@@ -712,7 +713,7 @@ Datum transform(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom;
 	PJ *input_pj,*output_pj;
 	int32 result_srid ;
-	char *srl;
+	uchar *srl;
 
 	PROJ4PortalCache *PROJ4Cache = NULL;
 
@@ -824,7 +825,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	text *input_proj4_text;
 	text *output_proj4_text;
 	int32 result_srid ;
-	char *srl;
+	uchar *srl;
 
 	result_srid = PG_GETARG_INT32(3);
 	if (result_srid == -1)

@@ -22,7 +22,7 @@
 #include "liblwgeom.h"
 
 Datum LWGEOM_asGML(PG_FUNCTION_ARGS);
-char *geometry_to_gml(char *lwgeom, char *srs);
+char *geometry_to_gml(uchar *srl, char *srs);
 
 static size_t asgml_point_size(LWPOINT *point, char *srs);
 static char *asgml_point(LWPOINT *point, char *srs);
@@ -107,7 +107,8 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 }
 
 // takes a GEOMETRY and returns a GML representation
-char *geometry_to_gml(char *geom, char *srs)
+char *
+geometry_to_gml(uchar *geom, char *srs)
 {
 	int type;
 	LWPOINT *point;
@@ -292,7 +293,7 @@ asgml_inspected_size(LWGEOM_INSPECTED *insp, char *srs)
 		LWLINE *line;
 		LWPOLY *poly;
 		LWGEOM_INSPECTED *subinsp;
-		char *subgeom;
+		uchar *subgeom;
 
 		if ((point=lwgeom_getpoint_inspected(insp, i)))
 		{
@@ -351,7 +352,7 @@ asgml_inspected_buf(LWGEOM_INSPECTED *insp, char *srs, char *output)
 		LWLINE *line;
 		LWPOLY *poly;
 		LWGEOM_INSPECTED *subinsp;
-		char *subgeom;
+		uchar *subgeom;
 
 		if ((point=lwgeom_getpoint_inspected(insp, i)))
 		{
@@ -504,6 +505,9 @@ getSRSbySRID(int SRID)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.12  2005/12/30 18:14:53  strk
+ * Fixed all signedness warnings
+ *
  * Revision 1.11  2005/11/18 10:16:21  strk
  * Removed casts on lwalloc return.
  * Used varlena macros when appropriate.

@@ -408,7 +408,7 @@ Datum BOX2DFLOAT4_combine(PG_FUNCTION_ARGS)
 	Pointer box2d_ptr = PG_GETARG_POINTER(0);
 	Pointer geom_ptr = PG_GETARG_POINTER(1);
 	BOX2DFLOAT4 *a,*b;
-	char *lwgeom;
+	PG_LWGEOM *lwgeom;
 	BOX2DFLOAT4 box, *result;
 
 	if  ( (box2d_ptr == NULL) && (geom_ptr == NULL) )
@@ -420,9 +420,9 @@ Datum BOX2DFLOAT4_combine(PG_FUNCTION_ARGS)
 
 	if (box2d_ptr == NULL)
 	{
-		lwgeom = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+		lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 		// empty geom would make getbox2d_p return NULL
-		if ( ! getbox2d_p(lwgeom+4, &box) ) PG_RETURN_NULL();
+		if ( ! getbox2d_p(SERIALIZED_FORM(lwgeom), &box) ) PG_RETURN_NULL();
 		memcpy(result, &box, sizeof(BOX2DFLOAT4));
 		PG_RETURN_POINTER(result);
 	}
@@ -436,8 +436,8 @@ Datum BOX2DFLOAT4_combine(PG_FUNCTION_ARGS)
 
 	//combine_bbox(BOX3D, geometry) => union(BOX3D, geometry->bvol)
 
-	lwgeom = (char *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-	if ( ! getbox2d_p(lwgeom+4, &box) )
+	lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	if ( ! getbox2d_p(SERIALIZED_FORM(lwgeom), &box) )
 	{
 		// must be the empty geom
 		memcpy(result, (char *)PG_GETARG_DATUM(0), sizeof(BOX2DFLOAT4));
@@ -464,7 +464,7 @@ Datum BOX2DFLOAT4_to_LWGEOM(PG_FUNCTION_ARGS)
 	LWPOLY *poly;
 	int wantbbox = 0;
 	PG_LWGEOM *result;
-	char *ser;
+	uchar *ser;
 
 	// Assign coordinates to POINT2D array
 	pts[0].x = box->xmin; pts[0].y = box->ymin;
@@ -475,7 +475,7 @@ Datum BOX2DFLOAT4_to_LWGEOM(PG_FUNCTION_ARGS)
 
 	// Construct point array
 	pa[0] = palloc(sizeof(POINTARRAY));
-	pa[0]->serialized_pointlist = (char *)pts;
+	pa[0]->serialized_pointlist = (uchar *)pts;
 	TYPE_SETZM(pa[0]->dims, 0, 0);
 	pa[0]->npoints = 5;
 

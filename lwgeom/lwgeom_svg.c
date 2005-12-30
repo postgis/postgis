@@ -103,7 +103,7 @@ geometry_to_svg(PG_LWGEOM *geometry, int svgrel, int precision)
 	inspected = lwgeom_inspect(SERIALIZED_FORM(geometry));
 	for(t=0; t<inspected->ngeometries; t++)
 	{
-		char *subgeom = lwgeom_getsubgeometry_inspected(inspected, t);
+		uchar *subgeom = lwgeom_getsubgeometry_inspected(inspected, t);
 		LWPOINT *point;
 		LWLINE *line;
 		LWPOLY *poly;
@@ -280,6 +280,9 @@ print_svg_path_rel(char *result, POINTARRAY *pa, int precision)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.10  2005/12/30 18:14:53  strk
+ * Fixed all signedness warnings
+ *
  * Revision 1.9  2005/11/18 10:16:21  strk
  * Removed casts on lwalloc return.
  * Used varlena macros when appropriate.
