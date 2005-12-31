@@ -216,8 +216,10 @@ box2df_to_box3d(BOX2DFLOAT4 *box)
 {
 	BOX3D result;
 
+#if PARANOIA_LEVEL > 0
 	if (box == NULL)
-		return result;
+		lwerror("box2df_to_box3d got NULL box");
+#endif
 
 	result.xmin = box->xmin;
 	result.ymin = box->ymin;
