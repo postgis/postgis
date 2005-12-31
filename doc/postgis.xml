@@ -266,16 +266,14 @@
         <listitem>
           <para>Retrieve the PostGIS source archive from <ulink
           url="http://postgis.refractions.net/postgis-@@LAST_RELEASE_VERSION@@.tar.gz">http://postgis.refractions.net/postgis-@@LAST_RELEASE_VERSION@@.tar.gz</ulink>.
-          Uncompress and untar the archive in the "contrib" directory of the
-          PostgreSQL source tree.</para>
+          Uncompress and untar the archive.
+	  </para>
 
-          <programlisting># cd [postgresql source tree]/contrib 
-# gzip -d -c postgis-@@LAST_RELEASE_VERSION@@.tar.gz | tar xvf -</programlisting>
+          <programlisting># gzip -d -c postgis-@@LAST_RELEASE_VERSION@@.tar.gz | tar xvf -</programlisting>
         </listitem>
 
         <listitem>
-          <para>Once your PostgreSQL installation is up-to-date, enter the
-          "postgis" directory, and run:
+          <para>Enter the postgis-@@LAST_RELEASE_VERSION@@ directory, and run:
 <programlisting># ./configure</programlisting>
 	  </para>
 
