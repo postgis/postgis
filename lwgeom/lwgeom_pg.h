@@ -40,8 +40,7 @@ void init_pg_func(void);
 
 /* PG-dependant */
 /* BOX is postgresql standard type */
-extern BOX2DFLOAT4 *box_to_box2df(BOX *box);  
-extern BOX box2df_to_box(BOX2DFLOAT4 *box);
+extern void box_to_box2df_p(BOX *box, BOX2DFLOAT4 *out);  
 extern void box2df_to_box_p(BOX2DFLOAT4 *box, BOX *out);
 
 /* PG-exposed */
