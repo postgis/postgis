@@ -5,6 +5,7 @@
 #include "executor/spi.h"
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
+#include "wktparse.h"
 
 /* #undef PGIS_DEBUG */
 
