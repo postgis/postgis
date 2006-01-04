@@ -25,7 +25,6 @@ Datum LWGEOM_area_polygon(PG_FUNCTION_ARGS);
 Datum postgis_uses_stats(PG_FUNCTION_ARGS);
 Datum postgis_autocache_bbox(PG_FUNCTION_ARGS);
 Datum postgis_scripts_released(PG_FUNCTION_ARGS);
-Datum postgis_version(PG_FUNCTION_ARGS);
 Datum postgis_lib_version(PG_FUNCTION_ARGS);
 Datum postgis_lib_build_date(PG_FUNCTION_ARGS);
 Datum LWGEOM_length2d_linestring(PG_FUNCTION_ARGS);
@@ -64,7 +63,7 @@ Datum LWGEOM_asEWKT(PG_FUNCTION_ARGS);
 Datum LWGEOM_hasBBOX(PG_FUNCTION_ARGS);
 Datum LWGEOM_azimuth(PG_FUNCTION_ARGS);
 
-
+Datum optimistic_overlap(PG_FUNCTION_ARGS);
 /*------------------------------------------------------------------*/
 
 //find the size of geometry
@@ -388,17 +387,6 @@ Datum LWGEOM_summary(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom,0);
 
 	PG_RETURN_POINTER(mytext);
-}
-
-PG_FUNCTION_INFO_V1(postgis_version);
-Datum postgis_version(PG_FUNCTION_ARGS)
-{
-	char *ver = POSTGIS_VERSION;
-	text *result;
-	result = lwalloc(VARHDRSZ  + strlen(ver));
-	VARATT_SIZEP(result) = VARHDRSZ + strlen(ver) ;
-	memcpy(VARDATA(result), ver, strlen(ver));
-	PG_RETURN_POINTER(result);
 }
 
 PG_FUNCTION_INFO_V1(postgis_lib_version);
@@ -2739,6 +2727,97 @@ Datum LWGEOM_isempty(PG_FUNCTION_ARGS)
 }
 
 
+#if ! USE_GEOS && ! USE_JTS
+
+LWGEOM *lwgeom_centroid(LWGEOM *in);
+
+LWGEOM *
+lwgeom_centroid(LWGEOM *in)
+{
+	int type = lwgeom_getType(in->type);
+	LWPOLY *poly;
+	LWPOINT *point;
+	LWMPOLY *mpoly;
+	POINTARRAY *ring, *pa;
+	POINT3DZ p, *cent;
+	int i,j,k;
+	uint32 num_points_tot = 0;
+	double tot_x=0, tot_y=0, tot_z=0;
+
+	if (type == POLYGONTYPE)
+	{
+		poly = (LWPOLY*)in;
+		for (j=0; j<poly->nrings; j++)
+		{
+			ring = poly->rings[j];
+			for (k=0; k<ring->npoints-1; k++)
+			{
+				getPoint3dz_p(ring, k, &p);
+				tot_x += p.x;
+				tot_y += p.y;
+				if ( TYPE_HASZ(ring->dims) ) tot_z += p.z;
+			}
+			num_points_tot += ring->npoints-1;
+		}
+	}
+	else if ( type == MULTIPOLYGONTYPE )
+	{
+		mpoly = (LWMPOLY*)in;
+		for (i=0; i<mpoly->ngeoms; i++)
+		{
+			poly = mpoly->geoms[i];
+			for (j=0; j<poly->nrings; j++)
+			{
+				ring = poly->rings[j];
+				for (k=0; k<ring->npoints-1; k++)
+				{
+					getPoint3dz_p(ring, k, &p);
+					tot_x += p.x;
+					tot_y += p.y;
+					if ( TYPE_HASZ(ring->dims) ) tot_z += p.z;
+				}
+				num_points_tot += ring->npoints-1;
+			}
+		}
+	}
+	else
+	{
+		return NULL;
+	}
+
+	// Setup point
+	cent = lwalloc(sizeof(POINT3DZ));
+	cent->x = tot_x/num_points_tot;
+	cent->y = tot_y/num_points_tot;
+	cent->z = tot_z/num_points_tot;
+
+	// Construct POINTARRAY (paranoia?)
+	pa = pointArray_construct((uchar *)cent, 1, 0, 1);
+
+	// Construct LWPOINT
+	point = lwpoint_construct(in->SRID, NULL, pa);
+
+	return (LWGEOM *)point;
+}
+
+Datum centroid(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(centroid);
+Datum centroid(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	LWGEOM *lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom));
+	LWGEOM *centroid = lwgeom_centroid(lwgeom);
+	PG_LWGEOM *ret;
+
+	lwgeom_release(lwgeom);
+	if ( ! centroid ) PG_RETURN_NULL();
+	ret = pglwgeom_serialize(centroid);
+	lwgeom_release((LWGEOM *)centroid);
+	PG_FREE_IF_COPY(geom, 0);
+	PG_RETURN_POINTER(ret);
+}
+#endif // ! USE_GEOS && ! USE_JTS
+
 // Returns a modified [multi]polygon so that no ring segment is 
 // longer then the given distance (computed using 2d).
 // Every input point is kept.
@@ -3219,3 +3298,75 @@ Datum LWGEOM_azimuth(PG_FUNCTION_ARGS)
 
 	PG_RETURN_FLOAT8(result);
 }
+
+
+
+
+
+// optimistic_overlap(Polygon P1, Multipolygon MP2, double dist)
+// returns true if P1 overlaps MP2
+//   method: bbox check - is separation < dist?  no - return false (quick)
+//                                               yes  - return distance(P1,MP2) < dist
+
+PG_FUNCTION_INFO_V1(optimistic_overlap);
+Datum optimistic_overlap(PG_FUNCTION_ARGS)
+{
+
+  PG_LWGEOM                  *pg_geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+  PG_LWGEOM                  *pg_geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+  double                  dist = PG_GETARG_FLOAT8(2);
+  BOX2DFLOAT4             g1_bvol;
+  double                  calc_dist;
+
+  LWGEOM                     *geom1;
+  LWGEOM                     *geom2;
+
+
+  // deserialized PG_LEGEOM into their respective LWGEOM
+  geom1 = lwgeom_deserialize(SERIALIZED_FORM(pg_geom1));
+  geom2 = lwgeom_deserialize(SERIALIZED_FORM(pg_geom2));
+
+  if (geom1->SRID != geom2->SRID){
+
+    elog(ERROR,"optimistic_overlap:Operation on two GEOMETRIES with different SRIDs\\n");
+    PG_RETURN_NULL();
+  }
+
+  if (TYPE_GETTYPE(geom1->type) != POLYGONTYPE){
+    elog(ERROR,"optimistic_overlap: first arg isnt a polygon\n");
+    PG_RETURN_NULL();
+  }
+
+  if ( (TYPE_GETTYPE(geom2->type) != POLYGONTYPE) &&  (geom2->type != MULTIPOLYGONTYPE) )
+    {
+      elog(ERROR,"optimistic_overlap: 2nd arg isnt a [multi-]polygon\n");
+      PG_RETURN_NULL();
+    }
+
+  //bbox check
+
+  //memcpy(&g1_bvol, geom1->bbox, sizeof(BOX2DFLOAT4) );
+  getbox2d_p( SERIALIZED_FORM(pg_geom1), &g1_bvol );
+
+
+  g1_bvol.xmin = g1_bvol.xmin - dist;
+  g1_bvol.ymin = g1_bvol.ymin - dist;
+  g1_bvol.xmax = g1_bvol.xmax + dist;
+  g1_bvol.ymax = g1_bvol.ymax + dist;
+
+  if (  (g1_bvol.xmin > geom2->bbox->xmax) ||
+        (g1_bvol.xmax < geom2->bbox->xmin) ||
+        (g1_bvol.ymin > geom2->bbox->ymax) ||
+        (g1_bvol.ymax < geom2->bbox->ymin)
+        )
+    {
+      PG_RETURN_BOOL(FALSE);  //bbox not overlap
+    }
+
+  //compute distances
+  //should be a fast calc if they actually do intersect
+  calc_dist =     DatumGetFloat8 ( DirectFunctionCall2(LWGEOM_mindistance2d,   PointerGetDatum( pg_geom1 ),       PointerGetDatum( pg_geom2 )));
+
+  PG_RETURN_BOOL(calc_dist < dist);
+}
+
