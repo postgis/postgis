@@ -13,6 +13,10 @@
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
 
+// External functions (what's again the reason for using explicit hex form ?)
+extern void deparse_hex(uchar str, uchar *result);
+extern uchar parse_hex(char *str);
+
 // Internal funcs
 void swap_char(char *a,char *b);
 void flip_endian_double(char *d);
@@ -149,6 +153,23 @@ Datum CHIP_out(PG_FUNCTION_ARGS)
 }
 
 
+//given a CHIP structure pipe it out as raw binary
+PG_FUNCTION_INFO_V1(CHIP_send);
+Datum CHIP_send(PG_FUNCTION_ARGS)
+{
+	CHIP *chip = (CHIP *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	bytea *result;
+
+
+
+	result = (bytea *)palloc( chip->size );
+	//VARATT_SIZEP(result) = chip->size + VARHDRSZ;
+	//memcpy( VARATT_DATA(result), chip, chip->size );
+	memcpy( result, chip, chip->size );
+	PG_RETURN_POINTER(result);	
+	//PG_RETURN_POINTER( (bytea *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0)) );
+}
+
 
 PG_FUNCTION_INFO_V1(CHIP_to_LWGEOM);
 Datum CHIP_to_LWGEOM(PG_FUNCTION_ARGS)
@@ -158,7 +179,7 @@ Datum CHIP_to_LWGEOM(PG_FUNCTION_ARGS)
 	POINT2D *pts = palloc(sizeof(POINT2D)*5);
 	POINTARRAY *pa[1];
 	LWPOLY *poly;
-	uchar *ser;
+	char *ser;
 	int wantbbox = false;
 	
 	// Assign coordinates to POINT2D array
@@ -170,7 +191,7 @@ Datum CHIP_to_LWGEOM(PG_FUNCTION_ARGS)
 	
 	// Construct point array
 	pa[0] = palloc(sizeof(POINTARRAY));
-	pa[0]->serialized_pointlist = (uchar *)pts;
+	pa[0]->serialized_pointlist = (char *)pts;
 	TYPE_SETZM(pa[0]->dims, 0, 0);
 	pa[0]->npoints = 5;
 
