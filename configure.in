@@ -82,11 +82,11 @@ AC_SUBST(PGBELIBS)
 AC_SUBST(PGBIN)
 AC_SUBST(PGTEMPLATE)
 AC_SUBST(LPATH)
-PGFEINCLUDES="-I`${PGCONFIG} --includedir`"
-PGFELIBS="-L`${PGCONFIG} --libdir` -lpq"
-PGBELIBS="-L`${PGCONFIG} --libdir` -lpostgres"
-PGBEINCLUDES="-I`${PGCONFIG} --includedir-server`"
-PGBIN="`${PGCONFIG} --bindir`"
+PGFEINCLUDES="-I"`${PGCONFIG} --includedir`
+PGFELIBS="-L"`${PGCONFIG} --libdir`" -lpq"
+PGBELIBS="-L"`${PGCONFIG} --libdir`" -lpostgres"
+PGBEINCLUDES="-I"`${PGCONFIG} --includedir-server`
+PGBIN=`${PGCONFIG} --bindir`
 
 dnl
 dnl Test for GEOS
@@ -452,7 +452,7 @@ EXE=
 case $host_os in
 	*mingw*)
 		PGBEINCLUDES="$PGBEINCLUDES $PGBEINCLUDES/port/win32"
-		PGFELIBS="`${PGCONFIG} --libdir`/libpq.dll"
+		PGFELIBS=`${PGCONFIG} --libdir`"/libpq.dll"
 		DLSUFFIX=.dll
 		DLFLAGS='${PGBELIBS}'
 		EXE=.exe
