@@ -13,10 +13,6 @@
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
 
-// External functions (what's again the reason for using explicit hex form ?)
-extern void deparse_hex(uchar str, uchar *result);
-extern uchar parse_hex(char *str);
-
 // Internal funcs
 void swap_char(char *a,char *b);
 void flip_endian_double(char *d);
@@ -179,7 +175,7 @@ Datum CHIP_to_LWGEOM(PG_FUNCTION_ARGS)
 	POINT2D *pts = palloc(sizeof(POINT2D)*5);
 	POINTARRAY *pa[1];
 	LWPOLY *poly;
-	char *ser;
+	uchar *ser;
 	int wantbbox = false;
 	
 	// Assign coordinates to POINT2D array
@@ -191,7 +187,7 @@ Datum CHIP_to_LWGEOM(PG_FUNCTION_ARGS)
 	
 	// Construct point array
 	pa[0] = palloc(sizeof(POINTARRAY));
-	pa[0]->serialized_pointlist = (char *)pts;
+	pa[0]->serialized_pointlist = (uchar *)pts;
 	TYPE_SETZM(pa[0]->dims, 0, 0);
 	pa[0]->npoints = 5;
 
