@@ -146,7 +146,7 @@ Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 
 	wkb_input = (WellKnownBinary *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	lwgeom2 = pglwgeom_from_ewkb(VARDATA(wkb_input),
+	lwgeom2 = pglwgeom_from_ewkb((uchar *)VARDATA(wkb_input),
 		VARSIZE(wkb_input)-VARHDRSZ);
 
 	if (  ( PG_NARGS()>1) && ( ! PG_ARGISNULL(1) ))
