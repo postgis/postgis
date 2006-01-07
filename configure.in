@@ -152,7 +152,7 @@ AC_PATH_PROG([PROJ], [proj])
 if test -n "$PROJ"; then
 	USE_PROJ=1
 	PROJ_DIR=`dirname ${PROJ}`/..
-	owd=$PWD; cd ${PROJ_DIR}; PROJ_DIR=$PWD; cd $owd;
+	owd=`pwd`; cd ${PROJ_DIR}; PROJ_DIR=`pwd`; cd $owd;
 fi
 AC_ARG_WITH(proj, 
 	[  --with-proj[[=DIR]]       enable reprojection support],
@@ -230,7 +230,7 @@ dnl if test -z "$INSTALL"; then
 dnl 	AC_MSG_ERROR(Can't find 'install');
 dnl fi
 AC_SUBST(INSTALL)
-INSTALL="${PWD}/install-sh"
+INSTALL=`pwd`"/install-sh"
 
 dnl
 dnl Search perl
