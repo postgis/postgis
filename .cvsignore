@@ -4,6 +4,7 @@ postgis.sql
 postgis_undef.sql
 postgis_old.sql
 lwpostgis.sql
+lwpostgis_upgrade.sql
 .classpath
 .project
 config.log
