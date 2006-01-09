@@ -107,12 +107,15 @@ elog(NOTICE, "DP_findsplit: segment too short, no split/no dist");
 POINTARRAY *
 DP_simplify2d(POINTARRAY *inpts, double epsilon)
 {
-	int stack[inpts->npoints];	/* recursion stack */
+	int *stack;			/* recursion stack */
 	int sp=-1;			/* recursion stack pointer */
 	int p1, split; 
 	double dist;
 	POINTARRAY *outpts;
 	int ptsize = pointArray_ptsize(inpts);
+
+	/* Allocate recursion stack */
+	stack = lwalloc(sizeof(int)*inpts->npoints);
 
 	p1 = 0;
 	stack[++sp] = inpts->npoints-1;
@@ -175,6 +178,7 @@ DP_simplify2d(POINTARRAY *inpts, double epsilon)
 		}
 	}
 
+	lwfree(stack);
 	return outpts;
 }
 
