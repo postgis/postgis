@@ -27,7 +27,7 @@ Datum lwgeom_ge(PG_FUNCTION_ARGS);
 Datum lwgeom_gt(PG_FUNCTION_ARGS);
 Datum lwgeom_cmp(PG_FUNCTION_ARGS);
 
-//#define PGIS_DEBUG
+/* #define PGIS_DEBUG */
 
 #if USE_VERSION == 72
 #define BTREE_SRID_MISMATCH_SEVERITY NOTICE
@@ -459,6 +459,9 @@ Datum lwgeom_cmp(PG_FUNCTION_ARGS)
 /***********************************************************
  *
  * $Log$
+ * Revision 1.9  2006/01/09 15:55:55  strk
+ * ISO C90 comments (finished in lwgeom/)
+ *
  * Revision 1.8  2005/06/15 16:04:11  strk
  * fault tolerant btree ops
  *

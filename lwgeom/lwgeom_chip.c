@@ -13,13 +13,13 @@
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
 
-// Internal funcs
+/* Internal funcs */
 void swap_char(char *a,char *b);
 void flip_endian_double(char *d);
 void flip_endian_int32(char *i);
 
 
-// Prototypes
+/* Prototypes */
 Datum CHIP_in(PG_FUNCTION_ARGS);
 Datum CHIP_out(PG_FUNCTION_ARGS);
 Datum CHIP_to_LWGEOM(PG_FUNCTION_ARGS);
@@ -33,7 +33,10 @@ Datum CHIP_getWidth(PG_FUNCTION_ARGS);
 Datum CHIP_setSRID(PG_FUNCTION_ARGS);
 
 
-// input is a string with hex chars in it.  Convert to binary and put in the result
+/*
+ * Input is a string with hex chars in it. 
+ * Convert to binary and put in the result
+ */
 PG_FUNCTION_INFO_V1(CHIP_in);
 Datum CHIP_in(PG_FUNCTION_ARGS)
 {
@@ -44,7 +47,7 @@ Datum CHIP_in(PG_FUNCTION_ARGS)
 	int input_str_len;
 	int datum_size;
 
-//printf("chip_in called\n");
+/*printf("chip_in called\n"); */
 
 	input_str_len = strlen(str);
 
@@ -66,7 +69,7 @@ Datum CHIP_in(PG_FUNCTION_ARGS)
 	{
 		((uchar *)result)[t] = parse_hex( &str[t*2]) ;
 	}
-// if endian is wrong, flip it otherwise do nothing
+/* if endian is wrong, flip it otherwise do nothing */
 	result->size = size;
 	if (result->size < sizeof(CHIP) )
 	{
@@ -76,7 +79,7 @@ Datum CHIP_in(PG_FUNCTION_ARGS)
 
 	if (result->endian_hint != 1)
 	{
-		//need to do an endian flip
+		/*need to do an endian flip */
 		flip_endian_int32( (char *)   &result->endian_hint);
 
 		flip_endian_double((char *)  &result->bvol.xmin);
@@ -88,7 +91,7 @@ Datum CHIP_in(PG_FUNCTION_ARGS)
 		flip_endian_double((char *)  &result->bvol.zmax);
 
 		flip_endian_int32( (char *)  & result->SRID);	
-			//dont know what to do with future[8] ...
+			/*dont know what to do with future[8] ... */
 
 		flip_endian_int32( (char *)  & result->height);	
 		flip_endian_int32( (char *)  & result->width);
@@ -113,7 +116,7 @@ Datum CHIP_in(PG_FUNCTION_ARGS)
 		datum_size=1;
 	}
 
-	if (result->compression ==0) //only true for non-compressed data
+	if (result->compression ==0) /*only true for non-compressed data */
 	{
 		if (result->size != (sizeof(CHIP) + datum_size * result->width*result->height) )
 		{
@@ -126,7 +129,7 @@ Datum CHIP_in(PG_FUNCTION_ARGS)
 }
 
 
-//given a CHIP structure, convert it to Hex and put it in a string
+/*given a CHIP structure, convert it to Hex and put it in a string */
 PG_FUNCTION_INFO_V1(CHIP_out);
 Datum CHIP_out(PG_FUNCTION_ARGS)
 {
@@ -135,11 +138,11 @@ Datum CHIP_out(PG_FUNCTION_ARGS)
 	int size_result;
 	int t;
 
-//printf("chip_out called\n");
+/*printf("chip_out called\n"); */
 
-	size_result = (chip->size ) *2 +1; // +1 for null char
+	size_result = (chip->size ) *2 +1; /* +1 for null char */
 	result = palloc (size_result);
-	result[size_result-1] = 0; //null terminate
+	result[size_result-1] = 0; /*null terminate */
 
 	for (t=0; t< (chip->size); t++)
 	{
@@ -149,7 +152,7 @@ Datum CHIP_out(PG_FUNCTION_ARGS)
 }
 
 
-//given a CHIP structure pipe it out as raw binary
+/*given a CHIP structure pipe it out as raw binary */
 PG_FUNCTION_INFO_V1(CHIP_send);
 Datum CHIP_send(PG_FUNCTION_ARGS)
 {
@@ -159,11 +162,11 @@ Datum CHIP_send(PG_FUNCTION_ARGS)
 
 
 	result = (bytea *)palloc( chip->size );
-	//VARATT_SIZEP(result) = chip->size + VARHDRSZ;
-	//memcpy( VARATT_DATA(result), chip, chip->size );
+	/*VARATT_SIZEP(result) = chip->size + VARHDRSZ; */
+	/*memcpy( VARATT_DATA(result), chip, chip->size ); */
 	memcpy( result, chip, chip->size );
 	PG_RETURN_POINTER(result);	
-	//PG_RETURN_POINTER( (bytea *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0)) );
+	/*PG_RETURN_POINTER( (bytea *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0)) );*/
 }
 
 
@@ -178,26 +181,26 @@ Datum CHIP_to_LWGEOM(PG_FUNCTION_ARGS)
 	uchar *ser;
 	int wantbbox = false;
 	
-	// Assign coordinates to POINT2D array
+	/* Assign coordinates to POINT2D array */
 	pts[0].x = chip->bvol.xmin; pts[0].y = chip->bvol.ymin;
 	pts[1].x = chip->bvol.xmin; pts[1].y = chip->bvol.ymax;
 	pts[2].x = chip->bvol.xmax; pts[2].y = chip->bvol.ymax;
 	pts[3].x = chip->bvol.xmax; pts[3].y = chip->bvol.ymin;
 	pts[4].x = chip->bvol.xmin; pts[4].y = chip->bvol.ymin;
 	
-	// Construct point array
+	/* Construct point array */
 	pa[0] = palloc(sizeof(POINTARRAY));
 	pa[0]->serialized_pointlist = (uchar *)pts;
 	TYPE_SETZM(pa[0]->dims, 0, 0);
 	pa[0]->npoints = 5;
 
-	// Construct polygon
+	/* Construct polygon */
 	poly = lwpoly_construct(chip->SRID, NULL, 1, pa);
 
-	// Serialize polygon
+	/* Serialize polygon */
 	ser = lwpoly_serialize(poly);
 
-	// Construct PG_LWGEOM 
+	/* Construct PG_LWGEOM  */
 	result = PG_LWGEOM_construct(ser, chip->SRID, wantbbox);
 	
 	PG_RETURN_POINTER(result);

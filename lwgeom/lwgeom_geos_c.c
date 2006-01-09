@@ -13,27 +13,29 @@
  * Define this to have have many notices printed
  * during postgis->geos and geos->postgis conversions
  */
-//#define PGIS_DEBUG_CONVERTER 1
+/*#define PGIS_DEBUG_CONVERTER 1 */
 #ifdef PGIS_DEBUG_CONVERTER
 #define PGIS_DEBUG_POSTGIS2GEOS 1
 #define PGIS_DEBUG_GEOS2POSTGIS 1
-#endif // PGIS_DEBUG_CONVERTER
-//#define PGIS_DEBUG 1
+#endif /* PGIS_DEBUG_CONVERTER */
 
-//#define WKB_CONVERSION 1
+/* #define PGIS_DEBUG 1 */
+/* #define WKB_CONVERSION 1 */
 
-//
-// WARNING: buffer-based GeomUnion has been disabled due to
-//          limitations in the GEOS code (it would only work
-//	    against polygons)
-//
-// Fuzzy way of finding out how many points to stuff
-// in each chunk: 680 * Mb of memory
-//
-// The example below is for about 32 MB (fuzzy pragmatic check)
-//
-//#define UNITE_USING_BUFFER 1
-#define MAXGEOMSPOINTS 21760
+/*
+ *
+ * WARNING: buffer-based GeomUnion has been disabled due to
+ *          limitations in the GEOS code (it would only work
+ *	    against polygons)
+ *
+ * Fuzzy way of finding out how many points to stuff
+ * in each chunk: 680 * Mb of memory
+ *
+ * The example below is for about 32 MB (fuzzy pragmatic check)
+ *
+ */
+/* #define UNITE_USING_BUFFER 1 */
+/* #define MAXGEOMSPOINTS 21760 */
 
 Datum relate_full(PG_FUNCTION_ARGS);
 Datum relate_pattern(PG_FUNCTION_ARGS);
@@ -111,9 +113,9 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 
 #ifdef PGIS_DEBUG
 	call++;
+	lwnotice("GEOS incremental union (call %d)", call);
 #endif
 
-	//lwnotice("GEOS incremental union");
 
 	datum = PG_GETARG_DATUM(0);
 
@@ -148,10 +150,10 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 		elog(NOTICE, "geom %d @ %p", i, geom);
 #endif
 
-		// Check is3d flag
+		/* Check is3d flag */
 		if ( TYPE_HASZ(geom->type) ) is3d = 1;
 
-		// Check SRID homogeneity and initialize geos result
+		/* Check SRID homogeneity and initialize geos result */
 		if ( ! i )
 		{
 			geos_result = POSTGIS2GEOS(geom);
@@ -191,16 +193,16 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 	if ( result == NULL )
 	{
 		elog(ERROR, "GEOS2POSTGIS returned an error");
-		PG_RETURN_NULL(); //never get here
+		PG_RETURN_NULL(); /* never get here */
 	}
 
-	//compressType(result);
+	/* compressType(result); */
 
 	PG_RETURN_POINTER(result);
 
 }
 
-#else // def UNITE_USING_BUFFER
+#else /* def UNITE_USING_BUFFER */
 
 /*
  * This is the final function for GeomUnion
@@ -227,9 +229,9 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 
 #ifdef PGIS_DEBUG
 	call++;
+	lwnotice("GEOS buffer union (call %d)", call);
 #endif
 
-	//lwnotice("GEOS buffer union");
 
 	datum = PG_GETARG_DATUM(0);
 
@@ -256,29 +258,31 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 
 	offset = 0; i=0;
 	ngeoms = 0; npoints=0;
-//lwnotice("Nelems %d, MAXGEOMSPOINST %d", nelems, MAXGEOMSPOINTS);
+#ifdef PGIS_DEBUG
+ 	lwnotice("Nelems %d, MAXGEOMSPOINST %d", nelems, MAXGEOMSPOINTS);
+#endif
 	while (!result) 
 	{
 		PG_LWGEOM *geom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
 		offset += INTALIGN(geom->size);
 
-		// Check is3d flag
+		/* Check is3d flag */
 		if ( TYPE_HASZ(geom->type) ) is3d = 1;
 
-		// Check SRID homogeneity 
+		/* Check SRID homogeneity  */
 		if ( ! i ) SRID = pglwgeom_getSRID(geom);
 		else errorIfSRIDMismatch(SRID, pglwgeom_getSRID(geom));
 
-		geoms[ngeoms] =
-			g1 = POSTGIS2GEOS(geom);
-			//lwgeom_deserialize(SERIALIZED_FORM(geom));
+		geoms[ngeoms] = g1 = POSTGIS2GEOS(geom);
 
 		npoints += GEOSGetNumCoordinate(geoms[ngeoms]);
 
 		++ngeoms;
 		++i;
 
-//lwnotice("Loop %d, npoints: %d", i, npoints);
+#if PGIS_DEBUG > 1
+		lwnotice("Loop %d, npoints: %d", i, npoints);
+#endif
 
 		/*
 		 * Maximum count of geometry points reached
@@ -286,7 +290,10 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 		 */
 		if ( (npoints>=MAXGEOMSPOINTS && ngeoms>1) || i==nelems)
 		{
-//lwnotice(" CHUNK (ngeoms:%d, npoints:%d, left:%d)", ngeoms, npoints, nelems-i);
+#if PGIS_DEBUG > 1
+			lwnotice(" CHUNK (ngeoms:%d, npoints:%d, left:%d)",
+				ngeoms, npoints, nelems-i);
+#endif
 
 			collection = GEOSMakeCollection(GEOS_GEOMETRYCOLLECTION,
 				geoms, ngeoms);
@@ -299,7 +306,9 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 			}
 			GEOSGeom_destroy(collection);
 
-//lwnotice(" Buffer() executed");
+#if PGIS_DEBUG > 1
+			lwnotice(" Buffer() executed");
+#endif
 
 			/*
 			 * If there are no other geoms in input
@@ -308,35 +317,48 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 			 */
 			if ( i == nelems )
 			{
-//lwnotice("  Final result points: %d", GEOSGetNumCoordinate(geos_result));
+#if PGIS_DEBUG > 1
+i				lwnotice("  Final result points: %d",
+					GEOSGetNumCoordinate(geos_result));
+#endif
 				GEOSSetSRID(geos_result, SRID);
 				result = GEOS2POSTGIS(geos_result, is3d);
 				GEOSGeom_destroy(geos_result);
-//lwnotice(" Result computed");
+
+#if PGIS_DEBUG > 1
+				lwnotice(" Result computed");
+#endif
+
 			}
 			else
 			{
-				//lwgeoms = lwalloc(sizeof(LWGEOM *)*MAXGEOMS);
-				//lwgeoms[0] = GEOS2LWGEOM(geos_result, is3d);
 				geoms[0] = geos_result;
 				ngeoms=1;
 				npoints = GEOSGetNumCoordinate(geoms[0]);
-//lwnotice("  Result pushed back on lwgeoms array (npoints:%d)", npoints);
+#if PGIS_DEBUG > 1
+	lwnotice("  Result pushed back on lwgeoms array (npoints:%d)", npoints);
+#endif
 			}
 		}
 	}
 
 
-	//compressType(result);
+	/* compressType(result); */
 
 	PG_RETURN_POINTER(result);
 
 }
 
-#endif // def UNITE_USING_BUFFER
+#endif /* def UNITE_USING_BUFFER */
 
 
-//select geomunion('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))','POLYGON((5 5, 15 5, 15 7, 5 7, 5 5))');
+/*
+ * select geomunion(
+ *      'POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))',
+ *      'POLYGON((5 5, 15 5, 15 7, 5 7, 5 5))'
+ * );
+ *
+ */
 PG_FUNCTION_INFO_V1(geomunion);
 Datum geomunion(PG_FUNCTION_ARGS)
 {
@@ -346,6 +368,10 @@ Datum geomunion(PG_FUNCTION_ARGS)
 	int SRID;
 	GEOSGeom g1,g2,g3;
 	PG_LWGEOM *result;
+
+#ifdef PGIS_DEBUG
+	elog(NOTICE,"in geomunion");
+#endif
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
@@ -361,7 +387,6 @@ Datum geomunion(PG_FUNCTION_ARGS)
 	errorIfSRIDMismatch(SRID, pglwgeom_getSRID(geom2));
 
 	initGEOS(lwnotice, lwnotice);
-//elog(NOTICE,"in geomunion");
 
 #ifdef PROFILE
 	profstart(PROF_P2G1);
@@ -378,8 +403,11 @@ Datum geomunion(PG_FUNCTION_ARGS)
 	profstop(PROF_P2G2);
 #endif
 
-//elog(NOTICE,"g1=%s",GEOSasText(g1));
-//elog(NOTICE,"g2=%s",GEOSasText(g2));
+#ifdef PGIS_DEBUG
+	elog(NOTICE,"g1=%s",GEOSasText(g1));
+	elog(NOTICE,"g2=%s",GEOSasText(g2));
+#endif
+
 #ifdef PROFILE
 	profstart(PROF_GRUN);
 #endif
@@ -388,7 +416,9 @@ Datum geomunion(PG_FUNCTION_ARGS)
 	profstop(PROF_GRUN);
 #endif
 
-//elog(NOTICE,"g3=%s",GEOSasText(g3));
+#ifdef PGIS_DEBUG
+	elog(NOTICE,"g3=%s",GEOSasText(g3));
+#endif
 
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g2);
@@ -396,13 +426,11 @@ Datum geomunion(PG_FUNCTION_ARGS)
 	if (g3 == NULL)
 	{
 		elog(ERROR,"GEOS union() threw an error!");
-		PG_RETURN_NULL(); //never get here
+		PG_RETURN_NULL(); /* never get here */
 	}
 
 
 	GEOSSetSRID(g3, SRID);
-
-//elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
 
 #ifdef PROFILE
 	profstart(PROF_G2P);
@@ -417,10 +445,10 @@ Datum geomunion(PG_FUNCTION_ARGS)
 	if (result == NULL)
 	{
 		elog(ERROR,"GEOS union() threw an error (result postgis geometry formation)!");
-		PG_RETURN_NULL(); //never get here
+		PG_RETURN_NULL(); /*never get here */
 	}
 
-	//compressType(result);  // convert multi* to single item if appropriate
+	/* compressType(result); */
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
@@ -434,7 +462,11 @@ Datum geomunion(PG_FUNCTION_ARGS)
 }
 
 
-// select symdifference('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))','POLYGON((5 5, 15 5, 15 7, 5 7, 5 5))');
+/*
+ *  select symdifference(
+ *      'POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))',
+ *      'POLYGON((5 5, 15 5, 15 7, 5 7, 5 5))');
+ */
 PG_FUNCTION_INFO_V1(symdifference);
 Datum symdifference(PG_FUNCTION_ARGS)
 {
@@ -488,10 +520,12 @@ Datum symdifference(PG_FUNCTION_ARGS)
 		elog(ERROR,"GEOS symdifference() threw an error!");
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g2);
-		PG_RETURN_NULL(); //never get here
+		PG_RETURN_NULL(); /*never get here */
 	}
 
-//	elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
+#ifdef PGIS_DEBUG
+	elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
+#endif
 
 	GEOSSetSRID(g3, SRID);
 
@@ -509,14 +543,14 @@ Datum symdifference(PG_FUNCTION_ARGS)
 		GEOSGeom_destroy(g2);
 		GEOSGeom_destroy(g3);
 		elog(ERROR,"GEOS symdifference() threw an error (result postgis geometry formation)!");
-		PG_RETURN_NULL(); //never get here
+		PG_RETURN_NULL(); /*never get here */
 	}
 
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g2);
 	GEOSGeom_destroy(g3);
 
-	//compressType(result);  // convert multi* to single item if appropriate
+	/* compressType(result); */
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
@@ -568,10 +602,12 @@ Datum boundary(PG_FUNCTION_ARGS)
 	{
 		elog(ERROR,"GEOS bounary() threw an error!");
 		GEOSGeom_destroy(g1);
-		PG_RETURN_NULL(); //never get here
+		PG_RETURN_NULL(); /* never get here */
 	}
 
-//	elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
+#ifdef PGIS_DEBUG
+  	elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
+#endif
 
 	GEOSSetSRID(g3, SRID);
 
@@ -589,7 +625,7 @@ Datum boundary(PG_FUNCTION_ARGS)
 
 		GEOSGeom_destroy(g3);
 		elog(ERROR,"GEOS boundary() threw an error (result postgis geometry formation)!");
-		PG_RETURN_NULL(); //never get here
+		PG_RETURN_NULL(); /* never get here */
 	}
 
 
@@ -597,7 +633,7 @@ Datum boundary(PG_FUNCTION_ARGS)
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g3);
 
-	//compressType(result);  // convert multi* to single item if appropriate
+	/* compressType(result);   */
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
@@ -648,11 +684,14 @@ Datum convexhull(PG_FUNCTION_ARGS)
 	{
 		elog(ERROR,"GEOS convexhull() threw an error!");
 		GEOSGeom_destroy(g1);
-		PG_RETURN_NULL(); //never get here
+		PG_RETURN_NULL(); /* never get here */
 	}
 
 
-	//elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
+#ifdef PGIS_DEBUG
+	elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
+#endif
+
 	GEOSSetSRID(g3, SRID);
 
 #ifdef PROFILE
@@ -667,7 +706,7 @@ Datum convexhull(PG_FUNCTION_ARGS)
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g3);
 		elog(ERROR,"convexhull() failed to convert GEOS geometry to LWGEOM");
-		PG_RETURN_NULL(); //never get here
+		PG_RETURN_NULL(); /* never get here */
 	}
 
 	/* Copy input bbox if any */
@@ -682,14 +721,14 @@ Datum convexhull(PG_FUNCTION_ARGS)
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g3);
 		elog(ERROR,"GEOS convexhull() threw an error (result postgis geometry formation)!");
-		PG_RETURN_NULL(); //never get here
+		PG_RETURN_NULL(); /* never get here */
 	}
 	lwgeom_release(lwout);
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g3);
 
 
-	//compressType(result);  // convert multi* to single item if appropriate
+	/* compressType(result);   */
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
@@ -709,7 +748,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 	double	size;
 	GEOSGeom g1,g3;
 	PG_LWGEOM *result;
-	int quadsegs = 8; // the default
+	int quadsegs = 8; /* the default */
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
@@ -741,11 +780,13 @@ Datum buffer(PG_FUNCTION_ARGS)
 	{
 		elog(ERROR,"GEOS buffer() threw an error!");
 		GEOSGeom_destroy(g1);
-		PG_RETURN_NULL(); //never get here
+		PG_RETURN_NULL(); /* never get here */
 	}
 
 
-//	elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
+#ifdef PGIS_DEBUG
+	elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
+#endif
 
 	GEOSSetSRID(g3, pglwgeom_getSRID(geom1));
 
@@ -761,13 +802,13 @@ Datum buffer(PG_FUNCTION_ARGS)
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g3);
 		elog(ERROR,"GEOS buffer() threw an error (result postgis geometry formation)!");
-		PG_RETURN_NULL(); //never get here
+		PG_RETURN_NULL(); /* never get here */
 	}
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g3);
 
 
-	//compressType(result);  // convert multi* to single item if appropriate
+	/* compressType(result); */
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
@@ -804,7 +845,9 @@ Datum intersection(PG_FUNCTION_ARGS)
 
 	initGEOS(lwnotice, lwnotice);
 
-//elog(NOTICE,"intersection() START");
+#ifdef PGIS_DEBUG
+	elog(NOTICE,"intersection() START");
+#endif
 
 #ifdef PROFILE
 	profstart(PROF_P2G1);
@@ -822,18 +865,15 @@ Datum intersection(PG_FUNCTION_ARGS)
 	profstop(PROF_P2G2);
 #endif
 
-//elog(NOTICE,"               constructed geometrys - calling geos");
+#ifdef PGIS_DEBUG
+	elog(NOTICE," constructed geometrys - calling geos");
+	elog(NOTICE," g1 = %s", GEOSasText(g1));
+	elog(NOTICE," g2 = %s", GEOSasText(g2));
+/*elog(NOTICE,"g2 is valid = %i",GEOSisvalid(g2)); */
+/*elog(NOTICE,"g1 is valid = %i",GEOSisvalid(g1)); */
+#endif
 
-//elog(NOTICE,"g1 = %s",GEOSasText(g1));
-//elog(NOTICE,"g2 = %s",GEOSasText(g2));
 
-
-//if (g1==NULL)
-//	elog(NOTICE,"g1 is null");
-//if (g2==NULL)
-//	elog(NOTICE,"g2 is null");
-//elog(NOTICE,"g2 is valid = %i",GEOSisvalid(g2));
-//elog(NOTICE,"g1 is valid = %i",GEOSisvalid(g1));
 
 
 #ifdef PROFILE
@@ -844,18 +884,23 @@ Datum intersection(PG_FUNCTION_ARGS)
 	profstop(PROF_GRUN);
 #endif
 
-//elog(NOTICE,"               intersection finished");
+#ifdef PGIS_DEBUG
+	elog(NOTICE," intersection finished");
+#endif
 
 	if (g3 == NULL)
 	{
 		elog(ERROR,"GEOS Intersection() threw an error!");
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g2);
-		PG_RETURN_NULL(); //never get here
+		PG_RETURN_NULL(); /* never get here */
 	}
 
 
-	//elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
+#ifdef PGIS_DEBUG
+	elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
+#endif
+
 	GEOSSetSRID(g3, SRID);
 
 #ifdef PROFILE
@@ -872,7 +917,7 @@ Datum intersection(PG_FUNCTION_ARGS)
 		GEOSGeom_destroy(g2);
 		GEOSGeom_destroy(g3);
 		elog(ERROR,"GEOS Intersection() threw an error (result postgis geometry formation)!");
-		PG_RETURN_NULL(); //never get here
+		PG_RETURN_NULL(); /* never get here */
 	}
 
 
@@ -881,7 +926,7 @@ Datum intersection(PG_FUNCTION_ARGS)
 	GEOSGeom_destroy(g2);
 	GEOSGeom_destroy(g3);
 
-	//compressType(result);  // convert multi* to single item if appropriate
+	/* compressType(result); */
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
@@ -894,7 +939,11 @@ Datum intersection(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-//select difference('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))','POLYGON((5 5, 15 5, 15 7, 5 7, 5 5))');
+/*
+ * select difference(
+ *      'POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))',
+ *	'POLYGON((5 5, 15 5, 15 7, 5 7, 5 5))');
+ */
 PG_FUNCTION_INFO_V1(difference);
 Datum difference(PG_FUNCTION_ARGS)
 {
@@ -948,10 +997,12 @@ Datum difference(PG_FUNCTION_ARGS)
 		elog(ERROR,"GEOS difference() threw an error!");
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g2);
-		PG_RETURN_NULL(); //never get here
+		PG_RETURN_NULL(); /* never get here */
 	}
 
-//	elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
+#ifdef PGIS_DEBUG
+  	elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
+#endif
 
 	GEOSSetSRID(g3, SRID);
 
@@ -968,14 +1019,14 @@ Datum difference(PG_FUNCTION_ARGS)
 		GEOSGeom_destroy(g2);
 		GEOSGeom_destroy(g3);
 		elog(ERROR,"GEOS difference() threw an error (result postgis geometry formation)!");
-		PG_RETURN_NULL(); //never get here
+		PG_RETURN_NULL(); /* never get here */
 	}
 
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g2);
 	GEOSGeom_destroy(g3);
 
-	////compressType(result);  // convert multi* to single item if appropriate
+	/* compressType(result); */
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
@@ -989,7 +1040,7 @@ Datum difference(PG_FUNCTION_ARGS)
 }
 
 
-//select pointonsurface('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))');
+/* select pointonsurface('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))'); */
 PG_FUNCTION_INFO_V1(pointonsurface);
 Datum pointonsurface(PG_FUNCTION_ARGS)
 {
@@ -1025,10 +1076,12 @@ Datum pointonsurface(PG_FUNCTION_ARGS)
 	{
 		elog(ERROR,"GEOS pointonsurface() threw an error!");
 		GEOSGeom_destroy(g1);
-		PG_RETURN_NULL(); //never get here
+		PG_RETURN_NULL(); /* never get here */
 	}
 
-//	elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
+#ifdef PGIS_DEBUG
+	elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
+#endif
 
 	GEOSSetSRID(g3, pglwgeom_getSRID(geom1));
 #ifdef PROFILE
@@ -1043,14 +1096,13 @@ Datum pointonsurface(PG_FUNCTION_ARGS)
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g3);
 		elog(ERROR,"GEOS pointonsurface() threw an error (result postgis geometry formation)!");
-		PG_RETURN_NULL(); //never get here
+		PG_RETURN_NULL(); /* never get here */
 	}
 
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g3);
 
-	// convert multi* to single item if appropriate
-	//compressType(result); 
+	/* compressType(result);  */
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
@@ -1130,7 +1182,7 @@ Datum centroid(PG_FUNCTION_ARGS)
 
 
 
-//----------------------------------------------
+/*---------------------------------------------*/
 
 
 
@@ -1174,7 +1226,6 @@ Datum isvalid(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(FALSE);
 	}
 	lwgeom_release(lwgeom);
-	//g1 = POSTGIS2GEOS(geom1);
 #ifdef PROFILE
 	profstop(PROF_P2G1);
 #endif
@@ -1191,7 +1242,7 @@ Datum isvalid(PG_FUNCTION_ARGS)
 	if (result == 2)
 	{
 		elog(ERROR,"GEOS isvalid() threw an error!");
-		PG_RETURN_NULL(); //never get here
+		PG_RETURN_NULL(); /*never get here */
 	}
 
 
@@ -1206,9 +1257,11 @@ Datum isvalid(PG_FUNCTION_ARGS)
 }
 
 
-// overlaps(PG_LWGEOM g1,PG_LWGEOM g2)
-// returns  if GEOS::g1->overlaps(g2) returns true
-// throws an error (elog(ERROR,...)) if GEOS throws an error
+/*
+ * overlaps(PG_LWGEOM g1,PG_LWGEOM g2)
+ * returns  if GEOS::g1->overlaps(g2) returns true
+ * throws an error (elog(ERROR,...)) if GEOS throws an error
+ */
 PG_FUNCTION_INFO_V1(overlaps);
 Datum overlaps(PG_FUNCTION_ARGS)
 {
@@ -1272,7 +1325,7 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	if (result == 2)
 	{
 		elog(ERROR,"GEOS overlaps() threw an error!");
-		PG_RETURN_NULL(); //never get here
+		PG_RETURN_NULL(); /* never get here */
 	}
 
 #ifdef PROFILE
@@ -1352,7 +1405,7 @@ Datum contains(PG_FUNCTION_ARGS)
 	if (result == 2)
 	{
 		elog(ERROR,"GEOS contains() threw an error!");
-		PG_RETURN_NULL(); //never get here
+		PG_RETURN_NULL(); /* never get here */
 	}
 
 #ifdef PROFILE
@@ -1431,7 +1484,7 @@ Datum within(PG_FUNCTION_ARGS)
 	if (result == 2)
 	{
 		elog(ERROR,"GEOS within() threw an error!");
-		PG_RETURN_NULL(); //never get here
+		PG_RETURN_NULL(); /* never get here */
 	}
 
 #ifdef PROFILE
@@ -1511,7 +1564,7 @@ Datum crosses(PG_FUNCTION_ARGS)
 	if (result == 2)
 	{
 		elog(ERROR,"GEOS crosses() threw an error!");
-		PG_RETURN_NULL(); //never get here
+		PG_RETURN_NULL(); /* never get here */
 	}
 
 #ifdef PROFILE
@@ -1589,7 +1642,7 @@ Datum intersects(PG_FUNCTION_ARGS)
 	if (result == 2)
 	{
 		elog(ERROR,"GEOS intersects() threw an error!");
-		PG_RETURN_NULL(); //never get here
+		PG_RETURN_NULL(); /* never get here */
 	}
 
 #ifdef PROFILE
@@ -1668,7 +1721,7 @@ Datum touches(PG_FUNCTION_ARGS)
 	if (result == 2)
 	{
 		elog(ERROR,"GEOS touches() threw an error!");
-		PG_RETURN_NULL(); //never get here
+		PG_RETURN_NULL(); /* never get here */
 	}
 
 #ifdef PROFILE
@@ -1746,7 +1799,7 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	if (result == 2)
 	{
 		elog(ERROR,"GEOS disjoin() threw an error!");
-		PG_RETURN_NULL(); //never get here
+		PG_RETURN_NULL(); /* never get here */
 	}
 
 #ifdef PROFILE
@@ -1814,7 +1867,7 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 	if (result == 2)
 	{
 		elog(ERROR,"GEOS relate_pattern() threw an error!");
-		PG_RETURN_NULL(); //never get here
+		PG_RETURN_NULL(); /* never get here */
 	}
 
 #ifdef PROFILE
@@ -1844,7 +1897,9 @@ Datum relate_full(PG_FUNCTION_ARGS)
 	profstart(PROF_QRUN);
 #endif
 
-//elog(NOTICE,"in relate_full()");
+#ifdef PGIS_DEBUG
+	elog(NOTICE,"in relate_full()");
+#endif
 
 	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
@@ -1854,8 +1909,6 @@ Datum relate_full(PG_FUNCTION_ARGS)
 
 
 	initGEOS(lwnotice, lwnotice);
-
-//elog(NOTICE,"GEOS init()");
 
 #ifdef PROFILE
 	profstart(PROF_P2G1);
@@ -1872,18 +1925,22 @@ Datum relate_full(PG_FUNCTION_ARGS)
 	profstop(PROF_P2G2);
 #endif
 
-//elog(NOTICE,"constructed geometries ");
+#ifdef PGIS_DEBUG
+ 	elog(NOTICE,"constructed geometries ");
+#endif
 
 	if ((g1==NULL) || (g2 == NULL))
 		elog(NOTICE,"g1 or g2 are null");
 
-//elog(NOTICE,GEOSasText(g1));
-//elog(NOTICE,GEOSasText(g2));
+#ifdef PGIS_DEBUG
+	elog(NOTICE,GEOSasText(g1));
+	elog(NOTICE,GEOSasText(g2));
 
-//elog(NOTICE,"valid g1 = %i", GEOSisvalid(g1));
-//elog(NOTICE,"valid g2 = %i",GEOSisvalid(g2));
+	/*elog(NOTICE,"valid g1 = %i", GEOSisvalid(g1));*/
+	/*elog(NOTICE,"valid g2 = %i",GEOSisvalid(g2));*/
 
-//elog(NOTICE,"about to relate()");
+	elog(NOTICE,"about to relate()");
+#endif
 
 
 #ifdef PROFILE
@@ -1894,23 +1951,23 @@ Datum relate_full(PG_FUNCTION_ARGS)
 	profstop(PROF_GRUN);
 #endif
 
-//elog(NOTICE,"finished relate()");
+#ifdef PGIS_DEBUG
+ 	elog(NOTICE,"finished relate()");
+#endif
 
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g2);
 
 	if (relate_str == NULL)
 	{
-		//free(relate_str);
 		elog(ERROR,"GEOS relate() threw an error!");
-		PG_RETURN_NULL(); //never get here
+		PG_RETURN_NULL(); /* never get here */
 	}
 
 	len = strlen(relate_str) + VARHDRSZ;
 
 	result= palloc(len);
 	VARATT_SIZEP(result) = len;
-	//*((int *) result) = len;
 
 	memcpy(VARDATA(result), relate_str, len-VARHDRSZ);
 
@@ -1927,7 +1984,7 @@ Datum relate_full(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-//==============================
+/*============================== */
 
 PG_FUNCTION_INFO_V1(geomequals);
 Datum geomequals(PG_FUNCTION_ARGS)
@@ -1992,7 +2049,7 @@ Datum geomequals(PG_FUNCTION_ARGS)
 	if (result == 2)
 	{
 		elog(ERROR,"GEOS equals() threw an error!");
-		PG_RETURN_NULL(); //never get here
+		PG_RETURN_NULL(); /*never get here */
 	}
 
 #ifdef PROFILE
@@ -2013,6 +2070,10 @@ Datum issimple(PG_FUNCTION_ARGS)
 	GEOSGeom g1;
 	int result;
 
+#ifdef PGIS_DEBUG
+	elog(NOTICE,"issimple called");
+#endif
+
 #ifdef PROFILE
 	profstart(PROF_QRUN);
 #endif
@@ -2023,8 +2084,6 @@ Datum issimple(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(true);
 
 	initGEOS(lwnotice, lwnotice);
-
-	//elog(NOTICE,"GEOS init()");
 
 #ifdef PROFILE
 	profstart(PROF_P2G1);
@@ -2046,7 +2105,7 @@ Datum issimple(PG_FUNCTION_ARGS)
 	if (result == 2)
 	{
 		elog(ERROR,"GEOS issimple() threw an error!");
-		PG_RETURN_NULL(); //never get here
+		PG_RETURN_NULL(); /*never get here */
 	}
 
 #ifdef PROFILE
@@ -2082,8 +2141,6 @@ Datum isring(PG_FUNCTION_ARGS)
 
 	initGEOS(lwnotice, lwnotice);
 
-	//elog(NOTICE,"GEOS init()");
-
 #ifdef PROFILE
 	profstart(PROF_P2G1);
 #endif
@@ -2104,7 +2161,7 @@ Datum isring(PG_FUNCTION_ARGS)
 	if (result == 2)
 	{
 		elog(ERROR,"GEOS isring() threw an error!");
-		PG_RETURN_NULL(); //never get here
+		PG_RETURN_NULL(); 
 	}
 
 #ifdef PROFILE
@@ -2119,13 +2176,13 @@ Datum isring(PG_FUNCTION_ARGS)
 
 
 
-//= GEOS <=> POSTGIS CONVERSION =========================
+/*= GEOS <=> POSTGIS CONVERSION ========================= */
 
-//-----=GEOS2POSTGIS=
+/*-----=GEOS2POSTGIS= */
 
 #ifdef WKB_CONVERSION
 
-// Return an LWGEOM from a GEOSGeom
+/* Return an LWGEOM from a GEOSGeom */
 LWGEOM *
 GEOS2LWGEOM(GEOSGeom geom, char want3d)
 {
@@ -2177,7 +2234,7 @@ GEOS2POSTGIS(GEOSGeom geom, char want3d)
 	return ret;
 }
 
-#else // !ndef WKB_CONVERSION
+#else /* !ndef WKB_CONVERSION */
 
 /* Return a POINTARRAY from a GEOSCoordSeq */
 POINTARRAY *
@@ -2206,7 +2263,8 @@ ptarray_from_GEOSCoordSeq(GEOSCoordSeq cs, char want3d)
 #ifdef PGIS_DEBUG_GEOS2POSTGIS 
 		lwnotice(" GEOSCoordSeq dimensions: %d", dims);
 #endif
-		if ( dims > 3 ) dims = 3; // forget higher dimensions (if any)
+		/* forget higher dimensions (if any) */
+		if ( dims > 3 ) dims = 3;
 	}
 
 #ifdef PGIS_DEBUG_GEOS2POSTGIS 
@@ -2232,7 +2290,7 @@ ptarray_from_GEOSCoordSeq(GEOSCoordSeq cs, char want3d)
 	return ret;
 }
 
-// Return an LWGEOM from a Geometry
+/* Return an LWGEOM from a Geometry */
 LWGEOM *
 GEOS2LWGEOM(GEOSGeom geom, char want3d)
 {
@@ -2244,7 +2302,9 @@ GEOS2LWGEOM(GEOSGeom geom, char want3d)
 	{
 		if ( want3d )
 		{
-			//elog(NOTICE, "Geometry has no Z, won't provide one");
+#ifdef PGIS_DEBUG
+			elog(NOTICE, "Geometry has no Z, won't provide one");
+#endif
 			want3d = 0;
 		}
 	}
@@ -2346,9 +2406,9 @@ GEOS2POSTGIS(GEOSGeom geom, char want3d)
 	return result;
 }
 
-#endif // def WKB_CONVERSION
+#endif /* def WKB_CONVERSION */
 
-//-----=POSTGIS2GEOS=
+/*-----=POSTGIS2GEOS= */
 
 
 #ifdef WKB_CONVERSION
@@ -2393,7 +2453,7 @@ POSTGIS2GEOS(PG_LWGEOM *pglwgeom)
 	return geom;
 }
 
-#else // ndef WKB_CONVERSION
+#else /* ndef WKB_CONVERSION */
 
 GEOSCoordSeq ptarray_to_GEOSCoordSeq(POINTARRAY *);
 GEOSGeom LWGEOM2GEOS(LWGEOM *lwgeom);
@@ -2466,7 +2526,7 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 			sq = ptarray_to_GEOSCoordSeq(lwpoly->rings[0]);
 			shell = GEOSGeom_createLinearRing(sq);
 	if ( ! shell ) return NULL;
-	//lwerror("LWGEOM2GEOS: exception during polygon shell conversion");
+	/*lwerror("LWGEOM2GEOS: exception during polygon shell conversion"); */
 			ngeoms = lwpoly->nrings-1;
 			geoms = malloc(sizeof(GEOSGeom)*ngeoms);
 			for (i=1; i<lwpoly->nrings; ++i)
@@ -2474,7 +2534,7 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 				sq = ptarray_to_GEOSCoordSeq(lwpoly->rings[i]);
 				geoms[i-1] = GEOSGeom_createLinearRing(sq);
 	if ( ! geoms[i-1] ) return NULL;
-	//lwerror("LWGEOM2GEOS: exception during polygon hole conversion");
+	/*lwerror("LWGEOM2GEOS: exception during polygon hole conversion"); */
 			}
 			g = GEOSGeom_createPolygon(shell, geoms, ngeoms);
 			if ( ! g ) return NULL;
@@ -2542,7 +2602,7 @@ POSTGIS2GEOS(PG_LWGEOM *pglwgeom)
 	return ret;
 }
 
-#endif // WKB_CONVERSION
+#endif /* WKB_CONVERSION */
 
 PG_FUNCTION_INFO_V1(GEOSnoop);
 Datum GEOSnoop(PG_FUNCTION_ARGS)
@@ -2657,10 +2717,10 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 	if ( result == NULL )
 	{
 		elog(ERROR, "GEOS2POSTGIS returned an error");
-		PG_RETURN_NULL(); //never get here
+		PG_RETURN_NULL(); /*never get here */
 	}
 
-	//compressType(result);
+	/*compressType(result); */
 
 	PG_RETURN_POINTER(result);
 
@@ -2701,11 +2761,13 @@ Datum linemerge(PG_FUNCTION_ARGS)
 	{
 		elog(ERROR,"GEOS LineMerge() threw an error!");
 		GEOSGeom_destroy(g1);
-		PG_RETURN_NULL(); //never get here
+		PG_RETURN_NULL(); /*never get here */
 	}
 
 
-//	elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
+#ifdef PGIS_DEBUG
+  	elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
+#endif
 
 	GEOSSetSRID(g3, pglwgeom_getSRID(geom1));
 
@@ -2721,13 +2783,13 @@ Datum linemerge(PG_FUNCTION_ARGS)
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g3);
 		elog(ERROR,"GEOS LineMerge() threw an error (result postgis geometry formation)!");
-		PG_RETURN_NULL(); //never get here
+		PG_RETURN_NULL(); /*never get here */
 	}
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g3);
 
 
-	//compressType(result);  // convert multi* to single item if appropriate
+	/* compressType(result); */
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
@@ -2776,9 +2838,8 @@ Datum LWGEOM_buildarea(PG_FUNCTION_ARGS)
 
 #ifdef PGIS_DEBUG
 	call++;
+	lwnotice("buildarea called (call %d)", call);
 #endif
-
-	//lwnotice("buildarea called");
 
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	SRID = pglwgeom_getSRID(geom);
@@ -2869,7 +2930,7 @@ Datum LWGEOM_buildarea(PG_FUNCTION_ARGS)
 				NULL, 0
 				);
 
-		if ( extring == NULL ) // exception
+		if ( extring == NULL ) /* exception */
 		{
 			lwerror("GEOSCreatePolygon threw an exception");
 			PG_RETURN_NULL();
@@ -2898,7 +2959,7 @@ Datum LWGEOM_buildarea(PG_FUNCTION_ARGS)
 	if ( result == NULL )
 	{
 		lwerror("serialization error");
-		PG_RETURN_NULL(); //never get here
+		PG_RETURN_NULL(); /*never get here */
 	}
 
 #endif

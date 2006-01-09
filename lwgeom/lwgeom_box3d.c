@@ -19,13 +19,12 @@
 #include "liblwgeom.h"
 
 
-//#define PGIS_DEBUG
-// basic implementation of BOX2D
+/*#define PGIS_DEBUG */
 
 #define SHOW_DIGS_DOUBLE 15
 #define MAX_DIGS_DOUBLE (SHOW_DIGS_DOUBLE + 6 + 1 + 3 +1)
 
-//forward defs
+/* forward defs */
 Datum BOX3D_in(PG_FUNCTION_ARGS);
 Datum BOX3D_out(PG_FUNCTION_ARGS);
 Datum LWGEOM_to_BOX3D(PG_FUNCTION_ARGS);
@@ -61,7 +60,7 @@ Datum BOX3D_in(PG_FUNCTION_ARGS)
 	box->zmax = 0;
 
 
-//printf( "box3d_in gets '%s'\n",str);
+/*printf( "box3d_in gets '%s'\n",str); */
 
 	if (strstr(str,"BOX3D(") !=  str )
 	{
@@ -127,8 +126,12 @@ Datum BOX3D_out(PG_FUNCTION_ARGS)
 		PG_RETURN_CSTRING(result);
 	}
 
+
+	/*double digits+ "BOX3D"+ "()" + commas +null */
 	size = MAX_DIGS_DOUBLE*6+5+2+4+5+1;
-	result = (char *) palloc(size); //double digits+ "BOX3D"+ "()" + commas +null
+
+	result = (char *) palloc(size);
+
 	sprintf(result, "BOX3D(%.15g %.15g %.15g,%.15g %.15g %.15g)",
 			bbox->xmin, bbox->ymin, bbox->zmin,
 			bbox->xmax,bbox->ymax,bbox->zmax);
@@ -166,26 +169,26 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 	PG_LWGEOM *result;
 	uchar *ser;
 
-	// Assign coordinates to POINT2D array
+	/* Assign coordinates to POINT2D array */
 	pts[0].x = box->xmin; pts[0].y = box->ymin;
 	pts[1].x = box->xmin; pts[1].y = box->ymax;
 	pts[2].x = box->xmax; pts[2].y = box->ymax;
 	pts[3].x = box->xmax; pts[3].y = box->ymin;
 	pts[4].x = box->xmin; pts[4].y = box->ymin;
 
-	// Construct point array
+	/* Construct point array */
 	pa[0] = palloc(sizeof(POINTARRAY));
 	pa[0]->serialized_pointlist = (uchar *)pts;
 	TYPE_SETZM(pa[0]->dims, 0, 0);
 	pa[0]->npoints = 5;
 
-	// Construct polygon
+	/* Construct polygon */
 	poly = lwpoly_construct(-1, NULL, 1, pa);
 
-	// Serialize polygon
+	/* Serialize polygon */
 	ser = lwpoly_serialize(poly);
 
-	// Construct PG_LWGEOM 
+	/* Construct PG_LWGEOM  */
 	result = PG_LWGEOM_construct(ser, -1, wantbbox);
 	
 	PG_RETURN_POINTER(result);
@@ -301,13 +304,13 @@ Datum BOX3D_combine(PG_FUNCTION_ARGS)
 		box = compute_serialized_box3d(SERIALIZED_FORM(lwgeom));
 		if ( ! box ) {
 			PG_FREE_IF_COPY(lwgeom, 1);
-			PG_RETURN_NULL(); // must be the empty geom
+			PG_RETURN_NULL(); /* must be the empty geom */
 		}
 		memcpy(result, box, sizeof(BOX3D));
 		PG_RETURN_POINTER(result);
 	}
 
-	// combine_bbox(BOX3D, null) => BOX3D
+	/* combine_bbox(BOX3D, null) => BOX3D */
 	if (geom_ptr == NULL)
 	{
 		memcpy(result, (char *)PG_GETARG_DATUM(0), sizeof(BOX3D));
@@ -316,7 +319,7 @@ Datum BOX3D_combine(PG_FUNCTION_ARGS)
 
 	lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	box = compute_serialized_box3d(SERIALIZED_FORM(lwgeom));
-	if ( ! box ) // must be the empty geom
+	if ( ! box ) /* must be the empty geom */
 	{
 		PG_FREE_IF_COPY(lwgeom, 1);
 		memcpy(result, (char *)PG_GETARG_DATUM(0), sizeof(BOX3D));
@@ -369,7 +372,7 @@ Datum BOX3D_construct(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-//min(a,b)
+/* min(a,b) */
 double
 LWGEOM_Mind(double a, double b)
 {
@@ -378,7 +381,7 @@ LWGEOM_Mind(double a, double b)
 	return b;
 }
 
-//max(a,b)
+/* max(a,b) */
 double
 LWGEOM_Maxd(double a, double b)
 {

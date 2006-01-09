@@ -16,12 +16,9 @@
 #include "stringBuffer.h"
 
 
-//#define PGIS_DEBUG
+/* #define PGIS_DEBUG */
 
-// basic implementation of BOX2D
-
-
-//forward defs
+/* forward defs */
 Datum BOX2DFLOAT4_in(PG_FUNCTION_ARGS);
 Datum BOX2DFLOAT4_out(PG_FUNCTION_ARGS);
 Datum LWGEOM_to_BOX2DFLOAT4(PG_FUNCTION_ARGS);
@@ -31,7 +28,7 @@ Datum BOX2DFLOAT4_combine(PG_FUNCTION_ARGS);
 Datum BOX2DFLOAT4_to_LWGEOM(PG_FUNCTION_ARGS);
 Datum BOX2DFLOAT4_construct(PG_FUNCTION_ARGS);
 
-//parser - "BOX(xmin ymin,xmax ymax)"
+/* parser - "BOX(xmin ymin,xmax ymax)" */
 PG_FUNCTION_INFO_V1(BOX2DFLOAT4_in);
 Datum BOX2DFLOAT4_in(PG_FUNCTION_ARGS)
 {
@@ -41,7 +38,7 @@ Datum BOX2DFLOAT4_in(PG_FUNCTION_ARGS)
 
 
 
-//printf( "box3d_in gets '%s'\n",str);
+/*printf( "box3d_in gets '%s'\n",str); */
 
 	if (strstr(str,"BOX(") !=  str )
 	{
@@ -72,26 +69,26 @@ Datum BOX2DFLOAT4_in(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(box);
 }
 
-//writer  "BOX(xmin ymin,xmax ymax)"
+/*writer  "BOX(xmin ymin,xmax ymax)" */
 PG_FUNCTION_INFO_V1(BOX2DFLOAT4_out);
 Datum BOX2DFLOAT4_out(PG_FUNCTION_ARGS)
 {
 	BOX2DFLOAT4 *box = (BOX2DFLOAT4 *) PG_GETARG_POINTER(0);
-	char tmp[500]; // big enough
+	char tmp[500]; /* big enough */
 	char *result;
 	int size;
 
 	size  = sprintf(tmp,"BOX(%.15g %.15g,%.15g %.15g)",
 		box->xmin, box->ymin, box->xmax, box->ymax);
 
-	result= palloc(size+1); // +1= null term
+	result= palloc(size+1); /* +1= null term */
 
 	memcpy(result,tmp,size+1);
 	PG_RETURN_CSTRING(result);
 }
 
 
-//convert a PG_LWGEOM to BOX2D
+/*convert a PG_LWGEOM to BOX2D */
 PG_FUNCTION_INFO_V1(LWGEOM_to_BOX2DFLOAT4);
 Datum LWGEOM_to_BOX2DFLOAT4(PG_FUNCTION_ARGS)
 {
@@ -101,7 +98,7 @@ Datum LWGEOM_to_BOX2DFLOAT4(PG_FUNCTION_ARGS)
 	result = palloc(sizeof(BOX2DFLOAT4));
 	if ( ! getbox2d_p(SERIALIZED_FORM(lwgeom), result) )
 	{
-		PG_RETURN_NULL(); // must be the empty geometry
+		PG_RETURN_NULL(); /* must be the empty geometry */
 	}
 
 	PG_RETURN_POINTER(result);
@@ -413,7 +410,7 @@ Datum BOX2DFLOAT4_combine(PG_FUNCTION_ARGS)
 
 	if  ( (box2d_ptr == NULL) && (geom_ptr == NULL) )
 	{
-		PG_RETURN_NULL(); // combine_box2d(null,null) => null
+		PG_RETURN_NULL(); /* combine_box2d(null,null) => null */
 	}
 
 	result = (BOX2DFLOAT4 *)palloc(sizeof(BOX2DFLOAT4));
@@ -421,25 +418,25 @@ Datum BOX2DFLOAT4_combine(PG_FUNCTION_ARGS)
 	if (box2d_ptr == NULL)
 	{
 		lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-		// empty geom would make getbox2d_p return NULL
+		/* empty geom would make getbox2d_p return NULL */
 		if ( ! getbox2d_p(SERIALIZED_FORM(lwgeom), &box) ) PG_RETURN_NULL();
 		memcpy(result, &box, sizeof(BOX2DFLOAT4));
 		PG_RETURN_POINTER(result);
 	}
 
-	// combine_bbox(BOX3D, null) => BOX3D
+	/* combine_bbox(BOX3D, null) => BOX3D */
 	if (geom_ptr == NULL)
 	{
 		memcpy(result, (char *)PG_GETARG_DATUM(0), sizeof(BOX2DFLOAT4));
 		PG_RETURN_POINTER(result);
 	}
 
-	//combine_bbox(BOX3D, geometry) => union(BOX3D, geometry->bvol)
+	/*combine_bbox(BOX3D, geometry) => union(BOX3D, geometry->bvol) */
 
 	lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	if ( ! getbox2d_p(SERIALIZED_FORM(lwgeom), &box) )
 	{
-		// must be the empty geom
+		/* must be the empty geom */
 		memcpy(result, (char *)PG_GETARG_DATUM(0), sizeof(BOX2DFLOAT4));
 		PG_RETURN_POINTER(result);
 	}
@@ -466,26 +463,26 @@ Datum BOX2DFLOAT4_to_LWGEOM(PG_FUNCTION_ARGS)
 	PG_LWGEOM *result;
 	uchar *ser;
 
-	// Assign coordinates to POINT2D array
+	/* Assign coordinates to POINT2D array */
 	pts[0].x = box->xmin; pts[0].y = box->ymin;
 	pts[1].x = box->xmin; pts[1].y = box->ymax;
 	pts[2].x = box->xmax; pts[2].y = box->ymax;
 	pts[3].x = box->xmax; pts[3].y = box->ymin;
 	pts[4].x = box->xmin; pts[4].y = box->ymin;
 
-	// Construct point array
+	/* Construct point array */
 	pa[0] = palloc(sizeof(POINTARRAY));
 	pa[0]->serialized_pointlist = (uchar *)pts;
 	TYPE_SETZM(pa[0]->dims, 0, 0);
 	pa[0]->npoints = 5;
 
-	// Construct polygon
+	/* Construct polygon */
 	poly = lwpoly_construct(-1, NULL, 1, pa);
 
-	// Serialize polygon
+	/* Serialize polygon */
 	ser = lwpoly_serialize(poly);
 
-	// Construct PG_LWGEOM 
+	/* Construct PG_LWGEOM  */
 	result = PG_LWGEOM_construct(ser, -1, wantbbox);
 	
 	PG_RETURN_POINTER(result);

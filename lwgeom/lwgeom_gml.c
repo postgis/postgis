@@ -37,7 +37,7 @@ static size_t pointArray_toGML(POINTARRAY *pa, char *buf);
 static char *getSRSbySRID(int SRID);
 
 #define DEF_PRECISION 15
-// Add dot, sign, exponent sign, 'e', exponent digits
+/* Add dot, sign, exponent sign, 'e', exponent digits */
 #define SHOW_DIGS (precision + 8)
 
 /* Globals */
@@ -64,7 +64,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	// Get precision (if provided) 
+	/* Get precision (if provided)  */
 	if ( PG_NARGS() > 1 && ! PG_ARGISNULL(1) )
 			precision = PG_GETARG_INT32(1);
 	
@@ -74,7 +74,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	// Get version (if provided) 
+	/* Get version (if provided)  */
 	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
 			version = PG_GETARG_INT32(2);
 
@@ -89,7 +89,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	if ( SRID != -1 ) srs = getSRSbySRID(SRID);
 	else srs = NULL;
 
-	//elog(NOTICE, "srs=%s", srs);
+	/*elog(NOTICE, "srs=%s", srs); */
 
 	gml = geometry_to_gml(SERIALIZED_FORM(geom), srs);
 	PG_FREE_IF_COPY(geom, 0);
@@ -106,7 +106,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-// takes a GEOMETRY and returns a GML representation
+/* takes a GEOMETRY and returns a GML representation */
 char *
 geometry_to_gml(uchar *geom, char *srs)
 {
@@ -283,7 +283,7 @@ asgml_inspected_size(LWGEOM_INSPECTED *insp, char *srs)
 	int i;
 	size_t size;
 
-	// the longest possible multi version
+	/* the longest possible multi version */
 	size = sizeof("<gml:MultiLineString></gml:MultiLineString>");
 	if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
 
@@ -339,7 +339,7 @@ asgml_inspected_buf(LWGEOM_INSPECTED *insp, char *srs, char *output)
 	else if (type == MULTIPOLYGONTYPE) gmltype = "MultiPolygon";
 	else gmltype = "MultiGeometry";
 
-	// Open outmost tag
+	/* Open outmost tag */
 	if ( srs ) {
 		ptr += sprintf(ptr, "<gml:%s srsName=\"%s\">", gmltype, srs);
 	} else {
@@ -378,7 +378,7 @@ asgml_inspected_buf(LWGEOM_INSPECTED *insp, char *srs, char *output)
 		}
 	}
 
-	// Close outmost tag
+	/* Close outmost tag */
 	ptr += sprintf(ptr, "</gml:%s>", gmltype);
 
 	return (ptr-output);
@@ -452,21 +452,21 @@ getSRSbySRID(int SRID)
 	char *srs, *srscopy;
 	int size, err;
 
-	// connect to SPI
+	/* connect to SPI */
 	if (SPI_OK_CONNECT != SPI_connect ()) {
 		elog(NOTICE, "getSRSbySRID: could not connect to SPI manager");
 		SPI_finish();
 		return NULL;
 	}
 
-	// write query
+	/* write query */
 	sprintf(query, "SELECT textcat(auth_name, textcat(':', auth_srid)) \
 		FROM spatial_ref_sys WHERE srid = '%d'", SRID);
 #ifdef PGIS_DEBUG
 	elog(NOTICE, "Query: %s", query);
 #endif
 
-	// execute query
+	/* execute query */
 	err = SPI_exec(query, 1);
 	if ( err < 0 ) {
 		elog(NOTICE, "getSRSbySRID: error executing query %d", err);
@@ -474,30 +474,30 @@ getSRSbySRID(int SRID)
 		return NULL;
 	}
 
-	// no entry in spatial_ref_sys
+	/* no entry in spatial_ref_sys */
 	if (SPI_processed <= 0) {
-		//elog(NOTICE, "getSRSbySRID: no record for SRID %d", SRID);
+		/*elog(NOTICE, "getSRSbySRID: no record for SRID %d", SRID); */
 		SPI_finish();
 		return NULL;
 	}
 
-	// get result 
+	/* get result  */
 	srs = SPI_getvalue(SPI_tuptable->vals[0],
 		SPI_tuptable->tupdesc, 1);
 	
-	// NULL result
+	/* NULL result */
 	if ( ! srs ) {
-		//elog(NOTICE, "getSRSbySRID: null result");
+		/*elog(NOTICE, "getSRSbySRID: null result"); */
 		SPI_finish();
 		return NULL;
 	}
 
-	// copy result to upper executor context
+	/* copy result to upper executor context */
 	size = strlen(srs)+1;
 	srscopy = SPI_palloc(size);
 	memcpy(srscopy, srs, size);
 
-	// disconnect from SPI
+	/* disconnect from SPI */
 	SPI_finish();
 
 	return srscopy;
@@ -505,6 +505,9 @@ getSRSbySRID(int SRID)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.13  2006/01/09 15:55:55  strk
+ * ISO C90 comments (finished in lwgeom/)
+ *
  * Revision 1.12  2005/12/30 18:14:53  strk
  * Fixed all signedness warnings
  *

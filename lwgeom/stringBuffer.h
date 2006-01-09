@@ -1,8 +1,8 @@
 
 typedef struct {
 	char * string;
-	int length;//length of string, EXCLUDING null termination
-	int size; //size of buffer -can be longer than
+	int length; /* length of string, EXCLUDING null termination */
+	int size;   /* size of buffer -can be longer than */
 } STRBUFF;
 
 

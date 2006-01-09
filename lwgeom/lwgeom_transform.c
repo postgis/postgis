@@ -26,7 +26,7 @@ Datum transform(PG_FUNCTION_ARGS);
 Datum transform_geom(PG_FUNCTION_ARGS);
 Datum postgis_proj_version(PG_FUNCTION_ARGS);
 
-// if USE_PROJECTION undefined, we get a do-nothing transform() function
+/* if USE_PROJECTION undefined, we get a do-nothing transform() function */
 #ifndef USE_PROJ
 
 PG_FUNCTION_INFO_V1(transform);
@@ -51,7 +51,7 @@ Datum postgis_proj_version(PG_FUNCTION_ARGS)
 	PG_RETURN_NULL();
 }
 
-#else // defined USE_PROJ 
+#else /* defined USE_PROJ  */
 
 #include "projects.h"
 #include "utils/memutils.h"
@@ -67,19 +67,22 @@ int transform_point(POINT2D *pt, PJ *srcdefn, PJ *dstdefn);
 static int lwgeom_transform_recursive(uchar *geom, PJ *inpj, PJ *outpj);
 
 
-// PROJ4 SRS Cache debugging (uncomment to debug)
-//#define PROJ4_CACHE_DEBUG 1
+/* PROJ4 SRS Cache debugging (uncomment to debug) */
+/* #define PROJ4_CACHE_DEBUG 1 */
 
-// PROJ 4 lookup transaction cache methods
+/* PROJ 4 lookup transaction cache methods */
 #define PROJ4_CACHE_ITEMS	8
 
-// PROJ 4 backend hash table initial hash size
-// (since 16 is the default portal hash table size, and we would typically have 2 entries per portal
-// then we shall use a default size of 32)
+/*
+ * PROJ 4 backend hash table initial hash size
+ * (since 16 is the default portal hash table size, and we would
+ * typically have 2 entries per portal
+ * then we shall use a default size of 32)
+ */
 #define PROJ4_BACKEND_HASH_SIZE	32		
 
 
-// An entry in the PROJ4 SRS cache
+/* An entry in the PROJ4 SRS cache */
 typedef struct struct_PROJ4SRSCacheItem
 {
 	int srid;
@@ -87,7 +90,7 @@ typedef struct struct_PROJ4SRSCacheItem
 	MemoryContext projection_mcxt;
 } PROJ4SRSCacheItem;
 
-// The portal cache: it's contents and cache context
+/* The portal cache: it's contents and cache context */
 typedef struct struct_PROJ4PortalCache
 {
 	PROJ4SRSCacheItem PROJ4SRSCache[PROJ4_CACHE_ITEMS];
@@ -96,14 +99,17 @@ typedef struct struct_PROJ4PortalCache
 } PROJ4PortalCache;
 
 
-// Backend PJ hash table
-//
-// This hash table stores a key/value pair of MemoryContext/PJ * objects. Whenever we create
-// a PJ * object using pj_init(), we create a separate MemoryContext as a child context of the
-// current executor context. The MemoryContext/PJ * object is stored in this hash table so
-// that when PROJ4SRSCacheDelete() is called during query cleanup, we can lookup the PJ * object
-// based upon the MemoryContext parameter and hence pj_free() it.
-
+/*
+ * Backend PJ hash table
+ *
+ * This hash table stores a key/value pair of MemoryContext/PJ * objects.
+ * Whenever we create a PJ * object using pj_init(), we create a separate
+ * MemoryContext as a child context of the current executor context.
+ * The MemoryContext/PJ * object is stored in this hash table so
+ * that when PROJ4SRSCacheDelete() is called during query cleanup, we can
+ * lookup the PJ * object based upon the MemoryContext parameter and hence
+ * pj_free() it.
+ */
 static HTAB *PJHash = NULL;
 
 typedef struct struct_PJHashEntry
@@ -113,7 +119,7 @@ typedef struct struct_PJHashEntry
 } PJHashEntry;
 
 
-// PJ Hash API
+/* PJ Hash API */
 #if USE_VERSION == 72
 long mcxt_ptr_hash(void *key, int keysize);
 #endif
@@ -129,13 +135,13 @@ static void AddPJHashEntry(MemoryContext mcxt, PJ *projection);
 static PJ *GetPJHashEntry(MemoryContext mcxt);
 static void DeletePJHashEntry(MemoryContext mcxt);
 
-// Cache API
+/* Cache API */
 bool IsInPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid);
 PJ *GetProjectionFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid);
 void AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid);
 void DeleteFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid);
 
-// Memory context cache functions
+/* Memory context cache functions */
 static void PROJ4SRSCacheInit(MemoryContext context);
 static void PROJ4SRSCacheDelete(MemoryContext context);
 #ifdef MEMORY_CONTEXT_CHECKING
@@ -143,7 +149,7 @@ static void PROJ4SRSCacheCheck(MemoryContext context);
 #endif
 
 
-// Memory context definition must match the current version of PostgreSQL
+/* Memory context definition must match the current version of PostgreSQL */
 #if USE_VERSION == 72
 static MemoryContextMethods PROJ4SRSCacheContextMethods = {
 	NULL,
@@ -195,7 +201,10 @@ static MemoryContextMethods PROJ4SRSCacheContextMethods = {
 static void
 PROJ4SRSCacheInit(MemoryContext context)
 {
-	// Do nothing as the cache is initialised when the transform() function is first called
+	/*
+	 * Do nothing as the cache is initialised when the transform()
+	 * function is first called
+	 */
 }
 
 static void
@@ -203,7 +212,7 @@ PROJ4SRSCacheDelete(MemoryContext context)
 {
 	PJ *projection;
 
-	// Lookup the PJ pointer in the global hash table so we can free it
+	/* Lookup the PJ pointer in the global hash table so we can free it */
 	projection = GetPJHashEntry(context);
 
 	if (!projection)
@@ -213,10 +222,10 @@ PROJ4SRSCacheDelete(MemoryContext context)
 	elog(NOTICE, "PROJ4SRSCacheDelete: deleting projection object (%p) with MemoryContext key (%p)", projection, context);
 #endif
 
-	// Free it
+	/* Free it */
 	pj_free(projection);	
 
-	// Remove the hash entry as it is no longer needed
+	/* Remove the hash entry as it is no longer needed */
 	DeletePJHashEntry(context);
 }
 
@@ -224,18 +233,23 @@ PROJ4SRSCacheDelete(MemoryContext context)
 static void
 PROJ4SRSCacheCheck(MemoryContext context)
 {
-	// Do nothing - stub required for when PostgreSQL is compiled with MEMORY_CONTEXT_CHECKING defined
+	/*
+	 * Do nothing - stub required for when PostgreSQL is compiled
+	 * with MEMORY_CONTEXT_CHECKING defined
+	 */
 }
 #endif
 
 
-//
-// PROJ4 PJ Hash Table functions
-//
+/*
+ * PROJ4 PJ Hash Table functions
+ */
 
 
-// A version of tag_hash - we specify this here as the implementation has changed over
-// the years....
+/*
+ * A version of tag_hash - we specify this here as the implementation
+ * has changed over the years....
+ */
 
 #if USE_VERSION == 72
 long mcxt_ptr_hash(void *key, int keysize)
@@ -249,7 +263,6 @@ uint32 mcxt_ptr_hash(const void *key, Size keysize)
 {
 	uint32 hashval;
 
-	//hashval = DatumGetUInt32(hash_any((const unsigned char *) key, (int) keysize));
 	hashval = DatumGetUInt32(hash_any(key, keysize));
 
 	return hashval;
@@ -273,13 +286,13 @@ static void AddPJHashEntry(MemoryContext mcxt, PJ *projection)
 	void **key;
 	PJHashEntry *he;
 
-	// The hash key is the MemoryContext pointer
+	/* The hash key is the MemoryContext pointer */
 	key = (void *)&mcxt;
 	
 	he = (PJHashEntry *) hash_search(PJHash, key, HASH_ENTER, &found);
 	if (!found)
 	{
-		// Insert the entry into the new hash element
+		/* Insert the entry into the new hash element */
 		he->ProjectionContext = mcxt;
 		he->projection = projection;
 	}
@@ -295,10 +308,10 @@ static PJ *GetPJHashEntry(MemoryContext mcxt)
 	void **key;
 	PJHashEntry *he;
 
-	// The hash key is the MemoryContext pointer
+	/* The hash key is the MemoryContext pointer */
 	key = (void *)&mcxt;
 
-	// Return the projection object from the hash
+	/* Return the projection object from the hash */
 	he = (PJHashEntry *) hash_search(PJHash, key, HASH_FIND, NULL);
 
 	return he->projection;
@@ -310,10 +323,10 @@ static void DeletePJHashEntry(MemoryContext mcxt)
 	void **key;
 	PJHashEntry *he;	
 
-	// The hash key is the MemoryContext pointer
+	/* The hash key is the MemoryContext pointer */
 	key = (void *)&mcxt;
 
-	// Delete the projection object from the hash
+	/* Delete the projection object from the hash */
 	he = (PJHashEntry *) hash_search(PJHash, key, HASH_REMOVE, NULL);
 
 	he->projection = NULL;
@@ -323,15 +336,17 @@ static void DeletePJHashEntry(MemoryContext mcxt)
 }
 
 
-//
-// Per-cache management functions
-//
+/*
+ * Per-cache management functions
+ */
 
-bool IsInPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
+bool
+IsInPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
 {
-	//
-	// Return true/false depending upon whether the item is in the SRS cache
-	//
+	/*
+	 * Return true/false depending upon whether the item
+	 * is in the SRS cache.
+	 */
 	
 	int i;
 
@@ -341,18 +356,18 @@ bool IsInPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
 			return true;
 	}
 
-	// Otherwise not found
+	/* Otherwise not found */
 	return false;
 }
 
 
-PJ *GetProjectionFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
+/*
+ * Return the projection object from the cache (we should
+ * already have checked it exists using IsInPROJ4SRSCache first)
+ */
+PJ *
+GetProjectionFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
 {
-	//
-	// Return the projection object from the cache (we should already have checked it exists
-	// using IsInPROJ4SRSCache first)
-	//
-
 	int i;
 
 	for (i = 0; i < PROJ4_CACHE_ITEMS; i++)
@@ -365,52 +380,56 @@ PJ *GetProjectionFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
 }
 
 
-void AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
+/*
+ * Add an entry to the local PROJ4 SRS cache. If we need to wrap around then
+ * we must make sure the entry we choose to delete does not contain other_srid
+ * which is the definition for the other half of the transformation.
+ */
+void
+AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 {
-	//
-        // Add an entry to the local PROJ4 SRS cache. If we need to wrap around then
-	// we must make sure the entry we choose to delete does not contain other_srid
-	// which is the definition for the other half of the transformation.
-	//        
-	
 	MemoryContext PJMemoryContext;
 	int spi_result;
 	PJ *projection = NULL;
 	char *proj_str;
 	char proj4_spi_buffer[256];
 
-	// Connect
+	/* Connect */
 	spi_result = SPI_connect();
         if (spi_result != SPI_OK_CONNECT)
         {
                 elog(ERROR, "AddToPROJ4SRSCache: Could not connect to database using SPI");
         }
 
-        // Execute the lookup query
+        /* Execute the lookup query */
         snprintf(proj4_spi_buffer, 255, "SELECT proj4text FROM spatial_ref_sys WHERE srid = %d LIMIT 1", srid);
         spi_result = SPI_exec(proj4_spi_buffer, 1);
 
-        // Read back the PROJ4 text
+        /* Read back the PROJ4 text */
         if (spi_result == SPI_OK_SELECT && SPI_processed > 0)
         {
-                // Select the first (and only tuple)
+                /* Select the first (and only tuple) */
                 TupleDesc tupdesc = SPI_tuptable->tupdesc;
                 SPITupleTable *tuptable = SPI_tuptable;
                 HeapTuple tuple = tuptable->vals[0];
 
-		// Make a projection object out of it
+		/* Make a projection object out of it */
 		proj_str = palloc(strlen(SPI_getvalue(tuple, tupdesc, 1)) + 1);
 		strcpy(proj_str, SPI_getvalue(tuple, tupdesc, 1));
 		projection = make_project(proj_str);
 
 		if ( (projection == NULL) || pj_errno)
 		{
-			//pfree(projection); // we need this for error reporting
+			/* we need this for error reporting */
+			/*pfree(projection); */
 			elog(ERROR, "AddToPROJ4SRSCache: couldn't parse proj4 string: '%s': %s", proj_str, pj_strerrno(pj_errno));
 		}
 
-		// If the cache is already full then find the first entry that doesn't contain other_srid
-		// and use this as the subsequent value of PROJ4SRSCacheCount
+		/*
+		 * If the cache is already full then find the first entry
+		 * that doesn't contain other_srid and use this as the
+		 * subsequent value of PROJ4SRSCacheCount
+		 */
 		if (PROJ4Cache->PROJ4SRSCacheCount == PROJ4_CACHE_ITEMS)
 		{
 			bool found = false;
@@ -431,7 +450,10 @@ void AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 			}
 		}
 
-		// Now create a memory context for this projection and store it in the backend hash
+		/*
+		 * Now create a memory context for this projection and
+		 * store it in the backend hash
+		 */
 #if PROJ4_CACHE_DEBUG
 		elog(NOTICE, "AddToPROJ4SRSCache: adding SRID %d with proj4text \"%s\" to query cache at index %d", srid, proj_str, PROJ4Cache->PROJ4SRSCacheCount);
 #endif
@@ -440,11 +462,14 @@ void AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 					PROJ4Cache->PROJ4SRSCacheContext,
 					"PROJ4 PJ Memory Context");
 
-		// Create the backend hash if it doesn't already exist
+		/* Create the backend hash if it doesn't already exist */
 		if (!PJHash)
 			PJHash = CreatePJHash();
 
-		// Add the MemoryContext to the backend hash so we can clean up upon portal shutdown
+		/*
+		 * Add the MemoryContext to the backend hash so we can
+		 * clean up upon portal shutdown
+		 */
 #if PROJ4_CACHE_DEBUG
 		elog(NOTICE, "AddToPROJ4SRSCache: adding projection object (%p) to hash table with MemoryContext key (%p)", projection, PJMemoryContext);
 #endif
@@ -455,7 +480,7 @@ void AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 		PROJ4Cache->PROJ4SRSCache[PROJ4Cache->PROJ4SRSCacheCount].projection_mcxt = PJMemoryContext;
 		PROJ4Cache->PROJ4SRSCacheCount++;
 
-		// Free the projection string
+		/* Free the projection string */
 		pfree(proj_str);
 	}
         else
@@ -463,7 +488,7 @@ void AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
                 elog(ERROR, "AddToPROJ4SRSCache: Cannot find SRID (%d) in spatial_ref_sys", srid);
         }
 
-        // Close the connection
+        /* Close the connection */
         spi_result = SPI_finish();
         if (spi_result != SPI_OK_FINISH)
         {
@@ -475,9 +500,9 @@ void AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 
 void DeleteFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
 {
-	//
-	// Delete the SRID entry from the cache
-	//
+	/*
+	 * Delete the SRID entry from the cache
+	 */
 
 	int i;
 
@@ -488,7 +513,10 @@ void DeleteFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
 #if PROJ4_CACHE_DEBUG
 			elog(NOTICE, "DeleteFromPROJ4SRSCache: removing query cache entry with SRID %d at index %d", srid, i);
 #endif
-			// Zero out the entries and free the PROJ4 handle by deleting the memory context
+			/*
+			 * Zero out the entries and free the PROJ4 handle
+			 * by deleting the memory context
+			 */
 			MemoryContextDelete(PROJ4Cache->PROJ4SRSCache[i].projection_mcxt);
 			PROJ4Cache->PROJ4SRSCache[i].projection = NULL;
 			PROJ4Cache->PROJ4SRSCache[i].projection_mcxt = NULL;
@@ -498,14 +526,16 @@ void DeleteFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
 }
 
 
-//this is *exactly* the same as PROJ.4's pj_transform(), but it doesnt do the
-// datum shift.
+/*
+ * This is *exactly* the same as PROJ.4's pj_transform(),
+ * but it doesn't do the datum shift.
+ */
 int
 pj_transform_nodatum(PJ *srcdefn, PJ *dstdefn, long point_count,
 int point_offset, double *x, double *y, double *z )
 {
     long      i;
-    //int       need_datum_shift;
+    /*int       need_datum_shift; */
 
     pj_errno = 0;
 
@@ -555,26 +585,28 @@ int point_offset, double *x, double *y, double *z )
 
 
 
-// convert decimal degress to radians
-void to_rad(POINT2D *pt)
+/* convert decimal degress to radians */
+void
+to_rad(POINT2D *pt)
 {
 	pt->x *= PI/180.0;
 	pt->y *= PI/180.0;
 }
 
-// convert radians to decimal degress
-void to_dec(POINT2D *pt)
+/* convert radians to decimal degress */
+void
+to_dec(POINT2D *pt)
 {
 	pt->x *= 180.0/PI;
 	pt->y *= 180.0/PI;
 }
 
-//given a string, make a PJ object
+/* given a string, make a PJ object */
 PJ *
 make_project(char *str1)
 {
 	int t;
-	char *params[1024];  //one for each parameter
+	char *params[1024];  /* one for each parameter */
 	char *loc;
 	char *str;
 	PJ *result;
@@ -591,7 +623,7 @@ make_project(char *str1)
 	 * based on the " " separator
 	 */
 
-	params[0] = str; // 1st param, we'll null terminate at the " " soon
+	params[0] = str; /* 1st param, we'll null terminate at the " " soon */
 
 	loc = str;
 	t = 1;
@@ -600,10 +632,10 @@ make_project(char *str1)
 		loc = strchr(loc, ' ');
 		if (loc != NULL)
 		{
-			*loc = 0; // null terminate
+			*loc = 0; /* null terminate */
 			params[t] = loc+1;
-			loc++; // next char
-			t++; //next param
+			loc++; /* next char */
+			t++; /*next param */
 		}
 	}
 
@@ -702,9 +734,12 @@ lwgeom_transform_recursive(uchar *geom, PJ *inpj, PJ *outpj)
 }
 
 
-//transform( GEOMETRY, INT (output srid) )
-// tmpPts - if there is a nadgrid error (-38), we re-try the transform on a copy of points.  The transformed points
-//          are in an indeterminate state after the -38 error is thrown.
+/*
+ * transform( GEOMETRY, INT (output srid) )
+ * tmpPts - if there is a nadgrid error (-38), we re-try the transform
+ * on a copy of points.  The transformed points
+ * are in an indeterminate state after the -38 error is thrown.
+ */
 PG_FUNCTION_INFO_V1(transform);
 Datum transform(PG_FUNCTION_ARGS)
 {
@@ -733,7 +768,10 @@ Datum transform(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	// If we have not already created PROJ4 cache for this portal then create it
+	/*
+	 * If we have not already created PROJ4 cache for this portal
+	 * then create it
+	 */
 	if (fcinfo->flinfo->fn_extra == NULL)
 	{
 		MemoryContext old_context;
@@ -749,7 +787,7 @@ Datum transform(PG_FUNCTION_ARGS)
 #if PROJ4_CACHE_DEBUG
 			elog(NOTICE, "Allocating PROJ4Cache for portal with transform() MemoryContext %p", fcinfo->flinfo->fn_mcxt);
 #endif
-			// Put in any required defaults
+			/* Put in any required defaults */
 			for (i = 0; i < PROJ4_CACHE_ITEMS; i++)
 			{
 				PROJ4Cache->PROJ4SRSCache[i].srid = -1;
@@ -759,38 +797,38 @@ Datum transform(PG_FUNCTION_ARGS)
 			PROJ4Cache->PROJ4SRSCacheCount = 0;
 			PROJ4Cache->PROJ4SRSCacheContext = fcinfo->flinfo->fn_mcxt;
 
-			// Store the pointer in fcinfo->flinfo->fn_extra
+			/* Store the pointer in fcinfo->flinfo->fn_extra */
 			fcinfo->flinfo->fn_extra = PROJ4Cache;
 		}
 	}
 	else
 	{
-		// Use the existing cache
+		/* Use the existing cache */
 		PROJ4Cache = fcinfo->flinfo->fn_extra;
 	}
 
-	// Add the output srid to the cache if it's not already there
+	/* Add the output srid to the cache if it's not already there */
 	if (!IsInPROJ4SRSCache(PROJ4Cache, result_srid))
 		AddToPROJ4SRSCache(PROJ4Cache, result_srid, pglwgeom_getSRID(geom));
 
-	// Get the output projection
+	/* Get the output projection */
 	output_pj = GetProjectionFromPROJ4SRSCache(PROJ4Cache, result_srid);
 
-	// Add the input srid to the cache if it's not already there
+	/* Add the input srid to the cache if it's not already there */
 	if (!IsInPROJ4SRSCache(PROJ4Cache, pglwgeom_getSRID(geom)))
 		AddToPROJ4SRSCache(PROJ4Cache, pglwgeom_getSRID(geom), result_srid);
 	
-	// Get the input projection	
+	/* Get the input projection	 */
 	input_pj = GetProjectionFromPROJ4SRSCache(PROJ4Cache, pglwgeom_getSRID(geom));
 
 	
-	// now we have a geometry, and input/output PJ structs.
+	/* now we have a geometry, and input/output PJ structs. */
 	lwgeom_transform_recursive(SERIALIZED_FORM(geom),
 		input_pj, output_pj);
 
 	srl = SERIALIZED_FORM(geom);
 
-	// Re-compute bbox if input had one (COMPUTE_BBOX TAINTING)
+	/* Re-compute bbox if input had one (COMPUTE_BBOX TAINTING) */
 	if ( TYPE_HASBBOX(geom->type) )
 	{
 		lwgeom = lwgeom_deserialize(srl);
@@ -807,13 +845,18 @@ Datum transform(PG_FUNCTION_ARGS)
 
 	pfree(geom);
 
-	PG_RETURN_POINTER(result); // new geometry
+	PG_RETURN_POINTER(result); /* new geometry */
 }
 
 
-//transform_geom( GEOMETRY, TEXT (input proj4), TEXT (output proj4), INT (output srid)
-// tmpPts - if there is a nadgrid error (-38), we re-try the transform on a copy of points.  The transformed points
-//          are in an indeterminate state after the -38 error is thrown.
+/*
+ * Transform_geom( GEOMETRY, TEXT (input proj4), TEXT (output proj4),
+ *	INT (output srid)
+ *
+ * tmpPts - if there is a nadgrid error (-38), we re-try the transform
+ * on a copy of points.  The transformed points
+ * are in an indeterminate state after the -38 error is thrown.
+ */
 PG_FUNCTION_INFO_V1(transform_geom);
 Datum transform_geom(PG_FUNCTION_ARGS)
 {
@@ -848,18 +891,20 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	input_proj4 = (char *)palloc(input_proj4_text->vl_len+1-4);
 	memcpy(input_proj4, input_proj4_text->vl_dat,
 		input_proj4_text->vl_len-4);
-	input_proj4[input_proj4_text->vl_len-4] = 0; //null terminate
+	input_proj4[input_proj4_text->vl_len-4] = 0; /* null terminate */
 
 	output_proj4 = (char *) palloc(output_proj4_text->vl_len +1-4);
 	memcpy(output_proj4, output_proj4_text->vl_dat,
 		output_proj4_text->vl_len-4);
-	output_proj4[output_proj4_text->vl_len-4] = 0; //null terminate
+	output_proj4[output_proj4_text->vl_len-4] = 0; /* null terminate */
 
-	//make input and output projection objects
+	/* make input and output projection objects */
 	input_pj = make_project(input_proj4);
 	if ( (input_pj == NULL) || pj_errno)
 	{
-		//pfree(input_proj4); // we need this for error reporting
+		/* we need this for error reporting */
+		/* pfree(input_proj4); */
+
 		pfree(output_proj4);
 		pfree(geom);
 		elog(ERROR, "transform: couldn't parse proj4 input string: '%s': %s", input_proj4, pj_strerrno(pj_errno));
@@ -870,7 +915,8 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	output_pj = make_project(output_proj4);
 	if ((output_pj == NULL)|| pj_errno)
 	{
-		//pfree(output_proj4); // we need this for error reporting
+		/* we need this for error reporting */
+		/* pfree(output_proj4); */
 		pj_free(input_pj);
 		pfree(geom);
 		elog(ERROR, "transform: couldn't parse proj4 output string: '%s': %s", output_proj4, pj_strerrno(pj_errno));
@@ -905,7 +951,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 
 	pfree(geom);
 
-	PG_RETURN_POINTER(result); // new geometry
+	PG_RETURN_POINTER(result); /* new geometry */
 }
 
 
@@ -928,11 +974,11 @@ transform_point(POINT2D *pt, PJ *srcpj, PJ *dstpj)
 	pj_transform(srcpj, dstpj, 1, 2, &(pt->x), &(pt->y), NULL);
 	if (pj_errno)
 	{
-		if (pj_errno == -38)  //2nd chance
+		if (pj_errno == -38)  /*2nd chance */
 		{
 			elog(WARNING, "transform: %i (%s)",
 				pj_errno, pj_strerrno(pj_errno));
-			//couldnt do nadshift - do it without the datum
+			/*couldnt do nadshift - do it without the datum */
 			pj_transform_nodatum(srcpj, dstpj, 1, 2,
 				&(pt->x), &(pt->y), NULL);
 		}

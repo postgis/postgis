@@ -6,7 +6,7 @@
 
 
 
-//convert postgresql BOX to BOX2D
+/* convert postgresql BOX to BOX2D */
 void
 box_to_box2df(BOX *box, BOX2DFLOAT4 *out)
 {
@@ -22,7 +22,7 @@ box_to_box2df(BOX *box, BOX2DFLOAT4 *out)
 
 }
 
-// convert BOX2D to postgresql BOX
+/* convert BOX2D to postgresql BOX */
 void
 box2df_to_box_p(BOX2DFLOAT4 *box, BOX *out)
 {

@@ -14,7 +14,7 @@
 #include "fmgr.h"
 #include "utils/elog.h"
 #if USE_VERSION > 73
-# include "lib/stringinfo.h" // for binary input
+# include "lib/stringinfo.h" /* for binary input */
 #endif
 
 
@@ -22,7 +22,7 @@
 #include "stringBuffer.h"
 
 
-//#define PGIS_DEBUG 1
+/* #define PGIS_DEBUG 1 */
 
 #include "lwgeom_pg.h"
 #include "wktparse.h"
@@ -44,30 +44,31 @@ Datum LWGEOM_send(PG_FUNCTION_ARGS);
 Datum BOOL_to_text(PG_FUNCTION_ARGS);
 
 
-// included here so we can be independent from postgis
-// WKB structure  -- exactly the same as TEXT
+/*
+ *  included here so we can be independent from postgis
+ * WKB structure  -- exactly the same as TEXT
+ */
 typedef struct Well_known_bin {
-    int32 size;             // total size of this structure
-    uchar  data[1]; //THIS HOLD VARIABLE LENGTH DATA
+    int32 size;		/* total size of this structure */
+    uchar  data[1];	/* THIS HOLD VARIABLE LENGTH DATA */
 } WellKnownBinary;
 
 
-
-
-
-// LWGEOM_in(cstring)
-// format is '[SRID=#;]wkt|wkb'
-//  LWGEOM_in( 'SRID=99;POINT(0 0)')
-//  LWGEOM_in( 'POINT(0 0)')            --> assumes SRID=-1
-//  LWGEOM_in( 'SRID=99;0101000000000000000000F03F000000000000004')
-//  returns a PG_LWGEOM object
+/*
+ * LWGEOM_in(cstring)
+ * format is '[SRID=#;]wkt|wkb'
+ *  LWGEOM_in( 'SRID=99;POINT(0 0)')
+ *  LWGEOM_in( 'POINT(0 0)')            --> assumes SRID=-1
+ *  LWGEOM_in( 'SRID=99;0101000000000000000000F03F000000000000004')
+ *  returns a PG_LWGEOM object
+ */
 PG_FUNCTION_INFO_V1(LWGEOM_in);
 Datum LWGEOM_in(PG_FUNCTION_ARGS)
 {
 	char *str = PG_GETARG_CSTRING(0);
 	PG_LWGEOM *ret;
 
-	// will handle both HEXEWKB and EWKT
+	/* will handle both HEXEWKB and EWKT */
 	ret = (PG_LWGEOM *)parse_lwgeom_wkt(str);
 
 	if ( is_worth_caching_pglwgeom_bbox(ret) )
@@ -79,12 +80,13 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(ret);
 }
 
-
-// LWGEOM_out(lwgeom) --> cstring
-// output is 'SRID=#;<wkb in hex form>'
-// ie. 'SRID=-99;0101000000000000000000F03F0000000000000040'
-// WKB is machine endian
-// if SRID=-1, the 'SRID=-1;' will probably not be present.
+/*
+ * LWGEOM_out(lwgeom) --> cstring
+ * output is 'SRID=#;<wkb in hex form>'
+ * ie. 'SRID=-99;0101000000000000000000F03F0000000000000040'
+ * WKB is machine endian
+ * if SRID=-1, the 'SRID=-1;' will probably not be present.
+ */
 PG_FUNCTION_INFO_V1(LWGEOM_out);
 Datum LWGEOM_out(PG_FUNCTION_ARGS)
 {
@@ -99,11 +101,13 @@ Datum LWGEOM_out(PG_FUNCTION_ARGS)
 	PG_RETURN_CSTRING(result);
 }
 
-// LWGEOM_to_text(lwgeom) --> text
-// output is 'SRID=#;<wkb in hex form>'
-// ie. 'SRID=-99;0101000000000000000000F03F0000000000000040'
-// WKB is machine endian
-// if SRID=-1, the 'SRID=-1;' will probably not be present.
+/*
+ * LWGEOM_to_text(lwgeom) --> text
+ * output is 'SRID=#;<wkb in hex form>'
+ * ie. 'SRID=-99;0101000000000000000000F03F0000000000000040'
+ * WKB is machine endian
+ * if SRID=-1, the 'SRID=-1;' will probably not be present.
+ */
 PG_FUNCTION_INFO_V1(LWGEOM_to_text);
 Datum LWGEOM_to_text(PG_FUNCTION_ARGS)
 {
@@ -125,19 +129,21 @@ Datum LWGEOM_to_text(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(text_result);
 }
 
-// LWGEOMFromWKB(wkb,  [SRID] )
-// NOTE: wkb is in *binary* not hex form.
-//
-// NOTE: this function parses EWKB (extended form)
-//       which also contains SRID info. When the SRID
-//	 argument is provided it will override any SRID
-//	 info found in EWKB format.
-//
-// NOTE: this function is *unoptimized* as will copy
-//       the object when adding SRID and when adding BBOX.
-//	 additionally, it suffers from the non-optimal
-//	 pglwgeom_from_ewkb function.
-//
+/*
+ * LWGEOMFromWKB(wkb,  [SRID] )
+ * NOTE: wkb is in *binary* not hex form.
+ *
+ * NOTE: this function parses EWKB (extended form)
+ *       which also contains SRID info. When the SRID
+ *	 argument is provided it will override any SRID
+ *	 info found in EWKB format.
+ *
+ * NOTE: this function is *unoptimized* as will copy
+ *       the object when adding SRID and when adding BBOX.
+ *	 additionally, it suffers from the non-optimal
+ *	 pglwgeom_from_ewkb function.
+ *
+ */
 PG_FUNCTION_INFO_V1(LWGEOMFromWKB);
 Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 {
@@ -165,22 +171,24 @@ Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(lwgeom);
 }
 
-// WKBFromLWGEOM(lwgeom) --> wkb
-// this will have no 'SRID=#;'
+/*
+ * WKBFromLWGEOM(lwgeom) --> wkb
+ * this will have no 'SRID=#;'
+ */
 PG_FUNCTION_INFO_V1(WKBFromLWGEOM);
 Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 {
-//#define BINARY_FROM_HEX 1
+/* #define BINARY_FROM_HEX 1 */
 
-	PG_LWGEOM *lwgeom_input; // SRID=#;<hexized wkb>
-	char *hexized_wkb; // hexized_wkb_srid w/o srid
-	char *result; //wkb
+	PG_LWGEOM *lwgeom_input; /* SRID=#;<hexized wkb> */
+	char *hexized_wkb; /* hexized_wkb_srid w/o srid */
+	char *result; /* wkb */
 	int size_result;
 #ifdef BINARY_FROM_HEX
 	char *hexized_wkb_srid;
 	char *semicolonLoc;
 	int t;
-#endif // BINARY_FROM_HEX
+#endif /* BINARY_FROM_HEX */
 	text *type;
 	unsigned int byteorder=-1;
 	size_t size;
@@ -217,7 +225,9 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 	hexized_wkb_srid = unparse_WKB(SERIALIZED_FORM(lwgeom_input),
 		lwalloc, lwfree, byteorder, &size, 1);
 
-//elog(NOTICE, "in WKBFromLWGEOM with WKB = '%s'", hexized_wkb_srid);
+#ifdef PGIS_DEBUG
+  elog(NOTICE, "in WKBFromLWGEOM with WKB = '%s'", hexized_wkb_srid);
+#endif
 
 	hexized_wkb = hexized_wkb_srid;
 
@@ -227,14 +237,17 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 		hexized_wkb = (semicolonLoc+1);
 	}
 
-//elog(NOTICE, "in WKBFromLWGEOM with WKB (with no 'SRID=#;' = '%s'", hexized_wkb);
+#ifdef PGIS_DEBUG
+	elog(NOTICE, "in WKBFromLWGEOM with WKB (with no 'SRID=#;' = '%s'",
+		hexized_wkb);
+#endif
 
 	size_result = size/2 + VARHDRSZ;
 	result = palloc(size_result);
 
-	memcpy(result, &size_result,VARHDRSZ); // size header
+	memcpy(result, &size_result,VARHDRSZ); /* size header */
 
-	// have a hexized string, want to make it binary
+	/* have a hexized string, want to make it binary */
 	for (t=0; t< (size/2); t++)
 	{
 		((uchar *) result +VARHDRSZ)[t] = parse_hex(  hexized_wkb + (t*2) );
@@ -242,7 +255,7 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 
 	pfree(hexized_wkb_srid);
 
-#else // ndef BINARY_FROM_HEX
+#else /* ndef BINARY_FROM_HEX */
 
 	hexized_wkb = unparse_WKB(SERIALIZED_FORM(lwgeom_input),
 		lwalloc, lwfree, byteorder, &size, 0);
@@ -263,13 +276,13 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 #ifdef PGIS_DEBUG
 	lwnotice("Output size is %lu (comp: %lu)",
 		VARSIZE(result), (unsigned long)size);
-#endif // def PGIS_DEBUG
+#endif /* def PGIS_DEBUG */
 
 
 	PG_RETURN_POINTER(result);
 }
 
-// puts a bbox inside the geometry
+/* puts a bbox inside the geometry */
 PG_FUNCTION_INFO_V1(LWGEOM_addBBOX);
 Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS)
 {
@@ -279,23 +292,29 @@ Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS)
 	uchar	old_type;
 	int		size;
 
-//elog(NOTICE,"in LWGEOM_addBBOX");
+#ifdef PGIS_DEBUG
+	elog(NOTICE,"in LWGEOM_addBBOX");
+#endif
 
 	if (lwgeom_hasBBOX( lwgeom->type ) )
 	{
-//elog(NOTICE,"LWGEOM_addBBOX  -- already has bbox");
-		// easy - already has one.  Just copy!
+#ifdef PGIS_DEBUG
+		elog(NOTICE,"LWGEOM_addBBOX  -- already has bbox");
+#endif
+		/* easy - already has one.  Just copy! */
 		result = palloc (lwgeom->size);
 		memcpy(result, lwgeom, lwgeom->size);
 		PG_RETURN_POINTER(result);
 	}
 
-//elog(NOTICE,"LWGEOM_addBBOX  -- giving it a bbox");
+#ifdef PGIS_DEBUG
+	elog(NOTICE,"LWGEOM_addBBOX  -- giving it a bbox");
+#endif
 
-	//construct new one
+	/* construct new one */
 	if ( ! getbox2d_p(SERIALIZED_FORM(lwgeom), &box) )
 	{
-		// Empty geom, no bbox to add
+		/* Empty geom, no bbox to add */
 		result = palloc (lwgeom->size);
 		memcpy(result, lwgeom, lwgeom->size);
 		PG_RETURN_POINTER(result);
@@ -304,20 +323,23 @@ Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS)
 
 	size = lwgeom->size+sizeof(BOX2DFLOAT4);
 
-	result = palloc(size);// 16 for bbox2d
+	result = palloc(size); /* 16 for bbox2d */
 
 	result->size = size;
 	result->type = lwgeom_makeType_full(
 		TYPE_HASZ(old_type),
 		TYPE_HASM(old_type),
 		lwgeom_hasSRID(old_type), lwgeom_getType(old_type), 1);
-	// copy in bbox
+
+	/* copy in bbox */
 	memcpy(result->data, &box, sizeof(BOX2DFLOAT4));
 
-	//lwnotice("result->type hasbbox: %d", TYPE_HASBBOX(result->type));
+#ifdef PGIS_DEBUG
+	lwnotice("result->type hasbbox: %d", TYPE_HASBBOX(result->type));
+	lwnotice("LWGEOM_addBBOX  -- about to copy serialized form");
+#endif
 
-//elog(NOTICE,"LWGEOM_addBBOX  -- about to copy serialized form");
-	// everything but the type and length
+	/* everything but the type and length */
 	memcpy(result->data+sizeof(BOX2DFLOAT4), lwgeom->data, lwgeom->size-5);
 
 	PG_RETURN_POINTER(result);
@@ -353,7 +375,7 @@ is_worth_caching_lwgeom_bbox(const LWGEOM *in)
 	return true;
 }
 
-// removes a bbox from a geometry
+/* removes a bbox from a geometry */
 PG_FUNCTION_INFO_V1(LWGEOM_dropBBOX);
 Datum LWGEOM_dropBBOX(PG_FUNCTION_ARGS)
 {
@@ -362,24 +384,30 @@ Datum LWGEOM_dropBBOX(PG_FUNCTION_ARGS)
 	uchar old_type;
 	int size;
 
-//elog(NOTICE,"in LWGEOM_dropBBOX");
+#ifdef PGIS_DEBUG
+	elog(NOTICE,"in LWGEOM_dropBBOX");
+#endif
 
 	if (!lwgeom_hasBBOX( lwgeom->type ) )
 	{
-//elog(NOTICE,"LWGEOM_dropBBOX  -- doesnt have a bbox already");
+#ifdef PGIS_DEBUG
+	elog(NOTICE,"LWGEOM_dropBBOX  -- doesnt have a bbox already");
+#endif
 		result = palloc (lwgeom->size);
 		memcpy(result, lwgeom, lwgeom->size);
 		PG_RETURN_POINTER(result);
 	}
 
-//elog(NOTICE,"LWGEOM_dropBBOX  -- dropping the bbox");
+#ifdef PGIS_DEBUG
+	elog(NOTICE,"LWGEOM_dropBBOX  -- dropping the bbox");
+#endif
 
-	//construct new one
+	/* construct new one */
 	old_type = lwgeom->type;
 
 	size = lwgeom->size-sizeof(BOX2DFLOAT4);
 
-	result = palloc(size);// 16 for bbox2d
+	result = palloc(size); /* 16 for bbox2d */
 
 	result->size = size;
 	result->type = lwgeom_makeType_full(
@@ -387,46 +415,51 @@ Datum LWGEOM_dropBBOX(PG_FUNCTION_ARGS)
 		TYPE_HASM(old_type),
 		lwgeom_hasSRID(old_type), lwgeom_getType(old_type), 0);
 
-	// everything but the type and length
+	/* everything but the type and length */
 	memcpy(result->data, lwgeom->data+sizeof(BOX2DFLOAT4), lwgeom->size-5-sizeof(BOX2DFLOAT4));
 
 	PG_RETURN_POINTER(result);
 }
 
 
-//for the wkt parser
-
+/* for the wkt parser */
 void elog_ERROR(const char* string)
 {
 	elog(ERROR,string);
 }
 
-// parse WKT input
-// parse_WKT_lwgeom(TEXT) -> LWGEOM
+/*
+ * parse WKT input
+ * parse_WKT_lwgeom(TEXT) -> LWGEOM
+ */
 PG_FUNCTION_INFO_V1(parse_WKT_lwgeom);
 Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS)
 {
-	// text
+	/* text */
 	text *wkt_input = PG_GETARG_TEXT_P(0);
-	PG_LWGEOM *ret;  //with length
+	PG_LWGEOM *ret;  /*with length */
 	char *wkt;
 	int wkt_size ;
 
 	init_pg_func();
 
-	wkt_size = VARSIZE(wkt_input)-VARHDRSZ; // actual letters
-	//(*(int*) wkt_input) -4; 
+	wkt_size = VARSIZE(wkt_input)-VARHDRSZ; /* actual letters */
 
-	wkt = palloc( wkt_size+1); //+1 for null
+	wkt = palloc( wkt_size+1); /* +1 for null */
 	memcpy(wkt, VARDATA(wkt_input), wkt_size );
-	wkt[wkt_size] = 0; // null term
+	wkt[wkt_size] = 0; /* null term */
 
 
-//elog(NOTICE,"in parse_WKT_lwgeom");
-//elog(NOTICE,"in parse_WKT_lwgeom with input: '%s'",wkt);
+#ifdef PGIS_DEBUG
+	elog(NOTICE,"in parse_WKT_lwgeom with input: '%s'",wkt);
+#endif
 
 	ret = (PG_LWGEOM *)parse_lwg((const char *)wkt, (allocator)lwalloc, (report_error)elog_ERROR);
-//elog(NOTICE,"parse_WKT_lwgeom:: finished parse");
+
+#ifdef PGIS_DEBUG
+	elog(NOTICE,"parse_WKT_lwgeom:: finished parse");
+#endif
+
 	pfree (wkt);
 
 	if (ret == NULL) elog(ERROR,"parse_WKT:: couldnt parse!");
@@ -508,7 +541,7 @@ Datum LWGEOM_send(PG_FUNCTION_ARGS)
 }
 
 
-#endif // USE_VERSION > 73
+#endif /* USE_VERSION > 73 */
 
 PG_FUNCTION_INFO_V1(LWGEOM_to_bytea);
 Datum LWGEOM_to_bytea(PG_FUNCTION_ARGS)

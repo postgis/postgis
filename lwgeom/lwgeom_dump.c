@@ -21,7 +21,7 @@
 #include "profile.h"
 #include "wktparse.h"
 
-//#define PGIS_DEBUG 1
+/*#define PGIS_DEBUG 1 */
 
 Datum LWGEOM_dump(PG_FUNCTION_ARGS);
 
@@ -131,9 +131,6 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 		tuple = BuildTupleFromCStrings(funcctx->attinmeta, values);
 		result = TupleGetDatum(funcctx->slot, tuple);
 
-		//lwnotice("%s", address);
-		//pglwgeom = pglwgeom_serialize(lwgeom);
-		//result = PointerGetDatum(pglwgeom);
 		state->root = NULL;
 		SRF_RETURN_NEXT(funcctx, result);
 	}
@@ -193,4 +190,4 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 }
 
 
-#endif // USE_VERSION > 72
+#endif /* USE_VERSION > 72 */

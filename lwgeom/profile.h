@@ -6,7 +6,7 @@
 /*
  * Define this to have profiling enabled
  */
-//#define PROFILE
+/*#define PROFILE */
 
 #ifdef PROFILE
 #include <sys/time.h>
@@ -47,7 +47,7 @@ long profipts1, profipts2, profopts;
 		proftime[PROF_QRUN], \
 		runpercent+convpercent); \
 	} while (0);
-#endif // PROFILE
+#endif /* PROFILE */
 
 
-#endif // _PROFILE_H
+#endif /* _PROFILE_H */

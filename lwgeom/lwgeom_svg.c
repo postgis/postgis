@@ -49,7 +49,7 @@ Datum assvg_geometry(PG_FUNCTION_ARGS)
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	// check for relative path notation
+	/* check for relative path notation */
 	if ( PG_NARGS() > 1 && ! PG_ARGISNULL(1) )
 			svgrel = PG_GETARG_INT32(1);
 
@@ -78,7 +78,7 @@ Datum assvg_geometry(PG_FUNCTION_ARGS)
 }
 
 
-//takes a GEOMETRY and returns a SVG representation
+/*takes a GEOMETRY and returns a SVG representation */
 char *
 geometry_to_svg(PG_LWGEOM *geometry, int svgrel, int precision)
 {
@@ -89,8 +89,8 @@ geometry_to_svg(PG_LWGEOM *geometry, int svgrel, int precision)
 	int size;
 	int npts;
 
-	//elog(NOTICE, "precision is %d", precision);
-	size = 30;	//just enough to put in object type
+	/*elog(NOTICE, "precision is %d", precision); */
+	size = 30;	/*just enough to put in object type */
 
 	if (lwgeom_getType(geometry->type) == COLLECTIONTYPE)
 	{
@@ -112,7 +112,7 @@ geometry_to_svg(PG_LWGEOM *geometry, int svgrel, int precision)
 		{
 			point = lwpoint_deserialize(subgeom);
 			size +=MAX_DIGS_DOUBLE*3 + 2 +10  ;
-			//make memory bigger
+			/*make memory bigger */
 			result = repalloc(result, size );
 
 			if (t) strcat(result, ",");
@@ -120,12 +120,12 @@ geometry_to_svg(PG_LWGEOM *geometry, int svgrel, int precision)
 			getPoint2d_p(point->point, 0, &pt);
 			if (svgrel == 1)
 			{  
-				//render circle
+				/*render circle */
 				print_svg_coords(result, &pt, precision);
 			}
 			else
 			{  
-				//render circle
+				/*render circle */
 				print_svg_circle(result, &pt, precision);
 			}
 
@@ -137,7 +137,7 @@ geometry_to_svg(PG_LWGEOM *geometry, int svgrel, int precision)
 			size +=(MAX_DIGS_DOUBLE*3+5)*line->points->npoints+12+3;
 			result = repalloc(result, size);
 
-			// start path with moveto
+			/* start path with moveto */
 			strcat(result, "M ");
 
 			if (svgrel == 1)
@@ -161,9 +161,9 @@ geometry_to_svg(PG_LWGEOM *geometry, int svgrel, int precision)
 				5 * poly->nrings;
 			result = repalloc(result, size);
 
-			for (u=0; u<poly->nrings; u++)  //for each ring
+			for (u=0; u<poly->nrings; u++)  /*for each ring */
 			{
-				strcat(result,"M ");	//begin ring
+				strcat(result,"M ");	/*begin ring */
 				if (svgrel == 1)
 					print_svg_path_rel(result, 
 						poly->rings[u],
@@ -173,7 +173,7 @@ geometry_to_svg(PG_LWGEOM *geometry, int svgrel, int precision)
 						poly->rings[u],
 						precision);
 				
-				strcat(result," ");	//end ring
+				strcat(result," ");	/*end ring */
 			}
 		}
 	}
@@ -280,6 +280,9 @@ print_svg_path_rel(char *result, POINTARRAY *pa, int precision)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.11  2006/01/09 15:55:55  strk
+ * ISO C90 comments (finished in lwgeom/)
+ *
  * Revision 1.10  2005/12/30 18:14:53  strk
  * Fixed all signedness warnings
  *
