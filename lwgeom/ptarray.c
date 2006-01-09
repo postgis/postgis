@@ -218,19 +218,21 @@ ptarray_segmentize2d(POINTARRAY *ipa, double dist)
 
 	while (ipoff<ipa->npoints)
 	{
-		POINT2D p2d1, p2d2;
+		/*
+		 * We use these pointers to avoid
+		 * "strict-aliasing rules break" warning raised
+		 * by gcc (3.3 and up).
+		 *
+		 * It looks that casting a variable address (also
+		 * referred to as "type-punned pointer")
+		 * breaks those "strict" rules.
+		 *
+		 */
+		POINT4D *p1ptr=&p1, *p2ptr=&p2;
 
 		getPoint4d_p(ipa, ipoff, &p2);
 
-		/*
-		 * We used to have a POINT4D=>POINT2D cast here
-		 * but GCC 3.3 kept warning about:
-		 *   "dereferencing type-punned pointer
-		 *   will break strict-aliasing rules"
-		 */
-		p2d1.x=p1.x; p2d1.y=p1.y;
-		p2d2.x=p2.x; p2d2.y=p2.y;
-		segdist = distance2d_pt_pt(&p2d1, &p2d2);
+		segdist = distance2d_pt_pt((POINT2D *)p1ptr, (POINT2D *)p2ptr);
 
 		if (segdist > dist) // add an intermediate point
 		{
