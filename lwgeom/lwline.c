@@ -1,16 +1,18 @@
-// basic LWLINE functions
+/* basic LWLINE functions */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "liblwgeom.h"
 
-//#define PGIS_DEBUG_CALLS 1
-//#define PGIS_DEBUG 1
+/*#define PGIS_DEBUG_CALLS 1 */
+/*#define PGIS_DEBUG 1 */
 
 
-// construct a new LWLINE.  points will *NOT* be copied
-// use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
+/*
+ * Construct a new LWLINE.  points will *NOT* be copied
+ * use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
+ */
 LWLINE *
 lwline_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points)
 {
@@ -29,10 +31,12 @@ lwline_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points)
 	return result;
 }
 
-// given the LWGEOM serialized form (or a pointer into a muli* one)
-// construct a proper LWLINE.
-// serialized_form should point to the 8bit type format (with type = 2)
-// See serialized form doc
+/*
+ * given the LWGEOM serialized form (or a pointer into a muli* one)
+ * construct a proper LWLINE.
+ * serialized_form should point to the 8bit type format (with type = 2)
+ * See serialized form doc
+ */
 LWLINE *
 lwline_deserialize(uchar *serialized_form)
 {
@@ -67,25 +71,25 @@ lwline_deserialize(uchar *serialized_form)
 	else
 	{
 		result->bbox = NULL;
-		//lwnotice("line has NO bbox");
+		/*lwnotice("line has NO bbox"); */
 	}
 
 	if ( lwgeom_hasSRID(type))
 	{
-		//lwnotice("line has srid");
+		/*lwnotice("line has srid"); */
 		result->SRID = get_int32(loc);
-		loc +=4; // type + SRID
+		loc +=4; /* type + SRID */
 	}
 	else
 	{
-		//lwnotice("line has NO srid");
+		/*lwnotice("line has NO srid"); */
 		result->SRID = -1;
 	}
 
-	// we've read the type (1 byte) and SRID (4 bytes, if present)
+	/* we've read the type (1 byte) and SRID (4 bytes, if present) */
 
 	npoints = get_uint32(loc);
-	//lwnotice("line npoints = %d", npoints);
+	/*lwnotice("line npoints = %d", npoints); */
 	loc +=4;
 	pa = pointArray_construct(loc, TYPE_HASZ(type), TYPE_HASM(type), npoints);
 	result->points = pa;
@@ -93,8 +97,10 @@ lwline_deserialize(uchar *serialized_form)
 	return result;
 }
 
-// convert this line into its serialize form
-// result's first char will be the 8bit type.  See serialized form doc
+/*
+ * convert this line into its serialize form
+ * result's first char will be the 8bit type.  See serialized form doc
+ */
 uchar *
 lwline_serialize(LWLINE *line)
 {
@@ -115,10 +121,12 @@ lwline_serialize(LWLINE *line)
 	return result;
 }
 
-// convert this line into its serialize form writing it into
-// the given buffer, and returning number of bytes written into
-// the given int pointer.
-// result's first char will be the 8bit type.  See serialized form doc
+/*
+ * convert this line into its serialize form writing it into
+ * the given buffer, and returning number of bytes written into
+ * the given int pointer.
+ * result's first char will be the 8bit type.  See serialized form doc
+ */
 void
 lwline_serialize_buf(LWLINE *line, uchar *buf, size_t *retsize)
 {
@@ -177,7 +185,7 @@ lwline_serialize_buf(LWLINE *line, uchar *buf, size_t *retsize)
 		line->points->npoints);
 #endif
 
-	//copy in points
+	/*copy in points */
 	size = line->points->npoints*ptsize;
 	memcpy(loc, getPoint_internal(line->points, 0), size);
 	loc += size;
@@ -189,7 +197,7 @@ lwline_serialize_buf(LWLINE *line, uchar *buf, size_t *retsize)
 
 	if (retsize) *retsize = loc-buf;
 
-	//printBYTES((uchar *)result, loc-buf);
+	/*printBYTES((uchar *)result, loc-buf); */
 
 #ifdef PGIS_DEBUG_CALLS
 	lwnotice("lwline_serialize_buf returning (loc: %p, size: %d)",
@@ -198,7 +206,10 @@ lwline_serialize_buf(LWLINE *line, uchar *buf, size_t *retsize)
 
 }
 
-// find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
+/*
+ * Find bounding box (standard one) 
+ * zmin=zmax=NO_Z_VALUE if 2d 
+ */
 BOX3D *
 lwline_compute_box3d(LWLINE *line)
 {
@@ -210,20 +221,20 @@ lwline_compute_box3d(LWLINE *line)
 	return ret;
 }
 
-// find length of this deserialized line
+/* find length of this deserialized line */
 size_t
 lwline_serialize_size(LWLINE *line)
 {
-	size_t size = 1;  //type
+	size_t size = 1;  /* type */
 
 #ifdef PGIS_DEBUG_CALLS
 	lwnotice("lwline_serialize_size called");
 #endif
 
-	if ( line->SRID != -1 ) size += 4; // SRID
+	if ( line->SRID != -1 ) size += 4; /* SRID */
 	if ( line->bbox ) size += sizeof(BOX2DFLOAT4);
 
-	size += 4; // npoints
+	size += 4; /* npoints */
 	size += pointArray_ptsize(line->points)*line->points->npoints;
 
 #ifdef PGIS_DEBUG_CALLS
@@ -239,12 +250,12 @@ void pfree_line (LWLINE  *line)
 	lwfree(line);
 }
 
-// find length of this serialized line
+/* find length of this serialized line */
 size_t
 lwgeom_size_line(const uchar *serialized_line)
 {
 	int type = (uchar) serialized_line[0];
-	uint32 result = 1;  //type
+	uint32 result = 1;  /*type */
 	const uchar *loc;
 	uint32 npoints;
 
@@ -266,13 +277,13 @@ lwgeom_size_line(const uchar *serialized_line)
 
 	if ( lwgeom_hasSRID(type))
 	{
-		loc += 4; // type + SRID
+		loc += 4; /* type + SRID */
 		result +=4;
 	}
 
-	// we've read the type (1 byte) and SRID (4 bytes, if present)
+	/* we've read the type (1 byte) and SRID (4 bytes, if present) */
 	npoints = get_uint32(loc);
-	result += sizeof(uint32); //npoints
+	result += sizeof(uint32); /* npoints */
 
 	result += TYPE_NDIMS(type) * sizeof(double) * npoints;
 
@@ -298,7 +309,7 @@ lwline_compute_box2d_p(LWLINE *line, BOX2DFLOAT4 *box)
 	return ptarray_compute_box2d_p(line->points, box);
 }
 
-// Clone LWLINE object. POINTARRAY is not copied.
+/* Clone LWLINE object. POINTARRAY is not copied. */
 LWLINE *
 lwline_clone(const LWLINE *g)
 {
@@ -308,10 +319,12 @@ lwline_clone(const LWLINE *g)
 	return ret;
 }
 
-// Add 'what' to this line at position 'where'.
-// where=0 == prepend
-// where=-1 == append
-// Returns a MULTILINE or a GEOMETRYCOLLECTION
+/*
+ * Add 'what' to this line at position 'where'.
+ * where=0 == prepend
+ * where=-1 == append
+ * Returns a MULTILINE or a GEOMETRYCOLLECTION
+ */
 LWGEOM *
 lwline_add(const LWLINE *to, uint32 where, const LWGEOM *what)
 {
@@ -325,28 +338,29 @@ lwline_add(const LWLINE *to, uint32 where, const LWGEOM *what)
 		return NULL;
 	}
 
-	// dimensions compatibility are checked by caller
+	/* dimensions compatibility are checked by caller */
 
-	// Construct geoms array
+	/* Construct geoms array */
 	geoms = lwalloc(sizeof(LWGEOM *)*2);
-	if ( where == -1 ) // append
+	if ( where == -1 ) /* append */
 	{
 		geoms[0] = lwgeom_clone((LWGEOM *)to);
 		geoms[1] = lwgeom_clone(what);
 	}
-	else // prepend
+	else /* prepend */
 	{
 		geoms[0] = lwgeom_clone(what);
 		geoms[1] = lwgeom_clone((LWGEOM *)to);
 	}
-	// reset SRID and wantbbox flag from component types
+
+	/* reset SRID and wantbbox flag from component types */
 	geoms[0]->SRID = geoms[1]->SRID = -1;
 	TYPE_SETHASSRID(geoms[0]->type, 0);
 	TYPE_SETHASSRID(geoms[1]->type, 0);
 	TYPE_SETHASBBOX(geoms[0]->type, 0);
 	TYPE_SETHASBBOX(geoms[1]->type, 0);
 
-	// Find appropriate geom type
+	/* Find appropriate geom type */
 	if ( TYPE_GETTYPE(what->type) == LINETYPE ) newtype = MULTILINETYPE;
 	else newtype = COLLECTIONTYPE;
 
@@ -370,7 +384,7 @@ lwline_segmentize2d(LWLINE *line, double dist)
 		ptarray_segmentize2d(line->points, dist));
 }
 
-// check coordinate equality 
+/* check coordinate equality  */
 char
 lwline_same(const LWLINE *l1, const LWLINE *l2)
 {

@@ -31,10 +31,14 @@
 #define SHOW_DIGS_DOUBLE 15
 #define MAX_DIGS_DOUBLE (SHOW_DIGS_DOUBLE + 6 + 1 + 3 +1)
 
-//	distance from -126 49  to -126 49.011096139863 in 'SPHEROID["GRS_1980",6378137,298.257222101]' is 1234.000
+/*
+ * distance from -126 49  to -126 49.011096139863
+ * in  'SPHEROID["GRS_1980",6378137,298.257222101]'
+ * is 1234.000
+ */
 
 
-// PG-exposed 
+/* PG-exposed  */
 Datum ellipsoid_in(PG_FUNCTION_ARGS);
 Datum ellipsoid_out(PG_FUNCTION_ARGS);
 Datum LWGEOM_length2d_ellipsoid_linestring(PG_FUNCTION_ARGS);
@@ -42,7 +46,7 @@ Datum LWGEOM_length_ellipsoid_linestring(PG_FUNCTION_ARGS);
 Datum LWGEOM_distance_ellipsoid_point(PG_FUNCTION_ARGS);
 Datum LWGEOM_distance_sphere(PG_FUNCTION_ARGS);
 
-// internal
+/* internal */
 double distance_sphere_method(double lat1, double long1,double lat2,double long2, SPHEROID *sphere);
 double distance_ellipse_calculation(double lat1, double long1, double lat2, double long2, SPHEROID *sphere);
 double	distance_ellipse(double lat1, double long1, double lat2, double long2, SPHEROID *sphere);
@@ -54,10 +58,12 @@ double lwgeom_pointarray_length2d_ellipse(POINTARRAY *pts, SPHEROID *sphere);
 double lwgeom_pointarray_length_ellipse(POINTARRAY *pts, SPHEROID *sphere);
 
 
-//use the WKT definition of an ellipsoid
-// ie. SPHEROID["name",A,rf] or SPHEROID("name",A,rf)
-//	  SPHEROID["GRS_1980",6378137,298.257222101]
-// wkt says you can use "(" or "["
+/*
+ * Use the WKT definition of an ellipsoid
+ * ie. SPHEROID["name",A,rf] or SPHEROID("name",A,rf)
+ *	  SPHEROID["GRS_1980",6378137,298.257222101]
+ * wkt says you can use "(" or "["
+ */
 PG_FUNCTION_INFO_V1(ellipsoid_in);
 Datum ellipsoid_in(PG_FUNCTION_ARGS)
 {
@@ -113,21 +119,24 @@ Datum ellipsoid_out(PG_FUNCTION_ARGS)
 	PG_RETURN_CSTRING(result);
 }
 
-//support function for distance calc
-	//code is taken from David Skea
-	//Geographic Data BC, Province of British Columbia, Canada.
-	// Thanks to GDBC and David Skea for allowing this to be
-	// put in PostGIS.
-double deltaLongitude(double azimuth, double sigma, double tsm,SPHEROID *sphere)
+/*
+ * support function for distance calc
+ * code is taken from David Skea
+ * Geographic Data BC, Province of British Columbia, Canada.
+ * Thanks to GDBC and David Skea for allowing this to be
+ * put in PostGIS.
+ */
+double
+deltaLongitude(double azimuth, double sigma, double tsm,SPHEROID *sphere)
 {
-	// compute the expansion C
+	/* compute the expansion C */
 	double das,C;
 	double ctsm,DL;
 
 	das = cos(azimuth)*cos(azimuth);
 	C = sphere->f/16.0 * das * (4.0 + sphere->f * (4.0 - 3.0 * das));
-	// compute the difference in longitude
 
+	/* compute the difference in longitude */
 	ctsm = cos(tsm);
 	DL = ctsm + C * cos(sigma) * (-1.0 + 2.0 * ctsm*ctsm);
 	DL = sigma + C * sin(sigma) * DL;
@@ -135,12 +144,15 @@ double deltaLongitude(double azimuth, double sigma, double tsm,SPHEROID *sphere)
 }
 
 
-//support function for distance calc
-	//code is taken from David Skea
-	//Geographic Data BC, Province of British Columbia, Canada.
-	// Thanks to GDBC and David Skea for allowing this to be
-	// put in PostGIS.
-double mu2(double azimuth,SPHEROID *sphere)
+/*
+ * support function for distance calc
+ * code is taken from David Skea
+ * Geographic Data BC, Province of British Columbia, Canada.
+ *  Thanks to GDBC and David Skea for allowing this to be
+ *  put in PostGIS.
+ */
+double
+mu2(double azimuth,SPHEROID *sphere)
 {
 	double    e2;
 
@@ -149,64 +161,80 @@ double mu2(double azimuth,SPHEROID *sphere)
 }
 
 
-//support function for distance calc
-	//code is taken from David Skea
-	//Geographic Data BC, Province of British Columbia, Canada.
-	// Thanks to GDBC and David Skea for allowing this to be
-	// put in PostGIS.
-double bigA(double u2)
+/*
+ * Support function for distance calc
+ * code is taken from David Skea
+ * Geographic Data BC, Province of British Columbia, Canada.
+ *  Thanks to GDBC and David Skea for allowing this to be
+ *  put in PostGIS.
+ */
+double
+bigA(double u2)
 {
 	return 1.0 + u2/256.0 * (64.0 + u2 * (-12.0 + 5.0 * u2));
 }
 
 
-//support function for distance calc
-	//code is taken from David Skea
-	//Geographic Data BC, Province of British Columbia, Canada.
-	// Thanks to GDBC and David Skea for allowing this to be
-	// put in PostGIS.
-double bigB(double u2)
+/*
+ * Support function for distance calc
+ * code is taken from David Skea
+ * Geographic Data BC, Province of British Columbia, Canada.
+ *  Thanks to GDBC and David Skea for allowing this to be
+ *  put in PostGIS.
+ */
+double
+bigB(double u2)
 {
 	return u2/512.0 * (128.0 + u2 * (-64.0 + 37.0 * u2));
 }
 
 
 
-double	distance_ellipse(double lat1, double long1,
-					double lat2, double long2,
-					SPHEROID *sphere)
+double
+distance_ellipse(double lat1, double long1,
+	double lat2, double long2, SPHEROID *sphere)
 {
-		double result;
+	double result;
 
-	    if ( (lat1==lat2) && (long1 == long2) )
-		{
-			return 0.0; // same point, therefore zero distance
-		}
+	if ( (lat1==lat2) && (long1 == long2) )
+	{
+		return 0.0; /* same point, therefore zero distance */
+	}
 
-		result = distance_ellipse_calculation(lat1,long1,lat2,long2,sphere);
-//		result2 =  distance_sphere_method(lat1, long1,lat2,long2, sphere);
+	result = distance_ellipse_calculation(lat1,long1,lat2,long2,sphere);
+	/*result2 =  distance_sphere_method(lat1, long1,lat2,long2, sphere);*/
 
-//elog(NOTICE,"delta = %lf, skae says: %.15lf,2 circle says: %.15lf",(result2-result),result,result2);
-//elog(NOTICE,"2 circle says: %.15lf",result2);
+#ifdef PGIS_DEBUG
+	elog(NOTICE, "delta = %lf, skae says: %.15lf,2 circle says: %.15lf",
+		(result2-result),result,result2);
+	elog(NOTICE,"2 circle says: %.15lf",result2);
+#endif
 
-		if (result != result)  // NaN check (x==x for all x except NaN by IEEE definition)
-		{
-			result =  distance_sphere_method(lat1, long1,lat2,long2, sphere);
-		}
+	if (result != result)  /* NaN check
+	                        * (x==x for all x except NaN by IEEE definition)
+	                        */
+	{
+		result =  distance_sphere_method(lat1, long1,
+			lat2,long2, sphere);
+	}
 
-		return result;
+	return result;
 }
 
-//given 2 lat/longs and ellipse, find the distance
-// note original r = 1st, s=2nd location
-double	distance_ellipse_calculation(double lat1, double long1,
-					double lat2, double long2,
-					SPHEROID *sphere)
+/*
+ * Given 2 lat/longs and ellipse, find the distance
+ * note original r = 1st, s=2nd location
+ */
+double
+distance_ellipse_calculation(double lat1, double long1,
+	double lat2, double long2, SPHEROID *sphere)
 {
-	//code is taken from David Skea
-	//Geographic Data BC, Province of British Columbia, Canada.
-	// Thanks to GDBC and David Skea for allowing this to be
-	// put in PostGIS.
+	/*
+	 * Code is taken from David Skea
+	 * Geographic Data BC, Province of British Columbia, Canada.
+	 *  Thanks to GDBC and David Skea for allowing this to be
+	 *  put in PostGIS.
+	 */
 
 	double L1,L2,sinU1,sinU2,cosU1,cosU2;
 	double dl,dl1,dl2,dl3,cosdl1,sindl1;
@@ -236,8 +264,12 @@ double	distance_ellipse_calculation(double lat1, double long1,
 		sigma = acos(cosSigma);
 		azimuthEQ = asin((cosU1 * cosU2 * sindl1)/sin(sigma));
 
-			// patch from patrica tozer to handle minor mathematical stability problem
-		TEMP = cosSigma - (2.0 * sinU1 * sinU2)/(cos(azimuthEQ)*cos(azimuthEQ));
+		/*
+		 * Patch from Patrica Tozer to handle minor
+		 * mathematical stability problem
+		 */
+		TEMP = cosSigma - (2.0 * sinU1 * sinU2)/
+			(cos(azimuthEQ)*cos(azimuthEQ));
 		if(TEMP > 1)
 		{
 			   TEMP = 1;
@@ -246,10 +278,13 @@ double	distance_ellipse_calculation(double lat1, double long1,
 		{
 			   TEMP = -1;
 		}
-        tsm = acos(TEMP);
+		tsm = acos(TEMP);
 
 
-		//tsm = acos(cosSigma - (2.0 * sinU1 * sinU2)/(cos(azimuthEQ)*cos(azimuthEQ)));
+		/* (old code?)
+tsm = acos(cosSigma - (2.0 * sinU1 * sinU2)/(cos(azimuthEQ)*cos(azimuthEQ)));
+		*/
+
 		dl2 = deltaLongitude(azimuthEQ, sigma, tsm,sphere);
 		dl3 = dl1 - (dl + dl2);
 		dl1 = dl + dl2;
@@ -258,13 +293,14 @@ double	distance_ellipse_calculation(double lat1, double long1,
 		iterations++;
 	} while ( (iterations<999) && (fabs(dl3) > 1.0e-032));
 
-	   // compute expansions A and B
+	/* compute expansions A and B */
 	u2 = mu2(azimuthEQ,sphere);
 	A = bigA(u2);
 	B = bigB(u2);
 
-	// compute length of geodesic
-	dsigma = B * sin(sigma) * (cos(tsm) + (B*cosSigma*(-1.0 + 2.0 * (cos(tsm)*cos(tsm))))/4.0);
+	/* compute length of geodesic */
+	dsigma = B * sin(sigma) * (cos(tsm) +
+		(B*cosSigma*(-1.0 + 2.0 * (cos(tsm)*cos(tsm))))/4.0);
 	return sphere->b * (A * (sigma - dsigma));
 }
 
@@ -277,11 +313,13 @@ double lwgeom_pointarray_length_ellipse(POINTARRAY *pts, SPHEROID *sphere)
 	double dist = 0.0;
 	int i;
 
-	//elog(NOTICE, "lwgeom_pointarray_length_ellipse called");
+#ifdef PGIS_DEBUG
+	elog(NOTICE, "lwgeom_pointarray_length_ellipse called");
+#endif
 
 	if ( pts->npoints < 2 ) return 0.0;
 
-	// compute 2d length if 3d is not available
+	/* compute 2d length if 3d is not available */
 	if ( TYPE_NDIMS(pts->dims) < 3 )
 	{
 		return lwgeom_pointarray_length2d_ellipse(pts, sphere);
@@ -316,7 +354,9 @@ lwgeom_pointarray_length2d_ellipse(POINTARRAY *pts, SPHEROID *sphere)
 	POINT2D frm;
 	POINT2D to;
 
-	//elog(NOTICE, "lwgeom_pointarray_length2d_ellipse called");
+#ifdef PGIS_DEBUG
+	elog(NOTICE, "lwgeom_pointarray_length2d_ellipse called");
+#endif
 
 	if ( pts->npoints < 2 ) return 0.0;
 	for (i=0; i<pts->npoints-1;i++)
@@ -330,13 +370,15 @@ lwgeom_pointarray_length2d_ellipse(POINTARRAY *pts, SPHEROID *sphere)
 	return dist;
 }
 
-//find the "length of a geometry"
-// length2d_spheroid(point, sphere) = 0
-// length2d_spheroid(line, sphere) = length of line
-// length2d_spheroid(polygon, sphere) = 0 
-//	-- could make sense to return sum(ring perimeter)
-// uses ellipsoidal math to find the distance
-//// x's are longitude, and y's are latitude - both in decimal degrees
+/*
+ * Find the "length of a geometry"
+ * length2d_spheroid(point, sphere) = 0
+ * length2d_spheroid(line, sphere) = length of line
+ * length2d_spheroid(polygon, sphere) = 0 
+ *	-- could make sense to return sum(ring perimeter)
+ * uses ellipsoidal math to find the distance
+ * x's are longitude, and y's are latitude - both in decimal degrees
+ */
 PG_FUNCTION_INFO_V1(LWGEOM_length2d_ellipsoid_linestring);
 Datum LWGEOM_length2d_ellipsoid_linestring(PG_FUNCTION_ARGS)
 {
@@ -347,7 +389,9 @@ Datum LWGEOM_length2d_ellipsoid_linestring(PG_FUNCTION_ARGS)
 	double dist = 0.0;
 	int i;
 
-//elog(NOTICE, "in LWGEOM_length2d_ellipsoid_linestring");
+#ifdef PGIS_DEBUG
+	elog(NOTICE, "in LWGEOM_length2d_ellipsoid_linestring");
+#endif
 
 	for (i=0; i<inspected->ngeometries; i++)
 	{
@@ -355,7 +399,10 @@ Datum LWGEOM_length2d_ellipsoid_linestring(PG_FUNCTION_ARGS)
 		if ( line == NULL ) continue;
 		dist += lwgeom_pointarray_length2d_ellipse(line->points,
 			sphere);
-//elog(NOTICE, " LWGEOM_length2d_ellipsoid_linestring found a line (%f)", dist);
+#if PGIS_DEBUG > 1
+ 	elog(NOTICE, " LWGEOM_length2d_ellipsoid_linestring found a line (%f)",
+		dist);
+#endif
 	}
 
 	pfree_inspected(inspected);
@@ -363,13 +410,16 @@ Datum LWGEOM_length2d_ellipsoid_linestring(PG_FUNCTION_ARGS)
 	PG_RETURN_FLOAT8(dist);
 }
 
-//find the "length of a geometry"
-// length2d_spheroid(point, sphere) = 0
-// length2d_spheroid(line, sphere) = length of line
-// length2d_spheroid(polygon, sphere) = 0 
-//	-- could make sense to return sum(ring perimeter)
-// uses ellipsoidal math to find the distance
-//// x's are longitude, and y's are latitude - both in decimal degrees
+/*
+ * Find the "length of a geometry"
+ *
+ * length2d_spheroid(point, sphere) = 0
+ * length2d_spheroid(line, sphere) = length of line
+ * length2d_spheroid(polygon, sphere) = 0 
+ *	-- could make sense to return sum(ring perimeter)
+ * uses ellipsoidal math to find the distance
+ * x's are longitude, and y's are latitude - both in decimal degrees
+ */
 PG_FUNCTION_INFO_V1(LWGEOM_length_ellipsoid_linestring);
 Datum LWGEOM_length_ellipsoid_linestring(PG_FUNCTION_ARGS)
 {
@@ -380,7 +430,9 @@ Datum LWGEOM_length_ellipsoid_linestring(PG_FUNCTION_ARGS)
 	double dist = 0.0;
 	int i;
 
-//elog(NOTICE, "in LWGEOM_length_ellipsoid_linestring");
+#ifdef PGIS_DEBUG
+	elog(NOTICE, "in LWGEOM_length_ellipsoid_linestring");
+#endif
 
 	for (i=0; i<inspected->ngeometries; i++)
 	{
@@ -388,7 +440,10 @@ Datum LWGEOM_length_ellipsoid_linestring(PG_FUNCTION_ARGS)
 		if ( line == NULL ) continue;
 		dist += lwgeom_pointarray_length_ellipse(line->points,
 			sphere);
-//elog(NOTICE, " LWGEOM_length_ellipsoid_linestring found a line (%f)", dist);
+#ifdef PGIS_DEBUG
+	elog(NOTICE, " LWGEOM_length_ellipsoid_linestring found a line (%f)",
+		dist);
+#endif
 	}
 
 	pfree_inspected(inspected);
@@ -471,21 +526,25 @@ double distance_sphere_method(double lat1, double long1,double lat2,double long2
 			double  Geocent_e2 	= sphere->e_sq;
 
 			R  	= Geocent_a / (sqrt(1.0e0 - Geocent_e2 * sin2_lat));
-			S 	= R * sin(M_PI/2.0-lat1) ; // 90 - lat1, but in radians
+			/* 90 - lat1, but in radians */
+			S 	= R * sin(M_PI/2.0-lat1) ;
 
-			deltaX = long2 - long1;  //in rads
-			deltaY = lat2 - lat1;    // in rads
+			deltaX = long2 - long1;  /* in rads */
+			deltaY = lat2 - lat1;    /* in rads */
 
-			X = deltaX/(2.0*M_PI) * 2 * M_PI * S;  // think: a % of 2*pi*S
-			Y = deltaY /(2.0*M_PI) * 2 * M_PI * R;
+			/* think: a % of 2*pi*S */
+			X = deltaX/(2.0*M_PI) * 2 * M_PI * S; 
+			Y = deltaY/(2.0*M_PI) * 2 * M_PI * R;
 
 			distance = sqrt((X * X + Y * Y));
 
 			return distance;
 }
 
-//distance (geometry,geometry, sphere)
-// -geometrys MUST be points
+/* 
+ * distance (geometry,geometry, sphere)
+ * -geometrys MUST be points
+ */
 PG_FUNCTION_INFO_V1(LWGEOM_distance_ellipsoid_point);
 Datum LWGEOM_distance_ellipsoid_point(PG_FUNCTION_ARGS)
 {
@@ -533,7 +592,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_distance_sphere);
 Datum LWGEOM_distance_sphere(PG_FUNCTION_ARGS)
 {
         const double EARTH_RADIUS = 6370986.884258304;
-	//const double TWO_PI = 2.0 * M_PI;
+	/*const double TWO_PI = 2.0 * M_PI; */
 	PG_LWGEOM *geom1 = (PG_LWGEOM *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	PG_LWGEOM *geom2 = (PG_LWGEOM *) PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
         LWPOINT *lwpt1, *lwpt2;

@@ -3,10 +3,12 @@
 #include <string.h>
 #include "liblwgeom.h"
 
-//#define PGIS_DEBUG_CALLS 1
+/*#define PGIS_DEBUG_CALLS 1 */
 
-// convert this point into its serialize form
-// result's first char will be the 8bit type.  See serialized form doc
+/*
+ * Convert this point into its serialize form
+ * result's first char will be the 8bit type.  See serialized form doc
+ */
 uchar *
 lwpoint_serialize(LWPOINT *point)
 {
@@ -25,10 +27,12 @@ lwpoint_serialize(LWPOINT *point)
 	return result;
 }
 
-// convert this point into its serialize form writing it into
-// the given buffer, and returning number of bytes written into
-// the given int pointer.
-// result's first char will be the 8bit type.  See serialized form doc
+/*
+ * Convert this point into its serialize form writing it into
+ * the given buffer, and returning number of bytes written into
+ * the given int pointer.
+ * result's first char will be the 8bit type.  See serialized form doc
+ */
 void
 lwpoint_serialize_buf(LWPOINT *point, uchar *buf, size_t *retsize)
 {
@@ -40,15 +44,15 @@ lwpoint_serialize_buf(LWPOINT *point, uchar *buf, size_t *retsize)
 	if ( TYPE_GETZM(point->type) != TYPE_GETZM(point->point->dims) )
 		lwerror("Dimensions mismatch in lwpoint");
 
-	//printLWPOINT(point);
 #ifdef PGIS_DEBUG_CALLS
 	lwnotice("lwpoint_serialize_buf(%p, %p) called", point, buf);
+	/*printLWPOINT(point); */
 #endif
 
 	hasSRID = (point->SRID != -1);
 
-	if (hasSRID) size +=4;  //4 byte SRID
-	if (point->bbox) size += sizeof(BOX2DFLOAT4); // bvol
+	if (hasSRID) size +=4;  /*4 byte SRID */
+	if (point->bbox) size += sizeof(BOX2DFLOAT4); /* bvol */
 
 	size += sizeof(double)*TYPE_NDIMS(point->type);
 
@@ -69,13 +73,16 @@ lwpoint_serialize_buf(LWPOINT *point, uchar *buf, size_t *retsize)
 		loc += 4;
 	}
 
-	//copy in points
+	/* copy in points */
 	memcpy(loc, getPoint_internal(point->point, 0), ptsize);
 
 	if (retsize) *retsize = size;
 }
 
-// find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
+/*
+ * Find bounding box (standard one) 
+ *   zmin=zmax=NO_Z_VALUE if 2d 
+ */
 BOX3D *
 lwpoint_compute_box3d(LWPOINT *point)
 {
@@ -97,15 +104,17 @@ lwpoint_compute_box3d(LWPOINT *point)
 	return ptarray_compute_box3d(point->point);
 }
 
-// convenience functions to hide the POINTARRAY
-// TODO: obsolete this
+/*
+ * Convenience functions to hide the POINTARRAY
+ * TODO: obsolete this
+ */
 int
 lwpoint_getPoint2d_p(const LWPOINT *point, POINT2D *out)
 {
 	return getPoint2d_p(point->point, 0, out);
 }
 
-// convenience functions to hide the POINTARRAY
+/* convenience functions to hide the POINTARRAY */
 int
 lwpoint_getPoint3dz_p(const LWPOINT *point, POINT3DZ *out)
 {
@@ -122,20 +131,20 @@ lwpoint_getPoint4d_p(const LWPOINT *point, POINT4D *out)
 	return getPoint4d_p(point->point,0,out);
 }
 
-// find length of this deserialized point
+/* find length of this deserialized point */
 size_t
 lwpoint_serialize_size(LWPOINT *point)
 {
-	size_t size = 1; // type
+	size_t size = 1; /* type */
 
 #ifdef PGIS_DEBUG_CALLS
 	lwnotice("lwpoint_serialize_size called");
 #endif
 
-	if ( point->SRID != -1 ) size += 4; // SRID
+	if ( point->SRID != -1 ) size += 4; /* SRID */
 	if ( point->bbox ) size += sizeof(BOX2DFLOAT4);
 
-	size += TYPE_NDIMS(point->type) * sizeof(double); // point
+	size += TYPE_NDIMS(point->type) * sizeof(double); /* point */
 
 #ifdef PGIS_DEBUG_CALLS
 	lwnotice("lwpoint_serialize_size returning %d", size);
@@ -144,15 +153,17 @@ lwpoint_serialize_size(LWPOINT *point)
 	return size; 
 }
 
-// construct a new point.  point will not be copied
-// use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
+/*
+ * Construct a new point.  point will not be copied
+ * use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
+ */
 LWPOINT *
 lwpoint_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *point)
 {
 	LWPOINT *result ;
 
 	if (point == NULL)
-		return NULL; // error
+		return NULL; /* error */
 
 	result = lwalloc(sizeof(LWPOINT));
 	result->type = lwgeom_makeType_full(TYPE_HASZ(point->dims), TYPE_HASM(point->dims), (SRID!=-1), POINTTYPE, 0);
@@ -223,10 +234,12 @@ make_lwpoint4d(int SRID, double x, double y, double z, double m)
 	return lwpoint_construct(SRID, NULL, pa);
 }
 
-// given the LWPOINT serialized form (or a pointer into a muli* one)
-// construct a proper LWPOINT.
-// serialized_form should point to the 8bit type format (with type = 1)
-// See serialized form doc
+/*
+ * Given the LWPOINT serialized form (or a pointer into a muli* one)
+ * construct a proper LWPOINT.
+ * serialized_form should point to the 8bit type format (with type = 1)
+ * See serialized form doc
+ */
 LWPOINT *
 lwpoint_deserialize(uchar *serialized_form)
 {
@@ -268,14 +281,14 @@ lwpoint_deserialize(uchar *serialized_form)
 		lwnotice("lwpoint_deserialize: input has SRID");
 #endif
 		result->SRID = get_int32(loc);
-		loc += 4; // type + SRID
+		loc += 4; /* type + SRID */
 	}
 	else
 	{
 		result->SRID = -1;
 	}
 
-	// we've read the type (1 byte) and SRID (4 bytes, if present)
+	/* we've read the type (1 byte) and SRID (4 bytes, if present) */
 
 	pa = pointArray_construct(loc, TYPE_HASZ(type), TYPE_HASM(type), 1);
 
@@ -306,7 +319,7 @@ lwpoint_compute_box2d_p(LWPOINT *point, BOX2DFLOAT4 *box)
 	return ptarray_compute_box2d_p(point->point, box);
 }
 
-// Clone LWPOINT object. POINTARRAY is not copied.
+/* Clone LWPOINT object. POINTARRAY is not copied. */
 LWPOINT *
 lwpoint_clone(const LWPOINT *g)
 {
@@ -319,10 +332,12 @@ lwpoint_clone(const LWPOINT *g)
 	return ret;
 }
 
-// Add 'what' to this point at position 'where'.
-// where=0 == prepend
-// where=-1 == append
-// Returns a MULTIPOINT or a GEOMETRYCOLLECTION
+/*
+ * Add 'what' to this point at position 'where'.
+ * where=0 == prepend
+ * where=-1 == append
+ * Returns a MULTIPOINT or a GEOMETRYCOLLECTION
+ */
 LWGEOM *
 lwpoint_add(const LWPOINT *to, uint32 where, const LWGEOM *what)
 {
@@ -336,28 +351,28 @@ lwpoint_add(const LWPOINT *to, uint32 where, const LWGEOM *what)
 		return NULL;
 	}
 
-	// dimensions compatibility are checked by caller
+	/* dimensions compatibility are checked by caller */
 
 
-	// Construct geoms array
+	/* Construct geoms array */
 	geoms = lwalloc(sizeof(LWGEOM *)*2);
-	if ( where == -1 ) // append
+	if ( where == -1 ) /* append */
 	{
 		geoms[0] = lwgeom_clone((LWGEOM *)to);
 		geoms[1] = lwgeom_clone(what);
 	}
-	else // prepend
+	else /* prepend */
 	{
 		geoms[0] = lwgeom_clone(what);
 		geoms[1] = lwgeom_clone((LWGEOM *)to);
 	}
-	// reset SRID and wantbbox flag from component types
+	/* reset SRID and wantbbox flag from component types */
 	lwgeom_dropSRID(geoms[0]);
 	lwgeom_dropBBOX(geoms[0]);
 	lwgeom_dropSRID(geoms[1]);
 	lwgeom_dropBBOX(geoms[1]);
 
-	// Find appropriate geom type
+	/* Find appropriate geom type */
 	if ( TYPE_GETTYPE(what->type) == POINTTYPE ) newtype = MULTIPOINTTYPE;
 	else newtype = COLLECTIONTYPE;
 
@@ -368,7 +383,7 @@ lwpoint_add(const LWPOINT *to, uint32 where, const LWGEOM *what)
 	return (LWGEOM *)col;
 }
 
-//find length of this serialized point
+/* Find length of this serialized point */
 size_t
 lwgeom_size_point(const uchar *serialized_point)
 {
@@ -400,7 +415,7 @@ lwnotice("lwgeom_size_point: has bbox (%d)", result);
 #ifdef PGIS_DEBUG
 lwnotice("lwgeom_size_point: has srid (%d)", result);
 #endif
-		loc +=4; // type + SRID
+		loc +=4; /* type + SRID */
 		result +=4;
 	}
 
@@ -409,7 +424,7 @@ lwnotice("lwgeom_size_point: has srid (%d)", result);
 	return result;
 }
 
-// check coordinate equality 
+/* check coordinate equality  */
 char
 lwpoint_same(const LWPOINT *p1, const LWPOINT *p2)
 {

@@ -28,7 +28,6 @@ lwmline_deserialize(uchar *srl)
 
 	if (lwgeom_hasBBOX(srl[0]))
 	{
-		//result->bbox = (BOX2DFLOAT4 *)(srl+1);
 		result->bbox = lwalloc(sizeof(BOX2DFLOAT4));
 		memcpy(result->bbox, srl+1, sizeof(BOX2DFLOAT4));
 	}
@@ -51,10 +50,12 @@ lwmline_deserialize(uchar *srl)
 	return result;
 }
 
-// Add 'what' to this multiline at position 'where'.
-// where=0 == prepend
-// where=-1 == append
-// Returns a MULTILINE or a COLLECTION
+/*
+ * Add 'what' to this multiline at position 'where'.
+ * where=0 == prepend
+ * where=-1 == append
+ * Returns a MULTILINE or a COLLECTION
+ */
 LWGEOM *
 lwmline_add(const LWMLINE *to, uint32 where, const LWGEOM *what)
 {
@@ -71,9 +72,9 @@ lwmline_add(const LWMLINE *to, uint32 where, const LWGEOM *what)
 		return NULL;
 	}
 
-	// dimensions compatibility are checked by caller
+	/* dimensions compatibility are checked by caller */
 
-	// Construct geoms array
+	/* Construct geoms array */
 	geoms = lwalloc(sizeof(LWGEOM *)*(to->ngeoms+1));
 	for (i=0; i<where; i++)
 	{

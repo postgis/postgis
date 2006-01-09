@@ -11,24 +11,21 @@
 #include <string.h>
 #include <math.h>
 #include <stdio.h>
-//TO get byte order
+/* TO get byte order */
 #include <sys/types.h>
 #include <sys/param.h>
-//#include <netinet/in.h>
-//#include <netinet/in_systm.h>
-//#include <netinet/ip.h>
 
 #include "liblwgeom.h"
 #include "wktparse.h"
 
 
-//-- Typedefs ----------------------------------------------
+/*-- Typedefs ---------------------------------------------- */
 
 typedef unsigned long int4;
 typedef uchar* (*outfunc)(uchar*,int);
 typedef uchar* (*outwkbfunc)(uchar*);
 
-//-- Prototypes --------------------------------------------
+/*-- Prototypes -------------------------------------------- */
 
 void ensure(int chars);
 void to_end(void);
@@ -54,7 +51,7 @@ uchar* output_wkb_collection_2(uchar* geom);
 uchar* output_wkb_point(uchar* geom);
 uchar* output_wkb(uchar* geom);
 
-//-- Globals -----------------------------------------------
+/*-- Globals ----------------------------------------------- */
 
 static int dims;
 static allocator local_malloc;
@@ -63,11 +60,10 @@ static char*  out_start;
 static char*  out_pos;
 static int len;
 static int lwgi;
-//static int flipbytes;
 static uchar endianbyte;
 void (*write_wkb_bytes)(uchar* ptr,unsigned int cnt,size_t size);
 
-//----------------------------------------------------------
+/*---------------------------------------------------------- */
 
 
 
@@ -165,7 +161,6 @@ double read_double(uchar** geom){
 		return ret-180.0;
 	}
 	else{
-		//double ret = *((double*)*geom);
 		double ret;
  		memcpy(&ret, *geom, 8);
 		(*geom)+=8;
@@ -239,21 +234,23 @@ uchar *output_multipoint(uchar* geom,int suppress){
 	return output_wkt(geom,suppress);
 }
 
-// Suppress=0 // write TYPE, M, coords
-// Suppress=1 // write TYPE, coords 
-// Suppress=2 // write only coords
+/*
+ * Suppress=0 -- write TYPE, M, coords
+ * Suppress=1 -- write TYPE, coords 
+ * Suppress=2 -- write only coords
+ */
 uchar *
 output_wkt(uchar* geom, int supress)
 {
 
 	unsigned type=*geom++;
 	char writeM=0;
-	dims = TYPE_NDIMS(type); //((type & 0x30) >> 4)+2;
+	dims = TYPE_NDIMS(type); /* ((type & 0x30) >> 4)+2; */
 
 	if ( ! supress && !TYPE_HASZ(type) && TYPE_HASM(type) ) writeM=1;
 
 
-	//Skip the bounding box if there is one
+	/* Skip the bounding box if there is one */
 	if ( TYPE_HASBBOX(type) )
 	{
 		geom+=16;
@@ -379,7 +376,7 @@ static char outchr[]={"0123456789ABCDEF" };
 void
 write_wkb_hex_flip_bytes(uchar* ptr, unsigned int cnt, size_t size)
 {
-	unsigned int bc; // byte count
+	unsigned int bc; /* byte count */
 
 	ensure(cnt*2*size);
 
@@ -397,7 +394,7 @@ write_wkb_hex_flip_bytes(uchar* ptr, unsigned int cnt, size_t size)
 void
 write_wkb_hex_bytes(uchar* ptr, unsigned int cnt, size_t size)
 {
-	unsigned int bc; // byte count
+	unsigned int bc; /* byte count */
 
 	ensure(cnt*2*size);
 
@@ -415,7 +412,7 @@ write_wkb_hex_bytes(uchar* ptr, unsigned int cnt, size_t size)
 void
 write_wkb_bin_flip_bytes(uchar* ptr, unsigned int cnt, size_t size)
 {
-	unsigned int bc; // byte count
+	unsigned int bc; /* byte count */
 
 	ensure(cnt*size);
 
@@ -432,7 +429,7 @@ write_wkb_bin_flip_bytes(uchar* ptr, unsigned int cnt, size_t size)
 void
 write_wkb_bin_bytes(uchar* ptr, unsigned int cnt, size_t size)
 {
-	unsigned int bc; // byte count
+	unsigned int bc; /* byte count */
 
 	ensure(cnt*size);
 
@@ -492,12 +489,11 @@ output_wkb(uchar* geom)
 	lwnotice("output_wkb: dims set to %d", dims);
 #endif
 
-	//Skip the bounding box
+	/* Skip the bounding box */
 	if ( TYPE_HASBBOX(type) ) { 
 		geom+=16;
 	}
 
-	//type&=0x0f;
 	wkbtype = TYPE_GETTYPE(type); 
 
 	if ( TYPE_HASZ(type) )
@@ -509,7 +505,7 @@ output_wkb(uchar* geom)
 	}
 
 
-	// Write byteorder (as from WKB specs...)
+	/* Write byteorder (as from WKB specs...) */
 	write_wkb_bytes(&endianbyte,1,1);
 
 	write_wkb_int(wkbtype);
@@ -614,6 +610,9 @@ unparse_WKB(uchar* serialized, allocator alloc, freeor free, char endian, size_t
 
 /******************************************************************
  * $Log$
+ * Revision 1.20  2006/01/09 15:12:02  strk
+ * ISO C90 comments
+ *
  * Revision 1.19  2005/03/10 18:19:16  strk
  * Made void args explicit to make newer compilers happy
  *

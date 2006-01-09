@@ -3,7 +3,7 @@
 #include <string.h>
 #include "liblwgeom.h"
 
-//#define PGIS_DEBUG_CALLS 1
+/*#define PGIS_DEBUG_CALLS 1 */
 
 LWMPOLY *
 lwmpoly_deserialize(uchar *srl)
@@ -34,7 +34,6 @@ lwmpoly_deserialize(uchar *srl)
 
 	if (lwgeom_hasBBOX(srl[0]))
 	{
-		//result->bbox = (BOX2DFLOAT4 *)(srl+1);
 		result->bbox = lwalloc(sizeof(BOX2DFLOAT4));
 		memcpy(result->bbox, srl+1, sizeof(BOX2DFLOAT4));
 	}
@@ -56,10 +55,12 @@ lwmpoly_deserialize(uchar *srl)
 	return result;
 }
 
-// Add 'what' to this multiline at position 'where'.
-// where=0 == prepend
-// where=-1 == append
-// Returns a MULTIPOLY or a COLLECTION
+/*
+ * Add 'what' to this multiline at position 'where'.
+ * where=0 == prepend
+ * where=-1 == append
+ * Returns a MULTIPOLY or a COLLECTION
+ */
 LWGEOM *
 lwmpoly_add(const LWMPOLY *to, uint32 where, const LWGEOM *what)
 {
@@ -76,9 +77,9 @@ lwmpoly_add(const LWMPOLY *to, uint32 where, const LWGEOM *what)
 		return NULL;
 	}
 
-	// dimensions compatibility are checked by caller
+	/* dimensions compatibility are checked by caller */
 
-	// Construct geoms array
+	/* Construct geoms array */
 	geoms = lwalloc(sizeof(LWGEOM *)*(to->ngeoms+1));
 	for (i=0; i<where; i++)
 	{

@@ -3,7 +3,7 @@
 #include <string.h>
 #include "liblwgeom.h"
 
-//#define PGIS_DEBUG_CALLS 1
+/*#define PGIS_DEBUG_CALLS 1 */
 
 #define CHECK_LWGEOM_ZM 1
 
@@ -87,7 +87,6 @@ lwcollection_deserialize(uchar *srl)
 
 	if (lwgeom_hasBBOX(srl[0]))
 	{
-		//result->bbox = (BOX2DFLOAT4 *)(srl+1);
 		result->bbox = lwalloc(sizeof(BOX2DFLOAT4));
 		memcpy(result->bbox, srl+1, sizeof(BOX2DFLOAT4));
 	}
@@ -113,14 +112,14 @@ lwcollection_getsubgeom(LWCOLLECTION *col, int gnum)
 	return (LWGEOM *)col->geoms[gnum];
 }
 
-// find serialized size of this collection
+/* find serialized size of this collection */
 size_t
 lwcollection_serialize_size(LWCOLLECTION *col)
 {
-	size_t size = 5; // type + nsubgeoms
+	size_t size = 5; /* type + nsubgeoms */
 	int i;
 
-	if ( col->SRID != -1 ) size += 4; // SRID
+	if ( col->SRID != -1 ) size += 4; /* SRID */
 	if ( col->bbox ) size += sizeof(BOX2DFLOAT4);
 
 #ifdef PGIS_DEBUG_CALLS
@@ -143,13 +142,15 @@ lwcollection_serialize_size(LWCOLLECTION *col)
 	return size; 
 }
 
-// convert this collectoin into its serialize form writing it into
-// the given buffer, and returning number of bytes written into
-// the given int pointer.
+/*
+ * convert this collectoin into its serialize form writing it into
+ * the given buffer, and returning number of bytes written into
+ * the given int pointer.
+ */
 void
 lwcollection_serialize_buf(LWCOLLECTION *coll, uchar *buf, size_t *retsize)
 {
-	size_t size=1; // type 
+	size_t size=1; /* type  */
 	size_t subsize=0;
 	char hasSRID;
 	uchar *loc;
@@ -167,7 +168,7 @@ lwcollection_serialize_buf(LWCOLLECTION *coll, uchar *buf, size_t *retsize)
 		hasSRID, TYPE_GETTYPE(coll->type), coll->bbox ? 1 : 0);
 	loc = buf+1;
 
-	// Add BBOX if requested
+	/* Add BBOX if requested */
 	if ( coll->bbox )
 	{
 		memcpy(loc, coll->bbox, sizeof(BOX2DFLOAT4));
@@ -175,7 +176,7 @@ lwcollection_serialize_buf(LWCOLLECTION *coll, uchar *buf, size_t *retsize)
 		loc += sizeof(BOX2DFLOAT4);
 	}
 
-	// Add SRID if requested
+	/* Add SRID if requested */
 	if (hasSRID)
 	{
 		memcpy(loc, &coll->SRID, 4);
@@ -183,12 +184,12 @@ lwcollection_serialize_buf(LWCOLLECTION *coll, uchar *buf, size_t *retsize)
 		loc += 4;
 	}
 
-	// Write number of subgeoms
+	/* Write number of subgeoms */
 	memcpy(loc, &coll->ngeoms, 4);
 	size += 4;
 	loc += 4;
 
-	// Serialize subgeoms
+	/* Serialize subgeoms */
 	for (i=0; i<coll->ngeoms; i++)
 	{
 		lwgeom_serialize_buf(coll->geoms[i], loc, &subsize);
@@ -241,16 +242,18 @@ lwcollection_clone(const LWCOLLECTION *g)
 	}
 	else
 	{
-		ret->bbox = NULL; // empty collection
+		ret->bbox = NULL; /* empty collection */
 		ret->geoms = NULL;
 	}
 	return ret;
 }
 
-// Add 'what' to this collection at position 'where'.
-// where=0 == prepend
-// where=-1 == append
-// Returns a GEOMETRYCOLLECTION
+/*
+ * Add 'what' to this collection at position 'where'.
+ * where=0 == prepend
+ * where=-1 == append
+ * Returns a GEOMETRYCOLLECTION
+ */
 LWGEOM *
 lwcollection_add(const LWCOLLECTION *to, uint32 where, const LWGEOM *what)
 {
@@ -266,9 +269,9 @@ lwcollection_add(const LWCOLLECTION *to, uint32 where, const LWGEOM *what)
 		return NULL;
 	}
 
-	// dimensions compatibility are checked by caller
+	/* dimensions compatibility are checked by caller */
 
-	// Construct geoms array
+	/* Construct geoms array */
 	geoms = lwalloc(sizeof(LWGEOM *)*(to->ngeoms+1));
 	for (i=0; i<where; i++)
 	{
@@ -310,7 +313,7 @@ lwcollection_segmentize2d(LWCOLLECTION *col, double dist)
 		col->ngeoms, newgeoms);
 }
 
-// check for same geometry composition
+/* check for same geometry composition */
 char
 lwcollection_same(const LWCOLLECTION *c1, const LWCOLLECTION *c2)
 {
@@ -319,7 +322,7 @@ lwcollection_same(const LWCOLLECTION *c1, const LWCOLLECTION *c2)
 
 #if PGIS_DEBUG_CALLS
 	lwnotice("lwcollection_same called");
-#endif // PGIS_DEBUG_CALLS
+#endif /* PGIS_DEBUG_CALLS */
 
 	if ( TYPE_GETTYPE(c1->type) != TYPE_GETTYPE(c2->type) ) return 0;
 	if ( c1->ngeoms != c2->ngeoms ) return 0;
