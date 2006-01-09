@@ -831,6 +831,12 @@ Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 
 	HeapTuple stats1_tuple, stats2_tuple, class_tuple;
 	GEOM_STATS *geomstats1, *geomstats2;
+	/*
+	 * These are to avoid casting the corresponding
+	 * "type-punned" pointers, which would break
+	 * "strict-aliasing rules".
+	 */
+	GEOM_STATS **gs1ptr=&geomstats1, **gs2ptr=&geomstats2;
 	int geomstats1_nvalues = 0, geomstats2_nvalues = 0;
 	float8 selectivity1 = 0.0, selectivity2 = 0.0;
 	float4 num1_tuples = 0.0, num2_tuples = 0.0;
@@ -900,7 +906,7 @@ Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 
 	if ( ! get_attstatsslot(stats1_tuple, 0, 0,
 		STATISTIC_KIND_GEOMETRY, InvalidOid, NULL, NULL,
-		(float4 **)&geomstats1, &geomstats1_nvalues) )
+		(float4 **)gs1ptr, &geomstats1_nvalues) )
 	{
 #if DEBUG_GEOMETRY_STATS
 		elog(NOTICE, " STATISTIC_KIND_GEOMETRY stats not found - returning default geometry join selectivity");
@@ -926,7 +932,7 @@ Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 
 	if ( ! get_attstatsslot(stats2_tuple, 0, 0,
 		STATISTIC_KIND_GEOMETRY, InvalidOid, NULL, NULL,
-		(float4 **)&geomstats2, &geomstats2_nvalues) )
+		(float4 **)gs2ptr, &geomstats2_nvalues) )
 	{
 #if DEBUG_GEOMETRY_STATS
 		elog(NOTICE, " STATISTIC_KIND_GEOMETRY stats not found - returning default geometry join selectivity");
@@ -1697,6 +1703,12 @@ Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS)
 	Oid relid;
 	HeapTuple stats_tuple;
 	GEOM_STATS *geomstats;
+	/*
+	 * This is to avoid casting the corresponding
+	 * "type-punned" pointer, which would break
+	 * "strict-aliasing rules".
+	 */
+	GEOM_STATS **gsptr=&geomstats;
 	int geomstats_nvalues=0;
 	Node *other;
 	Var *self;
@@ -1794,7 +1806,7 @@ Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS)
 
 	if ( ! get_attstatsslot(stats_tuple, 0, 0,
 		STATISTIC_KIND_GEOMETRY, InvalidOid, NULL, NULL,
-		(float4 **)&geomstats, &geomstats_nvalues) )
+		(float4 **)gsptr, &geomstats_nvalues) )
 	{
 #if DEBUG_GEOMETRY_STATS
 		elog(NOTICE, " STATISTIC_KIND_GEOMETRY stats not found - returning default geometry selectivity");
@@ -2581,6 +2593,9 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.37  2006/01/09 11:48:15  strk
+ * Fixed "strict-aliasing rule" breaks.
+ *
  * Revision 1.36  2005/12/30 17:40:37  strk
  * Moved PG_LWGEOM WKB I/O and SRID get/set funx
  * from lwgeom_api.c to lwgeom_pg.c.
