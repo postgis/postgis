@@ -13,29 +13,24 @@
  */
 #define PARANOIA_LEVEL 1
 
-//#define PGIS_DEBUG 1
-
-// This is an implementation of the functions defined in lwgeom.h
-
-//forward decs
-//extern uchar *parse_lwg(const char* geometry, lwallocator allocfunc, lwreporter errfunc);
-
-//*********************************************************************
-// BOX routines
-
-// returns the float thats very close to the input, but <=
-//  handles the funny differences in float4 and float8 reps.
+/* #define PGIS_DEBUG 1 */
 
 
-//these are taken from glibc
-// some machines do *not* have these functions defined, so we give
-//  an implementation of them here.
+/**********************************************************************
+ * BOX routines
+ *
+ * returns the float thats very close to the input, but <=
+ *  handles the funny differences in float4 and float8 reps.
+ **********************************************************************/
 
+
+/*
+ * These are taken from glibc
+ * some machines do *not* have these functions defined, so we give
+ *  an implementation of them here.
+ */
 typedef int int32_tt;
 typedef unsigned int u_int32_tt;
-
-
-float nextafterf_custom(float x, float y);
 
 typedef union
 {
@@ -43,27 +38,28 @@ typedef union
   u_int32_tt word;
 } ieee_float_shape_type;
 
+#define GET_FLOAT_WORD(i,d)			\
+	do {					\
+		ieee_float_shape_type gf_u;	\
+		gf_u.value = (d);		\
+		(i) = gf_u.word;		\
+	} while (0)
 
 
-#define GET_FLOAT_WORD(i,d)                                     \
-do {                                                            \
-  ieee_float_shape_type gf_u;                                   \
-  gf_u.value = (d);                                             \
-  (i) = gf_u.word;                                              \
-} while (0)
+#define SET_FLOAT_WORD(d,i)			\
+	do {					\
+		ieee_float_shape_type sf_u;	\
+		sf_u.word = (i);		\
+		(d) = sf_u.value;		\
+	} while (0)
 
 
-#define SET_FLOAT_WORD(d,i)                                     \
-do {                                                            \
-  ieee_float_shape_type sf_u;                                   \
-  sf_u.word = (i);                                              \
-  (d) = sf_u.value;                                             \
-} while (0)
-
-
-// returns the next smaller or next larger float
-// from x (in direction of y).
-float nextafterf_custom(float x, float y)
+/*
+ * Returns the next smaller or next larger float
+ * from x (in direction of y).
+ */
+float
+nextafterf_custom(float x, float y)
 {
         int32_tt hx,hy,ix,iy;
 
@@ -108,8 +104,6 @@ float nextafterf_custom(float x, float y)
 }
 
 
-
-
 float nextDown_f(double d)
 {
 	float result  = d;
@@ -121,47 +115,58 @@ float nextDown_f(double d)
 
 }
 
-// returns the float thats very close to the input, but >=
-//  handles the funny differences in float4 and float8 reps.
-float nextUp_f(double d)
+/*
+ * Returns the float thats very close to the input, but >=.
+ * handles the funny differences in float4 and float8 reps.
+ */
+float
+nextUp_f(double d)
 {
-		float result  = d;
+	float result  = d;
 
-		if ( ((double) result) >=d)
-			return result;
+	if ( ((double) result) >=d)
+		return result;
 
-		return nextafterf_custom(result, result + 1000000);
+	return nextafterf_custom(result, result + 1000000);
 }
 
 
-// returns the double thats very close to the input, but <
-//  handles the funny differences in float4 and float8 reps.
-double nextDown_d(float d)
+/*
+ * Returns the double thats very close to the input, but <.
+ * handles the funny differences in float4 and float8 reps.
+ */
+double
+nextDown_d(float d)
 {
-		double result  = d;
+	double result  = d;
 
-		if ( result < d)
-			return result;
+	if ( result < d)
+		return result;
 
-		return nextafterf_custom(result, result - 1000000);
+	return nextafterf_custom(result, result - 1000000);
 }
 
-// returns the double thats very close to the input, but >
-//  handles the funny differences in float4 and float8 reps.
-double nextUp_d(float d)
+/*
+ * Returns the double thats very close to the input, but >
+ * handles the funny differences in float4 and float8 reps.
+ */
+double
+nextUp_d(float d)
 {
-			double result  = d;
+	double result  = d;
 
-			if ( result > d)
-				return result;
+	if ( result > d)
+		return result;
 
-			return nextafterf_custom(result, result + 1000000);
+	return nextafterf_custom(result, result + 1000000);
 }
 
 
 
-// Convert BOX3D to BOX2D
-// returned box2d is allocated with 'lwalloc'
+/*
+ * Convert BOX3D to BOX2D
+ * returned box2d is allocated with 'lwalloc'
+ */
 BOX2DFLOAT4 *
 box3d_to_box2df(BOX3D *box)
 {
@@ -184,9 +189,11 @@ box3d_to_box2df(BOX3D *box)
 	return result;
 }
 
-// Convert BOX3D to BOX2D using pre-allocated BOX2D
-// returned box2d is allocated with 'lwalloc'
-// return 0 on error (NULL input box)
+/*
+ * Convert BOX3D to BOX2D using pre-allocated BOX2D
+ * returned box2d is allocated with 'lwalloc'
+ * return 0 on error (NULL input box)
+ */
 int
 box3d_to_box2df_p(BOX3D *box, BOX2DFLOAT4 *result)
 {
@@ -209,8 +216,10 @@ box3d_to_box2df_p(BOX3D *box, BOX2DFLOAT4 *result)
 
 
 
-// convert BOX2D to BOX3D
-// zmin and zmax are set to 0.0
+/*
+ * Convert BOX2D to BOX3D
+ * zmin and zmax are set to NO_Z_VALUE
+ */
 BOX3D
 box2df_to_box3d(BOX2DFLOAT4 *box)
 {
@@ -227,13 +236,15 @@ box2df_to_box3d(BOX2DFLOAT4 *box)
 	result.xmax = box->xmax;
 	result.ymax = box->ymax;
 
-	result.zmin = result.zmax = 0.0;
+	result.zmin = result.zmax = NO_Z_VALUE;
 
 	return result;
 }
 
-// convert BOX2D to BOX3D, using pre-allocated BOX3D as output
-// Z values are set to 0.0.
+/*
+ * Convert BOX2D to BOX3D, using pre-allocated BOX3D as output
+ * Z values are set to NO_Z_VALUE.
+ */
 void
 box2df_to_box3d_p(BOX2DFLOAT4 *box, BOX3D *out)
 {
@@ -245,15 +256,17 @@ box2df_to_box3d_p(BOX2DFLOAT4 *box, BOX3D *out)
 	out->xmax = box->xmax;
 	out->ymax = box->ymax;
 
-	out->zmin = out->zmax = 0.0;
+	out->zmin = out->zmax = NO_Z_VALUE;
 }
 
 
 
-// returns a BOX3D that encloses b1 and b2
-// box3d_union(NULL,A) --> A
-// box3d_union(A,NULL) --> A
-// box3d_union(A,B) --> A union B
+/*
+ * Returns a BOX3D that encloses b1 and b2
+ * box3d_union(NULL,A) --> A
+ * box3d_union(A,NULL) --> A
+ * box3d_union(A,B) --> A union B
+ */
 BOX3D *
 box3d_union(BOX3D *b1, BOX3D *b2)
 {
@@ -268,13 +281,13 @@ box3d_union(BOX3D *b1, BOX3D *b2)
 
 	if  (b1 == NULL)
 	{
-		//return b2
+		/*return b2 */
 		memcpy(result, b2, sizeof(BOX3D));
 		return result;
 	}
 	if (b2 == NULL)
 	{
-		//return b1
+		/*return b1 */
 		memcpy(result, b1, sizeof(BOX3D));
 		return result;
 	}
@@ -313,7 +326,7 @@ box3d_union(BOX3D *b1, BOX3D *b2)
 	return result;
 }
 
-// Make given ubox a union of b1 and b2
+/* Make given ubox a union of b1 and b2 */
 int
 box3d_union_p(BOX3D *b1, BOX3D *b2, BOX3D *ubox)
 {
@@ -367,16 +380,22 @@ box3d_union_p(BOX3D *b1, BOX3D *b2, BOX3D *ubox)
 	return 1;
 }
 
-// returns a pointer to internal storage, or NULL
-// if the serialized form does not have a BBOX.
-//BOX2DFLOAT4 *
-//getbox2d_internal(uchar *srl)
-//{
-//	if (TYPE_HASBBOX(srl[0])) return (BOX2DFLOAT4 *)(srl+1);
-//	else return NULL;
-//}
+#if 0 /* UNUSED */
+/*
+ * Returns a pointer to internal storage, or NULL
+ * if the serialized form does not have a BBOX.
+ */
+BOX2DFLOAT4 *
+getbox2d_internal(uchar *srl)
+{
+	if (TYPE_HASBBOX(srl[0])) return (BOX2DFLOAT4 *)(srl+1);
+	else return NULL;
+}
+#endif /* UNUSED */
 
-// same as getbox2d, but modifies box instead of returning result on the stack
+/*
+ * Same as getbox2d, but modifies box instead of returning result on the stack
+ */
 int
 getbox2d_p(uchar *srl, BOX2DFLOAT4 *box)
 {
@@ -392,7 +411,7 @@ getbox2d_p(uchar *srl, BOX2DFLOAT4 *box)
 
 	if (lwgeom_hasBBOX(type))
 	{
-		//woot - this is easy
+		/*woot - this is easy */
 #ifdef PGIS_DEBUG
 		lwnotice("getbox2d_p: has box");
 #endif
@@ -404,8 +423,7 @@ getbox2d_p(uchar *srl, BOX2DFLOAT4 *box)
 	lwnotice("getbox2d_p: has no box - computing");
 #endif
 
-	//we have to actually compute it!
-	//lwnotice("getbox2d_p:: computing box");
+	/* We have to actually compute it! */
 	if ( ! compute_serialized_box3d_p(srl, &box3d) ) return 0;
 
 #ifdef PGIS_DEBUG
@@ -421,14 +439,20 @@ getbox2d_p(uchar *srl, BOX2DFLOAT4 *box)
 	return 1;
 }
 
-//************************************************************************
-// POINTARRAY support functions
+/************************************************************************
+ * POINTARRAY support functions
+ *
+ * TODO: should be moved to ptarray.c probably
+ *
+ ************************************************************************/
 
-
-// copies a point from the point array into the parameter point
-// will set point's z=0 (or NaN) if pa is 2d
-// will set point's m=0 (or NaN( if pa is 3d or 2d
-// NOTE: point is a real POINT3D *not* a pointer
+/*
+ * Copies a point from the point array into the parameter point
+ * will set point's z=NO_Z_VALUE if pa is 2d
+ * will set point's m=NO_M_VALUE if pa is 3d or 2d
+ *
+ * NOTE: point is a real POINT3D *not* a pointer
+ */
 POINT4D
 getPoint4d(const POINTARRAY *pa, int n)
 {
@@ -437,10 +461,13 @@ getPoint4d(const POINTARRAY *pa, int n)
 	return result;
 }
 
-// copies a point from the point array into the parameter point
-// will set point's z=NO_Z_VALUE  if pa is 2d
-// will set point's m=NO_M_VALUE  if pa is 3d or 2d
-// NOTE: this will modify the point4d pointed to by 'point'.
+/*
+ * Copies a point from the point array into the parameter point
+ * will set point's z=NO_Z_VALUE  if pa is 2d
+ * will set point's m=NO_M_VALUE  if pa is 3d or 2d
+ *
+ * NOTE: this will modify the point4d pointed to by 'point'.
+ */
 int
 getPoint4d_p(const POINTARRAY *pa, int n, POINT4D *op)
 {
@@ -453,7 +480,7 @@ getPoint4d_p(const POINTARRAY *pa, int n, POINT4D *op)
 	if ( (n<0) || (n>=pa->npoints))
 	{
 		lwerror("getPoint4d_p: point offset out of range");
-		return 0; //error
+		return 0; /*error */
 	}
 #endif
 
@@ -463,24 +490,24 @@ getPoint4d_p(const POINTARRAY *pa, int n, POINT4D *op)
 
 	switch (zmflag)
 	{
-		case 0: // 2d 
+		case 0: /* 2d  */
 			memcpy(op, ptr, sizeof(POINT2D));
 			op->m=NO_M_VALUE;
 			op->z=NO_Z_VALUE;
 			break;
 
-		case 3: // ZM
+		case 3: /* ZM */
 			memcpy(op, ptr, sizeof(POINT4D));
 			break;
 
-		case 2: // Z
+		case 2: /* Z */
 			memcpy(op, ptr, sizeof(POINT3DZ));
 			op->m=NO_M_VALUE;
 			break;
 
-		case 1: // M
+		case 1: /* M */
 			memcpy(op, ptr, sizeof(POINT3DM));
-			op->m=op->z; // we use Z as temporary storage
+			op->m=op->z; /* we use Z as temporary storage */
 			op->z=NO_Z_VALUE;
 			break;
 
@@ -494,9 +521,11 @@ getPoint4d_p(const POINTARRAY *pa, int n, POINT4D *op)
 
 
 
-// copies a point from the point array into the parameter point
-// will set point's z=0 (or NaN) if pa is 2d
-// NOTE: point is a real POINT3DZ *not* a pointer
+/*
+ * Copy a point from the point array into the parameter point
+ * will set point's z=NO_Z_VALUE if pa is 2d
+ * NOTE: point is a real POINT3DZ *not* a pointer
+ */
 POINT3DZ
 getPoint3dz(const POINTARRAY *pa, int n)
 {
@@ -505,9 +534,12 @@ getPoint3dz(const POINTARRAY *pa, int n)
 	return result;
 }
 
-// copies a point from the point array into the parameter point
-// will set point's z=0 (or NaN) if pa is 2d
-// NOTE: point is a real POINT3DZ *not* a pointer
+/*
+ * Copy a point from the point array into the parameter point
+ * will set point's z=NO_Z_VALUE if pa is 2d
+ *
+ * NOTE: point is a real POINT3DZ *not* a pointer
+ */
 POINT3DM
 getPoint3dm(const POINTARRAY *pa, int n)
 {
@@ -516,9 +548,12 @@ getPoint3dm(const POINTARRAY *pa, int n)
 	return result;
 }
 
-// copies a point from the point array into the parameter point
-// will set point's z=NO_Z_VALUE if pa is 2d
-// NOTE: this will modify the point3dz pointed to by 'point'.
+/*
+ * Copy a point from the point array into the parameter point
+ * will set point's z=NO_Z_VALUE if pa is 2d
+ * 
+ * NOTE: this will modify the point3dz pointed to by 'point'.
+ */
 int
 getPoint3dz_p(const POINTARRAY *pa, int n, POINT3DZ *op)
 {
@@ -530,7 +565,7 @@ getPoint3dz_p(const POINTARRAY *pa, int n, POINT3DZ *op)
 	if ( (n<0) || (n>=pa->npoints))
 	{
 		lwnotice("%d out of numpoint range (%d)", n, pa->npoints);
-		return 0; //error
+		return 0; /*error */
 	}
 #endif
 
@@ -565,9 +600,12 @@ getPoint3dz_p(const POINTARRAY *pa, int n, POINT3DZ *op)
 
 }
 
-// copies a point from the point array into the parameter point
-// will set point's m=NO_M_VALUE if pa has no M
-// NOTE: this will modify the point3dm pointed to by 'point'.
+/*
+ * Copy a point from the point array into the parameter point
+ * will set point's m=NO_Z_VALUE if pa has no M
+ * 
+ * NOTE: this will modify the point3dm pointed to by 'point'.
+ */
 int
 getPoint3dm_p(const POINTARRAY *pa, int n, POINT3DM *op)
 {
@@ -580,7 +618,7 @@ getPoint3dm_p(const POINTARRAY *pa, int n, POINT3DM *op)
 	if ( (n<0) || (n>=pa->npoints))
 	{
 		lwerror("%d out of numpoint range (%d)", n, pa->npoints);
-		return 0; //error
+		return 0; /*error */
 	}
 #endif 
 
@@ -629,9 +667,12 @@ getPoint3dm_p(const POINTARRAY *pa, int n, POINT3DM *op)
 }
 
 
-// copies a point from the point array into the parameter point
-// z value (if present is not returned)
-// NOTE: point is a real POINT2D *not* a pointer
+/*
+ * Copy a point from the point array into the parameter point
+ * z value (if present) is not returned.
+ *
+ * NOTE: point is a real POINT2D *not* a pointer
+ */
 POINT2D
 getPoint2d(const POINTARRAY *pa, int n)
 {
@@ -640,9 +681,12 @@ getPoint2d(const POINTARRAY *pa, int n)
 	return result;
 }
 
-// copies a point from the point array into the parameter point
-// z value (if present is not returned)
-// NOTE: this will modify the point2d pointed to by 'point'.
+/*
+ * Copy a point from the point array into the parameter point
+ * z value (if present) is not returned.
+ *
+ * NOTE: this will modify the point2d pointed to by 'point'.
+ */
 int
 getPoint2d_p(const POINTARRAY *pa, int n, POINT2D *point)
 {
@@ -652,11 +696,11 @@ getPoint2d_p(const POINTARRAY *pa, int n, POINT2D *point)
 	if ( (n<0) || (n>=pa->npoints))
 	{
 		lwerror("getPoint2d_p: point offset out of range");
-		return 0; //error
+		return 0; /*error */
 	}
 #endif
 
-	// this does x,y
+	/* this does x,y */
 	memcpy(point, getPoint_internal(pa, n), sizeof(POINT2D));
 	return 1;
 }
@@ -692,9 +736,11 @@ setPoint4d(POINTARRAY *pa, int n, POINT4D *p4d)
 }
 
 
-// get a pointer to nth point of a POINTARRAY
-// You cannot safely cast this to a real POINT, due to memory alignment
-// constraints. Use getPoint*_p for that.
+/*
+ * Get a pointer to nth point of a POINTARRAY.
+ * You cannot safely cast this to a real POINT, due to memory alignment
+ * constraints. Use getPoint*_p for that.
+ */
 uchar *
 getPoint_internal(const POINTARRAY *pa, int n)
 {
@@ -708,7 +754,7 @@ getPoint_internal(const POINTARRAY *pa, int n)
 
 	if ( (n<0) || (n>=pa->npoints))
 	{
-		return NULL; //error
+		return NULL; /*error */
 	}
 #endif
 
@@ -719,10 +765,15 @@ getPoint_internal(const POINTARRAY *pa, int n)
 
 
 
-// constructs a POINTARRAY.
-// NOTE: points is *not* copied, so be careful about modification (can be aligned/missaligned)
-// NOTE: ndims is descriptive - it describes what type of data 'points'
-//       points to.  No data conversion is done.
+/*
+ * Constructs a POINTARRAY.
+ *
+ * NOTE: points is *not* copied, so be careful about modification
+ * (can be aligned/missaligned).
+ *
+ * NOTE: ndims is descriptive - it describes what type of data 'points'
+ *       points to.  No data conversion is done.
+ */
 POINTARRAY *
 pointArray_construct(uchar *points, char hasz, char hasm,
 	uint32 npoints)
@@ -740,48 +791,54 @@ pointArray_construct(uchar *points, char hasz, char hasm,
 }
 
 
-//size of point represeneted in the POINTARRAY
-// 16 for 2d, 24 for 3d, 32 for 4d
+/*
+ * Size of point represeneted in the POINTARRAY
+ * 16 for 2d, 24 for 3d, 32 for 4d
+ */
 int
 pointArray_ptsize(const POINTARRAY *pa)
 {
-	//fprintf(stderr, "pointArray_ptsize: TYPE_NDIMS(pa->dims)=%x\n", TYPE_NDIMS(pa->dims));
+#ifdef PGIS_DEBUG
+	lwnotice("pointArray_ptsize: TYPE_NDIMS(pa->dims)=%x\n",
+		TYPE_NDIMS(pa->dims));
+#endif
 	return sizeof(double)*TYPE_NDIMS(pa->dims);
 }
 
 
-//***************************************************************************
-// basic type handling
+/***************************************************************************
+ * Basic type handling
+ ***************************************************************************/
 
 
-// returns true if this type says it has an SRID (S bit set)
+/* Returns true if this type says it has an SRID (S bit set) */
 char
 lwgeom_hasSRID(uchar type)
 {
 	return TYPE_HASSRID(type);
 }
 
-// returns either 2,3, or 4 -- 2=2D, 3=3D, 4=4D
+/* Returns either 2,3, or 4 -- 2=2D, 3=3D, 4=4D */
 int
 lwgeom_ndims(uchar type)
 {
 	return TYPE_NDIMS(type);
 }
 
-// has M ?
+/* has M ? */
 int lwgeom_hasM(uchar type)
 {
 	return  ( (type & 0x10) >>4);
 }
 
-// has Z ?
+/* has Z ? */
 int lwgeom_hasZ(uchar type)
 {
 	return  ( (type & 0x20) >>5);
 }
 
 
-// get base type (ie. POLYGONTYPE)
+/* get base type (ie. POLYGONTYPE) */
 int
 lwgeom_getType(uchar type)
 {
@@ -789,7 +846,7 @@ lwgeom_getType(uchar type)
 }
 
 
-//construct a type (hasBOX=false)
+/* Construct a type (hasBOX=false) */
 uchar
 lwgeom_makeType(char hasz, char hasm, char hasSRID, int type)
 {
@@ -812,17 +869,18 @@ lwgeom_makeType_full(char hasz, char hasm, char hasSRID, int type, char hasBBOX)
 	return result;
 }
 
-//returns true if there's a bbox in this LWGEOM (B bit set)
+/* Returns true if there's a bbox in this LWGEOM (B bit set) */
 char
 lwgeom_hasBBOX(uchar type)
 {
 	return TYPE_HASBBOX(type);
 }
 
-//*****************************************************************************
-// basic sub-geometry types
+/*****************************************************************************
+ * Basic sub-geometry types
+ *****************************************************************************/
 
-// handle missaligned unsigned int32 data
+/* handle missaligned unsigned int32 data */
 uint32
 get_uint32(const uchar *loc)
 {
@@ -832,7 +890,7 @@ get_uint32(const uchar *loc)
 	return result;
 }
 
-// handle missaligned signed int32 data
+/* handle missaligned signed int32 data */
 int32
 get_int32(const uchar *loc)
 {
@@ -842,19 +900,24 @@ get_int32(const uchar *loc)
 	return result;
 }
 
-//******************************************************************************
 
-
-
-
-
-//*************************************************************************
-// multi-geometry support
-// note - for a simple type (ie. point), this will have sub_geom[0] = serialized_form.
-// for multi-geomtries sub_geom[0] will be a few bytes into the serialized form
-// This function just computes the length of each sub-object and pre-caches this info.
-// For a geometry collection of multi* geometries, you can inspect the sub-components
-// as well.
+/*************************************************************************
+ *
+ * Multi-geometry support
+ *
+ * Note - for a simple type (ie. point), this will have
+ * sub_geom[0] = serialized_form.
+ *
+ * For multi-geomtries sub_geom[0] will be a few bytes
+ * into the serialized form.
+ *
+ * This function just computes the length of each sub-object and
+ * pre-caches this info.
+ *
+ * For a geometry collection of multi* geometries, you can inspect
+ * the sub-components
+ * as well.
+ */
 LWGEOM_INSPECTED *
 lwgeom_inspect(const uchar *serialized_form)
 {
@@ -874,7 +937,7 @@ lwgeom_inspect(const uchar *serialized_form)
 
 	result->serialized_form = serialized_form; 
 	result->type = (uchar) serialized_form[0];
-	result->SRID = -1; // assume
+	result->SRID = -1; /* assume */
 
 	type = lwgeom_getType(typefl);
 
@@ -893,7 +956,7 @@ lwgeom_inspect(const uchar *serialized_form)
 
 	if ( (type==POINTTYPE) || (type==LINETYPE) || (type==POLYGONTYPE) )
 	{
-		//simple geometry (point/line/polygon)-- not multi!
+		/* simple geometry (point/line/polygon)-- not multi! */
 		result->ngeometries = 1;
 		sub_geoms = (uchar**) lwalloc(sizeof(char*));
 		sub_geoms[0] = (uchar *)serialized_form;
@@ -901,7 +964,7 @@ lwgeom_inspect(const uchar *serialized_form)
 		return result;
 	}
 
-	// its a GeometryCollection or multi* geometry
+	/* its a GeometryCollection or multi* geometry */
 
 	result->ngeometries = get_uint32(loc);
 	loc +=4;
@@ -920,7 +983,8 @@ lwgeom_inspect(const uchar *serialized_form)
 #endif
 	for (t=1;t<result->ngeometries; t++)
 	{
-		int sub_length = lwgeom_size_subgeom(sub_geoms[t-1], -1);//-1 = entire object
+		/* -1 = entire object */
+		int sub_length = lwgeom_size_subgeom(sub_geoms[t-1], -1);
 		sub_geoms[t] = sub_geoms[t-1] + sub_length;
 #ifdef PGIS_DEBUG
 		lwnotice("subgeom[%d] @ %p (+%d)",
@@ -933,11 +997,13 @@ lwgeom_inspect(const uchar *serialized_form)
 }
 
 
-// 1st geometry has geom_number = 0
-// if the actual sub-geometry isnt a POINT, null is returned (see _gettype()).
-// if there arent enough geometries, return null.
-// this is fine to call on a point (with geom_num=0),
-// multipoint or geometrycollection
+/*
+ * 1st geometry has geom_number = 0
+ * if the actual sub-geometry isnt a POINT, null is returned (see _gettype()).
+ * if there arent enough geometries, return null.
+ * this is fine to call on a point (with geom_num=0),
+ * multipoint or geometrycollection
+ */
 LWPOINT *
 lwgeom_getpoint(uchar *serialized_form, int geom_number)
 {
@@ -946,7 +1012,7 @@ lwgeom_getpoint(uchar *serialized_form, int geom_number)
 
 	if ((type == POINTTYPE)  && (geom_number == 0))
 	{
-		//be nice and do as they want instead of what they say
+		/* Be nice and do as they want instead of what they say */
 		return lwpoint_deserialize(serialized_form);
 	}
 
@@ -964,10 +1030,13 @@ lwgeom_getpoint(uchar *serialized_form, int geom_number)
 	return lwpoint_deserialize(sub_geom);
 }
 
-// 1st geometry has geom_number = 0
-// if the actual sub-geometry isnt a POINT, null is returned (see _gettype()).
-// if there arent enough geometries, return null.
-// this is fine to call on a point (with geom_num=0), multipoint or geometrycollection
+/*
+ * 1st geometry has geom_number = 0
+ * if the actual sub-geometry isnt a POINT, null is returned (see _gettype()).
+ * if there arent enough geometries, return null.
+ * this is fine to call on a point (with geom_num=0), multipoint
+ * or geometrycollection
+ */
 LWPOINT *lwgeom_getpoint_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
 {
 	uchar *sub_geom;
@@ -984,10 +1053,12 @@ LWPOINT *lwgeom_getpoint_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
 }
 
 
-// 1st geometry has geom_number = 0
-// if the actual geometry isnt a LINE, null is returned (see _gettype()).
-// if there arent enough geometries, return null.
-// this is fine to call on a line, multiline or geometrycollection
+/*
+ * 1st geometry has geom_number = 0
+ * if the actual geometry isnt a LINE, null is returned (see _gettype()).
+ * if there arent enough geometries, return null.
+ * this is fine to call on a line, multiline or geometrycollection
+ */
 LWLINE *
 lwgeom_getline(uchar *serialized_form, int geom_number)
 {
@@ -996,7 +1067,7 @@ lwgeom_getline(uchar *serialized_form, int geom_number)
 
 	if ((type == LINETYPE)  && (geom_number == 0))
 	{
-		//be nice and do as they want instead of what they say
+		/* be nice and do as they want instead of what they say */
 		return lwline_deserialize(serialized_form);
 	}
 
@@ -1012,11 +1083,14 @@ lwgeom_getline(uchar *serialized_form, int geom_number)
 	return lwline_deserialize(sub_geom);
 }
 
-// 1st geometry has geom_number = 0
-// if the actual geometry isnt a LINE, null is returned (see _gettype()).
-// if there arent enough geometries, return null.
-// this is fine to call on a line, multiline or geometrycollection
-LWLINE *lwgeom_getline_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
+/*
+ * 1st geometry has geom_number = 0
+ * if the actual geometry isnt a LINE, null is returned (see _gettype()).
+ * if there arent enough geometries, return null.
+ * this is fine to call on a line, multiline or geometrycollection
+ */
+LWLINE *
+lwgeom_getline_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
 {
 	uchar *sub_geom;
 	uchar type;
@@ -1031,10 +1105,12 @@ LWLINE *lwgeom_getline_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
 	return lwline_deserialize(sub_geom);
 }
 
-// 1st geometry has geom_number = 0
-// if the actual geometry isnt a POLYGON, null is returned (see _gettype()).
-// if there arent enough geometries, return null.
-// this is fine to call on a polygon, multipolygon or geometrycollection
+/*
+ * 1st geometry has geom_number = 0
+ * if the actual geometry isnt a POLYGON, null is returned (see _gettype()).
+ * if there arent enough geometries, return null.
+ * this is fine to call on a polygon, multipolygon or geometrycollection
+ */
 LWPOLY *
 lwgeom_getpoly(uchar *serialized_form, int geom_number)
 {
@@ -1043,7 +1119,7 @@ lwgeom_getpoly(uchar *serialized_form, int geom_number)
 
 	if ((type == POLYGONTYPE)  && (geom_number == 0))
 	{
-		//be nice and do as they want instead of what they say
+		/* Be nice and do as they want instead of what they say */
 		return lwpoly_deserialize(serialized_form);
 	}
 
@@ -1059,11 +1135,14 @@ lwgeom_getpoly(uchar *serialized_form, int geom_number)
 	return lwpoly_deserialize(sub_geom);
 }
 
-// 1st geometry has geom_number = 0
-// if the actual geometry isnt a POLYGON, null is returned (see _gettype()).
-// if there arent enough geometries, return null.
-// this is fine to call on a polygon, multipolygon or geometrycollection
-LWPOLY *lwgeom_getpoly_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
+/*
+ * 1st geometry has geom_number = 0
+ * if the actual geometry isnt a POLYGON, null is returned (see _gettype()).
+ * if there arent enough geometries, return null.
+ * this is fine to call on a polygon, multipolygon or geometrycollection
+ */
+LWPOLY *
+lwgeom_getpoly_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
 {
 	uchar *sub_geom;
 	uchar type;
@@ -1078,22 +1157,29 @@ LWPOLY *lwgeom_getpoly_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
 	return lwpoly_deserialize(sub_geom);
 }
 
-// this gets the serialized form of a sub-geometry
-// 1st geometry has geom_number = 0
-// if this isnt a multi* geometry, and geom_number ==0 then it returns
-// itself
-// returns null on problems.
-// in the future this is how you would access a muli* portion of a
-// geometry collection.
-//    GEOMETRYCOLLECTION(MULTIPOINT(0 0, 1 1), LINESTRING(0 0, 1 1))
-//   ie. lwgeom_getpoint( lwgeom_getsubgeometry( serialized, 0), 1)
-//           --> POINT(1 1)
-// you can inspect the sub-geometry as well if you wish.
+/*
+ * This gets the serialized form of a sub-geometry
+ *
+ * 1st geometry has geom_number = 0
+ * if this isnt a multi* geometry, and geom_number ==0 then it returns
+ * itself.
+ *
+ * Returns null on problems.
+ *
+ * In the future this is how you would access a muli* portion of a
+ * geometry collection.
+ *    GEOMETRYCOLLECTION(MULTIPOINT(0 0, 1 1), LINESTRING(0 0, 1 1))
+ *   ie. lwgeom_getpoint( lwgeom_getsubgeometry( serialized, 0), 1)
+ *           --> POINT(1 1)
+ *
+ * You can inspect the sub-geometry as well if you wish.
+ *
+ */
 uchar *
 lwgeom_getsubgeometry(const uchar *serialized_form, int geom_number)
 {
-	//major cheat!!
 	uchar *result;
+	/*major cheat!! */
 	LWGEOM_INSPECTED *inspected = lwgeom_inspect(serialized_form);
 
 	result = lwgeom_getsubgeometry_inspected(inspected, geom_number);
@@ -1114,18 +1200,20 @@ lwgeom_getsubgeometry_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
 }
 
 
-// 1st geometry has geom_number = 0
-//  use geom_number = -1 to find the actual type of the serialized form.
-//    ie lwgeom_gettype( <'MULTIPOINT(0 0, 1 1)'>, -1)
-//                 --> multipoint
-//   ie lwgeom_gettype( <'MULTIPOINT(0 0, 1 1)'>, 0)
-//                 --> point
-// gets the 8bit type of the geometry at location geom_number
+/*
+ * 1st geometry has geom_number = 0
+ *  use geom_number = -1 to find the actual type of the serialized form.
+ *    ie lwgeom_gettype( <'MULTIPOINT(0 0, 1 1)'>, -1)
+ *                 --> multipoint
+ *   ie lwgeom_gettype( <'MULTIPOINT(0 0, 1 1)'>, 0)
+ *                 --> point
+ * gets the 8bit type of the geometry at location geom_number
+ */
 uchar
 lwgeom_getsubtype(uchar *serialized_form, int geom_number)
 {
-	//major cheat!!
 	char  result;
+	/*major cheat!! */
 	LWGEOM_INSPECTED *inspected = lwgeom_inspect(serialized_form);
 
 	result = lwgeom_getsubtype_inspected(inspected, geom_number);
@@ -1139,12 +1227,14 @@ lwgeom_getsubtype_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
 	if ((geom_number <0) || (geom_number >= inspected->ngeometries) )
 		return 99;
 
-	return inspected->sub_geoms[geom_number][0]; // 1st byte is type
+	return inspected->sub_geoms[geom_number][0]; /* 1st byte is type */
 }
 
 
-// how many sub-geometries are there?
-//  for point,line,polygon will return 1.
+/*
+ * How many sub-geometries are there?
+ * for point,line,polygon will return 1.
+ */
 int
 lwgeom_getnumgeometries(uchar *serialized_form)
 {
@@ -1167,25 +1257,31 @@ lwgeom_getnumgeometries(uchar *serialized_form)
 	{
 		loc += 4;
 	}
-	//its a GeometryCollection or multi* geometry
+	/* its a GeometryCollection or multi* geometry */
 	return get_uint32(loc);
 }
 
-// how many sub-geometries are there?
-//  for point,line,polygon will return 1.
-int lwgeom_getnumgeometries_inspected(LWGEOM_INSPECTED *inspected)
+/*
+ * How many sub-geometries are there?
+ * for point,line,polygon will return 1.
+ */
+int
+lwgeom_getnumgeometries_inspected(LWGEOM_INSPECTED *inspected)
 {
 	return inspected->ngeometries;
 }
 
 
-// set finalType to COLLECTIONTYPE or 0 (0 means choose a best type)
-//   (ie. give it 2 points and ask it to be a multipoint)
-//  use SRID=-1 for unknown SRID  (will have 8bit type's S = 0)
-// all subgeometries must have the same SRID
-// if you want to construct an inspected, call this then inspect the result...
+/*
+ * Set finalType to COLLECTIONTYPE or 0 (0 means choose a best type)
+ *   (ie. give it 2 points and ask it to be a multipoint)
+ *  use SRID=-1 for unknown SRID  (will have 8bit type's S = 0)
+ * all subgeometries must have the same SRID
+ * if you want to construct an inspected, call this then inspect the result...
+ */
 uchar *
-lwgeom_serialized_construct(int SRID, int finalType, char hasz, char hasm, int nsubgeometries, uchar **serialized_subs)
+lwgeom_serialized_construct(int SRID, int finalType, char hasz, char hasm,
+	int nsubgeometries, uchar **serialized_subs)
 {
 	uint32 *lengths;
 	int t;
@@ -1211,7 +1307,7 @@ lwgeom_serialized_construct(int SRID, int finalType, char hasz, char hasm, int n
 		}
 		else if (type == COLLECTIONTYPE)
 		{
-				//still a collection type...
+				/* still a collection type... */
 		}
 		else
 		{
@@ -1228,11 +1324,11 @@ lwgeom_serialized_construct(int SRID, int finalType, char hasz, char hasm, int n
 				else if ( (this_type == POLYGONTYPE)  && (type==POLYGONTYPE) )
 					type=MULTIPOLYGONTYPE;
 				else if ( (this_type == POLYGONTYPE)  && (type==MULTIPOLYGONTYPE) )
-					;//nop
+					; /* nop */
 				else if ( (this_type == LINETYPE)  && (type==MULTILINETYPE) )
-					;//nop
+					; /* nop */
 				else if ( (this_type == POINTTYPE)  && (type==MULTIPOINTTYPE) )
-					;//nop
+					; /* nop */
 				else
 					type = COLLECTIONTYPE;
 			}
@@ -1249,13 +1345,13 @@ lwgeom_serialized_construct(int SRID, int finalType, char hasz, char hasm, int n
 	if (finalType == COLLECTIONTYPE)
 		type = COLLECTIONTYPE;
 
-	// now we have a mutli* or GEOMETRYCOLLECTION, lets serialize it
+	/* now we have a multi* or GEOMETRYCOLLECTION, let's serialize it */
 
 	if (SRID != -1)
-		total_length +=4; // space for SRID
+		total_length +=4; /* space for SRID */
 
-	total_length +=1 ;   // main type;
-	total_length +=4 ;   // nsubgeometries
+	total_length +=1 ;   /* main type; */
+	total_length +=4 ;   /* nsubgeometries */
 
 	result = lwalloc(total_length);
 	result[0] = (uchar) lwgeom_makeType(hasz, hasm, SRID != -1,  type);
@@ -1281,8 +1377,11 @@ lwgeom_serialized_construct(int SRID, int finalType, char hasz, char hasm, int n
 }
 
 
-// construct the empty geometry (GEOMETRYCOLLECTION(EMPTY))
-//returns serialized form
+/*
+ * Construct the empty geometry (GEOMETRYCOLLECTION(EMPTY)).
+ *
+ * Returns serialized form
+ */
 uchar *
 lwgeom_constructempty(int SRID, char hasz, char hasm)
 {
@@ -1319,8 +1418,10 @@ lwgeom_empty_length(int SRID)
 	return size;
 }
 
-// construct the empty geometry (GEOMETRYCOLLECTION(EMPTY))
-// writing it into the provided buffer.
+/*
+ * Construct the empty geometry (GEOMETRYCOLLECTION(EMPTY))
+ * writing it into the provided buffer.
+ */
 void
 lwgeom_constructempty_buf(int SRID, char hasz, char hasm,
 	uchar *buf, size_t *retsize)
@@ -1341,16 +1442,17 @@ lwgeom_constructempty_buf(int SRID, char hasz, char hasm,
 	if (retsize) *retsize = lwgeom_empty_length(SRID);
 }
 
-// helper function (not for general use)
-// find the size a geometry (or a sub-geometry)
-// 1st geometry has geom_number = 0
-//  use geom_number = -1 to find the actual type of the serialized form.
-//    ie lwgeom_gettype( <'MULTIPOINT(0 0, 1 1)'>, -1)
-//                 --> size of the multipoint
-//   ie lwgeom_gettype( <'MULTIPOINT(0 0, 1 1)'>, 0)
-//         --> size of the point
-
-// take a geometry, and find its length
+/*
+ * helper function (not for general use)
+ * find the size a geometry (or a sub-geometry)
+ * 1st geometry has geom_number = 0
+ *  use geom_number = -1 to find the actual type of the serialized form.
+ *    ie lwgeom_gettype( <'MULTIPOINT(0 0, 1 1)'>, -1)
+ *                 --> size of the multipoint
+ *   ie lwgeom_gettype( <'MULTIPOINT(0 0, 1 1)'>, 0)
+ *         --> size of the point
+ * take a geometry, and find its length
+ */
 size_t
 lwgeom_size(const uchar *serialized_form)
 {
@@ -1359,7 +1461,7 @@ lwgeom_size(const uchar *serialized_form)
 	const uchar *loc;
 	uint32 ngeoms;
 	int sub_size;
-	int result = 1; //"type"
+	int result = 1; /* type */
 
 #ifdef PGIS_DEBUG
 	lwnotice("lwgeom_size called");
@@ -1393,8 +1495,12 @@ lwgeom_size(const uchar *serialized_form)
 		return 0;
 	}
 
-	//handle all the multi* and geometrycollections the same
-	//NOTE: for a geometry collection of GC of GC of GC we will be recursing...
+	/*
+	 * Handle all the multi* and geometrycollections the same
+	 *
+	 * NOTE: for a geometry collection of GC of GC of GC we will
+	 *       be recursing...
+	 */
 
 #ifdef PGIS_DEBUG
 	lwnotice("lwgeom_size called on a geoemtry with type %d", type);
@@ -1424,7 +1530,7 @@ lwgeom_size(const uchar *serialized_form)
 
 	ngeoms = get_uint32(loc);
 	loc +=4;
-	result += 4; // numgeoms
+	result += 4; /* numgeoms */
 
 #ifdef PGIS_DEBUG
 	lwnotice("lwgeom_size called on a geoemtry with %d elems (result so far: %d)", ngeoms, result);
@@ -1480,10 +1586,12 @@ compute_serialized_box3d_p(uchar *srl, BOX3D *out)
 	return 1;
 }
 
-// Compute bounding box of a serialized LWGEOM, even if it is
-// already cached. The computed BOX2DFLOAT4 is stored at
-// the given location, the function returns 0 is the geometry
-// does not have a bounding box (EMPTY GEOM)
+/*
+ * Compute bounding box of a serialized LWGEOM, even if it is
+ * already cached. The computed BOX2DFLOAT4 is stored at
+ * the given location, the function returns 0 is the geometry
+ * does not have a bounding box (EMPTY GEOM)
+ */
 int
 compute_serialized_box2d_p(uchar *srl, BOX2DFLOAT4 *out)
 {
@@ -1498,7 +1606,9 @@ compute_serialized_box2d_p(uchar *srl, BOX2DFLOAT4 *out)
 	  return 1;
 }
 
-//dont forget to lwfree() result
+/*
+ * Don't forget to lwfree() result !
+ */
 BOX3D *
 compute_serialized_box3d(uchar *srl)
 {
@@ -1510,8 +1620,6 @@ compute_serialized_box3d(uchar *srl)
 	BOX3D b1;
 	int sub_size;
 	char nboxes=0;
-
-	//lwnotice("compute_serialized_box3d called");
 
 #ifdef PGIS_DEBUG
 lwnotice("compute_serialized_box3d called on type %d", type);
@@ -1569,7 +1677,7 @@ lwnotice("compute_serialized_box3d: bbox found");
 	ngeoms = get_uint32(loc);
 	loc += 4;
 
-	// each sub-type
+	/* each sub-type */
 	result = NULL;
 	for (t=0; t<ngeoms; t++)
 	{
@@ -1597,10 +1705,14 @@ lwnotice("compute_serialized_box3d: bbox found");
 
 }
 
-//****************************************************************
-// memory management -- these only delete the memory associated
-//  directly with the structure - NOT the stuff pointing into
-//  the original de-serialized info
+/****************************************************************
+ * memory management 
+ *
+ *  these only delete the memory associated
+ *  directly with the structure - NOT the stuff pointing into
+ *  the original de-serialized info
+ *
+ ****************************************************************/
 
 void
 pfree_inspected(LWGEOM_INSPECTED *inspected)
@@ -1619,8 +1731,9 @@ void pfree_POINTARRAY(POINTARRAY *pa)
 
 
 
-//************************************************
-//** debugging routines
+/************************************************
+ * debugging routines
+ ************************************************/
 
 
 void printBOX3D(BOX3D *box)
@@ -1668,7 +1781,7 @@ void printBYTES(uchar *a, int n)
 	int t;
 	char buff[3];
 
-	buff[2] = 0; //null terminate
+	buff[2] = 0; /* null terminate */
 
 	lwnotice(" BYTE ARRAY (n=%i) IN HEX: {", n);
 	for (t=0;t<n;t++)
@@ -1718,13 +1831,16 @@ printMULTI(uchar *serialized)
 	pfree_inspected(inspected);
 }
 
-void printType(uchar type)
+void
+printType(uchar type)
 {
 	lwnotice("type 0x%x ==> hasBBOX=%i, hasSRID=%i, ndims=%i, type=%i",(unsigned int) type, lwgeom_hasBBOX(type), lwgeom_hasSRID(type),lwgeom_ndims(type), lwgeom_getType(type));
 }
 
-// get the SRID from the LWGEOM
-// none present => -1
+/*
+ * Get the SRID from the LWGEOM.
+ * None present => -1
+ */
 int
 lwgeom_getsrid(uchar *serialized)
 {
@@ -1758,10 +1874,13 @@ ptarray_isccw(const POINTARRAY *pa)
 	else return 1;
 }
 
-// returns a BOX2DFLOAT4 that encloses b1 and b2
-// box2d_union(NULL,A) --> A
-// box2d_union(A,NULL) --> A
-// box2d_union(A,B) --> A union B
+/*
+ * Returns a BOX2DFLOAT4 that encloses b1 and b2
+ *
+ * box2d_union(NULL,A) --> A
+ * box2d_union(A,NULL) --> A
+ * box2d_union(A,B) --> A union B
+ */
 BOX2DFLOAT4 *
 box2d_union(BOX2DFLOAT4 *b1, BOX2DFLOAT4 *b2)
 {
@@ -1848,16 +1967,20 @@ lwgeom_typeflags(uchar type)
 	if ( TYPE_HASBBOX(type) ) flags[flagno++] = 'B';
 	if ( TYPE_HASSRID(type) ) flags[flagno++] = 'S';
 	flags[flagno] = '\0';
-	//lwnotice("Flags: %s - returning %p", flags, flags);
+#ifdef PGIS_DEBUG
+	lwnotice("Flags: %s - returning %p", flags, flags);
+#endif
 	return flags;
 }
 
-//given a string with at least 2 chars in it, convert them to
-// a byte value.  No error checking done!
+/*
+ * Given a string with at least 2 chars in it, convert them to
+ * a byte value.  No error checking done!
+ */
 uchar
 parse_hex(char *str)
 {
-	//do this a little brute force to make it faster
+	/* do this a little brute force to make it faster */
 
 	uchar		result_high = 0;
 	uchar		result_low = 0;
@@ -1968,11 +2091,15 @@ parse_hex(char *str)
 }
 
 
-//given one byte, populate result with two byte representing
-// the hex number
-// ie deparse_hex( 255, mystr)
-//		-> mystr[0] = 'F' and mystr[1] = 'F'
-// no error checking done
+/*
+ * Given one byte, populate result with two byte representing
+ * the hex number.
+ *
+ * Ie. deparse_hex( 255, mystr)
+ *		-> mystr[0] = 'F' and mystr[1] = 'F'
+ *
+ * No error checking done
+ */
 void
 deparse_hex(uchar str, char *result)
 {
