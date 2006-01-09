@@ -34,6 +34,9 @@
  ******************************************************************************
  *
  * $Log$
+ * Revision 1.7  2006/01/09 16:40:16  strk
+ * ISO C90 comments, signedness mismatch fixes
+ *
  * Revision 1.6  2003/12/01 20:52:00  strk
  * shapelib put in sync with gdal cvs
  *
@@ -590,6 +593,7 @@ DBFCreate( const char * pszFilename )
     psDBF->nFields = 0;
     psDBF->nRecordLength = 1;
     psDBF->nHeaderLength = 33;
+    psDBF->bUpdated = FALSE;
     
     psDBF->panFieldOffset = NULL;
     psDBF->panFieldSize = NULL;

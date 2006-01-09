@@ -49,15 +49,15 @@
 #define WKBZOFFSET 0x80000000
 #define WKBMOFFSET 0x40000000
 
-//#define DEBUG 1
+/*#define DEBUG 1 */
 
 typedef struct {double x, y, z, m;} Point;
 
 typedef struct Ring {
-	Point *list;	//list of points
+	Point *list;		/* list of points */
 	struct Ring  *next;
-	int n;	//number of points in list
-	unsigned int linked; // number of "next" rings
+	int n;			/* number of points in list */
+	unsigned int linked; 	/* number of "next" rings */
 } Ring;
 
 /* Values for null_policy global */
@@ -68,7 +68,7 @@ enum {
 };
 
 /* globals */
-int	dump_format = 0; //0=insert statements, 1 = dump
+int	dump_format = 0; /* 0=insert statements, 1 = dump */
 int	quoteidentifiers = 0;
 int	forceint4 = 0;
 int	createindex = 0;
@@ -79,7 +79,7 @@ int	istypeM = 0;
 int	pgdims;
 unsigned int wkbtype;
 char  	*shp_file = NULL;
-int	hwgeom = 0; // old (hwgeom) mode
+int	hwgeom = 0; /* old (hwgeom) mode */
 #ifdef USE_ICONV
 char	*encoding=NULL;
 #endif
@@ -129,7 +129,7 @@ void LowerCase(char *s);
 void Cleanup(void);
 
 
-// WKB
+/* WKB */
 static char getEndianByte(void);
 static void print_wkb_bytes(unsigned char* ptr, unsigned int cnt, size_t size);
 static void print_wkb_byte(unsigned char val);
@@ -155,12 +155,14 @@ void *safe_malloc(size_t size)
 char *
 make_good_string(char *str)
 {
-	//find all the tabs and make them \<tab>s
-	//
-	// 1. find # of tabs
-	// 2. make new string 
-	//
-	// we dont escape already escaped tabs
+	/*
+	 * find all the tabs and make them \<tab>s
+	 *
+	 * 1. find # of tabs
+	 * 2. make new string 
+	 *
+	 * we dont escape already escaped tabs
+	 */
 
 	char *result;
 	char *ptr, *optr;
@@ -209,11 +211,13 @@ make_good_string(char *str)
 char *
 protect_quotes_string(char *str)
 {
-	//find all quotes and make them \quotes
-	//find all '\' and make them '\\'
-	// 
-	// 1. find # of characters
-	// 2. make new string 
+	/*
+	 * find all quotes and make them \quotes
+	 * find all '\' and make them '\\'
+	 * 	 
+	 * 1. find # of characters
+	 * 2. make new string 
+	 */
 
 	char	*result;
 	char	*ptr, *optr;
@@ -260,31 +264,33 @@ protect_quotes_string(char *str)
 
 
 
-// PIP(): crossing number test for a point in a polygon
-//      input:   P = a point,
-//               V[] = vertex points of a polygon V[n+1] with V[n]=V[0]
-//      returns: 0 = outside, 1 = inside
+/*
+ * PIP(): crossing number test for a point in a polygon
+ *      input:   P = a point,
+ *               V[] = vertex points of a polygon V[n+1] with V[n]=V[0]
+ *      returns: 0 = outside, 1 = inside
+ */
 int
 PIP( Point P, Point* V, int n )
 {
-	int cn = 0;    // the crossing number counter
+	int cn = 0;    /* the crossing number counter */
 	int i;
 
-    // loop through all edges of the polygon
-    for (i=0; i<n-1; i++) {    // edge from V[i] to V[i+1]
-       if (((V[i].y <= P.y) && (V[i+1].y > P.y))    // an upward crossing
-        || ((V[i].y > P.y) && (V[i+1].y <= P.y))) { // a downward crossing
+    /* loop through all edges of the polygon */
+    for (i=0; i<n-1; i++) {    /* edge from V[i] to V[i+1] */
+       if (((V[i].y <= P.y) && (V[i+1].y > P.y))    /* an upward crossing */
+        || ((V[i].y > P.y) && (V[i+1].y <= P.y))) { /* a downward crossing */
             double vt = (float)(P.y - V[i].y) / (V[i+1].y - V[i].y);
-            if (P.x < V[i].x + vt * (V[i+1].x - V[i].x)) // P.x < intersect
-                ++cn;   // a valid crossing of y=P.y right of P.x
+            if (P.x < V[i].x + vt * (V[i+1].x - V[i].x)) /* P.x < intersect */
+                ++cn;   /* a valid crossing of y=P.y right of P.x */
         }
     }
-    return (cn&1);    // 0 if even (out), and 1 if odd (in)
+    return (cn&1);    /* 0 if even (out), and 1 if odd (in) */
 
 }
 
 
-//Insert the attributes from the correct row of dbf file
+/*Insert the attributes from the correct row of dbf file */
 
 int
 Insert_attributes(DBFHandle hDBFHandle, int row)
@@ -322,7 +328,7 @@ Insert_attributes(DBFHandle hDBFHandle, int row)
                   fprintf(stderr, "Warning: field %d name trucated\n", i);
                   val[1023] = '\0';
                }
-	       // pg_atoi() does not do this
+	       /* pg_atoi() does not do this */
 	       if ( val[0] == '\0' ) { val[0] = '0'; val[1] = '\0'; }
 	       if ( val[strlen(val)-1] == '.' ) val[strlen(val)-1] = '\0';
                break;
@@ -360,9 +366,10 @@ Insert_attributes(DBFHandle hDBFHandle, int row)
 
 
 
-// main()     
-//see description at the top of this file
-
+/*
+ * main()     
+ * see description at the top of this file
+ */
 int
 main (int ARGC, char **ARGV)
 {
@@ -390,7 +397,7 @@ main (int ARGC, char **ARGV)
 	{
 		printf("SET CLIENT_ENCODING TO UTF8;\n");
 	}
-#endif // defined USE_ICONV
+#endif /* defined USE_ICONV */
 
 	/*
 	 * Drop table if requested
@@ -420,11 +427,11 @@ main (int ARGC, char **ARGV)
 	 */
 	if(opt != 'p') LoadData();
 
-	printf("END;\n"); // End the last transaction
+	printf("END;\n"); /* End the last transaction */
 
 
 	return 0; 
-}//end main()
+}/*end main() */
 
 void
 LowerCase(char *s)
@@ -511,7 +518,7 @@ CreateTable(void)
 
 		if(hDBFHandle->pachFieldType[j] == 'D' ) /* Date field */
 		{
-			printf ("varchar(8)");//date data-type is not supported in API so check for it explicity before the api call.
+			printf ("varchar(8)");/*date data-type is not supported in API so check for it explicity before the api call. */
 		}
 			
 		else
@@ -519,7 +526,7 @@ CreateTable(void)
 
 			if(type == FTString)
 			{
-				// use DBF attribute size as maximum width
+				/* use DBF attribute size as maximum width */
 				printf ("varchar(%d)", field_width);
 			}
 			else if(type == FTInteger)
@@ -569,7 +576,7 @@ CreateTable(void)
 	}
 	printf (");\n");
 
-	//create the geometry column with an addgeometry call to dave's function
+	/*create the geometry column with an addgeometry call to dave's function */
 	if ( schema )
 	{
 		printf("SELECT AddGeometryColumn('%s','%s','%s','%s',",
@@ -626,7 +633,7 @@ LoadData(void)
 	 **************************************************************/
 	for (j=0; j<num_entities; j++)
 	{
-		//wrap a transaction block around each 250 inserts...
+		/*wrap a transaction block around each 250 inserts... */
 		if ( ! dump_format )
 		{
 			if (trans == 250) {
@@ -636,9 +643,9 @@ LoadData(void)
 			}
 		}
 		trans++;
-		// transaction stuff done
+		/* transaction stuff done */
 
-		//open the next object
+		/*open the next object */
 		obj = SHPReadObject(hSHPHandle,j);
 		if ( ! obj )
 		{
@@ -667,7 +674,7 @@ LoadData(void)
 		}
 		Insert_attributes(hDBFHandle,j);
 
-		// ---------- NULL SHAPE -----------------
+		/* ---------- NULL SHAPE ----------------- */
 		if (obj->nVertices == 0)
 		{
 			if (dump_format) printf("\\N\n");
@@ -715,7 +722,7 @@ LoadData(void)
 		
 		SHPDestroyObject(obj);	
 
-	} // END of MAIN SHAPE OBJECT LOOP
+	} /* END of MAIN SHAPE OBJECT LOOP */
 
 
 	if ((dump_format) ) {
@@ -768,7 +775,7 @@ usage(char *me, int exitcode)
 void
 InsertLineString(int id)
 {
-	int pi; // part index
+	int pi; /* part index */
 	unsigned int subtype = LINETYPE | (wkbtype&WKBZOFFSET) | 
 		(wkbtype&WKBMOFFSET);
 
@@ -793,14 +800,14 @@ InsertLineString(int id)
 
 	for (pi=0; pi<obj->nParts; pi++)
 	{
-		int vi; // vertex index
-		int vs; // start vertex
-		int ve; // end vertex
+		int vi; /* vertex index */
+		int vs; /* start vertex */
+		int ve; /* end vertex */
 
 		print_wkb_byte(getEndianByte());
 		print_wkb_int(subtype);
 
-		// Set start and end vertexes
+		/* Set start and end vertexes */
 		if ( pi==obj->nParts-1 ) ve = obj->nVertices;
 		else ve = obj->panPartStart[pi+1];
 		vs = obj->panPartStart[pi];
@@ -824,7 +831,7 @@ InsertLineString(int id)
 void
 InsertLineStringWKT(int id)
 {
-	int pi; // part index
+	int pi; /* part index */
 
 	/* Invalid (MULTI)Linestring */
 	if ( obj->nVertices < 2 )
@@ -843,14 +850,14 @@ InsertLineStringWKT(int id)
 
 	for (pi=0; pi<obj->nParts; pi++)
 	{
-		int vi; // vertex index
-		int vs; // start vertex
-		int ve; // end vertex
+		int vi; /* vertex index */
+		int vs; /* start vertex */
+		int ve; /* end vertex */
 
 		if (pi) printf(",");
 		printf("(");
 
-		// Set start and end vertexes
+		/* Set start and end vertexes */
 		if ( pi==obj->nParts-1 ) ve = obj->nVertices;
 		else ve = obj->panPartStart[pi+1];
 		vs = obj->panPartStart[pi];
@@ -876,11 +883,11 @@ InsertLineStringWKT(int id)
 int
 FindPolygons(SHPObject *obj, Ring ***Out)
 {
-	Ring **Outer;    // Pointers to Outer rings
-	int out_index=0; // Count of Outer rings
-	Ring **Inner;    // Pointers to Inner rings
-	int in_index=0;  // Count of Inner rings
-	int pi; // part index
+	Ring **Outer;    /* Pointers to Outer rings */
+	int out_index=0; /* Count of Outer rings */
+	Ring **Inner;    /* Pointers to Inner rings */
+	int in_index=0;  /* Count of Inner rings */
+	int pi; /* part index */
 
 #ifdef DEBUG
 	static int call = -1;
@@ -890,39 +897,39 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 		call, obj->nParts);
 #endif
 
-	// Allocate initial memory
+	/* Allocate initial memory */
 	Outer = (Ring**)malloc(sizeof(Ring*)*obj->nParts);
 	Inner = (Ring**)malloc(sizeof(Ring*)*obj->nParts);
 
-	// Iterate over rings dividing in Outers and Inners
+	/* Iterate over rings dividing in Outers and Inners */
 	for (pi=0; pi<obj->nParts; pi++)
 	{
-		int vi; // vertex index
-		int vs; // start index
-		int ve; // end index
-		int nv; // number of vertex
+		int vi; /* vertex index */
+		int vs; /* start index */
+		int ve; /* end index */
+		int nv; /* number of vertex */
 		double area = 0.0;
 		Ring *ring;
 
-		// Set start and end vertexes
+		/* Set start and end vertexes */
 		if ( pi==obj->nParts-1 ) ve = obj->nVertices;
 		else ve = obj->panPartStart[pi+1];
 		vs = obj->panPartStart[pi];
 
-		// Compute number of vertexes
+		/* Compute number of vertexes */
 		nv = ve-vs;
 
-		// Allocate memory for a ring
+		/* Allocate memory for a ring */
 		ring = (Ring*)malloc(sizeof(Ring));
 		ring->list = (Point*)malloc(sizeof(Point)*nv);
 		ring->n = nv;
 		ring->next = NULL;
 		ring->linked = 0;
 
-		// Iterate over ring vertexes
+		/* Iterate over ring vertexes */
 		for ( vi=vs; vi<ve; vi++)
 		{
-			int vn = vi+1; // next vertex for area
+			int vn = vi+1; /* next vertex for area */
 			if ( vn==ve ) vn = vs;
 
 			ring->list[vi-vs].x = obj->padfX[vi];
@@ -934,19 +941,19 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 				(obj->padfY[vi] * obj->padfX[vn]); 
 		}
 
-		// Close the ring with first vertex 
-		//ring->list[vi].x = obj->padfX[vs];
-		//ring->list[vi].y = obj->padfY[vs];
-		//ring->list[vi].z = obj->padfZ[vs];
-		//ring->list[vi].m = obj->padfM[vs];
+		/* Close the ring with first vertex  */
+		/*ring->list[vi].x = obj->padfX[vs]; */
+		/*ring->list[vi].y = obj->padfY[vs]; */
+		/*ring->list[vi].z = obj->padfZ[vs]; */
+		/*ring->list[vi].m = obj->padfM[vs]; */
 
-		// Clockwise (or single-part). It's an Outer Ring !
+		/* Clockwise (or single-part). It's an Outer Ring ! */
 		if(area < 0.0 || obj->nParts ==1) {
 			Outer[out_index] = ring;
 			out_index++;
 		}
 
-		// Counterclockwise. It's an Inner Ring !
+		/* Counterclockwise. It's an Inner Ring ! */
 		else {
 			Inner[in_index] = ring;
 			in_index++;
@@ -958,8 +965,8 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 		call, out_index, in_index);
 #endif
 
-	// Put the inner rings into the list of the outer rings
-	// of which they are within
+	/* Put the inner rings into the list of the outer rings */
+	/* of which they are within */
 	for(pi=0; pi<in_index; pi++)
 	{
 		Point pt,pt2;
@@ -982,7 +989,7 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 				outer = Outer[i];
 				break;
 			}
-			//fprintf(stderr, "!PIP %s\nOUTE %s\n", dump_ring(inner), dump_ring(Outer[i]));
+			/*fprintf(stderr, "!PIP %s\nOUTE %s\n", dump_ring(inner), dump_ring(Outer[i])); */
 		}
 
 		if ( outer )
@@ -993,8 +1000,8 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 		}
 		else
 		{
-			// The ring wasn't within any outer rings,
-			// assume it is a new outer ring.
+			/* The ring wasn't within any outer rings, */
+			/* assume it is a new outer ring. */
 #ifdef DEBUG
 			fprintf(stderr,
 				"FindPolygons[%d]: hole %d is orphan\n",
@@ -1015,7 +1022,7 @@ void
 ReleasePolygons(Ring **polys, int npolys)
 {
 	int pi;
-	// Release all memory
+	/* Release all memory */
 	for(pi=0; pi<npolys; pi++)
 	{
 		Ring *Poly, *temp;
@@ -1029,9 +1036,9 @@ ReleasePolygons(Ring **polys, int npolys)
 	}
 }
 
-//This function basically deals with the polygon case.
-//it sorts the polys in order of outer,inner,inner, so that inners
-//always come after outers they are within 
+/*This function basically deals with the polygon case. */
+/*it sorts the polys in order of outer,inner,inner, so that inners */
+/*always come after outers they are within  */
 void
 InsertPolygon(void)
 {
@@ -1039,7 +1046,7 @@ InsertPolygon(void)
 		(wkbtype&WKBMOFFSET);
 	Ring **Outer;
 	int out_index;
-	int pi; // part index
+	int pi; /* part index */
 
 	out_index = FindPolygons(obj, &Outer);
 
@@ -1048,9 +1055,9 @@ InsertPolygon(void)
 
 	print_wkb_byte(getEndianByte());
 	print_wkb_int(wkbtype);
-	print_wkb_int(out_index); // npolys
+	print_wkb_int(out_index); /* npolys */
 
-	// Write the coordinates
+	/* Write the coordinates */
 	for(pi=0; pi<out_index; pi++)
 	{
 		Ring *poly;
@@ -1059,13 +1066,13 @@ InsertPolygon(void)
 
 		print_wkb_byte(getEndianByte());
 		print_wkb_int(subtype);
-		print_wkb_int(poly->linked+1); // nrings
+		print_wkb_int(poly->linked+1); /* nrings */
 
 		while(poly)
 		{
-			int vi; // vertex index
+			int vi; /* vertex index */
 
-			print_wkb_int(poly->n); // npoints
+			print_wkb_int(poly->n); /* npoints */
 
 			for(vi=0; vi<poly->n; vi++)
 			{
@@ -1085,7 +1092,7 @@ InsertPolygon(void)
 	if (dump_format) printf("\n");
 	else printf("');\n");
 
-	// Release all memory
+	/* Release all memory */
 	ReleasePolygons(Outer, out_index);
 	free(Outer);
 }
@@ -1093,9 +1100,9 @@ InsertPolygon(void)
 void
 InsertPolygonWKT(void)
 {
-	Ring **Outer;    // Pointers to Outer rings
-	int out_index=0; // Count of Outer rings
-	int pi; // part index
+	Ring **Outer;    /* Pointers to Outer rings */
+	int out_index=0; /* Count of Outer rings */
+	int pi; /* part index */
 
 #ifdef DEBUG
 	static int call = -1;
@@ -1110,7 +1117,7 @@ InsertPolygonWKT(void)
 	if (dump_format) printf("SRID=%s;MULTIPOLYGON(",sr_id );
 	else printf("GeometryFromText('MULTIPOLYGON(");
 
-	// Write the coordinates
+	/* Write the coordinates */
 	for(pi=0; pi<out_index; pi++)
 	{
 		Ring *poly;
@@ -1122,7 +1129,7 @@ InsertPolygonWKT(void)
 
 		while(poly)
 		{
-			int vi; // vertex index
+			int vi; /* vertex index */
 
 			printf("(");
 			for(vi=0; vi<poly->n; vi++)
@@ -1147,7 +1154,7 @@ InsertPolygonWKT(void)
 	if (dump_format) printf(")\n");
 	else printf(")',%s) );\n",sr_id);
 
-	// Release all memory
+	/* Release all memory */
 	ReleasePolygons(Outer, out_index);
 	free(Outer);
 }
@@ -1348,27 +1355,27 @@ SetPgType(void)
 {
 	switch(shpfiletype)
 	{
-		case SHPT_POINT: // Point
+		case SHPT_POINT: /* Point */
 			pgtype = "POINT";
 			wkbtype = POINTTYPE;
 			pgdims = 2;
 			break;
-		case SHPT_ARC: // PolyLine
+		case SHPT_ARC: /* PolyLine */
 			pgtype = "MULTILINESTRING";
 			wkbtype = MULTILINETYPE ;
 			pgdims = 2;
 			break;
-		case SHPT_POLYGON: // Polygon
+		case SHPT_POLYGON: /* Polygon */
 			pgtype = "MULTIPOLYGON";
 			wkbtype = MULTIPOLYGONTYPE;
 			pgdims = 2;
 			break;
-		case SHPT_MULTIPOINT: // MultiPoint
+		case SHPT_MULTIPOINT: /* MultiPoint */
 			pgtype = "MULTIPOINT";
 			wkbtype = MULTIPOINTTYPE;
 			pgdims = 2;
 			break;
-		case SHPT_POINTM: // PointM
+		case SHPT_POINTM: /* PointM */
 			wkbtype = POINTTYPE | WKBMOFFSET;
 			if ( ! hwgeom ) {
 				pgtype = "POINTM";
@@ -1379,7 +1386,7 @@ SetPgType(void)
 				pgdims = 2;
 			}
 			break;
-		case SHPT_ARCM: // PolyLineM
+		case SHPT_ARCM: /* PolyLineM */
 			wkbtype = MULTILINETYPE | WKBMOFFSET;
 			if ( ! hwgeom ) {
 				pgtype = "MULTILINESTRINGM";
@@ -1390,7 +1397,7 @@ SetPgType(void)
 				pgdims = 2;
 			}
 			break;
-		case SHPT_POLYGONM: // PolygonM
+		case SHPT_POLYGONM: /* PolygonM */
 			wkbtype = MULTIPOLYGONTYPE | WKBMOFFSET;
 			if ( ! hwgeom ) {
 				pgtype = "MULTIPOLYGONM";
@@ -1401,7 +1408,7 @@ SetPgType(void)
 				pgdims = 2;
 			}
 			break;
-		case SHPT_MULTIPOINTM: // MultiPointM
+		case SHPT_MULTIPOINTM: /* MultiPointM */
 			wkbtype = MULTIPOINTTYPE | WKBMOFFSET;
 			if ( ! hwgeom ) {
 				pgtype = "MULTIPOINTM";
@@ -1412,25 +1419,25 @@ SetPgType(void)
 				pgdims = 2;
 			}
 			break;
-		case SHPT_POINTZ: // PointZ
+		case SHPT_POINTZ: /* PointZ */
 			wkbtype = POINTTYPE | WKBMOFFSET | WKBZOFFSET;
 			pgtype = "POINT";
 			if ( ! hwgeom ) pgdims = 4;
 			else pgdims = 3;
 			break;
-		case SHPT_ARCZ: // PolyLineZ
+		case SHPT_ARCZ: /* PolyLineZ */
 			pgtype = "MULTILINESTRING";
 			wkbtype = MULTILINETYPE | WKBZOFFSET | WKBMOFFSET;
 			if ( ! hwgeom ) pgdims = 4;
 			else pgdims = 3;
 			break;
-		case SHPT_POLYGONZ: // MultiPolygonZ
+		case SHPT_POLYGONZ: /* MultiPolygonZ */
 			pgtype = "MULTIPOLYGON";
 			wkbtype = MULTIPOLYGONTYPE | WKBZOFFSET | WKBMOFFSET;
 			if ( ! hwgeom ) pgdims = 4;
 			else pgdims = 3;
 			break;
-		case SHPT_MULTIPOINTZ: // MultiPointZ
+		case SHPT_MULTIPOINTZ: /* MultiPointZ */
 			pgtype = "MULTIPOINT";
 			wkbtype = MULTIPOINTTYPE | WKBZOFFSET | WKBMOFFSET;
 			if ( ! hwgeom ) pgdims = 4;
@@ -1463,16 +1470,16 @@ dump_ring(Ring *ring)
 	return buf;
 }
 
-//--------------- WKB handling 
+/*--------------- WKB handling  */
 
 static char outchr[]={"0123456789ABCDEF"};
 
-static int endian_check_int = 1; // dont modify this!!!
+static int endian_check_int = 1; /* dont modify this!!! */
 
 static char
 getEndianByte(void)
 {
-	// 0 = big endian, 1 = little endian
+	/* 0 = big endian, 1 = little endian */
 	if ( *((char *) &endian_check_int) ) return 1;
 	else return 0;
 }
@@ -1498,7 +1505,7 @@ print_wkb_int(int val)
 static void
 print_wkb_bytes(unsigned char *ptr, unsigned int cnt, size_t size)
 {
-	unsigned int bc; // byte count
+	unsigned int bc; /* byte count */
 	static char buf[256];
 	char *bufp;
 
@@ -1518,24 +1525,25 @@ print_wkb_bytes(unsigned char *ptr, unsigned int cnt, size_t size)
 		}
 	}
 	*bufp = '\0';
-	//fprintf(stderr, "\nwkbbytes:%s\n", buf);
+	/*fprintf(stderr, "\nwkbbytes:%s\n", buf); */
 	printf("%s", buf);
 }
 
 void
 DropTable(char *schema, char *table, char *geom)
 {
-		//---------------Drop the table--------------------------
-		// TODO: if the table has more then one geometry column
-		// the DROP TABLE call will leave spurious records in
-		// geometry_columns. 
-		//
-		// If the geometry column in the table being dropped
-		// does not match 'the_geom' or the name specified with
-		// -g an error is returned by DropGeometryColumn. 
-		//
-		// The table to be dropped might not exist.
-		//
+		/*---------------Drop the table--------------------------
+		 * TODO: if the table has more then one geometry column
+		 * the DROP TABLE call will leave spurious records in
+		 * geometry_columns. 
+		 *
+		 * If the geometry column in the table being dropped
+		 * does not match 'the_geom' or the name specified with
+		 * -g an error is returned by DropGeometryColumn. 
+		 *
+		 * The table to be dropped might not exist.
+		 *
+		 */
 		if ( schema )
 		{
 			printf("SELECT DropGeometryColumn('%s','%s','%s');\n",
@@ -1576,12 +1584,12 @@ GetFieldsSpec(void)
 	col_names = malloc((num_fields+2) * sizeof(char) * MAXFIELDNAMELEN);
 	strcpy(col_names, "(" );
 
-	//fprintf(stderr, "Number of fields from DBF: %d\n", num_fields);
+	/*fprintf(stderr, "Number of fields from DBF: %d\n", num_fields); */
 	for(j=0;j<num_fields;j++)
 	{
 		type = DBFGetFieldInfo(hDBFHandle, j, name, &field_width, &field_precision); 
 
-//fprintf(stderr, "Field %d (%s) width/decimals: %d/%d\n", j, name, field_width, field_precision);
+/*fprintf(stderr, "Field %d (%s) width/decimals: %d/%d\n", j, name, field_width, field_precision); */
 		types[j] = type;
 		widths[j] = field_width;
 		precisions[j] = field_precision;
@@ -1666,8 +1674,8 @@ utf8 (const char *fromcode, char *inputbuf)
 		return NULL;
 	}
 
-	outbytesleft = inbytesleft*3+1; // UTF8 string can be 3 times larger
-					// then local string
+	outbytesleft = inbytesleft*3+1; /* UTF8 string can be 3 times larger */
+					/* then local string */
 	outputbuf = (char *) malloc (outbytesleft);
 	if (!outputbuf)
 	{
@@ -1688,10 +1696,13 @@ utf8 (const char *fromcode, char *inputbuf)
 	return outputbuf;
 }
 
-#endif // defined USE_ICONV
+#endif /* defined USE_ICONV */
 
 /**********************************************************************
  * $Log$
+ * Revision 1.105  2006/01/09 16:40:16  strk
+ * ISO C90 comments, signedness mismatch fixes
+ *
  * Revision 1.104  2005/11/01 09:25:47  strk
  * Reworked NULL geometries handling code letting user specify policy (insert,skip,abort). Insert is the default.
  *

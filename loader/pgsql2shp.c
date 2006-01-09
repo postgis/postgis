@@ -131,7 +131,7 @@ void skipint(byte **c);
 double popdouble(byte **c);
 void skipdouble(byte **c);
 void dump_wkb(byte *wkb);
-byte * HexDecode(byte *hex);
+byte * HexDecode(char *hex);
 
 #define WKBZOFFSET 0x80000000
 #define WKBMOFFSET 0x40000000
@@ -301,7 +301,7 @@ main(int ARGC, char **ARGV)
 	}
 	printf(" [%d rows].\n", row);
 
-	DBFClose(dbf);
+	if (dbf) DBFClose(dbf);
 	if (shp) SHPClose(shp);
 	exit_nicely(conn);
 
@@ -323,8 +323,7 @@ shape_creator_wrapper_WKB(byte *str, int idx)
 	int ndims;
 	int wkb_big_endian;
 
-	// skip byte order
-	//skipbyte(&ptr);
+	/* byte order */
 	wkb_big_endian = ! popbyte(&ptr);
 	if ( wkb_big_endian != big_endian )
 	{
@@ -332,7 +331,7 @@ shape_creator_wrapper_WKB(byte *str, int idx)
 		exit(1);
 	}
 
-	// get type
+	/* get type */
 	type = getint(ptr);
 
 	ndims=2;
@@ -403,44 +402,50 @@ shape_creator_wrapper_WKB(byte *str, int idx)
 	}
 }
 
-//reads points into x,y,z co-ord arrays
-int parse_points(char *str, int num_points, double *x,double *y,double *z){
+/* 
+ * Reads WKT points into x,y,z co-ord arrays
+ */
+int
+parse_points(char *str, int num_points, double *x,double *y,double *z){
 	int	keep_going;
 	int	num_found= 0;
 	char	*end_of_double;
 
 	if ( (str == NULL) || (str[0] == 0) ){
-		return 0;  //either null string or empty string
+		return 0;  /* either null string or empty string */
 	}
 	
-	//look ahead for the "("
+	/* look ahead for the "(" */
 	str = strchr(str,'(') ;
 	
-	if ( (str == NULL) || (str[1] == 0) ){  // str[0] = '(';
-		return 0;  //either didnt find "(" or its at the end of the string
+	/* either didnt find "(" or its at the end of the string */
+	if ( (str == NULL) || (str[1] == 0) ) {  /* str[0] = '('; */
+		return 0; 
 	}
-	str++;  //move forward one char
+	str++;  /*move forward one char */
 	keep_going = 1;
 	while (keep_going == 1){
 		
-		//attempt to get the point
-		//scanf is slow, so we use strtod()
-
+		/*
+		 * attempt to get the point
+		 * scanf is slow, so we use strtod()
+		 */
 		x[num_found] = (double)strtod(str,&end_of_double);
 		if (end_of_double == str){
-			return 0; //error occured (nothing parsed)
+			return 0; /*error occured (nothing parsed) */
 		}
 		str = end_of_double;
 		y[num_found] = strtod(str,&end_of_double);
 		if (end_of_double == str){
-			return 0; //error occured (nothing parsed)
+			return 0; /*error occured (nothing parsed) */
 		}
 		str = end_of_double;
-		z[num_found] = strtod(str,&end_of_double); //will be zero if error occured
+		/* strtod() return will be zero if error occured */
+		z[num_found] = strtod(str,&end_of_double);
 		str = end_of_double;
 		num_found++;
 
-		str=strpbrk(str,",)");  // look for a "," or ")"
+		str=strpbrk(str,",)");  /* look for a "," or ")" */
 		if (str != NULL && str[0] == ','){
 			str++;
 		}
@@ -453,86 +458,94 @@ int parse_points(char *str, int num_points, double *x,double *y,double *z){
 
 
 
-//returns how many points are in the first list in str
-//
-//  1. scan ahead looking for "("
-//  2. find "," until hit a ")"
-//  3. return number of points found
-//	
-// NOTE: doesnt actually parse the points, so if the 
-//       str contains an invalid geometry, this could give
-// 	   back the wrong answer.
-//
-// "(1 2 3, 4 5 6),(7 8, 9 10, 11 12 13)" => 2 (2nd list is not included)
-int	num_points(char *str){
-	int		keep_going;
-	int		points_found = 1; //no "," if only one point (and last point)
+/*
+ * Returns how many points are in the first list in str
+ *
+ *  1. scan ahead looking for "("
+ *  2. find "," until hit a ")"
+ *  3. return number of points found
+ *	
+ * NOTE: doesnt actually parse the points, so if the 
+ *       str contains an invalid geometry, this could give
+ * 	   back the wrong answer.
+ *
+ * "(1 2 3, 4 5 6),(7 8, 9 10, 11 12 13)" => 2 (2nd list is not included)
+ */
+int
+num_points(char *str)
+{
+	int keep_going;
+	int points_found = 1; /* no "," if only one point (and last point) */
 						
 
 	if ( (str == NULL) || (str[0] == 0) )
 	{
-		return 0;  //either null string or empty string
+		return 0;  /* either null string or empty string */
 	}
 
-	//look ahead for the "("
+	/* look ahead for the "(" */
 
 	str = strchr(str,'(') ;
 	
-	if ( (str == NULL) || (str[1] == 0) )  // str[0] = '(';
+	/* either didnt find "(" or its at the end of the string */
+	if ( (str == NULL) || (str[1] == 0) )  /* str[0] = '('; */
 	{
-		return 0;  //either didnt find "(" or its at the end of the string
+		return 0; 
 	}
 
 	keep_going = 1;
 	while (keep_going) 
 	{
-		str=strpbrk(str,",)");  // look for a "," or ")"
+		str=strpbrk(str,",)");  /* look for a "," or ")" */
 		keep_going = (str != NULL);
-		if (keep_going)  // found a , or )
+		if (keep_going)  /* found a , or ) */
 		{
 			if (str[0] == ')')
 			{
-				//finished
+				/*finished */
 				return points_found;
 			}
-			else	//str[0] = ","
+			else	/*str[0] = "," */
 			{
 				points_found++;
-				str++; //move 1 char forward	
+				str++; /*move 1 char forward	 */
 			}
 		}
 	}
-	return points_found; // technically it should return an error.
+	return points_found; /* technically it should return an error. */
 }
 
-//number of sublist in a string.
-
-// Find the number of lines in a Multiline
-// OR
-// The number of rings in a Polygon
-// OR
-// The number of polygons in a multipolygon
-
-// ( (..),(..),(..) )  -> 3
-// ( ( (..),(..) ), ( (..) )) -> 2
-// ( ) -> 0
-// scan through the list, for every "(", depth (nesting) increases by 1
-//				  for every ")", depth (nesting) decreases by 1
-// if find a "(" at depth 1, then there is a sub list
-//
-// example: 
-//      "(((..),(..)),((..)))"
-//depth  12333223332112333210
-//        +           +         increase here
-
-int num_lines(char *str){
+/*
+ * Number of sublist in a string.
+ *
+ * Find the number of lines in a Multiline
+ * OR
+ * The number of rings in a Polygon
+ * OR
+ * The number of polygons in a multipolygon
+ *
+ * ( (..),(..),(..) )  -> 3
+ * ( ( (..),(..) ), ( (..) )) -> 2
+ * ( ) -> 0
+ * scan through the list, for every "(", depth (nesting) increases by 1
+ *				  for every ")", depth (nesting) decreases by 1
+ * if find a "(" at depth 1, then there is a sub list
+ *
+ * example: 
+ *      "(((..),(..)),((..)))"
+ *depth  12333223332112333210
+ *        +           +         increase here
+ */
+int
+num_lines(char *str)
+{
 	int	current_depth = 0;
 	int	numb_lists = 0;
 
 
 	while ( (str != NULL) && (str[0] != 0) )
 	{
-		str=strpbrk(str,"()"); //look for "(" or ")"
+		str=strpbrk(str,"()"); /*look for "(" or ")" */
 		if (str != NULL)
 		{
 			if (str[0] == '(')
@@ -550,22 +563,21 @@ int num_lines(char *str){
 			str++;
 		}
 	}
-	return numb_lists ; // probably should give an error
+	return numb_lists ; /* probably should give an error */
 }
 
 
 
-//simple scan-forward to find the next "(" at the same level
-//  ( (), (),(), ),(...
-//                 + return this location
-char *scan_to_same_level(char *str){
-
-	//scan forward in string looking for at "(" at the same level
-	// as the one its already pointing at
-
+/*
+ * simple scan-forward to find the next "(" at the same level
+ *  ( (), (),(), ),(...
+ *                 + return this location
+ */
+char *
+scan_to_same_level(char *str)
+{
 	int	current_depth = 0;
 	int  first_one=1;
-
 
 	while ( (str != NULL) && (str[0] != 0) )
 	{
@@ -580,7 +592,10 @@ char *scan_to_same_level(char *str){
 						return str;
 				}
 				else
-					first_one = 0;  //ignore the first opening "("
+				{
+					/* ignore the first opening "(" */
+					first_one = 0;
+				}
 				current_depth++;
 			}
 			if (str[0] == ')')
@@ -591,7 +606,7 @@ char *scan_to_same_level(char *str){
 			str++;
 		}
 	}
-	return str ; // probably should give an error
+	return str ; /* probably should give an error */
 }
 
 
@@ -599,26 +614,29 @@ char *scan_to_same_level(char *str){
 
 
 
-// Find out how many points are in each sublist, put the result in the array npoints[]
-//  (for at most max_list sublists)
-//
-//  ( (L1),(L2),(L3) )  --> npoints[0] = points in L1,
-//				    npoints[1] = points in L2,
-//				    npoints[2] = points in L3
-//
-// We find these by, again, scanning through str looking for "(" and ")"
-// to determine the current depth.  We dont actually parse the points.
-
-int points_per_sublist( char *str, int *npoints, long max_lists){
-	//scan through, noting depth and ","s
-
+/*
+ * Find out how many points are in each sublist, put the result in
+ * the array npoints[]
+ *  (for at most max_list sublists)
+ *
+ *  ( (L1),(L2),(L3) )  --> npoints[0] = points in L1,
+ *				    npoints[1] = points in L2,
+ *				    npoints[2] = points in L3
+ *
+ * We find these by, again, scanning through str looking for "(" and ")"
+ * to determine the current depth.  We dont actually parse the points.
+ */
+int
+points_per_sublist( char *str, int *npoints, long max_lists)
+{
+	/*scan through, noting depth and ","s */
 	int	current_depth = 0;
 	int	current_list =-1 ;
 
 
 	while ( (str != NULL) && (str[0] != 0) )
 	{
-		str=strpbrk(str,"(),");  //find "(" or ")" or ","
+		str=strpbrk(str,"(),");  /*find "(" or ")" or "," */
 		if (str != NULL)
 		{
 			if (str[0] == '(')
@@ -628,10 +646,10 @@ int points_per_sublist( char *str, int *npoints, long max_lists){
 				{
 					current_list ++;
 					if (current_list >=max_lists)
-						return 1;			// too many sub lists found
+						return 1;			/* too many sub lists found */
 					npoints[current_list] = 1;
 				}
-				// might want to return an error if depth>2
+				/* might want to return an error if depth>2 */
 			}
 			if (str[0] == ')')
 			{
@@ -650,7 +668,7 @@ int points_per_sublist( char *str, int *npoints, long max_lists){
 			str++;
 		}
 	}
-	return 1 ; // probably should give an error
+	return 1 ; /* probably should give an error */
 }
 
 SHPObject *
@@ -662,16 +680,16 @@ create_multiline3D_WKB (byte *wkb)
 	int li;
 	int zmflag;
 
-	// skip byteOrder
+	/* skip byteOrder */
 	skipbyte(&wkb);
 
-	// extract zmflag from type
+	/* extract zmflag from type */
 	zmflag = ZMFLAG(popint(&wkb));
 
 	/*
 	 * Scan all lines in multiline
 	 */
-	nlines=popint(&wkb); // num_wkbLineStrings
+	nlines=popint(&wkb); /* num_wkbLineStrings */
 #if VERBOSE > 2
 	printf("Multiline with %d lines\n", nlines);
 #endif
@@ -681,7 +699,7 @@ create_multiline3D_WKB (byte *wkb)
 	{
 		int npoints, pn;
 
-		// skip byteOrder and wkbType
+		/* skip byteOrder and wkbType */
 		skipbyte(&wkb); skipint(&wkb);
 
 		npoints = popint(&wkb);
@@ -730,16 +748,16 @@ create_multiline4D_WKB (byte *wkb)
 	int li;
 	int zmflag;
 
-	// skip byteOrder 
+	/* skip byteOrder  */
 	skipbyte(&wkb); 
 
-	// extract zmflag from type
+	/* extract zmflag from type */
 	zmflag = ZMFLAG(popint(&wkb));
 
 	/*
 	 * Scan all lines in multiline
 	 */
-	nlines=popint(&wkb); // num_wkbLineStrings
+	nlines=popint(&wkb); /* num_wkbLineStrings */
 #if VERBOSE > 2
 	printf("Multiline with %d lines\n", nlines);
 #endif
@@ -749,7 +767,7 @@ create_multiline4D_WKB (byte *wkb)
 	{
 		int npoints, pn;
 
-		// skip byteOrder and wkbType
+		/* skip byteOrder and wkbType */
 		skipbyte(&wkb); skipint(&wkb);
 
 		npoints = popint(&wkb);
@@ -794,16 +812,16 @@ create_multiline2D_WKB (byte *wkb)
 	SHPObject *obj;
 	int zmflag;
 	
-	// skip byteOrder 
+	/* skip byteOrder  */
 	skipbyte(&wkb); 
 
-	// extract zmflag from type
+	/* extract zmflag from type */
 	zmflag = ZMFLAG(popint(&wkb));
 
 	/*
 	 * Scan all lines in multiline
 	 */
-	nlines=popint(&wkb); // num_wkbLineStrings
+	nlines=popint(&wkb); /* num_wkbLineStrings */
 #if VERBOSE > 2
 	printf("Multiline with %d lines\n", nlines);
 #endif
@@ -813,7 +831,7 @@ create_multiline2D_WKB (byte *wkb)
 	{
 		int npoints, pn;
 
-		// skip byteOrder and wkbType
+		/* skip byteOrder and wkbType */
 		skipbyte(&wkb); skipint(&wkb);
 
 		npoints = popint(&wkb);
@@ -854,10 +872,10 @@ create_line4D_WKB (byte *wkb)
 	SHPObject *obj;
 	int zmflag;
 	
-	// skip byteOrder 
+	/* skip byteOrder  */
 	skipbyte(&wkb); 
 
-	// extract zmflag from type
+	/* extract zmflag from type */
 	zmflag = ZMFLAG(popint(&wkb));
 
 	npoints = popint(&wkb);
@@ -895,10 +913,10 @@ create_line3D_WKB (byte *wkb)
 	SHPObject *obj;
 	int zmflag;
 	
-	// skip byteOrder 
+	/* skip byteOrder  */
 	skipbyte(&wkb); 
 
-	// extract zmflag from type
+	/* extract zmflag from type */
 	zmflag = ZMFLAG(popint(&wkb));
 
 	npoints = popint(&wkb);
@@ -940,10 +958,10 @@ create_line2D_WKB (byte *wkb)
 	SHPObject *obj;
 	int zmflag;
 	
-	// skip byteOrder 
+	/* skip byteOrder  */
 	skipbyte(&wkb); 
 
-	// extract zmflag from type
+	/* extract zmflag from type */
 	zmflag = ZMFLAG(popint(&wkb));
 
 	npoints = popint(&wkb);
@@ -975,10 +993,10 @@ create_point4D_WKB(byte *wkb)
 	double x, y, z, m;
 	int zmflag;
 
-	// skip byteOrder 
+	/* skip byteOrder  */
 	skipbyte(&wkb); 
 
-	// extract zmflag from type
+	/* extract zmflag from type */
 	zmflag = ZMFLAG(popint(&wkb));
 
 	x = popdouble(&wkb);
@@ -999,10 +1017,10 @@ create_point3D_WKB(byte *wkb)
 	double x, y, zm;
 	int zmflag;
 
-	// skip byteOrder 
+	/* skip byteOrder  */
 	skipbyte(&wkb); 
 
-	// extract zmflag from type
+	/* extract zmflag from type */
 	zmflag = ZMFLAG(popint(&wkb));
 
 	x = popdouble(&wkb);
@@ -1027,10 +1045,10 @@ create_point2D_WKB(byte *wkb)
 	double x, y;
 	int zmflag;
 
-	// skip byteOrder 
+	/* skip byteOrder  */
 	skipbyte(&wkb); 
 
-	// extract zmflag from type
+	/* extract zmflag from type */
 	zmflag = ZMFLAG(popint(&wkb));
 
 	x = popdouble(&wkb);
@@ -1050,10 +1068,10 @@ create_multipoint4D_WKB(byte *wkb)
 	int pn;
 	int zmflag;
 
-	// skip byteOrder 
+	/* skip byteOrder  */
 	skipbyte(&wkb); 
 
-	// extract zmflag from type
+	/* extract zmflag from type */
 	zmflag = ZMFLAG(popint(&wkb));
 
 	npoints = popint(&wkb);
@@ -1065,8 +1083,8 @@ create_multipoint4D_WKB(byte *wkb)
 
 	for (pn=0; pn<npoints; pn++)
 	{
-		skipbyte(&wkb); // byteOrder
-		skipint(&wkb);  // wkbType
+		skipbyte(&wkb); /* byteOrder */
+		skipint(&wkb);  /* wkbType */
 		x[pn]=popdouble(&wkb);
 		y[pn]=popdouble(&wkb);
 		z[pn]=popdouble(&wkb);
@@ -1090,10 +1108,10 @@ create_multipoint3D_WKB(byte *wkb)
 	uint32 pn;
 	int zmflag;
 
-	// skip byteOrder 
+	/* skip byteOrder  */
 	skipbyte(&wkb); 
 
-	// extract zmflag from type
+	/* extract zmflag from type */
 	zmflag = ZMFLAG(popint(&wkb));
 
 	npoints = popint(&wkb);
@@ -1104,8 +1122,8 @@ create_multipoint3D_WKB(byte *wkb)
 
 	for (pn=0; pn<npoints; pn++)
 	{
-		skipbyte(&wkb); // byteOrder
-		skipint(&wkb);  // wkbType
+		skipbyte(&wkb); /* byteOrder */
+		skipint(&wkb);  /* wkbType */
 		x[pn]=popdouble(&wkb);
 		y[pn]=popdouble(&wkb);
 		zm[pn]=popdouble(&wkb);
@@ -1133,10 +1151,10 @@ create_multipoint2D_WKB(byte *wkb)
 	uint32 pn;
 	int zmflag;
 
-	// skip byteOrder 
+	/* skip byteOrder  */
 	skipbyte(&wkb); 
 
-	// extract zmflag from type
+	/* extract zmflag from type */
 	zmflag = ZMFLAG(popint(&wkb));
 
 	npoints = popint(&wkb);
@@ -1146,8 +1164,8 @@ create_multipoint2D_WKB(byte *wkb)
 
 	for (pn=0; pn<npoints; pn++)
 	{
-		skipbyte(&wkb); // byteOrder
-		skipint(&wkb);  // wkbType
+		skipbyte(&wkb); /* byteOrder */
+		skipint(&wkb);  /* wkbType */
 		x[pn]=popdouble(&wkb);
 		y[pn]=popdouble(&wkb);
 
@@ -1167,10 +1185,10 @@ create_polygon2D_WKB(byte *wkb)
 	double *x=NULL, *y=NULL, *z=NULL;
 	int zmflag;
 	
-	// skip byteOrder 
+	/* skip byteOrder  */
 	skipbyte(&wkb); 
 
-	// extract zmflag from type
+	/* extract zmflag from type */
 	zmflag = ZMFLAG(popint(&wkb));
 
 	/*
@@ -1243,10 +1261,10 @@ create_polygon4D_WKB(byte *wkb)
 	double *x=NULL, *y=NULL, *z=NULL, *m=NULL;
 	int zmflag;
 	
-	// skip byteOrder 
+	/* skip byteOrder  */
 	skipbyte(&wkb); 
 
-	// extract zmflag from type
+	/* extract zmflag from type */
 	zmflag = ZMFLAG(popint(&wkb));
 
 	/*
@@ -1321,10 +1339,10 @@ create_polygon3D_WKB(byte *wkb)
 	double *x=NULL, *y=NULL, *zm=NULL, *z=NULL;
 	int zmflag;
 	
-	// skip byteOrder 
+	/* skip byteOrder  */
 	skipbyte(&wkb); 
 
-	// extract zmflag from type
+	/* extract zmflag from type */
 	zmflag = ZMFLAG(popint(&wkb));
 
 	/*
@@ -1356,7 +1374,7 @@ create_polygon3D_WKB(byte *wkb)
 		 * other rings should be counter-clockwise
 		 */
 
-		// Set z to NULL if TYPEM
+		/* Set z to NULL if TYPEM */
 		if ( zmflag == 1 ) z = NULL;
 		else z = zm+totpoints;
 
@@ -1412,16 +1430,16 @@ create_multipolygon2D_WKB(byte *wkb)
 	double *x=NULL, *y=NULL;
 	int zmflag;
 
-	// skip byteOrder 
+	/* skip byteOrder  */
 	skipbyte(&wkb); 
 
-	// extract zmflag from type
+	/* extract zmflag from type */
 	zmflag = ZMFLAG(popint(&wkb));
 
 	/*
 	 * Scan all polygons in multipolygon
 	 */
-	npolys = popint(&wkb);  // num_wkbPolygons
+	npolys = popint(&wkb);  /* num_wkbPolygons */
 #if VERBOSE > 2
 	printf("Multipolygon with %lu polygons\n", npolys);
 #endif
@@ -1431,9 +1449,9 @@ create_multipolygon2D_WKB(byte *wkb)
 	 */
 	for (pi=0; pi<npolys; pi++)
 	{
-		uint32 ri; // ring index
+		uint32 ri; /* ring index */
 
-		// skip byteOrder and wkbType
+		/* skip byteOrder and wkbType */
 		skipbyte(&wkb); skipint(&wkb);
 
 		/*
@@ -1449,10 +1467,10 @@ create_multipolygon2D_WKB(byte *wkb)
 		printf("Polygon %lu has %lu rings\n", pi, nrings);
 #endif
 
-		// wkb now points at first ring
+		/* wkb now points at first ring */
 		for (ri=0; ri<nrings; ri++)
 		{
-			uint32 pn; // point number
+			uint32 pn; /* point number */
 			uint32 npoints;
 
 			npoints = popint(&wkb);
@@ -1539,16 +1557,16 @@ create_multipolygon3D_WKB(byte *wkb)
 	double *x=NULL, *y=NULL, *z=NULL, *zm=NULL;
 	int zmflag;
 
-	// skip byteOrder 
+	/* skip byteOrder  */
 	skipbyte(&wkb); 
 
-	// extract zmflag from type
+	/* extract zmflag from type */
 	zmflag = ZMFLAG(popint(&wkb));
 	
 	/*
 	 * Scan all polygons in multipolygon
 	 */
-	npolys = popint(&wkb);  // num_wkbPolygons
+	npolys = popint(&wkb);  /* num_wkbPolygons */
 #if VERBOSE > 2
 	printf("Multipolygon with %lu polygons\n", npolys);
 #endif
@@ -1558,9 +1576,9 @@ create_multipolygon3D_WKB(byte *wkb)
 	 */
 	for (pi=0; pi<npolys; pi++)
 	{
-		int ri; // ring index
+		int ri; /* ring index */
 
-		// skip byteOrder and wkbType
+		/* skip byteOrder and wkbType */
 		skipbyte(&wkb); skipint(&wkb);
 
 		/*
@@ -1576,10 +1594,10 @@ create_multipolygon3D_WKB(byte *wkb)
 		printf("Polygon %d has %d rings\n", pi, nrings);
 #endif
 
-		// wkb now points at first ring
+		/* wkb now points at first ring */
 		for (ri=0; ri<nrings; ri++)
 		{
-			int pn; // point number
+			int pn; /* point number */
 			int npoints;
 
 			npoints = popint(&wkb);
@@ -1608,7 +1626,7 @@ create_multipolygon3D_WKB(byte *wkb)
 			 * other rings should be counter-clockwise
 			 */
 
-			// Set z to NULL if TYPEM
+			/* Set z to NULL if TYPEM */
 			if ( zmflag == 1 ) z = NULL;
 			else z = zm+totpoints;
 
@@ -1679,16 +1697,16 @@ create_multipolygon4D_WKB(byte *wkb)
 	double *x=NULL, *y=NULL, *z=NULL, *m=NULL;
 	int zmflag;
 
-	// skip byteOrder 
+	/* skip byteOrder  */
 	skipbyte(&wkb); 
 
-	// extract zmflag from type
+	/* extract zmflag from type */
 	zmflag = ZMFLAG(popint(&wkb));
 	
 	/*
 	 * Scan all polygons in multipolygon
 	 */
-	npolys = popint(&wkb);  // num_wkbPolygons
+	npolys = popint(&wkb);  /* num_wkbPolygons */
 #if VERBOSE > 2
 	printf("Multipolygon with %lu polygons\n", npolys);
 #endif
@@ -1698,9 +1716,9 @@ create_multipolygon4D_WKB(byte *wkb)
 	 */
 	for (pi=0; pi<npolys; pi++)
 	{
-		int ri; // ring index
+		int ri; /* ring index */
 
-		// skip byteOrder and wkbType
+		/* skip byteOrder and wkbType */
 		skipbyte(&wkb); skipint(&wkb);
 
 		/*
@@ -1716,10 +1734,10 @@ create_multipolygon4D_WKB(byte *wkb)
 		printf("Polygon %d has %d rings\n", pi, nrings);
 #endif
 
-		// wkb now points at first ring
+		/* wkb now points at first ring */
 		for (ri=0; ri<nrings; ri++)
 		{
-			int pn; // point number
+			int pn; /* point number */
 			int npoints;
 
 			npoints = popint(&wkb);
@@ -1798,7 +1816,7 @@ create_multipolygon4D_WKB(byte *wkb)
 	return obj;
 }
 
-//Reverse the clockwise-ness of the point list...
+/*Reverse the clockwise-ness of the point list... */
 int
 reverse_points(int num_points, double *x, double *y, double *z, double *m)
 {
@@ -1837,12 +1855,14 @@ reverse_points(int num_points, double *x, double *y, double *z, double *m)
 	return 1;
 }
 
-//return 1 if the points are in clockwise order
-int is_clockwise(int num_points, double *x, double *y, double *z)
+/* Return 1 if the points are in clockwise order */
+int
+is_clockwise(int num_points, double *x, double *y, double *z)
 {
 	int i;
 	double x_change,y_change,area;
-	double *x_new, *y_new; //the points, translated to the origin for safer accuracy
+	double *x_new, *y_new; /* the points, translated to the origin
+	                        * for safer accuracy */
 
 	x_new = (double *)malloc(sizeof(double) * num_points);	
 	y_new = (double *)malloc(sizeof(double) * num_points);	
@@ -1850,20 +1870,23 @@ int is_clockwise(int num_points, double *x, double *y, double *z)
 	x_change = x[0];
 	y_change = y[0];
 
-	for(i=0; i < num_points ; i++){
+	for(i=0; i < num_points ; i++)
+	{
 		x_new[i] = x[i] - x_change;
 		y_new[i] = y[i] - y_change;
 	}
 
-	for(i=0; i < num_points - 1; i++){
-		area += (x[i] * y[i+1]) - (y[i] * x[i+1]); //calculate the area	
+	for(i=0; i < num_points - 1; i++)
+	{
+		/* calculate the area	 */
+		area += (x[i] * y[i+1]) - (y[i] * x[i+1]);
 	}
 	if(area > 0 ){
 		free(x_new); free(y_new);
-		return 0; //counter-clockwise
+		return 0; /*counter-clockwise */
 	}else{
 		free(x_new); free(y_new);
-		return 1; //clockwise
+		return 1; /*clockwise */
 	}
 }
 
@@ -1912,12 +1935,12 @@ addRecord(PGresult *res, int residx, int row)
 	int j;
 	int nFields = PQnfields(res);
 	int flds = 0; /* number of dbf field */
-	char *val;
-	char *v;
-	size_t junk;
 
 	for (j=0; j<nFields; j++)
 	{
+		char *val;
+		byte *v;
+		size_t junk;
 		SHPObject *obj;
 
 		/* Default (not geometry) attribute */
@@ -1954,7 +1977,7 @@ fprintf(stdout, "s"); fflush(stdout);
 		
 		/* If we arrived here it is a geometry attribute */
 
-		// Handle NULL shapes
+		/* Handle NULL shapes */
 		if ( PQgetisnull(res, residx, j) ) {
 			obj=SHPCreateSimpleObject(SHPT_NULL,0,NULL,NULL,NULL);
 			if ( SHPWriteObject(shp,-1,obj) == -1)
@@ -1970,33 +1993,33 @@ fprintf(stdout, "s"); fflush(stdout);
 
 		if ( ! binary )
 		{
-			v = PQgetvalue(res, residx, j);
+			val = PQgetvalue(res, residx, j);
 #ifndef HEXWKB
-			val = PQunescapeBytea(v, &junk);
+			v = PQunescapeBytea((byte *)val, &junk);
 #else
 			if ( pgis_major_version > 0 )
 			{
-				val = PQunescapeBytea(v, &junk);
+				v = PQunescapeBytea((byte *)val, &junk);
 			}
 			else
 			{
-				val = HexDecode(v);
+				v = HexDecode(val);
 			}
-#endif // HEXWKB
+#endif /* HEXWKB */
 #if VERBOSE > 2
-		dump_wkb(val);
-#endif // VERBOSE > 2
+		dump_wkb(v);
+#endif /* VERBOSE > 2 */
 		}
-		else // binary
+		else /* binary */
 		{
-			val = (char *)PQgetvalue(res, residx, j);
+			v = (byte *)PQgetvalue(res, residx, j);
 		}
 
 #if VERBOSE > 1
 		fprintf(stdout, "g"); fflush(stdout);
 #endif
 
-		obj = shape_creator_wrapper_WKB(val, row);
+		obj = shape_creator_wrapper_WKB(v, row);
 		if ( ! obj )
 		{
 			printf( "Error creating shape for record %d "
@@ -2011,7 +2034,7 @@ fprintf(stdout, "s"); fflush(stdout);
 		}
 		SHPDestroyObject(obj);
 
-		if ( ! binary ) free(val);
+		if ( ! binary ) free(v);
 	}
 
 #if VERBOSE > 2
@@ -2075,7 +2098,7 @@ getGeometryType(char *schema, char *table, char *geo_col_name)
 {
 	char query[1024];
 	PGresult *res;
-	char *geo_str; // the geometry type string
+	char *geo_str; /* the geometry type string */
 	int multitype=0;
 	int basetype=0;
 	int foundmulti=0;
@@ -2287,7 +2310,7 @@ parse_commandline(int ARGC, char **ARGV)
 	int c, curindex;
 	char buf[1024];
 
-	buf[1023] = '\0'; // just in case...
+	buf[1023] = '\0'; /* just in case... */
 
 	/* Parse command line */
         while ((c = getopt(ARGC, ARGV, "bf:h:du:p:P:g:rk")) != EOF){
@@ -2299,7 +2322,7 @@ parse_commandline(int ARGC, char **ARGV)
 				shp_file = optarg;
 				break;
 			case 'h':
-				//setenv("PGHOST", optarg, 1);
+				/*setenv("PGHOST", optarg, 1); */
 				snprintf(buf, 255, "PGHOST=%s", optarg);
 				putenv(strdup(buf));
 				break;
@@ -2312,17 +2335,17 @@ parse_commandline(int ARGC, char **ARGV)
 				unescapedattrs = 1;
 				break;		  
 			case 'u':
-				//setenv("PGUSER", optarg, 1);
+				/*setenv("PGUSER", optarg, 1); */
 				snprintf(buf, 255, "PGUSER=%s", optarg);
 				putenv(strdup(buf));
 				break;
 			case 'p':
-				//setenv("PGPORT", optarg, 1);
+				/*setenv("PGPORT", optarg, 1); */
 				snprintf(buf, 255, "PGPORT=%s", optarg);
 				putenv(strdup(buf));
 				break;
 			case 'P':
-				//setenv("PGPASSWORD", optarg, 1);
+				/*setenv("PGPASSWORD", optarg, 1); */
 				snprintf(buf, 255, "PGPASSWORD=%s", optarg);
 				putenv(strdup(buf));
 				break;
@@ -2341,7 +2364,7 @@ parse_commandline(int ARGC, char **ARGV)
         curindex=0;
         for (; optind<ARGC; optind++){
                 if (curindex == 0) {
-			//setenv("PGDATABASE", ARGV[optind], 1);
+			/*setenv("PGDATABASE", ARGV[optind], 1); */
 		    	snprintf(buf, 255, "PGDATABASE=%s", ARGV[optind]);
 		    	putenv(strdup(buf));
                 }else if(curindex == 1){
@@ -2388,7 +2411,7 @@ initialize(void)
 	int i;
 	char buf[256];
 	int tmpint;
-	int geo_oid; // geometry oid
+	int geo_oid; /* geometry oid */
 	int geom_fld = -1;
 	char *mainscan_flds[256];
 	int mainscan_nflds=0;
@@ -2410,7 +2433,7 @@ initialize(void)
 	size += 256;
 
 	query = (char *)malloc(size);
-	if ( ! query ) return 0; // out of virtual memory
+	if ( ! query ) return 0; /* out of virtual memory */
 
 	if ( schema )
 	{
@@ -2474,16 +2497,16 @@ initialize(void)
 	{
 		int j;
 		int type, size, mod;
-		char *fname; // pgsql attribute name
+		char *fname; /* pgsql attribute name */
 		char *ptr;
-		char field_name[32]; // dbf version of field name
+		char field_name[32]; /* dbf version of field name */
 
 		fname = PQgetvalue(res, i, 0);
 		type = atoi(PQgetvalue(res, i, 1));
 		size = atoi(PQgetvalue(res, i, 2));
 		mod = atoi(PQgetvalue(res, i, 3));
 
-//printf( "A: %s, T: %d, S: %d\n", fname, type, size);
+/*printf( "A: %s, T: %d, S: %d\n", fname, type, size); */
 		/*
 		 * This is a geometry column
 		 */
@@ -2571,7 +2594,7 @@ initialize(void)
 				fname, field_name);
 		}
 
-		//fprintf(stderr, "DBFfield: %s\n", field_name);
+		/*fprintf(stderr, "DBFfield: %s\n", field_name); */
 		dbf_flds[dbf_nfields++] = strdup(field_name);
 
 		/*
@@ -2692,7 +2715,7 @@ initialize(void)
 			 */
 			if ( (type == 1042 || type == 1043) && mod != -1 )
 			{
-				size = mod-4; // 4 is header size
+				size = mod-4; /* 4 is header size */
 			}
 			else
 			{
@@ -2700,10 +2723,10 @@ initialize(void)
 					table, fname);
 				if ( size == -1 ) return 0;
 				if ( ! size ) size = 32;
-				// might 0 be a good size ?
+				/* might 0 be a good size ? */
 			}
 		}
-//printf( "FIELD_NAME: %s, SIZE: %d\n", field_name, size);
+/*printf( "FIELD_NAME: %s, SIZE: %d\n", field_name, size); */
 		
 		/* generic type (use string representation) */
 		if(DBFAddField(dbf, field_name, FTString, size, 0) == -1)
@@ -2832,7 +2855,7 @@ initialize(void)
 #endif
 
 			}
-			else // little_endian
+			else /* little_endian */
 			{
 
 #ifdef HEXWKB
@@ -2845,7 +2868,7 @@ initialize(void)
 					sprintf(buf, "asbinary(\"%s\", 'NDR')",
 						mainscan_flds[i]);
 				}
-#else // ndef HEXWKB
+#else /* ndef HEXWKB */
 				if ( pgis_major_version > 0 )
 				{
 					sprintf(buf, "asEWKB(setSRID(\"%s\", -1), 'NDR')", mainscan_flds[i]);
@@ -2855,7 +2878,7 @@ initialize(void)
 					sprintf(buf, "asbinary(\"%s\", 'NDR')::bytea",
 						mainscan_flds[i]);
 				}
-#endif // def HEXWKB
+#endif /* def HEXWKB */
 
 			}
 		}
@@ -2881,7 +2904,7 @@ initialize(void)
 
 	strcat(main_scan_query, buf);
 
-	// Order by 'gid' (if found)
+	/* Order by 'gid' (if found) */
 	if ( gidfound )
 	{
 		sprintf(buf, " ORDER BY \"gid\"");
@@ -2904,8 +2927,8 @@ getMaxFieldSize(PGconn *conn, char *schema, char *table, char *fname)
 	char *query;
 	PGresult *res;
 
-	//( this is ugly: don't forget counting the length 
-	// when changing the fixed query strings )
+	/*( this is ugly: don't forget counting the length  */
+	/* when changing the fixed query strings ) */
 
 	if ( schema )
 	{
@@ -2948,9 +2971,10 @@ getMaxFieldSize(PGconn *conn, char *schema, char *table, char *fname)
  * Output is a binary string.
  */
 byte *
-HexDecode(byte *hex)
+HexDecode(char *hex)
 {
-	byte *ret, *retptr, *hexptr;
+	byte *ret, *retptr;
+	char *hexptr;
 	byte byt;
 	int len;
 	
@@ -2961,10 +2985,10 @@ HexDecode(byte *hex)
 		exit(1);
 	}
 
-	//printf("Decoding %d bytes", len); fflush(stdout);
+	/*printf("Decoding %d bytes", len); fflush(stdout); */
 	hexptr = hex; retptr = ret;
 
-	// for postgis > 0.9.x skip SRID=#; if found
+	/* for postgis > 0.9.x skip SRID=#; if found */
 	if ( pgis_major_version > 0 )
 	{
 		if ( hexptr[0] == 'S' )
@@ -2983,7 +3007,7 @@ HexDecode(byte *hex)
 		 * bytea unescaping works fine...
 		 */
 
-		//printf("%c", *hexptr);
+		/*printf("%c", *hexptr); */
 		if ( *hexptr < 58 && *hexptr > 47 )
 			byt = (((*hexptr)-48)<<4);
 		else if ( *hexptr > 64 && *hexptr < 71 )
@@ -2994,7 +3018,7 @@ HexDecode(byte *hex)
 		}
 		hexptr++;
 
-		//printf("%c", *hexptr);
+		/*printf("%c", *hexptr); */
 		if ( *hexptr < 58 && *hexptr > 47 )
 			byt |= ((*hexptr)-48);
 		else if ( *hexptr > 64 && *hexptr < 71 )
@@ -3005,12 +3029,12 @@ HexDecode(byte *hex)
 		}
 		hexptr++;
 
-		//printf("(%d)", byt);
+		/*printf("(%d)", byt); */
 
 		*retptr = (byte)byt;
 		retptr++;
 	}
-	//printf(" Done.\n");
+	/*printf(" Done.\n"); */
 
 	return ret;
 }
@@ -3022,11 +3046,11 @@ is_bigendian(void)
 
 	if ( (((char *)(&test))[0]) == 1)
 	{
-		return 0; //NDR (little_endian)
+		return 0; /*NDR (little_endian) */
 	}
 	else
 	{
-		return 1; //XDR (big_endian)
+		return 1; /*XDR (big_endian) */
 	}
 }
 
@@ -3055,8 +3079,8 @@ dump_wkb(byte *wkb)
 	type = popint(&wkb); 
 	if ( type&WKBZOFFSET ) printf ("Has Z!\n");
 	if ( type&WKBMOFFSET ) printf ("Has M!\n");
-	type &= ~WKBZOFFSET; // strip Z flag
-	type &= ~WKBMOFFSET; // strip M flag
+	type &= ~WKBZOFFSET; /* strip Z flag */
+	type &= ~WKBMOFFSET; /* strip M flag */
 	printf ("Type: %x\n", type);
 
 	printf("-----\n");
@@ -3151,7 +3175,7 @@ parse_table(char *spec)
 {
 	char *ptr;
 
-	// Spec is a query
+	/* Spec is a query */
 	if ( strstr(spec, "SELECT ") || strstr(spec, "select ") )
 	{
 		usrquery = spec;
@@ -3194,7 +3218,11 @@ create_usrquerytable(void)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.81  2006/01/09 16:40:16  strk
+ * ISO C90 comments, signedness mismatch fixes
+ *
  * Revision 1.80  2005/10/24 11:30:59  strk
+ *
  * Fixed a bug in string attributes handling truncating values of maximum
  * allowed length, curtesy of Lars Roessiger.
  * Reworked integer attributes handling to be stricter in dbf->sql mapping

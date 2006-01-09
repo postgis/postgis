@@ -107,4 +107,4 @@ PQunescapeBytea(const unsigned char *strtext, size_t *retbuflen)
         *retbuflen = buflen;
         return tmpbuf;
 }
-#endif // USE_VERSION < 73
+#endif /* USE_VERSION < 73 */

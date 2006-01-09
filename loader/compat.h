@@ -9,4 +9,4 @@
 unsigned char *PQunescapeBytea(const unsigned char *strtext, size_t *retbuflen);
 #endif
 
-#endif // ifndef _COMPAT_H
+#endif /* ifndef _COMPAT_H */
