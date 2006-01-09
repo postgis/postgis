@@ -27,74 +27,6 @@ ptarray_construct(char hasz, char hasm, unsigned int npoints)
 
 }
 
-//POINTARRAY *
-//ptarray_construct2d(uint32 npoints, const POINT2D *pts)
-//{
-//	POINTARRAY *pa = ptarray_construct(0, 0, npoints);
-//	uint32 i;
-//
-//	for (i=0; i<npoints; i++)
-//	{
-//		POINT2D *pap = (POINT2D *)getPoint(pa, i);
-//		pap->x = pts[i].x;
-//		pap->y = pts[i].y;
-//	}
-//	
-//	return pa;
-//}
-//
-//POINTARRAY *
-//ptarray_construct3dz(uint32 npoints, const POINT3DZ *pts)
-//{
-//	POINTARRAY *pa = ptarray_construct(1, 0, npoints);
-//	uint32 i;
-//
-//	for (i=0; i<npoints; i++)
-//	{
-//		POINT3DZ *pap = (POINT3DZ *)getPoint(pa, i);
-//		pap->x = pts[i].x;
-//		pap->y = pts[i].y;
-//		pap->z = pts[i].z;
-//	}
-//	
-//	return pa;
-//}
-//
-//POINTARRAY *
-//ptarray_construct3dm(uint32 npoints, const POINT3DM *pts)
-//{
-//	POINTARRAY *pa = ptarray_construct(0, 1, npoints);
-//	uint32 i;
-//
-//	for (i=0; i<npoints; i++)
-//	{
-//		POINT3DM *pap = (POINT3DM *)getPoint(pa, i);
-//		pap->x = pts[i].x;
-//		pap->y = pts[i].y;
-//		pap->m = pts[i].m;
-//	}
-//	
-//	return pa;
-//}
-//
-//POINTARRAY *
-//ptarray_construct4d(uint32 npoints, const POINT4D *pts)
-//{
-//	POINTARRAY *pa = ptarray_construct(0, 1, npoints);
-//	uint32 i;
-//
-//	for (i=0; i<npoints; i++)
-//	{
-//		POINT4D *pap = (POINT4D *)getPoint(pa, i);
-//		pap->x = pts[i].x;
-//		pap->y = pts[i].y;
-//		pap->z = pts[i].z;
-//		pap->m = pts[i].m;
-//	}
-//	
-//	return pa;
-//}
-
 void
 ptarray_reverse(POINTARRAY *pa)
 {
@@ -151,8 +83,10 @@ ptarray_compute_box2d_p(const POINTARRAY *pa, BOX2DFLOAT4 *result)
 	return 1;
 }
 
-// calculate the 2d bounding box of a set of points
-// return allocated BOX2DFLOAT4 or NULL (for empty array)
+/*
+ * Calculate the 2d bounding box of a set of points.
+ * Return allocated BOX2DFLOAT4 or NULL (for empty array).
+ */
 BOX2DFLOAT4 *
 ptarray_compute_box2d(const POINTARRAY *pa)
 {
@@ -164,7 +98,6 @@ ptarray_compute_box2d(const POINTARRAY *pa)
 
 	result = lwalloc(sizeof(BOX2DFLOAT4));
 
-	//pt = (POINT2D *)getPoint(pa, 0);
 	getPoint2d_p(pa, 0, &pt);
 
 	result->xmin = pt.x;
@@ -174,7 +107,6 @@ ptarray_compute_box2d(const POINTARRAY *pa)
 
 	for (t=1;t<pa->npoints;t++)
 	{
-		//pt = (POINT2D *)getPoint(pa, t);
 		getPoint2d_p(pa, t, &pt);
 		if (pt.x < result->xmin) result->xmin = pt.x;
 		if (pt.y < result->ymin) result->ymin = pt.y;
@@ -185,10 +117,12 @@ ptarray_compute_box2d(const POINTARRAY *pa)
 	return result;
 }
 
-// Returns a modified POINTARRAY so that no segment is 
-// longer then the given distance (computed using 2d).
-// Every input point is kept.
-// Z and M values for added points (if needed) are set to 0.
+/*
+ * Returns a modified POINTARRAY so that no segment is 
+ * longer then the given distance (computed using 2d).
+ * Every input point is kept.
+ * Z and M values for added points (if needed) are set to 0.
+ */
 POINTARRAY *
 ptarray_segmentize2d(POINTARRAY *ipa, double dist)
 {
@@ -199,17 +133,17 @@ ptarray_segmentize2d(POINTARRAY *ipa, double dist)
 	POINTARRAY *opa;
 	int maxpoints = ipa->npoints;
 	int ptsize = pointArray_ptsize(ipa);
-	int ipoff=0; // input point offset
+	int ipoff=0; /* input point offset */
 
 	pbuf.x = pbuf.y = pbuf.z = pbuf.m = 0;
 
-	// Initial storage
+	/* Initial storage */
 	opa = (POINTARRAY *)lwalloc(ptsize * maxpoints);
 	opa->dims = ipa->dims;
 	opa->npoints = 0;
 	opa->serialized_pointlist = (uchar *)lwalloc(maxpoints*ptsize);
 
-	// Add first point
+	/* Add first point */
 	opa->npoints++;
 	getPoint4d_p(ipa, ipoff, &p1);
 	op = getPoint_internal(opa, opa->npoints-1);
@@ -234,22 +168,22 @@ ptarray_segmentize2d(POINTARRAY *ipa, double dist)
 
 		segdist = distance2d_pt_pt((POINT2D *)p1ptr, (POINT2D *)p2ptr);
 
-		if (segdist > dist) // add an intermediate point
+		if (segdist > dist) /* add an intermediate point */
 		{
 			pbuf.x = p1.x + (p2.x-p1.x)/segdist * dist;
 			pbuf.y = p1.y + (p2.y-p1.y)/segdist * dist;
-			// might also compute z and m if available...
+			/* might also compute z and m if available... */
 			ip = &pbuf;
 			memcpy(&p1, ip, ptsize);
 		}
-		else // copy second point
+		else /* copy second point */
 		{
 			ip = &p2;
 			p1 = p2;
 			ipoff++;
 		}
 
-		// Add point
+		/* Add point */
 		if ( ++(opa->npoints) > maxpoints ) {
 			maxpoints *= 1.5;
 			opa->serialized_pointlist = (uchar *)lwrealloc(
@@ -420,13 +354,8 @@ ptarray_clone(const POINTARRAY *in)
 int
 ptarray_isclosed2d(const POINTARRAY *in)
 {
-	//POINT2D *p1, *p2;
 	if ( memcmp(getPoint_internal(in, 0), getPoint_internal(in, in->npoints-1), sizeof(POINT2D)) ) return 0;
 	return 1;
-	//p1 = (POINT2D *)getPoint(in, 0);
-	//p2 = (POINT2D *)getPoint(in, in->npoints-1);
-	//if ( p1->x != p2->x || p1->y != p2->y ) return 0;
-	//else return 1;
 }
 
 /*
@@ -520,7 +449,7 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 	int nsegs, i;
 	int ptsize;
 	double length, slength, tlength;
-	int state = 0; // 0=before, 1=inside, 2=after
+	int state = 0; /* 0=before, 1=inside, 2=after */
 
 	/* Allocate memory for a full copy of input points */
 	ptsize=TYPE_NDIMS(ipa->dims)*sizeof(double);
@@ -531,12 +460,16 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 	nsegs = ipa->npoints - 1;
 	length = lwgeom_pointarray_length2d(ipa);
 
-	//lwnotice("Total length: %g", length);
+#ifdef PGIS_DEBUG
+	lwnotice("Total length: %g", length);
+#endif
 
 	from = length*from;
 	to = length*to;
 
-	//lwnotice("From/To: %g/%g", from, to);
+#ifdef PGIS_DEBUG
+	lwnotice("From/To: %g/%g", from, to);
+#endif
 
 	tlength = 0;
 	getPoint2d_p(ipa, 0, &p1);
@@ -589,7 +522,9 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 		memcpy(&p1, &p2, sizeof(POINT2D));
 	}
 
-	//lwnotice("Out of loop, constructing ptarray with %d points", nopts);
+#ifdef PGIS_DEBUG
+	lwnotice("Out of loop, constructing ptarray with %d points", nopts);
+#endif
 
 	opa = pointArray_construct(opts,
 		TYPE_HASZ(ipa->dims),
@@ -614,18 +549,20 @@ closest_point_on_segment(POINT2D *p, POINT2D *A, POINT2D *B, POINT2D *ret)
 		return;
 	}
 
-	// we use comp.graphics.algorithms Frequently Asked Questions method
-
-	/*(1)     	AC dot AB
-                   r = ----------
-                         ||AB||^2
-		r has the following meaning:
-		r=0 P = A
-		r=1 P = B
-		r<0 P is on the backward extension of AB
-		r>1 P is on the forward extension of AB
-		0<r<1 P is interior to AB
-	*/
+	/*
+	 * We use comp.graphics.algorithms Frequently Asked Questions method
+	 *
+	 * (1)           AC dot AB
+	 *           r = ----------
+	 *                ||AB||^2
+	 *	r has the following meaning:
+	 *	r=0 P = A
+	 *	r=1 P = B
+	 *	r<0 P is on the backward extension of AB
+	 *	r>1 P is on the forward extension of AB
+	 *	0<r<1 P is interior to AB
+	 *	
+	 */
 	r = ( (p->x-A->x) * (B->x-A->x) + (p->y-A->y) * (B->y-A->y) )/( (B->x-A->x)*(B->x-A->x) +(B->y-A->y)*(B->y-A->y) );
 
 	if (r<0) {
@@ -669,7 +606,9 @@ ptarray_locate_point(POINTARRAY *pa, POINT2D *p)
 		start = end;
 	}
 
-	//lwnotice("Closest segment: %d", seg);
+#ifdef PGIS_DEBUG
+	lwnotice("Closest segment: %d", seg);
+#endif
 
 	/*
 	 * If mindist is not 0 we need to project the 
@@ -684,10 +623,14 @@ ptarray_locate_point(POINTARRAY *pa, POINT2D *p)
 		proj = *p;
 	}
 
-	//lwnotice("Closest point on segment: %g,%g", proj.x, proj.y);
+#ifdef PGIS_DEBUG
+	lwnotice("Closest point on segment: %g,%g", proj.x, proj.y);
+#endif
 
 	tlen = lwgeom_pointarray_length2d(pa);
-	//lwnotice("tlen %g", tlen);
+#ifdef PGIS_DEBUG
+	lwnotice("tlen %g", tlen);
+#endif
 
 	plen=0;
 	getPoint2d_p(pa, 0, &start);
@@ -695,13 +638,17 @@ ptarray_locate_point(POINTARRAY *pa, POINT2D *p)
 	{
 		getPoint2d_p(pa, t+1, &end);
 		plen += distance2d_pt_pt(&start, &end);
-		//lwnotice("Segment %d made plen %g", t, plen);
+#if PGIS_DEBUG > 1
+		lwnotice("Segment %d made plen %g", t, plen);
+#endif
 	}
 
 	plen+=distance2d_pt_pt(&proj, &start);
 
-	//lwnotice("plen %g, tlen %g", plen, tlen);
-	//lwnotice("mindist: %g", mindist);
+#ifdef PGIS_DEBUG
+	lwnotice("plen %g, tlen %g", plen, tlen);
+	lwnotice("mindist: %g", mindist);
+#endif
 
 	return plen/tlen;
 }
