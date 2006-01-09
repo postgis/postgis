@@ -47,15 +47,12 @@ char *
 lwpoint_summary(LWPOINT *point, int offset)
 {
 	char *result;
-	char pad[offset+1];
-
-	memset(pad, ' ', offset);
-	pad[offset] = '\0';
+	char *pad="";
 
 	result = lwalloc(128+offset);
 
-	sprintf(result, "%s%s[%s]\n",
-		pad, lwgeom_typename(TYPE_GETTYPE(point->type)),
+	sprintf(result, "%*.s%s[%s]\n",
+		offset, pad, lwgeom_typename(TYPE_GETTYPE(point->type)),
 		lwgeom_typeflags(point->type));
 	return result;
 }
@@ -64,15 +61,12 @@ char *
 lwline_summary(LWLINE *line, int offset)
 {
 	char *result;
-	char pad[offset+1];
-
-	memset(pad, ' ', offset);
-	pad[offset] = '\0';
+	char *pad="";
 
 	result = lwalloc(128+offset);
 
-	sprintf(result, "%s%s[%s] with %d points\n",
-		pad, lwgeom_typename(TYPE_GETTYPE(line->type)),
+	sprintf(result, "%*.s%s[%s] with %d points\n",
+		offset, pad, lwgeom_typename(TYPE_GETTYPE(line->type)),
 		lwgeom_typeflags(line->type),
 		line->points->npoints);
 	return result;
@@ -86,9 +80,7 @@ lwcollection_summary(LWCOLLECTION *col, int offset)
 	char *result;
 	char *tmp;
 	int i;
-	char pad[offset+1];
-	memset(pad, ' ', offset);
-	pad[offset] = '\0';
+	char *pad="";
 
 #ifdef PGIS_DEBUG_CALLS
 	lwnotice("lwcollection_summary called");
@@ -96,8 +88,8 @@ lwcollection_summary(LWCOLLECTION *col, int offset)
 
 	result = (char *)lwalloc(size);
 
-	sprintf(result, "%s%s[%s] with %d elements\n",
-		pad, lwgeom_typename(TYPE_GETTYPE(col->type)),
+	sprintf(result, "%*.s%s[%s] with %d elements\n",
+		offset, pad, lwgeom_typename(TYPE_GETTYPE(col->type)),
 		lwgeom_typeflags(col->type),
 		col->ngeoms);
 
@@ -106,7 +98,9 @@ lwcollection_summary(LWCOLLECTION *col, int offset)
 		tmp = lwgeom_summary(col->geoms[i], offset+2);
 		size += strlen(tmp)+1;
 		result = lwrealloc(result, size);
-		//lwnotice("Reallocated %d bytes for result", size);
+#if PGIS_DEBUG > 1
+		lwnotice("Reallocated %d bytes for result", size);
+#endif
 		strcat(result, tmp);
 		lwfree(tmp);
 	}
@@ -125,9 +119,7 @@ lwpoly_summary(LWPOLY *poly, int offset)
 	size_t size = 64*(poly->nrings+1)+128;
 	char *result;
 	int i;
-	char pad[offset+1];
-	memset(pad, ' ', offset);
-	pad[offset] = '\0';
+	char *pad="";
 
 #ifdef PGIS_DEBUG_CALLS
 	lwnotice("lwpoly_summary called");
@@ -135,8 +127,8 @@ lwpoly_summary(LWPOLY *poly, int offset)
 
 	result = lwalloc(size);
 
-	sprintf(result, "%s%s[%s] with %i rings\n",
-		pad, lwgeom_typename(TYPE_GETTYPE(poly->type)),
+	sprintf(result, "%*.s%s[%s] with %i rings\n",
+		offset, pad, lwgeom_typename(TYPE_GETTYPE(poly->type)),
 		lwgeom_typeflags(poly->type),
 		poly->nrings);
 
