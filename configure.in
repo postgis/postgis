@@ -63,8 +63,8 @@ AC_ARG_WITH(pgsql,
 [  --with-pgsql[[=ARG]]      build for a specific pgsql version
                           [[ARG=path to pg_config]]],
 	if test "$with_pgsql" != "no" -a "$with_pgsql" != "yes"; then
-		if ! test -x "$with_pgsql"; then
-			AC_MSG_ERROR([$with_pgsql is not an executable file]);
+		if test ! -f "$with_pgsql"; then
+			AC_MSG_ERROR([Invalid argument to --with-pgsql]);
 		fi
 		PGCONFIG="$with_pgsql"
 	fi
@@ -111,8 +111,8 @@ AC_ARG_WITH(geos,
 		USE_GEOS=0
 	else
 		if test "$with_geos" != "yes"; then
-			if ! test -e "$with_geos"; then
-	AC_MSG_ERROR([ARG of --with-geos is not an (executable) file]);
+			if test ! -f "$with_geos"; then
+	AC_MSG_ERROR([Invalid argument to --with-geos]);
 			else
 				GEOSCONFIG="$with_geos"
 				USE_GEOS=1
@@ -166,7 +166,7 @@ AC_ARG_WITH(proj,
 	fi
 )
 if test $USE_PROJ -gt 0; then
-	if ! test -e $PROJ_DIR/include/projects.h; then
+	if test ! -f $PROJ_DIR/include/projects.h; then
 		AC_MSG_ERROR([Can't find proj dir.]);
 	fi
 fi
@@ -183,8 +183,8 @@ AC_ARG_WITH(jts,
 	if test "$with_jts" != "no"; then
 		USE_JTS=1
 		if test "$with_jts" != "yes"; then
-			if ! test -e "$with_jts"; then
-	AC_MSG_ERROR([ARG of --with-jts is not an (executable) file]);
+			if test ! -f "$with_jts"; then
+	AC_MSG_ERROR([Invalid argument to --with-jts]);
 			else
 				JTSCONFIG=$with_jts
 			fi
