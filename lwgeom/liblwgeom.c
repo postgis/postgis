@@ -5,7 +5,7 @@
 #define CONTEXT_PG 0
 #define CONTEXT_SA 1
 
-//#define PGIS_DEBUG_ALLOCS 1
+/* #define PGIS_DEBUG_ALLOCS 1 */
 
 
 #ifdef STANDALONE
@@ -122,7 +122,7 @@ lwalloc(size_t size)
 	void *mem = lwalloc_var(size);
 	lwnotice("lwalloc: %d@%p", size, mem);
 	return mem;
-#else // ! PGIS_DEBUG_ALLOCS
+#else /* ! PGIS_DEBUG_ALLOCS */
 	return lwalloc_var(size);
 #endif
 }
@@ -139,7 +139,7 @@ lwrealloc(void *mem, size_t size)
 void
 lwfree(void *mem)
 {
-	return lwfree_var(mem);
+	lwfree_var(mem);
 }
 
 /*
@@ -153,12 +153,16 @@ trim_trailing_zeros(char *str)
 	int len;
 	int i;
 
-	//lwnotice("input: %s", str);
+#ifdef PGIS_DEBUG
+	lwnotice("input: %s", str);
+#endif
 	
 	ptr = strchr(str, '.');
-	if ( ! ptr ) return; // no dot, no decimal digits
+	if ( ! ptr ) return; /* no dot, no decimal digits */
 
-	//lwnotice("ptr: %s", ptr);
+#ifdef PGIS_DEBUG
+	lwnotice("ptr: %s", ptr);
+#endif
 
 	len = strlen(ptr);
 	for (i=len-1; i; i--)
@@ -172,16 +176,19 @@ trim_trailing_zeros(char *str)
 		else *totrim = '\0';
 	}
 	
-	//lwnotice("output: %s", str);
+#ifdef PGIS_DEBUG
+	lwnotice("output: %s", str);
+#endif
 }
 
 char
 getMachineEndian(void)
 {
-	static int endian_check_int = 1; // dont modify this!!!
+	static int endian_check_int = 1; /* dont modify this!!! */
 
-	return *((char *) &endian_check_int); // 0 = big endian | xdr,
-					      // 1 = little endian | ndr
+	return *((char *) &endian_check_int); /* 0 = big endian | xdr,
+					       * 1 = little endian | ndr
+	                                       */
 }
 
 
