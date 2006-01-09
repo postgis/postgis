@@ -218,9 +218,19 @@ ptarray_segmentize2d(POINTARRAY *ipa, double dist)
 
 	while (ipoff<ipa->npoints)
 	{
+		POINT2D p2d1, p2d2;
+
 		getPoint4d_p(ipa, ipoff, &p2);
 
-		segdist = distance2d_pt_pt((POINT2D *)&p1, (POINT2D *)&p2);
+		/*
+		 * We used to have a POINT4D=>POINT2D cast here
+		 * but GCC 3.3 kept warning about:
+		 *   "dereferencing type-punned pointer
+		 *   will break strict-aliasing rules"
+		 */
+		p2d1.x=p1.x; p2d1.y=p1.y;
+		p2d2.x=p2.x; p2d2.y=p2.y;
+		segdist = distance2d_pt_pt(&p2d1, &p2d2);
 
 		if (segdist > dist) // add an intermediate point
 		{
