@@ -3457,6 +3457,16 @@ dimension
           </varlistentry>
 
           <varlistentry>
+            <term>NumInteriorRing(geometry)</term>
+
+            <listitem>
+              <para>Synonym to NumInteriorRings(geometry). The OpenGIS specs
+	      are ambigous about the exact function naming, so we provide
+	      both spellings.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
             <term>InteriorRingN(geometry,integer)</term>
 
             <listitem>

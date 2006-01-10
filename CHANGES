@@ -2,6 +2,7 @@ PostGIS 1.1.1CVS
 
 	- Source code cleanups
 	- Solaris 2.7 and MingW support improvements
+	- added NumInteriorRing() alias due to OpenGIS ambiguity
 
 PostGIS 1.1.0
 2005/12/21

@@ -3036,6 +3036,11 @@ CREATEFUNCTION NumInteriorRings(geometry)
 	AS '@MODULE_FILENAME@','LWGEOM_numinteriorrings_polygon'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+CREATEFUNCTION NumInteriorRing(geometry)
+	RETURNS integer
+	AS '@MODULE_FILENAME@','LWGEOM_numinteriorrings_polygon'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
 CREATEFUNCTION InteriorRingN(geometry,integer)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','LWGEOM_interiorringn_polygon'
