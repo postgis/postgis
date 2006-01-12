@@ -2551,7 +2551,7 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 			else if ( type == MULTIPOLYGONTYPE )
 				geostype = GEOS_MULTIPOLYGON;
 			else
-				geostype = GEOS_MULTIPOLYGON;
+				geostype = GEOS_GEOMETRYCOLLECTION;
 
 			lwc = (LWCOLLECTION *)lwgeom;
 			ngeoms = lwc->ngeoms;
