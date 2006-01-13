@@ -634,7 +634,7 @@ ptarray_locate_point(POINTARRAY *pa, POINT2D *p)
 
 	plen=0;
 	getPoint2d_p(pa, 0, &start);
-	for (t=1; t<seg; t++, start=end)
+	for (t=0; t<seg; t++, start=end)
 	{
 		getPoint2d_p(pa, t+1, &end);
 		plen += distance2d_pt_pt(&start, &end);
