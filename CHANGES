@@ -5,6 +5,7 @@ PostGIS 1.1.1CVS
 	- added NumInteriorRing() alias due to OpenGIS ambiguity
 	- BUGFIX in geometrycollection handling of GEOS-CAPI connector
 	- BUGFIX in line_locate_point()
+	- Fixed handling of postgresql bindir
 
 PostGIS 1.1.0
 2005/12/21

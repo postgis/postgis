@@ -310,7 +310,7 @@ pg_eprefix='${prefix}'
 pg_docdir='${prefix}/share/doc'
 pg_datadir='${prefix}/share'
 pg_mandir='${prefix}/man'
-pg_bindir='${exec_prefix}/bin'
+pg_bindir="`${PGCONFIG} --bindir`"
 pg_pkglibdir="`${PGCONFIG} --pkglibdir`"
 for v in `${PGCONFIG} --configure`; do
 	strip=`echo $v | sed "s/'//g"`
@@ -327,8 +327,6 @@ for v in `${PGCONFIG} --configure`; do
 		pg_datadir=`echo "$strip" | cut -d= -f2`
 	elif test "$var" = "--mandir"; then
 		pg_mandir=`echo "$strip" | cut -d= -f2`
-	elif test "$var" = "--bindir"; then
-		pg_bindir=`echo "$strip" | cut -d= -f2`
 	elif test "$var" = "--with-template"; then
 		PGTEMPLATE=`echo "$strip" | cut -d= -f2`
 	fi
