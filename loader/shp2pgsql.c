@@ -332,8 +332,10 @@ Insert_attributes(DBFHandle hDBFHandle, int row)
 	       if ( val[0] == '\0' ) { val[0] = '0'; val[1] = '\0'; }
 	       if ( val[strlen(val)-1] == '.' ) val[strlen(val)-1] = '\0';
                break;
+
             case FTString:
             case FTLogical:
+	    case FTDate:
                if ( -1 == snprintf(val, 1024, "%s",
                      DBFReadStringAttribute(hDBFHandle, row, i)) )
                {
@@ -341,6 +343,7 @@ Insert_attributes(DBFHandle hDBFHandle, int row)
                   val[1023] = '\0';
                }
                break;
+
             default:
                fprintf(stderr,
                   "Error: field %d has invalid or unknown field type (%d)\n",
@@ -516,67 +519,62 @@ CreateTable(void)
 
 		printf(",\n\"%s\" ", field_names[j]);
 
-		if(hDBFHandle->pachFieldType[j] == 'D' ) /* Date field */
+		if(type == FTString)
 		{
-			printf ("varchar(8)");/*date data-type is not supported in API so check for it explicity before the api call. */
+			/* use DBF attribute size as maximum width */
+			printf ("varchar(%d)", field_width);
 		}
-			
-		else
+		else if (type == FTDate)
 		{
-
-			if(type == FTString)
+			printf ("date");
+		}
+		else if (type == FTInteger)
+		{
+			if ( forceint4 )
 			{
-				/* use DBF attribute size as maximum width */
-				printf ("varchar(%d)", field_width);
+				printf ("int4");
 			}
-			else if(type == FTInteger)
+			else if  ( field_width <= 5 )
 			{
-				if ( forceint4 )
-				{
-					printf ("int4");
-				}
-				else if  ( field_width <= 5 )
-				{
-					printf ("int2");
-				}
-				else if  ( field_width <= 10 )
-				{
-					printf ("int4");
-				}
-				else if  ( field_width <= 19 )
-				{
-					printf ("int8");
-				}
-				else 
-				{
-					printf("numeric(%d,0)",
-						field_width);
-				}
+				printf ("int2");
 			}
-			else if(type == FTDouble)
+			else if  ( field_width <= 10 )
 			{
-				if( field_width > 18 )
-				{
-					printf ("numeric");
-				}
-				else
-				{
-					printf ("float8");
-				}
+				printf ("int4");
 			}
-			else if(type == FTLogical)
+			else if  ( field_width <= 19 )
 			{
-				printf ("boolean");
+				printf ("int8");
+			}
+			else 
+			{
+				printf("numeric(%d,0)",
+					field_width);
+			}
+		}
+		else if(type == FTDouble)
+		{
+			if( field_width > 18 )
+			{
+				printf ("numeric");
 			}
 			else
 			{
-				printf ("Invalid type in DBF file");
+				printf ("float8");
 			}
-		}	
+		}
+		else if(type == FTLogical)
+		{
+			printf ("boolean");
+		}
+		else
+		{
+			printf ("Invalid type in DBF file");
+		}
 	}
 	printf (");\n");
 
-	/*create the geometry column with an addgeometry call to dave's function */
+	/* Create the geometry column with an addgeometry call */
 	if ( schema )
 	{
 		printf("SELECT AddGeometryColumn('%s','%s','%s','%s',",
@@ -1700,6 +1698,9 @@ utf8 (const char *fromcode, char *inputbuf)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.106  2006/01/16 10:42:58  strk
+ * Added support for Bool and Date DBF<=>PGIS mapping
+ *
  * Revision 1.105  2006/01/09 16:40:16  strk
  * ISO C90 comments, signedness mismatch fixes
  *

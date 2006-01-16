@@ -37,6 +37,9 @@
  ******************************************************************************
  *
  * $Log$
+ * Revision 1.5  2006/01/16 10:42:58  strk
+ * Added support for Bool and Date DBF<=>PGIS mapping
+ *
  * Revision 1.4  2003/12/01 20:52:00  strk
  * shapelib put in sync with gdal cvs
  *
@@ -416,7 +419,8 @@ typedef enum {
   FTInteger,
   FTDouble,
   FTLogical,
-  FTInvalid
+  FTInvalid,
+  FTDate
 } DBFFieldType;
 
 #define XBASE_FLDHDR_SZ       32
@@ -469,7 +473,7 @@ int SHPAPI_CALL
 			       const char lFieldValue);
 int SHPAPI_CALL
      DBFWriteAttributeDirectly(DBFHandle psDBF, int hEntity, int iField,
-                               void * pValue );
+                               const void * pValue );
 const char SHPAPI_CALL1(*)
       DBFReadTuple(DBFHandle psDBF, int hEntity );
 int SHPAPI_CALL

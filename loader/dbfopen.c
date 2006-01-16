@@ -34,6 +34,9 @@
  ******************************************************************************
  *
  * $Log$
+ * Revision 1.8  2006/01/16 10:42:57  strk
+ * Added support for Bool and Date DBF<=>PGIS mapping
+ *
  * Revision 1.7  2006/01/09 16:40:16  strk
  * ISO C90 comments, signedness mismatch fixes
  *
@@ -670,6 +673,8 @@ DBFAddField(DBFHandle psDBF, const char * pszFieldName,
         psDBF->pachFieldType[psDBF->nFields-1] = 'L';
     else if( eType == FTString )
         psDBF->pachFieldType[psDBF->nFields-1] = 'C';
+    else if( eType == FTDate )
+        psDBF->pachFieldType[psDBF->nFields-1] = 'D';
     else
         psDBF->pachFieldType[psDBF->nFields-1] = 'N';
 
@@ -985,9 +990,11 @@ DBFGetFieldInfo( DBFHandle psDBF, int iField, char * pszFieldName,
     if ( psDBF->pachFieldType[iField] == 'L' )
 	return( FTLogical);
 
+    else if( psDBF->pachFieldType[iField] == 'D'  )
+	return ( FTDate );
+
     else if( psDBF->pachFieldType[iField] == 'N' 
-             || psDBF->pachFieldType[iField] == 'F'
-             || psDBF->pachFieldType[iField] == 'D' )
+             || psDBF->pachFieldType[iField] == 'F' )
     {
 	if( psDBF->panFieldDecimals[iField] > 0 )
 	    return( FTDouble );
@@ -1177,7 +1184,7 @@ static int DBFWriteAttribute(DBFHandle psDBF, int hEntity, int iField,
 /************************************************************************/
 
 int DBFWriteAttributeDirectly(DBFHandle psDBF, int hEntity, int iField,
-                              void * pValue )
+                              const void * pValue )
 
 {
     int	       	nRecordOffset, i, j;

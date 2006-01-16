@@ -102,6 +102,13 @@ SHPObject * shape_creator_wrapper_WKB(byte *str, int idx);
 int get_postgis_major_version(void);
 static void parse_table(char *spec);
 static int create_usrquerytable(void);
+static const char *nullDBFValue(char fieldType);
+/* 
+ * Make appropriate formatting of a DBF value based on type.
+ * Might return untouched input or pointer to static private 
+ * buffer: use return value right away.
+ */
+static const char * goodDBFValue(const char *in, char fieldType);
 
 /* WKB functions */
 SHPObject * create_polygon2D_WKB(byte *wkb);
@@ -131,7 +138,7 @@ void skipint(byte **c);
 double popdouble(byte **c);
 void skipdouble(byte **c);
 void dump_wkb(byte *wkb);
-byte * HexDecode(char *hex);
+byte * HexDecode(const char *hex);
 
 #define WKBZOFFSET 0x80000000
 #define WKBMOFFSET 0x40000000
@@ -177,6 +184,15 @@ main(int ARGC, char **ARGV)
 	if ( ARGC == 1 ) {
 		usage(0);
 	}
+
+	/*
+	 * Make sure dates are returned in ISO
+	 * style (YYYY-MM-DD).
+	 * This is to allow goodDBFValue() function 
+	 * to successfully extract YYYYMMDD format
+	 * expected in shapefile's dbf file.
+	 */
+	putenv("PGDATESTYLE=ISO");
 
 	if ( ! parse_commandline(ARGC, ARGV) ) {
                 printf("\n**ERROR** invalid option or command parameters\n\n");
@@ -1938,7 +1954,7 @@ addRecord(PGresult *res, int residx, int row)
 
 	for (j=0; j<nFields; j++)
 	{
-		char *val;
+		const char *val;
 		byte *v;
 		size_t junk;
 		SHPObject *obj;
@@ -1948,19 +1964,19 @@ addRecord(PGresult *res, int residx, int row)
 		{
 			/*
 			 * Transform NULL numbers to '0'
-			 * This is because the shapelibe
+			 * This is because the shapelib
 			 * won't easly take care of setting
 			 * nulls unless paying the acquisition
 			 * of a bug in long integer values
 			 */
-			if ( PQgetisnull(res, residx, j) &&
-				( type_ary[j] == 1 || type_ary[j] == 2 ) )
+			if ( PQgetisnull(res, residx, j) )
 			{
-				val = "0";
+				val = nullDBFValue(type_ary[j]);
 			}
 			else
 			{
 				val = PQgetvalue(res, residx, j);
+				val = goodDBFValue(val, type_ary[j]);
 			}
 #if VERBOSE > 1
 fprintf(stdout, "s"); fflush(stdout);
@@ -2616,7 +2632,7 @@ initialize(void)
 					"be created.\n");
 				return 0;
 			}
-			type_ary[mainscan_nflds]=1;
+			type_ary[mainscan_nflds]=FTInteger;
 			mainscan_flds[mainscan_nflds++] = fname;
 			continue;
 		}
@@ -2632,11 +2648,11 @@ initialize(void)
 			if ( DBFAddField(dbf, field_name, FTInteger,
 				11, 0) == -1 )
 			{
-				printf( "error - Field could not "
+				printf( "Error - Ingeter field could not "
 					"be created.\n");
 				return 0;
 			}
-			type_ary[mainscan_nflds]=1;
+			type_ary[mainscan_nflds]=FTInteger;
 			mainscan_flds[mainscan_nflds++] = fname;
 			continue;
 		}
@@ -2652,11 +2668,11 @@ initialize(void)
 			if ( DBFAddField(dbf, field_name, FTInteger,
 				20, 0) == -1 )
 			{
-				printf( "error - Field could not "
+				printf( "Error - Integer field could not "
 					"be created.\n");
 				return 0;
 			}
-			type_ary[mainscan_nflds]=1;
+			type_ary[mainscan_nflds]=FTInteger;
 			mainscan_flds[mainscan_nflds++] = fname;
 			continue;
 		}
@@ -2674,22 +2690,48 @@ initialize(void)
 		{
 			if(DBFAddField(dbf, field_name,FTDouble,32,10) == -1)
 			{
-				printf( "error - Field could not "
+				printf( "Error - Double field could not "
 						"be created.\n");
 				return 0;
 			}
-			type_ary[mainscan_nflds]=2;
+			type_ary[mainscan_nflds]=FTDouble;
 			mainscan_flds[mainscan_nflds++] = fname;
 			continue;
 		}
 
 		/*
-		 * date field, which we store as a string so we need
+		 * Boolean field, we use FTLogical
+		 */
+		if ( type == 16 )
+		{
+			if ( DBFAddField(dbf, field_name, FTLogical,
+				2, 0) == -1 )
+			{
+				printf( "Error - Boolean field could not "
+					"be created.\n");
+				return 0;
+			}
+			type_ary[mainscan_nflds]=FTLogical;
+			mainscan_flds[mainscan_nflds++] = fname;
+			continue;
+		}
+
+		/*
+		 * Date field, which we store as a string so we need
 		 * more width in the column
 		 */
 		if(type == 1082)
 		{
-			size = 10;
+			if ( DBFAddField(dbf, field_name, FTDate,
+				10, 0) == -1 )
+			{
+				printf( "Error - Date field could not "
+					"be created.\n");
+				return 0;
+			}
+			type_ary[mainscan_nflds]=FTDate;
+			mainscan_flds[mainscan_nflds++] = fname;
+			continue;
 		}
 
 		/*
@@ -2731,11 +2773,11 @@ initialize(void)
 		/* generic type (use string representation) */
 		if(DBFAddField(dbf, field_name, FTString, size, 0) == -1)
 		{
-			printf( "error - Field could not "
+			printf( "Error - String field could not "
 					"be created.\n");
 			return 0;
 		}
-		type_ary[mainscan_nflds]=3;
+		type_ary[mainscan_nflds]=FTString;
 		mainscan_flds[mainscan_nflds++] = fname;
 	}
 
@@ -2971,10 +3013,10 @@ getMaxFieldSize(PGconn *conn, char *schema, char *table, char *fname)
  * Output is a binary string.
  */
 byte *
-HexDecode(char *hex)
+HexDecode(const char *hex)
 {
 	byte *ret, *retptr;
-	char *hexptr;
+	const char *hexptr;
 	byte byt;
 	int len;
 	
@@ -3216,8 +3258,74 @@ create_usrquerytable(void)
 	return 1;
 }
 
+/* This is taken and adapted from dbfopen.c of shapelib */
+static const char *
+nullDBFValue(char fieldType)
+{
+	switch(fieldType)
+	{
+		case FTInteger:
+		case FTDouble:
+			/* NULL numeric fields have value "****************" */
+			return "****************";
+
+		case FTDate:
+			/* NULL date fields have value "00000000" */
+			return "00000000";
+
+		case FTLogical:
+			/* NULL boolean fields have value "?" */ 
+			return "?";
+
+		default:
+			/* empty string fields are considered NULL */
+			return "";
+	}
+}
+
+/* 
+ * Make appropriate formatting of a DBF value based on type.
+ * Might return untouched input or pointer to static private 
+ * buffer: use return value right away.
+ */
+static const char *
+goodDBFValue(const char *in, char fieldType)
+{
+	/*
+	 * We only work on FTLogical and FTDate.
+	 * FTLogical is 1 byte, FTDate is 8 byte (YYYYMMDD)
+	 * We allocate space for 9 bytes to take
+	 * terminating null into account
+	 */
+	static char buf[9];
+
+	switch (fieldType)
+	{
+		case FTLogical:
+			buf[0] = toupper(in[0]);
+			buf[1]='\0';
+			return buf;
+		case FTDate:
+			buf[0]=in[0]; /* Y */
+			buf[1]=in[1]; /* Y */
+			buf[2]=in[2]; /* Y */
+			buf[3]=in[3]; /* Y */
+			buf[4]=in[5]; /* M */
+			buf[5]=in[6]; /* M */
+			buf[6]=in[8]; /* D */
+			buf[7]=in[9]; /* D */
+			buf[8]='\0';
+			return buf;
+		default:
+			return in;
+	}
+}
+
 /**********************************************************************
  * $Log$
+ * Revision 1.82  2006/01/16 10:42:57  strk
+ * Added support for Bool and Date DBF<=>PGIS mapping
+ *
  * Revision 1.81  2006/01/09 16:40:16  strk
  * ISO C90 comments, signedness mismatch fixes
  *
