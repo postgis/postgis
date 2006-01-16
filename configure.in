@@ -305,7 +305,7 @@ fi
 #
 # Prefix (pg_prefix)
 #
-pg_prefix=/usr/local
+pg_prefix=/usr/local/pgsql
 pg_eprefix='${prefix}'
 pg_docdir='${prefix}/share/doc'
 pg_datadir='${prefix}/share'
