@@ -6,6 +6,7 @@ PostGIS 1.1.1CVS
 	- BUGFIX in geometrycollection handling of GEOS-CAPI connector
 	- BUGFIX in line_locate_point()
 	- Fixed handling of postgresql paths
+	- Fixed a premature exit in postgis_restore.pl 
 
 PostGIS 1.1.0
 2005/12/21
