@@ -306,10 +306,10 @@ fi
 # Prefix (pg_prefix)
 #
 pg_prefix=/usr/local/pgsql
-pg_eprefix='${prefix}'
-pg_docdir='${prefix}/share/doc'
-pg_datadir='${prefix}/share'
-pg_mandir='${prefix}/man'
+pg_eprefix=
+pg_docdir=
+pg_datadir=
+pg_mandir=
 pg_bindir="`${PGCONFIG} --bindir`"
 pg_pkglibdir="`${PGCONFIG} --pkglibdir`"
 for v in `${PGCONFIG} --configure`; do
@@ -331,6 +331,16 @@ for v in `${PGCONFIG} --configure`; do
 		PGTEMPLATE=`echo "$strip" | cut -d= -f2`
 	fi
 done
+#
+# We set these defaults after scan of
+# pg_config --configure to safely expand pg_prefix
+# We need expansion for the 'postgresq' path component
+# addition below (default paths take from pg_config)
+#
+if test -z "$pg_eprefix"; then pg_eprefix=${pg_prefix}; fi
+if test -z "$pg_docdir"; then pg_docdir=${pg_prefix}'/doc'; fi
+if test -z "$pg_datadir"; then pg_datadir=${pg_prefix}'/share'; fi
+if test -z "$pg_mandir"; then pg_mandir=${pg_prefix}'/man'; fi
 
 # Use new layout by default
 use_new_layout=0
@@ -357,10 +367,34 @@ else
 
 	if test "$docdir" = '${prefix}/share/doc'; then
 		docdir=${pg_docdir}
+		#
+		# If datadir contains no 'pgsql' or 'postgres'
+		# add the suffix. This is derived from
+		# PGSQL_SRC/src/Makefile.global
+		#
+		if ! expr "${docdir}" : ".*/pgsql" > /dev/null ; then
+		if ! expr "${docdir}" : ".*/postgres" > /dev/null ; then
+			docdir=${docdir}"/postgresql"
+		fi
+		fi
+		# Add the "contrib" part
+		docdir=${docdir}"/contrib"
 	fi
 
 	if test "$datadir" = '${prefix}/share'; then
-		datadir=${pg_datadir}/postgresql/contrib
+		datadir=${pg_datadir}
+		#
+		# If datadir contains no 'pgsql' or 'postgres'
+		# add the suffix. This is derived from
+		# PGSQL_SRC/src/Makefile.global
+		#
+		if ! expr "${datadir}" : ".*/pgsql" > /dev/null ; then
+		if ! expr "${datadir}" : ".*/postgres" > /dev/null ; then
+			datadir=${datadir}"/postgresql"
+		fi
+		fi
+		# Add the "contrib" part
+		datadir=${datadir}"/contrib"
 	fi
 
 	if test "$mandir" = '${prefix}/man'; then
