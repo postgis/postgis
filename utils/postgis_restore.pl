@@ -702,8 +702,8 @@ close(INPUT);
 print "Dropping geometry_columns and spatial_ref_sys\n";
 print PSQL "DROP TABLE geometry_columns;";
 print PSQL "DROP TABLE spatial_ref_sys;";
-print "Now source $dumpascii manually\n";
-exit(1);
+#print "Now source $dumpascii manually\n";
+#exit(1);
 
 #
 # Source modified ascii dump
