@@ -8,6 +8,7 @@ PostGIS 1.1.1CVS
 	- Fixed handling of postgresql paths
 	- Fixed a premature exit in postgis_restore.pl 
 	- Fixed memory bug in line_substring()
+	- Added support for localized cluster in regress tester
 
 PostGIS 1.1.0
 2005/12/21

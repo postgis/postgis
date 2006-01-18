@@ -16,6 +16,8 @@ DB=postgis_reg
 #
 ###################################################
 
+export PGOPTIONS="${PGOPTIONS} -c lc_messages=C"
+
 if [ -z "$TMPDIR" ]; then
 	TMPDIR=/tmp
 fi
