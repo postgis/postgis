@@ -30,3 +30,6 @@ SELECT 'line_locate_point', line_locate_point('LINESTRING(709243.393033887 16396
 --- postgis-users/2006-January/010613.html
 select 'line_locate_point', line_locate_point(geomfromtext('LINESTRING(-1953743.873 471070.784,-1953735.105 471075.419,-1953720.034 471081.649)', 6269), geomfromtext('POINT(-1953720.034 471081.649)', 6269));
 select 'line_locate_point', line_locate_point(geomfromtext('LINESTRING(-1953743.873 471070.784,-1953735.105 471075.419,-1953720.034 471081.649)', 6269), geomfromtext('POINT(-1953743.873 471070.784)', 6269));
+
+--- postgis-devel/2006-January/001951.html
+select 'line_substring', asewkt(line_substring(geomfromewkt('SRID=4326;LINESTRING(0 0 0 0, 1 1 1 1, 2 2 2 2, 3 3 3 3, 4 4 4 4)'), 0.5, 0.8));

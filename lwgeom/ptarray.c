@@ -437,6 +437,9 @@ ptarray_compute_box3d_p(const POINTARRAY *pa, BOX3D *result)
 	return 1;
 }
 
+/*
+ * TODO: implement point interpolation
+ */
 POINTARRAY *
 ptarray_substring(POINTARRAY *ipa, double from, double to)
 {
@@ -487,7 +490,7 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 		 * so far. create a new point some distance down the current
 		 * segment.
 		 */
-		if ( state == 0 )
+		if ( state == 0 ) /* before */
 		{
 			if ( from < tlength + slength ) {
 				dseg = (from - tlength) / slength;
@@ -500,8 +503,9 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 			}
 		}
 
-		if ( state == 1 )
+		if ( state == 1 ) /* inside */
 		{
+			/* Need interpolation */
 			if ( to < tlength + slength ) {
 				dseg = (to - tlength) / slength;
 				pt.x = (p1.x) + ((p2.x - p1.x) * dseg);
@@ -510,8 +514,14 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 				memcpy(optsptr, &pt, ptsize);
 				optsptr+=ptsize;
 				nopts++; break;
-			} else {
-				memcpy(optsptr, &p2, ptsize);
+			}
+
+			/* Copy verbatim point */
+			else {
+				pt.x = p2.x;
+				pt.y = p2.y;
+				pt.z = 0; pt.m = 0;
+				memcpy(optsptr, &pt, ptsize);
 				optsptr+=ptsize;
 				nopts++;
 			}
