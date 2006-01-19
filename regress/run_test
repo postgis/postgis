@@ -23,7 +23,7 @@ if [ -z "$TMPDIR" ]; then
 fi
 
 if [ -z "$1" ]; then
-	echo "Usage: $0 <test> [<test>]" >&2
+	echo "Usage: $0 [-v] <test> [<test>]" >&2
 	exit 1;
 fi
 
@@ -69,11 +69,18 @@ echo
 echo "Running tests"
 echo
 
+VERBOSE=0
 RUN=0
 SKIP=0
 FAIL=0
 SUCCESS=0
 while [ -n "$1" ]; do
+
+	if test "$1" = "-v"; then
+		VERBOSE=1
+		shift
+		continue
+	fi
 
 	TEST="$1"; shift;
 
@@ -119,7 +126,16 @@ while [ -n "$1" ]; do
 		rm "${OUTFILE}" "${DIFFILE}" # we don't need these anymore
 	else
 		FAIL=`expr $FAIL + 1`
-		echo "Failed (diff ${DIFFILE})" # expected:'<'     obtained:'>'"
+		if test "$VERBOSE" -eq "1"; then
+			echo "Failed (diff ${DIFFILE})"
+			echo "-----------------------------------------------------------------------------"
+			echo "expected:'<'     obtained:'>'"
+			echo "-----------------------------------------------------------------------------"
+			cat ${DIFFILE}
+			echo "-----------------------------------------------------------------------------"
+		else
+			echo "Failed (diff ${DIFFILE})"
+		fi
 		rm "${OUTFILE}" # diff is enough
 	fi
 	RUN=`expr $RUN + 1`
