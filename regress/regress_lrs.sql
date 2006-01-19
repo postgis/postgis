@@ -33,3 +33,14 @@ select 'line_locate_point', line_locate_point(geomfromtext('LINESTRING(-1953743.
 
 --- postgis-devel/2006-January/001951.html
 select 'line_substring', asewkt(line_substring(geomfromewkt('SRID=4326;LINESTRING(0 0 0 0, 1 1 1 1, 2 2 2 2, 3 3 3 3, 4 4 4 4)'), 0.5, 0.8));
+
+select 'line_substring', asewkt(line_substring('LINESTRING(0 0 0 0, 1 1 1 1, 2 2 2 2, 3 3 3 3, 4 4 4 4)', 0.5, 0.75));
+select 'line_substring', asewkt(line_substring('LINESTRING(0 0, 1 1, 2 2)', 0, 0.5));
+select 'line_substring', asewkt(line_substring('LINESTRING(0 0, 1 1, 2 2)', 0.5, 1));
+select 'line_substring', asewkt(line_substring('LINESTRING(0 0, 2 2)', 0.5, 1));
+select 'line_substring', asewkt(line_substring('LINESTRING(0 0, 2 2)', 0, 0.5));
+select 'line_substring', asewkt(line_substring('LINESTRING(0 0, 4 4)', .25, 0.5));
+select 'line_substring', asewkt(line_substring('LINESTRINGM(0 0 0, 4 4 4)', .25, 0.5));
+select 'line_substring', asewkt(line_substring('LINESTRINGM(0 0 4, 4 4 0)', .25, 0.5));
+select 'line_substring', asewkt(line_substring('LINESTRING(0 0 4, 4 4 0)', .25, 0.5));
+
