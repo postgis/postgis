@@ -401,13 +401,16 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 	length = lwgeom_pointarray_length2d(ipa);
 	tlength = 0;
 	for( i = 0; i < nsegs; i++ ) {
-		POINT2D p1, p2;
+		POINT4D p1, p2;
+		POINT4D *p1ptr=&p1, *p2ptr=&p2; /* don't break
+		                                 * strict-aliasing rules
+		                                 */
 
-		getPoint2d_p(ipa, i, &p1);
-		getPoint2d_p(ipa, i+1, &p2);
+		getPoint4d_p(ipa, i, &p1);
+		getPoint4d_p(ipa, i+1, &p2);
 
 		/* Find the relative length of this segment */
-		slength = distance2d_pt_pt(&p1, &p2)/length;
+		slength = distance2d_pt_pt((POINT2D*)p1ptr, (POINT2D*)p2ptr)/length;
 
 		/* If our target distance is before the total length we've seen
 		 * so far. create a new point some distance down the current
@@ -415,10 +418,7 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 		 */
 		if( distance < tlength + slength ) {
 			double dseg = (distance - tlength) / slength;
-			pt.x = (p1.x) + ((p2.x - p1.x) * dseg);
-			pt.y = (p1.y) + ((p2.y - p1.y) * dseg);
-			pt.z = 0;
-			pt.m = 0;
+			interpolate_point4d(&p1, &p2, &pt, dseg);
 			opa = pointArray_construct((uchar *)&pt,
 				TYPE_HASZ(line->type),
 				TYPE_HASM(line->type),

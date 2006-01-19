@@ -9,6 +9,7 @@ PostGIS 1.1.1CVS
 	- Fixed a premature exit in postgis_restore.pl 
 	- BUGFIX in line_substring()
 	- New Z and M interpolation in line_substring()
+	- New Z and M interpolation in line_interpolate_point()
 	- Added support for localized cluster in regress tester
 
 PostGIS 1.1.0
