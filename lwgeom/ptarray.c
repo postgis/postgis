@@ -443,30 +443,30 @@ ptarray_compute_box3d_p(const POINTARRAY *pa, BOX3D *result)
 POINTARRAY *
 ptarray_substring(POINTARRAY *ipa, double from, double to)
 {
+	DYNPTARRAY *dpa;
 	POINTARRAY *opa;
-	int nopts=0;
-	uchar *opts;
-	uchar *optsptr;
 	POINT4D pt;
-	POINT2D p1, p2;
+	POINT4D p1, p2;
+	POINT4D *p1ptr=&p1; /* don't break strict-aliasing rule */
+	POINT4D *p2ptr=&p2;
 	int nsegs, i;
-	int ptsize;
 	double length, slength, tlength;
-	int state = 0; /* 0=before, 1=inside, 2=after */
+	int state = 0; /* 0=before, 1=inside */
 
-	/* Allocate memory for a full copy of input points */
-	ptsize=TYPE_NDIMS(ipa->dims)*sizeof(double);
-	opts = lwalloc(ptsize*ipa->npoints);
-	optsptr = opts;
+	/*
+	 * Create a dynamic pointarray with an initial capacity
+	 * equal to full copy of input points
+	 */
+	dpa = dynptarray_create(ipa->npoints, ipa->dims);
 
-	/* Interpolate a point on the line */
-	nsegs = ipa->npoints - 1;
+	/* Compute total line length */
 	length = lwgeom_pointarray_length2d(ipa);
 
 #ifdef PGIS_DEBUG
 	lwnotice("Total length: %g", length);
 #endif
 
+	/* Get 'from' and 'to' lengths */
 	from = length*from;
 	to = length*to;
 
@@ -475,71 +475,174 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 #endif
 
 	tlength = 0;
-	getPoint2d_p(ipa, 0, &p1);
+	getPoint4d_p(ipa, 0, &p1);
+	nsegs = ipa->npoints - 1;
 	for( i = 0; i < nsegs; i++ )
 	{
 		double dseg;
 
-		getPoint2d_p(ipa, i+1, &p2);
+		getPoint4d_p(ipa, i+1, &p2);
 
-		/* Find the relative length of this segment */
-		slength = distance2d_pt_pt(&p1, &p2);
+#ifdef PGIS_DEBUG
+	lwnotice("Segment %d: (%g,%g,%g,%g)-(%g,%g,%g,%g)",
+		i, p1.x, p1.y, p1.z, p1.m, p2.x, p2.y, p2.z, p2.m);
+#endif
+
+		/* Find the length of this segment */
+		slength = distance2d_pt_pt((POINT2D *)p1ptr, (POINT2D *)p2ptr);
 
 		/*
-		 * If our target distance is before the total length we've seen
-		 * so far. create a new point some distance down the current
-		 * segment.
+		 * We are before requested start.
 		 */
 		if ( state == 0 ) /* before */
 		{
-			if ( from < tlength + slength ) {
+
+#ifdef PGIS_DEBUG
+			lwnotice(" Before start");
+#endif
+			/*
+			 * Didn't reach the 'from' point,
+			 * nothing to do
+			 */
+			if ( from > tlength + slength ) goto END;
+
+			else if ( from == tlength + slength )
+			{
+#ifdef PGIS_DEBUG
+				lwnotice("  Second point is our start");
+#endif
+				/*
+				 * Second point is our start
+				 */
+				dynptarray_addPoint4d(dpa, &p2, 1);
+				state=1; /* we're inside now */
+				goto END;
+			}
+
+			else if ( from == tlength )
+			{
+#ifdef PGIS_DEBUG
+				lwnotice("  First point is our start");
+#endif
+				/*
+				 * First point is our start
+				 */
+				dynptarray_addPoint4d(dpa, &p1, 1);
+
+				/*
+				 * We're inside now, but will check
+				 * 'to' point as well
+				 */
+				state=1;
+			}
+
+			else  /* tlength < from < tlength+slength */
+			{
+#ifdef PGIS_DEBUG
+				lwnotice("  Seg contains first point");
+#endif
+				/*
+				 * Our start is between first and
+				 * second point
+				 */
 				dseg = (from - tlength) / slength;
-				pt.x = (p1.x) + ((p2.x - p1.x) * dseg);
-				pt.y = (p1.y) + ((p2.y - p1.y) * dseg);
-				pt.z = 0; pt.m = 0;
-				memcpy(optsptr, &pt, ptsize);
-				optsptr+=ptsize;
-				nopts++; state++;
+				interpolate_point4d(&p1, &p2, &pt, dseg);
+
+				dynptarray_addPoint4d(dpa, &pt, 1);
+
+				/*
+				 * We're inside now, but will check
+				 * 'to' point as well
+				 */
+				state=1;
 			}
 		}
 
 		if ( state == 1 ) /* inside */
 		{
-			/* Need interpolation */
-			if ( to < tlength + slength ) {
-				dseg = (to - tlength) / slength;
-				pt.x = (p1.x) + ((p2.x - p1.x) * dseg);
-				pt.y = (p1.y) + ((p2.y - p1.y) * dseg);
-				pt.z = 0; pt.m = 0;
-				memcpy(optsptr, &pt, ptsize);
-				optsptr+=ptsize;
-				nopts++; break;
+#ifdef PGIS_DEBUG
+			lwnotice(" Inside");
+#endif
+			/*
+			 * Didn't reach the 'end' point,
+			 * just copy second point
+			 */
+			if ( to > tlength + slength ) 
+			{
+				dynptarray_addPoint4d(dpa, &p2, 0);
+				goto END;
 			}
 
-			/* Copy verbatim point */
-			else {
-				pt.x = p2.x;
-				pt.y = p2.y;
-				pt.z = 0; pt.m = 0;
-				memcpy(optsptr, &pt, ptsize);
-				optsptr+=ptsize;
-				nopts++;
+			/*
+			 * 'to' point is our second point.
+			 */
+			else if ( to == tlength + slength )
+			{
+#ifdef PGIS_DEBUG
+				lwnotice(" Second point is our end");
+#endif
+				dynptarray_addPoint4d(dpa, &p2, 0);
+				break; /* substring complete */
+			}
+
+			/*
+			 * 'to' point is our first point.
+			 * Weird, should have been handled
+			 * by previous iteration as second point
+			 * unless to==0. Let's warn and handle
+			 * anyway
+			 */
+			else if ( to == tlength )
+			{
+#ifdef PGIS_DEBUG
+				lwnotice(" First point is our end");
+#endif
+				lwnotice("Is 'to' parameter == 0 ?");
+
+				dynptarray_addPoint4d(dpa, &p1, 0);
+
+				break; /* substring complete */
+			}
+
+			/*
+			 * 'to' point falls on this segment
+			 * Interpolate and break.
+			 */
+			else if ( to < tlength + slength )
+			{
+#ifdef PGIS_DEBUG
+				lwnotice(" Seg contains our end");
+#endif
+				dseg = (to - tlength) / slength;
+				interpolate_point4d(&p1, &p2, &pt, dseg);
+
+				dynptarray_addPoint4d(dpa, &pt, 0);
+
+				break;
+			}
+
+			else
+			{
+				lwnotice("Unhandled case");
 			}
 		}
 
 
+		END:
+
 		tlength += slength;
-		memcpy(&p1, &p2, sizeof(POINT2D));
+		memcpy(&p1, &p2, sizeof(POINT4D));
 	}
 
-#ifdef PGIS_DEBUG
-	lwnotice("Out of loop, constructing ptarray with %d points", nopts);
-#endif
+	/* Get constructed pointarray and release memory associated
+	 * with the dynamic pointarray
+	 */
+	opa = dpa->pa;
+	lwfree(dpa);
 
-	opa = pointArray_construct(opts,
-		TYPE_HASZ(ipa->dims),
-		TYPE_HASM(ipa->dims),
-		nopts);
+#ifdef PGIS_DEBUG
+	lwnotice("Out of loop, ptarray has %d points", opa->npoints);
+#endif
 
 	return opa;
 }

@@ -7,7 +7,8 @@ PostGIS 1.1.1CVS
 	- BUGFIX in line_locate_point()
 	- Fixed handling of postgresql paths
 	- Fixed a premature exit in postgis_restore.pl 
-	- Fixed memory bug in line_substring()
+	- BUGFIX in line_substring()
+	- New Z and M interpolation in line_substring()
 	- Added support for localized cluster in regress tester
 
 PostGIS 1.1.0
