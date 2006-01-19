@@ -934,6 +934,8 @@ extern int lwpoly_compute_box2d_p(LWPOLY *poly, BOX2DFLOAT4 *box);
 extern int lwcollection_compute_box2d_p(LWCOLLECTION *col, BOX2DFLOAT4 *box);
 extern BOX2DFLOAT4 *lwgeom_compute_box2d(LWGEOM *lwgeom);
 
+extern void interpolate_point4d(POINT4D *A, POINT4D *B, POINT4D *I, double F);
+
 /* return alloced memory */
 extern BOX2DFLOAT4 *box2d_union(BOX2DFLOAT4 *b1, BOX2DFLOAT4 *b2);
 

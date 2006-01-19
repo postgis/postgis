@@ -475,12 +475,11 @@ getPoint4d_p(const POINTARRAY *pa, int n, POINT4D *op)
 	int zmflag;
 
 #if PARANOIA_LEVEL > 0
-	if ( ! pa ) return 0;
+	if ( ! pa ) lwerror("getPoint4d_p: NULL pointarray");
 
 	if ( (n<0) || (n>=pa->npoints))
 	{
 		lwerror("getPoint4d_p: point offset out of range");
-		return 0; /*error */
 	}
 #endif
 
@@ -2134,4 +2133,33 @@ parse_lwgeom_wkt(char *wkt_input)
 
 	return serialized_form;
 
+}
+
+/*
+ * Find interpolation point I
+ * between point A and point B 
+ * so that the len(AI) == len(AB)*F
+ * and I falls on AB segment.
+ *
+ * Example:
+ *
+ *   F=0.5  :    A----I----B 
+ *   F=1    :    A---------B==I 
+ *   F=0    : A==I---------B
+ *   F=.2   :    A-I-------B
+ */
+void
+interpolate_point4d(POINT4D *A, POINT4D *B, POINT4D *I, double F)
+{
+#if PARANOIA_LEVEL > 0
+	double absF=fabs(F);
+	if ( absF < 0 || absF > 1 )
+	{
+		lwerror("interpolate_point4d: invalid F (%g)", F);
+	}
+#endif
+	I->x=A->x+((B->x-A->x)*F);
+	I->y=A->y+((B->y-A->y)*F);
+	I->z=A->z+((B->z-A->z)*F);
+	I->m=A->m+((B->m-A->m)*F);
 }
