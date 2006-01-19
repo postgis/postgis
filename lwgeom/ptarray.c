@@ -587,17 +587,13 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 
 			/*
 			 * 'to' point is our first point.
-			 * Weird, should have been handled
-			 * by previous iteration as second point
-			 * unless to==0. Let's warn and handle
-			 * anyway
+			 * (should only happen if 'to' is 0)
 			 */
 			else if ( to == tlength )
 			{
 #ifdef PGIS_DEBUG
 				lwnotice(" First point is our end");
 #endif
-				lwnotice("Is 'to' parameter == 0 ?");
 
 				dynptarray_addPoint4d(dpa, &p1, 0);
 

@@ -950,7 +950,7 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 	double from = PG_GETARG_FLOAT8(1);
 	double to = PG_GETARG_FLOAT8(2);
 	LWLINE *iline;
-	LWLINE *oline;
+	LWGEOM *olwgeom;
 	POINTARRAY *ipa, *opa;
 	PG_LWGEOM *ret;
 
@@ -979,10 +979,14 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 
 	opa = ptarray_substring(ipa, from, to);
 
-	oline = lwline_construct(iline->SRID, 0, opa);
-	ret = pglwgeom_serialize((LWGEOM *)oline);
+	if ( opa->npoints == 1 ) // Point returned
+		olwgeom = (LWGEOM *)lwpoint_construct(iline->SRID, NULL, opa);
+	else
+		olwgeom = (LWGEOM *)lwline_construct(iline->SRID, NULL, opa);
+
+	ret = pglwgeom_serialize(olwgeom);
 	PG_FREE_IF_COPY(geom, 0);
-	lwgeom_release((LWGEOM *)oline);
+	lwgeom_release(olwgeom);
 	PG_RETURN_POINTER(ret);
 }
 

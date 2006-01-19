@@ -44,3 +44,5 @@ select 'line_substring', asewkt(line_substring('LINESTRINGM(0 0 0, 4 4 4)', .25,
 select 'line_substring', asewkt(line_substring('LINESTRINGM(0 0 4, 4 4 0)', .25, 0.5));
 select 'line_substring', asewkt(line_substring('LINESTRING(0 0 4, 4 4 0)', .25, 0.5));
 
+select 'line_substring', asewkt(line_substring('LINESTRING(0 0, 1 1)', 0, 0));
+select 'line_substring', asewkt(line_substring('LINESTRING(0 0 10, 1 1 5)', 0.5, .5));
