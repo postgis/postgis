@@ -4861,8 +4861,9 @@ FROM geometry_table;</literallayout>
 
           <listitem>
 		<para>
-		Interpolates a point along a line. First argument must be a
-            	LINESTRING. Second argument is a float8 between 0 and 1
+		Returns a poin interpolated along a line.
+		First argument must be a LINESTRING.
+		Second argument is a float8 between 0 and 1
 		representing fraction of total
 		<link linkend="length2d">2d length</link> the point has
 		to be located.
@@ -4872,6 +4873,12 @@ FROM geometry_table;</literallayout>
 		See <link linkend="line_locate_point">line_locate_point()</link>
 		for computing the line location nearest to a Point.
 		</para>
+
+	<note><para>
+            Since release 1.1.1 this function also interpolates
+	    M and Z values (when present), while prior releases
+	    set them to 0.0.
+	</para></note>
 
 		<para>
 			Availability: 0.8.2
@@ -4890,9 +4897,20 @@ FROM geometry_table;</literallayout>
 		</para>
 
 		<para>
+		If 'start' and 'end' have the same value this is equivalent 
+		to <link linkend="line_interpolate_point">line_interpolate_point()</link>.
+		</para>
+
+		<para>
 		See <link linkend="line_locate_point">line_locate_point()</link>
 		for computing the line location nearest to a Point.
 		</para>
+
+	<note><para>
+            Since release 1.1.1 this function also interpolates
+	    M and Z values (when present), while prior releases
+	    set them to unspecified values.
+	</para></note>
 
 		<para>
 			Availability: 1.1.0
