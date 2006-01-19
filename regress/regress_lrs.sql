@@ -31,6 +31,8 @@ SELECT 'line_locate_point', line_locate_point('LINESTRING(709243.393033887 16396
 select 'line_locate_point', line_locate_point(geomfromtext('LINESTRING(-1953743.873 471070.784,-1953735.105 471075.419,-1953720.034 471081.649)', 6269), geomfromtext('POINT(-1953720.034 471081.649)', 6269));
 select 'line_locate_point', line_locate_point(geomfromtext('LINESTRING(-1953743.873 471070.784,-1953735.105 471075.419,-1953720.034 471081.649)', 6269), geomfromtext('POINT(-1953743.873 471070.784)', 6269));
 
+--- line_substring / line_interpolate_point
+
 --- postgis-devel/2006-January/001951.html
 select 'line_substring', asewkt(line_substring(geomfromewkt('SRID=4326;LINESTRING(0 0 0 0, 1 1 1 1, 2 2 2 2, 3 3 3 3, 4 4 4 4)'), 0.5, 0.8));
 
@@ -46,3 +48,8 @@ select 'line_substring', asewkt(line_substring('LINESTRING(0 0 4, 4 4 0)', .25, 
 
 select 'line_substring', asewkt(line_substring('LINESTRING(0 0, 1 1)', 0, 0));
 select 'line_substring', asewkt(line_substring('LINESTRING(0 0 10, 1 1 5)', 0.5, .5));
+
+--- line_interpolate_point
+
+select 'line_interpolate_point', asewkt(line_interpolate_point('LINESTRING(0 0, 1 1)', 0));
+select 'line_interpolate_point', asewkt(line_interpolate_point('LINESTRING(0 0 10, 1 1 5)', 0.5));
