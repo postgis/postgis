@@ -9,7 +9,8 @@ OUTFILE="${TMPDIR}/regress_index_out_$$"
 echo "Running GiST concurrency Regression."
 
 DB=postgis_reg
-export PGDATABASE=$DB
+PGDATABASE=$DB
+export PGDATABASE
 
 if [ "$1" = "prepare" ]; then
 	echo ""
