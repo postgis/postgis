@@ -5198,6 +5198,59 @@ FROM geometry_table;</literallayout>
 		<title>Release Notes</title>
 
     		<sect1>
+			<title>Release 1.1.1</title>
+			<para>Release date: 2006/01/23</para>
+
+			<para>
+This is an important Bugfix release, upgrade is <emphasis>highly
+recommended</emphasis>.
+Previous version contained a bug in postgis_restore.pl preventing
+<link linkend="hard_upgrade">hard upgrade</link> procedure to complete
+and a bug in GEOS-2.2+ connector preventing GeometryCollection objects
+to be used in topological operations.
+			</para>
+
+			<sect2>
+				<title>Upgrading</title>
+
+				<para>
+If you are upgrading from release 1.0.3 or later follow the
+<link linkend="soft_upgrade">soft upgrade</link> procedure.
+				</para>
+
+				<para>
+If you are upgrading from a release <emphasis>between 1.0.0RC6 and
+1.0.2</emphasis> (inclusive) and really want a live upgrade read the
+<link linkend="rel_1.0.3_upgrading">upgrade section</link> of the 1.0.3
+release notes chapter.
+				</para>
+
+				<para>
+Upgrade from any release prior to 1.0.0RC6 requires an
+<link linkend="hard_upgrade">hard upgrade</link>.
+				</para>
+			</sect2>
+
+			<sect2>
+				<title>Bug fixes</title>
+<para>Fixed a premature exit in postgis_restore.pl </para>
+<para>BUGFIX in geometrycollection handling of GEOS-CAPI connector</para>
+<para>Solaris 2.7 and MingW support improvements</para>
+<para>BUGFIX in line_locate_point()</para>
+<para>Fixed handling of postgresql paths</para>
+<para>BUGFIX in line_substring()</para>
+<para>Added support for localized cluster in regress tester</para>
+			</sect2>
+
+			<sect2>
+				<title>New functionalities</title>
+<para>New Z and M interpolation in line_substring()</para>
+<para>New Z and M interpolation in line_interpolate_point()</para>
+<para>added NumInteriorRing() alias due to OpenGIS ambiguity</para>
+			</sect2>
+
+		</sect1>
+    		<sect1>
 			<title>Release 1.1.0</title>
 			<para>Release date: 2005/12/21</para>
 
