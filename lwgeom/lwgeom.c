@@ -7,6 +7,7 @@
 #include "wktparse.h"
 
 /*#define PGIS_DEBUG_CALLS 1*/
+/*#define PGIS_DEBUG 1*/
 
 LWGEOM *
 lwgeom_deserialize(uchar *srl)
@@ -465,17 +466,39 @@ lwgeom_from_ewkb(uchar *ewkb, size_t size)
 char
 lwgeom_same(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2)
 {
+#if PGIS_DEBUG
+		lwnotice("lwgeom_same(%s, %s) called",
+			lwgeom_typename(TYPE_GETTYPE(lwgeom1->type)),
+			lwgeom_typename(TYPE_GETTYPE(lwgeom2->type)));
+#endif
+
 	if ( TYPE_GETTYPE(lwgeom1->type) != TYPE_GETTYPE(lwgeom2->type) )
+	{
+#if PGIS_DEBUG
+		lwnotice(" type differ");
+#endif
 		return 0;
+	}
 
 	if ( TYPE_GETZM(lwgeom1->type) != TYPE_GETZM(lwgeom2->type) )
+	{
+#if PGIS_DEBUG
+		lwnotice(" ZM flags differ");
+#endif
 		return 0;
+	}
 
 	/* Check boxes if both already computed  */
 	if ( lwgeom1->bbox && lwgeom2->bbox )
 	{
 		/*lwnotice("bbox1:%p, bbox2:%p", lwgeom1->bbox, lwgeom2->bbox);*/
-		if ( ! box2d_same(lwgeom1->bbox, lwgeom2->bbox) ) return 0;
+		if ( ! box2d_same(lwgeom1->bbox, lwgeom2->bbox) )
+		{
+#if PGIS_DEBUG
+			lwnotice(" bounding boxes differ");
+#endif
+			return 0;
+		}
 	}
 
 	/* geoms have same type, invoke type-specific function */

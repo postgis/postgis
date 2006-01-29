@@ -783,7 +783,7 @@ Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS)
 	PG_LWGEOM *out_geom = NULL;
 	LWGEOM *out_lwgeom;
 	gridspec grid;
-	BOX3D box3d;
+	//BOX3D box3d;
 
 	if ( PG_ARGISNULL(0) ) PG_RETURN_NULL();
 	datum = PG_GETARG_DATUM(0);
@@ -819,7 +819,20 @@ Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS)
    	out_lwgeom = lwgeom_grid(in_lwgeom, &grid);
 	if ( out_lwgeom == NULL ) PG_RETURN_NULL();
 
-	/* COMPUTE_BBOX WHEN_SIMPLE */
+	/* COMPUTE_BBOX TAINTING */
+	if ( in_lwgeom->bbox ) lwgeom_addBBOX(out_lwgeom);
+
+#if 0
+	/*
+	 * COMPUTE_BBOX WHEN SIMPLE
+	 *
+	 * WARNING: this is not SIMPLE, as snapping
+	 * an existing bbox to a grid does not
+	 * give the same result as computing a
+	 * new bounding box on the snapped coordinates.
+	 *
+	 * This bug has been fixed in postgis-1.1.2
+	 */
 	if ( in_lwgeom->bbox )
 	{
 		box2df_to_box3d_p(in_lwgeom->bbox, &box3d);
@@ -835,6 +848,7 @@ Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS)
 
 		out_lwgeom->bbox = box3d_to_box2df(&box3d);
 	}
+#endif // 0
 
 #if VERBOSE
 	elog(NOTICE, "SnapToGrid made a %s", lwgeom_typename(TYPE_GETTYPE(out_lwgeom->type)));
@@ -855,7 +869,7 @@ Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS)
 	PG_LWGEOM *out_geom = NULL;
 	LWGEOM *out_lwgeom;
 	gridspec grid;
-	BOX3D box3d;
+	//BOX3D box3d;
 	POINT4D offsetpoint;
 
 	if ( PG_ARGISNULL(0) ) PG_RETURN_NULL();
@@ -911,7 +925,20 @@ Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS)
    	out_lwgeom = lwgeom_grid(in_lwgeom, &grid);
 	if ( out_lwgeom == NULL ) PG_RETURN_NULL();
 
-	/* COMPUTE_BBOX WHEN_SIMPLE */
+	/* COMPUTE_BBOX TAINTING */
+	if ( in_lwgeom->bbox ) lwgeom_addBBOX(out_lwgeom);
+
+#if 0
+	/*
+	 * COMPUTE_BBOX WHEN SIMPLE
+	 *
+	 * WARNING: this is not SIMPLE, as snapping
+	 * an existing bbox to a grid does not
+	 * give the same result as computing a
+	 * new bounding box on the snapped coordinates.
+	 *
+	 * This bug has been fixed in postgis-1.1.2
+	 */
 	if ( in_lwgeom->bbox )
 	{
 		box2df_to_box3d_p(in_lwgeom->bbox, &box3d);
@@ -927,6 +954,7 @@ Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS)
 
 		out_lwgeom->bbox = box3d_to_box2df(&box3d);
 	}
+#endif // 0
 
 #if VERBOSE
 	elog(NOTICE, "SnapToGrid made a %s", lwgeom_typename(TYPE_GETTYPE(out_lwgeom->type)));

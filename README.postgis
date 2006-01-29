@@ -85,15 +85,35 @@ You can specify it using the --with-geos=PATH flag.
 
 See ./configure --help for more options.
 
+BUILD
+-----
+
+To build PostGIS library and utilities, as root run:
+
+  make
+
+
+TESTING
+-------
+
+You want to run regress tests before installation.
+To do so, as postgres run:
+
+	make test
+
+Final lines of output contain a summary of test results:
+run, succeeded, failed. If you have any failure please
+file a bug report using the online bug tracker:
+http://postgis.refractions.net/bugs.
+
 INSTALLATION
 ------------
 
-To build and install PostGIS library and utilities, as root run:
+To install PostGIS library and utilities, as root run:
 
-  make
   make install
 
-Installation paths will be derived by ``pg_config'':
+Installation paths will tipically be derived by ``pg_config'':
 
 	- Lib in `pg_config --pkglibdir`
 	- Binaries (loader/dumper) in `pg_config --bindir`
@@ -102,19 +122,9 @@ Installation paths will be derived by ``pg_config'':
 	- Documentation in in [prefix]/share/doc
 
 Where [prefix] above is exctracted by `pg_config --configure`.
-	
 
-TESTING
--------
-
-To run PostGIS regression tests, as postgres run:
-
-	make test
-
-Final lines of output contain a summary of test results:
-run, succeeded, failed. If you have any failure please
-file a bug report using the online bug tracker:
-http://postgis.refractions.net/bugs.
+You can change them using ./configure switches.
+See CONFIGURARION section.
 
 CREATING NEW SPATIAL DATABASES
 ------------------------------

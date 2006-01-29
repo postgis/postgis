@@ -33,16 +33,22 @@ if [ -z "$db_exists" ]; then
 	echo
 	echo "Creating spatial db ${DB} " 
 
-	createdb $DB > /dev/null
-	createlang plpgsql $DB > /dev/null
-	psql -f ../lwpostgis.sql $DB > /dev/null 2>&1
+	createdb $DB > ${TMPDIR}/regress_log_$$
+	createlang plpgsql $DB >> ${TMPDIR}/regress_log_$$ 
+	psql -f lwpostgis.sql $DB >> ${TMPDIR}/regress_log_$$ 2>&1
 fi
 
 libver=`psql -tAc "select postgis_lib_version()" $DB`
 
 if [ -z "$libver" ]; then
 	echo
-	echo "Something went wrong (no postgis installed in $DB)" 
+	echo " Something went wrong (no postgis installed in $DB)." 
+	if [ -z "$db_exists" ]; then
+		echo " Check ${TMPDIR}/regress_log_$$ for details."
+	else
+		echo " Try dropping the database, it will be recreated" \
+			" on next run."
+	fi
 	echo
 	exit 1
 fi

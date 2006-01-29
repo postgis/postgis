@@ -89,12 +89,13 @@ OBJS=$(SA_OBJS) liblwgeom.o lwgeom_pg.o lwgeom_debug.o lwgeom_spheroid.o lwgeom_
 #OTHERS=y.output lex.yy.c wktparse.tab.c wktparse.tab.h lwpostgis.sql
 OTHERS=y.output postgis_geos_version.h
 
-all: $(GEOS_RULES) ../lwpostgis.sql ../lwpostgis_upgrade.sql all-shared-lib 
+all: $(GEOS_RULES) ../lwpostgis.sql ../regress/lwpostgis.sql ../lwpostgis_upgrade.sql all-shared-lib 
 
 enable_shared=yes
 include Makefile.shlib
 
 MODULE_FILENAME = $(LPATH)/$(shlib)
+REGRESS_MODULE_FILENAME = $(shell pwd)/$(shlib)
 
 #---------------------------------------------------------------
 # Makefile targets
@@ -129,6 +130,9 @@ lwgeom_functions_basic.o: lwgeom_functions_basic.c profile.h
 
 ../lwpostgis.sql: lwpostgis.sql.in
 	cpp -P -traditional-cpp -DUSE_VERSION=$(USE_VERSION) $< | sed -e 's:@MODULE_FILENAME@:$(MODULE_FILENAME):g;s:@POSTGIS_VERSION@:$(POSTGIS_VERSION):g;s:@POSTGIS_SCRIPTS_VERSION@:$(SCRIPTS_VERSION):g;s/@POSTGIS_BUILD_DATE@/$(POSTGIS_BUILD_DATE)/g' | grep -v '^#' > $@
+
+../regress/lwpostgis.sql: lwpostgis.sql.in
+	cpp -P -traditional-cpp -DUSE_VERSION=$(USE_VERSION) $< | sed -e 's:@MODULE_FILENAME@:$(REGRESS_MODULE_FILENAME):g;s:@POSTGIS_VERSION@:$(POSTGIS_VERSION):g;s:@POSTGIS_SCRIPTS_VERSION@:$(SCRIPTS_VERSION):g;s/@POSTGIS_BUILD_DATE@/$(POSTGIS_BUILD_DATE)/g' | grep -v '^#' > $@
 
 install: all install-lib-shared install-lwgeom-scripts
 
