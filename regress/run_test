@@ -23,19 +23,59 @@ if [ -z "$TMPDIR" ]; then
 	TMPDIR=/tmp
 fi
 
+VERBOSE=0
+OPT_DROP=yes
+OPT_CREATE=yes
+while [ -n "$1" ]; do
+
+	if test "$1" = "-v"; then
+		VERBOSE=1
+		shift
+		continue
+	elif test "$1" = "--nodrop"; then
+		OPT_DROP=no
+		shift
+		continue
+	elif test "$1" = "--nocreate"; then
+		OPT_CREATE=no
+		shift
+		continue
+	else
+		break
+	fi
+done
+
 if [ -z "$1" ]; then
-	echo "Usage: $0 [-v] <test> [<test>]" >&2
-	exit 1;
+	echo "Usage: $0 [-v] [--nocreate] [--nodrop] <test> [<test>]" >&2
+	exit 1
 fi
 
-db_exists=`psql -l | grep -w ${DB}`
-if [ -z "$db_exists" ]; then
-	echo
-	echo "Creating spatial db ${DB} " 
 
-	createdb $DB > ${TMPDIR}/regress_log_$$
-	createlang plpgsql $DB >> ${TMPDIR}/regress_log_$$ 
-	psql -f lwpostgis.sql $DB >> ${TMPDIR}/regress_log_$$ 2>&1
+db_exists=`psql -l | grep -w ${DB}`
+
+if test -z "$db_exists"; then
+
+	if test x"$OPT_CREATE" = "xyes"; then
+		echo "Creating spatial db ${DB} " 
+
+		createdb $DB > ${TMPDIR}/regress_log_$$
+		createlang plpgsql $DB >> ${TMPDIR}/regress_log_$$ 
+		psql -f lwpostgis.sql $DB >> ${TMPDIR}/regress_log_$$ 2>&1
+	else
+
+		echo "Database ${DB} does not exist" >&2
+		echo "Run w/out the --nocreate flag to create it" >&2
+		exit 1
+	fi
+else
+	if test x"$OPT_CREATE" = "xyes"; then
+		echo "Database ${DB} already exist." >&2
+		echo "Run with the --nocreate flag to use it " \
+			"or drop it and try again." >&2
+		exit 1
+	else
+		echo "Using existing database ${DB}"
+	fi
 fi
 
 libver=`psql -tAc "select postgis_lib_version()" $DB`
@@ -76,19 +116,11 @@ echo
 echo "Running tests"
 echo
 
-VERBOSE=0
 RUN=0
 SKIP=0
 FAIL=0
 SUCCESS=0
 while [ -n "$1" ]; do
-
-	if test "$1" = "-v"; then
-		VERBOSE=1
-		shift
-		continue
-	fi
-
 	TEST="$1"; shift;
 
 	# catch a common mistake (strip trailing .sql)
@@ -155,6 +187,10 @@ echo "Run tests: $RUN"
 echo "Successful: $SUCCESS"
 echo "Failed: $FAIL"
 
-#sleep 1
-#dropdb $DB > /dev/null
+if test x"$OPT_DROP" = "xyes" -a x"$OPT_CREATE" = "xyes"; then
+	sleep 1
+	dropdb $DB > /dev/null
+else
+	: echo "Drop database ${DB} manually"
+fi
 

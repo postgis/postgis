@@ -12,7 +12,7 @@ ifeq ($(USE_PROJ),1)
 	TESTS += regress_proj
 endif
 
-all: test cleanup
+all: test 
 
 test: lwpostgis.sql ../lwgeom/liblwgeom.so
 	@./run_test $(TESTS)
