@@ -342,7 +342,7 @@ if test -z "$pg_docdir"; then pg_docdir=${pg_prefix}'/doc'; fi
 if test -z "$pg_datadir"; then pg_datadir=${pg_prefix}'/share'; fi
 if test -z "$pg_mandir"; then pg_mandir=${pg_prefix}'/man'; fi
 
-# Use new layout by default
+# Use old layout by default
 use_new_layout=0
 
 if test "$prefix" != 'NONE'; then
@@ -368,12 +368,12 @@ else
 	if test "$docdir" = '${prefix}/share/doc'; then
 		docdir=${pg_docdir}
 		#
-		# If datadir contains no 'pgsql' or 'postgres'
+		# If docdir contains no 'pgsql' or 'postgres'
 		# add the suffix. This is derived from
 		# PGSQL_SRC/src/Makefile.global
 		#
-		if ! expr "${docdir}" : ".*/pgsql" > /dev/null ; then
-		if ! expr "${docdir}" : ".*/postgres" > /dev/null ; then
+		if expr "${docdir}" : ".*/pgsql" > /dev/null ; then :; else
+		if expr "${docdir}" : ".*/postgres" > /dev/null ; then :; else
 			docdir=${docdir}"/postgresql"
 		fi
 		fi
@@ -388,8 +388,8 @@ else
 		# add the suffix. This is derived from
 		# PGSQL_SRC/src/Makefile.global
 		#
-		if ! expr "${datadir}" : ".*/pgsql" > /dev/null ; then
-		if ! expr "${datadir}" : ".*/postgres" > /dev/null ; then
+		if expr "${datadir}" : ".*/pgsql" > /dev/null ; then :; else
+		if expr "${datadir}" : ".*/postgres" > /dev/null ; then :; else
 			datadir=${datadir}"/postgresql"
 		fi
 		fi
