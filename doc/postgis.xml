@@ -72,7 +72,7 @@
           <term>Paul Ramsey &lt;pramsey@refractions.net&gt;</term>
 
           <listitem>
-            <para>Maintains the JDBC objects and keeps track of the
+            <para>Keeps track of the
             documentation and packaging.</para>
           </listitem>
         </varlistentry>
