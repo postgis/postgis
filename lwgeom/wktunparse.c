@@ -14,7 +14,6 @@
 /* TO get byte order */
 #include <sys/types.h>
 #include <sys/param.h>
-#include <stdint.h>
 
 #include "liblwgeom.h"
 #include "wktparse.h"
@@ -22,7 +21,6 @@
 
 /*-- Typedefs ---------------------------------------------- */
 
-typedef uint32_t int4;
 typedef uchar* (*outfunc)(uchar*,int);
 typedef uchar* (*outwkbfunc)(uchar*);
 
@@ -611,6 +609,9 @@ unparse_WKB(uchar* serialized, allocator alloc, freeor free, char endian, size_t
 
 /******************************************************************
  * $Log$
+ * Revision 1.22  2006/02/03 20:53:37  strk
+ * Swapped stdint.h (unavailable on Solaris9) with inttypes.h
+ *
  * Revision 1.21  2006/02/03 09:52:14  strk
  * Changed int4 typedefs to use POSIX uint32_t
  *

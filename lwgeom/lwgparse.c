@@ -23,8 +23,6 @@
 void set_zm(char z, char m);
 void close_parser(void);
 
-typedef uint32_t int4;
-
 typedef struct tag_tuple tuple;
 
 struct tag_outputstate{

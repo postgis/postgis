@@ -1,3 +1,5 @@
+#include <inttypes.h>
+
 /*
  * OGC WellKnownBinaryGeometry
  */
@@ -8,7 +10,7 @@
 #define WKB3DOFFSET 0x80000000
 
 typedef unsigned char byte;
-typedef unsigned long int uint32;
+typedef uint32_t uint32;
 
 typedef struct Point_t {
 	double x;

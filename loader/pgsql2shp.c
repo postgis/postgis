@@ -27,6 +27,9 @@ static char rcsid[] =
 #include <ctype.h>
 #include <math.h>
 #include <sys/types.h>
+/* Solaris9 does not provide stdint.h */
+/* #include <stdint.h> */
+#include <inttypes.h>
 #include "libpq-fe.h"
 #include "shapefil.h"
 #include "getopt.h"
@@ -55,7 +58,8 @@ static char rcsid[] =
 /* Define this to use HEX encoding instead of bytea encoding */
 #define HEXWKB 1
 
-typedef unsigned long int uint32;
+/*typedef unsigned long int uint32;*/
+typedef uint32_t uint32;
 typedef unsigned char byte;
 
 /* Global data */
@@ -412,7 +416,7 @@ shape_creator_wrapper_WKB(byte *str, int idx)
 				return create_multipoint4D_WKB(str);
 
 		default:
-			printf( "Unknown WKB type (%8.8lx) - (%s:%d)\n",
+			printf( "Unknown WKB type (%8.8x) - (%s:%d)\n",
 				type, __FILE__, __LINE__);
 			return NULL;
 	}
@@ -3323,6 +3327,9 @@ goodDBFValue(const char *in, char fieldType)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.83  2006/02/03 20:53:36  strk
+ * Swapped stdint.h (unavailable on Solaris9) with inttypes.h
+ *
  * Revision 1.82  2006/01/16 10:42:57  strk
  * Added support for Bool and Date DBF<=>PGIS mapping
  *
