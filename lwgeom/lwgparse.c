@@ -7,6 +7,7 @@
  */
 #include <string.h>
 #include <stdio.h>
+#include <stdint.h>
 
 #include "liblwgeom.h"
 #include "wktparse.h"
@@ -22,7 +23,7 @@
 void set_zm(char z, char m);
 void close_parser(void);
 
-typedef unsigned long int4;
+typedef uint32_t int4;
 
 typedef struct tag_tuple tuple;
 
