@@ -63,7 +63,7 @@ public class JtsGeometry extends PGobject {
         GeometryFactory factory = (GeometryFactory) factories.get(SRID);
         if (factory == null) {
             factory = new GeometryFactory(prec, SRID, csfac);
-            readers.put(SRID, factory);
+            factories.put(SRID, factory);
         }
         return factory;
     }

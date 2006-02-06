@@ -5,6 +5,7 @@ PostGIS 1.1.2CVS
 	- More portable ./configure script
 	- Changed ./run_test script to have more sane default behaviour
 	- Fixed support for 64bit archs
+	- jdbc2 SRID handling fixes in JTS code
 
 PostGIS 1.1.1
 2006/01/23

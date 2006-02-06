@@ -115,7 +115,7 @@ public class JtsBinaryParser {
 
         if (geofac == null) {
             geofac = JtsGeometry.getFactory(srid);
-        } else if (geofac.getSRID() != srid) {
+        } else if (haveS && geofac.getSRID() != srid) {
             throw new IllegalArgumentException("Inconsistent srids in complex geometry: " + srid
                     + ", " + geofac.getSRID());
         }
@@ -168,9 +168,9 @@ public class JtsBinaryParser {
     }
 
     /** Parse an Array of "full" Geometries */
-    private void parseGeometryArray(ValueGetter data, Geometry[] container) {
+    private void parseGeometryArray(ValueGetter data, Geometry[] container, GeometryFactory geofac) {
         for (int i = 0; i < container.length; i++) {
-            container[i] = parseGeometry(data);
+            container[i] = parseGeometry(data, geofac);
         }
     }
 
@@ -199,7 +199,7 @@ public class JtsBinaryParser {
 
     private MultiPoint parseMultiPoint(ValueGetter data, GeometryFactory geofac) {
         Point[] points = new Point[data.getInt()];
-        parseGeometryArray(data, points);
+        parseGeometryArray(data, points, geofac);
         return geofac.createMultiPoint(points);
     }
 
@@ -227,21 +227,21 @@ public class JtsBinaryParser {
     private MultiLineString parseMultiLineString(ValueGetter data, GeometryFactory geofac) {
         int count = data.getInt();
         LineString[] strings = new LineString[count];
-        parseGeometryArray(data, strings);
+        parseGeometryArray(data, strings, geofac);
         return geofac.createMultiLineString(strings);
     }
 
     private MultiPolygon parseMultiPolygon(ValueGetter data, GeometryFactory geofac) {
         int count = data.getInt();
         Polygon[] polys = new Polygon[count];
-        parseGeometryArray(data, polys);
+        parseGeometryArray(data, polys, geofac);
         return geofac.createMultiPolygon(polys);
     }
 
     private GeometryCollection parseCollection(ValueGetter data, GeometryFactory geofac) {
         int count = data.getInt();
         Geometry[] geoms = new Geometry[count];
-        parseGeometryArray(data, geoms);
+        parseGeometryArray(data, geoms, geofac);
         return geofac.createGeometryCollection(geoms);
     }
 }
