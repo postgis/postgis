@@ -10,9 +10,6 @@
 #define _WKTPARSE_H
 
 #include <stdlib.h>
-/* Solaris9 does not provide stdint.h */
-/* #include <stdint.h> */
-#include <inttypes.h>
 
 
 #ifndef _LIBLWGEOM_H
@@ -23,8 +20,6 @@ typedef void  (*freeor)(void* mem);
 typedef void  (*report_error)(const char* string, ...);
 
 /*typedef unsigned long int4;*/
-typedef uint32_t int4;
-
 
 /* How much memory is allocated at a time(bytes) for tuples */
 #define ALLOC_CHUNKS 8192
