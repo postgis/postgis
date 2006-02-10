@@ -9491,8 +9491,6 @@ INSERT INTO "spatial_ref_sys" ("srid","auth_name","auth_srid","srtext","proj4tex
 --- EPSG 32766 : WGS 84 / TM 36 SE
 ---
 INSERT INTO "spatial_ref_sys" ("srid","auth_name","auth_srid","srtext","proj4text") VALUES (32766,'EPSG',32766,'PROJCS["WGS 84 / TM 36 SE",GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.01745329251994328,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",36],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",10000000],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AUTHORITY["EPSG","32766"]]','+proj=tmerc +lat_0=0 +lon_0=36 +k=0.999600 +x_0=500000 +y_0=10000000 +ellps=WGS84 +datum=WGS84 +units=m +no_defs ');
-COMMIT;
-BEGIN;
 ---
 --- EPSG 4001 : Unknown datum based upon the Airy 1830 ellipsoid
 ---
