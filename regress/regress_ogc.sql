@@ -32,7 +32,7 @@ SELECT 'isvalid', isvalid('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');
 SELECT 'isvalid', isvalid('POLYGON((0 0, 0 10, 10 10, -5 10, 10 0, 0 0))');
 SELECT 'isvalid', isvalid('GEOMETRYCOLLECTION EMPTY');
 SELECT 'intersection', astext(intersection('LINESTRING(0 10, 0 -10)', 'LINESTRING(0 0, 1 1)'));
-SELECT 'difference', astext(difference('LINESTRING(0 10, 0 -10)', 'LINESTRING(0 2, 0 -2)'));
+SELECT 'difference', astext(difference('LINESTRING(0 10, 0 -10)'::GEOMETRY, 'LINESTRING(0 2, 0 -2)'::GEOMETRY));
 SELECT 'boundary', astext(boundary('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0),(2 2, 2 4, 4 4, 4 2, 2 2))'));
 SELECT 'symdifference', astext(symdifference('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0),(2 2, 2 4, 4 4, 4 2, 2 2))', 'LINESTRING(0 0, 20 20)'));
 SELECT 'issimple', issimple('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0),(2 2, 2 4, 4 4, 4 2, 2 2))');
