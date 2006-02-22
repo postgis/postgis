@@ -159,6 +159,81 @@ CREATE TYPE geometry (
         storage = main
 );
 
+-------------------------------------------
+-- Affine transforms
+-------------------------------------------
+
+-- Availability: 1.1.2
+CREATE OR REPLACE FUNCTION Affine(geometry,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_affine'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; 
+
+-- Availability: 1.1.2
+CREATE OR REPLACE FUNCTION Affine(geometry,float8,float8,float8,float8,float8,float8)
+	RETURNS geometry
+	AS 'SELECT affine($1,  $2, $3, 0,  $4, $5, 0,  0, 0, 1,  $6, $7, 0)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; 
+
+-- Availability: 1.1.2
+CREATEFUNCTION RotateZ(geometry,float8)
+	RETURNS geometry
+	AS 'SELECT affine($1,  cos($2), -sin($2), 0,  sin($2), cos($2), 0,  0, 0, 1,  0, 0, 0)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; 
+
+-- Availability: 1.1.2
+CREATEFUNCTION Rotate(geometry,float8)
+	RETURNS geometry
+	AS 'SELECT rotateZ($1, $2)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; 
+
+-- Availability: 1.1.2
+CREATEFUNCTION RotateX(geometry,float8)
+	RETURNS geometry
+ 	AS 'SELECT affine($1, 1, 0, 0, 0, cos($2), -sin($2), 0, sin($2), cos($2), 0, 0, 0)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; 
+
+-- Availability: 1.1.2
+CREATEFUNCTION RotateY(geometry,float8)
+	RETURNS geometry
+ 	AS 'SELECT affine($1,  cos($2), 0, sin($2),  0, 1, 0,  -sin($2), 0, cos($2), 0,  0, 0)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; 
+
+CREATEFUNCTION Translate(geometry,float8,float8,float8)
+	RETURNS geometry
+ 	AS 'SELECT affine($1, 1, 0, 0, 0, 1, 0, 0, 0, 1, $2, $3, $4)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; 
+
+CREATEFUNCTION Translate(geometry,float8,float8)
+	RETURNS geometry
+	AS 'SELECT translate($1, $2, $3, 0)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT;
+
+-- Availability: 1.1.0
+CREATEFUNCTION Scale(geometry,float8,float8,float8)
+	RETURNS geometry
+	AS 'SELECT affine($1,  $2, 0, 0,  0, $3, 0,  0, 0, $4,  0, 0, 0)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; 
+
+-- Availability: 1.1.0
+CREATEFUNCTION Scale(geometry,float8,float8)
+	RETURNS geometry
+	AS 'SELECT scale($1, $2, $3, 1)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; 
+
+-- Availability: 1.1.0 - DEPRECATED!
+CREATEFUNCTION transscale(geometry,float8,float8,float8,float8)
+        RETURNS geometry
+        AS '@MODULE_FILENAME@', 'LWGEOM_transscale'
+        LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict) ;
+
+-- Availability: 1.1.0
+CREATEFUNCTION shift_longitude(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_longitude_shift'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; 
+
+
         
 -------------------------------------------------------------------
 --  BOX3D TYPE
@@ -846,7 +921,9 @@ UPDATE pg_opclass
 
 #endif
 	
+-------------------------------------------
 -- other lwgeom functions
+-------------------------------------------
 
 CREATEFUNCTION addBBOX(geometry) 
 	RETURNS geometry
@@ -869,41 +946,9 @@ CREATEFUNCTION getBBOX(geometry)
         AS '@MODULE_FILENAME@','LWGEOM_to_BOX2DFLOAT4'
         LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
-CREATEFUNCTION translate(geometry,float8,float8,float8)
-	RETURNS geometry
-	AS '@MODULE_FILENAME@', 'LWGEOM_translate'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict) ;
-
-CREATEFUNCTION translate(geometry,float8,float8)
-	RETURNS geometry
-	AS ' SELECT translate($1, $2, $3, 0) '
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict);
-
--- Availability: 1.1.0CVS
-CREATEFUNCTION scale(geometry,float8,float8,float8)
-	RETURNS geometry
-	AS '@MODULE_FILENAME@', 'LWGEOM_scale'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict) ;
-
--- Availability: 1.1.0CVS
-CREATEFUNCTION scale(geometry,float8,float8)
-	RETURNS geometry
-	AS ' SELECT scale($1, $2, $3, 1) '
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict);
-
--- Availability: 1.1.0CVS
-CREATEFUNCTION transscale(geometry,float8,float8,float8,float8)
-	RETURNS geometry
-	AS '@MODULE_FILENAME@', 'LWGEOM_transscale'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict) ;
-
--- Availability: 1.1.0CVS
-CREATEFUNCTION shift_longitude(geometry)
-	RETURNS geometry
-	AS '@MODULE_FILENAME@', 'LWGEOM_longitude_shift'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict) ;
-
+-------------------------------------------
 --- CHIP functions
+-------------------------------------------
 
 CREATEFUNCTION srid(chip)
 	RETURNS int4

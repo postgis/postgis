@@ -2,7 +2,7 @@ TMPDIR?=/tmp
 
 include ../Makefile.config
 
-TESTS=regress regress_index lwgeom_regress regress_lrs removepoint setpoint simplify snaptogrid
+TESTS=regress regress_index lwgeom_regress regress_lrs removepoint setpoint simplify snaptogrid affine
 
 ifeq ($(USE_GEOS),1)
 	TESTS += regress_ogc regress_bdpoly
