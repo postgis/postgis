@@ -4709,6 +4709,64 @@ FROM geometry_table;</literallayout>
         </varlistentry>
 
         <varlistentry>
+          <term>Affine(geometry,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8)</term>
+
+          <listitem>
+            <para>Applies an 3d affine transformation to the geometry. The call 
+                <programlisting>
+                    Affine(geom, a, b, c, d, e, f, g, h, i, xoff, yoff, zoff)
+                </programlisting>
+                represents the transformation matrix
+                <programlisting>
+                    /  a  b  c  xoff  \
+                    |  d  e  f  yoff  |
+                    |  g  h  i  zoff  |
+                    \  0  0  0  1     /
+                </programlisting>
+                and the vertices are transformed as follows:
+                <programlisting>
+                    x' = a*x + b*y + c*z + xoff
+                    y' = d*x + e*y + f*z + yoff
+                    z' = g*x + h*y + i*z + zoff   
+                </programlisting>
+                All of the translate / scale functions below are expressed via such an affine transformation.
+            </para>
+            <para>
+                Availability: 1.1.2.
+            </para>
+          </listitem>
+        </varlistentry>
+	
+        <varlistentry>
+          <term>Affine(geometry,float8,float8,float8,float8,float8,float8)</term>
+
+          <listitem>
+            <para>Applies an 2d affine transformation to the geometry. The call 
+                <programlisting>
+                    Affine(geom, a, b, d, e, xoff, yoff)
+                </programlisting>
+                represents the transformation matrix
+                <programlisting>
+                    /  a  b  0  xoff  \        /  a  b  xoff  \
+                    |  d  e  0  yoff  |  rsp.  |  d  e  yoff  |
+                    |  0  0  1  0     |        \  0  0  1     /
+                    \  0  0  0  1     /
+                </programlisting>
+                and the vertices are transformed as follows:
+                <programlisting>
+                    x' = a*x + b*y + xoff
+                    y' = d*x + e*y + yoff
+                    z' = z   
+                </programlisting>
+                This method is a subcase of the 3D method above.
+            </para>
+            <para>
+		Availability: 1.1.2.
+            </para>
+          </listitem>
+        </varlistentry>
+	
+        <varlistentry>
           <term>Translate(geometry,float8,float8,float8)</term>
 
           <listitem>
@@ -4750,12 +4808,13 @@ FROM geometry_table;</literallayout>
           <term>TransScale(geometry,float8,float8,float8,float8)</term>
 
           <listitem>
-            <para>First, translates the geometry using the first two floats, then scales it
-                using the second two floats, working in 2D only. Using
-                transscale(geom, X, Y, XFactor, YFactor) effectively is an efficient shortcut
-                for scale(translate(geom,X,Y,0),Xfactor,YFactor,1).</para>
+                <para>First, translates the geometry using the first two floats, then scales it
+                    using the second two floats, working in 2D only. Using
+                    <code>transscale(geom, X, Y, XFactor, YFactor)</code> internally calls
+                    <code>affine(geom, XFactor, 0, 0,  0, YFactor, 0,  0, 0, 1,  X*XFactor, Y*YFactor, 0)</code>.                
+                </para>
                 <para>
-                        Availability: 1.1.0.  DEPRECATED in release 1.1.2.
+                        Availability: 1.1.0.
                 </para>
           </listitem>
         </varlistentry>

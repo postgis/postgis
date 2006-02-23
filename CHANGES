@@ -6,8 +6,9 @@ PostGIS 1.1.2CVS
 	- Changed ./run_test script to have more sane default behaviour
 	- Fixed support for 64bit archs
 	- jdbc2 SRID handling fixes in JTS code
+	- New affine() matrix transformation functions
 	- New rotate{,X,Y,Z}() function 
-	- Obsoleted transscale() function
+	- Old translating and scaling functions now use affine() internally
 
 PostGIS 1.1.1
 2006/01/23

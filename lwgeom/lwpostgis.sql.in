@@ -221,11 +221,11 @@ CREATEFUNCTION Scale(geometry,float8,float8)
 	AS 'SELECT scale($1, $2, $3, 1)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; 
 
--- Availability: 1.1.0 - DEPRECATED!
+-- Availability: 1.1.0 
 CREATEFUNCTION transscale(geometry,float8,float8,float8,float8)
         RETURNS geometry
-        AS '@MODULE_FILENAME@', 'LWGEOM_transscale'
-        LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict) ;
+        AS 'SELECT affine($1,  $4, 0, 0,  0, $5, 0,  0, 0, 1,  $2*$4, $3*$5, 0)'
+        LANGUAGE 'SQL' _IMMUTABLE_STRICT;
 
 -- Availability: 1.1.0
 CREATEFUNCTION shift_longitude(geometry)

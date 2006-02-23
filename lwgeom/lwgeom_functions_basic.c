@@ -34,7 +34,6 @@ Datum LWGEOM_perimeter2d_poly(PG_FUNCTION_ARGS);
 Datum LWGEOM_perimeter_poly(PG_FUNCTION_ARGS);
 Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_maxdistance2d_linestring(PG_FUNCTION_ARGS);
-Datum LWGEOM_transscale(PG_FUNCTION_ARGS);
 Datum LWGEOM_inside_circle_point(PG_FUNCTION_ARGS);
 Datum LWGEOM_collect(PG_FUNCTION_ARGS);
 Datum LWGEOM_accum(PG_FUNCTION_ARGS);
@@ -63,9 +62,6 @@ Datum LWGEOM_hasBBOX(PG_FUNCTION_ARGS);
 Datum LWGEOM_azimuth(PG_FUNCTION_ARGS);
 Datum LWGEOM_affine(PG_FUNCTION_ARGS);
 
-static void lwgeom_transscale_recursive(uchar *serialized, double xoff, double yoff, double xfac, double yfac);
-static void lwgeom_transscale_ptarray(POINTARRAY *pa, double xoff, double yoff, double xfac, double yfac);
-
 Datum optimistic_overlap(PG_FUNCTION_ARGS);
 /*------------------------------------------------------------------*/
 
@@ -86,102 +82,6 @@ Datum LWGEOM_mem_size(PG_FUNCTION_ARGS)
 
 	PG_FREE_IF_COPY(geom,0);
 	PG_RETURN_INT32(size);
-}
-
-
-/*
- * Transscale a pointarray.
- */
-static void
-lwgeom_transscale_ptarray(POINTARRAY *pa, double xoff, double yoff, double xfac, double yfac)
-{
-	int i;
-	POINT3DZ p3d;
-	POINT2D p2d;
-
-	if ( TYPE_HASZ(pa->dims) )
-	{
-		for (i=0; i<pa->npoints; i++) {
-			getPoint3dz_p(pa, i, &p3d);
-			p3d.x += xoff;
-			p3d.x *= xfac;
-			p3d.y += yoff;
-			p3d.y *= yfac;
-			/* Do nothing for z here */
-			memcpy(getPoint_internal(pa, i), &p3d,
-				sizeof(POINT3DZ));
-		}
-	}
-	else
-	{
-		for (i=0; i<pa->npoints; i++) {
-			getPoint2d_p(pa, i, &p2d);
-			p2d.x += xoff;
-			p2d.x *= xfac;
-			p2d.y += yoff;
-			p2d.y *= yfac;
-			memcpy(getPoint_internal(pa, i), &p2d,
-				sizeof(POINT2D));
-		}
-	}
-}
-
-static void
-lwgeom_transscale_recursive(uchar *serialized,
-	double xoff, double yoff, double xfac, double yfac)
-{
-	LWGEOM_INSPECTED *inspected;
-	int i, j;
-
-	inspected = lwgeom_inspect(serialized);
-
-	/* scan each object translating it */
-	for (i=0; i<inspected->ngeometries; i++)
-	{
-		LWLINE *line=NULL;
-		LWPOINT *point=NULL;
-		LWPOLY *poly=NULL;
-		uchar *subgeom=NULL;
-
-		point = lwgeom_getpoint_inspected(inspected, i);
-		if (point !=NULL)
-		{
-			lwgeom_transscale_ptarray(point->point,
-				xoff, yoff, xfac, yfac);
-			lwgeom_release((LWGEOM *)point);
-			continue;
-		}
-
-		poly = lwgeom_getpoly_inspected(inspected, i);
-		if (poly !=NULL)
-		{
-			for (j=0; j<poly->nrings; j++)
-			{
-				lwgeom_transscale_ptarray(poly->rings[j],
-					xoff, yoff, xfac, yfac);
-			}
-			lwgeom_release((LWGEOM *)poly);
-			continue;
-		}
-
-		line = lwgeom_getline_inspected(inspected, i);
-		if (line != NULL)
-		{
-			lwgeom_transscale_ptarray(line->points,
-				xoff, yoff, xfac, yfac);
-			lwgeom_release((LWGEOM *)line);
-			continue;
-		}
-
-		subgeom = lwgeom_getsubgeometry_inspected(inspected, i);
-		if ( subgeom == NULL )
-		{
-			elog(ERROR, "lwgeom_getsubgeometry_inspected returned NULL??");
-		}
-		lwgeom_transscale_recursive(subgeom, xoff, yoff, xfac, yfac);
-	}
-
-	pfree_inspected(inspected);
 }
 
 /* get summary info on a GEOMETRY */
@@ -1666,33 +1566,6 @@ Datum LWGEOM_longitude_shift(PG_FUNCTION_ARGS)
 
 	/* Release detoasted geometry */
 	pfree(geom);
-
-	PG_RETURN_POINTER(ret);
-}
-
-/*transscale geometry */
-PG_FUNCTION_INFO_V1(LWGEOM_transscale);
-Datum LWGEOM_transscale(PG_FUNCTION_ARGS)
-{
-	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
-	PG_LWGEOM *ret;
-	LWGEOM *tmp;
-	uchar *srl = SERIALIZED_FORM(geom);
-
-	double xoff =  PG_GETARG_FLOAT8(1);
-	double yoff =  PG_GETARG_FLOAT8(2);
-	double xfac =  PG_GETARG_FLOAT8(3);
-	double yfac =  PG_GETARG_FLOAT8(4);
-
-	lwgeom_transscale_recursive(srl, xoff, yoff, xfac, yfac);
-
-	/* COMPUTE_BBOX TAINTING */
-	tmp = pglwgeom_deserialize(geom);
-	ret = pglwgeom_serialize(tmp);
-
-	/* Release memory */
-	pfree(geom);
-	lwgeom_release(tmp);
 
 	PG_RETURN_POINTER(ret);
 }

@@ -27,3 +27,17 @@ select 'rotateX', asewkt(SnapToGrid(rotateX('POINT(1 1 1)', pi()/2), 0.1));
 select 'rotateX', asewkt(SnapToGrid(rotateX('POINT(1 1 1)', pi()+pi()/2), 0.1));
 select 'rotateX', asewkt(SnapToGrid(rotateX('POINT(1 1 1)', 2*pi()), 0.1));
 
+-- transscale
+select 'transscale', asewkt(snapToGrid(transscale('POINT(1 1)',1, 1, 1, 1), 0.1));
+select 'transscale', asewkt(snapToGrid(transscale('POINT(2 2)',1, 1, 1, 1), 0.1));
+select 'transscale', asewkt(snapToGrid(transscale('POINT(1 1)',-1, -1, -1, -1), 0.1));
+select 'transscale', asewkt(snapToGrid(transscale('POINT(1 1)',0, 1, 1, 1), 0.1));
+select 'transscale', asewkt(snapToGrid(transscale('POINT(1 1)',1, 0, 1, 1), 0.1));
+select 'transscale', asewkt(snapToGrid(transscale('POINT(1 1)',1, 1, 0, 1), 0.1));
+select 'transscale', asewkt(snapToGrid(transscale('POINT(1 1)',1, 1, 1, 0), 0.1));
+select 'transscale', asewkt(snapToGrid(transscale('POINT(1 1)',2, 1, 1, 1), 0.1));
+select 'transscale', asewkt(snapToGrid(transscale('POINT(1 1)',1, 2, 1, 1), 0.1));
+select 'transscale', asewkt(snapToGrid(transscale('POINT(1 1)',1, 1, 2, 1), 0.1));
+select 'transscale', asewkt(snapToGrid(transscale('POINT(1 1)',1, 1, 1, 2), 0.1));
+select 'transscale', asewkt(snapToGrid(transscale('POINT(1 1)',2, 3, 5, 7), 0.1));
+select 'transscale', asewkt(snapToGrid(transscale('POINT(1 1 1)',2, 3, 5, 7), 0.1));
