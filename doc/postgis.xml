@@ -280,19 +280,19 @@
           <itemizedlist>
             <listitem>
 		<para>
-		If want support for coordinate reprojection you must have
+		If you want support for coordinate reprojection, you must have
 		the Proj4 library installed. If ./configure didn't find
-		it try using <code>--with-proj=PATH</code>
+		it, try using <code>--with-proj=PATH</code>
 		switch specify a specific Proj4 installation directory.
 		</para>
             </listitem>
 
             <listitem>
 		<para>
-		If want to use GEOS functionality you must have the GEOS
-		library installed. If ./configure didn't find it try
-		using <code>--with-proj=PATH</code> to specify geos-config
-		full path.
+		If you want to use GEOS functionality, you must have the GEOS
+		library installed. If ./configure didn't find it, try
+		using <code>--with-geos=PATH</code> to specify the full 
+                path to the geos-config program full path.
 		</para>
             </listitem>
           </itemizedlist>
