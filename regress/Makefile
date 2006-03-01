@@ -28,4 +28,4 @@ cleanup:
 	@dropdb postgis_reg > /dev/null
 
 clean:
-	rm lwpostgis.sql
+	rm -f lwpostgis.sql
