@@ -83,7 +83,7 @@ AC_SUBST(PGBIN)
 AC_SUBST(PGTEMPLATE)
 AC_SUBST(LPATH)
 PGFEINCLUDES="-I"`${PGCONFIG} --includedir`
-PGFELIBS="-L"`${PGCONFIG} --libdir`" -lpq"
+PGFELIBS="-L"`${PGCONFIG} --libdir`" -lpq "`${PGCONFIG} --libs 2> /dev/null`
 PGBELIBS="-L"`${PGCONFIG} --libdir`" -lpostgres"
 PGBEINCLUDES="-I"`${PGCONFIG} --includedir-server`
 PGBIN=`${PGCONFIG} --bindir`
