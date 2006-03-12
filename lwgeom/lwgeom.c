@@ -133,7 +133,7 @@ lwgeom_forceRHR(LWGEOM *lwgeom)
 	switch (TYPE_GETTYPE(lwgeom->type))
 	{
 		case POLYGONTYPE:
-			lwpoly_reverse((LWPOLY *)lwgeom);
+			lwpoly_forceRHR((LWPOLY *)lwgeom);
 			return;
 
 		case MULTIPOLYGONTYPE:
