@@ -1867,7 +1867,7 @@ ptarray_isccw(const POINTARRAY *pa)
 	{
 		getPoint2d_p(pa, i, &p1);
 		getPoint2d_p(pa, i+1, &p2);
-		area += (p1.x * p2.y) - (p1.y * p2.x);
+		area += (p1.y * p2.x) - (p1.x * p2.y);
 	}
 	if ( area > 0 ) return 0;
 	else return 1;
