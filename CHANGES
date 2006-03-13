@@ -9,6 +9,7 @@ PostGIS 1.1.2CVS
 	- New affine() matrix transformation functions
 	- New rotate{,X,Y,Z}() function 
 	- Old translating and scaling functions now use affine() internally
+	- BUGFIX in EnforceRHR()
 
 PostGIS 1.1.1
 2006/01/23
