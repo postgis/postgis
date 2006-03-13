@@ -2510,6 +2510,43 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 
 	query = palloc(querysize);
 
+
+	/* Security check: because we access information in the pg_statistic table, we must run as the database
+	superuser (by marking the function as SECURITY DEFINER) and check permissions ourselves */
+	if ( txnsp )
+	{
+		sprintf(query, "SELECT has_table_privilege((SELECT usesysid FROM pg_user WHERE usename = session_user), '%s.%s', 'select')", nsp, tbl);
+	}
+	else
+	{
+		sprintf(query, "SELECT has_table_privilege((SELECT usesysid FROM pg_user WHERE usename = session_user), '%s', 'select')", tbl);
+	}
+
+#if DEBUG_GEOMETRY_STATS > 1
+	elog(NOTICE, "permission check sql query is: %s", query);
+#endif
+
+	SPIcode = SPI_exec(query, 1);
+	if (SPIcode != SPI_OK_SELECT)
+	{
+		SPI_finish();
+		elog(ERROR, "LWGEOM_estimated_extent: couldn't execute permission check sql via SPI");
+		PG_RETURN_NULL();
+	}
+
+	tuptable = SPI_tuptable;
+	tupdesc = SPI_tuptable->tupdesc;
+	tuple = tuptable->vals[0];
+	
+	if (!DatumGetBool(SPI_getbinval(tuple, tupdesc, 1, &isnull)))
+	{
+		SPI_finish();
+		elog(ERROR, "LWGEOM_estimated_extent: permission denied for relation %s", tbl);
+		PG_RETURN_NULL();
+	}
+
+
+	/* Return the stats data */
 	if ( txnsp )
 	{
 		sprintf(query, "SELECT s.stanumbers1[5:8] FROM pg_statistic s, pg_class c, pg_attribute a, pg_namespace n WHERE c.relname = '%s' AND a.attrelid = c.oid AND a.attname = '%s' AND n.nspname = '%s' AND c.relnamespace = n.oid AND s.starelid=c.oid AND s.staattnum = a.attnum AND staattnum = attnum", tbl, col, nsp);
@@ -2593,6 +2630,10 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.38  2006/03/13 10:54:08  strk
+ * Applied patch from Mark Cave Ayland embedding access control for
+ * the estimated_extent functions.
+ *
  * Revision 1.37  2006/01/09 11:48:15  strk
  * Fixed "strict-aliasing rule" breaks.
  *

@@ -30,6 +30,7 @@
 # define _VOLATILE_STRICT VOLATILE STRICT
 # define _VOLATILE VOLATILE
 # define _STRICT STRICT
+# define _SECURITY_DEFINER SECURITY DEFINER
 #else 
 # define _IMMUTABLE_STRICT  with(iscachable,isstrict)
 # define _IMMUTABLE with(iscachable)
@@ -38,6 +39,7 @@
 # define _VOLATILE_STRICT with(isstrict)
 # define _VOLATILE 
 # define _STRICT with(isstrict)
+# define _SECURITY_DEFINER 
 #endif 
 
 
@@ -1480,14 +1482,14 @@ CREATEFUNCTION estimate_histogram2d(histogram2d,box2d)
 -----------------------------------------------------------------------
 CREATEFUNCTION estimated_extent(text,text,text) RETURNS box2d AS
 	'@MODULE_FILENAME@', 'LWGEOM_estimated_extent'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+	LANGUAGE 'C' _IMMUTABLE_STRICT _SECURITY_DEFINER;
 
 -----------------------------------------------------------------------
 -- ESTIMATED_EXTENT( <table name>, <column name> )
 -----------------------------------------------------------------------
 CREATEFUNCTION estimated_extent(text,text) RETURNS box2d AS
 	'@MODULE_FILENAME@', 'LWGEOM_estimated_extent'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+	LANGUAGE 'C' _IMMUTABLE_STRICT _SECURITY_DEFINER; 
 
 -----------------------------------------------------------------------
 -- FIND_EXTENT( <schema name>, <table name>, <column name> )

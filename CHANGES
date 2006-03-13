@@ -9,7 +9,9 @@ PostGIS 1.1.2CVS
 	- New affine() matrix transformation functions
 	- New rotate{,X,Y,Z}() function 
 	- Old translating and scaling functions now use affine() internally
-	- BUGFIX in EnforceRHR()
+	- BUGFIX in EnforceRHR() 
+	- Embedded access control in estimated_extent() for builds against
+	  pgsql >= 8.0.0
 
 PostGIS 1.1.1
 2006/01/23
