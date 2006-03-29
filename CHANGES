@@ -1,4 +1,5 @@
-PostGIS 1.1.2CVS
+PostGIS 1.1.2
+2006/03/30
 
 	- Regress tests can now be run *before* postgis intallation
 	- BUGFIX in SnapToGrid() computation of output bounding box
