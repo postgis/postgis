@@ -9,14 +9,6 @@
 - casts between PostGIS and PostgreSQL geometry classes
 
 ======================================
-2005/12/16 - PostGIS 1.1.0 closeup
-======================================
-
-- TEST TEST TEST (upgrades mainly)
-
-- Remove type-punned warnings given by gcc-3.3 ?
-
-======================================
 2005/12/14 - other random items 
 ======================================
 
@@ -31,7 +23,7 @@
 
 - LineMerge and Polygonize* interfaces for JTS
 
-- More LRS functions
+- More LRS functions ?
 
 - Selectivity estimation code merge (+- pgsql-8.0.0)
 	
