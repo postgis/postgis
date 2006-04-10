@@ -39,8 +39,6 @@ Datum polygonize_garray(PG_FUNCTION_ARGS);
 Datum LWGEOM_buildarea(PG_FUNCTION_ARGS);
 Datum linemerge(PG_FUNCTION_ARGS);
 
-
-
 /*
  * Define this to have have many notices printed
  * during postgis->geos and geos->postgis conversions
@@ -234,6 +232,31 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 		g2 = JTSUnion(g1,geos_result);
 		if ( g2 == NULL )
 		{
+//#define PGIS_SQL_FAILURES 1
+
+#ifdef PGIS_SQL_FAILURES
+			LWGEOM *failing1, *failing2;
+			char *hexwkb1, *hexwkb2;
+
+			failing1 = JTS2LWGEOM(g1, 0);
+			failing2 = JTS2LWGEOM(geos_result, 0);
+
+			failing1->SRID=-1;
+			failing2->SRID=-1;
+
+			hexwkb1 = lwgeom_to_hexwkb(failing1, getMachineEndian());
+			hexwkb2 = lwgeom_to_hexwkb(failing2, getMachineEndian());
+
+			lwnotice("\nINSERT INTO jts_failures(g1,g2,op) VALUES ('%s', '%s', 'union');",
+				hexwkb1, hexwkb2);
+
+			lwgeom_release(failing1);
+			lwgeom_release(failing2);
+
+			// let it leak (getting memory errors otherwise)
+			//free(hexwkb1);
+			//free(hexwkb2);
+#endif
 			finishJTS();
 			lwerror("JTS union() threw an error!");
 			PG_RETURN_NULL();
