@@ -1,3 +1,8 @@
+PostGIS 1.1.3CVS
+
+	- WKT parser: forbidden construction of multigeometries with
+	  EMPTY elements (still supported for GEOMETRYCOLLECTION).
+
 PostGIS 1.1.2
 2006/03/30
 
