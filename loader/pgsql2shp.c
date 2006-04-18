@@ -58,6 +58,10 @@ static char rcsid[] =
 /* Define this to use HEX encoding instead of bytea encoding */
 #define HEXWKB 1
 
+/* Maximum DBF field width (according to ARCGIS) */
+#define MAX_DBF_FIELD_SIZE 255
+
+
 /*typedef unsigned long int uint32;*/
 typedef uint32_t uint32;
 typedef unsigned char byte;
@@ -2772,12 +2776,22 @@ initialize(void)
 				/* might 0 be a good size ? */
 			}
 		}
+
+		if ( size > MAX_DBF_FIELD_SIZE )
+		{
+			fprintf(stderr, "Warning: values of field '%s' "
+				"exceeding maximum dbf field width (%d) "
+				"will be truncated.\n",
+				fname, MAX_DBF_FIELD_SIZE);
+			size = MAX_DBF_FIELD_SIZE;
+		}
+
 /*printf( "FIELD_NAME: %s, SIZE: %d\n", field_name, size); */
-		
+
 		/* generic type (use string representation) */
 		if(DBFAddField(dbf, field_name, FTString, size, 0) == -1)
 		{
-			printf( "Error - String field could not "
+			fprintf(stderr, "Error - String field could not "
 					"be created.\n");
 			return 0;
 		}
@@ -3327,6 +3341,9 @@ goodDBFValue(const char *in, char fieldType)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.84  2006/04/18 14:09:28  strk
+ * Limited text field size to 255 (bug #84)  [will eventually provide a switch to support wider fields ]
+ *
  * Revision 1.83  2006/02/03 20:53:36  strk
  * Swapped stdint.h (unavailable on Solaris9) with inttypes.h
  *
