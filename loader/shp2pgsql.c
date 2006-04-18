@@ -1680,7 +1680,7 @@ utf8 (const char *fromcode, char *inputbuf)
 		fprintf(stderr, "utf8: malloc: %s\n", strerror (errno));
 		return NULL;
 	}
-	bzero (outputbuf, outbytesleft);
+	memset (outputbuf, 0, outbytesleft);
 	outputptr = outputbuf;
 
 	if (-1==iconv(cd, &inputbuf, &inbytesleft, &outputptr, &outbytesleft))
@@ -1698,6 +1698,9 @@ utf8 (const char *fromcode, char *inputbuf)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.107  2006/04/18 09:16:26  strk
+ * Substituted bzero() use with memset()
+ *
  * Revision 1.106  2006/01/16 10:42:58  strk
  * Added support for Bool and Date DBF<=>PGIS mapping
  *
