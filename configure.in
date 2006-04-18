@@ -235,8 +235,9 @@ AC_PATH_PROG([DLLWRAP], [dllwrap])
 AC_SUBST(DLLTOOL)
 AC_PATH_PROG([DLLTOOL], [dlltool])
 
-AC_SUBST(YACC)
-AC_PATH_PROG([YACC], [yacc])
+dnl AC_SUBST(YACC)
+dnl AC_PATH_PROG([YACC], [yacc])
+AC_PROG_YACC
 if test -z "$YACC"; then
 	AC_MSG_ERROR(Can't find 'yacc');
 fi
