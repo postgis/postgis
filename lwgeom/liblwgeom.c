@@ -112,6 +112,11 @@ default_errorreporter(const char *fmt, ...)
 const char *
 lwgeom_typename(int type)
 {
+	// something went wrong somewhere
+	if ( type < 0 || type > 7 ) {
+		// assert(0);
+		return "Invalid type";
+	}
 	return lwgeomTypeName[type];
 }
 

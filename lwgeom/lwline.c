@@ -50,7 +50,7 @@ lwline_deserialize(uchar *serialized_form)
 
 	if ( lwgeom_getType(type) != LINETYPE)
 	{
-		lwerror("lwline_deserialize: attempt to deserialize a line when its not really a line");
+		lwerror("lwline_deserialize: attempt to deserialize a line which is really a %s", lwgeom_typename(type));
 		return NULL;
 	}
 

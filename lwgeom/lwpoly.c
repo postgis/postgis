@@ -84,8 +84,7 @@ lwpoly_deserialize(uchar *serialized_form)
 
 	if ( TYPE_GETTYPE(type) != POLYGONTYPE)
 	{
-		lwerror("lwpoly_deserialize called with arg of type %d",
-			lwgeom_getType(type));
+		lwerror("lwpoly_deserialize: attempt to deserialize a poly which is really a %s", lwgeom_typename(type));
 		return NULL;
 	}
 

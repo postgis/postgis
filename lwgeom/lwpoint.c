@@ -256,7 +256,11 @@ lwpoint_deserialize(uchar *serialized_form)
 
 	type = serialized_form[0];
 
-	if ( lwgeom_getType(type) != POINTTYPE) return NULL;
+	if ( lwgeom_getType(type) != POINTTYPE)
+	{
+		lwerror("lwpoint_deserialize: attempt to deserialize a point which is really a %s", lwgeom_typename(type));
+		return NULL;
+	}
 	result->type = type;
 
 	loc = serialized_form+1;
