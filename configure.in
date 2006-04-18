@@ -37,10 +37,15 @@ if test "$USE_ICONV" = 1; then
 		USE_ICONV=1
 		ICONV_LDFLAGS=-liconv
 		,
-		AC_CHECK_LIB(c, iconv_open,
+		AC_CHECK_LIB(iconv, libiconv_open,
 			USE_ICONV=1
+			ICONV_LDFLAGS=-liconv
 			,
-			USE_ICONV=0
+			AC_CHECK_LIB(c, iconv_open,
+				USE_ICONV=1
+				,
+				USE_ICONV=0
+			)
 		)
 	)
 fi
