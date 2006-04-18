@@ -213,7 +213,7 @@ geometrycollection :
 	{ alloc_counter(); } LPAREN geometrycollection_int RPAREN { pop(); }
 
 geometrycollection_int :
-	// to support GEOMETRYCOLLECTION(EMPTY) for backward compatibility
+	/* to support GEOMETRYCOLLECTION(EMPTY) for backward compatibility */
 	empty
 	|
 	geometry_int
