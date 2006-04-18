@@ -89,6 +89,20 @@ PGBEINCLUDES="-I"`${PGCONFIG} --includedir-server`
 PGBIN=`${PGCONFIG} --bindir`
 
 dnl
+dnl MingW requires use of pwd -W to give proper Windows (not MingW) paths
+dnl for in-place regression tests
+dnl
+case $host_os in
+	*mingw*)
+		PWDREGRESS="pwd -W"
+		;;
+	*)
+		PWDREGRESS="pwd"
+		;;
+esac
+AC_SUBST(PWDREGRESS)
+
+dnl
 dnl Test for GEOS
 dnl
 
