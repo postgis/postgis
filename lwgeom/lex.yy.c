@@ -43,12 +43,6 @@
 #include <stdlib.h>
 #ifndef _WIN32
 #include <unistd.h>
-#else
-#ifndef YY_ALWAYS_INTERACTIVE
-#ifndef YY_NEVER_INTERACTIVE
-extern int isatty YY_PROTO(( int ));
-#endif
-#endif
 #endif
 
 /* Use prototypes in function declarations. */
@@ -88,6 +82,7 @@ extern int isatty YY_PROTO(( int ));
 #else
 #define YY_PROTO(proto) ()
 #endif
+
 
 /* Returned upon end-of-file. */
 #define YY_NULL 0
@@ -2339,7 +2334,7 @@ static YY_BUFFER_STATE buf_state;
    void close_parser() { lwg_parse_yy_delete_buffer(buf_state); }
    int lwg_parse_yywrap(void){ return 1; }
 
-#line 2343 "lex.yy.c"
+#line 2338 "lex.yy.c"
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -2489,7 +2484,7 @@ YY_DECL
 #line 26 "wktparse.lex"
 
 
-#line 2493 "lex.yy.c"
+#line 2488 "lex.yy.c"
 
 	if ( yy_init )
 		{
@@ -2700,7 +2695,7 @@ YY_RULE_SETUP
 #line 59 "wktparse.lex"
 ECHO;
 	YY_BREAK
-#line 2704 "lex.yy.c"
+#line 2699 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(vals_ok):
 	yyterminate();
