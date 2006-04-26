@@ -521,12 +521,11 @@ public class TestParser {
             dbuser = args[1];
             dbpass = args[2];
         } else {
-            System.err.println("Usage: java examples/TestParser dburls user pass [tablename]");
+            System.err.println("Usage: java examples/TestParser dburls user pass");
             System.err.println("   or: java examples/TestParser offline");
             System.err.println();
             System.err.println("dburls has one or more jdbc urls separated by ; in the following format");
             System.err.println("jdbc:postgresql://HOST:PORT/DATABASENAME");
-            System.err.println("tablename is 'jdbc_test' by default.");
             System.exit(1);
             // Signal the compiler that code flow ends here.
             return;
