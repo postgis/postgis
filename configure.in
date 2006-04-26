@@ -113,10 +113,12 @@ dnl
 
 AC_SUBST(USE_GEOS)
 AC_SUBST(GEOS_DIR)
+AC_SUBST(GEOS_LDFLAGS)
 AC_SUBST(USE_GEOS_CAPI)
 USE_GEOS=0
 USE_GEOS_CAPI=0
 GEOS_DIR=
+GEOS_LDFLAGS=
 
 AC_PATH_PROG([GEOSCONFIG], [geos-config])
 if test -n "$GEOSCONFIG"; then
@@ -142,6 +144,7 @@ AC_ARG_WITH(geos,
 
 if test $USE_GEOS -gt 0; then
 	GEOS_DIR=`$GEOSCONFIG --prefix`
+	GEOS_LDFLAGS=`$GEOSCONFIG --ldflags`
 	GEOS_MAJOR=`$GEOSCONFIG --version | cut -d. -f1`
 	if test "$GEOS_MAJOR" = "@GEOS_VERSION@"; then
 		GEOS_MAJOR=1
@@ -156,6 +159,20 @@ if test $USE_GEOS -gt 0; then
 	fi
 fi
 
+AC_ARG_WITH(geos-libdir,
+[  --with-geos-libdir=PATH path to GEOS libdir
+                          [[taken from geos-config by default]]],
+[
+case "$with_geos_libdir" in
+	no|yes)
+		AC_MSG_ERROR([Invalid argument to --with-geos-libdir])
+		;;
+	*)
+		GEOS_LDFLAGS=-L${with_geos_libdir}
+		;;
+esac
+], with_geos_libdir=no)
+
 dnl AC_ARG_WITH(geos-capi, 
 dnl [  --with-geos-capi        enable use of GEOS C API ],
 dnl 	if test "$with_geos_capi" != "no"; then
@@ -165,8 +182,10 @@ dnl )
 
 AC_SUBST(USE_PROJ)
 AC_SUBST(PROJ_DIR)
+AC_SUBST(PROJ_LIBDIR)
 USE_PROJ=0
 PROJ_DIR=
+PROJ_LIBDIR=
 AC_PATH_PROG([PROJ], [proj])
 if test -n "$PROJ"; then
 	USE_PROJ=1
@@ -188,7 +207,21 @@ if test $USE_PROJ -gt 0; then
 	if test ! -f $PROJ_DIR/include/projects.h; then
 		AC_MSG_ERROR([Can't find proj dir.]);
 	fi
+	PROJ_LIBDIR=${PROJ_DIR}/lib
 fi
+
+AC_ARG_WITH(proj-libdir,
+[  --with-proj-libdir=PATH path to PROJ4 libdir],
+[
+case "$with_proj_libdir" in
+	no|yes)
+		AC_MSG_ERROR([Invalid argument to --with-proj-libdir])
+		;;
+	*)
+		PROJ_LIBDIR=${with_proj_libdir}
+		;;
+esac
+], with_proj_libdir=no)
 
 AC_SUBST(USE_JTS)
 AC_SUBST(JTS_INCLUDES)
@@ -555,9 +588,10 @@ if test $USE_GEOS -gt 0; then
 	else
 		AC_MSG_RESULT([    GEOS: $GEOSCONFIG])
 	fi
+        AC_MSG_RESULT([          (ldflags: $GEOS_LDFLAGS)])
 fi
 if test $USE_PROJ -gt 0; then
-	AC_MSG_RESULT([    PROJ: dir=$PROJ_DIR])
+	AC_MSG_RESULT([    PROJ: prefix=$PROJ_DIR libdir=$PROJ_LIBDIR])
 fi
 AC_MSG_RESULT([   ICONV: $USE_ICONV $ICONV_LDFLAGS])
 dnl AC_MSG_RESULT([  FLEX:  path=$FLEX])

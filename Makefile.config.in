@@ -17,6 +17,7 @@
 #
 USE_PROJ=@USE_PROJ@
 PROJ_DIR=@PROJ_DIR@
+PROJ_LIBDIR=@PROJ_LIBDIR@
 
 #
 # Set USE_GEOS to 1 for GEOS spatial predicate and operator
@@ -32,6 +33,7 @@ PROJ_DIR=@PROJ_DIR@
 #
 USE_GEOS=@USE_GEOS@
 GEOS_DIR=@GEOS_DIR@
+GEOS_LDFLAGS=@GEOS_LDFLAGS@
 # EXPERIMENTAL! use geos C-API (only available with GEOS-2.2.x and up)
 USE_GEOS_CAPI=@USE_GEOS_CAPI@
 

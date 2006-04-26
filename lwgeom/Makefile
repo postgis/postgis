@@ -43,12 +43,12 @@ ifeq ($(USE_GEOS),1)
 		CSTAR_FLAGS += -I$(GEOS_DIR)/include 
 		GEOS_WRAPPER=
 		JTS_OBJ=lwgeom_geos_c.o
-		SHLIB_LINK += -L$(GEOS_DIR)/lib -lgeos_c
+		SHLIB_LINK += $(GEOS_LDFLAGS) -lgeos_c
 	else
 		CXXFLAGS += -I$(GEOS_DIR)/include 
 		GEOS_WRAPPER=lwgeom_geos_wrapper.o
 		JTS_OBJ=lwgeom_geos.o
-		SHLIB_LINK += -lstdc++ -L$(GEOS_DIR)/lib -lgeos
+		SHLIB_LINK += -lstdc++ $(GEOS_LDFLAGS) -lgeos
 		GEOS_RULES=detect_geos_version
 	endif
 endif
@@ -63,7 +63,7 @@ endif
 
 ifeq ($(USE_PROJ),1)
 	override CFLAGS += -I$(PROJ_DIR)/include -DUSE_PROJ 
-	SHLIB_LINK += -L$(PROJ_DIR)/lib -lproj
+	SHLIB_LINK += -L$(PROJ_LIBDIR) -lproj
 endif
 
 override CFLAGS += $(PGBEINCLUDES) -DAUTOCACHE_BBOX=$(AUTOCACHE_BBOX) 
