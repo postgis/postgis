@@ -12,3 +12,4 @@ config.status
 configure
 autom4te.cache
 config.h
+eclipsebin
