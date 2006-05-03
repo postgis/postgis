@@ -59,6 +59,9 @@ public class TestParser {
             ALL, // 3D
             "POINT(10 10 20)"},
         {
+            ALL, // 3D with scientific notation
+            "POINT(1e100 1.2345e-100 -2e-5)"},
+        {
             ONLY10, // 2D + Measures
             "POINTM(10 10 20)"},
         {
