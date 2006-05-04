@@ -43,6 +43,12 @@
 #include <stdlib.h>
 #ifndef _WIN32
 #include <unistd.h>
+#else
+#ifndef YY_ALWAYS_INTERACTIVE
+#ifndef YY_NEVER_INTERACTIVE
+extern int isatty YY_PROTO(( int ));
+#endif
+#endif
 #endif
 
 /* Use prototypes in function declarations. */
@@ -82,7 +88,6 @@
 #else
 #define YY_PROTO(proto) ()
 #endif
-
 
 /* Returned upon end-of-file. */
 #define YY_NULL 0
@@ -2322,7 +2327,8 @@ char *yytext;
 
 #line 11 "wktparse.lex"
 #include "wktparse.tab.h"
-#include "unistd.h"
+#include <unistd.h>
+#include <stdlib.h> // need stdlib for atof() definition 
 
 void init_parser(const char *src);
 void close_parser(void);
@@ -2334,7 +2340,7 @@ static YY_BUFFER_STATE buf_state;
    void close_parser() { lwg_parse_yy_delete_buffer(buf_state); }
    int lwg_parse_yywrap(void){ return 1; }
 
-#line 2338 "lex.yy.c"
+#line 2344 "lex.yy.c"
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -2481,10 +2487,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
 
-#line 26 "wktparse.lex"
+#line 27 "wktparse.lex"
 
 
-#line 2488 "lex.yy.c"
+#line 2494 "lex.yy.c"
 
 	if ( yy_init )
 		{
@@ -2557,145 +2563,145 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 28 "wktparse.lex"
+#line 29 "wktparse.lex"
 { lwg_parse_yylval.value=atof(lwg_parse_yytext); return VALUE; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 29 "wktparse.lex"
+#line 30 "wktparse.lex"
 { lwg_parse_yylval.value=atof(lwg_parse_yytext); return VALUE; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 31 "wktparse.lex"
+#line 32 "wktparse.lex"
 {  lwg_parse_yylval.wkb=lwg_parse_yytext; return WKB;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 32 "wktparse.lex"
+#line 33 "wktparse.lex"
 {  lwg_parse_yylval.wkb=lwg_parse_yytext; return WKB;}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 34 "wktparse.lex"
+#line 35 "wktparse.lex"
 { return POINT; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 35 "wktparse.lex"
+#line 36 "wktparse.lex"
 { return POINTM; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 36 "wktparse.lex"
+#line 37 "wktparse.lex"
 { return LINESTRING; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 37 "wktparse.lex"
+#line 38 "wktparse.lex"
 { return LINESTRINGM; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 38 "wktparse.lex"
+#line 39 "wktparse.lex"
 { return POLYGON; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 39 "wktparse.lex"
+#line 40 "wktparse.lex"
 { return POLYGONM; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 40 "wktparse.lex"
+#line 41 "wktparse.lex"
 { return MULTIPOINT; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 41 "wktparse.lex"
+#line 42 "wktparse.lex"
 { return MULTIPOINTM; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 42 "wktparse.lex"
+#line 43 "wktparse.lex"
 { return MULTILINESTRING; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 43 "wktparse.lex"
+#line 44 "wktparse.lex"
 { return MULTILINESTRINGM; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 44 "wktparse.lex"
+#line 45 "wktparse.lex"
 { return MULTIPOLYGON; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 45 "wktparse.lex"
+#line 46 "wktparse.lex"
 { return MULTIPOLYGONM; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 46 "wktparse.lex"
+#line 47 "wktparse.lex"
 { return GEOMETRYCOLLECTION; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 47 "wktparse.lex"
+#line 48 "wktparse.lex"
 { return GEOMETRYCOLLECTIONM; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 48 "wktparse.lex"
+#line 49 "wktparse.lex"
 { BEGIN(vals_ok); return SRID; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 49 "wktparse.lex"
+#line 50 "wktparse.lex"
 { return EMPTY; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 51 "wktparse.lex"
+#line 52 "wktparse.lex"
 { BEGIN(vals_ok); return LPAREN; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 52 "wktparse.lex"
+#line 53 "wktparse.lex"
 { return RPAREN; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 53 "wktparse.lex"
+#line 54 "wktparse.lex"
 { return COMMA ; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 54 "wktparse.lex"
+#line 55 "wktparse.lex"
 { return EQUALS ; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 55 "wktparse.lex"
+#line 56 "wktparse.lex"
 { BEGIN(0); return SEMICOLON; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 56 "wktparse.lex"
+#line 57 "wktparse.lex"
 /*eat whitespace*/
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 57 "wktparse.lex"
+#line 58 "wktparse.lex"
 { return lwg_parse_yytext[0]; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 59 "wktparse.lex"
+#line 60 "wktparse.lex"
 ECHO;
 	YY_BREAK
-#line 2699 "lex.yy.c"
+#line 2705 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(vals_ok):
 	yyterminate();
@@ -3581,6 +3587,6 @@ int main()
 	return 0;
 	}
 #endif
-#line 59 "wktparse.lex"
+#line 60 "wktparse.lex"
 
 

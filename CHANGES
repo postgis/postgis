@@ -5,6 +5,7 @@ PostGIS 1.1.3CVS
 	- Added --with-proj-libdir and --with-geos-libdir configure
 	  switches
 	- Improved JDBC regression tests: MultiPoint and scientific ordinates
+	- Support for build Tru64 build
 
 PostGIS 1.1.2
 2006/03/30

@@ -9,7 +9,8 @@
 %x vals_ok
 %{
 #include "wktparse.tab.h"
-#include "unistd.h"
+#include <unistd.h>
+#include <stdlib.h> // need stdlib for atof() definition 
 
 void init_parser(const char *src);
 void close_parser(void);
