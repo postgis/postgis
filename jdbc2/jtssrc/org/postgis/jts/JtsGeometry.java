@@ -140,8 +140,14 @@ public class JtsGeometry extends PGobject {
     }
 
     public boolean equals(Object obj) {
-        if (obj instanceof JtsGeometry)
-            return ((JtsGeometry) obj).getValue().equals(geom);
+        if ((obj != null) && (obj instanceof JtsGeometry)) {
+            Geometry other = ((JtsGeometry) obj).geom;
+            if (this.geom == other) { // handles identity as well as both ==null
+                return true;
+            } else if (this.geom != null && other != null) {
+                return other.equals(this.geom);
+            }
+        }
         return false;
     }
 }
