@@ -1,5 +1,5 @@
 /*
- * Test.java
+ * Point.java
  * 
  * PostGIS extension for PostgreSQL JDBC driver - geometry model
  * 
