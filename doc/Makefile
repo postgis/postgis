@@ -3,10 +3,13 @@ include ../Version.config
 
 LAST_RELEASE_VERSION = $(SO_MAJOR_VERSION).$(SO_MINOR_VERSION).$(SO_MICRO_VERSION)
 
-COMMONOPTS = -f docbook -b html -e no-valid
-XSLTPROC_COMMONOPTS = --param section.autolabel 1 \
+JW_COMMONOPTS = -f docbook -b html -e no-valid
+
+XSLTPROC_COMMONOPTS = \
+	--param section.autolabel 1 \
 	--param section.label.includes.component.label 1 \
 	--param chunk.section.depth 0 
+
 XSLTPROC_HTMLOPTS = \
 	--stringparam html.stylesheet style.css \
 
@@ -50,7 +53,7 @@ postgis.pdf: postgis.fo
 	$(PDFXMLTEX) $< 
 
 jw: postgis-out.xml
-	$(JW) $(COMMONOPTS) -o html/ postgis-out.xml
+	$(JW) $(JW_COMMONOPTS) -o html/ postgis-out.xml
 
 clean:
 	@rm -f \
