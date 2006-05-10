@@ -47,8 +47,7 @@ postgis.fo: postgis-out.xml
 html: html/postgis.html
 
 postgis.pdf: postgis.fo
-	$(PDFXMLTEX) $< > /dev/null ; \
-	$(PDFXMLTEX) $< > /dev/null
+	$(PDFXMLTEX) $< 
 
 jw: postgis-out.xml
 	$(JW) $(COMMONOPTS) -o html/ postgis-out.xml
