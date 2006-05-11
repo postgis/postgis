@@ -4,8 +4,8 @@
 
 Summary:        Geographic Information Systems Extensions to PostgreSQL
 Name:           postgis
-Version:        1.1.0
-Release:        2
+Version:        1.1.2
+Release:        1
 License:        GPL v2
 Group:          Applications/Databases
 Source0:        http://postgis.refractions.net/download/%{name}-%{version}.tar.gz
@@ -68,8 +68,10 @@ sh %{SOURCE2}
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT PGXS=1 PGSQL_SRC=/usr/lib/pgsql/pgxs
 install lwgeom/%{name}.so $RPM_BUILD_ROOT%{_libdir}/pgsql
-install -d  $RPM_BUILD_ROOT/usr/share/pgsql/postgresql/contrib/
-install -m 755 *.sql $RPM_BUILD_ROOT/usr/share/pgsql/postgresql/contrib/
+#install -d  $RPM_BUILD_ROOT/usr/share/pgsql/postgresql/contrib/
+#install -m 755 *.sql $RPM_BUILD_ROOT/usr/share/pgsql/postgresql/contrib/
+install -d  $RPM_BUILD_ROOT/usr/share/pgsql/contrib/
+install -m 755 *.sql $RPM_BUILD_ROOT/usr/share/pgsql/contrib/
 
 %if %jdbc2
 # JDBC2
@@ -92,7 +94,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_libdir}/pgsql/*.so*
 #%attr(755,root,root) %{_mandir}/man1/*
-%attr(755,root,root) /usr/share/pgsql/postgresql/contrib/*
+%attr(755,root,root) /usr/share/pgsql/contrib/*
 
 %if %jdbc2
 %files jdbc2
@@ -112,6 +114,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu May 11 2006 - Laurent WANDREBECK <lw@hygeos.com> 1.1.2-1
+- update to 1.1.2
+
 * Tue Dec 22 2005 - Devrim GUNDUZ <devrim@commandprompt.com> 1.1.0-2
 - Final fixes for 1.1.0
 
