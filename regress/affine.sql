@@ -41,3 +41,7 @@ select 'transscale', asewkt(snapToGrid(transscale('POINT(1 1)',1, 1, 2, 1), 0.1)
 select 'transscale', asewkt(snapToGrid(transscale('POINT(1 1)',1, 1, 1, 2), 0.1));
 select 'transscale', asewkt(snapToGrid(transscale('POINT(1 1)',2, 3, 5, 7), 0.1));
 select 'transscale', asewkt(snapToGrid(transscale('POINT(1 1 1)',2, 3, 5, 7), 0.1));
+
+-- postgis-users/2006-May/012119.html
+select 'transl_bbox', box2d(translate('LINESTRING(0 0, 1 1)'::geometry, 1, 0, 0));
+select 'scale_bbox', box2d(scale('LINESTRING(1 0, 2 1)'::geometry, 2, 0));
