@@ -1,5 +1,6 @@
 PostGIS 1.1.3CVS
 
+	- BUGXFIX in affine() failing to update bounding box
 	- WKT parser: forbidden construction of multigeometries with
 	  EMPTY elements (still supported for GEOMETRYCOLLECTION).
 	- Added --with-proj-libdir and --with-geos-libdir configure

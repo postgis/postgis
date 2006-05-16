@@ -3088,6 +3088,8 @@ Datum LWGEOM_affine(PG_FUNCTION_ARGS)
 
 	/* COMPUTE_BBOX TAINTING */
 	tmp = pglwgeom_deserialize(geom);
+	lwgeom_dropBBOX(tmp);
+	tmp->bbox = lwgeom_compute_box2d(tmp);
 	ret = pglwgeom_serialize(tmp);
 
 	/* Release memory */
