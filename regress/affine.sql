@@ -45,3 +45,7 @@ select 'transscale', asewkt(snapToGrid(transscale('POINT(1 1 1)',2, 3, 5, 7), 0.
 -- postgis-users/2006-May/012119.html
 select 'transl_bbox', box2d(translate('LINESTRING(0 0, 1 1)'::geometry, 1, 0, 0));
 select 'scale_bbox', box2d(scale('LINESTRING(1 0, 2 1)'::geometry, 2, 0));
+select 'tscale_bbox', box2d(transscale('LINESTRING(1 0, 2 1)'::geometry, 2, 1, 1, 1));
+
+select 'rotZ_bbox', box2d(SnapToGrid(rotateZ('LINESTRING(0 0, 1 0)', pi()), 0.1));
+select 'rotY_bbox', box2d(SnapToGrid(rotateY('LINESTRING(0 0, 1 0)', pi()), 0.1));
