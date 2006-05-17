@@ -13,6 +13,8 @@ XSLTPROC_COMMONOPTS = \
 XSLTPROC_HTMLOPTS = \
 	--stringparam html.stylesheet style.css \
 
+HTML_DOCBOOK_XSL=$(XSLBASE)/html/docbook.xsl 
+FO_DOCBOOK_XSL=$(XSLBASE)/fo/docbook.xsl
 
 all: $(DOC_RULE)
 
@@ -32,13 +34,13 @@ chunked-html: postgis-out.xml
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) $(XSLTPROC_HTMLOPTS) \
 		--output html/ \
 		--stringparam saxon.character.representation decimal \
-		$(XSLBASE)/html/chunk.xsl \
+		$(HTML_DOXBOOK_XSL) \
 		$<
 
 html/postgis.html: postgis-out.xml
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
 		--output html/postgis.html \
-		$(XSLBASE)/html/docbook.xsl \
+		$(FO_DOCBOOK_XSL) \
 		$<
 
 postgis.fo: postgis-out.xml
@@ -50,7 +52,12 @@ postgis.fo: postgis-out.xml
 html: html/postgis.html
 
 postgis.pdf: postgis.fo
-	$(PDFXMLTEX) $< 
+	@if test x"$(PDFXMLTEX)" = x; then \
+	   echo "Error: pdfxmltex not found, can't build posgis.pdf"; \
+	   false; \
+	else \
+	   $(PDFXMLTEX) $<;  \
+	fi
 
 jw: postgis-out.xml
 	$(JW) $(JW_COMMONOPTS) -o html/ postgis-out.xml
