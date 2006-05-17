@@ -11,6 +11,7 @@ PostGIS 1.1.3CVS
 	    - Added proper accessor functions for all fields in preparation of
 	      making those fields private later
 	- Support for build Tru64 build
+	- Use Jade for generating documentation
 
 PostGIS 1.1.2
 2006/03/30
