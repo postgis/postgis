@@ -22,4 +22,4 @@ Requirements to build postgis.pdf
 
 debian packages:
 	- passivetex 
-	- xmltex 
+	- xmltex  (for pdfxmltex)
