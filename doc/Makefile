@@ -51,7 +51,17 @@ postgis.fo: postgis-out.xml
 
 html: html/postgis.html
 
-postgis.pdf: postgis.fo
+postgis.pdf: postgis-out.xml
+	@if test x"$(DB2PDF)" = x; then \
+	   echo "Error: db2pdf not found, can't build posgis.pdf"; \
+	   echo "       try installing docbook-utils package"; \
+	   false; \
+	else \
+	   $(DB2PDF) $< && mv postgis-out.pdf postgis.pdf; \
+	fi
+
+# this is broken
+_postgis.pdf: postgis.fo
 	@if test x"$(PDFXMLTEX)" = x; then \
 	   echo "Error: pdfxmltex not found, can't build posgis.pdf"; \
 	   false; \

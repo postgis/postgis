@@ -11,6 +11,16 @@ Rules are:
 	make chuncked-html
 	make postgis.pdf
 
+====================================================
+ WARNING
+====================================================
+
+Informations passed this point are out-of-date.
+We're moving toward only requiring 'docbook-utils'
+package.
+
+====================================================
+
 Common requirements
 ===================
 
@@ -23,3 +33,4 @@ Requirements to build postgis.pdf
 debian packages:
 	- passivetex 
 	- xmltex  (for pdfxmltex)
+
