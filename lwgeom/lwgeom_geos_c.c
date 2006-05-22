@@ -2298,6 +2298,9 @@ GEOS2LWGEOM(GEOSGeom geom, char want3d)
 	bool hasZ = GEOSHasZ(geom);
 	int SRID = GEOSGetSRID(geom);
 
+	/* GEOS's 0 is equivalent to our -1 as for SRID values */
+	if ( SRID == 0 ) SRID = -1;
+
 	if ( ! hasZ )
 	{
 		if ( want3d )
