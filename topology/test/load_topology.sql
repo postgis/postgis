@@ -200,11 +200,11 @@ SELECT setval('city_data.edge_data_edge_id_seq', 26);
 CREATE SCHEMA features;
 
 CREATE TABLE features.land_parcels ( -- Land parcels (selected faces)
-  feature_name VARCHAR PRIMARY KEY);
+  feature_name VARCHAR PRIMARY KEY) with oids;
 CREATE TABLE features.city_streets ( -- City streets (selected edges)
-  feature_name VARCHAR PRIMARY KEY);
+  feature_name VARCHAR PRIMARY KEY) with oids;
 CREATE TABLE features.traffic_signs ( -- Traffic signs (selected nodes)
-  feature_name VARCHAR PRIMARY KEY);
+  feature_name VARCHAR PRIMARY KEY) with oids;
 
 
 
