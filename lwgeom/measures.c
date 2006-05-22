@@ -3,7 +3,7 @@
 
 #include "liblwgeom.h"
 
-/*#define PGIS_DEBUG*/
+/* #define PGIS_DEBUG 1 */
 
 /*
  * pt_in_ring_2d(): crossing number test for a point in a polygon
@@ -35,7 +35,7 @@ int pt_in_ring_2d(POINT2D *p, POINTARRAY *ring)
 
 #ifdef PGIS_DEBUG
 	lwnotice("pt_in_ring_2d called with point: %g %g", p->x, p->y);
-	printPA(ring);
+	//printPA(ring);
 #endif
 
 	/* loop through all edges of the polygon */
@@ -494,11 +494,11 @@ double distance2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2)
 
 			if (i) mindist = LW_MIN(mindist, d);
 			else mindist = d;
-		}
-
 #ifdef PGIS_DEBUG
-		lwnotice("  ring%d dist: %f, mindist: %f", i, d, mindist);
+		lwnotice("  ring%i-%i dist: %f, mindist: %f", i, j, d, mindist);
 #endif
+
+		}
 
 	}
 
