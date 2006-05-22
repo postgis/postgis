@@ -984,8 +984,14 @@ extern LWPOINT  *lwpoint_construct(int SRID, BOX2DFLOAT4 *bbox,
 	POINTARRAY *point);
 extern LWLINE *lwline_construct(int SRID, BOX2DFLOAT4 *bbox,
 	POINTARRAY *points);
+
+/*
+ * Construct a new LWPOLY.  arrays (points/points per ring) will NOT be copied
+ * use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
+ */
 extern LWPOLY *lwpoly_construct(int SRID, BOX2DFLOAT4 *bbox,
 	unsigned int nrings, POINTARRAY **points);
+
 extern LWCOLLECTION *lwcollection_construct(unsigned int type, int SRID,
 	BOX2DFLOAT4 *bbox, unsigned int ngeoms, LWGEOM **geoms);
 extern LWCOLLECTION *lwcollection_construct_empty(int SRID,
