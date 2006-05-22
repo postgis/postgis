@@ -1388,9 +1388,14 @@ CREATE AGGREGATE polygonize (
 
 CREATE TYPE geometry_dump AS (path integer[], geom geometry);
 
-CREATEFUNCTION dump(geometry)
+CREATEFUNCTION Dump(geometry)
 	RETURNS SETOF geometry_dump
 	AS '@MODULE_FILENAME@', 'LWGEOM_dump'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION DumpRings(geometry)
+	RETURNS SETOF geometry_dump
+	AS '@MODULE_FILENAME@', 'LWGEOM_dump_rings'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 #endif
