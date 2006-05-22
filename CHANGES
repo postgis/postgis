@@ -13,6 +13,7 @@ PostGIS 1.1.3CVS
 	- Support for build Tru64 build
 	- Use Jade for generating documentation
 	- New DumpRings() function
+	- BUGFIX in distance(poly,poly) giving wrong results
 
 PostGIS 1.1.2
 2006/03/30

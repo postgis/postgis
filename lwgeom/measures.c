@@ -3,7 +3,7 @@
 
 #include "liblwgeom.h"
 
-/* #define PGIS_DEBUG 1 */
+/*#define PGIS_DEBUG 1*/
 
 /*
  * pt_in_ring_2d(): crossing number test for a point in a polygon
@@ -74,9 +74,15 @@ int pt_in_ring_2d(POINT2D *p, POINTARRAY *ring)
 
 double distance2d_pt_pt(POINT2D *p1, POINT2D *p2)
 {
-	return sqrt(
-		(p2->x-p1->x) * (p2->x-p1->x) + (p2->y-p1->y) * (p2->y-p1->y)
-		); 
+	double hside = p2->x - p1->x;
+	double vside = p2->y - p1->y;
+
+	return sqrt ( hside*hside + vside*vside );
+
+	// the above is more readable
+	//return sqrt(
+	//	(p2->x-p1->x) * (p2->x-p1->x) + (p2->y-p1->y) * (p2->y-p1->y)
+	//	); 
 }
 
 /*distance2d from p to line A->B */
@@ -459,7 +465,7 @@ double distance2d_point_poly(LWPOINT *point, LWPOLY *poly)
 double distance2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2)
 {
 	POINT2D pt;
-	double mindist = 0;
+	double mindist = -1;
 	int i;
 
 #ifdef PGIS_DEBUG
@@ -492,7 +498,8 @@ double distance2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2)
 				poly2->rings[j]);
 			if ( d <= 0 ) return 0.0;
 
-			if (i) mindist = LW_MIN(mindist, d);
+			// mindist is -1 when not yet set
+			if (mindist > -1) mindist = LW_MIN(mindist, d);
 			else mindist = d;
 #ifdef PGIS_DEBUG
 		lwnotice("  ring%i-%i dist: %f, mindist: %f", i, j, d, mindist);
@@ -758,7 +765,7 @@ lwgeom_mindistance2d_recursive(uchar *lw1, uchar *lw2)
 
 #ifdef PGIS_DEBUG
 		lwnotice("dist %d-%d: %f - mindist: %f",
-				t1, t2, dist, mindist);
+				i, j, dist, mindist);
 #endif
 
 
