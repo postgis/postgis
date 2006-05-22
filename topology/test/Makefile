@@ -67,13 +67,14 @@ geompred: geom_predicates.sql
 	@psql -tf geom_predicates.sql $(DATABASE)
 
 topo_predicates.sql: predicates.sql.in
-	cpp -P -traditional-cpp predicates.sql.in | sed -e 's:@COLUMN@:feature:g;s:@SCHEMA@:topology.:g' > topo_predicates.sql
+	@cpp -P -traditional-cpp predicates.sql.in | sed -e 's:@COLUMN@:feature:g;s:@SCHEMA@:topology.:g' > topo_predicates.sql
 
 geom_predicates.sql: predicates.sql.in
-	cpp -P -traditional-cpp predicates.sql.in | sed -e 's:@COLUMN@:the_geom:g;s:@SCHEMA@::g' > geom_predicates.sql
+	@cpp -P -traditional-cpp predicates.sql.in | sed -e 's:@COLUMN@:the_geom:g;s:@SCHEMA@::g' > geom_predicates.sql
 
 edit:
-	psql -f edit_topology.sql
+	psql -f edit_topology.sql $(DATABASE)
 
 clean distclean:
 	rm -f geom_predicates.sql topo_predicates.sql
+	-dropdb $(DATABASE)
