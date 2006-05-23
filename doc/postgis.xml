@@ -4393,6 +4393,13 @@ FROM geometry_table;</literallayout>
 			</varlistentry>
 
 			<varlistentry>
+				<term>AsHEXEWKB(geometry, {'NDR'|'XDR'})</term>
+				<listitem>
+					<para>Returns a Geometry in HEXEWKB format (as text) using either little-endian (NDR) or big-endian (XDR) encoding.</para>
+				</listitem>
+			</varlistentry>
+
+			<varlistentry>
 				<term>AsSVG(geometry, [rel], [precision])</term>
 				<listitem>
 					<para>Return the geometry as an SVG path data. Use 1 as second argument to have the path data implemented in terms of relative moves, the default (or 0) uses absolute moves. Third argument may be used to reduce the maximum number of decimal digits used in output (defaults to 15). Point geometries will be rendered as cx/cy when 'rel' arg is 0, x/y when 'rel' is 1.</para>

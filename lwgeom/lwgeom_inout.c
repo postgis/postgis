@@ -102,6 +102,55 @@ Datum LWGEOM_out(PG_FUNCTION_ARGS)
 }
 
 /*
+ * AsHEXEWKB(geom, string)
+ */
+PG_FUNCTION_INFO_V1(LWGEOM_asHEXEWKB);
+Datum LWGEOM_asHEXEWKB(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *lwgeom;
+	char *result;
+	text *text_result;
+	size_t size;
+	text *type;
+	unsigned int byteorder=-1;
+
+	init_pg_func();
+
+	lwgeom = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+	if ( (PG_NARGS()>1) && (!PG_ARGISNULL(1)) )
+	{
+		type = PG_GETARG_TEXT_P(1);
+		if (VARSIZE(type) < 7)  
+		{
+			elog(ERROR,"AsHEXEWKB(geometry, <type>) - type should be 'XDR' or 'NDR'.  type length is %i",VARSIZE(type) -VARHDRSZ);
+			PG_RETURN_NULL();
+		}
+
+		if  ( ! strncmp(VARDATA(type), "xdr", 3) ||
+			! strncmp(VARDATA(type), "XDR", 3) )
+		{
+			byteorder = XDR;
+		}
+		else
+		{
+			byteorder = NDR;
+		}
+	}
+
+	result = unparse_WKB(SERIALIZED_FORM(lwgeom),lwalloc,lwfree,
+			byteorder, &size, 1);
+
+	text_result = palloc(size+VARHDRSZ);
+	memcpy(VARDATA(text_result),result,size);
+	VARATT_SIZEP(text_result) = size+VARHDRSZ;
+	pfree(result);
+
+	PG_RETURN_POINTER(text_result);
+
+}
+
+/*
  * LWGEOM_to_text(lwgeom) --> text
  * output is 'SRID=#;<wkb in hex form>'
  * ie. 'SRID=-99;0101000000000000000000F03F0000000000000040'
