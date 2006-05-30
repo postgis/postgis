@@ -3,7 +3,7 @@
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
- * Copyright 2001-2003 Refractions Research Inc.
+ * Copyright 2001-2006 Refractions Research Inc.
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -2630,6 +2630,9 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.39  2006/05/30 08:38:58  strk
+ * Added some missing copyright headers.
+ *
  * Revision 1.38  2006/03/13 10:54:08  strk
  * Applied patch from Mark Cave Ayland embedding access control for
  * the estimated_extent functions.
