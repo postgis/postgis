@@ -71,7 +71,7 @@ Datum CHIP_in(PG_FUNCTION_ARGS)
 	}
 /* if endian is wrong, flip it otherwise do nothing */
 	result->size = size;
-	if (result->size < sizeof(CHIP) )
+	if (result->size < sizeof(CHIP)-sizeof(void*) )
 	{
 		elog(ERROR,"CHIP_in parser - bad data (too small to be a CHIP)!");
 		PG_RETURN_NULL();	
@@ -118,7 +118,7 @@ Datum CHIP_in(PG_FUNCTION_ARGS)
 
 	if (result->compression ==0) /*only true for non-compressed data */
 	{
-		if (result->size != (sizeof(CHIP) + datum_size * result->width*result->height) )
+		if (result->size != (sizeof(CHIP) - sizeof(void*) + datum_size * result->width*result->height) )
 		{
 			elog(ERROR,"CHIP_in parser - bad data (actual size != computed size)!");
 			PG_RETURN_NULL();
