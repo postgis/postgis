@@ -16,7 +16,7 @@
 
 
 /* Define this to debug CHIP ops */
-/* #define DEBUG_CHIP 1 */
+#define DEBUG_CHIP 1
 
 /* Internal funcs */
 void swap_char(char *a,char *b);
@@ -569,8 +569,13 @@ chip_pixel_value_size(int datatype)
 		case 105:
 			return 3;
 		case 6:
+		case 7:
 		case 106:
+		case 107:
 			return 2;
+		case 8:
+		case 108:
+			return 1;
 		default:
 			lwerror("Unknown CHIP datatype: %d", datatype);
 			return 0;

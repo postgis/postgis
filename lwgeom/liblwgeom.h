@@ -81,9 +81,13 @@ typedef struct chiptag
 	int datatype;	/* 1 = float32,
 			 * 5 = 24bit integer,
 			 * 6 = 16bit integer (short)
+			 * 7 = 16bit ???
+			 * 8 = 8bit ???
 			 * 101 = float32 (NDR),
 			 * 105 = 24bit integer (NDR),
-			 * 106=16bit int (NDR)
+			 * 106 = 16bit int (NDR)
+			 * 107 = 16bit ??? (NDR)
+			 * 108 = 8bit ??? (NDR)
 			 */
 	int height;
 	int width;
