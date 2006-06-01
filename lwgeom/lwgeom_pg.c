@@ -11,6 +11,13 @@
 
 #define PARANOIA_LEVEL 1
 
+/*
+ * This is required for builds against pgsql 8.2
+ */
+#ifdef PG_MODULE_MAGIC
+PG_MODULE_MAGIC;
+#endif
+
 void *
 pg_alloc(size_t size)
 {
