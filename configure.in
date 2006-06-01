@@ -88,7 +88,10 @@ AC_SUBST(PGBIN)
 AC_SUBST(PGTEMPLATE)
 AC_SUBST(LPATH)
 PGFEINCLUDES="-I"`${PGCONFIG} --includedir`
-PGFELIBS="-L"`${PGCONFIG} --libdir`" -lpq "`${PGCONFIG} --libs 2> /dev/null`
+PGFELIBS="-L"`${PGCONFIG} --libdir`" -lpq " #(1)# `${PGCONFIG} --libs 2> /dev/null`
+#(1)#
+# We don't really want to link to more libs then required, see:
+# http://postgis.refractions.net/pipermail/postgis-devel/2006-May/002124.html
 PGBELIBS="-L"`${PGCONFIG} --libdir`" -lpostgres"
 PGBEINCLUDES="-I"`${PGCONFIG} --includedir-server`
 PGBIN=`${PGCONFIG} --bindir`

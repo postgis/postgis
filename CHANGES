@@ -14,7 +14,8 @@ PostGIS 1.1.3CVS
 	- Use Jade for generating documentation
 	- NEW DumpRings() function
 	- BUGFIX in distance(poly,poly) giving wrong results
-	- NEW AsHEXEWKB(geom, XDR|NDR) function
+	- NEW AsHEXEWKB(geom, XDR|NDR) function.
+	- Don't link pgsql2shp to more libs then required.
 
 PostGIS 1.1.2
 2006/03/30
