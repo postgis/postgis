@@ -87,7 +87,7 @@ typedef struct chiptag
 			 * 105 = 24bit integer (NDR),
 			 * 106 = 16bit int (NDR)
 			 * 107 = 16bit ??? (NDR)
-			 * 108 = 8bit ??? (NDR)
+			 * 108 = 8bit ??? (NDR) (this doesn't make sense)
 			 */
 	int height;
 	int width;

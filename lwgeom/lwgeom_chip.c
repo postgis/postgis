@@ -16,7 +16,7 @@
 
 
 /* Define this to debug CHIP ops */
-#define DEBUG_CHIP 1
+/*#define DEBUG_CHIP 1*/
 
 /* Internal funcs */
 void swap_char(char *a,char *b);
@@ -125,7 +125,7 @@ Datum CHIP_in(PG_FUNCTION_ARGS)
 	{
 		if (result->size != (sizeof(CHIP) - sizeof(void*) + datum_size * result->width*result->height) )
 		{
-			elog(ERROR,"CHIP_in parser - bad data (actual size != computed size)!");
+			elog(ERROR,"CHIP_in parser - bad data (actual size [%d] != computed size [%d])!", result->size, (sizeof(CHIP)-sizeof(void*) + datum_size * result->width*result->height) );
 			PG_RETURN_NULL();
 		}
 	}
@@ -320,6 +320,11 @@ void		flip_endian_int32(char		*i)
 
 #define CHIP_BOUNDS_CHECKS 1
 
+
+/* Macros to find size (in geographic units) of a CHIP cell (or pixel) */
+#define CHIP_CELL_WIDTH(x) ( ((x)->bvol.xmax-(x)->bvol.xmin)/(x)->width )
+#define CHIP_CELL_HEIGHT(x) ( ((x)->bvol.ymax-(x)->bvol.ymin)/(x)->height )
+
 /* Return the size of values for pixel of the given datatype */
 size_t chip_pixel_value_size(int datatype);
 
@@ -487,64 +492,84 @@ pixel_readval(char *buf)
 }
 
 void
+pixel_add_float32(PIXEL *where, PIXEL *what)
+{
+	FLOAT32 f1=0.0, f2=0.0;
+	memcpy(&f1, where->val, 4);
+	memcpy(&f2, what->val, 4);
+	f1 += f2;
+	memcpy(where->val, &f1, 4);
+}
+
+void
+pixel_add_int24(PIXEL *where, PIXEL *what)
+{
+	unsigned int red, green, blue;
+	RGB rgb1, rgb2;
+
+	memcpy(&rgb1, where->val, 3);
+	memcpy(&rgb2, what->val, 3);
+	red = rgb1.red + rgb2.red;
+	green = rgb1.green + rgb2.green;
+	blue = rgb1.blue + rgb2.blue;
+	if ( red > 255 )
+	{
+		lwnotice("Red channel saturated by add operation");
+		red = 255;
+	}
+	if ( green > 255 )
+	{
+		lwnotice("Green channel saturated by add operation");
+		green = 255;
+	}
+	if ( blue > 255 )
+	{
+		lwnotice("Blue channel saturated by add operation");
+		blue = 255;
+	}
+	rgb1.red = red;
+	rgb1.green = green;
+	rgb1.blue = blue;
+	memcpy(where->val, &rgb1, 3);
+}
+
+void
+pixel_add_int16(PIXEL *where, PIXEL *what)
+{
+	UINT16 i1, i2;
+	unsigned long int tmp;
+
+	i1 = pixel_readUINT16(where);
+	i2 = pixel_readUINT16(what);
+	tmp = (unsigned long)i1 + i2;
+	if ( tmp > 65535 )
+	{
+		lwnotice("UInt16 Pixel saturated by add operation (%u+%u=%u)",
+			i1, i2, tmp);
+		tmp = 65535;
+	}
+	i1 = tmp;
+	pixel_writeUINT16(where, i1);
+}
+
+void
 pixel_add(PIXEL *where, PIXEL *what)
 {
 	if ( where->type != what->type )
 		lwerror("Can't add pixels of different types");
 
-	FLOAT32 f1=0.0, f2=0.0;
-	UINT16 i1, i2;
-	RGB rgb1, rgb2;
-	unsigned int red, green, blue;
-	unsigned int tmp;
-
 	switch (where->type)
 	{
 		case 1: /*float32*/
-			memcpy(&f1, where->val, 4);
-			memcpy(&f2, what->val, 4);
-			f1 += f2;
-			memcpy(where->val, &f1, 4);
+			pixel_add_float32(where, what);
 			break;
 
 		case 5: /*int24*/
-			memcpy(&rgb1, where->val, 3);
-			memcpy(&rgb2, what->val, 3);
-			red = rgb1.red + rgb2.red;
-			green = rgb1.green + rgb2.green;
-			blue = rgb1.blue + rgb2.blue;
-			if ( red > 255 )
-			{
-				lwnotice("Red channel saturated by add operation");
-				red = 255;
-			}
-			if ( green > 255 )
-			{
-				lwnotice("Green channel saturated by add operation");
-				green = 255;
-			}
-			if ( blue > 255 )
-			{
-				lwnotice("Blue channel saturated by add operation");
-				blue = 255;
-			}
-			rgb1.red = red;
-			rgb1.green = green;
-			rgb1.blue = blue;
-			memcpy(where->val, &rgb1, 3);
+			pixel_add_int24(where, what);
 			break;
 
 		case 6: /*int16*/
-			i1 = pixel_readUINT16(where);
-			i2 = pixel_readUINT16(what);
-			tmp = (unsigned long)i1 + i2;
-			if ( tmp > 65535 )
-			{
-				lwnotice("Pixel saturated by add operation (%u)", tmp);
-				tmp = 65535;
-			}
-			i1 = tmp;
-			pixel_writeUINT16(where, i1);
+			pixel_add_int16(where, what);
 			break;
 
 		default:
@@ -655,13 +680,16 @@ chip_getPixel(CHIP *c, int x, int y)
 	return p;
 }
 
-
 /********************************************************************
  *
  * Drawing primitives
  * 
  ********************************************************************/
 
+/*
+ * Coordinates are in CHIP offset, so callers must
+ * appropriately translate.
+ */
 void
 chip_draw_pixel(CHIP *chip, int x, int y, PIXEL *pixel, int op)
 {
@@ -673,9 +701,15 @@ chip_draw_pixel(CHIP *chip, int x, int y, PIXEL *pixel, int op)
 
 	if ( x < 0 || x >= chip->width || y < 0 || y >= chip->height )
 	{
+/* should this be a warning ? */
 lwnotice("chip_draw_pixel called with out-of-range coordinates");
 return;
 	}
+
+	/*
+	 * Translate x and y values, which are in map units, to
+	 * CHIP units
+	 */
 
 	PIXEL p;
 
@@ -842,20 +876,57 @@ chip_draw_ptarray(CHIP *chip, POINTARRAY *pa, PIXEL *pixel, int op)
 {
 	POINT2D A, B;
 	int i;
+	int x1, x2, y1, y2;
+
+	double xoff = ( chip->bvol.xmin + CHIP_CELL_WIDTH(chip)/2 );
+	double yoff = ( chip->bvol.ymin + CHIP_CELL_HEIGHT(chip)/2 );
 
 	for (i=1; i<pa->npoints; i++)
 	{
 		getPoint2d_p(pa, i-1, &A);
 		getPoint2d_p(pa, i, &B);
-		chip_draw_segment(chip, A.x, A.y, B.x, B.y, pixel, op);
+
+		x1 = A.x - xoff;
+		y1 = A.y - yoff;
+		x2 = B.x - xoff;
+		y2 = B.y - yoff;
+
+		chip_draw_segment(chip, x1, y1, x2, y2, pixel, op);
 	}
+}
+
+void
+chip_draw_lwpoint(CHIP *chip, LWPOINT *lwpoint, PIXEL* pixel, int op)
+{
+	POINTARRAY *pa;
+	POINT2D point;
+	int x, y; /* translated integers */
+
+	pa = lwpoint->point;
+	getPoint2d_p(pa, 0, &point);
+
+	x = point.x - ( chip->bvol.xmin + CHIP_CELL_WIDTH(chip)/2 );
+	y = point.y - ( chip->bvol.ymin + CHIP_CELL_HEIGHT(chip)/2 );
+
+	lwnotice("chip.xmin:%g, point.x:%g, x:%d",
+		chip->bvol.xmin, point.x, x);
+
+	chip_draw_pixel(chip, x, y, pixel, op);
+}
+
+void
+chip_draw_lwline(CHIP *chip, LWLINE *lwline, PIXEL* pixel, int op)
+{
+	POINTARRAY *pa;
+
+	pa = lwline->points;
+	chip_draw_ptarray(chip, pa, pixel, op);
+	return;
 }
 
 void
 chip_draw_lwgeom(CHIP *chip, LWGEOM *lwgeom, PIXEL *pixel, int op)
 {
-	POINTARRAY *pa;
-	POINT2D point;
 	int i;
 	LWCOLLECTION *coll;
 
@@ -871,13 +942,10 @@ chip_draw_lwgeom(CHIP *chip, LWGEOM *lwgeom, PIXEL *pixel, int op)
 	switch (TYPE_GETTYPE(lwgeom->type) )
 	{
 		case POINTTYPE:
-			pa = ((LWPOINT *)lwgeom)->point;
-			getPoint2d_p(pa, 0, &point);
-			chip_draw_pixel(chip, point.x, point.y, pixel, op);
+			chip_draw_lwpoint(chip, (LWPOINT*)lwgeom, pixel, op);
 			return;
 		case LINETYPE:
-			pa = ((LWLINE *)lwgeom)->points;
-			chip_draw_ptarray(chip, pa, pixel, op);
+			chip_draw_lwline(chip, (LWLINE*)lwgeom, pixel, op);
 			return;
 		case POLYGONTYPE:
 			lwerror("%s geometry unsupported by draw operation",
