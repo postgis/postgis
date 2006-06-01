@@ -1,11 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
-#include "postgres.h"
-#include "executor/spi.h"
+#include <postgres.h>
+#include <fmgr.h>
+#include <executor/spi.h>
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
 #include "wktparse.h"
+
 
 /* #undef PGIS_DEBUG */
 
@@ -14,6 +16,7 @@
 /*
  * This is required for builds against pgsql 8.2
  */
+/*#include "pgmagic.h"*/
 #ifdef PG_MODULE_MAGIC
 PG_MODULE_MAGIC;
 #endif
