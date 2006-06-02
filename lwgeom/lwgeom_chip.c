@@ -702,7 +702,7 @@ chip_draw_pixel(CHIP *chip, int x, int y, PIXEL *pixel, int op)
 	if ( x < 0 || x >= chip->width || y < 0 || y >= chip->height )
 	{
 /* should this be a warning ? */
-lwnotice("chip_draw_pixel called with out-of-range coordinates");
+lwnotice("chip_draw_pixel called with out-of-range coordinates (%d,%d)", x, y);
 return;
 	}
 
@@ -871,6 +871,40 @@ pgchip_construct(BOX3D *bvol, int SRID, int width, int height,
  * 
  ********************************************************************/
 
+
+/*
+ * Transform a POINT from geo coordinates to CHIP offsets.
+ * Can be optimized by caching CHIP info somewhere and using
+ * multiplications rather then divisions.
+ */
+static void
+transform_point(CHIP* chip, POINT2D* p)
+{
+	/* geo size of full grid/chip */
+	double geowidth = chip->bvol.xmax - chip->bvol.xmin;
+	double geoheight = chip->bvol.ymax - chip->bvol.ymin;
+
+	/* geo size of a cell/pixel */
+	double xscale = geowidth / chip->width; 
+	double yscale = geoheight / chip->height; 
+
+	double xoff = ( chip->bvol.xmin + xscale );
+	double yoff = ( chip->bvol.ymin + yscale );
+
+#if 0
+	double ox = p->x;
+	double oy = p->y;
+#endif
+
+	p->x = rint ( ( p->x - xoff ) / xscale );
+	p->y = rint ( ( p->y - yoff ) / yscale );
+
+#if 0
+	lwnotice("Old x: %g, new x: %g", ox, p->x);
+#endif
+
+}
+
 void
 chip_draw_ptarray(CHIP *chip, POINTARRAY *pa, PIXEL *pixel, int op)
 {
@@ -878,18 +912,18 @@ chip_draw_ptarray(CHIP *chip, POINTARRAY *pa, PIXEL *pixel, int op)
 	int i;
 	int x1, x2, y1, y2;
 
-	double xoff = ( chip->bvol.xmin + CHIP_CELL_WIDTH(chip)/2 );
-	double yoff = ( chip->bvol.ymin + CHIP_CELL_HEIGHT(chip)/2 );
-
 	for (i=1; i<pa->npoints; i++)
 	{
 		getPoint2d_p(pa, i-1, &A);
 		getPoint2d_p(pa, i, &B);
 
-		x1 = A.x - xoff;
-		y1 = A.y - yoff;
-		x2 = B.x - xoff;
-		y2 = B.y - yoff;
+		transform_point(chip, &A);
+		transform_point(chip, &B);
+
+		x1 = A.x;
+		y1 = A.y;
+		x2 = B.x;
+		y2 = B.y;
 
 		chip_draw_segment(chip, x1, y1, x2, y2, pixel, op);
 	}
@@ -900,18 +934,14 @@ chip_draw_lwpoint(CHIP *chip, LWPOINT *lwpoint, PIXEL* pixel, int op)
 {
 	POINTARRAY *pa;
 	POINT2D point;
-	int x, y; /* translated integers */
 
 	pa = lwpoint->point;
 	getPoint2d_p(pa, 0, &point);
 
-	x = point.x - ( chip->bvol.xmin + CHIP_CELL_WIDTH(chip)/2 );
-	y = point.y - ( chip->bvol.ymin + CHIP_CELL_HEIGHT(chip)/2 );
+	/* translate to CHIP plane */
+	transform_point(chip, &point);
 
-	lwnotice("chip.xmin:%g, point.x:%g, x:%d",
-		chip->bvol.xmin, point.x, x);
-
-	chip_draw_pixel(chip, x, y, pixel, op);
+	chip_draw_pixel(chip, point.x, point.y, pixel, op);
 }
 
 void
