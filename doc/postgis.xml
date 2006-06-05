@@ -4933,7 +4933,7 @@ FROM geometry_table;</literallayout>
           <term>Segmentize(geometry, maxlength)</term>
 
           <listitem>
-            <para>Return a modified [multi]polygon having no ring segment
+            <para>Return a modified geometry having no segment
             longer then the given distance. Interpolated points will have Z
             and M values (if needed) set to 0. Distance computation is
             performed in 2d only.</para>

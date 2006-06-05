@@ -2393,7 +2393,7 @@ Datum LWGEOM_isempty(PG_FUNCTION_ARGS)
 
 
 /*
- *  Returns a modified [multi]polygon so that no ring segment is 
+ *  Returns a modified geometry so that no segment is 
  *  longer then the given distance (computed using 2d).
  *  Every input point is kept.
  *  Z and M values for added points (if needed) are set to 0.
