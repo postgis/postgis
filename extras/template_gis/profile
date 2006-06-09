@@ -21,7 +21,7 @@ DBAUSER=postgres
 #this is the postgis functionality loader script.
 #as it contains the name of the postgresql-postgis library, this 
 #file will designate which postgis version to use.
-PGISSCRIPT=postgis#SONAME#.sql
+PGISSCRIPT=lwpostgis.sql
 
 #set this to true not to load huge spatial_ref_sys table in the template.
 #NO_SRS=true
