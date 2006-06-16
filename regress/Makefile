@@ -2,7 +2,7 @@ TMPDIR?=/tmp
 
 include ../Makefile.config
 
-TESTS=regress regress_index lwgeom_regress regress_lrs removepoint setpoint simplify snaptogrid affine wkt measures
+TESTS=loader/mlines2d loader/mlines3dz loader/mlines3dm loader/mlines4d regress regress_index lwgeom_regress regress_lrs removepoint setpoint simplify snaptogrid affine wkt measures 
 
 ifeq ($(USE_GEOS),1)
 	TESTS += regress_ogc regress_bdpoly

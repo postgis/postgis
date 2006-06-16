@@ -1,6 +1,8 @@
 #!/bin/sh
 
 DB=postgis_reg
+SHP2PGSQL=../loader/shp2pgsql
+PGSQL2SHP=../loader/pgsql2shp
 
 ###################################################
 #
@@ -19,13 +21,287 @@ DB=postgis_reg
 PGOPTIONS="${PGOPTIONS} -c lc_messages=C"
 export PGOPTIONS
 
+PSQL="psql"
+
 if [ -z "$TMPDIR" ]; then
-	TMPDIR=/tmp
+	TMPDIR=/tmp/pgis_reg_$$
 fi
+
+mkdir -p ${TMPDIR}
+
+echo "TMPDIR is ${TMPDIR}"
 
 VERBOSE=0
 OPT_DROP=yes
 OPT_CREATE=yes
+
+###################################################
+# 
+# Helper functions
+#
+###################################################
+
+#
+# fail <msg> <log>
+#
+function fail ()
+{
+	_msg="$1"
+	_log="$2"
+
+	if [ -z "$_log" ]; then
+		echo " failed ($_msg)"
+	elif test "$VERBOSE" -eq "1"; then
+		echo " failed ($_msg: $_log)"
+		echo "-----------------------------------------------------------------------------"
+		cat $_log
+		echo "-----------------------------------------------------------------------------"
+	else
+		echo " failed ($_msg: $_log)"
+	fi
+
+	FAIL=`expr $FAIL + 1`
+}
+
+#
+#  run_simple_test 
+#
+#  Run an sql script and compare results with the given expected output
+#
+#  SQL input is ${TEST}.sql, expected output is {$TEST}_expected
+#
+function run_simple_test ()
+{
+	_sql="$1"
+	_expected="$2"
+	if [ -n "$3" ]; then
+		_msg="$3: "
+	else
+		_msg=
+	fi
+
+	if [ ! -r "$_expected" ]; then
+		fail "can't read $_expected"
+		return 1
+	fi
+
+
+	echo -n "."
+
+	OUTFILE="${TMPDIR}/test_${RUN}_out"
+	TMPFILE="${TMPDIR}/test_${RUN}_tmp"
+	DIFFILE="${TMPDIR}/test_${RUN}_diff"
+
+	# Use intermediate file to prevent MingW buffering problems
+	${PSQL} -tA < "${TEST}.sql" ${DB} > ${TMPFILE} 2>&1
+	cat ${TMPFILE} \
+		| grep -v "^$" \
+		| grep -v "^INSERT" \
+		| grep -v "^UPDATE" \
+		| grep -v "^DROP" \
+		| grep -v "^CREATE" \
+		| grep -v "^SET" \
+		| sed 's/Infinity/inf/g;s/Inf/inf/g;s/1\.#INF/inf/g' \
+		| sed 's/[eE]\([+-]\)0\{1,\}\([0-9]\{1,\}\)/e\1\2/g' \
+		| sed 's/Self-intersection .*/Self-intersection/' \
+		> "${OUTFILE}"
+	rm ${TMPFILE}
+
+	if diff "${_expected}" "${OUTFILE}" > ${DIFFILE}; then
+		#SUCCESS=`expr $SUCCESS + 1`
+		rm "${OUTFILE}" "${DIFFILE}" # we don't need these anymore
+		return 0
+	else
+		fail "${_msg}diff expected obtained" "${DIFFILE}"
+		rm "${OUTFILE}" # diff is enough
+		return 1
+	fi
+}
+
+#
+#  run_loader_test 
+#
+#  Load a shapefile with different methods, create a 'select *' SQL
+#  test and run simple test with provided expected output. 
+#
+#  SHP input is ${TEST}.shp, expected output is {$TEST}_expected
+#
+function run_loader_test ()
+{
+	_tblname=loadertest
+
+	# ON_ERROR_STOP is used by psql to return non-0 on an error
+	_psql_opts="--variable ON_ERROR_STOP=true"
+
+	echo "SELECT * from ${_tblname}" > ${TEST}.sql
+
+
+	#
+	# Run in HEXWKB insert mode
+	#
+
+	echo -n "."
+
+	${SHP2PGSQL} ${TEST}.shp $_tblname \
+		> ${TMPDIR}/loader \
+		2> ${TMPDIR}/loader.err
+
+	if [ $? -gt 0 ]; then
+		fail "running shp2pgsql" "${TMPDIR}/loader.err"
+		return 1
+
+	fi
+
+	echo -n "."
+
+	${PSQL} -c "DROP table ${_tblname}" "${DB}" >> ${TMPDIR}/regress_log 2>&1
+	${PSQL} ${_psql_opts} -f ${TMPDIR}/loader "${DB}" > ${TMPDIR}/loader.err 2>&1
+	if [ $? -gt 0 ]; then
+		fail "sourcing shp2pgsql output" "${TMPDIR}/loader.err"
+		return 1
+	fi
+
+	if ! run_simple_test ${TEST}.sql ${TEST}-wkb.expected "wkb insert"; then
+		return 1
+	fi
+
+
+	#
+	# Run in HEXWKB dump mode
+	#
+
+	echo -n "."
+
+	${SHP2PGSQL} -D ${TEST}.shp $_tblname \
+		> ${TMPDIR}/loader \
+		2> ${TMPDIR}/loader.err
+
+	if [ $? -gt 0 ]; then
+		fail "running shp2pgsql -D" "${TMPDIR}/loader.err"
+		return 1
+
+	fi
+
+	echo -n "."
+
+	${PSQL} -c "DROP table ${_tblname}" "${DB}" >> ${TMPDIR}/regress_log 2>&1
+	${PSQL} ${_psql_opts} -f ${TMPDIR}/loader "${DB}" > ${TMPDIR}/loader.err 2>&1
+	if [ $? -gt 0 ]; then
+		fail "sourcing shp2pgsql -D output" "${TMPDIR}/loader.err"
+		return 1
+	fi
+
+	if ! run_simple_test ${TEST}.sql ${TEST}-wkb.expected "wkb dump"; then
+		return 1
+	fi
+
+	###########################################################
+	#
+	# Dump and compare.
+	# Do this using WKB mode, as WKT is unable to reproduce
+	# M values
+	#
+
+	echo -n "."
+
+	${PGSQL2SHP} -f ${TMPDIR}/dumper ${DB} "${_tblname}" > "${TMPDIR}/dumper.err" 2>&1
+	if [ $? -gt 0 ]; then
+		fail "dumping loaded table" "${TMPDIR}/dumper.err"
+		return 1
+	fi
+
+	echo -n "."
+
+	if ! diff "${TMPDIR}"/dumper.shp "${TEST}".shp > /dev/null; then
+		ls -lL "${TMPDIR}"/dumper.shp "${TEST}".shp > "${TMPDIR}"/dumper.diff
+		fail "dumping loaded table" "${TMPDIR}/dumper.diff"
+		return 1
+	fi
+
+# I'm not sure it's safe to compare indexes
+#	if ! diff "${TMPDIR}"/dumper.shx "${TEST}".shx; then
+#		ls -lL "${TMPDIR}"/dumper.shx "${TEST}".shx > "${TMPDIR}"/dumper.diff
+#		fail "dumping loaded table" "${TMPDIR}/dumper.diff"
+#		return 1
+#	fi
+
+# Change in attribute sizes would make this fail
+#	if ! diff "${TMPDIR}"/dumper.dbf "${TEST}".dbf; then
+#		ls -lL "${TMPDIR}"/dumper.dbf "${TEST}".dbf > "${TMPDIR}"/dumper.diff
+#		fail "dumping loaded table" "${TMPDIR}/dumper.diff"
+#		return 1
+#	fi
+
+
+	#
+	# End of dump and compare.
+	#
+	################################################
+
+	echo -n "."
+
+	${SHP2PGSQL} -w ${TEST}.shp $_tblname \
+		> ${TMPDIR}/loader \
+		2> ${TMPDIR}/loader.err
+
+	if [ $? -gt 0 ]; then
+		fail "running shp2pgsql -w" "${TMPDIR}/loader.err"
+		return 1
+	fi
+
+	echo -n "."
+
+	${PSQL} -c "DROP table ${_tblname}" "${DB}" >> ${TMPDIR}/regress_log 2>&1
+	${PSQL} ${_psql_opts} -f ${TMPDIR}/loader "${DB}" > ${TMPDIR}/loader.err 2>&1
+	if [ $? -gt 0 ]; then
+		fail "sourcing shp2pgsql -w output" "${TMPDIR}/loader.err"
+		return 1
+	fi
+
+	if ! run_simple_test ${TEST}.sql ${TEST}-wkt.expected "wkt insert"; then
+		return 1
+	fi
+
+	#
+	# Run in WKT dump mode
+	#
+
+	echo -n "."
+
+	${SHP2PGSQL} -D -w ${TEST}.shp $_tblname \
+		> ${TMPDIR}/loader \
+		2> ${TMPDIR}/loader.err
+
+	if [ $? -gt 0 ]; then
+		fail "running shp2pgsql -D -w" "${TMPDIR}/loader.err"
+		return 1
+
+	fi
+
+	echo -n "."
+
+	${PSQL} -c "DROP table ${_tblname}" "${DB}" >> ${TMPDIR}/regress_log 2>&1
+	${PSQL} ${_psql_opts} -f ${TMPDIR}/loader "${DB}" > ${TMPDIR}/loader.err 2>&1
+	if [ $? -gt 0 ]; then
+		fail "sourcing shp2pgsql -D -w output" "${TMPDIR}/loader.err"
+		return 1
+	fi
+
+	if ! run_simple_test ${TEST}.sql ${TEST}-wkt.expected "wkt dump"; then
+		return 1
+	fi
+
+	rm ${TEST}.sql
+
+	return 0;
+}
+
+###################################################
+# 
+# Parse command line opts
+#
+###################################################
+
 while [ -n "$1" ]; do
 
 	if test "$1" = "-v"; then
@@ -50,17 +326,22 @@ if [ -z "$1" ]; then
 	exit 1
 fi
 
+###################################################
+# 
+# Prepare the database
+#
+###################################################
 
-db_exists=`psql -l | grep -w ${DB}`
+db_exists=`${PSQL} -l | grep -w ${DB}`
 
 if test -z "$db_exists"; then
 
 	if test x"$OPT_CREATE" = "xyes"; then
 		echo "Creating spatial db ${DB} " 
 
-		createdb $DB > ${TMPDIR}/regress_log_$$
-		createlang plpgsql $DB >> ${TMPDIR}/regress_log_$$ 
-		psql -f lwpostgis.sql $DB >> ${TMPDIR}/regress_log_$$ 2>&1
+		createdb "${DB}" > ${TMPDIR}/regress_log
+		createlang plpgsql "${DB}" >> ${TMPDIR}/regress_log
+		${PSQL} -f lwpostgis.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1
 	else
 
 		echo "Database ${DB} does not exist" >&2
@@ -78,11 +359,11 @@ else
 	fi
 fi
 
-libver=`psql -tAc "select postgis_lib_version()" $DB`
+libver=`${PSQL} -tAc "select postgis_lib_version()" "${DB}"`
 
 if [ -z "$libver" ]; then
 	echo
-	echo " Something went wrong (no postgis installed in $DB)." 
+	echo " Something went wrong (no postgis installed in ${DB})." 
 	if [ -z "$db_exists" ]; then
 		echo " Check ${TMPDIR}/regress_log_$$ for details."
 	else
@@ -93,11 +374,17 @@ if [ -z "$libver" ]; then
 	exit 1
 fi
 
-geosver=`psql -tAc "select postgis_geos_version()" $DB`
-jtsver=`psql -tAc "select postgis_jts_version()" $DB`
-projver=`psql -tAc "select postgis_proj_version()" $DB`
-libbuilddate=`psql -tAc "select postgis_lib_build_date()" $DB`
-pgsqlver=`psql -tAc "select version()" $DB`
+###################################################
+# 
+# Report runtime environment 
+#
+###################################################
+
+geosver=`${PSQL} -tAc "select postgis_geos_version()" "${DB}"`
+jtsver=`${PSQL} -tAc "select postgis_jts_version()" "${DB}"`
+projver=`${PSQL} -tAc "select postgis_proj_version()" "${DB}"`
+libbuilddate=`${PSQL} -tAc "select postgis_lib_build_date()" "${DB}"`
+pgsqlver=`${PSQL} -tAc "select version()" "${DB}"`
 
 echo
 echo " $pgsqlver"
@@ -112,6 +399,12 @@ if [ -n "$projver" ]; then
 	echo "   PROJ: $projver"
 fi
 
+###################################################
+# 
+# Run the tests
+#
+###################################################
+
 echo 
 echo "Running tests"
 echo
@@ -119,78 +412,46 @@ echo
 RUN=0
 SKIP=0
 FAIL=0
-SUCCESS=0
+#SUCCESS=0
 while [ -n "$1" ]; do
 	TEST="$1"; shift;
 
 	# catch a common mistake (strip trailing .sql)
 	TEST=`echo "$TEST" | sed 's/\.sql$//'`
 
-	OUTFILE="${TMPDIR}/regress_${TEST}_out_$$"
-	TMPFILE="${TMPDIR}/regress_${TEST}_tmp_$$"
-	DIFFILE="${TMPDIR}/regress_${TEST}_diff_$$"
+	#printf %20s " ${TEST}"
+	echo -ne " ${TEST}"
 
-	printf %20s " ${TEST}: "
-	#echo -ne " ${TEST}:\t"
+	RUN=`expr $RUN + 1`
 
-	if [ ! -r "${TEST}.sql" ]; then
+	# Check .shp *before* .sql as loader test would
+	# create the .sql
+	if [ -r "${TEST}.shp" ]; then
+		if run_loader_test; then
+			echo " ok"
+		fi
+	elif [ -r "${TEST}.sql" ]; then
+		if run_simple_test ${TEST}.sql ${TEST}_expected; then
+			echo " ok"
+		fi
+	else
 		echo "Skipped (can't read ${TEST}.sql)"
 		SKIP=`expr $SKIP + 1`
 		continue
 	fi
 
-	if [ ! -r "${TEST}_expected" ]; then
-		echo " Skipped (can't read ${TEST}_expected)"
-		SKIP=`expr $SKIP + 1`
-		continue
-	fi
-
-	# Use intermediate file to prevent MingW buffering problems
-	psql -tA < "${TEST}.sql" $DB > ${TMPFILE} 2>&1
-	cat ${TMPFILE} \
-		| grep -v "^$" \
-		| grep -v "^INSERT" \
-		| grep -v "^UPDATE" \
-		| grep -v "^DROP" \
-		| grep -v "^CREATE" \
-		| grep -v "^SET" \
-		| sed 's/Infinity/inf/g;s/Inf/inf/g;s/1\.#INF/inf/g' \
-		| sed 's/[eE]\([+-]\)0\{1,\}\([0-9]\{1,\}\)/e\1\2/g' \
-		| sed 's/Self-intersection .*/Self-intersection/' \
-		> "${OUTFILE}"
-	rm ${TMPFILE}
-
-	if diff "${TEST}_expected" "${OUTFILE}" > ${DIFFILE}; then
-		SUCCESS=`expr $SUCCESS + 1`
-		echo "Ok."
-		rm "${OUTFILE}" "${DIFFILE}" # we don't need these anymore
-	else
-		FAIL=`expr $FAIL + 1`
-		if test "$VERBOSE" -eq "1"; then
-			echo "Failed (diff ${DIFFILE})"
-			echo "-----------------------------------------------------------------------------"
-			echo "expected:'<'     obtained:'>'"
-			echo "-----------------------------------------------------------------------------"
-			cat ${DIFFILE}
-			echo "-----------------------------------------------------------------------------"
-		else
-			echo "Failed (diff ${DIFFILE})"
-		fi
-		rm "${OUTFILE}" # diff is enough
-	fi
-	RUN=`expr $RUN + 1`
 
 done
 
 echo
 echo "Run tests: $RUN"
 #echo "Skipped: $SKIP"
-echo "Successful: $SUCCESS"
+#echo "Successful: $SUCCESS"
 echo "Failed: $FAIL"
 
 if test x"$OPT_DROP" = "xyes" -a x"$OPT_CREATE" = "xyes"; then
 	sleep 1
-	dropdb $DB > /dev/null
+	dropdb "${DB}" > /dev/null
 else
 	: echo "Drop database ${DB} manually"
 fi
