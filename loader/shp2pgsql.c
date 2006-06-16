@@ -862,7 +862,7 @@ InsertLineStringWKT(int id)
 
 		for ( vi=vs; vi<ve; vi++)
 		{
-			if ( vi ) printf(",");
+			if ( vi > vs ) printf(",");
 			printf("%.15g %.15g",
 				obj->padfX[vi],
 				obj->padfY[vi]);
@@ -1698,6 +1698,10 @@ utf8 (const char *fromcode, char *inputbuf)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.108  2006/06/16 14:12:17  strk
+ *         - BUGFIX in pgsql2shp successful return code.
+ *         - BUGFIX in shp2pgsql handling of MultiLine WKT.
+ *
  * Revision 1.107  2006/04/18 09:16:26  strk
  * Substituted bzero() use with memset()
  *
