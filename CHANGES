@@ -1,5 +1,6 @@
 PostGIS 1.1.3CVS
 
+	- Can run the regress tests with 'make check' now.
 	- New regress test support for loader/dumper.
 	- BUGFIX in pgsql2shp successful return code.
 	- BUGFIX in shp2pgsql handling of MultiLine WKT.

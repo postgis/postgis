@@ -99,7 +99,7 @@ TESTING
 You want to run regress tests before installation.
 To do so, as postgres run:
 
-	make test
+	make check
 
 Final lines of output contain a summary of test results:
 run, succeeded, failed. If you have any failure please

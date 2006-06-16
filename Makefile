@@ -2,7 +2,7 @@
 # this file copied and adapted from PostgreSQL source
 # to allow easy build on BSD systems
 
-all install uninstall clean distclean maintainer-clean test docs docs-install docs-uninstall utils:
+all install uninstall clean distclean maintainer-clean test check docs docs-install docs-uninstall utils:
 	@IFS=':' ; \
 	 for dir in $$PATH; do \
 	   for prog in gmake gnumake make; do \
