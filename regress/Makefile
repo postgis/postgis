@@ -2,7 +2,30 @@ TMPDIR?=/tmp
 
 include ../Makefile.config
 
-TESTS=loader/mlines2d loader/mlines3dz loader/mlines3dm loader/mlines4d regress regress_index lwgeom_regress regress_lrs removepoint setpoint simplify snaptogrid affine wkt measures 
+TESTS = \
+	loader/Point \
+	loader/PointM \
+	loader/PointZ \
+	loader/MultiPoint \
+	loader/MultiPointM \
+	loader/MultiPointZ \
+	loader/Arc \
+	loader/ArcM \
+	loader/ArcZ \
+	loader/Polygon \
+	loader/PolygonM \
+	loader/PolygonZ \
+	regress \
+	regress_index \
+	lwgeom_regress \
+	regress_lrs \
+	removepoint \
+	setpoint \
+	simplify \
+	snaptogrid \
+	affine \
+	wkt \
+	measures 
 
 ifeq ($(USE_GEOS),1)
 	TESTS += regress_ogc regress_bdpoly

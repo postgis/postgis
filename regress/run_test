@@ -29,11 +29,17 @@ fi
 
 mkdir -p ${TMPDIR}
 
-echo "TMPDIR is ${TMPDIR}"
-
 VERBOSE=0
 OPT_DROP=yes
 OPT_CREATE=yes
+
+if echo '\c' | grep c >/dev/null 2>&1; then
+	ECHO_N='echo -n'
+	ECHO_C=''
+else
+	ECHO_N='echo'
+	ECHO_C='\c'
+fi
 
 ###################################################
 # 
@@ -41,10 +47,16 @@ OPT_CREATE=yes
 #
 ###################################################
 
+# Print a single dot
+show_progress()
+{
+	${ECHO_N} ".${ECHO_C}"
+}
+
 #
 # fail <msg> <log>
 #
-function fail ()
+fail ()
 {
 	_msg="$1"
 	_log="$2"
@@ -70,7 +82,7 @@ function fail ()
 #
 #  SQL input is ${TEST}.sql, expected output is {$TEST}_expected
 #
-function run_simple_test ()
+run_simple_test ()
 {
 	_sql="$1"
 	_expected="$2"
@@ -80,20 +92,24 @@ function run_simple_test ()
 		_msg=
 	fi
 
+	if [ ! -r "$_sql" ]; then
+		fail "can't read $_sql"
+		return 1
+	fi
+
 	if [ ! -r "$_expected" ]; then
 		fail "can't read $_expected"
 		return 1
 	fi
 
-
-	echo -n "."
+	show_progress
 
 	OUTFILE="${TMPDIR}/test_${RUN}_out"
 	TMPFILE="${TMPDIR}/test_${RUN}_tmp"
 	DIFFILE="${TMPDIR}/test_${RUN}_diff"
 
 	# Use intermediate file to prevent MingW buffering problems
-	${PSQL} -tA < "${TEST}.sql" ${DB} > ${TMPFILE} 2>&1
+	${PSQL} -tA < "${_sql}" ${DB} > ${TMPFILE} 2>&1
 	cat ${TMPFILE} \
 		| grep -v "^$" \
 		| grep -v "^INSERT" \
@@ -126,21 +142,21 @@ function run_simple_test ()
 #
 #  SHP input is ${TEST}.shp, expected output is {$TEST}_expected
 #
-function run_loader_test ()
+run_loader_test ()
 {
-	_tblname=loadertest
+	_tblname=loadedshp
 
 	# ON_ERROR_STOP is used by psql to return non-0 on an error
 	_psql_opts="--variable ON_ERROR_STOP=true"
 
-	echo "SELECT * from ${_tblname}" > ${TEST}.sql
+	#echo "SELECT * from ${_tblname}" > ${TEST}.sql
 
 
 	#
 	# Run in HEXWKB insert mode
 	#
 
-	echo -n "."
+	show_progress
 
 	${SHP2PGSQL} ${TEST}.shp $_tblname \
 		> ${TMPDIR}/loader \
@@ -152,7 +168,7 @@ function run_loader_test ()
 
 	fi
 
-	echo -n "."
+	show_progress
 
 	${PSQL} -c "DROP table ${_tblname}" "${DB}" >> ${TMPDIR}/regress_log 2>&1
 	${PSQL} ${_psql_opts} -f ${TMPDIR}/loader "${DB}" > ${TMPDIR}/loader.err 2>&1
@@ -161,8 +177,12 @@ function run_loader_test ()
 		return 1
 	fi
 
-	if ! run_simple_test ${TEST}.sql ${TEST}-wkb.expected "wkb insert"; then
-		return 1
+	if [ -e "${TEST}-wkb.sql" ]; then
+		if run_simple_test ${TEST}-wkb.sql ${TEST}-wkb.expected "wkb insert"; then
+			:
+		else
+			return 1
+		fi
 	fi
 
 
@@ -170,7 +190,7 @@ function run_loader_test ()
 	# Run in HEXWKB dump mode
 	#
 
-	echo -n "."
+	show_progress
 
 	${SHP2PGSQL} -D ${TEST}.shp $_tblname \
 		> ${TMPDIR}/loader \
@@ -182,7 +202,7 @@ function run_loader_test ()
 
 	fi
 
-	echo -n "."
+	show_progress
 
 	${PSQL} -c "DROP table ${_tblname}" "${DB}" >> ${TMPDIR}/regress_log 2>&1
 	${PSQL} ${_psql_opts} -f ${TMPDIR}/loader "${DB}" > ${TMPDIR}/loader.err 2>&1
@@ -191,8 +211,12 @@ function run_loader_test ()
 		return 1
 	fi
 
-	if ! run_simple_test ${TEST}.sql ${TEST}-wkb.expected "wkb dump"; then
-		return 1
+	if [ -e "${TEST}-wkb.sql" ]; then
+		if run_simple_test ${TEST}-wkb.sql ${TEST}-wkb.expected "wkb dump"; then
+			:
+		else
+			return 1
+		fi
 	fi
 
 	###########################################################
@@ -202,7 +226,7 @@ function run_loader_test ()
 	# M values
 	#
 
-	echo -n "."
+	show_progress
 
 	${PGSQL2SHP} -f ${TMPDIR}/dumper ${DB} "${_tblname}" > "${TMPDIR}/dumper.err" 2>&1
 	if [ $? -gt 0 ]; then
@@ -210,23 +234,29 @@ function run_loader_test ()
 		return 1
 	fi
 
-	echo -n "."
+	show_progress
 
-	if ! diff "${TMPDIR}"/dumper.shp "${TEST}".shp > /dev/null; then
+	if diff "${TMPDIR}"/dumper.shp "${TEST}".shp > /dev/null; then
+		:
+	else
 		ls -lL "${TMPDIR}"/dumper.shp "${TEST}".shp > "${TMPDIR}"/dumper.diff
 		fail "dumping loaded table" "${TMPDIR}/dumper.diff"
 		return 1
 	fi
 
 # I'm not sure it's safe to compare indexes
-#	if ! diff "${TMPDIR}"/dumper.shx "${TEST}".shx; then
+#	if diff "${TMPDIR}"/dumper.shx "${TEST}".shx; then
+#		:
+#	else
 #		ls -lL "${TMPDIR}"/dumper.shx "${TEST}".shx > "${TMPDIR}"/dumper.diff
 #		fail "dumping loaded table" "${TMPDIR}/dumper.diff"
 #		return 1
 #	fi
 
 # Change in attribute sizes would make this fail
-#	if ! diff "${TMPDIR}"/dumper.dbf "${TEST}".dbf; then
+#	if diff "${TMPDIR}"/dumper.dbf "${TEST}".dbf; then
+#		:
+#	else
 #		ls -lL "${TMPDIR}"/dumper.dbf "${TEST}".dbf > "${TMPDIR}"/dumper.diff
 #		fail "dumping loaded table" "${TMPDIR}/dumper.diff"
 #		return 1
@@ -238,7 +268,7 @@ function run_loader_test ()
 	#
 	################################################
 
-	echo -n "."
+	show_progress
 
 	${SHP2PGSQL} -w ${TEST}.shp $_tblname \
 		> ${TMPDIR}/loader \
@@ -249,7 +279,7 @@ function run_loader_test ()
 		return 1
 	fi
 
-	echo -n "."
+	show_progress
 
 	${PSQL} -c "DROP table ${_tblname}" "${DB}" >> ${TMPDIR}/regress_log 2>&1
 	${PSQL} ${_psql_opts} -f ${TMPDIR}/loader "${DB}" > ${TMPDIR}/loader.err 2>&1
@@ -258,15 +288,19 @@ function run_loader_test ()
 		return 1
 	fi
 
-	if ! run_simple_test ${TEST}.sql ${TEST}-wkt.expected "wkt insert"; then
-		return 1
+	if [ -e "${TEST}-wkt.sql" ]; then
+		if run_simple_test ${TEST}-wkt.sql ${TEST}-wkt.expected "wkt insert"; then
+			:
+		else
+			return 1
+		fi
 	fi
 
 	#
 	# Run in WKT dump mode
 	#
 
-	echo -n "."
+	show_progress
 
 	${SHP2PGSQL} -D -w ${TEST}.shp $_tblname \
 		> ${TMPDIR}/loader \
@@ -278,7 +312,7 @@ function run_loader_test ()
 
 	fi
 
-	echo -n "."
+	show_progress
 
 	${PSQL} -c "DROP table ${_tblname}" "${DB}" >> ${TMPDIR}/regress_log 2>&1
 	${PSQL} ${_psql_opts} -f ${TMPDIR}/loader "${DB}" > ${TMPDIR}/loader.err 2>&1
@@ -287,11 +321,15 @@ function run_loader_test ()
 		return 1
 	fi
 
-	if ! run_simple_test ${TEST}.sql ${TEST}-wkt.expected "wkt dump"; then
-		return 1
+	if [ -e "${TEST}-wkt.sql" ]; then
+		if run_simple_test ${TEST}-wkt.sql ${TEST}-wkt.expected "wkt dump"; then
+			:
+		else
+			return 1
+		fi
 	fi
 
-	rm ${TEST}.sql
+	#rm ${TEST}.sql
 
 	return 0;
 }
@@ -386,6 +424,8 @@ projver=`${PSQL} -tAc "select postgis_proj_version()" "${DB}"`
 libbuilddate=`${PSQL} -tAc "select postgis_lib_build_date()" "${DB}"`
 pgsqlver=`${PSQL} -tAc "select version()" "${DB}"`
 
+echo "TMPDIR is ${TMPDIR}"
+
 echo
 echo " $pgsqlver"
 echo " Postgis $libver - $libbuilddate"
@@ -420,7 +460,8 @@ while [ -n "$1" ]; do
 	TEST=`echo "$TEST" | sed 's/\.sql$//'`
 
 	#printf %20s " ${TEST}"
-	echo -ne " ${TEST}"
+	#echo -ne " ${TEST}"
+	${ECHO_N} " ${TEST}${ECHO_C}"
 
 	RUN=`expr $RUN + 1`
 

@@ -1,10 +1,13 @@
-Fri Jun 16 15:59:14 CEST 2006 --strk;
+Sat Jun 17 11:40:38 CEST 2006 --strk;
 
 The ../run_test script will load a provided shapefile using both DUMP and INSERT
-mode and both WKT and WKB modes.
-Will compare a 'select * from loaded_table' against the provided <name>-wkb.expected
-and <name>-wkt.expected files (we need two separate files as the WKT mode will
-not support M values).
-Also, the tester file will dump the loaded table and compare the resulting shapefile
-with the original one (only .shp, .dbf is not compared as field sizes are not
+mode and both WKT and WKB modes into a table name 'loadedshp'.
+After each WKB load, the <name>-wkb.sql test, if available, will be run
+and output compared to <name>-wkb.expected
+After each WKT load, the <name>-wkt.sql test, if available, will be run
+and output compared to <name>-wkt.expected
+We need two separate tests for WKB and WKT as the WKT mode will not support M values.
+
+Also, the tester script will dump the WKB loaded table and compare the resulting
+shapefile with the original one (only .shp, .dbf is not compared as field sizes are not
 retained, we might use a dbf viewer for that, but that's not currently implemented)
