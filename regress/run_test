@@ -177,7 +177,7 @@ run_loader_test ()
 		return 1
 	fi
 
-	if [ -e "${TEST}-wkb.sql" ]; then
+	if [ -f "${TEST}-wkb.sql" ]; then
 		if run_simple_test ${TEST}-wkb.sql ${TEST}-wkb.expected "wkb insert"; then
 			:
 		else
@@ -211,7 +211,7 @@ run_loader_test ()
 		return 1
 	fi
 
-	if [ -e "${TEST}-wkb.sql" ]; then
+	if [ -f "${TEST}-wkb.sql" ]; then
 		if run_simple_test ${TEST}-wkb.sql ${TEST}-wkb.expected "wkb dump"; then
 			:
 		else
@@ -288,7 +288,7 @@ run_loader_test ()
 		return 1
 	fi
 
-	if [ -e "${TEST}-wkt.sql" ]; then
+	if [ -f "${TEST}-wkt.sql" ]; then
 		if run_simple_test ${TEST}-wkt.sql ${TEST}-wkt.expected "wkt insert"; then
 			:
 		else
@@ -321,7 +321,7 @@ run_loader_test ()
 		return 1
 	fi
 
-	if [ -e "${TEST}-wkt.sql" ]; then
+	if [ -f "${TEST}-wkt.sql" ]; then
 		if run_simple_test ${TEST}-wkt.sql ${TEST}-wkt.expected "wkt dump"; then
 			:
 		else
