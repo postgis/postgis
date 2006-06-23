@@ -1,4 +1,4 @@
-CFLAGS += -I$(shell pg_config --includedir-server)
+CFLAGS += -W -Wall -I$(shell pg_config --includedir-server)
 CC = gcc
 MODULE_FILENAME = $(PWD)/libWFS_locks.so
 

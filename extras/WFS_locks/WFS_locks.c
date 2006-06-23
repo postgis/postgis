@@ -3,7 +3,9 @@
 #include "commands/trigger.h"   /* ... and triggers */
 #include "utils/lsyscache.h"	/* for get_namespace_name() */
 
-//#define PGIS_DEBUG 1
+#define PGIS_DEBUG 1
+
+#define ABORT_ON_AUTH_FAILURE 1
 
 Datum check_authorization(PG_FUNCTION_ARGS);
 
@@ -20,7 +22,8 @@ Datum check_authorization(PG_FUNCTION_ARGS)
 {
 	TriggerData *trigdata = (TriggerData *) fcinfo->context;
 	char *colname;
-	HeapTuple rettuple;
+	HeapTuple rettuple_ok;
+	HeapTuple rettuple_fail;
 	TupleDesc tupdesc;
 	int SPIcode;
 	char query[1024];
@@ -29,17 +32,40 @@ Datum check_authorization(PG_FUNCTION_ARGS)
 	HeapTuple tuple;
 	char *lockcode;
 	char *authtable = "authorization_table";
+	const char *op;
+#define ERRMSGLEN 256
+	char errmsg[ERRMSGLEN];
 
 
 	/* Make sure trigdata is pointing at what I expect */
-	if (!CALLED_AS_TRIGGER(fcinfo))
+	if ( ! CALLED_AS_TRIGGER(fcinfo) )
+	{
 		elog(ERROR,"check_authorization: not fired by trigger manager");
+	}
 
-	if (! (TRIGGER_FIRED_BY_UPDATE(trigdata->tg_event) ||
-		TRIGGER_FIRED_BY_DELETE(trigdata->tg_event)) )
+	if ( ! TRIGGER_FIRED_BEFORE(trigdata->tg_event) )
+	{
+		elog(ERROR,"check_authorization: not fired *before* event");
+	}
+
+	if ( TRIGGER_FIRED_BY_UPDATE(trigdata->tg_event) )
+	{
+		rettuple_ok = trigdata->tg_newtuple;
+		rettuple_fail = NULL;
+		op = "UPDATE";
+	}
+	else if ( TRIGGER_FIRED_BY_DELETE(trigdata->tg_event) )
+	{
+		rettuple_ok = trigdata->tg_trigtuple;
+		rettuple_fail = NULL;
+		op = "DELETE";
+	}
+	else
+	{
 		elog(ERROR,"check_authorization: not fired by update or delete");
+	}
 
-	rettuple = trigdata->tg_newtuple;
+
 	tupdesc = trigdata->tg_relation->rd_att;
 
 	/* Connect to SPI manager */
@@ -56,8 +82,7 @@ Datum check_authorization(PG_FUNCTION_ARGS)
 		SPI_fnumber(tupdesc, colname));
 
 #if PGIS_DEBUG
-	elog(NOTICE,"check_authorization(%s.%s.%s=%s)",
-		nspname, relname, colname, pk_id);
+	elog(NOTICE,"check_authorization called");
 #endif
 
 	sprintf(query,"SELECT authid FROM \"%s\" WHERE expires >= now() AND toid = '%d' AND rid = '%s'", authtable, trigdata->tg_relation->rd_id, pk_id);
@@ -73,21 +98,21 @@ Datum check_authorization(PG_FUNCTION_ARGS)
 	if (!SPI_processed )
 	{
 #if PGIS_DEBUG
-		elog(NOTICE,"there is NOT a lock on row '%s'", pk_id);
+		elog(NOTICE,"there is NO lock on row '%s'", pk_id);
 #endif
 		SPI_finish();
-		return PointerGetDatum(trigdata->tg_trigtuple);
+		return PointerGetDatum(rettuple_ok);
 	}
 
 	// there is a lock - check to see if I have rights to it!
 
 	tuptable = SPI_tuptable;
-	tupdesc = SPI_tuptable->tupdesc;
+	tupdesc = tuptable->tupdesc;
 	tuple = tuptable->vals[0];
 	lockcode = SPI_getvalue(tuple, tupdesc, 1);
 
 #if PGIS_DEBUG
-	elog(NOTICE,"there is a lock on this row!");
+	elog(NOTICE, "there is a lock on row '%s' (auth: '%s').", pk_id, lockcode);
 #endif
 
 	// check to see if temp_lock_have_table table exists
@@ -98,14 +123,7 @@ Datum check_authorization(PG_FUNCTION_ARGS)
 		elog(ERROR,"couldnt execute to test for lockkey temp table :%s",query);
 	if (SPI_processed==0)
 	{
-		SPI_finish();
-
-		elog(ERROR,"Unauthorized modification (requires auth: '%s')",
-			lockcode);
-		elog(NOTICE,"Modificaton of row '%s' requires authorization '%s'",
-			pk_id, lockcode);
-		// ignore requested delete or update
-		return PointerGetDatum(trigdata->tg_trigtuple);
+		goto fail;
 	}
 
 	sprintf(query, "SELECT * FROM temp_lock_have_table WHERE lockcode ='%s'",lockcode);
@@ -116,7 +134,7 @@ Datum check_authorization(PG_FUNCTION_ARGS)
 
 	SPIcode = SPI_exec(query,0);
 	if (SPIcode != SPI_OK_SELECT )
-		elog(ERROR,"couldnt execute to test for lock aquire: %s", query);
+		elog(ERROR, "couldnt execute to test for lock aquire: %s", query);
 
 	if (SPI_processed >0)
 	{
@@ -124,16 +142,23 @@ Datum check_authorization(PG_FUNCTION_ARGS)
 		elog(NOTICE,"I own the lock - I can modify the row");
 #endif
 		SPI_finish();
-		return PointerGetDatum(rettuple);
+		return PointerGetDatum(rettuple_ok);
 	}
 
-	SPI_finish();
+	fail:
 
-	elog(ERROR,"Unauthorized modification (requires auth: '%s')",
-		lockcode);
-	elog(NOTICE,"Modificaton of row '%s' requires authorization '%s'",
-		pk_id, lockcode);
-	// ignore the command
-	return PointerGetDatum(trigdata->tg_trigtuple);
+	snprintf(errmsg, ERRMSGLEN, "%s where \"%s\" = '%s' requires authorization '%s'",
+		op, colname, pk_id, lockcode);
+	errmsg[ERRMSGLEN-1] = '\0';
+
+#ifdef ABORT_ON_AUTH_FAILURE
+	elog(ERROR, "%s", errmsg);
+#else
+	elog(NOTICE, "%s", errmsg);
+#endif
+
+	SPI_finish();
+	return PointerGetDatum(rettuple_fail);
+
 
 }

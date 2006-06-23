@@ -31,6 +31,10 @@
 # define _STRICT with(isstrict)
 #endif 
 
+#if USE_VERSION >= 73
+# define HAS_SCHEMAS 1
+#endif
+
 
 -----------------------------------------------------------------------
 -- LONG TERM LOCKING
@@ -71,12 +75,18 @@ DECLARE
 	myrec RECORD;
 	
 BEGIN
+
 	EXECUTE ''DELETE FROM authorization_table WHERE expires < now()''; 
 
+#if HAS_SCHEMAS
 	SELECT c.oid INTO mytoid FROM pg_class c, pg_namespace n
 		WHERE c.relname = mytable
 		AND c.relnamespace = n.oid
 		AND n.nspname = myschema;
+#else
+	SELECT c.oid INTO mytoid FROM pg_class c
+		WHERE c.relname = mytable;
+#endif
 
 	-- RAISE NOTICE ''toid: %'', mytoid;
 
@@ -164,8 +174,10 @@ LANGUAGE PLPGSQL;
 CREATEFUNCTION CheckAuth(text, text, text)
 	RETURNS INT
 	AS '
+#if USE_VERSION >= 73
 DECLARE
 	schema text;
+#endif
 BEGIN
 
 #if USE_VERSION >= 73
@@ -201,6 +213,12 @@ CREATEFUNCTION CheckAuthTrigger()
 	'@MODULE_FILENAME@', 'check_authorization'
 	LANGUAGE C;
 
+CREATE TABLE authorization_table (
+	toid oid, -- table oid
+	rid text, -- row id
+	expires timestamp,
+	authid text
+);
 
 ---------------------------------------------------------------
 -- END
