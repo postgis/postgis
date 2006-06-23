@@ -3,7 +3,7 @@
 #include "commands/trigger.h"   /* ... and triggers */
 #include "utils/lsyscache.h"	/* for get_namespace_name() */
 
-#define PGIS_DEBUG 1
+/*#define PGIS_DEBUG 1*/
 
 #define ABORT_ON_AUTH_FAILURE 1
 

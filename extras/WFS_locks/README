@@ -12,6 +12,12 @@ and has been modified and packaged by Sandro Santilli <strk@refractions.net>.
 
   Usage:
 	
+	-- Enable long transaction support
+	SELECT EnableLongTransactions();
+
+	-- Disable long transaction support
+	SELECT DisableLongTransactions();
+
 	-- Check updates and deletes of rows in
 	-- given table for being authorized.
 	-- Identify rows using <column> value.
