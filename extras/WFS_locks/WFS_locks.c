@@ -63,6 +63,7 @@ Datum check_authorization(PG_FUNCTION_ARGS)
 	else
 	{
 		elog(ERROR,"check_authorization: not fired by update or delete");
+		PG_RETURN_NULL();
 	}
 
 
@@ -104,7 +105,7 @@ Datum check_authorization(PG_FUNCTION_ARGS)
 		return PointerGetDatum(rettuple_ok);
 	}
 
-	// there is a lock - check to see if I have rights to it!
+	/* there is a lock - check to see if I have rights to it! */
 
 	tuptable = SPI_tuptable;
 	tupdesc = tuptable->tupdesc;
@@ -115,8 +116,10 @@ Datum check_authorization(PG_FUNCTION_ARGS)
 	elog(NOTICE, "there is a lock on row '%s' (auth: '%s').", pk_id, lockcode);
 #endif
 
-	// check to see if temp_lock_have_table table exists
-	// (it might not exist if they own no locks
+	/*
+	 * check to see if temp_lock_have_table table exists
+	 * (it might not exist if they own no locks)
+	 */
 	sprintf(query,"SELECT * FROM pg_class WHERE relname = 'temp_lock_have_table'");
 	SPIcode = SPI_exec(query,0);
 	if (SPIcode != SPI_OK_SELECT )
