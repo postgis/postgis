@@ -226,7 +226,8 @@ CREATEFUNCTION Scale(geometry,float8,float8)
 -- Availability: 1.1.0 
 CREATEFUNCTION transscale(geometry,float8,float8,float8,float8)
         RETURNS geometry
-        AS 'SELECT affine($1,  $4, 0, 0,  0, $5, 0,  0, 0, 1,  $2*$4, $3*$5, 0)'
+        AS 'SELECT affine($1,  $4, 0, 0,  0, $5, 0, 
+		0, 0, 1,  $2 * $4, $3 * $5, 0)'
         LANGUAGE 'SQL' _IMMUTABLE_STRICT;
 
 -- Availability: 1.1.0
