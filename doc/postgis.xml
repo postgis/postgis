@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
-"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd" [
+  <!ENTITY long_xact SYSTEM "long_xact.xml">
+]>
 <book>
   <title>PostGIS Manual</title>
 
@@ -5261,7 +5263,7 @@ FROM geometry_table;</literallayout>
         </variablelist>
       </sect2>
 
-
+      &long_xact;
 
     </sect1>
   </chapter>

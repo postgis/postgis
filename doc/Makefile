@@ -28,7 +28,7 @@ requirements_not_met:
 	@echo "  http://postgis.refractions.net/docs"
 	@echo
 
-postgis-out.xml: postgis.xml ../Version.config
+postgis-out.xml: postgis.xml long_xact.xml ../Version.config
 	cat $< | sed "s/@@LAST_RELEASE_VERSION@@/$(LAST_RELEASE_VERSION)/g" > $@
 
 chunked-html: postgis-out.xml

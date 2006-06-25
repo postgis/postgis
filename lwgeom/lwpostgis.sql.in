@@ -42,6 +42,9 @@
 # define _SECURITY_DEFINER 
 #endif 
 
+#if USE_VERSION >= 73
+# define HAS_SCHEMAS 1
+#endif
 
 BEGIN;
 
@@ -3686,6 +3689,7 @@ END;
 '
 LANGUAGE 'plpgsql' _IMMUTABLE_STRICT; 
 
+#include "long_xact.sql"
 
 ---------------------------------------------------------------
 -- END

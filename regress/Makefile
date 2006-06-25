@@ -25,7 +25,8 @@ TESTS = \
 	snaptogrid \
 	affine \
 	wkt \
-	measures 
+	measures \
+	long_xact
 
 ifeq ($(USE_GEOS),1)
 	TESTS += regress_ogc regress_bdpoly
@@ -37,8 +38,8 @@ endif
 
 all: test 
 
-test: lwpostgis.sql ../lwgeom/liblwgeom.so
-	@USE_VERSION="$(USE_VERSION)" ./run_test long_xact # $(TESTS)
+test check: lwpostgis.sql ../lwgeom/liblwgeom.so
+	@USE_VERSION="$(USE_VERSION)" ./run_test $(TESTS)
 
 lwpostgis.sql: ../lwgeom/lwpostgis.sql.in 
 	$(MAKE) -C ../lwgeom ../regress/lwpostgis.sql
