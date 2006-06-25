@@ -129,7 +129,7 @@ Datum check_authorization(PG_FUNCTION_ARGS)
 		goto fail;
 	}
 
-	sprintf(query, "SELECT * FROM temp_lock_have_table WHERE lockcode ='%s'",lockcode);
+	sprintf(query, "SELECT * FROM temp_lock_have_table WHERE xideq( transid, getTransactionID() ) AND lockcode ='%s'", lockcode);
 
 #if PGIS_DEBUG
 	elog(NOTICE,"about to execute :%s", query);
@@ -164,4 +164,11 @@ Datum check_authorization(PG_FUNCTION_ARGS)
 	return PointerGetDatum(rettuple_fail);
 
 
+}
+
+PG_FUNCTION_INFO_V1(getTransactionID);
+Datum getTransactionID(PG_FUNCTION_ARGS)
+{
+    TransactionId xid = GetCurrentTransactionId();
+    PG_RETURN_DATUM( TransactionIdGetDatum(xid) );
 }

@@ -165,13 +165,17 @@ BEGIN
 		okay := ''t'';
 	END LOOP; 
 	IF (okay <> ''t'') THEN 
-		CREATE TEMP TABLE temp_lock_have_table (lockcode text)
-			ON COMMIT DELETE ROWS;
+		CREATE TEMP TABLE temp_lock_have_table (transid xid, lockcode text);
+			-- this will only work from pgsql7.4 up
+			-- ON COMMIT DELETE ROWS;
 	END IF;
 
 	--  INSERT INTO mylock VALUES ( $1)
-	EXECUTE ''INSERT INTO temp_lock_have_table VALUES ( ''||
-		quote_literal(lockid) ||'')'';
+--	EXECUTE ''INSERT INTO temp_lock_have_table VALUES ( ''||
+--		quote_literal(getTransactionID()) || '','' ||
+--		quote_literal(lockid) ||'')'';
+
+	INSERT INTO temp_lock_have_table VALUES (getTransactionID(), lockid);
 
 	RETURN true::boolean;
 END;
@@ -229,6 +233,11 @@ CREATEFUNCTION CheckAuth(text, text)
 CREATEFUNCTION CheckAuthTrigger()
 	RETURNS trigger AS 
 	'@MODULE_FILENAME@', 'check_authorization'
+	LANGUAGE C;
+
+CREATEFUNCTION GetTransactionID()
+	RETURNS xid AS 
+	'@MODULE_FILENAME@', 'getTransactionID'
 	LANGUAGE C;
 
 

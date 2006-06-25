@@ -1,4 +1,3 @@
---BEGIN;
 
 CREATE TABLE test_locks (id serial, b char(16), c char(16) );
 INSERT INTO test_locks(b) VALUES ('one');
@@ -58,4 +57,3 @@ UPDATE test_locks SET c = 'unauthorized' where id = 1;
 SELECT * from test_locks;
 DROP TABLE test_locks;
 
-END;
