@@ -38,7 +38,7 @@ endif
 all: test 
 
 test: lwpostgis.sql ../lwgeom/liblwgeom.so
-	@./run_test $(TESTS)
+	@USE_VERSION="$(USE_VERSION)" ./run_test long_xact # $(TESTS)
 
 lwpostgis.sql: ../lwgeom/lwpostgis.sql.in 
 	$(MAKE) -C ../lwgeom ../regress/lwpostgis.sql

@@ -18,8 +18,12 @@ PGSQL2SHP=../loader/pgsql2shp
 #
 ###################################################
 
-PGOPTIONS="${PGOPTIONS} -c lc_messages=C"
-export PGOPTIONS
+if [ -n "$USE_VERSION" ]; then
+	if [ "$USE_VERSION" -gt 74 ]; then
+		PGOPTIONS="${PGOPTIONS} -c lc_messages=C"
+		export PGOPTIONS
+	fi
+fi
 
 PSQL="psql"
 
@@ -403,7 +407,7 @@ if [ -z "$libver" ]; then
 	echo
 	echo " Something went wrong (no postgis installed in ${DB})." 
 	if [ -z "$db_exists" ]; then
-		echo " Check ${TMPDIR}/regress_log_$$ for details."
+		echo " For details, check ${TMPDIR}/regress_log"
 	else
 		echo " Try dropping the database, it will be recreated" \
 			" on next run."
