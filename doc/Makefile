@@ -14,6 +14,7 @@ XSLTPROC_HTMLOPTS = \
 	--stringparam html.stylesheet style.css \
 
 HTML_DOCBOOK_XSL=$(XSLBASE)/html/docbook.xsl 
+CHUNK_HTML_DOCBOOK_XSL=$(XSLBASE)/html/chunk.xsl 
 FO_DOCBOOK_XSL=$(XSLBASE)/fo/docbook.xsl
 
 all: $(DOC_RULE)
@@ -34,13 +35,13 @@ chunked-html: postgis-out.xml
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) $(XSLTPROC_HTMLOPTS) \
 		--output html/ \
 		--stringparam saxon.character.representation decimal \
-		$(HTML_DOXBOOK_XSL) \
+		$(CHUNK_HTML_DOCBOOK_XSL) \
 		$<
 
 html/postgis.html: postgis-out.xml
-	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
+	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) $(XSLTPROC_HTMLOPTS) \
 		--output html/postgis.html \
-		$(FO_DOCBOOK_XSL) \
+		$(HTML_DOCBOOK_XSL) \
 		$<
 
 postgis.fo: postgis-out.xml
