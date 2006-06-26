@@ -1760,7 +1760,7 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 	/* Make a DETOASTED copy of input geometry */
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(datum);
 #ifdef PGIS_DEBUG
-	elog(NOTICE, "geom_accum: detoasted geom: %x", geom);
+	elog(NOTICE, "geom_accum: detoasted geom: %p", (void*)geom);
 #endif
 
 	/*
@@ -1773,7 +1773,7 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 		nbytes = ARR_OVERHEAD_NONULLS(1)+INTALIGN(geom->size);
 #ifdef PGIS_DEBUG
 		elog(NOTICE, "geom_accum: adding %p (nelems=%d; nbytes=%d)",
-			geom, nelems, nbytes);
+			(void*)geom, nelems, nbytes);
 #endif
 		result = lwalloc(nbytes);
 		if ( ! result )
@@ -1802,7 +1802,7 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 		oldsize = array->size;
 		nbytes = oldsize + INTALIGN(geom->size);
 #ifdef PGIS_DEBUG
-		elog(NOTICE, "geom_accum: old array size: %d, adding %d bytes (nelems=%d; nbytes=%lu)", array->size, INTALIGN(geom->size), nelems, nbytes);
+		elog(NOTICE, "geom_accum: old array size: %d, adding %ld bytes (nelems=%d; nbytes=%u)", array->size, INTALIGN(geom->size), nelems, nbytes);
 #endif
 		result = (ArrayType *) lwrealloc(array, nbytes);
 		if ( ! result )
@@ -1815,7 +1815,7 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 #endif
 
 #ifdef PGIS_DEBUG
-		elog(NOTICE, " array start  @ %p", result);
+		elog(NOTICE, " array start  @ %p", (void*)result);
 		elog(NOTICE, " ARR_DATA_PTR @ %p (%d)",
 			ARR_DATA_PTR(result), (uchar *)ARR_DATA_PTR(result)-(uchar *)result);
 		elog(NOTICE, " next element @ %p", (uchar *)result+oldsize);
@@ -1824,7 +1824,7 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 		memcpy(ARR_DIMS(result), &nelems, sizeof(int));
 #ifdef PGIS_DEBUG
 		elog(NOTICE, " writing next element starting @ %p",
-			result+oldsize);
+			(void*)(result+oldsize));
 #endif
 		memcpy((uchar *)result+oldsize, geom, geom->size);
 	}
@@ -1879,7 +1879,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 	array = (ArrayType *) PG_DETOAST_DATUM(datum);
 
 #ifdef PGIS_DEBUG
-	elog(NOTICE, " array is %d-bytes in size, %d w/out header",
+	elog(NOTICE, " array is %d-bytes in size, %ld w/out header",
 		array->size, array->size-ARR_OVERHEAD_NONULLS(ARR_NDIM(array)));
 #endif
 
@@ -2238,7 +2238,7 @@ Datum LWGEOM_makepoly(PG_FUNCTION_ARGS)
 
 	outpoly = lwpoly_from_lwlines(shell, nholes, holes);
 #ifdef PGIS_DEBUG
-	lwnotice("%s", lwpoly_summary(outpoly));
+	lwnotice("%s", lwgeom_summary((LWGEOM*)outpoly, 0));
 #endif
 
 	result = pglwgeom_serialize((LWGEOM *)outpoly);
@@ -2969,8 +2969,15 @@ lwgeom_affine_ptarray(POINTARRAY *pa,
 	double x,y,z;
 	POINT4D p4d;
 
+#ifdef PGIS_DEBUG
+	lwnotice("lwgeom_affine_ptarray start");
+#endif
+
 	if ( TYPE_HASZ(pa->dims) )
 	{
+#ifdef PGIS_DEBUG
+		lwnotice(" has z");
+#endif
 		for (i=0; i<pa->npoints; i++) {
 			getPoint4d_p(pa, i, &p4d);
 			x = p4d.x;
@@ -2980,10 +2987,16 @@ lwgeom_affine_ptarray(POINTARRAY *pa,
 			p4d.y = dfac * x + efac * y + ffac * z + yoff;
 			p4d.z = gfac * x + hfac * y + ifac * z + zoff;
 			setPoint4d(pa, i, &p4d);
+#ifdef PGIS_DEBUG
+		lwnotice(" POINT %g %g %g => %g %g %g", x, y, x, p4d.x, p4d.y, p4d.z);
+#endif
 		}
 	}
 	else
 	{
+#ifdef PGIS_DEBUG
+		lwnotice(" doesn't have z");
+#endif
 		for (i=0; i<pa->npoints; i++) {
 			getPoint4d_p(pa, i, &p4d);
   			x = p4d.x;
@@ -2991,8 +3004,16 @@ lwgeom_affine_ptarray(POINTARRAY *pa,
   			p4d.x = afac * x + bfac * y + xoff;
   			p4d.y = dfac * x + efac * y + yoff;
 			setPoint4d(pa, i, &p4d);
+#ifdef PGIS_DEBUG
+		lwnotice(" POINT %g %g %g => %g %g %g", x, y, x, p4d.x, p4d.y, p4d.z);
+#endif
 		}
 	}
+
+#ifdef PGIS_DEBUG
+	lwnotice("lwgeom_affine_ptarray end");
+#endif
+
 }
 
 void
