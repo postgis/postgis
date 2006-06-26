@@ -13,7 +13,7 @@
  * Define this to have have many notices printed
  * during postgis->geos and geos->postgis conversions
  */
-/*#define PGIS_DEBUG_CONVERTER 1 */
+/* #define PGIS_DEBUG_CONVERTER 1 */
 #ifdef PGIS_DEBUG_CONVERTER
 #define PGIS_DEBUG_POSTGIS2GEOS 1
 #define PGIS_DEBUG_GEOS2POSTGIS 1
@@ -404,8 +404,8 @@ Datum geomunion(PG_FUNCTION_ARGS)
 #endif
 
 #ifdef PGIS_DEBUG
-	elog(NOTICE,"g1=%s",GEOSasText(g1));
-	elog(NOTICE,"g2=%s",GEOSasText(g2));
+	elog(NOTICE,"g1=%s", GEOSGeomToWKT(g1));
+	elog(NOTICE,"g2=%s", GEOSGeomToWKT(g2));
 #endif
 
 #ifdef PROFILE
@@ -417,7 +417,7 @@ Datum geomunion(PG_FUNCTION_ARGS)
 #endif
 
 #ifdef PGIS_DEBUG
-	elog(NOTICE,"g3=%s",GEOSasText(g3));
+	elog(NOTICE,"g3=%s", GEOSGeomToWKT(g3));
 #endif
 
 	GEOSGeom_destroy(g1);
@@ -524,7 +524,7 @@ Datum symdifference(PG_FUNCTION_ARGS)
 	}
 
 #ifdef PGIS_DEBUG
-	elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
+	elog(NOTICE,"result: %s", GEOSGeomToWKT(g3));
 #endif
 
 	GEOSSetSRID(g3, SRID);
@@ -606,7 +606,7 @@ Datum boundary(PG_FUNCTION_ARGS)
 	}
 
 #ifdef PGIS_DEBUG
-  	elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
+	elog(NOTICE,"result: %s", GEOSGeomToWKT(g3));
 #endif
 
 	GEOSSetSRID(g3, SRID);
@@ -689,7 +689,7 @@ Datum convexhull(PG_FUNCTION_ARGS)
 
 
 #ifdef PGIS_DEBUG
-	elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
+	elog(NOTICE,"result: %s", GEOSGeomToWKT(g3));
 #endif
 
 	GEOSSetSRID(g3, SRID);
@@ -785,7 +785,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 
 
 #ifdef PGIS_DEBUG
-	elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
+	elog(NOTICE,"result: %s", GEOSGeomToWKT(g3));
 #endif
 
 	GEOSSetSRID(g3, pglwgeom_getSRID(geom1));
@@ -867,8 +867,8 @@ Datum intersection(PG_FUNCTION_ARGS)
 
 #ifdef PGIS_DEBUG
 	elog(NOTICE," constructed geometrys - calling geos");
-	elog(NOTICE," g1 = %s", GEOSasText(g1));
-	elog(NOTICE," g2 = %s", GEOSasText(g2));
+	elog(NOTICE," g1 = %s", GEOSGeomToWKT(g1));
+	elog(NOTICE," g2 = %s", GEOSGeomToWKT(g2));
 /*elog(NOTICE,"g2 is valid = %i",GEOSisvalid(g2)); */
 /*elog(NOTICE,"g1 is valid = %i",GEOSisvalid(g1)); */
 #endif
@@ -898,7 +898,7 @@ Datum intersection(PG_FUNCTION_ARGS)
 
 
 #ifdef PGIS_DEBUG
-	elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
+	elog(NOTICE,"result: %s", GEOSGeomToWKT(g3) ) ;
 #endif
 
 	GEOSSetSRID(g3, SRID);
@@ -1001,7 +1001,7 @@ Datum difference(PG_FUNCTION_ARGS)
 	}
 
 #ifdef PGIS_DEBUG
-  	elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
+  	elog(NOTICE,"result: %s", GEOSGeomToWKT(g3) ) ;
 #endif
 
 	GEOSSetSRID(g3, SRID);
@@ -1080,7 +1080,7 @@ Datum pointonsurface(PG_FUNCTION_ARGS)
 	}
 
 #ifdef PGIS_DEBUG
-	elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
+	elog(NOTICE,"result: %s", GEOSGeomToWKT(g3) ) ;
 #endif
 
 	GEOSSetSRID(g3, pglwgeom_getSRID(geom1));
@@ -1933,8 +1933,8 @@ Datum relate_full(PG_FUNCTION_ARGS)
 		elog(NOTICE,"g1 or g2 are null");
 
 #ifdef PGIS_DEBUG
-	elog(NOTICE,GEOSasText(g1));
-	elog(NOTICE,GEOSasText(g2));
+	elog(NOTICE,GEOSGeomToWKT(g1));
+	elog(NOTICE,GEOSGeomToWKT(g2));
 
 	/*elog(NOTICE,"valid g1 = %i", GEOSisvalid(g1));*/
 	/*elog(NOTICE,"valid g2 = %i",GEOSisvalid(g2));*/
@@ -2364,11 +2364,15 @@ GEOS2LWGEOM(GEOSGeom geom, char want3d)
 	lwnotice("lwgeom_from_geometry: it's a Collection or Multi");
 #endif
 			ngeoms = GEOSGetNumGeometries(geom);
-			geoms = lwalloc(sizeof(LWGEOM *)*ngeoms);
-			for (i=0; i<ngeoms; i++)
+			geoms = NULL;
+			if ( ngeoms )
 			{
-				g = GEOSGetGeometryN(geom, i);
-				geoms[i] = GEOS2LWGEOM(g, want3d);
+				geoms = lwalloc(sizeof(LWGEOM *)*ngeoms);
+				for (i=0; i<ngeoms; i++)
+				{
+					g = GEOSGetGeometryN(geom, i);
+					geoms[i] = GEOS2LWGEOM(g, want3d);
+				}
 			}
 			return (LWGEOM *)lwcollection_construct(type,
 				SRID, NULL, ngeoms, geoms);
@@ -2769,7 +2773,7 @@ Datum linemerge(PG_FUNCTION_ARGS)
 
 
 #ifdef PGIS_DEBUG
-  	elog(NOTICE,"result: %s", GEOSasText(g3) ) ;
+  	elog(NOTICE,"result: %s", GEOSGeomToWKT(g3) ) ;
 #endif
 
 	GEOSSetSRID(g3, pglwgeom_getSRID(geom1));
