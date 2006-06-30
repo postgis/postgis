@@ -1,4 +1,5 @@
-PostGIS 1.1.3CVS
+PostGIS 1.1.3
+2006/06/30
 
 	- NEW Long Transactions support.
 	- Can run the regress tests with 'make check' now.
