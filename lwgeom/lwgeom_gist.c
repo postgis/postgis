@@ -544,7 +544,11 @@ Datum LWGEOM_gist_compress(PG_FUNCTION_ARGS)
 
 			gistentryinit(*retval, PointerGetDatum(rr),
 				entry->rel, entry->page,
+#if USE_VERSION >= 82
+				entry->offset,
+#else
 				entry->offset, sizeof(BOX2DFLOAT4),
+#endif
 				FALSE);
 
 		}
@@ -554,7 +558,11 @@ Datum LWGEOM_gist_compress(PG_FUNCTION_ARGS)
 		elog(NOTICE,"GIST: LWGEOM_gist_compress got a NULL key");
 #endif
 			gistentryinit(*retval, (Datum) 0, entry->rel,
+#if USE_VERSION >= 82
+				entry->page, entry->offset, FALSE);
+#else
 				entry->page, entry->offset, 0, FALSE);
+#endif
 		}
 
 	}
