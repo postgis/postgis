@@ -286,7 +286,7 @@ BEGIN
 			''n.nspname as schema, '' ||
 #endif
 			''c.relname as table, trim('' ||
-			quote_literal(''\\\\000'') ||
+			quote_literal(chr(92) || ''000'') ||
 			'' from t.tgargs) as id_column '' ||
 			''FROM pg_trigger t, pg_class c, pg_proc p '' ||
 #ifdef HAS_SCHEMAS
