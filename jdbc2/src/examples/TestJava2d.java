@@ -78,7 +78,7 @@ public class TestJava2d {
 
         window.addWindowListener(new EventHandler());
 
-        window.show();
+        window.setVisible(true);
     }
 
     static Rectangle2D calcbbox(Shape[] geometries) {
@@ -159,7 +159,7 @@ public class TestJava2d {
         }
 
         public void windowClosing(WindowEvent e) {
-            e.getWindow().hide();
+            e.getWindow().setVisible(false);
             System.exit(0);
         }
 
