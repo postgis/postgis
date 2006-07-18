@@ -56,7 +56,8 @@ public class JtsBinaryWriter {
     /**
      * Get the appropriate ValueGetter for my endianness
      * 
-     * @param bytes The appropriate Byte Getter
+     * @param bytes
+     *            The appropriate Byte Getter
      * 
      * @return the ValueGetter
      */
@@ -137,32 +138,32 @@ public class JtsBinaryWriter {
         dest.setInt(typeword);
 
         if (checkSrid(geom)) {
-            dest.setInt(geom.getFactory().getSRID());
+            dest.setInt(geom.getSRID());
         }
 
         switch (plaintype) {
-        case org.postgis.Geometry.POINT :
+        case org.postgis.Geometry.POINT:
             writePoint((Point) geom, dest);
             break;
-        case org.postgis.Geometry.LINESTRING :
+        case org.postgis.Geometry.LINESTRING:
             writeLineString((LineString) geom, dest);
             break;
-        case org.postgis.Geometry.POLYGON :
+        case org.postgis.Geometry.POLYGON:
             writePolygon((Polygon) geom, dest);
             break;
-        case org.postgis.Geometry.MULTIPOINT :
+        case org.postgis.Geometry.MULTIPOINT:
             writeMultiPoint((MultiPoint) geom, dest);
             break;
-        case org.postgis.Geometry.MULTILINESTRING :
+        case org.postgis.Geometry.MULTILINESTRING:
             writeMultiLineString((MultiLineString) geom, dest);
             break;
-        case org.postgis.Geometry.MULTIPOLYGON :
+        case org.postgis.Geometry.MULTIPOLYGON:
             writeMultiPolygon((MultiPolygon) geom, dest);
             break;
-        case org.postgis.Geometry.GEOMETRYCOLLECTION :
+        case org.postgis.Geometry.GEOMETRYCOLLECTION:
             writeCollection((GeometryCollection) geom, dest);
             break;
-        default :
+        default:
             throw new IllegalArgumentException("Unknown Geometry Type: " + plaintype);
         }
     }
@@ -183,8 +184,7 @@ public class JtsBinaryWriter {
         } else if (geom instanceof com.vividsolutions.jts.geom.GeometryCollection) {
             return org.postgis.Geometry.GEOMETRYCOLLECTION;
         } else {
-            throw new IllegalArgumentException("Unknown Geometry Type: "
-                    + geom.getClass().getName());
+            throw new IllegalArgumentException("Unknown Geometry Type: " + geom.getClass().getName());
         }
     }
 
@@ -242,14 +242,13 @@ public class JtsBinaryWriter {
     private void writeCollection(GeometryCollection geom, ValueSetter dest) {
         writeGeometryArray(geom, dest);
     }
-    
+
     private void writeGeometryArray(Geometry geom, ValueSetter dest) {
         dest.setInt(geom.getNumGeometries());
         for (int i = 0; i < geom.getNumGeometries(); i++) {
             writeGeometry(geom.getGeometryN(i), dest);
         }
     }
-    
 
     /** Estimate how much bytes a geometry will need in WKB. */
     protected int estimateBytes(Geometry geom) {
@@ -266,28 +265,28 @@ public class JtsBinaryWriter {
         }
 
         switch (getWKBType(geom)) {
-        case org.postgis.Geometry.POINT :
+        case org.postgis.Geometry.POINT:
             result += estimatePoint((Point) geom);
             break;
-        case org.postgis.Geometry.LINESTRING :
+        case org.postgis.Geometry.LINESTRING:
             result += estimateLineString((LineString) geom);
             break;
-        case org.postgis.Geometry.POLYGON :
+        case org.postgis.Geometry.POLYGON:
             result += estimatePolygon((Polygon) geom);
             break;
-        case org.postgis.Geometry.MULTIPOINT :
+        case org.postgis.Geometry.MULTIPOINT:
             result += estimateMultiPoint((MultiPoint) geom);
             break;
-        case org.postgis.Geometry.MULTILINESTRING :
+        case org.postgis.Geometry.MULTILINESTRING:
             result += estimateMultiLineString((MultiLineString) geom);
             break;
-        case org.postgis.Geometry.MULTIPOLYGON :
+        case org.postgis.Geometry.MULTIPOLYGON:
             result += estimateMultiPolygon((MultiPolygon) geom);
             break;
-        case org.postgis.Geometry.GEOMETRYCOLLECTION :
+        case org.postgis.Geometry.GEOMETRYCOLLECTION:
             result += estimateCollection((GeometryCollection) geom);
             break;
-        default :
+        default:
             throw new IllegalArgumentException("Unknown Geometry Type: " + getWKBType(geom));
         }
         return result;
@@ -296,12 +295,11 @@ public class JtsBinaryWriter {
     private boolean checkSrid(Geometry geom) {
         final int srid = geom.getFactory().getSRID();
         // SRID is default 0 with jts geometries
-        final boolean result = srid != -1 && srid != 0;
-        return result;
+        return (srid != -1) && (srid != 0);
     }
 
     private int estimatePoint(Point geom) {
-        return 8*getCoordDim(geom);
+        return 8 * getCoordDim(geom);
     }
 
     /** Write an Array of "full" Geometries */
@@ -379,7 +377,7 @@ public class JtsBinaryWriter {
 
     public static final int getCoordDim(Geometry geom) {
         // TODO: Fix geometries with more dimensions
-        //geom.getFactory().getCoordinateSequenceFactory()
+        // geom.getFactory().getCoordinateSequenceFactory()
         if (geom == null) {
             return 0;
         } else {

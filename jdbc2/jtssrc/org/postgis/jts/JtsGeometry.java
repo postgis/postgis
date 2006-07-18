@@ -25,14 +25,13 @@
 
 package org.postgis.jts;
 
-import gnu.trove.TIntObjectHashMap;
-
 import java.sql.SQLException;
 
 import org.postgresql.util.PGobject;
 
 import com.vividsolutions.jts.geom.CoordinateSequenceFactory;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.geom.impl.PackedCoordinateSequenceFactory;
@@ -52,30 +51,16 @@ public class JtsGeometry extends PGobject {
     Geometry geom;
 
     final static JtsBinaryParser bp = new JtsBinaryParser();
+
     final static JtsBinaryWriter bw = new JtsBinaryWriter();
+
     final static PrecisionModel prec = new PrecisionModel();
+
     final static CoordinateSequenceFactory csfac = PackedCoordinateSequenceFactory.DOUBLE_FACTORY;
 
-    private static TIntObjectHashMap readers = new TIntObjectHashMap();
-    private static TIntObjectHashMap factories = new TIntObjectHashMap();
+    final static GeometryFactory geofac = new GeometryFactory(prec, 0, csfac);
 
-    static synchronized GeometryFactory getFactory(int SRID) {
-        GeometryFactory factory = (GeometryFactory) factories.get(SRID);
-        if (factory == null) {
-            factory = new GeometryFactory(prec, SRID, csfac);
-            factories.put(SRID, factory);
-        }
-        return factory;
-    }
-
-    static synchronized WKTReader getReader(int SRID) {
-        WKTReader reader = (WKTReader) readers.get(SRID);
-        if (reader == null) {
-            reader = new WKTReader(getFactory(SRID));
-            readers.put(SRID, reader);
-        }
-        return reader;
-    }
+    static final WKTReader reader = new WKTReader(geofac);
 
     /** Constructor called by JDBC drivers */
     public JtsGeometry() {
@@ -112,12 +97,24 @@ public class JtsGeometry extends PGobject {
                     srid = Integer.parseInt(temp[0].substring(5));
                 }
 
-                result = getReader(srid).read(value);
+                result = reader.read(value);
+                setSridRecurse(result, srid);
                 return result;
             }
         } catch (Exception E) {
             E.printStackTrace();
             throw new SQLException("Error parsing SQL data:" + E);
+        }
+    }
+
+    /** Recursively set a srid for the geometry and all subgeometries */
+    public static void setSridRecurse(final Geometry result, final int srid) {
+        result.setSRID(srid);
+        if (result instanceof GeometryCollection) {
+            final int subcnt = result.getNumGeometries();
+            for (int i = 0; i < subcnt; i++) {
+                setSridRecurse(result.getGeometryN(i), srid);
+            }
         }
     }
 
@@ -142,7 +139,8 @@ public class JtsGeometry extends PGobject {
     public boolean equals(Object obj) {
         if ((obj != null) && (obj instanceof JtsGeometry)) {
             Geometry other = ((JtsGeometry) obj).geom;
-            if (this.geom == other) { // handles identity as well as both ==null
+            if (this.geom == other) { // handles identity as well as both
+                                        // ==null
                 return true;
             } else if (this.geom != null && other != null) {
                 return other.equals(this.geom);

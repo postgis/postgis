@@ -51,7 +51,8 @@ public class JtsBinaryParser {
     /**
      * Get the appropriate ValueGetter for my endianness
      * 
-     * @param bytes The appropriate Byte Getter
+     * @param bytes
+     *            The appropriate Byte Getter
      * 
      * @return the ValueGetter
      */
@@ -89,11 +90,11 @@ public class JtsBinaryParser {
 
     /** Parse a geometry starting at offset. */
     protected Geometry parseGeometry(ValueGetter data) {
-        return parseGeometry(data, null);
+        return parseGeometry(data, 0, false);
     }
 
     /** Parse with a known geometry factory */
-    protected Geometry parseGeometry(ValueGetter data, GeometryFactory geofac) {
+    protected Geometry parseGeometry(ValueGetter data, int srid, boolean inheritSrid) {
         byte endian = data.getByte(); // skip and test endian flag
         if (endian != data.endian) {
             throw new IllegalArgumentException("Endian inconsistency!");
@@ -106,71 +107,71 @@ public class JtsBinaryParser {
         boolean haveM = (typeword & 0x40000000) != 0;
         boolean haveS = (typeword & 0x20000000) != 0;
 
-        // srid defaults to 0 in jts
-        int srid = 0;
-
         if (haveS) {
-            srid = data.getInt();
+            int newsrid = data.getInt();
+            if (inheritSrid && newsrid != srid) {
+                throw new IllegalArgumentException("Inconsistent srids in complex geometry: " + srid + ", " + newsrid);
+            } else {
+                srid = newsrid;
+            }
+        } else if (!inheritSrid) {
+            srid = -1;
         }
-
-        if (geofac == null) {
-            geofac = JtsGeometry.getFactory(srid);
-        } else if (haveS && geofac.getSRID() != srid) {
-            throw new IllegalArgumentException("Inconsistent srids in complex geometry: " + srid
-                    + ", " + geofac.getSRID());
-        }
+       
         Geometry result;
         switch (realtype) {
-            case org.postgis.Geometry.POINT :
-                result = parsePoint(data, haveZ, haveM, geofac);
-                break;
-            case org.postgis.Geometry.LINESTRING :
-                result = parseLineString(data, haveZ, haveM, geofac);
-                break;
-            case org.postgis.Geometry.POLYGON :
-                result = parsePolygon(data, haveZ, haveM, geofac);
-                break;
-            case org.postgis.Geometry.MULTIPOINT :
-                result = parseMultiPoint(data, geofac);
-                break;
-            case org.postgis.Geometry.MULTILINESTRING :
-                result = parseMultiLineString(data, geofac);
-                break;
-            case org.postgis.Geometry.MULTIPOLYGON :
-                result = parseMultiPolygon(data, geofac);
-                break;
-            case org.postgis.Geometry.GEOMETRYCOLLECTION :
-                result = parseCollection(data, geofac);
-                break;
-            default :
-                throw new IllegalArgumentException("Unknown Geometry Type!");
+        case org.postgis.Geometry.POINT:
+            result = parsePoint(data, haveZ, haveM);
+            break;
+        case org.postgis.Geometry.LINESTRING:
+            result = parseLineString(data, haveZ, haveM);
+            break;
+        case org.postgis.Geometry.POLYGON:
+            result = parsePolygon(data, haveZ, haveM, srid);
+            break;
+        case org.postgis.Geometry.MULTIPOINT:
+            result = parseMultiPoint(data, srid);
+            break;
+        case org.postgis.Geometry.MULTILINESTRING:
+            result = parseMultiLineString(data, srid);
+            break;
+        case org.postgis.Geometry.MULTIPOLYGON:
+            result = parseMultiPolygon(data, srid);
+            break;
+        case org.postgis.Geometry.GEOMETRYCOLLECTION:
+            result = parseCollection(data, srid);
+            break;
+        default:
+            throw new IllegalArgumentException("Unknown Geometry Type!");
         }
-
+        
+        result.setSRID(srid);
+        
         return result;
     }
 
-    private Point parsePoint(ValueGetter data, boolean haveZ, boolean haveM, GeometryFactory geofac) {
+    private Point parsePoint(ValueGetter data, boolean haveZ, boolean haveM) {
         double X = data.getDouble();
         double Y = data.getDouble();
         Point result;
         if (haveZ) {
             double Z = data.getDouble();
-            result = geofac.createPoint(new Coordinate(X, Y, Z));
+            result = JtsGeometry.geofac.createPoint(new Coordinate(X, Y, Z));
         } else {
-            result = geofac.createPoint(new Coordinate(X, Y));
+            result = JtsGeometry.geofac.createPoint(new Coordinate(X, Y));
         }
 
         if (haveM) { // skip M value
             data.getDouble();
         }
-
+        
         return result;
     }
 
     /** Parse an Array of "full" Geometries */
-    private void parseGeometryArray(ValueGetter data, Geometry[] container, GeometryFactory geofac) {
+    private void parseGeometryArray(ValueGetter data, Geometry[] container, int srid) {
         for (int i = 0; i < container.length; i++) {
-            container[i] = parseGeometry(data, geofac);
+            container[i] = parseGeometry(data, srid, true);
         }
     }
 
@@ -197,51 +198,50 @@ public class JtsBinaryParser {
         return cs;
     }
 
-    private MultiPoint parseMultiPoint(ValueGetter data, GeometryFactory geofac) {
+    private MultiPoint parseMultiPoint(ValueGetter data, int srid) {
         Point[] points = new Point[data.getInt()];
-        parseGeometryArray(data, points, geofac);
-        return geofac.createMultiPoint(points);
+        parseGeometryArray(data, points, srid);
+        return JtsGeometry.geofac.createMultiPoint(points);
     }
 
-    private LineString parseLineString(ValueGetter data, boolean haveZ, boolean haveM,
-            GeometryFactory geofac) {
-        return geofac.createLineString(parseCS(data, haveZ, haveM));
+    private LineString parseLineString(ValueGetter data, boolean haveZ, boolean haveM) {
+        return JtsGeometry.geofac.createLineString(parseCS(data, haveZ, haveM));
     }
 
-    private LinearRing parseLinearRing(ValueGetter data, boolean haveZ, boolean haveM,
-            GeometryFactory geofac) {
-        return geofac.createLinearRing(parseCS(data, haveZ, haveM));
+    private LinearRing parseLinearRing(ValueGetter data, boolean haveZ, boolean haveM) {
+        return JtsGeometry.geofac.createLinearRing(parseCS(data, haveZ, haveM));
     }
 
-    private Polygon parsePolygon(ValueGetter data, boolean haveZ, boolean haveM,
-            GeometryFactory geofac) {
+    private Polygon parsePolygon(ValueGetter data, boolean haveZ, boolean haveM, int srid) {
         int holecount = data.getInt() - 1;
         LinearRing[] rings = new LinearRing[holecount];
-        LinearRing shell = parseLinearRing(data, haveZ, haveM, geofac);
+        LinearRing shell = parseLinearRing(data, haveZ, haveM);
+        shell.setSRID(srid);
         for (int i = 0; i < holecount; i++) {
-            rings[i] = parseLinearRing(data, haveZ, haveM, geofac);
+            rings[i] = parseLinearRing(data, haveZ, haveM);
+            rings[i].setSRID(srid);
         }
-        return geofac.createPolygon(shell, rings);
+        return JtsGeometry.geofac.createPolygon(shell, rings);
     }
 
-    private MultiLineString parseMultiLineString(ValueGetter data, GeometryFactory geofac) {
+    private MultiLineString parseMultiLineString(ValueGetter data, int srid) {
         int count = data.getInt();
         LineString[] strings = new LineString[count];
-        parseGeometryArray(data, strings, geofac);
-        return geofac.createMultiLineString(strings);
+        parseGeometryArray(data, strings, srid);
+        return JtsGeometry.geofac.createMultiLineString(strings);
     }
 
-    private MultiPolygon parseMultiPolygon(ValueGetter data, GeometryFactory geofac) {
+    private MultiPolygon parseMultiPolygon(ValueGetter data, int srid) {
         int count = data.getInt();
         Polygon[] polys = new Polygon[count];
-        parseGeometryArray(data, polys, geofac);
-        return geofac.createMultiPolygon(polys);
+        parseGeometryArray(data, polys, srid);
+        return JtsGeometry.geofac.createMultiPolygon(polys);
     }
 
-    private GeometryCollection parseCollection(ValueGetter data, GeometryFactory geofac) {
+    private GeometryCollection parseCollection(ValueGetter data, int srid) {
         int count = data.getInt();
         Geometry[] geoms = new Geometry[count];
-        parseGeometryArray(data, geoms, geofac);
-        return geofac.createGeometryCollection(geoms);
+        parseGeometryArray(data, geoms, srid);
+        return JtsGeometry.geofac.createGeometryCollection(geoms);
     }
 }
