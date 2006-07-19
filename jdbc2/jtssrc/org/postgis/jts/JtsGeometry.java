@@ -33,6 +33,7 @@ import com.vividsolutions.jts.geom.CoordinateSequenceFactory;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.geom.impl.PackedCoordinateSequenceFactory;
 import com.vividsolutions.jts.io.WKTReader;
@@ -108,12 +109,19 @@ public class JtsGeometry extends PGobject {
     }
 
     /** Recursively set a srid for the geometry and all subgeometries */
-    public static void setSridRecurse(final Geometry result, final int srid) {
-        result.setSRID(srid);
-        if (result instanceof GeometryCollection) {
-            final int subcnt = result.getNumGeometries();
+    public static void setSridRecurse(final Geometry geom, final int srid) {
+        geom.setSRID(srid);
+        if (geom instanceof GeometryCollection) {
+            final int subcnt = geom.getNumGeometries();
             for (int i = 0; i < subcnt; i++) {
-                setSridRecurse(result.getGeometryN(i), srid);
+                setSridRecurse(geom.getGeometryN(i), srid);
+            }
+        } else if (geom instanceof Polygon) {
+            Polygon poly = (Polygon) geom;
+            poly.getExteriorRing().setSRID(srid);
+            final int subcnt = poly.getNumInteriorRing();
+            for (int i = 0; i < subcnt; i++) {
+                poly.getInteriorRingN(i).setSRID(srid);
             }
         }
     }
