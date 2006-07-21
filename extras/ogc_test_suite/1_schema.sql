@@ -100,7 +100,12 @@
 -- create the spatial_ref_sys table or view via another mechanism.
 -- The size of the srtext VARCHAR exceeds that allowed on some systems.
 --
--- POSTGIS: This is already defined by postgis.sql so we comment it out.
+-- ---------------------
+-- !#@ ADAPTATION BEGIN
+-- This table is already defined by PostGIS so we comment it out here.
+-- ---------------------
+-- -- BEGIN ADAPTED  SQL
+-- ---------------------
 --CREATE TABLE spatial_ref_sys (
 --       srid       INTEGER NOT NULL PRIMARY KEY,
 --       auth_name  VARCHAR(256),
@@ -108,6 +113,10 @@
 --       srtext     VARCHAR(2048)
 --       srtext     VARCHAR(2000)
 --);
+-- ---------------------
+-- -- END   ADAPTED  SQL
+-- ---------------------
+-- -- !#@ ADAPTATION END
 --
 INSERT INTO spatial_ref_sys (SRID,AUTH_NAME,AUTH_SRID,SRTEXT) 
 VALUES (101, 'POSC', 32214, 
@@ -147,78 +156,208 @@ UNIT["Meter", 1.0]]'
 --
 --
 --
--- POSTGIS: We break the schema creation into two steps, first create the 
--- POSTGIS: attribute table, second use the AddGeometryColumn() function 
--- POSTGIS: to create and register the geometry column.
+-- !#@ ADAPTATION BEGIN
+-- We break the schema creation into two steps, first create the 
+-- attribute table, second use the AddGeometryColumn() function 
+-- to create and register the geometry column.
+-- ---------------------
+-- -- BEGIN ORIGINAL SQL
+-- ---------------------
+-- CREATE TABLE lakes (
+--       fid               INTEGER NOT NULL PRIMARY KEY,
+--       name              VARCHAR(64),
+--       shore             POLYGON
+-- );
+-- ---------------------
+-- -- END   ORIGINAL SQL
+-- ---------------------
+-- ---------------------
+-- -- BEGIN ADAPTED  SQL
+-- ---------------------
 CREATE TABLE lakes (
        fid               INTEGER NOT NULL PRIMARY KEY,
        name              VARCHAR(64)
---     shore             POLYGON
 );
 SELECT AddGeometryColumn('lakes','shore','101','POLYGON','2');
+-- ---------------------
+-- -- END   ADAPTED  SQL
+-- ---------------------
+-- -- !#@ ADAPTATION END
+
 --
 -- Road Segments
 --
 --
---
---
+-- !#@ ADAPTATION BEGIN
+-- We break the schema creation into two steps, first create the
+-- attribute table, second use the AddGeometryColumn() function
+-- to create and register the geometry column.
+-- ---------------------
+-- -- BEGIN ORIGINAL SQL
+-- ---------------------
+-- CREATE TABLE road_segments (
+--      fid               INTEGER NOT NULL PRIMARY KEY,
+--      name              VARCHAR(64),
+--      aliases           VARCHAR(64),
+--      num_lanes         INTEGER
+--      centerline        LINESTRING
+-- );
+-- ---------------------
+-- -- END   ORIGINAL SQL
+-- ---------------------
+-- ---------------------
+-- -- BEGIN ADAPTED  SQL
+-- ---------------------
+
 CREATE TABLE road_segments (
        fid               INTEGER NOT NULL PRIMARY KEY,
        name              VARCHAR(64),
        aliases           VARCHAR(64),
        num_lanes         INTEGER
---     centerline        LINESTRING
 );
 SELECT AddGeometryColumn('road_segments','centerline','101','LINESTRING','2');
+-- ---------------------
+-- -- END   ADAPTED  SQL
+-- ---------------------
+-- -- !#@ ADAPTATION END
+
 --
 -- Divided Routes
 --
 --
 --
 --
+-- !#@ ADAPTATION BEGIN
+-- We break the schema creation into two steps, first create the
+-- attribute table, second use the AddGeometryColumn() function
+-- to create and register the geometry column.
+-- ---------------------
+-- -- BEGIN ORIGINAL SQL
+-- ---------------------
+-- CREATE TABLE divided_routes (
+--       fid               INTEGER NOT NULL PRIMARY KEY,
+--       name              VARCHAR(64),
+--       num_lanes         INTEGER
+--       centerlines       MULTILINESTRING
+-- );
+-- ---------------------
+-- -- END   ORIGINAL SQL
+-- ---------------------
+-- ---------------------
+-- -- BEGIN ADAPTED  SQL
+-- ---------------------
 CREATE TABLE divided_routes (
        fid               INTEGER NOT NULL PRIMARY KEY,
        name              VARCHAR(64),
        num_lanes         INTEGER
---     centerlines       MULTILINESTRING
 );
 SELECT AddGeometryColumn('divided_routes','centerlines','101','MULTILINESTRING','2');
+-- ---------------------
+-- -- END   ADAPTED  SQL
+-- ---------------------
+-- -- !#@ ADAPTATION END
+
 --
 -- Forests
 --
 --
 --
 --
+-- !#@ ADAPTATION BEGIN
+-- We break the schema creation into two steps, first create the
+-- attribute table, second use the AddGeometryColumn() function
+-- to create and register the geometry column.
+-- ---------------------
+-- -- BEGIN ORIGINAL SQL
+-- ---------------------
+-- CREATE TABLE forests (
+--       fid            INTEGER NOT NULL PRIMARY KEY,
+--       name           VARCHAR(64)
+--       boundary       MULTIPOLYGON
+-- );
+-- ---------------------
+-- -- END   ORIGINAL SQL
+-- ---------------------
+-- ---------------------
+-- -- BEGIN ADAPTED  SQL
+-- ---------------------
 CREATE TABLE forests (
        fid            INTEGER NOT NULL PRIMARY KEY,
        name           VARCHAR(64)
---     boundary       MULTIPOLYGON
 );
 SELECT AddGeometryColumn('forests','boundary','101','MULTIPOLYGON','2');
+-- ---------------------
+-- -- END   ADAPTED  SQL
+-- ---------------------
+-- -- !#@ ADAPTATION END
+
 --
 -- Bridges
 --
 --
 --
 --
+-- !#@ ADAPTATION BEGIN
+-- We break the schema creation into two steps, first create the
+-- attribute table, second use the AddGeometryColumn() function
+-- to create and register the geometry column.
+-- ---------------------
+-- -- BEGIN ORIGINAL SQL
+-- ---------------------
+-- CREATE TABLE bridges (
+--       fid           INTEGER NOT NULL PRIMARY KEY,
+--       name          VARCHAR(64)
+--       position      POINT
+-- );
+-- ---------------------
+-- -- END   ORIGINAL SQL
+-- ---------------------
+-- ---------------------
+-- -- BEGIN ADAPTED  SQL
+-- ---------------------
 CREATE TABLE bridges (
        fid           INTEGER NOT NULL PRIMARY KEY,
        name          VARCHAR(64)
---     position      POINT
 );
 SELECT AddGeometryColumn('bridges','position','101','POINT','2');
+-- ---------------------
+-- -- END   ADAPTED  SQL
+-- ---------------------
+-- -- !#@ ADAPTATION END
+
+
 --
 -- Streams
 --
 --
---
---
+-- !#@ ADAPTATION BEGIN
+-- We break the schema creation into two steps, first create the
+-- attribute table, second use the AddGeometryColumn() function
+-- to create and register the geometry column.
+-- ---------------------
+-- -- BEGIN ORIGINAL SQL
+-- ---------------------
+-- CREATE TABLE streams (
+--       fid             INTEGER NOT NULL PRIMARY KEY,
+--       name            VARCHAR(64)
+--       centerline      LINESTRING
+-- );
+-- ---------------------
+-- -- END   ORIGINAL SQL
+-- ---------------------
+-- ---------------------
+-- -- BEGIN ADAPTED  SQL
+-- ---------------------
 CREATE TABLE streams (
        fid             INTEGER NOT NULL PRIMARY KEY,
        name            VARCHAR(64)
---     centerline      LINESTRING
 );
 SELECT AddGeometryColumn('streams','centerline','101','LINESTRING','2');
+-- ---------------------
+-- -- END   ADAPTED  SQL
+-- ---------------------
+-- -- !#@ ADAPTATION END
+
 --
 -- Buildings
 --
@@ -230,50 +369,138 @@ SELECT AddGeometryColumn('streams','centerline','101','LINESTRING','2');
 --
 --
 --
+-- !#@ ADAPTATION BEGIN
+-- We break the schema creation into two steps, first create the
+-- attribute table, second use the AddGeometryColumn() function
+-- to create and register the geometry column.
+-- ---------------------
+-- -- BEGIN ORIGINAL SQL
+-- ---------------------
+-- CREATE TABLE buildings (
+--     fid             INTEGER NOT NULL PRIMARY KEY,
+--     address         VARCHAR(64)
+--     position        POINT
+--     footprint       POLYGON
+-- );
+-- ---------------------
+-- -- END   ORIGINAL SQL
+-- ---------------------
+-- ---------------------
+-- -- BEGIN ADAPTED  SQL
+-- ---------------------
 CREATE TABLE buildings (
        fid             INTEGER NOT NULL PRIMARY KEY,
        address         VARCHAR(64)
---     position        POINT
---     footprint       POLYGON
 );
 SELECT AddGeometryColumn('buildings','position','101','POINT','2');
 SELECT AddGeometryColumn('buildings','footprint','101','POLYGON','2');
+-- ---------------------
+-- -- END   ADAPTED  SQL
+-- ---------------------
+-- -- !#@ ADAPTATION END
+
 --
 -- Ponds
 --
 --
 --
 --
+-- !#@ ADAPTATION BEGIN
+-- We break the schema creation into two steps, first create the
+-- attribute table, second use the AddGeometryColumn() function
+-- to create and register the geometry column.
+-- ---------------------
+-- -- BEGIN ORIGINAL SQL
+-- ---------------------
+-- CREATE TABLE ponds (
+--       fid             INTEGER NOT NULL PRIMARY KEY,
+--       name            VARCHAR(64),
+--       type            VARCHAR(64)
+--       shores          MULTIPOYLGON
+-- );
+-- ---------------------
+-- -- END   ORIGINAL SQL
+-- ---------------------
+-- ---------------------
+-- -- BEGIN ADAPTED  SQL
+-- ---------------------
 CREATE TABLE ponds (
        fid             INTEGER NOT NULL PRIMARY KEY,
        name            VARCHAR(64),
        type            VARCHAR(64)
---     shores          MULTIPOYLGON
 );
 SELECT AddGeometryColumn('ponds','shores','101','MULTIPOLYGON','2');
+-- ---------------------
+-- -- END   ADAPTED  SQL
+-- ---------------------
+-- -- !#@ ADAPTATION END
+
 --
 -- Named Places
 --
 --
 --
 --
+-- !#@ ADAPTATION BEGIN
+-- We break the schema creation into two steps, first create the
+-- attribute table, second use the AddGeometryColumn() function
+-- to create and register the geometry column.
+-- ---------------------
+-- -- BEGIN ORIGINAL SQL
+-- ---------------------
+
+-- CREATE TABLE named_places (
+--       fid             INTEGER NOT NULL PRIMARY KEY,
+--       name            VARCHAR(64)
+--       boundary        POLYGON
+-- );
+-- ---------------------
+-- -- END   ORIGINAL SQL
+-- ---------------------
+-- ---------------------
+-- -- BEGIN ADAPTED  SQL
+-- ---------------------
 CREATE TABLE named_places (
        fid             INTEGER NOT NULL PRIMARY KEY,
        name            VARCHAR(64)
---     boundary        POLYGON
 );
 SELECT AddGeometryColumn('named_places','boundary','101','POLYGON','2');
---
+-- ---------------------
+-- -- END   ADAPTED  SQL
+-- ---------------------
+-- -- !#@ ADAPTATION END
+
 -- Map Neatline
 --
 --
 --
 --
+-- !#@ ADAPTATION BEGIN
+-- We break the schema creation into two steps, first create the
+-- attribute table, second use the AddGeometryColumn() function
+-- to create and register the geometry column.
+-- ---------------------
+-- -- BEGIN ORIGINAL SQL
+-- ---------------------
+-- CREATE TABLE map_neatlines (
+--     fid             INTEGER NOT NULL PRIMARY KEY
+--     neatline        POLYGON
+-- );
+-- ---------------------
+-- -- END   ORIGINAL SQL
+-- ---------------------
+-- ---------------------
+-- -- BEGIN ADAPTED  SQL
+-- ---------------------
 CREATE TABLE map_neatlines (
        fid             INTEGER NOT NULL PRIMARY KEY
---     neatline        POLYGON
 );
 SELECT AddGeometryColumn('map_neatlines','neatline','101','POLYGON','2');
+-- ---------------------
+-- -- END   ADAPTED  SQL
+-- ---------------------
+-- -- !#@ ADAPTATION END
+
 --
 --
 --

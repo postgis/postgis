@@ -210,9 +210,28 @@ WHERE name = 'Blue Lake';
 --
 --================================
 --
+-- !#@ ADAPTATION BEGIN
+-- Test script incorrectly references the 'lakes' table
+-- instead of the 'divided_routes' table where 'Route 75' 
+-- appears.
+-- ---------------------
+-- -- BEGIN ORIGINAL SQL
+-- ---------------------
+-- SELECT GeometryType(centerlines) 
+-- FROM lakes 
+-- WHERE name = 'Route 75';
+-- ---------------------
+-- -- END   ORIGINAL SQL
+-- ---------------------
+-- -- BEGIN ADAPTED  SQL
+-- ---------------------
 SELECT GeometryType(centerlines) 
 FROM divided_routes 
 WHERE name = 'Route 75';
+-- ---------------------
+-- -- END   ADAPTED  SQL
+-- ---------------------
+-- -- !#@ ADAPTATION END
 --
 --================================
 -- Conformance Item T8	
@@ -301,9 +320,27 @@ WHERE name = 'Blue Lake';
 --
 --================================
 --
+-- !#@ ADAPTATION BEGIN
+-- Test script includes extraneous parenthesis around the 
+-- 'boundary' column.
+-- ---------------------
+-- -- BEGIN ORIGINAL SQL
+-- ---------------------
+-- SELECT AsText(Boundary((boundary)) 
+-- FROM named_places 
+-- WHERE name = 'Goose Island';
+-- ---------------------
+-- -- END   ORIGINAL SQL
+-- ---------------------
+-- -- BEGIN ADAPTED  SQL
+-- ---------------------
 SELECT AsText(Boundary(boundary)) 
 FROM named_places 
 WHERE name = 'Goose Island';
+-- ---------------------
+-- -- END   ADAPTED  SQL
+-- ---------------------
+-- -- !#@ ADAPTATION END
 --
 --================================
 -- Conformance Item T14	
@@ -314,9 +351,27 @@ WHERE name = 'Goose Island';
 --
 --================================
 --
+-- !#@ ADAPTATION BEGIN
+-- Test script includes extraneous parenthesis around the
+-- 'boundary' column.
+-- ---------------------
+-- -- BEGIN ORIGINAL SQL
+-- ---------------------
+-- SELECT AsText(Envelope((boundary)) 
+-- FROM named_places 
+-- WHERE name = 'Goose Island';
+-- ---------------------
+-- -- END   ORIGINAL SQL
+-- ---------------------
+-- -- BEGIN ADAPTED  SQL
+-- ---------------------
 SELECT AsText(Envelope(boundary)) 
 FROM named_places 
 WHERE name = 'Goose Island';
+-- ---------------------
+-- -- END   ADAPTED  SQL
+-- ---------------------
+-- -- !#@ ADAPTATION END
 --
 --
 --
@@ -335,9 +390,27 @@ WHERE name = 'Goose Island';
 --
 --================================
 --
+-- !#@ ADAPTATION BEGIN
+-- Test script reference to 'Bridges' is not correct, the 
+-- attribute value is 'Cam Bridge'.
+-- ---------------------
+-- -- BEGIN ORIGINAL SQL
+-- ---------------------
+-- SELECT X(position) 
+-- FROM bridges 
+-- WHERE name = 'Bridges';
+-- ---------------------
+-- -- END   ORIGINAL SQL
+-- ---------------------
+-- -- BEGIN ADAPTED  SQL
+-- ---------------------
 SELECT X(position) 
 FROM bridges 
 WHERE name = 'Cam Bridge';
+-- ---------------------
+-- -- END   ADAPTED  SQL
+-- ---------------------
+-- -- !#@ ADAPTATION END
 --
 --================================
 -- Conformance Item T16	
@@ -597,9 +670,28 @@ WHERE name = 'Route 75';
 --
 --================================
 --
+-- !#@ ADAPTATION BEGIN
+-- Test script does not wrap a geometry-returning function in
+-- AsText(), so there is no guarantee that the return string
+-- will match the official answer.
+-- ---------------------
+-- -- BEGIN ORIGINAL SQL
+-- ---------------------
+-- SELECT GeometryN(centerlines, 2)
+-- FROM divided_routes 
+-- WHERE name = 'Route 75';
+-- ---------------------
+-- -- END   ORIGINAL SQL
+-- ---------------------
+-- -- BEGIN ADAPTED  SQL
+-- ---------------------
 SELECT AsText(GeometryN(centerlines, 2))
 FROM divided_routes 
 WHERE name = 'Route 75';
+-- ---------------------
+-- -- END   ADAPTED  SQL
+-- ---------------------
+-- -- !#@ ADAPTATION END
 --
 --
 --
@@ -751,9 +843,27 @@ WHERE divided_routes.name = 'Route 75' AND named_places.name = 'Ashton';
 --
 --================================
 --
+-- !#@ ADAPTATION BEGIN
+-- The test script attempts to test the 'Touch' function, but the 
+-- specification document uses 'Touches' as the function name.
+-- ---------------------
+-- -- BEGIN ORIGINAL SQL
+-- ---------------------
+-- SELECT Touch(centerline, shore)
+-- FROM streams, lakes 
+-- WHERE streams.name = 'Cam Stream' AND lakes.name = 'Blue Lake';
+-- ---------------------
+-- -- END   ORIGINAL SQL
+-- ---------------------
+-- -- BEGIN ADAPTED  SQL
+-- ---------------------
 SELECT Touches(centerline, shore)
 FROM streams, lakes 
 WHERE streams.name = 'Cam Stream' AND lakes.name = 'Blue Lake';
+-- ---------------------
+-- -- END   ADAPTED  SQL
+-- ---------------------
+-- -- !#@ ADAPTATION END
 --
 --================================
 -- Conformance Item T40	
@@ -769,9 +879,29 @@ WHERE streams.name = 'Cam Stream' AND lakes.name = 'Blue Lake';
 --
 --================================
 --
+-- !#@ ADAPTATION BEGIN
+-- Test script reverses the correct order of arguments to 'Within()'. 
+-- Specification says 'Within(g1,g2) is 'TRUE if g1 is completely 
+-- contained in g2' and test explanation says we are checking if 
+-- the house (g1, footprint) is within Ashton (g2, boundary).
+-- ---------------------
+-- -- BEGIN ORIGINAL SQL
+-- ---------------------
+-- SELECT Within(boundary, footprint)
+-- FROM named_places, buildings 
+-- WHERE named_places.name = 'Ashton' AND buildings.address = '215 Main Street';
+-- ---------------------
+-- -- END   ORIGINAL SQL
+-- ---------------------
+-- -- BEGIN ADAPTED  SQL
+-- ---------------------
 SELECT Within(footprint, boundary)
 FROM named_places, buildings 
 WHERE named_places.name = 'Ashton' AND buildings.address = '215 Main Street';
+-- ---------------------
+-- -- END   ADAPTED  SQL
+-- ---------------------
+-- -- !#@ ADAPTATION END
 --
 --================================
 -- Conformance Item T41	
@@ -787,9 +917,27 @@ WHERE named_places.name = 'Ashton' AND buildings.address = '215 Main Street';
 --
 --================================
 --
+-- !#@ ADAPTATION BEGIN
+-- Test script uses 'Overlap()' as the function name and specification
+-- gives 'Overlaps()' as the function name.
+-- ---------------------
+-- -- BEGIN ORIGINAL SQL
+-- ---------------------
+-- SELECT Overlap(forest.boundary, named_places.boundary)
+-- FROM forests, named_places 
+-- WHERE forests.name = 'Green Forest' AND named_places.name = 'Ashton';
+-- ---------------------
+-- -- END   ORIGINAL SQL
+-- ---------------------
+-- -- BEGIN ADAPTED  SQL
+-- ---------------------
 SELECT Overlaps(forests.boundary, named_places.boundary)
 FROM forests, named_places 
 WHERE forests.name = 'Green Forest' AND named_places.name = 'Ashton';
+-- ---------------------
+-- -- END   ADAPTED  SQL
+-- ---------------------
+-- -- !#@ ADAPTATION END
 --
 --================================
 -- Conformance Item T42	
@@ -805,9 +953,29 @@ WHERE forests.name = 'Green Forest' AND named_places.name = 'Ashton';
 --
 --================================
 --
+-- !#@ ADAPTATION BEGIN
+-- Test script uses 'Cross()' as the function name and specification
+-- gives 'Crosses()' as the function name.
+-- Test script references 'road_segment' table and the correct table
+-- name is 'road_segments'.
+-- ---------------------
+-- -- BEGIN ORIGINAL SQL
+-- ---------------------
+-- SELECT Cross(road_segment.centerline, divided_routes.centerlines)
+-- FROM road_segment, divided_routes 
+-- WHERE road_segment.fid = 102 AND divided_routes.name = 'Route 75';
+-- ---------------------
+-- -- END   ORIGINAL SQL
+-- ---------------------
+-- -- BEGIN ADAPTED  SQL
+-- ---------------------
 SELECT Crosses(road_segments.centerline, divided_routes.centerlines)
 FROM road_segments, divided_routes 
 WHERE road_segments.fid = 102 AND divided_routes.name = 'Route 75';
+-- ---------------------
+-- -- END   ADAPTED  SQL
+-- ---------------------
+-- -- !#@ ADAPTATION END
 --
 --================================
 -- Conformance Item T43	
@@ -823,9 +991,27 @@ WHERE road_segments.fid = 102 AND divided_routes.name = 'Route 75';
 --
 --================================
 --
+-- !#@ ADAPTATION BEGIN
+-- Test script references 'road_segment' table and the correct table
+-- name is 'road_segments'.
+-- ---------------------
+-- -- BEGIN ORIGINAL SQL
+-- ---------------------
+-- SELECT Intersects(road_segment.centerline, divided_routes.centerlines)
+-- FROM road_segment, divided_routes 
+-- WHERE road_segment.fid = 102 AND divided_routes.name = 'Route 75';
+-- ---------------------
+-- -- END   ORIGINAL SQL
+-- ---------------------
+-- -- BEGIN ADAPTED  SQL
+-- ---------------------
 SELECT Intersects(road_segments.centerline, divided_routes.centerlines)
 FROM road_segments, divided_routes 
 WHERE road_segments.fid = 102 AND divided_routes.name = 'Route 75';
+-- ---------------------
+-- -- END   ADAPTED  SQL
+-- ---------------------
+-- -- !#@ ADAPTATION END
 --
 --================================
 -- Conformance Item T44	
@@ -841,9 +1027,27 @@ WHERE road_segments.fid = 102 AND divided_routes.name = 'Route 75';
 --
 --================================
 --
+-- !#@ ADAPTATION BEGIN
+-- Test script references 'forest' table and the correct table
+-- name is 'forests'.
+-- ---------------------
+-- -- BEGIN ORIGINAL SQL
+-- ---------------------
+-- SELECT Contains(forest.boundary, named_places.boundary)
+-- FROM forests, named_places 
+-- WHERE forests.name = 'Green Forest' AND named_places.name = 'Ashton';
+-- ---------------------
+-- -- END   ORIGINAL SQL
+-- ---------------------
+-- -- BEGIN ADAPTED  SQL
+-- ---------------------
 SELECT Contains(forests.boundary, named_places.boundary)
 FROM forests, named_places 
 WHERE forests.name = 'Green Forest' AND named_places.name = 'Ashton';
+-- ---------------------
+-- -- END   ADAPTED  SQL
+-- ---------------------
+-- -- !#@ ADAPTATION END
 --
 --================================
 -- Conformance Item T45	
@@ -859,9 +1063,27 @@ WHERE forests.name = 'Green Forest' AND named_places.name = 'Ashton';
 --
 --================================
 --
+-- !#@ ADAPTATION BEGIN
+-- Test script references 'forest' table and the correct table
+-- name is 'forests'.
+-- ---------------------
+-- -- BEGIN ORIGINAL SQL
+-- ---------------------
+-- SELECT Relate(forest.boundary, named_places.boundary, 'TTTTTTTTT')
+-- FROM forests, named_places 
+-- WHERE forests.name = 'Green Forest' AND named_places.name = 'Ashton';
+-- ---------------------
+-- -- END   ORIGINAL SQL
+-- ---------------------
+-- -- BEGIN ADAPTED  SQL
+-- ---------------------
 SELECT Relate(forests.boundary, named_places.boundary, 'TTTTTTTTT')
 FROM forests, named_places 
 WHERE forests.name = 'Green Forest' AND named_places.name = 'Ashton';
+-- ---------------------
+-- -- END   ADAPTED  SQL
+-- ---------------------
+-- -- !#@ ADAPTATION END
 --
 --
 --
@@ -902,9 +1124,28 @@ WHERE bridges.name = 'Cam Bridge' AND named_places.name = 'Ashton';
 --
 --================================
 --
+-- !#@ ADAPTATION BEGIN
+-- Test script does not wrap a geometry-returning function in
+-- AsText(), so there is no guarantee that the return string
+-- will match the official answer.
+-- ---------------------
+-- -- BEGIN ORIGINAL SQL
+-- ---------------------
+-- SELECT Intersection(centerline, shore)
+-- FROM streams, lakes 
+-- WHERE streams.name = 'Cam Stream' AND lakes.name = 'Blue Lake';
+-- ---------------------
+-- -- END   ORIGINAL SQL
+-- ---------------------
+-- -- BEGIN ADAPTED  SQL
+-- ---------------------
 SELECT AsText(Intersection(centerline, shore))
 FROM streams, lakes 
 WHERE streams.name = 'Cam Stream' AND lakes.name = 'Blue Lake';
+-- ---------------------
+-- -- END   ADAPTED  SQL
+-- ---------------------
+-- -- !#@ ADAPTATION END
 --
 --================================
 -- Conformance Item T48	
@@ -917,9 +1158,30 @@ WHERE streams.name = 'Cam Stream' AND lakes.name = 'Blue Lake';
 --
 --================================
 --
+-- !#@ ADAPTATION BEGIN
+-- Test script does not wrap a geometry-returning function in
+-- AsText(), so there is no guarantee that the return string
+-- will match the official answer.
+-- Note that the return geometry is the same as the official
+-- answer but with a different start point.
+-- ---------------------
+-- -- BEGIN ORIGINAL SQL
+-- ---------------------
+-- SELECT Difference(named_places.boundary, forests.boundary)
+-- FROM named_places, forests 
+-- WHERE named_places.name = 'Ashton' AND forests.name = 'Green Forest';
+-- ---------------------
+-- -- END   ORIGINAL SQL
+-- ---------------------
+-- -- BEGIN ADAPTED  SQL
+-- ---------------------
 SELECT AsText(Difference(named_places.boundary, forests.boundary))
 FROM named_places, forests 
 WHERE named_places.name = 'Ashton' AND forests.name = 'Green Forest';
+-- ---------------------
+-- -- END   ADAPTED  SQL
+-- ---------------------
+-- -- !#@ ADAPTATION END
 --
 --================================
 -- Conformance Item T49	
@@ -927,13 +1189,37 @@ WHERE named_places.name = 'Ashton' AND forests.name = 'Green Forest';
 -- For this test we will determine the union of Blue Lake and Goose Island 
 --
 -- ANSWER: 'POLYGON((52 18,66 23,73 9,48 6,52 18))'
--- NOTE: The outer ring of BLue Lake is the answer.
+-- NOTE: The outer ring of Blue Lake is the answer.
 --
 --================================
 --
+-- !#@ ADAPTATION BEGIN
+-- Test script does not wrap a geometry-returning function in
+-- AsText(), so there is no guarantee that the return string
+-- will match the official answer.
+-- Test script uses 'Ashton' as the place name where it means
+-- to use 'Goose Island'.
+-- Specification uses 'Union()' as a function name, but UNION
+-- is a SQL reserved work.  Function name adapted to 'GeomUnion()'
+-- for out implementation.
+-- ---------------------
+-- -- BEGIN ORIGINAL SQL
+-- ---------------------
+-- SELECT Union(shore, boundary)
+-- FROM lakes, named_places 
+-- WHERE lakes.name = 'Blue Lake' AND named_places.name = Ashton';
+-- ---------------------
+-- -- END   ORIGINAL SQL
+-- ---------------------
+-- -- BEGIN ADAPTED  SQL
+-- ---------------------
 SELECT AsText(GeomUnion(shore, boundary))
 FROM lakes, named_places 
 WHERE lakes.name = 'Blue Lake' AND named_places.name = 'Goose Island';
+-- ---------------------
+-- -- END   ADAPTED  SQL
+-- ---------------------
+-- -- !#@ ADAPTATION END
 --
 --================================
 -- Conformance Item T50	
@@ -942,13 +1228,34 @@ WHERE lakes.name = 'Blue Lake' AND named_places.name = 'Goose Island';
 -- and Goose Island 
 --
 -- ANSWER: 'POLYGON((52 18,66 23,73 9,48 6,52 18))'
--- NOTE: The outer ring of BLue Lake is the answer.
+-- NOTE: The outer ring of Blue Lake is the answer.
 --
 --================================
 --
+-- !#@ ADAPTATION BEGIN
+-- Test script does not wrap a geometry-returning function in
+-- AsText(), so there is no guarantee that the return string
+-- will match the official answer.
+-- Test script uses 'Ashton' as the place name where it means
+-- to use 'Goose Island'.
+-- ---------------------
+-- -- BEGIN ORIGINAL SQL
+-- ---------------------
+-- SELECT SymmetricDifference(shore, boundary)
+-- FROM lakes, named_places 
+-- WHERE lakes.name = 'Blue Lake' OR named_places.name = 'Ashton';
+-- ---------------------
+-- -- END   ORIGINAL SQL
+-- ---------------------
+-- -- BEGIN ADAPTED  SQL
+-- ---------------------
 SELECT AsText(SymmetricDifference(shore, boundary))
 FROM lakes, named_places 
 WHERE lakes.name = 'Blue Lake' AND named_places.name = 'Goose Island';
+-- ---------------------
+-- -- END   ADAPTED  SQL
+-- ---------------------
+-- -- !#@ ADAPTATION END
 --
 --================================
 -- Conformance Item T51	
@@ -970,9 +1277,27 @@ WHERE lakes.name = 'Blue Lake' AND named_places.name = 'Goose Island';
 --
 --================================
 --
+-- !#@ ADAPTATION BEGIN
+-- Our boolean function implementations return actual boolean values,
+-- so no further logical comparison (to 1 or 't') is required.
+-- ---------------------
+-- -- BEGIN ORIGINAL SQL
+-- ---------------------
+-- SELECT count(*)
+-- FROM buildings, bridges
+-- WHERE Contains(Buffer(bridges.position, 15.0), buildings.footprint) = 1;
+-- ---------------------
+-- -- END   ORIGINAL SQL
+-- ---------------------
+-- -- BEGIN ADAPTED  SQL
+-- ---------------------
 SELECT count(*)
 FROM buildings, bridges
 WHERE Contains(Buffer(bridges.position, 15.0), buildings.footprint);
+-- ---------------------
+-- -- END   ADAPTED  SQL
+-- ---------------------
+-- -- !#@ ADAPTATION END
 --
 --================================
 -- Conformance Item T52	
@@ -980,13 +1305,36 @@ WHERE Contains(Buffer(bridges.position, 15.0), buildings.footprint);
 -- For this test we will determine the convex hull of Blue Lake 
 --
 -- ANSWER: 'POLYGON((52 18,66 23,73 9,48 6,52 18))'
--- NOTE: The outer ring of BLue Lake is the answer.
+-- NOTE: The outer ring of Blue Lake is the answer.
 --
 --================================
 --
+-- !#@ ADAPTATION BEGIN
+-- Test script does not wrap a geometry-returning function in
+-- AsText(), so there is no guarantee that the return string
+-- will match the official answer.
+-- Note that the return geometry is the same as the official
+-- answer but with a different start point.
+-- ---------------------
+-- -- BEGIN ORIGINAL SQL
+-- ---------------------
+-- SELECT ConvexHull(shore)
+-- FROM lakes
+-- WHERE lakes.name = 'Blue Lake';
+-- ---------------------
+-- -- END   ORIGINAL SQL
+-- ---------------------
+-- -- BEGIN ADAPTED  SQL
+-- ---------------------
 SELECT AsText(ConvexHull(shore))
 FROM lakes
 WHERE lakes.name = 'Blue Lake';
+-- ---------------------
+-- -- END   ADAPTED  SQL
+-- ---------------------
+-- -- !#@ ADAPTATION END
+
+
 --
 --
 --
