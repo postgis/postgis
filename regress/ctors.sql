@@ -1,0 +1,4 @@
+-- postgis-users/2006-July/012764.html
+SELECT SRID(collect('SRID=32749;POINT(0 0)', 'SRID=32749;POINT(1 1)'));
+
+SELECT collect('SRID=32749;POINT(0 0)', 'SRID=32740;POINT(1 1)');

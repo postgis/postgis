@@ -26,7 +26,8 @@ TESTS = \
 	affine \
 	wkt \
 	measures \
-	long_xact
+	long_xact \
+	ctors
 
 ifeq ($(USE_GEOS),1)
 	TESTS += regress_ogc regress_bdpoly

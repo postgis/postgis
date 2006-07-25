@@ -1622,6 +1622,7 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeoms[2], *outlwg;
 	unsigned int type1, type2, outtype;
 	BOX2DFLOAT4 *box=NULL;
+	int SRID;
 
 	/* return null if both geoms are null */
 	if ( (geom1_ptr == NULL) && (geom2_ptr == NULL) )
@@ -1651,11 +1652,16 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 	elog(NOTICE, "LWGEOM_collect(%s, %s): call", lwgeom_typename(TYPE_GETTYPE(pglwgeom1->type)), lwgeom_typename(TYPE_GETTYPE(pglwgeom2->type)));
 #endif
 	
+#if 0
 	if ( pglwgeom_getSRID(pglwgeom1) != pglwgeom_getSRID(pglwgeom2) )
 	{
 		elog(ERROR, "Operation on two GEOMETRIES with different SRIDs\n");
 		PG_RETURN_NULL();
 	}
+#endif
+
+	SRID = pglwgeom_getSRID(pglwgeom1);
+	errorIfSRIDMismatch(SRID, pglwgeom_getSRID(pglwgeom2));
 
 	lwgeoms[0] = lwgeom_deserialize(SERIALIZED_FORM(pglwgeom1));
 	lwgeoms[1] = lwgeom_deserialize(SERIALIZED_FORM(pglwgeom2));
@@ -1686,7 +1692,7 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 	lwgeom_dropSRID(lwgeoms[1]);
 
 	outlwg = (LWGEOM *)lwcollection_construct(
-		outtype, lwgeoms[0]->SRID,
+		outtype, SRID,
 		box, 2, lwgeoms);
 
 	result = pglwgeom_serialize(outlwg);
