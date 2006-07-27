@@ -35,7 +35,7 @@ DELETE?=rm -rvf
 CP?=cp
 
 # If you happen to be stuck with ancient jar implementations that do not
-# know about the -u option, does not complain about duplicate directorys
+# know about the -u option, but does not complain about duplicate directorys
 # with the same name (e. G. debian woody fastjar), set the DEBUGJAR below
 # variable to postgis_debug.fastjar and JAR (above) to fastjar.
 DEBUGJAR?=postgis_debug.jar
