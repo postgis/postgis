@@ -506,6 +506,9 @@ Datum BOX2DFLOAT4_construct(PG_FUNCTION_ARGS)
 		elog(ERROR, "BOX2DFLOAT4_construct: args must be points");
 		PG_RETURN_NULL();
 	}
+
+	errorIfSRIDMismatch(minpoint->SRID, maxpoint->SRID);
+
 	getPoint2d_p(((LWPOINT *)minpoint)->point, 0, &minp);
 	getPoint2d_p(((LWPOINT *)maxpoint)->point, 0, &maxp);
 
