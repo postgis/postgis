@@ -2007,7 +2007,7 @@ Datum LWGEOM_line_from_mpoint(PG_FUNCTION_ARGS)
 	LWMPOINT *mpoint;
 
 #ifdef PGIS_DEBUG
-	elog(NOTICE, "LWGEOM_makeline called");
+	elog(NOTICE, "LWGEOM_line_from_mpoint called");
 #endif
 
 	/* Get input PG_LWGEOM and deserialize it */
@@ -2174,11 +2174,7 @@ Datum LWGEOM_makeline(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	if ( pglwgeom_getSRID(pglwg1) != pglwgeom_getSRID(pglwg2) )
-	{
-		elog(ERROR, "Operation with two geometries with different SRIDs\n");
-		PG_RETURN_NULL();
-	}
+	errorIfSRIDMismatch(pglwgeom_getSRID(pglwg1), pglwgeom_getSRID(pglwg2));
 
 	lwpoints[0] = lwpoint_deserialize(SERIALIZED_FORM(pglwg1));
 	lwpoints[1] = lwpoint_deserialize(SERIALIZED_FORM(pglwg2));
