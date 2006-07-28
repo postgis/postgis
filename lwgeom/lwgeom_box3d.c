@@ -354,9 +354,11 @@ Datum BOX3D_construct(PG_FUNCTION_ARGS)
 	if ( TYPE_GETTYPE(minpoint->type) != POINTTYPE ||
 		TYPE_GETTYPE(maxpoint->type) != POINTTYPE )
 	{
-		elog(ERROR, "BOX2DFLOAT4_construct: args must be points");
+		elog(ERROR, "BOX3D_construct: args must be points");
 		PG_RETURN_NULL();
 	}
+
+	errorIfSRIDMismatch(minpoint->SRID, maxpoint->SRID);
 
 	getPoint3dz_p(((LWPOINT *)minpoint)->point, 0, &minp);
 	getPoint3dz_p(((LWPOINT *)maxpoint)->point, 0, &maxp);
