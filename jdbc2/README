@@ -224,9 +224,7 @@ PostGIS server to connect to.
 * What about the JTS stuff *
 
 There's beta support for the JTS 1.6 geometry implementations instead of the
-native PostGIS classes on the java client side. This code currently also
-needs GNU trove4j http://trove4j.sourceforge.net/ for efficient cacheing
-of JTS GeometryFactories. Simply add jts_1.6.jar and trove_1.1b4jar to your
+native PostGIS classes on the java client side. Simply add jts_1.6.jar to your
 CLASSPATH, "make postgis_jts" and use at your own risk.
 
 
