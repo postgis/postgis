@@ -8,6 +8,8 @@ PostGIS 1.1.4CVS
 	- Fixed bug in collect() function discarding SRID of
 	  input
 	- Added SRID match check in MakeBox2d and MakeBox3d
+        - Added EJB2 support generously donated by the
+          "Geodetix s.r.l. Company" http://www.geodetix.it/
 
 PostGIS 1.1.3
 2006/06/30
