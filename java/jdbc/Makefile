@@ -104,17 +104,17 @@ JARCONTENTS=-C $(BUILD) org \
 		-C $(BUILD) examples \
 		-C $(SRCDIR) org/postgresql/driverconfig.properties \
 		-C . README COPYING_LGPL \
-		-C .. COPYING
+		-C ../.. COPYING
 
 DEBUGJARCONTENTS=-C $(SRCDIR) org \
 		-C $(SRCDIR) examples
 
 # include version numbers
-include ../Version.config
+include ../../Version.config
 
 # include configuration from central repository, only needed for install
 # and installdirs targets, not for building itsself.
--include ../Makefile.config
+-include ../../Makefile.config
 
 VERSION=$(JDBC_MAJOR_VERSION).$(JDBC_MINOR_VERSION).$(JDBC_MICRO_VERSION)
 VERSIONPATH=$(BUILD)/org/postgis
@@ -169,8 +169,8 @@ $(STUBBUILD):
 $(VERSIONPATH): $(BUILD)
 	$(MKDIR) $(VERSIONPATH)
 
-$(VERSIONTARGET): $(SRC) ../Version.config $(VERSIONPATH)
-	$(CP) ../Version.config $(VERSIONTARGET)
+$(VERSIONTARGET): $(SRC) ../../Version.config $(VERSIONPATH)
+	$(CP) ../../Version.config $(VERSIONTARGET)
 
 stubcompile: $(STUBBUILD) $(SRCCONF) $(STUBSRC)
 	$(JAVAC) -d $(STUBBUILD) $(STUBSRC)
