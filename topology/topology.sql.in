@@ -702,12 +702,6 @@ AS '
 '
 LANGUAGE 'sql' _VOLATILE;
 
-CREATEFUNCTION topology.AddTopoGeometryColumn(varchar, varchar, varchar, varchar, varchar)
-	RETURNS integer
-AS '
-	SELECT topology.AddTopoGeometryColumn($1, $2, $3, $4, $5, NULL);
-'
-LANGUAGE 'sql' _VOLATILE;
 --
 --} AddTopoGeometryColumn
 
