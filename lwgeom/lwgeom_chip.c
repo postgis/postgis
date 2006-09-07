@@ -711,10 +711,10 @@ return;
 	 * CHIP units
 	 */
 
-	PIXEL p;
-
 	switch ( op )
 	{
+		PIXEL p;
+
 		case PIXELOP_OVERWRITE:
 			chip_setPixel(chip, x, y, pixel);
 			break;
