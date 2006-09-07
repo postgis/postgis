@@ -271,13 +271,14 @@ Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS)
 	while (state->ringnum < state->poly->nrings )
 	{
 		LWPOLY* poly = state->poly;
+		POINTARRAY *ring;
 
 		/* Switch to an appropriate memory context for POINTARRAY
 		 * cloning and hexwkb allocation */
 		oldcontext = MemoryContextSwitchTo(newcontext);
 
 		/* We need a copy of input ring here */
-		POINTARRAY *ring = ptarray_clone(poly->rings[state->ringnum]);
+		ring = ptarray_clone(poly->rings[state->ringnum]);
 
 		/* Construct another polygon with shell only */
 		LWGEOM* ringgeom = (LWGEOM*)lwpoly_construct(

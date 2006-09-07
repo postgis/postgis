@@ -1098,9 +1098,10 @@ Datum CHIP_dump(PG_FUNCTION_ARGS)
 		state->x < state->chip->width )
 	{
 		char buf[256];
+		PIXEL p;
 
 		if ( ! state->chip ) lwerror("state->chip corrupted");
-		PIXEL p = chip_getPixel(state->chip, state->x, state->y);
+		p = chip_getPixel(state->chip, state->x, state->y);
 		pixel_writeval(&p, buf, 255);
 
 		sprintf(state->values[0], "%d", state->x);
