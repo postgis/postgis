@@ -919,7 +919,7 @@ DBFIsAttributeNULL( DBFHandle psDBF, int iRecord, int iField )
 
       case 'D':
         /* NULL date fields have value "00000000" */
-        return strncmp(pszValue,"00000000",8) == 0;
+        return (strncmp(pszValue,"00000000",8) == 0 || strlen(pszValue) == 0);
 
       case 'L':
         /* NULL boolean fields have value "?" */ 
