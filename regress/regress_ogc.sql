@@ -8,7 +8,7 @@
 SELECT 'buffer', astext(SnapToGrid(buffer('POINT(0 0)', 1, 2), 1.0e-6));
 
 SELECT 'geomunion', astext(geomunion('POINT(0 0)', 'POINT(1 1)'));
-SELECT 'unite_garray', astext(unite_garray(geom_accum('{POINT(0 0)}', 'POINT(2 3)')));
+SELECT 'unite_garray', equals(unite_garray(geom_accum('{POINT(0 0)}', 'POINT(2 3)')), 'MULTIPOINT(2 3,0 0)');
 SELECT 'convexhull', asewkt(convexhull('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0),(2 2, 2 4, 4 4, 4 2, 2 2))'));
 SELECT 'relate', relate('POINT(0 0)', 'LINESTRING(0 0, 1 1)');
 SELECT 'relate', relate('POINT(0 0)', 'LINESTRING(0 0, 1 1)', 'F0FFFF*02');

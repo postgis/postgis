@@ -11,6 +11,7 @@ PostGIS 1.1.4CVS
         - Added EJB2 support generously donated by the
           "Geodetix s.r.l. Company" http://www.geodetix.it/
         - Reorganized java directory layout a little.
+	- Fixed regress tests to pass with GEOS-3.0.0
 
 PostGIS 1.1.3
 2006/06/30

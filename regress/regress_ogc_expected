@@ -1,6 +1,6 @@
 buffer|POLYGON((1 0,0.707107 -0.707107,0 -1,-0.707107 -0.707107,-1 0,-0.707107 0.707107,0 1,0.707107 0.707107,1 0))
 geomunion|MULTIPOINT(0 0,1 1)
-unite_garray|MULTIPOINT(2 3,0 0)
+unite_garray|t
 convexhull|POLYGON((0 0,0 10,10 10,10 0,0 0))
 relate|F0FFFF102
 relate|t
