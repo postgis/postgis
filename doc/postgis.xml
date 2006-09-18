@@ -56,7 +56,7 @@
           <term>Sandro Santilli &lt;strk@refractions.net&gt;</term>
 
           <listitem>
-            <para>Coordinates all bug fixing and maintainance effort,
+            <para>Coordinates all bug fixing and maintenance effort,
             integration of new GEOS functionality, and new function
             enhancements.</para>
           </listitem>
@@ -423,7 +423,7 @@ file by yourself. This is done with the following command:
 By HARD UPGRADE we intend full dump/reload of postgis-enabled databases.
 You need an HARD UPGRADE when postgis objects' internal storage
 changes or when SOFT UPGRADE is not possible.
-The <link linkend="release_notes">Release Notes</link> appendix reports for each version wheter you need a
+The <link linkend="release_notes">Release Notes</link> appendix reports for each version whether you need a
 dump/reload (HARD UPGRADE) to upgrade.
 	</para>
 
@@ -493,7 +493,7 @@ as follow:
             <para>Check that you you have installed PostgreSQL 7.2 or newer,
             and that you are compiling against the same version of the
             PostgreSQL source as the version of PostgreSQL that is running.
-            Mix-ups can occur when your (Linux) distrubution has already
+            Mix-ups can occur when your (Linux) distribution has already
             installed PostgreSQL, or you have otherwise installed PostgreSQL
             before and forgotten about it. PostGIS will only work with
             PostgreSQL 7.2 or newer, and strange, unexpected error messages
@@ -1437,7 +1437,7 @@ COMMIT;</programlisting>
             <term>-k</term>
 
             <listitem>
-              <para>Keep idendifiers case (column, schema and attributes). Note that attributes in Shapefile are all UPPERCASE.</para>
+              <para>Keep identifiers' case (column, schema and attributes). Note that attributes in Shapefile are all UPPERCASE.</para>
             </listitem>
           </varlistentry>
 
@@ -1836,7 +1836,7 @@ SELECT UPDATE_GEOMETRY_STATS([table_name], [column_name]);</programlisting></par
           </listitem>
 
           <listitem>
-            <para>If you find the planner wrong about the cost of sequencial
+            <para>If you find the planner wrong about the cost of sequential
             vs index scans try reducing the value of random_page_cost in
             postgresql.conf or using SET random_page_cost=#. Default value for
             the parameter is 4, try setting it to 1 or 2. Decrementing the
@@ -1859,7 +1859,7 @@ SELECT UPDATE_GEOMETRY_STATS([table_name], [column_name]);</programlisting></par
         <title>Taking Advantage of Indexes</title>
 
         <para>When constructing a query it is important to remember that only
-        the bounding-box-based operators such as &amp;&amp; can take advatage
+        the bounding-box-based operators such as &amp;&amp; can take advantage
         of the GiST spatial index. Functions such as
         <varname>distance()</varname> cannot use the index to optimize their
         operation. For example, the following query would be quite slow on a
@@ -2437,7 +2437,7 @@ END</programlisting>
 
         <para>Now lets say we want to show only the highways until we get
         zoomed in to at least a 1:100000 scale - the next two layers will
-        acheive this effect:</para>
+        achieve this effect:</para>
 
         <programlisting>LAYER
  CONNECTION "user=theuser password=thepass dbname=thedb host=theserver"
@@ -2633,9 +2633,9 @@ information).
 <para>
 The problem appears if you happen to have a table with rather large
 geometries, but not too much rows of them (like a table containing the
-boundaries of all european countries in high resolution). Then the table
-itsself is small, but it uses lots of TOAST space. In our example case,
-the table itsself had about 80 rows and used only 3 data pages, but the
+boundaries of all European countries in high resolution). Then the table
+itself is small, but it uses lots of TOAST space. In our example case,
+the table itself had about 80 rows and used only 3 data pages, but the
 TOAST table used 8225 pages.
 </para>
 
@@ -2699,7 +2699,7 @@ SELECT geom_column FROM mytable WHERE bbox &amp;&amp; SetSrid('BOX3D(0 0,1 1)'::
 </programlisting>
 
 <para>
-Of yourse, if you change or add rows to mytable, you have to keep the
+Of course, if you change or add rows to mytable, you have to keep the
 bbox "in sync". The most transparent way to do this would be triggers,
 but you also can modify your application to keep the bbox column current
 or run the UPDATE query above after every modification.
@@ -3210,8 +3210,8 @@ dimension(the_geom)>2" skips re-writing of geometries that already are in 2D.
             <term>Difference(geometry A, geometry B)</term>
 
             <listitem>
-              <para>Returns a geometry that represents the point set symmetric
-              difference of Geometry A with Geometry B.</para>
+              <para>Returns a geometry that represents the point set difference
+              of Geometry A with Geometry B.</para>
 
               <para>Performed by the GEOS module</para>
 
@@ -3464,7 +3464,7 @@ dimension
 
             <listitem>
               <para>Synonym to NumInteriorRings(geometry). The OpenGIS specs
-	      are ambigous about the exact function naming, so we provide
+	      are ambiguous about the exact function naming, so we provide
 	      both spellings.</para>
             </listitem>
           </varlistentry>
@@ -4204,7 +4204,7 @@ dimension
 
 		  <listitem>
 		    <para>The "&amp;&amp;" operator is the "overlaps" operator. If A's
-		    bounding boux overlaps B's bounding box the operator returns
+		    bounding box overlaps B's bounding box the operator returns
 		    true.</para>
 		  </listitem>
 		</varlistentry>
@@ -4269,10 +4269,10 @@ dimension
           <term>length_spheroid(geometry,spheroid)</term>
 
           <listitem>
-            <para>Calculates the length of of a geometry on an elipsoid. This
+            <para>Calculates the length of of a geometry on an ellipsoid. This
             is useful if the coordinates of the geometry are in
             latitude/longitude and a length is desired without reprojection.
-            The elipsoid is a separate database type and can be constructed as
+            The ellipsoid is a separate database type and can be constructed as
             follows:</para>
 
             <literallayout>SPHEROID[&lt;NAME&gt;,&lt;SEMI-MAJOR AXIS&gt;,&lt;INVERSE FLATTENING&gt;]</literallayout>
@@ -4296,7 +4296,7 @@ FROM geometry_table;</literallayout>
           <term>length3d_spheroid(geometry,spheroid)</term>
 
           <listitem>
-            <para>Calculates the length of of a geometry on an elipsoid,
+            <para>Calculates the length of of a geometry on an ellipsoid,
             taking the elevation into account. This is just like
             length_spheroid except vertical coordinates (expressed in the same
             units as the spheroid axes) are used to calculate the extra
@@ -4512,7 +4512,7 @@ FROM geometry_table;</literallayout>
 		<varlistentry id="BuildArea">
 		  <term>BuildArea(geometry)</term>
 		  <listitem>
-		    <para>Creates an areal geometry formed by the costituent
+		    <para>Creates an areal geometry formed by the constituent
 		    linework of given geometry. The return type can
 		    be a Polygon or MultiPolygon, depending on input.
 		    If the input lineworks do not form polygons NULL is
@@ -4536,7 +4536,7 @@ FROM geometry_table;</literallayout>
 
 		<para>
 			Aggregate. Creates a GeometryCollection containing
-			possible polygons formed from the costituent linework
+			possible polygons formed from the constituent linework
 			of a set of geometries.
 		</para>
 
@@ -4949,7 +4949,7 @@ FROM geometry_table;</literallayout>
 
 		<para>
 			Returns a (set of) LineString(s) formed by sewing
-			togheter costituent linework of input.
+			together constituent linework of input.
 		</para>
 
 		<para>
@@ -4972,7 +4972,7 @@ FROM geometry_table;</literallayout>
 
           <listitem>
 		<para>
-		Returns a poin interpolated along a line.
+		Returns a point interpolated along a line.
 		First argument must be a LINESTRING.
 		Second argument is a float8 between 0 and 1
 		representing fraction of total
@@ -5275,7 +5275,7 @@ FROM geometry_table;</literallayout>
 	Reporting bugs effectively is a fundamental way to help PostGIS
 	development. The most effective bug report is that enabling 
 	PostGIS developers to reproduce it, so it would ideally contain
-	a script triggering it and every information reguarding the
+	a script triggering it and every information regarding the
 	environment in which it was detected. Good enough info can
 	be extracted running <code>SELECT postgis_full_version()</code>
 	[for postgis] and <code>SELECT version()</code> [for postgresql].
@@ -5422,7 +5422,7 @@ Upgrade from any release prior to 1.0.0RC6 requires an
 
 			<sect3>
 				<title>New functionalities</title>
-<para>Regress tests can now be run *before* postgis intallation</para>
+<para>Regress tests can now be run *before* postgis installation</para>
 <para>New affine() matrix transformation functions</para>
 <para>New rotate{,X,Y,Z}() function </para>
 <para>Old translating and scaling functions now use affine() internally</para>
@@ -5532,7 +5532,7 @@ NOT</emphasis> need a dump/reload.
 Simply sourcing the new lwpostgis_upgrade.sql script in all your
 existing databases will work.
 See the <link linkend="soft_upgrade">soft upgrade</link> chapter
-for more informations.
+for more information.
 				</para>
 
 				<para>
@@ -5570,7 +5570,7 @@ Upgrade from any release prior to 1.0.0RC6 requires an
 			<sect3>
 				<title>Bug fixes</title>
 <para>Fixed memory leak in polygonize()</para>
-<para>Fixed bug in lwgeom_as_anytype cast funcions</para>
+<para>Fixed bug in lwgeom_as_anytype cast functions</para>
 <para>
 Fixed USE_GEOS, USE_PROJ and USE_STATS elements of postgis_version()
 output to always reflect library state.
@@ -5693,7 +5693,7 @@ handling of UTF8 attributes and a few improvements and cleanups.
 			</para>
 
 			<note><para>
-Return code of shp2pgsl changed from previous releases to conform to unix
+Return code of shp2pgsql changed from previous releases to conform to unix
 standards (return 0 on success).
 			</para></note>
 
@@ -5923,13 +5923,13 @@ and functions signatures (see <link linkend="soft_upgrade">Soft upgrade</link>).
 
 			<sect3>
 				<title>Library changes</title>
-	<para>BUGFIX in 3d computation of lenght_spheroid()</para>
+	<para>BUGFIX in 3d computation of length_spheroid()</para>
 	<para>BUGFIX in join selectivity estimator</para>
 			</sect3>
 
 			<sect3>
 				<title>Other changes/additions</title>
-	<para>BUGFIX in shp2pgql escape functions</para>
+	<para>BUGFIX in shp2pgsql escape functions</para>
 	<para>better support for concurrent postgis in multiple schemas</para>
 	<para>documentation fixes</para>
 	<para>jdbc2: compile with "-target 1.2 -source 1.2" by default</para>
@@ -6094,7 +6094,7 @@ and functions signatures (see <link linkend="soft_upgrade">Soft upgrade</link>).
 <para>BUGFIX in loader and dumper handling of MultiLine shapes</para>
 <para>BUGFIX in loader, skipping all but first hole of polygons.</para>
 <para>jdbc2: code cleanups, Makefile improvements</para>
-<para>FLEX and YACC variables set *after* pgsql Makefile.global is included and only if the pgsql *stripped* version evaulates to the empty string</para>
+<para>FLEX and YACC variables set *after* pgsql Makefile.global is included and only if the pgsql *stripped* version evaluates to the empty string</para>
 <para>Added already generated parser in release</para>
 <para>Build scripts refinements</para>
 <para>improved version handling, central Version.config</para>
