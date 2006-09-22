@@ -1,5 +1,5 @@
 $Id$
-(This code was contributed by Noarman Barker <nbarker@ittvis.com>)
+(This code was contributed by Norman Barker <nbarker@ittvis.com>)
 
 Spatial EJB3
 

@@ -1,16 +1,18 @@
 PostGIS 1.1.4CVS
 
 	- Fixed support for PostgreSQL 8.2
-	- JDBC:
-	   - reworked JTS support to reflect new upstream
-	     JTS developers' attitude to SRID handling.
-	     This removes build depend on GNU trove.
+	- Java:
+		- reworked JTS support to reflect new upstream
+		  JTS developers' attitude to SRID handling.
+		  Simplifies code and drops build depend on GNU trove.
+        - Added EJB2 support generously donated by the
+          "Geodetix s.r.l. Company" http://www.geodetix.it/
+        - Added EJB3 tutorial / examples donated by
+          Norman Barker <nbarker@ittvis.com>
+        - Reorganized java directory layout a little.
 	- Fixed bug in collect() function discarding SRID of
 	  input
 	- Added SRID match check in MakeBox2d and MakeBox3d
-        - Added EJB2 support generously donated by the
-          "Geodetix s.r.l. Company" http://www.geodetix.it/
-        - Reorganized java directory layout a little.
 	- Fixed regress tests to pass with GEOS-3.0.0
 
 PostGIS 1.1.3
