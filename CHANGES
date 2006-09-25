@@ -14,6 +14,7 @@ PostGIS 1.1.4CVS
 	  input
 	- Added SRID match check in MakeBox2d and MakeBox3d
 	- Fixed regress tests to pass with GEOS-3.0.0
+	- Improved pgsql2shp run concurrency.
 
 PostGIS 1.1.3
 2006/06/30

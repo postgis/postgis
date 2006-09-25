@@ -34,6 +34,8 @@ static char rcsid[] =
 #include "shapefil.h"
 #include "getopt.h"
 #include "compat.h"
+#include <sys/types.h> // for getpid()
+#include <unistd.h> // for getpid()
 
 #ifdef __CYGWIN__
 #include <sys/param.h>       
@@ -53,7 +55,7 @@ static char rcsid[] =
  *   set to 1 to see record fetching progress
  *   set to 2 to see also shapefile creation progress
  */
-#define VERBOSE 1
+#define VERBOSE 3
 
 /* Define this to use HEX encoding instead of bytea encoding */
 #define HEXWKB 1
@@ -69,6 +71,7 @@ typedef unsigned char byte;
 /* Global data */
 PGconn *conn;
 int rowbuflen;
+char temptablename[256];
 char *geo_col_name, *table, *shp_file, *schema, *usrquery;
 int type_ary[256];
 char *main_scan_query;
@@ -2505,7 +2508,6 @@ initialize(void)
 		return 0;
 	}
 
-
 	/* Get geometry oid */
 	geo_oid = getGeometryOID(conn);
 	if ( geo_oid == -1 )
@@ -3240,7 +3242,15 @@ parse_table(char *spec)
 	if ( strstr(spec, "SELECT ") || strstr(spec, "select ") )
 	{
 		usrquery = spec;
-		table = "__pgsql2shp_tmp_table";
+
+		/*
+		 * encode pid in table name to reduce 
+		 * clashes probability (see bug#115)
+		 */
+		sprintf(temptablename,
+			"__pgsql2shp%lu_tmp_table",
+			(long)getpid());
+		table = temptablename; 
 	}
 	else
 	{
