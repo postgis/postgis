@@ -54,8 +54,9 @@ static char rcsid[] =
  * Verbosity:
  *   set to 1 to see record fetching progress
  *   set to 2 to see also shapefile creation progress
+ *   set to 3 for debugging
  */
-#define VERBOSE 3
+#define VERBOSE 1
 
 /* Define this to use HEX encoding instead of bytea encoding */
 #define HEXWKB 1
