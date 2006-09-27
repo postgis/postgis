@@ -13,13 +13,14 @@
 #
 #
 
-tag=HEAD
+tag=trunk
 version=cvs
 
 if [ -n "$1" ]; then
 	version="$1"
-	version=`echo $version | sed 's/RC/-rc/'`
-	tag=pgis_`echo "$version" | sed 's/\./_/g'`
+	#version=`echo $version | sed 's/RC/-rc/'`
+	#tag=pgis_`echo "$version" | sed 's/\./_/g'`
+	tag="tags/$version"
 fi
 
 outdir="postgis-$version"
@@ -31,7 +32,8 @@ if [ -d "$outdir" ]; then
 fi
 
 echo "Exporting tag $tag"
-cvs export -r "$tag" -d "$outdir" postgis 
+#cvs export -r "$tag" -d "$outdir" postgis 
+svn export "http://svn.refractions.net/postgis/$tag" "$outdir"
 if [ $? -gt 0 ]; then
 	exit 1
 fi
