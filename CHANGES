@@ -1,4 +1,4 @@
-PostGIS 1.1.4CVS
+PostGIS 1.1.4
 
 	- Fixed support for PostgreSQL 8.2
 	- Java:
