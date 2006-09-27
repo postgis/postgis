@@ -20,3 +20,7 @@ $Id$
 - Possibly adding server side code to support plJava
   http://gborg.postgresql.org/project/pljava/projdisplay.php
 
+- Rework the BinaryParser/BinaryWriter to work on SQLInput/SQLOutput 
+  instances, as well as reworking ValueGetter/ValueSetter to implment those interfaces.
+
+- Unify the build of app java projects
