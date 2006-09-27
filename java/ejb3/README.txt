@@ -15,3 +15,13 @@ Services.
 Since it is useful to display screenshots in a tutorial this has been written
 as a PDF and the document and source are available here.
 
+
+COMPILING:
+
+Run "ant" to compile.
+
+The postgis.jar, pgjdbc.jar and the other needed libs have to 
+be put in the lib/ subdirectory.
+
+If your JBOSS is not installed in C:\jboss-4.0.4.GA, fix the
+path in the build.xml.
