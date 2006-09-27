@@ -26,7 +26,7 @@
     <property name="lib.dir" value="lib"/>
     <property name="src.dir" value="src"/>
     <property name="dist.dir" value="dist"/>
-    <property name="jboss.home" value="C:/jboss-4.0.4.GA"/>
+    <property name="jboss.home" value="/home/jboss/attic/jboss-4.0.2/"/><!--C:/jboss-4.0.4.GA"/>-->
     <property name="jbossconf" value="jboss"/>
 
     <path id="class.path">
