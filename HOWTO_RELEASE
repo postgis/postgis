@@ -1,6 +1,6 @@
 How to release
 ~~~~~~~~~~~~~~
-  Date: 2005-12-15
+  Date: 2006-09-27
 
 Versioning Scheme
 -----------------
@@ -25,7 +25,10 @@ Release procedure
 2) Edit CHANGES: set release date and check all notable changes are
    been reported.
 3) Add release notes in doc/postgis.xml
-4) Tag pgis_MAJ_MIN_MIC
+4) Tag the release:
+   $ base=http://svn.refractions.net/postgis/
+   $ rel=MAJ.MIN.MIC
+   $ svn copy -m "Tagged release $rel" $base/trunk $base/tags/$rel
 5) Run: sh make_dist.sh MAJ.MIN.MIC
 6) Publish
 7) Announce 
