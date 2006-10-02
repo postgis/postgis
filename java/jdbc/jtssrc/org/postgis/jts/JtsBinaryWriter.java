@@ -74,42 +74,34 @@ public class JtsBinaryWriter {
     /**
      * Write a hex encoded geometry
      * 
-     * Is synchronized to protect offset counter. (Unfortunately, Java does not
-     * have neither call by reference nor multiple return values.) This is a
-     * TODO item.
-     * 
      * Currently, geometries with more than 2 dimensions and measures are not
      * cleanly supported, but SRID is honored.
      */
-    public synchronized String writeHexed(Geometry geom, byte REP) {
+    public String writeHexed(Geometry geom, byte REP) {
         int length = estimateBytes(geom);
         ByteSetter.StringByteSetter bytes = new ByteSetter.StringByteSetter(length);
         writeGeometry(geom, valueSetterForEndian(bytes, REP));
         return bytes.result();
     }
 
-    public synchronized String writeHexed(Geometry geom) {
+    public String writeHexed(Geometry geom) {
         return writeHexed(geom, ValueSetter.NDR.NUMBER);
     }
 
     /**
      * Write a binary encoded geometry.
      * 
-     * Is synchronized to protect offset counter. (Unfortunately, Java does not
-     * have neither call by reference nor multiple return values.) This is a
-     * TODO item.
-     * 
      * Currently, geometries with more than 2 dimensions and measures are not
      * cleanly supported, but SRID is honored.
      */
-    public synchronized byte[] writeBinary(Geometry geom, byte REP) {
+    public byte[] writeBinary(Geometry geom, byte REP) {
         int length = estimateBytes(geom);
         ByteSetter.BinaryByteSetter bytes = new ByteSetter.BinaryByteSetter(length);
         writeGeometry(geom, valueSetterForEndian(bytes, REP));
         return bytes.result();
     }
 
-    public synchronized byte[] writeBinary(Geometry geom) {
+    public byte[] writeBinary(Geometry geom) {
         return writeBinary(geom, ValueSetter.NDR.NUMBER);
     }
 

@@ -68,22 +68,16 @@ public class JtsBinaryParser {
 
     /**
      * Parse a hex encoded geometry
-     * 
-     * Is synchronized to protect offset counter. (Unfortunately, Java does not
-     * have neither call by reference nor multiple return values.)
      */
-    public synchronized Geometry parse(String value) {
+    public Geometry parse(String value) {
         StringByteGetter bytes = new ByteGetter.StringByteGetter(value);
         return parseGeometry(valueGetterForEndian(bytes));
     }
 
     /**
      * Parse a binary encoded geometry.
-     * 
-     * Is synchronized to protect offset counter. (Unfortunately, Java does not
-     * have neither call by reference nor multiple return values.)
      */
-    public synchronized Geometry parse(byte[] value) {
+    public Geometry parse(byte[] value) {
         BinaryByteGetter bytes = new ByteGetter.BinaryByteGetter(value);
         return parseGeometry(valueGetterForEndian(bytes));
     }
