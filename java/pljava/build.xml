@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<!-- PostGIS PLJava support
+    (C) 2006 Markus Schaber <schabi@logix-tt.com>
+    
+This library is free software; you can redistribute it and/or modify it under
+the terms of the GNU Lesser General Public License as published by the Free
+Software Foundation, either version 2.1 of the License.
+
+This library is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with this library; if not, write to the Free Software Foundation, Inc.,
+59 Temple Place, Suite 330, Boston, MA 02111-1307 USA or visit the web at
+http://www.gnu.org.
+
+$Id: JtsBinaryParser.java 2407 2006-07-18 18:13:31Z mschaber $
+-->
+<project name="Postgis-PLJava" default="all">
+    <property file="build.properties" />
+    <description>
+    Build the api jar and JNI headers for the navi java api
+
+        $Id: build.xml 1329 2006-01-04 10:26:07Z schabi $           
+    </description>
+
+    <property name="source.dir" value="src" />
+    <property name="class.dir" value="bin" />
+    <property name="jar.file" value="postgis_pljava.jar" />
+    <path id="buildcp"><fileset dir="lib" includes="*.jar"/></path>
+
+    <target name="all" depends="jar" description="build all">
+
+    </target>
+    <target name="clean" description="clean the whole mess up">
+        <delete dir="${class.dir}" includeemptydirs="true" />
+        <delete file="${jar.file}" />
+    </target>
+
+    <target name="prepare">
+        <mkdir dir="${class.dir}" />
+    </target>
+
+    <target name="compile" depends="prepare">
+        <javac srcdir="${source.dir}"
+               destdir="${class.dir}"
+               debug="${debug}"
+               deprecation="${deprecation}"
+               optimize="${optimize}"
+               source="1.4"
+               target="1.4" classpathref="buildcp"/>
+    </target>
+    
+    <target name="jar"
+            depends="compile"
+            description="create the java api package">
+        <jar basedir="${class.dir}" destfile="${jar.file}">
+        </jar>
+    </target>
+
+    <target name="properties"
+            description="Output all properties to stdout - build file debugging help">
+        <echoproperties />
+    </target>
+
+</project>
+
