@@ -145,15 +145,13 @@ public abstract class Geometry implements Serializable {
      * values
      */
     public boolean equals(Geometry other) {
-        boolean firstline = (other != null) && (this.dimension == other.dimension)
-                && (this.type == other.type);
-        boolean sridequals = (this.srid == other.srid);
-        boolean measEquals = (this.haveMeasure == other.haveMeasure);
-        boolean secondline = sridequals && measEquals;
-        boolean classequals = other.getClass().equals(this.getClass());
-        boolean equalsintern = this.equalsintern(other);
-        boolean result = firstline && secondline && classequals && equalsintern;
-        return result;
+        return (other != null) 
+                && (this.dimension == other.dimension)
+                && (this.type == other.type)
+                && (this.srid == other.srid) 
+                && (this.haveMeasure == other.haveMeasure) 
+                && other.getClass().equals(this.getClass()) 
+                && this.equalsintern(other);
     }
 
     /**

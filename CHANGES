@@ -2,6 +2,7 @@ PostGIS 1.1.5-CVS
 
 	- Java:
 		- Removed obsolete synchronization from Jts code.
+		- fixed nullpointer Exception in Geometry.equals() method
 
 PostGIS 1.1.4
 
