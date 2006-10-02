@@ -64,9 +64,9 @@ and/or SRID values. Presence of them is encoded in the type byte.
 
 If both objects are present the bounding box come first.
 
-Bounding box is composed by 4 16-bit float:
+Bounding box is composed by 4 32-bit float:
 
-	[FLOAT16] [FLOAT16] [FLOAT16] [FLOAT16]
+	[FLOAT32] [FLOAT32] [FLOAT32] [FLOAT32]
 	   xmin      ymin      xmax      ymax
 
 SRID is composed by a 32-bit integer:
@@ -78,24 +78,24 @@ SRID is composed by a 32-bit integer:
 ==Ordinate Arrays==
 
 
-When it comes to ordinate values all geometries use arrays of 32-bit
+When it comes to ordinate values all geometries use arrays of 64-bit
 floats. Number and semantic of values depend on the dimension flags
 on the geometry type byte:
 
 	 2D (ZM=0x00)
-		[FLOAT32] [FLOAT32]
+		[FLOAT64] [FLOAT64]
 		    x         y
 
 	3DM (ZM=0x01)
-		[FLOAT32] [FLOAT32] [FLOAT32]
+		[FLOAT64] [FLOAT64] [FLOAT64]
 		    x         y         m
 
 	3DZ (ZM=0x10)
-		[FLOAT32] [FLOAT32] [FLOAT32]
+		[FLOAT64] [FLOAT64] [FLOAT64]
 		    x         y         z
 
 	 4D (ZM=0x11)
-		[FLOAT32] [FLOAT32] [FLOAT32] [FLOAT32]
+		[FLOAT64] [FLOAT64] [FLOAT64] [FLOAT64]
 		    x         y         z         m
 
 
