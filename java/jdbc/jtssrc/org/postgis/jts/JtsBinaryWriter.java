@@ -191,9 +191,6 @@ public class JtsBinaryWriter {
     /**
      * Write a Coordinatesequence, part of LinearRing and Linestring, but not
      * MultiPoint!
-     * 
-     * @param haveZ
-     * @param haveM
      */
     private void writeCoordinates(CoordinateSequence seq, int dims, ValueSetter dest) {
         for (int i = 0; i < seq.size(); i++) {
@@ -306,9 +303,6 @@ public class JtsBinaryWriter {
     /**
      * Estimate an Array of "slim" Points (without endianness and type, part of
      * LinearRing and Linestring, but not MultiPoint!
-     * 
-     * @param haveZ
-     * @param haveM
      */
     private int estimatePointArray(int length, Point example) {
         // number of points

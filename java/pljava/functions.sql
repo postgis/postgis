@@ -14,13 +14,8 @@ CREATE OR REPLACE FUNCTION public.getSize(geometry)
     'org.postgis.pljava.HelloWorld.getSize'
   LANGUAGE 'java' IMMUTABLE STRICT;  
 
-CREATE OR REPLACE FUNCTION public.getHex(geometry)
+CREATE OR REPLACE FUNCTION public.getString(geometry)
   RETURNS "text" AS
-    'org.postgis.pljava.HelloWorld.getHex'
-  LANGUAGE 'java' IMMUTABLE STRICT;  
-
-  CREATE OR REPLACE FUNCTION public.getPoint()
-  RETURNS "geometry" AS
-    'org.postgis.pljava.HelloWorld.getPoint'
+    'org.postgis.pljava.HelloWorld.getString'
   LANGUAGE 'java' IMMUTABLE STRICT;  
   

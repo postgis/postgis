@@ -88,6 +88,8 @@ public class TestAutoregister {
             System.err.println("Connection initialization failed, aborting.");
             e.printStackTrace();
             System.exit(1);
+            // signal the compiler that code flow ends here:
+            throw new AssertionError();
         }
 
         int postgisServerMajor = 0;
@@ -96,8 +98,9 @@ public class TestAutoregister {
         } catch (SQLException e) {
             System.err.println("Error fetching PostGIS version: " + e.getMessage());
             System.err.println("Is PostGIS really installed in the database?");
-            // Signal the compiler that code flow ends here.
-            System.exit(1);
+             System.exit(1);
+            // signal the compiler that code flow ends here:
+            throw new AssertionError();
         }
 
         System.out.println("PostGIS Version: " + postgisServerMajor);

@@ -190,9 +190,6 @@ public class BinaryWriter {
     /**
      * Write an Array of "slim" Points (without endianness, srid and type, part
      * of LinearRing and Linestring, but not MultiPoint!
-     * 
-     * @param haveZ
-     * @param haveM
      */
     private void writePointArray(Point[] geom, ValueSetter dest) {
         // number of points
@@ -304,9 +301,6 @@ public class BinaryWriter {
     /**
      * Write an Array of "slim" Points (without endianness and type, part of
      * LinearRing and Linestring, but not MultiPoint!
-     * 
-     * @param haveZ
-     * @param haveM
      */
     private int estimatePointArray(Point[] geom) {
         // number of points
