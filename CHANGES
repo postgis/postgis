@@ -1,8 +1,10 @@
 PostGIS 1.1.5-CVS
 
 	- Java:
-		- Removed obsolete synchronization from Jts code.
-		- fixed nullpointer Exception in Geometry.equals() method
+	  - Removed obsolete synchronization from Jts code.
+	  - fixed nullpointer Exception in Geometry.equals() method
+          - Added EJB3Spatial.odt to fulfill the GPL requirement of
+            distributing the "preferred form of modification"
 
 PostGIS 1.1.4
 
