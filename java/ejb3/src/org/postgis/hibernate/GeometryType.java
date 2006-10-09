@@ -111,9 +111,9 @@ public class GeometryType implements UserType {
 	/* (non-Javadoc)
 	 * @see org.hibernate.usertype.UserType#replace(java.lang.Object, java.lang.Object, java.lang.Object)
 	 */
-	public Object replace(Object arg0, Object arg1, Object arg2) throws HibernateException {
-		// TODO Auto-generated method stub
-		return null;
+	public Object replace(Object original, Object target, 
+                              Object owner) throws HibernateException {
+		return original;	
 	}
 
 	/* (non-Javadoc)
