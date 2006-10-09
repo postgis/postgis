@@ -541,7 +541,6 @@ EXE=
 case $host_os in
 	*mingw*)
 		PGBEINCLUDES="$PGBEINCLUDES $PGBEINCLUDES/port/win32"
-		PGFELIBS=`${PGCONFIG} --libdir`"/libpq.dll"
 		DLSUFFIX=.dll
 		DLFLAGS='${PGBELIBS}'
 		EXE=.exe
