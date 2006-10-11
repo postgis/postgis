@@ -863,13 +863,14 @@ InsertLineStringWKT(int id)
 	if (simple_geometries==0) // We write MULTI geometries, so generate Header 
 	{
 		printf("MULTILINESTRING(");
-	} else if ((obj->nParts)==1)
+	}
+	else if ((obj->nParts)==1)
 	{
-		printf("POLYGON");
+		printf("LINESTRING");
 	}
 	else // We write Non-MULTI geometries, but have several parts: 
 	{
-		fprintf(stderr, "We have a Multipolygon with %d parts, can't use -S switch!\n", obj->nParts);
+		fprintf(stderr, "We have a Multilinestring with %d parts, can't use -S switch!\n", obj->nParts);
 		exit(1);		
 	} 
 
