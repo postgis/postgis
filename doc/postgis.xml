@@ -361,6 +361,19 @@
         </listitem>
       </orderedlist>
 
+	  <sect2 id="templatepostgis">
+		<title>Creating PostGIS spatially-enabled databases from an in-built template</title>
+		<para>Some packaged distributions of PostGIS (in particular the Win32 installers for PostGIS &gt;= 1.1.5) load the PostGIS functions into a template database called <varname>template_postgis</varname>. If the <varname>template_postgis</varname> database exists in your PostgreSQL installation then it is possible for users and/or applications to create spatially-enabled databases using a single command. Note that in both cases, the database user must have been granted the privilege to create new databases.</para>
+
+		<para>From the shell:</para>
+
+		<programlisting># createdb -T template_postgis my_spatial_db</programlisting>
+
+		<para>From SQL:</para>
+
+		<programlisting>postgres=# CREATE DATABASE my_spatial_db TEMPLATE=template_postgis</programlisting>
+	  </sect2>
+
       <sect2 id="upgrading">
         <title>Upgrading</title>
 
