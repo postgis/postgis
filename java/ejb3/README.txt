@@ -13,7 +13,8 @@ the dependency on JBoss and Hibernate to incorporate other Application
 Services. 
 
 Since it is useful to display screenshots in a tutorial this has been written
-as a PDF and the document and source are available here.
+as an Openoffice Document. For easy viewing and printing, a PDF version is
+also available.
 
 
 COMPILING:
