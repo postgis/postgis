@@ -5,6 +5,9 @@ PostGIS 1.1.5-CVS
 	  - fixed nullpointer Exception in Geometry.equals() method
           - Added EJB3Spatial.odt to fulfill the GPL requirement of
             distributing the "preferred form of modification"
+	- Added -S option for non-multi geometries to shp2pgsql
+	- Updated heavily outdated README files for shp2pgsql/pgsql2shp by 
+	  merging them with the manpages.
 
 PostGIS 1.1.4
 

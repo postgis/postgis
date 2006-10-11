@@ -69,6 +69,7 @@ enum {
 
 /* globals */
 int	dump_format = 0; /* 0=insert statements, 1 = dump */
+int     simple_geometries = 0; /* 0 = MULTILINESTRING/MULTIPOLYGON, 1 = LINESTRING/POLYGON */
 int	quoteidentifiers = 0;
 int	forceint4 = 0;
 int	createindex = 0;
@@ -739,7 +740,7 @@ usage(char *me, int exitcode)
 	fprintf(stderr, "  -s <srid>  Set the SRID field. If not specified it defaults to -1.\n");
 	fprintf(stderr, "\n");
 	fprintf(stderr, "  (-d|a|c|p) These are mutually exclusive options:\n");
-	fprintf(stderr, "      -d  Drops the table , then recreates it and populates\n");
+	fprintf(stderr, "      -d  Drops the table, then recreates it and populates\n");
 	fprintf(stderr, "          it with current shape file data.\n");
 	fprintf(stderr, "      -a  Appends shape file into current table, must be\n");
 	fprintf(stderr, "          exactly the same table schema.\n");
@@ -758,6 +759,8 @@ usage(char *me, int exitcode)
 	fprintf(stderr, "  -i  Use int4 type for all integer dbf fields.\n");
 	fprintf(stderr, "\n");
 	fprintf(stderr, "  -I  Create a GiST index on the geometry column.\n");
+	fprintf(stderr, "\n");
+	fprintf(stderr, "  -S  Generate simple geometries instead of MULTI geometries.\n");
 	fprintf(stderr, "\n");
 	fprintf(stderr, "  -w  Use wkt format (for postgis-0.x support - drops M - drifts coordinates).\n");
 #ifdef USE_ICONV
@@ -792,9 +795,17 @@ InsertLineString(int id)
 	if (!dump_format) printf("'");
 	if ( sr_id && sr_id != "-1" ) printf("SRID=%s;", sr_id);
 
-	print_wkb_byte(getEndianByte());
-	print_wkb_int(wkbtype);
-	print_wkb_int(obj->nParts);
+	if (simple_geometries==0) // We write MULTI geometries, so generate Header 
+	{
+		print_wkb_byte(getEndianByte());
+		print_wkb_int(wkbtype);
+		print_wkb_int(obj->nParts); /* npolys */
+	} 
+	else if ((obj->nParts)!=1) // We write Non-MULTI geometries, but have several parts: 
+	{
+		fprintf(stderr, "We have a MultiLineString with %d parts, can't use -S switch!\n", obj->nParts);
+		exit(1);		
+	}
 
 	for (pi=0; pi<obj->nParts; pi++)
 	{
@@ -845,6 +856,22 @@ InsertLineStringWKT(int id)
 
 	if (dump_format) printf("SRID=%s;MULTILINESTRING(",sr_id);
 	else printf("GeometryFromText('MULTILINESTRING (");
+	
+	if (dump_format) printf("SRID=%s;",sr_id );
+	else printf("GeometryFromText('");
+	
+	if (simple_geometries==0) // We write MULTI geometries, so generate Header 
+	{
+		printf("MULTILINESTRING(");
+	} else if ((obj->nParts)==1)
+	{
+		printf("POLYGON");
+	}
+	else // We write Non-MULTI geometries, but have several parts: 
+	{
+		fprintf(stderr, "We have a Multipolygon with %d parts, can't use -S switch!\n", obj->nParts);
+		exit(1);		
+	} 
 
 	for (pi=0; pi<obj->nParts; pi++)
 	{
@@ -874,8 +901,10 @@ InsertLineStringWKT(int id)
 				
 	}
 
-	if (dump_format) printf(")\n");
-	else printf(")',%s) );\n",sr_id);
+	if (simple_geometries==0) printf(")");
+
+	if (dump_format) printf("\n");
+	else printf("',%s) );\n",sr_id);
 }
 
 int
@@ -1051,9 +1080,17 @@ InsertPolygon(void)
 	if (!dump_format) printf("'");
 	if ( sr_id && sr_id != "-1" ) printf("SRID=%s;", sr_id);
 
-	print_wkb_byte(getEndianByte());
-	print_wkb_int(wkbtype);
-	print_wkb_int(out_index); /* npolys */
+	if (simple_geometries==0) // We write MULTI geometries, so generate Header 
+	{
+		print_wkb_byte(getEndianByte());
+		print_wkb_int(wkbtype);
+		print_wkb_int(out_index); /* npolys */
+	} 
+	else if (out_index!=1) // We write Non-MULTI geometries, but have several parts: 
+	{
+		fprintf(stderr, "We have a Multipolygon with %d parts, can't use -S switch!\n", out_index);
+		exit(1);		
+	}
 
 	/* Write the coordinates */
 	for(pi=0; pi<out_index; pi++)
@@ -1112,8 +1149,22 @@ InsertPolygonWKT(void)
 
 	out_index = FindPolygons(obj, &Outer);
 
-	if (dump_format) printf("SRID=%s;MULTIPOLYGON(",sr_id );
-	else printf("GeometryFromText('MULTIPOLYGON(");
+	if (dump_format) printf("SRID=%s;",sr_id );
+	else printf("GeometryFromText('");
+	
+	if (simple_geometries==0) // We write MULTI geometries, so generate Header 
+	{
+		printf("MULTIPOLYGON(");
+	} 
+	else if (out_index==1) 
+	{
+		printf("POLYGON");
+	}
+	else
+	{ // We write Non-MULTI geometries, but have several parts: 
+		fprintf(stderr, "We have a Multipolygon with %d parts, can't use -S switch!\n", out_index);
+		exit(1);		
+	}
 
 	/* Write the coordinates */
 	for(pi=0; pi<out_index; pi++)
@@ -1149,8 +1200,10 @@ InsertPolygonWKT(void)
 
 	}
 
-	if (dump_format) printf(")\n");
-	else printf(")',%s) );\n",sr_id);
+	if (simple_geometries==0) printf(")");
+	
+	if (dump_format) printf("\n");
+	else printf("',%s) );\n",sr_id);
 
 	/* Release all memory */
 	ReleasePolygons(Outer, out_index);
@@ -1228,7 +1281,7 @@ ParseCmdline(int ARGC, char **ARGV)
 	extern char *optarg;
 	extern int optind;
 
-	while ((c = getopt(ARGC, ARGV, "kcdapDs:g:iW:wIN:")) != EOF){
+	while ((c = getopt(ARGC, ARGV, "kcdapDs:Sg:iW:wIN:")) != EOF){
                switch (c) {
                case 'c':
                     if (opt == ' ')
@@ -1256,6 +1309,9 @@ ParseCmdline(int ARGC, char **ARGV)
                     break;
 	       case 'D':
 		    dump_format =1;
+                    break;
+               case 'S':
+                    simple_geometries =1;
                     break;
                case 's':
                     sr_id = optarg;
@@ -1311,7 +1367,7 @@ ParseCmdline(int ARGC, char **ARGV)
 
 	if ( opt==' ' ) opt = 'c';
 
-        for (; optind < ARGC; optind++){
+	for (; optind < ARGC; optind++){
 		if(curindex ==0){
 			shp_file = ARGV[optind];
 		}else if(curindex == 1){
@@ -1449,6 +1505,13 @@ SetPgType(void)
 				shpfiletype);
 			break;
 	}
+
+        if (simple_geometries)
+        {
+                // adjust geometry name for CREATE TABLE by skipping MULTI
+                if ((wkbtype & 0x7) == MULTIPOLYGONTYPE) pgtype += 5;
+                if ((wkbtype & 0x7) == MULTILINETYPE) pgtype += 5;
+        }                        
 }
 
 char *

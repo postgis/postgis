@@ -574,7 +574,8 @@ as follow:
       <para>The loader is called <filename>shp2pgsql</filename> and converts
       ESRI Shape files into SQL suitable for loading in PostGIS/PostgreSQL.
       The dumper is called <filename>pgsql2shp</filename> and converts PostGIS
-      tables (or queries) into ESRI Shape files.</para>
+      tables (or queries) into ESRI Shape files. For more verbose documentation,
+      see the online help, and the manual pages.</para>
     </sect1>
   </chapter>
 
