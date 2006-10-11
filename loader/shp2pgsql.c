@@ -854,9 +854,6 @@ InsertLineStringWKT(int id)
 		return;
 	}
 
-	if (dump_format) printf("SRID=%s;MULTILINESTRING(",sr_id);
-	else printf("GeometryFromText('MULTILINESTRING (");
-	
 	if (dump_format) printf("SRID=%s;",sr_id );
 	else printf("GeometryFromText('");
 	
