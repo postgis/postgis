@@ -1,5 +1,5 @@
-PostGIS 1.1.5-CVS
-
+PostGIS 1.1.5
+2006/10/13
 	- Java:
 	  - Removed obsolete synchronization from Jts code.
 	  - fixed nullpointer Exception in Geometry.equals() method
@@ -12,7 +12,7 @@ PostGIS 1.1.5-CVS
 	  segfault on Win32 when compiled for PostgreSQL 8.2
 
 PostGIS 1.1.4
-
+2006/09/27
 	- Fixed support for PostgreSQL 8.2
 	- Fixed bug in collect() function discarding SRID of
 	  input
