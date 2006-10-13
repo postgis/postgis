@@ -8,6 +8,8 @@ PostGIS 1.1.5-CVS
 	- Added -S option for non-multi geometries to shp2pgsql
 	- Updated heavily outdated README files for shp2pgsql/pgsql2shp by 
 	  merging them with the manpages.
+	- Fixed MingW link error that was causing pgsql2shp to
+	  segfault on Win32 when compiled for PostgreSQL 8.2
 
 PostGIS 1.1.4
 
