@@ -59,7 +59,7 @@ ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
 endif
 
 # shared library versions
-version=$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION).$(SO_MICRO_VERSION)
+version=$(REL_MAJOR_VERSION).$(REL_MINOR_VERSION).$(REL_MICRO_VERSION)
 EXTRA_VER="-pg$(pg_ver)"
 SONAME=$(shell objdump -p $(LIB_NAME) | grep SONAME | \
          awk '{if (match($$2,/\.so\.[0-9]+$$/)) print substr($$2,RSTART+4)}')

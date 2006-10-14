@@ -1,7 +1,7 @@
 include ../Makefile.config
 include ../Version.config
 
-LAST_RELEASE_VERSION = $(SO_MAJOR_VERSION).$(SO_MINOR_VERSION).$(SO_MICRO_VERSION)
+LAST_RELEASE_VERSION = $(REL_MAJOR_VERSION).$(REL_MINOR_VERSION).$(REL_MICRO_VERSION)
 
 JW_COMMONOPTS = -f docbook -b html -e no-valid
 

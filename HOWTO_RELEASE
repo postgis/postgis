@@ -6,8 +6,7 @@ Versioning Scheme
 -----------------
 
 Release version is composed by REL_MAJOR_VERSION, REL_MINOR_VERSION
-and REL_MICRO_VERSION components. "REL" here matches SO for the server
-side of PostGIS, and JDBC for the java side.
+and REL_MICRO_VERSION components.
 
 By default only [REL_MICRO_VERSION] increments between releases.
 

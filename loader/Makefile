@@ -1,5 +1,9 @@
 include ../Makefile.config
 
+# Version handling:
+include ../Version.config
+POSTGIS_VERSION = $(REL_MAJOR_VERSION).$(REL_MINOR_VERSION).$(REL_MICRO_VERSION)
+
 #
 # PostGIS Loader Makefile
 #
@@ -13,7 +17,7 @@ ifeq ($(USE_ICONV),1)
 	override LDFLAGS += $(ICONV_LDFLAGS)
 endif
 
-override CFLAGS := -g -Wall -I.. $(CFLAGS) -DUSE_VERSION=$(USE_VERSION)
+override CFLAGS := -g -Wall -I.. $(CFLAGS) -DUSE_VERSION=$(USE_VERSION) -DPOSTGIS_VERSION='"$(POSTGIS_VERSION)"'
 
 all: shp2pgsql$(EXE) pgsql2shp$(EXE)
 

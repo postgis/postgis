@@ -2310,7 +2310,7 @@ getGeometryMaxDims(char *schema, char *table, char *geo_col_name)
 void
 usage(int status)
 {
-	printf("RCSID: %s\n", rcsid);
+        printf("RCSID: %s RELEASE: %s\n", rcsid, POSTGIS_VERSION);
 	printf("USAGE: pgsql2shp [<options>] <database> [<schema>.]<table>\n");
 	printf("       pgsql2shp [<options>] <database> <query>\n");
 	printf("\n");

@@ -733,7 +733,7 @@ LoadData(void)
 void
 usage(char *me, int exitcode)
 {
-	fprintf(stderr, "RCSID: %s\n", rcsid);
+        fprintf(stderr, "RCSID: %s RELEASE: %s\n", rcsid, POSTGIS_VERSION);
 	fprintf(stderr, "USAGE: %s [<options>] <shapefile> [<schema>.]<table>\n", me);
 	fprintf(stderr, "\n");
 	fprintf(stderr, "OPTIONS:\n");

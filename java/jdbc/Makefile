@@ -116,7 +116,9 @@ include ../../Version.config
 # and installdirs targets, not for building itsself.
 -include ../../Makefile.config
 
-VERSION=$(JDBC_MAJOR_VERSION).$(JDBC_MINOR_VERSION).$(JDBC_MICRO_VERSION)
+VERSION=$(REL_MAJOR_VERSION).$(REL_MINOR_VERSION).$(REL_MICRO_VERSION)
+
+# We copy the ../Version.config into the jar to have it read at runtime.
 VERSIONPATH=$(BUILD)/org/postgis
 VERSIONTARGET=$(VERSIONPATH)/version.properties
 

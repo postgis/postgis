@@ -1,3 +1,11 @@
+PostGIS 1.1.6-CVS
+
+        - Simplified Version.config infrastructure to use a single
+          pack of version variables for everything.
+        - Include the Version.config in loader/dumper USAGE messages
+        - Replace hand-made, fragile JDBC version parser with Properties
+
+
 PostGIS 1.1.5
 2006/10/13
 	- Java:

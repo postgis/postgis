@@ -19,12 +19,12 @@
 # variables:
 #
 # NAME                  Name of library to build (no suffix nor "lib" prefix)
-# SO_MAJOR_VERSION      Major version number to use for shared library
-# SO_MINOR_VERSION      Minor version number to use for shared library
+# REL_MAJOR_VERSION      Major version number to use for shared library
+# REL_MINOR_VERSION      Minor version number to use for shared library
 # OBJS                  List of object files to include in library
 # SHLIB_LINK            If shared library relies on other libraries,
 #                       additional stuff to put in its link command
-# (If you want a patchlevel, include it in SO_MINOR_VERSION, e.g., "6.2".)
+# (If you want a patchlevel, include it in REL_MINOR_VERSION, e.g., "6.2".)
 #
 # Optional flags when building DLL's (only applicable to win32 and cygwin
 # platforms).
@@ -74,8 +74,8 @@ LINK.static = $(AR) $(AROPT)
 ifeq ($(enable_shared), yes)
 
 # Default shlib naming convention used by the majority of platforms
-shlib		= lib$(NAME)$(DLSUFFIX).$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION)
-shlib_major	= lib$(NAME)$(DLSUFFIX).$(SO_MAJOR_VERSION)
+shlib		= lib$(NAME)$(DLSUFFIX).$(REL_MAJOR_VERSION).$(REL_MINOR_VERSION)
+shlib_major	= lib$(NAME)$(DLSUFFIX).$(REL_MAJOR_VERSION)
 shlib_bare	= lib$(NAME)$(DLSUFFIX)
 
 # For each platform we support shared libraries on, set shlib to the
@@ -87,7 +87,7 @@ shlib_bare	= lib$(NAME)$(DLSUFFIX)
 
 override CFLAGS += $(CFLAGS_SL)
 
-soname = lib$(NAME)$(DLSUFFIX).$(SO_MAJOR_VERSION)
+soname = lib$(NAME)$(DLSUFFIX).$(REL_MAJOR_VERSION)
 
 ifeq ($(PORTNAME), aix)
   shlib			= lib$(NAME)$(DLSUFFIX)
@@ -95,20 +95,20 @@ ifeq ($(PORTNAME), aix)
 endif
 
 ifeq ($(PORTNAME), darwin)
-  ifneq ($(SO_MAJOR_VERSION), 0)
-    version_link	:= -compatibility_version $(SO_MAJOR_VERSION) -current_version $(SO_MAJOR_VERSION).$(SO_MINOR_VERSION)
+  ifneq ($(REL_MAJOR_VERSION), 0)
+    version_link	:= -compatibility_version $(REL_MAJOR_VERSION) -current_version $(REL_MAJOR_VERSION).$(REL_MINOR_VERSION)
   endif
   ifeq ($(DLTYPE), library)
     # linkable library
     DLSUFFIX		:= .dylib
-    LINK.shared		= $(COMPILER) -dynamiclib -install_name $(libdir)/lib$(NAME).$(SO_MAJOR_VERSION)$(DLSUFFIX) $(version_link) -multiply_defined suppress
+    LINK.shared		= $(COMPILER) -dynamiclib -install_name $(libdir)/lib$(NAME).$(REL_MAJOR_VERSION)$(DLSUFFIX) $(version_link) -multiply_defined suppress
   else
     # loadable module (default case)
     DLSUFFIX		:= .so
     LINK.shared		= $(COMPILER) -bundle
   endif
-  shlib			= lib$(NAME).$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION)$(DLSUFFIX)
-  shlib_major		= lib$(NAME).$(SO_MAJOR_VERSION)$(DLSUFFIX)
+  shlib			= lib$(NAME).$(REL_MAJOR_VERSION).$(REL_MINOR_VERSION)$(DLSUFFIX)
+  shlib_major		= lib$(NAME).$(REL_MAJOR_VERSION)$(DLSUFFIX)
 endif
 
 ifeq ($(PORTNAME), openbsd)
@@ -132,10 +132,10 @@ endif
 
 ifeq ($(PORTNAME), freebsd)
   ifdef ELF_SYSTEM
-    shlib		= lib$(NAME)$(DLSUFFIX).$(SO_MAJOR_VERSION)
+    shlib		= lib$(NAME)$(DLSUFFIX).$(REL_MAJOR_VERSION)
     LINK.shared		= $(COMPILER) -shared -Wl,-x,-soname,$(soname)
   else
-    shlib		= lib$(NAME)$(DLSUFFIX).$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION)
+    shlib		= lib$(NAME)$(DLSUFFIX).$(REL_MAJOR_VERSION).$(REL_MINOR_VERSION)
     LINK.shared		= $(LD) -x -Bshareable -Bforcearchive
   endif
 endif
@@ -149,7 +149,7 @@ ifeq ($(PORTNAME), netbsd)
 endif
 
 ifeq ($(PORTNAME), hpux)
-  shlib			= lib$(NAME)$(DLSUFFIX).$(SO_MAJOR_VERSION)
+  shlib			= lib$(NAME)$(DLSUFFIX).$(REL_MAJOR_VERSION)
   ifeq ($(GCC), yes)
     SHLIB_LINK		+= `$(CC) $(LDFLAGS) -print-libgcc-file-name`
   endif
@@ -167,8 +167,8 @@ ifeq ($(PORTNAME), hpux)
 endif
 
 ifeq ($(PORTNAME), irix)
-  shlib			= lib$(NAME)$(DLSUFFIX).$(SO_MAJOR_VERSION)
-  LINK.shared		= $(COMPILER) -shared -Wl,-set_version,sgi$(SO_MAJOR_VERSION).$(SO_MINOR_VERSION)
+  shlib			= lib$(NAME)$(DLSUFFIX).$(REL_MAJOR_VERSION)
+  LINK.shared		= $(COMPILER) -shared -Wl,-set_version,sgi$(REL_MAJOR_VERSION).$(REL_MINOR_VERSION)
 endif
 
 ifeq ($(PORTNAME), linux)

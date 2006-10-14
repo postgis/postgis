@@ -24,16 +24,14 @@
 
 package org.postgis;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
+import java.util.Properties;
 
 /** Corresponds to the appropriate PostGIS that carried this source */
 public class Version {
     /** We read our version information from this ressource... */
     private static final String RESSOURCENAME = "org/postgis/version.properties";
-    
+
     /** The major version */
     public static final int MAJOR;
 
@@ -49,34 +47,47 @@ public class Version {
     static {
         int major = -1;
         int minor = -1;
-        String micro = "INVALID";
+        String micro = null;
         try {
             ClassLoader loader = Version.class.getClassLoader();
-            URL ver = loader.getResource(RESSOURCENAME);
-            if (ver == null) {
-                throw new ExceptionInInitializerError(
-                        "Error initializing PostGIS JDBC version! Cause: Ressource "+RESSOURCENAME+" not found!");
-            }
-            BufferedReader rd = new BufferedReader(new InputStreamReader(ver.openStream()));
 
-            String line;
-            while ((line = rd.readLine()) != null) {
-                line = line.trim();
-                if (line.startsWith("JDBC_MAJOR_VERSION")) {
-                    major = Integer.parseInt(line.substring(19));
-                } else if (line.startsWith("JDBC_MINOR_VERSION")) {
-                    minor = Integer.parseInt(line.substring(19));
-                } else if (line.startsWith("JDBC_MICRO_VERSION")) {
-                    micro = line.substring(19);
-                } else {
-                    // ignore line
-                }
+            Properties prop = new Properties();
+
+            try {
+                prop.load(loader.getResourceAsStream(RESSOURCENAME));
+            } catch (IOException e) {
+                throw new ExceptionInInitializerError("Error initializing PostGIS JDBC version! Cause: Ressource "
+                        + RESSOURCENAME + " cannot be read! " + e.getMessage());
+            } catch (NullPointerException e) {
+                throw new ExceptionInInitializerError("Error initializing PostGIS JDBC version! Cause: Ressource "
+                        + RESSOURCENAME + " not found! " + e.getMessage());
             }
-            if (major == -1 || minor == -1 || micro.equals("INVALID")) {
-                throw new ExceptionInInitializerError("Error initializing PostGIS JDBC version! Cause: Ressource "+RESSOURCENAME+" incomplete!");
+
+            try {
+                major = Integer.parseInt(prop.getProperty("REL_MAJOR_VERSION"));
+            } catch (NullPointerException e) {
+                throw new ExceptionInInitializerError(
+                        "Error initializing PostGIS JDBC version! Missing REL_MAJOR_VERSION! " + e.getMessage());
+            } catch (NumberFormatException e) {
+                throw new ExceptionInInitializerError(
+                        "Error initializing PostGIS JDBC version! Error parsing REL_MAJOR_VERSION! " + e.getMessage());
             }
-        } catch (IOException e) {
-            throw new ExceptionInInitializerError("Error initializing PostGIS JDBC version! Cause: " + e.getMessage());
+
+            try {
+                minor = Integer.parseInt(prop.getProperty("REL_MINOR_VERSION"));
+            } catch (NullPointerException e) {
+                throw new ExceptionInInitializerError(
+                        "Error initializing PostGIS JDBC version! Missing REL_MINOR_VERSION! " + e.getMessage());
+            } catch (NumberFormatException e) {
+                throw new ExceptionInInitializerError(
+                        "Error initializing PostGIS JDBC version! Error parsing REL_MINOR_VERSION! " + e.getMessage());
+            }
+
+            micro = prop.getProperty("REL_MICRO_VERSION");
+            if (micro == null) {
+                throw new ExceptionInInitializerError(
+                        "Error initializing PostGIS JDBC version! Missing REL_MICRO_VERSION! ");
+            }
         } finally {
             MAJOR = major;
             MINOR = minor;
