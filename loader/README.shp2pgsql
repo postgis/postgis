@@ -88,6 +88,8 @@ OPTIONS
        -N <policy>
               Specify NULL geometries handling policy (insert,skip,abort).
 
+       -?     Display version and usage information.
+
 
 INSTALLATION
        To compile the program from source, simply run  "make"  in  the  source

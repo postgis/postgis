@@ -106,7 +106,7 @@ int PIP( Point P, Point* V, int n );
 void *safe_malloc(size_t size);
 void CreateTable(void);
 void CreateIndex(void);
-void usage(char *me, int exitcode);
+void usage(char *me, int exitcode, FILE* out);
 void InsertPoint(void);
 void InsertPointWKT(void);
 void InsertMultiPoint(void);
@@ -381,7 +381,7 @@ main (int ARGC, char **ARGV)
 	/*
 	 * Parse command line
 	 */
-	if ( ! ParseCmdline(ARGC, ARGV) ) usage(ARGV[0], 2);
+	if ( ! ParseCmdline(ARGC, ARGV) ) usage(ARGV[0], 2, stderr);
 
 	/*
 	 * Open shapefile and initialize globals
@@ -731,45 +731,34 @@ LoadData(void)
 }
 
 void
-usage(char *me, int exitcode)
+usage(char *me, int exitcode, FILE* out)
 {
-        fprintf(stderr, "RCSID: %s RELEASE: %s\n", rcsid, POSTGIS_VERSION);
-	fprintf(stderr, "USAGE: %s [<options>] <shapefile> [<schema>.]<table>\n", me);
-	fprintf(stderr, "\n");
-	fprintf(stderr, "OPTIONS:\n");
-	fprintf(stderr, "  -s <srid>  Set the SRID field. If not specified it defaults to -1.\n");
-	fprintf(stderr, "\n");
-	fprintf(stderr, "  (-d|a|c|p) These are mutually exclusive options:\n");
-	fprintf(stderr, "      -d  Drops the table, then recreates it and populates\n");
-	fprintf(stderr, "          it with current shape file data.\n");
-	fprintf(stderr, "      -a  Appends shape file into current table, must be\n");
-	fprintf(stderr, "          exactly the same table schema.\n");
-	fprintf(stderr, "      -c  Creates a new table and populates it, this is the\n");
-	fprintf(stderr, "          default if you do not specify any options.\n");
- 	fprintf(stderr, "      -p  Prepare mode, only creates the table\n");
-	fprintf(stderr, "\n");
-	fprintf(stderr, "  -g <geometry_column> Specify the name of the geometry column\n");
-	fprintf(stderr, "     (mostly useful in append mode).\n");
-	fprintf(stderr, "\n");
-	fprintf(stderr, "  -D  Use postgresql dump format (defaults to sql insert\n");
-	fprintf(stderr, "      statments.\n");
-	fprintf(stderr, "\n");
-	fprintf(stderr, "  -k  Keep postgresql identifiers case.\n");
-	fprintf(stderr, "\n");
-	fprintf(stderr, "  -i  Use int4 type for all integer dbf fields.\n");
-	fprintf(stderr, "\n");
-	fprintf(stderr, "  -I  Create a GiST index on the geometry column.\n");
-	fprintf(stderr, "\n");
-	fprintf(stderr, "  -S  Generate simple geometries instead of MULTI geometries.\n");
-	fprintf(stderr, "\n");
-	fprintf(stderr, "  -w  Use wkt format (for postgis-0.x support - drops M - drifts coordinates).\n");
+        fprintf(out, "RCSID: %s RELEASE: %s\n", rcsid, POSTGIS_VERSION);
+	fprintf(out, "USAGE: %s [<options>] <shapefile> [<schema>.]<table>\n", me);
+	fprintf(out, "OPTIONS:\n");
+	fprintf(out, "  -s <srid>  Set the SRID field. If not specified it defaults to -1.\n");
+	fprintf(out, "  (-d|a|c|p) These are mutually exclusive options:\n");
+	fprintf(out, "      -d  Drops the table, then recreates it and populates\n");
+	fprintf(out, "          it with current shape file data.\n");
+	fprintf(out, "      -a  Appends shape file into current table, must be\n");
+	fprintf(out, "          exactly the same table schema.\n");
+	fprintf(out, "      -c  Creates a new table and populates it, this is the\n");
+	fprintf(out, "          default if you do not specify any options.\n");
+ 	fprintf(out, "      -p  Prepare mode, only creates the table.\n");
+	fprintf(out, "  -g <geometry_column> Specify the name of the geometry column\n");
+	fprintf(out, "     (mostly useful in append mode).\n");
+	fprintf(out, "  -D  Use postgresql dump format (defaults to sql insert statments.\n");
+	fprintf(out, "  -k  Keep postgresql identifiers case.\n");
+	fprintf(out, "  -i  Use int4 type for all integer dbf fields.\n");
+	fprintf(out, "  -I  Create a GiST index on the geometry column.\n");
+	fprintf(out, "  -S  Generate simple geometries instead of MULTI geometries.\n");
+	fprintf(out, "  -w  Use wkt format (for postgis-0.x support - drops M - drifts coordinates).\n");
 #ifdef USE_ICONV
-	fprintf(stderr, "\n");
-	fprintf(stderr, "  -W <encoding> Specify the character encoding of Shape's\n");
-	fprintf(stderr, "     attribute column. (default : \"ASCII\")\n");
+	fprintf(out, "  -W <encoding> Specify the character encoding of Shape's\n");
+	fprintf(out, "     attribute column. (default : \"ASCII\")\n");
 #endif
-	fprintf(stderr, "\n");
-	fprintf(stderr, "  -N <policy> Specify NULL geometries handling policy (insert,skip,abort)\n");
+	fprintf(out, "  -N <policy> Specify NULL geometries handling policy (insert,skip,abort)\n");
+        fprintf(out, "  -? Display this help screen\n");
 	exit (exitcode);
 }
 
@@ -1279,6 +1268,10 @@ ParseCmdline(int ARGC, char **ARGV)
 	extern char *optarg;
 	extern int optind;
 
+        if ( ARGC == 1 ) {
+                usage(ARGV[0], 0, stdout);
+        }
+
 	while ((c = getopt(ARGC, ARGV, "kcdapDs:Sg:iW:wIN:")) != EOF){
                switch (c) {
                case 'c':
@@ -1354,6 +1347,7 @@ ParseCmdline(int ARGC, char **ARGV)
 			}
                     break;
                case '?':
+                    usage(ARGV[0], 0, stdout); 
                default:              
 		return 0;
                }

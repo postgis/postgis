@@ -65,6 +65,8 @@ OPTIONS
 
        -k     Keep idendifiers case (don't uppercase field names).
 
+       -?     Display version and usage information.
+
 
 INSTALLATION
        To compile the program from source, simply run  "make"  in  the  source

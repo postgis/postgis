@@ -93,7 +93,7 @@ int pgis_major_version;
 /* Prototypes */
 int getMaxFieldSize(PGconn *conn, char *schema, char *table, char *fname);
 int parse_commandline(int ARGC, char **ARGV);
-void usage(int exitstatus);
+void usage(char* me, int exitstatus, FILE* out);
 char *getTableOID(char *schema, char *table);
 int addRecord(PGresult *res, int residx, int row);
 int initShapefile(char *shp_file, PGresult *res);
@@ -194,10 +194,6 @@ main(int ARGC, char **ARGV)
 
 	if ( getenv("ROWBUFLEN") ) rowbuflen=atoi(getenv("ROWBUFLEN"));
 
-	if ( ARGC == 1 ) {
-		usage(0);
-	}
-
 	/*
 	 * Make sure dates are returned in ISO
 	 * style (YYYY-MM-DD).
@@ -209,7 +205,7 @@ main(int ARGC, char **ARGV)
 
 	if ( ! parse_commandline(ARGC, ARGV) ) {
                 printf("\n**ERROR** invalid option or command parameters\n\n");
-		usage(2);
+		usage(ARGV[0], 2, stderr);
 	}
 
 	/* Use table name as shapefile name */
@@ -2308,27 +2304,28 @@ getGeometryMaxDims(char *schema, char *table, char *geo_col_name)
 }
 
 void
-usage(int status)
+usage(char* me, int status, FILE* out)
 {
-        printf("RCSID: %s RELEASE: %s\n", rcsid, POSTGIS_VERSION);
-	printf("USAGE: pgsql2shp [<options>] <database> [<schema>.]<table>\n");
-	printf("       pgsql2shp [<options>] <database> <query>\n");
-	printf("\n");
-       	printf("OPTIONS:\n");
-       	printf("  -f <filename>  Use this option to specify the name of the file\n");
-       	printf("     to create.\n");
-       	printf("  -h <host>  Allows you to specify connection to a database on a\n");
-	printf("     machine other than the default.\n");
-       	printf("  -p <port>  Allows you to specify a database port other than the default.\n");
-       	printf("  -P <password>  Connect to the database with the specified password.\n");
-       	printf("  -u <user>  Connect to the database as the specified user.\n");
-	printf("  -g <geometry_column> Specify the geometry column to be exported.\n");
-	printf("  -b Use a binary cursor.\n");
-	printf("  -r Raw mode. Do not assume table has been created by \n");
-	printf("     the loader. This would not unescape attribute names\n");
-	printf("     and will not skip the 'gid' attribute.\n");
-	printf("  -k Keep postgresql identifiers case.\n");
-       	printf("\n");
+        fprintf(out,"RCSID: %s RELEASE: %s\n", rcsid, POSTGIS_VERSION);
+	fprintf(out,"USAGE: %s [<options>] <database> [<schema>.]<table>\n", me);
+	fprintf(out,"       %s [<options>] <database> <query>\n", me);
+	fprintf(out,"\n");
+       	fprintf(out,"OPTIONS:\n");
+       	fprintf(out,"  -f <filename>  Use this option to specify the name of the file\n");
+       	fprintf(out,"     to create.\n");
+       	fprintf(out,"  -h <host>  Allows you to specify connection to a database on a\n");
+	fprintf(out,"     machine other than the default.\n");
+       	fprintf(out,"  -p <port>  Allows you to specify a database port other than the default.\n");
+       	fprintf(out,"  -P <password>  Connect to the database with the specified password.\n");
+       	fprintf(out,"  -u <user>  Connect to the database as the specified user.\n");
+	fprintf(out,"  -g <geometry_column> Specify the geometry column to be exported.\n");
+	fprintf(out,"  -b Use a binary cursor.\n");
+	fprintf(out,"  -r Raw mode. Do not assume table has been created by \n");
+	fprintf(out,"     the loader. This would not unescape attribute names\n");
+	fprintf(out,"     and will not skip the 'gid' attribute.\n");
+	fprintf(out,"  -k Keep postgresql identifiers case.\n");
+        fprintf(out,"  -? Display this help screen.\n");
+       	fprintf(out,"\n");
        	exit (status);
 }
 
@@ -2336,6 +2333,10 @@ usage(int status)
 int
 parse_commandline(int ARGC, char **ARGV)
 {
+        if ( ARGC == 1 ) {
+                usage(ARGV[0], 0, stdout);
+        }
+
 	int c, curindex;
 	char buf[1024];
 
@@ -2385,6 +2386,7 @@ parse_commandline(int ARGC, char **ARGV)
 				keep_fieldname_case = 1;
 				break;
 			case '?':
+                                usage(ARGV[0], 0, stdout);
 			default:
 				return 0;
 		}
