@@ -1,5 +1,6 @@
 PostGIS 1.1.6-CVS
 
+	- spatial_ref_sys.sql updated to EPSG 6.11.1 
         - Simplified Version.config infrastructure to use a single
           pack of version variables for everything.
         - Include the Version.config in loader/dumper USAGE messages
