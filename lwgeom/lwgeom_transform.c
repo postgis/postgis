@@ -60,10 +60,10 @@ Datum postgis_proj_version(PG_FUNCTION_ARGS)
 #include "utils/hsearch.h"
 
 PJ *make_project(char *str1);
-void to_rad(POINT2D *pt);
-void to_dec(POINT2D *pt);
+void to_rad(POINT4D *pt);
+void to_dec(POINT4D *pt);
 int pj_transform_nodatum(PJ *srcdefn, PJ *dstdefn, long point_count, int point_offset, double *x, double *y, double *z );
-int transform_point(POINT2D *pt, PJ *srcdefn, PJ *dstdefn);
+int transform_point(POINT4D *pt, PJ *srcdefn, PJ *dstdefn);
 static int lwgeom_transform_recursive(uchar *geom, PJ *inpj, PJ *outpj);
 
 
@@ -587,7 +587,7 @@ int point_offset, double *x, double *y, double *z )
 
 /* convert decimal degress to radians */
 void
-to_rad(POINT2D *pt)
+to_rad(POINT4D *pt)
 {
 	pt->x *= PI/180.0;
 	pt->y *= PI/180.0;
@@ -595,7 +595,7 @@ to_rad(POINT2D *pt)
 
 /* convert radians to decimal degress */
 void
-to_dec(POINT2D *pt)
+to_dec(POINT4D *pt)
 {
 	pt->x *= 180.0/PI;
 	pt->y *= 180.0/PI;
@@ -663,16 +663,15 @@ lwgeom_transform_recursive(uchar *geom, PJ *inpj, PJ *outpj)
 		LWLINE *line=NULL;
 		LWPOINT *point=NULL;
 		LWPOLY *poly=NULL;
-		POINT2D p;
+		POINT4D p;
 		uchar *subgeom=NULL;
 
 		point = lwgeom_getpoint_inspected(inspected,j);
 		if (point != NULL)
 		{
-			getPoint2d_p(point->point, 0, &p);
+			getPoint4d_p(point->point, 0, &p);
 			transform_point(&p, inpj, outpj);
-			memcpy(getPoint_internal(point->point, 0),
-				&p, sizeof(POINT2D));
+			setPoint4d(point->point, 0, &p);
 			lwgeom_release((LWGEOM *)point);
 			continue;
 		}
@@ -683,10 +682,9 @@ lwgeom_transform_recursive(uchar *geom, PJ *inpj, PJ *outpj)
 			POINTARRAY *pts = line->points;
 			for (i=0; i<pts->npoints; i++)
 			{
-				getPoint2d_p(pts, i, &p);
+				getPoint4d_p(pts, i, &p);
 				transform_point(&p, inpj, outpj);
-				memcpy(getPoint_internal(pts, i),
-					&p, sizeof(POINT2D));
+				setPoint4d(pts, i, &p);
 			}
 			lwgeom_release((LWGEOM *)line);
 			continue;
@@ -701,10 +699,9 @@ lwgeom_transform_recursive(uchar *geom, PJ *inpj, PJ *outpj)
 				POINTARRAY *pts = poly->rings[i];
 				for (pi=0; pi<pts->npoints; pi++)
 				{
-					getPoint2d_p(pts, pi, &p);
+					getPoint4d_p(pts, pi, &p);
 					transform_point(&p, inpj, outpj);
-					memcpy(getPoint_internal(pts, pi),
-						&p, sizeof(POINT2D));
+					setPoint4d(pts, pi, &p);
 				}
 			}
 			lwgeom_release((LWGEOM *)poly);
@@ -968,10 +965,10 @@ Datum postgis_proj_version(PG_FUNCTION_ARGS)
 
 
 int
-transform_point(POINT2D *pt, PJ *srcpj, PJ *dstpj)
+transform_point(POINT4D *pt, PJ *srcpj, PJ *dstpj)
 {
 	if (srcpj->is_latlong) to_rad(pt);
-	pj_transform(srcpj, dstpj, 1, 2, &(pt->x), &(pt->y), NULL);
+	pj_transform(srcpj, dstpj, 1, 2, &(pt->x), &(pt->y), &(pt->z));
 	if (pj_errno)
 	{
 		if (pj_errno == -38)  /*2nd chance */
