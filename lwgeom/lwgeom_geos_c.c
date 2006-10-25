@@ -2240,9 +2240,8 @@ GEOS2POSTGIS(GEOSGeom geom, char want3d)
 POINTARRAY *
 ptarray_from_GEOSCoordSeq(GEOSCoordSeq cs, char want3d)
 {
-	size_t dims=2;
-	size_t size;
-	unsigned int i, ptsize;
+	unsigned int dims=2;
+	unsigned int size, i, ptsize;
 	uchar *points, *ptr;
 	POINTARRAY *ret;
 

@@ -1,5 +1,6 @@
 PostGIS 1.1.6-CVS
 
+	- fixed CAPI change that broke 64-bit platforms
 	- use Z ordinate in reprojections
 	- spatial_ref_sys.sql updated to EPSG 6.11.1 
         - Simplified Version.config infrastructure to use a single
