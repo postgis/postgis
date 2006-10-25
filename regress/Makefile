@@ -39,7 +39,7 @@ endif
 
 all: test 
 
-test check: lwpostgis.sql ../lwgeom/liblwgeom.so
+test check: lwpostgis.sql ../lwgeom/liblwgeom.so ../loader/pgsql2shp ../loader/shp2pgsql
 	@USE_VERSION="$(USE_VERSION)" ./run_test $(TESTS)
 
 lwpostgis.sql: ../lwgeom/lwpostgis.sql.in 
@@ -47,6 +47,12 @@ lwpostgis.sql: ../lwgeom/lwpostgis.sql.in
 
 ../lwgeom/liblwgeom.so:
 	$(MAKE) -C ../lwgeom all-shared-lib
+
+../loader/pgsql2shp:
+	$(MAKE) -C ../loader pgsql2shp
+
+../loader/shp2pgsql:
+	$(MAKE) -C ../loader shp2pgsql
 
 cleanup:
 	@sleep 1
