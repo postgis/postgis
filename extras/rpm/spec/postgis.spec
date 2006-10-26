@@ -90,7 +90,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc CHANGES CREDITS README.postgis TODO doc/html loader/README.* *.sql doc/postgis.xml  doc/ZMSgeoms.txt 
+%doc NEWS CREDITS README.postgis TODO doc/html loader/README.* *.sql doc/postgis.xml  doc/ZMSgeoms.txt 
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_libdir}/pgsql/*.so*
 #%attr(755,root,root) %{_mandir}/man1/*

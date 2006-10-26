@@ -138,7 +138,7 @@ install: build
 	cp $(DEBDIR)/createdb.postgis $(DESTDIR)/$(main_bin)
 	chmod 755 $(DESTDIR)/$(main_bin)/createdb.postgis
 
-	dh_installchangelogs CHANGES
+	dh_installchangelogs NEWS
 	dh_installman
 	dh_compress
 	dh_installdocs

@@ -22,7 +22,7 @@ Release procedure
 -----------------
 
 1) Update Version.config as specified in Versioning Scheme above.
-2) Edit CHANGES: set release date and check all notable changes are
+2) Edit NEWS: set release date and check all notable changes are
    been reported.
 3) Add release notes in doc/postgis.xml
 4) Tag the release:
