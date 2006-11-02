@@ -577,7 +577,7 @@ unparse_WKB(uchar* serialized, allocator alloc, freeor free, char endian, size_t
 	out_start = out_pos = alloc(len);
 	lwgi=0;
 
-	if ( endian == -1 )
+	if ( endian == (char)-1 )
 	{
 		endianbyte = getMachineEndian();
 		if ( hex ) write_wkb_bytes = write_wkb_hex_bytes;

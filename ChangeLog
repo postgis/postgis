@@ -1,3 +1,9 @@
+2006-11-02 Sandro Santilli <strk@refractions.net>
+
+	* lwgeom/lwgeom_api.c, lwgeom/wktunparse.c: cast -1 to a char
+	  to make some compilers happy about comparison with a char
+	  type.
+
 2006-10-25 10:23  mschaber
 
 	* CHANGES, lwgeom/lwgeom_geos_c.c: fixed CAPI change that broke

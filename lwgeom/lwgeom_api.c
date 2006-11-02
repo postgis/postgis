@@ -1285,7 +1285,7 @@ lwgeom_serialized_construct(int SRID, int finalType, char hasz, char hasm,
 	uint32 *lengths;
 	int t;
 	int total_length = 0;
-	char type = -1;
+	char type = (char)-1;
 	char this_type = -1;
 	uchar *result;
 	uchar *loc;
@@ -1300,7 +1300,7 @@ lwgeom_serialized_construct(int SRID, int finalType, char hasz, char hasm,
 		lengths[t] = lwgeom_size_subgeom(serialized_subs[t],-1);
 		total_length += lengths[t];
 		this_type = lwgeom_getType((uchar) (serialized_subs[t][0]));
-		if (type == -1)
+		if (type == (char)-1)
 		{
 			type = this_type;
 		}
