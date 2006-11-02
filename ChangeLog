@@ -1,5 +1,10 @@
 2006-11-02 Sandro Santilli <strk@refractions.net>
 
+	* Version.config, doc/postgis.xml, NEWS: prepared
+	  for 1.1.6 release.
+
+2006-11-02 Sandro Santilli <strk@refractions.net>
+
 	* lwgeom/lwgeom_api.c, lwgeom/wktunparse.c: cast -1 to a char
 	  to make some compilers happy about comparison with a char
 	  type.

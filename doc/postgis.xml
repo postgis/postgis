@@ -5327,6 +5327,68 @@ FROM geometry_table;</literallayout>
 		<title>Release Notes</title>
 
                 <sect2>
+                        <title>Release 1.1.6</title>
+                        <para>Release date: 2006/11/02</para>
+                        <para>This is a bugfix release, in particular fixing
+			    a critical error with GEOS interface in 64bit
+			    systems. Includes an updated of the SRS parameters
+			    and an improvement in reprojections (take Z in 
+			    consideration).
+                            Upgrade is <emphasis>encouraged</emphasis>.
+			</para>
+                        
+			<sect3>
+				<title>Upgrading</title>
+
+				<para>
+If you are upgrading from release 1.0.3 or later follow the
+<link linkend="soft_upgrade">soft upgrade</link> procedure.
+				</para>
+
+				<para>
+If you are upgrading from a release <emphasis>between 1.0.0RC6 and
+1.0.2</emphasis> (inclusive) and really want a live upgrade read the
+<link linkend="rel_1.0.3_upgrading">upgrade section</link> of the 1.0.3
+release notes chapter.
+				</para>
+
+				<para>
+Upgrade from any release prior to 1.0.0RC6 requires an
+<link linkend="hard_upgrade">hard upgrade</link>.
+				</para>
+			</sect3>
+
+			<sect3>
+			    <title>Bug fixes</title>
+	<para>
+	fixed CAPI change that broke 64-bit platforms
+	</para>
+        <para>
+	loader/dumper: fixed regression tests and usage output
+	</para>
+			</sect3>
+			<sect3>
+			    <title>Other changes</title>
+	<para>
+	use Z ordinate in reprojections
+	</para>
+	<para>
+	spatial_ref_sys.sql updated to EPSG 6.11.1 
+	</para>
+        <para>
+	Simplified Version.config infrastructure to use a single
+          pack of version variables for everything.
+	</para>
+        <para>
+	Include the Version.config in loader/dumper USAGE messages
+	</para>
+        <para>
+	Replace hand-made, fragile JDBC version parser with Properties
+	</para>
+                        </sect3>
+                </sect2>
+
+                <sect2>
                         <title>Release 1.1.5</title>
                         <para>Release date: 2006/10/13</para>
                         <para>This is an bugfix release, including a critical 

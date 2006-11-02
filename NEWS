@@ -1,4 +1,5 @@
-PostGIS 1.1.6-CVS
+PostGIS 1.1.6
+2006/11/02
 
 	- fixed CAPI change that broke 64-bit platforms
 	- use Z ordinate in reprojections
