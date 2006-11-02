@@ -8,6 +8,7 @@ PostGIS 1.1.6
           pack of version variables for everything.
         - Include the Version.config in loader/dumper USAGE messages
         - Replace hand-made, fragile JDBC version parser with Properties
+        - Fixed setSRID() bug in JDBC, thanks to Thomas Marti
         - loader/dumper: fixed regression tests and usage output
 
 

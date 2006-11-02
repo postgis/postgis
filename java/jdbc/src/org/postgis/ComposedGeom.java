@@ -262,4 +262,11 @@ public abstract class ComposedGeom extends Geometry {
             return false;
         }
     }
+
+    public void setSrid(int srid) {
+        super.setSrid(srid);
+        for (int i = 0; i < subgeoms.length; i++) {
+            subgeoms[i].setSrid(srid);
+        }
+    }
 }
