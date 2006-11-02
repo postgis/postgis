@@ -1,3 +1,7 @@
+2006-11-02 Sandro Santilli <strk@refractions.net>
+
+	* doc/postgis.xml: list setSRID bug fix in 'Bug fixes' section.
+
 2006-11-02 Markus Schaber <schabi@logix-tt.com>
 
 	* NEWS, postgis.xml, java/jdbc/src/org/postgis/ComposedGeom.java:

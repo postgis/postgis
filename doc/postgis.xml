@@ -5366,6 +5366,9 @@ Upgrade from any release prior to 1.0.0RC6 requires an
         <para>
 	loader/dumper: fixed regression tests and usage output
 	</para>
+        <para>
+	Fixed setSRID() bug in JDBC, thanks to Thomas Marti
+        </para>
 			</sect3>
 			<sect3>
 			    <title>Other changes</title>
@@ -5385,9 +5388,6 @@ Upgrade from any release prior to 1.0.0RC6 requires an
         <para>
         Replace hand-made, fragile JDBC version parser with Properties
 	</para>
-        <para>
-	Fixed setSRID() bug in JDBC, thanks to Thomas Marti
-        </para>
                         </sect3>
                 </sect2>
 
