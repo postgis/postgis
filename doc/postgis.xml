@@ -5383,8 +5383,11 @@ Upgrade from any release prior to 1.0.0RC6 requires an
 	Include the Version.config in loader/dumper USAGE messages
 	</para>
         <para>
-	Replace hand-made, fragile JDBC version parser with Properties
+        Replace hand-made, fragile JDBC version parser with Properties
 	</para>
+        <para>
+	Fixed setSRID() bug in JDBC, thanks to Thomas Marti
+        </para>
                         </sect3>
                 </sect2>
 

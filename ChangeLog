@@ -1,3 +1,8 @@
+2006-11-02 Markus Schaber <schabi@logix-tt.com>
+
+	* NEWS, postgis.xml, java/jdbc/src/org/postgis/ComposedGeom.java:
+          fixed setSRID bug in JDBC ComposedGeom.  
+
 2006-11-02 Sandro Santilli <strk@refractions.net>
 
 	* Version.config, doc/postgis.xml, NEWS: prepared
