@@ -1,3 +1,8 @@
+2006-11-10 Sandro Santilli <strk@refractions.net>
+
+	* configure.in (geos detection): use $geos_prefix/lib when
+	  --ldflags is not supported by geos-config available.
+
 2006-11-10 Havard Tveite <havard.tveite@nlh.no>
 
 	* doc/postgix.xml (Hard Upgrade): add info about createdb params

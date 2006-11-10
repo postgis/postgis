@@ -147,7 +147,16 @@ AC_ARG_WITH(geos,
 
 if test $USE_GEOS -gt 0; then
 	GEOS_DIR=`$GEOSCONFIG --prefix`
-	GEOS_LDFLAGS=`$GEOSCONFIG --ldflags`
+
+	GEOS_LDFLAGS=`$GEOSCONFIG --ldflags 2> /dev/null`
+	if test x"$GEOS_LDFLAGS" = "x"; then
+		# older geos-config versions did not
+		# support the --ldflags switch, we'll
+		# default to GEOS_DIR/lib in this case.
+		#
+		GEOS_LDFLAGS="$GEOS_DIR/lib"
+	fi
+
 	GEOS_MAJOR=`$GEOSCONFIG --version | cut -d. -f1`
 	if test "$GEOS_MAJOR" = "@GEOS_VERSION@"; then
 		GEOS_MAJOR=1
