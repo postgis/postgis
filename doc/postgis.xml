@@ -454,8 +454,11 @@ as follow:
 
 	# Restore the dump contextually upgrading postgis into
 	# a new database. The new database doesn't have to exist.
-	# Let's call it "newdb"
-	$ sh utils/postgis_restore.pl lwpostgis.sql newdb olddb.dump &gt; restore.log
+	# postgis_restore accepts createdb parameters after the dump
+	# file name, and that can for instance be used if you are using
+	# a non-default character encoding for your database.
+	# Let's call it "newdb", with UNICODE as the character encoding:
+	$ sh utils/postgis_restore.pl lwpostgis.sql newdb olddb.dump -E=UNICODE &gt; restore.log
 
 	# Check that all restored dump objects really had to be restored from dump
 	# and do not conflict with the ones defined in lwpostgis.sql

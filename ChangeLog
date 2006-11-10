@@ -1,3 +1,8 @@
+2006-11-10 Havard Tveite <havard.tveite@nlh.no>
+
+	* doc/postgix.xml (Hard Upgrade): add info about createdb params
+	* utils/postgis_restore.pl: fix use of createdb params
+
 2006-11-02 Sandro Santilli <strk@refractions.net>
 
 	* doc/postgis.xml: list setSRID bug fix in 'Bug fixes' section.

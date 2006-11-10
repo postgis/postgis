@@ -677,7 +677,7 @@ close(OUTPUT);
 # Create the new db and install plpgsql language
 #
 print "Creating db ($dbname)\n";
-`createdb $dbname $createdb_opt`;
+`createdb $createdb_opt $dbname`;
 die "Database creation failed\n" if ($?);
 print "Adding plpgsql\n";
 `createlang plpgsql $dbname`;
