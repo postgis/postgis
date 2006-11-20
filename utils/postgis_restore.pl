@@ -184,6 +184,11 @@ canonicalize_typename
 		$arg = 'geometry';
 	}
 
+	# Timestamp with or without time zone
+	if ( $arg =~ /timestamp .* time zone/ ) {
+		$arg = 'timestamp';
+	}
+
 	return $arg;
 }
 

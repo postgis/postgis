@@ -1,3 +1,9 @@
+2006-11-20 Sandro Santilli <strk@refractions.net>
+
+	* utils/postgis_restore.pl (canonicalize_typename):
+	  canonicalize 'timezone .* time stamp' to 'timezone'
+	  (fixes bug #121)
+
 2006-11-17 "Antoine Bajolet" <antoine.bajolet@tdf.fr>
 
 	* lwgeom/lwgeom_gist.c: fixed 'directives may not be used inside a
