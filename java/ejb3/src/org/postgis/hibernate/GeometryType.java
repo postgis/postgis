@@ -86,11 +86,13 @@ public class GeometryType implements UserType {
 	 */
 	public Object nullSafeGet(ResultSet resultSet, 
 		      String[] names, Object owner) throws HibernateException, SQLException {
-	    Geometry result = null;
-	    String geom = resultSet.getString(names[0]);
-	    BinaryParser parser = new BinaryParser();
-	    result = parser.parse(geom);
-	    return result;
+        Geometry result = null;
+        String geom = resultSet.getString(names[0]);
+        if(geom != null ) {
+            BinaryParser parser = new BinaryParser();
+            result = parser.parse(geom);
+        }
+        return result;
 	}
 
 	/**

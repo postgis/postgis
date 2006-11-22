@@ -1,3 +1,8 @@
+2006-11-22 Markus Schaber <schabi@logix-tt.com>
+
+	* java/ejb3/src/org/postgis/hibernate/GeometryType.java
+          Added Nullpointer Fix by Norman Barker
+
 2006-11-20 Sandro Santilli <strk@refractions.net>
 
 	* utils/postgis_restore.pl (canonicalize_typename):
