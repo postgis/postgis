@@ -1055,3 +1055,121 @@ Datum LWGEOM_line_locate_point(PG_FUNCTION_ARGS)
 
 	PG_RETURN_FLOAT8(ret);
 }
+
+/*******************************************************************************
+ * The following is based on the "Fast Winding Number Inclusion of a Point 
+ * in a Polygon" algorithm by Dan Sunday.
+ * http://www.geometryalgorithms.com/Archive/algorithm_0103/algorithm_0103.htm
+ ******************************************************************************/
+
+/*
+ * returns: >0 for a point to the left of the segment, 
+ *          <0 for a point to the right of the segment,
+ *          0 for a point on the segment
+ */
+double determineSide(POINT2D *seg1, POINT2D *seg2, POINT2D *point)
+{
+        return ((seg2->x-seg1->x)*(point->y-seg1->y)-(point->x-seg1->x)*(seg2->y-seg1->y));
+}
+
+/*
+ * return 0 iff point is outside ring pts
+ */
+int point_in_ring(POINTARRAY *pts, POINT2D *point)
+{
+        int wn = 0;
+        int i;
+        double side;
+        POINT2D seg1;
+        POINT2D seg2;
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("point_in_ring called.");
+#endif
+
+        for(i=0; i<pts->npoints-1; i++)
+        {
+                getPoint2d_p(pts, i, &seg1);
+                getPoint2d_p(pts, i+1, &seg2);
+                side = determineSide(&seg1, &seg2, point);
+                /* a point on the boundary of a ring is not contained. */
+                if(fabs(side) < 1e-12) 
+                {
+#ifdef PGIS_DEBUG
+                        lwnotice("point on ring boundary between points %d, %d", i, i+1);
+#endif
+                        return 0;
+                }
+                else if(seg1.y < point->y && seg2.y > point->y && side > 0)
+                        ++wn;
+                else if(seg1.y > point->y && seg2.y < point->y && side < 0)
+                        --wn;
+        }
+#ifdef PGIS_DEBUG
+        lwnotice("returning %d", wn);
+#endif
+        return wn;
+}
+
+/*
+ * return 0 iff point outside polygon
+ */
+int point_in_polygon(LWPOLY *polygon, LWPOINT *point)
+{
+        int i;
+        POINTARRAY *ring;
+        POINT2D pt;
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("point_in_polygon called.");
+#endif
+
+        getPoint2d_p(point->point, 0, &pt);
+        /* assume bbox short-circuit has already been attempted */
+        
+        ring = polygon->rings[0];
+        if(point_in_ring(ring, &pt) == 0) 
+        {
+#ifdef PGIS_DEBUG
+                lwnotice("point_in_polygon: outside exterior ring.");
+#endif
+                return 0;
+        }
+
+        for(i=1; i<polygon->nrings; i++)
+        {
+                ring = polygon->rings[i];
+                if(point_in_ring(ring, &pt) != 0) 
+                {
+#ifdef PGIS_DEBUG
+                        lwnotice("point_in_polygon: within hole %d.", i);
+#endif
+                        return 0;
+                }
+        }
+        return 1;
+}
+
+/*
+ * return 0 iff point is outside every polygon
+ */
+int point_in_multipolygon(LWMPOLY *mpolygon, LWPOINT *point)
+{
+        int i;
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("point_in_multipolygon called.");
+#endif
+
+        for(i=1; i<mpolygon->ngeoms; i++)
+        {
+                if(point_in_polygon((LWPOLY *)mpolygon->geoms[i], point)!=0) return 1;
+        }
+        return 0;
+}
+
+
+/*******************************************************************************
+ * End of "Fast Winding Number Inclusion of a Point in a Polygon" derivative.
+ ******************************************************************************/
+

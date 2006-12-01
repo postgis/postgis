@@ -307,8 +307,8 @@ ptarray_removePoint(POINTARRAY *pa, unsigned int which)
 	size_t ptsize = pointArray_ptsize(pa);
 
 #ifdef PGIS_DEBUG_CALLS
-	lwnotice("ptarray_removePoint: pa %x p %x size %d where %d",
-		pa, p, pdims, where);
+	lwnotice("ptarray_removePoint: pa %x which %d",
+		pa, which);
 #endif
 
 #if PARANOIA_LEVEL > 0
@@ -352,6 +352,10 @@ ptarray_clone(const POINTARRAY *in)
 {
 	POINTARRAY *out = lwalloc(sizeof(POINTARRAY));
 	size_t size;
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("ptarray_clone called.");
+#endif
 
 	out->dims = in->dims;
 	out->npoints = in->npoints;
@@ -802,6 +806,10 @@ dynptarray_create(size_t initial_capacity, int dims)
 {
 	DYNPTARRAY *ret=lwalloc(sizeof(DYNPTARRAY));
 
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("dynptarray_create called, dims=%d.", dims);
+#endif
+
 	if ( initial_capacity < 1 ) initial_capacity=1;
 
 	ret->pa=lwalloc(sizeof(POINTARRAY));
@@ -832,6 +840,10 @@ dynptarray_addPoint4d(DYNPTARRAY *dpa, POINT4D *p4d, int allow_duplicates)
 	POINTARRAY *pa=dpa->pa;
 	POINT4D tmp;
 
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("dynptarray_addPoint4d called.");
+#endif
+
 	if ( ! allow_duplicates && pa->npoints > 0 )
 	{
 		getPoint4d_p(pa, pa->npoints-1, &tmp);
@@ -856,3 +868,4 @@ dynptarray_addPoint4d(DYNPTARRAY *dpa, POINT4D *p4d, int allow_duplicates)
 
 	return 1;
 }
+

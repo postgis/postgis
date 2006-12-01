@@ -122,10 +122,18 @@ pglwgeom_serialize(LWGEOM *in)
 #endif
 
 	size = lwgeom_serialize_size(in) + VARHDRSZ;
-	/* lwnotice("lwgeom_serialize_size returned %d", size-VARHDRSZ); */
+
+#ifdef PGIS_DEBUG
+	lwnotice("lwgeom_serialize_size returned %d", size-VARHDRSZ);
+#endif
+
 	result = palloc(size);
 	result->size = (size);
 	lwgeom_serialize_buf(in, SERIALIZED_FORM(result), &size);
+
+#ifdef PGIS_DEBUG
+        lwnotice("pglwgeom_serialize: serialized size: %d, computed size: %d", size, result->size-VARHDRSZ);
+#endif
 
 #if PARANOIA_LEVEL > 0
 	if ( size != result->size-VARHDRSZ )

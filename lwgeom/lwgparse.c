@@ -93,6 +93,12 @@ struct {
 tuple* free_list=0;
 int minpoints;
 int checkclosed;
+
+/*
+ * This inicates if the number of points in the geometry is required to
+ * be odd (one) or even (zero, currently not enforced) or whatever (-one)
+ */
+int isodd;
 double *first_point=NULL;
 double *last_point=NULL;
 
@@ -126,10 +132,15 @@ void write_count(tuple* this,output_state* out);
 void write_type_count(tuple* this,output_state* out);
 void alloc_point(void);
 void alloc_linestring(void);
+void alloc_linestring_closed(void);
+void alloc_circularstring(void);
+void alloc_circularstring_closed(void);
 void alloc_polygon(void);
 void alloc_multipoint(void);
 void alloc_multilinestring(void);
+void alloc_multicurve(void);
 void alloc_multipolygon(void);
+void alloc_multisurface(void);
 void alloc_geomertycollection(void);
 void alloc_counter(void);
 void alloc_empty(void);
@@ -194,7 +205,6 @@ alloc_tuple(output_func of,size_t size)
 	}
 
 	the_geom.alloc_size += size;
-
 	return ret;
 }
 
@@ -234,6 +244,11 @@ inc_num(void)
 void
 alloc_stack_tuple(int type,output_func of,size_t size)
 {
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("alloc_stack_tuple %d, %d", type, size);
+#endif
+
 	tuple*	p;
 	inc_num();
 
@@ -257,6 +272,9 @@ popc(void)
 	if ( the_geom.stack->uu.nn.num < minpoints){
 		error("geometry requires more points");
 	}
+        if(isodd != -1 && the_geom.stack->uu.nn.num % 2 != isodd) {
+                error("geometry must have an odd number of points");
+        }
 	if ( checkclosed && first_point && last_point) {
 		if ( memcmp(first_point, last_point,
 			sizeof(double)*the_geom.ndims) )
@@ -271,10 +289,20 @@ popc(void)
 void
 check_dims(int num)
 {
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("check_dims the_geom.ndims = %d, num = %d", the_geom.ndims, num);
+#endif
+
 	if( the_geom.ndims != num){
 		if (the_geom.ndims) {
 			error("Can not mix dimensionality in a geometry");
 		} else {
+
+#ifdef PGIS_DEBUG
+                        lwnotice("check_dims: setting dim %d", num);
+#endif
+
 			the_geom.ndims = num;
 			if ( num > 2 ) the_geom.hasZ = 1;
 			if ( num > 3 ) the_geom.hasM = 1;
@@ -342,12 +370,22 @@ WRITE_DOUBLES(output_state* out,double* points, int cnt)
 void
 write_size(tuple* this,output_state* out)
 {
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("write_size");
+#endif
+
 	WRITE_INT4_REAL(out,the_geom.alloc_size);
 }
 
 void
 alloc_lwgeom(int srid)
 {
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("alloc_lwgeom %d", srid);
+#endif
+
 	the_geom.srid=srid;
 	the_geom.alloc_size=0;
 	the_geom.stack=NULL;
@@ -407,6 +445,11 @@ write_point_4i(tuple* this,output_state* out)
 void
 alloc_point_2d(double x,double y)
 {
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("alloc_point_2d %f,%f", x, y);
+#endif
+
 	tuple* p = alloc_tuple(write_point_2,the_geom.lwgi?8:16);
 	p->uu.points[0] = x;
 	p->uu.points[1] = y;
@@ -425,6 +468,11 @@ alloc_point_2d(double x,double y)
 void
 alloc_point_3d(double x,double y,double z)
 {
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("alloc_point_3d %f, %f, %f", x, y, z);
+#endif
+
 	tuple* p = alloc_tuple(write_point_3,the_geom.lwgi?12:24);
 	p->uu.points[0] = x;
 	p->uu.points[1] = y;
@@ -444,6 +492,11 @@ alloc_point_3d(double x,double y,double z)
 void
 alloc_point_4d(double x,double y,double z,double m)
 {
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("alloc_point_4d %f, %f, %f, %f", x, y, z, m);
+#endif
+
 	tuple* p = alloc_tuple(write_point_4,the_geom.lwgi?16:32);
 	p->uu.points[0] = x;
 	p->uu.points[1] = y;
@@ -508,6 +561,11 @@ write_type_count(tuple* this,output_state* out)
 void
 alloc_point(void)
 {
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("alloc_point");
+#endif
+
 	if( the_geom.lwgi)
 		alloc_stack_tuple(POINTTYPEI,write_type,1);
 	else
@@ -515,11 +573,17 @@ alloc_point(void)
 
 	minpoints=1;
 	checkclosed=0;
+        isodd=-1;
 }
 
 void
 alloc_linestring(void)
 {
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("alloc_linestring");
+#endif
+
 	if( the_geom.lwgi)
 		alloc_stack_tuple(LINETYPEI,write_type,1);
 	else
@@ -527,11 +591,53 @@ alloc_linestring(void)
 
 	minpoints=2;
 	checkclosed=0;
+        isodd=-1;
+}
+
+void alloc_linestring_closed(void)
+{
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("alloc_linestring_closed called.");
+#endif
+
+        alloc_linestring();
+        checkclosed=1;
+}
+
+void
+alloc_circularstring(void)
+{
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("alloc_circularstring");
+#endif
+
+        alloc_stack_tuple(CURVETYPE,write_type,1);
+        minpoints=3;
+        checkclosed=0;
+        isodd=1;
+}
+
+void alloc_circularstring_closed(void)
+{
+      
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("alloc_circularstring_closed");
+#endif
+
+        alloc_circularstring();
+        checkclosed=1;
 }
 
 void
 alloc_polygon(void)
 {
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("alloc_polygon");
+#endif
+
 	if( the_geom.lwgi)
 		alloc_stack_tuple(POLYGONTYPEI, write_type,1);
 	else
@@ -539,41 +645,120 @@ alloc_polygon(void)
 
 	minpoints=3;
 	checkclosed=1;
+        isodd=-1;
+
+}
+
+void
+alloc_curvepolygon(void)
+{
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("alloc_curvepolygon called.");
+#endif
+
+        alloc_stack_tuple(CURVEPOLYTYPE, write_type, 1);
+        minpoints=3;
+        checkclosed=1;
+        isodd=-1;
+}
+
+void
+alloc_compoundcurve(void)
+{
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("alloc_compoundcurve called.");
+#endif
+
+        alloc_stack_tuple(COMPOUNDTYPE, write_type, 1);
 }
 
 void
 alloc_multipoint(void)
 {
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("alloc_multipoint");
+#endif 
+
 	alloc_stack_tuple(MULTIPOINTTYPE,write_type,1);
 }
 
 void
 alloc_multilinestring(void)
 {
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("alloc_multilinestring");
+#endif
+
 	alloc_stack_tuple(MULTILINETYPE,write_type,1);
+}
+
+void
+alloc_multicurve(void)
+{
+       
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("alloc_multicurve");
+#endif
+
+        alloc_stack_tuple(MULTICURVETYPE,write_type,1);
 }
 
 void
 alloc_multipolygon(void)
 {
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("alloc_multipolygon");
+#endif
+
 	alloc_stack_tuple(MULTIPOLYGONTYPE,write_type,1);
+}
+
+void
+alloc_multisurface(void)
+{
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("alloc_multisurface called");
+#endif
+
+        alloc_stack_tuple(MULTISURFACETYPE,write_type,1);
 }
 
 void
 alloc_geomertycollection(void)
 {
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("alloc_geometrycollection");
+#endif
+
 	alloc_stack_tuple(COLLECTIONTYPE,write_type,1);
 }
 
 void
 alloc_counter(void)
 {
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("alloc_counter");
+#endif
+
 	alloc_stack_tuple(0,write_count,4);
 }
 
 void
 alloc_empty(void)
 {
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("alloc_empty");
+#endif
+
 	tuple* st = the_geom.stack;
 	/* Find the last geometry */
 	while(st->uu.nn.type == 0){
@@ -597,12 +782,16 @@ alloc_empty(void)
 	}
 
 	st->uu.nn.num=0;
-
 }
 
 uchar *
 make_lwgeom(void)
 {
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("make_lwgeom");
+#endif
+
 	uchar* out_c;
 	output_state out;
 	tuple* cur;
@@ -620,6 +809,12 @@ make_lwgeom(void)
 	write_size(NULL,&out);
 
 	return out_c;
+}
+
+void
+lwg_parse_yynotice(char* s)
+{
+        lwnotice(s);
 }
 
 int
@@ -776,6 +971,11 @@ read_collection2(const char **b)
 void
 parse_wkb(const char **b)
 {
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("parse_wkb");
+#endif
+
 	int4 type;
 	uchar xdr = read_wkb_byte(b);
 	int4 localsrid;
@@ -829,7 +1029,7 @@ parse_wkb(const char **b)
 	else{
 		/* If we are writing lwg and are reading wbki */
 		int4 towrite=type;
-		if (towrite > COLLECTIONTYPE ){
+		if (towrite >= POINTTYPEI && towrite <= POLYGONTYPEI){
 			towrite-=9;
 		}
 		alloc_stack_tuple(towrite,write_type,1);
@@ -844,13 +1044,27 @@ parse_wkb(const char **b)
 			read_collection(b,read_wkb_point);
 			break;
 
+                case    CURVETYPE:
+                        read_collection(b,read_wkb_point);
+                        break;
+
 		case	POLYGONTYPE:
 			read_collection(b,read_collection2);
 			break;
 
+                case    COMPOUNDTYPE:
+                        read_collection(b,parse_wkb);
+                        break;
+
+                case    CURVEPOLYTYPE:
+                        read_collection(b,parse_wkb);
+                        break;
+
 		case	MULTIPOINTTYPE:
 		case	MULTILINETYPE:
+                case    MULTICURVETYPE:
 		case	MULTIPOLYGONTYPE:
+                case    MULTISURFACETYPE:
 		case	COLLECTIONTYPE:
 			read_collection(b,parse_wkb);
 			break;
@@ -883,6 +1097,11 @@ parse_wkb(const char **b)
 void
 alloc_wkb(const char *parser)
 {
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("alloc_wkb");
+#endif
+
 	parse_wkb(&parser);
 }
 
@@ -893,13 +1112,19 @@ uchar *
 parse_it(const char *geometry, allocator allocfunc, report_error errfunc)
 {
 
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("parse_it: %s", geometry);
+#endif
+
 	local_malloc = allocfunc;
 	error_func=errfunc;
 
 	ferror_occured = 0;
 
 	init_parser(geometry);
+
 	lwg_parse_yyparse();
+
 	close_parser();
 
 	if (ferror_occured)
@@ -925,7 +1150,13 @@ parse_lwgi(const char* geometry,allocator allocfunc,report_error errfunc)
 void
 set_zm(char z, char m)
 {
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("set_zm %d, %d", z, m);
+#endif
+
 	the_geom.hasZ = z;
 	the_geom.hasM = m;
 	the_geom.ndims = 2+z+m;
 }
+

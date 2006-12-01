@@ -22,8 +22,8 @@ int lwg_parse_yylex(void);
 	const char* wkb;
 }
 
-%token POINT LINESTRING POLYGON MULTIPOINT MULTILINESTRING MULTIPOLYGON GEOMETRYCOLLECTION
-%token POINTM LINESTRINGM POLYGONM MULTIPOINTM MULTILINESTRINGM MULTIPOLYGONM GEOMETRYCOLLECTIONM
+%token POINT LINESTRING POLYGON MULTIPOINT MULTILINESTRING MULTIPOLYGON GEOMETRYCOLLECTION CIRCULARSTRING COMPOUNDCURVE CURVEPOLYGON MULTICURVE MULTISURFACE
+%token POINTM LINESTRINGM POLYGONM MULTIPOINTM MULTILINESTRINGM MULTIPOLYGONM GEOMETRYCOLLECTIONM CIRCULARSTRINGM COMPOUNDCURVEM CURVEPOLYGONM  MULTICURVEM MULTISURFACEM
 %token SRID      
 %token EMPTY
 %token <value> VALUE
@@ -44,14 +44,24 @@ geometry_int :
 	|
 	geom_linestring
 	|
+        geom_circularstring
+        |
 	geom_polygon
 	|
+        geom_compoundcurve
+        |
+        geom_curvepolygon
+        |
 	geom_multipoint 
 	|
 	geom_multilinestring
+        |
+        geom_multicurve
 	|
 	geom_multipolygon
 	|
+        geom_multisurface
+        |
 	geom_geometrycollection
 
 srid :
@@ -78,7 +88,6 @@ empty_point :
 
 nonempty_point :
 	{ alloc_point(); } point_int { pop(); } 
-
 
 point_int :
 	LPAREN a_point RPAREN
@@ -125,6 +134,9 @@ empty_linestring :
 nonempty_linestring :
 	{ alloc_linestring(); } linestring_1 { pop(); } 
 
+nonempty_linestring_closed :
+        { alloc_linestring_closed(); } linestring_1 { pop(); }
+
 linestring_1 :
 	{ alloc_counter(); } LPAREN linestring_int RPAREN { popc(); }
 
@@ -132,6 +144,66 @@ linestring_int :
 	a_point
 	|
 	linestring_int COMMA a_point;
+
+/* CIRCULARSTRING */
+
+geom_circularstring :
+        CIRCULARSTRING circularstring
+        |
+        CIRCULARSTRINGM {set_zm(0, 1); } circularstring
+
+geom_circularstring_closed :
+        CIRCULARSTRING circularstring_closed
+        |
+        CIRCULARSTRINGM {set_zm(0, 1); } circularstring_closed
+
+circularstring :
+        empty_circularstring
+        |
+        nonempty_circularstring
+
+circularstring_closed :
+        empty_circularstring
+        |
+        nonempty_circularstring_closed
+
+empty_circularstring :
+        { alloc_circularstring(); } empty { pop(); }
+
+nonempty_circularstring :
+        { alloc_circularstring(); } circularstring_1 { pop(); }
+
+nonempty_circularstring_closed :
+        { alloc_circularstring_closed(); } circularstring_1 { pop(); }
+
+circularstring_1 :
+        { alloc_counter(); } LPAREN circularstring_int RPAREN { popc(); }
+
+circularstring_int :
+        a_point
+        |
+        circularstring_int COMMA a_point;
+
+/* COMPOUNDCURVE */
+
+geom_compoundcurve:
+        COMPOUNDCURVE { alloc_compoundcurve(); } compoundcurve { pop(); }
+        |
+        COMPOUNDCURVEM {set_zm(0, 1); alloc_compoundcurve(); } compoundcurve { pop(); }
+
+compoundcurve:
+        empty
+        |
+        { alloc_counter(); } LPAREN compoundcurve_int RPAREN { pop(); }
+
+compoundcurve_int:
+        nonempty_linestring
+        |
+        geom_circularstring
+        |
+        compoundcurve_int COMMA nonempty_linestring
+        |
+        compoundcurve_int COMMA geom_circularstring
 
 /* MULTILINESTRING */
 
@@ -152,6 +224,28 @@ multilinestring_int :
 	|
 	multilinestring_int COMMA nonempty_linestring
 
+/* MULTICURVESTRING */
+
+geom_multicurve :
+        MULTICURVE { alloc_multicurve(); }
+                multicurve { pop(); }
+        |
+        MULTICURVEM { set_zm(0, 1); alloc_multicurve(); }
+                multicurve { pop(); }
+
+multicurve :
+        empty
+        |
+        { alloc_counter(); } LPAREN multicurve_int RPAREN { pop(); }
+
+multicurve_int :
+        nonempty_linestring
+        |
+        geom_circularstring
+        |
+        multicurve_int COMMA nonempty_linestring
+        |
+        multicurve_int COMMA geom_circularstring
 
 /* POLYGON */
 
@@ -178,7 +272,29 @@ polygon_int :
 	linestring_1
 	|
 	polygon_int COMMA linestring_1
-                                                                                                          
+
+/* CURVEPOLYGON */
+
+geom_curvepolygon :
+        CURVEPOLYGON { alloc_curvepolygon(); } curvepolygon { pop(); }
+        |
+        CURVEPOLYGONM { set_zm(0, 1); alloc_curvepolygon(); } 
+                        curvepolygon { pop(); }
+
+curvepolygon :
+        empty
+        |
+        { alloc_counter(); } LPAREN curvepolygon_int RPAREN { pop(); }
+
+curvepolygon_int :
+        nonempty_linestring_closed
+        |
+        geom_circularstring_closed
+        |
+        curvepolygon_int COMMA nonempty_linestring_closed
+        |
+        curvepolygon_int COMMA geom_circularstring_closed
+
 /* MULTIPOLYGON */
 
 geom_multipolygon :
@@ -197,6 +313,27 @@ multipolygon_int :
 	|
 	multipolygon_int COMMA nonempty_polygon
 
+/* MULTISURFACE */
+
+geom_multisurface :
+        MULTISURFACE {alloc_multisurface(); } multisurface { pop(); }
+        |
+        MULTISURFACEM { set_zm(0, 1); alloc_multisurface(); }
+                multisurface { pop(); }
+
+multisurface :
+        empty
+        |
+        { alloc_counter(); } LPAREN multisurface_int RPAREN { pop(); }
+
+multisurface_int :
+        nonempty_polygon
+        |
+        geom_curvepolygon
+        |
+        multisurface_int COMMA nonempty_polygon
+        |
+        multisurface_int COMMA geom_curvepolygon
 
 /* GEOMETRYCOLLECTION */
 

@@ -31,11 +31,20 @@ lwline_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points)
 	LWLINE *result;
 	result = (LWLINE*) lwalloc(sizeof(LWLINE));
 
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("lwline_construct called.");
+#endif
+
 	result->type = lwgeom_makeType_full(
 		TYPE_HASZ(points->dims),
 		TYPE_HASM(points->dims),
 		(SRID!=-1), LINETYPE,
 		0);
+
+#ifdef PGIS_DEBUG
+        lwnotice("lwline_construct type=%d", result->type);
+#endif
+
 	result->SRID = SRID;
 	result->points = points;
 	result->bbox = bbox;

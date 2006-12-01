@@ -1241,6 +1241,10 @@ Datum isvalid(PG_FUNCTION_ARGS)
 	bool result;
 	Geometry *g1;
 
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("isvalid called.");
+#endif
+
 #ifdef PROFILE
 	profstart(PROF_QRUN);
 #endif
@@ -2162,7 +2166,9 @@ Datum isring(PG_FUNCTION_ARGS)
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	if (lwgeom_getType(geom->type) != LINETYPE)
+	if (lwgeom_getType(geom->type) != LINETYPE &&
+            lwgeom_getType(geom->type) != CURVETYPE &&
+            lwgeom_getType(geom->type) != COMPOUNDTYPE)
 	{
 		elog(ERROR,"isring() should only be called on a LINE");
 	}
@@ -2470,12 +2476,23 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 {
 	uint32 i;
 	Geometry **collected;
+        LWGEOM *tmp;
 	LWCOLLECTION *col;
 	if ( ! lwgeom ) return NULL;
 
 #ifdef PGIS_DEBUG_POSTGIS2GEOS
 	lwnotice("LWGEOM2GEOS: got lwgeom[%p]", lwgeom);
 #endif
+
+        if(has_arc(lwgeom))
+        {
+#ifdef PGIS_DEBUG_CALLS
+                lwnotice("LWGEOM2GEOS: arced geometry found.");
+#endif
+                tmp = lwgeom;
+                lwgeom = lwgeom_segmentize(tmp, 32);
+                lwgeom_release(tmp);
+        }
 
 	switch (TYPE_GETTYPE(lwgeom->type))
 	{
@@ -2515,8 +2532,12 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 				TYPE_HASZ(col->type));
 
 		default:
+#ifdef PGIS_DEBUG
+                        lwerror("LWGEOM2GEOS: Unknown geometry type: %d", TYPE_GETTYPE(lwgeom->type));
+#else
 			lwerror("Unknown geometry type: %d",
 				TYPE_GETTYPE(lwgeom->type));
+#endif
 			return NULL;
 	}
 

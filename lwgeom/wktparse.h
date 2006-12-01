@@ -40,6 +40,12 @@ typedef void  (*report_error)(const char* string, ...);
 #define LINETYPEI     11
 #define POLYGONTYPEI  12
 
+#define CURVETYPE       8
+#define COMPOUNDTYPE    9
+#define CURVEPOLYTYPE   13
+#define MULTICURVETYPE          14
+#define MULTISURFACETYPE        15
+
 extern int srid;
 
 /*
@@ -59,10 +65,17 @@ void alloc_point_4d(double x,double y,double z,double m);
 
 void alloc_point(void);
 void alloc_linestring(void);
+void alloc_linestring_closed(void);
+void alloc_circularstring(void);
+void alloc_circularstring_closed(void);
 void alloc_polygon(void);
+void alloc_compoundcurve(void);
+void alloc_curvepolygon(void);
 void alloc_multipoint(void);
 void alloc_multilinestring(void);
+void alloc_multicurve(void);
 void alloc_multipolygon(void);
+void alloc_multisurface(void);
 void alloc_geomertycollection(void);
 void alloc_empty();
 void alloc_counter(void);

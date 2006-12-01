@@ -470,7 +470,7 @@ Datum LWGEOM_perimeter2d_poly(PG_FUNCTION_ARGS)
 /*
  * Write to already allocated memory 'optr' a 2d version of
  * the given serialized form. 
- * Higher dimensions in input geometry are discarder.
+ * Higher dimensions in input geometry are discarded.
  * Return number bytes written in given int pointer.
  */
 void
@@ -484,6 +484,7 @@ lwgeom_force2d_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 	uchar newtypefl;
 	LWPOINT *point = NULL;
 	LWLINE *line = NULL;
+        LWCURVE *curve = NULL;
 	LWPOLY *poly = NULL;
 	POINTARRAY newpts;
 	POINTARRAY **nrings;
@@ -550,6 +551,34 @@ lwnotice("lwgeom_force2d_recursive returning");
 		return;
 	}
 
+        if( type == CURVETYPE )
+        {
+                curve = lwcurve_deserialize(serialized);
+#ifdef PGIS_DEBUG
+                elog(NOTICE, "lwgeom_force2d_recursize: it's a curve with %d points", curve->points->npoints);
+#endif
+                TYPE_SETZM(newpts.dims, 0, 0);
+                newpts.npoints = curve->points->npoints;
+                newpts.serialized_pointlist = lwalloc(sizeof(POINT2D)*curve->points->npoints);
+#ifdef PGIS_DEBUG
+elog(NOTICE, "lwgeom_force2d_recursive: %d bytes pointlist allocated", sizeof(POINT2D)*curve->points->npoints);
+#endif
+
+                loc = newpts.serialized_pointlist;
+                for (j=0; j<curve->points->npoints; j++)
+                {
+                        getPoint2d_p(curve->points, j, &p2d);
+                        memcpy(loc, &p2d, sizeof(POINT2D));
+                        loc += sizeof(POINT2D);
+                }
+                curve->points = &newpts;
+                TYPE_SETZM(curve->type, 0, 0);
+                lwcurve_serialize_buf(curve, optr, retsize);
+                lwfree(newpts.serialized_pointlist);
+                lwfree(curve);
+                return;
+        }
+
 	if ( type == POLYGONTYPE )
 	{
 		poly = lwpoly_deserialize(serialized);
@@ -588,7 +617,9 @@ lwnotice("lwgeom_force2d_recursive returning");
 	}
 
 	if ( type != MULTIPOINTTYPE && type != MULTIPOLYGONTYPE &&
-		type != MULTILINETYPE && type != COLLECTIONTYPE )
+		type != MULTILINETYPE && type != COLLECTIONTYPE &&
+                type != COMPOUNDTYPE && type != CURVEPOLYTYPE &&
+                type != MULTICURVETYPE && type != MULTISURFACETYPE)
 	{
 		lwerror("lwgeom_force2d_recursive: unknown geometry: %d",
 			type);
@@ -696,6 +727,7 @@ lwgeom_force3dz_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 	int type;
 	LWPOINT *point = NULL;
 	LWLINE *line = NULL;
+        LWCURVE *curve = NULL;
 	LWPOLY *poly = NULL;
 	POINTARRAY newpts;
 	POINTARRAY **nrings;
@@ -751,6 +783,31 @@ elog(NOTICE, "lwgeom_force3dz_recursive: it's a line, size:%d", *retsize);
 #endif
 		return;
 	}
+
+        if ( type == CURVETYPE )
+        {
+                curve = lwcurve_deserialize(serialized);
+#ifdef PGIS_DEBUG
+                elog(NOTICE, "lwgeom_force3dz_recursize: it's a curve");
+#endif
+                TYPE_SETZM(newpts.dims, 1, 0);
+                newpts.npoints = curve->points->npoints;
+                newpts.serialized_pointlist = lwalloc(sizeof(POINT3DZ)*curve->points->npoints);
+                loc = newpts.serialized_pointlist;
+                for (j=0; j<curve->points->npoints; j++)
+                {
+                        getPoint3dz_p(curve->points, j, &point3dz);
+                        memcpy(loc, &point3dz, sizeof(POINT3DZ));
+                        loc+=sizeof(POINT3DZ);
+                }
+                curve->points = &newpts;
+                TYPE_SETZM(curve->type, 1, 0);
+                lwcurve_serialize_buf(curve, optr, retsize);
+#ifdef PGIS_DEBUG
+                elog(NOTICE, "lwgeom_force3dz_recursive: it's a curve, size:%d", *retsize);
+#endif
+                return;
+        }
 
 	if ( type == POLYGONTYPE )
 	{
@@ -864,6 +921,7 @@ lwgeom_force3dm_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 	uchar newtypefl;
 	LWPOINT *point = NULL;
 	LWLINE *line = NULL;
+        LWCURVE *curve = NULL;
 	LWPOLY *poly = NULL;
 	POINTARRAY newpts;
 	POINTARRAY **nrings;
@@ -930,6 +988,31 @@ lwnotice("lwgeom_force3dm_recursive returning");
 		return;
 	}
 
+        if ( type == CURVETYPE )
+        {
+                curve = lwcurve_deserialize(serialized);
+#ifdef PGIS_DEBUG
+                elog(NOTICE, "lwgeom_force3dm_recursize: it's a curve with %d points", curve->points->npoints);
+#endif
+                TYPE_SETZM(newpts.dims, 0, 1);
+                newpts.npoints = curve->points->npoints;
+                newpts.serialized_pointlist = lwalloc(sizeof(POINT3DM)*curve->points->npoints);
+
+                loc = newpts.serialized_pointlist;
+                for (j=0; j<curve->points->npoints; j++)
+                {
+                        getPoint3dm_p(curve->points, j, &p3dm);
+                        memcpy(loc, &p3dm, sizeof(POINT3DM));
+                        loc+=sizeof(POINT3DM);
+                }
+                curve->points = &newpts;
+                TYPE_SETZM(curve->type, 0, 1);
+                lwcurve_serialize_buf(curve, optr, retsize);
+                lwfree(newpts.serialized_pointlist);
+                lwfree(curve);
+                return;
+        }
+
 	if ( type == POLYGONTYPE )
 	{
 		poly = lwpoly_deserialize(serialized);
@@ -968,7 +1051,9 @@ lwnotice("lwgeom_force3dm_recursive returning");
 	}
 
 	if ( type != MULTIPOINTTYPE && type != MULTIPOLYGONTYPE &&
-		type != MULTILINETYPE && type != COLLECTIONTYPE )
+		type != MULTILINETYPE && type != COLLECTIONTYPE &&
+                type != COMPOUNDTYPE && type != CURVEPOLYTYPE &&
+                type != MULTICURVETYPE && type != MULTISURFACETYPE)
 	{
 		lwerror("lwgeom_force3dm_recursive: unknown geometry: %d",
 			type);
@@ -1076,6 +1161,7 @@ lwgeom_force4d_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 	int type;
 	LWPOINT *point = NULL;
 	LWLINE *line = NULL;
+        LWCURVE *curve = NULL;
 	LWPOLY *poly = NULL;
 	POINTARRAY newpts;
 	POINTARRAY **nrings;
@@ -1131,6 +1217,28 @@ elog(NOTICE, "lwgeom_force4d_recursive: it's a line, size:%d", *retsize);
 #endif
 		return;
 	}
+
+        if ( type == CURVETYPE )
+        {
+                curve = lwcurve_deserialize(serialized);
+                TYPE_SETZM(newpts.dims, 1, 1);
+                newpts.npoints = curve->points->npoints;
+                newpts.serialized_pointlist = lwalloc(sizeof(POINT4D)*curve->points->npoints);
+                loc = newpts.serialized_pointlist;
+                for (j=0; j<curve->points->npoints; j++)
+                {
+                        getPoint4d_p(curve->points, j, &p4d);
+                        memcpy(loc, &p4d, sizeof(POINT4D));
+                        loc+=sizeof(POINT4D);
+                }
+                curve->points = &newpts;
+                TYPE_SETZM(curve->type, 1, 1);
+                lwcurve_serialize_buf(curve, optr, retsize);
+#ifdef PGIS_DEBUG
+                elog(NOTICE, "lwgeom_force4d_recursive: it's a curve, size:%d", *retsize);
+#endif
+                return;
+        }
 
 	if ( type == POLYGONTYPE )
 	{
@@ -1367,6 +1475,10 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS)
 	int SRID;
 	BOX2DFLOAT4 *bbox;
 
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("LWGEOM_force_collection called");
+#endif
+
 	/*
 	 * This funx is a no-op only if a bbox cache is already present
 	 * in input. If bbox cache is not there we'll need to handle
@@ -1420,6 +1532,10 @@ Datum LWGEOM_force_multi(PG_FUNCTION_ARGS)
 	int type;
 	int SRID=-1;
 	BOX2DFLOAT4 *box;
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("LWGEOM_force_multi called");
+#endif
 
 	/*
 	 * This funx is a no-op only if a bbox cache is already present
@@ -1561,6 +1677,10 @@ Datum LWGEOM_longitude_shift(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom;
 	PG_LWGEOM *ret;
 
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("LWGEOM_longitude_shift called.");
+#endif
+
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
 	lwgeom = pglwgeom_deserialize(geom);
 
@@ -1623,6 +1743,10 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 	unsigned int type1, type2, outtype;
 	BOX2DFLOAT4 *box=NULL;
 	int SRID;
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("LWGEOM_collect called.");
+#endif
 
 	/* return null if both geoms are null */
 	if ( (geom1_ptr == NULL) && (geom2_ptr == NULL) )
@@ -1867,6 +1991,10 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 	size_t offset;
 	BOX2DFLOAT4 *box=NULL;
 
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("LWGEOM_collect_garray called.");
+#endif
+
 #ifdef PGIS_DEBUG
 	elog(NOTICE, "LWGEOM_collect_garray called");
 #endif
@@ -2006,6 +2134,10 @@ Datum LWGEOM_line_from_mpoint(PG_FUNCTION_ARGS)
 	LWLINE *lwline;
 	LWMPOINT *mpoint;
 
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("LWGEOM_line_from_mpoint called.");
+#endif
+
 #ifdef PGIS_DEBUG
 	elog(NOTICE, "LWGEOM_line_from_mpoint called");
 #endif
@@ -2054,6 +2186,10 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 	int i;
 	size_t offset;
 	int SRID=-1;
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("LWGEOM_makeline_garray called.");
+#endif
 
 #ifdef PGIS_DEBUG
 	elog(NOTICE, "LWGEOM_makeline_garray called");
@@ -2159,6 +2295,10 @@ Datum LWGEOM_makeline(PG_FUNCTION_ARGS)
 	LWPOINT *lwpoints[2];
 	LWLINE *outline;
 
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("LWGEOM_makeline called.");
+#endif
+
 #ifdef PGIS_DEBUG
 	elog(NOTICE, "LWGEOM_makeline called");
 #endif
@@ -2207,6 +2347,10 @@ Datum LWGEOM_makepoly(PG_FUNCTION_ARGS)
 	unsigned int nholes=0;
 	unsigned int i;
 	size_t offset=0;
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("LWGEOM_makepoly called.");
+#endif
 
 #ifdef PGIS_DEBUG
 	elog(NOTICE, "LWGEOM_makepoly called");
@@ -2268,6 +2412,10 @@ Datum LWGEOM_expand(PG_FUNCTION_ARGS)
 	LWPOLY *poly;
 	int SRID;
 	PG_LWGEOM *result;
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("LWGEOM_expand called.");
+#endif
 
 	/* get geometry box  */
 	if ( ! getbox2d_p(SERIALIZED_FORM(geom), &box) )
@@ -2407,6 +2555,10 @@ Datum LWGEOM_segmentize2d(PG_FUNCTION_ARGS)
 	double dist;
 	LWGEOM *inlwgeom, *outlwgeom;
 
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("LWGEOM_segmentize2d called");
+#endif
+
 	ingeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	dist = PG_GETARG_FLOAT8(1);
 
@@ -2438,6 +2590,10 @@ Datum LWGEOM_reverse(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom;
 	LWGEOM *lwgeom;
 
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("LWGEOM_reverse called");
+#endif
+
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
 
 	lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom));
@@ -2454,6 +2610,10 @@ Datum LWGEOM_forceRHR_poly(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *ingeom, *outgeom;
 	LWGEOM *lwgeom;
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("LWGEOM_forceRHR_poly called");
+#endif
 
 	ingeom = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
 
@@ -2474,6 +2634,10 @@ Datum LWGEOM_noop(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *in, *out;
 	LWGEOM *lwgeom;
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("LWGEOM_noop called");
+#endif
 
 	in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
@@ -2585,6 +2749,10 @@ Datum LWGEOM_makepoint(PG_FUNCTION_ARGS)
 	LWPOINT *point;
 	PG_LWGEOM *result;
 
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("LWGEOM_makepoint called");
+#endif
+
 	x = PG_GETARG_FLOAT8(0);
 	y = PG_GETARG_FLOAT8(1);
 
@@ -2616,6 +2784,10 @@ Datum LWGEOM_makepoint3dm(PG_FUNCTION_ARGS)
 	LWPOINT *point;
 	PG_LWGEOM *result;
 
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("LWGEOM_makepoint3dm called.");
+#endif
+
 	x = PG_GETARG_FLOAT8(0);
 	y = PG_GETARG_FLOAT8(1);
 	m = PG_GETARG_FLOAT8(2);
@@ -2633,6 +2805,10 @@ Datum LWGEOM_addpoint(PG_FUNCTION_ARGS)
 	LWPOINT *point;
 	LWLINE *line, *outline;
 	int where = -1;
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("LWGEOM_addpoint called.");
+#endif
 
 	pglwg1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	pglwg2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
@@ -2686,6 +2862,10 @@ Datum LWGEOM_removepoint(PG_FUNCTION_ARGS)
 	LWLINE *line, *outline;
 	unsigned int which;
 
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("LWGEOM_removepoint called.");
+#endif
+
 	pglwg1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	which = PG_GETARG_INT32(1);
 
@@ -2731,6 +2911,10 @@ Datum LWGEOM_setpoint_linestring(PG_FUNCTION_ARGS)
 	LWPOINT *lwpoint;
 	POINT4D newpoint;
 	unsigned int which;
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("LWGEOM_setpoint_linestring called.");
+#endif
 
 	/* we copy input as we're going to modify it */
 	pglwg1 = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
@@ -3101,6 +3285,10 @@ Datum LWGEOM_affine(PG_FUNCTION_ARGS)
 	PG_LWGEOM *ret;
 	LWGEOM *tmp;
 	uchar *srl = SERIALIZED_FORM(geom);
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("LWGEOM_affine called.");
+#endif
 
 	double afac =  PG_GETARG_FLOAT8(1);
 	double bfac =  PG_GETARG_FLOAT8(2);

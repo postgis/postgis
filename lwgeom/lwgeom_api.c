@@ -330,6 +330,13 @@ box3d_union(BOX3D *b1, BOX3D *b2)
 int
 box3d_union_p(BOX3D *b1, BOX3D *b2, BOX3D *ubox)
 {
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("box3d_union_p called: (xmin, xmax), (ymin, ymax), (zmin, zmax)");
+        lwnotice("b1: (%.16f, %.16f),(%.16f, %.16f),(%.16f, %.16f)", b1->xmin, b1->xmax, b1->ymin, b1->ymax, b1->zmin, b1->zmax);
+        lwnotice("b2: (%.16f, %.16f),(%.16f, %.16f),(%.16f, %.16f)", b2->xmin, b2->xmax, b2->ymin, b2->ymax, b2->zmin, b2->zmax);
+#endif
+
 	if ( (b1 == NULL) && (b2 == NULL) )
 	{
 		return 0;
@@ -372,7 +379,7 @@ box3d_union_p(BOX3D *b1, BOX3D *b2, BOX3D *ubox)
 	else
 		ubox->zmax = b2->zmax;
 
-	if (b1->zmin > b2->zmin)
+	if (b1->zmin < b2->zmin)
 		ubox->zmin = b1->zmin;
 	else
 		ubox->zmin = b2->zmin;
@@ -403,7 +410,7 @@ getbox2d_p(uchar *srl, BOX2DFLOAT4 *box)
 	uchar *loc;
 	BOX3D box3d;
 
-#ifdef PGIS_DEBUG
+#ifdef PGIS_DEBUG_CALLS
 	lwnotice("getbox2d_p call");
 #endif
 
@@ -483,9 +490,17 @@ getPoint4d_p(const POINTARRAY *pa, int n, POINT4D *op)
 	}
 #endif
 
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("getPoint4d_p called.");
+#endif
+
 	/* Get a pointer to nth point offset and zmflag */
 	ptr=getPoint_internal(pa, n);
 	zmflag=TYPE_GETZM(pa->dims);
+
+#ifdef PGIS_DEBUG
+        lwnotice("ptr %p, zmflag %d", ptr, zmflag);
+#endif
 
 	switch (zmflag)
 	{
@@ -513,7 +528,6 @@ getPoint4d_p(const POINTARRAY *pa, int n, POINT4D *op)
 		default:
 			lwerror("Unknown ZM flag ??");
 	}
-
 	return 1;
 
 }
@@ -797,9 +811,9 @@ pointArray_construct(uchar *points, char hasz, char hasm,
 int
 pointArray_ptsize(const POINTARRAY *pa)
 {
-#ifdef PGIS_DEBUG
-	lwnotice("pointArray_ptsize: TYPE_NDIMS(pa->dims)=%x\n",
-		TYPE_NDIMS(pa->dims));
+#ifdef PGIS_DEBUG_CALLS
+	/*lwnotice("pointArray_ptsize: TYPE_NDIMS(pa->dims)=%x\n",
+		TYPE_NDIMS(pa->dims));*/
 #endif
 	return sizeof(double)*TYPE_NDIMS(pa->dims);
 }
@@ -841,6 +855,11 @@ int lwgeom_hasZ(uchar type)
 int
 lwgeom_getType(uchar type)
 {
+
+#ifdef PGIS_DEBUG
+        lwnotice("lwgeom_getType %d", type);
+#endif
+
 	return (type & 0x0F);
 }
 
@@ -953,7 +972,7 @@ lwgeom_inspect(const uchar *serialized_form)
 		loc += 4;
 	}
 
-	if ( (type==POINTTYPE) || (type==LINETYPE) || (type==POLYGONTYPE) )
+	if ( (type==POINTTYPE) || (type==LINETYPE) || (type==POLYGONTYPE) || (type == CURVETYPE))
 	{
 		/* simple geometry (point/line/polygon)-- not multi! */
 		result->ngeometries = 1;
@@ -967,6 +986,7 @@ lwgeom_inspect(const uchar *serialized_form)
 
 	result->ngeometries = get_uint32(loc);
 	loc +=4;
+
 #ifdef PGIS_DEBUG
 	lwnotice("lwgeom_inspect: geometry is a collection of %d elements",
 		result->ngeometries);
@@ -977,18 +997,22 @@ lwgeom_inspect(const uchar *serialized_form)
 	sub_geoms = lwalloc(sizeof(uchar*) * result->ngeometries );
 	result->sub_geoms = sub_geoms;
 	sub_geoms[0] = (uchar *)loc;
+
 #ifdef PGIS_DEBUG
 	lwnotice("subgeom[0] @ %p (+%d)", sub_geoms[0], sub_geoms[0]-serialized_form);
 #endif
+
 	for (t=1;t<result->ngeometries; t++)
 	{
 		/* -1 = entire object */
 		int sub_length = lwgeom_size_subgeom(sub_geoms[t-1], -1);
 		sub_geoms[t] = sub_geoms[t-1] + sub_length;
+                
 #ifdef PGIS_DEBUG
 		lwnotice("subgeom[%d] @ %p (+%d)",
 			t, sub_geoms[t], sub_geoms[0]-serialized_form);
 #endif
+
 	}
 
 	return result;
@@ -1157,6 +1181,25 @@ lwgeom_getpoly_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
 }
 
 /*
+ * 1st geometry has geom_number = 0
+ * if there arent enough geometries, return null.
+ */
+LWGEOM *lwgeom_getgeom_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
+{
+	uchar *sub_geom;
+	uchar type;
+
+	sub_geom = lwgeom_getsubgeometry_inspected(inspected, geom_number);
+
+	if (sub_geom == NULL) return NULL;
+
+	type = lwgeom_getType(sub_geom[0]);
+
+	return lwgeom_deserialize(sub_geom);
+}
+
+
+/*
  * This gets the serialized form of a sub-geometry
  *
  * 1st geometry has geom_number = 0
@@ -1240,7 +1283,8 @@ lwgeom_getnumgeometries(uchar *serialized_form)
 	uchar type = lwgeom_getType((uchar)serialized_form[0]);
 	uchar *loc;
 
-	if ( (type==POINTTYPE) || (type==LINETYPE) || (type==POLYGONTYPE) )
+	if ( (type==POINTTYPE) || (type==LINETYPE) || (type==POLYGONTYPE) ||
+            (type==CURVETYPE) || (type==COMPOUNDTYPE) || (type==CURVEPOLYTYPE) )
 	{
 		return 1;
 	}
@@ -1480,13 +1524,26 @@ lwgeom_size(const uchar *serialized_form)
 #endif
 		return lwgeom_size_line(serialized_form);
 	}
+        else if(type == CURVETYPE)
+        {
+#ifdef PGIS_DEBUG
+                lwnotice("lwgeom_size: is a curve");
+#endif
+                return lwgeom_size_curve(serialized_form);
+        }
 	else if (type == POLYGONTYPE)
 	{
 #ifdef PGIS_DEBUG
 		lwnotice("lwgeom_size: is a polygon");
 #endif
 		return lwgeom_size_poly(serialized_form);
-	}
+	} 
+        else if (type == COMPOUNDTYPE)
+        {
+#ifdef PGIS_DEBUG
+                lwnotice("lwgeom_size: is a compound curve");
+#endif
+        }
 
 	if ( type == 0 )
 	{
@@ -1646,6 +1703,13 @@ lwnotice("compute_serialized_box3d: bbox found");
 		return result;
 
 	}
+        else if (type == CURVETYPE)
+        {
+                LWCURVE *curve = lwcurve_deserialize(srl);
+                result = lwcurve_compute_box3d(curve);
+                pfree_curve(curve);
+                return result;
+        }
 	else if (type == POLYGONTYPE)
 	{
 		LWPOLY *poly = lwpoly_deserialize(srl);
@@ -1655,7 +1719,9 @@ lwnotice("compute_serialized_box3d: bbox found");
 	}
 
 	if ( ! ( type == MULTIPOINTTYPE || type == MULTILINETYPE ||
-		type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE ) )
+		type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE ||
+                type == COMPOUNDTYPE || type == CURVEPOLYTYPE ||
+                type == MULTICURVETYPE || type == MULTISURFACETYPE) )
 	{
 		lwnotice("compute_serialized_box3d called on unknown type %d", type);
 		return NULL;
@@ -1746,6 +1812,7 @@ void printPA(POINTARRAY *pa)
 	int t;
 	POINT4D pt;
 	char *mflag;
+
 
 	if ( TYPE_HASM(pa->dims) ) mflag = "M";
 	else mflag = "";
@@ -2121,7 +2188,7 @@ parse_lwgeom_wkt(char *wkt_input)
 		lwalloc, lwerror);
 
 
-#ifdef PGIS_DEBUG
+#ifdef PGIS_DEBUG_CALLS
 	lwnotice("parse_lwgeom_wkt with %s",wkt_input);
 #endif
 

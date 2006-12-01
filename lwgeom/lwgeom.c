@@ -27,7 +27,7 @@ lwgeom_deserialize(uchar *srl)
 	int type = lwgeom_getType(srl[0]);
 
 #ifdef PGIS_DEBUG_CALLS
-	lwnotice("lwgeom_deserialize got %s", lwgeom_typename(type));
+	lwnotice("lwgeom_deserialize got %d - %s", type, lwgeom_typename(type));
 #endif
 
 	switch (type)
@@ -36,6 +36,8 @@ lwgeom_deserialize(uchar *srl)
 			return (LWGEOM *)lwpoint_deserialize(srl);
 		case LINETYPE:
 			return (LWGEOM *)lwline_deserialize(srl);
+                case CURVETYPE:
+                        return (LWGEOM *)lwcurve_deserialize(srl);
 		case POLYGONTYPE:
 			return (LWGEOM *)lwpoly_deserialize(srl);
 		case MULTIPOINTTYPE:
@@ -46,8 +48,20 @@ lwgeom_deserialize(uchar *srl)
 			return (LWGEOM *)lwmpoly_deserialize(srl);
 		case COLLECTIONTYPE:
 			return (LWGEOM *)lwcollection_deserialize(srl);
+                case COMPOUNDTYPE:
+                        return (LWGEOM *)lwcompound_deserialize(srl);
+                case CURVEPOLYTYPE:
+                        return (LWGEOM *)lwcurvepoly_deserialize(srl);
+                case MULTICURVETYPE:
+                        return (LWGEOM *)lwmcurve_deserialize(srl);
+                case MULTISURFACETYPE:
+                        return (LWGEOM *)lwmsurface_deserialize(srl);
 		default:
+#ifdef PGIS_DEBUG
+                        lwerror("lwgeom_deserialize: Unknown geometry type: %d", type);
+#else
 			lwerror("Unknown geometry type: %d", type);
+#endif
 			return NULL;
 	}
 
@@ -70,13 +84,23 @@ lwgeom_serialize_size(LWGEOM *lwgeom)
 			return lwline_serialize_size((LWLINE *)lwgeom);
 		case POLYGONTYPE:
 			return lwpoly_serialize_size((LWPOLY *)lwgeom);
+                case CURVETYPE:
+                        return lwcurve_serialize_size((LWCURVE *)lwgeom);
+                case CURVEPOLYTYPE:
+                case COMPOUNDTYPE:
 		case MULTIPOINTTYPE:
 		case MULTILINETYPE:
+                case MULTICURVETYPE:
 		case MULTIPOLYGONTYPE:
+                case MULTISURFACETYPE:
 		case COLLECTIONTYPE:
 			return lwcollection_serialize_size((LWCOLLECTION *)lwgeom);
 		default:
+#ifdef PGIS_DEBUG
+                        lwerror("lwgeom_serialize_size: Unknown geometry type: %d", type);
+#else
 			lwerror("Unknown geometry type: %d", type);
+#endif
 			return 0;
 	}
 }
@@ -101,15 +125,26 @@ lwgeom_serialize_buf(LWGEOM *lwgeom, uchar *buf, size_t *retsize)
 		case POLYGONTYPE:
 			lwpoly_serialize_buf((LWPOLY *)lwgeom, buf, retsize);
 			break;
+                case CURVETYPE:
+                        lwcurve_serialize_buf((LWCURVE *)lwgeom, buf, retsize);
+                        break;
+                case CURVEPOLYTYPE:
+                case COMPOUNDTYPE:
 		case MULTIPOINTTYPE:
 		case MULTILINETYPE:
+                case MULTICURVETYPE:
 		case MULTIPOLYGONTYPE:
+                case MULTISURFACETYPE:
 		case COLLECTIONTYPE:
 			lwcollection_serialize_buf((LWCOLLECTION *)lwgeom, buf,
 				retsize);
 			break;
 		default:
+#ifdef PGIS_DEBUG
+                        lwerror("lwgeom_serialize_buf: Unknown geometry type: %d", type);
+#else
 			lwerror("Unknown geometry type: %d", type);
+#endif
 			return;
 	}
 	return;
@@ -191,11 +226,17 @@ lwgeom_compute_box2d_p(LWGEOM *lwgeom, BOX2DFLOAT4 *buf)
 			return lwpoint_compute_box2d_p((LWPOINT *)lwgeom, buf);
 		case LINETYPE:
 			return lwline_compute_box2d_p((LWLINE *)lwgeom, buf);
+                case CURVETYPE:
+                        return lwcurve_compute_box2d_p((LWCURVE *)lwgeom, buf);
 		case POLYGONTYPE:
 			return lwpoly_compute_box2d_p((LWPOLY *)lwgeom, buf);
+                case COMPOUNDTYPE:
+                case CURVEPOLYTYPE:
 		case MULTIPOINTTYPE:
 		case MULTILINETYPE:
+                case MULTICURVETYPE:
 		case MULTIPOLYGONTYPE:
+                case MULTISURFACETYPE:
 		case COLLECTIONTYPE:
 			return lwcollection_compute_box2d_p((LWCOLLECTION *)lwgeom, buf);
 	}
@@ -232,6 +273,14 @@ lwgeom_as_lwline(LWGEOM *lwgeom)
 	else return NULL;
 }
 
+LWCURVE *
+lwgeom_as_lwcurve(LWGEOM *lwgeom)
+{
+        if( TYPE_GETTYPE(lwgeom->type) == CURVETYPE )
+                return (LWCURVE *)lwgeom;
+        else return NULL;
+}
+
 LWPOLY *
 lwgeom_as_lwpoly(LWGEOM *lwgeom)
 {
@@ -243,7 +292,8 @@ lwgeom_as_lwpoly(LWGEOM *lwgeom)
 LWCOLLECTION *
 lwgeom_as_lwcollection(LWGEOM *lwgeom)
 {
-	if ( TYPE_GETTYPE(lwgeom->type) >= MULTIPOINTTYPE )
+	if ( TYPE_GETTYPE(lwgeom->type) >= MULTIPOINTTYPE 
+            && TYPE_GETTYPE(lwgeom->type) <= COLLECTIONTYPE)
 		return (LWCOLLECTION *)lwgeom;
 	else return NULL;
 }
@@ -292,11 +342,21 @@ lwgeom_release(LWGEOM *lwgeom)
 #endif
 
 	/* Drop bounding box (always a copy) */
-	if ( lwgeom->bbox ) lwfree(lwgeom->bbox);
+	if ( lwgeom->bbox ) {
+#ifdef PGIS_DEBUG
+                lwnotice("lwgeom_release: releasing bbox.");
+#endif
+                lwfree(lwgeom->bbox);
+        }
 
 	/* Collection */
 	if ( (col=lwgeom_as_lwcollection(lwgeom)) )
 	{
+
+#ifdef PGIS_DEBUG
+                lwnotice("lwgeom_release: Releasing collection.");
+#endif
+
 		for (i=0; i<col->ngeoms; i++)
 		{
 			lwgeom_release(col->geoms[i]);
@@ -361,8 +421,18 @@ lwgeom_add(const LWGEOM *to, uint32 where, const LWGEOM *what)
 			return (LWGEOM *)lwpoint_add((const LWPOINT *)to, where, what);
 		case LINETYPE:
 			return (LWGEOM *)lwline_add((const LWLINE *)to, where, what);
+
+                case CURVETYPE:
+                        return (LWGEOM *)lwcurve_add((const LWCURVE *)to, where, what);
+
 		case POLYGONTYPE:
 			return (LWGEOM *)lwpoly_add((const LWPOLY *)to, where, what);
+
+                case COMPOUNDTYPE:
+                        return (LWGEOM *)lwcompound_add((const LWCOMPOUND *)to, where, what);
+
+                case CURVEPOLYTYPE:
+                        return (LWGEOM *)lwcurvepoly_add((const LWCURVEPOLY *)to, where, what);
 
 		case MULTIPOINTTYPE:
 			return (LWGEOM *)lwmpoint_add((const LWMPOINT *)to,
@@ -372,9 +442,17 @@ lwgeom_add(const LWGEOM *to, uint32 where, const LWGEOM *what)
 			return (LWGEOM *)lwmline_add((const LWMLINE *)to,
 				where, what);
 
+                case MULTICURVETYPE:
+                        return (LWGEOM *)lwmcurve_add((const LWMCURVE *)to,
+                                where, what);
+
 		case MULTIPOLYGONTYPE:
 			return (LWGEOM *)lwmpoly_add((const LWMPOLY *)to,
 				where, what);
+
+                case MULTISURFACETYPE:
+                        return (LWGEOM *)lwmsurface_add((const LWMSURFACE *)to,
+                                where, what);
 
 		case COLLECTIONTYPE:
 			return (LWGEOM *)lwcollection_add(

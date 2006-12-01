@@ -41,7 +41,15 @@ static char *lwgeomTypeName[] = {
 	"MultiPoint",
 	"MultiLine",
 	"MultiPolygon",
-	"GeometryCollection"
+	"GeometryCollection",
+        "Curve",
+        "CompoundString",
+        "Invalid Type",  /* POINTTYPEI */
+        "Invalid Type",  /* LINETYPEI */
+        "Invalid Type",  /* POLYTYPEI */
+        "CurvePolygon",
+        "MultiCurve",
+        "MultiSurface"
 };
 
 void *
@@ -113,7 +121,7 @@ const char *
 lwgeom_typename(int type)
 {
 	// something went wrong somewhere
-	if ( type < 0 || type > 7 ) {
+	if ( type < 0 || type > 12 ) {
 		// assert(0);
 		return "Invalid type";
 	}

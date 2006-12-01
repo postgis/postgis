@@ -1912,15 +1912,29 @@ BEGIN
 		   (new_type =''POLYGONM'') or
 		   (new_type =''MULTIPOLYGONM'') or
 		   (new_type =''LINESTRINGM'') or
-		   (new_type =''MULTILINESTRINGM'')) )
+		   (new_type =''MULTILINESTRINGM'') or
+                   (new_type = ''CIRCULARSTRING'') or
+                   (new_type = ''CIRCULARSTRINGM'') or
+                   (new_type = ''COMPOUNDCURVE'') or
+                   (new_type = ''COMPOUNDCURVEM'') or
+                   (new_type = ''CURVEPOLYGON'') or
+                   (new_type = ''CURVEPOLYGONM'') or
+                   (new_type = ''MULTICURVE'') or
+                   (new_type = ''MULTICURVEM'') or
+                   (new_type = ''MULTISURFACE'') or
+                   (new_type = ''MULTISURFACEM'')) )
 	THEN
 		RAISE EXCEPTION ''Invalid type name - valid ones are: 
 			GEOMETRY, GEOMETRYCOLLECTION, POINT, 
 			MULTIPOINT, POLYGON, MULTIPOLYGON, 
 			LINESTRING, MULTILINESTRING,
+                        CIRCULARSTRING, COMPOUNDCURVE,
+                        CURVEPOLYGON, MULTICURVE, MULTISURFACE,
 			GEOMETRYCOLLECTIONM, POINTM, 
 			MULTIPOINTM, POLYGONM, MULTIPOLYGONM, 
-			LINESTRINGM, or MULTILINESTRINGM '';
+			LINESTRINGM, MULTILINESTRINGM 
+                        CIRCULARSTRINGM, COMPOUNDCURVEM,
+                        CURVEPOLYGONM, MULTICURVEM or MULTISURFACEM'';
 		return ''fail'';
 	END IF;
 
@@ -3690,10 +3704,5 @@ END;
 LANGUAGE 'plpgsql' _IMMUTABLE_STRICT; 
 
 #include "long_xact.sql"
-
----------------------------------------------------------------
--- END
----------------------------------------------------------------
-
 COMMIT;
 

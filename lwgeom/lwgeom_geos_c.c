@@ -1339,7 +1339,8 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(result);
 }
 
-
+int point_in_polygon(LWPOLY *polygon, LWPOINT *point);
+int point_in_multipolygon(LWMPOLY *mpolygon, LWPOINT *point);
 
 PG_FUNCTION_INFO_V1(contains);
 Datum contains(PG_FUNCTION_ARGS)
@@ -1349,6 +1350,10 @@ Datum contains(PG_FUNCTION_ARGS)
 	GEOSGeom g1,g2;
 	bool result;
 	BOX2DFLOAT4 box1, box2;
+        int type1, type2;
+        LWPOLY *poly;
+        /* LWMPOLY *mpoly; */
+        LWPOINT *point;
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
@@ -1373,7 +1378,72 @@ Datum contains(PG_FUNCTION_ARGS)
 		if ( box2.ymin < box1.ymin ) PG_RETURN_BOOL(FALSE);
 		if ( box2.ymax > box1.ymax ) PG_RETURN_BOOL(FALSE);
 	}
-
+        /*
+         * short-circuit 2: if geom2 is a point and geom1 is a polygon
+         * call the point-in-polygon function.
+         */
+        type1 = lwgeom_getType((uchar)SERIALIZED_FORM(geom1)[0]);
+        type2 = lwgeom_getType((uchar)SERIALIZED_FORM(geom2)[0]);
+        if(type1 == POLYGONTYPE && type2 == POINTTYPE)
+        {
+#ifdef PGIS_DEBUG
+                lwnotice("Point in Polygon test requested...short-circuiting.");
+#endif
+                poly = lwpoly_deserialize(SERIALIZED_FORM(geom1));
+                point = lwpoint_deserialize(SERIALIZED_FORM(geom2));
+#ifdef PGIS_DEBUG
+                lwnotice("Precall point_in_polygon %p, %p", poly, point);
+#endif
+                if(point_in_polygon(poly, point) == 0)
+                {
+	                PG_FREE_IF_COPY(geom1, 0);
+	                PG_FREE_IF_COPY(geom2, 1);
+                        lwgeom_release((LWGEOM *)poly);
+                        lwgeom_release((LWGEOM *)point);
+                        PG_RETURN_BOOL(FALSE);
+                }
+                else
+                {
+                        PG_FREE_IF_COPY(geom1, 0);
+                        PG_FREE_IF_COPY(geom2, 1);
+                        lwgeom_release((LWGEOM *)poly);
+                        lwgeom_release((LWGEOM *)point);
+                        PG_RETURN_BOOL(TRUE);
+                }
+        } 
+        /* Not yet functional 
+        else if(type1 == MULTIPOLYGONTYPE && type2 == POINTTYPE)
+        {
+#ifdef PGIS_DEBUG
+                lwnotice("Point in MultiPolygon test requested...short-circuiting.");
+#endif
+                mpoly = lwmpoly_deserialize(SERIALIZED_FORM(geom1));
+                point = lwpoint_deserialize(SERIALIZED_FORM(geom2));
+                if(point_in_multipolygon(mpoly, point) == 0)
+                {
+                        PG_FREE_IF_COPY(geom1, 0);
+                        PG_FREE_IF_COPY(geom2, 1);
+                        lwgeom_release((LWGEOM *)mpoly);
+                        lwgeom_release((LWGEOM *)point);
+                        PG_RETURN_BOOL(FALSE);
+                }
+                else
+                {
+                        PG_FREE_IF_COPY(geom1, 0);
+                        PG_FREE_IF_COPY(geom2, 1);
+                        lwgeom_release((LWGEOM *)mpoly);
+                        lwgeom_release((LWGEOM *)point);
+                        PG_RETURN_BOOL(TRUE);
+                }
+        }
+        */
+        else 
+        {
+#ifdef PGIS_DEBUG
+                lwnotice("Contains: type1: %d, type2: %d", type1, type2);
+#endif
+        }
+        
 	initGEOS(lwnotice, lwnotice);
 
 #ifdef PROFILE
@@ -1428,6 +1498,9 @@ Datum within(PG_FUNCTION_ARGS)
 	GEOSGeom g1,g2;
 	bool result;
 	BOX2DFLOAT4 box1, box2;
+        LWPOLY *poly;
+        LWPOINT *point;
+        int type1, type2;
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
@@ -1452,6 +1525,36 @@ Datum within(PG_FUNCTION_ARGS)
 		if ( box1.ymin < box2.ymin ) PG_RETURN_BOOL(FALSE);
 		if ( box1.ymax > box2.ymax ) PG_RETURN_BOOL(FALSE);
 	}
+        /*
+         * short-circuit 2: if geom1 is a point and geom2 is a polygon
+         * call the point-in-polygon function.
+         */
+        type1 = lwgeom_getType((uchar)SERIALIZED_FORM(geom1)[0]);
+        type2 = lwgeom_getType((uchar)SERIALIZED_FORM(geom2)[0]);
+        if(type1 == POINTTYPE && type2 == POLYGONTYPE)
+        {
+#ifdef PGIS_DEBUG
+                lwnotice("Point in Polygon test requested...short-circuiting.");
+#endif
+                point = lwpoint_deserialize(SERIALIZED_FORM(geom1));
+                poly = lwpoly_deserialize(SERIALIZED_FORM(geom2));
+                if(point_in_polygon(poly, point) == 0)
+                {
+	                PG_FREE_IF_COPY(geom1, 0);
+	                PG_FREE_IF_COPY(geom2, 1);
+                        lwgeom_release((LWGEOM *)poly);
+                        lwgeom_release((LWGEOM *)point);
+                        PG_RETURN_BOOL(FALSE);
+                }
+                else
+                {
+                        PG_FREE_IF_COPY(geom1, 0);
+                        PG_FREE_IF_COPY(geom2, 1);
+                        lwgeom_release((LWGEOM *)poly);
+                        lwgeom_release((LWGEOM *)point);
+                        PG_RETURN_BOOL(TRUE);
+                }
+        }
 
 	initGEOS(lwnotice, lwnotice);
 
@@ -1766,7 +1869,7 @@ Datum disjoint(PG_FUNCTION_ARGS)
 		if ( box2.xmax < box1.xmin ) PG_RETURN_BOOL(TRUE);
 		if ( box2.xmin > box1.xmax ) PG_RETURN_BOOL(TRUE);
 		if ( box2.ymax < box1.ymin ) PG_RETURN_BOOL(TRUE);
-		if ( box2.ymin > box2.ymax ) PG_RETURN_BOOL(TRUE);
+		if ( box2.ymin > box1.ymax ) PG_RETURN_BOOL(TRUE);
 	}
 
 	initGEOS(lwnotice, lwnotice);

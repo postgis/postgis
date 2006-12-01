@@ -1,7 +1,7 @@
-/* A Bison parser, made by GNU Bison 1.875.  */
+/* A Bison parser, made by GNU Bison 1.875c.  */
 
 /* Skeleton parser for Yacc-like parsing with Bison,
-   Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002, 2003 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -36,22 +36,32 @@
      MULTILINESTRING = 262,
      MULTIPOLYGON = 263,
      GEOMETRYCOLLECTION = 264,
-     POINTM = 265,
-     LINESTRINGM = 266,
-     POLYGONM = 267,
-     MULTIPOINTM = 268,
-     MULTILINESTRINGM = 269,
-     MULTIPOLYGONM = 270,
-     GEOMETRYCOLLECTIONM = 271,
-     SRID = 272,
-     EMPTY = 273,
-     VALUE = 274,
-     LPAREN = 275,
-     RPAREN = 276,
-     COMMA = 277,
-     EQUALS = 278,
-     SEMICOLON = 279,
-     WKB = 280
+     CIRCULARSTRING = 265,
+     COMPOUNDCURVE = 266,
+     CURVEPOLYGON = 267,
+     MULTICURVE = 268,
+     MULTISURFACE = 269,
+     POINTM = 270,
+     LINESTRINGM = 271,
+     POLYGONM = 272,
+     MULTIPOINTM = 273,
+     MULTILINESTRINGM = 274,
+     MULTIPOLYGONM = 275,
+     GEOMETRYCOLLECTIONM = 276,
+     CIRCULARSTRINGM = 277,
+     COMPOUNDCURVEM = 278,
+     CURVEPOLYGONM = 279,
+     MULTICURVEM = 280,
+     MULTISURFACEM = 281,
+     SRID = 282,
+     EMPTY = 283,
+     VALUE = 284,
+     LPAREN = 285,
+     RPAREN = 286,
+     COMMA = 287,
+     EQUALS = 288,
+     SEMICOLON = 289,
+     WKB = 290
    };
 #endif
 #define POINT 258
@@ -61,22 +71,32 @@
 #define MULTILINESTRING 262
 #define MULTIPOLYGON 263
 #define GEOMETRYCOLLECTION 264
-#define POINTM 265
-#define LINESTRINGM 266
-#define POLYGONM 267
-#define MULTIPOINTM 268
-#define MULTILINESTRINGM 269
-#define MULTIPOLYGONM 270
-#define GEOMETRYCOLLECTIONM 271
-#define SRID 272
-#define EMPTY 273
-#define VALUE 274
-#define LPAREN 275
-#define RPAREN 276
-#define COMMA 277
-#define EQUALS 278
-#define SEMICOLON 279
-#define WKB 280
+#define CIRCULARSTRING 265
+#define COMPOUNDCURVE 266
+#define CURVEPOLYGON 267
+#define MULTICURVE 268
+#define MULTISURFACE 269
+#define POINTM 270
+#define LINESTRINGM 271
+#define POLYGONM 272
+#define MULTIPOINTM 273
+#define MULTILINESTRINGM 274
+#define MULTIPOLYGONM 275
+#define GEOMETRYCOLLECTIONM 276
+#define CIRCULARSTRINGM 277
+#define COMPOUNDCURVEM 278
+#define CURVEPOLYGONM 279
+#define MULTICURVEM 280
+#define MULTISURFACEM 281
+#define SRID 282
+#define EMPTY 283
+#define VALUE 284
+#define LPAREN 285
+#define RPAREN 286
+#define COMMA 287
+#define EQUALS 288
+#define SEMICOLON 289
+#define WKB 290
 
 
 
@@ -87,8 +107,8 @@ typedef union YYSTYPE {
 	double value;
 	const char* wkb;
 } YYSTYPE;
-/* Line 1248 of yacc.c.  */
-#line 91 "y.tab.h"
+/* Line 1275 of yacc.c.  */
+#line 112 "y.tab.h"
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
 # define YYSTYPE_IS_TRIVIAL 1

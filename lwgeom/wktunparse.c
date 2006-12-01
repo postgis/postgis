@@ -237,6 +237,49 @@ uchar *output_multipoint(uchar* geom,int suppress){
 	return output_wkt(geom,suppress);
 }
 
+/* special case for compound to suppress linestring but not circularstring */
+uchar *output_compound(uchar* geom, int suppress) {
+        unsigned type;
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("output_compound called.");
+#endif
+
+        type=*geom++;
+        switch(TYPE_GETTYPE(type)) 
+        {
+                case LINETYPE:
+                        geom = output_collection(geom,output_point,0);
+                        break;
+                case CURVETYPE:
+                        write_str("CIRCULARSTRING");
+                        geom = output_collection(geom,output_point,1);
+                        break;
+        }
+	return geom;
+}
+
+uchar *output_multisurface(uchar* geom, int suppress) {
+        unsigned type;
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("output_multisurface called.");
+#endif
+
+        type=*geom++;
+        switch(TYPE_GETTYPE(type))
+        {
+                case POLYGONTYPE:
+                        geom = output_collection(geom, output_collection_2,0);
+                        break;
+                case CURVEPOLYTYPE:
+                        write_str("CURVEPOLYGON");
+                        geom = output_collection(geom, output_compound,1);
+                        break;
+        }
+        return geom;
+}
+
 /*
  * Suppress=0 -- write TYPE, M, coords
  * Suppress=1 -- write TYPE, coords 
@@ -249,6 +292,10 @@ output_wkt(uchar* geom, int supress)
 	unsigned type=*geom++;
 	char writeM=0;
 	dims = TYPE_NDIMS(type); /* ((type & 0x30) >> 4)+2; */
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("output_wkt called.");
+#endif
 
 	if ( ! supress && !TYPE_HASZ(type) && TYPE_HASM(type) ) writeM=1;
 
@@ -280,6 +327,14 @@ output_wkt(uchar* geom, int supress)
 			}
 			geom = output_collection(geom,output_point,0);
 			break;
+                case CURVETYPE:
+                        if ( supress < 2 )
+                        {
+                                if(writeM) write_str("CIRCULARSTRINGM");
+                                else write_str("CIRCULARSTRING");
+                        }
+                        geom = output_collection(geom,output_point,0);
+                        break;
 		case POLYGONTYPE:
 			if ( supress < 2 )
 			{
@@ -288,6 +343,22 @@ output_wkt(uchar* geom, int supress)
 			}
 			geom = output_collection(geom,output_collection_2,0);
 			break;
+                case COMPOUNDTYPE:
+                        if ( supress < 2 )
+                        {
+                                if (writeM) write_str("COMPOUNDCURVEM");
+                                else write_str("COMPOUNDCURVE");
+                        }
+                        geom = output_collection(geom, output_compound,1);
+                        break;
+                case CURVEPOLYTYPE:
+                        if (supress < 2)
+                        {
+                                if(writeM) write_str("CURVEPOLYGONM");
+                                else write_str("CURVEPOLYGON");
+                        }
+                        geom = output_collection(geom, output_compound,0);
+                        break;
 		case MULTIPOINTTYPE:
 			if ( supress < 2 )
 			{
@@ -304,6 +375,14 @@ output_wkt(uchar* geom, int supress)
 			}
 			geom = output_collection(geom,output_wkt,2);
 			break;
+                case MULTICURVETYPE:
+                        if ( supress < 2 )
+                        {
+                                if (writeM) write_str("MULTICURVEM");
+                                else write_str("MULTICURVE");
+                        }
+                        geom = output_collection(geom,output_compound,2);
+                        break;
 		case MULTIPOLYGONTYPE:
 			if ( supress < 2 )
 			{
@@ -312,6 +391,14 @@ output_wkt(uchar* geom, int supress)
 			}
 			geom = output_collection(geom,output_wkt,2);
 			break;
+                case MULTISURFACETYPE:
+                        if ( supress < 2)
+                        {
+                                if (writeM) write_str("MULTISURFACEM");
+                                else write_str("MULTISURFACE");
+                        } 
+                        geom = output_collection(geom,output_multisurface,2);
+                        break;
 		case COLLECTIONTYPE:
 			if ( supress < 2 )
 			{
@@ -358,6 +445,10 @@ output_wkt(uchar* geom, int supress)
 char *
 unparse_WKT(uchar* serialized, allocator alloc, freeor free)
 {
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("unparse_WKT called.");
+#endif
 
 	if (serialized==NULL)
 		return NULL;
@@ -480,7 +571,6 @@ output_wkb_collection_2(uchar* geom){
 	return output_wkb_collection(geom,output_wkb_point);
 }
 
-
 uchar *
 output_wkb(uchar* geom)
 {
@@ -524,9 +614,20 @@ output_wkb(uchar* geom)
 		case LINETYPE:
 			geom=output_wkb_collection(geom,output_wkb_point);
 			break;
+                case CURVETYPE:
+                        geom=output_wkb_collection(geom,output_wkb_point);
+                        break;
 		case POLYGONTYPE:
 			geom=output_wkb_collection(geom,output_wkb_collection_2);
 			break;
+                case COMPOUNDTYPE:
+                        geom=output_wkb_collection(geom,output_wkb);
+                        break;
+                case CURVEPOLYTYPE:
+                        geom=output_wkb_collection(geom,output_wkb);
+                        break;
+                case MULTICURVETYPE:
+                case MULTISURFACETYPE:
 		case MULTIPOINTTYPE:
 		case MULTILINETYPE:
 		case MULTIPOLYGONTYPE:

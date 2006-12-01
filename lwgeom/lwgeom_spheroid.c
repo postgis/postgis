@@ -205,9 +205,9 @@ distance_ellipse(double lat1, double long1,
 	/*result2 =  distance_sphere_method(lat1, long1,lat2,long2, sphere);*/
 
 #ifdef PGIS_DEBUG
-	elog(NOTICE, "delta = %lf, skae says: %.15lf,2 circle says: %.15lf",
+	/*elog(NOTICE, "delta = %lf, skae says: %.15lf,2 circle says: %.15lf",
 		(result2-result),result,result2);
-	elog(NOTICE,"2 circle says: %.15lf",result2);
+	elog(NOTICE,"2 circle says: %.15lf",result2);*/
 #endif
 
 	if (result != result)  /* NaN check

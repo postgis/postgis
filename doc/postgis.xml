@@ -5326,8 +5326,24 @@ FROM geometry_table;</literallayout>
 	<title>Appendix</title>
 
 	<sect1>
-
+                 
 		<title>Release Notes</title>
+
+                <sect2>
+                        <title>Release 1.1.7</title>
+                        <para>Release date:</para>
+                        <para>This release provides type definitions along
+                            with serialization/deserialization capabilities 
+                            for SQL-MM defined curved geometries, as well as
+                            performance enhancements.
+                        </para>
+                        <sect3>
+                                <title>Changes</title>
+                                <para>Added curved geometry type support for serialization/deserialization</para>
+                                <para>Added point-in-polygon shortcircuit to the Contains and Within functions to improve performance for these cases.</para>
+                        </sect3>
+
+                </sect2>
 
                 <sect2>
                         <title>Release 1.1.6</title>
