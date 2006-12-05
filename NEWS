@@ -1,4 +1,4 @@
-PostGIS 1.1,7
+PostGIS 1.1.7
         - Added curved geometry type support for serialization/deserialization.
         - Added point-in-polygon shortcircuit to Contains and Within functions.
 
