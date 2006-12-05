@@ -19,13 +19,18 @@
 	  Minimum parsing/printing support and struct allocations.
   	* lwgeom/liblwgeom.c, lwgeom/lwgeom_api.c, lwgeom/lwgeom.c:
 	  Included curved types in various switches in generic functions.
-	* lwgeom_functions_analytic.c:
+	* lwgeom/lwgeom_functions_analytic.c:
 	  Added point-in-polygon function
-	* lwgeom_geos_c.c:
+	* lwgeom/lwgeom_geos_c.c:
 	  Added short-circuit for the point-in-polygon case to both Contains
 	  and Within.
-	* Makefile:
-	  Added new files to the makefile
+	* lwgeom/Makefile:
+	  Added new files to the makefile.
+	* regress/sql-mm-serialize.sql, regress/sql-mm-serialize_expected:
+	  Created a regression test set for the serialization/deserialization
+	  of the curved types.
+	* regress/Makefile:
+	  Added the new regression test for curve serialization.
 
 2006-11-29 Markus Schaber <schabi@logix-tt.com>
 
