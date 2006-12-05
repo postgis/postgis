@@ -3,6 +3,30 @@
 	* Added sqlmm.sql.in: ESRI's ArcSDE subset of SQL/MM functions
 	* Moved common sql defines to their own header file.
 
+2006-12-01 Mark Leslie <mleslie@refractions.net>
+
+	* lwgeom/lwcompound.c, lwgeom/lwcurve.c, lwgeom/lwmsurface.c,
+	  lwgeom/lwmcurve.c, lwgeom/lwcurvepoly.c:
+	  Added serialize/deserialize support for curved geometries.
+	* lwgeom/liblwgeom.h:
+	  Added typedefs and minimum function prototypes for curved
+	  geometries.
+	* lwgeom/lwgeom_sqlmm.c:
+	  Functions to determine curve centers for use in creating bounding
+	  boxs.
+	* lwgeom/wktunparse.c, lwgeom/lwgparse.c, lwgeom/wktparse.h, 
+	  lwgeom/wktparse.lex, lwgeom/wktparse.y:
+	  Minimum parsing/printing support and struct allocations.
+  	* lwgeom/liblwgeom.c, lwgeom/lwgeom_api.c, lwgeom/lwgeom.c:
+	  Included curved types in various switches in generic functions.
+	* lwgeom_functions_analytic.c:
+	  Added point-in-polygon function
+	* lwgeom_geos_c.c:
+	  Added short-circuit for the point-in-polygon case to both Contains
+	  and Within.
+	* Makefile:
+	  Added new files to the makefile
+
 2006-11-29 Markus Schaber <schabi@logix-tt.com>
 
 	* Added java/jdbc/jtssrc/org/postgis/jts/JTSShape.java
