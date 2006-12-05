@@ -1,3 +1,7 @@
+2006-11-29 Markus Schaber <schabi@logix-tt.com>
+
+	* Added java/jdbc/jtssrc/org/postgis/jts/JTSShape.java
+
 2006-11-22 Markus Schaber <schabi@logix-tt.com>
 
 	* java/ejb3/src/org/postgis/hibernate/GeometryType.java

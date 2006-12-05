@@ -1,6 +1,9 @@
 PostGIS 1.1.7
+(not released yet)
         - Added curved geometry type support for serialization/deserialization.
         - Added point-in-polygon shortcircuit to Contains and Within functions.
+        - JDBC: Added awt.shape implementation for JTS geometries
+        - EJB3: Fixed NullPointer bug, thanks to Norman Barker
 
 PostGIS 1.1.6
 2006/11/02
