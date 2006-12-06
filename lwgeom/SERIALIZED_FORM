@@ -55,6 +55,12 @@ Type values:
       wkbMultiPolygon = 6
       wkbGeometryCollection = 7
 
+* Note that the following values do not correspond to wkb type values.
+      CircularString = 8
+      CompoundCurve = 9
+      CurvePolygon = 13
+      MultiCurve = 14
+      MultiSurface = 15
 
 ==Bounding box and SRID==
 
@@ -119,6 +125,24 @@ A LineString geometry is as follows:
 	<UINT32> -- number of elements in following ORDINATE_ARRAY
 	<ORDINATE_ARRAY>
 
+=CircularString=
+
+A CircularString geometry is as follows:
+
+        <COMMON_HEADER>
+        <UINT32> -- number of elements in following ORDINATE_ARRAY
+        <ORDINATE_ARRAY>
+
+=CompoundString=
+
+A CompoundString geometry is as follows:
+
+        <COMMON_HEADER>
+        <UINT32> -- number of segments
+        One or more geometries as specified by previous uint32:
+                <SERIALIZED_GEOMETRY> -- Must be some combination of 
+                                         LineStrings and CircularStrings.
+
 =Polygon=
 
 A Polygon geometry is as follows:
@@ -131,6 +155,17 @@ A Polygon geometry is as follows:
 
 		<UINT32> -- number of elements in following ORDINATE_ARRAY
 		<ORDINATE_ARRAY> -- single element
+
+=CurvePolygon=                
+
+A CurvePolygon geometry is as follows:
+
+        <COMMON_HEADER>
+        <UINT32> -- number of rings
+        One or more geometries as specified by previous uint32:
+                <SERIALIZED_GEOMETRY> -- Must be some combination of 
+                                         LineStrings and CircularStrings.
+                                         CompoundString are not yet supported.
 
 =Collections=
 
