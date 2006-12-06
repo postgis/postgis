@@ -4947,6 +4947,810 @@
 
       &long_xact;
     </sect1>
+
+    <sect1>
+      <title>SQL-MM Functions</title>
+
+      <para>This is a listing of the SQL-MM defined functions that PostGIS
+      currently supports. The implementations of these functions follow the
+      ArcSDE implementation, and thus deviate somewhat from the spec. These
+      deviations will be noted.</para>
+
+      <para>As of version 1.2.0, these functions have been implemented by
+      wrapping existing PostGIS functions. As a result, full support for
+      curved geometries may not be in place for many functions.</para>
+
+      <note>
+        <para>SQL-MM defines the default SRID of all geometry constructors as
+        0. PostGIS uses a default SRID of -1.</para>
+      </note>
+
+      <variablelist>
+        <varlistentry>
+          <term>ST_Area</term>
+
+          <listitem>
+            <para>Return the area measurement of an ST_Surface or
+            ST_MultiSurface value.</para>
+
+            <para>SQL-MM 3: 8.1.2, 9.5.3</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_AsBinary</term>
+
+          <listitem>
+            <para>Return the well-known binary representation of an
+            ST_Geometry value.</para>
+
+            <para>SQL-MM 3: 5.1.37</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_AsText</term>
+
+          <listitem>
+            <para>Return the well-known text representation of an ST_Geometry
+            value.</para>
+
+            <para>SQL-MM 3: 5.1.25</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Boundary</term>
+
+          <listitem>
+            <para>Return the boundary of the ST_Geometry value.</para>
+
+            <para>SQL-MM 3: 5.1.14</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Buffer</term>
+
+          <listitem>
+            <para>Return a buffer around the ST_Geometry value.</para>
+
+            <para>SQL-MM 3: 5.1.17</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Centroid</term>
+
+          <listitem>
+            <para>Return mathematical centroid of the ST_Surface or
+            ST_MultiSurface value.</para>
+
+            <para>SQL-MM 3: 8.1.4, 9.5.5</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Contains</term>
+
+          <listitem>
+            <para>Test if an ST_Geometry value spatially contains another
+            ST_Geometry value.</para>
+
+            <para>SQL-MM 3: 5.1.31</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_ConvexHull</term>
+
+          <listitem>
+            <para>Return the convex hull of the ST_Geometry value.</para>
+
+            <para>SQL-MM 3: 5.1.16</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_CoordDim</term>
+
+          <listitem>
+            <para>Return the coodinate dimension of the ST_Geometry value.</para>
+
+            <para>SQL-MM 3: 5.1.3</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Crosses</term>
+
+          <listitem>
+            <para>Test if an ST_Geometry value spatially crosses another
+            ST_Geometry value.</para>
+
+            <para>SQL-MM 3: 5.1.29</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Difference</term>
+
+          <listitem>
+            <para>Return an ST_Geometry value that represents the point set
+            difference of two ST_Geometry values.</para>
+
+            <para>SQL-MM 3: 5.1.20</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Dimension</term>
+
+          <listitem>
+            <para>Return the dimension of the ST_Geometry value.</para>
+
+            <para>SQL-MM 3: 5.1.2</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Disjoint</term>
+
+          <listitem>
+            <para>Test if an ST_Geometry value is spatially disjoint from
+            another ST_Geometry value.</para>
+
+            <para>SQL-MM 3: 5.1.26</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Distance</term>
+
+          <listitem>
+            <para>Return the distance between two geometries.</para>
+
+            <para>SQL-MM 3: 5.1.23</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_EndPoint</term>
+
+          <listitem>
+            <para>Return an ST_Point value that is the end point of an
+            ST_Curve value.</para>
+
+            <para>SQL-MM 3: 7.1.4</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Envelope</term>
+
+          <listitem>
+            <para>Return the bounding rectangle for the ST_Geometry value.</para>
+
+            <para>SQL-MM 3: 5.1.15</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Equals</term>
+
+          <listitem>
+            <para>Test if an ST_Geometry alue as spatially equal to another
+            ST_Geometry value.</para>
+
+            <para>SQL-MM 3: 5.1.24</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_ExteriorRing</term>
+
+          <listitem>
+            <para>Return the exterior ring of an ST_Surface</para>
+
+            <para>SQL-MM 3: 8.2.3, 8.3.3</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_GeometryN</term>
+
+          <listitem>
+            <para>Return the indicated ST_Geometry value from an
+            ST_GeomCollection.</para>
+
+            <para>SQL-MM 3: 9.1.5</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_GeometryType</term>
+
+          <listitem>
+            <para>Return the geometry type of the ST_Geometry value.</para>
+
+            <para>SQL-MM 3: 5.1.4</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_GeomFromText</term>
+
+          <listitem>
+            <para>Return a specified ST_Geometry value.</para>
+
+            <para>SQL-MM 3: 5.1.40</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_GeomFromWKB</term>
+
+          <listitem>
+            <para>Return a specified ST_Geometry value.</para>
+
+            <para>SQL-MM 3: 5.1.41</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_InteriorRingN</term>
+
+          <listitem>
+            <para>Return the specified interior ring of an ST_Surface value.</para>
+
+            <para>SQL-MM 3: 8.2.6, 8.3.5</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Intersection</term>
+
+          <listitem>
+            <para>Return an ST_Geometry value that represents the point set
+            intersection of two ST_Geometry values.</para>
+
+            <para>SQL-MM 3: 5.1.18</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Intersects</term>
+
+          <listitem>
+            <para>Test if an ST_Geometry value spatially intersects another
+            ST_Geometry value.</para>
+
+            <para>SQL-MM 3: 5.1.27</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_IsClosed</term>
+
+          <listitem>
+            <para>Test if an ST_Curve or ST_MultiCurve value is closed.</para>
+
+            <note>
+              <para>SQL-MM defines the result of ST_IsClosed(NULL) to be 0,
+              while PostGIS returns NULL.</para>
+            </note>
+
+            <para>SQL-MM 3: 7.1.5, 9.3.3</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_IsEmpty</term>
+
+          <listitem>
+            <para>Test if an ST_Geometry value corresponds to the empty set.</para>
+
+            <note>
+              <para>SQL-MM defines the result of ST_IsEmpty(NULL) to be 0,
+              while PostGIS returns NULL.</para>
+            </note>
+
+            <para>SQL-MM 3: 5.1.7</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_IsRing</term>
+
+          <listitem>
+            <para>Test if an ST_Curve value is a ring.</para>
+
+            <note>
+              <para>SQL-MM defines the result of ST_IsRing(NULL) to be 0,
+              while PostGIS returns NULL.</para>
+            </note>
+
+            <para>SQL-MM 3: 7.1.6</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_IsSimple</term>
+
+          <listitem>
+            <para>Test if an ST_Geometry value has no anomalous geometryc
+            points, such as self intersection or self tangency.</para>
+
+            <note>
+              <para>SQL-MM defines the result of ST_IsSimple(NULL) to be 0,
+              while PostGIS returns NULL.</para>
+            </note>
+
+            <para>SQL-MM 3: 5.1.8</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_IsValid</term>
+
+          <listitem>
+            <para>Test if an ST_Geometry value is well formed.</para>
+
+            <note>
+              <para>SQL-MM defines the result of ST_IsValid(NULL) to be 0,
+              while PostGIS returns NULL.</para>
+            </note>
+
+            <para>QL-MM defines the result of ST_IsValid(NULL) to be 1</para>
+
+            <para>SQL-MM 3: 5.1.9</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Length</term>
+
+          <listitem>
+            <para>Return the length measurement of an ST_Curve or
+            ST_MultiCurve value.</para>
+
+            <para>SQL-MM 3: 7.1.2, 9.3.4</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_LineFromText</term>
+
+          <listitem>
+            <para>Return a specified ST_LineString value.</para>
+
+            <para>SQL-MM 3: 7.2.8</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_LineFromWKB</term>
+
+          <listitem>
+            <para>Return a specified ST_LineString value.</para>
+
+            <para>SQL-MM 3: 7.2.9</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_MLineFromText</term>
+
+          <listitem>
+            <para>Return a specified ST_MultiLineString value.</para>
+
+            <para>SQL-MM 3: 9.4.4</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_MLineFromWKB</term>
+
+          <listitem>
+            <para>Return a specified ST_MultiLineString value.</para>
+
+            <para>SQL-MM 3: 9.4.5</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_MPointFromText</term>
+
+          <listitem>
+            <para>Return a specified ST_MultiPoint value.</para>
+
+            <para>SQL-MM 3: 9.2.4</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_MPointFromWKB</term>
+
+          <listitem>
+            <para>Return a specified ST_MultiPoint value.</para>
+
+            <para>SQL-MM 3: 9.2.5</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_MPolyFromText</term>
+
+          <listitem>
+            <para>Return a specified ST_MultiPolygon value.</para>
+
+            <para>SQL-MM 3: 9.6.4</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_MPolyFromWKB</term>
+
+          <listitem>
+            <para>Return a specified ST_MultiPolygon value.</para>
+
+            <para>SQL-MM 3: 9.6.5</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_NumGeometries</term>
+
+          <listitem>
+            <para>Return the number of geometries in an ST_GeomCollection.</para>
+
+            <para>SQL-MM 3: 9.1.4</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_NumInteriorRing</term>
+
+          <listitem>
+            <para>Return the number of interior rings in an ST_Surface.</para>
+
+            <para>SQL-MM 3: 8.2.5</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_NumPoints</term>
+
+          <listitem>
+            <para>Return the number of points in an ST_LineString or
+            ST_CircularString value.</para>
+
+            <para>SQL-MM 3: 7.2.4</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_OrderingEquals</term>
+
+          <listitem>
+            <para>ST_OrderingEquals compares two geometries and t (TRUE) if
+            the geometries are equal and the coordinates are in the same
+            order; otherwise it returns f (FALSE).</para>
+
+            <note>
+              <para>This function is implemented as per the ArcSDE SQL
+              specification rather than SQL-MM.
+              http://edndoc.esri.com/arcsde/9.1/sql_api/sqlapi3.htm#ST_OrderingEquals</para>
+            </note>
+
+            <para>SQL-MM 3: 5.1.43</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Overlaps</term>
+
+          <listitem>
+            <para>Test if an ST_Geometry value spatially overlays another
+            ST_Geometry value.</para>
+
+            <para>SQL-MM 3: 5.1.32</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Perimeter</term>
+
+          <listitem>
+            <para>Return the length measurement of the boundary of an
+            ST_Surface or ST_MultiRSurface value.</para>
+
+            <para>SQL-MM 3: 8.1.3, 9.5.4</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Point</term>
+
+          <listitem>
+            <para>Returns an ST_Point with the given coordinate values.</para>
+
+            <para>SQL-MM 3: 6.1.2</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_PointFromText</term>
+
+          <listitem>
+            <para>Return a specified ST_Point value.</para>
+
+            <para>SQL-MM 3: 6.1.8</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_PointFromWKB</term>
+
+          <listitem>
+            <para>Return a specified ST_Point value.</para>
+
+            <para>SQL-MM 3: 6.1.9</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_PointN</term>
+
+          <listitem>
+            <para>Return the specified ST_Point value in an ST_LineString or
+            ST_CircularString</para>
+
+            <para>SQL-MM 3: 7.2.5, 7.3.5</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_PointOnSurface</term>
+
+          <listitem>
+            <para>Return an ST_Point value guaranteed to spatially intersect
+            the ST_Surface or ST_MultiSurface value.</para>
+
+            <para>SQL-MM 3: 8.1.5, 9.5.6</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_PolyFromText</term>
+
+          <listitem>
+            <para>Return a specified ST_Polygon value.</para>
+
+            <para>SQL-MM 3: 8.3.6</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_PolyFromWKB</term>
+
+          <listitem>
+            <para>Return a specified ST_Polygon value.</para>
+
+            <para>SQL-MM 3: 8.3.7</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Polygon</term>
+
+          <listitem>
+            <para>Return a polygon build from the specified linestring and
+            SRID.</para>
+
+            <para>SQL-MM 3: 8.3.2</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Relate</term>
+
+          <listitem>
+            <para>Test if an ST_Geometry value is spatially related to another
+            ST_Geometry value.</para>
+
+            <para>SQL-MM 3: 5.1.25</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_SRID</term>
+
+          <listitem>
+            <para>Return the spatial reference system identifier of the
+            ST_Geometry value.</para>
+
+            <para>SQL-MM 3: 5.1.5</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_StartPoint</term>
+
+          <listitem>
+            <para>Return an ST_Point value that is the start point of an
+            ST_Curve value.</para>
+
+            <para>SQL-MM 3: 7.1.3</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_SymDifference</term>
+
+          <listitem>
+            <para>Return an ST_Geometry value that represents the point set
+            symmetrcy difference of two ST_Geometry values.</para>
+
+            <para>SQL-MM 3: 5.1.21</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Touches</term>
+
+          <listitem>
+            <para>Test if an ST_Geometry value spatially touches another
+            ST_Geometry value.</para>
+
+            <para>SQL-MM 3: 5.1.28</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Transform</term>
+
+          <listitem>
+            <para>Return an ST_Geometry value transformed to the specified
+            spatial reference system.</para>
+
+            <para>SQL-MM 3: 5.1.6</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Union</term>
+
+          <listitem>
+            <para>Return an ST_Geometry value that represents the point set
+            union of two sST_Geometry values.</para>
+
+            <para>SQL-MM 3: 5.1.19</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Within</term>
+
+          <listitem>
+            <para>Test if an ST_Geometry value is spatially within another
+            ST_Geometry value.</para>
+
+            <para>SQL-MM 3: 5.1.30</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_WKBToSQL</term>
+
+          <listitem>
+            <para>Return an ST_Geometry value for a given well-known binary
+            representation.</para>
+
+            <para>SQL-MM 3: 5.1.36</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_WKTToSQL</term>
+
+          <listitem>
+            <para>Return an ST_Geometry value for a given well-known text
+            representation.</para>
+
+            <para>SQL-MM 3: 5.1.34</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_X</term>
+
+          <listitem>
+            <para>Returns the x coordinate value of an ST_Point value.</para>
+
+            <para>SQL-MM 3: 6.1.3</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Y</term>
+
+          <listitem>
+            <para>Returns the y coordinate value of an ST_Point value.</para>
+
+            <para>SQL-MM 3: 6.1.4</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </sect1>
+
+    <sect1>
+      <title>ArcSDE Functions</title>
+
+      <para>Additional functions have been added to improve support for an
+      ArcSDE style interface.</para>
+
+      <variablelist>
+        <varlistentry>
+          <term>SE_EnvelopesIntersect</term>
+
+          <listitem>
+            <para>Returns t (TRUE) if the envelopes of two geometries
+            intersect; otherwise, it returns f (FALSE).</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>SE_Is3d</term>
+
+          <listitem>
+            <para>Test if a geometry value has z coordinate values.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>SE_IsMeasured</term>
+
+          <listitem>
+            <para>Test if a geometry value has m coordinate values.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>SE_LocateAlong</term>
+
+          <listitem>
+            <para>Return a derived geometry collection value with elements
+            that match the specified measur.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>SE_LocateBetween</term>
+
+          <listitem>
+            <para>Return a derived geometry collection value with elements
+            that match the specified range of measures inclusively.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>SE_M</term>
+
+          <listitem>
+            <para>Returns the m coordinate value of an ST_Point value.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>SE_Z</term>
+
+          <listitem>
+            <para>Returns the z coordinate value of an ST_Point value</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </sect1>
   </chapter>
 
   <chapter>
