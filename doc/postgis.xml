@@ -5786,9 +5786,9 @@
       <title>Release Notes</title>
 
       <sect2>
-        <title>Release 1.1.7</title>
+        <title>Release 1.2.0</title>
 
-        <para>Release date:</para>
+        <para>Release date: 2006/12/08</para>
 
         <para>This release provides type definitions along with
         serialization/deserialization capabilities for SQL-MM defined curved
