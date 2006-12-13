@@ -213,7 +213,7 @@ in "custom" format. The hard upgrade procedure is as follows:
 	# If you did make additions we assume you know how to backup them before
 	# upgrading the table. Replace it with the new like this:
 	$ psql newdb
-	newdb=> drop table spatial_ref_sys;
+	newdb=> DELETE FROM spatial_ref_sys;
 	DROP
 	newdb=> \i spatial_ref_sys.sql
 
