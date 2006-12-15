@@ -4,10 +4,13 @@
 	  New AsKML() function
 	* doc/postgis.xml: document new AsKML function.
 
+
 2006-12-13 Markus Schaber <schabi@logix-tt.com>
 
 	* README.postgis
           Fixed "hard upgrade" instructions.
+
+---------  PostGIS-1.2.0 release [2006-12-08] --------------------------
 
 2006-12-05 Mark Leslie <mleslie@refractions.net>
 
