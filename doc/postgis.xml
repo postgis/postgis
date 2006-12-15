@@ -4163,6 +4163,13 @@
               in output (defaults to 15).</para>
             </listitem>
           </varlistentry>
+
+          <varlistentry>
+            <term>AsKML(geometry, [precision])</term>
+            <listitem>
+              <para>Return the geometry as a KML element.  Second argument may be used to reduce the maximum number of significant digits used in output (defaults to 15).</para>
+            </listitem>
+          </varlistentry>
         </variablelist>
       </sect2>
 

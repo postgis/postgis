@@ -3057,6 +3057,45 @@ CREATEFUNCTION AsGML(geometry)
 	AS '@MODULE_FILENAME@','LWGEOM_asGML'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-----------------------------------------------------------------------
+-- KML OUTPUT
+-----------------------------------------------------------------------
+-- AsUKML(geom, precision, version)
+CREATEFUNCTION AsUKML(geometry, int4, int4)
+	RETURNS TEXT
+	AS '@MODULE_FILENAME@','LWGEOM_asKML'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- AsUKML(geom, precision) / version=2
+CREATEFUNCTION AsUKML(geometry, int4)
+	RETURNS TEXT
+	AS '@MODULE_FILENAME@','LWGEOM_asKML'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- AsUKML(geom) / precision=15 version=2
+CREATEFUNCTION AsUKML(geometry)
+	RETURNS TEXT
+	AS '@MODULE_FILENAME@','LWGEOM_asKML'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- AsKML(geom, precision, version)
+CREATE OR REPLACE FUNCTION AsKML(geometry, int4, int4)
+	RETURNS TEXT
+	AS 'SELECT AsUKML(transform($1,4326),$2,$3)' 
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- AsKML(geom, precision) / version=2
+CREATE OR REPLACE FUNCTION AsKML(geometry, int4) 
+	RETURNS TEXT
+	AS 'SELECT AsUKML(transform($1,4326),$2)' 
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- AsKML(geom) / precision=15 version=2
+CREATE OR REPLACE FUNCTION AsKML(geometry) 
+	RETURNS TEXT
+	AS 'SELECT AsUKML(transform($1,4326))' 
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
 ------------------------------------------------------------------------
 -- OGC defined
 ------------------------------------------------------------------------
