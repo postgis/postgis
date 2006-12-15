@@ -1,5 +1,10 @@
 2006-12-15 Eduin Carrillo <yecarrillo@yahoo.com>
 
+	* lwgeom/lwgeom_transform.c:
+	  short circuit when source and target SRID are the same.
+
+2006-12-15 Eduin Carrillo <yecarrillo@yahoo.com>
+
 	* lwgeom/: Makefile, lwgeom_kml.c, lwpostgis.sql.in:
 	  New AsKML() function
 	* doc/postgis.xml: document new AsKML function.
