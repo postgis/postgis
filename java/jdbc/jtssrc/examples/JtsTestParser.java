@@ -26,15 +26,6 @@
 
 package examples;
 
-import org.postgis.binary.ValueSetter;
-import org.postgis.jts.JtsBinaryParser;
-import org.postgis.jts.JtsBinaryWriter;
-import org.postgis.jts.JtsGeometry;
-
-import org.postgresql.util.PGtokenizer;
-
-import com.vividsolutions.jts.geom.Geometry;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -43,6 +34,22 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 
+import org.postgis.binary.ValueSetter;
+import org.postgis.jts.JtsBinaryParser;
+import org.postgis.jts.JtsBinaryWriter;
+import org.postgis.jts.JtsGeometry;
+import org.postgresql.util.PGtokenizer;
+
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryCollection;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
+
 public class JtsTestParser {
 
     public static String ALL = "ALL", ONLY10 = "ONLY10", EQUAL10 = "EQUAL10";
@@ -50,79 +57,53 @@ public class JtsTestParser {
     /**
      * Our set of geometries to test.
      */
-    public static final String[][] testset = new String[][]{
-        {
-            ALL, // 2D
-            "POINT(10 10)"},
-        {
-            ALL, // 3D with 3rd coordinate set to 0
-            "POINT(10 10 0)"},
-        {
-            ALL, // 3D
-            "POINT(10 10 20)"},
-        {
-            ALL,
-            "MULTIPOINT(11 12, 20 20)"},
-        {
-            ALL,
-            "MULTIPOINT(11 12 13, 20 20 20)"},
-        {
-            ALL,
-            "LINESTRING(10 10,20 20,50 50,34 34)"},
-        {
-            ALL,
-            "LINESTRING(10 10 20,20 20 20,50 50 50,34 34 34)"},
-        {
-            ALL,
-            "POLYGON((10 10,20 10,20 20,20 10,10 10),(5 5,5 6,6 6,6 5,5 5))"},
-        {
-            ALL,
-            "POLYGON((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0))"},
-        {
-            ALL,
-            "MULTIPOLYGON(((10 10,20 10,20 20,20 10,10 10),(5 5,5 6,6 6,6 5,5 5)),((10 10,20 10,20 20,20 10,10 10),(5 5,5 6,6 6,6 5,5 5)))"},
-        {
-            ALL,
-            "MULTIPOLYGON(((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)),((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)))"},
-        {
-            ALL,
-            "MULTILINESTRING((10 10,20 10,20 20,20 10,10 10),(5 5,5 6,6 6,6 5,5 5))"},
-        {
-            ALL,
-            "MULTILINESTRING((10 10 5,20 10 5,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0))"},
-        {
-            ALL,
-            "GEOMETRYCOLLECTION(POINT(10 10),POINT(20 20))"},
-        {
-            ALL,
-            "GEOMETRYCOLLECTION(POINT(10 10 20),POINT(20 20 20))"},
-        {
-            ALL,
-            "GEOMETRYCOLLECTION(LINESTRING(10 10 20,20 20 20, 50 50 50, 34 34 34),LINESTRING(10 10 20,20 20 20, 50 50 50, 34 34 34))"},
-        {
-            ALL,
-            "GEOMETRYCOLLECTION(POLYGON((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)),POLYGON((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)))"},
-        {
-            ONLY10, // Cannot be parsed by 0.X servers
-            "GEOMETRYCOLLECTION(MULTIPOINT(10 10 10, 20 20 20),MULTIPOINT(10 10 10, 20 20 20))"},
-        {
-            EQUAL10, // PostGIs 0.X "flattens" this geometry, so it is not
-            // equal after reparsing.
-            "GEOMETRYCOLLECTION(MULTILINESTRING((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)))"},
-        {
-            EQUAL10,// PostGIs 0.X "flattens" this geometry, so it is not equal
-            // after reparsing.
-            "GEOMETRYCOLLECTION(MULTIPOLYGON(((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)),((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0))),MULTIPOLYGON(((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)),((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0))))"},
-        {
-            ALL,
-            "GEOMETRYCOLLECTION(POINT(10 10 20),LINESTRING(10 10 20,20 20 20, 50 50 50, 34 34 34),POLYGON((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)))"},
-        {
-            ONLY10, // Collections that contain both X and MultiX do not work on
-            // PostGIS 0.x
-            "GEOMETRYCOLLECTION(POINT(10 10 20),MULTIPOINT(10 10 10, 20 20 20),LINESTRING(10 10 20,20 20 20, 50 50 50, 34 34 34),POLYGON((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)),MULTIPOLYGON(((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)),((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0))),MULTILINESTRING((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)))"},
-        {
-            ALL,// new (correct) representation
-            "GEOMETRYCOLLECTION EMPTY"},
+    public static final String[][] testset = new String[][] {
+            { ALL, // 2D
+                    "POINT(10 10)" },
+            { ALL, // 3D with 3rd coordinate set to 0
+                    "POINT(10 10 0)" },
+            { ALL, // 3D
+                    "POINT(10 10 20)" },
+            { ALL, "MULTIPOINT(11 12, 20 20)" },
+            { ALL, "MULTIPOINT(11 12 13, 20 20 20)" },
+            { ALL, "LINESTRING(10 10,20 20,50 50,34 34)" },
+            { ALL, "LINESTRING(10 10 20,20 20 20,50 50 50,34 34 34)" },
+            { ALL, "POLYGON((10 10,20 10,20 20,20 10,10 10),(5 5,5 6,6 6,6 5,5 5))" },
+            { ALL, "POLYGON((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0))" },
+            {
+                    ALL,
+                    "MULTIPOLYGON(((10 10,20 10,20 20,20 10,10 10),(5 5,5 6,6 6,6 5,5 5)),((10 10,20 10,20 20,20 10,10 10),(5 5,5 6,6 6,6 5,5 5)))" },
+            {
+                    ALL,
+                    "MULTIPOLYGON(((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)),((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)))" },
+            { ALL, "MULTILINESTRING((10 10,20 10,20 20,20 10,10 10),(5 5,5 6,6 6,6 5,5 5))" },
+            { ALL, "MULTILINESTRING((10 10 5,20 10 5,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0))" },
+            { ALL, "GEOMETRYCOLLECTION(POINT(10 10),POINT(20 20))" },
+            { ALL, "GEOMETRYCOLLECTION(POINT(10 10 20),POINT(20 20 20))" },
+            {
+                    ALL,
+                    "GEOMETRYCOLLECTION(LINESTRING(10 10 20,20 20 20, 50 50 50, 34 34 34),LINESTRING(10 10 20,20 20 20, 50 50 50, 34 34 34))" },
+            {
+                    ALL,
+                    "GEOMETRYCOLLECTION(POLYGON((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)),POLYGON((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)))" },
+            { ONLY10, // Cannot be parsed by 0.X servers
+                    "GEOMETRYCOLLECTION(MULTIPOINT(10 10 10, 20 20 20),MULTIPOINT(10 10 10, 20 20 20))" },
+            { EQUAL10, // PostGIs 0.X "flattens" this geometry, so it is not
+                    // equal after reparsing.
+                    "GEOMETRYCOLLECTION(MULTILINESTRING((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)))" },
+            { EQUAL10,// PostGIs 0.X "flattens" this geometry, so it is not
+                        // equal
+                    // after reparsing.
+                    "GEOMETRYCOLLECTION(MULTIPOLYGON(((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)),((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0))),MULTIPOLYGON(((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)),((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0))))" },
+            {
+                    ALL,
+                    "GEOMETRYCOLLECTION(POINT(10 10 20),LINESTRING(10 10 20,20 20 20, 50 50 50, 34 34 34),POLYGON((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)))" },
+            { ONLY10, // Collections that contain both X and MultiX do not
+                        // work on
+                    // PostGIS 0.x
+                    "GEOMETRYCOLLECTION(POINT(10 10 20),MULTIPOINT(10 10 10, 20 20 20),LINESTRING(10 10 20,20 20 20, 50 50 50, 34 34 34),POLYGON((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)),MULTIPOLYGON(((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)),((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0))),MULTILINESTRING((10 10 0,20 10 0,20 20 0,20 10 0,10 10 0),(5 5 0,5 6 0,6 6 0,6 5 0,5 5 0)))" },
+            { ALL,// new (correct) representation
+                    "GEOMETRYCOLLECTION EMPTY" },
     // end
     };
 
@@ -136,6 +117,7 @@ public class JtsTestParser {
     public static int failcount = 0;
 
     private static JtsBinaryParser bp = new JtsBinaryParser();
+
     private static final JtsBinaryWriter bw = new JtsBinaryWriter();
 
     /** The actual test method */
@@ -143,12 +125,21 @@ public class JtsTestParser {
         System.out.println("Original:  " + WKT);
         Geometry geom = JtsGeometry.geomFromString(WKT);
         String parsed = geom.toString();
+        if (WKT.startsWith("SRID=")) {
+            parsed = "SRID="+geom.getSRID()+";"+parsed;
+        }
         System.out.println("Parsed:    " + parsed);
         Geometry regeom = JtsGeometry.geomFromString(parsed);
         String reparsed = regeom.toString();
+        if (WKT.startsWith("SRID=")) {
+            reparsed = "SRID="+geom.getSRID()+";"+reparsed;
+        }
         System.out.println("Re-Parsed: " + reparsed);
         if (!geom.equalsExact(regeom)) {
             System.out.println("--- Geometries are not equal!");
+            failcount++;
+        } else if (geom.getSRID() != regeom.getSRID()) {
+            System.out.println("--- Geometriy SRIDs are not equal!");
             failcount++;
         } else if (!reparsed.equals(parsed)) {
             System.out.println("--- Text Reps are not equal!");
@@ -157,7 +148,7 @@ public class JtsTestParser {
             System.out.println("Equals:    yes");
         }
 
-        String hexNWKT = bw.writeHexed(regeom, ValueSetter.NDR.NUMBER);
+        String hexNWKT = bw.writeHexed(geom, ValueSetter.NDR.NUMBER);
         System.out.println("NDRHex:    " + hexNWKT);
         regeom = JtsGeometry.geomFromString(hexNWKT);
         System.out.println("ReNDRHex:  " + regeom.toString());
@@ -168,7 +159,7 @@ public class JtsTestParser {
             System.out.println("Equals:    yes");
         }
 
-        String hexXWKT = bw.writeHexed(regeom, ValueSetter.XDR.NUMBER);
+        String hexXWKT = bw.writeHexed(geom, ValueSetter.XDR.NUMBER);
         System.out.println("XDRHex:    " + hexXWKT);
         regeom = JtsGeometry.geomFromString(hexXWKT);
         System.out.println("ReXDRHex:  " + regeom.toString());
@@ -179,7 +170,7 @@ public class JtsTestParser {
             System.out.println("Equals:    yes");
         }
 
-        byte[] NWKT = bw.writeBinary(regeom, ValueSetter.NDR.NUMBER);
+        byte[] NWKT = bw.writeBinary(geom, ValueSetter.NDR.NUMBER);
         regeom = bp.parse(NWKT);
         System.out.println("NDR:       " + regeom.toString());
         if (!geom.equalsExact(regeom)) {
@@ -189,7 +180,7 @@ public class JtsTestParser {
             System.out.println("Equals:    yes");
         }
 
-        byte[] XWKT = bw.writeBinary(regeom, ValueSetter.XDR.NUMBER);
+        byte[] XWKT = bw.writeBinary(geom, ValueSetter.XDR.NUMBER);
         regeom = bp.parse(XWKT);
         System.out.println("XDR:       " + regeom.toString());
         if (!geom.equalsExact(regeom)) {
@@ -199,14 +190,32 @@ public class JtsTestParser {
             System.out.println("Equals:    yes");
         }
 
+        Geometry coordArrayGeom = rebuildCS(geom);
+        System.out.println("CoordArray:" + regeom.toString());
+        if (!geom.equalsExact(coordArrayGeom)) {
+            System.out.println("--- Geometries are not equal!");
+            failcount++;
+        } else {
+            System.out.println("Equals:    yes");
+        }
+
+        String coordArrayWKT = bw.writeHexed(coordArrayGeom, ValueSetter.NDR.NUMBER);
+        System.out.println("HexCArray: " + coordArrayWKT);
+        if (!coordArrayWKT.equals(hexNWKT)) {
+            System.out.println("--- CoordArray HexWKT is not equal: "+bp.parse(coordArrayWKT));
+            failcount++;
+        } else {
+            System.out.println("HexEquals: yes");
+        }
+
         for (int i = 0; i < conns.length; i++) {
             Connection connection = conns[i];
             Statement statement = connection.createStatement();
             int serverPostgisMajor = TestAutoregister.getPostgisMajor(statement);
 
             if ((flags == ONLY10) && serverPostgisMajor < 1) {
-                System.out.println("PostGIS server too old, skipping test on connection " + i
-                        + ": " + connection.getCatalog());
+                System.out.println("PostGIS server too old, skipping test on connection " + i + ": "
+                        + connection.getCatalog());
             } else {
                 System.out.println("Testing on connection " + i + ": " + connection.getCatalog());
                 try {
@@ -215,8 +224,7 @@ public class JtsTestParser {
                     if (!geom.equalsExact(sqlGeom)) {
                         System.out.println("--- Geometries after SQL are not equal!");
                         if (flags == EQUAL10 && serverPostgisMajor < 1) {
-                            System.out.println("--- This is expected with PostGIS "
-                                    + serverPostgisMajor + ".X");
+                            System.out.println("--- This is expected with PostGIS " + serverPostgisMajor + ".X");
                         } else {
                             failcount++;
                         }
@@ -234,8 +242,7 @@ public class JtsTestParser {
                     if (!geom.equalsExact(sqlreGeom)) {
                         System.out.println("--- reparsed Geometries after SQL are not equal!");
                         if (flags == EQUAL10 && serverPostgisMajor < 1) {
-                            System.out.println("--- This is expected with PostGIS "
-                                    + serverPostgisMajor + ".X");
+                            System.out.println("--- This is expected with PostGIS " + serverPostgisMajor + ".X");
                         } else {
                             failcount++;
                         }
@@ -253,8 +260,7 @@ public class JtsTestParser {
                     if (!geom.equalsExact(sqlreGeom)) {
                         System.out.println("--- reparsed Geometries after prepared StatementSQL are not equal!");
                         if (flags == EQUAL10 && serverPostgisMajor < 1) {
-                            System.out.println("--- This is expected with PostGIS "
-                                    + serverPostgisMajor + ".X");
+                            System.out.println("--- This is expected with PostGIS " + serverPostgisMajor + ".X");
                         } else {
                             failcount++;
                         }
@@ -370,6 +376,97 @@ public class JtsTestParser {
             statement.close();
         }
         System.out.println("***");
+    }
+
+    // Rebuild given Geometry with a CoordinateArraySequence implementation. 
+    public static Geometry rebuildCS(Geometry geom) {        
+        if (geom instanceof Point) {
+            return rebuildCSPoint((Point)geom);
+        } else if (geom instanceof MultiPoint) {
+            return rebuildCSMP((MultiPoint)geom);
+        } else if (geom instanceof LineString) {
+            return rebuildCSLS((LineString)geom);
+        } else if (geom instanceof MultiLineString) {
+            return rebuildCSMLS((MultiLineString)geom);
+        } else if (geom instanceof Polygon) {
+            return rebuildCSP((Polygon)geom);
+        } else if (geom instanceof MultiPolygon) {
+            return rebuildCSMP((MultiPolygon)geom);
+        } else if (geom instanceof GeometryCollection) {
+            return rebuildCSGC((GeometryCollection)geom);
+        } else {
+            throw new AssertionError();
+        }
+    }
+
+    private static Geometry rebuildCSGC(GeometryCollection coll) {
+        Geometry[] geoms = new Geometry[coll.getNumGeometries()];
+        for (int i = 0; i < coll.getNumGeometries(); i++) {
+            geoms[i] = rebuildCS(coll.getGeometryN(i));
+        }
+        Geometry result = coll.getFactory().createGeometryCollection(geoms);
+        result.setSRID(coll.getSRID());
+        return result;
+    }
+
+    private static MultiPolygon rebuildCSMP(MultiPolygon multipoly) {
+        Polygon[] polygons = new Polygon[multipoly.getNumGeometries()];
+        for (int i=0; i < polygons.length; i++) {
+            polygons[i] = rebuildCSP((Polygon)multipoly.getGeometryN(i));
+        }
+        MultiPolygon result = multipoly.getFactory().createMultiPolygon(polygons);
+        result.setSRID(multipoly.getSRID());
+        return result;
+    }
+
+    private static Polygon rebuildCSP(Polygon polygon) {
+        LinearRing outer = rebuildLR(polygon.getExteriorRing());
+        LinearRing[] holes = new LinearRing[polygon.getNumInteriorRing()];
+        for (int i=0; i < holes.length; i++) {
+            holes[i] = rebuildLR(polygon.getInteriorRingN(i));
+        }
+        Polygon result = polygon.getFactory().createPolygon(outer, holes);
+        result.setSRID(polygon.getSRID());
+        return result;
+    }
+
+    private static LinearRing rebuildLR(LineString ring) {
+        LinearRing result = ring.getFactory().createLinearRing(ring.getCoordinates());
+        result.setSRID(ring.getSRID());
+        return result;
+    }
+
+    private static MultiLineString rebuildCSMLS(MultiLineString multiline) {
+        LineString[] polygons = new LineString[multiline.getNumGeometries()];
+        for (int i=0; i < polygons.length; i++) {
+            polygons[i] = rebuildCSLS((LineString)multiline.getGeometryN(i));
+        }
+        MultiLineString result = multiline.getFactory().createMultiLineString(polygons);
+        result.setSRID(multiline.getSRID());
+        return result;
+        
+    }
+
+    private static LineString rebuildCSLS(LineString line) {
+        LineString result = line.getFactory().createLineString(line.getCoordinates());
+        result.setSRID(line.getSRID());
+        return result; 
+    }
+
+    private static MultiPoint rebuildCSMP(MultiPoint mp) {
+        Point[] points = new Point[mp.getNumGeometries()];
+        for (int i=0; i < points.length; i++) {
+            points[i] = rebuildCSPoint((Point) mp.getGeometryN(i));
+        }
+        MultiPoint result = mp.getFactory().createMultiPoint(points);
+        result.setSRID(mp.getSRID());
+        return result;
+    }
+
+    private static Point rebuildCSPoint(Point point) {
+        Point result = point.getFactory().createPoint(point.getCoordinate());
+        result.setSRID(point.getSRID());
+        return result;       
     }
 
     /** Pass a geometry representation through the SQL server */

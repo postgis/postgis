@@ -1,10 +1,14 @@
 2006-12-15 Markus Schaber <schabi@logix-tt.com>
-        * trunk/java/jdbc/Makefile
+        * java/jdbc/Makefile
           Fixed Makefile for jts tests, commented debug options better
           
-        * trunk/java/jdbc/jtssrc/org/postgis/jts/JtsBinaryWriter.java 
+        * java/jdbc/jtssrc/org/postgis/jts/JtsBinaryWriter.java 
           Fix multi-dimension handling in JtsBinaryWriter, thanks to 
           Thomas Marti for the hints
+          
+        * java/jdbc/jtssrc/examples/JtsTestParser.java
+          Improved SRID handling in regression tests and added 
+          CoordinateArraySequence tests.
 
 2006-12-15 Eduin Carrillo <yecarrillo@yahoo.com>
 
