@@ -107,9 +107,17 @@ public class JtsBinaryWriter {
 
     /** Parse a geometry starting at offset. */
     protected void writeGeometry(Geometry geom, ValueSetter dest) {
-        final int dimension = getCoordDim(geom);
-        if (dimension < 2 || dimension > 4) {
-            throw new IllegalArgumentException("Unsupported geometry dimensionality: " + dimension);
+        final int dimension;
+        if (geom == null) {
+            throw new NullPointerException();
+        } else if (geom.isEmpty()) {
+            // don't set any flag bits
+            dimension = 0;
+        } else {
+            dimension = getCoordDim(geom);
+            if (dimension < 2 || dimension > 4) {
+                throw new IllegalArgumentException("Unsupported geometry dimensionality: " + dimension);
+            }
         }
         // write endian flag
         dest.setByte(dest.endian);
@@ -123,13 +131,15 @@ public class JtsBinaryWriter {
         if (dimension == 4) {
             typeword |= 0x40000000;
         }
-        if (checkSrid(geom)) {
+
+        final boolean haveSrid = checkSrid(geom);
+        if (haveSrid) {
             typeword |= 0x20000000;
         }
 
         dest.setInt(typeword);
 
-        if (checkSrid(geom)) {
+        if (haveSrid) {
             dest.setInt(geom.getSRID());
         }
 
@@ -161,7 +171,11 @@ public class JtsBinaryWriter {
     }
 
     public static int getWKBType(Geometry geom) {
-        if (geom instanceof Point) {
+        // We always write emtpy geometries as emtpy collections - for OpenGIS
+        // conformance
+        if (geom.isEmpty()) {
+            return org.postgis.Geometry.GEOMETRYCOLLECTION;
+        } else if (geom instanceof Point) {
             return org.postgis.Geometry.POINT;
         } else if (geom instanceof com.vividsolutions.jts.geom.LineString) {
             return org.postgis.Geometry.LINESTRING;
@@ -173,7 +187,7 @@ public class JtsBinaryWriter {
             return org.postgis.Geometry.MULTILINESTRING;
         } else if (geom instanceof com.vividsolutions.jts.geom.MultiPolygon) {
             return org.postgis.Geometry.MULTIPOLYGON;
-        } else if (geom instanceof com.vividsolutions.jts.geom.GeometryCollection) {
+        } if (geom instanceof com.vividsolutions.jts.geom.GeometryCollection) {
             return org.postgis.Geometry.GEOMETRYCOLLECTION;
         } else {
             throw new IllegalArgumentException("Unknown Geometry Type: " + geom.getClass().getName());
@@ -300,22 +314,6 @@ public class JtsBinaryWriter {
         return result;
     }
 
-    /**
-     * Estimate an Array of "slim" Points (without endianness and type, part of
-     * LinearRing and Linestring, but not MultiPoint!
-     */
-    private int estimatePointArray(int length, Point example) {
-        // number of points
-        int result = 4;
-
-        // And the amount of the points itsself, in consistent geometries
-        // all points have equal size.
-        if (length > 0) {
-            result += length * estimatePoint(example);
-        }
-        return result;
-    }
-
     /** Estimate an array of "fat" Points */
     private int estimateMultiPoint(MultiPoint geom) {
         // int size
@@ -332,7 +330,7 @@ public class JtsBinaryWriter {
         if (geom == null || geom.getNumGeometries() == 0) {
             return 0;
         } else {
-            return estimatePointArray(geom.getNumPoints(), geom.getStartPoint());
+            return 4 + 8 * getCoordSequenceDim(geom.getCoordinateSequence()) * geom.getCoordinateSequence().size();
         }
     }
 
@@ -362,12 +360,35 @@ public class JtsBinaryWriter {
     }
 
     public static final int getCoordDim(Geometry geom) {
-        // TODO: Fix geometries with more dimensions
-        // geom.getFactory().getCoordinateSequenceFactory()
-        if (geom == null) {
+        if (geom.isEmpty()) {
             return 0;
+        }
+        if (geom instanceof Point) {
+            return getCoordSequenceDim(((Point) geom).getCoordinateSequence());
+        } else if (geom instanceof LineString) {
+            return getCoordSequenceDim(((LineString) geom).getCoordinateSequence());
+        } else if (geom instanceof Polygon) {
+            return getCoordSequenceDim(((Polygon) geom).getExteriorRing().getCoordinateSequence());
         } else {
-            return 2;
+            return getCoordDim(geom.getGeometryN(0));
+        }
+    }
+
+    public static final int getCoordSequenceDim(CoordinateSequence coords) {
+        if (coords == null || coords.size() == 0)
+            return 0;
+        // JTS has a really strange way to handle dimensions!
+        // Just have a look at PackedCoordinateSequence and
+        // CoordinateArraySequence
+        int dimensions = coords.getDimension();
+        if (dimensions == 3) {
+            // CoordinateArraySequence will always return 3, so we have to
+            // check, if
+            // the third ordinate contains NaN, then the geom is actually
+            // 2-dimensional
+            return Double.isNaN(coords.getOrdinate(0, CoordinateSequence.Z)) ? 2 : 3;
+        } else {
+            return dimensions;
         }
     }
 }
