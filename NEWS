@@ -1,3 +1,7 @@
+PostGIS 1.2.1
+(not published yet)
+        - JDBC: Fixed JTS handling for multi-dimensional geometries
+                (thanks to Thomas Marti for hint and partial patch)
 
 
 PostGIS 1.2.0

@@ -1,3 +1,11 @@
+2006-12-15 Markus Schaber <schabi@logix-tt.com>
+        * trunk/java/jdbc/Makefile
+          Fixed Makefile for jts tests, commented debug options better
+          
+        * trunk/java/jdbc/jtssrc/org/postgis/jts/JtsBinaryWriter.java 
+          Fix multi-dimension handling in JtsBinaryWriter, thanks to 
+          Thomas Marti for the hints
+
 2006-12-15 Eduin Carrillo <yecarrillo@yahoo.com>
 
 	* lwgeom/lwgeom_transform.c:
