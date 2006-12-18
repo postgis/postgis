@@ -82,9 +82,12 @@ PGPASS?=guess
 PGURL?=//$(PGHOST):$(PGPORT)/$(PGDATABASE)
 
 # Where to put the output from regression tests. If you want to have it on
-# stdout, set TESTOUT to the empty string. Be careful - this will be deleted
-# by "make clean".
+# stdout, set TESTRD to the empty string. If you want to have it in another
+# file, set TESTOUTPUT to the file path.
+# Be careful - that file will be deleted by "make clean".
 TESTOUTPUT?=test.log
+# Output redirect for tests
+TESTRD?= >>$(TESTOUTPUT) 
 
 ### Config variable section ends ###
 
@@ -122,8 +125,6 @@ VERSION=$(REL_MAJOR_VERSION).$(REL_MINOR_VERSION).$(REL_MICRO_VERSION)
 VERSIONPATH=$(BUILD)/org/postgis
 VERSIONTARGET=$(VERSIONPATH)/version.properties
 
-# Output redirect for tests
-TESTRD?= >>$(TESTOUTPUT) 
 
 # Preliminary jts support - not stable yet!
 JTSDIR=jtssrc
@@ -137,7 +138,7 @@ SRC = $(SRCDIR)/org/postgis/*.java $(SRCDIR)/org/postgis/*/*.java $(SRCDIR)/exam
 
 STUBSRC = $(STUBDIR)/org/postgresql/*.java
 
-JTSSRC = $(JTSDIR)/org/postgis/jts/*.java
+JTSSRC = $(JTSDIR)/org/postgis/jts/*.java $(JTSDIR)/examples/*.java
 
 
 # Now the makefile targets that do the work:
