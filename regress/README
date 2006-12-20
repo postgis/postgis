@@ -1,3 +1,13 @@
+How to add a regression test
+----------------------------
+
+1. Write a /regress/<testname>.sql file with data and sql queries for testing
+2. Write a /regress/<testname>_expected file with expected results per query
+3. Edit regress/Makefile adding <testname> to the TESTS variable.
+
+Notes about changes in regression tests introduces with PostGIS 1.1.0
+---------------------------------------------------------------------
+
 - Mixed-dimensioned geometries are no longer supported
   (previous behaviour was to fill Z with a 0 value)
   [ updated to use new behaviour ]
