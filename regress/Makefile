@@ -17,6 +17,7 @@ TESTS = \
 	loader/PolygonZ \
 	regress \
 	regress_index \
+	regress_index_nulls \
 	lwgeom_regress \
 	regress_lrs \
 	removepoint \
