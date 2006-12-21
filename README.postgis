@@ -1,7 +1,7 @@
 PostGIS - Geographic Information Systems Extensions to PostgreSQL
 ~~~~~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-VERSION: 1.1.2 (2006/03/30)
+VERSION: 1.2.0 (2006/12/20)
 
 MORE INFORMATION: http://postgis.refractions.net
 
@@ -11,25 +11,27 @@ spatial functions for accessing and analyzing geographic data.
 
 Directory structure:
 
-  ./          Build scripts and install directions.
-  ./lwgeom    Library source code.
-  ./jdbc2     Extensions to the PostgreSQL JDBC drivers to support
-              the GIS objects. 
-  ./doc       PostGIS Documentation 
-  ./loader    A program to convert ESRI Shape files into SQL text
-              suitable for uploading into a PostGIS/PostgreSQL database
-              and a program for converting PostGIS spatial tables into
-              Shape files..
-  ./utils     Utility scripts for PostGIS (upgrade, profiling, ...)
-  ./extras    Various pieces that didn't belong to mainstream
-	      (package management specfiles, WFS_locks, sample wkb parser)
-  ./regress   Regression tests
+  ./            Build scripts and install directions.
+  ./lwgeom      Library source code.
+  ./java/ejb    EJB Java support
+  ./java/jdbc   Extensions to the PostgreSQL JDBC drivers to support
+                the GIS objects. 
+  ./java/pljava PostgreSQL PL/Java spatial object support
+  ./doc         PostGIS Documentation 
+  ./loader      A program to convert ESRI Shape files into SQL text
+                suitable for uploading into a PostGIS/PostgreSQL database
+                and a program for converting PostGIS spatial tables into
+                Shape files.
+  ./utils       Utility scripts for PostGIS (upgrade, profiling, ...)
+  ./extras      Various pieces that didn't belong to mainstream
+	        (package management specfiles, WFS_locks, sample wkb parser)
+  ./regress     Regression tests
 	        
 
 REQUIREMENTS
 ------------
 
-PostGIS is compatible with PostgreSQL 7.2 and above.
+PostGIS is compatible with PostgreSQL 7.4 and above.
 
 You *must* have full PostgreSQL - including server headers - installed
 for this to work. Note that server headers are not installed by
@@ -53,8 +55,8 @@ SEE THE NOTE ON GEOS SUPPORT BELOW FOR SPECIAL COMPILATION INSTRUCTIONS
 
     http://geos.refractions.net
 
-  In order to use the GEOS support, you *may* need to specially compile 
-  your version of PostgreSQL to link the C++ runtime library.
+  OLD NOTE: In order to use the GEOS support, you *may* need to 
+  specially compile your version of PostgreSQL to link the C++ runtime library.
   To do this, invoke the PgSQL configuration script this way:
  
   LDFLAGS=-lstdc++ ./configure --your-options-go-here
@@ -113,15 +115,15 @@ To install PostGIS library and utilities, as root run:
 
   make install
 
-Installation paths will tipically be derived by ``pg_config'':
+Installation paths will typically be derived by ``pg_config'':
 
 	- Lib in `pg_config --pkglibdir`
 	- Binaries (loader/dumper) in `pg_config --bindir`
 	- Important support files in [prefix]/share/contrib
-	- Manpages in [prefix]/man
+	- Manual pages in [prefix]/man
 	- Documentation in in [prefix]/share/doc
 
-Where [prefix] above is exctracted by `pg_config --configure`.
+Where [prefix] above is extracted by `pg_config --configure`.
 
 You can change them using ./configure switches.
 See CONFIGURARION section.
