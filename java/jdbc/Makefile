@@ -144,6 +144,7 @@ JTSSRC = $(JTSDIR)/org/postgis/jts/*.java $(JTSDIR)/examples/*.java
 # Now the makefile targets that do the work:
 # The default target:
 all:	jar \
+		postgis-jdbc-javadoc.zip \
 	offlinetests
 
 # Packing the archives
@@ -226,6 +227,7 @@ clean:
 	echo cleaning...
 	$(DELETE) $(BUILD) bin stubbin postgis.jar postgis_debug.jar \
 		compile stubcompile jtscompile $(JTSBUILD) postgis_jts.jar \
+		javadoc-build postgis-jdbc-javadoc.zip \
 		$(TESTOUTPUT) \
 		postgis_$(VERSION).jar \
 		postgis_debug_$(VERSION).jar \
@@ -243,6 +245,14 @@ install: jar installdirs
 
 installdirs:
 	@mkdir -p $(DESTDIR)
+
+postgis-jdbc-javadoc.zip: javadoc-build
+	$(JAR) -cf postgis-jdbc-javadoc.zip -C javadoc-build .
+
+javadoc-build: jtscompile compile
+	$(MKDIR) javadoc-build
+	javadoc -d javadoc-build -sourcepath src:jtssrc \
+		org.postgis org.postgis.jts org.postgis.binary org.postgis.java2d examples
 
 # Preliminary JTS support
 

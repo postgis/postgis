@@ -2,7 +2,7 @@ PostGIS 1.2.1
 (not published yet)
         - JDBC: Fixed JTS handling for multi-dimensional geometries
                 (thanks to Thomas Marti for hint and partial patch)
-
+                Additionally, now JavaDoc is compiled out.
 
 PostGIS 1.2.0
 2006/12/08

@@ -1,3 +1,8 @@
+2006-12-22 Markus Schaber <schabi@logix-tt.com>
+
+        * java/jdbc/Makefile
+          Added generation of basic javadoc zip file.
+
 2006-12-20 Sandro Santilli <strk@refractions.net>
 
 	* regress/README: wrote info about adding regression tests
