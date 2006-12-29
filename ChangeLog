@@ -1,5 +1,7 @@
 2006-12-29 Sandro Santilli <strk@refractions.net>
 
+	* configure.in: fixed GEOS_LDFLAGS detection
+	  for older GEOS versions.
 	* doc/postgis.xml: cleaned up Hard Upgrade section
 	  (was unreadable).
 
