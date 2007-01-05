@@ -23,6 +23,14 @@ SCRIPT_DOLINK=rm -f $(SCRIPT_LINK); \
               $(LN_S) $(SCRIPT_TARGET) $(SCRIPT_LINKDIR)
 SCRIPT_UNINSTALL=rm -f $(SCRIPT_TARGET)
 SCRIPT_UNLINK=rm -f $(SCRIPT_LINK)
+
+# would probably be nice to link these somewhere as well
+MANPAGES1:=$(wildcard *.1)
+MAN1_TARGETDIR=$(DESTDIR)$(mandir)/man1
+MAN1_TARGET=$(MAN1_TARGETDIR)/$(MAN1)
+MAN1_INSTALL=$(INSTALL_DATA) $(MAN1) $(MAN1_TARGET)
+MAN1_UNINSTALL=rm -f $(MAN1_TARGET)
+
 DEFAULTS_DIR=$(DESTDIR)/etc/default
 SCRIPT_DEFAULTS=$(DEFAULTS_DIR)/postgis
 
@@ -37,10 +45,13 @@ install: all
 	@mkdir -p $(DEFAULTS_DIR)
 	cp profile $(SCRIPT_DEFAULTS)
 	rm -f $(SCRIPT_TARGETDIR)/profile
+	@mkdir -p $(MAN1_TARGETDIR)
+	$(foreach MAN1, $(MANPAGES1), $(MAN1_INSTALL);)
 
 uninstall:
 	$(foreach SCRIPT, $(PUBLIC_SCRIPTS), $(SCRIPT_UNLINK);)
 	$(foreach SCRIPT, $(SCRIPTS), $(SCRIPT_UNINSTALL);)
+	$(foreach MAN1, $(MANPAGES1), $(MAN1_UNINSTALL);)
 
 purge: uninstall
 	rm -f $(SCRIPT_DEFAULTS)

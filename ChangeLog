@@ -1,3 +1,8 @@
+2007-01-05 Sandro Santilli <strk@refractions.net>
+
+	* GNUmakefile: bring in extra/template_gis for all rules.
+	* extras/template_gis/Makefile: have 'install' also install manuals.
+
 2006-12-29 Sandro Santilli <strk@refractions.net>
 
 	* configure.in: fixed GEOS_LDFLAGS detection
