@@ -25,12 +25,14 @@
 
 package org.postgis.jts;
 
-import org.postgresql.Driver;
-import org.postgresql.PGConnection;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.postgresql.Driver;
+import org.postgresql.PGConnection;
 
 /**
  * DriverWrapper
@@ -55,6 +57,8 @@ import java.util.Properties;
  */
 public class JtsWrapper extends Driver {
 
+    protected static final Logger logger = Logger.getLogger("org.postgis.DriverWrapper");
+
     private static final String POSTGRES_PROTOCOL = "jdbc:postgresql:";
     private static final String POSTGIS_PROTOCOL = "jdbc:postgres_jts:";
     public static final String REVISION = "$Revision$";
@@ -68,7 +72,7 @@ public class JtsWrapper extends Driver {
             // Try to register ourself to the DriverManager
             java.sql.DriverManager.registerDriver(new JtsWrapper());
         } catch (SQLException e) {
-            Driver.info("Error registering PostgreSQL Jts Wrapper Driver", e);
+            logger.log(Level.WARNING, "Error registering PostgreSQL Jts Wrapper Driver", e);
         }
     }
 

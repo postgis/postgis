@@ -28,6 +28,7 @@ import org.postgresql.Driver;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.logging.Level;
 
 /**
  * DriverWrapperLW
@@ -62,7 +63,7 @@ public class DriverWrapperLW extends DriverWrapper {
             // Try to register ourself to the DriverManager
             java.sql.DriverManager.registerDriver(new DriverWrapperLW());
         } catch (SQLException e) {
-            Driver.info("Error registering PostGIS LW Wrapper Driver", e);
+            logger.log(Level.WARNING, "Error registering PostGIS LW Wrapper Driver", e);
         }
     }
 

@@ -24,12 +24,14 @@
 
 package org.postgis;
 
-import org.postgresql.Driver;
-import org.postgresql.PGConnection;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.postgresql.Driver;
+import org.postgresql.PGConnection;
 
 /**
  * DriverWrapper
@@ -69,6 +71,8 @@ import java.util.Properties;
  */
 public class DriverWrapper extends Driver {
 
+    protected static final Logger logger = Logger.getLogger("org.postgis.DriverWrapper");
+    
     public static final String POSTGRES_PROTOCOL = "jdbc:postgresql:";
     public static final String POSTGIS_PROTOCOL = "jdbc:postgresql_postGIS:";
     public static final String REVISION = "$Revision$";
@@ -90,7 +94,7 @@ public class DriverWrapper extends Driver {
         typesAdder = getTypesAdder(this);
         // The debug method is @since 7.2
         if (super.getMajorVersion() > 8 || super.getMinorVersion() > 1) {
-            Driver.debug(this.getClass().getName() + " loaded TypesAdder: "
+            logger.fine(this.getClass().getName() + " loaded TypesAdder: "
                     + typesAdder.getClass().getName());
         }
     }
@@ -130,7 +134,7 @@ public class DriverWrapper extends Driver {
             // Try to register ourself to the DriverManager
             java.sql.DriverManager.registerDriver(new DriverWrapper());
         } catch (SQLException e) {
-            Driver.info("Error registering PostGIS Wrapper Driver", e);
+            logger.log(Level.WARNING, "Error registering PostGIS Wrapper Driver", e);
         }
     }
 
