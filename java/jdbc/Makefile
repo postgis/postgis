@@ -89,15 +89,15 @@ TESTOUTPUT?=test.log
 ### Config variable section ends ###
 
 # build internal constants follow:
-SRCDIR=src
+SRCDIR=./src
 EXAMPLES=examples
-BUILD=bin
+BUILD=./bin
 RUNCP=$(POSTGIS_BUILD_CLASSPATH)$(CPSEP)./postgis.jar
 BUILDCP=$(STUBBUILD)$(CPSEP)$(POSTGIS_BUILD_CLASSPATH)$(CPSEP)$(SRCDIR)
 
 # The pgjdbc 7.2/7.4/8.0 compatibility stub stuff
 STUBDIR=stubs
-STUBBUILD=stubbin/
+STUBBUILD=./stubbin/
 
 # What to put into the JAR files:
 JARCONTENTS=-C $(BUILD) org \
