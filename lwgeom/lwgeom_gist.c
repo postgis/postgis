@@ -951,14 +951,23 @@ Datum LWGEOM_gist_penalty(PG_FUNCTION_ARGS)
 	elog(NOTICE,"GIST: LWGEOM_gist_penalty called");
 #endif
 
+	if (DatumGetPointer(origentry->key) == NULL && DatumGetPointer(newentry->key) == NULL)
+	{
+#ifdef PGIS_DEBUG_GIST6
+		elog(NOTICE,"GIST: LWGEOM_gist_penalty called with both inputs NULL");
+#endif
+		*result = 0;
+	}
+	else
+	{
+		ud = DirectFunctionCall2(BOX2D_union, origentry->key, newentry->key);
+		/*ud = BOX2D_union(origentry->key, newentry->key); */
+		tmp1 = size_box2d_double(ud);
+		if (DatumGetPointer(ud) != NULL)
+			pfree(DatumGetPointer(ud));
+		*result = tmp1 - size_box2d_double(origentry->key);
+	}
 
-	ud = DirectFunctionCall2(BOX2D_union, origentry->key, newentry->key);
-	/*ud = BOX2D_union(origentry->key, newentry->key); */
-	tmp1 = size_box2d_double(ud);
-	if (DatumGetPointer(ud) != NULL)
-		pfree(DatumGetPointer(ud));
-
-	*result = tmp1 - size_box2d_double(origentry->key);
 
 #ifdef PGIS_DEBUG_GIST6
 	elog(NOTICE,"GIST: LWGEOM_gist_penalty called and returning %.15g", *result);
