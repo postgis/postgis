@@ -1,3 +1,13 @@
+2007-01-08 Markus Schaber <schabi@logix-tt.com>
+
+        * java/jdbc/Makefile:
+          Fixed gcj classpath problems
+        * src/org/postgis/DriverWrapperLW.java,
+          src/org/postgis/DriverWrapperAutoprobe.java,
+          src/org/postgis/DriverWrapper.java,
+          jtssrc/org/postgis/jts/JtsWrapper.java:
+          fixed 8.2 compatibility
+
 2006-12-20 Kevein Neufeld <kneufeld@refractions.net>
 
 	* lwgeom/lwgeom_gist.c
