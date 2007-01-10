@@ -19,6 +19,11 @@
 	Added fix to permit gist indexes to have more than 459 null
 	geometries in a table
 
+2006-11-17 "Antoine Bajolet" <antoine.bajolet@tdf.fr>
+
+	* lwgeom/lwgeom_gist.c: fixed 'directives may not be used inside a
+	  macro argument' error raised by some compilers.
+
 2006-11-02 Sandro Santilli <strk@refractions.net>
 
 	* doc/postgis.xml: list setSRID bug fix in 'Bug fixes' section.
