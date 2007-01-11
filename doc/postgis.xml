@@ -994,7 +994,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </listitem>
 
           <listitem>
-            <para>COMPOUNDCURVE((0 0, 1 1, 1 0),(1 0, 0 1)</para>
+            <para>COMPOUNDCURVE(CIRCULARSTRING(0 0, 1 1, 1 0),(1 0, 0 1))</para>
           </listitem>
 
           <listitem>
