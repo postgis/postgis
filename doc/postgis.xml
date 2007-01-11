@@ -5326,6 +5326,57 @@ FROM geometry_table;</literallayout>
 
 		<title>Release Notes</title>
 
+		<sect2>
+                        <title>Release 1.1.7</title>
+                        <para>Release date: (not published yet)</para>
+                        <para>This is a bugfix release, in particular fixing
+			    a critical error building GiST indexes on columns
+			    containing many NULLs against PostgreSQL 8.2, and an
+			    incompatibility between the PostgreSQL 8.2 JDBC driver
+			    and the PostGIS JDBC driver.
+                            Upgrade is <emphasis>encouraged</emphasis>.
+			</para>
+                        
+			<sect3>
+				<title>Upgrading</title>
+
+				<para>
+If you are upgrading from release 1.0.3 or later follow the
+<link linkend="soft_upgrade">soft upgrade</link> procedure.
+				</para>
+
+				<para>
+If you are upgrading from a release <emphasis>between 1.0.0RC6 and
+1.0.2</emphasis> (inclusive) and really want a live upgrade read the
+<link linkend="rel_1.0.3_upgrading">upgrade section</link> of the 1.0.3
+release notes chapter.
+				</para>
+
+				<para>
+Upgrade from any release prior to 1.0.0RC6 requires an
+<link linkend="hard_upgrade">hard upgrade</link>.
+				</para>
+			</sect3>
+
+			<sect3>
+			    <title>Bug fixes</title>
+	<para>
+	Fixed "function XXXXX returned NULL" error when creating a GiST index on a geometry column containing lots of NULLs
+	</para>
+        <para>
+	JDBC: Fixed classpath problems with GCJ
+	</para>
+	<para>
+        JDBC: Fixed pgjdbc 8.2 compatibility, losing support for jdk 1.3 and older
+	</para>
+			</sect3>
+			<sect3>
+			    <title>Other changes</title>
+			    <para>Fixed build issues with older versions of GEOS and gcc</para>
+			</sect3>
+		</sect2>
+
+
                 <sect2>
                         <title>Release 1.1.6</title>
                         <para>Release date: 2006/11/02</para>
