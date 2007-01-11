@@ -1092,6 +1092,15 @@ int point_in_ring(POINTARRAY *pts, POINT2D *point)
                 getPoint2d_p(pts, i, &seg1);
                 getPoint2d_p(pts, i+1, &seg2);
                 side = determineSide(&seg1, &seg2, point);
+                /* zero length segments are ignored. */
+                if(((seg2.x-seg1.x)*(seg2.x-seg1.x)+(seg2.y-seg1.y)*(seg2.y-seg1.y)) < 1e-12*1e-12) 
+                {
+#ifdef PGIS_DEBUG
+                        lwnotice("segment is zero length... ignoring.");
+#endif
+                        continue;
+                }
+
                 /* a point on the boundary of a ring is not contained. */
                 if(fabs(side) < 1e-12) 
                 {
