@@ -894,12 +894,12 @@ newdb=&#62; \i spatial_ref_sys.sql
         <para>OGC formats only support 2d geometries, and the associated SRID
         is *never* embedded in the input/output representations.</para>
 
-        <para>Postgis extended formats are currently superset of OGC one
+        <para>PostGIS extended formats are currently superset of OGC one
         (every valid WKB/WKT is a valid EWKB/EWKT) but this might vary in the
         future, specifically if OGC comes out with a new format conflicting
         with our extensions. Thus you SHOULD NOT rely on this feature!</para>
 
-        <para>Postgis EWKB/EWKT add 3dm,3dz,4d coordinates support and
+        <para>PostGIS EWKB/EWKT add 3dm,3dz,4d coordinates support and
         embedded SRID information.</para>
 
         <para>Examples of the text representations (EWKT) of the extended
@@ -3683,7 +3683,7 @@ newdb=&#62; \i spatial_ref_sys.sql
     </sect1>
 
     <sect1>
-      <title>Postgis Extensions</title>
+      <title>PostGIS Extensions</title>
 
       <sect2>
         <title>Management Functions</title>
@@ -7073,7 +7073,7 @@ newdb=&#62; \i spatial_ref_sys.sql
 
           <para>More geometry constructors / editors.</para>
 
-          <para>Postgis extension API.</para>
+          <para>PostGIS extension API.</para>
 
           <para>UTF8 support in loader.</para>
         </sect3>
