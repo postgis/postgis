@@ -323,17 +323,28 @@ dnl Find 'html/docbook.xsl'
 dnl
 AC_SUBST(XSLBASE)
 XSLBASE=
-SEARCHPATH="
-	/usr/share/sgml/docbook/xsl-stylesheets 
-	/usr/share/xml/docbook/stylesheet/nwalsh
-	/usr/share/sgml/docbook/stylesheet/xsl/nwalsh
-"
-for p in ${SEARCHPATH}; do
-	if test -r ${p}/html/docbook.xsl; then
-		XSLBASE=${p}
-		break
+AC_ARG_WITH(xsl,
+[  --with-xsl=DIR      Specify the DIR containing html/docbook.xsl stylesheet],
+	if test "$with_xsl" = yes; then
+		AC_MSG_ERROR([option --with-xsl requires an argument])
 	fi
-done
+	if test "$with_xsl" != "no"; then
+		xsl="$with_xsl"
+	else
+		SEARCHPATH="
+			/usr/share/sgml/docbook/xsl-stylesheets 
+			/usr/share/xml/docbook/stylesheet/nwalsh
+			/usr/share/sgml/docbook/stylesheet/xsl/nwalsh
+		"
+		for p in ${SEARCHPATH}; do
+			if test -r "${p}"/html/docbook.xsl; then
+				xsl="${p}"
+				break
+			fi
+		done
+	fi
+)
+XSLBASE="${xsl}"
 
 dnl
 dnl Search for other binaries needed to build docs

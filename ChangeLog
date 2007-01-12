@@ -1,3 +1,6 @@
+2007-01-12 Gerald Fenoy <djay@gentoo.org>
+
+	* configure.in: add --with-xsl switch.
 
 ---------  PostGIS-1.2.1 release [2007-01-11] --------------------------
 
