@@ -1,7 +1,6 @@
 2005/01/13
 
 - Clean up mapserver connectivity
-- Submit to OpenGIS Consortium for testing
 - Network creation and network operations 
   (upstream, downstream, least cost path)
 - Standardized handling for topology and coverages with 

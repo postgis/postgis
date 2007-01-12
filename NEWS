@@ -1,5 +1,10 @@
 PostGIS 1.2.1
-(not published yet)
+2007/01/11
+        - Fix point-in-polygon shortcut bug in Within()
+        - Fix PgSQL 8.2 null handling for indexes
+        - Update RPM spec files
+        - Add AsKML() function
+        - Add short-circuit for transform() in no-op case
         - JDBC: - Fixed JTS handling for multi-dimensional geometries
                   (thanks to Thomas Marti for hint and partial patch)
                 - Additionally, now JavaDoc is compiled and packaged

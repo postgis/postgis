@@ -26,11 +26,12 @@ Release procedure
    of a line to see how it looks like)
 3) Edit NEWS: set release date and check all notable changes are
    been reported (extract from ChangeLog).
-4) Add release notes in doc/postgis.xml
-5) Tag the release:
+4) Edit README.postgis and set release date and version.
+5) Add release notes in doc/postgis.xml
+6) Tag the release:
    $ base=http://svn.refractions.net/postgis/
    $ rel=MAJ.MIN.MIC
    $ svn copy -m "Tagged release $rel" $base/trunk $base/tags/$rel
-6) Run: sh make_dist.sh MAJ.MIN.MIC
-7) Publish
-8) Announce 
+7) Run: sh make_dist.sh MAJ.MIN.MIC
+8) Publish
+9) Announce 
