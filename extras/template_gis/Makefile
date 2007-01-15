@@ -7,7 +7,7 @@ include ../../Makefile.config
 SCRIPTS_IN:=$(wildcard *.in)
 SCRIPTS:=$(SCRIPTS_IN:.in=)
 PUBLIC_SCRIPTS:=mktemplate_gis rmtemplate_gis createdb.postgis
-SONAME:=$(shell grep ^REL_MAJOR_VERSION ../../Version.config | cut -d= -f2)
+SONAME:=$(shell grep "^REL_MAJOR_VERSION" ../../Version.config | cut -d= -f2)
 
 SUBSTITUTE=-e s:@bindir@:$(bindir):g \
            -e s:@datadir@:$(datadir):g \
