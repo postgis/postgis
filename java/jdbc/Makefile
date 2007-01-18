@@ -251,7 +251,7 @@ postgis-jdbc-javadoc.zip: javadoc-build
 
 javadoc-build:
 	$(MKDIR) javadoc-build
-	javadoc -d javadoc-build -sourcepath src:jtssrc \
+	javadoc -d javadoc-build -sourcepath src$(CPSEP)jtssrc \
 		org.postgis org.postgis.jts org.postgis.binary org.postgis.java2d examples
 
 # Preliminary JTS support
