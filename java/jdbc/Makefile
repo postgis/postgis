@@ -251,7 +251,9 @@ postgis-jdbc-javadoc.zip: javadoc-build
 
 javadoc-build:
 	$(MKDIR) javadoc-build
-	javadoc -d javadoc-build -sourcepath src$(CPSEP)jtssrc \
+	# We use an ugly trick to build on windows and unix - 
+	# javadoc command line options are not portable wr/t path separators
+	javadoc -d javadoc-build -sourcepath "src:jtssrc:;src;jtssrc" \
 		org.postgis org.postgis.jts org.postgis.binary org.postgis.java2d examples
 
 # Preliminary JTS support

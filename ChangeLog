@@ -1,7 +1,7 @@
 2007-01-18 Markus Schaber <schabi@logix-tt.com>
 
         * java/jdbc/Makefile:
-          Fixed javadoc build
+          Fixed javadoc build on Windows, kudos to Mark Cave-Ayland!
 
 2007-01-13 Michael Fuhr <mike@fuhr.org>
 
