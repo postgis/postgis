@@ -1,3 +1,8 @@
+2007-01-18 Markus Schaber <schabi@logix-tt.com>
+
+        * java/jdbc/Makefile:
+          Fixed javadoc build
+
 2007-01-13 Michael Fuhr <mike@fuhr.org>
 
 	* extras/template_gis/Makefile: quote grep argument

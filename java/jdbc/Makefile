@@ -249,7 +249,7 @@ installdirs:
 postgis-jdbc-javadoc.zip: javadoc-build
 	$(JAR) -cf postgis-jdbc-javadoc.zip -C javadoc-build .
 
-javadoc-build: jtscompile compile
+javadoc-build:
 	$(MKDIR) javadoc-build
 	javadoc -d javadoc-build -sourcepath src:jtssrc \
 		org.postgis org.postgis.jts org.postgis.binary org.postgis.java2d examples
