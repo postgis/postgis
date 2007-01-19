@@ -9,7 +9,9 @@ SCRIPTS:=$(SCRIPTS_IN:.in=)
 PUBLIC_SCRIPTS:=mktemplate_gis rmtemplate_gis createdb.postgis
 SONAME:=$(shell grep "^REL_MAJOR_VERSION" ../../Version.config | cut -d= -f2)
 
-SUBSTITUTE=-e s:@bindir@:$(bindir):g \
+# excape colon (:) chars in $bindir
+SUBBINDIR=$(shell echo $(bindir)|sed -e's:\::\\\\\\\::g')
+SUBSTITUTE=-e s:@bindir@:$(SUBBINDIR):g \
            -e s:@datadir@:$(datadir):g \
            -e s:@prefix@:$(prefix):g \
            -e s:@SONAME@:$(SONAME):g

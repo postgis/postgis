@@ -1,3 +1,8 @@
+2007-01-19 TECHER David <davidtecher@yahoo.fr>
+
+	* extras/template_gis/Makefile: escape $bindir
+	  to allow for colons in it's value (win32 issue).
+
 2007-01-18 Markus Schaber <schabi@logix-tt.com>
 
         * java/jdbc/Makefile:
