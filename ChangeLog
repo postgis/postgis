@@ -1,3 +1,10 @@
+2007-01-26 Mark Cave-Ayland <mark.cave-ayland@ilande.co.uk>
+
+	* extras/template_gis/Makefile: Refine previous patch
+	  to use a different delimiter than : for sed. This
+	  simplifies the Makefile and protects all the $*dir
+	  arguments from escaping issues under Win32.
+
 2007-01-19 TECHER David <davidtecher@yahoo.fr>
 
 	* extras/template_gis/Makefile: escape $bindir
