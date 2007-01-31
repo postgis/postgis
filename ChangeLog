@@ -1,3 +1,5 @@
+---------  PostGIS-1.1.7 release [2007-01-31] --------------------------
+
 2007-01-08 Markus Schaber <schabi@logix-tt.com>
 
         * java/jdbc/Makefile:
@@ -23,6 +25,9 @@
 
 	* lwgeom/lwgeom_gist.c: fixed 'directives may not be used inside a
 	  macro argument' error raised by some compilers.
+
+---------  PostGIS-1.1.6 release [2006-11-02] --------------------------
+
 
 2006-11-02 Sandro Santilli <strk@refractions.net>
 

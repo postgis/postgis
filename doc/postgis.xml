@@ -5328,7 +5328,7 @@ FROM geometry_table;</literallayout>
 
 		<sect2>
                         <title>Release 1.1.7</title>
-                        <para>Release date: (not published yet)</para>
+                        <para>Release date: 2007/01/31</para>
                         <para>This is a bugfix release, in particular fixing
 			    a critical error building GiST indexes on columns
 			    containing many NULLs against PostgreSQL 8.2, and an
