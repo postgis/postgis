@@ -4504,7 +4504,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Affine(geometry,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8)</term>
+            <term>Affine(geometry, float8, float8, float8, float8, float8, float8, float8, float8, float8, float8, float8, float8)</term>
 
             <listitem>
               <para>Applies an 3d affine transformation to the geometry. The
@@ -4523,7 +4523,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Affine(geometry,float8,float8,float8,float8,float8,float8)</term>
+            <term>Affine(geometry, float8, float8, float8, float8, float8, float8)</term>
 
             <listitem>
               <para>Applies an 2d affine transformation to the geometry. The
@@ -4541,7 +4541,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Translate(geometry,float8,float8,float8)</term>
+            <term>Translate(geometry, float8, float8, float8)</term>
 
             <listitem>
               <para>Translates the geometry to a new location using the
@@ -4550,7 +4550,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Scale(geometry,float8,float8,float8)</term>
+            <term>Scale(geometry, float8, float8, float8)</term>
 
             <listitem>
               <para>scales the geometry to a new size by multiplying the
@@ -4562,23 +4562,22 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry id="Rotate">
-            <term>RotateZ(geometry,float8)</term>
+            <term>RotateZ(geometry, float8)</term>
 
-            <term>RotateX(geometry,float8)</term>
+            <term>RotateX(geometry, float8)</term>
 
-            <term>RotateY(geometry,float8)</term>
+            <term>RotateY(geometry, float8)</term>
 
             <listitem>
               <para>Rotate the geometry around the Z, X or Y axis by the given
-              angle given in radians. Follows the right-hand rule. This is the
-              same in PostScript but opposite of SVG.</para>
+              angle given in radians. Follows the right-hand rule.</para>
 
               <para>Availability: 1.1.2.</para>
             </listitem>
           </varlistentry>
 
           <varlistentry>
-            <term>TransScale(geometry,float8,float8,float8,float8)</term>
+            <term>TransScale(geometry, float8, float8, float8, float8)</term>
 
             <listitem>
               <para>First, translates the geometry using the first two floats,
@@ -4945,7 +4944,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>point_inside_circle(geometry,float,float,float)</term>
+            <term>point_inside_circle(geometry, float, float, float)</term>
 
             <listitem>
               <para>The syntax for this functions is
