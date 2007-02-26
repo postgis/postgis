@@ -1,3 +1,13 @@
+2007-02-26 Eduin Carrillo <yecarrillo@yahoo.com>
+
+	* regress/: Makefile, kml.sql, kml_expected:
+	  Regression test for asKML().
+
+2007-02-26 Sandro Santilli <strk@refractions.net>
+
+	* regress/run_test: discard CONTEXT and DELETE
+	  lines from test outputs.
+
 2007-01-26 Mark Cave-Ayland <mark.cave-ayland@ilande.co.uk>
 
 	* extras/template_gis/Makefile: Refine previous patch

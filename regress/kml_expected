@@ -1,0 +1,21 @@
+ERROR:  AddToPROJ4SRSCache: Cannot find SRID (4326) in spatial_ref_sys
+ERROR:  Input geometry has unknown (-1) SRID
+ERROR:  geometry_to_kml: 'Curve' geometry type not supported by Google Earth
+ERROR:  geometry_to_kml: 'CompoundString' geometry type not supported by Google Earth
+ERROR:  geometry_to_kml: 'Invalid type' geometry type not supported by Google Earth
+ERROR:  geometry_to_kml: 'Invalid type' geometry type not supported by Google Earth
+ERROR:  geometry_to_kml: 'Invalid type' geometry type not supported by Google Earth
+ERROR:  Precision out of range 1..15
+ERROR:  Precision out of range 1..15
+ERROR:  Only KML 2 is supported
+<Point><coordinates>-75.5521729775749,10.4203366345305,0</coordinates></Point>
+<Point><coordinates>-75.55217298,10.42033663,0</coordinates></Point>
+<LineString><coordinates>-75.5884516874785,6.23081171191744,0 -75.5925764681848,6.20903425257533,0</coordinates></LineString>
+<LineString><coordinates>-75.58845169,6.230811712,0 -75.59257647,6.209034253,0</coordinates></LineString>
+<Polygon><outerBoundaryIs><LinearRing><coordinates>-74.042399,4.701288,0 -74.042099,4.700951,0 -74.042018,4.701012,0 -74.041835,4.700831,0 -74.041486,4.70114,0 -74.041328,4.700977,0 -74.04102,4.701245,0 -74.041178,4.701426,0 -74.040872,4.701697,0 -74.040941,4.701774,0 -74.0409,4.702606,0 -74.040824,4.702678,0 -74.041066,4.70295,0 -74.040873,4.703121,0 -74.041189,4.703468,0 -74.041383,4.703309,0 -74.041739,4.703689,0 -74.041924,4.703528,0 -74.041954,4.703555,0 -74.042307,4.703239,0 -74.042075,4.702978,0 -74.042155,4.702908,0 -74.04195,4.702675,0 -74.042096,4.702534,0 -74.042035,4.702467,0 -74.042053,4.702038,0 -74.042123,4.701974,0 -74.041986,4.701817,0 -74.042222,4.701604,0 -74.042149,4.70152,0 -74.042399,4.701288,0</coordinates></LinearRing></outerBoundaryIs></Polygon>
+<Polygon><outerBoundaryIs><LinearRing><coordinates>-74.04239911,4.701288195,0 -74.04209926,4.700950994,0 -74.0420183,4.701011516,0 -74.04183483,4.700831449,0 -74.04148629,4.70114015,0 -74.04132847,4.700976981,0 -74.04101991,4.701244757,0 -74.04117774,4.701425554,0 -74.04087245,4.701697127,0 -74.04094064,4.70177368,0 -74.04089953,4.70260566,0 -74.04082413,4.702677666,0 -74.04106565,4.702949831,0 -74.04087265,4.703121095,0 -74.04118885,4.703468333,0 -74.04138265,4.703308984,0 -74.04173931,4.703688848,0 -74.0419237,4.703528239,0 -74.04195356,4.703554861,0 -74.04230658,4.703239478,0 -74.04207492,4.702978243,0 -74.0421547,4.702907817,0 -74.04195033,4.702675127,0 -74.04209558,4.702533577,0 -74.04203505,4.702466796,0 -74.04205318,4.702038078,0 -74.04212336,4.701974338,0 -74.04198589,4.701816902,0 -74.04222168,4.701604424,0 -74.04214902,4.701519996,0 -74.04239911,4.701288195,0</coordinates></LinearRing></outerBoundaryIs></Polygon>
+<MultiGeometry><Point><coordinates>-74.0460345759477,4.75468700665652,0</coordinates></Point><Point><coordinates>-74.095833,4.746435,0</coordinates></Point><Point><coordinates>-74.1103754749261,4.7098754227297,0</coordinates></Point><Point><coordinates>-74.120148,4.533696,0</coordinates></Point></MultiGeometry>
+<MultiGeometry><Point><coordinates>-74.04603458,4.754687007,0</coordinates></Point><Point><coordinates>-74.095833,4.746435,0</coordinates></Point><Point><coordinates>-74.11037547,4.709875423,0</coordinates></Point><Point><coordinates>-74.120148,4.533696,0</coordinates></Point></MultiGeometry>
+<Point><coordinates>-73.1137865115871,7.10625638610512,0</coordinates></Point>
+<Point><coordinates>-73.1978481045547,6.76797715816346,0</coordinates></Point>
+<Point><coordinates>-74.0775046875181,4.59620005298432,0</coordinates></Point>

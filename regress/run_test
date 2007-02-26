@@ -117,6 +117,8 @@ run_simple_test ()
 	cat ${TMPFILE} \
 		| grep -v "^$" \
 		| grep -v "^INSERT" \
+		| grep -v "^DELETE" \
+		| grep -v "^CONTEXT" \
 		| grep -v "^UPDATE" \
 		| grep -v "^DROP" \
 		| grep -v "^CREATE" \

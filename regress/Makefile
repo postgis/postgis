@@ -36,7 +36,7 @@ ifeq ($(USE_GEOS),1)
 endif
 
 ifeq ($(USE_PROJ),1)
-	TESTS += regress_proj
+	TESTS += regress_proj kml
 endif
 
 all: test 
