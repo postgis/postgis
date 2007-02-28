@@ -941,8 +941,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </listitem>
 
           <listitem>
-            <para>GEOMETRYCOLLECTIONM(POINTM(2 3 9),LINESTRINGM((2 3 4,3 4
-            5)))</para>
+            <para>GEOMETRYCOLLECTIONM(POINTM(2 3 9), LINESTRINGM(2 3 4, 3 4 5))</para>
           </listitem>
         </itemizedlist>
 
