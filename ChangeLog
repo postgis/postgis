@@ -1,3 +1,8 @@
+2007-03-01 Sandro Santilli <strk@refractions.net>
+
+	* extras/template_gis/Makefile:
+	  Install 'defaults' file to $(DATADIR)$(prefix)
+
 2007-02-26 Eduin Carrillo <yecarrillo@yahoo.com>
 
 	* regress/: Makefile, kml.sql, kml_expected:
