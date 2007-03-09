@@ -21,6 +21,7 @@ SELECT 'crosses', crosses('LINESTRING(0 10, 0 -10)', 'LINESTRING(-4 0, 1 1)');
 SELECT 'within', within('POINT(5 5)', 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');
 SELECT 'within', within('POINT(0 0)', 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');
 SELECT 'within', within('POINT(-1 0)', 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');
+SELECT 'within', within(GeomFromText('POINT(521513 5377804)', 32631), GeomFromText('POLYGON((521526 5377783, 521481 5377811, 521494 5377832, 521539 5377804, 521526 5377783))', 32631));
 -- moved here from regress.sql
 select 'within119', within('LINESTRING(-1 -1, -1 101, 101 101, 101 -1)'::GEOMETRY,'BOX3D(0 0, 100 100)'::BOX3D);
 select 'within120', within('LINESTRING(-1 -1, -1 100, 101 100, 101 -1)'::GEOMETRY,'BOX3D(0 0, 100 100)'::BOX3D);

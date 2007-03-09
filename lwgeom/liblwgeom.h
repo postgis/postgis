@@ -7,7 +7,8 @@
 #define INTEGRITY_CHECKS 1
 /* #define DEBUG_ALLOCS 1 */
 /*#define PGIS_DEBUG 1
-#define PGIS_DEBUG_CALLS 1*/
+#define PGIS_DEBUG_CALLS 1
+#define PGIS_DEBUG_ALLOCS 1*/
 /* #define DEBUG_CALLS 1 */
 
 /*
