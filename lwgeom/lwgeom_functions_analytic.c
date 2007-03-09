@@ -1092,6 +1092,9 @@ int point_in_ring(POINTARRAY *pts, POINT2D *point)
                 getPoint2d_p(pts, i, &seg1);
                 getPoint2d_p(pts, i+1, &seg2);
                 side = determineSide(&seg1, &seg2, point);
+#ifdef PGIS_DEBUG
+                        lwnotice("side result: %f", side);
+#endif
                 /* zero length segments are ignored. */
                 if(((seg2.x-seg1.x)*(seg2.x-seg1.x)+(seg2.y-seg1.y)*(seg2.y-seg1.y)) < 1e-12*1e-12) 
                 {
@@ -1109,10 +1112,20 @@ int point_in_ring(POINTARRAY *pts, POINT2D *point)
 #endif
                         return 0;
                 }
-                else if(seg1.y < point->y && seg2.y > point->y && side > 0)
+                else if(seg1.y <= point->y && seg2.y > point->y && side > 0)
+                {
+#ifdef PGIS_DEBUG
+                        lwnotice("incrementing winding number.");
+#endif
                         ++wn;
-                else if(seg1.y > point->y && seg2.y < point->y && side < 0)
+                }
+                else if(seg1.y > point->y && seg2.y <= point->y && side < 0)
+                {
+#ifdef PGIS_DEBUG
+                        lwnotice("decrementing winding number.");
+#endif
                         --wn;
+                }
         }
 #ifdef PGIS_DEBUG
         lwnotice("returning %d", wn);
