@@ -1,3 +1,7 @@
+PostGIS 1.2.2-CVS
+????/??/??
+        - JDBC: Added Hibernate Dialect from Norman Barker
+
 PostGIS 1.2.1
 2007/01/11
         - Fix point-in-polygon shortcut bug in Within()
