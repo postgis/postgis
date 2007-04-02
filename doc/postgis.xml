@@ -3504,7 +3504,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>GeomFromWKB(bytea,[&#60;srid&#62;])</term>
+            <term>GeometryFromWKB(bytea,[&#60;srid&#62;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKB with the given SRID. If SRID is
