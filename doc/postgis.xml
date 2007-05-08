@@ -2978,7 +2978,7 @@ newdb=&#62; \i spatial_ref_sys.sql
 
             <listitem>
               <para>Returns a geometry that represents the point set
-              intersection of the Geometies.</para>
+              intersection of the Geometries.</para>
 
               <para>Performed by the GEOS module</para>
 
