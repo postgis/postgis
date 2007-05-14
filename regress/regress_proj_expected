@@ -7,4 +7,3 @@
 6|16.00000000|48.00000000
 ERROR:  Input geometry has unknown (-1) SRID
 8|SRID=1000002;POINT(0 0)
-DELETE 2
