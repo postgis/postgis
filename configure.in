@@ -117,9 +117,7 @@ dnl
 AC_SUBST(USE_GEOS)
 AC_SUBST(GEOS_DIR)
 AC_SUBST(GEOS_LDFLAGS)
-AC_SUBST(USE_GEOS_CAPI)
 USE_GEOS=0
-USE_GEOS_CAPI=0
 GEOS_DIR=
 GEOS_LDFLAGS=
 
@@ -136,10 +134,11 @@ AC_ARG_WITH(geos,
 	else
 		if test "$with_geos" != "yes"; then
 			if test ! -f "$with_geos"; then
-	AC_MSG_ERROR([Invalid argument to --with-geos]);
+	            AC_MSG_ERROR([Invalid argument to --with-geos]);
 			else
 				GEOSCONFIG="$with_geos"
 				USE_GEOS=1
+                AC_MSG_RESULT([Using specified geos-config file: $GEOSCONFIG])
 			fi
 		fi
 	fi
@@ -164,11 +163,19 @@ if test $USE_GEOS -gt 0; then
 	else
 		GEOS_MINOR=`$GEOSCONFIG --version | cut -d. -f2`
 	fi
-	if test $GEOS_MAJOR -gt 2; then
-		USE_GEOS_CAPI=1
-	elif test $GEOS_MAJOR -eq 2 -a $GEOS_MINOR -ge 2; then
-		USE_GEOS_CAPI=1
-	fi
+
+    # GEOS >= 3.0.0 always has CAPI, however only GEOS >= 2.2.0 has CAPI support
+    # so abort if CAPI support is not available.
+	if test $GEOS_MAJOR -lt 3; then
+	    if test $GEOS_MAJOR -eq 2 -a $GEOS_MINOR -lt 2; then
+            AC_MSG_ERROR([PostGIS version >= 1.2.0 requires GEOS version >= 2.2.0]) 
+        else
+            # Make sure we abort for all other versions of GEOS
+            if test $GEOS_MAJOR -lt 2; then
+                AC_MSG_ERROR([PostGIS version >= 1.2.0 requires GEOS version >= 2.2.0])
+            fi
+        fi
+    fi
 fi
 
 AC_ARG_WITH(geos-libdir,
@@ -185,12 +192,6 @@ case "$with_geos_libdir" in
 esac
 ], with_geos_libdir=no)
 
-dnl AC_ARG_WITH(geos-capi, 
-dnl [  --with-geos-capi        enable use of GEOS C API ],
-dnl 	if test "$with_geos_capi" != "no"; then
-dnl 		USE_GEOS_CAPI=1
-dnl 	fi
-dnl )
 
 AC_SUBST(USE_PROJ)
 AC_SUBST(PROJ_DIR)
@@ -605,17 +606,18 @@ AC_MSG_RESULT([   PGSQL: $PGCONFIG])
 if test $USE_JTS -gt 0; then
 	AC_MSG_RESULT([     JTS: includedir=$JTS_INCLUDES libdir=$JTS_LIBDIR])
 fi
+
+# GEOS CAPI information
 if test $USE_GEOS -gt 0; then
-	if test $USE_GEOS_CAPI -gt 0; then
-		AC_MSG_RESULT([    GEOS: $GEOSCONFIG (with C-API)])
-	else
-		AC_MSG_RESULT([    GEOS: $GEOSCONFIG])
-	fi
-        AC_MSG_RESULT([          (ldflags: $GEOS_LDFLAGS)])
+	AC_MSG_RESULT([    GEOS: $GEOSCONFIG (with C-API)])
+    AC_MSG_RESULT([          (ldflags: $GEOS_LDFLAGS)])
 fi
+
+# PROJ.4 information
 if test $USE_PROJ -gt 0; then
 	AC_MSG_RESULT([    PROJ: prefix=$PROJ_DIR libdir=$PROJ_LIBDIR])
 fi
+
 AC_MSG_RESULT([   ICONV: $USE_ICONV $ICONV_LDFLAGS])
 dnl AC_MSG_RESULT([  FLEX:  path=$FLEX])
 dnl AC_MSG_RESULT([  YACC:  path=$YACC])
