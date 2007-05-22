@@ -1340,6 +1340,7 @@ Datum overlaps(PG_FUNCTION_ARGS)
 }
 
 int point_in_polygon(LWPOLY *polygon, LWPOINT *point);
+int point_outside_polygon(LWPOLY *polygon, LWPOINT *point);
 int point_in_multipolygon(LWMPOLY *mpolygon, LWPOINT *point);
 
 PG_FUNCTION_INFO_V1(contains);
@@ -1691,6 +1692,9 @@ Datum intersects(PG_FUNCTION_ARGS)
 	GEOSGeom g1,g2;
 	bool result;
 	BOX2DFLOAT4 box1, box2;
+	int type1, type2;
+	LWPOINT *point;
+	LWPOLY *poly;
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
@@ -1715,6 +1719,63 @@ Datum intersects(PG_FUNCTION_ARGS)
 		if ( box2.ymax < box1.ymin ) PG_RETURN_BOOL(FALSE);
 		if ( box2.ymin > box2.ymax ) PG_RETURN_BOOL(FALSE);
 	}
+
+	/*
+	 * short-circuit 2: if the geoms are a point and a polygon,
+	 * call the point_outside_polygon function.
+	 */
+	type1 = lwgeom_getType((uchar)SERIALIZED_FORM(geom1)[0]);
+	type2 = lwgeom_getType((uchar)SERIALIZED_FORM(geom2)[0]);
+	if(type1 == POINTTYPE && type2 == POLYGONTYPE)
+	{
+#ifdef PGIS_DEBUG
+		lwnotice("Point in Polygon test requested...short-circuiting.");
+#endif
+		point = lwpoint_deserialize(SERIALIZED_FORM(geom1));
+		poly = lwpoly_deserialize(SERIALIZED_FORM(geom2));
+		if(point_outside_polygon(poly, point) == 0)
+		{
+			PG_FREE_IF_COPY(geom1, 0);
+			PG_FREE_IF_COPY(geom2, 1);
+			lwgeom_release((LWGEOM *)poly);
+			lwgeom_release((LWGEOM *)point);
+			PG_RETURN_BOOL(TRUE);
+		}
+		else
+		{
+			PG_FREE_IF_COPY(geom1, 0);
+			PG_FREE_IF_COPY(geom2, 1);
+			lwgeom_release((LWGEOM *)poly);
+			lwgeom_release((LWGEOM *)point);
+			PG_RETURN_BOOL(FALSE);
+		}
+	}
+	else if(type1 == POLYGONTYPE && type2 == POINTTYPE)
+	{
+	#ifdef PGIS_DEBUG
+		lwnotice("Point in Polygon test requested...short-circuiting.");
+#endif
+		point = lwpoint_deserialize(SERIALIZED_FORM(geom2));
+		poly = lwpoly_deserialize(SERIALIZED_FORM(geom1));
+		if(point_outside_polygon(poly, point) == 0)
+		{
+			PG_FREE_IF_COPY(geom1, 0);
+			PG_FREE_IF_COPY(geom2, 1);
+			lwgeom_release((LWGEOM *)poly);
+			lwgeom_release((LWGEOM *)point);
+			PG_RETURN_BOOL(TRUE);
+		}
+		else
+		{
+			PG_FREE_IF_COPY(geom1, 0);
+			PG_FREE_IF_COPY(geom2, 1);
+			lwgeom_release((LWGEOM *)poly);
+			lwgeom_release((LWGEOM *)point);
+			PG_RETURN_BOOL(FALSE);
+		}
+
+	}
+
 
 	initGEOS(lwnotice, lwnotice);
 
@@ -1847,6 +1908,9 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	GEOSGeom g1,g2;
 	bool result;
 	BOX2DFLOAT4 box1, box2;
+	int type1, type2;
+	LWPOLY *poly;
+	LWPOINT *point;
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
@@ -1870,6 +1934,61 @@ Datum disjoint(PG_FUNCTION_ARGS)
 		if ( box2.xmin > box1.xmax ) PG_RETURN_BOOL(TRUE);
 		if ( box2.ymax < box1.ymin ) PG_RETURN_BOOL(TRUE);
 		if ( box2.ymin > box1.ymax ) PG_RETURN_BOOL(TRUE);
+	}
+
+	/*
+	 * short-circuit 2: if the geoms are a point and a polygon, 
+	 * call the point_outside_polygon function.
+	 */
+	type1 = lwgeom_getType((uchar)SERIALIZED_FORM(geom1)[0]);
+	type2 = lwgeom_getType((uchar)SERIALIZED_FORM(geom2)[0]);
+	if(type1 == POINTTYPE && type2 == POLYGONTYPE)
+	{
+#ifdef PGIS_DEBUG
+		lwnotice("Point outside Polygon test requested...short-circuiting.");
+#endif
+		point = lwpoint_deserialize(SERIALIZED_FORM(geom1));
+		poly = lwpoly_deserialize(SERIALIZED_FORM(geom2));
+		if(point_outside_polygon(poly, point) == 0) 
+		{
+			PG_FREE_IF_COPY(geom1, 0);
+			PG_FREE_IF_COPY(geom2, 0);
+			lwgeom_release((LWGEOM *)poly);
+			lwgeom_release((LWGEOM *)point);
+			PG_RETURN_BOOL(FALSE);
+		}
+		else
+		{
+			PG_FREE_IF_COPY(geom1, 0);
+			PG_FREE_IF_COPY(geom2, 0);
+			lwgeom_release((LWGEOM *)poly);
+			lwgeom_release((LWGEOM *)point);
+			PG_RETURN_BOOL(TRUE);
+		}
+	}
+	else if(type1 == POLYGONTYPE && type2 == POINTTYPE)
+	{
+#ifdef PGIS_DEBUG
+		lwnotice("Point outside Polygon test requested...short-circuiting.");
+#endif
+		point = lwpoint_deserialize(SERIALIZED_FORM(geom2));
+		poly = lwpoly_deserialize(SERIALIZED_FORM(geom1));
+		if(point_outside_polygon(poly, point) == 0) 
+		{
+			PG_FREE_IF_COPY(geom1, 0);
+			PG_FREE_IF_COPY(geom2, 0);
+			lwgeom_release((LWGEOM *)poly);
+			lwgeom_release((LWGEOM *)point);
+			PG_RETURN_BOOL(FALSE);
+		}
+		else
+		{
+			PG_FREE_IF_COPY(geom1, 0);
+			PG_FREE_IF_COPY(geom2, 0);
+			lwgeom_release((LWGEOM *)poly);
+			lwgeom_release((LWGEOM *)point);
+			PG_RETURN_BOOL(TRUE);
+		}
 	}
 
 	initGEOS(lwnotice, lwnotice);

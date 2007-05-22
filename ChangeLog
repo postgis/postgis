@@ -1,3 +1,11 @@
+2007-05-22 Mark Leslie <mleslie@refractions.net>
+
+	* lwgeom/lwgeom_functions_analytic.c, lwgeom/lwgeom_geos_c.c: 
+	  Added short-circuit calls to the point-in-polygon function for 
+	  disjoint and intersects calls.
+	* regress/regress_ogc_expected, regress/regress_ogc.sql:
+	  Added regression tests for the above short-circuits.
+
 2007-03-15 Markus Schaber <schabi@logix-tt.com>
 
 	* java/hibernate/PostGISDialect.java:

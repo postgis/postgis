@@ -1073,7 +1073,9 @@ double determineSide(POINT2D *seg1, POINT2D *seg2, POINT2D *point)
 }
 
 /*
- * return 0 iff point is outside ring pts
+ * return -1 iff point is outside ring pts
+ * return 1 iff point is inside ring pts
+ * return 0 iff point is on ring pts
  */
 int point_in_ring(POINTARRAY *pts, POINT2D *point)
 {
@@ -1128,13 +1130,16 @@ int point_in_ring(POINTARRAY *pts, POINT2D *point)
                 }
         }
 #ifdef PGIS_DEBUG
-        lwnotice("returning %d", wn);
+        lwnotice("winding number %d", wn);
 #endif
-        return wn;
+        if(wn == 0)
+        	return -1;
+        return 1;
 }
 
 /*
- * return 0 iff point outside polygon
+ * return 0 iff point outside polygon or on boundary
+ * return 1 iff point inside polygon
  */
 int point_in_polygon(LWPOLY *polygon, LWPOINT *point)
 {
@@ -1150,7 +1155,7 @@ int point_in_polygon(LWPOLY *polygon, LWPOINT *point)
         /* assume bbox short-circuit has already been attempted */
         
         ring = polygon->rings[0];
-        if(point_in_ring(ring, &pt) == 0) 
+        if(point_in_ring(ring, &pt) != 1) 
         {
 #ifdef PGIS_DEBUG
                 lwnotice("point_in_polygon: outside exterior ring.");
@@ -1161,7 +1166,7 @@ int point_in_polygon(LWPOLY *polygon, LWPOINT *point)
         for(i=1; i<polygon->nrings; i++)
         {
                 ring = polygon->rings[i];
-                if(point_in_ring(ring, &pt) != 0) 
+                if(point_in_ring(ring, &pt) != -1) 
                 {
 #ifdef PGIS_DEBUG
                         lwnotice("point_in_polygon: within hole %d.", i);
@@ -1171,6 +1176,47 @@ int point_in_polygon(LWPOLY *polygon, LWPOINT *point)
         }
         return 1;
 }
+
+/*
+ * return 0 iff point inside polygon or on boundary
+ * return 1 iff point outside polygon
+ */
+int point_outside_polygon(LWPOLY *polygon, LWPOINT *point)
+{
+        int i;
+        POINTARRAY *ring;
+        POINT2D pt;
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("point_outside_polygon called.");
+#endif
+
+        getPoint2d_p(point->point, 0, &pt);
+        /* assume bbox short-circuit has already been attempted */
+        
+        ring = polygon->rings[0];
+        if(point_in_ring(ring, &pt) == -1) 
+        {
+#ifdef PGIS_DEBUG
+                lwnotice("point_outside_polygon: outside exterior ring.");
+#endif
+                return 1;
+        }
+
+        for(i=1; i<polygon->nrings; i++)
+        {
+                ring = polygon->rings[i];
+                if(point_in_ring(ring, &pt) == 1) 
+                {
+#ifdef PGIS_DEBUG
+                        lwnotice("point_outside_polygon: within hole %d.", i);
+#endif
+                        return 1;
+                }
+        }
+        return 0;
+}
+
 
 /*
  * return 0 iff point is outside every polygon
