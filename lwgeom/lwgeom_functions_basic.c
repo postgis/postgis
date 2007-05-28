@@ -320,6 +320,8 @@ Datum LWGEOM_area_polygon(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	LWGEOM_INSPECTED *inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
 	LWPOLY *poly;
+        LWCURVEPOLY *curvepoly;
+        LWGEOM *tmp;
 	double area = 0.0;
 	int i;
 
@@ -329,9 +331,18 @@ Datum LWGEOM_area_polygon(PG_FUNCTION_ARGS)
 
 	for (i=0; i<inspected->ngeometries; i++)
 	{
-		poly = lwgeom_getpoly_inspected(inspected, i);
-		if ( poly == NULL ) continue;
-		area += lwgeom_polygon_area(poly);
+                tmp = lwgeom_getgeom_inspected(inspected, i);
+                if(lwgeom_getType(tmp->type) == POLYGONTYPE)
+                {
+		        poly = (LWPOLY *)tmp;
+		        area += lwgeom_polygon_area(poly);
+                }
+                else if(lwgeom_getType(tmp->type) == CURVEPOLYTYPE)
+                {
+                        curvepoly = (LWCURVEPOLY *)tmp;
+                        area += lwgeom_curvepolygon_area(curvepoly);
+                }
+                lwgeom_release(tmp);
 #ifdef PGIS_DEBUG
 		elog(NOTICE, " LWGEOM_area_polygon found a poly (%f)", area);
 #endif

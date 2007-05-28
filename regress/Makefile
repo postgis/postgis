@@ -29,7 +29,14 @@ TESTS = \
 	measures \
 	long_xact \
 	ctors \
-	sql-mm-serialize
+	sql-mm-serialize \
+	sql-mm-circularstring \
+	sql-mm-compoundcurve \
+	sql-mm-curvepoly \
+	sql-mm-general \
+	sql-mm-multicurve \
+	sql-mm-multisurface 
+
 
 ifeq ($(USE_GEOS),1)
 	TESTS += regress_ogc regress_bdpoly

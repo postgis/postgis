@@ -3721,6 +3721,43 @@ LANGUAGE 'plpgsql' _IMMUTABLE_STRICT;
 #include "sqlmm.sql.in"
 
 ---------------------------------------------------------------
+-- SQL-MM
+---------------------------------------------------------------
+
+--
+-- SQL-MM
+--
+-- ST_CurveToLine(Geometry geometry, SegmentsPerQuarter integer)
+--
+-- Converts a given geometry to a linear geometry.  Each curveed
+-- geometry or segment is converted into a linear approximation using
+-- the given number of segments per quarter circle.
+CREATEFUNCTION ST_CurveToLine(geometry, integer)
+   RETURNS geometry
+   AS '@MODULE_FILENAME@', 'LWGEOM_curve_segmentize'
+   LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+--
+-- SQL-MM
+--
+-- ST_CurveToLine(Geometry geometry, SegmentsPerQuarter integer)
+--
+-- Converts a given geometry to a linear geometry.  Each curveed
+-- geometry or segment is converted into a linear approximation using
+-- the default value of 32 segments per quarter circle
+CREATEFUNCTION ST_CurveToLine(geometry)
+	RETURNS geometry AS 'SELECT ST_CurveToLine($1, 32)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+CREATEFUNCTION ST_HasArc(geometry)
+ 	RETURNS boolean
+	AS '@MODULE_FILENAME@', 'LWGEOM_has_arc'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+CREATEFUNCTION ST_LineToCurve(geometry)
+        RETURNS geometry
+        AS '@MODULE_FILENAME@', 'LWGEOM_line_desegmentize'
+        LANGUAGE 'C' _IMMUTABLE_STRICT; 
+---------------------------------------------------------------
 -- END
 ---------------------------------------------------------------
 

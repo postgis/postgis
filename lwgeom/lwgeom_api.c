@@ -792,6 +792,9 @@ pointArray_construct(uchar *points, char hasz, char hasm,
 	uint32 npoints)
 {
 	POINTARRAY  *pa;
+#ifdef PGIS_DEBUG_CALLS
+	lwnotice("pointArray_construct called.");
+#endif
 	pa = (POINTARRAY*)lwalloc(sizeof(POINTARRAY));
 
 	pa->dims = 0;
@@ -800,6 +803,9 @@ pointArray_construct(uchar *points, char hasz, char hasm,
 
 	pa->serialized_pointlist = points;
 
+#ifdef PGIS_DEBUG_CALLS
+	lwnotice("pointArray_construct returning %p", pa);
+#endif
 	return pa;
 }
 

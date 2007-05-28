@@ -1,3 +1,38 @@
+2007-05-25 Mark Leslie <mleslie@refractions.net>
+
+	* lwgeom/lwgeom_ogc.c: 
+	  Added curved type handling to: getType, numGeometries, geometryN, 
+	  dimension, exteriorRing, numInteriorRings, interiorRingN, 
+	  LWGeom_from_text, closed
+	* lwgeom/measures.c: 
+	  Added lwgeom_curvepolygon_area function to determine the area of a 
+	  curved polygon.
+	* lwgeom/lwgeom_sqlmm.c: 
+	  Added has_arc function to determine if a geometry contains curves.
+	  Added segmentization and desegmentization functions.
+	* lwgeom/lwpostgis.sql.in: 
+	  Added ST_CurveToLine function to create a linear geometry to 
+ 	  approximate a given curved geometry.
+	* lwgeom/lwgeom_functions_basic.c: 
+	  Added curved polygon handling to the area function.
+	* lwgeom/lwgeom.c: 
+	  Added curved geometry support to lwgeom_clone.
+	* lwgeom/lwgeom_geos_c.c:
+	  Added curved geometry support to isRing.
+	* regress/sql-mm-general.sql, 
+	  regress/sql-mm-circularstring.sql, 
+	  regress/sql-mm-circularstring_expected, 
+	  regress/sql-mm-compoundcurve.sql,
+	  regress/sql-mm-compoundcurve_expected, 
+	  regress/sql-mm-curvepoly.sql,
+	  regress/sql-mm-curvepoly_expected, 
+	  regress/sql-mm-multicurve.sql,
+	  regress/sql-mm-multicurve_expected,
+	  regress/sql-mm-multisurface.sql,
+	  regress/sql-mm-multisurface_expected,
+	  regress/Makefile
+	  Added regression testing for the sql-mm geometry types.
+
 2007-05-22 Mark Leslie <mleslie@refractions.net>
 
 	* lwgeom/lwgeom_functions_analytic.c, lwgeom/lwgeom_geos_c.c: 

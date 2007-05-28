@@ -137,12 +137,22 @@ Datum LWGEOM_getTYPE(PG_FUNCTION_ARGS)
 		strcpy(result,"MULTIPOINT");
 	else if (type == LINETYPE)
 		strcpy(result,"LINESTRING");
+        else if (type == CURVETYPE)
+                strcpy(result,"CIRCULARSTRING");
+        else if (type == COMPOUNDTYPE)
+                strcpy(result, "COMPOUNDCURVE");
 	else if (type == MULTILINETYPE)
 		strcpy(result,"MULTILINESTRING");
+        else if (type == MULTICURVETYPE)
+                strcpy(result, "MULTICURVE");
 	else if (type == POLYGONTYPE)
 		strcpy(result,"POLYGON");
+        else if (type == CURVEPOLYTYPE)
+                strcpy(result,"CURVEPOLYGON");
 	else if (type == MULTIPOLYGONTYPE)
 		strcpy(result,"MULTIPOLYGON");
+        else if (type == MULTISURFACETYPE)
+                strcpy(result, "MULTISURFACE");
 	else if (type == COLLECTIONTYPE)
 		strcpy(result,"GEOMETRYCOLLECTION");
 	else
@@ -171,18 +181,27 @@ lwgeom_numpoints_linestring_recursive(const uchar *serialized)
 	LWGEOM_INSPECTED *inspected = lwgeom_inspect(serialized);
 	int i;
 
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("lwgeom_numpoints_linestring_recursive called.");
+#endif
+
 	for (i=0; i<inspected->ngeometries; i++)
 	{
 		int32 npoints;
 		int type;
-		LWLINE *line=NULL;
+                LWGEOM *geom=NULL;
 		uchar *subgeom;
 
-		line = lwgeom_getline_inspected(inspected, i);
-		if (line != NULL)
-		{
-			return line->points->npoints;
-		}
+                geom = lwgeom_getgeom_inspected(inspected, i);
+
+#ifdef PGIS_DEBUG
+                lwnotice("numpoints_recursive: type=%d", lwgeom_getType(geom->type));
+#endif
+
+                if(lwgeom_getType(geom->type) == LINETYPE)
+                {
+                        return ((LWLINE *)geom)->points->npoints;
+                }
 
 		subgeom = lwgeom_getsubgeometry_inspected(inspected, i);
 		if ( subgeom == NULL )
@@ -193,7 +212,7 @@ lwgeom_numpoints_linestring_recursive(const uchar *serialized)
 		type = lwgeom_getType(subgeom[0]);
 
 		/* MULTILINESTRING && GEOMETRYCOLLECTION are worth checking */
-		if ( type != 7 && type != 5 ) continue;
+		if ( type != MULTILINETYPE && type != COLLECTIONTYPE ) continue;
 
 		npoints = lwgeom_numpoints_linestring_recursive(subgeom);
 		if ( npoints == -1 ) continue;
@@ -218,6 +237,11 @@ Datum LWGEOM_numpoints_linestring(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	int32 ret;
+
+#ifdef PGIS_DEBUG
+        lwnotice("LWGEOM_numpoints_linestring called.");
+#endif
+
 	ret = lwgeom_numpoints_linestring_recursive(SERIALIZED_FORM(geom));
 	if ( ret == -1 )
 	{
@@ -237,7 +261,9 @@ Datum LWGEOM_numgeometries_collection(PG_FUNCTION_ARGS)
 	uchar *serialized = SERIALIZED_FORM(geom);
 
 	type = lwgeom_getType(geom->type);
-	if ( type >= 4 )
+	if (type==MULTIPOINTTYPE || type==MULTILINETYPE || 
+                type==MULTICURVETYPE || type==MULTIPOLYGONTYPE ||
+                type==MULTISURFACETYPE || type==COLLECTIONTYPE)
 	{
 		ret = lwgeom_getnumgeometries(serialized);
 		PG_FREE_IF_COPY(geom, 0);
@@ -258,10 +284,15 @@ Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS)
 	LWCOLLECTION *coll;
 	LWGEOM *subgeom;
 
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("LWGEOM_geometryn_collection called.");
+#endif
+
 	/* elog(NOTICE, "GeometryN called"); */
 
 	/* call is valid on multi* geoms only */
-	if ( type < 4 )
+	if (type==POINTTYPE || type==LINETYPE || type==CURVETYPE ||
+                type==COMPOUNDTYPE || type==POLYGONTYPE || type==CURVEPOLYTYPE)
 	{
 		/* elog(NOTICE, "geometryn: geom is of type %d, requires >=4", type); */
 		PG_RETURN_NULL();
@@ -303,20 +334,37 @@ lwgeom_dimension_recursive(const uchar *serialized)
 	int ret = -1;
 	int i;
 
+	/*
+	 * This has the unfortunate habit of traversing the CURVEPOLYTYPe
+	 * geoms and returning 1, as all contained geoms are linear.
+	 * Here we preempt this problem.
+	 * TODO: This should handle things a bit better.  Only 
+	 * GEOMETRYCOLLECTION should ever need to be traversed.
+ 	 */
+	if(lwgeom_getType(serialized[0]) == CURVEPOLYTYPE) return 2;
+
 	inspected = lwgeom_inspect(serialized);
 	for (i=0; i<inspected->ngeometries; i++)
 	{
 		uchar *subgeom;
 		char typeflags = lwgeom_getsubtype_inspected(inspected, i);
 		int type = lwgeom_getType(typeflags);
+#ifdef PGIS_DEBUG
+                lwnotice("lwgeom_dimension_recursive: type %d", type);
+#endif
 		int dims=-1;
 
 		if ( type == POINTTYPE ) dims = 0;
 		else if ( type == MULTIPOINTTYPE ) dims=0;
 		else if ( type == LINETYPE ) dims=1;
+                else if ( type == CURVETYPE ) dims=1;
+                else if ( type == COMPOUNDTYPE ) dims=1;
 		else if ( type == MULTILINETYPE ) dims=1;
+                else if ( type == MULTICURVETYPE ) dims=1;
 		else if ( type == POLYGONTYPE ) dims=2;
+                else if ( type == CURVEPOLYTYPE ) dims=2;
 		else if ( type == MULTIPOLYGONTYPE ) dims=2;
+                else if ( type == MULTISURFACETYPE ) dims=2;
 		else if ( type == COLLECTIONTYPE ) 
 		{
 			subgeom = lwgeom_getsubgeometry_inspected(inspected, i);
@@ -350,6 +398,9 @@ Datum LWGEOM_dimension(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	int dimension;
+#ifdef PGIS_DEBUG_CALLS
+        elog(NOTICE, "LWGEOM_dimension called");
+#endif
 
 	dimension = lwgeom_dimension_recursive(SERIALIZED_FORM(geom));
 	if ( dimension == -1 )
@@ -374,33 +425,51 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	LWPOLY *poly = NULL;
+        LWCURVEPOLY *curvepoly = NULL;
 	POINTARRAY *extring;
+        LWGEOM *ring;
 	LWLINE *line;
 	PG_LWGEOM *result;
 	BOX2DFLOAT4 *bbox=NULL;
 
-	if ( TYPE_GETTYPE(geom->type) != POLYGONTYPE )
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("LWGEOM_exteriorring_polygon called.");
+#endif
+
+	if ( TYPE_GETTYPE(geom->type) != POLYGONTYPE && 
+                TYPE_GETTYPE(geom->type) != CURVEPOLYTYPE)
 	{
 		elog(ERROR, "ExteriorRing: geom is not a polygon");
 		PG_RETURN_NULL();
 	}
-	poly = lwpoly_deserialize(SERIALIZED_FORM(geom));
+        if(lwgeom_getType((uchar)SERIALIZED_FORM(geom)[0]) == POLYGONTYPE)
+        {
+	        poly = lwpoly_deserialize(SERIALIZED_FORM(geom));
 
-	/* Ok, now we have a polygon. Here is its exterior ring. */
-	extring = poly->rings[0];
+	        /* Ok, now we have a polygon. Here is its exterior ring. */
+	        extring = poly->rings[0];
 
-	/*
-	 * This is a LWLINE constructed by exterior ring POINTARRAY
-	 * If the input geom has a bbox, use it for 
-	 * the output geom, as exterior ring makes it up !
-	 */
-	if ( poly->bbox ) bbox=box2d_clone(poly->bbox);
-	line = lwline_construct(poly->SRID, bbox, extring);
+	        /*
+	        * This is a LWLINE constructed by exterior ring POINTARRAY
+	        * If the input geom has a bbox, use it for 
+	        * the output geom, as exterior ring makes it up !
+	        */
+	        if ( poly->bbox ) bbox=box2d_clone(poly->bbox);
+	        line = lwline_construct(poly->SRID, bbox, extring);
 
-	result = pglwgeom_serialize((LWGEOM *)line);
+	        result = pglwgeom_serialize((LWGEOM *)line);
 
-	lwgeom_release((LWGEOM *)line);
-	lwgeom_release((LWGEOM *)poly);
+	        lwgeom_release((LWGEOM *)line);
+	        lwgeom_release((LWGEOM *)poly);
+        }
+        else
+        {
+                curvepoly = lwcurvepoly_deserialize(SERIALIZED_FORM(geom));
+                ring = curvepoly->rings[0];
+                result = pglwgeom_serialize(ring);
+                lwgeom_release(ring);
+        }
+
 	PG_FREE_IF_COPY(geom, 0);
 
 
@@ -416,29 +485,66 @@ PG_FUNCTION_INFO_V1(LWGEOM_numinteriorrings_polygon);
 Datum LWGEOM_numinteriorrings_polygon(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	LWGEOM_INSPECTED *inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
+	LWGEOM_INSPECTED *inspected = NULL;
+        LWGEOM *tmp = NULL;
 	LWPOLY *poly = NULL;
+        LWCURVEPOLY *curvepoly = NULL;
 	int32 result;
 	int i;
 
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("LWGEOM_numinteriorrings called.");
+#endif
+
+        if(lwgeom_getType((uchar)SERIALIZED_FORM(geom)[0]) == CURVEPOLYTYPE)
+        {
+                tmp = (LWGEOM *)lwcurvepoly_deserialize(SERIALIZED_FORM(geom));
+        }
+        else
+        { 
+        inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
 	for (i=0; i<inspected->ngeometries; i++)
 	{
-		poly = lwgeom_getpoly_inspected(inspected, i);
-		if ( poly ) break;
+                tmp = lwgeom_getgeom_inspected(inspected, i);
+		if (lwgeom_getType(tmp->type) == POLYGONTYPE ||
+                    lwgeom_getType(tmp->type) == CURVEPOLYTYPE) break;
 	}
+        }
 
-	if ( poly == NULL ) {
+	if ( tmp == NULL ) {
 		PG_FREE_IF_COPY(geom, 0);
 		pfree_inspected(inspected);
 		PG_RETURN_NULL();
 	}
+#ifdef PGIS_DEBUG
+        lwnotice("Geometry of type %d found.", lwgeom_getType(tmp->type));
+#endif
 
-	/* Ok, now we have a polygon. Here is its number of holes */
-	result = poly->nrings-1;
+        if(lwgeom_getType(tmp->type) == POLYGONTYPE)
+        {
+                poly = (LWPOLY *)tmp;
 
+	        /* Ok, now we have a polygon. Here is its number of holes */
+	        result = poly->nrings-1;
+        }
+        else if(lwgeom_getType(tmp->type) == CURVEPOLYTYPE)
+        {
+#ifdef PGIS_DEBUG
+                lwnotice("CurvePolygon found.");
+#endif
+               
+                curvepoly = (LWCURVEPOLY *)tmp;
+                result = curvepoly->nrings-1;
+        } 
+        else 
+        {
+		PG_FREE_IF_COPY(geom, 0);
+		pfree_inspected(inspected);
+		PG_RETURN_NULL();
+        }
 	PG_FREE_IF_COPY(geom, 0);
-	pfree_inspected(inspected);
-	lwgeom_release((LWGEOM *)poly);
+        if(inspected != NULL) pfree_inspected(inspected);
+	lwgeom_release((LWGEOM *)tmp);
 
 	PG_RETURN_INT32(result);
 }
@@ -454,11 +560,16 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom;
 	int32 wanted_index;
+        LWCURVEPOLY *curvepoly = NULL;
 	LWPOLY *poly = NULL;
 	POINTARRAY *ring;
 	LWLINE *line;
 	PG_LWGEOM *result;
 	BOX2DFLOAT4 *bbox = NULL;
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("LWGEOM_interierringn_polygon called.");
+#endif
 
 	wanted_index = PG_GETARG_INT32(1);
 	if ( wanted_index < 1 )
@@ -469,37 +580,56 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	if ( TYPE_GETTYPE(geom->type) != POLYGONTYPE )
+	if ( TYPE_GETTYPE(geom->type) != POLYGONTYPE &&
+                TYPE_GETTYPE(geom->type) != CURVEPOLYTYPE )
 	{
 		PG_FREE_IF_COPY(geom, 0);
 		elog(ERROR, "InteriorRingN: geom is not a polygon");
 		PG_RETURN_NULL();
 	}
-	poly = lwpoly_deserialize(SERIALIZED_FORM(geom));
+        if( TYPE_GETTYPE(geom->type) == POLYGONTYPE)
+        {
+	        poly = lwpoly_deserialize(SERIALIZED_FORM(geom));
 
-	/* Ok, now we have a polygon. Let's see if it has enough holes */
-	if ( wanted_index >= poly->nrings )
-	{
-		PG_FREE_IF_COPY(geom, 0);
-		lwgeom_release((LWGEOM *)poly);
-		PG_RETURN_NULL();
-	}
+	        /* Ok, now we have a polygon. Let's see if it has enough holes */
+	        if ( wanted_index >= poly->nrings )
+	        {
+		        PG_FREE_IF_COPY(geom, 0);
+		        lwgeom_release((LWGEOM *)poly);
+		        PG_RETURN_NULL();
+	        }
 
-	ring = poly->rings[wanted_index];
+	        ring = poly->rings[wanted_index];
 
-	/* COMPUTE_BBOX==TAINTING */
-	if ( poly->bbox ) bbox = ptarray_compute_box2d(ring);
+	        /* COMPUTE_BBOX==TAINTING */
+	        if ( poly->bbox ) bbox = ptarray_compute_box2d(ring);
 
-	/* This is a LWLINE constructed by interior ring POINTARRAY */
-	line = lwline_construct(poly->SRID, bbox, ring);
+	        /* This is a LWLINE constructed by interior ring POINTARRAY */
+	        line = lwline_construct(poly->SRID, bbox, ring);
+        
+	        /* Copy SRID from polygon */
+	        line->SRID = poly->SRID;
 
-	/* Copy SRID from polygon */
-	line->SRID = poly->SRID;
+	        result = pglwgeom_serialize((LWGEOM *)line);
+	        lwgeom_release((LWGEOM *)line);
+	        lwgeom_release((LWGEOM *)poly);
+        }
+        else
+        {
+                curvepoly = lwcurvepoly_deserialize(SERIALIZED_FORM(geom));
 
-	result = pglwgeom_serialize((LWGEOM *)line);
+                if(wanted_index >= curvepoly->nrings)
+                {
+                        PG_FREE_IF_COPY(geom, 0);
+                        lwgeom_release((LWGEOM *)curvepoly);
+                        PG_RETURN_NULL();
+                }
 
-	lwgeom_release((LWGEOM *)line);
-	lwgeom_release((LWGEOM *)poly);
+                result = pglwgeom_serialize(curvepoly->rings[wanted_index]);
+                lwgeom_release((LWGEOM *)curvepoly);
+        }
+
+
 	PG_FREE_IF_COPY(geom, 0);
 
 	PG_RETURN_POINTER(result);
@@ -517,45 +647,86 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 	int32 wanted_index;
 	LWGEOM_INSPECTED *inspected;
 	LWLINE *line = NULL;
+        LWCURVE *curve = NULL;
+        LWGEOM *tmp = NULL;
 	POINTARRAY *pts;
 	LWPOINT *point;
 	uchar *serializedpoint;
 	PG_LWGEOM *result;
-	int i;
+	int i, type;
 
 	wanted_index = PG_GETARG_INT32(1);
 	if ( wanted_index < 1 )
 		PG_RETURN_NULL(); /* index out of range */
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
+        type = lwgeom_getType((uchar)SERIALIZED_FORM(geom)[0]);
+        if(type == COMPOUNDTYPE || type == CURVEPOLYTYPE)
+        {
+                PG_FREE_IF_COPY(geom, 0);
+                PG_RETURN_NULL();
+        }
+        else
+        {
+	        inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
+        
+	        for (i=0; i<inspected->ngeometries; i++)
+	        {
+		        tmp = lwgeom_getgeom_inspected(inspected, i);
+		        if (lwgeom_getType(tmp->type) == LINETYPE ||
+                                lwgeom_getType(tmp->type) == CURVETYPE) 
+                            break;
+	        }
 
-	for (i=0; i<inspected->ngeometries; i++)
-	{
-		line = lwgeom_getline_inspected(inspected, i);
-		if ( line ) break;
-	}
+	        if ( tmp == NULL ) {
+		        pfree_inspected(inspected);
+		        PG_FREE_IF_COPY(geom, 0);
+		        PG_RETURN_NULL();
+	        }
+                if(lwgeom_getType(tmp->type) == CURVETYPE)
+                {
+                        curve = (LWCURVE *)tmp;
+                        if(wanted_index > curve->points->npoints)
+                        {
+                                pfree_inspected(inspected);
+                                PG_FREE_IF_COPY(geom, 0);
+                                lwgeom_release(tmp);
+                                PG_RETURN_NULL();
+                        }
+                        pfree_inspected(inspected);
 
-	if ( line == NULL ) {
-		pfree_inspected(inspected);
-		PG_FREE_IF_COPY(geom, 0);
-		PG_RETURN_NULL();
-	}
-
-	/* Ok, now we have a line. Let's see if it has enough points. */
-	if ( wanted_index > line->points->npoints )
-	{
-		pfree_inspected(inspected);
-		PG_FREE_IF_COPY(geom, 0);
-		lwgeom_release((LWGEOM *)line);
-		PG_RETURN_NULL();
-	}
-	pfree_inspected(inspected);
-
-	/* Construct a point array */
-	pts = pointArray_construct(getPoint_internal(line->points,
-		wanted_index-1),
-		TYPE_HASZ(line->type), TYPE_HASM(line->type), 1);
+                        pts = pointArray_construct(getPoint_internal(
+                                        curve->points,
+                                        wanted_index-1),
+                                        TYPE_HASZ(curve->type), 
+                                        TYPE_HASM(curve->type), 1);
+                }
+                else if(lwgeom_getType(tmp->type) == LINETYPE)
+                {
+                        line = (LWLINE *)tmp;
+	                /* Ok, now we have a line. Let's see if it has enough points. */
+	                if ( wanted_index > line->points->npoints )
+	                {
+		                pfree_inspected(inspected);
+		                PG_FREE_IF_COPY(geom, 0);
+		                lwgeom_release(tmp);
+		                PG_RETURN_NULL();
+	                }
+	                pfree_inspected(inspected);
+        
+	                /* Construct a point array */
+	                pts = pointArray_construct(getPoint_internal(line->points,
+		                wanted_index-1),
+		                TYPE_HASZ(line->type), TYPE_HASM(line->type), 1);
+                }
+                else
+                {
+                        pfree_inspected(inspected);
+                        PG_FREE_IF_COPY(geom, 0);
+                        lwgeom_release(tmp);
+                        PG_RETURN_NULL();
+                }
+        }
 
 	/* Construct an LWPOINT */
 	point = lwpoint_construct(pglwgeom_getSRID(geom),
@@ -572,9 +743,8 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 
 	pfree(point);
 	pfree(serializedpoint);
-	lwgeom_release((LWGEOM *)line);
 	PG_FREE_IF_COPY(geom, 0);
-
+	lwgeom_release(tmp);
 	PG_RETURN_POINTER(result);
 }
 
@@ -698,29 +868,45 @@ Datum LWGEOM_startpoint_linestring(PG_FUNCTION_ARGS)
 	POINTARRAY *pts;
 	LWPOINT *point;
 	PG_LWGEOM *result;
-	int i;
+	int i, type;
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("LWGEOM_startpoint_linestring called.");
+#endif
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
 
-	for (i=0; i<inspected->ngeometries; i++)
+	/*
+	 * Curved polygons and compound curves are both collections
+	 * that should not be traversed looking for linestrings.
+	 */
+	type = lwgeom_getType((uchar)SERIALIZED_FORM(geom)[0]);
+	if(type == CURVEPOLYTYPE || type == COMPOUNDTYPE)
 	{
-		line = lwgeom_getline_inspected(inspected, i);
-		if ( line ) break;
+		PG_FREE_IF_COPY(geom, 0);
+		PG_RETURN_NULL();
 	}
-	pfree_inspected(inspected);
+
+        inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
+
+        for (i=0; i<inspected->ngeometries; i++)
+        {
+	        line = lwgeom_getline_inspected(inspected, i);
+	        if ( line ) break;
+        }
 
 	if ( line == NULL ) {
 		PG_FREE_IF_COPY(geom, 0);
 		PG_RETURN_NULL();
 	}
 
-	/* Ok, now we have a line.  */
+        /* Ok, now we have a line.  */
 
-	/* Construct a point array */
-	pts = pointArray_construct(getPoint_internal(line->points, 0),
-		TYPE_HASZ(line->type),
-		TYPE_HASM(line->type), 1);
+        /* Construct a point array */
+        pts = pointArray_construct(getPoint_internal(line->points, 0),
+	        TYPE_HASZ(line->type),
+	        TYPE_HASM(line->type), 1);
+        lwgeom_release((LWGEOM *)line);
 
 	/* Construct an LWPOINT */
 	point = lwpoint_construct(pglwgeom_getSRID(geom), NULL, pts);
@@ -728,7 +914,6 @@ Datum LWGEOM_startpoint_linestring(PG_FUNCTION_ARGS)
 	/* Construct a PG_LWGEOM */
 	result = pglwgeom_serialize((LWGEOM *)point);
 
-	lwgeom_release((LWGEOM *)line);
 	lwgeom_release((LWGEOM *)point);
 	PG_FREE_IF_COPY(geom, 0);
 
@@ -748,31 +933,42 @@ Datum LWGEOM_endpoint_linestring(PG_FUNCTION_ARGS)
 	POINTARRAY *pts;
 	LWGEOM *point;
 	PG_LWGEOM *result;
-	int i;
+	int i, type;
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("LWGEOM_endpoint_linestring called.");
+#endif
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
-
-	for (i=0; i<inspected->ngeometries; i++)
+	type = lwgeom_getType((uchar)SERIALIZED_FORM(geom)[0]);
+	if(type == CURVEPOLYTYPE || type == COMPOUNDTYPE)
 	{
-		line = lwgeom_getline_inspected(inspected, i);
-		if ( line ) break;
+		PG_FREE_IF_COPY(geom, 0);
+		PG_RETURN_NULL();
 	}
-	pfree_inspected(inspected);
+        
+        inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
+
+        for (i=0; i<inspected->ngeometries; i++)
+        {
+	        line = lwgeom_getline_inspected(inspected, i);
+	        if ( line ) break;
+        }
+        pfree_inspected(inspected);
 
 	if ( line == NULL ) {
 		PG_FREE_IF_COPY(geom, 0);
 		PG_RETURN_NULL();
 	}
 
+        /* Ok, now we have a line.  */
 
-	/* Ok, now we have a line.  */
-
-	/* Construct a point array */
-	pts = pointArray_construct(
-		getPoint_internal(line->points, line->points->npoints-1),
-		TYPE_HASZ(line->type),
-		TYPE_HASM(line->type), 1);
+        /* Construct a point array */
+        pts = pointArray_construct(
+	        getPoint_internal(line->points, line->points->npoints-1),
+	        TYPE_HASZ(line->type),
+	        TYPE_HASM(line->type), 1);
+        lwgeom_release((LWGEOM *)line);
 
 	/* Construct an LWPOINT */
 	point = (LWGEOM *)lwpoint_construct(pglwgeom_getSRID(geom), NULL, pts);
@@ -804,9 +1000,14 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 	PG_LWGEOM *result = NULL;
 	LWGEOM *lwgeom;
 
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("LWGEOM_from_text");
+#endif
 	size = VARSIZE(wkttext)-VARHDRSZ;
 
-	/*lwnotice("size: %d", size); */
+#ifdef PGIS_DEBUG
+	lwnotice("size: %d", size); 
+#endif
 
 	if ( size < 10 )
 	{
@@ -822,9 +1023,9 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 	 *
 	 * TODO: reject 'SRID=x;..' form...
 	 */
-	if ( fc!='P' && fc!='L' && fc!='M' && fc!='G' && fc!='S' )
+	if ( fc!='P' && fc!='L' && fc!='M' && fc!='G' && fc!='S' && fc!='C' )
 	{
-		lwerror("Invalid OGC WKT (does not start with P,L,M or G)");
+		lwerror("Invalid OGC WKT (does not start with P,L,M,C or G)");
 		PG_RETURN_NULL();
 	}
 
@@ -832,7 +1033,9 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 	memcpy(wkt, VARDATA(wkttext), size);
 	wkt[size]='\0';
 
-	/* lwnotice("wkt: [%s]", wkt); */
+#ifdef PGIS_DEBUG
+	lwnotice("wkt: [%s]", wkt);
+#endif
 
 	geom = (PG_LWGEOM *)parse_lwgeom_wkt(wkt);
 
@@ -898,6 +1101,11 @@ Datum LWGEOM_from_WKB(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_asText);
 Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 {
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("LWGEOM_asText called.");
+#endif
+
 	PG_LWGEOM *lwgeom;
 	PG_LWGEOM *ogclwgeom;
 	char *result_cstring;
@@ -971,6 +1179,10 @@ char line_is_closed(LWLINE *line)
 {
 	POINT3DZ sp, ep;
 
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("line_is_closed called.");
+#endif
+
 	getPoint3dz_p(line->points, 0, &sp);
 	getPoint3dz_p(line->points, line->points->npoints-1, &ep);
 
@@ -984,6 +1196,64 @@ char line_is_closed(LWLINE *line)
 	return 1;
 }
 
+char curve_is_closed(LWCURVE *curve)
+{
+        POINT3DZ sp, ep;
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("curve_is_closed called.");
+#endif
+
+        getPoint3dz_p(curve->points, 0, &sp);
+        getPoint3dz_p(curve->points, curve->points->npoints-1, &ep);
+
+        if(sp.x != ep.x) return 0;
+        if(sp.y != ep.y) return 0;
+        if(TYPE_HASZ(curve->type))
+        {
+                if(sp.z != ep.z) return 0;
+        }
+        return 1;
+}        
+
+char compound_is_closed(LWCOMPOUND *compound)
+{
+        POINT3DZ sp, ep;
+        LWGEOM *tmp;
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("compound_is_closed called.");
+#endif
+
+        tmp = compound->geoms[0];
+        if(lwgeom_getType(tmp->type) == LINETYPE)
+        {
+                getPoint3dz_p(((LWLINE *)tmp)->points, 0, &sp);
+        }
+        else 
+        {
+                getPoint3dz_p(((LWCURVE *)tmp)->points, 0, &sp);
+        }
+
+        tmp = compound->geoms[compound->ngeoms - 1];
+        if(lwgeom_getType(tmp->type) == LINETYPE)
+        {
+                getPoint3dz_p(((LWLINE *)tmp)->points, ((LWLINE *)tmp)->points->npoints - 1, &ep);
+        }
+        else
+        {
+                getPoint3dz_p(((LWCURVE *)tmp)->points, ((LWCURVE *)tmp)->points->npoints - 1, &ep);
+        }
+
+        if(sp.x != ep.x) return 0;
+        if(sp.y != ep.y) return 0;
+        if(TYPE_HASZ(compound->type))
+        {
+                if(sp.z != ep.z) return 0;
+        }
+        return 1;
+}
+
 /*
  * IsClosed(GEOMETRY) if geometry is a linestring then returns
  * startpoint == endpoint.  If its not a linestring then return NULL.
@@ -995,25 +1265,63 @@ Datum LWGEOM_isclosed_linestring(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom;
 	LWGEOM_INSPECTED *inspected;
-	LWLINE *line = NULL;
+        LWGEOM *sub = NULL;
+        LWCOMPOUND *compound = NULL;
 	int linesfound=0;
 	int i;
 
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("LWGEOM_isclosed_linestring called.");
+#endif
+
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+        if(lwgeom_getType((uchar)SERIALIZED_FORM(geom)[0]) == COMPOUNDTYPE) {
+                compound = lwcompound_deserialize(SERIALIZED_FORM(geom));
+                if(compound_is_closed(compound))
+                {
+                        lwgeom_release((LWGEOM *)compound);
+                        PG_FREE_IF_COPY(geom, 0);
+                        PG_RETURN_BOOL(TRUE);
+                }
+                else
+                {
+                        lwgeom_release((LWGEOM *)compound);
+                        PG_FREE_IF_COPY(geom, 0);
+                        PG_RETURN_BOOL(FALSE);
+                }
+        }
+
 	inspected = lwgeom_inspect(SERIALIZED_FORM(geom));
 
 	for (i=0; i<inspected->ngeometries; i++)
 	{
-		line = lwgeom_getline_inspected(inspected, i);
-		if ( line == NULL ) continue;
-		if ( ! line_is_closed(line) )
-		{
-			lwgeom_release((LWGEOM *)line);
-			pfree_inspected(inspected);
-			PG_FREE_IF_COPY(geom, 0);
-			PG_RETURN_BOOL(FALSE);
-		}
-		lwgeom_release((LWGEOM *)line);
+                sub = lwgeom_getgeom_inspected(inspected, i);
+		if ( sub == NULL ) continue;
+                else if(lwgeom_getType(sub->type) == LINETYPE &&
+                        !line_is_closed((LWLINE *)sub))
+                {
+                        lwgeom_release(sub);
+                        pfree_inspected(inspected);
+                        PG_FREE_IF_COPY(geom, 0);
+                        PG_RETURN_BOOL(FALSE);
+                }
+                else if(lwgeom_getType(sub->type) == CURVETYPE &&
+                        !curve_is_closed((LWCURVE *)sub))
+                {
+                        lwgeom_release(sub);
+                        pfree_inspected(inspected);
+                        PG_FREE_IF_COPY(geom, 0);
+                        PG_RETURN_BOOL(FALSE);
+                }
+                else if(lwgeom_getType(sub->type) == COMPOUNDTYPE &&
+                        !compound_is_closed((LWCOMPOUND *)sub))
+                {
+                        lwgeom_release(sub);
+                        pfree_inspected(inspected);
+                        PG_FREE_IF_COPY(geom, 0);
+                        PG_RETURN_BOOL(FALSE);
+                }
+		lwgeom_release(sub);
 		linesfound++;
 	}
 	pfree_inspected(inspected);

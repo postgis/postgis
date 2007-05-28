@@ -2719,8 +2719,11 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 {
 	GEOSCoordSeq sq;
 	GEOSGeom g, shell, *geoms;
+	/*
+        LWGEOM *tmp;
+	*/
 	unsigned int ngeoms, i;
-	int type = TYPE_GETTYPE(lwgeom->type);
+	int type;
 	int geostype;
 #ifdef PGIS_DEBUG_POSTGIS2GEOS 
 	char *wkt;
@@ -2730,6 +2733,21 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 	lwnotice("LWGEOM2GEOS got a %s", lwgeom_typename(type));
 #endif
 
+        if(has_arc(lwgeom))
+        {
+#ifdef PGIS_DEBUG_CALLS
+                lwnotice("LWGEOM2GEOS_c: arced geometry found.");
+#endif
+		lwerror("Exception in LWGEOM2GEOS: curved geometry not supported.");
+		/*
+                tmp = lwgeom;
+                lwgeom = lwgeom_segmentize(tmp, 32);
+#ifdef PGIS_DEBUG_CALLS
+                lwnotice("LWGEOM2GEOM_c: was %p, is %p", tmp, lwgeom);
+#endif
+		*/
+        }
+        type = TYPE_GETTYPE(lwgeom->type);
 	switch (type)
 	{
 		LWPOINT *lwp;
@@ -2797,7 +2815,11 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 			break;
 
 		default:
+#ifdef PGIS_DEBUG
+                        lwerror("LWGEOM2GEOS_c: Unknown geometry type: %d", type);
+#else 
 			lwerror("Unknown geometry type: %d", type);
+#endif
 			return NULL;
 	}
 
@@ -2806,6 +2828,9 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 #ifdef PGIS_DEBUG_POSTGIS2GEOS 
 	wkt = GEOSGeomToWKT(g);
 	lwnotice("LWGEOM2GEOS: GEOSGeom: %s", wkt);
+	/*
+        if(tmp != NULL) lwgeom_release(tmp);
+	*/
 	free(wkt);
 #endif
 

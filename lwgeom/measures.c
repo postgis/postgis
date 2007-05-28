@@ -581,6 +581,16 @@ lwgeom_pointarray_length(POINTARRAY *pts)
 }
 
 /*
+ * This should be rewritten to make use of the curve itself.
+ */
+double
+lwgeom_curvepolygon_area(LWCURVEPOLY *curvepoly)
+{
+        LWPOLY *poly = (LWPOLY *)lwgeom_segmentize((LWGEOM *)curvepoly, 32);
+        return lwgeom_polygon_area(poly);
+}
+
+/*
  * Find the area of the outer ring - sum (area of inner rings).
  * Could use a more numerically stable calculator...
  */

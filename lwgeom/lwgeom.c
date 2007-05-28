@@ -379,11 +379,17 @@ lwgeom_clone(const LWGEOM *lwgeom)
 			return (LWGEOM *)lwpoint_clone((LWPOINT *)lwgeom);
 		case LINETYPE:
 			return (LWGEOM *)lwline_clone((LWLINE *)lwgeom);
+                case CURVETYPE:
+                        return (LWGEOM *)lwcurve_clone((LWCURVE *)lwgeom);
 		case POLYGONTYPE:
 			return (LWGEOM *)lwpoly_clone((LWPOLY *)lwgeom);
+                case COMPOUNDTYPE:
+                case CURVEPOLYTYPE:
 		case MULTIPOINTTYPE:
 		case MULTILINETYPE:
+                case MULTICURVETYPE:
 		case MULTIPOLYGONTYPE:
+                case MULTISURFACETYPE:
 		case COLLECTIONTYPE:
 			return (LWGEOM *)lwcollection_clone((LWCOLLECTION *)lwgeom);
 		default:

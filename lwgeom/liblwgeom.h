@@ -6,9 +6,9 @@
 
 #define INTEGRITY_CHECKS 1
 /* #define DEBUG_ALLOCS 1 */
-/*#define PGIS_DEBUG 1
+/* #define PGIS_DEBUG 1
 #define PGIS_DEBUG_CALLS 1
-#define PGIS_DEBUG_ALLOCS 1*/
+#define PGIS_DEBUG_ALLOCS 1 */
 /* #define DEBUG_CALLS 1 */
 
 /*
@@ -1078,7 +1078,6 @@ extern char getMachineEndian(void);
 
 void errorIfSRIDMismatch(int srid1, int srid2);
 
-
 /* CURVETYPE */
 typedef struct
 {
@@ -1138,6 +1137,8 @@ typedef struct
  * LWCURVE functions
  ******************************************************************/
 
+LWCURVE *lwcurve_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points);
+
 /*
  * given the LWGEOM serialized form (or a pointer into a muli* one)
  * construct a proper LWCURVE.
@@ -1168,6 +1169,7 @@ LWGEOM *lwcurve_add(const LWCURVE *to, uint32 where, const LWGEOM *what);
 extern int lwcurve_compute_box2d_p(LWCURVE *curve, BOX2DFLOAT4 *box);
 extern BOX3D *lwcurve_compute_box3d(LWCURVE *curve);
 extern void pfree_curve(LWCURVE  *curve);
+LWCURVE *lwcurve_clone(const LWCURVE *curve);
 
 /******************************************************************
  * LWMULTIx and LWCOLLECTION functions
@@ -1188,6 +1190,15 @@ LWGEOM *lwmcurve_add(const LWMCURVE *to, uint32 where, const LWGEOM *what);
 LWMSURFACE *lwmsurface_deserialize(uchar *serialized_form);
 
 LWGEOM *lwmsurface_add(const LWMSURFACE *to, uint32 where, const LWGEOM *what);
+
+/*******************************************************************************
+ * SQLMM internal functions
+ ******************************************************************************/
+
+uint32 has_arc(LWGEOM *geom);
+double lwcircle_center(POINT4D *p1, POINT4D *p2, POINT4D *p3, POINT4D **result);
+LWGEOM *lwgeom_segmentize(LWGEOM *geom, uint32 perQuad);
+extern double lwgeom_curvepolygon_area(LWCURVEPOLY *curvepoly);
 #endif /* !defined _LIBLWGEOM_H  */
 
 double lwcircle_center(POINT4D *p1, POINT4D *p2, POINT4D *p3, POINT4D **result);
