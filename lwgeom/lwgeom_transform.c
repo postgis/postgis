@@ -895,15 +895,15 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	input_proj4_text  = (PG_GETARG_TEXT_P(1));
 	output_proj4_text = (PG_GETARG_TEXT_P(2));
 
-	input_proj4 = (char *)palloc(input_proj4_text->vl_len+1-4);
-	memcpy(input_proj4, input_proj4_text->vl_dat,
-		input_proj4_text->vl_len-4);
-	input_proj4[input_proj4_text->vl_len-4] = 0; /* null terminate */
+	input_proj4 = (char *)palloc(VARSIZE(input_proj4_text)+1-4);
+	memcpy(input_proj4, VARDATA(input_proj4_text),
+		VARSIZE(input_proj4_text)-VARHDRSZ);
+	input_proj4[VARSIZE(input_proj4_text)-VARHDRSZ] = 0; /* null terminate */
 
-	output_proj4 = (char *) palloc(output_proj4_text->vl_len +1-4);
-	memcpy(output_proj4, output_proj4_text->vl_dat,
-		output_proj4_text->vl_len-4);
-	output_proj4[output_proj4_text->vl_len-4] = 0; /* null terminate */
+	output_proj4 = (char *) palloc(VARSIZE(output_proj4_text) +1-VARHDRSZ);
+	memcpy(output_proj4, VARDATA(output_proj4_text),
+		VARSIZE(output_proj4_text)-VARHDRSZ);
+	output_proj4[VARSIZE(output_proj4_text)-VARHDRSZ] = 0; /* null terminate */
 
 	/* make input and output projection objects */
 	input_pj = make_project(input_proj4);
@@ -968,7 +968,7 @@ Datum postgis_proj_version(PG_FUNCTION_ARGS)
 	const char *ver = pj_release;
 	text *result;
 	result = (text *) palloc(VARHDRSZ  + strlen(ver));
-	VARATT_SIZEP(result) = VARHDRSZ + strlen(ver) ;
+	SET_VARSIZE(result, VARHDRSZ + strlen(ver));
 	memcpy(VARDATA(result), ver, strlen(ver));
 	PG_RETURN_POINTER(result);
 }

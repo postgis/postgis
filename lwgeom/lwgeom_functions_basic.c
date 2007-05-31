@@ -82,9 +82,9 @@ PG_FUNCTION_INFO_V1(LWGEOM_mem_size);
 Datum LWGEOM_mem_size(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	size_t size = geom->size;
+	size_t size = VARSIZE(geom);
 	size_t computed_size = lwgeom_size(SERIALIZED_FORM(geom));
-	computed_size += 4; /* varlena size */
+	computed_size += VARHDRSZ; /* varlena size */
 	if ( size != computed_size )
 	{
 		elog(NOTICE, "varlena size (%lu) != computed size+4 (%lu)",
@@ -113,7 +113,7 @@ Datum LWGEOM_summary(PG_FUNCTION_ARGS)
 
 	/* create a text obj to return */
 	mytext = (text *) lwalloc(VARHDRSZ  + strlen(result) + 1);
-	VARATT_SIZEP(mytext) = VARHDRSZ + strlen(result) + 1;
+	SET_VARSIZE(mytext, VARHDRSZ + strlen(result) + 1);
 	VARDATA(mytext)[0] = '\n';
 	memcpy(VARDATA(mytext)+1, result, strlen(result) );
 
@@ -129,7 +129,7 @@ Datum postgis_version(PG_FUNCTION_ARGS)
 	char *ver = POSTGIS_VERSION;
 	text *result;
 	result = lwalloc(VARHDRSZ  + strlen(ver));
-	VARATT_SIZEP(result) = VARHDRSZ + strlen(ver) ;
+	SET_VARSIZE(result, VARHDRSZ + strlen(ver));
 	memcpy(VARDATA(result), ver, strlen(ver));
 	PG_RETURN_POINTER(result);
 }
@@ -140,7 +140,7 @@ Datum postgis_lib_version(PG_FUNCTION_ARGS)
 	char *ver = POSTGIS_LIB_VERSION;
 	text *result;
 	result = lwalloc(VARHDRSZ  + strlen(ver));
-	VARATT_SIZEP(result) = VARHDRSZ + strlen(ver) ;
+	SET_VARSIZE(result, VARHDRSZ + strlen(ver));
 	memcpy(VARDATA(result), ver, strlen(ver));
 	PG_RETURN_POINTER(result);
 }
@@ -151,7 +151,7 @@ Datum postgis_lib_build_date(PG_FUNCTION_ARGS)
 	char *ver = POSTGIS_BUILD_DATE;
 	text *result;
 	result = lwalloc(VARHDRSZ  + strlen(ver));
-	VARATT_SIZEP(result) = VARHDRSZ + strlen(ver) ;
+	SET_VARSIZE(result, VARHDRSZ + strlen(ver));
 	memcpy(VARDATA(result), ver, strlen(ver));
 	PG_RETURN_POINTER(result);
 }
@@ -162,7 +162,7 @@ Datum postgis_scripts_released(PG_FUNCTION_ARGS)
 	char *ver = POSTGIS_SCRIPTS_VERSION;
 	text *result;
 	result = lwalloc(VARHDRSZ  + strlen(ver));
-	VARATT_SIZEP(result) = VARHDRSZ + strlen(ver) ;
+	SET_VARSIZE(result, VARHDRSZ + strlen(ver));
 	memcpy(VARDATA(result), ver, strlen(ver));
 	PG_RETURN_POINTER(result);
 }
@@ -1923,7 +1923,7 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 			PG_RETURN_NULL();
 		}
 
-		result->size = nbytes;
+		SET_VARSIZE(result, nbytes);
 		result->ndim = 1;
 
 #if USE_VERSION > 72
@@ -1940,7 +1940,7 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 #endif
 
 	} else {
-		oldsize = array->size;
+		oldsize = VARSIZE(array);
 		nbytes = oldsize + INTALIGN(geom->size);
 #ifdef PGIS_DEBUG
 		elog(NOTICE, "geom_accum: old array size: %d, adding %ld bytes (nelems=%d; nbytes=%u)", array->size, INTALIGN(geom->size), nelems, nbytes);
@@ -1961,7 +1961,7 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 			ARR_DATA_PTR(result), (uchar *)ARR_DATA_PTR(result)-(uchar *)result);
 		elog(NOTICE, " next element @ %p", (uchar *)result+oldsize);
 #endif
-		result->size = nbytes;
+		SET_VARSIZE(result, nbytes);
 		memcpy(ARR_DIMS(result), &nelems, sizeof(int));
 #ifdef PGIS_DEBUG
 		elog(NOTICE, " writing next element starting @ %p",
@@ -2980,7 +2980,7 @@ Datum LWGEOM_asEWKT(PG_FUNCTION_ARGS)
 	PG_LWGEOM *lwgeom;
 	char *result_cstring;
 	int len;
-        char *result,*loc_wkt;
+    char *result,*loc_wkt;
 	/*char *semicolonLoc; */
 
 	init_pg_func();
@@ -2997,11 +2997,11 @@ Datum LWGEOM_asEWKT(PG_FUNCTION_ARGS)
 #endif
 	loc_wkt = result_cstring;
 
-	len = strlen(loc_wkt)+4;
-	result = palloc(len);
-	memcpy(result, &len, 4);
+	len = strlen(loc_wkt);
+	result = palloc(len + VARHDRSZ);
+    SET_VARSIZE(result, len + VARHDRSZ);
 
-	memcpy(result+4,loc_wkt, len-4);
+	memcpy(VARDATA(result), loc_wkt, len);
 
 	pfree(result_cstring);
 	PG_FREE_IF_COPY(lwgeom, 0);

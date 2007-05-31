@@ -169,8 +169,8 @@ Datum CHIP_send(PG_FUNCTION_ARGS)
 
 
 	result = (bytea *)palloc( chip->size );
-	/*VARATT_SIZEP(result) = chip->size + VARHDRSZ; */
-	/*memcpy( VARATT_DATA(result), chip, chip->size ); */
+	/*SET_VARSIZE(result, chip->size + VARHDRSZ);*/
+	/*memcpy( VARDATA(result), chip, chip->size ); */
 	memcpy( result, chip, chip->size );
 	PG_RETURN_POINTER(result);	
 	/*PG_RETURN_POINTER( (bytea *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0)) );*/
@@ -1188,7 +1188,7 @@ Datum CHIP_getpixel(PG_FUNCTION_ARGS)
 	pixel_writeval(&p, buf, 255);
 	len = strlen(buf);
 	ret = lwalloc(len+VARHDRSZ);
-	VARATT_SIZEP(ret) = len+VARHDRSZ;
+	SET_VARSIZE(ret, len+VARHDRSZ);
 	memcpy(VARDATA(ret), buf, len);
 
 	PG_RETURN_POINTER(ret);

@@ -123,13 +123,12 @@ Datum LWGEOM_getTYPE(PG_FUNCTION_ARGS)
 	init_pg_func();
 
 	lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	text_ob = lwalloc(20+4);
-	result = text_ob+4;
+	text_ob = lwalloc(20+VARHDRSZ);
+	result = text_ob+VARHDRSZ;
 
-	/*type = lwgeom_getType(*(lwgeom+4)); */
 	type = lwgeom_getType(lwgeom->type);
 
-	memset(result, 0, 20);
+	memset(VARDATA(text_ob), 0, 20);
 
 	if (type == POINTTYPE)
 		strcpy(result,"POINT");
@@ -161,9 +160,8 @@ Datum LWGEOM_getTYPE(PG_FUNCTION_ARGS)
 	if ( TYPE_HASM(lwgeom->type) && ! TYPE_HASZ(lwgeom->type) )
 		strcat(result, "M");
 
-	size = strlen(result) +4 ;
-
-	memcpy(text_ob, &size,4); /* size of string */
+	size = strlen(result) + VARHDRSZ ;
+	SET_VARSIZE(text_ob, size); /* size of string */
 
 	PG_FREE_IF_COPY(lwgeom, 0);
 
@@ -996,7 +994,7 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 	text *wkttext = PG_GETARG_TEXT_P(0);
 	char *wkt, fc;
 	size_t size;
-	PG_LWGEOM *geom;
+    SERIALIZED_LWGEOM *serialized_lwgeom;
 	PG_LWGEOM *result = NULL;
 	LWGEOM *lwgeom;
 
@@ -1037,9 +1035,8 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 	lwnotice("wkt: [%s]", wkt);
 #endif
 
-	geom = (PG_LWGEOM *)parse_lwgeom_wkt(wkt);
-
-	lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom));
+    serialized_lwgeom = parse_lwgeom_wkt(wkt);
+    lwgeom = lwgeom_deserialize(serialized_lwgeom->lwgeom);
 
 	if ( lwgeom->SRID != -1 || TYPE_GETZM(lwgeom->type) != 0 )
 	{
@@ -1050,8 +1047,6 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 	if ( PG_NARGS() > 1 ) lwgeom->SRID = PG_GETARG_INT32(1);
 
 	result = pglwgeom_serialize(lwgeom);
-
-	pfree(geom);
 	lwgeom_release(lwgeom);
 
 	PG_RETURN_POINTER(result);
@@ -1110,7 +1105,7 @@ Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 	PG_LWGEOM *ogclwgeom;
 	char *result_cstring;
 	int len;
-        char *result,*loc_wkt;
+    char *result,*loc_wkt;
 	char *semicolonLoc;
 
 	init_pg_func();
@@ -1129,11 +1124,11 @@ Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 	if (semicolonLoc == NULL) loc_wkt = result_cstring;
 	else loc_wkt = semicolonLoc +1;
 
-	len = strlen(loc_wkt)+4;
+	len = strlen(loc_wkt)+VARHDRSZ;
 	result = palloc(len);
-	memcpy(result, &len, 4);
+	SET_VARSIZE(result, len);
 
-	memcpy(result+4,loc_wkt, len-4);
+	memcpy(VARDATA(result), loc_wkt, len-VARHDRSZ);
 
 	pfree(result_cstring);
 	PG_FREE_IF_COPY(lwgeom, 0);

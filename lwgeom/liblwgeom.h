@@ -473,9 +473,9 @@ extern char lwgeom_hasBBOX(uchar type); /* true iff B bit set    */
  * with postgresql varlena struct
  */
 typedef struct {
-	uint32 size;
-	uchar type; /* encodes ndims, type, bbox presence,
-		       srid presence */
+	uint32 size;        /* varlena header (do not touch directly!) */
+	uchar type;         /* encodes ndims, type, bbox presence,
+		                srid presence */
 	uchar data[1];
 } PG_LWGEOM;
 
@@ -512,9 +512,19 @@ char is_worth_caching_lwgeom_bbox(const LWGEOM *);
  * by most functions from an PG_LWGEOM struct.
  * (which is an PG_LWGEOM w/out int32 size casted to char *)
  */
-/*#define SERIALIZED_FORM(x) ((uchar *)(x))+4*/
 #define SERIALIZED_FORM(x) ((uchar *)VARDATA((x)))
 
+/*
+    This structure is a "glue" structure for returning a serialized
+    LWGEOM from the parser, along with its size. By using a separate
+    type, we remove the constraint that the output from the
+    parser must be PG_LWGEOM format (and hence protect ourselves
+    from future varlena changes)
+*/
+typedef struct serialized_lwgeom {
+    uchar *lwgeom;
+    int size;
+} SERIALIZED_LWGEOM;
 
 /*
  * This function computes the size in bytes
@@ -1057,7 +1067,7 @@ extern LWCOLLECTION *lwcollection_segmentize2d(LWCOLLECTION *coll, double dist);
 
 extern uchar parse_hex(char *str);
 extern void deparse_hex(uchar str, char *result);
-extern uchar *parse_lwgeom_wkt(char *wkt_input);
+extern SERIALIZED_LWGEOM *parse_lwgeom_wkt(char *wkt_input);
 
 extern char *lwgeom_to_ewkt(LWGEOM *lwgeom);
 extern char *lwgeom_to_hexwkb(LWGEOM *lwgeom, unsigned int byteorder);

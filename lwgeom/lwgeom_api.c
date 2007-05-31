@@ -2187,10 +2187,10 @@ deparse_hex(uchar str, char *result)
 
 }
 
-uchar *
+SERIALIZED_LWGEOM *
 parse_lwgeom_wkt(char *wkt_input)
 {
-	uchar *serialized_form = parse_lwg(wkt_input,
+	SERIALIZED_LWGEOM *serialized_form = parse_lwg(wkt_input,
 		lwalloc, lwerror);
 
 

@@ -66,10 +66,16 @@ PG_FUNCTION_INFO_V1(LWGEOM_in);
 Datum LWGEOM_in(PG_FUNCTION_ARGS)
 {
 	char *str = PG_GETARG_CSTRING(0);
-	PG_LWGEOM *ret;
+    SERIALIZED_LWGEOM *serialized_lwgeom;
+    LWGEOM *lwgeom;	
+    PG_LWGEOM *ret;
 
 	/* will handle both HEXEWKB and EWKT */
-	ret = (PG_LWGEOM *)parse_lwgeom_wkt(str);
+    serialized_lwgeom = parse_lwgeom_wkt(str);
+	lwgeom = lwgeom_deserialize(serialized_lwgeom->lwgeom);
+    
+    ret = pglwgeom_serialize(lwgeom);
+	lwgeom_release(lwgeom);
 
 	if ( is_worth_caching_pglwgeom_bbox(ret) )
 	{
@@ -143,7 +149,7 @@ Datum LWGEOM_asHEXEWKB(PG_FUNCTION_ARGS)
 
 	text_result = palloc(size+VARHDRSZ);
 	memcpy(VARDATA(text_result),result,size);
-	VARATT_SIZEP(text_result) = size+VARHDRSZ;
+	SET_VARSIZE(text_result, size+VARHDRSZ);
 	pfree(result);
 
 	PG_RETURN_POINTER(text_result);
@@ -172,7 +178,7 @@ Datum LWGEOM_to_text(PG_FUNCTION_ARGS)
 
 	text_result = palloc(size+VARHDRSZ);
 	memcpy(VARDATA(text_result),result,size);
-	VARATT_SIZEP(text_result) = size+VARHDRSZ;
+	SET_VARSIZE(text_result, size+VARHDRSZ);
 	pfree(result);
 
 	PG_RETURN_POINTER(text_result);
@@ -293,13 +299,12 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 
 	size_result = size/2 + VARHDRSZ;
 	result = palloc(size_result);
-
-	memcpy(result, &size_result,VARHDRSZ); /* size header */
+    SET_VARSIZE(result, size_result);
 
 	/* have a hexized string, want to make it binary */
 	for (t=0; t< (size/2); t++)
 	{
-		((uchar *) result +VARHDRSZ)[t] = parse_hex(  hexized_wkb + (t*2) );
+		((uchar *) VARDATA(result))[t] = parse_hex(  hexized_wkb + (t*2) );
 	}
 
 	pfree(hexized_wkb_srid);
@@ -311,7 +316,7 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 
 	size_result = size+VARHDRSZ;
 	result = palloc(size_result);
-	memcpy(result, &size_result, VARHDRSZ);
+	SET_VARSIZE(result, size_result);
 	memcpy(VARDATA(result), hexized_wkb, size);
 	pfree(hexized_wkb);
 
@@ -351,8 +356,9 @@ Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS)
 		elog(NOTICE,"LWGEOM_addBBOX  -- already has bbox");
 #endif
 		/* easy - already has one.  Just copy! */
-		result = palloc (lwgeom->size);
-		memcpy(result, lwgeom, lwgeom->size);
+		result = palloc (VARSIZE(lwgeom));
+        SET_VARSIZE(result, VARSIZE(lwgeom));
+		memcpy(VARDATA(result), VARDATA(lwgeom), VARSIZE(lwgeom)-VARHDRSZ);
 		PG_RETURN_POINTER(result);
 	}
 
@@ -364,17 +370,18 @@ Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS)
 	if ( ! getbox2d_p(SERIALIZED_FORM(lwgeom), &box) )
 	{
 		/* Empty geom, no bbox to add */
-		result = palloc (lwgeom->size);
-		memcpy(result, lwgeom, lwgeom->size);
+		result = palloc (VARSIZE(lwgeom));
+        SET_VARSIZE(result, VARSIZE(lwgeom));
+		memcpy(VARDATA(result), VARDATA(lwgeom), VARSIZE(lwgeom)-VARHDRSZ);
 		PG_RETURN_POINTER(result);
 	}
 	old_type = lwgeom->type;
 
-	size = lwgeom->size+sizeof(BOX2DFLOAT4);
+	size = VARSIZE(lwgeom)+sizeof(BOX2DFLOAT4);
 
 	result = palloc(size); /* 16 for bbox2d */
+	SET_VARSIZE(result, size);
 
-	result->size = size;
 	result->type = lwgeom_makeType_full(
 		TYPE_HASZ(old_type),
 		TYPE_HASM(old_type),
@@ -389,7 +396,7 @@ Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS)
 #endif
 
 	/* everything but the type and length */
-	memcpy(result->data+sizeof(BOX2DFLOAT4), lwgeom->data, lwgeom->size-5);
+	memcpy((char *)VARDATA(result)+sizeof(BOX2DFLOAT4)+1, (char *)VARDATA(lwgeom)+1, VARSIZE(lwgeom)-VARHDRSZ-1);
 
 	PG_RETURN_POINTER(result);
 }
@@ -442,8 +449,9 @@ Datum LWGEOM_dropBBOX(PG_FUNCTION_ARGS)
 #ifdef PGIS_DEBUG
 	elog(NOTICE,"LWGEOM_dropBBOX  -- doesnt have a bbox already");
 #endif
-		result = palloc (lwgeom->size);
-		memcpy(result, lwgeom, lwgeom->size);
+		result = palloc (VARSIZE(lwgeom));
+        SET_VARSIZE(result, VARSIZE(lwgeom));
+		memcpy(VARDATA(result), VARDATA(lwgeom), VARSIZE(lwgeom)-VARHDRSZ);
 		PG_RETURN_POINTER(result);
 	}
 
@@ -454,18 +462,18 @@ Datum LWGEOM_dropBBOX(PG_FUNCTION_ARGS)
 	/* construct new one */
 	old_type = lwgeom->type;
 
-	size = lwgeom->size-sizeof(BOX2DFLOAT4);
+	size = VARSIZE(lwgeom)-sizeof(BOX2DFLOAT4);
 
 	result = palloc(size); /* 16 for bbox2d */
+    SET_VARSIZE(result, size);
 
-	result->size = size;
 	result->type = lwgeom_makeType_full(
 		TYPE_HASZ(old_type),
 		TYPE_HASM(old_type),
 		lwgeom_hasSRID(old_type), lwgeom_getType(old_type), 0);
 
 	/* everything but the type and length */
-	memcpy(result->data, lwgeom->data+sizeof(BOX2DFLOAT4), lwgeom->size-5-sizeof(BOX2DFLOAT4));
+	memcpy((char *)VARDATA(result)+1, ((char *)(lwgeom->data))+sizeof(BOX2DFLOAT4), size-VARHDRSZ-1);
 
 	PG_RETURN_POINTER(result);
 }
@@ -487,7 +495,9 @@ Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS)
 	/* text */
 	text *wkt_input = PG_GETARG_TEXT_P(0);
 	PG_LWGEOM *ret;  /*with length */
-	char *wkt;
+    SERIALIZED_LWGEOM *serialized_lwgeom;
+    LWGEOM *lwgeom;	
+    char *wkt;
 	int wkt_size ;
 
 	init_pg_func();
@@ -503,7 +513,11 @@ Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS)
 	elog(NOTICE,"in parse_WKT_lwgeom with input: '%s'",wkt);
 #endif
 
-	ret = (PG_LWGEOM *)parse_lwg((const char *)wkt, (allocator)lwalloc, (report_error)elog_ERROR);
+    serialized_lwgeom = parse_lwg((const char *)wkt, (allocator)lwalloc, (report_error)elog_ERROR);
+    lwgeom = lwgeom_deserialize(serialized_lwgeom->lwgeom);
+    
+    ret = pglwgeom_serialize(lwgeom);
+	lwgeom_release(lwgeom);
 
 #ifdef PGIS_DEBUG
 	elog(NOTICE,"parse_WKT_lwgeom:: finished parse");
@@ -544,8 +558,8 @@ Datum LWGEOM_recv(PG_FUNCTION_ARGS)
 
 	/* Add VARLENA size info to make it a valid varlena object */
 	wkb = (bytea *)palloc(buf->len+VARHDRSZ);
-	VARATT_SIZEP(wkb) = buf->len+VARHDRSZ;
-	memcpy(VARATT_DATA(wkb), buf->data, buf->len);
+	SET_VARSIZE(wkb, buf->len+VARHDRSZ);
+	memcpy(VARDATA(wkb), buf->data, buf->len);
 
 #ifdef PGIS_DEBUG
 	elog(NOTICE, "LWGEOM_recv calling LWGEOMFromWKB");
@@ -632,7 +646,7 @@ Datum BOOL_to_text(PG_FUNCTION_ARGS)
 	c = b ? 't' : 'f';
 
 	result = palloc(VARHDRSZ+1*sizeof(char));
-	VARATT_SIZEP(result) = VARHDRSZ+1*sizeof(char);
+	SET_VARSIZE(result, VARHDRSZ+1*sizeof(char));
 	memcpy(VARDATA(result), &c, 1*sizeof(char));
 
 	PG_RETURN_POINTER(result);

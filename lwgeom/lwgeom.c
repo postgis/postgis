@@ -533,20 +533,21 @@ lwgeom_from_ewkb(uchar *ewkb, size_t size)
 	long int i;
 	uchar *pglwgeom; /* This is a PG_LWGEOM */
 	LWGEOM *ret;
+    SERIALIZED_LWGEOM *serialized_lwgeom;
 
 	/* "HEXify" the EWKB */
 	hexewkb = lwalloc(hexewkblen+1);
 	for (i=0; i<size; ++i) deparse_hex(ewkb[i], &hexewkb[i*2]);
 	hexewkb[hexewkblen] = '\0';
 
-	/* Rely on grammar parser to construct a PG_LWGEOM */
-	pglwgeom = parse_lwgeom_wkt(hexewkb);
+	/* Rely on grammar parser to construct a LWGEOM */
+    serialized_lwgeom = parse_lwgeom_wkt(hexewkb);
 
 	/* Free intermediate HEXified representation */
 	lwfree(hexewkb);
 
 	/* Deserialize */
-	ret = lwgeom_deserialize(pglwgeom+4);
+	ret = lwgeom_deserialize(serialized_lwgeom->lwgeom);
 
 	return ret;
 }

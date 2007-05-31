@@ -116,7 +116,7 @@ void WRITE_DOUBLES(output_state* out,double* points, int cnt);
 #ifdef SHRINK_INTS
 void WRITE_INT4(output_state * out,int4 val);
 #endif
-void write_size(tuple* this,output_state* out);
+void empty_stack(tuple* this,output_state* out);
 void alloc_lwgeom(int srid);
 void write_point_2(tuple* this,output_state* out);
 void write_point_3(tuple* this,output_state* out);
@@ -144,7 +144,7 @@ void alloc_multisurface(void);
 void alloc_geomertycollection(void);
 void alloc_counter(void);
 void alloc_empty(void);
-uchar* make_lwgeom(void);
+SERIALIZED_LWGEOM* make_serialized_lwgeom(void);
 uchar strhex_readbyte(const char *in);
 uchar read_wkb_byte(const char **in);
 void read_wkb_bytes(const char **in, uchar* out, int cnt);
@@ -155,9 +155,9 @@ void read_collection(const char **b, read_col_func f);
 void read_collection2(const char **b);
 void parse_wkb(const char **b);
 void alloc_wkb(const char *parser);
-uchar* parse_it(const char* geometry, allocator allocfunc, report_error errfunc);
-uchar* parse_lwg(const char* geometry, allocator allocfunc, report_error errfunc);
-uchar* parse_lwgi(const char* geometry, allocator allocfunc, report_error errfunc);
+SERIALIZED_LWGEOM* parse_it(const char* geometry, allocator allocfunc, report_error errfunc);
+SERIALIZED_LWGEOM* parse_lwg(const char* geometry, allocator allocfunc, report_error errfunc);
+SERIALIZED_LWGEOM* parse_lwgi(const char* geometry, allocator allocfunc, report_error errfunc);
 
 void
 set_srid(double d_srid)
@@ -368,14 +368,9 @@ WRITE_DOUBLES(output_state* out,double* points, int cnt)
 }
 
 void
-write_size(tuple* this,output_state* out)
+empty_stack(tuple *this,output_state* out)
 {
-
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("write_size");
-#endif
-
-	WRITE_INT4_REAL(out,the_geom.alloc_size);
+    /* Do nothing but provide an empty base for the geometry stack */
 }
 
 void
@@ -403,7 +398,8 @@ alloc_lwgeom(int srid)
 		the_geom.alloc_size+=4;
 	}
 
-	the_geom.stack = alloc_tuple(write_size,4);
+    /* Setup up an empty tuple as the stack base */
+    the_geom.stack = alloc_tuple(empty_stack, 0);
 }
 
 void
@@ -784,17 +780,23 @@ alloc_empty(void)
 	st->uu.nn.num=0;
 }
 
-uchar *
-make_lwgeom(void)
+SERIALIZED_LWGEOM *
+make_serialized_lwgeom(void)
 {
 
 #ifdef PGIS_DEBUG_CALLS
-        lwnotice("make_lwgeom");
+        lwnotice("make_serialized_lwgeom");
 #endif
 
+    SERIALIZED_LWGEOM *out_serialized_lwgeom;
 	uchar* out_c;
 	output_state out;
 	tuple* cur;
+
+    /* Allocate the SERIALIZED_LWGEOM structure */
+    out_serialized_lwgeom = (SERIALIZED_LWGEOM *)local_malloc(sizeof(SERIALIZED_LWGEOM));
+
+    /* Allocate the LWGEOM itself */
 	out_c = (uchar*)local_malloc(the_geom.alloc_size);
 	out.pos = out_c;
 	cur = the_geom.first ;
@@ -804,11 +806,11 @@ make_lwgeom(void)
 		cur=cur->next;
 	}
 
-	/* if ints shrink then we need to rewrite the size smaller */
-	out.pos = out_c;
-	write_size(NULL,&out);
+	/* Setup the SERIALIZED_LWGEOM structure */
+    out_serialized_lwgeom->lwgeom = out_c;
+    out_serialized_lwgeom->size = the_geom.alloc_size;
 
-	return out_c;
+	return out_serialized_lwgeom;
 }
 
 void
@@ -1108,7 +1110,7 @@ alloc_wkb(const char *parser)
 /*
 	Parse a string and return a LW_GEOM
 */
-uchar *
+SERIALIZED_LWGEOM *
 parse_it(const char *geometry, allocator allocfunc, report_error errfunc)
 {
 
@@ -1130,17 +1132,17 @@ parse_it(const char *geometry, allocator allocfunc, report_error errfunc)
 	if (ferror_occured)
 		return NULL;
 
-	return make_lwgeom();
+	return make_serialized_lwgeom();
 }
 
-uchar *
+SERIALIZED_LWGEOM *
 parse_lwg(const char* geometry,allocator allocfunc,report_error errfunc)
 {
 	the_geom.lwgi=0;
 	return parse_it(geometry,allocfunc,errfunc);
 }
 
-uchar *
+SERIALIZED_LWGEOM *
 parse_lwgi(const char* geometry,allocator allocfunc,report_error errfunc)
 {
 	the_geom.lwgi=1;

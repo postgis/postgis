@@ -67,7 +67,7 @@ Datum assvg_geometry(PG_FUNCTION_ARGS)
 	len = strlen(svg) + VARHDRSZ;
 
 	result = palloc(len);
-	VARATT_SIZEP(result) = len;
+	SET_VARSIZE(result, len);
 
 	memcpy(VARDATA(result), svg, len-VARHDRSZ);
 

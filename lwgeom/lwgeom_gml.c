@@ -97,7 +97,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	len = strlen(gml) + VARHDRSZ;
 
 	result = palloc(len);
-	VARATT_SIZEP(result) = len;
+	SET_VARSIZE(result, len);
 
 	memcpy(VARDATA(result), gml, len-VARHDRSZ);
 

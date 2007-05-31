@@ -81,7 +81,7 @@ Datum postgis_geos_version(PG_FUNCTION_ARGS)
 	const char *ver = GEOSversion();
 	text *result;
 	result = (text *) palloc(VARHDRSZ  + strlen(ver));
-	VARATT_SIZEP(result) = VARHDRSZ + strlen(ver) ;
+	SET_VARSIZE(result, VARHDRSZ + strlen(ver));
 	memcpy(VARDATA(result), ver, strlen(ver));
 	PG_RETURN_POINTER(result);
 }
@@ -142,7 +142,7 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 	for (i=0; i<nelems; i++)
 	{
 		PG_LWGEOM *geom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
-		offset += INTALIGN(geom->size);
+		offset += INTALIGN(VARSIZE(geom));
 
 		pgis_geom = geom;
 
@@ -2189,7 +2189,7 @@ Datum relate_full(PG_FUNCTION_ARGS)
 	len = strlen(relate_str) + VARHDRSZ;
 
 	result= palloc(len);
-	VARATT_SIZEP(result) = len;
+	SET_VARSIZE(result, len);
 
 	memcpy(VARDATA(result), relate_str, len-VARHDRSZ);
 
@@ -2935,7 +2935,7 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 	for (i=0; i<nelems; i++)
 	{
 		PG_LWGEOM *geom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
-		offset += INTALIGN(geom->size);
+		offset += INTALIGN(VARSIZE(geom));
 
 		vgeoms[i] = POSTGIS2GEOS(geom);
 		if ( ! i )

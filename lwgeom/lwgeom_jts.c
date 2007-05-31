@@ -189,7 +189,7 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 	for (i=0; i<nelems; i++)
 	{
 		PG_LWGEOM *geom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
-		offset += INTALIGN(geom->size);
+		offset += INTALIGN(VARSIZE(geom));
 
 		//lwnotice("unite_garray starting iteration %d of %d", i, nelems);
 
@@ -337,7 +337,7 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 	for (i=0; i<nelems; i++)
 	{
 		PG_LWGEOM *geom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
-		offset += INTALIGN(geom->size);
+		offset += INTALIGN(VARSIZE(geom));
 
 		pgis_geom = geom;
 
@@ -1929,7 +1929,7 @@ Datum relate_full(PG_FUNCTION_ARGS)
 	len = strlen(relate_str) + VARHDRSZ;
 
 	result= palloc(len);
-	VARATT_SIZEP(result) = len;
+	SET_VARSIZE(result, len);
 	//*((int *) result) = len;
 
 	memcpy(VARDATA(result), relate_str, len-VARHDRSZ);
@@ -2326,6 +2326,7 @@ LWGEOM *
 JTS2LWGEOM(JTSGeometry *geom, char want3d)
 {
 	char *wkt;
+    SERIALIZED_LWGEOM *serialized_lwgeom;
 	PG_LWGEOM *pglwgeom;
 	LWGEOM *ret;
 
@@ -2337,7 +2338,7 @@ JTS2LWGEOM(JTSGeometry *geom, char want3d)
 	lwnotice("JTS2LWGEOM: wkt: %d bytes", strlen(wkt));
 #endif
 
-	pglwgeom = (PG_LWGEOM *)parse_lwgeom_wkt(wkt);
+    serialized_lwgeom = parse_lwgeom_wkt(wkt);
 
 	//lwnotice("JTS2LWGEOM(WKT): wkt parsed (got pglwgeom)");
 
@@ -2345,12 +2346,12 @@ JTS2LWGEOM(JTSGeometry *geom, char want3d)
 	lwnotice("JTS2LWGEOM: parsed: %s",
 		lwgeom_typename(TYPE_GETTYPE(pglwgeom->type)));
 #endif
-	ret = lwgeom_deserialize(SERIALIZED_FORM(pglwgeom));
+	ret = lwgeom_deserialize(serialized_lwgeom->lwgeom);
+
 	ret->SRID = JTSGetSRID(geom);
 	//lwnotice("JTS2LWGEOM: return SRID: %d", ret->SRID);
 
 	return ret;
-
 }
 
 #else // ! WKT_J2P
@@ -2653,7 +2654,7 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 	for (i=0; i<nelems; i++)
 	{
 		PG_LWGEOM *geom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
-		offset += INTALIGN(geom->size);
+		offset += INTALIGN(VARSIZE(geom));
 
 		vgeoms[i] = POSTGIS2JTS(geom);
 		if ( ! i )
@@ -2791,7 +2792,7 @@ Datum postgis_jts_version(PG_FUNCTION_ARGS)
 
 	ver = JTSversion();
 	result = (text *) palloc(VARHDRSZ  + strlen(ver));
-	VARATT_SIZEP(result) = VARHDRSZ + strlen(ver) ;
+	SET_VARSIZE(result, VARHDRSZ + strlen(ver));
 	memcpy(VARDATA(result), ver, strlen(ver));
 	free(ver);
 

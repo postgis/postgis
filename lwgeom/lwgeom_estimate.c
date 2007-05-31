@@ -1309,7 +1309,7 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 	{
 		txnsp = PG_GETARG_TEXT_P(0);
 		nsp = palloc(VARSIZE(txnsp)+1);
-		memcpy(nsp, VARATT_DATA(txnsp), VARSIZE(txnsp)-VARHDRSZ);
+		memcpy(nsp, VARDATA(txnsp), VARSIZE(txnsp)-VARHDRSZ);
 		nsp[VARSIZE(txnsp)-VARHDRSZ]='\0';
 
 		txtbl = PG_GETARG_TEXT_P(1);
@@ -1327,11 +1327,11 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 	}
 
 	tbl = palloc(VARSIZE(txtbl)+1);
-	memcpy(tbl, VARATT_DATA(txtbl), VARSIZE(txtbl)-VARHDRSZ);
+	memcpy(tbl, VARDATA(txtbl), VARSIZE(txtbl)-VARHDRSZ);
 	tbl[VARSIZE(txtbl)-VARHDRSZ]='\0';
 
 	col = palloc(VARSIZE(txcol)+1);
-	memcpy(col, VARATT_DATA(txcol), VARSIZE(txcol)-VARHDRSZ);
+	memcpy(col, VARDATA(txcol), VARSIZE(txcol)-VARHDRSZ);
 	col[VARSIZE(txcol)-VARHDRSZ]='\0';
 
 #if DEBUG_GEOMETRY_STATS
@@ -2484,7 +2484,7 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 
 	if ( txnsp ) {
 		nsp = palloc(VARSIZE(txnsp)+1);
-		memcpy(nsp, VARATT_DATA(txnsp), VARSIZE(txnsp)-VARHDRSZ);
+		memcpy(nsp, VARDATA(txnsp), VARSIZE(txnsp)-VARHDRSZ);
 		nsp[VARSIZE(txnsp)-VARHDRSZ]='\0';
 		querysize += VARSIZE(txnsp);
 	} else {
@@ -2492,11 +2492,11 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 	}
 
 	tbl = palloc(VARSIZE(txtbl)+1);
-	memcpy(tbl, VARATT_DATA(txtbl), VARSIZE(txtbl)-VARHDRSZ);
+	memcpy(tbl, VARDATA(txtbl), VARSIZE(txtbl)-VARHDRSZ);
 	tbl[VARSIZE(txtbl)-VARHDRSZ]='\0';
 
 	col = palloc(VARSIZE(txcol)+1);
-	memcpy(col, VARATT_DATA(txcol), VARSIZE(txcol)-VARHDRSZ);
+	memcpy(col, VARDATA(txcol), VARSIZE(txcol)-VARHDRSZ);
 	col[VARSIZE(txcol)-VARHDRSZ]='\0';
 
 #if DEBUG_GEOMETRY_STATS

@@ -102,7 +102,7 @@ Datum LWGEOM_asKML(PG_FUNCTION_ARGS)
 	len = strlen(kml) + VARHDRSZ;
 
 	result = palloc(len);
-	VARATT_SIZEP(result) = len;
+	SET_VARSIZE(result, len);
 
 	memcpy(VARDATA(result), kml, len-VARHDRSZ);
 

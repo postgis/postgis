@@ -128,17 +128,17 @@ pglwgeom_serialize(LWGEOM *in)
 #endif
 
 	result = palloc(size);
-	result->size = (size);
+    SET_VARSIZE(result, size);
 	lwgeom_serialize_buf(in, SERIALIZED_FORM(result), &size);
 
 #ifdef PGIS_DEBUG
-        lwnotice("pglwgeom_serialize: serialized size: %d, computed size: %d", size, result->size-VARHDRSZ);
+        lwnotice("pglwgeom_serialize: serialized size: %d, computed size: %d", size, VARSIZE(result)-VARHDRSZ);
 #endif
 
 #if PARANOIA_LEVEL > 0
-	if ( size != result->size-VARHDRSZ )
+	if ( size != VARSIZE(result)-VARHDRSZ )
 	{
-		lwerror("pglwgeom_serialize: serialized size:%d, computed size:%d", size, result->size-VARHDRSZ);
+		lwerror("pglwgeom_serialize: serialized size:%d, computed size:%d", size, VARSIZE(result)-VARHDRSZ);
 		return NULL;
 	}
 #endif
@@ -229,7 +229,7 @@ PG_LWGEOM_construct(uchar *ser, int SRID, int wantbbox)
 	size+=4; /* size header */
 
 	result = lwalloc(size);
-	result->size = size;
+    SET_VARSIZE(result, size);
 
 	result->type = lwgeom_makeType_full(
 		TYPE_HASZ(ser[0]), TYPE_HASM(ser[0]),
@@ -252,12 +252,12 @@ PG_LWGEOM_construct(uchar *ser, int SRID, int wantbbox)
 
 /*
  * Make a PG_LWGEOM object from a WKB binary representation.
- * Currently unoptimized as it will convert WKB to HEXWKB first.
  */
 PG_LWGEOM *
 pglwgeom_from_ewkb(uchar *ewkb, size_t ewkblen)
 {
 	PG_LWGEOM *ret;
+    SERIALIZED_LWGEOM *serialized_lwgeom;
 	char *hexewkb;
 	size_t hexewkblen = ewkblen*2;
 	int i;
@@ -269,7 +269,11 @@ pglwgeom_from_ewkb(uchar *ewkb, size_t ewkblen)
 	}
 	hexewkb[hexewkblen] = '\0';
 
-	ret = (PG_LWGEOM *)parse_lwgeom_wkt(hexewkb);
+    serialized_lwgeom = parse_lwgeom_wkt(hexewkb);
+    
+    ret = (PG_LWGEOM *)palloc(serialized_lwgeom->size + VARHDRSZ);
+    SET_VARSIZE(ret, serialized_lwgeom->size + VARHDRSZ);
+	memcpy(VARDATA(ret), serialized_lwgeom->lwgeom, serialized_lwgeom->size);
 
 	lwfree(hexewkb);
 
