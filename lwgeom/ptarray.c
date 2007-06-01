@@ -335,7 +335,7 @@ ptarray_removePoint(POINTARRAY *pa, unsigned int which)
 	}
 
 	/* copy final part */
-	if ( which < pa->npoints-2 )
+	if ( which < pa->npoints-1 )
 	{
 		memcpy(getPoint_internal(ret, which), getPoint_internal(pa, which+1),
 			ptsize*(pa->npoints-which-1));
