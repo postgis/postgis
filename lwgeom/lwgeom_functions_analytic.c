@@ -1073,6 +1073,63 @@ double determineSide(POINT2D *seg1, POINT2D *seg2, POINT2D *point)
 }
 
 /*
+ * This function doesn't test that the point falls on the line defined by 
+ * the two points.  It assumes that that has already been determined
+ * by having determineSide return within the tolerance.  It simply checks
+ * that if the point is on the line, it is within the endpoints.
+ *
+ * returns: 1 if the point is not outside the bounds of the segment
+ *          0 if it is 
+ */
+int isOnSegment(POINT2D *seg1, POINT2D *seg2, POINT2D *point)
+{
+        double maxX; 
+        double maxY;
+        double minX;
+        double minY;
+
+        if(seg1->x > seg2->x)
+        {
+                maxX = seg1->x;
+                minX = seg2->x;
+        }
+        else
+        {
+                maxX = seg2->x;
+                minX = seg1->x;
+        }
+        if(seg1->y > seg2->y)
+        {
+                maxY = seg1->y;
+                minY = seg2->y;
+        }
+        else
+        {
+                maxY = seg2->y;
+                minY = seg1->y;
+        }
+#ifdef PGIS_DEBUG
+        lwnotice("maxX minX/maxY minY: %.8f %.8f/%.8f %.8f", maxX, minX, maxY, minY);
+#endif
+
+        if(maxX < point->x || minX > point->x)
+        {
+#ifdef PGIS_DEBUG
+                lwnotice("X value %.8f falls outside the range %.8f-%.8f", point->x, minX, maxX);
+#endif
+                return 0;
+        }
+        else if(maxY < point->y || minY > point->y)
+        {
+#ifdef PGIS_DEBUG
+                lwnotice("Y value %.8f falls outside the range %.8f-%.8f", point->y, minY, maxY);
+#endif
+                return 0;
+        }
+        return 1;
+}
+
+/*
  * return -1 iff point is outside ring pts
  * return 1 iff point is inside ring pts
  * return 0 iff point is on ring pts
@@ -1095,7 +1152,8 @@ int point_in_ring(POINTARRAY *pts, POINT2D *point)
                 getPoint2d_p(pts, i+1, &seg2);
                 side = determineSide(&seg1, &seg2, point);
 #ifdef PGIS_DEBUG
-                        lwnotice("side result: %f", side);
+                        lwnotice("segment: (%.8f, %.8f),(%.8f, %.8f)", seg1.x, seg1.y, seg2.x, seg2.y);
+                        lwnotice("side result: %.8f", side);
 #endif
                 /* zero length segments are ignored. */
                 if(((seg2.x-seg1.x)*(seg2.x-seg1.x)+(seg2.y-seg1.y)*(seg2.y-seg1.y)) < 1e-12*1e-12) 
@@ -1109,10 +1167,13 @@ int point_in_ring(POINTARRAY *pts, POINT2D *point)
                 /* a point on the boundary of a ring is not contained. */
                 if(fabs(side) < 1e-12) 
                 {
+                        if(isOnSegment(&seg1, &seg2, point) == 1)
+                        {
 #ifdef PGIS_DEBUG
-                        lwnotice("point on ring boundary between points %d, %d", i, i+1);
+                                lwnotice("point on ring boundary between points %d, %d", i, i+1);
 #endif
-                        return 0;
+                                return 0;
+                        }
                 }
                 else if(seg1.y <= point->y && seg2.y > point->y && side > 0)
                 {
