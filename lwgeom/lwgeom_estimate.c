@@ -874,7 +874,7 @@ Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 
 	if (!IsA(arg1, Var) || !IsA(arg2, Var))
 	{
-		elog(NOTICE, "LWGEOM_gist_joinsel called with arguments that are not column references");
+		elog(DEBUG1, "LWGEOM_gist_joinsel called with arguments that are not column references");
 		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_JOINSEL);
 	}
 
