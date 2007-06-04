@@ -7,4 +7,11 @@ SELECT snaptogrid(orig, 0.005) ~= snaptogrid(snaptogrid(orig, 0.005), 0.005) FRO
 SELECT snaptogrid(orig, 0.002) ~= snaptogrid(snaptogrid(orig, 0.002), 0.002) FROM tmp;
 SELECT snaptogrid(orig, 0.003) ~= snaptogrid(snaptogrid(orig, 0.003), 0.003) FROM tmp;
 SELECT snaptogrid(orig, 0.0002) ~= snaptogrid(snaptogrid(orig, 0.0002), 0.0002) FROM tmp;
+
+-- Repeat tests with new function names.
+SELECT ST_snaptogrid(orig, 0.001) ~= ST_snaptogrid(ST_snaptogrid(orig, 0.001), 0.001) FROM tmp;
+SELECT ST_snaptogrid(orig, 0.005) ~= ST_snaptogrid(ST_snaptogrid(orig, 0.005), 0.005) FROM tmp;
+SELECT ST_snaptogrid(orig, 0.002) ~= ST_snaptogrid(ST_snaptogrid(orig, 0.002), 0.002) FROM tmp;
+SELECT ST_snaptogrid(orig, 0.003) ~= ST_snaptogrid(ST_snaptogrid(orig, 0.003), 0.003) FROM tmp;
+SELECT ST_snaptogrid(orig, 0.0002) ~= ST_snaptogrid(ST_snaptogrid(orig, 0.0002), 0.0002) FROM tmp;
 DROP TABLE tmp;

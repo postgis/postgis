@@ -1,3 +1,10 @@
+2007-06-04 Mark Leslie <mleslie@refractions.net>
+
+	* lwgeom/lwpostgis.sql.in, lwgeom/sqlmm.sql.in:
+	  Added ST_ prefixed function versions where they were lacking.
+	* regress:
+	  Added tests for the new function names.
+
 2007-05-25 Mark Leslie <mleslie@refractions.net>
 
 	* lwgeom/lwgeom_ogc.c: 

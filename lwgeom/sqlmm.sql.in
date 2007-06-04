@@ -378,7 +378,7 @@ CREATEFUNCTION ST_OrderingEquals(geometry, geometry)
 CREATEFUNCTION SE_Is3D(geometry)
     RETURNS boolean
     AS '
-    SELECT CASE zmflag($1)
+    SELECT CASE ST_zmflag($1)
                WHEN 0 THEN false
                WHEN 1 THEN false
                WHEN 2 THEN true
@@ -392,7 +392,7 @@ CREATEFUNCTION SE_Is3D(geometry)
 CREATEFUNCTION SE_IsMeasured(geometry)
     RETURNS boolean
     AS '
-    SELECT CASE zmflag($1)
+    SELECT CASE ST_zmflag($1)
                WHEN 0 THEN false
                WHEN 1 THEN true
                WHEN 2 THEN false

@@ -80,6 +80,89 @@ SELECT 'isRing02', isRing(geomfromewkt('CIRCULARSTRING(
                 -2 0,
                 0 -2)'));
 
+-- Repeat tests with new function names.
+SELECT 'ndims01', ST_ndims(ST_geomfromewkt('CIRCULARSTRING(
+                0 0 0 0, 
+                0.26794919243112270647255365849413 1 3 -2, 
+                0.5857864376269049511983112757903 1.4142135623730950488016887242097 1 2)'));
+SELECT 'geometrytype01', geometrytype(ST_geomfromewkt('CIRCULARSTRING(
+                0 0 0 0, 
+                0.26794919243112270647255365849413 1 3 -2, 
+                0.5857864376269049511983112757903 1.4142135623730950488016887242097 1 2)'));
+SELECT 'ndims02', ST_ndims(ST_geomfromewkt('CIRCULARSTRING(
+                0 0 0, 
+                0.26794919243112270647255365849413 1 3, 
+                0.5857864376269049511981127579 1.4142135623730950488016887242097 1)'));
+SELECT 'geometrytype02', geometrytype(ST_geomfromewkt('CIRCULARSTRING(
+                0 0 0, 
+                0.26794919243112270647255365849413 1 3, 
+                0.5857864376269049511981127579 1.4142135623730950488016887242097 1)'));
+SELECT 'ndims03', ST_ndims(ST_geomfromewkt('CIRCULARSTRINGM(
+                0 0 0, 
+                0.26794919243112270647255365849413 1 -2, 
+                0.5857864376269049511981127579 1.4142135623730950488016887242097 2)'));
+SELECT 'geometrytype03', geometrytype(ST_geomfromewkt('CIRCULARSTRINGM(
+                0 0 0, 
+                0.26794919243112270647255365849413 1 -2, 
+                0.5857864376269049511981127579 1.4142135623730950488016887242097 2)'));
+SELECT 'ndims04', ST_ndims(ST_geomfromewkt('CIRCULARSTRING(
+                0 0, 
+                0.26794919243112270647255365849413 1, 
+                0.5857864376269049511981127579 1.4142135623730950488016887242097)'));
+SELECT 'geometrytype04', geometrytype(ST_geomfromewkt('CIRCULARSTRING(
+                0 0, 
+                0.26794919243112270647255365849413 1, 
+                0.5857864376269049511981127579 1.4142135623730950488016887242097)'));
+
+SELECT 'isClosed01', ST_isClosed(ST_geomfromewkt('CIRCULARSTRING(
+                0 -2,
+                -2 0,
+                0 2,
+                2 0,
+                0 -2)'));
+SELECT 'isSimple01', ST_isSimple(ST_geomfromewkt('CIRCULARSTRING(
+                0 -2,
+                -2 0,
+                0 2,
+                2 0,
+                0 -2)'));
+SELECT 'isRing01', ST_isRing(ST_geomfromewkt('CIRCULARSTRING(
+                0 -2,
+                -2 0,
+                0 2,
+                2 0,
+                0 -2)'));
+SELECT 'isClosed02', ST_isClosed(ST_geomfromewkt('CIRCULARSTRING(
+                0 -2,
+                -2 0,
+                0 2,
+                -2 0,
+                2 -2,
+                -2 0,
+                -2 -2,
+                -2 0,
+                0 -2)'));
+SELECT 'isSimple02', ST_isSimple(ST_geomfromewkt('CIRCULARSTRING(
+                0 -2,
+                -2 0,
+                0 2,
+                -2 0,
+                2 -2,
+                -2 0,
+                -2 -2,
+                -2 0,
+                0 -2)'));
+SELECT 'isRing02', ST_isRing(ST_geomfromewkt('CIRCULARSTRING(
+                0 -2,
+                -2 0,
+                0 2,
+                -2 0,
+                2 -2,
+                -2 0,
+                -2 -2,
+                -2 0,
+                0 -2)'));
+
 CREATE TABLE public.circularstring (id INTEGER, description VARCHAR);
 SELECT AddGeometryColumn('public', 'circularstring', 'the_geom_2d', -1, 'CIRCULARSTRING', 2);
 SELECT AddGeometryColumn('public', 'circularstring', 'the_geom_3dm', -1, 'CIRCULARSTRINGM', 3);
@@ -231,6 +314,63 @@ SELECT 'ST_LineToCurve01', asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_2d))) F
 SELECT 'ST_LineToCurve02', asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_3dm))) FROM public.circularstring;
 SELECT 'ST_LineToCurve03', asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_3dz))) FROM public.circularstring;
 SELECT 'ST_LineToCurve04', asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_4d))) FROM public.circularstring;
+
+-- Repeat tests with new function names.
+SELECT 'astext01', ST_astext(the_geom_2d) FROM public.circularstring;        
+SELECT 'astext02', ST_astext(the_geom_3dm) FROM public.circularstring;        
+SELECT 'astext03', ST_astext(the_geom_3dz) FROM public.circularstring;        
+SELECT 'astext04', ST_astext(the_geom_4d) FROM public.circularstring;        
+
+SELECT 'asewkt01', ST_asewkt(the_geom_2d) FROM public.circularstring;        
+SELECT 'asewkt02', ST_asewkt(the_geom_3dm) FROM public.circularstring;        
+SELECT 'asewkt03', ST_asewkt(the_geom_3dz) FROM public.circularstring;        
+SELECT 'asewkt04', ST_asewkt(the_geom_4d) FROM public.circularstring;        
+
+SELECT 'asbinary01', encode(ST_asbinary(the_geom_2d), 'hex') FROM public.circularstring;
+SELECT 'asbinary02', encode(ST_asbinary(the_geom_3dm), 'hex') FROM public.circularstring;
+SELECT 'asbinary03', encode(ST_asbinary(the_geom_3dz), 'hex') FROM public.circularstring;
+SELECT 'asbinary04', encode(ST_asbinary(the_geom_4d), 'hex') FROM public.circularstring;
+
+SELECT 'asewkb01', encode(ST_asewkb(the_geom_2d), 'hex') FROM public.circularstring;
+SELECT 'asewkb02', encode(ST_asewkb(the_geom_3dm), 'hex') FROM public.circularstring;
+SELECT 'asewkb03', encode(ST_asewkb(the_geom_3dz), 'hex') FROM public.circularstring;
+SELECT 'asewkb04', encode(ST_asewkb(the_geom_4d), 'hex') FROM public.circularstring;
+
+--Removed due to discrepencies between hardware
+--SELECT 'box2d01', ST_box2d(the_geom_2d) FROM public.circularstring;
+--SELECT 'box2d02', ST_box2d(the_geom_3dm) FROM public.circularstring;
+--SELECT 'box2d03', ST_box2d(the_geom_3dz) FROM public.circularstring;
+--SELECT 'box2d04', ST_box2d(the_geom_4d) FROM public.circularstring;
+
+--SELECT 'box3d01', ST_box3d(the_geom_2d) FROM public.circularstring;
+--SELECT 'box3d02', ST_box3d(the_geom_3dm) FROM public.circularstring;
+--SELECT 'box3d03', ST_box3d(the_geom_3dz) FROM public.circularstring;
+--SELECT 'box3d04', ST_box3d(the_geom_4d) FROM public.circularstring;
+
+SELECT 'isValid01', ST_isValid(the_geom_2d) FROM public.circularstring;
+SELECT 'isValid02', ST_isValid(the_geom_3dm) FROM public.circularstring;
+SELECT 'isValid03', ST_isValid(the_geom_3dz) FROM public.circularstring;
+SELECT 'isValid04', ST_isValid(the_geom_4d) FROM public.circularstring;
+
+SELECT 'dimension01', ST_dimension(the_geom_2d) FROM public.circularstring;
+SELECT 'dimension02', ST_dimension(the_geom_3dm) FROM public.circularstring;
+SELECT 'dimension03', ST_dimension(the_geom_3dz) FROM public.circularstring;
+SELECT 'dimension04', ST_dimension(the_geom_4d) FROM public.circularstring;
+
+SELECT 'SRID01', ST_SRID(the_geom_2d) FROM public.circularstring;
+SELECT 'SRID02', ST_SRID(the_geom_3dm) FROM public.circularstring;
+SELECT 'SRID03', ST_SRID(the_geom_3dz) FROM public.circularstring;
+SELECT 'SRID04', ST_SRID(the_geom_4d) FROM public.circularstring;
+
+SELECT 'accessors01', ST_isEmpty(the_geom_2d), ST_isSimple(the_geom_2d), ST_isClosed(the_geom_2d), ST_isRing(the_geom_2d) FROM public.circularstring;
+SELECT 'accessors02', ST_isEmpty(the_geom_3dm), ST_isSimple(the_geom_3dm), ST_isClosed(the_geom_3dm), ST_isRing(the_geom_3dm) FROM public.circularstring;
+SELECT 'accessors03', ST_isEmpty(the_geom_3dz), ST_isSimple(the_geom_3dz), ST_isClosed(the_geom_3dz), ST_isRing(the_geom_3dz) FROM public.circularstring;
+SELECT 'accessors04', ST_isEmpty(the_geom_4d), ST_isSimple(the_geom_4d), ST_isClosed(the_geom_4d), ST_isRing(the_geom_4d) FROM public.circularstring;
+
+SELECT 'envelope01', ST_asText(ST_snapToGrid(envelope(the_geom_2d), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.circularstring;
+SELECT 'envelope02', ST_asText(ST_snapToGrid(envelope(the_geom_3dm), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.circularstring;
+SELECT 'envelope03', ST_asText(ST_snapToGrid(envelope(the_geom_3dz), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.circularstring;
+SELECT 'envelope04', ST_asText(ST_snapToGrid(envelope(the_geom_4d), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.circularstring;
 
 SELECT DropGeometryColumn('public', 'circularstring', 'the_geom_4d');
 SELECT DropGeometryColumn('public', 'circularstring', 'the_geom_3dz');

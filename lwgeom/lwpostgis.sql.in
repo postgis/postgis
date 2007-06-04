@@ -35,12 +35,26 @@ BEGIN;
 # define HISTOGRAM_OUT_REP cstring
 #endif
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION histogram2d_in(HISTOGRAM_OUT_REP)
 	RETURNS HISTOGRAM_IN_REP
 	AS '@MODULE_FILENAME@', 'lwhistogram2d_in'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_histogram2d_in(HISTOGRAM_OUT_REP)
+	RETURNS HISTOGRAM_IN_REP
+	AS '@MODULE_FILENAME@', 'lwhistogram2d_in'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION histogram2d_out(HISTOGRAM_IN_REP)
+	RETURNS HISTOGRAM_OUT_REP
+	AS '@MODULE_FILENAME@', 'lwhistogram2d_out'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_histogram2d_out(HISTOGRAM_IN_REP)
 	RETURNS HISTOGRAM_OUT_REP
 	AS '@MODULE_FILENAME@', 'lwhistogram2d_out'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
@@ -48,8 +62,8 @@ CREATEFUNCTION histogram2d_out(HISTOGRAM_IN_REP)
 CREATE TYPE histogram2d (
 	alignment = double,
 	internallength = variable,
-	input = histogram2d_in,
-	output = histogram2d_out,
+	input = ST_histogram2d_in,
+	output = ST_histogram2d_out,
 	storage = main
 );
 
@@ -65,12 +79,26 @@ CREATE TYPE histogram2d (
 # define SPHEROID_OUT_REP cstring
 #endif
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION spheroid_in(SPHEROID_OUT_REP)
 	RETURNS SPHEROID_IN_REP
 	AS '@MODULE_FILENAME@','ellipsoid_in'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_spheroid_in(SPHEROID_OUT_REP)
+	RETURNS SPHEROID_IN_REP
+	AS '@MODULE_FILENAME@','ellipsoid_in'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION spheroid_out(SPHEROID_IN_REP)
+	RETURNS SPHEROID_OUT_REP
+	AS '@MODULE_FILENAME@','ellipsoid_out'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_spheroid_out(SPHEROID_IN_REP)
 	RETURNS SPHEROID_OUT_REP
 	AS '@MODULE_FILENAME@','ellipsoid_out'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
@@ -78,8 +106,8 @@ CREATEFUNCTION spheroid_out(SPHEROID_IN_REP)
 CREATE TYPE spheroid (
 	alignment = double,
 	internallength = 65,
-	input = spheroid_in,
-	output = spheroid_out
+	input = ST_spheroid_in,
+	output = ST_spheroid_out
 );
 
 -------------------------------------------------------------------
@@ -94,47 +122,81 @@ CREATE TYPE spheroid (
 # define GEOMETRY_OUT_REP cstring
 #endif
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION geometry_in(GEOMETRY_OUT_REP)
         RETURNS geometry
         AS '@MODULE_FILENAME@','LWGEOM_in'
         LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_geometry_in(GEOMETRY_OUT_REP)
+        RETURNS geometry
+        AS '@MODULE_FILENAME@','LWGEOM_in'
+        LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION geometry_out(GEOMETRY_IN_REP)
         RETURNS cstring
         AS '@MODULE_FILENAME@','LWGEOM_out'
         LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_geometry_out(GEOMETRY_IN_REP)
+        RETURNS cstring
+        AS '@MODULE_FILENAME@','LWGEOM_out'
+        LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
 #if USE_VERSION >= 80
+-- Deprecation in 1.2.3
 CREATEFUNCTION geometry_analyze(internal)
+	RETURNS bool
+	AS '@MODULE_FILENAME@', 'LWGEOM_analyze'
+	LANGUAGE 'C' _VOLATILE_STRICT; -- WITH (isstrict);
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_geometry_analyze(internal)
 	RETURNS bool
 	AS '@MODULE_FILENAME@', 'LWGEOM_analyze'
 	LANGUAGE 'C' _VOLATILE_STRICT; -- WITH (isstrict);
 #endif
 
 #if USE_VERSION > 73
+-- Deprecation in 1.2.3
 CREATEFUNCTION geometry_recv(internal)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','LWGEOM_recv'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_geometry_recv(internal)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','LWGEOM_recv'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION geometry_send(geometry)
+	RETURNS bytea
+	AS '@MODULE_FILENAME@','LWGEOM_send'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_geometry_send(geometry)
 	RETURNS bytea
 	AS '@MODULE_FILENAME@','LWGEOM_send'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 #endif
 
-
 CREATE TYPE geometry (
         internallength = variable,
-        input = geometry_in,
-        output = geometry_out,
+        input = ST_geometry_in,
+        output = ST_geometry_out,
 #if USE_VERSION > 73
-	send = geometry_send,
-	receive = geometry_recv,
+	send = ST_geometry_send,
+	receive = ST_geometry_recv,
 #endif
 	delimiter = ':',
 #if USE_VERSION >= 80
-	analyze = geometry_analyze,
+	analyze = ST_geometry_analyze,
 #endif 
         storage = main
 );
@@ -144,78 +206,161 @@ CREATE TYPE geometry (
 -------------------------------------------
 
 -- Availability: 1.1.2
+-- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION Affine(geometry,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_affine'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; 
 
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_Affine(geometry,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_affine'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; 
+
 -- Availability: 1.1.2
+-- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION Affine(geometry,float8,float8,float8,float8,float8,float8)
 	RETURNS geometry
 	AS 'SELECT affine($1,  $2, $3, 0,  $4, $5, 0,  0, 0, 1,  $6, $7, 0)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; 
 
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_Affine(geometry,float8,float8,float8,float8,float8,float8)
+	RETURNS geometry
+	AS 'SELECT affine($1,  $2, $3, 0,  $4, $5, 0,  0, 0, 1,  $6, $7, 0)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; 
+
 -- Availability: 1.1.2
+-- Deprecation in 1.2.3
 CREATEFUNCTION RotateZ(geometry,float8)
 	RETURNS geometry
 	AS 'SELECT affine($1,  cos($2), -sin($2), 0,  sin($2), cos($2), 0,  0, 0, 1,  0, 0, 0)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; 
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_RotateZ(geometry,float8)
+	RETURNS geometry
+	AS 'SELECT affine($1,  cos($2), -sin($2), 0,  sin($2), cos($2), 0,  0, 0, 1,  0, 0, 0)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; 
+
 -- Availability: 1.1.2
+-- Deprecation in 1.2.3
 CREATEFUNCTION Rotate(geometry,float8)
 	RETURNS geometry
 	AS 'SELECT rotateZ($1, $2)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; 
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_Rotate(geometry,float8)
+	RETURNS geometry
+	AS 'SELECT rotateZ($1, $2)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; 
+
 -- Availability: 1.1.2
+-- Deprecation in 1.2.3
 CREATEFUNCTION RotateX(geometry,float8)
 	RETURNS geometry
  	AS 'SELECT affine($1, 1, 0, 0, 0, cos($2), -sin($2), 0, sin($2), cos($2), 0, 0, 0)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; 
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_RotateX(geometry,float8)
+	RETURNS geometry
+ 	AS 'SELECT affine($1, 1, 0, 0, 0, cos($2), -sin($2), 0, sin($2), cos($2), 0, 0, 0)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; 
+
 -- Availability: 1.1.2
+-- Deprecation in 1.2.3
 CREATEFUNCTION RotateY(geometry,float8)
 	RETURNS geometry
  	AS 'SELECT affine($1,  cos($2), 0, sin($2),  0, 1, 0,  -sin($2), 0, cos($2), 0,  0, 0)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; 
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_RotateY(geometry,float8)
+	RETURNS geometry
+ 	AS 'SELECT affine($1,  cos($2), 0, sin($2),  0, 1, 0,  -sin($2), 0, cos($2), 0,  0, 0)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; 
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION Translate(geometry,float8,float8,float8)
 	RETURNS geometry
  	AS 'SELECT affine($1, 1, 0, 0, 0, 1, 0, 0, 0, 1, $2, $3, $4)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; 
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_Translate(geometry,float8,float8,float8)
+	RETURNS geometry
+ 	AS 'SELECT affine($1, 1, 0, 0, 0, 1, 0, 0, 0, 1, $2, $3, $4)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; 
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION Translate(geometry,float8,float8)
 	RETURNS geometry
 	AS 'SELECT translate($1, $2, $3, 0)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT;
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_Translate(geometry,float8,float8)
+	RETURNS geometry
+	AS 'SELECT translate($1, $2, $3, 0)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT;
+
 -- Availability: 1.1.0
+-- Deprecation in 1.2.3
 CREATEFUNCTION Scale(geometry,float8,float8,float8)
 	RETURNS geometry
 	AS 'SELECT affine($1,  $2, 0, 0,  0, $3, 0,  0, 0, $4,  0, 0, 0)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; 
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_Scale(geometry,float8,float8,float8)
+	RETURNS geometry
+	AS 'SELECT affine($1,  $2, 0, 0,  0, $3, 0,  0, 0, $4,  0, 0, 0)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; 
+
 -- Availability: 1.1.0
+-- Deprecation in 1.2.3
 CREATEFUNCTION Scale(geometry,float8,float8)
 	RETURNS geometry
 	AS 'SELECT scale($1, $2, $3, 1)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; 
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_Scale(geometry,float8,float8)
+	RETURNS geometry
+	AS 'SELECT scale($1, $2, $3, 1)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; 
+
 -- Availability: 1.1.0 
+-- Deprecation in 1.2.3
 CREATEFUNCTION transscale(geometry,float8,float8,float8,float8)
         RETURNS geometry
         AS 'SELECT affine($1,  $4, 0, 0,  0, $5, 0, 
 		0, 0, 1,  $2 * $4, $3 * $5, 0)'
         LANGUAGE 'SQL' _IMMUTABLE_STRICT;
 
+-- Availability: 1.2.2 
+CREATEFUNCTION ST_transscale(geometry,float8,float8,float8,float8)
+        RETURNS geometry
+        AS 'SELECT affine($1,  $4, 0, 0,  0, $5, 0, 
+		0, 0, 1,  $2 * $4, $3 * $5, 0)'
+        LANGUAGE 'SQL' _IMMUTABLE_STRICT;
+
 -- Availability: 1.1.0
+-- Deprecation in 1.2.3
 CREATEFUNCTION shift_longitude(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_longitude_shift'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; 
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_shift_longitude(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_longitude_shift'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; 
 
-        
 -------------------------------------------------------------------
 --  BOX3D TYPE
 -------------------------------------------------------------------
@@ -228,12 +373,26 @@ CREATEFUNCTION shift_longitude(geometry)
 # define BOX3D_OUT_REP cstring
 #endif
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION box3d_in(BOX3D_OUT_REP)
 	RETURNS BOX3D_IN_REP
 	AS '@MODULE_FILENAME@', 'BOX3D_in'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION box3d_out(BOX3D_IN_REP)
+	RETURNS BOX3D_OUT_REP
+	AS '@MODULE_FILENAME@', 'BOX3D_out'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_box3d_in(BOX3D_OUT_REP)
+	RETURNS BOX3D_IN_REP
+	AS '@MODULE_FILENAME@', 'BOX3D_in'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_box3d_out(BOX3D_IN_REP)
 	RETURNS BOX3D_OUT_REP
 	AS '@MODULE_FILENAME@', 'BOX3D_out'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
@@ -241,36 +400,78 @@ CREATEFUNCTION box3d_out(BOX3D_IN_REP)
 CREATE TYPE box3d (
 	alignment = double,
 	internallength = 48,
-	input = box3d_in,
-	output = box3d_out
+	input = ST_box3d_in,
+	output = ST_box3d_out
 );
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION xmin(box3d)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@','BOX3D_xmin'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_xmin(box3d)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@','BOX3D_xmin'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION ymin(box3d)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@','BOX3D_ymin'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_ymin(box3d)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@','BOX3D_ymin'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION zmin(box3d)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@','BOX3D_zmin'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_zmin(box3d)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@','BOX3D_zmin'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION xmax(box3d)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@','BOX3D_xmax'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_xmax(box3d)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@','BOX3D_xmax'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION ymax(box3d)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@','BOX3D_ymax'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_ymax(box3d)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@','BOX3D_ymax'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION zmax(box3d)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@','BOX3D_zmax'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_zmax(box3d)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@','BOX3D_zmax'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -287,12 +488,26 @@ CREATEFUNCTION zmax(box3d)
 # define CHIP_OUT_REP cstring
 #endif
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION chip_in(CHIP_OUT_REP)
 	RETURNS CHIP_IN_REP
 	AS '@MODULE_FILENAME@','CHIP_in'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+        
+-- Availability: 1.2.2
+CREATEFUNCTION ST_chip_in(CHIP_OUT_REP)
+	RETURNS CHIP_IN_REP
+	AS '@MODULE_FILENAME@','CHIP_in'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION chip_out(CHIP_IN_REP)
+	RETURNS CHIP_OUT_REP
+	AS '@MODULE_FILENAME@','CHIP_out'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_chip_out(CHIP_IN_REP)
 	RETURNS CHIP_OUT_REP
 	AS '@MODULE_FILENAME@','CHIP_out'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
@@ -300,8 +515,8 @@ CREATEFUNCTION chip_out(CHIP_IN_REP)
 CREATE TYPE chip (
 	alignment = double,
 	internallength = variable,
-	input = chip_in,
-	output = chip_out,
+	input = ST_chip_in,
+	output = ST_chip_out,
 	storage = extended
 );
 
@@ -318,70 +533,147 @@ CREATE TYPE chip (
 # define BOX2D_OUT_REP cstring
 #endif
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION box2d_in(BOX2D_OUT_REP)
         RETURNS box2d
         AS '@MODULE_FILENAME@','BOX2DFLOAT4_in'
         LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_box2d_in(BOX2D_OUT_REP)
+        RETURNS box2d
+        AS '@MODULE_FILENAME@','BOX2DFLOAT4_in'
+        LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION box2d_out(BOX2D_IN_REP)
+        RETURNS cstring
+        AS '@MODULE_FILENAME@','BOX2DFLOAT4_out'
+        LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_box2d_out(BOX2D_IN_REP)
         RETURNS cstring
         AS '@MODULE_FILENAME@','BOX2DFLOAT4_out'
         LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 CREATE TYPE box2d (
         internallength = 16,
-        input = box2d_in,
-        output = box2d_out,
+        input = ST_box2d_in,
+        output = ST_box2d_out,
         storage = plain
 );
 
 ---- BOX2D  support functions
 
-
+-- Deprecation in 1.2.3
 CREATEFUNCTION box2d_overleft(box2d, box2d) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@', 'BOX2D_overleft'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_box2d_overleft(box2d, box2d) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@', 'BOX2D_overleft'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION box2d_overright(box2d, box2d) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@', 'BOX2D_overright' 
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_box2d_overright(box2d, box2d) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@', 'BOX2D_overright' 
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION box2d_left(box2d, box2d) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@', 'BOX2D_left' 
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_box2d_left(box2d, box2d) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@', 'BOX2D_left' 
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION box2d_right(box2d, box2d) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@', 'BOX2D_right' 
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_box2d_right(box2d, box2d) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@', 'BOX2D_right' 
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION box2d_contain(box2d, box2d) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@', 'BOX2D_contain'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_box2d_contain(box2d, box2d) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@', 'BOX2D_contain'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION box2d_contained(box2d, box2d) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@', 'BOX2D_contained'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_box2d_contained(box2d, box2d) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@', 'BOX2D_contained'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION box2d_overlap(box2d, box2d) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@', 'BOX2D_overlap'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_box2d_overlap(box2d, box2d) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@', 'BOX2D_overlap'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION box2d_same(box2d, box2d) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@', 'BOX2D_same'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_box2d_same(box2d, box2d) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@', 'BOX2D_same'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION box2d_intersects(box2d, box2d) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@', 'BOX2D_intersects'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_box2d_intersects(box2d, box2d) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@', 'BOX2D_intersects'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
 
 -- lwgeom  operator support functions
 
@@ -389,32 +681,74 @@ CREATEFUNCTION box2d_intersects(box2d, box2d)
 -- BTREE indexes
 -------------------------------------------------------------------
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION geometry_lt(geometry, geometry) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@', 'lwgeom_lt'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_geometry_lt(geometry, geometry) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@', 'lwgeom_lt'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION geometry_le(geometry, geometry) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@', 'lwgeom_le'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_geometry_le(geometry, geometry) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@', 'lwgeom_le'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION geometry_gt(geometry, geometry) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@', 'lwgeom_gt'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_geometry_gt(geometry, geometry) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@', 'lwgeom_gt'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION geometry_ge(geometry, geometry) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@', 'lwgeom_ge'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_geometry_ge(geometry, geometry) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@', 'lwgeom_ge'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION geometry_eq(geometry, geometry) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@', 'lwgeom_eq'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_geometry_eq(geometry, geometry) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@', 'lwgeom_eq'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION geometry_cmp(geometry, geometry) 
+	RETURNS integer
+	AS '@MODULE_FILENAME@', 'lwgeom_cmp'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_geometry_cmp(geometry, geometry) 
 	RETURNS integer
 	AS '@MODULE_FILENAME@', 'lwgeom_cmp'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
@@ -424,30 +758,30 @@ CREATEFUNCTION geometry_cmp(geometry, geometry)
 --
 
 CREATE OPERATOR < (
-   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_lt,
+   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = ST_geometry_lt,
    COMMUTATOR = '>', NEGATOR = '>=',
    RESTRICT = contsel, JOIN = contjoinsel
 );
 
 CREATE OPERATOR <= (
-   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_le,
+   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = ST_geometry_le,
    COMMUTATOR = '>=', NEGATOR = '>',
    RESTRICT = contsel, JOIN = contjoinsel
 );
 
 CREATE OPERATOR = (
-   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_eq,
+   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = ST_geometry_eq,
    COMMUTATOR = '=', -- we might implement a faster negator here
    RESTRICT = contsel, JOIN = contjoinsel
 );
 
 CREATE OPERATOR >= (
-   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_ge,
+   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = ST_geometry_ge,
    COMMUTATOR = '<=', NEGATOR = '<',
    RESTRICT = contsel, JOIN = contjoinsel
 );
 CREATE OPERATOR > (
-   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_gt,
+   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = ST_geometry_gt,
    COMMUTATOR = '<', NEGATOR = '<=',
    RESTRICT = contsel, JOIN = contjoinsel
 );
@@ -469,6 +803,7 @@ CREATE OPERATOR CLASS btree_geometry_ops
 -------------------------------------------------------------------
 -- GiST indexes
 -------------------------------------------------------------------
+-- Deprecation in 1.2.3
 #if USE_VERSION < 73
 CREATEFUNCTION postgis_gist_sel(opaque, oid,  opaque, int4)
 #else
@@ -478,6 +813,17 @@ CREATEFUNCTION postgis_gist_sel (internal, oid, internal, int4)
 	AS '@MODULE_FILENAME@', 'LWGEOM_gist_sel'
 	LANGUAGE 'C';
 
+-- Availability: 1.2.2
+#if USE_VERSION < 73
+CREATEFUNCTION ST_postgis_gist_sel(opaque, oid,  opaque, int4)
+#else
+CREATEFUNCTION ST_postgis_gist_sel (internal, oid, internal, int4)
+#endif
+	RETURNS float8
+	AS '@MODULE_FILENAME@', 'LWGEOM_gist_sel'
+	LANGUAGE 'C';
+
+-- Deprecation in 1.2.3
 #if USE_VERSION == 72
 CREATEFUNCTION postgis_gist_joinsel(opaque, oid,  opaque)
 #elif USE_VERSION == 73
@@ -489,62 +835,158 @@ CREATEFUNCTION postgis_gist_joinsel(internal, oid, internal, smallint)
 	AS '@MODULE_FILENAME@', 'LWGEOM_gist_joinsel'
 	LANGUAGE 'C';
 
+-- Availability: 1.2.2
+#if USE_VERSION == 72
+CREATEFUNCTION ST_postgis_gist_joinsel(opaque, oid,  opaque)
+#elif USE_VERSION == 73
+CREATEFUNCTION ST_postgis_gist_joinsel(internal, oid,  internal)
+#else
+CREATEFUNCTION ST_postgis_gist_joinsel(internal, oid, internal, smallint)
+#endif
+	RETURNS float8
+	AS '@MODULE_FILENAME@', 'LWGEOM_gist_joinsel'
+	LANGUAGE 'C';
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION geometry_overleft(geometry, geometry) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@', 'LWGEOM_overleft'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_geometry_overleft(geometry, geometry) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@', 'LWGEOM_overleft'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION geometry_overright(geometry, geometry) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@', 'LWGEOM_overright'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_geometry_overright(geometry, geometry) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@', 'LWGEOM_overright'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION geometry_overabove(geometry, geometry) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@', 'LWGEOM_overabove'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_geometry_overabove(geometry, geometry) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@', 'LWGEOM_overabove'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION geometry_overbelow(geometry, geometry) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@', 'LWGEOM_overbelow'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_geometry_overbelow(geometry, geometry) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@', 'LWGEOM_overbelow'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION geometry_left(geometry, geometry) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@', 'LWGEOM_left'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_geometry_left(geometry, geometry) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@', 'LWGEOM_left'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION geometry_right(geometry, geometry) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@', 'LWGEOM_right'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_geometry_right(geometry, geometry) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@', 'LWGEOM_right'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION geometry_above(geometry, geometry) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@', 'LWGEOM_above'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_geometry_above(geometry, geometry) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@', 'LWGEOM_above'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION geometry_below(geometry, geometry) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@', 'LWGEOM_below'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_geometry_below(geometry, geometry) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@', 'LWGEOM_below'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION geometry_contain(geometry, geometry) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@', 'LWGEOM_contain'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_geometry_contain(geometry, geometry) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@', 'LWGEOM_contain'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION geometry_contained(geometry, geometry) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@', 'LWGEOM_contained'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_geometry_contained(geometry, geometry) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@', 'LWGEOM_contained'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION geometry_overlap(geometry, geometry) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@', 'LWGEOM_overlap'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_geometry_overlap(geometry, geometry) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@', 'LWGEOM_overlap'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION geometry_same(geometry, geometry) 
+	RETURNS bool
+	AS '@MODULE_FILENAME@', 'LWGEOM_same'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+--Availability: 1.2.2
+CREATEFUNCTION ST_geometry_same(geometry, geometry) 
 	RETURNS bool
 	AS '@MODULE_FILENAME@', 'LWGEOM_same'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -552,73 +994,73 @@ CREATEFUNCTION geometry_same(geometry, geometry)
 -- GEOMETRY operators
 
 CREATE OPERATOR << (
-   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_left,
+   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = ST_geometry_left,
    COMMUTATOR = '>>',
    RESTRICT = positionsel, JOIN = positionjoinsel
 );
 
 CREATE OPERATOR &< (
-   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overleft,
+   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = ST_geometry_overleft,
    COMMUTATOR = '&>',
    RESTRICT = positionsel, JOIN = positionjoinsel
 );
 
 CREATE OPERATOR <<| (
-   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_below,
+   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = ST_geometry_below,
    COMMUTATOR = '|>>',
    RESTRICT = positionsel, JOIN = positionjoinsel
 );
 
 CREATE OPERATOR &<| (
-   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overbelow,
+   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = ST_geometry_overbelow,
    COMMUTATOR = '|&>',
    RESTRICT = positionsel, JOIN = positionjoinsel
 );
 
 CREATE OPERATOR && (
-   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overlap,
+   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = ST_geometry_overlap,
    COMMUTATOR = '&&',
-   RESTRICT = postgis_gist_sel, JOIN = postgis_gist_joinsel
+   RESTRICT = ST_postgis_gist_sel, JOIN = ST_postgis_gist_joinsel
 );
 
 CREATE OPERATOR &> (
-   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overright,
+   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = ST_geometry_overright,
    COMMUTATOR = '&<',
    RESTRICT = positionsel, JOIN = positionjoinsel
 );
 
 CREATE OPERATOR >> (
-   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_right,
+   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = ST_geometry_right,
    COMMUTATOR = '<<',
    RESTRICT = positionsel, JOIN = positionjoinsel
 );
 
 CREATE OPERATOR |&> (
-   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overabove,
+   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = ST_geometry_overabove,
    COMMUTATOR = '&<|',
    RESTRICT = positionsel, JOIN = positionjoinsel
 );
 
 CREATE OPERATOR |>> (
-   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_above,
+   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = ST_geometry_above,
    COMMUTATOR = '<<|',
    RESTRICT = positionsel, JOIN = positionjoinsel
 );
 
 CREATE OPERATOR ~= (
-   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_same,
+   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = ST_geometry_same,
    COMMUTATOR = '~=', 
    RESTRICT = eqsel, JOIN = eqjoinsel
 );
 
 CREATE OPERATOR @ (
-   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_contained,
+   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = ST_geometry_contained,
    COMMUTATOR = '~',
    RESTRICT = contsel, JOIN = contjoinsel
 );
 
 CREATE OPERATOR ~ (
-   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_contain,
+   LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = ST_geometry_contain,
    COMMUTATOR = '@',
    RESTRICT = contsel, JOIN = contjoinsel
 );
@@ -906,22 +1348,49 @@ UPDATE pg_opclass
 -- other lwgeom functions
 -------------------------------------------
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION addBBOX(geometry) 
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','LWGEOM_addBBOX'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_addBBOX(geometry) 
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','LWGEOM_addBBOX'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION dropBBOX(geometry) 
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','LWGEOM_dropBBOX'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_dropBBOX(geometry) 
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','LWGEOM_dropBBOX'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 	
+-- Deprecation in 1.2.3
 CREATEFUNCTION getSRID(geometry) 
 	RETURNS int4
 	AS '@MODULE_FILENAME@','LWGEOM_getSRID'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION getSRID(geometry) 
+	RETURNS int4
+	AS '@MODULE_FILENAME@','LWGEOM_getSRID'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
+CREATEFUNCTION getBBOX(geometry)
+        RETURNS box2d
+        AS '@MODULE_FILENAME@','LWGEOM_to_BOX2DFLOAT4'
+        LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Availability: 1.2.2
 CREATEFUNCTION getBBOX(geometry)
         RETURNS box2d
         AS '@MODULE_FILENAME@','LWGEOM_to_BOX2DFLOAT4'
@@ -931,42 +1400,92 @@ CREATEFUNCTION getBBOX(geometry)
 --- CHIP functions
 -------------------------------------------
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION srid(chip)
 	RETURNS int4
 	AS '@MODULE_FILENAME@','CHIP_getSRID'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_srid(chip)
+	RETURNS int4
+	AS '@MODULE_FILENAME@','CHIP_getSRID'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION height(chip)
 	RETURNS int4
 	AS '@MODULE_FILENAME@','CHIP_getHeight'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_height(chip)
+	RETURNS int4
+	AS '@MODULE_FILENAME@','CHIP_getHeight'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION factor(chip)
 	RETURNS FLOAT4
 	AS '@MODULE_FILENAME@','CHIP_getFactor'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_factor(chip)
+	RETURNS FLOAT4
+	AS '@MODULE_FILENAME@','CHIP_getFactor'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION width(chip)
 	RETURNS int4
 	AS '@MODULE_FILENAME@','CHIP_getWidth'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_width(chip)
+	RETURNS int4
+	AS '@MODULE_FILENAME@','CHIP_getWidth'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION datatype(chip)
 	RETURNS int4
 	AS '@MODULE_FILENAME@','CHIP_getDatatype'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_datatype(chip)
+	RETURNS int4
+	AS '@MODULE_FILENAME@','CHIP_getDatatype'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION compression(chip)
 	RETURNS int4
 	AS '@MODULE_FILENAME@','CHIP_getCompression'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_compression(chip)
+	RETURNS int4
+	AS '@MODULE_FILENAME@','CHIP_getCompression'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION setSRID(chip,int4)
 	RETURNS chip
 	AS '@MODULE_FILENAME@','CHIP_setSRID'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION setFactor(chip,float4)
+	RETURNS chip
+	AS '@MODULE_FILENAME@','CHIP_setFactor'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_setFactor(chip,float4)
 	RETURNS chip
 	AS '@MODULE_FILENAME@','CHIP_setFactor'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -975,22 +1494,50 @@ CREATEFUNCTION setFactor(chip,float4)
 -- DEBUG
 ------------------------------------------------------------------------
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION mem_size(geometry)
 	RETURNS int4
 	AS '@MODULE_FILENAME@', 'LWGEOM_mem_size'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_mem_size(geometry)
+	RETURNS int4
+	AS '@MODULE_FILENAME@', 'LWGEOM_mem_size'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION summary(geometry)
 	RETURNS text
 	AS '@MODULE_FILENAME@', 'LWGEOM_summary'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_summary(geometry)
+	RETURNS text
+	AS '@MODULE_FILENAME@', 'LWGEOM_summary'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION npoints(geometry)
 	RETURNS int4
 	AS '@MODULE_FILENAME@', 'LWGEOM_npoints'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_npoints(geometry)
+	RETURNS int4
+	AS '@MODULE_FILENAME@', 'LWGEOM_npoints'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION nrings(geometry)
+	RETURNS int4
+	AS '@MODULE_FILENAME@', 'LWGEOM_nrings'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_nrings(geometry)
 	RETURNS int4
 	AS '@MODULE_FILENAME@', 'LWGEOM_nrings'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
@@ -1001,12 +1548,26 @@ CREATEFUNCTION nrings(geometry)
 
 -- this is a fake (for back-compatibility)
 -- uses 3d if 3d is available, 2d otherwise
+-- Deprecation in 1.2.3
 CREATEFUNCTION length3d(geometry)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@', 'LWGEOM_length_linestring'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_length3d(geometry)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@', 'LWGEOM_length_linestring'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION length2d(geometry)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@', 'LWGEOM_length2d_linestring'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_length2d(geometry)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@', 'LWGEOM_length2d_linestring'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
@@ -1018,33 +1579,69 @@ CREATEFUNCTION length(geometry)
 
 -- this is a fake (for back-compatibility)
 -- uses 3d if 3d is available, 2d otherwise
+-- Deprecation in 1.2.3
 CREATEFUNCTION length3d_spheroid(geometry, spheroid)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@','LWGEOM_length_ellipsoid_linestring'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_length3d_spheroid(geometry, spheroid)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@','LWGEOM_length_ellipsoid_linestring'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION length_spheroid(geometry, spheroid)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@','LWGEOM_length_ellipsoid_linestring'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_length_spheroid(geometry, spheroid)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@','LWGEOM_length_ellipsoid_linestring'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION length2d_spheroid(geometry, spheroid)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@','LWGEOM_length2d_ellipsoid_linestring'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_length2d_spheroid(geometry, spheroid)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@','LWGEOM_length2d_ellipsoid_linestring'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
 -- this is a fake (for back-compatibility)
 -- uses 3d if 3d is available, 2d otherwise
+-- Deprecation in 1.2.3
 CREATEFUNCTION perimeter3d(geometry)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@', 'LWGEOM_perimeter_poly'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_perimeter3d(geometry)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@', 'LWGEOM_perimeter_poly'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION perimeter2d(geometry)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@', 'LWGEOM_perimeter2d_poly'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_perimeter2d(geometry)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@', 'LWGEOM_perimeter2d_poly'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION perimeter(geometry)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@', 'LWGEOM_perimeter_poly'
@@ -1052,287 +1649,645 @@ CREATEFUNCTION perimeter(geometry)
 
 -- this is an alias for 'area(geometry)'
 -- there is nothing such an 'area3d'...
+-- Deprecation in 1.2.3
 CREATEFUNCTION area2d(geometry)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@', 'LWGEOM_area_polygon'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_area2d(geometry)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@', 'LWGEOM_area_polygon'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION area(geometry)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@','LWGEOM_area_polygon'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION distance_spheroid(geometry,geometry,spheroid)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@','LWGEOM_distance_ellipsoid_point'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_distance_spheroid(geometry,geometry,spheroid)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@','LWGEOM_distance_ellipsoid_point'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION distance_sphere(geometry,geometry)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@','LWGEOM_distance_sphere'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_distance_sphere(geometry,geometry)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@','LWGEOM_distance_sphere'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
 -- Minimum distance. 2d only.
+-- Deprecation in 1.2.3
 CREATEFUNCTION distance(geometry,geometry)
 	RETURNS float8
 	AS '@MODULE_FILENAME@', 'LWGEOM_mindistance2d'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Maximum distance between linestrings. 2d only. Very bogus.
+-- Deprecation in 1.2.3
 CREATEFUNCTION max_distance(geometry,geometry)
 	RETURNS float8
 	AS '@MODULE_FILENAME@', 'LWGEOM_maxdistance2d_linestring'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_max_distance(geometry,geometry)
+	RETURNS float8
+	AS '@MODULE_FILENAME@', 'LWGEOM_maxdistance2d_linestring'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION point_inside_circle(geometry,float8,float8,float8)
 	RETURNS bool
 	AS '@MODULE_FILENAME@', 'LWGEOM_inside_circle_point'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_point_inside_circle(geometry,float8,float8,float8)
+	RETURNS bool
+	AS '@MODULE_FILENAME@', 'LWGEOM_inside_circle_point'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION azimuth(geometry,geometry)
 	RETURNS float8
 	AS '@MODULE_FILENAME@', 'LWGEOM_azimuth'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_azimuth(geometry,geometry)
+	RETURNS float8
+	AS '@MODULE_FILENAME@', 'LWGEOM_azimuth'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
 ------------------------------------------------------------------------
 -- MISC
 ------------------------------------------------------------------------
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION force_2d(geometry) 
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_force_2d'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_force_2d(geometry) 
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_force_2d'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION force_3dz(geometry) 
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_force_3dz'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_force_3dz(geometry) 
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_force_3dz'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
 -- an alias for force_3dz
+-- Deprecation in 1.2.3
 CREATEFUNCTION force_3d(geometry) 
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_force_3dz'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_force_3d(geometry) 
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_force_3dz'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION force_3dm(geometry) 
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_force_3dm'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_force_3dm(geometry) 
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_force_3dm'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION force_4d(geometry) 
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_force_4d'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_force_4d(geometry) 
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_force_4d'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION force_collection(geometry) 
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_force_collection'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_force_collection(geometry) 
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_force_collection'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION multi(geometry) 
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_force_multi'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_multi(geometry) 
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_force_multi'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION collector(geometry, geometry) 
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_collect'
 	LANGUAGE 'C' _IMMUTABLE;
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_collector(geometry, geometry) 
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_collect'
+	LANGUAGE 'C' _IMMUTABLE;
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION collect(geometry, geometry) 
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_collect'
 	LANGUAGE 'C' _IMMUTABLE;
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_collect(geometry, geometry) 
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_collect'
+	LANGUAGE 'C' _IMMUTABLE;
+
+-- Deprecation in 1.2.3
 CREATE AGGREGATE memcollect(
-	sfunc = collect,
+	sfunc = ST_collect,
 	basetype = geometry,
 	stype = geometry
 	);
 
+-- Availability: 1.2.2
+CREATE AGGREGATE ST_memcollect(
+	sfunc = ST_collect,
+	basetype = geometry,
+	stype = geometry
+	);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION geom_accum (geometry[],geometry)
 	RETURNS geometry[]
 	AS '@MODULE_FILENAME@', 'LWGEOM_accum'
 	LANGUAGE 'C' _IMMUTABLE;
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_geom_accum (geometry[],geometry)
+	RETURNS geometry[]
+	AS '@MODULE_FILENAME@', 'LWGEOM_accum'
+	LANGUAGE 'C' _IMMUTABLE;
+
+-- Deprecation in 1.2.3
 CREATE AGGREGATE accum (
-	sfunc = geom_accum,
+	sfunc = ST_geom_accum,
 	basetype = geometry,
 	stype = geometry[]
 	);
 
+-- Availability: 1.2.2
+CREATE AGGREGATE ST_accum (
+	sfunc = ST_geom_accum,
+	basetype = geometry,
+	stype = geometry[]
+	);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION collect_garray (geometry[])
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_collect_garray'
 	LANGUAGE 'C' _IMMUTABLE_STRICT;
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_collect_garray (geometry[])
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_collect_garray'
+	LANGUAGE 'C' _IMMUTABLE_STRICT;
+
+-- Deprecation in 1.2.3
 CREATE AGGREGATE collect (
-	sfunc = geom_accum,
+	sfunc = ST_geom_accum,
 	basetype = geometry,
 	stype = geometry[],
-	finalfunc = collect_garray
+	finalfunc = ST_collect_garray
 	);
 
+
+-- Availability: 1.2.2
+CREATE AGGREGATE ST_collect (
+	sfunc = ST_geom_accum,
+	basetype = geometry,
+	stype = geometry[],
+	finalfunc = ST_collect_garray
+	);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION expand(box3d,float8)
 	RETURNS box3d
 	AS '@MODULE_FILENAME@', 'BOX3D_expand'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_expand(box3d,float8)
+	RETURNS box3d
+	AS '@MODULE_FILENAME@', 'BOX3D_expand'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION expand(box2d,float8)
 	RETURNS box2d
 	AS '@MODULE_FILENAME@', 'BOX2DFLOAT4_expand'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_expand(box2d,float8)
+	RETURNS box2d
+	AS '@MODULE_FILENAME@', 'BOX2DFLOAT4_expand'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION expand(geometry,float8)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_expand'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_expand(geometry,float8)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_expand'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION envelope(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_envelope'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION reverse(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_reverse'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION reverse(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_reverse'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION ForceRHR(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_forceRHR_poly'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ForceRHR(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_forceRHR_poly'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION noop(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_noop'
 	LANGUAGE 'C' _VOLATILE_STRICT; -- WITH (iscachable,isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_noop(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_noop'
+	LANGUAGE 'C' _VOLATILE_STRICT; -- WITH (iscachable,isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION zmflag(geometry)
 	RETURNS smallint
 	AS '@MODULE_FILENAME@', 'LWGEOM_zmflag'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_zmflag(geometry)
+	RETURNS smallint
+	AS '@MODULE_FILENAME@', 'LWGEOM_zmflag'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION hasBBOX(geometry)
 	RETURNS bool
 	AS '@MODULE_FILENAME@', 'LWGEOM_hasBBOX'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
+-- Availabitily: 1.2.2
+CREATEFUNCTION hasBBOX(geometry)
+	RETURNS bool
+	AS '@MODULE_FILENAME@', 'LWGEOM_hasBBOX'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION ndims(geometry)
 	RETURNS smallint
 	AS '@MODULE_FILENAME@', 'LWGEOM_ndims'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_ndims(geometry)
+	RETURNS smallint
+	AS '@MODULE_FILENAME@', 'LWGEOM_ndims'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION AsEWKT(geometry)
 	RETURNS TEXT
 	AS '@MODULE_FILENAME@','LWGEOM_asEWKT'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_AsEWKT(geometry)
+	RETURNS TEXT
+	AS '@MODULE_FILENAME@','LWGEOM_asEWKT'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION AsEWKB(geometry)
 	RETURNS BYTEA
 	AS '@MODULE_FILENAME@','WKBFromLWGEOM'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_AsEWKB(geometry)
+	RETURNS BYTEA
+	AS '@MODULE_FILENAME@','WKBFromLWGEOM'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION AsHEXEWKB(geometry)
 	RETURNS TEXT
 	AS '@MODULE_FILENAME@','LWGEOM_asHEXEWKB'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_AsHEXEWKB(geometry)
+	RETURNS TEXT
+	AS '@MODULE_FILENAME@','LWGEOM_asHEXEWKB'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION AsHEXEWKB(geometry, text)
 	RETURNS TEXT
 	AS '@MODULE_FILENAME@','LWGEOM_asHEXEWKB'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_AsHEXEWKB(geometry, text)
+	RETURNS TEXT
+	AS '@MODULE_FILENAME@','LWGEOM_asHEXEWKB'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION AsEWKB(geometry,text)
 	RETURNS bytea
 	AS '@MODULE_FILENAME@','WKBFromLWGEOM'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_AsEWKB(geometry,text)
+	RETURNS bytea
+	AS '@MODULE_FILENAME@','WKBFromLWGEOM'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION GeomFromEWKB(bytea)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','LWGEOMFromWKB'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_GeomFromEWKB(bytea)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','LWGEOMFromWKB'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION GeomFromEWKT(text)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','parse_WKT_lwgeom'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_GeomFromEWKT(text)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','parse_WKT_lwgeom'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION cache_bbox()
+        RETURNS trigger
+        AS '@MODULE_FILENAME@'
+        LANGUAGE 'C';
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_cache_bbox()
 	RETURNS trigger
-	AS '@MODULE_FILENAME@'
+	AS '@MODULE_FILENAME@','cache_bbox'
 	LANGUAGE 'C';
 
 ------------------------------------------------------------------------
 -- CONSTRUCTORS
 ------------------------------------------------------------------------
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION makePoint(float8, float8)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_makepoint'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_makePoint(float8, float8)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_makepoint'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION makePoint(float8, float8, float8)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_makepoint'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_makePoint(float8, float8, float8)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_makepoint'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION makePoint(float8, float8, float8, float8)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_makepoint'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_makePoint(float8, float8, float8, float8)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_makepoint'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION makePointM(float8, float8, float8)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_makepoint3dm'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION makePointM(float8, float8, float8)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_makepoint3dm'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION makeBox2d(geometry, geometry)
 	RETURNS box2d
 	AS '@MODULE_FILENAME@', 'BOX2DFLOAT4_construct'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_makeBox2d(geometry, geometry)
+	RETURNS box2d
+	AS '@MODULE_FILENAME@', 'BOX2DFLOAT4_construct'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION makeBox3d(geometry, geometry)
 	RETURNS box3d
 	AS '@MODULE_FILENAME@', 'BOX3D_construct'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_makeBox3d(geometry, geometry)
+	RETURNS box3d
+	AS '@MODULE_FILENAME@', 'BOX3D_construct'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION makeline_garray (geometry[])
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_makeline_garray'
 	LANGUAGE 'C' _IMMUTABLE_STRICT;
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_makeline_garray (geometry[])
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_makeline_garray'
+	LANGUAGE 'C' _IMMUTABLE_STRICT;
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION LineFromMultiPoint(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_line_from_mpoint'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_LineFromMultiPoint(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_line_from_mpoint'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION MakeLine(geometry, geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_makeline'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_MakeLine(geometry, geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_makeline'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION AddPoint(geometry, geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_addpoint'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_AddPoint(geometry, geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_addpoint'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION AddPoint(geometry, geometry, integer)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_addpoint'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_AddPoint(geometry, geometry, integer)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_addpoint'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION RemovePoint(geometry, integer)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_removepoint'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_RemovePoint(geometry, integer)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_removepoint'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION SetPoint(geometry, integer, geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_setpoint_linestring'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_SetPoint(geometry, integer, geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_setpoint_linestring'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
+
+-- Deprecation in 1.2.3
 CREATE AGGREGATE makeline (
 	sfunc = geom_accum,
 	basetype = geometry,
@@ -1340,31 +2295,75 @@ CREATE AGGREGATE makeline (
 	finalfunc = makeline_garray
 	);
 
+-- Availability: 1.2.2
+CREATE AGGREGATE ST_makeline (
+	sfunc = geom_accum,
+	basetype = geometry,
+	stype = geometry[],
+	finalfunc = ST_makeline_garray
+	);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION MakePolygon(geometry, geometry[])
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_makepoly'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_MakePolygon(geometry, geometry[])
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_makepoly'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION MakePolygon(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_makepoly'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_MakePolygon(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_makepoly'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION BuildArea(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_buildarea'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_BuildArea(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_buildarea'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION polygonize_garray (geometry[])
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'polygonize_garray'
 	LANGUAGE 'C' _IMMUTABLE_STRICT;
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_polygonize_garray (geometry[])
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'polygonize_garray'
+	LANGUAGE 'C' _IMMUTABLE_STRICT;
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION LineMerge(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'linemerge'
 	LANGUAGE 'C' _IMMUTABLE_STRICT;
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_LineMerge(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'linemerge'
+	LANGUAGE 'C' _IMMUTABLE_STRICT;
+
+-- Deprecation in 1.2.3
 CREATE AGGREGATE polygonize (
 	sfunc = geom_accum,
 	basetype = geometry,
@@ -1372,16 +2371,37 @@ CREATE AGGREGATE polygonize (
 	finalfunc = polygonize_garray
 	);
 
+-- Availability: 1.2.2
+CREATE AGGREGATE ST_polygonize (
+	sfunc = ST_geom_accum,
+	basetype = geometry,
+	stype = geometry[],
+	finalfunc = ST_polygonize_garray
+	);
 
 #if USE_VERSION > 72
 
 CREATE TYPE geometry_dump AS (path integer[], geom geometry);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION Dump(geometry)
 	RETURNS SETOF geometry_dump
 	AS '@MODULE_FILENAME@', 'LWGEOM_dump'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_Dump(geometry)
+	RETURNS SETOF geometry_dump
+	AS '@MODULE_FILENAME@', 'LWGEOM_dump'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
+CREATEFUNCTION DumpRings(geometry)
+	RETURNS SETOF geometry_dump
+	AS '@MODULE_FILENAME@', 'LWGEOM_dump_rings'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Availability: 1.2.2
 CREATEFUNCTION DumpRings(geometry)
 	RETURNS SETOF geometry_dump
 	AS '@MODULE_FILENAME@', 'LWGEOM_dump_rings'
@@ -1395,24 +2415,54 @@ CREATEFUNCTION DumpRings(geometry)
 -- Aggregate functions
 --
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION combine_bbox(box2d,geometry)
 	RETURNS box2d
 	AS '@MODULE_FILENAME@', 'BOX2DFLOAT4_combine'
 	LANGUAGE 'C' _IMMUTABLE;
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_combine_bbox(box2d,geometry)
+	RETURNS box2d
+	AS '@MODULE_FILENAME@', 'BOX2DFLOAT4_combine'
+	LANGUAGE 'C' _IMMUTABLE;
+
+-- Deprecation in 1.2.3
 CREATE AGGREGATE extent(
-	sfunc = combine_bbox,
+	sfunc = ST_combine_bbox,
 	basetype = geometry,
 	stype = box2d
 	);
 
+-- Availability: 1.2.2
+CREATE AGGREGATE ST_extent(
+	sfunc = ST_combine_bbox,
+	basetype = geometry,
+	stype = box2d
+	);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION combine_bbox(box3d,geometry)
 	RETURNS box3d
 	AS '@MODULE_FILENAME@', 'BOX3D_combine'
 	LANGUAGE 'C' _IMMUTABLE;
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_combine_bbox(box3d,geometry)
+	RETURNS box3d
+	AS '@MODULE_FILENAME@', 'BOX3D_combine'
+	LANGUAGE 'C' _IMMUTABLE;
+
+-- Deprecation in 1.2.3
 CREATE AGGREGATE extent3d(
 	sfunc = combine_bbox,
+	basetype = geometry,
+	stype = box3d
+	);
+
+-- Availability: 1.2.2
+CREATE AGGREGATE ST_extent3d(
+	sfunc = ST_combine_bbox,
 	basetype = geometry,
 	stype = box3d
 	);
@@ -1424,7 +2474,14 @@ CREATE AGGREGATE extent3d(
 -- Returns a histgram with 0s in all the boxes.
 --
 -----------------------------------------------------------------------
+-- Deprecation in 1.2.3
 CREATEFUNCTION create_histogram2d(box2d,int)
+	RETURNS histogram2d
+	AS '@MODULE_FILENAME@','create_lwhistogram2d'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_create_histogram2d(box2d,int)
 	RETURNS histogram2d
 	AS '@MODULE_FILENAME@','create_lwhistogram2d'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
@@ -1432,7 +2489,14 @@ CREATEFUNCTION create_histogram2d(box2d,int)
 -----------------------------------------------------------------------
 -- BUILD_HISTOGRAM2D( <histogram2d>, <tablename>, <columnname> )
 -----------------------------------------------------------------------
+-- Deprecation in 1.2.3
 CREATEFUNCTION build_histogram2d (histogram2d,text,text)
+	RETURNS histogram2d
+	AS '@MODULE_FILENAME@','build_lwhistogram2d'
+	LANGUAGE 'C' _STABLE_STRICT; -- WITH (isstrict);
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_build_histogram2d (histogram2d,text,text)
 	RETURNS histogram2d
 	AS '@MODULE_FILENAME@','build_lwhistogram2d'
 	LANGUAGE 'C' _STABLE_STRICT; -- WITH (isstrict);
@@ -1444,6 +2508,7 @@ CREATEFUNCTION build_histogram2d (histogram2d,text,text)
 -- This is a wrapper to the omonimous schema unaware function,
 -- thanks to Carl Anderson for the idea.
 -----------------------------------------------------------------------
+-- Deprecation in 1.2.3
 CREATEFUNCTION build_histogram2d (histogram2d,text,text,text)
 RETURNS histogram2d
 AS '
@@ -1453,12 +2518,31 @@ BEGIN
 END
 '
 LANGUAGE 'plpgsql' _STABLE_STRICT; -- WITH (isstrict);
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_build_histogram2d (histogram2d,text,text,text)
+RETURNS histogram2d
+AS '
+BEGIN
+	EXECUTE ''SET local search_path = ''||$2||'',public'';
+	RETURN public.build_histogram2d($1,$3,$4);
+END
+'
+LANGUAGE 'plpgsql' _STABLE_STRICT; -- WITH (isstrict);
+
 #endif
 
 -----------------------------------------------------------------------
 -- EXPLODE_HISTOGRAM2D( <histogram2d>, <tablename> )
 -----------------------------------------------------------------------
+-- Deprecation in 1.2.3
 CREATEFUNCTION explode_histogram2d (histogram2d,text)
+	RETURNS histogram2d
+	AS '@MODULE_FILENAME@','explode_lwhistogram2d'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_explode_histogram2d (histogram2d,text)
 	RETURNS histogram2d
 	AS '@MODULE_FILENAME@','explode_lwhistogram2d'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
@@ -1466,7 +2550,14 @@ CREATEFUNCTION explode_histogram2d (histogram2d,text)
 -----------------------------------------------------------------------
 -- ESTIMATE_HISTOGRAM2D( <histogram2d>, <box> )
 -----------------------------------------------------------------------
+-- Deprecation in 1.2.3
 CREATEFUNCTION estimate_histogram2d(histogram2d,box2d)
+	RETURNS float8
+	AS '@MODULE_FILENAME@','estimate_lwhistogram2d'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_estimate_histogram2d(histogram2d,box2d)
 	RETURNS float8
 	AS '@MODULE_FILENAME@','estimate_lwhistogram2d'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
@@ -1474,20 +2565,33 @@ CREATEFUNCTION estimate_histogram2d(histogram2d,box2d)
 -----------------------------------------------------------------------
 -- ESTIMATED_EXTENT( <schema name>, <table name>, <column name> )
 -----------------------------------------------------------------------
+-- Deprecation in 1.2.3
 CREATEFUNCTION estimated_extent(text,text,text) RETURNS box2d AS
+	'@MODULE_FILENAME@', 'LWGEOM_estimated_extent'
+	LANGUAGE 'C' _IMMUTABLE_STRICT _SECURITY_DEFINER;
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_estimated_extent(text,text,text) RETURNS box2d AS
 	'@MODULE_FILENAME@', 'LWGEOM_estimated_extent'
 	LANGUAGE 'C' _IMMUTABLE_STRICT _SECURITY_DEFINER;
 
 -----------------------------------------------------------------------
 -- ESTIMATED_EXTENT( <table name>, <column name> )
 -----------------------------------------------------------------------
+-- Deprecation in 1.2.3
 CREATEFUNCTION estimated_extent(text,text) RETURNS box2d AS
+	'@MODULE_FILENAME@', 'LWGEOM_estimated_extent'
+	LANGUAGE 'C' _IMMUTABLE_STRICT _SECURITY_DEFINER; 
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_estimated_extent(text,text) RETURNS box2d AS
 	'@MODULE_FILENAME@', 'LWGEOM_estimated_extent'
 	LANGUAGE 'C' _IMMUTABLE_STRICT _SECURITY_DEFINER; 
 
 -----------------------------------------------------------------------
 -- FIND_EXTENT( <schema name>, <table name>, <column name> )
 -----------------------------------------------------------------------
+-- Deprecation in 1.2.3
 CREATEFUNCTION find_extent(text,text,text) RETURNS box2d AS
 '
 DECLARE
@@ -1504,10 +2608,45 @@ END;
 '
 LANGUAGE 'plpgsql' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_find_extent(text,text,text) RETURNS box2d AS
+'
+DECLARE
+	schemaname alias for $1;
+	tablename alias for $2;
+	columnname alias for $3;
+	myrec RECORD;
+
+BEGIN
+	FOR myrec IN EXECUTE ''SELECT extent("''||columnname||''") FROM "''||schemaname||''"."''||tablename||''"'' LOOP
+		return myrec.extent;
+	END LOOP; 
+END;
+'
+LANGUAGE 'plpgsql' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+
 -----------------------------------------------------------------------
 -- FIND_EXTENT( <table name>, <column name> )
 -----------------------------------------------------------------------
+-- Deprecation in 1.2.3
 CREATEFUNCTION find_extent(text,text) RETURNS box2d AS
+'
+DECLARE
+	tablename alias for $1;
+	columnname alias for $2;
+	myrec RECORD;
+
+BEGIN
+	FOR myrec IN EXECUTE ''SELECT extent("''||columnname||''") FROM "''||tablename||''"'' LOOP
+		return myrec.extent;
+	END LOOP; 
+END;
+'
+LANGUAGE 'plpgsql' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_find_extent(text,text) RETURNS box2d AS
 '
 DECLARE
 	tablename alias for $1;
@@ -2700,134 +3839,275 @@ LANGUAGE 'plpgsql' _IMMUTABLE;
 -- CASTS
 ---------------------------------------------------------------
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION box2d(geometry)
         RETURNS box2d
         AS '@MODULE_FILENAME@','LWGEOM_to_BOX2DFLOAT4'
         LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_box2d(geometry)
+        RETURNS box2d
+        AS '@MODULE_FILENAME@','LWGEOM_to_BOX2DFLOAT4'
+        LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION box3d(geometry)
         RETURNS box3d
         AS '@MODULE_FILENAME@','LWGEOM_to_BOX3D'
         LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_box3d(geometry)
+        RETURNS box3d
+        AS '@MODULE_FILENAME@','LWGEOM_to_BOX3D'
+        LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION box(geometry)
         RETURNS box
         AS '@MODULE_FILENAME@','LWGEOM_to_BOX'
         LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_box(geometry)
+        RETURNS box
+        AS '@MODULE_FILENAME@','LWGEOM_to_BOX'
+        LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION box2d(box3d)
         RETURNS box2d
         AS '@MODULE_FILENAME@','BOX3D_to_BOX2DFLOAT4'
         LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_box2d(box3d)
+        RETURNS box2d
+        AS '@MODULE_FILENAME@','BOX3D_to_BOX2DFLOAT4'
+        LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION box3d(box2d)
         RETURNS box3d
         AS '@MODULE_FILENAME@','BOX2DFLOAT4_to_BOX3D'
         LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_box3d(box2d)
+        RETURNS box3d
+        AS '@MODULE_FILENAME@','BOX2DFLOAT4_to_BOX3D'
+        LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION box(box3d)
         RETURNS box
         AS '@MODULE_FILENAME@','BOX3D_to_BOX'
         LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_box(box3d)
+        RETURNS box
+        AS '@MODULE_FILENAME@','BOX3D_to_BOX'
+        LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION text(geometry)
         RETURNS text
         AS '@MODULE_FILENAME@','LWGEOM_to_text'
         LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_text(geometry)
+        RETURNS text
+        AS '@MODULE_FILENAME@','LWGEOM_to_text'
+        LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
 -- this is kept for backward-compatibility
+-- Deprecation in 1.2.3
 CREATEFUNCTION box3dtobox(box3d)
         RETURNS box
         AS 'SELECT box($1)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION geometry(box2d)
         RETURNS geometry
         AS '@MODULE_FILENAME@','BOX2DFLOAT4_to_LWGEOM'
         LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_geometry(box2d)
+        RETURNS geometry
+        AS '@MODULE_FILENAME@','BOX2DFLOAT4_to_LWGEOM'
+        LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION geometry(box3d)
         RETURNS geometry
         AS '@MODULE_FILENAME@','BOX3D_to_LWGEOM'
         LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_geometry(box3d)
+        RETURNS geometry
+        AS '@MODULE_FILENAME@','BOX3D_to_LWGEOM'
+        LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION geometry(text)
         RETURNS geometry
         AS '@MODULE_FILENAME@','parse_WKT_lwgeom'
         LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_geometry(text)
+        RETURNS geometry
+        AS '@MODULE_FILENAME@','parse_WKT_lwgeom'
+        LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION geometry(chip)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','CHIP_to_LWGEOM'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_geometry(chip)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','CHIP_to_LWGEOM'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION geometry(bytea)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','LWGEOM_from_bytea'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_geometry(bytea)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','LWGEOM_from_bytea'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION bytea(geometry)
 	RETURNS bytea
 	AS '@MODULE_FILENAME@','LWGEOM_to_bytea'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_bytea(geometry)
+	RETURNS bytea
+	AS '@MODULE_FILENAME@','LWGEOM_to_bytea'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION text(bool)
+	RETURNS text
+	AS '@MODULE_FILENAME@','BOOL_to_text'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_text(bool)
 	RETURNS text
 	AS '@MODULE_FILENAME@','BOOL_to_text'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- 7.3+ explicit casting definitions
 #if USE_VERSION >= 73
-CREATE CAST (geometry AS box2d) WITH FUNCTION box2d(geometry) AS IMPLICIT;
-CREATE CAST (geometry AS box3d) WITH FUNCTION box3d(geometry) AS IMPLICIT;
-CREATE CAST (geometry AS box) WITH FUNCTION box(geometry) AS IMPLICIT;
-CREATE CAST (box3d AS box2d) WITH FUNCTION box2d(box3d) AS IMPLICIT;
-CREATE CAST (box2d AS box3d) WITH FUNCTION box3d(box2d) AS IMPLICIT;
-CREATE CAST (box2d AS geometry) WITH FUNCTION geometry(box2d) AS IMPLICIT;
-CREATE CAST (box3d AS box) WITH FUNCTION box(box3d) AS IMPLICIT;
-CREATE CAST (box3d AS geometry) WITH FUNCTION geometry(box3d) AS IMPLICIT;
-CREATE CAST (text AS geometry) WITH FUNCTION geometry(text) AS IMPLICIT;
-CREATE CAST (geometry AS text) WITH FUNCTION text(geometry) AS IMPLICIT;
-CREATE CAST (chip AS geometry) WITH FUNCTION geometry(chip) AS IMPLICIT;
-CREATE CAST (bytea AS geometry) WITH FUNCTION geometry(bytea) AS IMPLICIT;
-CREATE CAST (geometry AS bytea) WITH FUNCTION bytea(geometry) AS IMPLICIT;
-CREATE CAST (bool AS text) WITH FUNCTION text(bool) AS IMPLICIT;
+CREATE CAST (geometry AS box2d) WITH FUNCTION ST_box2d(geometry) AS IMPLICIT;
+CREATE CAST (geometry AS box3d) WITH FUNCTION ST_box3d(geometry) AS IMPLICIT;
+CREATE CAST (geometry AS box) WITH FUNCTION ST_box(geometry) AS IMPLICIT;
+CREATE CAST (box3d AS box2d) WITH FUNCTION ST_box2d(box3d) AS IMPLICIT;
+CREATE CAST (box2d AS box3d) WITH FUNCTION ST_box3d(box2d) AS IMPLICIT;
+CREATE CAST (box2d AS geometry) WITH FUNCTION ST_geometry(box2d) AS IMPLICIT;
+CREATE CAST (box3d AS box) WITH FUNCTION ST_box(box3d) AS IMPLICIT;
+CREATE CAST (box3d AS geometry) WITH FUNCTION ST_geometry(box3d) AS IMPLICIT;
+CREATE CAST (text AS geometry) WITH FUNCTION ST_geometry(text) AS IMPLICIT;
+CREATE CAST (geometry AS text) WITH FUNCTION ST_text(geometry) AS IMPLICIT;
+CREATE CAST (chip AS geometry) WITH FUNCTION ST_geometry(chip) AS IMPLICIT;
+CREATE CAST (bytea AS geometry) WITH FUNCTION ST_geometry(bytea) AS IMPLICIT;
+CREATE CAST (geometry AS bytea) WITH FUNCTION ST_bytea(geometry) AS IMPLICIT;
+CREATE CAST (bool AS text) WITH FUNCTION ST_text(bool) AS IMPLICIT;
 #endif
 
 ---------------------------------------------------------------
 -- Algorithms
 ---------------------------------------------------------------
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION simplify(geometry, float8)
    RETURNS geometry
    AS '@MODULE_FILENAME@', 'LWGEOM_simplify2d'
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_simplify(geometry, float8)
+   RETURNS geometry
+   AS '@MODULE_FILENAME@', 'LWGEOM_simplify2d'
+   LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
 -- SnapToGrid(input, xoff, yoff, xsize, ysize)
+-- Deprecation in 1.2.3
 CREATEFUNCTION SnapToGrid(geometry, float8, float8, float8, float8)
    RETURNS geometry
    AS '@MODULE_FILENAME@', 'LWGEOM_snaptogrid'
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_SnapToGrid(geometry, float8, float8, float8, float8)
+   RETURNS geometry
+   AS '@MODULE_FILENAME@', 'LWGEOM_snaptogrid'
+   LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
 -- SnapToGrid(input, xsize, ysize) # offsets=0
+-- Deprecation in 1.2.3
 CREATEFUNCTION SnapToGrid(geometry, float8, float8)
    RETURNS geometry
    AS 'SELECT SnapToGrid($1, 0, 0, $2, $3)'
    LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_SnapToGrid(geometry, float8, float8)
+   RETURNS geometry
+   AS 'SELECT SnapToGrid($1, 0, 0, $2, $3)'
+   LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
 -- SnapToGrid(input, size) # xsize=ysize=size, offsets=0
+-- Deprecation in 1.2.3
 CREATEFUNCTION SnapToGrid(geometry, float8)
    RETURNS geometry
    AS 'SELECT SnapToGrid($1, 0, 0, $2, $2)'
    LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_SnapToGrid(geometry, float8)
+   RETURNS geometry
+   AS 'SELECT SnapToGrid($1, 0, 0, $2, $2)'
+   LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
 -- SnapToGrid(input, point_offsets, xsize, ysize, zsize, msize)
+-- Deprecation in 1.2.3
 CREATEFUNCTION SnapToGrid(geometry, geometry, float8, float8, float8, float8)
    RETURNS geometry
    AS '@MODULE_FILENAME@', 'LWGEOM_snaptogrid_pointoff'
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_SnapToGrid(geometry, geometry, float8, float8, float8, float8)
+   RETURNS geometry
+   AS '@MODULE_FILENAME@', 'LWGEOM_snaptogrid_pointoff'
+   LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION segmentize(geometry, float8)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_segmentize2d'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_segmentize(geometry, float8)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_segmentize2d'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -2836,27 +4116,62 @@ CREATEFUNCTION segmentize(geometry, float8)
 -- LRS
 ---------------------------------------------------------------
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION line_interpolate_point(geometry, float8)
    RETURNS geometry
    AS '@MODULE_FILENAME@', 'LWGEOM_line_interpolate_point'
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_line_interpolate_point(geometry, float8)
+   RETURNS geometry
+   AS '@MODULE_FILENAME@', 'LWGEOM_line_interpolate_point'
+   LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION line_substring(geometry, float8, float8)
    RETURNS geometry
    AS '@MODULE_FILENAME@', 'LWGEOM_line_substring'
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_line_substring(geometry, float8, float8)
+   RETURNS geometry
+   AS '@MODULE_FILENAME@', 'LWGEOM_line_substring'
+   LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION line_locate_point(geometry, geometry)
    RETURNS float8
    AS '@MODULE_FILENAME@', 'LWGEOM_line_locate_point'
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_line_locate_point(geometry, geometry)
+   RETURNS float8
+   AS '@MODULE_FILENAME@', 'LWGEOM_line_locate_point'
+   LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION locate_between_measures(geometry, float8, float8)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_locate_between_m'
 	LANGUAGE 'C' _IMMUTABLE_STRICT;
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_locate_between_measures(geometry, float8, float8)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_locate_between_m'
+	LANGUAGE 'C' _IMMUTABLE_STRICT;
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION locate_along_measure(geometry, float8)
+	RETURNS geometry
+	AS 'SELECT locate_between_measures($1, $2, $2)'
+	LANGUAGE 'sql' _IMMUTABLE_STRICT;
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_locate_along_measure(geometry, float8)
 	RETURNS geometry
 	AS 'SELECT locate_between_measures($1, $2, $2)'
 	LANGUAGE 'sql' _IMMUTABLE_STRICT;
@@ -2865,128 +4180,235 @@ CREATEFUNCTION locate_along_measure(geometry, float8)
 -- GEOS
 ---------------------------------------------------------------
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION intersection(geometry,geometry)
    RETURNS geometry
    AS '@MODULE_FILENAME@','intersection'
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_intersection(geometry,geometry)
+   RETURNS geometry
+   AS '@MODULE_FILENAME@','intersection'
+   LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION buffer(geometry,float8)
    RETURNS geometry
    AS '@MODULE_FILENAME@','buffer'
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_buffer(geometry,float8)
+   RETURNS geometry
+   AS '@MODULE_FILENAME@','buffer'
+   LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION buffer(geometry,float8,integer)
    RETURNS geometry
    AS '@MODULE_FILENAME@','buffer'
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_buffer(geometry,float8,integer)
+   RETURNS geometry
+   AS '@MODULE_FILENAME@','buffer'
+   LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
    
+-- Deprecation in 1.2.3
 CREATEFUNCTION convexhull(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','convexhull'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_convexhull(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','convexhull'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
   
-  
+-- Deprecation in 1.2.3
 CREATEFUNCTION difference(geometry,geometry)
 	RETURNS geometry
         AS '@MODULE_FILENAME@','difference'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_difference(geometry,geometry)
+	RETURNS geometry
+        AS '@MODULE_FILENAME@','difference'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
    
+-- Deprecation in 1.2.3
 CREATEFUNCTION boundary(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','boundary'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_boundary(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','boundary'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION symdifference(geometry,geometry)
         RETURNS geometry
         AS '@MODULE_FILENAME@','symdifference'
-   LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+        LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_symdifference(geometry,geometry)
+        RETURNS geometry
+        AS '@MODULE_FILENAME@','symdifference'
+        LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION symmetricdifference(geometry,geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','symdifference'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_symmetricdifference(geometry,geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','symdifference'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION GeomUnion(geometry,geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','geomunion'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_Union(geometry,geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','geomunion'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATE AGGREGATE MemGeomUnion (
 	basetype = geometry,
 	sfunc = geomunion,
 	stype = geometry
 	);
 
+-- Availability: 1.2.2
+CREATE AGGREGATE ST_MemGeomUnion (
+	basetype = geometry,
+	sfunc = ST_union,
+	stype = geometry
+	);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION unite_garray (geometry[])
 	RETURNS geometry
-	AS '@MODULE_FILENAME@'
+        AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable); 
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_unite_garray (geometry[])
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','unite_garray'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable); 
+
+-- Deprecation in 1.2.3
 CREATE AGGREGATE GeomUnion (
 	sfunc = geom_accum,
 	basetype = geometry,
 	stype = geometry[],
-	finalfunc = unite_garray
+	finalfunc = ST_unite_garray
 	);
 
+-- Availability: 1.2.2
+CREATE AGGREGATE ST_Union (
+	sfunc = ST_geom_accum,
+	basetype = geometry,
+	stype = geometry[],
+	finalfunc = ST_unite_garray
+	);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION relate(geometry,geometry)
    RETURNS text
    AS '@MODULE_FILENAME@','relate_full'
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_relate(geometry,geometry)
+   RETURNS text
+   AS '@MODULE_FILENAME@','relate_full'
+   LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION relate(geometry,geometry,text)
    RETURNS boolean
    AS '@MODULE_FILENAME@','relate_pattern'
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_relate(geometry,geometry,text)
+   RETURNS boolean
+   AS '@MODULE_FILENAME@','relate_pattern'
+   LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION disjoint(geometry,geometry)
    RETURNS boolean
    AS '@MODULE_FILENAME@'
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
+   
+-- Deprecation in 1.2.3
 CREATEFUNCTION touches(geometry,geometry)
    RETURNS boolean
    AS '@MODULE_FILENAME@'
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION intersects(geometry,geometry)
    RETURNS boolean
    AS '@MODULE_FILENAME@'
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION crosses(geometry,geometry)
    RETURNS boolean
    AS '@MODULE_FILENAME@'
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION within(geometry,geometry)
    RETURNS boolean
    AS '@MODULE_FILENAME@'
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION contains(geometry,geometry)
    RETURNS boolean
    AS '@MODULE_FILENAME@'
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION overlaps(geometry,geometry)
    RETURNS boolean
    AS '@MODULE_FILENAME@'
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION IsValid(geometry)
    RETURNS boolean
    AS '@MODULE_FILENAME@', 'isvalid'
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION GEOSnoop(geometry)
    RETURNS geometry
    AS '@MODULE_FILENAME@', 'GEOSnoop'
    LANGUAGE 'C' _VOLATILE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION JTSnoop(geometry)
    RETURNS geometry
    AS '@MODULE_FILENAME@', 'JTSnoop'
@@ -2998,22 +4420,56 @@ CREATEFUNCTION Centroid(geometry)
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_Centroid(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','centroid'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION IsRing(geometry)
 	RETURNS boolean
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_IsRing(geometry)
+	RETURNS boolean
+	AS '@MODULE_FILENAME@','isring'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION PointOnSurface(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_PointOnSurface(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','pointonsurface'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 	
+-- Deprecation in 1.2.3
 CREATEFUNCTION IsSimple(geometry)
 	RETURNS boolean
 	AS '@MODULE_FILENAME@', 'issimple'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_IsSimple(geometry)
+	RETURNS boolean
+	AS '@MODULE_FILENAME@', 'issimple'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION Equals(geometry,geometry)
+	RETURNS boolean
+	AS '@MODULE_FILENAME@','geomequals'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_Equals(geometry,geometry)
 	RETURNS boolean
 	AS '@MODULE_FILENAME@','geomequals'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -3021,17 +4477,38 @@ CREATEFUNCTION Equals(geometry,geometry)
 -----------------------------------------------------------------------
 -- SVG OUTPUT
 -----------------------------------------------------------------------
+-- Deprecation in 1.2.3
 CREATEFUNCTION AsSVG(geometry,int4,int4)
 	RETURNS TEXT
 	AS '@MODULE_FILENAME@','assvg_geometry'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_AsSVG(geometry,int4,int4)
+	RETURNS TEXT
+	AS '@MODULE_FILENAME@','assvg_geometry'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION AsSVG(geometry,int4)
 	RETURNS TEXT
 	AS '@MODULE_FILENAME@','assvg_geometry'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_AsSVG(geometry,int4)
+	RETURNS TEXT
+	AS '@MODULE_FILENAME@','assvg_geometry'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION AsSVG(geometry)
+	RETURNS TEXT
+	AS '@MODULE_FILENAME@','assvg_geometry'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_AsSVG(geometry)
 	RETURNS TEXT
 	AS '@MODULE_FILENAME@','assvg_geometry'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -3040,19 +4517,40 @@ CREATEFUNCTION AsSVG(geometry)
 -- GML OUTPUT
 -----------------------------------------------------------------------
 -- AsGML(geom, precision, version)
+-- Deprecation in 1.2.3
 CREATEFUNCTION AsGML(geometry, int4, int4)
 	RETURNS TEXT
 	AS '@MODULE_FILENAME@','LWGEOM_asGML'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_AsGML(geometry, int4, int4)
+	RETURNS TEXT
+	AS '@MODULE_FILENAME@','LWGEOM_asGML'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
 -- AsGML(geom, precision) / version=2
+-- Deprecation in 1.2.3
 CREATEFUNCTION AsGML(geometry, int4)
 	RETURNS TEXT
 	AS '@MODULE_FILENAME@','LWGEOM_asGML'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_AsGML(geometry, int4)
+	RETURNS TEXT
+	AS '@MODULE_FILENAME@','LWGEOM_asGML'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
 -- AsGML(geom) / precision=15 version=2
+-- Deprecation in 1.2.3
 CREATEFUNCTION AsGML(geometry)
+	RETURNS TEXT
+	AS '@MODULE_FILENAME@','LWGEOM_asGML'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Availabiltiy: 1.2.2
+CREATEFUNCTION ST_AsGML(geometry)
 	RETURNS TEXT
 	AS '@MODULE_FILENAME@','LWGEOM_asGML'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -3061,37 +4559,79 @@ CREATEFUNCTION AsGML(geometry)
 -- KML OUTPUT
 -----------------------------------------------------------------------
 -- AsUKML(geom, precision, version)
+-- Deprecation in 1.2.3
 CREATEFUNCTION AsUKML(geometry, int4, int4)
 	RETURNS TEXT
 	AS '@MODULE_FILENAME@','LWGEOM_asKML'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_AsUKML(geometry, int4, int4)
+	RETURNS TEXT
+	AS '@MODULE_FILENAME@','LWGEOM_asKML'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
 -- AsUKML(geom, precision) / version=2
+-- Deprecation in 1.2.3
 CREATEFUNCTION AsUKML(geometry, int4)
 	RETURNS TEXT
 	AS '@MODULE_FILENAME@','LWGEOM_asKML'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_AsUKML(geometry, int4)
+	RETURNS TEXT
+	AS '@MODULE_FILENAME@','LWGEOM_asKML'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
 -- AsUKML(geom) / precision=15 version=2
+-- Deprecation in 1.2.3
 CREATEFUNCTION AsUKML(geometry)
 	RETURNS TEXT
 	AS '@MODULE_FILENAME@','LWGEOM_asKML'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_AsUKML(geometry)
+	RETURNS TEXT
+	AS '@MODULE_FILENAME@','LWGEOM_asKML'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
 -- AsKML(geom, precision, version)
+-- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION AsKML(geometry, int4, int4)
 	RETURNS TEXT
 	AS 'SELECT AsUKML(transform($1,4326),$2,$3)' 
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_AsKML(geometry, int4, int4)
+	RETURNS TEXT
+	AS 'SELECT AsUKML(transform($1,4326),$2,$3)' 
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
 -- AsKML(geom, precision) / version=2
+-- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION AsKML(geometry, int4) 
 	RETURNS TEXT
 	AS 'SELECT AsUKML(transform($1,4326),$2)' 
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_AsKML(geometry, int4) 
+	RETURNS TEXT
+	AS 'SELECT AsUKML(transform($1,4326),$2)' 
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
 -- AsKML(geom) / precision=15 version=2
+-- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION AsKML(geometry) 
+	RETURNS TEXT
+	AS 'SELECT AsUKML(transform($1,4326))' 
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_AsKML(geometry) 
 	RETURNS TEXT
 	AS 'SELECT AsUKML(transform($1,4326))' 
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -3100,139 +4640,268 @@ CREATE OR REPLACE FUNCTION AsKML(geometry)
 -- OGC defined
 ------------------------------------------------------------------------
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION NumPoints(geometry)
 	RETURNS int4
 	AS '@MODULE_FILENAME@', 'LWGEOM_numpoints_linestring'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_NumPoints(geometry)
+	RETURNS int4
+	AS '@MODULE_FILENAME@', 'LWGEOM_numpoints_linestring'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION NumGeometries(geometry)
 	RETURNS int4
 	AS '@MODULE_FILENAME@', 'LWGEOM_numgeometries_collection'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_NumGeometries(geometry)
+	RETURNS int4
+	AS '@MODULE_FILENAME@', 'LWGEOM_numgeometries_collection'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION GeometryN(geometry,integer)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_geometryn_collection'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_GeometryN(geometry,integer)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_geometryn_collection'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION Dimension(geometry)
 	RETURNS int4
 	AS '@MODULE_FILENAME@', 'LWGEOM_dimension'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_Dimension(geometry)
+	RETURNS int4
+	AS '@MODULE_FILENAME@', 'LWGEOM_dimension'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION ExterioRring(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','LWGEOM_exteriorring_polygon'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_ExteriorRing(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','LWGEOM_exteriorring_polygon'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION NumInteriorRings(geometry)
 	RETURNS integer
 	AS '@MODULE_FILENAME@','LWGEOM_numinteriorrings_polygon'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_NumInteriorRings(geometry)
+	RETURNS integer
+	AS '@MODULE_FILENAME@','LWGEOM_numinteriorrings_polygon'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION NumInteriorRing(geometry)
 	RETURNS integer
 	AS '@MODULE_FILENAME@','LWGEOM_numinteriorrings_polygon'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_NumInteriorRing(geometry)
+	RETURNS integer
+	AS '@MODULE_FILENAME@','LWGEOM_numinteriorrings_polygon'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION InteriorRingN(geometry,integer)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','LWGEOM_interiorringn_polygon'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_InteriorRingN(geometry,integer)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','LWGEOM_interiorringn_polygon'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION GeometryType(geometry)
 	RETURNS text
 	AS '@MODULE_FILENAME@', 'LWGEOM_getTYPE'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_GeometryType(geometry)
+	RETURNS text
+	AS '@MODULE_FILENAME@', 'LWGEOM_getTYPE'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION PointN(geometry,integer)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','LWGEOM_pointn_linestring'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_PointN(geometry,integer)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','LWGEOM_pointn_linestring'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION X(geometry)
 	RETURNS float8
 	AS '@MODULE_FILENAME@','LWGEOM_x_point'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION Y(geometry)
 	RETURNS float8
 	AS '@MODULE_FILENAME@','LWGEOM_y_point'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION Z(geometry)
 	RETURNS float8
 	AS '@MODULE_FILENAME@','LWGEOM_z_point'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_Z(geometry)
+	RETURNS float8
+	AS '@MODULE_FILENAME@','LWGEOM_z_point'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION M(geometry)
 	RETURNS float8
 	AS '@MODULE_FILENAME@','LWGEOM_m_point'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_M(geometry)
+	RETURNS float8
+	AS '@MODULE_FILENAME@','LWGEOM_m_point'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION StartPoint(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_startpoint_linestring'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION EndPoint(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_endpoint_linestring'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION IsClosed(geometry)
 	RETURNS boolean
 	AS '@MODULE_FILENAME@', 'LWGEOM_isclosed_linestring'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION IsEmpty(geometry)
 	RETURNS boolean
 	AS '@MODULE_FILENAME@', 'LWGEOM_isempty'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION SRID(geometry) 
 	RETURNS int4
 	AS '@MODULE_FILENAME@','LWGEOM_getSRID'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-	
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION SetSRID(geometry,int4) 
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','LWGEOM_setSRID'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);	
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_SetSRID(geometry,int4) 
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','LWGEOM_setSRID'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);	
 	
+-- Deprecation in 1.2.3
 CREATEFUNCTION AsBinary(geometry)
 	RETURNS bytea
 	AS '@MODULE_FILENAME@','LWGEOM_asBinary'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION AsBinary(geometry,text)
 	RETURNS bytea
 	AS '@MODULE_FILENAME@','LWGEOM_asBinary'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_AsBinary(geometry,text)
+	RETURNS bytea
+	AS '@MODULE_FILENAME@','LWGEOM_asBinary'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION AsText(geometry)
 	RETURNS TEXT
 	AS '@MODULE_FILENAME@','LWGEOM_asText'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION GeometryFromText(text)
         RETURNS geometry
         AS '@MODULE_FILENAME@','LWGEOM_from_text'
         LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_GeometryFromText(text)
+        RETURNS geometry
+        AS '@MODULE_FILENAME@','LWGEOM_from_text'
+        LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION GeometryFromText(text, int4)
         RETURNS geometry
         AS '@MODULE_FILENAME@','LWGEOM_from_text'
         LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_GeometryFromText(text, int4)
+        RETURNS geometry
+        AS '@MODULE_FILENAME@','LWGEOM_from_text'
+        LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION GeomFromText(text)
 	RETURNS geometry AS 'SELECT geometryfromtext($1)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_GeomFromText(text)
+	RETURNS geometry AS 'SELECT geometryfromtext($1)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION GeomFromText(text, int4)
 	RETURNS geometry AS 'SELECT geometryfromtext($1, $2)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION PointFromText(text)
 	RETURNS geometry
 	AS '
@@ -3242,6 +4911,17 @@ CREATEFUNCTION PointFromText(text)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_PointFromText(text)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromText($1)) = ''POINT''
+	THEN GeomFromText($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION PointFromText(text, int4)
 	RETURNS geometry
 	AS '
@@ -3251,6 +4931,7 @@ CREATEFUNCTION PointFromText(text, int4)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION LineFromText(text)
 	RETURNS geometry
 	AS '
@@ -3260,6 +4941,17 @@ CREATEFUNCTION LineFromText(text)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_LineFromText(text)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromText($1)) = ''LINESTRING''
+	THEN GeomFromText($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION LineFromText(text, int4)
 	RETURNS geometry
 	AS '
@@ -3269,16 +4961,19 @@ CREATEFUNCTION LineFromText(text, int4)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION LineStringFromText(text)
 	RETURNS geometry
 	AS 'SELECT LineFromText($1)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION LineStringFromText(text, int4)
 	RETURNS geometry
 	AS 'SELECT LineFromText($1, $2)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION PolyFromText(text)
 	RETURNS geometry
 	AS '
@@ -3288,6 +4983,17 @@ CREATEFUNCTION PolyFromText(text)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_PolyFromText(text)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromText($1)) = ''POLYGON''
+	THEN GeomFromText($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION PolyFromText(text, int4)
 	RETURNS geometry
 	AS '
@@ -3297,16 +5003,31 @@ CREATEFUNCTION PolyFromText(text, int4)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION PolygonFromText(text, int4)
 	RETURNS geometry
 	AS 'SELECT PolyFromText($1, $2)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_PolygonFromText(text, int4)
+	RETURNS geometry
+	AS 'SELECT PolyFromText($1, $2)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION PolygonFromText(text)
 	RETURNS geometry
 	AS 'SELECT PolyFromText($1)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_PolygonFromText(text)
+	RETURNS geometry
+	AS 'SELECT PolyFromText($1)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION MLineFromText(text, int4)
 	RETURNS geometry
 	AS '
@@ -3317,6 +5038,7 @@ CREATEFUNCTION MLineFromText(text, int4)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION MLineFromText(text)
 	RETURNS geometry
 	AS '
@@ -3326,16 +5048,41 @@ CREATEFUNCTION MLineFromText(text)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_MLineFromText(text)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromText($1)) = ''MULTILINESTRING''
+	THEN GeomFromText($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION MultiLineStringFromText(text)
 	RETURNS geometry
 	AS 'SELECT MLineFromText($1)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_MultiLineStringFromText(text)
+	RETURNS geometry
+	AS 'SELECT MLineFromText($1)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION MultiLineStringFromText(text, int4)
 	RETURNS geometry
 	AS 'SELECT MLineFromText($1, $2)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_MultiLineStringFromText(text, int4)
+	RETURNS geometry
+	AS 'SELECT MLineFromText($1, $2)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION MPointFromText(text, int4)
 	RETURNS geometry
 	AS '
@@ -3345,6 +5092,7 @@ CREATEFUNCTION MPointFromText(text, int4)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION MPointFromText(text)
 	RETURNS geometry
 	AS '
@@ -3354,16 +5102,47 @@ CREATEFUNCTION MPointFromText(text)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_MPointFromText(text)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromText($1)) = ''MULTIPOINT''
+	THEN GeomFromText($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION MultiPointFromText(text, int4)
 	RETURNS geometry
 	AS 'SELECT MPointFromText($1, $2)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION MultiPointFromText(text)
 	RETURNS geometry
 	AS 'SELECT MPointFromText($1)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_MultiPointFromText(text)
+	RETURNS geometry
+	AS 'SELECT MPointFromText($1)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
+CREATEFUNCTION MultiPointFromText(text)
+	RETURNS geometry
+	AS 'SELECT MPointFromText($1)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_MultiPointFromText(text)
+	RETURNS geometry
+	AS 'SELECT MPointFromText($1)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION MPolyFromText(text, int4)
 	RETURNS geometry
 	AS '
@@ -3373,6 +5152,7 @@ CREATEFUNCTION MPolyFromText(text, int4)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION MPolyFromText(text)
 	RETURNS geometry
 	AS '
@@ -3382,16 +5162,41 @@ CREATEFUNCTION MPolyFromText(text)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+--Availability: 1.2.2
+CREATEFUNCTION ST_MPolyFromText(text)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromText($1)) = ''MULTIPOLYGON''
+	THEN GeomFromText($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION MultiPolygonFromText(text, int4)
 	RETURNS geometry
 	AS 'SELECT MPolyFromText($1, $2)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_MultiPolygonFromText(text, int4)
+	RETURNS geometry
+	AS 'SELECT MPolyFromText($1, $2)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION MultiPolygonFromText(text)
 	RETURNS geometry
 	AS 'SELECT MPolyFromText($1)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_MultiPolygonFromText(text)
+	RETURNS geometry
+	AS 'SELECT MPolyFromText($1)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION GeomCollFromText(text, int4)
 	RETURNS geometry
 	AS '
@@ -3402,6 +5207,18 @@ CREATEFUNCTION GeomCollFromText(text, int4)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_GeomCollFromText(text, int4)
+	RETURNS geometry
+	AS '
+	SELECT CASE
+	WHEN geometrytype(GeomFromText($1, $2)) = ''GEOMETRYCOLLECTION''
+	THEN GeomFromText($1,$2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION GeomCollFromText(text)
 	RETURNS geometry
 	AS '
@@ -3412,16 +5229,42 @@ CREATEFUNCTION GeomCollFromText(text)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_GeomCollFromText(text)
+	RETURNS geometry
+	AS '
+	SELECT CASE
+	WHEN geometrytype(GeomFromText($1)) = ''GEOMETRYCOLLECTION''
+	THEN GeomFromText($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION GeomFromWKB(bytea)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','LWGEOM_from_WKB'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_GeomFromWKB(bytea)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@','LWGEOM_from_WKB'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION GeomFromWKB(bytea, int)
 	RETURNS geometry
 	AS 'SELECT setSRID(GeomFromWKB($1), $2)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_GeomFromWKB(bytea, int)
+	RETURNS geometry
+	AS 'SELECT setSRID(GeomFromWKB($1), $2)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION PointFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
@@ -3431,6 +5274,7 @@ CREATEFUNCTION PointFromWKB(bytea, int)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION PointFromWKB(bytea)
 	RETURNS geometry
 	AS '
@@ -3440,6 +5284,17 @@ CREATEFUNCTION PointFromWKB(bytea)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_PointFromWKB(bytea)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''POINT''
+	THEN GeomFromWKB($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION LineFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
@@ -3449,6 +5304,7 @@ CREATEFUNCTION LineFromWKB(bytea, int)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION LineFromWKB(bytea)
 	RETURNS geometry
 	AS '
@@ -3458,6 +5314,17 @@ CREATEFUNCTION LineFromWKB(bytea)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_LineFromWKB(bytea)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''LINESTRING''
+	THEN GeomFromWKB($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION LinestringFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
@@ -3467,6 +5334,17 @@ CREATEFUNCTION LinestringFromWKB(bytea, int)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_LinestringFromWKB(bytea, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''LINESTRING''
+	THEN GeomFromWKB($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION LinestringFromWKB(bytea)
 	RETURNS geometry
 	AS '
@@ -3476,6 +5354,17 @@ CREATEFUNCTION LinestringFromWKB(bytea)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_LinestringFromWKB(bytea)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''LINESTRING''
+	THEN GeomFromWKB($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION PolyFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
@@ -3485,6 +5374,7 @@ CREATEFUNCTION PolyFromWKB(bytea, int)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION PolyFromWKB(bytea)
 	RETURNS geometry
 	AS '
@@ -3494,6 +5384,17 @@ CREATEFUNCTION PolyFromWKB(bytea)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_PolyFromWKB(bytea)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''POLYGON''
+	THEN GeomFromWKB($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION PolygonFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
@@ -3503,6 +5404,17 @@ CREATEFUNCTION PolygonFromWKB(bytea, int)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_PolygonFromWKB(bytea, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1,$2)) = ''POLYGON''
+	THEN GeomFromWKB($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION PolygonFromWKB(bytea)
 	RETURNS geometry
 	AS '
@@ -3512,6 +5424,17 @@ CREATEFUNCTION PolygonFromWKB(bytea)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_PolygonFromWKB(bytea)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''POLYGON''
+	THEN GeomFromWKB($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION MPointFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
@@ -3521,6 +5444,7 @@ CREATEFUNCTION MPointFromWKB(bytea, int)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION MPointFromWKB(bytea)
 	RETURNS geometry
 	AS '
@@ -3530,6 +5454,17 @@ CREATEFUNCTION MPointFromWKB(bytea)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_MPointFromWKB(bytea)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''MULTIPOINT''
+	THEN GeomFromWKB($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION MultiPointFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
@@ -3539,6 +5474,17 @@ CREATEFUNCTION MultiPointFromWKB(bytea, int)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_MultiPointFromWKB(bytea, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1,$2)) = ''MULTIPOINT''
+	THEN GeomFromWKB($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION MultiPointFromWKB(bytea)
 	RETURNS geometry
 	AS '
@@ -3548,6 +5494,17 @@ CREATEFUNCTION MultiPointFromWKB(bytea)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_MultiPointFromWKB(bytea)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''MULTIPOINT''
+	THEN GeomFromWKB($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION MultiLineFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
@@ -3557,6 +5514,17 @@ CREATEFUNCTION MultiLineFromWKB(bytea, int)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION MultiLineFromWKB(bytea, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''MULTILINESTRING''
+	THEN GeomFromWKB($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION MultiLineFromWKB(bytea)
 	RETURNS geometry
 	AS '
@@ -3566,6 +5534,17 @@ CREATEFUNCTION MultiLineFromWKB(bytea)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_MultiLineFromWKB(bytea)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''MULTILINESTRING''
+	THEN GeomFromWKB($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION MLineFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
@@ -3575,6 +5554,7 @@ CREATEFUNCTION MLineFromWKB(bytea, int)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION MLineFromWKB(bytea)
 	RETURNS geometry
 	AS '
@@ -3584,6 +5564,17 @@ CREATEFUNCTION MLineFromWKB(bytea)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_MLineFromWKB(bytea)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''MULTILINESTRING''
+	THEN GeomFromWKB($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION MPolyFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
@@ -3593,6 +5584,7 @@ CREATEFUNCTION MPolyFromWKB(bytea, int)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Deprecation in 1.2.3
 CREATEFUNCTION MPolyFromWKB(bytea)
 	RETURNS geometry
 	AS '
@@ -3602,6 +5594,17 @@ CREATEFUNCTION MPolyFromWKB(bytea)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_MPolyFromWKB(bytea)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''MULTIPOLYGON''
+	THEN GeomFromWKB($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION MultiPolyFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
@@ -3611,6 +5614,17 @@ CREATEFUNCTION MultiPolyFromWKB(bytea, int)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_MultiPolyFromWKB(bytea, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''MULTIPOLYGON''
+	THEN GeomFromWKB($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION MultiPolyFromWKB(bytea)
 	RETURNS geometry
 	AS '
@@ -3620,6 +5634,17 @@ CREATEFUNCTION MultiPolyFromWKB(bytea)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_MultiPolyFromWKB(bytea)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''MULTIPOLYGON''
+	THEN GeomFromWKB($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION GeomCollFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
@@ -3630,7 +5655,30 @@ CREATEFUNCTION GeomCollFromWKB(bytea, int)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION ST_GeomCollFromWKB(bytea, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE
+	WHEN geometrytype(GeomFromWKB($1, $2)) = ''GEOMETRYCOLLECTION''
+	THEN GeomFromWKB($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Deprecation in 1.2.3
 CREATEFUNCTION GeomCollFromWKB(bytea)
+	RETURNS geometry
+	AS '
+	SELECT CASE
+	WHEN geometrytype(GeomFromWKB($1)) = ''GEOMETRYCOLLECTION''
+	THEN GeomFromWKB($1)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_GeomCollFromWKB(bytea)
 	RETURNS geometry
 	AS '
 	SELECT CASE
@@ -3654,7 +5702,37 @@ CREATEFUNCTION GeomCollFromWKB(bytea)
 -- and another to actual return, in a CASE WHEN construct).
 -- Also, we profit from plpgsql to RAISE exceptions.
 --
+-- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION BdPolyFromText(text, integer)
+RETURNS geometry
+AS '
+DECLARE
+	geomtext alias for $1;
+	srid alias for $2;
+	mline geometry;
+	geom geometry;
+BEGIN
+	mline := MultiLineStringFromText(geomtext, srid);
+
+	IF mline IS NULL
+	THEN
+		RAISE EXCEPTION ''Input is not a MultiLinestring'';
+	END IF;
+
+	geom := BuildArea(mline);
+
+	IF GeometryType(geom) != ''POLYGON''
+	THEN
+		RAISE EXCEPTION ''Input returns more then a single polygon, try using BdMPolyFromText instead'';
+	END IF;
+
+	RETURN geom;
+END;
+'
+LANGUAGE 'plpgsql' _IMMUTABLE_STRICT; 
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_BdPolyFromText(text, integer)
 RETURNS geometry
 AS '
 DECLARE
@@ -3694,7 +5772,32 @@ LANGUAGE 'plpgsql' _IMMUTABLE_STRICT;
 -- This is a PLPGSQL function rather then an SQL function
 -- To raise an exception in case of invalid input.
 --
+-- Deprecation in 1.2.3
 CREATEFUNCTION BdMPolyFromText(text, integer)
+RETURNS geometry
+AS '
+DECLARE
+	geomtext alias for $1;
+	srid alias for $2;
+	mline geometry;
+	geom geometry;
+BEGIN
+	mline := MultiLineStringFromText(geomtext, srid);
+
+	IF mline IS NULL
+	THEN
+		RAISE EXCEPTION ''Input is not a MultiLinestring'';
+	END IF;
+
+	geom := multi(BuildArea(mline));
+
+	RETURN geom;
+END;
+'
+LANGUAGE 'plpgsql' _IMMUTABLE_STRICT; 
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_BdMPolyFromText(text, integer)
 RETURNS geometry
 AS '
 DECLARE

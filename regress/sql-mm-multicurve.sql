@@ -71,6 +71,80 @@ SELECT 'geometrytype04', geometrytype(geomfromewkt('MULTICURVE((
                 0.26794919243112270647255365849413 1, 
                 0.5857864376269049511983112757903 1.4142135623730950488016887242097))'));
 
+-- Repeat the tests with the new function names.
+SELECT 'ndims01', ST_ndims(ST_geomfromewkt('MULTICURVE((
+                5 5 1 3,
+                3 5 2 2,
+                3 3 3 1,
+                0 3 1 1)
+                ,CIRCULARSTRING(
+                0 0 0 0, 
+                0.26794919243112270647255365849413 1 3 -2, 
+                0.5857864376269049511983112757903 1.4142135623730950488016887242097 1 2))'));
+SELECT 'geometrytype01', geometrytype(ST_geomfromewkt('MULTICURVE((
+                5 5 1 3,
+                3 5 2 2,
+                3 3 3 1,
+                0 3 1 1)
+                ,CIRCULARSTRING(
+                0 0 0 0, 
+                0.26794919243112270647255365849413 1 3 -2, 
+                0.5857864376269049511983112757903 1.4142135623730950488016887242097 1 2))'));
+SELECT 'ndims02', ST_ndims(ST_geomfromewkt('MULTICURVE((
+                5 5 1,
+                3 5 2,
+                3 3 3,
+                0 3 1)
+                ,CIRCULARSTRING(
+                0 0 0, 
+                0.26794919243112270647255365849413 1 3, 
+                0.5857864376269049511983112757903 1.4142135623730950488016887242097 1))'));
+SELECT 'geometrytype02', geometrytype(ST_geomfromewkt('MULTICURVE((
+                5 5 1,
+                3 5 2,
+                3 3 3,
+                0 3 1)
+                ,CIRCULARSTRING(
+                0 0 0, 
+                0.26794919243112270647255365849413 1 3, 
+                0.5857864376269049511983112757903 1.4142135623730950488016887242097 1))'));
+SELECT 'ndims03', ST_ndims(ST_geomfromewkt('MULTICURVEM((
+                5 5 3,
+                3 5 2,
+                3 3 1,
+                0 3 1)
+                ,CIRCULARSTRING(
+                0 0 0, 
+                0.26794919243112270647255365849413 1 -2, 
+                0.5857864376269049511983112757903 1.4142135623730950488016887242097 2))'));
+SELECT 'geometrytype03', geometrytype(ST_geomfromewkt('MULTICURVEM((
+                5 5 3,
+                3 5 2,
+                3 3 1,
+                0 3 1)
+                ,CIRCULARSTRING(
+                0 0 0, 
+                0.26794919243112270647255365849413 1 -2, 
+                0.5857864376269049511983112757903 1.4142135623730950488016887242097 2))'));
+SELECT 'ndims04', ST_ndims(ST_geomfromewkt('MULTICURVE((
+                5 5,
+                3 5,
+                3 3,
+                0 3)
+                ,CIRCULARSTRING(
+                0 0, 
+                0.26794919243112270647255365849413 1, 
+                0.5857864376269049511983112757903 1.4142135623730950488016887242097))'));
+SELECT 'geometrytype04', geometrytype(ST_geomfromewkt('MULTICURVE((
+                5 5,
+                3 5,
+                3 3,
+                0 3)
+                ,CIRCULARSTRING(
+                0 0, 
+                0.26794919243112270647255365849413 1, 
+                0.5857864376269049511983112757903 1.4142135623730950488016887242097))'));
+
 CREATE TABLE public.multicurve (id INTEGER, description VARCHAR);
 SELECT AddGeometryColumn('public', 'multicurve', 'the_geom_2d', -1, 'MULTICURVE', 2);
 SELECT AddGeometryColumn('public', 'multicurve', 'the_geom_3dm', -1, 'MULTICURVEM', 3);
@@ -198,6 +272,63 @@ SELECT 'ST_LineToCurve01', asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_2d))) F
 SELECT 'ST_LineToCurve02', asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_3dm))) FROM public.multicurve;
 SELECT 'ST_LineToCurve03', asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_3dz))) FROM public.multicurve;
 SELECT 'ST_LineToCurve04', asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_4d))) FROM public.multicurve;
+
+-- Repeat all tests with the new function names.
+SELECT 'astext01', ST_astext(the_geom_2d) FROM public.multicurve;
+SELECT 'astext02', ST_astext(the_geom_3dm) FROM public.multicurve;
+SELECT 'astext03', ST_astext(the_geom_3dz) FROM public.multicurve;
+SELECT 'astext04', ST_astext(the_geom_4d) FROM public.multicurve;
+
+SELECT 'asewkt01', ST_asewkt(the_geom_2d) FROM public.multicurve;
+SELECT 'asewkt02', ST_asewkt(the_geom_3dm) FROM public.multicurve;
+SELECT 'asewkt03', ST_asewkt(the_geom_3dz) FROM public.multicurve;
+SELECT 'asewkt04', ST_asewkt(the_geom_4d) FROM public.multicurve;
+
+SELECT 'asbinary01', encode(ST_asbinary(the_geom_2d), 'hex') FROM public.multicurve;
+SELECT 'asbinary02', encode(ST_asbinary(the_geom_3dm), 'hex') FROM public.multicurve;
+SELECT 'asbinary03', encode(ST_asbinary(the_geom_3dz), 'hex') FROM public.multicurve;
+SELECT 'asbinary04', encode(ST_asbinary(the_geom_4d), 'hex') FROM public.multicurve;
+
+SELECT 'asewkb01', encode(ST_asewkb(the_geom_2d), 'hex') FROM public.multicurve;
+SELECT 'asewkb02', encode(ST_asewkb(the_geom_3dm), 'hex') FROM public.multicurve;
+SELECT 'asewkb03', encode(ST_asewkb(the_geom_3dz), 'hex') FROM public.multicurve;
+SELECT 'asewkb04', encode(ST_asewkb(the_geom_4d), 'hex') FROM public.multicurve;
+
+-- Removed due to descrepencies between hardware
+--SELECT 'box2d01', ST_box2d(the_geom_2d) FROM public.multicurve;
+--SELECT 'box2d02', ST_box2d(the_geom_3dm) FROM public.multicurve;
+--SELECT 'box2d03', ST_box2d(the_geom_3dz) FROM public.multicurve;
+--SELECT 'box2d04', ST_box2d(the_geom_4d) FROM public.multicurve;
+
+--SELECT 'box3d01', ST_box3d(the_geom_2d) FROM public.multicurve;
+--SELECT 'box3d02', ST_box3d(the_geom_3dm) FROM public.multicurve;
+--SELECT 'box3d03', ST_box3d(the_geom_3dz) FROM public.multicurve;
+--SELECT 'box3d04', ST_box3d(the_geom_4d) FROM public.multicurve;
+
+SELECT 'isValid01', ST_isValid(the_geom_2d) FROM public.multicurve;
+SELECT 'isValid02', ST_isValid(the_geom_3dm) FROM public.multicurve;
+SELECT 'isValid03', ST_isValid(the_geom_3dz) FROM public.multicurve;
+SELECT 'isValid04', ST_isValid(the_geom_4d) FROM public.multicurve;
+
+SELECT 'dimension01', ST_dimension(the_geom_2d) FROM public.multicurve;
+SELECT 'dimension02', ST_dimension(the_geom_3dm) FROM public.multicurve;
+SELECT 'dimension03', ST_dimension(the_geom_3dz) FROM public.multicurve;
+SELECT 'dimension04', ST_dimension(the_geom_4d) FROM public.multicurve;
+
+SELECT 'numGeometries01', ST_numGeometries(the_geom_2d) FROM public.multicurve;
+SELECT 'numGeometries02', ST_numGeometries(the_geom_3dm) FROM public.multicurve;
+SELECT 'numGeometries03', ST_numGeometries(the_geom_3dz) FROM public.multicurve;
+SELECT 'numGeometries04', ST_numGeometries(the_geom_4d) FROM public.multicurve;
+
+SELECT 'geometryN-201', ST_asEWKT(ST_geometryN(the_geom_2d, 2)) FROM public.multicurve;
+SELECT 'geometryN-202', ST_asEWKT(ST_geometryN(the_geom_3dm, 2)) FROM public.multicurve;
+SELECT 'geometryN-203', ST_asEWKT(ST_geometryN(the_geom_3dz, 2)) FROM public.multicurve;
+SELECT 'geometryN-204', ST_asEWKT(ST_geometryN(the_geom_4d, 2)) FROM public.multicurve;
+
+SELECT 'geometryN-301', (ST_asEWKT(ST_geometryN(the_geom_2d, 3)) is null) FROM public.multicurve;
+SELECT 'geometryN-302', (ST_asEWKT(ST_geometryN(the_geom_3dm, 3)) is null) FROM public.multicurve;
+SELECT 'geometryN-303', (ST_asEWKT(ST_geometryN(the_geom_3dz, 3)) is null) FROM public.multicurve;
+SELECT 'geometryN-304', (ST_asEWKT(ST_geometryN(the_geom_4d, 3)) is null) FROM public.multicurve;
 
 SELECT DropGeometryColumn('public', 'multicurve', 'the_geom_2d');
 SELECT DropGeometryColumn('public', 'multicurve', 'the_geom_3dm');

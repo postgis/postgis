@@ -158,7 +158,7 @@ INSERT INTO serialize_test(
 
 
     
-SELECT id, CASE WHEN ewkt = asEWKT(serialized::geometry) THEN 'pass' ELSE 'fail' END AS result FROM serialize_test ORDER BY id;
-SELECT id, CASE WHEN asEWKB(geomFromEWKT(ewkt)) = serialized THEN 'pass' ELSE 'fail' END AS result FROM serialize_test ORDER BY id;
+SELECT id, CASE WHEN ewkt = ST_asEWKT(serialized::geometry) THEN 'pass' ELSE 'fail' END AS result FROM serialize_test ORDER BY id;
+SELECT id, CASE WHEN ST_asEWKB(geomFromEWKT(ewkt)) = serialized THEN 'pass' ELSE 'fail' END AS result FROM serialize_test ORDER BY id;
 
 DROP TABLE serialize_test;
