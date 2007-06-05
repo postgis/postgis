@@ -1577,6 +1577,12 @@ CREATEFUNCTION length(geometry)
 	AS '@MODULE_FILENAME@', 'LWGEOM_length_linestring'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- PostGIS equivalent function: length2d(geometry)
+CREATEFUNCTION ST_Length(geometry)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@', 'LWGEOM_length2d_linestring'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
 -- this is a fake (for back-compatibility)
 -- uses 3d if 3d is available, 2d otherwise
 -- Deprecation in 1.2.3
@@ -1647,6 +1653,12 @@ CREATEFUNCTION perimeter(geometry)
 	AS '@MODULE_FILENAME@', 'LWGEOM_perimeter_poly'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- PostGIS equivalent function: perimeter2d(geometry)
+CREATEFUNCTION ST_Perimeter(geometry)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@', 'LWGEOM_perimeter2d_poly'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
 -- this is an alias for 'area(geometry)'
 -- there is nothing such an 'area3d'...
 -- Deprecation in 1.2.3
@@ -1663,6 +1675,12 @@ CREATEFUNCTION ST_area2d(geometry)
 
 -- Deprecation in 1.2.3
 CREATEFUNCTION area(geometry)
+	RETURNS FLOAT8
+	AS '@MODULE_FILENAME@','LWGEOM_area_polygon'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- PostGIS equivalent function: area(geometry)
+CREATEFUNCTION ST_Area(geometry)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@','LWGEOM_area_polygon'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
@@ -1697,6 +1715,12 @@ CREATEFUNCTION distance(geometry,geometry)
 	RETURNS float8
 	AS '@MODULE_FILENAME@', 'LWGEOM_mindistance2d'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- PostGIS equivalent function: distance(geometry,geometry)
+CREATEFUNCTION ST_Distance(geometry,geometry)
+    RETURNS float8
+    AS '@MODULE_FILENAME@', 'LWGEOM_mindistance2d'
+    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Maximum distance between linestrings. 2d only. Very bogus.
 -- Deprecation in 1.2.3
@@ -1958,6 +1982,12 @@ CREATEFUNCTION envelope(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_envelope'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
+
+-- PostGIS equivalent function: envelope(geometry)
+CREATEFUNCTION ST_Envelope(geometry)
+        RETURNS geometry
+        AS '@MODULE_FILENAME@', 'LWGEOM_envelope'
+        LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
 -- Deprecation in 1.2.3
 CREATEFUNCTION reverse(geometry)
@@ -3731,6 +3761,12 @@ CREATEFUNCTION transform(geometry,integer)
 	AS '@MODULE_FILENAME@','transform'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- PostGIS equivalent function: transform(geometry,integer)
+CREATEFUNCTION ST_Transform(geometry,integer)
+    RETURNS geometry
+    AS '@MODULE_FILENAME@','transform'
+    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
 
 -----------------------------------------------------------------------
 -- POSTGIS_VERSION()
@@ -4186,11 +4222,11 @@ CREATEFUNCTION intersection(geometry,geometry)
    AS '@MODULE_FILENAME@','intersection'
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
--- Availability: 1.2.2
-CREATEFUNCTION ST_intersection(geometry,geometry)
-   RETURNS geometry
-   AS '@MODULE_FILENAME@','intersection'
-   LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+-- PostGIS equivalent function: intersection(geometry,geometry)
+CREATEFUNCTION ST_Intersection(geometry,geometry)
+    RETURNS geometry
+    AS '@MODULE_FILENAME@','intersection'
+    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Deprecation in 1.2.3
 CREATEFUNCTION buffer(geometry,float8)
@@ -4198,11 +4234,11 @@ CREATEFUNCTION buffer(geometry,float8)
    AS '@MODULE_FILENAME@','buffer'
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
--- Availability: 1.2.2
-CREATEFUNCTION ST_buffer(geometry,float8)
-   RETURNS geometry
-   AS '@MODULE_FILENAME@','buffer'
-   LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+-- PostGIS equivalent function: buffer(geometry,float8)
+CREATEFUNCTION ST_Buffer(geometry,float8)
+    RETURNS geometry
+    AS '@MODULE_FILENAME@','buffer'
+    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Deprecation in 1.2.3
 CREATEFUNCTION buffer(geometry,float8,integer)
@@ -4222,35 +4258,35 @@ CREATEFUNCTION convexhull(geometry)
 	AS '@MODULE_FILENAME@','convexhull'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
--- Availability: 1.2.2
-CREATEFUNCTION ST_convexhull(geometry)
-	RETURNS geometry
-	AS '@MODULE_FILENAME@','convexhull'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-  
+-- PostGIS equivalent function: convexhull(geometry)
+CREATEFUNCTION ST_ConvexHull(geometry)
+    RETURNS geometry
+    AS '@MODULE_FILENAME@','convexhull'
+    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
 -- Deprecation in 1.2.3
 CREATEFUNCTION difference(geometry,geometry)
 	RETURNS geometry
         AS '@MODULE_FILENAME@','difference'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
--- Availability: 1.2.2
-CREATEFUNCTION ST_difference(geometry,geometry)
-	RETURNS geometry
-        AS '@MODULE_FILENAME@','difference'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-   
+-- PostGIS equivalent function: difference(geometry,geometry)
+CREATEFUNCTION ST_Difference(geometry,geometry)
+    RETURNS geometry
+    AS '@MODULE_FILENAME@','difference'
+    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
 -- Deprecation in 1.2.3
 CREATEFUNCTION boundary(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','boundary'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
--- Availability: 1.2.2
-CREATEFUNCTION ST_boundary(geometry)
-	RETURNS geometry
-	AS '@MODULE_FILENAME@','boundary'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+-- PostGIS equivalent function: boundary(geometry)
+CREATEFUNCTION ST_Boundary(geometry)
+        RETURNS geometry
+        AS '@MODULE_FILENAME@','boundary'
+        LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Deprecation in 1.2.3
 CREATEFUNCTION symdifference(geometry,geometry)
@@ -4258,11 +4294,11 @@ CREATEFUNCTION symdifference(geometry,geometry)
         AS '@MODULE_FILENAME@','symdifference'
         LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
--- Availability: 1.2.2
-CREATEFUNCTION ST_symdifference(geometry,geometry)
-        RETURNS geometry
-        AS '@MODULE_FILENAME@','symdifference'
-        LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+-- PostGIS equivalent function: symdifference(geometry,geometry)
+CREATEFUNCTION ST_SymDifference(geometry,geometry)
+    RETURNS geometry
+    AS '@MODULE_FILENAME@','symdifference'
+    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Deprecation in 1.2.3
 CREATEFUNCTION symmetricdifference(geometry,geometry)
@@ -4282,11 +4318,11 @@ CREATEFUNCTION GeomUnion(geometry,geometry)
 	AS '@MODULE_FILENAME@','geomunion'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
--- Availability: 1.2.2
+-- PostGIS equivalent function: GeomUnion(geometry,geometry)
 CREATEFUNCTION ST_Union(geometry,geometry)
-	RETURNS geometry
-	AS '@MODULE_FILENAME@','geomunion'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+    RETURNS geometry
+    AS '@MODULE_FILENAME@','geomunion'
+    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Deprecation in 1.2.3
 CREATE AGGREGATE MemGeomUnion (
@@ -4348,11 +4384,11 @@ CREATEFUNCTION relate(geometry,geometry,text)
    AS '@MODULE_FILENAME@','relate_pattern'
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
--- Availability: 1.2.2
-CREATEFUNCTION ST_relate(geometry,geometry,text)
-   RETURNS boolean
-   AS '@MODULE_FILENAME@','relate_pattern'
-   LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+-- PostGIS equivalent function: relate(geometry,geometry,text)
+CREATEFUNCTION ST_Relate(geometry,geometry,text)
+    RETURNS boolean
+    AS '@MODULE_FILENAME@','relate_pattern'
+    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Deprecation in 1.2.3
 CREATEFUNCTION disjoint(geometry,geometry)
@@ -4360,11 +4396,23 @@ CREATEFUNCTION disjoint(geometry,geometry)
    AS '@MODULE_FILENAME@'
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
    
+-- PostGIS equivalent function: disjoint(geometry,geometry)
+CREATEFUNCTION ST_Disjoint(geometry,geometry)
+    RETURNS boolean
+    AS '@MODULE_FILENAME@','disjoint'
+    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
 -- Deprecation in 1.2.3
 CREATEFUNCTION touches(geometry,geometry)
    RETURNS boolean
    AS '@MODULE_FILENAME@'
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- PostGIS equivalent function: touches(geometry,geometry)
+CREATEFUNCTION ST_Touches(geometry,geometry)
+    RETURNS boolean
+    AS '@MODULE_FILENAME@','touches'
+    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Deprecation in 1.2.3
 CREATEFUNCTION intersects(geometry,geometry)
@@ -4372,11 +4420,23 @@ CREATEFUNCTION intersects(geometry,geometry)
    AS '@MODULE_FILENAME@'
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- PostGIS equivalent function: intersects(geometry,geometry)
+CREATEFUNCTION ST_Intersects(geometry,geometry)
+    RETURNS boolean
+    AS '@MODULE_FILENAME@','intersects'
+    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
 -- Deprecation in 1.2.3
 CREATEFUNCTION crosses(geometry,geometry)
    RETURNS boolean
    AS '@MODULE_FILENAME@'
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- PostGIS equivalent function: crosses(geometry,geometry)
+CREATEFUNCTION ST_Crosses(geometry,geometry)
+    RETURNS boolean
+    AS '@MODULE_FILENAME@','crosses'
+    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Deprecation in 1.2.3
 CREATEFUNCTION within(geometry,geometry)
@@ -4384,11 +4444,23 @@ CREATEFUNCTION within(geometry,geometry)
    AS '@MODULE_FILENAME@'
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- PostGIS equivalent function: within(geometry,geometry)
+CREATEFUNCTION ST_Within(geometry,geometry)
+    RETURNS boolean
+    AS '@MODULE_FILENAME@','within'
+    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
 -- Deprecation in 1.2.3
 CREATEFUNCTION contains(geometry,geometry)
    RETURNS boolean
    AS '@MODULE_FILENAME@'
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- PostGIS equivalent function: contains(geometry,geometry)
+CREATEFUNCTION ST_Contains(geometry,geometry)
+    RETURNS boolean
+    AS '@MODULE_FILENAME@','contains'
+    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Deprecation in 1.2.3
 CREATEFUNCTION overlaps(geometry,geometry)
@@ -4396,11 +4468,24 @@ CREATEFUNCTION overlaps(geometry,geometry)
    AS '@MODULE_FILENAME@'
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- PostGIS equivalent function: overlaps(geometry,geometry)
+CREATEFUNCTION ST_Overlaps(geometry,geometry)
+    RETURNS boolean
+    AS '@MODULE_FILENAME@','overlaps'
+    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
 -- Deprecation in 1.2.3
 CREATEFUNCTION IsValid(geometry)
    RETURNS boolean
    AS '@MODULE_FILENAME@', 'isvalid'
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- PostGIS equivalent function: IsValid(geometry)
+-- TODO: change null returns to true
+CREATEFUNCTION ST_IsValid(geometry)
+    RETURNS boolean
+    AS '@MODULE_FILENAME@', 'isvalid'
+    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Deprecation in 1.2.3
 CREATEFUNCTION GEOSnoop(geometry)
@@ -4420,10 +4505,10 @@ CREATEFUNCTION Centroid(geometry)
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
--- Availability: 1.2.2
+-- PostGIS equivalent function: Centroid(geometry)
 CREATEFUNCTION ST_Centroid(geometry)
 	RETURNS geometry
-	AS '@MODULE_FILENAME@','centroid'
+	AS '@MODULE_FILENAME@', 'centroid'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Deprecation in 1.2.3
@@ -4432,10 +4517,10 @@ CREATEFUNCTION IsRing(geometry)
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
--- Availability: 1.2.2
+-- PostGIS equivalent function: IsRing(geometry)
 CREATEFUNCTION ST_IsRing(geometry)
 	RETURNS boolean
-	AS '@MODULE_FILENAME@','isring'
+	AS '@MODULE_FILENAME@', 'isring'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Deprecation in 1.2.3
@@ -4444,23 +4529,23 @@ CREATEFUNCTION PointOnSurface(geometry)
 	AS '@MODULE_FILENAME@'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
--- Availability: 1.2.2
+-- PostGIS equivalent function: PointOnSurface(geometry)
 CREATEFUNCTION ST_PointOnSurface(geometry)
 	RETURNS geometry
-	AS '@MODULE_FILENAME@','pointonsurface'
+	AS '@MODULE_FILENAME@', 'pointonsurface'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-	
+
 -- Deprecation in 1.2.3
 CREATEFUNCTION IsSimple(geometry)
 	RETURNS boolean
 	AS '@MODULE_FILENAME@', 'issimple'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
--- Availability: 1.2.2
+-- PostGIS equivalent function: IsSimple(geometry)	
 CREATEFUNCTION ST_IsSimple(geometry)
-	RETURNS boolean
-	AS '@MODULE_FILENAME@', 'issimple'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+        RETURNS boolean
+        AS '@MODULE_FILENAME@', 'issimple'
+        LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Deprecation in 1.2.3
 CREATEFUNCTION Equals(geometry,geometry)
@@ -4468,11 +4553,11 @@ CREATEFUNCTION Equals(geometry,geometry)
 	AS '@MODULE_FILENAME@','geomequals'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
--- Availability: 1.2.2
+-- PostGIS equivalent function: Equals(geometry,geometry)
 CREATEFUNCTION ST_Equals(geometry,geometry)
-	RETURNS boolean
-	AS '@MODULE_FILENAME@','geomequals'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+    RETURNS boolean
+    AS '@MODULE_FILENAME@','geomequals'
+    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -----------------------------------------------------------------------
 -- SVG OUTPUT
@@ -4646,7 +4731,7 @@ CREATEFUNCTION NumPoints(geometry)
 	AS '@MODULE_FILENAME@', 'LWGEOM_numpoints_linestring'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
--- Availability: 1.2.2
+-- PostGIS equivalent function: NumPoints(geometry)
 CREATEFUNCTION ST_NumPoints(geometry)
 	RETURNS int4
 	AS '@MODULE_FILENAME@', 'LWGEOM_numpoints_linestring'
@@ -4658,7 +4743,7 @@ CREATEFUNCTION NumGeometries(geometry)
 	AS '@MODULE_FILENAME@', 'LWGEOM_numgeometries_collection'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
--- Availability: 1.2.2
+-- PostGIS equivalent function: NumGeometries(geometry)
 CREATEFUNCTION ST_NumGeometries(geometry)
 	RETURNS int4
 	AS '@MODULE_FILENAME@', 'LWGEOM_numgeometries_collection'
@@ -4670,7 +4755,7 @@ CREATEFUNCTION GeometryN(geometry,integer)
 	AS '@MODULE_FILENAME@', 'LWGEOM_geometryn_collection'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
--- Availability: 1.2.2
+-- PostGIS equivalent function: GeometryN(geometry)
 CREATEFUNCTION ST_GeometryN(geometry,integer)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_geometryn_collection'
@@ -4682,19 +4767,19 @@ CREATEFUNCTION Dimension(geometry)
 	AS '@MODULE_FILENAME@', 'LWGEOM_dimension'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
--- Availability: 1.2.2
+-- PostGIS equivalent function: Dimension(geometry)
 CREATEFUNCTION ST_Dimension(geometry)
-	RETURNS int4
-	AS '@MODULE_FILENAME@', 'LWGEOM_dimension'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+    RETURNS int4
+    AS '@MODULE_FILENAME@', 'LWGEOM_dimension'
+    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
 -- Deprecation in 1.2.3
-CREATEFUNCTION ExterioRring(geometry)
+CREATEFUNCTION ExteriorRing(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','LWGEOM_exteriorring_polygon'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
--- Availability: 1.2.2
+-- PostGIS equivalent function: ExteriorRing(geometry)
 CREATEFUNCTION ST_ExteriorRing(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','LWGEOM_exteriorring_polygon'
@@ -4706,7 +4791,7 @@ CREATEFUNCTION NumInteriorRings(geometry)
 	AS '@MODULE_FILENAME@','LWGEOM_numinteriorrings_polygon'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
--- Availability: 1.2.2
+-- PostGIS equivalent function: NumInteriorRings(geometry)
 CREATEFUNCTION ST_NumInteriorRings(geometry)
 	RETURNS integer
 	AS '@MODULE_FILENAME@','LWGEOM_numinteriorrings_polygon'
@@ -4730,7 +4815,7 @@ CREATEFUNCTION InteriorRingN(geometry,integer)
 	AS '@MODULE_FILENAME@','LWGEOM_interiorringn_polygon'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
--- Availability: 1.2.2
+-- PostGIS equivalent function: InteriorRingN(geometry)
 CREATEFUNCTION ST_InteriorRingN(geometry,integer)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','LWGEOM_interiorringn_polygon'
@@ -4742,11 +4827,32 @@ CREATEFUNCTION GeometryType(geometry)
 	AS '@MODULE_FILENAME@', 'LWGEOM_getTYPE'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
--- Availability: 1.2.2
+-- Not quite equivalent to GeometryType
 CREATEFUNCTION ST_GeometryType(geometry)
-	RETURNS text
-	AS '@MODULE_FILENAME@', 'LWGEOM_getTYPE'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+    RETURNS text
+    AS '
+    DECLARE
+        gtype text := geometrytype($1);
+    BEGIN
+        IF (gtype IN (''POINT'', ''POINTM'')) THEN
+            gtype := ''Point'';
+        ELSIF (gtype IN (''LINESTRING'', ''LINESTRINGM'')) THEN
+            gtype := ''LineString'';
+        ELSIF (gtype IN (''POLYGON'', ''POLYGONM'')) THEN
+            gtype := ''Polygon'';
+        ELSIF (gtype IN (''MULTIPOINT'', ''MULTIPOINTM'')) THEN
+            gtype := ''MultiPoint'';
+        ELSIF (gtype IN (''MULTILINESTRING'', ''MULTILINESTRINGM'')) THEN
+            gtype := ''MultiLineString'';
+        ELSIF (gtype IN (''MULTIPOLYGON'', ''MULTIPOLYGONM'')) THEN
+            gtype := ''MultiPolygon'';
+        ELSE
+            gtype := ''Geometry'';
+        END IF;
+        RETURN ''ST_'' || gtype;
+    END
+	'
+	LANGUAGE 'plpgsql' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Deprecation in 1.2.3
 CREATEFUNCTION PointN(geometry,integer)
@@ -4754,8 +4860,8 @@ CREATEFUNCTION PointN(geometry,integer)
 	AS '@MODULE_FILENAME@','LWGEOM_pointn_linestring'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
--- Availability: 1.2.2
-CREATEFUNCTION ST_PointN(geometry,integer)
+-- PostGIS equivalent function: PointN(geometry)
+CREATEFUNCTION ST_PointN(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','LWGEOM_pointn_linestring'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
@@ -4766,14 +4872,32 @@ CREATEFUNCTION X(geometry)
 	AS '@MODULE_FILENAME@','LWGEOM_x_point'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- PostGIS equivalent function: X(geometry)
+CREATEFUNCTION ST_X(geometry)
+	RETURNS float8
+	AS '@MODULE_FILENAME@','LWGEOM_x_point'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
 -- Deprecation in 1.2.3
 CREATEFUNCTION Y(geometry)
+	RETURNS float8
+	AS '@MODULE_FILENAME@','LWGEOM_y_point'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+        
+-- PostGIS equivalent function: Y(geometry)
+CREATEFUNCTION ST_Y(geometry)
 	RETURNS float8
 	AS '@MODULE_FILENAME@','LWGEOM_y_point'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
 -- Deprecation in 1.2.3
 CREATEFUNCTION Z(geometry)
+	RETURNS float8
+	AS '@MODULE_FILENAME@','LWGEOM_z_point'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- PostGIS equivalent function: Z(geometry)
+CREATEFUNCTION SE_Z(geometry)
 	RETURNS float8
 	AS '@MODULE_FILENAME@','LWGEOM_z_point'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
@@ -4802,8 +4926,20 @@ CREATEFUNCTION StartPoint(geometry)
 	AS '@MODULE_FILENAME@', 'LWGEOM_startpoint_linestring'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- PostGIS equivalent function: StartPoint(geometry))
+CREATEFUNCTION ST_StartPoint(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_startpoint_linestring'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
 -- Deprecation in 1.2.3
 CREATEFUNCTION EndPoint(geometry)
+	RETURNS geometry
+	AS '@MODULE_FILENAME@', 'LWGEOM_endpoint_linestring'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+-- PostGIS equivalent function: EndPoint(geometry))
+CREATEFUNCTION ST_EndPoint(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_endpoint_linestring'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
@@ -4814,17 +4950,35 @@ CREATEFUNCTION IsClosed(geometry)
 	AS '@MODULE_FILENAME@', 'LWGEOM_isclosed_linestring'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- PostGIS equivalent function: IsClosed(geometry)
+CREATEFUNCTION ST_IsClosed(geometry)
+	RETURNS boolean
+	AS '@MODULE_FILENAME@', 'LWGEOM_isclosed_linestring'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
 -- Deprecation in 1.2.3
 CREATEFUNCTION IsEmpty(geometry)
 	RETURNS boolean
 	AS '@MODULE_FILENAME@', 'LWGEOM_isempty'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
+-- PostGIS equivalent function: IsEmpty(geometry)
+CREATEFUNCTION ST_IsEmpty(geometry)
+    RETURNS boolean
+    AS '@MODULE_FILENAME@', 'LWGEOM_isempty'
+    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
 -- Deprecation in 1.2.3
 CREATEFUNCTION SRID(geometry) 
 	RETURNS int4
 	AS '@MODULE_FILENAME@','LWGEOM_getSRID'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- PostGIS equivalent function: getSRID(geometry)
+CREATEFUNCTION ST_SRID(geometry) 
+    RETURNS int4
+    AS '@MODULE_FILENAME@','LWGEOM_getSRID'
+    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Deprecation in 1.2.3
 CREATEFUNCTION SetSRID(geometry,int4) 
@@ -4844,6 +4998,12 @@ CREATEFUNCTION AsBinary(geometry)
 	AS '@MODULE_FILENAME@','LWGEOM_asBinary'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- PostGIS equivalent function: AsBinary(geometry)
+CREATEFUNCTION ST_AsBinary(geometry)
+    RETURNS bytea
+    AS '@MODULE_FILENAME@','LWGEOM_asBinary'
+    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
 -- Deprecation in 1.2.3
 CREATEFUNCTION AsBinary(geometry,text)
 	RETURNS bytea
@@ -4861,6 +5021,12 @@ CREATEFUNCTION AsText(geometry)
 	RETURNS TEXT
 	AS '@MODULE_FILENAME@','LWGEOM_asText'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- PostGIS equivalent function: AsText(geometry)
+CREATEFUNCTION ST_AsText(geometry)
+    RETURNS TEXT
+    AS '@MODULE_FILENAME@','LWGEOM_asText'
+    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Deprecation in 1.2.3
 CREATEFUNCTION GeometryFromText(text)
@@ -4901,6 +5067,11 @@ CREATEFUNCTION GeomFromText(text, int4)
 	RETURNS geometry AS 'SELECT geometryfromtext($1, $2)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- PostGIS equivalent function: GeometryFromText(text, int4)
+CREATEFUNCTION ST_GeomFromText(text, int4)
+	RETURNS geometry AS 'SELECT geometryfromtext($1, $2)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
 -- Deprecation in 1.2.3
 CREATEFUNCTION PointFromText(text)
 	RETURNS geometry
@@ -4931,6 +5102,17 @@ CREATEFUNCTION PointFromText(text, int4)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- PostGIS equivalent function: PointFromText(text, int4)
+-- TODO: improve this ... by not duplicating constructor time.
+CREATEFUNCTION ST_PointFromText(text, int4)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromText($1, $2)) = ''POINT''
+	THEN GeomFromText($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
 -- Deprecation in 1.2.3
 CREATEFUNCTION LineFromText(text)
 	RETURNS geometry
@@ -4953,6 +5135,16 @@ CREATEFUNCTION ST_LineFromText(text)
 
 -- Deprecation in 1.2.3
 CREATEFUNCTION LineFromText(text, int4)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromText($1, $2)) = ''LINESTRING''
+	THEN GeomFromText($1,$2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- PostGIS equivalent function: LineFromText(text, int4)
+CREATEFUNCTION ST_LineFromText(text, int4)
 	RETURNS geometry
 	AS '
 	SELECT CASE WHEN geometrytype(GeomFromText($1, $2)) = ''LINESTRING''
@@ -5002,6 +5194,16 @@ CREATEFUNCTION PolyFromText(text, int4)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+        
+-- PostGIS equivalent function: PolyFromText(text, int4)
+CREATEFUNCTION ST_PolyFromText(text, int4)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromText($1, $2)) = ''POLYGON''
+	THEN GeomFromText($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Deprecation in 1.2.3
 CREATEFUNCTION PolygonFromText(text, int4)
@@ -5029,6 +5231,17 @@ CREATEFUNCTION ST_PolygonFromText(text)
 
 -- Deprecation in 1.2.3
 CREATEFUNCTION MLineFromText(text, int4)
+	RETURNS geometry
+	AS '
+	SELECT CASE
+	WHEN geometrytype(GeomFromText($1, $2)) = ''MULTILINESTRING''
+	THEN GeomFromText($1,$2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- PostGIS equivalent function: MLineFromText(text, int4)
+CREATEFUNCTION ST_MLineFromText(text, int4)
 	RETURNS geometry
 	AS '
 	SELECT CASE
@@ -5092,6 +5305,16 @@ CREATEFUNCTION MPointFromText(text, int4)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- PostGIS equivalent function: MPointFromText(text, int4)
+CREATEFUNCTION ST_MPointFromText(text, int4)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromText($1, $2)) = ''MULTIPOINT''
+	THEN GeomFromText($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
 -- Deprecation in 1.2.3
 CREATEFUNCTION MPointFromText(text)
 	RETURNS geometry
@@ -5144,6 +5367,16 @@ CREATEFUNCTION ST_MultiPointFromText(text)
 
 -- Deprecation in 1.2.3
 CREATEFUNCTION MPolyFromText(text, int4)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromText($1, $2)) = ''MULTIPOLYGON''
+	THEN GeomFromText($1,$2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- PostGIS equivalent function: MPolyFromText(text, int4)
+CREATEFUNCTION ST_MPolyFromText(text, int4)
 	RETURNS geometry
 	AS '
 	SELECT CASE WHEN geometrytype(GeomFromText($1, $2)) = ''MULTIPOLYGON''
@@ -5258,7 +5491,7 @@ CREATEFUNCTION GeomFromWKB(bytea, int)
 	AS 'SELECT setSRID(GeomFromWKB($1), $2)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
--- Availability: 1.2.2
+-- PostGIS equivalent function: GeomFromWKB(bytea, int)
 CREATEFUNCTION ST_GeomFromWKB(bytea, int)
 	RETURNS geometry
 	AS 'SELECT setSRID(GeomFromWKB($1), $2)'
@@ -5266,6 +5499,16 @@ CREATEFUNCTION ST_GeomFromWKB(bytea, int)
 
 -- Deprecation in 1.2.3
 CREATEFUNCTION PointFromWKB(bytea, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''POINT''
+	THEN GeomFromWKB($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- PostGIS equivalent function: PointFromWKB(bytea, int)
+CREATEFUNCTION ST_PointFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
 	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''POINT''
@@ -5296,6 +5539,16 @@ CREATEFUNCTION ST_PointFromWKB(bytea)
 
 -- Deprecation in 1.2.3
 CREATEFUNCTION LineFromWKB(bytea, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''LINESTRING''
+	THEN GeomFromWKB($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- PostGIS equivalent function: LineFromWKB(text, int)
+CREATEFUNCTION ST_LineFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
 	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''LINESTRING''
@@ -5374,6 +5627,16 @@ CREATEFUNCTION PolyFromWKB(bytea, int)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- PostGIS equivalent function: PolyFromWKB(text, int)
+CREATEFUNCTION ST_PolyFromWKB(bytea, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''POLYGON''
+	THEN GeomFromWKB($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
 -- Deprecation in 1.2.3
 CREATEFUNCTION PolyFromWKB(bytea)
 	RETURNS geometry
@@ -5439,6 +5702,16 @@ CREATEFUNCTION MPointFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
 	SELECT CASE WHEN geometrytype(GeomFromWKB($1,$2)) = ''MULTIPOINT''
+	THEN GeomFromWKB($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- PostGIS equivalent function: MPointFromWKB(text, int)
+CREATEFUNCTION ST_MPointFromWKB(bytea, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''MULTIPOINT''
 	THEN GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
@@ -5554,6 +5827,16 @@ CREATEFUNCTION MLineFromWKB(bytea, int)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- PostGIS equivalent function: MLineFromWKB(text, int)
+CREATEFUNCTION ST_MLineFromWKB(bytea, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''MULTILINESTRING''
+	THEN GeomFromWKB($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
 -- Deprecation in 1.2.3
 CREATEFUNCTION MLineFromWKB(bytea)
 	RETURNS geometry
@@ -5576,6 +5859,16 @@ CREATEFUNCTION ST_MLineFromWKB(bytea)
 
 -- Deprecation in 1.2.3
 CREATEFUNCTION MPolyFromWKB(bytea, int)
+	RETURNS geometry
+	AS '
+	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''MULTIPOLYGON''
+	THEN GeomFromWKB($1, $2)
+	ELSE NULL END
+	'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- PostGIS equivalent function: MPolyFromWKB(text, int)
+CREATEFUNCTION ST_MPolyFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
 	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''MULTIPOLYGON''

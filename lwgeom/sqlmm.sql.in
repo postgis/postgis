@@ -54,77 +54,13 @@ CREATEFUNCTION ST_WKTToSQL(text)
 	RETURNS geometry AS 'SELECT geometryfromtext($1)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
--- PostGIS equivalent function: GeometryFromText(text, int4)
-CREATEFUNCTION ST_GeomFromText(text, int4)
-	RETURNS geometry AS 'SELECT geometryfromtext($1, $2)'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- PostGIS equivalent function: PointFromText(text, int4)
--- TODO: improve this ... by not duplicating constructor time.
-CREATEFUNCTION ST_PointFromText(text, int4)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromText($1, $2)) = ''POINT''
-	THEN GeomFromText($1, $2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- PostGIS equivalent function: LineFromText(text, int4)
-CREATEFUNCTION ST_LineFromText(text, int4)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromText($1, $2)) = ''LINESTRING''
-	THEN GeomFromText($1,$2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- PostGIS equivalent function: PolyFromText(text, int4)
-CREATEFUNCTION ST_PolyFromText(text, int4)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromText($1, $2)) = ''POLYGON''
-	THEN GeomFromText($1, $2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- PostGIS equivalent function: MPointFromText(text, int4)
-CREATEFUNCTION ST_MPointFromText(text, int4)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromText($1, $2)) = ''MULTIPOINT''
-	THEN GeomFromText($1, $2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- PostGIS equivalent function: MLineFromText(text, int4)
-CREATEFUNCTION ST_MLineFromText(text, int4)
-	RETURNS geometry
-	AS '
-	SELECT CASE
-	WHEN geometrytype(GeomFromText($1, $2)) = ''MULTILINESTRING''
-	THEN GeomFromText($1,$2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- PostGIS equivalent function: MPolyFromText(text, int4)
-CREATEFUNCTION ST_MPolyFromText(text, int4)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromText($1, $2)) = ''MULTIPOLYGON''
-	THEN GeomFromText($1,$2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-
-
-
-
+-- ST_GeomFromText(text, int4) - already defined
+-- ST_PointFromText(text, int4) - already defined
+-- ST_LineFromText(text, int4) - already defined
+-- ST_PolyFromText(text, int4) - already defined
+-- ST_MPointFromText(text, int4) - already defined
+-- ST_MLineFromText(text, int4) - already defined
+-- ST_MPolyFromText(text, int4) - already defined
 
 -------------------------------------------------------------------------------
 -- SQL/MM (ArcSDE subset) - SQL Functions for constructing an ST_Geometry
@@ -138,76 +74,13 @@ CREATEFUNCTION ST_WKBToSQL(bytea)
 	AS 'SELECT GeomFromWKB($1)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
--- PostGIS equivalent function: GeomFromWKB(bytea, int)
-CREATEFUNCTION ST_GeomFromWKB(bytea, int)
-	RETURNS geometry
-	AS 'SELECT setSRID(GeomFromWKB($1), $2)'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- PostGIS equivalent function: PointFromWKB(bytea, int)
-CREATEFUNCTION ST_PointFromWKB(bytea, int)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''POINT''
-	THEN GeomFromWKB($1, $2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- PostGIS equivalent function: LineFromWKB(text, int)
-CREATEFUNCTION ST_LineFromWKB(bytea, int)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''LINESTRING''
-	THEN GeomFromWKB($1, $2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- PostGIS equivalent function: PolyFromWKB(text, int)
-CREATEFUNCTION ST_PolyFromWKB(bytea, int)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''POLYGON''
-	THEN GeomFromWKB($1, $2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- PostGIS equivalent function: MPointFromWKB(text, int)
-CREATEFUNCTION ST_MPointFromWKB(bytea, int)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''MULTIPOINT''
-	THEN GeomFromWKB($1, $2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- PostGIS equivalent function: MLineFromWKB(text, int)
-CREATEFUNCTION ST_MLineFromWKB(bytea, int)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''MULTILINESTRING''
-	THEN GeomFromWKB($1, $2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- PostGIS equivalent function: MPolyFromWKB(text, int)
-CREATEFUNCTION ST_MPolyFromWKB(bytea, int)
-	RETURNS geometry
-	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''MULTIPOLYGON''
-	THEN GeomFromWKB($1, $2)
-	ELSE NULL END
-	'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-
-
-
-
+-- ST_GeomFromWKB(bytea, int) - already defined
+-- ST_PointFromWKB(bytea, int) - already defined
+-- ST_LineFromWKB(bytea, int) - already defined
+-- ST_PolyFromWKB(bytea, int) - already defined
+-- ST_MPointFromWKB(bytea, int) - already defined
+-- ST_MLineFromWKB(bytea, int) - already defined
+-- ST_MPolyFromWKB(bytea, int) - already defined
 
 -------------------------------------------------------------------------------
 -- SQL/MM (ArcSDE subset) - SQL Functions for constructing an ST_Geometry
@@ -223,46 +96,23 @@ CREATEFUNCTION ST_MPolyFromWKB(bytea, int)
 -- TODO: SE_MLineFromShape
 -- TODO: SE_MPolyFromShape
 
-
-
-
-
-
 -------------------------------------------------------------------------------
 -- SQL/MM (ArcSDE subset) - SQL Functions for obtaining the WKT representation
 --     of an ST_Geometry
 -------------------------------------------------------------------------------
 
--- PostGIS equivalent function: AsText(geometry)
-CREATEFUNCTION ST_AsText(geometry)
-    RETURNS TEXT
-    AS '@MODULE_FILENAME@','LWGEOM_asText'
-    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-
-
-
-
+-- ST_AsText(geometry) - already defined
 
 -------------------------------------------------------------------------------
 -- SQL/MM (ArcSDE subset) - SQL Functions for obtaining the WKB representation
 --     of an ST_Geometry
 -------------------------------------------------------------------------------
 
--- PostGIS equivalent function: AsBinary(geometry)
-CREATEFUNCTION ST_AsBinary(geometry)
-    RETURNS bytea
-    AS '@MODULE_FILENAME@','LWGEOM_asBinary'
-    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-
-
-
-
+-- ST_AsBinary(geometry) - already defined
 
 -------------------------------------------------------------------------------
--- SQL/MM (ArcSDE subset) - SQL Functions for obtaining the ESRI Shape representation
---     of an ST_Geometry
+-- SQL/MM (ArcSDE subset) - SQL Functions for obtaining the ESRI Shape 
+-- representation of an ST_Geometry
 -------------------------------------------------------------------------------
 
 -- TODO: SE_AsShape(geometry)
@@ -271,20 +121,9 @@ CREATEFUNCTION ST_AsBinary(geometry)
 --    AS '@MODULE_FILENAME@','LWGEOM_AsShape'
 --    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
-
-
-
-
-
 -------------------------------------------------------------------------------
 -- SQL/MM (ArcSDE subset) - SQL Functions on type ST_Geometry
 -------------------------------------------------------------------------------
-
--- PostGIS equivalent function: Dimension(geometry)
-CREATEFUNCTION ST_Dimension(geometry)
-    RETURNS int4
-    AS '@MODULE_FILENAME@', 'LWGEOM_dimension'
-    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
 -- PostGIS equivalent function: ndims(geometry)
 CREATEFUNCTION ST_CoordDim(geometry)
@@ -292,79 +131,20 @@ CREATEFUNCTION ST_CoordDim(geometry)
     AS '@MODULE_FILENAME@', 'LWGEOM_ndims'
     LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
--- PostGIS equivalent function: GeometryType(geometry)
-CREATEFUNCTION ST_GeometryType(geometry)
-    RETURNS text
-    AS '
-    DECLARE
-        gtype text := geometrytype($1);
-    BEGIN
-        IF (gtype IN (''POINT'', ''POINTM'')) THEN
-            gtype := ''Point'';
-        ELSIF (gtype IN (''LINESTRING'', ''LINESTRINGM'')) THEN
-            gtype := ''LineString'';
-        ELSIF (gtype IN (''POLYGON'', ''POLYGONM'')) THEN
-            gtype := ''Polygon'';
-        ELSIF (gtype IN (''MULTIPOINT'', ''MULTIPOINTM'')) THEN
-            gtype := ''MultiPoint'';
-        ELSIF (gtype IN (''MULTILINESTRING'', ''MULTILINESTRINGM'')) THEN
-            gtype := ''MultiLineString'';
-        ELSIF (gtype IN (''MULTIPOLYGON'', ''MULTIPOLYGONM'')) THEN
-            gtype := ''MultiPolygon'';
-        ELSE
-            gtype := ''Geometry'';
-        END IF;
-        RETURN ''ST_'' || gtype;
-    END
-	'
-	LANGUAGE 'plpgsql' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
+-- ST_Dimension(geometry) - already defined.
+-- ST_GeometryType(geometry) - already defined.
+-- ST_SRID(geometry) - already defined.
+-- ST_IsEmpty(geometry) - already defined.
+-- ST_IsSimple(geometry) - already defined.
+-- ST_IsValid(geometry) - already defined.
+-- ST_Boundary(geometry) - already defined.
+-- ST_Envelope(geometry) - already defined.
+-- ST_Transform(geometry) - already defined.
 -- ST_AsText(geometry) - already defined.
 -- ST_AsBinary(geometry) - already defined.
 -- SE_AsShape(geometry) - already defined.
-
--- PostGIS equivalent function: getSRID(geometry)
-CREATEFUNCTION ST_SRID(geometry) 
-    RETURNS int4
-    AS '@MODULE_FILENAME@','LWGEOM_getSRID'
-    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- PostGIS equivalent function: IsEmpty(geometry)
-CREATEFUNCTION ST_IsEmpty(geometry)
-    RETURNS boolean
-    AS '@MODULE_FILENAME@', 'LWGEOM_isempty'
-    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
-
--- PostGIS equivalent function: IsSimple(geometry)	
-CREATEFUNCTION ST_IsSimple(geometry)
-    RETURNS boolean
-    AS '@MODULE_FILENAME@', 'issimple'
-    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- PostGIS equivalent function: IsValid(geometry)
--- TODO: change null returns to true
-CREATEFUNCTION ST_IsValid(geometry)
-    RETURNS boolean
-    AS '@MODULE_FILENAME@', 'isvalid'
-    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- PostGIS equivalent function: boundary(geometry)
-CREATEFUNCTION ST_Boundary(geometry)
-    RETURNS geometry
-    AS '@MODULE_FILENAME@','boundary'
-    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- PostGIS equivalent function: envelope(geometry)
-CREATEFUNCTION ST_Envelope(geometry)
-    RETURNS geometry
-    AS '@MODULE_FILENAME@', 'LWGEOM_envelope'
-    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
-
--- PostGIS equivalent function: transform(geometry,integer)
-CREATEFUNCTION ST_Transform(geometry,integer)
-    RETURNS geometry
-    AS '@MODULE_FILENAME@','transform'
-    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+-- ST_X(geometry) - already defined.
+-- ST_Y(geometry) - already defined.
 
 -- PostGIS equivalent function: ~= 
 CREATEFUNCTION ST_OrderingEquals(geometry, geometry)
@@ -416,18 +196,6 @@ CREATEFUNCTION ST_Point(float8, float8)
 	AS '@MODULE_FILENAME@', 'LWGEOM_makepoint'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
--- PostGIS equivalent function: X(geometry)
-CREATEFUNCTION ST_X(geometry)
-	RETURNS float8
-	AS '@MODULE_FILENAME@','LWGEOM_x_point'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
-
--- PostGIS equivalent function: Y(geometry)
-CREATEFUNCTION ST_Y(geometry)
-	RETURNS float8
-	AS '@MODULE_FILENAME@','LWGEOM_y_point'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
-
 -- PostGIS equivalent function: Z(geometry)
 CREATEFUNCTION SE_Z(geometry)
 	RETURNS float8
@@ -440,103 +208,31 @@ CREATEFUNCTION SE_M(geometry)
 	AS '@MODULE_FILENAME@','LWGEOM_m_point'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
-
-
-
-
-
 -------------------------------------------------------------------------------
 -- SQL/MM (ArcSDE subset) - SQL Functions on type ST_Curve
 -------------------------------------------------------------------------------
 
--- PostGIS equivalent function: StartPoint(geometry))
-CREATEFUNCTION ST_StartPoint(geometry)
-	RETURNS geometry
-	AS '@MODULE_FILENAME@', 'LWGEOM_startpoint_linestring'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
-
--- PostGIS equivalent function: EndPoint(geometry))
-CREATEFUNCTION ST_EndPoint(geometry)
-	RETURNS geometry
-	AS '@MODULE_FILENAME@', 'LWGEOM_endpoint_linestring'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
-
--- PostGIS equivalent function: IsClosed(geometry)
-CREATEFUNCTION ST_IsClosed(geometry)
-	RETURNS boolean
-	AS '@MODULE_FILENAME@', 'LWGEOM_isclosed_linestring'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
-
--- PostGIS equivalent function: IsRing(geometry)
-CREATEFUNCTION ST_IsRing(geometry)
-	RETURNS boolean
-	AS '@MODULE_FILENAME@', 'isring'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- PostGIS equivalent function: length2d(geometry)
-CREATEFUNCTION ST_Length(geometry)
-	RETURNS FLOAT8
-	AS '@MODULE_FILENAME@', 'LWGEOM_length2d_linestring'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
-
-
-
-
-
+-- ST_StartPoint(geometry) - already defined.
+-- ST_EndPoint(geometry) - already defined.
+-- ST_IsClosed(geometry) - already defined.
+-- ST_IsRing(geometry) - already defined.
+-- ST_Length(geometry) - already defined.
 
 -------------------------------------------------------------------------------
 -- SQL/MM (ArcSDE subset) - SQL Functions on type ST_LineString
 -------------------------------------------------------------------------------
 
--- PostGIS equivalent function: NumPoints(geometry)
-CREATEFUNCTION ST_NumPoints(geometry)
-	RETURNS int4
-	AS '@MODULE_FILENAME@', 'LWGEOM_numpoints_linestring'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
-
--- PostGIS equivalent function: PointN(geometry)
-CREATEFUNCTION ST_PointN(geometry)
-	RETURNS geometry
-	AS '@MODULE_FILENAME@','LWGEOM_pointn_linestring'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
-
-
-
-
-
+-- ST_NumPoints(geometry) - already defined.
+-- ST_PointN(geometry) - already defined.
 
 -------------------------------------------------------------------------------
 -- SQL/MM (ArcSDE subset) - SQL Functions on type ST_Surface
 -------------------------------------------------------------------------------
 
--- PostGIS equivalent function: Centroid(geometry)
-CREATEFUNCTION ST_Centroid(geometry)
-	RETURNS geometry
-	AS '@MODULE_FILENAME@', 'centroid'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- PostGIS equivalent function: PointOnSurface(geometry)
-CREATEFUNCTION ST_PointOnSurface(geometry)
-	RETURNS geometry
-	AS '@MODULE_FILENAME@', 'pointonsurface'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- PostGIS equivalent function: area(geometry)
-CREATEFUNCTION ST_Area(geometry)
-	RETURNS FLOAT8
-	AS '@MODULE_FILENAME@','LWGEOM_area_polygon'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
-
--- PostGIS equivalent function: perimeter2d(geometry)
-CREATEFUNCTION ST_Perimeter(geometry)
-	RETURNS FLOAT8
-	AS '@MODULE_FILENAME@', 'LWGEOM_perimeter2d_poly'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
-
-
-
-
-
+-- ST_Centroid(geometry) - already defined.
+-- ST_PointOnSurface(geometry) - already defined.
+-- ST_Area(geometry) - already defined.
+-- ST_Perimeter(geometry) - already defined.
 
 -------------------------------------------------------------------------------
 -- SQL/MM (ArcSDE subset) - SQL Functions on type ST_Polygon
@@ -550,49 +246,16 @@ CREATEFUNCTION ST_Polygon(geometry, int)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
--- PostGIS equivalent function: ExteriorRing(geometry)
-CREATEFUNCTION ST_ExteriorRing(geometry)
-	RETURNS geometry
-	AS '@MODULE_FILENAME@','LWGEOM_exteriorring_polygon'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
-
--- PostGIS equivalent function: NumInteriorRings(geometry)
-CREATEFUNCTION ST_NumInteriorRing(geometry)
-	RETURNS integer
-	AS '@MODULE_FILENAME@','LWGEOM_numinteriorrings_polygon'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
-
--- PostGIS equivalent function: InteriorRingN(geometry)
-CREATEFUNCTION ST_InteriorRingN(geometry,integer)
-	RETURNS geometry
-	AS '@MODULE_FILENAME@','LWGEOM_interiorringn_polygon'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
-
-
-
-
-
+-- ST_ExteriorRing(geometry) - already defined.
+-- ST_NumInteriorRing(geometry) - already defined.
+-- ST_InteriorRingN(geometry, integer) - already defined.
 
 -------------------------------------------------------------------------------
 -- SQL/MM (ArcSDE subset) - SQL Functions on type ST_GeomCollection
 -------------------------------------------------------------------------------
 
--- PostGIS equivalent function: NumGeometries(geometry)
-CREATEFUNCTION ST_NumGeometries(geometry)
-	RETURNS int4
-	AS '@MODULE_FILENAME@', 'LWGEOM_numgeometries_collection'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
-
--- PostGIS equivalent function: GeometryN(geometry)
-CREATEFUNCTION ST_GeometryN(geometry,integer)
-	RETURNS geometry
-	AS '@MODULE_FILENAME@', 'LWGEOM_geometryn_collection'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
-
-
-
-
-
+-- ST_NumGeometries(geometry) - already defined.
+-- ST_GeometryN(geometry, integer) - already defined.
 
 -------------------------------------------------------------------------------
 -- SQL/MM (ArcSDE subset) - SQL Functions on type ST_MultiCurve
@@ -614,53 +277,15 @@ CREATEFUNCTION ST_GeometryN(geometry,integer)
 -- SQL/MM (ArcSDE subset) - SQL Functions that test spatial relationships
 -------------------------------------------------------------------------------
 
--- PostGIS equivalent function: Equals(geometry,geometry)
-CREATEFUNCTION ST_Equals(geometry,geometry)
-    RETURNS boolean
-    AS '@MODULE_FILENAME@','geomequals'
-    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- PostGIS equivalent function: disjoint(geometry,geometry)
-CREATEFUNCTION ST_Disjoint(geometry,geometry)
-    RETURNS boolean
-    AS '@MODULE_FILENAME@','disjoint'
-    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- PostGIS equivalent function: touches(geometry,geometry)
-CREATEFUNCTION ST_Touches(geometry,geometry)
-    RETURNS boolean
-    AS '@MODULE_FILENAME@','touches'
-    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- PostGIS equivalent function: within(geometry,geometry)
-CREATEFUNCTION ST_Within(geometry,geometry)
-    RETURNS boolean
-    AS '@MODULE_FILENAME@','within'
-    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- PostGIS equivalent function: overlaps(geometry,geometry)
-CREATEFUNCTION ST_Overlaps(geometry,geometry)
-    RETURNS boolean
-    AS '@MODULE_FILENAME@','overlaps'
-    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- PostGIS equivalent function: crosses(geometry,geometry)
-CREATEFUNCTION ST_Crosses(geometry,geometry)
-    RETURNS boolean
-    AS '@MODULE_FILENAME@','crosses'
-    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- PostGIS equivalent function: intersects(geometry,geometry)
-CREATEFUNCTION ST_Intersects(geometry,geometry)
-    RETURNS boolean
-    AS '@MODULE_FILENAME@','intersects'
-    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- PostGIS equivalent function: contains(geometry,geometry)
-CREATEFUNCTION ST_Contains(geometry,geometry)
-    RETURNS boolean
-    AS '@MODULE_FILENAME@','contains'
-    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+-- ST_Equals(geometry, geometry) - already defined.
+-- ST_Disjoint(geometry, geometry) - already defined.
+-- ST_Touches(geometry, geometry) - already defined.
+-- ST_Within(geometry, geometry) - already defined.
+-- ST_Overlaps(geometry, geometry) - already defined.
+-- ST_Crosses(geometry, geometry) - already defined.
+-- ST_Intersects(geometry, geometry) - already defined.
+-- ST_Contains(geometry, geometry) - already defined.
+-- ST_Relate(geometry, geometry, text) - already defined.
 
 -- PostGIS equivalent function: none
 CREATEFUNCTION SE_EnvelopesIntersect(geometry,geometry)
@@ -670,71 +295,22 @@ CREATEFUNCTION SE_EnvelopesIntersect(geometry,geometry)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
--- PostGIS equivalent function: relate(geometry,geometry,text)
-CREATEFUNCTION ST_Relate(geometry,geometry,text)
-    RETURNS boolean
-    AS '@MODULE_FILENAME@','relate_pattern'
-    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-
-
-
-
-
 -------------------------------------------------------------------------------
 -- SQL/MM (ArcSDE subset) - SQL Functions for distance relationships
 -------------------------------------------------------------------------------
 
--- PostGIS equivalent function: distance(geometry,geometry)
-CREATEFUNCTION ST_Distance(geometry,geometry)
-    RETURNS float8
-    AS '@MODULE_FILENAME@', 'LWGEOM_mindistance2d'
-    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-
-
-
-
+-- ST_Distance(geometry, geometry) - already defined.
 
 -------------------------------------------------------------------------------
 -- SQL/MM (ArcSDE subset) - SQL Functions that implement spatial operators
 -------------------------------------------------------------------------------
 
--- PostGIS equivalent function: intersection(geometry,geometry)
-CREATEFUNCTION ST_Intersection(geometry,geometry)
-    RETURNS geometry
-    AS '@MODULE_FILENAME@','intersection'
-    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- PostGIS equivalent function: difference(geometry,geometry)
-CREATEFUNCTION ST_Difference(geometry,geometry)
-    RETURNS geometry
-    AS '@MODULE_FILENAME@','difference'
-    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- PostGIS equivalent function: GeomUnion(geometry,geometry)
-CREATEFUNCTION ST_Union(geometry,geometry)
-    RETURNS geometry
-    AS '@MODULE_FILENAME@','geomunion'
-    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- PostGIS equivalent function: symdifference(geometry,geometry)
-CREATEFUNCTION ST_SymDifference(geometry,geometry)
-    RETURNS geometry
-    AS '@MODULE_FILENAME@','symdifference'
-    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- PostGIS equivalent function: buffer(geometry,float8)
-CREATEFUNCTION ST_Buffer(geometry,float8)
-    RETURNS geometry
-    AS '@MODULE_FILENAME@','buffer'
-    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- PostGIS equivalent function: convexhull(geometry)
-CREATEFUNCTION ST_ConvexHull(geometry)
-    RETURNS geometry
-    AS '@MODULE_FILENAME@','convexhull'
-    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+-- ST_Intersection(geometry, geometry) - already defined.
+-- ST_Difference(geometry, geometry) - already defined.
+-- ST_Union(geometry, geometry) - already defined.
+-- ST_SymDifference(geometry, geometry) - already defined.
+-- ST_Buffer(geometry, float8) - already defined.
+-- ST_ConvexHull(geometry) already defined.
 
 -- PostGIS equivalent function: locate_along_measure(geometry, float8)
 CREATEFUNCTION SE_LocateAlong(geometry, float8)
