@@ -380,7 +380,8 @@
           <para>Soft upgrade consists of sourcing the lwpostgis_upgrade.sql
           script in your spatial database:</para>
 
-          <programlisting>$ psql -f lwpostgis_upgrade.sql -d your_spatial_database</programlisting>
+          <programlisting>$ psql -f lwpostgis_upgrade.sql -d
+          your_spatial_database</programlisting>
 
           <para>If a soft upgrade is not possible the script will abort and
           you will be warned about HARD UPGRADE being required, so do not
@@ -392,7 +393,8 @@
             generate that file by yourself. This is done with the following
             command:</para>
 
-            <programlisting>$ utils/postgis_proc_upgrade.pl lwpostgis.sql &#62; lwpostgis_upgrade.sql</programlisting>
+            <programlisting>$ utils/postgis_proc_upgrade.pl lwpostgis.sql
+            &#62; lwpostgis_upgrade.sql</programlisting>
           </note>
         </sect3>
 
@@ -411,64 +413,45 @@
           output to a file will help in case of problems. The procedure is as
           follow:</para>
 
-          <para>
-	  Create a &#34;custom-format&#34; dump of the database you want
-	  to upgrade (let&#39;s call it &#34;olddb&#34;)
-	  </para>
+          <para>Create a &#34;custom-format&#34; dump of the database you want
+          to upgrade (let&#39;s call it &#34;olddb&#34;)</para>
 
-	<programlisting>
-$ pg_dump -Fc olddb &#62; olddb.dump
-	</programlisting>
+          <programlisting>$ pg_dump -Fc olddb &#62; olddb.dump</programlisting>
 
-	<para>
-Restore the dump contextually upgrading postgis into a new database. The
-new database doesn&#39;t have to exist.  postgis_restore accepts createdb
-parameters after the dump file name, and that can for instance be used
-if you are using a non-default character encoding for your database.
-Let&#39;s call it &#34;newdb&#34;, with UNICODE as the character encoding:
-	</para>
+          <para>Restore the dump contextually upgrading postgis into a new
+          database. The new database doesn&#39;t have to exist.
+          postgis_restore accepts createdb parameters after the dump file
+          name, and that can for instance be used if you are using a
+          non-default character encoding for your database. Let&#39;s call it
+          &#34;newdb&#34;, with UNICODE as the character encoding:</para>
 
-	  <programlisting>
-$ sh utils/postgis_restore.pl lwpostgis.sql newdb olddb.dump -E=UNICODE &#62; restore.log
-	  </programlisting>
+          <programlisting>$ sh utils/postgis_restore.pl lwpostgis.sql newdb
+          olddb.dump -E=UNICODE &#62; restore.log</programlisting>
 
-	<para>
-Check that all restored dump objects really had to be restored from dump 
-and do not conflict with the ones defined in lwpostgis.sql
-	</para>
+          <para>Check that all restored dump objects really had to be restored
+          from dump and do not conflict with the ones defined in lwpostgis.sql</para>
 
-	<programlisting>
-$ grep ^KEEPING restore.log | less
-	</programlisting>
+          <programlisting>$ grep ^KEEPING restore.log | less</programlisting>
 
-	<para>
-If upgrading from PostgreSQL &#60; 8.0 to &#62;= 8.0 you might want to
-drop the attrelid, varattnum and stats columns in the geometry_columns
-table, which are no-more needed. Keeping them won&#39;t hurt.
-	DROPPING THEM WHEN REALLY NEEDED WILL DO HURT !
-	</para>
+          <para>If upgrading from PostgreSQL &#60; 8.0 to &#62;= 8.0 you might
+          want to drop the attrelid, varattnum and stats columns in the
+          geometry_columns table, which are no-more needed. Keeping them
+          won&#39;t hurt. DROPPING THEM WHEN REALLY NEEDED WILL DO HURT !</para>
 
-	<programlisting>
-$ psql newdb -c &#34;ALTER TABLE geometry_columns DROP attrelid&#34;
-$ psql newdb -c &#34;ALTER TABLE geometry_columns DROP varattnum&#34;
-$ psql newdb -c &#34;ALTER TABLE geometry_columns DROP stats&#34;
-	</programlisting>
+          <programlisting>$ psql newdb -c &#34;ALTER TABLE geometry_columns
+          DROP attrelid&#34; $ psql newdb -c &#34;ALTER TABLE geometry_columns
+          DROP varattnum&#34; $ psql newdb -c &#34;ALTER TABLE
+          geometry_columns DROP stats&#34;</programlisting>
 
-	<para>
-spatial_ref_sys table is restore from the dump, to ensure your custom
-additions are kept, but the distributed one might contain modification so
-you should backup your entries, drop the table and source the new one. If
-you did make additions we assume you know how to backup them before
-upgrading the table. Replace of it with the new one is done like this:
-	</para>
+          <para>spatial_ref_sys table is restore from the dump, to ensure your
+          custom additions are kept, but the distributed one might contain
+          modification so you should backup your entries, drop the table and
+          source the new one. If you did make additions we assume you know how
+          to backup them before upgrading the table. Replace of it with the
+          new one is done like this:</para>
 
-	<programlisting>
-$ psql newdb
-newdb=&#62; delete from spatial_ref_sys;
-DROP
-newdb=&#62; \i spatial_ref_sys.sql
-	</programlisting>
-
+          <programlisting>$ psql newdb newdb=&#62; delete from
+          spatial_ref_sys; DROP newdb=&#62; \i spatial_ref_sys.sql</programlisting>
         </sect3>
       </sect2>
 
@@ -941,7 +924,8 @@ newdb=&#62; \i spatial_ref_sys.sql
           </listitem>
 
           <listitem>
-            <para>GEOMETRYCOLLECTIONM(POINTM(2 3 9), LINESTRINGM(2 3 4, 3 4 5))</para>
+            <para>GEOMETRYCOLLECTIONM(POINTM(2 3 9), LINESTRINGM(2 3 4, 3 4
+            5))</para>
           </listitem>
         </itemizedlist>
 
@@ -2610,6 +2594,15 @@ newdb=&#62; \i spatial_ref_sys.sql
     likely to need. There are other functions which are required support
     functions to the PostGIS objects which are not of use to a general user.</para>
 
+    <note>
+      <para>PostGIS has begun a transition from the existing naming convension
+      to an SQL-MM-centric convension. As a result, most of the functions that
+      you know and love have been renamed using the standard spatial type (ST)
+      prefix. Previous functions are still available, though are not listed in
+      this document where updated functions are equivalent. These will be
+      deprecated in a future release.</para>
+    </note>
+
     <sect1>
       <title>OpenGIS Functions</title>
 
@@ -2648,7 +2641,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>SetSRID(geometry, integer)</term>
+            <term>ST_SetSRID(geometry, integer)</term>
 
             <listitem>
               <para>Set the SRID on a geometry to a particular integer value.
@@ -2663,7 +2656,7 @@ newdb=&#62; \i spatial_ref_sys.sql
 
         <variablelist>
           <varlistentry>
-            <term>Distance(geometry, geometry)</term>
+            <term>ST_Distance(geometry, geometry)</term>
 
             <listitem>
               <para>Return the cartesian distance between two geometries in
@@ -2672,7 +2665,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Equals(geometry, geometry)</term>
+            <term>ST_Equals(geometry, geometry)</term>
 
             <listitem>
               <para>Returns 1 (TRUE) if the given Geometries are
@@ -2687,7 +2680,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Disjoint(geometry, geometry)</term>
+            <term>ST_Disjoint(geometry, geometry)</term>
 
             <listitem>
               <para>Returns 1 (TRUE) if the Geometries are &#34;spatially
@@ -2706,7 +2699,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Intersects(geometry, geometry)</term>
+            <term>ST_Intersects(geometry, geometry)</term>
 
             <listitem>
               <para>Returns 1 (TRUE) if the Geometries &#34;spatially
@@ -2725,7 +2718,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Touches(geometry, geometry)</term>
+            <term>ST_Touches(geometry, geometry)</term>
 
             <listitem>
               <para>Returns 1 (TRUE) if the Geometries &#34;spatially
@@ -2745,7 +2738,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Crosses(geometry, geometry)</term>
+            <term>ST_Crosses(geometry, geometry)</term>
 
             <listitem>
               <para>Returns 1 (TRUE) if the Geometries &#34;spatially
@@ -2764,7 +2757,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Within(geometry A, geometry B)</term>
+            <term>ST_Within(geometry A, geometry B)</term>
 
             <listitem>
               <para>Returns 1 (TRUE) if Geometry A is &#34;spatially
@@ -2783,7 +2776,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Overlaps(geometry, geometry)</term>
+            <term>ST_Overlaps(geometry, geometry)</term>
 
             <listitem>
               <para>Returns 1 (TRUE) if the Geometries &#34;spatially
@@ -2801,7 +2794,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Contains(geometry A, geometry B)</term>
+            <term>ST_Contains(geometry A, geometry B)</term>
 
             <listitem>
               <para>Returns 1 (TRUE) if Geometry A &#34;spatially
@@ -2820,7 +2813,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Intersects(geometry, geometry)</term>
+            <term>ST_Intersects(geometry, geometry)</term>
 
             <listitem>
               <para>Returns 1 (TRUE) if the Geometries &#34;spatially
@@ -2839,7 +2832,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Relate(geometry, geometry, intersectionPatternMatrix)</term>
+            <term>ST_Relate(geometry, geometry, intersectionPatternMatrix)</term>
 
             <listitem>
               <para>Returns 1 (TRUE) if this Geometry is spatially related to
@@ -2859,7 +2852,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Relate(geometry, geometry)</term>
+            <term>ST_Relate(geometry, geometry)</term>
 
             <listitem>
               <para>returns the DE-9IM (dimensionally extended
@@ -2880,7 +2873,7 @@ newdb=&#62; \i spatial_ref_sys.sql
 
         <variablelist>
           <varlistentry>
-            <term>Centroid(geometry)</term>
+            <term>ST_Centroid(geometry)</term>
 
             <listitem>
               <para>Returns the centroid of the geometry as a point.</para>
@@ -2891,7 +2884,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Area(geometry)</term>
+            <term>ST_Area(geometry)</term>
 
             <listitem>
               <para>Returns the area of the geometry if it is a polygon or
@@ -2900,7 +2893,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Length(geometry)</term>
+            <term>ST_Length(geometry)</term>
 
             <listitem>
               <para>The length of this Curve in its associated spatial
@@ -2913,7 +2906,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>PointOnSurface(geometry)</term>
+            <term>ST_PointOnSurface(geometry)</term>
 
             <listitem>
               <para>Return a Point guaranteed to lie on the surface</para>
@@ -2925,7 +2918,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Boundary(geometry)</term>
+            <term>ST_Boundary(geometry)</term>
 
             <listitem>
               <para>Returns the closure of the combinatorial boundary of this
@@ -2943,7 +2936,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Buffer(geometry, double, [integer])</term>
+            <term>ST_Buffer(geometry, double, [integer])</term>
 
             <listitem>
               <para>Returns a geometry that represents all points whose
@@ -2961,7 +2954,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>ConvexHull(geometry)</term>
+            <term>ST_ConvexHull(geometry)</term>
 
             <listitem>
               <para>Returns a geometry that represents the convex hull of this
@@ -2974,7 +2967,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Intersection(geometry, geometry)</term>
+            <term>ST_Intersection(geometry, geometry)</term>
 
             <listitem>
               <para>Returns a geometry that represents the point set
@@ -2989,7 +2982,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>SymDifference(geometry A, geometry B)</term>
+            <term>ST_SymDifference(geometry A, geometry B)</term>
 
             <listitem>
               <para>Returns a geometry that represents the point set symmetric
@@ -3004,7 +2997,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Difference(geometry A, geometry B)</term>
+            <term>ST_Difference(geometry A, geometry B)</term>
 
             <listitem>
               <para>Returns a geometry that represents the point set
@@ -3019,7 +3012,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>GeomUnion(geometry, geometry)</term>
+            <term>ST_GeomUnion(geometry, geometry)</term>
 
             <listitem>
               <para>Returns a geometry that represents the point set union of
@@ -3037,7 +3030,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>GeomUnion(geometry set)</term>
+            <term>ST_Union(geometry set)</term>
 
             <listitem>
               <para>Returns a geometry that represents the point set union of
@@ -3052,7 +3045,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>MemGeomUnion(geometry set)</term>
+            <term>ST_MemGeomUnion(geometry set)</term>
 
             <listitem>
               <para>Same as the above, only memory-friendly (uses less memory
@@ -3067,7 +3060,7 @@ newdb=&#62; \i spatial_ref_sys.sql
 
         <variablelist>
           <varlistentry>
-            <term>AsText(geometry)</term>
+            <term>ST_AsText(geometry)</term>
 
             <listitem>
               <para>Return the Well-Known Text representation of the geometry.
@@ -3078,7 +3071,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>AsBinary(geometry)</term>
+            <term>ST_AsBinary(geometry)</term>
 
             <listitem>
               <para>Returns the geometry in the OGC
@@ -3094,7 +3087,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>SRID(geometry)</term>
+            <term>ST_SRID(geometry)</term>
 
             <listitem>
               <para>Returns the integer SRID number of the spatial reference
@@ -3105,7 +3098,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Dimension(geometry)</term>
+            <term>ST_Dimension(geometry)</term>
 
             <listitem>
               <para>The inherent dimension of this Geometry object, which must
@@ -3121,7 +3114,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Envelope(geometry)</term>
+            <term>ST_Envelope(geometry)</term>
 
             <listitem>
               <para>Returns a POLYGON representing the bounding box of the
@@ -3137,7 +3130,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>IsEmpty(geometry)</term>
+            <term>ST_IsEmpty(geometry)</term>
 
             <listitem>
               <para>Returns 1 (TRUE) if this Geometry is the empty geometry .
@@ -3149,7 +3142,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry id="IsSimple">
-            <term>IsSimple(geometry)</term>
+            <term>ST_IsSimple(geometry)</term>
 
             <listitem>
               <para>Returns 1 (TRUE) if this Geometry has no anomalous
@@ -3162,7 +3155,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry id="IsClosed">
-            <term>IsClosed(geometry)</term>
+            <term>ST_IsClosed(geometry)</term>
 
             <listitem>
               <para>Returns true of the geometry start and end points are
@@ -3171,7 +3164,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>IsRing(geometry)</term>
+            <term>ST_IsRing(geometry)</term>
 
             <listitem>
               <para>Returns 1 (TRUE) if this Curve is closed (StartPoint ( ) =
@@ -3185,7 +3178,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>NumGeometries(geometry)</term>
+            <term>ST_NumGeometries(geometry)</term>
 
             <listitem>
               <para>If geometry is a GEOMETRYCOLLECTION (or MULTI*) return the
@@ -3194,7 +3187,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>GeometryN(geometry,int)</term>
+            <term>ST_GeometryN(geometry,int)</term>
 
             <listitem>
               <para>Return the N&#39;th geometry if the geometry is a
@@ -3209,7 +3202,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>NumPoints(geometry)</term>
+            <term>ST_NumPoints(geometry)</term>
 
             <listitem>
               <para>Find and return the number of points in the first
@@ -3219,7 +3212,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>PointN(geometry,integer)</term>
+            <term>ST_PointN(geometry,integer)</term>
 
             <listitem>
               <para>Return the N&#39;th point in the first linestring in the
@@ -3233,7 +3226,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>ExteriorRing(geometry)</term>
+            <term>ST_ExteriorRing(geometry)</term>
 
             <listitem>
               <para>Return the exterior ring of the polygon geometry. Return
@@ -3242,7 +3235,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>NumInteriorRings(geometry)</term>
+            <term>ST_NumInteriorRings(geometry)</term>
 
             <listitem>
               <para>Return the number of interior rings of the first polygon
@@ -3252,7 +3245,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>NumInteriorRing(geometry)</term>
+            <term>ST_NumInteriorRing(geometry)</term>
 
             <listitem>
               <para>Synonym to NumInteriorRings(geometry). The OpenGIS specs
@@ -3262,7 +3255,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>InteriorRingN(geometry,integer)</term>
+            <term>ST_InteriorRingN(geometry,integer)</term>
 
             <listitem>
               <para>Return the N&#39;th interior ring of the polygon geometry.
@@ -3277,7 +3270,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>EndPoint(geometry)</term>
+            <term>ST_EndPoint(geometry)</term>
 
             <listitem>
               <para>Returns the last point of the LineString geometry as a
@@ -3286,7 +3279,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry id="StartPoint">
-            <term>StartPoint(geometry)</term>
+            <term>ST_StartPoint(geometry)</term>
 
             <listitem>
               <para>Returns the first point of the LineString geometry as a
@@ -3306,11 +3299,28 @@ newdb=&#62; \i spatial_ref_sys.sql
               subtype of Geometry of which this Geometry instance is a member.
               The name of the instantiable subtype of Geometry is returned as
               a string.</para>
+
+              <note>
+                <para>This function also indicates if the geometry is
+                measured, by returning a string of the form &#39;POINTM&#39;.</para>
+              </note>
             </listitem>
           </varlistentry>
 
           <varlistentry>
-            <term>X(geometry)</term>
+            <term>ST_GeometryType(geometry)</term>
+
+            <listitem>
+              <para>Returns the type of the geometry as a string. EG:
+              &#39;Linestring&#39;, &#39;Polygon&#39;, etc. This function
+              differs from GeometryType(geometry) in the case of the string
+              that is returned, as well as the fact that it will not indicate
+              whether the geometry is measured.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>ST_X(geometry)</term>
 
             <listitem>
               <para>Return the X coordinate of the point. Input must be a
@@ -3319,7 +3329,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Y(geometry)</term>
+            <term>ST_Y(geometry)</term>
 
             <listitem>
               <para>Return the Y coordinate of the point. Input must be a
@@ -3328,7 +3338,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Z(geometry)</term>
+            <term>ST_Z(geometry)</term>
 
             <listitem>
               <para>Return the Z coordinate of the point, or NULL if not
@@ -3337,7 +3347,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>M(geometry)</term>
+            <term>ST_M(geometry)</term>
 
             <listitem>
               <para>Return the M coordinate of the point, or NULL if not
@@ -3357,7 +3367,7 @@ newdb=&#62; \i spatial_ref_sys.sql
 
         <variablelist>
           <varlistentry>
-            <term>GeomFromText(text,[&#60;srid&#62;])</term>
+            <term>ST_GeomFromText(text,[&#60;srid&#62;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKT with the given SRID.</para>
@@ -3368,7 +3378,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>PointFromText(text,[&#60;srid&#62;])</term>
+            <term>ST_PointFromText(text,[&#60;srid&#62;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKT with the given SRID. If SRID is
@@ -3382,7 +3392,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>LineFromText(text,[&#60;srid&#62;])</term>
+            <term>ST_LineFromText(text,[&#60;srid&#62;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKT with the given SRID. If SRID is
@@ -3396,7 +3406,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>LinestringFromText(text,[&#60;srid&#62;])</term>
+            <term>ST_LinestringFromText(text,[&#60;srid&#62;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKT with the given SRID. If SRID is
@@ -3409,7 +3419,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>PolyFromText(text,[&#60;srid&#62;])</term>
+            <term>ST_PolyFromText(text,[&#60;srid&#62;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKT with the given SRID. If SRID is
@@ -3423,7 +3433,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>PolygonFromText(text,[&#60;srid&#62;])</term>
+            <term>ST_PolygonFromText(text,[&#60;srid&#62;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKT with the given SRID. If SRID is
@@ -3436,7 +3446,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>MPointFromText(text,[&#60;srid&#62;])</term>
+            <term>ST_MPointFromText(text,[&#60;srid&#62;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKT with the given SRID. If SRID is
@@ -3450,7 +3460,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>MLineFromText(text,[&#60;srid&#62;])</term>
+            <term>ST_MLineFromText(text,[&#60;srid&#62;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKT with the given SRID. If SRID is
@@ -3464,7 +3474,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>MPolyFromText(text,[&#60;srid&#62;])</term>
+            <term>ST_MPolyFromText(text,[&#60;srid&#62;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKT with the given SRID. If SRID is
@@ -3478,7 +3488,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>GeomCollFromText(text,[&#60;srid&#62;])</term>
+            <term>ST_GeomCollFromText(text,[&#60;srid&#62;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKT with the given SRID. If SRID is
@@ -3492,7 +3502,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>GeomFromWKB(bytea,[&#60;srid&#62;])</term>
+            <term>ST_GeomFromWKB(bytea,[&#60;srid&#62;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKB with the given SRID. If SRID is
@@ -3504,7 +3514,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>GeometryFromWKB(bytea,[&#60;srid&#62;])</term>
+            <term>ST_GeometryFromWKB(bytea,[&#60;srid&#62;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKB with the given SRID. If SRID is
@@ -3516,7 +3526,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>PointFromWKB(bytea,[&#60;srid&#62;])</term>
+            <term>ST_PointFromWKB(bytea,[&#60;srid&#62;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKB with the given SRID. If SRID is
@@ -3530,7 +3540,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>LineFromWKB(bytea,[&#60;srid&#62;])</term>
+            <term>ST_LineFromWKB(bytea,[&#60;srid&#62;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKB with the given SRID. If SRID is
@@ -3544,7 +3554,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>LinestringFromWKB(bytea,[&#60;srid&#62;])</term>
+            <term>ST_LinestringFromWKB(bytea,[&#60;srid&#62;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKB with the given SRID. If SRID is
@@ -3557,7 +3567,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>PolyFromWKB(bytea,[&#60;srid&#62;])</term>
+            <term>ST_PolyFromWKB(bytea,[&#60;srid&#62;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKB with the given SRID. If SRID is
@@ -3571,7 +3581,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>PolygonFromWKB(bytea,[&#60;srid&#62;])</term>
+            <term>ST_PolygonFromWKB(bytea,[&#60;srid&#62;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKB with the given SRID. If SRID is
@@ -3584,7 +3594,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>MPointFromWKB(bytea,[&#60;srid&#62;])</term>
+            <term>ST_MPointFromWKB(bytea,[&#60;srid&#62;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKB with the given SRID. If SRID is
@@ -3598,7 +3608,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>MLineFromWKB(bytea,[&#60;srid&#62;])</term>
+            <term>ST_MLineFromWKB(bytea,[&#60;srid&#62;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKB with the given SRID. If SRID is
@@ -3612,7 +3622,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>MPolyFromWKB(bytea,[&#60;srid&#62;])</term>
+            <term>ST_MPolyFromWKB(bytea,[&#60;srid&#62;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKB with the given SRID. If SRID is
@@ -3626,7 +3636,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>GeomCollFromWKB(bytea,[&#60;srid&#62;])</term>
+            <term>ST_GeomCollFromWKB(bytea,[&#60;srid&#62;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKB with the given SRID. If SRID is
@@ -3640,7 +3650,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry id="BdPolyFromText">
-            <term>BdPolyFromText(text WKT, integer SRID)</term>
+            <term>ST_BdPolyFromText(text WKT, integer SRID)</term>
 
             <listitem>
               <para>Construct a Polygon given an arbitrary collection of
@@ -3659,7 +3669,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry id="BdMPolyFromText">
-            <term>BdMPolyFromText(text WKT, integer SRID)</term>
+            <term>ST_BdMPolyFromText(text WKT, integer SRID)</term>
 
             <listitem>
               <para>Construct a MultiPolygon given an arbitrary collection of
@@ -3985,7 +3995,7 @@ newdb=&#62; \i spatial_ref_sys.sql
 
         <variablelist>
           <varlistentry>
-            <term>area2d(geometry)</term>
+            <term>ST_area2d(geometry)</term>
 
             <listitem>
               <para>Returns the area of the geometry if it is a polygon or
@@ -3994,7 +4004,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>distance_sphere(point, point)</term>
+            <term>ST_distance_sphere(point, point)</term>
 
             <listitem>
               <para>Returns linear distance in meters between two lat/lon
@@ -4005,7 +4015,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry id="distance_spheroid">
-            <term>distance_spheroid(point, point, spheroid)</term>
+            <term>ST_distance_spheroid(point, point, spheroid)</term>
 
             <listitem>
               <para>Returns linear distance between two lat/lon points given a
@@ -4016,7 +4026,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry id="length2d">
-            <term>length2d(geometry)</term>
+            <term>ST_length2d(geometry)</term>
 
             <listitem>
               <para>Returns the 2-dimensional length of the geometry if it is
@@ -4025,7 +4035,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>length3d(geometry)</term>
+            <term>ST_length3d(geometry)</term>
 
             <listitem>
               <para>Returns the 3-dimensional length of the geometry if it is
@@ -4034,7 +4044,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry id="length_spheroid">
-            <term>length_spheroid(geometry,spheroid)</term>
+            <term>ST_length_spheroid(geometry,spheroid)</term>
 
             <listitem>
               <para>Calculates the length of of a geometry on an ellipsoid.
@@ -4059,7 +4069,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>length3d_spheroid(geometry,spheroid)</term>
+            <term>ST_length3d_spheroid(geometry,spheroid)</term>
 
             <listitem>
               <para>Calculates the length of of a geometry on an ellipsoid,
@@ -4071,7 +4081,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>distance(geometry, geometry)</term>
+            <term>ST_distance(geometry, geometry)</term>
 
             <listitem>
               <para>Returns the smaller distance between two geometries.</para>
@@ -4079,7 +4089,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>max_distance(linestring,linestring)</term>
+            <term>ST_max_distance(linestring,linestring)</term>
 
             <listitem>
               <para>Returns the largest distance between two line strings.</para>
@@ -4087,7 +4097,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>perimeter(geometry)</term>
+            <term>ST_perimeter(geometry)</term>
 
             <listitem>
               <para>Returns the 2-dimensional perimeter of the geometry, if it
@@ -4096,7 +4106,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>perimeter2d(geometry)</term>
+            <term>ST_perimeter2d(geometry)</term>
 
             <listitem>
               <para>Returns the 2-dimensional perimeter of the geometry, if it
@@ -4105,7 +4115,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>perimeter3d(geometry)</term>
+            <term>ST_perimeter3d(geometry)</term>
 
             <listitem>
               <para>Returns the 3-dimensional perimeter of the geometry, if it
@@ -4114,7 +4124,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>azimuth(geometry, geometry)</term>
+            <term>ST_azimuth(geometry, geometry)</term>
 
             <listitem>
               <para>Returns the azimuth of the segment defined by the given
@@ -4132,7 +4142,7 @@ newdb=&#62; \i spatial_ref_sys.sql
 
         <variablelist>
           <varlistentry>
-            <term>AsBinary(geometry,{&#39;NDR&#39;|&#39;XDR&#39;})</term>
+            <term>ST_AsBinary(geometry,{&#39;NDR&#39;|&#39;XDR&#39;})</term>
 
             <listitem>
               <para>Returns the geometry in the OGC
@@ -4144,7 +4154,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>AsEWKT(geometry)</term>
+            <term>ST_AsEWKT(geometry)</term>
 
             <listitem>
               <para>Returns a Geometry in EWKT format (as text).</para>
@@ -4152,7 +4162,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>AsEWKB(geometry, {&#39;NDR&#39;|&#39;XDR&#39;})</term>
+            <term>ST_AsEWKB(geometry, {&#39;NDR&#39;|&#39;XDR&#39;})</term>
 
             <listitem>
               <para>Returns a Geometry in EWKB format (as bytea) using either
@@ -4161,7 +4171,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>AsHEXEWKB(geometry, {&#39;NDR&#39;|&#39;XDR&#39;})</term>
+            <term>ST_AsHEXEWKB(geometry, {&#39;NDR&#39;|&#39;XDR&#39;})</term>
 
             <listitem>
               <para>Returns a Geometry in HEXEWKB format (as text) using
@@ -4170,7 +4180,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>AsSVG(geometry, [rel], [precision])</term>
+            <term>ST_AsSVG(geometry, [rel], [precision])</term>
 
             <listitem>
               <para>Return the geometry as an SVG path data. Use 1 as second
@@ -4183,7 +4193,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>AsGML(geometry, [precision])</term>
+            <term>ST_AsGML(geometry, [precision])</term>
 
             <listitem>
               <para>Return the geometry as a GML element. Second argument may
@@ -4193,9 +4203,12 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>AsKML(geometry, [precision])</term>
+            <term>ST_AsKML(geometry, [precision])</term>
+
             <listitem>
-              <para>Return the geometry as a KML element.  Second argument may be used to reduce the maximum number of significant digits used in output (defaults to 15).</para>
+              <para>Return the geometry as a KML element. Second argument may
+              be used to reduce the maximum number of significant digits used
+              in output (defaults to 15).</para>
             </listitem>
           </varlistentry>
         </variablelist>
@@ -4206,7 +4219,7 @@ newdb=&#62; \i spatial_ref_sys.sql
 
         <variablelist>
           <varlistentry>
-            <term>GeomFromEWKT(text)</term>
+            <term>ST_GeomFromEWKT(text)</term>
 
             <listitem>
               <para>Makes a Geometry from EWKT.</para>
@@ -4214,7 +4227,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>GeomFromEWKB(bytea)</term>
+            <term>ST_GeomFromEWKB(bytea)</term>
 
             <listitem>
               <para>Makes a Geometry from EWKB.</para>
@@ -4222,7 +4235,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>MakePoint(&#60;x&#62;, &#60;y&#62;, [&#60;z&#62;],
+            <term>ST_MakePoint(&#60;x&#62;, &#60;y&#62;, [&#60;z&#62;],
             [&#60;m&#62;])</term>
 
             <listitem>
@@ -4231,7 +4244,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>MakePointM(&#60;x&#62;, &#60;y&#62;, &#60;m&#62;)</term>
+            <term>ST_MakePointM(&#60;x&#62;, &#60;y&#62;, &#60;m&#62;)</term>
 
             <listitem>
               <para>Creates a 3dm point geometry.</para>
@@ -4239,7 +4252,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>MakeBox2D(&#60;LL&#62;, &#60;UR&#62;)</term>
+            <term>ST_MakeBox2D(&#60;LL&#62;, &#60;UR&#62;)</term>
 
             <listitem>
               <para>Creates a BOX2D defined by the given point geometries.</para>
@@ -4247,7 +4260,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>MakeBox3D(&#60;LLB&#62;, &#60;URT&#62;)</term>
+            <term>ST_MakeBox3D(&#60;LLB&#62;, &#60;URT&#62;)</term>
 
             <listitem>
               <para>Creates a BOX3D defined by the given point geometries.</para>
@@ -4255,7 +4268,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>MakeLine(geometry set)</term>
+            <term>ST_MakeLine(geometry set)</term>
 
             <listitem>
               <para>Creates a Linestring from a set of point geometries. You
@@ -4265,7 +4278,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>MakeLine(geometry, geometry)</term>
+            <term>ST_MakeLine(geometry, geometry)</term>
 
             <listitem>
               <para>Creates a Linestring from the two given point geometries.</para>
@@ -4273,7 +4286,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>LineFromMultiPoint(multipoint)</term>
+            <term>ST_LineFromMultiPoint(multipoint)</term>
 
             <listitem>
               <para>Creates a LineString from a MultiPoint geometry.</para>
@@ -4281,7 +4294,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>MakePolygon(linestring, [linestring[]])</term>
+            <term>ST_MakePolygon(linestring, [linestring[]])</term>
 
             <listitem>
               <para>Creates a Polygon formed by the given shell and array of
@@ -4293,7 +4306,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry id="BuildArea">
-            <term>BuildArea(geometry)</term>
+            <term>ST_BuildArea(geometry)</term>
 
             <listitem>
               <para>Creates an areal geometry formed by the constituent
@@ -4310,7 +4323,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Polygonize(geometry set)</term>
+            <term>ST_Polygonize(geometry set)</term>
 
             <listitem>
               <para>Aggregate. Creates a GeometryCollection containing
@@ -4322,7 +4335,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Collect(geometry set)</term>
+            <term>ST_Collect(geometry set)</term>
 
             <listitem>
               <para>This function returns a GEOMETRYCOLLECTION or a MULTI
@@ -4337,7 +4350,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Collect(geometry, geometry)</term>
+            <term>ST_Collect(geometry, geometry)</term>
 
             <listitem>
               <para>This function returns a geometry being a collection of two
@@ -4347,7 +4360,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Dump(geometry)</term>
+            <term>ST_Dump(geometry)</term>
 
             <listitem>
               <para>This is a set-returning function (SRF). It returns a set
@@ -4365,7 +4378,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>DumpRings(geometry)</term>
+            <term>ST_DumpRings(geometry)</term>
 
             <listitem>
               <para>This is a set-returning function (SRF). It returns a set
@@ -4387,7 +4400,7 @@ newdb=&#62; \i spatial_ref_sys.sql
 
         <variablelist>
           <varlistentry id="addbbox">
-            <term>AddBBOX(geometry)</term>
+            <term>ST_AddBBOX(geometry)</term>
 
             <listitem>
               <para>Add bounding box to the geometry. This would make bounding
@@ -4397,7 +4410,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry id="dropbbox">
-            <term>DropBBOX(geometry)</term>
+            <term>ST_DropBBOX(geometry)</term>
 
             <listitem>
               <para>Drop the bounding box cache from the geometry. This
@@ -4407,7 +4420,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>AddPoint(linestring, point, [&#60;position&#62;])</term>
+            <term>ST_AddPoint(linestring, point, [&#60;position&#62;])</term>
 
             <listitem>
               <para>Adds a point to a LineString before point &#60;pos&#62;
@@ -4417,7 +4430,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>RemovePoint(linestring, offset)</term>
+            <term>ST_RemovePoint(linestring, offset)</term>
 
             <listitem>
               <para>Removes point from a linestring. Offset is 0-based.</para>
@@ -4427,7 +4440,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>SetPoint(linestring, N, point)</term>
+            <term>ST_SetPoint(linestring, N, point)</term>
 
             <listitem>
               <para>Replace point N of linestring with given point. Index is
@@ -4438,7 +4451,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Force_collection(geometry)</term>
+            <term>ST_Force_collection(geometry)</term>
 
             <listitem>
               <para>Converts the geometry into a GEOMETRYCOLLECTION. This is
@@ -4447,7 +4460,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry id="force_2d">
-            <term>Force_2d(geometry)</term>
+            <term>ST_Force_2d(geometry)</term>
 
             <listitem>
               <para>Forces the geometries into a &#34;2-dimensional mode&#34;
@@ -4458,9 +4471,9 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry id="force_3dz">
-            <term>Force_3dz(geometry)</term>
+            <term>ST_Force_3dz(geometry)</term>
 
-            <term>Force_3d(geometry)</term>
+            <term>ST_Force_3d(geometry)</term>
 
             <listitem>
               <para>Forces the geometries into XYZ mode.</para>
@@ -4468,7 +4481,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry id="force_3dm">
-            <term>Force_3dm(geometry)</term>
+            <term>ST_Force_3dm(geometry)</term>
 
             <listitem>
               <para>Forces the geometries into XYM mode.</para>
@@ -4476,7 +4489,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry id="force_4d">
-            <term>Force_4d(geometry)</term>
+            <term>ST_Force_4d(geometry)</term>
 
             <listitem>
               <para>Forces the geometries into XYZM mode.</para>
@@ -4484,7 +4497,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Multi(geometry)</term>
+            <term>ST_Multi(geometry)</term>
 
             <listitem>
               <para>Returns the geometry as a MULTI* geometry. If the geometry
@@ -4493,7 +4506,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Transform(geometry,integer)</term>
+            <term>ST_Transform(geometry,integer)</term>
 
             <listitem>
               <para>Returns a new geometry with its coordinates transformed to
@@ -4503,7 +4516,8 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Affine(geometry, float8, float8, float8, float8, float8, float8, float8, float8, float8, float8, float8, float8)</term>
+            <term>ST_Affine(geometry, float8, float8, float8, float8, float8,
+            float8, float8, float8, float8, float8, float8, float8)</term>
 
             <listitem>
               <para>Applies an 3d affine transformation to the geometry. The
@@ -4522,7 +4536,8 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Affine(geometry, float8, float8, float8, float8, float8, float8)</term>
+            <term>ST_Affine(geometry, float8, float8, float8, float8, float8,
+            float8)</term>
 
             <listitem>
               <para>Applies an 2d affine transformation to the geometry. The
@@ -4540,7 +4555,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Translate(geometry, float8, float8, float8)</term>
+            <term>ST_Translate(geometry, float8, float8, float8)</term>
 
             <listitem>
               <para>Translates the geometry to a new location using the
@@ -4549,7 +4564,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Scale(geometry, float8, float8, float8)</term>
+            <term>ST_Scale(geometry, float8, float8, float8)</term>
 
             <listitem>
               <para>scales the geometry to a new size by multiplying the
@@ -4561,11 +4576,11 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry id="Rotate">
-            <term>RotateZ(geometry, float8)</term>
+            <term>ST_RotateZ(geometry, float8)</term>
 
-            <term>RotateX(geometry, float8)</term>
+            <term>ST_RotateX(geometry, float8)</term>
 
-            <term>RotateY(geometry, float8)</term>
+            <term>ST_RotateY(geometry, float8)</term>
 
             <listitem>
               <para>Rotate the geometry around the Z, X or Y axis by the given
@@ -4576,7 +4591,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>TransScale(geometry, float8, float8, float8, float8)</term>
+            <term>ST_TransScale(geometry, float8, float8, float8, float8)</term>
 
             <listitem>
               <para>First, translates the geometry using the first two floats,
@@ -4590,7 +4605,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Reverse(geometry)</term>
+            <term>ST_Reverse(geometry)</term>
 
             <listitem>
               <para>Returns the geometry with vertex order reversed.</para>
@@ -4598,7 +4613,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>ForceRHR(geometry)</term>
+            <term>ST_ForceRHR(geometry)</term>
 
             <listitem>
               <para>Force polygons of the collection to obey Right-Hand-Rule.</para>
@@ -4606,7 +4621,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Simplify(geometry, tolerance)</term>
+            <term>ST_Simplify(geometry, tolerance)</term>
 
             <listitem>
               <para>Returns a &#34;simplified&#34; version of the given
@@ -4620,11 +4635,11 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>SnapToGrid(geometry, originX, originY, sizeX, sizeY)</term>
+            <term>ST_SnapToGrid(geometry, originX, originY, sizeX, sizeY)</term>
 
-            <term>SnapToGrid(geometry, sizeX, sizeY)</term>
+            <term>ST_SnapToGrid(geometry, sizeX, sizeY)</term>
 
-            <term>SnapToGrid(geometry, size)</term>
+            <term>ST_SnapToGrid(geometry, size)</term>
 
             <listitem>
               <para>Snap all points of the input geometry to the grid defined
@@ -4651,7 +4666,8 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>SnapToGrid(geometry, geometry, sizeX, sizeY, sizeZ, sizeM)</term>
+            <term>ST_SnapToGrid(geometry, geometry, sizeX, sizeY, sizeZ,
+            sizeM)</term>
 
             <listitem>
               <para>Snap all points of the input geometry to the grid defined
@@ -4664,7 +4680,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>Segmentize(geometry, maxlength)</term>
+            <term>ST_Segmentize(geometry, maxlength)</term>
 
             <listitem>
               <para>Return a modified geometry having no segment longer then
@@ -4675,7 +4691,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>LineMerge(geometry)</term>
+            <term>ST_LineMerge(geometry)</term>
 
             <listitem>
               <para>Returns a (set of) LineString(s) formed by sewing together
@@ -4692,7 +4708,7 @@ newdb=&#62; \i spatial_ref_sys.sql
 
         <variablelist>
           <varlistentry id="line_interpolate_point">
-            <term>line_interpolate_point(linestring, location)</term>
+            <term>ST_line_interpolate_point(linestring, location)</term>
 
             <listitem>
               <para>Returns a point interpolated along a line. First argument
@@ -4714,7 +4730,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry id="line_substring">
-            <term>line_substring(linestring, start, end)</term>
+            <term>ST_line_substring(linestring, start, end)</term>
 
             <listitem>
               <para>Return a linestring being a substring of the input one
@@ -4738,7 +4754,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry id="line_locate_point">
-            <term>line_locate_point(LineString, Point)</term>
+            <term>ST_line_locate_point(LineString, Point)</term>
 
             <listitem>
               <para>Returns a float between 0 and 1 representing the location
@@ -4755,7 +4771,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>locate_along_measure(geometry, float8)</term>
+            <term>ST_locate_along_measure(geometry, float8)</term>
 
             <listitem>
               <para>Return a derived geometry collection value with elements
@@ -4770,7 +4786,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>locate_between_measures(geometry, float8, float8)</term>
+            <term>ST_locate_between_measures(geometry, float8, float8)</term>
 
             <listitem>
               <para>Return a derived geometry collection value with elements
@@ -4791,7 +4807,7 @@ newdb=&#62; \i spatial_ref_sys.sql
 
         <variablelist>
           <varlistentry>
-            <term>Summary(geometry)</term>
+            <term>ST_Summary(geometry)</term>
 
             <listitem>
               <para>Returns a text summary of the contents of the geometry.</para>
@@ -4799,7 +4815,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>box2d(geometry)</term>
+            <term>ST_box2d(geometry)</term>
 
             <listitem>
               <para>Returns a BOX2D representing the maximum extents of the
@@ -4808,7 +4824,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>box3d(geometry)</term>
+            <term>ST_box3d(geometry)</term>
 
             <listitem>
               <para>Returns a BOX3D representing the maximum extents of the
@@ -4817,7 +4833,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>extent(geometry set)</term>
+            <term>ST_extent(geometry set)</term>
 
             <listitem>
               <para>The extent() function is an &#34;aggregate&#34; function
@@ -4832,7 +4848,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry id="zmflag">
-            <term>zmflag(geometry)</term>
+            <term>ST_zmflag(geometry)</term>
 
             <listitem>
               <para>Returns ZM (dimension semantic) flag of the geometries as
@@ -4841,7 +4857,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry id="hasbbox">
-            <term>HasBBOX(geometry)</term>
+            <term>ST_HasBBOX(geometry)</term>
 
             <listitem>
               <para>Returns TRUE if the bbox of this geometry is cached, FALSE
@@ -4851,7 +4867,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry id="ndims">
-            <term>ndims(geometry)</term>
+            <term>ST_ndims(geometry)</term>
 
             <listitem>
               <para>Returns number of dimensions of the geometry as a small
@@ -4860,7 +4876,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>nrings(geometry)</term>
+            <term>ST_nrings(geometry)</term>
 
             <listitem>
               <para>If the geometry is a polygon or multi-polygon returns the
@@ -4869,7 +4885,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>npoints(geometry)</term>
+            <term>ST_npoints(geometry)</term>
 
             <listitem>
               <para>Returns the number of points in the geometry.</para>
@@ -4877,7 +4893,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry id="IsValid">
-            <term>isvalid(geometry)</term>
+            <term>ST_isvalid(geometry)</term>
 
             <listitem>
               <para>returns true if this geometry is valid.</para>
@@ -4885,7 +4901,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>expand(geometry, float)</term>
+            <term>ST_expand(geometry, float)</term>
 
             <listitem>
               <para>This function returns a bounding box expanded in all
@@ -4896,7 +4912,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>estimated_extent([schema], table, geocolumn)</term>
+            <term>ST_estimated_extent([schema], table, geocolumn)</term>
 
             <listitem>
               <para>Return the &#39;estimated&#39; extent of the given spatial
@@ -4913,7 +4929,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>find_srid(varchar,varchar,varchar)</term>
+            <term>ST_find_srid(varchar,varchar,varchar)</term>
 
             <listitem>
               <para>The syntax is find_srid(&#60;db/schema&#62;,
@@ -4926,7 +4942,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>mem_size(geometry)</term>
+            <term>ST_mem_size(geometry)</term>
 
             <listitem>
               <para>Returns the amount of space (in bytes) the geometry takes.</para>
@@ -4934,16 +4950,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>numb_sub_objects(geometry)</term>
-
-            <listitem>
-              <para>Returns the number of objects stored in the geometry. This
-              is useful for MULTI-geometries and GEOMETRYCOLLECTIONs.</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>point_inside_circle(geometry, float, float, float)</term>
+            <term>ST_point_inside_circle(geometry, float, float, float)</term>
 
             <listitem>
               <para>The syntax for this functions is
@@ -4954,7 +4961,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>xmin(box3d) ymin(box3d) zmin(box3d)</term>
+            <term>ST_xmin(box3d) ymin(box3d) zmin(box3d)</term>
 
             <listitem>
               <para>Returns the requested minima of a bounding box.</para>
@@ -4962,7 +4969,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry>
-            <term>xmax(box3d) ymax(box3d) zmax(box3d)</term>
+            <term>ST_xmax(box3d) ymax(box3d) zmax(box3d)</term>
 
             <listitem>
               <para>Returns the requested maxima of a bounding box.</para>
@@ -4970,7 +4977,7 @@ newdb=&#62; \i spatial_ref_sys.sql
           </varlistentry>
 
           <varlistentry id="Accum">
-            <term>Accum(geometry set)</term>
+            <term>ST_Accum(geometry set)</term>
 
             <listitem>
               <para>Aggregate. Constructs an array of geometries.</para>
@@ -5824,17 +5831,25 @@ newdb=&#62; \i spatial_ref_sys.sql
 
         <para>Release date: 2007/01/11</para>
 
-        <para>This release provides bug fixes in PostgreSQL 8.2 
-        support and some small performance enhancements.</para>
+        <para>This release provides bug fixes in PostgreSQL 8.2 support and
+        some small performance enhancements.</para>
 
         <sect3>
           <title>Changes</title>
 
           <para>Fixed point-in-polygon shortcut bug in Within().</para>
+
           <para>Fixed PostgreSQL 8.2 NULL handling for indexes.</para>
+
           <para>Updated RPM spec files.</para>
+
           <para>Added short-circuit for Transform() in no-op case.</para>
-          <para>JDBC: Fixed JTS handling for multi-dimensional geometries (thanks to Thomas Marti for hint and partial patch).  Additionally, now JavaDoc is compiled and packaged. Fixed classpath problems with GCJ. Fixed pgjdbc 8.2 compatibility, losing support for jdk 1.3 and older.</para>
+
+          <para>JDBC: Fixed JTS handling for multi-dimensional geometries
+          (thanks to Thomas Marti for hint and partial patch). Additionally,
+          now JavaDoc is compiled and packaged. Fixed classpath problems with
+          GCJ. Fixed pgjdbc 8.2 compatibility, losing support for jdk 1.3 and
+          older.</para>
         </sect3>
       </sect2>
 
