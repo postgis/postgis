@@ -1,3 +1,9 @@
+2007-06-07 Mark Leslie <mleslie@refractions.net>
+
+	* lwgeom/lwpostgis.sql.in:
+	  Added relational functions that automatically inline index
+	  operators to provide automagic index utilization.
+
 2007-06-04 Mark Leslie <mleslie@refractions.net>
 
 	* lwgeom/lwpostgis.sql.in, lwgeom/sqlmm.sql.in:

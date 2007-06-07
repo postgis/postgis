@@ -4409,10 +4409,17 @@ CREATEFUNCTION touches(geometry,geometry)
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- PostGIS equivalent function: touches(geometry,geometry)
-CREATEFUNCTION ST_Touches(geometry,geometry)
+CREATEFUNCTION _ST_Touches(geometry,geometry)
     RETURNS boolean
     AS '@MODULE_FILENAME@','touches'
     LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Availability: 1.2.2
+-- Inlines index magic
+CREATEFUNCTION ST_Touches(geometry,geometry)
+    RETURNS boolean
+    AS 'SELECT $1 && $2 AND _ST_Touches($1,$2)'
+    LANGUAGE 'SQL' _IMMUTABLE; -- WITH (iscachable);
 
 -- Deprecation in 1.2.3
 CREATEFUNCTION intersects(geometry,geometry)
@@ -4421,11 +4428,17 @@ CREATEFUNCTION intersects(geometry,geometry)
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- PostGIS equivalent function: intersects(geometry,geometry)
-CREATEFUNCTION ST_Intersects(geometry,geometry)
+CREATEFUNCTION _ST_Intersects(geometry,geometry)
     RETURNS boolean
     AS '@MODULE_FILENAME@','intersects'
     LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Availability: 1.2.2
+-- Inlines index magic
+CREATEFUNCTION ST_Intersects(geometry,geometry)
+    RETURNS boolean
+    AS 'SELECT $1 && $2 AND _ST_Intersects($1,$2)'
+    LANGUAGE 'SQL' _IMMUTABLE; -- WITH (iscachable);
 -- Deprecation in 1.2.3
 CREATEFUNCTION crosses(geometry,geometry)
    RETURNS boolean
@@ -4433,10 +4446,17 @@ CREATEFUNCTION crosses(geometry,geometry)
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- PostGIS equivalent function: crosses(geometry,geometry)
-CREATEFUNCTION ST_Crosses(geometry,geometry)
+CREATEFUNCTION _ST_Crosses(geometry,geometry)
     RETURNS boolean
     AS '@MODULE_FILENAME@','crosses'
     LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Availability: 1.2.2
+-- Inlines index magic
+CREATEFUNCTION ST_Crosses(geometry,geometry)
+    RETURNS boolean
+    AS 'SELECT $1 && $2 AND _ST_Crosses($1,$2)'
+    LANGUAGE 'SQL' _IMMUTABLE; -- WITH (iscachable);
 
 -- Deprecation in 1.2.3
 CREATEFUNCTION within(geometry,geometry)
@@ -4445,10 +4465,17 @@ CREATEFUNCTION within(geometry,geometry)
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- PostGIS equivalent function: within(geometry,geometry)
-CREATEFUNCTION ST_Within(geometry,geometry)
+CREATEFUNCTION _ST_Within(geometry,geometry)
     RETURNS boolean
     AS '@MODULE_FILENAME@','within'
     LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Availability: 1.2.2
+-- Inlines index magic
+CREATEFUNCTION ST_Within(geometry,geometry)
+    RETURNS boolean
+    AS 'SELECT $1 && $2 AND _ST_Within($1,$2)'
+    LANGUAGE 'SQL' _IMMUTABLE; -- WITH (iscachable);
 
 -- Deprecation in 1.2.3
 CREATEFUNCTION contains(geometry,geometry)
@@ -4457,10 +4484,17 @@ CREATEFUNCTION contains(geometry,geometry)
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- PostGIS equivalent function: contains(geometry,geometry)
-CREATEFUNCTION ST_Contains(geometry,geometry)
+CREATEFUNCTION _ST_Contains(geometry,geometry)
     RETURNS boolean
     AS '@MODULE_FILENAME@','contains'
     LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Availability: 1.2.2
+-- Inlines index magic
+CREATEFUNCTION ST_Contains(geometry,geometry)
+    RETURNS boolean
+    AS 'SELECT $1 && $2 AND _ST_Contains($1,$2)'
+    LANGUAGE 'SQL' _IMMUTABLE; -- WITH (iscachable);
 
 -- Deprecation in 1.2.3
 CREATEFUNCTION overlaps(geometry,geometry)
@@ -4469,10 +4503,17 @@ CREATEFUNCTION overlaps(geometry,geometry)
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- PostGIS equivalent function: overlaps(geometry,geometry)
-CREATEFUNCTION ST_Overlaps(geometry,geometry)
+CREATEFUNCTION _ST_Overlaps(geometry,geometry)
     RETURNS boolean
     AS '@MODULE_FILENAME@','overlaps'
     LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Availability: 1.2.2
+-- Inlines index magic
+CREATEFUNCTION ST_Overlaps(geometry,geometry)
+    RETURNS boolean
+    AS 'SELECT $1 && $2 AND _ST_Overlaps($1,$2)'
+    LANGUAGE 'SQL' _IMMUTABLE; -- WITH (iscachable);
 
 -- Deprecation in 1.2.3
 CREATEFUNCTION IsValid(geometry)
