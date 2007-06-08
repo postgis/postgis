@@ -2996,10 +2996,10 @@ BEGIN
 		stale = 0;
 	END IF;
 
-        RETURN ''probed:''||probed||
-		'' inserted:''||inserted||
-		'' conflicts:''||probed-inserted||
-		'' stale:''||stale;
+        RETURN ''probed:''||probed::text||
+		'' inserted:''||inserted::text||
+		'' conflicts:''||(probed-inserted)::text||
+		'' stale:''||stale::text;
 END
 
 '
@@ -3150,7 +3150,7 @@ BEGIN
 #endif
 		quote_literal(table_name) || '','' ||
 		quote_literal(column_name) || '','' ||
-		new_dim || '','' || new_srid || '','' ||
+		new_dim::text || '','' || new_srid::text || '','' ||
 		quote_literal(new_type) || '')'';
 
 	-- Add table checks
@@ -3164,7 +3164,7 @@ BEGIN
 		|| '' ADD CONSTRAINT '' 
 		|| quote_ident(''enforce_srid_'' || column_name)
 		|| '' CHECK (SRID('' || quote_ident(column_name) ||
-		'') = '' || new_srid || '')'' ;
+		'') = '' || new_srid::text || '')'' ;
 
 	EXECUTE ''ALTER TABLE '' || 
 #if USE_VERSION >= 73
@@ -3175,7 +3175,7 @@ BEGIN
 		|| '' ADD CONSTRAINT ''
 		|| quote_ident(''enforce_dims_'' || column_name)
 		|| '' CHECK (ndims('' || quote_ident(column_name) ||
-		'') = '' || new_dim || '')'' ;
+		'') = '' || new_dim::text || '')'' ;
 
 	IF (not(new_type = ''GEOMETRY'')) THEN
 		EXECUTE ''ALTER TABLE '' || 
@@ -3197,9 +3197,9 @@ BEGIN
 		real_schema || ''.'' || 
 #endif
 		table_name || ''.'' || column_name ||
-		'' SRID:'' || new_srid ||
+		'' SRID:'' || new_srid::text ||
 		'' TYPE:'' || new_type || 
-		'' DIMS:'' || new_dim || chr(10) || '' ''; 
+		'' DIMS:'' || new_dim::text || chr(10) || '' ''; 
 END;
 '
 LANGUAGE 'plpgsql' _VOLATILE_STRICT; -- WITH (isstrict);
@@ -3503,7 +3503,7 @@ BEGIN
 	END IF;
 
 	-- Update ref from geometry_columns table
-	EXECUTE ''UPDATE geometry_columns SET SRID = '' || new_srid || 
+	EXECUTE ''UPDATE geometry_columns SET SRID = '' || new_srid::text || 
 		'' where f_table_schema = '' ||
 		quote_literal(real_schema) || '' and f_table_name = '' ||
 		quote_literal(table_name)  || '' and f_geometry_column = '' ||
@@ -3530,7 +3530,7 @@ BEGIN
 #endif
 		'' SET '' || quote_ident(column_name) ||
 		'' = setSRID('' || quote_ident(column_name) ||
-		'', '' || new_srid || '')'';
+		'', '' || new_srid::text || '')'';
 
 	-- Reset enforce_srid constraint
 #if USE_VERSION < 73
@@ -3541,9 +3541,9 @@ BEGIN
 #endif
 		'' ADD constraint '' || quote_ident(cname) ||
 		'' CHECK (srid('' || quote_ident(column_name) ||
-		'') = '' || new_srid || '')'';
+		'') = '' || new_srid::text || '')'';
 
-	RETURN real_schema || ''.'' || table_name || ''.'' || column_name ||'' SRID changed to '' || new_srid;
+	RETURN real_schema || ''.'' || table_name || ''.'' || column_name ||'' SRID changed to '' || new_srid::text;
 	
 END;
 '
@@ -4065,7 +4065,7 @@ CREATE CAST (geometry AS text) WITH FUNCTION ST_text(geometry) AS IMPLICIT;
 CREATE CAST (chip AS geometry) WITH FUNCTION ST_geometry(chip) AS IMPLICIT;
 CREATE CAST (bytea AS geometry) WITH FUNCTION ST_geometry(bytea) AS IMPLICIT;
 CREATE CAST (geometry AS bytea) WITH FUNCTION ST_bytea(geometry) AS IMPLICIT;
-CREATE CAST (bool AS text) WITH FUNCTION ST_text(bool) AS IMPLICIT;
+-- CREATE CAST (bool AS text) WITH FUNCTION ST_text(bool) AS IMPLICIT;
 #endif
 
 ---------------------------------------------------------------

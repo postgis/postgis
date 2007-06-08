@@ -445,7 +445,7 @@ getSRSbySRID(int SRID)
 	}
 
 	/* write query */
-	sprintf(query, "SELECT textcat(auth_name, textcat(':', auth_srid)) \
+	sprintf(query, "SELECT textcat(auth_name, textcat(':', auth_srid::text)) \
 		FROM spatial_ref_sys WHERE srid = '%d'", SRID);
 #ifdef PGIS_DEBUG
 	elog(NOTICE, "Query: %s", query);

@@ -89,8 +89,8 @@ BEGIN
 	END LOOP;
 
 	EXECUTE ''INSERT INTO authorization_table VALUES (''||
-		quote_literal(mytoid)||'',''||quote_literal(myrid)||
-		'',''||quote_literal(expires)||
+		quote_literal(mytoid::text)||'',''||quote_literal(myrid)||
+		'',''||quote_literal(expires::text)||
 		'',''||quote_literal(authid) ||'')'';
 
 	GET DIAGNOSTICS ret = ROW_COUNT;
