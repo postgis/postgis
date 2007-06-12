@@ -2595,8 +2595,8 @@
     functions to the PostGIS objects which are not of use to a general user.</para>
 
     <note>
-      <para>PostGIS has begun a transition from the existing naming convension
-      to an SQL-MM-centric convension. As a result, most of the functions that
+      <para>PostGIS has begun a transition from the existing naming convention
+      to an SQL-MM-centric convention. As a result, most of the functions that
       you know and love have been renamed using the standard spatial type (ST)
       prefix. Previous functions are still available, though are not listed in
       this document where updated functions are equivalent. These will be
@@ -5096,7 +5096,7 @@
           <term>ST_CoordDim</term>
 
           <listitem>
-            <para>Return the coodinate dimension of the ST_Geometry value.</para>
+            <para>Return the coordinate dimension of the ST_Geometry value.</para>
 
             <para>SQL-MM 3: 5.1.3</para>
           </listitem>
@@ -5180,7 +5180,7 @@
           <term>ST_Equals</term>
 
           <listitem>
-            <para>Test if an ST_Geometry alue as spatially equal to another
+            <para>Test if an ST_Geometry value as spatially equal to another
             ST_Geometry value.</para>
 
             <para>SQL-MM 3: 5.1.24</para>
@@ -5319,7 +5319,7 @@
           <term>ST_IsSimple</term>
 
           <listitem>
-            <para>Test if an ST_Geometry value has no anomalous geometryc
+            <para>Test if an ST_Geometry value has no anomalous geometric
             points, such as self intersection or self tangency.</para>
 
             <note>
@@ -5342,7 +5342,7 @@
               while PostGIS returns NULL.</para>
             </note>
 
-            <para>QL-MM defines the result of ST_IsValid(NULL) to be 1</para>
+            <para>SQL-MM defines the result of ST_IsValid(NULL) to be 1</para>
 
             <para>SQL-MM 3: 5.1.9</para>
           </listitem>
@@ -5631,7 +5631,7 @@
 
           <listitem>
             <para>Return an ST_Geometry value that represents the point set
-            symmetrcy difference of two ST_Geometry values.</para>
+            symmetric difference of two ST_Geometry values.</para>
 
             <para>SQL-MM 3: 5.1.21</para>
           </listitem>
@@ -5664,7 +5664,7 @@
 
           <listitem>
             <para>Return an ST_Geometry value that represents the point set
-            union of two sST_Geometry values.</para>
+            union of two ST_Geometry values.</para>
 
             <para>SQL-MM 3: 5.1.19</para>
           </listitem>
