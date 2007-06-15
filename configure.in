@@ -374,6 +374,11 @@ AC_SUBST(DOC_RULE)
 if test $USE_JTS -gt 0; then
 dnl	AC_MSG_RESULT([ GEOS disabled, using JTS.])
 	USE_GEOS=0
+        AC_DEFINE(USE_JTS)
+fi
+
+if test $USE_GEOS -gt 0; then
+        AC_DEFINE(USE_GEOS)
 fi
 
 #

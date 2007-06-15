@@ -37,6 +37,12 @@ TESTS = \
 	sql-mm-multicurve \
 	sql-mm-multisurface 
 
+PREPROC = \
+	sql-mm-circularstring_expected \
+	sql-mm-compoundcurve_expected \
+	sql-mm-curvepoly_expected \
+	sql-mm-multicurve_expected \
+	sql-mm-multisurface_expected
 
 ifeq ($(USE_GEOS),1)
 	TESTS += regress_ogc regress_bdpoly
@@ -48,7 +54,7 @@ endif
 
 all: test 
 
-test check: lwpostgis.sql ../lwgeom/liblwgeom.so ../loader/pgsql2shp ../loader/shp2pgsql
+test check: lwpostgis.sql ../lwgeom/liblwgeom.so ../loader/pgsql2shp ../loader/shp2pgsql $(PREPROC)
 	@USE_VERSION="$(USE_VERSION)" ./run_test $(TESTS)
 
 lwpostgis.sql: ../lwgeom/lwpostgis.sql.in 
@@ -63,9 +69,12 @@ lwpostgis.sql: ../lwgeom/lwpostgis.sql.in
 ../loader/shp2pgsql:
 	$(MAKE) -C ../loader shp2pgsql
 
+$(PREPROC):
+	cpp -P -traditional-cpp $@.in | grep -v "^$$" > $@
+
 cleanup:
 	@sleep 1
 	@dropdb postgis_reg > /dev/null
 
 clean:
-	rm -f lwpostgis.sql
+	rm -f lwpostgis.sql $(PREPROC)

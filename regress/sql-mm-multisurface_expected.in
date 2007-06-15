@@ -1,3 +1,4 @@
+#include "../config.h"
 ndims01|4
 geometrytype01|MULTISURFACE
 ndims02|3
@@ -58,10 +59,17 @@ box3d01|BOX3D(-2 0 0,10 14 0)
 box3d02|BOX3D(-2 0 0,10 14 0)
 box3d03|BOX3D(-2 0 0,10 14 7)
 box3d04|BOX3D(-2 0 0,10 14 7)
+#ifdef USE_JTS
+ERROR:  Exception in LWGEOM2JTS: curved geometry not supported.
+ERROR:  Exception in LWGEOM2JTS: curved geometry not supported.
+ERROR:  Exception in LWGEOM2JTS: curved geometry not supported.
+ERROR:  Exception in LWGEOM2JTS: curved geometry not supported.
+#else
 ERROR:  Exception in LWGEOM2GEOS: curved geometry not supported.
 ERROR:  Exception in LWGEOM2GEOS: curved geometry not supported.
 ERROR:  Exception in LWGEOM2GEOS: curved geometry not supported.
 ERROR:  Exception in LWGEOM2GEOS: curved geometry not supported.
+#endif
 dimension01|2
 dimension02|2
 dimension03|2
@@ -106,10 +114,17 @@ box3d01|BOX3D(-2 0 0,10 14 0)
 box3d02|BOX3D(-2 0 0,10 14 0)
 box3d03|BOX3D(-2 0 0,10 14 7)
 box3d04|BOX3D(-2 0 0,10 14 7)
+#ifdef USE_JTS
+ERROR:  Exception in LWGEOM2JTS: curved geometry not supported.
+ERROR:  Exception in LWGEOM2JTS: curved geometry not supported.
+ERROR:  Exception in LWGEOM2JTS: curved geometry not supported.
+ERROR:  Exception in LWGEOM2JTS: curved geometry not supported.
+#else
 ERROR:  Exception in LWGEOM2GEOS: curved geometry not supported.
 ERROR:  Exception in LWGEOM2GEOS: curved geometry not supported.
 ERROR:  Exception in LWGEOM2GEOS: curved geometry not supported.
 ERROR:  Exception in LWGEOM2GEOS: curved geometry not supported.
+#endif
 dimension01|2
 dimension02|2
 dimension03|2
