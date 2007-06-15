@@ -2537,6 +2537,13 @@ LWGEOM2JTS(LWGEOM *lwgeom)
 				collected, col->ngeoms, col->SRID,
 				TYPE_NDIMS(col->type)>2);
 
+                case CURVETYPE:
+                case COMPOUNDTYPE:
+                case CURVEPOLYTYPE:
+                case MULTICURVETYPE:
+                case MULTISURFACETYPE:
+                        lwerror("Exception in LWGEOM2JTS: curved geometry not supported.");
+                        return NULL;
 		default:
 			lwerror("Unknown geometry type: %d",
 				TYPE_GETTYPE(lwgeom->type));
