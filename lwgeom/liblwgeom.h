@@ -7,9 +7,23 @@
 #define INTEGRITY_CHECKS 1
 /* #define DEBUG_ALLOCS 1 */
 /* #define PGIS_DEBUG 1
-#define PGIS_DEBUG_CALLS 1
-#define PGIS_DEBUG_ALLOCS 1 */
+#define PGIS_DEBUG_CALLS 1 */
+/*#define PGIS_DEBUG_ALLOCS 1 */
 /* #define DEBUG_CALLS 1 */
+
+/*
+ * Floating point comparitors.
+ */
+#define PGIS_EPSILON 1e-12
+#define FP_MAX(A, B) ((A > B) ? A : B)
+#define FP_MIN(A, B) ((A < B) ? A : B)
+#define FP_LT(A, B) ((A + PGIS_EPSILON) < B)
+#define FP_LTEQ(A, B) ((A - PGIS_EPSILON) < B)
+#define FP_CONTAINS_TOP(A, X, B) (FP_LT(A, X) && FP_LTEQ(X, B))
+#define FP_CONTAINS_BOTTOM(A, X, B) (FP_LTEQ(A, X) && FP_LT(X, B))
+#define FP_CONTAINS_INCL(A, X, B) (FP_LTEQ(A, X) && FP_LTEQ(X, B))
+#define FP_CONTAINS_EXCL(A, X, B) (FP_LT(A, X) && FP_LT(X, B))
+#define FP_CONTAINS(A, X, B) FP_CONTAINS_EXCL(A, X, B)
 
 /*
  * Memory management function types
@@ -1209,6 +1223,7 @@ uint32 has_arc(LWGEOM *geom);
 double lwcircle_center(POINT4D *p1, POINT4D *p2, POINT4D *p3, POINT4D **result);
 LWGEOM *lwgeom_segmentize(LWGEOM *geom, uint32 perQuad);
 extern double lwgeom_curvepolygon_area(LWCURVEPOLY *curvepoly);
+double lwcircle_center(POINT4D *p1, POINT4D *p2, POINT4D *p3, POINT4D **result);
+
 #endif /* !defined _LIBLWGEOM_H  */
 
-double lwcircle_center(POINT4D *p1, POINT4D *p2, POINT4D *p3, POINT4D **result);

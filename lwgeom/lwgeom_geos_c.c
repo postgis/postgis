@@ -8,6 +8,7 @@
 #include "profile.h"
 #include "wktparse.h"
 #include "geos_c.h"
+#include "lwgeom_rtree.h"
 
 /*
  * Define this to have have many notices printed
@@ -1339,8 +1340,10 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(result);
 }
 
-int point_in_polygon(LWPOLY *polygon, LWPOINT *point);
-int point_outside_polygon(LWPOLY *polygon, LWPOINT *point);
+int point_in_polygon(RTREE_NODE **root, int ringCount, LWPOINT *point);
+int point_in_polygon_deprecated(LWPOLY *polygon, LWPOINT *point);
+int point_outside_polygon(RTREE_NODE **root, int ringCount, LWPOINT *point);
+int point_outside_polygon_deprecated(LWPOLY *polygon, LWPOINT *point);
 int point_in_multipolygon(LWMPOLY *mpolygon, LWPOINT *point);
 
 PG_FUNCTION_INFO_V1(contains);
@@ -1355,6 +1358,8 @@ Datum contains(PG_FUNCTION_ARGS)
         LWPOLY *poly;
         /* LWMPOLY *mpoly; */
         LWPOINT *point;
+        RTREE_POLY_CACHE *poly_cache;
+        MemoryContext old_context;
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
@@ -1390,12 +1395,24 @@ Datum contains(PG_FUNCTION_ARGS)
 #ifdef PGIS_DEBUG
                 lwnotice("Point in Polygon test requested...short-circuiting.");
 #endif
+
                 poly = lwpoly_deserialize(SERIALIZED_FORM(geom1));
                 point = lwpoint_deserialize(SERIALIZED_FORM(geom2));
 #ifdef PGIS_DEBUG
                 lwnotice("Precall point_in_polygon %p, %p", poly, point);
 #endif
-                if(point_in_polygon(poly, point) == 0)
+
+                /*
+                 * Switch the context to the function-scope context,
+                 * retrieve the appropriate cache object, cache it for 
+                 * future use, then switch back to the local context.
+                 */                 
+                old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
+                poly_cache = retrieveCache(poly, SERIALIZED_FORM(geom1), fcinfo->flinfo->fn_extra);
+                fcinfo->flinfo->fn_extra = poly_cache;
+                MemoryContextSwitchTo(old_context);
+
+                if(point_in_polygon(poly_cache->ringIndices, poly_cache->ringCount, point) == 0)
                 {
 	                PG_FREE_IF_COPY(geom1, 0);
 	                PG_FREE_IF_COPY(geom2, 1);
@@ -1502,6 +1519,8 @@ Datum within(PG_FUNCTION_ARGS)
         LWPOLY *poly;
         LWPOINT *point;
         int type1, type2;
+        MemoryContext old_context;
+        RTREE_POLY_CACHE *poly_cache;
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
@@ -1537,9 +1556,21 @@ Datum within(PG_FUNCTION_ARGS)
 #ifdef PGIS_DEBUG
                 lwnotice("Point in Polygon test requested...short-circuiting.");
 #endif
+
                 point = lwpoint_deserialize(SERIALIZED_FORM(geom1));
                 poly = lwpoly_deserialize(SERIALIZED_FORM(geom2));
-                if(point_in_polygon(poly, point) == 0)
+
+                /*
+                 * Switch the context to the function-scope context,
+                 * retrieve the appropriate cache object, cache it for 
+                 * future use, then switch back to the local context.
+                 */                 
+                old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
+                poly_cache = retrieveCache(poly, SERIALIZED_FORM(geom2), fcinfo->flinfo->fn_extra);
+                fcinfo->flinfo->fn_extra = poly_cache;
+                MemoryContextSwitchTo(old_context);
+
+                if(point_in_polygon(poly_cache->ringIndices, poly_cache->ringCount, point) == 0)
                 {
 	                PG_FREE_IF_COPY(geom1, 0);
 	                PG_FREE_IF_COPY(geom2, 1);
@@ -1695,6 +1726,8 @@ Datum intersects(PG_FUNCTION_ARGS)
 	int type1, type2;
 	LWPOINT *point;
 	LWPOLY *poly;
+        MemoryContext old_context;
+        RTREE_POLY_CACHE *poly_cache;
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
@@ -1733,7 +1766,18 @@ Datum intersects(PG_FUNCTION_ARGS)
 #endif
 		point = lwpoint_deserialize(SERIALIZED_FORM(geom1));
 		poly = lwpoly_deserialize(SERIALIZED_FORM(geom2));
-		if(point_outside_polygon(poly, point) == 0)
+
+                /*
+                 * Switch the context to the function-scope context,
+                 * retrieve the appropriate cache object, cache it for 
+                 * future use, then switch back to the local context.
+                 */                 
+                old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
+                poly_cache = retrieveCache(poly, SERIALIZED_FORM(geom2), fcinfo->flinfo->fn_extra);
+                fcinfo->flinfo->fn_extra = poly_cache;
+                MemoryContextSwitchTo(old_context);
+
+		if(point_outside_polygon(poly_cache->ringIndices, poly_cache->ringCount, point) == 0)
 		{
 			PG_FREE_IF_COPY(geom1, 0);
 			PG_FREE_IF_COPY(geom2, 1);
@@ -1757,7 +1801,18 @@ Datum intersects(PG_FUNCTION_ARGS)
 #endif
 		point = lwpoint_deserialize(SERIALIZED_FORM(geom2));
 		poly = lwpoly_deserialize(SERIALIZED_FORM(geom1));
-		if(point_outside_polygon(poly, point) == 0)
+
+                /*
+                 * Switch the context to the function-scope context,
+                 * retrieve the appropriate cache object, cache it for 
+                 * future use, then switch back to the local context.
+                 */                 
+                old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
+                poly_cache = retrieveCache(poly, SERIALIZED_FORM(geom1), fcinfo->flinfo->fn_extra);
+                fcinfo->flinfo->fn_extra = poly_cache;
+                MemoryContextSwitchTo(old_context);
+
+		if(point_outside_polygon(poly_cache->ringIndices, poly_cache->ringCount, point) == 0)
 		{
 			PG_FREE_IF_COPY(geom1, 0);
 			PG_FREE_IF_COPY(geom2, 1);
@@ -1911,6 +1966,8 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	int type1, type2;
 	LWPOLY *poly;
 	LWPOINT *point;
+        MemoryContext old_context;
+        RTREE_POLY_CACHE *poly_cache;
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
@@ -1949,7 +2006,18 @@ Datum disjoint(PG_FUNCTION_ARGS)
 #endif
 		point = lwpoint_deserialize(SERIALIZED_FORM(geom1));
 		poly = lwpoly_deserialize(SERIALIZED_FORM(geom2));
-		if(point_outside_polygon(poly, point) == 0) 
+
+                /*
+                 * Switch the context to the function-scope context,
+                 * retrieve the appropriate cache object, cache it for 
+                 * future use, then switch back to the local context.
+                 */                 
+                old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
+                poly_cache = retrieveCache(poly, SERIALIZED_FORM(geom2), fcinfo->flinfo->fn_extra);
+                fcinfo->flinfo->fn_extra = poly_cache;
+                MemoryContextSwitchTo(old_context);
+
+		if(point_outside_polygon(poly_cache->ringIndices, poly_cache->ringCount, point) == 0) 
 		{
 			PG_FREE_IF_COPY(geom1, 0);
 			PG_FREE_IF_COPY(geom2, 0);
@@ -1973,7 +2041,18 @@ Datum disjoint(PG_FUNCTION_ARGS)
 #endif
 		point = lwpoint_deserialize(SERIALIZED_FORM(geom2));
 		poly = lwpoly_deserialize(SERIALIZED_FORM(geom1));
-		if(point_outside_polygon(poly, point) == 0) 
+
+                /*
+                 * Switch the context to the function-scope context,
+                 * retrieve the appropriate cache object, cache it for 
+                 * future use, then switch back to the local context.
+                 */                 
+                old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
+                poly_cache = retrieveCache(poly, SERIALIZED_FORM(geom2), fcinfo->flinfo->fn_extra);
+                fcinfo->flinfo->fn_extra = poly_cache;
+                MemoryContextSwitchTo(old_context);
+
+		if(point_outside_polygon(poly_cache->ringIndices, poly_cache->ringCount, point) == 0) 
 		{
 			PG_FREE_IF_COPY(geom1, 0);
 			PG_FREE_IF_COPY(geom2, 0);
