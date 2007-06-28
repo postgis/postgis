@@ -1,3 +1,25 @@
+2007-07-28 Mark Leslie <mleslie@refractions.net>
+
+	* lwgeom/lwpostgis.sql.in,
+	  lwgeom/lwgeom_geos_c.c:
+	  Added ST_Covers and ST_CoveredBy functions, as discussed at 
+	  http://lin-ear-th-inking.blogspot.com.
+	* regress/regress_ogc_expected,
+	  regress/regress_ogc.sql:
+	  Added regression tests for the new functions.
+	* doc/postgis.xml:
+	  Added documentation blurbs for the new functions.
+
+2007-07-28 Mark Leslie <mleslie@refractions.net>
+
+	* lwgeom/lwgeom_geos_c.c,
+	  lwgeom/lwgeom_rtree.c,
+	  lwgeom/lwgeom_rtree.h,
+	  lwgeom/lwgeom_functions_analytic.c:
+	  Added a 1D RTree index to provide filtering for polygon
+	  segments.  Added the RTree into the point-in-polygon short-circuit
+	  in ST_Contains, ST_Intersects, ST_Within and ST_Disjoint.
+
 2007-06-07 Mark Leslie <mleslie@refractions.net>
 
 	* lwgeom/lwpostgis.sql.in:

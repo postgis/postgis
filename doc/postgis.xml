@@ -209,7 +209,7 @@
 
         <listitem>
           <para>(Recommended) GEOS geometry library. The GEOS library is used
-          to provide geometry tests (Touches(), Contains(), Intersects()) and
+          to provide geometry tests (ST_Touches(), ST_Contains(), ST_Intersects()) and
           operations (Buffer(), GeomUnion(), Difference()) within PostGIS.
           GEOS is available for download from <ulink
           url="http://geos.refractions.net">http://geos.refractions.net</ulink>.</para>
@@ -640,7 +640,8 @@
           much much faster.</para>
 
           <para>You will also make use of spatial functions, such as
-          Distance(), Intersects(), Contains() and Within(), among others, to
+          Distance(), ST_Intersects(), ST_Contains() and ST_Within(), 
+          among others, to
           narrow down the results of your search. Most spatial queries include
           both an indexed test and a spatial function test. The index test
           serves to limit the number of return tuples to only tuples that
@@ -2809,6 +2810,28 @@
 
               <para>OGC SPEC s2.1.1.2 // s2.1.13.3 - same as within(geometry
               B, geometry A)</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>ST_Covers(geometry A, geometry B)</term>
+
+            <listitem>
+              <para>Returns 1 (TRUE) if no point in Geometry B is outside 
+              Geometry A</para>
+              <para>Refer to http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html
+              for an explaination of the need of this function.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>ST_CoveredBy(geometry A, geometry B)</term>
+
+            <listitem>
+              <para>Returns 1 (TRUE) if no point in Geometry A is outside 
+                Geometry B</para>
+              <para>Refer to http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html
+              for an explaination of the need of this function.</para>
             </listitem>
           </varlistentry>
 

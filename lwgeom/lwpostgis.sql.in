@@ -4496,6 +4496,31 @@ CREATEFUNCTION ST_Contains(geometry,geometry)
     AS 'SELECT $1 && $2 AND _ST_Contains($1,$2)'
     LANGUAGE 'SQL' _IMMUTABLE; -- WITH (iscachable);
 
+-- Availability: 1.2.2
+CREATEFUNCTION _ST_CoveredBy(geometry,geometry)
+   RETURNS boolean
+   AS '@MODULE_FILENAME@', 'coveredby'
+   LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_CoveredBy(geometry,geometry)
+   RETURNS boolean
+   AS 'SELECT $1 && $2 AND _ST_CoveredBy($1,$2)'
+   LANGUAGE 'SQL' _IMMUTABLE; -- WITH(iscachable);
+
+-- Availability: 1.2.2
+CREATEFUNCTION _ST_Covers(geometry,geometry)
+   RETURNS boolean
+   AS '@MODULE_FILENAME@', 'covers'
+   LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Availability: 1.2.2
+-- Inlines index magic
+CREATEFUNCTION ST_Covers(geometry,geometry)
+   RETURNS boolean
+   AS 'SELECT $1 && $2 AND _ST_Covers($1,$2)'
+   LANGUAGE 'SQL' _IMMUTABLE; -- WITH (iscachable);
+
 -- Deprecation in 1.2.3
 CREATEFUNCTION overlaps(geometry,geometry)
    RETURNS boolean
