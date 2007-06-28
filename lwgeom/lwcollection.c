@@ -31,7 +31,7 @@ lwcollection_construct(unsigned int type, int SRID, BOX2DFLOAT4 *bbox,
 #endif
 
 #ifdef PGIS_DEBUG_CALLS
-        lwnotice("lwcollection_construct called.");
+        lwnotice("lwcollection_construct called with %d, %d, %p, %d, %p.", type, SRID, bbox, ngeoms, geoms);
 #endif        
 
 	hasz = 0;

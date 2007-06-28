@@ -303,7 +303,9 @@ lwgeom_size_poly(const uchar *serialized_poly)
 	loc +=4;
 	result +=4;
 
-
+#ifdef PGIS_DEBUG
+        lwnotice("lwgeom_size_poly contains %d rings", nrings);
+#endif
 	for (t =0;t<nrings;t++)
 	{
 		/* read in a single ring and make a PA */
@@ -327,6 +329,10 @@ lwgeom_size_poly(const uchar *serialized_poly)
 			result += 32*npoints;
 		}
 	}
+
+#ifdef PGIS_DEBUG
+        lwnotice("lwgeom_size_poly returning %d", result);
+#endif
 	return result;
 }
 

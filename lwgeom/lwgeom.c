@@ -220,6 +220,9 @@ lwgeom_reverse(LWGEOM *lwgeom)
 int
 lwgeom_compute_box2d_p(LWGEOM *lwgeom, BOX2DFLOAT4 *buf)
 {
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("lwgeom_compute_box2d_p called of %p of type %d.", lwgeom, TYPE_GETTYPE(lwgeom->type));
+#endif
 	switch(TYPE_GETTYPE(lwgeom->type))
 	{
 		case POINTTYPE:
@@ -373,6 +376,9 @@ lwgeom_release(LWGEOM *lwgeom)
 LWGEOM *
 lwgeom_clone(const LWGEOM *lwgeom)
 {
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("lwgeom_clone called with %p, %d", lwgeom, TYPE_GETTYPE(lwgeom->type));
+#endif
 	switch(TYPE_GETTYPE(lwgeom->type))
 	{
 		case POINTTYPE:

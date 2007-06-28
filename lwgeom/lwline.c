@@ -334,6 +334,9 @@ lwline_compute_box2d_p(LWLINE *line, BOX2DFLOAT4 *box)
 LWLINE *
 lwline_clone(const LWLINE *g)
 {
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("lwline_clone called with %p", g);
+#endif
 	LWLINE *ret = lwalloc(sizeof(LWLINE));
 	memcpy(ret, g, sizeof(LWLINE));
 	if ( g->bbox ) ret->bbox = box2d_clone(g->bbox);
