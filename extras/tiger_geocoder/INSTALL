@@ -1,0 +1,34 @@
+TIGER Geocoder
+
+  2004/10/28
+
+  A plpgsql based geocoder written for TIGER census data.
+
+Installation instructions:
+
+- If the database being used is new, ensure the following scripts have 
+  been loaded:
+
+	/opt/pgsql74/share/postgis.sql
+	/opt/pgsql74/share/contrib/spatial_ref_sys.sql
+
+- Load the fuzzy string matching functions.  These must first be compiled, 
+  and may be found in the contrib directory of the postgres source directory.
+
+	psql [-p (port)] (database) < /usr/local/src/postgresql-7.4.5/contrib/fuzzystrmatch/fuzzystrmatch.sql
+
+- Ensure that the TIGER data is loaded into the target database.
+
+- Load the lookup tables.  This creates the lookup tables and loads predefined
+  data into them.  If the standardized TIGER data is not being used, this 
+  script will need to be altered to reflect the actual data.  Since the place
+  and countysub lookup tables are generated to reflect the data in use, the
+  database must be populated before this script is run.  Indicies are also
+  created in this script.
+
+	psql [-p (port)] (database) < lookup_tables.sql
+
+- Load the function scripts.  This script loads the geocode function, and all
+  support modules and functions required by it.
+
+	psql [-p (port)] (database) < tiger_geocoder.sql
