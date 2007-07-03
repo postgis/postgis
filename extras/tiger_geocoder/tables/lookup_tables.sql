@@ -1,6 +1,6 @@
 -- Create direction lookup table
-BEGIN;
-CREATE TABLE direction_lookup (name VARCHAR(20), abbrev VARCHAR(3));
+DROP TABLE IF EXISTS direction_lookup;
+CREATE TABLE direction_lookup (name VARCHAR(20) PRIMARY KEY, abbrev VARCHAR(3));
 INSERT INTO direction_lookup (name, abbrev) VALUES('WEST', 'W');
 INSERT INTO direction_lookup (name, abbrev) VALUES('W', 'W');
 INSERT INTO direction_lookup (name, abbrev) VALUES('SW', 'SW');
@@ -29,13 +29,13 @@ INSERT INTO direction_lookup (name, abbrev) VALUES('NE', 'NE');
 INSERT INTO direction_lookup (name, abbrev) VALUES('N', 'N');
 INSERT INTO direction_lookup (name, abbrev) VALUES('EAST', 'E');
 INSERT INTO direction_lookup (name, abbrev) VALUES('E', 'E');
-COMMIT;
+CREATE INDEX direction_lookup_abbrev_idx ON direction_lookup (abbrev);
 
 
 
 -- Create secondary unit lookup table
-BEGIN;
-CREATE TABLE secondary_unit_lookup (name VARCHAR(20), abbrev VARCHAR(5));
+DROP TABLE IF EXISTS secondary_unit_lookup;
+CREATE TABLE secondary_unit_lookup (name VARCHAR(20) PRIMARY KEY, abbrev VARCHAR(5));
 INSERT INTO secondary_unit_lookup (name, abbrev) VALUES ('APARTMENT', 'APT');
 INSERT INTO secondary_unit_lookup (name, abbrev) VALUES ('APT', 'APT');
 INSERT INTO secondary_unit_lookup (name, abbrev) VALUES ('BASEMENT', 'BSMT');
@@ -75,78 +75,77 @@ INSERT INTO secondary_unit_lookup (name, abbrev) VALUES ('TRLR', 'TRLR');
 INSERT INTO secondary_unit_lookup (name, abbrev) VALUES ('UNIT', 'UNIT');
 INSERT INTO secondary_unit_lookup (name, abbrev) VALUES ('UPPER', 'UPPR');
 INSERT INTO secondary_unit_lookup (name, abbrev) VALUES ('UPPR', 'UPPR');
-COMMIT;
+CREATE INDEX secondary_unit_lookup_abbrev_idx ON secondary_unit_lookup (abbrev);
 
 
 
 -- Create state lookup table
-BEGIN;
-CREATE TABLE state_lookup (name VARCHAR(40), abbrev VARCHAR(3));
-INSERT INTO state_lookup (name, abbrev) VALUES ('Alabama', 'AL');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Alaska', 'AK');
-INSERT INTO state_lookup (name, abbrev) VALUES ('American Samoa', 'AS');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Arizona', 'AZ');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Arkansas', 'AR');
-INSERT INTO state_lookup (name, abbrev) VALUES ('California', 'CA');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Colorado', 'CO');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Connecticut', 'CT');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Delaware', 'DE');
-INSERT INTO state_lookup (name, abbrev) VALUES ('District of Columbia', 'DC');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Federated States of Micronesia', 'FM');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Florida', 'FL');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Georgia', 'GA');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Guam', 'GU');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Hawaii', 'HI');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Idaho', 'ID');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Illinois', 'IL');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Indiana', 'IN');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Iowa', 'IA');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Kansas', 'KS');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Kentucky', 'KY');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Louisiana', 'LA');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Maine', 'ME');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Marshall Islands', 'MH');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Maryland', 'MD');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Massachusetts', 'MA');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Michigan', 'MI');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Minnesota', 'MN');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Mississippi', 'MS');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Missouri', 'MO');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Montana', 'MT');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Nebraska', 'NE');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Nevada', 'NV');
-INSERT INTO state_lookup (name, abbrev) VALUES ('New Hampshire', 'NH');
-INSERT INTO state_lookup (name, abbrev) VALUES ('New Jersey', 'NJ');
-INSERT INTO state_lookup (name, abbrev) VALUES ('New Mexico', 'NM');
-INSERT INTO state_lookup (name, abbrev) VALUES ('New York', 'NY');
-INSERT INTO state_lookup (name, abbrev) VALUES ('North Carolina', 'NC');
-INSERT INTO state_lookup (name, abbrev) VALUES ('North Dakota', 'ND');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Northern Mariana Islands', 'MP');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Ohio', 'OH');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Oklahoma', 'OK');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Oregon', 'OR');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Palau', 'PW');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Pennsylvania', 'PA');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Puerto Rico', 'PR');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Rhode Island', 'RI');
-INSERT INTO state_lookup (name, abbrev) VALUES ('South Carolina', 'SC');
-INSERT INTO state_lookup (name, abbrev) VALUES ('South Dakota', 'SD');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Tennessee', 'TN');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Texas', 'TX');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Utah', 'UT');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Vermont', 'VT');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Virgin Islands', 'VI');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Virginia', 'VA');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Washington', 'WA');
-INSERT INTO state_lookup (name, abbrev) VALUES ('West Virginia', 'WV');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Wisconsin', 'WI');
-INSERT INTO state_lookup (name, abbrev) VALUES ('Wyoming', 'WY');
-COMMIT;
+DROP TABLE IF EXISTS state_lookup;
+CREATE TABLE state_lookup (st_code INTEGER PRIMARY KEY, name VARCHAR(40) UNIQUE, abbrev VARCHAR(3) UNIQUE);
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Alabama', 'AL', '01');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Alaska', 'AK', '02');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('American Samoa', 'AS', -1);
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Arizona', 'AZ', '04');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Arkansas', 'AR', '05');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('California', 'CA', '06');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Colorado', 'CO', '08');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Connecticut', 'CT', '09');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Delaware', 'DE', '10');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('District of Columbia', 'DC', '11');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Federated States of Micronesia', 'FM', -2);
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Florida', 'FL', '12');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Georgia', 'GA', '13');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Guam', 'GU', -7);
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Hawaii', 'HI', '15');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Idaho', 'ID', '16');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Illinois', 'IL', '17');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Indiana', 'IN', '18');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Iowa', 'IA', '19');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Kansas', 'KS', '20');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Kentucky', 'KY', '21');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Louisiana', 'LA', '22');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Maine', 'ME', '23');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Marshall Islands', 'MH', -3);
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Maryland', 'MD', '24');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Massachusetts', 'MA', '25');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Michigan', 'MI', '26');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Minnesota', 'MN', '27');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Mississippi', 'MS', '28');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Missouri', 'MO', '29');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Montana', 'MT', '30');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Nebraska', 'NE', '31');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Nevada', 'NV', '32');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('New Hampshire', 'NH', '33');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('New Jersey', 'NJ', '34');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('New Mexico', 'NM', '35');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('New York', 'NY', '36');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('North Carolina', 'NC', '37');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('North Dakota', 'ND', '38');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Northern Mariana Islands', 'MP', -4);
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Ohio', 'OH', '39');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Oklahoma', 'OK', '40');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Oregon', 'OR', '41');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Palau', 'PW', -5);
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Pennsylvania', 'PA', '42');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Puerto Rico', 'PR', '72');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Rhode Island', 'RI', '44');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('South Carolina', 'SC', '45');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('South Dakota', 'SD', '46');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Tennessee', 'TN', '47');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Texas', 'TX', '48');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Utah', 'UT', '49');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Vermont', 'VT', '50');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Virgin Islands', 'VI', -6);
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Virginia', 'VA', '51');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Washington', 'WA', '53');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('West Virginia', 'WV', '54');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Wisconsin', 'WI', '55');
+INSERT INTO state_lookup (name, abbrev, st_code) VALUES ('Wyoming', 'WY', '56');
 
 
 -- Create street type lookup table
-BEGIN;
-CREATE TABLE street_type_lookup (name VARCHAR(20), abbrev VARCHAR(4));
+DROP TABLE IF EXISTS street_type_lookup;
+CREATE TABLE street_type_lookup (name VARCHAR(20) PRIMARY KEY, abbrev VARCHAR(4));
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('ALLEE', 'Aly');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('ALLEY', 'Aly');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('ALLY', 'Aly');
@@ -697,8 +696,6 @@ INSERT INTO street_type_lookup (name, abbrev) VALUES ('HBRS', 'Hbrs');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('LGTS', 'Lgts');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('MTWY', 'Mtwy');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('MTNS', 'Mtns');
-INSERT INTO street_type_lookup (name, abbrev) VALUES ('ORCH', 'Orch');
-INSERT INTO street_type_lookup (name, abbrev) VALUES ('ORCH', 'Orch');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('OPAS', 'Opas');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('PSGE', 'Psge');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('PNE', 'Pne');
@@ -710,21 +707,179 @@ INSERT INTO street_type_lookup (name, abbrev) VALUES ('TRWY', 'Trwy');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('UPAS', 'Upas');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('UNS', 'Uns');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('WL', 'Wl');
-COMMIT;
+CREATE INDEX street_type_lookup_abbrev_idx ON street_type_lookup (abbrev);
 
 -- Create place and countysub lookup tables
-SELECT name, state INTO TABLE place_lookup FROM gazetteer_places group by name, state;
-SELECT name, state INTO TABLE countysub_lookup FROM gazetteer_county_subdivisions group by name, state;
+DROP TABLE IF EXISTS place_lookup;
+CREATE TABLE place_lookup (
+    st_code INTEGER,
+    state   VARCHAR(2),
+    pl_code INTEGER,
+    name    VARCHAR(90),
+    PRIMARY KEY (st_code,pl_code)
+);
 
--- Create indicies
-create index tiger_geocode_roads_zip_soundex_idx on tiger_geocode_roads (soundex(fename), zip, state);
-create index tiger_geocode_roads_place_soundex_idx on tiger_geocode_roads (soundex(fename), place, state);
-create index tiger_geocode_roads_cousub_soundex_idx on tiger_geocode_roads (soundex(fename), cousub, state);
-create index tiger_geocode_roads_place_more_soundex_idx on tiger_geocode_roads (soundex(fename), soundex(place), state);
-create index tiger_geocode_roads_cousub_more_soundex_idx on tiger_geocode_roads (soundex(fename), soundex(cousub), state);
-create index tiger_geocode_roads_state_soundex_idx on tiger_geocode_roads (soundex(fename), state);
-create index tiger_geocode_join_id_idx on tiger_geocode_join (id);
-create index roads_local_tlid_idx on roads_local (tlid);
-create index place_lookup_idx on place_lookup (state);
-create index countysub_lookup_idx on countysub_lookup (state);
+INSERT INTO place_lookup
+  SELECT
+    pl.state::integer   as st_code,
+    sl.abbrev           as state,
+    pl.placefp::integer as pl_code,
+    pl.name             as name
+  FROM
+    pl99_d00 pl
+    JOIN state_lookup sl ON (pl.state = lpad(sl.st_code,2,'0'))
+  GROUP BY pl.state, sl.abbrev, pl.placefp, pl.name;
 
+CREATE INDEX place_lookup_name_idx ON place_lookup (soundex(name));
+CREATE INDEX place_lookup_state_idx ON place_lookup (state);
+
+DROP TABLE IF EXISTS county_lookup;
+CREATE TABLE county_lookup (
+    st_code INTEGER,
+    state   VARCHAR(2),
+    co_code INTEGER,
+    name    VARCHAR(90),
+    PRIMARY KEY (st_code, co_code)
+);
+
+INSERT INTO county_lookup
+  SELECT
+    co.state::integer    as st_code,
+    sl.abbrev            as state,
+    co.county::integer   as co_code,
+    co.name              as name
+  FROM
+    co99_d00 co
+    JOIN state_lookup sl ON (co.state = lpad(sl.st_code,2,'0'))
+  GROUP BY co.state, sl.abbrev, co.county, co.name;
+
+CREATE INDEX county_lookup_name_idx ON county_lookup (soundex(name));
+CREATE INDEX county_lookup_state_idx ON county_lookup (state);
+
+DROP TABLE IF EXISTS countysub_lookup;
+CREATE TABLE countysub_lookup (
+    st_code INTEGER,
+    state   VARCHAR(2),
+    co_code INTEGER,
+    county  VARCHAR(90),
+    cs_code INTEGER,
+    name    VARCHAR(90),
+    PRIMARY KEY (st_code, co_code, cs_code)
+);
+
+INSERT INTO countysub_lookup
+  SELECT
+    cs.state::integer    as st_code,
+    sl.abbrev            as state,
+    cs.county::integer   as co_code,
+    cl.name              as county,
+    cs.cousubfp::integer as cs_code,
+    cs.name              as name
+  FROM
+    cs99_d00 cs
+    JOIN state_lookup sl ON (cs.state = lpad(sl.st_code,2,'0'))
+    JOIN county_lookup cl ON (cs.state = lpad(cl.st_code,2,'0') AND cs.county = cl.co_code)
+  GROUP BY cs.state, sl.abbrev, cs.county, cl.name, cs.cousubfp, cs.name;
+
+CREATE INDEX countysub_lookup_name_idx ON countysub_lookup (soundex(name));
+CREATE INDEX countysub_lookup_state_idx ON countysub_lookup (state);
+
+DROP TABLE IF EXISTS zip_lookup_all;
+CREATE TABLE zip_lookup_all (
+    zip     INTEGER,
+    st_code INTEGER,
+    state   VARCHAR(2),
+    co_code INTEGER,
+    county  VARCHAR(90),
+    cs_code INTEGER,
+    cousub  VARCHAR(90),
+    pl_code INTEGER,
+    place   VARCHAR(90),
+    cnt     INTEGER
+);
+
+SET work_mem = '2GB';
+
+INSERT INTO zip_lookup_all
+  SELECT *,count(*) as cnt FROM
+  (SELECT
+    zipl                 as zip,
+    rl.statel            as st_code,
+    sl.abbrev            as state,
+    rl.countyl           as co_code,
+    cl.name              as county,
+    rl.cousubl           as cs_code,
+    cs.name              as countysub,
+    rl.placel            as pl_code,
+    pl.name              as place
+  FROM
+    roads_local rl
+    JOIN state_lookup sl ON (rl.statel = lpad(sl.st_code,2,'0'))
+    LEFT JOIN county_lookup cl ON (rl.statel = lpad(cl.st_code,2,'0') AND rl.countyl = cl.co_code)
+    LEFT JOIN countysub_lookup cs ON (rl.statel = lpad(cs.st_code,2,'0') AND rl.countyl = cs.co_code AND rl.cousubl = cs.cs_code)
+    LEFT JOIN place_lookup pl ON (rl.statel = lpad(pl.st_code,2,'0') AND rl.placel = pl.pl_code)
+  WHERE zipl IS NOT NULL
+  UNION ALL
+  SELECT
+    zipr                 as zip,
+    rl.stater            as st_code,
+    sl.abbrev            as state,
+    rl.countyr           as co_code,
+    cl.name              as county,
+    rl.cousubr           as cs_code,
+    cs.name              as countysub,
+    rl.placer            as pl_code,
+    pl.name              as place
+  FROM
+    roads_local rl
+    JOIN state_lookup sl ON (rl.stater = lpad(sl.st_code,2,'0'))
+    LEFT JOIN county_lookup cl ON (rl.stater = lpad(cl.st_code,2,'0') AND rl.countyr = cl.co_code)
+    LEFT JOIN countysub_lookup cs ON (rl.stater = lpad(cs.st_code,2,'0') AND rl.countyr = cs.co_code AND rl.cousubr = cs.cs_code)
+    LEFT JOIN place_lookup pl ON (rl.stater = lpad(pl.st_code,2,'0') AND rl.placer = pl.pl_code)
+  WHERE zipr IS NOT NULL
+  ) as subquery
+  GROUP BY zip, st_code, state, co_code, county, cs_code, countysub, pl_code, place;
+
+DROP TABLE IF EXISTS zip_lookup_base;
+CREATE TABLE zip_lookup_base (
+    zip     INTEGER,
+    state   VARCHAR(40),
+    county  VARCHAR(90),
+    city    VARCHAR(100),
+    PRIMARY KEY (zip)
+);
+
+-- INSERT INTO zip_lookup_base
+-- Populate through magic
+-- If anyone knows of a good, public, free, place to pull this information from, that'd be awesome to have...
+
+DROP TABLE IF EXISTS zip_lookup;
+CREATE TABLE zip_lookup (
+    zip     INTEGER,
+    st_code INTEGER,
+    state   VARCHAR(2),
+    co_code INTEGER,
+    county  VARCHAR(90),
+    cs_code INTEGER,
+    cousub  VARCHAR(90),
+    pl_code INTEGER,
+    place   VARCHAR(90),
+    cnt     INTEGER,
+    PRIMARY KEY (zip)
+);
+
+INSERT INTO zip_lookup
+  SELECT
+    DISTINCT ON (zip)
+    zip,
+    st_code,
+    state,
+    co_code,
+    county,
+    cs_code,
+    cousub,
+    pl_code,
+    place,
+    cnt
+  FROM zip_lookup_all
+  ORDER BY zip,cnt desc;
