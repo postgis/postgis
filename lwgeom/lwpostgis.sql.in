@@ -4926,8 +4926,8 @@ CREATEFUNCTION PointN(geometry,integer)
 	AS '@MODULE_FILENAME@','LWGEOM_pointn_linestring'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
--- PostGIS equivalent function: PointN(geometry)
-CREATEFUNCTION ST_PointN(geometry)
+-- PostGIS equivalent function: PointN(geometry,integer)
+CREATEFUNCTION ST_PointN(geometry,integer)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@','LWGEOM_pointn_linestring'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
