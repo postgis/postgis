@@ -2661,7 +2661,16 @@
 
             <listitem>
               <para>Return the cartesian distance between two geometries in
-              projected units.</para>
+              projected units. Does not use indexes.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>ST_DWithin(geometry, geometry, float)</term>
+
+            <listitem>
+              <para>Returns true if geometries are within the specified distance 
+              of one another. Uses indexes if available.</para>
             </listitem>
           </varlistentry>
 
