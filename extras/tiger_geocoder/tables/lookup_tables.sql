@@ -845,7 +845,7 @@ CREATE TABLE zip_lookup_base (
     zip     INTEGER,
     state   VARCHAR(40),
     county  VARCHAR(90),
-    city    VARCHAR(100),
+    city    VARCHAR(90),
     PRIMARY KEY (zip)
 );
 
