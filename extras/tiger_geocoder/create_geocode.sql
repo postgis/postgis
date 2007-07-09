@@ -37,6 +37,7 @@ CREATE TYPE norm_addy AS (
 \i normalize/location_extract.sql
 -- Normalization API, called by geocode mainly.
 \i normalize/normalize_address.sql
+\i normalize/pprint_addy.sql
 
 ---- Geocoder functions
 -- General helpers
