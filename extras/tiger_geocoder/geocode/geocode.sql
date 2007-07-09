@@ -58,8 +58,6 @@ BEGIN
     RETURN;
   END IF;
 
-  raise NOTICE 'in_addy: %', IN_ADDY;
-
   -- Go for the full monty if we've got enough info
   IF IN_ADDY.address IS NOT NULL AND
       IN_ADDY.streetName IS NOT NULL AND
