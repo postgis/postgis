@@ -4,13 +4,13 @@
 #
 #-----------------------------------------------------
 
-all: Makefile.config liblwgeom loaderdumper utils templategis
+all: Makefile.config liblwgeom loaderdumper utils 
 
-install: all liblwgeom-install loaderdumper-install templategis-install
+install: all liblwgeom-install loaderdumper-install 
 
-uninstall: liblwgeom-uninstall loaderdumper-uninstall docs-uninstall templategis-uninstall
+uninstall: liblwgeom-uninstall loaderdumper-uninstall docs-uninstall 
 
-clean: Makefile.config liblwgeom-clean loaderdumper-clean docs-clean test-clean templategis-clean
+clean: Makefile.config liblwgeom-clean loaderdumper-clean docs-clean test-clean 
 	rm -f lwpostgis.sql lwpostgis_upgrade.sql
 
 distclean: clean
