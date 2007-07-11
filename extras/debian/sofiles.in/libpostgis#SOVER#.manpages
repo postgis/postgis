@@ -1,5 +1,0 @@
-doc/man/pgsql2shp.1
-doc/man/shp2pgsql.1
-debian/createdb.postgis.1
-debian/mktemplate_gis.1
-debian/rmtemplate_gis.1

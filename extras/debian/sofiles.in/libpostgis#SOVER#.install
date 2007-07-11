@@ -1,5 +1,0 @@
-@main_bin@/*
-@pg_libdir@/lib*.so*
-@pg_datadir@/*.sql
-@pg_docdir@/README*
-@pg_bindir@/*
