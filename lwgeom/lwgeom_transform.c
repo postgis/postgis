@@ -144,6 +144,9 @@ void DeleteFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid);
 /* Memory context cache functions */
 static void PROJ4SRSCacheInit(MemoryContext context);
 static void PROJ4SRSCacheDelete(MemoryContext context);
+static void PROJ4SRSCacheReset(MemoryContext context);
+static bool PROJ4SRSCacheIsEmpty(MemoryContext context);
+static void PROJ4SRSCacheStats(MemoryContext context);
 #ifdef MEMORY_CONTEXT_CHECKING
 static void PROJ4SRSCacheCheck(MemoryContext context);
 #endif
@@ -156,7 +159,7 @@ static MemoryContextMethods PROJ4SRSCacheContextMethods = {
 	NULL,
  	NULL,
  	PROJ4SRSCacheInit,
- 	NULL,
+ 	PROJ4SRSCacheReset,
  	PROJ4SRSCacheDelete
 #ifdef MEMORY_CONTEXT_CHECKING
  	,PROJ4SRSCacheCheck
@@ -170,10 +173,10 @@ static MemoryContextMethods PROJ4SRSCacheContextMethods = {
 	NULL,
 	NULL,
 	PROJ4SRSCacheInit,
-	NULL,
+	PROJ4SRSCacheReset,
 	PROJ4SRSCacheDelete,
 	NULL,
-	NULL
+	PROJ4SRSCacheIsEmpty
 #ifdef MEMORY_CONTEXT_CHECKING
  	,PROJ4SRSCacheCheck
 #endif
@@ -186,11 +189,11 @@ static MemoryContextMethods PROJ4SRSCacheContextMethods = {
 	NULL,
 	NULL,
 	PROJ4SRSCacheInit,
-	NULL,
+	PROJ4SRSCacheReset,
 	PROJ4SRSCacheDelete,
 	NULL,
-	NULL,
-	NULL
+	PROJ4SRSCacheIsEmpty,
+	PROJ4SRSCacheStats
 #ifdef MEMORY_CONTEXT_CHECKING
 	,PROJ4SRSCacheCheck
 #endif
@@ -227,6 +230,36 @@ PROJ4SRSCacheDelete(MemoryContext context)
 
 	/* Remove the hash entry as it is no longer needed */
 	DeletePJHashEntry(context);
+}
+
+static void
+PROJ4SRSCacheReset(MemoryContext context)
+{
+	/*
+	 * Do nothing, but we must supply a function since this call is mandatory according to tgl
+     * (see postgis-devel archives July 2007)
+	 */
+}
+
+static bool
+PROJ4SRSCacheIsEmpty(MemoryContext context)
+{
+	/*
+	 * Always return false since this call is mandatory according to tgl
+     * (see postgis-devel archives July 2007)
+	 */
+    return FALSE;
+}
+
+static void
+PROJ4SRSCacheStats(MemoryContext context)
+{
+	/*
+	 * Simple stats display function - we must supply a function since this call is mandatory according to tgl
+     * (see postgis-devel archives July 2007)
+	 */
+    
+    fprintf(stderr, "%s: PROJ4 context\n", context->name);
 }
 
 #ifdef MEMORY_CONTEXT_CHECKING
@@ -460,7 +493,7 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 		PJMemoryContext = MemoryContextCreate(T_AllocSetContext, 8192,
 					&PROJ4SRSCacheContextMethods,
 					PROJ4Cache->PROJ4SRSCacheContext,
-					"PROJ4 PJ Memory Context");
+					"PostGIS PROJ4 PJ Memory Context");
 
 		/* Create the backend hash if it doesn't already exist */
 		if (!PJHash)
