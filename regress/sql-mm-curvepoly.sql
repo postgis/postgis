@@ -373,11 +373,6 @@ SELECT 'interiorRingN-202', asEWKT(interiorRingN(the_geom_3dm, 2)) FROM public.c
 SELECT 'interiorRingN-203', asEWKT(interiorRingN(the_geom_3dz, 2)) FROM public.curvepolygon;
 SELECT 'interiorRingN-204', asEWKT(interiorRingN(the_geom_4d, 2)) FROM public.curvepolygon;
 
-SELECT 'ST_LineToCurve01', asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_2d))) FROM public.curvepolygon;
-SELECT 'ST_LineToCurve02', asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_3dm))) FROM public.curvepolygon;
-SELECT 'ST_LineToCurve03', asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_3dz))) FROM public.curvepolygon;
-SELECT 'ST_LineToCurve04', asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_4d))) FROM public.curvepolygon;
-
 -- Repeat tests with new function names.
 SELECT 'astext01', ST_astext(the_geom_2d) FROM public.curvepolygon;
 SELECT 'astext02', ST_astext(the_geom_3dm) FROM public.curvepolygon;

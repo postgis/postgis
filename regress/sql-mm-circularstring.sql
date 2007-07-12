@@ -310,11 +310,6 @@ SELECT 'envelope02', asText(snapToGrid(envelope(the_geom_3dm), 'POINT(0 0 0 0)':
 SELECT 'envelope03', asText(snapToGrid(envelope(the_geom_3dz), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.circularstring;
 SELECT 'envelope04', asText(snapToGrid(envelope(the_geom_4d), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.circularstring;
 
-SELECT 'ST_LineToCurve01', asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_2d))) FROM public.circularstring;
-SELECT 'ST_LineToCurve02', asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_3dm))) FROM public.circularstring;
-SELECT 'ST_LineToCurve03', asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_3dz))) FROM public.circularstring;
-SELECT 'ST_LineToCurve04', asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_4d))) FROM public.circularstring;
-
 -- Repeat tests with new function names.
 SELECT 'astext01', ST_astext(the_geom_2d) FROM public.circularstring;        
 SELECT 'astext02', ST_astext(the_geom_3dm) FROM public.circularstring;        

@@ -482,11 +482,6 @@ SELECT 'geometryN-302', (geometryN(the_geom_3dm, 3) is null) FROM public.multisu
 SELECT 'geometryN-303', (geometryN(the_geom_3dz, 3) is null) FROM public.multisurface;
 SELECT 'geometryN-304', (geometryN(the_geom_4d, 3) is null) FROM public.multisurface;
 
-SELECT 'ST_LineToCurve01', asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_2d))) FROM public.multisurface;
-SELECT 'ST_LineToCurve02', asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_3dm))) FROM public.multisurface;
-SELECT 'ST_LineToCurve03', asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_3dz))) FROM public.multisurface;
-SELECT 'ST_LineToCurve04', asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_4d))) FROM public.multisurface;
-
 -- Repeat tests with new function names.
 SELECT 'astext01', ST_astext(the_geom_2d) FROM public.multisurface;
 SELECT 'astext02', ST_astext(the_geom_3dm) FROM public.multisurface;
