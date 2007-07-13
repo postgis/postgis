@@ -160,10 +160,11 @@ static MemoryContextMethods PROJ4SRSCacheContextMethods = {
  	NULL,
  	PROJ4SRSCacheInit,
  	PROJ4SRSCacheReset,
- 	PROJ4SRSCacheDelete
+ 	PROJ4SRSCacheDelete,
 #ifdef MEMORY_CONTEXT_CHECKING
- 	,PROJ4SRSCacheCheck
+ 	PROJ4SRSCacheCheck,
 #endif
+    PROJ4SRSCacheStats
 };
 #endif
 
@@ -176,7 +177,7 @@ static MemoryContextMethods PROJ4SRSCacheContextMethods = {
 	PROJ4SRSCacheReset,
 	PROJ4SRSCacheDelete,
 	NULL,
-	PROJ4SRSCacheIsEmpty
+	PROJ4SRSCacheStats
 #ifdef MEMORY_CONTEXT_CHECKING
  	,PROJ4SRSCacheCheck
 #endif
@@ -310,7 +311,7 @@ static HTAB *CreatePJHash(void)
 	ctl.entrysize = sizeof(PJHashEntry);
 	ctl.hash = mcxt_ptr_hash;
 
-	return hash_create("PROJ4 Backend PJ MemoryContext Hash", PROJ4_BACKEND_HASH_SIZE, &ctl, (HASH_ELEM | HASH_FUNCTION));
+	return hash_create("PostGIS PROJ4 Backend PJ MemoryContext Hash", PROJ4_BACKEND_HASH_SIZE, &ctl, (HASH_ELEM | HASH_FUNCTION));
 }
 
 static void AddPJHashEntry(MemoryContext mcxt, PJ *projection)
