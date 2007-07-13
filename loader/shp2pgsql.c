@@ -251,8 +251,7 @@ protect_quotes_string(char *str)
 	optr=result;
 	ptr=str;
 	while (*ptr) {
-		if ( *ptr == '\'' ) *optr++='\'';
-        else if ( *ptr == '\\' ) *optr++='\\';
+		if ( *ptr == '\'' || *ptr == '\\' ) *optr++='\\';
 		*optr++=*ptr++;
 	}
 	*optr='\0';
