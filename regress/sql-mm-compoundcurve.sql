@@ -229,6 +229,14 @@ SELECT 'envelope02', asText(snapToGrid(envelope(the_geom_3dm), 'POINT(0 0 0 0)':
 SELECT 'envelope03', asText(snapToGrid(envelope(the_geom_3dz), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
 SELECT 'envelope04', asText(snapToGrid(envelope(the_geom_4d), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.compoundcurve;
 
+-- TODO: ST_SnapToGrid is required to remove platform dependent precision
+-- issues.  Until ST_SnapToGrid is updated to work against curves, these
+-- tests cannot be run.
+--SELECT 'ST_LineToCurve', asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_2d))) FROM public.compoundcurve;
+--SELECT 'ST_LineToCurve', asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_3dm))) FROM public.compoundcurve;
+--SELECT 'ST_LineToCurve', asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_3dz))) FROM public.compoundcurve;
+--SELECT 'ST_LineToCurve', asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_4d))) FROM public.compoundcurve;
+
 -- Repeat tests on new function names.
 SELECT 'astext01', ST_astext(the_geom_2d) FROM public.compoundcurve;
 SELECT 'astext02', ST_astext(the_geom_3dm) FROM public.compoundcurve;

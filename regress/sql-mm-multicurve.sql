@@ -268,6 +268,14 @@ SELECT 'geometryN-302', (asEWKT(geometryN(the_geom_3dm, 3)) is null) FROM public
 SELECT 'geometryN-303', (asEWKT(geometryN(the_geom_3dz, 3)) is null) FROM public.multicurve;
 SELECT 'geometryN-304', (asEWKT(geometryN(the_geom_4d, 3)) is null) FROM public.multicurve;
 
+-- TODO: ST_SnapToGrid is required to remove platform dependent precision
+-- issues.  Until ST_SnapToGrid is updated to work against curves, these
+-- tests cannot be run.
+--SELECT 'ST_LineToCurve01', asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_2d))) FROM public.multicurve;
+--SELECT 'ST_LineToCurve02', asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_3dm))) FROM public.multicurve;
+--SELECT 'ST_LineToCurve03', asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_3dz))) FROM public.multicurve;
+--SELECT 'ST_LineToCurve04', asewkt(ST_LineToCurve(ST_CurveToLine(the_geom_4d))) FROM public.multicurve;
+
 -- Repeat all tests with the new function names.
 SELECT 'astext01', ST_astext(the_geom_2d) FROM public.multicurve;
 SELECT 'astext02', ST_astext(the_geom_3dm) FROM public.multicurve;
