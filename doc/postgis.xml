@@ -1841,6 +1841,10 @@
         box&#34;. Assuming that our query box is much smaller than the extents
         of the entire geometry table, this will drastically reduce the number
         of distance calculations that need to be done.</para>
+
+        <note>As of PostGIS 1.3.0, most of the Geometry
+        Relationship Functions, with the notable exceptions of ST_Disjoint and
+        ST_Relate, include implicit bounding box overlap operators.</note>
       </sect2>
 
       <sect2>
@@ -2719,6 +2723,8 @@
 
               <para>Do not call with a GeometryCollection as an argument</para>
 
+              <para>This function call will autowatically include a bounding box comparison that will make use of any indicies that are available on the geometries.  To avoid index use, use the function _ST_Intersects.</para>
+
               <para>NOTE: this is the &#34;allowable&#34; version that returns
               a boolean, not an integer.</para>
 
@@ -2737,6 +2743,8 @@
               <para>Performed by the GEOS module</para>
 
               <para>Do not call with a GeometryCollection as an argument</para>
+              
+              <para>This function call will automatically include a bounding box comparison that will make use of any indicies that are available on the geometries.  To avoid index use, use the function _ST_Touches.</para>
 
               <para>NOTE: this is the &#34;allowable&#34; version that returns
               a boolean, not an integer.</para>
@@ -2758,6 +2766,8 @@
 
               <para>Do not call with a GeometryCollection as an argument</para>
 
+              <para>This function call will automatically include a bounding box comparison that will make use of any indicies that are available on the geometries.  To avoid index use, use the function _ST_Crosses.</para>
+
               <para>NOTE: this is the &#34;allowable&#34; version that returns
               a boolean, not an integer.</para>
 
@@ -2776,6 +2786,8 @@
               <para>Performed by the GEOS module</para>
 
               <para>Do not call with a GeometryCollection as an argument</para>
+
+              <para>This function call will automatically include a bounding box comparison that will make use of any indicies that are available on the geometries.  To avoid index use, use the function _ST_Within.</para>
 
               <para>NOTE: this is the &#34;allowable&#34; version that returns
               a boolean, not an integer.</para>
@@ -2796,6 +2808,8 @@
 
               <para>Do not call with a GeometryCollection as an argument</para>
 
+              <para>This function call will automatically include a bounding box comparison that will make use of any indicies that are available on the geometries.  To avoid index use, use the function _ST_Overlaps.</para>
+
               <para>NOTE: this is the &#34;allowable&#34; version that returns
               a boolean, not an integer.</para>
 
@@ -2814,6 +2828,8 @@
 
               <para>Do not call with a GeometryCollection as an argument</para>
 
+              <para>This function call will automatically include a bounding box comparison that will make use of any indicies that are available on the geometries.  To avoid index use, use the function _ST_Contains.</para>
+
               <para>NOTE: this is the &#34;allowable&#34; version that returns
               a boolean, not an integer.</para>
 
@@ -2830,6 +2846,7 @@
               Geometry A</para>
               <para>Refer to http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html
               for an explaination of the need of this function.</para>
+              <para>This function call will automatically include a bounding box comparison that will make use of any indicies that are available on the geometries.  To avoid index use, use the function _ST_Covers.</para>
             </listitem>
           </varlistentry>
 
