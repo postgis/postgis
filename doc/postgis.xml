@@ -2723,7 +2723,7 @@
 
               <para>Do not call with a GeometryCollection as an argument</para>
 
-              <para>This function call will autowatically include a bounding box comparison that will make use of any indicies that are available on the geometries.  To avoid index use, use the function _ST_Intersects.</para>
+              <para>This function call will automatically include a bounding box comparison that will make use of any indexes that are available on the geometries.  To avoid index use, use the function _ST_Intersects.</para>
 
               <para>NOTE: this is the &#34;allowable&#34; version that returns
               a boolean, not an integer.</para>
@@ -2744,7 +2744,7 @@
 
               <para>Do not call with a GeometryCollection as an argument</para>
               
-              <para>This function call will automatically include a bounding box comparison that will make use of any indicies that are available on the geometries.  To avoid index use, use the function _ST_Touches.</para>
+              <para>This function call will automatically include a bounding box comparison that will make use of any indexes that are available on the geometries.  To avoid index use, use the function _ST_Touches.</para>
 
               <para>NOTE: this is the &#34;allowable&#34; version that returns
               a boolean, not an integer.</para>
@@ -2766,7 +2766,7 @@
 
               <para>Do not call with a GeometryCollection as an argument</para>
 
-              <para>This function call will automatically include a bounding box comparison that will make use of any indicies that are available on the geometries.  To avoid index use, use the function _ST_Crosses.</para>
+              <para>This function call will automatically include a bounding box comparison that will make use of any indexes that are available on the geometries.  To avoid index use, use the function _ST_Crosses.</para>
 
               <para>NOTE: this is the &#34;allowable&#34; version that returns
               a boolean, not an integer.</para>
@@ -2787,7 +2787,7 @@
 
               <para>Do not call with a GeometryCollection as an argument</para>
 
-              <para>This function call will automatically include a bounding box comparison that will make use of any indicies that are available on the geometries.  To avoid index use, use the function _ST_Within.</para>
+              <para>This function call will automatically include a bounding box comparison that will make use of any indexes that are available on the geometries.  To avoid index use, use the function _ST_Within.</para>
 
               <para>NOTE: this is the &#34;allowable&#34; version that returns
               a boolean, not an integer.</para>
@@ -2808,7 +2808,7 @@
 
               <para>Do not call with a GeometryCollection as an argument</para>
 
-              <para>This function call will automatically include a bounding box comparison that will make use of any indicies that are available on the geometries.  To avoid index use, use the function _ST_Overlaps.</para>
+              <para>This function call will automatically include a bounding box comparison that will make use of any indexes that are available on the geometries.  To avoid index use, use the function _ST_Overlaps.</para>
 
               <para>NOTE: this is the &#34;allowable&#34; version that returns
               a boolean, not an integer.</para>
@@ -2828,7 +2828,7 @@
 
               <para>Do not call with a GeometryCollection as an argument</para>
 
-              <para>This function call will automatically include a bounding box comparison that will make use of any indicies that are available on the geometries.  To avoid index use, use the function _ST_Contains.</para>
+              <para>This function call will automatically include a bounding box comparison that will make use of any indexes that are available on the geometries.  To avoid index use, use the function _ST_Contains.</para>
 
               <para>NOTE: this is the &#34;allowable&#34; version that returns
               a boolean, not an integer.</para>
@@ -2845,8 +2845,8 @@
               <para>Returns 1 (TRUE) if no point in Geometry B is outside 
               Geometry A</para>
               <para>Refer to http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html
-              for an explaination of the need of this function.</para>
-              <para>This function call will automatically include a bounding box comparison that will make use of any indicies that are available on the geometries.  To avoid index use, use the function _ST_Covers.</para>
+              for an explanation of the need of this function.</para>
+              <para>This function call will automatically include a bounding box comparison that will make use of any indexes that are available on the geometries.  To avoid index use, use the function _ST_Covers.</para>
             </listitem>
           </varlistentry>
 
