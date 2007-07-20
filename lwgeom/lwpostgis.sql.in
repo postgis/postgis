@@ -1996,7 +1996,7 @@ CREATEFUNCTION reverse(geometry)
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
 -- Availability: 1.2.2
-CREATEFUNCTION reverse(geometry)
+CREATEFUNCTION ST_Reverse(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_reverse'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
@@ -2008,7 +2008,7 @@ CREATEFUNCTION ForceRHR(geometry)
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
 -- Availability: 1.2.2
-CREATEFUNCTION ForceRHR(geometry)
+CREATEFUNCTION ST_ForceRHR(geometry)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_forceRHR_poly'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
@@ -2044,7 +2044,7 @@ CREATEFUNCTION hasBBOX(geometry)
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
 -- Availabitily: 1.2.2
-CREATEFUNCTION hasBBOX(geometry)
+CREATEFUNCTION ST_HasBBOX(geometry)
 	RETURNS bool
 	AS '@MODULE_FILENAME@', 'LWGEOM_hasBBOX'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
@@ -2056,7 +2056,7 @@ CREATEFUNCTION ndims(geometry)
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
 -- Availability: 1.2.2
-CREATEFUNCTION ST_ndims(geometry)
+CREATEFUNCTION ST_NDims(geometry)
 	RETURNS smallint
 	AS '@MODULE_FILENAME@', 'LWGEOM_ndims'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
@@ -2152,7 +2152,7 @@ CREATEFUNCTION cache_bbox()
         LANGUAGE 'C';
 
 -- Availability: 1.2.2
-CREATEFUNCTION ST_cache_bbox()
+CREATEFUNCTION ST_Cache_BBox()
 	RETURNS trigger
 	AS '@MODULE_FILENAME@','cache_bbox'
 	LANGUAGE 'C';
@@ -2162,73 +2162,73 @@ CREATEFUNCTION ST_cache_bbox()
 ------------------------------------------------------------------------
 
 -- Deprecation in 1.2.3
-CREATEFUNCTION makePoint(float8, float8)
+CREATEFUNCTION MakePoint(float8, float8)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_makepoint'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
 -- Availability: 1.2.2
-CREATEFUNCTION ST_makePoint(float8, float8)
+CREATEFUNCTION ST_MakePoint(float8, float8)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_makepoint'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
 -- Deprecation in 1.2.3
-CREATEFUNCTION makePoint(float8, float8, float8)
+CREATEFUNCTION MakePoint(float8, float8, float8)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_makepoint'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
 -- Availability: 1.2.2
-CREATEFUNCTION ST_makePoint(float8, float8, float8)
+CREATEFUNCTION ST_MakePoint(float8, float8, float8)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_makepoint'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
 -- Deprecation in 1.2.3
-CREATEFUNCTION makePoint(float8, float8, float8, float8)
+CREATEFUNCTION MakePoint(float8, float8, float8, float8)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_makepoint'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
 -- Availability: 1.2.2
-CREATEFUNCTION ST_makePoint(float8, float8, float8, float8)
+CREATEFUNCTION ST_MakePoint(float8, float8, float8, float8)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_makepoint'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
 -- Deprecation in 1.2.3
-CREATEFUNCTION makePointM(float8, float8, float8)
+CREATEFUNCTION MakePointM(float8, float8, float8)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_makepoint3dm'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
 -- Availability: 1.2.2
-CREATEFUNCTION makePointM(float8, float8, float8)
+CREATEFUNCTION MakePointM(float8, float8, float8)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_makepoint3dm'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
 -- Deprecation in 1.2.3
-CREATEFUNCTION makeBox2d(geometry, geometry)
+CREATEFUNCTION MakeBox2d(geometry, geometry)
 	RETURNS box2d
 	AS '@MODULE_FILENAME@', 'BOX2DFLOAT4_construct'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
 -- Availability: 1.2.2
-CREATEFUNCTION ST_makeBox2d(geometry, geometry)
+CREATEFUNCTION ST_MakeBox2d(geometry, geometry)
 	RETURNS box2d
 	AS '@MODULE_FILENAME@', 'BOX2DFLOAT4_construct'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
 -- Deprecation in 1.2.3
-CREATEFUNCTION makeBox3d(geometry, geometry)
+CREATEFUNCTION MakeBox3d(geometry, geometry)
 	RETURNS box3d
 	AS '@MODULE_FILENAME@', 'BOX3D_construct'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
 -- Availability: 1.2.2
-CREATEFUNCTION ST_makeBox3d(geometry, geometry)
+CREATEFUNCTION ST_MakeBox3d(geometry, geometry)
 	RETURNS box3d
 	AS '@MODULE_FILENAME@', 'BOX3D_construct'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
@@ -2240,7 +2240,7 @@ CREATEFUNCTION makeline_garray (geometry[])
 	LANGUAGE 'C' _IMMUTABLE_STRICT;
 
 -- Availability: 1.2.2
-CREATEFUNCTION ST_makeline_garray (geometry[])
+CREATEFUNCTION ST_MakeLine_GArray (geometry[])
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_makeline_garray'
 	LANGUAGE 'C' _IMMUTABLE_STRICT;
@@ -2326,7 +2326,7 @@ CREATE AGGREGATE makeline (
 	);
 
 -- Availability: 1.2.2
-CREATE AGGREGATE ST_makeline (
+CREATE AGGREGATE ST_MakeLine (
 	sfunc = geom_accum,
 	basetype = geometry,
 	stype = geometry[],
@@ -2370,13 +2370,13 @@ CREATEFUNCTION ST_BuildArea(geometry)
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
 -- Deprecation in 1.2.3
-CREATEFUNCTION polygonize_garray (geometry[])
+CREATEFUNCTION Polygonize_GArray (geometry[])
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'polygonize_garray'
 	LANGUAGE 'C' _IMMUTABLE_STRICT;
 
 -- Availability: 1.2.2
-CREATEFUNCTION ST_polygonize_garray (geometry[])
+CREATEFUNCTION ST_Polygonize_GArray (geometry[])
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'polygonize_garray'
 	LANGUAGE 'C' _IMMUTABLE_STRICT;
@@ -2394,7 +2394,7 @@ CREATEFUNCTION ST_LineMerge(geometry)
 	LANGUAGE 'C' _IMMUTABLE_STRICT;
 
 -- Deprecation in 1.2.3
-CREATE AGGREGATE polygonize (
+CREATE AGGREGATE Polygonize (
 	sfunc = geom_accum,
 	basetype = geometry,
 	stype = geometry[],
@@ -2402,7 +2402,7 @@ CREATE AGGREGATE polygonize (
 	);
 
 -- Availability: 1.2.2
-CREATE AGGREGATE ST_polygonize (
+CREATE AGGREGATE ST_Polygonize (
 	sfunc = ST_geom_accum,
 	basetype = geometry,
 	stype = geometry[],
@@ -2432,7 +2432,7 @@ CREATEFUNCTION DumpRings(geometry)
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Availability: 1.2.2
-CREATEFUNCTION DumpRings(geometry)
+CREATEFUNCTION ST_DumpRings(geometry)
 	RETURNS SETOF geometry_dump
 	AS '@MODULE_FILENAME@', 'LWGEOM_dump_rings'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -2452,20 +2452,20 @@ CREATEFUNCTION combine_bbox(box2d,geometry)
 	LANGUAGE 'C' _IMMUTABLE;
 
 -- Availability: 1.2.2
-CREATEFUNCTION ST_combine_bbox(box2d,geometry)
+CREATEFUNCTION ST_Combine_BBox(box2d,geometry)
 	RETURNS box2d
 	AS '@MODULE_FILENAME@', 'BOX2DFLOAT4_combine'
 	LANGUAGE 'C' _IMMUTABLE;
 
 -- Deprecation in 1.2.3
-CREATE AGGREGATE extent(
+CREATE AGGREGATE Extent(
 	sfunc = ST_combine_bbox,
 	basetype = geometry,
 	stype = box2d
 	);
 
 -- Availability: 1.2.2
-CREATE AGGREGATE ST_extent(
+CREATE AGGREGATE ST_Extent(
 	sfunc = ST_combine_bbox,
 	basetype = geometry,
 	stype = box2d
@@ -2478,20 +2478,20 @@ CREATEFUNCTION combine_bbox(box3d,geometry)
 	LANGUAGE 'C' _IMMUTABLE;
 
 -- Availability: 1.2.2
-CREATEFUNCTION ST_combine_bbox(box3d,geometry)
+CREATEFUNCTION ST_Combine_BBox(box3d,geometry)
 	RETURNS box3d
 	AS '@MODULE_FILENAME@', 'BOX3D_combine'
 	LANGUAGE 'C' _IMMUTABLE;
 
 -- Deprecation in 1.2.3
-CREATE AGGREGATE extent3d(
+CREATE AGGREGATE Extent3d(
 	sfunc = combine_bbox,
 	basetype = geometry,
 	stype = box3d
 	);
 
 -- Availability: 1.2.2
-CREATE AGGREGATE ST_extent3d(
+CREATE AGGREGATE ST_Extent3d(
 	sfunc = ST_combine_bbox,
 	basetype = geometry,
 	stype = box3d
