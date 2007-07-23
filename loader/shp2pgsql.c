@@ -423,14 +423,14 @@ main (int ARGC, char **ARGV)
 	if(opt != 'a') CreateTable();
 
 	/*
-	 * Create GiST index if requested
-	 */
-	if(createindex) CreateIndex();
-
-	/*
 	 * Generate INSERT or COPY lines
 	 */
 	if(opt != 'p') LoadData();
+
+	/*
+	 * Create GiST index if requested
+	 */
+	if(createindex) CreateIndex();
 
 	printf("END;\n"); /* End the last transaction */
 
