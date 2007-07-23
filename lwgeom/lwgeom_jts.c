@@ -17,6 +17,7 @@ Datum intersects(PG_FUNCTION_ARGS);
 Datum crosses(PG_FUNCTION_ARGS);
 Datum within(PG_FUNCTION_ARGS);
 Datum contains(PG_FUNCTION_ARGS);
+Datum covers(PG_FUNCTION_ARGS);
 Datum overlaps(PG_FUNCTION_ARGS);
 Datum isvalid(PG_FUNCTION_ARGS);
 Datum buffer(PG_FUNCTION_ARGS);
@@ -1388,6 +1389,93 @@ Datum contains(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(result);
 }
 
+/*
+ * Described at 
+ * http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html
+ */
+PG_FUNCTION_INFO_V1(covers);
+Datum covers(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *geom1;
+	PG_LWGEOM *geom2;
+	JTSGeometry *g1,*g2;
+	bool result;
+	BOX2DFLOAT4 box1, box2;
+        char *patt = "******FF*";
+
+#ifdef PROFILE
+	profstart(PROF_QRUN);
+#endif
+
+	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+
+	errorIfJTSGeometryCollection(geom1,geom2);
+	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
+
+	/*
+	 * short-circuit 1: if geom2 bounding box is not completely inside
+	 * geom1 bounding box we can prematurely return FALSE.
+	 * Do the test IFF BOUNDING BOX AVAILABLE.
+	 */
+	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
+		getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	{
+		if ( box2.xmin < box1.xmin ) PG_RETURN_BOOL(FALSE);
+		if ( box2.xmax > box1.xmax ) PG_RETURN_BOOL(FALSE);
+		if ( box2.ymin < box1.ymin ) PG_RETURN_BOOL(FALSE);
+		if ( box2.ymax > box1.ymax ) PG_RETURN_BOOL(FALSE);
+	}
+        else 
+        {
+#ifdef PGIS_DEBUG
+                lwnotice("Covers: type1: %d, type2: %d", type1, type2);
+#endif
+        }
+        
+	initJTS(lwnotice);
+
+#ifdef PROFILE
+	profstart(PROF_P2G1);
+#endif
+	g1 = POSTGIS2JTS(geom1);
+#ifdef PROFILE
+	profstop(PROF_P2G1);
+#endif
+#ifdef PROFILE
+	profstart(PROF_P2G2);
+#endif
+	g2 = POSTGIS2JTS(geom2);
+#ifdef PROFILE
+	profstop(PROF_P2G2);
+#endif
+
+#ifdef PROFILE
+	profstart(PROF_GRUN);
+#endif
+	result = JTSrelatePattern(g1,g2,patt);
+#ifdef PROFILE
+	profstop(PROF_GRUN);
+#endif
+
+        finishJTS();
+
+	if (result == 2)
+	{
+		elog(ERROR,"JTS covers() threw an error!");
+		PG_RETURN_NULL(); /* never get here */
+	}
+
+#ifdef PROFILE
+	profstop(PROF_QRUN);
+	profreport("geos",geom1, geom2, NULL);
+#endif
+
+	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom2, 1);
+
+	PG_RETURN_BOOL(result);
+}
 
 PG_FUNCTION_INFO_V1(within);
 Datum within(PG_FUNCTION_ARGS)
@@ -1466,7 +1554,90 @@ Datum within(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(result);
 }
 
+/*
+ * Described at:
+ * http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html
+ */
+PG_FUNCTION_INFO_V1(coveredby);
+Datum coveredby(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *geom1;
+	PG_LWGEOM *geom2;
+	JTSGeometry *g1,*g2;
+	bool result;
+	BOX2DFLOAT4 box1, box2;
+        char *patt = "**F**F***";
 
+#ifdef PROFILE
+	profstart(PROF_QRUN);
+#endif
+
+	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+
+	errorIfJTSGeometryCollection(geom1,geom2);
+	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
+
+	/*
+	 * short-circuit 1: if geom1 bounding box is not completely inside
+	 * geom2 bounding box we can prematurely return FALSE.
+	 * Do the test IFF BOUNDING BOX AVAILABLE.
+	 */
+	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
+		getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	{
+		if ( box1.xmin < box2.xmin ) PG_RETURN_BOOL(FALSE);
+		if ( box1.xmax > box2.xmax ) PG_RETURN_BOOL(FALSE);
+		if ( box1.ymin < box2.ymin ) PG_RETURN_BOOL(FALSE);
+		if ( box1.ymax > box2.ymax ) PG_RETURN_BOOL(FALSE);
+
+#ifdef PGIS_DEBUG
+                lwnotice("bounding box short-circuit missed.");
+#endif
+	}
+	initJTS(lwnotice);
+
+#ifdef PROFILE
+	profstart(PROF_P2G1);
+#endif
+	g1 = POSTGIS2JTS(geom1);
+#ifdef PROFILE
+	profstop(PROF_P2G1);
+#endif
+#ifdef PROFILE
+	profstart(PROF_P2G2);
+#endif
+	g2 = POSTGIS2JTS(geom2);
+#ifdef PROFILE
+	profstop(PROF_P2G2);
+#endif
+
+#ifdef PROFILE
+	profstart(PROF_GRUN);
+#endif
+	result = JTSrelatePattern(g1,g2,patt);
+#ifdef PROFILE
+	profstop(PROF_GRUN);
+#endif
+
+        finishJTS();
+
+	if (result == 2)
+	{
+		elog(ERROR,"JTS coveredby() threw an error!");
+		PG_RETURN_NULL(); /* never get here */
+	}
+
+#ifdef PROFILE
+	profstop(PROF_QRUN);
+	profreport("geos",geom1, geom2, NULL);
+#endif
+
+	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom2, 1);
+
+	PG_RETURN_BOOL(result);
+}
 
 PG_FUNCTION_INFO_V1(crosses);
 Datum crosses(PG_FUNCTION_ARGS)
