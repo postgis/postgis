@@ -229,7 +229,7 @@ CREATEFUNCTION EnableLongTransactions()
 	RETURNS TEXT
 	AS '
 DECLARE
-	query text;
+	"query" text;
 	exists bool;
 	rec RECORD;
 
@@ -243,13 +243,13 @@ BEGIN
 
 	IF NOT exists
 	THEN
-		query = ''CREATE TABLE authorization_table (
+		"query" = ''CREATE TABLE authorization_table (
 			toid oid, -- table oid
 			rid text, -- row id
 			expires timestamp,
 			authid text
 		)'';
-		EXECUTE query;
+		EXECUTE "query";
 	END IF;
 
 	exists = ''f'';
@@ -259,7 +259,7 @@ BEGIN
 	END LOOP;
 
 	IF NOT exists THEN
-		query = ''CREATE VIEW authorized_tables AS '' ||
+		"query" = ''CREATE VIEW authorized_tables AS '' ||
 			''SELECT '' ||
 #ifdef HAS_SCHEMAS
 			''n.nspname as schema, '' ||
@@ -276,7 +276,7 @@ BEGIN
 			'' AND c.relnamespace = n.oid'' ||
 #endif
 			'' AND t.tgfoid = p.oid and t.tgrelid = c.oid'';
-		EXECUTE query;
+		EXECUTE "query";
 	END IF;
 
 	RETURN ''Long transactions support enabled'';
@@ -313,8 +313,6 @@ CREATEFUNCTION DisableLongTransactions()
 	RETURNS TEXT
 	AS '
 DECLARE
-	query text;
-	exists bool;
 	rec RECORD;
 
 BEGIN
