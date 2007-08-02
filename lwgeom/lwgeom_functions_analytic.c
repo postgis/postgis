@@ -1409,7 +1409,7 @@ int point_outside_polygon(RTREE_NODE **root, int ringCount, LWPOINT *point)
 
         for(i=1; i<ringCount; i++)
         {
-                if(point_in_ring_deprecated(root[i], &pt) == 1)
+                if(point_in_ring(root[i], &pt) == 1)
                 {
 #ifdef PGIS_DEBUG
                         lwnotice("point_outside_polygon: within hole %d.", i);
