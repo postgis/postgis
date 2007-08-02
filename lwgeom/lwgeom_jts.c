@@ -14,6 +14,7 @@ Datum relate_pattern(PG_FUNCTION_ARGS);
 Datum disjoint(PG_FUNCTION_ARGS);
 Datum touches(PG_FUNCTION_ARGS);
 Datum intersects(PG_FUNCTION_ARGS);
+Datum intersects_old(PG_FUNCTION_ARGS);
 Datum crosses(PG_FUNCTION_ARGS);
 Datum within(PG_FUNCTION_ARGS);
 Datum contains(PG_FUNCTION_ARGS);
@@ -55,11 +56,12 @@ Datum linemerge(PG_FUNCTION_ARGS);
  * If you're having problems with JTS<->POSTGIS conversions
  * you can define these to use WKT
  */
-#define WKT_J2P 0
-#define WKT_P2J 0
+#define WKT_J2P 1
+#define WKT_P2J 1
 
 typedef void (*noticefunc)(const char *fmt, ...);
-typedef  struct JTSGeometry JTSGeometry;
+typedef struct JTSGeometry JTSGeometry;
+typedef struct JTSPrepGeometry JTSPrepGeometry;
 
 extern const char * createJTSPoint(POINT3D *pt);
 extern void initJTS(noticefunc);
@@ -127,7 +129,20 @@ LWLINE *lwline_from_geometry(JTSGeometry *g, char want3d);
 LWPOLY *lwpoly_from_geometry(JTSGeometry *g, char want3d);
 LWCOLLECTION *lwcollection_from_geometry(JTSGeometry *geom, char want3d);
 LWGEOM *JTS2LWGEOM(JTSGeometry *g, char want3d);
+void JTSPrintPreparedGeometry(JTSGeometry *pg);
+JTSPrepGeometry *JTSGetRHSCache();
+JTSPrepGeometry *JTSGetLHSCache();
+void JTSPutRHSCache(JTSPrepGeometry *rhs);
+void JTSPutLHSCache(JTSPrepGeometry *lhs);
 
+typedef struct
+{
+        uchar *serializedGeomA;
+        uchar *serializedGeomB;
+} PREPARED_GEOMETRY_CACHE;
+
+char JTSpreparedIntersects(JTSPrepGeometry *pg, JTSGeometry *g);
+JTSPrepGeometry *JTSPrepareGeometry(JTSGeometry *g);
 
 /*
  * Using BUFFER(0) version of unite_garray takes
@@ -1426,13 +1441,7 @@ Datum covers(PG_FUNCTION_ARGS)
 		if ( box2.ymin < box1.ymin ) PG_RETURN_BOOL(FALSE);
 		if ( box2.ymax > box1.ymax ) PG_RETURN_BOOL(FALSE);
 	}
-        else 
-        {
-#ifdef PGIS_DEBUG
-                lwnotice("Covers: type1: %d, type2: %d", type1, type2);
-#endif
-        }
-        
+
 	initJTS(lwnotice);
 
 #ifdef PROFILE
@@ -1716,14 +1725,232 @@ Datum crosses(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(result);
 }
 
-
-
+/*
+ * TODO: PREPARED INTERSECTS
+#define DISABLE_CACHE 1
+ */
 PG_FUNCTION_INFO_V1(intersects);
 Datum intersects(PG_FUNCTION_ARGS)
 {
+        PG_LWGEOM *geom1;
+        PG_LWGEOM *geom2;
+        bool result;
+        BOX2DFLOAT4 box1, box2;
+        MemoryContext oldContext;
+        PREPARED_GEOMETRY_CACHE *cache = NULL;
+        JTSPrepGeometry *preparedGeom = NULL;
+        JTSGeometry *jtsGeom = NULL;
+        int i, length;
+        uchar *serialized;
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("intersects (prepared jts geometry) called");
+#endif 
+
+        geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+        geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+
+        errorIfJTSGeometryCollection(geom1,geom2);
+        errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
+
+        /*
+         * short-circuit 1: if geom2 bounding box does not overlap
+         * geom1 bounding box, we can prematurely return FALSE.
+         * Do the test IFF BOUNDING BOX AVAILABLE.
+         */
+        if(getbox2d_p(SERIALIZED_FORM(geom1), &box1) && 
+                getbox2d_p(SERIALIZED_FORM(geom2), &box2))
+        {
+                if(box2.xmax < box1.xmin) PG_RETURN_BOOL(FALSE);
+                if(box2.xmin > box1.xmax) PG_RETURN_BOOL(FALSE);
+                if(box2.ymax < box1.ymin) PG_RETURN_BOOL(FALSE);
+                if(box2.ymin > box1.ymax) PG_RETURN_BOOL(FALSE);
+        }
+
+	initJTS(lwnotice);
+
+        /*
+         * Any memory allocation that must survive beyond this function call
+         * must be made in the function context.  The terminology is a touch 
+         * confusing.  The function context will persist across all calls to 
+         * this function within the currently running query.
+         */
+        oldContext = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
+        /*
+         * Find the cache.  If there is none, create it.
+         */
+
+#ifndef DISABLE_CACHE
+        cache = fcinfo->flinfo->fn_extra;
+#endif
+
+#ifdef PGIS_DEBUG
+        lwnotice("intersects: cache retrieved %p", cache);
+#endif
+        if(!cache)
+        {
+#ifdef PGIS_DEBUG
+                lwnotice("intersects: no cache found.  Creating one.");
+#endif
+                cache = lwalloc(sizeof(PREPARED_GEOMETRY_CACHE));
+                preparedGeom = JTSPrepareGeometry(POSTGIS2JTS(geom1));
+                
+                JTSPutLHSCache(preparedGeom);
+                length = lwgeom_size(SERIALIZED_FORM(geom1));
+                cache->serializedGeomA = lwalloc(length);
+                memcpy(cache->serializedGeomA, SERIALIZED_FORM(geom1), length);
+                jtsGeom = POSTGIS2JTS(geom2);
+                JTSPutRHSCache(JTSPrepareGeometry(jtsGeom));
+                length = lwgeom_size(SERIALIZED_FORM(geom2));
+                cache->serializedGeomB = lwalloc(length);
+                memcpy(cache->serializedGeomB, SERIALIZED_FORM(geom2), length);
+                fcinfo->flinfo->fn_extra = cache;
+#ifdef PGIS_DEBUG
+                lwnotice("Cache created containing geoms:");
+#endif
+        }
+        /*
+         * There is a cache.  We must determine which geometry, if either,
+         * is found in the cache.
+         */
+        else
+        {
+#ifdef PGIS_DEBUG
+                lwnotice("intersects: checking cache");
+#endif
+                serialized = SERIALIZED_FORM(geom1);
+                length = lwgeom_size(serialized);
+                if(lwgeom_size(cache->serializedGeomA) == length)
+                {
+                        for(i = 0; i < length; i++)
+                        {
+                                uchar a = serialized[i];
+                                uchar b = cache->serializedGeomA[i];
+                                if(a != b)
+                                        break;
+                        }
+                        if(i >= length)
+                        {
+#ifdef PGIS_DEBUG
+                                lwnotice("intersects: LHS geom found in cache.");
+#endif
+                                preparedGeom = JTSGetLHSCache();
+                                jtsGeom = POSTGIS2JTS(geom2);
+#ifdef PGIS_DEBUG
+                                lwnotice("Cache hit, geom:");
+                                lwnotice("preparedGeom %p, jtsGeom %p",
+                                        preparedGeom, jtsGeom);
+#endif
+                        }
+                }
+                
+                serialized = SERIALIZED_FORM(geom2);
+                length = lwgeom_size(serialized);
+                if(!preparedGeom && lwgeom_size(cache->serializedGeomB) == length)
+                {
+                        for(i = 0; i < length; i++)
+                        {
+                                uchar a = serialized[i];
+                                uchar b = cache->serializedGeomB[i];
+                                if(a != b)
+                                        break;
+                        }
+                        if(i >= length)
+                        {
+#ifdef PGIS_DEBUG
+                                lwnotice("intersects: RHS geom found in cache.");
+#endif
+                                preparedGeom = JTSGetRHSCache();
+                                jtsGeom = POSTGIS2JTS(geom1);
+#ifdef PGIS_DEBUG
+                                lwnotice("Cache hit, geom:");
+                                lwnotice("preparedGeom %p, jtsGeom %p",
+                                        preparedGeom, jtsGeom);
+#endif
+                        }
+                }
+
+                if(!preparedGeom)
+                {
+#ifdef PGIS_DEBUG
+                        lwnotice("intersects: cache miss.");
+#endif
+                        if(cache->serializedGeomA)
+                                lwfree(cache->serializedGeomA);
+                        preparedGeom = JTSPrepareGeometry(POSTGIS2JTS(geom1));
+                        JTSPutLHSCache(preparedGeom);
+                        length = lwgeom_size(SERIALIZED_FORM(geom1));
+                        cache->serializedGeomA = lwalloc(length);
+                        memcpy(cache->serializedGeomA, 
+                                SERIALIZED_FORM(geom1), length);
+
+                        if(cache->serializedGeomB)
+                                lwfree(cache->serializedGeomB);
+                        jtsGeom = POSTGIS2JTS(geom2);
+                        JTSPutRHSCache(JTSPrepareGeometry(jtsGeom));
+                        length = lwgeom_size(SERIALIZED_FORM(geom2));
+                        cache->serializedGeomB = lwalloc(length);
+                        memcpy(cache->serializedGeomB, 
+                                SERIALIZED_FORM(geom2), length);
+                }
+        }
+        MemoryContextSwitchTo(oldContext);
+#ifdef PGIS_DEBUG
+        lwnotice("intersects: prepared-%p, geom-%p", preparedGeom, jtsGeom);
+        JTSPrintPreparedGeometry(preparedGeom);
+#endif
+
+        if(!preparedGeom || !jtsGeom)
+        {
+
+                lwnotice("intersects error: Unable to prepare geometery (%p, %p)", preparedGeom, jtsGeom);
+	        result = JTSrelateIntersects(POSTGIS2JTS(geom1), 
+                        POSTGIS2JTS(geom2));
+                if (result == 2)
+                {
+                        lwerror("JTS intersects() threw an error!");
+                        PG_FREE_IF_COPY(geom1, 0);
+                        PG_FREE_IF_COPY(geom2, 1);
+                        PG_RETURN_NULL();
+                }
+                
+        }
+        else
+        {
+
+                result = JTSpreparedIntersects(preparedGeom, jtsGeom);
+
+                /*
+	        finishJTS();
+                */
+	        if (result == 2)
+	        {
+		        lwerror("JTS intersects() threw an error!");
+	                PG_FREE_IF_COPY(geom1, 0);
+	                PG_FREE_IF_COPY(geom2, 1);
+		        PG_RETURN_NULL(); //never get here
+	        }
+        }
+
+	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom2, 1);
+
+#ifdef PGIS_DEBUG_CALLS
+        lwnotice("intersects() returning.");
+#endif
+
+	PG_RETURN_BOOL(result);
+}
+
+
+
+PG_FUNCTION_INFO_V1(intersects_old);
+Datum intersects_old(PG_FUNCTION_ARGS)
+{
 	PG_LWGEOM *geom1;
 	PG_LWGEOM *geom2;
-	JTSGeometry *g1,*g2;
+        JTSGeometry *g1;
+        JTSGeometry *g2;
 	bool result;
 	BOX2DFLOAT4 box1, box2;
 

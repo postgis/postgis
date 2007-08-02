@@ -14,6 +14,7 @@
 
 //#define DEBUG_JARRAY 1
 
+using namespace com::vividsolutions::jts::geom::prep;
 using namespace com::vividsolutions::jts::geom;
 using namespace com::vividsolutions::jts::io;
 using namespace com::vividsolutions::jts;
@@ -112,6 +113,15 @@ extern "C" char *JTSversion();
 extern "C" char *JTSjtsport();
 extern "C" int JTSGeometryTypeId(Geometry *g1);
 
+extern "C" char JTSpreparedIntersects(PreparedGeometry *pg, Geometry* g);
+extern "C" PreparedGeometry *JTSPrepareGeometry(Geometry* g);
+extern "C" void JTSgc(void);
+extern "C" void JTSPrintPreparedGeometry(PreparedGeometry *pg);
+extern "C" PreparedGeometry *JTSGetRHSCache();
+extern "C" PreparedGeometry *JTSGetLHSCache();
+extern "C" void JTSPutRHSCache(PreparedGeometry *rhs);
+extern "C" void JTSPutLHSCache(PreparedGeometry *lhs);
+
 extern "C" char JTSisvalid(Geometry *g1);
 
 /* Converters */
@@ -167,11 +177,14 @@ initJTS(noticefunc nf)
 	if (jtsGeomFactory == NULL)
 	{
 		JvCreateJavaVM(NULL);
-		JvAttachCurrentThread(NULL, NULL);	
+	        JvAttachCurrentThread(NULL, NULL);	
 		JvInitClass(&Geometry::class$);
 		JvInitClass(&GeometryFactory::class$);
 		JvInitClass(&Coordinate::class$);
 		JvInitClass(&JTSVersion::class$);
+                JvInitClass(&PreparedGeometry::class$);
+                JvInitClass(&PreparedGeometryFactory::class$);
+                JvInitClass(&PreparedGeometryCache::class$);
 
 		// NOTE: SRID will have to be changed after geometry creation
 		jtsGeomFactory = new GeometryFactory( new PrecisionModel(), -1);
@@ -188,11 +201,19 @@ finishJTS(void)
 	JvDetachCurrentThread();
 }
 
+void
+JTSgc(void)
+{
+        System::gc();
+}
+
 Geometry *
 JTSGeometryFromWKT(const char *wkt)
 {
 	try {
+#ifdef DEBUG_POSTGIS2GEOS
 		NOTICE_MESSAGE("JTSGeometryFromWKT called");
+#endif
 		static WKTReader *r = new WKTReader;
 		jstring wkt_j = JvNewStringLatin1(wkt);
 		Geometry *g = r->read(wkt_j);
@@ -248,6 +269,104 @@ char JTSrelateIntersects(Geometry *g1, Geometry*g2)
 		NOTICE_MESSAGE(StringToChar(t->getMessage()));
 		return 2;
 	}
+}
+
+char JTSpreparedIntersects(PreparedGeometry *pg, Geometry* g)
+{
+        try {
+                bool result;
+                result = pg->intersects(g);
+                return result;
+        }
+        catch (Throwable *t)
+        {
+                NOTICE_MESSAGE(StringToChar(t->getMessage()));
+                return 2;
+        }
+}
+
+PreparedGeometry *JTSPrepareGeometry(Geometry* g)
+{
+        try {
+                PreparedGeometryFactory *pgFact;
+                PreparedGeometry *pg;
+                pgFact = new PreparedGeometryFactory();
+                pg = pgFact->create(g);
+                return pg;
+        }
+        catch (Throwable *t)
+        {
+                NOTICE_MESSAGE(StringToChar(t->getMessage()));
+                return NULL;
+        }
+}
+
+void JTSPrintPreparedGeometry(PreparedGeometry *pg)
+{
+        try {
+                NOTICE_MESSAGE(StringToChar(pg->getGeometry()->toString()));
+        }
+        catch (Throwable *t)
+        {
+                NOTICE_MESSAGE(StringToChar(t->getMessage()));
+        }
+}
+
+PreparedGeometry *JTSGetRHSCache()
+{
+        try {
+                PreparedGeometryCache *cache;
+                PreparedGeometry *pg;
+                cache = PreparedGeometryCache::instance;
+                pg = cache->getRightHandSide();
+                return pg;
+        }
+        catch (Throwable *t)
+        {
+                NOTICE_MESSAGE(StringToChar(t->getMessage()));
+                return NULL;
+        }
+}
+
+PreparedGeometry *JTSGetLHSCache()
+{
+        try {
+                PreparedGeometryCache *cache;
+                PreparedGeometry *pg;
+                cache = PreparedGeometryCache::instance;
+                pg = cache->getLeftHandSide();
+                return pg;
+        }
+        catch (Throwable *t)
+        {
+                NOTICE_MESSAGE(StringToChar(t->getMessage()));
+                return NULL;
+        }
+}
+
+void JTSPutRHSCache(PreparedGeometry *rhs)
+{
+        try {
+                PreparedGeometryCache *cache;
+                cache = PreparedGeometryCache::instance;
+                cache->putRightHandSide(rhs);
+        }
+        catch (Throwable *t)
+        {
+                NOTICE_MESSAGE(StringToChar(t->getMessage()));
+        }
+}
+void JTSPutLHSCache(PreparedGeometry *lhs)
+{
+        try {
+                PreparedGeometryCache *cache;
+                cache = PreparedGeometryCache::instance;
+                cache->putLeftHandSide(lhs);
+        }
+        catch (Throwable *t)
+        {
+                NOTICE_MESSAGE(StringToChar(t->getMessage()));
+        }
 }
 
 char JTSrelateCrosses(Geometry *g1, Geometry*g2)
@@ -783,6 +902,14 @@ JTSversion()
         if ( ! v ) return "UNDEFINED";
         return StringToChar(v->toString());
 	//return res;
+}
+
+bool
+ensureMinimumVersion(int major, int minor, int patch)
+{
+        JTSVersion *v = JTSVersion::CURRENT_VERSION;
+        if (!v) return false;
+        return false;
 }
 
 bool 
