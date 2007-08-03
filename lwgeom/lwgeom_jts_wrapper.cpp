@@ -904,14 +904,6 @@ JTSversion()
 	//return res;
 }
 
-bool
-ensureMinimumVersion(int major, int minor, int patch)
-{
-        JTSVersion *v = JTSVersion::CURRENT_VERSION;
-        if (!v) return false;
-        return false;
-}
-
 bool 
 JTSHasZ(Geometry *g)
 {
