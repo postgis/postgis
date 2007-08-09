@@ -13,8 +13,8 @@ Datum relate_full(PG_FUNCTION_ARGS);
 Datum relate_pattern(PG_FUNCTION_ARGS);
 Datum disjoint(PG_FUNCTION_ARGS);
 Datum touches(PG_FUNCTION_ARGS);
+Datum intersects_reprecated(PG_FUNCTION_ARGS);
 Datum intersects(PG_FUNCTION_ARGS);
-Datum intersects_old(PG_FUNCTION_ARGS);
 Datum crosses(PG_FUNCTION_ARGS);
 Datum within(PG_FUNCTION_ARGS);
 Datum contains(PG_FUNCTION_ARGS);
@@ -48,16 +48,17 @@ Datum linemerge(PG_FUNCTION_ARGS);
 //#define PGIS_DEBUG_CONVERTER 1
 #ifdef PGIS_DEBUG_CONVERTER
 #define PGIS_DEBUG_POSTGIS2JTS 1
-#define PGIS_DEBUG_JTS2POSTGIS 1
+#define PGIS_DEBUG_JTS2POSTGIS 1 
 #endif // PGIS_DEBUG_CONVERTER
 //#define PGIS_DEBUG 1
+//#define PGIS_DEBUG_POSTGIS2JTS
 
 /*
  * If you're having problems with JTS<->POSTGIS conversions
  * you can define these to use WKT
  */
-#define WKT_J2P 1
-#define WKT_P2J 1
+#define WKT_J2P 0
+#define WKT_P2J 0
 
 typedef void (*noticefunc)(const char *fmt, ...);
 typedef struct JTSGeometry JTSGeometry;
@@ -1725,12 +1726,8 @@ Datum crosses(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(result);
 }
 
-/*
- * TODO: PREPARED INTERSECTS
-#define DISABLE_CACHE 1
- */
-PG_FUNCTION_INFO_V1(intersects);
-Datum intersects(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(intersects_reprecated);
+Datum intersects_reprecated(PG_FUNCTION_ARGS)
 {
         PG_LWGEOM *geom1;
         PG_LWGEOM *geom2;
@@ -1944,8 +1941,8 @@ Datum intersects(PG_FUNCTION_ARGS)
 
 
 
-PG_FUNCTION_INFO_V1(intersects_old);
-Datum intersects_old(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(intersects);
+Datum intersects(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom1;
 	PG_LWGEOM *geom2;
