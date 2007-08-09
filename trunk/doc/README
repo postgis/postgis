@@ -1,0 +1,36 @@
+Overview
+========
+
+Postgis documentation is written in docbook xml.
+Input file is postgis.xml. From that file we can
+convert to chunked html, single file html and pdf.
+
+Rules are:
+
+	make html # output in html/postgis.html
+	make chuncked-html
+	make postgis.pdf
+
+====================================================
+ WARNING
+====================================================
+
+Informations passed this point are out-of-date.
+We're moving toward only requiring 'docbook-utils'
+package.
+
+====================================================
+
+Common requirements
+===================
+
+debian packages:
+	- xlstproc 
+
+Requirements to build postgis.pdf
+=================================
+
+debian packages:
+	- passivetex 
+	- xmltex  (for pdfxmltex)
+

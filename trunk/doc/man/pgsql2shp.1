@@ -1,0 +1,100 @@
+.TH "pgsql2shp" "1" "" "" "PostGIS"
+.SH "NAME"
+.LP 
+pgsql2shp - postgis to shapefile dumper
+
+.SH "SYNTAX"
+.LP 
+pgsql2shp [\fIoptions\fR] \fIdatabase\fR [\fIschema\fR\fB.\fR]\fItable\fR
+.br 
+pgsql2shp [\fIoptions\fR] \fIdatabase\fR \fIquery\fR
+
+.SH "DESCRIPTION"
+.LP 
+The pgsql2shp table dumper connects directly to the database and converts a 
+table (possibly created by user query) into a shape file. It is compatible 
+with all versions of PostGIS.
+
+Version: 1.1.5 (2006/10/06)
+
+.SH "USAGE"
+.LP
+The <database> is the name of the database to connect to.
+
+The <table> is the (optionally schema-qualified) table to read spatial 
+data from. Alternatively, you can specify a QUERY whose result will be
+written into the shapefile.
+
+.SH "OPTIONS"
+.LP 
+The commandline options are:
+.TP 
+\fB\-f\fR <\fIfilename\fR>
+Write the output to a particular filename.
+.TP 
+\fB\-h\fR <\fIhost\fR>
+The database host to connect to.
+.TP 
+\fB\-p\fR <\fIport\fR>
+The port to connect to on the database host.
+.TP 
+\fB\-P\fR <\fIpassword\fR>
+The password to use when connecting to the database.
+.TP 
+\fB\-u\fR <\fIuser\fR>
+The username to use when connecting to the database.
+.TP 
+\fB\-g\fR <\fIgeometry column\fR>
+In the case of tables with multiple geometry columns, the geometry column 
+to use when writing the shape file.
+.TP 
+\fB\-b\fR
+Use a binary cursor. When used on pre\-1.0.0 PostGIS versions this will 
+reduce the likelihood of coordinate drift due to conversion to and from 
+WKT format. Coordinate drifts will not occur with PostGIS 1.0.0 and newer 
+versions. It will be slightly faster, but might fail if any NON\-gemetry 
+column lacks a cast to text.
+.TP 
+\fB\-r\fR
+Raw mode. Do not drop the gid field, or escape column names.
+.TP 
+\fB\-d\fR
+For backward compatibility: write a 3\-dimensional shape file when dumping 
+from old (pre\-1.0.0) postgis databases (the default is to write a 
+2\-dimensional shape file in that case). Starting from postgis\-1.0.0+, 
+dimensions are fully encoded. 
+.TP 
+\fB\-k\fR
+Keep idendifiers case (don't uppercase field names). 
+.TP 
+\fB\-?\fR
+Display version and usage information.
+
+.SH "INSTALLATION"
+.LP
+To compile the program from source, simply run "make" in the source directory.
+Then copy the binary in your shell search path (or wherever you like). This
+text is also available as a man page in the ../doc/man/ directory, ready for
+copying it into the manual search path on unixoid systems.
+
+.SH "EXAMPLES"
+.LP 
+An example session using the dumper to create shape file from a database might
+look like this:
+
+# \fBpgsql2shp -f myfile -p 5555 my_db roads_table\fR
+
+.SH "AUTHORS"
+.LP
+Originally written by Jeff Lounsbury <jeffloun@refractions.net>.
+Improved and maintained by Sandro Santilli <strk@refractions.net>.
+Includes small contributions and improvements by others.
+
+This application uses functionality from shapelib 1.2.9
+by Frank Warmerdam <warmerda@gdal.velocet.ca> to write to ESRI Shape files.
+
+.SH "SEE ALSO"
+.LP 
+shp2pgsql(1)
+
+More information is available at http://postgis.refractions.net

@@ -1,0 +1,5 @@
+liblwgeom.so*
+lwgeom.sql
+y.output
+lwpostgis.sql
+postgis_geos_version.h

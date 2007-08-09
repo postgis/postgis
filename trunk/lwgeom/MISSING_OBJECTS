@@ -1,0 +1,5 @@
+# This is a list of objects still missing lwgeom support
+--- OBSOLETED ?
+geometry_size(geometry, internal)
+optimistic_overlap(geometry, geometry, double precision)
+

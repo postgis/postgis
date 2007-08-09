@@ -1,0 +1,34 @@
+2005/01/13
+
+- Clean up mapserver connectivity
+- Network creation and network operations 
+  (upstream, downstream, least cost path)
+- Standardized handling for topology and coverages with 
+  support functions.
+- casts between PostGIS and PostgreSQL geometry classes
+
+======================================
+2005/12/14 - other random items 
+======================================
+
+- Add findsrid() functions that find good carthesian projection
+  srids for a given geometry.
+  
+- Treat geometries without SRID=-1 as compatible with all other
+  geometries in geometry operations
+
+- Special threatment of SRID=-1, dims=-1, type=GEOMETRY
+  in geometry_columns
+
+- LineMerge and Polygonize* interfaces for JTS
+
+- More LRS functions ?
+
+- Selectivity estimation code merge (+- pgsql-8.0.0)
+	
+- fix invalid stats computation (currently keeps the previously
+  computed ones, should instead wipe them out - possibly a pgsql bug).
+
+- MakeValidShape() to remove consecutive vertexes and any eventual
+  other cleanup aimed at making pgsql2shp produce "valid" Shapefiles.
+

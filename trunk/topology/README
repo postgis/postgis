@@ -1,0 +1,201 @@
+=Introduction
+
+This module contains an initial implementation of Topology
+model support.
+
+All routines, types and other management objects are stored
+in the "topology" SCHEMA.
+
+You can see an ER diagram of the conceptual model under the ER
+directory. You need xfig (http://epb.lbl.gov/xfig/).
+
+Comments welcome --strk(2005-10-13);
+
+=Requirements
+
+        * schema-aware postgresql (7.3 and up)
+        * PostGIS-1.1.x 
+        * Geos-2.1 or up
+
+=Install, upgrade, uninstall
+
+To enable topology support:
+
+	$ make
+	$ psql -f topology.sql
+
+To uninstall:
+
+	psql -c 'drop schema topology cascade'
+
+Upgrading currently requires uninstall.
+
+=Usage
+
+Topology data are stored in named SCHEMAs, where the topology
+name is the name of the SCHEMA containing its data.
+
+A catalogue of avalable topologies is kept under the
+"topology"."topology" table.
+
+To create/destroy a topology:
+
+	SELECT topology.CreateTopology(name, [srid], [tolerance]);
+	SELECT topology.DropTopology(name);
+
+==Loading topology data
+
+To load topology data in a topology you can use INSERT
+statements filling up the Edge, Node and Face relations
+under you topology schema:
+
+
+	* Edge
+	 * edge_id integer PRIMARY KEY
+	 * start_node integer REFERENCES Node.node_id)
+	 * end_node integer REFERENCES Node.node_id)
+	 * next_left_edge integer REFERENCES abs(Edge.edge_id)
+	 * next_right_edge integer REFERENCES abs(Edge.edge_id)
+	 * left_face integer REFERENCES Face.face_id
+	 * right_face integer REFERENCES Face.face_id
+	 * geom geometry ( a linestring )
+	
+
+	* Node
+	 * node_id integer PRIMARY KEY
+	 * containing_face integer REFERENCES Face.face_id
+	 * geom geometry ( a point )
+
+	* Face
+	 * face_id integer PRIMARY KEY
+	 * mbr box2d ( can be NULL )
+
+Details on semantic are contained in the SQL/MM specification, which
+this implementation follows as for these views structure.
+
+==Validating topology data
+
+To verify validity of a topology:
+
+	SELECT * FROM topology.ValidateTopology(name);
+
+==Defining TopoGeometry objects
+
+Currently, TopoGeometry objects can only be defined by specifying their
+component topology elements. We do support both basic TopoGeometry
+and hierarchical TopoGeometry. Basic TopoGeometry objects are those
+composed by base topolocal elements (faces, edges, nodes). Hierarchical
+TopoGeometry objects are composed by other TopoGeometry objects.
+
+Each TopoGeometry object belongs to a specific Layer of a specific
+Topology. Before creating a TopoGeometry object you need to create
+its Layer in the Topology. A Topology Layer is an association of
+a feature-table with the topology. It also contain type and hierarchy
+information. We create a layer using the AddTopoGeometryColumn() function:
+
+	topology.AddTopoGeometryColumn(topology_name,
+		schema_name, table_name, column_name, feature_type,
+		[child_layer])
+
+The function will both add the requested column to the table and add
+a record to the topology.layer table with all the given info.
+
+If you don't specify [child_layer] (or set it to NULL) this layer
+would contain Basic TopoGeometries (composed by primitive topology
+elements). Otherwise this layer will contain hierarchical TopoGeometries
+(composed by TopoGeometries from the child_layer).
+
+Once the layer is created (it's id is returned by the AddTopoGeometryColumn
+function) you're ready to construct TopoGeometry objects in it: 
+
+  	topology.CreateTopoGeom(
+
+    		topology_name,
+
+    		feature_type,	-- 1:[multi]point, 2:[multi]line,
+		             	-- 3:[multi]poly, 4:collection
+
+    		layer_id,    	-- as returned by AddTopoGeometryColumn
+
+		TopoElementArray);
+
+The TopoElementArray type is a bidimensional array of integers.
+Value semantics depend on the type of the layer associated with
+the TopoGeometry object. For Basic TopoGeometry objects this would
+be:
+	{{element_type, element_id}, ...}
+
+For Hierarchical TopoGeometry objects this would be:
+
+	{{child_layer_id, topogeoemtry_id}, ...}
+
+==Getting simple Geometry values from TopoGeometry objects
+
+You currently need to explicit call the TopoGeometry=>Geometry
+cast function. This will probably be made implicit when the
+code is more tested:
+
+	SELECT topology.Geometry(TopoGeometry);
+
+=Tests
+
+Tests are included under the test/ directory.
+Run make w/out args to see a list of supported targets:
+
+	$ cd test
+	$ make 
+
+
+=Issues
+
+==Topology tolerance
+
+GEOS (and JTS) often fail due to input precision.
+The CreateTopogeo() function currently accept a precision
+specification, we might use this to enforce a precision
+to the topology element geometries, by mean of SnapToGrid
+calls, or alternatively, force use of a specific PrecisionModel
+when using GEOS function. The former seems cleaner, but would
+require a trigger to run on all inserts, even when the geometry
+being input has already been snapped by caller.
+
+==ST_GetFaceGeometry() implementation
+
+The ST_GetFaceGeometry() function is currently implemented 
+as a call to polygonize() receiving all edges with the
+given Face on the left or right side. This reduces the number
+of SQL queries to 1, but makes it hard to detect any
+inconsistency in the underlying topology.
+Also, the polygonize() function does not use *any* of the
+metadata informations in the Edge table, so replacing it
+with a more topology-aware function could speed it up.
+
+==ValidateTopology() performance
+
+The ValidateTopology() function, as for SQL/MM specification
+uses ST_GetFaceGeometry() to check for Within() and Overlap()
+conditions. This is an expensive task, and might be replaced
+by topology-aware replacement of the two predicates. The
+Face geometries might also be cached, but that might still
+be slower then overloading the predicates.
+
+==Topology table constraints 
+
+In addition to the constraints defined in SQL/MM specification,
+this implementation adds constraints to enforce Node and Edge
+geometry types to be 'POINT' and 'LINESTRING' respectively.
+
+===SRID constraint
+
+One of the things that the ValidateTopology is required to
+check is SRID consistency: all geometry value must be in
+the same SRID. I avoided that check as any SRID mismatch
+would be cought by spacial predicates and will result
+in an exception being thrown.
+
+We might add the check as a constraint on the topology tables
+instead, possibly dropping the SRID after checking it. This
+would reduce database, while topology SRID could be re-attached
+to any output geometry reading it from the topology.topology
+metadata table.
+

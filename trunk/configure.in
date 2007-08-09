@@ -1,0 +1,646 @@
+AC_INIT(README.postgis)
+AC_CONFIG_HEADER(config.h)
+
+dnl AC_ARG_ENABLE(autoconf, [  --enable-autoconf       really use autoconf],
+dnl  	AC_MSG_RESULT(Using autoconf),
+dnl  	AC_MSG_ERROR([
+dnl  
+dnl  Autoconf-based configuration is not widely tested.
+dnl  If you want to use it anyway specify --enable-autoconf.
+dnl  ])
+dnl  )
+
+dnl
+dnl Compilers
+dnl
+AC_PROG_CC
+AC_PROG_CXX
+AC_PROG_LN_S
+
+
+dnl
+dnl iconv support (might fail in case of non-default iconv installation)
+dnl
+AC_SUBST(USE_ICONV)
+AC_SUBST(ICONV_LDFLAGS)
+ICONV_LDFLAGS=
+USE_ICONV=1
+AC_ARG_WITH(iconv, 
+[  --without-iconv         disable unicode support],
+	if test "$with_iconv" = "no"; then
+		USE_ICONV=0
+	fi
+)
+
+if test "$USE_ICONV" = 1; then
+	AC_CHECK_LIB(iconv, iconv_open,
+		USE_ICONV=1
+		ICONV_LDFLAGS=-liconv
+		,
+		AC_CHECK_LIB(iconv, libiconv_open,
+			USE_ICONV=1
+			ICONV_LDFLAGS=-liconv
+			,
+			AC_CHECK_LIB(c, iconv_open,
+				USE_ICONV=1
+				,
+				USE_ICONV=0
+			)
+		)
+	)
+fi
+
+AC_CHECK_HEADERS(iconv.h)
+
+
+
+dnl
+dnl host operating system
+dnl
+AC_CANONICAL_HOST
+
+dnl
+dnl Search for pg_config and setup pgsql stuff
+dnl
+AC_SUBST(PGCONFIG)
+PGCONFIG=
+AC_ARG_WITH(pgsql, 
+[  --with-pgsql[[=ARG]]      build for a specific pgsql version
+                          [[ARG=path to pg_config]]],
+	if test "$with_pgsql" != "no" -a "$with_pgsql" != "yes"; then
+		if test ! -f "$with_pgsql"; then
+			AC_MSG_ERROR([Invalid argument to --with-pgsql]);
+		fi
+		PGCONFIG="$with_pgsql"
+	fi
+)
+if test -z "$PGCONFIG"; then
+	AC_PATH_PROG([PGCONFIG], [pg_config])
+fi
+if test -z "$PGCONFIG"; then
+	AC_MSG_ERROR([PostgreSQL is required by PostGIS]);
+fi
+AC_SUBST(PGFEINCLUDES)
+AC_SUBST(PGBEINCLUDES)
+AC_SUBST(PGFELIBS)
+AC_SUBST(PGBELIBS)
+AC_SUBST(PGBIN)
+AC_SUBST(PGTEMPLATE)
+AC_SUBST(LPATH)
+PGFEINCLUDES="-I"`${PGCONFIG} --includedir`
+PGFELIBS="-L"`${PGCONFIG} --libdir`" -lpq " #(1)# `${PGCONFIG} --libs 2> /dev/null`
+#(1)#
+# We don't really want to link to more libs then required, see:
+# http://postgis.refractions.net/pipermail/postgis-devel/2006-May/002124.html
+PGBELIBS="-L"`${PGCONFIG} --libdir`" -lpostgres"
+PGBEINCLUDES="-I"`${PGCONFIG} --includedir-server`
+PGBIN=`${PGCONFIG} --bindir`
+
+dnl
+dnl MingW requires use of pwd -W to give proper Windows (not MingW) paths
+dnl for in-place regression tests
+dnl
+case $host_os in
+	*mingw*)
+		PWDREGRESS="pwd -W"
+		;;
+	*)
+		PWDREGRESS="pwd"
+		;;
+esac
+AC_SUBST(PWDREGRESS)
+
+dnl
+dnl Test for GEOS
+dnl
+
+AC_SUBST(USE_GEOS)
+AC_SUBST(GEOS_DIR)
+AC_SUBST(GEOS_LDFLAGS)
+USE_GEOS=0
+GEOS_DIR=
+GEOS_LDFLAGS=
+
+AC_PATH_PROG([GEOSCONFIG], [geos-config])
+if test -n "$GEOSCONFIG"; then
+	USE_GEOS=1
+fi
+
+AC_ARG_WITH(geos, 
+[  --with-geos[[=ARG]]       enable spatial predicates and operators using GEOS
+                          [[ARG=path to geos-config]]],
+	if test "$with_geos" = "no"; then
+		USE_GEOS=0
+	else
+		if test "$with_geos" != "yes"; then
+			if test ! -f "$with_geos"; then
+	            AC_MSG_ERROR([Invalid argument to --with-geos]);
+			else
+				GEOSCONFIG="$with_geos"
+				USE_GEOS=1
+                AC_MSG_RESULT([Using specified geos-config file: $GEOSCONFIG])
+			fi
+		fi
+	fi
+)
+
+if test $USE_GEOS -gt 0; then
+	GEOS_DIR=`$GEOSCONFIG --prefix`
+
+	GEOS_LDFLAGS=`$GEOSCONFIG --ldflags 2> /dev/null`
+	if test x"$GEOS_LDFLAGS" = "x"; then
+		# older geos-config versions did not
+		# support the --ldflags switch, we'll
+		# default to GEOS_DIR/lib in this case.
+		#
+		GEOS_LDFLAGS="-L${GEOS_DIR}/lib"
+	fi
+
+	GEOS_MAJOR=`$GEOSCONFIG --version | cut -d. -f1`
+	if test "$GEOS_MAJOR" = "@GEOS_VERSION@"; then
+		GEOS_MAJOR=1
+		GEOS_MINOR=0
+	else
+		GEOS_MINOR=`$GEOSCONFIG --version | cut -d. -f2`
+	fi
+
+    # GEOS >= 3.0.0 always has CAPI, however only GEOS >= 2.2.0 has CAPI support
+    # so abort if CAPI support is not available.
+	if test $GEOS_MAJOR -lt 3; then
+	    if test $GEOS_MAJOR -eq 2 -a $GEOS_MINOR -lt 2; then
+            AC_MSG_ERROR([PostGIS version >= 1.2.0 requires GEOS version >= 2.2.0]) 
+        else
+            # Make sure we abort for all other versions of GEOS
+            if test $GEOS_MAJOR -lt 2; then
+                AC_MSG_ERROR([PostGIS version >= 1.2.0 requires GEOS version >= 2.2.0])
+            fi
+        fi
+    fi
+fi
+
+AC_ARG_WITH(geos-libdir,
+[  --with-geos-libdir=PATH path to GEOS libdir
+                          [[taken from geos-config by default]]],
+[
+case "$with_geos_libdir" in
+	no|yes)
+		AC_MSG_ERROR([Invalid argument to --with-geos-libdir])
+		;;
+	*)
+		GEOS_LDFLAGS=-L${with_geos_libdir}
+		;;
+esac
+], with_geos_libdir=no)
+
+
+AC_SUBST(USE_PROJ)
+AC_SUBST(PROJ_DIR)
+AC_SUBST(PROJ_LIBDIR)
+USE_PROJ=0
+PROJ_DIR=
+PROJ_LIBDIR=
+AC_PATH_PROG([PROJ], [proj])
+if test -n "$PROJ"; then
+	USE_PROJ=1
+	PROJ_DIR=`dirname ${PROJ}`/..
+	owd=`pwd`; cd ${PROJ_DIR}; PROJ_DIR=`pwd`; cd $owd;
+fi
+AC_ARG_WITH(proj, 
+	[  --with-proj[[=DIR]]       enable reprojection support],
+	if test "$with_proj" = "no"; then
+		USE_PROJ=0
+	else
+		USE_PROJ=1
+		if test "$with_proj" != "yes"; then
+			PROJ_DIR=$with_proj
+		fi
+	fi
+)
+if test $USE_PROJ -gt 0; then
+	if test ! -f $PROJ_DIR/include/projects.h; then
+		AC_MSG_ERROR([Can't find proj dir.]);
+	fi
+	PROJ_LIBDIR=${PROJ_DIR}/lib
+fi
+
+AC_ARG_WITH(proj-libdir,
+[  --with-proj-libdir=PATH path to PROJ4 libdir],
+[
+case "$with_proj_libdir" in
+	no|yes)
+		AC_MSG_ERROR([Invalid argument to --with-proj-libdir])
+		;;
+	*)
+		PROJ_LIBDIR=${with_proj_libdir}
+		;;
+esac
+], with_proj_libdir=no)
+
+AC_SUBST(USE_JTS)
+AC_SUBST(JTS_INCLUDES)
+AC_SUBST(JTS_LIBDIR)
+USE_JTS=0
+JTS_INCLUDES=
+JTS_INCLUDES=
+AC_ARG_WITH(jts, 
+[  --with-jts[[=ARG]]        use JTS for spatial predicates and operators
+                          [[ARG=path to jts-config]]],
+	if test "$with_jts" != "no"; then
+		USE_JTS=1
+		if test "$with_jts" != "yes"; then
+			if test ! -f "$with_jts"; then
+	AC_MSG_ERROR([Invalid argument to --with-jts]);
+			else
+				JTSCONFIG=$with_jts
+			fi
+		fi
+	fi
+)
+if test $USE_JTS -gt 0; then
+	if test -z "$JTSCONFIG"; then
+		AC_PATH_PROG([JTSCONFIG], [jts-config])
+		if test -z "$JTSCONFIG"; then
+			AC_MSG_ERROR([Can't find jts-config]);
+		fi
+	fi
+	JTS_INCLUDES=`$JTSCONFIG --includedir`
+	JTS_LIBDIR=`$JTSCONFIG --libdir`
+fi
+
+dnl
+dnl Search flex and yacc
+dnl
+AC_SUBST(FLEX)
+AC_PATH_PROG([FLEX], [flex])
+if test -z "$FLEX"; then
+	AC_MSG_ERROR(Can't find 'flex');
+fi
+
+AC_SUBST(DLLWRAP)
+AC_PATH_PROG([DLLWRAP], [dllwrap])
+AC_SUBST(DLLTOOL)
+AC_PATH_PROG([DLLTOOL], [dlltool])
+
+dnl AC_SUBST(YACC)
+dnl AC_PATH_PROG([YACC], [yacc])
+AC_PROG_YACC
+if test -z "$YACC"; then
+	AC_MSG_ERROR(Can't find 'yacc');
+fi
+
+dnl
+dnl Find 'install'
+dnl
+dnl AC_PATH_PROG([INSTALL], [install])
+dnl if test -z "$INSTALL"; then
+dnl 	AC_MSG_ERROR(Can't find 'install');
+dnl fi
+AC_SUBST(INSTALL)
+INSTALL=`pwd`"/install-sh"
+
+dnl
+dnl Search perl
+dnl
+AC_SUBST(PERL)
+AC_PATH_PROG([PERL], [perl])
+if test -z "$PERL"; then
+	AC_MSG_ERROR(Can't find 'perl');
+fi
+
+AC_SUBST(docdir)
+docdir='${prefix}/share/doc'
+AC_ARG_WITH(docdir,
+[  --with-docdir=DIR       install the documentation in DIR [[PREFIX/share/doc]]],
+	if test "$with_docdir" = "yes"; then
+		AC_MSG_ERROR([option --with-docdir requires an argument])
+	fi
+	if test "$with_docdir" != "no"; then
+		docdir="$with_docdir"
+	fi
+)
+
+dnl
+dnl Find 'html/docbook.xsl'
+dnl
+AC_SUBST(XSLBASE)
+XSLBASE=
+AC_ARG_WITH(xsl,
+[  --with-xsl=DIR      Specify the DIR containing html/docbook.xsl stylesheet],
+	if test "$with_xsl" = yes; then
+		AC_MSG_ERROR([option --with-xsl requires an argument])
+	fi
+	if test "$with_xsl" != "no"; then
+		xsl="$with_xsl"
+	fi
+	,
+	SEARCHPATH="
+		/usr/share/sgml/docbook/xsl-stylesheets 
+		/usr/share/xml/docbook/stylesheet/nwalsh
+		/usr/share/sgml/docbook/stylesheet/xsl/nwalsh
+		"
+	for p in ${SEARCHPATH}; do
+		if test -r "${p}"/html/docbook.xsl; then
+			xsl="${p}"
+			break
+		fi
+	done
+)
+XSLBASE="${xsl}"
+
+dnl
+dnl Search for other binaries needed to build docs
+dnl
+AC_PATH_PROG([XSLTPROC], [xsltproc])
+AC_PATH_PROG([PDFXMLTEX], [pdfxmltex])
+AC_PATH_PROG([DB2PDF], [db2pdf])
+AC_PATH_PROG([JW], [jw])
+AC_SUBST(XSLTPROC)
+AC_SUBST(PDFXMLTEX)
+AC_SUBST(JW)
+
+DOC_RULE=requirements_not_met
+if test -n "${XSLBASE}"; then
+	if test -n "${XSLTPROC}"; then
+		DOC_RULE=html/postgis.html
+	else
+		if test -n "${JW}"; then
+			DOC_RULE=jw
+		fi
+	fi
+fi
+AC_SUBST(DOC_RULE)
+
+
+if test $USE_JTS -gt 0; then
+dnl	AC_MSG_RESULT([ GEOS disabled, using JTS.])
+	USE_GEOS=0
+        AC_DEFINE(USE_JTS)
+fi
+
+if test $USE_GEOS -gt 0; then
+        AC_DEFINE(USE_GEOS)
+fi
+
+#
+# Extract PostgreSQL paths from pg_config
+##
+
+#
+# Prefix (pg_prefix)
+#
+pg_prefix=/usr/local/pgsql
+pg_eprefix=
+pg_docdir=
+pg_datadir=
+pg_mandir=
+pg_bindir="`${PGCONFIG} --bindir`"
+pg_pkglibdir="`${PGCONFIG} --pkglibdir`"
+for v in `${PGCONFIG} --configure`; do
+	strip=`echo $v | sed "s/'//g"`
+	var=`echo "$strip" | cut -d= -f1`
+	if test "$var" = "--prefix"; then
+		pg_prefix=`echo "$strip" | cut -d= -f2`
+	elif test "$var" = "--exec-prefix"; then
+		pg_eprefix=`echo "$strip" | cut -d= -f2`
+	elif test "$var" = "--docdir"; then
+		pg_docdir=`echo "$strip" | cut -d= -f2`
+	elif test "$var" = "--with-docdir"; then
+		pg_docdir=`echo "$strip" | cut -d= -f2`
+	elif test "$var" = "--datadir"; then
+		pg_datadir=`echo "$strip" | cut -d= -f2`
+	elif test "$var" = "--mandir"; then
+		pg_mandir=`echo "$strip" | cut -d= -f2`
+	elif test "$var" = "--with-template"; then
+		PGTEMPLATE=`echo "$strip" | cut -d= -f2`
+	fi
+done
+#
+# We set these defaults after scan of
+# pg_config --configure to safely expand pg_prefix
+# We need expansion for the 'postgresq' path component
+# addition below (default paths take from pg_config)
+#
+if test -z "$pg_eprefix"; then pg_eprefix=${pg_prefix}; fi
+if test -z "$pg_docdir"; then pg_docdir=${pg_prefix}'/doc'; fi
+if test -z "$pg_datadir"; then pg_datadir=${pg_prefix}'/share'; fi
+if test -z "$pg_mandir"; then pg_mandir=${pg_prefix}'/man'; fi
+
+# Use old layout by default
+use_new_layout=0
+
+if test "$prefix" != 'NONE'; then
+	use_new_layout=1
+fi
+
+if test "${use_new_layout}" = "1"; then
+	LPATH=$libdir
+else
+
+	#
+	# Use old layout: everything under PGSQL paths
+	# Note: still allow override by user, this is
+	#       done checking each variable against its
+	#	default value, if it has a different
+	#	value do not use PGSQL versions
+	#
+
+	if test "$prefix" = 'NONE'; then
+		prefix=${pg_prefix}
+	fi
+
+	if test "$docdir" = '${prefix}/share/doc'; then
+		docdir=${pg_docdir}
+		#
+		# If docdir contains no 'pgsql' or 'postgres'
+		# add the suffix. This is derived from
+		# PGSQL_SRC/src/Makefile.global
+		#
+		if expr "${docdir}" : ".*/pgsql" > /dev/null ; then :; else
+		if expr "${docdir}" : ".*/postgres" > /dev/null ; then :; else
+			docdir=${docdir}"/postgresql"
+		fi
+		fi
+		# Add the "contrib" part
+		docdir=${docdir}"/contrib"
+	fi
+
+	if test "$datadir" = '${prefix}/share'; then
+		datadir=${pg_datadir}
+		#
+		# If datadir contains no 'pgsql' or 'postgres'
+		# add the suffix. This is derived from
+		# PGSQL_SRC/src/Makefile.global
+		#
+		if expr "${datadir}" : ".*/pgsql" > /dev/null ; then :; else
+		if expr "${datadir}" : ".*/postgres" > /dev/null ; then :; else
+			datadir=${datadir}"/postgresql"
+		fi
+		fi
+		# Add the "contrib" part
+		datadir=${datadir}"/contrib"
+	fi
+
+	if test "$mandir" = '${prefix}/man'; then
+		mandir=${pg_mandir}
+	fi
+
+	if test "$bindir" = '${exec_prefix}/bin'; then
+		bindir=${pg_bindir}
+	fi
+
+	if test "$libdir" = '${exec_prefix}/lib'; then
+		libdir=${pg_pkglibdir}
+		LPATH='\$$libdir'
+	else
+		LPATH=$libdir
+	fi
+fi
+
+# --with-template parsing is done in the single
+# pg_config --configure scan above
+AC_MSG_CHECKING([which template to use])
+template=$PGTEMPLATE
+
+case $host_os in
+     aix*) template=aix ;;
+    beos*) template=beos ;;
+    bsdi*) template=bsdi ;;
+  cygwin*) template=cygwin ;;
+  darwin*) template=darwin ;;
+    dgux*) template=dgux ;;
+ freebsd*) template=freebsd ;;
+    hpux*) template=hpux ;;
+    irix*) template=irix ;;
+ linux*|gnu*|k*bsd*-gnu)
+           template=linux ;;
+   mingw*) template=win32 ;;
+  netbsd*) template=netbsd ;;
+nextstep*) template=nextstep ;;
+ openbsd*) template=openbsd ;;
+     osf*) template=osf ;;
+     qnx*) template=qnx4 ;;
+     sco*) template=sco ;;
+ solaris*) template=solaris ;;
+   sunos*) template=sunos4 ;;
+ sysv4.2*)
+        case $host_vendor in
+          univel) template=univel ;;
+        esac ;;
+   sysv4*) template=svr4 ;;
+   sysv5*) template=unixware ;;
+  ultrix*) template=ultrix4 ;;
+esac
+
+  if test x"$template" = x"" ; then
+    AC_MSG_ERROR([[
+*******************************************************************
+PostgreSQL has apparently not been ported to your platform yet.
+To try a manual configuration, look into the src/template directory
+for a similar platform and use the '--with-template=' option.
+
+Please also contact <pgsql-ports@postgresql.org> to see about
+rectifying this.  Include the above 'checking host system type...'
+line.
+*******************************************************************
+]])
+  fi
+
+AC_MSG_RESULT([$template])
+
+PORTNAME=$template
+AC_SUBST(PORTNAME)
+
+
+#
+# OS-specific settings
+#
+AC_SUBST(DLSUFFIX)
+AC_SUBST(DLFLAGS)
+AC_SUBST(EXE)
+AC_SUBST(HOST_OS)
+
+# host_os is defined by AC_CANONICAL_HOST
+HOST_OS=$host_os
+DLSUFFIX=.so
+DLFLAGS=-shared
+EXE=
+case $host_os in
+	*mingw*)
+		PGBEINCLUDES="$PGBEINCLUDES $PGBEINCLUDES/port/win32"
+		DLSUFFIX=.dll
+		DLFLAGS='${PGBELIBS}'
+		EXE=.exe
+		;;
+	*darwin*)
+		DLFLAGS="-no-cpp-precomp -flat_namespace -undefined suppress -multiply_defined suppress"
+		;;
+esac
+
+# Assume system is ELF if it predefines __ELF__ as 1,
+# otherwise believe host_os based default.
+case $host_os in
+    freebsd1*|freebsd2*) elf=no;;
+    freebsd3*|freebsd4*) elf=yes;;
+esac
+
+AC_EGREP_CPP(yes,
+[#if __ELF__
+  yes
+#endif
+],
+[ELF_SYS=true],
+[if test "X$elf" = "Xyes" ; then
+  ELF_SYS=true
+else
+  ELF_SYS=
+fi])
+AC_SUBST(ELF_SYS)
+
+
+
+AC_OUTPUT(Makefile.config)
+
+AC_MSG_RESULT([ ])
+AC_MSG_RESULT([ SUMMARY])
+AC_MSG_RESULT([ -------------------------------------------------------])
+AC_MSG_RESULT([ ])
+AC_MSG_RESULT([ HOST_OS: $host_os])
+AC_MSG_RESULT([ ])
+AC_MSG_RESULT([   PGSQL: $PGCONFIG])
+
+if test $USE_JTS -gt 0; then
+	AC_MSG_RESULT([     JTS: includedir=$JTS_INCLUDES libdir=$JTS_LIBDIR])
+fi
+
+# GEOS CAPI information
+if test $USE_GEOS -gt 0; then
+	AC_MSG_RESULT([    GEOS: $GEOSCONFIG (with C-API)])
+    AC_MSG_RESULT([          (ldflags: $GEOS_LDFLAGS)])
+fi
+
+# PROJ.4 information
+if test $USE_PROJ -gt 0; then
+	AC_MSG_RESULT([    PROJ: prefix=$PROJ_DIR libdir=$PROJ_LIBDIR])
+fi
+
+AC_MSG_RESULT([   ICONV: $USE_ICONV $ICONV_LDFLAGS])
+dnl AC_MSG_RESULT([  FLEX:  path=$FLEX])
+dnl AC_MSG_RESULT([  YACC:  path=$YACC])
+
+AC_MSG_RESULT([  ])
+AC_MSG_RESULT([ PORTNAME: $PORTNAME])
+AC_MSG_RESULT([   PREFIX: $prefix])
+AC_MSG_RESULT([  EPREFIX: $exec_prefix])
+AC_MSG_RESULT([      DOC: $docdir])
+AC_MSG_RESULT([     DATA: $datadir])
+AC_MSG_RESULT([      MAN: $mandir])
+AC_MSG_RESULT([      BIN: $bindir])
+if test "$MODULE_INSTALLDIR" = "$LPATH"; then
+	AC_MSG_RESULT([      EXT: $libdir])
+else
+	AC_MSG_RESULT([      EXT: $libdir ($LPATH)])
+fi
+
+AC_MSG_RESULT([ -------------------------------------------------------])
+AC_MSG_RESULT([ ])
+

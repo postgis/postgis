@@ -1,0 +1,128 @@
+.TH "shp2pgsql" "1" "" "" "PostGIS"
+.SH "NAME"
+.LP 
+shp2pgsql - shapefile to postgis loader
+
+.SH "SYNTAX"
+.LP 
+shp2pgsql [\fIoptions\fR] \fIshapefile\fR [\fIschema\fR\fB.\fR]\fItable\fR
+
+.SH "DESCRIPTION"
+.LP 
+The shp2pgsql data loader converts ESRI Shape files into SQL suitable 
+for insertion into a PostGIS/PostgreSQL database. 
+
+Version: 1.1.5 (2006/10/06)
+
+.SH "USAGE"
+.LP
+The <shapefile> is the name of the shape file, without any extension
+information. For example, 'roads' would be the name of the shapefile 
+comprising the 'roads.shp', 'roads.shx', and 'roads.dbf' files.
+
+The <tablename> is the (optionally schema-qualified) name of the database 
+table you want the data stored in in the database. Within that table, 
+the geometry will be placed in the 'geo_value' column by default.
+
+.SH "OPTIONS"
+.LP 
+The loader has several operating modes distinguished by command line flags:
+
+(Note that -a, -c, -d and -p are mutually exclusive.)
+.TP 
+\fB\-d\fR
+Drops the database table before creating a new table with the data in the 
+Shape file.
+.TP 
+\fB\-a\fR
+Appends data from the Shape file into the database table. Note that to use
+this option to load multiple files, the files must have the same attributes 
+and same data types.
+.TP 
+\fB\-c\fR
+Creates a new table and populates it from the Shape file. This is the default 
+mode.
+.TP 
+\fB\-p\fR
+Only produces the table creation SQL code, without adding any actual data. 
+This can be used if you need to completely separate the table creation and 
+data loading steps.
+.TP 
+\fB\-D\fR
+Use the PostgreSQL "dump" format for the output data. This can be combined 
+with -a, -c and -d. It is much faster to load than the default "insert" SQL
+format. Use this for very large data sets.
+.TP 
+\fB\-s\fR <\fISRID\fR>
+Creates and populates the geometry tables with the specified SRID.
+.TP 
+\fB\-g\fR <\fIgeometry_column\fR>
+Specify the name of the geometry column (mostly useful in append mode).
+.TP 
+\fB\-k\fR
+Keep idendifiers case (column, schema and attributes). Note that attributes 
+in Shapefile are usually all UPPERCASE.
+.TP 
+\fB\-i\fR
+Coerce all integers to standard 32\-bit integers, do not create 64\-bit 
+bigints, even if the DBF header signature appears to warrant it.
+.TP 
+\fB\-S\fR
+Generate simple Geometries instead of MULTIgeometries. Shape files don't 
+differ between LINESTRINGs and MULTILINESTRINGs, so shp2pgsql generates 
+MULTILINESTRINGs by default. This switch will produce LINESTRINGs instead, 
+but shp2pgsql will fail when it hits a real MULTILINESTRING. The same works
+for POLYGONs vs. MULTIPOLYGONs.
+.TP 
+\fB\-w\fR
+Output WKT format, for use with older (0.x) versions of PostGIS.
+Note that this will introduce coordinate drifts and will drop
+M values from shapefiles.
+.TP 
+\fB\-W\fR <\fIencoding\fR>
+Specify the character \fIencoding\fR of Shapefile's attributes.
+If this option is used the output will be encoded in UTF-8.
+.TP 
+\fB\-I\fR
+Create a GiST index on the geometry column. 
+.TP 
+\fB\-N\fR <\fIpolicy\fR>
+Specify NULL geometries handling policy (insert,skip,abort).
+.TP 
+\fB\-?\fR
+Display version and usage information.
+
+.SH "INSTALLATION"
+.LP
+To compile the program from source, simply run "make" in the source directory.
+Then copy the binary in your shell search path (or wherever you like). This
+text is also available as a man page in the ../doc/man/ directory, ready for
+copying it into the manual search path on unixoid systems.
+
+.SH "EXAMPLES"
+.LP 
+An example session using the loader to create an input file and uploading it 
+might look like this:
+
+# \fBshp2pgsql shaperoads roadstable roadsdb > roads.sql\fR
+.br 
+# \fBpsql \-d roadsdb \-f roads.sql\fR
+
+A conversion and upload can be done all in one step using UNIX pipes:
+
+# \fBshp2pgsql shaperoads roadstable roadsdb | psql \-d roadsdb\fR
+
+.SH "AUTHORS"
+.LP
+Originally written by Jeff Lounsbury <jeffloun@refractions.net>.
+Improved and maintained by Sandro Santilli <strk@refractions.net>.
+Includes small contributions and improvements by others.
+
+This application uses functionality from shapelib 1.2.9
+by Frank Warmerdam <warmerda@gdal.velocet.ca> to read from ESRI Shape files.
+
+.SH "SEE ALSO"
+.LP 
+pgsql2shp(1)
+
+More information is available at http://postgis.refractions.net
