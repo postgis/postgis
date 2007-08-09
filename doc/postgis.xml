@@ -60,6 +60,13 @@
         </varlistentry>
 
         <varlistentry>
+          <term>Mark Leslie &#60;mleslie@refractions.net&#62;</term>
+          <listitem>
+            <para>Ongoing maintenance and development of core functions.</para>
+          </listitem>
+        </varlistentry>        
+
+        <varlistentry>
           <term>Chris Hodgson &#60;chodgson@refractions.net&#62;</term>
 
           <listitem>
@@ -156,7 +163,7 @@
           url="http://www.sai.msu.su/~megera/postgres/gist">http://www.sai.msu.su/~megera/postgres/gist</ulink>.</para>
         </listitem>
 
-        <listitem>
+          <listitem>
           <para>More information about Mapserver internet map server is
           available at <ulink url="http://mapserver.gis.umn.edu/">http://mapserver.gis.umn.edu</ulink>.</para>
         </listitem>
@@ -5875,6 +5882,38 @@
     <sect1>
       <title>Release Notes</title>
 
+      <sect2>
+        <title>Release 1.3.0</title>
+        <para>Release date: 2007/08/09</para>
+        <para>This release provides performance enhancements to the relational
+        functions, adds new relational functions and begins the migration of
+        our function names to the SQL-MM convension, using the spatial type 
+        (SP) prefix.</para>
+        <sect3>
+          <title>Added Functionality</title>
+          <para>JDBC: Added Hibernate Dialect (thanks to Norman Barker)</para>
+          <para>Added ST_Covers and ST_CoveredBy relational functions.  
+          Description and justification of these functions can be found at
+          http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html</para>
+          <para>Added ST_DWithin relational function.</para>
+          functions and some processing functions.</para>
+        </sect3>
+        <sect3>
+          <title>Performance Enhancements</title>
+          <para>Added cached and indexed point-in-polygon short-circuits
+          for the functions ST_Contains, ST_Intersects, ST_Within and 
+          ST_Disjoint</para>
+          <para>Added inline index support for relational functions
+          (except ST_Disjoint)</para>
+        </sect3>
+        <sect3>
+          <title>Other Changes</title>
+          <para>Extended curved geometry support into the geometery accessor 
+          and some processing functions</para>
+          <para>Began migration of functions to the SQL-MM naming convension;
+          using a spatial type (ST) prefix.</para>
+        </sect3>
+      </sect2>
       <sect2>
         <title>Release 1.2.1</title>
 
