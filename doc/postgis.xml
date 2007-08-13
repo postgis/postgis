@@ -5907,10 +5907,11 @@
         </sect3>
         <sect3>
           <title>Other Changes</title>
-          <para>Extended curved geometry support into the geometery accessor 
+          <para>Extended curved geometry support into the geometry accessor 
           and some processing functions</para>
           <para>Began migration of functions to the SQL-MM naming convension;
           using a spatial type (ST) prefix.</para>
+          <para>Added initial support for PostgreSQL 8.3</para>
         </sect3>
       </sect2>
       <sect2>
