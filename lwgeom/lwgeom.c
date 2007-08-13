@@ -537,7 +537,6 @@ lwgeom_from_ewkb(uchar *ewkb, size_t size)
 	size_t hexewkblen = size*2;
 	char *hexewkb;
 	long int i;
-	uchar *pglwgeom; /* This is a PG_LWGEOM */
 	LWGEOM *ret;
     SERIALIZED_LWGEOM *serialized_lwgeom;
 
