@@ -5895,8 +5895,7 @@
           <para>Added ST_Covers and ST_CoveredBy relational functions.  
           Description and justification of these functions can be found at
           http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html</para>
-          <para>Added ST_DWithin relational function.</para>
-          functions and some processing functions.</para>
+          <para>Added ST_DWithin relational function.
         </sect3>
         <sect3>
           <title>Performance Enhancements</title>
