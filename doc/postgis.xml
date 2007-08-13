@@ -5883,6 +5883,13 @@
       <title>Release Notes</title>
 
       <sect2>
+        <title>Release 1.3.1</title>
+        <para>Release date: 2007/08/13</para>
+        <para>This release fixes some oversights in the previous release
+        around version numbering, documentation, and tagging.</para>
+      </sect2>
+
+      <sect2>
         <title>Release 1.3.0</title>
         <para>Release date: 2007/08/09</para>
         <para>This release provides performance enhancements to the relational

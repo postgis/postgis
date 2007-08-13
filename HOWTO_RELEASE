@@ -28,10 +28,12 @@ Release procedure
    been reported (extract from ChangeLog).
 4) Edit README.postgis and set release date and version.
 5) Add release notes in doc/postgis.xml
-6) Tag the release:
+6) Commit all your changes
+7) Tag the release:
    $ base=http://svn.refractions.net/postgis/
    $ rel=MAJ.MIN.MIC
    $ svn copy -m "Tagged release $rel" $base/trunk $base/tags/$rel
-7) Run: sh make_dist.sh MAJ.MIN.MIC
-8) Publish
-9) Announce 
+8) Run: sh make_dist.sh MAJ.MIN.MIC
+9) Publish
+10) Announce 
+
