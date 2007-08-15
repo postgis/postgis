@@ -26,7 +26,7 @@ BEGIN
         sl.abbrev as state,
         parsed.zip as zip,
         centroid(wkb_geometry) as address_geom,
-        100::integer as rating
+        100::integer + levenshtein_ignore_case(coalesce(zip.city), parsed.location) as rating
     FROM
       zip_lookup_base zip
       JOIN state_lookup sl on (zip.state = sl.name)
@@ -43,7 +43,7 @@ BEGIN
     JOIN state_lookup sl ON (pl.state = lpad(sl.st_code,2,'0'))
     WHERE soundex(pl.name) = soundex(parsed.location) and sl.abbrev = parsed.stateAbbrev;
 
-  -- If that worked, just use the zipcode lookup
+  -- If that worked then use it
   IF tempInt > 0 THEN
     OPEN result FOR
     SELECT
@@ -55,7 +55,7 @@ BEGIN
         sl.abbrev as state,
         NULL::integer as zip,
         centroid(wkb_geometry) as address_geom,
-        100::integer as rating
+        100::integer + levenshtein_ignore_case(coalesce(zip.city), parsed.location) as rating
     FROM pl99_d00 pl
     JOIN state_lookup sl ON (pl.state = lpad(sl.st_code,2,'0'))
     WHERE soundex(pl.name) = soundex(parsed.location) and sl.abbrev = parsed.stateAbbrev;
