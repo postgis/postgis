@@ -973,9 +973,8 @@ Datum LWGEOM_endpoint_linestring(PG_FUNCTION_ARGS)
 
 	/* Serialize an PG_LWGEOM */
 	result = pglwgeom_serialize(point);
-
 	lwgeom_release(point);
-	lwgeom_release((LWGEOM *)line);
+	
 	PG_FREE_IF_COPY(geom, 0);
 
 	PG_RETURN_POINTER(result);
