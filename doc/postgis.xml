@@ -217,7 +217,7 @@
         <listitem>
           <para>(Recommended) GEOS geometry library. The GEOS library is used
           to provide geometry tests (ST_Touches(), ST_Contains(), ST_Intersects()) and
-          operations (Buffer(), GeomUnion(), Difference()) within PostGIS.
+          operations (ST_Buffer(), ST_Union(), ST_Difference()) within PostGIS.
           GEOS is available for download from <ulink
           url="http://geos.refractions.net">http://geos.refractions.net</ulink>.</para>
         </listitem>
@@ -3068,7 +3068,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>ST_GeomUnion(geometry, geometry)</term>
+            <term>ST_Union(geometry, geometry)</term>
 
             <listitem>
               <para>Returns a geometry that represents the point set union of
@@ -3101,7 +3101,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>ST_MemGeomUnion(geometry set)</term>
+            <term>ST_MemUnion(geometry set)</term>
 
             <listitem>
               <para>Same as the above, only memory-friendly (uses less memory

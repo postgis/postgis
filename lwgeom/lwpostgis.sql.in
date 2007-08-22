@@ -4332,7 +4332,7 @@ CREATE AGGREGATE MemGeomUnion (
 	);
 
 -- Availability: 1.2.2
-CREATE AGGREGATE ST_MemGeomUnion (
+CREATE AGGREGATE ST_MemUnion (
 	basetype = geometry,
 	sfunc = ST_union,
 	stype = geometry
