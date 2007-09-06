@@ -4249,10 +4249,12 @@
           </varlistentry>
 
           <varlistentry>
-            <term>ST_AsGML(geometry, [precision])</term>
+            <term>ST_AsGML([version], geometry, [precision])</term>
 
             <listitem>
-              <para>Return the geometry as a GML element. Second argument may
+              <para>Return the geometry as a GML element. The version parameter,
+              if specified, may be either 2 or 3. If no version parameter is
+	      specified then the default is assumed to be 2. The third argument may
               be used to reduce the maximum number of significant digits used
               in output (defaults to 15).</para>
             </listitem>

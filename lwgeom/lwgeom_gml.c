@@ -22,21 +22,34 @@
 #include "liblwgeom.h"
 
 Datum LWGEOM_asGML(PG_FUNCTION_ARGS);
-char *geometry_to_gml(uchar *srl, char *srs);
 
-static size_t asgml_point_size(LWPOINT *point, char *srs);
-static char *asgml_point(LWPOINT *point, char *srs);
-static size_t asgml_line_size(LWLINE *line, char *srs);
-static char *asgml_line(LWLINE *line, char *srs);
-static size_t asgml_poly_size(LWPOLY *poly, char *srs);
-static char *asgml_poly(LWPOLY *poly, char *srs);
-static size_t asgml_inspected_size(LWGEOM_INSPECTED *geom, char *srs);
-static char *asgml_inspected(LWGEOM_INSPECTED *geom, char *srs);
+char *geometry_to_gml2(uchar *srl, char *srs);
+
+static size_t asgml2_point_size(LWPOINT *point, char *srs);
+static char *asgml2_point(LWPOINT *point, char *srs);
+static size_t asgml2_line_size(LWLINE *line, char *srs);
+static char *asgml2_line(LWLINE *line, char *srs);
+static size_t asgml2_poly_size(LWPOLY *poly, char *srs);
+static char *asgml2_poly(LWPOLY *poly, char *srs);
+static size_t asgml2_inspected_size(LWGEOM_INSPECTED *geom, char *srs);
+static char *asgml2_inspected(LWGEOM_INSPECTED *geom, char *srs);
+static size_t pointArray_toGML2(POINTARRAY *pa, char *buf);
+
+char *geometry_to_gml3(uchar *srl, char *srs);
+
+static size_t asgml3_point_size(LWPOINT *point, char *srs);
+static char *asgml3_point(LWPOINT *point, char *srs);
+static size_t asgml3_line_size(LWLINE *line, char *srs);
+static char *asgml3_line(LWLINE *line, char *srs);
+static size_t asgml3_poly_size(LWPOLY *poly, char *srs);
+static char *asgml3_poly(LWPOLY *poly, char *srs);
+static size_t asgml3_inspected_size(LWGEOM_INSPECTED *geom, char *srs);
+static char *asgml3_inspected(LWGEOM_INSPECTED *geom, char *srs);
+static size_t pointArray_toGML3(POINTARRAY *pa, char *buf);
+
 static size_t pointArray_GMLsize(POINTARRAY *pa);
-static size_t pointArray_toGML(POINTARRAY *pa, char *buf);
 static char *getSRSbySRID(int SRID);
 
-#define DEF_PRECISION 15
 /* Add dot, sign, exponent sign, 'e', exponent digits */
 #define SHOW_DIGS (precision + 8)
 
@@ -54,44 +67,42 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	char *gml;
 	text *result;
 	int len;
-	int version = 2;
+	int version;
 	char *srs;
 	int SRID;
 
-	precision = DEF_PRECISION;
 
-	if ( PG_ARGISNULL(0) ) PG_RETURN_NULL();
+    /* Get the version */
+    version = PG_GETARG_INT32(0);
+	if ( version != 2 && version != 3 )
+	{
+		elog(ERROR, "Only GML 2 and GML 3 are supported");
+		PG_RETURN_NULL();
+	}
 
-	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+    /* Get the geometry */
+	if ( PG_ARGISNULL(1) ) PG_RETURN_NULL();
+	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
-	/* Get precision (if provided)  */
-	if ( PG_NARGS() > 1 && ! PG_ARGISNULL(1) )
-			precision = PG_GETARG_INT32(1);
-	
+	/* Get precision  */
+	precision = PG_GETARG_INT32(2);
 	if ( precision < 1 || precision > 15 )
 	{
 		elog(ERROR, "Precision out of range 1..15");
 		PG_RETURN_NULL();
 	}
-
-	/* Get version (if provided)  */
-	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
-			version = PG_GETARG_INT32(2);
-
 	
-	if ( version != 2 )
-	{
-		elog(ERROR, "Only GML 2 is supported");
-		PG_RETURN_NULL();
-	}
-
 	SRID = lwgeom_getsrid(SERIALIZED_FORM(geom));
 	if ( SRID != -1 ) srs = getSRSbySRID(SRID);
 	else srs = NULL;
 
 	/*elog(NOTICE, "srs=%s", srs); */
 
-	gml = geometry_to_gml(SERIALIZED_FORM(geom), srs);
+	if (version == 2)
+	  gml = geometry_to_gml2(SERIALIZED_FORM(geom), srs);
+	else
+	  gml = geometry_to_gml3(SERIALIZED_FORM(geom), srs);
+	
 	PG_FREE_IF_COPY(geom, 0);
 
 	len = strlen(gml) + VARHDRSZ;
@@ -106,9 +117,15 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
+
+
+/*
+ * VERSION GML 2 
+ */
+
 /* takes a GEOMETRY and returns a GML representation */
 char *
-geometry_to_gml(uchar *geom, char *srs)
+geometry_to_gml2(uchar *geom, char *srs)
 {
 	int type;
 	LWPOINT *point;
@@ -123,24 +140,24 @@ geometry_to_gml(uchar *geom, char *srs)
 
 		case POINTTYPE:
 			point = lwpoint_deserialize(geom);
-			return asgml_point(point, srs);
+			return asgml2_point(point, srs);
 
 		case LINETYPE:
 			line = lwline_deserialize(geom);
-			return asgml_line(line, srs);
+			return asgml2_line(line, srs);
 
 		case POLYGONTYPE:
 			poly = lwpoly_deserialize(geom);
-			return asgml_poly(poly, srs);
+			return asgml2_poly(poly, srs);
 
 		default:
 			inspected = lwgeom_inspect(geom);
-			return asgml_inspected(inspected, srs);
+			return asgml2_inspected(inspected, srs);
 	}
 }
 
 static size_t
-asgml_point_size(LWPOINT *point, char *srs)
+asgml2_point_size(LWPOINT *point, char *srs)
 {
 	int size;
 	size = pointArray_GMLsize(point->point);
@@ -150,7 +167,7 @@ asgml_point_size(LWPOINT *point, char *srs)
 }
 
 static size_t
-asgml_point_buf(LWPOINT *point, char *srs, char *output)
+asgml2_point_buf(LWPOINT *point, char *srs, char *output)
 {
 	char *ptr = output;
 
@@ -160,26 +177,26 @@ asgml_point_buf(LWPOINT *point, char *srs, char *output)
 		ptr += sprintf(ptr, "<gml:Point>");
 	}
 	ptr += sprintf(ptr, "<gml:coordinates>");
-	ptr += pointArray_toGML(point->point, ptr);
+	ptr += pointArray_toGML2(point->point, ptr);
 	ptr += sprintf(ptr, "</gml:coordinates></gml:Point>");
 
 	return (ptr-output);
 }
 
 static char *
-asgml_point(LWPOINT *point, char *srs)
+asgml2_point(LWPOINT *point, char *srs)
 {
 	char *output;
 	int size;
 	
-	size = asgml_point_size(point, srs);
+	size = asgml2_point_size(point, srs);
 	output = palloc(size);
-	asgml_point_buf(point, srs, output);
+	asgml2_point_buf(point, srs, output);
 	return output;
 }
 
 static size_t
-asgml_line_size(LWLINE *line, char *srs)
+asgml2_line_size(LWLINE *line, char *srs)
 {
 	int size;
 	size = pointArray_GMLsize(line->points);
@@ -189,7 +206,7 @@ asgml_line_size(LWLINE *line, char *srs)
 }
 
 static size_t
-asgml_line_buf(LWLINE *line, char *srs, char *output)
+asgml2_line_buf(LWLINE *line, char *srs, char *output)
 {
 	char *ptr=output;
 
@@ -199,33 +216,33 @@ asgml_line_buf(LWLINE *line, char *srs, char *output)
 		ptr += sprintf(ptr, "<gml:LineString>");
 	}
 	ptr += sprintf(ptr, "<gml:coordinates>");
-	ptr += pointArray_toGML(line->points, ptr);
+	ptr += pointArray_toGML2(line->points, ptr);
 	ptr += sprintf(ptr, "</gml:coordinates></gml:LineString>");
 
 	return (ptr-output);
 }
 
 static char *
-asgml_line(LWLINE *line, char *srs)
+asgml2_line(LWLINE *line, char *srs)
 {
 	char *output;
 	int size;
 
-	size = asgml_line_size(line, srs);
+	size = asgml2_line_size(line, srs);
 	output = palloc(size);
-	asgml_line_buf(line, srs, output);
+	asgml2_line_buf(line, srs, output);
 	return output;
 }
 
 static size_t
-asgml_poly_size(LWPOLY *poly, char *srs)
+asgml2_poly_size(LWPOLY *poly, char *srs)
 {
 	size_t size;
 	int i;
 
 	size = sizeof("<gml:polygon></gml:polygon>");
-	size += sizeof("<gml:outerboundaryis><gml:linearring>/") * 2;
-	size += sizeof("<gml:innerboundaryis><gml:linearring>/") * 2 *
+	size += sizeof("<gml:outerboundaryis><gml:linearring><gml:coordinates>/") * 2;
+	size += sizeof("<gml:innerboundaryis><gml:linearring><gml:coordinates>/") * 2 *
 		poly->nrings;
 	if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
 
@@ -236,7 +253,7 @@ asgml_poly_size(LWPOLY *poly, char *srs)
 }
 
 static size_t
-asgml_poly_buf(LWPOLY *poly, char *srs, char *output)
+asgml2_poly_buf(LWPOLY *poly, char *srs, char *output)
 {
 	int i;
 	char *ptr=output;
@@ -246,14 +263,14 @@ asgml_poly_buf(LWPOLY *poly, char *srs, char *output)
 	} else {
  		ptr += sprintf(ptr, "<gml:Polygon>");
 	}
- 	ptr += sprintf(ptr, "<gml:OuterBoundaryIs>");
-	ptr += pointArray_toGML(poly->rings[0], ptr);
- 	ptr += sprintf(ptr, "</gml:OuterBoundaryIs>");
+ 	ptr += sprintf(ptr, "<gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>");
+	ptr += pointArray_toGML2(poly->rings[0], ptr);
+ 	ptr += sprintf(ptr, "</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs>");
 	for (i=1; i<poly->nrings; i++)
 	{
- 		ptr += sprintf(ptr, "<gml:InnerBoundaryIs>");
-		ptr += pointArray_toGML(poly->rings[i], ptr);
- 		ptr += sprintf(ptr, "</gml:InnerBoundaryIs>");
+ 		ptr += sprintf(ptr, "<gml:innerBoundaryIs><gml:LinearRing><gml:coordinates>");
+		ptr += pointArray_toGML2(poly->rings[i], ptr);
+ 		ptr += sprintf(ptr, "</gml:coordinates></gml:LinearRing></gml:innerBoundaryIs>");
 	}
 	ptr += sprintf(ptr, "</gml:Polygon>");
 
@@ -261,14 +278,14 @@ asgml_poly_buf(LWPOLY *poly, char *srs, char *output)
 }
 
 static char *
-asgml_poly(LWPOLY *poly, char *srs)
+asgml2_poly(LWPOLY *poly, char *srs)
 {
 	char *output;
 	int size;
 
-	size = asgml_poly_size(poly, srs);
+	size = asgml2_poly_size(poly, srs);
 	output = palloc(size);
-	asgml_poly_buf(poly, srs, output);
+	asgml2_poly_buf(poly, srs, output);
 	return output;
 }
 
@@ -278,7 +295,7 @@ asgml_poly(LWPOLY *poly, char *srs)
  * Don't call this with single-geoms inspected.
  */
 static size_t
-asgml_inspected_size(LWGEOM_INSPECTED *insp, char *srs)
+asgml2_inspected_size(LWGEOM_INSPECTED *insp, char *srs)
 {
 	int i;
 	size_t size;
@@ -297,24 +314,24 @@ asgml_inspected_size(LWGEOM_INSPECTED *insp, char *srs)
 
 		if ((point=lwgeom_getpoint_inspected(insp, i)))
 		{
-			size += asgml_point_size(point, 0);
+			size += asgml2_point_size(point, 0);
 			pfree_point(point);
 		}
 		else if ((line=lwgeom_getline_inspected(insp, i)))
 		{
-			size += asgml_line_size(line, 0);
+			size += asgml2_line_size(line, 0);
 			pfree_line(line);
 		}
 		else if ((poly=lwgeom_getpoly_inspected(insp, i)))
 		{
-			size += asgml_poly_size(poly, 0);
+			size += asgml2_poly_size(poly, 0);
 			pfree_polygon(poly);
 		}
 		else
 		{
 			subgeom = lwgeom_getsubgeometry_inspected(insp, i);
 			subinsp = lwgeom_inspect(subgeom);
-			size += asgml_inspected_size(subinsp, 0);
+			size += asgml2_inspected_size(subinsp, 0);
 			pfree_inspected(subinsp);
 		}
 	}
@@ -326,7 +343,7 @@ asgml_inspected_size(LWGEOM_INSPECTED *insp, char *srs)
  * Don't call this with single-geoms inspected!
  */
 static size_t
-asgml_inspected_buf(LWGEOM_INSPECTED *insp, char *srs, char *output)
+asgml2_inspected_buf(LWGEOM_INSPECTED *insp, char *srs, char *output)
 {
 	int type = lwgeom_getType(insp->serialized_form[0]);
 	char *ptr, *gmltype;
@@ -356,24 +373,30 @@ asgml_inspected_buf(LWGEOM_INSPECTED *insp, char *srs, char *output)
 
 		if ((point=lwgeom_getpoint_inspected(insp, i)))
 		{
-			ptr += asgml_point_buf(point, 0, ptr);
+		  ptr += sprintf(ptr, "<gml:pointMember>");
+			ptr += asgml2_point_buf(point, 0, ptr);
 			pfree_point(point);
+			ptr += sprintf(ptr, "</gml:pointMember>");
 		}
 		else if ((line=lwgeom_getline_inspected(insp, i)))
 		{
-			ptr += asgml_line_buf(line, 0, ptr);
+		  ptr += sprintf(ptr, "<gml:lineStringMember>");
+			ptr += asgml2_line_buf(line, 0, ptr);
 			pfree_line(line);
+			ptr += sprintf(ptr, "</gml:lineStringMember>");
 		}
 		else if ((poly=lwgeom_getpoly_inspected(insp, i)))
 		{
-			ptr += asgml_poly_buf(poly, 0, ptr);
+		  ptr += sprintf(ptr, "<gml:polygonMember>");
+			ptr += asgml2_poly_buf(poly, 0, ptr);
 			pfree_polygon(poly);
+			ptr += sprintf(ptr, "</gml:polygonMember>");
 		}
 		else
 		{
 			subgeom = lwgeom_getsubgeometry_inspected(insp, i);
 			subinsp = lwgeom_inspect(subgeom);
-			ptr += asgml_inspected_buf(subinsp, 0, ptr);
+			ptr += asgml2_inspected_buf(subinsp, 0, ptr);
 			pfree_inspected(subinsp);
 		}
 	}
@@ -388,28 +411,19 @@ asgml_inspected_buf(LWGEOM_INSPECTED *insp, char *srs, char *output)
  * Don't call this with single-geoms inspected!
  */
 static char *
-asgml_inspected(LWGEOM_INSPECTED *insp, char *srs)
+asgml2_inspected(LWGEOM_INSPECTED *insp, char *srs)
 {
 	char *gml;
 	size_t size;
 
-	size = asgml_inspected_size(insp, srs);
+	size = asgml2_inspected_size(insp, srs);
 	gml = palloc(size);
-	asgml_inspected_buf(insp, srs, gml);
+	asgml2_inspected_buf(insp, srs, gml);
 	return gml;
 }
 
-/*
- * Returns maximum size of rendered pointarray in bytes.
- */
 static size_t
-pointArray_GMLsize(POINTARRAY *pa)
-{
-	return TYPE_NDIMS(pa->dims) * pa->npoints * (SHOW_DIGS+(TYPE_NDIMS(pa->dims)-1));
-}
-
-static size_t
-pointArray_toGML(POINTARRAY *pa, char *output)
+pointArray_toGML2(POINTARRAY *pa, char *output)
 {
 	int i;
 	char *ptr;
@@ -444,6 +458,367 @@ pointArray_toGML(POINTARRAY *pa, char *output)
 
 	return ptr-output;
 }
+
+
+/*
+ * VERSION GML 3.1.1 
+ */
+
+
+/* takes a GEOMETRY and returns a GML representation */
+char *
+geometry_to_gml3(uchar *geom, char *srs)
+{
+	int type;
+	LWPOINT *point;
+	LWLINE *line;
+	LWPOLY *poly;
+	LWGEOM_INSPECTED *inspected;
+
+	type = lwgeom_getType(geom[0]);
+
+	switch (type)
+	{
+
+		case POINTTYPE:
+			point = lwpoint_deserialize(geom);
+			return asgml3_point(point, srs);
+
+		case LINETYPE:
+			line = lwline_deserialize(geom);
+			return asgml3_line(line, srs);
+
+		case POLYGONTYPE:
+			poly = lwpoly_deserialize(geom);
+			return asgml3_poly(poly, srs);
+
+		default:
+			inspected = lwgeom_inspect(geom);
+			return asgml3_inspected(inspected, srs);
+
+	}
+}
+
+static size_t
+asgml3_point_size(LWPOINT *point, char *srs)
+{
+	int size;
+	size = pointArray_GMLsize(point->point);
+	size += sizeof("<gml:point><gml:pos>/") * 2;
+	if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
+	return size;
+}
+
+static size_t
+asgml3_point_buf(LWPOINT *point, char *srs, char *output)
+{
+	char *ptr = output;
+
+	if ( srs ) {
+		ptr += sprintf(ptr, "<gml:Point srsName=\"%s\">", srs);
+	} else {
+		ptr += sprintf(ptr, "<gml:Point>");
+	}
+	ptr += sprintf(ptr, "<gml:pos>");
+	ptr += pointArray_toGML3(point->point, ptr);
+	ptr += sprintf(ptr, "</gml:pos></gml:Point>");
+
+	return (ptr-output);
+}
+
+static char *
+asgml3_point(LWPOINT *point, char *srs)
+{
+	char *output;
+	int size;
+	
+	size = asgml3_point_size(point, srs);
+	output = palloc(size);
+	asgml3_point_buf(point, srs, output);
+	return output;
+}
+
+
+static size_t
+asgml3_line_size(LWLINE *line, char *srs)
+{
+	int size;
+	size = pointArray_GMLsize(line->points);
+	size += sizeof("<gml:Curve><gml:segments><gml:LineStringSegment><gml:posList>/") * 2;
+	if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
+	return size;
+}
+
+static size_t
+asgml3_line_buf(LWLINE *line, char *srs, char *output)
+{
+	char *ptr=output;
+
+	if ( srs ) {
+		ptr += sprintf(ptr, "<gml:Curve srsName=\"%s\">", srs);
+	} else {
+		ptr += sprintf(ptr, "<gml:Curve>");
+	}
+	ptr += sprintf(ptr, "<gml:segments>");
+	ptr += sprintf(ptr, "<gml:LineStringSegment>");
+	ptr += sprintf(ptr, "<gml:posList>");
+	ptr += pointArray_toGML3(line->points, ptr);
+	ptr += sprintf(ptr, "</gml:posList></gml:LineStringSegment>");
+	ptr += sprintf(ptr, "</gml:segments>");
+	ptr += sprintf(ptr, "</gml:Curve>");
+
+	return (ptr-output);
+}
+
+static char *
+asgml3_line(LWLINE *line, char *srs)
+{
+	char *output;
+	int size;
+
+	size = asgml3_line_size(line, srs);
+	output = palloc(size);
+	asgml3_line_buf(line, srs, output);
+	return output;
+}
+
+
+static size_t
+asgml3_poly_size(LWPOLY *poly, char *srs)
+{
+	size_t size;
+	int i;
+
+	size = sizeof("<gml:Polygon>");
+
+	size += sizeof("<gml:exterior><gml:LinearRing><gml:posList>");
+	size += sizeof("</gml:posList></gml:LinearRing></gml:exterior>");
+
+	size += sizeof("<gml:interior><gml:LinearRing><gml:posList>") * (poly->nrings - 1);
+	size += sizeof("</gml:posList></gml:LinearRing></gml:interior>") * (poly->nrings - 1);
+
+	size += sizeof("</gml:Polygon>");
+
+	if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
+
+	for (i=0; i<poly->nrings; i++)
+		size += pointArray_GMLsize(poly->rings[i]);
+
+	return size;
+}
+
+static size_t
+asgml3_poly_buf(LWPOLY *poly, char *srs, char *output)
+{
+	int i;
+	char *ptr=output;
+
+	if ( srs ) {
+ 		ptr += sprintf(ptr, "<gml:Polygon srsName=\"%s\">", srs);
+	} else {
+ 		ptr += sprintf(ptr, "<gml:Polygon>");
+	}
+ 	ptr += sprintf(ptr, "<gml:exterior><gml:LinearRing><gml:posList>");
+	ptr += pointArray_toGML3(poly->rings[0], ptr);
+ 	ptr += sprintf(ptr, "</gml:posList></gml:LinearRing></gml:exterior>");
+	for (i=1; i<poly->nrings; i++)
+	{
+ 		ptr += sprintf(ptr, "<gml:interior><gml:LinearRing><gml:posList>");
+		ptr += pointArray_toGML3(poly->rings[i], ptr);
+ 		ptr += sprintf(ptr, "</gml:posList></gml:LinearRing></gml:interior>");
+	}
+	ptr += sprintf(ptr, "</gml:Polygon>");
+
+	return (ptr-output);
+}
+
+static char *
+asgml3_poly(LWPOLY *poly, char *srs)
+{
+	char *output;
+	int size;
+
+	size = asgml3_poly_size(poly, srs);
+	output = palloc(size);
+	asgml3_poly_buf(poly, srs, output);
+	return output;
+}
+/*
+ * Compute max size required for GML version of this 
+ * inspected geometry. Will recurse when needed.
+ * Don't call this with single-geoms inspected.
+ */
+static size_t
+asgml3_inspected_size(LWGEOM_INSPECTED *insp, char *srs)
+{
+	int i;
+	size_t size;
+
+	/* the longest possible multi version */
+	size = sizeof("<gml:MultiLineString></gml:MultiLineString>");
+	if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
+
+	for (i=0; i<insp->ngeometries; i++)
+	{
+		LWPOINT *point;
+		LWLINE *line;
+		LWPOLY *poly;
+		LWGEOM_INSPECTED *subinsp;
+		uchar *subgeom;
+
+		if ((point=lwgeom_getpoint_inspected(insp, i)))
+		{
+			size += asgml3_point_size(point, 0);
+			pfree_point(point);
+		}
+		else if ((line=lwgeom_getline_inspected(insp, i)))
+		{
+			size += asgml3_line_size(line, 0);
+			pfree_line(line);
+		}
+		else if ((poly=lwgeom_getpoly_inspected(insp, i)))
+		{
+			size += asgml3_poly_size(poly, 0);
+			pfree_polygon(poly);
+		}
+		else
+		{
+			subgeom = lwgeom_getsubgeometry_inspected(insp, i);
+			subinsp = lwgeom_inspect(subgeom);
+			size += asgml3_inspected_size(subinsp, 0);
+			pfree_inspected(subinsp);
+		}
+	}
+
+	return size;
+}
+
+/*
+ * Don't call this with single-geoms inspected!
+ */
+static size_t
+asgml3_inspected_buf(LWGEOM_INSPECTED *insp, char *srs, char *output)
+{
+	int type = lwgeom_getType(insp->serialized_form[0]);
+	char *ptr, *gmltype;
+	int i;
+
+	ptr = output;
+
+	if (type == MULTIPOINTTYPE) gmltype = "MultiPoint";
+	else if (type == MULTILINETYPE) gmltype = "MultiCurve";
+	else if (type == MULTIPOLYGONTYPE) gmltype = "MultiSurface";
+	else gmltype = "MultiGeometry";
+
+	/* Open outmost tag */
+	if ( srs ) {
+		ptr += sprintf(ptr, "<gml:%s srsName=\"%s\">", gmltype, srs);
+	} else {
+		ptr += sprintf(ptr, "<gml:%s>", gmltype);
+	}
+
+	for (i=0; i<insp->ngeometries; i++)
+	{
+		LWPOINT *point;
+		LWLINE *line;
+		LWPOLY *poly;
+		LWGEOM_INSPECTED *subinsp;
+		uchar *subgeom;
+
+		if ((point=lwgeom_getpoint_inspected(insp, i)))
+		{
+		  ptr += sprintf(ptr, "<gml:pointMember>");
+			ptr += asgml3_point_buf(point, 0, ptr);
+			pfree_point(point);
+			ptr += sprintf(ptr, "</gml:pointMember>");
+		}
+		else if ((line=lwgeom_getline_inspected(insp, i)))
+		{
+		  ptr += sprintf(ptr, "<gml:curveMember>");
+			ptr += asgml3_line_buf(line, 0, ptr);
+			pfree_line(line);
+			ptr += sprintf(ptr, "</gml:curveMember>");
+		}
+		else if ((poly=lwgeom_getpoly_inspected(insp, i)))
+		{
+		  ptr += sprintf(ptr, "<gml:surfaceMember>");
+			ptr += asgml3_poly_buf(poly, 0, ptr);
+			pfree_polygon(poly);
+			ptr += sprintf(ptr, "</gml:surfaceMember>");
+		}
+		else
+		{
+			subgeom = lwgeom_getsubgeometry_inspected(insp, i);
+			subinsp = lwgeom_inspect(subgeom);
+			ptr += asgml3_inspected_buf(subinsp, 0, ptr);
+			pfree_inspected(subinsp);
+		}
+	}
+
+	/* Close outmost tag */
+	ptr += sprintf(ptr, "</gml:%s>", gmltype);
+
+	return (ptr-output);
+}
+
+/*
+ * Don't call this with single-geoms inspected!
+ */
+static char *
+asgml3_inspected(LWGEOM_INSPECTED *insp, char *srs)
+{
+	char *gml;
+	size_t size;
+
+	size = asgml3_inspected_size(insp, srs);
+	gml = palloc(size);
+	asgml3_inspected_buf(insp, srs, gml);
+	return gml;
+}
+
+/* In GML3, inside <posList> or <pos>, coordinates are separated by a space separator*/
+static size_t
+pointArray_toGML3(POINTARRAY *pa, char *output)
+{
+	int i;
+	char *ptr;
+
+	ptr = output;
+
+	if ( ! TYPE_HASZ(pa->dims) )
+	{
+		for (i=0; i<pa->npoints; i++)
+		{
+			POINT2D pt;
+			getPoint2d_p(pa, i, &pt);
+			if ( i ) ptr += sprintf(ptr, " ");
+			ptr += sprintf(ptr, "%.*g %.*g",
+				precision, pt.x,
+				precision, pt.y);
+		}
+	}
+	else 
+	{
+		for (i=0; i<pa->npoints; i++)
+		{
+			POINT4D pt;
+			getPoint4d_p(pa, i, &pt);
+			if ( i ) ptr += sprintf(ptr, " ");
+			ptr += sprintf(ptr, "%.*g %.*g,%.*g",
+				precision, pt.x,
+				precision, pt.y,
+				precision, pt.z);
+		}
+	}
+
+	return ptr-output;
+}
+
+
+
+/*
+ * Common GML routines 
+ */
 
 static char *
 getSRSbySRID(int SRID)
@@ -502,6 +877,16 @@ getSRSbySRID(int SRID)
 
 	return srscopy;
 }
+
+/*
+ * Returns maximum size of rendered pointarray in bytes.
+ */
+static size_t
+pointArray_GMLsize(POINTARRAY *pa)
+{
+	return TYPE_NDIMS(pa->dims) * pa->npoints * (SHOW_DIGS+(TYPE_NDIMS(pa->dims)-1));
+}
+
 
 /**********************************************************************
  * $Log$
