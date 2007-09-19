@@ -2501,6 +2501,17 @@ Datum LWGEOM_envelope(PG_FUNCTION_ARGS)
 	PG_LWGEOM *result;
 	uchar *ser;
 
+	if (lwgeom_getType(geom->type) == POINTTYPE ||
+            (lwgeom_getType(geom->type) == MULTIPOINTTYPE && lwgeom_getnumgeometries(SERIALIZED_FORM(geom)) == 1))
+	{
+		int srid = lwgeom_getsrid(SERIALIZED_FORM(geom));
+		LWPOINT* point = lwgeom_getpoint(SERIALIZED_FORM(geom), 0);
+		LWPOINT* envelope = lwpoint_construct(srid, NULL, point->point);
+		ser = lwpoint_serialize(envelope);
+		result = PG_LWGEOM_construct(ser, srid, 0);
+	PG_RETURN_POINTER(result);
+	}
+
 	/* get bounding box  */
 	if ( ! getbox2d_p(SERIALIZED_FORM(geom), &box) )
 	{
