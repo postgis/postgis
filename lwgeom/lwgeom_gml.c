@@ -103,7 +103,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	else
 	  gml = geometry_to_gml3(SERIALIZED_FORM(geom), srs);
 	
-	PG_FREE_IF_COPY(geom, 0);
+	PG_FREE_IF_COPY(geom, 1);
 
 	len = strlen(gml) + VARHDRSZ;
 
