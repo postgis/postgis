@@ -302,6 +302,8 @@ asgml2_inspected_size(LWGEOM_INSPECTED *insp, char *srs)
 
 	/* the longest possible multi version */
 	size = sizeof("<gml:MultiLineString></gml:MultiLineString>");
+	size += sizeof("<gml:lineStringMember>/") * 2;
+
 	if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
 
 	for (i=0; i<insp->ngeometries; i++)
@@ -643,6 +645,7 @@ asgml3_poly(LWPOLY *poly, char *srs)
 	asgml3_poly_buf(poly, srs, output);
 	return output;
 }
+
 /*
  * Compute max size required for GML version of this 
  * inspected geometry. Will recurse when needed.
@@ -656,6 +659,8 @@ asgml3_inspected_size(LWGEOM_INSPECTED *insp, char *srs)
 
 	/* the longest possible multi version */
 	size = sizeof("<gml:MultiLineString></gml:MultiLineString>");
+	size += sizeof("<gml:curveMember>/") * 2;
+
 	if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
 
 	for (i=0; i<insp->ngeometries; i++)
