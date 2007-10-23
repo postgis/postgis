@@ -10,7 +10,9 @@
  *
  **********************************************************************
  *
- * KML output routines.
+ * KML output routines based on  lwgeom_gml.c
+ * Written by: Eduin Carrillo <yecarrillo@cas.gov.co>
+ *             © 2006 Corporacion Autonoma Regional de Santander - CAS
  *
  **********************************************************************/
 

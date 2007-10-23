@@ -51,7 +51,7 @@ Version 1.1.0 of PostGIS includes patches from:
   Obe, Regina <robe.dnd@cityofboston.gov> with -k switch for pgsql2shp.
 
 Version 1.2.1 of PostGIS includes patches from:
-  Eduin Carrillo <yecarrillo@yahoo.com> for AsKML() and Transform() 
+  Eduin Carrillo <yecarrillo@cas.gov.co> for AsKML() and Transform() 
   short circuit.
 
 See the postgis manual for more contributors.

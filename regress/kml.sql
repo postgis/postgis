@@ -1,8 +1,7 @@
-/* Tests for KML producer
- * Regression tests for AsKML() function (PostGIS > 1.2)
- * http://postgis.refractions.net/pipermail/postgis-devel/2006-December/002376.html
- * yecarrillo@gmail.com
- */
+-- Regression tests for KML producer
+-- Written by: Eduin Carrillo <yecarrillo@cas.gov.co>
+--             © 2006 Corporacion Autonoma Regional de Santander - CAS
+-- http://postgis.refractions.net/pipermail/postgis-devel/2006-December/002376.html
 
 -- SPATIAL INFO NO AVAILABLE
 SELECT AsKML(GeomFromEWKT('SRID=1021892;POINT(1000000 1000000)'));
