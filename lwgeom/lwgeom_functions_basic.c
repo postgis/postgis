@@ -2493,55 +2493,85 @@ PG_FUNCTION_INFO_V1(LWGEOM_envelope);
 Datum LWGEOM_envelope(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	BOX2DFLOAT4 box;
-	POINT2D *pts = lwalloc(sizeof(POINT2D)*5);
-	POINTARRAY *pa[1];
-	LWPOLY *poly;
+	BOX3D box;
 	int SRID;
+	POINTARRAY *pa;
 	PG_LWGEOM *result;
-	uchar *ser;
+	uchar *ser = NULL;
 
-	if (lwgeom_getType(geom->type) == POINTTYPE ||
-            (lwgeom_getType(geom->type) == MULTIPOINTTYPE && lwgeom_getnumgeometries(SERIALIZED_FORM(geom)) == 1))
-	{
-		int srid = lwgeom_getsrid(SERIALIZED_FORM(geom));
-		LWPOINT* point = lwgeom_getpoint(SERIALIZED_FORM(geom), 0);
-		LWPOINT* envelope = lwpoint_construct(srid, NULL, point->point);
-		ser = lwpoint_serialize(envelope);
-		result = PG_LWGEOM_construct(ser, srid, 0);
-	PG_RETURN_POINTER(result);
-	}
 
 	/* get bounding box  */
-	if ( ! getbox2d_p(SERIALIZED_FORM(geom), &box) )
+	if ( ! compute_serialized_box3d_p(SERIALIZED_FORM(geom), &box) )
 	{
 		/* must be the EMPTY geometry */
 		PG_RETURN_POINTER(geom);
 	}
-
+	
 	/* get geometry SRID */
 	SRID = lwgeom_getsrid(SERIALIZED_FORM(geom));
 
+	
+	/* 
+	 * Alter envelope type so that a valid geometry is always
+	 * returned depending upon the size of the geometry. The
+	 * code makes the following assumptions:
+	 *     - If the bounding box is a single point then return a
+	 *     POINT geometry
+	 *     - If the bounding box represents either a horizontal or
+	 *     vertical line, return a LINESTRING geometry
+	 *     - Otherwise return a POLYGON
+	 */
+
+
+	if (box.xmin == box.xmax &&
+	    box.ymin == box.ymax)
+        {
+                /* Construct and serialize point */
+                LWPOINT *point = make_lwpoint2d(SRID, box.xmin, box.ymin);
+                ser = lwpoint_serialize(point);
+        }
+	else if (box.xmin == box.xmax ||
+	         box.ymin == box.ymax)
+        {
+                LWLINE *line;
+                POINT2D *pts = palloc(sizeof(POINT2D)*2);
+
+                /* Assign coordinates to POINT2D array */
+                pts[0].x = box.xmin; pts[0].y = box.ymin;
+                pts[1].x = box.xmax; pts[1].y = box.ymax;
+
+                /* Construct point array */
+                pa = pointArray_construct((uchar *)pts, 0, 0, 2);	  
+
+                /* Construct and serialize linestring */
+                line = lwline_construct(SRID, NULL, pa);
+                ser = lwline_serialize(line);
+        }
+        else
+        {
+                LWPOLY *poly;
+	        POINT2D *pts = lwalloc(sizeof(POINT2D)*5);
+                BOX2DFLOAT4 box2d;
+                getbox2d_p(SERIALIZED_FORM(geom), &box2d);
+  		
+                /* Assign coordinates to POINT2D array */
+                pts[0].x = box2d.xmin; pts[0].y = box2d.ymin;
+                pts[1].x = box2d.xmin; pts[1].y = box2d.ymax;
+                pts[2].x = box2d.xmax; pts[2].y = box2d.ymax;
+                pts[3].x = box2d.xmax; pts[3].y = box2d.ymin;
+                pts[4].x = box2d.xmin; pts[4].y = box2d.ymin;
+
+                /* Construct point array */
+                pa = pointArray_construct((uchar *)pts, 0, 0, 5);
+
+                /* Construct polygon  */
+                poly = lwpoly_construct(SRID, box2d_clone(&box2d), 1, &pa);
+
+                /* Serialize polygon */
+                ser = lwpoly_serialize(poly);
+        }
+			
 	PG_FREE_IF_COPY(geom, 0);
-
-	/* Assign coordinates to POINT2D array */
-	pts[0].x = box.xmin; pts[0].y = box.ymin;
-	pts[1].x = box.xmin; pts[1].y = box.ymax;
-	pts[2].x = box.xmax; pts[2].y = box.ymax;
-	pts[3].x = box.xmax; pts[3].y = box.ymin;
-	pts[4].x = box.xmin; pts[4].y = box.ymin;
-
-	/* Construct point array */
-	pa[0] = lwalloc(sizeof(POINTARRAY));
-	pa[0]->serialized_pointlist = (uchar *)pts;
-	TYPE_SETZM(pa[0]->dims, 0, 0);
-	pa[0]->npoints = 5;
-
-	/* Construct polygon  */
-	poly = lwpoly_construct(SRID, box2d_clone(&box), 1, pa);
-
-	/* Serialize polygon */
-	ser = lwpoly_serialize(poly);
 
 	/* Construct PG_LWGEOM  */
 	result = PG_LWGEOM_construct(ser, SRID, 1);

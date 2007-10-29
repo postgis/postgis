@@ -162,32 +162,69 @@ PG_FUNCTION_INFO_V1(BOX3D_to_LWGEOM);
 Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 {
 	BOX3D *box = (BOX3D *)PG_GETARG_POINTER(0);
-	POINT2D *pts = palloc(sizeof(POINT2D)*5);
-	POINTARRAY *pa[1];
-	LWPOLY *poly;
+	POINTARRAY *pa;
 	int wantbbox = 0;
 	PG_LWGEOM *result;
 	uchar *ser;
 
-	/* Assign coordinates to POINT2D array */
-	pts[0].x = box->xmin; pts[0].y = box->ymin;
-	pts[1].x = box->xmin; pts[1].y = box->ymax;
-	pts[2].x = box->xmax; pts[2].y = box->ymax;
-	pts[3].x = box->xmax; pts[3].y = box->ymin;
-	pts[4].x = box->xmin; pts[4].y = box->ymin;
 
-	/* Construct point array */
-	pa[0] = palloc(sizeof(POINTARRAY));
-	pa[0]->serialized_pointlist = (uchar *)pts;
-	TYPE_SETZM(pa[0]->dims, 0, 0);
-	pa[0]->npoints = 5;
+	/* 
+	 * Alter BOX3D cast so that a valid geometry is always
+	 * returned depending upon the size of the BOX3D. The
+	 * code makes the following assumptions:
+	 *     - If the BOX3D is a single point then return a
+	 *     POINT geometry
+	 *     - If the BOX3D represents either a horizontal or
+	 *     vertical line, return a LINESTRING geometry
+	 *     - Otherwise return a POLYGON
+	 */
 
-	/* Construct polygon */
-	poly = lwpoly_construct(-1, NULL, 1, pa);
+	if (box->xmin == box->xmax &&
+	    box->ymin == box->ymax)
+        {
+	  /* Construct and serialize point */
+          LWPOINT *point = make_lwpoint2d(-1, box->xmin, box->ymin);
+   	  ser = lwpoint_serialize(point);
+        }
+	else if (box->xmin == box->xmax ||
+	         box->ymin == box->ymax)
+        {
+  	  LWLINE *line;
+	  POINT2D *pts = palloc(sizeof(POINT2D)*2);
+	  
+	  /* Assign coordinates to POINT2D array */
+	  pts[0].x = box->xmin; pts[0].y = box->ymin;
+	  pts[1].x = box->xmax; pts[1].y = box->ymax;
+	  
+	  /* Construct point array */
+          pa = pointArray_construct((uchar *)pts, 0, 0, 2);	  
 
-	/* Serialize polygon */
-	ser = lwpoly_serialize(poly);
+	  /* Construct and serialize linestring */
+	  line = lwline_construct(-1, NULL, pa);
+	  ser = lwline_serialize(line);
+        }
+        else
+        {
+  	  LWPOLY *poly;
+	  POINT2D *pts = palloc(sizeof(POINT2D)*5);
 
+	  /* Assign coordinates to POINT2D array */
+	  pts[0].x = box->xmin; pts[0].y = box->ymin;
+	  pts[1].x = box->xmin; pts[1].y = box->ymax;
+	  pts[2].x = box->xmax; pts[2].y = box->ymax;
+	  pts[3].x = box->xmax; pts[3].y = box->ymin;
+	  pts[4].x = box->xmin; pts[4].y = box->ymin;
+
+	  /* Construct point array */
+          pa = pointArray_construct((uchar *)pts, 0, 0, 5);	  
+
+	  /* Construct polygon */
+	  poly = lwpoly_construct(-1, NULL, 1, &pa);
+
+	  /* Serialize polygon */
+	  ser = lwpoly_serialize(poly);
+        }
+        
 	/* Construct PG_LWGEOM  */
 	result = PG_LWGEOM_construct(ser, -1, wantbbox);
 	
