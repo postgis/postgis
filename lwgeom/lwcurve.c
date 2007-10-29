@@ -22,7 +22,7 @@
 /*#define PGIS_DEBUG 1 */
 
 #ifndef MAXFLOAT
-  #define MAXFLOAT      3.40282347e+38F
+  #define MAXFLOAT      3.402823466e+38F
 #endif
 
 /*
@@ -32,7 +32,9 @@
 LWCURVE *
 lwcurve_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points)
 {
-        /*
+        LWCURVE *result;
+        
+	/*
          * The first arc requires three points.  Each additional
          * arc requires two more points.  Thus the minimum point count
          * is three, and the count must be odd.
@@ -43,7 +45,6 @@ lwcurve_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points)
                 return NULL;
         }
         
-        LWCURVE *result;
         result = (LWCURVE*) lwalloc(sizeof(LWCURVE));
 
         result->type = lwgeom_makeType_full(

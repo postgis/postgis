@@ -2333,12 +2333,13 @@ usage(char* me, int status, FILE* out)
 int
 parse_commandline(int ARGC, char **ARGV)
 {
+	int c, curindex;
+	char buf[1024];
+        
         if ( ARGC == 1 ) {
                 usage(ARGV[0], 0, stdout);
         }
 
-	int c, curindex;
-	char buf[1024];
 
 	buf[1023] = '\0'; /* just in case... */
 

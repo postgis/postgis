@@ -427,6 +427,7 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 	PJ *projection = NULL;
 	char *proj_str;
 	char proj4_spi_buffer[256];
+	int* pj_errno_ref;
 
 	/* Connect */
 	spi_result = SPI_connect();
@@ -452,11 +453,12 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 		strcpy(proj_str, SPI_getvalue(tuple, tupdesc, 1));
 		projection = make_project(proj_str);
 
-		if ( (projection == NULL) || pj_errno)
+		pj_errno_ref = pj_get_errno_ref();
+		if ( (projection == NULL) || (*pj_errno_ref))
 		{
 			/* we need this for error reporting */
 			/*pfree(projection); */
-			elog(ERROR, "AddToPROJ4SRSCache: couldn't parse proj4 string: '%s': %s", proj_str, pj_strerrno(pj_errno));
+			elog(ERROR, "AddToPROJ4SRSCache: couldn't parse proj4 string: '%s': %s", proj_str, pj_strerrno(*pj_errno_ref));
 		}
 
 		/*
@@ -571,7 +573,7 @@ int point_offset, double *x, double *y, double *z )
     long      i;
     /*int       need_datum_shift; */
 
-    pj_errno = 0;
+    int* pj_errno_ref;
 
     if( point_offset == 0 )
         point_offset = 1;
@@ -587,8 +589,10 @@ int point_offset, double *x, double *y, double *z )
             projected_loc.v = y[point_offset*i];
 
             geodetic_loc = pj_inv( projected_loc, srcdefn );
-            if( pj_errno != 0 )
-                return pj_errno;
+            
+            pj_errno_ref = pj_get_errno_ref();
+            if( (*pj_errno_ref) != 0 )
+                return *pj_errno_ref;
 
             x[point_offset*i] = geodetic_loc.u;
             y[point_offset*i] = geodetic_loc.v;
@@ -606,8 +610,10 @@ int point_offset, double *x, double *y, double *z )
             geodetic_loc.v = y[point_offset*i];
 
             projected_loc = pj_fwd( geodetic_loc, dstdefn );
-            if( pj_errno != 0 )
-                return pj_errno;
+
+            pj_errno_ref = pj_get_errno_ref();
+            if( (*pj_errno_ref) != 0 )
+                return *pj_errno_ref;
 
             x[point_offset*i] = projected_loc.u;
             y[point_offset*i] = projected_loc.v;
@@ -910,6 +916,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	text *output_proj4_text;
 	int32 result_srid ;
 	uchar *srl;
+	int* pj_errno_ref;
 
 	result_srid = PG_GETARG_INT32(3);
 	if (result_srid == -1)
@@ -941,26 +948,30 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 
 	/* make input and output projection objects */
 	input_pj = make_project(input_proj4);
-	if ( (input_pj == NULL) || pj_errno)
+	
+	pj_errno_ref = pj_get_errno_ref();
+        if ( (input_pj == NULL) || (*pj_errno_ref))
 	{
 		/* we need this for error reporting */
 		/* pfree(input_proj4); */
 
 		pfree(output_proj4);
 		pfree(geom);
-		elog(ERROR, "transform: couldn't parse proj4 input string: '%s': %s", input_proj4, pj_strerrno(pj_errno));
+		elog(ERROR, "transform: couldn't parse proj4 input string: '%s': %s", input_proj4, pj_strerrno(*pj_errno_ref));
 		PG_RETURN_NULL();
 	}
 	pfree(input_proj4);
 
 	output_pj = make_project(output_proj4);
-	if ((output_pj == NULL)|| pj_errno)
+	
+	pj_errno_ref = pj_get_errno_ref();
+	if ((output_pj == NULL)|| (*pj_errno_ref))
 	{
 		/* we need this for error reporting */
 		/* pfree(output_proj4); */
 		pj_free(input_pj);
 		pfree(geom);
-		elog(ERROR, "transform: couldn't parse proj4 output string: '%s': %s", output_proj4, pj_strerrno(pj_errno));
+		elog(ERROR, "transform: couldn't parse proj4 output string: '%s': %s", output_proj4, pj_strerrno(*pj_errno_ref));
 		PG_RETURN_NULL();
 	}
 	pfree(output_proj4);
@@ -999,7 +1010,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(postgis_proj_version);
 Datum postgis_proj_version(PG_FUNCTION_ARGS)
 {
-	const char *ver = pj_release;
+	const char *ver = pj_get_release();
 	text *result;
 	result = (text *) palloc(VARHDRSZ  + strlen(ver));
 	SET_VARSIZE(result, VARHDRSZ + strlen(ver));
@@ -1011,23 +1022,28 @@ Datum postgis_proj_version(PG_FUNCTION_ARGS)
 int
 transform_point(POINT4D *pt, PJ *srcpj, PJ *dstpj)
 {
+	int* pj_errno_ref;
+	
 	if (srcpj->is_latlong) to_rad(pt);
 	pj_transform(srcpj, dstpj, 1, 2, &(pt->x), &(pt->y), &(pt->z));
-	if (pj_errno)
+	
+	pj_errno_ref = pj_get_errno_ref();
+        if (*pj_errno_ref)
 	{
-		if (pj_errno == -38)  /*2nd chance */
+		if ((*pj_errno_ref) == -38)  /*2nd chance */
 		{
 			elog(WARNING, "transform: %i (%s)",
-				pj_errno, pj_strerrno(pj_errno));
+				*pj_errno_ref, pj_strerrno(*pj_errno_ref));
 			/*couldnt do nadshift - do it without the datum */
 			pj_transform_nodatum(srcpj, dstpj, 1, 2,
 				&(pt->x), &(pt->y), NULL);
 		}
 
-		if (pj_errno)
+		pj_errno_ref = pj_get_errno_ref();
+		if ((*pj_errno_ref))
 		{
 			elog(ERROR,"transform: couldn't project point: %i (%s)",
-				pj_errno, pj_strerrno(pj_errno));
+				*pj_errno_ref, pj_strerrno(*pj_errno_ref));
 			return 0;
 		}
 	}

@@ -21,8 +21,8 @@
 RTREE_NODE *createTree(POINTARRAY *pointArray)
 {
         RTREE_NODE *root;
-        RTREE_NODE *nodes[pointArray->npoints];
-        int i, nodeCount;
+	RTREE_NODE** nodes = lwalloc(sizeof(RTREE_NODE*) * pointArray->npoints);
+	int i, nodeCount;
         int childNodes, parentNodes;
 
 #ifdef PGIS_DEBUG_CALLS
@@ -378,7 +378,9 @@ Datum LWGEOM_polygon_index(PG_FUNCTION_ARGS)
 #ifdef PGIS_DEBUG
         lwnotice("returning result %p", result);
 #endif
-        PG_FREE_IF_COPY(igeom, 0);
+	lwfree(root);
+
+	PG_FREE_IF_COPY(igeom, 0);
         lwgeom_release((LWGEOM *)poly);
         lwgeom_release((LWGEOM *)mline);
         PG_RETURN_POINTER(result);

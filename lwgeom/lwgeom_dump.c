@@ -272,6 +272,7 @@ Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS)
 	{
 		LWPOLY* poly = state->poly;
 		POINTARRAY *ring;
+		LWGEOM* ringgeom;
 
 		/* Switch to an appropriate memory context for POINTARRAY
 		 * cloning and hexwkb allocation */
@@ -281,7 +282,7 @@ Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS)
 		ring = ptarray_clone(poly->rings[state->ringnum]);
 
 		/* Construct another polygon with shell only */
-		LWGEOM* ringgeom = (LWGEOM*)lwpoly_construct(
+		ringgeom = (LWGEOM*)lwpoly_construct(
 			poly->SRID,
 			NULL, /* TODO: could use input bounding box here */
 			1, /* one ring */
