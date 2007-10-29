@@ -86,7 +86,7 @@ all: $(GEOS_RULES) ../lwpostgis.sql ../regress/lwpostgis.sql ../lwpostgis_upgrad
 enable_shared=yes
 include Makefile.shlib
 
-MODULE_FILENAME = $(LPATH)/$(shlib)
+MODULE_FILENAME = $(LPATH)/lib$(NAME)
 REGRESS_MODULE_FILENAME = $(shell $(PWDREGRESS))/$(shlib)
 
 #---------------------------------------------------------------
