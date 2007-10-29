@@ -256,6 +256,7 @@ LWPOINT *
 lwpoint_deserialize(uchar *serialized_form)
 {
 	uchar type;
+	int geom_type;
 	LWPOINT *result;
 	uchar *loc = NULL;
 	POINTARRAY *pa;
@@ -267,10 +268,11 @@ lwpoint_deserialize(uchar *serialized_form)
 	result = (LWPOINT*) lwalloc(sizeof(LWPOINT)) ;
 
 	type = serialized_form[0];
+	geom_type = lwgeom_getType(type);
 
-	if ( lwgeom_getType(type) != POINTTYPE)
+	if ( geom_type != POINTTYPE)
 	{
-		lwerror("lwpoint_deserialize: attempt to deserialize a point which is really a %s", lwgeom_typename(type));
+		lwerror("lwpoint_deserialize: attempt to deserialize a point which is really a %s", lwgeom_typename(geom_type));
 		return NULL;
 	}
 	result->type = type;
