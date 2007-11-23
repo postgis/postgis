@@ -536,15 +536,15 @@ CreateTable(void)
 			{
 				printf ("int4");
 			}
-			else if  ( field_width <= 5 )
+			else if  ( field_width < 5 )
 			{
 				printf ("int2");
 			}
-			else if  ( field_width <= 10 )
+			else if  ( field_width < 10 )
 			{
 				printf ("int4");
 			}
-			else if  ( field_width <= 19 )
+			else if  ( field_width < 19 )
 			{
 				printf ("int8");
 			}
