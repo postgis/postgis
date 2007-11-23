@@ -1,0 +1,199 @@
+<?xml version="1.0"?>
+<!--
+ * build file
+ *
+ * PostGIS JDBC driver
+ *
+ * (C) 2007  Mark Cave-Ayland <mark.cave-ayland@ilande.co.uk> 
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 2.1 of the License.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA or visit the web at
+ * http://www.gnu.org.
+ *
+
+ Usage: ant -Dclasspath=/path/to/postgresql-jdbc.jar
+
+ -->
+<project name="postgis-jdbc-driver" default="all" basedir=".">
+
+  <!-- Global properties -->
+  <property name="stubsrc" value="stubs"/>
+  <property name="stubbuild" value="stubbin"/>
+  <property name="src" value="src"/>
+  <property name="build" value="bin"/>
+  <property name="javadocbuild" value="javadoc-build"/>
+  <property name="javadoczip" value="postgis-jdbc-javadoc.zip"/>
+  <property name="regresslog" value="test.log"/>
+  <property name="pgdefaultjar" value="/usr/share/java/postgresql.jar"/>
+  <property name="versioninfo" value="../../Version.config"/>
+
+  <!-- Environment variables -->
+  <property environment="env"/>
+
+  <!-- Load in the version information from Version.config -->
+  <property file="${versioninfo}"/>
+  <property name="postgis_version" value="${REL_MAJOR_VERSION}.${REL_MINOR_VERSION}.${REL_MICRO_VERSION}"/>
+
+  <!-- Build classpath - required to build the PostGIS JDBC driver -->
+  <path id="buildclasspath">
+    <pathelement location="${stubbuild}/"/> 
+    <pathelement path="${pgdefaultjar}"/>
+    <pathelement path="${classpath}"/>
+  </path>
+
+  <!-- Regression test classpath - must contain the PostgreSQL JDBC driver plus the PostGIS JDBC driver -->
+  <path id="regressclasspath">
+    <pathelement path="${pgdefaultjar}"/>
+    <pathelement path="${classpath}"/>
+    <pathelement location="postgis_${postgis_version}.jar"/>
+  </path>
+
+
+  <!-- Clean target -->
+  <target name="clean">
+    <!-- Delete the binary build directories -->
+    <delete dir="${stubbuild}"/>
+    <delete dir="${build}"/>
+
+    <!-- Delete the JAR files -->
+    <delete>
+      <fileset dir="." includes="postgis_${postgis_version}.jar"/>
+      <fileset dir="." includes="postgis_debug_${postgis_version}.jar"/>
+    </delete>
+
+    <!-- Delete the test log file -->
+    <delete>
+      <fileset dir="." includes="${regresslog}"/>
+    </delete>
+
+    <!-- Delete the documentation -->
+    <delete dir="${javadocbuild}"/>
+    <delete>
+      <fileset dir="." includes="${javadoczip}"/>
+    </delete>
+  </target>
+
+
+  <!-- Main target -->
+  <target name="all" depends="build-standard, offline-regression, javadoc-compress"/>
+
+
+  <!-- Build the standard (non-JTS) jar -->
+  <target name="build-standard" depends="stubbuild, standard-jar">
+    <echo message="Building standard JDBC jar"/>
+  </target>
+
+
+  <!-- Build the stubs (the pgjdbc 7.2/7.4/8.0 compatibility stub stuff) -->
+  <target name="stubbuild">
+    <mkdir dir="${stubbuild}"/>
+    <javac srcdir="${stubsrc}" destdir="${stubbuild}" source="1.2" target="1.2"/>
+  </target>
+
+  <!-- Standard driver compile -->
+  <target name="standard-compile">
+    <mkdir dir="${build}"/>
+    <javac srcdir="${src}" destdir="${build}" classpathref="buildclasspath" source="1.2" target="1.2"/>
+  </target>
+
+  <!-- Standard driver JAR file (creates debug and non-debug versions) -->
+  <target name="standard-jar" depends="standard-compile">
+    <!-- Copy driverconfig.properties into the JAR to auto-register PostGIS types -->
+    <copy file="${src}/org/postgresql/driverconfig.properties" tofile="${build}/org/postgresql/driverconfig.properties"/>
+    
+    <!-- Copy Version.config into the JAR (this is read at runtime) -->
+    <copy file="${versioninfo}" tofile="${build}/org/postgis/version.properties"/>
+
+    <!-- Copy additional README and copyright files -->
+    <copy file="README" tofile="${build}/README"/>
+    <copy file="COPYING_LGPL" tofile="${build}/COPYING_LGPL"/>
+    <copy file="../../COPYING" tofile="${build}/COPYING"/>
+
+    <!-- Create the non-debug version -->
+    <jar destfile="postgis_${postgis_version}.jar" duplicate="preserve">
+      <fileset dir="${build}"/>
+    </jar>
+
+    <!-- Create debug version -->
+    <jar destfile="postgis_debug_${postgis_version}.jar" duplicate="preserve">
+      <fileset dir="${build}"/>
+      <fileset dir="${src}" includes="org/**"/>
+      <fileset dir="${src}" includes="examples/**"/>
+    </jar>
+  </target>
+
+
+  <!-- Offline regression tests -->
+  <target name="offline-regression" depends="boxtestoffline-regression, ptestoffline-regression, test-regression"/>
+ 
+  <target name="boxtestoffline-regression">
+    <java classname="examples.TestBoxes" fork="true" output="${regresslog}" error="${regresslog}.err" append="true">
+      <arg value="offline"/>
+      <classpath refid="regressclasspath"/>
+    </java>
+
+    <!-- Show any errors -->
+    <loadfile property="stderr" srcfile="${regresslog}.err"/>
+    <echo message="${stderr}"/>
+    <delete>
+      <fileset dir="." includes="${regresslog}.err"/>
+    </delete>
+  </target>
+
+  <target name="ptestoffline-regression">
+    <java classname="examples.TestParser" fork="true" output="${regresslog}" error="${regresslog}.err" append="true">
+      <arg value="offline"/>
+      <classpath refid="regressclasspath"/>
+    </java>
+    
+    <!-- Show any errors -->
+    <loadfile property="stderr" srcfile="${regresslog}.err"/>
+    <echo message="${stderr}"/>
+    <delete>
+      <fileset dir="." includes="${regresslog}.err"/>
+    </delete>
+  </target>
+  
+  <target name="test-regression">
+    <java classname="examples.Test" fork="true" output="${regresslog}" error="${regresslog}.err" append="true">
+      <arg value="offline"/>
+      <classpath refid="regressclasspath"/>
+    </java>
+    
+    <!-- Show any errors -->
+    <loadfile property="stderr" srcfile="${regresslog}.err"/>
+    <echo message="${stderr}"/>
+    <delete>
+      <fileset dir="." includes="${regresslog}.err"/>
+    </delete>
+  </target>
+
+
+  <!-- Documentation -->
+  <target name="javadoc" depends="build-standard">
+    <javadoc sourcepath="${src}" destdir="${javadocbuild}">
+      <package name="org.postgis"/>
+      <package name="org.postgis.jts"/>
+      <package name="org.postgis.binary"/>
+      <package name="org.postgis.java2d"/>
+      <package name="examples"/>
+    </javadoc>
+  </target>
+
+  <target name="javadoc-compress" depends="javadoc">
+    <!-- Compress the documentation into a single ZIP file -->
+    <zip basedir="${javadocbuild}" destfile="${javadoczip}"/>
+  </target>
+
+</project>
+

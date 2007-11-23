@@ -143,9 +143,20 @@ JTSSRC = $(JTSDIR)/org/postgis/jts/*.java $(JTSDIR)/examples/*.java
 
 # Now the makefile targets that do the work:
 # The default target:
-all:	jar \
+all:	deprecation-warning \
+	jar \
 		postgis-jdbc-javadoc.zip \
 	offlinetests
+
+# This Makefile is deprecated for build.xml (build with Ant)
+deprecation-warning:
+	@echo "***"
+	@echo "*** WARNING: This Makefile is deprecated for a build using Ant (build.xml)"
+	@echo "***"
+	@echo "*** If you wish to build a standard PostGIS JDBC driver, please use the Ant build"
+	@echo "*** If you wish to build a JTS-enabled PostGIS JDBC driver, or run the online"
+	@echo "*** regression tests, you will currently still need to use this Makefile"
+	@echo "***"
 
 # Packing the archives
 
