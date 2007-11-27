@@ -906,7 +906,7 @@ lwgeom_hasBBOX(uchar type)
 
 /* handle missaligned unsigned int32 data */
 uint32
-get_uint32(const uchar *loc)
+lw_get_uint32(const uchar *loc)
 {
 	uint32 result;
 
@@ -916,7 +916,7 @@ get_uint32(const uchar *loc)
 
 /* handle missaligned signed int32 data */
 int32
-get_int32(const uchar *loc)
+lw_get_int32(const uchar *loc)
 {
 	int32 result;
 
@@ -974,7 +974,7 @@ lwgeom_inspect(const uchar *serialized_form)
 
 	if ( lwgeom_hasSRID(typefl) )
 	{
-		result->SRID = get_int32(loc);
+		result->SRID = lw_get_int32(loc);
 		loc += 4;
 	}
 
@@ -990,7 +990,7 @@ lwgeom_inspect(const uchar *serialized_form)
 
 	/* its a GeometryCollection or multi* geometry */
 
-	result->ngeometries = get_uint32(loc);
+	result->ngeometries = lw_get_uint32(loc);
 	loc +=4;
 
 #ifdef PGIS_DEBUG
@@ -1307,7 +1307,7 @@ lwgeom_getnumgeometries(uchar *serialized_form)
 		loc += 4;
 	}
 	/* its a GeometryCollection or multi* geometry */
-	return get_uint32(loc);
+	return lw_get_uint32(loc);
 }
 
 /*
@@ -1590,7 +1590,7 @@ lwgeom_size(const uchar *serialized_form)
 	}
 
 
-	ngeoms = get_uint32(loc);
+	ngeoms = lw_get_uint32(loc);
 	loc +=4;
 	result += 4; /* numgeoms */
 
@@ -1745,7 +1745,7 @@ lwnotice("compute_serialized_box3d: bbox found");
 		loc +=4;
 	}
 
-	ngeoms = get_uint32(loc);
+	ngeoms = lw_get_uint32(loc);
 	loc += 4;
 
 	/* each sub-type */
@@ -1926,7 +1926,7 @@ lwgeom_getsrid(uchar *serialized)
 		loc += sizeof(BOX2DFLOAT4);
 	}
 
-	return get_int32(loc);
+	return lw_get_int32(loc);
 }
 
 char

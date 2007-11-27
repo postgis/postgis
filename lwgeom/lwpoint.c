@@ -298,7 +298,7 @@ lwpoint_deserialize(uchar *serialized_form)
 #ifdef PGIS_DEBUG
 		lwnotice("lwpoint_deserialize: input has SRID");
 #endif
-		result->SRID = get_int32(loc);
+		result->SRID = lw_get_int32(loc);
 		loc += 4; /* type + SRID */
 	}
 	else

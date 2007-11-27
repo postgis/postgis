@@ -107,7 +107,7 @@ lwcurve_deserialize(uchar *serialized_form)
 #ifdef PGIS_DEBUG
                 lwnotice("lwcurve_deserialize: input has srid");
 #endif
-                result->SRID = get_int32(loc);               
+                result->SRID = lw_get_int32(loc);               
                 loc += 4; /* type + SRID */
          }
          else
@@ -120,7 +120,7 @@ lwcurve_deserialize(uchar *serialized_form)
 
          /* we've read the type (1 byte) and SRID (4 bytes, if present) */
 
-         npoints = get_uint32(loc);
+         npoints = lw_get_uint32(loc);
 #ifdef PGIS_DEBUG
          lwnotice("curve npoints = %d", npoints);
 #endif         
@@ -505,7 +505,7 @@ lwgeom_size_curve(const uchar *serialized_curve)
         }
 
         /* we've read the type (1 byte) and SRID (4 bytes, if present) */
-        npoints = get_uint32(loc);
+        npoints = lw_get_uint32(loc);
         result += sizeof(uint32); /* npoints */
 
         result += TYPE_NDIMS(type) * sizeof(double) * npoints;

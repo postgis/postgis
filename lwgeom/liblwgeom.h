@@ -888,8 +888,8 @@ extern void pfree_POINTARRAY(POINTARRAY *pa);
  * utility
  ****************************************************************/
 
-extern uint32 get_uint32(const uchar *loc);
-extern int32 get_int32(const uchar *loc);
+extern uint32 lw_get_uint32(const uchar *loc);
+extern int32 lw_get_int32(const uchar *loc);
 extern void printBOX3D(BOX3D *b);
 extern void printPA(POINTARRAY *pa);
 extern void printLWPOINT(LWPOINT *point);

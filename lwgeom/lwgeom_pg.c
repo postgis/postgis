@@ -404,7 +404,7 @@ pglwgeom_getSRID(PG_LWGEOM *lwgeom)
 		loc += sizeof(BOX2DFLOAT4);
 	}
 
-	return get_int32(loc);
+	return lw_get_int32(loc);
 }
 
 

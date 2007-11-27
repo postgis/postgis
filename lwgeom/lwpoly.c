@@ -116,7 +116,7 @@ lwpoly_deserialize(uchar *serialized_form)
 
 	if ( lwgeom_hasSRID(type))
 	{
-		result->SRID = get_int32(loc);
+		result->SRID = lw_get_int32(loc);
 		loc +=4; /* type + SRID */
 	}
 	else
@@ -124,7 +124,7 @@ lwpoly_deserialize(uchar *serialized_form)
 		result->SRID = -1;
 	}
 
-	nrings = get_uint32(loc);
+	nrings = lw_get_uint32(loc);
 	result->nrings = nrings;
 	loc +=4;
 	result->rings = (POINTARRAY**) lwalloc(nrings* sizeof(POINTARRAY*));
@@ -132,7 +132,7 @@ lwpoly_deserialize(uchar *serialized_form)
 	for (t =0;t<nrings;t++)
 	{
 		/* read in a single ring and make a PA */
-		npoints = get_uint32(loc);
+		npoints = lw_get_uint32(loc);
 		loc +=4;
 
 		result->rings[t] = pointArray_construct(loc, hasz, hasm, npoints);
@@ -299,7 +299,7 @@ lwgeom_size_poly(const uchar *serialized_poly)
 	}
 
 
-	nrings = get_uint32(loc);
+	nrings = lw_get_uint32(loc);
 	loc +=4;
 	result +=4;
 
@@ -309,7 +309,7 @@ lwgeom_size_poly(const uchar *serialized_poly)
 	for (t =0;t<nrings;t++)
 	{
 		/* read in a single ring and make a PA */
-		npoints = get_uint32(loc);
+		npoints = lw_get_uint32(loc);
 		loc += 4;
 		result += 4;
 

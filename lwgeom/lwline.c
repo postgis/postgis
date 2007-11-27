@@ -98,7 +98,7 @@ lwline_deserialize(uchar *serialized_form)
 	if ( lwgeom_hasSRID(type))
 	{
 		/*lwnotice("line has srid"); */
-		result->SRID = get_int32(loc);
+		result->SRID = lw_get_int32(loc);
 		loc +=4; /* type + SRID */
 	}
 	else
@@ -109,7 +109,7 @@ lwline_deserialize(uchar *serialized_form)
 
 	/* we've read the type (1 byte) and SRID (4 bytes, if present) */
 
-	npoints = get_uint32(loc);
+	npoints = lw_get_uint32(loc);
 	/*lwnotice("line npoints = %d", npoints); */
 	loc +=4;
 	pa = pointArray_construct(loc, TYPE_HASZ(type), TYPE_HASM(type), npoints);
@@ -303,7 +303,7 @@ lwgeom_size_line(const uchar *serialized_line)
 	}
 
 	/* we've read the type (1 byte) and SRID (4 bytes, if present) */
-	npoints = get_uint32(loc);
+	npoints = lw_get_uint32(loc);
 	result += sizeof(uint32); /* npoints */
 
 	result += TYPE_NDIMS(type) * sizeof(double) * npoints;
