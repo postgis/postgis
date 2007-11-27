@@ -18,9 +18,11 @@
 
 #include "postgres.h"
 #include "fmgr.h"
+#include "miscadmin.h"
 
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
+
 
 Datum transform(PG_FUNCTION_ARGS);
 Datum transform_geom(PG_FUNCTION_ARGS);
@@ -140,6 +142,10 @@ bool IsInPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid);
 PJ *GetProjectionFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid);
 void AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid);
 void DeleteFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid);
+
+/* Search path for PROJ.4 library */
+static bool IsPROJ4LibPathSet = false;
+void SetPROJ4LibPath();
 
 /* Memory context cache functions */
 static void PROJ4SRSCacheInit(MemoryContext context);
@@ -563,6 +569,38 @@ void DeleteFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
 
 
 /*
+ * Specify an alternate directory for the PROJ.4 grid files
+ * (this should augment the PROJ.4 compile-time path)
+ *
+ * It's main purpose is to allow Win32 PROJ.4 installations
+ * to find a set grid shift files, although other platforms
+ * may find this useful too.
+ */
+void SetPROJ4LibPath()
+{
+	char *path;
+	const char **proj_lib_path;
+
+	/* 
+	 * Get the sharepath and append /contrib/postgis/nad to form a suitable
+	 * directory in which to store the grid shift files
+	 */	
+	proj_lib_path = palloc(sizeof(char *));
+	path = palloc(MAXPGPATH);
+	*proj_lib_path = path;
+
+	get_share_path(my_exec_path, path);
+	strncat(path, "/contrib/postgis/nad", MAXPGPATH - strlen(path) - 1);
+
+	/* Set the search path for PROJ.4 */
+	pj_set_searchpath(1, proj_lib_path);
+
+	/* Ensure we only do this once... */
+	IsPROJ4LibPathSet = true;
+}
+
+
+/*
  * This is *exactly* the same as PROJ.4's pj_transform(),
  * but it doesn't do the datum shift.
  */
@@ -771,6 +809,8 @@ lwgeom_transform_recursive(uchar *geom, PJ *inpj, PJ *outpj)
 }
 
 
+
+
 /*
  * transform( GEOMETRY, INT (output srid) )
  * tmpPts - if there is a nadgrid error (-38), we re-try the transform
@@ -804,6 +844,10 @@ Datum transform(PG_FUNCTION_ARGS)
 		elog(ERROR,"Input geometry has unknown (-1) SRID");
 		PG_RETURN_NULL();
 	}
+
+	/* Set the search path if we haven't already */
+	if (!IsPROJ4LibPathSet)
+		SetPROJ4LibPath();
 
 	/*
 	 * If input SRID and output SRID are equal, return geometry
@@ -918,6 +962,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	uchar *srl;
 	int* pj_errno_ref;
 
+
 	result_srid = PG_GETARG_INT32(3);
 	if (result_srid == -1)
 	{
@@ -932,6 +977,10 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 		elog(ERROR,"tranform: source SRID = -1");
 		PG_RETURN_NULL();
 	}
+
+	/* Set the search path if we haven't already */
+	if (!IsPROJ4LibPathSet)
+		SetPROJ4LibPath();
 
 	input_proj4_text  = (PG_GETARG_TEXT_P(1));
 	output_proj4_text = (PG_GETARG_TEXT_P(2));
