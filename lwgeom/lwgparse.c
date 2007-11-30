@@ -151,8 +151,11 @@ void read_wkb_bytes(const char **in, uchar* out, int cnt);
 int4 read_wkb_int(const char **in);
 double read_wkb_double(const char **in, int convert_from_int);
 void read_wkb_point(const char **b);
+void read_wkb_polygon(const char **b);
+void read_wkb_linestring(const char **b);
+void read_wkb_curve(const char **b);
+void read_wkb_ordinate_array(const char **b);
 void read_collection(const char **b, read_col_func f);
-void read_collection2(const char **b);
 void parse_wkb(const char **b);
 void alloc_wkb(const char *parser);
 SERIALIZED_LWGEOM* parse_it(const char* geometry, allocator allocfunc, report_error errfunc);
@@ -269,6 +272,7 @@ pop(void)
 void
 popc(void)
 {
+
 	if ( the_geom.stack->uu.nn.num < minpoints){
 		error("geometry requires more points");
 	}
@@ -281,7 +285,8 @@ popc(void)
 		{
 			error("geometry contains non-closed rings");
 		}
-	}
+	}	
+
 	the_geom.stack = the_geom.stack->uu.nn.stack_next;
 }
 
@@ -946,13 +951,85 @@ read_wkb_point(const char **b)
 		}
 	}
 
+
+	/* keep track of point */
+	if ( checkclosed ) {
+		if ( ! the_geom.stack->uu.nn.num )
+			first_point = p->uu.points;
+		last_point = p->uu.points;
+	}
+
 	inc_num();
 	check_dims(the_geom.ndims);
 }
 
 void
+read_wkb_polygon(const char **b)
+{
+	/* Stack the number of ORDINATE_ARRAYs (rings) */
+	int4 cnt=read_wkb_int(b);
+	alloc_counter();
+
+	/* Read through each ORDINATE_ARRAY in turn */
+	while(cnt--){
+		if ( ferror_occured )	return;
+
+		/* Things to check for POLYGON ORDINATE_ARRAYs */
+		minpoints=3;
+		checkclosed=1;
+		isodd=-1;
+
+		read_wkb_ordinate_array(b);
+	}
+
+	pop();
+}
+
+void
+read_wkb_linestring(const char **b)
+{
+
+	/* Things to check for LINESTRING ORDINATE_ARRAYs */
+	minpoints=2;
+	checkclosed=0;
+	isodd=-1;
+
+	read_wkb_ordinate_array(b);
+}
+
+
+void
+read_wkb_curve(const char **b)
+{
+
+	/* Things to check for CURVE ORDINATE_ARRAYs */
+	minpoints=3;
+	checkclosed=0;
+	isodd=-1;
+
+	read_wkb_ordinate_array(b);
+}
+
+void
+read_wkb_ordinate_array(const char **b)
+{
+	/* Read through a WKB ordinate array */
+	int4 cnt=read_wkb_int(b);
+	alloc_counter();
+
+	while(cnt--){
+		if ( ferror_occured )	return;
+		read_wkb_point(b);
+	}
+
+	/* Perform a check of the ordinate array */
+	popc();
+}
+
+void
 read_collection(const char **b, read_col_func f)
 {
+	/* Read through a COLLECTION or an EWKB */
 	int4 cnt=read_wkb_int(b);
 	alloc_counter();
 
@@ -962,12 +1039,6 @@ read_collection(const char **b, read_col_func f)
 	}
 
 	pop();
-}
-
-void
-read_collection2(const char **b)
-{
-	read_collection(b, read_wkb_point);
 }
 
 void
@@ -1043,15 +1114,15 @@ parse_wkb(const char **b)
 			break;
 
 		case	LINETYPE:
-			read_collection(b,read_wkb_point);
+			read_wkb_linestring(b);
 			break;
 
                 case    CURVETYPE:
-                        read_collection(b,read_wkb_point);
+                        read_wkb_curve(b);
                         break;
 
 		case	POLYGONTYPE:
-			read_collection(b,read_collection2);
+			read_wkb_polygon(b);
 			break;
 
                 case    COMPOUNDTYPE:
@@ -1078,12 +1149,12 @@ parse_wkb(const char **b)
 
 		case	LINETYPEI:
 			the_geom.from_lwgi=1;
-			read_collection(b,read_wkb_point);
+			read_wkb_linestring(b);
 			break;
 
 		case	POLYGONTYPEI:
 			the_geom.from_lwgi=1;
-			read_collection(b,read_collection2);
+			read_wkb_polygon(b);
 			break;
 
 		default:
