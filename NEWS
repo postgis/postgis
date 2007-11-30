@@ -1,3 +1,13 @@
+PostGIS 1.3.2
+2007/12/01
+        - Improvements in the TIGER geocoder
+        - Fix to ST_EndPoint() crasher bug
+        - Modified ST_AsGML() improving v2 and adding v3 support
+        - Fix to ensure ST_Envelope() returns valid geometries
+        - Change JDBC build to use Ant
+        - Fix for better OS/X support
+        - Fix to WKB parser to do simple validity checks  
+
 PostGIS 1.3.1
 2007/08/13
         - Fixed documentation bugs and release number errors
