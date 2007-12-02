@@ -1,7 +1,7 @@
 PostGIS - Geographic Information Systems Extensions to PostgreSQL
 ~~~~~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-VERSION: 1.3.1 (2007/08/13)
+VERSION: 1.3.2 (2007/12/01)
 
 MORE INFORMATION: http://postgis.refractions.net
 
@@ -67,15 +67,15 @@ SEE THE NOTE ON GEOS SUPPORT BELOW FOR SPECIAL COMPILATION INSTRUCTIONS
 CONFIGURATION
 -------------
 
-To configure PostGIS, as root run:
+To configure PostGIS, run:
 	
   ./configure
 
 Last lines from configure output will give a configuration summary.
 
-If pg_config can't be found in your $PATH configure will complan
-and refuse to proceed. You can specify it using the --with-pgsql-PATH
-flag.
+If pg_config can't be found in your $PATH configure will complain
+and refuse to proceed. You can specify it using the 
+--with-pgsql=/path/to/pg_config flag.
 
 If you don't see PROJ4 in the report (and you did have installed it)
 this means that proj4 installation dir could not be found.
@@ -83,14 +83,14 @@ You can specify it using the --with-proj=DIR flag.
 
 If you don't see GEOS in the report (and you did have installed it)
 this means that geos-config could not be found.
-You can specify it using the --with-geos=PATH flag.
+You can specify it using the --with-geos=/path/to/geos-config flag.
 
 See ./configure --help for more options.
 
 BUILD
 -----
 
-To build PostGIS library and utilities, as root run:
+To build PostGIS library and utilities, as postgres run:
 
   make
 
@@ -111,7 +111,7 @@ http://postgis.refractions.net/bugs.
 INSTALLATION
 ------------
 
-To install PostGIS library and utilities, as root run:
+To install PostGIS library and utilities, as postgres run:
 
   make install
 

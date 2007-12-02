@@ -1,3 +1,75 @@
+---------  PostGIS-1.3.2 release [2007-12-01] --------------------------
+
+2007-11-30 Mark Cave-Ayland <mark.cave-ayland@ilande.co.uk>
+
+	* lwgeom/lwgparse.c: Fix the (E)WKB parser so that it performs
+	  validation checks in the same way as the WKT parser, e.g. ensure
+	  POLYGON rings are closed, LINESTRINGs consist of at least 2
+	  points and that curves have at least 3 points.
+
+2007-11-27 Mark Cave-Ayland <mark.cave-ayland@ilande.co.uk>
+
+	* lwgeom/liblwgeom.h, lwgeom/lwcurve.c, lwgeom/lwgeom_api.c,
+	  lwgeom/lwgeom_pg.c, lwgeom/lwline.c, lwgeom/lwpoint.c,
+	  lwgeom/lwpoly.c: Rename the existing get_int32() and
+	  get_uint32() functions to lw_get_int32() and lw_get_uint32()
+	  respectively in order to avoid a collision with functions of the
+	  same name in newer versions of OS X.
+
+2007-11-27 22:19  mcayland
+
+	* lwgeom/lwgeom_transform.c: Extend the PROJ.4 search path to
+	  include $sharedir/contrib/postgis/nad when looking for grid
+	  files. This is mainly to allow Win32 builds to find grid files
+	  without having to use a PROJ.4 DLL compiled containing a fixed
+	  path.
+
+2007-11-23 Mark Cave-Ayland <mark.cave-ayland@ilande.co.uk>
+
+	* loader/shp2pgsql.c: Apply Tom Glancy's patch to shp2pgsql which
+	  corrects an off-by-one error in the field_width calculation when
+	  determining which SQL numeric type is required depending upon
+	  the length of the corresponding shapefile field.
+
+2007-11-23 Mark Cave-Ayland <mark.cave-ayland@ilande.co.uk>
+
+	* java/jdbc/Makefile, java/jdbc/build.xml: Commit a first attempt
+	  at an Ant build.xml file for the PostGIS JDBC driver so finally
+	  all the Java drivers build with Ant for consistency, plus we
+	  eliminate numerous cross platform problems.
+
+2007-10-29 Mark Cave-Ayland <mark.cave-ayland@ilande.co.uk>
+
+	* lwgeom/Makefile: Remove version numbers from liblwgeom
+	  references in lwpostgis.sql as per
+	  http://postgis.refractions.net/pipermail/postgis-devel/2007-September/002764.html.
+	  This should help make upgrades a lot easier for people since it
+	  removes the need to change the SQL function definitions when
+	  upgrading in the future.
+
+2007-10-29 Mark Cave-Ayland <mark.cave-ayland@ilande.co.uk>
+
+	* lwgeom/lwgeom_box2dfloat4.c, lwgeom/lwgeom_box3d.c,
+	  lwgeom/lwgeom_functions_basic.c: Commit Charlie Savage's patches
+	  (with additional comments) to the bounding box/envelope
+	  functions to ensure that valid geometries are always returned.
+          For details see the thread in the postgis-users archives Sept 2007
+          'How to get the centroid of a bounding box using st_extent'.
+
+2007-09-06 Mark Cave-Ayland <mark.cave-ayland@ilande.co.uk>
+
+	* doc/postgis.xml, lwgeom/lwgeom_gml.c, lwgeom/lwpostgis.sql.in:
+	  Commit modified version of Barbara Phillipot's GML patch to fix
+	  existing output to make it GML2 compliant, plus add GML3 output
+	  capability.
+
+2007-08-21 Mark Cave-Ayland <mark.cave-ayland@ilande.co.uk>
+
+	* lwgeom/lwgeom_ogc.c: Fix crash when calling ST_EndPoint caused
+	  by a double-free in LWGEOM_endpoint_linestring. This bug has
+	  been there for a while - thanks to Eric Francois for the bug
+	  report.
+
 ---------  PostGIS-1.3.1 release [2007-08-13] --------------------------
 
 2007-08-13 Mark Cave-Ayland <mark.cave-ayland@ilande.co.uk>
