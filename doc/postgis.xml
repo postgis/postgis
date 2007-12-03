@@ -50,7 +50,7 @@
 
       <variablelist>
         <varlistentry>
-          <term>Sandro Santilli &#60;strk@refractions.net&#62;</term>
+          <term>Sandro Santilli &lt;strk@refractions.net&gt;</term>
 
           <listitem>
             <para>Coordinates all bug fixing and maintenance effort,
@@ -60,14 +60,14 @@
         </varlistentry>
 
         <varlistentry>
-          <term>Mark Leslie &#60;mleslie@refractions.net&#62;</term>
+          <term>Mark Leslie &lt;mleslie@refractions.net&gt;</term>
           <listitem>
             <para>Ongoing maintenance and development of core functions.</para>
           </listitem>
         </varlistentry>        
 
         <varlistentry>
-          <term>Chris Hodgson &#60;chodgson@refractions.net&#62;</term>
+          <term>Chris Hodgson &lt;chodgson@refractions.net&gt;</term>
 
           <listitem>
             <para>Maintains new functions and the 7.2 index bindings.</para>
@@ -75,7 +75,7 @@
         </varlistentry>
 
         <varlistentry>
-          <term>Paul Ramsey &#60;pramsey@refractions.net&#62;</term>
+          <term>Paul Ramsey &lt;pramsey@refractions.net&gt;</term>
 
           <listitem>
             <para>Keeps track of the documentation and packaging.</para>
@@ -83,7 +83,7 @@
         </varlistentry>
 
         <varlistentry>
-          <term>Jeff Lounsbury &#60;jeffloun@refractions.net&#62;</term>
+          <term>Jeff Lounsbury &lt;jeffloun@refractions.net&gt;</term>
 
           <listitem>
             <para>Original development of the Shape file loader/dumper.</para>
@@ -91,7 +91,7 @@
         </varlistentry>
 
         <varlistentry>
-          <term>Dave Blasby &#60;dblasby@gmail.com&#62;</term>
+          <term>Dave Blasby &lt;dblasby@gmail.com&gt;</term>
 
           <listitem>
             <para>The original developer of PostGIS. Dave wrote the server
@@ -119,7 +119,7 @@
           <listitem>
             <para>The <ulink url="http://geos.refractions.net">GEOS</ulink>
             geometry operations library, and the algorithmic work of Martin
-            Davis &#60;mbdavis@vividsolutions.com&#62; of Vivid Solutions in
+            Davis &lt;mbdavis@vividsolutions.com&gt; of Vivid Solutions in
             making it all work.</para>
 
             <para>The <ulink url="http://proj4.maptools.org">Proj4</ulink>
@@ -169,8 +169,8 @@
         </listitem>
 
         <listitem>
-          <para>The &#34;<ulink url="http://www.opengis.org/docs/99-049.pdf">Simple
-          Features for Specification for SQL</ulink>&#34; is available at the
+          <para>The &quot;<ulink url="http://www.opengis.org/docs/99-049.pdf">Simple
+          Features for Specification for SQL</ulink>&quot; is available at the
           OpenGIS Consortium web site: <ulink url="http://www.opengis.org">http://www.opengis.org</ulink>.</para>
         </listitem>
       </itemizedlist>
@@ -261,8 +261,7 @@
           url="http://postgis.refractions.net/postgis-@@LAST_RELEASE_VERSION@@.tar.gz">http://postgis.refractions.net/postgis-@@LAST_RELEASE_VERSION@@.tar.gz</ulink>.
           Uncompress and untar the archive.</para>
 
-          <programlisting># gzip -d -c postgis-@@LAST_RELEASE_VERSION@@.tar.gz
-          | tar xvf -</programlisting>
+          <programlisting># gzip -d -c postgis-@@LAST_RELEASE_VERSION@@.tar.gz | tar xvf -</programlisting>
         </listitem>
 
         <listitem>
@@ -272,14 +271,14 @@
           <itemizedlist>
             <listitem>
               <para>If you want support for coordinate reprojection, you must
-              have the Proj4 library installed. If ./configure didn&#39;t find
+              have the Proj4 library installed. If ./configure didn't find
               it, try using <code>--with-proj=PATH</code> switch specify a
               specific Proj4 installation directory.</para>
             </listitem>
 
             <listitem>
               <para>If you want to use GEOS functionality, you must have the
-              GEOS library installed. If ./configure didn&#39;t find it, try
+              GEOS library installed. If ./configure didn't find it, try
               using <code>--with-geos=PATH</code> to specify the full path to
               the geos-config program full path.</para>
             </listitem>
@@ -315,7 +314,7 @@
           <para>PostGIS requires the PL/pgSQL procedural language extension.
           Before loading the <filename>lwpostgis.sql</filename> file, you must
           first enable PL/pgSQL. You should use the <filename>createlang</filename>
-          command. The PostgreSQL Programmer&#39;s Guide has the details if
+          command. The PostgreSQL Programmer's Guide has the details if
           you want to this manually for some reason.</para>
 
           <programlisting># createlang plpgsql [yourdatabase]</programlisting>
@@ -346,7 +345,7 @@
         template</title>
 
         <para>Some packaged distributions of PostGIS (in particular the Win32
-        installers for PostGIS &#62;= 1.1.5) load the PostGIS functions into a
+        installers for PostGIS &gt;= 1.1.5) load the PostGIS functions into a
         template database called <varname>template_postgis</varname>. If the
         <varname>template_postgis</varname> database exists in your PostgreSQL
         installation then it is possible for users and/or applications to
@@ -360,8 +359,7 @@
 
         <para>From SQL:</para>
 
-        <programlisting>postgres=# CREATE DATABASE my_spatial_db
-        TEMPLATE=template_postgis</programlisting>
+        <programlisting>postgres=# CREATE DATABASE my_spatial_db TEMPLATE=template_postgis</programlisting>
       </sect2>
 
       <sect2 id="upgrading">
@@ -387,21 +385,19 @@
           <para>Soft upgrade consists of sourcing the lwpostgis_upgrade.sql
           script in your spatial database:</para>
 
-          <programlisting>$ psql -f lwpostgis_upgrade.sql -d
-          your_spatial_database</programlisting>
+          <programlisting>$ psql -f lwpostgis_upgrade.sql -d your_spatial_database</programlisting>
 
           <para>If a soft upgrade is not possible the script will abort and
           you will be warned about HARD UPGRADE being required, so do not
           hesitate to try a soft upgrade first.</para>
 
           <note>
-            <para>If you can&#39;t find the <filename>lwpostgis_upgrade.sql</filename>
+            <para>If you can't find the <filename>lwpostgis_upgrade.sql</filename>
             file you are probably using a version prior to 1.1 and must
             generate that file by yourself. This is done with the following
             command:</para>
 
-            <programlisting>$ utils/postgis_proc_upgrade.pl lwpostgis.sql
-            &#62; lwpostgis_upgrade.sql</programlisting>
+            <programlisting>$ utils/postgis_proc_upgrade.pl lwpostgis.sql &gt; lwpostgis_upgrade.sql</programlisting>
           </note>
         </sect3>
 
@@ -409,7 +405,7 @@
           <title>Hard upgrade</title>
 
           <para>By HARD UPGRADE we intend full dump/reload of postgis-enabled
-          databases. You need an HARD UPGRADE when postgis objects&#39;
+          databases. You need an HARD UPGRADE when postgis objects'
           internal storage changes or when SOFT UPGRADE is not possible. The
           <link linkend="release_notes">Release Notes</link> appendix reports
           for each version whether you need a dump/reload (HARD UPGRADE) to
@@ -420,35 +416,33 @@
           output to a file will help in case of problems. The procedure is as
           follow:</para>
 
-          <para>Create a &#34;custom-format&#34; dump of the database you want
-          to upgrade (let&#39;s call it &#34;olddb&#34;)</para>
+          <para>Create a &quot;custom-format&quot; dump of the database you want
+          to upgrade (let's call it &quot;olddb&quot;)</para>
 
-          <programlisting>$ pg_dump -Fc olddb &#62; olddb.dump</programlisting>
+          <programlisting>$ pg_dump -Fc olddb &gt; olddb.dump</programlisting>
 
           <para>Restore the dump contextually upgrading postgis into a new
-          database. The new database doesn&#39;t have to exist.
+          database. The new database doesn't have to exist.
           postgis_restore accepts createdb parameters after the dump file
           name, and that can for instance be used if you are using a
-          non-default character encoding for your database. Let&#39;s call it
-          &#34;newdb&#34;, with UNICODE as the character encoding:</para>
+          non-default character encoding for your database. Let's call it
+          &quot;newdb&quot;, with UNICODE as the character encoding:</para>
 
-          <programlisting>$ sh utils/postgis_restore.pl lwpostgis.sql newdb
-          olddb.dump -E=UNICODE &#62; restore.log</programlisting>
+          <programlisting>$ sh utils/postgis_restore.pl lwpostgis.sql newdb olddb.dump -E=UNICODE &gt; restore.log</programlisting>
 
           <para>Check that all restored dump objects really had to be restored
           from dump and do not conflict with the ones defined in lwpostgis.sql</para>
 
           <programlisting>$ grep ^KEEPING restore.log | less</programlisting>
 
-          <para>If upgrading from PostgreSQL &#60; 8.0 to &#62;= 8.0 you might
+          <para>If upgrading from PostgreSQL &lt; 8.0 to &gt;= 8.0 you might
           want to drop the attrelid, varattnum and stats columns in the
           geometry_columns table, which are no-more needed. Keeping them
-          won&#39;t hurt. DROPPING THEM WHEN REALLY NEEDED WILL DO HURT !</para>
+          won't hurt. DROPPING THEM WHEN REALLY NEEDED WILL DO HURT !</para>
 
-          <programlisting>$ psql newdb -c &#34;ALTER TABLE geometry_columns
-          DROP attrelid&#34; $ psql newdb -c &#34;ALTER TABLE geometry_columns
-          DROP varattnum&#34; $ psql newdb -c &#34;ALTER TABLE
-          geometry_columns DROP stats&#34;</programlisting>
+          <programlisting>$ psql newdb -c &quot;ALTER TABLE geometry_columns DROP attrelid&quot; 
+$ psql newdb -c &quot;ALTER TABLE geometry_columns DROP varattnum&quot; 
+$ psql newdb -c &quot;ALTER TABLE geometry_columns DROP stats&quot;</programlisting>
 
           <para>spatial_ref_sys table is restore from the dump, to ensure your
           custom additions are kept, but the distributed one might contain
@@ -457,8 +451,10 @@
           to backup them before upgrading the table. Replace of it with the
           new one is done like this:</para>
 
-          <programlisting>$ psql newdb newdb=&#62; delete from
-          spatial_ref_sys; DROP newdb=&#62; \i spatial_ref_sys.sql</programlisting>
+          <programlisting>$ psql newdb 
+newdb=&gt; drop spatial_ref_sys; 
+DROP 
+newdb=&gt; \i spatial_ref_sys.sql</programlisting>
         </sect3>
       </sect2>
 
@@ -466,7 +462,7 @@
         <title>Common Problems</title>
 
         <para>There are several things to check when your installation or
-        upgrade doesn&#39;t go as you expected.</para>
+        upgrade doesn't go as you expected.</para>
 
         <orderedlist>
           <listitem>
@@ -557,8 +553,9 @@
       <para>The data loader and dumper are built and installed automatically
       as part of the PostGIS build. To build and install them manually:</para>
 
-      <programlisting># cd postgis-@@LAST_RELEASE_VERSION@@/loader # make #
-      make install</programlisting>
+      <programlisting># cd postgis-@@LAST_RELEASE_VERSION@@/loader 
+# make 
+# make install</programlisting>
 
       <para>The loader is called <filename>shp2pgsql</filename> and converts
       ESRI Shape files into SQL suitable for loading in PostGIS/PostgreSQL.
@@ -591,12 +588,11 @@
 
         <answer>
           <para>First, you need to create a table with a column of type
-          &#34;geometry&#34; to hold your GIS data. Connect to your database
+          &quot;geometry&quot; to hold your GIS data. Connect to your database
           with <filename>psql</filename> and try the following SQL:</para>
 
           <programlisting>CREATE TABLE gtest ( ID int4, NAME varchar(20) );
-          SELECT AddGeometryColumn(&#39;&#39;,
-          &#39;gtest&#39;,&#39;geom&#39;,-1,&#39;LINESTRING&#39;,2);</programlisting>
+SELECT AddGeometryColumn('', 'gtest','geom',-1,'LINESTRING',2);</programlisting>
 
           <para>If the geometry column addition fails, you probably have not
           loaded the PostGIS functions and objects into this database. See the
@@ -604,11 +600,14 @@
 
           <para>Then, you can insert a geometry into the table using a SQL
           insert statement. The GIS object itself is formatted using the
-          OpenGIS Consortium &#34;well-known text&#34; format:</para>
+          OpenGIS Consortium &quot;well-known text&quot; format:</para>
 
-          <programlisting>INSERT INTO gtest (ID, NAME, GEOM) VALUES (1,
-          &#39;First Geometry&#39;, GeomFromText(&#39;LINESTRING(2 3,4 5,6 5,7
-          8)&#39;, -1));</programlisting>
+          <programlisting>INSERT INTO gtest (ID, NAME, GEOM) 
+VALUES (
+  1, 
+  'First Geometry', 
+  GeomFromText('LINESTRING(2 3,4 5,6 5,7 8)', -1)
+);</programlisting>
 
           <para>For more information about other GIS objects, see the <link
           linkend="RefObject">object reference</link>.</para>
@@ -619,9 +618,10 @@
 
           <para>The return value should look something like this:</para>
 
-          <programlisting>id | name | geom
-          ----+----------------+----------------------------- 1 | First
-          Geometry | LINESTRING(2 3,4 5,6 5,7 8) (1 row)</programlisting>
+          <programlisting> id | name           | geom
+----+----------------+-----------------------------
+  1 | First Geometry | LINESTRING(2 3,4 5,6 5,7 8) 
+(1 row)</programlisting>
         </answer>
       </qandaentry>
 
@@ -639,11 +639,11 @@
           index you can make use of; and, are you doing expensive calculations
           on a large number of geometries.</para>
 
-          <para>In general, you will want to use the &#34;intersects
-          operator&#34; (&#38;&#38;) which tests whether the bounding boxes of
-          features intersect. The reason the &#38;&#38; operator is useful is
+          <para>In general, you will want to use the &quot;intersects
+          operator&quot; (&amp;&amp;) which tests whether the bounding boxes of
+          features intersect. The reason the &amp;&amp; operator is useful is
           because if a spatial index is available to speed up the test, the
-          &#38;&#38; operator will make use of this. This can make queries
+          &amp;&amp; operator will make use of this. This can make queries
           much much faster.</para>
 
           <para>You will also make use of spatial functions, such as
@@ -655,9 +655,12 @@
           <emphasis>might</emphasis> meet the condition of interest. The
           spatial functions are then use to test the condition exactly.</para>
 
-          <programlisting>SELECT id, the_geom FROM thetable WHERE the_geom
-          &#38;&#38; &#39;POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))&#39; AND
-          Contains(the_geom,&#39;POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))&#39;;</programlisting>
+          <programlisting>SELECT id, the_geom 
+FROM thetable 
+WHERE 
+  the_geom &amp;&amp; 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))' 
+AND
+  _ST_Contains(the_geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');</programlisting>
         </answer>
       </qandaentry>
 
@@ -668,16 +671,15 @@
 
         <answer>
           <para>Fast queries on large tables is the <emphasis>raison
-          d&#39;etre</emphasis> of spatial databases (along with transaction
+          d'etre</emphasis> of spatial databases (along with transaction
           support) so having a good index is important.</para>
 
           <para>To build a spatial index on a table with a <varname>geometry</varname>
-          column, use the &#34;CREATE INDEX&#34; function as follows:</para>
+          column, use the &quot;CREATE INDEX&quot; function as follows:</para>
 
-          <programlisting>CREATE INDEX [indexname] ON [tablename] USING GIST (
-          [geometrycolumn] );</programlisting>
+          <programlisting>CREATE INDEX [indexname] ON [tablename] USING GIST ( [geometrycolumn] );</programlisting>
 
-          <para>The &#34;USING GIST&#34; option tells the server to use a GiST
+          <para>The &quot;USING GIST&quot; option tells the server to use a GiST
           (Generalized Search Tree) index.</para>
 
           <note>
@@ -688,7 +690,7 @@
 
           <para>You should also ensure that the PostgreSQL query planner has
           enough information about your index to make rational decisions about
-          when to use it. To do this, you have to &#34;gather statistics&#34;
+          when to use it. To do this, you have to &quot;gather statistics&quot;
           on your geometry tables.</para>
 
           <para>For PostgreSQL 8.0.x and greater, just run the
@@ -701,7 +703,7 @@
 
       <qandaentry>
         <question>
-          <para>Why aren&#39;t PostgreSQL R-Tree indexes supported?</para>
+          <para>Why aren't PostgreSQL R-Tree indexes supported?</para>
         </question>
 
         <answer>
@@ -720,12 +722,12 @@
             <listitem>
               <para>R-Tree indexes in PostgreSQL cannot handle features which
               are larger than 8K in size. GiST indexes can, using the
-              &#34;lossy&#34; trick of substituting the bounding box for the
+              &quot;lossy&quot; trick of substituting the bounding box for the
               feature itself.</para>
             </listitem>
 
             <listitem>
-              <para>R-Tree indexes in PostgreSQL are not &#34;null safe&#34;,
+              <para>R-Tree indexes in PostgreSQL are not &quot;null safe&quot;,
               so building an index on a geometry column which contains null
               geometries will fail.</para>
             </listitem>
@@ -768,19 +770,17 @@
           bounding box test uses the spatial index, giving fast access to a
           subset of data which the radius test is then applied to.</para>
 
-          <para>The <varname>Expand()</varname> function is a handy way of
-          enlarging a bounding box to allow an index search of a region of
-          interest. The combination of a fast access index clause and a slower
-          accurate distance test provides the best combination of speed and
-          precision for this query.</para>
+          <para>The <varname>ST_DWithin(geometry, geometry, distance)</varname> 
+          function is a handy way of performing an indexed distance search.  
+          It works by creating a search rectangle large enough to enclose the
+          distance radius, then performing an exact distance search on the 
+          indexed subset of results.</para>
 
           <para>For example, to find all objects with 100 meters of POINT(1000
           1000) the following query would work well:</para>
 
-          <programlisting>SELECT * FROM GEOTABLE WHERE GEOCOLUMN &#38;&#38;
-          Expand(GeomFromText(&#39;POINT(1000 1000)&#39;,-1),100) AND
-          Distance(GeomFromText(&#39;POINT(1000 1000)&#39;,-1),GEOCOLUMN)
-          &#60; 100;</programlisting>
+          <programlisting>SELECT * FROM geotable 
+  WHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);</programlisting>
         </answer>
       </qandaentry>
 
@@ -796,7 +796,7 @@
           them. Once that is done, a reprojection is as simple as referring to
           the desired destination SRID.</para>
 
-          <programlisting>SELECT Transform(GEOM,4269) FROM GEOTABLE;</programlisting>
+          <programlisting>SELECT ST_Transform(the_geom,4269) FROM geotable;</programlisting>
         </answer>
       </qandaentry>
     </qandaset>
@@ -809,9 +809,9 @@
       <title>GIS Objects</title>
 
       <para>The GIS objects supported by PostGIS are a superset of the
-      &#34;Simple Features&#34; defined by the OpenGIS Consortium (OGC). As of
+      &quot;Simple Features&quot; defined by the OpenGIS Consortium (OGC). As of
       version 0.9, PostGIS supports all the objects and functions specified in
-      the OGC &#34;Simple Features for SQL&#34; specification.</para>
+      the OGC &quot;Simple Features for SQL&quot; specification.</para>
 
       <para>PostGIS extends the standard with support for 3DZ,3DM and 4D
       coordinates.</para>
@@ -867,16 +867,16 @@
         <para>Input/Output of these formats are available using the following
         interfaces:</para>
 
-        <programlisting>bytea WKB = asBinary(geometry); text WKT =
-        asText(geometry); geometry = GeomFromWKB(bytea WKB, SRID); geometry =
-        GeometryFromText(text WKT, SRID);</programlisting>
+        <programlisting>bytea WKB = asBinary(geometry); 
+text WKT = asText(geometry); 
+geometry = GeomFromWKB(bytea WKB, SRID); 
+geometry = GeometryFromText(text WKT, SRID);</programlisting>
 
         <para>For example, a valid insert statement to create and insert an
         OGC spatial object would be:</para>
 
-        <programlisting>INSERT INTO SPATIALTABLE ( THE_GEOM, THE_NAME ) VALUES
-        ( GeomFromText(&#39;POINT(-126.4 45.32)&#39;, 312), &#39;A Place&#39;
-        )</programlisting>
+        <programlisting>INSERT INTO geotable ( the_geom, the_name )
+  VALUES ( GeomFromText('POINT(-126.4 45.32)', 312), 'A Place');</programlisting>
       </sect2>
 
       <sect2>
@@ -940,30 +940,37 @@
         <para>Input/Output of these formats are available using the following
         interfaces:</para>
 
-        <programlisting>bytea EWKB = asEWKB(geometry); text EWKT =
-        asEWKT(geometry); geometry = GeomFromEWKB(bytea EWKB); geometry =
-        GeomFromEWKT(text EWKT);</programlisting>
+        <programlisting>bytea EWKB = asEWKB(geometry); 
+text EWKT = asEWKT(geometry); 
+geometry = GeomFromEWKB(bytea EWKB); 
+geometry = GeomFromEWKT(text EWKT);</programlisting>
 
         <para>For example, a valid insert statement to create and insert a
         PostGIS spatial object would be:</para>
 
-        <programlisting>INSERT INTO SPATIALTABLE ( THE_GEOM, THE_NAME ) VALUES
-        ( GeomFromEWKT(&#39;SRID=312;POINTM(-126.4 45.32 15)&#39;), &#39;A
-        Place&#39; )</programlisting>
+        <programlisting>INSERT INTO geotable ( the_geom, the_name ) 
+  VALUES ( GeomFromEWKT('SRID=312;POINTM(-126.4 45.32 15)'), 'A Place' )</programlisting>
 
-        <para>The &#34;canonical forms&#34; of a PostgreSQL type are the
+        <para>The &quot;canonical forms&quot; of a PostgreSQL type are the
         representations you get with a simple query (without any function
         call) and the one which is guaranteed to be accepted with a simple
-        insert, update or copy. For the postgis &#39;geometry&#39; type these
-        are: <programlisting> - Output - binary: EWKB ascii: HEXEWKB (EWKB in
-        hex form) - Input - binary: EWKB ascii: HEXEWKB|EWKT </programlisting></para>
+        insert, update or copy. For the postgis 'geometry' type these
+        are: <programlisting>- Output 
+  - binary: EWKB 
+    ascii: HEXEWKB (EWKB in hex form) 
+- Input 
+  - binary: EWKB 
+    ascii: HEXEWKB|EWKT </programlisting></para>
 
         <para>For example this statement reads EWKT and returns HEXEWKB in the
         process of canonical ascii input/output:</para>
 
-        <programlisting>=# SELECT &#39;SRID=4;POINT(0 0)&#39;::geometry;
-        geometry ----------------------------------------------------
-        01010000200400000000000000000000000000000000000000 (1 row)</programlisting>
+        <programlisting>=# SELECT 'SRID=4;POINT(0 0)'::geometry;
+
+geometry 
+----------------------------------------------------
+01010000200400000000000000000000000000000000000000 
+(1 row)</programlisting>
       </sect2>
 
       <sect2>
@@ -1020,7 +1027,7 @@
     <sect1>
       <title>Using OpenGIS Standards</title>
 
-      <para>The OpenGIS &#34;Simple Features Specification for SQL&#34;
+      <para>The OpenGIS &quot;Simple Features Specification for SQL&quot;
       defines standard GIS object types, the functions required to manipulate
       them, and a set of meta-data tables. In order to ensure that meta-data
       remain consistent, operations such as creating and removing a spatial
@@ -1037,9 +1044,13 @@
         <para>The <varname>SPATIAL_REF_SYS</varname> table definition is as
         follows:</para>
 
-        <programlisting>CREATE TABLE SPATIAL_REF_SYS ( SRID INTEGER NOT NULL
-        PRIMARY KEY, AUTH_NAME VARCHAR(256), AUTH_SRID INTEGER, SRTEXT
-        VARCHAR(2048), PROJ4TEXT VARCHAR(2048) )</programlisting>
+        <programlisting>CREATE TABLE spatial_ref_sys ( 
+  srid       INTEGER NOT NULL PRIMARY KEY, 
+  auth_name  VARCHAR(256), 
+  auth_srid  INTEGER, 
+  srtext     VARCHAR(2048), 
+  proj4text  VARCHAR(2048) 
+)</programlisting>
 
         <para>The <varname>SPATIAL_REF_SYS</varname> columns are as follows:</para>
 
@@ -1058,7 +1069,7 @@
 
             <listitem>
               <para>The name of the standard or standards body that is being
-              cited for this reference system. For example, &#34;EPSG&#34;
+              cited for this reference system. For example, &quot;EPSG&quot;
               would be a valid <varname>AUTH_NAME</varname>.</para>
             </listitem>
           </varlistentry>
@@ -1080,25 +1091,29 @@
               <para>The Well-Known Text representation of the Spatial
               Reference System. An example of a WKT SRS representation is:</para>
 
-              <programlisting>PROJCS[&#34;NAD83 / UTM Zone 10N&#34;,
-              GEOGCS[&#34;NAD83&#34;,
-              DATUM[&#34;North_American_Datum_1983&#34;, SPHEROID[&#34;GRS
-              1980&#34;,6378137,298.257222101] ],
-              PRIMEM[&#34;Greenwich&#34;,0],
-              UNIT[&#34;degree&#34;,0.0174532925199433] ],
-              PROJECTION[&#34;Transverse_Mercator&#34;],
-              PARAMETER[&#34;latitude_of_origin&#34;,0],
-              PARAMETER[&#34;central_meridian&#34;,-123],
-              PARAMETER[&#34;scale_factor&#34;,0.9996],
-              PARAMETER[&#34;false_easting&#34;,500000],
-              PARAMETER[&#34;false_northing&#34;,0], UNIT[&#34;metre&#34;,1] ]</programlisting>
+              <programlisting>PROJCS[&quot;NAD83 / UTM Zone 10N&quot;,
+  GEOGCS[&quot;NAD83&quot;,
+    DATUM[&quot;North_American_Datum_1983&quot;, 
+      SPHEROID[&quot;GRS 1980&quot;,6378137,298.257222101] 
+    ],
+    PRIMEM[&quot;Greenwich&quot;,0],
+    UNIT[&quot;degree&quot;,0.0174532925199433] 
+  ],
+  PROJECTION[&quot;Transverse_Mercator&quot;],
+  PARAMETER[&quot;latitude_of_origin&quot;,0],
+  PARAMETER[&quot;central_meridian&quot;,-123],
+  PARAMETER[&quot;scale_factor&quot;,0.9996],
+  PARAMETER[&quot;false_easting&quot;,500000],
+  PARAMETER[&quot;false_northing&quot;,0], 
+  UNIT[&quot;metre&quot;,1] 
+]</programlisting>
 
               <para>For a listing of EPSG projection codes and their
               corresponding WKT representations, see <ulink
               url="http://www.opengis.org/techno/interop/EPSG2WKT.TXT">http://www.opengis.org/techno/interop/EPSG2WKT.TXT</ulink>.
               For a discussion of WKT in general, see the OpenGIS
-              &#34;Coordinate Transformation Services Implementation
-              Specification&#34; at <ulink
+              &quot;Coordinate Transformation Services Implementation
+              Specification&quot; at <ulink
               url="http://www.opengis.org/techno/specs.htm">http://www.opengis.org/techno/specs.htm</ulink>.
               For information on the European Petroleum Survey Group (EPSG)
               and their database of spatial reference systems, see <ulink
@@ -1115,8 +1130,7 @@
               column contains the Proj4 coordinate definition string for a
               particular SRID. For example:</para>
 
-              <programlisting>+proj=utm +zone=10 +ellps=clrk66 +datum=NAD27
-              +units=m</programlisting>
+              <programlisting>+proj=utm +zone=10 +ellps=clrk66 +datum=NAD27 +units=m</programlisting>
 
               <para>For more information about, see the Proj4 web site at
               <ulink url="http://www.remotesensing.org/proj">http://www.remotesensing.org/proj</ulink>.
@@ -1134,11 +1148,15 @@
         <para>The <varname>GEOMETRY_COLUMNS</varname> table definition is as
         follows:</para>
 
-        <programlisting>CREATE TABLE GEOMETRY_COLUMNS ( F_TABLE_CATALOG
-        VARCHAR(256) NOT NULL, F_TABLE_SCHEMA VARCHAR(256) NOT NULL,
-        F_TABLE_NAME VARCHAR(256) NOT NULL, F_GEOMETRY_COLUMN VARCHAR(256) NOT
-        NULL, COORD_DIMENSION INTEGER NOT NULL, SRID INTEGER NOT NULL, TYPE
-        VARCHAR(30) NOT NULL )</programlisting>
+        <programlisting>CREATE TABLE geometry_columns ( 
+  f_table_catalog    VARRCHAR(256) NOT NULL, 
+  f_table_schema     VARCHAR(256) NOT NULL,
+  f_table_nam        VARCHAR(256) NOT NULL, 
+  f_geometry_column  VARCHAR(256) NOT NULL, 
+  coord_dimension    INTEGER NOT NULL, 
+  srid               INTEGER NOT NULL, 
+  type               VARCHAR(30) NOT NULL 
+)</programlisting>
 
         <para>The columns are as follows:</para>
 
@@ -1148,10 +1166,10 @@
 
             <listitem>
               <para>The fully qualified name of the feature table containing
-              the geometry column. Note that the terms &#34;catalog&#34; and
-              &#34;schema&#34; are Oracle-ish. There is not PostgreSQL
-              analogue of &#34;catalog&#34; so that column is left blank --
-              for &#34;schema&#34; the PostgreSQL schema name is used (<varname>public</varname>
+              the geometry column. Note that the terms &quot;catalog&quot; and
+              &quot;schema&quot; are Oracle-ish. There is not PostgreSQL
+              analogue of &quot;catalog&quot; so that column is left blank --
+              for &quot;schema&quot; the PostgreSQL schema name is used (<varname>public</varname>
               is the default).</para>
             </listitem>
           </varlistentry>
@@ -1193,7 +1211,7 @@
               corresponding XYM versions POINTM, LINESTRINGM, POLYGONM,
               MULTIPOINTM, MULTILINESTRINGM, MULTIPOLYGONM,
               GEOMETRYCOLLECTIONM. For heterogeneous (mixed-type) collections,
-              you can use &#34;GEOMETRY&#34; as the type.</para>
+              you can use &quot;GEOMETRY&quot; as the type.</para>
 
               <note>
                 <para>This attribute is (probably) not part of the OpenGIS
@@ -1219,21 +1237,30 @@
 
           <listitem>
             <para>Add a spatial column to the table using the OpenGIS
-            &#34;AddGeometryColumn&#34; function.</para>
+            &quot;AddGeometryColumn&quot; function.</para>
 
-            <para>The syntax is: <programlisting>AddGeometryColumn(&#60;schema_name&#62;,
-            &#60;table_name&#62;, &#60;column_name&#62;, &#60;srid&#62;,
-            &#60;type&#62;, &#60;dimension&#62;)</programlisting> Or, using
-            current schema: <programlisting>AddGeometryColumn(&#60;table_name&#62;,
-            &#60;column_name&#62;, &#60;srid&#62;, &#60;type&#62;,
-            &#60;dimension&#62;)</programlisting></para>
+            <para>The syntax is: <programlisting>AddGeometryColumn(
+  &lt;schema_name&gt;,
+  &lt;table_name&gt;, 
+  &lt;column_name&gt;, 
+  &lt;srid&gt;,
+  &lt;type&gt;, 
+  &lt;dimension&gt;
+)</programlisting> Or, using
+            current schema: <programlisting>AddGeometryColumn(
+  &lt;table_name&gt;,
+  &lt;column_name&gt;, 
+  &lt;srid&gt;, 
+  &lt;type&gt;,
+  &lt;dimension&gt;
+)</programlisting></para>
 
             <para>Example1: <command>SELECT
-            AddGeometryColumn(&#39;public&#39;, &#39;roads_geom&#39;,
-            &#39;geom&#39;, 423, &#39;LINESTRING&#39;, 2)</command></para>
+            AddGeometryColumn('public', 'roads_geom',
+            'geom', 423, 'LINESTRING', 2)</command></para>
 
             <para>Example2: <command>SELECT AddGeometryColumn(
-            &#39;roads_geom&#39;, &#39;geom&#39;, 423, &#39;LINESTRING&#39;,
+            'roads_geom', 'geom', 423, 'LINESTRING',
             2)</command></para>
           </listitem>
         </itemizedlist>
@@ -1241,17 +1268,22 @@
         <para>Here is an example of SQL used to create a table and add a
         spatial column (assuming that an SRID of 128 exists already):</para>
 
-        <programlisting>CREATE TABLE parks ( PARK_ID int4, PARK_NAME
-        varchar(128), PARK_DATE date, PARK_TYPE varchar(2) ); SELECT
-        AddGeometryColumn(&#39;parks&#39;, &#39;park_geom&#39;, 128,
-        &#39;MULTIPOLYGON&#39;, 2 );</programlisting>
+        <programlisting>CREATE TABLE parks ( 
+  park_id    INTEGER, 
+  park_name  VARCHAR,
+  park_date  DATE,
+  park_type  VARCHAR
+);
+SELECT AddGeometryColumn('parks', 'park_geom', 128, 'MULTIPOLYGON', 2 );</programlisting>
 
-        <para>Here is another example, using the generic &#34;geometry&#34;
+        <para>Here is another example, using the generic &quot;geometry&quot;
         type and the undefined SRID value of -1:</para>
 
-        <programlisting>CREATE TABLE roads ( ROAD_ID int4, ROAD_NAME
-        varchar(128) ); SELECT AddGeometryColumn( &#39;roads&#39;,
-        &#39;roads_geom&#39;, -1, &#39;GEOMETRY&#39;, 3 );</programlisting>
+        <programlisting>CREATE TABLE roads ( 
+  road_id INTEGER,
+  road_name VARCHAR
+);
+SELECT AddGeometryColumn( 'roads', 'roads_geom', -1, 'GEOMETRY', 3 );</programlisting>
       </sect2>
 
       <sect2>
@@ -1262,9 +1294,12 @@
         OpenGIS Simple Feature Specification. To check validity of geometries
         you can use the <link linkend="IsValid">IsValid()</link> function:</para>
 
-        <programlisting>gisdb=# select isvalid(&#39;LINESTRING(0 0, 1
-        1)&#39;), isvalid(&#39;LINESTRING(0 0,0 0)&#39;); isvalid | isvalid
-        ---------+--------- t | f</programlisting>
+        <programlisting> gisdb=# select isvalid('LINESTRING(0 0, 1 1)'), 
+        isvalid('LINESTRING(0 0,0 0)'); 
+
+ isvalid | isvalid
+---------+--------- 
+       t |       f</programlisting>
 
         <para>By default, PostGIS does not apply this validity check on
         geometry input, because testing for validity needs lots of CPU time
@@ -1272,12 +1307,13 @@
         data sources, you can manually enforce such a check to your tables by
         adding a check constraint:</para>
 
-        <programlisting>ALTER TABLE mytable ADD CONSTRAINT
-        geometry_valid_check CHECK (isvalid(the_geom));</programlisting>
+        <programlisting>ALTER TABLE mytable 
+  ADD CONSTRAINT geometry_valid_check 
+    CHECK (isvalid(the_geom));</programlisting>
 
-        <para>If you encounter any strange error messages such as &#34;GEOS
-        Intersection() threw an error!&#34; or &#34;JTS Intersection() threw
-        an error!&#34; when calling PostGIS functions with valid input
+        <para>If you encounter any strange error messages such as &quot;GEOS
+        Intersection() threw an error!&quot; or &quot;JTS Intersection() threw
+        an error!&quot; when calling PostGIS functions with valid input
         geometries, you likely found an error in either PostGIS or one of the
         libraries it uses, and you should contact the PostGIS developers. The
         same is true if a PostGIS function returns an invalid geometry for
@@ -1285,7 +1321,7 @@
 
         <note>
           <para>Strictly compliant OGC geometries cannot have Z or M values.
-          The <link linkend="IsValid">IsValid()</link> function won&#39;t
+          The <link linkend="IsValid">IsValid()</link> function won't
           consider higher dimensioned geometries invalid! Invocations of <link
           linkend="AddGeometryColumn">AddGeometryColumn()</link> will add a
           constraint checking geometry dimensions, so it is enough to specify
@@ -1308,30 +1344,29 @@
         <para>If you can convert your data to a text representation, then
         using formatted SQL might be the easiest way to get your data into
         PostGIS. As with Oracle and other SQL databases, data can be bulk
-        loaded by piping a large text file full of SQL &#34;INSERT&#34;
+        loaded by piping a large text file full of SQL &quot;INSERT&quot;
         statements into the SQL terminal monitor.</para>
 
         <para>A data upload file (<filename>roads.sql</filename> for example)
         might look like this:</para>
 
-        <programlisting>BEGIN; INSERT INTO ROADS_GEOM (ID,GEOM,NAME ) VALUES
-        (1,GeomFromText(&#39;LINESTRING(191232 243118,191108
-        243242)&#39;,-1),&#39;Jeff Rd&#39;); INSERT INTO ROADS_GEOM
-        (ID,GEOM,NAME ) VALUES (2,GeomFromText(&#39;LINESTRING(189141
-        244158,189265 244817)&#39;,-1),&#39;Geordie Rd&#39;); INSERT INTO
-        ROADS_GEOM (ID,GEOM,NAME ) VALUES
-        (3,GeomFromText(&#39;LINESTRING(192783 228138,192612
-        229814)&#39;,-1),&#39;Paul St&#39;); INSERT INTO ROADS_GEOM
-        (ID,GEOM,NAME ) VALUES (4,GeomFromText(&#39;LINESTRING(189412
-        252431,189631 259122)&#39;,-1),&#39;Graeme Ave&#39;); INSERT INTO
-        ROADS_GEOM (ID,GEOM,NAME ) VALUES
-        (5,GeomFromText(&#39;LINESTRING(190131 224148,190871
-        228134)&#39;,-1),&#39;Phil Tce&#39;); INSERT INTO ROADS_GEOM
-        (ID,GEOM,NAME ) VALUES (6,GeomFromText(&#39;LINESTRING(198231
-        263418,198213 268322)&#39;,-1),&#39;Dave Cres&#39;); COMMIT;</programlisting>
+        <programlisting>BEGIN; 
+INSERT INTO roads (road_id, roads_geom, road_name) 
+  VALUES (1,GeomFromText('LINESTRING(191232 243118,191108 243242)',-1),'Jeff Rd'); 
+INSERT INTO roads (road_id, roads_geom, road_name) 
+  VALUES (2,GeomFromText('LINESTRING(189141 244158,189265 244817)',-1),'Geordie Rd'); 
+INSERT INTO roads (road_id, roads_geom, road_name) 
+  VALUES (3,GeomFromText('LINESTRING(192783 228138,192612 229814)',-1),'Paul St'); 
+INSERT INTO roads (road_id, roads_geom, road_name) 
+  VALUES (4,GeomFromText('LINESTRING(189412 252431,189631 259122)',-1),'Graeme Ave'); 
+INSERT INTO roads (road_id, roads_geom, road_name) 
+  VALUES (5,GeomFromText('LINESTRING(190131 224148,190871 228134)',-1),'Phil Tce'); 
+INSERT INTO roads (road_id, roads_geom, road_name) 
+  VALUES (6,GeomFromText('LINESTRING(198231 263418,198213 268322)',-1),'Dave Cres'); 
+COMMIT;</programlisting>
 
         <para>The data file can be piped into PostgreSQL very easily using the
-        &#34;psql&#34; SQL terminal monitor:</para>
+        &quot;psql&quot; SQL terminal monitor:</para>
 
         <programlisting>psql -d [database] -f roads.sql</programlisting>
       </sect2>
@@ -1387,15 +1422,15 @@
             <term>-D</term>
 
             <listitem>
-              <para>Use the PostgreSQL &#34;dump&#34; format for the output
+              <para>Use the PostgreSQL &quot;dump&quot; format for the output
               data. This can be combined with -a, -c and -d. It is much faster
-              to load than the default &#34;insert&#34; SQL format. Use this
+              to load than the default &quot;insert&quot; SQL format. Use this
               for very large data sets.</para>
             </listitem>
           </varlistentry>
 
           <varlistentry>
-            <term>-s &#60;SRID&#62;</term>
+            <term>-s &lt;SRID&gt;</term>
 
             <listitem>
               <para>Creates and populates the geometry tables with the
@@ -1407,7 +1442,7 @@
             <term>-k</term>
 
             <listitem>
-              <para>Keep identifiers&#39; case (column, schema and
+              <para>Keep identifiers' case (column, schema and
               attributes). Note that attributes in Shapefile are all
               UPPERCASE.</para>
             </listitem>
@@ -1442,7 +1477,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>-W &#60;encoding&#62;</term>
+            <term>-W &lt;encoding&gt;</term>
 
             <listitem>
               <para>Specify encoding of the input data (dbf file). When used,
@@ -1460,14 +1495,13 @@
         <para>An example session using the loader to create an input file and
         uploading it might look like this:</para>
 
-        <programlisting># shp2pgsql shaperoads myschema.roadstable &#62;
-        roads.sql # psql -d roadsdb -f roads.sql</programlisting>
+        <programlisting># shp2pgsql shaperoads myschema.roadstable &gt; roads.sql 
+# psql -d roadsdb -f roads.sql</programlisting>
 
         <para>A conversion and upload can be done all in one step using UNIX
         pipes:</para>
 
-        <programlisting># shp2pgsql shaperoads myschema.roadstable | psql -d
-        roadsdb</programlisting>
+        <programlisting># shp2pgsql shaperoads myschema.roadstable | psql -d roadsdb</programlisting>
       </sect2>
     </sect1>
 
@@ -1485,16 +1519,18 @@
         database is to use a SQL select query and dump the resulting columns
         into a parsable text file:</para>
 
-        <programlisting>db=# SELECT id, AsText(geom) AS geom, name FROM
-        ROADS_GEOM; id | geom | name
-        ---+-----------------------------------------+----------- 1 |
-        LINESTRING(191232 243118,191108 243242) | Jeff Rd 2 |
-        LINESTRING(189141 244158,189265 244817) | Geordie Rd 3 |
-        LINESTRING(192783 228138,192612 229814) | Paul St 4 |
-        LINESTRING(189412 252431,189631 259122) | Graeme Ave 5 |
-        LINESTRING(190131 224148,190871 228134) | Phil Tce 6 |
-        LINESTRING(198231 263418,198213 268322) | Dave Cres 7 |
-        LINESTRING(218421 284121,224123 241231) | Chris Way (6 rows)</programlisting>
+        <programlisting>db=# SELECT road_id, AsText(road_geom) AS geom, road_name FROM roads; 
+
+road_id | geom                                    | road_name
+--------+-----------------------------------------+----------- 
+      1 | LINESTRING(191232 243118,191108 243242) | Jeff Rd 
+      2 | LINESTRING(189141 244158,189265 244817) | Geordie Rd 
+      3 | LINESTRING(192783 228138,192612 229814) | Paul St 
+      4 | LINESTRING(189412 252431,189631 259122) | Graeme Ave
+      5 | LINESTRING(190131 224148,190871 228134) | Phil Tce
+      6 | LINESTRING(198231 263418,198213 268322) | Dave Cres
+      7 | LINESTRING(218421 284121,224123 241231) | Chris Way 
+(6 rows)</programlisting>
 
         <para>However, there will be times when some kind of restriction is
         necessary to cut down the number of fields returned. In the case of
@@ -1504,7 +1540,7 @@
 
         <variablelist>
           <varlistentry>
-            <term>&#38;&#38;</term>
+            <term>&amp;&amp;</term>
 
             <listitem>
               <para>This operator tells whether the bounding box of one
@@ -1517,8 +1553,8 @@
 
             <listitem>
               <para>This operators tests whether two geometries are
-              geometrically identical. For example, if &#39;POLYGON((0 0,1 1,1
-              0,0 0))&#39; is the same as &#39;POLYGON((0 0,1 1,1 0,0 0))&#39;
+              geometrically identical. For example, if 'POLYGON((0 0,1 1,1
+              0,0 0))' is the same as 'POLYGON((0 0,1 1,1 0,0 0))'
               (it is).</para>
             </listitem>
           </varlistentry>
@@ -1536,36 +1572,38 @@
         <para>Next, you can use these operators in queries. Note that when
         specifying geometries and boxes on the SQL command line, you must
         explicitly turn the string representations into geometries by using
-        the &#34;GeomFromText()&#34; function. So, for example:</para>
+        the &quot;GeomFromText()&quot; function. So, for example:</para>
 
-        <programlisting>SELECT ID, NAME FROM ROADS_GEOM WHERE GEOM ~=
-        GeomFromText(&#39;LINESTRING(191232 243118,191108 243242)&#39;,-1);</programlisting>
+        <programlisting>SELECT road_id, road_name 
+  FROM roads 
+  WHERE roads_geom ~= GeomFromText('LINESTRING(191232 243118,191108 243242)',-1);</programlisting>
 
         <para>The above query would return the single record from the
-        &#34;ROADS_GEOM&#34; table in which the geometry was equal to that
+        &quot;ROADS_GEOM&quot; table in which the geometry was equal to that
         value.</para>
 
-        <para>When using the &#34;&#38;&#38;&#34; operator, you can specify
+        <para>When using the &quot;&amp;&amp;&quot; operator, you can specify
         either a BOX3D as the comparison feature or a GEOMETRY. When you
         specify a GEOMETRY, however, its bounding box will be used for the
         comparison.</para>
 
-        <programlisting>SELECT ID, NAME FROM ROADS_GEOM WHERE GEOM &#38;&#38;
-        GeomFromText(&#39;POLYGON((191232 243117,191232 243119,191234
-        243117,191232 243117))&#39;,-1);</programlisting>
+        <programlisting>SELECT road_id, road_name 
+FROM roads 
+WHERE roads_geom &amp;&amp; GeomFromText('POLYGON((...))',-1);</programlisting>
 
         <para>The above query will use the bounding box of the polygon for
         comparison purposes.</para>
 
         <para>The most common spatial query will probably be a
-        &#34;frame-based&#34; query, used by client software, like data
-        browsers and web mappers, to grab a &#34;map frame&#34; worth of data
-        for display. Using a &#34;BOX3D&#34; object for the frame, such a
+        &quot;frame-based&quot; query, used by client software, like data
+        browsers and web mappers, to grab a &quot;map frame&quot; worth of data
+        for display. Using a &quot;BOX3D&quot; object for the frame, such a
         query looks like this:</para>
 
-        <programlisting>SELECT AsText(GEOM) AS GEOM FROM ROADS_GEOM WHERE GEOM
-        &#38;&#38; SetSRID(&#39;BOX3D(191232 243117,191232
-        243119)&#39;::box3d,-1);</programlisting>
+        <programlisting>SELECT AsText(roads_geom) AS geom 
+FROM roads 
+WHERE 
+  roads_geom &amp;&amp; SetSRID('BOX3D(191232 243117,191232 243119)'::box3d,-1);</programlisting>
 
         <para>Note the use of the SRID, to specify the projection of the
         BOX3D. The value -1 is used to indicate no specified SRID.</para>
@@ -1578,17 +1616,15 @@
         directly to the database and converts a table (possibly defined by a
         query) into a shape file. The basic syntax is:</para>
 
-        <programlisting>pgsql2shp [&#60;options&#62;] &#60;database&#62;
-        [&#60;schema&#62;.]&#60;table&#62;</programlisting>
+        <programlisting>pgsql2shp [&lt;options&gt;] &lt;database&gt; [&lt;schema&gt;.]&lt;table&gt;</programlisting>
 
-        <programlisting>pgsql2shp [&#60;options&#62;] &#60;database&#62;
-        &#60;query&#62;</programlisting>
+        <programlisting>pgsql2shp [&lt;options&gt;] &lt;database&gt; &lt;query&gt;</programlisting>
 
         <para>The commandline options are:</para>
 
         <variablelist>
           <varlistentry>
-            <term>-f &#60;filename&#62;</term>
+            <term>-f &lt;filename&gt;</term>
 
             <listitem>
               <para>Write the output to a particular filename.</para>
@@ -1596,7 +1632,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>-h &#60;host&#62;</term>
+            <term>-h &lt;host&gt;</term>
 
             <listitem>
               <para>The database host to connect to.</para>
@@ -1604,7 +1640,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>-p &#60;port&#62;</term>
+            <term>-p &lt;port&gt;</term>
 
             <listitem>
               <para>The port to connect to on the database host.</para>
@@ -1612,7 +1648,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>-P &#60;password&#62;</term>
+            <term>-P &lt;password&gt;</term>
 
             <listitem>
               <para>The password to use when connecting to the database.</para>
@@ -1620,7 +1656,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>-u &#60;user&#62;</term>
+            <term>-u &lt;user&gt;</term>
 
             <listitem>
               <para>The username to use when connecting to the database.</para>
@@ -1628,7 +1664,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>-g &#60;geometry column&#62;</term>
+            <term>-g &lt;geometry column&gt;</term>
 
             <listitem>
               <para>In the case of tables with multiple geometry columns, the
@@ -1674,7 +1710,7 @@
 
       <para>Indexes are what make using a spatial database for large data sets
       possible. Without indexing, any search for a feature would require a
-      &#34;sequential scan&#34; of every record in the database. Indexing
+      &quot;sequential scan&quot; of every record in the database. Indexing
       speeds up searching by organizing the data into a search tree which can
       be quickly traversed to find a particular record. PostgreSQL supports
       three kinds of indexes by default: B-Tree indexes, R-Tree indexes, and
@@ -1697,8 +1733,8 @@
 
         <listitem>
           <para>GiST (Generalized Search Trees) indexes break up data into
-          &#34;things to one side&#34;, &#34;things which overlap&#34;,
-          &#34;things which are inside&#34; and can be used on a wide range of
+          &quot;things to one side&quot;, &quot;things which overlap&quot;,
+          &quot;things which are inside&quot; and can be used on a wide range of
           data-types, including GIS data. PostGIS uses an R-Tree index
           implemented on top of GiST to index GIS data.</para>
         </listitem>
@@ -1707,7 +1743,7 @@
       <sect2>
         <title>GiST Indexes</title>
 
-        <para>GiST stands for &#34;Generalized Search Tree&#34; and is a
+        <para>GiST stands for &quot;Generalized Search Tree&quot; and is a
         generic form of indexing. In addition to GIS indexing, GiST is used to
         speed up searches on all kinds of irregular data structures (integer
         arrays, spectral data, etc) which are not amenable to normal B-Tree
@@ -1715,14 +1751,13 @@
 
         <para>Once a GIS data table exceeds a few thousand rows, you will want
         to build an index to speed up spatial searches of the data (unless all
-        your searches are based on attributes, in which case you&#39;ll want
+        your searches are based on attributes, in which case you'll want
         to build a normal index on the attribute fields).</para>
 
-        <para>The syntax for building a GiST index on a &#34;geometry&#34;
+        <para>The syntax for building a GiST index on a &quot;geometry&quot;
         column is as follows:</para>
 
-        <para><programlisting>CREATE INDEX [indexname] ON [tablename] USING
-        GIST ( [geometryfield] GIST_GEOMETRY_OPS ); </programlisting></para>
+        <para><programlisting>CREATE INDEX [indexname] ON [tablename] USING GIST ( [geometryfield] ); </programlisting></para>
 
         <para>Building a spatial index is a computationally intensive
         exercise: on tables of around 1 million rows, on a 300MHz Solaris
@@ -1730,16 +1765,16 @@
         building an index, it is important to force PostgreSQL to collect
         table statistics, which are used to optimize query plans:</para>
 
-        <para><programlisting>VACUUM ANALYZE [table_name] [column_name]; --
-        This is only needed for PostgreSQL 7.4 installations and below SELECT
-        UPDATE_GEOMETRY_STATS([table_name], [column_name]);</programlisting></para>
+        <para><programlisting>VACUUM ANALYZE [table_name] [column_name]; 
+-- This is only needed for PostgreSQL 7.4 installations and below 
+SELECT UPDATE_GEOMETRY_STATS([table_name], [column_name]);</programlisting></para>
 
         <para>GiST indexes have two advantages over R-Tree indexes in
-        PostgreSQL. Firstly, GiST indexes are &#34;null safe&#34;, meaning
+        PostgreSQL. Firstly, GiST indexes are &quot;null safe&quot;, meaning
         they can index columns which include null values. Secondly, GiST
-        indexes support the concept of &#34;lossiness&#34; which is important
+        indexes support the concept of &quot;lossiness&quot; which is important
         when dealing with GIS objects larger than the PostgreSQL 8K page size.
-        Lossiness allows PostgreSQL to store only the &#34;important&#34; part
+        Lossiness allows PostgreSQL to store only the &quot;important&quot; part
         of an object in an index -- in the case of GIS objects, just the
         bounding box. GIS objects larger than 8K will cause R-Tree indexes to
         fail in the process of being built.</para>
@@ -1804,7 +1839,7 @@
     <sect1>
       <title>Complex Queries</title>
 
-      <para>The <emphasis>raison d&#39;etre</emphasis> of spatial database
+      <para>The <emphasis>raison d'etre</emphasis> of spatial database
       functionality is performing queries inside the database which would
       ordinarily require desktop GIS functionality. Using PostGIS effectively
       requires knowing what spatial functions are available, and ensuring that
@@ -1814,44 +1849,46 @@
         <title>Taking Advantage of Indexes</title>
 
         <para>When constructing a query it is important to remember that only
-        the bounding-box-based operators such as &#38;&#38; can take advantage
+        the bounding-box-based operators such as &amp;&amp; can take advantage
         of the GiST spatial index. Functions such as <varname>distance()</varname>
         cannot use the index to optimize their operation. For example, the
         following query would be quite slow on a large table:</para>
 
-        <programlisting>SELECT the_geom FROM geom_table WHERE distance(
-        the_geom, GeomFromText( &#39;POINT(100000 200000)&#39;, -1 ) ) &#60;
-        100</programlisting>
+        <programlisting>SELECT the_geom 
+FROM geom_table 
+WHERE ST_Distance(the_geom, GeomFromText('POINT(100000 200000)', -1)) &lt; 100</programlisting>
 
         <para>This query is selecting all the geometries in geom_table which
         are within 100 units of the point (100000, 200000). It will be slow
         because it is calculating the distance between each point in the table
-        and our specified point, ie. one <varname>distance()</varname>
+        and our specified point, ie. one <varname>ST_Distance()</varname>
         calculation for each row in the table. We can avoid this by using the
-        &#38;&#38; operator to reduce the number of distance calculations
+        &amp;&amp; operator to reduce the number of distance calculations
         required:</para>
 
-        <programlisting>SELECT the_geom FROM geom_table WHERE the_geom
-        &#38;&#38; &#39;BOX3D(90900 190900, 100100 200100)&#39;::box3d AND
-        distance( the_geom, GeomFromText( &#39;POINT(100000 200000)&#39;, -1 )
-        ) &#60; 100</programlisting>
+        <programlisting>SELECT the_geom 
+FROM geom_table 
+WHERE the_geom &amp;&amp; 'BOX3D(90900 190900, 100100 200100)'::box3d 
+  AND
+ST_Distance(the_geom, GeomFromText('POINT(100000 200000)', -1)) &lt; 100</programlisting>
 
         <para>This query selects the same geometries, but it does it in a more
         efficient way. Assuming there is a GiST index on the_geom, the query
         planner will recognize that it can use the index to reduce the number
         of rows before calculating the result of the <varname>distance()</varname>
         function. Notice that the <varname>BOX3D</varname> geometry which is
-        used in the &#38;&#38; operation is a 200 unit square box centered on
-        the original point - this is our &#34;query box&#34;. The &#38;&#38;
+        used in the &amp;&amp; operation is a 200 unit square box centered on
+        the original point - this is our &quot;query box&quot;. The &amp;&amp;
         operator uses the index to quickly reduce the result set down to only
-        those geometries which have bounding boxes that overlap the &#34;query
-        box&#34;. Assuming that our query box is much smaller than the extents
+        those geometries which have bounding boxes that overlap the &quot;query
+        box&quot;. Assuming that our query box is much smaller than the extents
         of the entire geometry table, this will drastically reduce the number
         of distance calculations that need to be done.</para>
 
-        <note>As of PostGIS 1.3.0, most of the Geometry
+        <note><title>Change in Behavior</title>
+        <para>As of PostGIS 1.3.0, most of the Geometry
         Relationship Functions, with the notable exceptions of ST_Disjoint and
-        ST_Relate, include implicit bounding box overlap operators.</note>
+        ST_Relate, include implicit bounding box overlap operators.</para></note>
       </sect2>
 
       <sect2>
@@ -1862,18 +1899,21 @@
         boundaries. The table definitions for the <varname>bc_roads</varname>
         table is:</para>
 
-        <programlisting>Column | Type | Description
-        ------------+-------------------+------------------- gid | integer |
-        Unique ID name | character varying | Road Name the_geom | geometry |
-        Location Geometry (Linestring)</programlisting>
+        <programlisting>Column      | Type              | Description
+------------+-------------------+------------------- 
+gid         | integer           | Unique ID 
+name        | character varying | Road Name 
+the_geom    | geometry          | Location Geometry (Linestring)</programlisting>
 
         <para>The table definition for the <varname>bc_municipality</varname>
         table is:</para>
 
-        <programlisting>Column | Type | Description
-        -----------+-------------------+------------------- gid | integer |
-        Unique ID code | integer | Unique ID name | character varying | City /
-        Town Name the_geom | geometry | Location Geometry (Polygon)</programlisting>
+        <programlisting>Column     | Type              | Description
+-----------+-------------------+------------------- 
+gid        | integer           | Unique ID 
+code       | integer           | Unique ID 
+name       | character varying | City / Town Name 
+the_geom   | geometry          | Location Geometry (Polygon)</programlisting>
 
         <qandaset>
           <qandaentry>
@@ -1886,9 +1926,12 @@
               <para>You can answer this question with a very simple piece of
               SQL:</para>
 
-              <programlisting>postgis=# SELECT sum(length(the_geom))/1000 AS
-              km_roads FROM bc_roads; km_roads ------------------
-              70842.1243039643 (1 row)</programlisting>
+              <programlisting>SELECT sum(ST_Length(the_geom))/1000 AS km_roads FROM bc_roads; 
+
+km_roads 
+------------------
+70842.1243039643 
+(1 row)</programlisting>
             </answer>
           </qandaentry>
 
@@ -1901,10 +1944,15 @@
               <para>This query combines an attribute condition (on the
               municipality name) with a spatial calculation (of the area):</para>
 
-              <programlisting>postgis=# SELECT area(the_geom)/10000 AS
-              hectares FROM bc_municipality WHERE name = &#39;PRINCE
-              GEORGE&#39;; hectares ------------------ 32657.9103824927 (1
-              row)</programlisting>
+              <programlisting>SELECT 
+  ST_Area(the_geom)/10000 AS hectares 
+FROM bc_municipality 
+WHERE name = 'PRINCE GEORGE'; 
+
+hectares 
+------------------ 
+32657.9103824927 
+(1 row)</programlisting>
             </answer>
           </qandaentry>
 
@@ -1918,17 +1966,25 @@
               condition. There are several ways of approaching this problem,
               but the most efficient is below:</para>
 
-              <programlisting>postgis=# SELECT name, area(the_geom)/10000 AS
-              hectares FROM bc_municipality ORDER BY hectares DESC LIMIT 1;
-              name | hectares ---------------+----------------- TUMBLER RIDGE
-              | 155020.02556131 (1 row)</programlisting>
+              <programlisting>SELECT 
+  name, 
+  ST_Area(the_geom)/10000 AS hectares 
+FROM 
+  bc_municipality 
+ORDER BY hectares DESC 
+LIMIT 1;
+
+name           | hectares 
+---------------+----------------- 
+TUMBLER RIDGE  | 155020.02556131 
+(1 row)</programlisting>
 
               <para>Note that in order to answer this query we have to
               calculate the area of every polygon. If we were doing this a lot
               it would make sense to add an area column to the table that we
               could separately index for performance. By ordering the results
               in a descending direction, and them using the PostgreSQL
-              &#34;LIMIT&#34; command we can easily pick off the largest value
+              &quot;LIMIT&quot; command we can easily pick off the largest value
               without using an aggregate function like max().</para>
             </answer>
           </qandaentry>
@@ -1940,21 +1996,31 @@
             </question>
 
             <answer>
-              <para>This is an example of a &#34;spatial join&#34;, because we
+              <para>This is an example of a &quot;spatial join&quot;, because we
               are bringing together data from two tables (doing a join) but
-              using a spatial interaction condition (&#34;contained&#34;) as
+              using a spatial interaction condition (&quot;contained&quot;) as
               the join condition rather than the usual relational approach of
               joining on a common key:</para>
 
-              <programlisting>postgis=# SELECT m.name,
-              sum(length(r.the_geom))/1000 as roads_km FROM bc_roads AS
-              r,bc_municipality AS m WHERE r.the_geom &#38;&#38; m.the_geom
-              AND contains(m.the_geom,r.the_geom) GROUP BY m.name ORDER BY
-              roads_km; name | roads_km
-              ----------------------------+------------------ SURREY |
-              1539.47553551242 VANCOUVER | 1450.33093486576 LANGLEY DISTRICT |
-              833.793392535662 BURNABY | 773.769091404338 PRINCE GEORGE |
-              694.37554369147 ...</programlisting>
+              <programlisting>SELECT 
+  m.name, 
+  sum(ST_Length(r.the_geom))/1000 as roads_km 
+FROM 
+  bc_roads AS r,  
+  bc_municipality AS m 
+WHERE
+  ST_Contains(m.the_geom,r.the_geom) 
+GROUP BY m.name 
+ORDER BY roads_km; 
+
+name                        | roads_km
+----------------------------+------------------ 
+SURREY                      | 1539.47553551242 
+VANCOUVER                   | 1450.33093486576 
+LANGLEY DISTRICT            | 833.793392535662 
+BURNABY                     | 773.769091404338 
+PRINCE GEORGE               | 694.37554369147 
+...</programlisting>
 
               <para>This query takes a while, because every road in the table
               is summarized into the final result (about 250K roads for our
@@ -1971,34 +2037,46 @@
             </question>
 
             <answer>
-              <para>This is an example of an &#34;overlay&#34;, which takes in
+              <para>This is an example of an &quot;overlay&quot;, which takes in
               two tables and outputs a new table that consists of spatially
-              clipped or cut resultants. Unlike the &#34;spatial join&#34;
+              clipped or cut resultants. Unlike the &quot;spatial join&quot;
               demonstrated above, this query actually creates new geometries.
               An overlay is like a turbo-charged spatial join, and is useful
               for more exact analysis work:</para>
 
-              <programlisting>postgis=# CREATE TABLE pg_roads as SELECT
-              intersection(r.the_geom, m.the_geom) AS intersection_geom,
-              length(r.the_geom) AS rd_orig_length, r.* FROM bc_roads AS r,
-              bc_municipality AS m WHERE r.the_geom &#38;&#38; m.the_geom AND
-              intersects(r.the_geom, m.the_geom) AND m.name = &#39;PRINCE
-              GEORGE&#39;;</programlisting>
+              <programlisting>CREATE TABLE pg_roads as 
+SELECT 
+  ST_Intersection(r.the_geom, m.the_geom) AS intersection_geom,
+  ST_Length(r.the_geom) AS rd_orig_length, 
+  r.* 
+FROM 
+  bc_roads AS r, 
+  bc_municipality AS m 
+WHERE ST_Intersects(r.the_geom, m.the_geom)
+  AND m.name = 'PRINCE GEORGE';</programlisting>
             </answer>
           </qandaentry>
 
           <qandaentry>
             <question>
-              <para>What is the length in kilometers of &#34;Douglas St&#34;
+              <para>What is the length in kilometers of &quot;Douglas St&quot;
               in Victoria?</para>
             </question>
 
             <answer>
-              <programlisting>postgis=# SELECT sum(length(r.the_geom))/1000 AS
-              kilometers FROM bc_roads r, bc_municipality m WHERE r.the_geom
-              &#38;&#38; m.the_geom AND r.name = &#39;Douglas St&#39; AND
-              m.name = &#39;VICTORIA&#39;; kilometers ------------------
-              4.89151904172838 (1 row)</programlisting>
+              <programlisting>SELECT 
+  sum(ST_Length(r.the_geom))/1000 AS kilometers 
+FROM 
+  bc_roads r, 
+  bc_municipality m 
+WHERE ST_Contains(m.the_geom, r.the_geom) 
+  AND r.name = 'Douglas St' 
+  AND m.name = 'VICTORIA'; 
+
+kilometers 
+------------------
+4.89151904172838 
+(1 row)</programlisting>
             </answer>
           </qandaentry>
 
@@ -2008,11 +2086,15 @@
             </question>
 
             <answer>
-              <programlisting>postgis=# SELECT gid, name, area(the_geom) AS
-              area FROM bc_municipality WHERE nrings(the_geom) &#62; 1 ORDER
-              BY area DESC LIMIT 1; gid | name | area
-              -----+--------------+------------------ 12 | SPALLUMCHEEN |
-              257374619.430216 (1 row)</programlisting>
+              <programlisting>SELECT gid, name, ST_Area(the_geom) AS area 
+FROM bc_municipality 
+WHERE ST_NRings(the_geom) &gt; 1 
+ORDER BY area DESC LIMIT 1; 
+
+gid  | name         | area
+-----+--------------+------------------ 
+12   | SPALLUMCHEEN | 257374619.430216 
+(1 row)</programlisting>
             </answer>
           </qandaentry>
         </qandaset>
@@ -2066,7 +2148,7 @@
         <orderedlist>
           <listitem>
             <para>Compile and install Mapserver, with whatever options you
-            desire, including the &#34;--with-postgis&#34; configuration
+            desire, including the &quot;--with-postgis&quot; configuration
             option.</para>
           </listitem>
 
@@ -2074,18 +2156,30 @@
             <para>In your Mapserver map file, add a PostGIS layer. For
             example:</para>
 
-            <programlisting>LAYER CONNECTIONTYPE postgis NAME
-            &#34;widehighways&#34; # Connect to a remote spatial database
-            CONNECTION &#34;user=dbuser dbname=gisdatabase host=bigserver&#34;
-            # Get the lines from the &#39;geom&#39; column of the
-            &#39;roads&#39; table DATA &#34;geom from roads&#34; STATUS ON
-            TYPE LINE # Of the lines in the extents, only render the wide
-            highways FILTER &#34;type = &#39;highway&#39; and numlanes &#62;=
-            4&#34; CLASS # Make the superhighways brighter and 2 pixels wide
-            EXPRESSION ([numlanes] &#62;= 6) COLOR 255 22 22 SYMBOL
-            &#34;solid&#34; SIZE 2 END CLASS # All the rest are darker and
-            only 1 pixel wide EXPRESSION ([numlanes] &#60; 6) COLOR 205 92 82
-            END END</programlisting>
+            <programlisting>LAYER 
+  CONNECTIONTYPE postgis 
+  NAME &quot;widehighways&quot; 
+  # Connect to a remote spatial database
+  CONNECTION &quot;user=dbuser dbname=gisdatabase host=bigserver&quot;
+  # Get the lines from the 'geom' column of the 'roads' table 
+  DATA &quot;geom from roads&quot; 
+  STATUS ON
+  TYPE LINE 
+  # Of the lines in the extents, only render the wide highways 
+  FILTER &quot;type = 'highway' and numlanes &gt;= 4&quot; 
+  CLASS 
+    # Make the superhighways brighter and 2 pixels wide
+    EXPRESSION ([numlanes] &gt;= 6) 
+    COLOR 255 22 22 
+    SYMBOL &quot;solid&quot; 
+    SIZE 2 
+  END 
+  CLASS 
+    # All the rest are darker and only 1 pixel wide 
+    EXPRESSION ([numlanes] &lt; 6) 
+    COLOR 205 92 82
+  END 
+END</programlisting>
 
             <para>In the example above, the PostGIS-specific directives are as
             follows:</para>
@@ -2095,7 +2189,7 @@
                 <term>CONNECTIONTYPE</term>
 
                 <listitem>
-                  <para>For PostGIS layers, this is always &#34;postgis&#34;.</para>
+                  <para>For PostGIS layers, this is always &quot;postgis&quot;.</para>
                 </listitem>
               </varlistentry>
 
@@ -2104,13 +2198,13 @@
 
                 <listitem>
                   <para>The database connection is governed by the a
-                  &#39;connection string&#39; which is a standard set of keys
+                  'connection string' which is a standard set of keys
                   and values like this (with the default values in
-                  &#60;&#62;):</para>
+                  &lt;&gt;):</para>
 
-                  <para>user=&#60;username&#62; password=&#60;password&#62;
-                  dbname=&#60;username&#62; hostname=&#60;server&#62;
-                  port=&#60;5432&#62;</para>
+                  <para>user=&lt;username&gt; password=&lt;password&gt;
+                  dbname=&lt;username&gt; hostname=&lt;server&gt;
+                  port=&lt;5432&gt;</para>
 
                   <para>An empty connection string is still valid, and any of
                   the key/value pairs can be omitted. At a minimum you will
@@ -2123,8 +2217,8 @@
                 <term>DATA</term>
 
                 <listitem>
-                  <para>The form of this parameter is &#34;&#60;column&#62;
-                  from &#60;tablename&#62;&#34; where the column is the
+                  <para>The form of this parameter is &quot;&lt;column&gt;
+                  from &lt;tablename&gt;&quot; where the column is the
                   spatial column to be rendered to the map.</para>
                 </listitem>
               </varlistentry>
@@ -2134,9 +2228,9 @@
 
                 <listitem>
                   <para>The filter must be a valid SQL string corresponding to
-                  the logic normally following the &#34;WHERE&#34; keyword in
+                  the logic normally following the &quot;WHERE&quot; keyword in
                   a SQL query. So, for example, to render only roads with 6 or
-                  more lanes, use a filter of &#34;num_lanes &#62;= 6&#34;.</para>
+                  more lanes, use a filter of &quot;num_lanes &gt;= 6&quot;.</para>
                 </listitem>
               </varlistentry>
             </variablelist>
@@ -2146,13 +2240,12 @@
             <para>In your spatial database, ensure you have spatial (GiST)
             indexes built for any the layers you will be drawing.</para>
 
-            <programlisting>CREATE INDEX [indexname] ON [tablename] USING GIST
-            ( [geometrycolumn] GIST_GEOMETRY_OPS );</programlisting>
+            <programlisting>CREATE INDEX [indexname] ON [tablename] USING GIST ( [geometrycolumn] );</programlisting>
           </listitem>
 
           <listitem>
             <para>If you will be querying your layers using Mapserver you will
-            also need an &#34;oid index&#34;.</para>
+            also need an &quot;oid index&quot;.</para>
 
             <para>Mapserver requires unique identifiers for each spatial
             record when doing queries, and the PostGIS module of Mapserver
@@ -2161,7 +2254,7 @@
             fast random access of records during queries, an index on the
             <varname>oid</varname> is needed.</para>
 
-            <para>To build an &#34;oid index&#34;, use the following SQL:</para>
+            <para>To build an &quot;oid index&quot;, use the following SQL:</para>
 
             <programlisting>CREATE INDEX [indexname] ON [tablename] ( oid );</programlisting>
           </listitem>
@@ -2183,7 +2276,7 @@
               <para>Unlike shape files, PostGIS field names have to be
               referenced in EXPRESSIONS using <emphasis>lower case</emphasis>.</para>
 
-              <programlisting>EXPRESSION ([numlanes] &#62;= 6)</programlisting>
+              <programlisting>EXPRESSION ([numlanes] &gt;= 6)</programlisting>
             </answer>
           </qandaentry>
 
@@ -2198,8 +2291,7 @@
               syntax (they are appended to the SQL statement the PostGIS
               connector generates for drawing layers in Mapserver).</para>
 
-              <programlisting>FILTER &#34;type = &#39;highway&#39; and
-              numlanes &#62;= 4&#34;</programlisting>
+              <programlisting>FILTER &quot;type = 'highway' and numlanes &gt;= 4&quot;</programlisting>
             </answer>
           </qandaentry>
 
@@ -2219,10 +2311,9 @@
               it is likely that you have not build a spatial index on your
               table.</para>
 
-              <programlisting>postgis# CREATE INDEX geotable_gix ON geotable
-              USING GIST ( geocolumn ); postgis# SELECT
-              update_geometry_stats(); -- For PGSQL &#60; 8.0 postgis# VACUUM
-              ANALYZE; -- For PGSQL &#62;= 8.0</programlisting>
+              <programlisting>postgis# CREATE INDEX geotable_gix ON geotable USING GIST ( geocolumn ); 
+postgis# SELECT update_geometry_stats(); -- For PGSQL &lt; 8.0 
+postgis# VACUUM ANALYZE; -- For PGSQL &gt;= 8.0</programlisting>
             </answer>
           </qandaentry>
 
@@ -2241,18 +2332,16 @@
               the <varname>USING UNIQUE</varname> clause in your
               <varname>DATA</varname> line:</para>
 
-              <programlisting>DATA &#34;the_geom FROM geotable USING UNIQUE
-              gid&#34;</programlisting>
+              <programlisting>DATA &quot;the_geom FROM geotable USING UNIQUE gid&quot;</programlisting>
 
               <para>If your table does not have an explicit unique column, you
-              can &#34;fake&#34; a unique column by using the PostgreSQL row
-              &#34;oid&#34; for your unique column. &#34;oid&#34; is the
+              can &quot;fake&quot; a unique column by using the PostgreSQL row
+              &quot;oid&quot; for your unique column. &quot;oid&quot; is the
               default unique column if you do not declare one, so enhancing
               your query speed is a matter of building an index on your
               spatial table oid value.</para>
 
-              <programlisting>postgis# CREATE INDEX geotable_oid_idx ON
-              geotable (oid);</programlisting>
+              <programlisting>postgis# CREATE INDEX geotable_oid_idx ON geotable (oid);</programlisting>
             </answer>
           </qandaentry>
         </qandaset>
@@ -2264,30 +2353,35 @@
         <para>The <varname>USING</varname> pseudo-SQL clause is used to add
         some information to help mapserver understand the results of more
         complex queries. More specifically, when either a view or a subselect
-        is used as the source table (the thing to the right of &#34;FROM&#34;
+        is used as the source table (the thing to the right of &quot;FROM&quot;
         in a <varname>DATA</varname> definition) it is more difficult for
         mapserver to automatically determine a unique identifier for each row
         and also the SRID for the table. The <varname>USING</varname> clause
         can provide mapserver with these two pieces of information as follows:</para>
 
-        <programlisting>DATA &#34;the_geom FROM (SELECT table1.the_geom AS
-        the_geom, table1.oid AS oid, table2.data AS data FROM table1 LEFT JOIN
-        table2 ON table1.id = table2.id) AS new_table USING UNIQUE oid USING
-        SRID=-1&#34;</programlisting>
+        <programlisting>DATA &quot;the_geom FROM (
+  SELECT 
+    table1.the_geom AS the_geom, 
+    table1.oid AS oid, 
+    table2.data AS data 
+  FROM table1 
+  LEFT JOIN table2 
+  ON table1.id = table2.id
+) AS new_table USING UNIQUE oid USING SRID=-1&quot;</programlisting>
 
         <variablelist>
           <varlistentry>
-            <term>USING UNIQUE &#60;uniqueid&#62;</term>
+            <term>USING UNIQUE &lt;uniqueid&gt;</term>
 
             <listitem>
               <para>Mapserver requires a unique id for each row in order to
               identify the row when doing map queries. Normally, it would use
               the oid as the unique identifier, but views and subselects
-              don&#39;t automatically have an oid column. If you want to use
-              Mapserver&#39;s query functionality, you need to add a unique
+              don't automatically have an oid column. If you want to use
+              Mapserver's query functionality, you need to add a unique
               column to your view or subselect, and declare it with
               <varname>USING UNIQUE</varname>. For example, you could
-              explicitly select one of the table&#39;s oid values for this
+              explicitly select one of the table's oid values for this
               purpose, or any other column which is guaranteed to be unique
               for the result set.</para>
 
@@ -2297,27 +2391,27 @@
               on the oid column of tables used in query-able layers, in order
               to speed up the performance of map queries. However, with the
               <varname>USING</varname> clause, it is possible to tell
-              mapserver to use your table&#39;s primary key as the identifier
+              mapserver to use your table's primary key as the identifier
               for map queries, and then it is no longer necessary to have an
               additional index.</para>
 
               <note>
-                <para>&#34;Querying a Map&#34; is the action of clicking on a
+                <para>&quot;Querying a Map&quot; is the action of clicking on a
                 map to ask for information about the map features in that
-                location. Don&#39;t confuse &#34;map queries&#34; with the SQL
+                location. Don't confuse &quot;map queries&quot; with the SQL
                 query in a <varname>DATA</varname> definition.</para>
               </note>
             </listitem>
           </varlistentry>
 
           <varlistentry>
-            <term>USING SRID=&#60;srid&#62;</term>
+            <term>USING SRID=&lt;srid&gt;</term>
 
             <listitem>
               <para>PostGIS needs to know which spatial referencing system is
               being used by the geometries in order to return the correct data
               back to mapserver. Normally it is possible to find this
-              information in the &#34;geometry_columns&#34; table in the
+              information in the &quot;geometry_columns&quot; table in the
               PostGIS database, however, this is not possible for tables which
               are created on the fly such as subselects and views. So the
               <varname>USING SRID=</varname> option allows the correct SRID to
@@ -2341,10 +2435,17 @@
         <para>Lets start with a simple example and work our way up. Consider
         the following Mapserver layer definition:</para>
 
-        <programlisting>LAYER CONNECTIONTYPE postgis NAME &#34;roads&#34;
-        CONNECTION &#34;user=theuser password=thepass dbname=thedb
-        host=theserver&#34; DATA &#34;the_geom FROM roads&#34; STATUS ON TYPE
-        LINE CLASS COLOR 0 0 0 END END</programlisting>
+        <programlisting>LAYER 
+  CONNECTIONTYPE postgis 
+  NAME &quot;roads&quot;
+  CONNECTION &quot;user=theuser password=thepass dbname=thedb host=theserver&quot; 
+  DATA &quot;the_geom FROM roads&quot; 
+  STATUS ON 
+  TYPE LINE 
+  CLASS 
+    COLOR 0 0 0 
+  END 
+END</programlisting>
 
         <para>This layer will display all the road geometries in the roads
         table as black lines.</para>
@@ -2353,19 +2454,38 @@
         zoomed in to at least a 1:100000 scale - the next two layers will
         achieve this effect:</para>
 
-        <programlisting>LAYER CONNECTION &#34;user=theuser password=thepass
-        dbname=thedb host=theserver&#34; DATA &#34;the_geom FROM roads&#34;
-        MINSCALE 100000 STATUS ON TYPE LINE FILTER &#34;road_type =
-        &#39;highway&#39;&#34; CLASS COLOR 0 0 0 END END LAYER CONNECTION
-        &#34;user=theuser password=thepass dbname=thedb host=theserver&#34;
-        DATA &#34;the_geom FROM roads&#34; MAXSCALE 100000 STATUS ON TYPE LINE
-        CLASSITEM road_type CLASS EXPRESSION &#34;highway&#34; SIZE 2 COLOR
-        255 0 0 END CLASS COLOR 0 0 0 END END</programlisting>
+        <programlisting>LAYER 
+  CONNECTION &quot;user=theuser password=thepass dbname=thedb host=theserver&quot; 
+  DATA &quot;the_geom FROM roads&quot;
+  MINSCALE 100000 
+  STATUS ON 
+  TYPE LINE 
+  FILTER &quot;road_type = 'highway'&quot; 
+  CLASS 
+    COLOR 0 0 0 
+  END 
+END 
+LAYER 
+  CONNECTION &quot;user=theuser password=thepass dbname=thedb host=theserver&quot;
+  DATA &quot;the_geom FROM roads&quot; 
+  MAXSCALE 100000 
+  STATUS ON 
+  TYPE LINE
+  CLASSITEM road_type 
+  CLASS 
+    EXPRESSION &quot;highway&quot; 
+    SIZE 2 
+    COLOR 255 0 0  
+  END 
+  CLASS  
+    COLOR 0 0 0 
+  END 
+END</programlisting>
 
         <para>The first layer is used when the scale is greater than 1:100000,
-        and displays only the roads of type &#34;highway&#34; as black lines.
+        and displays only the roads of type &quot;highway&quot; as black lines.
         The <varname>FILTER</varname> option causes only roads of type
-        &#34;highway&#34; to be displayed.</para>
+        &quot;highway&quot; to be displayed.</para>
 
         <para>The second layer is used when the scale is less than 1:100000,
         and will display highways as double-thick red lines, and other roads
@@ -2377,14 +2497,26 @@
         another table (for whatever reason) and we need to do a join to get it
         and label our roads.</para>
 
-        <programlisting>LAYER CONNECTION &#34;user=theuser password=thepass
-        dbname=thedb host=theserver&#34; DATA &#34;the_geom FROM (SELECT
-        roads.oid AS oid, roads.the_geom AS the_geom, road_names.name as name
-        FROM roads LEFT JOIN road_names ON roads.road_name_id =
-        road_names.road_name_id) AS named_roads USING UNIQUE oid USING
-        SRID=-1&#34; MAXSCALE 20000 STATUS ON TYPE ANNOTATION LABELITEM name
-        CLASS LABEL ANGLE auto SIZE 8 COLOR 0 192 0 TYPE truetype FONT arial
-        END END END</programlisting>
+        <programlisting>LAYER 
+  CONNECTION &quot;user=theuser password=thepass dbname=thedb host=theserver&quot; 
+  DATA &quot;the_geom FROM (SELECT roads.oid AS oid, roads.the_geom AS the_geom, 
+        road_names.name as name FROM roads LEFT JOIN road_names ON 
+        roads.road_name_id = road_names.road_name_id) 
+        AS named_roads USING UNIQUE oid USING SRID=-1&quot; 
+  MAXSCALE 20000 
+  STATUS ON 
+  TYPE ANNOTATION 
+  LABELITEM name
+  CLASS 
+    LABEL 
+      ANGLE auto 
+      SIZE 8 
+      COLOR 0 192 0 
+      TYPE truetype 
+      FONT arial
+    ENDl
+  END 
+END</programlisting>
 
         <para>This annotation layer adds green labels to all the roads when
         the scale gets down to 1:20000 or less. It also demonstrates how to
@@ -2395,45 +2527,80 @@
     <sect1>
       <title>Java Clients (JDBC)</title>
 
-      <para>Java clients can access PostGIS &#34;geometry&#34; objects in the
+      <para>Java clients can access PostGIS &quot;geometry&quot; objects in the
       PostgreSQL database either directly as text representations or using the
       JDBC extension objects bundled with PostGIS. In order to use the
-      extension objects, the &#34;postgis.jar&#34; file must be in your
-      CLASSPATH along with the &#34;postgresql.jar&#34; JDBC driver package.</para>
+      extension objects, the &quot;postgis.jar&quot; file must be in your
+      CLASSPATH along with the &quot;postgresql.jar&quot; JDBC driver package.</para>
 
-      <programlisting>import java.sql.*; import java.util.*; import
-      java.lang.*; import org.postgis.*; public class JavaGIS { public static
-      void main(String[] args) { java.sql.Connection conn; try { /* * Load the
-      JDBC driver and establish a connection. */
-      Class.forName(&#34;org.postgresql.Driver&#34;); String url =
-      &#34;jdbc:postgresql://localhost:5432/database&#34;; conn =
-      DriverManager.getConnection(url, &#34;postgres&#34;, &#34;&#34;); /* *
-      Add the geometry types to the connection. Note that you * must cast the
-      connection to the pgsql-specific connection * implementation before
-      calling the addDataType() method. */
-      ((org.postgresql.Connection)conn).addDataType(&#34;geometry&#34;,&#34;org.postgis.PGgeometry&#34;);
-      ((org.postgresql.Connection)conn).addDataType(&#34;box3d&#34;,&#34;org.postgis.PGbox3d&#34;);
-      /* * Create a statement and execute a select query. */ Statement s =
-      conn.createStatement(); ResultSet r = s.executeQuery(&#34;select
-      AsText(geom) as geom,id from geomtable&#34;); while( r.next() ) { /* *
-      Retrieve the geometry as an object then cast it to the geometry type. *
-      Print things out. */ PGgeometry geom = (PGgeometry)r.getObject(1); int
-      id = r.getInt(2); System.out.println(&#34;Row &#34; + id + &#34;:&#34;);
-      System.out.println(geom.toString()); } s.close(); conn.close(); } catch(
-      Exception e ) { e.printStackTrace(); } } }</programlisting>
+      <programlisting>import java.sql.*; 
+import java.util.*; 
+import java.lang.*; 
+import org.postgis.*; 
 
-      <para>The &#34;PGgeometry&#34; object is a wrapper object which contains
+public class JavaGIS { 
+
+public static void main(String[] args) { 
+
+  java.sql.Connection conn; 
+
+  try { 
+    /* 
+    * Load the JDBC driver and establish a connection. 
+    */
+    Class.forName(&quot;org.postgresql.Driver&quot;); 
+    String url = &quot;jdbc:postgresql://localhost:5432/database&quot;; 
+    conn = DriverManager.getConnection(url, &quot;postgres&quot;, &quot;&quot;); 
+    /* 
+    * Add the geometry types to the connection. Note that you 
+    * must cast the connection to the pgsql-specific connection 
+    * implementation before calling the addDataType() method. 
+    */
+    ((org.postgresql.Connection)conn).addDataType(&quot;geometry&quot;,&quot;org.postgis.PGgeometry&quot;)
+;
+    ((org.postgresql.Connection)conn).addDataType(&quot;box3d&quot;,&quot;org.postgis.PGbox3d&quot;);
+    /* 
+    * Create a statement and execute a select query. 
+    */ 
+    Statement s = conn.createStatement(); 
+    ResultSet r = s.executeQuery(&quot;select AsText(geom) as geom,id from geomtable&quot;); 
+    while( r.next() ) { 
+      /* 
+      * Retrieve the geometry as an object then cast it to the geometry type. 
+      * Print things out. 
+      */ 
+      PGgeometry geom = (PGgeometry)r.getObject(1); 
+      int id = r.getInt(2); 
+      System.out.println(&quot;Row &quot; + id + &quot;:&quot;);
+      System.out.println(geom.toString()); 
+    } 
+    s.close(); 
+    conn.close(); 
+  } 
+catch( Exception e ) { 
+  e.printStackTrace(); 
+  } 
+} 
+}</programlisting>
+
+      <para>The &quot;PGgeometry&quot; object is a wrapper object which contains
       a specific topological geometry object (subclasses of the abstract class
-      &#34;Geometry&#34;) depending on the type: Point, LineString, Polygon,
+      &quot;Geometry&quot;) depending on the type: Point, LineString, Polygon,
       MultiPoint, MultiLineString, MultiPolygon.</para>
 
-      <programlisting>PGgeometry geom = (PGgeometry)r.getObject(1); if(
-      geom.getType() = Geometry.POLYGON ) { Polygon pl =
-      (Polygon)geom.getGeometry(); for( int r = 0; r &#60; pl.numRings(); r++
-      ) { LinearRing rng = pl.getRing(r); System.out.println(&#34;Ring: &#34;
-      + r); for( int p = 0; p &#60; rng.numPoints(); p++ ) { Point pt =
-      rng.getPoint(p); System.out.println(&#34;Point: &#34; + p);
-      System.out.println(pt.toString()); } } }</programlisting>
+      <programlisting>PGgeometry geom = (PGgeometry)r.getObject(1); 
+if( geom.getType() = Geometry.POLYGON ) { 
+  Polygon pl = (Polygon)geom.getGeometry(); 
+  for( int r = 0; r &lt; pl.numRings(); r++) { 
+    LinearRing rng = pl.getRing(r); 
+    System.out.println(&quot;Ring: &quot; + r); 
+    for( int p = 0; p &lt; rng.numPoints(); p++ ) { 
+      Point pt = rng.getPoint(p); 
+      System.out.println(&quot;Point: &quot; + p);
+      System.out.println(pt.toString()); 
+    } 
+  } 
+}</programlisting>
 
       <para>The JavaDoc for the extension objects provides a reference for the
       various data accessor functions in the geometric objects.</para>
@@ -2469,7 +2636,7 @@
 
         <para>Current PostgreSQL versions (including 8.0) suffer from a query
         optimizer weakness regarding TOAST tables. TOAST tables are a kind of
-        &#34;extension room&#34; used to store large (in the sense of data
+        &quot;extension room&quot; used to store large (in the sense of data
         size) values that do not fit into normal data pages (like long texts,
         images or complex geometries with lots of vertices), see
         http://www.postgresql.org/docs/8.0/static/storage-toast.html for more
@@ -2482,17 +2649,17 @@
         space. In our example case, the table itself had about 80 rows and
         used only 3 data pages, but the TOAST table used 8225 pages.</para>
 
-        <para>Now issue a query where you use the geometry operator &#38;&#38;
+        <para>Now issue a query where you use the geometry operator &amp;&amp;
         to search for a bounding box that matches only very few of those rows.
         Now the query optimizer sees that the table has only 3 pages and 80
         rows. He estimates that a sequential scan on such a small table is
         much faster than using an index. And so he decides to ignore the GIST
         index. Usually, this estimation is correct. But in our case, the
-        &#38;&#38; operator has to fetch every geometry from disk to compare
+        &amp;&amp; operator has to fetch every geometry from disk to compare
         the bounding boxes, thus reading all TOAST pages, too.</para>
 
-        <para>To see whether your suffer from this bug, use the &#34;EXPLAIN
-        ANALYZE&#34; postgresql command. For more information and the
+        <para>To see whether your suffer from this bug, use the &quot;EXPLAIN
+        ANALYZE&quot; postgresql command. For more information and the
         technical details, you can read the thread on the postgres performance
         mailing list:
         http://archives.postgresql.org/pgsql-performance/2005-02/msg00030.php</para>
@@ -2505,30 +2672,30 @@
         the query estimation TOAST-aware. For now, here are two workarounds:</para>
 
         <para>The first workaround is to force the query planner to use the
-        index. Send &#34;SET enable_seqscan TO off;&#34; to the server before
+        index. Send &quot;SET enable_seqscan TO off;&quot; to the server before
         issuing the query. This basically forces the query planner to avoid
         sequential scans whenever possible. So it uses the GIST index as
         usual. But this flag has to be set on every connection, and it causes
         the query planner to make misestimations in other cases, so you should
-        &#34;SET enable_seqscan TO on;&#34; after the query.</para>
+        &quot;SET enable_seqscan TO on;&quot; after the query.</para>
 
         <para>The second workaround is to make the sequential scan as fast as
         the query planner thinks. This can be achieved by creating an
-        additional column that &#34;caches&#34; the bbox, and matching against
+        additional column that &quot;caches&quot; the bbox, and matching against
         this. In our example, the commands are like:</para>
 
-        <programlisting>SELECT
-        addGeometryColumn(&#39;myschema&#39;,&#39;mytable&#39;,&#39;bbox&#39;,&#39;4326&#39;,&#39;GEOMETRY&#39;,&#39;2&#39;);
-        UPDATE mytable set bbox = Envelope(Force_2d(the_geom));</programlisting>
+        <programlisting>SELECT addGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2'); 
+UPDATE mytable set bbox = Envelope(Force_2d(the_geom));</programlisting>
 
-        <para>Now change your query to use the &#38;&#38; operator against
+        <para>Now change your query to use the &amp;&amp; operator against
         bbox instead of geom_column, like:</para>
 
-        <programlisting>SELECT geom_column FROM mytable WHERE bbox &#38;&#38;
-        SetSrid(&#39;BOX3D(0 0,1 1)&#39;::box3d,4326);</programlisting>
+        <programlisting>SELECT geom_column 
+FROM mytable 
+WHERE bbox &amp;&amp; ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326);</programlisting>
 
         <para>Of course, if you change or add rows to mytable, you have to
-        keep the bbox &#34;in sync&#34;. The most transparent way to do this
+        keep the bbox &quot;in sync&quot;. The most transparent way to do this
         would be triggers, but you also can modify your application to keep
         the bbox column current or run the UPDATE query above after every
         modification.</para>
@@ -2552,21 +2719,20 @@
       GIST indices because GIST indices simply ignores NULL values, you get an
       error message like:</para>
 
-      <programlisting>lwgeom=# CLUSTER my_geom_index ON my_table; ERROR:
-      cannot cluster when index access method does not handle null values
-      HINT: You may be able to work around this by marking column
-      &#34;the_geom&#34; NOT NULL.</programlisting>
+      <programlisting>lwgeom=# CLUSTER my_geom_index ON my_table; 
+ERROR: cannot cluster when index access method does not handle null values
+HINT: You may be able to work around this by marking column &quot;the_geom&quot; NOT NULL.</programlisting>
 
       <para>As the HINT message tells you, one can work around this deficiency
-      by adding a &#34;not null&#34; constraint to the table:</para>
+      by adding a &quot;not null&quot; constraint to the table:</para>
 
-      <programlisting>lwgeom=# ALTER TABLE my_table ALTER COLUMN the_geom SET
-      not null; ALTER TABLE</programlisting>
+      <programlisting>lwgeom=# ALTER TABLE my_table ALTER COLUMN the_geom SET not null; 
+ALTER TABLE</programlisting>
 
       <para>Of course, this will not work if you in fact need NULL values in
       your geometry column. Additionally, you must use the above method to add
-      the constraint, using a CHECK constraint like &#34;ALTER TABLE blubb ADD
-      CHECK (geometry is not null);&#34; will not work.</para>
+      the constraint, using a CHECK constraint like &quot;ALTER TABLE blubb ADD
+      CHECK (geometry is not null);&quot; will not work.</para>
     </sect1>
 
     <sect1>
@@ -2579,11 +2745,11 @@
       for large geometries. To avoid this overhead, it may be feasible to
       pre-drop those additional dimensions once and forever:</para>
 
-      <programlisting>UPDATE mytable SET the_geom = force_2d(the_geom); VACUUM
-      FULL ANALYZE mytable;</programlisting>
+      <programlisting>UPDATE mytable SET the_geom = force_2d(the_geom); 
+VACUUM FULL ANALYZE mytable;</programlisting>
 
       <para>Note that if you added your geometry column using
-      AddGeometryColumn() there&#39;ll be a constraint on geometry dimension.
+      AddGeometryColumn() there'll be a constraint on geometry dimension.
       To bypass it you will need to drop the constraint. Remember to update
       the entry in the geometry_columns table and recreate the constraint
       afterwards.</para>
@@ -2591,10 +2757,10 @@
       <para>In case of large tables, it may be wise to divide this UPDATE into
       smaller portions by constraining the UPDATE to a part of the table via a
       WHERE clause and your primary key or another feasible criteria, and
-      running a simple &#34;VACUUM;&#34; between your UPDATEs. This
+      running a simple &quot;VACUUM;&quot; between your UPDATEs. This
       drastically reduces the need for temporary disk space. Additionally, if
       you have mixed dimension geometries, restricting the UPDATE by
-      &#34;WHERE dimension(the_geom)&#62;2&#34; skips re-writing of geometries
+      &quot;WHERE dimension(the_geom)&gt;2&quot; skips re-writing of geometries
       that already are in 2D.</para>
     </sect1>
   </chapter>
@@ -2627,16 +2793,16 @@
             varchar, integer)</term>
 
             <listitem>
-              <para>Syntax: AddGeometryColumn(&#60;schema_name&#62;,
-              &#60;table_name&#62;, &#60;column_name&#62;, &#60;srid&#62;,
-              &#60;type&#62;, &#60;dimension&#62;). Adds a geometry column to
+              <para>Syntax: AddGeometryColumn(&lt;schema_name&gt;,
+              &lt;table_name&gt;, &lt;column_name&gt;, &lt;srid&gt;,
+              &lt;type&gt;, &lt;dimension&gt;). Adds a geometry column to
               an existing table of attributes. The <varname>schema_name</varname>
               is the name of the table schema (unused for pre-schema
               PostgreSQL installations). The <varname>srid</varname> must be
               an integer value reference to an entry in the SPATIAL_REF_SYS
               table. The <varname>type</varname> must be an uppercase string
-              corresponding to the geometry type, eg, &#39;POLYGON&#39; or
-              &#39;MULTILINESTRING&#39;.</para>
+              corresponding to the geometry type, eg, 'POLYGON' or
+              'MULTILINESTRING'.</para>
             </listitem>
           </varlistentry>
 
@@ -2644,10 +2810,10 @@
             <term>DropGeometryColumn(varchar, varchar, varchar)</term>
 
             <listitem>
-              <para>Syntax: DropGeometryColumn(&#60;schema_name&#62;,
-              &#60;table_name&#62;, &#60;column_name&#62;). Remove a geometry
+              <para>Syntax: DropGeometryColumn(&lt;schema_name&gt;,
+              &lt;table_name&gt;, &lt;column_name&gt;). Remove a geometry
               column from a spatial table. Note that schema_name will need to
-              match the f_schema_name field of the table&#39;s row in the
+              match the f_schema_name field of the table's row in the
               geometry_columns table.</para>
             </listitem>
           </varlistentry>
@@ -2690,9 +2856,9 @@
 
             <listitem>
               <para>Returns 1 (TRUE) if the given Geometries are
-              &#34;spatially equal&#34;. Use this for a &#39;better&#39;
-              answer than &#39;=&#39;. equals(&#39;LINESTRING(0 0, 10
-              10)&#39;,&#39;LINESTRING(0 0, 5 5, 10 10)&#39;) is true.</para>
+              &quot;spatially equal&quot;. Use this for a 'better'
+              answer than '='. equals('LINESTRING(0 0, 10
+              10)','LINESTRING(0 0, 5 5, 10 10)') is true.</para>
 
               <para>Performed by the GEOS module</para>
 
@@ -2704,18 +2870,18 @@
             <term>ST_Disjoint(geometry, geometry)</term>
 
             <listitem>
-              <para>Returns 1 (TRUE) if the Geometries are &#34;spatially
-              disjoint&#34;.</para>
+              <para>Returns 1 (TRUE) if the Geometries are &quot;spatially
+              disjoint&quot;.</para>
 
               <para>Performed by the GEOS module</para>
 
               <para>Do not call with a GeometryCollection as an argument</para>
 
-              <para>NOTE: this is the &#34;allowable&#34; version that returns
+              <para>NOTE: this is the &quot;allowable&quot; version that returns
               a boolean, not an integer.</para>
 
               <para>OGC SPEC s2.1.1.2 //s2.1.13.3 - a.Relate(b,
-              &#39;FF*FF****&#39;)</para>
+              'FF*FF****')</para>
             </listitem>
           </varlistentry>
 
@@ -2723,8 +2889,8 @@
             <term>ST_Intersects(geometry, geometry)</term>
 
             <listitem>
-              <para>Returns 1 (TRUE) if the Geometries &#34;spatially
-              intersect&#34;.</para>
+              <para>Returns 1 (TRUE) if the Geometries &quot;spatially
+              intersect&quot;.</para>
 
               <para>Performed by the GEOS module</para>
 
@@ -2732,11 +2898,11 @@
 
               <para>This function call will automatically include a bounding box comparison that will make use of any indexes that are available on the geometries.  To avoid index use, use the function _ST_Intersects.</para>
 
-              <para>NOTE: this is the &#34;allowable&#34; version that returns
+              <para>NOTE: this is the &quot;allowable&quot; version that returns
               a boolean, not an integer.</para>
 
               <para>OGC SPEC s2.1.1.2 //s2.1.13.3 - Intersects(g1, g2 )
-              --&#62; Not (Disjoint(g1, g2 ))</para>
+              --&gt; Not (Disjoint(g1, g2 ))</para>
             </listitem>
           </varlistentry>
 
@@ -2744,8 +2910,8 @@
             <term>ST_Touches(geometry, geometry)</term>
 
             <listitem>
-              <para>Returns 1 (TRUE) if the Geometries &#34;spatially
-              touch&#34;.</para>
+              <para>Returns 1 (TRUE) if the Geometries &quot;spatially
+              touch&quot;.</para>
 
               <para>Performed by the GEOS module</para>
 
@@ -2753,10 +2919,10 @@
               
               <para>This function call will automatically include a bounding box comparison that will make use of any indexes that are available on the geometries.  To avoid index use, use the function _ST_Touches.</para>
 
-              <para>NOTE: this is the &#34;allowable&#34; version that returns
+              <para>NOTE: this is the &quot;allowable&quot; version that returns
               a boolean, not an integer.</para>
 
-              <para>OGC SPEC s2.1.1.2 // s2.1.13.3- a.Touches(b) -&#62; (I(a)
+              <para>OGC SPEC s2.1.1.2 // s2.1.13.3- a.Touches(b) -&gt; (I(a)
               intersection I(b) = {empty set} ) and (a intersection b) not
               empty</para>
             </listitem>
@@ -2766,8 +2932,8 @@
             <term>ST_Crosses(geometry, geometry)</term>
 
             <listitem>
-              <para>Returns 1 (TRUE) if the Geometries &#34;spatially
-              cross&#34;.</para>
+              <para>Returns 1 (TRUE) if the Geometries &quot;spatially
+              cross&quot;.</para>
 
               <para>Performed by the GEOS module</para>
 
@@ -2775,11 +2941,11 @@
 
               <para>This function call will automatically include a bounding box comparison that will make use of any indexes that are available on the geometries.  To avoid index use, use the function _ST_Crosses.</para>
 
-              <para>NOTE: this is the &#34;allowable&#34; version that returns
+              <para>NOTE: this is the &quot;allowable&quot; version that returns
               a boolean, not an integer.</para>
 
               <para>OGC SPEC s2.1.1.2 // s2.1.13.3 - a.Relate(b,
-              &#39;T*T******&#39;)</para>
+              'T*T******')</para>
             </listitem>
           </varlistentry>
 
@@ -2787,8 +2953,8 @@
             <term>ST_Within(geometry A, geometry B)</term>
 
             <listitem>
-              <para>Returns 1 (TRUE) if Geometry A is &#34;spatially
-              within&#34; Geometry B.</para>
+              <para>Returns 1 (TRUE) if Geometry A is &quot;spatially
+              within&quot; Geometry B.</para>
 
               <para>Performed by the GEOS module</para>
 
@@ -2796,11 +2962,11 @@
 
               <para>This function call will automatically include a bounding box comparison that will make use of any indexes that are available on the geometries.  To avoid index use, use the function _ST_Within.</para>
 
-              <para>NOTE: this is the &#34;allowable&#34; version that returns
+              <para>NOTE: this is the &quot;allowable&quot; version that returns
               a boolean, not an integer.</para>
 
               <para>OGC SPEC s2.1.1.2 // s2.1.13.3 - a.Relate(b,
-              &#39;T*F**F***&#39;)</para>
+              'T*F**F***')</para>
             </listitem>
           </varlistentry>
 
@@ -2808,8 +2974,8 @@
             <term>ST_Overlaps(geometry, geometry)</term>
 
             <listitem>
-              <para>Returns 1 (TRUE) if the Geometries &#34;spatially
-              overlap&#34;.</para>
+              <para>Returns 1 (TRUE) if the Geometries &quot;spatially
+              overlap&quot;.</para>
 
               <para>Performed by the GEOS module</para>
 
@@ -2817,7 +2983,7 @@
 
               <para>This function call will automatically include a bounding box comparison that will make use of any indexes that are available on the geometries.  To avoid index use, use the function _ST_Overlaps.</para>
 
-              <para>NOTE: this is the &#34;allowable&#34; version that returns
+              <para>NOTE: this is the &quot;allowable&quot; version that returns
               a boolean, not an integer.</para>
 
               <para>OGC SPEC s2.1.1.2 // s2.1.13.3</para>
@@ -2828,8 +2994,8 @@
             <term>ST_Contains(geometry A, geometry B)</term>
 
             <listitem>
-              <para>Returns 1 (TRUE) if Geometry A &#34;spatially
-              contains&#34; Geometry B.</para>
+              <para>Returns 1 (TRUE) if Geometry A &quot;spatially
+              contains&quot; Geometry B.</para>
 
               <para>Performed by the GEOS module</para>
 
@@ -2837,7 +3003,7 @@
 
               <para>This function call will automatically include a bounding box comparison that will make use of any indexes that are available on the geometries.  To avoid index use, use the function _ST_Contains.</para>
 
-              <para>NOTE: this is the &#34;allowable&#34; version that returns
+              <para>NOTE: this is the &quot;allowable&quot; version that returns
               a boolean, not an integer.</para>
 
               <para>OGC SPEC s2.1.1.2 // s2.1.13.3 - same as within(geometry
@@ -2872,14 +3038,14 @@
             <term>ST_Intersects(geometry, geometry)</term>
 
             <listitem>
-              <para>Returns 1 (TRUE) if the Geometries &#34;spatially
-              intersect&#34;.</para>
+              <para>Returns 1 (TRUE) if the Geometries &quot;spatially
+              intersect&quot;.</para>
 
               <para>Performed by the GEOS module</para>
 
               <para>Do not call with a GeometryCollection as an argument</para>
 
-              <para>NOTE: this is the &#34;allowable&#34; version that returns
+              <para>NOTE: this is the &quot;allowable&quot; version that returns
               a boolean, not an integer.</para>
 
               <para>OGC SPEC s2.1.1.2 // s2.1.13.3 - NOT disjoint(geometry,
@@ -2900,7 +3066,7 @@
 
               <para>Do not call with a GeometryCollection as an argument</para>
 
-              <para>NOTE: this is the &#34;allowable&#34; version that returns
+              <para>NOTE: this is the &quot;allowable&quot; version that returns
               a boolean, not an integer.</para>
 
               <para>OGC SPEC s2.1.1.2 // s2.1.13.3</para>
@@ -3078,7 +3244,7 @@
 
               <para>Do not call with a GeometryCollection as an argument</para>
 
-              <para>NOTE: this is renamed from &#34;union&#34; because union
+              <para>NOTE: this is renamed from &quot;union&quot; because union
               is an SQL reserved word</para>
 
               <para>OGC SPEC s2.1.1.3</para>
@@ -3131,14 +3297,14 @@
 
             <listitem>
               <para>Returns the geometry in the OGC
-              &#34;well-known-binary&#34; format, using the endian encoding of
+              &quot;well-known-binary&quot; format, using the endian encoding of
               the server on which the database is running. This is useful in
               binary cursors to pull data out of the database without
               converting it to a string representation.</para>
 
               <para>OGC SPEC s2.1.1.1 - also see
-              asBinary(&#60;geometry&#62;,&#39;XDR&#39;) and
-              asBinary(&#60;geometry&#62;,&#39;NDR&#39;)</para>
+              asBinary(&lt;geometry&gt;,'XDR') and
+              asBinary(&lt;geometry&gt;,'NDR')</para>
             </listitem>
           </varlistentry>
 
@@ -3163,9 +3329,10 @@
               and the largest dimension of the components of a
               GEOMETRYCOLLECTION.</para>
 
-              <programlisting>select
-              dimension(&#39;GEOMETRYCOLLECTION(LINESTRING(1 1,0 0),POINT(0
-              0)&#39;); dimension ----------- 1</programlisting>
+              <programlisting>select dimension('GEOMETRYCOLLECTION(LINESTRING(1 1,0 0),POINT(0 0)'); 
+dimension 
+----------- 
+1</programlisting>
             </listitem>
           </varlistentry>
 
@@ -3246,7 +3413,7 @@
             <term>ST_GeometryN(geometry,int)</term>
 
             <listitem>
-              <para>Return the N&#39;th geometry if the geometry is a
+              <para>Return the N'th geometry if the geometry is a
               GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING or MULTIPOLYGON.
               Otherwise, return NULL.</para>
 
@@ -3271,7 +3438,7 @@
             <term>ST_PointN(geometry,integer)</term>
 
             <listitem>
-              <para>Return the N&#39;th point in the first linestring in the
+              <para>Return the N'th point in the first linestring in the
               geometry. Return NULL if there is no linestring in the geometry.</para>
 
               <note>
@@ -3314,7 +3481,7 @@
             <term>ST_InteriorRingN(geometry,integer)</term>
 
             <listitem>
-              <para>Return the N&#39;th interior ring of the polygon geometry.
+              <para>Return the N'th interior ring of the polygon geometry.
               Return NULL if the geometry is not a polygon or the given N is
               out of range.</para>
 
@@ -3348,7 +3515,7 @@
 
             <listitem>
               <para>Returns the type of the geometry as a string. Eg:
-              &#39;LINESTRING&#39;, &#39;POLYGON&#39;, &#39;MULTIPOINT&#39;,
+              'LINESTRING', 'POLYGON', 'MULTIPOINT',
               etc.</para>
 
               <para>OGC SPEC s2.1.1.1 - Returns the name of the instantiable
@@ -3358,7 +3525,7 @@
 
               <note>
                 <para>This function also indicates if the geometry is
-                measured, by returning a string of the form &#39;POINTM&#39;.</para>
+                measured, by returning a string of the form 'POINTM'.</para>
               </note>
             </listitem>
           </varlistentry>
@@ -3368,7 +3535,7 @@
 
             <listitem>
               <para>Returns the type of the geometry as a string. EG:
-              &#39;Linestring&#39;, &#39;Polygon&#39;, etc. This function
+              'Linestring', 'Polygon', etc. This function
               differs from GeometryType(geometry) in the case of the string
               that is returned, as well as the fact that it will not indicate
               whether the geometry is measured.</para>
@@ -3423,7 +3590,7 @@
 
         <variablelist>
           <varlistentry>
-            <term>ST_GeomFromText(text,[&#60;srid&#62;])</term>
+            <term>ST_GeomFromText(text,[&lt;srid&gt;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKT with the given SRID.</para>
@@ -3434,7 +3601,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>ST_PointFromText(text,[&#60;srid&#62;])</term>
+            <term>ST_PointFromText(text,[&lt;srid&gt;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKT with the given SRID. If SRID is
@@ -3448,7 +3615,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>ST_LineFromText(text,[&#60;srid&#62;])</term>
+            <term>ST_LineFromText(text,[&lt;srid&gt;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKT with the given SRID. If SRID is
@@ -3462,7 +3629,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>ST_LinestringFromText(text,[&#60;srid&#62;])</term>
+            <term>ST_LinestringFromText(text,[&lt;srid&gt;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKT with the given SRID. If SRID is
@@ -3475,7 +3642,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>ST_PolyFromText(text,[&#60;srid&#62;])</term>
+            <term>ST_PolyFromText(text,[&lt;srid&gt;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKT with the given SRID. If SRID is
@@ -3489,7 +3656,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>ST_PolygonFromText(text,[&#60;srid&#62;])</term>
+            <term>ST_PolygonFromText(text,[&lt;srid&gt;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKT with the given SRID. If SRID is
@@ -3502,7 +3669,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>ST_MPointFromText(text,[&#60;srid&#62;])</term>
+            <term>ST_MPointFromText(text,[&lt;srid&gt;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKT with the given SRID. If SRID is
@@ -3516,7 +3683,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>ST_MLineFromText(text,[&#60;srid&#62;])</term>
+            <term>ST_MLineFromText(text,[&lt;srid&gt;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKT with the given SRID. If SRID is
@@ -3530,7 +3697,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>ST_MPolyFromText(text,[&#60;srid&#62;])</term>
+            <term>ST_MPolyFromText(text,[&lt;srid&gt;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKT with the given SRID. If SRID is
@@ -3544,7 +3711,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>ST_GeomCollFromText(text,[&#60;srid&#62;])</term>
+            <term>ST_GeomCollFromText(text,[&lt;srid&gt;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKT with the given SRID. If SRID is
@@ -3558,7 +3725,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>ST_GeomFromWKB(bytea,[&#60;srid&#62;])</term>
+            <term>ST_GeomFromWKB(bytea,[&lt;srid&gt;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKB with the given SRID. If SRID is
@@ -3570,7 +3737,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>ST_GeometryFromWKB(bytea,[&#60;srid&#62;])</term>
+            <term>ST_GeometryFromWKB(bytea,[&lt;srid&gt;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKB with the given SRID. If SRID is
@@ -3582,7 +3749,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>ST_PointFromWKB(bytea,[&#60;srid&#62;])</term>
+            <term>ST_PointFromWKB(bytea,[&lt;srid&gt;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKB with the given SRID. If SRID is
@@ -3596,7 +3763,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>ST_LineFromWKB(bytea,[&#60;srid&#62;])</term>
+            <term>ST_LineFromWKB(bytea,[&lt;srid&gt;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKB with the given SRID. If SRID is
@@ -3610,7 +3777,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>ST_LinestringFromWKB(bytea,[&#60;srid&#62;])</term>
+            <term>ST_LinestringFromWKB(bytea,[&lt;srid&gt;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKB with the given SRID. If SRID is
@@ -3623,7 +3790,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>ST_PolyFromWKB(bytea,[&#60;srid&#62;])</term>
+            <term>ST_PolyFromWKB(bytea,[&lt;srid&gt;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKB with the given SRID. If SRID is
@@ -3637,7 +3804,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>ST_PolygonFromWKB(bytea,[&#60;srid&#62;])</term>
+            <term>ST_PolygonFromWKB(bytea,[&lt;srid&gt;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKB with the given SRID. If SRID is
@@ -3650,7 +3817,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>ST_MPointFromWKB(bytea,[&#60;srid&#62;])</term>
+            <term>ST_MPointFromWKB(bytea,[&lt;srid&gt;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKB with the given SRID. If SRID is
@@ -3664,7 +3831,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>ST_MLineFromWKB(bytea,[&#60;srid&#62;])</term>
+            <term>ST_MLineFromWKB(bytea,[&lt;srid&gt;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKB with the given SRID. If SRID is
@@ -3678,7 +3845,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>ST_MPolyFromWKB(bytea,[&#60;srid&#62;])</term>
+            <term>ST_MPolyFromWKB(bytea,[&lt;srid&gt;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKB with the given SRID. If SRID is
@@ -3692,7 +3859,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>ST_GeomCollFromWKB(bytea,[&#60;srid&#62;])</term>
+            <term>ST_GeomCollFromWKB(bytea,[&lt;srid&gt;])</term>
 
             <listitem>
               <para>Makes a Geometry from WKB with the given SRID. If SRID is
@@ -3720,7 +3887,7 @@
 
               <para>OGC SFSQL 1.1 - 3.2.6.2</para>
 
-              <para>Availability: 1.1.0 - requires GEOS &#62;= 2.1.0.</para>
+              <para>Availability: 1.1.0 - requires GEOS &gt;= 2.1.0.</para>
             </listitem>
           </varlistentry>
 
@@ -3734,13 +3901,13 @@
               <para>Throws an error if WKT is not a MULTILINESTRING. Forces
               MULTIPOLYGON output even when result is really only composed by
               a single POLYGON; use <link linkend="BdPolyFromText">BdPolyFromText</link>
-              if you&#39;re sure a single POLYGON will result from operation,
+              if you're sure a single POLYGON will result from operation,
               or see <link linkend="BuildArea">BuildArea()</link> for a
               postgis-specific approach.</para>
 
               <para>OGC SFSQL 1.1 - 3.2.6.2</para>
 
-              <para>Availability: 1.1.0 - requires GEOS &#62;= 2.1.0.</para>
+              <para>Availability: 1.1.0 - requires GEOS &gt;= 2.1.0.</para>
             </listitem>
           </varlistentry>
         </variablelist>
@@ -3755,8 +3922,8 @@
 
         <variablelist>
           <varlistentry>
-            <term>DropGeometryTable([&#60;schema_name&#62;],
-            &#60;table_name&#62;)</term>
+            <term>DropGeometryTable([&lt;schema_name&gt;],
+            &lt;table_name&gt;)</term>
 
             <listitem>
               <para>Drops a table and all its references in geometry_columns.
@@ -3766,8 +3933,8 @@
           </varlistentry>
 
           <varlistentry>
-            <term>UpdateGeometrySRID([&#60;schema_name&#62;],
-            &#60;table_name&#62;, &#60;column_name&#62;, &#60;srid&#62;)</term>
+            <term>UpdateGeometrySRID([&lt;schema_name&gt;],
+            &lt;table_name&gt;, &lt;column_name&gt;, &lt;srid&gt;)</term>
 
             <listitem>
               <para>Update the SRID of all features in a geometry column
@@ -3778,16 +3945,16 @@
           </varlistentry>
 
           <varlistentry>
-            <term>update_geometry_stats([&#60;table_name&#62;,
-            &#60;column_name&#62;])</term>
+            <term>update_geometry_stats([&lt;table_name&gt;,
+            &lt;column_name&gt;])</term>
 
             <listitem>
               <para>Update statistics about spatial tables for use by the
-              query planner. You will also need to run &#34;VACUUM ANALYZE
-              [table_name] [column_name]&#34; for the statistics gathering
+              query planner. You will also need to run &quot;VACUUM ANALYZE
+              [table_name] [column_name]&quot; for the statistics gathering
               process to be complete. NOTE: starting with PostgreSQL 8.0
               statistics gathering is automatically performed running
-              &#34;VACUUM ANALYZE&#34;.</para>
+              &quot;VACUUM ANALYZE&quot;.</para>
             </listitem>
           </varlistentry>
 
@@ -3843,7 +4010,7 @@
               database.</para>
 
               <note>
-                <para>If the output of this function doesn&#39;t match the
+                <para>If the output of this function doesn't match the
                 output of <link linkend="postgis_scripts_released">postgis_scripts_released()</link>
                 you probably missed to properly upgrade an existing database.
                 See the <link linkend="upgrading">Upgrading</link> section for
@@ -3933,75 +4100,75 @@
 
         <variablelist>
           <varlistentry>
-            <term>A &#38;&#60; B</term>
+            <term>A &amp;&lt; B</term>
 
             <listitem>
-              <para>The &#34;&#38;&#60;&#34; operator returns true if A&#39;s
-              bounding box overlaps or is to the left of B&#39;s bounding box.</para>
+              <para>The &quot;&amp;&lt;&quot; operator returns true if A's
+              bounding box overlaps or is to the left of B's bounding box.</para>
             </listitem>
           </varlistentry>
 
           <varlistentry>
-            <term>A &#38;&#62; B</term>
+            <term>A &amp;&gt; B</term>
 
             <listitem>
-              <para>The &#34;&#38;&#62;&#34; operator returns true if A&#39;s
-              bounding box overlaps or is to the right of B&#39;s bounding
+              <para>The &quot;&amp;&gt;&quot; operator returns true if A's
+              bounding box overlaps or is to the right of B's bounding
               box.</para>
             </listitem>
           </varlistentry>
 
           <varlistentry>
-            <term>A &#60;&#60; B</term>
+            <term>A &lt;&lt; B</term>
 
             <listitem>
-              <para>The &#34;&#60;&#60;&#34; operator returns true if A&#39;s
-              bounding box is strictly to the left of B&#39;s bounding box.</para>
+              <para>The &quot;&lt;&lt;&quot; operator returns true if A's
+              bounding box is strictly to the left of B's bounding box.</para>
             </listitem>
           </varlistentry>
 
           <varlistentry>
-            <term>A &#62;&#62; B</term>
+            <term>A &gt;&gt; B</term>
 
             <listitem>
-              <para>The &#34;&#62;&#62;&#34; operator returns true if A&#39;s
-              bounding box is strictly to the right of B&#39;s bounding box.</para>
+              <para>The &quot;&gt;&gt;&quot; operator returns true if A's
+              bounding box is strictly to the right of B's bounding box.</para>
             </listitem>
           </varlistentry>
 
           <varlistentry>
-            <term>A &#38;&#60;| B</term>
+            <term>A &amp;&lt;| B</term>
 
             <listitem>
-              <para>The &#34;&#38;&#60;|&#34; operator returns true if A&#39;s
-              bounding box overlaps or is below B&#39;s bounding box.</para>
+              <para>The &quot;&amp;&lt;|&quot; operator returns true if A's
+              bounding box overlaps or is below B's bounding box.</para>
             </listitem>
           </varlistentry>
 
           <varlistentry>
-            <term>A |&#38;&#62; B</term>
+            <term>A |&amp;&gt; B</term>
 
             <listitem>
-              <para>The &#34;|&#38;&#62;&#34; operator returns true if A&#39;s
-              bounding box overlaps or is above B&#39;s bounding box.</para>
+              <para>The &quot;|&amp;&gt;&quot; operator returns true if A's
+              bounding box overlaps or is above B's bounding box.</para>
             </listitem>
           </varlistentry>
 
           <varlistentry>
-            <term>A &#60;&#60;| B</term>
+            <term>A &lt;&lt;| B</term>
 
             <listitem>
-              <para>The &#34;&#60;&#60;|&#34; operator returns true if A&#39;s
-              bounding box is strictly below B&#39;s bounding box.</para>
+              <para>The &quot;&lt;&lt;|&quot; operator returns true if A's
+              bounding box is strictly below B's bounding box.</para>
             </listitem>
           </varlistentry>
 
           <varlistentry>
-            <term>A |&#62;&#62; B</term>
+            <term>A |&gt;&gt; B</term>
 
             <listitem>
-              <para>The &#34;|&#62;&#62;&#34; operator returns true if A&#39;s
-              bounding box is strictly above B&#39;s bounding box.</para>
+              <para>The &quot;|&gt;&gt;&quot; operator returns true if A's
+              bounding box is strictly above B's bounding box.</para>
             </listitem>
           </varlistentry>
 
@@ -4009,7 +4176,7 @@
             <term>A ~= B</term>
 
             <listitem>
-              <para>The &#34;~=&#34; operator is the &#34;same as&#34;
+              <para>The &quot;~=&quot; operator is the &quot;same as&quot;
               operator. It tests actual geometric equality of two features. So
               if A and B are the same feature, vertex-by-vertex, the operator
               returns true.</para>
@@ -4020,8 +4187,8 @@
             <term>A @ B</term>
 
             <listitem>
-              <para>The &#34;@&#34; operator returns true if A&#39;s bounding
-              box is completely contained by B&#39;s bounding box.</para>
+              <para>The &quot;@&quot; operator returns true if A's bounding
+              box is completely contained by B's bounding box.</para>
             </listitem>
           </varlistentry>
 
@@ -4029,18 +4196,18 @@
             <term>A ~ B</term>
 
             <listitem>
-              <para>The &#34;~&#34; operator returns true if A&#39;s bounding
-              box completely contains B&#39;s bounding box.</para>
+              <para>The &quot;~&quot; operator returns true if A's bounding
+              box completely contains B's bounding box.</para>
             </listitem>
           </varlistentry>
 
           <varlistentry>
-            <term>A &#38;&#38; B</term>
+            <term>A &amp;&amp; B</term>
 
             <listitem>
-              <para>The &#34;&#38;&#38;&#34; operator is the
-              &#34;overlaps&#34; operator. If A&#39;s bounding box overlaps
-              B&#39;s bounding box the operator returns true.</para>
+              <para>The &quot;&amp;&amp;&quot; operator is the
+              &quot;overlaps&quot; operator. If A's bounding box overlaps
+              B's bounding box the operator returns true.</para>
             </listitem>
           </varlistentry>
         </variablelist>
@@ -4109,17 +4276,17 @@
               The ellipsoid is a separate database type and can be constructed
               as follows:</para>
 
-              <literallayout>SPHEROID[&#60;NAME&#62;,&#60;SEMI-MAJOR
-              AXIS&#62;,&#60;INVERSE FLATTENING&#62;]</literallayout>
+              <literallayout>SPHEROID[&lt;NAME&gt;,&lt;SEMI-MAJOR
+              AXIS&gt;,&lt;INVERSE FLATTENING&gt;]</literallayout>
 
               <para>Eg:</para>
 
-              <literallayout>SPHEROID[&#34;GRS_1980&#34;,6378137,298.257222101]</literallayout>
+              <literallayout>SPHEROID[&quot;GRS_1980&quot;,6378137,298.257222101]</literallayout>
 
               <para>An example calculation might look like this:</para>
 
               <literallayout>SELECT length_spheroid( geometry_column,
-              &#39;SPHEROID[&#34;GRS_1980&#34;,6378137,298.257222101]&#39; )
+              'SPHEROID[&quot;GRS_1980&quot;,6378137,298.257222101]' )
               FROM geometry_table;</literallayout>
             </listitem>
           </varlistentry>
@@ -4198,11 +4365,11 @@
 
         <variablelist>
           <varlistentry>
-            <term>ST_AsBinary(geometry,{&#39;NDR&#39;|&#39;XDR&#39;})</term>
+            <term>ST_AsBinary(geometry,{'NDR'|'XDR'})</term>
 
             <listitem>
               <para>Returns the geometry in the OGC
-              &#34;well-known-binary&#34; format as a bytea, using
+              &quot;well-known-binary&quot; format as a bytea, using
               little-endian (NDR) or big-endian (XDR) encoding. This is useful
               in binary cursors to pull data out of the database without
               converting it to a string representation.</para>
@@ -4218,7 +4385,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>ST_AsEWKB(geometry, {&#39;NDR&#39;|&#39;XDR&#39;})</term>
+            <term>ST_AsEWKB(geometry, {'NDR'|'XDR'})</term>
 
             <listitem>
               <para>Returns a Geometry in EWKB format (as bytea) using either
@@ -4227,7 +4394,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>ST_AsHEXEWKB(geometry, {&#39;NDR&#39;|&#39;XDR&#39;})</term>
+            <term>ST_AsHEXEWKB(geometry, {'NDR'|'XDR'})</term>
 
             <listitem>
               <para>Returns a Geometry in HEXEWKB format (as text) using
@@ -4244,7 +4411,7 @@
               moves, the default (or 0) uses absolute moves. Third argument
               may be used to reduce the maximum number of decimal digits used
               in output (defaults to 15). Point geometries will be rendered as
-              cx/cy when &#39;rel&#39; arg is 0, x/y when &#39;rel&#39; is 1.</para>
+              cx/cy when 'rel' arg is 0, x/y when 'rel' is 1.</para>
             </listitem>
           </varlistentry>
 
@@ -4293,8 +4460,8 @@
           </varlistentry>
 
           <varlistentry>
-            <term>ST_MakePoint(&#60;x&#62;, &#60;y&#62;, [&#60;z&#62;],
-            [&#60;m&#62;])</term>
+            <term>ST_MakePoint(&lt;x&gt;, &lt;y&gt;, [&lt;z&gt;],
+            [&lt;m&gt;])</term>
 
             <listitem>
               <para>Creates a 2d,3dz or 4d point geometry.</para>
@@ -4302,7 +4469,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>ST_MakePointM(&#60;x&#62;, &#60;y&#62;, &#60;m&#62;)</term>
+            <term>ST_MakePointM(&lt;x&gt;, &lt;y&gt;, &lt;m&gt;)</term>
 
             <listitem>
               <para>Creates a 3dm point geometry.</para>
@@ -4310,7 +4477,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>ST_MakeBox2D(&#60;LL&#62;, &#60;UR&#62;)</term>
+            <term>ST_MakeBox2D(&lt;LL&gt;, &lt;UR&gt;)</term>
 
             <listitem>
               <para>Creates a BOX2D defined by the given point geometries.</para>
@@ -4318,7 +4485,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>ST_MakeBox3D(&#60;LLB&#62;, &#60;URT&#62;)</term>
+            <term>ST_MakeBox3D(&lt;LLB&gt;, &lt;URT&gt;)</term>
 
             <listitem>
               <para>Creates a BOX3D defined by the given point geometries.</para>
@@ -4376,7 +4543,7 @@
               and <link linkend="BdMPolyFromText">BdMPolyFromText</link> -
               wrappers to this function with standard OGC interface.</para>
 
-              <para>Availability: 1.1.0 - requires GEOS &#62;= 2.1.0.</para>
+              <para>Availability: 1.1.0 - requires GEOS &gt;= 2.1.0.</para>
             </listitem>
           </varlistentry>
 
@@ -4388,7 +4555,7 @@
               possible polygons formed from the constituent linework of a set
               of geometries.</para>
 
-              <para>Availability: 1.0.0RC1 - requires GEOS &#62;= 2.1.0.</para>
+              <para>Availability: 1.0.0RC1 - requires GEOS &gt;= 2.1.0.</para>
             </listitem>
           </varlistentry>
 
@@ -4398,10 +4565,10 @@
             <listitem>
               <para>This function returns a GEOMETRYCOLLECTION or a MULTI
               object from a set of geometries. The collect() function is an
-              &#34;aggregate&#34; function in the terminology of PostgreSQL.
+              &quot;aggregate&quot; function in the terminology of PostgreSQL.
               That means that it operators on lists of data, in the same way
-              the sum() and mean() functions do. For example, &#34;SELECT
-              COLLECT(GEOM) FROM GEOMTABLE GROUP BY ATTRCOLUMN&#34; will
+              the sum() and mean() functions do. For example, &quot;SELECT
+              COLLECT(GEOM) FROM GEOMTABLE GROUP BY ATTRCOLUMN&quot; will
               return a separate GEOMETRYCOLLECTION for each distinct value of
               ATTRCOLUMN.</para>
             </listitem>
@@ -4441,9 +4608,9 @@
             <listitem>
               <para>This is a set-returning function (SRF). It returns a set
               of geometry_dump rows, formed by a geometry (geom) and an array
-              of integers (path). The &#39;path&#39; field holds the polygon
+              of integers (path). The 'path' field holds the polygon
               ring index, contains a single element: 0 for the shell, hole
-              number for holes. The &#39;geom&#39; field contains the
+              number for holes. The 'geom' field contains the
               corresponding ring as a polygon.</para>
 
               <para>Availability: PostGIS 1.1.3. Requires PostgreSQL 7.3 or
@@ -4478,10 +4645,10 @@
           </varlistentry>
 
           <varlistentry>
-            <term>ST_AddPoint(linestring, point, [&#60;position&#62;])</term>
+            <term>ST_AddPoint(linestring, point, [&lt;position&gt;])</term>
 
             <listitem>
-              <para>Adds a point to a LineString before point &#60;pos&#62;
+              <para>Adds a point to a LineString before point &lt;pos&gt;
               (0-based index). Third parameter can be omitted or set to -1 for
               appending.</para>
             </listitem>
@@ -4521,7 +4688,7 @@
             <term>ST_Force_2d(geometry)</term>
 
             <listitem>
-              <para>Forces the geometries into a &#34;2-dimensional mode&#34;
+              <para>Forces the geometries into a &quot;2-dimensional mode&quot;
               so that all output representations will only have the X and Y
               coordinates. This is useful for force OGC-compliant output
               (since OGC only specifies 2-D geometries).</para>
@@ -4579,14 +4746,15 @@
 
             <listitem>
               <para>Applies an 3d affine transformation to the geometry. The
-              call <programlisting> Affine(geom, a, b, c, d, e, f, g, h, i,
-              xoff, yoff, zoff) </programlisting> represents the
-              transformation matrix <programlisting> / a b c xoff \ | d e f
-              yoff | | g h i zoff | \ 0 0 0 1 / </programlisting> and the
+              call <programlisting>Affine(geom, a, b, c, d, e, f, g, h, i, xoff, yoff, zoff) </programlisting>               represents the transformation matrix 
+              <programlisting>/ a  b  c  xoff \ 
+| d  e  f  yoff | 
+| g  h  i  zoff | 
+\ 0  0  0     1 /</programlisting> and the
               vertices are transformed as follows:
-              <programlisting> x&#39; = a*x + b*y + c*z + xoff y&#39; = d*x +
-              e*y + f*z + yoff z&#39; = g*x + h*y + i*z + zoff
-              </programlisting> All of the translate / scale functions below
+              <programlisting>x' = a*x + b*y + c*z + xoff 
+y' = d*x + e*y + f*z + yoff 
+z' = g*x + h*y + i*z + zoff</programlisting> All of the translate / scale functions below
               are expressed via such an affine transformation.</para>
 
               <para>Availability: 1.1.2.</para>
@@ -4599,13 +4767,15 @@
 
             <listitem>
               <para>Applies an 2d affine transformation to the geometry. The
-              call <programlisting> Affine(geom, a, b, d, e, xoff, yoff)
-              </programlisting> represents the transformation matrix
-              <programlisting> / a b 0 xoff \ / a b xoff \ | d e 0 yoff | rsp.
-              | d e yoff | | 0 0 1 0 | \ 0 0 1 / \ 0 0 0 1 / </programlisting>
+              call <programlisting>Affine(geom, a, b, d, e, xoff, yoff)</programlisting> represents the transformation matrix
+              <programlisting>/  a  b  0  xoff  \       /  a  b  xoff  \ 
+|  d  e  0  yoff  | rsp.  |  d  e  yoff  | 
+|  0  0  1     0  |       \  0  0     1  / 
+\  0  0  0     1  /</programlisting>
               and the vertices are transformed as follows:
-              <programlisting> x&#39; = a*x + b*y + xoff y&#39; = d*x + e*y +
-              yoff z&#39; = z </programlisting> This method is a subcase of
+              <programlisting>x' = a*x + b*y + xoff 
+y' = d*x + e*y + yoff 
+z' = z </programlisting> This method is a subcase of
               the 3D method above.</para>
 
               <para>Availability: 1.1.2.</para>
@@ -4682,7 +4852,7 @@
             <term>ST_Simplify(geometry, tolerance)</term>
 
             <listitem>
-              <para>Returns a &#34;simplified&#34; version of the given
+              <para>Returns a &quot;simplified&quot; version of the given
               geometry using the Douglas-Peuker algorithm. Will actually do
               something only with (multi)lines and (multi)polygons but you can
               safely call it with any kind of geometry. Since simplification
@@ -4730,7 +4900,7 @@
             <listitem>
               <para>Snap all points of the input geometry to the grid defined
               by its origin (the second argument, must be a point) and cell
-              sizes. Specify 0 as size for any dimension you don&#39;t want to
+              sizes. Specify 0 as size for any dimension you don't want to
               snap to a grid.</para>
 
               <para>Availability: 1.1.0</para>
@@ -4755,7 +4925,7 @@
               <para>Returns a (set of) LineString(s) formed by sewing together
               constituent linework of input.</para>
 
-              <para>Availability: 1.1.0 - requires GEOS &#62;= 2.1.0</para>
+              <para>Availability: 1.1.0 - requires GEOS &gt;= 2.1.0</para>
             </listitem>
           </varlistentry>
         </variablelist>
@@ -4795,7 +4965,7 @@
               starting and ending at the given fractions of total 2d length.
               Second and third arguments are float8 values between 0 and 1.</para>
 
-              <para>If &#39;start&#39; and &#39;end&#39; have the same value
+              <para>If 'start' and 'end' have the same value
               this is equivalent to <link linkend="line_interpolate_point">line_interpolate_point()</link>.</para>
 
               <para>See <link linkend="line_locate_point">line_locate_point()</link>
@@ -4894,13 +5064,13 @@
             <term>ST_extent(geometry set)</term>
 
             <listitem>
-              <para>The extent() function is an &#34;aggregate&#34; function
+              <para>The extent() function is an &quot;aggregate&quot; function
               in the terminology of PostgreSQL. That means that it operators
               on lists of data, in the same way the sum() and mean() functions
-              do. For example, &#34;SELECT EXTENT(GEOM) FROM GEOMTABLE&#34;
+              do. For example, &quot;SELECT EXTENT(GEOM) FROM GEOMTABLE&quot;
               will return a BOX3D giving the maximum extend of all features in
-              the table. Similarly, &#34;SELECT EXTENT(GEOM) FROM GEOMTABLE
-              GROUP BY CATEGORY&#34; will return one extent result for each
+              the table. Similarly, &quot;SELECT EXTENT(GEOM) FROM GEOMTABLE
+              GROUP BY CATEGORY&quot; will return one extent result for each
               category.</para>
             </listitem>
           </varlistentry>
@@ -4973,15 +5143,15 @@
             <term>ST_estimated_extent([schema], table, geocolumn)</term>
 
             <listitem>
-              <para>Return the &#39;estimated&#39; extent of the given spatial
-              table. The estimated is taken from the geometry column&#39;s
+              <para>Return the 'estimated' extent of the given spatial
+              table. The estimated is taken from the geometry column's
               statistics. The current schema will be used if not specified.</para>
 
-              <para>For PostgreSQL&#62;=8.0.0 statistics are gathered by
+              <para>For PostgreSQL&gt;=8.0.0 statistics are gathered by
               VACUUM ANALYZE and resulting extent will be about 95% of the
               real one.</para>
 
-              <para>For PostgreSQL&#60;8.0.0 statistics are gathered by
+              <para>For PostgreSQL&lt;8.0.0 statistics are gathered by
               update_geometry_stats() and resulting extent will be exact.</para>
             </listitem>
           </varlistentry>
@@ -4990,8 +5160,8 @@
             <term>ST_find_srid(varchar,varchar,varchar)</term>
 
             <listitem>
-              <para>The syntax is find_srid(&#60;db/schema&#62;,
-              &#60;table&#62;, &#60;column&#62;) and the function returns the
+              <para>The syntax is find_srid(&lt;db/schema&gt;,
+              &lt;table&gt;, &lt;column&gt;) and the function returns the
               integer SRID of the specified column by searching through the
               GEOMETRY_COLUMNS table. If the geometry column has not been
               properly added with the AddGeometryColumns() function, this
@@ -5012,7 +5182,7 @@
 
             <listitem>
               <para>The syntax for this functions is
-              point_inside_circle(&#60;geometry&#62;,&#60;circle_center_x&#62;,&#60;circle_center_y&#62;,&#60;radius&#62;).
+              point_inside_circle(&lt;geometry&gt;,&lt;circle_center_x&gt;,&lt;circle_center_y&gt;,&lt;radius&gt;).
               Returns the true if the geometry is a point and is inside the
               circle. Returns false otherwise.</para>
             </listitem>
@@ -5863,17 +6033,17 @@
     postgis_full_version()</code> [for postgis] and <code>SELECT version()</code>
     [for postgresql].</para>
 
-    <para>If you aren&#39;t using latest release, it&#39;s worth taking a look
+    <para>If you aren't using latest release, it's worth taking a look
     at its <ulink url="http://postgis.refractions.net/CHANGES.txt">release
     changelog</ulink> first, to find out if your bug has already been fixed.</para>
 
     <para>Using the <ulink url="http://postgis.refractions.net/bugs/">PostGIS
     bug tracker</ulink> will ensure your reports are not discarded, and will
-    keep you informed on it&#39;s handling process. Before reporting a new bug
+    keep you informed on it's handling process. Before reporting a new bug
     please query the database to see if it is a known one, and if it is please
     add any new information you have about it.</para>
 
-    <para>You might want to read Simon Tatham&#39;s paper about <ulink
+    <para>You might want to read Simon Tatham's paper about <ulink
     url="http://www.chiark.greenend.org.uk/~sgtatham/bugs.html">How to Report
     Bugs Effectively</ulink> before filing a new report.</para>
   </chapter>
@@ -6063,15 +6233,15 @@
           Java</para>
 
           <para>Added EJB3Spatial.odt to fulfill the GPL requirement of
-          distributing the &#34;preferred form of modification&#34;</para>
+          distributing the &quot;preferred form of modification&quot;</para>
 
           <para>Removed obsolete synchronization from JDBC Jts code.</para>
 
           <para>Updated heavily outdated README files for shp2pgsql/pgsql2shp
           by merging them with the manpages.</para>
 
-          <para>Fixed version tag in jdbc code that still said &#34;1.1.3&#34;
-          in the &#34;1.1.4&#34; release.</para>
+          <para>Fixed version tag in jdbc code that still said &quot;1.1.3&quot;
+          in the &quot;1.1.4&quot; release.</para>
         </sect3>
 
         <sect3>
@@ -6122,14 +6292,14 @@
           <title>Java changes</title>
 
           <para>reworked JTS support to reflect new upstream JTS
-          developers&#39; attitude to SRID handling. Simplifies code and drops
+          developers' attitude to SRID handling. Simplifies code and drops
           build depend on GNU trove.</para>
 
-          <para>Added EJB2 support generously donated by the &#34;Geodetix
-          s.r.l. Company&#34; http://www.geodetix.it/</para>
+          <para>Added EJB2 support generously donated by the &quot;Geodetix
+          s.r.l. Company&quot; http://www.geodetix.it/</para>
 
           <para>Added EJB3 tutorial / examples donated by Norman Barker
-          &#60;nbarker@ittvis.com&#62;</para>
+          &lt;nbarker@ittvis.com&gt;</para>
 
           <para>Reorganized java directory layout a little.</para>
         </sect3>
@@ -6207,7 +6377,7 @@
 
           <para>Use Jade for generating documentation.</para>
 
-          <para>Don&#39;t link pgsql2shp to more libs then required.</para>
+          <para>Don't link pgsql2shp to more libs then required.</para>
 
           <para>Initial support for PostgreSQL 8.2.</para>
         </sect3>
@@ -6261,7 +6431,7 @@
           internally</para>
 
           <para>Embedded access control in estimated_extent() for builds
-          against pgsql &#62;= 8.0.0</para>
+          against pgsql &gt;= 8.0.0</para>
         </sect3>
 
         <sect3>
@@ -6341,7 +6511,7 @@
 
         <para>It is <emphasis>highly recommended</emphasis> that you upgrade
         to GEOS-2.2.x before installing PostGIS, this will ensure future GEOS
-        upgrades won&#39;t require a rebuild of the PostGIS library.</para>
+        upgrades won't require a rebuild of the PostGIS library.</para>
 
         <sect3>
           <title>Credits</title>
@@ -6423,7 +6593,7 @@
         <sect3>
           <title>Function semantic changes</title>
 
-          <para>SnapToGrid doesn&#39;t discard higher dimensions</para>
+          <para>SnapToGrid doesn't discard higher dimensions</para>
 
           <para>Changed Z() function to return NULL if requested dimension is
           not available</para>
@@ -6549,7 +6719,7 @@
         <para>Release date: 2005/11/25</para>
 
         <para>Contains memory-alignment fixes in the library, a segfault fix
-        in loader&#39;s handling of UTF8 attributes and a few improvements and
+        in loader's handling of UTF8 attributes and a few improvements and
         cleanups.</para>
 
         <note>
@@ -6604,7 +6774,7 @@
 
           <para>Schema aware postgis_proc_upgrade.pl, support for pgsql 7.2+</para>
 
-          <para>New &#34;Reporting Bugs&#34; chapter in manual</para>
+          <para>New &quot;Reporting Bugs&quot; chapter in manual</para>
         </sect3>
       </sect2>
 
@@ -6689,7 +6859,7 @@
 
           <para>If you are upgrading from versions 1.0.0RC6 or up, this
           release includes a perl script (utils/rebuild_bbox_caches.pl) to
-          force recomputation of geometries&#39; bounding boxes and invoke all
+          force recomputation of geometries' bounding boxes and invoke all
           operations required to propagate eventual changes in them (geometry
           statistics update, reindexing). Invoke the script after a make
           install (run with no args for syntax help). Optionally run
@@ -6700,7 +6870,7 @@
         <sect3>
           <title>Bug fixes</title>
 
-          <para>Severe bugfix in lwgeom&#39;s 2d bounding box computation</para>
+          <para>Severe bugfix in lwgeom's 2d bounding box computation</para>
 
           <para>Bugfix in WKT (-w) POINT handling in loader</para>
 
@@ -6800,7 +6970,7 @@
 
           <para>documentation fixes</para>
 
-          <para>jdbc2: compile with &#34;-target 1.2 -source 1.2&#34; by
+          <para>jdbc2: compile with &quot;-target 1.2 -source 1.2&quot; by
           default</para>
 
           <para>NEW -k switch for pgsql2shp</para>
@@ -6902,7 +7072,7 @@
 
           <para>BUGFIX in postgis_restore.pl scrip</para>
 
-          <para>BUGFIX in dumper&#39;s 64bit support</para>
+          <para>BUGFIX in dumper's 64bit support</para>
         </sect3>
       </sect2>
 
@@ -7178,10 +7348,10 @@
 
           <para>Lossless canonical output.</para>
 
-          <para>EWKB Canonical binary IO with PG&#62;73.</para>
+          <para>EWKB Canonical binary IO with PG&gt;73.</para>
 
           <para>Support for up to 4d coordinates, providing lossless
-          shapefile-&#62;postgis-&#62;shapefile conversion.</para>
+          shapefile-&gt;postgis-&gt;shapefile conversion.</para>
 
           <para>New function: UpdateGeometrySRID(), AsGML(), SnapToGrid(),
           ForceRHR(), estimated_extent(), accum().</para>
