@@ -71,6 +71,7 @@ typedef unsigned char byte;
 
 /* Global data */
 PGconn *conn;
+char conn_string[2048];
 int rowbuflen;
 char temptablename[256];
 char *geo_col_name, *table, *shp_file, *schema, *usrquery;
@@ -188,6 +189,7 @@ main(int ARGC, char **ARGV)
 	unescapedattrs=0;
 	binary = 0;
 	keep_fieldname_case = 0;
+	conn_string[0] = '\0';
 #ifdef DEBUG
 	FILE *debug;
 #endif
@@ -212,7 +214,7 @@ main(int ARGC, char **ARGV)
         if(shp_file == NULL) shp_file = table;
 
 	/* Make a connection to the specified database, and exit on failure */
-	conn = PQconnectdb("");
+	conn = PQconnectdb(conn_string);
 	if (PQstatus(conn) == CONNECTION_BAD) {
 		printf( "%s", PQerrorMessage(conn));
 		exit_nicely(conn, 1);
@@ -2334,14 +2336,13 @@ int
 parse_commandline(int ARGC, char **ARGV)
 {
 	int c, curindex;
-	char buf[1024];
+	char buf[2048];
         
         if ( ARGC == 1 ) {
                 usage(ARGV[0], 0, stdout);
         }
 
-
-	buf[1023] = '\0'; /* just in case... */
+	memset(buf, 0, 2048); /* just in case... */
 
 	/* Parse command line */
         while ((c = getopt(ARGC, ARGV, "bf:h:du:p:P:g:rk")) != EOF){
@@ -2353,9 +2354,7 @@ parse_commandline(int ARGC, char **ARGV)
 				shp_file = optarg;
 				break;
 			case 'h':
-				/*setenv("PGHOST", optarg, 1); */
-				snprintf(buf, 255, "PGHOST=%s", optarg);
-				putenv(strdup(buf));
+				snprintf(buf + strlen(buf), 255, "host=%s ", optarg);	
 				break;
 			case 'd':
 				dswitchprovided = 1;
@@ -2366,19 +2365,13 @@ parse_commandline(int ARGC, char **ARGV)
 				unescapedattrs = 1;
 				break;		  
 			case 'u':
-				/*setenv("PGUSER", optarg, 1); */
-				snprintf(buf, 255, "PGUSER=%s", optarg);
-				putenv(strdup(buf));
+				snprintf(buf + strlen(buf), 255, "user=%s ", optarg);
 				break;
 			case 'p':
-				/*setenv("PGPORT", optarg, 1); */
-				snprintf(buf, 255, "PGPORT=%s", optarg);
-				putenv(strdup(buf));
+				snprintf(buf + strlen(buf), 255, "port=%s ", optarg);	
 				break;
 			case 'P':
-				/*setenv("PGPASSWORD", optarg, 1); */
-				snprintf(buf, 255, "PGPASSWORD=%s", optarg);
-				putenv(strdup(buf));
+				snprintf(buf + strlen(buf), 255, "password=%s ", optarg);
 				break;
 			case 'g':
 				geo_col_name = optarg;
@@ -2396,9 +2389,7 @@ parse_commandline(int ARGC, char **ARGV)
         curindex=0;
         for (; optind<ARGC; optind++){
                 if (curindex == 0) {
-			/*setenv("PGDATABASE", ARGV[optind], 1); */
-		    	snprintf(buf, 255, "PGDATABASE=%s", ARGV[optind]);
-		    	putenv(strdup(buf));
+		    	snprintf(buf + strlen(buf), 255, "dbname=%s", ARGV[optind]);
                 }else if(curindex == 1){
 			parse_table(ARGV[optind]);
 
@@ -2406,6 +2397,10 @@ parse_commandline(int ARGC, char **ARGV)
                 curindex++;
         }
         if (curindex < 2) return 0;
+	
+	/* Copy the buffer result to the connection string */
+	strncpy(conn_string, buf, 2048);	
+	
 	return 1;
 }
 
