@@ -4632,6 +4632,70 @@ CREATEFUNCTION ST_Equals(geometry,geometry)
     LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -----------------------------------------------------------------------
+-- Prepared Geometry Predicates
+-- requires GEOS 3.2.0-CAPI-1.5.0
+-----------------------------------------------------------------------
+	
+CREATEFUNCTION _ST_ContainsPrepared(geometry,geometry)
+    RETURNS boolean
+    AS '@MODULE_FILENAME@','containsPrepared'
+    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Availability: 1.3.3
+-- Inlines index magic
+CREATEFUNCTION ST_ContainsPrepared(geometry,geometry)
+    RETURNS boolean
+    AS 'SELECT $1 && $2 AND _ST_ContainsPrepared($1,$2)'
+    LANGUAGE 'SQL' _IMMUTABLE; -- WITH (iscachable);
+
+	
+CREATEFUNCTION _ST_ContainsProperlyPrepared(geometry,geometry)
+    RETURNS boolean
+    AS '@MODULE_FILENAME@','containsProperlyPrepared'
+    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Availability: 1.3.3
+-- Inlines index magic
+CREATEFUNCTION ST_ContainsProperlyPrepared(geometry,geometry)
+    RETURNS boolean
+    AS 'SELECT $1 && $2 AND _ST_ContainsProperlyPrepared($1,$2)'
+    LANGUAGE 'SQL' _IMMUTABLE; -- WITH (iscachable);
+
+	
+-- Availability: 1.3.3
+-- Added for completeness, and to make testing ST_ContainsProperlyPrepared easier
+CREATE OR REPLACE FUNCTION ST_ContainsProperly(geometry,geometry)
+    RETURNS boolean
+    AS 'SELECT $1 && $2 AND ST_relate($1,$2,''T**FF*FF*'')'
+    LANGUAGE 'SQL' IMMUTABLE; 
+
+	
+CREATEFUNCTION _ST_CoversPrepared(geometry,geometry)
+    RETURNS boolean
+    AS '@MODULE_FILENAME@','coversPrepared'
+    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+	
+-- Availability: 1.3.3
+-- Inlines index magic
+CREATEFUNCTION ST_CoversPrepared(geometry,geometry)
+    RETURNS boolean
+    AS 'SELECT $1 && $2 AND _ST_CoversPrepared($1,$2)'
+    LANGUAGE 'SQL' _IMMUTABLE; -- WITH (iscachable);
+
+	
+CREATEFUNCTION _ST_IntersectsPrepared(geometry,geometry)
+    RETURNS boolean
+    AS '@MODULE_FILENAME@','intersectsPrepared'
+    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+	
+-- Availability: 1.3.3
+-- Inlines index magic
+CREATEFUNCTION ST_IntersectsPrepared(geometry,geometry)
+    RETURNS boolean
+    AS 'SELECT $1 && $2 AND _ST_IntersectsPrepared($1,$2)'
+    LANGUAGE 'SQL' _IMMUTABLE; -- WITH (iscachable);
+
+-----------------------------------------------------------------------
 -- SVG OUTPUT
 -----------------------------------------------------------------------
 -- Deprecation in 1.2.3
