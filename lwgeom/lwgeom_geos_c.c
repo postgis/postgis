@@ -3,12 +3,20 @@
 #include "utils/builtins.h"
 #include "fmgr.h"
 
+
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
 #include "profile.h"
 #include "wktparse.h"
 #include "geos_c.h"
 #include "lwgeom_rtree.h"
+
+#include <string.h>
+
+
+#ifdef PROFILE
+#warning PROFILE enabled!
+#endif
 
 /*
  * Define this to have have many notices printed
@@ -1347,6 +1355,7 @@ int point_outside_polygon(RTREE_NODE **root, int ringCount, LWPOINT *point);
 int point_outside_polygon_deprecated(LWPOLY *polygon, LWPOINT *point);
 int point_in_multipolygon(LWMPOLY *mpolygon, LWPOINT *point);
 
+
 PG_FUNCTION_INFO_V1(contains);
 Datum contains(PG_FUNCTION_ARGS)
 {
@@ -1499,7 +1508,7 @@ Datum contains(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	profreport("geos",geom1, geom2, NULL);
+	profreport("cont",geom1, geom2, NULL);
 #endif
 
 	PG_FREE_IF_COPY(geom1, 0);
@@ -1507,6 +1516,7 @@ Datum contains(PG_FUNCTION_ARGS)
 
 	PG_RETURN_BOOL(result);
 }
+
 
 /*
  * Described at 
@@ -3575,3 +3585,413 @@ Datum LWGEOM_buildarea(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 
 }
+
+
+//#define NO_PREPARED_GEOM
+#ifndef NO_PREPARED_GEOM
+
+Datum containsPrepared(PG_FUNCTION_ARGS);
+Datum containsProperlyPrepared(PG_FUNCTION_ARGS);
+Datum coversPrepared(PG_FUNCTION_ARGS);
+Datum intersectsPrepared(PG_FUNCTION_ARGS);
+
+typedef struct
+{
+	Size 					serialized_geom_length;
+	uchar * 				serialized_geom;
+	GEOSPreparedGeometry * 	prepared_geom;
+} PREPARED_GEOM_CACHE;
+
+/*
+char
+compare_bytes( uchar *obj1, uchar *obj2, Size len)
+{
+	Size i = 0;
+	
+	while ( i < len ) 
+		if ( obj1[ i ] != obj2[ i ] )
+			return 0;
+		else
+			i++;
+			
+	return 1;
+}
+*/
+
+/* 
+ * get cached prepared geometry for geom1
+ * only geom1 is potentially prepared as only
+ * the first arg of the prepared predicates CAN be prepared
+ * briefly, the following does:
+ *
+ * get cache
+ * if cache not exist
+ *   create cache 
+ *   arg1 into cache
+ *   return test( geom1, geom2)
+ *
+ * else if geom1 matches cached geom1
+ *    if cached prepared not exist
+ *        geom1 prepared into cache
+ *    
+ *    prepare geom1get prepared 
+ *
+ * else
+ *   geom1 into cache geom1
+ */
+PREPARED_GEOM_CACHE *
+get_prepared_geometry_cache( 
+	PREPARED_GEOM_CACHE * 	cache, 
+	uchar * 				serialized_geom, 
+	Size 					serialized_geom_length)
+	//GEOSGeom 				geom)
+{
+	GEOSGeom g;
+
+	if ( !cache || !cache->serialized_geom )
+	{
+		//lwnotice("get_prepared_geometry_cache: creating cache: %x", cache);
+
+		cache = lwalloc( sizeof( PREPARED_GEOM_CACHE ));
+		
+		cache->prepared_geom = 0;
+		cache->serialized_geom_length = serialized_geom_length;
+		cache->serialized_geom = lwalloc(serialized_geom_length);
+        memcpy( cache->serialized_geom, serialized_geom, serialized_geom_length); 
+	}
+	else if ( serialized_geom_length == cache->serialized_geom_length 
+		&& 0 == memcmp( cache->serialized_geom, serialized_geom, cache->serialized_geom_length ))
+	{
+		if ( !cache->prepared_geom )
+		{
+			//lwnotice("get_prepared_geometry_cache: preparing obj");
+			g = POSTGIS2GEOS( serialized_geom);
+			cache->prepared_geom = GEOSPrepare( g);
+		}
+		else
+		{
+			//lwnotice("get_prepared_geometry_cache: prepared obj in cache");
+		}
+	}
+	else
+	{
+		//lwnotice("get_prepared_geometry_cache: obj NOT in cache");
+
+		lwfree( cache->serialized_geom);
+		cache->serialized_geom = 0;
+		
+		GEOSPreparedGeom_destroy( cache->prepared_geom);
+		cache->prepared_geom = 0;
+
+		cache->serialized_geom_length = serialized_geom_length;
+		cache->serialized_geom = lwalloc(serialized_geom_length);
+        memcpy( cache->serialized_geom, serialized_geom, serialized_geom_length); 
+	}
+	
+	return cache;
+}
+
+
+PG_FUNCTION_INFO_V1(containsPrepared);
+Datum containsPrepared(PG_FUNCTION_ARGS)
+{
+    Size 					arg1_length;
+	PG_LWGEOM *				geom1;
+	PG_LWGEOM *				geom2;
+	GEOSGeom 				g1, g2;
+	GEOSPreparedGeometry * 	pg;
+	bool 					result;
+	BOX2DFLOAT4 			box1, box2;
+	PREPARED_GEOM_CACHE *	prep_cache;
+	MemoryContext 			old_context;
+
+	//(varattrib *) datum
+	//(struct varlena *) DatumGetPointer(datum)
+    arg1_length = toast_raw_datum_size(PG_GETARG_DATUM(0)) - VARHDRSZ;
+
+	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+
+	errorIfGeometryCollection(geom1,geom2);
+	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
+
+	/*
+	 * short-circuit: if geom2 bounding box is not completely inside
+	 * geom1 bounding box we can prematurely return FALSE.
+	 * Do the test IFF BOUNDING BOX AVAILABLE.
+	 */
+	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
+		getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	{
+		if ( box2.xmin < box1.xmin ) PG_RETURN_BOOL(FALSE);
+		if ( box2.xmax > box1.xmax ) PG_RETURN_BOOL(FALSE);
+		if ( box2.ymin < box1.ymin ) PG_RETURN_BOOL(FALSE);
+		if ( box2.ymax > box1.ymax ) PG_RETURN_BOOL(FALSE);
+	}
+	
+	old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
+	prep_cache =  fcinfo->flinfo->fn_extra;
+	//lwnotice("prep_cache before: %x", prep_cache);
+	prep_cache = get_prepared_geometry_cache( prep_cache, geom1, arg1_length);
+	//lwnotice("prep_cache after: %x", prep_cache);
+	fcinfo->flinfo->fn_extra = prep_cache;
+	MemoryContextSwitchTo(old_context);
+
+	g2 = POSTGIS2GEOS(geom2);
+
+	if ( !prep_cache || !prep_cache->prepared_geom )
+	{
+		g1 = POSTGIS2GEOS(geom1);
+		//lwnotice("invoking GEOSContains");
+		result = GEOSContains( g1, g2);
+		
+		GEOSGeom_destroy(g1);
+	}
+	else
+	{
+		pg = prep_cache->prepared_geom;
+
+		//lwnotice("invoking GEOSPreparedContains");
+		result = GEOSPreparedContains( pg, g2);	
+	}
+	GEOSGeom_destroy(g2);
+
+	if (result == 2)
+	{
+		elog(ERROR,"GEOS contains() threw an error!");
+		PG_RETURN_NULL(); /* never get here */
+	}
+
+	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom2, 1);
+
+	PG_RETURN_BOOL(result);
+}
+
+PG_FUNCTION_INFO_V1(containsProperlyPrepared);
+Datum containsProperlyPrepared(PG_FUNCTION_ARGS)
+{
+    Size 					arg1_length;
+	PG_LWGEOM *				geom1;
+	PG_LWGEOM *				geom2;
+	GEOSGeom 				g1, g2;
+	GEOSPreparedGeometry * 	pg;
+	bool 					result;
+	BOX2DFLOAT4 			box1, box2;
+	PREPARED_GEOM_CACHE *	prep_cache;
+	MemoryContext 			old_context;
+
+	//(varattrib *) datum
+	//(struct varlena *) DatumGetPointer(datum)
+    arg1_length = toast_raw_datum_size(PG_GETARG_DATUM(0)) - VARHDRSZ;
+
+	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+
+	errorIfGeometryCollection(geom1,geom2);
+	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
+
+	/*
+	 * short-circuit: if geom2 bounding box is not completely inside
+	 * geom1 bounding box we can prematurely return FALSE.
+	 * Do the test IFF BOUNDING BOX AVAILABLE.
+	 */
+	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
+		getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	{
+		if ( box2.xmin < box1.xmin ) PG_RETURN_BOOL(FALSE);
+		if ( box2.xmax > box1.xmax ) PG_RETURN_BOOL(FALSE);
+		if ( box2.ymin < box1.ymin ) PG_RETURN_BOOL(FALSE);
+		if ( box2.ymax > box1.ymax ) PG_RETURN_BOOL(FALSE);
+	}
+	
+	old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
+	prep_cache =  fcinfo->flinfo->fn_extra;
+	//lwnotice("prep_cache before: %x", prep_cache);
+	prep_cache = get_prepared_geometry_cache( prep_cache, geom1, arg1_length);
+	//lwnotice("prep_cache after: %x", prep_cache);
+	fcinfo->flinfo->fn_extra = prep_cache;
+	MemoryContextSwitchTo(old_context);
+
+	g2 = POSTGIS2GEOS(geom2);
+
+	if ( !prep_cache || !prep_cache->prepared_geom )
+	{
+		g1 = POSTGIS2GEOS(geom1);
+		
+		result = GEOSRelatePattern( g1, g2, "T**FF*FF*");
+		
+		GEOSGeom_destroy(g1);
+	}
+	else
+	{
+		pg = prep_cache->prepared_geom;
+
+		result = GEOSPreparedContainsProperly( pg, g2);	
+	}
+	GEOSGeom_destroy(g2);
+
+	if (result == 2)
+	{
+		elog(ERROR,"GEOS contains() threw an error!");
+		PG_RETURN_NULL(); /* never get here */
+	}
+
+	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom2, 1);
+
+	PG_RETURN_BOOL(result);
+}
+
+PG_FUNCTION_INFO_V1(coversPrepared);
+Datum coversPrepared(PG_FUNCTION_ARGS)
+{
+    Size 					arg1_length;
+	PG_LWGEOM *				geom1;
+	PG_LWGEOM *				geom2;
+	GEOSGeom 				g1, g2;
+	GEOSPreparedGeometry * 	pg;
+	bool 					result;
+	BOX2DFLOAT4 			box1, box2;
+	PREPARED_GEOM_CACHE *	prep_cache;
+	MemoryContext 			old_context;
+
+	//(varattrib *) datum
+	//(struct varlena *) DatumGetPointer(datum)
+    arg1_length = toast_raw_datum_size(PG_GETARG_DATUM(0)) - VARHDRSZ;
+
+	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+
+	errorIfGeometryCollection(geom1,geom2);
+	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
+
+	/*
+	 * short-circuit: if geom2 bounding box is not completely inside
+	 * geom1 bounding box we can prematurely return FALSE.
+	 * Do the test IFF BOUNDING BOX AVAILABLE.
+	 */
+	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
+		getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	{
+		if ( box2.xmin < box1.xmin ) PG_RETURN_BOOL(FALSE);
+		if ( box2.xmax > box1.xmax ) PG_RETURN_BOOL(FALSE);
+		if ( box2.ymin < box1.ymin ) PG_RETURN_BOOL(FALSE);
+		if ( box2.ymax > box1.ymax ) PG_RETURN_BOOL(FALSE);
+	}
+	
+	old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
+	prep_cache =  fcinfo->flinfo->fn_extra;
+	//lwnotice("prep_cache before: %x", prep_cache);
+	prep_cache = get_prepared_geometry_cache( prep_cache, geom1, arg1_length);
+	//lwnotice("prep_cache after: %x", prep_cache);
+	fcinfo->flinfo->fn_extra = prep_cache;
+	MemoryContextSwitchTo(old_context);
+
+	g2 = POSTGIS2GEOS(geom2);
+
+	if ( !prep_cache || !prep_cache->prepared_geom )
+	{
+		g1 = POSTGIS2GEOS(geom1);
+
+		result = GEOSRelatePattern( g1, g2, "******FF*");
+		
+		GEOSGeom_destroy(g1);
+	}
+	else
+	{
+		pg = prep_cache->prepared_geom;
+
+		//lwnotice("invoking GEOSPreparedContains");
+		result = GEOSPreparedCovers( pg, g2);	
+	}
+	GEOSGeom_destroy(g2);
+
+	if (result == 2)
+	{
+		elog(ERROR,"GEOS contains() threw an error!");
+		PG_RETURN_NULL(); /* never get here */
+	}
+
+	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom2, 1);
+
+	PG_RETURN_BOOL(result);
+}
+
+PG_FUNCTION_INFO_V1(intersectsPrepared);
+Datum intersectsPrepared(PG_FUNCTION_ARGS)
+{
+    Size 					arg1_length;
+	PG_LWGEOM *				geom1;
+	PG_LWGEOM *				geom2;
+	GEOSGeom 				g1, g2;
+	GEOSPreparedGeometry * 	pg;
+	bool 					result;
+	BOX2DFLOAT4 			box1, box2;
+	PREPARED_GEOM_CACHE *	prep_cache;
+	MemoryContext 			old_context;
+
+	//(varattrib *) datum
+	//(struct varlena *) DatumGetPointer(datum)
+    arg1_length = toast_raw_datum_size(PG_GETARG_DATUM(0)) - VARHDRSZ;
+
+	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+
+	errorIfGeometryCollection(geom1,geom2);
+	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
+
+	/*
+	 * short-circuit 1: if geom2 bounding box does not overlap
+	 * geom1 bounding box we can prematurely return FALSE.
+	 * Do the test IFF BOUNDING BOX AVAILABLE.
+	 */
+	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
+		getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	{
+		if ( box2.xmax < box1.xmin ) PG_RETURN_BOOL(FALSE);
+		if ( box2.xmin > box1.xmax ) PG_RETURN_BOOL(FALSE);
+		if ( box2.ymax < box1.ymin ) PG_RETURN_BOOL(FALSE);
+		if ( box2.ymin > box2.ymax ) PG_RETURN_BOOL(FALSE);
+	}
+	
+	old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
+	prep_cache =  fcinfo->flinfo->fn_extra;
+	//lwnotice("prep_cache before: %x", prep_cache);
+	prep_cache = get_prepared_geometry_cache( prep_cache, geom1, arg1_length);
+	//lwnotice("prep_cache after: %x", prep_cache);
+	fcinfo->flinfo->fn_extra = prep_cache;
+	MemoryContextSwitchTo(old_context);
+
+	g2 = POSTGIS2GEOS(geom2);
+
+	if ( !prep_cache || !prep_cache->prepared_geom )
+	{
+		g1 = POSTGIS2GEOS(geom1);
+
+		result = GEOSIntersects( g1, g2);
+		
+		GEOSGeom_destroy(g1);
+	}
+	else
+	{
+		pg = prep_cache->prepared_geom;
+
+		result = GEOSPreparedIntersects( pg, g2);	
+	}
+	GEOSGeom_destroy(g2);
+
+	if (result == 2)
+	{
+		elog(ERROR,"GEOS contains() threw an error!");
+		PG_RETURN_NULL(); /* never get here */
+	}
+
+	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom2, 1);
+
+	PG_RETURN_BOOL(result);
+}
+
+#endif
