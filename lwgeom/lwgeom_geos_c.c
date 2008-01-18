@@ -3587,8 +3587,8 @@ Datum LWGEOM_buildarea(PG_FUNCTION_ARGS)
 }
 
 
-//#define NO_PREPARED_GEOM
-#ifndef NO_PREPARED_GEOM
+#define PREPARED_GEOM 1
+#ifdef PREPARED_GEOM
 
 Datum containsPrepared(PG_FUNCTION_ARGS);
 Datum containsProperlyPrepared(PG_FUNCTION_ARGS);
@@ -3627,31 +3627,29 @@ compare_bytes( uchar *obj1, uchar *obj2, Size len)
  * get cache
  * if cache not exist
  *   create cache 
- *   arg1 into cache
- *   return test( geom1, geom2)
+ *   geom1 into cache
  *
  * else if geom1 matches cached geom1
  *    if cached prepared not exist
  *        geom1 prepared into cache
  *    
- *    prepare geom1get prepared 
- *
  * else
- *   geom1 into cache geom1
+ *   geom1 into cache
  */
 PREPARED_GEOM_CACHE *
 get_prepared_geometry_cache( 
 	PREPARED_GEOM_CACHE * 	cache, 
 	uchar * 				serialized_geom, 
 	Size 					serialized_geom_length)
-	//GEOSGeom 				geom)
 {
 	GEOSGeom g;
 
 	if ( !cache || !cache->serialized_geom )
 	{
-		//lwnotice("get_prepared_geometry_cache: creating cache: %x", cache);
-
+		#ifdef PGIS_DEBUG
+		lwnotice( "get_prepared_geometry_cache: creating cache: %x", cache);
+		#endif
+		
 		cache = lwalloc( sizeof( PREPARED_GEOM_CACHE ));
 		
 		cache->prepared_geom = 0;
@@ -3664,18 +3662,25 @@ get_prepared_geometry_cache(
 	{
 		if ( !cache->prepared_geom )
 		{
-			//lwnotice("get_prepared_geometry_cache: preparing obj");
+			#ifdef PGIS_DEBUG
+			lwnotice("get_prepared_geometry_cache: preparing obj");
+			#endif
+			
 			g = POSTGIS2GEOS( serialized_geom);
 			cache->prepared_geom = GEOSPrepare( g);
 		}
 		else
 		{
-			//lwnotice("get_prepared_geometry_cache: prepared obj in cache");
+			#ifdef PGIS_DEBUG
+			lwnotice("get_prepared_geometry_cache: prepared obj in cache");
+			#endif
 		}
 	}
 	else
 	{
-		//lwnotice("get_prepared_geometry_cache: obj NOT in cache");
+		#ifdef PGIS_DEBUG
+		lwnotice("get_prepared_geometry_cache: obj NOT in cache");
+		#endif
 
 		lwfree( cache->serialized_geom);
 		cache->serialized_geom = 0;
@@ -3705,13 +3710,13 @@ Datum containsPrepared(PG_FUNCTION_ARGS)
 	PREPARED_GEOM_CACHE *	prep_cache;
 	MemoryContext 			old_context;
 
-	//(varattrib *) datum
-	//(struct varlena *) DatumGetPointer(datum)
-    arg1_length = toast_raw_datum_size(PG_GETARG_DATUM(0)) - VARHDRSZ;
+    /*arg1_length = toast_raw_datum_size(PG_GETARG_DATUM(0)) - VARHDRSZ;*/
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
+	arg1_length = VARSIZE(geom1) - VARHDRSZ;
+	
 	errorIfGeometryCollection(geom1,geom2);
 	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
 
@@ -3731,18 +3736,20 @@ Datum containsPrepared(PG_FUNCTION_ARGS)
 	
 	old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
 	prep_cache =  fcinfo->flinfo->fn_extra;
-	//lwnotice("prep_cache before: %x", prep_cache);
+
 	prep_cache = get_prepared_geometry_cache( prep_cache, geom1, arg1_length);
-	//lwnotice("prep_cache after: %x", prep_cache);
+
 	fcinfo->flinfo->fn_extra = prep_cache;
 	MemoryContextSwitchTo(old_context);
+
+	initGEOS(lwnotice, lwnotice);
 
 	g2 = POSTGIS2GEOS(geom2);
 
 	if ( !prep_cache || !prep_cache->prepared_geom )
 	{
 		g1 = POSTGIS2GEOS(geom1);
-		//lwnotice("invoking GEOSContains");
+
 		result = GEOSContains( g1, g2);
 		
 		GEOSGeom_destroy(g1);
@@ -3751,7 +3758,6 @@ Datum containsPrepared(PG_FUNCTION_ARGS)
 	{
 		pg = prep_cache->prepared_geom;
 
-		//lwnotice("invoking GEOSPreparedContains");
 		result = GEOSPreparedContains( pg, g2);	
 	}
 	GEOSGeom_destroy(g2);
@@ -3781,13 +3787,13 @@ Datum containsProperlyPrepared(PG_FUNCTION_ARGS)
 	PREPARED_GEOM_CACHE *	prep_cache;
 	MemoryContext 			old_context;
 
-	//(varattrib *) datum
-	//(struct varlena *) DatumGetPointer(datum)
-    arg1_length = toast_raw_datum_size(PG_GETARG_DATUM(0)) - VARHDRSZ;
+    /*arg1_length = toast_raw_datum_size(PG_GETARG_DATUM(0)) - VARHDRSZ;*/
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
+	arg1_length = VARSIZE(geom1) - VARHDRSZ;
+	
 	errorIfGeometryCollection(geom1,geom2);
 	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
 
@@ -3807,12 +3813,14 @@ Datum containsProperlyPrepared(PG_FUNCTION_ARGS)
 	
 	old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
 	prep_cache =  fcinfo->flinfo->fn_extra;
-	//lwnotice("prep_cache before: %x", prep_cache);
+	
 	prep_cache = get_prepared_geometry_cache( prep_cache, geom1, arg1_length);
-	//lwnotice("prep_cache after: %x", prep_cache);
+	
 	fcinfo->flinfo->fn_extra = prep_cache;
-	MemoryContextSwitchTo(old_context);
+	MemoryContextSwitchTo( old_context);
 
+	initGEOS(lwnotice, lwnotice);
+		
 	g2 = POSTGIS2GEOS(geom2);
 
 	if ( !prep_cache || !prep_cache->prepared_geom )
@@ -3856,13 +3864,13 @@ Datum coversPrepared(PG_FUNCTION_ARGS)
 	PREPARED_GEOM_CACHE *	prep_cache;
 	MemoryContext 			old_context;
 
-	//(varattrib *) datum
-	//(struct varlena *) DatumGetPointer(datum)
-    arg1_length = toast_raw_datum_size(PG_GETARG_DATUM(0)) - VARHDRSZ;
+    /*arg1_length = toast_raw_datum_size(PG_GETARG_DATUM(0)) - VARHDRSZ;*/
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
+	arg1_length = VARSIZE(geom1) - VARHDRSZ;
+	
 	errorIfGeometryCollection(geom1,geom2);
 	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
 
@@ -3882,11 +3890,13 @@ Datum coversPrepared(PG_FUNCTION_ARGS)
 	
 	old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
 	prep_cache =  fcinfo->flinfo->fn_extra;
-	//lwnotice("prep_cache before: %x", prep_cache);
+
 	prep_cache = get_prepared_geometry_cache( prep_cache, geom1, arg1_length);
-	//lwnotice("prep_cache after: %x", prep_cache);
+
 	fcinfo->flinfo->fn_extra = prep_cache;
 	MemoryContextSwitchTo(old_context);
+
+	initGEOS(lwnotice, lwnotice);
 
 	g2 = POSTGIS2GEOS(geom2);
 
@@ -3902,7 +3912,6 @@ Datum coversPrepared(PG_FUNCTION_ARGS)
 	{
 		pg = prep_cache->prepared_geom;
 
-		//lwnotice("invoking GEOSPreparedContains");
 		result = GEOSPreparedCovers( pg, g2);	
 	}
 	GEOSGeom_destroy(g2);
@@ -3932,13 +3941,13 @@ Datum intersectsPrepared(PG_FUNCTION_ARGS)
 	PREPARED_GEOM_CACHE *	prep_cache;
 	MemoryContext 			old_context;
 
-	//(varattrib *) datum
-	//(struct varlena *) DatumGetPointer(datum)
-    arg1_length = toast_raw_datum_size(PG_GETARG_DATUM(0)) - VARHDRSZ;
+    /*arg1_length = toast_raw_datum_size(PG_GETARG_DATUM(0)) - VARHDRSZ;*/
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
+	arg1_length = VARSIZE(geom1) - VARHDRSZ;
+	
 	errorIfGeometryCollection(geom1,geom2);
 	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
 
@@ -3958,11 +3967,13 @@ Datum intersectsPrepared(PG_FUNCTION_ARGS)
 	
 	old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
 	prep_cache =  fcinfo->flinfo->fn_extra;
-	//lwnotice("prep_cache before: %x", prep_cache);
+
 	prep_cache = get_prepared_geometry_cache( prep_cache, geom1, arg1_length);
-	//lwnotice("prep_cache after: %x", prep_cache);
+
 	fcinfo->flinfo->fn_extra = prep_cache;
 	MemoryContextSwitchTo(old_context);
+
+	initGEOS(lwnotice, lwnotice);
 
 	g2 = POSTGIS2GEOS(geom2);
 
