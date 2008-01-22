@@ -3587,8 +3587,9 @@ Datum LWGEOM_buildarea(PG_FUNCTION_ARGS)
 }
 
 
+#if ( GEOS_VERSION_MAJOR > 3 || (GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 1) ) && ( GEOS_CAPI_VERSION_MAJOR > 1 || (GEOS_CAPI_VERSION_MAJOR == 1 && GEOS_CAPI_VERSION_MINOR >= 5) )
 #define PREPARED_GEOM 1
-#ifdef PREPARED_GEOM
+#endif
 
 Datum containsPrepared(PG_FUNCTION_ARGS);
 Datum containsProperlyPrepared(PG_FUNCTION_ARGS);
@@ -3602,21 +3603,6 @@ typedef struct
 	GEOSPreparedGeometry * 	prepared_geom;
 } PREPARED_GEOM_CACHE;
 
-/*
-char
-compare_bytes( uchar *obj1, uchar *obj2, Size len)
-{
-	Size i = 0;
-	
-	while ( i < len ) 
-		if ( obj1[ i ] != obj2[ i ] )
-			return 0;
-		else
-			i++;
-			
-	return 1;
-}
-*/
 
 /* 
  * get cached prepared geometry for geom1
@@ -3697,9 +3683,16 @@ get_prepared_geometry_cache(
 }
 
 
+
+
 PG_FUNCTION_INFO_V1(containsPrepared);
 Datum containsPrepared(PG_FUNCTION_ARGS)
 {
+#ifndef PREPARED_GEOM
+	elog(ERROR,"Not implemented in this version!");
+	PG_RETURN_NULL(); /* never get here */
+
+#else
     Size 					arg1_length;
 	PG_LWGEOM *				geom1;
 	PG_LWGEOM *				geom2;
@@ -3772,11 +3765,17 @@ Datum containsPrepared(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom2, 1);
 
 	PG_RETURN_BOOL(result);
+#endif
 }
 
 PG_FUNCTION_INFO_V1(containsProperlyPrepared);
 Datum containsProperlyPrepared(PG_FUNCTION_ARGS)
 {
+#ifndef PREPARED_GEOM
+	elog(ERROR,"Not implemented in this version!");
+	PG_RETURN_NULL(); /* never get here */
+
+#else
     Size 					arg1_length;
 	PG_LWGEOM *				geom1;
 	PG_LWGEOM *				geom2;
@@ -3849,11 +3848,17 @@ Datum containsProperlyPrepared(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom2, 1);
 
 	PG_RETURN_BOOL(result);
+#endif
 }
 
 PG_FUNCTION_INFO_V1(coversPrepared);
 Datum coversPrepared(PG_FUNCTION_ARGS)
 {
+#ifndef PREPARED_GEOM
+	elog(ERROR,"Not implemented in this version!");
+	PG_RETURN_NULL(); /* never get here */
+
+#else
     Size 					arg1_length;
 	PG_LWGEOM *				geom1;
 	PG_LWGEOM *				geom2;
@@ -3926,11 +3931,17 @@ Datum coversPrepared(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom2, 1);
 
 	PG_RETURN_BOOL(result);
+#endif
 }
 
 PG_FUNCTION_INFO_V1(intersectsPrepared);
 Datum intersectsPrepared(PG_FUNCTION_ARGS)
 {
+#ifndef PREPARED_GEOM
+	elog(ERROR,"Not implemented in this version!");
+	PG_RETURN_NULL(); /* never get here */
+
+#else
     Size 					arg1_length;
 	PG_LWGEOM *				geom1;
 	PG_LWGEOM *				geom2;
@@ -4003,6 +4014,6 @@ Datum intersectsPrepared(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom2, 1);
 
 	PG_RETURN_BOOL(result);
+#endif
 }
 
-#endif
