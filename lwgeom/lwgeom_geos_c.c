@@ -3587,14 +3587,21 @@ Datum LWGEOM_buildarea(PG_FUNCTION_ARGS)
 }
 
 
-#if ( GEOS_VERSION_MAJOR > 3 || (GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 1) ) && ( GEOS_CAPI_VERSION_MAJOR > 1 || (GEOS_CAPI_VERSION_MAJOR == 1 && GEOS_CAPI_VERSION_MINOR >= 5) )
-#define PREPARED_GEOM 1
-#endif
-
 Datum containsPrepared(PG_FUNCTION_ARGS);
 Datum containsProperlyPrepared(PG_FUNCTION_ARGS);
 Datum coversPrepared(PG_FUNCTION_ARGS);
 Datum intersectsPrepared(PG_FUNCTION_ARGS);
+
+/*
+ * GEOS prepared geometry is only available from GEOS 3.1 onwards
+ */
+#if ( GEOS_VERSION_MAJOR > 3 || (GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 1) ) 
+/* #if ( GEOS_CAPI_VERSION_MAJOR > 1 || (GEOS_CAPI_VERSION_MAJOR == 1 && GEOS_CAPI_VERSION_MINOR >= 5) ) */
+#define PREPARED_GEOM 1
+#endif
+
+
+#ifdef PREPARED_GEOM
 
 typedef struct
 {
@@ -3682,7 +3689,7 @@ get_prepared_geometry_cache(
 	return cache;
 }
 
-
+#endif
 
 
 PG_FUNCTION_INFO_V1(containsPrepared);
