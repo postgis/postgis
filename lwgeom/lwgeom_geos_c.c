@@ -3605,8 +3605,7 @@ Datum intersectsPrepared(PG_FUNCTION_ARGS);
 
 typedef struct
 {
-	Size 					serialized_geom_length;
-	uchar * 				serialized_geom;
+	int32					key;
 	GEOSPreparedGeometry * 	prepared_geom;
 } PREPARED_GEOM_CACHE;
 
@@ -3620,24 +3619,25 @@ typedef struct
  * get cache
  * if cache not exist
  *   create cache 
- *   geom1 into cache
+ *   key into cache
  *
- * else if geom1 matches cached geom1
+ * else if key matches cached key
  *    if cached prepared not exist
  *        geom1 prepared into cache
  *    
  * else
- *   geom1 into cache
+ *   key into cache
+ *   clear prepared cache
  */
 PREPARED_GEOM_CACHE *
 get_prepared_geometry_cache( 
 	PREPARED_GEOM_CACHE * 	cache, 
-	uchar * 				serialized_geom, 
-	Size 					serialized_geom_length)
+	uchar * 				serialized_geom,
+	int32					key )
 {
 	GEOSGeom g;
 
-	if ( !cache || !cache->serialized_geom )
+	if ( !cache )
 	{
 		#ifdef PGIS_DEBUG
 		lwnotice( "get_prepared_geometry_cache: creating cache: %x", cache);
@@ -3646,12 +3646,9 @@ get_prepared_geometry_cache(
 		cache = lwalloc( sizeof( PREPARED_GEOM_CACHE ));
 		
 		cache->prepared_geom = 0;
-		cache->serialized_geom_length = serialized_geom_length;
-		cache->serialized_geom = lwalloc(serialized_geom_length);
-        memcpy( cache->serialized_geom, serialized_geom, serialized_geom_length); 
+		cache->key = key;
 	}
-	else if ( serialized_geom_length == cache->serialized_geom_length 
-		&& 0 == memcmp( cache->serialized_geom, serialized_geom, cache->serialized_geom_length ))
+	else if ( cache->key == key )
 	{
 		if ( !cache->prepared_geom )
 		{
@@ -3675,21 +3672,16 @@ get_prepared_geometry_cache(
 		lwnotice("get_prepared_geometry_cache: obj NOT in cache");
 		#endif
 
-		lwfree( cache->serialized_geom);
-		cache->serialized_geom = 0;
-		
 		GEOSPreparedGeom_destroy( cache->prepared_geom);
-		cache->prepared_geom = 0;
 
-		cache->serialized_geom_length = serialized_geom_length;
-		cache->serialized_geom = lwalloc(serialized_geom_length);
-        memcpy( cache->serialized_geom, serialized_geom, serialized_geom_length); 
+		cache->prepared_geom = 0;
+		cache->key = key;
 	}
 	
 	return cache;
 }
 
-#endif
+#endif /* PREPARED_GEOM */
 
 
 PG_FUNCTION_INFO_V1(containsPrepared);
@@ -3700,7 +3692,6 @@ Datum containsPrepared(PG_FUNCTION_ARGS)
 	PG_RETURN_NULL(); /* never get here */
 
 #else
-    Size 					arg1_length;
 	PG_LWGEOM *				geom1;
 	PG_LWGEOM *				geom2;
 	GEOSGeom 				g1, g2;
@@ -3709,13 +3700,12 @@ Datum containsPrepared(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4 			box1, box2;
 	PREPARED_GEOM_CACHE *	prep_cache;
 	MemoryContext 			old_context;
-
-    /*arg1_length = toast_raw_datum_size(PG_GETARG_DATUM(0)) - VARHDRSZ;*/
+	int32					surrogate_key;
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-
-	arg1_length = VARSIZE(geom1) - VARHDRSZ;
+	
+	surrogate_key = PG_GETARG_INT32(2);
 	
 	errorIfGeometryCollection(geom1,geom2);
 	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
@@ -3737,7 +3727,7 @@ Datum containsPrepared(PG_FUNCTION_ARGS)
 	old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
 	prep_cache =  fcinfo->flinfo->fn_extra;
 
-	prep_cache = get_prepared_geometry_cache( prep_cache, geom1, arg1_length);
+	prep_cache = get_prepared_geometry_cache( prep_cache, geom1, surrogate_key);
 
 	fcinfo->flinfo->fn_extra = prep_cache;
 	MemoryContextSwitchTo(old_context);
@@ -3772,7 +3762,7 @@ Datum containsPrepared(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom2, 1);
 
 	PG_RETURN_BOOL(result);
-#endif
+#endif /* PREPARED_GEOM */
 }
 
 PG_FUNCTION_INFO_V1(containsProperlyPrepared);
@@ -3783,7 +3773,6 @@ Datum containsProperlyPrepared(PG_FUNCTION_ARGS)
 	PG_RETURN_NULL(); /* never get here */
 
 #else
-    Size 					arg1_length;
 	PG_LWGEOM *				geom1;
 	PG_LWGEOM *				geom2;
 	GEOSGeom 				g1, g2;
@@ -3792,13 +3781,12 @@ Datum containsProperlyPrepared(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4 			box1, box2;
 	PREPARED_GEOM_CACHE *	prep_cache;
 	MemoryContext 			old_context;
-
-    /*arg1_length = toast_raw_datum_size(PG_GETARG_DATUM(0)) - VARHDRSZ;*/
+	int32					surrogate_key;
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-
-	arg1_length = VARSIZE(geom1) - VARHDRSZ;
+	
+	surrogate_key = PG_GETARG_INT32(2);
 	
 	errorIfGeometryCollection(geom1,geom2);
 	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
@@ -3820,7 +3808,7 @@ Datum containsProperlyPrepared(PG_FUNCTION_ARGS)
 	old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
 	prep_cache =  fcinfo->flinfo->fn_extra;
 	
-	prep_cache = get_prepared_geometry_cache( prep_cache, geom1, arg1_length);
+	prep_cache = get_prepared_geometry_cache( prep_cache, geom1, surrogate_key);
 	
 	fcinfo->flinfo->fn_extra = prep_cache;
 	MemoryContextSwitchTo( old_context);
@@ -3855,7 +3843,7 @@ Datum containsProperlyPrepared(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom2, 1);
 
 	PG_RETURN_BOOL(result);
-#endif
+#endif /* PREPARED_GEOM */
 }
 
 PG_FUNCTION_INFO_V1(coversPrepared);
@@ -3866,7 +3854,6 @@ Datum coversPrepared(PG_FUNCTION_ARGS)
 	PG_RETURN_NULL(); /* never get here */
 
 #else
-    Size 					arg1_length;
 	PG_LWGEOM *				geom1;
 	PG_LWGEOM *				geom2;
 	GEOSGeom 				g1, g2;
@@ -3875,13 +3862,12 @@ Datum coversPrepared(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4 			box1, box2;
 	PREPARED_GEOM_CACHE *	prep_cache;
 	MemoryContext 			old_context;
-
-    /*arg1_length = toast_raw_datum_size(PG_GETARG_DATUM(0)) - VARHDRSZ;*/
+	int32					surrogate_key;
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-
-	arg1_length = VARSIZE(geom1) - VARHDRSZ;
+	
+	surrogate_key = PG_GETARG_INT32(2);
 	
 	errorIfGeometryCollection(geom1,geom2);
 	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
@@ -3903,7 +3889,7 @@ Datum coversPrepared(PG_FUNCTION_ARGS)
 	old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
 	prep_cache =  fcinfo->flinfo->fn_extra;
 
-	prep_cache = get_prepared_geometry_cache( prep_cache, geom1, arg1_length);
+	prep_cache = get_prepared_geometry_cache( prep_cache, geom1, surrogate_key);
 
 	fcinfo->flinfo->fn_extra = prep_cache;
 	MemoryContextSwitchTo(old_context);
@@ -3938,7 +3924,7 @@ Datum coversPrepared(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom2, 1);
 
 	PG_RETURN_BOOL(result);
-#endif
+#endif /* PREPARED_GEOM */
 }
 
 PG_FUNCTION_INFO_V1(intersectsPrepared);
@@ -3949,7 +3935,6 @@ Datum intersectsPrepared(PG_FUNCTION_ARGS)
 	PG_RETURN_NULL(); /* never get here */
 
 #else
-    Size 					arg1_length;
 	PG_LWGEOM *				geom1;
 	PG_LWGEOM *				geom2;
 	GEOSGeom 				g1, g2;
@@ -3958,13 +3943,12 @@ Datum intersectsPrepared(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4 			box1, box2;
 	PREPARED_GEOM_CACHE *	prep_cache;
 	MemoryContext 			old_context;
-
-    /*arg1_length = toast_raw_datum_size(PG_GETARG_DATUM(0)) - VARHDRSZ;*/
+	int32					surrogate_key;
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-
-	arg1_length = VARSIZE(geom1) - VARHDRSZ;
+	
+	surrogate_key = PG_GETARG_INT32(2);
 	
 	errorIfGeometryCollection(geom1,geom2);
 	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
@@ -3986,7 +3970,7 @@ Datum intersectsPrepared(PG_FUNCTION_ARGS)
 	old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
 	prep_cache =  fcinfo->flinfo->fn_extra;
 
-	prep_cache = get_prepared_geometry_cache( prep_cache, geom1, arg1_length);
+	prep_cache = get_prepared_geometry_cache( prep_cache, geom1, surrogate_key);
 
 	fcinfo->flinfo->fn_extra = prep_cache;
 	MemoryContextSwitchTo(old_context);
@@ -4021,6 +4005,6 @@ Datum intersectsPrepared(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom2, 1);
 
 	PG_RETURN_BOOL(result);
-#endif
+#endif /* PREPARED_GEOM */
 }
 

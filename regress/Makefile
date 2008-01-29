@@ -35,7 +35,7 @@ TESTS = \
 	sql-mm-curvepoly \
 	sql-mm-general \
 	sql-mm-multicurve \
-	sql-mm-multisurface 
+	sql-mm-multisurface
 
 PREPROC = \
 	sql-mm-circularstring_expected \
@@ -45,7 +45,7 @@ PREPROC = \
 	sql-mm-multisurface_expected
 
 ifeq ($(USE_GEOS),1)
-	TESTS += regress_ogc regress_bdpoly
+	TESTS += regress_ogc regress_bdpoly regress_ogc_prep
 endif
 
 ifeq ($(USE_PROJ),1)
