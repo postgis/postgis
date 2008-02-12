@@ -60,6 +60,7 @@ Datum isvalid(PG_FUNCTION_ARGS);
 Datum buffer(PG_FUNCTION_ARGS);
 Datum intersection(PG_FUNCTION_ARGS);
 Datum convexhull(PG_FUNCTION_ARGS);
+Datum topologypreservesimplify(PG_FUNCTION_ARGS);
 Datum difference(PG_FUNCTION_ARGS);
 Datum boundary(PG_FUNCTION_ARGS);
 Datum symdifference(PG_FUNCTION_ARGS);
@@ -749,6 +750,83 @@ Datum convexhull(PG_FUNCTION_ARGS)
 
 	PG_RETURN_POINTER(result);
 
+}
+
+PG_FUNCTION_INFO_V1(topologypreservesimplify);
+Datum topologypreservesimplify(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM	*geom1;
+	double	tolerance;
+	GEOSGeom g1,g3;
+	PG_LWGEOM *result;
+
+#ifdef PROFILE
+	profstart(PROF_QRUN);
+#endif
+
+	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	tolerance = PG_GETARG_FLOAT8(1);
+
+	initGEOS(lwnotice, lwnotice);
+
+#ifdef PROFILE
+	profstart(PROF_P2G1);
+#endif
+	g1 = POSTGIS2GEOS(geom1);
+#ifdef PROFILE
+	profstop(PROF_P2G1);
+#endif
+
+#ifdef PROFILE
+	profstart(PROF_GRUN);
+#endif
+	g3 = GEOSTopologyPreserveSimplify(g1,tolerance);
+#ifdef PROFILE
+	profstop(PROF_GRUN);
+#endif
+
+	if (g3 == NULL)
+	{
+		elog(ERROR,"GEOS topologypreservesimplify() threw an error!");
+		GEOSGeom_destroy(g1);
+		PG_RETURN_NULL(); /* never get here */
+	}
+
+
+#ifdef PGIS_DEBUG
+	elog(NOTICE,"result: %s", GEOSGeomToWKT(g3));
+#endif
+
+	GEOSSetSRID(g3, pglwgeom_getSRID(geom1));
+
+#ifdef PROFILE
+	profstart(PROF_G2P);
+#endif
+	result = GEOS2POSTGIS(g3, TYPE_HASZ(geom1->type));
+#ifdef PROFILE
+	profstop(PROF_G2P);
+#endif
+	if (result == NULL)
+	{
+		GEOSGeom_destroy(g1);
+		GEOSGeom_destroy(g3);
+		elog(ERROR,"GEOS topologypreservesimplify() threw an error (result postgis geometry formation)!");
+		PG_RETURN_NULL(); /* never get here */
+	}
+	GEOSGeom_destroy(g1);
+	GEOSGeom_destroy(g3);
+
+
+	/* compressType(result); */
+
+#ifdef PROFILE
+	profstop(PROF_QRUN);
+	profreport("geos",geom1, NULL, result);
+#endif
+
+	PG_FREE_IF_COPY(geom1, 0);
+
+	PG_RETURN_POINTER(result);
 }
 
 PG_FUNCTION_INFO_V1(buffer);

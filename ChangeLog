@@ -1,3 +1,8 @@
+2008-02-12 Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* lwgeom/lwgeom_geos_c.c, lwgeom/lwpostgis.sql.in: Add in hook to 
+          GEOSTopologyPreserveSimplify
+
 ---------  PostGIS-1.3.2 release [2007-12-01] --------------------------
 
 2007-11-30 Mark Cave-Ayland <mark.cave-ayland@ilande.co.uk>
