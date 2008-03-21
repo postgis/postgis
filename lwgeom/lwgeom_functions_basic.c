@@ -1360,7 +1360,7 @@ Datum LWGEOM_force_2d(PG_FUNCTION_ARGS)
 	if ( lwgeom_ndims(geom->type) == 2 ) PG_RETURN_POINTER(geom);
 
 	/* allocate a larger for safety and simplicity */
-	srl = lwalloc(geom->size);
+	srl = lwalloc(VARSIZE(geom));
 
 	lwgeom_force2d_recursive(SERIALIZED_FORM(geom),
 		srl, &size);
@@ -1388,10 +1388,10 @@ Datum LWGEOM_force_3dz(PG_FUNCTION_ARGS)
 	if ( olddims == 3 && TYPE_HASZ(geom->type) ) PG_RETURN_POINTER(geom);
 
 	if ( olddims > 3 ) {
-		srl = lwalloc(geom->size);
+		srl = lwalloc(VARSIZE(geom));
 	} else {
 		/* allocate double as memory a larger for safety */
-		srl = lwalloc(geom->size*1.5);
+		srl = lwalloc(VARSIZE(geom)*1.5);
 	}
 
 	lwgeom_force3dz_recursive(SERIALIZED_FORM(geom),
@@ -1420,10 +1420,10 @@ Datum LWGEOM_force_3dm(PG_FUNCTION_ARGS)
 	if ( olddims == 3 && TYPE_HASM(geom->type) ) PG_RETURN_POINTER(geom);
 
 	if ( olddims > 3 ) {
-		size = geom->size;
+		size = VARSIZE(geom);
 	} else {
 		/* allocate double as memory a larger for safety */
-		size = geom->size * 2;
+		size = VARSIZE(geom) * 2;
 	}
 	srl = lwalloc(size);
 
@@ -1462,7 +1462,7 @@ Datum LWGEOM_force_4d(PG_FUNCTION_ARGS)
 	if ( olddims == 4 ) PG_RETURN_POINTER(geom);
 
 	/* allocate double as memory a larger for safety  */
-	srl = lwalloc(geom->size*2);
+	srl = lwalloc(VARSIZE(geom)*2);
 
 	lwgeom_force4d_recursive(SERIALIZED_FORM(geom),
 		srl, &size);
@@ -1911,7 +1911,7 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 	 */
 	++nelems;
 	if ( nelems == 1 || ! array ) {
-		nbytes = ARR_OVERHEAD_NONULLS(1)+INTALIGN(geom->size);
+		nbytes = ARR_OVERHEAD_NONULLS(1)+INTALIGN(VARSIZE(geom));
 #ifdef PGIS_DEBUG
 		elog(NOTICE, "geom_accum: adding %p (nelems=%d; nbytes=%d)",
 			(void*)geom, nelems, nbytes);
@@ -1934,16 +1934,16 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 #endif
 		memcpy(ARR_DIMS(result), &nelems, sizeof(int));
 		memcpy(ARR_LBOUND(result), &lbs, sizeof(int));
-		memcpy(ARR_DATA_PTR(result), geom, geom->size);
+		memcpy(ARR_DATA_PTR(result), geom, VARSIZE(geom));
 #ifdef PGIS_DEBUG
-		elog(NOTICE, " %d bytes memcopied", geom->size);
+		elog(NOTICE, " %d bytes memcopied", VARSIZE(geom));
 #endif
 
 	} else {
 		oldsize = VARSIZE(array);
-		nbytes = oldsize + INTALIGN(geom->size);
+		nbytes = oldsize + INTALIGN(VARSIZE(geom));
 #ifdef PGIS_DEBUG
-		elog(NOTICE, "geom_accum: old array size: %d, adding %ld bytes (nelems=%d; nbytes=%u)", array->size, INTALIGN(geom->size), nelems, nbytes);
+		elog(NOTICE, "geom_accum: old array size: %d, adding %ld bytes (nelems=%d; nbytes=%u)", ARR_SIZE(array), INTALIGN(VARSIZE(geom)), nelems, nbytes);
 #endif
 		result = (ArrayType *) lwrealloc(array, nbytes);
 		if ( ! result )
@@ -1967,7 +1967,7 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 		elog(NOTICE, " writing next element starting @ %p",
 			(void*)(result+oldsize));
 #endif
-		memcpy((uchar *)result+oldsize, geom, geom->size);
+		memcpy((uchar *)result+oldsize, geom, VARSIZE(geom));
 	}
 
 #ifdef PGIS_DEBUG
@@ -2025,7 +2025,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 
 #ifdef PGIS_DEBUG
 	elog(NOTICE, " array is %d-bytes in size, %ld w/out header",
-		array->size, array->size-ARR_OVERHEAD_NONULLS(ARR_NDIM(array)));
+		ARR_SIZE(array), ARR_SIZE(array)-ARR_OVERHEAD_NONULLS(ARR_NDIM(array)));
 #endif
 
 
@@ -2055,7 +2055,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 		PG_LWGEOM *geom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
 		unsigned int intype = TYPE_GETTYPE(geom->type);
 
-		offset += INTALIGN(geom->size);
+		offset += INTALIGN(VARSIZE(geom));
 
 		lwgeoms[i] = lwgeom_deserialize(SERIALIZED_FORM(geom));
 #ifdef PGIS_DEBUG
@@ -2250,7 +2250,7 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 	for (i=0; i<nelems; i++)
 	{
 		PG_LWGEOM *geom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
-		offset += INTALIGN(geom->size);
+		offset += INTALIGN(VARSIZE(geom));
 
 		if ( TYPE_GETTYPE(geom->type) != POINTTYPE ) continue;
 
@@ -2384,7 +2384,7 @@ Datum LWGEOM_makepoly(PG_FUNCTION_ARGS)
 		{
 			PG_LWGEOM *g = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
 			LWLINE *hole;
-			offset += INTALIGN(g->size);
+			offset += INTALIGN(VARSIZE(g));
 			if ( TYPE_GETTYPE(g->type) != LINETYPE ) {
 				lwerror("Hole %d is not a line", i);
 			}

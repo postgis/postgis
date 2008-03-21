@@ -275,7 +275,7 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 	while (!result) 
 	{
 		PG_LWGEOM *geom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
-		offset += INTALIGN(geom->size);
+		offset += INTALIGN(VARSIZE(geom));
 
 		/* Check is3d flag */
 		if ( TYPE_HASZ(geom->type) ) is3d = 1;
