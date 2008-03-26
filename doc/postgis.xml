@@ -6047,7 +6047,7 @@ z' = z </programlisting> This method is a subcase of
     at its <ulink url="http://postgis.refractions.net/CHANGES.txt">release
     changelog</ulink> first, to find out if your bug has already been fixed.</para>
 
-    <para>Using the <ulink url="http://postgis.refractions.net/bugs/">PostGIS
+    <para>Using the <ulink url="http://code.google.com/p/postgis/issues/list">PostGIS
     bug tracker</ulink> will ensure your reports are not discarded, and will
     keep you informed on it's handling process. Before reporting a new bug
     please query the database to see if it is a known one, and if it is please
