@@ -209,7 +209,7 @@ Datum BOX2D_overbelow(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4		   *box1 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(0);
 	BOX2DFLOAT4		   *box2 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(1);
 
-	PG_RETURN_BOOL(FPle(box1->ymin, box2->ymin));
+	PG_RETURN_BOOL(FPle(box1->ymax, box2->ymax));
 }
 
 /*
@@ -246,7 +246,7 @@ Datum BOX2D_overabove(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4		   *box1 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(0);
 	BOX2DFLOAT4		   *box2 = (BOX2DFLOAT4 *) PG_GETARG_POINTER(1);
 
-	PG_RETURN_BOOL(FPge(box1->ymax, box2->ymax));
+	PG_RETURN_BOOL(FPge(box1->ymin, box2->ymin));
 }
 
 /*
