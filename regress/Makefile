@@ -45,7 +45,10 @@ PREPROC = \
 	sql-mm-multisurface_expected
 
 ifeq ($(USE_GEOS),1)
-	TESTS += regress_ogc regress_bdpoly regress_ogc_prep
+#       Temporarily remove prepared geometry tests to provide compatibility 
+#       with GEOS 3.0.0
+#	TESTS += regress_ogc regress_bdpoly regress_ogc_prep
+	TESTS += regress_ogc regress_bdpoly 
 endif
 
 ifeq ($(USE_PROJ),1)
