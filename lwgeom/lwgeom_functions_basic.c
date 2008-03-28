@@ -2767,14 +2767,14 @@ Datum LWGEOM_same(PG_FUNCTION_ARGS)
 	if ( TYPE_GETTYPE(g1->type) != TYPE_GETTYPE(g2->type) )
 	{
 		PG_FREE_IF_COPY(g1, 0);
-		PG_FREE_IF_COPY(g2, 0);
+		PG_FREE_IF_COPY(g2, 1);
 		PG_RETURN_BOOL(FALSE); /* different types */
 	}
 
 	if ( TYPE_GETZM(g1->type) != TYPE_GETZM(g2->type) )
 	{
 		PG_FREE_IF_COPY(g1, 0);
-		PG_FREE_IF_COPY(g2, 0);
+		PG_FREE_IF_COPY(g2, 1);
 		PG_RETURN_BOOL(FALSE); /* different dimensions */
 	}
 
