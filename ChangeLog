@@ -1,12 +1,5 @@
 2008-03-28 Paul Ramsey <pramsey@cleverelephant.ca>
 
-        * lwgeom/lwgeom_kml.c, lwgeom/lwpostgis.sql.in
-          Added patch from Eduin Carillo to enhance KML
-          support. 
-          http://code.google.com/p/postgis/issues/detail?id=17
-
-2008-03-28 Paul Ramsey <pramsey@cleverelephant.ca>
-
         * doc/postgis.xml, lwgeom/lwgeom_svn.c,
           Added patch from Marco Hugentobler to enhance SVG 
           support. 2008-February/002883.html
