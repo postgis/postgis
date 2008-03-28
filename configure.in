@@ -117,9 +117,11 @@ dnl
 AC_SUBST(USE_GEOS)
 AC_SUBST(GEOS_DIR)
 AC_SUBST(GEOS_LDFLAGS)
+AC_SUBST(GEOS_VERNUM)
 USE_GEOS=0
 GEOS_DIR=
 GEOS_LDFLAGS=
+GEOS_VERNUM=10
 
 AC_PATH_PROG([GEOSCONFIG], [geos-config])
 if test -n "$GEOSCONFIG"; then
@@ -145,9 +147,10 @@ AC_ARG_WITH(geos,
 )
 
 if test $USE_GEOS -gt 0; then
-	GEOS_DIR=`$GEOSCONFIG --prefix`
 
+	GEOS_DIR=`$GEOSCONFIG --prefix`
 	GEOS_LDFLAGS=`$GEOSCONFIG --ldflags 2> /dev/null`
+
 	if test x"$GEOS_LDFLAGS" = "x"; then
 		# older geos-config versions did not
 		# support the --ldflags switch, we'll
@@ -157,41 +160,17 @@ if test $USE_GEOS -gt 0; then
 	fi
 
 	GEOS_MAJOR=`$GEOSCONFIG --version | cut -d. -f1`
-	if test "$GEOS_MAJOR" = "@GEOS_VERSION@"; then
-		GEOS_MAJOR=1
-		GEOS_MINOR=0
-	else
-		GEOS_MINOR=`$GEOSCONFIG --version | cut -d. -f2`
+	GEOS_MINOR=`$GEOSCONFIG --version | cut -d. -f2`
+	GEOS_VERNUM=`expr $GEOS_MAJOR "*" 10`
+	GEOS_VERNUM=`expr $GEOS_VERNUM "+" $GEOS_MINOR`
+
+	# GEOS >= 3.0.0 always has CAPI, however only GEOS >= 2.2.0 has CAPI support
+	# so abort if CAPI support is not available.
+	if test $GEOS_VERNUM -lt 22; then
+		AC_MSG_ERROR([PostGIS version >= 1.2.0 requires GEOS version >= 2.2.0]) 
 	fi
 
-    # GEOS >= 3.0.0 always has CAPI, however only GEOS >= 2.2.0 has CAPI support
-    # so abort if CAPI support is not available.
-	if test $GEOS_MAJOR -lt 3; then
-	    if test $GEOS_MAJOR -eq 2 -a $GEOS_MINOR -lt 2; then
-            AC_MSG_ERROR([PostGIS version >= 1.2.0 requires GEOS version >= 2.2.0]) 
-        else
-            # Make sure we abort for all other versions of GEOS
-            if test $GEOS_MAJOR -lt 2; then
-                AC_MSG_ERROR([PostGIS version >= 1.2.0 requires GEOS version >= 2.2.0])
-            fi
-        fi
-    fi
 fi
-
-AC_ARG_WITH(geos-libdir,
-[  --with-geos-libdir=PATH path to GEOS libdir
-                          [[taken from geos-config by default]]],
-[
-case "$with_geos_libdir" in
-	no|yes)
-		AC_MSG_ERROR([Invalid argument to --with-geos-libdir])
-		;;
-	*)
-		GEOS_LDFLAGS=-L${with_geos_libdir}
-		;;
-esac
-], with_geos_libdir=no)
-
 
 AC_SUBST(USE_PROJ)
 AC_SUBST(PROJ_DIR)

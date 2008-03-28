@@ -4073,13 +4073,13 @@ CREATE CAST (geometry AS bytea) WITH FUNCTION ST_bytea(geometry) AS IMPLICIT;
 ---------------------------------------------------------------
 
 -- Deprecation in 1.2.3
-CREATEFUNCTION simplify(geometry, float8)
+CREATEFUNCTION Simplify(geometry, float8)
    RETURNS geometry
    AS '@MODULE_FILENAME@', 'LWGEOM_simplify2d'
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Availability: 1.2.2
-CREATEFUNCTION ST_simplify(geometry, float8)
+CREATEFUNCTION ST_Simplify(geometry, float8)
    RETURNS geometry
    AS '@MODULE_FILENAME@', 'LWGEOM_simplify2d'
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -4137,13 +4137,13 @@ CREATEFUNCTION ST_SnapToGrid(geometry, geometry, float8, float8, float8, float8)
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Deprecation in 1.2.3
-CREATEFUNCTION segmentize(geometry, float8)
+CREATEFUNCTION Segmentize(geometry, float8)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_segmentize2d'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Availability: 1.2.2
-CREATEFUNCTION ST_segmentize(geometry, float8)
+CREATEFUNCTION ST_Segmentize(geometry, float8)
 	RETURNS geometry
 	AS '@MODULE_FILENAME@', 'LWGEOM_segmentize2d'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -4264,11 +4264,14 @@ CREATEFUNCTION ST_ConvexHull(geometry)
     AS '@MODULE_FILENAME@','convexhull'
     LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+#if GEOS_VERNUM >= 30
+-- Requires GEOS >= 3.0.0
 -- Availability: 1.3.3
 CREATEFUNCTION ST_SimplifyPreserveTopology(geometry, float8)
     RETURNS geometry
     AS '@MODULE_FILENAME@','topologypreservesimplify'
     LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+#endif
 
 -- Deprecation in 1.2.3
 CREATEFUNCTION difference(geometry,geometry)
@@ -4490,7 +4493,7 @@ CREATEFUNCTION ST_Within(geometry,geometry)
     LANGUAGE 'SQL' _IMMUTABLE; -- WITH (iscachable);
 
 -- Deprecation in 1.2.3
-CREATEFUNCTION contains(geometry,geometry)
+CREATEFUNCTION Contains(geometry,geometry)
    RETURNS boolean
    AS '@MODULE_FILENAME@'
    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -4508,6 +4511,7 @@ CREATEFUNCTION ST_Contains(geometry,geometry)
     AS 'SELECT $1 && $2 AND _ST_Contains($1,$2)'
     LANGUAGE 'SQL' _IMMUTABLE; -- WITH (iscachable);
 
+#if GEOS_VERNUM >= 30
 -- Availability: 1.2.2
 CREATEFUNCTION _ST_CoveredBy(geometry,geometry)
    RETURNS boolean
@@ -4532,6 +4536,7 @@ CREATEFUNCTION ST_Covers(geometry,geometry)
    RETURNS boolean
    AS 'SELECT $1 && $2 AND _ST_Covers($1,$2)'
    LANGUAGE 'SQL' _IMMUTABLE; -- WITH (iscachable);
+#endif
 
 -- Deprecation in 1.2.3
 CREATEFUNCTION overlaps(geometry,geometry)
@@ -4642,64 +4647,68 @@ CREATEFUNCTION ST_Equals(geometry,geometry)
 -- requires GEOS 3.1.0-CAPI-1.5.0 or better
 -----------------------------------------------------------------------
 
+#if GEOS_VERNUM >= 31
+
+-- Availability: 1.4.0
 CREATEFUNCTION _ST_ContainsPrepared(geometry,geometry,integer)
     RETURNS boolean
     AS '@MODULE_FILENAME@','containsPrepared'
     LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
--- Availability: 1.3.3
+-- Availability: 1.4.0
 -- Inlines index magic
 CREATEFUNCTION ST_Contains(geometry,geometry,integer)
     RETURNS boolean
     AS 'SELECT $1 && $2 AND _ST_ContainsPrepared($1,$2,$3)'
     LANGUAGE 'SQL' _IMMUTABLE; -- WITH (iscachable);
 
-	
+-- Availability: 1.4.0
 CREATEFUNCTION _ST_ContainsProperlyPrepared(geometry,geometry,integer)
     RETURNS boolean
     AS '@MODULE_FILENAME@','containsProperlyPrepared'
     LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
--- Availability: 1.3.3
+-- Availability: 1.4.0
 -- Inlines index magic
 CREATEFUNCTION ST_ContainsProperly(geometry,geometry,integer)
     RETURNS boolean
     AS 'SELECT $1 && $2 AND _ST_ContainsProperlyPrepared($1,$2,$3)'
     LANGUAGE 'SQL' _IMMUTABLE; -- WITH (iscachable);
 
-	
--- Availability: 1.3.3
+-- Availability: 1.4.0
 -- Added for completeness, and to make testing ST_ContainsProperlyPrepared easier
 CREATE OR REPLACE FUNCTION ST_ContainsProperly(geometry,geometry)
     RETURNS boolean
     AS 'SELECT $1 && $2 AND ST_relate($1,$2,''T**FF*FF*'')'
     LANGUAGE 'SQL' IMMUTABLE; 
-
 	
+-- Availability: 1.4.0
 CREATEFUNCTION _ST_CoversPrepared(geometry,geometry,integer)
     RETURNS boolean
     AS '@MODULE_FILENAME@','coversPrepared'
     LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-	
--- Availability: 1.3.3
+ 	
+-- Availability: 1.4.0
 -- Inlines index magic
 CREATEFUNCTION ST_Covers(geometry,geometry,integer)
     RETURNS boolean
     AS 'SELECT $1 && $2 AND _ST_CoversPrepared($1,$2,$3)'
     LANGUAGE 'SQL' _IMMUTABLE; -- WITH (iscachable);
 
-	
+Availability: 1.4.0
 CREATEFUNCTION _ST_IntersectsPrepared(geometry,geometry,integer)
     RETURNS boolean
     AS '@MODULE_FILENAME@','intersectsPrepared'
     LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-	
--- Availability: 1.3.3
+ 	
+-- Availability: 1.4.0
 -- Inlines index magic
 CREATEFUNCTION ST_Intersects(geometry,geometry,integer)
     RETURNS boolean
     AS 'SELECT $1 && $2 AND _ST_IntersectsPrepared($1,$2,$3)'
     LANGUAGE 'SQL' _IMMUTABLE; -- WITH (iscachable);
+
+#endif
 
 -----------------------------------------------------------------------
 -- SVG OUTPUT

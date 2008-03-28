@@ -36,6 +36,7 @@ PROJ_LIBDIR=@PROJ_LIBDIR@
 USE_GEOS=@USE_GEOS@
 GEOS_DIR=@GEOS_DIR@
 GEOS_LDFLAGS=@GEOS_LDFLAGS@
+GEOS_VERNUM=@GEOS_VERNUM@
 
 #
 # Set USE_JTS to 1 if you have libjts installed. 
@@ -156,36 +157,11 @@ endif
 
 #---------------------------------------------------------------
 # Test the version string and set the USE_VERSION macro
-# appropriately.
+# appropriately. eg:
+# 
+# pg_config --version => PostgreSQL 8.3.1
 #
-VERSION=$(shell $(PGCONFIG) --version)
-ifneq ($(findstring 7.1,$(VERSION)),)
-	USE_VERSION=71
-else
-	ifneq ($(findstring 7.2,$(VERSION)),)
-		USE_VERSION=72
-	else
-		ifneq ($(findstring 7.3,$(VERSION)),)
-			USE_VERSION=73
-		else
-			ifneq ($(findstring 7.4,$(VERSION)),)
-				USE_VERSION=74
-			else
-				ifneq ($(findstring 8.0,$(VERSION)),)
-					USE_VERSION=80
-				else
-					ifneq ($(findstring 8.1,$(VERSION)),)
-						USE_VERSION=81
-					else
-                        ifneq ($(findstring 8.2,$(VERSION)),)
-    						USE_VERSION=82
-                        else
-						    USE_VERSION=83
-                        endif
-					endif
-				endif
-			endif
-		endif
-	endif
-endif
+PG_VERSION_MAJOR=$(shell $(PGCONFIG) --version | cut -f2 -d' ' | cut -f1 -d.)
+PG_VERSION_MINOR=$(shell $(PGCONFIG) --version | cut -f2 -d' ' | cut -f2 -d.)
+USE_VERSION=$(PG_VERSION_MAJOR)$(PG_VERSION_MINOR)
 

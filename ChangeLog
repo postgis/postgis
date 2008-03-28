@@ -1,3 +1,13 @@
+2008-03-28 Paul Ramsey <pramsey@cleverelephant.ca>
+
+        * Makefile.config.in, configure.in, lwgeom/Makefile, 
+          lwgeom/lwpostgis.sql.in, lwgeom/lwgeom_geos_c.c
+          Changed GEOS version checking to use geos-config, and
+          set a GEOS_VERNUM macro that compresses the version string
+          into an integer: 2.2.1 = 22, 3.1.1 = 31, etc.
+        * Placed GEOS 3.0 and 3.1 dependent functions into 
+          appropriate macro blocks.
+
 2008-02-12 Paul Ramsey <pramsey@cleverelephant.ca>
 
 	* lwgeom/lwgeom_geos_c.c, lwgeom/lwpostgis.sql.in: Add in hook to 

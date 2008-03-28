@@ -752,6 +752,8 @@ Datum convexhull(PG_FUNCTION_ARGS)
 
 }
 
+#if GEOS_VERNUM >= 30 
+
 PG_FUNCTION_INFO_V1(topologypreservesimplify);
 Datum topologypreservesimplify(PG_FUNCTION_ARGS)
 {
@@ -828,6 +830,7 @@ Datum topologypreservesimplify(PG_FUNCTION_ARGS)
 
 	PG_RETURN_POINTER(result);
 }
+#endif
 
 PG_FUNCTION_INFO_V1(buffer);
 Datum buffer(PG_FUNCTION_ARGS)
@@ -3673,8 +3676,7 @@ Datum intersectsPrepared(PG_FUNCTION_ARGS);
 /*
  * GEOS prepared geometry is only available from GEOS 3.1 onwards
  */
-#if ( GEOS_VERSION_MAJOR > 3 || (GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 1) ) 
-/* #if ( GEOS_CAPI_VERSION_MAJOR > 1 || (GEOS_CAPI_VERSION_MAJOR == 1 && GEOS_CAPI_VERSION_MINOR >= 5) ) */
+#if GEOS_VERNUM >= 31
 #define PREPARED_GEOM 1
 #endif
 
