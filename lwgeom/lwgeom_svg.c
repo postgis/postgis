@@ -25,8 +25,8 @@ Datum assvg_geometry(PG_FUNCTION_ARGS);
 char *geometry_to_svg(PG_LWGEOM *geometry, int svgrel, int precision);
 void print_svg_coords(char *result, POINT2D *pt, int precision);
 void print_svg_circle(char *result, POINT2D *pt, int precision);
-void print_svg_path_abs(char *result, POINTARRAY *pa, int precision);
-void print_svg_path_rel(char *result, POINTARRAY *pa, int precision);
+void print_svg_path_abs(char *result, POINTARRAY *pa, int precision, int polygonRing);
+void print_svg_path_rel(char *result, POINTARRAY *pa, int precision, int polygonRing);
 
 #define SHOW_DIGS_DOUBLE 15
 #define MAX_DOUBLE_PRECISION 15
@@ -82,19 +82,56 @@ Datum assvg_geometry(PG_FUNCTION_ARGS)
 char *
 geometry_to_svg(PG_LWGEOM *geometry, int svgrel, int precision)
 {
-	char *result;
+	char *result = NULL;
 	LWGEOM_INSPECTED *inspected;
 	int t,u;
 	POINT2D	pt;
-	int size;
 	int npts;
+	int size;
 
 	/*elog(NOTICE, "precision is %d", precision); */
 	size = 30;	/*just enough to put in object type */
 
 	if (lwgeom_getType(geometry->type) == COLLECTIONTYPE)
 	{
-		return NULL;
+	  LWCOLLECTION* theCollection = lwcollection_deserialize(SERIALIZED_FORM(geometry));
+
+	  PG_LWGEOM* theGeom;
+	  char* geomSvg;
+	  int i;
+
+	  for(i = 0; i < theCollection->ngeoms; ++i)
+	    {
+	      theGeom = pglwgeom_serialize(theCollection->geoms[i]);
+	      if(!theGeom)
+		{
+		  pfree(result);
+		  return NULL;
+		}
+
+	      geomSvg = geometry_to_svg(theGeom, svgrel, precision);
+	      size += strlen(geomSvg + 1);
+	      	      
+	      if(!geomSvg)
+		{
+		  pfree(result);
+		  return NULL;
+		}
+
+	      if(i == 0)
+		{
+		  result = geomSvg;
+		}
+	      else
+		{
+		  result = repalloc(result, size);
+		  strcat(result, ";");
+		  strncat(result, geomSvg, strlen(geomSvg));
+		  pfree(geomSvg);
+		}
+	      pfree(theGeom);
+	    }
+	  return result;
 	}
 
 	result = palloc(size);
@@ -137,17 +174,20 @@ geometry_to_svg(PG_LWGEOM *geometry, int svgrel, int precision)
 			size +=(MAX_DIGS_DOUBLE*3+5)*line->points->npoints+12+3;
 			result = repalloc(result, size);
 
+			if(t)
+			  {
+			    strcat(result, " ");
+			  }
+
 			/* start path with moveto */
 			strcat(result, "M ");
 
 			if (svgrel == 1)
 				print_svg_path_rel(result, line->points,
-					precision);
+						   precision, 0);
 			else
 				print_svg_path_abs( result, line->points,
-					precision);
-
-			strcat(result, " ");
+						    precision, 0);
 		}
 		if (lwgeom_getType(subgeom[0]) == POLYGONTYPE)
 		{
@@ -158,22 +198,30 @@ geometry_to_svg(PG_LWGEOM *geometry, int svgrel, int precision)
 				npts += poly->rings[u]->npoints;
 
 			size += (MAX_DIGS_DOUBLE*3+3) * npts +
-				5 * poly->nrings;
+				5 * poly->nrings + 1;
 			result = repalloc(result, size);
+
+			if(t)
+			  {
+			    strcat(result, " ");
+			  }
 
 			for (u=0; u<poly->nrings; u++)  /*for each ring */
 			{
+			  if(u)
+			    {
+			      strcat(result," "); /*Blank separator from previous ring*/
+			    }
+
 				strcat(result,"M ");	/*begin ring */
 				if (svgrel == 1)
 					print_svg_path_rel(result, 
 						poly->rings[u],
-						precision);
+							   precision, 1);
 				else
 					print_svg_path_abs(result,
 						poly->rings[u],
-						precision);
-				
-				strcat(result," ");	/*end ring */
+							   precision, 1);
 			}
 		}
 	}
@@ -192,7 +240,7 @@ void print_svg_coords(char *result, POINT2D *pt, int precision)
 
 	sprintf(x, "%.*f", precision, pt->x);
 	trim_trailing_zeros(x);
-	sprintf(y, "%.*f", precision, pt->y * -1);
+	sprintf(y, "%.*f", precision, fabs(pt->y) > 0 ? (pt->y * -1) : pt->y);
 	trim_trailing_zeros(y);
 
 	sprintf(temp, "x=\"%s\" y=\"%s\"", x, y);
@@ -211,7 +259,7 @@ void print_svg_circle(char *result, POINT2D *pt, int precision)
 
 	sprintf(x, "%.*f", precision, pt->x);
 	trim_trailing_zeros(x);
-	sprintf(y, "%.*f", precision, pt->y * -1);
+	sprintf(y, "%.*f", precision, fabs(pt->y) > 0 ? (pt->y * -1) : pt->y);
 	trim_trailing_zeros(y);
 
 	sprintf(temp, "cx=\"%s\" cy=\"%s\"", x, y);
@@ -220,7 +268,7 @@ void print_svg_circle(char *result, POINT2D *pt, int precision)
 
 
 void
-print_svg_path_abs(char *result, POINTARRAY *pa, int precision)
+print_svg_path_abs(char *result, POINTARRAY *pa, int precision, int polygonRing)
 {
 	int u;
 	POINT2D pt;
@@ -231,14 +279,28 @@ print_svg_path_abs(char *result, POINTARRAY *pa, int precision)
 	for (u=0; u<pa->npoints; u++)
 	{
 		getPoint2d_p(pa, u, &pt);
+	      
+		//close PATH with 'Z' for polygon rings if last point equals first point
+		if(u > 0 && u == (pa->npoints - 1) && polygonRing)
+		  {
+		    POINT2D firstPoint;
+		    getPoint2d_p(pa, 0, &firstPoint);
+		    if(pt.x == firstPoint.x && pt.y == firstPoint.y)
+		      {
+			sprintf(result, " Z");
+			break;
+		      }
+		  }
+
 		if (u != 0)
 		{
 			result[0] = ' ';
 			result++;
 		}
+
 		sprintf(x, "%.*f", precision, pt.x);
 		trim_trailing_zeros(x);
-		sprintf(y, "%.*f", precision, pt.y * -1);
+		sprintf(y, "%.*f", precision, fabs(pt.y) > 0.0 ? (pt.y * -1) : pt.y);
 		trim_trailing_zeros(y);
 		result+= sprintf(result,"%s %s", x, y);
 	}
@@ -246,7 +308,7 @@ print_svg_path_abs(char *result, POINTARRAY *pa, int precision)
 
 
 void
-print_svg_path_rel(char *result, POINTARRAY *pa, int precision)
+print_svg_path_rel(char *result, POINTARRAY *pa, int precision, int polygonRing)
 {
 	int u;
 	POINT2D pt, lpt;
@@ -259,7 +321,7 @@ print_svg_path_rel(char *result, POINTARRAY *pa, int precision)
 
 	sprintf(x, "%.*f", precision, pt.x);
 	trim_trailing_zeros(x);
-	sprintf(y, "%.*f", precision, pt.y * -1);
+	sprintf(y, "%.*f", precision, fabs(pt.y) > 0 ? (pt.y * -1) : pt.y);
 	trim_trailing_zeros(y);
 
 	result += sprintf(result,"%s %s l", x, y); 
@@ -267,13 +329,26 @@ print_svg_path_rel(char *result, POINTARRAY *pa, int precision)
 	lpt = pt;
 	for (u=1; u<pa->npoints; u++)
 	{
-		getPoint2d_p(pa, u, &pt);
-		sprintf(x, "%.*f", precision, pt.x - lpt.x);
-		trim_trailing_zeros(x);
-		sprintf(y, "%.*f", precision, (pt.y - lpt.y) * -1);
-		trim_trailing_zeros(y);
-		result+= sprintf(result," %s %s", x, y);
-		lpt = pt;
+	  getPoint2d_p(pa, u, &pt);
+
+	  if(u == (pa->npoints - 1) && polygonRing)
+	    {
+	      //close PATH with 'z' if last point equals first point
+	      POINT2D firstPoint;
+	      getPoint2d_p(pa, 0, &firstPoint);
+	      if(pt.x == firstPoint.x && pt.y == firstPoint.y)
+		{
+		  sprintf(result, " z");
+		  break;
+		}
+	    }
+
+	  sprintf(x, "%.*f", precision, pt.x - lpt.x);
+	  trim_trailing_zeros(x);
+	  sprintf(y, "%.*f", precision, fabs(pt.y - lpt.y) > 0 ? ((pt.y - lpt.y) * -1) : (pt.y - lpt.y));
+	  trim_trailing_zeros(y);
+	  result+= sprintf(result," %s %s", x, y);
+	  lpt = pt;
 	}
 }
 

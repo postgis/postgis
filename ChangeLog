@@ -1,5 +1,11 @@
 2008-03-28 Paul Ramsey <pramsey@cleverelephant.ca>
 
+        * doc/postgis.xml, lwgeom/lwgeom_svn.c,
+          Added patch from Marco Hugentobler to enhance SVG 
+          support. 2008-February/002883.html
+
+2008-03-28 Paul Ramsey <pramsey@cleverelephant.ca>
+
         * Makefile.config.in, configure.in, lwgeom/Makefile, 
           lwgeom/lwpostgis.sql.in, lwgeom/lwgeom_geos_c.c
           Changed GEOS version checking to use geos-config, and
