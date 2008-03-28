@@ -4801,83 +4801,53 @@ CREATEFUNCTION ST_AsGML(int4, geometry, int4)
 -----------------------------------------------------------------------
 -- KML OUTPUT
 -----------------------------------------------------------------------
--- AsUKML(geom, precision, version)
--- Deprecation in 1.2.3
-CREATEFUNCTION AsUKML(geometry, int4, int4)
+-- _ST_AsKML(version, geom, precision)
+CREATEFUNCTION _ST_AsKML(int4, geometry, int4)
 	RETURNS TEXT
 	AS '@MODULE_FILENAME@','LWGEOM_asKML'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
--- Availability: 1.2.2
-CREATEFUNCTION ST_AsUKML(geometry, int4, int4)
-	RETURNS TEXT
-	AS '@MODULE_FILENAME@','LWGEOM_asKML'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- AsUKML(geom, precision) / version=2
--- Deprecation in 1.2.3
-CREATEFUNCTION AsUKML(geometry, int4)
-	RETURNS TEXT
-	AS '@MODULE_FILENAME@','LWGEOM_asKML'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- Availability: 1.2.2
-CREATEFUNCTION ST_AsUKML(geometry, int4)
-	RETURNS TEXT
-	AS '@MODULE_FILENAME@','LWGEOM_asKML'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- AsUKML(geom) / precision=15 version=2
--- Deprecation in 1.2.3
-CREATEFUNCTION AsUKML(geometry)
-	RETURNS TEXT
-	AS '@MODULE_FILENAME@','LWGEOM_asKML'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- Availability: 1.2.2
-CREATEFUNCTION ST_AsUKML(geometry)
-	RETURNS TEXT
-	AS '@MODULE_FILENAME@','LWGEOM_asKML'
-	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- AsKML(geom, precision, version)
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION AsKML(geometry, int4, int4)
-	RETURNS TEXT
-	AS 'SELECT AsUKML(transform($1,4326),$2,$3)' 
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_AsKML(geometry, int4, int4)
-	RETURNS TEXT
-	AS 'SELECT AsUKML(transform($1,4326),$2,$3)' 
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
+#ifdef USE_PROJ
 -- AsKML(geom, precision) / version=2
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION AsKML(geometry, int4) 
+CREATEFUNCTION AsKML(geometry, int4)
 	RETURNS TEXT
-	AS 'SELECT AsUKML(transform($1,4326),$2)' 
+	AS 'SELECT _ST_AsKML(2, transform($1,4326), $2)' 
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_AsKML(geometry, int4) 
+CREATEFUNCTION ST_AsKML(geometry, int4)
 	RETURNS TEXT
-	AS 'SELECT AsUKML(transform($1,4326),$2)' 
+	AS 'SELECT _ST_AsKML(2, transform($1,4326), $2)' 
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- AsKML(geom) / precision=15 version=2
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION AsKML(geometry) 
+CREATEFUNCTION AsKML(geometry) 
 	RETURNS TEXT
-	AS 'SELECT AsUKML(transform($1,4326))' 
+	AS 'SELECT _ST_AsKML(2, transform($1,4326), 15)' 
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_AsKML(geometry) 
+-- Availabiltiy: 1.2.2
+CREATEFUNCTION ST_AsKML(geometry)
 	RETURNS TEXT
-	AS 'SELECT AsUKML(transform($1,4326))' 
+	AS 'SELECT _ST_AsKML(2, transform($1,4326), 15)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- ST_AsKML(version, geom) / precision=15 version=2
+-- Availabiltiy: 1.3.2
+CREATEFUNCTION ST_AsKML(int4, geometry)
+	RETURNS TEXT
+	AS 'SELECT _ST_AsKML($1, transform($2,4326), 15)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- ST_AsKML(version, geom, precision)
+-- Availabiltiy: 1.3.2
+CREATEFUNCTION ST_AsKML(int4, geometry, int4) 
+	RETURNS TEXT
+	AS 'SELECT _ST_AsKML($1, transform($2,4326), $3)' 
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+#endif
 
 ------------------------------------------------------------------------
 -- OGC defined
