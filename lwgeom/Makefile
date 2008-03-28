@@ -24,6 +24,7 @@ POSTGIS_LIB_VERSION = $(REL_MAJOR_VERSION).$(REL_MINOR_VERSION).$(REL_MICRO_VERS
 POSTGIS_BUILD_DATE := $(shell date -u "+%Y-%m-%d %H:%M:%S")
 SCRIPTS_VERSION=$(POSTGIS_LIB_VERSION)
 
+SQL_FLAGS = -DUSE_VERSION=$(USE_VERSION)
 
 #---------------------------------------------------------------
 
@@ -39,6 +40,7 @@ JTS_OBJ=lwgeom_nojts.o
 ifeq ($(USE_GEOS),1)
 	CSTAR_FLAGS += -DUSE_GEOS
 	CSTAR_FLAGS += -DGEOS_VERNUM=$(GEOS_VERNUM)
+        SQL_FLAGS += -DUSE_GEOS -DGEOS_VERNUM=$(GEOS_VERNUM)
 	GEOS_RULES=
 	CSTAR_FLAGS += -I$(GEOS_DIR)/include 
 	GEOS_WRAPPER=
@@ -49,6 +51,7 @@ endif
 ifeq ($(USE_JTS),1)
 	CXXFLAGS += -I$(JTS_INCLUDES)
 	CSTAR_FLAGS += -DUSE_JTS
+        SQL_FLAGS += -DUSE_JTS
 	JTS_WRAPPER=lwgeom_jts_wrapper.o
 	JTS_OBJ=lwgeom_jts.o
 	SHLIB_LINK += -lgcj -ljts -lstdc++ -L$(JTS_LIBDIR) 
@@ -57,6 +60,7 @@ endif
 ifeq ($(USE_PROJ),1)
 	override CFLAGS += -I$(PROJ_DIR)/include -DUSE_PROJ 
 	SHLIB_LINK += -L$(PROJ_LIBDIR) -lproj
+        SQL_FLAGS += -DUSE_PROJ
 endif
 
 override CFLAGS += $(PGBEINCLUDES) -DAUTOCACHE_BBOX=$(AUTOCACHE_BBOX) 
@@ -118,10 +122,10 @@ lwgeom_functions_basic.o: lwgeom_functions_basic.c profile.h
 	$(PERL) ../utils/postgis_proc_upgrade.pl ../lwpostgis.sql > ../lwpostgis_upgrade.sql
 
 ../lwpostgis.sql: lwpostgis.sql.in long_xact.sql.in sqlmm.sql.in sqldefines.h 
-	cpp -P -traditional-cpp -DUSE_VERSION=$(USE_VERSION) $< | sed -e 's:@MODULE_FILENAME@:$(MODULE_FILENAME):g;s:@POSTGIS_VERSION@:$(POSTGIS_VERSION):g;s:@POSTGIS_SCRIPTS_VERSION@:$(SCRIPTS_VERSION):g;s/@POSTGIS_BUILD_DATE@/$(POSTGIS_BUILD_DATE)/g' | grep -v '^#' > $@
+	cpp -P -traditional-cpp $(SQL_FLAGS) $< | sed -e 's:@MODULE_FILENAME@:$(MODULE_FILENAME):g;s:@POSTGIS_VERSION@:$(POSTGIS_VERSION):g;s:@POSTGIS_SCRIPTS_VERSION@:$(SCRIPTS_VERSION):g;s/@POSTGIS_BUILD_DATE@/$(POSTGIS_BUILD_DATE)/g' | grep -v '^#' > $@
 
 ../regress/lwpostgis.sql: lwpostgis.sql.in long_xact.sql.in sqlmm.sql.in sqldefines.h
-	cpp -P -traditional-cpp -DUSE_VERSION=$(USE_VERSION) $< | sed -e 's#@MODULE_FILENAME@#$(MODULE_FILENAME)#g;s#@POSTGIS_VERSION@#$(POSTGIS_VERSION)#g;s#@POSTGIS_SCRIPTS_VERSION@#$(SCRIPTS_VERSION)#g;s/@POSTGIS_BUILD_DATE@/$(POSTGIS_BUILD_DATE)/g' | grep -v '^#' > $@
+	cpp -P -traditional-cpp $(SQL_FLAGS) $< | sed -e 's#@MODULE_FILENAME@#$(MODULE_FILENAME)#g;s#@POSTGIS_VERSION@#$(POSTGIS_VERSION)#g;s#@POSTGIS_SCRIPTS_VERSION@#$(SCRIPTS_VERSION)#g;s/@POSTGIS_BUILD_DATE@/$(POSTGIS_BUILD_DATE)/g' | grep -v '^#' > $@
 
 install: all install-lib-shared install-lwgeom-scripts
 
