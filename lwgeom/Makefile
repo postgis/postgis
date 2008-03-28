@@ -5,7 +5,7 @@ include ../Version.config
 #---------------------------------------------------------------
 # Default missing CXX variable to c++
 # 
-ifeq ($(CXX),) 
+ifndef $(CXX) 
 	CXX = c++
 endif
 
