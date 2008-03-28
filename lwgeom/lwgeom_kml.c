@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id$
+ * $Id: $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
@@ -10,7 +10,7 @@
  *
  **********************************************************************
  *
- * KML output routines based on  lwgeom_gml.c
+ * KML output routines based on lwgeom_gml.c
  * Written by: Eduin Carrillo <yecarrillo@cas.gov.co>
  *             © 2006 Corporacion Autonoma Regional de Santander - CAS
  *
@@ -24,21 +24,21 @@
 #include "liblwgeom.h"
 
 Datum LWGEOM_asKML(PG_FUNCTION_ARGS);
-char *geometry_to_kml(uchar *srl, char *srs);
 
-static size_t askml_point_size(LWPOINT *point, char *srs);
-static char *askml_point(LWPOINT *point, char *srs);
-static size_t askml_line_size(LWLINE *line, char *srs);
-static char *askml_line(LWLINE *line, char *srs);
-static size_t askml_poly_size(LWPOLY *poly, char *srs);
-static char *askml_poly(LWPOLY *poly, char *srs);
-static size_t askml_inspected_size(LWGEOM_INSPECTED *geom, char *srs);
-static char *askml_inspected(LWGEOM_INSPECTED *geom, char *srs);
+char *geometry_to_kml2(uchar *srl);
+
+static size_t askml2_point_size(LWPOINT *point);
+static char *askml2_point(LWPOINT *point);
+static size_t askml2_line_size(LWLINE *line);
+static char *askml2_line(LWLINE *line);
+static size_t askml2_poly_size(LWPOLY *poly);
+static char *askml2_poly(LWPOLY *poly);
+static size_t askml2_inspected_size(LWGEOM_INSPECTED *geom);
+static char *askml2_inspected(LWGEOM_INSPECTED *geom);
+static size_t pointArray_toKML2(POINTARRAY *pa, char *buf);
+
 static size_t pointArray_KMLsize(POINTARRAY *pa);
-static size_t pointArray_toKML(POINTARRAY *pa, char *buf);
-static char *getSRSbySRID(int SRID);
 
-#define DEF_PRECISION 15
 /* Add dot, sign, exponent sign, 'e', exponent digits */
 #define SHOW_DIGS (precision + 8)
 
@@ -56,50 +56,33 @@ Datum LWGEOM_asKML(PG_FUNCTION_ARGS)
 	char *kml;
 	text *result;
 	int len;
-	int version = 2;
-	char *srs;
-	int SRID;
+	int version;
 
-	precision = DEF_PRECISION;
 
-	if ( PG_ARGISNULL(0) ) PG_RETURN_NULL();
-
-	geom = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
-
-	/* Get precision (if provided)  */
-	if ( PG_NARGS() > 1 && ! PG_ARGISNULL(1) )
-			precision = PG_GETARG_INT32(1);
-	
-	if ( precision < 1 || precision > 15 )
-	{
-		elog(ERROR, "Precision out of range 1..15");
-		PG_RETURN_NULL();
-	}
-
-	/* Get version (if provided)  */
-	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
-			version = PG_GETARG_INT32(2);
-
-	
-	if ( version != 2 )
+    /* Get the version */
+    version = PG_GETARG_INT32(0);
+	if ( version != 2)
 	{
 		elog(ERROR, "Only KML 2 is supported");
 		PG_RETURN_NULL();
 	}
 
-	SRID = lwgeom_getsrid(SERIALIZED_FORM(geom));
-	if ( SRID != -1 ) {
-	  srs = getSRSbySRID(SRID);
-	} else {
-		PG_FREE_IF_COPY(geom, 0);
-		elog(ERROR,"Input geometry has unknown (-1) SRID");
+    /* Get the geometry */
+	if ( PG_ARGISNULL(1) ) PG_RETURN_NULL();
+	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+
+	/* Get precision  */
+	precision = PG_GETARG_INT32(2);
+	if ( precision < 1 || precision > 15 )
+	{
+		elog(ERROR, "Precision out of range 1..15");
 		PG_RETURN_NULL();
 	}
-
-	/*elog(NOTICE, "srs=%s", srs); */
-
-	kml = geometry_to_kml(SERIALIZED_FORM(geom), srs);
-	PG_FREE_IF_COPY(geom, 0);
+	
+	if (version == 2)
+	  kml = geometry_to_kml2(SERIALIZED_FORM(geom));
+	
+	PG_FREE_IF_COPY(geom, 1);
 
 	len = strlen(kml) + VARHDRSZ;
 
@@ -113,9 +96,15 @@ Datum LWGEOM_asKML(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
+
+
+/*
+ * VERSION KML 2 
+ */
+
 /* takes a GEOMETRY and returns a KML representation */
 char *
-geometry_to_kml(uchar *geom, char *srs)
+geometry_to_kml2(uchar *geom)
 {
 	int type;
 	LWPOINT *point;
@@ -130,21 +119,21 @@ geometry_to_kml(uchar *geom, char *srs)
 
 		case POINTTYPE:
 			point = lwpoint_deserialize(geom);
-			return askml_point(point, srs);
+			return askml2_point(point);
 
 		case LINETYPE:
 			line = lwline_deserialize(geom);
-			return askml_line(line, srs);
+			return askml2_line(line);
 
 		case POLYGONTYPE:
 			poly = lwpoly_deserialize(geom);
-			return askml_poly(poly, srs);
+			return askml2_poly(poly);
 
 		case MULTIPOINTTYPE:
 		case MULTILINETYPE:
 		case MULTIPOLYGONTYPE:
 			inspected = lwgeom_inspect(geom);
-			return askml_inspected(inspected, srs);
+			return askml2_inspected(inspected);
 		
 		default:
 			lwerror("geometry_to_kml: '%s' geometry type not supported by Google Earth", lwgeom_typename(type));
@@ -153,7 +142,7 @@ geometry_to_kml(uchar *geom, char *srs)
 }
 
 static size_t
-askml_point_size(LWPOINT *point, char *srs)
+askml2_point_size(LWPOINT *point)
 {
 	int size;
 	size = pointArray_KMLsize(point->point);
@@ -162,32 +151,32 @@ askml_point_size(LWPOINT *point, char *srs)
 }
 
 static size_t
-askml_point_buf(LWPOINT *point, char *srs, char *output)
+askml2_point_buf(LWPOINT *point, char *output)
 {
 	char *ptr = output;
 
 	ptr += sprintf(ptr, "<Point>");
 	ptr += sprintf(ptr, "<coordinates>");
-	ptr += pointArray_toKML(point->point, ptr);
+	ptr += pointArray_toKML2(point->point, ptr);
 	ptr += sprintf(ptr, "</coordinates></Point>");
 
 	return (ptr-output);
 }
 
 static char *
-askml_point(LWPOINT *point, char *srs)
+askml2_point(LWPOINT *point)
 {
 	char *output;
 	int size;
 	
-	size = askml_point_size(point, srs);
+	size = askml2_point_size(point);
 	output = palloc(size);
-	askml_point_buf(point, srs, output);
+	askml2_point_buf(point, output);
 	return output;
 }
 
 static size_t
-askml_line_size(LWLINE *line, char *srs)
+askml2_line_size(LWLINE *line)
 {
 	int size;
 	size = pointArray_KMLsize(line->points);
@@ -196,32 +185,32 @@ askml_line_size(LWLINE *line, char *srs)
 }
 
 static size_t
-askml_line_buf(LWLINE *line, char *srs, char *output)
+askml2_line_buf(LWLINE *line, char *output)
 {
 	char *ptr=output;
 
 	ptr += sprintf(ptr, "<LineString>");
 	ptr += sprintf(ptr, "<coordinates>");
-	ptr += pointArray_toKML(line->points, ptr);
+	ptr += pointArray_toKML2(line->points, ptr);
 	ptr += sprintf(ptr, "</coordinates></LineString>");
 
 	return (ptr-output);
 }
 
 static char *
-askml_line(LWLINE *line, char *srs)
+askml2_line(LWLINE *line)
 {
 	char *output;
 	int size;
 
-	size = askml_line_size(line, srs);
+	size = askml2_line_size(line);
 	output = palloc(size);
-	askml_line_buf(line, srs, output);
+	askml2_line_buf(line, output);
 	return output;
 }
 
 static size_t
-askml_poly_size(LWPOLY *poly, char *srs)
+askml2_poly_size(LWPOLY *poly)
 {
 	size_t size;
 	int i;
@@ -238,19 +227,19 @@ askml_poly_size(LWPOLY *poly, char *srs)
 }
 
 static size_t
-askml_poly_buf(LWPOLY *poly, char *srs, char *output)
+askml2_poly_buf(LWPOLY *poly, char *output)
 {
 	int i;
 	char *ptr=output;
 
 	ptr += sprintf(ptr, "<Polygon>");
 	ptr += sprintf(ptr, "<outerBoundaryIs><LinearRing><coordinates>");
-	ptr += pointArray_toKML(poly->rings[0], ptr);
+	ptr += pointArray_toKML2(poly->rings[0], ptr);
 	ptr += sprintf(ptr, "</coordinates></LinearRing></outerBoundaryIs>");
 	for (i=1; i<poly->nrings; i++)
 	{
 		ptr += sprintf(ptr, "<innerBoundaryIs><LinearRing><coordinates>");
-		ptr += pointArray_toKML(poly->rings[i], ptr);
+		ptr += pointArray_toKML2(poly->rings[i], ptr);
 		ptr += sprintf(ptr, "</coordinates></LinearRing></innerBoundaryIs>");
 	}
 	ptr += sprintf(ptr, "</Polygon>");
@@ -259,14 +248,14 @@ askml_poly_buf(LWPOLY *poly, char *srs, char *output)
 }
 
 static char *
-askml_poly(LWPOLY *poly, char *srs)
+askml2_poly(LWPOLY *poly)
 {
 	char *output;
 	int size;
 
-	size = askml_poly_size(poly, srs);
+	size = askml2_poly_size(poly);
 	output = palloc(size);
-	askml_poly_buf(poly, srs, output);
+	askml2_poly_buf(poly, output);
 	return output;
 }
 
@@ -276,7 +265,7 @@ askml_poly(LWPOLY *poly, char *srs)
  * Don't call this with single-geoms inspected.
  */
 static size_t
-askml_inspected_size(LWGEOM_INSPECTED *insp, char *srs)
+askml2_inspected_size(LWGEOM_INSPECTED *insp)
 {
 	int i;
 	size_t size;
@@ -294,24 +283,24 @@ askml_inspected_size(LWGEOM_INSPECTED *insp, char *srs)
 
 		if ((point=lwgeom_getpoint_inspected(insp, i)))
 		{
-			size += askml_point_size(point, 0);
+			size += askml2_point_size(point);
 			pfree_point(point);
 		}
 		else if ((line=lwgeom_getline_inspected(insp, i)))
 		{
-			size += askml_line_size(line, 0);
+			size += askml2_line_size(line);
 			pfree_line(line);
 		}
 		else if ((poly=lwgeom_getpoly_inspected(insp, i)))
 		{
-			size += askml_poly_size(poly, 0);
+			size += askml2_poly_size(poly);
 			pfree_polygon(poly);
 		}
 		else
 		{
 			subgeom = lwgeom_getsubgeometry_inspected(insp, i);
 			subinsp = lwgeom_inspect(subgeom);
-			size += askml_inspected_size(subinsp, 0);
+			size += askml2_inspected_size(subinsp);
 			pfree_inspected(subinsp);
 		}
 	}
@@ -323,7 +312,7 @@ askml_inspected_size(LWGEOM_INSPECTED *insp, char *srs)
  * Don't call this with single-geoms inspected!
  */
 static size_t
-askml_inspected_buf(LWGEOM_INSPECTED *insp, char *srs, char *output)
+askml2_inspected_buf(LWGEOM_INSPECTED *insp, char *output)
 {
 	char *ptr, *kmltype;
 	int i;
@@ -331,6 +320,7 @@ askml_inspected_buf(LWGEOM_INSPECTED *insp, char *srs, char *output)
 	ptr = output;
 	kmltype = "MultiGeometry";
 
+	/* Open outmost tag */
 	ptr += sprintf(ptr, "<%s>", kmltype);
 
 	for (i=0; i<insp->ngeometries; i++)
@@ -343,24 +333,24 @@ askml_inspected_buf(LWGEOM_INSPECTED *insp, char *srs, char *output)
 
 		if ((point=lwgeom_getpoint_inspected(insp, i)))
 		{
-			ptr += askml_point_buf(point, 0, ptr);
+			ptr += askml2_point_buf(point, ptr);
 			pfree_point(point);
 		}
 		else if ((line=lwgeom_getline_inspected(insp, i)))
 		{
-			ptr += askml_line_buf(line, 0, ptr);
+			ptr += askml2_line_buf(line, ptr);
 			pfree_line(line);
 		}
 		else if ((poly=lwgeom_getpoly_inspected(insp, i)))
 		{
-			ptr += askml_poly_buf(poly, 0, ptr);
+			ptr += askml2_poly_buf(poly, ptr);
 			pfree_polygon(poly);
 		}
 		else
 		{
 			subgeom = lwgeom_getsubgeometry_inspected(insp, i);
 			subinsp = lwgeom_inspect(subgeom);
-			ptr += askml_inspected_buf(subinsp, 0, ptr);
+			ptr += askml2_inspected_buf(subinsp, ptr);
 			pfree_inspected(subinsp);
 		}
 	}
@@ -375,28 +365,19 @@ askml_inspected_buf(LWGEOM_INSPECTED *insp, char *srs, char *output)
  * Don't call this with single-geoms inspected!
  */
 static char *
-askml_inspected(LWGEOM_INSPECTED *insp, char *srs)
+askml2_inspected(LWGEOM_INSPECTED *insp)
 {
 	char *kml;
 	size_t size;
 
-	size = askml_inspected_size(insp, srs);
+	size = askml2_inspected_size(insp);
 	kml = palloc(size);
-	askml_inspected_buf(insp, srs, kml);
+	askml2_inspected_buf(insp, kml);
 	return kml;
 }
 
-/*
- * Returns maximum size of rendered pointarray in bytes.
- */
 static size_t
-pointArray_KMLsize(POINTARRAY *pa)
-{
-	return TYPE_NDIMS(pa->dims) * pa->npoints * (SHOW_DIGS+(TYPE_NDIMS(pa->dims)-1));
-}
-
-static size_t
-pointArray_toKML(POINTARRAY *pa, char *output)
+pointArray_toKML2(POINTARRAY *pa, char *output)
 {
 	int i;
 	char *ptr;
@@ -410,7 +391,7 @@ pointArray_toKML(POINTARRAY *pa, char *output)
 			POINT2D pt;
 			getPoint2d_p(pa, i, &pt);
 			if ( i ) ptr += sprintf(ptr, " ");
-			ptr += sprintf(ptr, "%.*g,%.*g,0",
+			ptr += sprintf(ptr, "%.*g,%.*g",
 				precision, pt.x,
 				precision, pt.y);
 		}
@@ -432,65 +413,22 @@ pointArray_toKML(POINTARRAY *pa, char *output)
 	return ptr-output;
 }
 
-static char *
-getSRSbySRID(int SRID)
+
+
+/*
+ * Common KML routines 
+ */
+
+/*
+ * Returns maximum size of rendered pointarray in bytes.
+ */
+static size_t
+pointArray_KMLsize(POINTARRAY *pa)
 {
-	char query[128];
-	char *srs, *srscopy;
-	int size, err;
-
-	/* connect to SPI */
-	if (SPI_OK_CONNECT != SPI_connect ()) {
-		elog(NOTICE, "getSRSbySRID: could not connect to SPI manager");
-		SPI_finish();
-		return NULL;
-	}
-
-	/* write query */
-	sprintf(query, "SELECT textcat(auth_name, textcat(':', auth_srid::text)) \
-		FROM spatial_ref_sys WHERE srid = '%d'", SRID);
-#ifdef PGIS_DEBUG
-	elog(NOTICE, "Query: %s", query);
-#endif
-
-	/* execute query */
-	err = SPI_exec(query, 1);
-	if ( err < 0 ) {
-		elog(NOTICE, "getSRSbySRID: error executing query %d", err);
-		SPI_finish();
-		return NULL;
-	}
-
-	/* no entry in spatial_ref_sys */
-	if (SPI_processed <= 0) {
-		/*elog(NOTICE, "getSRSbySRID: no record for SRID %d", SRID); */
-		SPI_finish();
-		return NULL;
-	}
-
-	/* get result  */
-	srs = SPI_getvalue(SPI_tuptable->vals[0],
-		SPI_tuptable->tupdesc, 1);
-	
-	/* NULL result */
-	if ( ! srs ) {
-		/*elog(NOTICE, "getSRSbySRID: null result"); */
-		SPI_finish();
-		return NULL;
-	}
-
-	/* copy result to upper executor context */
-	size = strlen(srs)+1;
-	srscopy = SPI_palloc(size);
-	memcpy(srscopy, srs, size);
-
-	/* disconnect from SPI */
-	SPI_finish();
-
-	return srscopy;
+	return TYPE_NDIMS(pa->dims) * pa->npoints * (SHOW_DIGS+(TYPE_NDIMS(pa->dims)-1));
 }
 
 /**********************************************************************
- * $Log$
+ * $Log: $
  **********************************************************************/
 
