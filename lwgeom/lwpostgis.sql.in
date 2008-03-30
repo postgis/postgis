@@ -411,7 +411,7 @@ CREATEFUNCTION xmin(box3d)
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Availability: 1.2.2
-CREATEFUNCTION ST_xmin(box3d)
+CREATEFUNCTION ST_XMin(box3d)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@','BOX3D_xmin'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -423,7 +423,7 @@ CREATEFUNCTION ymin(box3d)
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Availability: 1.2.2
-CREATEFUNCTION ST_ymin(box3d)
+CREATEFUNCTION ST_YMin(box3d)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@','BOX3D_ymin'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -435,7 +435,7 @@ CREATEFUNCTION zmin(box3d)
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Availability: 1.2.2
-CREATEFUNCTION ST_zmin(box3d)
+CREATEFUNCTION ST_ZMin(box3d)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@','BOX3D_zmin'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -447,7 +447,7 @@ CREATEFUNCTION xmax(box3d)
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Availability: 1.2.2
-CREATEFUNCTION ST_xmax(box3d)
+CREATEFUNCTION ST_XMax(box3d)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@','BOX3D_xmax'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -459,7 +459,7 @@ CREATEFUNCTION ymax(box3d)
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Availability: 1.2.2
-CREATEFUNCTION ST_ymax(box3d)
+CREATEFUNCTION ST_YMax(box3d)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@','BOX3D_ymax'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -471,7 +471,7 @@ CREATEFUNCTION zmax(box3d)
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Availability: 1.2.2
-CREATEFUNCTION ST_zmax(box3d)
+CREATEFUNCTION ST_ZMax(box3d)
 	RETURNS FLOAT8
 	AS '@MODULE_FILENAME@','BOX3D_zmax'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
