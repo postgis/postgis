@@ -5200,7 +5200,7 @@ z' = z </programlisting> This method is a subcase of
           </varlistentry>
 
           <varlistentry>
-            <term>ST_xmin(box3d) ymin(box3d) zmin(box3d)</term>
+            <term>ST_XMin(box3d) ST_YMin(box3d) ST_ZMin(box3d)</term>
 
             <listitem>
               <para>Returns the requested minima of a bounding box.</para>
@@ -5208,7 +5208,7 @@ z' = z </programlisting> This method is a subcase of
           </varlistentry>
 
           <varlistentry>
-            <term>ST_xmax(box3d) ymax(box3d) zmax(box3d)</term>
+            <term>ST_XMax(box3d) ST_YMax(box3d) ST_ZMax(box3d)</term>
 
             <listitem>
               <para>Returns the requested maxima of a bounding box.</para>
