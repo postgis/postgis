@@ -575,14 +575,19 @@ void DeleteFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
  * It's main purpose is to allow Win32 PROJ.4 installations
  * to find a set grid shift files, although other platforms
  * may find this useful too.
+ *
+ * Note that we currently ignore this on PostgreSQL < 8.0
+ * since the method of determining the current installation
+ * path are different on older PostgreSQL versions. 
  */
 void SetPROJ4LibPath()
 {
+#if USE_VERSION >= 80
 	char *path;
 	const char **proj_lib_path;
 
 	/* 
-	 * Get the sharepath and append /contrib/postgis/nad to form a suitable
+	 * Get the sharepath and append /contrib/postgis/proj to form a suitable
 	 * directory in which to store the grid shift files
 	 */	
 	proj_lib_path = palloc(sizeof(char *));
@@ -590,13 +595,17 @@ void SetPROJ4LibPath()
 	*proj_lib_path = path;
 
 	get_share_path(my_exec_path, path);
-	strncat(path, "/contrib/postgis/nad", MAXPGPATH - strlen(path) - 1);
+	strncat(path, "/contrib/postgis/proj", MAXPGPATH - strlen(path) - 1);
 
 	/* Set the search path for PROJ.4 */
 	pj_set_searchpath(1, proj_lib_path);
 
 	/* Ensure we only do this once... */
 	IsPROJ4LibPathSet = true;
+#else
+	/* Ensure we only do this once... */
+	IsPROJ4LibPathSet = true;
+#endif
 }
 
 
