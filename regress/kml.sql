@@ -24,7 +24,7 @@ SELECT AsKML(GeomFromEWKT('SRID=4326;MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(-2
 -- PARAMETERS
 SELECT AsKML(GeomFromEWKT('SRID=4326;POINT(1 1)'), 0);
 SELECT AsKML(GeomFromEWKT('SRID=4326;POINT(1 1)'), 16);
-SELECT AsKML(GeomFromEWKT('SRID=4326;POINT(1 1)'), 15, 3);
+SELECT AsKML(3,GeomFromEWKT('SRID=4326;POINT(1 1)'), 15);
 
 -- SIMPLE FEATURES
 -- San Felipe de Barajas Fortresses - Cartagena, Colombia (Placemark) http://en.wikipedia.org/wiki/Cartagena%2C_Bol%C3%ADvar
@@ -64,7 +64,7 @@ SELECT ST_AsKML(ST_GeomFromEWKT('SRID=4326;MULTISURFACE(CURVEPOLYGON(CIRCULARSTR
 -- PARAMETERS
 SELECT ST_AsKML(ST_GeomFromEWKT('SRID=4326;POINT(1 1)'), 0);
 SELECT ST_AsKML(ST_GeomFromEWKT('SRID=4326;POINT(1 1)'), 16);
-SELECT ST_AsKML(ST_GeomFromEWKT('SRID=4326;POINT(1 1)'), 15, 3);
+SELECT ST_AsKML(3,ST_GeomFromEWKT('SRID=4326;POINT(1 1)'), 15);
 
 -- SIMPLE FEATURES
 -- San Felipe de Barajas Fortresses - Cartagena, Colombia (Placemark) http://en.wikipedia.org/wiki/Cartagena%2C_Bol%C3%ADvar
