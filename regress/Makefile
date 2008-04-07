@@ -44,11 +44,21 @@ PREPROC = \
 	sql-mm-multicurve_expected \
 	sql-mm-multisurface_expected
 
+
+# GEOS tests only if GEOS is available
 ifeq ($(USE_GEOS),1)
-#       Temporarily remove prepared geometry tests to provide compatibility 
-#       with GEOS 3.0.0
-#	TESTS += regress_ogc regress_bdpoly regress_ogc_prep
 	TESTS += regress_ogc regress_bdpoly 
+
+# Covers/CoveredBy only if GEOS >= 3.0
+ifeq ($(shell expr $(GEOS_VERNUM) ">=" 30),1)
+	TESTS += regress_ogc_cover 
+
+# PreparedGeometry only if GEOS >= 3.1
+ifeq ($(shell expr $(GEOS_VERNUM) ">=" 31),1)
+	TESTS += regress_ogc_prep
+
+endif
+endif
 endif
 
 ifeq ($(USE_PROJ),1)

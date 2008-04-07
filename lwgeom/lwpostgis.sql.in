@@ -4828,6 +4828,13 @@ CREATEFUNCTION AsKML(geometry)
 	AS 'SELECT _ST_AsKML(2, transform($1,4326), 15)' 
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- AsKML(version, geom, precision)
+-- Deprecation in 1.2.3
+CREATEFUNCTION AsKML(int4, geometry, int4) 
+	RETURNS TEXT
+	AS 'SELECT _ST_AsKML($1, transform($2,4326), $3)' 
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
 -- Availabiltiy: 1.2.2
 CREATEFUNCTION ST_AsKML(geometry)
 	RETURNS TEXT
