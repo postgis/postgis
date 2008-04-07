@@ -1,3 +1,11 @@
+2008-04-07 Paul Ramsey <pramsey@cleverelephant.ca>
+
+        * loader/shp2pgsql.c, pgsql2shp.c, getopt.c, getopt.h
+          Renamed all instances of getopt to pgis_gettop to avoid 
+          collision with system getopt.  To do: return to using
+          system getopt and drop our version?  Understand the 
+          actions of the platform #defines in getopt.h?
+
 2008-03-28 Paul Ramsey <pramsey@cleverelephant.ca>
 
         * lwgeom/lwgeom_kml.c, lwgeom/lwpostgis.sql.in

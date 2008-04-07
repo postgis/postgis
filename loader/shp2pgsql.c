@@ -1273,7 +1273,7 @@ ParseCmdline(int ARGC, char **ARGV)
                 usage(ARGV[0], 0, stdout);
         }
 
-	while ((c = getopt(ARGC, ARGV, "kcdapDs:Sg:iW:wIN:")) != EOF){
+	while ((c = pgis_getopt(ARGC, ARGV, "kcdapDs:Sg:iW:wIN:")) != EOF){
                switch (c) {
                case 'c':
                     if (opt == ' ')

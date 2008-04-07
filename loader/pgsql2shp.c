@@ -2345,7 +2345,7 @@ parse_commandline(int ARGC, char **ARGV)
 	memset(buf, 0, 2048); /* just in case... */
 
 	/* Parse command line */
-        while ((c = getopt(ARGC, ARGV, "bf:h:du:p:P:g:rk")) != EOF){
+        while ((c = pgis_getopt(ARGC, ARGV, "bf:h:du:p:P:g:rk")) != EOF){
 		switch (c) {
 			case 'b':
 				binary = 1;

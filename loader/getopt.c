@@ -264,7 +264,7 @@ exchange (argv)
    long-named options.  */
 
 int
-_getopt_internal (argc, argv, optstring, longopts, longind, long_only)
+_pgis_getopt_internal (argc, argv, optstring, longopts, longind, long_only)
      int argc;
      char *const *argv;
      const char *optstring;
@@ -598,26 +598,26 @@ _getopt_internal (argc, argv, optstring, longopts, longind, long_only)
 }
 
 int
-getopt (argc, argv, optstring)
+pgis_getopt (argc, argv, optstring)
      int argc;
      char *const *argv;
      const char *optstring;
 {
-  return _getopt_internal (argc, argv, optstring,
+  return _pgis_getopt_internal (argc, argv, optstring,
 			   (const struct option *) 0,
 			   (int *) 0,
 			   0);
 }
 
 int
-getopt_long (argc, argv, options, long_options, opt_index)
+pgis_getopt_long (argc, argv, options, long_options, opt_index)
      int argc;
      char *const *argv;
      const char *options;
      const struct option *long_options;
      int *opt_index;
 {
-  return _getopt_internal (argc, argv, options, long_options, opt_index, 0);
+  return _pgis_getopt_internal (argc, argv, options, long_options, opt_index, 0);
 }
 
 /* #endif	  _LIBC or not __GNU_LIBRARY__.  */
@@ -639,7 +639,7 @@ main (argc, argv)
     {
       int this_option_optind = optind ? optind : 1;
 
-      c = getopt (argc, argv, "abc:d:0123456789");
+      c = pgis_getopt (argc, argv, "abc:d:0123456789");
       if (c == EOF)
 	break;
 

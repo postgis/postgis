@@ -99,25 +99,25 @@ struct option
 /* Many other libraries have conflicting prototypes for getopt, with
    differences in the consts, in stdlib.h.  To avoid compilation
    errors, only prototype getopt for the GNU C library.  */
-extern int getopt (int argc, char *const *argv, const char *shortopts);
+extern int pgis_getopt (int argc, char *const *argv, const char *shortopts);
 #endif /* not __GNU_LIBRARY__ */
-extern int getopt_long (int argc, char *const *argv, const char *shortopts,
+extern int pgis_getopt_long (int argc, char *const *argv, const char *shortopts,
 		        const struct option *longopts, int *longind);
-extern int getopt_long_only (int argc, char *const *argv,
+extern int pgis_getopt_long_only (int argc, char *const *argv,
 			     const char *shortopts,
 		             const struct option *longopts, int *longind);
 
 /* Internal only.  Users should not call this directly.  */
-extern int _getopt_internal (int argc, char *const *argv,
+extern int _pgis_getopt_internal (int argc, char *const *argv,
 			     const char *shortopts,
 		             const struct option *longopts, int *longind,
 			     int long_only);
 #else /* not __STDC__ */
-extern int getopt ();
-extern int getopt_long ();
-extern int getopt_long_only ();
+extern int pgis_getopt ();
+extern int pgis_getopt_long ();
+extern int pgis_getopt_long_only ();
 
-extern int _getopt_internal ();
+extern int _pgis_getopt_internal ();
 #endif /* not __STDC__ */
 
 #ifdef	__cplusplus
