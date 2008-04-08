@@ -783,7 +783,7 @@ InsertLineString(int id)
 	}
 
 	if (!dump_format) printf("'");
-	if ( sr_id && sr_id != "-1" ) printf("SRID=%s;", sr_id);
+	if ( sr_id && strcmp(sr_id,"-1") ) printf("SRID=%s;", sr_id);
 
 	if (simple_geometries==0) // We write MULTI geometries, so generate Header 
 	{
@@ -1066,7 +1066,7 @@ InsertPolygon(void)
 	out_index = FindPolygons(obj, &Outer);
 
 	if (!dump_format) printf("'");
-	if ( sr_id && sr_id != "-1" ) printf("SRID=%s;", sr_id);
+	if ( sr_id && strcmp(sr_id,"-1") ) printf("SRID=%s;", sr_id);
 
 	if (simple_geometries==0) // We write MULTI geometries, so generate Header 
 	{
@@ -1202,7 +1202,7 @@ void
 InsertPoint(void)
 {
 	if (!dump_format) printf("'");
-	if ( sr_id && sr_id != "-1" ) printf("SRID=%s;", sr_id);
+	if ( sr_id && strcmp(sr_id,"-1") ) printf("SRID=%s;", sr_id);
 
 	print_wkb_byte(getEndianByte());
 	print_wkb_int(wkbtype);
@@ -1240,7 +1240,7 @@ InsertMultiPoint(void)
 		(wkbtype&WKBMOFFSET);
 
 	if (!dump_format) printf("'");
-	if ( sr_id && sr_id != "-1" ) printf("SRID=%s;", sr_id);
+	if ( sr_id && strcmp(sr_id,"-1") ) printf("SRID=%s;", sr_id);
 
 	print_wkb_byte(getEndianByte());
 	print_wkb_int(wkbtype);
