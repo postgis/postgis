@@ -96,7 +96,7 @@ int 	*precisions;
 char    *table=NULL,*schema=NULL,*geom=NULL;
 int     num_fields,num_records,num_entities;
 char    **field_names;
-char 	*sr_id = NULL;
+int 	sr_id = 0;
 
 /* Prototypes */
 int Insert_attributes(DBFHandle hDBFHandle, int row);
@@ -579,12 +579,12 @@ CreateTable(void)
 	/* Create the geometry column with an addgeometry call */
 	if ( schema )
 	{
-		printf("SELECT AddGeometryColumn('%s','%s','%s','%s',",
+		printf("SELECT AddGeometryColumn('%s','%s','%s','%d',",
 			schema, table, geom, sr_id);
 	}
 	else
 	{
-		printf("SELECT AddGeometryColumn('','%s','%s','%s',",
+		printf("SELECT AddGeometryColumn('','%s','%s','%d',",
 			table, geom, sr_id);
 	}
 
@@ -783,7 +783,7 @@ InsertLineString(int id)
 	}
 
 	if (!dump_format) printf("'");
-	if ( sr_id && strcmp(sr_id,"-1") ) printf("SRID=%s;", sr_id);
+	if ( sr_id > 0 ) printf("SRID=%d;", sr_id);
 
 	if (simple_geometries==0) // We write MULTI geometries, so generate Header 
 	{
@@ -844,7 +844,7 @@ InsertLineStringWKT(int id)
 		return;
 	}
 
-	if (dump_format) printf("SRID=%s;",sr_id );
+	if (dump_format) printf("SRID=%d;",sr_id );
 	else printf("GeometryFromText('");
 	
 	if (simple_geometries==0) // We write MULTI geometries, so generate Header 
@@ -892,7 +892,7 @@ InsertLineStringWKT(int id)
 	if (simple_geometries==0) printf(")");
 
 	if (dump_format) printf("\n");
-	else printf("',%s) );\n",sr_id);
+	else printf("',%d) );\n",sr_id);
 }
 
 int
@@ -1066,7 +1066,7 @@ InsertPolygon(void)
 	out_index = FindPolygons(obj, &Outer);
 
 	if (!dump_format) printf("'");
-	if ( sr_id && strcmp(sr_id,"-1") ) printf("SRID=%s;", sr_id);
+	if ( sr_id > 0 ) printf("SRID=%d;", sr_id);
 
 	if (simple_geometries==0) // We write MULTI geometries, so generate Header 
 	{
@@ -1137,7 +1137,7 @@ InsertPolygonWKT(void)
 
 	out_index = FindPolygons(obj, &Outer);
 
-	if (dump_format) printf("SRID=%s;",sr_id );
+	if (dump_format) printf("SRID=%d;",sr_id );
 	else printf("GeometryFromText('");
 	
 	if (simple_geometries==0) // We write MULTI geometries, so generate Header 
@@ -1191,7 +1191,7 @@ InsertPolygonWKT(void)
 	if (simple_geometries==0) printf(")");
 	
 	if (dump_format) printf("\n");
-	else printf("',%s) );\n",sr_id);
+	else printf("',%d) );\n",sr_id);
 
 	/* Release all memory */
 	ReleasePolygons(Outer, out_index);
@@ -1202,7 +1202,7 @@ void
 InsertPoint(void)
 {
 	if (!dump_format) printf("'");
-	if ( sr_id && strcmp(sr_id,"-1") ) printf("SRID=%s;", sr_id);
+	if ( sr_id > 0 ) printf("SRID=%d;", sr_id);
 
 	print_wkb_byte(getEndianByte());
 	print_wkb_int(wkbtype);
@@ -1219,7 +1219,7 @@ void
 InsertPointWKT(void)
 {
 	unsigned int u;
-	if (dump_format) printf("SRID=%s;%s(", sr_id, pgtype);
+	if (dump_format) printf("SRID=%d;%s(", sr_id, pgtype);
 	else printf("GeometryFromText('%s(", pgtype);
 
 	for (u=0;u<obj->nVertices; u++){
@@ -1228,7 +1228,7 @@ InsertPointWKT(void)
 		if ( wkbtype & WKBZOFFSET ) printf(" %.15g", obj->padfZ[u]);
 	}
 	if (dump_format) printf(")\n");
-	else printf(")',%s) );\n",sr_id);
+	else printf(")',%d) );\n",sr_id);
 
 }
 
@@ -1240,7 +1240,7 @@ InsertMultiPoint(void)
 		(wkbtype&WKBMOFFSET);
 
 	if (!dump_format) printf("'");
-	if ( sr_id && strcmp(sr_id,"-1") ) printf("SRID=%s;", sr_id);
+	if ( sr_id > 0 ) printf("SRID=%d;", sr_id);
 
 	print_wkb_byte(getEndianByte());
 	print_wkb_int(wkbtype);
@@ -1306,7 +1306,7 @@ ParseCmdline(int ARGC, char **ARGV)
                     simple_geometries =1;
                     break;
                case 's':
-                    sr_id = optarg;
+                    (void)sscanf(optarg, "%d", &sr_id);
                     break;
                case 'g':
                     geom = optarg;
@@ -1354,7 +1354,7 @@ ParseCmdline(int ARGC, char **ARGV)
                }
 	}
 
-	if ( !sr_id ) sr_id = "-1";
+	if ( !sr_id ) sr_id = -1;
 
 	if ( !geom ) geom = "the_geom";
 
