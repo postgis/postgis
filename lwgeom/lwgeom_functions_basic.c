@@ -1879,7 +1879,7 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 		elog(NOTICE, "geom_accum: NULL array");
 #endif
 	} else {
-		array = (ArrayType *) PG_DETOAST_DATUM_COPY(datum);
+		array = DatumGetArrayTypePCopy(datum);
 		/*array = PG_GETARG_ARRAYTYPE_P(0); */
 		nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
 #ifdef PGIS_DEBUG
@@ -2021,7 +2021,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 	}
 
 	/* Get actual ArrayType */
-	array = (ArrayType *) PG_DETOAST_DATUM(datum);
+	array = DatumGetArrayTypeP(datum);
 
 #ifdef PGIS_DEBUG
 	elog(NOTICE, " array is %d-bytes in size, %ld w/out header",
@@ -2217,7 +2217,7 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 	}
 
 	/* Get actual ArrayType */
-	array = (ArrayType *) PG_DETOAST_DATUM(datum);
+	array = DatumGetArrayTypeP(datum);
 
 #ifdef PGIS_DEBUG
 	elog(NOTICE, "LWGEOM_makeline_garray: array detoasted");
@@ -2377,7 +2377,7 @@ Datum LWGEOM_makepoly(PG_FUNCTION_ARGS)
 	/* Get input holes if any */
 	if ( PG_NARGS() > 1 )
 	{
-		array = (ArrayType *) PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+		array = PG_GETARG_ARRAYTYPE_P(1);
 		nholes = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
 		holes = lwalloc(sizeof(LWLINE *)*nholes);
 		for (i=0; i<nholes; i++)

@@ -186,7 +186,7 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 	/* Null array, null geometry (should be empty?) */
 	if ( (Pointer *)datum == NULL ) PG_RETURN_NULL();
 
-	array = (ArrayType *) PG_DETOAST_DATUM(datum);
+	array = DatumGetArrayTypeP(datum);
 
 	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
 
@@ -335,7 +335,7 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 	/* Null array, null geometry (should be empty?) */
 	if ( (Pointer *)datum == NULL ) PG_RETURN_NULL();
 
-	array = (ArrayType *) PG_DETOAST_DATUM(datum);
+	array = DatumGetArrayTypeP(datum);
 
 	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
 
@@ -3038,7 +3038,7 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 	/* Null array, null geometry (should be empty?) */
 	if ( (Pointer *)datum == NULL ) PG_RETURN_NULL();
 
-	array = (ArrayType *) PG_DETOAST_DATUM(datum);
+	array = DatumGetArrayTypeP(datum);
 
 	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
 

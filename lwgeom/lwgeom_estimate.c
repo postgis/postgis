@@ -21,6 +21,7 @@
 #include "executor/spi.h"
 #include "fmgr.h"
 #include "parser/parsetree.h"
+#include "utils/array.h"
 
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
@@ -2579,7 +2580,7 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 	tuptable = SPI_tuptable;
 	tupdesc = SPI_tuptable->tupdesc;
 	tuple = tuptable->vals[0];
-	array = (ArrayType *)SPI_getbinval(tuple, tupdesc, 1, &isnull);
+	array = DatumGetArrayTypeP(SPI_getbinval(tuple, tupdesc, 1, &isnull));
 	if (isnull)
 	{
 		SPI_finish();
