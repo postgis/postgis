@@ -2727,13 +2727,12 @@ initialize(void)
 		}
 
 		/*
-		 * Date field, which we store as a string so we need
-		 * more width in the column
+		 * Date field
 		 */
 		if(type == 1082)
 		{
 			if ( DBFAddField(dbf, field_name, FTDate,
-				10, 0) == -1 )
+				8, 0) == -1 )
 			{
 				printf( "Error - Date field could not "
 					"be created.\n");
