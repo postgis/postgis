@@ -73,6 +73,7 @@ int     simple_geometries = 0; /* 0 = MULTILINESTRING/MULTIPOLYGON, 1 = LINESTRI
 int	quoteidentifiers = 0;
 int	forceint4 = 0;
 int	createindex = 0;
+int readshape = 1;
 char    opt = ' ';
 char    *col_names = NULL;
 char	*pgtype;
@@ -306,17 +307,18 @@ Insert_attributes(DBFHandle hDBFHandle, int row)
    {
       if(DBFIsAttributeNULL( hDBFHandle, row, i))
       {
-         if(dump_format)
-         {
-            printf("\\N");
-            printf("\t");
-         }
-         else
-         {
-            printf("NULL");
-            printf(",");
-         }
-      }
+
+		if(dump_format)
+		{
+			printf("\\N");
+			//printf("\t");
+		}
+		else
+		{
+			printf("NULL");
+			//printf(",");
+		}
+	  }
 
       else /* Attribute NOT NULL */
       {
@@ -327,7 +329,7 @@ Insert_attributes(DBFHandle hDBFHandle, int row)
                if ( -1 == snprintf(val, 1024, "%s",
                      DBFReadStringAttribute(hDBFHandle, row, i)) )
                {
-                  fprintf(stderr, "Warning: field %d name trucated\n", i);
+                  fprintf(stderr, "Warning: field %d name truncated\n", i);
                   val[1023] = '\0';
                }
 	       /* pg_atoi() does not do this */
@@ -341,7 +343,7 @@ Insert_attributes(DBFHandle hDBFHandle, int row)
                if ( -1 == snprintf(val, 1024, "%s",
                      DBFReadStringAttribute(hDBFHandle, row, i)) )
                {
-                  fprintf(stderr, "Warning: field %d name trucated\n", i);
+                  fprintf(stderr, "Warning: field %d name truncated\n", i);
                   val[1023] = '\0';
                }
                break;
@@ -356,14 +358,24 @@ Insert_attributes(DBFHandle hDBFHandle, int row)
 			if (dump_format) {
 				escval = make_good_string(val);
 				printf("%s", escval);
-				printf("\t");
+				//printf("\t");
 			} else {
 				escval = protect_quotes_string(val);
 				printf("'%s'", escval);
-				printf(",");
+				//printf(",");
 			}
 			if ( val != escval ) free(escval);
 		 }
+		//only put in delimeter if not last field or a shape will follow
+		if(readshape == 1 || i < (num_fields - 1))
+		{
+			if (dump_format){
+			   printf("\t");   
+			}
+			else {
+				printf(",");   
+			}
+		}
 	}
 	return 1;
 }
@@ -389,13 +401,16 @@ main (int ARGC, char **ARGV)
 	 */
 	OpenShape();
 
-	/*
-	 * Compute output geometry type
-	 */
-	SetPgType();
-
-	fprintf(stderr, "Shapefile type: %s\n", SHPTypeName(shpfiletype));
-	fprintf(stderr, "Postgis type: %s[%d]\n", pgtype, pgdims);
+	if (readshape == 1){	
+		/*
+		 * Compute output geometry type
+		 */
+		 
+		SetPgType();
+	
+		fprintf(stderr, "Shapefile type: %s\n", SHPTypeName(shpfiletype));
+		fprintf(stderr, "Postgis type: %s[%d]\n", pgtype, pgdims);
+	}
 
 #ifdef USE_ICONV
 	if ( encoding )
@@ -457,36 +472,47 @@ OpenShape(void)
 	int j;
 	SHPObject *obj=NULL;
 
-	hSHPHandle = SHPOpen( shp_file, "rb" );
-	if (hSHPHandle == NULL) {
-		fprintf(stderr, "%s: shape (.shp) or index files (.shx) can not be opened.\n", shp_file);
-		exit(-1);
-	}
-	hDBFHandle = DBFOpen( shp_file, "rb" );
-	if (hSHPHandle == NULL || hDBFHandle == NULL){
-		fprintf(stderr, "%s: dbf file (.dbf) can not be opened.\n",
-			shp_file);
-		exit(-1);
-	}
-	SHPGetInfo(hSHPHandle, &num_entities, &shpfiletype, NULL, NULL);
-
-	if ( null_policy == abort_on_null )
+	if (readshape == 1)
 	{
-		for (j=0; j<num_entities; j++)
+		hSHPHandle = SHPOpen( shp_file, "rb" );
+		if (hSHPHandle == NULL) 
 		{
-			obj = SHPReadObject(hSHPHandle,j);
-			if ( ! obj )
-			{
-		fprintf(stderr, "Error reading shape object %d\n", j);
-		exit(1);
-			}
-			if ( obj->nVertices == 0 )
-			{
-		fprintf(stderr, "Empty geometries found, aborted.\n");
-		exit(1);
-			}
-			SHPDestroyObject(obj);
+			fprintf(stderr, "%s: shape (.shp) or index files (.shx) can not be opened, will just import attribute data.\n", shp_file);
+			readshape = 0;
 		}
+	}
+	
+	hDBFHandle = DBFOpen( shp_file, "rb" );
+	if ((hSHPHandle == NULL && readshape == 1) || hDBFHandle == NULL){
+		fprintf(stderr, "%s: dbf file (.dbf) can not be opened.\n",shp_file);
+		exit(-1);
+	}
+	
+	if (readshape == 1)
+	{
+		SHPGetInfo(hSHPHandle, &num_entities, &shpfiletype, NULL, NULL);
+	
+		if ( null_policy == abort_on_null )
+		{
+			for (j=0; j<num_entities; j++)
+			{
+				obj = SHPReadObject(hSHPHandle,j);
+				if ( ! obj )
+				{
+					fprintf(stderr, "Error reading shape object %d\n", j);
+					exit(1);
+				}
+				if ( obj->nVertices == 0 )
+				{
+					fprintf(stderr, "Empty geometries found, aborted.\n");
+					exit(1);
+				}
+				SHPDestroyObject(obj);
+			}
+		}
+	}
+	else {
+		num_entities = DBFGetRecordCount(hDBFHandle);
 	}
 
 }
@@ -577,18 +603,20 @@ CreateTable(void)
 	printf (");\n");
 
 	/* Create the geometry column with an addgeometry call */
-	if ( schema )
+	if ( schema && readshape == 1 )
 	{
 		printf("SELECT AddGeometryColumn('%s','%s','%s','%d',",
 			schema, table, geom, sr_id);
 	}
-	else
+	else if (readshape == 1)
 	{
 		printf("SELECT AddGeometryColumn('','%s','%s','%d',",
 			table, geom, sr_id);
 	}
-
-	printf("'%s',%d);\n", pgtype, pgdims);
+	if (pgtype)
+	{ //pgtype will only be set if we are loading geometries
+		printf("'%s',%d);\n", pgtype, pgdims);
+	}
 }
 
 void
@@ -646,19 +674,22 @@ LoadData(void)
 		/* transaction stuff done */
 
 		/*open the next object */
-		obj = SHPReadObject(hSHPHandle,j);
-		if ( ! obj )
+		if (readshape == 1)
 		{
-			fprintf(stderr, "Error reading shape object %d\n", j);
-			exit(1);
+			obj = SHPReadObject(hSHPHandle,j);
+			if ( ! obj )
+			{
+				fprintf(stderr, "Error reading shape object %d\n", j);
+				exit(1);
+			}
+	
+			if ( null_policy == skip_null && obj->nVertices == 0 )
+			{
+				SHPDestroyObject(obj);
+				continue;
+			}
 		}
-
-		if ( null_policy == skip_null && obj->nVertices == 0 )
-		{
-			SHPDestroyObject(obj);
-			continue;
-		}
-
+		
 		if (!dump_format)
 		{
 			if ( schema )
@@ -674,55 +705,66 @@ LoadData(void)
 		}
 		Insert_attributes(hDBFHandle,j);
 
-		/* ---------- NULL SHAPE ----------------- */
-		if (obj->nVertices == 0)
+		if (readshape == 1) 
 		{
-			if (dump_format) printf("\\N\n");
-			else printf("NULL);\n");
+			/* ---------- NULL SHAPE ----------------- */
+			if (obj->nVertices == 0)
+			{
+				if (dump_format) printf("\\N\n");
+				else printf("NULL);\n");
+				SHPDestroyObject(obj);	
+				continue;
+			}
+	
+			switch (obj->nSHPType)
+			{
+				case SHPT_POLYGON:
+				case SHPT_POLYGONM:
+				case SHPT_POLYGONZ:
+					if ( hwgeom ) InsertPolygonWKT();
+					else InsertPolygon();
+					break;
+	
+				case SHPT_POINT:
+				case SHPT_POINTM:
+				case SHPT_POINTZ:
+					if ( hwgeom ) InsertPointWKT();
+					else InsertPoint();
+					break;
+	
+				case SHPT_MULTIPOINT:
+				case SHPT_MULTIPOINTM:
+				case SHPT_MULTIPOINTZ:
+					if ( hwgeom ) InsertPointWKT();
+					else InsertMultiPoint();
+					break;
+	
+				case SHPT_ARC:
+				case SHPT_ARCM:
+				case SHPT_ARCZ:
+					if ( hwgeom ) InsertLineStringWKT(j);
+					else InsertLineString(j);
+					break;
+	
+				default:
+					printf ("\n\n**** Type is NOT SUPPORTED, type id = %d ****\n\n",
+						obj->nSHPType);
+					break;
+	
+			}
+			
 			SHPDestroyObject(obj);	
-			continue;
 		}
-
-		switch (obj->nSHPType)
-		{
-			case SHPT_POLYGON:
-			case SHPT_POLYGONM:
-			case SHPT_POLYGONZ:
-				if ( hwgeom ) InsertPolygonWKT();
-				else InsertPolygon();
-				break;
-
-			case SHPT_POINT:
-			case SHPT_POINTM:
-			case SHPT_POINTZ:
-				if ( hwgeom ) InsertPointWKT();
-				else InsertPoint();
-				break;
-
-			case SHPT_MULTIPOINT:
-			case SHPT_MULTIPOINTM:
-			case SHPT_MULTIPOINTZ:
-				if ( hwgeom ) InsertPointWKT();
-				else InsertMultiPoint();
-				break;
-
-			case SHPT_ARC:
-			case SHPT_ARCM:
-			case SHPT_ARCZ:
-				if ( hwgeom ) InsertLineStringWKT(j);
-				else InsertLineString(j);
-				break;
-
-			default:
-				printf ("\n\n**** Type is NOT SUPPORTED, type id = %d ****\n\n",
-					obj->nSHPType);
-				break;
-
-		}
-		
-		SHPDestroyObject(obj);	
-
+		else 
+			if (dump_format){ /*close for dbf only dump format */
+				printf("\n");
+			}
+			else { /*close for dbf only sql insert format */
+				printf(");\n");
+			}
+	
 	} /* END of MAIN SHAPE OBJECT LOOP */
+	
 
 
 	if ((dump_format) ) {
@@ -734,7 +776,7 @@ LoadData(void)
 void
 usage(char *me, int exitcode, FILE* out)
 {
-        fprintf(out, "RCSID: %s RELEASE: %s\n", rcsid, POSTGIS_VERSION);
+    fprintf(out, "RCSID: %s RELEASE: %s\n", rcsid, POSTGIS_VERSION);
 	fprintf(out, "USAGE: %s [<options>] <shapefile> [<schema>.]<table>\n", me);
 	fprintf(out, "OPTIONS:\n");
 	fprintf(out, "  -s <srid>  Set the SRID field. If not specified it defaults to -1.\n");
@@ -759,7 +801,8 @@ usage(char *me, int exitcode, FILE* out)
 	fprintf(out, "     attribute column. (default : \"ASCII\")\n");
 #endif
 	fprintf(out, "  -N <policy> Specify NULL geometries handling policy (insert,skip,abort)\n");
-        fprintf(out, "  -? Display this help screen\n");
+	fprintf(out, "  -n  Only import DBF file.\n");
+    fprintf(out, "  -? Display this help screen\n");
 	exit (exitcode);
 }
 
@@ -1269,89 +1312,92 @@ ParseCmdline(int ARGC, char **ARGV)
 	extern char *optarg;
 	extern int optind;
 
-        if ( ARGC == 1 ) {
-                usage(ARGV[0], 0, stdout);
-        }
+	if ( ARGC == 1 ) {
+		usage(ARGV[0], 0, stdout);
+	}
 
-	while ((c = pgis_getopt(ARGC, ARGV, "kcdapDs:Sg:iW:wIN:")) != EOF){
-               switch (c) {
-               case 'c':
-                    if (opt == ' ')
-                         opt ='c';
-                    else
-                         return 0;
-                    break;
-               case 'd':
-                    if (opt == ' ')
-                         opt ='d';
-                    else
-                         return 0;
-                    break;
-	       case 'a':
-                    if (opt == ' ')
-                         opt ='a';
-                    else
-                         return 0;
-                    break;
-	       case 'p':
-                    if (opt == ' ')
-                         opt ='p';
-                    else
-                         return 0;
-                    break;
-	       case 'D':
-		    dump_format =1;
-                    break;
-               case 'S':
-                    simple_geometries =1;
-                    break;
-               case 's':
+	while ((c = pgis_getopt(ARGC, ARGV, "kcdapDs:Sg:iW:wIN:n")) != EOF){
+		switch (c) {
+			case 'c':
+				if (opt == ' ')
+					 opt ='c';
+				else
+					 return 0;
+				break;
+			case 'd':
+				if (opt == ' ')
+					 opt ='d';
+				else
+					 return 0;
+				break;
+			case 'a':
+				if (opt == ' ')
+					 opt ='a';
+				else
+					 return 0;
+				break;
+			case 'p':
+				if (opt == ' ')
+					 opt ='p';
+				else
+					 return 0;
+				break;
+			case 'D':
+				dump_format =1;
+				break;
+			case 'S':
+				simple_geometries =1;
+				break;
+			case 's':
                     (void)sscanf(optarg, "%d", &sr_id);
-                    break;
-               case 'g':
-                    geom = optarg;
-                    break;
-               case 'k':
-                    quoteidentifiers = 1;
-                    break;
-               case 'i':
-                    forceint4 = 1;
-                    break;
-               case 'I':
-                    createindex = 1;
-                    break;
-               case 'w':
-                    hwgeom = 1;
-                    break;
-		case 'W':
+				break;
+			case 'g':
+				geom = optarg;
+				break;
+			case 'k':
+				quoteidentifiers = 1;
+				break;
+			case 'i':
+				forceint4 = 1;
+				break;
+			case 'I':
+				createindex = 1;
+				break;
+			case 'w':
+				hwgeom = 1;
+				break;
+			case 'n':
+				readshape = 0;
+				break;
+			case 'W':
 #ifdef USE_ICONV
-                    encoding = optarg;
+					encoding = optarg;
 #else
-		    fprintf(stderr, "WARNING: the -W switch will have no effect. UTF8 disabled at compile time\n");
+					fprintf(stderr, "WARNING: the -W switch will have no effect. UTF8 disabled at compile time\n");
 #endif
-                    break;
-		case 'N':
-			switch (optarg[0])
-			{	
-				case 'a':
-					null_policy = abort_on_null;
-					break;
-				case 'i':
-					null_policy = insert_null;
-					break;
-				case 's':
-					null_policy = skip_null;
-					break;
-				default:
-					fprintf(stderr, "Unsupported NULL geometry handling policy.\nValid policies: insert, skip, abort\n");
-					exit(1);
-			}
-                    break;
-               case '?':
-                    usage(ARGV[0], 0, stdout); 
-               default:              
-		return 0;
-               }
+				break;
+			case 'N':
+				switch (optarg[0])
+				{	
+					case 'a':
+						null_policy = abort_on_null;
+						break;
+					case 'i':
+						null_policy = insert_null;
+						break;
+					case 's':
+						null_policy = skip_null;
+						break;
+					default:
+						fprintf(stderr, "Unsupported NULL geometry handling policy.\nValid policies: insert, skip, abort\n");
+						exit(1);
+				}
+				break;
+			case '?':
+				usage(ARGV[0], 0, stdout); 
+			default:              
+				return 0;
+		}
 	}
 
 	if ( !sr_id ) sr_id = -1;
@@ -1600,14 +1646,18 @@ DropTable(char *schema, char *table, char *geom)
 		 */
 		if ( schema )
 		{
-			printf("SELECT DropGeometryColumn('%s','%s','%s');\n",
-				schema, table, geom);
+			if (readshape == 1){
+				printf("SELECT DropGeometryColumn('%s','%s','%s');\n",
+					schema, table, geom);
+			}
 			printf("DROP TABLE \"%s\".\"%s\";\n", schema, table);
 		}
 		else
 		{
-			printf("SELECT DropGeometryColumn('','%s','%s');\n",
-				table, geom);
+			if (readshape == 1){
+				printf("SELECT DropGeometryColumn('','%s','%s');\n",
+					table, geom);
+			}
 			printf("DROP TABLE \"%s\";\n", table);
 		}
 }
@@ -1635,7 +1685,13 @@ GetFieldsSpec(void)
 	types = (DBFFieldType *)malloc(num_fields*sizeof(int));
 	widths = malloc(num_fields*sizeof(int));
 	precisions = malloc(num_fields*sizeof(int));
-	col_names = malloc((num_fields+2) * sizeof(char) * MAXFIELDNAMELEN);
+	if (readshape == 1)
+	{
+		col_names = malloc((num_fields+2) * sizeof(char) * MAXFIELDNAMELEN);
+	}
+	{	//for dbf only, we do not need to allocate slot for the_geom
+		col_names = malloc((num_fields+1) * sizeof(char) * MAXFIELDNAMELEN);
+	}
 	strcpy(col_names, "(" );
 
 	/*fprintf(stderr, "Number of fields from DBF: %d\n", num_fields); */
@@ -1701,10 +1757,18 @@ GetFieldsSpec(void)
 		/*sprintf(col_names, "%s\"%s\",", col_names, name);*/
 		strcat(col_names, "\"");
 		strcat(col_names, name);
-		strcat(col_names, "\",");
+		if (readshape == 1 || j < (num_fields - 1)){
+			//don't include last comma if its the last field and no geometry field will follow
+			strcat(col_names, "\",");
+		}
+		else {
+			strcat(col_names, "\"");
+		}
 	}
 	/*sprintf(col_names, "%s\"%s\")", col_names, geom);*/
-	strcat(col_names, geom);
+	if (readshape == 1){
+		strcat(col_names, geom);
+	}
 	strcat(col_names, ")");
 }
 
@@ -1754,6 +1818,9 @@ utf8 (const char *fromcode, char *inputbuf)
 
 /**********************************************************************
  * $Log$
+ * Revision 1.109  2008/04/09 14:12:17  robe
+ *         - Added support to load dbf-only files
+ * 
  * Revision 1.108  2006/06/16 14:12:17  strk
  *         - BUGFIX in pgsql2shp successful return code.
  *         - BUGFIX in shp2pgsql handling of MultiLine WKT.
