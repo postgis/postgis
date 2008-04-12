@@ -1,3 +1,18 @@
+PostGIS 1.3.3
+2008/04/12
+        - shp2pgsql, pgsql2shp improvements
+          - regression tests on Windows
+          - OS/X 10.5 compatibility
+          - DBF-only loading flag (-n)
+          - fix to Date DBF output
+        - ST_SimplifyPreserveTopology(geometry, float8)
+          Allows simplification of polygons without creating
+          invalid geometries.
+        - Fix to |>> and <<| operators
+        - Build system more sensitive to GEOS version number
+        - KML support updates (from Eduin Carillo)
+        - SVG support updates (from Marco Hugentobler) 
+
 PostGIS 1.3.2
 2007/12/01
         - Improvements in the TIGER geocoder
