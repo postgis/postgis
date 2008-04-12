@@ -1,3 +1,9 @@
+2008-04-13 Paul Ramsey <pramsey@cleverelephant.ca>
+
+        * load/shp2pgsql.c
+          Added patch from Regina Obe to support DBF-only
+          loading of attributes without shapes.
+
 2008-04-07 Paul Ramsey <pramsey@cleverelephant.ca>
 
         * loader/shp2pgsql.c, pgsql2shp.c, getopt.c, getopt.h
