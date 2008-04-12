@@ -1,4 +1,6 @@
-2008-04-13 Paul Ramsey <pramsey@cleverelephant.ca>
+---------  PostGIS-1.3.3 release [2008-04-12] --------------------------
+
+2008-04-12 Paul Ramsey <pramsey@cleverelephant.ca>
 
         * load/shp2pgsql.c
           Added patch from Regina Obe to support DBF-only

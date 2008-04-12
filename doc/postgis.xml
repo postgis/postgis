@@ -6066,6 +6066,16 @@ z' = z </programlisting> This method is a subcase of
       <title>Release Notes</title>
 
       <sect2>
+        <title>Release 1.3.3</title>
+        <para>Release date: 2008/04/12</para>
+        <para>This release fixes bugs shp2pgsql, adds enhancements
+        to SVG and KML support, adds a ST_SimplifyPreserveTopology
+        function, makes the build more sensitive to GEOS versions,
+        and fixes a handful of severe but rare failure cases.
+        </para>
+      </sect2>
+
+      <sect2>
         <title>Release 1.3.2</title>
         <para>Release date: 2007/12/01</para>
         <para>This release fixes bugs in ST_EndPoint() and ST_Envelope,
