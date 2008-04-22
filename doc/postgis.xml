@@ -3340,8 +3340,10 @@ dimension
             <term>ST_Envelope(geometry)</term>
 
             <listitem>
-              <para>Returns a POLYGON representing the bounding box of the
-              geometry.</para>
+              <para>Returns a vald geometry (POINT, LINESTRING or POLYGON) 
+              representing the bounding box of the geometry. Degenerate
+              cases (vertical lines, point) will return a geometry of
+              lower dimension than POLYGON.</para>
 
               <para>OGC SPEC s2.1.1.1 - The minimum bounding box for this
               Geometry, returned as a Geometry. The polygon is defined by the
