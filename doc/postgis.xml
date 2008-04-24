@@ -4439,6 +4439,44 @@ dimension
               in output (defaults to 15).</para>
             </listitem>
           </varlistentry>
+          <varlistentry>
+            <term>ST_AsGeoJson([version], geometry, [precision], [options])</term>
+
+            <listitem>
+              <para>
+                Return the geometry as a GeoJson element. (Cf <ulink
+                url="http://wiki.geojson.org/GeoJSON_draft_version_6">GeoJson
+                specifications 1.0 RC6</ulink>).
+                2D and 3D Geometries are both supported. GeoJson only support
+                SFS 1.1 geometry type (no curve support for example).
+              </para>
+              <para>
+                The version parameter, if specified, must be 1.
+              </para>
+              <para>
+                The third argument may be used to reduce the maximum number of
+                significant digits used in output (defaults to 15).
+              </para>
+              <para>
+                The last 'options' argument could be used to add Bbox
+                or Crs in GeoJSON output:
+                <itemizedlist>
+                  <listitem>
+                    <para>0: means no option (default value)</para>
+                  </listitem>
+                  <listitem>
+                    <para>1: GeoJson CRS</para>
+                  </listitem>
+                  <listitem>
+                    <para>2: GeoJson Bbox</para>
+                  </listitem>
+                  <listitem>
+                    <para>2: Both GeoJson Bbox and CRS</para>
+                  </listitem>
+                </itemizedlist>
+              </para>
+            </listitem>
+          </varlistentry>
         </variablelist>
       </sect2>
 

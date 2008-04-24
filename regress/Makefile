@@ -35,7 +35,8 @@ TESTS = \
 	sql-mm-curvepoly \
 	sql-mm-general \
 	sql-mm-multicurve \
-	sql-mm-multisurface
+	sql-mm-multisurface \
+	geojson
 
 PREPROC = \
 	sql-mm-circularstring_expected \
