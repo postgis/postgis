@@ -1,10 +1,10 @@
 #-----------------------------------------------------
 #
-# Configuration directives are in Makefile.config
+# Configuration directives are in postgis_config.h 
 #
 #-----------------------------------------------------
 
-all: Makefile.config liblwgeom loaderdumper utils 
+all: liblwgeom loaderdumper utils 
 
 install: all liblwgeom-install loaderdumper-install 
 
@@ -18,7 +18,7 @@ distclean: clean
 	rm -f config.log config.cache config.status Makefile.config
 	rm -f config.h
 
-maintainer-clean: Makefile.config
+maintainer-clean: 
 	@echo '------------------------------------------------------'
 	@echo 'This command is intended for maintainers to use; it'
 	@echo 'deletes files that may need special tools to rebuild.'
@@ -35,7 +35,7 @@ test check:
 test-clean:
 	$(MAKE) -C regress clean
 
-liblwgeom: Makefile.config
+liblwgeom: 
 	$(MAKE) -C lwgeom 
 
 liblwgeom-clean:
@@ -47,7 +47,7 @@ liblwgeom-install:
 liblwgeom-uninstall:
 	$(MAKE) -C lwgeom uninstall
 
-loaderdumper: Makefile.config
+loaderdumper:
 	$(MAKE) -C loader
 
 loaderdumper-clean:
@@ -59,7 +59,7 @@ loaderdumper-install:
 loaderdumper-uninstall:
 	$(MAKE) -C loader uninstall
 
-templategis: Makefile.config
+templategis:
 	$(MAKE) -C extras/template_gis
 
 templategis-clean:
@@ -71,10 +71,10 @@ templategis-install:
 templategis-uninstall:
 	$(MAKE) -C extras/template_gis uninstall
 
-docs: Makefile.config
+docs: 
 	$(MAKE) -C doc 
 
-docs-clean: Makefile.config
+docs-clean:
 	$(MAKE) -C doc clean
 
 
@@ -92,11 +92,5 @@ configure: configure.in
 
 config.status: configure
 	./configure
-
-Makefile.config: Makefile.config.in config.status 
-	./config.status
-
-config.h: config.h.in config.status
-	./config.status
 
 .PHONY: utils
