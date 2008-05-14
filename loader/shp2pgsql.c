@@ -22,7 +22,7 @@
  *
  **********************************************************************/
 
-#include "../config.h"
+#include "../postgis_config.h"
 #include "shapefil.h"
 #include <stdio.h>
 #include <string.h>

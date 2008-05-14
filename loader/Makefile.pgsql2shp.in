@@ -1,0 +1,22 @@
+#
+# PostGIS PGXS build system
+#
+PROGRAM=pgsql2shp
+
+# List of objects to build
+OBJS=	shpopen.o \
+	dbfopen.o \
+	getopt.o \
+	pgsql2shp.o \
+	PQunescapeBytea.o
+
+# Link against libpq
+PG_CPPFLAGS=@PGSQL_FE_CPPFLAGS@
+PG_LIBS=@PGSQL_FE_LDFLAGS@ -lpq
+
+
+# PGXS information
+PG_CONFIG = pg_config
+PGXS := $(shell $(PG_CONFIG) --pgxs)
+include $(PGXS)
+

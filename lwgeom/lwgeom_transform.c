@@ -28,8 +28,8 @@ Datum transform(PG_FUNCTION_ARGS);
 Datum transform_geom(PG_FUNCTION_ARGS);
 Datum postgis_proj_version(PG_FUNCTION_ARGS);
 
-/* if USE_PROJECTION undefined, we get a do-nothing transform() function */
-#ifndef USE_PROJ
+/* if POSTGIS_PROJ_VERSION undefined, we get a do-nothing transform() function */
+#ifndef POSTGIS_PROJ_VERSION 
 
 PG_FUNCTION_INFO_V1(transform);
 Datum transform(PG_FUNCTION_ARGS)
@@ -53,7 +53,7 @@ Datum postgis_proj_version(PG_FUNCTION_ARGS)
 	PG_RETURN_NULL();
 }
 
-#else /* defined USE_PROJ  */
+#else /* defined POSTGIS_PROJ_VERSION  */
 
 #include "projects.h"
 #include "utils/memutils.h"
@@ -122,13 +122,13 @@ typedef struct struct_PJHashEntry
 
 
 /* PJ Hash API */
-#if USE_VERSION == 72
+#if POSTGIS_PGSQL_VERSION == 72
 long mcxt_ptr_hash(void *key, int keysize);
 #endif
-#if USE_VERSION == 73
+#if POSTGIS_PGSQL_VERSION == 73
 uint32 mcxt_ptr_hash(void *key, int keysize);
 #endif
-#if USE_VERSION > 73
+#if POSTGIS_PGSQL_VERSION > 73
 uint32 mcxt_ptr_hash(const void *key, Size keysize);
 #endif
 
@@ -159,7 +159,7 @@ static void PROJ4SRSCacheCheck(MemoryContext context);
 
 
 /* Memory context definition must match the current version of PostgreSQL */
-#if USE_VERSION == 72
+#if POSTGIS_PGSQL_VERSION == 72
 static MemoryContextMethods PROJ4SRSCacheContextMethods = {
 	NULL,
 	NULL,
@@ -174,7 +174,7 @@ static MemoryContextMethods PROJ4SRSCacheContextMethods = {
 };
 #endif
 
-#if USE_VERSION == 73 || USE_VERSION == 74
+#if POSTGIS_PGSQL_VERSION == 73 || POSTGIS_PGSQL_VERSION == 74
 static MemoryContextMethods PROJ4SRSCacheContextMethods = {
 	NULL,
 	NULL,
@@ -190,7 +190,7 @@ static MemoryContextMethods PROJ4SRSCacheContextMethods = {
 };
 #endif
  
-#if USE_VERSION >= 80
+#if POSTGIS_PGSQL_VERSION >= 80
 static MemoryContextMethods PROJ4SRSCacheContextMethods = {
 	NULL,
 	NULL,
@@ -291,13 +291,13 @@ PROJ4SRSCacheCheck(MemoryContext context)
  * has changed over the years....
  */
 
-#if USE_VERSION == 72
+#if POSTGIS_PGSQL_VERSION == 72
 long mcxt_ptr_hash(void *key, int keysize)
 #endif
-#if USE_VERSION == 73
+#if POSTGIS_PGSQL_VERSION == 73
 uint32 mcxt_ptr_hash(void *key, int keysize)
 #endif
-#if USE_VERSION > 73
+#if POSTGIS_PGSQL_VERSION > 73
 uint32 mcxt_ptr_hash(const void *key, Size keysize)
 #endif
 {
@@ -582,7 +582,7 @@ void DeleteFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
  */
 void SetPROJ4LibPath()
 {
-#if USE_VERSION >= 80
+#if POSTGIS_PGSQL_VERSION >= 80
 	char *path;
 	const char **proj_lib_path;
 

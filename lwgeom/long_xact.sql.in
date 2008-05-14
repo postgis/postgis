@@ -211,12 +211,12 @@ CREATEFUNCTION CheckAuth(text, text)
 
 CREATEFUNCTION CheckAuthTrigger()
 	RETURNS trigger AS 
-	'@MODULE_FILENAME@', 'check_authorization'
+	'MODULE_PATHNAME', 'check_authorization'
 	LANGUAGE C;
 
 CREATEFUNCTION GetTransactionID()
 	RETURNS xid AS 
-	'@MODULE_FILENAME@', 'getTransactionID'
+	'MODULE_PATHNAME', 'getTransactionID'
 	LANGUAGE C;
 
 

@@ -5,16 +5,16 @@ How to release
 Versioning Scheme
 -----------------
 
-Release version is composed by REL_MAJOR_VERSION, REL_MINOR_VERSION
-and REL_MICRO_VERSION components.
+Release version is composed by POSTGIS_MAJOR_VERSION, POSTGIS_MINOR_VERSION
+and POSTGIS_MICRO_VERSION components.
 
-By default only [REL_MICRO_VERSION] increments between releases.
+By default only [POSTGIS_MICRO_VERSION] increments between releases.
 
-[REL_MINOR_VERSION] is incremented (and MICRO set to 0) when minor
+[POSTGIS_MINOR_VERSION] is incremented (and MICRO set to 0) when minor
 additions have been introduced (one or two functions can be considered
 *micro* additions)
 
-[REL_MAJOR_VERSION] is incremented (and MICRO and MINOR set to 0) when
+[POSTGIS_MAJOR_VERSION] is incremented (and MICRO and MINOR set to 0) when
 a dump/reload of existing spatial databases is *REQUIRED* for things
 to work or rather *HIGHLY RECOMMENDED* to get new functionalities.
 

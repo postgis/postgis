@@ -34,8 +34,10 @@ typedef void (*lwfreeor)(void* mem);
 typedef void (*lwreporter)(const char* fmt, ...);
 
 #ifndef C_H
+
 typedef unsigned int uint32;
 typedef int int32;
+
 #endif
 
 /*

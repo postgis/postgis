@@ -29,7 +29,7 @@
 /*#define DEBUG_GEOMETRY_STATS 1*/
 
 
-#if USE_VERSION >= 80
+#if POSTGIS_PGSQL_VERSION >= 80
 
 #include "commands/vacuum.h"
 #include "utils/lsyscache.h"
@@ -82,7 +82,7 @@ typedef struct GEOM_STATS_T
 
 static float8 estimate_selectivity(BOX2DFLOAT4 *box, GEOM_STATS *geomstats);
 
-#endif /* USE_VERSION >= 80 */
+#endif /* POSTGIS_PGSQL_VERSION >= 80 */
 
 #define SHOW_DIGS_DOUBLE 15
 #define MAX_DIGS_DOUBLE (SHOW_DIGS_DOUBLE + 6 + 1 + 3 +1)
@@ -136,7 +136,7 @@ Datum estimate_lwhistogram2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS);
 Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS);
 Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS);
-#if USE_VERSION >= 80
+#if POSTGIS_PGSQL_VERSION >= 80
 Datum LWGEOM_analyze(PG_FUNCTION_ARGS);
 #endif
 
@@ -405,7 +405,7 @@ Datum build_lwhistogram2d(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL() ;
 	}
 
-#if USE_VERSION >= 80
+#if POSTGIS_PGSQL_VERSION >= 80
 	SPIportal = SPI_cursor_open(NULL, SPIplan, NULL, NULL, 1);
 #else
 	SPIportal = SPI_cursor_open(NULL, SPIplan, NULL, NULL);
@@ -765,7 +765,7 @@ elog(NOTICE," search is in x: %i to %i   y: %i to %i",x_idx_min, x_idx_max, y_id
 }
 
 
-#if ! REALLY_DO_JOINSEL || USE_VERSION < 80
+#if ! REALLY_DO_JOINSEL || POSTGIS_PGSQL_VERSION < 80
 /*
  * JOIN selectivity in the GiST && operator
  * for all PG versions
@@ -780,7 +780,7 @@ Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 	PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_JOINSEL);
 }
 
-#else /* REALLY_DO_JOINSEL && USE_VERSION >= 80 */
+#else /* REALLY_DO_JOINSEL && POSTGIS_PGSQL_VERSION >= 80 */
 
 int calculate_column_intersection(BOX2DFLOAT4 *search_box, GEOM_STATS *geomstats1, GEOM_STATS *geomstats2);
 
@@ -817,7 +817,7 @@ calculate_column_intersection(BOX2DFLOAT4 *search_box, GEOM_STATS *geomstats1, G
 PG_FUNCTION_INFO_V1(LWGEOM_gist_joinsel);
 Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 {
-#if USE_VERSION < 81
+#if POSTGIS_PGSQL_VERSION < 81
 	Query *root = (Query *) PG_GETARG_POINTER(0);
 #else
 	PlannerInfo *root = (PlannerInfo *) PG_GETARG_POINTER(0);
@@ -881,7 +881,7 @@ Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 
 	var1 = (Var *)arg1;
 	var2 = (Var *)arg2;
-#if USE_VERSION < 81
+#if POSTGIS_PGSQL_VERSION < 81
 	relid1 = getrelid(var1->varno, root->rtable);
 	relid2 = getrelid(var2->varno, root->rtable);
 #else
@@ -1052,7 +1052,7 @@ Datum LWGEOM_gist_joinsel(PG_FUNCTION_ARGS)
 /**************************** FROM POSTGIS ****************/
 
 
-#if USE_VERSION < 80
+#if POSTGIS_PGSQL_VERSION < 80
 /*
  * get_restriction_var
  *		Examine the args of a restriction clause to see if it's of the
@@ -1139,7 +1139,7 @@ Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS)
 
 	double myest;
 
-#ifndef USE_STATS
+#ifndef POSTGIS_USE_STATS
 	PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_SEL);
 #endif
 
@@ -1432,7 +1432,7 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(box);
 }
 
-#else /* USE_VERSION >= 80 */
+#else /* POSTGIS_PGSQL_VERSION >= 80 */
 
 /*
  * This function returns an estimate of the selectivity
@@ -1693,7 +1693,7 @@ elog(NOTICE, " avg feat overlaps %f cells", avg_feat_cells);
 PG_FUNCTION_INFO_V1(LWGEOM_gist_sel);
 Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS)
 {
-#if USE_VERSION < 81
+#if POSTGIS_PGSQL_VERSION < 81
 	Query *root = (Query *) PG_GETARG_POINTER(0);
 #else
 	PlannerInfo *root = (PlannerInfo *) PG_GETARG_POINTER(0);
@@ -1788,7 +1788,7 @@ Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS)
 	 * Get pg_statistic row
 	 */
 
-#if USE_VERSION < 81
+#if POSTGIS_PGSQL_VERSION < 81
 /*	relid = getrelid(varRelid, root->rtable); */
 	relid = getrelid(self->varno, root->rtable);
 #else
@@ -2626,7 +2626,7 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 }
 	
 
-#endif /* USE_VERSION >= 80 */
+#endif /* POSTGIS_PGSQL_VERSION >= 80 */
 
 
 /**********************************************************************

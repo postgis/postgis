@@ -15,6 +15,8 @@
 #endif
 
 /* Global variables */
+#include "../postgis_config.h"
+
 #if DEFAULT_CONTEXT == CONTEXT_SA
 #include "liblwgeom.h"
 lwallocator lwalloc_var = default_allocator;

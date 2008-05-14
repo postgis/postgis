@@ -1,0 +1,67 @@
+/* postgis_config.h.in.  Generated from configure.in by autoheader.  */
+
+/* Define to 1 if you have the <inttypes.h> header file. */
+#undef HAVE_INTTYPES_H
+
+/* Define to 1 if you have the `geos_c' library (-lgeos_c). */
+#undef HAVE_LIBGEOS_C
+
+/* Define to 1 if you have the `pq' library (-lpq). */
+#undef HAVE_LIBPQ
+
+/* Define to 1 if you have the `proj' library (-lproj). */
+#undef HAVE_LIBPROJ
+
+/* Define to 1 if you have the <memory.h> header file. */
+#undef HAVE_MEMORY_H
+
+/* Define to 1 if you have the <stdint.h> header file. */
+#undef HAVE_STDINT_H
+
+/* Define to 1 if you have the <stdlib.h> header file. */
+#undef HAVE_STDLIB_H
+
+/* Define to 1 if you have the <strings.h> header file. */
+#undef HAVE_STRINGS_H
+
+/* Define to 1 if you have the <string.h> header file. */
+#undef HAVE_STRING_H
+
+/* Define to 1 if you have the <sys/stat.h> header file. */
+#undef HAVE_SYS_STAT_H
+
+/* Define to 1 if you have the <sys/types.h> header file. */
+#undef HAVE_SYS_TYPES_H
+
+/* Define to 1 if you have the <unistd.h> header file. */
+#undef HAVE_UNISTD_H
+
+/* Enable caching of bounding box within geometries */
+#undef POSTGIS_AUTOCACHE_BBOX
+
+/* PostGIS build date */
+#undef POSTGIS_BUILD_DATE
+
+/* GEOS library version */
+#undef POSTGIS_GEOS_VERSION
+
+/* PostGIS library version */
+#undef POSTGIS_LIB_VERSION
+
+/* PostgreSQL server version */
+#undef POSTGIS_PGSQL_VERSION
+
+/* PROJ library version */
+#undef POSTGIS_PROJ_VERSION
+
+/* PostGIS scripts version */
+#undef POSTGIS_SCRIPTS_VERSION
+
+/* Enable use of ANALYZE statistics */
+#undef POSTGIS_USE_STATS
+
+/* PostGIS version */
+#undef POSTGIS_VERSION
+
+/* Define to 1 if you have the ANSI C header files. */
+#undef STDC_HEADERS

@@ -180,7 +180,7 @@ Datum postgis_uses_stats(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(postgis_autocache_bbox);
 Datum postgis_autocache_bbox(PG_FUNCTION_ARGS)
 {
-#ifdef AUTOCACHE_BBOX
+#ifdef POSTGIS_AUTOCACHE_BBOX
 	PG_RETURN_BOOL(TRUE);
 #else
 	PG_RETURN_BOOL(FALSE);
@@ -1858,13 +1858,13 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 	Datum datum;
 	PG_LWGEOM *geom;
 	ArrayType *result;
-#if USE_VERSION > 72
-# if USE_VERSION == 73
+#if POSTGIS_PGSQL_VERSION > 72
+# if POSTGIS_PGSQL_VERSION == 73
 	Oid oid = getGeometryOID();
-# else  /* USE_VERSION > 73 */
+# else  /* POSTGIS_PGSQL_VERSION > 73 */
 	Oid oid = get_fn_expr_argtype(fcinfo->flinfo, 1);
-# endif /* USE_VERSION > 73 */
-#endif /* USE_VERSION > 72 */
+# endif /* POSTGIS_PGSQL_VERSION > 73 */
+#endif /* POSTGIS_PGSQL_VERSION > 72 */
 
 
 #ifdef PGIS_DEBUG
@@ -1926,10 +1926,10 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 		SET_VARSIZE(result, nbytes);
 		result->ndim = 1;
 
-#if USE_VERSION > 72
+#if POSTGIS_PGSQL_VERSION > 72
 		result->elemtype = oid;
 #endif
-#if USE_VERSION > 81
+#if POSTGIS_PGSQL_VERSION > 81
 		result->dataoffset = 0;
 #endif
 		memcpy(ARR_DIMS(result), &nelems, sizeof(int));

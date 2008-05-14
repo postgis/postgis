@@ -1,8 +1,9 @@
+#include "../postgis_config.h"
+
 #include "postgres.h"
 #include "utils/array.h"
 #include "utils/builtins.h"
 #include "fmgr.h"
-
 
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
@@ -752,7 +753,7 @@ Datum convexhull(PG_FUNCTION_ARGS)
 
 }
 
-#if GEOS_VERNUM >= 30 
+#if POSTGIS_GEOS_VERSION >= 30 
 
 PG_FUNCTION_INFO_V1(topologypreservesimplify);
 Datum topologypreservesimplify(PG_FUNCTION_ARGS)

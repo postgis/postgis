@@ -130,7 +130,7 @@ run_simple_test ()
 		> "${OUTFILE}"
 	rm ${TMPFILE}
 
-	if diff "${_expected}" "${OUTFILE}" > ${DIFFILE}; then
+	if diff -c "${_expected}" "${OUTFILE}" > ${DIFFILE}; then
 		#SUCCESS=`expr $SUCCESS + 1`
 		rm "${OUTFILE}" "${DIFFILE}" # we don't need these anymore
 		return 0

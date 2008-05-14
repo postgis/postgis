@@ -1,3 +1,5 @@
+#include "../postgis_config.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -114,7 +116,7 @@ pglwgeom_serialize(LWGEOM *in)
 	size_t size;
 	PG_LWGEOM *result;
 
-#if AUTOCACHE_BBOX
+#if POSTGIS_AUTOCACHE_BBOX
 	if ( ! in->bbox && is_worth_caching_lwgeom_bbox(in) )
 	{
 		lwgeom_addBBOX(in);

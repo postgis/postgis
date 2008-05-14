@@ -70,7 +70,7 @@ PG_OBJS=liblwgeom.o \
 OBJS=$(SA_OBJS) $(PG_OBJS)
 
 # Libraries to link into the module (proj, geos)
-SHLIB_LINK= -L/usr/lib  -lgeos_c -lproj
+SHLIB_LINK=@SHLIB_LINK@
 
 # Extra files to remove during 'make clean'
 EXTRA_CLEAN=$(SQL_OBJS)

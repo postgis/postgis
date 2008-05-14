@@ -4,16 +4,19 @@
 #include <stdio.h>
 #include <errno.h>
 
+#include "../postgis_config.h"
+
 #include "postgres.h"
 #include "access/gist.h"
 #include "access/itup.h"
-#if USE_VERSION > 80
+#if POSTGIS_PGSQL_VERSION > 80
 #include "access/skey.h"
 #endif
 #include "fmgr.h"
 #include "utils/elog.h"
 
 #include "liblwgeom.h"
+
 #include "lwgeom_pg.h"
 #include "stringBuffer.h"
 
@@ -542,7 +545,7 @@ Datum LWGEOM_gist_compress(PG_FUNCTION_ARGS)
 			if (in != (PG_LWGEOM*)DatumGetPointer(entry->key))
 				pfree(in);  /* PG_FREE_IF_COPY */
 
-#if USE_VERSION >= 82
+#if POSTGIS_PGSQL_VERSION >= 82
 			gistentryinit(*retval, PointerGetDatum(rr),
 				entry->rel, entry->page,
 				entry->offset,
@@ -562,7 +565,7 @@ Datum LWGEOM_gist_compress(PG_FUNCTION_ARGS)
 		elog(NOTICE,"GIST: LWGEOM_gist_compress got a NULL key");
 #endif
 
-#if USE_VERSION >= 82
+#if POSTGIS_PGSQL_VERSION >= 82
 			gistentryinit(*retval, (Datum) 0, entry->rel,
 				entry->page, entry->offset, FALSE);
 #else
@@ -807,7 +810,7 @@ Datum LWGEOM_gist_decompress(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_gist_union);
 Datum LWGEOM_gist_union(PG_FUNCTION_ARGS)
 {
-#if USE_VERSION < 80
+#if POSTGIS_PGSQL_VERSION < 80
 	bytea *entryvec = (bytea *) PG_GETARG_POINTER(0);
 #else
  	GistEntryVector	*entryvec = (GistEntryVector *) PG_GETARG_POINTER(0);
@@ -822,7 +825,7 @@ Datum LWGEOM_gist_union(PG_FUNCTION_ARGS)
 	elog(NOTICE,"GIST: LWGEOM_gist_union called\n");
 #endif
 
-#if USE_VERSION < 80
+#if POSTGIS_PGSQL_VERSION < 80
 	numranges = (VARSIZE(entryvec) - VARHDRSZ) / sizeof(GISTENTRY);
 	cur = (BOX2DFLOAT4 *) DatumGetPointer(((GISTENTRY *) VARDATA(entryvec))[0].key);
 #else
@@ -837,7 +840,7 @@ Datum LWGEOM_gist_union(PG_FUNCTION_ARGS)
 
 	for (i = 1; i < numranges; i++)
 	{
-#if USE_VERSION < 80
+#if POSTGIS_PGSQL_VERSION < 80
 		cur = (BOX2DFLOAT4*) DatumGetPointer(((GISTENTRY *) VARDATA(entryvec))[i].key);
 #else
 		cur = (BOX2DFLOAT4*) DatumGetPointer(entryvec->vector[i].key);
@@ -1030,7 +1033,7 @@ Datum LWGEOM_gist_same(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_gist_picksplit);
 Datum LWGEOM_gist_picksplit(PG_FUNCTION_ARGS)
 {
-#if USE_VERSION < 80
+#if POSTGIS_PGSQL_VERSION < 80
 	bytea *entryvec = (bytea *) PG_GETARG_POINTER(0);
 #else
   	GistEntryVector	*entryvec = (GistEntryVector *) PG_GETARG_POINTER(0);
@@ -1053,7 +1056,7 @@ Datum LWGEOM_gist_picksplit(PG_FUNCTION_ARGS)
 
 	posL = posR = posB = posT = 0;
 
-#if USE_VERSION < 80
+#if POSTGIS_PGSQL_VERSION < 80
 	maxoff = ((VARSIZE(entryvec) - VARHDRSZ) / sizeof(GISTENTRY)) - 1;
 	cur = (BOX2DFLOAT4*) DatumGetPointer(((GISTENTRY *) VARDATA(entryvec))[FirstOffsetNumber].key);
 #else
@@ -1071,7 +1074,7 @@ elog(NOTICE,"   cur is: <%.16g %.16g,%.16g %.16g>", cur->xmin, cur->ymin, cur->x
 	/* find MBR */
 	for (i = OffsetNumberNext(FirstOffsetNumber); i <= maxoff; i = OffsetNumberNext(i))
 	{
-#if USE_VERSION < 80
+#if POSTGIS_PGSQL_VERSION < 80
 		cur = (BOX2DFLOAT4*) DatumGetPointer(((GISTENTRY *) VARDATA(entryvec))[i].key);
 #else
   		cur = (BOX2DFLOAT4 *) DatumGetPointer(entryvec->vector[i].key);
@@ -1111,7 +1114,7 @@ elog(NOTICE,"   pageunion is: <%.16g %.16g,%.16g %.16g>", pageunion.xmin, pageun
 #ifdef PGIS_DEBUG_GIST6
 elog(NOTICE," AllIsEqual!");
 #endif
-#if USE_VERSION < 80
+#if POSTGIS_PGSQL_VERSION < 80
 		cur = (BOX2DFLOAT4*) DatumGetPointer(((GISTENTRY *) VARDATA(entryvec))[OffsetNumberNext(FirstOffsetNumber)].key);
 #else
   		cur = (BOX2DFLOAT4*) DatumGetPointer(entryvec->vector[OffsetNumberNext(FirstOffsetNumber)].key);
@@ -1167,7 +1170,7 @@ elog(NOTICE," AllIsEqual!");
 
 	for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i))
 	{
-#if USE_VERSION < 80
+#if POSTGIS_PGSQL_VERSION < 80
 		cur = (BOX2DFLOAT4*) DatumGetPointer(((GISTENTRY *) VARDATA(entryvec))[i].key);
 #else
   		cur = (BOX2DFLOAT4*) DatumGetPointer(entryvec->vector[i].key);
@@ -1196,7 +1199,7 @@ elog(NOTICE,"   unionB is: <%.16g %.16g,%.16g %.16g>", unionB->xmin, unionB->ymi
 		KBsort *arr = (KBsort*)palloc( sizeof(KBsort) * maxoff );
 		posL = posR = posB = posT = 0;
 		for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i)) {
-#if USE_VERSION < 80
+#if POSTGIS_PGSQL_VERSION < 80
 			arr[i-1].key = (BOX2DFLOAT4*) DatumGetPointer(((GISTENTRY *) VARDATA(entryvec))[i].key);
 #else
   			arr[i-1].key = (BOX2DFLOAT4*) DatumGetPointer(entryvec->vector[i].key);

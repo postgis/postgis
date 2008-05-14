@@ -4,17 +4,17 @@
 /*
  * Define just the version numbers; otherwise we get some strange substitutions in lwpostgis.sql.in
  */
-#define POSTGIS_PGSQL_VERSION 83
-#define POSTGIS_GEOS_VERSION 30
-#define POSTGIS_PROJ_VERSION 46
+#define POSTGIS_PGSQL_VERSION @POSTGIS_PGSQL_VERSION@
+#define POSTGIS_GEOS_VERSION @POSTGIS_GEOS_VERSION@
+#define POSTGIS_PROJ_VERSION @POSTGIS_PROJ_VERSION@
 
 /*
  * Define the build date and the version number
  * (these substitiutions are done with extra quotes sinces CPP
  * won't substitute within apostrophes)
  */
-#define _POSTGIS_SQL_SELECT_POSTGIS_VERSION 'SELECT ''1.4 USE_GEOS=1 USE_PROJ=1 USE_STATS=1''::text AS version'
-#define _POSTGIS_SQL_SELECT_POSTGIS_BUILD_DATE 'SELECT ''2008-05-14 08:59:43''::text AS version'
+#define _POSTGIS_SQL_SELECT_POSTGIS_VERSION 'SELECT ''@POSTGIS_VERSION@''::text AS version'
+#define _POSTGIS_SQL_SELECT_POSTGIS_BUILD_DATE 'SELECT ''@POSTGIS_BUILD_DATE@''::text AS version'
 
 
 #define CREATEFUNCTION CREATE OR REPLACE FUNCTION

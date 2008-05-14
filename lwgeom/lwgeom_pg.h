@@ -1,6 +1,7 @@
 #ifndef _LWGEOM_PG_H
 #define _LWGEOM_PG_H 1
 
+#include "../postgis_config.h"
 #include "postgres.h"
 #include "utils/geo_decls.h"
 #include "fmgr.h"
@@ -11,7 +12,7 @@
 #define PG_NARGS() (fcinfo->nargs)
 #endif
 
-#if USE_VERSION < 82 
+#if POSTGIS_PGSQL_VERSION < 82 
 #define ARR_OVERHEAD_NONULLS(x) ARR_OVERHEAD((x))
 #endif
 

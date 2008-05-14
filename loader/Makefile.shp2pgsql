@@ -1,0 +1,16 @@
+#
+# PostGIS PGXS build system
+#
+PROGRAM=shp2pgsql
+
+# List of objects to build
+OBJS=	shpopen.o \
+	dbfopen.o \
+	getopt.o \
+	shp2pgsql.o
+
+# PGXS information
+PG_CONFIG = pg_config
+PGXS := $(shell $(PG_CONFIG) --pgxs)
+include $(PGXS)
+

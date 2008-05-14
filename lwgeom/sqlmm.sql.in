@@ -118,7 +118,7 @@ CREATEFUNCTION ST_WKBToSQL(bytea)
 -- TODO: SE_AsShape(geometry)
 --CREATEFUNCTION SE_AsShape(geometry)
 --    RETURNS bytea
---    AS '@MODULE_FILENAME@','LWGEOM_AsShape'
+--    AS 'MODULE_PATHNAME','LWGEOM_AsShape'
 --    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -------------------------------------------------------------------------------
@@ -128,7 +128,7 @@ CREATEFUNCTION ST_WKBToSQL(bytea)
 -- PostGIS equivalent function: ndims(geometry)
 CREATEFUNCTION ST_CoordDim(geometry)
     RETURNS smallint
-    AS '@MODULE_FILENAME@', 'LWGEOM_ndims'
+    AS 'MODULE_PATHNAME', 'LWGEOM_ndims'
     LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
 -- ST_Dimension(geometry) - already defined.
@@ -193,19 +193,19 @@ CREATEFUNCTION SE_IsMeasured(geometry)
 -- PostGIS equivalent function: makePoint(float8,float8)
 CREATEFUNCTION ST_Point(float8, float8)
 	RETURNS geometry
-	AS '@MODULE_FILENAME@', 'LWGEOM_makepoint'
+	AS 'MODULE_PATHNAME', 'LWGEOM_makepoint'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
 -- PostGIS equivalent function: Z(geometry)
 CREATEFUNCTION SE_Z(geometry)
 	RETURNS float8
-	AS '@MODULE_FILENAME@','LWGEOM_z_point'
+	AS 'MODULE_PATHNAME','LWGEOM_z_point'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
 -- PostGIS equivalent function: M(geometry)
 CREATEFUNCTION SE_M(geometry)
 	RETURNS float8
-	AS '@MODULE_FILENAME@','LWGEOM_m_point'
+	AS 'MODULE_PATHNAME','LWGEOM_m_point'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
 -------------------------------------------------------------------------------
@@ -321,7 +321,7 @@ CREATEFUNCTION SE_LocateAlong(geometry, float8)
 -- PostGIS equivalent function: locate_between_measures(geometry, float8, float8)
 CREATEFUNCTION SE_LocateBetween(geometry, float8, float8)
 	RETURNS geometry
-	AS '@MODULE_FILENAME@', 'LWGEOM_locate_between_m'
+	AS 'MODULE_PATHNAME', 'LWGEOM_locate_between_m'
 	LANGUAGE 'C' _IMMUTABLE_STRICT;
 
 

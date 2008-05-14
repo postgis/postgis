@@ -1,6 +1,8 @@
 TMPDIR?=/tmp
 
-include ../Makefile.config
+POSTGIS_PGSQL_VERSION=@POSTGIS_PGSQL_VERSION@
+POSTGIS_GEOS_VERSION=@POSTGIS_GEOS_VERSION@
+POSTGIS_PROJ_VERSION=@POSTGIS_PROJ_VERSION@
 
 TESTS = \
 	loader/Point \
@@ -36,7 +38,12 @@ TESTS = \
 	sql-mm-general \
 	sql-mm-multicurve \
 	sql-mm-multisurface \
-	geojson
+	geojson \
+	regress_ogc \
+	regress_bdpoly \
+	regress_proj \
+	kml
+
 
 PREPROC = \
 	sql-mm-circularstring_expected \
@@ -46,42 +53,29 @@ PREPROC = \
 	sql-mm-multisurface_expected
 
 
-# GEOS tests only if GEOS is available
-ifeq ($(USE_GEOS),1)
-	TESTS += regress_ogc regress_bdpoly 
-
 # Covers/CoveredBy only if GEOS >= 3.0
-ifeq ($(shell expr $(GEOS_VERNUM) ">=" 30),1)
+ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 30),1)
 	TESTS += regress_ogc_cover 
 
 # PreparedGeometry only if GEOS >= 3.1
-ifeq ($(shell expr $(GEOS_VERNUM) ">=" 31),1)
+ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 31),1)
 	TESTS += regress_ogc_prep
 
 endif
 endif
-endif
 
-ifeq ($(USE_PROJ),1)
-	TESTS += regress_proj kml
-endif
 
 all: test 
 
-test check: lwpostgis.sql ../lwgeom/liblwgeom.so ../loader/pgsql2shp ../loader/shp2pgsql $(PREPROC)
-	@USE_VERSION="$(USE_VERSION)" ./run_test $(TESTS)
-
-lwpostgis.sql: ../lwgeom/lwpostgis.sql.in 
-	$(MAKE) -C ../lwgeom ../regress/lwpostgis.sql
+test check: ../lwgeom/liblwgeom.so ../loader/pgsql2shp ../loader/shp2pgsql $(PREPROC)
+	cp ../lwgeom/lwpostgis.sql .
+	@USE_VERSION="$(POSTGIS_PGSQL_VERSION)" ./run_test $(TESTS)
 
 ../lwgeom/liblwgeom.so:
-	$(MAKE) -C ../lwgeom all-shared-lib
+	$(MAKE) -C ../lwgeom
 
-../loader/pgsql2shp:
-	$(MAKE) -C ../loader pgsql2shp
-
-../loader/shp2pgsql:
-	$(MAKE) -C ../loader shp2pgsql
+../loader/pgsql2shp ../loader/shp2pgsql:
+	$(MAKE) -C ../loader
 
 $(PREPROC):
 	cpp -P -traditional-cpp $@.in | grep -v "^$$" > $@

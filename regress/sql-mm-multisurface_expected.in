@@ -1,4 +1,4 @@
-#include "../config.h"
+#include "../postgis_config.h"
 ndims01|4
 geometrytype01|MULTISURFACE
 ndims02|3

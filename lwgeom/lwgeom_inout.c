@@ -1,3 +1,5 @@
+#include "../postgis_config.h"
+
 #include "postgres.h"
 
 #include <math.h>
@@ -13,7 +15,7 @@
 
 #include "fmgr.h"
 #include "utils/elog.h"
-#if USE_VERSION > 73
+#if POSTGIS_PGSQL_VERSION > 73
 # include "lib/stringinfo.h" /* for binary input */
 #endif
 
@@ -37,7 +39,7 @@ Datum LWGEOM_to_text(PG_FUNCTION_ARGS);
 Datum LWGEOM_to_bytea(PG_FUNCTION_ARGS);
 Datum LWGEOM_from_bytea(PG_FUNCTION_ARGS);
 Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS);
-#if USE_VERSION > 73
+#if POSTGIS_PGSQL_VERSION > 73
 Datum LWGEOM_recv(PG_FUNCTION_ARGS);
 Datum LWGEOM_send(PG_FUNCTION_ARGS);
 #endif
@@ -404,7 +406,7 @@ Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS)
 char
 is_worth_caching_pglwgeom_bbox(const PG_LWGEOM *in)
 {
-#if ! AUTOCACHE_BBOX
+#if ! POSTGIS_AUTOCACHE_BBOX
 	return false;
 #endif
 	if ( TYPE_GETTYPE(in->type) == POINTTYPE ) return false;
@@ -414,7 +416,7 @@ is_worth_caching_pglwgeom_bbox(const PG_LWGEOM *in)
 char
 is_worth_caching_serialized_bbox(const uchar *in)
 {
-#if ! AUTOCACHE_BBOX
+#if ! POSTGIS_AUTOCACHE_BBOX
 	return false;
 #endif
 	if ( TYPE_GETTYPE((uchar)in[0]) == POINTTYPE ) return false;
@@ -424,7 +426,7 @@ is_worth_caching_serialized_bbox(const uchar *in)
 char
 is_worth_caching_lwgeom_bbox(const LWGEOM *in)
 {
-#if ! AUTOCACHE_BBOX
+#if ! POSTGIS_AUTOCACHE_BBOX
 	return false;
 #endif
 	if ( TYPE_GETTYPE(in->type) == POINTTYPE ) return false;
@@ -537,7 +539,7 @@ Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS)
 }
 
 
-#if USE_VERSION > 73
+#if POSTGIS_PGSQL_VERSION > 73
 /*
  * This function must advance the StringInfo.cursor pointer
  * and leave it at the end of StringInfo.buf. If it fails
@@ -604,7 +606,7 @@ Datum LWGEOM_send(PG_FUNCTION_ARGS)
 }
 
 
-#endif /* USE_VERSION > 73 */
+#endif /* POSTGIS_PGSQL_VERSION > 73 */
 
 PG_FUNCTION_INFO_V1(LWGEOM_to_bytea);
 Datum LWGEOM_to_bytea(PG_FUNCTION_ARGS)
