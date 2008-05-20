@@ -2,8 +2,8 @@
 # PostGIS documentation build Makefile
 #
 
-XSLTPROC = /usr/bin/xsltproc 
-XSLBASE = /usr/share/xml/docbook/stylesheet/nwalsh
+XSLTPROC = @XSLTPROC@
+XSLBASE = @XSLBASE@
 
 XSLTPROC_COMMONOPTS = \
 	--param section.autolabel 1 \
@@ -27,7 +27,7 @@ endif
 
 
 postgis-out.xml: postgis.xml long_xact.xml ../Version.config
-	cat $< | sed "s/@@LAST_RELEASE_VERSION@@/1.4.0/g" > $@
+	cat $< | sed "s/@@LAST_RELEASE_VERSION@@/@POSTGIS_LIB_VERSION@/g" > $@
 
 chunked-html: postgis-out.xml
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) $(XSLTPROC_HTMLOPTS) \
