@@ -24,6 +24,49 @@ POSTGIS_MICRO_VERSION=`cat Version.config | grep POSTGIS_MICRO_VERSION | sed 's/
 
 
 dnl
+dnl Search for xsltproc which is required for building documentation
+dnl
+
+AC_PATH_PROG([XSLTPROC], [xsltproc], [])
+if test "x$XSLTPROC" = "x"; then
+	AC_MSG_WARN([xsltproc is not installed so documentation cannot be built])
+fi
+
+
+dnl
+dnl Allow the user to specify the location of the html/docbook.xsl stylesheet
+dnl
+
+AC_ARG_WITH([xsldir], [Specify the path to the directory containing the docbook.xsl stylesheet], [XSLBASE="$withval"], [XSLBASE=""])
+if test "x$XSLBASE" = "x"; then
+	dnl If the user did not specify a directory for the docbook stylesheet, choose the first directory
+	dnl that matches from the following list
+	SEARCHPATH="
+		/usr/share/sgml/docbook/xsl-stylesheets 
+		/usr/share/xml/docbook/stylesheet/nwalsh
+		/usr/share/sgml/docbook/stylesheet/xsl/nwalsh
+		"
+	for p in ${SEARCHPATH}; do
+		if test -r "${p}"/html/docbook.xsl; then
+			XSLBASE="${p}"
+			break
+		fi
+	done
+fi
+
+dnl For XSLBASE, make sure the directory exists and that it contains html/docbook.xsl 
+if test ! -d "$XSLBASE"; then
+	AC_MSG_ERROR([the docbook stylesheet directory specified using --with-xsldir does not exist])
+fi 
+
+if test ! -f "$XSLBASE/html/docbook.xsl"; then
+	AC_MSG_ERROR([the docbook stylesheet directory specified using --with-xsldir does not contain the html/docbook.xsl file])
+fi
+
+AC_SUBST([XSLBASE])
+
+
+dnl
 dnl Detect the version of PostgreSQL installed on the system
 dnl
 
@@ -245,5 +288,5 @@ AC_SUBST([SHLIB_LINK])
 dnl AC_MSG_RESULT([SHLIB_LINK: $SHLIB_LINK])
 
 dnl Output the relevant files
-AC_OUTPUT([lwgeom/Makefile lwgeom/sqldefines.h loader/Makefile.pgsql2shp regress/Makefile])
+AC_OUTPUT([lwgeom/Makefile lwgeom/sqldefines.h loader/Makefile.pgsql2shp regress/Makefile doc/Makefile])
 

@@ -1,9 +1,9 @@
-include ../Makefile.config
-include ../Version.config
+#
+# PostGIS documentation build Makefile
+#
 
-LAST_RELEASE_VERSION = $(REL_MAJOR_VERSION).$(REL_MINOR_VERSION).$(REL_MICRO_VERSION)
-
-JW_COMMONOPTS = -f docbook -b html -e no-valid
+XSLTPROC = /usr/bin/xsltproc 
+XSLBASE = /usr/share/xml/docbook/stylesheet/nwalsh
 
 XSLTPROC_COMMONOPTS = \
 	--param section.autolabel 1 \
@@ -15,21 +15,19 @@ XSLTPROC_HTMLOPTS = \
 
 HTML_DOCBOOK_XSL=$(XSLBASE)/html/docbook.xsl 
 CHUNK_HTML_DOCBOOK_XSL=$(XSLBASE)/html/chunk.xsl 
-FO_DOCBOOK_XSL=$(XSLBASE)/fo/docbook.xsl
 
-all: $(DOC_RULE)
 
-requirements_not_met:
-	@echo
-	@echo "Docs building requires 'xsltproc' or 'jw'."
-	@echo "Configuration tool could not find any, either install"
-	@echo "them or refer to online manual:"
-	@echo
-	@echo "  http://postgis.refractions.net/docs"
-	@echo
+# If XSLTPROC was not found during configure, we cannot
+# build the documentation
+ifdef XSLTPROC
+all: html/postgis.html
+else
+all: requirements_not_met
+endif
+
 
 postgis-out.xml: postgis.xml long_xact.xml ../Version.config
-	cat $< | sed "s/@@LAST_RELEASE_VERSION@@/$(LAST_RELEASE_VERSION)/g" > $@
+	cat $< | sed "s/@@LAST_RELEASE_VERSION@@/1.4.0/g" > $@
 
 chunked-html: postgis-out.xml
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) $(XSLTPROC_HTMLOPTS) \
@@ -43,35 +41,6 @@ html/postgis.html: postgis-out.xml
 		--output html/postgis.html \
 		$(HTML_DOCBOOK_XSL) \
 		$<
-
-postgis.fo: postgis-out.xml
-	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) \
-		--output $@ \
-		$(XSLBASE)/fo/docbook.xsl \
-		$<
-
-html: html/postgis.html
-
-postgis.pdf: postgis-out.xml
-	@if test x"$(DB2PDF)" = x; then \
-	   echo "Error: db2pdf not found, can't build posgis.pdf"; \
-	   echo "       try installing docbook-utils package"; \
-	   false; \
-	else \
-	   $(DB2PDF) $< && mv postgis-out.pdf postgis.pdf; \
-	fi
-
-# this is broken
-_postgis.pdf: postgis.fo
-	@if test x"$(PDFXMLTEX)" = x; then \
-	   echo "Error: pdfxmltex not found, can't build posgis.pdf"; \
-	   false; \
-	else \
-	   $(PDFXMLTEX) $<;  \
-	fi
-
-jw: postgis-out.xml
-	$(JW) $(JW_COMMONOPTS) -o html/ postgis-out.xml
 
 clean:
 	@rm -f \
@@ -99,4 +68,14 @@ uninstall:
 	rm -f $(DESTDIR)$(mandir)/man1/shp2pgsql.1
 	rm -f $(DESTDIR)$(mandir)/man1/pgsql2shp.1
 
-.PHONY: html 
+requirements_not_met:
+	@echo
+	@echo "configure was unable to find 'xsltproc' which is required to build the documentation."
+	@echo "To build the documentation, install xsltproc and then re-run configure. Alternatively "
+	@echo "refer to online manual:"
+	@echo
+	@echo "  http://postgis.refractions.net/docs"
+	@echo
+
+.PHONY: html
+ 
