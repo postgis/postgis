@@ -22,6 +22,27 @@
 #include "wktparse.h"
 #include "lwgeom_pg.h"
 
+
+double interpolate_arc(double angle, double zm1, double a1, double zm2, double a2);
+POINTARRAY *lwcircle_segmentize(POINT4D *p1, POINT4D *p2, POINT4D *p3, uint32 perQuad);
+LWLINE *lwcurve_segmentize(LWCURVE *icurve, uint32 perQuad);
+LWLINE *lwcompound_segmentize(LWCOMPOUND *icompound, uint32 perQuad);
+LWPOLY *lwcurvepoly_segmentize(LWCURVEPOLY *curvepoly, uint32 perQuad);
+LWMLINE *lwmcurve_segmentize(LWMCURVE *mcurve, uint32 perQuad);
+LWMPOLY *lwmsurface_segmentize(LWMSURFACE *msurface, uint32 perQuad);
+LWCOLLECTION *lwcollection_segmentize(LWCOLLECTION *collection, uint32 perQuad);
+LWGEOM *append_segment(LWGEOM *geom, POINTARRAY *pts, int type, int SRID);
+LWGEOM *pta_desegmentize(POINTARRAY *points, int type, int SRID);
+LWGEOM *lwline_desegmentize(LWLINE *line);
+LWGEOM *lwpolygon_desegmentize(LWPOLY *poly);
+LWGEOM *lwmline_desegmentize(LWMLINE *mline);
+LWGEOM *lwmpolygon_desegmentize(LWMPOLY *mpoly);
+LWGEOM *lwgeom_desegmentize(LWGEOM *geom);
+Datum LWGEOM_has_arc(PG_FUNCTION_ARGS);
+Datum LWGEOM_curve_segmentize(PG_FUNCTION_ARGS);
+Datum LWGEOM_line_desegmentize(PG_FUNCTION_ARGS);
+
+
 /*
  * Tolerance used to determine equality.
  */

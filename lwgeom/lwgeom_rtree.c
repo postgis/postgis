@@ -14,6 +14,11 @@
 #include "liblwgeom.h"
 #include "lwgeom_rtree.h"
 
+
+Datum LWGEOM_polygon_index(PG_FUNCTION_ARGS);
+RTREE_POLY_CACHE *createNewCache(LWPOLY *poly, uchar *serializedPoly);
+
+
 /*
  * Creates an rtree given a pointer to the point array.
  * Must copy the point array.

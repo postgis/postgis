@@ -73,8 +73,15 @@ Datum LWGEOM_asEWKT(PG_FUNCTION_ARGS);
 Datum LWGEOM_hasBBOX(PG_FUNCTION_ARGS);
 Datum LWGEOM_azimuth(PG_FUNCTION_ARGS);
 Datum LWGEOM_affine(PG_FUNCTION_ARGS);
-
+Datum LWGEOM_longitude_shift(PG_FUNCTION_ARGS);
 Datum optimistic_overlap(PG_FUNCTION_ARGS);
+
+void lwgeom_affine_ptarray(POINTARRAY *pa, double afac, double bfac, double cfac,
+	double dfac, double efac, double ffac, double gfac, double hfac, double ifac, double xoff, double yoff, double zoff);
+
+void lwgeom_affine_recursive(uchar *serialized, double afac, double bfac, double cfac,
+	double dfac, double efac, double ffac, double gfac, double hfac, double ifac, double xoff, double yoff, double zoff);
+
 /*------------------------------------------------------------------*/
 
 /*find the size of geometry */

@@ -28,6 +28,7 @@ Datum transform(PG_FUNCTION_ARGS);
 Datum transform_geom(PG_FUNCTION_ARGS);
 Datum postgis_proj_version(PG_FUNCTION_ARGS);
 
+
 /* if POSTGIS_PROJ_VERSION undefined, we get a do-nothing transform() function */
 #ifndef POSTGIS_PROJ_VERSION 
 
@@ -145,7 +146,7 @@ void DeleteFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid);
 
 /* Search path for PROJ.4 library */
 static bool IsPROJ4LibPathSet = false;
-void SetPROJ4LibPath();
+void SetPROJ4LibPath(void);
 
 /* Memory context cache functions */
 static void PROJ4SRSCacheInit(MemoryContext context);
@@ -244,7 +245,7 @@ PROJ4SRSCacheReset(MemoryContext context)
 {
 	/*
 	 * Do nothing, but we must supply a function since this call is mandatory according to tgl
-     * (see postgis-devel archives July 2007)
+	 * (see postgis-devel archives July 2007)
 	 */
 }
 
@@ -253,7 +254,7 @@ PROJ4SRSCacheIsEmpty(MemoryContext context)
 {
 	/*
 	 * Always return false since this call is mandatory according to tgl
-     * (see postgis-devel archives July 2007)
+ 	 * (see postgis-devel archives July 2007)
 	 */
     return FALSE;
 }
@@ -263,7 +264,7 @@ PROJ4SRSCacheStats(MemoryContext context)
 {
 	/*
 	 * Simple stats display function - we must supply a function since this call is mandatory according to tgl
-     * (see postgis-devel archives July 2007)
+	 * (see postgis-devel archives July 2007)
 	 */
     
     fprintf(stderr, "%s: PROJ4 context\n", context->name);
@@ -580,7 +581,7 @@ void DeleteFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
  * since the method of determining the current installation
  * path are different on older PostgreSQL versions. 
  */
-void SetPROJ4LibPath()
+void SetPROJ4LibPath(void)
 {
 #if POSTGIS_PGSQL_VERSION >= 80
 	char *path;

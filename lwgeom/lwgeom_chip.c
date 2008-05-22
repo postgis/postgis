@@ -18,10 +18,47 @@
 /* Define this to debug CHIP ops */
 /*#define DEBUG_CHIP 1*/
 
+typedef unsigned short int UINT16;
+typedef float FLOAT32;
+
+typedef struct PIXEL_T {
+	int type; /* 1=float32, 5=int24, 6=int16 */
+	uchar val[4];
+} PIXEL;
+
+typedef struct RGB_T {
+	uchar red;
+	uchar green;
+	uchar blue;
+} RGB;
+
+
 /* Internal funcs */
 void swap_char(char *a,char *b);
 void flip_endian_double(char *d);
 void flip_endian_int32(char *i);
+const char* pixelOpName(int op);
+const char* pixelHEX(PIXEL* p);
+UINT16 pixel_readUINT16(PIXEL *p);
+void pixel_writeUINT16(PIXEL *p, UINT16 i);
+PIXEL pixel_readval(char *buf);
+void pixel_writeval(PIXEL *p, char *buf, size_t maxlen);
+void pixel_add_float32(PIXEL *where, PIXEL *what);
+void pixel_add_int24(PIXEL *where, PIXEL *what);
+void pixel_add_int16(PIXEL *where, PIXEL *what);
+void pixel_add(PIXEL *where, PIXEL *what);
+size_t chip_xy_off(CHIP *c, size_t x, size_t y);
+void chip_setPixel(CHIP *c, int x, int y, PIXEL *p);
+PIXEL chip_getPixel(CHIP *c, int x, int y);
+void chip_draw_pixel(CHIP *chip, int x, int y, PIXEL *pixel, int op);
+void chip_draw_segment(CHIP *chip, int x1, int y1, int x2, int y2, PIXEL *pixel, int op);
+void chip_fill(CHIP *chip, PIXEL *pixel, int op);
+CHIP * pgchip_construct(BOX3D *bvol, int SRID, int width, int height, int datatype, PIXEL *initvalue);
+void chip_draw_ptarray(CHIP *chip, POINTARRAY *pa, PIXEL *pixel, int op);
+void chip_draw_lwpoint(CHIP *chip, LWPOINT *lwpoint, PIXEL* pixel, int op);
+void chip_draw_lwline(CHIP *chip, LWLINE *lwline, PIXEL* pixel, int op);
+void chip_draw_lwgeom(CHIP *chip, LWGEOM *lwgeom, PIXEL *pixel, int op);
+char * text_to_cstring(text *t);
 
 
 /* Prototypes */
@@ -36,6 +73,13 @@ Datum CHIP_getCompression(PG_FUNCTION_ARGS);
 Datum CHIP_getHeight(PG_FUNCTION_ARGS);
 Datum CHIP_getWidth(PG_FUNCTION_ARGS);
 Datum CHIP_setSRID(PG_FUNCTION_ARGS);
+Datum CHIP_send(PG_FUNCTION_ARGS);
+Datum CHIP_dump(PG_FUNCTION_ARGS);
+Datum CHIP_construct(PG_FUNCTION_ARGS);
+Datum CHIP_getpixel(PG_FUNCTION_ARGS);
+Datum CHIP_setpixel(PG_FUNCTION_ARGS);
+Datum CHIP_draw(PG_FUNCTION_ARGS);
+Datum CHIP_fill(PG_FUNCTION_ARGS);
 
 
 /*
@@ -354,21 +398,6 @@ pixelOpName(int op)
 	}
 	return pixelop_name[op];
 }
-
-
-typedef struct RGB_T {
-	uchar red;
-	uchar green;
-	uchar blue;
-} RGB;
-
-typedef unsigned short int UINT16;
-typedef float FLOAT32;
-
-typedef struct PIXEL_T {
-	int type; /* 1=float32, 5=int24, 6=int16 */
-	uchar val[4];
-} PIXEL;
 
 const char*
 pixelHEX(PIXEL* p)

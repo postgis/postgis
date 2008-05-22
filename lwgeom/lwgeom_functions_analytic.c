@@ -43,6 +43,15 @@ LWCOLLECTION *simplify2d_collection(const LWCOLLECTION *igeom, double dist);
 LWGEOM *simplify2d_lwgeom(const LWGEOM *igeom, double dist);
 Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS);
 
+double determineSide(POINT2D *seg1, POINT2D *seg2, POINT2D *point);
+int isOnSegment(POINT2D *seg1, POINT2D *seg2, POINT2D *point);
+int point_in_ring(RTREE_NODE *root, POINT2D *point);
+int point_in_ring_deprecated(POINTARRAY *pts, POINT2D *point);
+int point_in_polygon(RTREE_NODE **root, int ringCount, LWPOINT *point);
+int point_in_polygon_deprecated(LWPOLY *polygon, LWPOINT *point);
+int point_outside_polygon(RTREE_NODE **root, int ringCount, LWPOINT *point);
+int point_outside_polygon_deprecated(LWPOLY *polygon, LWPOINT *point);
+
 
 /*
  * Search farthest point from segment p1-p2

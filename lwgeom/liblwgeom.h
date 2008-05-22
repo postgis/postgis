@@ -912,6 +912,7 @@ extern float  nextUp_f(double d);
 extern double nextDown_d(float d);
 extern double nextUp_d(float d);
 
+extern float nextafterf_custom(float x, float y);
 
 
 #define LW_MAX(a,b)	((a) >	(b) ? (a) : (b))
@@ -1070,6 +1071,7 @@ extern int32 lwgeom_nrings_recursive(uchar *serialized);
 extern void ptarray_reverse(POINTARRAY *pa);
 extern POINTARRAY *ptarray_substring(POINTARRAY *, double, double);
 extern double ptarray_locate_point(POINTARRAY *, POINT2D *);
+extern void closest_point_on_segment(POINT2D *p, POINT2D *A, POINT2D *B, POINT2D *ret);
 
 /*
  * Ensure every segment is at most 'dist' long.
@@ -1162,6 +1164,10 @@ typedef struct
 /******************************************************************
  * LWCURVE functions
  ******************************************************************/
+
+/* Casts LWGEOM->LW* (return NULL if cast is illegal) */
+extern LWCURVE *lwgeom_as_lwcurve(LWGEOM *lwgeom);
+
 
 LWCURVE *lwcurve_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points);
 

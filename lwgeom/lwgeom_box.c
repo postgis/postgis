@@ -5,6 +5,9 @@
 #include "liblwgeom.h"
 
 
+void box_to_box2df(BOX *box, BOX2DFLOAT4 *out);
+
+
 
 /* convert postgresql BOX to BOX2D */
 void

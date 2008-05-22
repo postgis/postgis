@@ -42,6 +42,8 @@ uchar* output_single(uchar* geom,int supress);
 uchar* output_collection(uchar* geom,outfunc func,int supress);
 uchar* output_collection_2(uchar* geom,int suppress);
 uchar* output_multipoint(uchar* geom,int suppress);
+uchar* output_compound(uchar* geom, int suppress);
+uchar* output_multisurface(uchar* geom, int suppress);
 
 void write_wkb_hex_bytes(uchar* ptr, unsigned int cnt, size_t size);
 void write_wkb_bin_bytes(uchar* ptr, unsigned int cnt, size_t size);

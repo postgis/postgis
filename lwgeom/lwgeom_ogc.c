@@ -81,6 +81,8 @@ Datum LWGEOM_isclosed_linestring(PG_FUNCTION_ARGS);
 static int32 lwgeom_numpoints_linestring_recursive(const uchar *serialized);
 static int32 lwgeom_dimension_recursive(const uchar *serialized);
 char line_is_closed(LWLINE *line);
+char curve_is_closed(LWCURVE *curve);
+char compound_is_closed(LWCOMPOUND *compound);
 
 /*------------------------------------------------------------------*/
 

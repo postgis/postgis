@@ -18,6 +18,18 @@
 #include <math.h>
 #include "liblwgeom.h"
 
+BOX3D *lwcircle_compute_box3d(POINT4D *p1, POINT4D *p2, POINT4D *p3);
+void printLWCURVE(LWCURVE *curve);
+void lwcurve_reverse(LWCURVE *curve);
+LWCURVE *lwcurve_segmentize2d(LWCURVE *curve, double dist);
+char lwcurve_same(const LWCURVE *me, const LWCURVE *you);
+LWCURVE *lwcurve_from_lwpointarray(int SRID, unsigned int npoints, LWPOINT **points);
+LWCURVE *lwcurve_from_lwmpoint(int SRID, LWMPOINT *mpoint);
+LWCURVE *lwcurve_addpoint(LWCURVE *curve, LWPOINT *point, unsigned int where);
+LWCURVE *lwcurve_removepoint(LWCURVE *curve, unsigned int index);
+void lwcurve_setPoint4d(LWCURVE *curve, unsigned int index, POINT4D *newpoint);
+
+
 /*#define PGIS_DEBUG_CALLS 1 */
 /*#define PGIS_DEBUG 1 */
 
