@@ -1,27 +1,28 @@
-# Configuration Directives
-include ../Makefile.config
-include ../Version.config
+#
+# PostGIS PGXS build system
+#
 
-#---------------------------------------------------------------
-# Postgis version and build date
-#---------------------------------------------------------------
+# Files to be copied to the contrib/ directory
+DATA_built=topology.sql
 
-all: topology.sql 
+# SQL objects (files requiring C pre-processing)
+SQL_OBJS=topology.sql.in
 
-topology.sql: topology.sql.in
-	cpp -P -traditional-cpp -DUSE_VERSION=$(USE_VERSION) $< | grep -v '^#' > $@
+# Extra files to remove during 'make clean'
+EXTRA_CLEAN=$(SQL_OBJS)
 
-install: all install-topology-scripts
+# PGXS information
+PG_CONFIG = pg_config
+PGXS := $(shell $(PG_CONFIG) --pgxs)
+include $(PGXS)
 
-uninstall: uninstall-topology-scripts
 
-install-topology-scripts:
-	@mkdir -p $(DESTDIR)$(datadir)
-	$(INSTALL_DATA) topology.sql $(DESTDIR)$(datadir)/topology.sql
+# Unfortunately we have to copy this from the PGXS Makefile as it only gets picked up
+# if MODULE_big is defined
+%.sql: %.sql.in
+	sed 's,MODULE_PATHNAME,$$libdir/$*,g' $< >$@
 
-uninstall-topology-scripts:
-	rm -f $(DESTDIR)$(datadir)/postgis/topology.sql
-
-clean distclean: 
-	rm -f topology.sql
+# Generate any .sql.in files from .sql.in.c files by running them through the C pre-processor 
+$(SQL_OBJS): %.in: %.in.c
+	$(CPP) -traditional-cpp $< | grep -v '^#' > $@
 

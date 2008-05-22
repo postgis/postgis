@@ -1,6 +1,6 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- 
--- $Id$
+-- $Id: topology.sql.in 2469 2006-09-06 11:16:59Z strk $
 --
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.refractions.net
@@ -160,26 +160,7 @@
 --  
 --  
 
-
-#define CREATEFUNCTION CREATE OR REPLACE FUNCTION
-
-#if USE_VERSION > 72
-# define _IMMUTABLE_STRICT IMMUTABLE STRICT
-# define _IMMUTABLE IMMUTABLE
-# define _STABLE_STRICT STABLE STRICT
-# define _STABLE STABLE
-# define _VOLATILE_STRICT VOLATILE STRICT
-# define _VOLATILE VOLATILE
-# define _STRICT STRICT
-#else 
-# define _IMMUTABLE_STRICT  with(iscachable,isstrict)
-# define _IMMUTABLE with(iscachable)
-# define _STABLE_STRICT with(isstrict)
-# define _STABLE 
-# define _VOLATILE_STRICT with(isstrict)
-# define _VOLATILE 
-# define _STRICT with(isstrict)
-#endif 
+#include "../lwgeom/sqldefines.h"
 
 DROP SCHEMA topology CASCADE;
 
@@ -2428,7 +2409,7 @@ BEGIN
 		|| '')''
 	LOOP
 		RAISE EXCEPTION
-		''SQL/MM Spatial exception ­ edge crosses node.'';
+		''SQL/MM Spatial exception - edge crosses node.'';
 	END LOOP;
 
 
@@ -2556,7 +2537,7 @@ BEGIN
 		|| '')''
 	LOOP
 		RAISE EXCEPTION
-		''SQL/MM Spatial exception ­ edge crosses node.'';
+		''SQL/MM Spatial exception - edge crosses node.'';
 	END LOOP;
 
 	--
@@ -3275,7 +3256,7 @@ BEGIN
 		--
 		IF ! within(acurve, face) THEN
 	RAISE EXCEPTION
-	''SQL/MM Spatial exception ­ geometry not within face.'';
+	''SQL/MM Spatial exception - geometry not within face.'';
 		END IF;
 
 	END IF;
@@ -3287,7 +3268,7 @@ BEGIN
 	IF x(snodegeom) != x(StartPoint(acurve)) OR
 	   y(snodegeom) != y(StartPoint(acurve)) THEN
   RAISE EXCEPTION
-  ''SQL/MM Spatial exception ­ start node not geometry start point.'';
+  ''SQL/MM Spatial exception - start node not geometry start point.'';
 	END IF;
 
 	--
@@ -3297,7 +3278,7 @@ BEGIN
 	IF x(enodegeom) != x(EndPoint(acurve)) OR
 	   y(enodegeom) != y(EndPoint(acurve)) THEN
   RAISE EXCEPTION
-  ''SQL/MM Spatial exception ­ end node not geometry end point.'';
+  ''SQL/MM Spatial exception - end node not geometry end point.'';
 	END IF;
 
 	--
