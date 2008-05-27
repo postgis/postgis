@@ -776,10 +776,9 @@ int DBFReadSetup(DBFHandle psDBF, int hEntity)
 int DBFReadDeleted(DBFHandle psDBF, int hEntity)
 {
   unsigned char	*pabyRec;
-  unsigned char *pDeleted;
   
   if( ! DBFReadSetup( psDBF, hEntity) )
-    return NULL;
+    return 0;
 
   /* get reference to current record */
   pabyRec = (unsigned char *) psDBF->pszCurrentRecord;

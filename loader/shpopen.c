@@ -173,9 +173,6 @@
  *
  */
 
-static char rcsid[] = 
-  "$Id$";
-
 #include "shapefil.h"
 
 #include <math.h>
