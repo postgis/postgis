@@ -9,6 +9,9 @@ OBJS=	shpopen.o \
 	getopt.o \
 	shp2pgsql.o
 
+# Link against libiconv where available
+PG_LIBS=@ICONV_LDFLAGS@
+
 # PGXS information
 PG_CONFIG = pg_config
 PGXS := $(shell $(PG_CONFIG) --pgxs)

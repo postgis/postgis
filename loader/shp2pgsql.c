@@ -33,7 +33,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include "getopt.h"
-#ifdef HAVE_ICONV_H
+#ifdef HAVE_ICONV
 #include <iconv.h>
 #endif
 
@@ -82,7 +82,7 @@ int	pgdims;
 unsigned int wkbtype;
 char  	*shp_file = NULL;
 int	hwgeom = 0; /* old (hwgeom) mode */
-#ifdef USE_ICONV
+#ifdef HAVE_ICONV
 char	*encoding=NULL;
 #endif
 int null_policy = insert_null;
@@ -118,7 +118,7 @@ void InsertLineStringWKT(int id);
 int ParseCmdline(int ARGC, char **ARGV);
 void SetPgType(void);
 char *dump_ring(Ring *ring);
-#ifdef USE_ICONV
+#ifdef HAVE_ICONV
 char *utf8(const char *fromcode, char *inputbuf);
 #endif
 int FindPolygons(SHPObject *obj, Ring ***Out);
@@ -170,7 +170,7 @@ make_good_string(char *str)
 	char *ptr, *optr;
 	int toescape = 0;
 	size_t size;
-#ifdef USE_ICONV
+#ifdef HAVE_ICONV
 	char *utf8str=NULL;
 
 	if ( encoding )
@@ -202,7 +202,7 @@ make_good_string(char *str)
 	}
 	*optr='\0';
 
-#ifdef USE_ICONV
+#ifdef HAVE_ICONV
 	if ( encoding ) free(str);
 #endif
 
@@ -225,7 +225,7 @@ protect_quotes_string(char *str)
 	char	*ptr, *optr;
 	int	toescape = 0;
 	size_t size;
-#ifdef USE_ICONV
+#ifdef HAVE_ICONV
 	char *utf8str=NULL;
 
 	if ( encoding )
@@ -258,7 +258,7 @@ protect_quotes_string(char *str)
 	}
 	*optr='\0';
 
-#ifdef USE_ICONV
+#ifdef HAVE_ICONV
 	if ( encoding ) free(str);
 #endif
 
@@ -412,12 +412,12 @@ main (int ARGC, char **ARGV)
 		fprintf(stderr, "Postgis type: %s[%d]\n", pgtype, pgdims);
 	}
 
-#ifdef USE_ICONV
+#ifdef HAVE_ICONV
 	if ( encoding )
 	{
 		printf("SET CLIENT_ENCODING TO UTF8;\n");
 	}
-#endif /* defined USE_ICONV */
+#endif /* defined HAVE_ICONV */
 
 	/*
 	 * Drop table if requested
@@ -802,7 +802,7 @@ usage(char *me, int exitcode, FILE* out)
 	fprintf(out, "  -I  Create a GiST index on the geometry column.\n");
 	fprintf(out, "  -S  Generate simple geometries instead of MULTI geometries.\n");
 	fprintf(out, "  -w  Use wkt format (for postgis-0.x support - drops M - drifts coordinates).\n");
-#ifdef USE_ICONV
+#ifdef HAVE_ICONV
 	fprintf(out, "  -W <encoding> Specify the character encoding of Shape's\n");
 	fprintf(out, "     attribute column. (default : \"ASCII\")\n");
 #endif
@@ -1376,7 +1376,7 @@ ParseCmdline(int ARGC, char **ARGV)
 				readshape = 0;
 				break;
 			case 'W':
-#ifdef USE_ICONV
+#ifdef HAVE_ICONV
 					encoding = optarg;
 #else
 					fprintf(stderr, "WARNING: the -W switch will have no effect. UTF8 disabled at compile time\n");
@@ -1681,7 +1681,7 @@ GetFieldsSpec(void)
 	char  name[MAXFIELDNAMELEN];
 	char  name2[MAXFIELDNAMELEN];
 	DBFFieldType type = -1;
-#ifdef USE_ICONV
+#ifdef HAVE_ICONV
 	char *utf8str;
 #endif
 
@@ -1710,7 +1710,7 @@ GetFieldsSpec(void)
 		widths[j] = field_width;
 		precisions[j] = field_precision;
 
-#ifdef USE_ICONV
+#ifdef HAVE_ICONV
 		if ( encoding )
 		{
 			utf8str = utf8(encoding, name);
@@ -1778,7 +1778,7 @@ GetFieldsSpec(void)
 	strcat(col_names, ")");
 }
 
-#ifdef USE_ICONV
+#ifdef HAVE_ICONV
 
 char *
 utf8 (const char *fromcode, char *inputbuf)
@@ -1820,7 +1820,7 @@ utf8 (const char *fromcode, char *inputbuf)
 	return outputbuf;
 }
 
-#endif /* defined USE_ICONV */
+#endif /* defined HAVE_ICONV */
 
 /**********************************************************************
  * $Log$
