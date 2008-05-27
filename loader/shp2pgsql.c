@@ -673,6 +673,12 @@ LoadData(void)
 		trans++;
 		/* transaction stuff done */
 
+    /*skip the record if it has been deleted*/
+    if(readshape != 1 && DBFReadDeleted(hDBFHandle, j)) {
+      continue; 
+    }
+
+
 		/*open the next object */
 		if (readshape == 1)
 		{
