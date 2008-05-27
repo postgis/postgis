@@ -456,6 +456,8 @@ const char SHPAPI_CALL1(*)
 int     SHPAPI_CALL
       DBFIsAttributeNULL( DBFHandle hDBF, int iShape, int iField );
 
+int SHPAPI_CALL DBFReadSetup(DBFHandle psDBF, int hEntity);
+
 int SHPAPI_CALL DBFReadDeleted(DBFHandle psDBF, int hEntity);
 
 int SHPAPI_CALL
