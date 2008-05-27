@@ -718,30 +718,22 @@ DBFAddField(DBFHandle psDBF, const char * pszFieldName,
     return( psDBF->nFields-1 );
 }
 
+
 /************************************************************************/
-/*                          DBFReadAttribute()                          */
+/*                        DBFReadSetup()                                */
 /*                                                                      */
-/*      Read one of the attribute fields of a record.                   */
+/*      Prep a record for reading.                                      */
 /************************************************************************/
 
-static void *DBFReadAttribute(DBFHandle psDBF, int hEntity, int iField,
-                              char chReqType )
-
+int DBFReadSetup(DBFHandle psDBF, int hEntity) 
 {
     int	       	nRecordOffset;
-    unsigned char	*pabyRec;
-    void	*pReturnField = NULL;
-
-    static double dDoubleField;
 
 /* -------------------------------------------------------------------- */
 /*      Verify selection.                                               */
 /* -------------------------------------------------------------------- */
     if( hEntity < 0 || hEntity >= psDBF->nRecords )
-        return( NULL );
-
-    if( iField < 0 || iField >= psDBF->nFields )
-        return( NULL );
+        return( 0 );
 
 /* -------------------------------------------------------------------- */
 /*	Have we read the record?					*/
@@ -756,7 +748,7 @@ static void *DBFReadAttribute(DBFHandle psDBF, int hEntity, int iField,
         {
             fprintf( stderr, "fseek(%d) failed on DBF file.\n",
                      nRecordOffset );
-            return NULL;
+            return 0;
         }
 
 	if( fread( psDBF->pszCurrentRecord, psDBF->nRecordLength, 
@@ -764,25 +756,77 @@ static void *DBFReadAttribute(DBFHandle psDBF, int hEntity, int iField,
         {
             fprintf( stderr, "fread(%d) failed on DBF file.\n",
                      psDBF->nRecordLength );
-            return NULL;
+            return 0;
         }
 
 	psDBF->nCurrentRecord = hEntity;
     }
+    
+    return 1;
 
+}
+
+
+/************************************************************************/
+/*                        DBFReadDeleted()                              */
+/*                                                                      */
+/*      Read whether a record is deleted.                               */
+/************************************************************************/
+
+int DBFReadDeleted(DBFHandle psDBF, int hEntity)
+{
+  unsigned char	*pabyRec;
+  unsigned char *pDeleted;
+  
+  if( ! DBFReadSetup( psDBF, hEntity) )
+    return NULL;
+
+  /* get reference to current record */
+  pabyRec = (unsigned char *) psDBF->pszCurrentRecord;
+
+  /* 0x20 => not deleted, 0x24 => deleted */
+  return *pabyRec == 0x20 ? 1 : 0;
+
+}
+
+/************************************************************************/
+/*                          DBFReadAttribute()                          */
+/*                                                                      */
+/*      Read one of the attribute fields of a record.                   */
+/************************************************************************/
+
+static void *DBFReadAttribute(DBFHandle psDBF, int hEntity, int iField,
+                              char chReqType )
+
+{
+    unsigned char	*pabyRec;
+    void	*pReturnField = NULL;
+
+    static double dDoubleField;
+
+/* -------------------------------------------------------------------- */
+/*      Verify selection.                                               */
+/* -------------------------------------------------------------------- */
+    if( iField < 0 || iField >= psDBF->nFields )
+        return( NULL );
+
+    if( ! DBFReadSetup( psDBF, hEntity) )
+      return( NULL );
+
+    /* get reference to current record */
     pabyRec = (unsigned char *) psDBF->pszCurrentRecord;
 
 /* -------------------------------------------------------------------- */
-/*	Ensure our field buffer is large enough to hold this buffer.	*/
+/*	Ensure our field buffer is large enough to hold this buffer.	      */
 /* -------------------------------------------------------------------- */
     if( psDBF->panFieldSize[iField]+1 > nStringFieldLen )
     {
-	nStringFieldLen = psDBF->panFieldSize[iField]*2 + 10;
-	pszStringField = (char *) SfRealloc(pszStringField,nStringFieldLen);
+	    nStringFieldLen = psDBF->panFieldSize[iField]*2 + 10;
+	    pszStringField = (char *) SfRealloc(pszStringField,nStringFieldLen);
     }
 
 /* -------------------------------------------------------------------- */
-/*	Extract the requested field.					*/
+/*	Extract the requested field.				                              	*/
 /* -------------------------------------------------------------------- */
     strncpy( pszStringField, 
 	     ((const char *) pabyRec) + psDBF->panFieldOffset[iField],
@@ -796,9 +840,8 @@ static void *DBFReadAttribute(DBFHandle psDBF, int hEntity, int iField,
 /* -------------------------------------------------------------------- */
     if( chReqType == 'N' )
     {
-        dDoubleField = atof(pszStringField);
-
-	pReturnField = &dDoubleField;
+      dDoubleField = atof(pszStringField);
+      pReturnField = &dDoubleField;
     }
 
 /* -------------------------------------------------------------------- */

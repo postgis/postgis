@@ -1,3 +1,7 @@
+2008-06-26 Paul Ramsey <pramsey@cleverelephant.ca>
+
+        * loader/shapefil.h, dbfopen.c, shp2pgsql.c
+          Fix for DBF files with deleted records. (#29)
 
 2008-04-12 Paul Ramsey <pramsey@cleverelephant.ca>
           
