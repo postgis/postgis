@@ -3238,12 +3238,13 @@ VACUUM FULL ANALYZE mytable;</programlisting>
               <para>Returns a geometry that represents the point set union of
               the Geometries.</para>
 
-              <para>Performed by the GEOS module</para>
+              <para>Performed by the GEOS module.</para>
 
-              <para>Do not call with a GeometryCollection as an argument</para>
+              <para>Do not call with a GeometryCollection as an argument.</para>
 
-              <para>NOTE: this is renamed from &quot;union&quot; because union
-              is an SQL reserved word</para>
+              <para>NOTE: this function was formerly called GeomUnion(),
+              which was renamed from &quot;Union&quot; because
+              UNION is an SQL reserved word.</para>
 
               <para>OGC SPEC s2.1.1.3</para>
             </listitem>
@@ -3254,13 +3255,13 @@ VACUUM FULL ANALYZE mytable;</programlisting>
 
             <listitem>
               <para>Returns a geometry that represents the point set union of
-              this all Geometries in given set.</para>
+              all Geometries in given set.</para>
 
-              <para>Performed by the GEOS module</para>
+              <para>Performed by the GEOS module.</para>
 
-              <para>Do not call with a GeometryCollection in the argument set</para>
+              <para>Do not call with a GeometryCollection in the argument set.</para>
 
-              <para>Not explicitly defined in OGC SPEC</para>
+              <para>Not explicitly defined in OGC SPEC.</para>
             </listitem>
           </varlistentry>
 
