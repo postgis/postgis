@@ -3169,8 +3169,6 @@ VACUUM FULL ANALYZE mytable;</programlisting>
 
               <para>Performed by the GEOS module</para>
 
-              <para>Do not call with a GeometryCollection as an argument</para>
-
               <para>OGC SPEC s2.1.1.3</para>
             </listitem>
           </varlistentry>
