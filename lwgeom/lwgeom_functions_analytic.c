@@ -794,7 +794,7 @@ Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS)
 	PG_LWGEOM *out_geom = NULL;
 	LWGEOM *out_lwgeom;
 	gridspec grid;
-	//BOX3D box3d;
+	/* BOX3D box3d; */
 
 	if ( PG_ARGISNULL(0) ) PG_RETURN_NULL();
 	datum = PG_GETARG_DATUM(0);
@@ -859,7 +859,7 @@ Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS)
 
 		out_lwgeom->bbox = box3d_to_box2df(&box3d);
 	}
-#endif // 0
+#endif /* 0 */
 
 #if VERBOSE
 	elog(NOTICE, "SnapToGrid made a %s", lwgeom_typename(TYPE_GETTYPE(out_lwgeom->type)));
@@ -880,7 +880,7 @@ Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS)
 	PG_LWGEOM *out_geom = NULL;
 	LWGEOM *out_lwgeom;
 	gridspec grid;
-	//BOX3D box3d;
+	/* BOX3D box3d; */
 	POINT4D offsetpoint;
 
 	if ( PG_ARGISNULL(0) ) PG_RETURN_NULL();
@@ -965,7 +965,7 @@ Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS)
 
 		out_lwgeom->bbox = box3d_to_box2df(&box3d);
 	}
-#endif // 0
+#endif /* 0 */
 
 #if VERBOSE
 	elog(NOTICE, "SnapToGrid made a %s", lwgeom_typename(TYPE_GETTYPE(out_lwgeom->type)));
@@ -1018,7 +1018,7 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 
 	opa = ptarray_substring(ipa, from, to);
 
-	if ( opa->npoints == 1 ) // Point returned
+	if ( opa->npoints == 1 ) /* Point returned */
 		olwgeom = (LWGEOM *)lwpoint_construct(iline->SRID, NULL, opa);
 	else
 		olwgeom = (LWGEOM *)lwline_construct(iline->SRID, NULL, opa);
@@ -1366,8 +1366,8 @@ int point_in_polygon_deprecated(LWPOLY *polygon, LWPOINT *point)
         /* assume bbox short-circuit has already been attempted */
         
         ring = polygon->rings[0];
-        //root = createTree(ring);
-        //if(point_in_ring(root, &pt) != 1) 
+        /* root = createTree(ring); */
+        /* if(point_in_ring(root, &pt) != 1)  */
         if(point_in_ring_deprecated(polygon->rings[0], &pt) != 1)
         {
 #ifdef PGIS_DEBUG
@@ -1379,8 +1379,8 @@ int point_in_polygon_deprecated(LWPOLY *polygon, LWPOINT *point)
         for(i=1; i<polygon->nrings; i++)
         {
                 ring = polygon->rings[i];
-                //root = createTree(ring);
-                //if(point_in_ring(root, &pt) != -1) 
+                /* root = createTree(ring); */
+                /* if(point_in_ring(root, &pt) != -1) */
                 if(point_in_ring_deprecated(polygon->rings[i], &pt) != -1)
                 {
 #ifdef PGIS_DEBUG
@@ -1447,8 +1447,8 @@ int point_outside_polygon_deprecated(LWPOLY *polygon, LWPOINT *point)
         /* assume bbox short-circuit has already been attempted */
         
         ring = polygon->rings[0];
-        //root = createTree(ring);
-        //if(point_in_ring(root, &pt) == -1) 
+        /* root = createTree(ring); */
+        /* if(point_in_ring(root, &pt) == -1) */
         if(point_in_ring_deprecated(ring, &pt) == -1)
         {
 #ifdef PGIS_DEBUG
@@ -1460,8 +1460,8 @@ int point_outside_polygon_deprecated(LWPOLY *polygon, LWPOINT *point)
         for(i=1; i<polygon->nrings; i++)
         {
                 ring = polygon->rings[i];
-                //root = createTree(ring);
-                //if(point_in_ring(root, &pt) == 1) 
+                /* root = createTree(ring); */
+                /* if(point_in_ring(root, &pt) == 1)  */
                 if(point_in_ring_deprecated(ring, &pt) == 1)
                 {
 #ifdef PGIS_DEBUG
