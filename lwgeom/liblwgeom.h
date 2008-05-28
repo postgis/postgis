@@ -943,6 +943,7 @@ extern double distance2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2);
 extern double distance2d_line_poly(LWLINE *line, LWPOLY *poly);
 extern int azimuth_pt_pt(POINT2D *p1, POINT2D *p2, double *ret);
 extern double lwgeom_mindistance2d_recursive(uchar *lw1, uchar *lw2);
+extern double lwgeom_mindistance2d_recursive_tolerance(uchar *lw1, uchar *lw2, double tolerance);
 extern int lwgeom_pt_inside_circle(POINT2D *p, double cx, double cy, double rad);
 extern int32 lwgeom_npoints(uchar *serialized);
 extern char ptarray_isccw(const POINTARRAY *pa);

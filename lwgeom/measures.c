@@ -47,7 +47,7 @@ int pt_in_ring_2d(POINT2D *p, POINTARRAY *ring)
 
 #ifdef PGIS_DEBUG
 	lwnotice("pt_in_ring_2d called with point: %g %g", p->x, p->y);
-	//printPA(ring);
+	/* printPA(ring); */
 #endif
 
 	/* loop through all edges of the polygon */
@@ -91,10 +91,10 @@ double distance2d_pt_pt(POINT2D *p1, POINT2D *p2)
 
 	return sqrt ( hside*hside + vside*vside );
 
-	// the above is more readable
-	//return sqrt(
-	//	(p2->x-p1->x) * (p2->x-p1->x) + (p2->y-p1->y) * (p2->y-p1->y)
-	//	); 
+	/* the above is more readable
+	   return sqrt(
+	  	(p2->x-p1->x) * (p2->x-p1->x) + (p2->y-p1->y) * (p2->y-p1->y)
+		);  */
 }
 
 /*distance2d from p to line A->B */
@@ -510,7 +510,7 @@ double distance2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2)
 				poly2->rings[j]);
 			if ( d <= 0 ) return 0.0;
 
-			// mindist is -1 when not yet set
+			/* mindist is -1 when not yet set */
 			if (mindist > -1) mindist = LW_MIN(mindist, d);
 			else mindist = d;
 #ifdef PGIS_DEBUG
@@ -677,6 +677,12 @@ lwnotice("in lwgeom_polygon_perimeter (%d rings)", poly->nrings);
 double
 lwgeom_mindistance2d_recursive(uchar *lw1, uchar *lw2)
 {
+  return lwgeom_mindistance2d_recursive_tolerance( lw1, lw2, 0.0 );
+}
+
+double
+lwgeom_mindistance2d_recursive_tolerance(uchar *lw1, uchar *lw2, double tolerance)
+{
 	LWGEOM_INSPECTED *in1, *in2;
 	int i, j;
 	double mindist = -1;
@@ -688,13 +694,13 @@ lwgeom_mindistance2d_recursive(uchar *lw1, uchar *lw2)
 	{
 		uchar *g1 = lwgeom_getsubgeometry_inspected(in1, i);
 		int t1 = lwgeom_getType(g1[0]);
-		double dist=0;
+		double dist=tolerance;
 
 		/* it's a multitype... recurse */
 		if ( t1 >= 4 )
 		{
-			dist = lwgeom_mindistance2d_recursive(g1, lw2);
-			if ( dist == 0 ) return 0.0; /* can't be closer */
+			dist = lwgeom_mindistance2d_recursive_tolerance(g1, lw2, tolerance);
+			if ( dist <= tolerance ) return tolerance; /* can't be closer */
 			if ( mindist == -1 ) mindist = dist;
 			else mindist = LW_MIN(dist, mindist);
 			continue;
@@ -779,7 +785,7 @@ lwgeom_mindistance2d_recursive(uchar *lw1, uchar *lw2)
 			}
 			else /* it's a multitype... recurse */
 			{
-				dist = lwgeom_mindistance2d_recursive(g1, g2);
+				dist = lwgeom_mindistance2d_recursive_tolerance(g1, g2, tolerance);
 			}
 
 			if (mindist == -1 ) mindist = dist;
@@ -791,7 +797,7 @@ lwgeom_mindistance2d_recursive(uchar *lw1, uchar *lw2)
 #endif
 
 
-			if (mindist <= 0.0) return 0.0; /* can't be closer */
+			if (mindist <= tolerance) return tolerance; /* can't be closer */
 
 		}
 
@@ -801,6 +807,8 @@ lwgeom_mindistance2d_recursive(uchar *lw1, uchar *lw2)
 
 	return mindist;
 }
+
+
 
 int
 lwgeom_pt_inside_circle(POINT2D *p, double cx, double cy, double rad)

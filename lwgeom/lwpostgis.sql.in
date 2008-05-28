@@ -4430,10 +4430,16 @@ CREATEFUNCTION ST_Touches(geometry,geometry)
     AS 'SELECT $1 && $2 AND _ST_Touches($1,$2)'
     LANGUAGE 'SQL' _IMMUTABLE; -- WITH (iscachable);
 
+-- Availability: 1.3.4
+CREATEFUNCTION _ST_DWithin(geometry,geometry,float8)
+    RETURNS boolean
+    AS '@MODULE_FILENAME@', 'LWGEOM_dwithin'
+    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
 -- Availability: 1.2.2
 CREATEFUNCTION ST_DWithin(geometry, geometry, float8)
     RETURNS boolean
-    AS 'SELECT $1 && ST_Expand($2,$3) AND $2 && ST_Expand($1,$3) AND ST_Distance($1, $2) < $3'
+    AS 'SELECT $1 && ST_Expand($2,$3) AND $2 && ST_Expand($1,$3) AND _ST_DWithin($1, $2, $3)'
     LANGUAGE 'SQL' _IMMUTABLE; -- WITH (iscachable);
 
 -- Deprecation in 1.2.3

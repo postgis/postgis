@@ -280,7 +280,7 @@ print_svg_path_abs(char *result, POINTARRAY *pa, int precision, int polygonRing)
 	{
 		getPoint2d_p(pa, u, &pt);
 	      
-		//close PATH with 'Z' for polygon rings if last point equals first point
+		/* close PATH with 'Z' for polygon rings if last point equals first point */
 		if(u > 0 && u == (pa->npoints - 1) && polygonRing)
 		  {
 		    POINT2D firstPoint;
@@ -333,7 +333,7 @@ print_svg_path_rel(char *result, POINTARRAY *pa, int precision, int polygonRing)
 
 	  if(u == (pa->npoints - 1) && polygonRing)
 	    {
-	      //close PATH with 'z' if last point equals first point
+	      /* close PATH with 'z' if last point equals first point */
 	      POINT2D firstPoint;
 	      getPoint2d_p(pa, 0, &firstPoint);
 	      if(pt.x == firstPoint.x && pt.y == firstPoint.y)

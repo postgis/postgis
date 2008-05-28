@@ -34,6 +34,7 @@ Datum LWGEOM_summary(PG_FUNCTION_ARGS);
 Datum LWGEOM_npoints(PG_FUNCTION_ARGS);
 Datum LWGEOM_nrings(PG_FUNCTION_ARGS);
 Datum LWGEOM_area_polygon(PG_FUNCTION_ARGS);
+Datum LWGEOM_dwithin(PG_FUNCTION_ARGS);
 Datum postgis_uses_stats(PG_FUNCTION_ARGS);
 Datum postgis_autocache_bbox(PG_FUNCTION_ARGS);
 Datum postgis_scripts_released(PG_FUNCTION_ARGS);
@@ -1620,6 +1621,50 @@ Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom2, 1);
 
 	PG_RETURN_FLOAT8(mindist);
+}
+
+/* Minimum 2d distance between objects in geom1 and geom2. */
+PG_FUNCTION_INFO_V1(LWGEOM_dwithin);
+Datum LWGEOM_dwithin(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *geom1;
+	PG_LWGEOM *geom2;
+	double mindist, tolerance;
+
+#ifdef PROFILE
+	profstart(PROF_QRUN);
+#endif
+
+	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+  tolerance = PG_GETARG_FLOAT8(2);
+
+  if( tolerance < 0 ) {		
+    elog(ERROR,"Tolerance cannot be less than zero\n");
+		PG_RETURN_NULL();
+  }
+
+	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
+	{
+		elog(ERROR,"Operation on two GEOMETRIES with different SRIDs\n");
+		PG_RETURN_NULL();
+	}
+
+	mindist = lwgeom_mindistance2d_recursive_tolerance(
+	            SERIALIZED_FORM(geom1),
+		          SERIALIZED_FORM(geom2), 
+		          tolerance
+		        );
+
+#ifdef PROFILE
+	profstop(PROF_QRUN);
+	profreport("dist",geom1, geom2, NULL);
+#endif
+
+	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom2, 1);
+
+	PG_RETURN_BOOL(tolerance >= mindist);
 }
 
 /*
