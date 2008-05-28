@@ -3167,9 +3167,7 @@ VACUUM FULL ANALYZE mytable;</programlisting>
               Geometry. The optional third parameter sets the number of
               segment used to approximate a quarter circle (defaults to 8).</para>
 
-              <para>Performed by the GEOS module</para>
-
-              <para>Do not call with a GeometryCollection as an argument</para>
+              <para>Performed by the GEOS module.</para>
 
               <para>OGC SPEC s2.1.1.3</para>
             </listitem>
