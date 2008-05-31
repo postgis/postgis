@@ -58,9 +58,7 @@ has_arc(LWGEOM *geom)
         LWCOLLECTION *col;
         int i;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("has_arc called.");
-#endif
+        LWDEBUG(2, "has_arc called.");
 
         switch(lwgeom_getType(geom->type)) 
         {
@@ -98,9 +96,7 @@ lwcircle_center(POINT4D *p1, POINT4D *p2, POINT4D *p3, POINT4D **result)
         double cx, cy, cr;
         double temp, bc, cd, det;
         
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("lwcircle_center called (%.16f, %.16f), (%.16f, %.16f), (%.16f, %.16f).", p1->x, p1->y, p2->x, p2->y, p3->x, p3->y);
-#endif
+        LWDEBUGF(2, "lwcircle_center called (%.16f, %.16f), (%.16f, %.16f), (%.16f, %.16f).", p1->x, p1->y, p2->x, p2->y, p3->x, p3->y);
 
         /* Closed circle */
         if(fabs(p1->x - p3->x) < EPSILON_SQLMM
@@ -142,17 +138,12 @@ lwcircle_center(POINT4D *p1, POINT4D *p2, POINT4D *p3, POINT4D **result)
 double
 interpolate_arc(double angle, double zm1, double a1, double zm2, double a2)
 {
-
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("interpolate_arc called.");
-#endif
-
         double frac = fabs((angle - a1) / (a2 - a1));
         double result = frac * (zm2 - zm1) + zm1;
 
-#ifdef PGIS_DEBUG
-        lwnotice("interpolate_arc: angle=%.16f, a1=%.16f, a2=%.16f, z1=%.16f, z2=%.16f, frac=%.16f, result=%.16f", angle, a1, a2, zm1, zm2, frac, result);
-#endif
+        LWDEBUG(2, "interpolate_arc called.");
+
+        LWDEBUGF(3, "interpolate_arc: angle=%.16f, a1=%.16f, a2=%.16f, z1=%.16f, z2=%.16f, frac=%.16f, result=%.16f", angle, a1, a2, zm1, zm2, frac, result);
 
         return result;
 }
@@ -177,14 +168,12 @@ lwcircle_segmentize(POINT4D *p1, POINT4D *p2, POINT4D *p3, uint32 perQuad)
                increment = 0.0;
         double a1, a2, a3, i;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("lwcircle_segmentize called. ");
-#endif
+        LWDEBUG(2, "lwcircle_segmentize called. ");
 
         radius = lwcircle_center(p1, p2, p3, &center);
-#ifdef PGIS_DEBUG
-        lwnotice("lwcircle_segmentize, (%.16f, %.16f) radius=%.16f", center->x, center->y, radius);
-#endif
+
+        LWDEBUGF(3, "lwcircle_segmentize, (%.16f, %.16f) radius=%.16f", center->x, center->y, radius);
+
         if(radius < 0)
         {
                 return NULL;
@@ -194,9 +183,7 @@ lwcircle_segmentize(POINT4D *p1, POINT4D *p2, POINT4D *p3, uint32 perQuad)
         a2 = atan2(p2->y - center->y, p2->x - center->x);
         a3 = atan2(p3->y - center->y, p3->x - center->x);
 
-#ifdef PGIS_DEBUG
-        lwnotice("a1 = %.16f, a2 = %.16f, a3 = %.16f", a1, a2, a3);
-#endif
+        LWDEBUGF(3, "a1 = %.16f, a2 = %.16f, a3 = %.16f", a1, a2, a3);
 
         if(fabs(p1->x - p3->x) < EPSILON_SQLMM
                         && fabs(p1->y - p3->y) < EPSILON_SQLMM)
@@ -236,9 +223,7 @@ lwcircle_segmentize(POINT4D *p1, POINT4D *p2, POINT4D *p3, uint32 perQuad)
         if(sweep < 0) increment *= -1.0;
         angle = a1;
 
-#ifdef PGIS_DEBUG
-        lwnotice("ptcount: %d, perQuad: %d, sweep: %.16f, increment: %.16f", ptcount, perQuad, sweep, increment);
-#endif
+        LWDEBUGF(3, "ptcount: %d, perQuad: %d, sweep: %.16f, increment: %.16f", ptcount, perQuad, sweep, increment);
 
         for(i = 0; i < ptcount - 1; i++)
         {
@@ -314,9 +299,7 @@ lwcurve_segmentize(LWCURVE *icurve, uint32 perQuad)
         POINT4D *p4 = lwalloc(sizeof(POINT4D));
 
 
-#ifdef PGIS_DEBUG
-        lwnotice("lwcurve_segmentize called., dim = %d", icurve->points->dims);
-#endif
+        LWDEBUGF(2, "lwcurve_segmentize called., dim = %d", icurve->points->dims);
 
         ptarray = dynptarray_create(icurve->points->npoints, icurve->points->dims);
         if(!getPoint4d_p(icurve->points, 0, p4))
@@ -327,19 +310,14 @@ lwcurve_segmentize(LWCURVE *icurve, uint32 perQuad)
 
         for(i = 2; i < icurve->points->npoints; i+=2) 
         {
-
-#ifdef PGIS_DEBUG
-                lwnotice("lwcurve_segmentize: arc ending at point %d", i);
-#endif
+                LWDEBUGF(3, "lwcurve_segmentize: arc ending at point %d", i);
 
                 getPoint4d_p(icurve->points, i - 2, p1);
                 getPoint4d_p(icurve->points, i - 1, p2);
                 getPoint4d_p(icurve->points, i, p3);
                 tmp = lwcircle_segmentize(p1, p2, p3, perQuad);
 
-#ifdef PGIS_DEBUG
-                lwnotice("lwcurve_segmentize: generated %d points", tmp->npoints);
-#endif
+                LWDEBUGF(3, "lwcurve_segmentize: generated %d points", tmp->npoints);
 
                 for(j = 0; j < tmp->npoints; j++)
                 {
@@ -368,9 +346,8 @@ lwcompound_segmentize(LWCOMPOUND *icompound, uint32 perQuad)
         uint32 i, j;
         POINT4D *p = NULL;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("lwcompound_segmentize called.");
-#endif 
+        LWDEBUG(2, "lwcompound_segmentize called.");
+
         p = lwalloc(sizeof(POINT4D));
 
         ptarray = dynptarray_create(2, ((POINTARRAY *)icompound->geoms[0]->data)->dims);
@@ -418,9 +395,7 @@ lwcurvepoly_segmentize(LWCURVEPOLY *curvepoly, uint32 perQuad)
         POINTARRAY **ptarray;
         int i;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("lwcurvepoly_segmentize called.");
-#endif
+        LWDEBUG(2, "lwcurvepoly_segmentize called.");
 
         ptarray = lwalloc(sizeof(POINTARRAY *)*curvepoly->nrings);
 
@@ -457,9 +432,7 @@ lwmcurve_segmentize(LWMCURVE *mcurve, uint32 perQuad)
         LWGEOM **lines;
         int i;
         
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("lwmcurve_segmentize called, geoms=%d, dim=%d.", mcurve->ngeoms, TYPE_NDIMS(mcurve->type));
-#endif
+        LWDEBUGF(2, "lwmcurve_segmentize called, geoms=%d, dim=%d.", mcurve->ngeoms, TYPE_NDIMS(mcurve->type));
 
         lines = lwalloc(sizeof(LWGEOM *)*mcurve->ngeoms);
 
@@ -495,9 +468,7 @@ lwmsurface_segmentize(LWMSURFACE *msurface, uint32 perQuad)
         POINTARRAY **ptarray;
         int i, j;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("lwmsurface_segmentize called.");
-#endif
+        LWDEBUG(2, "lwmsurface_segmentize called.");
 
         polys = lwalloc(sizeof(LWGEOM *)*msurface->ngeoms);
 
@@ -531,9 +502,7 @@ lwcollection_segmentize(LWCOLLECTION *collection, uint32 perQuad)
         LWGEOM **geoms;
         int i;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("lwcollection_segmentize called.");
-#endif
+        LWDEBUG(2, "lwcollection_segmentize called.");
 
         if(has_arc((LWGEOM *)collection) == 0)
         {
@@ -602,28 +571,27 @@ append_segment(LWGEOM *geom, POINTARRAY *pts, int type, int SRID)
         LWGEOM *result; 
         int currentType, i;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("append_segment called %p, %p, %d, %d", geom, pts, type, SRID);
-#endif
+        LWDEBUGF(2, "append_segment called %p, %p, %d, %d", geom, pts, type, SRID);
 
         if(geom == NULL)
         {
                 if(type == LINETYPE)
                 {
-#ifdef PGIS_DEBUG
-                        lwnotice("append_segment: line to NULL");
-#endif
+                        LWDEBUG(3, "append_segment: line to NULL");
+
                         return (LWGEOM *)lwline_construct(SRID, NULL, pts);
                 }
                 else if(type == CURVETYPE)
                 {
-#ifdef PGIS_DEBUG
-                        lwnotice("append_segment: curve to NULL %d", pts->npoints);
+#if POSTGIS_DEBUG_LEVEL >= 4
                         POINT4D tmp;
+                        
+			LWDEBUGF(4, "append_segment: curve to NULL %d", pts->npoints);
+ 
                         for(i=0; i<pts->npoints; i++)
                         {
                                 getPoint4d_p(pts, i, &tmp);
-                                lwnotice("new point: (%.16f,%.16f)",tmp.x,tmp.y);
+                                LWDEBUGF(4, "new point: (%.16f,%.16f)",tmp.x,tmp.y);
                         }
 #endif
                         return (LWGEOM *)lwcurve_construct(SRID, NULL, pts);
@@ -640,9 +608,9 @@ append_segment(LWGEOM *geom, POINTARRAY *pts, int type, int SRID)
                 POINTARRAY *newPoints;
                 POINT4D pt;
                 LWLINE *line = (LWLINE *)geom;
-#ifdef PGIS_DEBUG
-                lwnotice("append_segment: line to line");
-#endif
+
+                LWDEBUG(3, "append_segment: line to line");
+
                 newPoints = ptarray_construct(TYPE_HASZ(pts->dims), TYPE_HASM(pts->dims), pts->npoints + line->points->npoints - 1);
                 for(i=0; i<line->points->npoints; i++)
                 {
@@ -663,27 +631,27 @@ append_segment(LWGEOM *geom, POINTARRAY *pts, int type, int SRID)
                 POINTARRAY *newPoints;
                 POINT4D pt;
                 LWCURVE *curve = (LWCURVE *)geom;
-#ifdef PGIS_DEBUG
-                lwnotice("append_segment: curve to curve");
-#endif
+
+                LWDEBUG(3, "append_segment: curve to curve");
+
                 newPoints = ptarray_construct(TYPE_HASZ(pts->dims), TYPE_HASM(pts->dims), pts->npoints + curve->points->npoints - 1);
-#ifdef PGIS_DEBUG
-                lwnotice("New array length: %d", pts->npoints + curve->points->npoints - 1);
-#endif
+
+                LWDEBUGF(3, "New array length: %d", pts->npoints + curve->points->npoints - 1);
+
                 for(i=0; i<curve->points->npoints; i++)
                 {
                         getPoint4d_p(curve->points, i, &pt);
-#ifdef PGIS_DEBUG
-                        lwnotice("orig point %d: (%.16f,%.16f)", i, pt.x, pt.y);
-#endif
+
+                        LWDEBUGF(3, "orig point %d: (%.16f,%.16f)", i, pt.x, pt.y);
+
                         setPoint4d(newPoints, i, &pt);
                 }
                 for(i=1; i<pts->npoints;i++)
                 {
                         getPoint4d_p(pts, i, &pt);
-#ifdef PGIS_DEBUG
-                        lwnotice("new point %d: (%.16f,%.16f)", i + curve->points->npoints - 1, pt.x, pt.y);
-#endif
+
+                        LWDEBUGF(3, "new point %d: (%.16f,%.16f)", i + curve->points->npoints - 1, pt.x, pt.y);
+
                         setPoint4d(newPoints, i + curve->points->npoints - 1, &pt);
                 }
                 result = (LWGEOM *)lwcurve_construct(SRID, NULL, newPoints);
@@ -694,9 +662,9 @@ append_segment(LWGEOM *geom, POINTARRAY *pts, int type, int SRID)
         {
                 LWLINE *line;
                 LWGEOM **geomArray;
-#ifdef PGIS_DEBUG
-                lwnotice("append_segment: line to curve");
-#endif
+
+                LWDEBUG(3, "append_segment: line to curve");
+
                 geomArray = lwalloc(sizeof(LWGEOM *)*2);
                 geomArray[0] = lwgeom_clone(geom);
                 
@@ -712,9 +680,9 @@ append_segment(LWGEOM *geom, POINTARRAY *pts, int type, int SRID)
         {
                 LWCURVE *curve;
                 LWGEOM **geomArray;
-#ifdef PGIS_DEBUG
-                lwnotice("append_segment: curve to line");
-#endif
+
+                LWDEBUG(3, "append_segment: curve to line");
+
                 geomArray = lwalloc(sizeof(LWGEOM *)*2);
                 geomArray[0] = lwgeom_clone(geom);
 
@@ -742,16 +710,14 @@ append_segment(LWGEOM *geom, POINTARRAY *pts, int type, int SRID)
                 }
                 if(type == LINETYPE)
                 {
-#ifdef PGIS_DEBUG
-                        lwnotice("append_segment: line to compound");
-#endif
+                        LWDEBUG(3, "append_segment: line to compound");
+
                         newGeom = (LWGEOM *)lwline_construct(SRID, NULL, pts);
                 }
                 else if(type == CURVETYPE)
                 {
-#ifdef PGIS_DEBUG
-                        lwnotice("append_segment: curve to compound");
-#endif
+                        LWDEBUG(3, "append_segment: curve to compound");
+
                         newGeom = (LWGEOM *)lwcurve_construct(SRID, NULL, pts);
                 }
                 else
@@ -780,9 +746,7 @@ pta_desegmentize(POINTARRAY *points, int type, int SRID)
         POINTARRAY *pts;
         LWGEOM *geom = NULL;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("pta_desegmentize called.");
-#endif
+        LWDEBUG(2, "pta_desegmentize called.");
 
         getPoint4d_p(points, 0, &a);
         getPoint4d_p(points, 1, &b);
@@ -800,16 +764,12 @@ pta_desegmentize(POINTARRAY *points, int type, int SRID)
         if((last_length - length) < EPSILON_SQLMM) 
         {
                 isline = -1;
-#ifdef PGIS_DEBUG
-                lwnotice("Starting as unknown.");
-#endif
+                LWDEBUG(3, "Starting as unknown.");
         }
         else 
         {
                 isline = 1;        
-#ifdef PGIS_DEBUG
-                lwnotice("Starting as line.");
-#endif
+                LWDEBUG(3, "Starting as line.");
         }
 
         commit = 0;
@@ -824,16 +784,14 @@ pta_desegmentize(POINTARRAY *points, int type, int SRID)
                 dxbc = c.x - b.x;
                 dybc = c.y - b.y;
 
-#ifdef PGIS_DEBUG
-                lwnotice("(dxab, dyab, dxbc, dybc) (%.16f, %.16f, %.16f, %.16f)", dxab, dyab, dxbc, dybc);
-#endif
+                LWDEBUGF(3, "(dxab, dyab, dxbc, dybc) (%.16f, %.16f, %.16f, %.16f)", dxab, dyab, dxbc, dybc);
 
                 theta = atan2(dyab, dxab);
                 theta = theta - atan2(dybc, dxbc);
                 length = sqrt(dxbc*dxbc+dybc*dybc);
-#ifdef PGIS_DEBUG
-                lwnotice("Last/current length and angle %.16f/%.16f, %.16f/%.16f", last_angle, theta, last_length, length);
-#endif
+
+                LWDEBUGF(3, "Last/current length and angle %.16f/%.16f, %.16f/%.16f", last_angle, theta, last_length, length);
+
                 /* Found a line segment */
                 if(fabs(length - last_length) > EPSILON_SQLMM || 
                         fabs(theta - last_angle) > EPSILON_SQLMM)
@@ -847,9 +805,8 @@ pta_desegmentize(POINTARRAY *points, int type, int SRID)
                         /* We were tracking a curve, commit it and start line*/
                         else if(isline == 0)
                         {
-#ifdef PGIS_DEBUG
-                                lwnotice("Building curve, %d - %d", commit, i);
-#endif
+                                LWDEBUGF(3, "Building curve, %d - %d", commit, i);
+
                                 count = i - commit;
                                 pts = ptarray_construct(
                                         TYPE_HASZ(type),
@@ -889,16 +846,12 @@ pta_desegmentize(POINTARRAY *points, int type, int SRID)
         if((last_length - length) < EPSILON_SQLMM) 
         {
                 isline = -1;
-#ifdef PGIS_DEBUG
-                lwnotice("Restarting as unknown.");
-#endif
+                LWDEBUG(3, "Restarting as unknown.");
         }
         else 
         {
                 isline = 1;        
-#ifdef PGIS_DEBUG
-                lwnotice("Restarting as line.");
-#endif
+                LWDEBUG(3, "Restarting as line.");
         }
 
 
@@ -906,9 +859,7 @@ pta_desegmentize(POINTARRAY *points, int type, int SRID)
                         /* We didn't know what we were tracking, now we do. */
                         else
                         {
-#ifdef PGIS_DEBUG
-                                lwnotice("It's a line");
-#endif
+                                LWDEBUG(3, "It's a line");
                                 isline = 1;
                         }
                 }
@@ -918,9 +869,8 @@ pta_desegmentize(POINTARRAY *points, int type, int SRID)
                         /* We were tracking a curve, commit it and start line */
                         if(isline > 0)
                         {
-#ifdef PGIS_DEBUG
-                                lwnotice("Building line, %d - %d", commit, i-2);
-#endif
+                                LWDEBUGF(3, "Building line, %d - %d", commit, i-2);
+
                                 count = i - commit - 2;
 
                                 pts = ptarray_construct(
@@ -945,9 +895,7 @@ pta_desegmentize(POINTARRAY *points, int type, int SRID)
                         /* We didn't know what we were tracking, now we do */
                         else
                         {
-#ifdef PGIS_DEBUG
-                                lwnotice("It's a curve");
-#endif                          
+                                LWDEBUG(3, "It's a curve");
                                 isline = 0;
                         }
                 }
@@ -955,9 +903,8 @@ pta_desegmentize(POINTARRAY *points, int type, int SRID)
         count = i - commit;
         if(isline == 0 && count > 2)
         {
-#ifdef PGIS_DEBUG
-                lwnotice("Finishing curve %d,%d.", commit, i);
-#endif
+                LWDEBUGF(3, "Finishing curve %d,%d.", commit, i);
+
                 pts = ptarray_construct(
                         TYPE_HASZ(type),
                         TYPE_HASM(type),
@@ -973,9 +920,8 @@ pta_desegmentize(POINTARRAY *points, int type, int SRID)
         }
         else 
         {
-#ifdef PGIS_DEBUG
-                lwnotice("Finishing line %d,%d.", commit, i);
-#endif
+                LWDEBUGF(3, "Finishing line %d,%d.", commit, i);
+
                 pts = ptarray_construct(
                         TYPE_HASZ(type),
                         TYPE_HASM(type),
@@ -993,9 +939,7 @@ pta_desegmentize(POINTARRAY *points, int type, int SRID)
 LWGEOM *
 lwline_desegmentize(LWLINE *line)
 {
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("lwline_desegmentize called.");
-#endif 
+        LWDEBUG(2, "lwline_desegmentize called.");
 
         return pta_desegmentize(line->points, line->type, line->SRID);
 }
@@ -1006,9 +950,7 @@ lwpolygon_desegmentize(LWPOLY *poly)
         LWGEOM **geoms;
         int i, hascurve = 0;
         
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("lwpolygon_desegmentize called.");
-#endif
+        LWDEBUG(2, "lwpolygon_desegmentize called.");
 
         geoms = lwalloc(sizeof(LWGEOM *)*poly->nrings);
         for(i=0; i<poly->nrings; i++)
@@ -1038,9 +980,7 @@ lwmline_desegmentize(LWMLINE *mline)
         LWGEOM **geoms;
         int i, hascurve = 0;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("lwmline_desegmentize called.");
-#endif
+        LWDEBUG(2, "lwmline_desegmentize called.");
 
         geoms = lwalloc(sizeof(LWGEOM *)*mline->ngeoms);
         for(i=0; i<mline->ngeoms; i++)
@@ -1069,9 +1009,7 @@ lwmpolygon_desegmentize(LWMPOLY *mpoly)
         LWGEOM **geoms;
         int i, hascurve = 0;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("lwmpoly_desegmentize called.");
-#endif
+        LWDEBUG(2, "lwmpoly_desegmentize called.");
 
         geoms = lwalloc(sizeof(LWGEOM *)*mpoly->ngeoms);
         for(i=0; i<mpoly->ngeoms; i++)
@@ -1098,9 +1036,7 @@ lwgeom_desegmentize(LWGEOM *geom)
 {
         int type = lwgeom_getType(geom->type);
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("lwgeom_desegmentize called.");
-#endif
+        LWDEBUG(2, "lwgeom_desegmentize called.");
 
         switch(type) {
         case LINETYPE:
@@ -1142,19 +1078,17 @@ Datum LWGEOM_curve_segmentize(PG_FUNCTION_ARGS)
         PG_LWGEOM *ret;
         LWGEOM *igeom = NULL, *ogeom = NULL;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("LWGEOM_curve_segmentize called.");
-#endif
+        POSTGIS_DEBUG(2, "LWGEOM_curve_segmentize called.");
 
         if(perQuad < 0) 
         {
                 elog(ERROR, "2nd argument must be positive.");
                 PG_RETURN_NULL();
         }
-#ifdef PGIS_DEBUG
+#if POSTGIS_DEBUG_LEVEL > 0
         else
         {
-                lwnotice("perQuad = %d", perQuad);
+                POSTGIS_DEBUGF(3, "perQuad = %d", perQuad);
         }
 #endif
         igeom = lwgeom_deserialize(SERIALIZED_FORM(geom));
@@ -1174,9 +1108,7 @@ Datum LWGEOM_line_desegmentize(PG_FUNCTION_ARGS)
         PG_LWGEOM *ret;
         LWGEOM *igeom = NULL, *ogeom = NULL;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("LWGEOM_line_desegmentize.");
-#endif
+        POSTGIS_DEBUG(2, "LWGEOM_line_desegmentize.");
 
         igeom = lwgeom_deserialize(SERIALIZED_FORM(geom));
         ogeom = lwgeom_desegmentize(igeom);

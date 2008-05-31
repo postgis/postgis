@@ -17,7 +17,6 @@
 #include <string.h>
 #include "liblwgeom.h"
 
-/*#define PGIS_DEBUG_CALLS 1 */
 
 LWCURVEPOLY *
 lwcurvepoly_deserialize(uchar *srl)
@@ -27,9 +26,7 @@ lwcurvepoly_deserialize(uchar *srl)
         int type = lwgeom_getType(srl[0]);
         int i;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("lwcurvepoly_deserialize called.");
-#endif
+        LWDEBUG(3, "lwcurvepoly_deserialize called.");
 
         if(type != CURVEPOLYTYPE)
         {

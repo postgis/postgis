@@ -4433,7 +4433,7 @@ CREATEFUNCTION ST_Touches(geometry,geometry)
 -- Availability: 1.3.4
 CREATEFUNCTION _ST_DWithin(geometry,geometry,float8)
     RETURNS boolean
-    AS '@MODULE_FILENAME@', 'LWGEOM_dwithin'
+    AS 'MODULE_PATHNAME', 'LWGEOM_dwithin'
     LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Availability: 1.2.2

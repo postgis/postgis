@@ -13,7 +13,6 @@
  */
 #define PARANOIA_LEVEL 1
 
-/* #define PGIS_DEBUG 1 */
 
 
 /**********************************************************************
@@ -331,11 +330,9 @@ int
 box3d_union_p(BOX3D *b1, BOX3D *b2, BOX3D *ubox)
 {
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("box3d_union_p called: (xmin, xmax), (ymin, ymax), (zmin, zmax)");
-        lwnotice("b1: (%.16f, %.16f),(%.16f, %.16f),(%.16f, %.16f)", b1->xmin, b1->xmax, b1->ymin, b1->ymax, b1->zmin, b1->zmax);
-        lwnotice("b2: (%.16f, %.16f),(%.16f, %.16f),(%.16f, %.16f)", b2->xmin, b2->xmax, b2->ymin, b2->ymax, b2->zmin, b2->zmax);
-#endif
+        LWDEBUG(2, "box3d_union_p called: (xmin, xmax), (ymin, ymax), (zmin, zmax)");
+        LWDEBUGF(4, "b1: (%.16f, %.16f),(%.16f, %.16f),(%.16f, %.16f)", b1->xmin, b1->xmax, b1->ymin, b1->ymax, b1->zmin, b1->zmax);
+        LWDEBUGF(4, "b2: (%.16f, %.16f),(%.16f, %.16f),(%.16f, %.16f)", b2->xmin, b2->xmax, b2->ymin, b2->ymax, b2->zmin, b2->zmax);
 
 	if ( (b1 == NULL) && (b2 == NULL) )
 	{
@@ -410,38 +407,28 @@ getbox2d_p(uchar *srl, BOX2DFLOAT4 *box)
 	uchar *loc;
 	BOX3D box3d;
 
-#ifdef PGIS_DEBUG_CALLS
-	lwnotice("getbox2d_p call");
-#endif
+	LWDEBUG(2, "getbox2d_p call");
 
 	loc = srl+1;
 
 	if (lwgeom_hasBBOX(type))
 	{
 		/*woot - this is easy */
-#ifdef PGIS_DEBUG
-		lwnotice("getbox2d_p: has box");
-#endif
+		LWDEBUG(4, "getbox2d_p: has box");
 		memcpy(box, loc, sizeof(BOX2DFLOAT4));
 		return 1;
 	}
 
-#ifdef PGIS_DEBUG
-	lwnotice("getbox2d_p: has no box - computing");
-#endif
+	LWDEBUG(4, "getbox2d_p: has no box - computing");
 
 	/* We have to actually compute it! */
 	if ( ! compute_serialized_box3d_p(srl, &box3d) ) return 0;
 
-#ifdef PGIS_DEBUG
-	lwnotice("getbox2d_p: compute_serialized_box3d returned %p", box3d);
-#endif
+	LWDEBUGF(4, "getbox2d_p: compute_serialized_box3d returned %p", box3d);
 
 	if ( ! box3d_to_box2df_p(&box3d, box) ) return 0;
 
-#ifdef PGIS_DEBUG
-	lwnotice("getbox2d_p: box3d converted to box2d");
-#endif
+	LWDEBUG(4, "getbox2d_p: box3d converted to box2d");
 
 	return 1;
 }
@@ -490,17 +477,13 @@ getPoint4d_p(const POINTARRAY *pa, int n, POINT4D *op)
 	}
 #endif
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("getPoint4d_p called.");
-#endif
+        LWDEBUG(4, "getPoint4d_p called.");
 
 	/* Get a pointer to nth point offset and zmflag */
 	ptr=getPoint_internal(pa, n);
 	zmflag=TYPE_GETZM(pa->dims);
 
-#ifdef PGIS_DEBUG
-        lwnotice("ptr %p, zmflag %d", ptr, zmflag);
-#endif
+        LWDEBUGF(4, "ptr %p, zmflag %d", ptr, zmflag);
 
 	switch (zmflag)
 	{
@@ -577,15 +560,13 @@ getPoint3dz_p(const POINTARRAY *pa, int n, POINT3DZ *op)
 
 	if ( (n<0) || (n>=pa->npoints))
 	{
-		lwnotice("%d out of numpoint range (%d)", n, pa->npoints);
+		LWDEBUGF(4, "%d out of numpoint range (%d)", n, pa->npoints);
 		return 0; /*error */
 	}
 #endif
 
-#ifdef PGIS_DEBUG
-	lwnotice("getPoint3dz_p called on array of %d-dimensions / %u pts",
+	LWDEBUGF(2, "getPoint3dz_p called on array of %d-dimensions / %u pts",
 		TYPE_NDIMS(pa->dims), pa->npoints);
-#endif
 
 	/* Get a pointer to nth point offset */
 	ptr=getPoint_internal(pa, n);
@@ -635,10 +616,8 @@ getPoint3dm_p(const POINTARRAY *pa, int n, POINT3DM *op)
 	}
 #endif 
 
-#ifdef PGIS_DEBUG
-	lwnotice("getPoint3dm_p(%d) called on array of %d-dimensions / %u pts",
+	LWDEBUGF(2, "getPoint3dm_p(%d) called on array of %d-dimensions / %u pts",
 		n, TYPE_NDIMS(pa->dims), pa->npoints);
-#endif
 
 
 	/* Get a pointer to nth point offset and zmflag */
@@ -792,9 +771,9 @@ pointArray_construct(uchar *points, char hasz, char hasm,
 	uint32 npoints)
 {
 	POINTARRAY  *pa;
-#ifdef PGIS_DEBUG_CALLS
-	lwnotice("pointArray_construct called.");
-#endif
+	
+	LWDEBUG(2, "pointArray_construct called.");
+
 	pa = (POINTARRAY*)lwalloc(sizeof(POINTARRAY));
 
 	pa->dims = 0;
@@ -803,9 +782,8 @@ pointArray_construct(uchar *points, char hasz, char hasm,
 
 	pa->serialized_pointlist = points;
 
-#ifdef PGIS_DEBUG_CALLS
-	lwnotice("pointArray_construct returning %p", pa);
-#endif
+	LWDEBUGF(4, "pointArray_construct returning %p", pa);
+
 	return pa;
 }
 
@@ -817,10 +795,9 @@ pointArray_construct(uchar *points, char hasz, char hasm,
 int
 pointArray_ptsize(const POINTARRAY *pa)
 {
-#ifdef PGIS_DEBUG_CALLS
-	/*lwnotice("pointArray_ptsize: TYPE_NDIMS(pa->dims)=%x\n",
-		TYPE_NDIMS(pa->dims));*/
-#endif
+	LWDEBUGF(2, "pointArray_ptsize: TYPE_NDIMS(pa->dims)=%x\n",
+		TYPE_NDIMS(pa->dims));
+
 	return sizeof(double)*TYPE_NDIMS(pa->dims);
 }
 
@@ -861,10 +838,7 @@ int lwgeom_hasZ(uchar type)
 int
 lwgeom_getType(uchar type)
 {
-
-#ifdef PGIS_DEBUG
-        lwnotice("lwgeom_getType %d", type);
-#endif
+        LWDEBUGF(2, "lwgeom_getType %d", type);
 
 	return (type & 0x0F);
 }
@@ -952,9 +926,7 @@ lwgeom_inspect(const uchar *serialized_form)
 	const uchar *loc;
 	int 	t;
 
-#ifdef PGIS_DEBUG
-	lwnotice("lwgeom_inspect: serialized@%p", serialized_form);
-#endif
+	LWDEBUGF(2, "lwgeom_inspect: serialized@%p", serialized_form);
 
 	if (serialized_form == NULL)
 		return NULL;
@@ -993,10 +965,8 @@ lwgeom_inspect(const uchar *serialized_form)
 	result->ngeometries = lw_get_uint32(loc);
 	loc +=4;
 
-#ifdef PGIS_DEBUG
-	lwnotice("lwgeom_inspect: geometry is a collection of %d elements",
+	LWDEBUGF(3, "lwgeom_inspect: geometry is a collection of %d elements",
 		result->ngeometries);
-#endif
 
 	if ( ! result->ngeometries ) return result;
 
@@ -1004,9 +974,7 @@ lwgeom_inspect(const uchar *serialized_form)
 	result->sub_geoms = sub_geoms;
 	sub_geoms[0] = (uchar *)loc;
 
-#ifdef PGIS_DEBUG
-	lwnotice("subgeom[0] @ %p (+%d)", sub_geoms[0], sub_geoms[0]-serialized_form);
-#endif
+	LWDEBUGF(3, "subgeom[0] @ %p (+%d)", sub_geoms[0], sub_geoms[0]-serialized_form);
 
 	for (t=1;t<result->ngeometries; t++)
 	{
@@ -1014,11 +982,8 @@ lwgeom_inspect(const uchar *serialized_form)
 		int sub_length = lwgeom_size_subgeom(sub_geoms[t-1], -1);
 		sub_geoms[t] = sub_geoms[t-1] + sub_length;
                 
-#ifdef PGIS_DEBUG
-		lwnotice("subgeom[%d] @ %p (+%d)",
+		LWDEBUGF(3, "subgeom[%d] @ %p (+%d)",
 			t, sub_geoms[t], sub_geoms[0]-serialized_form);
-#endif
-
 	}
 
 	return result;
@@ -1512,43 +1477,35 @@ lwgeom_size(const uchar *serialized_form)
 	int sub_size;
 	int result = 1; /* type */
 
-#ifdef PGIS_DEBUG
-	lwnotice("lwgeom_size called");
-#endif
+	LWDEBUG(2, "lwgeom_size called");
 
 	if (type == POINTTYPE)
 	{
-#ifdef PGIS_DEBUG
-		lwnotice("lwgeom_size: is a point");
-#endif
+		LWDEBUG(3, "lwgeom_size: is a point");
+
 		return lwgeom_size_point(serialized_form);
 	}
 	else if (type == LINETYPE)
 	{
-#ifdef PGIS_DEBUG
-		lwnotice("lwgeom_size: is a line");
-#endif
+		LWDEBUG(3, "lwgeom_size: is a line");
+
 		return lwgeom_size_line(serialized_form);
 	}
         else if(type == CURVETYPE)
         {
-#ifdef PGIS_DEBUG
-                lwnotice("lwgeom_size: is a curve");
-#endif
+                LWDEBUG(3, "lwgeom_size: is a curve");
+
                 return lwgeom_size_curve(serialized_form);
         }
 	else if (type == POLYGONTYPE)
 	{
-#ifdef PGIS_DEBUG
-		lwnotice("lwgeom_size: is a polygon");
-#endif
+		LWDEBUG(3, "lwgeom_size: is a polygon");
+
 		return lwgeom_size_poly(serialized_form);
 	} 
         else if (type == COMPOUNDTYPE)
         {
-#ifdef PGIS_DEBUG
-                lwnotice("lwgeom_size: is a compound curve");
-#endif
+                LWDEBUG(3, "lwgeom_size: is a compound curve");
         }
 
 	if ( type == 0 )
@@ -1564,17 +1521,13 @@ lwgeom_size(const uchar *serialized_form)
 	 *       be recursing...
 	 */
 
-#ifdef PGIS_DEBUG
-	lwnotice("lwgeom_size called on a geoemtry with type %d", type);
-#endif
+	LWDEBUGF(3, "lwgeom_size called on a geoemtry with type %d", type);
 
 	loc = serialized_form+1;
 
 	if (lwgeom_hasBBOX((uchar) serialized_form[0]))
 	{
-#ifdef PGIS_DEBUG
-		lwnotice("lwgeom_size: has bbox");
-#endif
+		LWDEBUG(3, "lwgeom_size: has bbox");
 
 		loc += sizeof(BOX2DFLOAT4);
 		result +=sizeof(BOX2DFLOAT4);
@@ -1582,9 +1535,8 @@ lwgeom_size(const uchar *serialized_form)
 
 	if (lwgeom_hasSRID( (uchar) serialized_form[0]) )
 	{
-#ifdef PGIS_DEBUG
-		lwnotice("lwgeom_size: has srid");
-#endif
+		LWDEBUG(3, "lwgeom_size: has srid");
+
 		result +=4;
 		loc +=4;
 	}
@@ -1594,23 +1546,20 @@ lwgeom_size(const uchar *serialized_form)
 	loc +=4;
 	result += 4; /* numgeoms */
 
-#ifdef PGIS_DEBUG
-	lwnotice("lwgeom_size called on a geoemtry with %d elems (result so far: %d)", ngeoms, result);
-#endif
+	LWDEBUGF(3, "lwgeom_size called on a geoemtry with %d elems (result so far: %d)", ngeoms, result);
 
 	for (t=0;t<ngeoms;t++)
 	{
 		sub_size = lwgeom_size(loc);
-#ifdef PGIS_DEBUG
-		lwnotice(" subsize %d", sub_size);
-#endif
+
+		LWDEBUGF(3, " subsize %d", sub_size);
+
 		loc += sub_size;
 		result += sub_size;
 	}
 
-#ifdef PGIS_DEBUG
-	lwnotice("lwgeom_size returning %d", result);
-#endif
+	LWDEBUGF(3, "lwgeom_size returning %d", result);
+
 	return result;
 }
 
@@ -1683,20 +1632,18 @@ compute_serialized_box3d(uchar *srl)
 	int sub_size;
 	char nboxes=0;
 
-#ifdef PGIS_DEBUG
-lwnotice("compute_serialized_box3d called on type %d", type);
-#endif
+	LWDEBUGF(2, "compute_serialized_box3d called on type %d", type);
 
 	if (type == POINTTYPE)
 	{
 		LWPOINT *pt = lwpoint_deserialize(srl);
-#ifdef PGIS_DEBUG
-lwnotice("compute_serialized_box3d: lwpoint deserialized");
-#endif
+
+		LWDEBUG(3, "compute_serialized_box3d: lwpoint deserialized");
+
 		result = lwpoint_compute_box3d(pt);
-#ifdef PGIS_DEBUG
-lwnotice("compute_serialized_box3d: bbox found");
-#endif
+
+		LWDEBUG(3, "compute_serialized_box3d: bbox found");
+
 		pfree_point(pt);
 		return result;
 	}
@@ -1754,9 +1701,11 @@ lwnotice("compute_serialized_box3d: bbox found");
 	{
 		if ( compute_serialized_box3d_p(loc, &b1) ) 
 		{
-#ifdef PGIS_DEBUG
-			lwnotice("Geom %d have box:"); printBOX3D(&b1);
+			LWDEBUG(3, "Geom %d have box:"); 
+#if POSTGIS_DEBUG_LEVEL >= 3
+			printBOX3D(&b1);
 #endif
+
 			if (result)
 			{
 				nboxes += box3d_union_p(result, &b1, result);
@@ -2039,9 +1988,9 @@ lwgeom_typeflags(uchar type)
 	if ( TYPE_HASBBOX(type) ) flags[flagno++] = 'B';
 	if ( TYPE_HASSRID(type) ) flags[flagno++] = 'S';
 	flags[flagno] = '\0';
-#ifdef PGIS_DEBUG
-	lwnotice("Flags: %s - returning %p", flags, flags);
-#endif
+
+	LWDEBUGF(4, "Flags: %s - returning %p", flags, flags);
+
 	return flags;
 }
 
@@ -2194,9 +2143,7 @@ parse_lwgeom_wkt(char *wkt_input)
 		lwalloc, lwerror);
 
 
-#ifdef PGIS_DEBUG_CALLS
-	lwnotice("parse_lwgeom_wkt with %s",wkt_input);
-#endif
+	LWDEBUGF(2, "parse_lwgeom_wkt with %s",wkt_input);
 
 	if (serialized_form == NULL)
 	{

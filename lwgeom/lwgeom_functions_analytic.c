@@ -26,13 +26,6 @@
  * --strk@keybit.net;
  ***********************************************************************/
 
-#define VERBOSE 0
-
-#if VERBOSE > 0
-#define REPORT_POINTS_REDUCTION
-#define REPORT_RINGS_REDUCTION
-#define REPORT_RINGS_ADJUSTMENTS
-#endif
 
 /* Prototypes */
 void DP_findsplit2d(POINTARRAY *pts, int p1, int p2, int *split, double *dist);
@@ -64,9 +57,7 @@ DP_findsplit2d(POINTARRAY *pts, int p1, int p2, int *split, double *dist)
    POINT2D pa, pb, pk;
    double tmp;
 
-#if VERBOSE > 4
-elog(NOTICE, "DP_findsplit called");
-#endif
+   LWDEBUG(4, "DP_findsplit called");
 
    *dist = -1;
    *split = p1;
@@ -77,18 +68,14 @@ elog(NOTICE, "DP_findsplit called");
       getPoint2d_p(pts, p1, &pa);
       getPoint2d_p(pts, p2, &pb);
 
-#if VERBOSE > 4
-elog(NOTICE, "DP_findsplit: P%d(%f,%f) to P%d(%f,%f)",
-   p1, pa.x, pa.y, p2, pb.x, pb.y);
-#endif
+      LWDEBUGF(4, "DP_findsplit: P%d(%f,%f) to P%d(%f,%f)",
+      p1, pa.x, pa.y, p2, pb.x, pb.y);
 
       for (k=p1+1; k<p2; k++)
       {
          getPoint2d_p(pts, k, &pk);
 
-#if VERBOSE > 4
-elog(NOTICE, "DP_findsplit: P%d(%f,%f)", k, pk.x, pk.y);
-#endif
+         LWDEBUGF(4, "DP_findsplit: P%d(%f,%f)", k, pk.x, pk.y);
 
          /* distance computation */
          tmp = distance2d_pt_seg(&pk, &pa, &pb);
@@ -97,9 +84,8 @@ elog(NOTICE, "DP_findsplit: P%d(%f,%f)", k, pk.x, pk.y);
          {
             *dist = tmp;	/* record the maximum */
             *split = k;
-#if VERBOSE > 4
-elog(NOTICE, "DP_findsplit: P%d is farthest (%g)", k, *dist);
-#endif
+
+            LWDEBUGF(4, "DP_findsplit: P%d is farthest (%g)", k, *dist);
          }
       }
 
@@ -107,9 +93,7 @@ elog(NOTICE, "DP_findsplit: P%d is farthest (%g)", k, *dist);
 
    else
    {
-#if VERBOSE > 3
-elog(NOTICE, "DP_findsplit: segment too short, no split/no dist");
-#endif
+      LWDEBUG(3, "DP_findsplit: segment too short, no split/no dist");
    }
 
 }
@@ -131,9 +115,7 @@ DP_simplify2d(POINTARRAY *inpts, double epsilon)
 	p1 = 0;
 	stack[++sp] = inpts->npoints-1;
 
-#if VERBOSE > 4
-	elog(NOTICE, "DP_simplify called input has %d pts and %d dims (ptsize: %d)", inpts->npoints, inpts->ndims, ptsize);
-#endif
+	LWDEBUGF(2, "DP_simplify called input has %d pts and %d dims (ptsize: %d)", inpts->npoints, inpts->dims, ptsize);
 
 	/* allocate space for output POINTARRAY */
 	outpts = palloc(sizeof(POINTARRAY));
@@ -143,18 +125,14 @@ DP_simplify2d(POINTARRAY *inpts, double epsilon)
 	memcpy(getPoint_internal(outpts, 0), getPoint_internal(inpts, 0),
 		ptsize);
 
-#if VERBOSE > 3
-	elog(NOTICE, "DP_simplify: added P0 to simplified point array (size 1)");
-#endif
-
+	LWDEBUG(3, "DP_simplify: added P0 to simplified point array (size 1)");
 
 	do
 	{
 
 		DP_findsplit2d(inpts, p1, stack[sp], &split, &dist);
-#if VERBOSE > 3
-		elog(NOTICE, "DP_simplify: farthest point from P%d-P%d is P%d (dist. %g)", p1, stack[sp], split, dist);
-#endif
+
+		LWDEBUGF(3, "DP_simplify: farthest point from P%d-P%d is P%d (dist. %g)", p1, stack[sp], split, dist);
 
 		if (dist > epsilon) {
 			stack[++sp] = split;
@@ -163,14 +141,13 @@ DP_simplify2d(POINTARRAY *inpts, double epsilon)
 			memcpy(getPoint_internal(outpts, outpts->npoints-1),
 				getPoint_internal(inpts, stack[sp]),
 				ptsize);
-#if VERBOSE > 3
-			elog(NOTICE, "DP_simplify: added P%d to simplified point array (size: %d)", stack[sp], outpts->npoints);
-#endif
+
+			LWDEBUGF(4, "DP_simplify: added P%d to simplified point array (size: %d)", stack[sp], outpts->npoints);
+
 			p1 = stack[sp--];
 		}
-#if VERBOSE > 5
-		elog(NOTICE, "stack pointer = %d", sp);
-#endif
+
+		LWDEBUGF(4, "stack pointer = %d", sp);
 	}
 	while (! (sp<0) );
 
@@ -200,9 +177,7 @@ simplify2d_lwline(const LWLINE *iline, double dist)
 	POINTARRAY *opts;
 	LWLINE *oline;
 
-#if VERBOSE
-   elog(NOTICE, "simplify2d_lwline called");
-#endif
+	LWDEBUG(2, "simplify2d_lwline called");
 
 	ipts = iline->points;
 	opts = DP_simplify2d(ipts, dist);
@@ -219,9 +194,7 @@ simplify2d_lwpoly(const LWPOLY *ipoly, double dist)
 	LWPOLY *opoly;
 	int norings=0, ri;
 
-#ifdef REPORT_RINGS_REDUCTION
-	elog(NOTICE, "simplify_polygon3d: simplifying polygon with %d rings", ipoly->nrings);
-#endif
+	LWDEBUGF(2, "simplify_polygon3d: simplifying polygon with %d rings", ipoly->nrings);
 
 	orings = (POINTARRAY **)palloc(sizeof(POINTARRAY *)*ipoly->nrings);
 
@@ -245,18 +218,15 @@ simplify2d_lwpoly(const LWPOLY *ipoly, double dist)
 		if ( opts->npoints < 4 )
 		{
 			pfree(opts);
-#ifdef REPORT_RINGS_ADJUSTMENTS
-			elog(NOTICE, "simplify_polygon3d: ring%d skipped ( <4 pts )", ri);
-#endif
+
+			LWDEBUGF(3, "simplify_polygon3d: ring%d skipped ( <4 pts )", ri);
 
 			if ( ri ) continue;
 			else break;
 		}
 
 
-#ifdef REPORT_POINTS_REDUCTION
-		elog(NOTICE, "simplify_polygon3d: ring%d simplified from %d to %d points", ri, ipts->npoints, opts->npoints);
-#endif
+		LWDEBUGF(3, "simplify_polygon3d: ring%d simplified from %d to %d points", ri, ipts->npoints, opts->npoints);
 
 
 		/*
@@ -268,9 +238,7 @@ simplify2d_lwpoly(const LWPOLY *ipoly, double dist)
 
 	}
 
-#ifdef REPORT_RINGS_REDUCTION
-elog(NOTICE, "simplify_polygon3d: simplified polygon with %d rings", norings);
-#endif
+	LWDEBUGF(3, "simplify_polygon3d: simplified polygon with %d rings", norings);
 
 	if ( ! norings ) return NULL;
 
@@ -536,7 +504,7 @@ POINTARRAY *ptarray_grid(POINTARRAY *pa, gridspec *grid);
 Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS);
 Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS);
 static int grid_isNull(const gridspec *grid);
-#if VERBOSE
+#if POSTGIS_DEBUG_LEVEL > 0 
 static void grid_print(const gridspec *grid, lwreporter printer);
 #endif
 
@@ -551,7 +519,7 @@ grid_isNull(const gridspec *grid)
 	else return 0;
 }
 
-#if VERBOSE
+#if POSTGIS_DEBUG_LEVEL > 0 
 /* Print grid using given reporter */
 static void
 grid_print(const gridspec *grid, lwreporter printer)
@@ -578,9 +546,7 @@ ptarray_grid(POINTARRAY *pa, gridspec *grid)
 	DYNPTARRAY *dpa;
 	POINTARRAY *opa;
 
-#if VERBOSE
-	elog(NOTICE, "ptarray_grid called on %p", pa);
-#endif
+	LWDEBUGF(2, "ptarray_grid called on %p", pa);
 
 	dpa=dynptarray_create(pa->npoints, pa->dims);
 
@@ -651,22 +617,20 @@ lwpoly_grid(LWPOLY *poly, gridspec *grid)
 
 	nrings = 0;
 
-#ifdef REPORT_RINGS_REDUCTION
-	elog(NOTICE, "grid_polygon3d: applying grid to polygon with %d rings",
+	LWDEBUGF(3, "grid_polygon3d: applying grid to polygon with %d rings",
    		poly->nrings);
-#endif
 
 	for (ri=0; ri<poly->nrings; ri++)
 	{
 		POINTARRAY *ring = poly->rings[ri];
 		POINTARRAY *newring;
 
-#ifdef CHECK_RING_IS_CLOSE
+#if POSTGIS_DEBUG_LEVEL >= 4
 		POINT2D p1, p2;
 		getPoint2d_p(ring, 0, &p1);
 		getPoint2d_p(ring, ring->npoints-1, &p2);
 		if ( ! SAMEPOINT(&p1, &p2) )
-			elog(NOTICE, "Before gridding: first point != last point");
+			LWDEBUG(4, "Before gridding: first point != last point");
 #endif
 
 		newring = ptarray_grid(ring, grid);
@@ -675,27 +639,22 @@ lwpoly_grid(LWPOLY *poly, gridspec *grid)
 		if ( newring->npoints < 4 )
 		{
 			pfree(newring);
-#ifdef REPORT_RINGS_ADJUSTMENTS
-			elog(NOTICE, "grid_polygon3d: ring%d skipped ( <4 pts )", ri);
-#endif
+
+			LWDEBUGF(3, "grid_polygon3d: ring%d skipped ( <4 pts )", ri);
+
 			if ( ri ) continue;
 			else break; /* this is the external ring, no need to work on holes */
 		}
 
-#ifdef CHECK_RING_IS_CLOSE
+#if POSTGIS_DEBUG_LEVEL >= 4
 		getPoint2d_p(newring, 0, &p1);
 		getPoint2d_p(newring, newring->npoints-1, &p2);
 		if ( ! SAMEPOINT(&p1, &p2) )
-			elog(NOTICE, "After gridding: first point != last point");
+			LWDEBUG(4, "After gridding: first point != last point");
 #endif
 
-
-
-#ifdef REPORT_POINTS_REDUCTION
-elog(NOTICE, "grid_polygon3d: ring%d simplified from %d to %d points", ri,
-	ring->npoints, newring->npoints);
-#endif
-
+		LWDEBUGF(3, "grid_polygon3d: ring%d simplified from %d to %d points", ri,
+			ring->npoints, newring->npoints);
 
 		/*
 		 * Add ring to simplified ring array
@@ -713,9 +672,7 @@ elog(NOTICE, "grid_polygon3d: ring%d simplified from %d to %d points", ri,
 		newrings[nrings++] = newring;
 	}
 
-#ifdef REPORT_RINGS_REDUCTION
-elog(NOTICE, "grid_polygon3d: simplified polygon with %d rings", nrings);
-#endif
+	LWDEBUGF(3, "grid_polygon3d: simplified polygon with %d rings", nrings);
 
 	if ( ! nrings ) return NULL;
 
@@ -734,9 +691,7 @@ lwpoint_grid(LWPOINT *point, gridspec *grid)
 	/* TODO: grid bounding box ? */
 	opoint = lwpoint_construct(point->SRID, NULL, opa);
 
-#if VERBOSE
-	elog(NOTICE, "lwpoint_grid called");
-#endif
+	LWDEBUG(2, "lwpoint_grid called");
 
 	return opoint;
 }
@@ -823,9 +778,7 @@ Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS)
 
 	in_lwgeom = lwgeom_deserialize(SERIALIZED_FORM(in_geom));
 
-#if VERBOSE
-	elog(NOTICE, "SnapToGrid got a %s", lwgeom_typename(TYPE_GETTYPE(in_lwgeom->type)));
-#endif
+	POSTGIS_DEBUGF(3, "SnapToGrid got a %s", lwgeom_typename(TYPE_GETTYPE(in_lwgeom->type)));
 
    	out_lwgeom = lwgeom_grid(in_lwgeom, &grid);
 	if ( out_lwgeom == NULL ) PG_RETURN_NULL();
@@ -861,9 +814,7 @@ Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS)
 	}
 #endif /* 0 */
 
-#if VERBOSE
-	elog(NOTICE, "SnapToGrid made a %s", lwgeom_typename(TYPE_GETTYPE(out_lwgeom->type)));
-#endif
+	POSTGIS_DEBUGF(3, "SnapToGrid made a %s", lwgeom_typename(TYPE_GETTYPE(out_lwgeom->type)));
 
 	out_geom = pglwgeom_serialize(out_lwgeom);
 
@@ -917,7 +868,7 @@ Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS)
 	if (TYPE_HASM(in_lwpoint->type) ) grid.ipm = offsetpoint.m;
 	else grid.ipm=0;
 
-#if VERBOSE
+#if POSTGIS_DEBUG_LEVEL >= 4 
 	grid_print(&grid, lwnotice);
 #endif
 
@@ -929,9 +880,7 @@ Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS)
 
 	in_lwgeom = lwgeom_deserialize(SERIALIZED_FORM(in_geom));
 
-#if VERBOSE
-	elog(NOTICE, "SnapToGrid got a %s", lwgeom_typename(TYPE_GETTYPE(in_lwgeom->type)));
-#endif
+	POSTGIS_DEBUGF(3, "SnapToGrid got a %s", lwgeom_typename(TYPE_GETTYPE(in_lwgeom->type)));
 
    	out_lwgeom = lwgeom_grid(in_lwgeom, &grid);
 	if ( out_lwgeom == NULL ) PG_RETURN_NULL();
@@ -967,9 +916,7 @@ Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS)
 	}
 #endif /* 0 */
 
-#if VERBOSE
-	elog(NOTICE, "SnapToGrid made a %s", lwgeom_typename(TYPE_GETTYPE(out_lwgeom->type)));
-#endif
+	POSTGIS_DEBUGF(3, "SnapToGrid made a %s", lwgeom_typename(TYPE_GETTYPE(out_lwgeom->type)));
 
 	out_geom = pglwgeom_serialize(out_lwgeom);
 
@@ -1119,22 +1066,19 @@ int isOnSegment(POINT2D *seg1, POINT2D *seg2, POINT2D *point)
                 maxY = seg2->y;
                 minY = seg1->y;
         }
-#ifdef PGIS_DEBUG
-        lwnotice("maxX minX/maxY minY: %.8f %.8f/%.8f %.8f", maxX, minX, maxY, minY);
-#endif
+
+        LWDEBUGF(3, "maxX minX/maxY minY: %.8f %.8f/%.8f %.8f", maxX, minX, maxY, minY);
 
         if(maxX < point->x || minX > point->x)
         {
-#ifdef PGIS_DEBUG
-                lwnotice("X value %.8f falls outside the range %.8f-%.8f", point->x, minX, maxX);
-#endif
+                LWDEBUGF(3, "X value %.8f falls outside the range %.8f-%.8f", point->x, minX, maxX);
+
                 return 0;
         }
         else if(maxY < point->y || minY > point->y)
         {
-#ifdef PGIS_DEBUG
-                lwnotice("Y value %.8f falls outside the range %.8f-%.8f", point->y, minY, maxY);
-#endif
+                LWDEBUGF(3, "Y value %.8f falls outside the range %.8f-%.8f", point->y, minY, maxY);
+
                 return 0;
         }
         return 1;
@@ -1153,9 +1097,8 @@ int point_in_ring(RTREE_NODE *root, POINT2D *point)
         POINT2D seg1;
         POINT2D seg2;
         LWMLINE *lines;
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("point_in_ring called.");
-#endif
+
+        LWDEBUG(2, "point_in_ring called.");
 
         lines = findLineSegments(root, point->y);
         if(!lines)
@@ -1168,17 +1111,16 @@ int point_in_ring(RTREE_NODE *root, POINT2D *point)
 
 
                 side = determineSide(&seg1, &seg2, point);
-#ifdef PGIS_DEBUG
-                lwnotice("segment: (%.8f, %.8f),(%.8f, %.8f)", seg1.x, seg1.y, seg2.x, seg2.y);
-                lwnotice("side result: %.8f", side);
-                lwnotice("counterclockwise wrap %d, clockwise wrap %d", FP_CONTAINS_BOTTOM(seg1.y,point->y,seg2.y), FP_CONTAINS_BOTTOM(seg2.y,point->y,seg1.y));
-#endif
+
+                LWDEBUGF(3, "segment: (%.8f, %.8f),(%.8f, %.8f)", seg1.x, seg1.y, seg2.x, seg2.y);
+                LWDEBUGF(3, "side result: %.8f", side);
+                LWDEBUGF(3, "counterclockwise wrap %d, clockwise wrap %d", FP_CONTAINS_BOTTOM(seg1.y,point->y,seg2.y), FP_CONTAINS_BOTTOM(seg2.y,point->y,seg1.y));
+
                 /* zero length segments are ignored. */
                 if(((seg2.x-seg1.x)*(seg2.x-seg1.x)+(seg2.y-seg1.y)*(seg2.y-seg1.y)) < 1e-12*1e-12) 
                 {
-#ifdef PGIS_DEBUG
-                        lwnotice("segment is zero length... ignoring.");
-#endif
+                        LWDEBUG(3, "segment is zero length... ignoring.");
+
                         continue;
                 }
 
@@ -1187,9 +1129,8 @@ int point_in_ring(RTREE_NODE *root, POINT2D *point)
                 {
                         if(isOnSegment(&seg1, &seg2, point) == 1)
                         {
-#ifdef PGIS_DEBUG
-                                lwnotice("point on ring boundary between points %d, %d", i, i+1);
-#endif
+                                LWDEBUGF(3, "point on ring boundary between points %d, %d", i, i+1);
+
                                 return 0;
                         }
                 }
@@ -1200,9 +1141,8 @@ int point_in_ring(RTREE_NODE *root, POINT2D *point)
                  */
                 else if(FP_CONTAINS_BOTTOM(seg1.y,point->y,seg2.y) && side>0)
                 {
-#ifdef PGIS_DEBUG
-                        lwnotice("incrementing winding number.");
-#endif
+                        LWDEBUG(3, "incrementing winding number.");
+
                         ++wn;
                 }
                 /*
@@ -1212,16 +1152,14 @@ int point_in_ring(RTREE_NODE *root, POINT2D *point)
                  */
                 else if(FP_CONTAINS_BOTTOM(seg2.y,point->y,seg1.y) && side<0)
                 {
-#ifdef PGIS_DEBUG
-                        lwnotice("decrementing winding number.");
-#endif
+                        LWDEBUG(3, "decrementing winding number.");
+
                         --wn;
                 }
         }
 
-#ifdef PGIS_DEBUG
-        lwnotice("winding number %d", wn);
-#endif
+        LWDEBUGF(3, "winding number %d", wn);
+
         if(wn == 0)
         	return -1;
         return 1;
@@ -1240,9 +1178,8 @@ int point_in_ring_deprecated(POINTARRAY *pts, POINT2D *point)
         double side;
         POINT2D seg1;
         POINT2D seg2;
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("point_in_ring called.");
-#endif
+
+        LWDEBUG(2, "point_in_ring called.");
 
         
         for(i=0; i<pts->npoints-1; i++)
@@ -1252,17 +1189,16 @@ int point_in_ring_deprecated(POINTARRAY *pts, POINT2D *point)
 
 
                 side = determineSide(&seg1, &seg2, point);
-#ifdef PGIS_DEBUG
-                lwnotice("segment: (%.8f, %.8f),(%.8f, %.8f)", seg1.x, seg1.y, seg2.x, seg2.y);
-                lwnotice("side result: %.8f", side);
-                lwnotice("counterclockwise wrap %d, clockwise wrap %d", FP_CONTAINS_BOTTOM(seg1.y,point->y,seg2.y), FP_CONTAINS_BOTTOM(seg2.y,point->y,seg1.y));
-#endif
+
+                LWDEBUGF(3, "segment: (%.8f, %.8f),(%.8f, %.8f)", seg1.x, seg1.y, seg2.x, seg2.y);
+                LWDEBUGF(3, "side result: %.8f", side);
+                LWDEBUGF(3, "counterclockwise wrap %d, clockwise wrap %d", FP_CONTAINS_BOTTOM(seg1.y,point->y,seg2.y), FP_CONTAINS_BOTTOM(seg2.y,point->y,seg1.y));
+
                 /* zero length segments are ignored. */
                 if(((seg2.x-seg1.x)*(seg2.x-seg1.x)+(seg2.y-seg1.y)*(seg2.y-seg1.y)) < 1e-12*1e-12) 
                 {
-#ifdef PGIS_DEBUG
-                        lwnotice("segment is zero length... ignoring.");
-#endif
+                        LWDEBUG(3, "segment is zero length... ignoring.");
+
                         continue;
                 }
 
@@ -1271,9 +1207,8 @@ int point_in_ring_deprecated(POINTARRAY *pts, POINT2D *point)
                 {
                         if(isOnSegment(&seg1, &seg2, point) == 1)
                         {
-#ifdef PGIS_DEBUG
-                                lwnotice("point on ring boundary between points %d, %d", i, i+1);
-#endif
+                                LWDEBUGF(3, "point on ring boundary between points %d, %d", i, i+1);
+
                                 return 0;
                         }
                 }
@@ -1284,9 +1219,8 @@ int point_in_ring_deprecated(POINTARRAY *pts, POINT2D *point)
                  */
                 else if(FP_CONTAINS_BOTTOM(seg1.y,point->y,seg2.y) && side>0)
                 {
-#ifdef PGIS_DEBUG
-                        lwnotice("incrementing winding number.");
-#endif
+                        LWDEBUG(3, "incrementing winding number.");
+
                         ++wn;
                 }
                 /*
@@ -1296,16 +1230,14 @@ int point_in_ring_deprecated(POINTARRAY *pts, POINT2D *point)
                  */
                 else if(FP_CONTAINS_BOTTOM(seg2.y,point->y,seg1.y) && side<0)
                 {
-#ifdef PGIS_DEBUG
-                        lwnotice("decrementing winding number.");
-#endif
+                        LWDEBUG(3, "decrementing winding number.");
+
                         --wn;
                 }
         }
 
-#ifdef PGIS_DEBUG
-        lwnotice("winding number %d", wn);
-#endif
+        LWDEBUGF(3, "winding number %d", wn);
+
         if(wn == 0)
         	return -1;
         return 1;
@@ -1320,18 +1252,15 @@ int point_in_polygon(RTREE_NODE **root, int ringCount, LWPOINT *point)
         int i;
         POINT2D pt;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("point_in_polygon called for %p %d %p.", root, ringCount, point);
-#endif
+        LWDEBUGF(2, "point_in_polygon called for %p %d %p.", root, ringCount, point);
 
         getPoint2d_p(point->point, 0, &pt);
         /* assume bbox short-circuit has already been attempted */
         
         if(point_in_ring(root[0], &pt) != 1) 
         {
-#ifdef PGIS_DEBUG
-                lwnotice("point_in_polygon: outside exterior ring.");
-#endif
+                LWDEBUG(3, "point_in_polygon: outside exterior ring.");
+
                 return 0;
         }
 
@@ -1339,9 +1268,8 @@ int point_in_polygon(RTREE_NODE **root, int ringCount, LWPOINT *point)
         {
                 if(point_in_ring(root[i], &pt) != -1)
                 {
-#ifdef PGIS_DEBUG
-                        lwnotice("point_in_polygon: within hole %d.", i);
-#endif
+                        LWDEBUGF(3, "point_in_polygon: within hole %d.", i);
+
                         return 0;
                 }
         }
@@ -1358,9 +1286,7 @@ int point_in_polygon_deprecated(LWPOLY *polygon, LWPOINT *point)
         POINTARRAY *ring;
         POINT2D pt;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("point_in_polygon_deprecated called.");
-#endif
+        LWDEBUG(2, "point_in_polygon_deprecated called.");
 
         getPoint2d_p(point->point, 0, &pt);
         /* assume bbox short-circuit has already been attempted */
@@ -1370,9 +1296,8 @@ int point_in_polygon_deprecated(LWPOLY *polygon, LWPOINT *point)
         /* if(point_in_ring(root, &pt) != 1)  */
         if(point_in_ring_deprecated(polygon->rings[0], &pt) != 1)
         {
-#ifdef PGIS_DEBUG
-                lwnotice("point_in_polygon: outside exterior ring.");
-#endif
+                LWDEBUG(3, "point_in_polygon: outside exterior ring.");
+
                 return 0;
         }
 
@@ -1383,9 +1308,8 @@ int point_in_polygon_deprecated(LWPOLY *polygon, LWPOINT *point)
                 /* if(point_in_ring(root, &pt) != -1) */
                 if(point_in_ring_deprecated(polygon->rings[i], &pt) != -1)
                 {
-#ifdef PGIS_DEBUG
-                        lwnotice("point_in_polygon: within hole %d.", i);
-#endif
+                        LWDEBUGF(3, "point_in_polygon: within hole %d.", i);
+
                         return 0;
                 }
         }
@@ -1401,18 +1325,15 @@ int point_outside_polygon(RTREE_NODE **root, int ringCount, LWPOINT *point)
         int i;
         POINT2D pt;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("point_outside_polygon called.");
-#endif
+        LWDEBUG(2, "point_outside_polygon called.");
 
         getPoint2d_p(point->point, 0, &pt);
         /* assume bbox short-circuit has already been attempted */
         
         if(point_in_ring(root[0], &pt) == -1)
         {
-#ifdef PGIS_DEBUG
-                lwnotice("point_outside_polygon: outside exterior ring.");
-#endif
+                LWDEBUG(3, "point_outside_polygon: outside exterior ring.");
+
                 return 1;
         }
 
@@ -1420,9 +1341,8 @@ int point_outside_polygon(RTREE_NODE **root, int ringCount, LWPOINT *point)
         {
                 if(point_in_ring(root[i], &pt) == 1)
                 {
-#ifdef PGIS_DEBUG
-                        lwnotice("point_outside_polygon: within hole %d.", i);
-#endif
+                        LWDEBUGF(3, "point_outside_polygon: within hole %d.", i);
+
                         return 1;
                 }
         }
@@ -1439,9 +1359,7 @@ int point_outside_polygon_deprecated(LWPOLY *polygon, LWPOINT *point)
         POINTARRAY *ring;
         POINT2D pt;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("point_outside_polygon_deprecated called.");
-#endif
+        LWDEBUG(2, "point_outside_polygon_deprecated called.");
 
         getPoint2d_p(point->point, 0, &pt);
         /* assume bbox short-circuit has already been attempted */
@@ -1451,9 +1369,8 @@ int point_outside_polygon_deprecated(LWPOLY *polygon, LWPOINT *point)
         /* if(point_in_ring(root, &pt) == -1) */
         if(point_in_ring_deprecated(ring, &pt) == -1)
         {
-#ifdef PGIS_DEBUG
-                lwnotice("point_outside_polygon_deprecated: outside exterior ring.");
-#endif
+                LWDEBUG(3, "point_outside_polygon_deprecated: outside exterior ring.");
+
                 return 1;
         }
 
@@ -1464,9 +1381,8 @@ int point_outside_polygon_deprecated(LWPOLY *polygon, LWPOINT *point)
                 /* if(point_in_ring(root, &pt) == 1)  */
                 if(point_in_ring_deprecated(ring, &pt) == 1)
                 {
-#ifdef PGIS_DEBUG
-                        lwnotice("point_outside_polygon_deprecated: within hole %d.", i);
-#endif
+                        LWDEBUGF(3, "point_outside_polygon_deprecated: within hole %d.", i);
+
                         return 1;
                 }
         }
@@ -1482,9 +1398,7 @@ int point_in_multipolygon(LWMPOLY *mpolygon, LWPOINT *point)
 {
         int i;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("point_in_multipolygon called.");
-#endif
+        LWDEBUG(2, "point_in_multipolygon called.");
 
         for(i=1; i<mpolygon->ngeoms; i++)
         {

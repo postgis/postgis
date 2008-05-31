@@ -15,8 +15,6 @@
 
 #include "liblwgeom.h"
 
-/*#define PGIS_DEBUG_CALLS 1*/
-/*#define PGIS_DEBUG 1*/
 
 POINTARRAY *
 ptarray_construct(char hasz, char hasm, unsigned int npoints)
@@ -243,10 +241,8 @@ ptarray_addPoint(POINTARRAY *pa, uchar *p, size_t pdims, unsigned int where)
 	POINT4D pbuf;
 	size_t ptsize = pointArray_ptsize(pa);
 
-#ifdef PGIS_DEBUG_CALLS
-	lwnotice("ptarray_addPoint: pa %x p %x size %d where %d",
+	LWDEBUGF(3, "pa %x p %x size %d where %d",
 		pa, p, pdims, where);
-#endif
 
 	if ( pdims < 2 || pdims > 4 )
 	{
@@ -262,16 +258,12 @@ ptarray_addPoint(POINTARRAY *pa, uchar *p, size_t pdims, unsigned int where)
 		return NULL;
 	}
 
-#if PGIS_DEBUG
-	lwnotice("ptarray_addPoint: called with a %dD point");
-#endif
+	LWDEBUG(3, "called with a %dD point");
 	
 	pbuf.x = pbuf.y = pbuf.z = pbuf.m = 0.0;
 	memcpy((uchar *)&pbuf, p, pdims*sizeof(double));
 
-#if PGIS_DEBUG
-	lwnotice("ptarray_addPoint: initialized point buffer");
-#endif
+	LWDEBUG(3, "initialized point buffer");
 
 	ret = ptarray_construct(TYPE_HASZ(pa->dims),
 		TYPE_HASM(pa->dims), pa->npoints+1);
@@ -306,10 +298,7 @@ ptarray_removePoint(POINTARRAY *pa, unsigned int which)
 	POINTARRAY *ret;
 	size_t ptsize = pointArray_ptsize(pa);
 
-#ifdef PGIS_DEBUG_CALLS
-	lwnotice("ptarray_removePoint: pa %x which %d",
-		pa, which);
-#endif
+	LWDEBUGF(3, "pa %x which %d", pa, which);
 
 #if PARANOIA_LEVEL > 0
 	if ( which > pa->npoints-1 )
@@ -353,9 +342,7 @@ ptarray_clone(const POINTARRAY *in)
 	POINTARRAY *out = lwalloc(sizeof(POINTARRAY));
 	size_t size;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("ptarray_clone called.");
-#endif
+        LWDEBUG(3, "ptarray_clone called.");
 
 	out->dims = in->dims;
 	out->npoints = in->npoints;
@@ -405,16 +392,13 @@ ptarray_compute_box3d_p(const POINTARRAY *pa, BOX3D *result)
 	int t;
 	POINT3DZ pt;
 
-#ifdef PGIS_DEBUG
-	lwnotice("ptarray_compute_box3d call (array has %d points)", pa->npoints);
-#endif
+	LWDEBUGF(3, "ptarray_compute_box3d call (array has %d points)", pa->npoints);
+	
 	if (pa->npoints == 0) return 0;
 
 	getPoint3dz_p(pa, 0, &pt);
 
-#ifdef PGIS_DEBUG
-	lwnotice("ptarray_compute_box3d: got point 0");
-#endif
+	LWDEBUG(3, "got point 0");
 
 	result->xmin = pt.x;
 	result->xmax = pt.x;
@@ -429,9 +413,8 @@ ptarray_compute_box3d_p(const POINTARRAY *pa, BOX3D *result)
 		result->zmax = NO_Z_VALUE;
 	}
 
-#ifdef PGIS_DEBUG
-	lwnotice("ptarray_compute_box3d: scanning other %d points", pa->npoints);
-#endif
+	LWDEBUGF(3, "scanning other %d points", pa->npoints);
+
 	for (t=1; t<pa->npoints; t++)
 	{
 		getPoint3dz_p(pa,t,&pt);
@@ -446,9 +429,7 @@ ptarray_compute_box3d_p(const POINTARRAY *pa, BOX3D *result)
 		}
 	}
 
-#ifdef PGIS_DEBUG
-	lwnotice("ptarray_compute_box3d returning box");
-#endif
+	LWDEBUG(3, "returning box");
 
 	return 1;
 }
@@ -478,17 +459,17 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 	/* Compute total line length */
 	length = lwgeom_pointarray_length2d(ipa);
 
-#ifdef PGIS_DEBUG
-	lwnotice("Total length: %g", length);
-#endif
+
+	LWDEBUGF(3, "Total length: %g", length);
+
 
 	/* Get 'from' and 'to' lengths */
 	from = length*from;
 	to = length*to;
 
-#ifdef PGIS_DEBUG
-	lwnotice("From/To: %g/%g", from, to);
-#endif
+
+	LWDEBUGF(3, "From/To: %g/%g", from, to);
+
 
 	tlength = 0;
 	getPoint4d_p(ipa, 0, &p1);
@@ -499,10 +480,10 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 
 		getPoint4d_p(ipa, i+1, &p2);
 
-#ifdef PGIS_DEBUG
-	lwnotice("Segment %d: (%g,%g,%g,%g)-(%g,%g,%g,%g)",
-		i, p1.x, p1.y, p1.z, p1.m, p2.x, p2.y, p2.z, p2.m);
-#endif
+
+		LWDEBUGF(3 ,"Segment %d: (%g,%g,%g,%g)-(%g,%g,%g,%g)",
+			i, p1.x, p1.y, p1.z, p1.m, p2.x, p2.y, p2.z, p2.m);
+
 
 		/* Find the length of this segment */
 		slength = distance2d_pt_pt((POINT2D *)p1ptr, (POINT2D *)p2ptr);
@@ -513,9 +494,8 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 		if ( state == 0 ) /* before */
 		{
 
-#ifdef PGIS_DEBUG
-			lwnotice(" Before start");
-#endif
+			LWDEBUG(3, " Before start");
+
 			/*
 			 * Didn't reach the 'from' point,
 			 * nothing to do
@@ -524,9 +504,9 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 
 			else if ( from == tlength + slength )
 			{
-#ifdef PGIS_DEBUG
-				lwnotice("  Second point is our start");
-#endif
+
+				LWDEBUG(3, "  Second point is our start");
+
 				/*
 				 * Second point is our start
 				 */
@@ -537,9 +517,9 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 
 			else if ( from == tlength )
 			{
-#ifdef PGIS_DEBUG
-				lwnotice("  First point is our start");
-#endif
+
+				LWDEBUG(3, "  First point is our start");
+
 				/*
 				 * First point is our start
 				 */
@@ -554,9 +534,9 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 
 			else  /* tlength < from < tlength+slength */
 			{
-#ifdef PGIS_DEBUG
-				lwnotice("  Seg contains first point");
-#endif
+
+				LWDEBUG(3, "  Seg contains first point");
+
 				/*
 				 * Our start is between first and
 				 * second point
@@ -576,9 +556,9 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 
 		if ( state == 1 ) /* inside */
 		{
-#ifdef PGIS_DEBUG
-			lwnotice(" Inside");
-#endif
+
+			LWDEBUG(3, " Inside");
+
 			/*
 			 * Didn't reach the 'end' point,
 			 * just copy second point
@@ -594,9 +574,9 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 			 */
 			else if ( to == tlength + slength )
 			{
-#ifdef PGIS_DEBUG
-				lwnotice(" Second point is our end");
-#endif
+
+				LWDEBUG(3, " Second point is our end");
+
 				dynptarray_addPoint4d(dpa, &p2, 0);
 				break; /* substring complete */
 			}
@@ -607,9 +587,8 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 			 */
 			else if ( to == tlength )
 			{
-#ifdef PGIS_DEBUG
-				lwnotice(" First point is our end");
-#endif
+
+				LWDEBUG(3, " First point is our end");
 
 				dynptarray_addPoint4d(dpa, &p1, 0);
 
@@ -622,9 +601,9 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 			 */
 			else if ( to < tlength + slength )
 			{
-#ifdef PGIS_DEBUG
-				lwnotice(" Seg contains our end");
-#endif
+
+				LWDEBUG(3, " Seg contains our end");
+
 				dseg = (to - tlength) / slength;
 				interpolate_point4d(&p1, &p2, &pt, dseg);
 
@@ -635,7 +614,7 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 
 			else
 			{
-				lwnotice("Unhandled case");
+				LWDEBUG(3, "Unhandled case");
 			}
 		}
 
@@ -652,9 +631,7 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 	opa = dpa->pa;
 	lwfree(dpa);
 
-#ifdef PGIS_DEBUG
-	lwnotice("Out of loop, ptarray has %d points", opa->npoints);
-#endif
+	LWDEBUGF(3, "Out of loop, ptarray has %d points", opa->npoints);
 
 	return opa;
 }
@@ -731,9 +708,7 @@ ptarray_locate_point(POINTARRAY *pa, POINT2D *p)
 		start = end;
 	}
 
-#ifdef PGIS_DEBUG
-	lwnotice("Closest segment: %d", seg);
-#endif
+	LWDEBUGF(3, "Closest segment: %d", seg);
 
 	/*
 	 * If mindist is not 0 we need to project the 
@@ -748,14 +723,11 @@ ptarray_locate_point(POINTARRAY *pa, POINT2D *p)
 		proj = *p;
 	}
 
-#ifdef PGIS_DEBUG
-	lwnotice("Closest point on segment: %g,%g", proj.x, proj.y);
-#endif
+	LWDEBUGF(3, "Closest point on segment: %g,%g", proj.x, proj.y);
 
 	tlen = lwgeom_pointarray_length2d(pa);
-#ifdef PGIS_DEBUG
-	lwnotice("tlen %g", tlen);
-#endif
+
+	LWDEBUGF(3, "tlen %g", tlen);
 
 	plen=0;
 	getPoint2d_p(pa, 0, &start);
@@ -763,17 +735,14 @@ ptarray_locate_point(POINTARRAY *pa, POINT2D *p)
 	{
 		getPoint2d_p(pa, t+1, &end);
 		plen += distance2d_pt_pt(&start, &end);
-#if PGIS_DEBUG > 1
-		lwnotice("Segment %d made plen %g", t, plen);
-#endif
+
+		LWDEBUGF(4, "Segment %d made plen %g", t, plen);
 	}
 
 	plen+=distance2d_pt_pt(&proj, &start);
 
-#ifdef PGIS_DEBUG
-	lwnotice("plen %g, tlen %g", plen, tlen);
-	lwnotice("mindist: %g", mindist);
-#endif
+	LWDEBUGF(3, "plen %g, tlen %g", plen, tlen);
+	LWDEBUGF(3, "mindist: %g", mindist);
 
 	return plen/tlen;
 }
@@ -806,9 +775,7 @@ dynptarray_create(size_t initial_capacity, int dims)
 {
 	DYNPTARRAY *ret=lwalloc(sizeof(DYNPTARRAY));
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("dynptarray_create called, dims=%d.", dims);
-#endif
+        LWDEBUGF(3, "dynptarray_create called, dims=%d.", dims);
 
 	if ( initial_capacity < 1 ) initial_capacity=1;
 
@@ -840,9 +807,7 @@ dynptarray_addPoint4d(DYNPTARRAY *dpa, POINT4D *p4d, int allow_duplicates)
 	POINTARRAY *pa=dpa->pa;
 	POINT4D tmp;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("dynptarray_addPoint4d called.");
-#endif
+        LWDEBUG(3, "dynptarray_addPoint4d called.");
 
 	if ( ! allow_duplicates && pa->npoints > 0 )
 	{

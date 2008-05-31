@@ -15,7 +15,6 @@
 #include <string.h>
 #include "liblwgeom.h"
 
-/*#define PGIS_DEBUG_CALLS 1 */
 
 #define CHECK_LWGEOM_ZM 1
 
@@ -30,9 +29,7 @@ lwcollection_construct(unsigned int type, int SRID, BOX2DFLOAT4 *bbox,
 	unsigned int i;
 #endif
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("lwcollection_construct called with %d, %d, %p, %d, %p.", type, SRID, bbox, ngeoms, geoms);
-#endif        
+        LWDEBUGF(2, "lwcollection_construct called with %d, %d, %p, %d, %p.", type, SRID, bbox, ngeoms, geoms);
 
 	hasz = 0;
 	hasm = 0;
@@ -42,14 +39,13 @@ lwcollection_construct(unsigned int type, int SRID, BOX2DFLOAT4 *bbox,
 		hasm = TYPE_HASM(geoms[0]->type);
 #ifdef CHECK_LWGEOM_ZM
 		zm = TYPE_GETZM(geoms[0]->type);
-#ifdef PGIS_DEBUG
-                lwnotice("lwcollection_construct type[0]=%d", geoms[0]->type);
-#endif
+
+                LWDEBUGF(3, "lwcollection_construct type[0]=%d", geoms[0]->type);
+
 		for (i=1; i<ngeoms; i++)
 		{
-#ifdef PGIS_DEBUG
-                        lwnotice("lwcollection_construct type=[%d]=%d", i, geoms[i]->type);
-#endif
+                        LWDEBUGF(3, "lwcollection_construct type=[%d]=%d", i, geoms[i]->type);
+
 			if ( zm != TYPE_GETZM(geoms[i]->type) )
 				lwerror("lwcollection_construct: mixed dimension geometries: %d/%d", zm, TYPE_GETZM(geoms[i]->type));
 		}
@@ -144,22 +140,17 @@ lwcollection_serialize_size(LWCOLLECTION *col)
 	if ( col->SRID != -1 ) size += 4; /* SRID */
 	if ( col->bbox ) size += sizeof(BOX2DFLOAT4);
 
-#ifdef PGIS_DEBUG_CALLS
-	lwnotice("lwcollection_serialize_size[%p]: start size: %d", col, size);
-#endif
+	LWDEBUGF(2, "lwcollection_serialize_size[%p]: start size: %d", col, size);
 
 
 	for (i=0; i<col->ngeoms; i++)
 	{
 		size += lwgeom_serialize_size(col->geoms[i]);
-#ifdef PGIS_DEBUG_CALLS
-		lwnotice("lwcollection_serialize_size[%p]: with geom%d: %d", col, i, size);
-#endif
+
+		LWDEBUGF(3, "lwcollection_serialize_size[%p]: with geom%d: %d", col, i, size);
 	}
 
-#ifdef PGIS_DEBUG_CALLS
-	lwnotice("lwcollection_serialize_size[%p]:  returning %d", col, size);
-#endif
+	LWDEBUGF(3, "lwcollection_serialize_size[%p]:  returning %d", col, size);
 
 	return size; 
 }
@@ -178,10 +169,8 @@ lwcollection_serialize_buf(LWCOLLECTION *coll, uchar *buf, size_t *retsize)
 	uchar *loc;
 	int i;
 
-#ifdef PGIS_DEBUG_CALLS
-	lwnotice("lwcollection_serialize_buf called (%s with %d elems)",
+	LWDEBUGF(2, "lwcollection_serialize_buf called (%s with %d elems)",
 		lwgeom_typename(TYPE_GETTYPE(coll->type)), coll->ngeoms);
-#endif
 
 	hasSRID = (coll->SRID != -1);
 
@@ -221,9 +210,7 @@ lwcollection_serialize_buf(LWCOLLECTION *coll, uchar *buf, size_t *retsize)
 
 	if (retsize) *retsize = size;
 
-#ifdef PGIS_DEBUG_CALLS
-	lwnotice("lwcollection_serialize_buf returning");
-#endif
+	LWDEBUG(3, "lwcollection_serialize_buf returning");
 }
 
 int
@@ -342,9 +329,7 @@ lwcollection_same(const LWCOLLECTION *c1, const LWCOLLECTION *c2)
 	unsigned int i, j;
 	unsigned int *hit;
 
-#if PGIS_DEBUG_CALLS
-	lwnotice("lwcollection_same called");
-#endif /* PGIS_DEBUG_CALLS */
+	LWDEBUG(2, "lwcollection_same called");
 
 	if ( TYPE_GETTYPE(c1->type) != TYPE_GETTYPE(c2->type) ) return 0;
 	if ( c1->ngeoms != c2->ngeoms ) return 0;

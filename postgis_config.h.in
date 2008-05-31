@@ -45,6 +45,9 @@
 /* PostGIS build date */
 #undef POSTGIS_BUILD_DATE
 
+/* PostGIS library debug level (0=disabled) */
+#undef POSTGIS_DEBUG_LEVEL
+
 /* GEOS library version */
 #undef POSTGIS_GEOS_VERSION
 

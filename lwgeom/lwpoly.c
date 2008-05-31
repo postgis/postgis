@@ -17,7 +17,6 @@
 #include <string.h>
 #include "liblwgeom.h"
 
-/*#define PGIS_DEBUG_CALLS 1 */
 
 #define CHECK_POLY_RINGS_ZM 1
 
@@ -104,9 +103,8 @@ lwpoly_deserialize(uchar *serialized_form)
 	loc = serialized_form+1;
 
 	if (lwgeom_hasBBOX(type)) {
-#ifdef PGIS_DEBUG
-		lwnotice("lwpoly_deserialize: input has bbox");
-#endif
+		LWDEBUG(3, "lwpoly_deserialize: input has bbox");
+
 		result->bbox = lwalloc(sizeof(BOX2DFLOAT4));
 		memcpy(result->bbox, loc, sizeof(BOX2DFLOAT4));
 		loc += sizeof(BOX2DFLOAT4);
@@ -181,9 +179,7 @@ lwpoly_serialize_buf(LWPOLY *poly, uchar *buf, size_t *retsize)
 	uchar *loc;
 	int ptsize;
 
-#ifdef PGIS_DEBUG_CALLS
-	lwnotice("lwpoly_serialize_buf called");
-#endif
+	LWDEBUG(2, "lwpoly_serialize_buf called");
 
 	ptsize = sizeof(double)*TYPE_NDIMS(poly->type);
 
@@ -281,9 +277,8 @@ lwgeom_size_poly(const uchar *serialized_poly)
 
 	if (lwgeom_hasBBOX(type))
 	{
-#ifdef PGIS_DEBUG
-		lwnotice("lwgeom_size_poly: has bbox");
-#endif
+		LWDEBUG(3, "lwgeom_size_poly: has bbox");
+
 		loc += sizeof(BOX2DFLOAT4);
 		result +=sizeof(BOX2DFLOAT4);
 	}
@@ -291,9 +286,8 @@ lwgeom_size_poly(const uchar *serialized_poly)
 
 	if ( lwgeom_hasSRID(type))
 	{
-#ifdef PGIS_DEBUG
-		lwnotice("lwgeom_size_poly: has srid");
-#endif
+		LWDEBUG(3, "lwgeom_size_poly: has srid");
+
 		loc +=4; /* type + SRID */
 		result += 4;
 	}
@@ -303,9 +297,8 @@ lwgeom_size_poly(const uchar *serialized_poly)
 	loc +=4;
 	result +=4;
 
-#ifdef PGIS_DEBUG
-        lwnotice("lwgeom_size_poly contains %d rings", nrings);
-#endif
+        LWDEBUGF(3, "lwgeom_size_poly contains %d rings", nrings);
+
 	for (t =0;t<nrings;t++)
 	{
 		/* read in a single ring and make a PA */
@@ -330,9 +323,8 @@ lwgeom_size_poly(const uchar *serialized_poly)
 		}
 	}
 
-#ifdef PGIS_DEBUG
-        lwnotice("lwgeom_size_poly returning %d", result);
-#endif
+        LWDEBUGF(3, "lwgeom_size_poly returning %d", result);
+
 	return result;
 }
 
@@ -346,10 +338,8 @@ lwpoly_serialize_size(LWPOLY *poly)
 	if ( poly->SRID != -1 ) size += 4; /* SRID */
 	if ( poly->bbox ) size += sizeof(BOX2DFLOAT4);
 
-#ifdef PGIS_DEBUG_CALLS
-	lwnotice("lwpoly_serialize_size called with poly[%p] (%d rings)",
+	LWDEBUGF(2, "lwpoly_serialize_size called with poly[%p] (%d rings)",
 			poly, poly->nrings);
-#endif
 
 	size += 4; /* nrings */
 
@@ -359,9 +349,7 @@ lwpoly_serialize_size(LWPOLY *poly)
 		size += poly->rings[i]->npoints*TYPE_NDIMS(poly->type)*sizeof(double);
 	}
 
-#ifdef PGIS_DEBUG_CALLS
-	lwnotice("lwpoly_serialize_size returning %d", size);
-#endif
+	LWDEBUGF(3, "lwpoly_serialize_size returning %d", size);
 
 	return size;
 }

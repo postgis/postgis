@@ -15,7 +15,6 @@
 #include <string.h>
 #include "liblwgeom.h"
 
-/*#define PGIS_DEBUG_CALLS 1 */
 
 LWMPOLY *
 lwmpoly_deserialize(uchar *srl)
@@ -25,9 +24,7 @@ lwmpoly_deserialize(uchar *srl)
 	int type = lwgeom_getType(srl[0]);
 	int i;
 
-#ifdef PGIS_DEBUG_CALLS
-	lwnotice("lwmpoly_deserialize called");
-#endif
+	LWDEBUG(2, "lwmpoly_deserialize called");
 
 	if ( type != MULTIPOLYGONTYPE ) 
 	{

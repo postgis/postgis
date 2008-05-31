@@ -30,8 +30,6 @@ LWCURVE *lwcurve_removepoint(LWCURVE *curve, unsigned int index);
 void lwcurve_setPoint4d(LWCURVE *curve, unsigned int index, POINT4D *newpoint);
 
 
-/*#define PGIS_DEBUG_CALLS 1 */
-/*#define PGIS_DEBUG 1 */
 
 #ifndef MAXFLOAT
   #define MAXFLOAT      3.402823466e+38F
@@ -99,43 +97,39 @@ lwcurve_deserialize(uchar *serialized_form)
 
         if(lwgeom_hasBBOX(type))
         {
-#ifdef PGIS_DEBUG
-                lwnotice("lwcurve_deserialize: input has bbox");
-#endif
+                LWDEBUG(3, "lwcurve_deserialize: input has bbox");
+
                 result->bbox = lwalloc(sizeof(BOX2DFLOAT4));
                 memcpy(result->bbox, loc, sizeof(BOX2DFLOAT4));
                 loc += sizeof(BOX2DFLOAT4);               
          }
          else
          {
-#ifdef PGIS_DEBUG
-                lwnotice("lwcurve_deserialize: input lacks bbox");           
-#endif               
+                LWDEBUG(3, "lwcurve_deserialize: input lacks bbox");           
+               
                 result->bbox = NULL;
          }
 
          if(lwgeom_hasSRID(type))
          {
-#ifdef PGIS_DEBUG
-                lwnotice("lwcurve_deserialize: input has srid");
-#endif
+                LWDEBUG(3, "lwcurve_deserialize: input has srid");
+
                 result->SRID = lw_get_int32(loc);               
                 loc += 4; /* type + SRID */
          }
          else
          {
-#ifdef PGIS_DEBUG
-                lwnotice("lwcurve_deserialize: input lacks srid");
-#endif
+                LWDEBUG(3, "lwcurve_deserialize: input lacks srid");
+
                 result->SRID = -1;                
          }
 
          /* we've read the type (1 byte) and SRID (4 bytes, if present) */
 
          npoints = lw_get_uint32(loc);
-#ifdef PGIS_DEBUG
-         lwnotice("curve npoints = %d", npoints);
-#endif         
+
+         LWDEBUGF(3, "curve npoints = %d", npoints);
+         
          loc += 4;
          pa = pointArray_construct(loc, TYPE_HASZ(type), TYPE_HASM(type), npoints);
          result->points = pa;
@@ -178,10 +172,8 @@ void lwcurve_serialize_buf(LWCURVE *curve, uchar *buf, size_t *retsize)
         int ptsize;
         size_t size;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("lwcurve_serialize_buf(%p, %p, %p) called",
+        LWDEBUGF(2, "lwcurve_serialize_buf(%p, %p, %p) called",
                 curve, buf, retsize);
-#endif
 
         if(curve == NULL) 
         {
@@ -204,19 +196,14 @@ void lwcurve_serialize_buf(LWCURVE *curve, uchar *buf, size_t *retsize)
                 hasSRID, CURVETYPE, curve->bbox ? 1 : 0);
         loc = buf+1;
 
-#ifdef PGIS_DEBUG
-        lwnotice("lwcurve_serialize_buf added type (%d)", curve->type);
-#endif
+        LWDEBUGF(3, "lwcurve_serialize_buf added type (%d)", curve->type);
 
         if(curve->bbox)
         {
                 memcpy(loc, curve->bbox, sizeof(BOX2DFLOAT4));
                 loc += sizeof(BOX2DFLOAT4);
 
-#ifdef PGIS_DEBUG
-                lwnotice("lwcurve_serialize_buf added BBOX");
-#endif
-
+                LWDEBUG(3, "lwcurve_serialize_buf added BBOX");
         }                
 
         if(hasSRID)
@@ -224,36 +211,27 @@ void lwcurve_serialize_buf(LWCURVE *curve, uchar *buf, size_t *retsize)
                 memcpy(loc, &curve->SRID, sizeof(int32));
                 loc += sizeof(int32);
 
-#ifdef PGIS_DEBUG
-                lwnotice("lwcurve_serialize_buf added SRID");
-#endif
-
+                LWDEBUG(3, "lwcurve_serialize_buf added SRID");
         }
 
         memcpy(loc, &curve->points->npoints, sizeof(uint32));
         loc += sizeof(uint32);
 
-#ifdef PGIS_DEBUG
-        lwnotice("lwcurve_serialize_buf added npoints (%d)",
+        LWDEBUGF(3, "lwcurve_serialize_buf added npoints (%d)",
             curve->points->npoints);
-#endif
 
         /* copy in points */
         size = curve->points->npoints * ptsize;
         memcpy(loc, getPoint_internal(curve->points, 0), size);
         loc += size;
 
-#ifdef PGIS_DEBUG
-        lwnotice("lwcurve_serialize_buf copied serialized_pointlist (%d bytes)",
+        LWDEBUGF(3, "lwcurve_serialize_buf copied serialized_pointlist (%d bytes)",
                 ptsize * curve->points->npoints);        
-#endif
 
         if(retsize) *retsize = loc-buf;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("lwcurve_serialize_buf returning (loc: %p, size: %d)",
+        LWDEBUGF(3, "lwcurve_serialize_buf returning (loc: %p, size: %d)",
                 loc, loc-buf);
-#endif
 }
 
 /* find length of this deserialized curve */
@@ -262,9 +240,7 @@ lwcurve_serialize_size(LWCURVE *curve)
 {
         size_t size = 1; /* type */
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("lwcurve_serialize_size called");        
-#endif
+        LWDEBUG(2, "lwcurve_serialize_size called");        
 
         if(curve->SRID != -1) size += 4; /* SRID */
         if(curve->bbox) size += sizeof(BOX2DFLOAT4);
@@ -272,9 +248,7 @@ lwcurve_serialize_size(LWCURVE *curve)
         size += 4; /* npoints */
         size += pointArray_ptsize(curve->points) * curve->points->npoints;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("lwcurve_serialize_size returning %d", size);
-#endif
+        LWDEBUGF(3, "lwcurve_serialize_size returning %d", size);
 
         return size;
 }
@@ -293,9 +267,7 @@ lwcircle_compute_box3d(POINT4D *p1, POINT4D *p2, POINT4D *p3)
         int i;
         BOX3D *box;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("lwcircle_compute_box3d called.");
-#endif
+        LWDEBUG(2, "lwcircle_compute_box3d called.");
 
         center = lwalloc(sizeof(POINT4D));
         radius = lwcircle_center(p1, p2, p3, &center);
@@ -305,9 +277,7 @@ lwcircle_compute_box3d(POINT4D *p1, POINT4D *p2, POINT4D *p3)
         top = center->y + radius;
         left = center->x - radius;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("lwcircle_compute_box3d: top=%.16f, left=%.16f", top, left);
-#endif
+        LWDEBUGF(3, "lwcircle_compute_box3d: top=%.16f, left=%.16f", top, left);
         */
 
         x1 = MAXFLOAT;
@@ -344,9 +314,7 @@ lwcircle_compute_box3d(POINT4D *p1, POINT4D *p2, POINT4D *p3)
                 sweep = 0.0;
         }
 
-#ifdef PGIS_DEBUG
-        lwnotice("a1 %.16f, a2 %.16f, a3 %.16f, sweep %.16f", a1, a2, a3, sweep);
-#endif
+        LWDEBUGF(3, "a1 %.16f, a2 %.16f, a3 %.16f, sweep %.16f", a1, a2, a3, sweep);
 
         angle = 0.0;
         for(i=0; i < 6; i++)
@@ -389,17 +357,15 @@ lwcircle_compute_box3d(POINT4D *p1, POINT4D *p2, POINT4D *p3)
                         if(sweep < 0.0 && (angle < a3 || angle > a1)) continue;
                 }
 
-#ifdef PGIS_DEBUG
-                lwnotice("lwcircle_compute_box3d: potential extreame %d (%.16f, %.16f)", i, xe, ye);
-#endif
+                LWDEBUGF(3, "lwcircle_compute_box3d: potential extreame %d (%.16f, %.16f)", i, xe, ye);
+
                 x1 = (x1 < xe) ? x1 : xe;
                 y1 = (y1 < ye) ? y1 : ye;
                 x2 = (x2 > xe) ? x2 : xe;
                 y2 = (y2 > ye) ? y2 : ye;
         }
-#ifdef PGIS_DEBUG
-        lwnotice("lwcircle_compute_box3d: extreames found (%.16f %.16f, %.16f %.16f)", x1, y1, x2, y2);
-#endif
+
+        LWDEBUGF(3, "lwcircle_compute_box3d: extreames found (%.16f %.16f, %.16f %.16f)", x1, y1, x2, y2);
 
         /*
         x1 = center->x + x1 * radius;
@@ -436,9 +402,7 @@ lwcurve_compute_box3d(LWCURVE *curve)
         POINT4D *p2 = lwalloc(sizeof(POINT4D));
         POINT4D *p3 = lwalloc(sizeof(POINT4D));
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("lwcurve_compute_box3d called.");
-#endif
+        LWDEBUG(2, "lwcurve_compute_box3d called.");
 
         /* initialize box values */
         box = lwalloc(sizeof(BOX3D));
@@ -459,9 +423,8 @@ lwcurve_compute_box3d(LWCURVE *curve)
                 box->ymax = (box->ymax > tmp->ymax) ? box->ymax : tmp->ymax;
                 box->zmin = (box->zmin < tmp->zmin) ? box->zmin : tmp->zmin;
                 box->zmax = (box->zmax > tmp->zmax) ? box->zmax : tmp->zmax;
-#ifdef PGIS_DEBUG_CALLS
-                lwnotice("curve %d x=(%.16f,%.16f) y=(%.16f,%.16f) z=(%.16f,%.16f)", i/2, box->xmin, box->xmax, box->ymin, box->ymax, box->zmin, box->zmax);
-#endif
+
+                LWDEBUGF(4, "curve %d x=(%.16f,%.16f) y=(%.16f,%.16f) z=(%.16f,%.16f)", i/2, box->xmin, box->xmax, box->ymin, box->ymax, box->zmin, box->zmax);
         }
 
         
@@ -471,12 +434,9 @@ lwcurve_compute_box3d(LWCURVE *curve)
 int
 lwcurve_compute_box2d_p(LWCURVE *curve, BOX2DFLOAT4 *result)
 {
-
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("lwcurve_compute_box2d_p called.");
-#endif
-
         BOX3D *box = lwcurve_compute_box3d(curve);
+        LWDEBUG(2, "lwcurve_compute_box2d_p called.");
+
         if(box == NULL) return 0;
         box3d_to_box2df_p(box, result);
         return 1;
@@ -497,9 +457,8 @@ lwgeom_size_curve(const uchar *serialized_curve)
         const uchar *loc;
         uint32 npoints;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("lwgeom_size_curve called");
-#endif
+        LWDEBUG(2, "lwgeom_size_curve called");
+
         if(lwgeom_getType(type) != CURVETYPE)
                 lwerror("lwgeom_size_curve::attempt to find the length of a non-curve");
 
@@ -522,9 +481,7 @@ lwgeom_size_curve(const uchar *serialized_curve)
 
         result += TYPE_NDIMS(type) * sizeof(double) * npoints;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("lwgeom_size_curve returning %d", result);
-#endif        
+        LWDEBUGF(3, "lwgeom_size_curve returning %d", result);
 
         return result;
 }
@@ -707,9 +664,7 @@ lwcurve_from_lwmpoint(int SRID, LWMPOINT *mpoint)
         pa = pointArray_construct(newpoints, zmflag&2, zmflag&1,
                 mpoint->ngeoms);
 
-#ifdef PGIS_DEBUG
-        lwnotice("lwcurve_from_lwmpoint: constructed pointarray for %d points, %d zmflag", mpoint->ngeoms, zmflag);
-#endif
+        LWDEBUGF(3, "lwcurve_from_lwmpoint: constructed pointarray for %d points, %d zmflag", mpoint->ngeoms, zmflag);
         
         return lwcurve_construct(SRID, NULL, pa);
 }
@@ -748,15 +703,5 @@ lwcurve_setPoint4d(LWCURVE *curve, unsigned int index, POINT4D *newpoint)
 {
         setPoint4d(curve->points, index, newpoint);
 }
-
-
-
-
-
-
-
-
-
-
 
 

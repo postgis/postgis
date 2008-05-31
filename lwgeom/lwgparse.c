@@ -247,14 +247,11 @@ inc_num(void)
 void
 alloc_stack_tuple(int type,output_func of,size_t size)
 {
-
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("alloc_stack_tuple %d, %d", type, size);
-#endif
-
 	tuple*	p;
 	inc_num();
 
+        LWDEBUGF(2, "alloc_stack_tuple %d, %d", type, size);
+	
 	p = alloc_tuple(of,size);
 	p->uu.nn.stack_next = the_geom.stack;
 	p->uu.nn.type = type;
@@ -294,19 +291,14 @@ popc(void)
 void
 check_dims(int num)
 {
-
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("check_dims the_geom.ndims = %d, num = %d", the_geom.ndims, num);
-#endif
+        LWDEBUGF(2, "check_dims the_geom.ndims = %d, num = %d", the_geom.ndims, num);
 
 	if( the_geom.ndims != num){
 		if (the_geom.ndims) {
 			error("Can not mix dimensionality in a geometry");
 		} else {
 
-#ifdef PGIS_DEBUG
-                        lwnotice("check_dims: setting dim %d", num);
-#endif
+                        LWDEBUGF(3, "check_dims: setting dim %d", num);
 
 			the_geom.ndims = num;
 			if ( num > 2 ) the_geom.hasZ = 1;
@@ -381,10 +373,7 @@ empty_stack(tuple *this,output_state* out)
 void
 alloc_lwgeom(int srid)
 {
-
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("alloc_lwgeom %d", srid);
-#endif
+        LWDEBUGF(2, "alloc_lwgeom %d", srid);
 
 	the_geom.srid=srid;
 	the_geom.alloc_size=0;
@@ -446,15 +435,12 @@ write_point_4i(tuple* this,output_state* out)
 void
 alloc_point_2d(double x,double y)
 {
-
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("alloc_point_2d %f,%f", x, y);
-#endif
-
 	tuple* p = alloc_tuple(write_point_2,the_geom.lwgi?8:16);
 	p->uu.points[0] = x;
 	p->uu.points[1] = y;
 
+        LWDEBUGF(2, "alloc_point_2d %f,%f", x, y);
+	
 	/* keep track of point */
 	if ( checkclosed ) {
 		if ( ! the_geom.stack->uu.nn.num )
@@ -469,16 +455,13 @@ alloc_point_2d(double x,double y)
 void
 alloc_point_3d(double x,double y,double z)
 {
-
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("alloc_point_3d %f, %f, %f", x, y, z);
-#endif
-
 	tuple* p = alloc_tuple(write_point_3,the_geom.lwgi?12:24);
 	p->uu.points[0] = x;
 	p->uu.points[1] = y;
 	p->uu.points[2] = z;
 
+        LWDEBUGF(2, "alloc_point_3d %f, %f, %f", x, y, z);
+	
 	/* keep track of point */
 	if ( checkclosed ) {
 		if ( ! the_geom.stack->uu.nn.num )
@@ -493,16 +476,13 @@ alloc_point_3d(double x,double y,double z)
 void
 alloc_point_4d(double x,double y,double z,double m)
 {
-
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("alloc_point_4d %f, %f, %f, %f", x, y, z, m);
-#endif
-
 	tuple* p = alloc_tuple(write_point_4,the_geom.lwgi?16:32);
 	p->uu.points[0] = x;
 	p->uu.points[1] = y;
 	p->uu.points[2] = z;
 	p->uu.points[3] = m;
+
+        LWDEBUGF(2, "alloc_point_4d %f, %f, %f, %f", x, y, z, m);
 
 	/* keep track of point */
 	if ( checkclosed ) {
@@ -562,10 +542,7 @@ write_type_count(tuple* this,output_state* out)
 void
 alloc_point(void)
 {
-
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("alloc_point");
-#endif
+        LWDEBUG(2, "alloc_point");
 
 	if( the_geom.lwgi)
 		alloc_stack_tuple(POINTTYPEI,write_type,1);
@@ -580,10 +557,7 @@ alloc_point(void)
 void
 alloc_linestring(void)
 {
-
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("alloc_linestring");
-#endif
+        LWDEBUG(2, "alloc_linestring");
 
 	if( the_geom.lwgi)
 		alloc_stack_tuple(LINETYPEI,write_type,1);
@@ -597,10 +571,7 @@ alloc_linestring(void)
 
 void alloc_linestring_closed(void)
 {
-
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("alloc_linestring_closed called.");
-#endif
+        LWDEBUG(2, "alloc_linestring_closed called.");
 
         alloc_linestring();
         checkclosed=1;
@@ -609,10 +580,7 @@ void alloc_linestring_closed(void)
 void
 alloc_circularstring(void)
 {
-
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("alloc_circularstring");
-#endif
+        LWDEBUG(2, "alloc_circularstring");
 
         alloc_stack_tuple(CURVETYPE,write_type,1);
         minpoints=3;
@@ -622,10 +590,7 @@ alloc_circularstring(void)
 
 void alloc_circularstring_closed(void)
 {
-      
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("alloc_circularstring_closed");
-#endif
+        LWDEBUG(2, "alloc_circularstring_closed");
 
         alloc_circularstring();
         checkclosed=1;
@@ -634,10 +599,7 @@ void alloc_circularstring_closed(void)
 void
 alloc_polygon(void)
 {
-
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("alloc_polygon");
-#endif
+        LWDEBUG(2, "alloc_polygon");
 
 	if( the_geom.lwgi)
 		alloc_stack_tuple(POLYGONTYPEI, write_type,1);
@@ -653,10 +615,7 @@ alloc_polygon(void)
 void
 alloc_curvepolygon(void)
 {
-
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("alloc_curvepolygon called.");
-#endif
+        LWDEBUG(2, "alloc_curvepolygon called.");
 
         alloc_stack_tuple(CURVEPOLYTYPE, write_type, 1);
         minpoints=3;
@@ -667,10 +626,7 @@ alloc_curvepolygon(void)
 void
 alloc_compoundcurve(void)
 {
-
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("alloc_compoundcurve called.");
-#endif
+        LWDEBUG(2, "alloc_compoundcurve called.");
 
         alloc_stack_tuple(COMPOUNDTYPE, write_type, 1);
 }
@@ -678,10 +634,7 @@ alloc_compoundcurve(void)
 void
 alloc_multipoint(void)
 {
-
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("alloc_multipoint");
-#endif 
+        LWDEBUG(2, "alloc_multipoint");
 
 	alloc_stack_tuple(MULTIPOINTTYPE,write_type,1);
 }
@@ -689,10 +642,7 @@ alloc_multipoint(void)
 void
 alloc_multilinestring(void)
 {
-
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("alloc_multilinestring");
-#endif
+        LWDEBUG(2, "alloc_multilinestring");
 
 	alloc_stack_tuple(MULTILINETYPE,write_type,1);
 }
@@ -700,10 +650,7 @@ alloc_multilinestring(void)
 void
 alloc_multicurve(void)
 {
-       
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("alloc_multicurve");
-#endif
+        LWDEBUG(2, "alloc_multicurve");
 
         alloc_stack_tuple(MULTICURVETYPE,write_type,1);
 }
@@ -711,10 +658,7 @@ alloc_multicurve(void)
 void
 alloc_multipolygon(void)
 {
-
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("alloc_multipolygon");
-#endif
+        LWDEBUG(2, "alloc_multipolygon");
 
 	alloc_stack_tuple(MULTIPOLYGONTYPE,write_type,1);
 }
@@ -722,10 +666,7 @@ alloc_multipolygon(void)
 void
 alloc_multisurface(void)
 {
-
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("alloc_multisurface called");
-#endif
+        LWDEBUG(2, "alloc_multisurface called");
 
         alloc_stack_tuple(MULTISURFACETYPE,write_type,1);
 }
@@ -733,10 +674,7 @@ alloc_multisurface(void)
 void
 alloc_geomertycollection(void)
 {
-
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("alloc_geometrycollection");
-#endif
+        LWDEBUG(2, "alloc_geometrycollection");
 
 	alloc_stack_tuple(COLLECTIONTYPE,write_type,1);
 }
@@ -744,10 +682,7 @@ alloc_geomertycollection(void)
 void
 alloc_counter(void)
 {
-
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("alloc_counter");
-#endif
+        LWDEBUG(2, "alloc_counter");
 
 	alloc_stack_tuple(0,write_count,4);
 }
@@ -755,12 +690,10 @@ alloc_counter(void)
 void
 alloc_empty(void)
 {
-
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("alloc_empty");
-#endif
-
 	tuple* st = the_geom.stack;
+
+	LWDEBUG(2, "alloc_empty");
+
 	/* Find the last geometry */
 	while(st->uu.nn.type == 0){
 		st =st->uu.nn.stack_next;
@@ -788,20 +721,17 @@ alloc_empty(void)
 SERIALIZED_LWGEOM *
 make_serialized_lwgeom(void)
 {
-
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("make_serialized_lwgeom");
-#endif
-
-    SERIALIZED_LWGEOM *out_serialized_lwgeom;
+	SERIALIZED_LWGEOM *out_serialized_lwgeom;
 	uchar* out_c;
 	output_state out;
 	tuple* cur;
+	
+	LWDEBUG(2, "make_serialized_lwgeom");
 
-    /* Allocate the SERIALIZED_LWGEOM structure */
-    out_serialized_lwgeom = (SERIALIZED_LWGEOM *)local_malloc(sizeof(SERIALIZED_LWGEOM));
+	/* Allocate the SERIALIZED_LWGEOM structure */
+	out_serialized_lwgeom = (SERIALIZED_LWGEOM *)local_malloc(sizeof(SERIALIZED_LWGEOM));
 
-    /* Allocate the LWGEOM itself */
+	/* Allocate the LWGEOM itself */
 	out_c = (uchar*)local_malloc(the_geom.alloc_size);
 	out.pos = out_c;
 	cur = the_geom.first ;
@@ -812,8 +742,8 @@ make_serialized_lwgeom(void)
 	}
 
 	/* Setup the SERIALIZED_LWGEOM structure */
-    out_serialized_lwgeom->lwgeom = out_c;
-    out_serialized_lwgeom->size = the_geom.alloc_size;
+	out_serialized_lwgeom->lwgeom = out_c;
+	out_serialized_lwgeom->size = the_geom.alloc_size;
 
 	return out_serialized_lwgeom;
 }
@@ -1044,14 +974,11 @@ read_collection(const char **b, read_col_func f)
 void
 parse_wkb(const char **b)
 {
-
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("parse_wkb");
-#endif
-
 	int4 type;
 	uchar xdr = read_wkb_byte(b);
 	int4 localsrid;
+
+        LWDEBUG(2, "parse_wkb");
 
 	swap_order=0;
 
@@ -1170,10 +1097,7 @@ parse_wkb(const char **b)
 void
 alloc_wkb(const char *parser)
 {
-
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("alloc_wkb");
-#endif
+        LWDEBUG(2, "alloc_wkb");
 
 	parse_wkb(&parser);
 }
@@ -1184,10 +1108,7 @@ alloc_wkb(const char *parser)
 SERIALIZED_LWGEOM *
 parse_it(const char *geometry, allocator allocfunc, report_error errfunc)
 {
-
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("parse_it: %s", geometry);
-#endif
+        LWDEBUGF(2, "parse_it: %s", geometry);
 
 	local_malloc = allocfunc;
 	error_func=errfunc;
@@ -1223,10 +1144,7 @@ parse_lwgi(const char* geometry,allocator allocfunc,report_error errfunc)
 void
 set_zm(char z, char m)
 {
-
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("set_zm %d, %d", z, m);
-#endif
+        LWDEBUGF(2, "set_zm %d, %d", z, m);
 
 	the_geom.hasZ = z;
 	the_geom.hasM = m;

@@ -16,7 +16,6 @@
 #include "stringBuffer.h"
 
 
-/* #define PGIS_DEBUG */
 
 /* forward defs */
 Datum BOX2DFLOAT4_in(PG_FUNCTION_ARGS);

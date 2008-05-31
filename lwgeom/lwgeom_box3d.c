@@ -19,7 +19,6 @@
 #include "liblwgeom.h"
 
 
-/*#define PGIS_DEBUG */
 
 #define SHOW_DIGS_DOUBLE 15
 #define MAX_DIGS_DOUBLE (SHOW_DIGS_DOUBLE + 6 + 1 + 3 +1)

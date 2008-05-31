@@ -16,8 +16,6 @@
 #include "lwgeom_pg.h"
 #include "math.h"
 
-#define DEBUG_LRS 0
-#define DEBUG_INTERPOLATION 0
 
 Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS);
 
@@ -120,10 +118,9 @@ clip_seg_by_m_range(POINT4D *p1, POINT4D *p2, double m0, double m1)
 	dX=p2->x-p1->x;
 	dY=p2->y-p1->y;
 	dZ=p2->z-p1->z;
-#if DEBUG_INTERPOLATION
-	lwnotice("dM0:%g dM1:%g", dM0, dM1);
-	lwnotice("dX:%g dY:%g dZ:%g", dX, dY, dZ);
-#endif
+
+	LWDEBUGF(3, "dM0:%g dM1:%g", dM0, dM1);
+	LWDEBUGF(3, "dX:%g dY:%g dZ:%g", dX, dY, dZ);
 
 
 	/* 
@@ -201,10 +198,8 @@ ptarray_locate_between_m(POINTARRAY *ipa, double m0, double m1)
 	 */
 	ret.ptarrays=lwalloc(sizeof(POINTARRAY *)*ipa->npoints-1);
 
-#if DEBUG_LRS
-	lwnotice("ptarray_locate...: called for pointarray %x, m0:%g, m1:%g",
+	LWDEBUGF(2, "ptarray_locate...: called for pointarray %x, m0:%g, m1:%g",
 		ipa, m0, m1);
-#endif
 
 
 	for(i=1; i<ipa->npoints; i++)
@@ -215,12 +210,10 @@ ptarray_locate_between_m(POINTARRAY *ipa, double m0, double m1)
 		getPoint4d_p(ipa, i-1, &p1);
 		getPoint4d_p(ipa, i, &p2);
 
-#if DEBUG_LRS
-		lwnotice(" segment %d-%d [ %g %g %g %g -  %g %g %g %g ]",
+		LWDEBUGF(3, " segment %d-%d [ %g %g %g %g -  %g %g %g %g ]",
 			i-1, i,
 			p1.x, p1.y, p1.z, p1.m,
 			p2.x, p2.y, p2.z, p2.m);
-#endif
 
 
 		clipval=clip_seg_by_m_range(&p1, &p2, m0, m1);
@@ -235,29 +228,26 @@ ptarray_locate_between_m(POINTARRAY *ipa, double m0, double m1)
 		 */
 		if ( clipval & 0x0100 || i == ipa->npoints-1 ) 
 		{
-#if DEBUG_LRS
-			lwnotice(" second point clipped");
-#endif
+			LWDEBUG(3, " second point clipped");
+
 			/*
 			 * No output points defined, so
 			 * we have to open a new one and add the first point
 			 */
 			if ( dpa == NULL )
 			{
-#if DEBUG_LRS
-				lwnotice(" 1 creating new POINARRAY with first point %g,%g,%g,%g", p1.x, p1.y, p1.z, p1.m);
-#endif
+				LWDEBUGF(3, " 1 creating new POINARRAY with first point %g,%g,%g,%g", p1.x, p1.y, p1.z, p1.m);
+
 				dpa = dynptarray_create(2, ipa->dims);
 				dynptarray_addPoint4d(dpa, &p1, 1);
 			}
 
-#if DEBUG_LRS
-			lwnotice(" 1 adding new point %g,%g,%g,%g", p2.x, p2.y, p2.z, p2.m);
-#endif
+			LWDEBUGF(3, " 1 adding new point %g,%g,%g,%g", p2.x, p2.y, p2.z, p2.m);
+
 			dynptarray_addPoint4d(dpa, &p2, 0);
-#if DEBUG_LRS
-			lwnotice(" closing pointarray %x with %d points", dpa->pa, dpa->pa->npoints);
-#endif
+
+			LWDEBUGF(3, " closing pointarray %x with %d points", dpa->pa, dpa->pa->npoints);
+
 			ret.ptarrays[ret.nptarrays++] = dpa->pa;
 			lwfree(dpa); dpa=NULL;
 			continue;
@@ -268,9 +258,8 @@ ptarray_locate_between_m(POINTARRAY *ipa, double m0, double m1)
 		 */
 		if ( dpa==NULL )
 		{
-#if DEBUG_LRS
-			lwnotice(" 3 creating new POINARRAY with first point %g,%g,%g,%g", p1.x, p1.y, p1.z, p1.m);
-#endif
+			LWDEBUGF(3, " 3 creating new POINARRAY with first point %g,%g,%g,%g", p1.x, p1.y, p1.z, p1.m);
+
 			dpa = dynptarray_create(ipa->npoints-i, ipa->dims);
 			dynptarray_addPoint4d(dpa, &p1, 1);
 		}
@@ -278,9 +267,8 @@ ptarray_locate_between_m(POINTARRAY *ipa, double m0, double m1)
 		/*
 		 * In any case we add the second point (w/out allowin duplicates)
 		 */
-#if DEBUG_LRS
-		lwnotice(" 2 adding new point %g,%g,%g,%g", p2.x, p2.y, p2.z, p2.m);
-#endif
+		LWDEBUGF(3, " 2 adding new point %g,%g,%g,%g", p2.x, p2.y, p2.z, p2.m);
+
 		dynptarray_addPoint4d(dpa, &p2, 0);
 
 	}
@@ -304,23 +292,19 @@ lwpoint_locate_between_m(LWPOINT *lwpoint, double m0, double m1)
 {
 	POINT3DM p3dm;
 
-#if DEBUG_LRS
-	lwnotice("lwpoint_locate_between called for lwpoint %x", lwpoint);
-#endif
+	LWDEBUGF(2, "lwpoint_locate_between called for lwpoint %x", lwpoint);
 
 	lwpoint_getPoint3dm_p(lwpoint, &p3dm);
 	if ( p3dm.m >= m0 && p3dm.m <= m1)
 	{
-#if DEBUG_LRS
-		lwnotice(" lwpoint... returning a clone of input");
-#endif
+		LWDEBUG(3, " lwpoint... returning a clone of input");
+
 		return (LWGEOM *)lwpoint_clone(lwpoint);
 	}
 	else
 	{
-#if DEBUG_LRS
-		lwnotice(" lwpoint... returning a clone of input");
-#endif
+		LWDEBUG(3, " lwpoint... returning a clone of input");
+
 		return NULL;
 	}
 }
@@ -347,17 +331,12 @@ lwline_locate_between_m(LWLINE *lwline_in, double m0, double m1)
 	int typeflag=0; /* see flags below */
 	const int pointflag=0x01;
 	const int lineflag=0x10;
-
-#if DEBUG_LRS
-	lwnotice("lwline_locate_between called for lwline %x", lwline_in);
-#endif
-
 	POINTARRAYSET paset=ptarray_locate_between_m(ipa, m0, m1);
 
-#if DEBUG_LRS
-	lwnotice(" ptarray_locate... returned %d pointarrays",
+	LWDEBUGF(2, "lwline_locate_between called for lwline %x", lwline_in);
+
+	LWDEBUGF(3, " ptarray_locate... returned %d pointarrays",
 		paset.nptarrays);
-#endif
 
 	if ( paset.nptarrays == 0 )
 	{
@@ -443,9 +422,7 @@ lwcollection_locate_between_m(LWCOLLECTION *lwcoll, double m0, double m1)
 	int ngeoms=0;
 	LWGEOM **geoms;
 
-#if DEBUG_LRS
-	lwnotice("lwcollection_locate_between_m called for lwcoll %x", lwcoll);
-#endif
+	LWDEBUGF(2, "lwcollection_locate_between_m called for lwcoll %x", lwcoll);
 
 	geoms=lwalloc(sizeof(LWGEOM *)*lwcoll->ngeoms);
 	for (i=0; i<lwcoll->ngeoms; i++)
@@ -474,9 +451,8 @@ lwcollection_locate_between_m(LWCOLLECTION *lwcoll, double m0, double m1)
 static LWGEOM *
 lwgeom_locate_between_m(LWGEOM *lwin, double m0, double m1)
 {
-#if DEBUG_LRS
-	lwnotice("lwgeom_locate_between called for lwgeom %x", lwin);
-#endif
+	LWDEBUGF(2, "lwgeom_locate_between called for lwgeom %x", lwin);
+
 	switch (TYPE_GETTYPE(lwin->type))
 	{
 		case POINTTYPE:

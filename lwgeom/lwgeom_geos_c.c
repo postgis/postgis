@@ -22,15 +22,8 @@
 /*
  * Define this to have have many notices printed
  * during postgis->geos and geos->postgis conversions
+ *
  */
-/* #define PGIS_DEBUG_CONVERTER 1 */
-#ifdef PGIS_DEBUG_CONVERTER
-#define PGIS_DEBUG_POSTGIS2GEOS 1
-#define PGIS_DEBUG_GEOS2POSTGIS 1
-#endif /* PGIS_DEBUG_CONVERTER */
-
-/* #define PGIS_DEBUG 1 */
-/* #define WKB_CONVERSION 1 */
 
 /*
  *
@@ -78,12 +71,14 @@ Datum centroid(PG_FUNCTION_ARGS);
 Datum polygonize_garray(PG_FUNCTION_ARGS);
 Datum LWGEOM_buildarea(PG_FUNCTION_ARGS);
 Datum linemerge(PG_FUNCTION_ARGS);
+Datum coveredby(PG_FUNCTION_ARGS);
 
 
 LWGEOM *GEOS2LWGEOM(GEOSGeom geom, char want3d);
 PG_LWGEOM *GEOS2POSTGIS(GEOSGeom geom, char want3d);
 GEOSGeom POSTGIS2GEOS(PG_LWGEOM *g);
 GEOSGeom LWGEOM2GEOS(LWGEOM *g);
+POINTARRAY *ptarray_from_GEOSCoordSeq(GEOSCoordSeq cs, char want3d);
 
 void errorIfGeometryCollection(PG_LWGEOM *g1, PG_LWGEOM *g2);
 
@@ -119,15 +114,14 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 	GEOSGeom g1, g2, geos_result=NULL;
 	int SRID=-1;
 	size_t offset;
-#ifdef PGIS_DEBUG
+#if POSTGIS_DEBUG_LEVEL > 0
 	static int call=1;
 #endif
 
-#ifdef PGIS_DEBUG
+#if POSTGIS_DEBUG_LEVEL >= 2 
 	call++;
-	lwnotice("GEOS incremental union (call %d)", call);
+	POSTGIS_DEBUGF(2, "GEOS incremental union (call %d)", call);
 #endif
-
 
 	datum = PG_GETARG_DATUM(0);
 
@@ -138,9 +132,7 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 
 	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE, "unite_garray: number of elements: %d", nelems);
-#endif
+	POSTGIS_DEBUGF(3, "unite_garray: number of elements: %d", nelems);
 
 	if ( nelems == 0 ) PG_RETURN_NULL();
 
@@ -158,9 +150,7 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 
 		pgis_geom = geom;
 
-#ifdef PGIS_DEBUG
-		elog(NOTICE, "geom %d @ %p", i, geom);
-#endif
+		POSTGIS_DEBUGF(3, "geom %d @ %p", i, geom);
 
 		/* Check is3d flag */
 		if ( TYPE_HASZ(geom->type) ) is3d = 1;
@@ -170,9 +160,9 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 		{
 			geos_result = POSTGIS2GEOS(geom);
 			SRID = pglwgeom_getSRID(geom);
-#ifdef PGIS_DEBUG
-		elog(NOTICE, "first geom is a %s", lwgeom_typename(TYPE_GETTYPE(geom->type)));
-#endif
+
+			POSTGIS_DEBUGF(3, "first geom is a %s", lwgeom_typename(TYPE_GETTYPE(geom->type)));
+
 			continue;
 		}
 		else
@@ -182,10 +172,8 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 		
 		g1 = POSTGIS2GEOS(pgis_geom);
 
-#ifdef PGIS_DEBUG
-		elog(NOTICE, "unite_garray(%d): adding geom %d to union (%s)",
+		POSTGIS_DEBUGF(3, "unite_garray(%d): adding geom %d to union (%s)",
 				call, i, lwgeom_typename(TYPE_GETTYPE(geom->type)));
-#endif
 
 		g2 = GEOSUnion(g1,geos_result);
 		if ( g2 == NULL )
@@ -235,15 +223,14 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 	GEOSGeom g1, geos_result=NULL;
 	int SRID=-1;
 	size_t offset;
-#ifdef PGIS_DEBUG
+#if POSTGIS_DEBUG_LEVEL > 0
 	static int call=1;
 #endif
 
-#ifdef PGIS_DEBUG
+#if POSTGIS_DEBUG_LEVEL >= 2 
 	call++;
-	lwnotice("GEOS buffer union (call %d)", call);
+	POSTGIS_DEBUGF(2, "GEOS buffer union (call %d)", call);
 #endif
-
 
 	datum = PG_GETARG_DATUM(0);
 
@@ -254,9 +241,7 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 
 	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE, "unite_garray: number of elements: %d", nelems);
-#endif
+	POSTGIS_DEBUGF(3, "unite_garray: number of elements: %d", nelems);
 
 	if ( nelems == 0 ) PG_RETURN_NULL();
 
@@ -270,9 +255,9 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 
 	offset = 0; i=0;
 	ngeoms = 0; npoints=0;
-#ifdef PGIS_DEBUG
- 	lwnotice("Nelems %d, MAXGEOMSPOINST %d", nelems, MAXGEOMSPOINTS);
-#endif
+
+ 	POSTGIS_DEBUGF(3, "Nelems %d, MAXGEOMSPOINST %d", nelems, MAXGEOMSPOINTS);
+
 	while (!result) 
 	{
 		PG_LWGEOM *geom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
@@ -292,9 +277,7 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 		++ngeoms;
 		++i;
 
-#if PGIS_DEBUG > 1
-		lwnotice("Loop %d, npoints: %d", i, npoints);
-#endif
+		POSTGIS_DEBUGF(4, "Loop %d, npoints: %d", i, npoints);
 
 		/*
 		 * Maximum count of geometry points reached
@@ -302,10 +285,8 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 		 */
 		if ( (npoints>=MAXGEOMSPOINTS && ngeoms>1) || i==nelems)
 		{
-#if PGIS_DEBUG > 1
-			lwnotice(" CHUNK (ngeoms:%d, npoints:%d, left:%d)",
+			POSTGIS_DEBUGF(4, " CHUNK (ngeoms:%d, npoints:%d, left:%d)",
 				ngeoms, npoints, nelems-i);
-#endif
 
 			collection = GEOSMakeCollection(GEOS_GEOMETRYCOLLECTION,
 				geoms, ngeoms);
@@ -318,9 +299,7 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 			}
 			GEOSGeom_destroy(collection);
 
-#if PGIS_DEBUG > 1
-			lwnotice(" Buffer() executed");
-#endif
+			POSTGIS_DEBUG(4, " Buffer() executed");
 
 			/*
 			 * If there are no other geoms in input
@@ -329,17 +308,14 @@ Datum unite_garray(PG_FUNCTION_ARGS)
 			 */
 			if ( i == nelems )
 			{
-#if PGIS_DEBUG > 1
-i				lwnotice("  Final result points: %d",
+				POSTGIS_DEBUGF(4, "  Final result points: %d",
 					GEOSGetNumCoordinate(geos_result));
-#endif
+
 				GEOSSetSRID(geos_result, SRID);
 				result = GEOS2POSTGIS(geos_result, is3d);
 				GEOSGeom_destroy(geos_result);
 
-#if PGIS_DEBUG > 1
-				lwnotice(" Result computed");
-#endif
+				POSTGIS_DEBUG(4, " Result computed");
 
 			}
 			else
@@ -347,9 +323,8 @@ i				lwnotice("  Final result points: %d",
 				geoms[0] = geos_result;
 				ngeoms=1;
 				npoints = GEOSGetNumCoordinate(geoms[0]);
-#if PGIS_DEBUG > 1
-	lwnotice("  Result pushed back on lwgeoms array (npoints:%d)", npoints);
-#endif
+
+				POSTGIS_DEBUGF(4, "  Result pushed back on lwgeoms array (npoints:%d)", npoints);
 			}
 		}
 	}
@@ -381,9 +356,7 @@ Datum geomunion(PG_FUNCTION_ARGS)
 	GEOSGeom g1,g2,g3;
 	PG_LWGEOM *result;
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE,"in geomunion");
-#endif
+	POSTGIS_DEBUG(2, "in geomunion");
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
@@ -415,10 +388,8 @@ Datum geomunion(PG_FUNCTION_ARGS)
 	profstop(PROF_P2G2);
 #endif
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE,"g1=%s", GEOSGeomToWKT(g1));
-	elog(NOTICE,"g2=%s", GEOSGeomToWKT(g2));
-#endif
+	POSTGIS_DEBUGF(3, "g1=%s", GEOSGeomToWKT(g1));
+	POSTGIS_DEBUGF(3, "g2=%s", GEOSGeomToWKT(g2));
 
 #ifdef PROFILE
 	profstart(PROF_GRUN);
@@ -428,9 +399,7 @@ Datum geomunion(PG_FUNCTION_ARGS)
 	profstop(PROF_GRUN);
 #endif
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE,"g3=%s", GEOSGeomToWKT(g3));
-#endif
+	POSTGIS_DEBUGF(3, "g3=%s", GEOSGeomToWKT(g3));
 
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g2);
@@ -535,9 +504,7 @@ Datum symdifference(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL(); /*never get here */
 	}
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE,"result: %s", GEOSGeomToWKT(g3));
-#endif
+	POSTGIS_DEBUGF(3, "result: %s", GEOSGeomToWKT(g3));
 
 	GEOSSetSRID(g3, SRID);
 
@@ -617,9 +584,7 @@ Datum boundary(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL(); /* never get here */
 	}
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE,"result: %s", GEOSGeomToWKT(g3));
-#endif
+	POSTGIS_DEBUGF(3, "result: %s", GEOSGeomToWKT(g3));
 
 	GEOSSetSRID(g3, SRID);
 
@@ -700,9 +665,7 @@ Datum convexhull(PG_FUNCTION_ARGS)
 	}
 
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE,"result: %s", GEOSGeomToWKT(g3));
-#endif
+	POSTGIS_DEBUGF(3, "result: %s", GEOSGeomToWKT(g3));
 
 	GEOSSetSRID(g3, SRID);
 
@@ -796,9 +759,7 @@ Datum topologypreservesimplify(PG_FUNCTION_ARGS)
 	}
 
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE,"result: %s", GEOSGeomToWKT(g3));
-#endif
+	POSTGIS_DEBUGF(3, "result: %s", GEOSGeomToWKT(g3));
 
 	GEOSSetSRID(g3, pglwgeom_getSRID(geom1));
 
@@ -876,9 +837,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 	}
 
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE,"result: %s", GEOSGeomToWKT(g3));
-#endif
+	POSTGIS_DEBUGF(3, "result: %s", GEOSGeomToWKT(g3));
 
 	GEOSSetSRID(g3, pglwgeom_getSRID(geom1));
 
@@ -937,9 +896,7 @@ Datum intersection(PG_FUNCTION_ARGS)
 
 	initGEOS(lwnotice, lwnotice);
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE,"intersection() START");
-#endif
+	POSTGIS_DEBUG(3, "intersection() START");
 
 #ifdef PROFILE
 	profstart(PROF_P2G1);
@@ -957,13 +914,11 @@ Datum intersection(PG_FUNCTION_ARGS)
 	profstop(PROF_P2G2);
 #endif
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE," constructed geometrys - calling geos");
-	elog(NOTICE," g1 = %s", GEOSGeomToWKT(g1));
-	elog(NOTICE," g2 = %s", GEOSGeomToWKT(g2));
-/*elog(NOTICE,"g2 is valid = %i",GEOSisvalid(g2)); */
-/*elog(NOTICE,"g1 is valid = %i",GEOSisvalid(g1)); */
-#endif
+	POSTGIS_DEBUG(3, " constructed geometrys - calling geos");
+	POSTGIS_DEBUGF(3, " g1 = %s", GEOSGeomToWKT(g1));
+	POSTGIS_DEBUGF(3, " g2 = %s", GEOSGeomToWKT(g2));
+	/*POSTGIS_DEBUGF(3, "g2 is valid = %i",GEOSisvalid(g2)); */
+	/*POSTGIS_DEBUGF(3, "g1 is valid = %i",GEOSisvalid(g1)); */
 
 
 
@@ -976,9 +931,7 @@ Datum intersection(PG_FUNCTION_ARGS)
 	profstop(PROF_GRUN);
 #endif
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE," intersection finished");
-#endif
+	POSTGIS_DEBUG(3, " intersection finished");
 
 	if (g3 == NULL)
 	{
@@ -989,9 +942,7 @@ Datum intersection(PG_FUNCTION_ARGS)
 	}
 
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE,"result: %s", GEOSGeomToWKT(g3) ) ;
-#endif
+	POSTGIS_DEBUGF(3, "result: %s", GEOSGeomToWKT(g3) ) ;
 
 	GEOSSetSRID(g3, SRID);
 
@@ -1092,9 +1043,7 @@ Datum difference(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL(); /* never get here */
 	}
 
-#ifdef PGIS_DEBUG
-  	elog(NOTICE,"result: %s", GEOSGeomToWKT(g3) ) ;
-#endif
+  	POSTGIS_DEBUGF(3, "result: %s", GEOSGeomToWKT(g3) ) ;
 
 	GEOSSetSRID(g3, SRID);
 
@@ -1171,9 +1120,7 @@ Datum pointonsurface(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL(); /* never get here */
 	}
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE,"result: %s", GEOSGeomToWKT(g3) ) ;
-#endif
+	POSTGIS_DEBUGF(3, "result: %s", GEOSGeomToWKT(g3) ) ;
 
 	GEOSSetSRID(g3, pglwgeom_getSRID(geom1));
 #ifdef PROFILE
@@ -1484,15 +1431,12 @@ Datum contains(PG_FUNCTION_ARGS)
         type2 = lwgeom_getType((uchar)SERIALIZED_FORM(geom2)[0]);
         if(type1 == POLYGONTYPE && type2 == POINTTYPE)
         {
-#ifdef PGIS_DEBUG
-                lwnotice("Point in Polygon test requested...short-circuiting.");
-#endif
+                POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
 
                 poly = lwpoly_deserialize(SERIALIZED_FORM(geom1));
                 point = lwpoint_deserialize(SERIALIZED_FORM(geom2));
-#ifdef PGIS_DEBUG
-                lwnotice("Precall point_in_polygon %p, %p", poly, point);
-#endif
+
+                POSTGIS_DEBUGF(3, "Precall point_in_polygon %p, %p", poly, point);
 
                 /*
                  * Switch the context to the function-scope context,
@@ -1524,9 +1468,8 @@ Datum contains(PG_FUNCTION_ARGS)
         /* Not yet functional 
         else if(type1 == MULTIPOLYGONTYPE && type2 == POINTTYPE)
         {
-#ifdef PGIS_DEBUG
-                lwnotice("Point in MultiPolygon test requested...short-circuiting.");
-#endif
+                POSTGIS_DEBUG(3, "Point in MultiPolygon test requested...short-circuiting.");
+
                 mpoly = lwmpoly_deserialize(SERIALIZED_FORM(geom1));
                 point = lwpoint_deserialize(SERIALIZED_FORM(geom2));
                 if(point_in_multipolygon(mpoly, point) == 0)
@@ -1549,9 +1492,7 @@ Datum contains(PG_FUNCTION_ARGS)
         */
         else 
         {
-#ifdef PGIS_DEBUG
-                lwnotice("Contains: type1: %d, type2: %d", type1, type2);
-#endif
+                POSTGIS_DEBUGF(3, "Contains: type1: %d, type2: %d", type1, type2);
         }
         
 	initGEOS(lwnotice, lwnotice);
@@ -1651,15 +1592,12 @@ Datum covers(PG_FUNCTION_ARGS)
         type2 = lwgeom_getType((uchar)SERIALIZED_FORM(geom2)[0]);
         if(type1 == POLYGONTYPE && type2 == POINTTYPE)
         {
-#ifdef PGIS_DEBUG
-                lwnotice("Point in Polygon test requested...short-circuiting.");
-#endif
+                POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
 
                 poly = lwpoly_deserialize(SERIALIZED_FORM(geom1));
                 point = lwpoint_deserialize(SERIALIZED_FORM(geom2));
-#ifdef PGIS_DEBUG
-                lwnotice("Precall point_in_polygon %p, %p", poly, point);
-#endif
+
+                POSTGIS_DEBUGF(3, "Precall point_in_polygon %p, %p", poly, point);
 
                 /*
                  * Switch the context to the function-scope context,
@@ -1690,9 +1628,7 @@ Datum covers(PG_FUNCTION_ARGS)
         } 
         else 
         {
-#ifdef PGIS_DEBUG
-                lwnotice("Covers: type1: %d, type2: %d", type1, type2);
-#endif
+                POSTGIS_DEBUGF(3, "Covers: type1: %d, type2: %d", type1, type2);
         }
         
 	initGEOS(lwnotice, lwnotice);
@@ -1785,9 +1721,7 @@ Datum within(PG_FUNCTION_ARGS)
         type2 = lwgeom_getType((uchar)SERIALIZED_FORM(geom2)[0]);
         if(type1 == POINTTYPE && type2 == POLYGONTYPE)
         {
-#ifdef PGIS_DEBUG
-                lwnotice("Point in Polygon test requested...short-circuiting.");
-#endif
+                POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
 
                 point = lwpoint_deserialize(SERIALIZED_FORM(geom1));
                 poly = lwpoly_deserialize(SERIALIZED_FORM(geom2));
@@ -1908,9 +1842,7 @@ Datum coveredby(PG_FUNCTION_ARGS)
 		if ( box1.ymin < box2.ymin ) PG_RETURN_BOOL(FALSE);
 		if ( box1.ymax > box2.ymax ) PG_RETURN_BOOL(FALSE);
 
-#ifdef PGIS_DEBUG
-                lwnotice("bounding box short-circuit missed.");
-#endif
+                POSTGIS_DEBUG(3, "bounding box short-circuit missed.");
 	}
         /*
          * short-circuit 2: if geom1 is a point and geom2 is a polygon
@@ -1920,9 +1852,7 @@ Datum coveredby(PG_FUNCTION_ARGS)
         type2 = lwgeom_getType((uchar)SERIALIZED_FORM(geom2)[0]);
         if(type1 == POINTTYPE && type2 == POLYGONTYPE)
         {
-#ifdef PGIS_DEBUG
-                lwnotice("Point in Polygon test requested...short-circuiting.");
-#endif
+                POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
 
                 point = lwpoint_deserialize(SERIALIZED_FORM(geom1));
                 poly = lwpoly_deserialize(SERIALIZED_FORM(geom2));
@@ -2128,9 +2058,8 @@ Datum intersects(PG_FUNCTION_ARGS)
 	type2 = lwgeom_getType((uchar)SERIALIZED_FORM(geom2)[0]);
 	if(type1 == POINTTYPE && type2 == POLYGONTYPE)
 	{
-#ifdef PGIS_DEBUG
-		lwnotice("Point in Polygon test requested...short-circuiting.");
-#endif
+		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
+
 		point = lwpoint_deserialize(SERIALIZED_FORM(geom1));
 		poly = lwpoly_deserialize(SERIALIZED_FORM(geom2));
 
@@ -2163,9 +2092,8 @@ Datum intersects(PG_FUNCTION_ARGS)
 	}
 	else if(type1 == POLYGONTYPE && type2 == POINTTYPE)
 	{
-	#ifdef PGIS_DEBUG
-		lwnotice("Point in Polygon test requested...short-circuiting.");
-#endif
+		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
+
 		point = lwpoint_deserialize(SERIALIZED_FORM(geom2));
 		poly = lwpoly_deserialize(SERIALIZED_FORM(geom1));
 
@@ -2368,9 +2296,8 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	type2 = lwgeom_getType((uchar)SERIALIZED_FORM(geom2)[0]);
 	if(type1 == POINTTYPE && type2 == POLYGONTYPE)
 	{
-#ifdef PGIS_DEBUG
-		lwnotice("Point outside Polygon test requested...short-circuiting.");
-#endif
+		POSTGIS_DEBUG(3, "Point outside Polygon test requested...short-circuiting.");
+
 		point = lwpoint_deserialize(SERIALIZED_FORM(geom1));
 		poly = lwpoly_deserialize(SERIALIZED_FORM(geom2));
 
@@ -2403,9 +2330,8 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	}
 	else if(type1 == POLYGONTYPE && type2 == POINTTYPE)
 	{
-#ifdef PGIS_DEBUG
-		lwnotice("Point outside Polygon test requested...short-circuiting.");
-#endif
+		POSTGIS_DEBUG(3, "Point outside Polygon test requested...short-circuiting.");
+
 		point = lwpoint_deserialize(SERIALIZED_FORM(geom2));
 		poly = lwpoly_deserialize(SERIALIZED_FORM(geom1));
 
@@ -2565,9 +2491,7 @@ Datum relate_full(PG_FUNCTION_ARGS)
 	profstart(PROF_QRUN);
 #endif
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE,"in relate_full()");
-#endif
+	POSTGIS_DEBUG(2, "in relate_full()");
 
 	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
@@ -2593,22 +2517,18 @@ Datum relate_full(PG_FUNCTION_ARGS)
 	profstop(PROF_P2G2);
 #endif
 
-#ifdef PGIS_DEBUG
- 	elog(NOTICE,"constructed geometries ");
-#endif
+ 	POSTGIS_DEBUG(3, "constructed geometries ");
 
 	if ((g1==NULL) || (g2 == NULL))
 		elog(NOTICE,"g1 or g2 are null");
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE,GEOSGeomToWKT(g1));
-	elog(NOTICE,GEOSGeomToWKT(g2));
+	POSTGIS_DEBUGF(3, "%s", GEOSGeomToWKT(g1));
+	POSTGIS_DEBUGF(3, "%s", GEOSGeomToWKT(g2));
 
-	/*elog(NOTICE,"valid g1 = %i", GEOSisvalid(g1));*/
-	/*elog(NOTICE,"valid g2 = %i",GEOSisvalid(g2));*/
+	/*POSTGIS_DEBUGF(3, "valid g1 = %i", GEOSisvalid(g1));*/
+	/*POSTGIS_DEBUGF(3, "valid g2 = %i",GEOSisvalid(g2));*/
 
-	elog(NOTICE,"about to relate()");
-#endif
+	POSTGIS_DEBUG(3, "about to relate()");
 
 
 #ifdef PROFILE
@@ -2619,9 +2539,7 @@ Datum relate_full(PG_FUNCTION_ARGS)
 	profstop(PROF_GRUN);
 #endif
 
-#ifdef PGIS_DEBUG
- 	elog(NOTICE,"finished relate()");
-#endif
+ 	POSTGIS_DEBUG(3, "finished relate()");
 
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g2);
@@ -2738,9 +2656,7 @@ Datum issimple(PG_FUNCTION_ARGS)
 	GEOSGeom g1;
 	int result;
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE,"issimple called");
-#endif
+	POSTGIS_DEBUG(2, "issimple called");
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
@@ -2913,31 +2829,25 @@ ptarray_from_GEOSCoordSeq(GEOSCoordSeq cs, char want3d)
 	uchar *points, *ptr;
 	POINTARRAY *ret;
 
-#ifdef PGIS_DEBUG_GEOS2POSTGIS 
-	lwnotice("ptarray_fromGEOSCoordSeq called");
-#endif
+	LWDEBUG(2, "ptarray_fromGEOSCoordSeq called");
 
 	if ( ! GEOSCoordSeq_getSize(cs, &size) )
 			lwerror("Exception thrown");
 
-#ifdef PGIS_DEBUG_GEOS2POSTGIS 
-	lwnotice(" GEOSCoordSeq size: %d", size);
-#endif
+	LWDEBUGF(4, " GEOSCoordSeq size: %d", size);
 
 	if ( want3d )
 	{
 		if ( ! GEOSCoordSeq_getDimensions(cs, &dims) )
 			lwerror("Exception thrown");
-#ifdef PGIS_DEBUG_GEOS2POSTGIS 
-		lwnotice(" GEOSCoordSeq dimensions: %d", dims);
-#endif
+
+		LWDEBUGF(4, " GEOSCoordSeq dimensions: %d", dims);
+
 		/* forget higher dimensions (if any) */
 		if ( dims > 3 ) dims = 3;
 	}
 
-#ifdef PGIS_DEBUG_GEOS2POSTGIS 
-	lwnotice(" output dimensions: %d", dims);
-#endif
+	LWDEBUGF(4, " output dimensions: %d", dims);
 
 	ptsize = sizeof(double)*dims;
 
@@ -2973,9 +2883,8 @@ GEOS2LWGEOM(GEOSGeom geom, char want3d)
 	{
 		if ( want3d )
 		{
-#ifdef PGIS_DEBUG
-			elog(NOTICE, "Geometry has no Z, won't provide one");
-#endif
+			LWDEBUG(3, "Geometry has no Z, won't provide one");
+
 			want3d = 0;
 		}
 	}
@@ -2989,26 +2898,23 @@ GEOS2LWGEOM(GEOSGeom geom, char want3d)
 		unsigned int i, ngeoms;
 
 		case GEOS_POINT:
-#ifdef PGIS_DEBUG_GEOS2POSTGIS
-	lwnotice("lwgeom_from_geometry: it's a Point");
-#endif
+			LWDEBUG(4, "lwgeom_from_geometry: it's a Point");
+
 			cs = GEOSGeom_getCoordSeq(geom);
 			pa = ptarray_from_GEOSCoordSeq(cs, want3d);
 			return (LWGEOM *)lwpoint_construct(SRID, NULL, pa);
 			
 		case GEOS_LINESTRING:
 		case GEOS_LINEARRING:
-#ifdef PGIS_DEBUG_GEOS2POSTGIS
-	lwnotice("lwgeom_from_geometry: it's a LineString or LinearRing");
-#endif
+			LWDEBUG(4, "lwgeom_from_geometry: it's a LineString or LinearRing");
+
 			cs = GEOSGeom_getCoordSeq(geom);
 			pa = ptarray_from_GEOSCoordSeq(cs, want3d);
 			return (LWGEOM *)lwline_construct(SRID, NULL, pa);
 
 		case GEOS_POLYGON:
-#ifdef PGIS_DEBUG_GEOS2POSTGIS
-	lwnotice("lwgeom_from_geometry: it's a Polygon");
-#endif
+			LWDEBUG(4, "lwgeom_from_geometry: it's a Polygon");
+
 			ngeoms = GEOSGetNumInteriorRings(geom);
 			ppaa = lwalloc(sizeof(POINTARRAY *)*(ngeoms+1));
 			g = GEOSGetExteriorRing(geom);
@@ -3028,9 +2934,8 @@ GEOS2LWGEOM(GEOSGeom geom, char want3d)
 		case GEOS_MULTILINESTRING:
 		case GEOS_MULTIPOLYGON:
 		case GEOS_GEOMETRYCOLLECTION:
-#ifdef PGIS_DEBUG_GEOS2POSTGIS
-	lwnotice("lwgeom_from_geometry: it's a Collection or Multi");
-#endif
+			LWDEBUG(4, "lwgeom_from_geometry: it's a Collection or Multi");
+
 			ngeoms = GEOSGetNumGeometries(geom);
 			geoms = NULL;
 			if ( ngeoms )
@@ -3067,9 +2972,7 @@ GEOS2POSTGIS(GEOSGeom geom, char want3d)
 		return NULL;
 	}
 
-#ifdef PGIS_DEBUG_GEOS2POSTGIS
-	lwnotice("GEOS2POSTGIS: GEOS2LWGEOM returned a %s", lwgeom_summary(lwgeom, 0)); 
-#endif
+	LWDEBUGF(4, "GEOS2POSTGIS: GEOS2LWGEOM returned a %s", lwgeom_summary(lwgeom, 0)); 
 
 	if ( is_worth_caching_lwgeom_bbox(lwgeom) )
 	{
@@ -3120,9 +3023,9 @@ POSTGIS2GEOS(PG_LWGEOM *pglwgeom)
 		lwerror("POSTGIS2GEOS conversion failed");
 	}
 
-#ifdef PGIS_DEBUG_CONVERTER
+#if POSTGIS_DEBUG_LEVEL >= 4
 	wkb = GEOSGeomToWKT(geom);
-	lwnotice("GEOS geom: %s", wkb);
+	LWDEBUGF(4, "GEOS geom: %s", wkb);
 #endif
 
 	return geom;
@@ -3150,9 +3053,9 @@ ptarray_to_GEOSCoordSeq(POINTARRAY *pa)
 	for (i=0; i<size; i++)
 	{
 		getPoint3dz_p(pa, i, &p);
-#ifdef PGIS_DEBUG_CONVERTER
-lwnotice("Point: %g,%g,%g", p.x, p.y, p.z);
-#endif
+
+		LWDEBUGF(4, "Point: %g,%g,%g", p.x, p.y, p.z);
+
 		GEOSCoordSeq_setX(sq, i, p.x);
 		GEOSCoordSeq_setY(sq, i, p.y);
 		if ( dims == 3 ) GEOSCoordSeq_setZ(sq, i, p.z);
@@ -3169,28 +3072,23 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
         LWGEOM *tmp;
 	*/
 	unsigned int ngeoms, i;
-	int type;
+	int type = 0;
 	int geostype;
-#ifdef PGIS_DEBUG_POSTGIS2GEOS 
+#if POSTGIS_DEBUG_LEVEL >= 4 
 	char *wkt;
 #endif
 
-#ifdef PGIS_DEBUG_POSTGIS2GEOS 
-	lwnotice("LWGEOM2GEOS got a %s", lwgeom_typename(type));
-#endif
+	LWDEBUGF(4, "LWGEOM2GEOS got a %s", lwgeom_typename(type));
 
         if(has_arc(lwgeom))
         {
-#ifdef PGIS_DEBUG_CALLS
-                lwnotice("LWGEOM2GEOS_c: arced geometry found.");
-#endif
+                LWDEBUG(3, "LWGEOM2GEOS_c: arced geometry found.");
+
 		lwerror("Exception in LWGEOM2GEOS: curved geometry not supported.");
 		/*
                 tmp = lwgeom;
                 lwgeom = lwgeom_segmentize(tmp, 32);
-#ifdef PGIS_DEBUG_CALLS
-                lwnotice("LWGEOM2GEOM_c: was %p, is %p", tmp, lwgeom);
-#endif
+                LWDEBUGF(3, "LWGEOM2GEOM_c: was %p, is %p", tmp, lwgeom);
 		*/
         }
         type = TYPE_GETTYPE(lwgeom->type);
@@ -3261,19 +3159,16 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 			break;
 
 		default:
-#ifdef PGIS_DEBUG
-                        lwerror("LWGEOM2GEOS_c: Unknown geometry type: %d", type);
-#else 
 			lwerror("Unknown geometry type: %d", type);
-#endif
+
 			return NULL;
 	}
 
 	GEOSSetSRID(g, lwgeom->SRID);
 
-#ifdef PGIS_DEBUG_POSTGIS2GEOS 
+#if POSTGIS_DEBUG_LEVEL >= 4 
 	wkt = GEOSGeomToWKT(g);
-	lwnotice("LWGEOM2GEOS: GEOSGeom: %s", wkt);
+	LWDEBUGF(4, "LWGEOM2GEOS: GEOSGeom: %s", wkt);
 	/*
         if(tmp != NULL) lwgeom_release(tmp);
 	*/
@@ -3314,9 +3209,8 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 	initGEOS(lwnotice, lwnotice);
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-#ifdef PGIS_DEBUG_CONVERTER
-	elog(NOTICE, "GEOSnoop: IN: %s", unparse_WKT(SERIALIZED_FORM(geom), malloc, free));
-#endif
+
+	POSTGIS_DEBUGF(2, "GEOSnoop: IN: %s", unparse_WKT(SERIALIZED_FORM(geom), malloc, free));
 
 	geosgeom = POSTGIS2GEOS(geom);
 	if ( ! geosgeom ) PG_RETURN_NULL();
@@ -3329,9 +3223,7 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 	result = GEOS2POSTGIS(geosgeom, TYPE_HASZ(geom->type));
 	GEOSGeom_destroy(geosgeom);
 
-#ifdef PGIS_DEBUG_CONVERTER
-	elog(NOTICE, "GEOSnoop: OUT: %s", unparse_WKT(SERIALIZED_FORM(result), malloc, free));
-#endif
+	POSTGIS_DEBUGF(4, "GEOSnoop: OUT: %s", unparse_WKT(SERIALIZED_FORM(result), malloc, free));
 
 	PG_FREE_IF_COPY(geom, 0);
 
@@ -3350,11 +3242,11 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 	GEOSGeom *vgeoms;
 	int SRID=-1;
 	size_t offset;
-#ifdef PGIS_DEBUG
+#if POSTGIS_DEBUG_LEVEL > 0 
 	static int call=1;
 #endif
 
-#ifdef PGIS_DEBUG
+#if POSTGIS_DEBUG_LEVEL >= 3 
 	call++;
 #endif
 
@@ -3367,9 +3259,7 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 
 	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE, "polygonize_garray: number of elements: %d", nelems);
-#endif
+	POSTGIS_DEBUGF(3, "polygonize_garray: number of elements: %d", nelems);
 
 	if ( nelems == 0 ) PG_RETURN_NULL();
 
@@ -3398,14 +3288,12 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 		}
 	}
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE, "polygonize_garray: invoking GEOSpolygonize");
-#endif
+	POSTGIS_DEBUG(3, "polygonize_garray: invoking GEOSpolygonize");
 
 	geos_result = GEOSPolygonize(vgeoms, nelems);
-#ifdef PGIS_DEBUG
-	elog(NOTICE, "polygonize_garray: GEOSpolygonize returned");
-#endif
+
+	POSTGIS_DEBUG(3, "polygonize_garray: GEOSpolygonize returned");
+
 	for (i=0; i<nelems; ++i) GEOSGeom_destroy(vgeoms[i]);
 	pfree(vgeoms);
 
@@ -3465,9 +3353,7 @@ Datum linemerge(PG_FUNCTION_ARGS)
 	}
 
 
-#ifdef PGIS_DEBUG
-  	elog(NOTICE,"result: %s", GEOSGeomToWKT(g3) ) ;
-#endif
+  	POSTGIS_DEBUGF(3, "result: %s", GEOSGeomToWKT(g3) ) ;
 
 	GEOSSetSRID(g3, pglwgeom_getSRID(geom1));
 
@@ -3532,22 +3418,21 @@ Datum LWGEOM_buildarea(PG_FUNCTION_ARGS)
 	GEOSGeom geos_result, shp;
 	GEOSGeom vgeoms[1];
 	int SRID=-1;
-#ifdef PGIS_DEBUG
+#if POSTGIS_DEBUG_LEVEL > 0
 	static int call=1;
 #endif
 
-#ifdef PGIS_DEBUG
+	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+#if POSTGIS_DEBUG_LEVEL >= 3
 	call++;
 	lwnotice("buildarea called (call %d)", call);
 #endif
 
-	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	SRID = pglwgeom_getSRID(geom);
 	is3d = TYPE_HASZ(geom->type);
 
-#ifdef PGIS_DEBUG
-	lwnotice("LWGEOM_buildarea got geom @ %x", geom);
-#endif
+	POSTGIS_DEBUGF(3, "LWGEOM_buildarea got geom @ %p", geom);
 
 	initGEOS(lwnotice, lwnotice);
 
@@ -3555,9 +3440,7 @@ Datum LWGEOM_buildarea(PG_FUNCTION_ARGS)
 	geos_result = GEOSPolygonize(vgeoms, 1);
 	GEOSGeom_destroy(vgeoms[0]);
 
-#ifdef PGIS_DEBUG
-	lwnotice("GEOSpolygonize returned @ %x", geos_result);
-#endif
+	POSTGIS_DEBUGF(3, "GEOSpolygonize returned @ %p", geos_result);
 
 	/* Null return from GEOSpolygonize */
 	if ( ! geos_result ) PG_RETURN_NULL();
@@ -3576,9 +3459,7 @@ Datum LWGEOM_buildarea(PG_FUNCTION_ARGS)
 
 	ngeoms = GEOSGetNumGeometries(geos_result);
 
-#ifdef PGIS_DEBUG
-	lwnotice("GEOSpolygonize: ngeoms in polygonize output: %d", ngeoms);
-#endif
+	POSTGIS_DEBUGF(3, "GEOSpolygonize: ngeoms in polygonize output: %d", ngeoms);
 
 	/*
 	 * No geometries in collection, return NULL
@@ -3720,9 +3601,7 @@ get_prepared_geometry_cache(
 
 	if ( !cache )
 	{
-		#ifdef PGIS_DEBUG
-		lwnotice( "get_prepared_geometry_cache: creating cache: %x", cache);
-		#endif
+		LWDEBUGF(3, "get_prepared_geometry_cache: creating cache: %x", cache);
 		
 		cache = lwalloc( sizeof( PREPARED_GEOM_CACHE ));
 		
@@ -3733,25 +3612,19 @@ get_prepared_geometry_cache(
 	{
 		if ( !cache->prepared_geom )
 		{
-			#ifdef PGIS_DEBUG
-			lwnotice("get_prepared_geometry_cache: preparing obj");
-			#endif
+			LWDEBUGF(3, "get_prepared_geometry_cache: preparing obj");
 			
 			g = POSTGIS2GEOS( serialized_geom);
 			cache->prepared_geom = GEOSPrepare( g);
 		}
 		else
 		{
-			#ifdef PGIS_DEBUG
-			lwnotice("get_prepared_geometry_cache: prepared obj in cache");
-			#endif
+			LWDEBUGF(3, "get_prepared_geometry_cache: prepared obj in cache");
 		}
 	}
 	else
 	{
-		#ifdef PGIS_DEBUG
-		lwnotice("get_prepared_geometry_cache: obj NOT in cache");
-		#endif
+		LWDEBUG(3, "get_prepared_geometry_cache: obj NOT in cache");
 
 		GEOSPreparedGeom_destroy( cache->prepared_geom);
 

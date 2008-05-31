@@ -11,7 +11,6 @@
 #include "wktparse.h"
 
 
-/* #undef PGIS_DEBUG */
 
 #define PARANOIA_LEVEL 1
 
@@ -27,16 +26,16 @@ void *
 pg_alloc(size_t size)
 {
 	void * result;
-#ifdef PGIS_DEBUG_ALLOCS
-	lwnotice("  pg_alloc(%d) called", size);
-#endif
+
+	POSTGIS_DEBUGF(5, "  pg_alloc(%d) called", (int)size);
+
 	result = palloc(size);
-#ifdef PGIS_DEBUG_ALLOCS
-	lwnotice("  pg_alloc(%d) returning %p", size, result);
-#endif
+
+	POSTGIS_DEBUGF(5, "  pg_alloc(%d) returning %p", (int)size, result);
+
 	if ( ! result )
 	{
-		elog(ERROR, "Out of virtual memory");
+		ereport(ERROR, (errmsg_internal("Out of virtual memory")));
 		return NULL;
 	}
 	return result;
@@ -46,13 +45,13 @@ void *
 pg_realloc(void *mem, size_t size)
 {
 	void * result;
-#ifdef PGIS_DEBUG_ALLOCS
-	lwnotice("  pg_realloc(%p, %d) called", mem, size);
-#endif
+
+	POSTGIS_DEBUGF(5, "  pg_realloc(%p, %d) called", mem, (int)size);
+
 	result = repalloc(mem, size);
-#ifdef PGIS_DEBUG_ALLOCS
-	lwnotice("  pg_realloc(%p, %d) returning %p", mem, size, result);
-#endif
+
+	POSTGIS_DEBUGF(5, "  pg_realloc(%p, %d) returning %p", mem, (int)size, result);
+
 	return result;
 }
 
@@ -75,7 +74,7 @@ pg_error(const char *fmt, ...)
 	va_end (ap);
 
 	errmsg[ERRMSG_MAXLEN]='\0';
-	elog(ERROR, "%s", errmsg);
+	ereport(ERROR, (errmsg_internal("%s", errmsg)));
 }
 
 void
@@ -95,7 +94,7 @@ pg_notice(const char *fmt, ...)
 		va_end (ap);
 		return;
 	}
-	elog(NOTICE, "%s", msg);
+	ereport(NOTICE, (errmsg_internal("%s", msg)));
 	va_end(ap);
 	free(msg);
 }
@@ -125,22 +124,18 @@ pglwgeom_serialize(LWGEOM *in)
 
 	size = lwgeom_serialize_size(in) + VARHDRSZ;
 
-#ifdef PGIS_DEBUG
-	lwnotice("lwgeom_serialize_size returned %d", size-VARHDRSZ);
-#endif
+	POSTGIS_DEBUGF(3, "lwgeom_serialize_size returned %d", (int)size-VARHDRSZ);
 
 	result = palloc(size);
-    SET_VARSIZE(result, size);
+	SET_VARSIZE(result, size);
 	lwgeom_serialize_buf(in, SERIALIZED_FORM(result), &size);
 
-#ifdef PGIS_DEBUG
-        lwnotice("pglwgeom_serialize: serialized size: %d, computed size: %d", size, VARSIZE(result)-VARHDRSZ);
-#endif
+        POSTGIS_DEBUGF(3, "pglwgeom_serialize: serialized size: %d, computed size: %d", (int)size, VARSIZE(result)-VARHDRSZ);
 
 #if PARANOIA_LEVEL > 0
 	if ( size != VARSIZE(result)-VARHDRSZ )
 	{
-		lwerror("pglwgeom_serialize: serialized size:%d, computed size:%d", size, VARSIZE(result)-VARHDRSZ);
+		lwerror("pglwgeom_serialize: serialized size:%d, computed size:%d", (int)size, VARSIZE(result)-VARHDRSZ);
 		return NULL;
 	}
 #endif
@@ -231,7 +226,7 @@ PG_LWGEOM_construct(uchar *ser, int SRID, int wantbbox)
 	size+=4; /* size header */
 
 	result = lwalloc(size);
-    SET_VARSIZE(result, size);
+	SET_VARSIZE(result, size);
 
 	result->type = lwgeom_makeType_full(
 		TYPE_HASZ(ser[0]), TYPE_HASM(ser[0]),

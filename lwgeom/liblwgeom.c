@@ -5,7 +5,6 @@
 #define CONTEXT_PG 0
 #define CONTEXT_SA 1
 
-/* #define PGIS_DEBUG_ALLOCS 1 */
 
 
 #ifdef STANDALONE
@@ -34,6 +33,7 @@ lwfreeor lwfree_var = pg_free;
 lwreporter lwerror = pg_error;
 lwreporter lwnotice = pg_notice;
 #endif
+
 
 static char *lwgeomTypeName[] = {
 	"Unknown",
@@ -133,21 +133,15 @@ lwgeom_typename(int type)
 void *
 lwalloc(size_t size)
 {
-#ifdef PGIS_DEBUG_ALLOCS
 	void *mem = lwalloc_var(size);
-	lwnotice("lwalloc: %d@%p", size, mem);
+	LWDEBUGF(5, "lwalloc: %d@%p", size, mem);
 	return mem;
-#else /* ! PGIS_DEBUG_ALLOCS */
-	return lwalloc_var(size);
-#endif
 }
 
 void *
 lwrealloc(void *mem, size_t size)
 {
-#ifdef PGIS_DEBUG_ALLOCS
-	lwnotice("lwrealloc: %d@%p", size, mem);
-#endif
+	LWDEBUGF(5, "lwrealloc: %d@%p", size, mem);
 	return lwrealloc_var(mem, size);
 }
 
@@ -168,16 +162,12 @@ trim_trailing_zeros(char *str)
 	int len;
 	int i;
 
-#ifdef PGIS_DEBUG
-	lwnotice("input: %s", str);
-#endif
+	LWDEBUGF(3, "input: %s", str);
 	
 	ptr = strchr(str, '.');
 	if ( ! ptr ) return; /* no dot, no decimal digits */
 
-#ifdef PGIS_DEBUG
-	lwnotice("ptr: %s", ptr);
-#endif
+	LWDEBUGF(3, "ptr: %s", ptr);
 
 	len = strlen(ptr);
 	for (i=len-1; i; i--)
@@ -191,9 +181,7 @@ trim_trailing_zeros(char *str)
 		else *totrim = '\0';
 	}
 	
-#ifdef PGIS_DEBUG
-	lwnotice("output: %s", str);
-#endif
+	LWDEBUGF(3, "output: %s", str);
 }
 
 char

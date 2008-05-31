@@ -1,9 +1,10 @@
+#include "lwgeom_pg.h"
+
 #include "postgres.h"
 #include "executor/spi.h"       /* this is what you need to work with SPI */
 #include "commands/trigger.h"   /* ... and triggers */
 #include "utils/lsyscache.h"	/* for get_namespace_name() */
 
-/*#define PGIS_DEBUG 1*/
 
 #define ABORT_ON_AUTH_FAILURE 1
 
@@ -83,15 +84,11 @@ Datum check_authorization(PG_FUNCTION_ARGS)
 	pk_id = SPI_getvalue(trigdata->tg_trigtuple, tupdesc,
 		SPI_fnumber(tupdesc, colname));
 
-#if PGIS_DEBUG
-	elog(NOTICE,"check_authorization called");
-#endif
+	POSTGIS_DEBUG(3, "check_authorization called");
 
 	sprintf(query,"SELECT authid FROM \"%s\" WHERE expires >= now() AND toid = '%d' AND rid = '%s'", authtable, trigdata->tg_relation->rd_id, pk_id);
 
-#if PGIS_DEBUG > 1
-	elog(NOTICE,"about to execute :%s", query);
-#endif
+	POSTGIS_DEBUGF(3 ,"about to execute :%s", query);
 
 	SPIcode = SPI_exec(query,0);
 	if (SPIcode !=SPI_OK_SELECT )
@@ -99,9 +96,8 @@ Datum check_authorization(PG_FUNCTION_ARGS)
 
 	if (!SPI_processed )
 	{
-#if PGIS_DEBUG
-		elog(NOTICE,"there is NO lock on row '%s'", pk_id);
-#endif
+		POSTGIS_DEBUGF(3, "there is NO lock on row '%s'", pk_id);
+
 		SPI_finish();
 		return PointerGetDatum(rettuple_ok);
 	}
@@ -113,9 +109,7 @@ Datum check_authorization(PG_FUNCTION_ARGS)
 	tuple = tuptable->vals[0];
 	lockcode = SPI_getvalue(tuple, tupdesc, 1);
 
-#if PGIS_DEBUG
-	elog(NOTICE, "there is a lock on row '%s' (auth: '%s').", pk_id, lockcode);
-#endif
+	POSTGIS_DEBUGF(3, "there is a lock on row '%s' (auth: '%s').", pk_id, lockcode);
 
 	/*
 	 * check to see if temp_lock_have_table table exists
@@ -132,9 +126,7 @@ Datum check_authorization(PG_FUNCTION_ARGS)
 
 	sprintf(query, "SELECT * FROM temp_lock_have_table WHERE xideq( transid, getTransactionID() ) AND lockcode ='%s'", lockcode);
 
-#if PGIS_DEBUG
-	elog(NOTICE,"about to execute :%s", query);
-#endif
+	POSTGIS_DEBUGF(3, "about to execute :%s", query);
 
 	SPIcode = SPI_exec(query,0);
 	if (SPIcode != SPI_OK_SELECT )
@@ -142,9 +134,8 @@ Datum check_authorization(PG_FUNCTION_ARGS)
 
 	if (SPI_processed >0)
 	{
-#if PGIS_DEBUG
-		elog(NOTICE,"I own the lock - I can modify the row");
-#endif
+		POSTGIS_DEBUG(3, "I own the lock - I can modify the row");
+
 		SPI_finish();
 		return PointerGetDatum(rettuple_ok);
 	}

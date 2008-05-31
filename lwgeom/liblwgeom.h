@@ -1,15 +1,11 @@
 #ifndef _LIBLWGEOM_H
 #define _LIBLWGEOM_H 1
 
+#include "../postgis_config.h"
 #include <stdio.h>
 #include "compat.h"
 
 #define INTEGRITY_CHECKS 1
-/* #define DEBUG_ALLOCS 1 */
-/* #define PGIS_DEBUG 1
-#define PGIS_DEBUG_CALLS 1 */
-/*#define PGIS_DEBUG_ALLOCS 1 */
-/* #define DEBUG_CALLS 1 */
 
 /*
  * Floating point comparitors.
@@ -62,6 +58,35 @@ extern lwallocator lwalloc_var;
 extern lwfreeor lwfree_var;
 extern lwreporter lwerror;
 extern lwreporter lwnotice;
+
+/* Debug macros */
+#if POSTGIS_DEBUG_LEVEL > 0
+
+/* Display a notice at the given debug level */
+#define LWDEBUG(level, msg) \
+        do { \
+                if (POSTGIS_DEBUG_LEVEL >= level) \
+                        lwnotice("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__); \
+        } while (0);
+
+/* Display a formatted notice at the given debug level (like printf, with variadic arguments) */
+#define LWDEBUGF(level, msg, ...) \
+        do { \
+                if (POSTGIS_DEBUG_LEVEL >= level) \
+                        lwnotice("[%s:%s:%d] " msg, __FILE__, __func__, __LINE__, __VA_ARGS__); \
+        } while (0);
+
+#else
+
+/* Empty prototype that can be optimised away by the compiler for non-debug builds */
+#define LWDEBUG(level, msg) \
+        ((void) 0)
+
+/* Empty prototype that can be optimised away by the compiler for non-debug builds */
+#define LWDEBUGF(level, msg, ...) \
+        ((void) 0)
+
+#endif
 
 /******************************************************************/
 

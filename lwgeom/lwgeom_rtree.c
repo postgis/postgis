@@ -30,15 +30,11 @@ RTREE_NODE *createTree(POINTARRAY *pointArray)
 	int i, nodeCount;
         int childNodes, parentNodes;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("createTree called with pointarray %p", pointArray);
-#endif
+        LWDEBUGF(2, "createTree called with pointarray %p", pointArray);
 
         nodeCount = pointArray->npoints - 1;
 
-#ifdef PGIS_DEBUG
-        lwnotice("Total leaf nodes: %d", nodeCount);
-#endif
+        LWDEBUGF(3, "Total leaf nodes: %d", nodeCount);
 
         /*
          * Create a leaf node for every line segment.
@@ -57,9 +53,8 @@ RTREE_NODE *createTree(POINTARRAY *pointArray)
         parentNodes = nodeCount / 2;
         while(parentNodes > 0)
         {
-#ifdef PGIS_DEBUG
-                lwnotice("Merging %d children into %d parents.", childNodes, parentNodes);
-#endif
+                LWDEBUGF(3, "Merging %d children into %d parents.", childNodes, parentNodes);
+
                 i = 0;
                 while(i < parentNodes) 
                 {
@@ -71,9 +66,8 @@ RTREE_NODE *createTree(POINTARRAY *pointArray)
                  */
                 if(parentNodes * 2 < childNodes)
                 {
-#ifdef PGIS_DEBUG
-                        lwnotice("Shuffling child %d to parent %d", childNodes - 1, i);
-#endif
+                        LWDEBUGF(3, "Shuffling child %d to parent %d", childNodes - 1, i);
+
                         nodes[i] = nodes[childNodes - 1];
                         parentNodes++;
                 }
@@ -83,9 +77,8 @@ RTREE_NODE *createTree(POINTARRAY *pointArray)
 
         root = nodes[0];
 
-#ifdef PGIS_DEBUG
-        lwnotice("createTree returning %p", root);
-#endif
+        LWDEBUGF(3, "createTree returning %p", root);
+
         return root;
 }
 
@@ -95,17 +88,16 @@ RTREE_NODE *createTree(POINTARRAY *pointArray)
 RTREE_NODE *createInteriorNode(RTREE_NODE *left, RTREE_NODE *right){
         RTREE_NODE *parent;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("createInteriorNode called for children %p, %p", left, right);
-#endif
+        LWDEBUGF(2, "createInteriorNode called for children %p, %p", left, right);
+
         parent = lwalloc(sizeof(RTREE_NODE));
         parent->leftNode = left;
         parent->rightNode = right;
         parent->interval = mergeIntervals(left->interval, right->interval);
         parent->segment = NULL;
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("createInteriorNode returning %p", parent);
-#endif
+
+        LWDEBUGF(3, "createInteriorNode returning %p", parent);
+
         return parent;
 }
 
@@ -121,9 +113,8 @@ RTREE_NODE *createLeafNode(POINTARRAY *pa, int startPoint)
         POINT4D tmp;
         POINTARRAY *npa;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("createLeafNode called for point %d of %p", startPoint, pa);
-#endif
+        LWDEBUGF(2, "createLeafNode called for point %d of %p", startPoint, pa);
+
         if(pa->npoints < startPoint + 2)
         {
                 lwerror("createLeafNode: npoints = %d, startPoint = %d", pa->npoints, startPoint);
@@ -158,9 +149,8 @@ RTREE_NODE *createLeafNode(POINTARRAY *pa, int startPoint)
         parent->leftNode = NULL;
         parent->rightNode = NULL;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("createLeafNode returning %p", parent);
-#endif
+        LWDEBUGF(3, "createLeafNode returning %p", parent);
+
         return parent;
 }
 
@@ -171,15 +161,14 @@ INTERVAL *mergeIntervals(INTERVAL *inter1, INTERVAL *inter2)
 {
         INTERVAL *interval;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("mergeIntervals called with %p, %p", inter1, inter2);
-#endif
+        LWDEBUGF(2, "mergeIntervals called with %p, %p", inter1, inter2);
+
         interval = lwalloc(sizeof(INTERVAL));
         interval->max = FP_MAX(inter1->max, inter2->max);
         interval->min = FP_MIN(inter1->min, inter2->min);
-#ifdef PGIS_DEBUG
-        lwnotice("interval min = %8.3f, max = %8.3f", interval->min, interval->max);
-#endif
+
+        LWDEBUGF(3, "interval min = %8.3f, max = %8.3f", interval->min, interval->max);
+
         return interval;
 }
 
@@ -190,15 +179,14 @@ INTERVAL *createInterval(double value1, double value2)
 {
         INTERVAL *interval;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("createInterval called with %8.3f, %8.3f", value1, value2);
-#endif
+        LWDEBUGF(2, "createInterval called with %8.3f, %8.3f", value1, value2);
+
         interval = lwalloc(sizeof(INTERVAL));
         interval->max = FP_MAX(value1, value2);
         interval->min = FP_MIN(value1, value2);
-#ifdef PGIS_DEBUG
-        lwnotice("interval min = %8.3f, max = %8.3f", interval->min, interval->max);
-#endif
+
+        LWDEBUGF(3, "interval min = %8.3f, max = %8.3f", interval->min, interval->max);
+
         return interval;
 }
 
@@ -208,10 +196,8 @@ INTERVAL *createInterval(double value1, double value2)
  */
 void freeTree(RTREE_NODE *root)
 {
+        LWDEBUGF(2, "freeTree called for %p", root);
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("freeTree called for %p", root);
-#endif
         if(root->leftNode)
                 freeTree(root->leftNode);
         if(root->rightNode)
@@ -233,46 +219,40 @@ LWMLINE *findLineSegments(RTREE_NODE *root, double value)
         LWMLINE *tmp, *result;
         LWGEOM **lwgeoms;
         
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("findLineSegments called for tree %p and value %8.3f", root, value);
-#endif
+        LWDEBUGF(2, "findLineSegments called for tree %p and value %8.3f", root, value);
+
         result = NULL;
 
         if(!isContained(root->interval, value))
         {
-#ifdef PGIS_DEBUG
-                lwnotice("findLineSegments %p: not contained.", root);
-#endif
+                LWDEBUGF(3, "findLineSegments %p: not contained.", root);
+
                 return NULL;
         }
 
         /* If there is a segment defined for this node, include it. */
         if(root->segment)
         {
-#ifdef PGIS_DEBUG
-                lwnotice("findLineSegments %p: adding segment %p %d.", root, root->segment, TYPE_GETTYPE(root->segment->type));
-#endif
+                LWDEBUGF(3, "findLineSegments %p: adding segment %p %d.", root, root->segment, TYPE_GETTYPE(root->segment->type));
+
                 lwgeoms = lwalloc(sizeof(LWGEOM *));
                 lwgeoms[0] = (LWGEOM *)root->segment;
 
-#ifdef PGIS_DEBUG
-                lwnotice("Found geom %p, type %d, dim %d", root->segment, TYPE_GETTYPE(root->segment->type), TYPE_GETZM(root->segment->type));
-#endif
+                LWDEBUGF(3, "Found geom %p, type %d, dim %d", root->segment, TYPE_GETTYPE(root->segment->type), TYPE_GETZM(root->segment->type));
+
                 result = (LWMLINE *)lwcollection_construct(lwgeom_makeType_full(0, 0, 0, MULTILINETYPE, 0), -1, NULL, 1, lwgeoms);
         }
 
         /* If there is a left child node, recursively include its results. */
         if(root->leftNode)
         {
-#ifdef PGIS_DEBUG
-                lwnotice("findLineSegments %p: recursing left.", root);
-#endif
+                LWDEBUGF(3, "findLineSegments %p: recursing left.", root);
+
                 tmp = findLineSegments(root->leftNode, value);
                 if(tmp)
                 {
-#ifdef PGIS_DEBUG
-                        lwnotice("Found geom %p, type %d, dim %d", tmp, TYPE_GETTYPE(tmp->type), TYPE_GETZM(tmp->type));
-#endif
+                        LWDEBUGF(3, "Found geom %p, type %d, dim %d", tmp, TYPE_GETTYPE(tmp->type), TYPE_GETZM(tmp->type));
+
                         if(result)
                                 result = mergeMultiLines(result, tmp);
                         else
@@ -283,15 +263,13 @@ LWMLINE *findLineSegments(RTREE_NODE *root, double value)
         /* Same for any right child. */
         if(root->rightNode)
         {
-#ifdef PGIS_DEBUG
-                lwnotice("findLineSegments %p: recursing right.", root);
-#endif
+                LWDEBUGF(3, "findLineSegments %p: recursing right.", root);
+
                 tmp = findLineSegments(root->rightNode, value);
                 if(tmp)
                 {
-#ifdef PGIS_DEBUG
-                        lwnotice("Found geom %p, type %d, dim %d", tmp, TYPE_GETTYPE(tmp->type), TYPE_GETZM(tmp->type));
-#endif
+                        LWDEBUGF(3, "Found geom %p, type %d, dim %d", tmp, TYPE_GETTYPE(tmp->type), TYPE_GETZM(tmp->type));
+
                         if(result)
                                 result = mergeMultiLines(result, tmp);
                         else
@@ -309,9 +287,8 @@ LWMLINE *mergeMultiLines(LWMLINE *line1, LWMLINE *line2)
         LWCOLLECTION *col;
         int i, j, ngeoms;
         
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("mergeMultiLines called on %p, %d, %d; %p, %d, %d", line1, line1->ngeoms, TYPE_GETTYPE(line1->type), line2, line2->ngeoms, TYPE_GETTYPE(line2->type));
-#endif
+        LWDEBUGF(2, "mergeMultiLines called on %p, %d, %d; %p, %d, %d", line1, line1->ngeoms, TYPE_GETTYPE(line1->type), line2, line2->ngeoms, TYPE_GETTYPE(line2->type));
+
         ngeoms = line1->ngeoms + line2->ngeoms;
         geoms = lwalloc(sizeof(LWGEOM *) * ngeoms);
 
@@ -326,9 +303,7 @@ LWMLINE *mergeMultiLines(LWMLINE *line1, LWMLINE *line2)
         }
         col = lwcollection_construct(MULTILINETYPE, -1, NULL, ngeoms, geoms);
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("mergeMultiLines returning %p, %d, %d", col, col->ngeoms, TYPE_GETTYPE(col->type));
-#endif
+        LWDEBUGF(3, "mergeMultiLines returning %p, %d, %d", col, col->ngeoms, TYPE_GETTYPE(col->type));
 
         return (LWMLINE *)col;
 }
@@ -349,11 +324,12 @@ Datum LWGEOM_polygon_index(PG_FUNCTION_ARGS)
         LWMLINE *mline;
         RTREE_NODE *root;
         double yval;
-        
-#ifdef PGIS_DEBUG_CALLS
-        int i;
-        lwnotice("polygon_index called.");
-#endif
+#if POSTGIS_DEBUG_LEVEL > 0
+	int i = 0;
+#endif       
+ 
+        POSTGIS_DEBUG(2, "polygon_index called.");
+
         result = NULL;
         igeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
         yval = PG_GETARG_FLOAT8(1);
@@ -369,20 +345,19 @@ Datum LWGEOM_polygon_index(PG_FUNCTION_ARGS)
 
         mline = findLineSegments(root, yval);
 
-#ifdef PGIS_DEBUG
-        lwnotice("mline returned %p %d", mline, TYPE_GETTYPE(mline->type));
+#if POSTGIS_DEBUG_LEVEL >= 3
+        POSTGIS_DEBUGF(3, "mline returned %p %d", mline, TYPE_GETTYPE(mline->type));
         for(i = 0; i < mline->ngeoms; i++)
         {
-                lwnotice("geom[%d] %p %d", i, mline->geoms[i], TYPE_GETTYPE(mline->geoms[i]->type));
+                POSTGIS_DEBUGF(3, "geom[%d] %p %d", i, mline->geoms[i], TYPE_GETTYPE(mline->geoms[i]->type));
         }
 #endif
 
         if(mline)
                 result = pglwgeom_serialize((LWGEOM *)mline);
 
-#ifdef PGIS_DEBUG
-        lwnotice("returning result %p", result);
-#endif
+        POSTGIS_DEBUGF(3, "returning result %p", result);
+
 	lwfree(root);
 
 	PG_FREE_IF_COPY(igeom, 0);
@@ -397,9 +372,8 @@ RTREE_POLY_CACHE *createNewCache(LWPOLY *poly, uchar *serializedPoly)
         RTREE_POLY_CACHE *result;
         int i, length;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("createNewCache called with %p", poly);
-#endif
+        LWDEBUGF(2, "createNewCache called with %p", poly);
+
         result = lwalloc(sizeof(RTREE_POLY_CACHE));
         result->ringIndices = lwalloc(sizeof(RTREE_NODE *) * poly->nrings);
         result->ringCount = poly->nrings;
@@ -410,9 +384,9 @@ RTREE_POLY_CACHE *createNewCache(LWPOLY *poly, uchar *serializedPoly)
         {
                 result->ringIndices[i] = createTree(poly->rings[i]);
         }
-#ifdef PGIS_DEBUG
-        lwnotice("createNewCache returning %p", result);
-#endif
+
+        LWDEBUGF(3, "createNewCache returning %p", result);
+
         return result;
 }
 
@@ -428,21 +402,18 @@ RTREE_POLY_CACHE *retrieveCache(LWPOLY *poly, uchar *serializedPoly,
 {
         int i, length;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("retrieveCache called with %p %p %p", poly, serializedPoly, currentCache);
-#endif
+        LWDEBUGF(2, "retrieveCache called with %p %p %p", poly, serializedPoly, currentCache);
+
         if(!currentCache)
         {
-#ifdef PGIS_DEBUG
-                lwnotice("No existing cache, create one.");
-#endif
+                LWDEBUG(3, "No existing cache, create one.");
+
                 return createNewCache(poly, serializedPoly);
         }
         if(!(currentCache->poly))
         {
-#ifdef PGIS_DEBUG
-                lwnotice("Cache contains no polygon, creating new cache.");
-#endif
+                LWDEBUG(3, "Cache contains no polygon, creating new cache.");
+
                 return createNewCache(poly, serializedPoly);
         }
 
@@ -450,9 +421,8 @@ RTREE_POLY_CACHE *retrieveCache(LWPOLY *poly, uchar *serializedPoly,
 
         if(lwgeom_size_poly(currentCache->poly) != length)
         {
-#ifdef PGIS_DEBUG
-                lwnotice("Polygon size mismatch, creating new cache.");
-#endif
+                LWDEBUG(3, "Polygon size mismatch, creating new cache.");
+
                 lwfree(currentCache->poly);
                 lwfree(currentCache);
                 return createNewCache(poly, serializedPoly);
@@ -463,18 +433,16 @@ RTREE_POLY_CACHE *retrieveCache(LWPOLY *poly, uchar *serializedPoly,
                 uchar b = currentCache->poly[i];
                 if(a != b) 
                 {
-#ifdef PGIS_DEBUG
-                        lwnotice("Polygon mismatch, creating new cache. %c, %c", a, b);
-#endif
+                        LWDEBUGF(3, "Polygon mismatch, creating new cache. %c, %c", a, b);
+
                         lwfree(currentCache->poly);
                         lwfree(currentCache);
                         return createNewCache(poly, serializedPoly);
                 }
         }
 
-#ifdef PGIS_DEBUG
-        lwnotice("Polygon match, retaining current cache, %p.", currentCache);
-#endif
+        LWDEBUGF(3, "Polygon match, retaining current cache, %p.", currentCache);
+
         return currentCache;
 }
 

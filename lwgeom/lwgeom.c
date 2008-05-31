@@ -18,17 +18,13 @@
 #include "liblwgeom.h"
 #include "wktparse.h"
 
-/*#define PGIS_DEBUG_CALLS 1*/
-/*#define PGIS_DEBUG 1*/
 
 LWGEOM *
 lwgeom_deserialize(uchar *srl)
 {
 	int type = lwgeom_getType(srl[0]);
 
-#ifdef PGIS_DEBUG_CALLS
-	lwnotice("lwgeom_deserialize got %d - %s", type, lwgeom_typename(type));
-#endif
+	LWDEBUGF(2, "lwgeom_deserialize got %d - %s", type, lwgeom_typename(type));
 
 	switch (type)
 	{
@@ -57,11 +53,8 @@ lwgeom_deserialize(uchar *srl)
                 case MULTISURFACETYPE:
                         return (LWGEOM *)lwmsurface_deserialize(srl);
 		default:
-#ifdef PGIS_DEBUG
-                        lwerror("lwgeom_deserialize: Unknown geometry type: %d", type);
-#else
 			lwerror("Unknown geometry type: %d", type);
-#endif
+
 			return NULL;
 	}
 
@@ -72,9 +65,7 @@ lwgeom_serialize_size(LWGEOM *lwgeom)
 {
 	int type = TYPE_GETTYPE(lwgeom->type);
 
-#ifdef PGIS_DEBUG_CALLS
-	lwnotice("lwgeom_serialize_size(%s) called", lwgeom_typename(type));
-#endif
+	LWDEBUGF(2, "lwgeom_serialize_size(%s) called", lwgeom_typename(type));
 
 	switch (type)
 	{
@@ -96,11 +87,8 @@ lwgeom_serialize_size(LWGEOM *lwgeom)
 		case COLLECTIONTYPE:
 			return lwcollection_serialize_size((LWCOLLECTION *)lwgeom);
 		default:
-#ifdef PGIS_DEBUG
-                        lwerror("lwgeom_serialize_size: Unknown geometry type: %d", type);
-#else
 			lwerror("Unknown geometry type: %d", type);
-#endif
+
 			return 0;
 	}
 }
@@ -110,10 +98,9 @@ lwgeom_serialize_buf(LWGEOM *lwgeom, uchar *buf, size_t *retsize)
 {
 	int type = TYPE_GETTYPE(lwgeom->type);
 
-#ifdef PGIS_DEBUG_CALLS 
-	lwnotice("lwgeom_serialize_buf called with a %s",
+	LWDEBUGF(2, "lwgeom_serialize_buf called with a %s",
 			lwgeom_typename(type));
-#endif
+
 	switch (type)
 	{
 		case POINTTYPE:
@@ -140,11 +127,7 @@ lwgeom_serialize_buf(LWGEOM *lwgeom, uchar *buf, size_t *retsize)
 				retsize);
 			break;
 		default:
-#ifdef PGIS_DEBUG
-                        lwerror("lwgeom_serialize_buf: Unknown geometry type: %d", type);
-#else
 			lwerror("Unknown geometry type: %d", type);
-#endif
 			return;
 	}
 	return;
@@ -159,7 +142,7 @@ lwgeom_serialize(LWGEOM *lwgeom)
 
 	lwgeom_serialize_buf(lwgeom, serialized, &retsize);
 
-#ifdef PGIS_DEBUG
+#if POSTGIS_DEBUG_LEVEL > 0
 	if ( retsize != size )
 	{
 		lwerror("lwgeom_serialize: computed size %d, returned size %d",
@@ -220,9 +203,8 @@ lwgeom_reverse(LWGEOM *lwgeom)
 int
 lwgeom_compute_box2d_p(LWGEOM *lwgeom, BOX2DFLOAT4 *buf)
 {
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("lwgeom_compute_box2d_p called of %p of type %d.", lwgeom, TYPE_GETTYPE(lwgeom->type));
-#endif
+        LWDEBUGF(2, "lwgeom_compute_box2d_p called of %p of type %d.", lwgeom, TYPE_GETTYPE(lwgeom->type));
+
 	switch(TYPE_GETTYPE(lwgeom->type))
 	{
 		case POINTTYPE:
@@ -346,19 +328,15 @@ lwgeom_release(LWGEOM *lwgeom)
 
 	/* Drop bounding box (always a copy) */
 	if ( lwgeom->bbox ) {
-#ifdef PGIS_DEBUG
-                lwnotice("lwgeom_release: releasing bbox.");
-#endif
+                LWDEBUG(3, "lwgeom_release: releasing bbox.");
+
                 lwfree(lwgeom->bbox);
         }
 
 	/* Collection */
 	if ( (col=lwgeom_as_lwcollection(lwgeom)) )
 	{
-
-#ifdef PGIS_DEBUG
-                lwnotice("lwgeom_release: Releasing collection.");
-#endif
+                LWDEBUG(3, "lwgeom_release: Releasing collection.");
 
 		for (i=0; i<col->ngeoms; i++)
 		{
@@ -376,9 +354,8 @@ lwgeom_release(LWGEOM *lwgeom)
 LWGEOM *
 lwgeom_clone(const LWGEOM *lwgeom)
 {
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("lwgeom_clone called with %p, %d", lwgeom, TYPE_GETTYPE(lwgeom->type));
-#endif
+        LWDEBUGF(2, "lwgeom_clone called with %p, %d", lwgeom, TYPE_GETTYPE(lwgeom->type));
+
 	switch(TYPE_GETTYPE(lwgeom->type))
 	{
 		case POINTTYPE:
@@ -420,12 +397,10 @@ lwgeom_add(const LWGEOM *to, uint32 where, const LWGEOM *what)
 		return NULL;
 	}
 
-#ifdef PGIS_DEBUG_CALLS
-	lwnotice("lwgeom_add(%s, %d, %s) called",
+	LWDEBUGF(2, "lwgeom_add(%s, %d, %s) called",
 		lwgeom_typename(TYPE_GETTYPE(to->type)),
 		where,
 		lwgeom_typename(TYPE_GETTYPE(what->type)));
-#endif
 
 	switch(TYPE_GETTYPE(to->type))
 	{
@@ -538,7 +513,7 @@ lwgeom_from_ewkb(uchar *ewkb, size_t size)
 	char *hexewkb;
 	long int i;
 	LWGEOM *ret;
-    SERIALIZED_LWGEOM *serialized_lwgeom;
+	SERIALIZED_LWGEOM *serialized_lwgeom;
 
 	/* "HEXify" the EWKB */
 	hexewkb = lwalloc(hexewkblen+1);
@@ -546,7 +521,7 @@ lwgeom_from_ewkb(uchar *ewkb, size_t size)
 	hexewkb[hexewkblen] = '\0';
 
 	/* Rely on grammar parser to construct a LWGEOM */
-    serialized_lwgeom = parse_lwgeom_wkt(hexewkb);
+	serialized_lwgeom = parse_lwgeom_wkt(hexewkb);
 
 	/* Free intermediate HEXified representation */
 	lwfree(hexewkb);
@@ -568,25 +543,21 @@ lwgeom_from_ewkb(uchar *ewkb, size_t size)
 char
 lwgeom_same(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2)
 {
-#if PGIS_DEBUG
-		lwnotice("lwgeom_same(%s, %s) called",
-			lwgeom_typename(TYPE_GETTYPE(lwgeom1->type)),
-			lwgeom_typename(TYPE_GETTYPE(lwgeom2->type)));
-#endif
+	LWDEBUGF(2, "lwgeom_same(%s, %s) called",
+		lwgeom_typename(TYPE_GETTYPE(lwgeom1->type)),
+		lwgeom_typename(TYPE_GETTYPE(lwgeom2->type)));
 
 	if ( TYPE_GETTYPE(lwgeom1->type) != TYPE_GETTYPE(lwgeom2->type) )
 	{
-#if PGIS_DEBUG
-		lwnotice(" type differ");
-#endif
+		LWDEBUG(3, " type differ");
+
 		return 0;
 	}
 
 	if ( TYPE_GETZM(lwgeom1->type) != TYPE_GETZM(lwgeom2->type) )
 	{
-#if PGIS_DEBUG
-		lwnotice(" ZM flags differ");
-#endif
+		LWDEBUG(3, " ZM flags differ");
+
 		return 0;
 	}
 
@@ -596,9 +567,8 @@ lwgeom_same(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2)
 		/*lwnotice("bbox1:%p, bbox2:%p", lwgeom1->bbox, lwgeom2->bbox);*/
 		if ( ! box2d_same(lwgeom1->bbox, lwgeom2->bbox) )
 		{
-#if PGIS_DEBUG
-			lwnotice(" bounding boxes differ");
-#endif
+			LWDEBUG(3, " bounding boxes differ");
+
 			return 0;
 		}
 	}

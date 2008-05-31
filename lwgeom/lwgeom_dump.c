@@ -24,7 +24,6 @@
 #include "profile.h"
 #include "wktparse.h"
 
-/*#define PGIS_DEBUG 1 */
 
 Datum LWGEOM_dump(PG_FUNCTION_ARGS);
 Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS);

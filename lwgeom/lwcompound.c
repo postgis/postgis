@@ -76,9 +76,7 @@ lwcompound_add(const LWCOMPOUND *to, uint32 where, const LWGEOM *what)
         LWGEOM **geoms;
         int newtype;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("lwcompound_add called.");
-#endif
+        LWDEBUG(2, "lwcompound_add called.");
 
         if(where != -1 && where != 0)
         {

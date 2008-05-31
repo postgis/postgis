@@ -70,8 +70,6 @@ int transform_point(POINT4D *pt, PJ *srcdefn, PJ *dstdefn);
 static int lwgeom_transform_recursive(uchar *geom, PJ *inpj, PJ *outpj);
 
 
-/* PROJ4 SRS Cache debugging (uncomment to debug) */
-/* #define PROJ4_CACHE_DEBUG 1 */
 
 /* PROJ 4 lookup transaction cache methods */
 #define PROJ4_CACHE_ITEMS	8
@@ -229,9 +227,7 @@ PROJ4SRSCacheDelete(MemoryContext context)
 	if (!projection)
 		elog(ERROR, "PROJ4SRSCacheDelete: Trying to delete non-existant projection object with MemoryContext key (%p)", (void *)context);
 
-#if PROJ4_CACHE_DEBUG
-	elog(NOTICE, "PROJ4SRSCacheDelete: deleting projection object (%p) with MemoryContext key (%p)", projection, context);
-#endif
+	LWDEBUGF(3, "deleting projection object (%p) with MemoryContext key (%p)", projection, context);
 
 	/* Free it */
 	pj_free(projection);	
@@ -482,9 +478,8 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 			{
 				if (PROJ4Cache->PROJ4SRSCache[i].srid != other_srid && found == false)
 				{
-#if PROJ4_CACHE_DEBUG
-					elog(NOTICE, "AddToPROJ4SRSCache: choosing to remove item from query cache with SRID %d and index %d", PROJ4Cache->PROJ4SRSCache[i].srid, i);
-#endif
+					LWDEBUGF(3, "choosing to remove item from query cache with SRID %d and index %d", PROJ4Cache->PROJ4SRSCache[i].srid, i);
+		
 					DeleteFromPROJ4SRSCache(PROJ4Cache, PROJ4Cache->PROJ4SRSCache[i].srid);
 					PROJ4Cache->PROJ4SRSCacheCount = i;
 
@@ -497,9 +492,8 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 		 * Now create a memory context for this projection and
 		 * store it in the backend hash
 		 */
-#if PROJ4_CACHE_DEBUG
-		elog(NOTICE, "AddToPROJ4SRSCache: adding SRID %d with proj4text \"%s\" to query cache at index %d", srid, proj_str, PROJ4Cache->PROJ4SRSCacheCount);
-#endif
+		LWDEBUGF(3, "adding SRID %d with proj4text \"%s\" to query cache at index %d", srid, proj_str, PROJ4Cache->PROJ4SRSCacheCount);
+
 		PJMemoryContext = MemoryContextCreate(T_AllocSetContext, 8192,
 					&PROJ4SRSCacheContextMethods,
 					PROJ4Cache->PROJ4SRSCacheContext,
@@ -513,9 +507,8 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 		 * Add the MemoryContext to the backend hash so we can
 		 * clean up upon portal shutdown
 		 */
-#if PROJ4_CACHE_DEBUG
-		elog(NOTICE, "AddToPROJ4SRSCache: adding projection object (%p) to hash table with MemoryContext key (%p)", projection, PJMemoryContext);
-#endif
+		LWDEBUGF(3, "adding projection object (%p) to hash table with MemoryContext key (%p)", projection, PJMemoryContext);
+
 		AddPJHashEntry(PJMemoryContext, projection);
 		
 		PROJ4Cache->PROJ4SRSCache[PROJ4Cache->PROJ4SRSCacheCount].srid = srid;
@@ -553,9 +546,8 @@ void DeleteFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
 	{
 		if (PROJ4Cache->PROJ4SRSCache[i].srid == srid)
 		{
-#if PROJ4_CACHE_DEBUG
-			elog(NOTICE, "DeleteFromPROJ4SRSCache: removing query cache entry with SRID %d at index %d", srid, i);
-#endif
+			LWDEBUGF(3, "removing query cache entry with SRID %d at index %d", srid, i);
+
 			/*
 			 * Zero out the entries and free the PROJ4 handle
 			 * by deleting the memory context
@@ -885,9 +877,7 @@ Datum transform(PG_FUNCTION_ARGS)
 		{
 			int i;
 
-#if PROJ4_CACHE_DEBUG
-			elog(NOTICE, "Allocating PROJ4Cache for portal with transform() MemoryContext %p", fcinfo->flinfo->fn_mcxt);
-#endif
+			POSTGIS_DEBUGF(3, "Allocating PROJ4Cache for portal with transform() MemoryContext %p", fcinfo->flinfo->fn_mcxt);
 			/* Put in any required defaults */
 			for (i = 0; i < PROJ4_CACHE_ITEMS; i++)
 			{

@@ -82,9 +82,7 @@ lwcollection_summary(LWCOLLECTION *col, int offset)
 	int i;
 	char *pad="";
 
-#ifdef PGIS_DEBUG_CALLS
-	lwnotice("lwcollection_summary called");
-#endif
+	LWDEBUG(2, "lwcollection_summary called");
 
 	result = (char *)lwalloc(size);
 
@@ -98,16 +96,14 @@ lwcollection_summary(LWCOLLECTION *col, int offset)
 		tmp = lwgeom_summary(col->geoms[i], offset+2);
 		size += strlen(tmp)+1;
 		result = lwrealloc(result, size);
-#if PGIS_DEBUG > 1
-		lwnotice("Reallocated %d bytes for result", size);
-#endif
+
+		LWDEBUGF(4, "Reallocated %d bytes for result", size);
+
 		strcat(result, tmp);
 		lwfree(tmp);
 	}
 
-#ifdef PGIS_DEBUG_CALLS
-	lwnotice("lwcollection_summary returning");
-#endif
+	LWDEBUG(3, "lwcollection_summary returning");
 
 	return result;
 }
@@ -121,9 +117,7 @@ lwpoly_summary(LWPOLY *poly, int offset)
 	int i;
 	char *pad="";
 
-#ifdef PGIS_DEBUG_CALLS
-	lwnotice("lwpoly_summary called");
-#endif
+	LWDEBUG(2, "lwpoly_summary called");
 
 	result = lwalloc(size);
 
@@ -139,9 +133,7 @@ lwpoly_summary(LWPOLY *poly, int offset)
 		strcat(result,tmp);
 	}
 
-#ifdef PGIS_DEBUG_CALLS
-	lwnotice("lwpoly_summary returning");
-#endif
+	LWDEBUG(3, "lwpoly_summary returning");
 
 	return result;
 }

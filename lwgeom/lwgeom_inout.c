@@ -24,7 +24,6 @@
 #include "stringBuffer.h"
 
 
-/* #define PGIS_DEBUG 1 */
 
 #include "lwgeom_pg.h"
 #include "wktparse.h"
@@ -283,9 +282,7 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 	hexized_wkb_srid = unparse_WKB(SERIALIZED_FORM(lwgeom_input),
 		lwalloc, lwfree, byteorder, &size, 1);
 
-#ifdef PGIS_DEBUG
-  elog(NOTICE, "in WKBFromLWGEOM with WKB = '%s'", hexized_wkb_srid);
-#endif
+	LWDEBUGF(3, "in WKBFromLWGEOM with WKB = '%s'", hexized_wkb_srid);
 
 	hexized_wkb = hexized_wkb_srid;
 
@@ -295,14 +292,12 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 		hexized_wkb = (semicolonLoc+1);
 	}
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE, "in WKBFromLWGEOM with WKB (with no 'SRID=#;' = '%s'",
+	LWDEBUGF(3, "in WKBFromLWGEOM with WKB (with no 'SRID=#;' = '%s'",
 		hexized_wkb);
-#endif
 
 	size_result = size/2 + VARHDRSZ;
 	result = palloc(size_result);
-    SET_VARSIZE(result, size_result);
+	SET_VARSIZE(result, size_result);
 
 	/* have a hexized string, want to make it binary */
 	for (t=0; t< (size/2); t++)
@@ -330,11 +325,8 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 	lwnotice("unparse_WKB: prof: %lu", proftime[PROF_QRUN]);
 #endif
 
-#ifdef PGIS_DEBUG
-	lwnotice("Output size is %lu (comp: %lu)",
+	LWDEBUGF(3, "Output size is %lu (comp: %lu)",
 		VARSIZE(result), (unsigned long)size);
-#endif /* def PGIS_DEBUG */
-
 
 	PG_RETURN_POINTER(result);
 }
@@ -349,32 +341,27 @@ Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS)
 	uchar	old_type;
 	int		size;
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE,"in LWGEOM_addBBOX");
-#endif
+	POSTGIS_DEBUG(2, "in LWGEOM_addBBOX");
 
 	if (lwgeom_hasBBOX( lwgeom->type ) )
 	{
-#ifdef PGIS_DEBUG
-		elog(NOTICE,"LWGEOM_addBBOX  -- already has bbox");
-#endif
+		POSTGIS_DEBUG(3, "LWGEOM_addBBOX  -- already has bbox");
+
 		/* easy - already has one.  Just copy! */
 		result = palloc (VARSIZE(lwgeom));
-        SET_VARSIZE(result, VARSIZE(lwgeom));
+		SET_VARSIZE(result, VARSIZE(lwgeom));
 		memcpy(VARDATA(result), VARDATA(lwgeom), VARSIZE(lwgeom)-VARHDRSZ);
 		PG_RETURN_POINTER(result);
 	}
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE,"LWGEOM_addBBOX  -- giving it a bbox");
-#endif
+	POSTGIS_DEBUG(3, "LWGEOM_addBBOX  -- giving it a bbox");
 
 	/* construct new one */
 	if ( ! getbox2d_p(SERIALIZED_FORM(lwgeom), &box) )
 	{
 		/* Empty geom, no bbox to add */
 		result = palloc (VARSIZE(lwgeom));
-        SET_VARSIZE(result, VARSIZE(lwgeom));
+		SET_VARSIZE(result, VARSIZE(lwgeom));
 		memcpy(VARDATA(result), VARDATA(lwgeom), VARSIZE(lwgeom)-VARHDRSZ);
 		PG_RETURN_POINTER(result);
 	}
@@ -393,10 +380,8 @@ Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS)
 	/* copy in bbox */
 	memcpy(result->data, &box, sizeof(BOX2DFLOAT4));
 
-#ifdef PGIS_DEBUG
-	lwnotice("result->type hasbbox: %d", TYPE_HASBBOX(result->type));
-	lwnotice("LWGEOM_addBBOX  -- about to copy serialized form");
-#endif
+	POSTGIS_DEBUGF(3, "result->type hasbbox: %d", TYPE_HASBBOX(result->type));
+	POSTGIS_DEBUG(3, "LWGEOM_addBBOX  -- about to copy serialized form");
 
 	/* everything but the type and length */
 	memcpy((char *)VARDATA(result)+sizeof(BOX2DFLOAT4)+1, (char *)VARDATA(lwgeom)+1, VARSIZE(lwgeom)-VARHDRSZ-1);
@@ -443,24 +428,19 @@ Datum LWGEOM_dropBBOX(PG_FUNCTION_ARGS)
 	uchar old_type;
 	int size;
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE,"in LWGEOM_dropBBOX");
-#endif
+	POSTGIS_DEBUG(2, "in LWGEOM_dropBBOX");
 
 	if (!lwgeom_hasBBOX( lwgeom->type ) )
 	{
-#ifdef PGIS_DEBUG
-	elog(NOTICE,"LWGEOM_dropBBOX  -- doesnt have a bbox already");
-#endif
+		POSTGIS_DEBUG(3, "LWGEOM_dropBBOX  -- doesnt have a bbox already");
+
 		result = palloc (VARSIZE(lwgeom));
-        SET_VARSIZE(result, VARSIZE(lwgeom));
+		SET_VARSIZE(result, VARSIZE(lwgeom));
 		memcpy(VARDATA(result), VARDATA(lwgeom), VARSIZE(lwgeom)-VARHDRSZ);
 		PG_RETURN_POINTER(result);
 	}
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE,"LWGEOM_dropBBOX  -- dropping the bbox");
-#endif
+	POSTGIS_DEBUG(3, "LWGEOM_dropBBOX  -- dropping the bbox");
 
 	/* construct new one */
 	old_type = lwgeom->type;
@@ -468,7 +448,7 @@ Datum LWGEOM_dropBBOX(PG_FUNCTION_ARGS)
 	size = VARSIZE(lwgeom)-sizeof(BOX2DFLOAT4);
 
 	result = palloc(size); /* 16 for bbox2d */
-    SET_VARSIZE(result, size);
+	SET_VARSIZE(result, size);
 
 	result->type = lwgeom_makeType_full(
 		TYPE_HASZ(old_type),
@@ -498,9 +478,9 @@ Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS)
 	/* text */
 	text *wkt_input = PG_GETARG_TEXT_P(0);
 	PG_LWGEOM *ret;  /*with length */
-    SERIALIZED_LWGEOM *serialized_lwgeom;
-    LWGEOM *lwgeom;	
-    char *wkt;
+	SERIALIZED_LWGEOM *serialized_lwgeom;
+	LWGEOM *lwgeom;	
+	char *wkt;
 	int wkt_size ;
 
 	init_pg_func();
@@ -512,19 +492,15 @@ Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS)
 	wkt[wkt_size] = 0; /* null term */
 
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE,"in parse_WKT_lwgeom with input: '%s'",wkt);
-#endif
+	POSTGIS_DEBUGF(3, "in parse_WKT_lwgeom with input: '%s'",wkt);
 
-    serialized_lwgeom = parse_lwg((const char *)wkt, (allocator)lwalloc, (report_error)elog_ERROR);
-    lwgeom = lwgeom_deserialize(serialized_lwgeom->lwgeom);
+	serialized_lwgeom = parse_lwg((const char *)wkt, (allocator)lwalloc, (report_error)elog_ERROR);
+	lwgeom = lwgeom_deserialize(serialized_lwgeom->lwgeom);
     
-    ret = pglwgeom_serialize(lwgeom);
+	ret = pglwgeom_serialize(lwgeom);
 	lwgeom_release(lwgeom);
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE,"parse_WKT_lwgeom:: finished parse");
-#endif
+	POSTGIS_DEBUG(3, "parse_WKT_lwgeom:: finished parse");
 
 	pfree (wkt);
 
@@ -555,38 +531,27 @@ Datum LWGEOM_recv(PG_FUNCTION_ARGS)
         bytea *wkb;
 	PG_LWGEOM *result;
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE, "LWGEOM_recv start");
-#endif
+	POSTGIS_DEBUG(2, "LWGEOM_recv start");
 
 	/* Add VARLENA size info to make it a valid varlena object */
 	wkb = (bytea *)palloc(buf->len+VARHDRSZ);
 	SET_VARSIZE(wkb, buf->len+VARHDRSZ);
 	memcpy(VARDATA(wkb), buf->data, buf->len);
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE, "LWGEOM_recv calling LWGEOMFromWKB");
-#endif
+	POSTGIS_DEBUG(3, "LWGEOM_recv calling LWGEOMFromWKB");
 
 	/* Call LWGEOM_from_bytea function... */
 	result = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall1(
 		LWGEOMFromWKB, PointerGetDatum(wkb)));
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE, "LWGEOM_recv advancing StringInfo buffer");
-#endif
+	POSTGIS_DEBUG(3, "LWGEOM_recv advancing StringInfo buffer");
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE, "LWGEOM_from_bytea returned %s", unparse_WKB(SERIALIZED_FORM(result),pg_alloc,pg_free,-1,NULL,1));
-#endif
-
+	POSTGIS_DEBUGF(3, "LWGEOM_from_bytea returned %s", unparse_WKB(SERIALIZED_FORM(result),pg_alloc,pg_free,-1,NULL,1));
 
 	/* Set cursor to the end of buffer (so the backend is happy) */
 	buf->cursor = buf->len;
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE, "LWGEOM_recv returning");
-#endif
+	POSTGIS_DEBUG(3, "LWGEOM_recv returning");
 
         PG_RETURN_POINTER(result);
 }
@@ -596,9 +561,7 @@ Datum LWGEOM_send(PG_FUNCTION_ARGS)
 {
 	bytea *result;
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE, "LWGEOM_send called");
-#endif
+	POSTGIS_DEBUG(2, "LWGEOM_send called");
 
 	result = (bytea *)DatumGetPointer(DirectFunctionCall1(
 		WKBFromLWGEOM, PG_GETARG_DATUM(0)));
@@ -614,9 +577,7 @@ Datum LWGEOM_to_bytea(PG_FUNCTION_ARGS)
 {
 	bytea *result;
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE, "LWGEOM_to_bytea called");
-#endif
+	POSTGIS_DEBUG(2, "LWGEOM_to_bytea called");
 
 	result = (bytea *)DatumGetPointer(DirectFunctionCall1(
 		WKBFromLWGEOM, PG_GETARG_DATUM(0)));
@@ -629,9 +590,7 @@ Datum LWGEOM_from_bytea(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *result;
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE, "LWGEOM_from_bytea start");
-#endif
+	POSTGIS_DEBUG(2, "LWGEOM_from_bytea start");
 
 	result = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall1(
 		LWGEOMFromWKB, PG_GETARG_DATUM(0)));

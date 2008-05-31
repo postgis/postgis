@@ -15,7 +15,6 @@
 #include <string.h>
 #include "liblwgeom.h"
 
-/*#define PGIS_DEBUG_CALLS 1 */
 
 LWMSURFACE *
 lwmsurface_deserialize(uchar *srl)
@@ -26,9 +25,7 @@ lwmsurface_deserialize(uchar *srl)
         int type = lwgeom_getType(srl[0]);
         int i;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("lwmsurface_deserialize called");
-#endif
+        LWDEBUG(2, "lwmsurface_deserialize called");
 
         if(type != MULTISURFACETYPE)
         {

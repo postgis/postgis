@@ -27,7 +27,6 @@ Datum lwgeom_ge(PG_FUNCTION_ARGS);
 Datum lwgeom_gt(PG_FUNCTION_ARGS);
 Datum lwgeom_cmp(PG_FUNCTION_ARGS);
 
-/* #define PGIS_DEBUG */
 
 #if POSTGIS_PGSQL_VERSION == 72
 #define BTREE_SRID_MISMATCH_SEVERITY NOTICE
@@ -47,9 +46,7 @@ Datum lwgeom_lt(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4 box1;
 	BOX2DFLOAT4 box2;
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE, "lwgeom_lt called");
-#endif
+	POSTGIS_DEBUG(2, "lwgeom_lt called");
 
 	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
 	{
@@ -62,16 +59,12 @@ Datum lwgeom_lt(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE, "lwgeom_lt passed getSRID test");
-#endif
+	POSTGIS_DEBUG(3, "lwgeom_lt passed getSRID test");
 
 	getbox2d_p(SERIALIZED_FORM(geom1), &box1);
 	getbox2d_p(SERIALIZED_FORM(geom2), &box2);
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE, "lwgeom_lt getbox2d_p passed");
-#endif
+	POSTGIS_DEBUG(3, "lwgeom_lt getbox2d_p passed");
 
 	if  ( ! FPeq(box1.xmin , box2.xmin) ) {
 		if  (box1.xmin < box2.xmin)
@@ -104,9 +97,7 @@ Datum lwgeom_le(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4 box1;
 	BOX2DFLOAT4 box2;
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE, "lwgeom_le called");
-#endif
+	POSTGIS_DEBUG(2, "lwgeom_le called");
 
 	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
 	{
@@ -184,9 +175,7 @@ Datum lwgeom_eq(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4 box1;
 	BOX2DFLOAT4 box2;
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE, "lwgeom_eq called");
-#endif
+	POSTGIS_DEBUG(2, "lwgeom_eq called");
 
 	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
 	{
@@ -244,9 +233,7 @@ Datum lwgeom_ge(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4 box1;
 	BOX2DFLOAT4 box2;
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE, "lwgeom_ge called");
-#endif
+	POSTGIS_DEBUG(2, "lwgeom_ge called");
 
 	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
 	{
@@ -316,9 +303,7 @@ Datum lwgeom_gt(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4 box1;
 	BOX2DFLOAT4 box2;
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE, "lwgeom_gt called");
-#endif
+	POSTGIS_DEBUG(2, "lwgeom_gt called");
 
 	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
 	{
@@ -384,9 +369,7 @@ Datum lwgeom_cmp(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4 box1;
 	BOX2DFLOAT4 box2;
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE, "lwgeom_cmp called");
-#endif
+	POSTGIS_DEBUG(2, "lwgeom_cmp called");
 
 	if (pglwgeom_getSRID(geom1) != pglwgeom_getSRID(geom2))
 	{

@@ -194,7 +194,10 @@ double
 distance_ellipse(double lat1, double long1,
 	double lat2, double long2, SPHEROID *sphere)
 {
-	double result;
+	double result = 0;
+#if POSTGIS_DEBUG_LEVEL > 0
+	double result2 = 0;
+#endif
 
 	if ( (lat1==lat2) && (long1 == long2) )
 	{
@@ -202,12 +205,13 @@ distance_ellipse(double lat1, double long1,
 	}
 
 	result = distance_ellipse_calculation(lat1,long1,lat2,long2,sphere);
-	/*result2 =  distance_sphere_method(lat1, long1,lat2,long2, sphere);*/
 
-#ifdef PGIS_DEBUG
-	/*elog(NOTICE, "delta = %lf, skae says: %.15lf,2 circle says: %.15lf",
+#if POSTGIS_DEBUG_LEVEL >= 4
+	result2 =  distance_sphere_method(lat1, long1,lat2,long2, sphere);
+
+	LWDEBUGF(4, "delta = %lf, skae says: %.15lf,2 circle says: %.15lf",
 		(result2-result),result,result2);
-	elog(NOTICE,"2 circle says: %.15lf",result2);*/
+	LWDEBUGF(4, "2 circle says: %.15lf",result2);
 #endif
 
 	if (result != result)  /* NaN check
@@ -313,9 +317,7 @@ double lwgeom_pointarray_length_ellipse(POINTARRAY *pts, SPHEROID *sphere)
 	double dist = 0.0;
 	int i;
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE, "lwgeom_pointarray_length_ellipse called");
-#endif
+	LWDEBUG(2, "lwgeom_pointarray_length_ellipse called");
 
 	if ( pts->npoints < 2 ) return 0.0;
 
@@ -354,9 +356,7 @@ lwgeom_pointarray_length2d_ellipse(POINTARRAY *pts, SPHEROID *sphere)
 	POINT2D frm;
 	POINT2D to;
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE, "lwgeom_pointarray_length2d_ellipse called");
-#endif
+	LWDEBUG(2, "lwgeom_pointarray_length2d_ellipse called");
 
 	if ( pts->npoints < 2 ) return 0.0;
 	for (i=0; i<pts->npoints-1;i++)
@@ -389,9 +389,7 @@ Datum LWGEOM_length2d_ellipsoid_linestring(PG_FUNCTION_ARGS)
 	double dist = 0.0;
 	int i;
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE, "in LWGEOM_length2d_ellipsoid_linestring");
-#endif
+	POSTGIS_DEBUG(2, "in LWGEOM_length2d_ellipsoid_linestring");
 
 	for (i=0; i<inspected->ngeometries; i++)
 	{
@@ -399,10 +397,9 @@ Datum LWGEOM_length2d_ellipsoid_linestring(PG_FUNCTION_ARGS)
 		if ( line == NULL ) continue;
 		dist += lwgeom_pointarray_length2d_ellipse(line->points,
 			sphere);
-#if PGIS_DEBUG > 1
- 	elog(NOTICE, " LWGEOM_length2d_ellipsoid_linestring found a line (%f)",
-		dist);
-#endif
+
+	 	POSTGIS_DEBUGF(3, " LWGEOM_length2d_ellipsoid_linestring found a line (%f)",
+			dist);
 	}
 
 	pfree_inspected(inspected);
@@ -430,9 +427,7 @@ Datum LWGEOM_length_ellipsoid_linestring(PG_FUNCTION_ARGS)
 	double dist = 0.0;
 	int i;
 
-#ifdef PGIS_DEBUG
-	elog(NOTICE, "in LWGEOM_length_ellipsoid_linestring");
-#endif
+	POSTGIS_DEBUG(2, "in LWGEOM_length_ellipsoid_linestring");
 
 	for (i=0; i<inspected->ngeometries; i++)
 	{
@@ -440,10 +435,9 @@ Datum LWGEOM_length_ellipsoid_linestring(PG_FUNCTION_ARGS)
 		if ( line == NULL ) continue;
 		dist += lwgeom_pointarray_length_ellipse(line->points,
 			sphere);
-#ifdef PGIS_DEBUG
-	elog(NOTICE, " LWGEOM_length_ellipsoid_linestring found a line (%f)",
-		dist);
-#endif
+
+		POSTGIS_DEBUGF(3, " LWGEOM_length_ellipsoid_linestring found a line (%f)",
+			dist);
 	}
 
 	pfree_inspected(inspected);
