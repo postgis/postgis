@@ -303,15 +303,7 @@ LIBS="$LIBS_SAVE"
 dnl
 dnl Allow the user to enable debugging with --enable-debug
 dnl
-dnl Currently 5 levels are defined (each increasing in complexity):
-dnl   - 1: Reserved 
-dnl   - 2: Output function names upon entry (where defined) 
-dnl   - 3: Normal function debugging 
-dnl   - 4: Verbose function debugging 
-dnl   - 5: Memory allocation/deallocation calls
-dnl
-dnl All levels include the output of all preceding levels. We default to level 4, but the
-dnl developer is encouraged to manually alter postgis_config.h as required.
+dnl Currently we default to debug level 4. See DEBUG for more information. 
 dnl
 
 AC_ARG_ENABLE([debug], AC_HELP_STRING([--enable-debug], [Enable verbose debugging messages]), 
