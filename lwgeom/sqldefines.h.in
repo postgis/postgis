@@ -27,6 +27,4 @@
 # define _STRICT STRICT
 # define _SECURITY_DEFINER SECURITY DEFINER
 
-# define HAS_SCHEMAS 1
-
 #endif /* _LWPGIS_DEFINES */
