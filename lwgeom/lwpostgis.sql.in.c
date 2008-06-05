@@ -958,32 +958,32 @@ CREATEFUNCTION LWGEOM_gist_consistent(internal,geometry,int4)
 	LANGUAGE 'C';
 
 CREATEFUNCTION LWGEOM_gist_compress(internal) 
-	RETURNS OPAQUE_TYPE 
+	RETURNS internal 
 	AS 'MODULE_PATHNAME','LWGEOM_gist_compress'
 	LANGUAGE 'C';
 
 CREATEFUNCTION LWGEOM_gist_penalty(internal,internal,internal) 
-	RETURNS OPAQUE_TYPE 
+	RETURNS internal 
 	AS 'MODULE_PATHNAME' ,'LWGEOM_gist_penalty'
 	LANGUAGE 'C';
 
 CREATEFUNCTION LWGEOM_gist_picksplit(internal, internal) 
-	RETURNS OPAQUE_TYPE 
+	RETURNS internal 
 	AS 'MODULE_PATHNAME' ,'LWGEOM_gist_picksplit'
 	LANGUAGE 'C';
 
 CREATEFUNCTION LWGEOM_gist_union(bytea, internal) 
-	RETURNS OPAQUE_TYPE 
+	RETURNS internal 
 	AS 'MODULE_PATHNAME' ,'LWGEOM_gist_union'
 	LANGUAGE 'C';
 
 CREATEFUNCTION LWGEOM_gist_same(box2d, box2d, internal) 
-	RETURNS OPAQUE_TYPE 
+	RETURNS internal 
 	AS 'MODULE_PATHNAME' ,'LWGEOM_gist_same'
 	LANGUAGE 'C';
 
 CREATEFUNCTION LWGEOM_gist_decompress(internal) 
-	RETURNS OPAQUE_TYPE
+	RETURNS internal 
 	AS 'MODULE_PATHNAME' ,'LWGEOM_gist_decompress'
 	LANGUAGE 'C';
 
@@ -997,6 +997,7 @@ CREATEFUNCTION LWGEOM_gist_decompress(internal)
 
 CREATE OPERATOR CLASS gist_geometry_ops
         DEFAULT FOR TYPE geometry USING gist AS
+	STORAGE 	box2d,
         OPERATOR        1        << 	RECHECK,
         OPERATOR        2        &<	RECHECK,
         OPERATOR        3        &&	RECHECK,
@@ -1017,15 +1018,6 @@ CREATE OPERATOR CLASS gist_geometry_ops
         FUNCTION        6        LWGEOM_gist_picksplit (internal, internal),
         FUNCTION        7        LWGEOM_gist_same (box2d, box2d, internal);
 
-UPDATE pg_opclass 
-	SET opckeytype = (SELECT oid FROM pg_type 
-                          WHERE typname = 'box2d' 
-                          AND typnamespace = (SELECT oid FROM pg_namespace 
-                                              WHERE nspname=current_schema())) 
-	WHERE opcname = 'gist_geometry_ops' 
-        AND opcnamespace = (SELECT oid from pg_namespace 
-                            WHERE nspname=current_schema());
-	
 -- TODO: add btree binding...
 
 	
