@@ -1,7 +1,17 @@
+dnl **********************************************************************
+dnl * $Id: ac_proj4_version.m4 2797 2008-05-31 09:56:44Z mcayland $
+dnl *
+dnl * PostGIS - Spatial Types for PostgreSQL
+dnl * http://postgis.refractions.net
+dnl * Copyright 2008 Mark Cave-Ayland
+dnl *
+dnl * This is free software; you can redistribute and/or modify it under
+dnl * the terms of the GNU General Public Licence. See the COPYING file.
+dnl *
+dnl **********************************************************************
+
 dnl
 dnl Return the PROJ.4 version number
-dnl
-dnl Written by Mark Cave-Ayland
 dnl
 
 AC_DEFUN([AC_PROJ_VERSION], [
