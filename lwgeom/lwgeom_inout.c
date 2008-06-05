@@ -15,9 +15,7 @@
 
 #include "fmgr.h"
 #include "utils/elog.h"
-#if POSTGIS_PGSQL_VERSION > 73
 # include "lib/stringinfo.h" /* for binary input */
-#endif
 
 
 #include "liblwgeom.h"
@@ -39,10 +37,8 @@ Datum LWGEOM_to_bytea(PG_FUNCTION_ARGS);
 Datum LWGEOM_from_bytea(PG_FUNCTION_ARGS);
 Datum LWGEOM_asHEXEWKB(PG_FUNCTION_ARGS);
 Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS);
-#if POSTGIS_PGSQL_VERSION > 73
 Datum LWGEOM_recv(PG_FUNCTION_ARGS);
 Datum LWGEOM_send(PG_FUNCTION_ARGS);
-#endif
 Datum BOOL_to_text(PG_FUNCTION_ARGS);
 
 
@@ -516,7 +512,6 @@ Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS)
 }
 
 
-#if POSTGIS_PGSQL_VERSION > 73
 /*
  * This function must advance the StringInfo.cursor pointer
  * and leave it at the end of StringInfo.buf. If it fails
@@ -568,9 +563,6 @@ Datum LWGEOM_send(PG_FUNCTION_ARGS)
 
         PG_RETURN_POINTER(result);
 }
-
-
-#endif /* POSTGIS_PGSQL_VERSION > 73 */
 
 PG_FUNCTION_INFO_V1(LWGEOM_to_bytea);
 Datum LWGEOM_to_bytea(PG_FUNCTION_ARGS)

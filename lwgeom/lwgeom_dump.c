@@ -1,10 +1,5 @@
 #include "../postgis_config.h"
 
-/*
- * This only works for PGSQL > 72 
- */
-#if POSTGIS_PGSQL_VERSION > 72
-
 #include <math.h>
 #include <float.h>
 #include <string.h>
@@ -307,5 +302,3 @@ Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS)
 
 }
 
-
-#endif /* POSTGIS_PGSQL_VERSION > 72 */

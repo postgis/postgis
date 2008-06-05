@@ -16,10 +16,8 @@
 #define _POSTGIS_SQL_SELECT_POSTGIS_VERSION 'SELECT ''@POSTGIS_VERSION@''::text AS version'
 #define _POSTGIS_SQL_SELECT_POSTGIS_BUILD_DATE 'SELECT ''@POSTGIS_BUILD_DATE@''::text AS version'
 
-
 #define CREATEFUNCTION CREATE OR REPLACE FUNCTION
 
-#if POSTGIS_PGSQL_VERSION > 72
 # define _IMMUTABLE_STRICT IMMUTABLE STRICT
 # define _IMMUTABLE IMMUTABLE
 # define _STABLE_STRICT STABLE STRICT
@@ -28,19 +26,7 @@
 # define _VOLATILE VOLATILE
 # define _STRICT STRICT
 # define _SECURITY_DEFINER SECURITY DEFINER
-#else 
-# define _IMMUTABLE_STRICT  with(iscachable,isstrict)
-# define _IMMUTABLE with(iscachable)
-# define _STABLE_STRICT with(isstrict)
-# define _STABLE 
-# define _VOLATILE_STRICT with(isstrict)
-# define _VOLATILE 
-# define _STRICT with(isstrict)
-# define _SECURITY_DEFINER 
-#endif 
 
-#if POSTGIS_PGSQL_VERSION >= 73
 # define HAS_SCHEMAS 1
-#endif
 
 #endif /* _LWPGIS_DEFINES */

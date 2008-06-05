@@ -9,9 +9,8 @@
 #include "postgres.h"
 #include "access/gist.h"
 #include "access/itup.h"
-#if POSTGIS_PGSQL_VERSION > 80
 #include "access/skey.h"
-#endif
+
 #include "fmgr.h"
 #include "utils/elog.h"
 
@@ -759,11 +758,8 @@ Datum LWGEOM_gist_decompress(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_gist_union);
 Datum LWGEOM_gist_union(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_PGSQL_VERSION < 80
-	bytea *entryvec = (bytea *) PG_GETARG_POINTER(0);
-#else
  	GistEntryVector	*entryvec = (GistEntryVector *) PG_GETARG_POINTER(0);
-#endif
+
 	int		   *sizep = (int *) PG_GETARG_POINTER(1);
 	int			numranges,
 				i;
@@ -772,13 +768,9 @@ Datum LWGEOM_gist_union(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(2, "GIST: LWGEOM_gist_union called\n");
 
-#if POSTGIS_PGSQL_VERSION < 80
-	numranges = (VARSIZE(entryvec) - VARHDRSZ) / sizeof(GISTENTRY);
-	cur = (BOX2DFLOAT4 *) DatumGetPointer(((GISTENTRY *) VARDATA(entryvec))[0].key);
-#else
   	numranges = entryvec->n;
 	cur = (BOX2DFLOAT4 *) DatumGetPointer(entryvec->vector[0].key);
-#endif
+
 	pageunion = (BOX2DFLOAT4 *) palloc(sizeof(BOX2DFLOAT4));
 	memcpy((void *) pageunion, (void *) cur, sizeof(BOX2DFLOAT4));
 
@@ -787,11 +779,7 @@ Datum LWGEOM_gist_union(PG_FUNCTION_ARGS)
 
 	for (i = 1; i < numranges; i++)
 	{
-#if POSTGIS_PGSQL_VERSION < 80
-		cur = (BOX2DFLOAT4*) DatumGetPointer(((GISTENTRY *) VARDATA(entryvec))[i].key);
-#else
 		cur = (BOX2DFLOAT4*) DatumGetPointer(entryvec->vector[i].key);
-#endif
 
 		if (pageunion->xmax < cur->xmax)
 			pageunion->xmax = cur->xmax;
@@ -963,11 +951,8 @@ Datum LWGEOM_gist_same(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_gist_picksplit);
 Datum LWGEOM_gist_picksplit(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_PGSQL_VERSION < 80
-	bytea *entryvec = (bytea *) PG_GETARG_POINTER(0);
-#else
   	GistEntryVector	*entryvec = (GistEntryVector *) PG_GETARG_POINTER(0);
-#endif
+
 	GIST_SPLITVEC *v = (GIST_SPLITVEC *) PG_GETARG_POINTER(1);
 	OffsetNumber i;
 	OffsetNumber *listL, *listR, *listB, *listT;
@@ -984,13 +969,8 @@ Datum LWGEOM_gist_picksplit(PG_FUNCTION_ARGS)
 
 	posL = posR = posB = posT = 0;
 
-#if POSTGIS_PGSQL_VERSION < 80
-	maxoff = ((VARSIZE(entryvec) - VARHDRSZ) / sizeof(GISTENTRY)) - 1;
-	cur = (BOX2DFLOAT4*) DatumGetPointer(((GISTENTRY *) VARDATA(entryvec))[FirstOffsetNumber].key);
-#else
   	maxoff = entryvec->n - 1;
   	cur = (BOX2DFLOAT4*) DatumGetPointer(entryvec->vector[FirstOffsetNumber].key);
-#endif
 
 	memcpy((void *) &pageunion, (void *) cur, sizeof(BOX2DFLOAT4));
 
@@ -1000,11 +980,7 @@ Datum LWGEOM_gist_picksplit(PG_FUNCTION_ARGS)
 	/* find MBR */
 	for (i = OffsetNumberNext(FirstOffsetNumber); i <= maxoff; i = OffsetNumberNext(i))
 	{
-#if POSTGIS_PGSQL_VERSION < 80
-		cur = (BOX2DFLOAT4*) DatumGetPointer(((GISTENTRY *) VARDATA(entryvec))[i].key);
-#else
   		cur = (BOX2DFLOAT4 *) DatumGetPointer(entryvec->vector[i].key);
-#endif
 
 		if ( allisequal == true &&  (
 				pageunion.xmax != cur->xmax ||
@@ -1036,11 +1012,7 @@ Datum LWGEOM_gist_picksplit(PG_FUNCTION_ARGS)
 	{
 		POSTGIS_DEBUG(4, " AllIsEqual!");
 
-#if POSTGIS_PGSQL_VERSION < 80
-		cur = (BOX2DFLOAT4*) DatumGetPointer(((GISTENTRY *) VARDATA(entryvec))[OffsetNumberNext(FirstOffsetNumber)].key);
-#else
   		cur = (BOX2DFLOAT4*) DatumGetPointer(entryvec->vector[OffsetNumberNext(FirstOffsetNumber)].key);
-#endif
 
 
 		if (memcmp((void *) cur, (void *) &pageunion, sizeof(BOX2DFLOAT4)) == 0)
@@ -1092,11 +1064,8 @@ Datum LWGEOM_gist_picksplit(PG_FUNCTION_ARGS)
 
 	for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i))
 	{
-#if POSTGIS_PGSQL_VERSION < 80
-		cur = (BOX2DFLOAT4*) DatumGetPointer(((GISTENTRY *) VARDATA(entryvec))[i].key);
-#else
   		cur = (BOX2DFLOAT4*) DatumGetPointer(entryvec->vector[i].key);
-#endif
+
 		if (cur->xmin - pageunion.xmin < pageunion.xmax - cur->xmax)
 			ADDLIST(listL, unionL, posL,i);
 		else
@@ -1119,11 +1088,7 @@ Datum LWGEOM_gist_picksplit(PG_FUNCTION_ARGS)
 		KBsort *arr = (KBsort*)palloc( sizeof(KBsort) * maxoff );
 		posL = posR = posB = posT = 0;
 		for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i)) {
-#if POSTGIS_PGSQL_VERSION < 80
-			arr[i-1].key = (BOX2DFLOAT4*) DatumGetPointer(((GISTENTRY *) VARDATA(entryvec))[i].key);
-#else
   			arr[i-1].key = (BOX2DFLOAT4*) DatumGetPointer(entryvec->vector[i].key);
-#endif
 			arr[i-1].pos = i;
 		}
 		qsort( arr, maxoff, sizeof(KBsort), compare_KB );
