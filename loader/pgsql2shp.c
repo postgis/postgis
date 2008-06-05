@@ -35,7 +35,6 @@ static char rcsid[] =
 #include "libpq-fe.h"
 #include "shapefil.h"
 #include "getopt.h"
-#include "compat.h"
 #include <sys/types.h> // for getpid()
 #include <unistd.h> // for getpid()
 
