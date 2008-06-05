@@ -51,7 +51,7 @@
 -- PostGIS equivalent function: GeometryFromText(text)
 -- Note: Defaults to an SRID=-1, not 0 as per SQL/MM specs.
 CREATEFUNCTION ST_WKTToSQL(text)
-	RETURNS geometry AS 'SELECT geometryfromtext($1)'
+	RETURNS geometry AS $$ SELECT geometryfromtext($1) $$
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- ST_GeomFromText(text, int4) - already defined
@@ -71,7 +71,7 @@ CREATEFUNCTION ST_WKTToSQL(text)
 -- Note: Defaults to an SRID=-1, not 0 as per SQL/MM specs.
 CREATEFUNCTION ST_WKBToSQL(bytea)
 	RETURNS geometry
-	AS 'SELECT GeomFromWKB($1)'
+	AS $$ SELECT GeomFromWKB($1) $$
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- ST_GeomFromWKB(bytea, int) - already defined
@@ -149,15 +149,15 @@ CREATEFUNCTION ST_CoordDim(geometry)
 -- PostGIS equivalent function: ~= 
 CREATEFUNCTION ST_OrderingEquals(geometry, geometry)
     RETURNS boolean
-    AS '
+    AS $$ 
     SELECT $1 && $2 AND $1 ~= $2
-	'
+	$$	
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- PostGIS equivalent function: zmflag(geometry)
 CREATEFUNCTION SE_Is3D(geometry)
     RETURNS boolean
-    AS '
+    AS $$ 
     SELECT CASE ST_zmflag($1)
                WHEN 0 THEN false
                WHEN 1 THEN false
@@ -165,13 +165,13 @@ CREATEFUNCTION SE_Is3D(geometry)
                WHEN 3 THEN true
                ELSE false
            END
-	'
+	$$	
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- PostGIS equivalent function: zmflag(geometry)
 CREATEFUNCTION SE_IsMeasured(geometry)
     RETURNS boolean
-    AS '
+    AS $$ 
     SELECT CASE ST_zmflag($1)
                WHEN 0 THEN false
                WHEN 1 THEN true
@@ -179,7 +179,7 @@ CREATEFUNCTION SE_IsMeasured(geometry)
                WHEN 3 THEN true
                ELSE false
            END
-	'
+	$$	
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 
@@ -241,9 +241,9 @@ CREATEFUNCTION SE_M(geometry)
 -- PostGIS equivalent function: MakePolygon(geometry)
 CREATEFUNCTION ST_Polygon(geometry, int)
 	RETURNS geometry
-	AS '
+	AS $$ 
 	SELECT setSRID(makepolygon($1), $2)
-	'
+	$$	
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- ST_ExteriorRing(geometry) - already defined.
@@ -290,9 +290,9 @@ CREATEFUNCTION ST_Polygon(geometry, int)
 -- PostGIS equivalent function: none
 CREATEFUNCTION SE_EnvelopesIntersect(geometry,geometry)
     RETURNS boolean
-	AS '
+	AS $$ 
 	SELECT $1 && $2
-	'
+	$$	
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -------------------------------------------------------------------------------
@@ -315,7 +315,7 @@ CREATEFUNCTION SE_EnvelopesIntersect(geometry,geometry)
 -- PostGIS equivalent function: locate_along_measure(geometry, float8)
 CREATEFUNCTION SE_LocateAlong(geometry, float8)
 	RETURNS geometry
-	AS 'SELECT locate_between_measures($1, $2, $2)'
+	AS $$ SELECT locate_between_measures($1, $2, $2) $$
 	LANGUAGE 'sql' _IMMUTABLE_STRICT;
 
 -- PostGIS equivalent function: locate_between_measures(geometry, float8, float8)

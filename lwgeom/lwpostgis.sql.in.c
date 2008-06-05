@@ -2209,7 +2209,7 @@ CREATEFUNCTION ST_estimated_extent(text,text) RETURNS box2d AS
 -----------------------------------------------------------------------
 -- Deprecation in 1.2.3
 CREATEFUNCTION find_extent(text,text,text) RETURNS box2d AS
-'
+$$
 DECLARE
 	schemaname alias for $1;
 	tablename alias for $2;
@@ -2217,16 +2217,16 @@ DECLARE
 	myrec RECORD;
 
 BEGIN
-	FOR myrec IN EXECUTE ''SELECT extent("''||columnname||''") FROM "''||schemaname||''"."''||tablename||''"'' LOOP
+	FOR myrec IN EXECUTE 'SELECT extent("' || columnname || '") FROM "' || schemaname || '"."' || tablename || '"' LOOP
 		return myrec.extent;
 	END LOOP; 
 END;
-'
+$$
 LANGUAGE 'plpgsql' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
 -- Availability: 1.2.2
 CREATEFUNCTION ST_find_extent(text,text,text) RETURNS box2d AS
-'
+$$
 DECLARE
 	schemaname alias for $1;
 	tablename alias for $2;
@@ -2234,11 +2234,11 @@ DECLARE
 	myrec RECORD;
 
 BEGIN
-	FOR myrec IN EXECUTE ''SELECT extent("''||columnname||''") FROM "''||schemaname||''"."''||tablename||''"'' LOOP
+	FOR myrec IN EXECUTE 'SELECT extent("' || columnname || '") FROM "' || schemaname || '"."' || tablename || '"' LOOP
 		return myrec.extent;
 	END LOOP; 
 END;
-'
+$$
 LANGUAGE 'plpgsql' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
 
@@ -2247,34 +2247,34 @@ LANGUAGE 'plpgsql' _IMMUTABLE_STRICT; -- WITH (isstrict);
 -----------------------------------------------------------------------
 -- Deprecation in 1.2.3
 CREATEFUNCTION find_extent(text,text) RETURNS box2d AS
-'
+$$
 DECLARE
 	tablename alias for $1;
 	columnname alias for $2;
 	myrec RECORD;
 
 BEGIN
-	FOR myrec IN EXECUTE ''SELECT extent("''||columnname||''") FROM "''||tablename||''"'' LOOP
+	FOR myrec IN EXECUTE 'SELECT extent("' || columnname || '") FROM "' || tablename || '"' LOOP
 		return myrec.extent;
 	END LOOP; 
 END;
-'
+$$
 LANGUAGE 'plpgsql' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
 -- Availability: 1.2.2
 CREATEFUNCTION ST_find_extent(text,text) RETURNS box2d AS
-'
+$$
 DECLARE
 	tablename alias for $1;
 	columnname alias for $2;
 	myrec RECORD;
 
 BEGIN
-	FOR myrec IN EXECUTE ''SELECT extent("''||columnname||''") FROM "''||tablename||''"'' LOOP
+	FOR myrec IN EXECUTE 'SELECT extent("' || columnname || '") FROM "' || tablename || '"' LOOP
 		return myrec.extent;
 	END LOOP; 
 END;
-'
+$$
 LANGUAGE 'plpgsql' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
 -------------------------------------------------------------------
@@ -2317,9 +2317,9 @@ CREATE TABLE geometry_columns (
 -----------------------------------------------------------------------
 CREATEFUNCTION rename_geometry_table_constraints() RETURNS text
 AS 
-'
-SELECT ''rename_geometry_table_constraint() is obsoleted''::text
-'
+$$
+SELECT 'rename_geometry_table_constraint() is obsoleted'::text
+$$
 LANGUAGE 'SQL' _IMMUTABLE;
 
 -----------------------------------------------------------------------
@@ -2340,7 +2340,7 @@ LANGUAGE 'SQL' _IMMUTABLE;
 -----------------------------------------------------------------------
 CREATEFUNCTION fix_geometry_columns() RETURNS text
 AS 
-'
+$$
 DECLARE
 	mislinked record;
 	result text;
@@ -2358,7 +2358,7 @@ BEGIN
 		FROM pg_namespace n, pg_class c, pg_attribute a,
 			pg_constraint sridcheck, pg_constraint typecheck
                 WHERE ( f_table_schema is NULL
-		OR f_table_schema = ''''
+		OR f_table_schema = ''
                 OR f_table_schema NOT IN (
                         SELECT nspname::varchar
                         FROM pg_namespace nn, pg_class cc, pg_attribute aa
@@ -2372,13 +2372,13 @@ BEGIN
                 AND f_geometry_column::name = a.attname
 
                 AND sridcheck.conrelid = c.oid
-		AND sridcheck.consrc LIKE ''(srid(% = %)''
-                AND sridcheck.consrc ~ textcat('' = '', srid::text)
+		AND sridcheck.consrc LIKE '(srid(% = %)'
+                AND sridcheck.consrc ~ textcat(' = ', srid::text)
 
                 AND typecheck.conrelid = c.oid
 		AND typecheck.consrc LIKE
-	''((geometrytype(%) = ''''%''''::text) OR (% IS NULL))''
-                AND typecheck.consrc ~ textcat('' = '''''', type::text)
+		'((geometrytype(%) = ''%''::text) OR (% IS NULL))'
+                AND typecheck.consrc ~ textcat(' = ''', type::text)
 
                 AND NOT EXISTS (
                         SELECT oid FROM geometry_columns gc
@@ -2390,10 +2390,10 @@ BEGIN
 	GET DIAGNOSTICS foundschema = ROW_COUNT;
 
 	-- no linkage to system table needed
-	return ''fixed:''||foundschema::text;
+	return 'fixed:'||foundschema::text;
 
 END;
-'
+$$
 LANGUAGE 'plpgsql' _VOLATILE;
 
 -----------------------------------------------------------------------
@@ -2408,7 +2408,7 @@ LANGUAGE 'plpgsql' _VOLATILE;
 -- it and probe.
 -----------------------------------------------------------------------
 CREATEFUNCTION probe_geometry_columns() RETURNS text AS
-'
+$$
 DECLARE
 	inserted integer;
 	oldcount integer;
@@ -2423,46 +2423,46 @@ BEGIN
 			pg_namespace n,
 			pg_constraint sridcheck, pg_constraint typecheck
 
-		WHERE t.typname = ''geometry''
+		WHERE t.typname = 'geometry'
 		AND a.atttypid = t.oid
 		AND a.attrelid = c.oid
 		AND c.relnamespace = n.oid
 		AND sridcheck.connamespace = n.oid
 		AND typecheck.connamespace = n.oid
 		AND sridcheck.conrelid = c.oid
-		AND sridcheck.consrc LIKE ''(srid(''||a.attname||'') = %)''
+		AND sridcheck.consrc LIKE '(srid('||a.attname||') = %)'
 		AND typecheck.conrelid = c.oid
 		AND typecheck.consrc LIKE
-	''((geometrytype(''||a.attname||'') = ''''%''''::text) OR (% IS NULL))''
+		'((geometrytype('||a.attname||') = ''%''::text) OR (% IS NULL))'
 		;
 
 	INSERT INTO geometry_columns SELECT
-		''''::varchar as f_table_catalogue,
+		''::varchar as f_table_catalogue,
 		n.nspname::varchar as f_table_schema,
 		c.relname::varchar as f_table_name,
 		a.attname::varchar as f_geometry_column,
 		2 as coord_dimension,
-		trim(both  '' =)'' from substr(sridcheck.consrc,
-			strpos(sridcheck.consrc, ''='')))::integer as srid,
-		trim(both '' =)'''''' from substr(typecheck.consrc, 
-			strpos(typecheck.consrc, ''=''),
-			strpos(typecheck.consrc, ''::'')-
-			strpos(typecheck.consrc, ''='')
+		trim(both  ' =)' from substr(sridcheck.consrc,
+			strpos(sridcheck.consrc, '=')))::integer as srid,
+		trim(both ' =)''' from substr(typecheck.consrc, 
+			strpos(typecheck.consrc, '='),
+			strpos(typecheck.consrc, '::')-
+			strpos(typecheck.consrc, '=')
 			))::varchar as type
 		FROM pg_class c, pg_attribute a, pg_type t, 
 			pg_namespace n,
 			pg_constraint sridcheck, pg_constraint typecheck
-		WHERE t.typname = ''geometry''
+		WHERE t.typname = 'geometry'
 		AND a.atttypid = t.oid
 		AND a.attrelid = c.oid
 		AND c.relnamespace = n.oid
 		AND sridcheck.connamespace = n.oid
 		AND typecheck.connamespace = n.oid
 		AND sridcheck.conrelid = c.oid
-		AND sridcheck.consrc LIKE ''(srid(''||a.attname||'') = %)''
+		AND sridcheck.consrc LIKE '(srid('||a.attname||') = %)'
 		AND typecheck.conrelid = c.oid
 		AND typecheck.consrc LIKE
-	''((geometrytype(''||a.attname||'') = ''''%''''::text) OR (% IS NULL))''
+		'((geometrytype('||a.attname||') = ''%''::text) OR (% IS NULL))'
 
                 AND NOT EXISTS (
                         SELECT oid FROM geometry_columns gc
@@ -2479,13 +2479,13 @@ BEGIN
 		stale = 0;
 	END IF;
 
-        RETURN ''probed:''||probed::text||
-		'' inserted:''||inserted::text||
-		'' conflicts:''||(probed-inserted)::text||
-		'' stale:''||stale::text;
+        RETURN 'probed:'||probed::text||
+		' inserted:'||inserted::text||
+		' conflicts:'||(probed-inserted)::text||
+		' stale:'||stale::text;
 END
 
-'
+$$
 LANGUAGE 'plpgsql' _VOLATILE;
 
 -----------------------------------------------------------------------
@@ -2508,7 +2508,7 @@ LANGUAGE 'plpgsql' _VOLATILE;
 CREATEFUNCTION AddGeometryColumn(varchar,varchar,varchar,varchar,integer,varchar,integer)
 	RETURNS text
 	AS 
-'
+$$
 DECLARE
 	catalog_name alias for $1;
 	schema_name alias for $2;
@@ -2523,33 +2523,33 @@ DECLARE
 
 BEGIN
 
-	IF ( not ( (new_type =''GEOMETRY'') or
-		   (new_type =''GEOMETRYCOLLECTION'') or
-		   (new_type =''POINT'') or 
-		   (new_type =''MULTIPOINT'') or
-		   (new_type =''POLYGON'') or
-		   (new_type =''MULTIPOLYGON'') or
-		   (new_type =''LINESTRING'') or
-		   (new_type =''MULTILINESTRING'') or
-		   (new_type =''GEOMETRYCOLLECTIONM'') or
-		   (new_type =''POINTM'') or 
-		   (new_type =''MULTIPOINTM'') or
-		   (new_type =''POLYGONM'') or
-		   (new_type =''MULTIPOLYGONM'') or
-		   (new_type =''LINESTRINGM'') or
-		   (new_type =''MULTILINESTRINGM'') or
-                   (new_type = ''CIRCULARSTRING'') or
-                   (new_type = ''CIRCULARSTRINGM'') or
-                   (new_type = ''COMPOUNDCURVE'') or
-                   (new_type = ''COMPOUNDCURVEM'') or
-                   (new_type = ''CURVEPOLYGON'') or
-                   (new_type = ''CURVEPOLYGONM'') or
-                   (new_type = ''MULTICURVE'') or
-                   (new_type = ''MULTICURVEM'') or
-                   (new_type = ''MULTISURFACE'') or
-                   (new_type = ''MULTISURFACEM'')) )
+	IF ( not ( (new_type ='GEOMETRY') or
+		   (new_type ='GEOMETRYCOLLECTION') or
+		   (new_type ='POINT') or 
+		   (new_type ='MULTIPOINT') or
+		   (new_type ='POLYGON') or
+		   (new_type ='MULTIPOLYGON') or
+		   (new_type ='LINESTRING') or
+		   (new_type ='MULTILINESTRING') or
+		   (new_type ='GEOMETRYCOLLECTIONM') or
+		   (new_type ='POINTM') or 
+		   (new_type ='MULTIPOINTM') or
+		   (new_type ='POLYGONM') or
+		   (new_type ='MULTIPOLYGONM') or
+		   (new_type ='LINESTRINGM') or
+		   (new_type ='MULTILINESTRINGM') or
+                   (new_type = 'CIRCULARSTRING') or
+                   (new_type = 'CIRCULARSTRINGM') or
+                   (new_type = 'COMPOUNDCURVE') or
+                   (new_type = 'COMPOUNDCURVEM') or
+                   (new_type = 'CURVEPOLYGON') or
+                   (new_type = 'CURVEPOLYGONM') or
+                   (new_type = 'MULTICURVE') or
+                   (new_type = 'MULTICURVEM') or
+                   (new_type = 'MULTISURFACE') or
+                   (new_type = 'MULTISURFACEM')) )
 	THEN
-		RAISE EXCEPTION ''Invalid type name - valid ones are: 
+		RAISE EXCEPTION 'Invalid type name - valid ones are: 
 			GEOMETRY, GEOMETRYCOLLECTION, POINT, 
 			MULTIPOINT, POLYGON, MULTIPOLYGON, 
 			LINESTRING, MULTILINESTRING,
@@ -2559,29 +2559,29 @@ BEGIN
 			MULTIPOINTM, POLYGONM, MULTIPOLYGONM, 
 			LINESTRINGM, MULTILINESTRINGM 
                         CIRCULARSTRINGM, COMPOUNDCURVEM,
-                        CURVEPOLYGONM, MULTICURVEM or MULTISURFACEM'';
-		return ''fail'';
+                        CURVEPOLYGONM, MULTICURVEM or MULTISURFACEM';
+		return 'fail';
 	END IF;
 
 	IF ( (new_dim >4) or (new_dim <0) ) THEN
-		RAISE EXCEPTION ''invalid dimension'';
-		return ''fail'';
+		RAISE EXCEPTION 'invalid dimension';
+		return 'fail';
 	END IF;
 
-	IF ( (new_type LIKE ''%M'') and (new_dim!=3) ) THEN
+	IF ( (new_type LIKE '%M') and (new_dim!=3) ) THEN
 
-		RAISE EXCEPTION ''TypeM needs 3 dimensions'';
-		return ''fail'';
+		RAISE EXCEPTION 'TypeM needs 3 dimensions';
+		return 'fail';
 	END IF;
 
-	IF ( schema_name != '''' ) THEN
-		schema_ok = ''f'';
+	IF ( schema_name != '' ) THEN
+		schema_ok = 'f';
 		FOR rec IN SELECT nspname FROM pg_namespace WHERE text(nspname) = schema_name LOOP
-			schema_ok := ''t'';
+			schema_ok := 't';
 		END LOOP;
 
-		if ( schema_ok <> ''t'' ) THEN
-			RAISE NOTICE ''Invalid schema name - using current_schema()'';
+		if ( schema_ok <> 't' ) THEN
+			RAISE NOTICE 'Invalid schema name - using current_schema()';
 			SELECT current_schema() into real_schema;
 		ELSE
 			real_schema = schema_name;
@@ -2594,67 +2594,67 @@ BEGIN
 
 	-- Add geometry column
 
-	EXECUTE ''ALTER TABLE '' ||
-		quote_ident(real_schema) || ''.'' || quote_ident(table_name)
-		|| '' ADD COLUMN '' || quote_ident(column_name) || 
-		'' geometry '';
+	EXECUTE 'ALTER TABLE ' ||
+		quote_ident(real_schema) || '.' || quote_ident(table_name)
+		|| ' ADD COLUMN ' || quote_ident(column_name) || 
+		' geometry ';
 
 
 	-- Delete stale record in geometry_column (if any)
 
-	EXECUTE ''DELETE FROM geometry_columns WHERE
-		f_table_catalog = '' || quote_literal('''') || 
-		'' AND f_table_schema = '' ||
+	EXECUTE 'DELETE FROM geometry_columns WHERE
+		f_table_catalog = ' || quote_literal('') || 
+		' AND f_table_schema = ' ||
 		quote_literal(real_schema) || 
-		'' AND f_table_name = '' || quote_literal(table_name) ||
-		'' AND f_geometry_column = '' || quote_literal(column_name);
+		' AND f_table_name = ' || quote_literal(table_name) ||
+		' AND f_geometry_column = ' || quote_literal(column_name);
 
 
 	-- Add record in geometry_column 
 
-	EXECUTE ''INSERT INTO geometry_columns VALUES ('' ||
-		quote_literal('''') || '','' ||
-		quote_literal(real_schema) || '','' ||
-		quote_literal(table_name) || '','' ||
-		quote_literal(column_name) || '','' ||
-		new_dim::text || '','' || new_srid::text || '','' ||
-		quote_literal(new_type) || '')'';
+	EXECUTE 'INSERT INTO geometry_columns VALUES (' ||
+		quote_literal('') || ',' ||
+		quote_literal(real_schema) || ',' ||
+		quote_literal(table_name) || ',' ||
+		quote_literal(column_name) || ',' ||
+		new_dim::text || ',' || new_srid::text || ',' ||
+		quote_literal(new_type) || ')';
 
 	-- Add table checks
 
-	EXECUTE ''ALTER TABLE '' || 
-		quote_ident(real_schema) || ''.'' || quote_ident(table_name)
-		|| '' ADD CONSTRAINT '' 
-		|| quote_ident(''enforce_srid_'' || column_name)
-		|| '' CHECK (SRID('' || quote_ident(column_name) ||
-		'') = '' || new_srid::text || '')'' ;
+	EXECUTE 'ALTER TABLE ' || 
+		quote_ident(real_schema) || '.' || quote_ident(table_name)
+		|| ' ADD CONSTRAINT ' 
+		|| quote_ident('enforce_srid_' || column_name)
+		|| ' CHECK (SRID(' || quote_ident(column_name) ||
+		') = ' || new_srid::text || ')' ;
 
-	EXECUTE ''ALTER TABLE '' || 
-		quote_ident(real_schema) || ''.'' || quote_ident(table_name)
-		|| '' ADD CONSTRAINT ''
-		|| quote_ident(''enforce_dims_'' || column_name)
-		|| '' CHECK (ndims('' || quote_ident(column_name) ||
-		'') = '' || new_dim::text || '')'' ;
+	EXECUTE 'ALTER TABLE ' || 
+		quote_ident(real_schema) || '.' || quote_ident(table_name)
+		|| ' ADD CONSTRAINT '
+		|| quote_ident('enforce_dims_' || column_name)
+		|| ' CHECK (ndims(' || quote_ident(column_name) ||
+		') = ' || new_dim::text || ')' ;
 
-	IF (not(new_type = ''GEOMETRY'')) THEN
-		EXECUTE ''ALTER TABLE '' || 
-		quote_ident(real_schema) || ''.'' || quote_ident(table_name)
-		|| '' ADD CONSTRAINT ''
-		|| quote_ident(''enforce_geotype_'' || column_name)
-		|| '' CHECK (geometrytype('' ||
-		quote_ident(column_name) || '')='' ||
-		quote_literal(new_type) || '' OR ('' ||
-		quote_ident(column_name) || '') is null)'';
+	IF (not(new_type = 'GEOMETRY')) THEN
+		EXECUTE 'ALTER TABLE ' || 
+		quote_ident(real_schema) || '.' || quote_ident(table_name)
+		|| ' ADD CONSTRAINT '
+		|| quote_ident('enforce_geotype_' || column_name)
+		|| ' CHECK (geometrytype(' ||
+		quote_ident(column_name) || ')=' ||
+		quote_literal(new_type) || ' OR (' ||
+		quote_ident(column_name) || ') is null)';
 	END IF;
 
 	return 
-		real_schema || ''.'' || 
-		table_name || ''.'' || column_name ||
-		'' SRID:'' || new_srid::text ||
-		'' TYPE:'' || new_type || 
-		'' DIMS:'' || new_dim::text || chr(10) || '' ''; 
+		real_schema || '.' || 
+		table_name || '.' || column_name ||
+		' SRID:' || new_srid::text ||
+		' TYPE:' || new_type || 
+		' DIMS:' || new_dim::text || chr(10) || ' '; 
 END;
-'
+$$
 LANGUAGE 'plpgsql' _VOLATILE_STRICT; -- WITH (isstrict);
 
 ----------------------------------------------------------------------------
@@ -2665,14 +2665,14 @@ LANGUAGE 'plpgsql' _VOLATILE_STRICT; -- WITH (isstrict);
 -- when catalogue is undefined
 --
 ----------------------------------------------------------------------------
-CREATEFUNCTION AddGeometryColumn(varchar,varchar,varchar,integer,varchar,integer) RETURNS text AS '
+CREATEFUNCTION AddGeometryColumn(varchar,varchar,varchar,integer,varchar,integer) RETURNS text AS $$ 
 DECLARE
 	ret  text;
 BEGIN
-	SELECT AddGeometryColumn('''',$1,$2,$3,$4,$5,$6) into ret;
+	SELECT AddGeometryColumn('',$1,$2,$3,$4,$5,$6) into ret;
 	RETURN ret;
 END;
-'
+$$
 LANGUAGE 'plpgsql' _STABLE_STRICT; -- WITH (isstrict);
 
 ----------------------------------------------------------------------------
@@ -2683,14 +2683,14 @@ LANGUAGE 'plpgsql' _STABLE_STRICT; -- WITH (isstrict);
 -- when catalogue and schema are undefined
 --
 ----------------------------------------------------------------------------
-CREATEFUNCTION AddGeometryColumn(varchar,varchar,integer,varchar,integer) RETURNS text AS '
+CREATEFUNCTION AddGeometryColumn(varchar,varchar,integer,varchar,integer) RETURNS text AS $$ 
 DECLARE
 	ret  text;
 BEGIN
-	SELECT AddGeometryColumn('''','''',$1,$2,$3,$4,$5) into ret;
+	SELECT AddGeometryColumn('','',$1,$2,$3,$4,$5) into ret;
 	RETURN ret;
 END;
-'
+$$
 LANGUAGE 'plpgsql' _VOLATILE_STRICT; -- WITH (isstrict);
 
 -----------------------------------------------------------------------
@@ -2706,7 +2706,7 @@ LANGUAGE 'plpgsql' _VOLATILE_STRICT; -- WITH (isstrict);
 CREATEFUNCTION DropGeometryColumn(varchar, varchar,varchar,varchar)
 	RETURNS text
 	AS 
-'
+$$
 DECLARE
 	catalog_name alias for $1; 
 	schema_name alias for $2;
@@ -2720,15 +2720,15 @@ BEGIN
 
 
 	-- Find, check or fix schema_name
-	IF ( schema_name != '''' ) THEN
-		okay = ''f'';
+	IF ( schema_name != '' ) THEN
+		okay = 'f';
 
 		FOR myrec IN SELECT nspname FROM pg_namespace WHERE text(nspname) = schema_name LOOP
-			okay := ''t'';
+			okay := 't';
 		END LOOP;
 
-		IF ( okay <> ''t'' ) THEN
-			RAISE NOTICE ''Invalid schema name - using current_schema()'';
+		IF ( okay <> 't' ) THEN
+			RAISE NOTICE 'Invalid schema name - using current_schema()';
 			SELECT current_schema() into real_schema;
 		ELSE
 			real_schema = schema_name;
@@ -2738,30 +2738,30 @@ BEGIN
 	END IF;
 
  	-- Find out if the column is in the geometry_columns table
-	okay = ''f'';
+	okay = 'f';
 	FOR myrec IN SELECT * from geometry_columns where f_table_schema = text(real_schema) and f_table_name = table_name and f_geometry_column = column_name LOOP
-		okay := ''t'';
+		okay := 't';
 	END LOOP; 
-	IF (okay <> ''t'') THEN 
-		RAISE EXCEPTION ''column not found in geometry_columns table'';
-		RETURN ''f'';
+	IF (okay <> 't') THEN 
+		RAISE EXCEPTION 'column not found in geometry_columns table';
+		RETURN 'f';
 	END IF;
 
 	-- Remove ref from geometry_columns table
-	EXECUTE ''delete from geometry_columns where f_table_schema = '' ||
-		quote_literal(real_schema) || '' and f_table_name = '' ||
-		quote_literal(table_name)  || '' and f_geometry_column = '' ||
+	EXECUTE 'delete from geometry_columns where f_table_schema = ' ||
+		quote_literal(real_schema) || ' and f_table_name = ' ||
+		quote_literal(table_name)  || ' and f_geometry_column = ' ||
 		quote_literal(column_name);
 	
 	-- Remove table column
-	EXECUTE ''ALTER TABLE '' || quote_ident(real_schema) || ''.'' ||
-		quote_ident(table_name) || '' DROP COLUMN '' ||
+	EXECUTE 'ALTER TABLE ' || quote_ident(real_schema) || '.' ||
+		quote_ident(table_name) || ' DROP COLUMN ' ||
 		quote_ident(column_name);
 
-	RETURN real_schema || ''.'' || table_name || ''.'' || column_name ||'' effectively removed.'';
+	RETURN real_schema || '.' || table_name || '.' || column_name ||' effectively removed.';
 	
 END;
-'
+$$
 LANGUAGE 'plpgsql' _VOLATILE_STRICT; -- WITH (isstrict);
 
 -----------------------------------------------------------------------
@@ -2776,14 +2776,14 @@ LANGUAGE 'plpgsql' _VOLATILE_STRICT; -- WITH (isstrict);
 CREATEFUNCTION DropGeometryColumn(varchar,varchar,varchar)
 	RETURNS text
 	AS 
-'
+$$
 DECLARE
 	ret text;
 BEGIN
-	SELECT DropGeometryColumn('''',$1,$2,$3) into ret;
+	SELECT DropGeometryColumn('',$1,$2,$3) into ret;
 	RETURN ret;
 END;
-'
+$$
 LANGUAGE 'plpgsql' _VOLATILE_STRICT; -- WITH (isstrict);
 
 -----------------------------------------------------------------------
@@ -2798,14 +2798,14 @@ LANGUAGE 'plpgsql' _VOLATILE_STRICT; -- WITH (isstrict);
 CREATEFUNCTION DropGeometryColumn(varchar,varchar)
 	RETURNS text
 	AS 
-'
+$$
 DECLARE
 	ret text;
 BEGIN
-	SELECT DropGeometryColumn('''','''',$1,$2) into ret;
+	SELECT DropGeometryColumn('','',$1,$2) into ret;
 	RETURN ret;
 END;
-'
+$$
 LANGUAGE 'plpgsql' _VOLATILE_STRICT; -- WITH (isstrict);
 
 -----------------------------------------------------------------------
@@ -2819,7 +2819,7 @@ LANGUAGE 'plpgsql' _VOLATILE_STRICT; -- WITH (isstrict);
 CREATEFUNCTION DropGeometryTable(varchar, varchar,varchar)
 	RETURNS text
 	AS 
-'
+$$
 DECLARE
 	catalog_name alias for $1; 
 	schema_name alias for $2;
@@ -2828,29 +2828,29 @@ DECLARE
 
 BEGIN
 
-	IF ( schema_name = '''' ) THEN
+	IF ( schema_name = '' ) THEN
 		SELECT current_schema() into real_schema;
 	ELSE
 		real_schema = schema_name;
 	END IF;
 
 	-- Remove refs from geometry_columns table
-	EXECUTE ''DELETE FROM geometry_columns WHERE '' ||
-		''f_table_schema = '' || quote_literal(real_schema) ||
-		'' AND '' ||
-		'' f_table_name = '' || quote_literal(table_name);
+	EXECUTE 'DELETE FROM geometry_columns WHERE ' ||
+		'f_table_schema = ' || quote_literal(real_schema) ||
+		' AND ' ||
+		' f_table_name = ' || quote_literal(table_name);
 	
 	-- Remove table 
-	EXECUTE ''DROP TABLE ''
-		|| quote_ident(real_schema) || ''.'' ||
+	EXECUTE 'DROP TABLE '
+		|| quote_ident(real_schema) || '.' ||
 		quote_ident(table_name);
 
 	RETURN
-		real_schema || ''.'' ||
-		table_name ||'' dropped.'';
+		real_schema || '.' ||
+		table_name ||' dropped.';
 	
 END;
-'
+$$
 LANGUAGE 'plpgsql' _VOLATILE_STRICT; -- WITH (isstrict);
 
 -----------------------------------------------------------------------
@@ -2862,7 +2862,7 @@ LANGUAGE 'plpgsql' _VOLATILE_STRICT; -- WITH (isstrict);
 --
 -----------------------------------------------------------------------
 CREATEFUNCTION DropGeometryTable(varchar,varchar) RETURNS text AS 
-'SELECT DropGeometryTable('''',$1,$2)'
+$$ SELECT DropGeometryTable('',$1,$2) $$ 
 LANGUAGE 'sql' WITH (isstrict);
 
 -----------------------------------------------------------------------
@@ -2875,7 +2875,7 @@ LANGUAGE 'sql' WITH (isstrict);
 --
 -----------------------------------------------------------------------
 CREATEFUNCTION DropGeometryTable(varchar) RETURNS text AS 
-'SELECT DropGeometryTable('''','''',$1)'
+$$ SELECT DropGeometryTable('','',$1) $$
 LANGUAGE 'sql' _VOLATILE_STRICT; -- WITH (isstrict);
 
 -----------------------------------------------------------------------
@@ -2889,7 +2889,7 @@ LANGUAGE 'sql' _VOLATILE_STRICT; -- WITH (isstrict);
 CREATEFUNCTION UpdateGeometrySRID(varchar,varchar,varchar,varchar,integer)
 	RETURNS text
 	AS 
-'
+$$
 DECLARE
 	catalog_name alias for $1; 
 	schema_name alias for $2;
@@ -2905,15 +2905,15 @@ BEGIN
 
 
 	-- Find, check or fix schema_name
-	IF ( schema_name != '''' ) THEN
-		okay = ''f'';
+	IF ( schema_name != '' ) THEN
+		okay = 'f';
 
 		FOR myrec IN SELECT nspname FROM pg_namespace WHERE text(nspname) = schema_name LOOP
-			okay := ''t'';
+			okay := 't';
 		END LOOP;
 
-		IF ( okay <> ''t'' ) THEN
-			RAISE EXCEPTION ''Invalid schema name'';
+		IF ( okay <> 't' ) THEN
+			RAISE EXCEPTION 'Invalid schema name';
 		ELSE
 			real_schema = schema_name;
 		END IF;
@@ -2922,48 +2922,48 @@ BEGIN
 	END IF;
 
  	-- Find out if the column is in the geometry_columns table
-	okay = ''f'';
+	okay = 'f';
 	FOR myrec IN SELECT * from geometry_columns where f_table_schema = text(real_schema) and f_table_name = table_name and f_geometry_column = column_name LOOP
-		okay := ''t'';
+		okay := 't';
 	END LOOP; 
-	IF (okay <> ''t'') THEN 
-		RAISE EXCEPTION ''column not found in geometry_columns table'';
-		RETURN ''f'';
+	IF (okay <> 't') THEN 
+		RAISE EXCEPTION 'column not found in geometry_columns table';
+		RETURN 'f';
 	END IF;
 
 	-- Update ref from geometry_columns table
-	EXECUTE ''UPDATE geometry_columns SET SRID = '' || new_srid::text || 
-		'' where f_table_schema = '' ||
-		quote_literal(real_schema) || '' and f_table_name = '' ||
-		quote_literal(table_name)  || '' and f_geometry_column = '' ||
+	EXECUTE 'UPDATE geometry_columns SET SRID = ' || new_srid::text || 
+		' where f_table_schema = ' ||
+		quote_literal(real_schema) || ' and f_table_name = ' ||
+		quote_literal(table_name)  || ' and f_geometry_column = ' ||
 		quote_literal(column_name);
 	
 	-- Make up constraint name
-	cname = ''enforce_srid_''  || column_name;
+	cname = 'enforce_srid_'  || column_name;
 
 	-- Drop enforce_srid constraint
-	EXECUTE ''ALTER TABLE '' || quote_ident(real_schema) ||
-		''.'' || quote_ident(table_name) ||
-		'' DROP constraint '' || quote_ident(cname);
+	EXECUTE 'ALTER TABLE ' || quote_ident(real_schema) ||
+		'.' || quote_ident(table_name) ||
+		' DROP constraint ' || quote_ident(cname);
 
 	-- Update geometries SRID
-	EXECUTE ''UPDATE '' || quote_ident(real_schema) ||
-		''.'' || quote_ident(table_name) ||
-		'' SET '' || quote_ident(column_name) ||
-		'' = setSRID('' || quote_ident(column_name) ||
-		'', '' || new_srid::text || '')'';
+	EXECUTE 'UPDATE ' || quote_ident(real_schema) ||
+		'.' || quote_ident(table_name) ||
+		' SET ' || quote_ident(column_name) ||
+		' = setSRID(' || quote_ident(column_name) ||
+		', ' || new_srid::text || ')';
 
 	-- Reset enforce_srid constraint
-	EXECUTE ''ALTER TABLE '' || quote_ident(real_schema) ||
-		''.'' || quote_ident(table_name) ||
-		'' ADD constraint '' || quote_ident(cname) ||
-		'' CHECK (srid('' || quote_ident(column_name) ||
-		'') = '' || new_srid::text || '')'';
+	EXECUTE 'ALTER TABLE ' || quote_ident(real_schema) ||
+		'.' || quote_ident(table_name) ||
+		' ADD constraint ' || quote_ident(cname) ||
+		' CHECK (srid(' || quote_ident(column_name) ||
+		') = ' || new_srid::text || ')';
 
-	RETURN real_schema || ''.'' || table_name || ''.'' || column_name ||'' SRID changed to '' || new_srid::text;
+	RETURN real_schema || '.' || table_name || '.' || column_name ||' SRID changed to ' || new_srid::text;
 	
 END;
-'
+$$
 LANGUAGE 'plpgsql' _VOLATILE_STRICT; -- WITH (isstrict);
 
 -----------------------------------------------------------------------
@@ -2972,14 +2972,14 @@ LANGUAGE 'plpgsql' _VOLATILE_STRICT; -- WITH (isstrict);
 -----------------------------------------------------------------------
 CREATEFUNCTION UpdateGeometrySRID(varchar,varchar,varchar,integer)
 	RETURNS text
-	AS '
+	AS $$ 
 DECLARE
 	ret  text;
 BEGIN
-	SELECT UpdateGeometrySRID('''',$1,$2,$3,$4) into ret;
+	SELECT UpdateGeometrySRID('',$1,$2,$3,$4) into ret;
 	RETURN ret;
 END;
-'
+$$
 LANGUAGE 'plpgsql' _VOLATILE_STRICT; -- WITH (isstrict);
 
 -----------------------------------------------------------------------
@@ -2988,53 +2988,54 @@ LANGUAGE 'plpgsql' _VOLATILE_STRICT; -- WITH (isstrict);
 -----------------------------------------------------------------------
 CREATEFUNCTION UpdateGeometrySRID(varchar,varchar,integer)
 	RETURNS text
-	AS '
+	AS $$ 
 DECLARE
 	ret  text;
 BEGIN
-	SELECT UpdateGeometrySRID('''','''',$1,$2,$3) into ret;
+	SELECT UpdateGeometrySRID('','',$1,$2,$3) into ret;
 	RETURN ret;
 END;
-'
+$$
 LANGUAGE 'plpgsql' _VOLATILE_STRICT; -- WITH (isstrict);
 
 -----------------------------------------------------------------------
 -- FIND_SRID( <schema>, <table>, <geom col> )
 -----------------------------------------------------------------------
 CREATEFUNCTION find_srid(varchar,varchar,varchar) RETURNS int4 AS
-'DECLARE
+$$
+DECLARE
    schem text;
    tabl text;
    sr int4;
 BEGIN
    IF $1 IS NULL THEN
-      RAISE EXCEPTION ''find_srid() - schema is NULL!'';
+      RAISE EXCEPTION 'find_srid() - schema is NULL!';
    END IF;
    IF $2 IS NULL THEN
-      RAISE EXCEPTION ''find_srid() - table name is NULL!'';
+      RAISE EXCEPTION 'find_srid() - table name is NULL!';
    END IF;
    IF $3 IS NULL THEN
-      RAISE EXCEPTION ''find_srid() - column name is NULL!'';
+      RAISE EXCEPTION 'find_srid() - column name is NULL!';
    END IF;
    schem = $1;
    tabl = $2;
 -- if the table contains a . and the schema is empty
 -- split the table into a schema and a table
 -- otherwise drop through to default behavior
-   IF ( schem = '''' and tabl LIKE ''%.%'' ) THEN
-     schem = substr(tabl,1,strpos(tabl,''.'')-1);
+   IF ( schem = '' and tabl LIKE '%.%' ) THEN
+     schem = substr(tabl,1,strpos(tabl,'.')-1);
      tabl = substr(tabl,length(schem)+2);
    ELSE
-     schem = schem || ''%'';
+     schem = schem || '%';
    END IF;
 
    select SRID into sr from geometry_columns where f_table_schema like schem and f_table_name = tabl and f_geometry_column = $3;
    IF NOT FOUND THEN
-       RAISE EXCEPTION ''find_srid() - couldnt find the corresponding SRID - is the geometry registered in the GEOMETRY_COLUMNS table?  Is there an uppercase/lowercase missmatch?'';
+       RAISE EXCEPTION 'find_srid() - couldnt find the corresponding SRID - is the geometry registered in the GEOMETRY_COLUMNS table?  Is there an uppercase/lowercase missmatch?';
    END IF;
   return sr;
 END;
-'
+$$
 LANGUAGE 'plpgsql' _IMMUTABLE_STRICT; -- WITH (iscachable); 
 
 
@@ -3043,11 +3044,11 @@ LANGUAGE 'plpgsql' _IMMUTABLE_STRICT; -- WITH (iscachable);
 ---------------------------------------------------------------
 
 CREATEFUNCTION get_proj4_from_srid(integer) RETURNS text AS
-'
+$$
 BEGIN
 	RETURN proj4text::text FROM spatial_ref_sys WHERE srid= $1;
 END;
-'
+$$
 LANGUAGE 'plpgsql' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
 
@@ -3123,7 +3124,7 @@ CREATEFUNCTION postgis_lib_build_date() RETURNS text
 
 
 CREATEFUNCTION postgis_full_version() RETURNS text
-AS '
+AS $$ 
 DECLARE
 	libver text;
 	projver text;
@@ -3142,34 +3143,34 @@ BEGIN
 	SELECT postgis_scripts_installed() INTO dbproc;
 	SELECT postgis_scripts_released() INTO relproc;
 
-	fullver = ''POSTGIS="'' || libver || ''"'';
+	fullver = 'POSTGIS="' || libver || '"';
 
 	IF  geosver IS NOT NULL THEN
-		fullver = fullver || '' GEOS="'' || geosver || ''"'';
+		fullver = fullver || ' GEOS="' || geosver || '"';
 	END IF;
 
 	IF  jtsver IS NOT NULL THEN
-		fullver = fullver || '' JTS="'' || jtsver || ''"'';
+		fullver = fullver || ' JTS="' || jtsver || '"';
 	END IF;
 
 	IF  projver IS NOT NULL THEN
-		fullver = fullver || '' PROJ="'' || projver || ''"'';
+		fullver = fullver || ' PROJ="' || projver || '"';
 	END IF;
 
 	IF usestats THEN
-		fullver = fullver || '' USE_STATS'';
+		fullver = fullver || ' USE_STATS';
 	END IF;
 
-	-- fullver = fullver || '' DBPROC="'' || dbproc || ''"'';
-	-- fullver = fullver || '' RELPROC="'' || relproc || ''"'';
+	-- fullver = fullver || ' DBPROC="' || dbproc || '"';
+	-- fullver = fullver || ' RELPROC="' || relproc || '"';
 
 	IF dbproc != relproc THEN
-		fullver = fullver || '' (procs from '' || dbproc || '' need upgrade)'';
+		fullver = fullver || ' (procs from ' || dbproc || ' need upgrade)';
 	END IF;
 
 	RETURN fullver;
 END
-'
+$$
 LANGUAGE 'plpgsql' _IMMUTABLE;
 
 ---------------------------------------------------------------
@@ -3501,13 +3502,13 @@ CREATEFUNCTION ST_locate_between_measures(geometry, float8, float8)
 -- Deprecation in 1.2.3
 CREATEFUNCTION locate_along_measure(geometry, float8)
 	RETURNS geometry
-	AS 'SELECT locate_between_measures($1, $2, $2)'
+	AS $$ SELECT locate_between_measures($1, $2, $2) $$
 	LANGUAGE 'sql' _IMMUTABLE_STRICT;
 
 -- Availability: 1.2.2
 CREATEFUNCTION ST_locate_along_measure(geometry, float8)
 	RETURNS geometry
-	AS 'SELECT locate_between_measures($1, $2, $2)'
+	AS $$ SELECT locate_between_measures($1, $2, $2) $$
 	LANGUAGE 'sql' _IMMUTABLE_STRICT;
 
 ---------------------------------------------------------------
@@ -4314,29 +4315,29 @@ CREATEFUNCTION GeometryType(geometry)
 -- Not quite equivalent to GeometryType
 CREATEFUNCTION ST_GeometryType(geometry)
     RETURNS text
-    AS '
+    AS $$ 
     DECLARE
         gtype text := geometrytype($1);
     BEGIN
-        IF (gtype IN (''POINT'', ''POINTM'')) THEN
-            gtype := ''Point'';
-        ELSIF (gtype IN (''LINESTRING'', ''LINESTRINGM'')) THEN
-            gtype := ''LineString'';
-        ELSIF (gtype IN (''POLYGON'', ''POLYGONM'')) THEN
-            gtype := ''Polygon'';
-        ELSIF (gtype IN (''MULTIPOINT'', ''MULTIPOINTM'')) THEN
-            gtype := ''MultiPoint'';
-        ELSIF (gtype IN (''MULTILINESTRING'', ''MULTILINESTRINGM'')) THEN
-            gtype := ''MultiLineString'';
-        ELSIF (gtype IN (''MULTIPOLYGON'', ''MULTIPOLYGONM'')) THEN
-            gtype := ''MultiPolygon'';
+        IF (gtype IN ('POINT', 'POINTM')) THEN
+            gtype := 'Point';
+        ELSIF (gtype IN ('LINESTRING', 'LINESTRINGM')) THEN
+            gtype := 'LineString';
+        ELSIF (gtype IN ('POLYGON', 'POLYGONM')) THEN
+            gtype := 'Polygon';
+        ELSIF (gtype IN ('MULTIPOINT', 'MULTIPOINTM')) THEN
+            gtype := 'MultiPoint';
+        ELSIF (gtype IN ('MULTILINESTRING', 'MULTILINESTRINGM')) THEN
+            gtype := 'MultiLineString';
+        ELSIF (gtype IN ('MULTIPOLYGON', 'MULTIPOLYGONM')) THEN
+            gtype := 'MultiPolygon';
         ELSE
-            gtype := ''Geometry'';
+            gtype := 'Geometry';
         END IF;
-        RETURN ''ST_'' || gtype;
+        RETURN 'ST_' || gtype;
     END
-	'
-	LANGUAGE 'plpgsql' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+$$
+LANGUAGE 'plpgsql' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Deprecation in 1.2.3
 CREATEFUNCTION PointN(geometry,integer)
@@ -5482,7 +5483,7 @@ CREATEFUNCTION ST_GeomCollFromWKB(bytea)
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION BdPolyFromText(text, integer)
 RETURNS geometry
-AS '
+AS $$ 
 DECLARE
 	geomtext alias for $1;
 	srid alias for $2;
@@ -5493,25 +5494,25 @@ BEGIN
 
 	IF mline IS NULL
 	THEN
-		RAISE EXCEPTION ''Input is not a MultiLinestring'';
+		RAISE EXCEPTION 'Input is not a MultiLinestring';
 	END IF;
 
 	geom := BuildArea(mline);
 
-	IF GeometryType(geom) != ''POLYGON''
+	IF GeometryType(geom) != 'POLYGON'
 	THEN
-		RAISE EXCEPTION ''Input returns more then a single polygon, try using BdMPolyFromText instead'';
+		RAISE EXCEPTION 'Input returns more then a single polygon, try using BdMPolyFromText instead';
 	END IF;
 
 	RETURN geom;
 END;
-'
+$$
 LANGUAGE 'plpgsql' _IMMUTABLE_STRICT; 
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_BdPolyFromText(text, integer)
 RETURNS geometry
-AS '
+AS $$ 
 DECLARE
 	geomtext alias for $1;
 	srid alias for $2;
@@ -5522,19 +5523,19 @@ BEGIN
 
 	IF mline IS NULL
 	THEN
-		RAISE EXCEPTION ''Input is not a MultiLinestring'';
+		RAISE EXCEPTION 'Input is not a MultiLinestring';
 	END IF;
 
 	geom := BuildArea(mline);
 
-	IF GeometryType(geom) != ''POLYGON''
+	IF GeometryType(geom) != 'POLYGON'
 	THEN
-		RAISE EXCEPTION ''Input returns more then a single polygon, try using BdMPolyFromText instead'';
+		RAISE EXCEPTION 'Input returns more then a single polygon, try using BdMPolyFromText instead';
 	END IF;
 
 	RETURN geom;
 END;
-'
+$$
 LANGUAGE 'plpgsql' _IMMUTABLE_STRICT; 
 
 --
@@ -5552,7 +5553,7 @@ LANGUAGE 'plpgsql' _IMMUTABLE_STRICT;
 -- Deprecation in 1.2.3
 CREATEFUNCTION BdMPolyFromText(text, integer)
 RETURNS geometry
-AS '
+AS $$ 
 DECLARE
 	geomtext alias for $1;
 	srid alias for $2;
@@ -5563,20 +5564,20 @@ BEGIN
 
 	IF mline IS NULL
 	THEN
-		RAISE EXCEPTION ''Input is not a MultiLinestring'';
+		RAISE EXCEPTION 'Input is not a MultiLinestring';
 	END IF;
 
 	geom := multi(BuildArea(mline));
 
 	RETURN geom;
 END;
-'
+$$
 LANGUAGE 'plpgsql' _IMMUTABLE_STRICT; 
 
 -- Availability: 1.2.2
 CREATEFUNCTION ST_BdMPolyFromText(text, integer)
 RETURNS geometry
-AS '
+AS $$ 
 DECLARE
 	geomtext alias for $1;
 	srid alias for $2;
@@ -5587,14 +5588,14 @@ BEGIN
 
 	IF mline IS NULL
 	THEN
-		RAISE EXCEPTION ''Input is not a MultiLinestring'';
+		RAISE EXCEPTION 'Input is not a MultiLinestring';
 	END IF;
 
 	geom := multi(BuildArea(mline));
 
 	RETURN geom;
 END;
-'
+$$
 LANGUAGE 'plpgsql' _IMMUTABLE_STRICT; 
 
 #include "long_xact.sql.in"
