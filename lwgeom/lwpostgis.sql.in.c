@@ -27,35 +27,27 @@ BEGIN;
 --  SPHEROID TYPE
 -------------------------------------------------------------------
 
-#if POSTGIS_PGSQL_VERSION < 73
-# define SPHEROID_IN_REP opaque
-# define SPHEROID_OUT_REP opaque
-#else
-# define SPHEROID_IN_REP spheroid
-# define SPHEROID_OUT_REP cstring
-#endif
-
 -- Deprecation in 1.2.3
-CREATEFUNCTION spheroid_in(SPHEROID_OUT_REP)
-	RETURNS SPHEROID_IN_REP
+CREATEFUNCTION spheroid_in(cstring)
+	RETURNS spheroid 
 	AS 'MODULE_PATHNAME','ellipsoid_in'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Availability: 1.2.2
-CREATEFUNCTION ST_spheroid_in(SPHEROID_OUT_REP)
-	RETURNS SPHEROID_IN_REP
+CREATEFUNCTION ST_spheroid_in(cstring)
+	RETURNS spheroid 
 	AS 'MODULE_PATHNAME','ellipsoid_in'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Deprecation in 1.2.3
-CREATEFUNCTION spheroid_out(SPHEROID_IN_REP)
-	RETURNS SPHEROID_OUT_REP
+CREATEFUNCTION spheroid_out(spheroid)
+	RETURNS cstring 
 	AS 'MODULE_PATHNAME','ellipsoid_out'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
 -- Availability: 1.2.2
-CREATEFUNCTION ST_spheroid_out(SPHEROID_IN_REP)
-	RETURNS SPHEROID_OUT_REP
+CREATEFUNCTION ST_spheroid_out(spheroid)
+	RETURNS cstring 
 	AS 'MODULE_PATHNAME','ellipsoid_out'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
@@ -70,39 +62,30 @@ CREATE TYPE spheroid (
 --  GEOMETRY TYPE (lwgeom)
 -------------------------------------------------------------------
 
-#if POSTGIS_PGSQL_VERSION < 73
-# define GEOMETRY_IN_REP opaque
-# define GEOMETRY_OUT_REP opaque
-#else
-# define GEOMETRY_IN_REP geometry
-# define GEOMETRY_OUT_REP cstring
-#endif
-
 -- Deprecation in 1.2.3
-CREATEFUNCTION geometry_in(GEOMETRY_OUT_REP)
+CREATEFUNCTION geometry_in(cstring)
         RETURNS geometry
         AS 'MODULE_PATHNAME','LWGEOM_in'
         LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Availability: 1.2.2
-CREATEFUNCTION ST_geometry_in(GEOMETRY_OUT_REP)
+CREATEFUNCTION ST_geometry_in(cstring)
         RETURNS geometry
         AS 'MODULE_PATHNAME','LWGEOM_in'
         LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Deprecation in 1.2.3
-CREATEFUNCTION geometry_out(GEOMETRY_IN_REP)
+CREATEFUNCTION geometry_out(geometry)
         RETURNS cstring
         AS 'MODULE_PATHNAME','LWGEOM_out'
         LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Availability: 1.2.2
-CREATEFUNCTION ST_geometry_out(GEOMETRY_IN_REP)
+CREATEFUNCTION ST_geometry_out(geometry)
         RETURNS cstring
         AS 'MODULE_PATHNAME','LWGEOM_out'
         LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
-#if POSTGIS_PGSQL_VERSION >= 80
 -- Deprecation in 1.2.3
 CREATEFUNCTION geometry_analyze(internal)
 	RETURNS bool
@@ -114,9 +97,7 @@ CREATEFUNCTION ST_geometry_analyze(internal)
 	RETURNS bool
 	AS 'MODULE_PATHNAME', 'LWGEOM_analyze'
 	LANGUAGE 'C' _VOLATILE_STRICT; -- WITH (isstrict);
-#endif
 
-#if POSTGIS_PGSQL_VERSION > 73
 -- Deprecation in 1.2.3
 CREATEFUNCTION geometry_recv(internal)
 	RETURNS geometry
@@ -140,20 +121,15 @@ CREATEFUNCTION ST_geometry_send(geometry)
 	RETURNS bytea
 	AS 'MODULE_PATHNAME','LWGEOM_send'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
-#endif
 
 CREATE TYPE geometry (
         internallength = variable,
         input = ST_geometry_in,
         output = ST_geometry_out,
-#if POSTGIS_PGSQL_VERSION > 73
 	send = ST_geometry_send,
 	receive = ST_geometry_recv,
-#endif
 	delimiter = ':',
-#if POSTGIS_PGSQL_VERSION >= 80
 	analyze = ST_geometry_analyze,
-#endif 
         storage = main
 );
 
@@ -321,35 +297,27 @@ CREATEFUNCTION ST_shift_longitude(geometry)
 --  BOX3D TYPE
 -------------------------------------------------------------------
 
-#if POSTGIS_PGSQL_VERSION < 73
-# define BOX3D_IN_REP opaque
-# define BOX3D_OUT_REP opaque
-#else
-# define BOX3D_IN_REP box3d
-# define BOX3D_OUT_REP cstring
-#endif
-
 -- Deprecation in 1.2.3
-CREATEFUNCTION box3d_in(BOX3D_OUT_REP)
-	RETURNS BOX3D_IN_REP
+CREATEFUNCTION box3d_in(cstring)
+	RETURNS box3d 
 	AS 'MODULE_PATHNAME', 'BOX3D_in'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
 -- Deprecation in 1.2.3
-CREATEFUNCTION box3d_out(BOX3D_IN_REP)
-	RETURNS BOX3D_OUT_REP
+CREATEFUNCTION box3d_out(box3d)
+	RETURNS cstring 
 	AS 'MODULE_PATHNAME', 'BOX3D_out'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
 -- Availability: 1.2.2
-CREATEFUNCTION ST_box3d_in(BOX3D_OUT_REP)
-	RETURNS BOX3D_IN_REP
+CREATEFUNCTION ST_box3d_in(cstring)
+	RETURNS box3d 
 	AS 'MODULE_PATHNAME', 'BOX3D_in'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
 -- Availability: 1.2.2
-CREATEFUNCTION ST_box3d_out(BOX3D_IN_REP)
-	RETURNS BOX3D_OUT_REP
+CREATEFUNCTION ST_box3d_out(box3d)
+	RETURNS cstring 
 	AS 'MODULE_PATHNAME', 'BOX3D_out'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
@@ -436,35 +404,27 @@ CREATEFUNCTION ST_ZMax(box3d)
 --  CHIP TYPE
 -------------------------------------------------------------------
 
-#if POSTGIS_PGSQL_VERSION < 73
-# define CHIP_IN_REP opaque
-# define CHIP_OUT_REP opaque
-#else
-# define CHIP_IN_REP chip
-# define CHIP_OUT_REP cstring
-#endif
-
 -- Deprecation in 1.2.3
-CREATEFUNCTION chip_in(CHIP_OUT_REP)
-	RETURNS CHIP_IN_REP
+CREATEFUNCTION chip_in(cstring)
+	RETURNS chip 
 	AS 'MODULE_PATHNAME','CHIP_in'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
         
 -- Availability: 1.2.2
-CREATEFUNCTION ST_chip_in(CHIP_OUT_REP)
-	RETURNS CHIP_IN_REP
+CREATEFUNCTION ST_chip_in(cstring)
+	RETURNS chip 
 	AS 'MODULE_PATHNAME','CHIP_in'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
 -- Deprecation in 1.2.3
-CREATEFUNCTION chip_out(CHIP_IN_REP)
-	RETURNS CHIP_OUT_REP
+CREATEFUNCTION chip_out(chip)
+	RETURNS cstring 
 	AS 'MODULE_PATHNAME','CHIP_out'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
 -- Availability: 1.2.2
-CREATEFUNCTION ST_chip_out(CHIP_IN_REP)
-	RETURNS CHIP_OUT_REP
+CREATEFUNCTION ST_chip_out(chip)
+	RETURNS cstring 
 	AS 'MODULE_PATHNAME','CHIP_out'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
@@ -480,35 +440,26 @@ CREATE TYPE chip (
 -- BOX2D
 -----------------------------------------------------------------------
 
-
-#if POSTGIS_PGSQL_VERSION < 73
-# define BOX2D_IN_REP opaque
-# define BOX2D_OUT_REP opaque
-#else
-# define BOX2D_IN_REP box2d
-# define BOX2D_OUT_REP cstring
-#endif
-
 -- Deprecation in 1.2.3
-CREATEFUNCTION box2d_in(BOX2D_OUT_REP)
+CREATEFUNCTION box2d_in(cstring)
         RETURNS box2d
         AS 'MODULE_PATHNAME','BOX2DFLOAT4_in'
         LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Availability: 1.2.2
-CREATEFUNCTION ST_box2d_in(BOX2D_OUT_REP)
+CREATEFUNCTION ST_box2d_in(cstring)
         RETURNS box2d
         AS 'MODULE_PATHNAME','BOX2DFLOAT4_in'
         LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Deprecation in 1.2.3
-CREATEFUNCTION box2d_out(BOX2D_IN_REP)
+CREATEFUNCTION box2d_out(box2d)
         RETURNS cstring
         AS 'MODULE_PATHNAME','BOX2DFLOAT4_out'
         LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Availability: 1.2.2
-CREATEFUNCTION ST_box2d_out(BOX2D_IN_REP)
+CREATEFUNCTION ST_box2d_out(box2d)
         RETURNS cstring
         AS 'MODULE_PATHNAME','BOX2DFLOAT4_out'
         LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -742,7 +693,6 @@ CREATE OPERATOR > (
    RESTRICT = contsel, JOIN = contjoinsel
 );
 
-#if POSTGIS_PGSQL_VERSION >= 74
 
 CREATE OPERATOR CLASS btree_geometry_ops
 	DEFAULT FOR TYPE geometry USING btree AS
@@ -753,52 +703,31 @@ CREATE OPERATOR CLASS btree_geometry_ops
 	OPERATOR	5	> ,
 	FUNCTION	1	geometry_cmp (geometry, geometry);
 
-#endif
 
 
 -------------------------------------------------------------------
 -- GiST indexes
 -------------------------------------------------------------------
 -- Deprecation in 1.2.3
-#if POSTGIS_PGSQL_VERSION < 73
-CREATEFUNCTION postgis_gist_sel(opaque, oid,  opaque, int4)
-#else
 CREATEFUNCTION postgis_gist_sel (internal, oid, internal, int4)
-#endif
 	RETURNS float8
 	AS 'MODULE_PATHNAME', 'LWGEOM_gist_sel'
 	LANGUAGE 'C';
 
 -- Availability: 1.2.2
-#if POSTGIS_PGSQL_VERSION < 73
-CREATEFUNCTION ST_postgis_gist_sel(opaque, oid,  opaque, int4)
-#else
 CREATEFUNCTION ST_postgis_gist_sel (internal, oid, internal, int4)
-#endif
 	RETURNS float8
 	AS 'MODULE_PATHNAME', 'LWGEOM_gist_sel'
 	LANGUAGE 'C';
 
 -- Deprecation in 1.2.3
-#if POSTGIS_PGSQL_VERSION == 72
-CREATEFUNCTION postgis_gist_joinsel(opaque, oid,  opaque)
-#elif POSTGIS_PGSQL_VERSION == 73
-CREATEFUNCTION postgis_gist_joinsel(internal, oid,  internal)
-#else
 CREATEFUNCTION postgis_gist_joinsel(internal, oid, internal, smallint)
-#endif
 	RETURNS float8
 	AS 'MODULE_PATHNAME', 'LWGEOM_gist_joinsel'
 	LANGUAGE 'C';
 
 -- Availability: 1.2.2
-#if POSTGIS_PGSQL_VERSION == 72
-CREATEFUNCTION ST_postgis_gist_joinsel(opaque, oid,  opaque)
-#elif POSTGIS_PGSQL_VERSION == 73
-CREATEFUNCTION ST_postgis_gist_joinsel(internal, oid,  internal)
-#else
 CREATEFUNCTION ST_postgis_gist_joinsel(internal, oid, internal, smallint)
-#endif
 	RETURNS float8
 	AS 'MODULE_PATHNAME', 'LWGEOM_gist_joinsel'
 	LANGUAGE 'C';
@@ -1023,43 +952,37 @@ CREATE OPERATOR ~ (
 
 -- gist support functions
 
-#if POSTGIS_PGSQL_VERSION < 73
-#define OPAQUE_TYPE opaque
-#else
-#define OPAQUE_TYPE internal
-#endif
-
-CREATEFUNCTION LWGEOM_gist_consistent(OPAQUE_TYPE,geometry,int4) 
+CREATEFUNCTION LWGEOM_gist_consistent(internal,geometry,int4) 
 	RETURNS bool 
 	AS 'MODULE_PATHNAME' ,'LWGEOM_gist_consistent'
 	LANGUAGE 'C';
 
-CREATEFUNCTION LWGEOM_gist_compress(OPAQUE_TYPE) 
+CREATEFUNCTION LWGEOM_gist_compress(internal) 
 	RETURNS OPAQUE_TYPE 
 	AS 'MODULE_PATHNAME','LWGEOM_gist_compress'
 	LANGUAGE 'C';
 
-CREATEFUNCTION LWGEOM_gist_penalty(OPAQUE_TYPE,OPAQUE_TYPE,OPAQUE_TYPE) 
+CREATEFUNCTION LWGEOM_gist_penalty(internal,internal,internal) 
 	RETURNS OPAQUE_TYPE 
 	AS 'MODULE_PATHNAME' ,'LWGEOM_gist_penalty'
 	LANGUAGE 'C';
 
-CREATEFUNCTION LWGEOM_gist_picksplit(OPAQUE_TYPE, OPAQUE_TYPE) 
+CREATEFUNCTION LWGEOM_gist_picksplit(internal, internal) 
 	RETURNS OPAQUE_TYPE 
 	AS 'MODULE_PATHNAME' ,'LWGEOM_gist_picksplit'
 	LANGUAGE 'C';
 
-CREATEFUNCTION LWGEOM_gist_union(bytea, OPAQUE_TYPE) 
+CREATEFUNCTION LWGEOM_gist_union(bytea, internal) 
 	RETURNS OPAQUE_TYPE 
 	AS 'MODULE_PATHNAME' ,'LWGEOM_gist_union'
 	LANGUAGE 'C';
 
-CREATEFUNCTION LWGEOM_gist_same(box2d, box2d, OPAQUE_TYPE) 
+CREATEFUNCTION LWGEOM_gist_same(box2d, box2d, internal) 
 	RETURNS OPAQUE_TYPE 
 	AS 'MODULE_PATHNAME' ,'LWGEOM_gist_same'
 	LANGUAGE 'C';
 
-CREATEFUNCTION LWGEOM_gist_decompress(OPAQUE_TYPE) 
+CREATEFUNCTION LWGEOM_gist_decompress(internal) 
 	RETURNS OPAQUE_TYPE
 	AS 'MODULE_PATHNAME' ,'LWGEOM_gist_decompress'
 	LANGUAGE 'C';
@@ -1067,199 +990,6 @@ CREATEFUNCTION LWGEOM_gist_decompress(OPAQUE_TYPE)
 -------------------------------------------
 -- GIST opclass index binding entries.
 -------------------------------------------
-
-#if POSTGIS_PGSQL_VERSION == 72
-
---
--- Create opclass index binding entries for PG72
---
-
-INSERT INTO pg_opclass (opcamid, opcname, opcintype, opcdefault, opckeytype)
-    VALUES (
-        (SELECT oid FROM pg_am WHERE amname = 'gist'),
-        'gist_geometry_ops',
-        (SELECT oid FROM pg_type WHERE typname = 'geometry'),
-        true,
-        (SELECT oid FROM pg_type WHERE typname = 'box2d'));
-
--- drop table rt_ops_tmp;
-
-SELECT o.oid AS opoid, o.oprname
-	INTO TABLE rt_ops_tmp
-	FROM pg_operator o, pg_type t
-	WHERE o.oprleft = t.oid 
-		AND t.typname = 'geometry';
-
--- poly_left
-INSERT INTO pg_amop (amopclaid, amopstrategy, amopreqcheck, amopopr) 
-   SELECT opcl.oid, 1, true, c.opoid
-   FROM pg_opclass opcl, rt_ops_tmp c
-   WHERE
-      opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
-      and opcname = 'gist_geometry_ops' 
-      and c.oprname = '<<';
-
--- poly_overleft
-INSERT INTO pg_amop (amopclaid, amopstrategy, amopreqcheck, amopopr) 
-   SELECT opcl.oid, 2, true, c.opoid
-   FROM pg_opclass opcl, rt_ops_tmp c
-   WHERE
-      opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
-      and opcname = 'gist_geometry_ops' 
-      and c.oprname = '&<';
-
--- poly_overlap
-INSERT INTO pg_amop (amopclaid, amopstrategy, amopreqcheck, amopopr) 
-   SELECT opcl.oid, 3, true, c.opoid
-   FROM pg_opclass opcl, rt_ops_tmp c
-   WHERE
-      opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
-      and opcname = 'gist_geometry_ops' 
-      and c.oprname = '&&';
-
--- poly_overright
-INSERT INTO pg_amop (amopclaid, amopstrategy, amopreqcheck, amopopr) 
-   SELECT opcl.oid, 4, true, c.opoid
-   FROM pg_opclass opcl, rt_ops_tmp c
-   WHERE
-      opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
-      and opcname = 'gist_geometry_ops' 
-      and c.oprname = '&>';
-
--- poly_right
-INSERT INTO pg_amop (amopclaid, amopstrategy, amopreqcheck, amopopr)
-   SELECT opcl.oid, 5, true, c.opoid
-   FROM pg_opclass opcl, rt_ops_tmp c
-   WHERE
-      opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
-      and opcname = 'gist_geometry_ops' 
-      and c.oprname = '>>';
-
--- poly_same
-INSERT INTO pg_amop (amopclaid, amopstrategy, amopreqcheck, amopopr) 
-   SELECT opcl.oid, 6, true, c.opoid
-   FROM pg_opclass opcl, rt_ops_tmp c
-   WHERE
-      opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
-      and opcname = 'gist_geometry_ops' 
-      and c.oprname = '~=';
-
--- poly_contains
-INSERT INTO pg_amop (amopclaid, amopstrategy, amopreqcheck, amopopr)
-   SELECT opcl.oid, 7, true, c.opoid
-   FROM pg_opclass opcl, rt_ops_tmp c
-   WHERE
-      opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
-      and opcname = 'gist_geometry_ops' 
-      and c.oprname = '~';
-
--- poly_contained
-INSERT INTO pg_amop (amopclaid, amopstrategy, amopreqcheck, amopopr)
-   SELECT opcl.oid, 8, true, c.opoid
-   FROM pg_opclass opcl, rt_ops_tmp c
-   WHERE
-      opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
-      and opcname = 'gist_geometry_ops' 
-      and c.oprname = '@';
-
--- poly_overbelow
-INSERT INTO pg_amop (amopclaid, amopstrategy, amopreqcheck, amopopr)
-   SELECT opcl.oid, 9, true, c.opoid
-   FROM pg_opclass opcl, rt_ops_tmp c
-   WHERE
-      opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
-      and opcname = 'gist_geometry_ops' 
-      and c.oprname = '&<|';
-
--- poly_below
-INSERT INTO pg_amop (amopclaid, amopstrategy, amopreqcheck, amopopr) 
-   SELECT opcl.oid, 10, true, c.opoid
-   FROM pg_opclass opcl, rt_ops_tmp c
-   WHERE
-      opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
-      and opcname = 'gist_geometry_ops' 
-      and c.oprname = '<<|';
-
--- poly_above
-INSERT INTO pg_amop (amopclaid, amopstrategy, amopreqcheck, amopopr) 
-   SELECT opcl.oid, 11, true, c.opoid
-   FROM pg_opclass opcl, rt_ops_tmp c
-   WHERE
-      opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
-      and opcname = 'gist_geometry_ops' 
-      and c.oprname = '|>>';
-
--- poly_overabove
-INSERT INTO pg_amop (amopclaid, amopstrategy, amopreqcheck, amopopr) 
-   SELECT opcl.oid, 12, true, c.opoid
-   FROM pg_opclass opcl, rt_ops_tmp c
-   WHERE
-      opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
-      and opcname = 'gist_geometry_ops' 
-      and c.oprname = '|&>';
-
-DROP TABLE rt_ops_tmp;
-
-
--- add the entries to amproc for the support methods
--- note the amprocnum numbers associated with each are specific!
-INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
-   SELECT opcl.oid, 1, pro.oid
-   FROM pg_opclass opcl, pg_proc pro
-   WHERE
-      opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
-      and opcname = 'gist_geometry_ops'
-      and proname = 'lwgeom_gist_consistent';
-
-INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
-   SELECT opcl.oid, 2, pro.oid
-   FROM pg_opclass opcl, pg_proc pro
-   WHERE
-      opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
-      and opcname = 'gist_geometry_ops'
-      and proname = 'lwgeom_gist_union';
-
-INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
-   SELECT opcl.oid, 3, pro.oid
-   FROM pg_opclass opcl, pg_proc pro
-   WHERE
-      opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
-      and opcname = 'gist_geometry_ops'
-      and proname = 'lwgeom_gist_compress';
-
-INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
-   SELECT opcl.oid, 4, pro.oid
-   FROM pg_opclass opcl, pg_proc pro
-   WHERE
-      opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
-      and opcname = 'gist_geometry_ops'
-      and proname = 'lwgeom_gist_decompress';
-
-INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
-   SELECT opcl.oid, 5, pro.oid
-   FROM pg_opclass opcl, pg_proc pro
-   WHERE
-      opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
-      and opcname = 'gist_geometry_ops'
-      and proname = 'lwgeom_gist_penalty';
-
-INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
-   SELECT opcl.oid, 6, pro.oid
-   FROM pg_opclass opcl, pg_proc pro
-   WHERE
-      opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
-      and opcname = 'gist_geometry_ops'
-      and proname = 'lwgeom_gist_picksplit';
-
-INSERT INTO pg_amproc (amopclaid, amprocnum, amproc)
-   SELECT opcl.oid, 7, pro.oid
-   FROM pg_opclass opcl, pg_proc pro
-   WHERE
-      opcamid = (SELECT oid FROM pg_am WHERE amname = 'gist')
-      and opcname = 'gist_geometry_ops'
-      and proname = 'lwgeom_gist_same';
-
-#else
 
 --
 -- Create opclass index bindings for PG>=73
@@ -1298,7 +1028,6 @@ UPDATE pg_opclass
 	
 -- TODO: add btree binding...
 
-#endif
 	
 -------------------------------------------
 -- other lwgeom functions
@@ -2365,8 +2094,6 @@ CREATE AGGREGATE ST_Polygonize (
 	finalfunc = ST_polygonize_garray
 	);
 
-#if POSTGIS_PGSQL_VERSION > 72
-
 CREATE TYPE geometry_dump AS (path integer[], geom geometry);
 
 -- Deprecation in 1.2.3
@@ -2392,8 +2119,6 @@ CREATEFUNCTION ST_DumpRings(geometry)
 	RETURNS SETOF geometry_dump
 	AS 'MODULE_PATHNAME', 'LWGEOM_dump_rings'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
-#endif
 
 ------------------------------------------------------------------------
 
@@ -2574,11 +2299,6 @@ CREATE TABLE geometry_columns (
 	coord_dimension integer not null,
 	srid integer not null,
 	type varchar(30) not null,
-#if POSTGIS_PGSQL_VERSION < 80
-	attrelid oid,
-	varattnum int,
-	stats histogram2d,
-#endif
 	CONSTRAINT geometry_columns_pk primary key ( 
 		f_table_catalog, 
 		f_table_schema, 
@@ -2626,12 +2346,9 @@ DECLARE
 	result text;
 	linked integer;
 	deleted integer;
-#if POSTGIS_PGSQL_VERSION >= 73
 	foundschema integer;
-#endif
 BEGIN
 
-#if POSTGIS_PGSQL_VERSION >= 73
 	-- Since 7.3 schema support has been added.
 	-- Previous postgis versions used to put the database name in
 	-- the schema column. This needs to be fixed, so we try to 
@@ -2671,55 +2388,9 @@ BEGIN
                 );
 
 	GET DIAGNOSTICS foundschema = ROW_COUNT;
-#endif
 
-#if POSTGIS_PGSQL_VERSION >= 80
 	-- no linkage to system table needed
 	return ''fixed:''||foundschema::text;
-#endif
-
-	-- fix linking to system tables
-	SELECT 0 INTO linked;
-	FOR mislinked in
-		SELECT gc.oid as gcrec,
-			a.attrelid as attrelid, a.attnum as attnum
-                FROM geometry_columns gc, pg_class c,
-#if POSTGIS_PGSQL_VERSION >= 73
-		pg_namespace n, pg_attribute a
-#else
-		pg_attribute a
-#endif
-                WHERE ( gc.attrelid IS NULL OR gc.attrelid != a.attrelid 
-			OR gc.varattnum IS NULL OR gc.varattnum != a.attnum)
-#if POSTGIS_PGSQL_VERSION >= 73
-                AND n.nspname = gc.f_table_schema::name
-                AND c.relnamespace = n.oid
-#endif
-                AND c.relname = gc.f_table_name::name
-                AND a.attname = f_geometry_column::name
-                AND a.attrelid = c.oid
-	LOOP
-		UPDATE geometry_columns SET
-			attrelid = mislinked.attrelid,
-			varattnum = mislinked.attnum,
-			stats = NULL
-			WHERE geometry_columns.oid = mislinked.gcrec;
-		SELECT linked+1 INTO linked;
-	END LOOP; 
-
-	-- remove stale records
-	DELETE FROM geometry_columns WHERE attrelid IS NULL;
-
-	GET DIAGNOSTICS deleted = ROW_COUNT;
-
-	result = 
-#if POSTGIS_PGSQL_VERSION >= 73
-		''fixed:'' || foundschema::text ||
-#endif
-		'' linked:'' || linked::text || 
-		'' deleted:'' || deleted::text;
-
-	return result;
 
 END;
 '
@@ -2749,48 +2420,28 @@ BEGIN
 
 	SELECT count(*) INTO probed
 		FROM pg_class c, pg_attribute a, pg_type t, 
-#if POSTGIS_PGSQL_VERSION >= 73
 			pg_namespace n,
 			pg_constraint sridcheck, pg_constraint typecheck
-#else
-			pg_relcheck sridcheck, pg_relcheck typecheck
-#endif 
 
 		WHERE t.typname = ''geometry''
 		AND a.atttypid = t.oid
 		AND a.attrelid = c.oid
-#if POSTGIS_PGSQL_VERSION >= 73
 		AND c.relnamespace = n.oid
 		AND sridcheck.connamespace = n.oid
 		AND typecheck.connamespace = n.oid
-#endif
-
-#if POSTGIS_PGSQL_VERSION >= 73
 		AND sridcheck.conrelid = c.oid
 		AND sridcheck.consrc LIKE ''(srid(''||a.attname||'') = %)''
 		AND typecheck.conrelid = c.oid
 		AND typecheck.consrc LIKE
 	''((geometrytype(''||a.attname||'') = ''''%''''::text) OR (% IS NULL))''
-#else
-		AND sridcheck.rcrelid = c.oid
-		AND sridcheck.rcsrc LIKE ''(srid(''||a.attname||'') = %)''
-		AND typecheck.rcrelid = c.oid
-		AND typecheck.rcsrc LIKE
-	''((geometrytype(''||a.attname||'') = ''''%''''::text) OR (% IS NULL))''
-#endif
 		;
 
 	INSERT INTO geometry_columns SELECT
 		''''::varchar as f_table_catalogue,
-#if POSTGIS_PGSQL_VERSION >= 73
 		n.nspname::varchar as f_table_schema,
-#else
-		''''::varchar as f_table_schema,
-#endif
 		c.relname::varchar as f_table_name,
 		a.attname::varchar as f_geometry_column,
 		2 as coord_dimension,
-#if POSTGIS_PGSQL_VERSION >= 73
 		trim(both  '' =)'' from substr(sridcheck.consrc,
 			strpos(sridcheck.consrc, ''='')))::integer as srid,
 		trim(both '' =)'''''' from substr(typecheck.consrc, 
@@ -2798,32 +2449,12 @@ BEGIN
 			strpos(typecheck.consrc, ''::'')-
 			strpos(typecheck.consrc, ''='')
 			))::varchar as type
-#else
-		trim(both  '' =)'' from substr(sridcheck.rcsrc,
-			strpos(sridcheck.rcsrc, ''='')))::integer as srid,
-		trim(both '' =)'''''' from substr(typecheck.rcsrc, 
-			strpos(typecheck.rcsrc, ''=''),
-			strpos(typecheck.rcsrc, ''::'')-
-			strpos(typecheck.rcsrc, ''='')
-			))::varchar as type
-#endif
-
-#if POSTGIS_PGSQL_VERSION < 80
-		, a.attrelid,
-		a.attnum as varattnum,
-		null::histogram2d as stats
-#endif
 		FROM pg_class c, pg_attribute a, pg_type t, 
-#if POSTGIS_PGSQL_VERSION >= 73
 			pg_namespace n,
 			pg_constraint sridcheck, pg_constraint typecheck
-#else
-			pg_relcheck sridcheck, pg_relcheck typecheck
-#endif 
 		WHERE t.typname = ''geometry''
 		AND a.atttypid = t.oid
 		AND a.attrelid = c.oid
-#if POSTGIS_PGSQL_VERSION >= 73
 		AND c.relnamespace = n.oid
 		AND sridcheck.connamespace = n.oid
 		AND typecheck.connamespace = n.oid
@@ -2832,20 +2463,11 @@ BEGIN
 		AND typecheck.conrelid = c.oid
 		AND typecheck.consrc LIKE
 	''((geometrytype(''||a.attname||'') = ''''%''''::text) OR (% IS NULL))''
-#else
-		AND sridcheck.rcrelid = c.oid
-		AND sridcheck.rcsrc LIKE ''(srid(''||a.attname||'') = %)''
-		AND typecheck.rcrelid = c.oid
-		AND typecheck.rcsrc LIKE
-	''((geometrytype(''||a.attname||'') = ''''%''''::text) OR (% IS NULL))''
-#endif
 
                 AND NOT EXISTS (
                         SELECT oid FROM geometry_columns gc
                         WHERE c.relname::varchar = gc.f_table_name
-#if POSTGIS_PGSQL_VERSION >= 73
                         AND n.nspname::varchar = gc.f_table_schema
-#endif
                         AND a.attname::varchar = gc.f_geometry_column
                 );
 
@@ -2895,11 +2517,9 @@ DECLARE
 	new_srid alias for $5;
 	new_type alias for $6;
 	new_dim alias for $7;
-#if POSTGIS_PGSQL_VERSION >= 73
 	rec RECORD;
 	schema_ok bool;
 	real_schema name;
-#endif
 
 BEGIN
 
@@ -2954,7 +2574,6 @@ BEGIN
 		return ''fail'';
 	END IF;
 
-#if POSTGIS_PGSQL_VERSION >= 73
 	IF ( schema_name != '''' ) THEN
 		schema_ok = ''f'';
 		FOR rec IN SELECT nspname FROM pg_namespace WHERE text(nspname) = schema_name LOOP
@@ -2971,17 +2590,12 @@ BEGIN
 	ELSE
 		SELECT current_schema() into real_schema;
 	END IF;
-#endif
 
 
 	-- Add geometry column
 
 	EXECUTE ''ALTER TABLE '' ||
-#if POSTGIS_PGSQL_VERSION >= 73
 		quote_ident(real_schema) || ''.'' || quote_ident(table_name)
-#else
-		quote_ident(table_name)
-#endif
 		|| '' ADD COLUMN '' || quote_ident(column_name) || 
 		'' geometry '';
 
@@ -2991,11 +2605,7 @@ BEGIN
 	EXECUTE ''DELETE FROM geometry_columns WHERE
 		f_table_catalog = '' || quote_literal('''') || 
 		'' AND f_table_schema = '' ||
-#if POSTGIS_PGSQL_VERSION >= 73
 		quote_literal(real_schema) || 
-#else
-		quote_literal('''') || 
-#endif
 		'' AND f_table_name = '' || quote_literal(table_name) ||
 		'' AND f_geometry_column = '' || quote_literal(column_name);
 
@@ -3004,11 +2614,7 @@ BEGIN
 
 	EXECUTE ''INSERT INTO geometry_columns VALUES ('' ||
 		quote_literal('''') || '','' ||
-#if POSTGIS_PGSQL_VERSION >= 73
 		quote_literal(real_schema) || '','' ||
-#else
-		quote_literal('''') || '','' ||
-#endif
 		quote_literal(table_name) || '','' ||
 		quote_literal(column_name) || '','' ||
 		new_dim::text || '','' || new_srid::text || '','' ||
@@ -3017,22 +2623,14 @@ BEGIN
 	-- Add table checks
 
 	EXECUTE ''ALTER TABLE '' || 
-#if POSTGIS_PGSQL_VERSION >= 73
 		quote_ident(real_schema) || ''.'' || quote_ident(table_name)
-#else
-		quote_ident(table_name)
-#endif
 		|| '' ADD CONSTRAINT '' 
 		|| quote_ident(''enforce_srid_'' || column_name)
 		|| '' CHECK (SRID('' || quote_ident(column_name) ||
 		'') = '' || new_srid::text || '')'' ;
 
 	EXECUTE ''ALTER TABLE '' || 
-#if POSTGIS_PGSQL_VERSION >= 73
 		quote_ident(real_schema) || ''.'' || quote_ident(table_name)
-#else
-		quote_ident(table_name)
-#endif
 		|| '' ADD CONSTRAINT ''
 		|| quote_ident(''enforce_dims_'' || column_name)
 		|| '' CHECK (ndims('' || quote_ident(column_name) ||
@@ -3040,11 +2638,7 @@ BEGIN
 
 	IF (not(new_type = ''GEOMETRY'')) THEN
 		EXECUTE ''ALTER TABLE '' || 
-#if POSTGIS_PGSQL_VERSION >= 73
 		quote_ident(real_schema) || ''.'' || quote_ident(table_name)
-#else
-		quote_ident(table_name)
-#endif
 		|| '' ADD CONSTRAINT ''
 		|| quote_ident(''enforce_geotype_'' || column_name)
 		|| '' CHECK (geometrytype('' ||
@@ -3054,9 +2648,7 @@ BEGIN
 	END IF;
 
 	return 
-#if POSTGIS_PGSQL_VERSION >= 73
 		real_schema || ''.'' || 
-#endif
 		table_name || ''.'' || column_name ||
 		'' SRID:'' || new_srid::text ||
 		'' TYPE:'' || new_type || 
@@ -3127,7 +2719,6 @@ DECLARE
 BEGIN
 
 
-#if POSTGIS_PGSQL_VERSION >= 73
 	-- Find, check or fix schema_name
 	IF ( schema_name != '''' ) THEN
 		okay = ''f'';
@@ -3145,9 +2736,6 @@ BEGIN
 	ELSE
 		SELECT current_schema() into real_schema;
 	END IF;
-#else
-	real_schema = schema_name;
-#endif
 
  	-- Find out if the column is in the geometry_columns table
 	okay = ''f'';
@@ -3165,20 +2753,10 @@ BEGIN
 		quote_literal(table_name)  || '' and f_geometry_column = '' ||
 		quote_literal(column_name);
 	
-#if POSTGIS_PGSQL_VERSION < 73
-	-- Remove not-null constraint to table column 
-	EXECUTE ''update pg_attribute set attnotnull = false from pg_class where pg_attribute.attrelid = pg_class.oid and pg_class.relname = '' || quote_literal(table_name) ||'' and pg_attribute.attname = '' || quote_literal(column_name);
-	-- update the given table/column so that it it all NULLS
-	EXECUTE ''update "''||table_name||''" set "''||column_name||''"= NULL'';
-	-- add = NULL constraint to given table/column
-	EXECUTE ''ALTER TABLE "''||table_name||''" ADD CHECK ("''||column_name||''" IS NULL)'';
-#else
 	-- Remove table column
 	EXECUTE ''ALTER TABLE '' || quote_ident(real_schema) || ''.'' ||
 		quote_ident(table_name) || '' DROP COLUMN '' ||
 		quote_ident(column_name);
-#endif 
-
 
 	RETURN real_schema || ''.'' || table_name || ''.'' || column_name ||'' effectively removed.'';
 	
@@ -3250,33 +2828,25 @@ DECLARE
 
 BEGIN
 
-#if POSTGIS_PGSQL_VERSION >= 73
 	IF ( schema_name = '''' ) THEN
 		SELECT current_schema() into real_schema;
 	ELSE
 		real_schema = schema_name;
 	END IF;
-#endif
 
 	-- Remove refs from geometry_columns table
 	EXECUTE ''DELETE FROM geometry_columns WHERE '' ||
-#if POSTGIS_PGSQL_VERSION >= 73
 		''f_table_schema = '' || quote_literal(real_schema) ||
 		'' AND '' ||
-#endif
 		'' f_table_name = '' || quote_literal(table_name);
 	
 	-- Remove table 
 	EXECUTE ''DROP TABLE ''
-#if POSTGIS_PGSQL_VERSION >= 73
 		|| quote_ident(real_schema) || ''.'' ||
-#endif 
 		quote_ident(table_name);
 
 	RETURN
-#if POSTGIS_PGSQL_VERSION >= 73
 		real_schema || ''.'' ||
-#endif 
 		table_name ||'' dropped.'';
 	
 END;
@@ -3334,7 +2904,6 @@ DECLARE
 BEGIN
 
 
-#if POSTGIS_PGSQL_VERSION >= 73
 	-- Find, check or fix schema_name
 	IF ( schema_name != '''' ) THEN
 		okay = ''f'';
@@ -3351,7 +2920,6 @@ BEGIN
 	ELSE
 		SELECT INTO real_schema current_schema()::text;
 	END IF;
-#endif
 
  	-- Find out if the column is in the geometry_columns table
 	okay = ''f'';
@@ -3374,32 +2942,20 @@ BEGIN
 	cname = ''enforce_srid_''  || column_name;
 
 	-- Drop enforce_srid constraint
-#if POSTGIS_PGSQL_VERSION < 73
-	EXECUTE ''ALTER TABLE '' || quote_ident(table_name) ||
-#else
 	EXECUTE ''ALTER TABLE '' || quote_ident(real_schema) ||
 		''.'' || quote_ident(table_name) ||
-#endif
 		'' DROP constraint '' || quote_ident(cname);
 
 	-- Update geometries SRID
-#if POSTGIS_PGSQL_VERSION < 73
-	EXECUTE ''UPDATE '' || quote_ident(table_name) ||
-#else
 	EXECUTE ''UPDATE '' || quote_ident(real_schema) ||
 		''.'' || quote_ident(table_name) ||
-#endif
 		'' SET '' || quote_ident(column_name) ||
 		'' = setSRID('' || quote_ident(column_name) ||
 		'', '' || new_srid::text || '')'';
 
 	-- Reset enforce_srid constraint
-#if POSTGIS_PGSQL_VERSION < 73
-	EXECUTE ''ALTER TABLE '' || quote_ident(table_name) ||
-#else
 	EXECUTE ''ALTER TABLE '' || quote_ident(real_schema) ||
 		''.'' || quote_ident(table_name) ||
-#endif
 		'' ADD constraint '' || quote_ident(cname) ||
 		'' CHECK (srid('' || quote_ident(column_name) ||
 		'') = '' || new_srid::text || '')'';
@@ -3441,122 +2997,6 @@ BEGIN
 END;
 '
 LANGUAGE 'plpgsql' _VOLATILE_STRICT; -- WITH (isstrict);
-
------------------------------------------------------------------------
--- UPDATE_GEOMETRY_STATS()
------------------------------------------------------------------------
---
--- Only meaningful for PG<75.
--- Gather statisticts about geometry columns for use
--- with cost estimator.
---
--- It is defined also for PG>=75 for back-compatibility
---
------------------------------------------------------------------------
-#if POSTGIS_PGSQL_VERSION >= 80
-CREATEFUNCTION update_geometry_stats() RETURNS text
-AS ' SELECT ''update_geometry_stats() has been obsoleted. Statistics are automatically built running the ANALYZE command''::text' LANGUAGE 'sql';
-#else
-CREATEFUNCTION update_geometry_stats()
-RETURNS text
-AS
-'
-DECLARE
-	result text;
-	stated integer;
-BEGIN
-
-	UPDATE geometry_columns SET
-#if POSTGIS_PGSQL_VERSION >= 73
-		stats = (build_histogram2d(create_histogram2d(
-			find_extent(f_table_schema, f_table_name, f_geometry_column), 40), f_table_schema, f_table_name, f_geometry_column))
-		FROM pg_class c, pg_attribute a, pg_namespace n
-		WHERE n.nspname = f_table_schema::name
-		AND c.relname = f_table_name::name
-		AND c.relnamespace = n.oid
-#else
-		stats = (build_histogram2d(create_histogram2d(
-			find_extent(f_table_name, f_geometry_column),
-			40), f_table_name, f_geometry_column))
-		FROM pg_class c, pg_attribute a
-		WHERE c.relname = f_table_name::name
-#endif
-		AND a.attname = f_geometry_column::name
-		AND a.attrelid = c.oid
-		AND geometry_columns.attrelid is not null;
-
-	GET DIAGNOSTICS stated = ROW_COUNT;
-
-	result = ''stats:'' || stated::text;
-
-	return result;
-END;
-'
-LANGUAGE 'plpgsql' _VOLATILE_STRICT; 
-#endif
-
------------------------------------------------------------------------
--- UPDATE_GEOMETRY_STATS( <table>, <column> )
------------------------------------------------------------------------
---
--- Only meaningful for PG<75.
--- Gather statisticts about a geometry column for use
--- with cost estimator.
---
--- It is defined also for PG>=75 for back-compatibility
---
------------------------------------------------------------------------
-#if POSTGIS_PGSQL_VERSION >= 80
-CREATEFUNCTION update_geometry_stats(varchar,varchar) RETURNS text
-AS 'SELECT update_geometry_stats();' LANGUAGE 'sql' ;
-#else
-CREATEFUNCTION update_geometry_stats(varchar,varchar) RETURNS text
-AS
-'
-DECLARE
-	tablename aliAS for $1;
-	columnname aliAS for $2;
-	stated integer;
-	result text;
-BEGIN
-
-	EXECUTE ''UPDATE geometry_columns SET
-#if POSTGIS_PGSQL_VERSION >= 73
-			stats = (build_histogram2d(create_histogram2d(
-				find_extent(f_table_schema,
-					f_table_name,
-					f_geometry_column), 40),
-					f_table_schema, f_table_name,
-					f_geometry_column))
-			FROM pg_class c, pg_attribute a, pg_namespace n
-			WHERE n.nspname = f_table_schema::name
-			AND c.relname = f_table_name::name
-			AND a.attname = f_geometry_column::name
-			AND c.relnamespace = n.oid
-			AND a.attrelid = c.oid
-#else
-			stats = (build_histogram2d(create_histogram2d(
-				find_extent(f_table_name, f_geometry_column),
-				40), f_table_name, f_geometry_column))
-			FROM pg_class c, pg_attribute a
-			WHERE c.relname = f_table_name::name
-			AND a.attname = f_geometry_column::name
-			AND a.attrelid = c.oid
-#endif
-			AND f_table_name = '' || quote_literal(tablename) || ''
-			AND f_geometry_column = '' || quote_literal(columnname)
-			|| '' AND geometry_columns.attrelid is not null'';
-
-	GET DIAGNOSTICS stated = ROW_COUNT;
-
-	result = ''stats:'' || stated::text;
-
-	return result;
-END;
-'
-LANGUAGE 'plpgsql' _VOLATILE_STRICT;
-
-#endif 
 
 -----------------------------------------------------------------------
 -- FIND_SRID( <schema>, <table>, <geom col> )
@@ -3912,7 +3352,6 @@ CREATEFUNCTION ST_text(bool)
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- 7.3+ explicit casting definitions
-#if POSTGIS_PGSQL_VERSION >= 73
 CREATE CAST (geometry AS box2d) WITH FUNCTION ST_box2d(geometry) AS IMPLICIT;
 CREATE CAST (geometry AS box3d) WITH FUNCTION ST_box3d(geometry) AS IMPLICIT;
 CREATE CAST (geometry AS box) WITH FUNCTION ST_box(geometry) AS IMPLICIT;
@@ -3926,8 +3365,6 @@ CREATE CAST (geometry AS text) WITH FUNCTION ST_text(geometry) AS IMPLICIT;
 CREATE CAST (chip AS geometry) WITH FUNCTION ST_geometry(chip) AS IMPLICIT;
 CREATE CAST (bytea AS geometry) WITH FUNCTION ST_geometry(bytea) AS IMPLICIT;
 CREATE CAST (geometry AS bytea) WITH FUNCTION ST_bytea(geometry) AS IMPLICIT;
--- CREATE CAST (bool AS text) WITH FUNCTION ST_text(bool) AS IMPLICIT;
-#endif
 
 ---------------------------------------------------------------
 -- Algorithms
