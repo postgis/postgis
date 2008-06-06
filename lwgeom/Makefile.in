@@ -33,7 +33,11 @@ SA_OBJS=measures.o \
 	lwmline.o \
 	lwmpoly.o \
 	lwcollection.o \
-	lwgeom_geos_c.o \
+	lwcurve.o \
+	lwcompound.o \
+	lwcurvepoly.o \
+	lwmcurve.o \
+	lwmsurface.o \
 	wktunparse.o \
 	lwgparse.o \
 	wktparse.tab.o \
@@ -47,7 +51,6 @@ PG_OBJS=liblwgeom.o \
 	lwgeom_spheroid.o \
 	lwgeom_ogc.o \
 	lwgeom_functions_analytic.o \
-	$(JTS_OBJ) \
 	lwgeom_inout.o \
 	lwgeom_estimate.o \
 	lwgeom_functions_basic.o \
@@ -59,6 +62,7 @@ PG_OBJS=liblwgeom.o \
 	lwgeom_box3d.o \
 	lwgeom_box2dfloat4.o \
 	lwgeom_chip.o \
+	lwgeom_geos_c.o \
 	lwgeom_svg.o \
 	lwgeom_gml.o \
 	lwgeom_kml.o \
@@ -67,11 +71,6 @@ PG_OBJS=liblwgeom.o \
 	lwgeom_dump.o \
 	lwgeom_functions_lrs.o \
 	long_xact.o \
-	lwcurve.o \
-	lwcompound.o \
-	lwcurvepoly.o \
-	lwmcurve.o \
-	lwmsurface.o \
 	lwgeom_sqlmm.o \
 	lwgeom_rtree.o
 
