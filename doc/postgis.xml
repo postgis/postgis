@@ -3196,7 +3196,7 @@ VACUUM FULL ANALYZE mytable;</programlisting>
             <listitem>
               <para>Returns a geometry that represents the point set
               intersection of the Geometries.  </para>
-			  <para>In other words - that portion of geometry A and geometry B that is shared between the two geometries.</para></para>
+			  <para>In other words - that portion of geometry A and geometry B that is shared between the two geometries.</para>
 
               <para>Performed by the GEOS module</para>
 
@@ -6160,7 +6160,7 @@ z' = z </programlisting> This method is a subcase of
           </listitem>
           <listitem>
 
-            <para>Attach the patch to a new issue in bug tracker.</command></para>
+            <para>Attach the patch to a new issue in bug tracker.</para>
 
           </listitem>
         </orderedlist>
