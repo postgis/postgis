@@ -2954,7 +2954,7 @@ VACUUM FULL ANALYZE mytable;</programlisting>
 
             <listitem>
               <para>Returns 1 (TRUE) if Geometry A is &quot;spatially
-              within&quot; Geometry B.</para>
+              within&quot; Geometry B.  A has to be completely inside B.</para>
 
               <para>Performed by the GEOS module</para>
 
@@ -3177,9 +3177,13 @@ VACUUM FULL ANALYZE mytable;</programlisting>
             <term>ST_ConvexHull(geometry)</term>
 
             <listitem>
-              <para>Returns a geometry that represents the convex hull of this
-              Geometry.</para>
-
+              <para>The convex hull of a geometry represents the minimum closed geometry that encloses all geometries within the set.  </para>
+			  <para>It is usually used with MULTI and Geometry Collections.  Although it is not an aggregate - you can use it in conjunction with ST_Collect to get the convex hull of a set of points.  ST_ConvexHull(ST_Collect(somepointfield)).  It is often used to determine an affected area based on a set of point observations.
+			  </para>
+			  <programlisting>SELECT d.disease_type, ST_ConvexHull(ST_Collect(d.the_geom)) As the_geom 
+			  		FROM disease_obs As d 
+					GROUP BY d.disease_type</programlisting>
+			  
               <para>Performed by the GEOS module</para>
 
               <para>OGC SPEC s2.1.1.3</para>
@@ -3191,7 +3195,8 @@ VACUUM FULL ANALYZE mytable;</programlisting>
 
             <listitem>
               <para>Returns a geometry that represents the point set
-              intersection of the Geometries.</para>
+              intersection of the Geometries.  </para>
+			  <para>In other words - that portion of geometry A and geometry B that is shared between the two geometries.</para></para>
 
               <para>Performed by the GEOS module</para>
 
@@ -3200,6 +3205,14 @@ VACUUM FULL ANALYZE mytable;</programlisting>
               <para>OGC SPEC s2.1.1.3</para>
             </listitem>
           </varlistentry>
+		  
+		  <varlistentry>
+            <term>ST_Shift_Longitude(geometry)</term>
+            <listitem>
+              <para>Reads every point/vertex in every component of every feature in a geometry, and if the longitude coordinate is &lt;0, adds 360 to it. The result would be a 0-360 version of the data to be plotted in a 180 centric map</para>
+            </listitem>
+          </varlistentry>
+
 
           <varlistentry>
             <term>ST_SymDifference(geometry A, geometry B)</term>
@@ -3230,7 +3243,7 @@ VACUUM FULL ANALYZE mytable;</programlisting>
               <para>OGC SPEC s2.1.1.3</para>
             </listitem>
           </varlistentry>
-
+		  
           <varlistentry>
             <term>ST_Union(geometry, geometry)</term>
 
@@ -5364,7 +5377,9 @@ z' = z </programlisting> This method is a subcase of
           <term>ST_ConvexHull</term>
 
           <listitem>
-            <para>Return the convex hull of the ST_Geometry value.</para>
+           <para>The convex hull of a geometry represents the minimum geometry that encloses all geometries within the set.  </para>
+		   <para>It is usually used with MULTI and Geometry Collections.  Although it is not an aggregate - you can use it in conjunction with ST_Collect to get the convex hull of a set of points.  ST_ConvexHull(ST_Collect(somepointfield)).  It is often used to determine an affected area based on a set of point observations.
+		   </para>
 
             <para>SQL-MM 3: 5.1.16</para>
           </listitem>
@@ -5532,6 +5547,7 @@ z' = z </programlisting> This method is a subcase of
           <listitem>
             <para>Return an ST_Geometry value that represents the point set
             intersection of two ST_Geometry values.</para>
+			<para>In other words - that portion of geometry A and geometry B that is shared between the two geometries.</para>
 
             <para>SQL-MM 3: 5.1.18</para>
           </listitem>
