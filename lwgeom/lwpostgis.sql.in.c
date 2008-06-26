@@ -3398,7 +3398,7 @@ CREATEFUNCTION SnapToGrid(geometry, float8, float8)
 -- Availability: 1.2.2
 CREATEFUNCTION ST_SnapToGrid(geometry, float8, float8)
    RETURNS geometry
-   AS 'SELECT SnapToGrid($1, 0, 0, $2, $3)'
+   AS 'SELECT ST_SnapToGrid($1, 0, 0, $2, $3)'
    LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- SnapToGrid(input, size) # xsize=ysize=size, offsets=0
@@ -3411,7 +3411,7 @@ CREATEFUNCTION SnapToGrid(geometry, float8)
 -- Availability: 1.2.2
 CREATEFUNCTION ST_SnapToGrid(geometry, float8)
    RETURNS geometry
-   AS 'SELECT SnapToGrid($1, 0, 0, $2, $2)'
+   AS 'SELECT ST_SnapToGrid($1, 0, 0, $2, $2)'
    LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- SnapToGrid(input, point_offsets, xsize, ysize, zsize, msize)
