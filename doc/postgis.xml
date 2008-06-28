@@ -4619,11 +4619,24 @@ dimension
               <para>This function returns a GEOMETRYCOLLECTION or a MULTI
               object from a set of geometries. The collect() function is an
               &quot;aggregate&quot; function in the terminology of PostgreSQL.
-              That means that it operators on lists of data, in the same way
+              That means that it operates on rows of data, in the same way
               the sum() and mean() functions do. For example, &quot;SELECT
               COLLECT(GEOM) FROM GEOMTABLE GROUP BY ATTRCOLUMN&quot; will
               return a separate GEOMETRYCOLLECTION for each distinct value of
               ATTRCOLUMN.</para>
+			  <para>ST_Collect and ST_Union are often interchangeable.  ST_Collect is in general orders of magnitude faster than ST_Union because it does not try to dissolve
+			  boundaries.  It merely rolls up single geometries into MULTI and MULTI or mixed in Geometry Collection.  Unfortunately geometry collections are not well-supported by 
+			  GIS tools.  To prevent ST_Collect from returning a Geometry Collection when collecting MULTI geometries, one can use the below trick that utilizes ST_Dump to expand the MULTIs out to singles and then regroup them.
+			  </para>
+			  <programlisting>
+			  	Thread ref: http://postgis.refractions.net/pipermail/postgis-users/2008-June/020331.html
+			  	SELECT stusps, 
+					   ST_Multi(ST_Collect(f.the_geom)) as singlegeom  
+					 FROM (SELECT stusps, (ST_Dump(the_geom)).geom As the_geom 
+					 			FROM
+					 			somestatetable ) As f
+				GROUP BY stusps
+			  </programlisting>
             </listitem>
           </varlistentry>
 
