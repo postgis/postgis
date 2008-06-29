@@ -8,14 +8,6 @@
 #include "liblwgeom.h"
 #include "pgsql_compat.h"
 
-#ifndef PG_NARGS
-#define PG_NARGS() (fcinfo->nargs)
-#endif
-
-#if POSTGIS_PGSQL_VERSION < 82 
-#define ARR_OVERHEAD_NONULLS(x) ARR_OVERHEAD((x))
-#endif
-
 void *pg_alloc(size_t size);
 void *pg_realloc(void *ptr, size_t size);
 void pg_free(void *ptr);
