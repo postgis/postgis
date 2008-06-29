@@ -67,9 +67,6 @@ extern int pglwgeom_getSRID(PG_LWGEOM *pglwgeom);
 
 extern Oid getGeometryOID(void);
 
-/* call this as first thing of any PG function */
-void init_pg_func(void);
-
 /* PG-dependant */
 /* BOX is postgresql standard type */
 extern void box_to_box2df_p(BOX *box, BOX2DFLOAT4 *out);  

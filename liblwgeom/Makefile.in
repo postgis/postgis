@@ -1,0 +1,51 @@
+# **********************************************************************
+# * $Id: Makefile.in 
+# *
+# * PostGIS - Spatial Types for PostgreSQL
+# * http://postgis.refractions.net
+# * Copyright 2008 Mark Cave-Ayland
+# *
+# * This is free software; you can redistribute and/or modify it under
+# * the terms of the GNU General Public Licence. See the COPYING file.
+# *
+# **********************************************************************
+
+CC=@CC@
+CFLAGS=@CFLAGS@ -Wall -Wmissing-prototypes -fPIC 
+
+# Standalone LWGEOM objects
+SA_OBJS=measures.o \
+	box2d.o \
+	ptarray.o \
+	lwgeom_api.o \
+	lwgeom.o \
+	lwpoint.o \
+	lwline.o \
+	lwpoly.o \
+	lwmpoint.o \
+	lwmline.o \
+	lwmpoly.o \
+	lwcollection.o \
+	lwcurve.o \
+	lwcompound.o \
+	lwcurvepoly.o \
+	lwmcurve.o \
+	lwmsurface.o \
+	lwutil.o \
+	lwgunparse.o \
+	lwgparse.o \
+	wktparse.tab.o \
+	lex.yy.o \
+	vsprintf.o	
+
+all: $(SA_OBJS)
+	ar rs liblwgeom.a $(SA_OBJS) 	
+
+clean:
+	rm -f $(SA_OBJS) 
+	rm -f liblwgeom.a 
+
+# Command to build each of the .o files
+$(SA_OBJS): %.o: %.c
+	$(CC) $(CFLAGS) -c -o $@ $<
+ 

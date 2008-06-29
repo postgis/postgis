@@ -8,7 +8,7 @@
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
 #include "profile.h"
-#include "wktparse.h"
+
 #include "geos_c.h"
 #include "lwgeom_rtree.h"
 

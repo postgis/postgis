@@ -25,8 +25,6 @@
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
 #include "profile.h"
-#include "wktparse.h"
-
 
 Datum LWGEOM_mem_size(PG_FUNCTION_ARGS);
 Datum LWGEOM_summary(PG_FUNCTION_ARGS);
@@ -111,8 +109,6 @@ Datum LWGEOM_summary(PG_FUNCTION_ARGS)
 	char *result;
 	text *mytext;
 	LWGEOM *lwgeom;
-
-	init_pg_func();
 
 	lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom));
 
@@ -2910,10 +2906,8 @@ Datum LWGEOM_asEWKT(PG_FUNCTION_ARGS)
 	PG_LWGEOM *lwgeom;
 	char *result_cstring;
 	int len;
-    char *result,*loc_wkt;
+	char *result,*loc_wkt;
 	/*char *semicolonLoc; */
-
-	init_pg_func();
 
 	lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	result_cstring =  unparse_WKT(SERIALIZED_FORM(lwgeom),lwalloc,lwfree);
@@ -2953,8 +2947,6 @@ Datum LWGEOM_azimuth(PG_FUNCTION_ARGS)
 	POINT2D p1, p2;
 	double result;
 	int SRID;
-
-	init_pg_func();
 
 	/* Extract first point */
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));

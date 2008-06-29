@@ -24,7 +24,6 @@
 
 
 #include "lwgeom_pg.h"
-#include "wktparse.h"
 #include "profile.h"
 
 void elog_ERROR(const char* string);
@@ -97,8 +96,6 @@ Datum LWGEOM_out(PG_FUNCTION_ARGS)
 	PG_LWGEOM *lwgeom;
 	char *result;
 
-	init_pg_func();
-
 	lwgeom = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	result = unparse_WKB(SERIALIZED_FORM(lwgeom),lwalloc,lwfree,-1,NULL,1);
 
@@ -117,8 +114,6 @@ Datum LWGEOM_asHEXEWKB(PG_FUNCTION_ARGS)
 	size_t size;
 	text *type;
 	unsigned int byteorder=-1;
-
-	init_pg_func();
 
 	lwgeom = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
@@ -168,8 +163,6 @@ Datum LWGEOM_to_text(PG_FUNCTION_ARGS)
 	char *result;
 	text *text_result;
 	size_t size;
-
-	init_pg_func();
 
 	lwgeom = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	result = unparse_WKB(SERIALIZED_FORM(lwgeom),lwalloc,lwfree,-1,&size,1);
@@ -249,8 +242,6 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 #ifdef PROFILE
 	profstart(PROF_QRUN);
 #endif
-
-	init_pg_func();
 
 	if ( (PG_NARGS()>1) && (!PG_ARGISNULL(1)) )
 	{
@@ -479,8 +470,6 @@ Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS)
 	char *wkt;
 	int wkt_size ;
 
-	init_pg_func();
-
 	wkt_size = VARSIZE(wkt_input)-VARHDRSZ; /* actual letters */
 
 	wkt = palloc( wkt_size+1); /* +1 for null */
@@ -490,7 +479,7 @@ Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUGF(3, "in parse_WKT_lwgeom with input: '%s'",wkt);
 
-	serialized_lwgeom = parse_lwg((const char *)wkt, (allocator)lwalloc, (report_error)elog_ERROR);
+	serialized_lwgeom = parse_lwgeom_wkt(wkt);
 	lwgeom = lwgeom_deserialize(serialized_lwgeom->lwgeom);
     
 	ret = pglwgeom_serialize(lwgeom);

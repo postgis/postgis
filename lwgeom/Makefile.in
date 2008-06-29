@@ -20,33 +20,8 @@ DATA=../spatial_ref_sys.sql
 # SQL objects (files requiring C pre-processing)
 SQL_OBJS=lwpostgis.sql.in
 
-# Standalone LWGEOM objects
-SA_OBJS=measures.o \
-	box2d.o \
-	ptarray.o \
-	lwgeom_api.o \
-	lwgeom.o \
-	lwpoint.o \
-	lwline.o \
-	lwpoly.o \
-	lwmpoint.o \
-	lwmline.o \
-	lwmpoly.o \
-	lwcollection.o \
-	lwcurve.o \
-	lwcompound.o \
-	lwcurvepoly.o \
-	lwmcurve.o \
-	lwmsurface.o \
-	wktunparse.o \
-	lwgparse.o \
-	wktparse.tab.o \
-	lex.yy.o \
-	vsprintf.o	
-
 # PostgreSQL objects
-PG_OBJS=liblwgeom.o \
-	lwgeom_pg.o \
+PG_OBJS=lwgeom_pg.o \
 	lwgeom_debug.o \
 	lwgeom_spheroid.o \
 	lwgeom_ogc.o \
@@ -75,10 +50,11 @@ PG_OBJS=liblwgeom.o \
 	lwgeom_rtree.o
 
 # Objects to build using PGXS
-OBJS=$(SA_OBJS) $(PG_OBJS)
+OBJS=$(PG_OBJS)
 
 # Libraries to link into the module (proj, geos)
-SHLIB_LINK=@SHLIB_LINK@
+PG_CPPFLAGS=@CPPFLAGS@ -I../liblwgeom
+SHLIB_LINK=@SHLIB_LINK@ -L../liblwgeom -llwgeom
 
 # Extra files to remove during 'make clean'
 EXTRA_CLEAN=$(SQL_OBJS)

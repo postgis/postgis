@@ -3,7 +3,7 @@
 
 #include "../postgis_config.h"
 #include <stdio.h>
-#include "compat.h"
+/* #include "compat.h" */
 
 #define INTEGRITY_CHECKS 1
 
@@ -24,6 +24,8 @@
 /*
  * Memory management function types
  */
+extern void lwgeom_init_allocators(void);
+
 typedef void* (*lwallocator)(size_t size);
 typedef void* (*lwreallocator)(void *mem, size_t size);
 typedef void (*lwfreeor)(void* mem);
@@ -1111,8 +1113,12 @@ extern LWCOLLECTION *lwcollection_segmentize2d(LWCOLLECTION *coll, double dist);
 
 extern uchar parse_hex(char *str);
 extern void deparse_hex(uchar str, char *result);
-extern SERIALIZED_LWGEOM *parse_lwgeom_wkt(char *wkt_input);
 
+/* Parser access routines */
+extern char *unparse_WKT(uchar* serialized, lwallocator alloc, lwfreeor free);
+extern char *unparse_WKB(uchar* serialized, lwallocator alloc, lwfreeor free, char endian, size_t *outsize, uchar hex);
+
+extern SERIALIZED_LWGEOM *parse_lwgeom_wkt(char *wkt_input);
 extern char *lwgeom_to_ewkt(LWGEOM *lwgeom);
 extern char *lwgeom_to_hexwkb(LWGEOM *lwgeom, unsigned int byteorder);
 extern LWGEOM *lwgeom_from_ewkb(uchar *ewkb, size_t ewkblen);

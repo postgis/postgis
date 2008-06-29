@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id$
+ * $Id: lwmpoint.c 2369 2006-05-30 08:38:58Z strk $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net

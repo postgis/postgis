@@ -8,8 +8,6 @@
 #include <executor/spi.h>
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
-#include "wktparse.h"
-
 
 
 #define PARANOIA_LEVEL 1
@@ -17,7 +15,6 @@
 /*
  * This is required for builds against pgsql 8.2
  */
-/*#include "pgmagic.h"*/
 #ifdef PG_MODULE_MAGIC
 PG_MODULE_MAGIC;
 #endif
@@ -100,8 +97,9 @@ pg_notice(const char *fmt, ...)
 }
 
 void
-init_pg_func(void)
+lwgeom_init_allocators(void)
 {
+	/* liblwgeom callback - install PostgreSQL handlers */
 	lwalloc_var = pg_alloc;
 	lwrealloc_var = pg_realloc;
 	lwfree_var = pg_free;

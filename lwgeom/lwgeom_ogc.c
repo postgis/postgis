@@ -28,9 +28,6 @@
 #include "lwgeom_pg.h"
 
 
-
-#include "wktparse.h"
-
 /* ---- SRID(geometry) */
 Datum LWGEOM_getSRID(PG_FUNCTION_ARGS);
 /* ---- SetSRID(geometry, integer) */
@@ -120,8 +117,6 @@ Datum LWGEOM_getTYPE(PG_FUNCTION_ARGS)
 	char *result;
 	int32 size;
 	uchar type;
-
-	init_pg_func();
 
 	lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	text_ob = lwalloc(20+VARHDRSZ);
@@ -1077,8 +1072,6 @@ Datum LWGEOM_asText(PG_FUNCTION_ARGS)
         
 	POSTGIS_DEBUG(2, "LWGEOM_asText called.");
 
-	init_pg_func();
-
 	lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	/* Force to 2d */
@@ -1112,8 +1105,6 @@ Datum LWGEOM_asBinary(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *ogclwgeom;
 	char *result;
-
-	init_pg_func();
 
 	/* Force to 2d */
 	ogclwgeom = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall1(

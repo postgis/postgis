@@ -19,10 +19,6 @@
 #include "lwgeom_pg.h"
 #include "stringBuffer.h"
 
-#if POSTGIS_DEBUG_LEVEL > 0
-#include "wktparse.h"
-#endif
-
 
 /*
  * implementation GiST support and basic LWGEOM operations (like &&)

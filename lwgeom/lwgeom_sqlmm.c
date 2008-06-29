@@ -19,7 +19,7 @@
 #include "postgres.h"
 #include "liblwgeom.h"
 #include "fmgr.h"
-#include "wktparse.h"
+
 #include "lwgeom_pg.h"
 
 

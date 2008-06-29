@@ -4,13 +4,13 @@
 #
 #-----------------------------------------------------
 
-all: liblwgeom loaderdumper utils 
+all: postgis loaderdumper utils 
 
-install: all liblwgeom-install loaderdumper-install 
+install: all postgis-install loaderdumper-install 
 
-uninstall: liblwgeom-uninstall loaderdumper-uninstall docs-uninstall 
+uninstall: postgis-uninstall loaderdumper-uninstall docs-uninstall 
 
-clean: liblwgeom-clean loaderdumper-clean docs-clean test-clean 
+clean: liblwgeom-clean postgis-clean loaderdumper-clean docs-clean test-clean 
 	rm -f lwpostgis.sql lwpostgis_upgrade.sql
 
 distclean: clean
@@ -35,16 +35,24 @@ test check:
 test-clean:
 	$(MAKE) -C regress clean
 
-liblwgeom: 
-	$(MAKE) -C lwgeom 
+liblwgeom/liblwgeom.a:
+	$(MAKE) -C liblwgeom 
+
+liblwgeom: liblwgeom/liblwgeom.a 
 
 liblwgeom-clean:
+	$(MAKE) -C liblwgeom clean
+
+postgis: liblwgeom/liblwgeom.a 
+	$(MAKE) -C lwgeom 
+
+postgis-clean:
 	$(MAKE) -C lwgeom clean
 
-liblwgeom-install:
+postgis-install:
 	$(MAKE) -C lwgeom install
 
-liblwgeom-uninstall:
+postgis-uninstall:
 	$(MAKE) -C lwgeom uninstall
 
 loaderdumper:

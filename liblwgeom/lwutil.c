@@ -1,39 +1,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#include <string.h>
 
-#define CONTEXT_PG 0
-#define CONTEXT_SA 1
-
-
-
-#ifdef STANDALONE
-#define DEFAULT_CONTEXT CONTEXT_SA
-#else
-#define DEFAULT_CONTEXT CONTEXT_PG
-#endif
 
 /* Global variables */
 #include "../postgis_config.h"
-
-#if DEFAULT_CONTEXT == CONTEXT_SA
-#include "liblwgeom.h"
-lwallocator lwalloc_var = default_allocator;
-lwreallocator lwrealloc_var = default_reallocator;
-lwfreeor lwfree_var = default_freeor;
-lwreporter lwerror = default_errorreporter;
-lwreporter lwnotice = default_noticereporter;
-#else
-#include "lwgeom_pg.h"
 #include "liblwgeom.h"
 
-lwallocator lwalloc_var = pg_alloc;
-lwreallocator lwrealloc_var = pg_realloc;
-lwfreeor lwfree_var = pg_free;
-lwreporter lwerror = pg_error;
-lwreporter lwnotice = pg_notice;
-#endif
+void *init_allocator(size_t size);
+void init_freeor(void *mem);
+void *init_reallocator(void *mem, size_t size);
+void init_noticereporter(const char *fmt, ...);
+void init_errorreporter(const char *fmt, ...);
 
+lwallocator lwalloc_var = init_allocator;
+lwreallocator lwrealloc_var = init_reallocator;
+lwfreeor lwfree_var = init_freeor;
+lwreporter lwerror = init_errorreporter;
+lwreporter lwnotice = init_noticereporter;
 
 static char *lwgeomTypeName[] = {
 	"Unknown",
@@ -53,6 +38,74 @@ static char *lwgeomTypeName[] = {
         "MultiCurve",
         "MultiSurface"
 };
+
+
+/*
+ * Initialisation allocators
+ *
+ * These are used the first time any of the allocators are called
+ * to enable executables/libraries that link into liblwgeom to
+ * be able to set up their own allocators. This is mainly useful
+ * for older PostgreSQL versions that don't have functions that
+ * are called upon startup.
+ */
+
+void *
+init_allocator(size_t size)
+{
+	lwgeom_init_allocators();
+
+	return lwalloc_var(size);
+}
+
+void 
+init_freeor(void *mem)
+{
+	lwgeom_init_allocators();
+
+	lwfree_var(mem);
+}
+
+void *
+init_reallocator(void *mem, size_t size)
+{
+	lwgeom_init_allocators();
+
+	return lwrealloc_var(mem, size);
+}
+
+void
+init_noticereporter(const char *fmt, ...)
+{
+	va_list ap;
+
+	lwgeom_init_allocators();
+
+	va_start(ap, fmt);
+	lwnotice(fmt, ap);
+	va_end(ap);
+}
+	
+void
+init_errorreporter(const char *fmt, ...)
+{
+	va_list ap;
+
+	lwgeom_init_allocators();
+
+	va_start(ap, fmt);
+	lwerror(fmt, ap);
+	va_end(ap);
+}
+
+
+/*
+ * Default allocators
+ *
+ * We include some default allocators that use malloc/free/realloc
+ * along with stdout/stderr since this is the most common use case
+ *
+ */
 
 void *
 default_allocator(size_t size)
@@ -118,6 +171,22 @@ default_errorreporter(const char *fmt, ...)
 	free(msg);
 	exit(1);
 }
+
+
+/*
+ * This function should be called from lwgeom_init_allocators() by programs
+ * which wish to use the default allocators above
+ */
+
+void lwgeom_install_default_allocators()
+{
+	lwalloc_var = default_allocator;
+	lwrealloc_var = default_reallocator;
+	lwfree_var = default_freeor;
+	lwerror = default_errorreporter;	
+	lwnotice = default_noticereporter;
+}
+ 
 
 const char *
 lwgeom_typename(int type)
