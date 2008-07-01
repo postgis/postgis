@@ -11,7 +11,7 @@
 # **********************************************************************
 
 CC=@CC@
-CFLAGS=@CFLAGS@ -Wall -Wmissing-prototypes -fPIC 
+CFLAGS=@CFLAGS@ @PICFLAGS@ @WARNFLAGS@ 
 
 # Standalone LWGEOM objects
 SA_OBJS=measures.o \

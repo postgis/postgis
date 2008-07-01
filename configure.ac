@@ -13,6 +13,10 @@ dnl **********************************************************************
 AC_INIT()
 AC_CONFIG_HEADERS([postgis_config.h])
 
+dnl Invoke libtool: we do this as it is the easiest way to find the PIC
+dnl flags required to build liblwgeom
+AC_PROG_LIBTOOL
+
 dnl
 dnl Compilers
 dnl
@@ -20,6 +24,19 @@ AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_CXX
 
+dnl
+dnl Define PIC flags in PICFLAGS (note: this variable is set as part of libtool initialisation above)
+dnl
+PICFLAGS="$lt_prog_compiler_pic"
+AC_SUBST([PICFLAGS])
+
+dnl
+dnl For GCC enable additional warning flags -Wall and -Wmissing-prototypes (using macro included with libtool)
+dnl
+WARNFLAGS=""
+AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -Wall], [dummy], [-Wall], [], [WARNFLAGS="$WARNFLAGS -Wall"], []) 
+AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -Wmissing-prototypes], [dummy], [-Wmissing-prototypes], [], [WARNFLAGS="$WARNFLAGS -Wmissing-prototypes"], []) 
+AC_SUBST([WARNFLAGS])
 
 dnl
 dnl Version Information imported from Version.config 
