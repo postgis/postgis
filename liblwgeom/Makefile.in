@@ -13,6 +13,9 @@
 CC=@CC@
 CFLAGS=@CFLAGS@ @PICFLAGS@ @WARNFLAGS@ 
 
+YACC=@YACC@
+LEX=@LEX@
+
 # Standalone LWGEOM objects
 SA_OBJS=measures.o \
 	box2d.o \
@@ -48,4 +51,13 @@ clean:
 # Command to build each of the .o files
 $(SA_OBJS): %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
+
+# Commands to generate the lexer and parser from input files
+wktparse.tab.c: wktparse.y
+	$(YACC) -vd -p lwg_parse_yy wktparse.y
+	mv -f y.tab.c wktparse.tab.c
+	mv -f y.tab.h wktparse.tab.h
+ 
+lex.yy.c: wktparse.lex wktparse.tab.c
+	$(LEX) -Plwg_parse_yy -i -f -o 'lex.yy.c' wktparse.lex
  

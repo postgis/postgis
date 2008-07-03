@@ -47,6 +47,16 @@ POSTGIS_MICRO_VERSION=`cat Version.config | grep POSTGIS_MICRO_VERSION | sed 's/
 
 
 dnl
+dnl Search for flex/bison to build the parser
+dnl
+
+AC_PROG_LEX
+AC_PROG_YACC
+AC_SUBST([LEX])
+AC_SUBST([YACC])
+
+
+dnl
 dnl Search for xsltproc which is required for building documentation
 dnl
 
