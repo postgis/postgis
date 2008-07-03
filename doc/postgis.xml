@@ -3178,7 +3178,8 @@ VACUUM FULL ANALYZE mytable;</programlisting>
 
             <listitem>
               <para>The convex hull of a geometry represents the minimum closed geometry that encloses all geometries within the set.  </para>
-			  <para>It is usually used with MULTI and Geometry Collections.  Although it is not an aggregate - you can use it in conjunction with ST_Collect to get the convex hull of a set of points.  ST_ConvexHull(ST_Collect(somepointfield)).  It is often used to determine an affected area based on a set of point observations.
+			  <para>It is usually used with MULTI and Geometry Collections.  Although it is not an aggregate - you can use it in conjunction with ST_Collect to get the convex hull of a set of points.  
+			  ST_ConvexHull(ST_Collect(somepointfield)).  It is often used to determine an affected area based on a set of point observations.
 			  </para>
 			  <programlisting>SELECT d.disease_type, ST_ConvexHull(ST_Collect(d.the_geom)) As the_geom 
 	FROM disease_obs As d 
@@ -4552,6 +4553,12 @@ dimension
               <para>Creates a Linestring from a set of point geometries. You
               might want to use a subselect to order points before feeding
               them to this aggregate.</para>
+			  <programlisting>
+SELECT gps.gps_track, ST_MakeLine(gps.the_geom) As newgeom
+	FROM (SELECT gps_track,gps_time, the_geom
+			FROM gps_points ORDER BY gps_track, gps_time) As gps
+	GROUP BY gps.gps_track
+			  </programlisting>
             </listitem>
           </varlistentry>
 
@@ -4560,6 +4567,9 @@ dimension
 
             <listitem>
               <para>Creates a Linestring from the two given point geometries.</para>
+			  <programlisting>
+SELECT ST_AsText(ST_MakeLine(ST_MakePoint(1,2), ST_MakePoint(3,4)))
+			  </programlisting>
             </listitem>
           </varlistentry>
 
@@ -4620,8 +4630,8 @@ dimension
               object from a set of geometries. The collect() function is an
               &quot;aggregate&quot; function in the terminology of PostgreSQL.
               That means that it operates on rows of data, in the same way
-              the sum() and mean() functions do. For example, &quot;SELECT
-              COLLECT(GEOM) FROM GEOMTABLE GROUP BY ATTRCOLUMN&quot; will
+              the SUM() and AVG() functions do. For example, &quot;SELECT
+              ST_Collect(GEOM) FROM GEOMTABLE GROUP BY ATTRCOLUMN&quot; will
               return a separate GEOMETRYCOLLECTION for each distinct value of
               ATTRCOLUMN.</para>
 			  <para>ST_Collect and ST_Union are often interchangeable.  
@@ -4670,8 +4680,8 @@ GROUP BY stusps
 			  	it creates new rows. For example it can be use to expand MULTIPOLYGONS into POLYGONS.</para>
 				
 			  <programlisting>
-SELECT sometable.*, (ST_Dump(the_geom)).geom As the_geom 
-	 FROM somestatetable
+SELECT sometable.field1, sometable.field1, (ST_Dump(sometable.the_geom)).geom As the_geom 
+	 FROM sometable
 			  </programlisting>
 				
 
