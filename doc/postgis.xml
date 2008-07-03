@@ -4,7 +4,7 @@
 <!ENTITY long_xact SYSTEM "long_xact.xml">
 ]>
 <book>
-  <title>PostGIS Manual</title>
+  <title>PostGIS @@LAST_RELEASE_VERSION@@ Manual</title>
 
   <bookinfo>
     <editor>
