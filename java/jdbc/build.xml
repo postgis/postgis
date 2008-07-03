@@ -42,7 +42,7 @@
 
   <!-- Load in the version information from Version.config -->
   <property file="${versioninfo}"/>
-  <property name="postgis_version" value="${REL_MAJOR_VERSION}.${REL_MINOR_VERSION}.${REL_MICRO_VERSION}"/>
+  <property name="postgis_version" value="${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}"/>
 
   <!-- Build classpath - required to build the PostGIS JDBC driver -->
   <path id="buildclasspath">
