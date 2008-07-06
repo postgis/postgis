@@ -2052,8 +2052,7 @@ SELECT
 FROM 
   bc_roads AS r, 
   bc_municipality AS m 
-WHERE ST_Intersects(r.the_geom, m.the_geom)
-  AND m.name = 'PRINCE GEORGE';</programlisting>
+WHERE  m.name = 'PRINCE GEORGE' AND ST_Intersects(r.the_geom, m.the_geom);</programlisting>
             </answer>
           </qandaentry>
 
@@ -2069,9 +2068,8 @@ WHERE ST_Intersects(r.the_geom, m.the_geom)
 FROM 
   bc_roads r, 
   bc_municipality m 
-WHERE ST_Contains(m.the_geom, r.the_geom) 
-  AND r.name = 'Douglas St' 
-  AND m.name = 'VICTORIA'; 
+WHERE  r.name = 'Douglas St' AND m.name = 'VICTORIA' 
+	AND ST_Contains(m.the_geom, r.the_geom) ; 
 
 kilometers 
 ------------------
@@ -3342,7 +3340,7 @@ VACUUM FULL ANALYZE mytable;</programlisting>
               and the largest dimension of the components of a
               GEOMETRYCOLLECTION.</para>
 
-              <programlisting>select dimension('GEOMETRYCOLLECTION(LINESTRING(1 1,0 0),POINT(0 0)'); 
+              <programlisting>SELECT ST_dimension('GEOMETRYCOLLECTION(LINESTRING(1 1,0 0),POINT(0 0))'); 
 dimension 
 ----------- 
 1</programlisting>
