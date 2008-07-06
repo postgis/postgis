@@ -855,7 +855,7 @@ AND
           </listitem>
 
           <listitem>
-            <para>GEOMETRYCOLLECTION(POINT(2 3),LINESTRING((2 3,3 4)))</para>
+            <para>GEOMETRYCOLLECTION(POINT(2 3),LINESTRING(2 3,3 4))</para>
           </listitem>
         </itemizedlist>
 
