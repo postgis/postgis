@@ -4608,7 +4608,8 @@ SELECT ST_GeomFromText('LINESTRING(75.15 29.53,77 29,77.6 29.5)') As open_line) 
 --Build a donut with an ant hole
 SELECT ST_MakePolygon(
 		ST_ExteriorRing(ST_Buffer(foo.line,10)),
-		ARRAY[ST_Translate(foo.line,1,1),ST_ExteriorRing(ST_Buffer(ST_MakePoint(20,20),1)) ]
+	ARRAY[ST_Translate(foo.line,1,1),
+		ST_ExteriorRing(ST_Buffer(ST_MakePoint(20,20),1)) ]
 	)
 FROM 
 	(SELECT ST_ExteriorRing(ST_Buffer(ST_MakePoint(10,10),10,10))
@@ -4705,7 +4706,8 @@ GROUP BY stusps
 			  	it creates new rows. For example it can be use to expand MULTIPOLYGONS into POLYGONS.</para>
 				
 			  <programlisting>
-SELECT sometable.field1, sometable.field1, (ST_Dump(sometable.the_geom)).geom As the_geom 
+SELECT sometable.field1, sometable.field1, 
+(ST_Dump(sometable.the_geom)).geom As the_geom 
 	 FROM sometable
 			  </programlisting>
 				
@@ -4758,12 +4760,22 @@ SELECT sometable.field1, sometable.field1, (ST_Dump(sometable.the_geom)).geom As
           </varlistentry>
 
           <varlistentry>
-            <term>ST_AddPoint(linestring, point, [&lt;position&gt;])</term>
+		  	<term>ST_AddPoint(linestring geometry, point geometry)</term>
+            <term>ST_AddPoint(linestring geometry, point geometry, position integer)</term>
 
             <listitem>
-              <para>Adds a point to a LineString before point &lt;pos&gt;
+              <para>Adds a point to a LineString before point &lt;position&gt;
               (0-based index). Third parameter can be omitted or set to -1 for
               appending.</para>
+			  <programlisting>
+--guarantee all linestrings in a table are closed
+--by adding the start point of each linestring to the end of the line string 
+--only for those that are not closed
+UPDATE sometable
+	SET the_geom = ST_AddPoint(the_geom, ST_StartPoint(the_geom))
+	FROM sometable
+	WHERE ST_IsClosed(the_geom) = false;
+			  </programlisting>
             </listitem>
           </varlistentry>
 
@@ -5190,9 +5202,9 @@ z' = z </programlisting> This method is a subcase of
               <para>The extent() function is an &quot;aggregate&quot; function
               in the terminology of PostgreSQL. That means that it operators
               on lists of data, in the same way the sum() and mean() functions
-              do. For example, &quot;SELECT EXTENT(GEOM) FROM GEOMTABLE&quot;
-              will return a BOX3D giving the maximum extend of all features in
-              the table. Similarly, &quot;SELECT EXTENT(GEOM) FROM GEOMTABLE
+              do. For example, &quot;SELECT ST_Extent(GEOM) FROM GEOMTABLE&quot;
+              will return a BOX3D giving the maximum extent of all features in
+              the table. Similarly, &quot;SELECT ST_Extent(GEOM) FROM GEOMTABLE
               GROUP BY CATEGORY&quot; will return one extent result for each
               category.</para>
             </listitem>
