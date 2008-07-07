@@ -4579,15 +4579,42 @@ SELECT ST_AsText(ST_MakeLine(ST_MakePoint(1,2), ST_MakePoint(3,4)))
             </listitem>
           </varlistentry>
 
-          <varlistentry>
-            <term>ST_MakePolygon(linestring, [linestring[]])</term>
+		  <varlistentry>
+            <term>ST_MakePolygon(linestring geometry)</term>
 
+            <listitem>
+              <para>Creates a Polygon formed by the given shell. Input geometries must be closed
+              LINESTRINGS (see <link linkend="IsClosed">ST_IsClosed</link> and
+              <link linkend="GeometryType">ST_GeometryType</link>). This function will not accept a MULTILINESTRING.</para>
+			  <programlisting>
+SELECT ST_MakePolygon(ST_GeomFromText('LINESTRING(75.15 29.53,77 29,77.6 29.5, 75.15 29.53)'));
+--If linestring is not closed
+--you can add the start point to close it
+SELECT ST_MakePolygon(ST_AddPoint(foo.open_line, ST_StartPoint(foo.open_line)))
+FROM (
+SELECT ST_GeomFromText('LINESTRING(75.15 29.53,77 29,77.6 29.5)') As open_line) As foo
+			  </programlisting>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>ST_MakePolygon(linestring geometry, linestrings geometry[])</term>
             <listitem>
               <para>Creates a Polygon formed by the given shell and array of
               holes. You can construct a geometry array using <link
-              linkend="Accum">Accum</link>. Input geometries must be closed
-              LINESTRINGS (see <link linkend="IsClosed">IsClosed</link> and
-              <link linkend="GeometryType">GeometryType</link>).</para>
+              linkend="Accum">ST_Accum</link> or the PostgreSQL ARRAY[] and ARRAY() constructs. Input geometries must be closed
+              LINESTRINGS (see <link linkend="IsClosed">ST_IsClosed</link> and
+              <link linkend="GeometryType">ST_GeometryType</link>).</para>
+			  <programlisting>
+--Build a donut with an ant hole
+SELECT ST_MakePolygon(
+		ST_ExteriorRing(ST_Buffer(foo.line,10)),
+		ARRAY[ST_Translate(foo.line,1,1),ST_ExteriorRing(ST_Buffer(ST_MakePoint(20,20),1)) ]
+	)
+FROM 
+	(SELECT ST_ExteriorRing(ST_Buffer(ST_MakePoint(10,10),10,10))
+		As line )
+		As foo	
+			  </programlisting>
             </listitem>
           </varlistentry>
 
