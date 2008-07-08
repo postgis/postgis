@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter>
+  <title>Introduction</title>
+
+  <para>PostGIS is developed by Refractions Research Inc, as a spatial
+  database technology research project. Refractions is a GIS and database
+  consulting company in Victoria, British Columbia, Canada, specializing in
+  data integration and custom software development. We plan on supporting and
+  developing PostGIS to support a range of important GIS functionality,
+  including full OpenGIS support, advanced topological constructs (coverages,
+  surfaces, networks), desktop user interface tools for viewing and editing
+  GIS data, and web-based access tools.</para>
+
+  <sect1 id="credits">
+    <title>Credits</title>
+
+    <variablelist>
+      <varlistentry>
+        <term>Sandro Santilli &lt;strk@refractions.net&gt;</term>
+
+        <listitem>
+          <para>Coordinates all bug fixing and maintenance effort, integration
+          of new GEOS functionality, and new function enhancements.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>Mark Leslie &lt;mleslie@refractions.net&gt;</term>
+
+        <listitem>
+          <para>Ongoing maintenance and development of core functions.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>Chris Hodgson &lt;chodgson@refractions.net&gt;</term>
+
+        <listitem>
+          <para>Maintains new functions and the 7.2 index bindings.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>Paul Ramsey &lt;pramsey@refractions.net&gt;</term>
+
+        <listitem>
+          <para>Keeps track of the documentation and packaging.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>Jeff Lounsbury &lt;jeffloun@refractions.net&gt;</term>
+
+        <listitem>
+          <para>Original development of the Shape file loader/dumper.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>Dave Blasby &lt;dblasby@gmail.com&gt;</term>
+
+        <listitem>
+          <para>The original developer of PostGIS. Dave wrote the server side
+          objects, index bindings, and many of the server side analytical
+          functions.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>Other contributors</term>
+
+        <listitem>
+          <para>In alphabetical order: Alex Bodnaru, Alex Mayrhofer, Bruce
+          Rindahl, Bernhard Reiter, Bruno Wolff III, Carl Anderson, Charlie
+          Savage, David Skea, David Techer, IIDA Tetsushi, Geographic Data BC,
+          Gerald Fenoy, Gino Lucrezi, Klaus Foerster, Kris Jurka, Mark
+          Cave-Ayland, Mark Sondheim, Markus Schaber, Michael Fuhr, Nikita
+          Shulga, Norman Vine, Olivier Courtin, Ralph Mason, Steffen
+          Macke.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>Important Support Libraries</term>
+
+        <listitem>
+          <para>The <ulink url="http://geos.refractions.net">GEOS</ulink>
+          geometry operations library, and the algorithmic work of Martin
+          Davis &lt;mbdavis@vividsolutions.com&gt; of Vivid Solutions in
+          making it all work.</para>
+
+          <para>The <ulink url="http://proj4.maptools.org">Proj4</ulink>
+          cartographic projection library, and the work of Gerald Evenden and
+          Frank Warmerdam in creating and maintaining it.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </sect1>
+
+  <sect1>
+    <title>More Information</title>
+
+    <itemizedlist>
+      <listitem>
+        <para>The latest software, documentation and news items are available
+        at the PostGIS web site, <ulink
+        url="http://postgis.refractions.net">http://postgis.refractions.net</ulink>.</para>
+      </listitem>
+
+      <listitem>
+        <para>More information about the GEOS geometry operations library is
+        available at<ulink url="http://geos.refractions.net">
+        http://geos.refractions.net</ulink>.</para>
+      </listitem>
+
+      <listitem>
+        <para>More information about the Proj4 reprojection library is
+        available at <ulink
+        url="http://www.remotesensing.org/proj">http://www.remotesensing.org/proj</ulink>.</para>
+      </listitem>
+
+      <listitem>
+        <para>More information about the PostgreSQL database server is
+        available at the PostgreSQL main site <ulink
+        url="http://www.postgresql.org">http://www.postgresql.org</ulink>.</para>
+      </listitem>
+
+      <listitem>
+        <para>More information about GiST indexing is available at the
+        PostgreSQL GiST development site, <ulink
+        url="http://www.sai.msu.su/~megera/postgres/gist">http://www.sai.msu.su/~megera/postgres/gist</ulink>.</para>
+      </listitem>
+
+      <listitem>
+        <para>More information about Mapserver internet map server is
+        available at <ulink
+        url="http://mapserver.gis.umn.edu/">http://mapserver.gis.umn.edu</ulink>.</para>
+      </listitem>
+
+      <listitem>
+        <para>The "<ulink url="http://www.opengis.org/docs/99-049.pdf">Simple
+        Features for Specification for SQL</ulink>" is available at the
+        OpenGIS Consortium web site: <ulink
+        url="http://www.opengis.org">http://www.opengis.org</ulink>.</para>
+      </listitem>
+    </itemizedlist>
+  </sect1>
+</chapter>

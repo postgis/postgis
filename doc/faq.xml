@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter>
+  <title>Frequently Asked Questions</title>
+
+  <qandaset>
+    <qandaentry>
+      <question>
+        <para>What kind of geometric objects can I store?</para>
+      </question>
+
+      <answer>
+        <para>You can store point, line, polygon, multipoint, multiline,
+        multipolygon, and geometrycollections. These are specified in the Open
+        GIS Well Known Text Format (with XYZ,XYM,XYZM extentions).</para>
+      </answer>
+    </qandaentry>
+
+    <qandaentry>
+      <question>
+        <para>How do I insert a GIS object into the database?</para>
+      </question>
+
+      <answer>
+        <para>First, you need to create a table with a column of type
+        "geometry" to hold your GIS data. Connect to your database with
+        <filename>psql</filename> and try the following SQL:</para>
+
+        <programlisting>CREATE TABLE gtest ( ID int4, NAME varchar(20) );
+SELECT AddGeometryColumn('', 'gtest','geom',-1,'LINESTRING',2);</programlisting>
+
+        <para>If the geometry column addition fails, you probably have not
+        loaded the PostGIS functions and objects into this database. See the
+        <link linkend="PGInstall">installation instructions</link>.</para>
+
+        <para>Then, you can insert a geometry into the table using a SQL
+        insert statement. The GIS object itself is formatted using the OpenGIS
+        Consortium "well-known text" format:</para>
+
+        <programlisting>INSERT INTO gtest (ID, NAME, GEOM) 
+VALUES (
+  1, 
+  'First Geometry', 
+  GeomFromText('LINESTRING(2 3,4 5,6 5,7 8)', -1)
+);</programlisting>
+
+        <para>For more information about other GIS objects, see the <link
+        linkend="RefObject">object reference</link>.</para>
+
+        <para>To view your GIS data in the table:</para>
+
+        <programlisting>SELECT id, name, AsText(geom) AS geom FROM gtest;</programlisting>
+
+        <para>The return value should look something like this:</para>
+
+        <programlisting> id | name           | geom
+----+----------------+-----------------------------
+  1 | First Geometry | LINESTRING(2 3,4 5,6 5,7 8) 
+(1 row)</programlisting>
+      </answer>
+    </qandaentry>
+
+    <qandaentry>
+      <question>
+        <para>How do I construct a spatial query?</para>
+      </question>
+
+      <answer>
+        <para>The same way you construct any other database query, as an SQL
+        combination of return values, functions, and boolean tests.</para>
+
+        <para>For spatial queries, there are two issues that are important to
+        keep in mind while constructing your query: is there a spatial index
+        you can make use of; and, are you doing expensive calculations on a
+        large number of geometries.</para>
+
+        <para>In general, you will want to use the "intersects operator"
+        (&amp;&amp;) which tests whether the bounding boxes of features
+        intersect. The reason the &amp;&amp; operator is useful is because if
+        a spatial index is available to speed up the test, the &amp;&amp;
+        operator will make use of this. This can make queries much much
+        faster.</para>
+
+        <para>You will also make use of spatial functions, such as Distance(),
+        ST_Intersects(), ST_Contains() and ST_Within(), among others, to
+        narrow down the results of your search. Most spatial queries include
+        both an indexed test and a spatial function test. The index test
+        serves to limit the number of return tuples to only tuples that
+        <emphasis>might</emphasis> meet the condition of interest. The spatial
+        functions are then use to test the condition exactly.</para>
+
+        <programlisting>SELECT id, the_geom 
+FROM thetable 
+WHERE 
+  the_geom &amp;&amp; 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))' 
+AND
+  _ST_Contains(the_geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');</programlisting>
+      </answer>
+    </qandaentry>
+
+    <qandaentry>
+      <question>
+        <para>How do I speed up spatial queries on large tables?</para>
+      </question>
+
+      <answer>
+        <para>Fast queries on large tables is the <emphasis>raison
+        d'etre</emphasis> of spatial databases (along with transaction
+        support) so having a good index is important.</para>
+
+        <para>To build a spatial index on a table with a
+        <varname>geometry</varname> column, use the "CREATE INDEX" function as
+        follows:</para>
+
+        <programlisting>CREATE INDEX [indexname] ON [tablename] USING GIST ( [geometrycolumn] );</programlisting>
+
+        <para>The "USING GIST" option tells the server to use a GiST
+        (Generalized Search Tree) index.</para>
+
+        <note>
+          <para>GiST indexes are assumed to be lossy. Lossy indexes uses a
+          proxy object (in the spatial case, a bounding box) for building the
+          index.</para>
+        </note>
+
+        <para>You should also ensure that the PostgreSQL query planner has
+        enough information about your index to make rational decisions about
+        when to use it. To do this, you have to "gather statistics" on your
+        geometry tables.</para>
+
+        <para>For PostgreSQL 8.0.x and greater, just run the <command>VACUUM
+        ANALYZE</command> command.</para>
+
+        <para>For PostgreSQL 7.4.x and below, run the <command>SELECT
+        UPDATE_GEOMETRY_STATS()</command> command.</para>
+      </answer>
+    </qandaentry>
+
+    <qandaentry>
+      <question>
+        <para>Why aren't PostgreSQL R-Tree indexes supported?</para>
+      </question>
+
+      <answer>
+        <para>Early versions of PostGIS used the PostgreSQL R-Tree indexes.
+        However, PostgreSQL R-Trees have been completely discarded since
+        version 0.6, and spatial indexing is provided with an R-Tree-over-GiST
+        scheme.</para>
+
+        <para>Our tests have shown search speed for native R-Tree and GiST to
+        be comparable. Native PostgreSQL R-Trees have two limitations which
+        make them undesirable for use with GIS features (note that these
+        limitations are due to the current PostgreSQL native R-Tree
+        implementation, not the R-Tree concept in general):</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>R-Tree indexes in PostgreSQL cannot handle features which
+            are larger than 8K in size. GiST indexes can, using the "lossy"
+            trick of substituting the bounding box for the feature
+            itself.</para>
+          </listitem>
+
+          <listitem>
+            <para>R-Tree indexes in PostgreSQL are not "null safe", so
+            building an index on a geometry column which contains null
+            geometries will fail.</para>
+          </listitem>
+        </itemizedlist>
+      </answer>
+    </qandaentry>
+
+    <qandaentry>
+      <question>
+        <para>Why should I use the <varname>AddGeometryColumn()</varname>
+        function and all the other OpenGIS stuff?</para>
+      </question>
+
+      <answer>
+        <para>If you do not want to use the OpenGIS support functions, you do
+        not have to. Simply create tables as in older versions, defining your
+        geometry columns in the CREATE statement. All your geometries will
+        have SRIDs of -1, and the OpenGIS meta-data tables will
+        <emphasis>not</emphasis> be filled in properly. However, this will
+        cause most applications based on PostGIS to fail, and it is generally
+        suggested that you do use <varname>AddGeometryColumn()</varname> to
+        create geometry tables.</para>
+
+        <para>Mapserver is one application which makes use of the
+        <varname>geometry_columns</varname> meta-data. Specifically, Mapserver
+        can use the SRID of the geometry column to do on-the-fly reprojection
+        of features into the correct map projection.</para>
+      </answer>
+    </qandaentry>
+
+    <qandaentry>
+      <question>
+        <para>What is the best way to find all objects within a radius of
+        another object?</para>
+      </question>
+
+      <answer>
+        <para>To use the database most efficiently, it is best to do radius
+        queries which combine the radius test with a bounding box test: the
+        bounding box test uses the spatial index, giving fast access to a
+        subset of data which the radius test is then applied to.</para>
+
+        <para>The <varname>ST_DWithin(geometry, geometry, distance)</varname>
+        function is a handy way of performing an indexed distance search. It
+        works by creating a search rectangle large enough to enclose the
+        distance radius, then performing an exact distance search on the
+        indexed subset of results.</para>
+
+        <para>For example, to find all objects with 100 meters of POINT(1000
+        1000) the following query would work well:</para>
+
+        <programlisting>SELECT * FROM geotable 
+  WHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);</programlisting>
+      </answer>
+    </qandaentry>
+
+    <qandaentry>
+      <question>
+        <para>How do I perform a coordinate reprojection as part of a
+        query?</para>
+      </question>
+
+      <answer>
+        <para>To perform a reprojection, both the source and destination
+        coordinate systems must be defined in the SPATIAL_REF_SYS table, and
+        the geometries being reprojected must already have an SRID set on
+        them. Once that is done, a reprojection is as simple as referring to
+        the desired destination SRID.</para>
+
+        <programlisting>SELECT ST_Transform(the_geom,4269) FROM geotable;</programlisting>
+      </answer>
+    </qandaentry>
+  </qandaset>
+</chapter>

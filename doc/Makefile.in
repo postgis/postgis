@@ -15,7 +15,8 @@ XSLBASE = @XSLBASE@
 XSLTPROC_COMMONOPTS = \
 	--param section.autolabel 1 \
 	--param section.label.includes.component.label 1 \
-	--param chunk.section.depth 0 
+	--param chunk.section.depth 0 \
+	--param generate.section.toc.level 1 
 
 XSLTPROC_HTMLOPTS = \
 	--stringparam html.stylesheet style.css \
@@ -36,8 +37,7 @@ else
 all: requirements_not_met
 endif
 
-
-postgis-out.xml: postgis.xml long_xact.xml ../Version.config
+postgis-out.xml: postgis.xml introduction.xml installation.xml faq.xml using_postgis.xml performance_tips.xml reference.xml reporting.xml release_notes.xml ../Version.config
 	cat $< | sed "s/@@LAST_RELEASE_VERSION@@/@POSTGIS_LIB_VERSION@/g" > $@
 
 chunked-html: postgis-out.xml

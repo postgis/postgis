@@ -1,0 +1,3564 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter>
+  <title>PostGIS Reference</title>
+
+  <para>The functions given below are the ones which a user of PostGIS is
+  likely to need. There are other functions which are required support
+  functions to the PostGIS objects which are not of use to a general
+  user.</para>
+
+  <note>
+    <para>PostGIS has begun a transition from the existing naming convention
+    to an SQL-MM-centric convention. As a result, most of the functions that
+    you know and love have been renamed using the standard spatial type (ST)
+    prefix. Previous functions are still available, though are not listed in
+    this document where updated functions are equivalent. These will be
+    deprecated in a future release.</para>
+  </note>
+
+  <sect1>
+    <title>OpenGIS Functions</title>
+
+    <sect2>
+      <title>Management Functions</title>
+
+      <variablelist>
+        <varlistentry id="AddGeometryColumn">
+          <term>AddGeometryColumn(varchar, varchar, varchar, integer, varchar,
+          integer)</term>
+
+          <listitem>
+            <para>Syntax: AddGeometryColumn(&lt;schema_name&gt;,
+            &lt;table_name&gt;, &lt;column_name&gt;, &lt;srid&gt;,
+            &lt;type&gt;, &lt;dimension&gt;). Adds a geometry column to an
+            existing table of attributes. The <varname>schema_name</varname>
+            is the name of the table schema (unused for pre-schema PostgreSQL
+            installations). The <varname>srid</varname> must be an integer
+            value reference to an entry in the SPATIAL_REF_SYS table. The
+            <varname>type</varname> must be an uppercase string corresponding
+            to the geometry type, eg, 'POLYGON' or 'MULTILINESTRING'.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>DropGeometryColumn(varchar, varchar, varchar)</term>
+
+          <listitem>
+            <para>Syntax: DropGeometryColumn(&lt;schema_name&gt;,
+            &lt;table_name&gt;, &lt;column_name&gt;). Remove a geometry column
+            from a spatial table. Note that schema_name will need to match the
+            f_schema_name field of the table's row in the geometry_columns
+            table.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_SetSRID(geometry, integer)</term>
+
+          <listitem>
+            <para>Set the SRID on a geometry to a particular integer value.
+            Useful in constructing bounding boxes for queries.</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </sect2>
+
+    <sect2>
+      <title>Geometry Relationship Functions</title>
+
+      <variablelist>
+        <varlistentry>
+          <term>ST_Distance(geometry, geometry)</term>
+
+          <listitem>
+            <para>Return the cartesian distance between two geometries in
+            projected units. Does not use indexes.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_DWithin(geometry, geometry, float)</term>
+
+          <listitem>
+            <para>Returns true if geometries are within the specified distance
+            of one another. Uses indexes if available.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Equals(geometry, geometry)</term>
+
+          <listitem>
+            <para>Returns 1 (TRUE) if the given Geometries are "spatially
+            equal". Use this for a 'better' answer than '='.
+            equals('LINESTRING(0 0, 10 10)','LINESTRING(0 0, 5 5, 10 10)') is
+            true.</para>
+
+            <para>Performed by the GEOS module</para>
+
+            <para>OGC SPEC s2.1.1.2</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Disjoint(geometry, geometry)</term>
+
+          <listitem>
+            <para>Returns 1 (TRUE) if the Geometries are "spatially
+            disjoint".</para>
+
+            <para>Performed by the GEOS module</para>
+
+            <para>Do not call with a GeometryCollection as an argument</para>
+
+            <para>NOTE: this is the "allowable" version that returns a
+            boolean, not an integer.</para>
+
+            <para>OGC SPEC s2.1.1.2 //s2.1.13.3 - a.Relate(b,
+            'FF*FF****')</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Intersects(geometry, geometry)</term>
+
+          <listitem>
+            <para>Returns 1 (TRUE) if the Geometries "spatially
+            intersect".</para>
+
+            <para>Performed by the GEOS module</para>
+
+            <para>Do not call with a GeometryCollection as an argument</para>
+
+            <para>This function call will automatically include a bounding box
+            comparison that will make use of any indexes that are available on
+            the geometries. To avoid index use, use the function
+            _ST_Intersects.</para>
+
+            <para>NOTE: this is the "allowable" version that returns a
+            boolean, not an integer.</para>
+
+            <para>OGC SPEC s2.1.1.2 //s2.1.13.3 - Intersects(g1, g2 ) --&gt;
+            Not (Disjoint(g1, g2 ))</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Touches(geometry, geometry)</term>
+
+          <listitem>
+            <para>Returns 1 (TRUE) if the Geometries "spatially touch".</para>
+
+            <para>Performed by the GEOS module</para>
+
+            <para>Do not call with a GeometryCollection as an argument</para>
+
+            <para>This function call will automatically include a bounding box
+            comparison that will make use of any indexes that are available on
+            the geometries. To avoid index use, use the function
+            _ST_Touches.</para>
+
+            <para>NOTE: this is the "allowable" version that returns a
+            boolean, not an integer.</para>
+
+            <para>OGC SPEC s2.1.1.2 // s2.1.13.3- a.Touches(b) -&gt; (I(a)
+            intersection I(b) = {empty set} ) and (a intersection b) not
+            empty</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Crosses(geometry, geometry)</term>
+
+          <listitem>
+            <para>Returns 1 (TRUE) if the Geometries "spatially cross".</para>
+
+            <para>Performed by the GEOS module</para>
+
+            <para>Do not call with a GeometryCollection as an argument</para>
+
+            <para>This function call will automatically include a bounding box
+            comparison that will make use of any indexes that are available on
+            the geometries. To avoid index use, use the function
+            _ST_Crosses.</para>
+
+            <para>NOTE: this is the "allowable" version that returns a
+            boolean, not an integer.</para>
+
+            <para>OGC SPEC s2.1.1.2 // s2.1.13.3 - a.Relate(b,
+            'T*T******')</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Within(geometry A, geometry B)</term>
+
+          <listitem>
+            <para>Returns 1 (TRUE) if Geometry A is "spatially within"
+            Geometry B. A has to be completely inside B.</para>
+
+            <para>Performed by the GEOS module</para>
+
+            <para>Do not call with a GeometryCollection as an argument</para>
+
+            <para>This function call will automatically include a bounding box
+            comparison that will make use of any indexes that are available on
+            the geometries. To avoid index use, use the function
+            _ST_Within.</para>
+
+            <para>NOTE: this is the "allowable" version that returns a
+            boolean, not an integer.</para>
+
+            <para>OGC SPEC s2.1.1.2 // s2.1.13.3 - a.Relate(b,
+            'T*F**F***')</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Overlaps(geometry, geometry)</term>
+
+          <listitem>
+            <para>Returns 1 (TRUE) if the Geometries "spatially
+            overlap".</para>
+
+            <para>Performed by the GEOS module</para>
+
+            <para>Do not call with a GeometryCollection as an argument</para>
+
+            <para>This function call will automatically include a bounding box
+            comparison that will make use of any indexes that are available on
+            the geometries. To avoid index use, use the function
+            _ST_Overlaps.</para>
+
+            <para>NOTE: this is the "allowable" version that returns a
+            boolean, not an integer.</para>
+
+            <para>OGC SPEC s2.1.1.2 // s2.1.13.3</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Contains(geometry A, geometry B)</term>
+
+          <listitem>
+            <para>Returns 1 (TRUE) if Geometry A "spatially contains" Geometry
+            B.</para>
+
+            <para>Performed by the GEOS module</para>
+
+            <para>Do not call with a GeometryCollection as an argument</para>
+
+            <para>This function call will automatically include a bounding box
+            comparison that will make use of any indexes that are available on
+            the geometries. To avoid index use, use the function
+            _ST_Contains.</para>
+
+            <para>NOTE: this is the "allowable" version that returns a
+            boolean, not an integer.</para>
+
+            <para>OGC SPEC s2.1.1.2 // s2.1.13.3 - same as within(geometry B,
+            geometry A)</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Covers(geometry A, geometry B)</term>
+
+          <listitem>
+            <para>Returns 1 (TRUE) if no point in Geometry B is outside
+            Geometry A</para>
+
+            <para>Refer to
+            http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html
+            for an explanation of the need of this function.</para>
+
+            <para>This function call will automatically include a bounding box
+            comparison that will make use of any indexes that are available on
+            the geometries. To avoid index use, use the function
+            _ST_Covers.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_CoveredBy(geometry A, geometry B)</term>
+
+          <listitem>
+            <para>Returns 1 (TRUE) if no point in Geometry A is outside
+            Geometry B</para>
+
+            <para>Refer to
+            http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html
+            for an explaination of the need of this function.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Intersects(geometry, geometry)</term>
+
+          <listitem>
+            <para>Returns 1 (TRUE) if the Geometries "spatially
+            intersect".</para>
+
+            <para>Performed by the GEOS module</para>
+
+            <para>Do not call with a GeometryCollection as an argument</para>
+
+            <para>NOTE: this is the "allowable" version that returns a
+            boolean, not an integer.</para>
+
+            <para>OGC SPEC s2.1.1.2 // s2.1.13.3 - NOT disjoint(geometry,
+            geometry)</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Relate(geometry, geometry,
+          intersectionPatternMatrix)</term>
+
+          <listitem>
+            <para>Returns 1 (TRUE) if this Geometry is spatially related to
+            anotherGeometry, by testing for intersections between the
+            Interior, Boundary and Exterior of the two geometries as specified
+            by the values in the intersectionPatternMatrix.</para>
+
+            <para>Performed by the GEOS module</para>
+
+            <para>Do not call with a GeometryCollection as an argument</para>
+
+            <para>NOTE: this is the "allowable" version that returns a
+            boolean, not an integer.</para>
+
+            <para>OGC SPEC s2.1.1.2 // s2.1.13.3</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Relate(geometry, geometry)</term>
+
+          <listitem>
+            <para>returns the DE-9IM (dimensionally extended nine-intersection
+            matrix)</para>
+
+            <para>Performed by the GEOS module</para>
+
+            <para>Do not call with a GeometryCollection as an argument</para>
+
+            <para>not in OGC spec, but implied. see s2.1.13.2</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </sect2>
+
+    <sect2>
+      <title>Geometry Processing Functions</title>
+
+      <variablelist>
+        <varlistentry>
+          <term>ST_Centroid(geometry)</term>
+
+          <listitem>
+            <para>Returns the centroid of the geometry as a point.</para>
+
+            <para>Computation will be more accurate if performed by the GEOS
+            module (enabled at compile time).</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Area(geometry)</term>
+
+          <listitem>
+            <para>Returns the area of the geometry if it is a polygon or
+            multi-polygon.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Length(geometry)</term>
+
+          <listitem>
+            <para>The length of this Curve in its associated spatial
+            reference.</para>
+
+            <para>synonym for length2d()</para>
+
+            <para>OGC SPEC 2.1.5.1</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_PointOnSurface(geometry)</term>
+
+          <listitem>
+            <para>Return a Point guaranteed to lie on the surface</para>
+
+            <para>Implemented using GEOS</para>
+
+            <para>OGC SPEC 3.2.14.2 and 3.2.18.2 -</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Boundary(geometry)</term>
+
+          <listitem>
+            <para>Returns the closure of the combinatorial boundary of this
+            Geometry. The combinatorial boundary is defined as described in
+            section 3.12.3.2 of the OGC SPEC. Because the result of this
+            function is a closure, and hence topologically closed, the
+            resulting boundary can be represented using representational
+            geometry primitives as discussed in the OGC SPEC, section
+            3.12.2.</para>
+
+            <para>Performed by the GEOS module</para>
+
+            <para>OGC SPEC s2.1.1.1</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Buffer(geometry, double, [integer])</term>
+
+          <listitem>
+            <para>Returns a geometry that represents all points whose distance
+            from this Geometry is less than or equal to distance. Calculations
+            are in the Spatial Reference System of this Geometry. The optional
+            third parameter sets the number of segment used to approximate a
+            quarter circle (defaults to 8).</para>
+
+            <para>Performed by the GEOS module.</para>
+
+            <para>OGC SPEC s2.1.1.3</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_ConvexHull(geometry)</term>
+
+          <listitem>
+            <para>The convex hull of a geometry represents the minimum closed
+            geometry that encloses all geometries within the set.</para>
+
+            <para>It is usually used with MULTI and Geometry Collections.
+            Although it is not an aggregate - you can use it in conjunction
+            with ST_Collect to get the convex hull of a set of points.
+            ST_ConvexHull(ST_Collect(somepointfield)). It is often used to
+            determine an affected area based on a set of point
+            observations.</para>
+
+            <programlisting>SELECT d.disease_type, ST_ConvexHull(ST_Collect(d.the_geom)) As the_geom 
+	FROM disease_obs As d 
+	GROUP BY d.disease_type</programlisting>
+
+            <para>Performed by the GEOS module</para>
+
+            <para>OGC SPEC s2.1.1.3</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Intersection(geometry, geometry)</term>
+
+          <listitem>
+            <para>Returns a geometry that represents the point set
+            intersection of the Geometries.</para>
+
+            <para>In other words - that portion of geometry A and geometry B
+            that is shared between the two geometries.</para>
+
+            <para>Performed by the GEOS module</para>
+
+            <para>Do not call with a GeometryCollection as an argument</para>
+
+            <para>OGC SPEC s2.1.1.3</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Shift_Longitude(geometry)</term>
+
+          <listitem>
+            <para>Reads every point/vertex in every component of every feature
+            in a geometry, and if the longitude coordinate is &lt;0, adds 360
+            to it. The result would be a 0-360 version of the data to be
+            plotted in a 180 centric map</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_SymDifference(geometry A, geometry B)</term>
+
+          <listitem>
+            <para>Returns a geometry that represents the portions of A and B
+            that do not intersect. It is called a symmetric difference because
+            ST_SymDifference(A,B) = ST_SymDifference(B,A).</para>
+
+            <para>Performed by the GEOS module</para>
+
+            <para>Do not call with a GeometryCollection as an argument</para>
+
+            <para>OGC SPEC s2.1.1.3</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Difference(geometry A, geometry B)</term>
+
+          <listitem>
+            <para>Returns a geometry that represents that part of geometry A
+            that does not intersect with geometry B.</para>
+
+            <para>Performed by the GEOS module</para>
+
+            <para>Do not call with a GeometryCollection as an argument</para>
+
+            <para>OGC SPEC s2.1.1.3</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Union(geometry, geometry)</term>
+
+          <listitem>
+            <para>Returns a geometry that represents the point set union of
+            the Geometries.</para>
+
+            <para>Performed by the GEOS module.</para>
+
+            <para>Do not call with a GeometryCollection as an argument.</para>
+
+            <para>NOTE: this function was formerly called GeomUnion(), which
+            was renamed from "Union" because UNION is an SQL reserved
+            word.</para>
+
+            <para>OGC SPEC s2.1.1.3</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Union(geometry set)</term>
+
+          <listitem>
+            <para>Returns a geometry that represents the point set union of
+            all Geometries in given set.</para>
+
+            <para>Performed by the GEOS module.</para>
+
+            <para>Do not call with a GeometryCollection in the argument
+            set.</para>
+
+            <para>Not explicitly defined in OGC SPEC.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_MemUnion(geometry set)</term>
+
+          <listitem>
+            <para>Same as the above, only memory-friendly (uses less memory
+            and more processor time).</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </sect2>
+
+    <sect2>
+      <title>Geometry Accessors</title>
+
+      <variablelist>
+        <varlistentry>
+          <term>ST_AsText(geometry)</term>
+
+          <listitem>
+            <para>Return the Well-Known Text representation of the geometry.
+            For example: POLYGON(0 0,0 1,1 1,1 0,0 0)</para>
+
+            <para>OGC SPEC s2.1.1.1</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_AsBinary(geometry)</term>
+
+          <listitem>
+            <para>Returns the geometry in the OGC "well-known-binary" format,
+            using the endian encoding of the server on which the database is
+            running. This is useful in binary cursors to pull data out of the
+            database without converting it to a string representation.</para>
+
+            <para>OGC SPEC s2.1.1.1 - also see
+            asBinary(&lt;geometry&gt;,'XDR') and
+            asBinary(&lt;geometry&gt;,'NDR')</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_SRID(geometry)</term>
+
+          <listitem>
+            <para>Returns the integer SRID number of the spatial reference
+            system of the geometry.</para>
+
+            <para>OGC SPEC s2.1.1.1</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Dimension(geometry)</term>
+
+          <listitem>
+            <para>The inherent dimension of this Geometry object, which must
+            be less than or equal to the coordinate dimension. OGC SPEC
+            s2.1.1.1 - returns 0 for points, 1 for lines, 2 for polygons, and
+            the largest dimension of the components of a
+            GEOMETRYCOLLECTION.</para>
+
+            <programlisting>SELECT ST_dimension('GEOMETRYCOLLECTION(LINESTRING(1 1,0 0),POINT(0 0))'); 
+dimension 
+----------- 
+1</programlisting>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Envelope(geometry)</term>
+
+          <listitem>
+            <para>Returns a vald geometry (POINT, LINESTRING or POLYGON)
+            representing the bounding box of the geometry. Degenerate cases
+            (vertical lines, point) will return a geometry of lower dimension
+            than POLYGON.</para>
+
+            <para>OGC SPEC s2.1.1.1 - The minimum bounding box for this
+            Geometry, returned as a Geometry. The polygon is defined by the
+            corner points of the bounding box ((MINX, MINY), (MAXX, MINY),
+            (MAXX, MAXY), (MINX, MAXY), (MINX, MINY)).</para>
+
+            <para>NOTE:PostGIS will add a Zmin/Zmax coordinate as well.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_IsEmpty(geometry)</term>
+
+          <listitem>
+            <para>Returns 1 (TRUE) if this Geometry is the empty geometry . If
+            true, then this Geometry represents the empty point set - i.e.
+            GEOMETRYCOLLECTION(EMPTY).</para>
+
+            <para>OGC SPEC s2.1.1.1</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="IsSimple">
+          <term>ST_IsSimple(geometry)</term>
+
+          <listitem>
+            <para>Returns 1 (TRUE) if this Geometry has no anomalous geometric
+            points, such as self intersection or self tangency.</para>
+
+            <para>Performed by the GEOS module</para>
+
+            <para>OGC SPEC s2.1.1.1</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="IsClosed">
+          <term>ST_IsClosed(geometry)</term>
+
+          <listitem>
+            <para>Returns true of the geometry start and end points are
+            coincident.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_IsRing(geometry)</term>
+
+          <listitem>
+            <para>Returns 1 (TRUE) if this Curve is closed (StartPoint ( ) =
+            EndPoint ( )) and this Curve is simple (does not pass through the
+            same point more than once).</para>
+
+            <para>performed by GEOS</para>
+
+            <para>OGC spec 2.1.5.1</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_NumGeometries(geometry)</term>
+
+          <listitem>
+            <para>If geometry is a GEOMETRYCOLLECTION (or MULTI*) return the
+            number of geometries, otherwise return NULL.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_GeometryN(geometry,int)</term>
+
+          <listitem>
+            <para>Return the N'th geometry if the geometry is a
+            GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING or MULTIPOLYGON.
+            Otherwise, return NULL.</para>
+
+            <note>
+              <para>Index is 1-based as for OGC specs since version 0.8.0.
+              Previous versions implemented this as 0-based instead.</para>
+            </note>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_NumPoints(geometry)</term>
+
+          <listitem>
+            <para>Find and return the number of points in the first linestring
+            in the geometry. Return NULL if there is no linestring in the
+            geometry.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_PointN(geometry,integer)</term>
+
+          <listitem>
+            <para>Return the N'th point in the first linestring in the
+            geometry. Return NULL if there is no linestring in the
+            geometry.</para>
+
+            <note>
+              <para>Index is 1-based as for OGC specs since version 0.8.0.
+              Previous versions implemented this as 0-based instead.</para>
+            </note>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_ExteriorRing(geometry)</term>
+
+          <listitem>
+            <para>Return the exterior ring of the polygon geometry. Return
+            NULL if the geometry is not a polygon.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_NumInteriorRings(geometry)</term>
+
+          <listitem>
+            <para>Return the number of interior rings of the first polygon in
+            the geometry. Return NULL if there is no polygon in the
+            geometry.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_NumInteriorRing(geometry)</term>
+
+          <listitem>
+            <para>Synonym to NumInteriorRings(geometry). The OpenGIS specs are
+            ambiguous about the exact function naming, so we provide both
+            spellings.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_InteriorRingN(geometry,integer)</term>
+
+          <listitem>
+            <para>Return the N'th interior ring of the polygon geometry.
+            Return NULL if the geometry is not a polygon or the given N is out
+            of range.</para>
+
+            <note>
+              <para>Index is 1-based as for OGC specs since version 0.8.0.
+              Previous versions implemented this as 0-based instead.</para>
+            </note>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_EndPoint(geometry)</term>
+
+          <listitem>
+            <para>Returns the last point of the LineString geometry as a
+            point.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="StartPoint">
+          <term>ST_StartPoint(geometry)</term>
+
+          <listitem>
+            <para>Returns the first point of the LineString geometry as a
+            point.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="GeometryType">
+          <term>GeometryType(geometry)</term>
+
+          <listitem>
+            <para>Returns the type of the geometry as a string. Eg:
+            'LINESTRING', 'POLYGON', 'MULTIPOINT', etc.</para>
+
+            <para>OGC SPEC s2.1.1.1 - Returns the name of the instantiable
+            subtype of Geometry of which this Geometry instance is a member.
+            The name of the instantiable subtype of Geometry is returned as a
+            string.</para>
+
+            <note>
+              <para>This function also indicates if the geometry is measured,
+              by returning a string of the form 'POINTM'.</para>
+            </note>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_GeometryType(geometry)</term>
+
+          <listitem>
+            <para>Returns the type of the geometry as a string. EG:
+            'Linestring', 'Polygon', etc. This function differs from
+            GeometryType(geometry) in the case of the string that is returned,
+            as well as the fact that it will not indicate whether the geometry
+            is measured.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_X(geometry)</term>
+
+          <listitem>
+            <para>Return the X coordinate of the point. Input must be a
+            point.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Y(geometry)</term>
+
+          <listitem>
+            <para>Return the Y coordinate of the point. Input must be a
+            point.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Z(geometry)</term>
+
+          <listitem>
+            <para>Return the Z coordinate of the point, or NULL if not
+            available. Input must be a point.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_M(geometry)</term>
+
+          <listitem>
+            <para>Return the M coordinate of the point, or NULL if not
+            available. Input must be a point.</para>
+
+            <note>
+              <para>This is not (yet) part of the OGC spec, but is listed here
+              to complete the point coordinate extractor function list.</para>
+            </note>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </sect2>
+
+    <sect2>
+      <title>Geometry Constructors</title>
+
+      <variablelist>
+        <varlistentry>
+          <term>ST_GeomFromText(text,[&lt;srid&gt;])</term>
+
+          <listitem>
+            <para>Makes a Geometry from WKT with the given SRID.</para>
+
+            <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
+            suite</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_PointFromText(text,[&lt;srid&gt;])</term>
+
+          <listitem>
+            <para>Makes a Geometry from WKT with the given SRID. If SRID is
+            not give, it defaults to -1.</para>
+
+            <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
+            suite</para>
+
+            <para>Throws an error if the WKT is not a Point</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_LineFromText(text,[&lt;srid&gt;])</term>
+
+          <listitem>
+            <para>Makes a Geometry from WKT with the given SRID. If SRID is
+            not give, it defaults to -1.</para>
+
+            <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
+            suite</para>
+
+            <para>Throws an error if the WKT is not a Line</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_LinestringFromText(text,[&lt;srid&gt;])</term>
+
+          <listitem>
+            <para>Makes a Geometry from WKT with the given SRID. If SRID is
+            not give, it defaults to -1.</para>
+
+            <para>from the conformance suite</para>
+
+            <para>Throws an error if the WKT is not a Line</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_PolyFromText(text,[&lt;srid&gt;])</term>
+
+          <listitem>
+            <para>Makes a Geometry from WKT with the given SRID. If SRID is
+            not give, it defaults to -1.</para>
+
+            <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
+            suite</para>
+
+            <para>Throws an error if the WKT is not a Polygon</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_PolygonFromText(text,[&lt;srid&gt;])</term>
+
+          <listitem>
+            <para>Makes a Geometry from WKT with the given SRID. If SRID is
+            not give, it defaults to -1.</para>
+
+            <para>from the conformance suite</para>
+
+            <para>Throws an error if the WKT is not a Polygon</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_MPointFromText(text,[&lt;srid&gt;])</term>
+
+          <listitem>
+            <para>Makes a Geometry from WKT with the given SRID. If SRID is
+            not give, it defaults to -1.</para>
+
+            <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
+            suite</para>
+
+            <para>Throws an error if the WKT is not a MULTIPOINT</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_MLineFromText(text,[&lt;srid&gt;])</term>
+
+          <listitem>
+            <para>Makes a Geometry from WKT with the given SRID. If SRID is
+            not give, it defaults to -1.</para>
+
+            <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
+            suite</para>
+
+            <para>Throws an error if the WKT is not a MULTILINESTRING</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_MPolyFromText(text,[&lt;srid&gt;])</term>
+
+          <listitem>
+            <para>Makes a Geometry from WKT with the given SRID. If SRID is
+            not give, it defaults to -1.</para>
+
+            <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
+            suite</para>
+
+            <para>Throws an error if the WKT is not a MULTIPOLYGON</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_GeomCollFromText(text,[&lt;srid&gt;])</term>
+
+          <listitem>
+            <para>Makes a Geometry from WKT with the given SRID. If SRID is
+            not give, it defaults to -1.</para>
+
+            <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
+            suite</para>
+
+            <para>Throws an error if the WKT is not a
+            GEOMETRYCOLLECTION</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_GeomFromWKB(bytea,[&lt;srid&gt;])</term>
+
+          <listitem>
+            <para>Makes a Geometry from WKB with the given SRID. If SRID is
+            not give, it defaults to -1.</para>
+
+            <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
+            suite</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_GeometryFromWKB(bytea,[&lt;srid&gt;])</term>
+
+          <listitem>
+            <para>Makes a Geometry from WKB with the given SRID. If SRID is
+            not give, it defaults to -1.</para>
+
+            <para>OGC SPEC 3.2.7.2 - option SRID is from the conformance
+            suite</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_PointFromWKB(bytea,[&lt;srid&gt;])</term>
+
+          <listitem>
+            <para>Makes a Geometry from WKB with the given SRID. If SRID is
+            not give, it defaults to -1.</para>
+
+            <para>OGC SPEC 3.2.7.2 - option SRID is from the conformance
+            suite</para>
+
+            <para>throws an error if WKB is not a POINT</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_LineFromWKB(bytea,[&lt;srid&gt;])</term>
+
+          <listitem>
+            <para>Makes a Geometry from WKB with the given SRID. If SRID is
+            not give, it defaults to -1.</para>
+
+            <para>OGC SPEC 3.2.7.2 - option SRID is from the conformance
+            suite</para>
+
+            <para>throws an error if WKB is not a LINESTRING</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_LinestringFromWKB(bytea,[&lt;srid&gt;])</term>
+
+          <listitem>
+            <para>Makes a Geometry from WKB with the given SRID. If SRID is
+            not give, it defaults to -1.</para>
+
+            <para>from the conformance suite</para>
+
+            <para>throws an error if WKB is not a LINESTRING</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_PolyFromWKB(bytea,[&lt;srid&gt;])</term>
+
+          <listitem>
+            <para>Makes a Geometry from WKB with the given SRID. If SRID is
+            not give, it defaults to -1.</para>
+
+            <para>OGC SPEC 3.2.7.2 - option SRID is from the conformance
+            suite</para>
+
+            <para>throws an error if WKB is not a POLYGON</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_PolygonFromWKB(bytea,[&lt;srid&gt;])</term>
+
+          <listitem>
+            <para>Makes a Geometry from WKB with the given SRID. If SRID is
+            not give, it defaults to -1.</para>
+
+            <para>from the conformance suite</para>
+
+            <para>throws an error if WKB is not a POLYGON</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_MPointFromWKB(bytea,[&lt;srid&gt;])</term>
+
+          <listitem>
+            <para>Makes a Geometry from WKB with the given SRID. If SRID is
+            not give, it defaults to -1.</para>
+
+            <para>OGC SPEC 3.2.7.2 - option SRID is from the conformance
+            suite</para>
+
+            <para>throws an error if WKB is not a MULTIPOINT</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_MLineFromWKB(bytea,[&lt;srid&gt;])</term>
+
+          <listitem>
+            <para>Makes a Geometry from WKB with the given SRID. If SRID is
+            not give, it defaults to -1.</para>
+
+            <para>OGC SPEC 3.2.7.2 - option SRID is from the conformance
+            suite</para>
+
+            <para>throws an error if WKB is not a MULTILINESTRING</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_MPolyFromWKB(bytea,[&lt;srid&gt;])</term>
+
+          <listitem>
+            <para>Makes a Geometry from WKB with the given SRID. If SRID is
+            not give, it defaults to -1.</para>
+
+            <para>OGC SPEC 3.2.7.2 - option SRID is from the conformance
+            suite</para>
+
+            <para>throws an error if WKB is not a MULTIPOLYGON</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_GeomCollFromWKB(bytea,[&lt;srid&gt;])</term>
+
+          <listitem>
+            <para>Makes a Geometry from WKB with the given SRID. If SRID is
+            not give, it defaults to -1.</para>
+
+            <para>OGC SPEC 3.2.7.2 - option SRID is from the conformance
+            suite</para>
+
+            <para>throws an error if WKB is not a GEOMETRYCOLLECTION</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="BdPolyFromText">
+          <term>ST_BdPolyFromText(text WKT, integer SRID)</term>
+
+          <listitem>
+            <para>Construct a Polygon given an arbitrary collection of closed
+            linestrings as a MultiLineString text representation.</para>
+
+            <para>Throws an error if WKT is not a MULTILINESTRING. Throws an
+            error if output is a MULTIPOLYGON; use <link
+            linkend="BdMPolyFromText">BdMPolyFromText</link> in that case, or
+            see <link linkend="BuildArea">BuildArea()</link> for a
+            postgis-specific approach.</para>
+
+            <para>OGC SFSQL 1.1 - 3.2.6.2</para>
+
+            <para>Availability: 1.1.0 - requires GEOS &gt;= 2.1.0.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="BdMPolyFromText">
+          <term>ST_BdMPolyFromText(text WKT, integer SRID)</term>
+
+          <listitem>
+            <para>Construct a MultiPolygon given an arbitrary collection of
+            closed linestrings as a MultiLineString text
+            representation.</para>
+
+            <para>Throws an error if WKT is not a MULTILINESTRING. Forces
+            MULTIPOLYGON output even when result is really only composed by a
+            single POLYGON; use <link
+            linkend="BdPolyFromText">BdPolyFromText</link> if you're sure a
+            single POLYGON will result from operation, or see <link
+            linkend="BuildArea">BuildArea()</link> for a postgis-specific
+            approach.</para>
+
+            <para>OGC SFSQL 1.1 - 3.2.6.2</para>
+
+            <para>Availability: 1.1.0 - requires GEOS &gt;= 2.1.0.</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </sect2>
+  </sect1>
+
+  <sect1>
+    <title>PostGIS Extensions</title>
+
+    <sect2>
+      <title>Management Functions</title>
+
+      <variablelist>
+        <varlistentry>
+          <term>DropGeometryTable([&lt;schema_name&gt;],
+          &lt;table_name&gt;)</term>
+
+          <listitem>
+            <para>Drops a table and all its references in geometry_columns.
+            Note: uses current_schema() on schema-aware pgsql installations if
+            schema is not provided.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>UpdateGeometrySRID([&lt;schema_name&gt;], &lt;table_name&gt;,
+          &lt;column_name&gt;, &lt;srid&gt;)</term>
+
+          <listitem>
+            <para>Update the SRID of all features in a geometry column
+            updating constraints and reference in geometry_columns. Note: uses
+            current_schema() on schema-aware pgsql installations if schema is
+            not provided.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>update_geometry_stats([&lt;table_name&gt;,
+          &lt;column_name&gt;])</term>
+
+          <listitem>
+            <para>Update statistics about spatial tables for use by the query
+            planner. You will also need to run "VACUUM ANALYZE [table_name]
+            [column_name]" for the statistics gathering process to be
+            complete. NOTE: starting with PostgreSQL 8.0 statistics gathering
+            is automatically performed running "VACUUM ANALYZE".</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>postgis_version()</term>
+
+          <listitem>
+            <para>Returns PostGIS version number and compile-time
+            options</para>
+
+            <note>
+              <para>Prior to version 1.1.0 this was a procedural function,
+              thus possibly returning inaccurate information (in case of
+              incomplete database upgrades).</para>
+            </note>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="postgis_lib_version">
+          <term>postgis_lib_version()</term>
+
+          <listitem>
+            <para>Returns the version number of the PostGIS library.</para>
+
+            <para>Availability: 0.9.0</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>postgis_lib_build_date()</term>
+
+          <listitem>
+            <para>Returns build date of the PostGIS library.</para>
+
+            <para>Availability: 1.0.0RC1</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>postgis_script_build_date()</term>
+
+          <listitem>
+            <para>Returns build date of the PostGIS scripts.</para>
+
+            <para>Availability: 1.0.0RC1</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>postgis_scripts_installed()</term>
+
+          <listitem>
+            <para>Returns version of the postgis scripts installed in this
+            database.</para>
+
+            <note>
+              <para>If the output of this function doesn't match the output of
+              <link
+              linkend="postgis_scripts_released">postgis_scripts_released()</link>
+              you probably missed to properly upgrade an existing database.
+              See the <link linkend="upgrading">Upgrading</link> section for
+              more info.</para>
+            </note>
+
+            <para>Availability: 0.9.0</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="postgis_scripts_released">
+          <term>postgis_scripts_released()</term>
+
+          <listitem>
+            <para>Returns the version number of the lwpostgis.sql script
+            released with the installed postgis lib.</para>
+
+            <note>
+              <para>Starting with version 1.1.0 this function returns the same
+              value of <link
+              linkend="postgis_lib_version">postgis_lib_version()</link>. Kept
+              for backward compatibility.</para>
+            </note>
+
+            <para>Availability: 0.9.0</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>postgis_geos_version()</term>
+
+          <listitem>
+            <para>Returns the version number of the GEOS library, or NULL if
+            GEOS support is not enabled.</para>
+
+            <para>Availability: 0.9.0</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>postgis_jts_version()</term>
+
+          <listitem>
+            <para>Returns the version number of the JTS library, or NULL if
+            JTS support is not enabled.</para>
+
+            <para>Availability: 1.1.0</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>postgis_proj_version()</term>
+
+          <listitem>
+            <para>Returns the version number of the PROJ4 library, or NULL if
+            PROJ4 support is not enabled.</para>
+
+            <para>Availability: 0.9.0</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>postgis_uses_stats()</term>
+
+          <listitem>
+            <para>Returns true if STATS usage has been enabled, false
+            otherwise.</para>
+
+            <para>Availability: 0.9.0</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="postgis_full_version">
+          <term>postgis_full_version()</term>
+
+          <listitem>
+            <para>Reports full postgis version and build configuration
+            infos.</para>
+
+            <para>Availability: 0.9.0</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </sect2>
+
+    <sect2>
+      <title>Operators</title>
+
+      <variablelist>
+        <varlistentry>
+          <term>A &amp;&lt; B</term>
+
+          <listitem>
+            <para>The "&amp;&lt;" operator returns true if A's bounding box
+            overlaps or is to the left of B's bounding box.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>A &amp;&gt; B</term>
+
+          <listitem>
+            <para>The "&amp;&gt;" operator returns true if A's bounding box
+            overlaps or is to the right of B's bounding box.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>A &lt;&lt; B</term>
+
+          <listitem>
+            <para>The "&lt;&lt;" operator returns true if A's bounding box is
+            strictly to the left of B's bounding box.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>A &gt;&gt; B</term>
+
+          <listitem>
+            <para>The "&gt;&gt;" operator returns true if A's bounding box is
+            strictly to the right of B's bounding box.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>A &amp;&lt;| B</term>
+
+          <listitem>
+            <para>The "&amp;&lt;|" operator returns true if A's bounding box
+            overlaps or is below B's bounding box.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>A |&amp;&gt; B</term>
+
+          <listitem>
+            <para>The "|&amp;&gt;" operator returns true if A's bounding box
+            overlaps or is above B's bounding box.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>A &lt;&lt;| B</term>
+
+          <listitem>
+            <para>The "&lt;&lt;|" operator returns true if A's bounding box is
+            strictly below B's bounding box.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>A |&gt;&gt; B</term>
+
+          <listitem>
+            <para>The "|&gt;&gt;" operator returns true if A's bounding box is
+            strictly above B's bounding box.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>A ~= B</term>
+
+          <listitem>
+            <para>The "~=" operator is the "same as" operator. It tests actual
+            geometric equality of two features. So if A and B are the same
+            feature, vertex-by-vertex, the operator returns true.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>A @ B</term>
+
+          <listitem>
+            <para>The "@" operator returns true if A's bounding box is
+            completely contained by B's bounding box.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>A ~ B</term>
+
+          <listitem>
+            <para>The "~" operator returns true if A's bounding box completely
+            contains B's bounding box.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>A &amp;&amp; B</term>
+
+          <listitem>
+            <para>The "&amp;&amp;" operator is the "overlaps" operator. If A's
+            bounding box overlaps B's bounding box the operator returns
+            true.</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </sect2>
+
+    <sect2>
+      <title>Measurement Functions</title>
+
+      <variablelist>
+        <varlistentry>
+          <term>ST_area2d(geometry)</term>
+
+          <listitem>
+            <para>Returns the area of the geometry if it is a polygon or
+            multi-polygon.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_distance_sphere(point, point)</term>
+
+          <listitem>
+            <para>Returns linear distance in meters between two lat/lon
+            points. Uses a spherical earth and radius of 6370986 meters.
+            Faster than <link
+            linkend="distance_spheroid">distance_spheroid()</link>, but less
+            accurate. Only implemented for points.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="distance_spheroid">
+          <term>ST_distance_spheroid(point, point, spheroid)</term>
+
+          <listitem>
+            <para>Returns linear distance between two lat/lon points given a
+            particular spheroid. See the explanation of spheroids given for
+            <link linkend="length_spheroid">length_spheroid()</link>.
+            Currently only implemented for points.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="length2d">
+          <term>ST_length2d(geometry)</term>
+
+          <listitem>
+            <para>Returns the 2-dimensional length of the geometry if it is a
+            linestring or multi-linestring.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_length3d(geometry)</term>
+
+          <listitem>
+            <para>Returns the 3-dimensional length of the geometry if it is a
+            linestring or multi-linestring.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="length_spheroid">
+          <term>ST_length_spheroid(geometry,spheroid)</term>
+
+          <listitem>
+            <para>Calculates the length of of a geometry on an ellipsoid. This
+            is useful if the coordinates of the geometry are in
+            latitude/longitude and a length is desired without reprojection.
+            The ellipsoid is a separate database type and can be constructed
+            as follows:</para>
+
+            <literallayout>SPHEROID[&lt;NAME&gt;,&lt;SEMI-MAJOR
+              AXIS&gt;,&lt;INVERSE FLATTENING&gt;]</literallayout>
+
+            <para>Eg:</para>
+
+            <literallayout>SPHEROID["GRS_1980",6378137,298.257222101]</literallayout>
+
+            <para>An example calculation might look like this:</para>
+
+            <literallayout>SELECT length_spheroid( geometry_column,
+              'SPHEROID["GRS_1980",6378137,298.257222101]' )
+              FROM geometry_table;</literallayout>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_length3d_spheroid(geometry,spheroid)</term>
+
+          <listitem>
+            <para>Calculates the length of of a geometry on an ellipsoid,
+            taking the elevation into account. This is just like
+            length_spheroid except vertical coordinates (expressed in the same
+            units as the spheroid axes) are used to calculate the extra
+            distance vertical displacement adds.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_distance(geometry, geometry)</term>
+
+          <listitem>
+            <para>Returns the smaller distance between two geometries.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_max_distance(linestring,linestring)</term>
+
+          <listitem>
+            <para>Returns the largest distance between two line
+            strings.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_perimeter(geometry)</term>
+
+          <listitem>
+            <para>Returns the 2-dimensional perimeter of the geometry, if it
+            is a polygon or multi-polygon.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_perimeter2d(geometry)</term>
+
+          <listitem>
+            <para>Returns the 2-dimensional perimeter of the geometry, if it
+            is a polygon or multi-polygon.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_perimeter3d(geometry)</term>
+
+          <listitem>
+            <para>Returns the 3-dimensional perimeter of the geometry, if it
+            is a polygon or multi-polygon.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_azimuth(geometry, geometry)</term>
+
+          <listitem>
+            <para>Returns the azimuth of the segment defined by the given
+            Point geometries, or NULL if the two points are coincident. Return
+            value is in radians.</para>
+
+            <para>Availability: 1.1.0</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </sect2>
+
+    <sect2>
+      <title>Geometry Outputs</title>
+
+      <variablelist>
+        <varlistentry>
+          <term>ST_AsBinary(geometry,{'NDR'|'XDR'})</term>
+
+          <listitem>
+            <para>Returns the geometry in the OGC "well-known-binary" format
+            as a bytea, using little-endian (NDR) or big-endian (XDR)
+            encoding. This is useful in binary cursors to pull data out of the
+            database without converting it to a string representation.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_AsEWKT(geometry)</term>
+
+          <listitem>
+            <para>Returns a Geometry in EWKT format (as text).</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_AsEWKB(geometry, {'NDR'|'XDR'})</term>
+
+          <listitem>
+            <para>Returns a Geometry in EWKB format (as bytea) using either
+            little-endian (NDR) or big-endian (XDR) encoding.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_AsHEXEWKB(geometry, {'NDR'|'XDR'})</term>
+
+          <listitem>
+            <para>Returns a Geometry in HEXEWKB format (as text) using either
+            little-endian (NDR) or big-endian (XDR) encoding.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_AsSVG(geometry, [rel], [precision])</term>
+
+          <listitem>
+            <para>Return the geometry as SVG path data. Use 1 as second
+            argument to have the path data implemented in terms of relative
+            moves, the default (or 0) uses absolute moves. Third argument may
+            be used to reduce the maximum number of decimal digits used in
+            output (defaults to 15). Point geometries will be rendered as
+            cx/cy when 'rel' arg is 0, x/y when 'rel' is 1. Multipoint
+            geometries are delimited by commas (","), GeometryCollection
+            geometries are delimited by semicolons (";").</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_AsGML([version], geometry, [precision])</term>
+
+          <listitem>
+            <para>Return the geometry as a GML element. The version parameter,
+            if specified, may be either 2 or 3. If no version parameter is
+            specified then the default is assumed to be 2. The third argument
+            may be used to reduce the maximum number of significant digits
+            used in output (defaults to 15).</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_AsKML(geometry, [precision])</term>
+
+          <listitem>
+            <para>Return the geometry as a KML element. Second argument may be
+            used to reduce the maximum number of significant digits used in
+            output (defaults to 15).</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_AsGeoJson([version], geometry, [precision],
+          [options])</term>
+
+          <listitem>
+            <para>Return the geometry as a GeoJson element. (Cf <ulink
+            url="http://wiki.geojson.org/GeoJSON_draft_version_6">GeoJson
+            specifications 1.0 RC6</ulink>). 2D and 3D Geometries are both
+            supported. GeoJson only support SFS 1.1 geometry type (no curve
+            support for example).</para>
+
+            <para>The version parameter, if specified, must be 1.</para>
+
+            <para>The third argument may be used to reduce the maximum number
+            of significant digits used in output (defaults to 15).</para>
+
+            <para>The last 'options' argument could be used to add Bbox or Crs
+            in GeoJSON output: <itemizedlist>
+                <listitem>
+                  <para>0: means no option (default value)</para>
+                </listitem>
+
+                <listitem>
+                  <para>1: GeoJson CRS</para>
+                </listitem>
+
+                <listitem>
+                  <para>2: GeoJson Bbox</para>
+                </listitem>
+
+                <listitem>
+                  <para>2: Both GeoJson Bbox and CRS</para>
+                </listitem>
+              </itemizedlist></para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </sect2>
+
+    <sect2>
+      <title>Geometry Constructors</title>
+
+      <variablelist>
+        <varlistentry>
+          <term>ST_GeomFromEWKT(text)</term>
+
+          <listitem>
+            <para>Makes a Geometry from EWKT.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_GeomFromEWKB(bytea)</term>
+
+          <listitem>
+            <para>Makes a Geometry from EWKB.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_MakePoint(&lt;x&gt;, &lt;y&gt;, [&lt;z&gt;],
+          [&lt;m&gt;])</term>
+
+          <listitem>
+            <para>Creates a 2d,3dz or 4d point geometry.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_MakePointM(&lt;x&gt;, &lt;y&gt;, &lt;m&gt;)</term>
+
+          <listitem>
+            <para>Creates a 3dm point geometry.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_MakeBox2D(&lt;LL&gt;, &lt;UR&gt;)</term>
+
+          <listitem>
+            <para>Creates a BOX2D defined by the given point
+            geometries.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_MakeBox3D(&lt;LLB&gt;, &lt;URT&gt;)</term>
+
+          <listitem>
+            <para>Creates a BOX3D defined by the given point
+            geometries.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_MakeLine(geometry set)</term>
+
+          <listitem>
+            <para>Creates a Linestring from a set of point geometries. You
+            might want to use a subselect to order points before feeding them
+            to this aggregate.</para>
+
+            <programlisting>
+SELECT gps.gps_track, ST_MakeLine(gps.the_geom) As newgeom
+	FROM (SELECT gps_track,gps_time, the_geom
+			FROM gps_points ORDER BY gps_track, gps_time) As gps
+	GROUP BY gps.gps_track
+			  </programlisting>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_MakeLine(geometry, geometry)</term>
+
+          <listitem>
+            <para>Creates a Linestring from the two given point
+            geometries.</para>
+
+            <programlisting>
+SELECT ST_AsText(ST_MakeLine(ST_MakePoint(1,2), ST_MakePoint(3,4)))
+			  </programlisting>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_LineFromMultiPoint(multipoint)</term>
+
+          <listitem>
+            <para>Creates a LineString from a MultiPoint geometry.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_MakePolygon(linestring geometry)</term>
+
+          <listitem>
+            <para>Creates a Polygon formed by the given shell. Input
+            geometries must be closed LINESTRINGS (see <link
+            linkend="IsClosed">ST_IsClosed</link> and <link
+            linkend="GeometryType">ST_GeometryType</link>). This function will
+            not accept a MULTILINESTRING.</para>
+
+            <programlisting>
+SELECT ST_MakePolygon(ST_GeomFromText('LINESTRING(75.15 29.53,77 29,77.6 29.5, 75.15 29.53)'));
+--If linestring is not closed
+--you can add the start point to close it
+SELECT ST_MakePolygon(ST_AddPoint(foo.open_line, ST_StartPoint(foo.open_line)))
+FROM (
+SELECT ST_GeomFromText('LINESTRING(75.15 29.53,77 29,77.6 29.5)') As open_line) As foo
+			  </programlisting>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_MakePolygon(linestring geometry, linestrings
+          geometry[])</term>
+
+          <listitem>
+            <para>Creates a Polygon formed by the given shell and array of
+            holes. You can construct a geometry array using <link
+            linkend="Accum">ST_Accum</link> or the PostgreSQL ARRAY[] and
+            ARRAY() constructs. Input geometries must be closed LINESTRINGS
+            (see <link linkend="IsClosed">ST_IsClosed</link> and <link
+            linkend="GeometryType">ST_GeometryType</link>).</para>
+
+            <programlisting>
+--Build a donut with an ant hole
+SELECT ST_MakePolygon(
+		ST_ExteriorRing(ST_Buffer(foo.line,10)),
+	ARRAY[ST_Translate(foo.line,1,1),
+		ST_ExteriorRing(ST_Buffer(ST_MakePoint(20,20),1)) ]
+	)
+FROM 
+	(SELECT ST_ExteriorRing(ST_Buffer(ST_MakePoint(10,10),10,10))
+		As line )
+		As foo	
+			  </programlisting>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="BuildArea">
+          <term>ST_BuildArea(geometry)</term>
+
+          <listitem>
+            <para>Creates an areal geometry formed by the constituent linework
+            of given geometry. The return type can be a Polygon or
+            MultiPolygon, depending on input. If the input lineworks do not
+            form polygons NULL is returned.</para>
+
+            <para>See also <link
+            linkend="BdPolyFromText">BdPolyFromText</link> and <link
+            linkend="BdMPolyFromText">BdMPolyFromText</link> - wrappers to
+            this function with standard OGC interface.</para>
+
+            <para>Availability: 1.1.0 - requires GEOS &gt;= 2.1.0.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Polygonize(geometry set)</term>
+
+          <listitem>
+            <para>Aggregate. Creates a GeometryCollection containing possible
+            polygons formed from the constituent linework of a set of
+            geometries.</para>
+
+            <para>Availability: 1.0.0RC1 - requires GEOS &gt;= 2.1.0.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Collect(geometry set)</term>
+
+          <listitem>
+            <para>This function returns a GEOMETRYCOLLECTION or a MULTI object
+            from a set of geometries. The collect() function is an "aggregate"
+            function in the terminology of PostgreSQL. That means that it
+            operates on rows of data, in the same way the SUM() and AVG()
+            functions do. For example, "SELECT ST_Collect(GEOM) FROM GEOMTABLE
+            GROUP BY ATTRCOLUMN" will return a separate GEOMETRYCOLLECTION for
+            each distinct value of ATTRCOLUMN.</para>
+
+            <para>ST_Collect and ST_Union are often interchangeable.
+            ST_Collect is in general orders of magnitude faster than ST_Union
+            because it does not try to dissolve boundaries. It merely rolls up
+            single geometries into MULTI and MULTI or mixed geometry types
+            into Geometry Collections. Unfortunately geometry collections are
+            not well-supported by GIS tools. To prevent ST_Collect from
+            returning a Geometry Collection when collecting MULTI geometries,
+            one can use the below trick that utilizes ST_Dump to expand the
+            MULTIs out to singles and then regroup them.</para>
+
+            <programlisting>
+Thread ref: http://postgis.refractions.net/pipermail/postgis-users/2008-June/020331.html
+SELECT stusps, 
+	   ST_Multi(ST_Collect(f.the_geom)) as singlegeom  
+	 FROM (SELECT stusps, (ST_Dump(the_geom)).geom As the_geom 
+				FROM
+				somestatetable ) As f
+GROUP BY stusps
+			  </programlisting>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Collect(geometry, geometry)</term>
+
+          <listitem>
+            <para>This function returns a geometry being a collection of two
+            input geometries. Output type can be a MULTI* or a
+            GEOMETRYCOLLECTION.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Dump(geometry)</term>
+
+          <listitem>
+            <para>This is a set-returning function (SRF). It returns a set of
+            geometry_dump rows, formed by a geometry (geom) and an array of
+            integers (path). When the input geometry is a simple type
+            (POINT,LINESTRING,POLYGON) a single record will be returned with
+            an empty path array and the input geometry as geom. When the input
+            geometry is a collection or multi it will return a record for each
+            of the collection components, and the path will express the
+            position of the component inside the collection.</para>
+
+            <para>ST_Dump is useful for expanding geometries. It is the
+            reverse of a GROUP BY in that it creates new rows. For example it
+            can be use to expand MULTIPOLYGONS into POLYGONS.</para>
+
+            <programlisting>
+SELECT sometable.field1, sometable.field1, 
+(ST_Dump(sometable.the_geom)).geom As the_geom 
+	 FROM sometable
+			  </programlisting>
+
+            <para>Availability: PostGIS 1.0.0RC1. Requires PostgreSQL 7.3 or
+            higher.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_DumpRings(geometry)</term>
+
+          <listitem>
+            <para>This is a set-returning function (SRF). It returns a set of
+            geometry_dump rows, formed by a geometry (geom) and an array of
+            integers (path). The 'path' field holds the polygon ring index,
+            contains a single element: 0 for the shell, hole number for holes.
+            The 'geom' field contains the corresponding ring as a
+            polygon.</para>
+
+            <para>Availability: PostGIS 1.1.3. Requires PostgreSQL 7.3 or
+            higher.</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </sect2>
+
+    <sect2>
+      <title>Geometry Editors</title>
+
+      <variablelist>
+        <varlistentry id="addbbox">
+          <term>ST_AddBBOX(geometry)</term>
+
+          <listitem>
+            <para>Add bounding box to the geometry. This would make bounding
+            box based queries faster, but will increase the size of the
+            geometry.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="dropbbox">
+          <term>ST_DropBBOX(geometry)</term>
+
+          <listitem>
+            <para>Drop the bounding box cache from the geometry. This reduces
+            geometry size, but makes bounding-box based queries slower.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_AddPoint(linestring geometry, point geometry)</term>
+
+          <term>ST_AddPoint(linestring geometry, point geometry, position
+          integer)</term>
+
+          <listitem>
+            <para>Adds a point to a LineString before point &lt;position&gt;
+            (0-based index). Third parameter can be omitted or set to -1 for
+            appending.</para>
+
+            <programlisting>
+--guarantee all linestrings in a table are closed
+--by adding the start point of each linestring to the end of the line string 
+--only for those that are not closed
+UPDATE sometable
+	SET the_geom = ST_AddPoint(the_geom, ST_StartPoint(the_geom))
+	FROM sometable
+	WHERE ST_IsClosed(the_geom) = false;
+			  </programlisting>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_RemovePoint(linestring, offset)</term>
+
+          <listitem>
+            <para>Removes point from a linestring. Offset is 0-based.</para>
+
+            <para>Availability: 1.1.0</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_SetPoint(linestring, N, point)</term>
+
+          <listitem>
+            <para>Replace point N of linestring with given point. Index is
+            0-based.</para>
+
+            <para>Availability: 1.1.0</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Force_collection(geometry)</term>
+
+          <listitem>
+            <para>Converts the geometry into a GEOMETRYCOLLECTION. This is
+            useful for simplifying the WKB representation.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="force_2d">
+          <term>ST_Force_2d(geometry)</term>
+
+          <listitem>
+            <para>Forces the geometries into a "2-dimensional mode" so that
+            all output representations will only have the X and Y coordinates.
+            This is useful for force OGC-compliant output (since OGC only
+            specifies 2-D geometries).</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="force_3dz">
+          <term>ST_Force_3dz(geometry)</term>
+
+          <term>ST_Force_3d(geometry)</term>
+
+          <listitem>
+            <para>Forces the geometries into XYZ mode.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="force_3dm">
+          <term>ST_Force_3dm(geometry)</term>
+
+          <listitem>
+            <para>Forces the geometries into XYM mode.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="force_4d">
+          <term>ST_Force_4d(geometry)</term>
+
+          <listitem>
+            <para>Forces the geometries into XYZM mode.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Multi(geometry)</term>
+
+          <listitem>
+            <para>Returns the geometry as a MULTI* geometry. If the geometry
+            is already a MULTI*, it is returned unchanged.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Transform(geometry,integer)</term>
+
+          <listitem>
+            <para>Returns a new geometry with its coordinates transformed to
+            the SRID referenced by the integer parameter. The destination SRID
+            must exist in the <varname>SPATIAL_REF_SYS</varname> table.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Affine(geometry, float8, float8, float8, float8, float8,
+          float8, float8, float8, float8, float8, float8, float8)</term>
+
+          <listitem>
+            <para>Applies an 3d affine transformation to the geometry. The
+            call <programlisting>Affine(geom, a, b, c, d, e, f, g, h, i, xoff, yoff, zoff) </programlisting>
+            represents the transformation matrix <programlisting>/ a  b  c  xoff \ 
+| d  e  f  yoff | 
+| g  h  i  zoff | 
+\ 0  0  0     1 /</programlisting> and the vertices are transformed as
+            follows: <programlisting>x' = a*x + b*y + c*z + xoff 
+y' = d*x + e*y + f*z + yoff 
+z' = g*x + h*y + i*z + zoff</programlisting> All of the translate / scale
+            functions below are expressed via such an affine
+            transformation.</para>
+
+            <para>Availability: 1.1.2.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Affine(geometry, float8, float8, float8, float8, float8,
+          float8)</term>
+
+          <listitem>
+            <para>Applies an 2d affine transformation to the geometry. The
+            call <programlisting>Affine(geom, a, b, d, e, xoff, yoff)</programlisting>
+            represents the transformation matrix <programlisting>/  a  b  0  xoff  \       /  a  b  xoff  \ 
+|  d  e  0  yoff  | rsp.  |  d  e  yoff  | 
+|  0  0  1     0  |       \  0  0     1  / 
+\  0  0  0     1  /</programlisting> and the vertices are transformed as
+            follows: <programlisting>x' = a*x + b*y + xoff 
+y' = d*x + e*y + yoff 
+z' = z </programlisting> This method is a subcase of the 3D method
+            above.</para>
+
+            <para>Availability: 1.1.2.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Translate(geometry, float8, float8, float8)</term>
+
+          <listitem>
+            <para>Translates the geometry to a new location using the numeric
+            parameters as offsets. Ie: translate(geom, X, Y, Z).</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Scale(geometry, float8, float8, float8)</term>
+
+          <listitem>
+            <para>scales the geometry to a new size by multiplying the
+            ordinates with the parameters. Ie: scale(geom, Xfactor, Yfactor,
+            Zfactor).</para>
+
+            <para>Availability: 1.1.0</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="Rotate">
+          <term>ST_RotateZ(geometry, float8)</term>
+
+          <term>ST_RotateX(geometry, float8)</term>
+
+          <term>ST_RotateY(geometry, float8)</term>
+
+          <listitem>
+            <para>Rotate the geometry around the Z, X or Y axis by the given
+            angle given in radians. Follows the right-hand rule.</para>
+
+            <para>Availability: 1.1.2.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_TransScale(geometry, float8, float8, float8, float8)</term>
+
+          <listitem>
+            <para>First, translates the geometry using the first two floats,
+            then scales it using the second two floats, working in 2D only.
+            Using <code>transscale(geom, X, Y, XFactor, YFactor)</code>
+            internally calls <code>affine(geom, XFactor, 0, 0, 0, YFactor, 0,
+            0, 0, 1, X*XFactor, Y*YFactor, 0)</code>.</para>
+
+            <para>Availability: 1.1.0.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Reverse(geometry)</term>
+
+          <listitem>
+            <para>Returns the geometry with vertex order reversed.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_ForceRHR(geometry)</term>
+
+          <listitem>
+            <para>Force polygons of the collection to obey
+            Right-Hand-Rule.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Simplify(geometry, tolerance)</term>
+
+          <listitem>
+            <para>Returns a "simplified" version of the given geometry using
+            the Douglas-Peuker algorithm. Will actually do something only with
+            (multi)lines and (multi)polygons but you can safely call it with
+            any kind of geometry. Since simplification occurs on a
+            object-by-object basis you can also feed a GeometryCollection to
+            this function. Note that returned geometry might loose its
+            simplicity (see <link linkend="IsSimple">IsSimple</link>)</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_SimplifyPreserveTopology(geometry, tolerance)</term>
+
+          <listitem>
+            <para>Returns a "simplified" version of the given geometry using
+            the Douglas-Peuker algorithm. Will avoid creating derived
+            geometries (polygons in particular) that are invalid.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_SnapToGrid(geometry, originX, originY, sizeX, sizeY)</term>
+
+          <term>ST_SnapToGrid(geometry, sizeX, sizeY)</term>
+
+          <term>ST_SnapToGrid(geometry, size)</term>
+
+          <listitem>
+            <para>Snap all points of the input geometry to the grid defined by
+            its origin and cell size. Remove consecutive points falling on the
+            same cell, eventually returning NULL if output points are not
+            enough to define a geometry of the given type. Collapsed
+            geometries in a collection are stripped from it.</para>
+
+            <note>
+              <para>The returned geometry might loose its simplicity (see
+              <link linkend="IsSimple">IsSimple</link>).</para>
+            </note>
+
+            <note>
+              <para>Before release 1.1.0 this function always returned a 2d
+              geometry. Starting at 1.1.0 the returned geometry will have same
+              dimensionality as the input one with higher dimension values
+              untouched. Use the version taking a second geometry argument to
+              define all grid dimensions.</para>
+            </note>
+
+            <para>Availability: 1.0.0RC1</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_SnapToGrid(geometry, geometry, sizeX, sizeY, sizeZ,
+          sizeM)</term>
+
+          <listitem>
+            <para>Snap all points of the input geometry to the grid defined by
+            its origin (the second argument, must be a point) and cell sizes.
+            Specify 0 as size for any dimension you don't want to snap to a
+            grid.</para>
+
+            <para>Availability: 1.1.0</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_Segmentize(geometry, maxlength)</term>
+
+          <listitem>
+            <para>Return a modified geometry having no segment longer then the
+            given distance. Interpolated points will have Z and M values (if
+            needed) set to 0. Distance computation is performed in 2d
+            only.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_LineMerge(geometry)</term>
+
+          <listitem>
+            <para>Returns a (set of) LineString(s) formed by sewing together
+            constituent linework of input.</para>
+
+            <para>Availability: 1.1.0 - requires GEOS &gt;= 2.1.0</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </sect2>
+
+    <sect2>
+      <title>Linear Referencing</title>
+
+      <variablelist>
+        <varlistentry id="line_interpolate_point">
+          <term>ST_line_interpolate_point(linestring, location)</term>
+
+          <listitem>
+            <para>Returns a point interpolated along a line. First argument
+            must be a LINESTRING. Second argument is a float8 between 0 and 1
+            representing fraction of total <link linkend="length2d">2d
+            length</link> the point has to be located.</para>
+
+            <para>See <link
+            linkend="line_locate_point">line_locate_point()</link> for
+            computing the line location nearest to a Point.</para>
+
+            <note>
+              <para>Since release 1.1.1 this function also interpolates M and
+              Z values (when present), while prior releases set them to
+              0.0.</para>
+            </note>
+
+            <para>Availability: 0.8.2</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="line_substring">
+          <term>ST_line_substring(linestring, start, end)</term>
+
+          <listitem>
+            <para>Return a linestring being a substring of the input one
+            starting and ending at the given fractions of total 2d length.
+            Second and third arguments are float8 values between 0 and
+            1.</para>
+
+            <para>If 'start' and 'end' have the same value this is equivalent
+            to <link
+            linkend="line_interpolate_point">line_interpolate_point()</link>.</para>
+
+            <para>See <link
+            linkend="line_locate_point">line_locate_point()</link> for
+            computing the line location nearest to a Point.</para>
+
+            <note>
+              <para>Since release 1.1.1 this function also interpolates M and
+              Z values (when present), while prior releases set them to
+              unspecified values.</para>
+            </note>
+
+            <para>Availability: 1.1.0</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="line_locate_point">
+          <term>ST_line_locate_point(LineString, Point)</term>
+
+          <listitem>
+            <para>Returns a float between 0 and 1 representing the location of
+            the closest point on LineString to the given Point, as a fraction
+            of total <link linkend="length2d">2d line</link> length.</para>
+
+            <para>You can use the returned location to extract a Point (<link
+            linkend="line_interpolate_point">line_interpolate_point</link>) or
+            a substring (<link
+            linkend="line_substring">line_substring</link>).</para>
+
+            <para>Availability: 1.1.0</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_locate_along_measure(geometry, float8)</term>
+
+          <listitem>
+            <para>Return a derived geometry collection value with elements
+            that match the specified measure. Polygonal elements are not
+            supported.</para>
+
+            <para>Semantic is specified by: ISO/IEC CD 13249-3:200x(E) - Text
+            for Continuation CD Editing Meeting</para>
+
+            <para>Availability: 1.1.0</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_locate_between_measures(geometry, float8, float8)</term>
+
+          <listitem>
+            <para>Return a derived geometry collection value with elements
+            that match the specified range of measures inclusively. Polygonal
+            elements are not supported.</para>
+
+            <para>Semantic is specified by: ISO/IEC CD 13249-3:200x(E) - Text
+            for Continuation CD Editing Meeting</para>
+
+            <para>Availability: 1.1.0</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </sect2>
+
+    <sect2>
+      <title>Misc</title>
+
+      <variablelist>
+        <varlistentry>
+          <term>ST_Summary(geometry)</term>
+
+          <listitem>
+            <para>Returns a text summary of the contents of the
+            geometry.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_box2d(geometry)</term>
+
+          <listitem>
+            <para>Returns a BOX2D representing the maximum extents of the
+            geometry.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_box3d(geometry)</term>
+
+          <listitem>
+            <para>Returns a BOX3D representing the maximum extents of the
+            geometry.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_extent(geometry set)</term>
+
+          <listitem>
+            <para>The extent() function is an "aggregate" function in the
+            terminology of PostgreSQL. That means that it operators on lists
+            of data, in the same way the sum() and mean() functions do. For
+            example, "SELECT ST_Extent(GEOM) FROM GEOMTABLE" will return a
+            BOX3D giving the maximum extent of all features in the table.
+            Similarly, "SELECT ST_Extent(GEOM) FROM GEOMTABLE GROUP BY
+            CATEGORY" will return one extent result for each category.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="zmflag">
+          <term>ST_zmflag(geometry)</term>
+
+          <listitem>
+            <para>Returns ZM (dimension semantic) flag of the geometries as a
+            small int. Values are: 0=2d, 1=3dm, 2=3dz, 3=4d.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="hasbbox">
+          <term>ST_HasBBOX(geometry)</term>
+
+          <listitem>
+            <para>Returns TRUE if the bbox of this geometry is cached, FALSE
+            otherwise. Use <link linkend="addbbox">addBBOX()</link> and <link
+            linkend="dropbbox">dropBBOX()</link> to control caching.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="ndims">
+          <term>ST_ndims(geometry)</term>
+
+          <listitem>
+            <para>Returns number of dimensions of the geometry as a small int.
+            Values are: 2,3 or 4.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_nrings(geometry)</term>
+
+          <listitem>
+            <para>If the geometry is a polygon or multi-polygon returns the
+            number of rings.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_npoints(geometry)</term>
+
+          <listitem>
+            <para>Returns the number of points in the geometry.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="IsValid">
+          <term>ST_isvalid(geometry)</term>
+
+          <listitem>
+            <para>returns true if this geometry is valid.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_expand(geometry, float)</term>
+
+          <listitem>
+            <para>This function returns a bounding box expanded in all
+            directions from the bounding box of the input geometry, by an
+            amount specified in the second argument. Very useful for
+            distance() queries, to add an index filter to the query.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_estimated_extent([schema], table, geocolumn)</term>
+
+          <listitem>
+            <para>Return the 'estimated' extent of the given spatial table.
+            The estimated is taken from the geometry column's statistics. The
+            current schema will be used if not specified.</para>
+
+            <para>For PostgreSQL&gt;=8.0.0 statistics are gathered by VACUUM
+            ANALYZE and resulting extent will be about 95% of the real
+            one.</para>
+
+            <para>For PostgreSQL&lt;8.0.0 statistics are gathered by
+            update_geometry_stats() and resulting extent will be exact.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_find_srid(varchar,varchar,varchar)</term>
+
+          <listitem>
+            <para>The syntax is find_srid(&lt;db/schema&gt;, &lt;table&gt;,
+            &lt;column&gt;) and the function returns the integer SRID of the
+            specified column by searching through the GEOMETRY_COLUMNS table.
+            If the geometry column has not been properly added with the
+            AddGeometryColumns() function, this function will not work
+            either.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_mem_size(geometry)</term>
+
+          <listitem>
+            <para>Returns the amount of space (in bytes) the geometry
+            takes.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_point_inside_circle(geometry, float, float, float)</term>
+
+          <listitem>
+            <para>The syntax for this functions is
+            point_inside_circle(&lt;geometry&gt;,&lt;circle_center_x&gt;,&lt;circle_center_y&gt;,&lt;radius&gt;).
+            Returns the true if the geometry is a point and is inside the
+            circle. Returns false otherwise.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_XMin(box3d) ST_YMin(box3d) ST_ZMin(box3d)</term>
+
+          <listitem>
+            <para>Returns the requested minima of a bounding box.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ST_XMax(box3d) ST_YMax(box3d) ST_ZMax(box3d)</term>
+
+          <listitem>
+            <para>Returns the requested maxima of a bounding box.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="Accum">
+          <term>ST_Accum(geometry set)</term>
+
+          <listitem>
+            <para>Aggregate. Constructs an array of geometries.</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </sect2>
+
+    <sect2>
+      <title>Long Transactions support</title>
+
+      <para>This module and associated pl/pgsql functions have been
+      implemented to provide long locking support required by <ulink
+      url="https://portal.opengeospatial.org/files/?artifact_id=7176">Web
+      Feature Service</ulink> specification.</para>
+
+      <note>
+        <para>Users must use <ulink
+        url="http://www.postgresql.org/docs/7.4/static/transaction-iso.html">serializable
+        transaction level</ulink> otherwise locking mechanism would
+        break.</para>
+      </note>
+
+      <variablelist>
+        <varlistentry id="EnableLongTransactions">
+          <term>EnableLongTransactions()</term>
+
+          <listitem>
+            <para>Enable long transaction support. This function creates the
+            required metadata tables, needs to be called once before using the
+            other functions in this section. Calling it twice is
+            harmless.</para>
+
+            <para>Availability: 1.1.3</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="DisableLongTransactions">
+          <term>DisableLongTransactions()</term>
+
+          <listitem>
+            <para>Disable long transaction support. This function removes the
+            long transaction support metadata tables, and drops all triggers
+            attached to lock-checked tables.</para>
+
+            <para>Availability: 1.1.3</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="CheckAuth">
+          <term>CheckAuth([&lt;schema&gt;], &lt;table&gt;,
+          &lt;rowid_col&gt;)</term>
+
+          <listitem>
+            <para>Check updates and deletes of rows in given table for being
+            authorized. Identify rows using &lt;rowid_col&gt; column.</para>
+
+            <para>Availability: 1.1.3</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="LockRow">
+          <term>LockRow([&lt;schema&gt;], &lt;table&gt;, &lt;rowid&gt;,
+          &lt;authid&gt;, [&lt;expires&gt;])</term>
+
+          <listitem>
+            <para>Set lock/authorization for specific row in table
+            &lt;authid&gt; is a text value, &lt;expires&gt; is a timestamp
+            defaulting to now()+1hour. Returns 1 if lock has been assigned, 0
+            otherwise (already locked by other auth)</para>
+
+            <para>Availability: 1.1.3</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="UnlockRows">
+          <term>UnlockRows(&lt;authid&gt;)</term>
+
+          <listitem>
+            <para>Remove all locks held by specified authorization id. Returns
+            the number of locks released.</para>
+
+            <para>Availability: 1.1.3</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="AddAuth">
+          <term>AddAuth(&lt;authid&gt;)</term>
+
+          <listitem>
+            <para>Add an authorization token to be used in current
+            transaction.</para>
+
+            <para>Availability: 1.1.3</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </sect2>
+  </sect1>
+
+  <sect1>
+    <title>SQL-MM Functions</title>
+
+    <para>This is a listing of the SQL-MM defined functions that PostGIS
+    currently supports. The implementations of these functions follow the
+    ArcSDE implementation, and thus deviate somewhat from the spec. These
+    deviations will be noted.</para>
+
+    <para>As of version 1.2.0, these functions have been implemented by
+    wrapping existing PostGIS functions. As a result, full support for curved
+    geometries may not be in place for many functions.</para>
+
+    <note>
+      <para>SQL-MM defines the default SRID of all geometry constructors as 0.
+      PostGIS uses a default SRID of -1.</para>
+    </note>
+
+    <variablelist>
+      <varlistentry>
+        <term>ST_Area</term>
+
+        <listitem>
+          <para>Return the area measurement of an ST_Surface or
+          ST_MultiSurface value.</para>
+
+          <para>SQL-MM 3: 8.1.2, 9.5.3</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_AsBinary</term>
+
+        <listitem>
+          <para>Return the well-known binary representation of an ST_Geometry
+          value.</para>
+
+          <para>SQL-MM 3: 5.1.37</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_AsText</term>
+
+        <listitem>
+          <para>Return the well-known text representation of an ST_Geometry
+          value.</para>
+
+          <para>SQL-MM 3: 5.1.25</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_Boundary</term>
+
+        <listitem>
+          <para>Return the boundary of the ST_Geometry value.</para>
+
+          <para>SQL-MM 3: 5.1.14</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_Buffer</term>
+
+        <listitem>
+          <para>Return a buffer around the ST_Geometry value.</para>
+
+          <para>SQL-MM 3: 5.1.17</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_Centroid</term>
+
+        <listitem>
+          <para>Return mathematical centroid of the ST_Surface or
+          ST_MultiSurface value.</para>
+
+          <para>SQL-MM 3: 8.1.4, 9.5.5</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_Contains</term>
+
+        <listitem>
+          <para>Test if an ST_Geometry value spatially contains another
+          ST_Geometry value.</para>
+
+          <para>SQL-MM 3: 5.1.31</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_ConvexHull</term>
+
+        <listitem>
+          <para>The convex hull of a geometry represents the minimum geometry
+          that encloses all geometries within the set.</para>
+
+          <para>It is usually used with MULTI and Geometry Collections.
+          Although it is not an aggregate - you can use it in conjunction with
+          ST_Collect to get the convex hull of a set of points.
+          ST_ConvexHull(ST_Collect(somepointfield)). It is often used to
+          determine an affected area based on a set of point
+          observations.</para>
+
+          <para>SQL-MM 3: 5.1.16</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_CoordDim</term>
+
+        <listitem>
+          <para>Return the coordinate dimension of the ST_Geometry
+          value.</para>
+
+          <para>SQL-MM 3: 5.1.3</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_Crosses</term>
+
+        <listitem>
+          <para>Test if an ST_Geometry value spatially crosses another
+          ST_Geometry value.</para>
+
+          <para>SQL-MM 3: 5.1.29</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_Difference</term>
+
+        <listitem>
+          <para>Return an ST_Geometry value that represents the point set
+          difference of two ST_Geometry values.</para>
+
+          <para>SQL-MM 3: 5.1.20</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_Dimension</term>
+
+        <listitem>
+          <para>Return the dimension of the ST_Geometry value.</para>
+
+          <para>SQL-MM 3: 5.1.2</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_Disjoint</term>
+
+        <listitem>
+          <para>Test if an ST_Geometry value is spatially disjoint from
+          another ST_Geometry value.</para>
+
+          <para>SQL-MM 3: 5.1.26</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_Distance</term>
+
+        <listitem>
+          <para>Return the distance between two geometries.</para>
+
+          <para>SQL-MM 3: 5.1.23</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_EndPoint</term>
+
+        <listitem>
+          <para>Return an ST_Point value that is the end point of an ST_Curve
+          value.</para>
+
+          <para>SQL-MM 3: 7.1.4</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_Envelope</term>
+
+        <listitem>
+          <para>Return the bounding rectangle for the ST_Geometry
+          value.</para>
+
+          <para>SQL-MM 3: 5.1.15</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_Equals</term>
+
+        <listitem>
+          <para>Test if an ST_Geometry value as spatially equal to another
+          ST_Geometry value.</para>
+
+          <para>SQL-MM 3: 5.1.24</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_ExteriorRing</term>
+
+        <listitem>
+          <para>Return the exterior ring of an ST_Surface</para>
+
+          <para>SQL-MM 3: 8.2.3, 8.3.3</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_GeometryN</term>
+
+        <listitem>
+          <para>Return the indicated ST_Geometry value from an
+          ST_GeomCollection.</para>
+
+          <para>SQL-MM 3: 9.1.5</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_GeometryType</term>
+
+        <listitem>
+          <para>Return the geometry type of the ST_Geometry value.</para>
+
+          <para>SQL-MM 3: 5.1.4</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_GeomFromText</term>
+
+        <listitem>
+          <para>Return a specified ST_Geometry value.</para>
+
+          <para>SQL-MM 3: 5.1.40</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_GeomFromWKB</term>
+
+        <listitem>
+          <para>Return a specified ST_Geometry value.</para>
+
+          <para>SQL-MM 3: 5.1.41</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_InteriorRingN</term>
+
+        <listitem>
+          <para>Return the specified interior ring of an ST_Surface
+          value.</para>
+
+          <para>SQL-MM 3: 8.2.6, 8.3.5</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_Intersection</term>
+
+        <listitem>
+          <para>Return an ST_Geometry value that represents the point set
+          intersection of two ST_Geometry values.</para>
+
+          <para>In other words - that portion of geometry A and geometry B
+          that is shared between the two geometries.</para>
+
+          <para>SQL-MM 3: 5.1.18</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_Intersects</term>
+
+        <listitem>
+          <para>Test if an ST_Geometry value spatially intersects another
+          ST_Geometry value.</para>
+
+          <para>SQL-MM 3: 5.1.27</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_IsClosed</term>
+
+        <listitem>
+          <para>Test if an ST_Curve or ST_MultiCurve value is closed.</para>
+
+          <note>
+            <para>SQL-MM defines the result of ST_IsClosed(NULL) to be 0,
+            while PostGIS returns NULL.</para>
+          </note>
+
+          <para>SQL-MM 3: 7.1.5, 9.3.3</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_IsEmpty</term>
+
+        <listitem>
+          <para>Test if an ST_Geometry value corresponds to the empty
+          set.</para>
+
+          <note>
+            <para>SQL-MM defines the result of ST_IsEmpty(NULL) to be 0, while
+            PostGIS returns NULL.</para>
+          </note>
+
+          <para>SQL-MM 3: 5.1.7</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_IsRing</term>
+
+        <listitem>
+          <para>Test if an ST_Curve value is a ring.</para>
+
+          <note>
+            <para>SQL-MM defines the result of ST_IsRing(NULL) to be 0, while
+            PostGIS returns NULL.</para>
+          </note>
+
+          <para>SQL-MM 3: 7.1.6</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_IsSimple</term>
+
+        <listitem>
+          <para>Test if an ST_Geometry value has no anomalous geometric
+          points, such as self intersection or self tangency.</para>
+
+          <note>
+            <para>SQL-MM defines the result of ST_IsSimple(NULL) to be 0,
+            while PostGIS returns NULL.</para>
+          </note>
+
+          <para>SQL-MM 3: 5.1.8</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_IsValid</term>
+
+        <listitem>
+          <para>Test if an ST_Geometry value is well formed.</para>
+
+          <note>
+            <para>SQL-MM defines the result of ST_IsValid(NULL) to be 0, while
+            PostGIS returns NULL.</para>
+          </note>
+
+          <para>SQL-MM defines the result of ST_IsValid(NULL) to be 1</para>
+
+          <para>SQL-MM 3: 5.1.9</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_Length</term>
+
+        <listitem>
+          <para>Return the length measurement of an ST_Curve or ST_MultiCurve
+          value.</para>
+
+          <para>SQL-MM 3: 7.1.2, 9.3.4</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_LineFromText</term>
+
+        <listitem>
+          <para>Return a specified ST_LineString value.</para>
+
+          <para>SQL-MM 3: 7.2.8</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_LineFromWKB</term>
+
+        <listitem>
+          <para>Return a specified ST_LineString value.</para>
+
+          <para>SQL-MM 3: 7.2.9</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_MLineFromText</term>
+
+        <listitem>
+          <para>Return a specified ST_MultiLineString value.</para>
+
+          <para>SQL-MM 3: 9.4.4</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_MLineFromWKB</term>
+
+        <listitem>
+          <para>Return a specified ST_MultiLineString value.</para>
+
+          <para>SQL-MM 3: 9.4.5</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_MPointFromText</term>
+
+        <listitem>
+          <para>Return a specified ST_MultiPoint value.</para>
+
+          <para>SQL-MM 3: 9.2.4</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_MPointFromWKB</term>
+
+        <listitem>
+          <para>Return a specified ST_MultiPoint value.</para>
+
+          <para>SQL-MM 3: 9.2.5</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_MPolyFromText</term>
+
+        <listitem>
+          <para>Return a specified ST_MultiPolygon value.</para>
+
+          <para>SQL-MM 3: 9.6.4</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_MPolyFromWKB</term>
+
+        <listitem>
+          <para>Return a specified ST_MultiPolygon value.</para>
+
+          <para>SQL-MM 3: 9.6.5</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_NumGeometries</term>
+
+        <listitem>
+          <para>Return the number of geometries in an
+          ST_GeomCollection.</para>
+
+          <para>SQL-MM 3: 9.1.4</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_NumInteriorRing</term>
+
+        <listitem>
+          <para>Return the number of interior rings in an ST_Surface.</para>
+
+          <para>SQL-MM 3: 8.2.5</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_NumPoints</term>
+
+        <listitem>
+          <para>Return the number of points in an ST_LineString or
+          ST_CircularString value.</para>
+
+          <para>SQL-MM 3: 7.2.4</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_OrderingEquals</term>
+
+        <listitem>
+          <para>ST_OrderingEquals compares two geometries and t (TRUE) if the
+          geometries are equal and the coordinates are in the same order;
+          otherwise it returns f (FALSE).</para>
+
+          <note>
+            <para>This function is implemented as per the ArcSDE SQL
+            specification rather than SQL-MM.
+            http://edndoc.esri.com/arcsde/9.1/sql_api/sqlapi3.htm#ST_OrderingEquals</para>
+          </note>
+
+          <para>SQL-MM 3: 5.1.43</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_Overlaps</term>
+
+        <listitem>
+          <para>Test if an ST_Geometry value spatially overlays another
+          ST_Geometry value.</para>
+
+          <para>SQL-MM 3: 5.1.32</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_Perimeter</term>
+
+        <listitem>
+          <para>Return the length measurement of the boundary of an ST_Surface
+          or ST_MultiRSurface value.</para>
+
+          <para>SQL-MM 3: 8.1.3, 9.5.4</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_Point</term>
+
+        <listitem>
+          <para>Returns an ST_Point with the given coordinate values.</para>
+
+          <para>SQL-MM 3: 6.1.2</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_PointFromText</term>
+
+        <listitem>
+          <para>Return a specified ST_Point value.</para>
+
+          <para>SQL-MM 3: 6.1.8</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_PointFromWKB</term>
+
+        <listitem>
+          <para>Return a specified ST_Point value.</para>
+
+          <para>SQL-MM 3: 6.1.9</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_PointN</term>
+
+        <listitem>
+          <para>Return the specified ST_Point value in an ST_LineString or
+          ST_CircularString</para>
+
+          <para>SQL-MM 3: 7.2.5, 7.3.5</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_PointOnSurface</term>
+
+        <listitem>
+          <para>Return an ST_Point value guaranteed to spatially intersect the
+          ST_Surface or ST_MultiSurface value.</para>
+
+          <para>SQL-MM 3: 8.1.5, 9.5.6</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_PolyFromText</term>
+
+        <listitem>
+          <para>Return a specified ST_Polygon value.</para>
+
+          <para>SQL-MM 3: 8.3.6</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_PolyFromWKB</term>
+
+        <listitem>
+          <para>Return a specified ST_Polygon value.</para>
+
+          <para>SQL-MM 3: 8.3.7</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_Polygon</term>
+
+        <listitem>
+          <para>Return a polygon build from the specified linestring and
+          SRID.</para>
+
+          <para>SQL-MM 3: 8.3.2</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_Relate</term>
+
+        <listitem>
+          <para>Test if an ST_Geometry value is spatially related to another
+          ST_Geometry value.</para>
+
+          <para>SQL-MM 3: 5.1.25</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_SRID</term>
+
+        <listitem>
+          <para>Return the spatial reference system identifier of the
+          ST_Geometry value.</para>
+
+          <para>SQL-MM 3: 5.1.5</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_StartPoint</term>
+
+        <listitem>
+          <para>Return an ST_Point value that is the start point of an
+          ST_Curve value.</para>
+
+          <para>SQL-MM 3: 7.1.3</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_SymDifference</term>
+
+        <listitem>
+          <para>Return an ST_Geometry value that represents the point set
+          symmetric difference of two ST_Geometry values.</para>
+
+          <para>SQL-MM 3: 5.1.21</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_Touches</term>
+
+        <listitem>
+          <para>Test if an ST_Geometry value spatially touches another
+          ST_Geometry value.</para>
+
+          <para>SQL-MM 3: 5.1.28</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_Transform</term>
+
+        <listitem>
+          <para>Return an ST_Geometry value transformed to the specified
+          spatial reference system.</para>
+
+          <para>SQL-MM 3: 5.1.6</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_Union</term>
+
+        <listitem>
+          <para>Return an ST_Geometry value that represents the point set
+          union of two ST_Geometry values.</para>
+
+          <para>SQL-MM 3: 5.1.19</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_Within</term>
+
+        <listitem>
+          <para>Test if an ST_Geometry value is spatially within another
+          ST_Geometry value.</para>
+
+          <para>SQL-MM 3: 5.1.30</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_WKBToSQL</term>
+
+        <listitem>
+          <para>Return an ST_Geometry value for a given well-known binary
+          representation.</para>
+
+          <para>SQL-MM 3: 5.1.36</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_WKTToSQL</term>
+
+        <listitem>
+          <para>Return an ST_Geometry value for a given well-known text
+          representation.</para>
+
+          <para>SQL-MM 3: 5.1.34</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_X</term>
+
+        <listitem>
+          <para>Returns the x coordinate value of an ST_Point value.</para>
+
+          <para>SQL-MM 3: 6.1.3</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ST_Y</term>
+
+        <listitem>
+          <para>Returns the y coordinate value of an ST_Point value.</para>
+
+          <para>SQL-MM 3: 6.1.4</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </sect1>
+
+  <sect1>
+    <title>ArcSDE Functions</title>
+
+    <para>Additional functions have been added to improve support for an
+    ArcSDE style interface.</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>SE_EnvelopesIntersect</term>
+
+        <listitem>
+          <para>Returns t (TRUE) if the envelopes of two geometries intersect;
+          otherwise, it returns f (FALSE).</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>SE_Is3d</term>
+
+        <listitem>
+          <para>Test if a geometry value has z coordinate values.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>SE_IsMeasured</term>
+
+        <listitem>
+          <para>Test if a geometry value has m coordinate values.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>SE_LocateAlong</term>
+
+        <listitem>
+          <para>Return a derived geometry collection value with elements that
+          match the specified measur.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>SE_LocateBetween</term>
+
+        <listitem>
+          <para>Return a derived geometry collection value with elements that
+          match the specified range of measures inclusively.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>SE_M</term>
+
+        <listitem>
+          <para>Returns the m coordinate value of an ST_Point value.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>SE_Z</term>
+
+        <listitem>
+          <para>Returns the z coordinate value of an ST_Point value</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </sect1>
+</chapter>
