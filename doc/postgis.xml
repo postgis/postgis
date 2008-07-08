@@ -2682,8 +2682,8 @@ if( geom.getType() = Geometry.POLYGON ) {
         additional column that &quot;caches&quot; the bbox, and matching against
         this. In our example, the commands are like:</para>
 
-        <programlisting>SELECT addGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2'); 
-UPDATE mytable set bbox = Envelope(Force_2d(the_geom));</programlisting>
+        <programlisting>SELECT AddGeometryColumn('myschema','mytable','bbox','4326','GEOMETRY','2'); 
+UPDATE mytable SET bbox = ST_Envelope(ST_Force_2d(the_geom));</programlisting>
 
         <para>Now change your query to use the &amp;&amp; operator against
         bbox instead of geom_column, like:</para>
@@ -2737,13 +2737,13 @@ ALTER TABLE</programlisting>
       <title>Avoiding dimension conversion</title>
 
       <para>Sometimes, you happen to have 3D or 4D data in your table, but
-      always access it using OpenGIS compliant asText() or asBinary()
+      always access it using OpenGIS compliant ST_AsText() or ST_AsBinary()
       functions that only output 2D geometries. They do this by internally
-      calling the force_2d() function, which introduces a significant overhead
+      calling the ST_Force_2d() function, which introduces a significant overhead
       for large geometries. To avoid this overhead, it may be feasible to
       pre-drop those additional dimensions once and forever:</para>
 
-      <programlisting>UPDATE mytable SET the_geom = force_2d(the_geom); 
+      <programlisting>UPDATE mytable SET the_geom = ST_Force_2d(the_geom); 
 VACUUM FULL ANALYZE mytable;</programlisting>
 
       <para>Note that if you added your geometry column using
