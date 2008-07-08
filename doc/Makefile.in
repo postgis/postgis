@@ -15,8 +15,7 @@ XSLBASE = @XSLBASE@
 XSLTPROC_COMMONOPTS = \
 	--param section.autolabel 1 \
 	--param section.label.includes.component.label 1 \
-	--param chunk.section.depth 0 \
-	--param generate.section.toc.level 1 
+	--param chunk.section.depth 0 
 
 XSLTPROC_HTMLOPTS = \
 	--stringparam html.stylesheet style.css \
