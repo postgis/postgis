@@ -613,8 +613,8 @@
             the largest dimension of the components of a
             GEOMETRYCOLLECTION.</para>
 
-            <programlisting>SELECT ST_dimension('GEOMETRYCOLLECTION(LINESTRING(1 1,0 0),POINT(0 0))'); 
-dimension 
+            <programlisting>SELECT ST_Dimension('GEOMETRYCOLLECTION(LINESTRING(1 1,0 0),POINT(0 0))'); 
+ST_Dimension 
 ----------- 
 1</programlisting>
           </listitem>
@@ -696,7 +696,7 @@ dimension
         </varlistentry>
 
         <varlistentry>
-          <term>ST_GeometryN(geometry,int)</term>
+          <term>ST_GeometryN(geometry,nth integer)</term>
 
           <listitem>
             <para>Return the N'th geometry if the geometry is a
@@ -721,7 +721,7 @@ dimension
         </varlistentry>
 
         <varlistentry>
-          <term>ST_PointN(geometry,integer)</term>
+          <term>ST_PointN(geometry,nth integer)</term>
 
           <listitem>
             <para>Return the N'th point in the first linestring in the
@@ -765,7 +765,7 @@ dimension
         </varlistentry>
 
         <varlistentry>
-          <term>ST_InteriorRingN(geometry,integer)</term>
+          <term>ST_InteriorRingN(geometry,nth integer)</term>
 
           <listitem>
             <para>Return the N'th interior ring of the polygon geometry.
@@ -821,8 +821,8 @@ dimension
 
           <listitem>
             <para>Returns the type of the geometry as a string. EG:
-            'Linestring', 'Polygon', etc. This function differs from
-            GeometryType(geometry) in the case of the string that is returned,
+            'ST_Linestring', 'ST_Polygon','ST_MultiPolygon' etc. This function differs from
+            GeometryType(geometry) in the case of the string and ST in front that is returned,
             as well as the fact that it will not indicate whether the geometry
             is measured.</para>
           </listitem>
@@ -876,10 +876,11 @@ dimension
 
       <variablelist>
         <varlistentry>
-          <term>ST_GeomFromText(text,[&lt;srid&gt;])</term>
+			<term>ST_GeomFromText(text)</term>
+			<term>ST_GeomFromText(text,srid integer)</term>
 
           <listitem>
-            <para>Makes a Geometry from WKT with the given SRID.</para>
+            <para>Makes a Geometry from WKT with the given SRID. If no SRID is passed in SRID is unknown (-1 currently).</para>
 
             <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
             suite</para>
@@ -887,7 +888,8 @@ dimension
         </varlistentry>
 
         <varlistentry>
-          <term>ST_PointFromText(text,[&lt;srid&gt;])</term>
+			<term>ST_PointFromText(text)</term>
+          <term>ST_PointFromText(text,srid integer)</term>
 
           <listitem>
             <para>Makes a Geometry from WKT with the given SRID. If SRID is
@@ -901,30 +903,32 @@ dimension
         </varlistentry>
 
         <varlistentry>
-          <term>ST_LineFromText(text,[&lt;srid&gt;])</term>
+			<term>ST_LineFromText(text)</term>
+			<term>ST_LineFromText(text,srid integer)</term>
 
-          <listitem>
-            <para>Makes a Geometry from WKT with the given SRID. If SRID is
-            not give, it defaults to -1.</para>
-
-            <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
-            suite</para>
-
-            <para>Throws an error if the WKT is not a Line</para>
-          </listitem>
+			<listitem>
+				<para>Makes a Geometry from WKT with the given SRID. If SRID is
+				not give, it defaults to -1.</para>
+				
+				<para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
+				suite</para>
+				
+				<para>Throws an error if the WKT is not a Line</para>
+			</listitem>
         </varlistentry>
 
         <varlistentry>
-          <term>ST_LinestringFromText(text,[&lt;srid&gt;])</term>
-
-          <listitem>
-            <para>Makes a Geometry from WKT with the given SRID. If SRID is
-            not give, it defaults to -1.</para>
-
-            <para>from the conformance suite</para>
-
-            <para>Throws an error if the WKT is not a Line</para>
-          </listitem>
+			<term>ST_LinestringFromText(text)</term>
+			<term>ST_LinestringFromText(text,srid integer)</term>
+			
+			<listitem>
+				<para>Makes a Geometry from WKT with the given SRID. If SRID is
+				not give, it defaults to -1.</para>
+				
+				<para>from the conformance suite</para>
+				
+				<para>Throws an error if the WKT is not a Line</para>
+			</listitem>
         </varlistentry>
 
         <varlistentry>
@@ -1916,7 +1920,7 @@ FROM
 SELECT p.gid, p.province_name, 
 	CASE WHEN
 		ST_Accum(w.the_geom) IS NULL THEN p.the_geom
-	ELSE ST_MakePolygon(ST_LineMerge(ST_Boundary(p.the_geom)), ST_Accum(w.the_geom))) END
+	ELSE  ST_MakePolygon(ST_LineMerge(ST_Boundary(p.the_geom)), ST_Accum(w.the_geom)) END
 FROM 
 	provinces p LEFT JOIN waterlines w 
 		ON (ST_Within(w.the_geom, p.the_geom) AND ST_IsClosed(w.the_geom))
@@ -2402,7 +2406,7 @@ z' = z </programlisting> This method is a subcase of the 3D method
 
       <variablelist>
         <varlistentry id="line_interpolate_point">
-          <term>ST_line_interpolate_point(linestring, location)</term>
+          <term>ST_line_interpolate_point(linestring geometry, locationfraction float8)</term>
 
           <listitem>
             <para>Returns a point interpolated along a line. First argument
@@ -2425,7 +2429,7 @@ z' = z </programlisting> This method is a subcase of the 3D method
         </varlistentry>
 
         <varlistentry id="line_substring">
-          <term>ST_line_substring(linestring, start, end)</term>
+          <term>ST_Line_substring(linestring geometry, startfraction float8, endfraction float8)</term>
 
           <listitem>
             <para>Return a linestring being a substring of the input one
@@ -2452,7 +2456,7 @@ z' = z </programlisting> This method is a subcase of the 3D method
         </varlistentry>
 
         <varlistentry id="line_locate_point">
-          <term>ST_line_locate_point(LineString, Point)</term>
+          <term>ST_line_locate_point(LineString geometry, Point geometry)</term>
 
           <listitem>
             <para>Returns a float between 0 and 1 representing the location of
