@@ -1904,7 +1904,42 @@ SELECT ST_MakePolygon(
 FROM 
 	(SELECT ST_ExteriorRing(ST_Buffer(ST_MakePoint(10,10),10,10))
 		As line )
-		As foo	
+		As foo;
+		
+--Build province boundaries with holes
+--representing lakes in the province from a set of 
+--province polygons/multipolygons and water line strings
+--this is an example of using PostGIS ST_Accum
+--NOTE: the use of CASE because feeding a null array into 
+--ST_MakePolygon results in NULL
+--NOTE: the use of left join to guarantee we get all provinces back even if they have no lakes
+SELECT p.gid, p.province_name, 
+	CASE WHEN
+		ST_Accum(w.the_geom) IS NULL THEN p.the_geom
+	ELSE ST_MakePolygon(ST_LineMerge(ST_Boundary(p.the_geom)), ST_Accum(w.the_geom))) END
+FROM 
+	provinces p LEFT JOIN waterlines w 
+		ON (ST_Within(w.the_geom, p.the_geom) AND ST_IsClosed(w.the_geom))
+GROUP BY p.gid, p.province_name, p.the_geom;
+
+--Same example above but utilizing a correlated subquery
+--and PostgreSQL built-in ARRAY() function that converts a row set to an array
+--NOTE: use of case because ST_MakePolygon 
+--evidentally doesn't like empty arrays either
+SELECT p.gid,  p.province_name, CASE WHEN 
+	EXISTS(SELECT w.the_geom 
+		FROM waterlines w 
+		WHERE ST_Within(w.the_geom, p.the_geom) 
+		AND ST_IsClosed(w.the_geom))
+	THEN 
+	ST_MakePolygon(ST_LineMerge(ST_Boundary(p.the_geom)), 
+		ARRAY(SELECT w.the_geom 
+			FROM waterlines w 
+			WHERE ST_Within(w.the_geom, p.the_geom) 
+			AND ST_IsClosed(w.the_geom)))
+	ELSE p.the_geom END As the_geom
+FROM 
+	provinces p; 
 			  </programlisting>
           </listitem>
         </varlistentry>
