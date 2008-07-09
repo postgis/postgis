@@ -68,7 +68,7 @@
 
       <variablelist>
         <varlistentry>
-          <term>ST_Distance(geometry, geometry)</term>
+          <term>ST_Distance(A geometry, B geometry)</term>
 
           <listitem>
             <para>Return the cartesian distance between two geometries in
@@ -77,11 +77,12 @@
         </varlistentry>
 
         <varlistentry>
-          <term>ST_DWithin(geometry, geometry, float)</term>
+          <term>ST_DWithin(A geometry, B geometry, sriddistance float)</term>
 
           <listitem>
-            <para>Returns true if geometries are within the specified distance
-            of one another. Uses indexes if available.</para>
+            <para>Returns true if geometries are within the specified sriddistance
+            of one another. sriddistance is in units defined by the spatial reference system.
+			Uses indexes if available.</para>
           </listitem>
         </varlistentry>
 
@@ -89,10 +90,12 @@
           <term>ST_Equals(geometry, geometry)</term>
 
           <listitem>
-            <para>Returns 1 (TRUE) if the given Geometries are "spatially
+            <para>Returns TRUE if the given Geometries are "spatially
             equal". Use this for a 'better' answer than '='.
             equals('LINESTRING(0 0, 10 10)','LINESTRING(0 0, 5 5, 10 10)') is
-            true.</para>
+            true.  Note by spatially equal we also mean ordering of points can be different but
+			represent the same geometry structure.  To verify the order of points is consistent, use 
+			ST_OrderingEquals.</para>
 
             <para>Performed by the GEOS module</para>
 
@@ -101,10 +104,10 @@
         </varlistentry>
 
         <varlistentry>
-          <term>ST_Disjoint(geometry, geometry)</term>
+          <term>ST_Disjoint(A geometry, B geometry)</term>
 
           <listitem>
-            <para>Returns 1 (TRUE) if the Geometries are "spatially
+            <para>Returns TRUE if the Geometries are "spatially
             disjoint".</para>
 
             <para>Performed by the GEOS module</para>
@@ -120,11 +123,11 @@
         </varlistentry>
 
         <varlistentry>
-          <term>ST_Intersects(geometry, geometry)</term>
+          <term>ST_Intersects(A geometry, B geometry)</term>
 
           <listitem>
-            <para>Returns 1 (TRUE) if the Geometries "spatially
-            intersect".</para>
+            <para>Returns TRUE if the Geometries "spatially
+            intersect" - (share any portion of space) and FALSE if they don't.</para>
 
             <para>Performed by the GEOS module</para>
 
@@ -144,10 +147,10 @@
         </varlistentry>
 
         <varlistentry>
-          <term>ST_Touches(geometry, geometry)</term>
+          <term>ST_Touches(A geometry, B geometry)</term>
 
           <listitem>
-            <para>Returns 1 (TRUE) if the Geometries "spatially touch".</para>
+            <para>Returns TRUE if the Geometries "spatially touch".</para>
 
             <para>Performed by the GEOS module</para>
 
@@ -168,10 +171,10 @@
         </varlistentry>
 
         <varlistentry>
-          <term>ST_Crosses(geometry, geometry)</term>
+          <term>ST_Crosses(A geometry, B geometry)</term>
 
           <listitem>
-            <para>Returns 1 (TRUE) if the Geometries "spatially cross".</para>
+            <para>Returns TRUE if the Geometries "spatially cross".</para>
 
             <para>Performed by the GEOS module</para>
 
@@ -191,10 +194,10 @@
         </varlistentry>
 
         <varlistentry>
-          <term>ST_Within(geometry A, geometry B)</term>
+          <term>ST_Within(A geometry, B geometry)</term>
 
           <listitem>
-            <para>Returns 1 (TRUE) if Geometry A is "spatially within"
+            <para>Returns TRUE if Geometry A is "spatially within"
             Geometry B. A has to be completely inside B.</para>
 
             <para>Performed by the GEOS module</para>
@@ -215,10 +218,10 @@
         </varlistentry>
 
         <varlistentry>
-          <term>ST_Overlaps(geometry, geometry)</term>
+          <term>ST_Overlaps(A geometry, B geometry)</term>
 
           <listitem>
-            <para>Returns 1 (TRUE) if the Geometries "spatially
+            <para>Returns TRUE if the Geometries "spatially
             overlap".</para>
 
             <para>Performed by the GEOS module</para>
@@ -238,10 +241,10 @@
         </varlistentry>
 
         <varlistentry>
-          <term>ST_Contains(geometry A, geometry B)</term>
+          <term>ST_Contains(A geometry, B geometry)</term>
 
           <listitem>
-            <para>Returns 1 (TRUE) if Geometry A "spatially contains" Geometry
+            <para>Returns TRUE if Geometry A "spatially contains" Geometry
             B.</para>
 
             <para>Performed by the GEOS module</para>
