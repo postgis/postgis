@@ -739,21 +739,46 @@ ST_Dimension
         </varlistentry>
 
         <varlistentry>
-          <term>ST_ExteriorRing(geometry)</term>
+          <term>ST_ExteriorRing(polygon geometry)</term>
 
           <listitem>
             <para>Return the exterior ring of the polygon geometry. Return
-            NULL if the geometry is not a polygon.</para>
+            NULL if the geometry is not a polygon.  Will not work with MULTIPOLYGON</para>
+			<programlisting>
+--If you have a table of polygons
+SELECT gid, ST_ExteriorRing(the_geom) AS ering
+FROM sometable;
+
+--If you have a table of MULTIPOLYGONs 
+--and want to return a MULTILINESTRING composed of the exterior rings of each polygon
+SELECT gid, ST_Collect(ST_ExteriorRing(the_geom)) AS erings
+	FROM (SELECT gid, (ST_Dump(the_geom)).geom As the_geom
+			FROM sometable) As foo
+GROUP BY gid;
+			</programlisting>
           </listitem>
         </varlistentry>
 
         <varlistentry>
-          <term>ST_NumInteriorRings(geometry)</term>
+          <term>ST_NumInteriorRings(polygon geometry)</term>
 
           <listitem>
             <para>Return the number of interior rings of the first polygon in
-            the geometry. Return NULL if there is no polygon in the
+            the geometry. This will work with both POLYGON and MULTIPOLYGON types but only looks at the first polygon.
+			Return NULL if there is no polygon in the
             geometry.</para>
+			<programlisting>
+--If you have a regular polygon
+SELECT gid, field1, field2, ST_NumInteriorRings(the_geom) AS numholes
+FROM sometable;
+
+--If you have multipolygons
+--And you want to know the total number of interior rings in the MULTIPOLYGON
+SELECT gid, field1, field2, SUM(ST_NumInteriorRings(the_geom)) AS numholes
+FROM (SELECT gid, field1, field2, (ST_Dump(the_geom)).geom As the_geom
+	FROM sometable) As foo
+GROUP BY gid, field1,field2;
+			</programlisting>
           </listitem>
         </varlistentry>
 
