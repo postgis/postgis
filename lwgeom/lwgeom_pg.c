@@ -264,7 +264,7 @@ pglwgeom_from_ewkb(uchar *ewkb, size_t ewkblen)
 	}
 	hexewkb[hexewkblen] = '\0';
 
-    serialized_lwgeom = ewkt_to_lwgeom(hexewkb);
+    serialized_lwgeom = lwgeom_from_ewkt(hexewkb);
     
     ret = (PG_LWGEOM *)palloc(serialized_lwgeom->size + VARHDRSZ);
     SET_VARSIZE(ret, serialized_lwgeom->size + VARHDRSZ);

@@ -1115,8 +1115,8 @@ extern uchar parse_hex(char *str);
 extern void deparse_hex(uchar str, char *result);
 
 /* Parser access routines */
-extern SERIALIZED_LWGEOM *ewkt_to_lwgeom(char *wkt_input);
 extern char *lwgeom_to_ewkt(LWGEOM *lwgeom);
+extern SERIALIZED_LWGEOM *lwgeom_from_ewkt(char *wkt_input);
 extern char *lwgeom_to_hexwkb(LWGEOM *lwgeom, unsigned int byteorder);
 extern LWGEOM *lwgeom_from_ewkb(uchar *ewkb, size_t ewkblen);
 extern uchar *lwgeom_to_ewkb(LWGEOM *lwgeom, char byteorder, size_t *ewkblen);

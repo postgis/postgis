@@ -68,7 +68,7 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
     PG_LWGEOM *ret;
 
 	/* will handle both HEXEWKB and EWKT */
-    serialized_lwgeom = ewkt_to_lwgeom(str);
+    serialized_lwgeom = lwgeom_from_ewkt(str);
 	lwgeom = lwgeom_deserialize(serialized_lwgeom->lwgeom);
     
     ret = pglwgeom_serialize(lwgeom);
@@ -476,7 +476,7 @@ Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUGF(3, "in parse_WKT_lwgeom with input: '%s'",wkt);
 
-	serialized_lwgeom = ewkt_to_lwgeom(wkt);
+	serialized_lwgeom = lwgeom_from_ewkt(wkt);
 	lwgeom = lwgeom_deserialize(serialized_lwgeom->lwgeom);
     
 	ret = pglwgeom_serialize(lwgeom);

@@ -457,17 +457,17 @@ lwgeom_add(const LWGEOM *to, uint32 where, const LWGEOM *what)
  * Make a LWGEOM object from a WKT input string
  */
 SERIALIZED_LWGEOM *
-ewkt_to_lwgeom(char *wkt_input)
+lwgeom_from_ewkt(char *wkt_input)
 {
 	SERIALIZED_LWGEOM *serialized_form = parse_lwg(wkt_input,
 		lwalloc, lwerror);
 
 
-	LWDEBUGF(2, "ewkt_to_lwgeom with %s",wkt_input);
+	LWDEBUGF(2, "lwgeom_from_ewkt with %s",wkt_input);
 
 	if (serialized_form == NULL)
 	{
-		lwerror("ewkt_to_lwgeom:: couldnt parse!");
+		lwerror("lwgeom_from_ewkt:: couldnt parse!");
 		return NULL;
 	}
 
@@ -543,7 +543,7 @@ lwgeom_from_ewkb(uchar *ewkb, size_t size)
 	hexewkb[hexewkblen] = '\0';
 
 	/* Rely on grammar parser to construct a LWGEOM */
-	serialized_lwgeom = ewkt_to_lwgeom(hexewkb);
+	serialized_lwgeom = lwgeom_from_ewkt(hexewkb);
 
 	/* Free intermediate HEXified representation */
 	lwfree(hexewkb);
