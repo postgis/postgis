@@ -1767,8 +1767,8 @@ GROUP BY gid, field1,field2;
 
           <listitem>
             <para>Return the geometry as a GeoJson element. (Cf <ulink
-            url="http://wiki.geojson.org/GeoJSON_draft_version_6">GeoJson
-            specifications 1.0 RC6</ulink>). 2D and 3D Geometries are both
+            url="http://geojson.org/geojson-spec.html">GeoJson
+            specifications 1.0</ulink>). 2D and 3D Geometries are both
             supported. GeoJson only support SFS 1.1 geometry type (no curve
             support for example).</para>
 
@@ -1778,7 +1778,8 @@ GROUP BY gid, field1,field2;
             of significant digits used in output (defaults to 15).</para>
 
             <para>The last 'options' argument could be used to add Bbox or Crs
-            in GeoJSON output: <itemizedlist>
+            in GeoJSON output:
+              <itemizedlist>
                 <listitem>
                   <para>0: means no option (default value)</para>
                 </listitem>
@@ -1792,9 +1793,12 @@ GROUP BY gid, field1,field2;
                 </listitem>
 
                 <listitem>
-                  <para>2: Both GeoJson Bbox and CRS</para>
+                  <para>3: Both GeoJson Bbox and CRS</para>
                 </listitem>
-              </itemizedlist></para>
+              </itemizedlist>
+            GeoJson CRS pattern is: <literal>auth_name:auth_srid</literal>
+            from spatial_ref_sys table (EPSG:4326 for instance).
+            </para>
           </listitem>
         </varlistentry>
       </variablelist>
