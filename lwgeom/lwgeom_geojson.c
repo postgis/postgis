@@ -59,7 +59,7 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 	int version;
 	int option = 0;
 	bool has_bbox = 0;
-	int precision=MAX_DOUBLE_PRECISION;
+	int precision = MAX_DOUBLE_PRECISION;
 	char * srs = NULL;
 
    	/* Get the version */
@@ -205,8 +205,8 @@ asgeojson_srs_size(char *srs) {
 
 	size = sizeof("'crs':{'type':'',");
 	size += sizeof("'properties':{'code':}");
-	size += strlen(srs) * sizeof(char); /* substract the ':' char */
-
+	size += strlen(srs) * sizeof(char) * 2; /* a bit more than really needed
+						   but avoid to search : separator */
 	return size;
 }
 
@@ -228,12 +228,13 @@ asgeojson_srs_buf(char *output, char *srs) {
 	memcpy(buf, srs, size);
 	buf[size] = '\0';
 	ptr += sprintf(ptr, "\"crs\":{\"type\":\"%s\",", buf);
+	ptr += sprintf(ptr, "\"properties\":{\"%s\":", buf);
 
 	size = srs + strlen(srs) - ptr_sep;
 	if (size > 256) size = 256;
-	memcpy(buf, ptr_sep + 1, size); 
+	memcpy(buf, ptr_sep + 1, size);
 	buf[size] = '\0';
-	ptr += sprintf(ptr, "\"properties\":{\"code\":%s}},", buf);
+	ptr += sprintf(ptr, "%s}},", buf);
 
 	return (ptr-output);
 }
@@ -872,10 +873,7 @@ getSRSbySRID(int SRID)
 
 	/* write query */
 	sprintf(query, "SELECT textcat(auth_name, textcat(':', auth_srid::text)) \
-		FROM spatial_ref_sys WHERE srid = '%d'", SRID);
-#if 0
-	elog(NOTICE, "Query: %s", query);
-#endif
+			FROM spatial_ref_sys WHERE srid = '%d'", SRID);
 
 	/* execute query */
 	err = SPI_exec(query, 1);
@@ -887,9 +885,6 @@ getSRSbySRID(int SRID)
 
 	/* no entry in spatial_ref_sys */
 	if (SPI_processed <= 0) {
-#if 0
-		elog(NOTICE, "getSRSbySRID: no record for SRID %d", SRID);
-#endif
 		SPI_finish();
 		return NULL;
 	}
@@ -922,9 +917,10 @@ getSRSbySRID(int SRID)
 static size_t
 pointArray_geojson_size(POINTARRAY *pa, int precision)
 {
-	int dim=2;
+	if (TYPE_NDIMS(pa->dims) == 2)
+		return (MAX_DIGS_DOUBLE + precision + sizeof(","))
+			* 2 * pa->npoints + sizeof(",[]");
 
-	if (TYPE_NDIMS(pa->dims) > 2) dim = 3;
-	return dim * pa->npoints * (MAX_DIGS_DOUBLE + precision)
-		+ sizeof(",[]");
+	return (MAX_DIGS_DOUBLE + precision + sizeof(",,"))
+		* 3 * pa->npoints + sizeof(",[]");
 }

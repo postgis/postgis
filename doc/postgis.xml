@@ -4457,8 +4457,8 @@ dimension
             <listitem>
               <para>
                 Return the geometry as a GeoJson element. (Cf <ulink
-                url="http://wiki.geojson.org/GeoJSON_draft_version_6">GeoJson
-                specifications 1.0 RC6</ulink>).
+                url="http://www.geojson.org/geojson-spec.html">GeoJson
+                specifications 1.0</ulink>).
                 2D and 3D Geometries are both supported. GeoJson only support
                 SFS 1.1 geometry type (no curve support for example).
               </para>
@@ -4483,9 +4483,11 @@ dimension
                     <para>2: GeoJson Bbox</para>
                   </listitem>
                   <listitem>
-                    <para>2: Both GeoJson Bbox and CRS</para>
+                    <para>3: Both GeoJson Bbox and CRS</para>
                   </listitem>
                 </itemizedlist>
+                GeoJson CRS pattern generated is: <literal>auth_name:auth_srid</literal>
+                from spatial_ref_sys table (EPSG:4326 for instance).
               </para>
             </listitem>
           </varlistentry>
