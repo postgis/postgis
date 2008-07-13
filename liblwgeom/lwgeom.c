@@ -452,6 +452,28 @@ lwgeom_add(const LWGEOM *to, uint32 where, const LWGEOM *what)
 	}
 }
 
+
+/*
+ * Make a LWGEOM object from a WKT input string
+ */
+SERIALIZED_LWGEOM *
+ewkt_to_lwgeom(char *wkt_input)
+{
+	SERIALIZED_LWGEOM *serialized_form = parse_lwg(wkt_input,
+		lwalloc, lwerror);
+
+
+	LWDEBUGF(2, "ewkt_to_lwgeom with %s",wkt_input);
+
+	if (serialized_form == NULL)
+	{
+		lwerror("ewkt_to_lwgeom:: couldnt parse!");
+		return NULL;
+	}
+
+	return serialized_form;
+}
+
 /*
  * Return an alloced string
  */
@@ -521,7 +543,7 @@ lwgeom_from_ewkb(uchar *ewkb, size_t size)
 	hexewkb[hexewkblen] = '\0';
 
 	/* Rely on grammar parser to construct a LWGEOM */
-	serialized_lwgeom = parse_lwgeom_wkt(hexewkb);
+	serialized_lwgeom = ewkt_to_lwgeom(hexewkb);
 
 	/* Free intermediate HEXified representation */
 	lwfree(hexewkb);
@@ -531,6 +553,40 @@ lwgeom_from_ewkb(uchar *ewkb, size_t size)
 
 	return ret;
 }
+
+
+/*
+ * Parser functions for working with serialized LWGEOMs. Useful for cases where
+ * the function input is already serialized, e.g. some input and output functions
+ */
+
+/*
+ * Return an alloced string
+ */
+char *
+serialized_lwgeom_to_ewkt(uchar *serialized)
+{
+	return unparse_WKT(serialized, lwalloc, lwfree);
+}
+
+/*
+ * Return an alloced string
+ */
+char *
+serialized_lwgeom_to_hexwkb(uchar *serialized, unsigned int byteorder, size_t *size)
+{
+	return unparse_WKB(serialized, lwalloc, lwfree, byteorder, size, 1);
+}
+
+/*
+ * Return an alloced string
+ */
+char *
+serialized_lwgeom_to_ewkb(uchar *serialized, unsigned int byteorder, size_t *size)
+{
+	return unparse_WKB(serialized, lwalloc, lwfree, byteorder, size, 0);
+}
+
 
 /*
  * geom1 same as geom2

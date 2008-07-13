@@ -2136,24 +2136,6 @@ deparse_hex(uchar str, char *result)
 
 }
 
-SERIALIZED_LWGEOM *
-parse_lwgeom_wkt(char *wkt_input)
-{
-	SERIALIZED_LWGEOM *serialized_form = parse_lwg(wkt_input,
-		lwalloc, lwerror);
-
-
-	LWDEBUGF(2, "parse_lwgeom_wkt with %s",wkt_input);
-
-	if (serialized_form == NULL)
-	{
-		lwerror("parse_WKT:: couldnt parse!");
-		return NULL;
-	}
-
-	return serialized_form;
-
-}
 
 /*
  * Find interpolation point I

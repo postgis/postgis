@@ -68,7 +68,7 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
     PG_LWGEOM *ret;
 
 	/* will handle both HEXEWKB and EWKT */
-    serialized_lwgeom = parse_lwgeom_wkt(str);
+    serialized_lwgeom = ewkt_to_lwgeom(str);
 	lwgeom = lwgeom_deserialize(serialized_lwgeom->lwgeom);
     
     ret = pglwgeom_serialize(lwgeom);
@@ -97,7 +97,7 @@ Datum LWGEOM_out(PG_FUNCTION_ARGS)
 	char *result;
 
 	lwgeom = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	result = unparse_WKB(SERIALIZED_FORM(lwgeom),lwalloc,lwfree,-1,NULL,1);
+	result = serialized_lwgeom_to_hexwkb(SERIALIZED_FORM(lwgeom), -1, NULL);
 
 	PG_RETURN_CSTRING(result);
 }
@@ -137,8 +137,7 @@ Datum LWGEOM_asHEXEWKB(PG_FUNCTION_ARGS)
 		}
 	}
 
-	result = unparse_WKB(SERIALIZED_FORM(lwgeom),lwalloc,lwfree,
-			byteorder, &size, 1);
+	result = serialized_lwgeom_to_hexwkb(SERIALIZED_FORM(lwgeom), byteorder, &size);
 
 	text_result = palloc(size+VARHDRSZ);
 	memcpy(VARDATA(text_result),result,size);
@@ -165,7 +164,7 @@ Datum LWGEOM_to_text(PG_FUNCTION_ARGS)
 	size_t size;
 
 	lwgeom = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	result = unparse_WKB(SERIALIZED_FORM(lwgeom),lwalloc,lwfree,-1,&size,1);
+	result = serialized_lwgeom_to_hexwkb(SERIALIZED_FORM(lwgeom), -1, &size);
 
 	text_result = palloc(size+VARHDRSZ);
 	memcpy(VARDATA(text_result),result,size);
@@ -266,8 +265,7 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 	lwgeom_input = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 #ifdef BINARY_FROM_HEX
-	hexized_wkb_srid = unparse_WKB(SERIALIZED_FORM(lwgeom_input),
-		lwalloc, lwfree, byteorder, &size, 1);
+	hexized_wkb_srid = serialized_lwgeom_to_hexwkb(SERIALIZED_FORM(lwgeom_input), byteorder, &size);
 
 	LWDEBUGF(3, "in WKBFromLWGEOM with WKB = '%s'", hexized_wkb_srid);
 
@@ -296,8 +294,7 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 
 #else /* ndef BINARY_FROM_HEX */
 
-	hexized_wkb = unparse_WKB(SERIALIZED_FORM(lwgeom_input),
-		lwalloc, lwfree, byteorder, &size, 0);
+	hexized_wkb = serialized_lwgeom_to_ewkb(SERIALIZED_FORM(lwgeom_input), byteorder, &size);
 
 	size_result = size+VARHDRSZ;
 	result = palloc(size_result);
@@ -309,7 +306,7 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
-	lwnotice("unparse_WKB: prof: %lu", proftime[PROF_QRUN]);
+	lwnotice("serialized_lwgeom_to_ewkb: prof: %lu", proftime[PROF_QRUN]);
 #endif
 
 	LWDEBUGF(3, "Output size is %lu (comp: %lu)",
@@ -479,7 +476,7 @@ Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUGF(3, "in parse_WKT_lwgeom with input: '%s'",wkt);
 
-	serialized_lwgeom = parse_lwgeom_wkt(wkt);
+	serialized_lwgeom = ewkt_to_lwgeom(wkt);
 	lwgeom = lwgeom_deserialize(serialized_lwgeom->lwgeom);
     
 	ret = pglwgeom_serialize(lwgeom);
@@ -530,7 +527,7 @@ Datum LWGEOM_recv(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(3, "LWGEOM_recv advancing StringInfo buffer");
 
-	POSTGIS_DEBUGF(3, "LWGEOM_from_bytea returned %s", unparse_WKB(SERIALIZED_FORM(result),pg_alloc,pg_free,-1,NULL,1));
+	POSTGIS_DEBUGF(3, "LWGEOM_from_bytea returned %s", serialized_lwgeom_to_hexwkb(SERIALIZED_FORM(result), -1, NULL));
 
 	/* Set cursor to the end of buffer (so the backend is happy) */
 	buf->cursor = buf->len;

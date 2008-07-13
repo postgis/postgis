@@ -1115,14 +1115,16 @@ extern uchar parse_hex(char *str);
 extern void deparse_hex(uchar str, char *result);
 
 /* Parser access routines */
-extern char *unparse_WKT(uchar* serialized, lwallocator alloc, lwfreeor free);
-extern char *unparse_WKB(uchar* serialized, lwallocator alloc, lwfreeor free, char endian, size_t *outsize, uchar hex);
-
-extern SERIALIZED_LWGEOM *parse_lwgeom_wkt(char *wkt_input);
+extern SERIALIZED_LWGEOM *ewkt_to_lwgeom(char *wkt_input);
 extern char *lwgeom_to_ewkt(LWGEOM *lwgeom);
 extern char *lwgeom_to_hexwkb(LWGEOM *lwgeom, unsigned int byteorder);
 extern LWGEOM *lwgeom_from_ewkb(uchar *ewkb, size_t ewkblen);
 extern uchar *lwgeom_to_ewkb(LWGEOM *lwgeom, char byteorder, size_t *ewkblen);
+
+extern char *serialized_lwgeom_to_ewkt(uchar *serialized);
+extern char *serialized_lwgeom_to_hexwkb(uchar *serialized, unsigned int byteorder, size_t *size);
+extern char *serialized_lwgeom_to_ewkb(uchar *serialized, unsigned int byteorder, size_t *size);
+
 
 extern void *lwalloc(size_t size);
 extern void *lwrealloc(void *mem, size_t size);

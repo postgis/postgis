@@ -1002,7 +1002,7 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUGF(3, "wkt: [%s]", wkt);
 
-	serialized_lwgeom = parse_lwgeom_wkt(wkt);
+	serialized_lwgeom = ewkt_to_lwgeom(wkt);
 	lwgeom = lwgeom_deserialize(serialized_lwgeom->lwgeom);
 
 	if ( lwgeom->SRID != -1 || TYPE_GETZM(lwgeom->type) != 0 )
@@ -1078,7 +1078,7 @@ Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 	ogclwgeom = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall1(
 		LWGEOM_force_2d, PointerGetDatum(lwgeom)));
 
-	result_cstring =  unparse_WKT(SERIALIZED_FORM(ogclwgeom),lwalloc,lwfree);
+	result_cstring =  serialized_lwgeom_to_ewkt(SERIALIZED_FORM(ogclwgeom));
 
 	semicolonLoc = strchr(result_cstring,';');
 

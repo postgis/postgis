@@ -264,7 +264,7 @@ pglwgeom_from_ewkb(uchar *ewkb, size_t ewkblen)
 	}
 	hexewkb[hexewkblen] = '\0';
 
-    serialized_lwgeom = parse_lwgeom_wkt(hexewkb);
+    serialized_lwgeom = ewkt_to_lwgeom(hexewkb);
     
     ret = (PG_LWGEOM *)palloc(serialized_lwgeom->size + VARHDRSZ);
     SET_VARSIZE(ret, serialized_lwgeom->size + VARHDRSZ);
@@ -282,8 +282,7 @@ char *
 pglwgeom_to_ewkb(PG_LWGEOM *geom, char byteorder, size_t *outsize)
 {
 	uchar *srl = &(geom->type);
-	return unparse_WKB(srl, lwalloc, lwfree,
-		byteorder, outsize, 0);
+	return serialized_lwgeom_to_ewkb(srl, byteorder, outsize);
 }
 
 /*

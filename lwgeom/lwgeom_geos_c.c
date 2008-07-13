@@ -3210,7 +3210,7 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	POSTGIS_DEBUGF(2, "GEOSnoop: IN: %s", unparse_WKT(SERIALIZED_FORM(geom), malloc, free));
+	POSTGIS_DEBUGF(2, "GEOSnoop: IN: %s", serialized_lwgeom_to_ewkt(SERIALIZED_FORM(geom)));
 
 	geosgeom = POSTGIS2GEOS(geom);
 	if ( ! geosgeom ) PG_RETURN_NULL();
@@ -3223,7 +3223,7 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 	result = GEOS2POSTGIS(geosgeom, TYPE_HASZ(geom->type));
 	GEOSGeom_destroy(geosgeom);
 
-	POSTGIS_DEBUGF(4, "GEOSnoop: OUT: %s", unparse_WKT(SERIALIZED_FORM(result), malloc, free));
+	POSTGIS_DEBUGF(4, "GEOSnoop: OUT: %s", serialized_lwgeom_to_ewkt(SERIALIZED_FORM(result)));
 
 	PG_FREE_IF_COPY(geom, 0);
 
