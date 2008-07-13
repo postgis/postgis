@@ -243,9 +243,7 @@ uchar *output_multipoint(uchar* geom,int suppress){
 uchar *output_compound(uchar* geom, int suppress) {
         unsigned type;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("output_compound called.");
-#endif
+        LWDEBUG(2, "output_compound called.");
 
         type=*geom++;
         switch(TYPE_GETTYPE(type)) 
@@ -264,9 +262,7 @@ uchar *output_compound(uchar* geom, int suppress) {
 uchar *output_multisurface(uchar* geom, int suppress) {
         unsigned type;
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("output_multisurface called.");
-#endif
+        LWDEBUG(2, "output_multisurface called.");
 
         type=*geom++;
         switch(TYPE_GETTYPE(type))
@@ -295,9 +291,7 @@ output_wkt(uchar* geom, int supress)
 	char writeM=0;
 	dims = TYPE_NDIMS(type); /* ((type & 0x30) >> 4)+2; */
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("output_wkt called.");
-#endif
+        LWDEBUG(2, "output_wkt called.");
 
 	if ( ! supress && !TYPE_HASZ(type) && TYPE_HASM(type) ) writeM=1;
 
@@ -448,9 +442,7 @@ char *
 unparse_WKT(uchar* serialized, allocator alloc, freeor free)
 {
 
-#ifdef PGIS_DEBUG_CALLS
-        lwnotice("unparse_WKT called.");
-#endif
+        LWDEBUG(2, "unparse_WKT called.");
 
 	if (serialized==NULL)
 		return NULL;
@@ -560,9 +552,9 @@ uchar *
 output_wkb_collection(uchar* geom,outwkbfunc func)
 {
 	int cnt = read_int(&geom);
-#ifdef PGIS_DEBUG
-	lwnotice("output_wkb_collection: %d iterations loop", cnt);
-#endif
+
+	LWDEBUGF(2, "output_wkb_collection: %d iterations loop", cnt);
+
 	write_wkb_int(cnt);
 	while(cnt--) geom=func(geom);
 	return geom;
@@ -580,9 +572,8 @@ output_wkb(uchar* geom)
 	int4 wkbtype;
 
 	dims = TYPE_NDIMS(type); 
-#ifdef PGIS_DEBUG
-	lwnotice("output_wkb: dims set to %d", dims);
-#endif
+
+	LWDEBUGF(2, "output_wkb: dims set to %d", dims);
 
 	/* Skip the bounding box */
 	if ( TYPE_HASBBOX(type) ) { 
@@ -667,9 +658,7 @@ output_wkb(uchar* geom)
 char *
 unparse_WKB(uchar* serialized, allocator alloc, freeor free, char endian, size_t *outsize, uchar hex)
 {
-#ifdef PGIS_DEBUG
-	lwnotice("unparse_WKB(%p,...) called", serialized);
-#endif
+	LWDEBUGF(2, "unparse_WKB(%p,...) called", serialized);
 
 	if (serialized==NULL)
 		return NULL;
