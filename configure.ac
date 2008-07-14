@@ -74,6 +74,7 @@ AC_ARG_WITH([xsldir],
 	[AS_HELP_STRING([--with-xsldir=PATH], [specify the directory containing the docbook.xsl stylesheet])], 
 	[XSLBASE="$withval"], [XSLBASE=""])
 
+XSLBASE_AUTO=""
 if test "x$XSLBASE" = "x"; then
 	dnl If the user did not specify a directory for the docbook stylesheet, choose the first directory
 	dnl that matches from the following list
@@ -84,18 +85,35 @@ if test "x$XSLBASE" = "x"; then
 		"
 	for p in ${SEARCHPATH}; do
 		if test -r "${p}"/html/docbook.xsl; then
-			XSLBASE="${p}"
+			XSLBASE_AUTO="${p}"
 			break
 		fi
 	done
 
-	dnl For XSLBASE, make sure the directory exists and that it contains html/docbook.xsl 
+	dnl Check to see if the automatically searched paths above located a valid Docbook stylesheet
+	if test "x$XSLBASE_AUTO" = "x"; then
+		AC_MSG_WARN([could not locate Docbook stylesheets required to build the documentation])
+	fi
+else
+	dnl The user specified an alternate directory so make sure everything looks sensible
 	if test ! -d "$XSLBASE"; then
 		AC_MSG_ERROR([the docbook stylesheet directory specified using --with-xsldir does not exist])
 	fi 
 
 	if test ! -f "$XSLBASE/html/docbook.xsl"; then
 		AC_MSG_ERROR([the docbook stylesheet directory specified using --with-xsldir does not contain the html/docbook.xsl file])
+	fi
+fi
+
+dnl
+dnl If XSLBASE has been set then at this point we know it must be valid and so we can just use it. If XSLBASE_AUTO has been set, and XSLBASE
+dnl is empty then a valid stylesheet was found in XSLBASE_AUTO so we should use that. Otherwise just continue silently with a blank XSLBASE
+dnl variable which will trigger the error message in the documentation Makefile
+dnl
+
+if test "x$XSLBASE" = "x"; then
+	if test ! "x$XSLBASE_AUTO" = "x"; then
+		XSLBASE="$XSLBASE_AUTO"
 	fi
 fi
 
