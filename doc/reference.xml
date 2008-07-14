@@ -81,8 +81,21 @@
 
           <listitem>
             <para>Returns true if geometries are within the specified sriddistance
-            of one another. sriddistance is in units defined by the spatial reference system.
+            of one another. sriddistance is in units defined by the spatial reference system and both
+			geometries must have the same SRID.
 			Uses indexes if available.</para>
+			
+			<programlisting>
+--Find the nearest hospital to each school 
+--that is within 3000 units of the school.  
+-- We do an ST_DWithin search to utilize indexes to limit our search list
+-- that the non-indexable ST_Distance needs to process
+--If the units of the spatial reference is meters then units would be meters
+SELECT DISTINCT ON (s.gid) s.gid, s.school_name, s.the_geom, h.hospital_name
+	FROM schools s 
+		LEFT JOIN hospitals h ON ST_DWithin(s.the_geom, h.the_geom, 3000)
+	ORDER BY s.gid, ST_Distance(s.the_geom, h.the_geom);
+			</programlisting>
           </listitem>
         </varlistentry>
 
