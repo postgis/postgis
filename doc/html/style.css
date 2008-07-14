@@ -1,13 +1,40 @@
-H1,H2,H3,H4,TH,DT,B{color:#656599;font-family:verdana,arial,helvetica}
-A.ulink,A.vlink,P,LI,TD{font-family:verdana,arial,helvetica}
-B,TH,DT{color:#656599;font-weight:bold}
-PRE{font-family:courier}
-TT{font-family:courier}
-CODE{font-family:courier}
-.LITERALLAYOUT{font-weight:bold;font-family:courier}
-.QUESTION{color:#656599;font-weight:bold}
-P,FORM,TD,TH,DT,LI{font-size:10pt}
-H1{font-size:15pt}
-H2{font-size:13pt}
-H3{font-size:12pt}
-H4{font-size:11pt}
+/* PostGIS Alternative Docbook CSS | Dane Springmeyer
+----------------------------------------------------- */
+
+/* 1. Body
+----------------------------------------------------- */
+
+body { font: 90% 'Lucida Grande', Verdana, Geneva, Arial, Helvetica, sans-serif; background: #ffffff; color: #2e2e2e; margin: 2em; padding: 2em; }
+
+
+/* 2. Standard Tags
+----------------------------------------------------- */
+
+a {text-decoration: none; color: #418acd; }
+a:hover, li a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover {color: #e9cb2b; }
+p,form,td,th,dt,li{font-size:10pt}
+h1, h2 {color: #282e5b;}
+h3,h4,th,dt,b {color: #213780;}
+h1 { font-size: 24px; line-height: 24px; margin-bottom: 24px;}
+h2 { font-size: 22px; line-height: 22px; margin-bottom: 21px;}
+h3 { font-size: 16px; line-height: 18px; margin-bottom: 16px;}
+h4 { font-size: 14px; line-height: 16px; margin-bottom: 14px;}
+h5 { font-size: 13px; line-height: 10px; margin-bottom: 13px;}
+
+
+/* 3. Block Formatted
+----------------------------------------------------- */
+pre, .literallayout { border-right-width: 0px; border-left-width: 0px; border-bottom-width: 2px; border-top-width: 2px; font-family: "DejaVu Sans", "Lucida Grande", "Verdana", Courier, mono; line-height: 16px; border-color: #f7931e; border-style: solid; font-size: 11px; margin-bottom: 10px; margin-top: 10px; overflow: auto; padding: 10px; background: #f8f8f9; -moz-border-radius: 2px; -webkit-border-radius: 2px;}
+.note { border-left-width: 0px; border-bottom-width: 2px; border-right-width: 0px; border-top-width: 2px; width: 80%; border-color: #a2d545; border-style: solid; font-size: 11px; margin-bottom: 10px; margin-top: 10px; overflow: auto; padding: 10px; background: #e4f7dd; -moz-border-radius: 2px; -webkit-border-radius: 2px;}
+code { border-right-style: solid; border-right-color: #79791a; border-left-color: #79791b; border-left-style: solid; border-left-width: 0px; border-bottom-width: 0px; border-right-width: 0px; border-top-width: 0px; padding-left: 3px; padding-bottom: 1px; padding-right: 3px; padding-top: 1px; font-family: "Courier New", Courier, Monaco, monospace; color: #fefff7; background: #9b9e96; -moz-border-radius: 2px; -webkit-border-radius: 2px;}
+
+
+/* 4. Docbook Specifics
+----------------------------------------------------- */
+.question {font-weight: bold; color: #213780;}
+.term { font-weight: bold; color: #38488d;}
+.term:hover { font-weight: bold; color: #88000f;}
+.chapter { margin-top: 60px; }
+.sect1 { margin-top: 50px; }
+.sect2 { margin-top: 40px; }
+.sect3 { margin-top: 30px; }
