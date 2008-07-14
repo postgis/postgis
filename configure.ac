@@ -106,28 +106,23 @@ dnl
 dnl Detect iconv if it is installed (used for shp2pgsql encoding conversion if available)
 dnl
 
-LIBS_SAVE="$LIBS"
 HAVE_ICONV_H=0
 AC_CHECK_HEADER([iconv.h], [HAVE_ICONV_H=1], [])
 
 dnl If we find the header file, try and link against the library
 if test "x$HAVE_ICONV_H" != "x0"; then
 	dnl Check for iconv includes as part of libc
-	AC_CHECK_LIB([c], [iconv_open], [HAVE_ICONV=1], [])
+	AC_CHECK_LIB([c], [iconv_open], [ICONV_LDFLAGS=-lc HAVE_ICONV=1], [])
 	if test "x$HAVE_ICONV" = "x"; then
 		dnl If not found, check for iconv included as part of libiconv
-		AC_CHECK_LIB([iconv], [iconv_open], [HAVE_ICONV=1], [])
+		AC_CHECK_LIB([iconv], [iconv_open], [ICONV_LDFLAGS=-liconv HAVE_ICONV=1], [])
 		if test "x$HAVE_ICONV" = "x"; then
 			dnl If not found, check for Win32 iconv (some of them use a lib prefix for functions within the iconv DLLs)
-			AC_CHECK_LIB([iconv], [libiconv_open], [HAVE_ICONV=1], [])
+			AC_CHECK_LIB([iconv], [libiconv_open], [ICONV_LDFLAGS=-liconv HAVE_ICONV=1], [])
 			if test "x$HAVE_ICONV" = "x"; then
 				dnl No iconv library was found; issue a warning to the console
 				AC_MSG_WARN([could not find iconv library: no support for encoding conversion will be included])
-			else
-				ICONV_LDFLAGS="$LIBS"
 			fi
-		else
-			ICONV_LDFLAGS="$LIBS"
 		fi	
 	fi
 else
@@ -135,7 +130,6 @@ else
 	AC_MSG_WARN([could not find iconv.h header: no support for encoding conversion will be included])
 fi
 
-LIBS="$LIBS_SAVE"
 
 dnl Only define HAVE_ICONV in postgis_config.h if we detect iconv sucessfully
 if test "x$HAVE_ICONV" != "x"; then
