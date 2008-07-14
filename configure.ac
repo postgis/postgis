@@ -70,7 +70,10 @@ dnl
 dnl Allow the user to specify the location of the html/docbook.xsl stylesheet
 dnl
 
-AC_ARG_WITH([xsldir], [Specify the path to the directory containing the docbook.xsl stylesheet], [XSLBASE="$withval"], [XSLBASE=""])
+AC_ARG_WITH([xsldir], 
+	[AS_HELP_STRING([--with-xsldir=PATH], [specify the directory containing the docbook.xsl stylesheet])], 
+	[XSLBASE="$withval"], [XSLBASE=""])
+
 if test "x$XSLBASE" = "x"; then
 	dnl If the user did not specify a directory for the docbook stylesheet, choose the first directory
 	dnl that matches from the following list
@@ -85,16 +88,15 @@ if test "x$XSLBASE" = "x"; then
 			break
 		fi
 	done
-fi
 
+	dnl For XSLBASE, make sure the directory exists and that it contains html/docbook.xsl 
+	if test ! -d "$XSLBASE"; then
+		AC_MSG_ERROR([the docbook stylesheet directory specified using --with-xsldir does not exist])
+	fi 
 
-dnl For XSLBASE, make sure the directory exists and that it contains html/docbook.xsl 
-if test ! -d "$XSLBASE"; then
-	AC_MSG_ERROR([the docbook stylesheet directory specified using --with-xsldir does not exist])
-fi 
-
-if test ! -f "$XSLBASE/html/docbook.xsl"; then
-	AC_MSG_ERROR([the docbook stylesheet directory specified using --with-xsldir does not contain the html/docbook.xsl file])
+	if test ! -f "$XSLBASE/html/docbook.xsl"; then
+		AC_MSG_ERROR([the docbook stylesheet directory specified using --with-xsldir does not contain the html/docbook.xsl file])
+	fi
 fi
 
 AC_SUBST([XSLBASE])
@@ -147,7 +149,10 @@ dnl
 dnl Detect the version of PostgreSQL installed on the system
 dnl
 
-AC_ARG_WITH([pgconfig], [Specify the path to an alternative pg_config], [PGCONFIG="$withval"], [PGCONFIG=""])
+AC_ARG_WITH([pgconfig], 
+	[AS_HELP_STRING([--with-pgconfig=FILE], [specify an alternative pg_config file])], 
+	[PGCONFIG="$withval"], [PGCONFIG=""])
+
 if test "x$PGCONFIG" = "x"; then
 	dnl PGCONFIG was not specified, so search within the current path
 	AC_PATH_PROG([PGCONFIG], [pg_config])
@@ -227,7 +232,10 @@ dnl
 dnl Detect the version of GEOS installed on the system
 dnl
 
-AC_ARG_WITH([geosconfig], [Specify the path to an alternative geos-config], [GEOSCONFIG="$withval"], [GEOSCONFIG=""])
+AC_ARG_WITH([geosconfig], 
+	[AS_HELP_STRING([--with-geosconfig=FILE], [specify an alternative geos-config file])], 
+	[GEOSCONFIG="$withval"], [GEOSCONFIG=""])
+
 if test "x$GEOSCONFIG" = "x"; then
 	dnl GEOSCONFIG was not specified, so search within the current path
 	AC_PATH_PROG([GEOSCONFIG], [geos-config])
@@ -294,7 +302,10 @@ dnl
 dnl Detect the version of PROJ.4 installed
 dnl
 
-AC_ARG_WITH([projdir], [Specify the directory to an alternative PROJ installation], [PROJDIR="$withval"], [PROJDIR=""])
+AC_ARG_WITH([projdir], 
+	[AS_HELP_STRING([--with-projdir=PATH], [specify the PROJ.4 installation directory])], 
+	[PROJDIR="$withval"], [PROJDIR=""])
+
 if test ! "x$PROJDIR" = "x"; then
 	dnl Make sure that the directory exists 
 	if test "x$PROJDIR" = "xyes"; then

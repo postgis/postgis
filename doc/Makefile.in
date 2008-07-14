@@ -28,12 +28,14 @@ PGSQL_DOCDIR=@PGSQL_DOCDIR@
 PGSQL_MANDIR=@PGSQL_MANDIR@
 
 
-# If XSLTPROC was not found during configure, we cannot
+# If XSLTPROC or XSLBASE were not found during configure, we cannot
 # build the documentation
-ifdef XSLTPROC
-all: html/postgis.html
+ifndef XSLTPROC
+all: requirements_not_met_xsltproc
+else ifndef XSLBASE
+all: requirements_not_met_xslbase 
 else
-all: requirements_not_met
+all: html/postgis.html
 endif
 
 postgis-out.xml: postgis.xml introduction.xml installation.xml faq.xml using_postgis.xml performance_tips.xml reference.xml reporting.xml release_notes.xml ../Version.config
@@ -78,10 +80,19 @@ uninstall:
 	rm -f $(PGSQL_MANDIR)/man1/shp2pgsql.1
 	rm -f $(PGSQL_MANDIR)/man1/pgsql2shp.1
 
-requirements_not_met:
+requirements_not_met_xsltproc:
 	@echo
 	@echo "configure was unable to find 'xsltproc' which is required to build the documentation."
 	@echo "To build the documentation, install xsltproc and then re-run configure. Alternatively "
+	@echo "refer to online manual:"
+	@echo
+	@echo "  http://postgis.refractions.net/docs"
+	@echo
+
+requirements_not_met_xslbase:
+	@echo
+	@echo "configure was unable to find the Docbook XSL stylesheet directory which is required to build the documentation."
+	@echo "To build the documentation, install the Docbook XSL stylesheets and/or re-run configure with the --with-xsldir option. Alternatively "
 	@echo "refer to online manual:"
 	@echo
 	@echo "  http://postgis.refractions.net/docs"
