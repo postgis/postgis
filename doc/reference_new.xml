@@ -276,7 +276,7 @@ Check constraints:
         <refname>UpdateGeometrySRID</refname>
 
         <refpurpose>Updates the SRID of all features in a geometry
-        column</refpurpose>
+        column and also corrects the geometry_columns table and corrects the geometry constraints on the table.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
@@ -463,7 +463,7 @@ FROM userpoints ;
       <refsection>
         <title>See Also</title>
 
-        <para><xref linkend="ST_Transform"/></para>
+        <para><xref linkend="ST_Transform"/>, <xref linkend="UpdateGeometrySRID"/></para>
       </refsection>
       
     </refentry>
