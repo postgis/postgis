@@ -41,49 +41,6 @@
         </varlistentry>
 
         <varlistentry>
-          <term>ST_Disjoint(A geometry, B geometry)</term>
-
-          <listitem>
-            <para>Returns TRUE if the Geometries are "spatially
-            disjoint".</para>
-
-            <para>Performed by the GEOS module</para>
-
-            <para>Do not call with a GeometryCollection as an argument</para>
-
-            <para>NOTE: this is the "allowable" version that returns a
-            boolean, not an integer.</para>
-
-            <para>OGC SPEC s2.1.1.2 //s2.1.13.3 - a.Relate(b,
-            'FF*FF****')</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>ST_Intersects(A geometry, B geometry)</term>
-
-          <listitem>
-            <para>Returns TRUE if the Geometries "spatially
-            intersect" - (share any portion of space) and FALSE if they don't.</para>
-
-            <para>Performed by the GEOS module</para>
-
-            <para>Do not call with a GeometryCollection as an argument</para>
-
-            <para>This function call will automatically include a bounding box
-            comparison that will make use of any indexes that are available on
-            the geometries. To avoid index use, use the function
-            _ST_Intersects.</para>
-
-            <para>NOTE: this is the "allowable" version that returns a
-            boolean, not an integer.</para>
-
-            <para>OGC SPEC s2.1.1.2 //s2.1.13.3 - Intersects(g1, g2 ) --&gt;
-            Not (Disjoint(g1, g2 ))</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
           <term>ST_Touches(A geometry, B geometry)</term>
 
           <listitem>

@@ -486,8 +486,76 @@ FROM userpoints ;
   
   
   <sect1>
-    <title>Spatial Relationships</title>
+    <title>Spatial Relationships and Measurements</title>
 
+	<refentry id="ST_Disjoint">
+		<refnamediv>
+			<refname>ST_Disjoint</refname>
+			
+			<refpurpose>Returns TRUE if the Geometries do not "spatially
+			intersect" - if they do not share any space together.
+			</refpurpose>
+		</refnamediv>
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>boolean <function>ST_Disjoint</function></funcdef>
+					<paramdef>
+						<type>geometry</type>
+						<parameter>A</parameter>
+					</paramdef>
+					<paramdef>
+						<type>geometry</type>
+						<parameter>B</parameter>
+					</paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+		<refsection>
+			<title>Description</title>
+			<para>Overlaps, Touches, Within all imply geometries are not spatially disjoint.  If any of the aforementioned
+				returns true, then the geometries are not spatially disjoint.  
+				Disjoint implies false for spatial intersection.</para>
+			<para><inlinegraphic class="sfs_compliant" fileref="images/warning.png" />
+				Do not call with a GeometryCollection as an argument
+			</para>
+			<para>Performed by the GEOS module</para>
+			<note>
+			  <para>This function call does not use indexes</para>
+			  
+			</note>
+			<note>
+			  <para>NOTE: this is the "allowable" version that returns a
+            boolean, not an integer.</para>
+			</note>
+			<para>
+			  <inlinegraphic class="sfs_compliant" fileref="images/check.png" />
+			  This method implements the
+			  <ulink url="http://www.opengeospatial.org/standards/sfs">OGC SPEC s2.1.1.2 //s2.1.13.3 - a.Relate(b,
+            'FF*FF****')</ulink>
+			</para> 
+		</refsection>
+		<refsection>
+		<title>Examples</title>
+		
+		<programlisting>SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::geometry);
+ st_disjoint
+---------------
+ t
+(1 row)
+SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
+ st_disjoint
+---------------
+ f
+(1 row)
+		</programlisting>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_Intersects"/>ST_Intersects</para>
+		</refsection>
+    </refentry>
     <refentry id="ST_Distance">
       <refnamediv>
         <refname>ST_Distance</refname>
@@ -615,10 +683,80 @@ SELECT DISTINCT ON (s.gid) s.gid, s.school_name, s.the_geom, h.hospital_name
         <para><xref linkend="ST_Distance"/></para>
       </refsection>
     </refentry>
-  </sect1>
-  
-  <sect1>
-      <title>Spatial Predicates</title>
+	
+	<refentry id="ST_Intersects">
+		<refnamediv>
+			<refname>ST_Intersects</refname>
+			
+			<refpurpose>Returns TRUE if the Geometries "spatially
+			intersect" - (share any portion of space) and FALSE if they don't (they are Disjoint).
+			</refpurpose>
+		</refnamediv>
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>boolean <function>ST_Intersects</function></funcdef>
+					<paramdef>
+						<type>geometry</type>
+						<parameter>A</parameter>
+					</paramdef>
+					<paramdef>
+						<type>geometry</type>
+						<parameter>B</parameter>
+					</paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+		<refsection>
+			<title>Description</title>
+			<para>Overlaps, Touches, Within all imply spatial intersection.  If any of the aforementioned
+				returns true, then the geometries also spatially intersect.  
+				Disjoint implies false for spatial intersection.</para>
+			<para><inlinegraphic class="sfs_compliant" fileref="images/warning.png" />
+				Do not call with a GeometryCollection as an argument
+			</para>
+			<para>Performed by the GEOS module</para>
+			<note>
+			  <para>This function call will automatically include a bounding box
+			  comparison that will make use of any indexes that are available on the
+			  geometries.</para>
+			  
+			</note>
+			<note>
+			  <para>NOTE: this is the "allowable" version that returns a
+            boolean, not an integer.</para>
+			</note>
+			<para>
+			  <inlinegraphic class="sfs_compliant" fileref="images/check.png" />
+			  This method implements the
+			  <ulink url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple
+			  Features Implementation Specification for SQL</ulink>
+			</para>
+			<para>
+			  <inlinegraphic class="sql_mm_compliant" fileref="images/check.png" />
+			  OGC SPEC s2.1.1.2 //s2.1.13.3 - ST_Intersects(g1, g2 ) --&gt;
+				Not (ST_Disjoint(g1, g2 ))
+			</para> 
+		</refsection>
+		<refsection>
+        <title>Examples</title>
+<programlisting>SELECT ST_Intersects('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::geometry);
+ st_intersects
+---------------
+ f
+(1 row)
+SELECT ST_Intersects('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
+ st_intersects
+---------------
+ t
+(1 row)
+		</programlisting>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_Disjoint"/>ST_Disjoint</para>
+		</refsection>
+    </refentry>
   </sect1>
   
   <sect1>
