@@ -708,7 +708,7 @@ SELECT DISTINCT ON (s.gid) s.gid, s.school_name, s.the_geom, h.hospital_name
 		  <inlinegraphic class="sfs_compliant" fileref="images/check.png" />
 		  This method implements the
 		  <ulink url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple
-		  Features Implementation Specification for SQL OGC SPEC s2.1.1.2<</ulink>
+		  Features Implementation Specification for SQL OGC SPEC s2.1.1.2</ulink>
 		</para>
 	
 	  </refsection>

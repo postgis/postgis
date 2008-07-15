@@ -2149,7 +2149,7 @@ z' = z </programlisting> This method is a subcase of the 3D method
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="ST_Reverse">
           <term>ST_Reverse(geometry)</term>
 
           <listitem>
