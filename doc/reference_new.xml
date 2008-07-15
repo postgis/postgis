@@ -409,8 +409,8 @@ SELECT gps.gps_track, ST_MakeLine(gps.the_geom) As newgeom
 			line strings from 2 points a user draws</para>
 		<programlisting>
 SELECT ST_AsText(ST_MakeLine(ST_MakePoint(1,2), ST_MakePoint(3,4)));
-SELECT up.id, ST_MakeLine(startpoint, endpoint) As drawn_line
-FROM userpoints;
+SELECT userpoints.id, ST_MakeLine(startpoint, endpoint) As drawn_line
+FROM userpoints ;
 		</programlisting>
 		</refsection>
 		
