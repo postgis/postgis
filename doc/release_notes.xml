@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <appendix id="release_notes">
   <title>Appendix</title>
-
-  <sect1>
-    <title>Release Notes</title>
-
-    <sect2>
+    <subtitle>Release Notes</subtitle>
+    
+    <sect1>
       <title>Release 1.3.3</title>
 
       <para>Release date: 2008/04/12</para>
@@ -14,9 +12,9 @@
       KML support, adds a ST_SimplifyPreserveTopology function, makes the
       build more sensitive to GEOS versions, and fixes a handful of severe but
       rare failure cases.</para>
-    </sect2>
+    </sect1>
 
-    <sect2>
+    <sect1>
       <title>Release 1.3.2</title>
 
       <para>Release date: 2007/12/01</para>
@@ -24,18 +22,18 @@
       <para>This release fixes bugs in ST_EndPoint() and ST_Envelope, improves
       support for JDBC building and OS/X, and adds better support for GML
       output with ST_AsGML(), including GML3 output.</para>
-    </sect2>
+    </sect1>
 
-    <sect2>
+    <sect1>
       <title>Release 1.3.1</title>
 
       <para>Release date: 2007/08/13</para>
 
       <para>This release fixes some oversights in the previous release around
       version numbering, documentation, and tagging.</para>
-    </sect2>
+    </sect1>
 
-    <sect2>
+    <sect1>
       <title>Release 1.3.0</title>
 
       <para>Release date: 2007/08/09</para>
@@ -45,7 +43,7 @@
       function names to the SQL-MM convension, using the spatial type (SP)
       prefix.</para>
 
-      <sect3>
+      <simplesect>
         <title>Added Functionality</title>
 
         <para>JDBC: Added Hibernate Dialect (thanks to Norman Barker)</para>
@@ -55,9 +53,9 @@
         http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html</para>
 
         <para>Added ST_DWithin relational function.</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Performance Enhancements</title>
 
         <para>Added cached and indexed point-in-polygon short-circuits for the
@@ -65,9 +63,9 @@
 
         <para>Added inline index support for relational functions (except
         ST_Disjoint)</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Other Changes</title>
 
         <para>Extended curved geometry support into the geometry accessor and
@@ -77,10 +75,10 @@
         using a spatial type (ST) prefix.</para>
 
         <para>Added initial support for PostgreSQL 8.3</para>
-      </sect3>
-    </sect2>
+      </simplesect>
+    </sect1>
 
-    <sect2>
+    <sect1>
       <title>Release 1.2.1</title>
 
       <para>Release date: 2007/01/11</para>
@@ -88,7 +86,7 @@
       <para>This release provides bug fixes in PostgreSQL 8.2 support and some
       small performance enhancements.</para>
 
-      <sect3>
+      <simplesect>
         <title>Changes</title>
 
         <para>Fixed point-in-polygon shortcut bug in Within().</para>
@@ -104,10 +102,10 @@
         JavaDoc is compiled and packaged. Fixed classpath problems with GCJ.
         Fixed pgjdbc 8.2 compatibility, losing support for jdk 1.3 and
         older.</para>
-      </sect3>
-    </sect2>
+      </simplesect>
+    </sect1>
 
-    <sect2>
+    <sect1>
       <title>Release 1.2.0</title>
 
       <para>Release date: 2006/12/08</para>
@@ -116,7 +114,7 @@
       serialization/deserialization capabilities for SQL-MM defined curved
       geometries, as well as performance enhancements.</para>
 
-      <sect3>
+      <simplesect>
         <title>Changes</title>
 
         <para>Added curved geometry type support for
@@ -124,10 +122,10 @@
 
         <para>Added point-in-polygon shortcircuit to the Contains and Within
         functions to improve performance for these cases.</para>
-      </sect3>
-    </sect2>
+      </simplesect>
+    </sect1>
 
-    <sect2>
+    <sect1>
       <title>Release 1.1.6</title>
 
       <para>Release date: 2006/11/02</para>
@@ -137,7 +135,7 @@
       parameters and an improvement in reprojections (take Z in
       consideration). Upgrade is <emphasis>encouraged</emphasis>.</para>
 
-      <sect3>
+      <simplesect>
         <title>Upgrading</title>
 
         <para>If you are upgrading from release 1.0.3 or later follow the
@@ -150,9 +148,9 @@
 
         <para>Upgrade from any release prior to 1.0.0RC6 requires an <link
         linkend="hard_upgrade">hard upgrade</link>.</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Bug fixes</title>
 
         <para>fixed CAPI change that broke 64-bit platforms</para>
@@ -160,9 +158,9 @@
         <para>loader/dumper: fixed regression tests and usage output</para>
 
         <para>Fixed setSRID() bug in JDBC, thanks to Thomas Marti</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Other changes</title>
 
         <para>use Z ordinate in reprojections</para>
@@ -177,10 +175,10 @@
 
         <para>Replace hand-made, fragile JDBC version parser with
         Properties</para>
-      </sect3>
-    </sect2>
+      </simplesect>
+    </sect1>
 
-    <sect2>
+    <sect1>
       <title>Release 1.1.5</title>
 
       <para>Release date: 2006/10/13</para>
@@ -188,7 +186,7 @@
       <para>This is an bugfix release, including a critical segfault on win32.
       Upgrade is <emphasis>encouraged</emphasis>.</para>
 
-      <sect3>
+      <simplesect>
         <title>Upgrading</title>
 
         <para>If you are upgrading from release 1.0.3 or later follow the
@@ -201,9 +199,9 @@
 
         <para>Upgrade from any release prior to 1.0.0RC6 requires an <link
         linkend="hard_upgrade">hard upgrade</link>.</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Bug fixes</title>
 
         <para>Fixed MingW link error that was causing pgsql2shp to segfault on
@@ -222,16 +220,16 @@
 
         <para>Fixed version tag in jdbc code that still said "1.1.3" in the
         "1.1.4" release.</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>New Features</title>
 
         <para>Added -S option for non-multi geometries to shp2pgsql</para>
-      </sect3>
-    </sect2>
+      </simplesect>
+    </sect1>
 
-    <sect2>
+    <sect1>
       <title>Release 1.1.4</title>
 
       <para>Release date: 2006/09/27</para>
@@ -239,7 +237,7 @@
       <para>This is an bugfix release including some improvements in the Java
       interface. Upgrade is <emphasis>encouraged</emphasis>.</para>
 
-      <sect3>
+      <simplesect>
         <title>Upgrading</title>
 
         <para>If you are upgrading from release 1.0.3 or later follow the
@@ -252,9 +250,9 @@
 
         <para>Upgrade from any release prior to 1.0.0RC6 requires an <link
         linkend="hard_upgrade">hard upgrade</link>.</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Bug fixes</title>
 
         <para>Fixed support for PostgreSQL 8.2</para>
@@ -266,9 +264,9 @@
         <para>Fixed regress tests to pass with GEOS-3.0.0</para>
 
         <para>Improved pgsql2shp run concurrency.</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Java changes</title>
 
         <para>reworked JTS support to reflect new upstream JTS developers'
@@ -282,10 +280,10 @@
         &lt;nbarker@ittvis.com&gt;</para>
 
         <para>Reorganized java directory layout a little.</para>
-      </sect3>
-    </sect2>
+      </simplesect>
+    </sect1>
 
-    <sect2>
+    <sect1>
       <title>Release 1.1.3</title>
 
       <para>Release date: 2006/06/30</para>
@@ -294,7 +292,7 @@
       (most notably long transaction support) and portability enhancements.
       Upgrade is <emphasis>encouraged</emphasis>.</para>
 
-      <sect3>
+      <simplesect>
         <title>Upgrading</title>
 
         <para>If you are upgrading from release 1.0.3 or later follow the
@@ -307,9 +305,9 @@
 
         <para>Upgrade from any release prior to 1.0.0RC6 requires an <link
         linkend="hard_upgrade">hard upgrade</link>.</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Bug fixes / correctness</title>
 
         <para>BUGFIX in distance(poly,poly) giving wrong results.</para>
@@ -322,9 +320,9 @@
 
         <para>WKT parser: forbidden construction of multigeometries with EMPTY
         elements (still supported for GEOMETRYCOLLECTION).</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>New functionalities</title>
 
         <para>NEW Long Transactions support.</para>
@@ -332,9 +330,9 @@
         <para>NEW DumpRings() function.</para>
 
         <para>NEW AsHEXEWKB(geom, XDR|NDR) function.</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>JDBC changes</title>
 
         <para>Improved regression tests: MultiPoint and scientific
@@ -344,9 +342,9 @@
 
         <para>Added proper accessor functions for all fields in preparation of
         making those fields private later</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Other changes</title>
 
         <para>NEW regress test support for loader/dumper.</para>
@@ -361,10 +359,10 @@
         <para>Don't link pgsql2shp to more libs then required.</para>
 
         <para>Initial support for PostgreSQL 8.2.</para>
-      </sect3>
-    </sect2>
+      </simplesect>
+    </sect1>
 
-    <sect2>
+    <sect1>
       <title>Release 1.1.2</title>
 
       <para>Release date: 2006/03/30</para>
@@ -373,7 +371,7 @@
       portability enhancements. Upgrade is
       <emphasis>encouraged</emphasis>.</para>
 
-      <sect3>
+      <simplesect>
         <title>Upgrading</title>
 
         <para>If you are upgrading from release 1.0.3 or later follow the
@@ -386,9 +384,9 @@
 
         <para>Upgrade from any release prior to 1.0.0RC6 requires an <link
         linkend="hard_upgrade">hard upgrade</link>.</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Bug fixes</title>
 
         <para>BUGFIX in SnapToGrid() computation of output bounding box</para>
@@ -398,9 +396,9 @@
         <para>jdbc2 SRID handling fixes in JTS code</para>
 
         <para>Fixed support for 64bit archs</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>New functionalities</title>
 
         <para>Regress tests can now be run *before* postgis
@@ -415,19 +413,19 @@
 
         <para>Embedded access control in estimated_extent() for builds against
         pgsql &gt;= 8.0.0</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Other changes</title>
 
         <para>More portable ./configure script</para>
 
         <para>Changed ./run_test script to have more sane default
         behaviour</para>
-      </sect3>
-    </sect2>
+      </simplesect>
+    </sect1>
 
-    <sect2>
+    <sect1>
       <title>Release 1.1.1</title>
 
       <para>Release date: 2006/01/23</para>
@@ -439,7 +437,7 @@
       preventing GeometryCollection objects to be used in topological
       operations.</para>
 
-      <sect3>
+      <simplesect>
         <title>Upgrading</title>
 
         <para>If you are upgrading from release 1.0.3 or later follow the
@@ -452,9 +450,9 @@
 
         <para>Upgrade from any release prior to 1.0.0RC6 requires an <link
         linkend="hard_upgrade">hard upgrade</link>.</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Bug fixes</title>
 
         <para>Fixed a premature exit in postgis_restore.pl</para>
@@ -471,9 +469,9 @@
         <para>BUGFIX in line_substring()</para>
 
         <para>Added support for localized cluster in regress tester</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>New functionalities</title>
 
         <para>New Z and M interpolation in line_substring()</para>
@@ -481,10 +479,10 @@
         <para>New Z and M interpolation in line_interpolate_point()</para>
 
         <para>added NumInteriorRing() alias due to OpenGIS ambiguity</para>
-      </sect3>
-    </sect2>
+      </simplesect>
+    </sect1>
 
-    <sect2>
+    <sect1>
       <title>Release 1.1.0</title>
 
       <para>Release date: 2005/12/21</para>
@@ -498,7 +496,7 @@
       GEOS-2.2.x before installing PostGIS, this will ensure future GEOS
       upgrades won't require a rebuild of the PostGIS library.</para>
 
-      <sect3>
+      <simplesect>
         <title>Credits</title>
 
         <para>This release includes code from Mark Cave Ayland for caching of
@@ -510,9 +508,9 @@
         Devrim GUNDUZ provided RPM specfiles. Carl Anderson helped with the
         new area building functions. See the <link
         linkend="credits">credits</link> section for more names.</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Upgrading</title>
 
         <para>If you are upgrading from release 1.0.3 or later you
@@ -528,9 +526,9 @@
 
         <para>Upgrade from any release prior to 1.0.0RC6 requires an <link
         linkend="hard_upgrade">hard upgrade</link>.</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>New functions</title>
 
         <para>scale() and transscale() companion methods to translate()</para>
@@ -562,9 +560,9 @@
         <para>RemovePoint(linestring, offset)</para>
 
         <para>ReplacePoint(linestring, offset, point)</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Bug fixes</title>
 
         <para>Fixed memory leak in polygonize()</para>
@@ -573,27 +571,27 @@
 
         <para>Fixed USE_GEOS, USE_PROJ and USE_STATS elements of
         postgis_version() output to always reflect library state.</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Function semantic changes</title>
 
         <para>SnapToGrid doesn't discard higher dimensions</para>
 
         <para>Changed Z() function to return NULL if requested dimension is
         not available</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Performance improvements</title>
 
         <para>Much faster transform() function, caching proj4 objects</para>
 
         <para>Removed automatic call to fix_geometry_columns() in
         AddGeometryColumns() and update_geometry_stats()</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>JDBC2 works</title>
 
         <para>Makefile improvements</para>
@@ -614,9 +612,9 @@
         <para>fix EWKT constructors to accept SRID=4711; representation</para>
 
         <para>added preliminary read-only support for java2d geometries</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Other new things</title>
 
         <para>Full autoconf-based configuration, with PostgreSQL source
@@ -629,9 +627,9 @@
         <para>Debian and RPM specfiles</para>
 
         <para>New lwpostgis_upgrade.sql script</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Other changes</title>
 
         <para>JTS support improvements</para>
@@ -646,17 +644,17 @@
         <para>obsoleted direct use of postgis_proc_upgrade.pl</para>
 
         <para>scripts version unified with release version</para>
-      </sect3>
-    </sect2>
+      </simplesect>
+    </sect1>
 
-    <sect2>
+    <sect1>
       <title>Release 1.0.6</title>
 
       <para>Release date: 2005/12/06</para>
 
       <para>Contains a few bug fixes and improvements.</para>
 
-      <sect3>
+      <simplesect>
         <title>Upgrading</title>
 
         <para>If you are upgrading from release 1.0.3 or later you
@@ -669,9 +667,9 @@
 
         <para>Upgrade from any release prior to 1.0.0RC6 requires an <link
         linkend="hard_upgrade">hard upgrade</link>.</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Bug fixes</title>
 
         <para>Fixed palloc(0) call in collection deserializer (only gives
@@ -688,18 +686,18 @@
         <para>Fixed bug in segmentize()</para>
 
         <para>Fixed bbox computation of SnapToGrid output</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Improvements</title>
 
         <para>Initial support for postgresql 8.2</para>
 
         <para>Added missing SRID mismatch checks in GEOS ops</para>
-      </sect3>
-    </sect2>
+      </simplesect>
+    </sect1>
 
-    <sect2>
+    <sect1>
       <title>Release 1.0.5</title>
 
       <para>Release date: 2005/11/25</para>
@@ -713,7 +711,7 @@
         conform to unix standards (return 0 on success).</para>
       </note>
 
-      <sect3>
+      <simplesect>
         <title>Upgrading</title>
 
         <para>If you are upgrading from release 1.0.3 or later you
@@ -726,9 +724,9 @@
 
         <para>Upgrade from any release prior to 1.0.0RC6 requires an <link
         linkend="hard_upgrade">hard upgrade</link>.</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Library changes</title>
 
         <para>Fixed memory alignment problems</para>
@@ -741,9 +739,9 @@
         <para>Speedup of serializer functions</para>
 
         <para>Fixed a bug in force_3dm(), force_3dz() and force_4d()</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Loader changes</title>
 
         <para>Fixed return code of shp2pgsql</para>
@@ -755,19 +753,19 @@
         attributes</para>
 
         <para>Segfault fix in shp2pgsql (utf8 encoding)</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Other changes</title>
 
         <para>Schema aware postgis_proc_upgrade.pl, support for pgsql
         7.2+</para>
 
         <para>New "Reporting Bugs" chapter in manual</para>
-      </sect3>
-    </sect2>
+      </simplesect>
+    </sect1>
 
-    <sect2>
+    <sect1>
       <title>Release 1.0.4</title>
 
       <para>Release date: 2005/09/09</para>
@@ -776,7 +774,7 @@
       particular, it fixes a memory leak preventing successful build of GiST
       indexes for large spatial tables.</para>
 
-      <sect3>
+      <simplesect>
         <title>Upgrading</title>
 
         <para>If you are upgrading from release 1.0.3 you <emphasis>DO
@@ -789,9 +787,9 @@
 
         <para>Upgrade from any release prior to 1.0.0RC6 requires an <link
         linkend="hard_upgrade">hard upgrade</link>.</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Bug fixes</title>
 
         <para>Memory leak plugged in GiST indexing</para>
@@ -806,9 +804,9 @@
         <para>Fixed bug in MakeLine dimension handling</para>
 
         <para>Fixed bug in translate() corrupting output bounding box</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Improvements</title>
 
         <para>Documentation improvements</para>
@@ -822,10 +820,10 @@
         <para>GiST indexing cleanup</para>
 
         <para>Looser syntax acceptance in box3d parser</para>
-      </sect3>
-    </sect2>
+      </simplesect>
+    </sect1>
 
-    <sect2 id="rel_1.0.3_upgrading">
+    <sect1 id="rel_1.0.3_upgrading">
       <title>Release 1.0.3</title>
 
       <para>Release date: 2005/08/08</para>
@@ -834,7 +832,7 @@
       affecting correctness of stored geometries</emphasis> - and a few
       improvements.</para>
 
-      <sect3>
+      <simplesect>
         <title>Upgrading</title>
 
         <para>Due to a bug in a bounding box computation routine, the upgrade
@@ -854,9 +852,9 @@
         no args for syntax help). Optionally run utils/postgis_proc_upgrade.pl
         to refresh postgis procedures and functions signatures (see <link
         linkend="soft_upgrade">Soft upgrade</link>).</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Bug fixes</title>
 
         <para>Severe bugfix in lwgeom's 2d bounding box computation</para>
@@ -868,9 +866,9 @@
         <para>Bugfix in dumper handling of user-defined queries</para>
 
         <para>Bugfix in create_undef.pl script</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Improvements</title>
 
         <para>Small performance improvement in canonical input function</para>
@@ -882,17 +880,17 @@
         <para>Improvement in the postgis_restore.pl script</para>
 
         <para>New rebuild_bbox_caches.pl util script</para>
-      </sect3>
-    </sect2>
+      </simplesect>
+    </sect1>
 
-    <sect2>
+    <sect1>
       <title>Release 1.0.2</title>
 
       <para>Release date: 2005/07/04</para>
 
       <para>Contains a few bug fixes and improvements.</para>
 
-      <sect3>
+      <simplesect>
         <title>Upgrading</title>
 
         <para>If you are upgrading from release 1.0.0RC6 or up you
@@ -901,9 +899,9 @@
         <para>Upgrading from older releases requires a dump/reload. See the
         <link linkend="upgrading">upgrading</link> chapter for more
         informations.</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Bug fixes</title>
 
         <para>Fault tolerant btree ops</para>
@@ -914,25 +912,25 @@
 
         <para>Cleaner build scripts (avoided mix of CFLAGS and
         CXXFLAGS)</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Improvements</title>
 
         <para>New index creation capabilities in loader (-I switch)</para>
 
         <para>Initial support for postgresql 8.1dev</para>
-      </sect3>
-    </sect2>
+      </simplesect>
+    </sect1>
 
-    <sect2>
+    <sect1>
       <title>Release 1.0.1</title>
 
       <para>Release date: 2005/05/24</para>
 
       <para>Contains a few bug fixes and some improvements.</para>
 
-      <sect3>
+      <simplesect>
         <title>Upgrading</title>
 
         <para>If you are upgrading from release 1.0.0RC6 or up you
@@ -941,17 +939,17 @@
         <para>Upgrading from older releases requires a dump/reload. See the
         <link linkend="upgrading">upgrading</link> chapter for more
         informations.</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Library changes</title>
 
         <para>BUGFIX in 3d computation of length_spheroid()</para>
 
         <para>BUGFIX in join selectivity estimator</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Other changes/additions</title>
 
         <para>BUGFIX in shp2pgsql escape functions</para>
@@ -972,10 +970,10 @@
         <para>BUGFIX in Paris projections definitions</para>
 
         <para>postgis_restore.pl cleanups</para>
-      </sect3>
-    </sect2>
+      </simplesect>
+    </sect1>
 
-    <sect2>
+    <sect1>
       <title>Release 1.0.0</title>
 
       <para>Release date: 2005/04/19</para>
@@ -984,7 +982,7 @@
       in the loader (most notably support for older postgis versions), and
       more docs.</para>
 
-      <sect3>
+      <simplesect>
         <title>Upgrading</title>
 
         <para>If you are upgrading from release 1.0.0RC6 you <emphasis>DO
@@ -993,9 +991,9 @@
         <para>Upgrading from any other precedent release requires a
         dump/reload. See the <link linkend="upgrading">upgrading</link>
         chapter for more informations.</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Library changes</title>
 
         <para>BUGFIX in transform() releasing random memory address</para>
@@ -1005,9 +1003,9 @@
 
         <para>BUGFIX in join selectivity estimator (defaults, leaks,
         tuplecount, sd)</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Other changes/additions</title>
 
         <para>BUGFIX in shp2pgsql escape of values starting with tab or
@@ -1025,10 +1023,10 @@
 
         <para>BUGFIX in estimator testers (support for LWGEOM and schema
         parsing)</para>
-      </sect3>
-    </sect2>
+      </simplesect>
+    </sect1>
 
-    <sect2>
+    <sect1>
       <title>Release 1.0.0RC6</title>
 
       <para>Release date: 2005/03/30</para>
@@ -1036,38 +1034,38 @@
       <para>Sixth release candidate for 1.0.0. Contains a few bug fixes and
       cleanups.</para>
 
-      <sect3>
+      <simplesect>
         <title>Upgrading</title>
 
         <para>You need a dump/reload to upgrade from precedent releases. See
         the <link linkend="upgrading">upgrading</link> chapter for more
         informations.</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Library changes</title>
 
         <para>BUGFIX in multi()</para>
 
         <para>early return [when noop] from multi()</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Scripts changes</title>
 
         <para>dropped {x,y}{min,max}(box2d) functions</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Other changes</title>
 
         <para>BUGFIX in postgis_restore.pl scrip</para>
 
         <para>BUGFIX in dumper's 64bit support</para>
-      </sect3>
-    </sect2>
+      </simplesect>
+    </sect1>
 
-    <sect2>
+    <sect1>
       <title>Release 1.0.0RC5</title>
 
       <para>Release date: 2005/03/25</para>
@@ -1075,7 +1073,7 @@
       <para>Fifth release candidate for 1.0.0. Contains a few bug fixes and a
       improvements.</para>
 
-      <sect3>
+      <simplesect>
         <title>Upgrading</title>
 
         <para>If you are upgrading from release 1.0.0RC4 you <emphasis>DO
@@ -1084,27 +1082,27 @@
         <para>Upgrading from any other precedent release requires a
         dump/reload. See the <link linkend="upgrading">upgrading</link>
         chapter for more informations.</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Library changes</title>
 
         <para>BUGFIX (segfaulting) in box3d computation (yes,
         another!).</para>
 
         <para>BUGFIX (segfaulting) in estimated_extent().</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Other changes</title>
 
         <para>Small build scripts and utilities refinements.</para>
 
         <para>Additional performance tips documented.</para>
-      </sect3>
-    </sect2>
+      </simplesect>
+    </sect1>
 
-    <sect2>
+    <sect1>
       <title>Release 1.0.0RC4</title>
 
       <para>Release date: 2005/03/18</para>
@@ -1112,15 +1110,15 @@
       <para>Fourth release candidate for 1.0.0. Contains bug fixes and a few
       improvements.</para>
 
-      <sect3>
+      <simplesect>
         <title>Upgrading</title>
 
         <para>You need a dump/reload to upgrade from precedent releases. See
         the <link linkend="upgrading">upgrading</link> chapter for more
         informations.</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Library changes</title>
 
         <para>BUGFIX (segfaulting) in geom_accum().</para>
@@ -1136,18 +1134,18 @@
         <para>Consistency check fix in SnapToGrid().</para>
 
         <para>Box2d output changed back to 15 significant digits.</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Scripts changes</title>
 
         <para>NEW distance_sphere() function.</para>
 
         <para>Changed get_proj4_from_srid implementation to use PL/PGSQL
         instead of SQL.</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Other changes</title>
 
         <para>BUGFIX in loader and dumper handling of MultiLine shapes</para>
@@ -1168,10 +1166,10 @@
         <para>improved version handling, central Version.config</para>
 
         <para>improvements in postgis_restore.pl</para>
-      </sect3>
-    </sect2>
+      </simplesect>
+    </sect1>
 
-    <sect2>
+    <sect1>
       <title>Release 1.0.0RC3</title>
 
       <para>Release date: 2005/02/24</para>
@@ -1179,15 +1177,15 @@
       <para>Third release candidate for 1.0.0. Contains many bug fixes and
       improvements.</para>
 
-      <sect3>
+      <simplesect>
         <title>Upgrading</title>
 
         <para>You need a dump/reload to upgrade from precedent releases. See
         the <link linkend="upgrading">upgrading</link> chapter for more
         informations.</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Library changes</title>
 
         <para>BUGFIX in transform(): missing SRID, better error
@@ -1209,9 +1207,9 @@
 
         <para>Reduced memory usage by early releasing query-context palloced
         one.</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Scripts changes</title>
 
         <para>BUGFIX in 72 index bindings.</para>
@@ -1223,9 +1221,9 @@
 
         <para>Some functions made IMMUTABLE from STABLE, for performance
         improvement.</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>JDBC changes</title>
 
         <para>jdbc2: small patches, box2d/3d tests, revised docs and
@@ -1247,9 +1245,9 @@
         servers.</para>
 
         <para>jdbc2: Fixed handling of measured geometries in EWKT.</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Other changes</title>
 
         <para>new performance tips chapter in manual</para>
@@ -1265,10 +1263,10 @@
 
         <para>spatial_ref_sys: changed Paris entries to match the ones
         distributed with 0.x.</para>
-      </sect3>
-    </sect2>
+      </simplesect>
+    </sect1>
 
-    <sect2>
+    <sect1>
       <title>Release 1.0.0RC2</title>
 
       <para>Release date: 2005/01/26</para>
@@ -1276,15 +1274,15 @@
       <para>Second release candidate for 1.0.0 containing bug fixes and a few
       improvements.</para>
 
-      <sect3>
+      <simplesect>
         <title>Upgrading</title>
 
         <para>You need a dump/reload to upgrade from precedent releases. See
         the <link linkend="upgrading">upgrading</link> chapter for more
         informations.</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Library changes</title>
 
         <para>BUGFIX in pointarray box3d computation</para>
@@ -1301,27 +1299,27 @@
         <para>Faster binary outputs</para>
 
         <para>Stricter OGC WKB/WKT constructors</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Scripts changes</title>
 
         <para>More correct STABLE, IMMUTABLE, STRICT uses in
         lwpostgis.sql</para>
 
         <para>stricter OGC WKB/WKT constructors</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Other changes</title>
 
         <para>Faster and more robust loader (both i18n and not)</para>
 
         <para>Initial autoconf script</para>
-      </sect3>
-    </sect2>
+      </simplesect>
+    </sect1>
 
-    <sect2>
+    <sect1>
       <title>Release 1.0.0RC1</title>
 
       <para>Release date: 2005/01/13</para>
@@ -1330,15 +1328,15 @@
       internal storage of postgis types redesigned to be smaller and faster on
       indexed queries.</para>
 
-      <sect3>
+      <simplesect>
         <title>Upgrading</title>
 
         <para>You need a dump/reload to upgrade from precedent releases. See
         the <link linkend="upgrading">upgrading</link> chapter for more
         informations.</para>
-      </sect3>
+      </simplesect>
 
-      <sect3>
+      <simplesect>
         <title>Changes</title>
 
         <para>Faster canonical input parsing.</para>
@@ -1362,7 +1360,6 @@
         <para>PostGIS extension API.</para>
 
         <para>UTF8 support in loader.</para>
-      </sect3>
-    </sect2>
-  </sect1>
+      </simplesect>
+    </sect1>
 </appendix>

@@ -20,85 +20,9 @@
     <title>OpenGIS Functions</title>
 
     <sect2>
-      <title>Management Functions</title>
-
-      <variablelist>
-        <varlistentry id="AddGeometryColumn">
-          <term>AddGeometryColumn(varchar, varchar, varchar, integer, varchar,
-          integer)</term>
-
-          <listitem>
-            <para>Syntax: AddGeometryColumn(&lt;schema_name&gt;,
-            &lt;table_name&gt;, &lt;column_name&gt;, &lt;srid&gt;,
-            &lt;type&gt;, &lt;dimension&gt;). Adds a geometry column to an
-            existing table of attributes. The <varname>schema_name</varname>
-            is the name of the table schema (unused for pre-schema PostgreSQL
-            installations). The <varname>srid</varname> must be an integer
-            value reference to an entry in the SPATIAL_REF_SYS table. The
-            <varname>type</varname> must be an uppercase string corresponding
-            to the geometry type, eg, 'POLYGON' or 'MULTILINESTRING'.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>DropGeometryColumn(varchar, varchar, varchar)</term>
-
-          <listitem>
-            <para>Syntax: DropGeometryColumn(&lt;schema_name&gt;,
-            &lt;table_name&gt;, &lt;column_name&gt;). Remove a geometry column
-            from a spatial table. Note that schema_name will need to match the
-            f_schema_name field of the table's row in the geometry_columns
-            table.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>ST_SetSRID(geometry, integer)</term>
-
-          <listitem>
-            <para>Set the SRID on a geometry to a particular integer value.
-            Useful in constructing bounding boxes for queries.</para>
-          </listitem>
-        </varlistentry>
-      </variablelist>
-    </sect2>
-
-    <sect2>
       <title>Geometry Relationship Functions</title>
 
       <variablelist>
-        <varlistentry>
-          <term>ST_Distance(A geometry, B geometry)</term>
-
-          <listitem>
-            <para>Return the cartesian distance between two geometries in
-            projected units. Does not use indexes.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>ST_DWithin(A geometry, B geometry, sriddistance float)</term>
-
-          <listitem>
-            <para>Returns true if geometries are within the specified sriddistance
-            of one another. sriddistance is in units defined by the spatial reference system and both
-			geometries must have the same SRID.
-			Uses indexes if available.</para>
-			
-			<programlisting>
---Find the nearest hospital to each school 
---that is within 3000 units of the school.  
--- We do an ST_DWithin search to utilize indexes to limit our search list
--- that the non-indexable ST_Distance needs to process
---If the units of the spatial reference is meters then units would be meters
-SELECT DISTINCT ON (s.gid) s.gid, s.school_name, s.the_geom, h.hospital_name
-	FROM schools s 
-		LEFT JOIN hospitals h ON ST_DWithin(s.the_geom, h.the_geom, 3000)
-	ORDER BY s.gid, ST_Distance(s.the_geom, h.the_geom);
-			</programlisting>
-          </listitem>
-        </varlistentry>
-
         <varlistentry>
           <term>ST_Equals(geometry, geometry)</term>
 
@@ -1256,17 +1180,6 @@ GROUP BY gid, field1,field2;
 
       <variablelist>
         <varlistentry>
-          <term>DropGeometryTable([&lt;schema_name&gt;],
-          &lt;table_name&gt;)</term>
-
-          <listitem>
-            <para>Drops a table and all its references in geometry_columns.
-            Note: uses current_schema() on schema-aware pgsql installations if
-            schema is not provided.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
           <term>UpdateGeometrySRID([&lt;schema_name&gt;], &lt;table_name&gt;,
           &lt;column_name&gt;, &lt;srid&gt;)</term>
 
@@ -1560,20 +1473,20 @@ GROUP BY gid, field1,field2;
           </listitem>
         </varlistentry>
 
-        <varlistentry>
-          <term>ST_distance_sphere(point, point)</term>
+        <varlistentry id="ST_Distance_Sphere">
+          <term>ST_Distance_Sphere(point, point)</term>
 
           <listitem>
             <para>Returns linear distance in meters between two lat/lon
             points. Uses a spherical earth and radius of 6370986 meters.
             Faster than <link
-            linkend="distance_spheroid">distance_spheroid()</link>, but less
+            linkend="ST_Distance_Spheroid">ST_Distance_Spheroid()</link>, but less
             accurate. Only implemented for points.</para>
           </listitem>
         </varlistentry>
 
-        <varlistentry id="distance_spheroid">
-          <term>ST_distance_spheroid(point, point, spheroid)</term>
+        <varlistentry id="ST_Distance_Spheroid">
+          <term>ST_Distance_Spheroid(point, point, spheroid)</term>
 
           <listitem>
             <para>Returns linear distance between two lat/lon points given a
@@ -1635,14 +1548,6 @@ GROUP BY gid, field1,field2;
             length_spheroid except vertical coordinates (expressed in the same
             units as the spheroid axes) are used to calculate the extra
             distance vertical displacement adds.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>ST_distance(geometry, geometry)</term>
-
-          <listitem>
-            <para>Returns the smaller distance between two geometries.</para>
           </listitem>
         </varlistentry>
 
@@ -2235,7 +2140,7 @@ UPDATE sometable
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="ST_Transform">
           <term>ST_Transform(geometry,integer)</term>
 
           <listitem>
@@ -3019,16 +2924,6 @@ WHERE n*100.00/length &lt; 1;
           another ST_Geometry value.</para>
 
           <para>SQL-MM 3: 5.1.26</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term>ST_Distance</term>
-
-        <listitem>
-          <para>Return the distance between two geometries.</para>
-
-          <para>SQL-MM 3: 5.1.23</para>
         </listitem>
       </varlistentry>
 

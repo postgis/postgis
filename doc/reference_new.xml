@@ -1,0 +1,571 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter>
+  <title>PostGIS Reference</title>
+
+  <para>The functions given below are the ones which a user of PostGIS is
+  likely to need. There are other functions which are required support
+  functions to the PostGIS objects which are not of use to a general
+  user.</para>
+
+  <note>
+    <para>PostGIS has begun a transition from the existing naming convention
+    to an SQL-MM-centric convention. As a result, most of the functions that
+    you know and love have been renamed using the standard spatial type (ST)
+    prefix. Previous functions are still available, though are not listed in
+    this document where updated functions are equivalent. These will be
+    deprecated in a future release.</para>
+  </note>
+
+  <sect1>
+    <title>Management Functions</title>
+
+    <refentry id="AddGeometryColumn">
+      <refnamediv>
+        <refname>AddGeometryColumn</refname>
+
+        <refpurpose>Adds a geometry column to an existing table of
+        attributes.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>text <function>AddGeometryColumn</function></funcdef>
+
+            <paramdef><type>varchar </type>
+            <parameter>table_name</parameter></paramdef>
+
+            <paramdef><type>varchar </type>
+            <parameter>column_name</parameter></paramdef>
+
+            <paramdef><type>integer </type>
+            <parameter>srid</parameter></paramdef>
+
+            <paramdef><type>varchar </type>
+            <parameter>type</parameter></paramdef>
+
+            <paramdef><type>integer </type>
+            <parameter>dimension</parameter></paramdef>
+          </funcprototype>
+
+          <funcprototype>
+            <funcdef>text <function>AddGeometryColumn</function></funcdef>
+
+            <paramdef><type>varchar </type>
+            <parameter>schema_name</parameter></paramdef>
+
+            <paramdef><type>varchar </type>
+            <parameter>table_name</parameter></paramdef>
+
+            <paramdef><type>varchar </type>
+            <parameter>column_name</parameter></paramdef>
+
+            <paramdef><type>integer </type>
+            <parameter>srid</parameter></paramdef>
+
+            <paramdef><type>varchar </type>
+            <parameter>type</parameter></paramdef>
+
+            <paramdef><type>integer </type>
+            <parameter>dimension</parameter></paramdef>
+          </funcprototype>
+
+          <funcprototype>
+            <funcdef>text <function>AddGeometryColumn</function></funcdef>
+
+            <paramdef><type>varchar </type>
+            <parameter>catalog_name</parameter></paramdef>
+
+            <paramdef><type>varchar </type>
+            <parameter>schema_name</parameter></paramdef>
+
+            <paramdef><type>varchar </type>
+            <parameter>table_name</parameter></paramdef>
+
+            <paramdef><type>varchar </type>
+            <parameter>column_name</parameter></paramdef>
+
+            <paramdef><type>integer </type>
+            <parameter>srid</parameter></paramdef>
+
+            <paramdef><type>varchar </type>
+            <parameter>type</parameter></paramdef>
+
+            <paramdef><type>integer </type>
+            <parameter>dimension</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Adds a geometry column to an existing table of attributes. The
+        <varname>schema_name</varname> is the name of the table schema (unused
+        for pre-schema PostgreSQL installations). The <varname>srid</varname>
+        must be an integer value reference to an entry in the SPATIAL_REF_SYS
+        table. The <varname>type</varname> must be an uppercase string
+        corresponding to the geometry type, eg, 'POLYGON' or
+        'MULTILINESTRING'.</para>
+
+        <para>
+          <inlinegraphic class="sfs_compliant" fileref="images/check.png" />
+          This method implements the
+          <ulink url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple
+          Features Implementation Specification for SQL.</ulink>
+        </para>
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+
+        <programlisting>
+-- Create a new simple PostgreSQL table
+postgis=# CREATE TABLE my_schema.my_spatial_table (id serial);
+
+-- Describing the table shows a simple table with a single "id" column.
+postgis=# \d my_schema.my_spatial_table
+                             Table "my_schema.my_spatial_table"
+ Column |  Type   |                                Modifiers                                
+--------+---------+-------------------------------------------------------------------------
+ id     | integer | not null default nextval('my_schema.my_spatial_table_id_seq'::regclass)
+
+-- Add a spatial column to the table
+postgis=# SELECT AddGeometryColumn ('my_schema','my_spatial_table','the_geom',4326,'POINT',2);
+
+-- Describe the table again reveals the addition of a new "the_geom" column.
+postgis=# \d my_schema.my_spatial_table
+                              Table "my_schema.my_spatial_table"
+  Column  |   Type   |                                Modifiers                                
+----------+----------+-------------------------------------------------------------------------
+ id       | integer  | not null default nextval('my_schema.my_spatial_table_id_seq'::regclass)
+ the_geom | geometry | 
+Check constraints:
+    "enforce_dims_the_geom" CHECK (ndims(the_geom) = 2)
+    "enforce_geotype_the_geom" CHECK (geometrytype(the_geom) = 'POINT'::text OR the_geom IS NULL)
+    "enforce_srid_the_geom" CHECK (srid(the_geom) = 4326)
+        </programlisting>
+      </refsection>
+      
+      <refsection>
+        <title>See Also</title>
+
+        <para><xref linkend="DropGeometryColumn"/>, <xref linkend="DropGeometryTable"/></para>
+      </refsection>
+    </refentry>
+
+    <refentry id="DropGeometryColumn">
+      <refnamediv>
+        <refname>DropGeometryColumn</refname>
+
+        <refpurpose>Removes a geometry column from a spatial
+        table.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>text <function>DropGeometryColumn</function></funcdef>
+
+            <paramdef><type>varchar </type>
+            <parameter>table_name</parameter></paramdef>
+
+            <paramdef><type>varchar </type>
+            <parameter>column_name</parameter></paramdef>
+          </funcprototype>
+
+          <funcprototype>
+            <funcdef>text <function>DropGeometryColumn</function></funcdef>
+
+            <paramdef><type>varchar </type>
+            <parameter>schema_name</parameter></paramdef>
+
+            <paramdef><type>varchar </type>
+            <parameter>table_name</parameter></paramdef>
+
+            <paramdef><type>varchar </type>
+            <parameter>column_name</parameter></paramdef>
+          </funcprototype>
+
+          <funcprototype>
+            <funcdef>text <function>DropGeometryColumn</function></funcdef>
+
+            <paramdef><type>varchar </type>
+            <parameter>catalog_name</parameter></paramdef>
+
+            <paramdef><type>varchar </type>
+            <parameter>schema_name</parameter></paramdef>
+
+            <paramdef><type>varchar </type>
+            <parameter>table_name</parameter></paramdef>
+
+            <paramdef><type>varchar </type>
+            <parameter>column_name</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Removes a geometry column from a spatial table. Note that
+        schema_name will need to match the f_schema_name field of the table's
+        row in the geometry_columns table.</para>
+
+        <para>
+          <inlinegraphic class="sfs_compliant" fileref="images/check.png" />
+          This method implements the
+          <ulink url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple
+          Features Implementation Specification for SQL.</ulink>
+        </para>
+      </refsection>
+      
+      <refsection>
+        <title>See Also</title>
+
+        <para><xref linkend="AddGeometryColumn"/>, <xref linkend="DropGeometryTable"/></para>
+      </refsection>
+    </refentry>
+
+    <refentry id="DropGeometryTable">
+      <refnamediv>
+        <refname>DropGeometryTable</refname>
+
+        <refpurpose>Drops a table and all its references in
+        geometry_columns.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>boolean <function>DropGeometryTable</function></funcdef>
+
+            <paramdef><type>varchar </type>
+            <parameter>table_name</parameter></paramdef>
+          </funcprototype>
+
+          <funcprototype>
+            <funcdef>boolean <function>DropGeometryTable</function></funcdef>
+
+            <paramdef><type>varchar </type>
+            <parameter>schema_name</parameter></paramdef>
+
+            <paramdef><type>varchar </type>
+            <parameter>table_name</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Drops a table and all its references in geometry_columns. Note:
+        uses current_schema() on schema-aware pgsql installations if schema is
+        not provided.</para>
+      </refsection>
+      
+      <refsection>
+        <title>See Also</title>
+
+        <para><xref linkend="AddGeometryColumn"/>, <xref linkend="DropGeometryColumn"/></para>
+      </refsection>
+    </refentry>
+
+    <refentry id="UpdateGeometrySRID">
+      <refnamediv>
+        <refname>UpdateGeometrySRID</refname>
+
+        <refpurpose>Updates the SRID of all features in a geometry
+        column</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>text <function>UpdateGeometrySRID</function></funcdef>
+
+            <paramdef><type>varchar </type>
+            <parameter>table_name</parameter></paramdef>
+
+            <paramdef><type>varchar </type>
+            <parameter>column_name</parameter></paramdef>
+
+            <paramdef><type>integer </type>
+            <parameter>srid</parameter></paramdef>
+          </funcprototype>
+
+          <funcprototype>
+            <funcdef>text <function>UpdateGeometrySRID</function></funcdef>
+
+            <paramdef><type>varchar </type>
+            <parameter>schema_name</parameter></paramdef>
+
+            <paramdef><type>varchar </type>
+            <parameter>table_name</parameter></paramdef>
+
+            <paramdef><type>varchar </type>
+            <parameter>column_name</parameter></paramdef>
+
+            <paramdef><type>integer </type>
+            <parameter>srid</parameter></paramdef>
+          </funcprototype>
+
+          <funcprototype>
+            <funcdef>text <function>UpdateGeometrySRID</function></funcdef>
+
+            <paramdef><type>varchar </type>
+            <parameter>catalog_name</parameter></paramdef>
+
+            <paramdef><type>varchar </type>
+            <parameter>schema_name</parameter></paramdef>
+
+            <paramdef><type>varchar </type>
+            <parameter>table_name</parameter></paramdef>
+
+            <paramdef><type>varchar </type>
+            <parameter>column_name</parameter></paramdef>
+
+            <paramdef><type>integer </type>
+            <parameter>srid</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Updates the SRID of all features in a geometry column, updating
+        constraints and reference in geometry_columns. Note: uses
+        current_schema() on schema-aware pgsql installations if schema is not
+        provided.</para>
+      </refsection>
+      
+      <refsection>
+        <title>See Also</title>
+
+        <para><xref linkend="ST_SetSRID"/></para>
+      </refsection>
+    </refentry>
+  </sect1>
+  
+  <sect1>
+      <title>Geometry Constructors</title>
+  </sect1>
+   
+  <sect1>
+      <title>Geometry Accessors</title>
+  </sect1>
+  
+  <sect1>
+      <title>Geometry Editors</title>
+      
+    <refentry id="ST_SetSRID">
+      <refnamediv>
+        <refname>ST_SetSRID</refname>
+
+        <refpurpose>Sets the SRID on a geometry to a particular integer
+        value.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>boolean <function>ST_SetSRID</function></funcdef>
+
+            <paramdef><type>Geometry </type>
+            <parameter>geom</parameter></paramdef>
+
+            <paramdef><type>integer </type>
+            <parameter>srid</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Sets the SRID on a geometry to a particular integer value.
+        Useful in constructing bounding boxes for queries.</para>
+        
+        <note>
+          <para>This function does not transform the geometry is any way - 
+          it simply sets the projection the geometry that it's currently in.  
+          Use <xref linkend="ST_Transform"/> if you want to transform the 
+          geometry into a new projection.</para>
+        </note>
+
+        <para>
+          <inlinegraphic class="sfs_compliant" fileref="images/check.png" />
+          This method implements the
+          <ulink url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple
+          Features Implementation Specification for SQL.</ulink>
+        </para>
+      </refsection>    
+            
+      <refsection>
+        <title>See Also</title>
+
+        <para><xref linkend="ST_Transform"/></para>
+      </refsection>
+      
+    </refentry>
+  </sect1>
+
+  <sect1>
+      <title>Geometry Outputs</title>
+  </sect1>
+  
+  <sect1>
+      <title>Operators</title>
+  </sect1>
+  
+  
+  <sect1>
+    <title>Spatial Relationships</title>
+
+    <refentry id="ST_Distance">
+      <refnamediv>
+        <refname>ST_Distance</refname>
+
+        <refpurpose>Returns the cartesian distance between two geometries in
+        projected units.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>boolean <function>ST_Distance</function></funcdef>
+
+            <paramdef><type>Geometry </type>
+            <parameter>g1</parameter></paramdef>
+
+            <paramdef><type>Geometry </type>
+            <parameter>g2</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Returns the cartesian distance between two geometries in
+        projected units.</para>
+
+        <para>
+          <inlinegraphic class="sfs_compliant" fileref="images/check.png" />
+          This method implements the
+          <ulink url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple
+          Features Implementation Specification for SQL.</ulink>
+        </para>
+
+        <para>
+          <inlinegraphic class="sql_mm_compliant" fileref="images/check.png" />
+          This method implements the SQL/MM specification: SQL-MM 3: 5.1.23
+        </para> 
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+
+        <programlisting>postgis=# SELECT ST_Distance('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::geometry);
+   st_distance   
+-----------------
+ 1.4142135623731
+(1 row)</programlisting>
+      </refsection>
+
+      <refsection>
+        <title>See Also</title>
+
+        <para><xref linkend="ST_DWithin"/>, <xref linkend="ST_Distance_Sphere"/>, <xref linkend="ST_Distance_Spheroid"/></para>
+      </refsection>
+    </refentry>
+
+    <refentry id="ST_DWithin">
+      <refnamediv>
+        <refname>ST_DWithin</refname>
+
+        <refpurpose>Returns true if the geometries are within the specified
+        distance of one another</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>boolean <function>ST_DWithin</function></funcdef>
+
+            <paramdef><type>geometry </type>
+            <parameter>g1</parameter></paramdef>
+
+            <paramdef><type>geometry </type>
+            <parameter>g2</parameter></paramdef>
+
+            <paramdef><type>double precision </type>
+            <parameter>distance</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Returns true if the geometries are within the specified distance
+        of one another. The distance is specified in units defined by the
+        spatial reference system of the geometries.  For this function to make
+        sense, the source geometries must both be of the same coorindate projection, 
+        having the same SRID.</para>
+
+        <note>
+          <para>This function call will automatically include a bounding box
+          comparison that will make use of any indexes that are available on
+          the geometries.</para>
+        </note>
+
+        <para>
+          <inlinegraphic class="sfs_compliant" fileref="images/check.png" />
+          This method implements the
+          <ulink url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple
+          Features Implementation Specification for SQL.</ulink>
+        </para>
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+          <programlisting>
+--Find the nearest hospital to each school 
+--that is within 3000 units of the school.  
+-- We do an ST_DWithin search to utilize indexes to limit our search list
+-- that the non-indexable ST_Distance needs to process
+--If the units of the spatial reference is meters then units would be meters
+SELECT DISTINCT ON (s.gid) s.gid, s.school_name, s.the_geom, h.hospital_name
+	FROM schools s 
+		LEFT JOIN hospitals h ON ST_DWithin(s.the_geom, h.the_geom, 3000)
+	ORDER BY s.gid, ST_Distance(s.the_geom, h.the_geom);
+			  </programlisting>
+      </refsection>
+      
+      <refsection>
+        <title>See Also</title>
+
+        <para><xref linkend="ST_Distance"/></para>
+      </refsection>
+    </refentry>
+  </sect1>
+  
+  <sect1>
+      <title>Spatial Predicates</title>
+  </sect1>
+  
+  <sect1>
+      <title>Linear Referencing</title>
+  </sect1>
+  
+  <sect1>
+      <title>Long Transactions Support</title>
+  </sect1>
+  
+  <sect1>
+      <title>Misc</title>
+  </sect1>
+      
+</chapter>

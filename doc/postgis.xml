@@ -8,6 +8,7 @@
 <!ENTITY using_postgis SYSTEM "using_postgis.xml">
 <!ENTITY performance_tips SYSTEM "performance_tips.xml">
 <!ENTITY reference SYSTEM "reference.xml">
+<!ENTITY reference_new SYSTEM "reference_new.xml">
 <!ENTITY reporting SYSTEM "reporting.xml">
 <!ENTITY release_notes SYSTEM "release_notes.xml">
 
@@ -48,6 +49,7 @@
   &using_postgis;
   &performance_tips;
   &reference;
+  &reference_new;
   &reporting;
   &release_notes;
     
