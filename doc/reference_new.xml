@@ -350,6 +350,71 @@ Check constraints:
   
   <sect1>
       <title>Geometry Constructors</title>
+	<refentry id="ST_MakeLine">
+		<refnamediv>
+		<refname>ST_MakeLine</refname>
+		
+		<refpurpose>Creates a Linestring from point geometries.</refpurpose>
+		</refnamediv>
+		
+		<refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>Geometry <function>ST_MakeLine</function></funcdef>
+			<paramdef><type>Geometry set</type> <parameter>pointfield</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>Geometry <function>ST_MakeLine</function></funcdef>
+			<paramdef><type>Geometry</type> <parameter>point1</parameter></paramdef>
+			<paramdef><type>Geometry</type> <parameter>point2</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+		</refsynopsisdiv>
+		
+		<refsection>
+		<title>Description</title>
+		
+		<para>ST_MakeLine comes in 2 forms: a spatial aggregate that takes
+			rows of point geometries and returns a line string, and a regular function that takes two point geometries. You
+            might want to use a subselect to order points before feeding them
+            to  the aggregate version of this function.</para>
+		
+		<!-- optionally mention that this function uses indexes if appropriate -->
+		<note>
+		  <para>This function call will automatically include a bounding box
+		  comparison that will make use of any indexes that are available on the
+		  geometries.</para>
+		</note>
+		
+		</refsection>
+		
+		<refsection>
+		<title>Examples: Spatial Aggregate version</title>
+		<para>This example takes a sequence of GPS points and creates one record for each
+			gps travel where the geometry field is a line string composed of the gps points
+			in the order of the travel.</para>
+		
+		<programlisting>
+SELECT gps.gps_track, ST_MakeLine(gps.the_geom) As newgeom
+	FROM (SELECT gps_track,gps_time, the_geom
+			FROM gps_points ORDER BY gps_track, gps_time) As gps
+	GROUP BY gps.gps_track</programlisting>
+		</refsection>
+		<refsection>
+		<title>Examples: Non-Spatial Aggregate version</title>
+		
+		<para>First example is a simple one off line string composed of 2 points.  The second formulates
+			line strings from 2 points a user draws</para>
+		<programlisting>
+SELECT ST_AsText(ST_MakeLine(ST_MakePoint(1,2), ST_MakePoint(3,4)));
+SELECT up.id, ST_MakeLine(startpoint, endpoint) As drawn_line
+FROM userpoints;
+		</programlisting>
+		</refsection>
+		
+		</refentry>  
   </sect1>
    
   <sect1>

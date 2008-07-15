@@ -1776,37 +1776,7 @@ GROUP BY gid, field1,field2;
             geometries.</para>
           </listitem>
         </varlistentry>
-
-        <varlistentry>
-          <term>ST_MakeLine(geometry set)</term>
-
-          <listitem>
-            <para>Creates a Linestring from a set of point geometries. You
-            might want to use a subselect to order points before feeding them
-            to this aggregate.</para>
-
-            <programlisting>
-SELECT gps.gps_track, ST_MakeLine(gps.the_geom) As newgeom
-	FROM (SELECT gps_track,gps_time, the_geom
-			FROM gps_points ORDER BY gps_track, gps_time) As gps
-	GROUP BY gps.gps_track
-			  </programlisting>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>ST_MakeLine(geometry, geometry)</term>
-
-          <listitem>
-            <para>Creates a Linestring from the two given point
-            geometries.</para>
-
-            <programlisting>
-SELECT ST_AsText(ST_MakeLine(ST_MakePoint(1,2), ST_MakePoint(3,4)))
-			  </programlisting>
-          </listitem>
-        </varlistentry>
-
+		
         <varlistentry>
           <term>ST_LineFromMultiPoint(multipoint)</term>
 
