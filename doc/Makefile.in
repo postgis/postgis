@@ -26,22 +26,23 @@ XSLTPROC_COMMONOPTS = \
 XSLTPROC_HTMLOPTS = \
 	--stringparam html.stylesheet style.css \
 
-HTML_DOCBOOK_XSL=$(XSLBASE)/html/docbook.xsl 
-CHUNK_HTML_DOCBOOK_XSL=$(XSLBASE)/html/chunk.xsl 
+HTML_DOCBOOK_XSL=$(XSLBASE)/html/docbook.xsl
+CHUNK_HTML_DOCBOOK_XSL=$(XSLBASE)/html/chunk.xsl
 
 # Directories for documentation and man pages
 PGSQL_DOCDIR=@PGSQL_DOCDIR@
 PGSQL_MANDIR=@PGSQL_MANDIR@
 
-
 # If XSLTPROC or XSLBASE were not found during configure, we cannot
 # build the documentation
-ifndef XSLTPROC
+ifeq ($(XSLTPROC),)
 all: requirements_not_met_xsltproc
-else ifndef XSLBASE
+else 
+ifeq ($(XSLBASE),)
 all: requirements_not_met_xslbase 
 else
 all: html/postgis.html
+endif
 endif
 
 postgis-out.xml: postgis.xml introduction.xml installation.xml faq.xml using_postgis.xml performance_tips.xml reference.xml reference_new.xml reporting.xml release_notes.xml ../Version.config
@@ -105,4 +106,4 @@ requirements_not_met_xslbase:
 	@echo
 
 .PHONY: html
- 
+
