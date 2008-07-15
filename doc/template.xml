@@ -11,15 +11,15 @@
     <funcsynopsis>
       <funcprototype>
         <funcdef>boolean <function>ST_MyMethod</function></funcdef>
-        <paramdef><type>Geometry </type> <parameter>g1</parameter></paramdef>
-        <paramdef><type>Geometry </type> <parameter>g2</parameter></paramdef>
+        <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+        <paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>
       </funcprototype>
 
       <!-- an optional second method prototype -->
       <funcprototype>
         <funcdef>boolean <function>ST_MyMethod</function></funcdef>
-        <paramdef><type>Geometry </type> <parameter>g1</parameter></paramdef>
-        <paramdef><type>Geometry </type> <parameter>g2</parameter></paramdef>
+        <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+        <paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>
         <paramdef><type>varchar </type> <parameter>myparam</parameter></paramdef>
       </funcprototype>
     </funcsynopsis>

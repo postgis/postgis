@@ -190,25 +190,6 @@
         </varlistentry>
 
         <varlistentry>
-          <term>ST_Intersects(geometry, geometry)</term>
-
-          <listitem>
-            <para>Returns 1 (TRUE) if the Geometries "spatially
-            intersect".</para>
-
-            <para>Performed by the GEOS module</para>
-
-            <para>Do not call with a GeometryCollection as an argument</para>
-
-            <para>NOTE: this is the "allowable" version that returns a
-            boolean, not an integer.</para>
-
-            <para>OGC SPEC s2.1.1.2 // s2.1.13.3 - NOT disjoint(geometry,
-            geometry)</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
           <term>ST_Relate(geometry, geometry,
           intersectionPatternMatrix)</term>
 
@@ -3176,23 +3157,6 @@ WHERE n*100.00/length &lt; 1;
         </listitem>
       </varlistentry>
 
-      <varlistentry>
-        <term>ST_OrderingEquals</term>
-
-        <listitem>
-          <para>ST_OrderingEquals compares two geometries and t (TRUE) if the
-          geometries are equal and the coordinates are in the same order;
-          otherwise it returns f (FALSE).</para>
-
-          <note>
-            <para>This function is implemented as per the ArcSDE SQL
-            specification rather than SQL-MM.
-            http://edndoc.esri.com/arcsde/9.1/sql_api/sqlapi3.htm#ST_OrderingEquals</para>
-          </note>
-
-          <para>SQL-MM 3: 5.1.43</para>
-        </listitem>
-      </varlistentry>
 
       <varlistentry>
         <term>ST_Overlaps</term>
