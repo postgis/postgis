@@ -380,14 +380,7 @@ Check constraints:
 			rows of point geometries and returns a line string, and a regular function that takes two point geometries. You
             might want to use a subselect to order points before feeding them
             to  the aggregate version of this function.</para>
-		
-		<!-- optionally mention that this function uses indexes if appropriate -->
-		<note>
-		  <para>This function call will automatically include a bounding box
-		  comparison that will make use of any indexes that are available on the
-		  geometries.</para>
-		</note>
-		
+			
 		</refsection>
 		
 		<refsection>
