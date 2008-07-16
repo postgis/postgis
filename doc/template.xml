@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <refentry id="ST_MyMethod">
-
   <refnamediv>
     <refname>ST_MyMethod</refname>
 
@@ -37,20 +36,22 @@
       geometries.</para>
     </note>
 
-    <!-- optionally mention OpenGIS compliancy if appropriate -->
-    <para>
-      <inlinegraphic class="sfs_compliant" fileref="images/check.png" />
-      This method implements the
-      <ulink url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple
-      Features Implementation Specification for SQL</ulink>
-    </para>
+    <!-- Optionally mention OpenGIS compliancy if appropriate -->
+    <para><inlinemediaobject>
+        <imageobject>
+          <imagedata fileref="images/check.png" />
+        </imageobject>
+      </inlinemediaobject> This method implements the <ulink
+    url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+    Implementation Specification for SQL.</ulink></para>
 
-    <!-- optionally mention SQL/MM compliancy if appropriate -->
-    <para>
-      <inlinegraphic class="sql_mm_compliant" fileref="images/check.png" />
-      This method implements the SQL/MM specification: SQL-MM 3: 5.1.23
-    </para> 
-
+    <!-- Optionally mention SQL/MM compliancy if appropriate -->
+    <para><inlinemediaobject>
+        <imageobject>
+          <imagedata fileref="images/check.png" />
+        </imageobject>
+      </inlinemediaobject> This method implements the SQL/MM specification:
+    SQL-MM 3: 5.1.23</para>
   </refsection>
 
   <refsection>
@@ -58,12 +59,11 @@
 
     <programlisting></programlisting>
   </refsection>
-  
+
   <!-- Optionally add a "See Also" section -->
   <refsection>
     <title>See Also</title>
 
-    <para><xref linkend="ST_MyMethod2"/>, ...</para>
+    <para><xref linkend="ST_MyMethod2" />, ...</para>
   </refsection>
-  
 </refentry>
