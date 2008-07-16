@@ -20,6 +20,7 @@ h2 { font-size: 22px; line-height: 22px; margin-bottom: 21px;}
 h3 { font-size: 16px; line-height: 18px; margin-bottom: 16px;}
 h4 { font-size: 14px; line-height: 16px; margin-bottom: 14px;}
 h5 { font-size: 13px; line-height: 10px; margin-bottom: 13px;}
+table, td { border: 0; }
 
 
 /* 3. Block Formatted
@@ -27,7 +28,7 @@ h5 { font-size: 13px; line-height: 10px; margin-bottom: 13px;}
 pre, .literallayout { border-right-width: 0px; border-left-width: 0px; border-bottom-width: 2px; border-top-width: 2px; font-family: "DejaVu Sans", "Lucida Grande", "Verdana", Courier, mono; line-height: 16px; border-color: #f7931e; border-style: solid; font-size: 11px; margin-bottom: 10px; margin-top: 10px; overflow: auto; padding: 10px; background: #f8f8f9; -moz-border-radius: 2px; -webkit-border-radius: 2px;}
 .note { border-left-width: 0px; border-bottom-width: 2px; border-right-width: 0px; border-top-width: 2px; width: 80%; border-color: #a2d545; border-style: solid; font-size: 11px; margin-bottom: 10px; margin-top: 10px; overflow: auto; padding: 10px; background: #e4f7dd; -moz-border-radius: 2px; -webkit-border-radius: 2px;}
 code { border-right-style: solid; border-right-color: #79791a; border-left-color: #79791b; border-left-style: solid; border-left-width: 0px; border-bottom-width: 0px; border-right-width: 0px; border-top-width: 0px; padding-left: 3px; padding-bottom: 1px; padding-right: 3px; padding-top: 1px; font-family: "Courier New", Courier, Monaco, monospace; color: #fefff7; background: #9b9e96; -moz-border-radius: 2px; -webkit-border-radius: 2px;}
-
+.programlisting {font-family: "Courier New", Courier, Monaco, monospace;}
 
 /* 4. Docbook Specifics
 ----------------------------------------------------- */
@@ -38,3 +39,5 @@ code { border-right-style: solid; border-right-color: #79791a; border-left-color
 .sect1 { margin-top: 50px; }
 .sect2 { margin-top: 40px; }
 .sect3 { margin-top: 30px; }
+.caption p {font-style: italic; font-size: 90%;}
+.remark { background: #ffff00; }

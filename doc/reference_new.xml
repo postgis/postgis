@@ -481,6 +481,194 @@ FROM userpoints ;
   <sect1>
     <title>Spatial Relationships and Measurements</title>
 
+    
+  <refentry id="ST_Crosses">
+    <refnamediv>
+      <refname>ST_Crosses</refname>
+
+      <refpurpose>Returns <varname>TRUE</varname> if the Geometries have some, but not all,
+      interior points in common.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <funcsynopsis>
+        <funcprototype>
+          <funcdef>boolean <function>ST_Crosses</function></funcdef>
+
+          <paramdef><type>Geometry </type><parameter>g1</parameter></paramdef>
+
+          <paramdef><type>Geometry </type><parameter>g2</parameter></paramdef>
+        </funcprototype>
+      </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+      <title>Description</title>
+
+      <para><function>ST_Crosses</function> takes two geometry objects and
+      returns <varname>TRUE</varname> if their intersection "spatially cross", that is, the
+      geometries have some, but not all interior points in common. The
+      intersection of the interiors of the geometries must not be the empty
+      set and must have a dimensionality less than the the maximum dimension
+      of the two input geometries. Additionally, the intersection of the two
+      geometries must not equal either of the source geometries. Otherwise, it
+      returns <varname>FALSE</varname>.</para>
+
+      <para>In mathematical terms, this is expressed as :</para>
+
+      <remark>TODO: replace this with a MathML equivalent</remark>
+      
+      <informalfigure>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/st_crosses-math.gif" />
+          </imageobject>
+        </mediaobject>
+      </informalfigure>
+
+      <para>The DE-9IM Intersection Matrix for the two geometries is:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><markup>T*T******</markup> (for Point/Line, Point/Area, and
+          Line/Area situations)</para>
+        </listitem>
+
+        <listitem>
+          <para><markup>T*****T**</markup> (for Line/Point, Area/Point, and
+          Area/Line situations)</para>
+        </listitem>
+
+        <listitem>
+          <para><markup>0********</markup> (for Line/Line situations)</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>For any other combination of dimensions this predicate returns
+      false.</para>
+
+      <para>The OpenGIS Simple Features Specification defines this predicate
+        only for Point/Line, Point/Area, Line/Line, and Line/Area situations.
+        JTS / GEOS extends the definition to apply to Line/Point, Area/Point and
+        Area/Line situations as well. This makes the relation
+        symmetric.</para>
+
+    <important>
+        <para>Do not call with a GeometryCollection as an argument</para>
+      </important>
+    </refsection>
+    
+    <note>
+      <para>This function call will automatically include a bounding box
+      comparison that will make use of any indexes that are available on the
+      geometries.</para>
+    </note>
+
+    <para>
+      <inlinegraphic class="sfs_compliant" fileref="images/check.png" />
+      This method implements the
+      <ulink url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple
+      Features Implementation Specification for SQL: 1.1: s2.1.13.3</ulink>
+    </para>
+    
+    <para>
+      <inlinegraphic class="sql_mm_compliant" fileref="images/check.png" />
+      This method implements the SQL/MM specification: SQL-MM 3: 5.1.29
+    </para> 
+    
+    <refsection>
+      <title>Examples</title>
+
+      <para>The following illustrations all return <varname>TRUE</varname>.</para>
+
+      <informaltable>
+        <tgroup cols="2">
+          <tbody>
+            <row>
+              <entry><para><informalfigure>
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/st_crosses01.gif" />
+                    </imageobject>
+
+                    <caption><para>MultiPoint / LineString</para></caption>
+                  </mediaobject>
+                </informalfigure></para></entry>
+
+              <entry><para><informalfigure>
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/st_crosses02.gif" />
+                    </imageobject>
+
+                    <caption><para>MultiPoint / Polygon</para></caption>
+                  </mediaobject>
+                </informalfigure></para></entry>
+            </row>
+
+            <row>
+              <entry><para><informalfigure>
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/st_crosses03.gif" />
+                    </imageobject>
+
+                    <caption><para>LineString / Polygon</para></caption>
+                  </mediaobject>
+                </informalfigure></para></entry>
+
+              <entry><para><informalfigure>
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/st_crosses04.gif" />
+                    </imageobject>
+
+                    <caption><para>LineString / LineString</para></caption>
+                  </mediaobject>
+                </informalfigure></para></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+      
+      <para>Consider a situation where a user has two tables: a table of roads
+      and a table of highways.</para>
+
+      <informaltable>
+        <tgroup cols="2">
+          <tbody>
+            <row>
+              <entry><para> <informalexample>
+                  <programlisting>CREATE TABLE roads (
+  id serial NOT NULL,
+  the_geom geometry,
+  CONSTRAINT roads_pkey PRIMARY KEY (road_id)
+);</programlisting>
+                </informalexample> </para></entry>
+
+              <entry><para> <informalexample>
+                  <programlisting>CREATE TABLE highways (
+  id serial NOT NULL,
+  the_gem geometry,
+  CONSTRAINT roads_pkey PRIMARY KEY (road_id)
+);</programlisting>
+                </informalexample> </para></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+
+      <para>To determine a list of roads that cross a highway, use a query
+      similiar to:</para>
+
+      <para><informalexample>
+          <programlisting>SELECT roads.id
+FROM roads, highways
+WHERE ST_Crosses(roads.the_geom, highways.the_geom);</programlisting>
+        </informalexample></para>
+    </refsection>
+  </refentry>
+
 	<refentry id="ST_Disjoint">
 		<refnamediv>
 			<refname>ST_Disjoint</refname>
