@@ -412,6 +412,100 @@ FROM userpoints ;
    
   <sect1>
       <title>Geometry Accessors</title>
+      
+      <refentry id="ST_Envelope">
+  <refnamediv>
+    <refname>ST_Envelope</refname>
+
+    <refpurpose>Returns a geometry representing the bounding box of the
+    supplied geometry.</refpurpose>
+  </refnamediv>
+
+  <refsynopsisdiv>
+    <funcsynopsis>
+      <funcprototype>
+        <funcdef>boolean <function>ST_Envelope</function></funcdef>
+
+        <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+      </funcprototype>
+    </funcsynopsis>
+  </refsynopsisdiv>
+
+  <refsection>
+    <title>Description</title>
+
+    <para>Returns the minimum bounding box for the supplied geometry, as a geometry.
+    The polygon is defined by the corner points of the bounding box
+    ((<varname>MINX</varname>, <varname>MINY</varname>),
+    (<varname>MINX</varname>, <varname>MAXY</varname>),
+    (<varname>MAXX</varname>, <varname>MAXY</varname>),
+    (<varname>MAXX</varname>, <varname>MINY</varname>),
+    (<varname>MINX</varname>, <varname>MINY</varname>)). (PostGIS will add a
+    <varname>ZMIN</varname>/<varname>ZMAX</varname> coordinate as
+    well).</para>
+
+    <para>Degenerate cases (vertical lines, points) will return a geometry of
+    lower dimension than <varname>POLYGON</varname>, ie.
+    <varname>POINT</varname> or <varname>LINESTRING</varname>.</para>
+
+    <caution>
+      <para>In PostGIS, the bounding box of a geometry is represented internally using 
+      <varname>float4</varname>s instead of <varname>float8</varname>s that are used 
+      to store geometries.  The bounding box coordinates are floored, guarenteeing 
+      that the geometry is contained entirely within its bounds.  This has the 
+      advantage that a geometry's bounding box is half the size as the minimum
+      bounding rectangle, which means significantly faster indexes and general performance.  
+      But it also means that the bounding box is NOT the same as the minimum bounding 
+      rectangle that bounds the geometry.</para>
+    </caution>
+    
+    <para><inlinemediaobject>
+        <imageobject>
+          <imagedata fileref="images/check.png" />
+        </imageobject>
+      </inlinemediaobject> This method implements the <ulink
+    url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+    Implementation Specification for SQL: v1.1: s2.1.1.1</ulink></para>
+
+    <para><inlinemediaobject>
+        <imageobject>
+          <imagedata fileref="images/check.png" />
+        </imageobject>
+      </inlinemediaobject> This method implements the SQL/MM specification:
+    SQL-MM 3: 5.1.15</para>
+  </refsection>
+
+  <refsection>
+    <title>Examples</title>
+
+    <programlisting>
+SELECT ST_AsText(ST_Envelope('POINT(1 3)'::geometry));
+ st_astext  
+------------
+ POINT(1 3)
+(1 row)
+
+
+SELECT ST_AsText(ST_Envelope('LINESTRING(0 0, 1 3)'::geometry));
+           st_astext            
+--------------------------------
+ POLYGON((0 0,0 3,1 3,1 0,0 0))
+(1 row)
+
+
+SELECT ST_AsText(ST_Envelope('POLYGON((0 0, 0 1, 1.0000001 1, 1.0000001 0, 0 0))'::geometry));
+                          st_astext                           
+--------------------------------------------------------------
+ POLYGON((0 0,0 1,1.00000011920929 1,1.00000011920929 0,0 0))
+(1 row)
+SELECT ST_AsText(ST_Envelope('POLYGON((0 0, 0 1, 1.0000000001 1, 1.0000000001 0, 0 0))'::geometry));
+                          st_astext                           
+--------------------------------------------------------------
+ POLYGON((0 0,0 1,1.00000011920929 1,1.00000011920929 0,0 0))
+(1 row)</programlisting>
+  </refsection>
+</refentry>
+      
   </sect1>
   
   <sect1>

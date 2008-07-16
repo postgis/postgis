@@ -476,24 +476,6 @@ ST_Dimension
         </varlistentry>
 
         <varlistentry>
-          <term>ST_Envelope(geometry)</term>
-
-          <listitem>
-            <para>Returns a vald geometry (POINT, LINESTRING or POLYGON)
-            representing the bounding box of the geometry. Degenerate cases
-            (vertical lines, point) will return a geometry of lower dimension
-            than POLYGON.</para>
-
-            <para>OGC SPEC s2.1.1.1 - The minimum bounding box for this
-            Geometry, returned as a Geometry. The polygon is defined by the
-            corner points of the bounding box ((MINX, MINY), (MAXX, MINY),
-            (MAXX, MAXY), (MINX, MAXY), (MINX, MINY)).</para>
-
-            <para>NOTE:PostGIS will add a Zmin/Zmax coordinate as well.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
           <term>ST_IsEmpty(geometry)</term>
 
           <listitem>
@@ -1094,18 +1076,6 @@ GROUP BY gid, field1,field2;
       <title>Management Functions</title>
 
       <variablelist>
-        <varlistentry>
-          <term>UpdateGeometrySRID([&lt;schema_name&gt;], &lt;table_name&gt;,
-          &lt;column_name&gt;, &lt;srid&gt;)</term>
-
-          <listitem>
-            <para>Update the SRID of all features in a geometry column
-            updating constraints and reference in geometry_columns. Note: uses
-            current_schema() on schema-aware pgsql installations if schema is
-            not provided.</para>
-          </listitem>
-        </varlistentry>
-
         <varlistentry>
           <term>update_geometry_stats([&lt;table_name&gt;,
           &lt;column_name&gt;])</term>
@@ -2809,17 +2779,6 @@ WHERE n*100.00/length &lt; 1;
           value.</para>
 
           <para>SQL-MM 3: 7.1.4</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term>ST_Envelope</term>
-
-        <listitem>
-          <para>Return the bounding rectangle for the ST_Geometry
-          value.</para>
-
-          <para>SQL-MM 3: 5.1.15</para>
         </listitem>
       </varlistentry>
 
