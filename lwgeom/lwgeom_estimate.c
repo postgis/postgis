@@ -2104,8 +2104,8 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 			continue;
 		}
 		if ( ! newhistobox ) {
-			newhistobox = palloc(sizeof(BOX));
-			memcpy(newhistobox, box, sizeof(BOX));
+			newhistobox = palloc(sizeof(BOX2DFLOAT4));
+			memcpy(newhistobox, box, sizeof(BOX2DFLOAT4));
 		} else {
 			if ( box->xmin < newhistobox->xmin )
 				newhistobox->xmin = box->xmin;
