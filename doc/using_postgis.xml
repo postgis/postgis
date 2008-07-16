@@ -782,7 +782,7 @@ road_id | geom                                    | road_name
 
           <listitem>
             <para>This operator is a little more naive, it only tests whether
-            the bounding boxes of to geometries are the same.</para>
+            the bounding boxes of two geometries are the same.</para>
           </listitem>
         </varlistentry>
       </variablelist>
