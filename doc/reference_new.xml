@@ -486,7 +486,7 @@ FROM userpoints ;
     <refnamediv>
       <refname>ST_Crosses</refname>
 
-      <refpurpose>Returns <varname>TRUE</varname> if the Geometries have some, but not all,
+      <refpurpose>Returns <varname>TRUE</varname> if the supplied geometries have some, but not all,
       interior points in common.</refpurpose>
     </refnamediv>
 
@@ -495,9 +495,9 @@ FROM userpoints ;
         <funcprototype>
           <funcdef>boolean <function>ST_Crosses</function></funcdef>
 
-          <paramdef><type>Geometry </type><parameter>g1</parameter></paramdef>
+          <paramdef><type>geometry </type><parameter>g1</parameter></paramdef>
 
-          <paramdef><type>Geometry </type><parameter>g2</parameter></paramdef>
+          <paramdef><type>geometry </type><parameter>g2</parameter></paramdef>
         </funcprototype>
       </funcsynopsis>
     </refsynopsisdiv>
@@ -554,7 +554,7 @@ FROM userpoints ;
         symmetric.</para>
 
     <important>
-        <para>Do not call with a GeometryCollection as an argument</para>
+        <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
       </important>
     </refsection>
     
