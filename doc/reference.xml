@@ -65,30 +65,6 @@
         </varlistentry>
 
         <varlistentry>
-          <term>ST_Within(A geometry, B geometry)</term>
-
-          <listitem>
-            <para>Returns TRUE if Geometry A is "spatially within"
-            Geometry B. A has to be completely inside B.</para>
-
-            <para>Performed by the GEOS module</para>
-
-            <para>Do not call with a GeometryCollection as an argument</para>
-
-            <para>This function call will automatically include a bounding box
-            comparison that will make use of any indexes that are available on
-            the geometries. To avoid index use, use the function
-            _ST_Within.</para>
-
-            <para>NOTE: this is the "allowable" version that returns a
-            boolean, not an integer.</para>
-
-            <para>OGC SPEC s2.1.1.2 // s2.1.13.3 - a.Relate(b,
-            'T*F**F***')</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
           <term>ST_Overlaps(A geometry, B geometry)</term>
 
           <listitem>
@@ -3265,16 +3241,7 @@ WHERE n*100.00/length &lt; 1;
         </listitem>
       </varlistentry>
 
-      <varlistentry>
-        <term>ST_Within</term>
-
-        <listitem>
-          <para>Test if an ST_Geometry value is spatially within another
-          ST_Geometry value.</para>
-
-          <para>SQL-MM 3: 5.1.30</para>
-        </listitem>
-      </varlistentry>
+   
 
       <varlistentry>
         <term>ST_WKBToSQL</term>

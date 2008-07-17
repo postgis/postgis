@@ -982,9 +982,11 @@ SELECT DISTINCT ON (s.gid) s.gid, s.school_name, s.the_geom, h.hospital_name
 	
 		<para>Returns TRUE if the given Geometries are "spatially
             equal". Use this for a 'better' answer than '='.
-			Note by spatially equal we also mean ordering of points can be different but
+			Note by spatially equal we mean ST_Within(A,B) = true and ST_Within(B,A) = true and
+			also mean ordering of points can be different but
 			represent the same geometry structure.  To verify the order of points is consistent, use 
-			ST_OrderingEquals.</para>
+			ST_OrderingEquals (it must be noted ST_OrderingEquals is a little more stringent than simply verifying order of
+			points are the same).</para>
 
 		<para>
 		  <inlinegraphic class="sfs_compliant" fileref="images/check.png" />
@@ -1017,7 +1019,7 @@ SELECT ST_Equals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
 	  <refsection>
 		<title>See Also</title>
 	
-		<para><xref linkend="ST_OrderingEquals"/>, <xref linkend="ST_Reverse"/></para>
+		<para><xref linkend="ST_OrderingEquals"/>, <xref linkend="ST_Reverse"/>, <xref linkend="ST_Within" /></para>
 	  </refsection>
 	  
 	</refentry>
@@ -1167,6 +1169,100 @@ SELECT ST_OrderingEquals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
 	  </refsection>
 	  
 	</refentry>
+	
+    <refentry id="ST_Within">
+      <refnamediv>
+        <refname>ST_Within</refname>
+
+        <refpurpose>Returns true if the geometry A is completely inside geometry B</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>boolean <function>ST_Within</function></funcdef>
+
+            <paramdef><type>geometry </type>
+            <parameter>A</parameter></paramdef>
+
+            <paramdef><type>geometry </type>
+            <parameter>B</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Returns TRUE if geometry A is completely inside geometry B. For this function to make
+        sense, the source geometries must both be of the same coorindate projection, 
+        having the same SRID.  It is a given that if ST_Within(A,B) is true and ST_Within(B,A) is true, then
+		the two geometries are considered spatially equal.</para>
+	
+        <para>Performed by the GEOS module</para>
+
+        <note><para>Do not call with a GeometryCollection as an argument</para></note>
+
+        <para>This function call will automatically include a bounding box
+            comparison that will make use of any indexes that are available on
+            the geometries. To avoid index use, use the function
+            _ST_Within.</para>
+
+        <para>NOTE: this is the "allowable" version that returns a
+            boolean, not an integer.</para>
+
+        <note>
+          <para>This function call will automatically include a bounding box
+          comparison that will make use of any indexes that are available on
+          the geometries.</para>
+        </note>
+
+        <para>
+          <inlinemediaobject>
+        <imageobject>
+          <imagedata fileref="images/check.png" />
+        </imageobject>
+      </inlinemediaobject> This method implements the 
+	  <ulink url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+    Implementation Specification for SQL.</ulink>
+		   OGC SPEC s2.1.1.2 // s2.1.13.3 - a.Relate(b,
+            'T*F**F***')
+        </para>
+		
+		<para>
+			<inlinemediaobject>
+				<imageobject>
+				  <imagedata fileref="images/check.png" />
+				</imageobject>
+			  </inlinemediaobject> This method implements the SQL/MM specification:
+			SQL-MM 3: 5.1.30</para>
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+          <programlisting>
+--a circle within a circle
+SELECT ST_Within(smallc,smallc) As smallinsmall,
+	ST_Within(smallc, bigc) As smallinbig, 
+	ST_Within(bigc,smallc) As biginsmall,
+	ST_Within(ST_Union(smallc, bigc), bigc) as unioninbig,
+	ST_Within(bigc, ST_Union(smallc, bigc)) as biginunion,
+	ST_Equals(bigc, ST_Union(smallc, bigc)) as bigisunion
+FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc, 
+	ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As bigc) As foo;
+--Result
+ smallinsmall | smallinbig | biginsmall | unioninbig | biginunion | bigisunion
+--------------+------------+------------+------------+------------+------------
+ t            | t          | f          | t          | t          | t
+(1 row)
+		</programlisting>
+      </refsection>
+      
+      <refsection>
+        <title>See Also</title>
+        <para><xref linkend="ST_Equals"/></para>
+      </refsection>
+    </refentry>
   </sect1>
   
   <sect1>
