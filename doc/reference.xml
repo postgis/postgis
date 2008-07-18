@@ -1814,39 +1814,7 @@ SELECT sometable.field1, sometable.field1,
           </listitem>
         </varlistentry>
 
-        <varlistentry>
-          <term>ST_AddPoint(linestring geometry, point geometry)</term>
-
-          <term>ST_AddPoint(linestring geometry, point geometry, position
-          integer)</term>
-
-          <listitem>
-            <para>Adds a point to a LineString before point &lt;position&gt;
-            (0-based index). Third parameter can be omitted or set to -1 for
-            appending.</para>
-
-            <programlisting>
---guarantee all linestrings in a table are closed
---by adding the start point of each linestring to the end of the line string 
---only for those that are not closed
-UPDATE sometable
-	SET the_geom = ST_AddPoint(the_geom, ST_StartPoint(the_geom))
-	FROM sometable
-	WHERE ST_IsClosed(the_geom) = false;
-			  </programlisting>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>ST_RemovePoint(linestring, offset)</term>
-
-          <listitem>
-            <para>Removes point from a linestring. Offset is 0-based.</para>
-
-            <para>Availability: 1.1.0</para>
-          </listitem>
-        </varlistentry>
-
+       
         <varlistentry>
           <term>ST_SetPoint(linestring, N, point)</term>
 
@@ -2329,14 +2297,6 @@ WHERE n*100.00/length &lt; 1;
           <listitem>
             <para>If the geometry is a polygon or multi-polygon returns the
             number of rings.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>ST_npoints(geometry)</term>
-
-          <listitem>
-            <para>Returns the number of points in the geometry.</para>
           </listitem>
         </varlistentry>
 
@@ -2980,18 +2940,6 @@ WHERE n*100.00/length &lt; 1;
           <para>SQL-MM 3: 8.2.5</para>
         </listitem>
       </varlistentry>
-
-      <varlistentry>
-        <term>ST_NumPoints</term>
-
-        <listitem>
-          <para>Return the number of points in an ST_LineString or
-          ST_CircularString value.</para>
-
-          <para>SQL-MM 3: 7.2.4</para>
-        </listitem>
-      </varlistentry>
-
 
       <varlistentry>
         <term>ST_Overlaps</term>
