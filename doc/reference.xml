@@ -1254,17 +1254,7 @@ GROUP BY gid, field1,field2;
 
     <sect2>
       <title>Measurement Functions</title>
-
-      <variablelist>
-        <varlistentry>
-          <term>ST_area2d(geometry)</term>
-
-          <listitem>
-            <para>Returns the area of the geometry if it is a polygon or
-            multi-polygon.</para>
-          </listitem>
-        </varlistentry>
-
+	  <variablelist>
         <varlistentry id="ST_Distance_Sphere">
           <term>ST_Distance_Sphere(point, point)</term>
 
@@ -2393,17 +2383,6 @@ WHERE n*100.00/length &lt; 1;
     </note>
 
     <variablelist>
-      <varlistentry>
-        <term>ST_Area</term>
-
-        <listitem>
-          <para>Return the area measurement of an ST_Surface or
-          ST_MultiSurface value.</para>
-
-          <para>SQL-MM 3: 8.1.2, 9.5.3</para>
-        </listitem>
-      </varlistentry>
-
       <varlistentry>
         <term>ST_AsBinary</term>
 
