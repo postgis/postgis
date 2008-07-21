@@ -638,18 +638,6 @@ GROUP BY gid, field1,field2;
         </varlistentry>
 
         <varlistentry>
-          <term>ST_GeometryType(geometry)</term>
-
-          <listitem>
-            <para>Returns the type of the geometry as a string. EG:
-            'ST_Linestring', 'ST_Polygon','ST_MultiPolygon' etc. This function differs from
-            GeometryType(geometry) in the case of the string and ST in front that is returned,
-            as well as the fact that it will not indicate whether the geometry
-            is measured.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
           <term>ST_X(geometry)</term>
 
           <listitem>
@@ -1586,89 +1574,6 @@ GROUP BY gid, field1,field2;
 
           <listitem>
             <para>Creates a LineString from a MultiPoint geometry.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>ST_MakePolygon(linestring geometry)</term>
-
-          <listitem>
-            <para>Creates a Polygon formed by the given shell. Input
-            geometries must be closed LINESTRINGS (see <link
-            linkend="IsClosed">ST_IsClosed</link> and <link
-            linkend="GeometryType">ST_GeometryType</link>). This function will
-            not accept a MULTILINESTRING.</para>
-
-            <programlisting>
-SELECT ST_MakePolygon(ST_GeomFromText('LINESTRING(75.15 29.53,77 29,77.6 29.5, 75.15 29.53)'));
---If linestring is not closed
---you can add the start point to close it
-SELECT ST_MakePolygon(ST_AddPoint(foo.open_line, ST_StartPoint(foo.open_line)))
-FROM (
-SELECT ST_GeomFromText('LINESTRING(75.15 29.53,77 29,77.6 29.5)') As open_line) As foo
-			  </programlisting>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>ST_MakePolygon(linestring geometry, linestrings
-          geometry[])</term>
-
-          <listitem>
-            <para>Creates a Polygon formed by the given shell and array of
-            holes. You can construct a geometry array using <link
-            linkend="Accum">ST_Accum</link> or the PostgreSQL ARRAY[] and
-            ARRAY() constructs. Input geometries must be closed LINESTRINGS
-            (see <link linkend="IsClosed">ST_IsClosed</link> and <link
-            linkend="GeometryType">ST_GeometryType</link>).</para>
-
-            <programlisting>
---Build a donut with an ant hole
-SELECT ST_MakePolygon(
-		ST_ExteriorRing(ST_Buffer(foo.line,10)),
-	ARRAY[ST_Translate(foo.line,1,1),
-		ST_ExteriorRing(ST_Buffer(ST_MakePoint(20,20),1)) ]
-	)
-FROM 
-	(SELECT ST_ExteriorRing(ST_Buffer(ST_MakePoint(10,10),10,10))
-		As line )
-		As foo;
-		
---Build province boundaries with holes
---representing lakes in the province from a set of 
---province polygons/multipolygons and water line strings
---this is an example of using PostGIS ST_Accum
---NOTE: the use of CASE because feeding a null array into 
---ST_MakePolygon results in NULL
---NOTE: the use of left join to guarantee we get all provinces back even if they have no lakes
-SELECT p.gid, p.province_name, 
-	CASE WHEN
-		ST_Accum(w.the_geom) IS NULL THEN p.the_geom
-	ELSE  ST_MakePolygon(ST_LineMerge(ST_Boundary(p.the_geom)), ST_Accum(w.the_geom)) END
-FROM 
-	provinces p LEFT JOIN waterlines w 
-		ON (ST_Within(w.the_geom, p.the_geom) AND ST_IsClosed(w.the_geom))
-GROUP BY p.gid, p.province_name, p.the_geom;
-
---Same example above but utilizing a correlated subquery
---and PostgreSQL built-in ARRAY() function that converts a row set to an array
---NOTE: use of case because ST_MakePolygon 
---evidentally doesn't like empty arrays either
-SELECT p.gid,  p.province_name, CASE WHEN 
-	EXISTS(SELECT w.the_geom 
-		FROM waterlines w 
-		WHERE ST_Within(w.the_geom, p.the_geom) 
-		AND ST_IsClosed(w.the_geom))
-	THEN 
-	ST_MakePolygon(ST_LineMerge(ST_Boundary(p.the_geom)), 
-		ARRAY(SELECT w.the_geom 
-			FROM waterlines w 
-			WHERE ST_Within(w.the_geom, p.the_geom) 
-			AND ST_IsClosed(w.the_geom)))
-	ELSE p.the_geom END As the_geom
-FROM 
-	provinces p; 
-			  </programlisting>
           </listitem>
         </varlistentry>
 
@@ -2656,15 +2561,6 @@ WHERE n*100.00/length &lt; 1;
         </listitem>
       </varlistentry>
 
-      <varlistentry>
-        <term>ST_GeometryType</term>
-
-        <listitem>
-          <para>Return the geometry type of the ST_Geometry value.</para>
-
-          <para>SQL-MM 3: 5.1.4</para>
-        </listitem>
-      </varlistentry>
 
       <varlistentry>
         <term>ST_GeomFromText</term>
