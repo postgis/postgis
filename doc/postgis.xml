@@ -4232,7 +4232,7 @@ dimension
 
         <variablelist>
           <varlistentry>
-            <term>ST_area2d(geometry)</term>
+            <term>ST_Area(geometry)</term>
 
             <listitem>
               <para>Returns the area of the geometry if it is a polygon or
