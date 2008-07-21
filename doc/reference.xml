@@ -24,23 +24,6 @@
 
       <variablelist>
         <varlistentry>
-          <term>ST_Equals(geometry, geometry)</term>
-
-          <listitem>
-            <para>Returns TRUE if the given Geometries are "spatially
-            equal". Use this for a 'better' answer than '='.
-            equals('LINESTRING(0 0, 10 10)','LINESTRING(0 0, 5 5, 10 10)') is
-            true.  Note by spatially equal we also mean ordering of points can be different but
-			represent the same geometry structure.  To verify the order of points is consistent, use 
-			ST_OrderingEquals.</para>
-
-            <para>Performed by the GEOS module</para>
-
-            <para>OGC SPEC s2.1.1.2</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
           <term>ST_Touches(A geometry, B geometry)</term>
 
           <listitem>
@@ -2649,17 +2632,6 @@ WHERE n*100.00/length &lt; 1;
           value.</para>
 
           <para>SQL-MM 3: 7.1.4</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term>ST_Equals</term>
-
-        <listitem>
-          <para>Test if an ST_Geometry value as spatially equal to another
-          ST_Geometry value.</para>
-
-          <para>SQL-MM 3: 5.1.24</para>
         </listitem>
       </varlistentry>
 

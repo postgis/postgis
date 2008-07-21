@@ -1332,6 +1332,14 @@ SELECT DISTINCT ON (s.gid) s.gid, s.school_name, s.the_geom, h.hospital_name
 	FROM schools s 
 		LEFT JOIN hospitals h ON ST_DWithin(s.the_geom, h.the_geom, 3000)
 	ORDER BY s.gid, ST_Distance(s.the_geom, h.the_geom);
+	
+--The schools with no close hospitals
+--Find all schools with no hospital within 3000 units
+--away from the school.  Units is in units of spatial ref (e.g. meters, feet, degrees)
+SELECT s.gid, s.school_name
+	FROM schools s 
+		LEFT JOIN hospitals h ON ST_DWithin(s.the_geom, h.the_geom, 3000)
+	WHERE h.gid IS NULL;
 			  </programlisting>
       </refsection>
       
@@ -1376,6 +1384,14 @@ SELECT DISTINCT ON (s.gid) s.gid, s.school_name, s.the_geom, h.hospital_name
 		  This method implements the
 		  <ulink url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple
 		  Features Implementation Specification for SQL OGC SPEC s2.1.1.2</ulink>
+		</para>
+		
+		<para><inlinemediaobject>
+        <imageobject>
+          <imagedata fileref="images/check.png" />
+        </imageobject>
+      </inlinemediaobject> This method implements the SQL/MM specification:
+	  			SQL-MM 3: 5.1.24
 		</para>
 	
 	  </refsection>
