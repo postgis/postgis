@@ -380,16 +380,6 @@
       <title>Geometry Accessors</title>
 
       <variablelist>
-        <varlistentry>
-          <term>ST_AsText(geometry)</term>
-
-          <listitem>
-            <para>Return the Well-Known Text representation of the geometry.
-            For example: POLYGON(0 0,0 1,1 1,1 0,0 0)</para>
-
-            <para>OGC SPEC s2.1.1.1</para>
-          </listitem>
-        </varlistentry>
 
         <varlistentry>
           <term>ST_AsBinary(geometry)</term>
@@ -2374,17 +2364,6 @@ WHERE n*100.00/length &lt; 1;
           value.</para>
 
           <para>SQL-MM 3: 5.1.37</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term>ST_AsText</term>
-
-        <listitem>
-          <para>Return the well-known text representation of an ST_Geometry
-          value.</para>
-
-          <para>SQL-MM 3: 5.1.25</para>
         </listitem>
       </varlistentry>
 
