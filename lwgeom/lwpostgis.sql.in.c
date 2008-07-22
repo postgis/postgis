@@ -1345,6 +1345,7 @@ CREATEFUNCTION area2d(geometry)
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
 -- Availability: 1.2.2
+-- Deprecation in 1.3.4
 CREATEFUNCTION ST_area2d(geometry)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME', 'LWGEOM_area_polygon'
