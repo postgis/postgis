@@ -1094,6 +1094,133 @@ LINESTRING(1 2,1 10) | LINESTRING(1 10,1 2)
       </refsection>
       
     </refentry>
+	
+	<refentry id="ST_Multi">
+		<refnamediv>
+			<refname>ST_Multi</refname>
+			
+			<refpurpose>Returns the geometry as a MULTI* geometry. If the geometry
+				is already a MULTI*, it is returned unchanged.</refpurpose>
+		</refnamediv>
+		
+		<refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>geoometry <function>ST_Multi</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+	
+		<refsection>
+			<title>Description</title>
+			
+			<para>Returns the geometry as a MULTI* geometry. If the geometry
+				is already a MULTI*, it is returned unchanged.</para>
+		
+		</refsection>
+		
+		<refsection>
+			<title>Examples</title>
+			
+			<programlisting>SELECT ST_AsText(ST_Multi(ST_GeomFromText('POLYGON((743238 2967416,743238 2967450,
+			743265 2967450,743265.625 2967416,743238 2967416))')));
+			st_astext
+			--------------------------------------------------------------------------------------------------
+			MULTIPOLYGON(((743238 2967416,743238 2967450,743265 2967450,743265.625 2967416,
+			743238 2967416)))
+			(1 row)
+			</programlisting>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_AsText" /></para>
+		</refsection>
+	</refentry>
+	
+	<refentry id="ST_Transform">
+	  <refnamediv>
+		<refname>ST_Transform</refname>
+	
+		<refpurpose>Returns a new geometry with its coordinates transformed to
+            the SRID referenced by the integer parameter.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Transform</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+	
+		<para>Returns a new geometry with its coordinates transformed to
+            spatial reference system referenced by the SRID integer parameter. The destination SRID
+            must exist in the <varname>SPATIAL_REF_SYS</varname> table.</para>
+		<para>ST_Transform is often confused with ST_SetSRID().  ST_Transform actually changes the coordinates
+		of a geometry from one spatial reference system to another, while ST_SetSRID() simply changes the SRID identifier of
+		the geometry</para>
+	
+		<note>
+		  <para>If using more than one transformation, it is useful to have a functional index on the commonly used
+		  	transformations to take advantage of index usage.</para>
+		</note>
+	
+		<!-- Optionally mention OpenGIS compliancy if appropriate -->
+		<para><inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+		  </inlinemediaobject> This method implements the <ulink
+		url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+		Implementation Specification for SQL.</ulink></para>
+	
+		<!-- Optionally mention SQL/MM compliancy if appropriate -->
+		<para><inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+		  </inlinemediaobject> This method implements the SQL/MM specification:
+		SQL-MM 3: 5.1.6</para>
+	  </refsection>
+	
+	  <refsection>
+		<title>Examples</title>
+		<para>Change Mass state plane US feet geometry to WGS 84 long lat</para>
+		<programlisting>
+		SELECT ST_AsText(ST_Transform(ST_GeomFromText('POLYGON((743238 2967416,743238 2967450,
+	743265 2967450,743265.625 2967416,743238 2967416))',2249),4326)) As wgs_geom;
+	
+ wgs_geom
+---------------------------
+ POLYGON((-71.1776848522251 42.3902896512902,-71.1776843766326 42.3903829478009,
+-71.1775844305465 42.3903826677917,-71.1775825927231 42.3902893647987,-71.177684
+8522251 42.3902896512902));
+(1 row)
+		</programlisting>
+		<para>Example of creating a partial functional index.  For tables where you are not sure all the geometries
+			will be filled in, its best to use a partial index that leaves out null geometries which will both conserve space and make your index smaller and more efficient.</para>
+		<programlisting>
+CREATE INDEX idx_the_geom_26986_parcels
+  ON parcels
+  USING gist
+  (ST_Transform(the_geom, 26986))
+  WHERE the_geom IS NOT NULL;
+		</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+	
+		<para><xref linkend="ST_AsText" />, <xref linkend="ST_SetSRID" />, <xref linkend="UpdateGeometrySRID"/></para>
+	  </refsection>
+	</refentry>
   </sect1>
 
   <sect1>

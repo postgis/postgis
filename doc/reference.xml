@@ -1750,24 +1750,7 @@ SELECT sometable.field1, sometable.field1,
           </listitem>
         </varlistentry>
 
-        <varlistentry>
-          <term>ST_Multi(geometry)</term>
-
-          <listitem>
-            <para>Returns the geometry as a MULTI* geometry. If the geometry
-            is already a MULTI*, it is returned unchanged.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry id="ST_Transform">
-          <term>ST_Transform(geometry,integer)</term>
-
-          <listitem>
-            <para>Returns a new geometry with its coordinates transformed to
-            the SRID referenced by the integer parameter. The destination SRID
-            must exist in the <varname>SPATIAL_REF_SYS</varname> table.</para>
-          </listitem>
-        </varlistentry>
+  
 
         <varlistentry>
           <term>ST_Affine(geometry, float8, float8, float8, float8, float8,
@@ -2948,16 +2931,7 @@ WHERE n*100.00/length &lt; 1;
         </listitem>
       </varlistentry>
 
-      <varlistentry>
-        <term>ST_Transform</term>
 
-        <listitem>
-          <para>Return an ST_Geometry value transformed to the specified
-          spatial reference system.</para>
-
-          <para>SQL-MM 3: 5.1.6</para>
-        </listitem>
-      </varlistentry>
 
       <varlistentry>
         <term>ST_Union</term>
