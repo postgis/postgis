@@ -2,6 +2,7 @@
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
 "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd" [
 
+<!ENTITY last_release_version "@@LAST_RELEASE_VERSION@@">
 <!ENTITY introduction SYSTEM "introduction.xml">
 <!ENTITY installation SYSTEM "installation.xml">
 <!ENTITY faq SYSTEM "faq.xml">
@@ -14,7 +15,7 @@
 
 ]>
 <book>
-  <title>PostGIS @@LAST_RELEASE_VERSION@@ Manual</title>
+  <title>PostGIS &last_release_version; Manual</title>
 
   <bookinfo>
     <editor>
@@ -39,7 +40,7 @@
       GiST-based R-Tree spatial indexes, and functions for analysis and
       processing of GIS objects.</para>
 
-      <para>This is the manual for version @@LAST_RELEASE_VERSION@@</para>
+      <para>This is the manual for version &last_release_version;</para>
     </abstract>
   </bookinfo>
 

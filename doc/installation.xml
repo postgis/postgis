@@ -52,12 +52,12 @@
     <title>PostGIS</title>
 
     <para>The PostGIS module is a extension to the PostgreSQL backend server.
-    As such, PostGIS @@LAST_RELEASE_VERSION@@ <emphasis>requires</emphasis>
+    As such, PostGIS &last_release_version; <emphasis>requires</emphasis>
     full PostgreSQL server headers access in order to compile. The PostgreSQL
     source code is available at <ulink
     url="http://www.postgresql.org">http://www.postgresql.org</ulink>.</para>
 
-    <para>PostGIS @@LAST_RELEASE_VERSION@@ can be built against PostgreSQL
+    <para>PostGIS &last_release_version; can be built against PostgreSQL
     versions 7.2.0 or higher. Earlier versions of PostgreSQL are
     <emphasis>not</emphasis> supported.</para>
 
@@ -81,14 +81,14 @@
 
       <listitem>
         <para>Retrieve the PostGIS source archive from <ulink
-        url="http://postgis.refractions.net/postgis-@@LAST_RELEASE_VERSION@@.tar.gz">http://postgis.refractions.net/postgis-@@LAST_RELEASE_VERSION@@.tar.gz</ulink>.
+        url="http://postgis.refractions.net/postgis-&last_release_version;.tar.gz">http://postgis.refractions.net/postgis-&last_release_version;.tar.gz</ulink>.
         Uncompress and untar the archive.</para>
 
-        <programlisting># gzip -d -c postgis-@@LAST_RELEASE_VERSION@@.tar.gz | tar xvf -</programlisting>
+        <programlisting># gzip -d -c postgis-&last_release_version;.tar.gz | tar xvf -</programlisting>
       </listitem>
 
       <listitem>
-        <para>Enter the postgis-@@LAST_RELEASE_VERSION@@ directory, and run:
+        <para>Enter the postgis-&last_release_version; directory, and run:
         <programlisting># ./configure</programlisting></para>
 
         <itemizedlist>
@@ -380,7 +380,7 @@ newdb=&gt; \i spatial_ref_sys.sql</programlisting>
     <para>The data loader and dumper are built and installed automatically as
     part of the PostGIS build. To build and install them manually:</para>
 
-    <programlisting># cd postgis-@@LAST_RELEASE_VERSION@@/loader 
+    <programlisting># cd postgis-&last_release_version;/loader 
 # make 
 # make install</programlisting>
 
