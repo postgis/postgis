@@ -1389,23 +1389,6 @@ GROUP BY gid, field1,field2;
         </varlistentry>
 
         <varlistentry>
-          <term>ST_AsEWKT(geometry)</term>
-
-          <listitem>
-            <para>Returns a Geometry in EWKT format (as text).</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>ST_AsEWKB(geometry, {'NDR'|'XDR'})</term>
-
-          <listitem>
-            <para>Returns a Geometry in EWKB format (as bytea) using either
-            little-endian (NDR) or big-endian (XDR) encoding.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
           <term>ST_AsHEXEWKB(geometry, {'NDR'|'XDR'})</term>
 
           <listitem>
