@@ -380,22 +380,6 @@
       <title>Geometry Accessors</title>
 
       <variablelist>
-
-        <varlistentry>
-          <term>ST_AsBinary(geometry)</term>
-
-          <listitem>
-            <para>Returns the geometry in the OGC "well-known-binary" format,
-            using the endian encoding of the server on which the database is
-            running. This is useful in binary cursors to pull data out of the
-            database without converting it to a string representation.</para>
-
-            <para>OGC SPEC s2.1.1.1 - also see
-            asBinary(&lt;geometry&gt;,'XDR') and
-            asBinary(&lt;geometry&gt;,'NDR')</para>
-          </listitem>
-        </varlistentry>
-
         <varlistentry>
           <term>ST_SRID(geometry)</term>
 
@@ -1378,17 +1362,6 @@ GROUP BY gid, field1,field2;
 
       <variablelist>
         <varlistentry>
-          <term>ST_AsBinary(geometry,{'NDR'|'XDR'})</term>
-
-          <listitem>
-            <para>Returns the geometry in the OGC "well-known-binary" format
-            as a bytea, using little-endian (NDR) or big-endian (XDR)
-            encoding. This is useful in binary cursors to pull data out of the
-            database without converting it to a string representation.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
           <term>ST_AsHEXEWKB(geometry, {'NDR'|'XDR'})</term>
 
           <listitem>
@@ -2339,17 +2312,6 @@ WHERE n*100.00/length &lt; 1;
     </note>
 
     <variablelist>
-      <varlistentry>
-        <term>ST_AsBinary</term>
-
-        <listitem>
-          <para>Return the well-known binary representation of an ST_Geometry
-          value.</para>
-
-          <para>SQL-MM 3: 5.1.37</para>
-        </listitem>
-      </varlistentry>
-
       <varlistentry>
         <term>ST_Boundary</term>
 
