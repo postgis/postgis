@@ -380,7 +380,7 @@
       <title>Geometry Accessors</title>
 
       <variablelist>
-        <varlistentry>
+        <varlistentry id="ST_SRID">
           <term>ST_SRID(geometry)</term>
 
           <listitem>
@@ -658,7 +658,7 @@ GROUP BY gid, field1,field2;
       <title>Geometry Constructors</title>
 
       <variablelist>
-        <varlistentry>
+        <varlistentry id="ST_GeomFromText">
 			<term>ST_GeomFromText(text)</term>
 			<term>ST_GeomFromText(text,srid integer)</term>
 
@@ -1454,7 +1454,7 @@ GROUP BY gid, field1,field2;
       <title>Geometry Constructors</title>
 
       <variablelist>
-        <varlistentry>
+        <varlistentry id="ST_GeomFromEWKT">
           <term>ST_GeomFromEWKT(text)</term>
 
           <listitem>
@@ -1462,7 +1462,7 @@ GROUP BY gid, field1,field2;
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="ST_GeomFromEWKB">
           <term>ST_GeomFromEWKB(bytea)</term>
 
           <listitem>
@@ -1544,7 +1544,7 @@ GROUP BY gid, field1,field2;
             into Geometry Collections. Unfortunately geometry collections are
             not well-supported by GIS tools. To prevent ST_Collect from
             returning a Geometry Collection when collecting MULTI geometries,
-            one can use the below trick that utilizes ST_Dump to expand the
+            one can use the below trick that utilizes <xref linkend="ST_Dump" /> to expand the
             MULTIs out to singles and then regroup them.</para>
 
             <programlisting>
@@ -1569,7 +1569,7 @@ GROUP BY stusps
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="ST_Dump">
           <term>ST_Dump(geometry)</term>
 
           <listitem>
@@ -1878,7 +1878,7 @@ z' = z </programlisting> This method is a subcase of the 3D method
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="ST_LineMerge">
           <term>ST_LineMerge(geometry)</term>
 
           <listitem>
@@ -2192,7 +2192,7 @@ WHERE n*100.00/length &lt; 1;
           </listitem>
         </varlistentry>
 
-        <varlistentry id="Accum">
+        <varlistentry id="ST_Accum">
           <term>ST_Accum(geometry set)</term>
 
           <listitem>
@@ -2504,7 +2504,7 @@ WHERE n*100.00/length &lt; 1;
         </listitem>
       </varlistentry>
 
-      <varlistentry>
+      <varlistentry id="ST_IsClosed">
         <term>ST_IsClosed</term>
 
         <listitem>

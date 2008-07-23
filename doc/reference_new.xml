@@ -432,9 +432,9 @@ Check constraints:
 					 <para>Throws an error if WKT is not a MULTILINESTRING. Forces
 					MULTIPOLYGON output even when result is really only composed by a
 					single POLYGON; use <link
-					linkend="BdPolyFromText">BdPolyFromText</link> if you're sure a
+					linkend="ST_BdPolyFromText">ST_BdPolyFromText</link> if you're sure a
 					single POLYGON will result from operation, or see <link
-					linkend="BuildArea">BuildArea()</link> for a postgis-specific
+					linkend="ST_BuildArea">ST_BuildArea()</link> for a postgis-specific
 					approach.</para>
 				</note>
 				
@@ -615,7 +615,7 @@ SELECT userpoints.id, ST_MakeLine(startpoint, endpoint) As drawn_line
             holes. You can construct a geometry array using ST_Accum or the PostgreSQL ARRAY[] and
             ARRAY() constructs. Input geometries must be closed LINESTRINGS.</para>
 			<note>
-				<para>This function will not accept a MULTILINESTRING.  Use ST_LineMerge or ST_Dump to generate line strings.</para>
+				<para>This function will not accept a MULTILINESTRING.  Use <xref linkend="ST_LineMerge" /> or <xref linkend="ST_Dump" /> to generate line strings.</para>
 			</note>
 			
 		</refsection>
@@ -684,7 +684,7 @@ FROM
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_Accum" />, <xref linkend="ST_AddPoint" />, <xref linkend="ST_GeometryType" />, <xref linkend="ST_IsClose" />, <xref linkend="ST_LineMerge" /></para>
+			<para><xref linkend="ST_Accum" />, <xref linkend="ST_AddPoint" />, <xref linkend="ST_GeometryType" />, <xref linkend="ST_IsClosed" />, <xref linkend="ST_LineMerge" /></para>
 		</refsection>
 	</refentry>
   </sect1>
@@ -1411,7 +1411,7 @@ CREATE INDEX idx_the_geom_26986_parcels
 				WKT format does not maintain precision so to prevent floating truncation, use ST_AsBinary or ST_AsEWKB format for transport.
 			</para>
 			<note>
-			  <para>ST_AsEWKT is the reverse of ST_GeomFromEWKT.  Use ST_GeomFromEWKT to convert to a postgis geometry from ST_AsEWKT representation.</para>
+			  <para>ST_AsEWKT is the reverse of <xref linkend="ST_GeomFromEWKT" />.  Use <xref linkend="ST_GeomFromEWKT" /> to convert to a postgis geometry from ST_AsEWKT representation.</para>
 			</note>
 		  </refsection>
 		
@@ -1458,13 +1458,13 @@ SRID=4326;POLYGON((0 0,0 1,1 1,1 0,0 0))
 
 			<note>
 			  <para>The WKT spec does not include the SRID.  To get the SRID as part of the data, use the non-standard
-			  	PostGIS ST_AsEWKT()</para>
+			  	PostGIS <xref linkend="ST_AsEWKT" /></para>
 			</note>
 			<para><inlinegraphic class="sfs_compliant" fileref="images/warning.png" />
 				WKT format does not maintain precision so to prevent floating truncation, use ST_AsBinary or ST_AsEWKB format for transport.
 			</para>
 			<note>
-			  <para>ST_AsText is the reverse of ST_GeomFromText.  Use ST_GeomFromText to convert to a postgis geometry from ST_AsText representation.</para>
+			  <para>ST_AsText is the reverse of <xref linkend="ST_GeomFromText" />.  Use <xref linkend="ST_GeomFromText" /> to convert to a postgis geometry from ST_AsText representation.</para>
 			</note>
 		
 			<!-- Optionally mention OpenGIS compliancy if appropriate -->
