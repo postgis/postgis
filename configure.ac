@@ -346,6 +346,11 @@ AC_DEFINE_UNQUOTED([POSTGIS_PROJ_VERSION], [$POSTGIS_PROJ_VERSION], [PROJ librar
 AC_SUBST([POSTGIS_PROJ_VERSION])
 CPPFLAGS="$CPPFLAGS_SAVE"
 
+dnl Ensure that we are using PROJ >= 4.5.0 (requires pj_set_searchpath) 
+if test ! "$POSTGIS_PROJ_VERSION" -ge 45; then
+	AC_MSG_ERROR([PostGIS requires PROJ >= 4.5.0])
+fi
+
 dnl Ensure we can link against libproj
 LIBS_SAVE="$LIBS"
 LIBS="$PROJ_LDFLAGS"
