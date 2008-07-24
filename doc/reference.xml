@@ -971,41 +971,6 @@ GROUP BY gid, field1,field2;
         </varlistentry>
 
         <varlistentry>
-          <term>postgis_version()</term>
-
-          <listitem>
-            <para>Returns PostGIS version number and compile-time
-            options</para>
-
-            <note>
-              <para>Prior to version 1.1.0 this was a procedural function,
-              thus possibly returning inaccurate information (in case of
-              incomplete database upgrades).</para>
-            </note>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry id="postgis_lib_version">
-          <term>postgis_lib_version()</term>
-
-          <listitem>
-            <para>Returns the version number of the PostGIS library.</para>
-
-            <para>Availability: 0.9.0</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>postgis_lib_build_date()</term>
-
-          <listitem>
-            <para>Returns build date of the PostGIS library.</para>
-
-            <para>Availability: 1.0.0RC1</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
           <term>postgis_script_build_date()</term>
 
           <listitem>
@@ -1044,65 +1009,9 @@ GROUP BY gid, field1,field2;
 
             <note>
               <para>Starting with version 1.1.0 this function returns the same
-              value of <link
-              linkend="postgis_lib_version">postgis_lib_version()</link>. Kept
+              value of <xref linkend="PostGIS_Lib_Version" />. Kept
               for backward compatibility.</para>
             </note>
-
-            <para>Availability: 0.9.0</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>postgis_geos_version()</term>
-
-          <listitem>
-            <para>Returns the version number of the GEOS library, or NULL if
-            GEOS support is not enabled.</para>
-
-            <para>Availability: 0.9.0</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>postgis_jts_version()</term>
-
-          <listitem>
-            <para>Returns the version number of the JTS library, or NULL if
-            JTS support is not enabled.</para>
-
-            <para>Availability: 1.1.0</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>postgis_proj_version()</term>
-
-          <listitem>
-            <para>Returns the version number of the PROJ4 library, or NULL if
-            PROJ4 support is not enabled.</para>
-
-            <para>Availability: 0.9.0</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>postgis_uses_stats()</term>
-
-          <listitem>
-            <para>Returns true if STATS usage has been enabled, false
-            otherwise.</para>
-
-            <para>Availability: 0.9.0</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry id="postgis_full_version">
-          <term>postgis_full_version()</term>
-
-          <listitem>
-            <para>Reports full postgis version and build configuration
-            infos.</para>
 
             <para>Availability: 0.9.0</para>
           </listitem>

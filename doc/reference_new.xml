@@ -271,6 +271,357 @@ Check constraints:
       </refsection>
     </refentry>
 
+
+    <refentry id="PostGIS_Full_Version">
+      <refnamediv>
+        <refname>PostGIS_Full_Version</refname>
+
+        <refpurpose>Reports full postgis version and build configuration
+        infos.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>text <function>PostGIS_Full_Version</function></funcdef>
+
+            <paramdef></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Reports full postgis version and build configuration
+        infos.</para>
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+
+        <programlisting>SELECT PostGIS_Full_Version();
+                               postgis_full_version                               
+----------------------------------------------------------------------------------
+ POSTGIS="1.3.3" GEOS="3.1.0-CAPI-1.5.0" PROJ="Rel. 4.4.9, 29 Oct 2004" USE_STATS
+(1 row)</programlisting>
+      </refsection>
+
+      <refsection>
+        <title>See Also</title>
+
+        <para><xref linkend="PostGIS_GEOS_Version" />, <xref
+        linkend="PostGIS_JTS_Version" />, <xref
+        linkend="PostGIS_Lib_Version" />, <xref
+        linkend="PostGIS_PROJ_Version" />, <xref
+        linkend="PostGIS_Version" /></para>
+      </refsection>
+    </refentry>
+
+    <refentry id="PostGIS_GEOS_Version">
+      <refnamediv>
+        <refname>PostGIS_GEOS_Version</refname>
+
+        <refpurpose>Returns the version number of the GEOS
+        library.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>text <function>PostGIS_GEOS_Version</function></funcdef>
+
+            <paramdef></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Returns the version number of the GEOS library, or
+        <varname>NULL</varname> if GEOS support is not enabled.</para>
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+
+        <programlisting>SELECT PostGIS_GEOS_Version();
+ postgis_geos_version 
+----------------------
+ 3.1.0-CAPI-1.5.0
+(1 row)</programlisting>
+      </refsection>
+
+      <refsection>
+        <title>See Also</title>
+
+        <para><xref linkend="PostGIS_Full_Version" />, <xref
+        linkend="PostGIS_JTS_Version" />, <xref
+        linkend="PostGIS_Lib_Version" />, <xref
+        linkend="PostGIS_PROJ_Version" />, <xref
+        linkend="PostGIS_Version" /></para>
+      </refsection>
+    </refentry>
+
+    <refentry id="PostGIS_JTS_Version">
+      <refnamediv>
+        <refname>PostGIS_JTS_Version</refname>
+
+        <refpurpose>Returns the version number of the JTS
+        library.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>text <function>PostGIS_JTS_Version</function></funcdef>
+
+            <paramdef></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Returns the version number of the JTS library, or
+        <varname>NULL</varname> if JTS support is not enabled.</para>
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+
+        <programlisting>SELECT PostGIS_JTS_Version();
+ postgis_jts_version 
+---------------------
+ 1.8
+(1 row)</programlisting>
+      </refsection>
+
+      <refsection>
+        <title>See Also</title>
+
+        <para><xref linkend="PostGIS_Full_Version" />, <xref
+        linkend="PostGIS_GEOS_Version" />, <xref
+        linkend="PostGIS_Lib_Version" />, <xref
+        linkend="PostGIS_PROJ_Version" />, <xref
+        linkend="PostGIS_Version" /></para>
+      </refsection>
+    </refentry>
+
+    <refentry id="PostGIS_Lib_Build_Date">
+      <refnamediv>
+        <refname>PostGIS_Lib_Build_Date</refname>
+    
+        <refpurpose>Returns build date of the PostGIS library.</refpurpose>
+      </refnamediv>
+    
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>text <function>Postgis_Lib_Build_Date</function></funcdef>
+    
+            <paramdef></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+    
+      <refsection>
+        <title>Description</title>
+    
+        <para>Returns build date of the PostGIS library.</para>
+      </refsection>
+    
+      <refsection>
+        <title>Examples</title>
+    
+        <programlisting>SELECT PostGIS_Lib_Build_Date();
+ postgis_lib_build_date 
+------------------------
+ 2008-06-21 17:53:21
+(1 row)</programlisting>
+      </refsection>
+    </refentry>
+
+    <refentry id="PostGIS_Lib_Version">
+      <refnamediv>
+        <refname>PostGIS_Lib_Version</refname>
+
+        <refpurpose>Returns the version number of the PostGIS
+        library.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>text <function>PostGIS_Lib_Version</function></funcdef>
+
+            <paramdef></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Returns the version number of the PostGIS library.</para>
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+
+        <programlisting>SELECT PostGIS_Lib_Version();
+ postgis_lib_version 
+---------------------
+ 1.3.3
+(1 row)</programlisting>
+      </refsection>
+
+      <refsection>
+        <title>See Also</title>
+
+        <para><xref linkend="PostGIS_Full_Version" />, <xref
+        linkend="PostGIS_GEOS_Version" />, <xref
+        linkend="PostGIS_JTS_Version" />, <xref
+        linkend="PostGIS_PROJ_Version" />, <xref
+        linkend="PostGIS_Version" /></para>
+      </refsection>
+    </refentry>
+
+    <refentry id="PostGIS_PROJ_Version">
+      <refnamediv>
+        <refname>PostGIS_PROJ_Version</refname>
+
+        <refpurpose>Returns the version number of the PROJ4
+        library.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>text <function>PostGIS_PROJ_Version</function></funcdef>
+
+            <paramdef></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Returns the version number of the PROJ4 library, or
+        <varname>NULL</varname> if PROJ4 support is not enabled.</para>
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+
+        <programlisting>SELECT PostGIS_PROJ_Version();
+  postgis_proj_version   
+-------------------------
+ Rel. 4.4.9, 29 Oct 2004
+(1 row)</programlisting>
+      </refsection>
+
+      <refsection>
+        <title>See Also</title>
+
+        <para><xref linkend="PostGIS_Full_Version" />, <xref
+        linkend="PostGIS_GEOS_Version" />, <xref
+        linkend="PostGIS_JTS_Version" />, <xref
+        linkend="PostGIS_Lib_Version" />, <xref
+        linkend="PostGIS_Version" /></para>
+      </refsection>
+    </refentry>
+
+    <refentry id="PostGIS_Uses_Stats">
+      <refnamediv>
+        <refname>PostGIS_Uses_Stats</refname>
+
+        <refpurpose>Returns <varname>TRUE</varname> if STATS usage has been
+        enabled.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>text <function>PostGIS_Uses_Stats</function></funcdef>
+
+            <paramdef></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Returns <varname>TRUE</varname> if STATS usage has been enabled,
+        <varname>FALSE</varname> otherwise.</para>
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+
+        <programlisting>SELECT PostGIS_Uses_Stats();
+ postgis_uses_stats 
+--------------------
+ t
+(1 row)</programlisting>
+      </refsection>
+
+      <refsection>
+        <title>See Also</title>
+
+        <para><xref linkend="PostGIS_Version" /></para>
+      </refsection>
+    </refentry>
+
+    <refentry id="PostGIS_Version">
+      <refnamediv>
+        <refname>PostGIS_Version</refname>
+
+        <refpurpose>Returns PostGIS version number and compile-time
+        options.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>text <function>PostGIS_Version</function></funcdef>
+
+            <paramdef></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Returns PostGIS version number and compile-time options.</para>
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+
+        <programlisting>SELECT PostGIS_Version();
+            postgis_version            
+---------------------------------------
+ 1.3 USE_GEOS=1 USE_PROJ=1 USE_STATS=1
+(1 row)</programlisting>
+      </refsection>
+
+      <refsection>
+        <title>See Also</title>
+
+        <para><xref linkend="PostGIS_Full_Version" />, <xref
+        linkend="PostGIS_GEOS_Version" />, <xref
+        linkend="PostGIS_JTS_Version" />, <xref
+        linkend="PostGIS_Lib_Version" />, <xref
+        linkend="PostGIS_PROJ_Version" /></para>
+      </refsection>
+    </refentry>
+
     <refentry id="UpdateGeometrySRID">
       <refnamediv>
         <refname>UpdateGeometrySRID</refname>

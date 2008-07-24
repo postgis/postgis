@@ -21,7 +21,8 @@ XSLTPROC_COMMONOPTS = \
 	--param admon.graphics 1 \
 	--param admon.textlabel 0 \
 	--param simplesect.in.toc 0 \
-	--param use.id.as.filename 1
+	--param use.id.as.filename 1 \
+	--param chunk.quietly 1
 
 XSLTPROC_HTMLOPTS = \
 	--stringparam html.stylesheet style.css \
