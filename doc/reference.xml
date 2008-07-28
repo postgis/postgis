@@ -658,7 +658,7 @@ GROUP BY gid, field1,field2;
       <title>Geometry Constructors</title>
 
       <variablelist>
-        <varlistentry id="ST_GeomFromText">
+        <varlistentry>
 			<term>ST_GeomFromText(text)</term>
 			<term>ST_GeomFromText(text,srid integer)</term>
 
@@ -798,7 +798,7 @@ GROUP BY gid, field1,field2;
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="ST_GeomFromWKB">
           <term>ST_GeomFromWKB(bytea,[&lt;srid&gt;])</term>
 
           <listitem>

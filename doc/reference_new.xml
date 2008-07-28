@@ -1807,7 +1807,7 @@ CREATE INDEX idx_the_geom_26986_parcels
 			  <para>The WKB spec does not include the SRID.  To get the OGC WKB with SRID format use ST_AsEWKB</para>
 			</note>
 			<note>
-			  <para>ST_AsBinary is the reverse of ST_GeomFromWKB.  Use ST_GeomFromWKB to convert to a postgis geometry from ST_AsBinary representation.</para>
+			  <para>ST_AsBinary is the reverse of <xref linkend="ST_GeomFromWKB" />.  Use <xref linkend="ST_GeomFromWKB" /> to convert to a postgis geometry from ST_AsBinary representation.</para>
 			</note>
 			
 			<para><inlinemediaobject>
