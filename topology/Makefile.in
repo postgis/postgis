@@ -12,7 +12,7 @@ SQL_OBJS=topology.sql.in
 EXTRA_CLEAN=$(SQL_OBJS)
 
 # PGXS information
-PG_CONFIG = pg_config
+PG_CONFIG = @PGCONFIG@ 
 PGXS := $(shell $(PG_CONFIG) --pgxs)
 include $(PGXS)
 

@@ -22,7 +22,7 @@ OBJS=	shpopen.o \
 PG_LIBS=@ICONV_LDFLAGS@
 
 # PGXS information
-PG_CONFIG = pg_config
+PG_CONFIG = @PGCONFIG@ 
 PGXS := $(shell $(PG_CONFIG) --pgxs)
 include $(PGXS)
 
