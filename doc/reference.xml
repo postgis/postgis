@@ -1363,22 +1363,6 @@ GROUP BY gid, field1,field2;
       <title>Geometry Constructors</title>
 
       <variablelist>
-        <varlistentry id="ST_GeomFromEWKT">
-          <term>ST_GeomFromEWKT(text)</term>
-
-          <listitem>
-            <para>Makes a Geometry from EWKT.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry id="ST_GeomFromEWKB">
-          <term>ST_GeomFromEWKB(bytea)</term>
-
-          <listitem>
-            <para>Makes a Geometry from EWKB.</para>
-          </listitem>
-        </varlistentry>
-
         <varlistentry>
           <term>ST_MakePoint(&lt;x&gt;, &lt;y&gt;, [&lt;z&gt;],
           [&lt;m&gt;])</term>
