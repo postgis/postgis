@@ -168,17 +168,6 @@
 
       <variablelist>
         <varlistentry>
-          <term>ST_Centroid(geometry)</term>
-
-          <listitem>
-            <para>Returns the centroid of the geometry as a point.</para>
-
-            <para>Computation will be more accurate if performed by the GEOS
-            module (enabled at compile time).</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
           <term>ST_Area(geometry)</term>
 
           <listitem>
@@ -2226,17 +2215,6 @@ WHERE n*100.00/length &lt; 1;
       </varlistentry>
 
       <varlistentry>
-        <term>ST_Centroid</term>
-
-        <listitem>
-          <para>Return mathematical centroid of the ST_Surface or
-          ST_MultiSurface value.</para>
-
-          <para>SQL-MM 3: 8.1.4, 9.5.5</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
         <term>ST_Contains</term>
 
         <listitem>
@@ -2640,7 +2618,7 @@ WHERE n*100.00/length &lt; 1;
         </listitem>
       </varlistentry>
 
-      <varlistentry>
+      <varlistentry id="ST_PointOnSurface">
         <term>ST_PointOnSurface</term>
 
         <listitem>

@@ -2131,6 +2131,135 @@ st_area
 
 	</refentry>
 
+  <refentry id="ST_Centroid">
+    <refnamediv>
+      <refname>ST_Centroid</refname>
+
+      <refpurpose>Returns the geometric center of a geometry.</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <funcsynopsis>
+        <funcprototype>
+          <funcdef>boolean <function>ST_Centroid</function></funcdef>
+
+          <paramdef><type>geometry </type>
+          <parameter>g1</parameter></paramdef>
+        </funcprototype>
+      </funcsynopsis>
+    </refsynopsisdiv>
+
+    <refsection>
+      <title>Description</title>
+
+      <para>Computes the geometric center of a geometry, or equivalently,
+      the center of mass of the geometry as a <varname>POINT</varname>. For
+      [<varname>MULTI</varname>]<varname>POINT</varname>s, this is computed
+      as the arithmetric mean of the input coordinates. For
+      [<varname>MULTI</varname>]<varname>LINESTRING</varname>s, this is
+      computed as the weighted length of each line segment. For
+      [<varname>MULTI</varname>]<varname>POLYGON</varname>s, "weight" is
+      thought in terms of area. If an empty geometry is supplied, an empty
+      <varname>GEOMETRYCOLLECTION</varname> is returned. If
+      <varname>NULL</varname> is supplied, <varname>NULL</varname> is
+      returned.</para>
+
+      <para>The centroid is equal to the centroid of the set of component
+      Geometries of highest dimension (since the lower-dimension geometries
+      contribute zero "weight" to the centroid).</para>
+
+      <note><para>Computation will be more accurate if performed by the GEOS
+      module (enabled at compile time).</para></note>
+      
+      <para><inlinemediaobject>
+          <imageobject>
+            <imagedata fileref="images/check.png" />
+          </imageobject>
+        </inlinemediaobject> This method implements the <ulink
+      url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple
+      Features Implementation Specification for SQL.</ulink></para>
+
+      <para><inlinemediaobject>
+          <imageobject>
+            <imagedata fileref="images/check.png" />
+          </imageobject>
+        </inlinemediaobject> This method implements the SQL/MM
+      specification: SQL-MM 3: 8.1.4, 9.5.5</para>
+    </refsection>
+
+    <refsection>
+      <title>Examples</title>
+
+      <para>In each of the following illustrations, the blue dot represents 
+      the centroid of the source geometry.</para>
+
+      <informaltable>
+        <tgroup cols="2">
+          <tbody>
+            <row>
+              <entry><para><informalfigure>
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/st_centroid01.png" />
+                    </imageobject>
+
+                    <caption><para>Centroid of a
+                    <varname>MULTIPOINT</varname></para></caption>
+                  </mediaobject>
+                </informalfigure></para></entry>
+
+              <entry><para><informalfigure>
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/st_centroid02.png" />
+                    </imageobject>
+
+                    <caption><para>Centroid of a
+                    <varname>LINESTRING</varname></para></caption>
+                  </mediaobject>
+                </informalfigure></para></entry>
+            </row>
+
+            <row>
+              <entry><para><informalfigure>
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/st_centroid03.png" />
+                    </imageobject>
+
+                    <caption><para>Centroid of a
+                    <varname>POLYGON</varname></para></caption>
+                  </mediaobject>
+                </informalfigure></para></entry>
+
+              <entry><para><informalfigure>
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/st_centroid04.png" />
+                    </imageobject>
+
+                    <caption><para>Centroid of a
+                    <varname>GEOMETRYCOLLECTION</varname></para></caption>
+                  </mediaobject>
+                </informalfigure></para></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+
+      <programlisting>SELECT ST_AsText(ST_Centroid('MULTIPOINT ( -1 0, -1 2, -1 3, -1 4, -1 7, 0 1, 0 3, 1 1, 2 0, 6 0, 7 8, 9 8, 10 6 )'));
+                st_astext                 
+------------------------------------------
+ POINT(2.30769230769231 3.30769230769231)
+(1 row)</programlisting>
+    </refsection>
+
+    <refsection>
+      <title>See Also</title>
+
+      <para><xref linkend="ST_PointOnSurface" /></para>
+    </refsection>
+  </refentry>
     
   <refentry id="ST_Crosses">
     <refnamediv>
