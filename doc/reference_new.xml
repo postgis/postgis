@@ -2937,7 +2937,7 @@ SELECT ST_OrderingEquals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
 		<refsynopsisdiv>
 		  <funcsynopsis>
 			<funcprototype>
-			  <funcdef>float <function>ST_Length</function></funcdef>
+			  <funcdef>float <function>ST_Perimeter</function></funcdef>
 			  	<paramdef><type>geometry </type><parameter>g1</parameter></paramdef>
 			</funcprototype>
 		  </funcsynopsis>
