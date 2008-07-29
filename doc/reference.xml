@@ -284,41 +284,7 @@
           </listitem>
         </varlistentry>
 
-        <varlistentry>
-          <term>ST_Union(geometry, geometry)</term>
-
-          <listitem>
-            <para>Returns a geometry that represents the point set union of
-            the Geometries.</para>
-
-            <para>Performed by the GEOS module.</para>
-
-            <para>Do not call with a GeometryCollection as an argument.</para>
-
-            <para>NOTE: this function was formerly called GeomUnion(), which
-            was renamed from "Union" because UNION is an SQL reserved
-            word.</para>
-
-            <para>OGC SPEC s2.1.1.3</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>ST_Union(geometry set)</term>
-
-          <listitem>
-            <para>Returns a geometry that represents the point set union of
-            all Geometries in given set.</para>
-
-            <para>Performed by the GEOS module.</para>
-
-            <para>Do not call with a GeometryCollection in the argument
-            set.</para>
-
-            <para>Not explicitly defined in OGC SPEC.</para>
-          </listitem>
-        </varlistentry>
-
+    
         <varlistentry>
           <term>ST_MemUnion(geometry set)</term>
 
@@ -1359,78 +1325,6 @@ GROUP BY gid, field1,field2;
             geometries.</para>
 
             <para>Availability: 1.0.0RC1 - requires GEOS &gt;= 2.1.0.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>ST_Collect(geometry set)</term>
-
-          <listitem>
-            <para>This function returns a GEOMETRYCOLLECTION or a MULTI object
-            from a set of geometries. The collect() function is an "aggregate"
-            function in the terminology of PostgreSQL. That means that it
-            operates on rows of data, in the same way the SUM() and AVG()
-            functions do. For example, "SELECT ST_Collect(GEOM) FROM GEOMTABLE
-            GROUP BY ATTRCOLUMN" will return a separate GEOMETRYCOLLECTION for
-            each distinct value of ATTRCOLUMN.</para>
-
-            <para>ST_Collect and ST_Union are often interchangeable.
-            ST_Collect is in general orders of magnitude faster than ST_Union
-            because it does not try to dissolve boundaries. It merely rolls up
-            single geometries into MULTI and MULTI or mixed geometry types
-            into Geometry Collections. Unfortunately geometry collections are
-            not well-supported by GIS tools. To prevent ST_Collect from
-            returning a Geometry Collection when collecting MULTI geometries,
-            one can use the below trick that utilizes <xref linkend="ST_Dump" /> to expand the
-            MULTIs out to singles and then regroup them.</para>
-
-            <programlisting>
-Thread ref: http://postgis.refractions.net/pipermail/postgis-users/2008-June/020331.html
-SELECT stusps, 
-	   ST_Multi(ST_Collect(f.the_geom)) as singlegeom  
-	 FROM (SELECT stusps, (ST_Dump(the_geom)).geom As the_geom 
-				FROM
-				somestatetable ) As f
-GROUP BY stusps
-			  </programlisting>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>ST_Collect(geometry, geometry)</term>
-
-          <listitem>
-            <para>This function returns a geometry being a collection of two
-            input geometries. Output type can be a MULTI* or a
-            GEOMETRYCOLLECTION.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry id="ST_Dump">
-          <term>ST_Dump(geometry)</term>
-
-          <listitem>
-            <para>This is a set-returning function (SRF). It returns a set of
-            geometry_dump rows, formed by a geometry (geom) and an array of
-            integers (path). When the input geometry is a simple type
-            (POINT,LINESTRING,POLYGON) a single record will be returned with
-            an empty path array and the input geometry as geom. When the input
-            geometry is a collection or multi it will return a record for each
-            of the collection components, and the path will express the
-            position of the component inside the collection.</para>
-
-            <para>ST_Dump is useful for expanding geometries. It is the
-            reverse of a GROUP BY in that it creates new rows. For example it
-            can be use to expand MULTIPOLYGONS into POLYGONS.</para>
-
-            <programlisting>
-SELECT sometable.field1, sometable.field1, 
-(ST_Dump(sometable.the_geom)).geom As the_geom 
-	 FROM sometable
-			  </programlisting>
-
-            <para>Availability: PostGIS 1.0.0RC1. Requires PostgreSQL 7.3 or
-            higher.</para>
           </listitem>
         </varlistentry>
 
@@ -2635,22 +2529,7 @@ WHERE n*100.00/length &lt; 1;
 
           <para>SQL-MM 3: 5.1.28</para>
         </listitem>
-      </varlistentry>
-
-
-
-      <varlistentry>
-        <term>ST_Union</term>
-
-        <listitem>
-          <para>Return an ST_Geometry value that represents the point set
-          union of two ST_Geometry values.</para>
-
-          <para>SQL-MM 3: 5.1.19</para>
-        </listitem>
-      </varlistentry>
-
-   
+      </varlistentry>   
 
       <varlistentry>
         <term>ST_WKBToSQL</term>

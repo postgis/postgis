@@ -712,7 +712,7 @@ Check constraints:
 		  <refsynopsisdiv>
 			<funcsynopsis>
 			  <funcprototype>
-				<funcdef>geometery <function>ST_BdPolyFromText</function></funcdef>
+				<funcdef>geometry <function>ST_BdPolyFromText</function></funcdef>
 				<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
 			  </funcprototype>
 			</funcsynopsis>
@@ -766,7 +766,7 @@ Check constraints:
 			<refsynopsisdiv>
 				<funcsynopsis>
 				  <funcprototype>
-					<funcdef>geometery <function>ST_BdMPolyFromText</function></funcdef>
+					<funcdef>geometry <function>ST_BdMPolyFromText</function></funcdef>
 					<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
@@ -873,6 +873,140 @@ FROM (SELECT ST_Buffer(ST_MakeLine(ST_MakePoint(21, 22),ST_MakePoint(-19, -18)),
             this function with standard OGC interface</para>
 		  </refsection>
 	</refentry>
+	<refentry id="ST_Collect">
+	  <refnamediv>
+		<refname>ST_Collect</refname>
+		<refpurpose>Return a specified ST_Geometry value from a collection of other geometries.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Collect</function></funcdef>
+			<paramdef><type>geometry set</type> <parameter>g1field</parameter></paramdef>
+		  </funcprototype>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Collect</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>g1</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+		<para> Output type can be a MULTI* or a
+            GEOMETRYCOLLECTION. Comes in 2 variants.  Variant 1 collects 2 geometries. Variant 2 is an aggregate function that takes a set of geometries and collects
+			them into a single ST_Geometry.</para>
+			
+		<para>Aggregate version: This function returns a GEOMETRYCOLLECTION or a MULTI object
+            from a set of geometries. The ST_Collect() function is an "aggregate"
+            function in the terminology of PostgreSQL. That means that it
+            operates on rows of data, in the same way the SUM() and AVG()
+            functions do. For example, "SELECT ST_Collect(GEOM) FROM GEOMTABLE
+            GROUP BY ATTRCOLUMN" will return a separate GEOMETRYCOLLECTION for
+            each distinct value of ATTRCOLUMN.</para>
+			
+		<para>Non-Aggregate version: This function returns a geometry being a collection of two
+            input geometries. Output type can be a MULTI* or a
+            GEOMETRYCOLLECTION.</para>
+
+        <note><para>ST_Collect and ST_Union are often interchangeable.
+            ST_Collect is in general orders of magnitude faster than ST_Union
+            because it does not try to dissolve boundaries or validate that a constructed MultiPolgon doesn't
+			have overlapping regions. It merely rolls up
+            single geometries into MULTI and MULTI or mixed geometry types
+            into Geometry Collections. Unfortunately geometry collections are
+            not well-supported by GIS tools. To prevent ST_Collect from
+            returning a Geometry Collection when collecting MULTI geometries,
+            one can use the below trick that utilizes <xref linkend="ST_Dump" /> to expand the
+            MULTIs out to singles and then regroup them.</para></note>
+	  </refsection>
+	
+	  <refsection>
+		<title>Examples</title>
+		<para>Aggregate example</para>
+            <programlisting>
+Thread ref: http://postgis.refractions.net/pipermail/postgis-users/2008-June/020331.html
+SELECT stusps, 
+	   ST_Multi(ST_Collect(f.the_geom)) as singlegeom  
+	 FROM (SELECT stusps, (ST_Dump(the_geom)).geom As the_geom 
+				FROM
+				somestatetable ) As f
+GROUP BY stusps
+			  </programlisting>
+		<para>Non-Aggregate example</para>
+            <programlisting>
+Thread ref: http://postgis.refractions.net/pipermail/postgis-users/2008-June/020331.html
+SELECT ST_AsText(ST_Collect(ST_GeomFromText('POINT(1 2)'),
+	ST_GeomFromText('POINT(-2 3)') ));
+	
+st_astext
+----------
+MULTIPOINT(1 2,-2 3)
+
+SELECT ST_AsText(ST_Collect(ST_GeomFromText('POINT(1 2)'),
+		ST_GeomFromText('POINT(1 2)') ) );
+	
+st_astext
+----------
+MULTIPOINT(1 2,1 2)
+			  </programlisting>
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_Dump" />, <xref linkend="ST_Union" /></para>
+	  </refsection>
+	</refentry>
+	
+	<refentry id="ST_Dump">
+	  <refnamediv>
+		<refname>ST_Dump</refname>
+		<refpurpose>Returns a set of
+            geometry_dump rows, formed by a geometry (geom).</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry_dump[]<function>ST_Dump</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+        	<para>This is a set-returning function (SRF). It returns a set of
+            geometry_dump rows, formed by a geometry (geom) and an array of
+            integers (path). When the input geometry is a simple type
+            (POINT,LINESTRING,POLYGON) a single record will be returned with
+            an empty path array and the input geometry as geom. When the input
+            geometry is a collection or multi it will return a record for each
+            of the collection components, and the path will express the
+            position of the component inside the collection.</para>
+
+            <para>ST_Dump is useful for expanding geometries. It is the
+            reverse of a GROUP BY in that it creates new rows. For example it
+            can be use to expand MULTIPOLYGONS into POLYGONS.</para>
+			
+			<para>Availability: PostGIS 1.0.0RC1. Requires PostgreSQL 7.3 or
+            higher.</para>
+	  </refsection>
+	
+	  <refsection>
+		<title>Examples</title>
+	            <programlisting>
+SELECT sometable.field1, sometable.field1, 
+(ST_Dump(sometable.the_geom)).geom As the_geom 
+	 FROM sometable
+			  </programlisting>
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_Collect" /></para>
+	  </refsection>
+	</refentry>		
+
 	<refentry id="ST_GeomFromEWKB">
 	  <refnamediv>
 		<refname>ST_GeomFromEWKB</refname>
@@ -882,7 +1016,7 @@ FROM (SELECT ST_Buffer(ST_MakeLine(ST_MakePoint(21, 22),ST_MakePoint(-19, -18)),
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>geometery <function>ST_GeomFromEWKB</function></funcdef>
+			<funcdef>geometry <function>ST_GeomFromEWKB</function></funcdef>
 			<paramdef><type>bytea </type> <parameter>EWKB</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
@@ -925,7 +1059,7 @@ FROM (SELECT ST_Buffer(ST_MakeLine(ST_MakePoint(21, 22),ST_MakePoint(-19, -18)),
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>geometery <function>ST_GeomFromEWKT</function></funcdef>
+			<funcdef>geometry <function>ST_GeomFromEWKT</function></funcdef>
 			<paramdef><type>text </type> <parameter>EWKT</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
@@ -989,11 +1123,11 @@ SELECT ST_GeomFromEWKT('SRID=4269;MULTIPOLYGON(((-71.1031880899493 42.3152774590
 		  <refsynopsisdiv>
 			<funcsynopsis>
 			  <funcprototype>
-				<funcdef>geometery <function>ST_GeomFromText</function></funcdef>
+				<funcdef>geometry <function>ST_GeomFromText</function></funcdef>
 				<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
 			  </funcprototype>
 			  <funcprototype>
-				<funcdef>geometery <function>ST_GeomFromText</function></funcdef>
+				<funcdef>geometry <function>ST_GeomFromText</function></funcdef>
 				<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
 			  </funcprototype>
@@ -1235,6 +1369,101 @@ FROM
 			<title>See Also</title>
 			<para><xref linkend="ST_Accum" />, <xref linkend="ST_AddPoint" />, <xref linkend="ST_GeometryType" />, <xref linkend="ST_IsClosed" />, <xref linkend="ST_LineMerge" /></para>
 		</refsection>
+	</refentry>	
+	<refentry id="ST_Union">
+	  <refnamediv>
+		<refname>ST_Union</refname>
+		<refpurpose>Returns a geometry that represents the point set union of
+            the Geometries.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Union</function></funcdef>
+			<paramdef><type>geometry set</type> <parameter>g1field</parameter></paramdef>
+		  </funcprototype>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Union</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>g1</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+		<para> Output type can be a MULTI* , single geometry, or Geometry Collection. Comes in 2 variants.  Variant 1 unions 2 geometries resulting in a new geomety with no intersecting regions. 
+			Variant 2 is an aggregate function that takes a set of geometries and unions
+			them into a single ST_Geometry resulting in no intersecting regions.</para>
+			
+		<para>Aggregate version: This function returns a MULTI geometry or NON-MULTI geometry 
+            from a set of geometries. The ST_Union() function is an "aggregate"
+            function in the terminology of PostgreSQL. That means that it
+            operates on rows of data, in the same way the SUM() and AVG()
+            functions do.</para>
+			
+		<para>Non-Aggregate version: This function returns a geometry being a union of two
+            input geometries. Output type can be a MULTI* ,NON-MULTI or
+            GEOMETRYCOLLECTION.</para>
+
+        <note><para>ST_Collect and ST_Union are often interchangeable.
+            ST_Union is in general orders of magnitude slower than ST_Collect
+            because it does not tries to dissolve boundaries and reorder geometries to ensure that a constructed MultiPolygon doesn't
+			have intersecting regions. .</para></note>
+			
+		<para>Performed by the GEOS module.</para>
+		<para>NOTE: this function was formerly called GeomUnion(), which
+            was renamed from "Union" because UNION is an SQL reserved
+            word.</para>
+			
+		<para><inlinemediaobject>
+				<imageobject>
+				  <imagedata fileref="images/check.png" />
+				</imageobject>
+			  </inlinemediaobject> This method implements the <ulink
+			url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+			Implementation Specification for SQL: OGC SPEC s2.1.1.3</ulink></para>
+		
+			<para><inlinemediaobject>
+				<imageobject>
+				  <imagedata fileref="images/check.png" />
+				</imageobject>
+			  </inlinemediaobject> This method implements the SQL/MM specification:
+			SQL-MM 3: 5.1.19</para>
+			
+			<note><para>Aggregate version is not explicitly defined in OGC SPEC.</para></note>
+	  </refsection>
+	
+	  <refsection>
+		<title>Examples</title>
+		<para>Aggregate example</para>
+            <programlisting>
+SELECT stusps, 
+	   ST_Multi(ST_Union(f.the_geom)) as singlegeom  
+	 FROM sometable As f
+GROUP BY stusps
+			  </programlisting>
+		<para>Non-Aggregate example</para>
+            <programlisting>
+SELECT ST_AsText(ST_Union(ST_GeomFromText('POINT(1 2)'),
+	ST_GeomFromText('POINT(-2 3)') ) )
+	
+st_astext
+----------
+MULTIPOINT(-2 3,1 2)
+
+
+SELECT ST_AsText(ST_Union(ST_GeomFromText('POINT(1 2)'),
+		ST_GeomFromText('POINT(1 2)') ) );
+st_astext
+----------		
+POINT(1 2)
+			  </programlisting>
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_Collect" /></para>
+	  </refsection>
 	</refentry>
   </sect1>
    
