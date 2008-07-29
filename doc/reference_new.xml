@@ -2870,6 +2870,73 @@ SELECT ST_OrderingEquals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
 	  </refsection>
 	  
 	</refentry>
+    <refentry id="ST_PointOnSurface">
+      <refnamediv>
+        <refname>ST_PointOnSurface</refname>
+
+        <refpurpose>Returns a <varname>POINT</varname> guaranteed to lie on the surface.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>boolean <function>ST_PointOnSurface</function></funcdef>
+
+            <paramdef><type>geometry </type>
+            <parameter>g1</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Returns a <varname>POINT</varname> guaranteed to intersect a surface.</para>
+
+        <para><inlinemediaobject>
+            <imageobject>
+              <imagedata fileref="images/check.png" />
+            </imageobject>
+          </inlinemediaobject> This method implements the <ulink
+        url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple
+        Features Implementation Specification for SQL: 3.2.14.2, 3.2.18.2</ulink></para>
+
+        <para><inlinemediaobject>
+            <imageobject>
+              <imagedata fileref="images/check.png" />
+            </imageobject>
+          </inlinemediaobject> This method implements the SQL/MM
+        specification: SQL-MM 3: 8.1.5, 9.5.6</para>
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+        
+        <programlisting>SELECT ST_AsText(ST_PointOnSurface('POINT(0 5)'::geometry));
+ st_astext  
+------------
+ POINT(0 5)
+(1 row)
+
+SELECT ST_AsText(ST_PointOnSurface('LINESTRING(0 5, 0 10)'::geometry));
+ st_astext  
+------------
+ POINT(0 5)
+(1 row)
+
+SELECT ST_AsText(ST_PointOnSurface('POLYGON((0 0, 0 5, 5 5, 5 0, 0 0))'::geometry));
+   st_astext    
+----------------
+ POINT(2.5 2.5)
+(1 row)</programlisting>
+      </refsection>
+
+      <refsection>
+        <title>See Also</title>
+
+        <para><xref linkend="ST_Centroid" />, <xref linkend="ST_Point_Inside_Circle" /></para>
+      </refsection>
+    </refentry>
 	
     <refentry id="ST_Within">
       <refnamediv>

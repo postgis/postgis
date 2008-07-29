@@ -190,18 +190,6 @@
         </varlistentry>
 
         <varlistentry>
-          <term>ST_PointOnSurface(geometry)</term>
-
-          <listitem>
-            <para>Return a Point guaranteed to lie on the surface</para>
-
-            <para>Implemented using GEOS</para>
-
-            <para>OGC SPEC 3.2.14.2 and 3.2.18.2 -</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
           <term>ST_Boundary(geometry)</term>
 
           <listitem>
@@ -2047,7 +2035,7 @@ WHERE n*100.00/length &lt; 1;
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="ST_Point_Inside_Circle">
           <term>ST_point_inside_circle(geometry, float, float, float)</term>
 
           <listitem>
@@ -2615,17 +2603,6 @@ WHERE n*100.00/length &lt; 1;
           ST_CircularString</para>
 
           <para>SQL-MM 3: 7.2.5, 7.3.5</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="ST_PointOnSurface">
-        <term>ST_PointOnSurface</term>
-
-        <listitem>
-          <para>Return an ST_Point value guaranteed to spatially intersect the
-          ST_Surface or ST_MultiSurface value.</para>
-
-          <para>SQL-MM 3: 8.1.5, 9.5.6</para>
         </listitem>
       </varlistentry>
 
