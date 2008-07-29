@@ -1408,8 +1408,8 @@ FROM
 
         <note><para>ST_Collect and ST_Union are often interchangeable.
             ST_Union is in general orders of magnitude slower than ST_Collect
-            because it does not tries to dissolve boundaries and reorder geometries to ensure that a constructed MultiPolygon doesn't
-			have intersecting regions. .</para></note>
+            because it tries to dissolve boundaries and reorder geometries to ensure that a constructed Multi* doesn't
+			have intersecting regions.</para></note>
 			
 		<para>Performed by the GEOS module.</para>
 		<para>NOTE: this function was formerly called GeomUnion(), which
