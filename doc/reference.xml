@@ -165,30 +165,7 @@
 
     <sect2>
       <title>Geometry Processing Functions</title>
-
-      <variablelist>
-        <varlistentry>
-          <term>ST_Area(geometry)</term>
-
-          <listitem>
-            <para>Returns the area of the geometry if it is a polygon or
-            multi-polygon.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>ST_Length(geometry)</term>
-
-          <listitem>
-            <para>The length of this Curve in its associated spatial
-            reference.</para>
-
-            <para>synonym for length2d()</para>
-
-            <para>OGC SPEC 2.1.5.1</para>
-          </listitem>
-        </varlistentry>
-
+	  <variablelist>
         <varlistentry>
           <term>ST_Boundary(geometry)</term>
 
@@ -1201,16 +1178,6 @@ GROUP BY gid, field1,field2;
             strings.</para>
           </listitem>
         </varlistentry>
-
-        <varlistentry>
-          <term>ST_perimeter(geometry)</term>
-
-          <listitem>
-            <para>Returns the 2-dimensional perimeter of the geometry, if it
-            is a polygon or multi-polygon.</para>
-          </listitem>
-        </varlistentry>
-
         <varlistentry>
           <term>ST_perimeter2d(geometry)</term>
 
@@ -2432,17 +2399,6 @@ WHERE n*100.00/length &lt; 1;
       </varlistentry>
 
       <varlistentry>
-        <term>ST_Length</term>
-
-        <listitem>
-          <para>Return the length measurement of an ST_Curve or ST_MultiCurve
-          value.</para>
-
-          <para>SQL-MM 3: 7.1.2, 9.3.4</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
         <term>ST_LineFromText</term>
 
         <listitem>
@@ -2551,17 +2507,6 @@ WHERE n*100.00/length &lt; 1;
           ST_Geometry value.</para>
 
           <para>SQL-MM 3: 5.1.32</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term>ST_Perimeter</term>
-
-        <listitem>
-          <para>Return the length measurement of the boundary of an ST_Surface
-          or ST_MultiRSurface value.</para>
-
-          <para>SQL-MM 3: 8.1.3, 9.5.4</para>
         </listitem>
       </varlistentry>
 
