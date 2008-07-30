@@ -2543,17 +2543,6 @@ WHERE n*100.00/length &lt; 1;
       </varlistentry>
 
       <varlistentry>
-        <term>ST_WKTToSQL</term>
-
-        <listitem>
-          <para>Return an ST_Geometry value for a given well-known text
-          representation.</para>
-
-          <para>SQL-MM 3: 5.1.34</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
         <term>ST_X</term>
 
         <listitem>

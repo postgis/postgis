@@ -1114,12 +1114,51 @@ SELECT ST_GeomFromEWKT('SRID=4269;MULTIPOLYGON(((-71.1031880899493 42.3152774590
 		<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_GeomFromText" />, <xref linkend="ST_GeomFromEWKT" /></para>
 	  </refsection>
 	</refentry>
-	  <refentry id="ST_GeomFromText">
+	<refentry id="ST_GeometryFromText">
+		  <refnamediv>
+			<refname>ST_GeometryFromText</refname>
+			<refpurpose>Return a specified ST_Geometry value from Well-Known Text representation (WKT).  This is an alias name for ST_GeomFromText</refpurpose>
+		  </refnamediv>		
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_GeometryFromText</function></funcdef>
+				<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
+			  </funcprototype>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_GeometryFromText</function></funcdef>
+				<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+		  <refsection>
+			<title>Description</title>
+			<!-- Optionally mention OpenGIS compliancy if appropriate -->
+			<para><inlinemediaobject>
+				<imageobject>
+				  <imagedata fileref="images/check.png" />
+				</imageobject>
+			  </inlinemediaobject> This method implements the <ulink
+			url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+			Implementation Specification for SQL.</ulink></para>
+			<para><inlinemediaobject>
+				<imageobject>
+				  <imagedata fileref="images/check.png" />
+				</imageobject>
+			  </inlinemediaobject> This method implements the SQL/MM specification:
+			SQL-MM 3: 5.1.40</para>
+		  </refsection>
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_GeomFromText" /></para>
+		  </refsection>
+	</refentry>
+	<refentry id="ST_GeomFromText">
 		  <refnamediv>
 			<refname>ST_GeomFromText</refname>
 			<refpurpose>Return a specified ST_Geometry value from Well-Known Text representation (WKT).</refpurpose>
-		  </refnamediv>
-		
+		  </refnamediv>		
 		  <refsynopsisdiv>
 			<funcsynopsis>
 			  <funcprototype>
@@ -1464,6 +1503,39 @@ POINT(1 2)
 		<title>See Also</title>
 		<para><xref linkend="ST_Collect" /></para>
 	  </refsection>
+	</refentry>
+	<refentry id="ST_WKTToSQL">
+		  <refnamediv>
+			<refname>ST_WKTToSQL</refname>
+			<refpurpose>Return a specified ST_Geometry value from Well-Known Text representation (WKT).  This is an alias name for ST_GeomFromText</refpurpose>
+		  </refnamediv>		
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_WKTToSQL</function></funcdef>
+				<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
+			  </funcprototype>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_WKTToSQL</function></funcdef>
+				<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+		  <refsection>
+			<title>Description</title>
+			<!-- Optionally mention OpenGIS compliancy if appropriate -->
+			<para><inlinemediaobject>
+				<imageobject>
+				  <imagedata fileref="images/check.png" />
+				</imageobject>
+			  </inlinemediaobject> This method implements the SQL/MM specification:
+			SQL-MM 3: 5.1.34</para>
+		  </refsection>
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_GeomFromText" /></para>
+		  </refsection>
 	</refentry>
   </sect1>
    
