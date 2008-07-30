@@ -48,11 +48,12 @@
 -- (http://edndoc.esri.com/arcsde/9.1/general_topics/storing_geo_in_rdbms.html)
 -------------------------------------------------------------------------------
 
--- PostGIS equivalent function: GeometryFromText(text)
+-- PostGIS equivalent function: ST_GeometryFromText(text)
 -- Note: Defaults to an SRID=-1, not 0 as per SQL/MM specs.
 CREATEFUNCTION ST_WKTToSQL(text)
-	RETURNS geometry AS $$ SELECT geometryfromtext($1) $$
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+    	RETURNS geometry
+        AS 'MODULE_PATHNAME','LWGEOM_from_text'
+        LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- ST_GeomFromText(text, int4) - already defined
 -- ST_PointFromText(text, int4) - already defined
@@ -69,10 +70,11 @@ CREATEFUNCTION ST_WKTToSQL(text)
 
 -- PostGIS equivalent function: GeomFromWKB(bytea))
 -- Note: Defaults to an SRID=-1, not 0 as per SQL/MM specs.
+
 CREATEFUNCTION ST_WKBToSQL(bytea)
 	RETURNS geometry
-	AS $$ SELECT GeomFromWKB($1) $$
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+	AS 'MODULE_PATHNAME','LWGEOM_from_WKB'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- ST_GeomFromWKB(bytea, int) - already defined
 -- ST_PointFromWKB(bytea, int) - already defined

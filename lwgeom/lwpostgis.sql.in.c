@@ -4537,18 +4537,20 @@ CREATEFUNCTION GeomFromText(text)
 
 -- Availability: 1.2.2
 CREATEFUNCTION ST_GeomFromText(text)
-	RETURNS geometry AS 'SELECT geometryfromtext($1)'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+        RETURNS geometry
+        AS 'MODULE_PATHNAME','LWGEOM_from_text'
+        LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Deprecation in 1.2.3
 CREATEFUNCTION GeomFromText(text, int4)
 	RETURNS geometry AS 'SELECT geometryfromtext($1, $2)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
--- PostGIS equivalent function: GeometryFromText(text, int4)
+-- PostGIS equivalent function: ST_GeometryFromText(text, int4)
 CREATEFUNCTION ST_GeomFromText(text, int4)
-	RETURNS geometry AS 'SELECT geometryfromtext($1, $2)'
-	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+        RETURNS geometry
+        AS 'MODULE_PATHNAME','LWGEOM_from_text'
+        LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Deprecation in 1.2.3
 CREATEFUNCTION PointFromText(text)
@@ -4564,8 +4566,8 @@ CREATEFUNCTION PointFromText(text)
 CREATEFUNCTION ST_PointFromText(text)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype(GeomFromText($1)) = ''POINT''
-	THEN GeomFromText($1)
+	SELECT CASE WHEN geometrytype(ST_GeomFromText($1)) = ''POINT''
+	THEN ST_GeomFromText($1)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -4585,8 +4587,8 @@ CREATEFUNCTION PointFromText(text, int4)
 CREATEFUNCTION ST_PointFromText(text, int4)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype(GeomFromText($1, $2)) = ''POINT''
-	THEN GeomFromText($1, $2)
+	SELECT CASE WHEN geometrytype(ST_GeomFromText($1, $2)) = ''POINT''
+	THEN ST_GeomFromText($1, $2)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -4605,8 +4607,8 @@ CREATEFUNCTION LineFromText(text)
 CREATEFUNCTION ST_LineFromText(text)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype(GeomFromText($1)) = ''LINESTRING''
-	THEN GeomFromText($1)
+	SELECT CASE WHEN geometrytype(ST_GeomFromText($1)) = ''LINESTRING''
+	THEN ST_GeomFromText($1)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -4657,8 +4659,8 @@ CREATEFUNCTION PolyFromText(text)
 CREATEFUNCTION ST_PolyFromText(text)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype(GeomFromText($1)) = ''POLYGON''
-	THEN GeomFromText($1)
+	SELECT CASE WHEN geometrytype(ST_GeomFromText($1)) = ''POLYGON''
+	THEN ST_GeomFromText($1)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -4673,12 +4675,12 @@ CREATEFUNCTION PolyFromText(text, int4)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
         
--- PostGIS equivalent function: PolyFromText(text, int4)
+-- PostGIS equivalent function: ST_PolygonFromText(text, int4)
 CREATEFUNCTION ST_PolyFromText(text, int4)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype(GeomFromText($1, $2)) = ''POLYGON''
-	THEN GeomFromText($1, $2)
+	SELECT CASE WHEN geometrytype(ST_GeomFromText($1, $2)) = ''POLYGON''
+	THEN ST_GeomFromText($1, $2)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -4704,7 +4706,7 @@ CREATEFUNCTION PolygonFromText(text)
 -- Availability: 1.2.2
 CREATEFUNCTION ST_PolygonFromText(text)
 	RETURNS geometry
-	AS 'SELECT PolyFromText($1)'
+	AS 'SELECT ST_PolyFromText($1)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Deprecation in 1.2.3
@@ -4743,8 +4745,8 @@ CREATEFUNCTION MLineFromText(text)
 CREATEFUNCTION ST_MLineFromText(text)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype(GeomFromText($1)) = ''MULTILINESTRING''
-	THEN GeomFromText($1)
+	SELECT CASE WHEN geometrytype(ST_GeomFromText($1)) = ''MULTILINESTRING''
+	THEN ST_GeomFromText($1)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -4752,13 +4754,13 @@ CREATEFUNCTION ST_MLineFromText(text)
 -- Deprecation in 1.2.3
 CREATEFUNCTION MultiLineStringFromText(text)
 	RETURNS geometry
-	AS 'SELECT MLineFromText($1)'
+	AS 'SELECT ST_MLineFromText($1)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Availability: 1.2.2
 CREATEFUNCTION ST_MultiLineStringFromText(text)
 	RETURNS geometry
-	AS 'SELECT MLineFromText($1)'
+	AS 'SELECT ST_MLineFromText($1)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Deprecation in 1.2.3
@@ -4807,8 +4809,8 @@ CREATEFUNCTION MPointFromText(text)
 CREATEFUNCTION ST_MPointFromText(text)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype(GeomFromText($1)) = ''MULTIPOINT''
-	THEN GeomFromText($1)
+	SELECT CASE WHEN geometrytype(ST_GeomFromText($1)) = ''MULTIPOINT''
+	THEN ST_GeomFromText($1)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -4828,7 +4830,7 @@ CREATEFUNCTION MultiPointFromText(text)
 -- Availability: 1.2.2
 CREATEFUNCTION ST_MultiPointFromText(text)
 	RETURNS geometry
-	AS 'SELECT MPointFromText($1)'
+	AS 'SELECT ST_MPointFromText($1)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Deprecation in 1.2.3
@@ -4857,8 +4859,8 @@ CREATEFUNCTION MPolyFromText(text, int4)
 CREATEFUNCTION ST_MPolyFromText(text, int4)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype(GeomFromText($1, $2)) = ''MULTIPOLYGON''
-	THEN GeomFromText($1,$2)
+	SELECT CASE WHEN geometrytype(ST_GeomFromText($1, $2)) = ''MULTIPOLYGON''
+	THEN ST_GeomFromText($1,$2)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -4877,8 +4879,8 @@ CREATEFUNCTION MPolyFromText(text)
 CREATEFUNCTION ST_MPolyFromText(text)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype(GeomFromText($1)) = ''MULTIPOLYGON''
-	THEN GeomFromText($1)
+	SELECT CASE WHEN geometrytype(ST_GeomFromText($1)) = ''MULTIPOLYGON''
+	THEN ST_GeomFromText($1)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -4923,8 +4925,8 @@ CREATEFUNCTION ST_GeomCollFromText(text, int4)
 	RETURNS geometry
 	AS '
 	SELECT CASE
-	WHEN geometrytype(GeomFromText($1, $2)) = ''GEOMETRYCOLLECTION''
-	THEN GeomFromText($1,$2)
+	WHEN geometrytype(ST_GeomFromText($1, $2)) = ''GEOMETRYCOLLECTION''
+	THEN ST_GeomFromText($1,$2)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -4945,8 +4947,8 @@ CREATEFUNCTION ST_GeomCollFromText(text)
 	RETURNS geometry
 	AS '
 	SELECT CASE
-	WHEN geometrytype(GeomFromText($1)) = ''GEOMETRYCOLLECTION''
-	THEN GeomFromText($1)
+	WHEN geometrytype(ST_GeomFromText($1)) = ''GEOMETRYCOLLECTION''
+	THEN ST_GeomFromText($1)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -4972,7 +4974,7 @@ CREATEFUNCTION GeomFromWKB(bytea, int)
 -- PostGIS equivalent function: GeomFromWKB(bytea, int)
 CREATEFUNCTION ST_GeomFromWKB(bytea, int)
 	RETURNS geometry
-	AS 'SELECT setSRID(GeomFromWKB($1), $2)'
+	AS 'SELECT ST_SetSRID(ST_GeomFromWKB($1), $2)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Deprecation in 1.2.3
@@ -4989,8 +4991,8 @@ CREATEFUNCTION PointFromWKB(bytea, int)
 CREATEFUNCTION ST_PointFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''POINT''
-	THEN GeomFromWKB($1, $2)
+	SELECT CASE WHEN geometrytype(ST_GeomFromWKB($1, $2)) = ''POINT''
+	THEN ST_GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -5009,8 +5011,8 @@ CREATEFUNCTION PointFromWKB(bytea)
 CREATEFUNCTION ST_PointFromWKB(bytea)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''POINT''
-	THEN GeomFromWKB($1)
+	SELECT CASE WHEN geometrytype(ST_GeomFromWKB($1)) = ''POINT''
+	THEN ST_GeomFromWKB($1)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -5025,12 +5027,12 @@ CREATEFUNCTION LineFromWKB(bytea, int)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
--- PostGIS equivalent function: LineFromWKB(text, int)
+-- PostGIS equivalent function: LineFromWKB(bytea, int)
 CREATEFUNCTION ST_LineFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''LINESTRING''
-	THEN GeomFromWKB($1, $2)
+	SELECT CASE WHEN geometrytype(ST_GeomFromWKB($1, $2)) = ''LINESTRING''
+	THEN ST_GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -5049,8 +5051,8 @@ CREATEFUNCTION LineFromWKB(bytea)
 CREATEFUNCTION ST_LineFromWKB(bytea)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''LINESTRING''
-	THEN GeomFromWKB($1)
+	SELECT CASE WHEN geometrytype(ST_GeomFromWKB($1)) = ''LINESTRING''
+	THEN ST_GeomFromWKB($1)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -5069,8 +5071,8 @@ CREATEFUNCTION LinestringFromWKB(bytea, int)
 CREATEFUNCTION ST_LinestringFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''LINESTRING''
-	THEN GeomFromWKB($1, $2)
+	SELECT CASE WHEN geometrytype(ST_GeomFromWKB($1, $2)) = ''LINESTRING''
+	THEN ST_GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -5109,8 +5111,8 @@ CREATEFUNCTION PolyFromWKB(bytea, int)
 CREATEFUNCTION ST_PolyFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''POLYGON''
-	THEN GeomFromWKB($1, $2)
+	SELECT CASE WHEN geometrytype(ST_GeomFromWKB($1, $2)) = ''POLYGON''
+	THEN ST_GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -5129,8 +5131,8 @@ CREATEFUNCTION PolyFromWKB(bytea)
 CREATEFUNCTION ST_PolyFromWKB(bytea)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''POLYGON''
-	THEN GeomFromWKB($1)
+	SELECT CASE WHEN geometrytype(ST_GeomFromWKB($1)) = ''POLYGON''
+	THEN ST_GeomFromWKB($1)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -5149,8 +5151,8 @@ CREATEFUNCTION PolygonFromWKB(bytea, int)
 CREATEFUNCTION ST_PolygonFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1,$2)) = ''POLYGON''
-	THEN GeomFromWKB($1, $2)
+	SELECT CASE WHEN geometrytype(ST_GeomFromWKB($1,$2)) = ''POLYGON''
+	THEN ST_GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -5209,8 +5211,8 @@ CREATEFUNCTION MPointFromWKB(bytea)
 CREATEFUNCTION ST_MPointFromWKB(bytea)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''MULTIPOINT''
-	THEN GeomFromWKB($1)
+	SELECT CASE WHEN geometrytype(ST_GeomFromWKB($1)) = ''MULTIPOINT''
+	THEN ST_GeomFromWKB($1)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -5229,8 +5231,8 @@ CREATEFUNCTION MultiPointFromWKB(bytea, int)
 CREATEFUNCTION ST_MultiPointFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1,$2)) = ''MULTIPOINT''
-	THEN GeomFromWKB($1, $2)
+	SELECT CASE WHEN geometrytype(ST_GeomFromWKB($1,$2)) = ''MULTIPOINT''
+	THEN ST_GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -5249,8 +5251,8 @@ CREATEFUNCTION MultiPointFromWKB(bytea)
 CREATEFUNCTION ST_MultiPointFromWKB(bytea)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''MULTIPOINT''
-	THEN GeomFromWKB($1)
+	SELECT CASE WHEN geometrytype(ST_GeomFromWKB($1)) = ''MULTIPOINT''
+	THEN ST_GeomFromWKB($1)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -5289,8 +5291,8 @@ CREATEFUNCTION MultiLineFromWKB(bytea)
 CREATEFUNCTION ST_MultiLineFromWKB(bytea)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''MULTILINESTRING''
-	THEN GeomFromWKB($1)
+	SELECT CASE WHEN geometrytype(ST_GeomFromWKB($1)) = ''MULTILINESTRING''
+	THEN ST_GeomFromWKB($1)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -5309,8 +5311,8 @@ CREATEFUNCTION MLineFromWKB(bytea, int)
 CREATEFUNCTION ST_MLineFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''MULTILINESTRING''
-	THEN GeomFromWKB($1, $2)
+	SELECT CASE WHEN geometrytype(ST_GeomFromWKB($1, $2)) = ''MULTILINESTRING''
+	THEN ST_GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -5329,8 +5331,8 @@ CREATEFUNCTION MLineFromWKB(bytea)
 CREATEFUNCTION ST_MLineFromWKB(bytea)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''MULTILINESTRING''
-	THEN GeomFromWKB($1)
+	SELECT CASE WHEN geometrytype(ST_GeomFromWKB($1)) = ''MULTILINESTRING''
+	THEN ST_GeomFromWKB($1)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -5345,12 +5347,12 @@ CREATEFUNCTION MPolyFromWKB(bytea, int)
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
--- PostGIS equivalent function: MPolyFromWKB(text, int)
+-- PostGIS equivalent function: MPolyFromWKB(bytea, int)
 CREATEFUNCTION ST_MPolyFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''MULTIPOLYGON''
-	THEN GeomFromWKB($1, $2)
+	SELECT CASE WHEN geometrytype(ST_GeomFromWKB($1, $2)) = ''MULTIPOLYGON''
+	THEN ST_GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -5369,8 +5371,8 @@ CREATEFUNCTION MPolyFromWKB(bytea)
 CREATEFUNCTION ST_MPolyFromWKB(bytea)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''MULTIPOLYGON''
-	THEN GeomFromWKB($1)
+	SELECT CASE WHEN geometrytype(ST_GeomFromWKB($1)) = ''MULTIPOLYGON''
+	THEN ST_GeomFromWKB($1)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -5389,8 +5391,8 @@ CREATEFUNCTION MultiPolyFromWKB(bytea, int)
 CREATEFUNCTION ST_MultiPolyFromWKB(bytea, int)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1, $2)) = ''MULTIPOLYGON''
-	THEN GeomFromWKB($1, $2)
+	SELECT CASE WHEN geometrytype(ST_GeomFromWKB($1, $2)) = ''MULTIPOLYGON''
+	THEN ST_GeomFromWKB($1, $2)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -5409,8 +5411,8 @@ CREATEFUNCTION MultiPolyFromWKB(bytea)
 CREATEFUNCTION ST_MultiPolyFromWKB(bytea)
 	RETURNS geometry
 	AS '
-	SELECT CASE WHEN geometrytype(GeomFromWKB($1)) = ''MULTIPOLYGON''
-	THEN GeomFromWKB($1)
+	SELECT CASE WHEN geometrytype(ST_GeomFromWKB($1)) = ''MULTIPOLYGON''
+	THEN ST_GeomFromWKB($1)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -5453,8 +5455,8 @@ CREATEFUNCTION ST_GeomCollFromWKB(bytea)
 	RETURNS geometry
 	AS '
 	SELECT CASE
-	WHEN geometrytype(GeomFromWKB($1)) = ''GEOMETRYCOLLECTION''
-	THEN GeomFromWKB($1)
+	WHEN geometrytype(ST_GeomFromWKB($1)) = ''GEOMETRYCOLLECTION''
+	THEN ST_GeomFromWKB($1)
 	ELSE NULL END
 	'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -5512,14 +5514,14 @@ DECLARE
 	mline geometry;
 	geom geometry;
 BEGIN
-	mline := MultiLineStringFromText(geomtext, srid);
+	mline := ST_MultiLineStringFromText(geomtext, srid);
 
 	IF mline IS NULL
 	THEN
 		RAISE EXCEPTION 'Input is not a MultiLinestring';
 	END IF;
 
-	geom := BuildArea(mline);
+	geom := ST_BuildArea(mline);
 
 	IF GeometryType(geom) != 'POLYGON'
 	THEN
@@ -5577,14 +5579,14 @@ DECLARE
 	mline geometry;
 	geom geometry;
 BEGIN
-	mline := MultiLineStringFromText(geomtext, srid);
+	mline := ST_MultiLineStringFromText(geomtext, srid);
 
 	IF mline IS NULL
 	THEN
 		RAISE EXCEPTION 'Input is not a MultiLinestring';
 	END IF;
 
-	geom := multi(BuildArea(mline));
+	geom := multi(ST_BuildArea(mline));
 
 	RETURN geom;
 END;
