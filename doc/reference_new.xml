@@ -2165,7 +2165,7 @@ CREATE INDEX idx_the_geom_26986_parcels
 			<para><xref linkend="ST_AsEWKB" />, <xref linkend="ST_AsEWKT" />, <xref linkend="ST_AsText" />, <xref linkend="ST_GeomFromEWKB" /></para>
 		  </refsection>
 	</refentry>
-	  <refentry id="ST_AsEWKB">
+	<refentry id="ST_AsEWKB">
 		  <refnamediv>
 			<refname>ST_AsEWKB</refname>
 			<refpurpose>Return the Well-Known Binary (WKB) representation of the geometry with SRID meta data.</refpurpose>
@@ -2287,8 +2287,315 @@ SRID=4326;POLYGON((0 0,0 1,1 1,1 0,0 0))
 			<title>See Also</title>
 			<para><xref linkend="ST_AsBinary" /><xref linkend="ST_AsEWKB" /><xref linkend="ST_AsText" />, <xref linkend="ST_GeomFromEWKT" /></para>
 		  </refsection>
+	</refentry>	
+	<refentry id="ST_AsGeoJson">
+	  <refnamediv>
+		<refname>ST_AsGeoJson</refname>
+	
+		<refpurpose>Return the geometry as a GeoJson element.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>max_decimal_digits</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>max_decimal_digits</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>options</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
+				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
+				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
+				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
+				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>max_decimal_digits</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
+				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
+				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>max_decimal_digits</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>options</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+	
+		  <para>Return the geometry as a GeoJson element. (Cf <ulink
+            url="http://geojson.org/geojson-spec.html">GeoJson
+            specifications 1.0</ulink>). 2D and 3D Geometries are both
+            supported. GeoJson only support SFS 1.1 geometry type (no curve
+            support for example).</para>
+
+            <para>The version parameter, if specified, must be 1.</para>
+
+            <para>The third argument may be used to reduce the maximum number
+            of significant digits used in output (defaults to 15).</para>
+
+            <para>The last 'options' argument could be used to add Bbox or Crs
+            in GeoJSON output:
+              <itemizedlist>
+                <listitem>
+                  <para>0: means no option (default value)</para>
+                </listitem>
+
+                <listitem>
+                  <para>1: GeoJson CRS</para>
+                </listitem>
+
+                <listitem>
+                  <para>2: GeoJson Bbox</para>
+                </listitem>
+
+                <listitem>
+                  <para>3: Both GeoJson Bbox and CRS</para>
+                </listitem>
+              </itemizedlist>
+            GeoJson CRS pattern is: <literal>auth_name:auth_srid</literal>
+            from spatial_ref_sys table (EPSG:4326 for instance).
+            </para>
+			<para>Version 1: ST_AsGeoJson(geom) / precision=15 version=1 options=0</para>
+			<para>Version 2: ST_AsGeoJson(geom, precision) / version=1 options=0</para>
+			<para>Version 3: ST_AsGeoJson(geom, precision, options) / version=1</para>
+			<para>Version 4: ST_AsGeoJson(version, geom) / precision=15 options=0</para>
+			<para>Version 5: ST_AsGeoJson(version, geom, precision) /options=0</para>
+			<para>Version 6: ST_AsGeoJson(version, geom, precision,options)</para>
+			
+			<note><para>Availability: 1.3.4</para></note>
+	  </refsection>
+	
+	  <refsection>
+		<title>Examples</title>
+		<programlisting><!-- TODO:  --></programlisting>
+	  </refsection>
+	</refentry>		
+	<refentry id="ST_AsGML">
+	  <refnamediv>
+		<refname>ST_AsGML</refname>
+		<refpurpose>Return the geometry as a GML version 2 or 3 element.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>text <function>ST_AsGML</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_AsGML</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>max_num_decimal_digits</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_AsGML</function></funcdef>
+				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
+				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>max_num_decimal_digits</parameter></paramdef>
+			</funcprototype>
+			<!-- TODO: itemize other prototypes - 1 more -->
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+	
+        <para>Return the geometry as a Geography Markup Language (GML) element. The version parameter,
+            if specified, may be either 2 or 3. If no version parameter is
+            specified then the default is assumed to be 2. The third argument
+            may be used to reduce the maximum number of significant digits
+            used in output (defaults to 15).</para>
+			
+		<!-- TODO: Itemize defaults for each function -->
+
+		<note>
+		  <para>Availability: 1.3.2</para>
+		</note>
+	  </refsection>
+	
+	  <refsection>
+		<title>Examples</title>
+		<programlisting>SELECT ST_AsGML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
+		
+		st_asgml
+		--------
+		</programlisting>
+	  </refsection>
 	</refentry>
-	  <refentry id="ST_AsText">
+	
+		
+	<refentry id="ST_AsHEXEWKB">
+	  <refnamediv>
+		<refname>ST_AsHEXEWKB</refname>
+	
+		<refpurpose>Returns a Geometry in HEXEWKB format (as text) using either
+            little-endian (NDR) or big-endian (XDR) encoding.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>ST_AsHEXEWKB</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+			<paramdef><type>text </type> <parameter>NDRorXDR</parameter></paramdef>
+		  </funcprototype>
+
+		  <funcprototype>
+			<funcdef>text <function>ST_AsHEXEWKB</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+	
+		<para>Returns a Geometry in HEXEWKB format (as text) using either
+            little-endian (NDR) or big-endian (XDR) encoding.  If no encoding is specified, then NDR is used.</para>
+
+		<note>
+		  <para>Availability: 1.2.2</para>
+		</note>
+	  </refsection>
+	
+	  <refsection>
+		<title>Examples</title>
+		<programlisting>SELECT ST_AsHEXEWKB(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
+		which gives same answer as
+		
+		SELECT ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326)::text;
+		
+		st_ashexewkb
+		--------
+		0103000020E6100000010000000500
+		00000000000000000000000000000000
+		00000000000000000000000000000000F03F
+		000000000000F03F000000000000F03F000000000000F03
+		F000000000000000000000000000000000000000000000000</programlisting>
+	  </refsection>
+	</refentry>
+	
+	<refentry id="ST_AsKML">
+	  <refnamediv>
+		<refname>ST_AsKML</refname>
+	
+		<refpurpose>Return the geometry as a KML element. Second argument may be
+            used to reduce the maximum number of significant digits used in
+            output (defaults to 15).</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>text <function>ST_AsKML</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_AsKML</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>max_num_decimal_digits</parameter></paramdef>
+			</funcprototype>
+			<!-- TODO: itemize other prototypes - 3 more -->
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+	
+		<para>Return the geometry as a Keyhole Markup Language (KML) element. Second argument may be
+            used to reduce the maximum number of significant digits used in
+            output (defaults to 15).</para>
+			
+		<!-- TODO: Itemize defaults for each function -->
+
+		<note>
+		  <para>Availability: 1.2.2 - later variants that include version param came in 1.3.2</para>
+		</note>
+	  </refsection>
+	
+	  <refsection>
+		<title>Examples</title>
+		<programlisting>SELECT ST_AsKML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
+		
+		st_askml
+		--------
+		<literal><Polygon>
+			<outerBoundaryIs>
+				<LinearRing><coordinates>0,0 0,1 1,1 1,0 0,0</coordinates></LinearRing>
+			</outerBoundaryIs>
+			</Polygon>
+		</literal>
+		</programlisting>
+	  </refsection>
+	</refentry>
+	<refentry id="ST_AsSVG">
+	  <refnamediv>
+		<refname>ST_AsSVG</refname>
+	
+		<refpurpose>Returns a Geometry in SVG path data.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>text <function>ST_AsSVG</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_AsSVG</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>rel</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_AsSVG</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>rel</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>maxdecimaldigits</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+	
+		<para>Return the geometry as Scalar Vector Graphics (SVG) path data. Use 1 as second
+            argument to have the path data implemented in terms of relative
+            moves, the default (or 0) uses absolute moves. Third argument may
+            be used to reduce the maximum number of decimal digits used in
+            output (defaults to 15). Point geometries will be rendered as
+            cx/cy when 'rel' arg is 0, x/y when 'rel' is 1. Multipoint
+            geometries are delimited by commas (","), GeometryCollection
+            geometries are delimited by semicolons (";").</para>
+
+		<note>
+		  <para>Availability: 1.2.2</para>
+		</note>
+	  </refsection>
+	
+	  <refsection>
+		<title>Examples</title>
+		<programlisting>SELECT ST_AsSVG(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
+		
+		st_assvg
+		--------
+		M 0 0 0 -1 1 -1 1 0 Z</programlisting>
+	  </refsection>
+	</refentry>
+	<refentry id="ST_AsText">
 		  <refnamediv>
 			<refname>ST_AsText</refname>
 			<refpurpose>Return the Well-Known Text (WKT) representation of the geometry without SRID metadata.</refpurpose>
