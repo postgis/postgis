@@ -41,3 +41,4 @@ code { border-right-style: solid; border-right-color: #79791a; border-left-color
 .sect3 { margin-top: 30px; }
 .caption p {font-style: italic; font-size: 90%;}
 .remark { background: #ffff00; }
+.equation {font-style: italic; font-size: 90%;}

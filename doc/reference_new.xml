@@ -2596,16 +2596,11 @@ st_area
 
       <para>In mathematical terms, this is expressed as :</para>
 
-      <remark>TODO: replace this with a MathML equivalent</remark>
+      <para>
+        <equation>a.Crosses(b) &hArr; (dim(I(a) &cap; I(b)) &lt; max(dim(I(a)),dim(I(b))) 
+        &and; (a &cup; b &ne; a) &and; (a &cup; b &ne; b)</equation>
+      </para>
       
-      <informalfigure>
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/st_crosses-math.gif" />
-          </imageobject>
-        </mediaobject>
-      </informalfigure>
-
       <para>The DE-9IM Intersection Matrix for the two geometries is:</para>
 
       <itemizedlist>
