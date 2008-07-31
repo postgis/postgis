@@ -2594,7 +2594,7 @@ st_area
       geometries must not equal either of the source geometries. Otherwise, it
       returns <varname>FALSE</varname>.</para>
 
-      <para>In mathematical terms, this is expressed as :</para>
+      <para>In mathematical terms, this is expressed as:</para>
 
       <para>
         <equation>a.Crosses(b) &hArr; (dim(I(a) &cap; I(b)) &lt; max(dim(I(a)),dim(I(b))) 
@@ -2628,7 +2628,7 @@ st_area
         Area/Line situations as well. This makes the relation
         symmetric.</para>
 
-    <important>
+      <important>
         <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
       </important>
     </refsection>
@@ -2772,9 +2772,11 @@ WHERE ST_Crosses(roads.the_geom, highways.the_geom);</programlisting>
 			<para>Overlaps, Touches, Within all imply geometries are not spatially disjoint.  If any of the aforementioned
 				returns true, then the geometries are not spatially disjoint.  
 				Disjoint implies false for spatial intersection.</para>
-			<para><inlinegraphic class="sfs_compliant" fileref="images/warning.png" />
-				Do not call with a GeometryCollection as an argument
-			</para>
+				
+      <important>
+        <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
+      </important>
+      
 			<para>Performed by the GEOS module</para>
 			<note>
 			  <para>This function call does not use indexes</para>
@@ -3049,9 +3051,11 @@ SELECT ST_Equals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
 			<para>Overlaps, Touches, Within all imply spatial intersection.  If any of the aforementioned
 				returns true, then the geometries also spatially intersect.  
 				Disjoint implies false for spatial intersection.</para>
-			<para><inlinegraphic class="sfs_compliant" fileref="images/warning.png" />
-				Do not call with a GeometryCollection as an argument
-			</para>
+
+      <important>
+        <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
+      </important>
+      
 			<para>Performed by the GEOS module</para>
 			<note>
 			  <para>This function call will automatically include a bounding box
@@ -3366,6 +3370,93 @@ SELECT ST_AsText(ST_PointOnSurface('POLYGON((0 0, 0 5, 5 5, 5 0, 0 0))'::geometr
       </refsection>
     </refentry>
 	
+    <refentry id="ST_Touches">
+      <refnamediv>
+        <refname>ST_Touches</refname>
+
+        <refpurpose>Returns <varname>TRUE</varname> if the geometries have at least one point in common, 
+        but their interiors do not intersect.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>boolean <function>ST_Touches</function></funcdef>
+
+            <paramdef><type>geometry </type>
+            <parameter>g1</parameter></paramdef>
+
+            <paramdef><type>geometry </type>
+            <parameter>g2</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Returns <varname>TRUE</varname> if the only points in common between 
+        <parameter>g1</parameter> and <parameter>g2</parameter> lie in the union of the 
+        boundaries of <parameter>g1</parameter> and <parameter>g2</parameter>.
+        The <function>ST_Touches</function> relation applies 
+        to all Area/Area, Line/Line, Line/Area, Point/Area and Point/Line pairs of relationships, 
+        but <emphasis>not</emphasis> to the Point/Point pair.</para>
+
+        <para>In mathematical terms, this predicate is expressed as:</para>
+        
+        <para>
+          <equation>a.Touches(b) &hArr; (I(a) &cap; I(b) = &empty;) &and; (a &cup; b &ne; &empty;)</equation>
+        </para>
+        
+        <para>The allowable DE-9IM Intersection Matrices for the two geometries are:</para>
+        
+        <itemizedlist>
+          <listitem>
+            <para><markup>FT*******</markup></para>
+          </listitem>
+        
+          <listitem>
+            <para><markup>F**T*****</markup></para>
+          </listitem>
+        
+          <listitem>
+            <para><markup>F***T****</markup></para>
+          </listitem>
+        </itemizedlist>
+        
+        <important>
+          <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
+        </important>
+        
+        <note>
+          <para>This function call will automatically include a bounding box
+          comparison that will make use of any indexes that are available on
+          the geometries.  To avoid using an index, use <function>_ST_Touches</function> instead.</para>
+        </note>
+      
+        <para><inlinemediaobject>
+            <imageobject>
+              <imagedata fileref="images/check.png" />
+            </imageobject>
+          </inlinemediaobject> This method implements the <ulink
+        url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple
+        Features Implementation Specification for SQL: 2.1.1.2, 2.1.13.3</ulink></para>
+
+        <para><inlinemediaobject>
+            <imageobject>
+              <imagedata fileref="images/check.png" />
+            </imageobject>
+          </inlinemediaobject> This method implements the SQL/MM
+        specification: SQL-MM 3: 5.1.28</para>
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+
+        <programlisting>Forthcoming...</programlisting>
+      </refsection>
+    </refentry>
+    
     <refentry id="ST_Within">
       <refnamediv>
         <refname>ST_Within</refname>
@@ -3397,7 +3488,9 @@ SELECT ST_AsText(ST_PointOnSurface('POLYGON((0 0, 0 5, 5 5, 5 0, 0 0))'::geometr
 	
         <para>Performed by the GEOS module</para>
 
-        <note><para>Do not call with a GeometryCollection as an argument</para></note>
+        <important>
+          <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
+        </important>
 
         <para>This function call will automatically include a bounding box
             comparison that will make use of any indexes that are available on
