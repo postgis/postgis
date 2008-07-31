@@ -1241,6 +1241,7 @@ GROUP BY gid, field1,field2;
             GeoJson CRS pattern is: <literal>auth_name:auth_srid</literal>
             from spatial_ref_sys table (EPSG:4326 for instance).
             </para>
+			<para>Availability: 1.3.4</para>
           </listitem>
         </varlistentry>
       </variablelist>
