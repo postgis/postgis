@@ -3405,7 +3405,7 @@ SELECT ST_AsText(ST_PointOnSurface('POLYGON((0 0, 0 5, 5 5, 5 0, 0 0))'::geometr
         <para>In mathematical terms, this predicate is expressed as:</para>
         
         <para>
-          <equation>a.Touches(b) &hArr; (I(a) &cap; I(b) = &empty;) &and; (a &cup; b &ne; &empty;)</equation>
+          <equation>a.Touches(b) &hArr; (I(a) &cap; I(b) = &empty;) &and; (a &cap; b &ne; &empty;)</equation>
         </para>
         
         <para>The allowable DE-9IM Intersection Matrices for the two geometries are:</para>
