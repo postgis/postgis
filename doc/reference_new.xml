@@ -2533,12 +2533,7 @@ SRID=4326;POLYGON((0 0,0 1,1 1,1 0,0 0))
 		
 		st_askml
 		--------
-		<literal><Polygon>
-			<outerBoundaryIs>
-				<LinearRing><coordinates>0,0 0,1 1,1 1,0 0,0</coordinates></LinearRing>
-			</outerBoundaryIs>
-			</Polygon>
-		</literal>
+		
 		</programlisting>
 	  </refsection>
 	</refentry>
