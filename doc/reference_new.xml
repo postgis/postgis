@@ -2968,7 +2968,7 @@ st_area
                       <imagedata fileref="images/st_crosses01.gif" />
                     </imageobject>
 
-                    <caption><para>MultiPoint / LineString</para></caption>
+                    <caption><para><varname>MULTIPOINT</varname> / <varname>LINESTRING</varname></para></caption>
                   </mediaobject>
                 </informalfigure></para></entry>
 
@@ -2978,7 +2978,7 @@ st_area
                       <imagedata fileref="images/st_crosses02.gif" />
                     </imageobject>
 
-                    <caption><para>MultiPoint / Polygon</para></caption>
+                    <caption><para><varname>MULTIPOINT</varname> / <varname>POLYGON</varname></para></caption>
                   </mediaobject>
                 </informalfigure></para></entry>
             </row>
@@ -2990,7 +2990,7 @@ st_area
                       <imagedata fileref="images/st_crosses03.gif" />
                     </imageobject>
 
-                    <caption><para>LineString / Polygon</para></caption>
+                    <caption><para><varname>LINESTRING</varname> / <varname>POLYGON</varname></para></caption>
                   </mediaobject>
                 </informalfigure></para></entry>
 
@@ -3000,7 +3000,7 @@ st_area
                       <imagedata fileref="images/st_crosses04.gif" />
                     </imageobject>
 
-                    <caption><para>LineString / LineString</para></caption>
+                    <caption><para><varname>LINESTRING</varname> / <varname>LINESTRING</varname></para></caption>
                   </mediaobject>
                 </informalfigure></para></entry>
             </row>
@@ -3755,7 +3755,87 @@ SELECT ST_AsText(ST_PointOnSurface('POLYGON((0 0, 0 5, 5 5, 5 0, 0 0))'::geometr
       <refsection>
         <title>Examples</title>
 
-        <programlisting>Forthcoming...</programlisting>
+        <para>The <function>ST_Touches</function> returns <varname>TRUE</varname> in all the following illustrations.</para>
+        <informaltable>
+          <tgroup cols="3">
+            <tbody>
+              <row>
+                <entry><para><informalfigure>
+                    <mediaobject>
+                      <imageobject>
+                        <imagedata fileref="images/st_touches01.png" />
+                      </imageobject>
+        
+                      <caption><para><varname>POLYGON</varname> / <varname>POLYGON</varname></para></caption>
+                    </mediaobject>
+                  </informalfigure></para></entry>
+        
+                <entry><para><informalfigure>
+                    <mediaobject>
+                      <imageobject>
+                        <imagedata fileref="images/st_touches02.png" />
+                      </imageobject>
+        
+                      <caption><para><varname>POLYGON</varname> / <varname>POLYGON</varname></para></caption>
+                    </mediaobject>
+                  </informalfigure></para></entry>
+                  
+                <entry><para><informalfigure>
+                    <mediaobject>
+                      <imageobject>
+                        <imagedata fileref="images/st_touches03.png" />
+                      </imageobject>
+        
+                      <caption><para><varname>POLYGON</varname> / <varname>LINESTRING</varname></para></caption>
+                    </mediaobject>
+                  </informalfigure></para></entry>
+              </row>
+              <row>
+                <entry><para><informalfigure>
+                    <mediaobject>
+                      <imageobject>
+                        <imagedata fileref="images/st_touches04.png" />
+                      </imageobject>
+        
+                      <caption><para><varname>LINESTRING</varname> / <varname>LINESTRING</varname></para></caption>
+                    </mediaobject>
+                  </informalfigure></para></entry>
+        
+                <entry><para><informalfigure>
+                    <mediaobject>
+                      <imageobject>
+                        <imagedata fileref="images/st_touches05.png" />
+                      </imageobject>
+        
+                      <caption><para><varname>LINESTRING</varname> / <varname>LINESTRING</varname></para></caption>
+                    </mediaobject>
+                  </informalfigure></para></entry>
+                  
+                <entry><para><informalfigure>
+                    <mediaobject>
+                      <imageobject>
+                        <imagedata fileref="images/st_touches06.png" />
+                      </imageobject>
+        
+                      <caption><para><varname>POLYGON</varname> / <varname>POINT</varname></para></caption>
+                    </mediaobject>
+                  </informalfigure></para></entry>
+              </row>              
+            </tbody>
+          </tgroup>
+        </informaltable>
+      
+        <programlisting>SELECT ST_Touches('LINESTRING(0 0, 1 1, 0 2)'::geometry, 'POINT(1 1)'::geometry);
+ st_touches 
+------------
+ f
+(1 row)
+
+SELECT ST_Touches('LINESTRING(0 0, 1 1, 0 2)'::geometry, 'POINT(0 2)'::geometry);
+ st_touches 
+------------
+ t
+(1 row)</programlisting>
       </refsection>
     </refentry>
     
