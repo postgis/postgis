@@ -2898,10 +2898,16 @@ st_area
 
       <para>In mathematical terms, this is expressed as:</para>
 
-      <para>
-        <equation>a.Crosses(b) &hArr; (dim(I(a) &cap; I(b)) &lt; max(dim(I(a)),dim(I(b))) 
-        &and; (a &cup; b &ne; a) &and; (a &cup; b &ne; b)</equation>
-      </para>
+      <remark>TODO: Insert appropriate MathML markup here or use a gif.  
+      Simple HTML markup does not work well in both IE and Firefox.</remark>
+      
+      <informalfigure>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/st_crosses-math.gif" />
+          </imageobject>
+        </mediaobject>
+      </informalfigure>
       
       <para>The DE-9IM Intersection Matrix for the two geometries is:</para>
 
@@ -3706,9 +3712,16 @@ SELECT ST_AsText(ST_PointOnSurface('POLYGON((0 0, 0 5, 5 5, 5 0, 0 0))'::geometr
 
         <para>In mathematical terms, this predicate is expressed as:</para>
         
-        <para>
-          <equation>a.Touches(b) &hArr; (I(a) &cap; I(b) = &empty;) &and; (a &cap; b &ne; &empty;)</equation>
-        </para>
+        <remark>TODO: Insert appropriate MathML markup here or use a gif.  
+        Simple HTML markup does not work well in both IE and Firefox.</remark>
+      
+        <informalfigure>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/st_touches-math.gif" />
+            </imageobject>
+          </mediaobject>
+        </informalfigure>
         
         <para>The allowable DE-9IM Intersection Matrices for the two geometries are:</para>
         
