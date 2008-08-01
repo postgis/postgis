@@ -3755,7 +3755,7 @@ SELECT ST_AsText(ST_PointOnSurface('POLYGON((0 0, 0 5, 5 5, 5 0, 0 0))'::geometr
       <refsection>
         <title>Examples</title>
 
-        <para>The <function>ST_Touches</function> returns <varname>TRUE</varname> in all the following illustrations.</para>
+        <para>The <function>ST_Touches</function> predicate returns <varname>TRUE</varname> in all the following illustrations.</para>
         <informaltable>
           <tgroup cols="3">
             <tbody>
