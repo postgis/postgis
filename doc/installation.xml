@@ -13,7 +13,7 @@
         <para>A complete installation of PostgreSQL (including server
         headers). PostgreSQL is available from <ulink
         url="http://www.postgresql.org">http://www.postgresql.org</ulink>.
-        Version 7.2 or higher is required.</para>
+        Version 8.1 or higher is required.</para>
       </listitem>
 
       <listitem>
@@ -32,19 +32,25 @@
       </listitem>
 
       <listitem>
-        <para>(Recommended) Proj4 reprojection library. The Proj4 library is
+        <para>Proj4 reprojection library. The Proj4 library is
         used to provide coordinate reprojection support within PostGIS. Proj4
         is available for download from <ulink
         url="http://www.remotesensing.org/proj">http://www.remotesensing.org/proj</ulink>.</para>
       </listitem>
 
       <listitem>
-        <para>(Recommended) GEOS geometry library. The GEOS library is used to
+        <para>GEOS geometry library. The GEOS library is used to
         provide geometry tests (ST_Touches(), ST_Contains(), ST_Intersects())
         and operations (ST_Buffer(), ST_Union(), ST_Difference()) within
         PostGIS. GEOS is available for download from <ulink
         url="http://geos.refractions.net">http://geos.refractions.net</ulink>.</para>
       </listitem>
+
+      <listitem>
+        <para>(Recommended) Apache Ant (<filename>ant</filename>). Required for 
+        building any of the drivers under the <filename>java</filename> directory.</para>
+      </listitem>
+
     </itemizedlist>
   </sect1>
 
@@ -58,7 +64,7 @@
     url="http://www.postgresql.org">http://www.postgresql.org</ulink>.</para>
 
     <para>PostGIS &last_release_version; can be built against PostgreSQL
-    versions 7.2.0 or higher. Earlier versions of PostgreSQL are
+    versions 8.1.0 or higher. Earlier versions of PostgreSQL are
     <emphasis>not</emphasis> supported.</para>
 
     <orderedlist>
@@ -93,17 +99,25 @@
 
         <itemizedlist>
           <listitem>
-            <para>If you want support for coordinate reprojection, you must
-            have the Proj4 library installed. If ./configure didn't find it,
-            try using <code>--with-proj=PATH</code> switch specify a specific
+            <para>PostgreSQL provides a utility called <filename>pg_config</filename> to enable
+            extensions like PostGIS to locate the PostgreSQL installation directory.
+            If ./configure didn't find <filename>pg_config</filename>,
+            try using the <code>--with-pgconfig=/path/to/pg_config</code> switch specify a specific
+            PostgreSQL installation.</para>
+          </listitem>
+
+          <listitem>
+            <para>Proj4 is now required in order to build and use PostGIS.
+            If ./configure didn't find the Proj4 library,
+            try using the <code>--with-projdir=/path/to/projdir</code> switch specify a specific
             Proj4 installation directory.</para>
           </listitem>
 
           <listitem>
-            <para>If you want to use GEOS functionality, you must have the
-            GEOS library installed. If ./configure didn't find it, try using
-            <code>--with-geos=PATH</code> to specify the full path to the
-            geos-config program full path.</para>
+            <para>GEOS is now required in order to build and use PostGIS.
+            If ./configure didn't find it, try using the 
+            <code>--with-geosconfig=/path/to/geos-config</code> switch to specify the full path 
+            to the geos-config program.</para>
           </listitem>
         </itemizedlist>
       </listitem>
@@ -293,23 +307,12 @@ newdb=&gt; \i spatial_ref_sys.sql</programlisting>
 
       <orderedlist>
         <listitem>
-          <para>It is easiest if you untar the PostGIS distribution into the
-          contrib directory under the PostgreSQL source tree. However, if this
-          is not possible for some reason, you can set the
-          <varname>PGSQL_SRC</varname> environment variable to the path to the
-          PostgreSQL source directory. This will allow you to compile PostGIS,
-          but the <command>make install</command> may not work, so be prepared
-          to copy the PostGIS library and executable files to the appropriate
-          locations yourself.</para>
-        </listitem>
-
-        <listitem>
-          <para>Check that you you have installed PostgreSQL 7.2 or newer, and
+          <para>Check that you you have installed PostgreSQL 8.1 or newer, and
           that you are compiling against the same version of the PostgreSQL
           source as the version of PostgreSQL that is running. Mix-ups can
           occur when your (Linux) distribution has already installed
           PostgreSQL, or you have otherwise installed PostgreSQL before and
-          forgotten about it. PostGIS will only work with PostgreSQL 7.2 or
+          forgotten about it. PostGIS will only work with PostgreSQL 8.1 or
           newer, and strange, unexpected error messages will result if you use
           an older version. To check the version of PostgreSQL which is
           running, connect to the database using psql and run this
@@ -324,23 +327,15 @@ newdb=&gt; \i spatial_ref_sys.sql</programlisting>
         </listitem>
       </orderedlist>
 
-      <para>Also check that you have made any necessary changes to the top of
-      the Makefile.config. This includes:</para>
+      <para>Also check that configure has correctly detected the location and 
+      version of PostgreSQL, the Proj4 library and the GEOS library.</para>
 
       <orderedlist>
         <listitem>
-          <para>If you want to be able to do coordinate reprojections, you
-          must install the Proj4 library on your system, set the
-          <varname>USE_PROJ</varname> variable to 1 and the
-          <varname>PROJ_DIR</varname> to your installation prefix in the
-          Makefile.config.</para>
-        </listitem>
-
-        <listitem>
-          <para>If you want to be able to use GEOS functions you must install
-          the GEOS library on your system, and set the
-          <varname>USE_GEOS</varname> to 1 and the <varname>GEOS_DIR</varname>
-          to your installation prefix in the Makefile.config</para>
+          <para>The output from configure is used to generate the
+          <filename>postgis_config.h</filename> file. Check that the 
+          <varname>POSTGIS_PGSQL_VERSION</varname>, <varname>POSTGIS_PROJ_VERSION</varname>
+          and <varname>POSTGIS_GEOS_VERSION</varname> variables have been set correctly.</para>
         </listitem>
       </orderedlist>
     </sect2>
@@ -356,22 +351,26 @@ newdb=&gt; \i spatial_ref_sys.sql</programlisting>
 
     <orderedlist>
       <listitem>
-        <para>Enter the <filename>jdbc</filename> sub-directory of the PostGIS
+        <para>Enter the <filename>java/jdbc</filename> sub-directory of the PostGIS
         distribution.</para>
       </listitem>
 
       <listitem>
-        <para>Edit the <filename>Makefile</filename> to provide the correct
-        paths of your java compiler (<varname>JAVAC</varname>) and interpreter
-        (<varname>JAVA</varname>).</para>
-      </listitem>
-
-      <listitem>
-        <para>Run the <filename>make</filename> command. Copy the
+        <para>Run the <filename>ant</filename> command. Copy the
         <filename>postgis.jar</filename> file to wherever you keep your java
         libraries.</para>
       </listitem>
     </orderedlist>
+
+    <para>The JDBC extensions require a PostgreSQL JDBC driver to be present in
+    the current CLASSPATH during the build process. If the PostgreSQL JDBC driver
+    is located elsewhere, you may pass the location of the JDBC driver JAR separately
+    using the -D parameter like this:</para>
+
+    <programlisting># ant -Dclasspath=/path/to/postgresql-jdbc.jar</programlisting>
+
+    <para>PostgreSQL JDBC drivers be downloaded from 
+    <ulink url="http://jdbc.postgresql.org">http://jdbc.postgresql.org</ulink>.</para> 
   </sect1>
 
   <sect1>
