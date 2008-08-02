@@ -48,7 +48,7 @@
 
       <listitem>
         <para>(Recommended) Apache Ant (<filename>ant</filename>). Required for 
-        building any of the drivers under the <filename>java</filename> directory.</para>
+        building any of the drivers under the <filename>java</filename> directory. Ant is available for download from <ulink url="http://ant.apache.org">http://ant.apache.org</ulink>.</para>
       </listitem>
 
     </itemizedlist>
@@ -102,14 +102,14 @@
             <para>PostgreSQL provides a utility called <filename>pg_config</filename> to enable
             extensions like PostGIS to locate the PostgreSQL installation directory.
             If ./configure didn't find <filename>pg_config</filename>,
-            try using the <code>--with-pgconfig=/path/to/pg_config</code> switch specify a specific
+            try using the <code>--with-pgconfig=/path/to/pg_config</code> switch to specify a particular 
             PostgreSQL installation.</para>
           </listitem>
 
           <listitem>
             <para>Proj4 is now required in order to build and use PostGIS.
             If ./configure didn't find the Proj4 library,
-            try using the <code>--with-projdir=/path/to/projdir</code> switch specify a specific
+            try using the <code>--with-projdir=/path/to/projdir</code> switch to specify an alternative
             Proj4 installation directory.</para>
           </listitem>
 
@@ -117,7 +117,7 @@
             <para>GEOS is now required in order to build and use PostGIS.
             If ./configure didn't find it, try using the 
             <code>--with-geosconfig=/path/to/geos-config</code> switch to specify the full path 
-            to the geos-config program.</para>
+            to the <filename>geos-config</filename> program.</para>
           </listitem>
         </itemizedlist>
       </listitem>
