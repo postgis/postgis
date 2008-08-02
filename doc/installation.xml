@@ -369,7 +369,7 @@ newdb=&gt; \i spatial_ref_sys.sql</programlisting>
 
     <programlisting># ant -Dclasspath=/path/to/postgresql-jdbc.jar</programlisting>
 
-    <para>PostgreSQL JDBC drivers be downloaded from 
+    <para>PostgreSQL JDBC drivers can be downloaded from 
     <ulink url="http://jdbc.postgresql.org">http://jdbc.postgresql.org</ulink>.</para> 
   </sect1>
 
