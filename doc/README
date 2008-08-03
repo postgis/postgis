@@ -8,7 +8,7 @@ convert to chunked html, single file html and pdf.
 Rules are:
 
 	make html # output in html/postgis.html
-	make chuncked-html
+	make chunked-html
 	make postgis.pdf
 
 ====================================================

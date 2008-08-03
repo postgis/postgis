@@ -11,7 +11,7 @@
       <answer>
         <para>You can store point, line, polygon, multipoint, multiline,
         multipolygon, and geometrycollections. These are specified in the Open
-        GIS Well Known Text Format (with XYZ,XYM,XYZM extentions).</para>
+        GIS Well Known Text Format (with XYZ,XYM,XYZM extensions).</para>
       </answer>
     </qandaentry>
 
@@ -185,8 +185,8 @@ AND
         suggested that you do use <varname>AddGeometryColumn()</varname> to
         create geometry tables.</para>
 
-        <para>Mapserver is one application which makes use of the
-        <varname>geometry_columns</varname> meta-data. Specifically, Mapserver
+        <para>MapServer is one application which makes use of the
+        <varname>geometry_columns</varname> meta-data. Specifically, MapServer
         can use the SRID of the geometry column to do on-the-fly reprojection
         of features into the correct map projection.</para>
       </answer>

@@ -126,14 +126,14 @@ Installation paths will typically be derived by ``pg_config'':
 Where [prefix] above is extracted by `pg_config --configure`.
 
 You can change them using ./configure switches.
-See CONFIGURARION section.
+See CONFIGURATION section.
 
 CREATING NEW SPATIAL DATABASES
 ------------------------------
 
 PostGIS support must be enabled for each database that requires
 its usage. This is done by feeding the lwpostgis.sql (the enabler script)
-file to the targed database. 
+file to the target database. 
 
 The enabler script requires the PL/pgSQL procedural language in order
 to operate correctly, you can use the 'createlang' program from the

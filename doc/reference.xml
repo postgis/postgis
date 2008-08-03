@@ -98,7 +98,7 @@
 
             <para>Refer to
             http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html
-            for an explaination of the need of this function.</para>
+            for an explanation of the need of this function.</para>
           </listitem>
         </varlistentry>
 
@@ -366,7 +366,7 @@ ST_Dimension
           <term>ST_GeometryN(geometry,nth integer)</term>
 
           <listitem>
-            <para>Return the N'th geometry if the geometry is a
+            <para>Return the Nth geometry if the geometry is a
             GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING or MULTIPOLYGON.
             Otherwise, return NULL.</para>
 
@@ -391,7 +391,7 @@ ST_Dimension
           <term>ST_PointN(geometry,nth integer)</term>
 
           <listitem>
-            <para>Return the N'th point in the first linestring in the
+            <para>Return the Nth point in the first linestring in the
             geometry. Return NULL if there is no linestring in the
             geometry.</para>
 
@@ -460,7 +460,7 @@ GROUP BY gid, field1,field2;
           <term>ST_InteriorRingN(geometry,nth integer)</term>
 
           <listitem>
-            <para>Return the N'th interior ring of the polygon geometry.
+            <para>Return the Nth interior ring of the polygon geometry.
             Return NULL if the geometry is not a polygon or the given N is out
             of range.</para>
 
@@ -1080,7 +1080,7 @@ GROUP BY gid, field1,field2;
           <term>ST_length_spheroid(geometry,spheroid)</term>
 
           <listitem>
-            <para>Calculates the length of of a geometry on an ellipsoid. This
+            <para>Calculates the length of a geometry on an ellipsoid. This
             is useful if the coordinates of the geometry are in
             latitude/longitude and a length is desired without reprojection.
             The ellipsoid is a separate database type and can be constructed
@@ -1105,7 +1105,7 @@ GROUP BY gid, field1,field2;
           <term>ST_length3d_spheroid(geometry,spheroid)</term>
 
           <listitem>
-            <para>Calculates the length of of a geometry on an ellipsoid,
+            <para>Calculates the length of a geometry on an ellipsoid,
             taking the elevation into account. This is just like
             length_spheroid except vertical coordinates (expressed in the same
             units as the spheroid axes) are used to calculate the extra

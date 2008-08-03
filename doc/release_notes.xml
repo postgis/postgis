@@ -40,7 +40,7 @@
 
       <para>This release provides performance enhancements to the relational
       functions, adds new relational functions and begins the migration of our
-      function names to the SQL-MM convension, using the spatial type (SP)
+      function names to the SQL-MM convention, using the spatial type (SP)
       prefix.</para>
 
       <simplesect>
@@ -71,7 +71,7 @@
         <para>Extended curved geometry support into the geometry accessor and
         some processing functions</para>
 
-        <para>Began migration of functions to the SQL-MM naming convension;
+        <para>Began migration of functions to the SQL-MM naming convention;
         using a spatial type (ST) prefix.</para>
 
         <para>Added initial support for PostgreSQL 8.3</para>
