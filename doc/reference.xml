@@ -556,33 +556,6 @@ GROUP BY gid, field1,field2;
 
       <variablelist>
         <varlistentry>
-			<term>ST_GeomFromText(text)</term>
-			<term>ST_GeomFromText(text,srid integer)</term>
-
-          <listitem>
-            <para>Makes a Geometry from WKT with the given SRID. If no SRID is passed in SRID is unknown (-1 currently).</para>
-
-            <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
-            suite</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-			<term>ST_PointFromText(text)</term>
-          <term>ST_PointFromText(text,srid integer)</term>
-
-          <listitem>
-            <para>Makes a Geometry from WKT with the given SRID. If SRID is
-            not give, it defaults to -1.</para>
-
-            <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
-            suite</para>
-
-            <para>Throws an error if the WKT is not a Point</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
 			<term>ST_LineFromText(text)</term>
 			<term>ST_LineFromText(text,srid integer)</term>
 
@@ -1157,15 +1130,6 @@ GROUP BY gid, field1,field2;
       <title>Geometry Constructors</title>
 
       <variablelist>
-        <varlistentry>
-          <term>ST_MakePoint(&lt;x&gt;, &lt;y&gt;, [&lt;z&gt;],
-          [&lt;m&gt;])</term>
-
-          <listitem>
-            <para>Creates a 2d,3dz or 4d point geometry.</para>
-          </listitem>
-        </varlistentry>
-
         <varlistentry>
           <term>ST_MakePointM(&lt;x&gt;, &lt;y&gt;, &lt;m&gt;)</term>
 

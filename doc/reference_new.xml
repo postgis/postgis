@@ -1193,7 +1193,8 @@ SELECT ST_GeomFromEWKT('SRID=4269;MULTIPOLYGON(((-71.1031880899493 42.3152774590
 				</imageobject>
 			  </inlinemediaobject> This method implements the <ulink
 			url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
-			Implementation Specification for SQL.</ulink></para>
+			Implementation Specification for SQL. 
+			OGC SPEC 3.2.6.2 - option SRID is from the conformance suite.</ulink></para>
 			<para><inlinemediaobject>
 				<imageobject>
 				  <imagedata fileref="images/check.png" />
@@ -1302,6 +1303,83 @@ SELECT userpoints.id, ST_MakeLine(startpoint, endpoint) As drawn_line
 			</programlisting>
 		</refsection>
 	</refentry>
+	        <varlistentry>
+          <term>ST_MakePoint(&lt;x&gt;, &lt;y&gt;, [&lt;z&gt;],
+          [&lt;m&gt;])</term>
+
+          <listitem>
+            <para>Creates a 2d,3dz or 4d point geometry.</para>
+          </listitem>
+        </varlistentry>
+		
+<refentry id="ST_MakePoint">
+		<refnamediv>
+		<refname>ST_MakePoint</refname>
+		
+		<refpurpose>Creates a 2d,3dz or 4d point geometry.</refpurpose>
+		</refnamediv>
+		
+		<refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_MakePoint</function></funcdef>
+			<paramdef><type>float</type> <parameter>x</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>y</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_MakePoint</function></funcdef>
+			<paramdef><type>float</type> <parameter>x</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>y</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>z</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_MakePoint</function></funcdef>
+			<paramdef><type>float</type> <parameter>x</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>y</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>z</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>m</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+		</refsynopsisdiv>
+		
+		<refsection>
+			<title>Description</title>
+			
+			<para>>Creates a 2d,3dz or 4d point geometry (geometry with measure).  ST_MakePoint while not being
+			OGC compliant is generally faster and more precise than ST_GeomFromText and ST_PointFromText.  It is also easier
+			to use if you have raw coordinates rather than WKT.</para>
+			<para><note>Note x is longitude and y is latitude</note></para>
+		</refsection>
+		
+		<refsection>
+		<title>Examples</title>		
+		 <programlisting>
+--Return point with unknown SRID
+SELECT ST_MakePoint(-71.1043443253471, 42.3150676015829);
+
+--Return point marked as WGS 84 long lat
+SELECT ST_SetSRID(ST_MakePoint(-71.1043443253471, 42.3150676015829),4326);
+
+--Return a 3d point (e.g. has altitude)
+SELECT ST_MakePoint(1, 2,1.5);
+
+--Get z of point
+SELECT ST_Z(ST_MakePoint(1, 2,1.5)); 
+result
+-------
+1.5
+			  </programlisting>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_GeomFromText" />, <xref linkend="ST_PointFromText" />, <xref linkend="ST_SetSRID" /></para>
+		</refsection>
+	</refentry>	
+
 	
 	<refentry id="ST_MakePolygon">
 		<refnamediv>
@@ -1409,6 +1487,75 @@ FROM
 			<para><xref linkend="ST_Accum" />, <xref linkend="ST_AddPoint" />, <xref linkend="ST_GeometryType" />, <xref linkend="ST_IsClosed" />, <xref linkend="ST_LineMerge" /></para>
 		</refsection>
 	</refentry>	
+	<refentry id="ST_PointFromText">
+		  <refnamediv>
+			<refname>ST_PointFromText</refname>
+			<refpurpose>Makes a point Geometry from WKT with the given SRID. If SRID is
+            not given, it defaults to unknown.</refpurpose>
+		  </refnamediv>		
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_PointFromText</function></funcdef>
+				<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
+			  </funcprototype>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_PointFromText</function></funcdef>
+				<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+		
+		  <refsection>
+			<title>Description</title>
+		
+			<para>Constructs a PostGIS ST_Geometry point object from the OGC Well-Known text representation. If SRID is
+            not give, it defaults to unknown (currently -1).  If geometry is not a WKT point representation, returns null. 
+			If completely invalid WKT, then throws an error.</para>
+		
+			<!-- optionally mention that this function uses indexes if appropriate -->
+			<note>
+				<para>There are 2 variants of ST_PointFromText function, the first takes no SRID and returns a geometry
+					with no defined spatial reference system.  The second takes a spatial reference id as the second argument
+					and returns an ST_Geometry that includes this srid as part of its meta-data.  The srid must be defined
+					in the spatial_ref_sys table.</para>
+			</note>
+			
+			<note>
+				<para>If you are absolutely sure all your WKT geometries are points, don't use this function.  
+					It is slower than ST_GeomFromText since it adds an additional validation step.  If you are building points from long lat coordinates and care more about performance than OGC compliance, use ST_MakePoint.  </para>
+			</note>
+		
+			<!-- Optionally mention OpenGIS compliancy if appropriate -->
+			<para><inlinemediaobject>
+				<imageobject>
+				  <imagedata fileref="images/check.png" />
+				</imageobject>
+			  </inlinemediaobject> This method implements the <ulink
+			url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+			Implementation Specification for SQL. 
+			OGC SPEC 3.2.6.2 - option SRID is from the conformance suite.</ulink></para>
+			<para><inlinemediaobject>
+				<imageobject>
+				  <imagedata fileref="images/check.png" />
+				</imageobject>
+			  </inlinemediaobject> This method implements the SQL/MM specification:
+			SQL-MM 3: 5.1.40</para>
+		  </refsection>
+		
+		  <refsection>
+			<title>Examples</title>
+	<programlisting>
+SELECT ST_PointFromText('POINT(-71.064544 42.28787)');
+SELECT ST_PointFromText('POINT(-71.064544 42.28787)', 4326);
+	</programlisting>
+		  </refsection>
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_GeomFromText" />, <xref linkend="ST_MakePoint" />, <xref linkend="ST_SRID" /></para>
+		  </refsection>
+	</refentry>
 	<refentry id="ST_Union">
 	  <refnamediv>
 		<refname>ST_Union</refname>
@@ -3888,7 +4035,7 @@ SELECT ST_Touches('LINESTRING(0 0, 1 1, 0 2)'::geometry, 'POINT(0 2)'::geometry)
         <title>Description</title>
 
         <para>Returns TRUE if geometry A is completely inside geometry B. For this function to make
-        sense, the source geometries must both be of the same coorindate projection, 
+        sense, the source geometries must both be of the same coordinate projection, 
         having the same SRID.  It is a given that if ST_Within(A,B) is true and ST_Within(B,A) is true, then
 		the two geometries are considered spatially equal.</para>
 	
