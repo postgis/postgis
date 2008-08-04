@@ -277,17 +277,6 @@
       <title>Geometry Accessors</title>
 
       <variablelist>
-        <varlistentry id="ST_SRID">
-          <term>ST_SRID(geometry)</term>
-
-          <listitem>
-            <para>Returns the integer SRID number of the spatial reference
-            system of the geometry.</para>
-
-            <para>OGC SPEC s2.1.1.1</para>
-          </listitem>
-        </varlistentry>
-
         <varlistentry>
           <term>ST_Dimension(geometry)</term>
 
@@ -2332,17 +2321,6 @@ WHERE n*100.00/length &lt; 1;
           ST_Geometry value.</para>
 
           <para>SQL-MM 3: 5.1.25</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term>ST_SRID</term>
-
-        <listitem>
-          <para>Return the spatial reference system identifier of the
-          ST_Geometry value.</para>
-
-          <para>SQL-MM 3: 5.1.5</para>
         </listitem>
       </varlistentry>
 

@@ -1242,7 +1242,7 @@ SELECT ST_GeomFromText('MULTIPOLYGON(((-71.1031880899493 42.3152774590236,
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_GeomFromWKB" /></para>
+			<para><xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_GeomFromWKB" />, <xref linkend="ST_SRID" /></para>
 		  </refsection>
 	</refentry>
 		
@@ -1302,16 +1302,11 @@ SELECT userpoints.id, ST_MakeLine(startpoint, endpoint) As drawn_line
 	FROM userpoints ;
 			</programlisting>
 		</refsection>
-	</refentry>
-	        <varlistentry>
-          <term>ST_MakePoint(&lt;x&gt;, &lt;y&gt;, [&lt;z&gt;],
-          [&lt;m&gt;])</term>
-
-          <listitem>
-            <para>Creates a 2d,3dz or 4d point geometry.</para>
-          </listitem>
-        </varlistentry>
-		
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_GeomFromText" />, <xref linkend="ST_MakePoint" /></para>
+		</refsection>
+	</refentry>	
 <refentry id="ST_MakePoint">
 		<refnamediv>
 		<refname>ST_MakePoint</refname>
@@ -1914,6 +1909,59 @@ POINT(1 2)
 		<para><xref linkend="ST_NPoints" /></para>
 	  </refsection>
 	</refentry>
+	<refentry id="ST_SRID">
+	  <refnamediv>
+		<refname>ST_SRID</refname>
+		<refpurpose>Returns the spatial reference identifier for the ST_Geometry as defined in spatial_ref_sys table.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>integer <function>ST_SRID</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+	
+		<para>Returns the spatial reference identifier for the ST_Geometry as defined in spatial_ref_sys table. </para>
+		<para><note>spatial_ref_sys
+		table is a table that catalogs all spatial reference systems known to PostGIS and is used for transformations from one spatial
+			reference system to another.  So verifying you have the right spatial reference system identifier is important if you plan to ever transform your geometries.</note></para>
+		<para><inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+		  </inlinemediaobject> This method implements the <ulink
+		url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+		Implementation Specification for SQL.</ulink>
+		OGC SPEC s2.1.1.1</para>
+
+		<para><inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+		  </inlinemediaobject> This method implements the SQL/MM specification:
+		SQL-MM 3: 5.1.5</para>
+	  </refsection>
+	
+	  <refsection>
+		<title>Examples</title>
+	
+		<programlisting>SELECT ST_SRID(ST_GeomFromText('POINT(-71.1043 42.315)',4326));
+		--result
+		4326
+		</programlisting>
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+	
+		<para><xref linkend="ST_GeomFromText" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_Transform" /></para>
+	  </refsection>
+	</refentry>
   </sect1>
   
   <sect1>
@@ -2132,7 +2180,7 @@ LINESTRING(1 2,1 10) | LINESTRING(1 10,1 2)
       <refsection>
         <title>See Also</title>
 
-        <para><xref linkend="ST_Transform"/>, <xref linkend="UpdateGeometrySRID"/></para>
+        <para><xref linkend="ST_SRID"/>, <xref linkend="ST_Transform"/>, <xref linkend="UpdateGeometrySRID"/></para>
       </refsection>
       
     </refentry>
