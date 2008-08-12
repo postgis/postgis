@@ -2174,14 +2174,17 @@ gid  | name         | area
   CLASS 
     # Make the superhighways brighter and 2 pixels wide
     EXPRESSION ([numlanes] &gt;= 6) 
-    COLOR 255 22 22 
-    SYMBOL &quot;solid&quot; 
-    SIZE 2 
+    STYLE
+      COLOR 255 22 22 
+      WIDTH 2 
+    END
   END 
   CLASS 
     # All the rest are darker and only 1 pixel wide 
     EXPRESSION ([numlanes] &lt; 6) 
-    COLOR 205 92 82
+    STYLE
+      COLOR 205 92 82
+    END
   END 
 END</programlisting>
 
@@ -2478,8 +2481,10 @@ LAYER
   CLASSITEM road_type 
   CLASS 
     EXPRESSION &quot;highway&quot; 
-    SIZE 2 
-    COLOR 255 0 0  
+    STYLE
+      WIDTH 2 
+      COLOR 255 0 0  
+    END
   END 
   CLASS  
     COLOR 0 0 0 
@@ -2518,7 +2523,7 @@ END</programlisting>
       COLOR 0 192 0 
       TYPE truetype 
       FONT arial
-    ENDl
+    END
   END 
 END</programlisting>
 
