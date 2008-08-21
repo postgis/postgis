@@ -53,8 +53,14 @@ PG_OBJS=lwgeom_pg.o \
 OBJS=$(PG_OBJS)
 
 # Libraries to link into the module (proj, geos)
-PG_CPPFLAGS=@CPPFLAGS@ -I../liblwgeom
-SHLIB_LINK=@SHLIB_LINK@ -L../liblwgeom -llwgeom
+#
+# Note: we specify liblwgeom.a directly in SHLIB_LINK rather than using
+# -L... -l options to prevent issues with some platforms trying to link
+# to an existing liblwgeom.so in the PostgreSQL $libdir supplied by an
+# older version of PostGIS, rather than with the static liblwgeom.a 
+# supplied with newer versions of PostGIS
+PG_CPPFLAGS+=@CPPFLAGS@ -I../liblwgeom
+SHLIB_LINK+=@SHLIB_LINK@ ../liblwgeom/liblwgeom.a
 
 # Extra files to remove during 'make clean'
 EXTRA_CLEAN=$(SQL_OBJS)

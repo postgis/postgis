@@ -19,7 +19,7 @@ OBJS=	shpopen.o \
 	shp2pgsql.o
 
 # Link against libiconv where available
-PG_LIBS=@ICONV_LDFLAGS@
+PG_LIBS+=@ICONV_LDFLAGS@
 
 # PGXS information
 PG_CONFIG = @PGCONFIG@ 

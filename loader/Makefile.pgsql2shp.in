@@ -19,8 +19,8 @@ OBJS=	shpopen.o \
 	pgsql2shp.o
 
 # Link against libpq
-PG_CPPFLAGS=@PGSQL_FE_CPPFLAGS@
-PG_LIBS=@PGSQL_FE_LDFLAGS@ -lpq
+PG_CPPFLAGS+=@PGSQL_FE_CPPFLAGS@
+PG_LIBS+=@PGSQL_FE_LDFLAGS@ -lpq
 
 
 # PGXS information
