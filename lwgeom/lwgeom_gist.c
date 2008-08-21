@@ -546,6 +546,16 @@ Datum LWGEOM_gist_consistent(PG_FUNCTION_ARGS)
 	bool result;
 	BOX2DFLOAT4  box;
 
+#if POSTGIS_PGSQL_VERSION >= 84
+	/* PostgreSQL 8.4 and later require the RECHECK flag to be set here,
+	   rather than being supplied as part of the operator class definition */
+	bool *recheck = (bool *) PG_GETARG_POINTER(4);
+
+	/* Since the index is lossy from conversion from float8 to float4, we must
+	   recheck */
+	*recheck = true;
+#endif
+
 	POSTGIS_DEBUG(2, "GIST: LWGEOM_gist_consistent called");
 
 	if ( ((Pointer *) PG_GETARG_DATUM(1)) == NULL )

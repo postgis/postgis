@@ -991,8 +991,10 @@ CREATEFUNCTION LWGEOM_gist_decompress(internal)
 -- GIST opclass index binding entries.
 -------------------------------------------
 
+#if POSTGIS_PGSQL_VERSION < 84
+
 --
--- Create opclass index bindings for PG>=73
+-- Create opclass index bindings for PG>=73 and PG<=83
 --
 
 CREATE OPERATOR CLASS gist_geometry_ops
@@ -1018,7 +1020,37 @@ CREATE OPERATOR CLASS gist_geometry_ops
         FUNCTION        6        LWGEOM_gist_picksplit (internal, internal),
         FUNCTION        7        LWGEOM_gist_same (box2d, box2d, internal);
 
--- TODO: add btree binding...
+#else
+
+--
+-- Create opclass index bindings for PG>83 
+-- (No RECHECK since this is now handled as part of the GiST Access methods)
+--
+
+CREATE OPERATOR CLASS gist_geometry_ops
+        DEFAULT FOR TYPE geometry USING gist AS
+	STORAGE 	box2d,
+        OPERATOR        1        <<,
+        OPERATOR        2        &<,
+        OPERATOR        3        &&,
+        OPERATOR        4        &>,
+        OPERATOR        5        >>,
+        OPERATOR        6        ~=,
+        OPERATOR        7        ~,
+        OPERATOR        8        @,
+	OPERATOR	9	 &<|,
+	OPERATOR	10	 <<|,
+	OPERATOR	11	 |>>,
+	OPERATOR	12	 |&>,
+	FUNCTION        1        LWGEOM_gist_consistent (internal, geometry, int4),
+        FUNCTION        2        LWGEOM_gist_union (bytea, internal),
+        FUNCTION        3        LWGEOM_gist_compress (internal),
+        FUNCTION        4        LWGEOM_gist_decompress (internal),
+        FUNCTION        5        LWGEOM_gist_penalty (internal, internal, internal),
+        FUNCTION        6        LWGEOM_gist_picksplit (internal, internal),
+        FUNCTION        7        LWGEOM_gist_same (box2d, box2d, internal);
+
+#endif
 
 	
 -------------------------------------------
