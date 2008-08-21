@@ -1,7 +1,7 @@
 PostGIS - Geographic Information Systems Extensions to PostgreSQL
 ~~~~~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-VERSION: 1.3.3 (2008/04/12)
+VERSION: 1.4.0 (TBC)
 
 MORE INFORMATION: http://postgis.refractions.net
 
@@ -12,7 +12,8 @@ spatial functions for accessing and analyzing geographic data.
 Directory structure:
 
   ./            Build scripts and install directions.
-  ./lwgeom      Library source code.
+  ./liblwgeom   LWGEOM access library.
+  ./lwgeom      PostGIS library source code.
   ./java/ejb    EJB Java support
   ./java/jdbc   Extensions to the PostgreSQL JDBC drivers to support
                 the GIS objects. 
@@ -31,23 +32,21 @@ Directory structure:
 REQUIREMENTS
 ------------
 
-PostGIS is compatible with PostgreSQL 8.0 and above.
+PostGIS is compatible with PostgreSQL 8.1 and above.
 
 You *must* have full PostgreSQL - including server headers - installed
-for this to work. Note that server headers are not installed by
-default until PostgreSQL 8.0.0 and require the special 'install-all-headers'
-Makefile rule.
+for this to work. 
 
 SEE THE NOTE ON GEOS SUPPORT BELOW FOR SPECIAL COMPILATION INSTRUCTIONS
 
-* PROJ4 SUPPORT (Recommended): 
+* PROJ4 SUPPORT (Required): 
 
   The Proj4 reprojection library is required if you want to use the 
   transform() function to reproject features within the database.
 
     http://www.remotesensing.org/proj
 
-* SPATIAL PREDICATE / GEOS SUPPORT (Recommended):
+* SPATIAL PREDICATE / GEOS SUPPORT (Required):
 
   The GEOS library provides support for exact topological tests
   such as Touches(), Contains(), Disjoint() and spatial operations
@@ -71,19 +70,21 @@ To configure PostGIS, run:
 	
   ./configure
 
-Last lines from configure output will give a configuration summary.
+The results of the configuration can be easily seen within the
+postgis_config.h file.
 
 If pg_config can't be found in your $PATH configure will complain
 and refuse to proceed. You can specify it using the 
---with-pgsql=/path/to/pg_config flag.
+--with-pgconfig=/path/to/pg_config flag.
 
-If you don't see PROJ4 in the report (and you did have installed it)
-this means that proj4 installation dir could not be found.
-You can specify it using the --with-proj=DIR flag.
+If PROJ4 has been installed (but cannot be found), configure will
+complain and refuse to proceed. You can specify an alternative 
+installation directory using the --with-projdir=DIR option.
 
-If you don't see GEOS in the report (and you did have installed it)
-this means that geos-config could not be found.
-You can specify it using the --with-geos=/path/to/geos-config flag.
+If GEOS has been installed (but cannot be found), configure will 
+complain and refuse to proceed. You can specify an alternative 
+geos-config file using the --with-geosconfig=/path/to/geos-config 
+option.
 
 See ./configure --help for more options.
 
@@ -106,7 +107,7 @@ To do so, as postgres run:
 Final lines of output contain a summary of test results:
 run, succeeded, failed. If you have any failure please
 file a bug report using the online bug tracker:
-http://postgis.refractions.net/bugs.
+http://code.google.com/p/postgis/issues/list.
 
 INSTALLATION
 ------------
