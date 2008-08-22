@@ -66,6 +66,10 @@
     <para>PostGIS &last_release_version; can be built against PostgreSQL
     versions 8.1.0 or higher. Earlier versions of PostgreSQL are
     <emphasis>not</emphasis> supported.</para>
+	
+	<note><para>Many OS systems now include pre-built packages for PostgreSQL/PostGIS. In many
+	cases compilation is only necessary if you won't the most bleeding edge versions.</para>
+	</note>
 
 	<sect2 id="firsttimeinstall">
 		<title>Compiling and Installing from Source</title>
@@ -75,7 +79,7 @@
 			compile and install the PostgreSQL package.</para>
 			
 			<note>
-			  <para>If you plan to use GEOS functionality you might need to
+			  <para>For GEOS functionality you might need to
 			  explicitly link PostgreSQL against the standard C++ library:</para>
 			
 			  <programlisting>LDFLAGS=-lstdc++ ./configure [YOUR OPTIONS HERE]</programlisting>
@@ -85,21 +89,22 @@
 			  unexpectedly closed or similar things) try this trick. This will
 			  require recompiling your PostgreSQL from scratch, of course.</para>
 			  
-			  <para>The steps that follow are for Linux users.  They will not work on Windows without MingW and some other stuff</para>
+			  <para>The steps that follow are for Linux users.  They will not work on Windows or Mac</para>
+			  <para>For the below - if you are not logged in as root, you may need to use sudo or su commands
+			  	to run the make make install commands
 			</note>
 		</listitem>
 		
 		<listitem>
-			<para>Check your settings to see which versions of things will be used</para>
+			<para>Check your settings to see which versions of things will be used.  Note this part is for the most
+			part unnecessary since the PostGIS configure step will tell you what it is using and what is missing.</para>
 			<programlisting>
 			which gcc
 			which make &amp;&amp; which autoconf
 			which pg_config
-			sudo ldconfig -v | grep iconv
-			which flex &amp;&amp; which bison
-			sudo ldconfig -v | grep /usr/local/lib
+			ldconfig -v | grep /usr/local/lib
 			which geos-config
-			sudo ldconfig -v | grep proj
+			ldconfig -v | grep proj
 			</programlisting>
 		</listitem>
 		
@@ -110,8 +115,8 @@
 			tar xvzf proj-4.6.0.tar.gz
 			cd proj-4.6.0
 			./configure &amp;&amp; make clean &amp;&amp; make
-			sudo make install
-			sudo ldconfig
+			make install
+			ldconfig
 			cd ..
 			</programlisting>
 		</listitem>
@@ -123,8 +128,8 @@
 			tar xvjf geos-3.0.0.tar.bz2
 			cd geos-3.0.0
 			./configure &amp;&amp; make clean &amp;&amp; make
-			sudo make install
-			sudo ldconfig
+			make install
+			ldconfig
 			cd ..
 			</programlisting>
 		</listitem>
@@ -159,7 +164,6 @@
 				wget http://postgis.refractions.net/download/postgis-&last_release_version;.tar.gz
 				gzip -d -c postgis-&last_release_version;.tar.gz | tar xvf -
 				cd postgis-&last_release_version;/
-				sh autogen.sh
 				./configure
 			</programlisting>
 		</listitem>
@@ -192,8 +196,8 @@
 			</itemizedlist>
 			<programlisting>
 				make clean &amp;&amp; make
-				sudo make install
-				sudo ldconfig
+				make install
+				ldconfig
 			</programlisting>
 		</listitem>
 		
