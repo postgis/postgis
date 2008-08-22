@@ -67,9 +67,9 @@
     versions 8.1.0 or higher. Earlier versions of PostgreSQL are
     <emphasis>not</emphasis> supported.</para>
 
-    <orderedlist>
 	<sect2 id="firsttimeinstall">
 		<title>Compiling and Installing from Source</title>
+		<orderedlist>
 		<listitem>
 			<para>Before you can compile the PostGIS server modules, you must
 			compile and install the PostgreSQL package.</para>
@@ -228,6 +228,7 @@
 			
 			<programlisting># psql -d [yourdatabase] -f spatial_ref_sys.sql</programlisting>
 		</listitem>
+		</orderedlist>
 	</sect2>
 
 
@@ -389,7 +390,6 @@ newdb=&gt; \i spatial_ref_sys.sql</programlisting>
         </listitem>
       </orderedlist>
     </sect2>
-	</orderedlist>
   </sect1>
 
   <sect1>
