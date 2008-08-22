@@ -107,8 +107,8 @@
 			<para>If you are missing proj based on above or running a version below 4.5, then install by following these steps.</para>
 			<programlisting>
 			wget http://download.osgeo.org/proj/proj-4.6.0.tar.gz
-			tar xvzf proj4-4.6.0.tar.gz
-			cd proj4-4.6.0
+			tar xvzf proj-4.6.0.tar.gz
+			cd proj-4.6.0
 			./configure &amp;&amp; make clean &amp;&amp; make
 			sudo make install
 			sudo ldconfig
