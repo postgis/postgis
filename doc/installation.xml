@@ -68,164 +68,168 @@
     <emphasis>not</emphasis> supported.</para>
 
     <orderedlist>
-      <listitem>
-        <para>Before you can compile the PostGIS server modules, you must
-        compile and install the PostgreSQL package.</para>
-
-        <note>
-          <para>If you plan to use GEOS functionality you might need to
-          explicitly link PostgreSQL against the standard C++ library:</para>
-
-          <programlisting>LDFLAGS=-lstdc++ ./configure [YOUR OPTIONS HERE]</programlisting>
-
-          <para>This is a workaround for bogus C++ exceptions interaction with
-          older development tools. If you experience weird problems (backend
-          unexpectedly closed or similar things) try this trick. This will
-          require recompiling your PostgreSQL from scratch, of course.</para>
-		  
-		  <para>The steps that follow are for Linux users.  They will not work on Windows without MingW and some other stuff</para>
-        </note>
-      </listitem>
-	  
-	  <listitem>
-	  	<para>Check your settings to see which versions of things will be used</para>
-		<programlisting>
-		which gcc
-		which make &amp;&amp; which autoconf
-		which pg_config
-		sudo ldconfig -v | grep iconv
-		which flex &amp;&amp; which bison
-		sudo ldconfig -v | grep /usr/local/lib
-		which geos-config
-		sudo ldconfig -v | grep proj
-		</programlisting>
-	  </listitem>
-	  
-	  <listitem>
-	  	<para>If you are missing proj based on above or running a version below 4.5, then install by following these steps.</para>
-		<programlisting>
-		wget http://download.osgeo.org/proj/proj-4.6.0.tar.gz
-		tar xvzf proj4-4.6.0.tar.gz
-		cd proj4-4.6.0
-		./configure &amp;&amp; make clean &amp;&amp; make
-		sudo make install
-		sudo ldconfig
-		cd ..
-		</programlisting>
-	  </listitem>
-
-	  <listitem>
-	  	<para>If you are missing geos based on above or running a version below 3.0, then install by following these steps.</para>
-		<programlisting>
-		wget http://geos.refractions.net/downloads/geos-3.0.0.tar.bz2
-		tar xvjf geos-3.0.0.tar.bz2
-		cd geos-3.0.0
-		./configure &amp;&amp; make clean &amp;&amp; make
-		sudo make install
-		sudo ldconfig
-		cd ..
-		</programlisting>
-	  </listitem>
-	  
-	  <listitem>
-        <para>Retrieve the PostGIS source archive from <ulink
-        url="http://postgis.refractions.net/download/postgis-&last_release_version;.tar.gz">http://postgis.refractions.net/download/postgis-&last_release_version;.tar.gz</ulink>.
-        Uncompress and untar the archive. configure.</para>
+	<sect2 id="firsttimeinstall">
+		<title>Compiling and Installing from Source</title>
+		<listitem>
+			<para>Before you can compile the PostGIS server modules, you must
+			compile and install the PostgreSQL package.</para>
+			
+			<note>
+			  <para>If you plan to use GEOS functionality you might need to
+			  explicitly link PostgreSQL against the standard C++ library:</para>
+			
+			  <programlisting>LDFLAGS=-lstdc++ ./configure [YOUR OPTIONS HERE]</programlisting>
+			
+			  <para>This is a workaround for bogus C++ exceptions interaction with
+			  older development tools. If you experience weird problems (backend
+			  unexpectedly closed or similar things) try this trick. This will
+			  require recompiling your PostgreSQL from scratch, of course.</para>
+			  
+			  <para>The steps that follow are for Linux users.  They will not work on Windows without MingW and some other stuff</para>
+			</note>
+		</listitem>
 		
-		<para>All files are installed using information provided by
-        <filename>pg_config</filename></para>
-
-        <itemizedlist>
-          <listitem>
-            <para>Libraries are installed
-            <filename>[pkglibdir]/lib/contrib</filename>.</para>
-          </listitem>
-
-          <listitem>
-            <para>Important support files such as
-            <filename>lwpostgis.sql</filename> are installed in
-            <filename>[prefix]/share/contrib</filename>.</para>
-          </listitem>
-
-          <listitem>
-            <para>Loader and dumper binaries are installed in
-            <filename>[bindir]/</filename>.</para>
-          </listitem>
-        </itemizedlist>
-
-        <programlisting>
-			wget http://postgis.refractions.net/download/postgis-&last_release_version;.tar.gz
-			gzip -d -c postgis-&last_release_version;.tar.gz | tar xvf -
-			cd postgis-&last_release_version;/
-			sh autogen.sh
-			./configure
-		</programlisting>
-	</listitem>
+		<listitem>
+			<para>Check your settings to see which versions of things will be used</para>
+			<programlisting>
+			which gcc
+			which make &amp;&amp; which autoconf
+			which pg_config
+			sudo ldconfig -v | grep iconv
+			which flex &amp;&amp; which bison
+			sudo ldconfig -v | grep /usr/local/lib
+			which geos-config
+			sudo ldconfig -v | grep proj
+			</programlisting>
+		</listitem>
 		
-		
-	<listitem>
-		 <para>Make and Install</para>
-		<itemizedlist>
-		  <listitem>
-			<para>PostgreSQL provides a utility called <filename>pg_config</filename> to enable
-			extensions like PostGIS to locate the PostgreSQL installation directory.
-			If ./configure didn't find <filename>pg_config</filename>,
-			try using the <code>--with-pgconfig=/path/to/pg_config</code> switch to specify a particular 
-			PostgreSQL installation.</para>
-		  </listitem>
-
-		  <listitem>
-			<para>Proj4 is now required in order to build and use PostGIS.
-			If ./configure didn't find the Proj4 library,
-			try using the <code>--with-projdir=/path/to/projdir</code> switch to specify an alternative
-			Proj4 installation directory.</para>
-		  </listitem>
-
-		  <listitem>
-			<para>GEOS is now required in order to build and use PostGIS.
-			If ./configure didn't find it, try using the 
-			<code>--with-geosconfig=/path/to/geos-config</code> switch to specify the full path 
-			to the <filename>geos-config</filename> program.</para>
-		  </listitem>
-		</itemizedlist>
-		<programlisting>
-			make clean &amp;&amp; make
+		<listitem>
+			<para>If you are missing proj based on above or running a version below 4.5, then install by following these steps.</para>
+			<programlisting>
+			wget http://download.osgeo.org/proj/proj-4.6.0.tar.gz
+			tar xvzf proj4-4.6.0.tar.gz
+			cd proj4-4.6.0
+			./configure &amp;&amp; make clean &amp;&amp; make
 			sudo make install
 			sudo ldconfig
-		</programlisting>
-	</listitem>
-     
+			cd ..
+			</programlisting>
+		</listitem>
+		
+		<listitem>
+			<para>If you are missing geos based on above or running a version below 3.0, then install by following these steps.</para>
+			<programlisting>
+			wget http://geos.refractions.net/downloads/geos-3.0.0.tar.bz2
+			tar xvjf geos-3.0.0.tar.bz2
+			cd geos-3.0.0
+			./configure &amp;&amp; make clean &amp;&amp; make
+			sudo make install
+			sudo ldconfig
+			cd ..
+			</programlisting>
+		</listitem>
+		
+		<listitem>
+			<para>Retrieve the PostGIS source archive from <ulink
+			url="http://postgis.refractions.net/download/postgis-&last_release_version;.tar.gz">http://postgis.refractions.net/download/postgis-&last_release_version;.tar.gz</ulink>.
+			Uncompress and untar the archive. configure.</para>
+			
+			<para>All files are installed using information provided by
+			<filename>pg_config</filename></para>
+			
+			<itemizedlist>
+			  <listitem>
+				<para>Libraries are installed
+				<filename>[pkglibdir]/lib/contrib</filename>.</para>
+			  </listitem>
+			
+			  <listitem>
+				<para>Important support files such as
+				<filename>lwpostgis.sql</filename> are installed in
+				<filename>[prefix]/share/contrib</filename>.</para>
+			  </listitem>
+			
+			  <listitem>
+				<para>Loader and dumper binaries are installed in
+				<filename>[bindir]/</filename>.</para>
+			  </listitem>
+			</itemizedlist>
+			
+			<programlisting>
+				wget http://postgis.refractions.net/download/postgis-&last_release_version;.tar.gz
+				gzip -d -c postgis-&last_release_version;.tar.gz | tar xvf -
+				cd postgis-&last_release_version;/
+				sh autogen.sh
+				./configure
+			</programlisting>
+		</listitem>
+		
+		
+		<listitem>
+			 <para>Make and Install</para>
+			<itemizedlist>
+			  <listitem>
+				<para>PostgreSQL provides a utility called <filename>pg_config</filename> to enable
+				extensions like PostGIS to locate the PostgreSQL installation directory.
+				If ./configure didn't find <filename>pg_config</filename>,
+				try using the <code>--with-pgconfig=/path/to/pg_config</code> switch to specify a particular 
+				PostgreSQL installation.</para>
+			  </listitem>
+			
+			  <listitem>
+				<para>Proj4 is now required in order to build and use PostGIS.
+				If ./configure didn't find the Proj4 library,
+				try using the <code>--with-projdir=/path/to/projdir</code> switch to specify an alternative
+				Proj4 installation directory.</para>
+			  </listitem>
+			
+			  <listitem>
+				<para>GEOS is now required in order to build and use PostGIS.
+				If ./configure didn't find it, try using the 
+				<code>--with-geosconfig=/path/to/geos-config</code> switch to specify the full path 
+				to the <filename>geos-config</filename> program.</para>
+			  </listitem>
+			</itemizedlist>
+			<programlisting>
+				make clean &amp;&amp; make
+				sudo make install
+				sudo ldconfig
+			</programlisting>
+		</listitem>
+		
+		
+		<listitem>
+			<para>PostGIS requires the PL/pgSQL procedural language extension.
+			Before loading the <filename>lwpostgis.sql</filename> file, you must
+			first enable PL/pgSQL. You should use the
+			<filename>createlang</filename> command. The PostgreSQL Programmer's
+			Guide has the details if you want to this manually for some
+			reason.</para>
+			
+			<programlisting># createlang plpgsql [yourdatabase]</programlisting>
+			</listitem>
+			
+			<listitem>
+			<para>Now load the PostGIS object and function definitions into your
+			database by loading the <filename>lwpostgis.sql</filename> definitions
+			file.</para>
+			
+			<programlisting># psql -d [yourdatabase] -f lwpostgis.sql</programlisting>
+			
+			<para>The PostGIS server extensions are now loaded and ready to
+			use.</para>
+		</listitem>
+		
+		<listitem>
+			<para>For a complete set of EPSG coordinate system definition
+			identifiers, you can also load the
+			<filename>spatial_ref_sys.sql</filename> definitions file and populate
+			the <varname>SPATIAL_REF_SYS</varname> table.</para>
+			
+			<programlisting># psql -d [yourdatabase] -f spatial_ref_sys.sql</programlisting>
+		</listitem>
+	</sect2>
 
-	<listitem>
-		<para>PostGIS requires the PL/pgSQL procedural language extension.
-		Before loading the <filename>lwpostgis.sql</filename> file, you must
-		first enable PL/pgSQL. You should use the
-		<filename>createlang</filename> command. The PostgreSQL Programmer's
-		Guide has the details if you want to this manually for some
-		reason.</para>
-		
-		<programlisting># createlang plpgsql [yourdatabase]</programlisting>
-	</listitem>
-	
-	<listitem>
-		<para>Now load the PostGIS object and function definitions into your
-		database by loading the <filename>lwpostgis.sql</filename> definitions
-		file.</para>
-		
-		<programlisting># psql -d [yourdatabase] -f lwpostgis.sql</programlisting>
-		
-		<para>The PostGIS server extensions are now loaded and ready to
-		use.</para>
-	</listitem>
-	
-	<listitem>
-		<para>For a complete set of EPSG coordinate system definition
-		identifiers, you can also load the
-		<filename>spatial_ref_sys.sql</filename> definitions file and populate
-		the <varname>SPATIAL_REF_SYS</varname> table.</para>
-		
-		<programlisting># psql -d [yourdatabase] -f spatial_ref_sys.sql</programlisting>
-	</listitem>
 
     <sect2 id="templatepostgis">
       <title>Creating PostGIS spatially-enabled databases from an in-built
