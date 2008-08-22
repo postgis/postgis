@@ -82,10 +82,11 @@
           older development tools. If you experience weird problems (backend
           unexpectedly closed or similar things) try this trick. This will
           require recompiling your PostgreSQL from scratch, of course.</para>
+		  
+		  <para>The steps that follow are for Linux users.  They will not work on Windows without MingW and some other stuff</para>
         </note>
       </listitem>
 	  
-	  <para><note>The steps that follow are for Linux users.  They will not work on Windows without MingW and some other stuff</note></para>
 	  <listitem>
 	  	<para>Check your settings to see which versions of things will be used</para>
 		<programlisting>
