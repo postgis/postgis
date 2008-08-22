@@ -91,7 +91,7 @@
 			  
 			  <para>The steps that follow are for Linux users.  They will not work on Windows or Mac</para>
 			  <para>For the below - if you are not logged in as root, you may need to use sudo or su commands
-			  	to run the make make install commands
+			  	to run the make make install commands</para>
 			</note>
 		</listitem>
 		
