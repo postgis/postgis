@@ -68,7 +68,7 @@
     <emphasis>not</emphasis> supported.</para>
 	
 	<note><para>Many OS systems now include pre-built packages for PostgreSQL/PostGIS. In many
-	cases compilation is only necessary if you won't the most bleeding edge versions.</para>
+	cases compilation is only necessary if you want the most bleeding edge versions.</para>
 	</note>
 
 	<sect2 id="firsttimeinstall">
