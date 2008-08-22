@@ -155,7 +155,7 @@
         <programlisting>
 			wget http://postgis.refractions.net/download/postgis-&last_release_version;.tar.gz
 			gzip -d -c postgis-&last_release_version;.tar.gz | tar xvf -
-			cd postgis-&amp;last_release_version;/
+			cd postgis-&last_release_version;/
 			sh autogen.sh
 			./configure
 		</programlisting>
