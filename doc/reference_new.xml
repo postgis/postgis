@@ -1683,6 +1683,64 @@ POINT(1 2)
    
   <sect1>
     <title>Geometry Accessors</title>  
+    
+    <refentry id="ST_EndPoint">
+      <refnamediv>
+        <refname>ST_EndPoint</refname>
+    
+        <refpurpose>Returns the last point of a <varname>LINESTRING</varname>
+        geometry as a <varname>POINT</varname>.</refpurpose>
+      </refnamediv>
+    
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>boolean <function>ST_EndPoint</function></funcdef>
+    
+            <paramdef><type>geometry </type> <parameter>g</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+    
+      <refsection>
+        <title>Description</title>
+    
+        <para>Returns the last point of a <varname>LINESTRING</varname> geometry
+        as a <varname>POINT</varname> or <varname>NULL</varname> if the input
+        parameter is not a <varname>LINESTRING</varname>.</para>
+    
+        <para><inlinemediaobject>
+            <imageobject>
+              <imagedata fileref="images/check.png" />
+            </imageobject>
+          </inlinemediaobject> This method implements the SQL/MM specification:
+        SQL-MM 3: 7.1.4</para>
+      </refsection>
+    
+      <refsection>
+        <title>Examples</title>
+    
+        <programlisting>postgis=# SELECT ST_AsText(ST_EndPoint('LINESTRING(1 1, 2 2, 3 3)'::geometry));
+ st_astext
+------------
+ POINT(3 3)
+(1 row)
+
+postgis=# SELECT ST_EndPoint('POINT(1 1)'::geometry) IS NULL AS is_null;
+  is_null
+----------
+ t
+(1 row)</programlisting>
+      </refsection>
+    
+      <refsection>
+        <title>See Also</title>
+    
+        <para><xref linkend="ST_PointN" />, <xref
+        linkend="ST_StartPoint" /></para>
+      </refsection>
+    </refentry>
+
 		<refentry id="ST_Envelope">
 		  <refnamediv>
 			<refname>ST_Envelope</refname>
@@ -1909,6 +1967,7 @@ POINT(1 2)
 		<para><xref linkend="ST_NPoints" /></para>
 	  </refsection>
 	</refentry>
+	
 	<refentry id="ST_SRID">
 	  <refnamediv>
 		<refname>ST_SRID</refname>
@@ -1962,6 +2021,63 @@ POINT(1 2)
 		<para><xref linkend="ST_GeomFromText" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_Transform" /></para>
 	  </refsection>
 	</refentry>
+	
+	<refentry id="ST_StartPoint">
+    <refnamediv>
+      <refname>ST_StartPoint</refname>
+  
+      <refpurpose>Returns the first point of a <varname>LINESTRING</varname>
+      geometry as a <varname>POINT</varname>.</refpurpose>
+    </refnamediv>
+  
+    <refsynopsisdiv>
+      <funcsynopsis>
+        <funcprototype>
+          <funcdef>boolean <function>ST_StartPoint</function></funcdef>
+  
+          <paramdef><type>geometry </type> <parameter>g</parameter></paramdef>
+        </funcprototype>
+      </funcsynopsis>
+    </refsynopsisdiv>
+  
+    <refsection>
+      <title>Description</title>
+  
+      <para>Returns the first point of a <varname>LINESTRING</varname> geometry
+      as a <varname>POINT</varname> or <varname>NULL</varname> if the input
+      parameter is not a <varname>LINESTRING</varname>.</para>
+  
+      <para><inlinemediaobject>
+          <imageobject>
+            <imagedata fileref="images/check.png" />
+          </imageobject>
+        </inlinemediaobject> This method implements the SQL/MM specification:
+      SQL-MM 3: 7.1.3</para>
+    </refsection>
+  
+    <refsection>
+      <title>Examples</title>
+  
+      <programlisting>postgis=# SELECT ST_AsText(ST_StartPoint('LINESTRING(0 1, 0 2)'::geometry));
+ st_astext
+------------
+ POINT(0 1)
+(1 row)
+
+postgis=# SELECT ST_StartPoint('POINT(0 1)'::geometry) IS NULL AS is_null;
+  is_null
+----------
+ t
+(1 row)</programlisting>
+    </refsection>
+  
+    <refsection>
+      <title>See Also</title>
+  
+      <para><xref linkend="ST_EndPoint" />, <xref linkend="ST_PointN" /></para>
+    </refsection>
+  </refentry>
+
   </sect1>
   
   <sect1>
