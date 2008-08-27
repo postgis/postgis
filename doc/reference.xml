@@ -319,15 +319,6 @@ ST_Dimension
           </listitem>
         </varlistentry>
 
-        <varlistentry id="IsClosed">
-          <term>ST_IsClosed(geometry)</term>
-
-          <listitem>
-            <para>Returns true of the geometry start and end points are
-            coincident.</para>
-          </listitem>
-        </varlistentry>
-
         <varlistentry>
           <term>ST_IsRing(geometry)</term>
 
@@ -2021,21 +2012,6 @@ WHERE n*100.00/length &lt; 1;
         </listitem>
       </varlistentry>
 
-      <varlistentry id="ST_IsClosed">
-        <term>ST_IsClosed</term>
-
-        <listitem>
-          <para>Test if an ST_Curve or ST_MultiCurve value is closed.</para>
-
-          <note>
-            <para>SQL-MM defines the result of ST_IsClosed(NULL) to be 0,
-            while PostGIS returns NULL.</para>
-          </note>
-
-          <para>SQL-MM 3: 7.1.5, 9.3.3</para>
-        </listitem>
-      </varlistentry>
-
       <varlistentry>
         <term>ST_IsEmpty</term>
 
@@ -2052,7 +2028,7 @@ WHERE n*100.00/length &lt; 1;
         </listitem>
       </varlistentry>
 
-      <varlistentry>
+      <varlistentry id="ST_IsRing">
         <term>ST_IsRing</term>
 
         <listitem>
@@ -2067,7 +2043,7 @@ WHERE n*100.00/length &lt; 1;
         </listitem>
       </varlistentry>
 
-      <varlistentry>
+      <varlistentry >
         <term>ST_IsSimple</term>
 
         <listitem>

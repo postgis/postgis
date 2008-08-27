@@ -1876,6 +1876,95 @@ postgis=# SELECT ST_EndPoint('POINT(1 1)'::geometry) IS NULL AS is_null;
 			<para><xref linkend="GeometryType" /></para>
 		</refsection>
 	</refentry>
+	
+    <refentry id="ST_IsClosed">
+      <refnamediv>
+        <refname>ST_IsClosed</refname>
+    
+        <refpurpose>Returns <varname>TRUE</varname> if the 
+        <varname>LINESTRING</varname>'s start and end points are coincident.
+        </refpurpose>
+      </refnamediv>
+    
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>boolean <function>ST_IsClosed</function></funcdef>
+    
+            <paramdef><type>geometry </type> <parameter>g</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+    
+      <refsection>
+        <title>Description</title>
+    
+        <para>Returns <varname>TRUE</varname> if the <varname>LINESTRING</varname>'s 
+        start and end points are coincident.</para>
+    
+        <para><inlinemediaobject>
+            <imageobject>
+              <imagedata fileref="images/check.png" />
+            </imageobject>
+          </inlinemediaobject> This method implements the <ulink
+        url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+        Implementation Specification for SQL.</ulink></para>
+    
+        <para><inlinemediaobject>
+            <imageobject>
+              <imagedata fileref="images/check.png" />
+            </imageobject>
+          </inlinemediaobject> This method implements the SQL/MM specification:
+        SQL-MM 3: 7.1.5, 9.3.3</para>
+    
+        <note>
+          <para>SQL-MM defines the result of
+          <function>ST_IsClosed(<varname>NULL</varname>)</function> to be 0, while
+          PostGIS returns <varname>NULL</varname>.</para>
+        </note>
+      </refsection>
+    
+      <refsection>
+        <title>Examples</title>
+    
+        <programlisting>postgis=# SELECT ST_IsClosed('LINESTRING(0 0, 1 1)'::geometry);
+ st_isclosed
+-------------
+ f
+(1 row)
+
+postgis=# SELECT ST_IsClosed('LINESTRING(0 0, 0 1, 1 1, 0 0)'::geometry);
+ st_isclosed
+-------------
+ t
+(1 row)
+
+postgis=# SELECT ST_IsClosed('MULTILINESTRING((0 0, 0 1, 1 1, 0 0),(0 0, 1 1))'::geometry);
+ st_isclosed
+-------------
+ f
+(1 row)
+
+postgis=# SELECT ST_IsClosed('POINT(0 0)'::geometry);
+ st_isclosed
+-------------
+ t
+(1 row)
+
+postgis=# SELECT ST_IsClosed('MULTIPOINT((0 0), (1 1))'::geometry);
+ st_isclosed
+-------------
+ t
+(1 row)</programlisting>
+      </refsection>
+    
+      <refsection>
+        <title>See Also</title>
+    
+        <para><xref linkend="ST_IsRing" /></para>
+      </refsection>
+    </refentry>
+
 	<refentry id="ST_NPoints">
 		<refnamediv>
 			<refname>ST_NPoints</refname>
