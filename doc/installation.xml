@@ -35,7 +35,7 @@
         <para>Proj4 reprojection library. The Proj4 library is
         used to provide coordinate reprojection support within PostGIS. Proj4
         is available for download from <ulink
-        url="http://www.remotesensing.org/proj">http://www.remotesensing.org/proj</ulink>.</para>
+        url="http://trac.osgeo.org/proj/">http://trac.osgeo.org/proj/</ulink>.</para>
       </listitem>
 
       <listitem>
@@ -43,7 +43,7 @@
         provide geometry tests (ST_Touches(), ST_Contains(), ST_Intersects())
         and operations (ST_Buffer(), ST_Union(), ST_Difference()) within
         PostGIS. GEOS is available for download from <ulink
-        url="http://geos.refractions.net">http://geos.refractions.net</ulink>.</para>
+        url="http://trac.osgeo.org/geos/">http://trac.osgeo.org/geos/</ulink>.</para>
       </listitem>
 
       <listitem>
@@ -57,7 +57,7 @@
   <sect1 id="PGInstall">
     <title>PostGIS</title>
 
-    <para>The PostGIS module is a extension to the PostgreSQL backend server.
+    <para>The PostGIS module is an extension to the PostgreSQL backend server.
     As such, PostGIS &last_release_version; <emphasis>requires</emphasis>
     full PostgreSQL server headers access in order to compile. The PostgreSQL
     source code is available at <ulink
@@ -68,7 +68,7 @@
     <emphasis>not</emphasis> supported.</para>
 	
 	<note><para>Many OS systems now include pre-built packages for PostgreSQL/PostGIS. In many
-	cases compilation is only necessary if you want the most bleeding edge versions.</para>
+	cases compilation is only necessary if you want the most bleeding edge versions or you are a package maintainer.</para>
 	</note>
 
 	<sect2 id="firsttimeinstall">
@@ -93,45 +93,6 @@
 			  <para>For the below - if you are not logged in as root, you may need to use sudo or su commands
 			  	to run the make make install commands</para>
 			</note>
-		</listitem>
-		
-		<listitem>
-			<para>Check your settings to see which versions of things will be used.  Note this part is for the most
-			part unnecessary since the PostGIS configure step will tell you what it is using and what is missing.</para>
-			<programlisting>
-			which gcc
-			which make &amp;&amp; which autoconf
-			which pg_config
-			ldconfig -v | grep /usr/local/lib
-			which geos-config
-			ldconfig -v | grep proj
-			</programlisting>
-		</listitem>
-		
-		<listitem>
-			<para>If you are missing proj based on above or running a version below 4.5, then install by following these steps.</para>
-			<programlisting>
-			wget http://download.osgeo.org/proj/proj-4.6.0.tar.gz
-			tar xvzf proj-4.6.0.tar.gz
-			cd proj-4.6.0
-			./configure &amp;&amp; make clean &amp;&amp; make
-			make install
-			ldconfig
-			cd ..
-			</programlisting>
-		</listitem>
-		
-		<listitem>
-			<para>If you are missing geos based on above or running a version below 3.0, then install by following these steps.</para>
-			<programlisting>
-			wget http://geos.refractions.net/downloads/geos-3.0.0.tar.bz2
-			tar xvjf geos-3.0.0.tar.bz2
-			cd geos-3.0.0
-			./configure &amp;&amp; make clean &amp;&amp; make
-			make install
-			ldconfig
-			cd ..
-			</programlisting>
 		</listitem>
 		
 		<listitem>
@@ -184,20 +145,48 @@
 				<para>Proj4 is now required in order to build and use PostGIS.
 				If ./configure didn't find the Proj4 library,
 				try using the <code>--with-projdir=/path/to/projdir</code> switch to specify an alternative
-				Proj4 installation directory.</para>
+				Proj4 installation directory.  If you have not compiled or installed Proj4, follow the instructions below
+				if you wish to compile Proj4 from source.</para>
 			  </listitem>
 			
 			  <listitem>
 				<para>GEOS is now required in order to build and use PostGIS.
 				If ./configure didn't find it, try using the 
 				<code>--with-geosconfig=/path/to/geos-config</code> switch to specify the full path 
-				to the <filename>geos-config</filename> program.</para>
+				to the <filename>geos-config</filename> program.  If you have not compiled or installed Geos, follow the
+				instructions that follow below to compile Geos from source.</para>
 			  </listitem>
 			</itemizedlist>
 			<programlisting>
 				make clean &amp;&amp; make
 				make install
 				ldconfig
+			</programlisting>
+		</listitem>
+		
+		<listitem>
+			<para>If you are missing proj based on above or running a version below 4.5, then install by following these steps.</para>
+			<programlisting>
+			wget http://download.osgeo.org/proj/proj-4.6.0.tar.gz
+			tar xvzf proj-4.6.0.tar.gz
+			cd proj-4.6.0
+			./configure &amp;&amp; make clean &amp;&amp; make
+			make install
+			ldconfig
+			cd ..
+			</programlisting>
+		</listitem>
+		
+		<listitem>
+			<para>If you are missing geos based on above or running a version below 3.0, then install by following these steps.</para>
+			<programlisting>
+			wget http://download.osgeo.org/geos/geos-3.0.0.tar.bz2
+			tar xvjf geos-3.0.0.tar.bz2
+			cd geos-3.0.0
+			./configure &amp;&amp; make clean &amp;&amp; make
+			make install
+			ldconfig
+			cd ..
 			</programlisting>
 		</listitem>
 		
