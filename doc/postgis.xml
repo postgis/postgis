@@ -3361,7 +3361,7 @@ dimension
             <term>ST_Envelope(geometry)</term>
 
             <listitem>
-              <para>Returns a vald geometry (POINT, LINESTRING or POLYGON) 
+              <para>Returns a valid geometry (POINT, LINESTRING or POLYGON) 
               representing the bounding box of the geometry. Degenerate
               cases (vertical lines, point) will return a geometry of
               lower dimension than POLYGON.</para>
