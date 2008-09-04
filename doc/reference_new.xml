@@ -3787,6 +3787,10 @@ SELECT s.gid, s.school_name
 			represent the same geometry structure.  To verify the order of points is consistent, use 
 			ST_OrderingEquals (it must be noted ST_OrderingEquals is a little more stringent than simply verifying order of
 			points are the same).</para>
+			
+		<note>
+		  <para>This function will return false if either geometry is invalid even if they are binary equal.</para>
+		</note>
 
 		<para>
 		  <inlinegraphic class="sfs_compliant" fileref="images/check.png" />
@@ -3827,7 +3831,7 @@ SELECT ST_Equals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
 	  <refsection>
 		<title>See Also</title>
 	
-		<para><xref linkend="ST_OrderingEquals"/>, <xref linkend="ST_Reverse"/>, <xref linkend="ST_Within" /></para>
+		<para><xref linkend="ST_IsValid"/>, <xref linkend="ST_OrderingEquals"/>, <xref linkend="ST_Reverse"/>, <xref linkend="ST_Within" /></para>
 	  </refsection>
 	  
 	</refentry>
