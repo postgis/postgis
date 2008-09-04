@@ -25,29 +25,6 @@
       <variablelist>
 
         <varlistentry>
-          <term>ST_Overlaps(A geometry, B geometry)</term>
-
-          <listitem>
-            <para>Returns TRUE if the Geometries "spatially
-            overlap".</para>
-
-            <para>Performed by the GEOS module</para>
-
-            <para>Do not call with a GeometryCollection as an argument</para>
-
-            <para>This function call will automatically include a bounding box
-            comparison that will make use of any indexes that are available on
-            the geometries. To avoid index use, use the function
-            _ST_Overlaps.</para>
-
-            <para>NOTE: this is the "allowable" version that returns a
-            boolean, not an integer.</para>
-
-            <para>OGC SPEC s2.1.1.2 // s2.1.13.3</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
           <term>ST_Contains(A geometry, B geometry)</term>
 
           <listitem>
@@ -2174,17 +2151,6 @@ WHERE n*100.00/length &lt; 1;
           <para>Return the number of interior rings in an ST_Surface.</para>
 
           <para>SQL-MM 3: 8.2.5</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term>ST_Overlaps</term>
-
-        <listitem>
-          <para>Test if an ST_Geometry value spatially overlays another
-          ST_Geometry value.</para>
-
-          <para>SQL-MM 3: 5.1.32</para>
         </listitem>
       </varlistentry>
 

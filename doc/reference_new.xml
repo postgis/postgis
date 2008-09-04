@@ -3937,13 +3937,104 @@ SELECT ST_OrderingEquals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
  f
 (1 row)
 </programlisting>
-	  </refsection>
+		  </refsection>
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_Equals"/></para>
+		  </refsection>
+	</refentry>
 
+	<refentry id="ST_Overlaps">
+	  <refnamediv>
+		<refname>ST_Overlaps</refname>
+	
+		<refpurpose>Returns TRUE if the Geometries share space, are of the same dimension, but are not completely contained by each other.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_Overlaps</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>A</parameter></paramdef>
+			<paramdef><type>geometry </type> <parameter>B</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+	
+		<para>Returns TRUE if the Geometries "spatially
+            overlap".  By that we mean they intersect, but one does not completely contain another. </para>
+			
+		 <para>Performed by the GEOS module</para>
+
+		<note><para>Do not call with a GeometryCollection as an argument</para></note>
+
+		<para>This function call will automatically include a bounding box
+		comparison that will make use of any indexes that are available on
+		the geometries. To avoid index use, use the function
+		_ST_Overlaps.</para>
+		
+        <para>NOTE: this is the "allowable" version that returns a
+            boolean, not an integer.</para>
+
+        <para>OGC SPEC s2.1.1.2 // s2.1.13.3</para>
+
+		<para>
+		  <inlinegraphic class="sql_mm_compliant" fileref="images/check.png" />
+		  This method implements the SQL/MM specification: SQL-MM 3: 5.1.32
+		</para> 
+	
+	  </refsection>
+	
+	  <refsection>
+		<title>Examples</title>
+	
+		<programlisting>--a point on a line is contained by the line and is of a lower dimension, and therefore does not overlap the line
+			nor crosses
+		
+SELECT ST_Overlaps(a,b) As a_overlap_b, 
+	ST_Crosses(a,b) As a_crosses_b, 
+		ST_Intersects(a, b) As a_intersects_b, ST_Contains(b,a) As b_contains_a
+FROM (SELECT ST_GeomFromText('POINT(1 0.5)') As a, ST_GeomFromText('LINESTRING(1 0, 1 1, 3 5)')  As b)
+	As foo
+	
+a_overlap_b | a_crosses_b | a_intersects_b | b_contains_a
+------------+-------------+----------------+--------------
+f           | f           | t              | t
+
+--a line that is partly contained by circle, but not fully is defined as intersecting and crossing,
+-- but since of different dimension it does not overlap
+SELECT ST_Overlaps(a,b) As a_overlap_b, ST_Crosses(a,b) As a_crosses_b, 
+	ST_Intersects(a, b) As a_intersects_b, 
+	ST_Contains(a,b) As a_contains_b
+FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 0.5)'), 3)  As a, ST_GeomFromText('LINESTRING(1 0, 1 1, 3 5)')  As b)
+	As foo;
+
+ a_overlap_b | a_crosses_b | a_intersects_b | a_contains_b
+-------------+-------------+----------------+--------------
+ f           | t           | t              | f
+ 
+ -- a 2-dimensional bent hot dog (aka puffered line string) that intersects a circle, 
+ --	but is not fully contained by the circle is defined as overlapping since they are of the same dimension,
+--	but it does not cross, because the intersection of the 2 is of the same dimension 
+--	as the maximum dimension of the 2
+
+SELECT ST_Overlaps(a,b) As a_overlap_b, ST_Crosses(a,b) As a_crosses_b, ST_Intersects(a, b) As a_intersects_b, ST_Contains(b,a) As b_contains_a, ST_Dimension(a) As dim_a, ST_Dimension(b) as dim_b
+FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 0.5)'), 3)  As a, ST_Buffer(ST_GeomFromText('LINESTRING(1 0, 1 1, 3 5)'),0.5)  As b)
+	As foo;
+	
+a_overlap_b | a_crosses_b | a_intersects_b | b_contains_a | dim_a | dim_b
+------------+-------------+----------------+--------------+-------+-------
+t           | f           | t              | f            |     2 |     2
+</programlisting>
+	  </refsection>
 
 	  <refsection>
 		<title>See Also</title>
 	
-		<para><xref linkend="ST_Equals"/>, <xref linkend="ST_Reverse"/></para>
+		<para><xref linkend="ST_Contains"/>, <xref linkend="ST_Crosses"/>, <xref linkend="ST_Intersects"/></para>
 	  </refsection>
 	</refentry>
 	<refentry id="ST_Perimeter">
