@@ -255,23 +255,6 @@
 
       <variablelist>
         <varlistentry>
-          <term>ST_Dimension(geometry)</term>
-
-          <listitem>
-            <para>The inherent dimension of this Geometry object, which must
-            be less than or equal to the coordinate dimension. OGC SPEC
-            s2.1.1.1 - returns 0 for points, 1 for lines, 2 for polygons, and
-            the largest dimension of the components of a
-            GEOMETRYCOLLECTION.</para>
-
-            <programlisting>SELECT ST_Dimension('GEOMETRYCOLLECTION(LINESTRING(1 1,0 0),POINT(0 0))'); 
-ST_Dimension 
------------ 
-1</programlisting>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
           <term>ST_IsEmpty(geometry)</term>
 
           <listitem>
@@ -1606,16 +1589,6 @@ WHERE n*100.00/length &lt; 1;
             linkend="dropbbox">dropBBOX()</link> to control caching.</para>
           </listitem>
         </varlistentry>
-
-        <varlistentry id="ndims">
-          <term>ST_ndims(geometry)</term>
-
-          <listitem>
-            <para>Returns number of dimensions of the geometry as a small int.
-            Values are: 2,3 or 4.</para>
-          </listitem>
-        </varlistentry>
-
         <varlistentry>
           <term>ST_nrings(geometry)</term>
 
@@ -1898,16 +1871,6 @@ WHERE n*100.00/length &lt; 1;
           difference of two ST_Geometry values.</para>
 
           <para>SQL-MM 3: 5.1.20</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term>ST_Dimension</term>
-
-        <listitem>
-          <para>Return the dimension of the ST_Geometry value.</para>
-
-          <para>SQL-MM 3: 5.1.2</para>
         </listitem>
       </varlistentry>
 
