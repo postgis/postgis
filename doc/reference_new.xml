@@ -3438,23 +3438,23 @@ st_area
 		  <programlisting>
 	--a circle within a circle
 	SELECT ST_Contains(smallc,smallc) As smallinsmall,
-	ST_Contains(smallc, bigc) As smallinbig, 
-	ST_Contains(bigc,smallc) As biginsmall,
-	ST_Contains(ST_Union(smallc, bigc), bigc) as unioninbig,
-	ST_Contains(bigc, ST_Union(smallc, bigc)) as biginunion,
+	ST_Contains(smallc, bigc) As smallcontainsbig, 
+	ST_Contains(bigc,smallc) As bigcontainssmall,
+	ST_Contains(ST_Union(smallc, bigc), bigc) as unioncontainsbig,
+	ST_Contains(bigc, ST_Union(smallc, bigc)) as bigcontainsunion,
 	ST_Equals(bigc, ST_Union(smallc, bigc)) as bigisunion
 	FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc, 
 	ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As bigc) As foo;
 	--Result
- smallinsmall | smallinbig | biginsmall | unioninbig | biginunion | bigisunion
---------------+------------+------------+------------+------------+------------
- t            | f          | t          | t          | t          | t
+ smallinsmall | smallcontainsbig | bigcontainssmall | unioncontainsbig | bigcontainsunion | bigisunion
+--------------+------------------+------------------+------------------+------------------+------------
+ t            | f                | t                | t                | t                | t
 		</programlisting>
 	  </refsection>
 	  
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_Within"/></para>
+		<para><xref linkend="ST_Equals"/>,<xref linkend="ST_Within"/></para>
 	  </refsection>
 	</refentry>
     
