@@ -1797,18 +1797,7 @@ WHERE n*100.00/length &lt; 1;
           <para>SQL-MM 3: 5.1.17</para>
         </listitem>
       </varlistentry>
-
-      <varlistentry>
-        <term>ST_Contains</term>
-
-        <listitem>
-          <para>Test if an ST_Geometry value spatially contains another
-          ST_Geometry value.</para>
-
-          <para>SQL-MM 3: 5.1.31</para>
-        </listitem>
-      </varlistentry>
-
+	  
       <varlistentry>
         <term>ST_ConvexHull</term>
 
