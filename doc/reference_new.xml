@@ -3364,6 +3364,99 @@ st_area
       <para><xref linkend="ST_PointOnSurface" /></para>
     </refsection>
   </refentry>
+  
+	<refentry id="ST_Contains">
+	  <refnamediv>
+		<refname>ST_Contains</refname>
+	
+		<refpurpose>Returns true if the geometry B is completely inside geometry A</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_Contains</function></funcdef>
+	
+			<paramdef><type>geometry </type>
+			<parameter>A</parameter></paramdef>
+	
+			<paramdef><type>geometry </type>
+			<parameter>B</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+	
+		<para>Returns TRUE if geometry B is completely inside geometry A. For this function to make
+		sense, the source geometries must both be of the same coordinate projection, 
+		having the same SRID.  ST_Contains is the inverse of ST_Within.  So ST_Contains(A,B) implies ST_Within(B,A) except in the case of
+		invalid geometries where the result is always false regardless or not defined.</para>
+	
+		<para>Performed by the GEOS module</para>
+	
+        <important>
+          <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
+        </important>
+		
+		<important>
+          <para>Do not use this function with invalid geometries. You will get unexpected results.</para>
+        </important>
+	
+		<para>This function call will automatically include a bounding box
+			comparison that will make use of any indexes that are available on
+			the geometries. To avoid index use, use the function
+			_ST_Contains.</para>
+	
+		<para>NOTE: this is the "allowable" version that returns a
+			boolean, not an integer.</para>
+	
+		<para>
+		  <inlinemediaobject>
+		<imageobject>
+		  <imagedata fileref="images/check.png" />
+		</imageobject>
+	  </inlinemediaobject> This method implements the 
+	  <ulink url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+	Implementation Specification for SQL.</ulink>
+		   OGC SPEC s2.1.1.2 // s2.1.13.3 - same as within(geometry B,
+		geometry A)
+		</para>
+		
+		<para>
+			<inlinemediaobject>
+				<imageobject>
+				  <imagedata fileref="images/check.png" />
+				</imageobject>
+			  </inlinemediaobject> This method implements the SQL/MM specification:
+			SQL-MM 3: 5.1.30</para>
+	  </refsection>
+	
+	  <refsection>
+		<title>Examples</title>
+		  <programlisting>
+	--a circle within a circle
+	SELECT ST_Contains(smallc,smallc) As smallinsmall,
+	ST_Contains(smallc, bigc) As smallinbig, 
+	ST_Contains(bigc,smallc) As biginsmall,
+	ST_Contains(ST_Union(smallc, bigc), bigc) as unioninbig,
+	ST_Contains(bigc, ST_Union(smallc, bigc)) as biginunion,
+	ST_Equals(bigc, ST_Union(smallc, bigc)) as bigisunion
+	FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc, 
+	ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As bigc) As foo;
+	--Result
+ smallinsmall | smallinbig | biginsmall | unioninbig | biginunion | bigisunion
+--------------+------------+------------+------------+------------+------------
+ t            | f          | t          | t          | t          | t
+		</programlisting>
+	  </refsection>
+	  
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_Within"/></para>
+	  </refsection>
+	</refentry>
     
   <refentry id="ST_Crosses">
     <refnamediv>
@@ -3788,9 +3881,9 @@ SELECT s.gid, s.school_name
 			ST_OrderingEquals (it must be noted ST_OrderingEquals is a little more stringent than simply verifying order of
 			points are the same).</para>
 			
-		<note>
-		  <para>This function will return false if either geometry is invalid even if they are binary equal.</para>
-		</note>
+		<important>
+          <para>This function will return false if either geometry is invalid even if they are binary equal.</para>
+        </important>
 
 		<para>
 		  <inlinegraphic class="sfs_compliant" fileref="images/check.png" />
@@ -4485,6 +4578,10 @@ SELECT ST_Touches('LINESTRING(0 0, 1 1, 0 2)'::geometry, 'POINT(0 2)'::geometry)
         <important>
           <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
         </important>
+		
+		<important>
+          <para>Do not use this function with invalid geometries. You will get unexpected results.</para>
+        </important>
 
         <para>This function call will automatically include a bounding box
             comparison that will make use of any indexes that are available on
@@ -4493,12 +4590,6 @@ SELECT ST_Touches('LINESTRING(0 0, 1 1, 0 2)'::geometry, 'POINT(0 2)'::geometry)
 
         <para>NOTE: this is the "allowable" version that returns a
             boolean, not an integer.</para>
-
-        <note>
-          <para>This function call will automatically include a bounding box
-          comparison that will make use of any indexes that are available on
-          the geometries.</para>
-        </note>
 
         <para>
           <inlinemediaobject>
@@ -4543,7 +4634,7 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
       
       <refsection>
         <title>See Also</title>
-        <para><xref linkend="ST_Equals"/></para>
+        <para><xref linkend="ST_Contains"/>, <xref linkend="ST_Equals"/></para>
       </refsection>
     </refentry>
   </sect1>

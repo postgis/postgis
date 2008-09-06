@@ -23,31 +23,6 @@
       <title>Geometry Relationship Functions</title>
 
       <variablelist>
-
-        <varlistentry>
-          <term>ST_Contains(A geometry, B geometry)</term>
-
-          <listitem>
-            <para>Returns TRUE if Geometry A "spatially contains" Geometry
-            B.</para>
-
-            <para>Performed by the GEOS module</para>
-
-            <para>Do not call with a GeometryCollection as an argument</para>
-
-            <para>This function call will automatically include a bounding box
-            comparison that will make use of any indexes that are available on
-            the geometries. To avoid index use, use the function
-            _ST_Contains.</para>
-
-            <para>NOTE: this is the "allowable" version that returns a
-            boolean, not an integer.</para>
-
-            <para>OGC SPEC s2.1.1.2 // s2.1.13.3 - same as within(geometry B,
-            geometry A)</para>
-          </listitem>
-        </varlistentry>
-
         <varlistentry>
           <term>ST_Covers(geometry A, geometry B)</term>
 
