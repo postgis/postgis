@@ -2437,19 +2437,12 @@ LINESTRING(1 2,1 10) | LINESTRING(1 10,1 2)
             0-based.</refpurpose>
 		  </refnamediv>
 		  <refsynopsisdiv>
-			<funcsynopsis>
-			  <funcprototype>
-				<funcdef>geometry <function>ST_AddPoint</function></funcdef>
-				<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef>
-				<paramdef><type>geometry</type> <parameter>point</parameter></paramdef>
-			  </funcprototype>
-			 </funcsynopsis>
 			 <funcsynopsis>
 			  <funcprototype>
-				<funcdef>geometry <function>ST_AddPoint</function></funcdef>
+				<funcdef>geometry <function>ST_SetPoint</function></funcdef>
 				<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef>
+				<paramdef><type>integer</type> <parameter>zerobasedposition</parameter></paramdef>
 				<paramdef><type>geometry</type> <parameter>point</parameter></paramdef>
-				<paramdef><type>integer</type> <parameter>position</parameter></paramdef>
 			  </funcprototype>
 			 </funcsynopsis>
 		  </refsynopsisdiv>
