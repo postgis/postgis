@@ -2466,7 +2466,11 @@ LINESTRING(1 2,1 10) | LINESTRING(1 10,1 2)
 		  <refsection>
 			<title>Examples</title>	
 			<programlisting>
-<!-- TODO: Provide ST_SetPoint Example -->
+--Change second point in line string from -1 3 to -1 1
+SELECT ST_AsText(ST_SetPoint('LINESTRING(-1 2,-1 3)', 1, 'POINT(-1 1)'));
+       st_astext
+-----------------------
+ LINESTRING(-1 2,-1 1)
 			</programlisting>
 		  </refsection>
 		  <refsection>
