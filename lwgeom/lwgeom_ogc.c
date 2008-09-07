@@ -1002,7 +1002,7 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUGF(3, "wkt: [%s]", wkt);
 
-	serialized_lwgeom = lwgeom_from_ewkt(wkt);
+	serialized_lwgeom = serialized_lwgeom_from_ewkt(wkt);
 	lwgeom = lwgeom_deserialize(serialized_lwgeom->lwgeom);
 
 	if ( lwgeom->SRID != -1 || TYPE_GETZM(lwgeom->type) != 0 )

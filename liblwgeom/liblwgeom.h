@@ -1116,12 +1116,12 @@ extern void deparse_hex(uchar str, char *result);
 
 /* Parser access routines */
 extern char *lwgeom_to_ewkt(LWGEOM *lwgeom);
-extern SERIALIZED_LWGEOM *lwgeom_from_ewkt(char *wkt_input);
 extern char *lwgeom_to_hexwkb(LWGEOM *lwgeom, unsigned int byteorder);
 extern LWGEOM *lwgeom_from_ewkb(uchar *ewkb, size_t ewkblen);
 extern uchar *lwgeom_to_ewkb(LWGEOM *lwgeom, char byteorder, size_t *ewkblen);
 
 extern char *serialized_lwgeom_to_ewkt(uchar *serialized);
+extern SERIALIZED_LWGEOM *serialized_lwgeom_from_ewkt(char *wkt_input);
 extern char *serialized_lwgeom_to_hexwkb(uchar *serialized, unsigned int byteorder, size_t *size);
 extern char *serialized_lwgeom_to_ewkb(uchar *serialized, unsigned int byteorder, size_t *size);
 

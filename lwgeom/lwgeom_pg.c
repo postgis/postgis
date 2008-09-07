@@ -252,7 +252,7 @@ PG_LWGEOM *
 pglwgeom_from_ewkb(uchar *ewkb, size_t ewkblen)
 {
 	PG_LWGEOM *ret;
-    SERIALIZED_LWGEOM *serialized_lwgeom;
+	SERIALIZED_LWGEOM *serialized_lwgeom;
 	char *hexewkb;
 	size_t hexewkblen = ewkblen*2;
 	int i;
@@ -264,10 +264,10 @@ pglwgeom_from_ewkb(uchar *ewkb, size_t ewkblen)
 	}
 	hexewkb[hexewkblen] = '\0';
 
-    serialized_lwgeom = lwgeom_from_ewkt(hexewkb);
+	serialized_lwgeom = serialized_lwgeom_from_ewkt(hexewkb);
     
-    ret = (PG_LWGEOM *)palloc(serialized_lwgeom->size + VARHDRSZ);
-    SET_VARSIZE(ret, serialized_lwgeom->size + VARHDRSZ);
+	ret = (PG_LWGEOM *)palloc(serialized_lwgeom->size + VARHDRSZ);
+	SET_VARSIZE(ret, serialized_lwgeom->size + VARHDRSZ);
 	memcpy(VARDATA(ret), serialized_lwgeom->lwgeom, serialized_lwgeom->size);
 
 	lwfree(hexewkb);

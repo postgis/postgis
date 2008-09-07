@@ -63,15 +63,15 @@ PG_FUNCTION_INFO_V1(LWGEOM_in);
 Datum LWGEOM_in(PG_FUNCTION_ARGS)
 {
 	char *str = PG_GETARG_CSTRING(0);
-    SERIALIZED_LWGEOM *serialized_lwgeom;
-    LWGEOM *lwgeom;	
-    PG_LWGEOM *ret;
+	SERIALIZED_LWGEOM *serialized_lwgeom;
+	LWGEOM *lwgeom;	
+	PG_LWGEOM *ret;
 
 	/* will handle both HEXEWKB and EWKT */
-    serialized_lwgeom = lwgeom_from_ewkt(str);
+	serialized_lwgeom = serialized_lwgeom_from_ewkt(str);
 	lwgeom = lwgeom_deserialize(serialized_lwgeom->lwgeom);
     
-    ret = pglwgeom_serialize(lwgeom);
+	ret = pglwgeom_serialize(lwgeom);
 	lwgeom_release(lwgeom);
 
 	if ( is_worth_caching_pglwgeom_bbox(ret) )
@@ -476,7 +476,7 @@ Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUGF(3, "in parse_WKT_lwgeom with input: '%s'",wkt);
 
-	serialized_lwgeom = lwgeom_from_ewkt(wkt);
+	serialized_lwgeom = serialized_lwgeom_from_ewkt(wkt);
 	lwgeom = lwgeom_deserialize(serialized_lwgeom->lwgeom);
     
 	ret = pglwgeom_serialize(lwgeom);

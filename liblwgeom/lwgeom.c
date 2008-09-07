@@ -454,27 +454,6 @@ lwgeom_add(const LWGEOM *to, uint32 where, const LWGEOM *what)
 
 
 /*
- * Make a LWGEOM object from a WKT input string
- */
-SERIALIZED_LWGEOM *
-lwgeom_from_ewkt(char *wkt_input)
-{
-	SERIALIZED_LWGEOM *serialized_form = parse_lwg(wkt_input,
-		lwalloc, lwerror);
-
-
-	LWDEBUGF(2, "lwgeom_from_ewkt with %s",wkt_input);
-
-	if (serialized_form == NULL)
-	{
-		lwerror("lwgeom_from_ewkt:: couldnt parse!");
-		return NULL;
-	}
-
-	return serialized_form;
-}
-
-/*
  * Return an alloced string
  */
 char *
@@ -543,7 +522,7 @@ lwgeom_from_ewkb(uchar *ewkb, size_t size)
 	hexewkb[hexewkblen] = '\0';
 
 	/* Rely on grammar parser to construct a LWGEOM */
-	serialized_lwgeom = lwgeom_from_ewkt(hexewkb);
+	serialized_lwgeom = serialized_lwgeom_from_ewkt(hexewkb);
 
 	/* Free intermediate HEXified representation */
 	lwfree(hexewkb);
@@ -559,6 +538,27 @@ lwgeom_from_ewkb(uchar *ewkb, size_t size)
  * Parser functions for working with serialized LWGEOMs. Useful for cases where
  * the function input is already serialized, e.g. some input and output functions
  */
+
+/*
+ * Make a serialzed LWGEOM object from a WKT input string
+ */
+SERIALIZED_LWGEOM *
+serialized_lwgeom_from_ewkt(char *wkt_input)
+{
+	SERIALIZED_LWGEOM *serialized_form = parse_lwg(wkt_input,
+		lwalloc, lwerror);
+
+
+	LWDEBUGF(2, "serialized_lwgeom_from_ewkt with %s",wkt_input);
+
+	if (serialized_form == NULL)
+	{
+		lwerror("serialized_lwgeom_from_ewkt:: couldnt parse!");
+		return NULL;
+	}
+
+	return serialized_form;
+}
 
 /*
  * Return an alloced string
