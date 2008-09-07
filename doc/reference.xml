@@ -1113,19 +1113,7 @@ GROUP BY gid, field1,field2;
             geometry size, but makes bounding-box based queries slower.</para>
           </listitem>
         </varlistentry>
-
-       
-        <varlistentry>
-          <term>ST_SetPoint(linestring, N, point)</term>
-
-          <listitem>
-            <para>Replace point N of linestring with given point. Index is
-            0-based.</para>
-
-            <para>Availability: 1.1.0</para>
-          </listitem>
-        </varlistentry>
-
+		
         <varlistentry>
           <term>ST_Force_collection(geometry)</term>
 

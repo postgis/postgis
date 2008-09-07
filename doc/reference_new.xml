@@ -2308,11 +2308,11 @@ postgis=# SELECT ST_StartPoint('POINT(0 1)'::geometry) IS NULL AS is_null;
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_RemovePoint"/></para>
+			<para><xref linkend="ST_RemovePoint"/>, <xref linkend="ST_SetPoint" /></para>
 		  </refsection>
 		</refentry> 
 		
-<refentry id="ST_Multi">
+	<refentry id="ST_Multi">
 		<refnamediv>
 			<refname>ST_Multi</refname>
 			
@@ -2392,7 +2392,7 @@ UPDATE sometable
         <title>See Also</title>
         <para><xref linkend="ST_AddPoint"/>, <xref linkend="ST_NPoints"/>, <xref linkend="ST_NumPoints"/></para>
       </refsection>
-	</refentry> 
+	</refentry>
 
 	<refentry id="ST_Reverse">
 	  <refnamediv>
@@ -2428,7 +2428,53 @@ FROM
 LINESTRING(1 2,1 10) | LINESTRING(1 10,1 2)
 </programlisting>
 	  </refsection>
+	</refentry>
+
+	<refentry id="ST_SetPoint">
+		  <refnamediv>
+			<refname>ST_SetPoint</refname>
+			<refpurpose>Replace point N of linestring with given point. Index is
+            0-based.</refpurpose>
+		  </refnamediv>
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_AddPoint</function></funcdef>
+				<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef>
+				<paramdef><type>geometry</type> <parameter>point</parameter></paramdef>
+			  </funcprototype>
+			 </funcsynopsis>
+			 <funcsynopsis>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_AddPoint</function></funcdef>
+				<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef>
+				<paramdef><type>geometry</type> <parameter>point</parameter></paramdef>
+				<paramdef><type>integer</type> <parameter>position</parameter></paramdef>
+			  </funcprototype>
+			 </funcsynopsis>
+		  </refsynopsisdiv>
+		
+		  <refsection>
+			<title>Description</title>
+		
+			<para>Replace point N of linestring with given point. Index is
+            0-based. 
+				This is especially useful in triggers when trying to maintain relationship of joints when one vertex moves.</para>
+			<para>Availability: 1.1.0</para>
+		  </refsection>
+		
+		  <refsection>
+			<title>Examples</title>	
+			<programlisting>
+<!-- TODO: Provide ST_SetPoint Example -->
+			</programlisting>
+		  </refsection>
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_AddPoint"/>,<xref linkend="ST_RemovePoint"/></para>
+		  </refsection>
 	</refentry> 
+		
     <refentry id="ST_SetSRID">
       <refnamediv>
         <refname>ST_SetSRID</refname>
