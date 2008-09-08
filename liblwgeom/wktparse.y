@@ -17,6 +17,8 @@ int lwg_parse_yylex(void);
 
 %start geometry
 
+%locations
+
 %union {
 	double value;
 	const char* wkb;
