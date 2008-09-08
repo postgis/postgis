@@ -2606,6 +2606,66 @@ CREATE INDEX idx_the_geom_26986_parcels
 		<para><xref linkend="ST_AsText" />, <xref linkend="ST_SetSRID" />, <xref linkend="UpdateGeometrySRID"/></para>
 	  </refsection>
 	</refentry>
+	
+	<refentry id="ST_Translate">
+	  <refnamediv>
+		<refname>ST_Translate</refname>
+	
+		<refpurpose>Translates the geometry to a new location using the numeric
+			parameters as offsets. Ie: ST_Translate(geom, X, Y) or  ST_Translate(geom, X, Y,Z).</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Translate</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>deltax</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>deltay</parameter></paramdef>
+		  </funcprototype>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Translate</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>deltax</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>deltay</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>deltaz</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+		
+		<para>Returns a new geometry whose coordinates are translated delta x,delta y,delta z units. Units are
+		based on the units defined in spatial reference (SRID) for this geometry.</para>
+		
+		<para>Availability: 1.2.2</para>
+	  </refsection>
+	
+	  <refsection>
+		<title>Examples</title>
+		<para>Move a point 1 degree longitude</para>
+		<programlisting>
+	SELECT ST_AsText(ST_Translate(ST_GeomFromText('POINT(-71.01 42.37)',4326),1,0)) As wgs_transgeomtxt;
+	
+	wgs_transgeomtxt
+	---------------------
+	POINT(-70.01 42.37)
+		</programlisting>
+		<para>Move a linestring 1 degree longitude and 1/2 degree latitude</para>
+		<programlisting>SELECT ST_AsText(ST_Translate(ST_GeomFromText('LINESTRING(-71.01 42.37,-71.11 42.38)',4326),1,0.5)) As wgs_transgeomtxt;
+		   wgs_transgeomtxt
+	---------------------------------------
+	LINESTRING(-70.01 42.87,-70.11 42.88)
+	</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_AsText" />, <xref linkend="ST_GeomFromText" /></para>
+	  </refsection>
+	</refentry>
   </sect1>
 
   <sect1>

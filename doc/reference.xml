@@ -1204,15 +1204,6 @@ z' = z </programlisting> This method is a subcase of the 3D method
         </varlistentry>
 
         <varlistentry>
-          <term>ST_Translate(geometry, float8, float8, float8)</term>
-
-          <listitem>
-            <para>Translates the geometry to a new location using the numeric
-            parameters as offsets. Ie: translate(geom, X, Y, Z).</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
           <term>ST_Scale(geometry, float8, float8, float8)</term>
 
           <listitem>
