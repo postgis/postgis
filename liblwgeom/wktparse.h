@@ -96,8 +96,8 @@ void alloc_wkb(const char* parser);
 	You are responsible for freeing the returned memory.
 */
 
-SERIALIZED_LWGEOM* parse_lwg(const char* wkt,allocator allocfunc,report_error errfunc);
-SERIALIZED_LWGEOM* parse_lwgi(const char* wkt,allocator allocfunc,report_error errfunc);
+SERIALIZED_LWGEOM* parse_lwg(const char* wkt, int flags, allocator allocfunc,report_error errfunc);
+SERIALIZED_LWGEOM* parse_lwgi(const char* wkt, int flags, allocator allocfunc,report_error errfunc);
 char* unparse_WKT(uchar* serialized, allocator alloc,freeor free);
 char* unparse_WKB(uchar* serialized, allocator alloc,freeor free, char endian, size_t *outsize, uchar hexform);
 int lwg_parse_yyparse(void);

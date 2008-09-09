@@ -746,8 +746,8 @@ lwgeom_rtree_leaf_consistent(BOX2DFLOAT4 *key,
 PG_FUNCTION_INFO_V1(LWGEOM_gist_decompress);
 Datum LWGEOM_gist_decompress(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_DEBUG_LEVEL >= 4
 	static unsigned int counter2 = 0;
+#if POSTGIS_DEBUG_LEVEL >= 4
 	counter2++;
 #endif
 	POSTGIS_DEBUGF(2, "GIST: LWGEOM_gist_decompress called %i",counter2);

@@ -508,7 +508,7 @@ lwgeom_to_ewkb(LWGEOM *lwgeom, char byteorder, size_t *outsize)
  *	- deserialize it
  */
 LWGEOM *
-lwgeom_from_ewkb(uchar *ewkb, size_t size)
+lwgeom_from_ewkb(uchar *ewkb, size_t size, int flags)
 {
 	size_t hexewkblen = size*2;
 	char *hexewkb;
@@ -522,7 +522,7 @@ lwgeom_from_ewkb(uchar *ewkb, size_t size)
 	hexewkb[hexewkblen] = '\0';
 
 	/* Rely on grammar parser to construct a LWGEOM */
-	serialized_lwgeom = serialized_lwgeom_from_ewkt(hexewkb);
+	serialized_lwgeom = serialized_lwgeom_from_ewkt(hexewkb, flags);
 
 	/* Free intermediate HEXified representation */
 	lwfree(hexewkb);
@@ -543,9 +543,9 @@ lwgeom_from_ewkb(uchar *ewkb, size_t size)
  * Make a serialzed LWGEOM object from a WKT input string
  */
 SERIALIZED_LWGEOM *
-serialized_lwgeom_from_ewkt(char *wkt_input)
+serialized_lwgeom_from_ewkt(char *wkt_input, int flags)
 {
-	SERIALIZED_LWGEOM *serialized_form = parse_lwg(wkt_input,
+	SERIALIZED_LWGEOM *serialized_form = parse_lwg(wkt_input, flags,
 		lwalloc, lwerror);
 
 

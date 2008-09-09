@@ -91,6 +91,16 @@ struct {
 } the_geom;
 
 tuple* free_list=0;
+
+
+/*
+ * Parser global check flags - a bitmap of flags that determine which checks the parser will perform 
+ * (see liblwgeom.h for the related PARSER_CHECK constants)
+ */
+int parser_check_flags;
+
+
+/* Parser state flags - these are set automatically by the parser */
 int minpoints;
 int checkclosed;
 
@@ -101,6 +111,7 @@ int checkclosed;
 int isodd;
 double *first_point=NULL;
 double *last_point=NULL;
+
 
 /* External functions */
 extern void init_parser(const char *);
@@ -158,9 +169,9 @@ void read_wkb_ordinate_array(const char **b);
 void read_collection(const char **b, read_col_func f);
 void parse_wkb(const char **b);
 void alloc_wkb(const char *parser);
-SERIALIZED_LWGEOM* parse_it(const char* geometry, allocator allocfunc, report_error errfunc);
-SERIALIZED_LWGEOM* parse_lwg(const char* geometry, allocator allocfunc, report_error errfunc);
-SERIALIZED_LWGEOM* parse_lwgi(const char* geometry, allocator allocfunc, report_error errfunc);
+SERIALIZED_LWGEOM* parse_it(const char* geometry, int flags, allocator allocfunc, report_error errfunc);
+SERIALIZED_LWGEOM* parse_lwg(const char* geometry, int flags, allocator allocfunc, report_error errfunc);
+SERIALIZED_LWGEOM* parse_lwgi(const char* geometry, int flags, allocator allocfunc, report_error errfunc);
 
 void
 set_srid(double d_srid)
@@ -269,20 +280,30 @@ pop(void)
 void
 popc(void)
 {
-
-	if ( the_geom.stack->uu.nn.num < minpoints){
-		error("geometry requires more points");
-	}
-        if(isodd != -1 && the_geom.stack->uu.nn.num % 2 != isodd) {
-                error("geometry must have an odd number of points");
-        }
-	if ( checkclosed && first_point && last_point) {
-		if ( memcmp(first_point, last_point,
-			sizeof(double)*the_geom.ndims) )
-		{
-			error("geometry contains non-closed rings");
+	/* If the minimum point check has been enabled, perform it */
+	if (parser_check_flags & PARSER_CHECK_MINPOINTS) {
+		if ( the_geom.stack->uu.nn.num < minpoints){
+			error("geometry requires more points");
 		}
-	}	
+	}
+
+	/* If the odd number point check has been enabled, perform it */
+	if (parser_check_flags & PARSER_CHECK_CLOSURE) {
+        	if(isodd != -1 && the_geom.stack->uu.nn.num % 2 != isodd) {
+                	error("geometry must have an odd number of points");
+        	}
+	}
+
+	/* If the polygon closure check has been enabled, perform it */
+	if (parser_check_flags & PARSER_CHECK_ODD) {
+		if ( checkclosed && first_point && last_point) {
+			if ( memcmp(first_point, last_point,
+				sizeof(double)*the_geom.ndims) )
+			{
+				error("geometry contains non-closed rings");
+			}
+		}	
+	}
 
 	the_geom.stack = the_geom.stack->uu.nn.stack_next;
 }
@@ -1106,7 +1127,7 @@ alloc_wkb(const char *parser)
 	Parse a string and return a LW_GEOM
 */
 SERIALIZED_LWGEOM *
-parse_it(const char *geometry, allocator allocfunc, report_error errfunc)
+parse_it(const char *geometry, int flags, allocator allocfunc, report_error errfunc)
 {
         LWDEBUGF(2, "parse_it: %s", geometry);
 
@@ -1114,6 +1135,9 @@ parse_it(const char *geometry, allocator allocfunc, report_error errfunc)
 	error_func=errfunc;
 
 	ferror_occured = 0;
+
+	/* Setup the inital parser flags */
+	parser_check_flags = flags;
 
 	init_parser(geometry);
 
@@ -1128,17 +1152,17 @@ parse_it(const char *geometry, allocator allocfunc, report_error errfunc)
 }
 
 SERIALIZED_LWGEOM *
-parse_lwg(const char* geometry,allocator allocfunc,report_error errfunc)
+parse_lwg(const char* geometry, int flags, allocator allocfunc, report_error errfunc)
 {
 	the_geom.lwgi=0;
-	return parse_it(geometry,allocfunc,errfunc);
+	return parse_it(geometry, flags, allocfunc, errfunc);
 }
 
 SERIALIZED_LWGEOM *
-parse_lwgi(const char* geometry,allocator allocfunc,report_error errfunc)
+parse_lwgi(const char* geometry, int flags, allocator allocfunc, report_error errfunc)
 {
 	the_geom.lwgi=1;
-	return parse_it(geometry,allocfunc,errfunc);
+	return parse_it(geometry, flags, allocfunc, errfunc);
 }
 
 void
