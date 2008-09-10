@@ -4737,7 +4737,7 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
       
       <refsection>
         <title>See Also</title>
-        <para><xref linkend="ST_Contains"/>, <xref linkend="ST_Equals"/></para>
+        <para><xref linkend="ST_Contains"/>, <xref linkend="ST_Equals"/>,<xref linkend="ST_IsValid"/></para>
       </refsection>
     </refentry>
   </sect1>
