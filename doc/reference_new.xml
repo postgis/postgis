@@ -1926,22 +1926,6 @@ postgis=# SELECT ST_EndPoint('POINT(1 1)'::geometry) IS NULL AS is_null;
 			<para><xref linkend="GeometryType" /></para>
 		</refsection>
 	</refentry>
-	<varlistentry>
-        <term>ST_IsValid</term>
-
-        <listitem>
-          <para>Test if an ST_Geometry value is well formed.</para>
-
-          <note>
-            <para>SQL-MM defines the result of ST_IsValid(NULL) to be 0, while
-            PostGIS returns NULL.</para>
-          </note>
-
-          <para>SQL-MM defines the result of ST_IsValid(NULL) to be 1</para>
-
-          <para>SQL-MM 3: 5.1.9</para>
-        </listitem>
-    </varlistentry>
     <refentry id="ST_IsClosed">
       <refnamediv>
         <refname>ST_IsClosed</refname>
@@ -2338,15 +2322,6 @@ postgis=# SELECT ST_StartPoint('POINT(0 1)'::geometry) IS NULL AS is_null;
       <para><xref linkend="ST_EndPoint" />, <xref linkend="ST_PointN" /></para>
     </refsection>
   </refentry>
-  
-       <varlistentry>
-          <term>ST_Summary(geometry)</term>
-
-          <listitem>
-            <para>Returns a text summary of the contents of the
-            geometry.</para>
-          </listitem>
-        </varlistentry>
     <refentry id="ST_Summary">
       <refnamediv>
         <refname>ST_Summary</refname>
