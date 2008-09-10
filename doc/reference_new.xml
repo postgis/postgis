@@ -888,6 +888,7 @@ FROM (SELECT ST_Buffer(ST_MakeLine(ST_MakePoint(21, 22),ST_MakePoint(-19, -18)),
 		  <funcprototype>
 			<funcdef>geometry <function>ST_Collect</function></funcdef>
 			<paramdef><type>geometry</type> <parameter>g1</parameter></paramdef>
+			<paramdef><type>geometry</type> <parameter>g2</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -2485,7 +2486,7 @@ SELECT ST_AsText(ST_SetPoint('LINESTRING(-1 2,-1 3)', 1, 'POINT(-1 1)'));
           <funcprototype>
             <funcdef>boolean <function>ST_SetSRID</function></funcdef>
 
-            <paramdef><type>Geometry </type>
+            <paramdef><type>geometry </type>
             <parameter>geom</parameter></paramdef>
 
             <paramdef><type>integer </type>
@@ -3832,10 +3833,10 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
           <funcprototype>
             <funcdef>boolean <function>ST_Distance</function></funcdef>
 
-            <paramdef><type>Geometry </type>
+            <paramdef><type>geometry </type>
             <parameter>g1</parameter></paramdef>
 
-            <paramdef><type>Geometry </type>
+            <paramdef><type>geometry </type>
             <parameter>g2</parameter></paramdef>
           </funcprototype>
         </funcsynopsis>
