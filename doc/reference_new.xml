@@ -2376,8 +2376,8 @@ postgis=# SELECT ST_StartPoint('POINT(0 1)'::geometry) IS NULL AS is_null;
       <refsection>
         <title>Examples</title>
     
-        <programlisting>SELECT ST_IsValid(ST_GeomFromText('LINESTRING(0 0, 1 1)')) As good_line,
-	ST_IsValid(ST_GeomFromText('POLYGON((0 0, 1 1, 1 2, 1 1, 0 0))')) As bad_poly
+        <programlisting>SELECT ST_Summary(ST_GeomFromText('LINESTRING(0 0, 1 1)')) As good_line,
+	ST_Summary(ST_GeomFromText('POLYGON((0 0, 1 1, 1 2, 1 1, 0 0))')) As bad_poly
 --results
       good_line       |        bad_poly
 ----------------------+-------------------------
