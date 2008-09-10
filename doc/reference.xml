@@ -1485,15 +1485,6 @@ WHERE n*100.00/length &lt; 1;
 
       <variablelist>
         <varlistentry>
-          <term>ST_Summary(geometry)</term>
-
-          <listitem>
-            <para>Returns a text summary of the contents of the
-            geometry.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
           <term>ST_box2d(geometry)</term>
 
           <listitem>
