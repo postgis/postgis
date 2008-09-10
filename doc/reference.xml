@@ -1552,14 +1552,6 @@ WHERE n*100.00/length &lt; 1;
           </listitem>
         </varlistentry>
 
-        <varlistentry id="IsValid">
-          <term>ST_isvalid(geometry)</term>
-
-          <listitem>
-            <para>returns true if this geometry is valid.</para>
-          </listitem>
-        </varlistentry>
-
         <varlistentry>
           <term>ST_expand(geometry, float)</term>
 
@@ -1939,23 +1931,6 @@ WHERE n*100.00/length &lt; 1;
           </note>
 
           <para>SQL-MM 3: 5.1.8</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term>ST_IsValid</term>
-
-        <listitem>
-          <para>Test if an ST_Geometry value is well formed.</para>
-
-          <note>
-            <para>SQL-MM defines the result of ST_IsValid(NULL) to be 0, while
-            PostGIS returns NULL.</para>
-          </note>
-
-          <para>SQL-MM defines the result of ST_IsValid(NULL) to be 1</para>
-
-          <para>SQL-MM 3: 5.1.9</para>
         </listitem>
       </varlistentry>
 
