@@ -512,7 +512,7 @@ SELECT AddGeometryColumn( 'roads', 'roads_geom', -1, 'GEOMETRY', 3 );</programli
       <para>Most of the functions implemented by the GEOS library rely on the
       assumption that your geometries are valid as specified by the OpenGIS
       Simple Feature Specification. To check validity of geometries you can
-      use the <link linkend="IsValid">IsValid()</link> function:</para>
+      use the <link linkend="ST_IsValid">IsValid()</link> function:</para>
 
       <programlisting> gisdb=# select isvalid('LINESTRING(0 0, 1 1)'), 
         isvalid('LINESTRING(0 0,0 0)'); 
@@ -540,7 +540,7 @@ SELECT AddGeometryColumn( 'roads', 'roads_geom', -1, 'GEOMETRY', 3 );</programli
 
       <note>
         <para>Strictly compliant OGC geometries cannot have Z or M values. The
-        <link linkend="IsValid">IsValid()</link> function won't consider
+        <link linkend="ST_IsValid">IsValid()</link> function won't consider
         higher dimensioned geometries invalid! Invocations of <link
         linkend="AddGeometryColumn">AddGeometryColumn()</link> will add a
         constraint checking geometry dimensions, so it is enough to specify 2
