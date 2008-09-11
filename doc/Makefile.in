@@ -30,6 +30,9 @@ XSLTPROC_HTMLOPTS = \
 HTML_DOCBOOK_XSL=$(XSLBASE)/html/docbook.xsl
 CHUNK_HTML_DOCBOOK_XSL=$(XSLBASE)/html/chunk.xsl
 
+# OpenJade's db2pdf script for PDF generation from DocBook
+DB2PDF = @DB2PDF@
+
 # Directories for documentation and man pages
 PGSQL_DOCDIR=@PGSQL_DOCDIR@
 PGSQL_MANDIR=@PGSQL_MANDIR@
@@ -61,6 +64,15 @@ html/postgis.html: postgis-out.xml
 		--output html/postgis.html \
 		$(HTML_DOCBOOK_XSL) \
 		$<
+
+postgis.pdf: postgis-out.xml
+	@if test x"$(DB2PDF)" = x; then \
+	   echo "Error: db2pdf not found, can't build posgis.pdf"; \
+	   echo "       try installing docbook-utils package and then re-run configure"; \
+	   false; \
+	else \
+	   $(DB2PDF) $< && mv postgis-out.pdf postgis.pdf; \
+	fi
 
 clean:
 	@rm -f \
