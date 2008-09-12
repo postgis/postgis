@@ -258,7 +258,7 @@
 
         <listitem>
           <para>Retrieve the PostGIS source archive from <ulink
-          url="http://postgis.refractions.net/postgis-@@LAST_RELEASE_VERSION@@.tar.gz">http://postgis.refractions.net/postgis-@@LAST_RELEASE_VERSION@@.tar.gz</ulink>.
+          url="http://postgis.refractions.net/download/postgis-@@LAST_RELEASE_VERSION@@.tar.gz">http://postgis.refractions.net/download/postgis-@@LAST_RELEASE_VERSION@@.tar.gz</ulink>.
           Uncompress and untar the archive.</para>
 
           <programlisting># gzip -d -c postgis-@@LAST_RELEASE_VERSION@@.tar.gz | tar xvf -</programlisting>
