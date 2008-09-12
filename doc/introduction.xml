@@ -15,54 +15,62 @@
     <title>Credits</title>
 
     <variablelist>
-      <varlistentry>
-        <term>Sandro Santilli &lt;strk@refractions.net&gt;</term>
-
+	  <varlistentry>
+        <term>Mark Cave-Ayland</term>
         <listitem>
-          <para>Coordinates all bug fixing and maintenance effort, integration
+          <para>Coordinates bug fixing and maintenance effort, alignment of PostGIS with PostgreSQL releases, windows build, integration
           of new GEOS functionality, and new function enhancements.</para>
         </listitem>
       </varlistentry>
-
       <varlistentry>
-        <term>Mark Leslie &lt;mleslie@refractions.net&gt;</term>
-
+        <term>Paul Ramsey</term>
+        <listitem>
+          <para>Release Manager, coordinates general direction of the project, 
+		  	often gets his hands dirty doing real coding.</para>
+        </listitem>
+      </varlistentry>
+	  
+      <varlistentry>
+        <term>Mark Leslie</term>
         <listitem>
           <para>Ongoing maintenance and development of core functions.</para>
         </listitem>
       </varlistentry>
-
+	  
       <varlistentry>
-        <term>Chris Hodgson &lt;chodgson@refractions.net&gt;</term>
-
+        <term>Kevin Kneufeld</term>
         <listitem>
-          <para>Maintains new functions and the 7.2 index bindings.</para>
+          <para>Documentation, Hudson automated build, advanced user support on PostGIS newsgroup.</para>
         </listitem>
       </varlistentry>
-
-      <varlistentry>
-        <term>Paul Ramsey &lt;pramsey@refractions.net&gt;</term>
-
+	  
+	  <varlistentry>
+        <term>Sandro Santilli</term>
         <listitem>
-          <para>Keeps track of the documentation and packaging.</para>
+          <para>Bug fixes and maintenance and integration of new GEOS functionality</para>
         </listitem>
       </varlistentry>
-
+	  
       <varlistentry>
-        <term>Jeff Lounsbury &lt;jeffloun@refractions.net&gt;</term>
-
+        <term>Chris Hodgson</term>
         <listitem>
-          <para>Original development of the Shape file loader/dumper.</para>
+          <para>General development</para>
         </listitem>
       </varlistentry>
-
-      <varlistentry>
-        <term>Dave Blasby &lt;dblasby@gmail.com&gt;</term>
-
+	  
+	  <varlistentry>
+        <term>Dave Blasby</term>
         <listitem>
           <para>The original developer of PostGIS. Dave wrote the server side
           objects, index bindings, and many of the server side analytical
           functions.</para>
+        </listitem>
+      </varlistentry>
+	  
+      <varlistentry>
+        <term>Jeff Lounsbury</term>
+        <listitem>
+          <para>Original development of the Shape file loader/dumper.</para>
         </listitem>
       </varlistentry>
 
@@ -72,11 +80,9 @@
         <listitem>
           <para>In alphabetical order: Alex Bodnaru, Alex Mayrhofer, Bruce
           Rindahl, Bernhard Reiter, Bruno Wolff III, Carl Anderson, Charlie
-          Savage, David Skea, David Techer, IIDA Tetsushi, Geographic Data BC,
-          Gerald Fenoy, Gino Lucrezi, Klaus Foerster, Kris Jurka, Mark
-          Cave-Ayland, Mark Sondheim, Markus Schaber, Michael Fuhr, Nikita
-          Shulga, Norman Vine, Olivier Courtin, Ralph Mason, Steffen
-          Macke.</para>
+          Savage, Dane Springmeyer, David Skea, David Techer, IIDA Tetsushi, Geographic Data BC,
+          Gerald Fenoy, Gino Lucrezi, Klaus Foerster, Kris Jurka, Mark Sondheim, Markus Schaber, Michael Fuhr, Nikita
+          Shulga, Norman Vine, Olivier Courtin, Ralph Mason, Regina Obe, Steffen Macke.</para>
         </listitem>
       </varlistentry>
 
@@ -84,12 +90,12 @@
         <term>Important Support Libraries</term>
 
         <listitem>
-          <para>The <ulink url="http://geos.refractions.net">GEOS</ulink>
+          <para>The <ulink url="http://geos.osgeo.org/">GEOS</ulink>
           geometry operations library, and the algorithmic work of Martin
-          Davis &lt;mbdavis@vividsolutions.com&gt; of Vivid Solutions in
-          making it all work.</para>
+          Davis in
+          making it all work, ongoing maintainenance and support of Masteuz Loskot, Paul Ramsey and others.</para>
 
-          <para>The <ulink url="http://proj4.maptools.org">Proj4</ulink>
+          <para>The <ulink url="http://proj.osgeo.org">Proj4</ulink>
           cartographic projection library, and the work of Gerald Evenden and
           Frank Warmerdam in creating and maintaining it.</para>
         </listitem>
@@ -109,14 +115,14 @@
 
       <listitem>
         <para>More information about the GEOS geometry operations library is
-        available at<ulink url="http://geos.refractions.net">
-        http://geos.refractions.net</ulink>.</para>
+        available at<ulink url="http://geos.osgeo.org/">
+       http://geos.osgeo.org/</ulink>.</para>
       </listitem>
 
       <listitem>
         <para>More information about the Proj4 reprojection library is
         available at <ulink
-        url="http://www.remotesensing.org/proj">http://www.remotesensing.org/proj</ulink>.</para>
+        url="http://proj.osgeo.org">http://proj.osgeo.org</ulink>.</para>
       </listitem>
 
       <listitem>
