@@ -2213,6 +2213,83 @@ NOTICE:  Self-intersection at or near point 0 0
 	  </refsection>
 	</refentry>
 	
+  <refentry id="ST_IsRing">
+    <refnamediv>
+      <refname>ST_IsRing</refname>
+  
+      <refpurpose>Returns <varname>TRUE</varname> if this
+      <varname>LINESTRING</varname> is both closed and simple.</refpurpose>
+    </refnamediv>
+  
+    <refsynopsisdiv>
+      <funcsynopsis>
+        <funcprototype>
+          <funcdef>boolean <function>ST_IsRing</function></funcdef>
+  
+          <paramdef><type>geometry </type> <parameter>g</parameter></paramdef>
+        </funcprototype>
+      </funcsynopsis>
+    </refsynopsisdiv>
+  
+    <refsection>
+      <title>Description</title>
+  
+      <para>Returns <varname>TRUE</varname> if this
+      <varname>LINESTRING</varname> is both <xref linkend="ST_IsClosed" />
+      (<function>ST_StartPoint(<parameter>g</parameter>)</function>
+      <function>~=</function>
+      <function>ST_Endpoint(<parameter>g</parameter>)</function>) and <xref
+      linkend="ST_IsSimple" /> (does not self intersect).</para>
+  
+      <para><inlinemediaobject>
+          <imageobject>
+            <imagedata fileref="images/check.png" />
+          </imageobject>
+        </inlinemediaobject> This method implements the <ulink
+      url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+      Implementation Specification for SQL.</ulink> OGC SFSQL 1.1 -
+      2.1.5.1</para>
+  
+      <para><inlinemediaobject>
+          <imageobject>
+            <imagedata fileref="images/check.png" />
+          </imageobject>
+        </inlinemediaobject> This method implements the SQL/MM specification:
+      SQL-MM 3: 7.1.6</para>
+  
+      <note>
+        <para>SQL-MM defines the result of
+        <function>ST_IsRing(<varname>NULL</varname>)</function> to be 0, while
+        PostGIS returns <varname>NULL</varname>.</para>
+      </note>
+    </refsection>
+  
+    <refsection>
+      <title>Examples</title>
+  
+      <programlisting>SELECT ST_IsRing(the_geom), ST_IsClosed(the_geom), ST_IsSimple(the_geom)
+FROM (SELECT 'LINESTRING(0 0, 0 1, 1 1, 1 0, 0 0)'::geometry AS the_geom) AS foo;
+ st_isring | st_isclosed | st_issimple
+-----------+-------------+-------------
+ t         | t           | t
+(1 row)
+
+SELECT ST_IsRing(the_geom), ST_IsClosed(the_geom), ST_IsSimple(the_geom)
+FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS the_geom) AS foo;
+ st_isring | st_isclosed | st_issimple
+-----------+-------------+-------------
+ f         | t           | f
+(1 row)</programlisting>
+    </refsection>
+  
+    <refsection>
+      <title>See Also</title>
+  
+      <para><xref linkend="ST_IsClosed" />, <xref linkend="ST_IsSimple" />, <xref linkend="ST_StartPoint" />,
+      <xref linkend="ST_EndPoint" /></para>
+    </refsection>
+  </refentry>
+
 	<refentry id="ST_SRID">
 	  <refnamediv>
 		<refname>ST_SRID</refname>

@@ -241,7 +241,7 @@
           </listitem>
         </varlistentry>
 
-        <varlistentry id="IsSimple">
+        <varlistentry id="ST_IsSimple">
           <term>ST_IsSimple(geometry)</term>
 
           <listitem>
@@ -251,20 +251,6 @@
             <para>Performed by the GEOS module</para>
 
             <para>OGC SPEC s2.1.1.1</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>ST_IsRing(geometry)</term>
-
-          <listitem>
-            <para>Returns 1 (TRUE) if this Curve is closed (StartPoint ( ) =
-            EndPoint ( )) and this Curve is simple (does not pass through the
-            same point more than once).</para>
-
-            <para>performed by GEOS</para>
-
-            <para>OGC spec 2.1.5.1</para>
           </listitem>
         </varlistentry>
 
@@ -1263,7 +1249,7 @@ z' = z </programlisting> This method is a subcase of the 3D method
             any kind of geometry. Since simplification occurs on a
             object-by-object basis you can also feed a GeometryCollection to
             this function. Note that returned geometry might loose its
-            simplicity (see <link linkend="IsSimple">IsSimple</link>)</para>
+            simplicity (see <xref linkend="ST_IsSimple" />)</para>
           </listitem>
         </varlistentry>
 
@@ -1293,7 +1279,7 @@ z' = z </programlisting> This method is a subcase of the 3D method
 
             <note>
               <para>The returned geometry might loose its simplicity (see
-              <link linkend="IsSimple">IsSimple</link>).</para>
+              <xref linkend="ST_IsSimple" />).</para>
             </note>
 
             <note>
@@ -1894,22 +1880,7 @@ WHERE n*100.00/length &lt; 1;
         </listitem>
       </varlistentry>
 
-      <varlistentry id="ST_IsRing">
-        <term>ST_IsRing</term>
-
-        <listitem>
-          <para>Test if an ST_Curve value is a ring.</para>
-
-          <note>
-            <para>SQL-MM defines the result of ST_IsRing(NULL) to be 0, while
-            PostGIS returns NULL.</para>
-          </note>
-
-          <para>SQL-MM 3: 7.1.6</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry >
+      <varlistentry>
         <term>ST_IsSimple</term>
 
         <listitem>
