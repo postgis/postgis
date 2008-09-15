@@ -356,7 +356,7 @@ geometry
             <programlisting>+proj=utm +zone=10 +ellps=clrk66 +datum=NAD27 +units=m</programlisting>
 
             <para>For more information about, see the Proj4 web site at <ulink
-            url="http://www.remotesensing.org/proj">http://www.remotesensing.org/proj</ulink>.
+            url="http://proj.osgeo.org">http://proj.osgeo.org</ulink>.
             The <filename>spatial_ref_sys.sql</filename> file contains both
             <varname>SRTEXT</varname> and <varname>PROJ4TEXT</varname>
             definitions for all EPSG projections.</para>
