@@ -108,17 +108,17 @@
 		</listitem>
 	  </varlistentry>
 	
-	  <varlistentry>
-		<term>Other contributors</term>
-	
-		<listitem>
-		  <para>In alphabetical order: Alex Bodnaru, Alex Mayrhofer, Bruce
-		  Rindahl, Bernhard Reiter, Bruno Wolff III, Carl Anderson, Charlie
-		  Savage, Dane Springmeyer, David Skea, David Techer, IIDA Tetsushi, Geographic Data BC,
-		  Gerald Fenoy, Gino Lucrezi, Klaus Foerster, Kris Jurka, Mark Sondheim, Markus Schaber, Michael Fuhr, Nikita
-		  Shulga, Norman Vine, Olivier Courtin, Ralph Mason, Regina Obe, Steffen Macke.</para>
-		</listitem>
-	  </varlistentry>
+      <varlistentry>
+        <term>Other contributors</term>
+
+        <listitem>
+          <para>In alphabetical order: Alex Bodnaru, Alex Mayrhofer, Barbara Phillipot, Ben Jubb, Bernhard Reiter, Bruce
+          Rindahl, Bruno Wolff III, Carl Anderson, Charlie Savage, Dane Springmeyer, David Skea, 
+		  David Techer, Eduin Carillo, IIDA Tetsushi, Geographic Data BC,
+          Gerald Fenoy, Gino Lucrezi, Klaus Foerster, Kris Jurka, Mark Sondheim, Markus Schaber, Michael Fuhr, Nikita
+          Shulga, Norman Vine, Olivier Courtin, Ralph Mason, Regina Obe, Steffen Macke, Stephen Frost.</para>
+        </listitem>
+      </varlistentry>
 	
 	  <varlistentry>
 		<term>Important Support Libraries</term>
