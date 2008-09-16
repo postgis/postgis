@@ -3458,7 +3458,7 @@ F000000000000000000000000000000000000000000000000');
   
   <sect1>
       <title>Operators</title>
-      <para>&nbsp;</para> 
+      <para></para> 
   </sect1>
   
   
@@ -4107,6 +4107,13 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
           comparison that will make use of any indexes that are available on
           the geometries.</para>
         </note>
+		
+		<note>
+          <para>Prior to 1.3, ST_Expand was commonly used in conjunction with &amp;&amp; and ST_Distance to
+		  achieve the same effect and in pre-1.3.4 this function was basically short-hand for that construct.
+		  From 1.3.4, ST_DWithin uses a more short-circuit distance function which should make it more efficient
+		  than prior versions for larger buffer regions.</para>
+        </note>
 
         <para>
           <inlinegraphic fileref="images/check.png" />
@@ -4142,7 +4149,7 @@ SELECT s.gid, s.school_name
       <refsection>
         <title>See Also</title>
 
-        <para><xref linkend="ST_Distance"/></para>
+        <para><xref linkend="ST_Distance"/>, <xref linkend="ST_Expand"/></para>
       </refsection>
     </refentry>
 
@@ -4935,17 +4942,100 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
   
   <sect1>
       <title>Linear Referencing</title>
-      <para>&nbsp;</para> 
+      <para> </para> 
   </sect1>
   
   <sect1>
       <title>Long Transactions Support</title>
-      <para>&nbsp;</para>
+      <para> </para>
   </sect1>
   
   <sect1>
-      <title>Misc</title>
-      <para>&nbsp;</para>
+    <title>Misc</title>
+	<para> </para>
+	<refentry id="ST_Expand">
+      <refnamediv>
+        <refname>ST_Expand</refname>
+        <refpurpose>Returns bounding box expanded in all directions from the bounding box of the input geometry</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_Expand</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>units_to_expand</parameter></paramdef>
+          </funcprototype>
+
+          <funcprototype>
+            <funcdef>box2d <function>ST_Expand</function></funcdef>
+			<paramdef><type>box2d </type> <parameter>g1</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>units_to_expand</parameter></paramdef>
+          </funcprototype>
+		  
+		  <funcprototype>
+            <funcdef>box3d <function>ST_Expand</function></funcdef>
+			<paramdef><type>box3d </type> <parameter>g1</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>units_to_expand</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+       	<para>This function returns a bounding box expanded in all
+		directions from the bounding box of the input geometry, by an
+		amount specified in the second argument. Very useful for
+		distance() queries, or bounding box queries to add an index filter to the query.</para>
+		<para>There are 3 variants of this.  The one that takes a geometry will return a POLYGON geometry representation
+			of the bounding box and is the most commonly used variant.</para>
+		<para>ST_Expand is similar in concept to ST_Buffer except while buffer expands the geometry in all directions,
+			ST_Expand expands the bounding box an x,y,z unit amount.</para>
+		<para>Units are in the units of the spatial reference system in use denoted by the SRID</para>
+			
+		<note>
+		  <para>Pre 1.3, ST_Expand was used in conjunction with distance to do indexable queries.  Something of the form
+		  	<code>the_geom &amp;&amp; ST_Expand('POINT(10 20)', 10) AND ST_Distance(the_geom, 'POINT(10 20)') &lt; 10</code>
+			Post 1.2, this was replaced with the easier ST_DWithin construct.</para>
+		</note>
+		
+		<note>
+		  <para>Bounding boxes of all geometries are currently 2-d even if they are 3-dimensional geometries.</para>
+		</note>
+
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+		<note><para>Examples below use US National Atlas Equal Area (SRID=2163) which is a meter projection</para></note>
+        <programlisting>
+--10 meter expanded box around bbox of a linestring
+SELECT CAST(ST_Expand(ST_GeomFromText('LINESTRING(2312980 110676,2312923 110701,2312892 110714)', 2163),10) As box2d);
+		             st_expand
+------------------------------------
+ BOX(2312882 110666,2312990 110724)
+
+--10 meter expanded 3d box of a 3d box
+SELECT ST_Expand(CAST('BOX3D(778783 2951741 1,794875 2970042.61545891 10)' As box3d),10)
+		                      st_expand
+-----------------------------------------------------
+ BOX3D(778773 2951731 -9,794885 2970052.61545891 20)
+ 
+ --10 meter geometry astext rep of a expand box around a point geometry
+ SELECT ST_AsEWKT(ST_Expand(ST_GeomFromEWKT('SRID=2163;POINT(2312980 110676)'),10));
+                                            st_asewkt
+-------------------------------------------------------------------------------------------------
+ SRID=2163;POLYGON((2312970 110666,2312970 110686,2312990 110686,2312990 110666,2312970 110666))
+
+		</programlisting>
+      </refsection>
+
+      <refsection>
+        <title>See Also</title>
+        <para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_Buffer" />, <xref linkend="ST_DWithin" />, <xref linkend="ST_GeomFromEWKT" />,<xref linkend="ST_GeomFromText" />, <xref linkend="ST_SRID" /></para>
+      </refsection>
+    </refentry>
   </sect1>
       
 </chapter>
