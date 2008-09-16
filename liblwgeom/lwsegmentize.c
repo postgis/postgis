@@ -1045,3 +1045,4 @@ lwgeom_desegmentize(LWGEOM *geom)
                 return lwgeom_clone(geom);
         }
 }
+

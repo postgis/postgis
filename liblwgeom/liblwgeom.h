@@ -25,6 +25,7 @@
  * Memory management function types
  */
 extern void lwgeom_init_allocators(void);
+extern void lwgeom_install_default_allocators(void);
 
 typedef void* (*lwallocator)(size_t size);
 typedef void* (*lwreallocator)(void *mem, size_t size);
@@ -1272,6 +1273,7 @@ LWGEOM *lwmsurface_add(const LWMSURFACE *to, uint32 where, const LWGEOM *what);
 uint32 has_arc(LWGEOM *geom);
 double lwcircle_center(POINT4D *p1, POINT4D *p2, POINT4D *p3, POINT4D **result);
 LWGEOM *lwgeom_segmentize(LWGEOM *geom, uint32 perQuad);
+LWGEOM *lwgeom_desegmentize(LWGEOM *geom);
 extern double lwgeom_curvepolygon_area(LWCURVEPOLY *curvepoly);
 double lwcircle_center(POINT4D *p1, POINT4D *p2, POINT4D *p3, POINT4D **result);
 

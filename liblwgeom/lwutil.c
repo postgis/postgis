@@ -178,7 +178,7 @@ default_errorreporter(const char *fmt, ...)
  * which wish to use the default allocators above
  */
 
-void lwgeom_install_default_allocators()
+void lwgeom_install_default_allocators(void)
 {
 	lwalloc_var = default_allocator;
 	lwrealloc_var = default_reallocator;
