@@ -40,7 +40,7 @@ SELECT AddGeometryColumn('', 'gtest','geom',-1,'LINESTRING',2);</programlisting>
 VALUES (
   1, 
   'First Geometry', 
-  GeomFromText('LINESTRING(2 3,4 5,6 5,7 8)', -1)
+  ST_GeomFromText('LINESTRING(2 3,4 5,6 5,7 8)', -1)
 );</programlisting>
 
         <para>For more information about other GIS objects, see the <link
@@ -48,7 +48,7 @@ VALUES (
 
         <para>To view your GIS data in the table:</para>
 
-        <programlisting>SELECT id, name, AsText(geom) AS geom FROM gtest;</programlisting>
+        <programlisting>SELECT id, name, ST_AsText(geom) AS geom FROM gtest;</programlisting>
 
         <para>The return value should look something like this:</para>
 
@@ -91,9 +91,7 @@ VALUES (
         <programlisting>SELECT id, the_geom 
 FROM thetable 
 WHERE 
-  the_geom &amp;&amp; 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))' 
-AND
-  _ST_Contains(the_geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');</programlisting>
+  ST_Contains(the_geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');</programlisting>
       </answer>
     </qandaentry>
 
@@ -229,7 +227,8 @@ AND
         coordinate systems must be defined in the SPATIAL_REF_SYS table, and
         the geometries being reprojected must already have an SRID set on
         them. Once that is done, a reprojection is as simple as referring to
-        the desired destination SRID.</para>
+        the desired destination SRID. The below projects a geometry to NAD 83 long lat.  
+		The below will only work if the srid of the_geom is not -1 (not undefined spatial ref)</para>
 
         <programlisting>SELECT ST_Transform(the_geom,4269) FROM geotable;</programlisting>
       </answer>
