@@ -37,6 +37,7 @@ SA_OBJS=measures.o \
 	lwutil.o \
 	lwgunparse.o \
 	lwgparse.o \
+	lwsegmentize.o \
 	wktparse.tab.o \
 	lex.yy.o \
 	vsprintf.o	
