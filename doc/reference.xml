@@ -113,7 +113,7 @@
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="ST_Buffer">
           <term>ST_Buffer(geometry, double, [integer])</term>
 
           <listitem>
