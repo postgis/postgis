@@ -262,8 +262,23 @@ geometry
     descriptions of coordinate systems used in the spatial database.</para>
 
     <sect2>
-      <title>The SPATIAL_REF_SYS Table</title>
+      <title>The SPATIAL_REF_SYS Table and Spatial Reference Systems</title>
 
+	  <para>The spatial_ref_sys table is a PostGIS included and OGC compliant database table that lists over 3000
+	  		known <ulink url="http://www.sharpgis.net/post/2007/05/Spatial-references2c-coordinate-systems2c-projections2c-datums2c-ellipsoids-e28093-confusing.aspx">spatial reference systems</ulink> 
+			and details needed to transform/reproject between them.</para>
+			
+	  <para>Although the PostGIS spatial_ref_sys table contains over 3000 of the more commonly used spatial reference system definitions that can be handled by the proj library, it does not contain all known to man and
+	  		you can even define your own custom projection if you are familiar with proj4 constructs.  Keep in mind that most spatial reference systems are regional and have no meaning when used outside of the bounds they were intended for.</para>
+			
+	  <para>An excellent resource for finding spatial reference systems not defined in the core set is <ulink url="http://spatialreference.org/">http://spatialreference.org/</ulink></para>
+	  
+	  <para>Some of the more commonly used spatial reference systems are: <ulink url="http://spatialreference.org/ref/epsg/4326/">4326 - WGS 84 Long Lat</ulink>, 
+	  		<ulink url="http://spatialreference.org/ref/epsg/4269/">4269 - NAD 83 Long Lat</ulink>, 
+			<ulink url="http://spatialreference.org/ref/epsg/3395/">WGS 84 World Mercator</ulink>,
+			<ulink url="http://spatialreference.org/ref/epsg/2163/">US National Atlas Equal Area</ulink>
+	  </para>
+			
       <para>The <varname>SPATIAL_REF_SYS</varname> table definition is as
       follows:</para>
 
@@ -280,7 +295,7 @@ geometry
 
       <variablelist>
         <varlistentry>
-          <term>SRID</term>
+          <term><ulink url="http://en.wikipedia.org/wiki/SRID">SRID</ulink></term>
 
           <listitem>
             <para>An integer value that uniquely identifies the Spatial
