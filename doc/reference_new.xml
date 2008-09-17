@@ -2308,7 +2308,7 @@ FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS the_geom) AS foo
 	  <refsection>
 		<title>Description</title>
 	
-		<para>Returns the spatial reference identifier for the ST_Geometry as defined in spatial_ref_sys table. </para>
+		<para>Returns the spatial reference identifier for the ST_Geometry as defined in <xref linkend="spatial_ref_sys">spatial_ref_sys</xref> table. </para>
 		<para><note><para>spatial_ref_sys
 		table is a table that catalogs all spatial reference systems known to PostGIS and is used for transformations from one spatial
 			reference system to another.  So verifying you have the right spatial reference system identifier is important if you plan to ever transform your geometries.</para></note></para>
@@ -2340,7 +2340,7 @@ FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS the_geom) AS foo
 	  <refsection>
 		<title>See Also</title>
 	
-		<para><xref linkend="ST_GeomFromText" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_Transform" /></para>
+		<para><xref linkend="spatial_ref_sys" />,<xref linkend="ST_GeomFromText" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_Transform" /></para>
 	  </refsection>
 	</refentry>
 	
