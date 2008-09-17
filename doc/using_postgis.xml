@@ -261,7 +261,7 @@ geometry
     <varname>SPATIAL_REF_SYS</varname> table holds the numeric IDs and textual
     descriptions of coordinate systems used in the spatial database.</para>
 
-    <sect2>
+    <sect2 id="spatial_ref_sys">
       <title>The SPATIAL_REF_SYS Table and Spatial Reference Systems</title>
 
 	  <para>The spatial_ref_sys table is a PostGIS included and OGC compliant database table that lists over 3000
