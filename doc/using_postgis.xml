@@ -275,8 +275,8 @@ geometry
 	  
 	  <para>Some of the more commonly used spatial reference systems are: <ulink url="http://spatialreference.org/ref/epsg/4326/">4326 - WGS 84 Long Lat</ulink>, 
 	  		<ulink url="http://spatialreference.org/ref/epsg/4269/">4269 - NAD 83 Long Lat</ulink>, 
-			<ulink url="http://spatialreference.org/ref/epsg/3395/">WGS 84 World Mercator</ulink>,
-			<ulink url="http://spatialreference.org/ref/epsg/2163/">US National Atlas Equal Area</ulink>,
+			<ulink url="http://spatialreference.org/ref/epsg/3395/">3395 - WGS 84 World Mercator</ulink>,
+			<ulink url="http://spatialreference.org/ref/epsg/2163/">2163 - US National Atlas Equal Area</ulink>,
 			Spatial reference systems for each NAD 83, WGS 84 UTM zone - UTM zones are one of the most ideal for measurement, but only cover 6-degree regions.
 	</para>
 	<para>
