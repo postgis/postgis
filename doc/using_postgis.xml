@@ -276,8 +276,16 @@ geometry
 	  <para>Some of the more commonly used spatial reference systems are: <ulink url="http://spatialreference.org/ref/epsg/4326/">4326 - WGS 84 Long Lat</ulink>, 
 	  		<ulink url="http://spatialreference.org/ref/epsg/4269/">4269 - NAD 83 Long Lat</ulink>, 
 			<ulink url="http://spatialreference.org/ref/epsg/3395/">WGS 84 World Mercator</ulink>,
-			<ulink url="http://spatialreference.org/ref/epsg/2163/">US National Atlas Equal Area</ulink>
-	  </para>
+			<ulink url="http://spatialreference.org/ref/epsg/2163/">US National Atlas Equal Area</ulink>,
+			Spatial reference systems for each NAD 83, WGS 84 UTM zone - UTM zones are one of the most ideal for measurement, but only cover 6-degree regions.
+	</para>
+	<para>
+		Various US state plane spatial reference systems (meter or feet based) - usually one or 2 exists per US state.  Most of the meter ones are in the core set, but many of the 
+		feet based ones or ESRI created ones you will need to pull from <ulink url="http://spatialreference.org">spatialreference.org</ulink>.
+	</para>
+	<para>
+		For details on determining which UTM zone to use for your area of interest, check out the <ulink url="support/wiki/index.php?plpgsqlfunctions">utmzone PostGIS plpgsql helper function</ulink>.
+	</para>
 			
       <para>The <varname>SPATIAL_REF_SYS</varname> table definition is as
       follows:</para>
