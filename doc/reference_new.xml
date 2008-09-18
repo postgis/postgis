@@ -143,8 +143,7 @@ postgis=# \d my_schema.my_spatial_table
 Check constraints:
     "enforce_dims_the_geom" CHECK (ndims(the_geom) = 2)
     "enforce_geotype_the_geom" CHECK (geometrytype(the_geom) = 'POINT'::text OR the_geom IS NULL)
-    "enforce_srid_the_geom" CHECK (srid(the_geom) = 4326)
-        </programlisting>
+    "enforce_srid_the_geom" CHECK (srid(the_geom) = 4326)</programlisting>
       </refsection>
       
       <refsection>
@@ -844,8 +843,7 @@ Check constraints:
 		  <refsection>
 			<title>Examples</title>
 		
-			<programlisting>
---This will create a donut
+			<programlisting>--This will create a donut
 SELECT ST_BuildArea(ST_Collect(smallc,bigc))
 FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc, 
 	ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As bigc) As foo
@@ -860,8 +858,7 @@ FROM (SELECT ST_Buffer(ST_MakeLine(ST_MakePoint(21, 22),ST_MakePoint(-19, -18)),
 --but using linestrings instead of polygons	
 SELECT ST_AsBinary(ST_BuildArea(ST_Collect(ST_ExteriorRing(line),ST_ExteriorRing(circle))))
 FROM (SELECT ST_Buffer(ST_MakeLine(ST_MakePoint(21, 22),ST_MakePoint(-19, -18)),1)  As line, 
-	ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As circle) As foo
-			</programlisting>
+	ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As circle) As foo</programlisting>
 		  </refsection>
 
 		  <refsection>
@@ -926,18 +923,15 @@ FROM (SELECT ST_Buffer(ST_MakeLine(ST_MakePoint(21, 22),ST_MakePoint(-19, -18)),
 	  <refsection>
 		<title>Examples</title>
 		<para>Aggregate example</para>
-            <programlisting>
-Thread ref: http://postgis.refractions.net/pipermail/postgis-users/2008-June/020331.html
+            <programlisting>Thread ref: http://postgis.refractions.net/pipermail/postgis-users/2008-June/020331.html
 SELECT stusps, 
 	   ST_Multi(ST_Collect(f.the_geom)) as singlegeom  
 	 FROM (SELECT stusps, (ST_Dump(the_geom)).geom As the_geom 
 				FROM
 				somestatetable ) As f
-GROUP BY stusps
-			  </programlisting>
+GROUP BY stusps</programlisting>
 		<para>Non-Aggregate example</para>
-            <programlisting>
-Thread ref: http://postgis.refractions.net/pipermail/postgis-users/2008-June/020331.html
+            <programlisting>Thread ref: http://postgis.refractions.net/pipermail/postgis-users/2008-June/020331.html
 SELECT ST_AsText(ST_Collect(ST_GeomFromText('POINT(1 2)'),
 	ST_GeomFromText('POINT(-2 3)') ));
 	
@@ -950,8 +944,7 @@ SELECT ST_AsText(ST_Collect(ST_GeomFromText('POINT(1 2)'),
 	
 st_astext
 ----------
-MULTIPOINT(1 2,1 2)
-			  </programlisting>
+MULTIPOINT(1 2,1 2)</programlisting>
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
@@ -996,11 +989,9 @@ MULTIPOINT(1 2,1 2)
 	
 	  <refsection>
 		<title>Examples</title>
-	            <programlisting>
-SELECT sometable.field1, sometable.field1, 
-(ST_Dump(sometable.the_geom)).geom As the_geom 
-	 FROM sometable
-			  </programlisting>
+    <programlisting>SELECT sometable.field1, sometable.field1, 
+      (ST_Dump(sometable.the_geom)).geom As the_geom 
+FROM sometable</programlisting>
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
@@ -1038,12 +1029,10 @@ SELECT sometable.field1, sometable.field1,
 		LINESTRING(-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932) in NAD 83 long lat (4269).</para>
 		<note><para>NOTE: Even though byte arrays are delimited with \ and may have ', we need to escape both out with \ and ''.  So it does not
 			look exactly like its AsEWKB representation.</para></note>
-	<programlisting>
-	SELECT ST_GeomFromEWKB(E'\\001\\002\\000\\000 \\255\\020\\000\\000\\003\\000\\000\\000\\344J=
-	\\013B\\312Q\\300n\\303(\\010\\036!E@''\\277E''K
-	\\312Q\\300\\366{b\\235*!E@\\225|\\354.P\\312Q
-	\\300p\\231\\323e1!E@');
-	</programlisting>
+	<programlisting>SELECT ST_GeomFromEWKB(E'\\001\\002\\000\\000 \\255\\020\\000\\000\\003\\000\\000\\000\\344J=
+\\013B\\312Q\\300n\\303(\\010\\036!E@''\\277E''K
+\\312Q\\300\\366{b\\235*!E@\\225|\\354.P\\312Q
+\\300p\\231\\323e1!E@');</programlisting>
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
