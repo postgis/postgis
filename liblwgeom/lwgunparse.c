@@ -40,6 +40,10 @@ double read_double(uchar** geom);
 uchar* output_point(uchar* geom,int supress);
 uchar* output_single(uchar* geom,int supress);
 uchar* output_collection(uchar* geom,outfunc func,int supress);
+uchar* output_line_collection(uchar* geom,outfunc func,int supress);
+uchar* output_polygon_collection(uchar* geom,int suppress);
+uchar* output_polygon_ring_collection(uchar* geom,outfunc func,int supress);
+uchar* output_curve_collection(uchar* geom,outfunc func,int supress);
 uchar* output_collection_2(uchar* geom,int suppress);
 uchar* output_multipoint(uchar* geom,int suppress);
 uchar* output_compound(uchar* geom, int suppress);
@@ -52,7 +56,10 @@ void write_wkb_hex_flip_bytes(uchar* ptr, unsigned int cnt, size_t size);
 
 void write_wkb_int(int i);
 uchar* output_wkb_collection(uchar* geom,outwkbfunc func);
-uchar* output_wkb_collection_2(uchar* geom);
+uchar* output_wkb_polygon_collection(uchar* geom);
+uchar* output_wkb_polygon_ring_collection(uchar* geom,outwkbfunc func);
+uchar* output_wkb_line_collection(uchar* geom,outwkbfunc func);
+uchar* output_wkb_curve_collection(uchar* geom,outwkbfunc func);
 uchar* output_wkb_point(uchar* geom);
 uchar* output_wkb(uchar* geom);
 
@@ -195,6 +202,7 @@ output_single(uchar* geom,int supress)
 	return geom;
 }
 
+/* Output a standard collection */
 uchar *
 output_collection(uchar* geom,outfunc func,int supress)
 {
@@ -215,10 +223,119 @@ output_collection(uchar* geom,outfunc func,int supress)
 	return geom;
 }
 
+/* Output a set of LINESTRING points */
 uchar *
-output_collection_2(uchar* geom,int suppress)
+output_line_collection(uchar* geom,outfunc func,int supress)
 {
-	return output_collection(geom,output_point,suppress);
+	int cnt = read_int(&geom);
+
+	/* Ensure that LINESTRING has a minimum of 2 points */
+	if (cnt < 2)
+		lwerror("geometry requires more points");
+
+	if ( cnt == 0 ){
+		write_str(" EMPTY");
+	}
+	else{
+		write_str("(");
+		while(cnt--){
+			geom=func(geom,supress);
+			if ( cnt ){
+				write_str(",");
+			}
+		}
+		write_str(")");
+	}
+	return geom;
+}
+
+/* Output an individual ring from a POLYGON  */
+uchar *
+output_polygon_ring_collection(uchar* geom,outfunc func,int supress)
+{
+        uchar *temp;
+        int dimcount;
+        double first_point[dims];
+        double last_point[dims];
+
+	int cnt = read_int(&geom);
+	if ( cnt == 0 ){
+		write_str(" EMPTY");
+	}
+	else{
+		write_str("(");
+	
+        	/* Store the first point of the ring (use a temp var since read_double alters
+           	the pointer after use) */
+        	temp = geom;
+        	dimcount = 0;
+        	while (dimcount < dims)
+        	{
+                	first_point[dimcount] = read_double(&temp);
+                	dimcount++;
+        	}
+	
+		while(cnt--){
+			geom=func(geom,supress);
+			if ( cnt ){
+				write_str(",");
+			}
+		}
+		write_str(")");
+
+        	/* Store the last point of the ring (note: we will have moved past it, so we
+           	need to count backwards) */
+        	temp = geom - sizeof(double) * dims;
+        	dimcount = 0;
+        	while (dimcount < dims)
+        	{
+                	last_point[dimcount] = read_double(&temp);
+                	dimcount++;
+       	 	}
+
+        	/* Check if they are the same... */
+        	if (memcmp(&first_point, &last_point, sizeof(double) * dims))
+                	lwerror("geometry contains non-closed rings");
+
+	}
+	return geom;
+}
+
+/* Ouput the points from a CIRCULARSTRING */
+uchar *
+output_curve_collection(uchar* geom,outfunc func,int supress)
+{
+	int cnt = read_int(&geom);
+
+	/* Ensure that a CIRCULARSTRING has a minimum of 3 points */
+        if (cnt < 3)
+                lwerror("geometry requires more points");
+
+	/* Ensure that a CIRCULARSTRING has an odd number of points */
+        if (cnt % 2 != 1)
+                lwerror("geometry must have an odd number of points");
+
+	if ( cnt == 0 ){
+		write_str(" EMPTY");
+	}
+	else{
+		write_str("(");
+		while(cnt--){
+			geom=func(geom,supress);
+			if ( cnt ){
+				write_str(",");
+			}
+		}
+		write_str(")");
+	}
+	return geom;
+}
+
+/* Output a POLYGON consisting of a number of rings */
+uchar *
+output_polygon_collection(uchar* geom,int suppress)
+{
+	return output_polygon_ring_collection(geom,output_point,suppress);
 }
 
 uchar *output_wkt(uchar* geom, int supress);
@@ -253,7 +370,7 @@ uchar *output_compound(uchar* geom, int suppress) {
                         break;
                 case CURVETYPE:
                         write_str("CIRCULARSTRING");
-                        geom = output_collection(geom,output_point,1);
+                        geom = output_curve_collection(geom,output_point,1);
                         break;
         }
 	return geom;
@@ -268,7 +385,7 @@ uchar *output_multisurface(uchar* geom, int suppress) {
         switch(TYPE_GETTYPE(type))
         {
                 case POLYGONTYPE:
-                        geom = output_collection(geom, output_collection_2,0);
+                        geom = output_collection(geom, output_polygon_collection,0);
                         break;
                 case CURVEPOLYTYPE:
                         write_str("CURVEPOLYGON");
@@ -321,7 +438,7 @@ output_wkt(uchar* geom, int supress)
 				if (writeM) write_str("LINESTRINGM");
 				else write_str("LINESTRING");
 			}
-			geom = output_collection(geom,output_point,0);
+			geom = output_line_collection(geom,output_point,0);
 			break;
                 case CURVETYPE:
                         if ( supress < 2 )
@@ -329,7 +446,7 @@ output_wkt(uchar* geom, int supress)
                                 if(writeM) write_str("CIRCULARSTRINGM");
                                 else write_str("CIRCULARSTRING");
                         }
-                        geom = output_collection(geom,output_point,0);
+                        geom = output_curve_collection(geom,output_point,0);
                         break;
 		case POLYGONTYPE:
 			if ( supress < 2 )
@@ -337,7 +454,7 @@ output_wkt(uchar* geom, int supress)
 				if (writeM) write_str("POLYGONM");
 				else write_str("POLYGON");
 			}
-			geom = output_collection(geom,output_collection_2,0);
+			geom = output_collection(geom,output_polygon_collection,0);
 			break;
                 case COMPOUNDTYPE:
                         if ( supress < 2 )
@@ -431,7 +548,7 @@ output_wkt(uchar* geom, int supress)
 				else write_str("POLYGON");
 			}
 			lwgi++;
-			geom =output_collection(geom,output_collection_2,0);
+			geom = output_collection(geom,output_polygon_collection,0);
 			lwgi--;
 			break;
 	}
@@ -548,6 +665,7 @@ write_wkb_int(int i){
 	write_wkb_bytes((uchar*)&i,1,4);
 }
 
+/* Output a standard collection */
 uchar *
 output_wkb_collection(uchar* geom,outwkbfunc func)
 {
@@ -560,9 +678,95 @@ output_wkb_collection(uchar* geom,outwkbfunc func)
 	return geom;
 }
 
+/* Output a set of LINESTRING points */
 uchar *
-output_wkb_collection_2(uchar* geom){
-	return output_wkb_collection(geom,output_wkb_point);
+output_wkb_line_collection(uchar* geom,outwkbfunc func)
+{
+	int cnt = read_int(&geom);
+
+	LWDEBUGF(2, "output_wkb_line_collection: %d iterations loop", cnt);
+
+	/* Ensure that LINESTRING has a minimum of 2 points */
+        if (cnt < 2)
+                lwerror("geometry requires more points");
+
+	write_wkb_int(cnt);
+	while(cnt--) geom=func(geom);
+	return geom;
+}
+
+/* Output an individual ring from a POLYGON  */
+uchar *
+output_wkb_polygon_ring_collection(uchar* geom,outwkbfunc func)
+{
+	uchar *temp;
+	int dimcount;
+	double first_point[dims];
+	double last_point[dims];
+
+	int cnt = read_int(&geom);
+
+	LWDEBUGF(2, "output_wkb_polygon_ring_collection: %d iterations loop", cnt);
+
+	write_wkb_int(cnt);
+
+	/* Store the first point of the ring (use a temp var since read_double alters 
+	   the pointer after use) */
+	temp = geom;
+	dimcount = 0;
+	while (dimcount < dims)
+	{
+		first_point[dimcount] = read_double(&temp);
+		dimcount++;
+	}
+
+	while(cnt--) geom=func(geom); 
+
+	/* Store the last point of the ring (note: we will have moved past it, so we
+	   need to count backwards) */
+	temp = geom - sizeof(double) * dims;
+	dimcount = 0;
+	while (dimcount < dims)
+	{
+		last_point[dimcount] = read_double(&temp);
+		dimcount++;
+	}
+
+	/* Check if they are the same... */
+	if (memcmp(&first_point, &last_point, sizeof(double) * dims))
+		lwerror("geometry contains non-closed rings");
+
+	return geom;
+}
+
+/* Output a POLYGON consisting of a number of rings */
+uchar *
+output_wkb_polygon_collection(uchar* geom)
+{
+	LWDEBUGF(2, "output_wkb_polygon_collection: %d iterations loop", cnt);
+
+	return output_wkb_polygon_ring_collection(geom,output_wkb_point); 
+}
+
+/* Ouput the points from a CIRCULARSTRING */
+uchar *
+output_wkb_curve_collection(uchar* geom,outwkbfunc func)
+{
+	int cnt = read_int(&geom);
+
+	LWDEBUGF(2, "output_wkb_curve_collection: %d iterations loop", cnt);
+
+	/* Ensure that a CIRCULARSTRING has a minimum of 3 points */
+        if (cnt < 3)
+                lwerror("geometry requires more points");
+
+	/* Ensure that a CIRCULARSTRING has an odd number of points */
+        if (cnt % 2 != 1)
+                lwerror("geometry must have an odd number of points");
+
+	write_wkb_int(cnt);
+	while(cnt--) geom=func(geom);
+	return geom;
 }
 
 uchar *
@@ -605,13 +809,13 @@ output_wkb(uchar* geom)
 			geom=output_wkb_point(geom);
 			break;
 		case LINETYPE:
-			geom=output_wkb_collection(geom,output_wkb_point);
+			geom=output_wkb_line_collection(geom,output_wkb_point);
 			break;
                 case CURVETYPE:
-                        geom=output_wkb_collection(geom,output_wkb_point);
+                        geom=output_wkb_curve_collection(geom,output_wkb_point);
                         break;
 		case POLYGONTYPE:
-			geom=output_wkb_collection(geom,output_wkb_collection_2);
+			geom=output_wkb_collection(geom,output_wkb_polygon_collection);
 			break;
                 case COMPOUNDTYPE:
                         geom=output_wkb_collection(geom,output_wkb);
@@ -648,7 +852,7 @@ output_wkb(uchar* geom)
 			break;
 		case POLYGONTYPEI:
 			lwgi++;
-			geom = output_wkb_collection(geom,output_wkb_collection_2);
+			geom = output_wkb_collection(geom,output_wkb_polygon_collection);
 			lwgi--;
 			break;
 	}
