@@ -121,12 +121,11 @@
 			  </listitem>
 			</itemizedlist>
 			
-			<programlisting>
-				wget http://postgis.refractions.net/download/postgis-&last_release_version;.tar.gz
-				gzip -d -c postgis-&last_release_version;.tar.gz | tar xvf -
-				cd postgis-&last_release_version;/
-				./configure
-			</programlisting>
+			<programlisting>wget http://postgis.refractions.net/download/postgis-&last_release_version;.tar.gz
+gzip -d -c postgis-&last_release_version;.tar.gz | tar xvf -
+cd postgis-&last_release_version;/
+./configure</programlisting>
+
 		</listitem>
 		
 		
@@ -157,37 +156,31 @@
 				instructions that follow below to compile Geos from source.</para>
 			  </listitem>
 			</itemizedlist>
-			<programlisting>
-				make clean &amp;&amp; make
-				make install
-				ldconfig
-			</programlisting>
+			<programlisting>make clean &amp;&amp; make
+make install
+ldconfig</programlisting>
 		</listitem>
 		
 		<listitem>
 			<para>If you are missing proj based on above or running a version below 4.5, then install by following these steps.</para>
-			<programlisting>
-			wget http://download.osgeo.org/proj/proj-4.6.0.tar.gz
-			tar xvzf proj-4.6.0.tar.gz
-			cd proj-4.6.0
-			./configure &amp;&amp; make clean &amp;&amp; make
-			make install
-			ldconfig
-			cd ..
-			</programlisting>
+			<programlisting>wget http://download.osgeo.org/proj/proj-4.6.0.tar.gz
+tar xvzf proj-4.6.0.tar.gz
+cd proj-4.6.0
+./configure &amp;&amp; make clean &amp;&amp; make
+make install
+ldconfig
+cd ..</programlisting>
 		</listitem>
 		
 		<listitem>
 			<para>If you are missing geos based on above or running a version below 3.0, then install by following these steps.</para>
-			<programlisting>
-			wget http://download.osgeo.org/geos/geos-3.0.0.tar.bz2
-			tar xvjf geos-3.0.0.tar.bz2
-			cd geos-3.0.0
-			./configure &amp;&amp; make clean &amp;&amp; make
-			make install
-			ldconfig
-			cd ..
-			</programlisting>
+			<programlisting>wget http://download.osgeo.org/geos/geos-3.0.0.tar.bz2
+tar xvjf geos-3.0.0.tar.bz2
+cd geos-3.0.0
+./configure &amp;&amp; make clean &amp;&amp; make
+make install
+ldconfig
+cd ..</programlisting>
 		</listitem>
 		
 		
