@@ -713,6 +713,7 @@ Check constraints:
 			  <funcprototype>
 				<funcdef>geometry <function>ST_BdPolyFromText</function></funcdef>
 				<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
 			  </funcprototype>
 			</funcsynopsis>
 		  </refsynopsisdiv>
@@ -767,6 +768,7 @@ Check constraints:
 				  <funcprototype>
 					<funcdef>geometry <function>ST_BdMPolyFromText</function></funcdef>
 					<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -1646,11 +1648,6 @@ POINT(1 2)
 			  <funcprototype>
 				<funcdef>geometry <function>ST_WKTToSQL</function></funcdef>
 				<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
-			  </funcprototype>
-			  <funcprototype>
-				<funcdef>geometry <function>ST_WKTToSQL</function></funcdef>
-				<paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
 			  </funcprototype>
 			</funcsynopsis>
 		  </refsynopsisdiv>
