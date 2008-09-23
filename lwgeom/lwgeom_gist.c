@@ -465,7 +465,7 @@ Datum LWGEOM_gist_compress(PG_FUNCTION_ARGS)
 			/* lwgeom serialized form */
 			in = (PG_LWGEOM*)PG_DETOAST_DATUM(entry->key);
 
-			POSTGIS_DEBUGF(4, "GIST: LWGEOM_gist_compress detoasted entry->key: %s", serialized_lwgeom_to_ewkt(in+VARHDRSZ));
+			POSTGIS_DEBUGF(4, "GIST: LWGEOM_gist_compress detoasted entry->key: %s", serialized_lwgeom_to_ewkt((uchar *)in+VARHDRSZ));
 
 			if (in == NULL)
 			{
@@ -746,11 +746,11 @@ lwgeom_rtree_leaf_consistent(BOX2DFLOAT4 *key,
 PG_FUNCTION_INFO_V1(LWGEOM_gist_decompress);
 Datum LWGEOM_gist_decompress(PG_FUNCTION_ARGS)
 {
-	static unsigned int counter2 = 0;
 #if POSTGIS_DEBUG_LEVEL >= 4
+	static unsigned int counter2 = 0;
 	counter2++;
 #endif
-	POSTGIS_DEBUGF(2, "GIST: LWGEOM_gist_decompress called %i",counter2);
+	POSTGIS_DEBUGF(4, "GIST: LWGEOM_gist_decompress called %i",counter2);
 
 	PG_RETURN_POINTER(PG_GETARG_POINTER(0));
 }
