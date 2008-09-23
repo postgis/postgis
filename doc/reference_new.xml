@@ -813,6 +813,132 @@ Check constraints:
 				<para><xref linkend="ST_BuildArea" />, <xref linkend="ST_BdPolyFromText" /></para>
 			</refsection>
 		</refentry>
+		
+		<refentry id="ST_Buffer">
+			<refnamediv>
+				<refname>ST_Buffer</refname>
+			
+				<refpurpose>Returns a geometry that represents all points whose distance
+			from this Geometry is less than or equal to distance. Calculations
+			are in the Spatial Reference System of this Geometry. The optional
+			third parameter sets the number of segments used to approximate a
+			quarter circle (defaults to 8).</refpurpose>
+			</refnamediv>
+			
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>geometry <function>ST_Buffer</function></funcdef>
+					<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+					<paramdef><type>float </type> <parameter>radius_of_buffer</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>geometry <function>ST_Buffer</function></funcdef>
+					<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+					<paramdef><type>float </type> <parameter>radius_of_buffer</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>num_seg_quarter_circle</parameter></paramdef>
+				  </funcprototype>
+				  
+				</funcsynopsis>
+			</refsynopsisdiv>
+			
+			  <refsection>
+				<title>Description</title>
+			
+				<para>Returns a geometry that represents all points whose distance
+			from this Geometry is less than or equal to distance. Calculations
+			are in the Spatial Reference System of this Geometry. The optional
+			third parameter sets the number of segments used to approximate a
+			quarter circle (defaults to 8).  
+				</para>
+				<para>Units are alwas measured in units of the spatial reference system.</para>
+				<para>The inputs can be POINTS, MULTIPOINTS, LINESTRINGS, MULTILINESTRINGS, POLYGONS, MULTIPOLYGONS, and GeometryCollections.</para>
+				<note><para>This function ignores the third dimension (z) and will always give a 2-d buffer even when presented with a 3d-geometry.</para></note>
+				
+				<para>Performed by the GEOS module.</para>
+				
+				<!-- Optionally mention OpenGIS compliancy if appropriate -->
+				<para><inlinemediaobject>
+					<imageobject>
+					  <imagedata fileref="images/check.png" />
+					</imageobject>
+				  </inlinemediaobject> This method implements the <ulink
+				url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+				Implementation Specification for SQL.</ulink>
+				OGC SPEC s2.1.1.3</para>
+				
+				<!-- Optionally mention SQL/MM compliancy if appropriate -->
+				<para><inlinemediaobject>
+					<imageobject>
+					  <imagedata fileref="images/check.png" />
+					</imageobject>
+				  </inlinemediaobject> This method implements the SQL/MM specification:
+				SQL-MM 3: 5.1.17</para>
+				
+				<note><para>People often make the mistake of using this function to try to do radius searches.  Creating a 
+					buffer to to a radius search is slow and pointless.  Use <xref linkend="ST_DWithin" /> instead.</para></note>
+			</refsection>
+			
+			  <refsection>
+				<title>Examples</title>
+			
+<programlisting>--A buffered point approximates a circle
+-- A buffered point forcing approximation of 
+-- 4 points per circle looks like poly with 16 sides
+SELECT ST_NPoints(ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10)) As promisingcircle_pcount, 
+ST_NPoints(ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10, 4)) As lamecircle_pcount;
+
+promisingcircle_pcount | lamecircle_pcount
+------------------------+-------------------
+			 33 |                17
+
+--A lighter but lamer circle 
+-- only 2 points per quarter circle
+--Below is a 100 meter octagon
+-- Note coordinates are in NAD 83 long lat which we transform
+to Mass state plane meter and then buffer to get measurements in meters;
+SELECT ST_AsText(ST_Buffer(
+ST_Transform(
+ST_SetSRID(ST_MakePoint(-71.063526, 42.35785),4269), 26986)
+,100,2)) As octagon;
+----------------------
+POLYGON((236057.59057465 900908.759918696,236028.301252769 900838.049240578,235
+957.59057465 900808.759918696,235886.879896532 900838.049240578,235857.59057465
+900908.759918696,235886.879896532 900979.470596815,235957.59057465 901008.759918
+696,236028.301252769 900979.470596815,236057.59057465 900908.759918696))
+
+--Buffer is often also used as a poor mans polygon fixer or a sometimes speedier unioner
+--Sometimes able to fix invalid polygons - using below
+-- using below on anything but a polygon will result in empty geometry
+-- and for geometry collections kill anything in the collection that is not a polygon
+--Poor man's bad poly fixer
+SELECT ST_IsValid(foo.invalidpoly)  as isvalid, ST_IsValid(ST_Buffer(foo.invalidpoly,0.0)) as bufferisvalid,
+ST_AsText(ST_Buffer(foo.invalidpoly,0.0)) As newpolytextrep
+FROM (SELECT ST_GeomFromText('POLYGON((-1 2, 3 4, 5 6, -1 2, 5 6, -1 2))') as invalidpoly) As foo
+NOTICE:  Self-intersection at or near point -1 2
+isvalid | bufferisvalid |        newpolytextrep
+---------+---------------+------------------------------
+f       | t             | POLYGON((-1 2,5 6,3 4,-1 2))
+
+--Poor man's polygon unioner
+SELECT ST_AsText(the_geom) as textorig, ST_AsText(ST_Buffer(foo.the_geom,0.0)) As textbuffer
+FROM (SELECT ST_Collect('POLYGON((-1 2, 3 4, 5 6, -1 2))', 'POLYGON((-1 2, 2 3, 5 6, -1 2))') As the_geom) as foo;
+				 textorig                          |            textbuffer
+-----------------------------------------------------------+--------------------
+MULTIPOLYGON(((-1 2,3 4,5 6,-1 2)),((-1 2,2 3,5 6,-1 2))) | POLYGON((-1 2,5 6,3 4,2 3,-1 2))
+
+
+		</programlisting>
+			  </refsection>
+		
+			  <refsection>
+				<title>See Also</title>
+			
+				<para><xref linkend="ST_Collect" />, <xref linkend="ST_DWithin" />, <xref linkend="ST_Union" /></para>
+			  </refsection>
+		</refentry>
+
 		<refentry id="ST_BuildArea">
 		  <refnamediv>
 			<refname>ST_BuildArea</refname>
