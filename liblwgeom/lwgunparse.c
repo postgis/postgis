@@ -743,8 +743,7 @@ output_wkb_polygon_ring_collection(uchar* geom,outwkbfunc func)
 uchar *
 output_wkb_polygon_collection(uchar* geom)
 {
-	int cnt = read_int(&geom);
-	LWDEBUGF(2, "output_wkb_polygon_collection: %d iterations loop", cnt);
+	LWDEBUG(2, "output_wkb_polygon_collection");
 
 	return output_wkb_polygon_ring_collection(geom,output_wkb_point); 
 }
