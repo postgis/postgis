@@ -2,8 +2,8 @@
 #define _LIBLWGEOM_H 1
 
 #include "../postgis_config.h"
+#include <stdarg.h>
 #include <stdio.h>
-/* #include "compat.h" */
 
 #define INTEGRITY_CHECKS 1
 
@@ -30,7 +30,10 @@ extern void lwgeom_install_default_allocators(void);
 typedef void* (*lwallocator)(size_t size);
 typedef void* (*lwreallocator)(void *mem, size_t size);
 typedef void (*lwfreeor)(void* mem);
-typedef void (*lwreporter)(const char* fmt, ...);
+typedef void (*lwreporter)(const char* fmt, va_list ap);
+
+void lwnotice(const char *fmt, ...);
+void lwerror(const char *fmt, ...);
 
 #ifndef C_H
 
@@ -52,15 +55,17 @@ typedef int int32;
 void *default_allocator(size_t size);
 void *default_reallocator(void *mem, size_t size);
 void default_freeor(void *ptr);
-void default_errorreporter(const char *fmt, ...);
-void default_noticereporter(const char *fmt, ...);
+void default_errorreporter(const char *fmt, va_list ap);
+void default_noticereporter(const char *fmt, va_list ap);
 
 /* globals */
 extern lwreallocator lwrealloc_var;
 extern lwallocator lwalloc_var;
 extern lwfreeor lwfree_var;
-extern lwreporter lwerror;
-extern lwreporter lwnotice;
+extern lwreporter lwerror_var;
+extern lwreporter lwnotice_var;
+
+extern int lw_vasprintf (char **result, const char *format, va_list args);
 
 /* Debug macros */
 #if POSTGIS_DEBUG_LEVEL > 0

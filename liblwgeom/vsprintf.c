@@ -36,6 +36,18 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 int global_total_width;
 #endif
 
+
+int lw_vasprintf (char **result, const char *format, va_list args);
+int lw_asprintf
+#if __STDC__
+     (char **result, const char *format, ...);
+#else
+     (result, va_alist);
+     char **result;
+     va_dcl
+#endif
+
+
 static int
 int_vasprintf (result, format, args)
      char **result;
@@ -127,16 +139,16 @@ int_vasprintf (result, format, args)
 }
 
 int
-vasprintf (result, format, args)
+lw_vasprintf (result, format, args)
      char **result;
      const char *format;
      va_list args;
 {
-  return int_vasprintf (result, format, &args);
+  return int_vasprintf (result, format, args);
 }
 
 int
-asprintf
+lw_asprintf
 #if __STDC__
      (char **result, const char *format, ...)
 #else
@@ -155,7 +167,7 @@ asprintf
   va_start (args);
   format = va_arg (args, char *);
 #endif
-  done = vasprintf (result, format, args);
+  done = lw_vasprintf (result, format, args);
   va_end (args);
 
   return done;

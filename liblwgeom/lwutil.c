@@ -11,14 +11,14 @@
 void *init_allocator(size_t size);
 void init_freeor(void *mem);
 void *init_reallocator(void *mem, size_t size);
-void init_noticereporter(const char *fmt, ...);
-void init_errorreporter(const char *fmt, ...);
+void init_noticereporter(const char *fmt, va_list ap);
+void init_errorreporter(const char *fmt, va_list ap);
 
 lwallocator lwalloc_var = init_allocator;
 lwreallocator lwrealloc_var = init_reallocator;
 lwfreeor lwfree_var = init_freeor;
-lwreporter lwerror = init_errorreporter;
-lwreporter lwnotice = init_noticereporter;
+lwreporter lwnotice_var = init_noticereporter;
+lwreporter lwerror_var = init_errorreporter;
 
 static char *lwgeomTypeName[] = {
 	"Unknown",
@@ -39,6 +39,40 @@ static char *lwgeomTypeName[] = {
         "MultiSurface"
 };
 
+
+/*
+ * lwnotice/lwerror handlers
+ *
+ * Since variadic functions cannot pass their parameters directly, we need
+ * wrappers for these functions to convert the arguments into a va_list
+ * structure.
+ */
+
+void
+lwnotice(const char *fmt, ...)
+{
+	va_list ap;
+
+	va_start(ap, fmt);
+
+	/* Call the supplied function */
+	(*lwnotice_var)(fmt, ap);
+
+	va_end(ap);
+}
+
+void
+lwerror(const char *fmt, ...)
+{
+	va_list ap;
+
+	va_start(ap, fmt);
+
+	/* Call the supplied function */
+	(*lwerror_var)(fmt, ap);
+
+	va_end(ap);
+}
 
 /*
  * Initialisation allocators
@@ -75,27 +109,19 @@ init_reallocator(void *mem, size_t size)
 }
 
 void
-init_noticereporter(const char *fmt, ...)
+init_noticereporter(const char *fmt, va_list ap)
 {
-	va_list ap;
-
 	lwgeom_init_allocators();
 
-	va_start(ap, fmt);
-	lwnotice(fmt, ap);
-	va_end(ap);
+	(*lwnotice_var)(fmt, ap);
 }
 	
 void
-init_errorreporter(const char *fmt, ...)
+init_errorreporter(const char *fmt, va_list ap)
 {
-	va_list ap;
-
 	lwgeom_init_allocators();
 
-	va_start(ap, fmt);
-	lwerror(fmt, ap);
-	va_end(ap);
+	(*lwerror_var)(fmt, ap);
 }
 
 
@@ -128,46 +154,38 @@ default_reallocator(void *mem, size_t size)
 }
 
 void
-default_noticereporter(const char *fmt, ...)
+default_noticereporter(const char *fmt, va_list ap)
 {
 	char *msg;
-	va_list ap;
-
-	va_start (ap, fmt);
 
 	/*
 	 * This is a GNU extension.
 	 * Dunno how to handle errors here.
 	 */
-	if (!vasprintf (&msg, fmt, ap))
+	if (!lw_vasprintf (&msg, fmt, ap))
 	{
 		va_end (ap);
 		return;
 	}
 	printf("%s\n", msg);
-	va_end(ap);
 	free(msg);
 }
 
 void
-default_errorreporter(const char *fmt, ...)
+default_errorreporter(const char *fmt, va_list ap)
 {
 	char *msg;
-	va_list ap;
-
-	va_start (ap, fmt);
 
 	/*
 	 * This is a GNU extension.
 	 * Dunno how to handle errors here.
 	 */
-	if (!vasprintf (&msg, fmt, ap))
+	if (!lw_vasprintf (&msg, fmt, ap))
 	{
 		va_end (ap);
 		return;
 	}
 	fprintf(stderr, "%s\n", msg);
-	va_end(ap);
 	free(msg);
 	exit(1);
 }
@@ -183,8 +201,8 @@ void lwgeom_install_default_allocators(void)
 	lwalloc_var = default_allocator;
 	lwrealloc_var = default_reallocator;
 	lwfree_var = default_freeor;
-	lwerror = default_errorreporter;	
-	lwnotice = default_noticereporter;
+	lwerror_var = default_errorreporter;	
+	lwnotice_var = default_noticereporter;
 }
  
 

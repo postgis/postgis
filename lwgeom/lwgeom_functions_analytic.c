@@ -505,7 +505,7 @@ Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS);
 Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS);
 static int grid_isNull(const gridspec *grid);
 #if POSTGIS_DEBUG_LEVEL > 0 
-static void grid_print(const gridspec *grid, lwreporter printer);
+static void grid_print(const gridspec *grid);
 #endif
 
 /* A NULL grid is a grid in which size in all dimensions is 0 */
@@ -522,9 +522,9 @@ grid_isNull(const gridspec *grid)
 #if POSTGIS_DEBUG_LEVEL > 0 
 /* Print grid using given reporter */
 static void
-grid_print(const gridspec *grid, lwreporter printer)
+grid_print(const gridspec *grid)
 {
-	printer("GRID(%g %g %g %g, %g %g %g %g)",
+	lwnotice("GRID(%g %g %g %g, %g %g %g %g)",
 		grid->ipx, grid->ipy, grid->ipz, grid->ipm,
 		grid->xsize, grid->ysize, grid->zsize, grid->msize);
 }
@@ -869,7 +869,7 @@ Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS)
 	else grid.ipm=0;
 
 #if POSTGIS_DEBUG_LEVEL >= 4 
-	grid_print(&grid, lwnotice);
+	grid_print(&grid);
 #endif
 
 	/* Return input geometry if grid is null */

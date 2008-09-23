@@ -11,8 +11,8 @@
 void *pg_alloc(size_t size);
 void *pg_realloc(void *ptr, size_t size);
 void pg_free(void *ptr);
-void pg_error(const char *msg, ...);
-void pg_notice(const char *msg, ...);
+void pg_error(const char *msg, va_list vp);
+void pg_notice(const char *msg, va_list vp);
 
 
 /* Debugging macros */

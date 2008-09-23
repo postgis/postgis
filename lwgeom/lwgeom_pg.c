@@ -59,40 +59,33 @@ pg_free(void *ptr)
 }
 
 void
-pg_error(const char *fmt, ...)
+pg_error(const char *fmt, va_list ap)
 {
 #define ERRMSG_MAXLEN 256
 
 	char errmsg[ERRMSG_MAXLEN+1];
-	va_list ap;
 
-	va_start (ap, fmt);
 	vsnprintf (errmsg, ERRMSG_MAXLEN, fmt, ap);
-	va_end (ap);
 
 	errmsg[ERRMSG_MAXLEN]='\0';
 	ereport(ERROR, (errmsg_internal("%s", errmsg)));
 }
 
 void
-pg_notice(const char *fmt, ...)
+pg_notice(const char *fmt, va_list ap)
 {
 	char *msg;
-	va_list ap;
-
-	va_start (ap, fmt);
 
 	/*
 	 * This is a GNU extension.
 	 * Dunno how to handle errors here.
 	 */
-	if (!vasprintf (&msg, fmt, ap))
+	if (!lw_vasprintf (&msg, fmt, ap))
 	{
 		va_end (ap);
 		return;
 	}
 	ereport(NOTICE, (errmsg_internal("%s", msg)));
-	va_end(ap);
 	free(msg);
 }
 
@@ -103,8 +96,8 @@ lwgeom_init_allocators(void)
 	lwalloc_var = pg_alloc;
 	lwrealloc_var = pg_realloc;
 	lwfree_var = pg_free;
-	lwerror = pg_error;
-	lwnotice = pg_notice;
+	lwerror_var = pg_error;
+	lwnotice_var = pg_notice;
 }
 
 PG_LWGEOM *
