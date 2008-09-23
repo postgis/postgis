@@ -448,6 +448,11 @@ RTREE_POLY_CACHE *retrieveCache(LWPOLY *poly, uchar *serializedPoly,
 #ifdef PGIS_DEBUG
                 lwnotice("Polygon size mismatch, creating new cache.");
 #endif
+                for(i = 0; i < currentCache->ringCount; i++)
+                {
+                        freeTree(currentCache->ringIndices[i]);
+                }
+                lwfree(currentCache->ringIndices);
                 lwfree(currentCache->poly);
                 lwfree(currentCache);
                 return createNewCache(poly, serializedPoly);
@@ -461,6 +466,11 @@ RTREE_POLY_CACHE *retrieveCache(LWPOLY *poly, uchar *serializedPoly,
 #ifdef PGIS_DEBUG
                         lwnotice("Polygon mismatch, creating new cache. %c, %c", a, b);
 #endif
+                        for(i = 0; i < currentCache->ringCount; i++)
+                        { 
+                                freeTree(currentCache->ringIndices[i]);
+                        }
+                        lwfree(currentCache->ringIndices);
                         lwfree(currentCache->poly);
                         lwfree(currentCache);
                         return createNewCache(poly, serializedPoly);
