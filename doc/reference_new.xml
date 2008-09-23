@@ -852,7 +852,7 @@ Check constraints:
 			third parameter sets the number of segments used to approximate a
 			quarter circle (defaults to 8).  
 				</para>
-				<para>Units are alwas measured in units of the spatial reference system.</para>
+				<para>Units are always measured in units of the spatial reference system.</para>
 				<para>The inputs can be POINTS, MULTIPOINTS, LINESTRINGS, MULTILINESTRINGS, POLYGONS, MULTIPOLYGONS, and GeometryCollections.</para>
 				<note><para>This function ignores the third dimension (z) and will always give a 2-d buffer even when presented with a 3d-geometry.</para></note>
 				
@@ -935,7 +935,7 @@ MULTIPOLYGON(((-1 2,3 4,5 6,-1 2)),((-1 2,2 3,5 6,-1 2))) | POLYGON((-1 2,5 6,3 
 			  <refsection>
 				<title>See Also</title>
 			
-				<para><xref linkend="ST_Collect" />, <xref linkend="ST_DWithin" />, <xref linkend="ST_Union" /></para>
+				<para><xref linkend="ST_Collect" />, <xref linkend="ST_DWithin" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_Transform" />, <xref linkend="ST_Union" /></para>
 			  </refsection>
 		</refentry>
 
