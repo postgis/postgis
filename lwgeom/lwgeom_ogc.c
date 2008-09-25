@@ -1078,7 +1078,7 @@ Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 	ogclwgeom = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall1(
 		LWGEOM_force_2d, PointerGetDatum(lwgeom)));
 
-	result_cstring =  serialized_lwgeom_to_ewkt(SERIALIZED_FORM(ogclwgeom));
+	result_cstring =  serialized_lwgeom_to_ewkt(SERIALIZED_FORM(ogclwgeom), PARSER_CHECK_ALL);
 
 	semicolonLoc = strchr(result_cstring,';');
 

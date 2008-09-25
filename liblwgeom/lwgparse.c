@@ -1129,7 +1129,7 @@ alloc_wkb(const char *parser)
 SERIALIZED_LWGEOM *
 parse_it(const char *geometry, int flags, allocator allocfunc, report_error errfunc)
 {
-        LWDEBUGF(2, "parse_it: %s", geometry);
+        LWDEBUGF(2, "parse_it: %s with parser flags %d", geometry, flags);
 
 	local_malloc = allocfunc;
 	error_func=errfunc;

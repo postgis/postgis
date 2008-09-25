@@ -75,7 +75,16 @@ static int lwgi;
 static uchar endianbyte;
 void (*write_wkb_bytes)(uchar* ptr,unsigned int cnt,size_t size);
 
+/*
+ * Parser global check flags - a bitmap of flags that determine which checks the parser will perform
+ * (see liblwgeom.h for the related PARSER_CHECK constants)
+ */
+int parser_check_flags;
+
 /*---------------------------------------------------------- */
+
+
+
 
 
 
@@ -230,7 +239,7 @@ output_line_collection(uchar* geom,outfunc func,int supress)
 	int cnt = read_int(&geom);
 
 	/* Ensure that LINESTRING has a minimum of 2 points */
-	if (cnt < 2)
+	if ((parser_check_flags & PARSER_CHECK_MINPOINTS) && cnt < 2)
 		lwerror("geometry requires more points");
 
 	if ( cnt == 0 ){
@@ -294,7 +303,8 @@ output_polygon_ring_collection(uchar* geom,outfunc func,int supress)
        	 	}
 
         	/* Check if they are the same... */
-        	if (memcmp(&first_point, &last_point, sizeof(double) * dims))
+        	if (memcmp(&first_point, &last_point, sizeof(double) * dims) &&
+			(parser_check_flags & PARSER_CHECK_CLOSURE))
                 	lwerror("geometry contains non-closed rings");
 
 	}
@@ -308,11 +318,11 @@ output_curve_collection(uchar* geom,outfunc func,int supress)
 	int cnt = read_int(&geom);
 
 	/* Ensure that a CIRCULARSTRING has a minimum of 3 points */
-        if (cnt < 3)
+        if ((parser_check_flags & PARSER_CHECK_MINPOINTS) && cnt < 3)
                 lwerror("geometry requires more points");
 
 	/* Ensure that a CIRCULARSTRING has an odd number of points */
-        if (cnt % 2 != 1)
+        if ((parser_check_flags & PARSER_CHECK_ODD) && cnt % 2 != 1)
                 lwerror("geometry must have an odd number of points");
 
 	if ( cnt == 0 ){
@@ -556,13 +566,16 @@ output_wkt(uchar* geom, int supress)
 }
 
 char *
-unparse_WKT(uchar* serialized, allocator alloc, freeor free)
+unparse_WKT(uchar* serialized, allocator alloc, freeor free, int flags)
 {
 
-        LWDEBUG(2, "unparse_WKT called.");
+        LWDEBUGF(2, "unparse_WKT called with parser flags %d.", flags);
 
 	if (serialized==NULL)
 		return NULL;
+
+	/* Setup the inital parser flags */
+        parser_check_flags = flags;
 
 	local_malloc=alloc;
 	local_free=free;
@@ -687,7 +700,7 @@ output_wkb_line_collection(uchar* geom,outwkbfunc func)
 	LWDEBUGF(2, "output_wkb_line_collection: %d iterations loop", cnt);
 
 	/* Ensure that LINESTRING has a minimum of 2 points */
-        if (cnt < 2)
+        if ((parser_check_flags & PARSER_CHECK_MINPOINTS) && cnt < 2)
                 lwerror("geometry requires more points");
 
 	write_wkb_int(cnt);
@@ -733,7 +746,8 @@ output_wkb_polygon_ring_collection(uchar* geom,outwkbfunc func)
 	}
 
 	/* Check if they are the same... */
-	if (memcmp(&first_point, &last_point, sizeof(double) * dims))
+	if (memcmp(&first_point, &last_point, sizeof(double) * dims) &&
+		(parser_check_flags & PARSER_CHECK_CLOSURE))
 		lwerror("geometry contains non-closed rings");
 
 	return geom;
@@ -757,11 +771,11 @@ output_wkb_curve_collection(uchar* geom,outwkbfunc func)
 	LWDEBUGF(2, "output_wkb_curve_collection: %d iterations loop", cnt);
 
 	/* Ensure that a CIRCULARSTRING has a minimum of 3 points */
-        if (cnt < 3)
+        if ((parser_check_flags & PARSER_CHECK_MINPOINTS) && cnt < 3)
                 lwerror("geometry requires more points");
 
 	/* Ensure that a CIRCULARSTRING has an odd number of points */
-        if (cnt % 2 != 1)
+        if ((parser_check_flags & PARSER_CHECK_ODD) && cnt % 2 != 1)
                 lwerror("geometry must have an odd number of points");
 
 	write_wkb_int(cnt);
@@ -860,12 +874,15 @@ output_wkb(uchar* geom)
 }
 
 char *
-unparse_WKB(uchar* serialized, allocator alloc, freeor free, char endian, size_t *outsize, uchar hex)
+unparse_WKB(uchar* serialized, allocator alloc, freeor free, int flags, char endian, size_t *outsize, uchar hex)
 {
-	LWDEBUGF(2, "unparse_WKB(%p,...) called", serialized);
+	LWDEBUGF(2, "unparse_WKB(%p,...) called with parser flags %d", serialized, flags);
 
 	if (serialized==NULL)
 		return NULL;
+
+	/* Setup the inital parser flags */
+        parser_check_flags = flags;
 
 	local_malloc=alloc;
 	local_free=free;

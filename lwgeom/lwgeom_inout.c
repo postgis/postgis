@@ -97,7 +97,7 @@ Datum LWGEOM_out(PG_FUNCTION_ARGS)
 	char *result;
 
 	lwgeom = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	result = serialized_lwgeom_to_hexwkb(SERIALIZED_FORM(lwgeom), -1, NULL);
+	result = serialized_lwgeom_to_hexwkb(SERIALIZED_FORM(lwgeom), PARSER_CHECK_ALL, -1, NULL);
 
 	PG_RETURN_CSTRING(result);
 }
@@ -137,7 +137,7 @@ Datum LWGEOM_asHEXEWKB(PG_FUNCTION_ARGS)
 		}
 	}
 
-	result = serialized_lwgeom_to_hexwkb(SERIALIZED_FORM(lwgeom), byteorder, &size);
+	result = serialized_lwgeom_to_hexwkb(SERIALIZED_FORM(lwgeom), PARSER_CHECK_ALL, byteorder, &size);
 
 	text_result = palloc(size+VARHDRSZ);
 	memcpy(VARDATA(text_result),result,size);
@@ -164,7 +164,7 @@ Datum LWGEOM_to_text(PG_FUNCTION_ARGS)
 	size_t size;
 
 	lwgeom = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	result = serialized_lwgeom_to_hexwkb(SERIALIZED_FORM(lwgeom), -1, &size);
+	result = serialized_lwgeom_to_hexwkb(SERIALIZED_FORM(lwgeom), PARSER_CHECK_ALL, -1, &size);
 
 	text_result = palloc(size+VARHDRSZ);
 	memcpy(VARDATA(text_result),result,size);
@@ -197,7 +197,7 @@ Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 
 	wkb_input = (WellKnownBinary *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	lwgeom2 = pglwgeom_from_ewkb((uchar *)VARDATA(wkb_input),
+	lwgeom2 = pglwgeom_from_ewkb((uchar *)VARDATA(wkb_input), PARSER_CHECK_ALL,
 		VARSIZE(wkb_input)-VARHDRSZ);
 
 	if (  ( PG_NARGS()>1) && ( ! PG_ARGISNULL(1) ))
@@ -294,7 +294,7 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 
 #else /* ndef BINARY_FROM_HEX */
 
-	hexized_wkb = serialized_lwgeom_to_ewkb(SERIALIZED_FORM(lwgeom_input), byteorder, &size);
+	hexized_wkb = serialized_lwgeom_to_ewkb(SERIALIZED_FORM(lwgeom_input), PARSER_CHECK_ALL, byteorder, &size);
 
 	size_result = size+VARHDRSZ;
 	result = palloc(size_result);
@@ -527,7 +527,7 @@ Datum LWGEOM_recv(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(3, "LWGEOM_recv advancing StringInfo buffer");
 
-	POSTGIS_DEBUGF(3, "LWGEOM_from_bytea returned %s", serialized_lwgeom_to_hexwkb(SERIALIZED_FORM(result), -1, NULL));
+	POSTGIS_DEBUGF(3, "LWGEOM_from_bytea returned %s", serialized_lwgeom_to_hexwkb(SERIALIZED_FORM(result), PARSER_CHECK_NONE, -1, NULL));
 
 	/* Set cursor to the end of buffer (so the backend is happy) */
 	buf->cursor = buf->len;

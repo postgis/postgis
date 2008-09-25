@@ -50,8 +50,8 @@ extern PG_LWGEOM *pglwgeom_serialize(LWGEOM *lwgeom);
 extern LWGEOM *pglwgeom_deserialize(PG_LWGEOM *pglwgeom);
 
 /* PG_LWGEOM WKB IO */
-extern PG_LWGEOM *pglwgeom_from_ewkb(uchar *ewkb, size_t ewkblen);
-extern char *pglwgeom_to_ewkb(PG_LWGEOM *geom, char byteorder, size_t *ewkblen);
+extern PG_LWGEOM *pglwgeom_from_ewkb(uchar *ewkb, int flags, size_t ewkblen);
+extern char *pglwgeom_to_ewkb(PG_LWGEOM *geom, int flags, char byteorder, size_t *ewkblen);
 
 /* PG_LWGEOM SRID get/set */
 extern PG_LWGEOM *pglwgeom_setSRID(PG_LWGEOM *pglwgeom, int32 newSRID);

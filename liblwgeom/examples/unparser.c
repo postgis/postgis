@@ -69,9 +69,9 @@ int main()
 	serialized_lwgeom = lwgeom_serialize(lwgeom); 
 
 	/* Output the geometry in WKT and WKB */
-	wkt = serialized_lwgeom_to_ewkt(serialized_lwgeom);
+	wkt = serialized_lwgeom_to_ewkt(serialized_lwgeom, PARSER_CHECK_ALL);
 	printf("WKT format    : %s\n", wkt);
-	wkb = serialized_lwgeom_to_hexwkb(serialized_lwgeom, NDR, &wkb_size);
+	wkb = serialized_lwgeom_to_hexwkb(serialized_lwgeom, PARSER_CHECK_ALL, NDR, &wkb_size);
 	printf("HEXWKB format : %s\n\n", wkb); 
 
 	/* Free all of the allocated items */
@@ -105,9 +105,9 @@ int main()
 	serialized_lwgeom = lwgeom_serialize(lwgeom); 
 
 	/* Output the geometry in WKT and WKB */
-	wkt = serialized_lwgeom_to_ewkt(serialized_lwgeom);
+	wkt = serialized_lwgeom_to_ewkt(serialized_lwgeom, PARSER_CHECK_ALL);
 	printf("WKT format    : %s\n", wkt);
-	wkb = serialized_lwgeom_to_hexwkb(serialized_lwgeom, NDR, &wkb_size);
+	wkb = serialized_lwgeom_to_hexwkb(serialized_lwgeom, PARSER_CHECK_ALL, NDR, &wkb_size);
 	printf("HEXWKB format : %s\n\n", wkb); 
 
 	/* Free all of the allocated items */
@@ -177,9 +177,9 @@ int main()
 	serialized_lwgeom = lwgeom_serialize(lwgeom); 
 
 	/* Output the geometry in WKT and WKB */
-	wkt = serialized_lwgeom_to_ewkt(serialized_lwgeom);
+	wkt = serialized_lwgeom_to_ewkt(serialized_lwgeom, PARSER_CHECK_NONE);
 	printf("WKT format    : %s\n", wkt);
-	wkb = serialized_lwgeom_to_hexwkb(serialized_lwgeom, NDR, &wkb_size);
+	wkb = serialized_lwgeom_to_hexwkb(serialized_lwgeom, PARSER_CHECK_NONE, NDR, &wkb_size);
 	printf("HEXWKB format : %s\n\n", wkb); 
 
 	/* Free all of the allocated items */

@@ -2910,7 +2910,7 @@ Datum LWGEOM_asEWKT(PG_FUNCTION_ARGS)
 	/*char *semicolonLoc; */
 
 	lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	result_cstring =  serialized_lwgeom_to_ewkt(SERIALIZED_FORM(lwgeom));
+	result_cstring =  serialized_lwgeom_to_ewkt(SERIALIZED_FORM(lwgeom), PARSER_CHECK_ALL);
 
 #if 0
 	semicolonLoc = strchr(result_cstring,';');

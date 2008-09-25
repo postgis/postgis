@@ -2778,7 +2778,7 @@ GEOS2LWGEOM(GEOSGeom geom, char want3d)
 	else GEOS_setWKBOutputDims(2);
 
 	wkb = GEOSGeomToWKB_buf(geom, &size);
-	lwgeom = lwgeom_from_ewkb(wkb, size);
+	lwgeom = lwgeom_from_ewkb(wkb, flags, size);
 
 	return lwgeom;
 }
@@ -3210,7 +3210,7 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	POSTGIS_DEBUGF(2, "GEOSnoop: IN: %s", serialized_lwgeom_to_ewkt(SERIALIZED_FORM(geom)));
+	POSTGIS_DEBUGF(2, "GEOSnoop: IN: %s", serialized_lwgeom_to_ewkt(SERIALIZED_FORM(geom), PARSER_CHECK_NONE));
 
 	geosgeom = POSTGIS2GEOS(geom);
 	if ( ! geosgeom ) PG_RETURN_NULL();
@@ -3223,7 +3223,7 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 	result = GEOS2POSTGIS(geosgeom, TYPE_HASZ(geom->type));
 	GEOSGeom_destroy(geosgeom);
 
-	POSTGIS_DEBUGF(4, "GEOSnoop: OUT: %s", serialized_lwgeom_to_ewkt(SERIALIZED_FORM(result)));
+	POSTGIS_DEBUGF(4, "GEOSnoop: OUT: %s", serialized_lwgeom_to_ewkt(SERIALIZED_FORM(result), PARSER_CHECK_NONE));
 
 	PG_FREE_IF_COPY(geom, 0);
 

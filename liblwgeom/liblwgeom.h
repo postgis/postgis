@@ -1125,19 +1125,20 @@ extern void deparse_hex(uchar str, char *result);
 #define PARSER_CHECK_ODD	2
 #define PARSER_CHECK_CLOSURE	4
 
+#define PARSER_CHECK_NONE	0
 #define PARSER_CHECK_ALL	(PARSER_CHECK_MINPOINTS | PARSER_CHECK_ODD | PARSER_CHECK_CLOSURE)
 
 
 /* Parser access routines */
-extern char *lwgeom_to_ewkt(LWGEOM *lwgeom);
-extern char *lwgeom_to_hexwkb(LWGEOM *lwgeom, unsigned int byteorder);
-extern LWGEOM *lwgeom_from_ewkb(uchar *ewkb, size_t ewkblen, int flags);
-extern uchar *lwgeom_to_ewkb(LWGEOM *lwgeom, char byteorder, size_t *ewkblen);
+extern char *lwgeom_to_ewkt(LWGEOM *lwgeom, int flags);
+extern char *lwgeom_to_hexwkb(LWGEOM *lwgeom, int flags, unsigned int byteorder);
+extern LWGEOM *lwgeom_from_ewkb(uchar *ewkb, int flags, size_t ewkblen);
+extern uchar *lwgeom_to_ewkb(LWGEOM *lwgeom, int flags, char byteorder, size_t *ewkblen);
 
-extern char *serialized_lwgeom_to_ewkt(uchar *serialized);
+extern char *serialized_lwgeom_to_ewkt(uchar *serialized, int flags);
 extern SERIALIZED_LWGEOM *serialized_lwgeom_from_ewkt(char *wkt_input, int flags);
-extern char *serialized_lwgeom_to_hexwkb(uchar *serialized, unsigned int byteorder, size_t *size);
-extern char *serialized_lwgeom_to_ewkb(uchar *serialized, unsigned int byteorder, size_t *size);
+extern char *serialized_lwgeom_to_hexwkb(uchar *serialized, int flags, unsigned int byteorder, size_t *size);
+extern char *serialized_lwgeom_to_ewkb(uchar *serialized, int flags, unsigned int byteorder, size_t *size);
 
 
 extern void *lwalloc(size_t size);

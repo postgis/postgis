@@ -242,7 +242,7 @@ PG_LWGEOM_construct(uchar *ser, int SRID, int wantbbox)
  * Make a PG_LWGEOM object from a WKB binary representation.
  */
 PG_LWGEOM *
-pglwgeom_from_ewkb(uchar *ewkb, size_t ewkblen)
+pglwgeom_from_ewkb(uchar *ewkb, int flags, size_t ewkblen)
 {
 	PG_LWGEOM *ret;
 	SERIALIZED_LWGEOM *serialized_lwgeom;
@@ -257,7 +257,7 @@ pglwgeom_from_ewkb(uchar *ewkb, size_t ewkblen)
 	}
 	hexewkb[hexewkblen] = '\0';
 
-	serialized_lwgeom = serialized_lwgeom_from_ewkt(hexewkb, PARSER_CHECK_ALL);
+	serialized_lwgeom = serialized_lwgeom_from_ewkt(hexewkb, flags);
     
 	ret = (PG_LWGEOM *)palloc(serialized_lwgeom->size + VARHDRSZ);
 	SET_VARSIZE(ret, serialized_lwgeom->size + VARHDRSZ);
@@ -272,10 +272,10 @@ pglwgeom_from_ewkb(uchar *ewkb, size_t ewkblen)
  * Return the EWKB (binary) representation for a PG_LWGEOM.
  */
 char *
-pglwgeom_to_ewkb(PG_LWGEOM *geom, char byteorder, size_t *outsize)
+pglwgeom_to_ewkb(PG_LWGEOM *geom, int flags, char byteorder, size_t *outsize)
 {
 	uchar *srl = &(geom->type);
-	return serialized_lwgeom_to_ewkb(srl, byteorder, outsize);
+	return serialized_lwgeom_to_ewkb(srl, flags, byteorder, outsize);
 }
 
 /*
