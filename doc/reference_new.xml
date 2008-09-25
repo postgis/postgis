@@ -2685,7 +2685,7 @@ Line[B] with 2 points : Polygon[B] with 1 rings
 		<refsynopsisdiv>
 			<funcsynopsis>
 			  <funcprototype>
-				<funcdef>geoometry <function>ST_Multi</function></funcdef>
+				<funcdef>geometry <function>ST_Multi</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
 			  </funcprototype>
 			</funcsynopsis>
@@ -3711,7 +3711,7 @@ st_area
     <refsynopsisdiv>
       <funcsynopsis>
         <funcprototype>
-          <funcdef>boolean <function>ST_Centroid</function></funcdef>
+          <funcdef>geometry <function>ST_Centroid</function></funcdef>
 
           <paramdef><type>geometry </type>
           <parameter>g1</parameter></paramdef>
@@ -4193,7 +4193,7 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
       <refsynopsisdiv>
         <funcsynopsis>
           <funcprototype>
-            <funcdef>boolean <function>ST_Distance</function></funcdef>
+            <funcdef>float <function>ST_Distance</function></funcdef>
 
             <paramdef><type>geometry </type>
             <parameter>g1</parameter></paramdef>
@@ -4785,7 +4785,7 @@ st_perimeter
       <refsynopsisdiv>
         <funcsynopsis>
           <funcprototype>
-            <funcdef>boolean <function>ST_PointOnSurface</function></funcdef>
+            <funcdef>geometry <function>ST_PointOnSurface</function></funcdef>
 
             <paramdef><type>geometry </type>
             <parameter>g1</parameter></paramdef>
