@@ -998,14 +998,6 @@ GROUP BY gid, field1,field2;
 
       <variablelist>
         <varlistentry>
-          <term>ST_MakePointM(&lt;x&gt;, &lt;y&gt;, &lt;m&gt;)</term>
-
-          <listitem>
-            <para>Creates a 3dm point geometry.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
           <term>ST_MakeBox2D(&lt;LL&gt;, &lt;UR&gt;)</term>
 
           <listitem>
