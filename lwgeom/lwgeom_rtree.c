@@ -202,8 +202,11 @@ void freeTree(RTREE_NODE *root)
         if(root->rightNode)
                 freeTree(root->rightNode);
         lwfree(root->interval);
-        if(root->segment)
-                lwgeom_release((LWGEOM *)root->segment);
+        if(root->segment) {
+            lwfree(root->segment->points->serialized_pointlist);
+            lwfree(root->segment->points);
+            lwgeom_release((LWGEOM *)root->segment);
+        }
         lwfree(root);
 }
 
