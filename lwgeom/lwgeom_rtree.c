@@ -16,7 +16,6 @@
 
 
 Datum LWGEOM_polygon_index(PG_FUNCTION_ARGS);
-RTREE_POLY_CACHE *createNewCache(LWPOLY *poly, uchar *serializedPoly);
 
 
 /*
@@ -76,7 +75,7 @@ RTREE_NODE *createTree(POINTARRAY *pointArray)
         }
 
         root = nodes[0];
-
+        lwfree(nodes);
         LWDEBUGF(3, "createTree returning %p", root);
 
         return root;
@@ -208,6 +207,24 @@ void freeTree(RTREE_NODE *root)
         lwfree(root);
 }
 
+
+/*
+ * Free the cache object and all the sub-objects properly.
+ */
+void freeCache(RTREE_POLY_CACHE *cache)
+{
+    int i;
+    LWDEBUGF(2, "freeCache called for %p", cache);
+    for(i = 0; i < cache->ringCount; i++)
+    { 
+	    freeTree(cache->ringIndices[i]);
+    }
+    lwfree(cache->ringIndices);
+    lwfree(cache->poly);
+    lwfree(cache);
+}
+
+ 
 /*
  * Retrieves a collection of line segments given the root and crossing value.
  * The collection is a multilinestring consisting of two point lines 
@@ -400,58 +417,38 @@ RTREE_POLY_CACHE *createNewCache(LWPOLY *poly, uchar *serializedPoly)
 RTREE_POLY_CACHE *retrieveCache(LWPOLY *poly, uchar *serializedPoly, 
                 RTREE_POLY_CACHE *currentCache)
 {
-        int i, length;
+    int length;
 
-        LWDEBUGF(2, "retrieveCache called with %p %p %p", poly, serializedPoly, currentCache);
+    LWDEBUGF(2, "retrieveCache called with %p %p %p", poly, serializedPoly, currentCache);
 
-        if(!currentCache)
-        {
-                LWDEBUG(3, "No existing cache, create one.");
+    if(!currentCache)
+    {
+        LWDEBUG(3, "No existing cache, create one.");
+        return createNewCache(poly, serializedPoly);
+    }
+    if(!(currentCache->poly))
+    {
+        LWDEBUG(3, "Cache contains no polygon, creating new cache.");
+        return createNewCache(poly, serializedPoly);
+    }
 
-                return createNewCache(poly, serializedPoly);
-        }
-        if(!(currentCache->poly))
-        {
-                LWDEBUG(3, "Cache contains no polygon, creating new cache.");
+    length = lwgeom_size_poly(serializedPoly);
 
-                return createNewCache(poly, serializedPoly);
-        }
+    if(lwgeom_size_poly(currentCache->poly) != length)
+    {
+        LWDEBUG(3, "Polygon size mismatch, creating new cache.");
+        freeCache(currentCache);
+        return createNewCache(poly, serializedPoly);
+    }
+    if( memcmp(serializedPoly, currentCache->poly, length) ) 
+    {
+        LWDEBUGF(3, "Polygon mismatch, creating new cache. %c, %c", a, b);
+        freeCache(currentCache);
+        return createNewCache(poly, serializedPoly);
+    }
 
-        length = lwgeom_size_poly(serializedPoly);
+    LWDEBUGF(3, "Polygon match, retaining current cache, %p.", currentCache);
 
-        if(lwgeom_size_poly(currentCache->poly) != length)
-        {
-                LWDEBUG(3, "Polygon size mismatch, creating new cache.");
-                for(i = 0; i < currentCache->ringCount; i++)
-                {
-                    freeTree(currentCache->ringIndices[i]);
-                }
-                lwfree(currentCache->ringIndices);
-                lwfree(currentCache->poly);
-                lwfree(currentCache);
-                return createNewCache(poly, serializedPoly);
-        }
-        for(i = 0; i < length; i++) 
-        {
-                uchar a = serializedPoly[i];
-                uchar b = currentCache->poly[i];
-                if(a != b) 
-                {
-                        LWDEBUGF(3, "Polygon mismatch, creating new cache. %c, %c", a, b);
-
-                        for(i = 0; i < currentCache->ringCount; i++)
-                        { 
-			                freeTree(currentCache->ringIndices[i]);
-                        }
-                        lwfree(currentCache->ringIndices);
-                        lwfree(currentCache->poly);
-                        lwfree(currentCache);
-                        return createNewCache(poly, serializedPoly);
-                }
-        }
-
-        LWDEBUGF(3, "Polygon match, retaining current cache, %p.", currentCache);
-
-        return currentCache;
+    return currentCache;
 }
 
