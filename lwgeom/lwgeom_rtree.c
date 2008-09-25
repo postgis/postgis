@@ -204,7 +204,7 @@ void freeTree(RTREE_NODE *root)
                 freeTree(root->rightNode);
         lwfree(root->interval);
         if(root->segment)
-                lwfree(root->segment);
+                lwgeom_release((LWGEOM *)root->segment);
         lwfree(root);
 }
 
@@ -424,7 +424,7 @@ RTREE_POLY_CACHE *retrieveCache(LWPOLY *poly, uchar *serializedPoly,
                 LWDEBUG(3, "Polygon size mismatch, creating new cache.");
                 for(i = 0; i < currentCache->ringCount; i++)
                 {
-			freeTree(currentCache->ringIndices[i]);
+                    freeTree(currentCache->ringIndices[i]);
                 }
                 lwfree(currentCache->ringIndices);
                 lwfree(currentCache->poly);
@@ -441,7 +441,7 @@ RTREE_POLY_CACHE *retrieveCache(LWPOLY *poly, uchar *serializedPoly,
 
                         for(i = 0; i < currentCache->ringCount; i++)
                         { 
-			        freeTree(currentCache->ringIndices[i]);
+			                freeTree(currentCache->ringIndices[i]);
                         }
                         lwfree(currentCache->ringIndices);
                         lwfree(currentCache->poly);
