@@ -445,7 +445,7 @@ RTREE_POLY_CACHE *retrieveCache(LWPOLY *poly, uchar *serializedPoly,
     }
     if( memcmp(serializedPoly, currentCache->poly, length) ) 
     {
-        LWDEBUGF(3, "Polygon mismatch, creating new cache. %c, %c", a, b);
+        LWDEBUG(3, "Polygon mismatch, creating new cache.");
         freeCache(currentCache);
         return createNewCache(poly, serializedPoly);
     }
