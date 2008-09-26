@@ -10,55 +10,60 @@
      ******************************************************************** -->
 	<xsl:output method="xml" indent="yes" />
 	<xsl:template match='/chapter'>
-	
-	  <title>PostGIS Aggregates Index</title>
-	  <para>The functions given below are spatial aggregate functions provided with PostGIS that can
-	  be used just like any other sql aggregate function such as sum, average.</para>
-	  <chapter>
-	  <sect1><title>PostGIS Aggregate Functions</title>
-	  	
-		<xsl:variable name="ap"><xsl:text>'</xsl:text></xsl:variable>
-<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
-		<xsl:for-each select='sect1/refentry'>
-		  <xsl:variable name='comment'>
-		  	<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
-		  </xsl:variable>
-
-<!-- For each function prototype if it takes a geometry set then catalog it as an aggregate function  -->
-			<xsl:for-each select="refsynopsisdiv/funcsynopsis/funcprototype">
-				<xsl:choose>
-					<xsl:when test="contains(paramdef/type,'geometry set')">
-						<p><xref linkend="{funcdef/function}" />(geometry <xsl:call-template name="listparams"><xsl:with-param name="func" select="." /></xsl:call-template>) - <xsl:value-of select='$comment' /></p>
-					</xsl:when>
-				</xsl:choose>
-			</xsl:for-each>
-		</xsl:for-each>
-		</sect1>
-		
-		<sect1><title>PostGIS MM Compliant Functions</title>
-		<para>The functions given below are PostGIS functions that conform to the SQL/MM 3 standard</para>
-<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
-		<xsl:for-each select='sect1/refentry'>
-		  <xsl:variable name='comment'>
-		  	<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
-		  </xsl:variable>
-		  <xsl:variable name='refid'>
-		  	<xsl:value-of select='@id' />
-		  </xsl:variable>
-
-<!-- For each section if there is not that it implements SQL/MM catalog it -->
-			<xsl:for-each select="refsection">
-				<xsl:for-each select="para">
+	<chapter>
+		<title>PostGIS Special Functions Index</title>	  
+		<sect1>
+			<title>PostGIS Aggregate Functions</title>
+			<para>The functions given below are spatial aggregate functions provided with PostGIS that can be used just like any other sql aggregate function such as sum, average.</para>
+			<itemizedlist>
+			<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
+			<xsl:for-each select='sect1/refentry'>
+			  <xsl:variable name='comment'>
+				<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
+			  </xsl:variable>
+			  <xsl:variable name="refid">
+				<xsl:value-of select="@id" />
+			  </xsl:variable>
+			
+			<!-- For each function prototype if it takes a geometry set then catalog it as an aggregate function  -->
+				<xsl:for-each select="refsynopsisdiv/funcsynopsis/funcprototype">
 					<xsl:choose>
-						<xsl:when test="contains(.,'implements the SQL/MM')">
-							<p><xref linkend="{$refid}" /> - <xsl:value-of select='$comment' /></p>
+						<xsl:when test="contains(paramdef/type,'geometry set')">
+							 <listitem><para><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="$comment" /></para></listitem>
 						</xsl:when>
 					</xsl:choose>
 				</xsl:for-each>
 			</xsl:for-each>
-		</xsl:for-each>
+			</itemizedlist>
 		</sect1>
-		</chapter>
+		
+		<sect1>
+			<title>PostGIS MM Compliant Functions</title>
+			<para>The functions given below are PostGIS functions that conform to the SQL/MM 3 standard</para>
+				<itemizedlist>
+			<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
+				<xsl:for-each select='sect1/refentry'>
+					  <xsl:variable name='comment'>
+						<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
+					  </xsl:variable>
+					  <xsl:variable name="refid">
+						<xsl:value-of select="@id" />
+					  </xsl:variable>
+				
+			<!-- For each section if there is not that it implements SQL/MM catalog it -->
+						<xsl:for-each select="refsection">
+							<xsl:for-each select="para">
+								<xsl:choose>
+									<xsl:when test="contains(.,'implements the SQL/MM')">
+										<listitem><para><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="$comment" /></para></listitem>
+									</xsl:when>
+								</xsl:choose>
+							</xsl:for-each>
+						</xsl:for-each>
+				</xsl:for-each>
+				</itemizedlist>
+		</sect1>
+	</chapter>
 	</xsl:template>
 
 	<!--macro to pull out function parameter names so we can provide a pretty arg list prefix for each function -->
