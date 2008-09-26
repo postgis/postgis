@@ -1277,6 +1277,63 @@ int point_in_polygon(RTREE_NODE **root, int ringCount, LWPOINT *point)
 }
 
 /*
+ * return -1 if point outside polygon
+ * return 0 if point on boundary
+ * return 1 if point inside polygon
+ *
+ * Expected **root order is all the exterior rings first, then all the holes
+ *
+ * TODO: this could be made slightly more efficient by ordering the rings in 
+ * EIIIEIIIEIEI order (exterior/interior) and including list of exterior ring 
+ * positions on the cache object.
+ */
+int point_in_multipolygon(RTREE_NODE **root, int polyCount, int ringCount, LWPOINT *point)
+{
+    int i;
+    POINT2D pt;
+    int result = -1;
+
+    LWDEBUGF(2, "point_in_multipolygon called for %p %d %d %p.", root, polyCount, ringCount, point);
+
+    getPoint2d_p(point->point, 0, &pt);
+    /* assume bbox short-circuit has already been attempted */
+
+	/* is the point inside (not outside) any of the exterior rings? */
+    for( i = 0; i < polyCount; i++ )
+    {
+		int in_ring = point_in_ring(root[i], &pt);
+		LWDEBUGF(4, "point_in_multipolygon: exterior ring (%d), point_in_ring returned %d", i, in_ring);
+       	if( in_ring != -1 ) /* not outside this ring */
+       	{
+           	LWDEBUG(3, "point_in_multipolygon: inside exterior ring.");
+           	result = in_ring;
+           	break;
+       	}
+    }
+    
+    if( result == -1 ) /* strictly outside all rings */
+        return result;
+
+	/* ok, it's in a ring, but if it's in a hole it's still outside */
+    for( i = polyCount; i < ringCount; i++ )
+    {
+		int in_ring = point_in_ring(root[i], &pt);
+		LWDEBUGF(4, "point_in_multipolygon: hole (%d), point_in_ring returned %d", i, in_ring);
+       	if( in_ring == 1 ) /* completely inside hole */
+       	{
+          	LWDEBUGF(3, "point_in_multipolygon: within hole %d.", i);
+          	return -1;
+       	}
+		if( in_ring == 0 ) /* on the boundary of a hole */
+		{
+			result = 0;
+		}
+    }
+    return result; /* -1 = outside, 0 = boundary, 1 = inside */
+
+}
+
+/*
  * return 0 iff point outside polygon or on boundary
  * return 1 iff point inside polygon
  */
@@ -1348,6 +1405,7 @@ int point_outside_polygon(RTREE_NODE **root, int ringCount, LWPOINT *point)
         }
         return 0;
 }
+
 
 /*
  * return 0 iff point inside polygon or on boundary

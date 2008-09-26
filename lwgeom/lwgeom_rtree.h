@@ -47,6 +47,7 @@ typedef struct
 {
         RTREE_NODE **ringIndices;
         int ringCount;
+        int polyCount;
         uchar *poly;
 } RTREE_POLY_CACHE;
 
@@ -54,8 +55,8 @@ typedef struct
  * Creates a new cachable index if needed, or returns the current cache if
  * it is applicable to the current polygon.
  */
-RTREE_POLY_CACHE *retrieveCache(LWPOLY *poly, uchar *serializedPoly, RTREE_POLY_CACHE *currentCache);
-RTREE_POLY_CACHE *createNewCache(LWPOLY *poly, uchar *serializedPoly);
+RTREE_POLY_CACHE *retrieveCache(LWGEOM *lwgeom, uchar *serializedPoly, RTREE_POLY_CACHE *currentCache);
+RTREE_POLY_CACHE *createNewCache(LWGEOM *lwgeom, uchar *serializedPoly);
 /* Frees the cache. */
 void freeCache(RTREE_POLY_CACHE *cache);
 

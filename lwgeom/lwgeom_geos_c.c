@@ -1382,7 +1382,7 @@ int point_in_polygon(RTREE_NODE **root, int ringCount, LWPOINT *point);
 int point_in_polygon_deprecated(LWPOLY *polygon, LWPOINT *point);
 int point_outside_polygon(RTREE_NODE **root, int ringCount, LWPOINT *point);
 int point_outside_polygon_deprecated(LWPOLY *polygon, LWPOINT *point);
-int point_in_multipolygon(LWMPOLY *mpolygon, LWPOINT *point);
+int point_in_multipolygon(RTREE_NODE **root, int polyCount, int ringCount, LWPOINT *point);
 
 
 PG_FUNCTION_INFO_V1(contains);
@@ -1391,14 +1391,13 @@ Datum contains(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom1;
 	PG_LWGEOM *geom2;
 	GEOSGeom g1,g2;
-	bool result;
 	BOX2DFLOAT4 box1, box2;
-        int type1, type2;
-        LWPOLY *poly;
-        /* LWMPOLY *mpoly; */
-        LWPOINT *point;
-        RTREE_POLY_CACHE *poly_cache;
-        MemoryContext old_context;
+    int type1, type2;
+    LWGEOM *lwgeom;
+    LWPOINT *point;
+    RTREE_POLY_CACHE *poly_cache;
+    MemoryContext old_context;
+	bool result;
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
@@ -1410,90 +1409,63 @@ Datum contains(PG_FUNCTION_ARGS)
 	errorIfGeometryCollection(geom1,geom2);
 	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
 
-	/*
-	 * short-circuit 1: if geom2 bounding box is not completely inside
-	 * geom1 bounding box we can prematurely return FALSE.
-	 * Do the test IFF BOUNDING BOX AVAILABLE.
-	 */
-	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-		getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+    /*
+    ** short-circuit 1: if geom2 bounding box is not completely inside
+    ** geom1 bounding box we can prematurely return FALSE.
+	** Do the test IFF BOUNDING BOX AVAILABLE.
+    */
+    if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
+         getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
-		if ( box2.xmin < box1.xmin ) PG_RETURN_BOOL(FALSE);
-		if ( box2.xmax > box1.xmax ) PG_RETURN_BOOL(FALSE);
-		if ( box2.ymin < box1.ymin ) PG_RETURN_BOOL(FALSE);
-		if ( box2.ymax > box1.ymax ) PG_RETURN_BOOL(FALSE);
+		if ( ( box2.xmin < box1.xmin ) || ( box2.xmax > box1.xmax ) ||
+		     ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax ) ) 
+		{
+		    PG_RETURN_BOOL(FALSE);
+		}
 	}
+
+    /*
+    ** short-circuit 2: if geom2 is a point and geom1 is a polygon
+    ** call the point-in-polygon function.
+    */
+    type1 = lwgeom_getType((uchar)SERIALIZED_FORM(geom1)[0]);
+    type2 = lwgeom_getType((uchar)SERIALIZED_FORM(geom2)[0]);
+    if((type1 == POLYGONTYPE || type1 == MULTIPOLYGONTYPE) && type2 == POINTTYPE)
+    {
+        POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
+        lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom1));
+        point = lwpoint_deserialize(SERIALIZED_FORM(geom2));
+
+        POSTGIS_DEBUGF(3, "Precall point_in_multipolygon %p, %p", lwgeom, point);
+
         /*
-         * short-circuit 2: if geom2 is a point and geom1 is a polygon
-         * call the point-in-polygon function.
-         */
-        type1 = lwgeom_getType((uchar)SERIALIZED_FORM(geom1)[0]);
-        type2 = lwgeom_getType((uchar)SERIALIZED_FORM(geom2)[0]);
-        if(type1 == POLYGONTYPE && type2 == POINTTYPE)
-        {
-                POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
+         * Switch the context to the function-scope context,
+         * retrieve the appropriate cache object, cache it for 
+         * future use, then switch back to the local context.
+         */                 
+        old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
+        poly_cache = retrieveCache(lwgeom, SERIALIZED_FORM(geom1), fcinfo->flinfo->fn_extra);
+        fcinfo->flinfo->fn_extra = poly_cache;
+        MemoryContextSwitchTo(old_context);
 
-                poly = lwpoly_deserialize(SERIALIZED_FORM(geom1));
-                point = lwpoint_deserialize(SERIALIZED_FORM(geom2));
-
-                POSTGIS_DEBUGF(3, "Precall point_in_polygon %p, %p", poly, point);
-
-                /*
-                 * Switch the context to the function-scope context,
-                 * retrieve the appropriate cache object, cache it for 
-                 * future use, then switch back to the local context.
-                 */                 
-                old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
-                poly_cache = retrieveCache(poly, SERIALIZED_FORM(geom1), fcinfo->flinfo->fn_extra);
-                fcinfo->flinfo->fn_extra = poly_cache;
-                MemoryContextSwitchTo(old_context);
-
-                if(point_in_polygon(poly_cache->ringIndices, poly_cache->ringCount, point) == 0)
-                {
-	                PG_FREE_IF_COPY(geom1, 0);
-	                PG_FREE_IF_COPY(geom2, 1);
-                        lwgeom_release((LWGEOM *)poly);
-                        lwgeom_release((LWGEOM *)point);
-                        PG_RETURN_BOOL(FALSE);
-                }
-                else
-                {
-                        PG_FREE_IF_COPY(geom1, 0);
-                        PG_FREE_IF_COPY(geom2, 1);
-                        lwgeom_release((LWGEOM *)poly);
-                        lwgeom_release((LWGEOM *)point);
-                        PG_RETURN_BOOL(TRUE);
-                }
-        } 
-        /* Not yet functional 
-        else if(type1 == MULTIPOLYGONTYPE && type2 == POINTTYPE)
-        {
-                POSTGIS_DEBUG(3, "Point in MultiPolygon test requested...short-circuiting.");
-
-                mpoly = lwmpoly_deserialize(SERIALIZED_FORM(geom1));
-                point = lwpoint_deserialize(SERIALIZED_FORM(geom2));
-                if(point_in_multipolygon(mpoly, point) == 0)
-                {
-                        PG_FREE_IF_COPY(geom1, 0);
-                        PG_FREE_IF_COPY(geom2, 1);
-                        lwgeom_release((LWGEOM *)mpoly);
-                        lwgeom_release((LWGEOM *)point);
-                        PG_RETURN_BOOL(FALSE);
-                }
-                else
-                {
-                        PG_FREE_IF_COPY(geom1, 0);
-                        PG_FREE_IF_COPY(geom2, 1);
-                        lwgeom_release((LWGEOM *)mpoly);
-                        lwgeom_release((LWGEOM *)point);
-                        PG_RETURN_BOOL(TRUE);
-                }
-        }
-        */
-        else 
-        {
-                POSTGIS_DEBUGF(3, "Contains: type1: %d, type2: %d", type1, type2);
-        }
+        result = point_in_multipolygon(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCount, point);
+        PG_FREE_IF_COPY(geom1, 0);
+        PG_FREE_IF_COPY(geom2, 1);
+        lwgeom_release((LWGEOM *)lwgeom);
+        lwgeom_release((LWGEOM *)point);
+		if( result == 1 ) /* completely inside */
+		{
+			PG_RETURN_BOOL(TRUE);
+		}
+		else
+		{
+			PG_RETURN_BOOL(FALSE);
+		}
+    } 
+    else 
+    {
+        POSTGIS_DEBUGF(3, "Contains: type1: %d, type2: %d", type1, type2);
+    }
         
 	initGEOS(lwnotice, lwnotice);
 
@@ -1554,7 +1526,7 @@ Datum covers(PG_FUNCTION_ARGS)
 	bool result;
 	BOX2DFLOAT4 box1, box2;
         int type1, type2;
-        LWPOLY *poly;
+        LWGEOM *lwgeom;
         /* LWMPOLY *mpoly; */
         LWPOINT *point;
         RTREE_POLY_CACHE *poly_cache;
@@ -1590,14 +1562,14 @@ Datum covers(PG_FUNCTION_ARGS)
          */
         type1 = lwgeom_getType((uchar)SERIALIZED_FORM(geom1)[0]);
         type2 = lwgeom_getType((uchar)SERIALIZED_FORM(geom2)[0]);
-        if(type1 == POLYGONTYPE && type2 == POINTTYPE)
+    	if((type1 == POLYGONTYPE || type1 == MULTIPOLYGONTYPE) && type2 == POINTTYPE)
         {
                 POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
 
-                poly = lwpoly_deserialize(SERIALIZED_FORM(geom1));
+                lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom1));
                 point = lwpoint_deserialize(SERIALIZED_FORM(geom2));
 
-                POSTGIS_DEBUGF(3, "Precall point_in_polygon %p, %p", poly, point);
+                POSTGIS_DEBUGF(3, "Precall point_in_polygon %p, %p", lwgeom, point);
 
                 /*
                  * Switch the context to the function-scope context,
@@ -1605,32 +1577,29 @@ Datum covers(PG_FUNCTION_ARGS)
                  * future use, then switch back to the local context.
                  */                 
                 old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
-                poly_cache = retrieveCache(poly, SERIALIZED_FORM(geom1), fcinfo->flinfo->fn_extra);
+                poly_cache = retrieveCache(lwgeom, SERIALIZED_FORM(geom1), fcinfo->flinfo->fn_extra);
                 fcinfo->flinfo->fn_extra = poly_cache;
                 MemoryContextSwitchTo(old_context);
 
-                if(point_outside_polygon(poly_cache->ringIndices, poly_cache->ringCount, point) == 0)
-                {
-	                PG_FREE_IF_COPY(geom1, 0);
-	                PG_FREE_IF_COPY(geom2, 1);
-                        lwgeom_release((LWGEOM *)poly);
-                        lwgeom_release((LWGEOM *)point);
-                        PG_RETURN_BOOL(TRUE);
-                }
-                else
-                {
-                        PG_FREE_IF_COPY(geom1, 0);
-                        PG_FREE_IF_COPY(geom2, 1);
-                        lwgeom_release((LWGEOM *)poly);
-                        lwgeom_release((LWGEOM *)point);
-                        PG_RETURN_BOOL(FALSE);
-                }
+				result = point_in_multipolygon(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCount, point);
+                PG_FREE_IF_COPY(geom1, 0);
+                PG_FREE_IF_COPY(geom2, 1);
+				lwgeom_release((LWGEOM *)lwgeom);
+				lwgeom_release((LWGEOM *)point);
+				if( result != -1 ) /* not outside */
+				{
+					PG_RETURN_BOOL(TRUE);
+				}
+				else
+				{
+					PG_RETURN_BOOL(FALSE);
+				}
         } 
         else 
         {
                 POSTGIS_DEBUGF(3, "Covers: type1: %d, type2: %d", type1, type2);
         }
-        
+
 	initGEOS(lwnotice, lwnotice);
 
 #ifdef PROFILE
@@ -1684,7 +1653,7 @@ Datum within(PG_FUNCTION_ARGS)
 	GEOSGeom g1,g2;
 	bool result;
 	BOX2DFLOAT4 box1, box2;
-        LWPOLY *poly;
+        LWGEOM *lwgeom;
         LWPOINT *point;
         int type1, type2;
         MemoryContext old_context;
@@ -1719,12 +1688,12 @@ Datum within(PG_FUNCTION_ARGS)
          */
         type1 = lwgeom_getType((uchar)SERIALIZED_FORM(geom1)[0]);
         type2 = lwgeom_getType((uchar)SERIALIZED_FORM(geom2)[0]);
-        if(type1 == POINTTYPE && type2 == POLYGONTYPE)
+    	if((type2 == POLYGONTYPE || type1 == MULTIPOLYGONTYPE) && type1 == POINTTYPE)
         {
                 POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
 
                 point = lwpoint_deserialize(SERIALIZED_FORM(geom1));
-                poly = lwpoly_deserialize(SERIALIZED_FORM(geom2));
+                lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom2));
 
                 /*
                  * Switch the context to the function-scope context,
@@ -1732,26 +1701,23 @@ Datum within(PG_FUNCTION_ARGS)
                  * future use, then switch back to the local context.
                  */                 
                 old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
-                poly_cache = retrieveCache(poly, SERIALIZED_FORM(geom2), fcinfo->flinfo->fn_extra);
+                poly_cache = retrieveCache(lwgeom, SERIALIZED_FORM(geom2), fcinfo->flinfo->fn_extra);
                 fcinfo->flinfo->fn_extra = poly_cache;
                 MemoryContextSwitchTo(old_context);
 
-                if(point_in_polygon(poly_cache->ringIndices, poly_cache->ringCount, point) == 0)
-                {
-	                PG_FREE_IF_COPY(geom1, 0);
-	                PG_FREE_IF_COPY(geom2, 1);
-                        lwgeom_release((LWGEOM *)poly);
-                        lwgeom_release((LWGEOM *)point);
-                        PG_RETURN_BOOL(FALSE);
-                }
-                else
-                {
-                        PG_FREE_IF_COPY(geom1, 0);
-                        PG_FREE_IF_COPY(geom2, 1);
-                        lwgeom_release((LWGEOM *)poly);
-                        lwgeom_release((LWGEOM *)point);
-                        PG_RETURN_BOOL(TRUE);
-                }
+				result = point_in_multipolygon(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCount, point);
+                PG_FREE_IF_COPY(geom1, 0);
+                PG_FREE_IF_COPY(geom2, 1);
+                lwgeom_release((LWGEOM *)lwgeom);
+                lwgeom_release((LWGEOM *)point);
+				if( result == 1 ) /* completely inside */
+				{
+					PG_RETURN_BOOL(TRUE);
+				}
+				else
+				{
+					PG_RETURN_BOOL(FALSE);
+				}
         }
 
 	initGEOS(lwnotice, lwnotice);
@@ -1812,7 +1778,7 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	GEOSGeom g1,g2;
 	bool result;
 	BOX2DFLOAT4 box1, box2;
-        LWPOLY *poly;
+        LWGEOM *lwgeom;
         LWPOINT *point;
         int type1, type2;
         MemoryContext old_context;
@@ -1850,12 +1816,12 @@ Datum coveredby(PG_FUNCTION_ARGS)
          */
         type1 = lwgeom_getType((uchar)SERIALIZED_FORM(geom1)[0]);
         type2 = lwgeom_getType((uchar)SERIALIZED_FORM(geom2)[0]);
-        if(type1 == POINTTYPE && type2 == POLYGONTYPE)
+    	if((type2 == POLYGONTYPE || type2 == MULTIPOLYGONTYPE) && type1 == POINTTYPE)
         {
                 POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
 
                 point = lwpoint_deserialize(SERIALIZED_FORM(geom1));
-                poly = lwpoly_deserialize(SERIALIZED_FORM(geom2));
+                lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom2));
 
                 /*
                  * Switch the context to the function-scope context,
@@ -1863,26 +1829,23 @@ Datum coveredby(PG_FUNCTION_ARGS)
                  * future use, then switch back to the local context.
                  */                 
                 old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
-                poly_cache = retrieveCache(poly, SERIALIZED_FORM(geom2), fcinfo->flinfo->fn_extra);
+                poly_cache = retrieveCache(lwgeom, SERIALIZED_FORM(geom2), fcinfo->flinfo->fn_extra);
                 fcinfo->flinfo->fn_extra = poly_cache;
                 MemoryContextSwitchTo(old_context);
 
-                if(point_outside_polygon(poly_cache->ringIndices, poly_cache->ringCount, point) == 0)
-                {
-	                PG_FREE_IF_COPY(geom1, 0);
-	                PG_FREE_IF_COPY(geom2, 1);
-                        lwgeom_release((LWGEOM *)poly);
-                        lwgeom_release((LWGEOM *)point);
-                        PG_RETURN_BOOL(TRUE);
-                }
-                else
-                {
-                        PG_FREE_IF_COPY(geom1, 0);
-                        PG_FREE_IF_COPY(geom2, 1);
-                        lwgeom_release((LWGEOM *)poly);
-                        lwgeom_release((LWGEOM *)point);
-                        PG_RETURN_BOOL(FALSE);
-                }
+				result = point_in_multipolygon(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCount, point);
+                PG_FREE_IF_COPY(geom1, 0);
+                PG_FREE_IF_COPY(geom2, 1);
+                lwgeom_release((LWGEOM *)lwgeom);
+                lwgeom_release((LWGEOM *)point);
+				if( result != -1 ) /* not outside */
+				{
+					PG_RETURN_BOOL(TRUE);
+				}
+				else
+				{
+					PG_RETURN_BOOL(FALSE);
+				}
         }
 
 	initGEOS(lwnotice, lwnotice);
@@ -2011,18 +1974,18 @@ Datum crosses(PG_FUNCTION_ARGS)
 }
 
 
-
 PG_FUNCTION_INFO_V1(intersects);
 Datum intersects(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom1;
 	PG_LWGEOM *geom2;
+	uchar *serialized_poly;
 	GEOSGeom g1,g2;
 	bool result;
 	BOX2DFLOAT4 box1, box2;
 	int type1, type2;
 	LWPOINT *point;
-	LWPOLY *poly;
+	LWGEOM *lwgeom;
         MemoryContext old_context;
         RTREE_POLY_CACHE *poly_cache;
 
@@ -2056,76 +2019,43 @@ Datum intersects(PG_FUNCTION_ARGS)
 	 */
 	type1 = lwgeom_getType((uchar)SERIALIZED_FORM(geom1)[0]);
 	type2 = lwgeom_getType((uchar)SERIALIZED_FORM(geom2)[0]);
-	if(type1 == POINTTYPE && type2 == POLYGONTYPE)
+	if( (type1 == POINTTYPE && (type2 == POLYGONTYPE || type2 == MULTIPOLYGONTYPE)) || 
+	    (type2 == POINTTYPE && (type1 == POLYGONTYPE || type1 == MULTIPOLYGONTYPE)))
 	{
 		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
 
-		point = lwpoint_deserialize(SERIALIZED_FORM(geom1));
-		poly = lwpoly_deserialize(SERIALIZED_FORM(geom2));
+        if( type1 == POINTTYPE ) {
+		    point = lwpoint_deserialize(SERIALIZED_FORM(geom1));
+		    lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom2));
+			serialized_poly = SERIALIZED_FORM(geom2);
+        } else {
+		    point = lwpoint_deserialize(SERIALIZED_FORM(geom2));
+		    lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom1));
+			serialized_poly = SERIALIZED_FORM(geom1);
+		}
+        /*
+         * Switch the context to the function-scope context,
+         * retrieve the appropriate cache object, cache it for 
+         * future use, then switch back to the local context.
+         */                 
+        old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
+        poly_cache = retrieveCache(lwgeom, serialized_poly, fcinfo->flinfo->fn_extra);
+        fcinfo->flinfo->fn_extra = poly_cache;
+        MemoryContextSwitchTo(old_context);
 
-                /*
-                 * Switch the context to the function-scope context,
-                 * retrieve the appropriate cache object, cache it for 
-                 * future use, then switch back to the local context.
-                 */                 
-                old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
-                poly_cache = retrieveCache(poly, SERIALIZED_FORM(geom2), fcinfo->flinfo->fn_extra);
-                fcinfo->flinfo->fn_extra = poly_cache;
-                MemoryContextSwitchTo(old_context);
-
-		if(point_outside_polygon(poly_cache->ringIndices, poly_cache->ringCount, point) == 0)
+		result = point_in_multipolygon(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCount, point);
+		PG_FREE_IF_COPY(geom1, 0);
+		PG_FREE_IF_COPY(geom2, 1);
+		lwgeom_release((LWGEOM *)lwgeom);
+		lwgeom_release((LWGEOM *)point);
+		if( result != -1 ) /* not outside */ 
 		{
-			PG_FREE_IF_COPY(geom1, 0);
-			PG_FREE_IF_COPY(geom2, 1);
-			lwgeom_release((LWGEOM *)poly);
-			lwgeom_release((LWGEOM *)point);
 			PG_RETURN_BOOL(TRUE);
 		}
-		else
-		{
-			PG_FREE_IF_COPY(geom1, 0);
-			PG_FREE_IF_COPY(geom2, 1);
-			lwgeom_release((LWGEOM *)poly);
-			lwgeom_release((LWGEOM *)point);
+		else {
 			PG_RETURN_BOOL(FALSE);
 		}
 	}
-	else if(type1 == POLYGONTYPE && type2 == POINTTYPE)
-	{
-		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
-
-		point = lwpoint_deserialize(SERIALIZED_FORM(geom2));
-		poly = lwpoly_deserialize(SERIALIZED_FORM(geom1));
-
-                /*
-                 * Switch the context to the function-scope context,
-                 * retrieve the appropriate cache object, cache it for 
-                 * future use, then switch back to the local context.
-                 */                 
-                old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
-                poly_cache = retrieveCache(poly, SERIALIZED_FORM(geom1), fcinfo->flinfo->fn_extra);
-                fcinfo->flinfo->fn_extra = poly_cache;
-                MemoryContextSwitchTo(old_context);
-
-		if(point_outside_polygon(poly_cache->ringIndices, poly_cache->ringCount, point) == 0)
-		{
-			PG_FREE_IF_COPY(geom1, 0);
-			PG_FREE_IF_COPY(geom2, 1);
-			lwgeom_release((LWGEOM *)poly);
-			lwgeom_release((LWGEOM *)point);
-			PG_RETURN_BOOL(TRUE);
-		}
-		else
-		{
-			PG_FREE_IF_COPY(geom1, 0);
-			PG_FREE_IF_COPY(geom2, 1);
-			lwgeom_release((LWGEOM *)poly);
-			lwgeom_release((LWGEOM *)point);
-			PG_RETURN_BOOL(FALSE);
-		}
-
-	}
-
 
 	initGEOS(lwnotice, lwnotice);
 
@@ -2258,11 +2188,6 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	GEOSGeom g1,g2;
 	bool result;
 	BOX2DFLOAT4 box1, box2;
-	int type1, type2;
-	LWPOLY *poly;
-	LWPOINT *point;
-        MemoryContext old_context;
-        RTREE_POLY_CACHE *poly_cache;
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
@@ -2288,80 +2213,6 @@ Datum disjoint(PG_FUNCTION_ARGS)
 		if ( box2.ymin > box1.ymax ) PG_RETURN_BOOL(TRUE);
 	}
 
-	/*
-	 * short-circuit 2: if the geoms are a point and a polygon, 
-	 * call the point_outside_polygon function.
-	 */
-	type1 = lwgeom_getType((uchar)SERIALIZED_FORM(geom1)[0]);
-	type2 = lwgeom_getType((uchar)SERIALIZED_FORM(geom2)[0]);
-	if(type1 == POINTTYPE && type2 == POLYGONTYPE)
-	{
-		POSTGIS_DEBUG(3, "Point outside Polygon test requested...short-circuiting.");
-
-		point = lwpoint_deserialize(SERIALIZED_FORM(geom1));
-		poly = lwpoly_deserialize(SERIALIZED_FORM(geom2));
-
-                /*
-                 * Switch the context to the function-scope context,
-                 * retrieve the appropriate cache object, cache it for 
-                 * future use, then switch back to the local context.
-                 */                 
-                old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
-                poly_cache = retrieveCache(poly, SERIALIZED_FORM(geom2), fcinfo->flinfo->fn_extra);
-                fcinfo->flinfo->fn_extra = poly_cache;
-                MemoryContextSwitchTo(old_context);
-
-		if(point_outside_polygon(poly_cache->ringIndices, poly_cache->ringCount, point) == 0) 
-		{
-			PG_FREE_IF_COPY(geom1, 0);
-			PG_FREE_IF_COPY(geom2, 0);
-			lwgeom_release((LWGEOM *)poly);
-			lwgeom_release((LWGEOM *)point);
-			PG_RETURN_BOOL(FALSE);
-		}
-		else
-		{
-			PG_FREE_IF_COPY(geom1, 0);
-			PG_FREE_IF_COPY(geom2, 0);
-			lwgeom_release((LWGEOM *)poly);
-			lwgeom_release((LWGEOM *)point);
-			PG_RETURN_BOOL(TRUE);
-		}
-	}
-	else if(type1 == POLYGONTYPE && type2 == POINTTYPE)
-	{
-		POSTGIS_DEBUG(3, "Point outside Polygon test requested...short-circuiting.");
-
-		point = lwpoint_deserialize(SERIALIZED_FORM(geom2));
-		poly = lwpoly_deserialize(SERIALIZED_FORM(geom1));
-
-                /*
-                 * Switch the context to the function-scope context,
-                 * retrieve the appropriate cache object, cache it for 
-                 * future use, then switch back to the local context.
-                 */                 
-                old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
-                poly_cache = retrieveCache(poly, SERIALIZED_FORM(geom2), fcinfo->flinfo->fn_extra);
-                fcinfo->flinfo->fn_extra = poly_cache;
-                MemoryContextSwitchTo(old_context);
-
-		if(point_outside_polygon(poly_cache->ringIndices, poly_cache->ringCount, point) == 0) 
-		{
-			PG_FREE_IF_COPY(geom1, 0);
-			PG_FREE_IF_COPY(geom2, 0);
-			lwgeom_release((LWGEOM *)poly);
-			lwgeom_release((LWGEOM *)point);
-			PG_RETURN_BOOL(FALSE);
-		}
-		else
-		{
-			PG_FREE_IF_COPY(geom1, 0);
-			PG_FREE_IF_COPY(geom2, 0);
-			lwgeom_release((LWGEOM *)poly);
-			lwgeom_release((LWGEOM *)point);
-			PG_RETURN_BOOL(TRUE);
-		}
-	}
 
 	initGEOS(lwnotice, lwnotice);
 
@@ -3558,17 +3409,19 @@ Datum intersectsPrepared(PG_FUNCTION_ARGS);
 /*
  * GEOS prepared geometry is only available from GEOS 3.1 onwards
  */
-#if GEOS_VERNUM >= 31
+#if POSTGIS_GEOS_VERSION >= 31
 #define PREPARED_GEOM 1
+#warning COMPILING PREPARED GEOMETRY
 #endif
-
 
 #ifdef PREPARED_GEOM
 
 typedef struct
 {
-	int32					key;
-	GEOSPreparedGeometry * 	prepared_geom;
+	int32					key1;
+	int32					key2;
+    int32                   argnum;
+	GEOSPreparedGeometry    *prepared_geom;
 } PREPARED_GEOM_CACHE;
 
 
@@ -3591,46 +3444,60 @@ typedef struct
  *   key into cache
  *   clear prepared cache
  */
-PREPARED_GEOM_CACHE *
-get_prepared_geometry_cache( 
-	PREPARED_GEOM_CACHE * 	cache, 
-	uchar * 				serialized_geom,
-	int32					key )
+PREPARED_GEOM_CACHE 
+*get_prepared_geometry_cache( 
+	PREPARED_GEOM_CACHE *cache, 
+	PG_LWGEOM *serialized_geom1, PG_LWGEOM *serialized_geom2,
+	int32 key1, int32 key2 )
 {
-	GEOSGeom g;
 
 	if ( !cache )
 	{
-		LWDEBUGF(3, "get_prepared_geometry_cache: creating cache: %x", cache);
-		
-		cache = lwalloc( sizeof( PREPARED_GEOM_CACHE ));
-		
+		cache = lwalloc( sizeof(PREPARED_GEOM_CACHE) );
 		cache->prepared_geom = 0;
-		cache->key = key;
+        cache->argnum = 0;
+		cache->key1 = 0;
+		cache->key2 = 0;
+		LWDEBUGF(3, "get_prepared_geometry_cache: creating cache: %x", cache);
 	}
-	else if ( cache->key == key )
+	else if ( cache->key1 == key1 )
 	{
 		if ( !cache->prepared_geom )
 		{
-			LWDEBUGF(3, "get_prepared_geometry_cache: preparing obj");
-			
-			g = POSTGIS2GEOS( serialized_geom);
-			cache->prepared_geom = GEOSPrepare( g);
+			GEOSGeom g = POSTGIS2GEOS( serialized_geom1 );
+			cache->prepared_geom = GEOSPrepare( g );
+            cache->argnum = 1;
+			LWDEBUG(3, "get_prepared_geometry_cache: preparing obj in argument 1");
 		}
 		else
 		{
-			LWDEBUGF(3, "get_prepared_geometry_cache: prepared obj in cache");
+			LWDEBUG(3, "get_prepared_geometry_cache: prepared obj 1 in cache");
 		}
 	}
-	else
+	else if ( key2 && cache->key2 == key2 )
+	{
+		if ( !cache->prepared_geom )
+		{
+			GEOSGeom g = POSTGIS2GEOS( serialized_geom2 );
+			cache->prepared_geom = GEOSPrepare( g );
+            cache->argnum = 2;
+			LWDEBUG(3, "get_prepared_geometry_cache: preparing obj in argument 2");
+		}
+		else
+		{
+			LWDEBUG(3, "get_prepared_geometry_cache: prepared obj 2 in cache");
+		}
+	}
+	else if ( cache->prepared_geom )
 	{
 		LWDEBUG(3, "get_prepared_geometry_cache: obj NOT in cache");
-
-		GEOSPreparedGeom_destroy( cache->prepared_geom);
-
+		GEOSPreparedGeom_destroy( cache->prepared_geom );
 		cache->prepared_geom = 0;
-		cache->key = key;
+        cache->argnum = 0;
 	}
+
+	cache->key1 = key1;
+	cache->key2 = key2;
 	
 	return cache;
 }
@@ -3644,22 +3511,19 @@ Datum containsPrepared(PG_FUNCTION_ARGS)
 #ifndef PREPARED_GEOM
 	elog(ERROR,"Not implemented in this version!");
 	PG_RETURN_NULL(); /* never get here */
-
 #else
 	PG_LWGEOM *				geom1;
 	PG_LWGEOM *				geom2;
-	GEOSGeom 				g1, g2;
 	GEOSPreparedGeometry * 	pg;
 	bool 					result;
 	BOX2DFLOAT4 			box1, box2;
 	PREPARED_GEOM_CACHE *	prep_cache;
 	MemoryContext 			old_context;
-	int32					surrogate_key;
+	int32					key1, key2;
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-	
-	surrogate_key = PG_GETARG_INT32(2);
+	key1 = PG_GETARG_INT32(2);
 	
 	errorIfGeometryCollection(geom1,geom2);
 	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
@@ -3672,39 +3536,34 @@ Datum containsPrepared(PG_FUNCTION_ARGS)
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
 		getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
-		if ( box2.xmin < box1.xmin ) PG_RETURN_BOOL(FALSE);
-		if ( box2.xmax > box1.xmax ) PG_RETURN_BOOL(FALSE);
-		if ( box2.ymin < box1.ymin ) PG_RETURN_BOOL(FALSE);
-		if ( box2.ymax > box1.ymax ) PG_RETURN_BOOL(FALSE);
+		if (( box2.xmin < box1.xmin ) || ( box2.xmax > box1.xmax ) ||
+		    ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax )) 
+		    PG_RETURN_BOOL(FALSE);
 	}
 	
 	old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
 	prep_cache =  fcinfo->flinfo->fn_extra;
-
-	prep_cache = get_prepared_geometry_cache( prep_cache, geom1, surrogate_key);
-
+	prep_cache = get_prepared_geometry_cache( prep_cache, geom1, 0, key1, 0 );
 	fcinfo->flinfo->fn_extra = prep_cache;
 	MemoryContextSwitchTo(old_context);
 
 	initGEOS(lwnotice, lwnotice);
 
-	g2 = POSTGIS2GEOS(geom2);
-
-	if ( !prep_cache || !prep_cache->prepared_geom )
+	if ( prep_cache && prep_cache->prepared_geom && prep_cache->argnum == 1 )
 	{
-		g1 = POSTGIS2GEOS(geom1);
-
-		result = GEOSContains( g1, g2);
-		
-		GEOSGeom_destroy(g1);
+    	GEOSGeom g = POSTGIS2GEOS(geom2);
+		pg = prep_cache->prepared_geom;
+	    result = GEOSPreparedContains( pg, g);	
+	    GEOSGeom_destroy(g);
 	}
 	else
 	{
-		pg = prep_cache->prepared_geom;
-
-		result = GEOSPreparedContains( pg, g2);	
-	}
-	GEOSGeom_destroy(g2);
+		GEOSGeom g1 = POSTGIS2GEOS(geom1);
+	    GEOSGeom g2 = POSTGIS2GEOS(geom2);
+		result = GEOSContains( g1, g2);
+		GEOSGeom_destroy(g1);
+	    GEOSGeom_destroy(g2);
+    }
 
 	if (result == 2)
 	{
@@ -3725,22 +3584,20 @@ Datum containsProperlyPrepared(PG_FUNCTION_ARGS)
 #ifndef PREPARED_GEOM
 	elog(ERROR,"Not implemented in this version!");
 	PG_RETURN_NULL(); /* never get here */
-
 #else
 	PG_LWGEOM *				geom1;
 	PG_LWGEOM *				geom2;
-	GEOSGeom 				g1, g2;
 	GEOSPreparedGeometry * 	pg;
 	bool 					result;
 	BOX2DFLOAT4 			box1, box2;
 	PREPARED_GEOM_CACHE *	prep_cache;
 	MemoryContext 			old_context;
-	int32					surrogate_key;
+	int32					key1, key2;
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-	
-	surrogate_key = PG_GETARG_INT32(2);
+	key1 = PG_GETARG_INT32(1);
+	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(2));
+	key2 = PG_GETARG_INT32(3);
 	
 	errorIfGeometryCollection(geom1,geom2);
 	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
@@ -3753,39 +3610,34 @@ Datum containsProperlyPrepared(PG_FUNCTION_ARGS)
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
 		getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
-		if ( box2.xmin < box1.xmin ) PG_RETURN_BOOL(FALSE);
-		if ( box2.xmax > box1.xmax ) PG_RETURN_BOOL(FALSE);
-		if ( box2.ymin < box1.ymin ) PG_RETURN_BOOL(FALSE);
-		if ( box2.ymax > box1.ymax ) PG_RETURN_BOOL(FALSE);
+		if (( box2.xmin < box1.xmin ) || ( box2.xmax > box1.xmax ) ||
+		    ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax )) 
+		    PG_RETURN_BOOL(FALSE);
 	}
 	
 	old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
 	prep_cache =  fcinfo->flinfo->fn_extra;
-	
-	prep_cache = get_prepared_geometry_cache( prep_cache, geom1, surrogate_key);
-	
+	prep_cache = get_prepared_geometry_cache( prep_cache, geom1, 0, key1, 0 );
 	fcinfo->flinfo->fn_extra = prep_cache;
-	MemoryContextSwitchTo( old_context);
+	MemoryContextSwitchTo(old_context);
 
 	initGEOS(lwnotice, lwnotice);
-		
-	g2 = POSTGIS2GEOS(geom2);
 
-	if ( !prep_cache || !prep_cache->prepared_geom )
+	if ( prep_cache && prep_cache->prepared_geom && prep_cache->argnum == 1 )
 	{
-		g1 = POSTGIS2GEOS(geom1);
-		
-		result = GEOSRelatePattern( g1, g2, "T**FF*FF*");
-		
-		GEOSGeom_destroy(g1);
+    	GEOSGeom g = POSTGIS2GEOS(geom2);
+		pg = prep_cache->prepared_geom;
+	    result = GEOSPreparedContainsProperly( pg, g);	
+	    GEOSGeom_destroy(g);
 	}
 	else
 	{
-		pg = prep_cache->prepared_geom;
-
-		result = GEOSPreparedContainsProperly( pg, g2);	
-	}
-	GEOSGeom_destroy(g2);
+		GEOSGeom g1 = POSTGIS2GEOS(geom1);
+	    GEOSGeom g2 = POSTGIS2GEOS(geom2);
+		result = GEOSRelatePattern( g1, g2, "T**FF*FF*" );
+		GEOSGeom_destroy(g1);
+	    GEOSGeom_destroy(g2);
+    }
 
 	if (result == 2)
 	{
@@ -3806,22 +3658,20 @@ Datum coversPrepared(PG_FUNCTION_ARGS)
 #ifndef PREPARED_GEOM
 	elog(ERROR,"Not implemented in this version!");
 	PG_RETURN_NULL(); /* never get here */
-
 #else
 	PG_LWGEOM *				geom1;
 	PG_LWGEOM *				geom2;
-	GEOSGeom 				g1, g2;
 	GEOSPreparedGeometry * 	pg;
 	bool 					result;
 	BOX2DFLOAT4 			box1, box2;
 	PREPARED_GEOM_CACHE *	prep_cache;
 	MemoryContext 			old_context;
-	int32					surrogate_key;
+	int32					key1, key2;
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-	
-	surrogate_key = PG_GETARG_INT32(2);
+	key1 = PG_GETARG_INT32(1);
+	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(2));
+	key2 = PG_GETARG_INT32(3);
 	
 	errorIfGeometryCollection(geom1,geom2);
 	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
@@ -3834,39 +3684,34 @@ Datum coversPrepared(PG_FUNCTION_ARGS)
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
 		getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
-		if ( box2.xmin < box1.xmin ) PG_RETURN_BOOL(FALSE);
-		if ( box2.xmax > box1.xmax ) PG_RETURN_BOOL(FALSE);
-		if ( box2.ymin < box1.ymin ) PG_RETURN_BOOL(FALSE);
-		if ( box2.ymax > box1.ymax ) PG_RETURN_BOOL(FALSE);
+		if (( box2.xmin < box1.xmin ) || ( box2.xmax > box1.xmax ) ||
+		    ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax )) 
+		    PG_RETURN_BOOL(FALSE);
 	}
 	
 	old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
 	prep_cache =  fcinfo->flinfo->fn_extra;
-
-	prep_cache = get_prepared_geometry_cache( prep_cache, geom1, surrogate_key);
-
+	prep_cache = get_prepared_geometry_cache( prep_cache, geom1, 0, key1, 0 );
 	fcinfo->flinfo->fn_extra = prep_cache;
 	MemoryContextSwitchTo(old_context);
 
 	initGEOS(lwnotice, lwnotice);
 
-	g2 = POSTGIS2GEOS(geom2);
-
-	if ( !prep_cache || !prep_cache->prepared_geom )
+	if ( prep_cache && prep_cache->prepared_geom && prep_cache->argnum == 1 )
 	{
-		g1 = POSTGIS2GEOS(geom1);
-
-		result = GEOSRelatePattern( g1, g2, "******FF*");
-		
-		GEOSGeom_destroy(g1);
+    	GEOSGeom g = POSTGIS2GEOS(geom2);
+		pg = prep_cache->prepared_geom;
+	    result = GEOSPreparedCovers( pg, g);	
+	    GEOSGeom_destroy(g);
 	}
 	else
 	{
-		pg = prep_cache->prepared_geom;
-
-		result = GEOSPreparedCovers( pg, g2);	
-	}
-	GEOSGeom_destroy(g2);
+		GEOSGeom g1 = POSTGIS2GEOS(geom1);
+	    GEOSGeom g2 = POSTGIS2GEOS(geom2);
+		result = GEOSRelatePattern( g1, g2, "******FF*" );
+		GEOSGeom_destroy(g1);
+	    GEOSGeom_destroy(g2);
+    }
 
 	if (result == 2)
 	{
@@ -3881,28 +3726,27 @@ Datum coversPrepared(PG_FUNCTION_ARGS)
 #endif /* PREPARED_GEOM */
 }
 
+
 PG_FUNCTION_INFO_V1(intersectsPrepared);
 Datum intersectsPrepared(PG_FUNCTION_ARGS)
 {
 #ifndef PREPARED_GEOM
 	elog(ERROR,"Not implemented in this version!");
 	PG_RETURN_NULL(); /* never get here */
-
 #else
 	PG_LWGEOM *				geom1;
 	PG_LWGEOM *				geom2;
-	GEOSGeom 				g1, g2;
 	GEOSPreparedGeometry * 	pg;
 	bool 					result;
 	BOX2DFLOAT4 			box1, box2;
 	PREPARED_GEOM_CACHE *	prep_cache;
 	MemoryContext 			old_context;
-	int32					surrogate_key;
+	int32					key1, key2;
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-	
-	surrogate_key = PG_GETARG_INT32(2);
+	key1 = PG_GETARG_INT32(1);
+	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(2));
+	key2 = PG_GETARG_INT32(3);
 	
 	errorIfGeometryCollection(geom1,geom2);
 	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
@@ -3915,39 +3759,42 @@ Datum intersectsPrepared(PG_FUNCTION_ARGS)
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
 		getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
-		if ( box2.xmax < box1.xmin ) PG_RETURN_BOOL(FALSE);
-		if ( box2.xmin > box1.xmax ) PG_RETURN_BOOL(FALSE);
-		if ( box2.ymax < box1.ymin ) PG_RETURN_BOOL(FALSE);
-		if ( box2.ymin > box2.ymax ) PG_RETURN_BOOL(FALSE);
+		if (( box2.xmax < box1.xmin ) || ( box2.xmin > box1.xmax ) || 
+		    ( box2.ymax < box1.ymin ) || ( box2.ymin > box2.ymax ))
+		    PG_RETURN_BOOL(FALSE);
 	}
 	
 	old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
 	prep_cache =  fcinfo->flinfo->fn_extra;
-
-	prep_cache = get_prepared_geometry_cache( prep_cache, geom1, surrogate_key);
-
+	prep_cache = get_prepared_geometry_cache( prep_cache, geom1, geom2, key1, key2 );
 	fcinfo->flinfo->fn_extra = prep_cache;
 	MemoryContextSwitchTo(old_context);
 
 	initGEOS(lwnotice, lwnotice);
 
-	g2 = POSTGIS2GEOS(geom2);
-
-	if ( !prep_cache || !prep_cache->prepared_geom )
+	if ( prep_cache && prep_cache->prepared_geom )
 	{
-		g1 = POSTGIS2GEOS(geom1);
-
-		result = GEOSIntersects( g1, g2);
-		
-		GEOSGeom_destroy(g1);
+		if( prep_cache->argnum == 1 ) {
+        	GEOSGeom g = POSTGIS2GEOS(geom2);
+		    pg = prep_cache->prepared_geom;
+	        result = GEOSPreparedCovers( pg, g);	
+	        GEOSGeom_destroy(g);
+		}
+		else {
+        	GEOSGeom g = POSTGIS2GEOS(geom1);
+		    pg = prep_cache->prepared_geom;
+	        result = GEOSPreparedCovers( pg, g);	
+	        GEOSGeom_destroy(g);
+		}
 	}
 	else
 	{
-		pg = prep_cache->prepared_geom;
-
-		result = GEOSPreparedIntersects( pg, g2);	
+		GEOSGeom g1 = POSTGIS2GEOS(geom1);
+	    GEOSGeom g2 = POSTGIS2GEOS(geom2);
+		result = GEOSIntersects( g1, g2);
+		GEOSGeom_destroy(g1);
+	    GEOSGeom_destroy(g2);
 	}
-	GEOSGeom_destroy(g2);
 
 	if (result == 2)
 	{
