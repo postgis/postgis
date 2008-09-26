@@ -4026,16 +4026,16 @@ CREATEFUNCTION ST_Covers(geometry,geometry,integer)
     LANGUAGE 'SQL' _IMMUTABLE; -- WITH (iscachable);
 
 -- Availability: 1.4.0
-CREATEFUNCTION _ST_IntersectsPrepared(geometry,geometry,integer)
+CREATEFUNCTION _ST_IntersectsPrepared(geometry,geometry,integer,integer)
     RETURNS boolean
     AS 'MODULE_PATHNAME','intersectsPrepared'
     LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
  	
 -- Availability: 1.4.0
 -- Inlines index magic
-CREATEFUNCTION ST_Intersects(geometry,geometry,integer)
+CREATEFUNCTION ST_Intersects(geometry,geometry,integer,integer)
     RETURNS boolean
-    AS 'SELECT $1 && $2 AND _ST_IntersectsPrepared($1,$2,$3)'
+    AS 'SELECT $1 && $2 AND _ST_IntersectsPrepared($1,$2,$3,$4)'
     LANGUAGE 'SQL' _IMMUTABLE; -- WITH (iscachable);
 
 #endif

@@ -3597,12 +3597,11 @@ Datum containsProperlyPrepared(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4 			box1, box2;
 	PREPARED_GEOM_CACHE *	prep_cache;
 	MemoryContext 			old_context;
-	int32					key1, key2;
+	int32					key1;
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	key1 = PG_GETARG_INT32(1);
-	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(2));
-	key2 = PG_GETARG_INT32(3);
+	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	key1 = PG_GETARG_INT32(2);
 	
 	errorIfGeometryCollection(geom1,geom2);
 	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
@@ -3671,13 +3670,12 @@ Datum coversPrepared(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4 			box1, box2;
 	PREPARED_GEOM_CACHE *	prep_cache;
 	MemoryContext 			old_context;
-	int32					key1, key2;
+	int32					key1;
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	key1 = PG_GETARG_INT32(1);
-	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(2));
-	key2 = PG_GETARG_INT32(3);
-	
+	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	key1 = PG_GETARG_INT32(2);
+
 	errorIfGeometryCollection(geom1,geom2);
 	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
 
@@ -3749,8 +3747,8 @@ Datum intersectsPrepared(PG_FUNCTION_ARGS)
 	int32					key1, key2;
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	key1 = PG_GETARG_INT32(1);
-	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(2));
+	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	key1 = PG_GETARG_INT32(2);
 	key2 = PG_GETARG_INT32(3);
 	
 	errorIfGeometryCollection(geom1,geom2);
