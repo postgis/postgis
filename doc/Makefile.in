@@ -77,11 +77,7 @@ postgis.pdf: postgis-out.xml
 clean:
 	@rm -f \
 		postgis-out.xml \
-		postgis.aux \
-		postgis.fo \
-		postgis.pdf \
-		postgis.out \
-		postgis.log
+		postgis-*.pdf 
 
 maintainer-clean: clean
 	@rm -f html/*.html
