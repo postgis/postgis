@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <!-- ********************************************************************
-     $Id: 0.1 postgis_mm.xml.xsl 2008-09-26 $
+     $Id: 0.1 postgis_aggs_mm.xml.xsl 2008-09-26 $
      ********************************************************************
 	 Copyright 2008, Regina Obe
      License: BSD
@@ -24,8 +24,7 @@
 		  	<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
 		  </xsl:variable>
 
-<!-- For each function prototype generate the DDL comment statement
-	If its input is a geometry set - we know it is an aggregate function rather than a regular function -->
+<!-- For each function prototype if it takes a geometry set then catalog it as an aggregate function  -->
 			<xsl:for-each select="refsynopsisdiv/funcsynopsis/funcprototype">
 				<xsl:choose>
 					<xsl:when test="contains(paramdef/type,'geometry set')">
@@ -47,8 +46,7 @@
 		  	<xsl:value-of select='@id' />
 		  </xsl:variable>
 
-<!-- For each function prototype generate the DDL comment statement
-	If its input is a geometry set - we know it is an aggregate function rather than a regular function -->
+<!-- For each section if there is not that it implements SQL/MM catalog it -->
 			<xsl:for-each select="refsection">
 				<xsl:for-each select="para">
 					<xsl:choose>
