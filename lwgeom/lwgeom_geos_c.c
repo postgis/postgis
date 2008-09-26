@@ -3422,6 +3422,7 @@ typedef struct
 	int32					key2;
     int32                   argnum;
 	GEOSPreparedGeometry    *prepared_geom;
+	GEOSGeometry			*geom;
 } PREPARED_GEOM_CACHE;
 
 
@@ -3444,8 +3445,7 @@ typedef struct
  *   key into cache
  *   clear prepared cache
  */
-PREPARED_GEOM_CACHE 
-*get_prepared_geometry_cache( 
+PREPARED_GEOM_CACHE * get_prepared_geometry_cache( 
 	PREPARED_GEOM_CACHE *cache, 
 	PG_LWGEOM *serialized_geom1, PG_LWGEOM *serialized_geom2,
 	int32 key1, int32 key2 )
@@ -3455,6 +3455,7 @@ PREPARED_GEOM_CACHE
 	{
 		cache = lwalloc( sizeof(PREPARED_GEOM_CACHE) );
 		cache->prepared_geom = 0;
+		cache->geom = 0;
         cache->argnum = 0;
 		cache->key1 = 0;
 		cache->key2 = 0;
@@ -3465,6 +3466,7 @@ PREPARED_GEOM_CACHE
 		if ( !cache->prepared_geom )
 		{
 			GEOSGeom g = POSTGIS2GEOS( serialized_geom1 );
+			cache->geom = g; 
 			cache->prepared_geom = GEOSPrepare( g );
             cache->argnum = 1;
 			LWDEBUG(3, "get_prepared_geometry_cache: preparing obj in argument 1");
@@ -3479,6 +3481,7 @@ PREPARED_GEOM_CACHE
 		if ( !cache->prepared_geom )
 		{
 			GEOSGeom g = POSTGIS2GEOS( serialized_geom2 );
+			cache->geom = g; 
 			cache->prepared_geom = GEOSPrepare( g );
             cache->argnum = 2;
 			LWDEBUG(3, "get_prepared_geometry_cache: preparing obj in argument 2");
@@ -3492,7 +3495,9 @@ PREPARED_GEOM_CACHE
 	{
 		LWDEBUG(3, "get_prepared_geometry_cache: obj NOT in cache");
 		GEOSPreparedGeom_destroy( cache->prepared_geom );
+		GEOSGeom_destroy( cache->geom ); 
 		cache->prepared_geom = 0;
+		cache->geom = 0;
         cache->argnum = 0;
 	}
 
@@ -3519,7 +3524,7 @@ Datum containsPrepared(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4 			box1, box2;
 	PREPARED_GEOM_CACHE *	prep_cache;
 	MemoryContext 			old_context;
-	int32					key1, key2;
+	int32					key1;
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
