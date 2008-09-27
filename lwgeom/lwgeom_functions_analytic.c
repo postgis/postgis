@@ -41,6 +41,7 @@ int isOnSegment(POINT2D *seg1, POINT2D *seg2, POINT2D *point);
 int point_in_ring(RTREE_NODE *root, POINT2D *point);
 int point_in_ring_deprecated(POINTARRAY *pts, POINT2D *point);
 int point_in_polygon(RTREE_NODE **root, int ringCount, LWPOINT *point);
+int point_in_multipolygon(RTREE_NODE **root, int polyCount, int ringCount, LWPOINT *point);
 int point_in_polygon_deprecated(LWPOLY *polygon, LWPOINT *point);
 int point_outside_polygon(RTREE_NODE **root, int ringCount, LWPOINT *point);
 int point_outside_polygon_deprecated(LWPOLY *polygon, LWPOINT *point);
