@@ -967,8 +967,10 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 	char *wkt, fc;
 	size_t size;
 	SERIALIZED_LWGEOM *serialized_lwgeom;
-	PG_LWGEOM *result = NULL;
+	LWGEOM_PARSER_RESULT lwg_parser_result;
+	PG_LWGEOM *geom_result = NULL;
 	LWGEOM *lwgeom;
+	int result;
 
         POSTGIS_DEBUG(2, "LWGEOM_from_text");
 
@@ -1002,7 +1004,9 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUGF(3, "wkt: [%s]", wkt);
 
-	serialized_lwgeom = serialized_lwgeom_from_ewkt(wkt, PARSER_CHECK_ALL);
+	result = serialized_lwgeom_from_ewkt(&lwg_parser_result, wkt, PARSER_CHECK_ALL);
+
+	serialized_lwgeom = lwg_parser_result.serialized_lwgeom;
 	lwgeom = lwgeom_deserialize(serialized_lwgeom->lwgeom);
 
 	if ( lwgeom->SRID != -1 || TYPE_GETZM(lwgeom->type) != 0 )
@@ -1013,10 +1017,10 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 	/* read user-requested SRID if any */
 	if ( PG_NARGS() > 1 ) lwgeom->SRID = PG_GETARG_INT32(1);
 
-	result = pglwgeom_serialize(lwgeom);
+	geom_result = pglwgeom_serialize(lwgeom);
 	lwgeom_release(lwgeom);
 
-	PG_RETURN_POINTER(result);
+	PG_RETURN_POINTER(geom_result);
 }
 
 /*

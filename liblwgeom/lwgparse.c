@@ -169,9 +169,9 @@ void read_wkb_ordinate_array(const char **b);
 void read_collection(const char **b, read_col_func f);
 void parse_wkb(const char **b);
 void alloc_wkb(const char *parser);
-SERIALIZED_LWGEOM* parse_it(const char* geometry, int flags, allocator allocfunc, report_error errfunc);
-SERIALIZED_LWGEOM* parse_lwg(const char* geometry, int flags, allocator allocfunc, report_error errfunc);
-SERIALIZED_LWGEOM* parse_lwgi(const char* geometry, int flags, allocator allocfunc, report_error errfunc);
+int parse_it(LWGEOM_PARSER_RESULT *lwg_parser_result, const char* geometry, int flags, allocator allocfunc, report_error errfunc);
+int parse_lwg(LWGEOM_PARSER_RESULT *lwg_parser_result, const char* geometry, int flags, allocator allocfunc, report_error errfunc);
+int parse_lwgi(LWGEOM_PARSER_RESULT *lwg_parser_result, const char* geometry, int flags, allocator allocfunc, report_error errfunc);
 
 void
 set_srid(double d_srid)
@@ -1126,8 +1126,8 @@ alloc_wkb(const char *parser)
 /*
 	Parse a string and return a LW_GEOM
 */
-SERIALIZED_LWGEOM *
-parse_it(const char *geometry, int flags, allocator allocfunc, report_error errfunc)
+int
+parse_it(LWGEOM_PARSER_RESULT *lwg_parser_result, const char *geometry, int flags, allocator allocfunc, report_error errfunc)
 {
         LWDEBUGF(2, "parse_it: %s with parser flags %d", geometry, flags);
 
@@ -1136,8 +1136,9 @@ parse_it(const char *geometry, int flags, allocator allocfunc, report_error errf
 
 	ferror_occured = 0;
 
-	/* Setup the inital parser flags */
+	/* Setup the inital parser flags and empty the return struct */
 	parser_check_flags = flags;
+	lwg_parser_result->serialized_lwgeom = NULL;
 
 	init_parser(geometry);
 
@@ -1146,23 +1147,26 @@ parse_it(const char *geometry, int flags, allocator allocfunc, report_error errf
 	close_parser();
 
 	if (ferror_occured)
-		return NULL;
+		return 0;
 
-	return make_serialized_lwgeom();
+	/* Return the parsed geometry */
+	lwg_parser_result->serialized_lwgeom = make_serialized_lwgeom();
+
+	return -1;
 }
 
-SERIALIZED_LWGEOM *
-parse_lwg(const char* geometry, int flags, allocator allocfunc, report_error errfunc)
+int
+parse_lwg(LWGEOM_PARSER_RESULT *lwg_parser_result, const char* geometry, int flags, allocator allocfunc, report_error errfunc)
 {
 	the_geom.lwgi=0;
-	return parse_it(geometry, flags, allocfunc, errfunc);
+	return parse_it(lwg_parser_result, geometry, flags, allocfunc, errfunc);
 }
 
-SERIALIZED_LWGEOM *
-parse_lwgi(const char* geometry, int flags, allocator allocfunc, report_error errfunc)
+int
+parse_lwgi(LWGEOM_PARSER_RESULT *lwg_parser_result, const char* geometry, int flags, allocator allocfunc, report_error errfunc)
 {
 	the_geom.lwgi=1;
-	return parse_it(geometry, flags, allocfunc, errfunc);
+	return parse_it(lwg_parser_result, geometry, flags, allocfunc, errfunc);
 }
 
 void

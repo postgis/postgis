@@ -64,11 +64,15 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 {
 	char *str = PG_GETARG_CSTRING(0);
 	SERIALIZED_LWGEOM *serialized_lwgeom;
+	LWGEOM_PARSER_RESULT lwg_parser_result;
 	LWGEOM *lwgeom;	
 	PG_LWGEOM *ret;
+	int result;
 
 	/* will handle both HEXEWKB and EWKT */
-	serialized_lwgeom = serialized_lwgeom_from_ewkt(str, PARSER_CHECK_ALL);
+	result = serialized_lwgeom_from_ewkt(&lwg_parser_result, str, PARSER_CHECK_ALL);
+
+	serialized_lwgeom = lwg_parser_result.serialized_lwgeom;	
 	lwgeom = lwgeom_deserialize(serialized_lwgeom->lwgeom);
     
 	ret = pglwgeom_serialize(lwgeom);
@@ -463,9 +467,10 @@ Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS)
 	text *wkt_input = PG_GETARG_TEXT_P(0);
 	PG_LWGEOM *ret;  /*with length */
 	SERIALIZED_LWGEOM *serialized_lwgeom;
+	LWGEOM_PARSER_RESULT lwg_parser_result;
 	LWGEOM *lwgeom;	
 	char *wkt;
-	int wkt_size ;
+	int wkt_size, result;
 
 	wkt_size = VARSIZE(wkt_input)-VARHDRSZ; /* actual letters */
 
@@ -476,7 +481,9 @@ Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUGF(3, "in parse_WKT_lwgeom with input: '%s'",wkt);
 
-	serialized_lwgeom = serialized_lwgeom_from_ewkt(wkt, PARSER_CHECK_ALL);
+	result = serialized_lwgeom_from_ewkt(&lwg_parser_result, wkt, PARSER_CHECK_ALL);
+
+	serialized_lwgeom = lwg_parser_result.serialized_lwgeom;
 	lwgeom = lwgeom_deserialize(serialized_lwgeom->lwgeom);
     
 	ret = pglwgeom_serialize(lwgeom);

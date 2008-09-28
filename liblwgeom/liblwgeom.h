@@ -1128,6 +1128,14 @@ extern void deparse_hex(uchar str, char *result);
 #define PARSER_CHECK_NONE	0
 #define PARSER_CHECK_ALL	(PARSER_CHECK_MINPOINTS | PARSER_CHECK_ODD | PARSER_CHECK_CLOSURE)
 
+/*
+ * Parser result structure: returns the result of attempting to convert (E)WKT/(E)WKB to LWGEOM 
+ */
+typedef struct struct_lwgeom_parser_result
+{
+	SERIALIZED_LWGEOM *serialized_lwgeom;
+} LWGEOM_PARSER_RESULT;
+
 
 /* Parser access routines */
 extern char *lwgeom_to_ewkt(LWGEOM *lwgeom, int flags);
@@ -1136,7 +1144,7 @@ extern LWGEOM *lwgeom_from_ewkb(uchar *ewkb, int flags, size_t ewkblen);
 extern uchar *lwgeom_to_ewkb(LWGEOM *lwgeom, int flags, char byteorder, size_t *ewkblen);
 
 extern char *serialized_lwgeom_to_ewkt(uchar *serialized, int flags);
-extern SERIALIZED_LWGEOM *serialized_lwgeom_from_ewkt(char *wkt_input, int flags);
+extern int serialized_lwgeom_from_ewkt(LWGEOM_PARSER_RESULT *lwg_parser_result, char *wkt_input, int flags);
 extern char *serialized_lwgeom_to_hexwkb(uchar *serialized, int flags, unsigned int byteorder, size_t *size);
 extern char *serialized_lwgeom_to_ewkb(uchar *serialized, int flags, unsigned int byteorder, size_t *size);
 

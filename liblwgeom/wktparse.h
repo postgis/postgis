@@ -19,6 +19,11 @@ typedef struct serialized_lwgeom {
     uchar *lwgeom;
     int size;
 } SERIALIZED_LWGEOM;
+
+typedef struct struct_lwgeom_parser_result
+{
+        SERIALIZED_LWGEOM *serialized_lwgeom;
+} LWGEOM_PARSER_RESULT;
 #endif
 typedef void* (*allocator)(size_t size);
 typedef void  (*freeor)(void* mem);
@@ -96,8 +101,8 @@ void alloc_wkb(const char* parser);
 	You are responsible for freeing the returned memory.
 */
 
-SERIALIZED_LWGEOM* parse_lwg(const char* wkt, int flags, allocator allocfunc,report_error errfunc);
-SERIALIZED_LWGEOM* parse_lwgi(const char* wkt, int flags, allocator allocfunc,report_error errfunc);
+int parse_lwg(LWGEOM_PARSER_RESULT *lwg_parser_result, const char* wkt, int flags, allocator allocfunc,report_error errfunc);
+int parse_lwgi(LWGEOM_PARSER_RESULT *lwg_parser_result, const char* wkt, int flags, allocator allocfunc,report_error errfunc);
 char* unparse_WKT(uchar* serialized, allocator alloc, freeor free, int flags);
 char* unparse_WKB(uchar* serialized, allocator alloc, freeor free, int flags, char endian, size_t *outsize, uchar hexform);
 int lwg_parse_yyparse(void);
