@@ -155,7 +155,7 @@ void alloc_multisurface(void);
 void alloc_geomertycollection(void);
 void alloc_counter(void);
 void alloc_empty(void);
-SERIALIZED_LWGEOM* make_serialized_lwgeom(void);
+void make_serialized_lwgeom(LWGEOM_PARSER_RESULT *lwg_parser_result);
 uchar strhex_readbyte(const char *in);
 uchar read_wkb_byte(const char **in);
 void read_wkb_bytes(const char **in, uchar* out, int cnt);
@@ -739,18 +739,14 @@ alloc_empty(void)
 	st->uu.nn.num=0;
 }
 
-SERIALIZED_LWGEOM *
-make_serialized_lwgeom(void)
+void
+make_serialized_lwgeom(LWGEOM_PARSER_RESULT *lwg_parser_result)
 {
-	SERIALIZED_LWGEOM *out_serialized_lwgeom;
 	uchar* out_c;
 	output_state out;
 	tuple* cur;
 	
 	LWDEBUG(2, "make_serialized_lwgeom");
-
-	/* Allocate the SERIALIZED_LWGEOM structure */
-	out_serialized_lwgeom = (SERIALIZED_LWGEOM *)local_malloc(sizeof(SERIALIZED_LWGEOM));
 
 	/* Allocate the LWGEOM itself */
 	out_c = (uchar*)local_malloc(the_geom.alloc_size);
@@ -762,11 +758,11 @@ make_serialized_lwgeom(void)
 		cur=cur->next;
 	}
 
-	/* Setup the SERIALIZED_LWGEOM structure */
-	out_serialized_lwgeom->lwgeom = out_c;
-	out_serialized_lwgeom->size = the_geom.alloc_size;
+	/* Setup the LWGEOM_PARSER_RESULT structure */
+	lwg_parser_result->serialized_lwgeom = out_c;
+	lwg_parser_result->size = the_geom.alloc_size;
 
-	return out_serialized_lwgeom;
+	return;
 }
 
 void
@@ -1150,7 +1146,7 @@ parse_it(LWGEOM_PARSER_RESULT *lwg_parser_result, const char *geometry, int flag
 		return 0;
 
 	/* Return the parsed geometry */
-	lwg_parser_result->serialized_lwgeom = make_serialized_lwgeom();
+	make_serialized_lwgeom(lwg_parser_result);
 
 	return -1;
 }

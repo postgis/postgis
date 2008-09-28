@@ -515,7 +515,6 @@ lwgeom_from_ewkb(uchar *ewkb, int flags, size_t size)
 	long int i;
 	int result;
 	LWGEOM *ret;
-	SERIALIZED_LWGEOM *serialized_lwgeom;
 	LWGEOM_PARSER_RESULT lwg_parser_result;
 
 	/* "HEXify" the EWKB */
@@ -530,7 +529,7 @@ lwgeom_from_ewkb(uchar *ewkb, int flags, size_t size)
 	lwfree(hexewkb);
 
 	/* Deserialize */
-	ret = lwgeom_deserialize(serialized_lwgeom->lwgeom);
+	ret = lwgeom_deserialize(lwg_parser_result.serialized_lwgeom);
 
 	return ret;
 }

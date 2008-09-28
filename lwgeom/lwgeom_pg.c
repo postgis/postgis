@@ -245,7 +245,6 @@ PG_LWGEOM *
 pglwgeom_from_ewkb(uchar *ewkb, int flags, size_t ewkblen)
 {
 	PG_LWGEOM *ret;
-	SERIALIZED_LWGEOM *serialized_lwgeom;
 	LWGEOM_PARSER_RESULT lwg_parser_result;
 	char *hexewkb;
 	size_t hexewkblen = ewkblen*2;
@@ -260,10 +259,9 @@ pglwgeom_from_ewkb(uchar *ewkb, int flags, size_t ewkblen)
 
 	result = serialized_lwgeom_from_ewkt(&lwg_parser_result, hexewkb, flags);
 
-	serialized_lwgeom = lwg_parser_result.serialized_lwgeom; 
-	ret = (PG_LWGEOM *)palloc(serialized_lwgeom->size + VARHDRSZ);
-	SET_VARSIZE(ret, serialized_lwgeom->size + VARHDRSZ);
-	memcpy(VARDATA(ret), serialized_lwgeom->lwgeom, serialized_lwgeom->size);
+	ret = (PG_LWGEOM *)palloc(lwg_parser_result.size + VARHDRSZ);
+	SET_VARSIZE(ret, lwg_parser_result.size + VARHDRSZ);
+	memcpy(VARDATA(ret), lwg_parser_result.serialized_lwgeom, lwg_parser_result.size);
 
 	lwfree(hexewkb);
 

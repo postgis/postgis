@@ -63,7 +63,6 @@ PG_FUNCTION_INFO_V1(LWGEOM_in);
 Datum LWGEOM_in(PG_FUNCTION_ARGS)
 {
 	char *str = PG_GETARG_CSTRING(0);
-	SERIALIZED_LWGEOM *serialized_lwgeom;
 	LWGEOM_PARSER_RESULT lwg_parser_result;
 	LWGEOM *lwgeom;	
 	PG_LWGEOM *ret;
@@ -72,8 +71,7 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 	/* will handle both HEXEWKB and EWKT */
 	result = serialized_lwgeom_from_ewkt(&lwg_parser_result, str, PARSER_CHECK_ALL);
 
-	serialized_lwgeom = lwg_parser_result.serialized_lwgeom;	
-	lwgeom = lwgeom_deserialize(serialized_lwgeom->lwgeom);
+	lwgeom = lwgeom_deserialize(lwg_parser_result.serialized_lwgeom);
     
 	ret = pglwgeom_serialize(lwgeom);
 	lwgeom_release(lwgeom);
@@ -466,7 +464,6 @@ Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS)
 	/* text */
 	text *wkt_input = PG_GETARG_TEXT_P(0);
 	PG_LWGEOM *ret;  /*with length */
-	SERIALIZED_LWGEOM *serialized_lwgeom;
 	LWGEOM_PARSER_RESULT lwg_parser_result;
 	LWGEOM *lwgeom;	
 	char *wkt;
@@ -483,8 +480,7 @@ Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS)
 
 	result = serialized_lwgeom_from_ewkt(&lwg_parser_result, wkt, PARSER_CHECK_ALL);
 
-	serialized_lwgeom = lwg_parser_result.serialized_lwgeom;
-	lwgeom = lwgeom_deserialize(serialized_lwgeom->lwgeom);
+	lwgeom = lwgeom_deserialize(lwg_parser_result.serialized_lwgeom);
     
 	ret = pglwgeom_serialize(lwgeom);
 	lwgeom_release(lwgeom);

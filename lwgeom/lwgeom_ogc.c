@@ -966,7 +966,6 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 	text *wkttext = PG_GETARG_TEXT_P(0);
 	char *wkt, fc;
 	size_t size;
-	SERIALIZED_LWGEOM *serialized_lwgeom;
 	LWGEOM_PARSER_RESULT lwg_parser_result;
 	PG_LWGEOM *geom_result = NULL;
 	LWGEOM *lwgeom;
@@ -1006,8 +1005,7 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 
 	result = serialized_lwgeom_from_ewkt(&lwg_parser_result, wkt, PARSER_CHECK_ALL);
 
-	serialized_lwgeom = lwg_parser_result.serialized_lwgeom;
-	lwgeom = lwgeom_deserialize(serialized_lwgeom->lwgeom);
+	lwgeom = lwgeom_deserialize(lwg_parser_result.serialized_lwgeom);
 
 	if ( lwgeom->SRID != -1 || TYPE_GETZM(lwgeom->type) != 0 )
 	{

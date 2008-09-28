@@ -564,18 +564,6 @@ char is_worth_caching_lwgeom_bbox(const LWGEOM *);
 #define SERIALIZED_FORM(x) ((uchar *)VARDATA((x)))
 
 /*
-    This structure is a "glue" structure for returning a serialized
-    LWGEOM from the parser, along with its size. By using a separate
-    type, we remove the constraint that the output from the
-    parser must be PG_LWGEOM format (and hence protect ourselves
-    from future varlena changes)
-*/
-typedef struct serialized_lwgeom {
-    uchar *lwgeom;
-    int size;
-} SERIALIZED_LWGEOM;
-
-/*
  * This function computes the size in bytes
  * of the serialized geometries.
  */
@@ -1133,7 +1121,8 @@ extern void deparse_hex(uchar str, char *result);
  */
 typedef struct struct_lwgeom_parser_result
 {
-	SERIALIZED_LWGEOM *serialized_lwgeom;
+	uchar *serialized_lwgeom;
+	int size;
 } LWGEOM_PARSER_RESULT;
 
 
