@@ -274,8 +274,14 @@ pglwgeom_from_ewkb(uchar *ewkb, int flags, size_t ewkblen)
 char *
 pglwgeom_to_ewkb(PG_LWGEOM *geom, int flags, char byteorder, size_t *outsize)
 {
+	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
+	int result;
 	uchar *srl = &(geom->type);
-	return serialized_lwgeom_to_ewkb(srl, flags, byteorder, outsize);
+
+	result = serialized_lwgeom_to_ewkb(&lwg_unparser_result, srl, flags, byteorder);
+
+	*outsize = lwg_unparser_result.size;
+	return lwg_unparser_result.wkoutput;
 }
 
 /*

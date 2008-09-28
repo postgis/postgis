@@ -44,7 +44,6 @@ uchar* output_line_collection(uchar* geom,outfunc func,int supress);
 uchar* output_polygon_collection(uchar* geom,int suppress);
 uchar* output_polygon_ring_collection(uchar* geom,outfunc func,int supress);
 uchar* output_curve_collection(uchar* geom,outfunc func,int supress);
-uchar* output_collection_2(uchar* geom,int suppress);
 uchar* output_multipoint(uchar* geom,int suppress);
 uchar* output_compound(uchar* geom, int suppress);
 uchar* output_multisurface(uchar* geom, int suppress);
@@ -80,6 +79,11 @@ void (*write_wkb_bytes)(uchar* ptr,unsigned int cnt,size_t size);
  * (see liblwgeom.h for the related PARSER_CHECK constants)
  */
 int unparser_check_flags;
+
+/*
+ * Unparser result structure
+ */
+LWGEOM_UNPARSER_RESULT *unparser_result;
 
 /*---------------------------------------------------------- */
 
@@ -565,18 +569,21 @@ output_wkt(uchar* geom, int supress)
 	return geom;
 }
 
-char *
-unparse_WKT(uchar* serialized, allocator alloc, freeor free, int flags)
+int
+unparse_WKT(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar* serialized, allocator alloc, freeor free, int flags)
 {
 
         LWDEBUGF(2, "unparse_WKT called with parser flags %d.", flags);
 
 	if (serialized==NULL)
-		return NULL;
+		return 0;
 
-	/* Setup the inital parser flags */
+	/* Setup the inital parser flags and empty the return struct */
         unparser_check_flags = flags;
+	lwg_unparser_result->wkoutput = NULL;
+        lwg_unparser_result->size = 0;
 
+	unparser_result = lwg_unparser_result;
 	local_malloc=alloc;
 	local_free=free;
 	len = 128;
@@ -585,7 +592,11 @@ unparse_WKT(uchar* serialized, allocator alloc, freeor free, int flags)
 
 	output_wkt(serialized, 0);
 
-	return out_start;
+	/* Store the result in the struct */
+	lwg_unparser_result->wkoutput = out_start;
+	lwg_unparser_result->size = strlen(out_start);
+
+	return -1;
 }
 
 static char outchr[]={"0123456789ABCDEF" };
@@ -873,17 +884,20 @@ output_wkb(uchar* geom)
 	return geom;
 }
 
-char *
-unparse_WKB(uchar* serialized, allocator alloc, freeor free, int flags, char endian, size_t *outsize, uchar hex)
+int
+unparse_WKB(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar* serialized, allocator alloc, freeor free, int flags, char endian, uchar hex)
 {
 	LWDEBUGF(2, "unparse_WKB(%p,...) called with parser flags %d", serialized, flags);
 
-	if (serialized==NULL)
-		return NULL;
+	if (serialized==0)
+		return 0;
 
-	/* Setup the inital parser flags */
+	/* Setup the inital parser flags and empty the return struct */
         unparser_check_flags = flags;
+	lwg_unparser_result->wkoutput = NULL;
+	lwg_unparser_result->size = 0;
 
+	unparser_result = lwg_unparser_result;
 	local_malloc=alloc;
 	local_free=free;
 	len = 128;
@@ -918,9 +932,11 @@ unparse_WKB(uchar* serialized, allocator alloc, freeor free, int flags, char end
 		*out_pos=0;
 	}
 
-	if ( outsize ) *outsize = (out_pos-out_start);
+	/* Store the result in the struct */	
+	lwg_unparser_result->wkoutput = out_start;
+	lwg_unparser_result->size = (out_pos-out_start);
 
-	return out_start;
+	return -1;	
 }
 
 

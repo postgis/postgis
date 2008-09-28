@@ -1135,6 +1135,7 @@ parse_it(LWGEOM_PARSER_RESULT *lwg_parser_result, const char *geometry, int flag
 	/* Setup the inital parser flags and empty the return struct */
 	parser_check_flags = flags;
 	lwg_parser_result->serialized_lwgeom = NULL;
+	lwg_parser_result->size = 0;
 
 	init_parser(geometry);
 

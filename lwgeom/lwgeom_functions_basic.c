@@ -2903,34 +2903,35 @@ Datum LWGEOM_setpoint_linestring(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_asEWKT);
 Datum LWGEOM_asEWKT(PG_FUNCTION_ARGS)
 {
+	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
 	PG_LWGEOM *lwgeom;
-	char *result_cstring;
-	int len;
-	char *result,*loc_wkt;
+	int len, result;
+	char *lwgeom_result,*loc_wkt;
 	/*char *semicolonLoc; */
 
 	lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	result_cstring =  serialized_lwgeom_to_ewkt(SERIALIZED_FORM(lwgeom), PARSER_CHECK_ALL);
+
+	result = serialized_lwgeom_to_ewkt(&lwg_unparser_result, SERIALIZED_FORM(lwgeom), PARSER_CHECK_ALL);
 
 #if 0
-	semicolonLoc = strchr(result_cstring,';');
+	semicolonLoc = strchr(lwg_unparser_result.wkb,';');
 
 	/*loc points to start of wkt */
-	if (semicolonLoc == NULL) loc_wkt = result_cstring;
+	if (semicolonLoc == NULL) loc_wkt = lwg_unparser_result.wkoutput;
 	else loc_wkt = semicolonLoc +1;
 #endif
-	loc_wkt = result_cstring;
+	loc_wkt = lwg_unparser_result.wkoutput;
 
 	len = strlen(loc_wkt);
-	result = palloc(len + VARHDRSZ);
-    SET_VARSIZE(result, len + VARHDRSZ);
+	lwgeom_result = palloc(len + VARHDRSZ);
+	SET_VARSIZE(lwgeom_result, len + VARHDRSZ);
 
-	memcpy(VARDATA(result), loc_wkt, len);
+	memcpy(VARDATA(lwgeom_result), loc_wkt, len);
 
-	pfree(result_cstring);
+	pfree(lwg_unparser_result.wkoutput);
 	PG_FREE_IF_COPY(lwgeom, 0);
 
-	PG_RETURN_POINTER(result);
+	PG_RETURN_POINTER(lwgeom_result);
 }
 
 /*

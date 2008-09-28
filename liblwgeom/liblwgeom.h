@@ -1121,10 +1121,18 @@ extern void deparse_hex(uchar str, char *result);
  */
 typedef struct struct_lwgeom_parser_result
 {
-	uchar *serialized_lwgeom;
-	int size;
+	uchar *serialized_lwgeom;	/* Pointer to serialized LWGEOM */
+	int size;			/* Size of serialized LWGEOM in bytes */
 } LWGEOM_PARSER_RESULT;
 
+/*
+ * Unparser result structure: returns the result of attempting to convert LWGEOM to (E)WKT/(E)WKB 
+ */
+typedef struct struct_lwgeom_unparser_result
+{
+	char *wkoutput;			/* Pointer to WKT or WKB output */
+	int size;			/* Size of serialized LWGEOM in bytes */
+} LWGEOM_UNPARSER_RESULT;
 
 /* Parser access routines */
 extern char *lwgeom_to_ewkt(LWGEOM *lwgeom, int flags);
@@ -1132,10 +1140,10 @@ extern char *lwgeom_to_hexwkb(LWGEOM *lwgeom, int flags, unsigned int byteorder)
 extern LWGEOM *lwgeom_from_ewkb(uchar *ewkb, int flags, size_t ewkblen);
 extern uchar *lwgeom_to_ewkb(LWGEOM *lwgeom, int flags, char byteorder, size_t *ewkblen);
 
-extern char *serialized_lwgeom_to_ewkt(uchar *serialized, int flags);
+extern int serialized_lwgeom_to_ewkt(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar *serialized, int flags);
 extern int serialized_lwgeom_from_ewkt(LWGEOM_PARSER_RESULT *lwg_parser_result, char *wkt_input, int flags);
-extern char *serialized_lwgeom_to_hexwkb(uchar *serialized, int flags, unsigned int byteorder, size_t *size);
-extern char *serialized_lwgeom_to_ewkb(uchar *serialized, int flags, unsigned int byteorder, size_t *size);
+extern int serialized_lwgeom_to_hexwkb(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar *serialized, int flags, unsigned int byteorder);
+extern int serialized_lwgeom_to_ewkb(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar *serialized, int flags, unsigned int byteorder);
 
 
 extern void *lwalloc(size_t size);

@@ -24,6 +24,12 @@ typedef struct struct_lwgeom_parser_result
 {
         SERIALIZED_LWGEOM *serialized_lwgeom;
 } LWGEOM_PARSER_RESULT;
+
+typedef struct struct_lwgeom_unparser_result
+{
+        char *wkoutput;
+        int size;
+} LWGEOM_UNPARSER_RESULT;
 #endif
 typedef void* (*allocator)(size_t size);
 typedef void  (*freeor)(void* mem);
@@ -103,8 +109,8 @@ void alloc_wkb(const char* parser);
 
 int parse_lwg(LWGEOM_PARSER_RESULT *lwg_parser_result, const char* wkt, int flags, allocator allocfunc,report_error errfunc);
 int parse_lwgi(LWGEOM_PARSER_RESULT *lwg_parser_result, const char* wkt, int flags, allocator allocfunc,report_error errfunc);
-char* unparse_WKT(uchar* serialized, allocator alloc, freeor free, int flags);
-char* unparse_WKB(uchar* serialized, allocator alloc, freeor free, int flags, char endian, size_t *outsize, uchar hexform);
+int unparse_WKT(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar* serialized, allocator alloc, freeor free, int flags);
+int unparse_WKB(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar* serialized, allocator alloc, freeor free, int flags, char endian, uchar hexform);
 int lwg_parse_yyparse(void);
 int lwg_parse_yyerror(char* s);
 

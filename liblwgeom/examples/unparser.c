@@ -39,10 +39,11 @@ int main()
 	/*
 	 * An example to show how to call the WKT/WKB unparsers in liblwgeom
 	 */
+	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
+	int result;
 
 	LWGEOM *lwgeom;
-	uchar *serialized_lwgeom, *wkt, *wkb;
-	size_t wkb_size;	
+	uchar *serialized_lwgeom;
 
 	POINTARRAY *pa;
 	POINT2D point2d;
@@ -69,14 +70,13 @@ int main()
 	serialized_lwgeom = lwgeom_serialize(lwgeom); 
 
 	/* Output the geometry in WKT and WKB */
-	wkt = serialized_lwgeom_to_ewkt(serialized_lwgeom, PARSER_CHECK_ALL);
-	printf("WKT format    : %s\n", wkt);
-	wkb = serialized_lwgeom_to_hexwkb(serialized_lwgeom, PARSER_CHECK_ALL, NDR, &wkb_size);
-	printf("HEXWKB format : %s\n\n", wkb); 
+	result = serialized_lwgeom_to_ewkt(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_ALL);
+	printf("WKT format    : %s\n", lwg_unparser_result.wkoutput);
+	result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_ALL, NDR);
+	printf("HEXWKB format : %s\n\n", lwg_unparser_result.wkoutput); 
 
 	/* Free all of the allocated items */
-	lwfree(wkb);
-	lwfree(wkt);
+	lwfree(lwg_unparser_result.wkoutput);
 	lwfree(serialized_lwgeom);
 	pfree_point(testpoint);
 
@@ -105,14 +105,13 @@ int main()
 	serialized_lwgeom = lwgeom_serialize(lwgeom); 
 
 	/* Output the geometry in WKT and WKB */
-	wkt = serialized_lwgeom_to_ewkt(serialized_lwgeom, PARSER_CHECK_ALL);
-	printf("WKT format    : %s\n", wkt);
-	wkb = serialized_lwgeom_to_hexwkb(serialized_lwgeom, PARSER_CHECK_ALL, NDR, &wkb_size);
-	printf("HEXWKB format : %s\n\n", wkb); 
+	result = serialized_lwgeom_to_ewkt(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_ALL);
+	printf("WKT format    : %s\n", lwg_unparser_result.wkoutput);
+	result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_ALL, NDR);
+	printf("HEXWKB format : %s\n\n", lwg_unparser_result.wkoutput); 
 
 	/* Free all of the allocated items */
-	lwfree(wkb);
-	lwfree(wkt);
+	lwfree(lwg_unparser_result.wkoutput);
 	lwfree(serialized_lwgeom);
 	pfree_line(testline);
 
@@ -177,14 +176,13 @@ int main()
 	serialized_lwgeom = lwgeom_serialize(lwgeom); 
 
 	/* Output the geometry in WKT and WKB */
-	wkt = serialized_lwgeom_to_ewkt(serialized_lwgeom, PARSER_CHECK_NONE);
-	printf("WKT format    : %s\n", wkt);
-	wkb = serialized_lwgeom_to_hexwkb(serialized_lwgeom, PARSER_CHECK_NONE, NDR, &wkb_size);
-	printf("HEXWKB format : %s\n\n", wkb); 
+	result = serialized_lwgeom_to_ewkt(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_NONE);
+	printf("WKT format    : %s\n", lwg_unparser_result.wkoutput);
+	result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_NONE, NDR);
+	printf("HEXWKB format : %s\n\n", lwg_unparser_result.wkoutput); 
 
 	/* Free all of the allocated items */
-	lwfree(wkb);
-	lwfree(wkt);
+	lwfree(lwg_unparser_result.wkoutput);
 	lwfree(serialized_lwgeom);
 	pfree_polygon(testpoly);
 }

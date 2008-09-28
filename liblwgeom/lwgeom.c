@@ -459,14 +459,18 @@ lwgeom_add(const LWGEOM *to, uint32 where, const LWGEOM *what)
 char *
 lwgeom_to_ewkt(LWGEOM *lwgeom, int flags)
 {
+	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
 	uchar *serialized = lwgeom_serialize(lwgeom);
-	char *ret;
+	int result;
+
 	if ( ! serialized ) {
 		lwerror("Error serializing geom %p", lwgeom);
 	}
-	ret = unparse_WKT(serialized, lwalloc, lwfree, flags);
+
+	result = unparse_WKT(&lwg_unparser_result, serialized, lwalloc, lwfree, flags);
 	lwfree(serialized);
-	return ret;
+
+	return lwg_unparser_result.wkoutput;
 }
 
 /*
@@ -475,10 +479,14 @@ lwgeom_to_ewkt(LWGEOM *lwgeom, int flags)
 char *
 lwgeom_to_hexwkb(LWGEOM *lwgeom, int flags, unsigned int byteorder)
 {
+	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
 	uchar *serialized = lwgeom_serialize(lwgeom);
-	char *hexwkb = unparse_WKB(serialized, lwalloc, lwfree, flags, byteorder,NULL,1);
+	int result;
+
+	result = unparse_WKB(&lwg_unparser_result, serialized, lwalloc, lwfree, flags, byteorder,1);
+
 	lwfree(serialized);
-	return hexwkb;
+	return lwg_unparser_result.wkoutput;
 }
 
 /*
@@ -487,17 +495,19 @@ lwgeom_to_hexwkb(LWGEOM *lwgeom, int flags, unsigned int byteorder)
 uchar *
 lwgeom_to_ewkb(LWGEOM *lwgeom, int flags, char byteorder, size_t *outsize)
 {
+	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
 	uchar *serialized = lwgeom_serialize(lwgeom);
+	int result;
 
 	/*
 	 * We cast return to "unsigned" char as we are
 	 * requesting a "binary" output, not HEX
 	 * (last argument set to 0)
 	 */
-	uchar *hexwkb = (uchar *)unparse_WKB(serialized, lwalloc, lwfree,
-		flags, byteorder, outsize, 0);
+	result = unparse_WKB(&lwg_unparser_result, serialized, lwalloc, lwfree,
+		flags, byteorder, 0);
 	lwfree(serialized);
-	return hexwkb;
+	return (uchar *)lwg_unparser_result.wkoutput;
 }
 
 /*
@@ -558,28 +568,40 @@ serialized_lwgeom_from_ewkt(LWGEOM_PARSER_RESULT *lwg_parser_result, char *wkt_i
 /*
  * Return an alloced string
  */
-char *
-serialized_lwgeom_to_ewkt(uchar *serialized, int flags)
+int
+serialized_lwgeom_to_ewkt(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar *serialized, int flags)
 {
-	return unparse_WKT(serialized, lwalloc, lwfree, flags);
+	int result;
+
+	result = unparse_WKT(lwg_unparser_result, serialized, lwalloc, lwfree, flags);
+
+	return result;
 }
 
 /*
  * Return an alloced string
  */
-char *
-serialized_lwgeom_to_hexwkb(uchar *serialized, int flags, unsigned int byteorder, size_t *size)
+int
+serialized_lwgeom_to_hexwkb(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar *serialized, int flags, unsigned int byteorder)
 {
-	return unparse_WKB(serialized, lwalloc, lwfree, flags, byteorder, size, 1);
+	int result;
+
+	result = unparse_WKB(lwg_unparser_result, serialized, lwalloc, lwfree, flags, byteorder, 1);
+
+	return result;
 }
 
 /*
  * Return an alloced string
  */
-char *
-serialized_lwgeom_to_ewkb(uchar *serialized, int flags, unsigned int byteorder, size_t *size)
+int
+serialized_lwgeom_to_ewkb(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar *serialized, int flags, unsigned int byteorder)
 {
-	return unparse_WKB(serialized, lwalloc, lwfree, flags, byteorder, size, 0);
+	int result;
+
+	result = unparse_WKB(lwg_unparser_result, serialized, lwalloc, lwfree, flags, byteorder, 0);
+
+	return result;
 }
 
 
