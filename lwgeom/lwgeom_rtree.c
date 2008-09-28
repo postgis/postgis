@@ -404,14 +404,17 @@ RTREE_POLY_CACHE * createCache()
 void populateCache(RTREE_POLY_CACHE *currentCache, LWGEOM *lwgeom, uchar *serializedPoly)
 {
 	int i, j, k, length;
+	LWMPOLY *mpoly;
+	LWPOLY *poly;
+	int nrings;
 	
 	LWDEBUGF(2, "populateCache called with cache %p geom %p", currentCache, lwgeom);
 
 	if(TYPE_GETTYPE(lwgeom->type) == MULTIPOLYGONTYPE) 
 	{
 		LWDEBUG(2, "populateCache MULTIPOLYGON");
-		LWMPOLY *mpoly = (LWMPOLY *)lwgeom;
-		int nrings = 0;
+		mpoly = (LWMPOLY *)lwgeom;
+		nrings = 0;
 		/*
 		** Count the total number of rings.
 		*/
@@ -444,7 +447,7 @@ void populateCache(RTREE_POLY_CACHE *currentCache, LWGEOM *lwgeom, uchar *serial
 	else if ( TYPE_GETTYPE(lwgeom->type) == POLYGONTYPE ) 
 	{
 		LWDEBUG(2, "populateCache POLYGON");
-		LWPOLY *poly = (LWPOLY *)lwgeom;
+		poly = (LWPOLY *)lwgeom;
 		currentCache->polyCount = 1;
 		currentCache->ringCount = poly->nrings;
 		/*
@@ -459,7 +462,7 @@ void populateCache(RTREE_POLY_CACHE *currentCache, LWGEOM *lwgeom, uchar *serial
 	else 
 	{
 		/* Uh oh, shouldn't be here. */
-		return NULL;
+		return;
 	}
 
 	/*
