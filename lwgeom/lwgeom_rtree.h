@@ -56,8 +56,9 @@ typedef struct
  * it is applicable to the current polygon.
  */
 RTREE_POLY_CACHE *retrieveCache(LWGEOM *lwgeom, uchar *serializedPoly, RTREE_POLY_CACHE *currentCache);
-RTREE_POLY_CACHE *createNewCache(LWGEOM *lwgeom, uchar *serializedPoly);
+RTREE_POLY_CACHE *createCache();
 /* Frees the cache. */
-void freeCache(RTREE_POLY_CACHE *cache);
+void populateCache(RTREE_POLY_CACHE *cache, LWGEOM *lwgeom, uchar *serializedPoly);
+void clearCache(RTREE_POLY_CACHE *cache);
 
 #endif /* !defined _LIBLWGEOM_H */

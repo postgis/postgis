@@ -1378,11 +1378,10 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(result);
 }
 
-int point_in_polygon(RTREE_NODE **root, int ringCount, LWPOINT *point);
-int point_in_polygon_deprecated(LWPOLY *polygon, LWPOINT *point);
-int point_outside_polygon(RTREE_NODE **root, int ringCount, LWPOINT *point);
-int point_outside_polygon_deprecated(LWPOLY *polygon, LWPOINT *point);
-int point_in_multipolygon(RTREE_NODE **root, int polyCount, int ringCount, LWPOINT *point);
+int point_in_polygon_rtree(RTREE_NODE **root, int ringCount, LWPOINT *point);
+int point_in_multipolygon_rtree(RTREE_NODE **root, int polyCount, int ringCount, LWPOINT *point);
+int point_in_polygon(LWPOLY *polygon, LWPOINT *point);
+int point_in_multipolygon(LWMPOLY *mpolygon, LWPOINT *pont);
 
 
 PG_FUNCTION_INFO_V1(contains);
@@ -1408,6 +1407,8 @@ Datum contains(PG_FUNCTION_ARGS)
 
 	errorIfGeometryCollection(geom1,geom2);
 	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
+
+    POSTGIS_DEBUG(3, "contains called.");
 
     /*
     ** short-circuit 1: if geom2 bounding box is not completely inside
@@ -1436,7 +1437,7 @@ Datum contains(PG_FUNCTION_ARGS)
         lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom1));
         point = lwpoint_deserialize(SERIALIZED_FORM(geom2));
 
-        POSTGIS_DEBUGF(3, "Precall point_in_multipolygon %p, %p", lwgeom, point);
+        POSTGIS_DEBUGF(3, "Precall point_in_multipolygon_rtree %p, %p", lwgeom, point);
 
         /*
          * Switch the context to the function-scope context,
@@ -1448,7 +1449,23 @@ Datum contains(PG_FUNCTION_ARGS)
         fcinfo->flinfo->fn_extra = poly_cache;
         MemoryContextSwitchTo(old_context);
 
-        result = point_in_multipolygon(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCount, point);
+		if( poly_cache->ringIndices ) 
+		{
+			result = point_in_multipolygon_rtree(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCount, point);
+		}
+		else if ( type1 == POLYGONTYPE ) 
+		{
+			result = point_in_polygon((LWPOLY*)lwgeom, point);
+		}
+		else if ( type1 == MULTIPOLYGONTYPE ) 
+		{
+			result = point_in_multipolygon((LWMPOLY*)lwgeom, point);
+		}
+		else {
+			/* Gulp! Should not be here... */
+			elog(ERROR,"Type isn't poly or multipoly!");
+			PG_RETURN_NULL(); 
+		}
         PG_FREE_IF_COPY(geom1, 0);
         PG_FREE_IF_COPY(geom2, 1);
         lwgeom_release((LWGEOM *)lwgeom);
@@ -1569,7 +1586,7 @@ Datum covers(PG_FUNCTION_ARGS)
                 lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom1));
                 point = lwpoint_deserialize(SERIALIZED_FORM(geom2));
 
-                POSTGIS_DEBUGF(3, "Precall point_in_polygon %p, %p", lwgeom, point);
+                POSTGIS_DEBUGF(3, "Precall point_in_multipolygon_rtree %p, %p", lwgeom, point);
 
                 /*
                  * Switch the context to the function-scope context,
@@ -1581,7 +1598,24 @@ Datum covers(PG_FUNCTION_ARGS)
                 fcinfo->flinfo->fn_extra = poly_cache;
                 MemoryContextSwitchTo(old_context);
 
-				result = point_in_multipolygon(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCount, point);
+				if( poly_cache->ringIndices ) 
+				{
+					result = point_in_multipolygon_rtree(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCount, point);
+				}
+				else if ( type1 == POLYGONTYPE ) 
+				{
+					result = point_in_polygon((LWPOLY*)lwgeom, point);
+				}
+				else if ( type1 == MULTIPOLYGONTYPE ) 
+				{
+					result = point_in_multipolygon((LWMPOLY*)lwgeom, point);
+				}
+				else {
+					/* Gulp! Should not be here... */
+					elog(ERROR,"Type isn't poly or multipoly!");
+					PG_RETURN_NULL(); 
+				}
+
                 PG_FREE_IF_COPY(geom1, 0);
                 PG_FREE_IF_COPY(geom2, 1);
 				lwgeom_release((LWGEOM *)lwgeom);
@@ -1688,7 +1722,7 @@ Datum within(PG_FUNCTION_ARGS)
          */
         type1 = lwgeom_getType((uchar)SERIALIZED_FORM(geom1)[0]);
         type2 = lwgeom_getType((uchar)SERIALIZED_FORM(geom2)[0]);
-    	if((type2 == POLYGONTYPE || type1 == MULTIPOLYGONTYPE) && type1 == POINTTYPE)
+    	if((type2 == POLYGONTYPE || type2 == MULTIPOLYGONTYPE) && type1 == POINTTYPE)
         {
                 POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
 
@@ -1705,7 +1739,24 @@ Datum within(PG_FUNCTION_ARGS)
                 fcinfo->flinfo->fn_extra = poly_cache;
                 MemoryContextSwitchTo(old_context);
 
-				result = point_in_multipolygon(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCount, point);
+				if( poly_cache->ringIndices ) 
+				{
+					result = point_in_multipolygon_rtree(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCount, point);
+				}
+				else if ( type2 == POLYGONTYPE ) 
+				{
+					result = point_in_polygon((LWPOLY*)lwgeom, point);
+				}
+				else if ( type2 == MULTIPOLYGONTYPE ) 
+				{
+					result = point_in_multipolygon((LWMPOLY*)lwgeom, point);
+				}
+				else {
+					/* Gulp! Should not be here... */
+					elog(ERROR,"Type isn't poly or multipoly!");
+					PG_RETURN_NULL(); 
+				}
+
                 PG_FREE_IF_COPY(geom1, 0);
                 PG_FREE_IF_COPY(geom2, 1);
                 lwgeom_release((LWGEOM *)lwgeom);
@@ -1833,7 +1884,24 @@ Datum coveredby(PG_FUNCTION_ARGS)
                 fcinfo->flinfo->fn_extra = poly_cache;
                 MemoryContextSwitchTo(old_context);
 
-				result = point_in_multipolygon(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCount, point);
+				if( poly_cache->ringIndices ) 
+				{
+					result = point_in_multipolygon_rtree(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCount, point);
+				}
+				else if ( type2 == POLYGONTYPE ) 
+				{
+					result = point_in_polygon((LWPOLY*)lwgeom, point);
+				}
+				else if ( type2 == MULTIPOLYGONTYPE ) 
+				{
+					result = point_in_multipolygon((LWMPOLY*)lwgeom, point);
+				}
+				else {
+					/* Gulp! Should not be here... */
+					elog(ERROR,"Type isn't poly or multipoly!");
+					PG_RETURN_NULL(); 
+				}
+				
                 PG_FREE_IF_COPY(geom1, 0);
                 PG_FREE_IF_COPY(geom2, 1);
                 lwgeom_release((LWGEOM *)lwgeom);
@@ -1983,7 +2051,7 @@ Datum intersects(PG_FUNCTION_ARGS)
 	GEOSGeom g1,g2;
 	bool result;
 	BOX2DFLOAT4 box1, box2;
-	int type1, type2;
+	int type1, type2, polytype;
 	LWPOINT *point;
 	LWGEOM *lwgeom;
         MemoryContext old_context;
@@ -2028,10 +2096,12 @@ Datum intersects(PG_FUNCTION_ARGS)
 		    point = lwpoint_deserialize(SERIALIZED_FORM(geom1));
 		    lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom2));
 			serialized_poly = SERIALIZED_FORM(geom2);
+			polytype = type2;
         } else {
 		    point = lwpoint_deserialize(SERIALIZED_FORM(geom2));
 		    lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom1));
 			serialized_poly = SERIALIZED_FORM(geom1);
+			polytype = type1;
 		}
         /*
          * Switch the context to the function-scope context,
@@ -2043,7 +2113,24 @@ Datum intersects(PG_FUNCTION_ARGS)
         fcinfo->flinfo->fn_extra = poly_cache;
         MemoryContextSwitchTo(old_context);
 
-		result = point_in_multipolygon(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCount, point);
+		if( poly_cache->ringIndices ) 
+		{
+			result = point_in_multipolygon_rtree(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCount, point);
+		}
+		else if ( polytype == POLYGONTYPE ) 
+		{
+			result = point_in_polygon((LWPOLY*)lwgeom, point);
+		}
+		else if ( polytype == MULTIPOLYGONTYPE ) 
+		{
+			result = point_in_multipolygon((LWMPOLY*)lwgeom, point);
+		}
+		else {
+			/* Gulp! Should not be here... */
+			elog(ERROR,"Type isn't poly or multipoly!");
+			PG_RETURN_NULL(); 
+		}
+
 		PG_FREE_IF_COPY(geom1, 0);
 		PG_FREE_IF_COPY(geom2, 1);
 		lwgeom_release((LWGEOM *)lwgeom);

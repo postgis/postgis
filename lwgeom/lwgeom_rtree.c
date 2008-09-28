@@ -214,7 +214,7 @@ void freeTree(RTREE_NODE *root)
 /*
  * Free the cache object and all the sub-objects properly.
  */
-void freeCache(RTREE_POLY_CACHE *cache)
+void clearCache(RTREE_POLY_CACHE *cache)
 {
 	int i;
 	LWDEBUGF(2, "freeCache called for %p", cache);
@@ -224,7 +224,10 @@ void freeCache(RTREE_POLY_CACHE *cache)
 	}
 	lwfree(cache->ringIndices);
 	lwfree(cache->poly);
-	lwfree(cache);
+	cache->poly = 0;
+	cache->ringIndices = 0;
+	cache->ringCount = 0;
+	cache->polyCount = 0;
 }
 
  
@@ -387,18 +390,26 @@ Datum LWGEOM_polygon_index(PG_FUNCTION_ARGS)
 		
 }
 
-
-RTREE_POLY_CACHE *createNewCache(LWGEOM *lwgeom, uchar *serializedPoly)
+RTREE_POLY_CACHE * createCache()
 {
 	RTREE_POLY_CACHE *result;
+	result = lwalloc(sizeof(RTREE_POLY_CACHE));
+	result->polyCount = 0;
+	result->ringCount = 0;
+	result->ringIndices = 0;
+	result->poly = 0;
+	return result;
+}
+
+void populateCache(RTREE_POLY_CACHE *currentCache, LWGEOM *lwgeom, uchar *serializedPoly)
+{
 	int i, j, k, length;
 	
-	LWDEBUGF(2, "createNewCache called with %p", lwgeom);
-
-	result = lwalloc(sizeof(RTREE_POLY_CACHE));
+	LWDEBUGF(2, "populateCache called with cache %p geom %p", currentCache, lwgeom);
 
 	if(TYPE_GETTYPE(lwgeom->type) == MULTIPOLYGONTYPE) 
 	{
+		LWDEBUG(2, "populateCache MULTIPOLYGON");
 		LWMPOLY *mpoly = (LWMPOLY *)lwgeom;
 		int nrings = 0;
 		/*
@@ -408,15 +419,15 @@ RTREE_POLY_CACHE *createNewCache(LWGEOM *lwgeom, uchar *serializedPoly)
 		{
 			nrings += mpoly->geoms[i]->nrings;
 		}
-		result->polyCount = mpoly->ngeoms;
-		result->ringCount = nrings;
-		result->ringIndices = lwalloc(sizeof(RTREE_NODE *) * nrings);
+		currentCache->polyCount = mpoly->ngeoms;
+		currentCache->ringCount = nrings;
+		currentCache->ringIndices = lwalloc(sizeof(RTREE_NODE *) * nrings);
 		/*
 		** Load the exterior rings onto the ringIndices array first
 		*/
 		for( i = 0; i < mpoly->ngeoms; i++ ) 
 		{
-			result->ringIndices[i] = createTree(mpoly->geoms[i]->rings[0]);
+			currentCache->ringIndices[i] = createTree(mpoly->geoms[i]->rings[0]);
 		}
 		/*
 		** Load the interior rings (holes) onto ringIndices next
@@ -425,23 +436,24 @@ RTREE_POLY_CACHE *createNewCache(LWGEOM *lwgeom, uchar *serializedPoly)
 		{
 			for( k = 1; k < mpoly->geoms[j]->nrings; k++ ) 
 			{
-				result->ringIndices[i] = createTree(mpoly->geoms[j]->rings[k]);
+				currentCache->ringIndices[i] = createTree(mpoly->geoms[j]->rings[k]);
 				i++;
 			}
 		}
 	}
 	else if ( TYPE_GETTYPE(lwgeom->type) == POLYGONTYPE ) 
 	{
+		LWDEBUG(2, "populateCache POLYGON");
 		LWPOLY *poly = (LWPOLY *)lwgeom;
-		result->polyCount = 1;
-		result->ringCount = poly->nrings;
+		currentCache->polyCount = 1;
+		currentCache->ringCount = poly->nrings;
 		/*
 		** Just load the rings on in order
 		*/
-		result->ringIndices = lwalloc(sizeof(RTREE_NODE *) * poly->nrings);
+		currentCache->ringIndices = lwalloc(sizeof(RTREE_NODE *) * poly->nrings);
 		for( i = 0; i < poly->nrings; i++ ) 
 		{
-			result->ringIndices[i] = createTree(poly->rings[i]);
+			currentCache->ringIndices[i] = createTree(poly->rings[i]);
 		}
 	}
 	else 
@@ -455,12 +467,9 @@ RTREE_POLY_CACHE *createNewCache(LWGEOM *lwgeom, uchar *serializedPoly)
 	** we can test for equality against subsequent polygons.
 	*/
 	length = lwgeom_size(serializedPoly);
-	result->poly = lwalloc(length);
-	memcpy(result->poly, serializedPoly, length); 
-	
-	LWDEBUGF(3, "createNewCache returning %p", result);
-
-	return result;
+	currentCache->poly = lwalloc(length);
+	memcpy(currentCache->poly, serializedPoly, length); 
+	LWDEBUGF(3, "populateCache returning %p", currentCache);
 }
 
 /* 
@@ -470,8 +479,7 @@ RTREE_POLY_CACHE *createNewCache(LWGEOM *lwgeom, uchar *serializedPoly)
  * method.	The method will allocate memory for the cache it creates,
  * as well as freeing the memory of any cache that is no longer applicable.
  */
-RTREE_POLY_CACHE *retrieveCache(LWGEOM *lwgeom, uchar *serializedPoly, 
-				RTREE_POLY_CACHE *currentCache)
+RTREE_POLY_CACHE *retrieveCache(LWGEOM *lwgeom, uchar *serializedPoly, RTREE_POLY_CACHE *currentCache)
 {
 	int length;
 
@@ -480,12 +488,13 @@ RTREE_POLY_CACHE *retrieveCache(LWGEOM *lwgeom, uchar *serializedPoly,
 	if(!currentCache)
 	{
 		LWDEBUG(3, "No existing cache, create one.");
-		return createNewCache(lwgeom, serializedPoly);
+		return createCache();
 	}
 	if(!(currentCache->poly))
 	{
-		LWDEBUG(3, "Cache contains no polygon, creating new cache.");
-		return createNewCache(lwgeom, serializedPoly);
+		LWDEBUG(3, "Cache contains no polygon, populating it.");
+		populateCache(currentCache, lwgeom, serializedPoly);
+		return currentCache;
 	}
 
 	length = lwgeom_size(serializedPoly);
@@ -493,14 +502,14 @@ RTREE_POLY_CACHE *retrieveCache(LWGEOM *lwgeom, uchar *serializedPoly,
 	if(lwgeom_size(currentCache->poly) != length)
 	{
 		LWDEBUG(3, "Polygon size mismatch, creating new cache.");
-		freeCache(currentCache);
-		return createNewCache(lwgeom, serializedPoly);
+		clearCache(currentCache);
+		return currentCache;
 	}
 	if( memcmp(serializedPoly, currentCache->poly, length) ) 
 	{
 		LWDEBUG(3, "Polygon mismatch, creating new cache.");
-		freeCache(currentCache);
-		return createNewCache(lwgeom, serializedPoly);
+		clearCache(currentCache);
+		return currentCache;
 	}
 
 	LWDEBUGF(3, "Polygon match, retaining current cache, %p.", currentCache);

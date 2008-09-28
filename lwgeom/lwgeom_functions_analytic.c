@@ -38,13 +38,12 @@ Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS);
 
 double determineSide(POINT2D *seg1, POINT2D *seg2, POINT2D *point);
 int isOnSegment(POINT2D *seg1, POINT2D *seg2, POINT2D *point);
-int point_in_ring(RTREE_NODE *root, POINT2D *point);
-int point_in_ring_deprecated(POINTARRAY *pts, POINT2D *point);
-int point_in_polygon(RTREE_NODE **root, int ringCount, LWPOINT *point);
-int point_in_multipolygon(RTREE_NODE **root, int polyCount, int ringCount, LWPOINT *point);
-int point_in_polygon_deprecated(LWPOLY *polygon, LWPOINT *point);
-int point_outside_polygon(RTREE_NODE **root, int ringCount, LWPOINT *point);
-int point_outside_polygon_deprecated(LWPOLY *polygon, LWPOINT *point);
+int point_in_ring(POINTARRAY *pts, POINT2D *point);
+int point_in_polygon(LWPOLY *polygon, LWPOINT *point);
+int point_in_multipolygon(LWMPOLY *mpolygon, LWPOINT *point);
+int point_in_ring_rtree(RTREE_NODE *root, POINT2D *point);
+int point_in_polygon_rtree(RTREE_NODE **root, int ringCount, LWPOINT *point);
+int point_in_multipolygon_rtree(RTREE_NODE **root, int polyCount, int ringCount, LWPOINT *point);
 
 
 /*
@@ -1090,7 +1089,7 @@ int isOnSegment(POINT2D *seg1, POINT2D *seg2, POINT2D *point)
  * return 1 iff point is inside ring pts
  * return 0 iff point is on ring pts
  */
-int point_in_ring(RTREE_NODE *root, POINT2D *point)
+int point_in_ring_rtree(RTREE_NODE *root, POINT2D *point)
 {
         int wn = 0;
         int i;
@@ -1172,7 +1171,7 @@ int point_in_ring(RTREE_NODE *root, POINT2D *point)
  * return 1 iff point is inside ring pts
  * return 0 iff point is on ring pts
  */
-int point_in_ring_deprecated(POINTARRAY *pts, POINT2D *point)
+int point_in_ring(POINTARRAY *pts, POINT2D *point)
 {
         int wn = 0;
         int i;
@@ -1248,7 +1247,7 @@ int point_in_ring_deprecated(POINTARRAY *pts, POINT2D *point)
  * return 0 iff point outside polygon or on boundary
  * return 1 iff point inside polygon
  */
-int point_in_polygon(RTREE_NODE **root, int ringCount, LWPOINT *point)
+int point_in_polygon_rtree(RTREE_NODE **root, int ringCount, LWPOINT *point)
 {
         int i;
         POINT2D pt;
@@ -1258,18 +1257,18 @@ int point_in_polygon(RTREE_NODE **root, int ringCount, LWPOINT *point)
         getPoint2d_p(point->point, 0, &pt);
         /* assume bbox short-circuit has already been attempted */
         
-        if(point_in_ring(root[0], &pt) != 1) 
+        if(point_in_ring_rtree(root[0], &pt) != 1) 
         {
-                LWDEBUG(3, "point_in_polygon: outside exterior ring.");
+                LWDEBUG(3, "point_in_polygon_rtree: outside exterior ring.");
 
                 return 0;
         }
 
         for(i=1; i<ringCount; i++)
         {
-                if(point_in_ring(root[i], &pt) != -1)
+                if(point_in_ring_rtree(root[i], &pt) != -1)
                 {
-                        LWDEBUGF(3, "point_in_polygon: within hole %d.", i);
+                        LWDEBUGF(3, "point_in_polygon_rtree: within hole %d.", i);
 
                         return 0;
                 }
@@ -1288,13 +1287,13 @@ int point_in_polygon(RTREE_NODE **root, int ringCount, LWPOINT *point)
  * EIIIEIIIEIEI order (exterior/interior) and including list of exterior ring 
  * positions on the cache object.
  */
-int point_in_multipolygon(RTREE_NODE **root, int polyCount, int ringCount, LWPOINT *point)
+int point_in_multipolygon_rtree(RTREE_NODE **root, int polyCount, int ringCount, LWPOINT *point)
 {
     int i;
     POINT2D pt;
     int result = -1;
 
-    LWDEBUGF(2, "point_in_multipolygon called for %p %d %d %p.", root, polyCount, ringCount, point);
+    LWDEBUGF(2, "point_in_multipolygon_rtree called for %p %d %d %p.", root, polyCount, ringCount, point);
 
     getPoint2d_p(point->point, 0, &pt);
     /* assume bbox short-circuit has already been attempted */
@@ -1302,11 +1301,11 @@ int point_in_multipolygon(RTREE_NODE **root, int polyCount, int ringCount, LWPOI
 	/* is the point inside (not outside) any of the exterior rings? */
     for( i = 0; i < polyCount; i++ )
     {
-		int in_ring = point_in_ring(root[i], &pt);
-		LWDEBUGF(4, "point_in_multipolygon: exterior ring (%d), point_in_ring returned %d", i, in_ring);
+		int in_ring = point_in_ring_rtree(root[i], &pt);
+		LWDEBUGF(4, "point_in_multipolygon_rtree: exterior ring (%d), point_in_ring returned %d", i, in_ring);
        	if( in_ring != -1 ) /* not outside this ring */
        	{
-           	LWDEBUG(3, "point_in_multipolygon: inside exterior ring.");
+           	LWDEBUG(3, "point_in_multipolygon_rtree: inside exterior ring.");
            	result = in_ring;
            	break;
        	}
@@ -1318,11 +1317,11 @@ int point_in_multipolygon(RTREE_NODE **root, int polyCount, int ringCount, LWPOI
 	/* ok, it's in a ring, but if it's in a hole it's still outside */
     for( i = polyCount; i < ringCount; i++ )
     {
-		int in_ring = point_in_ring(root[i], &pt);
-		LWDEBUGF(4, "point_in_multipolygon: hole (%d), point_in_ring returned %d", i, in_ring);
+		int in_ring = point_in_ring_rtree(root[i], &pt);
+		LWDEBUGF(4, "point_in_multipolygon_rtree: hole (%d), point_in_ring returned %d", i, in_ring);
        	if( in_ring == 1 ) /* completely inside hole */
        	{
-          	LWDEBUGF(3, "point_in_multipolygon: within hole %d.", i);
+          	LWDEBUGF(3, "point_in_multipolygon_rtree: within hole %d.", i);
           	return -1;
        	}
 		if( in_ring == 0 ) /* on the boundary of a hole */
@@ -1335,137 +1334,107 @@ int point_in_multipolygon(RTREE_NODE **root, int polyCount, int ringCount, LWPOI
 }
 
 /*
- * return 0 iff point outside polygon or on boundary
+ * return -1 iff point outside polygon
+ * return 0 iff point on boundary
  * return 1 iff point inside polygon
  */
-int point_in_polygon_deprecated(LWPOLY *polygon, LWPOINT *point)
+int point_in_polygon(LWPOLY *polygon, LWPOINT *point)
 {
-        int i;
+        int i, result, in_ring;
         POINTARRAY *ring;
         POINT2D pt;
 
-        LWDEBUG(2, "point_in_polygon_deprecated called.");
+        LWDEBUG(2, "point_in_polygon called.");
 
         getPoint2d_p(point->point, 0, &pt);
         /* assume bbox short-circuit has already been attempted */
         
         ring = polygon->rings[0];
-        /* root = createTree(ring); */
-        /* if(point_in_ring(root, &pt) != 1)  */
-        if(point_in_ring_deprecated(polygon->rings[0], &pt) != 1)
+		in_ring = point_in_ring(polygon->rings[0], &pt);
+        if( in_ring == -1) /* outside the exterior ring */
         {
                 LWDEBUG(3, "point_in_polygon: outside exterior ring.");
-
-                return 0;
+                return -1;
         }
+		result = in_ring;
 
         for(i=1; i<polygon->nrings; i++)
         {
                 ring = polygon->rings[i];
-                /* root = createTree(ring); */
-                /* if(point_in_ring(root, &pt) != -1) */
-                if(point_in_ring_deprecated(polygon->rings[i], &pt) != -1)
+				in_ring = point_in_ring(polygon->rings[i], &pt);
+                if(in_ring == 1) /* inside a hole => outside the polygon */
                 {
-                        LWDEBUGF(3, "point_in_polygon: within hole %d.", i);
-
-                        return 0;
+                	LWDEBUGF(3, "point_in_polygon: within hole %d.", i);
+                    return -1;
                 }
+				if(in_ring == 0) /* on the edge of a hole */
+				{
+                    LWDEBUGF(3, "point_in_polygon: on edge of hole %d.", i);
+					return 0;
+				}
         }
-        return 1;
+        return result; /* -1 = outside, 0 = boundary, 1 = inside */
 }
 
 /*
- * return 0 iff point inside polygon or on boundary
- * return 1 iff point outside polygon
+ * return -1 iff point outside multipolygon
+ * return 0 iff point on multipolygon boundary
+ * return 1 iff point inside multipolygon
  */
-int point_outside_polygon(RTREE_NODE **root, int ringCount, LWPOINT *point)
+int point_in_multipolygon(LWMPOLY *mpolygon, LWPOINT *point)
 {
-        int i;
-        POINT2D pt;
-
-        LWDEBUG(2, "point_outside_polygon called.");
-
-        getPoint2d_p(point->point, 0, &pt);
-        /* assume bbox short-circuit has already been attempted */
-        
-        if(point_in_ring(root[0], &pt) == -1)
-        {
-                LWDEBUG(3, "point_outside_polygon: outside exterior ring.");
-
-                return 1;
-        }
-
-        for(i=1; i<ringCount; i++)
-        {
-                if(point_in_ring(root[i], &pt) == 1)
-                {
-                        LWDEBUGF(3, "point_outside_polygon: within hole %d.", i);
-
-                        return 1;
-                }
-        }
-        return 0;
-}
-
-
-/*
- * return 0 iff point inside polygon or on boundary
- * return 1 iff point outside polygon
- */
-int point_outside_polygon_deprecated(LWPOLY *polygon, LWPOINT *point)
-{
-        int i;
+        int i, j, result, in_ring;
         POINTARRAY *ring;
         POINT2D pt;
 
-        LWDEBUG(2, "point_outside_polygon_deprecated called.");
+        LWDEBUG(2, "point_in_polygon called.");
 
         getPoint2d_p(point->point, 0, &pt);
         /* assume bbox short-circuit has already been attempted */
-        
-        ring = polygon->rings[0];
-        /* root = createTree(ring); */
-        /* if(point_in_ring(root, &pt) == -1) */
-        if(point_in_ring_deprecated(ring, &pt) == -1)
-        {
-                LWDEBUG(3, "point_outside_polygon_deprecated: outside exterior ring.");
 
-                return 1;
-        }
+		result = -1;
 
-        for(i=1; i<polygon->nrings; i++)
-        {
+		for(j = 0; j < mpolygon->ngeoms; j++ ) 
+		{
+		
+			LWPOLY *polygon = mpolygon->geoms[j];
+		   	ring = polygon->rings[0];
+			in_ring = point_in_ring(polygon->rings[0], &pt);
+       		if( in_ring == -1) /* outside the exterior ring */
+        	{
+                LWDEBUG(3, "point_in_polygon: outside exterior ring.");
+				continue;
+        	}
+			if( in_ring == 0 ) 
+			{
+				return 0;
+			}
+
+			result = in_ring;
+
+        	for(i=1; i<polygon->nrings; i++)
+        	{
                 ring = polygon->rings[i];
-                /* root = createTree(ring); */
-                /* if(point_in_ring(root, &pt) == 1)  */
-                if(point_in_ring_deprecated(ring, &pt) == 1)
+				in_ring = point_in_ring(polygon->rings[i], &pt);
+                if(in_ring == 1) /* inside a hole => outside the polygon */
                 {
-                        LWDEBUGF(3, "point_outside_polygon_deprecated: within hole %d.", i);
-
-                        return 1;
+                	LWDEBUGF(3, "point_in_polygon: within hole %d.", i);
+					result = -1;
+                    break;
                 }
-        }
-        return 0;
+				if(in_ring == 0) /* on the edge of a hole */
+				{
+                    LWDEBUGF(3, "point_in_polygon: on edge of hole %d.", i);
+					return 0;
+				}
+        	}
+        	if( result != -1) 
+			{
+				return result;
+			}
+		}
+		return result;
 }
-
-
-/*
- * return 0 iff point is outside every polygon
- */
-/* Not yet functional.
-int point_in_multipolygon(LWMPOLY *mpolygon, LWPOINT *point)
-{
-        int i;
-
-        LWDEBUG(2, "point_in_multipolygon called.");
-
-        for(i=1; i<mpolygon->ngeoms; i++)
-        {
-                if(point_in_polygon((LWPOLY *)mpolygon->geoms[i], point)!=0) return 1;
-        }
-        return 0;
-}
-*/
 
 
 /*******************************************************************************
