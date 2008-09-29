@@ -16,8 +16,8 @@
 #include "lwgeom_pg.h"
 #include "math.h"
 
-#define DEBUG_LRS 1
-#define DEBUG_INTERPOLATION 1
+#define DEBUG_LRS 0
+#define DEBUG_INTERPOLATION 0
 
 Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS);
 
@@ -430,9 +430,6 @@ lwline_locate_between_m(LWLINE *lwline_in, double m0, double m1)
 		if ( typeflag == 1 ) outtype=MULTIPOINTTYPE;
 		else if ( typeflag == 2 ) outtype=MULTILINETYPE;
 		else outtype = COLLECTIONTYPE;
-
-	lwnotice(" XXX lwline_locate_between_m: %s", lwgeom_to_ewkt((LWGEOM *)lwcollection_construct(outtype,
-			lwline_in->SRID, NULL, ngeoms, geoms)));
 
 		return (LWGEOM *)lwcollection_construct(outtype,
 			lwline_in->SRID, NULL, ngeoms, geoms);

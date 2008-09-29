@@ -1,7 +1,27 @@
+2008-09-29 Paul Ramsey <pramsey@cleverelephant.ca>
+
+        * lwgeom/lwgeom_rtree.*, lwgeom/lwgeom_geos_c.c
+          Remove memory leaks from p-i-p shortcuts and allow
+          multipolygons as an input type
+
+2008-07-13 Olivier Courtin
+  
+        * lwgeom/lwgeom_geojson.c, ST_AsGeoJSON implementation.
+
 2008-06-26 Paul Ramsey <pramsey@cleverelephant.ca>
 
         * loader/shapefil.h, dbfopen.c, shp2pgsql.c
           Fix for DBF files with deleted records. (#29)
+
+2008-05-28 Paul Ramsey <pramsey@cleverelephant.ca>
+  
+        * lwgeom/box2d.c, lwgeom/liblwgeom.h,
+          lwgeom/lwgeom_functions_analytic.c,
+          lwgeom/lwgeom_functions_basic.c, lwgeom/lwgeom_svg.c,
+          lwgeom/lwpostgis.sql.in, lwgeom/measures.c: Enhanced speed
+          _ST_DWithin(g,g,d) that returns as soon as g and g are within d
+          of each other, rather than using distance naively. Change
+          ST_DWithin to use enhanced op. (Issue 20)
 
 2008-04-12 Paul Ramsey <pramsey@cleverelephant.ca>
           
