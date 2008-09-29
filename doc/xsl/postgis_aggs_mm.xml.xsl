@@ -18,12 +18,13 @@
 			<itemizedlist>
 			<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
 			<xsl:for-each select='sect1/refentry'>
-			  <xsl:variable name='comment'>
-				<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
-			  </xsl:variable>
-			  <xsl:variable name="refid">
-				<xsl:value-of select="@id" />
-			  </xsl:variable>
+				<xsl:sort select="@id"/>
+				<xsl:variable name='comment'>
+					<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
+				</xsl:variable>
+				<xsl:variable name="refid">
+					<xsl:value-of select="@id" />
+				</xsl:variable>
 			
 			<!-- For each function prototype if it takes a geometry set then catalog it as an aggregate function  -->
 				<xsl:for-each select="refsynopsisdiv/funcsynopsis/funcprototype">
@@ -43,12 +44,13 @@
 				<itemizedlist>
 			<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
 				<xsl:for-each select='sect1/refentry'>
-					  <xsl:variable name='comment'>
+					<xsl:sort select="@id"/>
+					<xsl:variable name='comment'>
 						<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
-					  </xsl:variable>
-					  <xsl:variable name="refid">
+					</xsl:variable>
+					<xsl:variable name="refid">
 						<xsl:value-of select="@id" />
-					  </xsl:variable>
+					</xsl:variable>
 				
 			<!-- For each section if there is not that it implements SQL/MM catalog it -->
 						<xsl:for-each select="refsection">
