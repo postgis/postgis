@@ -16,8 +16,8 @@
 #include "lwgeom_pg.h"
 #include "math.h"
 
-#define DEBUG_LRS 0
-#define DEBUG_INTERPOLATION 0
+#define DEBUG_LRS 1
+#define DEBUG_INTERPOLATION 1
 
 Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS);
 
@@ -151,7 +151,7 @@ clip_seg_by_m_range(POINT4D *p1, POINT4D *p2, double m0, double m1)
 	 * numbers.
 	 *
 	 * The two points must be equal anyway.
-	 */
+
 	if ( m0 == m1 )
 	{
 		memcpy(p2, p1, sizeof(POINT4D));
@@ -159,6 +159,7 @@ clip_seg_by_m_range(POINT4D *p1, POINT4D *p2, double m0, double m1)
 		else ret |= 0x0100;
 		return ret;
 	}
+XXX		 */
 
 	/* 
 	 * Second point out of range, project 
@@ -338,7 +339,7 @@ lwpoint_locate_between_m(LWPOINT *lwpoint, double m0, double m1)
  */
 static LWGEOM *
 lwline_locate_between_m(LWLINE *lwline_in, double m0, double m1)
-{
+{		
 	POINTARRAY *ipa=lwline_in->points;
 	int i;
 	LWGEOM **geoms;
@@ -377,6 +378,7 @@ lwline_locate_between_m(LWLINE *lwline_in, double m0, double m1)
 		/* This is a point */
 		if ( pa->npoints == 1 )
 		{
+
 			lwpoint=lwalloc(sizeof(LWPOINT));
 			lwpoint->type=lwgeom_makeType_full(
 				TYPE_HASZ(pa->dims),
@@ -414,6 +416,8 @@ lwline_locate_between_m(LWLINE *lwline_in, double m0, double m1)
 			lwerror("ptarray_locate_between_m returned a POINARRAY set containing POINTARRAY with 0 points");
 		}
 
+
+
 	}
 
 	if ( ngeoms == 1 )
@@ -426,6 +430,9 @@ lwline_locate_between_m(LWLINE *lwline_in, double m0, double m1)
 		if ( typeflag == 1 ) outtype=MULTIPOINTTYPE;
 		else if ( typeflag == 2 ) outtype=MULTILINETYPE;
 		else outtype = COLLECTIONTYPE;
+
+	lwnotice(" XXX lwline_locate_between_m: %s", lwgeom_to_ewkt((LWGEOM *)lwcollection_construct(outtype,
+			lwline_in->SRID, NULL, ngeoms, geoms)));
 
 		return (LWGEOM *)lwcollection_construct(outtype,
 			lwline_in->SRID, NULL, ngeoms, geoms);

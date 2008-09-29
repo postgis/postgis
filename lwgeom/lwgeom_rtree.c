@@ -77,6 +77,7 @@ RTREE_NODE *createTree(POINTARRAY *pointArray)
         }
 
         root = nodes[0];
+		lwfree(nodes);
 
 #ifdef PGIS_DEBUG
         lwnotice("createTree returning %p", root);
@@ -207,15 +208,40 @@ void freeTree(RTREE_NODE *root)
 #ifdef PGIS_DEBUG_CALLS
         lwnotice("freeTree called for %p", root);
 #endif
-        if(root->leftNode)
-                freeTree(root->leftNode);
-        if(root->rightNode)
-                freeTree(root->rightNode);
-        lwfree(root->interval);
-        if(root->segment)
-                lwfree(root->segment);
-        lwfree(root);
+		if(root->leftNode)
+				freeTree(root->leftNode);
+		if(root->rightNode)
+				freeTree(root->rightNode);
+		lwfree(root->interval);
+		if(root->segment) {
+			lwfree(root->segment->points->serialized_pointlist);
+			lwfree(root->segment->points);
+			lwgeom_release((LWGEOM *)root->segment);
+		}
+		lwfree(root);
 }
+
+/*
+ * Free the cache object and all the sub-objects properly.
+ */
+void clearCache(RTREE_POLY_CACHE *cache)
+{
+	int i;
+#ifdef PGIS_DEBUG_CALLS
+    lwnotice("clearCache called for %p", cache);
+#endif
+	for(i = 0; i < cache->ringCount; i++)
+	{ 
+		freeTree(cache->ringIndices[i]);
+	}
+	lwfree(cache->ringIndices);
+	lwfree(cache->poly);
+	cache->poly = 0;
+	cache->ringIndices = 0;
+	cache->ringCount = 0;
+	cache->polyCount = 0;
+}
+
 
 /*
  * Retrieves a collection of line segments given the root and crossing value.
@@ -387,28 +413,98 @@ Datum LWGEOM_polygon_index(PG_FUNCTION_ARGS)
         
 }
 
-RTREE_POLY_CACHE *createNewCache(LWPOLY *poly, uchar *serializedPoly)
+RTREE_POLY_CACHE * createCache()
 {
-        RTREE_POLY_CACHE *result;
-        int i, length;
+	RTREE_POLY_CACHE *result;
+	result = lwalloc(sizeof(RTREE_POLY_CACHE));
+	result->polyCount = 0;
+	result->ringCount = 0;
+	result->ringIndices = 0;
+	result->poly = 0;
+	return result;
+}
 
+void populateCache(RTREE_POLY_CACHE *currentCache, LWGEOM *lwgeom, uchar *serializedPoly)
+{
+	int i, j, k, length;
+	LWMPOLY *mpoly;
+	LWPOLY *poly;
+	int nrings;
+	
 #ifdef PGIS_DEBUG_CALLS
-        lwnotice("createNewCache called with %p", poly);
+    lwnotice("populateCache called with cache %p geom %p", currentCache, lwgeom);
 #endif
-        result = lwalloc(sizeof(RTREE_POLY_CACHE));
-        result->ringIndices = lwalloc(sizeof(RTREE_NODE *) * poly->nrings);
-        result->ringCount = poly->nrings;
-        length = lwgeom_size_poly(serializedPoly);
-        result->poly = lwalloc(length);
-        memcpy(result->poly, serializedPoly, length); 
-        for(i = 0; i < result->ringCount; i++)
-        {
-                result->ringIndices[i] = createTree(poly->rings[i]);
-        }
-#ifdef PGIS_DEBUG
-        lwnotice("createNewCache returning %p", result);
+
+	if(TYPE_GETTYPE(lwgeom->type) == MULTIPOLYGONTYPE) 
+	{
+#ifdef PGIS_DEBUG_CALLS
+		lwnotice("populateCache MULTIPOLYGON");
 #endif
-        return result;
+		mpoly = (LWMPOLY *)lwgeom;
+		nrings = 0;
+		/*
+		** Count the total number of rings.
+		*/
+		for( i = 0; i < mpoly->ngeoms; i++ ) 
+		{
+			nrings += mpoly->geoms[i]->nrings;
+		}
+		currentCache->polyCount = mpoly->ngeoms;
+		currentCache->ringCount = nrings;
+		currentCache->ringIndices = lwalloc(sizeof(RTREE_NODE *) * nrings);
+		/*
+		** Load the exterior rings onto the ringIndices array first
+		*/
+		for( i = 0; i < mpoly->ngeoms; i++ ) 
+		{
+			currentCache->ringIndices[i] = createTree(mpoly->geoms[i]->rings[0]);
+		}
+		/*
+		** Load the interior rings (holes) onto ringIndices next
+		*/
+		for( j = 0; j < mpoly->ngeoms; j++ )
+		{
+			for( k = 1; k < mpoly->geoms[j]->nrings; k++ ) 
+			{
+				currentCache->ringIndices[i] = createTree(mpoly->geoms[j]->rings[k]);
+				i++;
+			}
+		}
+	}
+	else if ( TYPE_GETTYPE(lwgeom->type) == POLYGONTYPE ) 
+	{
+#ifdef PGIS_DEBUG_CALLS
+		lwnotice("populateCache POLYGON");
+#endif
+		poly = (LWPOLY *)lwgeom;
+		currentCache->polyCount = 1;
+		currentCache->ringCount = poly->nrings;
+		/*
+		** Just load the rings on in order
+		*/
+		currentCache->ringIndices = lwalloc(sizeof(RTREE_NODE *) * poly->nrings);
+		for( i = 0; i < poly->nrings; i++ ) 
+		{
+			currentCache->ringIndices[i] = createTree(poly->rings[i]);
+		}
+	}
+	else 
+	{
+		/* Uh oh, shouldn't be here. */
+		return;
+	}
+
+	/*
+	** Copy the serialized form of the polygon into the cache so
+	** we can test for equality against subsequent polygons.
+	*/
+	length = lwgeom_size(serializedPoly);
+	currentCache->poly = lwalloc(length);
+	memcpy(currentCache->poly, serializedPoly, length); 
+#ifdef PGIS_DEBUG_CALLS
+	lwnotice("populateCache returning %p", currentCache);
+#endif
+
 }
 
 /* 
@@ -418,10 +514,10 @@ RTREE_POLY_CACHE *createNewCache(LWPOLY *poly, uchar *serializedPoly)
  * method.  The method will allocate memory for the cache it creates,
  * as well as freeing the memory of any cache that is no longer applicable.
  */
-RTREE_POLY_CACHE *retrieveCache(LWPOLY *poly, uchar *serializedPoly, 
+RTREE_POLY_CACHE *retrieveCache(LWGEOM *lwgeom, uchar *serializedPoly, 
                 RTREE_POLY_CACHE *currentCache)
 {
-        int i, length;
+        int length;
 
 #ifdef PGIS_DEBUG_CALLS
         lwnotice("retrieveCache called with %p %p %p", poly, serializedPoly, currentCache);
@@ -431,51 +527,35 @@ RTREE_POLY_CACHE *retrieveCache(LWPOLY *poly, uchar *serializedPoly,
 #ifdef PGIS_DEBUG
                 lwnotice("No existing cache, create one.");
 #endif
-                return createNewCache(poly, serializedPoly);
+				return createCache();
         }
         if(!(currentCache->poly))
         {
 #ifdef PGIS_DEBUG
-                lwnotice("Cache contains no polygon, creating new cache.");
+                lwnotice("Cache contains no polygon, populating it.");
 #endif
-                return createNewCache(poly, serializedPoly);
+				populateCache(currentCache, lwgeom, serializedPoly);
+				return currentCache;
         }
 
         length = lwgeom_size_poly(serializedPoly);
 
-        if(lwgeom_size_poly(currentCache->poly) != length)
+		if(lwgeom_size(currentCache->poly) != length)
         {
 #ifdef PGIS_DEBUG
                 lwnotice("Polygon size mismatch, creating new cache.");
 #endif
-                for(i = 0; i < currentCache->ringCount; i++)
-                {
-                        freeTree(currentCache->ringIndices[i]);
-                }
-                lwfree(currentCache->ringIndices);
-                lwfree(currentCache->poly);
-                lwfree(currentCache);
-                return createNewCache(poly, serializedPoly);
-        }
-        for(i = 0; i < length; i++) 
-        {
-                uchar a = serializedPoly[i];
-                uchar b = currentCache->poly[i];
-                if(a != b) 
-                {
+				clearCache(currentCache);
+				return currentCache;
+		}
+		if( memcmp(serializedPoly, currentCache->poly, length) ) 
+		{
 #ifdef PGIS_DEBUG
-                        lwnotice("Polygon mismatch, creating new cache. %c, %c", a, b);
+				lwnotice("Polygon mismatch, creating new cache. %c, %c", a, b);
 #endif
-                        for(i = 0; i < currentCache->ringCount; i++)
-                        { 
-                                freeTree(currentCache->ringIndices[i]);
-                        }
-                        lwfree(currentCache->ringIndices);
-                        lwfree(currentCache->poly);
-                        lwfree(currentCache);
-                        return createNewCache(poly, serializedPoly);
-                }
-        }
+				clearCache(currentCache);
+				return currentCache;
+		}
 
 #ifdef PGIS_DEBUG
         lwnotice("Polygon match, retaining current cache, %p.", currentCache);
