@@ -1807,18 +1807,7 @@ WHERE n*100.00/length &lt; 1;
           <para>SQL-MM 3: 5.1.18</para>
         </listitem>
       </varlistentry>
-
-      <varlistentry>
-        <term>ST_Intersects</term>
-
-        <listitem>
-          <para>Test if an ST_Geometry value spatially intersects another
-          ST_Geometry value.</para>
-
-          <para>SQL-MM 3: 5.1.27</para>
-        </listitem>
-      </varlistentry>
-
+	  
       <varlistentry>
         <term>ST_IsEmpty</term>
 

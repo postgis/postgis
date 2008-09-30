@@ -4451,12 +4451,15 @@ SELECT ST_Equals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
 			  This method implements the
 			  <ulink url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple
 			  Features Implementation Specification for SQL</ulink>
-			</para>
-			<para>
-			  <inlinegraphic fileref="images/check.png" />
 			  OGC SPEC s2.1.1.2 //s2.1.13.3 - ST_Intersects(g1, g2 ) --&gt;
 				Not (ST_Disjoint(g1, g2 ))
-			</para> 
+			</para>
+			<para><inlinemediaobject>
+				<imageobject>
+				  <imagedata fileref="images/check.png" />
+				</imageobject>
+			  </inlinemediaobject>This method implements the SQL/MM specification:
+			SQL-MM 3: 5.1.27</para>
 		</refsection>
 		<refsection>
         <title>Examples</title>
