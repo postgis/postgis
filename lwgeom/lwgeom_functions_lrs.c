@@ -141,22 +141,6 @@ clip_seg_by_m_range(POINT4D *p1, POINT4D *p2, double m0, double m1)
 		else ret |= 0x0010;
 	}
 
-	/*
-	 * if m0 and m1 have the same value
-	 * avoid computation of second point to
-	 * reduce rouding problems with floating
-	 * numbers.
-	 *
-	 * The two points must be equal anyway.
-	 */
-	if ( m0 == m1 )
-	{
-		memcpy(p2, p1, sizeof(POINT4D));
-		if ( swapped ) ret |= 0x0010;
-		else ret |= 0x0100;
-		return ret;
-	}
-
 	/* 
 	 * Second point out of range, project 
 	 * it on the range
