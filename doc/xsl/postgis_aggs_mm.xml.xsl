@@ -57,7 +57,7 @@
 							<xsl:for-each select="para">
 								<xsl:choose>
 									<xsl:when test="contains(.,'implements the SQL/MM')">
-										<listitem><para><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="$comment" /></para></listitem>
+										<listitem><para><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="$comment" /></para><para><xsl:value-of select="." /></para></listitem>
 									</xsl:when>
 								</xsl:choose>
 							</xsl:for-each>
