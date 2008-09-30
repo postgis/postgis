@@ -10,6 +10,7 @@
 <!ENTITY performance_tips SYSTEM "performance_tips.xml">
 <!ENTITY reference SYSTEM "reference.xml">
 <!ENTITY reference_new SYSTEM "reference_new.xml">
+<!ENTITY postgis_aggs_mm SYSTEM "postgis_aggs_mm.xml">
 <!ENTITY reporting SYSTEM "reporting.xml">
 <!ENTITY release_notes SYSTEM "release_notes.xml">
 
@@ -51,6 +52,7 @@
   &performance_tips;
   &reference;
   &reference_new;
+  &postgis_aggs_mm;
   &reporting;
   &release_notes;
     

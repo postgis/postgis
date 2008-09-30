@@ -49,8 +49,11 @@ all: html/postgis.html
 endif
 endif
 
-postgis-out.xml: postgis.xml introduction.xml installation.xml faq.xml using_postgis.xml performance_tips.xml reference.xml reference_new.xml reporting.xml release_notes.xml ../Version.config
-	cat $< | sed "s/@@LAST_RELEASE_VERSION@@/@POSTGIS_LIB_VERSION@/g" > $@
+postgis_aggs_mm.xml: ./xsl/postgis_aggs_mm.xml.xsl reference_new.xml
+	$(XSLTPROC) ./xsl/postgis_aggs_mm.xml.xsl reference_new.xml > $@
+
+postgis-out.xml: postgis.xml introduction.xml installation.xml faq.xml using_postgis.xml performance_tips.xml reference.xml reference_new.xml postgis_aggs_mm.xml reporting.xml release_notes.xml ../Version.config
+	cat $< | sed "s/@@LAST_RELEASE_VERSION@@/1.4.0SVN/g" > $@
 
 chunked-html: postgis-out.xml
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) $(XSLTPROC_HTMLOPTS) \

@@ -8,7 +8,7 @@
 	 Purpose: This is an xsl transform that generates index listing of aggregate functions and mm /sql compliant functions xml section from reference_new.xml to then
 	 be processed by doc book
      ******************************************************************** -->
-	<xsl:output method="xml" indent="yes" />
+	<xsl:output method="xml" indent="yes" encoding="utf-8"/>
 	<xsl:template match='/chapter'>
 	<chapter>
 		<title>PostGIS Special Functions Index</title>	  
