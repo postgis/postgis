@@ -23,6 +23,26 @@ select 'LINEZM_4', asewkt(locate_between_measures('LINESTRING(0 10 100 0, 0 0 0 
 select 'LINEZM_5', asewkt(locate_between_measures('LINESTRING(0 10 100 0, 0 0 0 20, 0 10 10 40, 10 0 0 0)', 2, 18));
 select 'LINEZM_6', asewkt(locate_between_measures('LINESTRING(0 10 10 40, 10 0 0 0)', 2, 2));
 
+
+
+-- Linestring, locating point, border cases
+select 'LINEZM_7', asewkt(locate_between_measures('LINESTRING(0 0 0 0, 1 1 1 1, 2 2 2 2, 3 4 5 6)', 1, 2));
+select 'LINEZM_8', asewkt(locate_between_measures('LINESTRING(0 0 0 0, 1 1 1 1, 2 2 2 2, 3 4 5 6)', 1.1, 2.1));
+select 'LINEZM_9', asewkt(locate_between_measures('LINESTRING(0 0 0 0, 1 1 1 1, 2 2 2 2, 3 4 5 6)', 2, 2));
+
+
+select 'LINEPZM_1', asewkt(locate_along_measure('LINESTRING(0 0 0 0, 1 1 1 1, 2 2 2 2, 3 4 5 6)', 0));
+select 'LINEPZM_2', asewkt(locate_along_measure('LINESTRING(0 0 0 0, 1 1 1 1, 2 2 2 2, 3 4 5 6)', 1));
+select 'LINEPZM_3', asewkt(locate_along_measure('LINESTRING(0 0 0 0, 1 1 1 1, 2 2 2 2, 3 4 5 6)', 1.5));
+select 'LINEPZM_4', asewkt(locate_along_measure('LINESTRING(0 0 0 0, 1 1 1 1, 2 2 2 2, 3 4 5 6)', 2));
+select 'LINEPZM_5', asewkt(locate_along_measure('LINESTRING(0 0 0 0, 1 1 1 1, 2 2 2 2, 3 4 5 6)', -1));
+select 'LINEPZM_6', asewkt(locate_along_measure('LINESTRING(0 0 0 0, 1 1 1 1, 2 2 2 2, 3 4 5 6)', 6.1));
+
+
+
+
+
+
 --- line_locate_point
 
 SELECT 'line_locate_point', line_locate_point('LINESTRING(709243.393033887 163969.752725768,708943.240904444 163974.593889146,708675.634380651 163981.832927298)', 'POINT(705780 15883)');
