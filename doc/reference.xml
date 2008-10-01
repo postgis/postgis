@@ -138,24 +138,6 @@
         </varlistentry>
 
         <varlistentry>
-          <term>ST_Intersection(geometry, geometry)</term>
-
-          <listitem>
-            <para>Returns a geometry that represents the point set
-            intersection of the Geometries.</para>
-
-            <para>In other words - that portion of geometry A and geometry B
-            that is shared between the two geometries.</para>
-
-            <para>Performed by the GEOS module</para>
-
-            <para>Do not call with a GeometryCollection as an argument</para>
-
-            <para>OGC SPEC s2.1.1.3</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
           <term>ST_Shift_Longitude(geometry)</term>
 
           <listitem>
@@ -1793,21 +1775,7 @@ WHERE n*100.00/length &lt; 1;
           <para>SQL-MM 3: 8.2.6, 8.3.5</para>
         </listitem>
       </varlistentry>
-
-      <varlistentry>
-        <term>ST_Intersection</term>
-
-        <listitem>
-          <para>Return an ST_Geometry value that represents the point set
-          intersection of two ST_Geometry values.</para>
-
-          <para>In other words - that portion of geometry A and geometry B
-          that is shared between the two geometries.</para>
-
-          <para>SQL-MM 3: 5.1.18</para>
-        </listitem>
-      </varlistentry>
-	  
+  
       <varlistentry>
         <term>ST_IsEmpty</term>
 

@@ -5115,6 +5115,103 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
     </refentry>
   </sect1>
   
+	<sect1>
+		<title>Geometry Processing Functions</title>
+			<refentry id="ST_Intersection">
+			<refnamediv>
+				<refname>ST_Intersection</refname>
+				
+				<refpurpose>Returns a geometry that represents the shared portion of geomA and geomB
+				</refpurpose>
+			</refnamediv>
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>geometry <function>ST_Intersection</function></funcdef>
+						<paramdef>
+							<type>geometry</type>
+							<parameter>geomA</parameter>
+						</paramdef>
+						<paramdef>
+							<type>geometry</type>
+							<parameter>geomB</parameter>
+						</paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+			<refsection>
+				<title>Description</title>
+				<para>Returns a geometry that represents the point set
+					intersection of the Geometries.</para>
+	
+				<para>In other words - that portion of geometry A and geometry B
+				that is shared between the two geometries.</para>
+				
+				<para>If the geometries do not share any space (are disjoint), then an empty geometry collection
+				is returned.</para>
+				<para>ST_Intersection in conjunction with ST_Intersects is very useful for clipping geometries such as in bounding box, buffer, region 
+					queries where you only want to return that portion of a geometry that sits in a country or region of interest.</para>
+	
+			  <important>
+				<para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
+			  </important>
+		  
+			  <para>Performed by the GEOS module</para>
+	
+	
+				<para>
+				  <inlinegraphic fileref="images/check.png" />
+				  This method implements the
+				  <ulink url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple
+				  Features Implementation Specification for SQL</ulink>  OGC SPEC s2.1.1.3 
+				</para>
+			</refsection>
+			<refsection>
+			<title>Examples</title>
+<programlisting>SELECT ST_AsText(ST_Intersection('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::geometry));
+	 st_astext
+	---------------
+	GEOMETRYCOLLECTION EMPTY
+	(1 row)
+	SELECT ST_AsText(ST_Intersection('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry));
+	 st_astext
+	---------------
+	POINT(0 0)
+	(1 row)
+	
+	---Clip all lines (trails) by country (here we assume country geom are POLYGON or MULTIPOLYGONS)
+	-- NOTE: we are only keeping intersections that result in a LINESTRING or MULTILINESTRING because we don't
+	-- care about trails that just share a point
+	-- the dump is needed to expand a geometry collection into individual single MULT* parts
+	-- the below is fairly generic and will work for polys, etc. by just changing the where clause
+	SELECT clipped.gid, clipped.f_name, clipped_geom
+	FROM (SELECT trails.gid, trails.f_name, (ST_Dump(ST_Intersection(country.the_geom, trails.the_geom))).geom As clipped_geom 
+	FROM country 
+		INNER JOIN trails 
+		ON ST_Intersects(country.the_geom, trails.the_geom))  As clipped
+		WHERE ST_Dimension(clipped.clipped_geom) = 1 ;
+		
+	--For polys e.g. polygon landmarks, you can also use the sometimes faster hack that buffering anything by 0.0 
+	-- except a polygon results in an empty geometry collection 
+	--(so a geometry collection containing polys, lines and points) 
+	-- buffered by 0.0 would only leave the polygons and dissolve the collection shell
+	SELECT poly.gid,  ST_Multi(ST_Buffer(
+					ST_Intersection(country.the_geom, poly.the_geom),
+					0.0)
+					) As clipped_geom 
+	FROM country 
+		INNER JOIN poly
+		ON ST_Intersects(country.the_geom, poly.the_geom) 
+		WHERE Not ST_IsEmpty(ST_Buffer(ST_Intersection(country.the_geom, poly.the_geom),0.0));
+			</programlisting>
+			</refsection>
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="ST_Dimension"/>, <xref linkend="ST_Dump"/>, <xref linkend="ST_Intersects"/>, <xref linkend="ST_Multi"/></para>
+			</refsection>
+		</refentry>	
+	</sect1>
+  
   <sect1>
       <title>Linear Referencing</title>
       <para> </para> 
