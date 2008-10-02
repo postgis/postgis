@@ -114,6 +114,12 @@
           <ulink url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple
           Features Implementation Specification for SQL.</ulink>
         </para>
+		<!-- Optionally mention 3d support -->
+		<para><inlinemediaobject>
+        <imageobject>
+          <imagedata fileref="images/check.png" />
+        </imageobject>
+		</inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
       </refsection>
 
       <refsection>
@@ -217,6 +223,12 @@ Check constraints:
           <ulink url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple
           Features Implementation Specification for SQL.</ulink>
         </para>
+			<!-- Optionally mention 3d support -->
+		<para><inlinemediaobject>
+        <imageobject>
+          <imagedata fileref="images/check.png" />
+        </imageobject>
+      </inlinemediaobject> This function supports 3d geometry fields.</para>
       </refsection>
       
       <refsection>
@@ -688,6 +700,12 @@ Check constraints:
         constraints and reference in geometry_columns. Note: uses
         current_schema() on schema-aware pgsql installations if schema is not
         provided.</para>
+			<!-- Optionally mention 3d support -->
+    <para><inlinemediaobject>
+        <imageobject>
+          <imagedata fileref="images/check.png" />
+        </imageobject>
+      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
       </refsection>
       
       <refsection>
@@ -836,6 +854,12 @@ Check constraints:
 			<para>The EWKB format is not an OGC standard, but a PostGIS specific format that includes the spatial reference system (SRID)
 			identifier</para>
 		</note>
+		<!-- Optionally mention 3d support -->
+		<para><inlinemediaobject>
+        <imageobject>
+          <imagedata fileref="images/check.png" />
+        </imageobject>
+      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
 	  </refsection>
 	
 	  <refsection>
@@ -877,6 +901,12 @@ Check constraints:
 			<para>The EWKT format is not an OGC standard, but an PostGIS specific format that includes the spatial reference system (SRID)
 			identifier</para>
 		</note>
+		<!-- Optionally mention 3d support -->
+		<para><inlinemediaobject>
+        <imageobject>
+          <imagedata fileref="images/check.png" />
+        </imageobject>
+		</inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
 	  </refsection>
 	
 	  <refsection>
@@ -1398,6 +1428,8 @@ SELECT ST_PointFromText('POINT(-71.064544 42.28787)', 4326);
             </imageobject>
           </inlinemediaobject> This method implements the SQL/MM specification:
         SQL-MM 3: 5.1.2</para>
+		
+
       </refsection>
     
       <refsection>
@@ -1406,7 +1438,8 @@ SELECT ST_PointFromText('POINT(-71.064544 42.28787)', 4326);
          <programlisting>SELECT ST_Dimension('GEOMETRYCOLLECTION(LINESTRING(1 1,0 0),POINT(0 0))'); 
 ST_Dimension 
 ----------- 
-1</programlisting>
+1
+</programlisting>
     	</refsection>
 		<refsection>
 			<title>See Also</title>
@@ -1446,6 +1479,13 @@ ST_Dimension
             </imageobject>
           </inlinemediaobject> This method implements the SQL/MM specification:
         SQL-MM 3: 7.1.4</para>
+		
+		<!-- Optionally mention 3d support -->	
+			<para><inlinemediaobject>
+				<imageobject>
+				  <imagedata fileref="images/check.png" />
+				</imageobject>
+			  </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
       </refsection>
     
       <refsection>
@@ -1461,7 +1501,15 @@ postgis=# SELECT ST_EndPoint('POINT(1 1)'::geometry) IS NULL AS is_null;
   is_null
 ----------
  t
-(1 row)</programlisting>
+(1 row)
+
+--3d endpoint
+SELECT ST_AsEWKT(ST_EndPoint('LINESTRING(1 1 2, 1 2 3, 0 0 5)'));
+  st_asewkt
+--------------
+ POINT(0 0 5)
+(1 row)
+</programlisting>
       </refsection>
     
       <refsection>
