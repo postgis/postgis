@@ -40,6 +40,8 @@
 /* #define UNITE_USING_BUFFER 1 */
 /* #define MAXGEOMSPOINTS 21760 */
 
+/* PROTOTYPES start */
+
 Datum relate_full(PG_FUNCTION_ARGS);
 Datum relate_pattern(PG_FUNCTION_ARGS);
 Datum disjoint(PG_FUNCTION_ARGS);
@@ -81,6 +83,14 @@ GEOSGeom LWGEOM2GEOS(LWGEOM *g);
 POINTARRAY *ptarray_from_GEOSCoordSeq(GEOSCoordSeq cs, char want3d);
 
 void errorIfGeometryCollection(PG_LWGEOM *g1, PG_LWGEOM *g2);
+int point_in_polygon_rtree(RTREE_NODE **root, int ringCount, LWPOINT *point);
+int point_in_multipolygon_rtree(RTREE_NODE **root, int polyCount, int ringCount, LWPOINT *point);
+int point_in_polygon(LWPOLY *polygon, LWPOINT *point);
+int point_in_multipolygon(LWMPOLY *mpolygon, LWPOINT *pont);
+
+/* PROTOTYPES end */
+
+
 
 PG_FUNCTION_INFO_V1(postgis_geos_version);
 Datum postgis_geos_version(PG_FUNCTION_ARGS)
@@ -1378,11 +1388,6 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(result);
 }
 
-int point_in_polygon_rtree(RTREE_NODE **root, int ringCount, LWPOINT *point);
-int point_in_multipolygon_rtree(RTREE_NODE **root, int polyCount, int ringCount, LWPOINT *point);
-int point_in_polygon(LWPOLY *polygon, LWPOINT *point);
-int point_in_multipolygon(LWMPOLY *mpolygon, LWPOINT *pont);
-
 
 PG_FUNCTION_INFO_V1(contains);
 Datum contains(PG_FUNCTION_ARGS)
@@ -2300,7 +2305,6 @@ Datum disjoint(PG_FUNCTION_ARGS)
 		if ( box2.ymin > box1.ymax ) PG_RETURN_BOOL(TRUE);
 	}
 
-
 	initGEOS(lwnotice, lwnotice);
 
 #ifdef PROFILE
@@ -2354,6 +2358,7 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 	char *patt;
 	bool result;
 	GEOSGeom g1,g2;
+	int i;
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
@@ -2384,6 +2389,14 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 
 	patt =  DatumGetCString(DirectFunctionCall1(textout,
                         PointerGetDatum(PG_GETARG_DATUM(2))));
+
+    /*
+    ** Need to make sure 't' and 'f' are upper-case before handing to GEOS 
+    */
+	for( i = 0; i < strlen(patt); i++ ) {
+		if( patt[i] == 't' ) patt[i] = 'T';
+		if( patt[i] == 'f' ) patt[i] = 'F';
+	}
 
 #ifdef PROFILE
 	profstart(PROF_GRUN);
@@ -3634,13 +3647,13 @@ Datum containsPrepared(PG_FUNCTION_ARGS)
 	}
 	
 	old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
-	prep_cache =  fcinfo->flinfo->fn_extra;
+	prep_cache = fcinfo->flinfo->fn_extra;
 	prep_cache = get_prepared_geometry_cache( prep_cache, geom1, 0, key1, 0 );
 	fcinfo->flinfo->fn_extra = prep_cache;
 	MemoryContextSwitchTo(old_context);
 
 	initGEOS(lwnotice, lwnotice);
-
+	
 	if ( prep_cache && prep_cache->prepared_geom && prep_cache->argnum == 1 )
 	{
     	GEOSGeom g = POSTGIS2GEOS(geom2);
