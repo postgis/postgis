@@ -5234,7 +5234,6 @@ POINT(1 2)
   
   <sect1>
     <title>Misc</title>
-	<para> </para>
 	<refentry id="ST_Expand">
       <refnamediv>
         <refname>ST_Expand</refname>
@@ -5318,6 +5317,92 @@ SELECT ST_Expand(CAST('BOX3D(778783 2951741 1,794875 2970042.61545891 10)' As bo
         <para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_Buffer" />, <xref linkend="ST_DWithin" />, <xref linkend="ST_GeomFromEWKT" />,<xref linkend="ST_GeomFromText" />, <xref linkend="ST_SRID" /></para>
       </refsection>
     </refentry>
-  </sect1>
+	        <varlistentry>
+          <term>ST_extent(geometry set)</term>
+
+          <listitem>
+            <para>The extent() function is an "aggregate" function in the
+            terminology of PostgreSQL. That means that it operators on lists
+            of data, in the same way the sum() and mean() functions do. For
+            example, "SELECT ST_Extent(GEOM) FROM GEOMTABLE" will return a
+            BOX3D giving the maximum extent of all features in the table.
+            Similarly, "SELECT ST_Extent(GEOM) FROM GEOMTABLE GROUP BY
+            CATEGORY" will return one extent result for each category.</para>
+          </listitem>
+        </varlistentry>
+		
+	<refentry id="ST_Extent">
+      <refnamediv>
+        <refname>ST_Extent</refname>
+        <refpurpose>an aggregate function that returns the bounding box that bounds rows of geometries.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>box2d <function>ST_Extent</function></funcdef>
+			<paramdef><type>geometry set</type> <parameter>geomfield</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+       	<para>ST_Extent returns a bounding box that encloses a set of geometries. The ST_Extent function is an "aggregate" function in the
+            terminology of SQL. That means that it operates on lists
+            of data, in the same way the SUM() and AVG() functions do.</para>
+		<para>Since it returns a bounding box, the spatial Units are in the units of the spatial reference system in use denoted by the SRID</para>
+		<para>ST_Extent is similar in concept to Oracle Spatial/Locator's SDO_AGGR_MBR</para>	
+		<note>
+		  <para>Since ST_Extent returns a bounding box, the SRID meta-data is lost.  Use ST_SetSRID to force it back into
+		  	a geometry with SRID meta data.  The coordinates are in the units of the spatial ref of the orginal geometries.</para>
+		</note>
+		
+		<note>
+		  <para>Bounding boxes of all geometries are currently 2-d even if they are 3-dimensional geometries.</para>
+		</note>
+
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+		<note><para>Examples below use Massachusetts State Plane ft (SRID=2249)</para></note>
+        <programlisting>
+
+SELECT ST_Extent(the_geom) as bextent FROM sometable;
+		             st_bextent
+------------------------------------
+BOX(739651.875 2908247.25,794875.8125 2970042.75)
+
+
+--Return extent of each category of geometries
+SELECT ST_Extent(the_geom) as bextent 
+FROM sometable 
+GROUP BY category ORDER BY category;
+ 
+                      bextent                       |         name
+----------------------------------------------------+----------------
+ BOX(778783.5625 2951741.25,794875.8125 2970042.75) | A
+ BOX(751315.8125 2919164.75,765202.6875 2935417.25) | B
+ BOX(739651.875 2917394.75,756688.375 2935866)      | C
+
+ --Force back into a geometry 
+ -- and render the extended text representation of that geometry
+SELECT ST_SetSRID(ST_Extent(the_geom),2249) as bextent FROM sometable;
+
+                bextent
+--------------------------------------------------------------------------------
+ SRID=2249;POLYGON((739651.875 2908247.25,739651.875 2970042.75,794875.8125 2970042.75,
+ 794875.8125 2908247.25,739651.875 2908247.25))
+		</programlisting>
+      </refsection>
+
+      <refsection>
+        <title>See Also</title>
+        <para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_SRID" /></para>
+      </refsection>
+	</refentry>
+ </sect1>
       
 </chapter>
