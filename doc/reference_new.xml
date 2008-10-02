@@ -5317,20 +5317,7 @@ SELECT ST_Expand(CAST('BOX3D(778783 2951741 1,794875 2970042.61545891 10)' As bo
         <para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_Buffer" />, <xref linkend="ST_DWithin" />, <xref linkend="ST_GeomFromEWKT" />,<xref linkend="ST_GeomFromText" />, <xref linkend="ST_SRID" /></para>
       </refsection>
     </refentry>
-	        <varlistentry>
-          <term>ST_extent(geometry set)</term>
-
-          <listitem>
-            <para>The extent() function is an "aggregate" function in the
-            terminology of PostgreSQL. That means that it operators on lists
-            of data, in the same way the sum() and mean() functions do. For
-            example, "SELECT ST_Extent(GEOM) FROM GEOMTABLE" will return a
-            BOX3D giving the maximum extent of all features in the table.
-            Similarly, "SELECT ST_Extent(GEOM) FROM GEOMTABLE GROUP BY
-            CATEGORY" will return one extent result for each category.</para>
-          </listitem>
-        </varlistentry>
-		
+	
 	<refentry id="ST_Extent">
       <refnamediv>
         <refname>ST_Extent</refname>
