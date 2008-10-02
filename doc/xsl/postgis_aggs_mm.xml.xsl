@@ -30,7 +30,7 @@
 				<xsl:for-each select="refsynopsisdiv/funcsynopsis/funcprototype">
 					<xsl:choose>
 						<xsl:when test="contains(paramdef/type,'geometry set')">
-							 <listitem><para><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="$comment" /></para></listitem>
+							 <listitem><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="$comment" /></listitem>
 						</xsl:when>
 					</xsl:choose>
 				</xsl:for-each>
@@ -57,7 +57,7 @@
 							<xsl:for-each select="para">
 								<xsl:choose>
 									<xsl:when test="contains(.,'implements the SQL/MM')">
-										<listitem><para><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="$comment" /> <xsl:value-of select="." /></para></listitem>
+										<listitem><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="$comment" /> <xsl:value-of select="." /></listitem>
 									</xsl:when>
 								</xsl:choose>
 							</xsl:for-each>

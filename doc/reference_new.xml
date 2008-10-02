@@ -5174,8 +5174,77 @@ FROM country
 			<para><xref linkend="ST_Dimension"/>, <xref linkend="ST_Dump"/>, <xref linkend="ST_Intersects"/>, <xref linkend="ST_Multi"/></para>
 		</refsection>
 	</refentry>	
+
+	<refentry id="ST_Polygonize">
+		<refnamediv>
+			<refname>ST_Polygonize</refname>
+			
+			<refpurpose>Aggregate. Creates a GeometryCollection containing possible
+            polygons formed from the constituent linework of a set of
+            geometries.</refpurpose>
+		</refnamediv>
+		
+		<refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Polygonize</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geomfield</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+		</refsynopsisdiv>
+		
+		<refsection>
+			<title>Description</title>
+			
+			<para>Creates a GeometryCollection containing possible
+            polygons formed from the constituent linework of a set of
+            geometries.</para>
+
+			<note>
+				<para>Geometry Collections are often difficult to deal with with third party tools, so use ST_Polygonize in conjunction with  <xref linkend="ST_Dump" /> to dump the polygons
+				out into individual polygons.</para>
+			</note>	
+			<para>Availability: 1.0.0RC1 - requires GEOS &gt;= 2.1.0.</para>
+		</refsection>
+		
+		<refsection>
+		<title>Examples: Polygonizing single linestrings</title>		
+		 <programlisting>
+SELECT ST_AsEWKT(ST_Polygonize(the_geom_4269)) As geomtextrep
+FROM (SELECT the_geom_4269 FROM ma.suffolk_edges ORDER BY tlid LIMIT 45) As foo;
+
+geomtextrep
+-------------------------------------
+ SRID=4269;GEOMETRYCOLLECTION(POLYGON((-71.040878 42.285678,-71.040943 42.2856,-
+71.04096 42.285752,-71.040878 42.285678)),POLYGON((-71.17166 42.353675,-71.17202
+6 42.354044,-71.17239 42.354358,-71.171794 42.354971,-71.170511 42.354855,-71.17
+112 42.354238,-71.17166 42.353675)))
+(1 row)
+
+--Use ST_Dump to dump out the polygonize geoms into individual polygons
+SELECT ST_AsEWKT((ST_Dump(foofoo.polycoll)).geom) As geomtextrep
+FROM (SELECT ST_Polygonize(the_geom_4269) As polycoll
+	FROM (SELECT the_geom_4269 FROM ma.suffolk_edges 
+		ORDER BY tlid LIMIT 45) As foo) As foofoo;
+
+geomtextrep
+------------------------
+ SRID=4269;POLYGON((-71.040878 42.285678,-71.040943 42.2856,-71.04096 42.285752,
+-71.040878 42.285678))
+ SRID=4269;POLYGON((-71.17166 42.353675,-71.172026 42.354044,-71.17239 42.354358
+,-71.171794 42.354971,-71.170511 42.354855,-71.17112 42.354238,-71.17166 42.353675))
+(2 rows)		
+
+			  </programlisting>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_Dump" /></para>
+		</refsection>
+	</refentry>	
 	
-	<refentry id="ST_Union">
+<refentry id="ST_Union">
   <refnamediv>
 	<refname>ST_Union</refname>
 	<refpurpose>Returns a geometry that represents the point set union of

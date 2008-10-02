@@ -1006,18 +1006,6 @@ GROUP BY gid, field1,field2;
         </varlistentry>
 
         <varlistentry>
-          <term>ST_Polygonize(geometry set)</term>
-
-          <listitem>
-            <para>Aggregate. Creates a GeometryCollection containing possible
-            polygons formed from the constituent linework of a set of
-            geometries.</para>
-
-            <para>Availability: 1.0.0RC1 - requires GEOS &gt;= 2.1.0.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
           <term>ST_DumpRings(geometry)</term>
 
           <listitem>
