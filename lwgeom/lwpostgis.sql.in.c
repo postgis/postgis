@@ -2544,6 +2544,7 @@ DECLARE
 	new_dim alias for $7;
 	rec RECORD;
 	schema_ok bool;
+	sr varchar;
 	real_schema name;
 
 BEGIN
@@ -2616,6 +2617,12 @@ BEGIN
 		SELECT current_schema() into real_schema;
 	END IF;
 
+	IF ( new_srid != -1 ) THEN
+		SELECT SRID INTO sr FROM SPATIAL_REF_SYS WHERE SRID = new_srid;
+		IF NOT FOUND THEN
+			RAISE EXCEPTION 'AddGeometryColumns() - invalid SRID';
+		END IF;
+	END IF;
 
 	-- Add geometry column
 
