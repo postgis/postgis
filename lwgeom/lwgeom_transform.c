@@ -116,7 +116,7 @@ static void PROJ4SRSCacheInit(MemoryContext context);
 static void PROJ4SRSCacheDelete(MemoryContext context);
 static void PROJ4SRSCacheReset(MemoryContext context);
 static bool PROJ4SRSCacheIsEmpty(MemoryContext context);
-static void PROJ4SRSCacheStats(MemoryContext context);
+static void PROJ4SRSCacheStats(MemoryContext context, int level);
 #ifdef MEMORY_CONTEXT_CHECKING
 static void PROJ4SRSCacheCheck(MemoryContext context);
 #endif
@@ -188,7 +188,7 @@ PROJ4SRSCacheIsEmpty(MemoryContext context)
 }
 
 static void
-PROJ4SRSCacheStats(MemoryContext context)
+PROJ4SRSCacheStats(MemoryContext context, int level)
 {
 	/*
 	 * Simple stats display function - we must supply a function since this call is mandatory according to tgl
