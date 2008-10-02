@@ -2458,6 +2458,15 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 	patt =  DatumGetCString(DirectFunctionCall1(textout,
                         PointerGetDatum(PG_GETARG_DATUM(2))));
 
+	/*
+	** Need to make sure 't' and 'f' are upper-case before handing to GEOS 
+	*/
+	for( i = 0; i < strlen(patt); i++ ) {
+		if( patt[i] == 't' ) patt[i] = 'T';
+		if( patt[i] == 'f' ) patt[i] = 'F';
+	}
+
+
 #ifdef PROFILE
 	profstart(PROF_GRUN);
 #endif
