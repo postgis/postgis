@@ -217,7 +217,7 @@ void freeTree(RTREE_NODE *root)
 void clearCache(RTREE_POLY_CACHE *cache)
 {
 	int i;
-	LWDEBUGF(2, "freeCache called for %p", cache);
+	LWDEBUGF(2, "clearCache called for %p", cache);
 	for(i = 0; i < cache->ringCount; i++)
 	{ 
 		freeTree(cache->ringIndices[i]);
