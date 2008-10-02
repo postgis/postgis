@@ -1082,6 +1082,12 @@ SELECT ST_GeomFromText('MULTIPOLYGON(((-71.1031880899493 42.3152774590236,
             might want to use a subselect to order points before feeding them
             to  the aggregate version of this function.</para>
 			
+		<!-- Optionally mention 3d support -->	
+		<para><inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+		  </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
 		</refsection>
 		
 		<refsection>
@@ -1100,16 +1106,25 @@ SELECT gps.gps_track, ST_MakeLine(gps.the_geom) As newgeom
 			<title>Examples: Non-Spatial Aggregate version</title>
 			
 			<para>First example is a simple one off line string composed of 2 points.  The second formulates
-				line strings from 2 points a user draws</para>
+				line strings from 2 points a user draws.  The third is a one-off that joins 2 3d points to create a line in 3d space.</para>
 			<programlisting>
 SELECT ST_AsText(ST_MakeLine(ST_MakePoint(1,2), ST_MakePoint(3,4)));
+      st_astext
+---------------------
+ LINESTRING(1 2,3 4)
+
 SELECT userpoints.id, ST_MakeLine(startpoint, endpoint) As drawn_line
 	FROM userpoints ;
+	
+SELECT ST_AsEWKT(ST_MakeLine(ST_MakePoint(1,2,3), ST_MakePoint(3,4,5)));
+        st_asewkt
+-------------------------
+ LINESTRING(1 2 3,3 4 5)
 			</programlisting>
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_GeomFromText" />, <xref linkend="ST_MakePoint" /></para>
+			<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_AsText" />, <xref linkend="ST_GeomFromText" />, <xref linkend="ST_MakePoint" /></para>
 		</refsection>
 	</refentry>	
 	<refentry id="ST_MakePoint">
@@ -1153,6 +1168,13 @@ SELECT userpoints.id, ST_MakeLine(startpoint, endpoint) As drawn_line
 			OGC compliant is generally faster and more precise than ST_GeomFromText and ST_PointFromText.  It is also easier
 			to use if you have raw coordinates rather than WKT.</para>
 			<note><para>Note x is longitude and y is latitude</para></note>
+			
+			<!-- Optionally mention 3d support -->	
+			<para><inlinemediaobject>
+				<imageobject>
+				  <imagedata fileref="images/check.png" />
+				</imageobject>
+			  </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
 		</refsection>
 		
 		<refsection>
@@ -2640,6 +2662,12 @@ CREATE INDEX idx_the_geom_26986_parcels
 			<note>
 			  <para>ST_AsEWKB is the reverse of ST_GeomFromEWKB.  Use ST_GeomFromEWKB to convert to a postgis geometry from ST_AsEWKB representation.</para>
 			</note>
+			<!-- Optionally mention 3d support -->	
+			<para><inlinemediaobject>
+				<imageobject>
+				  <imagedata fileref="images/check.png" />
+				</imageobject>
+			  </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
 		  </refsection>
 		
 		
@@ -2707,6 +2735,12 @@ CREATE INDEX idx_the_geom_26986_parcels
 			<note>
 			  <para>ST_AsEWKT is the reverse of <xref linkend="ST_GeomFromEWKT" />.  Use <xref linkend="ST_GeomFromEWKT" /> to convert to a postgis geometry from ST_AsEWKT representation.</para>
 			</note>
+			<!-- Optionally mention 3d support -->	
+			<para><inlinemediaobject>
+				<imageobject>
+				  <imagedata fileref="images/check.png" />
+				</imageobject>
+			  </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
 		  </refsection>
 		
 		
@@ -4836,6 +4870,12 @@ FROM (SELECT ST_Buffer(ST_MakeLine(ST_MakePoint(21, 22),ST_MakePoint(-19, -18)),
             returning a Geometry Collection when collecting MULTI geometries,
             one can use the below trick that utilizes <xref linkend="ST_Dump" /> to expand the
             MULTIs out to singles and then regroup them.</para></note>
+		<!-- Optionally mention 3d support -->	
+		<para><inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+		  </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
 	  </refsection>
 	
 	  <refsection>
@@ -4857,12 +4897,22 @@ st_astext
 ----------
 MULTIPOINT(1 2,-2 3)
 
+--Collect 2 d points
 SELECT ST_AsText(ST_Collect(ST_GeomFromText('POINT(1 2)'),
 		ST_GeomFromText('POINT(1 2)') ) );
 	
 st_astext
 ----------
-MULTIPOINT(1 2,1 2)</programlisting>
+MULTIPOINT(1 2,1 2)
+
+--Collect 3d points
+SELECT ST_AsEWKT(ST_Collect(ST_GeomFromEWKT('POINT(1 2 3)'),
+		ST_GeomFromEWKT('POINT(1 2 4)') ) );
+	
+        st_asewkt
+-------------------------
+ MULTIPOINT(1 2 3,1 2 4)
+</programlisting>
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>

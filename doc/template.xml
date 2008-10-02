@@ -52,7 +52,15 @@
         </imageobject>
       </inlinemediaobject> This method implements the SQL/MM specification:
     SQL-MM 3: 5.1.23</para>
+	
+	<!-- Optionally mention 3d support -->
+    <para><inlinemediaobject>
+        <imageobject>
+          <imagedata fileref="images/check.png" />
+        </imageobject>
+      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
   </refsection>
+  
 
   <refsection>
     <title>Examples</title>

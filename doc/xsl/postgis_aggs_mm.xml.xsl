@@ -52,12 +52,40 @@
 						<xsl:value-of select="@id" />
 					</xsl:variable>
 				
-			<!-- For each section if there is not that it implements SQL/MM catalog it -->
+			<!-- For each section if there is note that it implements SQL/MM catalog it -->
 						<xsl:for-each select="refsection">
 							<xsl:for-each select="para">
 								<xsl:choose>
 									<xsl:when test="contains(.,'implements the SQL/MM')">
 										<listitem><para><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="$comment" /> <xsl:value-of select="." /></para></listitem>
+									</xsl:when>
+								</xsl:choose>
+							</xsl:for-each>
+						</xsl:for-each>
+				</xsl:for-each>
+				</itemizedlist>
+		</sect1>
+		
+		<sect1>
+			<title>PostGIS Functions that support 3D</title>
+			<para>The functions given below are PostGIS functions that do not throw away the Z-Index.</para>
+				<itemizedlist>
+			<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
+				<xsl:for-each select='sect1/refentry'>
+					<xsl:sort select="@id"/>
+					<xsl:variable name='comment'>
+						<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
+					</xsl:variable>
+					<xsl:variable name="refid">
+						<xsl:value-of select="@id" />
+					</xsl:variable>
+				
+			<!-- For each section if there is note that it supports 3d catalog it -->
+						<xsl:for-each select="refsection">
+							<xsl:for-each select="para">
+								<xsl:choose>
+									<xsl:when test="contains(.,'This function supports 3d')">
+										<listitem><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="$comment" /></listitem>
 									</xsl:when>
 								</xsl:choose>
 							</xsl:for-each>
