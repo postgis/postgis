@@ -2427,6 +2427,7 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 	char *patt;
 	bool result;
 	GEOSGeom g1,g2;
+	int i;
 
 #ifdef PROFILE
 	profstart(PROF_QRUN);
