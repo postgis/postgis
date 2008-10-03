@@ -3168,7 +3168,9 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
+	/* TODO: serialized_lwgeom_to_ewkt doesn't return string, this needs fixing
 	POSTGIS_DEBUGF(2, "GEOSnoop: IN: %s", serialized_lwgeom_to_ewkt(SERIALIZED_FORM(geom), PARSER_CHECK_NONE));
+	*/
 
 	geosgeom = POSTGIS2GEOS(geom);
 	if ( ! geosgeom ) PG_RETURN_NULL();
@@ -3181,8 +3183,10 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 	result = GEOS2POSTGIS(geosgeom, TYPE_HASZ(geom->type));
 	GEOSGeom_destroy(geosgeom);
 
+	/* TODO: serialized_lwgeom_to_ewkt doesn't return string, this needs fixing
 	POSTGIS_DEBUGF(4, "GEOSnoop: OUT: %s", serialized_lwgeom_to_ewkt(SERIALIZED_FORM(result), PARSER_CHECK_NONE));
-
+	*/
+	
 	PG_FREE_IF_COPY(geom, 0);
 
 	PG_RETURN_POINTER(result);
@@ -3636,7 +3640,7 @@ PreparedCacheDelete(MemoryContext context)
 	if (!pghe)
 		elog(ERROR, "PreparedCacheDelete: Trying to delete non-existant hash entry object with MemoryContext key (%p)", (void *)context);
 
-	LWDEBUGF(3, "deleting geom object (%p) and prepared geom object (%p) with MemoryContext key (%p)", pghe.geom, pghe.prepared_geom, context);
+	LWDEBUGF(3, "deleting geom object (%p) and prepared geom object (%p) with MemoryContext key (%p)", pghe->geom, pghe->prepared_geom, context);
 
 	/* Free them */
 	if( pghe->prepared_geom )

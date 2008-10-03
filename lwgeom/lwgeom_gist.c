@@ -465,8 +465,10 @@ Datum LWGEOM_gist_compress(PG_FUNCTION_ARGS)
 			/* lwgeom serialized form */
 			in = (PG_LWGEOM*)PG_DETOAST_DATUM(entry->key);
 
+			/* TODO, fix this, serialized_lwgeom_to_wkt doesn't return string anymore, returns status
 			POSTGIS_DEBUGF(4, "GIST: LWGEOM_gist_compress detoasted entry->key: %s", serialized_lwgeom_to_ewkt((uchar *)in+VARHDRSZ, PARSER_CHECK_NONE));
-
+			*/
+			
 			if (in == NULL)
 			{
 				elog(ERROR, "PG_DETOAST_DATUM(<notnull>) returned NULL ??");

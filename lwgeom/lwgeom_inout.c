@@ -313,7 +313,7 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 #endif
 
 	LWDEBUGF(3, "Output size is %lu (comp: %lu)",
-		VARSIZE(lwgeom_result), (unsigned long)size);
+		VARSIZE(lwgeom_result), (unsigned long)size_result);
 
 	PG_RETURN_POINTER(lwgeom_result);
 }
