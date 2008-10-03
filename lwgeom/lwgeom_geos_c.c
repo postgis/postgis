@@ -3880,7 +3880,7 @@ GetPrepGeomCache(FunctionCallInfoData *fcinfo, PG_LWGEOM *serialized_geom1, PG_L
 		pghe->geom = 0;
 		pghe->prepared_geom = 0;
 
-		LWDEBUG(3, "GetPrepGeomCache: obj NOT in cache");
+		LWDEBUG(3, "GetPrepGeomCache: obj NOT in cache, deleting prepared geometries");
 		GEOSPreparedGeom_destroy( cache->prepared_geom );
 		GEOSGeom_destroy( cache->geom );
 		
@@ -3919,6 +3919,8 @@ Datum containsPrepared(PG_FUNCTION_ARGS)
 	errorIfGeometryCollection(geom1,geom2);
 	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
 
+	LWDEBUG(3, "containsPrepared: entered function");
+
 	/*
 	* short-circuit: if geom2 bounding box is not completely inside
 	* geom1 bounding box we can prematurely return FALSE.
@@ -3932,6 +3934,7 @@ Datum containsPrepared(PG_FUNCTION_ARGS)
 			PG_RETURN_BOOL(FALSE);
 	}
 
+	LWDEBUGF(4, "containsPrepared: calling for prep_cache with key1 = %d", key1);
 
 	prep_cache = GetPrepGeomCache( fcinfo, geom1, 0, key1, 0 );
 
@@ -3940,6 +3943,7 @@ Datum containsPrepared(PG_FUNCTION_ARGS)
 	if ( prep_cache && prep_cache->prepared_geom && prep_cache->argnum == 1 )
 	{
 		GEOSGeom g = POSTGIS2GEOS(geom2);
+		LWDEBUG(4, "containsPrepared: cache is live, running preparedcontains");
 		result = GEOSPreparedContains( prep_cache->prepared_geom, g);
 		GEOSGeom_destroy(g);
 	}
@@ -3947,6 +3951,7 @@ Datum containsPrepared(PG_FUNCTION_ARGS)
 	{
 		GEOSGeom g1 = POSTGIS2GEOS(geom1);
 		GEOSGeom g2 = POSTGIS2GEOS(geom2);
+		LWDEBUG(4, "containsPrepared: cache is not ready, running standard contains");
 		result = GEOSContains( g1, g2);
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g2);
