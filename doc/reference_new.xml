@@ -5477,7 +5477,7 @@ st_asewkt
 ---------
 GEOMETRYCOLLECTION(POINT(-2 3 1),LINESTRING(5 5 5,10 10 10),POLYGON((-7 4.2 5,-7.1 4.2 5,-7.1 4.3 5,-7 4.2 5)));
 
---3d example not mixing dimensions - polygon elevation is averaged
+--3d example not mixing dimensions
 SELECT ST_AsEWKT(st_union(the_geom))
 FROM
 (SELECT ST_GeomFromEWKT('POLYGON((-7 4.2 2,-7.1 4.2 3,-7.1 4.3 2,
