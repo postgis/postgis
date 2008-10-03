@@ -5426,6 +5426,14 @@ geomtextrep
 		SQL-MM 3: 5.1.19</para>
 		
 		<note><para>Aggregate version is not explicitly defined in OGC SPEC.</para></note>
+		
+		<!-- Optionally mention 3d support -->
+		<para><inlinemediaobject>
+        <imageobject>
+          <imagedata fileref="images/check.png" />
+        </imageobject>
+		</inlinemediaobject> This function supports 3d and will not drop the z-index, but sometimes does something goofy with
+			the z-index (elevation) when polygons are involved.</para>
 	  </refsection>
 	
 	  <refsection>
@@ -5452,6 +5460,41 @@ SELECT ST_AsText(ST_Union(ST_GeomFromText('POINT(1 2)'),
 st_astext
 ----------		
 POINT(1 2)
+
+--3d example - sort of supports 3d (and with mixed dimensions!)
+SELECT ST_AsEWKT(st_union(the_geom))
+FROM
+(SELECT ST_GeomFromEWKT('POLYGON((-7 4.2,-7.1 4.2,-7.1 4.3,
+-7 4.2))') as the_geom
+UNION ALL
+SELECT ST_GeomFromEWKT('POINT(5 5 5)') as the_geom
+UNION ALL
+	SELECT ST_GeomFromEWKT('POINT(-2 3 1)') as the_geom
+UNION ALL
+SELECT ST_GeomFromEWKT('LINESTRING(5 5 5, 10 10 10)') as the_geom ) as foo;
+
+st_asewkt
+---------
+GEOMETRYCOLLECTION(POINT(-2 3 1),LINESTRING(5 5 5,10 10 10),POLYGON((-7 4.2 5,-7.1 4.2 5,-7.1 4.3 5,-7 4.2 5)));
+
+--3d example not mixing dimensions - polygon elevation is averaged
+SELECT ST_AsEWKT(st_union(the_geom))
+FROM
+(SELECT ST_GeomFromEWKT('POLYGON((-7 4.2 2,-7.1 4.2 3,-7.1 4.3 2,
+-7 4.2 2))') as the_geom
+UNION ALL
+SELECT ST_GeomFromEWKT('POINT(5 5 5)') as the_geom
+UNION ALL
+	SELECT ST_GeomFromEWKT('POINT(-2 3 1)') as the_geom
+UNION ALL
+SELECT ST_GeomFromEWKT('LINESTRING(5 5 5, 10 10 10)') as the_geom ) as foo;
+
+st_asewkt
+---------
+GEOMETRYCOLLECTION(POINT(-2 3 1),LINESTRING(5 5 5,10 10 10),POLYGON((-7 4.2 2,-7.1 4.2 3,-7.1 4.3 2,-7 4.2 2)))
+
+
+
 			  </programlisting>
 	  </refsection>
 	  <refsection>
