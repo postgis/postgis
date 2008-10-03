@@ -700,8 +700,8 @@ Check constraints:
         constraints and reference in geometry_columns. Note: uses
         current_schema() on schema-aware pgsql installations if schema is not
         provided.</para>
-			<!-- Optionally mention 3d support -->
-    <para><inlinemediaobject>
+		<!-- Optionally mention 3d support -->
+		<para><inlinemediaobject>
         <imageobject>
           <imagedata fileref="images/check.png" />
         </imageobject>
@@ -1830,6 +1830,13 @@ NOTICE:  Self-intersection at or near point 0 0
 			
 			<para>Returns the coordinate dimension of the geometry.  PostGIS supports 2 -  (x,y) , 
 			3 -  (x,y,z) or 2D with measure - x,y,m, and 4 - 3D with measure space x,y,z,m</para>
+			
+			<!-- Optionally mention 3d support -->
+			<para><inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+		  </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
 		</refsection>
 		
 		<refsection>
@@ -1869,12 +1876,23 @@ NOTICE:  Self-intersection at or near point 0 0
 			<title>Description</title>
 			
 			<para>Return the number of points in a geometry.  Works for all geometries.</para>
+						<!-- Optionally mention 3d support -->
+			<para><inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+		  </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
 		</refsection>
 		
 		<refsection>
 			<title>Examples</title>
 			
 			<programlisting>SELECT ST_NPoints(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'));
+			--result
+			4
+			
+			--Polygon in 3d space
+			SELECT ST_NPoints(ST_GeomFromEWKT('LINESTRING(77.29 29.07 1,77.42 29.26 0,77.27 29.31 -1,77.29 29.07 3)'))
 			--result
 			4
 			</programlisting>
@@ -2104,22 +2122,40 @@ FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS the_geom) AS foo
           </imageobject>
         </inlinemediaobject> This method implements the SQL/MM specification:
       SQL-MM 3: 7.1.3</para>
+	  
+		<!-- Optionally mention 3d support -->	
+		<para>
+			<inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+			</inlinemediaobject> This function supports 3d and will not drop the z-index.
+		</para>
     </refsection>
   
     <refsection>
       <title>Examples</title>
   
-      <programlisting>postgis=# SELECT ST_AsText(ST_StartPoint('LINESTRING(0 1, 0 2)'::geometry));
+      <programlisting>SELECT ST_AsText(ST_StartPoint('LINESTRING(0 1, 0 2)'::geometry));
  st_astext
 ------------
  POINT(0 1)
 (1 row)
 
-postgis=# SELECT ST_StartPoint('POINT(0 1)'::geometry) IS NULL AS is_null;
+SELECT ST_StartPoint('POINT(0 1)'::geometry) IS NULL AS is_null;
   is_null
 ----------
  t
-(1 row)</programlisting>
+(1 row)
+
+--3d line
+SELECT ST_AsEWKT(ST_StartPoint('LINESTRING(0 1 1, 0 2 2)'::geometry));
+ st_asewkt
+------------
+ POINT(0 1 1)
+(1 row)
+
+</programlisting>
     </refsection>
   
     <refsection>
@@ -2151,6 +2187,14 @@ postgis=# SELECT ST_StartPoint('POINT(0 1)'::geometry) IS NULL AS is_null;
         <title>Description</title>
     
         <para>Returns a text summary of the contents of the geometry.</para>
+		<!-- Optionally mention 3d support -->	
+		<para>
+			<inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+			</inlinemediaobject> This function supports 3d and will not drop the z-index.
+		</para>
 
       </refsection>
     
@@ -2166,6 +2210,19 @@ postgis=# SELECT ST_StartPoint('POINT(0 1)'::geometry) IS NULL AS is_null;
 Line[B] with 2 points : Polygon[B] with 1 rings
                       :    ring 0 has 5 points
                       :
+					  
+--3d polygon
+SELECT ST_Summary(ST_GeomFromEWKT('LINESTRING(0 0 1, 1 1 1)')) As good_line,
+	ST_Summary(ST_GeomFromEWKT('POLYGON((0 0 1, 1 1 2, 1 2 3, 1 1 1, 0 0 1))')) As poly
+	
+--results
+      good_line       |        poly
+----------------------+-------------------------
+                      |
+Line[ZB] with 2 points : Polygon[ZB] with 1 rings
+                      :    ring 0 has 5 points
+                      :
+					  
 </programlisting>
       </refsection>
     
@@ -2211,6 +2268,14 @@ Line[B] with 2 points : Polygon[B] with 1 rings
 				(0-based index). Third parameter can be omitted or set to -1 for
 				appending.</para>
 			<para>Availability: 1.1.0</para>
+			<!-- Optionally mention 3d support -->	
+			<para>
+				<inlinemediaobject>
+				<imageobject>
+				  <imagedata fileref="images/check.png" />
+				</imageobject>
+				</inlinemediaobject> This function supports 3d and will not drop the z-index.
+			</para>
 		  </refsection>
 		
 		  <refsection>
@@ -2223,6 +2288,14 @@ Line[B] with 2 points : Polygon[B] with 1 rings
 		SET the_geom = ST_AddPoint(the_geom, ST_StartPoint(the_geom))
 		FROM sometable
 		WHERE ST_IsClosed(the_geom) = false;
+		
+		--Adding point to a 3-d line
+		SELECT ST_AsEWKT(ST_AddPoint(ST_GeomFromEWKT('LINESTRING(0 0 1, 1 1 1)'), ST_MakePoint(1, 2, 3)));
+		
+		--result
+		st_asewkt
+		----------
+		LINESTRING(0 0 1,1 1 1,1 2 3)
 			</programlisting>
 		  </refsection>
 		  <refsection>
