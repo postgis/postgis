@@ -4153,13 +4153,13 @@ Datum intersectsPrepared(PG_FUNCTION_ARGS)
 		if ( prep_cache->argnum == 1 )
 		{
 			GEOSGeom g = POSTGIS2GEOS(geom2);
-			result = GEOSPreparedCovers( prep_cache->prepared_geom, g);
+			result = GEOSPreparedIntersects( prep_cache->prepared_geom, g);
 			GEOSGeom_destroy(g);
 		}
 		else
 		{
 			GEOSGeom g = POSTGIS2GEOS(geom1);
-			result = GEOSPreparedCovers( prep_cache->prepared_geom, g);
+			result = GEOSPreparedIntersects( prep_cache->prepared_geom, g);
 			GEOSGeom_destroy(g);
 		}
 	}
