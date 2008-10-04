@@ -3559,6 +3559,7 @@ Datum intersectsPrepared(PG_FUNCTION_ARGS);
 ** PreparedGeometry have to be cached, because the PreparedGeometry
 ** contains a reference to the geometry.
 */
+#ifdef PREPARED_GEOM
 typedef struct
 {
 	int32					key1;
@@ -3793,7 +3794,6 @@ DeletePrepGeomHashEntry(MemoryContext mcxt)
 ** cycling keys don't cause too much preparing.
 **
 */
-#ifdef PREPARED_GEOM
 PrepGeomCache* 
 GetPrepGeomCache(FunctionCallInfoData *fcinfo, PG_LWGEOM *serialized_geom1, PG_LWGEOM *serialized_geom2, int32 key1, int32 key2)
 {
