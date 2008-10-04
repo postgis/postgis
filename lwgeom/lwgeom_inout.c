@@ -514,7 +514,11 @@ Datum LWGEOM_recv(PG_FUNCTION_ARGS)
 {
 	StringInfo buf = (StringInfo) PG_GETARG_POINTER(0);
         bytea *wkb;
-	PG_LWGEOM *result;
+	PG_LWGEOM *lwgeom_result;
+#if POSTGIS_DEBUG_LEVEL > 0
+	int result;
+	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
+#endif
 
 	POSTGIS_DEBUG(2, "LWGEOM_recv start");
 
@@ -526,19 +530,22 @@ Datum LWGEOM_recv(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUG(3, "LWGEOM_recv calling LWGEOMFromWKB");
 
 	/* Call LWGEOM_from_bytea function... */
-	result = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall1(
+	lwgeom_result = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall1(
 		LWGEOMFromWKB, PointerGetDatum(wkb)));
 
 	POSTGIS_DEBUG(3, "LWGEOM_recv advancing StringInfo buffer");
 
-	POSTGIS_DEBUGF(3, "LWGEOM_from_bytea returned %s", serialized_lwgeom_to_hexwkb(SERIALIZED_FORM(result), PARSER_CHECK_NONE, -1, NULL));
+#if POSTGIS_DEBUG_LEVEL > 0
+	result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, SERIALIZED_FORM(lwgeom_result), PARSER_CHECK_NONE, -1);
+	POSTGIS_DEBUGF(3, "LWGEOM_from_bytea returned %s", lwg_unparser_result.wkoutput);
+#endif
 
 	/* Set cursor to the end of buffer (so the backend is happy) */
 	buf->cursor = buf->len;
 
 	POSTGIS_DEBUG(3, "LWGEOM_recv returning");
 
-        PG_RETURN_POINTER(result);
+        PG_RETURN_POINTER(lwgeom_result);
 }
 
 PG_FUNCTION_INFO_V1(LWGEOM_send);

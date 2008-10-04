@@ -3162,15 +3162,20 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom;
 	GEOSGeom geosgeom;
-	PG_LWGEOM *result;
+	PG_LWGEOM *lwgeom_result;
+#if POSTGIS_DEBUG_LEVEL > 0
+	int result; 
+	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
+#endif
 
 	initGEOS(lwnotice, lwnotice);
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	/* TODO: serialized_lwgeom_to_ewkt doesn't return string, this needs fixing
-	POSTGIS_DEBUGF(2, "GEOSnoop: IN: %s", serialized_lwgeom_to_ewkt(SERIALIZED_FORM(geom), PARSER_CHECK_NONE));
-	*/
+#if POSTGIS_DEBUG_LEVEL > 0
+	result = serialized_lwgeom_to_ewkt(&lwg_unparser_result, SERIALIZED_FORM(geom), PARSER_CHECK_NONE);
+	POSTGIS_DEBUGF(2, "GEOSnoop: IN: %s", lwg_unparser_result.wkoutput);
+#endif
 
 	geosgeom = POSTGIS2GEOS(geom);
 	if ( ! geosgeom ) PG_RETURN_NULL();
@@ -3180,16 +3185,17 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 	profstop(PROF_GRUN);
 #endif
 
-	result = GEOS2POSTGIS(geosgeom, TYPE_HASZ(geom->type));
+	lwgeom_result = GEOS2POSTGIS(geosgeom, TYPE_HASZ(geom->type));
 	GEOSGeom_destroy(geosgeom);
 
-	/* TODO: serialized_lwgeom_to_ewkt doesn't return string, this needs fixing
-	POSTGIS_DEBUGF(4, "GEOSnoop: OUT: %s", serialized_lwgeom_to_ewkt(SERIALIZED_FORM(result), PARSER_CHECK_NONE));
-	*/
+#if POSTGIS_DEBUG_LEVEL > 0
+	result = serialized_lwgeom_to_ewkt(&lwg_unparser_result, SERIALIZED_FORM(lwgeom_result), PARSER_CHECK_NONE);
+	POSTGIS_DEBUGF(4, "GEOSnoop: OUT: %s", lwg_unparser_result.wkoutput);
+#endif
 	
 	PG_FREE_IF_COPY(geom, 0);
 
-	PG_RETURN_POINTER(result);
+	PG_RETURN_POINTER(lwgeom_result);
 }
 
 PG_FUNCTION_INFO_V1(polygonize_garray);

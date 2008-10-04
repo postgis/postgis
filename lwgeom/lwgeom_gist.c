@@ -450,6 +450,10 @@ Datum LWGEOM_gist_compress(PG_FUNCTION_ARGS)
 
 	PG_LWGEOM *in; /* lwgeom serialized */
 	BOX2DFLOAT4 *rr;
+#if POSTGIS_DEBUG_LEVEL > 0
+	int result;
+	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
+#endif
 
 	POSTGIS_DEBUG(2, "GIST: LWGEOM_gist_compress called");
 
@@ -465,10 +469,11 @@ Datum LWGEOM_gist_compress(PG_FUNCTION_ARGS)
 			/* lwgeom serialized form */
 			in = (PG_LWGEOM*)PG_DETOAST_DATUM(entry->key);
 
-			/* TODO, fix this, serialized_lwgeom_to_wkt doesn't return string anymore, returns status
-			POSTGIS_DEBUGF(4, "GIST: LWGEOM_gist_compress detoasted entry->key: %s", serialized_lwgeom_to_ewkt((uchar *)in+VARHDRSZ, PARSER_CHECK_NONE));
-			*/
-			
+#if POSTGIS_DEBUG_LEVEL > 0
+			result = serialized_lwgeom_to_ewkt(&lwg_unparser_result, (uchar *)in+VARHDRSZ, PARSER_CHECK_NONE);
+			POSTGIS_DEBUGF(4, "GIST: LWGEOM_gist_compress detoasted entry->key: %s", lwg_unparser_result.wkoutput);
+#endif		
+	
 			if (in == NULL)
 			{
 				elog(ERROR, "PG_DETOAST_DATUM(<notnull>) returned NULL ??");
