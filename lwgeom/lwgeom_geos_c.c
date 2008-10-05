@@ -3615,100 +3615,403 @@ Datum LWGEOM_buildarea(PG_FUNCTION_ARGS)
 
 }
 
+/*********************************************************************************
+**
+**  PreparedGeometry implementations that cache intermediate indexed versions
+**  of geometry in a special MemoryContext for re-used by future function
+**  invocations.
+**
+**  By creating a memory context to hold the GEOS PreparedGeometry and Geometry
+**  and making it a child of the fmgr memory context, we can get the memory held
+**  by the GEOS objects released when the memory context delete callback is
+**  invoked by the parent context.
+**
+*********************************************************************************/
 
+#include "utils/memutils.h"
+#include "executor/spi.h"
+#include "access/hash.h"
+#include "utils/hsearch.h"
+
+/*
+** GEOS prepared geometry is only available from GEOS 3.1 onwards
+*/
+#if GEOS_VERNUM >= 31
+#define PREPARED_GEOM 1
+#warning COMPILING PREPARED GEOMETRY
+#endif
+
+/* Prepared geometry function prototypes */
 Datum containsPrepared(PG_FUNCTION_ARGS);
 Datum containsProperlyPrepared(PG_FUNCTION_ARGS);
 Datum coversPrepared(PG_FUNCTION_ARGS);
 Datum intersectsPrepared(PG_FUNCTION_ARGS);
 
-/*
- * GEOS prepared geometry is only available from GEOS 3.1 onwards
- */
-#if GEOS_VERNUM >= 31
-#define PREPARED_GEOM 1
-#endif
-
-
+/* 
+** Cache structure. Keys are unique for a unique geometry, usually the row
+** primary key is passed in. This avoid the need to do a memcmp to test
+** for geometry equality at each function invocation. The argnum gives
+** the number of function arguments we are caching. Intersects requires that
+** both arguments be checked for cacheability, while Contains only requires
+** that the containing argument be checked. Both the Geometry and the 
+** PreparedGeometry have to be cached, because the PreparedGeometry
+** contains a reference to the geometry.
+*/
 #ifdef PREPARED_GEOM
-
 typedef struct
 {
-	int32					key;
-	GEOSPreparedGeometry * 	prepared_geom;
-} PREPARED_GEOM_CACHE;
+	int32					key1;
+	int32					key2;
+	int32                   argnum;
+	const GEOSPreparedGeometry*   prepared_geom;
+	const GEOSGeometry*			geom;
+	MemoryContext			context;
+} PrepGeomCache;
 
+/*
+** Backend prepared hash table
+**
+** The memory context call-backs use a MemoryContext as the parameter
+** so we need to map that over to actual references to GEOS objects to 
+** delete.
+**
+** This hash table stores a key/value pair of MemoryContext/Geom* objects.
+*/
+static HTAB* PrepGeomHash = NULL;
 
-/* 
- * get cached prepared geometry for geom1
- * only geom1 is potentially prepared as only
- * the first arg of the prepared predicates CAN be prepared
- * briefly, the following does:
- *
- * get cache
- * if cache not exist
- *   create cache 
- *   key into cache
- *
- * else if key matches cached key
- *    if cached prepared not exist
- *        geom1 prepared into cache
- *    
- * else
- *   key into cache
- *   clear prepared cache
- */
-PREPARED_GEOM_CACHE *
-get_prepared_geometry_cache( 
-	PREPARED_GEOM_CACHE * 	cache, 
-	uchar * 				serialized_geom,
-	int32					key )
+#define PREPARED_BACKEND_HASH_SIZE	32		
+
+typedef struct 
 {
-	GEOSGeom g;
+	MemoryContext context;
+	const GEOSPreparedGeometry* prepared_geom;
+	const GEOSGeometry* geom;
+} PrepGeomHashEntry;
 
-	if ( !cache )
+/* Utility function to pull or prepare the current cache */
+PrepGeomCache *GetPrepGeomCache(FunctionCallInfoData *fcinfo, PG_LWGEOM *serialized_geom1, PG_LWGEOM *serialized_geom2, int32 key1, int32 key2);
+
+/* Memory context hash table function prototypes */
+uint32 mcxt_ptr_hasha(const void *key, Size keysize);
+static HTAB* CreatePrepGeomHash(void);
+static void AddPrepGeomHashEntry(PrepGeomHashEntry pghe);
+static PrepGeomHashEntry *GetPrepGeomHashEntry(MemoryContext mcxt);
+static void DeletePrepGeomHashEntry(MemoryContext mcxt);
+
+
+/* Memory context cache function prototypes */
+static void PreparedCacheInit(MemoryContext context);
+static void PreparedCacheReset(MemoryContext context);
+static void PreparedCacheDelete(MemoryContext context);
+static bool PreparedCacheIsEmpty(MemoryContext context);
+static void PreparedCacheStats(MemoryContext context, int level);
+#ifdef MEMORY_CONTEXT_CHECKING
+static void PreparedCacheCheck(MemoryContext context);
+#endif
+
+/* Memory context definition must match the current version of PostgreSQL */
+static MemoryContextMethods PreparedCacheContextMethods = {
+	NULL,
+	NULL,
+	NULL,
+	PreparedCacheInit,
+	PreparedCacheReset,
+	PreparedCacheDelete,
+	NULL,
+	PreparedCacheIsEmpty,
+	PreparedCacheStats
+#ifdef MEMORY_CONTEXT_CHECKING
+	, PreparedCacheCheck
+#endif
+};
+
+static void
+PreparedCacheInit(MemoryContext context)
+{
+	/*
+	 * Do nothing as the cache is initialised when the transform()
+	 * function is first called
+	 */
+}
+
+static void
+PreparedCacheDelete(MemoryContext context)
+{
+	PrepGeomHashEntry* pghe;
+
+	/* Lookup the hash entry pointer in the global hash table so we can free it */
+	pghe = GetPrepGeomHashEntry(context);
+
+	if (!pghe)
+		elog(ERROR, "PreparedCacheDelete: Trying to delete non-existant hash entry object with MemoryContext key (%p)", (void *)context);
+#ifdef PGIS_DEBUG
+	lwnotice("deleting geom object (%p) and prepared geom object (%p) with MemoryContext key (%p)", pghe->geom, pghe->prepared_geom, context);
+#endif
+	/* Free them */
+	if( pghe->prepared_geom )
+		GEOSPreparedGeom_destroy( pghe->prepared_geom );
+	if( pghe->geom )
+		GEOSGeom_destroy( pghe->geom );
+
+	/* Remove the hash entry as it is no longer needed */
+	DeletePrepGeomHashEntry(context);
+}
+
+static void
+PreparedCacheReset(MemoryContext context)
+{
+	/*
+	 * Do nothing, but we must supply a function since this call is mandatory according to tgl
+	 * (see postgis-devel archives July 2007)
+	 */
+}
+
+static bool
+PreparedCacheIsEmpty(MemoryContext context)
+{
+	/*
+	 * Always return false since this call is mandatory according to tgl
+	 * (see postgis-devel archives July 2007)
+	 */
+	return FALSE;
+}
+
+static void
+PreparedCacheStats(MemoryContext context, int level)
+{
+	/*
+	 * Simple stats display function - we must supply a function since this call is mandatory according to tgl
+	 * (see postgis-devel archives July 2007)
+	 */
+
+	fprintf(stderr, "%s: Prepared context\n", context->name);
+}
+
+#ifdef MEMORY_CONTEXT_CHECKING
+static void
+PreparedCacheCheck(MemoryContext context)
+{
+	/*
+	 * Do nothing - stub required for when PostgreSQL is compiled
+	 * with MEMORY_CONTEXT_CHECKING defined
+	 */
+}
+#endif
+
+/* TODO: put this in common are for both transform and prepared
+** mcxt_ptr_hash
+** Build a key from a pointer and a size value.
+*/
+uint32 
+mcxt_ptr_hasha(const void *key, Size keysize)
+{
+	uint32 hashval;
+
+	hashval = DatumGetUInt32(hash_any(key, keysize));
+
+	return hashval;
+}
+
+static HTAB*
+CreatePrepGeomHash(void)
+{
+	HASHCTL ctl;
+
+	ctl.keysize = sizeof(MemoryContext);
+	ctl.entrysize = sizeof(PrepGeomHashEntry);
+	ctl.hash = mcxt_ptr_hasha;
+
+	return hash_create("PostGIS Prepared Geometry Backend MemoryContext Hash", PREPARED_BACKEND_HASH_SIZE, &ctl, (HASH_ELEM | HASH_FUNCTION));
+}
+
+static void 
+AddPrepGeomHashEntry(PrepGeomHashEntry pghe)
+{
+	bool found;
+	void **key;
+	PrepGeomHashEntry *he;
+
+	/* The hash key is the MemoryContext pointer */
+	key = (void *)&(pghe.context);
+	
+	he = (PrepGeomHashEntry *) hash_search(PrepGeomHash, key, HASH_ENTER, &found);
+	if (!found)
 	{
-		#ifdef PGIS_DEBUG
-		lwnotice( "get_prepared_geometry_cache: creating cache: %x", cache);
-		#endif
-		
-		cache = lwalloc( sizeof( PREPARED_GEOM_CACHE ));
-		
-		cache->prepared_geom = 0;
-		cache->key = key;
-	}
-	else if ( cache->key == key )
-	{
-		if ( !cache->prepared_geom )
-		{
-			#ifdef PGIS_DEBUG
-			lwnotice("get_prepared_geometry_cache: preparing obj");
-			#endif
-			
-			g = POSTGIS2GEOS( serialized_geom);
-			cache->prepared_geom = GEOSPrepare( g);
-		}
-		else
-		{
-			#ifdef PGIS_DEBUG
-			lwnotice("get_prepared_geometry_cache: prepared obj in cache");
-			#endif
-		}
+		/* Insert the entry into the new hash element */
+		he->context = pghe.context;
+		he->geom = pghe.geom;
+		he->prepared_geom = pghe.prepared_geom;
 	}
 	else
 	{
-		#ifdef PGIS_DEBUG
-		lwnotice("get_prepared_geometry_cache: obj NOT in cache");
-		#endif
-
-		GEOSPreparedGeom_destroy( cache->prepared_geom);
-
-		cache->prepared_geom = 0;
-		cache->key = key;
+		elog(ERROR, "AddPrepGeomHashEntry: This memory context is already in use! (%p)", (void *)pghe.context);
 	}
-	
-	return cache;
 }
 
+static PrepGeomHashEntry*
+GetPrepGeomHashEntry(MemoryContext mcxt)
+{
+	void **key;
+	PrepGeomHashEntry *he;
+
+	/* The hash key is the MemoryContext pointer */
+	key = (void *)&mcxt;
+
+	/* Return the projection object from the hash */
+	he = (PrepGeomHashEntry *) hash_search(PrepGeomHash, key, HASH_FIND, NULL);
+
+	return he;
+}
+
+
+static void 
+DeletePrepGeomHashEntry(MemoryContext mcxt)
+{
+	void **key;
+	PrepGeomHashEntry *he;	
+
+	/* The hash key is the MemoryContext pointer */
+	key = (void *)&mcxt;
+
+	/* Delete the projection object from the hash */
+	he = (PrepGeomHashEntry *) hash_search(PrepGeomHash, key, HASH_REMOVE, NULL);
+
+	he->prepared_geom = NULL;
+	he->geom = NULL;
+
+	if (!he)
+		elog(ERROR, "DeletePrepGeomHashEntry: There was an error removing the geometry object from this MemoryContext (%p)", (void *)mcxt);
+}
+
+/*
+** GetPrepGeomCache
+**
+** Pull the current prepared geometry from the cache or make
+** one if there is not one available. Only prepare geometry
+** if we are seeing a key for the second time. That way rapidly 
+** cycling keys don't cause too much preparing.
+**
+*/
+PrepGeomCache* 
+GetPrepGeomCache(FunctionCallInfoData *fcinfo, PG_LWGEOM *serialized_geom1, PG_LWGEOM *serialized_geom2, int32 key1, int32 key2)
+{
+	PrepGeomCache* cache = fcinfo->flinfo->fn_extra;
+
+	if (!PrepGeomHash)
+		PrepGeomHash = CreatePrepGeomHash();
+
+	if ( cache == NULL)
+	{
+		PrepGeomHashEntry pghe;
+		MemoryContext old_context;
+	
+		old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
+		cache = palloc(sizeof(PrepGeomCache));		
+		MemoryContextSwitchTo(old_context);
+	
+		cache->prepared_geom = 0;
+		cache->geom = 0;
+		cache->argnum = 0;
+		cache->key1 = 0;
+		cache->key2 = 0;
+		cache->context = MemoryContextCreate(T_AllocSetContext, 8192,
+		                 &PreparedCacheContextMethods,
+		                 fcinfo->flinfo->fn_mcxt,
+		                 "PostGIS Prepared Geometry Context");
+#ifdef PGIS_DEBUG
+		lwnotice("GetPrepGeomCache: creating cache: %x", cache);
+#endif
+		pghe.context = cache->context;
+		pghe.geom = 0;
+		pghe.prepared_geom = 0;
+		AddPrepGeomHashEntry( pghe );
+
+		fcinfo->flinfo->fn_extra = cache;
+#ifdef PGIS_DEBUG
+		lwnotice("GetPrepGeomCache: adding context to hash: %x", cache);
+#endif
+	}
+	else if ( cache->key1 == key1 )
+	{
+		if ( !cache->prepared_geom )
+		{
+			PrepGeomHashEntry* pghe;
+			
+			GEOSGeom g = POSTGIS2GEOS( serialized_geom1 );
+			cache->geom = g;
+			cache->prepared_geom = GEOSPrepare( g );
+			cache->argnum = 1;
+#ifdef PGIS_DEBUG
+			lwnotice("GetPrepGeomCache: preparing obj in argument 1");
+#endif
+			pghe = GetPrepGeomHashEntry(cache->context);
+			pghe->geom = cache->geom;
+			pghe->prepared_geom = cache->prepared_geom;
+#ifdef PGIS_DEBUG
+			lwnotice("GetPrepGeomCache: storing references to prepared obj in argument 1");
+#endif
+
+		}
+		else
+		{
+#ifdef PGIS_DEBUG
+			lwnotice("GetPrepGeomCache: prepared obj 1 in cache");
+#endif
+		}
+	}
+	else if ( key2 && cache->key2 == key2 )
+	{
+		if ( !cache->prepared_geom )
+		{
+			PrepGeomHashEntry* pghe;
+
+			GEOSGeom g = POSTGIS2GEOS( serialized_geom2 );
+			cache->geom = g;
+			cache->prepared_geom = GEOSPrepare( g );
+			cache->argnum = 2;
+#ifdef PGIS_DEBUG
+			lwnotice("GetPrepGeomCache: preparing obj in argument 2");
+#endif			
+			pghe = GetPrepGeomHashEntry(cache->context);
+			pghe->geom = cache->geom;
+			pghe->prepared_geom = cache->prepared_geom;
+#ifdef PGIS_DEBUG
+			lwnotice("GetPrepGeomCache: storing references to prepared obj in argument 2");
+#endif
+
+		}
+		else
+		{
+#ifdef PGIS_DEBUG
+			lwnotice("GetPrepGeomCache: prepared obj 2 in cache");
+#endif
+		}
+	}
+	else if ( cache->prepared_geom )
+	{
+		PrepGeomHashEntry* pghe;
+
+		pghe = GetPrepGeomHashEntry(cache->context);
+		pghe->geom = 0;
+		pghe->prepared_geom = 0;
+
+#ifdef PGIS_DEBUG
+		lwnotice("GetPrepGeomCache: obj NOT in cache, deleting prepared geometries");
+#endif
+		GEOSPreparedGeom_destroy( cache->prepared_geom );
+		GEOSGeom_destroy( cache->geom );
+		
+		cache->prepared_geom = 0;
+		cache->geom = 0;
+		cache->argnum = 0;
+
+	}
+
+	cache->key1 = key1;
+	cache->key2 = key2;
+
+	return cache;
+}
 #endif /* PREPARED_GEOM */
 
 
@@ -3717,68 +4020,63 @@ Datum containsPrepared(PG_FUNCTION_ARGS)
 {
 #ifndef PREPARED_GEOM
 	elog(ERROR,"Not implemented in this version!");
-	PG_RETURN_NULL(); /* never get here */
-
+	PG_RETURN_NULL(); 
 #else
-	PG_LWGEOM *				geom1;
-	PG_LWGEOM *				geom2;
-	GEOSGeom 				g1, g2;
-	GEOSPreparedGeometry * 	pg;
-	bool 					result;
-	BOX2DFLOAT4 			box1, box2;
-	PREPARED_GEOM_CACHE *	prep_cache;
-	MemoryContext 			old_context;
-	int32					surrogate_key;
+	PG_LWGEOM *              geom1;
+	PG_LWGEOM *              geom2;
+	bool                     result;
+	BOX2DFLOAT4              box1, box2;
+	PrepGeomCache *          prep_cache;
+	int32                    key1;
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-	
-	surrogate_key = PG_GETARG_INT32(2);
-	
+	key1 = PG_GETARG_INT32(2);
+
 	errorIfGeometryCollection(geom1,geom2);
 	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
-
+#ifdef PGIS_DEBUG
+	lwnotice("containsPrepared: entered function");
+#endif
 	/*
-	 * short-circuit: if geom2 bounding box is not completely inside
-	 * geom1 bounding box we can prematurely return FALSE.
-	 * Do the test IFF BOUNDING BOX AVAILABLE.
-	 */
+	* short-circuit: if geom2 bounding box is not completely inside
+	* geom1 bounding box we can prematurely return FALSE.
+	* Do the test IFF BOUNDING BOX AVAILABLE.
+	*/
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-		getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	                getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
-		if ( box2.xmin < box1.xmin ) PG_RETURN_BOOL(FALSE);
-		if ( box2.xmax > box1.xmax ) PG_RETURN_BOOL(FALSE);
-		if ( box2.ymin < box1.ymin ) PG_RETURN_BOOL(FALSE);
-		if ( box2.ymax > box1.ymax ) PG_RETURN_BOOL(FALSE);
+		if (( box2.xmin < box1.xmin ) || ( box2.xmax > box1.xmax ) ||
+		                ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax ))
+			PG_RETURN_BOOL(FALSE);
 	}
-	
-	old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
-	prep_cache =  fcinfo->flinfo->fn_extra;
-
-	prep_cache = get_prepared_geometry_cache( prep_cache, geom1, surrogate_key);
-
-	fcinfo->flinfo->fn_extra = prep_cache;
-	MemoryContextSwitchTo(old_context);
+#ifdef PGIS_DEBUG
+	lwnotice("containsPrepared: calling for prep_cache with key1 = %d", key1);
+#endif
+	prep_cache = GetPrepGeomCache( fcinfo, geom1, 0, key1, 0 );
 
 	initGEOS(lwnotice, lwnotice);
 
-	g2 = POSTGIS2GEOS(geom2);
-
-	if ( !prep_cache || !prep_cache->prepared_geom )
+	if ( prep_cache && prep_cache->prepared_geom && prep_cache->argnum == 1 )
 	{
-		g1 = POSTGIS2GEOS(geom1);
-
-		result = GEOSContains( g1, g2);
-		
-		GEOSGeom_destroy(g1);
+		GEOSGeom g = POSTGIS2GEOS(geom2);
+#ifdef PGIS_DEBUG
+		lwnotice("containsPrepared: cache is live, running preparedcontains");
+#endif
+		result = GEOSPreparedContains( prep_cache->prepared_geom, g);
+		GEOSGeom_destroy(g);
 	}
 	else
 	{
-		pg = prep_cache->prepared_geom;
-
-		result = GEOSPreparedContains( pg, g2);	
+		GEOSGeom g1 = POSTGIS2GEOS(geom1);
+		GEOSGeom g2 = POSTGIS2GEOS(geom2);
+#ifdef PGIS_DEBUG
+		lwnotice("containsPrepared: cache is not ready, running standard contains");
+#endif
+		result = GEOSContains( g1, g2);
+		GEOSGeom_destroy(g1);
+		GEOSGeom_destroy(g2);
 	}
-	GEOSGeom_destroy(g2);
 
 	if (result == 2)
 	{
@@ -3799,67 +4097,52 @@ Datum containsProperlyPrepared(PG_FUNCTION_ARGS)
 #ifndef PREPARED_GEOM
 	elog(ERROR,"Not implemented in this version!");
 	PG_RETURN_NULL(); /* never get here */
-
 #else
 	PG_LWGEOM *				geom1;
 	PG_LWGEOM *				geom2;
-	GEOSGeom 				g1, g2;
-	GEOSPreparedGeometry * 	pg;
 	bool 					result;
 	BOX2DFLOAT4 			box1, box2;
-	PREPARED_GEOM_CACHE *	prep_cache;
-	MemoryContext 			old_context;
-	int32					surrogate_key;
+	PrepGeomCache *	prep_cache;
+	int32					key1;
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-	
-	surrogate_key = PG_GETARG_INT32(2);
-	
+	key1 = PG_GETARG_INT32(2);
+
 	errorIfGeometryCollection(geom1,geom2);
 	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
 
 	/*
-	 * short-circuit: if geom2 bounding box is not completely inside
-	 * geom1 bounding box we can prematurely return FALSE.
-	 * Do the test IFF BOUNDING BOX AVAILABLE.
-	 */
+	* short-circuit: if geom2 bounding box is not completely inside
+	* geom1 bounding box we can prematurely return FALSE.
+	* Do the test IFF BOUNDING BOX AVAILABLE.
+	*/
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-		getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	                getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
-		if ( box2.xmin < box1.xmin ) PG_RETURN_BOOL(FALSE);
-		if ( box2.xmax > box1.xmax ) PG_RETURN_BOOL(FALSE);
-		if ( box2.ymin < box1.ymin ) PG_RETURN_BOOL(FALSE);
-		if ( box2.ymax > box1.ymax ) PG_RETURN_BOOL(FALSE);
+		if (( box2.xmin < box1.xmin ) || ( box2.xmax > box1.xmax ) ||
+		                ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax ))
+			PG_RETURN_BOOL(FALSE);
 	}
-	
-	old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
-	prep_cache =  fcinfo->flinfo->fn_extra;
-	
-	prep_cache = get_prepared_geometry_cache( prep_cache, geom1, surrogate_key);
-	
-	fcinfo->flinfo->fn_extra = prep_cache;
-	MemoryContextSwitchTo( old_context);
+
+	prep_cache = GetPrepGeomCache( fcinfo, geom1, 0, key1, 0 );
 
 	initGEOS(lwnotice, lwnotice);
-		
-	g2 = POSTGIS2GEOS(geom2);
 
-	if ( !prep_cache || !prep_cache->prepared_geom )
+	if ( prep_cache && prep_cache->prepared_geom && prep_cache->argnum == 1 )
 	{
-		g1 = POSTGIS2GEOS(geom1);
-		
-		result = GEOSRelatePattern( g1, g2, "T**FF*FF*");
-		
-		GEOSGeom_destroy(g1);
+		GEOSGeom g = POSTGIS2GEOS(geom2);
+		result = GEOSPreparedContainsProperly( prep_cache->prepared_geom, g);
+		GEOSGeom_destroy(g);
 	}
 	else
 	{
-		pg = prep_cache->prepared_geom;
-
-		result = GEOSPreparedContainsProperly( pg, g2);	
+		GEOSGeom g1 = POSTGIS2GEOS(geom1);
+		GEOSGeom g2 = POSTGIS2GEOS(geom2);
+		result = GEOSRelatePattern( g1, g2, "T**FF*FF*" );
+		GEOSGeom_destroy(g1);
+		GEOSGeom_destroy(g2);
 	}
-	GEOSGeom_destroy(g2);
 
 	if (result == 2)
 	{
@@ -3880,67 +4163,52 @@ Datum coversPrepared(PG_FUNCTION_ARGS)
 #ifndef PREPARED_GEOM
 	elog(ERROR,"Not implemented in this version!");
 	PG_RETURN_NULL(); /* never get here */
-
 #else
 	PG_LWGEOM *				geom1;
 	PG_LWGEOM *				geom2;
-	GEOSGeom 				g1, g2;
-	GEOSPreparedGeometry * 	pg;
 	bool 					result;
 	BOX2DFLOAT4 			box1, box2;
-	PREPARED_GEOM_CACHE *	prep_cache;
-	MemoryContext 			old_context;
-	int32					surrogate_key;
+	PrepGeomCache *	prep_cache;
+	int32					key1;
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-	
-	surrogate_key = PG_GETARG_INT32(2);
-	
+	key1 = PG_GETARG_INT32(2);
+
 	errorIfGeometryCollection(geom1,geom2);
 	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
 
 	/*
-	 * short-circuit: if geom2 bounding box is not completely inside
-	 * geom1 bounding box we can prematurely return FALSE.
-	 * Do the test IFF BOUNDING BOX AVAILABLE.
-	 */
+	* short-circuit: if geom2 bounding box is not completely inside
+	* geom1 bounding box we can prematurely return FALSE.
+	* Do the test IFF BOUNDING BOX AVAILABLE.
+	*/
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-		getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	                getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
-		if ( box2.xmin < box1.xmin ) PG_RETURN_BOOL(FALSE);
-		if ( box2.xmax > box1.xmax ) PG_RETURN_BOOL(FALSE);
-		if ( box2.ymin < box1.ymin ) PG_RETURN_BOOL(FALSE);
-		if ( box2.ymax > box1.ymax ) PG_RETURN_BOOL(FALSE);
+		if (( box2.xmin < box1.xmin ) || ( box2.xmax > box1.xmax ) ||
+		                ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax ))
+			PG_RETURN_BOOL(FALSE);
 	}
-	
-	old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
-	prep_cache =  fcinfo->flinfo->fn_extra;
 
-	prep_cache = get_prepared_geometry_cache( prep_cache, geom1, surrogate_key);
-
-	fcinfo->flinfo->fn_extra = prep_cache;
-	MemoryContextSwitchTo(old_context);
+	prep_cache = GetPrepGeomCache( fcinfo, geom1, 0, key1, 0 );
 
 	initGEOS(lwnotice, lwnotice);
 
-	g2 = POSTGIS2GEOS(geom2);
-
-	if ( !prep_cache || !prep_cache->prepared_geom )
+	if ( prep_cache && prep_cache->prepared_geom && prep_cache->argnum == 1 )
 	{
-		g1 = POSTGIS2GEOS(geom1);
-
-		result = GEOSRelatePattern( g1, g2, "******FF*");
-		
-		GEOSGeom_destroy(g1);
+		GEOSGeom g = POSTGIS2GEOS(geom2);
+		result = GEOSPreparedCovers( prep_cache->prepared_geom, g);
+		GEOSGeom_destroy(g);
 	}
 	else
 	{
-		pg = prep_cache->prepared_geom;
-
-		result = GEOSPreparedCovers( pg, g2);	
+		GEOSGeom g1 = POSTGIS2GEOS(geom1);
+		GEOSGeom g2 = POSTGIS2GEOS(geom2);
+		result = GEOSRelatePattern( g1, g2, "******FF*" );
+		GEOSGeom_destroy(g1);
+		GEOSGeom_destroy(g2);
 	}
-	GEOSGeom_destroy(g2);
 
 	if (result == 2)
 	{
@@ -3954,6 +4222,7 @@ Datum coversPrepared(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(result);
 #endif /* PREPARED_GEOM */
 }
+
 
 PG_FUNCTION_INFO_V1(intersectsPrepared);
 Datum intersectsPrepared(PG_FUNCTION_ARGS)
@@ -3961,67 +4230,62 @@ Datum intersectsPrepared(PG_FUNCTION_ARGS)
 #ifndef PREPARED_GEOM
 	elog(ERROR,"Not implemented in this version!");
 	PG_RETURN_NULL(); /* never get here */
-
 #else
 	PG_LWGEOM *				geom1;
 	PG_LWGEOM *				geom2;
-	GEOSGeom 				g1, g2;
-	GEOSPreparedGeometry * 	pg;
 	bool 					result;
 	BOX2DFLOAT4 			box1, box2;
-	PREPARED_GEOM_CACHE *	prep_cache;
-	MemoryContext 			old_context;
-	int32					surrogate_key;
+	PrepGeomCache *	prep_cache;
+	int32					key1, key2;
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-	
-	surrogate_key = PG_GETARG_INT32(2);
-	
+	key1 = PG_GETARG_INT32(2);
+	key2 = PG_GETARG_INT32(3);
+
 	errorIfGeometryCollection(geom1,geom2);
 	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
 
 	/*
-	 * short-circuit 1: if geom2 bounding box does not overlap
-	 * geom1 bounding box we can prematurely return FALSE.
-	 * Do the test IFF BOUNDING BOX AVAILABLE.
-	 */
+	* short-circuit 1: if geom2 bounding box does not overlap
+	* geom1 bounding box we can prematurely return FALSE.
+	* Do the test IFF BOUNDING BOX AVAILABLE.
+	*/
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-		getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	                getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
-		if ( box2.xmax < box1.xmin ) PG_RETURN_BOOL(FALSE);
-		if ( box2.xmin > box1.xmax ) PG_RETURN_BOOL(FALSE);
-		if ( box2.ymax < box1.ymin ) PG_RETURN_BOOL(FALSE);
-		if ( box2.ymin > box2.ymax ) PG_RETURN_BOOL(FALSE);
+		if (( box2.xmax < box1.xmin ) || ( box2.xmin > box1.xmax ) ||
+		                ( box2.ymax < box1.ymin ) || ( box2.ymin > box2.ymax ))
+			PG_RETURN_BOOL(FALSE);
 	}
-	
-	old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
-	prep_cache =  fcinfo->flinfo->fn_extra;
 
-	prep_cache = get_prepared_geometry_cache( prep_cache, geom1, surrogate_key);
-
-	fcinfo->flinfo->fn_extra = prep_cache;
-	MemoryContextSwitchTo(old_context);
+	prep_cache = GetPrepGeomCache( fcinfo, geom1, geom2, key1, key2 );
 
 	initGEOS(lwnotice, lwnotice);
 
-	g2 = POSTGIS2GEOS(geom2);
-
-	if ( !prep_cache || !prep_cache->prepared_geom )
+	if ( prep_cache && prep_cache->prepared_geom )
 	{
-		g1 = POSTGIS2GEOS(geom1);
-
-		result = GEOSIntersects( g1, g2);
-		
-		GEOSGeom_destroy(g1);
+		if ( prep_cache->argnum == 1 )
+		{
+			GEOSGeom g = POSTGIS2GEOS(geom2);
+			result = GEOSPreparedIntersects( prep_cache->prepared_geom, g);
+			GEOSGeom_destroy(g);
+		}
+		else
+		{
+			GEOSGeom g = POSTGIS2GEOS(geom1);
+			result = GEOSPreparedIntersects( prep_cache->prepared_geom, g);
+			GEOSGeom_destroy(g);
+		}
 	}
 	else
 	{
-		pg = prep_cache->prepared_geom;
-
-		result = GEOSPreparedIntersects( pg, g2);	
+		GEOSGeom g1 = POSTGIS2GEOS(geom1);
+		GEOSGeom g2 = POSTGIS2GEOS(geom2);
+		result = GEOSIntersects( g1, g2);
+		GEOSGeom_destroy(g1);
+		GEOSGeom_destroy(g2);
 	}
-	GEOSGeom_destroy(g2);
 
 	if (result == 2)
 	{
@@ -4035,4 +4299,3 @@ Datum intersectsPrepared(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(result);
 #endif /* PREPARED_GEOM */
 }
-
