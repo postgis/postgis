@@ -2785,25 +2785,25 @@ ptarray_from_GEOSCoordSeq(GEOSCoordSeq cs, char want3d)
 	uchar *points, *ptr;
 	POINTARRAY *ret;
 
-	LWDEBUG(2, "ptarray_fromGEOSCoordSeq called");
+	POSTGIS_DEBUG(2, "ptarray_fromGEOSCoordSeq called");
 
 	if ( ! GEOSCoordSeq_getSize(cs, &size) )
 		lwerror("Exception thrown");
 
-	LWDEBUGF(4, " GEOSCoordSeq size: %d", size);
+	POSTGIS_DEBUGF(4, " GEOSCoordSeq size: %d", size);
 
 	if ( want3d )
 	{
 		if ( ! GEOSCoordSeq_getDimensions(cs, &dims) )
 			lwerror("Exception thrown");
 
-		LWDEBUGF(4, " GEOSCoordSeq dimensions: %d", dims);
+		POSTGIS_DEBUGF(4, " GEOSCoordSeq dimensions: %d", dims);
 
 		/* forget higher dimensions (if any) */
 		if ( dims > 3 ) dims = 3;
 	}
 
-	LWDEBUGF(4, " output dimensions: %d", dims);
+	POSTGIS_DEBUGF(4, " output dimensions: %d", dims);
 
 	ptsize = sizeof(double)*dims;
 
@@ -2839,7 +2839,7 @@ GEOS2LWGEOM(GEOSGeom geom, char want3d)
 	{
 		if ( want3d )
 		{
-			LWDEBUG(3, "Geometry has no Z, won't provide one");
+			POSTGIS_DEBUG(3, "Geometry has no Z, won't provide one");
 
 			want3d = 0;
 		}
@@ -2854,7 +2854,7 @@ GEOS2LWGEOM(GEOSGeom geom, char want3d)
 		unsigned int i, ngeoms;
 
 	case GEOS_POINT:
-		LWDEBUG(4, "lwgeom_from_geometry: it's a Point");
+		POSTGIS_DEBUG(4, "lwgeom_from_geometry: it's a Point");
 
 		cs = GEOSGeom_getCoordSeq(geom);
 		pa = ptarray_from_GEOSCoordSeq(cs, want3d);
@@ -2862,14 +2862,14 @@ GEOS2LWGEOM(GEOSGeom geom, char want3d)
 
 	case GEOS_LINESTRING:
 	case GEOS_LINEARRING:
-		LWDEBUG(4, "lwgeom_from_geometry: it's a LineString or LinearRing");
+		POSTGIS_DEBUG(4, "lwgeom_from_geometry: it's a LineString or LinearRing");
 
 		cs = GEOSGeom_getCoordSeq(geom);
 		pa = ptarray_from_GEOSCoordSeq(cs, want3d);
 		return (LWGEOM *)lwline_construct(SRID, NULL, pa);
 
 	case GEOS_POLYGON:
-		LWDEBUG(4, "lwgeom_from_geometry: it's a Polygon");
+		POSTGIS_DEBUG(4, "lwgeom_from_geometry: it's a Polygon");
 
 		ngeoms = GEOSGetNumInteriorRings(geom);
 		ppaa = lwalloc(sizeof(POINTARRAY *)*(ngeoms+1));
@@ -2890,7 +2890,7 @@ GEOS2LWGEOM(GEOSGeom geom, char want3d)
 	case GEOS_MULTILINESTRING:
 	case GEOS_MULTIPOLYGON:
 	case GEOS_GEOMETRYCOLLECTION:
-		LWDEBUG(4, "lwgeom_from_geometry: it's a Collection or Multi");
+		POSTGIS_DEBUG(4, "lwgeom_from_geometry: it's a Collection or Multi");
 
 		ngeoms = GEOSGetNumGeometries(geom);
 		geoms = NULL;
@@ -2928,7 +2928,7 @@ GEOS2POSTGIS(GEOSGeom geom, char want3d)
 		return NULL;
 	}
 
-	LWDEBUGF(4, "GEOS2POSTGIS: GEOS2LWGEOM returned a %s", lwgeom_summary(lwgeom, 0));
+	POSTGIS_DEBUGF(4, "GEOS2POSTGIS: GEOS2LWGEOM returned a %s", lwgeom_summary(lwgeom, 0));
 
 	if ( is_worth_caching_lwgeom_bbox(lwgeom) )
 	{
@@ -2982,7 +2982,7 @@ POSTGIS2GEOS(PG_LWGEOM *pglwgeom)
 
 #if POSTGIS_DEBUG_LEVEL >= 4
 	wkb = GEOSGeomToWKT(geom);
-	LWDEBUGF(4, "GEOS geom: %s", wkb);
+	POSTGIS_DEBUGF(4, "GEOS geom: %s", wkb);
 #endif
 
 	return geom;
@@ -3011,7 +3011,7 @@ ptarray_to_GEOSCoordSeq(POINTARRAY *pa)
 	{
 		getPoint3dz_p(pa, i, &p);
 
-		LWDEBUGF(4, "Point: %g,%g,%g", p.x, p.y, p.z);
+		POSTGIS_DEBUGF(4, "Point: %g,%g,%g", p.x, p.y, p.z);
 
 		GEOSCoordSeq_setX(sq, i, p.x);
 		GEOSCoordSeq_setY(sq, i, p.y);
@@ -3035,17 +3035,17 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 	char *wkt;
 #endif
 
-	LWDEBUGF(4, "LWGEOM2GEOS got a %s", lwgeom_typename(type));
+	POSTGIS_DEBUGF(4, "LWGEOM2GEOS got a %s", lwgeom_typename(type));
 
 	if (has_arc(lwgeom))
 	{
-		LWDEBUG(3, "LWGEOM2GEOS_c: arced geometry found.");
+		POSTGIS_DEBUG(3, "LWGEOM2GEOS_c: arced geometry found.");
 
 		lwerror("Exception in LWGEOM2GEOS: curved geometry not supported.");
 		/*
 		tmp = lwgeom;
 		lwgeom = lwgeom_segmentize(tmp, 32);
-		LWDEBUGF(3, "LWGEOM2GEOM_c: was %p, is %p", tmp, lwgeom);
+		POSTGIS_DEBUGF(3, "LWGEOM2GEOM_c: was %p, is %p", tmp, lwgeom);
 		*/
 	}
 	type = TYPE_GETTYPE(lwgeom->type);
@@ -3125,7 +3125,7 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 
 #if POSTGIS_DEBUG_LEVEL >= 4
 	wkt = GEOSGeomToWKT(g);
-	LWDEBUGF(4, "LWGEOM2GEOS: GEOSGeom: %s", wkt);
+	POSTGIS_DEBUGF(4, "LWGEOM2GEOS: GEOSGeom: %s", wkt);
 	/*
 	if(tmp != NULL) lwgeom_release(tmp);
 	*/
@@ -3562,12 +3562,12 @@ Datum intersectsPrepared(PG_FUNCTION_ARGS);
 #ifdef PREPARED_GEOM
 typedef struct
 {
-	int32					key1;
-	int32					key2;
-	int32                   argnum;
+	int32                         key1;
+	int32                         key2;
+	int32                         argnum;
 	const GEOSPreparedGeometry*   prepared_geom;
-	const GEOSGeometry*			geom;
-	MemoryContext			context;
+	const GEOSGeometry*           geom;
+	MemoryContext                 context;
 } PrepGeomCache;
 
 /*
@@ -3647,7 +3647,7 @@ PreparedCacheDelete(MemoryContext context)
 	if (!pghe)
 		elog(ERROR, "PreparedCacheDelete: Trying to delete non-existant hash entry object with MemoryContext key (%p)", (void *)context);
 
-	LWDEBUGF(3, "deleting geom object (%p) and prepared geom object (%p) with MemoryContext key (%p)", pghe->geom, pghe->prepared_geom, context);
+	POSTGIS_DEBUGF(3, "deleting geom object (%p) and prepared geom object (%p) with MemoryContext key (%p)", pghe->geom, pghe->prepared_geom, context);
 
 	/* Free them */
 	if( pghe->prepared_geom )
@@ -3821,7 +3821,7 @@ GetPrepGeomCache(FunctionCallInfoData *fcinfo, PG_LWGEOM *serialized_geom1, PG_L
 		                 fcinfo->flinfo->fn_mcxt,
 		                 "PostGIS Prepared Geometry Context");
 
-		LWDEBUGF(3, "GetPrepGeomCache: creating cache: %x", cache);
+		POSTGIS_DEBUGF(3, "GetPrepGeomCache: creating cache: %x", cache);
 
 		pghe.context = cache->context;
 		pghe.geom = 0;
@@ -3830,7 +3830,7 @@ GetPrepGeomCache(FunctionCallInfoData *fcinfo, PG_LWGEOM *serialized_geom1, PG_L
 
 		fcinfo->flinfo->fn_extra = cache;
 
-		LWDEBUGF(3, "GetPrepGeomCache: adding context to hash: %x", cache);
+		POSTGIS_DEBUGF(3, "GetPrepGeomCache: adding context to hash: %x", cache);
 	}
 	else if ( cache->key1 == key1 )
 	{
@@ -3842,17 +3842,17 @@ GetPrepGeomCache(FunctionCallInfoData *fcinfo, PG_LWGEOM *serialized_geom1, PG_L
 			cache->geom = g;
 			cache->prepared_geom = GEOSPrepare( g );
 			cache->argnum = 1;
-			LWDEBUG(3, "GetPrepGeomCache: preparing obj in argument 1");
+			POSTGIS_DEBUG(3, "GetPrepGeomCache: preparing obj in argument 1");
 
 			pghe = GetPrepGeomHashEntry(cache->context);
 			pghe->geom = cache->geom;
 			pghe->prepared_geom = cache->prepared_geom;
-			LWDEBUG(3, "GetPrepGeomCache: storing references to prepared obj in argument 1");
+			POSTGIS_DEBUG(3, "GetPrepGeomCache: storing references to prepared obj in argument 1");
 
 		}
 		else
 		{
-			LWDEBUG(3, "GetPrepGeomCache: prepared obj 1 in cache");
+			POSTGIS_DEBUG(3, "GetPrepGeomCache: prepared obj 1 in cache");
 		}
 	}
 	else if ( key2 && cache->key2 == key2 )
@@ -3865,17 +3865,17 @@ GetPrepGeomCache(FunctionCallInfoData *fcinfo, PG_LWGEOM *serialized_geom1, PG_L
 			cache->geom = g;
 			cache->prepared_geom = GEOSPrepare( g );
 			cache->argnum = 2;
-			LWDEBUG(3, "GetPrepGeomCache: preparing obj in argument 2");
+			POSTGIS_DEBUG(3, "GetPrepGeomCache: preparing obj in argument 2");
 			
 			pghe = GetPrepGeomHashEntry(cache->context);
 			pghe->geom = cache->geom;
 			pghe->prepared_geom = cache->prepared_geom;
-			LWDEBUG(3, "GetPrepGeomCache: storing references to prepared obj in argument 2");
+			POSTGIS_DEBUG(3, "GetPrepGeomCache: storing references to prepared obj in argument 2");
 
 		}
 		else
 		{
-			LWDEBUG(3, "GetPrepGeomCache: prepared obj 2 in cache");
+			POSTGIS_DEBUG(3, "GetPrepGeomCache: prepared obj 2 in cache");
 		}
 	}
 	else if ( cache->prepared_geom )
@@ -3886,7 +3886,7 @@ GetPrepGeomCache(FunctionCallInfoData *fcinfo, PG_LWGEOM *serialized_geom1, PG_L
 		pghe->geom = 0;
 		pghe->prepared_geom = 0;
 
-		LWDEBUG(3, "GetPrepGeomCache: obj NOT in cache, deleting prepared geometries");
+		POSTGIS_DEBUG(3, "GetPrepGeomCache: obj NOT in cache, deleting prepared geometries");
 		GEOSPreparedGeom_destroy( cache->prepared_geom );
 		GEOSGeom_destroy( cache->geom );
 		
@@ -3925,7 +3925,7 @@ Datum containsPrepared(PG_FUNCTION_ARGS)
 	errorIfGeometryCollection(geom1,geom2);
 	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
 
-	LWDEBUG(3, "containsPrepared: entered function");
+	POSTGIS_DEBUG(3, "containsPrepared: entered function");
 
 	/*
 	* short-circuit: if geom2 bounding box is not completely inside
@@ -3940,7 +3940,7 @@ Datum containsPrepared(PG_FUNCTION_ARGS)
 			PG_RETURN_BOOL(FALSE);
 	}
 
-	LWDEBUGF(4, "containsPrepared: calling for prep_cache with key1 = %d", key1);
+	POSTGIS_DEBUGF(4, "containsPrepared: calling for prep_cache with key1 = %d", key1);
 
 	prep_cache = GetPrepGeomCache( fcinfo, geom1, 0, key1, 0 );
 
@@ -3949,7 +3949,7 @@ Datum containsPrepared(PG_FUNCTION_ARGS)
 	if ( prep_cache && prep_cache->prepared_geom && prep_cache->argnum == 1 )
 	{
 		GEOSGeom g = POSTGIS2GEOS(geom2);
-		LWDEBUG(4, "containsPrepared: cache is live, running preparedcontains");
+		POSTGIS_DEBUG(4, "containsPrepared: cache is live, running preparedcontains");
 		result = GEOSPreparedContains( prep_cache->prepared_geom, g);
 		GEOSGeom_destroy(g);
 	}
@@ -3957,7 +3957,7 @@ Datum containsPrepared(PG_FUNCTION_ARGS)
 	{
 		GEOSGeom g1 = POSTGIS2GEOS(geom1);
 		GEOSGeom g2 = POSTGIS2GEOS(geom2);
-		LWDEBUG(4, "containsPrepared: cache is not ready, running standard contains");
+		POSTGIS_DEBUG(4, "containsPrepared: cache is not ready, running standard contains");
 		result = GEOSContains( g1, g2);
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g2);
