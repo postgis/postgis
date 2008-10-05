@@ -288,14 +288,14 @@ popc(void)
 	}
 
 	/* If the odd number point check has been enabled, perform it */
-	if (parser_check_flags & PARSER_CHECK_CLOSURE) {
+	if (parser_check_flags & PARSER_CHECK_ODD) {
         	if(isodd != -1 && the_geom.stack->uu.nn.num % 2 != isodd) {
                 	error("geometry must have an odd number of points");
         	}
 	}
 
 	/* If the polygon closure check has been enabled, perform it */
-	if (parser_check_flags & PARSER_CHECK_ODD) {
+	if (parser_check_flags & PARSER_CHECK_CLOSURE) {
 		if ( checkclosed && first_point && last_point) {
 			if ( memcmp(first_point, last_point,
 				sizeof(double)*the_geom.ndims) )
