@@ -4047,7 +4047,7 @@ Datum containsPrepared(PG_FUNCTION_ARGS)
 	                getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
 		if (( box2.xmin < box1.xmin ) || ( box2.xmax > box1.xmax ) ||
-		                ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax ))
+		    ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax ))
 			PG_RETURN_BOOL(FALSE);
 	}
 #ifdef PGIS_DEBUG
@@ -4121,7 +4121,7 @@ Datum containsProperlyPrepared(PG_FUNCTION_ARGS)
 	                getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
 		if (( box2.xmin < box1.xmin ) || ( box2.xmax > box1.xmax ) ||
-		                ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax ))
+		    ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax ))
 			PG_RETURN_BOOL(FALSE);
 	}
 
@@ -4187,7 +4187,7 @@ Datum coversPrepared(PG_FUNCTION_ARGS)
 	                getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
 		if (( box2.xmin < box1.xmin ) || ( box2.xmax > box1.xmax ) ||
-		                ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax ))
+		    ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax ))
 			PG_RETURN_BOOL(FALSE);
 	}
 
@@ -4255,7 +4255,7 @@ Datum intersectsPrepared(PG_FUNCTION_ARGS)
 	                getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
 		if (( box2.xmax < box1.xmin ) || ( box2.xmin > box1.xmax ) ||
-		                ( box2.ymax < box1.ymin ) || ( box2.ymin > box2.ymax ))
+		    ( box2.ymax < box1.ymin ) || ( box2.ymin > box1.ymax ))
 			PG_RETURN_BOOL(FALSE);
 	}
 
