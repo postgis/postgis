@@ -5040,6 +5040,83 @@ SELECT ST_AsEWKT(ST_Collect(ST_GeomFromEWKT('POINT(1 2 3)'),
 		<para><xref linkend="ST_Dump" />, <xref linkend="ST_Union" /></para>
 	  </refsection>
 	</refentry>
+   
+	<refentry id="ST_ConvexHull">
+	  <refnamediv>
+		<refname>ST_ConvexHull</refname>
+		<refpurpose>The convex hull of a geometry represents the minimum closed
+		geometry that encloses all geometries within the set.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry<function>ST_ConvexHull</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+        	<para>The convex hull of a geometry represents the minimum closed
+		geometry that encloses all geometries within the set.</para>
+
+            <para>It is usually used with MULTI and Geometry Collections.
+		Although it is not an aggregate - you can use it in conjunction
+		with ST_Collect to get the convex hull of a set of points.
+		ST_ConvexHull(ST_Collect(somepointfield)).</para>
+		
+		<para>It is often used to
+		determine an affected area based on a set of point
+		observations.</para>
+		
+		<para>Performed by the GEOS module</para>
+
+		<para>
+			  <inlinegraphic fileref="images/check.png" />
+			  This method implements the
+			  <ulink url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple
+			  Features Implementation Specification for SQL</ulink>  OGC SPEC s2.1.1.3 
+		</para>
+		<!-- Optionally mention 3d support -->
+		<para><inlinemediaobject>
+        <imageobject>
+          <imagedata fileref="images/check.png" />
+        </imageobject>
+		</inlinemediaobject> This function supports 3d and will not drop the z-index, but sometimes does something goofy with
+			the z-index (elevation) when polygons are involved.</para>
+			
+		<!-- Optionally mention SQL/MM compliancy if appropriate -->
+		<para><inlinemediaobject>
+				<imageobject>
+				  <imagedata fileref="images/check.png" />
+				</imageobject>
+			  </inlinemediaobject> This method implements the SQL/MM specification: SQL-MM 3: 5.1.16</para>
+			
+	  </refsection>
+	
+	  <refsection>
+		<title>Examples</title>
+<programlisting>SELECT d.disease_type, 
+	ST_ConvexHull(ST_Collect(d.the_geom)) As the_geom 
+	FROM disease_obs As d 
+	GROUP BY d.disease_type;
+	
+	SELECT ST_AsEWKT(ST_ConvexHull(
+		ST_Collect(
+			ST_GeomFromEWKT('LINESTRING(1 2 3,3 4 5)'), 
+				ST_MakePoint(0, 2, 0))
+				));
+	---st_asewkt--
+	POLYGON((0 2 0,3 4 5,1 2 3,0 2 0))
+				</programlisting>
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_Collect" /></para>
+	  </refsection>
+	</refentry>	  
 	
 	<refentry id="ST_Dump">
 	  <refnamediv>

@@ -114,30 +114,6 @@
         </varlistentry>
 
         <varlistentry>
-          <term>ST_ConvexHull(geometry)</term>
-
-          <listitem>
-            <para>The convex hull of a geometry represents the minimum closed
-            geometry that encloses all geometries within the set.</para>
-
-            <para>It is usually used with MULTI and Geometry Collections.
-            Although it is not an aggregate - you can use it in conjunction
-            with ST_Collect to get the convex hull of a set of points.
-            ST_ConvexHull(ST_Collect(somepointfield)). It is often used to
-            determine an affected area based on a set of point
-            observations.</para>
-
-            <programlisting>SELECT d.disease_type, ST_ConvexHull(ST_Collect(d.the_geom)) As the_geom 
-	FROM disease_obs As d 
-	GROUP BY d.disease_type</programlisting>
-
-            <para>Performed by the GEOS module</para>
-
-            <para>OGC SPEC s2.1.1.3</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
           <term>ST_Shift_Longitude(geometry)</term>
 
           <listitem>
@@ -1655,24 +1631,6 @@ WHERE n*100.00/length &lt; 1;
           <para>Return the boundary of the ST_Geometry value.</para>
 
           <para>SQL-MM 3: 5.1.14</para>
-        </listitem>
-      </varlistentry>
-  
-      <varlistentry>
-        <term>ST_ConvexHull</term>
-
-        <listitem>
-          <para>The convex hull of a geometry represents the minimum geometry
-          that encloses all geometries within the set.</para>
-
-          <para>It is usually used with MULTI and Geometry Collections.
-          Although it is not an aggregate - you can use it in conjunction with
-          ST_Collect to get the convex hull of a set of points.
-          ST_ConvexHull(ST_Collect(somepointfield)). It is often used to
-          determine an affected area based on a set of point
-          observations.</para>
-
-          <para>SQL-MM 3: 5.1.16</para>
         </listitem>
       </varlistentry>
 
