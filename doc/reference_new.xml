@@ -5084,8 +5084,7 @@ SELECT ST_AsEWKT(ST_Collect(ST_GeomFromEWKT('POINT(1 2 3)'),
         <imageobject>
           <imagedata fileref="images/check.png" />
         </imageobject>
-		</inlinemediaobject> This function supports 3d and will not drop the z-index, but sometimes does something goofy with
-			the z-index (elevation) when polygons are involved.</para>
+		</inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
 			
 		<!-- Optionally mention SQL/MM compliancy if appropriate -->
 		<para><inlinemediaobject>
