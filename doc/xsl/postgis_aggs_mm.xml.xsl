@@ -39,7 +39,7 @@
 		</sect1>
 		
 		<sect1>
-			<title>PostGIS MM Compliant Functions</title>
+			<title>PostGIS SQL-MM Compliant Functions</title>
 			<para>The functions given below are PostGIS functions that conform to the SQL/MM 3 standard</para>
 				<itemizedlist>
 			<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
