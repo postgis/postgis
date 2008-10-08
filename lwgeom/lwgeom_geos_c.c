@@ -3210,7 +3210,7 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 	GEOSGeom *vgeoms;
 	int SRID=-1;
 	size_t offset;
-#if POSTGIS_DEBUG_LEVEL > 0
+#if POSTGIS_DEBUG_LEVEL >= 3
 	static int call=1;
 #endif
 
@@ -3386,7 +3386,7 @@ Datum LWGEOM_buildarea(PG_FUNCTION_ARGS)
 	GEOSGeom geos_result, shp;
 	GEOSGeom vgeoms[1];
 	int SRID=-1;
-#if POSTGIS_DEBUG_LEVEL > 0
+#if POSTGIS_DEBUG_LEVEL >= 3
 	static int call=1;
 #endif
 
@@ -3562,12 +3562,10 @@ Datum intersectsPrepared(PG_FUNCTION_ARGS);
 #ifdef PREPARED_GEOM
 typedef struct
 {
-	int32                         key1;
-	int32                         key2;
-	uchar*                         serialized1;
-	uchar*                         serialized2;
-	size_t                        serialized1_size;
-	size_t                        serialized2_size;
+	PG_LWGEOM*                    pg_geom1;
+	PG_LWGEOM*                    pg_geom2;
+	size_t                        pg_geom1_size;
+	size_t                        pg_geom2_size;
 	int32                         argnum;
 	const GEOSPreparedGeometry*   prepared_geom;
 	const GEOSGeometry*           geom;
@@ -3595,7 +3593,7 @@ typedef struct
 } PrepGeomHashEntry;
 
 /* Utility function to pull or prepare the current cache */
-PrepGeomCache *GetPrepGeomCache(FunctionCallInfoData *fcinfo, uchar *serialized_geom1, uchar *serialized_geom2);
+PrepGeomCache *GetPrepGeomCache(FunctionCallInfoData *fcinfo, PG_LWGEOM *pg_geom1, PG_LWGEOM *pg_geom2);
 
 /* Memory context hash table function prototypes */
 uint32 mcxt_ptr_hasha(const void *key, Size keysize);
@@ -3799,20 +3797,22 @@ DeletePrepGeomHashEntry(MemoryContext mcxt)
 **
 */
 PrepGeomCache* 
-GetPrepGeomCache(FunctionCallInfoData *fcinfo, uchar *serialized_geom1, uchar *serialized_geom2)
+GetPrepGeomCache(FunctionCallInfoData *fcinfo, PG_LWGEOM *pg_geom1, PG_LWGEOM *pg_geom2)
 {
+	MemoryContext old_context;
 	PrepGeomCache* cache = fcinfo->flinfo->fn_extra;
-	size_t geom1_size = 0;
-	size_t geom2_size = 0;
+	int copy_keys = 1;
+	size_t pg_geom1_size = 0;
+	size_t pg_geom2_size = 0;
 
 	if (!PrepGeomHash)
 		CreatePrepGeomHash();
 
-	if(serialized_geom1)
-		geom1_size = lwgeom_size(serialized_geom1);
-		
-	if(serialized_geom2)
-		geom2_size = lwgeom_size(serialized_geom2);
+	if( pg_geom1 ) 
+		pg_geom1_size = VARSIZE(pg_geom1) + VARHDRSZ;
+
+	if( pg_geom2 ) 
+		pg_geom2_size = VARSIZE(pg_geom2) + VARHDRSZ;
 
 	if ( cache == NULL)
 	{
@@ -3821,7 +3821,6 @@ GetPrepGeomCache(FunctionCallInfoData *fcinfo, uchar *serialized_geom1, uchar *s
 		** Set it up, but don't prepare the geometry yet.
 		*/
 		PrepGeomHashEntry pghe;
-		MemoryContext old_context;
 	
 		old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
 		cache = palloc(sizeof(PrepGeomCache));		
@@ -3830,16 +3829,16 @@ GetPrepGeomCache(FunctionCallInfoData *fcinfo, uchar *serialized_geom1, uchar *s
 		cache->prepared_geom = 0;
 		cache->geom = 0;
 		cache->argnum = 0;
-		cache->serialized1 = 0;
-		cache->serialized2 = 0;
-		cache->serialized1_size = 0;
-		cache->serialized2_size = 0;
+		cache->pg_geom1 = 0;
+		cache->pg_geom2 = 0;
+		cache->pg_geom1_size = 0;
+		cache->pg_geom2_size = 0;
 		cache->context = MemoryContextCreate(T_AllocSetContext, 8192,
 		                 &PreparedCacheContextMethods,
 		                 fcinfo->flinfo->fn_mcxt,
 		                 "PostGIS Prepared Geometry Context");
 
-		POSTGIS_DEBUGF(3, "GetPrepGeomCache: creating cache: %x", cache);
+		POSTGIS_DEBUGF(1, "GetPrepGeomCache: creating cache: %p", cache);
 
 		pghe.context = cache->context;
 		pghe.geom = 0;
@@ -3848,10 +3847,12 @@ GetPrepGeomCache(FunctionCallInfoData *fcinfo, uchar *serialized_geom1, uchar *s
 
 		fcinfo->flinfo->fn_extra = cache;
 
-		POSTGIS_DEBUGF(3, "GetPrepGeomCache: adding context to hash: %x", cache);
+		POSTGIS_DEBUGF(3, "GetPrepGeomCache: adding context to hash: %p", cache);
 	}
-	else if ( cache->serialized1_size == geom1_size && 
-	          memcmp(cache->serialized1, serialized_geom1, geom1_size) )
+	else if ( pg_geom1 &&
+	          cache->argnum != 2 &&
+	          cache->pg_geom1_size == pg_geom1_size && 
+	          memcmp(cache->pg_geom1, pg_geom1, pg_geom1_size) == 0)
 	{
 		if ( !cache->prepared_geom )
 		{
@@ -3861,11 +3862,11 @@ GetPrepGeomCache(FunctionCallInfoData *fcinfo, uchar *serialized_geom1, uchar *s
 			*/
 			PrepGeomHashEntry* pghe;
 		
-			GEOSGeom g = POSTGIS2GEOS( serialized_geom1 );
+			GEOSGeom g = POSTGIS2GEOS( pg_geom1 );
 			cache->geom = g;
 			cache->prepared_geom = GEOSPrepare( g );
 			cache->argnum = 1;
-			POSTGIS_DEBUG(3, "GetPrepGeomCache: preparing obj in argument 1");
+			POSTGIS_DEBUG(1, "GetPrepGeomCache: preparing obj in argument 1");
 
 			pghe = GetPrepGeomHashEntry(cache->context);
 			pghe->geom = cache->geom;
@@ -3877,11 +3878,15 @@ GetPrepGeomCache(FunctionCallInfoData *fcinfo, uchar *serialized_geom1, uchar *s
 			/*
 			** Cache hit, and we're good to go. Do nothing.
 			*/
-			POSTGIS_DEBUG(3, "GetPrepGeomCache: prepared obj 1 in cache");
+			POSTGIS_DEBUG(1, "GetPrepGeomCache: cache hit, argument 1");
 		}
+		/* we don't need new keys until we have a cache miss */
+		copy_keys = 0;
 	}
-	else if ( cache->serialized2_size == geom2_size && 
-	          memcmp(cache->serialized2, serialized_geom2, geom2_size) )
+	else if ( pg_geom2 && 
+	          cache->argnum != 1 &&
+	          cache->pg_geom2_size == pg_geom2_size && 
+	          memcmp(cache->pg_geom2, pg_geom2, pg_geom2_size) == 0)
 	{
 		 	if ( !cache->prepared_geom )
 			{
@@ -3890,11 +3895,11 @@ GetPrepGeomCache(FunctionCallInfoData *fcinfo, uchar *serialized_geom1, uchar *s
 				** Prepare it.
 				*/
 				PrepGeomHashEntry* pghe;
-				GEOSGeom g = POSTGIS2GEOS( serialized_geom2 );
+				GEOSGeom g = POSTGIS2GEOS( pg_geom2 );
 				cache->geom = g;
 				cache->prepared_geom = GEOSPrepare( g );
 				cache->argnum = 2;
-				POSTGIS_DEBUG(3, "GetPrepGeomCache: preparing obj in argument 2");
+				POSTGIS_DEBUG(1, "GetPrepGeomCache: preparing obj in argument 2");
 			
 				pghe = GetPrepGeomHashEntry(cache->context);
 				pghe->geom = cache->geom;
@@ -3906,8 +3911,10 @@ GetPrepGeomCache(FunctionCallInfoData *fcinfo, uchar *serialized_geom1, uchar *s
 				/*
 				** Cache hit, and we're good to go. Do nothing.
 				*/
-				POSTGIS_DEBUG(3, "GetPrepGeomCache: prepared obj for arg 2 in cache");
+					POSTGIS_DEBUG(1, "GetPrepGeomCache: cache hit, argument 2");
 			}
+			/* we don't need new keys until we have a cache miss */
+			copy_keys = 0;
 	}
 	else if ( cache->prepared_geom )
 	{
@@ -3921,7 +3928,7 @@ GetPrepGeomCache(FunctionCallInfoData *fcinfo, uchar *serialized_geom1, uchar *s
 		pghe->geom = 0;
 		pghe->prepared_geom = 0;
 
-		POSTGIS_DEBUG(3, "GetPrepGeomCache: obj NOT in cache, deleting prepared geometries");
+		POSTGIS_DEBUGF(1, "GetPrepGeomCache: cache miss, argument %d", cache->argnum);
 		GEOSPreparedGeom_destroy( cache->prepared_geom );
 		GEOSGeom_destroy( cache->geom );
 		
@@ -3931,18 +3938,33 @@ GetPrepGeomCache(FunctionCallInfoData *fcinfo, uchar *serialized_geom1, uchar *s
 
 	}
 	
-	if( serialized_geom1 ) 
+	if( copy_keys && pg_geom1 ) 
 	{
-		cache->serialized1 = serialized_geom1;
-		cache->serialized1_size = geom1_size;
+		POSTGIS_DEBUG(1, "GetPrepGeomCache: copying pg_geom1 into cache");
+		old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
+		if( cache->pg_geom1 ) 
+			pfree(cache->pg_geom1);
+		cache->pg_geom1 = palloc(pg_geom1_size);
+		MemoryContextSwitchTo(old_context);
+		memcpy(cache->pg_geom1, pg_geom1, pg_geom1_size);
+		cache->pg_geom1_size = pg_geom1_size;
 	}
-	if( serialized_geom2 )
+	if( copy_keys && pg_geom2 )
 	{ 
-		cache->serialized2 = serialized_geom2;
-		cache->serialized2_size = geom2_size;
+		POSTGIS_DEBUG(1, "GetPrepGeomCache: copying pg_geom2 into cache");
+		old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
+		if( cache->pg_geom2 ) 
+			pfree(cache->pg_geom2);
+		cache->pg_geom2 = palloc(pg_geom2_size);
+		MemoryContextSwitchTo(old_context);
+		memcpy(cache->pg_geom2, pg_geom2, pg_geom2_size);
+		cache->pg_geom2_size = pg_geom2_size;
 	}
 
 	return cache;
+	
+	/* select sum(v.gid) from vada2005 v, ed2000 e where st_contains(e.the_geom, v.the_geom, e.gid) and e.id like 'PR%' */
+
 }
 #endif /* PREPARED_GEOM */
 
@@ -3976,16 +3998,14 @@ Datum containsPrepared(PG_FUNCTION_ARGS)
 	* Do the test IFF BOUNDING BOX AVAILABLE.
 	*/
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-	                getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	     getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
 		if (( box2.xmin < box1.xmin ) || ( box2.xmax > box1.xmax ) ||
 		    ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax ))
 			PG_RETURN_BOOL(FALSE);
 	}
 
-	POSTGIS_DEBUGF(4, "containsPrepared: calling for prep_cache with key1 = %d", key1);
-
-	prep_cache = GetPrepGeomCache( fcinfo, SERIALIZED_FORM(geom1), 0 );
+	prep_cache = GetPrepGeomCache( fcinfo, geom1, 0 );
 
 	initGEOS(lwnotice, lwnotice);
 
@@ -4053,7 +4073,7 @@ Datum containsProperlyPrepared(PG_FUNCTION_ARGS)
 			PG_RETURN_BOOL(FALSE);
 	}
 
-	prep_cache = GetPrepGeomCache( fcinfo, SERIALIZED_FORM(geom1), 0 );
+	prep_cache = GetPrepGeomCache( fcinfo, geom1, 0 );
 
 	initGEOS(lwnotice, lwnotice);
 
@@ -4119,7 +4139,7 @@ Datum coversPrepared(PG_FUNCTION_ARGS)
 			PG_RETURN_BOOL(FALSE);
 	}
 
-	prep_cache = GetPrepGeomCache( fcinfo, SERIALIZED_FORM(geom1), 0 );
+	prep_cache = GetPrepGeomCache( fcinfo, geom1, 0 );
 
 	initGEOS(lwnotice, lwnotice);
 
@@ -4187,7 +4207,7 @@ Datum intersectsPrepared(PG_FUNCTION_ARGS)
 			PG_RETURN_BOOL(FALSE);
 	}
 
-	prep_cache = GetPrepGeomCache( fcinfo, SERIALIZED_FORM(geom1), SERIALIZED_FORM(geom2) );
+	prep_cache = GetPrepGeomCache( fcinfo, geom1, geom2 );
 
 	initGEOS(lwnotice, lwnotice);
 
