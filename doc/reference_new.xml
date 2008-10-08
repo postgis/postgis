@@ -2632,6 +2632,12 @@ CREATE INDEX idx_the_geom_26986_parcels
 		based on the units defined in spatial reference (SRID) for this geometry.</para>
 		
 		<para>Availability: 1.2.2</para>
+		<!-- Optionally mention 3d support -->	
+		<para><inlinemediaobject>
+				<imageobject>
+				  <imagedata fileref="images/check.png" />
+				</imageobject>
+			  </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
 	  </refsection>
 	
 	  <refsection>
@@ -2649,7 +2655,13 @@ CREATE INDEX idx_the_geom_26986_parcels
 		   wgs_transgeomtxt
 	---------------------------------------
 	LINESTRING(-70.01 42.87,-70.11 42.88)
-	</programlisting>
+		</programlisting>
+		<para>Move a 3d point</para>
+		<programlisting>SELECT ST_AsEWKT(ST_Translate(CAST('POINT(0 0 0)' As geometry), 5, 12,3));
+	st_asewkt
+	---------
+	POINT(5 12 3)	
+		</programlisting>
 	  </refsection>
 	
 	  <!-- Optionally add a "See Also" section -->
