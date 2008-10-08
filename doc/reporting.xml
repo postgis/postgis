@@ -14,7 +14,7 @@
     version()</code> [for postgresql].</para>
 
     <para>If you aren't using the latest release, it's worth taking a look at
-    its <ulink url="http://postgis.refractions.net/CHANGES.txt">release
+    its <ulink url="http://svn.refractions.net/postgis/trunk/NEWS">release
     changelog</ulink> first, to find out if your bug has already been
     fixed.</para>
 

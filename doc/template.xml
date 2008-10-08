@@ -1,25 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<refentry id="ST_MyMethod">
+<refentry id="ST_IsRing">
   <refnamediv>
-    <refname>ST_MyMethod</refname>
+    <refname>ST_IsRing</refname>
 
-    <refpurpose>Returns something useful</refpurpose>
+    <refpurpose>Returns <varname>TRUE</varname> if this
+    <varname>LINESTRING</varname> is both closed and simple.</refpurpose>
   </refnamediv>
 
   <refsynopsisdiv>
     <funcsynopsis>
       <funcprototype>
-        <funcdef>boolean <function>ST_MyMethod</function></funcdef>
-        <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-        <paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>
-      </funcprototype>
+        <funcdef>boolean <function>ST_IsRing</function></funcdef>
 
-      <!-- an optional second method prototype -->
-      <funcprototype>
-        <funcdef>boolean <function>ST_MyMethod</function></funcdef>
-        <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-        <paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>
-        <paramdef><type>varchar </type> <parameter>myparam</parameter></paramdef>
+        <paramdef><type>geometry </type> <parameter>g</parameter></paramdef>
       </funcprototype>
     </funcsynopsis>
   </refsynopsisdiv>
@@ -27,31 +20,34 @@
   <refsection>
     <title>Description</title>
 
-    <para>Some useful description here.</para>
+    <para>Returns <varname>TRUE</varname> if this
+    <varname>LINESTRING</varname> is both <xref linkend="ST_IsClosed" />
+    (<function>ST_StartPoint(<parameter>g</parameter>)</function>
+    <function>~=</function>
+    <function>ST_Endpoint(<parameter>g</parameter>)</function>) and <xref
+    linkend="ST_IsSimple" /> (does not self intersect).</para>
 
-    <!-- optionally mention that this function uses indexes if appropriate -->
-    <note>
-      <para>This function call will automatically include a bounding box
-      comparison that will make use of any indexes that are available on the
-      geometries.</para>
-    </note>
-
-    <!-- Optionally mention OpenGIS compliancy if appropriate -->
     <para><inlinemediaobject>
         <imageobject>
           <imagedata fileref="images/check.png" />
         </imageobject>
       </inlinemediaobject> This method implements the <ulink
     url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
-    Implementation Specification for SQL.</ulink></para>
+    Implementation Specification for SQL.</ulink> OGC SFSQL 1.1 -
+    2.1.5.1</para>
 
-    <!-- Optionally mention SQL/MM compliancy if appropriate -->
     <para><inlinemediaobject>
         <imageobject>
           <imagedata fileref="images/check.png" />
         </imageobject>
       </inlinemediaobject> This method implements the SQL/MM specification:
-    SQL-MM 3: 5.1.23</para>
+    SQL-MM 3: 7.1.6</para>
+
+    <note>
+      <para>SQL-MM defines the result of
+      <function>ST_IsRing(<varname>NULL</varname>)</function> to be 0, while
+      PostGIS returns <varname>NULL</varname>.</para>
+    </note>
 	
 	<!-- Optionally mention 3d support -->
     <para><inlinemediaobject>
@@ -65,13 +61,14 @@
   <refsection>
     <title>Examples</title>
 
-    <programlisting></programlisting>
+    <programlisting>
+</programlisting>
   </refsection>
 
-  <!-- Optionally add a "See Also" section -->
   <refsection>
     <title>See Also</title>
 
-    <para><xref linkend="ST_MyMethod2" />, ...</para>
+    <para><xref linkend="ST_IsSimple" />, <xref linkend="ST_StartPoint" />,
+    <xref linkend="ST_EndPoint" /></para>
   </refsection>
 </refentry>

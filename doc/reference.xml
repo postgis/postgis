@@ -1519,7 +1519,7 @@ WHERE n*100.00/length &lt; 1;
 
       <para>This module and associated pl/pgsql functions have been
       implemented to provide long locking support required by <ulink
-      url="https://portal.opengeospatial.org/files/?artifact_id=7176">Web
+      url="http://portal.opengeospatial.org/files/index.php?artifact_id=7176">Web
       Feature Service</ulink> specification.</para>
 
       <note>

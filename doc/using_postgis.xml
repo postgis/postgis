@@ -357,13 +357,13 @@ geometry
 
             <para>For a listing of EPSG projection codes and their
             corresponding WKT representations, see <ulink
-            url="http://www.opengis.org/techno/interop/EPSG2WKT.TXT">http://www.opengis.org/techno/interop/EPSG2WKT.TXT</ulink>.
+            url="http://www.opengeospatial.org/">http://www.opengeospatial.org/</ulink>.
             For a discussion of WKT in general, see the OpenGIS "Coordinate
             Transformation Services Implementation Specification" at <ulink
-            url="http://www.opengis.org/techno/specs.htm">http://www.opengis.org/techno/specs.htm</ulink>.
+            url="http://www.opengeospatial.org/standards">http://www.opengeospatial.org/standards</ulink>.
             For information on the European Petroleum Survey Group (EPSG) and
             their database of spatial reference systems, see <ulink
-            url="http://epsg.org">http://epsg.org</ulink>.</para>
+            url="http://www.epsg.org/">http://www.epsg.org</ulink>.</para>
           </listitem>
         </varlistentry>
 
@@ -379,7 +379,7 @@ geometry
             <programlisting>+proj=utm +zone=10 +ellps=clrk66 +datum=NAD27 +units=m</programlisting>
 
             <para>For more information about, see the Proj4 web site at <ulink
-            url="http://proj.osgeo.org">http://proj.osgeo.org</ulink>.
+            url="http://trac.osgeo.org/proj/">http://trac.osgeo.org/proj/</ulink>.
             The <filename>spatial_ref_sys.sql</filename> file contains both
             <varname>SRTEXT</varname> and <varname>PROJ4TEXT</varname>
             definitions for all EPSG projections.</para>
@@ -1356,7 +1356,7 @@ gid  | name         | area
 
       <listitem>
         <para>The OpenGIS Web Map Specification is at <ulink
-        url="http://www.opengis.org/techno/specs/01-047r2.pdf">http://www.opengis.org/techno/specs/01-047r2.pdf</ulink>.</para>
+        url="http://www.opengeospatial.org/standards">http://www.opengeospatial.org/standards</ulink>.</para>
       </listitem>
     </itemizedlist>
 
