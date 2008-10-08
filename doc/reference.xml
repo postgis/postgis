@@ -1524,7 +1524,7 @@ WHERE n*100.00/length &lt; 1;
 
       <note>
         <para>Users must use <ulink
-        url="http://www.postgresql.org/docs/7.4/static/transaction-iso.html">serializable
+        url="http://www.postgresql.org/docs/8.3/static/transaction-iso.html">serializable
         transaction level</ulink> otherwise locking mechanism would
         break.</para>
       </note>
