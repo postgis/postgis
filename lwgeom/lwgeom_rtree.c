@@ -520,7 +520,7 @@ RTREE_POLY_CACHE *retrieveCache(LWGEOM *lwgeom, uchar *serializedPoly,
         int length;
 
 #ifdef PGIS_DEBUG_CALLS
-        lwnotice("retrieveCache called with %p %p %p", poly, serializedPoly, currentCache);
+        lwnotice("retrieveCache called with %p %p %p", lwgeom, serializedPoly, currentCache);
 #endif
         if(!currentCache)
         {
@@ -551,7 +551,7 @@ RTREE_POLY_CACHE *retrieveCache(LWGEOM *lwgeom, uchar *serializedPoly,
 		if( memcmp(serializedPoly, currentCache->poly, length) ) 
 		{
 #ifdef PGIS_DEBUG
-				lwnotice("Polygon mismatch, creating new cache. %c, %c", a, b);
+				//lwnotice("Polygon mismatch, creating new cache. %c, %c", a, b);
 #endif
 				clearCache(currentCache);
 				return currentCache;

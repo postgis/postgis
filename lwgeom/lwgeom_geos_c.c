@@ -1493,7 +1493,7 @@ Datum contains(PG_FUNCTION_ARGS)
         		lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom1));
                 point = lwpoint_deserialize(SERIALIZED_FORM(geom2));
 #ifdef PGIS_DEBUG
-                lwnotice("Precall point_in_polygon %p, %p", poly, point);
+                lwnotice("Precall point_in_polygon %p, %p", lwgeom, point);
 #endif
 
                 /*
@@ -1647,7 +1647,7 @@ Datum covers(PG_FUNCTION_ARGS)
                 lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom1));
                 point = lwpoint_deserialize(SERIALIZED_FORM(geom2));
 #ifdef PGIS_DEBUG
-                lwnotice("Precall point_in_polygon %p, %p", poly, point);
+                lwnotice("Precall point_in_polygon %p, %p", lwgeom, point);
 #endif
 
                 /*
