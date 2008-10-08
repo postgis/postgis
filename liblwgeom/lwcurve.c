@@ -258,10 +258,10 @@ lwcircle_compute_box3d(POINT4D *p1, POINT4D *p2, POINT4D *p3)
 {
         double x1, x2, y1, y2, z1, z2;
         double angle, radius, sweep;
-        /*
-        double top, left;
-        */
+	// angles from center
         double a1, a2, a3;
+	// angles from center once a1 is rotated to zero
+	double r2, r3;
         double xe = 0.0, ye = 0.0;
         POINT4D *center;
         int i;
@@ -277,7 +277,7 @@ lwcircle_compute_box3d(POINT4D *p1, POINT4D *p2, POINT4D *p3)
         top = center->y + radius;
         left = center->x - radius;
 
-        LWDEBUGF(3, "lwcircle_compute_box3d: top=%.16f, left=%.16f", top, left);
+        LWDEBUGF(3, "lwcircle_compute_box3d: center (%.16f, %.16f)", center->x, center->y);
         */
 
         x1 = MAXFLOAT;
@@ -289,29 +289,54 @@ lwcircle_compute_box3d(POINT4D *p1, POINT4D *p2, POINT4D *p3)
         a2 = atan2(p2->y - center->y, p2->x - center->x);
         a3 = atan2(p3->y - center->y, p3->x - center->x);
 
-        /* Determine sweep angle */
-        if(a1 > a2 && a2 > a3) 
+	// Rotate a2 and a3 such that a1 = 0
+	r2 = a2 - a1;
+	r3 = a3 - a1;
+
+        /*
+         * There are six cases here I'm interested in
+         * Clockwise:
+         *   1. a1-a2 < 180 == r2 < 0 && (r3 > 0 || r3 < r2)
+         *   2. a1-a2 > 180 == r2 > 0 && (r3 > 0 && r3 < r2)
+         *   3. a1-a2 > 180 == r2 > 0 && (r3 > r2 || r3 < 0)
+         * Counter-clockwise:
+         *   4. a1-a2 < 180 == r2 > 0 && (r3 < 0 || r3 > r2)
+         *   5. a1-a2 > 180 == r2 < 0 && (r3 < 0 && r3 > r2)
+         *   6. a1-a2 > 180 == r2 < 0 && (r3 < r2 || r3 > 0)
+         * 3 and 6 are invalid cases where a3 is the midpoint.
+         * BBOX is fundamental, so these cannot error out and will instead
+         * calculate the sweep using a3 as the middle point.
+         */
+
+        // clockwise 1
+        if(r2 < 0 && (r3 > 0 || r3 < r2))
         {
-                sweep = a3 - a1;
+            sweep = (r3 > 0) ? (r3 - 2 * M_PI) : r3;
         }
-        /* Counter-clockwise */
-        else if(a1 < a2 && a2 < a3)
+        // clockwise 2
+        else if(r2 > 0 && r3 > 0 && r3 < r2)
         {
-                sweep = a3 - a1;
+            sweep = (r3 > 0) ? (r3 - 2 * M_PI) : r3;
         }
-        /* Clockwise, wrap */
-        else if((a1 < a2 && a1 > a3) || (a2 < a3 && a1 > a3))
+        // counter-clockwise 4
+        else if(r2 > 0 && (r3 < 0 || r3 > r2))
         {
-                sweep = a3 - a1 + 2*M_PI;
+            sweep = (r3 < 0) ? (r3 + 2 * M_PI) : r3;
         }
-        /* Counter-clockwise, wrap */
-        else if((a1 > a2 && a1 < a3) || (a2 > a3 && a1 < a3))
+        // counter-clockwisk 5
+        else if(r2 < 0 && r3 < 0 && r3 > r2)
         {
-                sweep = a3 - a1 - 2*M_PI;
-        } 
-        else 
+            sweep = (r3 < 0) ? (r3 + 2 * M_PI) : r3;
+        }
+        // clockwise invalid 3
+        else if(r2 > 0 && (r3 > r2 || r3 < 0))
         {
-                sweep = 0.0;
+            sweep = (r2 > 0) ? (r2 - 2 * M_PI) : r2;
+        }
+        // clockwise invalid 6
+        else
+        {
+            sweep = (r2 < 0) ? (r2 + 2 * M_PI) : r2;
         }
 
         LWDEBUGF(3, "a1 %.16f, a2 %.16f, a3 %.16f, sweep %.16f", a1, a2, a3, sweep);
@@ -320,42 +345,69 @@ lwcircle_compute_box3d(POINT4D *p1, POINT4D *p2, POINT4D *p3)
         for(i=0; i < 6; i++)
         {
                 switch(i) {
+		// right extent
                 case 0:
                         angle = 0.0;
                         xe = center->x + radius;
                         ye = center->y;
                         break;
+		// top extent
                 case 1:
                         angle = M_PI_2;
                         xe = center->x;
                         ye = center->y + radius;
                         break;
+		// left extent
                 case 2:
                         angle = M_PI;
                         xe = center->x - radius;
                         ye = center->y;
                         break;
+		// bottom extent
                 case 3:
                         angle = -1 * M_PI_2;
                         xe = center->x;
                         ye = center->y - radius;
                         break;
+		// first point
                 case 4:
                         angle = a1;
                         xe = p1->x;
                         ye = p1->y;
                         break;
+		// last point
                 case 5:
                         angle = a3;
                         xe = p3->x;
                         ye = p3->y;
                         break;
                 }
+		// determine if the extents are outside the arc
                 if(i < 4) 
                 {
-                        if(sweep > 0.0 && (angle > a3 || angle < a1)) continue;
-                        if(sweep < 0.0 && (angle < a3 || angle > a1)) continue;
-                }
+		    if(sweep > 0.0)
+		    {
+		        if(a3 < a1)
+		        {
+			    if(angle > (a3 + 2 * M_PI) || angle < a1) continue;
+		        }
+		        else
+		        {
+			    if(angle > a3 || angle < a1) continue;
+		        }
+                    }
+		    else
+		    {
+		        if(a3 > a1)
+		        {
+			    if(angle < (a3 - 2 * M_PI) || angle > a1) continue;
+		        }
+		        else
+		        {
+			    if(angle < a3 || angle > a1) continue;
+		        }
+		    }
+		}
 
                 LWDEBUGF(3, "lwcircle_compute_box3d: potential extreame %d (%.16f, %.16f)", i, xe, ye);
 
