@@ -3875,6 +3875,21 @@ CREATEFUNCTION ST_Covers(geometry,geometry)
    LANGUAGE 'SQL' _IMMUTABLE; -- WITH (iscachable);
 #endif
 
+#if POSTGIS_GEOS_VERSION >= 31
+-- Availability: 1.4.0
+CREATEFUNCTION _ST_ContainsProperly(geometry,geometry)
+    RETURNS boolean
+    AS 'MODULE_PATHNAME','containsproperly'
+    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Availability: 1.4.0
+-- Inlines index magic
+CREATEFUNCTION ST_ContainsProperly(geometry,geometry)
+    RETURNS boolean
+    AS 'SELECT $1 && $2 AND _ST_ContainsProperly($1,$2)'
+    LANGUAGE 'SQL' _IMMUTABLE; -- WITH (iscachable);
+#endif
+
 -- Deprecation in 1.2.3
 CREATEFUNCTION overlaps(geometry,geometry)
    RETURNS boolean
@@ -3978,74 +3993,6 @@ CREATEFUNCTION ST_Equals(geometry,geometry)
     RETURNS boolean
     AS 'MODULE_PATHNAME','geomequals'
     LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
------------------------------------------------------------------------
--- Prepared Geometry Predicates
--- requires GEOS 3.1.0-CAPI-1.5.0 or better
------------------------------------------------------------------------
-
-#if POSTGIS_GEOS_VERSION >= 31
-
--- Availability: 1.4.0
-CREATEFUNCTION _ST_ContainsPrepared(geometry,geometry,integer)
-    RETURNS boolean
-    AS 'MODULE_PATHNAME','containsPrepared'
-    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- Availability: 1.4.0
--- Inlines index magic
-CREATEFUNCTION ST_Contains(geometry,geometry,integer)
-    RETURNS boolean
-    AS 'SELECT $1 && $2 AND _ST_ContainsPrepared($1,$2,$3)'
-    LANGUAGE 'SQL' _IMMUTABLE; -- WITH (iscachable);
-
--- Availability: 1.4.0
-CREATEFUNCTION _ST_ContainsProperlyPrepared(geometry,geometry,integer)
-    RETURNS boolean
-    AS 'MODULE_PATHNAME','containsProperlyPrepared'
-    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
-
--- Availability: 1.4.0
--- Inlines index magic
-CREATEFUNCTION ST_ContainsProperly(geometry,geometry,integer)
-    RETURNS boolean
-    AS 'SELECT $1 && $2 AND _ST_ContainsProperlyPrepared($1,$2,$3)'
-    LANGUAGE 'SQL' _IMMUTABLE; -- WITH (iscachable);
-
--- Availability: 1.4.0
--- Added for completeness, and to make testing ST_ContainsProperlyPrepared easier
-CREATE OR REPLACE FUNCTION ST_ContainsProperly(geometry,geometry)
-    RETURNS boolean
-    AS 'SELECT $1 && $2 AND ST_relate($1,$2,''T**FF*FF*'')'
-    LANGUAGE 'SQL' IMMUTABLE; 
-	
--- Availability: 1.4.0
-CREATEFUNCTION _ST_CoversPrepared(geometry,geometry,integer)
-    RETURNS boolean
-    AS 'MODULE_PATHNAME','coversPrepared'
-    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
- 	
--- Availability: 1.4.0
--- Inlines index magic
-CREATEFUNCTION ST_Covers(geometry,geometry,integer)
-    RETURNS boolean
-    AS 'SELECT $1 && $2 AND _ST_CoversPrepared($1,$2,$3)'
-    LANGUAGE 'SQL' _IMMUTABLE; -- WITH (iscachable);
-
--- Availability: 1.4.0
-CREATEFUNCTION _ST_IntersectsPrepared(geometry,geometry,integer,integer)
-    RETURNS boolean
-    AS 'MODULE_PATHNAME','intersectsPrepared'
-    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
- 	
--- Availability: 1.4.0
--- Inlines index magic
-CREATEFUNCTION ST_Intersects(geometry,geometry,integer,integer)
-    RETURNS boolean
-    AS 'SELECT $1 && $2 AND _ST_IntersectsPrepared($1,$2,$3,$4)'
-    LANGUAGE 'SQL' _IMMUTABLE; -- WITH (iscachable);
-
-#endif
 
 -----------------------------------------------------------------------
 -- SVG OUTPUT

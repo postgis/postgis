@@ -9,6 +9,9 @@ How to add a regression test
       -a -- unaligned columns
       -f | -- use | (pipe) as the field separator between columns
       -t -- output rows only, ie. no table header
+
+   cat file.sql | psql -F\| -t -A > file_expected
+
 3. Edit regress/Makefile adding <testname> to the TESTS variable.
    Any _expected.in files need to be added to the PREPROC variable.
 

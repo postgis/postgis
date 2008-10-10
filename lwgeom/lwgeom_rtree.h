@@ -61,4 +61,6 @@ RTREE_POLY_CACHE *createCache(void);
 void populateCache(RTREE_POLY_CACHE *cache, LWGEOM *lwgeom, uchar *serializedPoly);
 void clearCache(RTREE_POLY_CACHE *cache);
 
+
+
 #endif /* !defined _LIBLWGEOM_H */
