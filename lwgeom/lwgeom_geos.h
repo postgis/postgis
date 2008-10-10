@@ -15,10 +15,13 @@
 #include "../postgis_config.h"
 
 #include "postgres.h"
-#include "utils/array.h"
-#include "utils/builtins.h"
 #include "fmgr.h"
 #include "miscadmin.h"
+#include "utils/array.h"
+#include "utils/builtins.h"
+#include "utils/hsearch.h"
+#include "utils/memutils.h"
+#include "executor/spi.h"
 
 #include "geos_c.h"
 

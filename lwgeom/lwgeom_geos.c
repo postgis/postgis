@@ -17,22 +17,14 @@
 
 
 /*
- *
- * WARNING: buffer-based GeomUnion has been disabled due to
- *          limitations in the GEOS code (it would only work
- *	    against polygons)
- *
- * Fuzzy way of finding out how many points to stuff
- * in each chunk: 680 * Mb of memory
- *
- * The example below is for about 32 MB (fuzzy pragmatic check)
- *
- */
-/* #define UNITE_USING_BUFFER 1 */
-/* #define MAXGEOMSPOINTS 21760 */
+** NOTE: Buffer-based GeomUnion has been disabled due to
+** limitations in the GEOS code (it would only work against polygons)
+** TODO: Implement cascaded GeomUnion and remove old buffer-based code.
+*/
 
-/* PROTOTYPES start */
-
+/* 
+** Prototypes for SQL-bound functions
+*/
 Datum relate_full(PG_FUNCTION_ARGS);
 Datum relate_pattern(PG_FUNCTION_ARGS);
 Datum disjoint(PG_FUNCTION_ARGS);
@@ -60,10 +52,9 @@ Datum geomequals(PG_FUNCTION_ARGS);
 Datum pointonsurface(PG_FUNCTION_ARGS);
 Datum GEOSnoop(PG_FUNCTION_ARGS);
 Datum postgis_geos_version(PG_FUNCTION_ARGS);
-Datum postgis_jts_version(PG_FUNCTION_ARGS);
 Datum centroid(PG_FUNCTION_ARGS);
 Datum polygonize_garray(PG_FUNCTION_ARGS);
-Datum LWGEOM_buildarea(PG_FUNCTION_ARGS);
+Datum LWGEOM_buildarea(PG_FUNCTION_ARGS); /* TODO: rename to match others */
 Datum linemerge(PG_FUNCTION_ARGS);
 Datum coveredby(PG_FUNCTION_ARGS);
 
@@ -73,26 +64,9 @@ int point_in_multipolygon_rtree(RTREE_NODE **root, int polyCount, int ringCount,
 int point_in_polygon(LWPOLY *polygon, LWPOINT *point);
 int point_in_multipolygon(LWMPOLY *mpolygon, LWPOINT *pont);
 
-/* PROTOTYPES end */
-
-/*********************************************************************************
-**
-**  PreparedGeometry implementations that cache intermediate indexed versions
-**  of geometry in a special MemoryContext for re-used by future function
-**  invocations.
-**
-**  By creating a memory context to hold the GEOS PreparedGeometry and Geometry
-**  and making it a child of the fmgr memory context, we can get the memory held
-**  by the GEOS objects released when the memory context delete callback is
-**  invoked by the parent context.
-**
-*********************************************************************************/
-
-#include "utils/memutils.h"
-#include "executor/spi.h"
-#include "access/hash.h"
-#include "utils/hsearch.h"
-
+/* 
+** Prototypes end 
+*/
 
 
 PG_FUNCTION_INFO_V1(postgis_geos_version);
@@ -739,30 +713,13 @@ Datum topologypreservesimplify(PG_FUNCTION_ARGS)
 	GEOSGeom g1,g3;
 	PG_LWGEOM *result;
 
-#ifdef PROFILE
-	profstart(PROF_QRUN);
-#endif
-
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	tolerance = PG_GETARG_FLOAT8(1);
 
 	initGEOS(lwnotice, lwnotice);
 
-#ifdef PROFILE
-	profstart(PROF_P2G1);
-#endif
 	g1 = POSTGIS2GEOS(geom1);
-#ifdef PROFILE
-	profstop(PROF_P2G1);
-#endif
-
-#ifdef PROFILE
-	profstart(PROF_GRUN);
-#endif
 	g3 = GEOSTopologyPreserveSimplify(g1,tolerance);
-#ifdef PROFILE
-	profstop(PROF_GRUN);
-#endif
 
 	if (g3 == NULL)
 	{
@@ -776,13 +733,8 @@ Datum topologypreservesimplify(PG_FUNCTION_ARGS)
 
 	GEOSSetSRID(g3, pglwgeom_getSRID(geom1));
 
-#ifdef PROFILE
-	profstart(PROF_G2P);
-#endif
 	result = GEOS2POSTGIS(g3, TYPE_HASZ(geom1->type));
-#ifdef PROFILE
-	profstop(PROF_G2P);
-#endif
+
 	if (result == NULL)
 	{
 		GEOSGeom_destroy(g1);
@@ -793,19 +745,10 @@ Datum topologypreservesimplify(PG_FUNCTION_ARGS)
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g3);
 
-
-	/* compressType(result); */
-
-#ifdef PROFILE
-	profstop(PROF_QRUN);
-	profreport("geos",geom1, NULL, result);
-#endif
-
 	PG_FREE_IF_COPY(geom1, 0);
-
 	PG_RETURN_POINTER(result);
 }
-#endif
+#endif /* POSTGIS_GEOS_VERSION >= 30 */
 
 PG_FUNCTION_INFO_V1(buffer);
 Datum buffer(PG_FUNCTION_ARGS)
@@ -933,9 +876,6 @@ Datum intersection(PG_FUNCTION_ARGS)
 	/*POSTGIS_DEBUGF(3, "g2 is valid = %i",GEOSisvalid(g2)); */
 	/*POSTGIS_DEBUGF(3, "g1 is valid = %i",GEOSisvalid(g1)); */
 
-
-
-
 #ifdef PROFILE
 	profstart(PROF_GRUN);
 #endif
@@ -953,7 +893,6 @@ Datum intersection(PG_FUNCTION_ARGS)
 		GEOSGeom_destroy(g2);
 		PG_RETURN_NULL(); /* never get here */
 	}
-
 
 	POSTGIS_DEBUGF(3, "result: %s", GEOSGeomToWKT(g3) ) ;
 
@@ -976,13 +915,9 @@ Datum intersection(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL(); /* never get here */
 	}
 
-
-
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g2);
 	GEOSGeom_destroy(g3);
-
-	/* compressType(result); */
 
 #ifdef PROFILE
 	profstop(PROF_QRUN);
@@ -1409,7 +1344,6 @@ Datum contains(PG_FUNCTION_ARGS)
 	PrepGeomCache *prep_cache;
 #endif
 
-
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
@@ -1625,10 +1559,11 @@ Datum covers(PG_FUNCTION_ARGS)
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
 	     getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
-		if ( box2.xmin < box1.xmin ) PG_RETURN_BOOL(FALSE);
-		if ( box2.xmax > box1.xmax ) PG_RETURN_BOOL(FALSE);
-		if ( box2.ymin < box1.ymin ) PG_RETURN_BOOL(FALSE);
-		if ( box2.ymax > box1.ymax ) PG_RETURN_BOOL(FALSE);
+		if (( box2.xmin < box1.xmin ) || ( box2.xmax > box1.xmax ) ||
+		    ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax )) 
+		{
+			PG_RETURN_BOOL(FALSE);
+		}
 	}
 	/*
 	 * short-circuit 2: if geom2 is a point and geom1 is a polygon
@@ -1759,10 +1694,11 @@ Datum within(PG_FUNCTION_ARGS)
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
 	                getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
-		if ( box1.xmin < box2.xmin ) PG_RETURN_BOOL(FALSE);
-		if ( box1.xmax > box2.xmax ) PG_RETURN_BOOL(FALSE);
-		if ( box1.ymin < box2.ymin ) PG_RETURN_BOOL(FALSE);
-		if ( box1.ymax > box2.ymax ) PG_RETURN_BOOL(FALSE);
+		if ( ( box1.xmin < box2.xmin ) || ( box1.xmax > box2.xmax ) ||
+		     ( box1.ymin < box2.ymin ) || ( box1.ymax > box2.ymax ) )
+		{
+			PG_RETURN_BOOL(FALSE);
+		}
 	}
 	/*
 	 * short-circuit 2: if geom1 is a point and geom2 is a polygon
@@ -1902,10 +1838,11 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
 	                getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
-		if ( box1.xmin < box2.xmin ) PG_RETURN_BOOL(FALSE);
-		if ( box1.xmax > box2.xmax ) PG_RETURN_BOOL(FALSE);
-		if ( box1.ymin < box2.ymin ) PG_RETURN_BOOL(FALSE);
-		if ( box1.ymax > box2.ymax ) PG_RETURN_BOOL(FALSE);
+		if ( ( box1.xmin < box2.xmin ) || ( box1.xmax > box2.xmax ) ||
+		     ( box1.ymin < box2.ymin ) || ( box1.ymax > box2.ymax ) )
+		{
+			PG_RETURN_BOOL(FALSE);
+		}
 
 		POSTGIS_DEBUG(3, "bounding box short-circuit missed.");
 	}
@@ -2038,10 +1975,11 @@ Datum crosses(PG_FUNCTION_ARGS)
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
 	                getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
-		if ( box2.xmax < box1.xmin ) PG_RETURN_BOOL(FALSE);
-		if ( box2.xmin > box1.xmax ) PG_RETURN_BOOL(FALSE);
-		if ( box2.ymax < box1.ymin ) PG_RETURN_BOOL(FALSE);
-		if ( box2.ymin > box2.ymax ) PG_RETURN_BOOL(FALSE);
+		if ( ( box2.xmax < box1.xmin ) || ( box2.xmin > box1.xmax ) ||
+		     ( box2.ymax < box1.ymin ) || ( box2.ymin > box2.ymax ) )
+		{
+			PG_RETURN_BOOL(FALSE);
+		}
 	}
 
 	initGEOS(lwnotice, lwnotice);
@@ -2121,10 +2059,11 @@ Datum intersects(PG_FUNCTION_ARGS)
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
 	                getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
-		if ( box2.xmax < box1.xmin ) PG_RETURN_BOOL(FALSE);
-		if ( box2.xmin > box1.xmax ) PG_RETURN_BOOL(FALSE);
-		if ( box2.ymax < box1.ymin ) PG_RETURN_BOOL(FALSE);
-		if ( box2.ymin > box1.ymax ) PG_RETURN_BOOL(FALSE);
+		if ( ( box2.xmax < box1.xmin ) || ( box2.xmin > box1.xmax ) ||
+		     ( box2.ymax < box1.ymin ) || ( box2.ymin > box1.ymax ) )
+		{
+			PG_RETURN_BOOL(FALSE);
+		}
 	}
 
 	/*
@@ -2263,10 +2202,11 @@ Datum touches(PG_FUNCTION_ARGS)
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
 	                getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
-		if ( box2.xmax < box1.xmin ) PG_RETURN_BOOL(FALSE);
-		if ( box2.xmin > box1.xmax ) PG_RETURN_BOOL(FALSE);
-		if ( box2.ymax < box1.ymin ) PG_RETURN_BOOL(FALSE);
-		if ( box2.ymin > box2.ymax ) PG_RETURN_BOOL(FALSE);
+		if ( ( box2.xmax < box1.xmin ) || ( box2.xmin > box1.xmax ) ||
+		     ( box2.ymax < box1.ymin ) || ( box2.ymin > box1.ymax ) )
+		{
+			PG_RETURN_BOOL(FALSE);
+		}
 	}
 
 	initGEOS(lwnotice, lwnotice);
@@ -2342,10 +2282,11 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
 	                getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
-		if ( box2.xmax < box1.xmin ) PG_RETURN_BOOL(TRUE);
-		if ( box2.xmin > box1.xmax ) PG_RETURN_BOOL(TRUE);
-		if ( box2.ymax < box1.ymin ) PG_RETURN_BOOL(TRUE);
-		if ( box2.ymin > box1.ymax ) PG_RETURN_BOOL(TRUE);
+		if ( ( box2.xmax < box1.xmin ) || ( box2.xmin > box1.xmax ) ||
+		     ( box2.ymax < box1.ymin ) || ( box2.ymin > box1.ymax ) )
+		{
+			PG_RETURN_BOOL(TRUE);
+		}
 	}
 
 	initGEOS(lwnotice, lwnotice);
@@ -2403,10 +2344,6 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 	GEOSGeom g1,g2;
 	int i;
 
-#ifdef PROFILE
-	profstart(PROF_QRUN);
-#endif
-
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
@@ -2415,20 +2352,8 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 
 	initGEOS(lwnotice, lwnotice);
 
-#ifdef PROFILE
-	profstart(PROF_P2G1);
-#endif
 	g1 = POSTGIS2GEOS(geom1);
-#ifdef PROFILE
-	profstop(PROF_P2G1);
-#endif
-#ifdef PROFILE
-	profstart(PROF_P2G2);
-#endif
 	g2 = POSTGIS2GEOS(geom2);
-#ifdef PROFILE
-	profstop(PROF_P2G2);
-#endif
 
 	patt =  DatumGetCString(DirectFunctionCall1(textout,
 	                        PointerGetDatum(PG_GETARG_DATUM(2))));
@@ -2442,13 +2367,7 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 		if ( patt[i] == 'f' ) patt[i] = 'F';
 	}
 
-#ifdef PROFILE
-	profstart(PROF_GRUN);
-#endif
 	result = GEOSRelatePattern(g1,g2,patt);
-#ifdef PROFILE
-	profstop(PROF_GRUN);
-#endif
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g2);
 	pfree(patt);
@@ -2458,11 +2377,6 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 		elog(ERROR,"GEOS relate_pattern() threw an error!");
 		PG_RETURN_NULL(); /* never get here */
 	}
-
-#ifdef PROFILE
-	profstop(PROF_QRUN);
-	profreport("geos",geom1, geom2, NULL);
-#endif
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
@@ -2482,10 +2396,6 @@ Datum relate_full(PG_FUNCTION_ARGS)
 	int len;
 	text *result;
 
-#ifdef PROFILE
-	profstart(PROF_QRUN);
-#endif
-
 	POSTGIS_DEBUG(2, "in relate_full()");
 
 	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
@@ -2494,23 +2404,10 @@ Datum relate_full(PG_FUNCTION_ARGS)
 	errorIfGeometryCollection(geom1,geom2);
 	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
 
-
 	initGEOS(lwnotice, lwnotice);
 
-#ifdef PROFILE
-	profstart(PROF_P2G1);
-#endif
 	g1 = POSTGIS2GEOS(geom1 );
-#ifdef PROFILE
-	profstop(PROF_P2G1);
-#endif
-#ifdef PROFILE
-	profstart(PROF_P2G2);
-#endif
 	g2 = POSTGIS2GEOS(geom2 );
-#ifdef PROFILE
-	profstop(PROF_P2G2);
-#endif
 
 	POSTGIS_DEBUG(3, "constructed geometries ");
 
@@ -2525,14 +2422,7 @@ Datum relate_full(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(3, "about to relate()");
 
-
-#ifdef PROFILE
-	profstart(PROF_GRUN);
-#endif
 	relate_str = GEOSRelate(g1, g2);
-#ifdef PROFILE
-	profstop(PROF_GRUN);
-#endif
 
 	POSTGIS_DEBUG(3, "finished relate()");
 
@@ -2554,18 +2444,12 @@ Datum relate_full(PG_FUNCTION_ARGS)
 
 	free(relate_str);
 
-#ifdef PROFILE
-	profstop(PROF_QRUN);
-	profreport("geos",geom1, geom2, NULL);
-#endif
-
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
 
 	PG_RETURN_POINTER(result);
 }
 
-/*============================== */
 
 PG_FUNCTION_INFO_V1(geomequals);
 Datum geomequals(PG_FUNCTION_ARGS)
@@ -2653,10 +2537,6 @@ Datum issimple(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(2, "issimple called");
 
-#ifdef PROFILE
-	profstart(PROF_QRUN);
-#endif
-
 	geom = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	if (lwgeom_getnumgeometries(SERIALIZED_FORM(geom)) == 0)
@@ -2664,21 +2544,8 @@ Datum issimple(PG_FUNCTION_ARGS)
 
 	initGEOS(lwnotice, lwnotice);
 
-#ifdef PROFILE
-	profstart(PROF_P2G1);
-#endif
 	g1 = POSTGIS2GEOS(geom);
-#ifdef PROFILE
-	profstop(PROF_P2G1);
-#endif
-
-#ifdef PROFILE
-	profstart(PROF_GRUN);
-#endif
 	result = GEOSisSimple(g1);
-#ifdef PROFILE
-	profstop(PROF_GRUN);
-#endif
 	GEOSGeom_destroy(g1);
 
 	if (result == 2)
@@ -2686,11 +2553,6 @@ Datum issimple(PG_FUNCTION_ARGS)
 		elog(ERROR,"GEOS issimple() threw an error!");
 		PG_RETURN_NULL(); /*never get here */
 	}
-
-#ifdef PROFILE
-	profstop(PROF_QRUN);
-	profreport("geos",geom, NULL, NULL);
-#endif
 
 	PG_FREE_IF_COPY(geom, 0);
 
@@ -2704,10 +2566,6 @@ Datum isring(PG_FUNCTION_ARGS)
 	GEOSGeom g1;
 	int result;
 
-#ifdef PROFILE
-	profstart(PROF_QRUN);
-#endif
-
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	if (lwgeom_getType(geom->type) != LINETYPE)
@@ -2720,21 +2578,8 @@ Datum isring(PG_FUNCTION_ARGS)
 
 	initGEOS(lwnotice, lwnotice);
 
-#ifdef PROFILE
-	profstart(PROF_P2G1);
-#endif
 	g1 = POSTGIS2GEOS(geom );
-#ifdef PROFILE
-	profstop(PROF_P2G1);
-#endif
-
-#ifdef PROFILE
-	profstart(PROF_GRUN);
-#endif
 	result = GEOSisRing(g1);
-#ifdef PROFILE
-	profstop(PROF_GRUN);
-#endif
 	GEOSGeom_destroy(g1);
 
 	if (result == 2)
@@ -2743,21 +2588,22 @@ Datum isring(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-#ifdef PROFILE
-	profstop(PROF_QRUN);
-	profreport("geos",geom, NULL, NULL);
-#endif
-
 	PG_FREE_IF_COPY(geom, 0);
-
 	PG_RETURN_BOOL(result);
 }
 
 
 
-/*= GEOS <=> POSTGIS CONVERSION ========================= */
-
-/*-----=GEOS2POSTGIS= */
+/*
+**  GEOS <==> PostGIS conversion functions
+**
+** WKB_CONVERSION is turned off by default. It serializes PostGIS to a WKB
+** array, then GEOS deserializes that array. 
+**
+** Default conversion creates a GEOS point array, then iterates through the
+** PostGIS points, setting each value in the GEOS array one at a time.
+**
+*/
 
 #ifdef WKB_CONVERSION
 
@@ -3392,20 +3238,6 @@ Datum linemerge(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom1, 0);
 
 	PG_RETURN_POINTER(result);
-}
-
-Datum JTSnoop(PG_FUNCTION_ARGS);
-PG_FUNCTION_INFO_V1(JTSnoop);
-Datum JTSnoop(PG_FUNCTION_ARGS)
-{
-	elog(ERROR, "JTS support is disabled");
-	PG_RETURN_NULL();
-}
-
-PG_FUNCTION_INFO_V1(postgis_jts_version);
-Datum postgis_jts_version(PG_FUNCTION_ARGS)
-{
-	PG_RETURN_NULL();
 }
 
 /*

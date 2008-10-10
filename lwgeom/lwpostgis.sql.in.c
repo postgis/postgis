@@ -3141,10 +3141,6 @@ CREATEFUNCTION postgis_geos_version() RETURNS text
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'C' _IMMUTABLE;
 
-CREATEFUNCTION postgis_jts_version() RETURNS text
-	AS 'MODULE_PATHNAME'
-	LANGUAGE 'C' _IMMUTABLE;
-
 CREATEFUNCTION postgis_scripts_build_date() RETURNS text
         AS _POSTGIS_SQL_SELECT_POSTGIS_BUILD_DATE
         LANGUAGE 'sql' _IMMUTABLE;
@@ -3161,7 +3157,6 @@ DECLARE
 	libver text;
 	projver text;
 	geosver text;
-	jtsver text;
 	usestats bool;
 	dbproc text;
 	relproc text;
@@ -3170,7 +3165,6 @@ BEGIN
 	SELECT postgis_lib_version() INTO libver;
 	SELECT postgis_proj_version() INTO projver;
 	SELECT postgis_geos_version() INTO geosver;
-	SELECT postgis_jts_version() INTO jtsver;
 	SELECT postgis_uses_stats() INTO usestats;
 	SELECT postgis_scripts_installed() INTO dbproc;
 	SELECT postgis_scripts_released() INTO relproc;
@@ -3179,10 +3173,6 @@ BEGIN
 
 	IF  geosver IS NOT NULL THEN
 		fullver = fullver || ' GEOS="' || geosver || '"';
-	END IF;
-
-	IF  jtsver IS NOT NULL THEN
-		fullver = fullver || ' JTS="' || jtsver || '"';
 	END IF;
 
 	IF  projver IS NOT NULL THEN
@@ -3926,12 +3916,6 @@ CREATEFUNCTION ST_IsValid(geometry)
 CREATEFUNCTION GEOSnoop(geometry)
    RETURNS geometry
    AS 'MODULE_PATHNAME', 'GEOSnoop'
-   LANGUAGE 'C' _VOLATILE_STRICT; -- WITH (isstrict,iscachable);
-
--- Deprecation in 1.2.3
-CREATEFUNCTION JTSnoop(geometry)
-   RETURNS geometry
-   AS 'MODULE_PATHNAME', 'JTSnoop'
    LANGUAGE 'C' _VOLATILE_STRICT; -- WITH (isstrict,iscachable);
 
 -- This is also available w/out GEOS 

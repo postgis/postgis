@@ -13,38 +13,39 @@
 
 #include "lwgeom_geos_prepared.h"
 
-/* 
-** Prepared geometry function prototypes 
-*/
-Datum containsPrepared(PG_FUNCTION_ARGS);
-Datum coversPrepared(PG_FUNCTION_ARGS);
-Datum intersectsPrepared(PG_FUNCTION_ARGS);
-
-/**********************************************************************
-** Internal prototype and structure definitions for the 
-** prepared geometry code.
+/***********************************************************************
 **
-** Working parts:
+**  PreparedGeometry implementations that cache intermediate indexed versions
+**  of geometry in a special MemoryContext for re-used by future function
+**  invocations.
 **
-** PrepGeomCache, the actual struct that holds the keys we compare
-** to determine if our cache is stale, and references to the GEOS
-** objects used in computations.
+**  By creating a memory context to hold the GEOS PreparedGeometry and Geometry
+**  and making it a child of the fmgr memory context, we can get the memory held
+**  by the GEOS objects released when the memory context delete callback is
+**  invoked by the parent context.
 **
-** PrepGeomHash, a global hash table that uses a MemoryContext as
-** key and returns a structure holding references to the GEOS
-** objects used in computations.
+**  Working parts:
 **
-** PreparedCacheContextMethods, a set of callback functions that
-** get hooked into a MemoryContext that is in turn used as a 
-** key in the PrepGeomHash.
+**  PrepGeomCache, the actual struct that holds the keys we compare
+**  to determine if our cache is stale, and references to the GEOS
+**  objects used in computations.
 **
-** All this is to allow us to clean up external malloc'ed objects
-** (the GEOS Geometry and PreparedGeometry) before the structure
-** that references them (PrepGeomCache) is pfree'd by PgSQL. The
-** methods in the PreparedCacheContext are called just before the
-** function context is freed, allowing us to look up the references
-** in the PrepGeomHash and free them before the function context
-** is freed.
+**  PrepGeomHash, a global hash table that uses a MemoryContext as
+**  key and returns a structure holding references to the GEOS
+**  objects used in computations.
+**
+**  PreparedCacheContextMethods, a set of callback functions that
+**  get hooked into a MemoryContext that is in turn used as a 
+**  key in the PrepGeomHash.
+**
+**  All this is to allow us to clean up external malloc'ed objects
+**  (the GEOS Geometry and PreparedGeometry) before the structure
+**  that references them (PrepGeomCache) is pfree'd by PgSQL. The
+**  methods in the PreparedCacheContext are called just before the
+**  function context is freed, allowing us to look up the references
+**  in the PrepGeomHash and free them before the function context
+**  is freed.
+**
 **/
 
 #ifdef PREPARED_GEOM
