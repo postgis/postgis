@@ -1,6 +1,6 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- 
--- $Id: lwpostgis.sql.in 2772 2008-04-24 01:04:52Z pramsey $
+-- $Id$
 --
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.refractions.net
