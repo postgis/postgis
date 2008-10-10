@@ -1628,9 +1628,9 @@ Datum covers(PG_FUNCTION_ARGS)
 
 	initGEOS(lwnotice, lwnotice);
 
+#ifdef PREPARED_GEOM
 	prep_cache = GetPrepGeomCache( fcinfo, geom1, 0 );
 
-#ifdef PREPARED_GEOM
 	if ( prep_cache && prep_cache->prepared_geom && prep_cache->argnum == 1 )
 	{
 		GEOSGeom g1 = POSTGIS2GEOS(geom2);
