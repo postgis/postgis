@@ -592,6 +592,7 @@ Datum LWGEOM_gist_consistent(PG_FUNCTION_ARGS)
 	PG_LWGEOM *query ; /* lwgeom serialized form */
 	StrategyNumber strategy = (StrategyNumber) PG_GETARG_UINT16(2);
 	bool result;
+	uchar *serialized_lwgeom;
 	BOX2DFLOAT4  box;
 
 #ifdef PGIS_DEBUG_CALLS
@@ -604,7 +605,11 @@ Datum LWGEOM_gist_consistent(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(false); /* null query - this is screwy! */
 	}
 
-	query = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	/* 
+	** First pull only a small amount of the tuple, enough to 
+	** get the bounding box, if one exists.
+	*/
+	query = (PG_LWGEOM*)PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(1), 0, VARHDRSZ + 1 + sizeof(BOX2DFLOAT4) );
 
 	if ( ! (DatumGetPointer(entry->key) != NULL && query) )
 	{
@@ -613,10 +618,24 @@ Datum LWGEOM_gist_consistent(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(FALSE);
 	}
 
-	if ( ! getbox2d_p(SERIALIZED_FORM(query), &box) )
+	/*
+	** If the bounding box exists, copy it into the working variable.
+	** If not, pull the full toasted data out, and call the standard box 
+	** retrieval function, which will calculate the box from scratch.
+	*/
+	serialized_lwgeom = SERIALIZED_FORM(query);
+	if( lwgeom_hasBBOX(serialized_lwgeom[0]) ) 
 	{
-		PG_FREE_IF_COPY(query, 1);
-		PG_RETURN_BOOL(FALSE);
+		memcpy(&box, serialized_lwgeom + 1, sizeof(BOX2DFLOAT4));
+	} 
+	else 
+	{
+		query = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1)); 
+		if ( ! getbox2d_p(SERIALIZED_FORM(query), &box) )
+		{
+			PG_FREE_IF_COPY(query, 1);
+			PG_RETURN_BOOL(FALSE);
+		}
 	}
 
 	if (GIST_LEAF(entry))
