@@ -69,7 +69,7 @@ typedef struct
 {
 	MemoryContext context;
 	const GEOSPreparedGeometry* prepared_geom;
-	const GEOSGeometry* geom;
+	GEOSGeometry* geom;
 } PrepGeomHashEntry;
 
 /* Memory context hash table function prototypes */
