@@ -75,10 +75,10 @@ static uchar endianbyte;
 void (*write_wkb_bytes)(uchar* ptr,unsigned int cnt,size_t size);
 
 /*
- * Parser global check flags - a bitmap of flags that determine which checks the parser will perform
+ * Unparser current instance check flags - a bitmap of flags that determine which checks are enabled during the current unparse
  * (see liblwgeom.h for the related PARSER_CHECK constants)
  */
-int unparser_check_flags;
+int current_unparser_check_flags;
 
 /*
  * Unparser result structure
@@ -243,7 +243,7 @@ output_line_collection(uchar* geom,outfunc func,int supress)
 	int cnt = read_int(&geom);
 
 	/* Ensure that LINESTRING has a minimum of 2 points */
-	if ((unparser_check_flags & PARSER_CHECK_MINPOINTS) && cnt < 2)
+	if ((current_unparser_check_flags & PARSER_CHECK_MINPOINTS) && cnt < 2)
 		lwerror("geometry requires more points");
 
 	if ( cnt == 0 ){
@@ -308,7 +308,7 @@ output_polygon_ring_collection(uchar* geom,outfunc func,int supress)
 
         	/* Check if they are the same... */
         	if (memcmp(&first_point, &last_point, sizeof(double) * dims) &&
-			(unparser_check_flags & PARSER_CHECK_CLOSURE))
+			(current_unparser_check_flags & PARSER_CHECK_CLOSURE))
                 	lwerror("geometry contains non-closed rings");
 
 	}
@@ -322,11 +322,11 @@ output_curve_collection(uchar* geom,outfunc func,int supress)
 	int cnt = read_int(&geom);
 
 	/* Ensure that a CIRCULARSTRING has a minimum of 3 points */
-        if ((unparser_check_flags & PARSER_CHECK_MINPOINTS) && cnt < 3)
+        if ((current_unparser_check_flags & PARSER_CHECK_MINPOINTS) && cnt < 3)
                 lwerror("geometry requires more points");
 
 	/* Ensure that a CIRCULARSTRING has an odd number of points */
-        if ((unparser_check_flags & PARSER_CHECK_ODD) && cnt % 2 != 1)
+        if ((current_unparser_check_flags & PARSER_CHECK_ODD) && cnt % 2 != 1)
                 lwerror("geometry must have an odd number of points");
 
 	if ( cnt == 0 ){
@@ -579,7 +579,7 @@ unparse_WKT(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar* serialized, allo
 		return 0;
 
 	/* Setup the inital parser flags and empty the return struct */
-        unparser_check_flags = flags;
+        current_unparser_check_flags = flags;
 	lwg_unparser_result->wkoutput = NULL;
         lwg_unparser_result->size = 0;
 
@@ -711,7 +711,7 @@ output_wkb_line_collection(uchar* geom,outwkbfunc func)
 	LWDEBUGF(2, "output_wkb_line_collection: %d iterations loop", cnt);
 
 	/* Ensure that LINESTRING has a minimum of 2 points */
-        if ((unparser_check_flags & PARSER_CHECK_MINPOINTS) && cnt < 2)
+        if ((current_unparser_check_flags & PARSER_CHECK_MINPOINTS) && cnt < 2)
                 lwerror("geometry requires more points");
 
 	write_wkb_int(cnt);
@@ -758,7 +758,7 @@ output_wkb_polygon_ring_collection(uchar* geom,outwkbfunc func)
 
 	/* Check if they are the same... */
 	if (memcmp(&first_point, &last_point, sizeof(double) * dims) &&
-		(unparser_check_flags & PARSER_CHECK_CLOSURE))
+		(current_unparser_check_flags & PARSER_CHECK_CLOSURE))
 		lwerror("geometry contains non-closed rings");
 
 	return geom;
@@ -782,11 +782,11 @@ output_wkb_curve_collection(uchar* geom,outwkbfunc func)
 	LWDEBUGF(2, "output_wkb_curve_collection: %d iterations loop", cnt);
 
 	/* Ensure that a CIRCULARSTRING has a minimum of 3 points */
-        if ((unparser_check_flags & PARSER_CHECK_MINPOINTS) && cnt < 3)
+        if ((current_unparser_check_flags & PARSER_CHECK_MINPOINTS) && cnt < 3)
                 lwerror("geometry requires more points");
 
 	/* Ensure that a CIRCULARSTRING has an odd number of points */
-        if ((unparser_check_flags & PARSER_CHECK_ODD) && cnt % 2 != 1)
+        if ((current_unparser_check_flags & PARSER_CHECK_ODD) && cnt % 2 != 1)
                 lwerror("geometry must have an odd number of points");
 
 	write_wkb_int(cnt);
@@ -893,7 +893,7 @@ unparse_WKB(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar* serialized, allo
 		return 0;
 
 	/* Setup the inital parser flags and empty the return struct */
-        unparser_check_flags = flags;
+        current_unparser_check_flags = flags;
 	lwg_unparser_result->wkoutput = NULL;
 	lwg_unparser_result->size = 0;
 

@@ -94,10 +94,10 @@ tuple* free_list=0;
 
 
 /*
- * Parser global check flags - a bitmap of flags that determine which checks the parser will perform 
+ * Parser current instance check flags - a bitmap of flags that determine which checks are enabled during the current parse 
  * (see liblwgeom.h for the related PARSER_CHECK constants)
  */
-int parser_check_flags;
+int current_parser_check_flags;
 
 
 /* Parser state flags - these are set automatically by the parser */
@@ -281,21 +281,21 @@ void
 popc(void)
 {
 	/* If the minimum point check has been enabled, perform it */
-	if (parser_check_flags & PARSER_CHECK_MINPOINTS) {
+	if (current_parser_check_flags & PARSER_CHECK_MINPOINTS) {
 		if ( the_geom.stack->uu.nn.num < minpoints){
 			error("geometry requires more points");
 		}
 	}
 
 	/* If the odd number point check has been enabled, perform it */
-	if (parser_check_flags & PARSER_CHECK_ODD) {
+	if (current_parser_check_flags & PARSER_CHECK_ODD) {
         	if(isodd != -1 && the_geom.stack->uu.nn.num % 2 != isodd) {
                 	error("geometry must have an odd number of points");
         	}
 	}
 
 	/* If the polygon closure check has been enabled, perform it */
-	if (parser_check_flags & PARSER_CHECK_CLOSURE) {
+	if (current_parser_check_flags & PARSER_CHECK_CLOSURE) {
 		if ( checkclosed && first_point && last_point) {
 			if ( memcmp(first_point, last_point,
 				sizeof(double)*the_geom.ndims) )
@@ -1133,7 +1133,7 @@ parse_it(LWGEOM_PARSER_RESULT *lwg_parser_result, const char *geometry, int flag
 	ferror_occured = 0;
 
 	/* Setup the inital parser flags and empty the return struct */
-	parser_check_flags = flags;
+	current_parser_check_flags = flags;
 	lwg_parser_result->serialized_lwgeom = NULL;
 	lwg_parser_result->size = 0;
 
