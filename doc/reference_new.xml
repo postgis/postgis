@@ -441,7 +441,7 @@ Check constraints:
       <refsynopsisdiv>
         <funcsynopsis>
           <funcprototype>
-            <funcdef>text <function>Postgis_Lib_Build_Date</function></funcdef>
+            <funcdef>text <function>PostGIS_Lib_Build_Date</function></funcdef>
     
             <paramdef></paramdef>
           </funcprototype>
@@ -556,6 +556,155 @@ Check constraints:
       </refsection>
     </refentry>
 
+    <refentry id="PostGIS_Scripts_Build_Date">
+      <refnamediv>
+        <refname>PostGIS_Scripts_Build_Date</refname>
+
+        <refpurpose>Returns build date of the PostGIS scripts.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>text <function>PostGIS_Scripts_Build_Date</function></funcdef>
+
+            <paramdef></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Returns build date of the PostGIS scripts.</para>
+
+        <para>Availability: 1.0.0RC1</para>
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+
+        <programlisting>SELECT PostGIS_Scripts_Build_Date();
+  postgis_scripts_build_date   
+-------------------------
+ 2007-08-18 09:09:26
+(1 row)</programlisting>
+      </refsection>
+
+      <refsection>
+        <title>See Also</title>
+
+        <para><xref linkend="PostGIS_Full_Version" />, <xref
+        linkend="PostGIS_GEOS_Version" />, <xref
+        linkend="PostGIS_JTS_Version" />, <xref
+        linkend="PostGIS_Lib_Version" />, <xref
+        linkend="PostGIS_Version" /></para>
+      </refsection>
+    </refentry>
+			
+	<refentry id="PostGIS_Scripts_Installed">
+      <refnamediv>
+        <refname>PostGIS_Scripts_Installed</refname>
+
+        <refpurpose>Returns version of the postgis scripts installed in this
+            database.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>text <function>PostGIS_Scripts_Installed</function></funcdef>
+
+            <paramdef></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Returns version of the postgis scripts installed in this
+            database.</para>
+			
+		<note>
+              <para>If the output of this function doesn't match the output of
+              <link
+              linkend="postgis_scripts_released">postgis_scripts_released()</link>
+              you probably missed to properly upgrade an existing database.
+              See the <link linkend="upgrading">Upgrading</link> section for
+              more info.</para>
+        </note>
+
+        <para>Availability: 0.9.0</para>
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+
+        <programlisting>SELECT PostGIS_Scripts_Installed();
+  postgis_scripts_installed  
+-------------------------
+ 1.3.4SVN
+(1 row)</programlisting>
+      </refsection>
+
+      <refsection>
+        <title>See Also</title>
+
+        <para><xref linkend="PostGIS_Full_Version" />, <xref linkend="PostGIS_Scripts_Released" />, <xref linkend="PostGIS_Version" /></para>
+      </refsection>
+    </refentry>
+	
+	<refentry id="PostGIS_Scripts_Released">
+      <refnamediv>
+        <refname>PostGIS_Scripts_Released</refname>
+
+        <refpurpose>Returns the version number of the lwpostgis.sql script
+		released with the installed postgis lib.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>text <function>PostGIS_Scripts_Released</function></funcdef>
+
+            <paramdef></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Returns the version number of the lwpostgis.sql script
+		released with the installed postgis lib.</para>
+			
+		<note>
+		  <para>Starting with version 1.1.0 this function returns the same
+		  value of <xref linkend="PostGIS_Lib_Version" />. Kept
+		  for backward compatibility.</para>
+		</note>
+
+        <para>Availability: 0.9.0</para>
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+
+        <programlisting>SELECT PostGIS_Scripts_Released();
+  postgis_scripts_released 
+-------------------------
+ 1.3.4SVN
+(1 row)</programlisting>
+      </refsection>
+
+      <refsection>
+        <title>See Also</title>
+
+        <para><xref linkend="PostGIS_Full_Version" />, <xref linkend="PostGIS_Scripts_Installed" />, <xref linkend="PostGIS_Lib_Version" /></para>
+      </refsection>
+    </refentry>
+
     <refentry id="PostGIS_Uses_Stats">
       <refnamediv>
         <refname>PostGIS_Uses_Stats</refname>
@@ -642,7 +791,51 @@ Check constraints:
         linkend="PostGIS_PROJ_Version" /></para>
       </refsection>
     </refentry>
+	
+	<refentry id="Probe_Geometry_Columns">
+      <refnamediv>
+        <refname>Probe_Geometry_Columns</refname>
 
+        <refpurpose>Scans all tables with PostGIS geometry constraints and adds them to the <varname>geometry_columns</varname>
+			table if they are not there.  Also give stats on number of inserts and already present or possibly obsolete columns.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>text <function>Probe_Geometry_Columns</function></funcdef>
+            <paramdef></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Scans all tables with PostGIS geometry constraints and adds them to the <varname>geometry_columns</varname>
+			table if they are not there.  Also give stats on number of inserts and already present or possibly obsolete.</para>
+		<note><para>This will usually only pick up records added by AddGeometryColumn() function.  It will not scan views so views 
+			will need to be manually added to geometry_columns table.</para></note>
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+
+        <programlisting>SELECT Probe_Geometry_Columns();
+            probe_geometry_columns           
+---------------------------------------
+probed:6 inserted:0 conflicts:6 stale:0
+(1 row)</programlisting>
+      </refsection>
+
+      <refsection>
+        <title>See Also</title>
+
+        <para><xref linkend="AddGeometryColumn" /></para>
+      </refsection>
+    </refentry>
+	
+	
     <refentry id="UpdateGeometrySRID">
       <refnamediv>
         <refname>UpdateGeometrySRID</refname>
