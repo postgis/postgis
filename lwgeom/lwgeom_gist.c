@@ -88,67 +88,27 @@ static int counter_intern = 0;
 PG_FUNCTION_INFO_V1(LWGEOM_overlap);
 Datum LWGEOM_overlap(PG_FUNCTION_ARGS)
 {
-	/*
 	PG_LWGEOM *lwgeom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	PG_LWGEOM *lwgeom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-	*/
-
-	PG_LWGEOM *lwgeom1 = (PG_LWGEOM*)PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, VARHDRSZ + 1 + sizeof(BOX2DFLOAT4) );
-	PG_LWGEOM *lwgeom2 = (PG_LWGEOM*)PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(1), 0, VARHDRSZ + 1 + sizeof(BOX2DFLOAT4) );
 	bool result;
 	BOX2DFLOAT4 box1;
 	BOX2DFLOAT4 box2;
-	uchar *ser1;
-	uchar *ser2;
 
-	ser1 = SERIALIZED_FORM(lwgeom1);
-	ser2 = SERIALIZED_FORM(lwgeom2);
-	if ( lwgeom_hasBBOX(ser1[0]) )
+	if ( pglwgeom_getSRID(lwgeom1) != pglwgeom_getSRID(lwgeom2) )
 	{
-		memcpy(&box1, ser1 + 1, sizeof(BOX2DFLOAT4));
-	}
-	else
-	{
-		lwgeom1 = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-		if ( ! getbox2d_p(SERIALIZED_FORM(lwgeom1), &box1) )
-		{
-			PG_FREE_IF_COPY(lwgeom1, 0);
-			PG_RETURN_BOOL(FALSE);
-		}
-	}
-	if ( lwgeom_hasBBOX(ser2[0]) )
-	{
-		memcpy(&box2, ser2 + 1, sizeof(BOX2DFLOAT4));
-	}
-	else
-	{
-		lwgeom2 = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-		if ( ! getbox2d_p(SERIALIZED_FORM(lwgeom2), &box2) )
-		{
-			PG_FREE_IF_COPY(lwgeom2, 0);
-			PG_RETURN_BOOL(FALSE);
-		}
+		PG_FREE_IF_COPY(lwgeom1, 0);
+       	PG_FREE_IF_COPY(lwgeom2, 1);
+		elog(ERROR, "Operation on two geometries with different SRIDs");
+		PG_RETURN_NULL();
 	}
 
-	POSTGIS_DEBUG(2, "GIST: LWGEOM_overlap --entry");
-	/*
-		if ( pglwgeom_getSRID(lwgeom1) != pglwgeom_getSRID(lwgeom2) )
-		{
-			PG_FREE_IF_COPY(lwgeom1, 0);
-	        	PG_FREE_IF_COPY(lwgeom2, 1);
-			elog(ERROR, "Operation on two geometries with different SRIDs");
-			PG_RETURN_NULL();
-		}
-
-
-		if ( ! (getbox2d_p(SERIALIZED_FORM(lwgeom1), &box1) && getbox2d_p(SERIALIZED_FORM(lwgeom2), &box2)) )
-		{
-			PG_FREE_IF_COPY(lwgeom1, 0);
-	        	PG_FREE_IF_COPY(lwgeom2, 1);
-			/* One or both are empty geoms */
-	/*        	PG_RETURN_BOOL(FALSE);
-		}
-	*/
+	if ( ! (getbox2d_p(SERIALIZED_FORM(lwgeom1), &box1) && getbox2d_p(SERIALIZED_FORM(lwgeom2), &box2)) )
+	{
+		PG_FREE_IF_COPY(lwgeom1, 0);
+       	PG_FREE_IF_COPY(lwgeom2, 1);
+		/* One or both are empty geoms */
+		PG_RETURN_BOOL(FALSE);
+	}
 
 	result = DatumGetBool(DirectFunctionCall2(BOX2D_overlap,
 	                      PointerGetDatum(&box1), PointerGetDatum(&box2)));
