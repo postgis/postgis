@@ -70,6 +70,8 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 
 	/* will handle both HEXEWKB and EWKT */
 	result = serialized_lwgeom_from_ewkt(&lwg_parser_result, str, PARSER_CHECK_ALL);
+	if (result)
+		PG_PARSER_ERROR(lwg_parser_result);
 
 	lwgeom = lwgeom_deserialize(lwg_parser_result.serialized_lwgeom);
     
@@ -101,6 +103,8 @@ Datum LWGEOM_out(PG_FUNCTION_ARGS)
 
 	lwgeom = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, SERIALIZED_FORM(lwgeom), PARSER_CHECK_ALL, -1);
+	if (result)
+		PG_UNPARSER_ERROR(lwg_unparser_result);
 
 	PG_RETURN_CSTRING(lwg_unparser_result.wkoutput);
 }
@@ -141,6 +145,8 @@ Datum LWGEOM_asHEXEWKB(PG_FUNCTION_ARGS)
 	}
 
 	result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, SERIALIZED_FORM(lwgeom), PARSER_CHECK_ALL, byteorder);
+	if (result)
+		PG_UNPARSER_ERROR(lwg_unparser_result);
 
 	text_result = palloc(lwg_unparser_result.size+VARHDRSZ);
 	memcpy(VARDATA(text_result),lwg_unparser_result.wkoutput,lwg_unparser_result.size);
@@ -168,6 +174,8 @@ Datum LWGEOM_to_text(PG_FUNCTION_ARGS)
 
 	lwgeom = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, SERIALIZED_FORM(lwgeom), PARSER_CHECK_ALL, -1);
+	if (result)
+		PG_UNPARSER_ERROR(lwg_unparser_result);
 
 	text_result = palloc(lwg_unparser_result.size+VARHDRSZ);
 	memcpy(VARDATA(text_result),lwg_unparser_result.wkoutput,lwg_unparser_result.size);
@@ -269,6 +277,8 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 
 #ifdef BINARY_FROM_HEX
 	result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, SERIALIZED_FORM(lwgeom_input), byteorder);
+	if (result)
+		PG_UNPARSER_ERROR(lwg_unparser_result);
 
 	LWDEBUGF(3, "in WKBFromLWGEOM with WKB = '%s'", lwg_unparser_result.wkoutput);
 
@@ -298,6 +308,8 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 #else /* ndef BINARY_FROM_HEX */
 
 	result = serialized_lwgeom_to_ewkb(&lwg_unparser_result, SERIALIZED_FORM(lwgeom_input), PARSER_CHECK_ALL, byteorder);
+	if (result)
+		PG_UNPARSER_ERROR(lwg_unparser_result);
 
 	size_result = lwg_unparser_result.size+VARHDRSZ;
 	lwgeom_result = palloc(size_result);
@@ -480,6 +492,8 @@ Datum parse_WKT_lwgeom(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUGF(3, "in parse_WKT_lwgeom with input: '%s'",wkt);
 
 	result = serialized_lwgeom_from_ewkt(&lwg_parser_result, wkt, PARSER_CHECK_ALL);
+	if (result)
+		PG_PARSER_ERROR(lwg_parser_result);
 
 	lwgeom = lwgeom_deserialize(lwg_parser_result.serialized_lwgeom);
     

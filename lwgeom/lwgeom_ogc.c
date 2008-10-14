@@ -1004,6 +1004,8 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUGF(3, "wkt: [%s]", wkt);
 
 	result = serialized_lwgeom_from_ewkt(&lwg_parser_result, wkt, PARSER_CHECK_ALL);
+	if (result)
+		PG_PARSER_ERROR(lwg_parser_result);
 
 	lwgeom = lwgeom_deserialize(lwg_parser_result.serialized_lwgeom);
 
@@ -1081,6 +1083,8 @@ Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 		LWGEOM_force_2d, PointerGetDatum(lwgeom)));
 
 	result =  serialized_lwgeom_to_ewkt(&lwg_unparser_result, SERIALIZED_FORM(ogclwgeom), PARSER_CHECK_ALL);
+	if (result)
+		PG_UNPARSER_ERROR(lwg_unparser_result);
 
 	semicolonLoc = strchr(lwg_unparser_result.wkoutput,';');
 

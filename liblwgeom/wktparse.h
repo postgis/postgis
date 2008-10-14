@@ -23,12 +23,17 @@ typedef struct serialized_lwgeom {
 typedef struct struct_lwgeom_parser_result
 {
         SERIALIZED_LWGEOM *serialized_lwgeom;
+        int size;
+        const char *message;
+        int errlocation;
 } LWGEOM_PARSER_RESULT;
 
 typedef struct struct_lwgeom_unparser_result
 {
         char *wkoutput;
         int size;
+	const char *message;
+        int errlocation;
 } LWGEOM_UNPARSER_RESULT;
 #endif
 typedef void* (*allocator)(size_t size);

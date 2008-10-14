@@ -13,6 +13,7 @@
 
 #include "liblwgeom.h"
 #include "wktparse.h"
+#include "wktparse.tab.h"
 
 /*
  * To get byte order
@@ -43,7 +44,7 @@ typedef void (*read_col_func)(const char **f);
 
 int srid=-1;
 
-static int ferror_occured;
+static int parser_ferror_occured;
 static allocator local_malloc;
 static report_error error_func;
 
@@ -99,13 +100,18 @@ tuple* free_list=0;
  */
 int current_parser_check_flags;
 
+/*
+ * Parser current instance result structure - the result structure being used for the current parse
+ */
+LWGEOM_PARSER_RESULT *current_lwg_parser_result;
+
 
 /* Parser state flags - these are set automatically by the parser */
 int minpoints;
 int checkclosed;
 
 /*
- * This inicates if the number of points in the geometry is required to
+ * This indicates if the number of points in the geometry is required to
  * be odd (one) or even (zero, currently not enforced) or whatever (-one)
  */
 int isodd;
@@ -113,12 +119,50 @@ double *first_point=NULL;
 double *last_point=NULL;
 
 
+/*
+ * Parser error messages
+ *
+ * IMPORTANT: Make sure the order of these messages matches the PARSER_ERROR constants in liblwgeom.h!
+ * The 0th element should always be empty since it is unused (error constants start from -1)
+ */
+
+const char *parser_error_messages[] = {
+	"",
+	"geometry requires more points",
+	"geometry must have an odd number of points",
+	"geometry contains non-closed rings",
+	"can not mix dimensionality in a geometry",
+	"parse error - invalid geometry",
+	"invalid WKB type"
+};
+
+/* Macro to return the error message and the current position within WKT */ 
+#define LWGEOM_WKT_PARSER_ERROR(errcode) \
+	do { \
+		if (!parser_ferror_occured) { \
+			parser_ferror_occured = -1 * errcode; \
+			current_lwg_parser_result->message = parser_error_messages[errcode]; \
+			current_lwg_parser_result->errlocation = lwg_parse_yylloc.last_column; \
+		} \
+	} while (0);
+
+
+/* Macro to return the error message and the current position within WKB 
+   NOTE: the position is handled automatically by strhex_readbyte */ 
+#define LWGEOM_WKB_PARSER_ERROR(errcode) \
+	do { \
+		if (!parser_ferror_occured) { \
+			parser_ferror_occured = -1 * errcode; \
+			current_lwg_parser_result->message = parser_error_messages[errcode]; \
+		} \
+	} while (0);
+
+
 /* External functions */
 extern void init_parser(const char *);
 
 /* Prototypes */
 tuple* alloc_tuple(output_func of,size_t size);
-static void error(const char* err);
 void free_tuple(tuple* to_free);
 void inc_num(void);
 void alloc_stack_tuple(int type,output_func of,size_t size);
@@ -222,13 +266,6 @@ alloc_tuple(output_func of,size_t size)
 	return ret;
 }
 
-static void
-error(const char* err)
-{
-	error_func(err);
-	ferror_occured=1;
-}
-
 void
 free_tuple(tuple* to_free)
 {
@@ -283,14 +320,14 @@ popc(void)
 	/* If the minimum point check has been enabled, perform it */
 	if (current_parser_check_flags & PARSER_CHECK_MINPOINTS) {
 		if ( the_geom.stack->uu.nn.num < minpoints){
-			error("geometry requires more points");
+			LWGEOM_WKT_PARSER_ERROR(PARSER_ERROR_MOREPOINTS);
 		}
 	}
 
 	/* If the odd number point check has been enabled, perform it */
 	if (current_parser_check_flags & PARSER_CHECK_ODD) {
         	if(isodd != -1 && the_geom.stack->uu.nn.num % 2 != isodd) {
-                	error("geometry must have an odd number of points");
+                	LWGEOM_WKT_PARSER_ERROR(PARSER_ERROR_ODDPOINTS);
         	}
 	}
 
@@ -300,7 +337,7 @@ popc(void)
 			if ( memcmp(first_point, last_point,
 				sizeof(double)*the_geom.ndims) )
 			{
-				error("geometry contains non-closed rings");
+				LWGEOM_WKT_PARSER_ERROR(PARSER_ERROR_UNCLOSED);
 			}
 		}	
 	}
@@ -316,7 +353,7 @@ check_dims(int num)
 
 	if( the_geom.ndims != num){
 		if (the_geom.ndims) {
-			error("Can not mix dimensionality in a geometry");
+			LWGEOM_WKT_PARSER_ERROR(PARSER_ERROR_MIXDIMS);
 		} else {
 
                         LWDEBUGF(3, "check_dims: setting dim %d", num);
@@ -627,7 +664,7 @@ alloc_polygon(void)
 	else
 		alloc_stack_tuple(POLYGONTYPE, write_type,1);
 
-	minpoints=3;
+	minpoints=4;
 	checkclosed=1;
         isodd=-1;
 
@@ -639,7 +676,7 @@ alloc_curvepolygon(void)
         LWDEBUG(2, "alloc_curvepolygon called.");
 
         alloc_stack_tuple(CURVEPOLYTYPE, write_type, 1);
-        minpoints=3;
+        minpoints=4;
         checkclosed=1;
         isodd=-1;
 }
@@ -774,8 +811,7 @@ lwg_parse_yynotice(char* s)
 int
 lwg_parse_yyerror(char* s)
 {
-	error("parse error - invalid geometry");
-	/* error_func("parse error - invalid geometry"); */
+	LWGEOM_WKT_PARSER_ERROR(PARSER_ERROR_INVALIDGEOM);
 	return 1;
 }
 
@@ -809,12 +845,18 @@ uchar
 strhex_readbyte(const char* in)
 {
 	if ( *in == 0 ){
-		if ( ! ferror_occured){
-			error("invalid wkb");
+		if ( ! parser_ferror_occured){
+			LWGEOM_WKB_PARSER_ERROR(PARSER_ERROR_INVALIDGEOM);
 		}
 		return 0;
 	}
-	return to_hex[(int)*in]<<4 | to_hex[(int)*(in+1)];
+
+	if (!parser_ferror_occured) {
+		lwg_parse_yylloc.last_column++;
+		return to_hex[(int)*in]<<4 | to_hex[(int)*(in+1)];
+	} else {
+		return 0;
+	}
 }
 
 uchar
@@ -919,10 +961,10 @@ read_wkb_polygon(const char **b)
 
 	/* Read through each ORDINATE_ARRAY in turn */
 	while(cnt--){
-		if ( ferror_occured )	return;
+		if ( parser_ferror_occured )	return;
 
 		/* Things to check for POLYGON ORDINATE_ARRAYs */
-		minpoints=3;
+		minpoints=4;
 		checkclosed=1;
 		isodd=-1;
 
@@ -965,7 +1007,7 @@ read_wkb_ordinate_array(const char **b)
 	alloc_counter();
 
 	while(cnt--){
-		if ( ferror_occured )	return;
+		if ( parser_ferror_occured )	return;
 		read_wkb_point(b);
 	}
 
@@ -981,7 +1023,7 @@ read_collection(const char **b, read_col_func f)
 	alloc_counter();
 
 	while(cnt--){
-		if ( ferror_occured )	return;
+		if ( parser_ferror_occured )	return;
 		f(b);
 	}
 
@@ -1007,7 +1049,7 @@ parse_wkb(const char **b)
 	type = read_wkb_int(b);
 
 	/* quick exit on error */
-	if ( ferror_occured ) return;
+	if ( parser_ferror_occured ) return;
 
 	the_geom.ndims=2;
 	if (type & WKBZOFFSET)
@@ -1102,7 +1144,7 @@ parse_wkb(const char **b)
 			break;
 
 		default:
-			error("Invalid type in wbk");
+			LWGEOM_WKB_PARSER_ERROR(PARSER_ERROR_INVALIDWKBTYPE);
 	}
 
 	the_geom.from_lwgi=0;
@@ -1130,9 +1172,10 @@ parse_it(LWGEOM_PARSER_RESULT *lwg_parser_result, const char *geometry, int flag
 	local_malloc = allocfunc;
 	error_func=errfunc;
 
-	ferror_occured = 0;
+	parser_ferror_occured = 0;
 
 	/* Setup the inital parser flags and empty the return struct */
+	current_lwg_parser_result = lwg_parser_result;
 	current_parser_check_flags = flags;
 	lwg_parser_result->serialized_lwgeom = NULL;
 	lwg_parser_result->size = 0;
@@ -1143,13 +1186,10 @@ parse_it(LWGEOM_PARSER_RESULT *lwg_parser_result, const char *geometry, int flag
 
 	close_parser();
 
-	if (ferror_occured)
-		return 0;
-
 	/* Return the parsed geometry */
 	make_serialized_lwgeom(lwg_parser_result);
 
-	return -1;
+	return parser_ferror_occured;
 }
 
 int

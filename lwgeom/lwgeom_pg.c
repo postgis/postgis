@@ -19,6 +19,12 @@
 PG_MODULE_MAGIC;
 #endif
 
+/*
+ * Global pointer for parser/unparser error messages
+ */
+char *parser_message;
+
+
 void *
 pg_alloc(size_t size)
 {
@@ -258,6 +264,8 @@ pglwgeom_from_ewkb(uchar *ewkb, int flags, size_t ewkblen)
 	hexewkb[hexewkblen] = '\0';
 
 	result = serialized_lwgeom_from_ewkt(&lwg_parser_result, hexewkb, flags);
+	if (result)
+		PG_PARSER_ERROR(lwg_parser_result);
 
 	ret = (PG_LWGEOM *)palloc(lwg_parser_result.size + VARHDRSZ);
 	SET_VARSIZE(ret, lwg_parser_result.size + VARHDRSZ);
@@ -276,12 +284,20 @@ pglwgeom_to_ewkb(PG_LWGEOM *geom, int flags, char byteorder, size_t *outsize)
 {
 	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
 	int result;
+	char *wkoutput;
 	uchar *srl = &(geom->type);
 
 	result = serialized_lwgeom_to_ewkb(&lwg_unparser_result, srl, flags, byteorder);
+	if (result)
+		PG_UNPARSER_ERROR(lwg_unparser_result);
 
 	*outsize = lwg_unparser_result.size;
-	return lwg_unparser_result.wkoutput;
+
+	/* Make a copy of the wkoutput so it can be used outside of the function */
+	wkoutput = palloc(lwg_unparser_result.size);
+	memcpy(wkoutput, lwg_unparser_result.wkoutput, lwg_unparser_result.size);
+
+	return wkoutput;
 }
 
 /*

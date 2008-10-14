@@ -45,6 +45,23 @@ void pg_notice(const char *msg, va_list vp);
 #endif
 
 
+/*
+ * Standard macro for reporting parser errors to PostgreSQL
+ */
+#define PG_PARSER_ERROR(lwg_parser_result) \
+        do { \
+                elog(ERROR, "%s", lwg_parser_result.message); \
+        } while(0);
+
+/*
+ * Standard macro for reporting unparser errors to PostgreSQL
+ */
+#define PG_UNPARSER_ERROR(lwg_unparser_result) \
+        do { \
+                elog(ERROR, "%s", lwg_unparser_result.message); \
+        } while(0);
+
+
 /* Serialize/deserialize a PG_LWGEOM (postgis datatype) */
 extern PG_LWGEOM *pglwgeom_serialize(LWGEOM *lwgeom);
 extern LWGEOM *pglwgeom_deserialize(PG_LWGEOM *pglwgeom);

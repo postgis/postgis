@@ -64,6 +64,7 @@ uchar* output_wkb(uchar* geom);
 
 /*-- Globals ----------------------------------------------- */
 
+static int unparser_ferror_occured;
 static int dims;
 static allocator local_malloc;
 static freeor local_free;
@@ -81,9 +82,43 @@ void (*write_wkb_bytes)(uchar* ptr,unsigned int cnt,size_t size);
 int current_unparser_check_flags;
 
 /*
- * Unparser result structure
+ * Unparser current instance result structure - the result structure being used for the current unparse
  */
-LWGEOM_UNPARSER_RESULT *unparser_result;
+LWGEOM_UNPARSER_RESULT *current_lwg_unparser_result;
+
+/*
+ * Unparser error messages
+ *
+ * IMPORTANT: Make sure the order of these messages matches the UNPARSER_ERROR constants in liblwgeom.h!
+ * The 0th element should always be empty since it is unused (error constants start from -1)
+ */
+
+const char *unparser_error_messages[] = {
+        "",
+        "geometry requires more points",
+	"geometry must have an odd number of points",
+        "geometry contains non-closed rings"
+};
+
+/* Macro to return the error message and the current position within WKT */
+#define LWGEOM_WKT_UNPARSER_ERROR(errcode) \
+        do { \
+		if (!unparser_ferror_occured) { \
+                	unparser_ferror_occured = -1 * errcode; \
+                	current_lwg_unparser_result->message = unparser_error_messages[errcode]; \
+                	current_lwg_unparser_result->errlocation = (out_pos - out_start); \
+		} \
+        } while (0);
+
+/* Macro to return the error message and the current position within WKB */
+#define LWGEOM_WKB_UNPARSER_ERROR(errcode) \
+        do { \
+		if (!unparser_ferror_occured) { \
+                	unparser_ferror_occured = -1 * errcode; \
+                	current_lwg_unparser_result->message = unparser_error_messages[errcode]; \
+                	current_lwg_unparser_result->errlocation = (out_pos - out_start); \
+		} \
+        } while (0);
 
 /*---------------------------------------------------------- */
 
@@ -241,10 +276,7 @@ uchar *
 output_line_collection(uchar* geom,outfunc func,int supress)
 {
 	int cnt = read_int(&geom);
-
-	/* Ensure that LINESTRING has a minimum of 2 points */
-	if ((current_unparser_check_flags & PARSER_CHECK_MINPOINTS) && cnt < 2)
-		lwerror("geometry requires more points");
+	int orig_cnt = cnt;
 
 	if ( cnt == 0 ){
 		write_str(" EMPTY");
@@ -259,6 +291,11 @@ output_line_collection(uchar* geom,outfunc func,int supress)
 		}
 		write_str(")");
 	}
+
+	/* Ensure that LINESTRING has a minimum of 2 points */
+	if ((current_unparser_check_flags & PARSER_CHECK_MINPOINTS) && orig_cnt < 2)
+		LWGEOM_WKT_UNPARSER_ERROR(UNPARSER_ERROR_MOREPOINTS);
+
 	return geom;
 }
 
@@ -272,6 +309,7 @@ output_polygon_ring_collection(uchar* geom,outfunc func,int supress)
         double last_point[dims];
 
 	int cnt = read_int(&geom);
+	int orig_cnt = cnt;
 	if ( cnt == 0 ){
 		write_str(" EMPTY");
 	}
@@ -309,8 +347,11 @@ output_polygon_ring_collection(uchar* geom,outfunc func,int supress)
         	/* Check if they are the same... */
         	if (memcmp(&first_point, &last_point, sizeof(double) * dims) &&
 			(current_unparser_check_flags & PARSER_CHECK_CLOSURE))
-                	lwerror("geometry contains non-closed rings");
+                	LWGEOM_WKT_UNPARSER_ERROR(UNPARSER_ERROR_UNCLOSED);	
 
+		/* Ensure that POLYGON has a minimum of 4 points */
+        	if ((current_unparser_check_flags & PARSER_CHECK_MINPOINTS) && orig_cnt < 4)
+                	LWGEOM_WKT_UNPARSER_ERROR(UNPARSER_ERROR_MOREPOINTS);
 	}
 	return geom;
 }
@@ -320,14 +361,7 @@ uchar *
 output_curve_collection(uchar* geom,outfunc func,int supress)
 {
 	int cnt = read_int(&geom);
-
-	/* Ensure that a CIRCULARSTRING has a minimum of 3 points */
-        if ((current_unparser_check_flags & PARSER_CHECK_MINPOINTS) && cnt < 3)
-                lwerror("geometry requires more points");
-
-	/* Ensure that a CIRCULARSTRING has an odd number of points */
-        if ((current_unparser_check_flags & PARSER_CHECK_ODD) && cnt % 2 != 1)
-                lwerror("geometry must have an odd number of points");
+	int orig_cnt = cnt;
 
 	if ( cnt == 0 ){
 		write_str(" EMPTY");
@@ -342,6 +376,17 @@ output_curve_collection(uchar* geom,outfunc func,int supress)
 		}
 		write_str(")");
 	}
+
+	/* Ensure that a CIRCULARSTRING has a minimum of 3 points */
+        if ((current_unparser_check_flags & PARSER_CHECK_MINPOINTS) && orig_cnt < 3) {
+                LWGEOM_WKT_UNPARSER_ERROR(UNPARSER_ERROR_MOREPOINTS);
+	}
+
+	/* Ensure that a CIRCULARSTRING has an odd number of points */
+        if ((current_unparser_check_flags & PARSER_CHECK_ODD) && orig_cnt % 2 != 1) {
+                LWGEOM_WKT_UNPARSER_ERROR(UNPARSER_ERROR_ODDPOINTS);
+	}
+
 	return geom;
 }
 
@@ -579,11 +624,12 @@ unparse_WKT(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar* serialized, allo
 		return 0;
 
 	/* Setup the inital parser flags and empty the return struct */
+	current_lwg_unparser_result = lwg_unparser_result;
         current_unparser_check_flags = flags;
 	lwg_unparser_result->wkoutput = NULL;
         lwg_unparser_result->size = 0;
 
-	unparser_result = lwg_unparser_result;
+	unparser_ferror_occured = 0;
 	local_malloc=alloc;
 	local_free=free;
 	len = 128;
@@ -596,7 +642,7 @@ unparse_WKT(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar* serialized, allo
 	lwg_unparser_result->wkoutput = out_start;
 	lwg_unparser_result->size = strlen(out_start);
 
-	return -1;
+	return unparser_ferror_occured;
 }
 
 static char outchr[]={"0123456789ABCDEF" };
@@ -707,15 +753,18 @@ uchar *
 output_wkb_line_collection(uchar* geom,outwkbfunc func)
 {
 	int cnt = read_int(&geom);
+	int orig_cnt = cnt;
 
 	LWDEBUGF(2, "output_wkb_line_collection: %d iterations loop", cnt);
 
-	/* Ensure that LINESTRING has a minimum of 2 points */
-        if ((current_unparser_check_flags & PARSER_CHECK_MINPOINTS) && cnt < 2)
-                lwerror("geometry requires more points");
-
 	write_wkb_int(cnt);
 	while(cnt--) geom=func(geom);
+
+	/* Ensure that LINESTRING has a minimum of 2 points */
+        if ((current_unparser_check_flags & PARSER_CHECK_MINPOINTS) && orig_cnt < 2) {
+		LWGEOM_WKB_UNPARSER_ERROR(UNPARSER_ERROR_MOREPOINTS);
+	}
+
 	return geom;
 }
 
@@ -729,6 +778,7 @@ output_wkb_polygon_ring_collection(uchar* geom,outwkbfunc func)
 	double last_point[dims];
 
 	int cnt = read_int(&geom);
+	int orig_cnt = cnt;
 
 	LWDEBUGF(2, "output_wkb_polygon_ring_collection: %d iterations loop", cnt);
 
@@ -758,8 +808,13 @@ output_wkb_polygon_ring_collection(uchar* geom,outwkbfunc func)
 
 	/* Check if they are the same... */
 	if (memcmp(&first_point, &last_point, sizeof(double) * dims) &&
-		(current_unparser_check_flags & PARSER_CHECK_CLOSURE))
-		lwerror("geometry contains non-closed rings");
+		(current_unparser_check_flags & PARSER_CHECK_CLOSURE)) {
+		LWGEOM_WKB_UNPARSER_ERROR(UNPARSER_ERROR_UNCLOSED);
+	}
+
+	/* Ensure that POLYGON has a minimum of 4 points */
+	if ((current_unparser_check_flags & PARSER_CHECK_MINPOINTS) && orig_cnt < 4)
+		LWGEOM_WKT_UNPARSER_ERROR(UNPARSER_ERROR_MOREPOINTS);
 
 	return geom;
 }
@@ -778,19 +833,23 @@ uchar *
 output_wkb_curve_collection(uchar* geom,outwkbfunc func)
 {
 	int cnt = read_int(&geom);
+	int orig_cnt = cnt;
 
 	LWDEBUGF(2, "output_wkb_curve_collection: %d iterations loop", cnt);
 
-	/* Ensure that a CIRCULARSTRING has a minimum of 3 points */
-        if ((current_unparser_check_flags & PARSER_CHECK_MINPOINTS) && cnt < 3)
-                lwerror("geometry requires more points");
-
-	/* Ensure that a CIRCULARSTRING has an odd number of points */
-        if ((current_unparser_check_flags & PARSER_CHECK_ODD) && cnt % 2 != 1)
-                lwerror("geometry must have an odd number of points");
-
 	write_wkb_int(cnt);
 	while(cnt--) geom=func(geom);
+
+	/* Ensure that a CIRCULARSTRING has a minimum of 3 points */
+        if ((current_unparser_check_flags & PARSER_CHECK_MINPOINTS) && orig_cnt < 3) {
+		LWGEOM_WKB_UNPARSER_ERROR(UNPARSER_ERROR_MOREPOINTS);
+	}
+
+	/* Ensure that a CIRCULARSTRING has an odd number of points */
+        if ((current_unparser_check_flags & PARSER_CHECK_ODD) && orig_cnt % 2 != 1) {
+		LWGEOM_WKB_UNPARSER_ERROR(UNPARSER_ERROR_ODDPOINTS);
+	}
+
 	return geom;
 }
 
@@ -893,11 +952,12 @@ unparse_WKB(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar* serialized, allo
 		return 0;
 
 	/* Setup the inital parser flags and empty the return struct */
+	current_lwg_unparser_result = lwg_unparser_result;
         current_unparser_check_flags = flags;
 	lwg_unparser_result->wkoutput = NULL;
 	lwg_unparser_result->size = 0;
 
-	unparser_result = lwg_unparser_result;
+	unparser_ferror_occured = 0;
 	local_malloc=alloc;
 	local_free=free;
 	len = 128;
@@ -936,7 +996,7 @@ unparse_WKB(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar* serialized, allo
 	lwg_unparser_result->wkoutput = out_start;
 	lwg_unparser_result->size = (out_pos-out_start);
 
-	return -1;	
+	return unparser_ferror_occured;	
 }
 
 

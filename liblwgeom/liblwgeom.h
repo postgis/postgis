@@ -1123,7 +1123,20 @@ typedef struct struct_lwgeom_parser_result
 {
 	uchar *serialized_lwgeom;	/* Pointer to serialized LWGEOM */
 	int size;			/* Size of serialized LWGEOM in bytes */
+	const char *message;		/* Error/warning message */
+	int errlocation;		/* Location of error */
 } LWGEOM_PARSER_RESULT;
+
+/*
+ * Parser error messages (these must match the message array in lwgparse.c)
+ */
+#define PARSER_ERROR_MOREPOINTS 	1
+#define PARSER_ERROR_ODDPOINTS		2	
+#define PARSER_ERROR_UNCLOSED		3 
+#define PARSER_ERROR_MIXDIMS		4	
+#define PARSER_ERROR_INVALIDGEOM	5
+#define PARSER_ERROR_INVALIDWKBTYPE	6
+
 
 /*
  * Unparser result structure: returns the result of attempting to convert LWGEOM to (E)WKT/(E)WKB 
@@ -1132,7 +1145,17 @@ typedef struct struct_lwgeom_unparser_result
 {
 	char *wkoutput;			/* Pointer to WKT or WKB output */
 	int size;			/* Size of serialized LWGEOM in bytes */
+	const char *message;		/* Error/warning message */
+	int errlocation;		/* Location of error */
 } LWGEOM_UNPARSER_RESULT;
+
+/*
+ * Unparser error messages (these must match the message array in lwgunparse.c)
+ */
+#define UNPARSER_ERROR_MOREPOINTS 	1
+#define UNPARSER_ERROR_ODDPOINTS	2	
+#define UNPARSER_ERROR_UNCLOSED		3 
+
 
 /* Parser access routines */
 extern char *lwgeom_to_ewkt(LWGEOM *lwgeom, int flags);

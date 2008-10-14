@@ -2949,6 +2949,8 @@ Datum LWGEOM_asEWKT(PG_FUNCTION_ARGS)
 	lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	result = serialized_lwgeom_to_ewkt(&lwg_unparser_result, SERIALIZED_FORM(lwgeom), PARSER_CHECK_ALL);
+	if (result)
+		PG_UNPARSER_ERROR(lwg_unparser_result);
 
 #if 0
 	semicolonLoc = strchr(lwg_unparser_result.wkb,';');
