@@ -1096,30 +1096,6 @@ z' = z </programlisting> This method is a subcase of the 3D method
         </varlistentry>
 
         <varlistentry>
-          <term>ST_Simplify(geometry, tolerance)</term>
-
-          <listitem>
-            <para>Returns a "simplified" version of the given geometry using
-            the Douglas-Peuker algorithm. Will actually do something only with
-            (multi)lines and (multi)polygons but you can safely call it with
-            any kind of geometry. Since simplification occurs on a
-            object-by-object basis you can also feed a GeometryCollection to
-            this function. Note that returned geometry might loose its
-            simplicity (see <xref linkend="ST_IsSimple" />)</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>ST_SimplifyPreserveTopology(geometry, tolerance)</term>
-
-          <listitem>
-            <para>Returns a "simplified" version of the given geometry using
-            the Douglas-Peuker algorithm. Will avoid creating derived
-            geometries (polygons in particular) that are invalid.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
           <term>ST_SnapToGrid(geometry, originX, originY, sizeX, sizeY)</term>
 
           <term>ST_SnapToGrid(geometry, sizeX, sizeY)</term>

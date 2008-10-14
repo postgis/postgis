@@ -5654,7 +5654,103 @@ geomtextrep
 			<para><xref linkend="ST_Dump" /></para>
 		</refsection>
 	</refentry>	
+		
+	<refentry id="ST_Simplify">
+	  <refnamediv>
+		<refname>ST_Simplify</refname>
+		<refpurpose>Returns a "simplified" version of the given geometry using
+				the Douglas-Peuker algorithm.</refpurpose>
+	  </refnamediv>
 	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Simplify</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>tolerance</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+		<para>Returns a "simplified" version of the given geometry using
+				the Douglas-Peuker algorithm. Will actually do something only with
+				(multi)lines and (multi)polygons but you can safely call it with
+				any kind of geometry. Since simplification occurs on a
+				object-by-object basis you can also feed a GeometryCollection to
+				this function.</para>
+			
+		<note><para>Note that returned geometry might loose its
+				simplicity (see <xref linkend="ST_IsSimple" />)</para></note>
+		<note><para>Note topology may not be preserved and may result in invalid geometries.  Use  (see <xref linkend="ST_SimplifyPreserveTopology" />) to preserve topology.</para></note>
+			
+		<para>Performed by the GEOS module.</para>
+		<para>Availability: 1.2.2</para>
+	  </refsection>
+		
+		  <refsection>
+			<title>Examples</title>
+			<para>Forthcoming</para>
+				<programlisting>
+				<!-- TODO: Need examples -->
+	
+				</programlisting>
+		  </refsection>
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_SimplifyPreserveTopology" /></para>
+		  </refsection>
+	</refentry>
+
+	<refentry id="ST_SimplifyPreserveTopology">
+	  <refnamediv>
+		<refname>ST_SimplifyPreserveTopology</refname>
+		<refpurpose>Returns a "simplified" version of the given geometry using
+            the Douglas-Peuker algorithm. Will avoid creating derived
+            geometries (polygons in particular) that are invalid.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_SimplifyPreserveTopology</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>tolerance</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+		<para>Returns a "simplified" version of the given geometry using
+            the Douglas-Peuker algorithm. Will avoid creating derived
+            geometries (polygons in particular) that are invalid. Will actually do something only with
+				(multi)lines and (multi)polygons but you can safely call it with
+				any kind of geometry. Since simplification occurs on a
+				object-by-object basis you can also feed a GeometryCollection to
+				this function.</para>
+					
+		<para>Performed by the GEOS module.</para>
+		<note><para>Requires GEOS 3.0.0+</para></note>
+		<para>Availability: 1.3.3</para>
+	  </refsection>
+		
+		  <refsection>
+			<title>Examples</title>
+			<para>Forthcoming</para>
+				<programlisting>
+				<!-- TODO: Need examples -->
+	
+				</programlisting>
+		  </refsection>
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_Simplify" /></para>
+		  </refsection>
+	</refentry>
+		
+		
 <refentry id="ST_Union">
   <refnamediv>
 	<refname>ST_Union</refname>
