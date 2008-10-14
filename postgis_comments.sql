@@ -22,15 +22,23 @@ COMMENT ON FUNCTION PostGIS_GEOS_Version() IS 'Returns the version number of the
 			
 COMMENT ON FUNCTION PostGIS_JTS_Version() IS 'Returns the version number of the JTS library.';
 			
-COMMENT ON FUNCTION Postgis_Lib_Build_Date() IS 'Returns build date of the PostGIS library.';
+COMMENT ON FUNCTION PostGIS_Lib_Build_Date() IS 'Returns build date of the PostGIS library.';
 			
 COMMENT ON FUNCTION PostGIS_Lib_Version() IS 'Returns the version number of the PostGIS library.';
 			
 COMMENT ON FUNCTION PostGIS_PROJ_Version() IS 'Returns the version number of the PROJ4 library.';
 			
+COMMENT ON FUNCTION PostGIS_Scripts_Build_Date() IS 'Returns build date of the PostGIS scripts.';
+			
+COMMENT ON FUNCTION PostGIS_Scripts_Installed() IS 'Returns version of the postgis scripts installed in this database.';
+			
+COMMENT ON FUNCTION PostGIS_Scripts_Released() IS 'Returns the version number of the lwpostgis.sql script released with the installed postgis lib.';
+			
 COMMENT ON FUNCTION PostGIS_Uses_Stats() IS 'Returns TRUE if STATS usage has been enabled.';
 			
 COMMENT ON FUNCTION PostGIS_Version() IS 'Returns PostGIS version number and compile-time options.';
+			
+COMMENT ON FUNCTION Probe_Geometry_Columns() IS 'Scans all tables with PostGIS geometry constraints and adds them to the geometry_columns table if they are not there. Also give stats on number of inserts and already present or possibly obsolete columns.';
 			
 COMMENT ON FUNCTION UpdateGeometrySRID(varchar , varchar , integer ) IS 'args: table_name, column_name, srid - Updates the SRID of all features in a geometry column, geometry_columns metadata and srid table constraint';
 			
@@ -226,4 +234,4 @@ COMMENT ON FUNCTION ST_Expand(box2d , float) IS 'args: g1, units_to_expand - Ret
 			
 COMMENT ON FUNCTION ST_Expand(box3d , float) IS 'args: g1, units_to_expand - Returns bounding box expanded in all directions from the bounding box of the input geometry';
 			
-COMMENT ON AGGREGATE ST_Extent(geometry) IS 'args: geomfield - an aggregate function that returns the bounding box that bounds rows of geometries.';		
+COMMENT ON AGGREGATE ST_Extent(geometry) IS 'args: geomfield - an aggregate function that returns the bounding box that bounds rows of geometries.';			
