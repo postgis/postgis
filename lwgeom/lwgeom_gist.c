@@ -592,8 +592,11 @@ Datum LWGEOM_gist_consistent(PG_FUNCTION_ARGS)
 	PG_LWGEOM *query ; /* lwgeom serialized form */
 	StrategyNumber strategy = (StrategyNumber) PG_GETARG_UINT16(2);
 	bool result;
-	uchar *serialized_lwgeom;
 	BOX2DFLOAT4  box;
+#if USE_VERSION > 72
+	/* For sliced de-toasting code */
+	uchar *serialized_lwgeom;
+#endif
 
 #ifdef PGIS_DEBUG_CALLS
 	elog(NOTICE,"GIST: LWGEOM_gist_consistent called");
@@ -605,6 +608,24 @@ Datum LWGEOM_gist_consistent(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(false); /* null query - this is screwy! */
 	}
 
+#if USE_VERSION <= 72
+	/* 
+	** PgSQL 7.2 doesn't support sliced detoasting.
+	*/
+	query = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1)); 
+
+	if ( ! (DatumGetPointer(entry->key) != NULL && query) )
+	{
+		PG_FREE_IF_COPY(query, 1);
+		elog(ERROR, "LWGEOM_gist_consistent got either NULL query or entry->key");
+		PG_RETURN_BOOL(FALSE);
+	}
+	if ( ! getbox2d_p(SERIALIZED_FORM(query), &box) )
+	{
+		PG_FREE_IF_COPY(query, 1);
+		PG_RETURN_BOOL(FALSE);
+	}
+#else
 	/* 
 	** First pull only a small amount of the tuple, enough to 
 	** get the bounding box, if one exists.
@@ -637,6 +658,7 @@ Datum LWGEOM_gist_consistent(PG_FUNCTION_ARGS)
 			PG_RETURN_BOOL(FALSE);
 		}
 	}
+#endif
 
 	if (GIST_LEAF(entry))
 		result = lwgeom_rtree_leaf_consistent((BOX2DFLOAT4 *)
