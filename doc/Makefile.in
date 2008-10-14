@@ -79,11 +79,11 @@ postgis.pdf: postgis-out.xml
 
 clean:
 	@rm -f \
-		postgis-out.xml \
-		postgis-*.pdf 
+		postgis-out.xml
 
 maintainer-clean: clean
-	@rm -f html/*.html
+	@rm -f html/*.html \
+		postgis-*.pdf 
 
 install: html/postgis.html man/shp2pgsql.1 man/pgsql2shp.1
 	@mkdir -p $(PGSQL_DOCDIR)/postgis
