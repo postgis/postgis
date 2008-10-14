@@ -5691,15 +5691,22 @@ geomtextrep
 		
 		  <refsection>
 			<title>Examples</title>
-			<para>Forthcoming</para>
+			<para>A circle simplified too much becomes a triangle, medium an octagon, </para>
 				<programlisting>
-				<!-- TODO: Need examples -->
-	
+SELECT ST_Npoints(the_geom) As np_before, ST_NPoints(ST_Simplify(the_geom,0.1)) As np01_notbadcircle, ST_NPoints(ST_Simplify(the_geom,0.5)) As np05_notquitecircle,
+ST_NPoints(ST_Simplify(the_geom,1)) As np1_octagon, ST_NPoints(ST_Simplify(the_geom,10)) As np10_triangle,
+(ST_Simplify(the_geom,100) is null) As  np100_geometrygoesaway
+FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As the_geom) As foo;
+-result
+ np_before | np01_notbadcircle | np05_notquitecircle | np1_octagon | np10_triangle | np100_geometrygoesaway 
+-----------+-------------------+---------------------+-------------+---------------+------------------------
+        49 |                33 |                  17 |           9 |             4 | t
+
 				</programlisting>
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_SimplifyPreserveTopology" /></para>
+			<para><xref linkend="ST_IsSimple" />, <xref linkend="ST_SimplifyPreserveTopology" /></para>
 		  </refsection>
 	</refentry>
 
@@ -5738,10 +5745,17 @@ geomtextrep
 		
 		  <refsection>
 			<title>Examples</title>
-			<para>Forthcoming</para>
+			<para>Same example as Simplify, but we see Preserve Topology prevents oversimplification.  The circle can at most become a square.</para>
 				<programlisting>
-				<!-- TODO: Need examples -->
-	
+SELECT ST_Npoints(the_geom) As np_before, ST_NPoints(ST_SimplifyPreserveTopology(the_geom,0.1)) As np01_notbadcircle, ST_NPoints(ST_SimplifyPreserveTopology(the_geom,0.5)) As np05_notquitecircle,
+ST_NPoints(ST_SimplifyPreserveTopology(the_geom,1)) As np1_octagon, ST_NPoints(ST_SimplifyPreserveTopology(the_geom,10)) As np10_square,
+ST_NPoints(ST_SimplifyPreserveTopology(the_geom,100)) As  np100_stillsquare
+FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As the_geom) As foo;
+
+--result--
+ np_before | np01_notbadcircle | np05_notquitecircle | np1_octagon | np10_square | np100_stillsquare 
+-----------+-------------------+---------------------+-------------+---------------+-------------------
+        49 |                33 |                  17 |           9 |             5 |                 5
 				</programlisting>
 		  </refsection>
 		  <refsection>
