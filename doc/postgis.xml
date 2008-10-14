@@ -348,6 +348,12 @@
 
           <programlisting># psql -d [yourdatabase] -f spatial_ref_sys.sql</programlisting>
         </listitem>
+		
+		<listitem>
+          <para>For helpful descriptions about functions included in postgis, install the postgis_comments.sql file.</para>
+
+          <programlisting># psql -d [yourdatabase] -f postgis_comments.sql</programlisting>
+        </listitem>
       </orderedlist>
 
       <sect2 id="templatepostgis">
