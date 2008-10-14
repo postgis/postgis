@@ -224,6 +224,10 @@ COMMENT ON FUNCTION ST_Intersection(geometry, geometry) IS 'args: geomA, geomB -
 			
 COMMENT ON AGGREGATE ST_Polygonize(geometry) IS 'args: geomfield - Aggregate. Creates a GeometryCollection containing possible polygons formed from the constituent linework of a set of geometries.';
 			
+COMMENT ON FUNCTION ST_Simplify(geometry, float) IS 'args: geomA, tolerance - Returns a "simplified" version of the given geometry using the Douglas-Peuker algorithm.';
+			
+COMMENT ON FUNCTION ST_SimplifyPreserveTopology(geometry, float) IS 'args: geomA, tolerance - Returns a "simplified" version of the given geometry using the Douglas-Peuker algorithm. Will avoid creating derived geometries (polygons in particular) that are invalid.';
+			
 COMMENT ON AGGREGATE ST_Union(geometry) IS 'args: g1field - Returns a geometry that represents the point set union of the Geometries.';
 			
 COMMENT ON FUNCTION ST_Union(geometry) IS 'args: g1 - Returns a geometry that represents the point set union of the Geometries.';
