@@ -264,6 +264,16 @@ Check constraints:
             <paramdef><type>varchar </type>
             <parameter>table_name</parameter></paramdef>
           </funcprototype>
+		  
+		  <funcprototype>
+            <funcdef>boolean <function>DropGeometryTable</function></funcdef>
+			<paramdef><type>varchar </type>
+            <parameter>catalog_name</parameter></paramdef>
+            <paramdef><type>varchar </type>
+            <parameter>schema_name</parameter></paramdef>
+            <paramdef><type>varchar </type>
+            <parameter>table_name</parameter></paramdef>
+          </funcprototype>
         </funcsynopsis>
       </refsynopsisdiv>
 
