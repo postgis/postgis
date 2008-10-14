@@ -61,7 +61,7 @@ typedef struct
 	size_t                        pg_geom2_size;
 	int32                         argnum;
 	const GEOSPreparedGeometry*   prepared_geom;
-	const GEOSGeometry*           geom;
+	GEOSGeometry*                 geom;
 	MemoryContext                 context;
 } PrepGeomCache;
 
@@ -3666,7 +3666,7 @@ typedef struct
 {
 	MemoryContext context;
 	const GEOSPreparedGeometry* prepared_geom;
-	const GEOSGeometry* geom;
+	GEOSGeometry* geom;
 } PrepGeomHashEntry;
 
 
