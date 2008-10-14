@@ -88,45 +88,81 @@ static int counter_intern = 0;
 PG_FUNCTION_INFO_V1(LWGEOM_overlap);
 Datum LWGEOM_overlap(PG_FUNCTION_ARGS)
 {
+	/*
 	PG_LWGEOM *lwgeom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	PG_LWGEOM *lwgeom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	*/
+
+	PG_LWGEOM *lwgeom1 = (PG_LWGEOM*)PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, VARHDRSZ + 1 + sizeof(BOX2DFLOAT4) );
+	PG_LWGEOM *lwgeom2 = (PG_LWGEOM*)PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(1), 0, VARHDRSZ + 1 + sizeof(BOX2DFLOAT4) );
 	bool result;
 	BOX2DFLOAT4 box1;
 	BOX2DFLOAT4 box2;
+	uchar *ser1;
+	uchar *ser2;
+
+	ser1 = SERIALIZED_FORM(lwgeom1);
+	ser2 = SERIALIZED_FORM(lwgeom2);
+	if ( lwgeom_hasBBOX(ser1[0]) )
+	{
+		memcpy(&box1, ser1 + 1, sizeof(BOX2DFLOAT4));
+	}
+	else
+	{
+		lwgeom1 = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+		if ( ! getbox2d_p(SERIALIZED_FORM(lwgeom1), &box1) )
+		{
+			PG_FREE_IF_COPY(lwgeom1, 0);
+			PG_RETURN_BOOL(FALSE);
+		}
+	}
+	if ( lwgeom_hasBBOX(ser2[0]) )
+	{
+		memcpy(&box2, ser2 + 1, sizeof(BOX2DFLOAT4));
+	}
+	else
+	{
+		lwgeom2 = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+		if ( ! getbox2d_p(SERIALIZED_FORM(lwgeom2), &box2) )
+		{
+			PG_FREE_IF_COPY(lwgeom2, 0);
+			PG_RETURN_BOOL(FALSE);
+		}
+	}
 
 	POSTGIS_DEBUG(2, "GIST: LWGEOM_overlap --entry");
+	/*
+		if ( pglwgeom_getSRID(lwgeom1) != pglwgeom_getSRID(lwgeom2) )
+		{
+			PG_FREE_IF_COPY(lwgeom1, 0);
+	        	PG_FREE_IF_COPY(lwgeom2, 1);
+			elog(ERROR, "Operation on two geometries with different SRIDs");
+			PG_RETURN_NULL();
+		}
 
-	if ( pglwgeom_getSRID(lwgeom1) != pglwgeom_getSRID(lwgeom2) )
-	{
-		PG_FREE_IF_COPY(lwgeom1, 0);
-        	PG_FREE_IF_COPY(lwgeom2, 1);
-		elog(ERROR, "Operation on two geometries with different SRIDs");
-		PG_RETURN_NULL();
-	}
 
-
-	if ( ! (getbox2d_p(SERIALIZED_FORM(lwgeom1), &box1) && getbox2d_p(SERIALIZED_FORM(lwgeom2), &box2)) )
-	{
-		PG_FREE_IF_COPY(lwgeom1, 0);
-        	PG_FREE_IF_COPY(lwgeom2, 1);
-		/* One or both are empty geoms */
-        	PG_RETURN_BOOL(FALSE);
-	}
-
+		if ( ! (getbox2d_p(SERIALIZED_FORM(lwgeom1), &box1) && getbox2d_p(SERIALIZED_FORM(lwgeom2), &box2)) )
+		{
+			PG_FREE_IF_COPY(lwgeom1, 0);
+	        	PG_FREE_IF_COPY(lwgeom2, 1);
+			/* One or both are empty geoms */
+	/*        	PG_RETURN_BOOL(FALSE);
+		}
+	*/
 
 	result = DatumGetBool(DirectFunctionCall2(BOX2D_overlap,
-		PointerGetDatum(&box1), PointerGetDatum(&box2)));
+	                      PointerGetDatum(&box1), PointerGetDatum(&box2)));
 
 	PG_FREE_IF_COPY(lwgeom1, 0);
-        PG_FREE_IF_COPY(lwgeom2, 1);
+	PG_FREE_IF_COPY(lwgeom2, 1);
 
 	POSTGIS_DEBUGF(3, "GIST: lwgeom_overlap:\n(%f %f, %f %f) (%f %f %f %f) = %i",
-		box1.xmin, box1.ymax, box1.xmax, box1.ymax,
-		box2.xmin, box2.ymax, box2.xmax, box2.ymax,
-		result
-		);
+	               box1.xmin, box1.ymax, box1.xmax, box1.ymax,
+	               box2.xmin, box2.ymax, box2.xmax, box2.ymax,
+	               result
+	              );
 
-        PG_RETURN_BOOL(result);
+	PG_RETURN_BOOL(result);
 }
 
 
@@ -158,12 +194,12 @@ Datum LWGEOM_overleft(PG_FUNCTION_ARGS)
 
 
 	result = DatumGetBool(DirectFunctionCall2(BOX2D_overleft,
-		PointerGetDatum(&box1), PointerGetDatum(&box2))); 
+	                      PointerGetDatum(&box1), PointerGetDatum(&box2)));
 
 	PG_FREE_IF_COPY(lwgeom1, 0);
-        PG_FREE_IF_COPY(lwgeom2, 1);
+	PG_FREE_IF_COPY(lwgeom2, 1);
 
-        PG_RETURN_BOOL(result);
+	PG_RETURN_BOOL(result);
 }
 
 PG_FUNCTION_INFO_V1(LWGEOM_left);
@@ -187,12 +223,12 @@ Datum LWGEOM_left(PG_FUNCTION_ARGS)
 	}
 
 	result = DatumGetBool(DirectFunctionCall2(BOX2D_left,
-		PointerGetDatum(&box1), PointerGetDatum(&box2))); 
+	                      PointerGetDatum(&box1), PointerGetDatum(&box2)));
 
 	PG_FREE_IF_COPY(lwgeom1, 0);
-        PG_FREE_IF_COPY(lwgeom2, 1);
+	PG_FREE_IF_COPY(lwgeom2, 1);
 
-        PG_RETURN_BOOL(result);
+	PG_RETURN_BOOL(result);
 }
 
 
@@ -217,12 +253,12 @@ Datum LWGEOM_right(PG_FUNCTION_ARGS)
 	}
 
 	result = DatumGetBool(DirectFunctionCall2(BOX2D_right,
-		PointerGetDatum(&box1), PointerGetDatum(&box2)));
+	                      PointerGetDatum(&box1), PointerGetDatum(&box2)));
 
 	PG_FREE_IF_COPY(lwgeom1, 0);
-        PG_FREE_IF_COPY(lwgeom2, 1);
+	PG_FREE_IF_COPY(lwgeom2, 1);
 
-        PG_RETURN_BOOL(result);
+	PG_RETURN_BOOL(result);
 }
 
 
@@ -247,12 +283,12 @@ Datum LWGEOM_overright(PG_FUNCTION_ARGS)
 	}
 
 	result = DatumGetBool(DirectFunctionCall2(BOX2D_overright,
-		PointerGetDatum(&box1), PointerGetDatum(&box2)));
+	                      PointerGetDatum(&box1), PointerGetDatum(&box2)));
 
 	PG_FREE_IF_COPY(lwgeom1, 0);
-        PG_FREE_IF_COPY(lwgeom2, 1);
+	PG_FREE_IF_COPY(lwgeom2, 1);
 
-        PG_RETURN_BOOL(result);
+	PG_RETURN_BOOL(result);
 }
 
 
@@ -278,12 +314,12 @@ Datum LWGEOM_overbelow(PG_FUNCTION_ARGS)
 
 
 	result = DatumGetBool(DirectFunctionCall2(BOX2D_overbelow,
-		PointerGetDatum(&box1), PointerGetDatum(&box2))); 
+	                      PointerGetDatum(&box1), PointerGetDatum(&box2)));
 
 	PG_FREE_IF_COPY(lwgeom1, 0);
-        PG_FREE_IF_COPY(lwgeom2, 1);
+	PG_FREE_IF_COPY(lwgeom2, 1);
 
-        PG_RETURN_BOOL(result);
+	PG_RETURN_BOOL(result);
 }
 
 PG_FUNCTION_INFO_V1(LWGEOM_below);
@@ -307,12 +343,12 @@ Datum LWGEOM_below(PG_FUNCTION_ARGS)
 	}
 
 	result = DatumGetBool(DirectFunctionCall2(BOX2D_below,
-		PointerGetDatum(&box1), PointerGetDatum(&box2))); 
+	                      PointerGetDatum(&box1), PointerGetDatum(&box2)));
 
 	PG_FREE_IF_COPY(lwgeom1, 0);
-        PG_FREE_IF_COPY(lwgeom2, 1);
+	PG_FREE_IF_COPY(lwgeom2, 1);
 
-        PG_RETURN_BOOL(result);
+	PG_RETURN_BOOL(result);
 }
 
 
@@ -337,12 +373,12 @@ Datum LWGEOM_above(PG_FUNCTION_ARGS)
 	}
 
 	result = DatumGetBool(DirectFunctionCall2(BOX2D_above,
-		PointerGetDatum(&box1), PointerGetDatum(&box2)));
+	                      PointerGetDatum(&box1), PointerGetDatum(&box2)));
 
 	PG_FREE_IF_COPY(lwgeom1, 0);
-        PG_FREE_IF_COPY(lwgeom2, 1);
+	PG_FREE_IF_COPY(lwgeom2, 1);
 
-        PG_RETURN_BOOL(result);
+	PG_RETURN_BOOL(result);
 }
 
 
@@ -367,12 +403,12 @@ Datum LWGEOM_overabove(PG_FUNCTION_ARGS)
 	}
 
 	result = DatumGetBool(DirectFunctionCall2(BOX2D_overabove,
-		PointerGetDatum(&box1), PointerGetDatum(&box2)));
+	                      PointerGetDatum(&box1), PointerGetDatum(&box2)));
 
 	PG_FREE_IF_COPY(lwgeom1, 0);
-        PG_FREE_IF_COPY(lwgeom2, 1);
+	PG_FREE_IF_COPY(lwgeom2, 1);
 
-        PG_RETURN_BOOL(result);
+	PG_RETURN_BOOL(result);
 }
 
 
@@ -397,12 +433,12 @@ Datum LWGEOM_contained(PG_FUNCTION_ARGS)
 	}
 
 	result = DatumGetBool(DirectFunctionCall2(BOX2D_contained,
-		PointerGetDatum(&box1), PointerGetDatum(&box2)));
+	                      PointerGetDatum(&box1), PointerGetDatum(&box2)));
 
 	PG_FREE_IF_COPY(lwgeom1, 0);
-        PG_FREE_IF_COPY(lwgeom2, 1);
+	PG_FREE_IF_COPY(lwgeom2, 1);
 
-        PG_RETURN_BOOL(result);
+	PG_RETURN_BOOL(result);
 }
 
 
@@ -427,12 +463,12 @@ Datum LWGEOM_contain(PG_FUNCTION_ARGS)
 	}
 
 	result = DatumGetBool(DirectFunctionCall2(BOX2D_contain,
-		PointerGetDatum(&box1), PointerGetDatum(&box2)));
+	                      PointerGetDatum(&box1), PointerGetDatum(&box2)));
 
 	PG_FREE_IF_COPY(lwgeom1, 0);
-        PG_FREE_IF_COPY(lwgeom2, 1);
+	PG_FREE_IF_COPY(lwgeom2, 1);
 
-        PG_RETURN_BOOL(result);
+	PG_RETURN_BOOL(result);
 }
 
 
@@ -472,8 +508,8 @@ Datum LWGEOM_gist_compress(PG_FUNCTION_ARGS)
 #if POSTGIS_DEBUG_LEVEL > 0
 			result = serialized_lwgeom_to_ewkt(&lwg_unparser_result, (uchar *)in+VARHDRSZ, PARSER_CHECK_NONE);
 			POSTGIS_DEBUGF(4, "GIST: LWGEOM_gist_compress detoasted entry->key: %s", lwg_unparser_result.wkoutput);
-#endif		
-	
+#endif
+
 			if (in == NULL)
 			{
 				elog(ERROR, "PG_DETOAST_DATUM(<notnull>) returned NULL ??");
@@ -483,10 +519,10 @@ Datum LWGEOM_gist_compress(PG_FUNCTION_ARGS)
 			rr = (BOX2DFLOAT4*) palloc(sizeof(BOX2DFLOAT4));
 
 			if (	! getbox2d_p(SERIALIZED_FORM(in), rr) ||
-				! finite(rr->xmin) ||
-				! finite(rr->ymin) ||
-				! finite(rr->xmax) ||
-				! finite(rr->ymax) )
+			                ! finite(rr->xmin) ||
+			                ! finite(rr->ymin) ||
+			                ! finite(rr->xmax) ||
+			                ! finite(rr->ymax) )
 			{
 
 				POSTGIS_DEBUG(4, "found empty or infinite geometry");
@@ -506,14 +542,14 @@ Datum LWGEOM_gist_compress(PG_FUNCTION_ARGS)
 
 #if POSTGIS_PGSQL_VERSION >= 82
 			gistentryinit(*retval, PointerGetDatum(rr),
-				entry->rel, entry->page,
-				entry->offset,
-				FALSE);
+			              entry->rel, entry->page,
+			              entry->offset,
+			              FALSE);
 #else
 			gistentryinit(*retval, PointerGetDatum(rr),
-				entry->rel, entry->page,
-				entry->offset, sizeof(BOX2DFLOAT4),
-				FALSE);
+			              entry->rel, entry->page,
+			              entry->offset, sizeof(BOX2DFLOAT4),
+			              FALSE);
 #endif
 
 
@@ -524,10 +560,10 @@ Datum LWGEOM_gist_compress(PG_FUNCTION_ARGS)
 
 #if POSTGIS_PGSQL_VERSION >= 82
 			gistentryinit(*retval, (Datum) 0, entry->rel,
-				entry->page, entry->offset, FALSE);
+			              entry->page, entry->offset, FALSE);
 #else
 			gistentryinit(*retval, (Datum) 0, entry->rel,
-				entry->page, entry->offset, 0, FALSE);
+			              entry->page, entry->offset, 0, FALSE);
 #endif
 
 		}
@@ -572,7 +608,7 @@ Datum LWGEOM_gist_consistent(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(false); /* null query - this is screwy! */
 	}
 
-	/* 
+	/*
 	** First pull only a small amount of the tuple, enough to 
 	** get the bounding box, if one exists.
 	*/
@@ -591,13 +627,13 @@ Datum LWGEOM_gist_consistent(PG_FUNCTION_ARGS)
 	** retrieval function, which will calculate the box from scratch.
 	*/
 	serialized_lwgeom = SERIALIZED_FORM(query);
-	if( lwgeom_hasBBOX(serialized_lwgeom[0]) ) 
+	if ( lwgeom_hasBBOX(serialized_lwgeom[0]) )
 	{
 		memcpy(&box, serialized_lwgeom + 1, sizeof(BOX2DFLOAT4));
-	} 
-	else 
+	}
+	else
 	{
-		query = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1)); 
+		query = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 		if ( ! getbox2d_p(SERIALIZED_FORM(query), &box) )
 		{
 			PG_FREE_IF_COPY(query, 1);
@@ -607,11 +643,11 @@ Datum LWGEOM_gist_consistent(PG_FUNCTION_ARGS)
 
 	if (GIST_LEAF(entry))
 		result = lwgeom_rtree_leaf_consistent((BOX2DFLOAT4 *)
-			DatumGetPointer(entry->key), &box, strategy );
+		                                      DatumGetPointer(entry->key), &box, strategy );
 	else
 		result = lwgeom_rtree_internal_consistent(
-			(BOX2DFLOAT4 *) DatumGetPointer(entry->key),
-			&box, strategy );
+		                 (BOX2DFLOAT4 *) DatumGetPointer(entry->key),
+		                 &box, strategy );
 
 	PG_FREE_IF_COPY(query, 1);
 	PG_RETURN_BOOL(result);
@@ -620,78 +656,79 @@ Datum LWGEOM_gist_consistent(PG_FUNCTION_ARGS)
 
 static bool
 lwgeom_rtree_internal_consistent(BOX2DFLOAT4 *key, BOX2DFLOAT4 *query,
-	StrategyNumber strategy)
+                                 StrategyNumber strategy)
 {
 	bool retval;
 
 	POSTGIS_DEBUGF(2, "GIST: lwgeom_rtree_internal_consistent called with strategy=%i", strategy);
 
-	switch(strategy) {
-		case RTLeftStrategyNumber:
-			retval = !DatumGetBool( DirectFunctionCall2( BOX2D_overright, PointerGetDatum(key), PointerGetDatum(query) ) );
-			break;
-		case RTOverLeftStrategyNumber:
-			retval = !DatumGetBool( DirectFunctionCall2( BOX2D_right, PointerGetDatum(key), PointerGetDatum(query) ) );
-			break;
-		case RTOverlapStrategyNumber:  /*optimized for speed */
+	switch (strategy)
+	{
+	case RTLeftStrategyNumber:
+		retval = !DatumGetBool( DirectFunctionCall2( BOX2D_overright, PointerGetDatum(key), PointerGetDatum(query) ) );
+		break;
+	case RTOverLeftStrategyNumber:
+		retval = !DatumGetBool( DirectFunctionCall2( BOX2D_right, PointerGetDatum(key), PointerGetDatum(query) ) );
+		break;
+	case RTOverlapStrategyNumber:  /*optimized for speed */
 
-		        retval = (((key->xmax>= query->xmax) &&
-				 (key->xmin <= query->xmax)) ||
-				((query->xmax>= key->xmax) &&
-				 (query->xmin<= key->xmax)))
-				&&
-				(((key->ymax>= query->ymax) &&
-		  		(key->ymin<= query->ymax)) ||
-		 		((query->ymax>= key->ymax) &&
-		  		(query->ymin<= key->ymax)));
+		retval = (((key->xmax>= query->xmax) &&
+		           (key->xmin <= query->xmax)) ||
+		          ((query->xmax>= key->xmax) &&
+		           (query->xmin<= key->xmax)))
+		         &&
+		         (((key->ymax>= query->ymax) &&
+		           (key->ymin<= query->ymax)) ||
+		          ((query->ymax>= key->ymax) &&
+		           (query->ymin<= key->ymax)));
 
 
 #if POSTGIS_DEBUG_LEVEL >=4
-			/*keep track and report info about how many times this is called */
-			if (counter_intern == 0)
-			{
-				POSTGIS_DEBUGF(4, "search bounding box is: <%.16g %.16g,%.16g %.16g> - size box2d= %ld",
-				 	query->xmin,query->ymin,query->xmax,query->ymax,sizeof(BOX2DFLOAT4));
+		/*keep track and report info about how many times this is called */
+		if (counter_intern == 0)
+		{
+			POSTGIS_DEBUGF(4, "search bounding box is: <%.16g %.16g,%.16g %.16g> - size box2d= %ld",
+			               query->xmin,query->ymin,query->xmax,query->ymax,sizeof(BOX2DFLOAT4));
 
-			}
+		}
 
 
-			POSTGIS_DEBUGF(4, "%i:(int)<%.8g %.8g,%.8g %.8g>&&<%.8g %.8g,%.8g %.8g> %i",counter_intern,key->xmin,key->ymin,key->xmax,key->ymax,
-		  			query->xmin,query->ymin,query->xmax,query->ymax,   (int) retval);
-		
-			counter_intern++;
+		POSTGIS_DEBUGF(4, "%i:(int)<%.8g %.8g,%.8g %.8g>&&<%.8g %.8g,%.8g %.8g> %i",counter_intern,key->xmin,key->ymin,key->xmax,key->ymax,
+		               query->xmin,query->ymin,query->xmax,query->ymax,   (int) retval);
+
+		counter_intern++;
 #endif
 
-			return(retval);
-			break;
+		return(retval);
+		break;
 
-		case RTOverRightStrategyNumber:
-			retval = !DatumGetBool( DirectFunctionCall2( BOX2D_left, PointerGetDatum(key), PointerGetDatum(query) ) );
-			break;
-		case RTRightStrategyNumber:
-			retval = !DatumGetBool( DirectFunctionCall2( BOX2D_overleft, PointerGetDatum(key), PointerGetDatum(query) ) );
-			break;
-		case RTOverBelowStrategyNumber:
-			retval = !DatumGetBool( DirectFunctionCall2( BOX2D_above, PointerGetDatum(key), PointerGetDatum(query) ) );
-			break;
-		case RTBelowStrategyNumber:
-			retval = !DatumGetBool( DirectFunctionCall2( BOX2D_overabove, PointerGetDatum(key), PointerGetDatum(query) ) );
-			break;
-		case RTAboveStrategyNumber:
-			retval = !DatumGetBool( DirectFunctionCall2( BOX2D_overbelow, PointerGetDatum(key), PointerGetDatum(query) ) );
-			break;
-		case RTOverAboveStrategyNumber:
-			retval = !DatumGetBool( DirectFunctionCall2( BOX2D_below, PointerGetDatum(key), PointerGetDatum(query) ) );
-			break;
-		case RTSameStrategyNumber:
-		case RTContainsStrategyNumber:
-			retval = DatumGetBool( DirectFunctionCall2( BOX2D_contain, PointerGetDatum(key), PointerGetDatum(query) ) );
-			break;
-		case RTContainedByStrategyNumber:
-			retval = DatumGetBool( DirectFunctionCall2( BOX2D_overlap, PointerGetDatum(key), PointerGetDatum(query) ) );
-			break;
-		default:
-			retval = FALSE;
+	case RTOverRightStrategyNumber:
+		retval = !DatumGetBool( DirectFunctionCall2( BOX2D_left, PointerGetDatum(key), PointerGetDatum(query) ) );
+		break;
+	case RTRightStrategyNumber:
+		retval = !DatumGetBool( DirectFunctionCall2( BOX2D_overleft, PointerGetDatum(key), PointerGetDatum(query) ) );
+		break;
+	case RTOverBelowStrategyNumber:
+		retval = !DatumGetBool( DirectFunctionCall2( BOX2D_above, PointerGetDatum(key), PointerGetDatum(query) ) );
+		break;
+	case RTBelowStrategyNumber:
+		retval = !DatumGetBool( DirectFunctionCall2( BOX2D_overabove, PointerGetDatum(key), PointerGetDatum(query) ) );
+		break;
+	case RTAboveStrategyNumber:
+		retval = !DatumGetBool( DirectFunctionCall2( BOX2D_overbelow, PointerGetDatum(key), PointerGetDatum(query) ) );
+		break;
+	case RTOverAboveStrategyNumber:
+		retval = !DatumGetBool( DirectFunctionCall2( BOX2D_below, PointerGetDatum(key), PointerGetDatum(query) ) );
+		break;
+	case RTSameStrategyNumber:
+	case RTContainsStrategyNumber:
+		retval = DatumGetBool( DirectFunctionCall2( BOX2D_contain, PointerGetDatum(key), PointerGetDatum(query) ) );
+		break;
+	case RTContainedByStrategyNumber:
+		retval = DatumGetBool( DirectFunctionCall2( BOX2D_overlap, PointerGetDatum(key), PointerGetDatum(query) ) );
+		break;
+	default:
+		retval = FALSE;
 	}
 	return(retval);
 }
@@ -699,7 +736,7 @@ lwgeom_rtree_internal_consistent(BOX2DFLOAT4 *key, BOX2DFLOAT4 *query,
 
 static bool
 lwgeom_rtree_leaf_consistent(BOX2DFLOAT4 *key,
-	BOX2DFLOAT4 *query, StrategyNumber strategy)
+                             BOX2DFLOAT4 *query, StrategyNumber strategy)
 {
 	bool retval;
 
@@ -707,62 +744,62 @@ lwgeom_rtree_leaf_consistent(BOX2DFLOAT4 *key,
 
 	switch (strategy)
 	{
-		case RTLeftStrategyNumber:
-			retval = DatumGetBool(DirectFunctionCall2(BOX2D_left, PointerGetDatum(key), PointerGetDatum(query)));
-			break;
-		case RTOverLeftStrategyNumber:
-			retval = DatumGetBool(DirectFunctionCall2(BOX2D_overleft, PointerGetDatum(key), PointerGetDatum(query)));
-			break;
-		case RTOverlapStrategyNumber: /*optimized for speed */
-			retval = (((key->xmax>= query->xmax) &&
-				 (key->xmin <= query->xmax)) ||
-				 ((query->xmax>= key->xmax) &&
-	   			 (query->xmin<= key->xmax)))
-			   	 &&
-				 (((key->ymax>= query->ymax) &&
-				 (key->ymin<= query->ymax)) ||
-				 ((query->ymax>= key->ymax) &&
-				 (query->ymin<= key->ymax)));
+	case RTLeftStrategyNumber:
+		retval = DatumGetBool(DirectFunctionCall2(BOX2D_left, PointerGetDatum(key), PointerGetDatum(query)));
+		break;
+	case RTOverLeftStrategyNumber:
+		retval = DatumGetBool(DirectFunctionCall2(BOX2D_overleft, PointerGetDatum(key), PointerGetDatum(query)));
+		break;
+	case RTOverlapStrategyNumber: /*optimized for speed */
+		retval = (((key->xmax>= query->xmax) &&
+		           (key->xmin <= query->xmax)) ||
+		          ((query->xmax>= key->xmax) &&
+		           (query->xmin<= key->xmax)))
+		         &&
+		         (((key->ymax>= query->ymax) &&
+		           (key->ymin<= query->ymax)) ||
+		          ((query->ymax>= key->ymax) &&
+		           (query->ymin<= key->ymax)));
 
 #if POSTGIS_DEBUG_LEVEL >= 4
-			/*keep track and report info about how many times this is called */
-			POSTGIS_DEBUGF(4, "%i:gist test (leaf) <%.6g %.6g,%.6g %.6g> &&  <%.6g %.6g,%.6g %.6g> --> %i",
-				counter_leaf,key->xmin,key->ymin,key->xmax,key->ymax,
-				query->xmin,query->ymin,query->xmax,query->ymax,   (int) retval);
-			counter_leaf++;
+		/*keep track and report info about how many times this is called */
+		POSTGIS_DEBUGF(4, "%i:gist test (leaf) <%.6g %.6g,%.6g %.6g> &&  <%.6g %.6g,%.6g %.6g> --> %i",
+		               counter_leaf,key->xmin,key->ymin,key->xmax,key->ymax,
+		               query->xmin,query->ymin,query->xmax,query->ymax,   (int) retval);
+		counter_leaf++;
 #endif
-			return(retval);
+		return(retval);
 
-			break;
-		case RTOverRightStrategyNumber:
-			retval = DatumGetBool(DirectFunctionCall2(BOX2D_overright, PointerGetDatum(key), PointerGetDatum(query)));
-			break;
-		case RTRightStrategyNumber:
-			retval = DatumGetBool(DirectFunctionCall2(BOX2D_right, PointerGetDatum(key), PointerGetDatum(query)));
-			break;
-		case RTOverBelowStrategyNumber:
-			retval = DatumGetBool(DirectFunctionCall2(BOX2D_overbelow, PointerGetDatum(key), PointerGetDatum(query)));
-			break;
-		case RTBelowStrategyNumber:
-			retval = DatumGetBool(DirectFunctionCall2(BOX2D_below, PointerGetDatum(key), PointerGetDatum(query)));
-			break;
-		case RTAboveStrategyNumber:
-			retval = DatumGetBool(DirectFunctionCall2(BOX2D_above, PointerGetDatum(key), PointerGetDatum(query)));
-			break;
-		case RTOverAboveStrategyNumber:
-			retval = DatumGetBool(DirectFunctionCall2(BOX2D_overabove, PointerGetDatum(key), PointerGetDatum(query)));
-			break;
-		case RTSameStrategyNumber:
-			retval = DatumGetBool(DirectFunctionCall2(BOX2D_same, PointerGetDatum(key), PointerGetDatum(query)));
-			break;
-		case RTContainsStrategyNumber:
-			retval = DatumGetBool(DirectFunctionCall2(BOX2D_contain, PointerGetDatum(key), PointerGetDatum(query)));
-			break;
-		case RTContainedByStrategyNumber:
-			retval = DatumGetBool(DirectFunctionCall2(BOX2D_contained, PointerGetDatum(key), PointerGetDatum(query)));
-			break;
-		default:
-			retval = FALSE;
+		break;
+	case RTOverRightStrategyNumber:
+		retval = DatumGetBool(DirectFunctionCall2(BOX2D_overright, PointerGetDatum(key), PointerGetDatum(query)));
+		break;
+	case RTRightStrategyNumber:
+		retval = DatumGetBool(DirectFunctionCall2(BOX2D_right, PointerGetDatum(key), PointerGetDatum(query)));
+		break;
+	case RTOverBelowStrategyNumber:
+		retval = DatumGetBool(DirectFunctionCall2(BOX2D_overbelow, PointerGetDatum(key), PointerGetDatum(query)));
+		break;
+	case RTBelowStrategyNumber:
+		retval = DatumGetBool(DirectFunctionCall2(BOX2D_below, PointerGetDatum(key), PointerGetDatum(query)));
+		break;
+	case RTAboveStrategyNumber:
+		retval = DatumGetBool(DirectFunctionCall2(BOX2D_above, PointerGetDatum(key), PointerGetDatum(query)));
+		break;
+	case RTOverAboveStrategyNumber:
+		retval = DatumGetBool(DirectFunctionCall2(BOX2D_overabove, PointerGetDatum(key), PointerGetDatum(query)));
+		break;
+	case RTSameStrategyNumber:
+		retval = DatumGetBool(DirectFunctionCall2(BOX2D_same, PointerGetDatum(key), PointerGetDatum(query)));
+		break;
+	case RTContainsStrategyNumber:
+		retval = DatumGetBool(DirectFunctionCall2(BOX2D_contain, PointerGetDatum(key), PointerGetDatum(query)));
+		break;
+	case RTContainedByStrategyNumber:
+		retval = DatumGetBool(DirectFunctionCall2(BOX2D_contained, PointerGetDatum(key), PointerGetDatum(query)));
+		break;
+	default:
+		retval = FALSE;
 	}
 	return (retval);
 }
@@ -790,17 +827,17 @@ Datum LWGEOM_gist_decompress(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_gist_union);
 Datum LWGEOM_gist_union(PG_FUNCTION_ARGS)
 {
- 	GistEntryVector	*entryvec = (GistEntryVector *) PG_GETARG_POINTER(0);
+	GistEntryVector	*entryvec = (GistEntryVector *) PG_GETARG_POINTER(0);
 
 	int		   *sizep = (int *) PG_GETARG_POINTER(1);
 	int			numranges,
-				i;
+	i;
 	BOX2DFLOAT4 *cur,
-			   *pageunion;
+	*pageunion;
 
 	POSTGIS_DEBUG(2, "GIST: LWGEOM_gist_union called\n");
 
-  	numranges = entryvec->n;
+	numranges = entryvec->n;
 	cur = (BOX2DFLOAT4 *) DatumGetPointer(entryvec->vector[0].key);
 
 	pageunion = (BOX2DFLOAT4 *) palloc(sizeof(BOX2DFLOAT4));
@@ -938,13 +975,16 @@ Datum LWGEOM_gist_penalty(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-typedef struct {
+typedef struct
+{
 	BOX2DFLOAT4 	*key;
 	int 	pos;
-} KBsort;
+}
+KBsort;
 
 static int
-compare_KB(const void* a, const void* b) {
+compare_KB(const void* a, const void* b)
+{
 	BOX2DFLOAT4 *abox = ((KBsort*)a)->key;
 	BOX2DFLOAT4 *bbox = ((KBsort*)b)->key;
 	float sa = (abox->xmax - abox->xmin) * (abox->ymax - abox->ymin);
@@ -983,7 +1023,7 @@ Datum LWGEOM_gist_same(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_gist_picksplit);
 Datum LWGEOM_gist_picksplit(PG_FUNCTION_ARGS)
 {
-  	GistEntryVector	*entryvec = (GistEntryVector *) PG_GETARG_POINTER(0);
+	GistEntryVector	*entryvec = (GistEntryVector *) PG_GETARG_POINTER(0);
 
 	GIST_SPLITVEC *v = (GIST_SPLITVEC *) PG_GETARG_POINTER(1);
 	OffsetNumber i;
@@ -1001,8 +1041,8 @@ Datum LWGEOM_gist_picksplit(PG_FUNCTION_ARGS)
 
 	posL = posR = posB = posT = 0;
 
-  	maxoff = entryvec->n - 1;
-  	cur = (BOX2DFLOAT4*) DatumGetPointer(entryvec->vector[FirstOffsetNumber].key);
+	maxoff = entryvec->n - 1;
+	cur = (BOX2DFLOAT4*) DatumGetPointer(entryvec->vector[FirstOffsetNumber].key);
 
 	memcpy((void *) &pageunion, (void *) cur, sizeof(BOX2DFLOAT4));
 
@@ -1012,14 +1052,14 @@ Datum LWGEOM_gist_picksplit(PG_FUNCTION_ARGS)
 	/* find MBR */
 	for (i = OffsetNumberNext(FirstOffsetNumber); i <= maxoff; i = OffsetNumberNext(i))
 	{
-  		cur = (BOX2DFLOAT4 *) DatumGetPointer(entryvec->vector[i].key);
+		cur = (BOX2DFLOAT4 *) DatumGetPointer(entryvec->vector[i].key);
 
 		if ( allisequal == true &&  (
-				pageunion.xmax != cur->xmax ||
-				pageunion.ymax != cur->ymax ||
-				pageunion.xmin != cur->xmin ||
-				pageunion.ymin != cur->ymin
-			) )
+		                        pageunion.xmax != cur->xmax ||
+		                        pageunion.ymax != cur->ymax ||
+		                        pageunion.xmin != cur->xmin ||
+		                        pageunion.ymin != cur->ymin
+		                ) )
 			allisequal = false;
 
 		if (pageunion.xmax < cur->xmax)
@@ -1044,7 +1084,7 @@ Datum LWGEOM_gist_picksplit(PG_FUNCTION_ARGS)
 	{
 		POSTGIS_DEBUG(4, " AllIsEqual!");
 
-  		cur = (BOX2DFLOAT4*) DatumGetPointer(entryvec->vector[OffsetNumberNext(FirstOffsetNumber)].key);
+		cur = (BOX2DFLOAT4*) DatumGetPointer(entryvec->vector[OffsetNumberNext(FirstOffsetNumber)].key);
 
 
 		if (memcmp((void *) cur, (void *) &pageunion, sizeof(BOX2DFLOAT4)) == 0)
@@ -1096,7 +1136,7 @@ Datum LWGEOM_gist_picksplit(PG_FUNCTION_ARGS)
 
 	for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i))
 	{
-  		cur = (BOX2DFLOAT4*) DatumGetPointer(entryvec->vector[i].key);
+		cur = (BOX2DFLOAT4*) DatumGetPointer(entryvec->vector[i].key);
 
 		if (cur->xmin - pageunion.xmin < pageunion.xmax - cur->xmax)
 			ADDLIST(listL, unionL, posL,i);
@@ -1116,34 +1156,41 @@ Datum LWGEOM_gist_picksplit(PG_FUNCTION_ARGS)
 
 
 	/* bad disposition, sort by ascending and resplit */
-	if ( (posR==0 || posL==0) && (posT==0 || posB==0) ) {
+	if ( (posR==0 || posL==0) && (posT==0 || posB==0) )
+	{
 		KBsort *arr = (KBsort*)palloc( sizeof(KBsort) * maxoff );
 		posL = posR = posB = posT = 0;
-		for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i)) {
-  			arr[i-1].key = (BOX2DFLOAT4*) DatumGetPointer(entryvec->vector[i].key);
+		for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i))
+		{
+			arr[i-1].key = (BOX2DFLOAT4*) DatumGetPointer(entryvec->vector[i].key);
 			arr[i-1].pos = i;
 		}
 		qsort( arr, maxoff, sizeof(KBsort), compare_KB );
-		for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i)) {
+		for (i = FirstOffsetNumber; i <= maxoff; i = OffsetNumberNext(i))
+		{
 			cur = arr[i-1].key;
 			if (cur->xmin - pageunion.xmin < pageunion.xmax - cur->xmax)
 				ADDLIST(listL, unionL, posL,arr[i-1].pos);
-			else if ( cur->xmin - pageunion.xmin == pageunion.xmax - cur->xmax ) {
+			else if ( cur->xmin - pageunion.xmin == pageunion.xmax - cur->xmax )
+			{
 				if ( posL>posR )
 					ADDLIST(listR, unionR, posR,arr[i-1].pos);
 				else
 					ADDLIST(listL, unionL, posL,arr[i-1].pos);
-			} else
+			}
+			else
 				ADDLIST(listR, unionR, posR,arr[i-1].pos);
 
 			if (cur->ymin - pageunion.ymin < pageunion.ymax - cur->ymax)
 				ADDLIST(listB, unionB, posB,arr[i-1].pos);
-			else if ( cur->ymin - pageunion.ymin == pageunion.ymax - cur->ymax ) {
+			else if ( cur->ymin - pageunion.ymin == pageunion.ymax - cur->ymax )
+			{
 				if ( posB>posT )
 					ADDLIST(listT, unionT, posT,arr[i-1].pos);
 				else
 					ADDLIST(listB, unionB, posB,arr[i-1].pos);
-			} else
+			}
+			else
 				ADDLIST(listT, unionT, posT,arr[i-1].pos);
 		}
 		pfree(arr);
@@ -1157,9 +1204,9 @@ Datum LWGEOM_gist_picksplit(PG_FUNCTION_ARGS)
 	else
 	{
 		Datum interLR = DirectFunctionCall2(BOX2D_intersects,
-			PointerGetDatum(unionL), PointerGetDatum(unionR));
+		                                    PointerGetDatum(unionL), PointerGetDatum(unionR));
 		Datum interBT = DirectFunctionCall2(BOX2D_intersects,
-			PointerGetDatum(unionB), PointerGetDatum(unionT));
+		                                    PointerGetDatum(unionB), PointerGetDatum(unionT));
 		float sizeLR, sizeBT;
 
 		/*elog(NOTICE,"direction is abigeous"); */
@@ -1193,29 +1240,29 @@ Datum LWGEOM_gist_picksplit(PG_FUNCTION_ARGS)
 		v->spl_rdatum = PointerGetDatum(unionR);
 
 #if POSTGIS_DEBUG_LEVEL >= 4
-	{
-		char aaa[5000],bbb[100];
-		aaa[0] = 0;
-
-		POSTGIS_DEBUGF(4, "   split direction was '%c'", direction);
-		POSTGIS_DEBUGF(4, "   posL = %i, posR=%i", posL,posR);
-		POSTGIS_DEBUG(4, "   posL's (nleft) offset numbers:");
-
-		for (i=0;i<posL;i++)
 		{
-			sprintf(bbb," %i", listL[i]);
-			strcat(aaa,bbb);
+			char aaa[5000],bbb[100];
+			aaa[0] = 0;
+
+			POSTGIS_DEBUGF(4, "   split direction was '%c'", direction);
+			POSTGIS_DEBUGF(4, "   posL = %i, posR=%i", posL,posR);
+			POSTGIS_DEBUG(4, "   posL's (nleft) offset numbers:");
+
+			for (i=0;i<posL;i++)
+			{
+				sprintf(bbb," %i", listL[i]);
+				strcat(aaa,bbb);
+			}
+			POSTGIS_DEBUGF(4, "%s", aaa);
+			aaa[0]=0;
+			POSTGIS_DEBUG(4, "   posR's (nright) offset numbers:");
+			for (i=0;i<posR;i++)
+			{
+				sprintf(bbb," %i", listR[i]);
+				strcat(aaa,bbb);
+			}
+			POSTGIS_DEBUGF(4, "%s", aaa);
 		}
-		POSTGIS_DEBUGF(4, "%s", aaa);
-		aaa[0]=0;
-		POSTGIS_DEBUG(4, "   posR's (nright) offset numbers:");
-		for (i=0;i<posR;i++)
-		{
-			sprintf(bbb," %i", listR[i]);
-			strcat(aaa,bbb);
-		}
-		POSTGIS_DEBUGF(4, "%s", aaa);
-	}
 #endif
 
 
@@ -1234,30 +1281,30 @@ Datum LWGEOM_gist_picksplit(PG_FUNCTION_ARGS)
 		v->spl_ldatum = PointerGetDatum(unionB);
 		v->spl_rdatum = PointerGetDatum(unionT);
 
-#if POSTGIS_DEBUG_LEVEL >= 4 
-	{
-		char aaa[5000],bbb[100];
-		aaa[0]=0;
-
-		POSTGIS_DEBUGF(4, "   split direction was '%c'", direction);
-		POSTGIS_DEBUGF(4, "   posB = %i, posT=%i", posB,posT);
-		POSTGIS_DEBUG(4, "   posB's (nleft) offset numbers:");
-
-		for (i=0;i<posB;i++)
+#if POSTGIS_DEBUG_LEVEL >= 4
 		{
-			sprintf(bbb," %i", listB[i]);
-			strcat(aaa,bbb);
+			char aaa[5000],bbb[100];
+			aaa[0]=0;
+
+			POSTGIS_DEBUGF(4, "   split direction was '%c'", direction);
+			POSTGIS_DEBUGF(4, "   posB = %i, posT=%i", posB,posT);
+			POSTGIS_DEBUG(4, "   posB's (nleft) offset numbers:");
+
+			for (i=0;i<posB;i++)
+			{
+				sprintf(bbb," %i", listB[i]);
+				strcat(aaa,bbb);
+			}
+			POSTGIS_DEBUGF(4, "%s", aaa);
+			aaa[0]=0;
+			POSTGIS_DEBUG(4, "   posT's (nright) offset numbers:");
+			for (i=0;i<posT;i++)
+			{
+				sprintf(bbb," %i", listT[i]);
+				strcat(aaa,bbb);
+			}
+			POSTGIS_DEBUGF(4, "%s", aaa);
 		}
-		POSTGIS_DEBUGF(4, "%s", aaa);
-		aaa[0]=0;
-		POSTGIS_DEBUG(4, "   posT's (nright) offset numbers:");
-		for (i=0;i<posT;i++)
-		{
-			sprintf(bbb," %i", listT[i]);
-			strcat(aaa,bbb);
-		}
-		POSTGIS_DEBUGF(4, "%s", aaa);
-	}
 #endif
 
 
