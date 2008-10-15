@@ -32,7 +32,6 @@ PG_OBJS=lwgeom_pg.o \
 	lwgeom_gist.o \
 	lwgeom_btree.o \
 	lwgeom_transform.o \
-	stringBuffer.o \
 	lwgeom_box.o \
 	lwgeom_box3d.o \
 	lwgeom_box2dfloat4.o \

@@ -94,6 +94,8 @@ Datum LWGEOM_overlap(PG_FUNCTION_ARGS)
 	BOX2DFLOAT4 box1;
 	BOX2DFLOAT4 box2;
 
+	POSTGIS_DEBUG(2, "GIST: LWGEOM_overlap --entry");
+
 	if ( pglwgeom_getSRID(lwgeom1) != pglwgeom_getSRID(lwgeom2) )
 	{
 		PG_FREE_IF_COPY(lwgeom1, 0);
