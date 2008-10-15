@@ -44,7 +44,7 @@ pg_parser_errhint(LWGEOM_PARSER_RESULT *lwg_parser_result)
 
 	/* If we are not at the start of the buffer, prefix with "..." */
 	if (hintstart != lwg_parser_result->wkinput)
-		strncpy(hintbuffer, "...", 3);
+		strncpy(hintbuffer, "...", 4);
 	
 	/* Append to the existing string */
 	strncat(hintbuffer, hintstart, hintfinish-hintstart);
