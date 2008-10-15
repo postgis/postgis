@@ -48,9 +48,13 @@ void pg_notice(const char *msg, va_list vp);
 /*
  * Standard macro for reporting parser errors to PostgreSQL
  */
+
+extern void pg_parser_errhint(LWGEOM_PARSER_RESULT *lwg_parser_result);
+extern void pg_unparser_errhint(LWGEOM_UNPARSER_RESULT *lwg_unparser_result);
+
 #define PG_PARSER_ERROR(lwg_parser_result) \
         do { \
-                elog(ERROR, "%s", lwg_parser_result.message); \
+                pg_parser_errhint(&lwg_parser_result); \
         } while(0);
 
 /*
@@ -58,7 +62,7 @@ void pg_notice(const char *msg, va_list vp);
  */
 #define PG_UNPARSER_ERROR(lwg_unparser_result) \
         do { \
-                elog(ERROR, "%s", lwg_unparser_result.message); \
+                pg_unparser_errhint(&lwg_unparser_result); \
         } while(0);
 
 

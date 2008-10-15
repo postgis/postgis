@@ -1179,6 +1179,7 @@ parse_it(LWGEOM_PARSER_RESULT *lwg_parser_result, const char *geometry, int flag
 	current_parser_check_flags = flags;
 	lwg_parser_result->serialized_lwgeom = NULL;
 	lwg_parser_result->size = 0;
+	lwg_parser_result->wkinput = geometry;
 
 	init_parser(geometry);
 

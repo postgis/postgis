@@ -19,10 +19,48 @@
 PG_MODULE_MAGIC;
 #endif
 
+
 /*
- * Global pointer for parser/unparser error messages
+ * Error message parsing functions
+ *
+ * Produces nicely formatted messages for parser/unparser errors with optional HINT
  */
-char *parser_message;
+
+void
+pg_parser_errhint(LWGEOM_PARSER_RESULT *lwg_parser_result)
+{
+	char hintbuffer[128];
+	char *hintstart;
+	char *hintfinish; 
+
+	/* Generate the HINT string as the last 40 chars up until the error location */
+	hintbuffer[0] = '\0';
+	hintfinish = (char *)lwg_parser_result->wkinput + lwg_parser_result->errlocation;	
+
+	if (lwg_parser_result->errlocation <= 40)
+		hintstart = (char *)lwg_parser_result->wkinput;
+	else
+		hintstart = hintfinish - 40;
+
+	/* If we are not at the start of the buffer, prefix with "..." */
+	if (hintstart != lwg_parser_result->wkinput)
+		strncpy(hintbuffer, "...", 3);
+	
+	/* Append to the existing string */
+	strncat(hintbuffer, hintstart, hintfinish-hintstart);
+		
+	ereport(ERROR,
+		(errmsg("%s", lwg_parser_result->message),
+		errhint("\"%s\" <-- parse error at position %d within geometry", hintbuffer, lwg_parser_result->errlocation))
+	);	
+}
+
+void
+pg_unparser_errhint(LWGEOM_UNPARSER_RESULT *lwg_unparser_result)
+{
+	/* For the unparser simply output the error message without any associated HINT */
+	elog(ERROR, "%s", lwg_unparser_result->message);
+}
 
 
 void *
@@ -415,6 +453,4 @@ pglwgeom_getSRID(PG_LWGEOM *lwgeom)
 
 	return lw_get_int32(loc);
 }
-
-
 

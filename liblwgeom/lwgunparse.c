@@ -628,6 +628,7 @@ unparse_WKT(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar* serialized, allo
         current_unparser_check_flags = flags;
 	lwg_unparser_result->wkoutput = NULL;
         lwg_unparser_result->size = 0;
+	lwg_unparser_result->serialized_lwgeom = serialized;
 
 	unparser_ferror_occured = 0;
 	local_malloc=alloc;
@@ -956,6 +957,7 @@ unparse_WKB(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar* serialized, allo
         current_unparser_check_flags = flags;
 	lwg_unparser_result->wkoutput = NULL;
 	lwg_unparser_result->size = 0;
+	lwg_unparser_result->serialized_lwgeom = serialized;
 
 	unparser_ferror_occured = 0;
 	local_malloc=alloc;

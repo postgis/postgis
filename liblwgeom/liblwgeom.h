@@ -1121,6 +1121,7 @@ extern void deparse_hex(uchar str, char *result);
  */
 typedef struct struct_lwgeom_parser_result
 {
+	const char *wkinput;		/* Copy of pointer to input WKT/WKB */
 	uchar *serialized_lwgeom;	/* Pointer to serialized LWGEOM */
 	int size;			/* Size of serialized LWGEOM in bytes */
 	const char *message;		/* Error/warning message */
@@ -1143,6 +1144,7 @@ typedef struct struct_lwgeom_parser_result
  */
 typedef struct struct_lwgeom_unparser_result
 {
+	uchar *serialized_lwgeom;	/* Copy of pointer to input serialized LWGEOM */
 	char *wkoutput;			/* Pointer to WKT or WKB output */
 	int size;			/* Size of serialized LWGEOM in bytes */
 	const char *message;		/* Error/warning message */

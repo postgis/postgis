@@ -22,6 +22,7 @@ typedef struct serialized_lwgeom {
 
 typedef struct struct_lwgeom_parser_result
 {
+	const char *wkinput;
         SERIALIZED_LWGEOM *serialized_lwgeom;
         int size;
         const char *message;
@@ -30,6 +31,7 @@ typedef struct struct_lwgeom_parser_result
 
 typedef struct struct_lwgeom_unparser_result
 {
+	uchar *serialized_lwgeom;
         char *wkoutput;
         int size;
 	const char *message;

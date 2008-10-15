@@ -48,20 +48,33 @@
 48|MULTIPOINT(-1 -2 -3,5.4 6.6 7.77,-5.4 -6.6 -7.77,1000000 1e-6 -1000000,-1.3e-6 -1.4e-5 0)
 49|GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(1 1)))
 ERROR:  parse error - invalid geometry
+HINT:  "POINT()" <-- parse error at position 7 within geometry
 ERROR:  parse error - invalid geometry
+HINT:  "POINT(1)" <-- parse error at position 8 within geometry
 ERROR:  parse error - invalid geometry
+HINT:  "POINT(," <-- parse error at position 7 within geometry
 ERROR:  parse error - invalid geometry
+HINT:  "MULTIPOINT(," <-- parse error at position 12 within geometry
 ERROR:  parse error - invalid geometry
+HINT:  "POINT(" <-- parse error at position 6 within geometry
 ERROR:  parse error - invalid geometry
+HINT:  "MULTIPOINT()" <-- parse error at position 12 within geometry
 ERROR:  geometry contains non-closed rings
+HINT:  "POLYGON( (0 0, 10 0, 10 10, 0 10)" <-- parse error at position 33 within geometry
 ERROR:  geometry contains non-closed rings
+HINT:  "... 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7)" <-- parse error at position 60 within geometry
 ERROR:  parse error - invalid geometry
+HINT:  "...TILINESTRING((0 0, 1 1),(0 0, 1 1, 2 2,)" <-- parse error at position 43 within geometry
 ERROR:  parse error - invalid geometry
+HINT:  "POINT(1 2 3," <-- parse error at position 12 within geometry
 ERROR:  parse error - invalid geometry
+HINT:  "POINT(1 2 3 4 5" <-- parse error at position 15 within geometry
 ERROR:  geometry requires more points
+HINT:  "LINESTRING(1 1)" <-- parse error at position 15 within geometry
 62|POINT(inf 0)
 63|POINT(-inf 0)
 ERROR:  parse error - invalid geometry
+HINT:  "MULTIPOINT(1 1, 2 2" <-- parse error at position 19 within geometry
 65|t
 66|f
 67|t

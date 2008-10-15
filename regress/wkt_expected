@@ -1,32 +1,47 @@
 GEOMETRYCOLLECTION EMPTY
 ERROR:  parse error - invalid geometry
+HINT:  "POINT(EMPTY" <-- parse error at position 11 within geometry
 POINT(0 0)
 ERROR:  parse error - invalid geometry
+HINT:  "POINT((" <-- parse error at position 7 within geometry
 GEOMETRYCOLLECTION EMPTY
 ERROR:  parse error - invalid geometry
+HINT:  "MULTIPOINT(EMPTY" <-- parse error at position 16 within geometry
 MULTIPOINT(0 0,2 0)
 MULTIPOINT(0 0,2 0)
 ERROR:  parse error - invalid geometry
+HINT:  "MULTIPOINT((0 0), (2 0), EMPTY" <-- parse error at position 30 within geometry
 GEOMETRYCOLLECTION EMPTY
 ERROR:  parse error - invalid geometry
+HINT:  "LINESTRING(EMPTY" <-- parse error at position 16 within geometry
 LINESTRING(0 0,1 1)
 ERROR:  parse error - invalid geometry
+HINT:  "LINESTRING((" <-- parse error at position 12 within geometry
 ERROR:  parse error - invalid geometry
+HINT:  "LINESTRING((" <-- parse error at position 12 within geometry
 GEOMETRYCOLLECTION EMPTY
 ERROR:  parse error - invalid geometry
+HINT:  "MULTILINESTRING(EMPTY" <-- parse error at position 21 within geometry
 ERROR:  parse error - invalid geometry
+HINT:  "MULTILINESTRING(0" <-- parse error at position 17 within geometry
 MULTILINESTRING((0 0,2 0))
 MULTILINESTRING((0 0,2 0),(1 1,2 2))
 ERROR:  parse error - invalid geometry
+HINT:  "...LINESTRING((0 0, 2 0), (1 1, 2 2), EMPTY" <-- parse error at position 45 within geometry
 ERROR:  parse error - invalid geometry
+HINT:  "...INESTRING((0 0, 2 0), (1 1, 2 2), (EMPTY" <-- parse error at position 46 within geometry
 GEOMETRYCOLLECTION EMPTY
 ERROR:  parse error - invalid geometry
+HINT:  "POLYGON(EMPTY" <-- parse error at position 13 within geometry
 POLYGON((0 0,1 0,1 1,0 1,0 0))
 POLYGON((0 0,10 0,10 10,0 10,0 0),(2 2,2 5,5 5,5 2,2 2))
 GEOMETRYCOLLECTION EMPTY
 ERROR:  parse error - invalid geometry
+HINT:  "MULTIPOLYGON(EMPTY" <-- parse error at position 18 within geometry
 ERROR:  parse error - invalid geometry
+HINT:  "MULTIPOLYGON((EMPTY" <-- parse error at position 19 within geometry
 MULTIPOLYGON(((0 0,10 0,10 10,0 10,0 0),(2 2,2 5,5 5,5 2,2 2)))
 GEOMETRYCOLLECTION EMPTY
 GEOMETRYCOLLECTION EMPTY
 ERROR:  parse error - invalid geometry
+HINT:  "GEOMETRYCOLLECTION((" <-- parse error at position 20 within geometry
