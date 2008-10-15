@@ -1140,27 +1140,6 @@ z' = z </programlisting> This method is a subcase of the 3D method
           </listitem>
         </varlistentry>
 
-        <varlistentry>
-          <term>ST_Segmentize(geometry, maxlength)</term>
-
-          <listitem>
-            <para>Return a modified geometry having no segment longer then the
-            given distance. Interpolated points will have Z and M values (if
-            needed) set to 0. Distance computation is performed in 2d
-            only.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry id="ST_LineMerge">
-          <term>ST_LineMerge(geometry)</term>
-
-          <listitem>
-            <para>Returns a (set of) LineString(s) formed by sewing together
-            constituent linework of input.</para>
-
-            <para>Availability: 1.1.0 - requires GEOS &gt;= 2.1.0</para>
-          </listitem>
-        </varlistentry>
       </variablelist>
     </sect2>
 
@@ -1191,7 +1170,7 @@ z' = z </programlisting> This method is a subcase of the 3D method
           </listitem>
         </varlistentry>
 
-        <varlistentry id="line_substring">
+        <varlistentry id="ST_Line_Substring">
           <term>ST_Line_Substring(linestring geometry, startfraction float8, endfraction float8)</term>
 
           <listitem>
