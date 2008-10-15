@@ -17,7 +17,6 @@
 #include "liblwgeom.h"
 
 #include "lwgeom_pg.h"
-#include "stringBuffer.h"
 
 
 /*
