@@ -1,3 +1,4 @@
+
 COMMENT ON FUNCTION AddGeometryColumn(varchar , varchar , integer , varchar , integer ) IS 'args: table_name, column_name, srid, type, dimension - Adds a geometry column to an existing table of attributes.';
 			
 COMMENT ON FUNCTION AddGeometryColumn(varchar , varchar , varchar , integer , varchar , integer ) IS 'args: schema_name, table_name, column_name, srid, type, dimension - Adds a geometry column to an existing table of attributes.';
@@ -110,11 +111,15 @@ COMMENT ON FUNCTION ST_AddPoint(geometry, geometry) IS 'args: linestring, point 
 			
 COMMENT ON FUNCTION ST_AddPoint(geometry, geometry, integer) IS 'args: linestring, point, position - Adds a point to a LineString before point <position> (0-based index).';
 			
+COMMENT ON FUNCTION ST_LineMerge(geometry ) IS 'args: amultilinestring - Returns a (set of) LineString(s) formed by sewing together a MULTILINESTRING.';
+			
 COMMENT ON FUNCTION ST_Multi(geometry ) IS 'args: g1 - Returns the geometry as a MULTI* geometry. If the geometry is already a MULTI*, it is returned unchanged.';
 			
 COMMENT ON FUNCTION ST_RemovePoint(geometry, integer) IS 'args: linestring, offset - Removes point from a linestring. Offset is 0-based.';
 			
 COMMENT ON FUNCTION ST_Reverse(geometry ) IS 'args: g1 - Returns the geometry with vertex order reversed.';
+			
+COMMENT ON FUNCTION ST_Segmentize(geometry , float ) IS 'args: geomA, max_length - Return a modified geometry having no segment longer than the given distance. Distance computation is performed in 2d only.';
 			
 COMMENT ON FUNCTION ST_SetPoint(geometry, integer, geometry) IS 'args: linestring, zerobasedposition, point - Replace point N of linestring with given point. Index is 0-based.';
 			
@@ -238,4 +243,5 @@ COMMENT ON FUNCTION ST_Expand(box2d , float) IS 'args: g1, units_to_expand - Ret
 			
 COMMENT ON FUNCTION ST_Expand(box3d , float) IS 'args: g1, units_to_expand - Returns bounding box expanded in all directions from the bounding box of the input geometry';
 			
-COMMENT ON AGGREGATE ST_Extent(geometry) IS 'args: geomfield - an aggregate function that returns the bounding box that bounds rows of geometries.';			
+COMMENT ON AGGREGATE ST_Extent(geometry) IS 'args: geomfield - an aggregate function that returns the bounding box that bounds rows of geometries.';
+			
