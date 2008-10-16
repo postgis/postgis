@@ -228,59 +228,6 @@
           </listitem>
         </varlistentry>
 
-        <varlistentry>
-          <term>ST_ExteriorRing(polygon geometry)</term>
-
-          <listitem>
-            <para>Return the exterior ring of the polygon geometry. Return
-            NULL if the geometry is not a polygon.  Will not work with MULTIPOLYGON</para>
-			<programlisting>
---If you have a table of polygons
-SELECT gid, ST_ExteriorRing(the_geom) AS ering
-FROM sometable;
-
---If you have a table of MULTIPOLYGONs 
---and want to return a MULTILINESTRING composed of the exterior rings of each polygon
-SELECT gid, ST_Collect(ST_ExteriorRing(the_geom)) AS erings
-	FROM (SELECT gid, (ST_Dump(the_geom)).geom As the_geom
-			FROM sometable) As foo
-GROUP BY gid;
-			</programlisting>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>ST_NumInteriorRings(polygon geometry)</term>
-
-          <listitem>
-            <para>Return the number of interior rings of the first polygon in
-            the geometry. This will work with both POLYGON and MULTIPOLYGON types but only looks at the first polygon.
-			Return NULL if there is no polygon in the
-            geometry.</para>
-			<programlisting>
---If you have a regular polygon
-SELECT gid, field1, field2, ST_NumInteriorRings(the_geom) AS numholes
-FROM sometable;
-
---If you have multipolygons
---And you want to know the total number of interior rings in the MULTIPOLYGON
-SELECT gid, field1, field2, SUM(ST_NumInteriorRings(the_geom)) AS numholes
-FROM (SELECT gid, field1, field2, (ST_Dump(the_geom)).geom As the_geom
-	FROM sometable) As foo
-GROUP BY gid, field1,field2;
-			</programlisting>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>ST_NumInteriorRing(geometry)</term>
-
-          <listitem>
-            <para>Synonym to NumInteriorRings(geometry). The OpenGIS specs are
-            ambiguous about the exact function naming, so we provide both
-            spellings.</para>
-          </listitem>
-        </varlistentry>
 
         <varlistentry>
           <term>ST_InteriorRingN(geometry,nth integer)</term>
@@ -1518,16 +1465,6 @@ WHERE n*100.00/length &lt; 1;
       </varlistentry>
 
       <varlistentry>
-        <term>ST_ExteriorRing</term>
-
-        <listitem>
-          <para>Return the exterior ring of an ST_Surface</para>
-
-          <para>SQL-MM 3: 8.2.3, 8.3.3</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
         <term>ST_GeometryN</term>
 
         <listitem>
@@ -1679,16 +1616,6 @@ WHERE n*100.00/length &lt; 1;
           ST_GeomCollection.</para>
 
           <para>SQL-MM 3: 9.1.4</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term>ST_NumInteriorRing</term>
-
-        <listitem>
-          <para>Return the number of interior rings in an ST_Surface.</para>
-
-          <para>SQL-MM 3: 8.2.5</para>
         </listitem>
       </varlistentry>
 

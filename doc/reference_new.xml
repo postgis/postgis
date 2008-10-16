@@ -1905,6 +1905,90 @@ SELECT ST_AsEWKT(ST_EndPoint('LINESTRING(1 1 2, 1 2 3, 0 0 5)'));
 	(1 row)</programlisting>
 	  </refsection>
 	</refentry>
+
+	<refentry id="ST_ExteriorRing">
+	  <refnamediv>
+		<refname>ST_ExteriorRing</refname>
+	
+		<refpurpose>Returns a line string representing the exterior ring of the <varname>POLYGON</varname> geometry. Return
+				NULL if the geometry is not a polygon.  Will not work with MULTIPOLYGON</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_ExteriorRing</function></funcdef>
+	
+			<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+	
+		<para>Returns a line string representing the exterior ring of the <varname>POLYGON</varname> geometry. Return
+				NULL if the geometry is not a polygon.</para>
+				
+		<note><para>Only works with POLYGON geometry types</para></note>
+	
+		<para><inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+		  </inlinemediaobject> This method implements the <ulink
+		url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+		Implementation Specification for SQL.</ulink> OGC SFSQL 1.1 -
+		2.1.5.1</para>
+	
+		<para><inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+		  </inlinemediaobject> This method implements the SQL/MM specification: SQL-MM 3: 8.2.3, 8.3.3</para>
+		
+		<!-- Optionally mention 3d support -->
+		<para><inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+		  </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+	  </refsection>
+	  
+	
+	  <refsection>
+		<title>Examples</title>
+<programlisting>
+--If you have a table of polygons
+SELECT gid, ST_ExteriorRing(the_geom) AS ering
+FROM sometable;
+
+--If you have a table of MULTIPOLYGONs 
+--and want to return a MULTILINESTRING composed of the exterior rings of each polygon
+SELECT gid, ST_Collect(ST_ExteriorRing(the_geom)) AS erings
+	FROM (SELECT gid, (ST_Dump(the_geom)).geom As the_geom
+			FROM sometable) As foo
+GROUP BY gid;
+
+--3d Example
+SELECT ST_AsEWKT(
+	ST_ExteriorRing(
+	ST_GeomFromEWKT('POLYGON((0 0 1, 1 1 1, 1 2 1, 1 1 1, 0 0 1))')
+	)
+);
+
+st_asewkt
+---------
+LINESTRING(0 0 1,1 1 1,1 2 1,1 1 1,0 0 1)
+</programlisting>
+	  </refsection>
+	
+	  <refsection>
+		<title>See Also</title>
+	
+		<para><xref linkend="ST_Boundary" />, <xref linkend="ST_InteriorRings" /></para>
+	  </refsection>
+	</refentry>
 	
 	<refentry id="ST_GeometryType">
         <refnamediv>
@@ -2035,6 +2119,83 @@ postgis=# SELECT ST_IsClosed('MULTIPOINT((0 0), (1 1))'::geometry);
         <para><xref linkend="ST_IsRing" /></para>
       </refsection>
     </refentry>
+	
+  <refentry id="ST_IsRing">
+    <refnamediv>
+      <refname>ST_IsRing</refname>
+  
+      <refpurpose>Returns <varname>TRUE</varname> if this
+      <varname>LINESTRING</varname> is both closed and simple.</refpurpose>
+    </refnamediv>
+  
+    <refsynopsisdiv>
+      <funcsynopsis>
+        <funcprototype>
+          <funcdef>boolean <function>ST_IsRing</function></funcdef>
+  
+          <paramdef><type>geometry </type> <parameter>g</parameter></paramdef>
+        </funcprototype>
+      </funcsynopsis>
+    </refsynopsisdiv>
+  
+    <refsection>
+      <title>Description</title>
+  
+      <para>Returns <varname>TRUE</varname> if this
+      <varname>LINESTRING</varname> is both <xref linkend="ST_IsClosed" />
+      (<function>ST_StartPoint(<parameter>g</parameter>)</function>
+      <function>~=</function>
+      <function>ST_Endpoint(<parameter>g</parameter>)</function>) and <xref
+      linkend="ST_IsSimple" /> (does not self intersect).</para>
+  
+      <para><inlinemediaobject>
+          <imageobject>
+            <imagedata fileref="images/check.png" />
+          </imageobject>
+        </inlinemediaobject> This method implements the <ulink
+      url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+      Implementation Specification for SQL.</ulink> OGC SFSQL 1.1 -
+      2.1.5.1</para>
+  
+      <para><inlinemediaobject>
+          <imageobject>
+            <imagedata fileref="images/check.png" />
+          </imageobject>
+        </inlinemediaobject> This method implements the SQL/MM specification:
+      SQL-MM 3: 7.1.6</para>
+  
+      <note>
+        <para>SQL-MM defines the result of
+        <function>ST_IsRing(<varname>NULL</varname>)</function> to be 0, while
+        PostGIS returns <varname>NULL</varname>.</para>
+      </note>
+    </refsection>
+  
+    <refsection>
+      <title>Examples</title>
+  
+      <programlisting>SELECT ST_IsRing(the_geom), ST_IsClosed(the_geom), ST_IsSimple(the_geom)
+FROM (SELECT 'LINESTRING(0 0, 0 1, 1 1, 1 0, 0 0)'::geometry AS the_geom) AS foo;
+ st_isring | st_isclosed | st_issimple
+-----------+-------------+-------------
+ t         | t           | t
+(1 row)
+
+SELECT ST_IsRing(the_geom), ST_IsClosed(the_geom), ST_IsSimple(the_geom)
+FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS the_geom) AS foo;
+ st_isring | st_isclosed | st_issimple
+-----------+-------------+-------------
+ f         | t           | f
+(1 row)</programlisting>
+    </refsection>
+  
+    <refsection>
+      <title>See Also</title>
+  
+      <para><xref linkend="ST_IsClosed" />, <xref linkend="ST_IsSimple" />, <xref linkend="ST_StartPoint" />,
+      <xref linkend="ST_EndPoint" /></para>
+    </refsection>
+  </refentry>
 
     <refentry id="ST_IsValid">
       <refnamediv>
@@ -2197,6 +2358,100 @@ NOTICE:  Self-intersection at or near point 0 0
 		</refsection>
 	</refentry>
 	
+	<refentry id="ST_NumInteriorRings">
+	  <refnamediv>
+		<refname>ST_NumInteriorRings</refname>
+		<refpurpose>Return the number of interior rings of the first polygon in
+            the geometry. This will work with both POLYGON and MULTIPOLYGON types but only looks at the first polygon.
+			Return NULL if there is no polygon in the
+            geometry.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>integer <function>ST_NumInteriorRings</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+	
+		<para>Return the number of interior rings of the first polygon in
+            the geometry. This will work with both POLYGON and MULTIPOLYGON types but only looks at the first polygon.
+			Return NULL if there is no polygon in the
+            geometry.</para>
+
+		<para><inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+		  </inlinemediaobject> This method implements the SQL/MM specification: SQL-MM 3: 8.2.5</para>
+	  </refsection>
+	
+	  <refsection>
+		<title>Examples</title>
+	
+			<programlisting>
+--If you have a regular polygon
+SELECT gid, field1, field2, ST_NumInteriorRings(the_geom) AS numholes
+FROM sometable;
+
+--If you have multipolygons
+--And you want to know the total number of interior rings in the MULTIPOLYGON
+SELECT gid, field1, field2, SUM(ST_NumInteriorRings(the_geom)) AS numholes
+FROM (SELECT gid, field1, field2, (ST_Dump(the_geom)).geom As the_geom
+	FROM sometable) As foo
+GROUP BY gid, field1,field2;
+			</programlisting>
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+	
+		<para><xref linkend="ST_NumInteriorRing" /></para>
+	  </refsection>
+	</refentry>
+	
+	<refentry id="ST_NumInteriorRing">
+	  <refnamediv>
+		<refname>ST_NumInteriorRing</refname>
+		<refpurpose>Return the number of interior rings of the first polygon in
+            the geometry. Synonym to ST_NumInteriorRings. </refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>integer <function>ST_NumInteriorRing</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+	
+		<para>Return the number of interior rings of the first polygon in
+            the geometry. Synonym to ST_NumInteriorRings. The OpenGIS specs are
+            ambiguous about the exact function naming, so we provide both
+            spellings.</para>
+
+		<para><inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+		  </inlinemediaobject> This method implements the SQL/MM specification: SQL-MM 3: 8.2.5</para>
+	  </refsection>
+	
+	  <refsection>
+		<title>See Also</title>
+	
+		<para><xref linkend="ST_NumInteriorRings" /></para>
+	  </refsection>
+	</refentry>
+	
 	<refentry id="ST_NumPoints">
 	  <refnamediv>
 		<refname>ST_NumPoints</refname>
@@ -2253,83 +2508,6 @@ NOTICE:  Self-intersection at or near point 0 0
 	  </refsection>
 	</refentry>
 	
-  <refentry id="ST_IsRing">
-    <refnamediv>
-      <refname>ST_IsRing</refname>
-  
-      <refpurpose>Returns <varname>TRUE</varname> if this
-      <varname>LINESTRING</varname> is both closed and simple.</refpurpose>
-    </refnamediv>
-  
-    <refsynopsisdiv>
-      <funcsynopsis>
-        <funcprototype>
-          <funcdef>boolean <function>ST_IsRing</function></funcdef>
-  
-          <paramdef><type>geometry </type> <parameter>g</parameter></paramdef>
-        </funcprototype>
-      </funcsynopsis>
-    </refsynopsisdiv>
-  
-    <refsection>
-      <title>Description</title>
-  
-      <para>Returns <varname>TRUE</varname> if this
-      <varname>LINESTRING</varname> is both <xref linkend="ST_IsClosed" />
-      (<function>ST_StartPoint(<parameter>g</parameter>)</function>
-      <function>~=</function>
-      <function>ST_Endpoint(<parameter>g</parameter>)</function>) and <xref
-      linkend="ST_IsSimple" /> (does not self intersect).</para>
-  
-      <para><inlinemediaobject>
-          <imageobject>
-            <imagedata fileref="images/check.png" />
-          </imageobject>
-        </inlinemediaobject> This method implements the <ulink
-      url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
-      Implementation Specification for SQL.</ulink> OGC SFSQL 1.1 -
-      2.1.5.1</para>
-  
-      <para><inlinemediaobject>
-          <imageobject>
-            <imagedata fileref="images/check.png" />
-          </imageobject>
-        </inlinemediaobject> This method implements the SQL/MM specification:
-      SQL-MM 3: 7.1.6</para>
-  
-      <note>
-        <para>SQL-MM defines the result of
-        <function>ST_IsRing(<varname>NULL</varname>)</function> to be 0, while
-        PostGIS returns <varname>NULL</varname>.</para>
-      </note>
-    </refsection>
-  
-    <refsection>
-      <title>Examples</title>
-  
-      <programlisting>SELECT ST_IsRing(the_geom), ST_IsClosed(the_geom), ST_IsSimple(the_geom)
-FROM (SELECT 'LINESTRING(0 0, 0 1, 1 1, 1 0, 0 0)'::geometry AS the_geom) AS foo;
- st_isring | st_isclosed | st_issimple
------------+-------------+-------------
- t         | t           | t
-(1 row)
-
-SELECT ST_IsRing(the_geom), ST_IsClosed(the_geom), ST_IsSimple(the_geom)
-FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS the_geom) AS foo;
- st_isring | st_isclosed | st_issimple
------------+-------------+-------------
- f         | t           | f
-(1 row)</programlisting>
-    </refsection>
-  
-    <refsection>
-      <title>See Also</title>
-  
-      <para><xref linkend="ST_IsClosed" />, <xref linkend="ST_IsSimple" />, <xref linkend="ST_StartPoint" />,
-      <xref linkend="ST_EndPoint" /></para>
-    </refsection>
-  </refentry>
-
 	<refentry id="ST_SRID">
 	  <refnamediv>
 		<refname>ST_SRID</refname>
