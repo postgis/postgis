@@ -48,11 +48,23 @@ pg_parser_errhint(LWGEOM_PARSER_RESULT *lwg_parser_result)
 	
 	/* Append to the existing string */
 	strncat(hintbuffer, hintstart, hintfinish-hintstart);
-		
-	ereport(ERROR,
-		(errmsg("%s", lwg_parser_result->message),
-		errhint("\"%s\" <-- parse error at position %d within geometry", hintbuffer, lwg_parser_result->errlocation))
-	);	
+	
+	/* Only display the parser position if the location is > 0; this provides a nicer output when the first token
+	   within the input stream cannot be matched */	
+	if (lwg_parser_result->errlocation > 0)
+	{
+		ereport(ERROR,
+			(errmsg("%s", lwg_parser_result->message),
+			errhint("\"%s\" <-- parse error at position %d within geometry", hintbuffer, lwg_parser_result->errlocation))
+		);	
+	}
+	else
+	{
+		ereport(ERROR,
+			(errmsg("%s", lwg_parser_result->message),
+			errhint("You must specify a valid OGC WKT geometry type such as POINT, LINESTRING or POLYGON"))
+		);	
+	}	
 }
 
 void
