@@ -3767,7 +3767,7 @@ st_area
 		<refnamediv>
 		  <refname>ST_Azimuth</refname>
 	
-		  <refpurpose>Returns the angle in radians from the horizontal of the line defined by pointA and pointB</refpurpose>
+		  <refpurpose>Returns the angle in radians from the horizontal of the vector defined by pointA and pointB</refpurpose>
 		</refnamediv>
 		<refsynopsisdiv>
 		  <funcsynopsis>
