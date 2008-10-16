@@ -179,7 +179,7 @@ COMMENT ON FUNCTION ST_AsText(geometry ) IS 'args: g1 - Return the Well-Known Te
 			
 COMMENT ON FUNCTION ST_Area(geometry ) IS 'args: g1 - Returns the area of the geometry if it is a polygon or multi-polygon.';
 			
-COMMENT ON FUNCTION ST_Azimuth(geometry , geometry ) IS 'args: pointA, pointB - Returns the angle in radians from the horizontal of the line defined by pointA and pointB';
+COMMENT ON FUNCTION ST_Azimuth(geometry , geometry ) IS 'args: pointA, pointB - Returns the angle in radians from the horizontal of the vector defined by pointA and pointB';
 			
 COMMENT ON FUNCTION ST_Centroid(geometry ) IS 'args: g1 - Returns the geometric center of a geometry.';
 			
