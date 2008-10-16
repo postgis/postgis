@@ -45,6 +45,13 @@ POSTGIS_MAJOR_VERSION=`cat Version.config | grep POSTGIS_MAJOR_VERSION | sed 's/
 POSTGIS_MINOR_VERSION=`cat Version.config | grep POSTGIS_MINOR_VERSION | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
 POSTGIS_MICRO_VERSION=`cat Version.config | grep POSTGIS_MICRO_VERSION | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
 
+AC_DEFINE_UNQUOTED([POSTGIS_MAJOR_VERSION], ["$POSTGIS_MAJOR_VERSION"], [PostGIS major version])
+AC_DEFINE_UNQUOTED([POSTGIS_MINOR_VERSION], ["$POSTGIS_MINOR_VERSION"], [PostGIS minor version])
+AC_DEFINE_UNQUOTED([POSTGIS_MICRO_VERSION], ["$POSTGIS_MICRO_VERSION"], [PostGIS micro version])
+
+AC_SUBST([POSTGIS_MAJOR_VERSION])
+AC_SUBST([POSTGIS_MINOR_VERSION])
+AC_SUBST([POSTGIS_MICRO_VERSION])
 
 dnl
 dnl Search for flex/bison to build the parser
@@ -74,6 +81,17 @@ AC_PATH_PROG([DB2PDF], [db2pdf], [])
 if test "x$DB2PDF" = "x"; then
 	AC_MSG_WARN([db2pdf is not installed so PDF documentation cannot be built])
 fi
+
+
+dnl
+dnl Search for dblatex which is required for building PDF documentation
+dnl
+
+AC_PATH_PROG([DBLATEX], [dblatex], [])
+if test "x$DBLATEX" = "x"; then
+	AC_MSG_WARN([dblatex is not installed so PDF documentation cannot be built])
+fi
+
 
 
 dnl

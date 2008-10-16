@@ -9,6 +9,10 @@
 # that we could produce a large number of files (think chunked HTML)
 #
 
+POSTGIS_MAJOR_VERSION=@POSTGIS_MAJOR_VERSION@
+POSTGIS_MINOR_VERSION=@POSTGIS_MINOR_VERSION@
+POSTGIS_MICRO_VERSION=@POSTGIS_MICRO_VERSION@
+
 XSLTPROC = @XSLTPROC@
 XSLBASE = @XSLBASE@
 
@@ -33,6 +37,9 @@ CHUNK_HTML_DOCBOOK_XSL=$(XSLBASE)/html/chunk.xsl
 # OpenJade's db2pdf script for PDF generation from DocBook
 DB2PDF = @DB2PDF@
 
+# DBLatex's dblatex script for PDF generation from DocBook
+DBLATEX = @DBLATEX@
+
 # Directories for documentation and man pages
 PGSQL_DOCDIR=@PGSQL_DOCDIR@
 PGSQL_MANDIR=@PGSQL_MANDIR@
@@ -53,7 +60,7 @@ postgis_aggs_mm.xml: ./xsl/postgis_aggs_mm.xml.xsl reference_new.xml
 	$(XSLTPROC) ./xsl/postgis_aggs_mm.xml.xsl reference_new.xml > $@
 
 postgis-out.xml: postgis.xml introduction.xml installation.xml faq.xml using_postgis.xml performance_tips.xml reference.xml reference_new.xml postgis_aggs_mm.xml reporting.xml release_notes.xml ../Version.config
-	cat $< | sed "s/@@LAST_RELEASE_VERSION@@/1.4.0SVN/g" > $@
+	cat $< | sed "s/@@LAST_RELEASE_VERSION@@/${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}/g" > $@
 
 chunked-html: postgis-out.xml
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) $(XSLTPROC_HTMLOPTS) \
@@ -68,6 +75,7 @@ html/postgis.html: postgis-out.xml
 		$(HTML_DOCBOOK_XSL) \
 		$<
 
+# This will soon be deprecated.
 postgis.pdf: postgis-out.xml
 	@if test x"$(DB2PDF)" = x; then \
 	   echo "Error: db2pdf not found, can't build posgis.pdf"; \
@@ -77,13 +85,37 @@ postgis.pdf: postgis-out.xml
 	   $(DB2PDF) $< && mv postgis-out.pdf postgis.pdf; \
 	fi
 
+postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf: postgis-out.xml
+	@if test x"$(DBLATEX)" = x; then \
+	   echo "Error: dblatex not found, can't build pdf"; \
+	   echo "       try installing dblatex and then re-run configure"; \
+	   false; \
+	else \
+		cp reference.xml reference.xml.orig; \
+		cat reference.xml.orig | sed -e "s:term:listitem:g" > reference.xml; \
+		dblatex -T native -t pdf \
+		   -I "${PWD}/html" \
+		   -P doc.collab.show=0 \
+		   -P figure.note="${PWD}/html/images/note" \
+		   -P figure.tip="${PWD}/html/images/tip" \
+		   -P figure.important="${PWD}/html/images/important" \
+		   -P figure.warning="${PWD}/html/images/warning" \
+		   -P figure.caution="${PWD}/html/images/caution" \
+		   -P latex.output.revhistory=0 \
+		   -o postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf $<; \
+		cp reference.xml.orig reference.xml; \
+		rm -rf reference.xml.orig; \
+	fi
+
+pdf: postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf
+
 clean:
 	@rm -f \
 		postgis-out.xml
 
 maintainer-clean: clean
 	@rm -f html/*.html \
-		postgis-*.pdf 
+		postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf 
 
 install: html/postgis.html man/shp2pgsql.1 man/pgsql2shp.1
 	@mkdir -p $(PGSQL_DOCDIR)/postgis
