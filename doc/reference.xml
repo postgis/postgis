@@ -95,23 +95,6 @@
     <sect2>
       <title>Geometry Processing Functions</title>
 	  <variablelist>
-        <varlistentry>
-          <term>ST_Boundary(geometry)</term>
-
-          <listitem>
-            <para>Returns the closure of the combinatorial boundary of this
-            Geometry. The combinatorial boundary is defined as described in
-            section 3.12.3.2 of the OGC SPEC. Because the result of this
-            function is a closure, and hence topologically closed, the
-            resulting boundary can be represented using representational
-            geometry primitives as discussed in the OGC SPEC, section
-            3.12.2.</para>
-
-            <para>Performed by the GEOS module</para>
-
-            <para>OGC SPEC s2.1.1.1</para>
-          </listitem>
-        </varlistentry>
 
         <varlistentry>
           <term>ST_Shift_Longitude(geometry)</term>
@@ -1513,16 +1496,6 @@ WHERE n*100.00/length &lt; 1;
     </note>
 
     <variablelist>
-      <varlistentry>
-        <term>ST_Boundary</term>
-
-        <listitem>
-          <para>Return the boundary of the ST_Geometry value.</para>
-
-          <para>SQL-MM 3: 5.1.14</para>
-        </listitem>
-      </varlistentry>
-
       <varlistentry>
         <term>ST_CoordDim</term>
 

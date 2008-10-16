@@ -1597,7 +1597,97 @@ SELECT ST_PointFromText('POINT(-71.064544 42.28787)', 4326);
   </sect1>
    
   <sect1>
-    <title>Geometry Accessors</title>  		
+    <title>Geometry Accessors</title> 		
+	<refentry id="ST_Boundary">
+      <refnamediv>
+        <refname>ST_Boundary</refname>
+    
+        <refpurpose>Returns the closure of the combinatorial boundary of this
+            Geometry.</refpurpose>
+      </refnamediv>
+    
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>geometry <function>ST_Boundary</function></funcdef>
+    
+            <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+    
+      <refsection>
+        <title>Description</title>
+    
+        <para>Returns the closure of the combinatorial boundary of this
+            Geometry. The combinatorial boundary is defined as described in
+            section 3.12.3.2 of the OGC SPEC. Because the result of this
+            function is a closure, and hence topologically closed, the
+            resulting boundary can be represented using representational
+            geometry primitives as discussed in the OGC SPEC, section
+            3.12.2.</para>
+		<para>Performed by the GEOS module</para>
+		<important>
+          <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
+        </important>
+		
+		<para><inlinemediaobject>
+				<imageobject>
+				  <imagedata fileref="images/check.png" />
+				</imageobject>
+			  </inlinemediaobject> This method implements the <ulink
+			url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+			Implementation Specification for SQL.</ulink> OGC SPEC s2.1.1.1</para>
+    
+        <para><inlinemediaobject>
+            <imageobject>
+              <imagedata fileref="images/check.png" />
+            </imageobject>
+          </inlinemediaobject> This method implements the SQL/MM specification: SQL-MM 3: 5.1.14</para>
+		  
+		<!-- Optionally mention 3d support -->
+		<para><inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+		  </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+      </refsection>
+    
+      <refsection>
+        <title>Examples</title>
+    
+         <programlisting>SELECT ST_AsText(ST_Boundary(ST_GeomFromText('LINESTRING(1 1,0 0, -1 1)')));
+st_astext
+----------- 
+MULTIPOINT(1 1,-1 1)
+
+SELECT ST_AsText(ST_Boundary(ST_GeomFromText('POLYGON((1 1,0 0, -1 1, 1 1))')));
+st_astext
+----------
+LINESTRING(1 1,0 0,-1 1,1 1)
+
+--Using a 3d polygon
+SELECT ST_AsEWKT(ST_Boundary(ST_GeomFromEWKT('POLYGON((1 1 1,0 0 1, -1 1 1, 1 1 1))')));
+
+st_asewkt
+-----------------------------------
+LINESTRING(1 1 1,0 0 1,-1 1 1,1 1 1)
+
+--Using a 3d multilinestring
+SELECT ST_AsEWKT(ST_Boundary(ST_GeomFromEWKT('MULTILINESTRING((1 1 1,0 0 0.5, -1 1 1),(1 1 0.5,0 0 0.5, -1 1 0.5, 1 1 0.5) )')));
+
+st_asewkt
+----------
+MULTIPOINT(-1 1 1,1 1 0.75)
+</programlisting>
+    	</refsection>
+		<refsection>
+			<title>See Also</title>
+			
+			<para><xref linkend="ST_ExteriorRing" />, <xref linkend="ST_MakePolygon" /></para>
+		</refsection>
+	</refentry>
+	
     <refentry id="ST_Dimension">
       <refnamediv>
         <refname>ST_Dimension</refname>

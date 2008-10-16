@@ -41,6 +41,10 @@
 		<sect1>
 			<title>PostGIS SQL-MM Compliant Functions</title>
 			<para>The functions given below are PostGIS functions that conform to the SQL/MM 3 standard</para>
+			<note>
+			  <para>SQL-MM defines the default SRID of all geometry constructors as 0.
+			  PostGIS uses a default SRID of -1.</para>
+			</note>
 				<itemizedlist>
 			<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
 				<xsl:for-each select='sect1/refentry'>
