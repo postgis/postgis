@@ -2358,6 +2358,60 @@ NOTICE:  Self-intersection at or near point 0 0
 		</refsection>
 	</refentry>
 	
+	<refentry id="ST_NumGeometries">
+		<refnamediv>
+			<refname>ST_NumGeometries</refname>
+			<refpurpose>If geometry is a GEOMETRYCOLLECTION (or MULTI*) return the
+            number of geometries, otherwise return NULL.</refpurpose>
+		</refnamediv>
+		
+		<refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>integer <function>ST_NumGeometries</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>a_multi_or_geomcollection</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+		</refsynopsisdiv>
+		
+		<refsection>
+			<title>Description</title>
+			
+			<para>Returns the number of Geometries. If geometry is a GEOMETRYCOLLECTION (or MULTI*) return the
+            number of geometries, otherwise return NULL.</para>
+			
+			    <para><inlinemediaobject>
+        <imageobject>
+          <imagedata fileref="images/check.png" />
+        </imageobject>
+      </inlinemediaobject> This method implements the SQL/MM specification: SQL-MM 3: 9.1.4</para>
+		
+		</refsection>
+		
+		<refsection>
+			<title>Examples</title>
+			
+<programlisting>
+--Although ST_NumGeometries will return null when passed a single, you can wrap in ST_Multi to force 1 or more for all geoms
+SELECT ST_NumGeometries(ST_Multi(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)')));
+--result
+1
+
+--Geometry Collection Example - multis count as one geom in a collection
+SELECT ST_NumGeometries(ST_GeomFromEWKT('GEOMETRYCOLLECTION(MULTIPOINT(-2 3 , -2 2),
+LINESTRING(5 5 ,10 10),
+POLYGON((-7 4.2,-7.1 5,-7.1 4.3,-7 4.2)))'));
+--result
+3
+</programlisting>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+			
+			<para><xref linkend="ST_GeometryN" />, <xref linkend="ST_Multi" /></para>
+		</refsection>
+	</refentry>
+	
 	<refentry id="ST_NumInteriorRings">
 	  <refnamediv>
 		<refname>ST_NumInteriorRings</refname>

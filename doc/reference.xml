@@ -179,16 +179,7 @@
           </listitem>
         </varlistentry>
 
-        <varlistentry>
-          <term>ST_NumGeometries(geometry)</term>
-
-          <listitem>
-            <para>If geometry is a GEOMETRYCOLLECTION (or MULTI*) return the
-            number of geometries, otherwise return NULL.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
+        <varlistentry id="ST_GeometryN">
           <term>ST_GeometryN(geometry,nth integer)</term>
 
           <listitem>
@@ -200,16 +191,6 @@
               <para>Index is 1-based as for OGC specs since version 0.8.0.
               Previous versions implemented this as 0-based instead.</para>
             </note>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>ST_NumPoints(geometry)</term>
-
-          <listitem>
-            <para>Find and return the number of points in the first linestring
-            in the geometry. Return NULL if there is no linestring in the
-            geometry.</para>
           </listitem>
         </varlistentry>
 
@@ -1605,17 +1586,6 @@ WHERE n*100.00/length &lt; 1;
           <para>Return a specified ST_MultiPolygon value.</para>
 
           <para>SQL-MM 3: 9.6.5</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term>ST_NumGeometries</term>
-
-        <listitem>
-          <para>Return the number of geometries in an
-          ST_GeomCollection.</para>
-
-          <para>SQL-MM 3: 9.1.4</para>
         </listitem>
       </varlistentry>
 
