@@ -853,18 +853,6 @@ GROUP BY gid, field1,field2;
             is a polygon or multi-polygon.</para>
           </listitem>
         </varlistentry>
-
-        <varlistentry>
-          <term>ST_azimuth(geometry, geometry)</term>
-
-          <listitem>
-            <para>Returns the azimuth of the segment defined by the given
-            Point geometries, or NULL if the two points are coincident. Return
-            value is in radians.</para>
-
-            <para>Availability: 1.1.0</para>
-          </listitem>
-        </varlistentry>
       </variablelist>
     </sect2>
 

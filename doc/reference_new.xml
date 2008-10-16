@@ -3762,6 +3762,55 @@ st_area
 		</refsection>
 
 	</refentry>
+			
+	<refentry id="ST_Azimuth">
+		<refnamediv>
+		  <refname>ST_Azimuth</refname>
+	
+		  <refpurpose>Returns the angle in radians from the horizontal of the line defined by pointA and pointB</refpurpose>
+		</refnamediv>
+		<refsynopsisdiv>
+		  <funcsynopsis>
+			<funcprototype>
+			  <funcdef>float <function>ST_Azimuth</function></funcdef>
+			  <paramdef><type>geometry </type><parameter>pointA</parameter></paramdef>
+			  <paramdef><type>geometry </type><parameter>pointB</parameter></paramdef>
+			</funcprototype>
+		  </funcsynopsis>
+		</refsynopsisdiv>
+		<refsection>
+			<title>Description</title>
+			
+			<para>Returns the azimuth of the segment defined by the given
+            Point geometries, or NULL if the two points are coincident. Return
+            value is in radians.</para>
+			
+			<para>The Azimuth is mathematical concept defined as the angle, in this case measured in radian, between a reference plane 
+				and a point</para>
+				
+			<para>Availability: 1.1.0</para>
+			<para>Azimuth is especially useful in conjunction with ST_Translate for shifting an object along its perpendicular axis. See
+				 upgis_lineshift <ulink url="http://postgis.refractions.net/support/wiki/index.php?plpgsqlfunctions">Plpgsqlfunctions PostGIS wiki section</ulink> for example of this.</para>
+		</refsection>
+		
+		<refsection>
+		<title>Examples</title>
+		<para>--Azimuth in degrees </para>
+<programlisting>
+SELECT ST_Azimuth(ST_MakePoint(1,2), ST_MakePoint(3,4))/(2*pi())*360 as degAz, 
+	ST_Azimuth(ST_MakePoint(3,4), ST_MakePoint(1,2))/(2*pi())*360 As degAzrev
+
+degaz	degazrev
+------	---------
+45		225
+</programlisting>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_MakePoint" />, <xref linkend="ST_Translate" /></para>
+		</refsection>
+
+  </refentry>
 
   <refentry id="ST_Centroid">
     <refnamediv>
