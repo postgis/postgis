@@ -121,52 +121,6 @@
           </listitem>
         </varlistentry>
 
-        <varlistentry id="ST_GeometryN">
-          <term>ST_GeometryN(geometry,nth integer)</term>
-
-          <listitem>
-            <para>Return the Nth geometry if the geometry is a
-            GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING or MULTIPOLYGON.
-            Otherwise, return NULL.</para>
-
-            <note>
-              <para>Index is 1-based as for OGC specs since version 0.8.0.
-              Previous versions implemented this as 0-based instead.</para>
-            </note>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry id="ST_PointN">
-          <term>ST_PointN(geometry,nth integer)</term>
-
-          <listitem>
-            <para>Return the Nth point in the first linestring in the
-            geometry. Return NULL if there is no linestring in the
-            geometry.</para>
-
-            <note>
-              <para>Index is 1-based as for OGC specs since version 0.8.0.
-              Previous versions implemented this as 0-based instead.</para>
-            </note>
-          </listitem>
-        </varlistentry>
-
-
-        <varlistentry>
-          <term>ST_InteriorRingN(geometry,nth integer)</term>
-
-          <listitem>
-            <para>Return the Nth interior ring of the polygon geometry.
-            Return NULL if the geometry is not a polygon or the given N is out
-            of range.</para>
-
-            <note>
-              <para>Index is 1-based as for OGC specs since version 0.8.0.
-              Previous versions implemented this as 0-based instead.</para>
-            </note>
-          </listitem>
-        </varlistentry>
-
         <varlistentry id="GeometryType">
           <term>GeometryType(geometry)</term>
 
@@ -1359,34 +1313,12 @@ WHERE n*100.00/length &lt; 1;
       </varlistentry>
 
       <varlistentry>
-        <term>ST_GeometryN</term>
-
-        <listitem>
-          <para>Return the indicated ST_Geometry value from an
-          ST_GeomCollection.</para>
-
-          <para>SQL-MM 3: 9.1.5</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
         <term>ST_GeomFromWKB</term>
 
         <listitem>
           <para>Return a specified ST_Geometry value.</para>
 
           <para>SQL-MM 3: 5.1.41</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term>ST_InteriorRingN</term>
-
-        <listitem>
-          <para>Return the specified interior ring of an ST_Surface
-          value.</para>
-
-          <para>SQL-MM 3: 8.2.6, 8.3.5</para>
         </listitem>
       </varlistentry>
   
@@ -1503,16 +1435,6 @@ WHERE n*100.00/length &lt; 1;
       </varlistentry>
 
       <varlistentry>
-        <term>ST_Point</term>
-
-        <listitem>
-          <para>Returns an ST_Point with the given coordinate values.</para>
-
-          <para>SQL-MM 3: 6.1.2</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
         <term>ST_PointFromText</term>
 
         <listitem>
@@ -1529,17 +1451,6 @@ WHERE n*100.00/length &lt; 1;
           <para>Return a specified ST_Point value.</para>
 
           <para>SQL-MM 3: 6.1.9</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term>ST_PointN</term>
-
-        <listitem>
-          <para>Return the specified ST_Point value in an ST_LineString or
-          ST_CircularString</para>
-
-          <para>SQL-MM 3: 7.2.5, 7.3.5</para>
         </listitem>
       </varlistentry>
 

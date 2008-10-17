@@ -1495,6 +1495,53 @@ result
 			<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_MakePoint" />, <xref linkend="ST_SetSRID" /></para>
 		</refsection>
 	</refentry>	
+	
+	<refentry id="ST_Point">
+	  <refnamediv>
+	    <refname>ST_Point</refname>
+	
+	    <refpurpose>Returns an ST_Point with the given coordinate values. OGC alias for ST_MakePoint.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>geometry <function>ST_Point</function></funcdef>
+	        <paramdef><type>float </type> <parameter>x_lon</parameter></paramdef>
+	        <paramdef><type>float </type> <parameter>y_lat</parameter></paramdef>
+	      </funcprototype>
+	    </funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+	    <para>Returns an ST_Point with the given coordinate values. MM compliant alias for ST_MakePoint that takes just an x and y.</para>
+	
+
+	    <!-- Optionally mention SQL/MM compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the SQL/MM specification: SQL-MM 3: 6.1.2</para>
+
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+	
+	    <programlisting>SELECT ST_SetSRID(ST_Point(-71.1043443253471, 42.3150676015829),4326)</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	
+	    <para><xref linkend="ST_MakePoint" />, <xref linkend="ST_SetSRID" /></para>
+	  </refsection>
+	</refentry>
 
 	<refentry id="ST_PointFromText">
 		  <refnamediv>
@@ -1989,6 +2036,96 @@ LINESTRING(0 0 1,1 1 1,1 2 1,1 1 1,0 0 1)
 		<para><xref linkend="ST_Boundary" />, <xref linkend="ST_InteriorRings" /></para>
 	  </refsection>
 	</refentry>
+
+	<refentry id="ST_GeometryN">
+	  <refnamediv>
+	    <refname>ST_GeometryN</refname>
+	
+	    <refpurpose>Return the 1-based Nth geometry if the geometry is a
+            GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING or MULTIPOLYGON.
+            Otherwise, return NULL.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>geometry <function>ST_GeometryN</function></funcdef>
+	        <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+	        <paramdef><type>integer </type> <parameter>n</parameter></paramdef>
+	      </funcprototype>
+	    </funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+	    <para>Return the 1-based Nth geometry if the geometry is a
+            GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING or MULTIPOLYGON.
+            Otherwise, return NULL.</para>
+	
+		<note>
+		  <para>Index is 1-based as for OGC specs since version 0.8.0.
+		  Previous versions implemented this as 0-based instead.</para>
+		</note>
+		
+		<note>
+		  <para>If you want to extract all geometries, of a geometry, ST_Dump is more efficient and will also work for singular geoms.</para>
+		</note>
+	
+	    <!-- Optionally mention OpenGIS compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the <ulink
+	    url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+	    Implementation Specification for SQL.</ulink></para>
+
+	    <!-- Optionally mention SQL/MM compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the SQL/MM specification: SQL-MM 3: 9.1.5</para>
+		
+		<!-- Optionally mention 3d support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject>This function supports 3d and will not drop the z-index.</para>
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+	
+	    <programlisting>
+--Extracting a subset of points from a 3d multipoint
+SELECT ST_AsEWKT(ST_GeometryN(the_geom, n))
+FROM (
+SELECT ST_GeomFromEWKT('MULTIPOINT(1 2 7, 3 4 7, 5 6 7, 8 9 10)') As the_geom) As foo 
+	CROSS JOIN generate_series(1,100) n
+WHERE n BETWEEN 2 and 3;
+
+st_asewkt
+------------
+POINT(3 4 7)
+POINT(5 6 7)
+
+--Extracting all geometries (useful when you want to assign an id) 
+SELECT gid, n, ST_GeometryN(the_geom, n)
+FROM sometable CROSS JOIN generate_series(1,100) n
+WHERE n &gt;= ST_NumGeometries(the_geom);</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	
+	    <para><xref linkend="ST_Dump" />, <xref linkend="ST_NumGeometries" /></para>
+	  </refsection>
+	</refentry>
 	
 	<refentry id="ST_GeometryType">
         <refnamediv>
@@ -2032,6 +2169,83 @@ LINESTRING(0 0 1,1 1 1,1 2 1,1 1 1,0 0 1)
 			<para><xref linkend="GeometryType" /></para>
 		</refsection>
 	</refentry>
+		
+	<refentry id="ST_InteriorRingN">
+	  <refnamediv>
+	    <refname>ST_InteriorRingN</refname>
+	
+	    <refpurpose>Return the Nth interior linestring ring of the polygon geometry.
+            Return NULL if the geometry is not a polygon or the given N is out
+            of range.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>geometry <function>ST_InteriorRingN</function></funcdef>
+	        <paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>n</parameter></paramdef>
+	      </funcprototype>
+	    </funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+	    <para>Return the Nth interior linestring ring of the polygon geometry.
+            Return NULL if the geometry is not a polygon or the given N is out
+            of range.  index starts at 1.</para>
+	
+	    <!-- optionally mention that this function uses indexes if appropriate -->
+	    <note>
+	      <para>This will not work for MULTIPOLYGONs.  Use in conjunction with ST_Dump for MULTIPOLYGONS</para>
+	    </note>
+	
+	    <!-- Optionally mention OpenGIS compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the <ulink
+	    url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+	    Implementation Specification for SQL.</ulink></para>
+	
+	    <!-- Optionally mention SQL/MM compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the SQL/MM specification: SQL-MM 3: 8.2.6, 8.3.5</para>
+		
+		<!-- Optionally mention 3d support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+	
+	    <programlisting>
+SELECT ST_AsText(ST_InteriorRingN(the_geom, 1)) As the_geom
+FROM (SELECT ST_BuildArea(
+		ST_Collect(ST_Buffer(ST_Point(1,2), 20,3), 
+			ST_Buffer(ST_Point(1, 2), 10,3))) As the_geom
+		)  as foo
+		</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	
+	    <para><xref linkend="ST_BuildArea" />, <xref linkend="ST_Collect" />, <xref linkend="ST_Dump" />, <xref linkend="ST_NumInteriorRing" />, <xref linkend="ST_NumInteriorRings" /></para>
+	  </refsection>
+	</refentry>
+
     <refentry id="ST_IsClosed">
       <refnamediv>
         <refname>ST_IsClosed</refname>
@@ -2559,6 +2773,81 @@ GROUP BY gid, field1,field2;
 		<title>See Also</title>
 	
 		<para><xref linkend="ST_NPoints" /></para>
+	  </refsection>
+	</refentry>
+		
+	<refentry id="ST_PointN">
+	  <refnamediv>
+	    <refname>ST_PointN</refname>
+	
+	    <refpurpose>Return the Nth point in the first linestring or circular linestring in the
+            geometry. Return NULL if there is no linestring in the
+            geometry.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>geometry <function>ST_PointN</function></funcdef>
+	        <paramdef><type>geometry </type> <parameter>a_linestring</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>n</parameter></paramdef>
+	      </funcprototype>
+	    </funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+	    <para>Return the Nth point in the first linestring or circular linestring in the
+            geometry. Return NULL if there is no linestring in the
+            geometry.</para>
+	
+	    <note>
+              <para>Index is 1-based as for OGC specs since version 0.8.0.
+              Previous versions implemented this as 0-based instead.</para>
+        </note>
+		
+		<note>
+              <para>If you want to get the nth point of each line string in a multilinestring, use in conjunction 
+			  with ST_Dump</para>
+        </note>
+	
+	    <!-- Optionally mention OpenGIS compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the <ulink
+	    url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+	    Implementation Specification for SQL.</ulink></para>
+	
+	    <!-- Optionally mention SQL/MM compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the SQL/MM specification: SQL-MM 3: 7.2.5, 7.3.5</para>
+		
+		<!-- Optionally mention 3d support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+	
+	    <programlisting></programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	
+	    <para><xref linkend="ST_Dump" />, <xref linkend="ST_NPoints" /></para>
 	  </refsection>
 	</refentry>
 	
