@@ -5816,7 +5816,90 @@ SELECT ST_AsEWKT(ST_Collect(ST_GeomFromEWKT('POINT(1 2 3)'),
 		<title>See Also</title>
 		<para><xref linkend="ST_Collect" /></para>
 	  </refsection>
-	</refentry>	  
+	</refentry>
+	
+	<refentry id="ST_Difference">
+	  <refnamediv>
+	    <refname>ST_Difference</refname>
+	
+	    <refpurpose>Returns a geometry that represents that part of geometry A
+            that does not intersect with geometry B.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>geometry <function>ST_Difference</function></funcdef>
+	        <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+	        <paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>
+	      </funcprototype>
+	    </funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+	    <para>Returns a geometry that represents that part of geometry A
+            that does not intersect with geometry B.  One can think of this as GeometryA - ST_Intersection(A,B).  If A is completely contained in B
+			then an empty geometry collection is returned.</para>
+		<note><para>Note - order matters. B - A will always return a portion of B</para></note>
+	
+		<para>Performed by the GEOS module</para>
+
+        <note><para>Do not call with a GeometryCollection as an argument</para></note>
+	
+	    <!-- Optionally mention OpenGIS compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the <ulink
+	    url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+	    Implementation Specification for SQL.</ulink> OGC SPEC s2.1.1.3</para>
+	
+	    <!-- Optionally mention SQL/MM compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the SQL/MM specification: SQL-MM 3: 5.1.20</para>
+		
+		<!-- Optionally mention 3d support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This function supports 3d and will not drop the z-index.  
+		  	However it seems to only consider x y when doing the difference and tacks back on the Z-Index</para>
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+	
+		<programlisting>
+--Safe for 2d
+SELECT ST_AsText(ST_Difference(ST_GeomFromText('LINESTRING(1 2, 1 4)'), ST_GeomFromText('LINESTRING(1 2, 1 3)')))
+
+st_astext
+---------
+LINESTRING(1 3,1 4)
+
+--When used in 3d doesn't quite do the right thing
+SELECT ST_AsEWKT(ST_Difference(ST_GeomFromEWKT('MULTIPOINT(-118.58 38.38 5,-118.60 38.329 6,-118.614 38.281 7)'), ST_GeomFromEWKT('POINT(-118.614 38.281 5)')));
+st_asewkt
+---------
+MULTIPOINT(-118.6 38.329 6,-118.58 38.38 5)		
+		</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	
+	    <para><xref linkend="ST_SymDifference" /></para>
+	  </refsection>
+	</refentry>
 	
 	<refentry id="ST_Dump">
 	  <refnamediv>
@@ -6139,8 +6222,75 @@ geomtextrep
 			<title>See Also</title>
 			<para><xref linkend="ST_Dump" /></para>
 		</refsection>
-	</refentry>	
+	</refentry>
+
+	<refentry id="ST_Shift_Longitude">
+	  <refnamediv>
+	    <refname>ST_Shift_Longitude</refname>
+	
+	    <refpurpose>Reads every point/vertex in every component of every feature
+            in a geometry, and if the longitude coordinate is &lt;0, adds 360
+            to it. The result would be a 0-360 version of the data to be
+            plotted in a 180 centric map</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>geometry <function>ST_Shift_Longitude</function></funcdef>
+	        <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+	      </funcprototype>
+	    </funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+	    <para>Reads every point/vertex in every component of every feature
+            in a geometry, and if the longitude coordinate is &lt;0, adds 360
+            to it. The result would be a 0-360 version of the data to be
+            plotted in a 180 centric map</para>
+		<note><para>This is only useful for data in long lat e.g. 4326 (WGS 84 long lat)</para></note>
 		
+		<para><inlinegraphic fileref="images/warning.png" />
+				1.3 doesn't seem to work with MULTIPOINTS but works for everything else - possible bug.
+		</para>
+	
+		<!-- Optionally mention 3d support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+	
+	    <programlisting>--3d points
+SELECT ST_AsEWKT(ST_Shift_Longitude(ST_GeomFromEWKT('SRID=4326;POINT(-118.58 38.38 10)'))) As geomA, 
+	ST_AsEWKT(ST_Shift_Longitude(ST_GeomFromEWKT('SRID=4326;POINT(241.42 38.38 10)'))) As geomb
+geomA							  geomB
+----------						  -----------
+SRID=4326;POINT(241.42 38.38 10) SRID=4326;POINT(-118.58 38.38 10)
+		
+--regular line string
+SELECT ST_AsText(ST_Shift_Longitude(ST_GeomFromText('LINESTRING(-118.58 38.38, -118.20 38.45)')))
+
+st_astext
+----------
+LINESTRING(241.42 38.38,241.8 38.45)
+		</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	    <para><xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_GeomFromText" />, <xref linkend="ST_AsEWKT" /></para>
+	  </refsection>
+	</refentry>
+	
 	<refentry id="ST_Simplify">
 	  <refnamediv>
 		<refname>ST_Simplify</refname>
@@ -6248,6 +6398,109 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As the_geom) As foo;
 			<title>See Also</title>
 			<para><xref linkend="ST_Simplify" /></para>
 		  </refsection>
+	</refentry>
+	
+	        <varlistentry>
+          <term>ST_SymDifference(geometry A, geometry B)</term>
+
+          <listitem>
+            <para>Returns a geometry that represents the portions of A and B
+            that do not intersect. It is called a symmetric difference because
+            ST_SymDifference(A,B) = ST_SymDifference(B,A).</para>
+
+            <para>Performed by the GEOS module</para>
+
+            <para>Do not call with a GeometryCollection as an argument</para>
+
+            <para>OGC SPEC s2.1.1.3</para>
+          </listitem>
+        </varlistentry>
+		
+	<refentry id="ST_SymDifference">
+	  <refnamediv>
+	    <refname>ST_SymDifference</refname>
+	
+	    <refpurpose>Returns a geometry that represents the portions of A and B
+            that do not intersect. It is called a symmetric difference because
+            ST_SymDifference(A,B) = ST_SymDifference(B,A).</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>geometry <function>ST_SymDifference</function></funcdef>
+	        <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+	        <paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>
+	      </funcprototype>
+	    </funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+	    <para>Returns a geometry that represents the portions of A and B
+            that do not intersect. It is called a symmetric difference because
+            ST_SymDifference(A,B) = ST_SymDifference(B,A). One can think of this as ST_Union(geomA,geomB) - ST_Intersection(A,B).  
+			</para>
+		<note><para>Note - order matters. B - A will always return a portion of B</para></note>
+	
+		<para>Performed by the GEOS module</para>
+
+        <note><para>Do not call with a GeometryCollection as an argument</para></note>
+	
+	    <!-- Optionally mention OpenGIS compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the <ulink
+	    url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+	    Implementation Specification for SQL.</ulink> OGC SPEC s2.1.1.3</para>
+	
+	    <!-- Optionally mention SQL/MM compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the SQL/MM specification: SQL-MM 3: 5.1.21</para>
+		
+		<!-- Optionally mention 3d support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This function supports 3d and will not drop the z-index.  
+		  	However it seems to only consider x y when doing the difference and tacks back on the Z-Index</para>
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+	
+		<programlisting>
+--Safe for 2d
+SELECT ST_AsText(ST_SymDifference(ST_GeomFromText('LINESTRING(1 2, 1 4)'), ST_GeomFromText('LINESTRING(1 1, 1 3)')))
+
+st_astext
+---------
+MULTILINESTRING((1 3,1 4),(1 1,1 2))
+
+--When used in 3d doesn't quite do the right thing
+SELECT ST_AsEWKT(ST_SymDifference(ST_GeomFromEWKT('LINESTRING(1 2 1, 1 4 2)'), 
+	ST_GeomFromEWKT('LINESTRING(1 1 3, 1 3 4)')))
+	
+st_astext
+------------
+MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))
+		</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	
+	    <para><xref linkend="ST_Difference" /></para>
+	  </refsection>
 	</refentry>
 		
 		
