@@ -6156,6 +6156,59 @@ FROM country
 		</refsection>
 	</refentry>	
 
+	<refentry id="ST_MemUnion">
+	  <refnamediv>
+	    <refname>ST_MemUnion</refname>
+	
+	    <refpurpose>Same as ST_Union, only memory-friendly (uses less memory
+            and more processor time).</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>geometry <function>ST_MemUnion</function></funcdef>
+	        <paramdef><type>geometry set</type> <parameter>geomfield</parameter></paramdef>
+	      </funcprototype>
+
+	    </funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+	    <para>Some useful description here.</para>
+	
+	    <!-- optionally mention that this function uses indexes if appropriate -->
+	    <note>
+	      <para>Same as ST_Union, only memory-friendly (uses less memory
+            and more processor time).  This aggregate function works by unioning the geometries one at a time to previous result as opposed to 
+			ST_Union aggregate which first creates an array and then unions</para>
+	    </note>
+		
+		<!-- Optionally mention 3d support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This function supports 3d and will not drop the z-index, but sometimes does strange things with 3d.</para>
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+	
+	    <programlisting>See ST_Union</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	
+	    <para><xref linkend="ST_Union" /></para>
+	  </refsection>
+	</refentry>
+
 	<refentry id="ST_Polygonize">
 		<refnamediv>
 			<refname>ST_Polygonize</refname>

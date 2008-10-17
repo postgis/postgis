@@ -93,21 +93,6 @@
     </sect2>
 
     <sect2>
-      <title>Geometry Processing Functions</title>
-	  <variablelist>
-    
-        <varlistentry>
-          <term>ST_MemUnion(geometry set)</term>
-
-          <listitem>
-            <para>Same as the above, only memory-friendly (uses less memory
-            and more processor time).</para>
-          </listitem>
-        </varlistentry>
-      </variablelist>
-    </sect2>
-
-    <sect2>
       <title>Geometry Accessors</title>
 
       <variablelist>
