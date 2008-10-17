@@ -241,6 +241,8 @@ COMMENT ON FUNCTION ST_MakePolygon(geometry, geometry[]) IS 'args: outerlinestri
 			
 COMMENT ON FUNCTION ST_Intersection(geometry, geometry) IS 'args: geomA, geomB - Returns a geometry that represents the shared portion of geomA and geomB';
 			
+COMMENT ON AGGREGATE ST_MemUnion(geometry) IS 'args: geomfield - Same as ST_Union, only memory-friendly (uses less memory and more processor time).';
+			
 COMMENT ON AGGREGATE ST_Polygonize(geometry) IS 'args: geomfield - Aggregate. Creates a GeometryCollection containing possible polygons formed from the constituent linework of a set of geometries.';
 			
 COMMENT ON FUNCTION ST_Shift_Longitude(geometry ) IS 'args: geomA - Reads every point/vertex in every component of every feature in a geometry, and if the longitude coordinate is <0, adds 360 to it. The result would be a 0-360 version of the data to be plotted in a 180 centric map';
