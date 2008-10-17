@@ -6399,22 +6399,6 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As the_geom) As foo;
 			<para><xref linkend="ST_Simplify" /></para>
 		  </refsection>
 	</refentry>
-	
-	        <varlistentry>
-          <term>ST_SymDifference(geometry A, geometry B)</term>
-
-          <listitem>
-            <para>Returns a geometry that represents the portions of A and B
-            that do not intersect. It is called a symmetric difference because
-            ST_SymDifference(A,B) = ST_SymDifference(B,A).</para>
-
-            <para>Performed by the GEOS module</para>
-
-            <para>Do not call with a GeometryCollection as an argument</para>
-
-            <para>OGC SPEC s2.1.1.3</para>
-          </listitem>
-        </varlistentry>
 		
 	<refentry id="ST_SymDifference">
 	  <refnamediv>
