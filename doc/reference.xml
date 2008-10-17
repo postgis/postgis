@@ -643,24 +643,6 @@
           </listitem>
         </varlistentry>
 
-        <varlistentry id="length2d">
-          <term>ST_length2d(geometry)</term>
-
-          <listitem>
-            <para>Returns the 2-dimensional length of the geometry if it is a
-            linestring or multi-linestring.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>ST_length3d(geometry)</term>
-
-          <listitem>
-            <para>Returns the 3-dimensional length of the geometry if it is a
-            linestring or multi-linestring.</para>
-          </listitem>
-        </varlistentry>
-
         <varlistentry id="length_spheroid">
           <term>ST_length_spheroid(geometry,spheroid)</term>
 
