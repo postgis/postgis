@@ -205,7 +205,11 @@ COMMENT ON FUNCTION ST_Equals(geometry , geometry ) IS 'args: A, B - Returns tru
 			
 COMMENT ON FUNCTION ST_Intersects(geometry, geometry) IS 'args: A, B - Returns TRUE if the Geometries "spatially intersect" - (share any portion of space) and FALSE if they dont (they are Disjoint).';
 			
-COMMENT ON FUNCTION ST_Length(geometry ) IS 'args: g1 - Returns the length of the geometry if it is a linestring or multilinestring.';
+COMMENT ON FUNCTION ST_Length(geometry ) IS 'args: a_2dlinestring - Returns the 2d length of the geometry if it is a linestring or multilinestring.';
+			
+COMMENT ON FUNCTION ST_Length2D(geometry ) IS 'args: a_2dlinestring - Returns the 2-dimensional length of the geometry if it is a linestring or multi-linestring. This is an alias for ST_Length';
+			
+COMMENT ON FUNCTION ST_Length3D(geometry ) IS 'args: a_3dlinestring - Returns the 3-dimensional or 2-dimensional length of the geometry if it is a linestring or multi-linestring.';
 			
 COMMENT ON FUNCTION ST_OrderingEquals(geometry , geometry ) IS 'args: A, B - Returns true if the given geometries represent the same geometry and points are in the same directional order.';
 			
