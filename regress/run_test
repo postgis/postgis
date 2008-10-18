@@ -426,7 +426,6 @@ fi
 ###################################################
 
 geosver=`${PSQL} -tAc "select postgis_geos_version()" "${DB}"`
-jtsver=`${PSQL} -tAc "select postgis_jts_version()" "${DB}"`
 projver=`${PSQL} -tAc "select postgis_proj_version()" "${DB}"`
 libbuilddate=`${PSQL} -tAc "select postgis_lib_build_date()" "${DB}"`
 pgsqlver=`${PSQL} -tAc "select version()" "${DB}"`
@@ -438,9 +437,6 @@ echo " $pgsqlver"
 echo " Postgis $libver - $libbuilddate"
 if [ -n "$geosver" ]; then
 	echo "   GEOS: $geosver"
-fi
-if [ -n "$jtsver" ]; then
-	echo "   JTS: $jtsver"
 fi
 if [ -n "$projver" ]; then
 	echo "   PROJ: $projver"
