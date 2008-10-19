@@ -1650,7 +1650,7 @@ SELECT ST_PointFromText('POINT(-71.064544 42.28787)', 4326);
 	  <refnamediv>
 	    <refname>GeometryType</refname>
 	
-	    <refpurpose>eturns the type of the geometry as a string. Eg:
+	    <refpurpose>Returns the type of the geometry as a string. Eg:
             'LINESTRING', 'POLYGON', 'MULTIPOINT', etc.</refpurpose>
 	  </refnamediv>
 	
@@ -1694,7 +1694,11 @@ SELECT ST_PointFromText('POINT(-71.064544 42.28787)', 4326);
 	  <refsection>
 	    <title>Examples</title>
 	
-	    <programlisting></programlisting>
+	    <programlisting>SELECT GeometryType(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'));
+ geometrytype 
+--------------
+ LINESTRING
+</programlisting>
 	  </refsection>
 	
 	  <!-- Optionally add a "See Also" section -->
