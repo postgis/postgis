@@ -1,0 +1,54 @@
+# **********************************************************************
+# * $Id: Makefile.in
+# *
+# * PostGIS - Spatial Types for PostgreSQL
+# * http://postgis.refractions.net
+# * Copyright 2008 Mark Cave-Ayland
+# *
+# * This is free software; you can redistribute and/or modify it under
+# * the terms of the GNU General Public Licence. See the COPYING file.
+# *
+# **********************************************************************
+
+CC=@CC@
+CFLAGS=@CFLAGS@ @PICFLAGS@ @WARNFLAGS@
+
+# Filenames with extension as determined by the OS
+PGSQL2SHP=pgsql2shp@EXESUFFIX@
+SHP2PGSQL=shp2pgsql@EXESUFFIX@
+
+# Common shapefile library files
+OBJS=	shpopen.o \
+	dbfopen.o \
+	getopt.o
+
+# PostgreSQL frontend CPPFLAGS and LDFLAGS (for compiling and linking with libpq)
+PGSQL_FE_CPPFLAGS=@PGSQL_FE_CPPFLAGS@
+PGSQL_FE_LDFLAGS=@PGSQL_FE_LDFLAGS@
+
+# PostgreSQL executable directory
+PGSQL_BINDIR=@PGSQL_BINDIR@
+
+
+all: $(SHP2PGSQL) $(PGSQL2SHP) 
+
+pgsql2shp.o: pgsql2shp.c
+	$(CC) $(CFLAGS) $(PGSQL_FE_CPPFLAGS) -c $<
+
+$(PGSQL2SHP): $(OBJS) pgsql2shp.o
+	$(CC) $(CFLAGS) $(OBJS) pgsql2shp.o $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) -o $@ 
+
+$(SHP2PGSQL): $(OBJS) shp2pgsql.o
+	$(CC) $(CFLAGS) $(OBJS) shp2pgsql.o $(ICONV_LDFLAGS) -o $@ 
+
+install: all
+	cp $(PGSQL2SHP) $(PGSQL_BINDIR)/$(PGSQL2SHP)
+	cp $(SHP2PGSQL) $(PGSQL_BINDIR)/$(SHP2PGSQL)
+
+uninstall:
+	rm -f $(PGSQL_BINDIR)/$(PGSQL2SHP)
+	rm -f $(PGSQL_BINDIR)/$(SHP2PGSQL)
+
+clean:
+	rm -f $(OBJS) shp2pgsql.o pgsql2shp.o $(SHP2PGSQL) $(PGSQL2SHP) 
+

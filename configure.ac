@@ -39,6 +39,12 @@ AC_LIBTOOL_COMPILER_OPTION([if $compiler supports -Wmissing-prototypes], [dummy]
 AC_SUBST([WARNFLAGS])
 
 dnl
+dnl Define executable suffix for use with the loader Makefiles
+dnl
+EXESUFFIX="$ac_cv_exeext"
+AC_SUBST([EXESUFFIX])
+
+dnl
 dnl Version Information imported from Version.config 
 dnl
 POSTGIS_MAJOR_VERSION=`cat Version.config | grep POSTGIS_MAJOR_VERSION | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
@@ -235,8 +241,8 @@ fi
 dnl Note: We don't need the server-side LDFLAGS or CPPFLAGS because we get these from PGXS 
 
 dnl Extract the linker and include flags for the frontend (for programs that use libpq)
-PGSQL_FE_LDFLAGS=-L`$PGCONFIG --libdir`
-PGSQL_FE_CPPFLAGS=-I`$PGCONFIG --includedir`
+PGSQL_FE_LDFLAGS="-L`$PGCONFIG --libdir` -lpq"
+PGSQL_FE_CPPFLAGS="-I`$PGCONFIG --includedir`"
 
 AC_SUBST([PGSQL_FE_LDFLAGS])
 AC_SUBST([PGSQL_FE_CPPFLAGS])
@@ -247,6 +253,11 @@ PGSQL_MANDIR=`$PGCONFIG --mandir`
 
 AC_SUBST([PGSQL_DOCDIR])
 AC_SUBST([PGSQL_MANDIR])
+
+dnl Extract the executable directory
+PGSQL_BINDIR=`$PGCONFIG --bindir`
+
+AC_SUBST([PGSQL_BINDIR])
 
 
 dnl Ensure that we can parse libpq-fe.h
@@ -440,5 +451,5 @@ AC_SUBST([SHLIB_LINK])
 dnl AC_MSG_RESULT([SHLIB_LINK: $SHLIB_LINK])
 
 dnl Output the relevant files
-AC_OUTPUT([liblwgeom/Makefile lwgeom/Makefile lwgeom/sqldefines.h loader/Makefile.pgsql2shp loader/Makefile.shp2pgsql topology/Makefile regress/Makefile doc/Makefile])
+AC_OUTPUT([liblwgeom/Makefile lwgeom/Makefile lwgeom/sqldefines.h loader/Makefile topology/Makefile regress/Makefile doc/Makefile])
 
