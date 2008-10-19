@@ -93,97 +93,6 @@
     </sect2>
 
     <sect2>
-      <title>Geometry Accessors</title>
-
-      <variablelist>
-        <varlistentry>
-          <term>ST_IsEmpty(geometry)</term>
-
-          <listitem>
-            <para>Returns 1 (TRUE) if this Geometry is the empty geometry . If
-            true, then this Geometry represents the empty point set - i.e.
-            GEOMETRYCOLLECTION(EMPTY).</para>
-
-            <para>OGC SPEC s2.1.1.1</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry id="ST_IsSimple">
-          <term>ST_IsSimple(geometry)</term>
-
-          <listitem>
-            <para>Returns 1 (TRUE) if this Geometry has no anomalous geometric
-            points, such as self intersection or self tangency.</para>
-
-            <para>Performed by the GEOS module</para>
-
-            <para>OGC SPEC s2.1.1.1</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry id="GeometryType">
-          <term>GeometryType(geometry)</term>
-
-          <listitem>
-            <para>Returns the type of the geometry as a string. Eg:
-            'LINESTRING', 'POLYGON', 'MULTIPOINT', etc.</para>
-
-            <para>OGC SPEC s2.1.1.1 - Returns the name of the instantiable
-            subtype of Geometry of which this Geometry instance is a member.
-            The name of the instantiable subtype of Geometry is returned as a
-            string.</para>
-
-            <note>
-              <para>This function also indicates if the geometry is measured,
-              by returning a string of the form 'POINTM'.</para>
-            </note>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>ST_X(geometry)</term>
-
-          <listitem>
-            <para>Return the X coordinate of the point. Input must be a
-            point.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>ST_Y(geometry)</term>
-
-          <listitem>
-            <para>Return the Y coordinate of the point. Input must be a
-            point.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>ST_Z(geometry)</term>
-
-          <listitem>
-            <para>Return the Z coordinate of the point, or NULL if not
-            available. Input must be a point.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>ST_M(geometry)</term>
-
-          <listitem>
-            <para>Return the M coordinate of the point, or NULL if not
-            available. Input must be a point.</para>
-
-            <note>
-              <para>This is not (yet) part of the OGC spec, but is listed here
-              to complete the point coordinate extractor function list.</para>
-            </note>
-          </listitem>
-        </varlistentry>
-      </variablelist>
-    </sect2>
-
-    <sect2>
       <title>Geometry Constructors</title>
 
       <variablelist>
@@ -1323,38 +1232,6 @@ WHERE n*100.00/length &lt; 1;
       </varlistentry>
   
       <varlistentry>
-        <term>ST_IsEmpty</term>
-
-        <listitem>
-          <para>Test if an ST_Geometry value corresponds to the empty
-          set.</para>
-
-          <note>
-            <para>SQL-MM defines the result of ST_IsEmpty(NULL) to be 0, while
-            PostGIS returns NULL.</para>
-          </note>
-
-          <para>SQL-MM 3: 5.1.7</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term>ST_IsSimple</term>
-
-        <listitem>
-          <para>Test if an ST_Geometry value has no anomalous geometric
-          points, such as self intersection or self tangency.</para>
-
-          <note>
-            <para>SQL-MM defines the result of ST_IsSimple(NULL) to be 0,
-            while PostGIS returns NULL.</para>
-          </note>
-
-          <para>SQL-MM 3: 5.1.8</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
         <term>ST_LineFromText</term>
 
         <listitem>
@@ -1506,27 +1383,7 @@ WHERE n*100.00/length &lt; 1;
           <para>SQL-MM 3: 5.1.36</para>
         </listitem>
       </varlistentry>
-
-      <varlistentry>
-        <term>ST_X</term>
-
-        <listitem>
-          <para>Returns the x coordinate value of an ST_Point value.</para>
-
-          <para>SQL-MM 3: 6.1.3</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term>ST_Y</term>
-
-        <listitem>
-          <para>Returns the y coordinate value of an ST_Point value.</para>
-
-          <para>SQL-MM 3: 6.1.4</para>
-        </listitem>
-      </varlistentry>
-    </variablelist>
+	 </variablelist>
   </sect1>
 
   <sect1>

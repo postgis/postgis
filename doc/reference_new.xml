@@ -1644,7 +1644,65 @@ SELECT ST_PointFromText('POINT(-71.064544 42.28787)', 4326);
   </sect1>
    
   <sect1>
-    <title>Geometry Accessors</title> 		
+    <title>Geometry Accessors</title> 
+
+	<refentry id="GeometryType">
+	  <refnamediv>
+	    <refname>GeometryType</refname>
+	
+	    <refpurpose>eturns the type of the geometry as a string. Eg:
+            'LINESTRING', 'POLYGON', 'MULTIPOINT', etc.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>text <function>GeometryType</function></funcdef>
+	        <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+	      </funcprototype>
+	    </funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+		<para>Returns the type of the geometry as a string. Eg:
+		'LINESTRING', 'POLYGON', 'MULTIPOINT', etc.</para>
+
+		<para>OGC SPEC s2.1.1.1 - Returns the name of the instantiable
+		subtype of Geometry of which this Geometry instance is a member.
+		The name of the instantiable subtype of Geometry is returned as a
+		string.</para>
+
+		<note>
+		  <para>This function also indicates if the geometry is measured,
+		  by returning a string of the form 'POINTM'.</para>
+		</note>
+	
+	    <!-- Optionally mention OpenGIS compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the <ulink
+	    url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+	    Implementation Specification for SQL.</ulink></para>
+
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+	
+	    <programlisting></programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	    <para><xref linkend="ST_GeometryType" /></para>
+	  </refsection>
+	</refentry>
 	<refentry id="ST_Boundary">
       <refnamediv>
         <refname>ST_Boundary</refname>
@@ -2333,6 +2391,89 @@ postgis=# SELECT ST_IsClosed('MULTIPOINT((0 0), (1 1))'::geometry);
         <para><xref linkend="ST_IsRing" /></para>
       </refsection>
     </refentry>
+
+	<refentry id="ST_IsEmpty">
+	  <refnamediv>
+		<refname>ST_IsEmpty</refname>
+	
+		<refpurpose>Returns true if this Geometry is an empty geometry . If
+				true, then this Geometry represents the empty point set - i.e.
+				GEOMETRYCOLLECTION(EMPTY).</refpurpose>
+				
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_IsEmpty</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+	
+		<para>Returns true if this Geometry is an empty geometry . If
+				true, then this Geometry represents an empty geometry collection, polygon, point etc.</para>
+		<note>
+            <para>SQL-MM defines the result of ST_IsEmpty(NULL) to be 0, while
+            PostGIS returns NULL.</para>
+        </note>
+	
+		<!-- Optionally mention OpenGIS compliancy if appropriate -->
+		<para><inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+		  </inlinemediaobject> This method implements the <ulink
+		url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+		Implementation Specification for SQL.</ulink> OGC SPEC s2.1.1.1</para>
+	
+		<!-- Optionally mention SQL/MM compliancy if appropriate -->
+		<para><inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+		  </inlinemediaobject> This method implements the SQL/MM specification:
+		SQL-MM 3: 5.1.7</para>
+		
+	  </refsection>
+	  
+	
+	  <refsection>
+		<title>Examples</title>
+	
+		<programlisting>
+SELECT ST_IsEmpty('GEOMETRYCOLLECTION(EMPTY)');
+ st_isempty 
+------------
+ t
+(1 row)
+
+ SELECT ST_IsEmpty(ST_GeomFromText('POLYGON EMPTY'));
+ st_isempty 
+------------
+ t
+(1 row)
+
+SELECT ST_IsEmpty(ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))'));
+
+ st_isempty 
+------------
+ f
+(1 row)
+
+ SELECT ST_IsEmpty(ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))')) = false;
+ ?column? 
+----------
+ t
+(1 row)
+
+		</programlisting>
+	  </refsection>
+
+	</refentry>
 	
   <refentry id="ST_IsRing">
     <refnamediv>
@@ -2410,6 +2551,81 @@ FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS the_geom) AS foo
       <xref linkend="ST_EndPoint" /></para>
     </refsection>
   </refentry>
+  
+
+  <refentry id="ST_IsSimple">
+	  <refnamediv>
+		<refname>ST_IsSimple</refname>
+	
+		<refpurpose>Returns (TRUE) if this Geometry has no anomalous geometric
+				points, such as self intersection or self tangency.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_IsSimple</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+	
+		<para>Returns true if this Geometry has no anomalous geometric
+				points, such as self intersection or self tangency.</para>
+				
+		<note>
+			<para>SQL-MM defines the result of ST_IsSimple(NULL) to be 0,
+			while PostGIS returns NULL.</para>
+		</note>
+
+	
+		<!-- Optionally mention OpenGIS compliancy if appropriate -->
+		<para><inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+		  </inlinemediaobject> This method implements the <ulink
+		url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+		Implementation Specification for SQL.</ulink> OGC SPEC s2.1.1.1</para>
+	
+		<!-- Optionally mention SQL/MM compliancy if appropriate -->
+		<para><inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+		  </inlinemediaobject> This method implements the SQL/MM specification:
+		SQL-MM 3: 5.1.8</para>
+		
+		<!-- Optionally mention 3d support -->
+		<para><inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+		  </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+	  </refsection>
+	  
+	
+	  <refsection>
+		<title>Examples</title>
+	
+		<programlisting> SELECT ST_IsSimple(ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))'));
+ st_issimple 
+-------------
+ t
+(1 row)
+
+ SELECT ST_IsSimple(ST_GeomFromText('LINESTRING(1 1,2 2,2 3.5,1 3,1 2,2 1)'));
+ st_issimple 
+-------------
+ f
+(1 row)
+
+</programlisting>
+	  </refsection>
+	</refentry>
 
     <refentry id="ST_IsValid">
       <refnamediv>
@@ -2476,6 +2692,79 @@ NOTICE:  Self-intersection at or near point 0 0
         <para><xref linkend="ST_Summary" /></para>
       </refsection>
     </refentry>
+		
+	<refentry id="ST_M">
+	  <refnamediv>
+	    <refname>ST_M</refname>
+	
+	    <refpurpose>Return the M coordinate of the point, or NULL if not
+            available. Input must be a point.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>float <function>ST_M</function></funcdef>
+	        <paramdef><type>geometry </type> <parameter>a_point</parameter></paramdef>
+	      </funcprototype>
+	    </funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+	    <para>Return the M coordinate of the point, or NULL if not
+            available. Input must be a point.</para>
+	
+		<note>
+              <para>This is not (yet) part of the OGC spec, but is listed here
+              to complete the point coordinate extractor function list.</para>
+        </note>
+	
+	    <!-- Optionally mention OpenGIS compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the <ulink
+	    url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+	    Implementation Specification for SQL.</ulink></para>
+	
+	    <!-- Optionally mention SQL/MM compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the SQL/MM specification:
+	    SQL-MM 3 New standard: ?</para>
+		
+		<!-- Optionally mention 3d support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+	    <programlisting>SELECT ST_M(ST_GeomFromEWKT('POINT(1 2 3 4)'));
+ st_m 
+------
+    4
+(1 row)
+
+		</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	
+	    <para><xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_X" />, <xref linkend="ST_Y" />, <xref linkend="ST_Z" /></para>
+	  </refsection>
+	</refentry>
 		
 	<refentry id="ST_NDims">
 		<refnamediv>
@@ -3046,6 +3335,204 @@ Line[ZB] with 2 points : Polygon[ZB] with 1 rings
         <para><xref linkend="ST_IsValid" /></para>
       </refsection>
     </refentry>
+		
+	<refentry id="ST_X">
+	  <refnamediv>
+	    <refname>ST_X</refname>
+	
+	    <refpurpose>Return the X coordinate of the point, or NULL if not
+            available. Input must be a point.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>float <function>ST_X</function></funcdef>
+	        <paramdef><type>geometry </type> <parameter>a_point</parameter></paramdef>
+	      </funcprototype>
+	    </funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+	    <para>Return the X coordinate of the point, or NULL if not
+            available. Input must be a point.</para>
+	
+	    <!-- Optionally mention OpenGIS compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the <ulink
+	    url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+	    Implementation Specification for SQL.</ulink></para>
+	
+	    <!-- Optionally mention SQL/MM compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the SQL/MM specification:
+	    SQL-MM 3 standard: SQL-MM 3: 6.1.3</para>
+		
+		<!-- Optionally mention 3d support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+	    <programlisting>SELECT ST_X(ST_GeomFromEWKT('POINT(1 2 3 4)'));
+ st_x 
+------
+    1
+(1 row)
+
+		</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	
+	    <para><xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_M" />, <xref linkend="ST_Y" />, <xref linkend="ST_Z" /></para>
+	  </refsection>
+	</refentry>
+		
+	<refentry id="ST_Y">
+	  <refnamediv>
+	    <refname>ST_Y</refname>
+	
+	    <refpurpose>Return the Y coordinate of the point, or NULL if not
+            available. Input must be a point.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>float <function>ST_X</function></funcdef>
+	        <paramdef><type>geometry </type> <parameter>a_point</parameter></paramdef>
+	      </funcprototype>
+	    </funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+	    <para>Return the Y coordinate of the point, or NULL if not
+            available. Input must be a point.</para>
+	
+	    <!-- Optionally mention OpenGIS compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the <ulink
+	    url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+	    Implementation Specification for SQL.</ulink></para>
+	
+	    <!-- Optionally mention SQL/MM compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the SQL/MM specification:
+	    SQL-MM 3 standard: SQL-MM 3: 6.1.4</para>
+		
+		<!-- Optionally mention 3d support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+	    <programlisting>SELECT ST_Y(ST_GeomFromEWKT('POINT(1 2 3 4)'));
+ st_y 
+------
+    2
+(1 row)
+
+		</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	
+	    <para><xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_M" />, <xref linkend="ST_X" />, <xref linkend="ST_Z" /></para>
+	  </refsection>
+	</refentry>
+	
+	<refentry id="ST_Z">
+	  <refnamediv>
+	    <refname>ST_Z</refname>
+	
+	    <refpurpose>Return the Z coordinate of the point, or NULL if not
+            available. Input must be a point.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>float <function>ST_Z</function></funcdef>
+	        <paramdef><type>geometry </type> <parameter>a_point</parameter></paramdef>
+	      </funcprototype>
+	    </funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+	    <para>Return the Z coordinate of the point, or NULL if not
+            available. Input must be a point.</para>
+	
+	 
+	
+	    <!-- Optionally mention SQL/MM compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the SQL/MM specification:
+	    SQL-MM 3 standard New Spec: ?</para>
+		
+		<!-- Optionally mention 3d support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+	    <programlisting>SELECT ST_Z(ST_GeomFromEWKT('POINT(1 2 3 4)'));
+ st_y 
+------
+    3
+(1 row)
+
+		</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	
+	    <para><xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_M" />, <xref linkend="ST_Y" />, <xref linkend="ST_Z" /></para>
+	  </refsection>
+	</refentry>
+
 
   </sect1>
   
@@ -6533,9 +7020,9 @@ FROM country
 		</refsection>
 	</refentry>	
 
-	<refentry id="ST_MemUnion">
+	<refentry id="ST_MemGeomUnion">
 	  <refnamediv>
-	    <refname>ST_MemUnion</refname>
+	    <refname>ST_MemGeomUnion</refname>
 	
 	    <refpurpose>Same as ST_Union, only memory-friendly (uses less memory
             and more processor time).</refpurpose>
@@ -6544,7 +7031,7 @@ FROM country
 	  <refsynopsisdiv>
 	    <funcsynopsis>
 	      <funcprototype>
-	        <funcdef>geometry <function>ST_MemUnion</function></funcdef>
+	        <funcdef>geometry <function>ST_MemGeomUnion</function></funcdef>
 	        <paramdef><type>geometry set</type> <parameter>geomfield</parameter></paramdef>
 	      </funcprototype>
 
@@ -6856,7 +7343,6 @@ FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As the_geom) As foo;
             that do not intersect. It is called a symmetric difference because
             ST_SymDifference(A,B) = ST_SymDifference(B,A). One can think of this as ST_Union(geomA,geomB) - ST_Intersection(A,B).  
 			</para>
-		<note><para>Note - order matters. B - A will always return a portion of B</para></note>
 	
 		<para>Performed by the GEOS module</para>
 
