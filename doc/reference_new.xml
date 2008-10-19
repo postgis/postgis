@@ -3393,6 +3393,12 @@ Line[ZB] with 2 points : Polygon[ZB] with 1 rings
     1
 (1 row)
 
+SELECT ST_Y(ST_Centroid(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)')));
+ st_y 
+------
+  1.5
+(1 row)
+
 		</programlisting>
 	  </refsection>
 	
@@ -3400,7 +3406,7 @@ Line[ZB] with 2 points : Polygon[ZB] with 1 rings
 	  <refsection>
 	    <title>See Also</title>
 	
-	    <para><xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_M" />, <xref linkend="ST_Y" />, <xref linkend="ST_Z" /></para>
+	    <para><xref linkend="ST_Centroid" />, <xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_M" />, <xref linkend="ST_Y" />, <xref linkend="ST_Z" /></para>
 	  </refsection>
 	</refentry>
 		
@@ -3415,7 +3421,7 @@ Line[ZB] with 2 points : Polygon[ZB] with 1 rings
 	  <refsynopsisdiv>
 	    <funcsynopsis>
 	      <funcprototype>
-	        <funcdef>float <function>ST_X</function></funcdef>
+	        <funcdef>float <function>ST_Y</function></funcdef>
 	        <paramdef><type>geometry </type> <parameter>a_point</parameter></paramdef>
 	      </funcprototype>
 	    </funcsynopsis>
@@ -3461,6 +3467,13 @@ Line[ZB] with 2 points : Polygon[ZB] with 1 rings
     2
 (1 row)
 
+SELECT ST_Y(ST_Centroid(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)')));
+ st_y 
+------
+  1.5
+(1 row)
+
+
 		</programlisting>
 	  </refsection>
 	
@@ -3468,7 +3481,7 @@ Line[ZB] with 2 points : Polygon[ZB] with 1 rings
 	  <refsection>
 	    <title>See Also</title>
 	
-	    <para><xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_M" />, <xref linkend="ST_X" />, <xref linkend="ST_Z" /></para>
+	    <para><xref linkend="ST_Centroid" />, <xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_M" />, <xref linkend="ST_X" />, <xref linkend="ST_Z" /></para>
 	  </refsection>
 	</refentry>
 	
