@@ -83,7 +83,7 @@ COMMENT ON FUNCTION ST_PointFromText(text , integer ) IS 'args: WKT, srid - Make
 			
 COMMENT ON FUNCTION ST_WKTToSQL(text ) IS 'args: WKT - Return a specified ST_Geometry value from Well-Known Text representation (WKT). This is an alias name for ST_GeomFromText';
 			
-COMMENT ON FUNCTION GeometryType(geometry ) IS 'args: geomA - eturns the type of the geometry as a string. Eg: LINESTRING, POLYGON, MULTIPOINT, etc.';
+COMMENT ON FUNCTION GeometryType(geometry ) IS 'args: geomA - Returns the type of the geometry as a string. Eg: LINESTRING, POLYGON, MULTIPOINT, etc.';
 			
 COMMENT ON FUNCTION ST_Boundary(geometry ) IS 'args: geomA - Returns the closure of the combinatorial boundary of this Geometry.';
 			
