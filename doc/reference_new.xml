@@ -4967,11 +4967,11 @@ degaz	degazrev
     </refsection>
   </refentry>
   
-	<refentry id="ST_Contains">
+  <refentry id="ST_Contains">
 	  <refnamediv>
 		<refname>ST_Contains</refname>
 	
-		<refpurpose>Returns true if the geometry B is completely inside geometry A</refpurpose>
+		<refpurpose>Returns true if the geometry B is completely inside geometry A. </refpurpose>
 	  </refnamediv>
 	
 	  <refsynopsisdiv>
@@ -4980,10 +4980,10 @@ degaz	degazrev
 			<funcdef>boolean <function>ST_Contains</function></funcdef>
 	
 			<paramdef><type>geometry </type>
-			<parameter>A</parameter></paramdef>
+			<parameter>geomA</parameter></paramdef>
 	
 			<paramdef><type>geometry </type>
-			<parameter>B</parameter></paramdef>
+			<parameter>geomB</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -5033,33 +5033,186 @@ degaz	degazrev
 				</imageobject>
 			  </inlinemediaobject> This method implements the SQL/MM specification:
 			SQL-MM 3: 5.1.31</para>
+			
+		<para>There are certain subtleties to ST_Contains and ST_Within that are not intuitively obvious.
+			For details check out <ulink url="http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html">Subtleties of OGC Covers, Contains, Within</ulink></para>
 	  </refsection>
 	
 	  <refsection>
 		<title>Examples</title>
 		  <programlisting>
 	--a circle within a circle
-	SELECT ST_Contains(smallc,smallc) As smallinsmall,
-	ST_Contains(smallc, bigc) As smallcontainsbig, 
+	SELECT ST_Contains(smallc, bigc) As smallcontainsbig, 
 	ST_Contains(bigc,smallc) As bigcontainssmall,
-	ST_Contains(ST_Union(smallc, bigc), bigc) as unioncontainsbig,
 	ST_Contains(bigc, ST_Union(smallc, bigc)) as bigcontainsunion,
-	ST_Equals(bigc, ST_Union(smallc, bigc)) as bigisunion
+	ST_Equals(bigc, ST_Union(smallc, bigc)) as bigisunion,
+	ST_Covers(bigc, ST_ExteriorRing(bigc)) As bigcoversexterior,
+	ST_Contains(bigc, ST_ExteriorRing(bigc)) As bigcontainsexterior
 	FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc, 
 	ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As bigc) As foo;
 	--Result
- smallinsmall | smallcontainsbig | bigcontainssmall | unioncontainsbig | bigcontainsunion | bigisunion
---------------+------------------+------------------+------------------+------------------+------------
- t            | f                | t                | t                | t                | t
-		</programlisting>
+  smallcontainsbig | bigcontainssmall | bigcontainsunion | bigisunion | bigcoversexterior | bigcontainsexterior
+------------------+------------------+------------------+------------+-------------------+---------------------
+ f                | t                | t                | t          | t        | f	</programlisting>
 	  </refsection>
 	  
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_Equals"/>,<xref linkend="ST_Within"/></para>
+		<para><xref linkend="ST_Covers" />,<xref linkend="ST_CoveredBy" />, <xref linkend="ST_Equals"/>,<xref linkend="ST_Within"/></para>
 	  </refsection>
-	</refentry>
-    
+ </refentry>
+ 
+  <refentry id="ST_Covers">
+	  <refnamediv>
+		<refname>ST_Covers</refname>
+	
+		<refpurpose>Returns 1 (TRUE) if no point in Geometry B is outside
+            Geometry A</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_Covers</function></funcdef>
+	
+			<paramdef><type>geometry </type>
+			<parameter>geomA</parameter></paramdef>
+	
+			<paramdef><type>geometry </type>
+			<parameter>geomB</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+	
+		  <para>Returns 1 (TRUE) if no point in Geometry B is outside
+            Geometry A</para>
+
+		<para>Performed by the GEOS module</para>
+	
+        <important>
+          <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
+        </important>
+		
+		<important>
+          <para>Do not use this function with invalid geometries. You will get unexpected results.</para>
+        </important>
+	
+		<para>This function call will automatically include a bounding box
+			comparison that will make use of any indexes that are available on
+			the geometries. To avoid index use, use the function
+			_ST_Covers.</para>
+			
+		<para>Availability: 1.2.2</para>
+	
+		<para>NOTE: this is the "allowable" version that returns a
+			boolean, not an integer.</para>
+	
+		<para>Not an OGC standard, but Oracle has it too.</para>
+		<para>There are certain subtleties to ST_Contains and ST_Within that are not intuitively obvious.
+			For details check out <ulink url="http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html">Subtleties of OGC Covers, Contains, Within</ulink></para>
+	  </refsection>
+	
+	  <refsection>
+		<title>Examples</title>
+		  <programlisting>
+	--a circle covering a circle
+SELECT ST_Covers(smallc,smallc) As smallinsmall,
+	ST_Covers(smallc, bigc) As smallcoversbig, 
+	ST_Covers(bigc, ST_ExteriorRing(bigc)) As bigcoversexterior,
+	ST_Contains(bigc, ST_ExteriorRing(bigc)) As bigcontainsexterior
+FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc, 
+	ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As bigc) As foo;
+	--Result
+ smallinsmall | smallcoversbig | bigcoversexterior | bigcontainsexterior
+--------------+----------------+-------------------+---------------------
+ t            | f              | t                 | f
+(1 row)	</programlisting>
+	  </refsection>
+	  
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_Contains"/>, <xref linkend="ST_CoveredBy" />, <xref linkend="ST_Within"/></para>
+	  </refsection>
+ </refentry>
+ 
+  <refentry id="ST_CoveredBy">
+	  <refnamediv>
+		<refname>ST_CoveredBy</refname>
+	
+		<refpurpose>Returns 1 (TRUE) if no point in Geometry B is outside
+            Geometry A</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_CoveredBy</function></funcdef>
+	
+			<paramdef><type>geometry </type>
+			<parameter>geomA</parameter></paramdef>
+	
+			<paramdef><type>geometry </type>
+			<parameter>geomB</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+	
+		  <para>Returns 1 (TRUE) if no point in Geometry A is outside
+            Geometry B</para>
+
+		<para>Performed by the GEOS module</para>
+	
+        <important>
+          <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
+        </important>
+		
+		<important>
+          <para>Do not use this function with invalid geometries. You will get unexpected results.</para>
+        </important>
+		<para>Availability: 1.2.2</para>
+	
+		<para>This function call will automatically include a bounding box
+			comparison that will make use of any indexes that are available on
+			the geometries. To avoid index use, use the function
+			_ST_CoveredBy.</para>
+	
+		<para>NOTE: this is the "allowable" version that returns a
+			boolean, not an integer.</para>
+	
+		<para>Not an OGC standard, but Oracle has it too.</para>
+		<para>There are certain subtleties to ST_Contains and ST_Within that are not intuitively obvious.
+			For details check out <ulink url="http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html">Subtleties of OGC Covers, Contains, Within</ulink></para>
+	  </refsection>
+	
+	  <refsection>
+		<title>Examples</title>
+		  <programlisting>
+	--a circle coveredby a circle
+SELECT ST_CoveredBy(smallc,smallc) As smallinsmall,
+	ST_CoveredBy(smallc, bigc) As smallcoveredbybig, 
+	ST_CoveredBy(ST_ExteriorRing(bigc), bigc) As exteriorcoveredbybig,
+	ST_Within(ST_ExteriorRing(bigc),bigc) As exeriorwithinbig
+FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc, 
+	ST_Buffer(ST_GeomFromText('POINT(1 2)'), 20) As bigc) As foo;
+	--Result
+ smallinsmall | smallcoveredbybig | exteriorcoveredbybig | exeriorwithinbig
+--------------+-------------------+----------------------+------------------
+ t            | t                 | t                    | f
+(1 row)	</programlisting>
+	  </refsection>
+	  
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_Contains"/>, <xref linkend="ST_Covers" />, <xref linkend="ST_ExteriorRing"/>, <xref linkend="ST_Within"/></para>
+	  </refsection>
+ </refentry>
+     
   <refentry id="ST_Crosses">
     <refnamediv>
       <refname>ST_Crosses</refname>

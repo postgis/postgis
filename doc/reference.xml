@@ -24,37 +24,6 @@
 
       <variablelist>
         <varlistentry>
-          <term>ST_Covers(geometry A, geometry B)</term>
-
-          <listitem>
-            <para>Returns 1 (TRUE) if no point in Geometry B is outside
-            Geometry A</para>
-
-            <para>Refer to
-            http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html
-            for an explanation of the need of this function.</para>
-
-            <para>This function call will automatically include a bounding box
-            comparison that will make use of any indexes that are available on
-            the geometries. To avoid index use, use the function
-            _ST_Covers.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>ST_CoveredBy(geometry A, geometry B)</term>
-
-          <listitem>
-            <para>Returns 1 (TRUE) if no point in Geometry A is outside
-            Geometry B</para>
-
-            <para>Refer to
-            http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html
-            for an explanation of the need of this function.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
           <term>ST_Relate(geometry, geometry,
           intersectionPatternMatrix)</term>
 
