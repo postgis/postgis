@@ -63,16 +63,6 @@ fi
 make clean # won't drop the html dir
 cd "$owd"
 
-## generating parser
-#echo "Generating parser"
-#owd="$PWD"
-#cd "$outdir"/lwgeom
-#make lex.yy.c
-#if [ $? -gt 0 ]; then
-#	exit 1
-#fi
-#cd "$owd"
-
 # Run make distclean
 echo "Running make distclean"
 owd="$PWD"
@@ -82,7 +72,4 @@ cd "$owd"
 
 echo "Generating $package file"
 tar czf "$package" "$outdir"
-
-#echo "Cleaning up"
-#rm -Rf "$outdir"
 
