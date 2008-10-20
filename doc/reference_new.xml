@@ -5142,8 +5142,8 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 2)'), 10) As smallc,
 	  <refnamediv>
 		<refname>ST_CoveredBy</refname>
 	
-		<refpurpose>Returns 1 (TRUE) if no point in Geometry B is outside
-            Geometry A</refpurpose>
+		<refpurpose>Returns 1 (TRUE) if no point in Geometry A is outside
+            Geometry B</refpurpose>
 	  </refnamediv>
 	
 	  <refsynopsisdiv>
