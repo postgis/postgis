@@ -45,7 +45,7 @@ SEE THE NOTE ON GEOS SUPPORT BELOW FOR SPECIAL COMPILATION INSTRUCTIONS
   The Proj4 reprojection library is required if you want to use the 
   transform() function to reproject features within the database.
 
-    http://www.remotesensing.org/proj
+    http://trac.osgeo.org/proj/
 
 * SPATIAL PREDICATE / GEOS SUPPORT (Recommended):
 
@@ -53,7 +53,7 @@ SEE THE NOTE ON GEOS SUPPORT BELOW FOR SPECIAL COMPILATION INSTRUCTIONS
   such as Touches(), Contains(), Disjoint() and spatial operations
   such as Intersection(), Union() and Buffer().  
 
-    http://geos.refractions.net
+    http://trac.osgeo.org/geos/
 
   OLD NOTE: In order to use the GEOS support, you *may* need to 
   specially compile your version of PostgreSQL to link the C++ runtime library.
@@ -94,11 +94,18 @@ To build PostGIS library and utilities, as postgres run:
 
   make
 
+INSTALLATION
+------------
 
+To install PostGIS library and utilities, as postgres run:
+
+  make install
+  
 TESTING
 -------
 
-You want to run regress tests before installation.
+You want to run regress tests after library installation.
+The below will create a test database with postgis extensions, run tests and then drop the db
 To do so, as postgres run:
 
 	make check
@@ -108,12 +115,7 @@ run, succeeded, failed. If you have any failure please
 file a bug report using the online bug tracker:
 http://postgis.refractions.net/bugs.
 
-INSTALLATION
-------------
 
-To install PostGIS library and utilities, as postgres run:
-
-  make install
 
 Installation paths will typically be derived by ``pg_config'':
 
@@ -145,6 +147,7 @@ So, as postgres run:
 
   createlang plpgsql yourdatabase
   psql -f lwpostgis.sql -d your_database
+  psql -f postgis_comments.sql -d your_database
 
 Your database should now be spatially enabled.
 
