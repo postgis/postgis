@@ -7190,9 +7190,9 @@ FROM country
 		</refsection>
 	</refentry>	
 
-	<refentry id="ST_MemGeomUnion">
+	<refentry id="ST_MemUnion">
 	  <refnamediv>
-	    <refname>ST_MemGeomUnion</refname>
+	    <refname>ST_MemUnion</refname>
 	
 	    <refpurpose>Same as ST_Union, only memory-friendly (uses less memory
             and more processor time).</refpurpose>
@@ -7201,7 +7201,7 @@ FROM country
 	  <refsynopsisdiv>
 	    <funcsynopsis>
 	      <funcprototype>
-	        <funcdef>geometry <function>ST_MemGeomUnion</function></funcdef>
+	        <funcdef>geometry <function>ST_MemUnion</function></funcdef>
 	        <paramdef><type>geometry set</type> <parameter>geomfield</parameter></paramdef>
 	      </funcprototype>
 
