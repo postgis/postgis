@@ -140,6 +140,10 @@ ifeq ($(PORTNAME), freebsd)
   endif
 endif
 
+ifeq ($(PORTNAME), dragonfly)
+  LINK.shared          = $(COMPILER) -shared -Wl,-x,-soname,$(soname)
+endif
+
 ifeq ($(PORTNAME), netbsd)
   ifdef ELF_SYSTEM
     LINK.shared		= $(COMPILER) -shared -Wl,-x,-soname,$(soname)
