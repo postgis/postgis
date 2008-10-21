@@ -510,33 +510,7 @@
             units as the spheroid axes) are used to calculate the extra
             distance vertical displacement adds.</para>
           </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>ST_max_distance(linestring,linestring)</term>
-
-          <listitem>
-            <para>Returns the largest distance between two line
-            strings.</para>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term>ST_perimeter2d(geometry)</term>
-
-          <listitem>
-            <para>Returns the 2-dimensional perimeter of the geometry, if it
-            is a polygon or multi-polygon.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>ST_perimeter3d(geometry)</term>
-
-          <listitem>
-            <para>Returns the 3-dimensional perimeter of the geometry, if it
-            is a polygon or multi-polygon.</para>
-          </listitem>
-        </varlistentry>
+        </varlistentry>     
       </variablelist>
     </sect2>
 

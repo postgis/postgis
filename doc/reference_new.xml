@@ -5534,11 +5534,12 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
 			<para><xref linkend="ST_Intersects"/>ST_Intersects</para>
 		</refsection>
     </refentry>
+	
     <refentry id="ST_Distance">
       <refnamediv>
         <refname>ST_Distance</refname>
 
-        <refpurpose>Returns the cartesian distance between two geometries in
+        <refpurpose>Returns the 2-dimensional cartesian minimum distance between two geometries in
         projected units.</refpurpose>
       </refnamediv>
 
@@ -5559,7 +5560,7 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
       <refsection>
         <title>Description</title>
 
-        <para>Returns the cartesian distance between two geometries in
+        <para>Returns the 2-dimensional minimum cartesian distance between two geometries in
         projected units.</para>
 
         <para>
@@ -5588,7 +5589,7 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
       <refsection>
         <title>See Also</title>
 
-        <para><xref linkend="ST_DWithin"/>, <xref linkend="ST_Distance_Sphere"/>, <xref linkend="ST_Distance_Spheroid"/></para>
+        <para><xref linkend="ST_DWithin"/>, <xref linkend="ST_Distance_Sphere"/>, <xref linkend="ST_Distance_Spheroid"/>, <xhref linkend="ST_Max_Distance" /></para>
       </refsection>
     </refentry>
 
@@ -5977,6 +5978,49 @@ st_length3d
 	  </refsection>
 	</refentry>
 
+    <refentry id="ST_Max_Distance">
+      <refnamediv>
+        <refname>ST_Max_Distance</refname>
+
+        <refpurpose>Returns the 2-dimensional largest distance between two geometries in
+        projected units.</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>float <function>ST_Max_Distance</function></funcdef>
+
+            <paramdef><type>geometry </type>
+            <parameter>g1</parameter></paramdef>
+
+            <paramdef><type>geometry </type>
+            <parameter>g2</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsection>
+        <title>Description</title>
+
+        <para>Returns the 2-dimensional maximum cartesian distance between two linestrings in
+        projected units.</para>
+
+      </refsection>
+
+      <refsection>
+        <title>Examples</title>
+
+        <programlisting>--ALL EXAMPLES current throw NOT YET IMPLEMENTED</programlisting>
+      </refsection>
+
+      <refsection>
+        <title>See Also</title>
+
+        <para><xref linkend="ST_Distance"/></para>
+      </refsection>
+    </refentry>
+
 	
 	<refentry id="ST_OrderingEquals">
 	  <refnamediv>
@@ -6217,6 +6261,98 @@ st_perimeter
 			<para><xref linkend="ST_Length" /></para>
 		</refsection>
 	</refentry>	
+		
+	<refentry id="ST_Perimeter2D">
+	  <refnamediv>
+	    <refname>ST_Perimeter2D</refname>
+	
+	    <refpurpose>Returns the 2-dimensional perimeter of the geometry, if it
+            is a polygon or multi-polygon.  This is currently an alias for ST_Perimeter.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>float <function>ST_Perimeter2D</function></funcdef>
+	        <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+	      </funcprototype>
+	    </funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+	    <para>Returns the 2-dimensional perimeter of the geometry, if it
+            is a polygon or multi-polygon. </para>
+	
+	    <!-- optionally mention that this function uses indexes if appropriate -->
+	    <note>
+	      <para> This is currently an alias for ST_Perimeter. In future versions ST_Perimeter may return the highest dimension perimeter for a geometry.  This is still under consideration</para>
+	    </note>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	
+	    <para><xref linkend="ST_Perimeter" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_Perimeter3D">
+	  <refnamediv>
+	    <refname>ST_Perimeter3D</refname>
+	
+	    <refpurpose>Returns the 3-dimensional perimeter of the geometry, if it
+            is a polygon or multi-polygon.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>float <function>ST_Perimeter3D</function></funcdef>
+	        <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+	      </funcprototype>
+	    </funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+	    <para>Returns the 3-dimensional perimeter of the geometry, if it
+            is a polygon or multi-polygon. If the geometry is 2-dimensional, then the 2-dimensional perimeter is returned.  </para>
+	
+		
+		<!-- Optionally mention 3d support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+		<para>Perimeter of a slightly elevated polygon in the air in Massachusetts state plane feet</para>
+	    <programlisting>SELECT ST_Perimeter3D(the_geom), ST_Perimeter2d(the_geom), ST_Perimeter(the_geom) FROM
+			(SELECT ST_GeomFromEWKT('SRID=2249;POLYGON((743238 2967416 2,743238 2967450 1,
+743265.625 2967416 1,743238 2967416 2))') As the_geom) As foo;
+
+  st_perimeter3d  |  st_perimeter2d  |   st_perimeter   
+------------------+------------------+------------------
+ 105.465793597674 | 105.432997272188 | 105.432997272188
+
+</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	
+	    <para><xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_Perimeter" />, <xref linkend="ST_Perimeter2D" /></para>
+	  </refsection>
+	</refentry>
 	
     <refentry id="ST_PointOnSurface">
       <refnamediv>
