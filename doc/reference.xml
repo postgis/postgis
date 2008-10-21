@@ -742,15 +742,6 @@ z' = z </programlisting> This method is a subcase of the 3D method
         </varlistentry>
 
         <varlistentry>
-          <term>ST_ForceRHR(geometry)</term>
-
-          <listitem>
-            <para>Force polygons of the collection to obey
-            Right-Hand-Rule.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
           <term>ST_SnapToGrid(geometry, originX, originY, sizeX, sizeY)</term>
 
           <term>ST_SnapToGrid(geometry, sizeX, sizeY)</term>
