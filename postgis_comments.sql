@@ -163,6 +163,9 @@ COMMENT ON FUNCTION ST_Translate(geometry , float , float ) IS 'args: g1, deltax
 			
 COMMENT ON FUNCTION ST_Translate(geometry , float , float , float ) IS 'args: g1, deltax, deltay, deltaz - Translates the geometry to a new location using the numeric parameters as offsets. Ie: ST_Translate(geom, X, Y) or ST_Translate(geom, X, Y,Z).';
 			
+COMMENT ON FUNCTION ST_ForceRHR(geometry
+						) IS 'args: g - Forces the orientation of the vertices in a polygon to follow the Right-Hand-Rule.';
+			
 COMMENT ON FUNCTION ST_AsBinary(geometry ) IS 'args: g1 - Return the Well-Known Binary (WKB) representation of the geometry without SRID meta data.';
 			
 COMMENT ON FUNCTION ST_AsBinary(geometry , text ) IS 'args: g1, NDR_or_XDR - Return the Well-Known Binary (WKB) representation of the geometry without SRID meta data.';
