@@ -6421,6 +6421,104 @@ SELECT ST_AsText(ST_PointOnSurface('POLYGON((0 0, 0 5, 5 5, 5 0, 0 0))'::geometr
         <para><xref linkend="ST_Centroid" />, <xref linkend="ST_Point_Inside_Circle" /></para>
       </refsection>
     </refentry>
+		
+	<refentry id="ST_Relate">
+	  <refnamediv>
+		<refname>ST_Relate</refname>
+	
+		<refpurpose>Returns true if this Geometry is spatially related to
+				anotherGeometry, by testing for intersections between the
+				Interior, Boundary and Exterior of the two geometries as specified
+				by the values in the intersectionPatternMatrix.  If no intersectionPatternMatrix
+				is passed in, then returns the maximum intersectionPatternMatrix that relates the 2 geometries.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_Relate</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>
+		  </funcprototype>
+	
+		  <funcprototype>
+			<funcdef>boolean <function>ST_Relate</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>
+			<paramdef><type>text </type> <parameter>intersectionPatternMatrix</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+	
+		<para>Version 1: Takes geomA, geomB, intersectionMatrix and Returns 1 (TRUE) if this Geometry is spatially related to
+				anotherGeometry, by testing for intersections between the
+				Interior, Boundary and Exterior of the two geometries as specified
+				by the values in the <ulink url="http://docs.codehaus.org/display/GEOTDOC/Point+Set+Theory+and+the+DE-9IM+Matrix#PointSetTheoryandtheDE-9IMMatrix-9IntersectionMatrix">intersectionPatternMatrix</ulink>.</para>
+	
+		<para>This is especially useful for testing compound checks of intersection, crosses, etc in one step.</para>
+		<para>Do not call with a GeometryCollection as an argument</para>
+	
+		<note><para>This is the "allowable" version that returns a
+		boolean, not an integer.  This is defined in OGC spec</para></note>
+		
+		<para>Version 2: Takes geomA and geomB and returns the <ulink url="http://docs.codehaus.org/display/GEOTDOC/Point+Set+Theory+and+the+DE-9IM+Matrix#PointSetTheoryandtheDE-9IMMatrix-9IntersectionMatrix">DE-9IM (dimensionally extended nine-intersection
+		matrix)</ulink></para>
+		
+		<note><para>Do not call with a GeometryCollection as an argument</para></note>
+		
+		<para>not in OGC spec, but implied. see s2.1.13.2</para>
+		
+		<para>Both Performed by the GEOS module</para>
+	
+		<!-- Optionally mention OpenGIS compliancy if appropriate -->
+		<para><inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+		  </inlinemediaobject> This method implements the <ulink
+		url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+		Implementation Specification for SQL.</ulink> OGC SPEC s2.1.1.2 // s2.1.13.3</para>
+	
+		<!-- Optionally mention SQL/MM compliancy if appropriate -->
+		<para><inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+		  </inlinemediaobject> This method implements the SQL/MM specification:
+		SQL-MM 3: 5.1.25</para>
+	
+	  </refsection>
+	  
+	
+	  <refsection>
+		<title>Examples</title>
+		<programlisting>SELECT ST_Relate(ST_GeometryFromText('POINT(1 2)'), ST_Buffer(ST_GeometryFromText('POINT(1 2)'),2));
+	 st_relate
+	-----------
+	 0FFFFF212
+	 
+	 SELECT ST_Relate(ST_GeometryFromText('POINT(1 2)'), ST_Buffer(ST_GeometryFromText('POINT(1 2)'),2), '0FFFFF212');
+	 st_relate
+	-----------
+	 t
+	 
+	 SELECT ST_Relate(ST_GeometryFromText('POINT(1 2)'), ST_Buffer(ST_GeometryFromText('POINT(1 2)'),2), '*FF*FF212');
+	 st_relate
+	-----------
+	 t 
+		</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+	
+		<para><xref linkend="ST_Crosses" />, <xref linkend="ST_Disjoint" />, <xref linkend="ST_Intersects" />, <xref linkend="ST_Touches" /></para>
+	  </refsection>
+	</refentry>
 	
     <refentry id="ST_Touches">
       <refnamediv>

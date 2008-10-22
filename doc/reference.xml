@@ -20,48 +20,6 @@
     <title>OpenGIS Functions</title>
 
     <sect2>
-      <title>Geometry Relationship Functions</title>
-
-      <variablelist>
-        <varlistentry>
-          <term>ST_Relate(geometry, geometry,
-          intersectionPatternMatrix)</term>
-
-          <listitem>
-            <para>Returns 1 (TRUE) if this Geometry is spatially related to
-            anotherGeometry, by testing for intersections between the
-            Interior, Boundary and Exterior of the two geometries as specified
-            by the values in the intersectionPatternMatrix.</para>
-
-            <para>Performed by the GEOS module</para>
-
-            <para>Do not call with a GeometryCollection as an argument</para>
-
-            <para>NOTE: this is the "allowable" version that returns a
-            boolean, not an integer.</para>
-
-            <para>OGC SPEC s2.1.1.2 // s2.1.13.3</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>ST_Relate(geometry, geometry)</term>
-
-          <listitem>
-            <para>returns the DE-9IM (dimensionally extended nine-intersection
-            matrix)</para>
-
-            <para>Performed by the GEOS module</para>
-
-            <para>Do not call with a GeometryCollection as an argument</para>
-
-            <para>not in OGC spec, but implied. see s2.1.13.2</para>
-          </listitem>
-        </varlistentry>
-      </variablelist>
-    </sect2>
-
-    <sect2>
       <title>Geometry Constructors</title>
 
       <variablelist>
@@ -1293,17 +1251,6 @@ WHERE n*100.00/length &lt; 1;
           SRID.</para>
 
           <para>SQL-MM 3: 8.3.2</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term>ST_Relate</term>
-
-        <listitem>
-          <para>Test if an ST_Geometry value is spatially related to another
-          ST_Geometry value.</para>
-
-          <para>SQL-MM 3: 5.1.25</para>
         </listitem>
       </varlistentry>
 
