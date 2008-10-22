@@ -254,6 +254,10 @@ COMMENT ON FUNCTION ST_Perimeter3D(geometry ) IS 'args: geomA - Returns the 3-di
 			
 COMMENT ON FUNCTION ST_PointOnSurface(geometry ) IS 'args: g1 - Returns a POINT guaranteed to lie on the surface.';
 			
+COMMENT ON FUNCTION ST_Relate(geometry , geometry ) IS 'args: geomA, geomB - Returns true if this Geometry is spatially related to anotherGeometry, by testing for intersections between the Interior, Boundary and Exterior of the two geometries as specified by the values in the intersectionPatternMatrix. If no intersectionPatternMatrix is passed in, then returns the maximum intersectionPatternMatrix that relates the 2 geometries.';
+			
+COMMENT ON FUNCTION ST_Relate(geometry , geometry , text ) IS 'args: geomA, geomB, intersectionPatternMatrix - Returns true if this Geometry is spatially related to anotherGeometry, by testing for intersections between the Interior, Boundary and Exterior of the two geometries as specified by the values in the intersectionPatternMatrix. If no intersectionPatternMatrix is passed in, then returns the maximum intersectionPatternMatrix that relates the 2 geometries.';
+			
 COMMENT ON FUNCTION ST_Touches(geometry , geometry ) IS 'args: g1, g2 - Returns TRUE if the geometries have at least one point in common, but their interiors do not intersect.';
 			
 COMMENT ON FUNCTION ST_Within(geometry , geometry ) IS 'args: A, B - Returns true if the geometry A is completely inside geometry B';
