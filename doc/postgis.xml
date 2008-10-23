@@ -2844,6 +2844,17 @@ VACUUM FULL ANALYZE mytable;</programlisting>
           </varlistentry>
 
           <varlistentry>
+            <term>Probe_Geometry_Columns()</term>
+
+            <listitem>
+              <para>Scans all tables with PostGIS geometry constraints and 
+              adds them to the geometry_columns table if they are not already 
+              there. Also give stats on the number of inserts, already present, 
+              or possibly obsolete columns.</para>
+            </listitem>
+          </varlistentry>
+          
+          <varlistentry>
             <term>ST_SetSRID(geometry, integer)</term>
 
             <listitem>
