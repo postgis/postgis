@@ -4076,7 +4076,7 @@ SELECT ST_AsEWKT(ST_SnapToGrid(ST_GeomFromEWKT('LINESTRING(-1.1115678 2.123 3 2.
 	  <refsection>
 	    <title>See Also</title>
 	
-	    <para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_AsGeomFromText" />, <xref linkend="ST_GeomFromText" />, <xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_Simplify" /></para>
+	    <para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_AsText" />, <xref linkend="ST_GeomFromText" />, <xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_Simplify" /></para>
 	  </refsection>
 	</refentry>
 	
