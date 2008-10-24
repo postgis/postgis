@@ -673,51 +673,7 @@ z' = z </programlisting> This method is a subcase of the 3D method
           </listitem>
         </varlistentry>
 
-        <varlistentry>
-          <term>ST_SnapToGrid(geometry, originX, originY, sizeX, sizeY)</term>
-
-          <term>ST_SnapToGrid(geometry, sizeX, sizeY)</term>
-
-          <term>ST_SnapToGrid(geometry, size)</term>
-
-          <listitem>
-            <para>Snap all points of the input geometry to the grid defined by
-            its origin and cell size. Remove consecutive points falling on the
-            same cell, eventually returning NULL if output points are not
-            enough to define a geometry of the given type. Collapsed
-            geometries in a collection are stripped from it.</para>
-
-            <note>
-              <para>The returned geometry might loose its simplicity (see
-              <xref linkend="ST_IsSimple" />).</para>
-            </note>
-
-            <note>
-              <para>Before release 1.1.0 this function always returned a 2d
-              geometry. Starting at 1.1.0 the returned geometry will have same
-              dimensionality as the input one with higher dimension values
-              untouched. Use the version taking a second geometry argument to
-              define all grid dimensions.</para>
-            </note>
-
-            <para>Availability: 1.0.0RC1</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>ST_SnapToGrid(geometry, geometry, sizeX, sizeY, sizeZ,
-          sizeM)</term>
-
-          <listitem>
-            <para>Snap all points of the input geometry to the grid defined by
-            its origin (the second argument, must be a point) and cell sizes.
-            Specify 0 as size for any dimension you don't want to snap to a
-            grid.</para>
-
-            <para>Availability: 1.1.0</para>
-          </listitem>
-        </varlistentry>
-
+      
       </variablelist>
     </sect2>
 

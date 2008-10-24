@@ -3948,6 +3948,138 @@ SELECT ST_AsText(ST_SetPoint('LINESTRING(-1 2,-1 3)', 1, 'POINT(-1 1)'));
       
     </refentry>
 	
+	<refentry id="ST_SnapToGrid">
+	  <refnamediv>
+	    <refname>ST_SnapToGrid</refname>
+	
+	    <refpurpose>Snap all points of the input geometry to the grid defined by
+            its origin and cell size. Remove consecutive points falling on the
+            same cell, eventually returning NULL if output points are not
+            enough to define a geometry of the given type. Collapsed
+            geometries in a collection are stripped from it. Useful for reducing precision.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>geometry <function>ST_SnapToGrid</function></funcdef>
+	        <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>originX</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>originY</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>sizeX</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>sizeY</parameter></paramdef>
+	      </funcprototype>
+	
+	      <funcprototype>
+	        <funcdef>geometry <function>ST_SnapToGrid</function></funcdef>
+	        <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>sizeX</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>sizeY</parameter></paramdef>
+	      </funcprototype>
+		  
+		  <funcprototype>
+	        <funcdef>geometry <function>ST_SnapToGrid</function></funcdef>
+	        <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>size</parameter></paramdef>
+	      </funcprototype>
+		  
+		  <funcprototype>
+	        <funcdef>geometry <function>ST_SnapToGrid</function></funcdef>
+	        <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>geometry </type> <parameter>pointOrigin</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>sizeX</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>sizeY</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>sizeZ</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>sizeM</parameter></paramdef>
+	      </funcprototype>
+	    </funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+		<para>Variant 1,2,3: Snap all points of the input geometry to the grid defined by
+            its origin and cell size. Remove consecutive points falling on the
+            same cell, eventually returning NULL if output points are not
+            enough to define a geometry of the given type. Collapsed
+            geometries in a collection are stripped from it.
+		</para>
+		
+		<para>Variant 4:  Introduced 1.1.0 - Snap all points of the input geometry to the grid defined by
+            its origin (the second argument, must be a point) and cell sizes.
+            Specify 0 as size for any dimension you don't want to snap to a
+            grid.</para>
+
+		<note>
+		  <para>The returned geometry might loose its simplicity (see
+		  <xref linkend="ST_IsSimple" />).</para>
+		</note>
+
+		<note>
+		  <para>Before release 1.1.0 this function always returned a 2d
+		  geometry. Starting at 1.1.0 the returned geometry will have same
+		  dimensionality as the input one with higher dimension values
+		  untouched. Use the version taking a second geometry argument to
+		  define all grid dimensions.</para>
+		</note>
+
+        <para>Availability: 1.0.0RC1</para>
+		<para>Availability: 1.1.0 - Z and M support</para>
+		
+		<!-- Optionally mention 3d support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+	
+	    <programlisting>
+--Snap your geometries to a precision grid of 10^-3
+UPDATE mytable
+   SET the_geom = ST_SnapToGrid(the_geom, 0.001);
+   
+SELECT ST_AsText(ST_SnapToGrid(
+			ST_GeomFromText('LINESTRING(1.1115678 2.123, 4.111111 3.2374897, 4.11112 3.23748667)'), 
+			0.001)
+		);
+              st_astext
+-------------------------------------
+ LINESTRING(1.112 2.123,4.111 3.237)
+ --Snap a 4d geometry
+SELECT ST_AsEWKT(ST_SnapToGrid(
+	ST_GeomFromEWKT('LINESTRING(-1.1115678 2.123 2.3456 1.11111, 
+		4.111111 3.2374897 3.1234 1.1111, -1.11111112 2.123 2.3456 1.1111112)'),
+ ST_GeomFromEWKT('POINT(1.12 2.22 3.2 4.4444)'),
+ 0.1, 0.1, 0.1, 0.01) );
+                                  st_asewkt
+------------------------------------------------------------------------------
+ LINESTRING(-1.08 2.12 2.3 1.1144,4.12 3.22 3.1 1.1144,-1.08 2.12 2.3 1.1144)
+
+ 
+--With a 4d geometry - the ST_SnapToGrid(geom,size) only touches x and y coords but keeps m and z the same
+SELECT ST_AsEWKT(ST_SnapToGrid(ST_GeomFromEWKT('LINESTRING(-1.1115678 2.123 3 2.3456, 
+		4.111111 3.2374897 3.1234 1.1111)'),
+       0.01)      );
+                        st_asewkt
+---------------------------------------------------------
+ LINESTRING(-1.11 2.12 3 2.3456,4.11 3.24 3.1234 1.1111)
+
+		</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	
+	    <para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_AsGeomFromText" />, <xref linkend="ST_GeomFromText" />, <xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_Simplify" /></para>
+	  </refsection>
+	</refentry>
+	
 	<refentry id="ST_Transform">
 	  <refnamediv>
 		<refname>ST_Transform</refname>
