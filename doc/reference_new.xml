@@ -3742,6 +3742,12 @@ MULTILINESTRING((-45.2 -33.2,-46 -32),(-29 -27,-30 -29.7,-36 -31,-45 -33))
 	
 		<para>Removes point from a linestring.  Useful for turning a closed ring into an open line string</para>
 		<para>Availability: 1.1.0</para>
+		<!-- Optionally mention 3d support -->
+			<para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+			</inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
 	  </refsection>
 	
 	  <refsection>
@@ -3879,21 +3885,35 @@ POLYGON((-29 28,-29.8304547985374 37.9654575824488,-30 40,-29.1695452014626 30.0
             0-based. 
 				This is especially useful in triggers when trying to maintain relationship of joints when one vertex moves.</para>
 			<para>Availability: 1.1.0</para>
+			
+			<!-- Optionally mention 3d support -->
+			<para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+			</inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
 		  </refsection>
 		
 		  <refsection>
 			<title>Examples</title>	
 			<programlisting>
---Change second point in line string from -1 3 to -1 1
-SELECT ST_AsText(ST_SetPoint('LINESTRING(-1 2,-1 3)', 1, 'POINT(-1 1)'));
+--Change first point in line string from -1 3 to -1 1
+SELECT ST_AsText(ST_SetPoint('LINESTRING(-1 2,-1 3)', 0, 'POINT(-1 1)'));
        st_astext
 -----------------------
- LINESTRING(-1 2,-1 1)
+ LINESTRING(-1 1,-1 3)
+ 
+---Change last point in a line string (lets play with 3d linestring this time)
+SELECT ST_AsEWKT(ST_SetPoint(foo.the_geom, ST_NumPoints(foo.the_geom) - 1, ST_GeomFromEWKT('POINT(-1 1 3)')))
+FROM (SELECT ST_GeomFromEWKT('LINESTRING(-1 2 3,-1 3 4, 5 6 7)') As the_geom) As foo;
+       st_asewkt
+-----------------------
+LINESTRING(-1 2 3,-1 3 4,-1 1 3)
 			</programlisting>
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_AddPoint"/>,<xref linkend="ST_RemovePoint"/></para>
+			<para><xref linkend="ST_AddPoint"/>,<xref linkend="ST_NPoints"/>, <xref linkend="ST_NumPoints"/>, <xref linkend="ST_RemovePoint"/></para>
 		  </refsection>
 	</refentry> 
 		
