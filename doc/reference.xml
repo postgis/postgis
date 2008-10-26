@@ -420,49 +420,6 @@
     </sect2>
 
     <sect2>
-      <title>Measurement Functions</title>
-	  <variablelist>
-     
-        <varlistentry id="ST_Length_Spheroid">
-          <term>ST_length_spheroid(geometry,spheroid)</term>
-
-          <listitem>
-            <para>Calculates the length of a geometry on an ellipsoid. This
-            is useful if the coordinates of the geometry are in
-            latitude/longitude and a length is desired without reprojection.
-            The ellipsoid is a separate database type and can be constructed
-            as follows:</para>
-
-            <literallayout>SPHEROID[&lt;NAME&gt;,&lt;SEMI-MAJOR
-              AXIS&gt;,&lt;INVERSE FLATTENING&gt;]</literallayout>
-
-            <para>Eg:</para>
-
-            <literallayout>SPHEROID["GRS_1980",6378137,298.257222101]</literallayout>
-
-            <para>An example calculation might look like this:</para>
-
-            <literallayout>SELECT length_spheroid( geometry_column,
-              'SPHEROID["GRS_1980",6378137,298.257222101]' )
-              FROM geometry_table;</literallayout>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>ST_length3d_spheroid(geometry,spheroid)</term>
-
-          <listitem>
-            <para>Calculates the length of a geometry on an ellipsoid,
-            taking the elevation into account. This is just like
-            length_spheroid except vertical coordinates (expressed in the same
-            units as the spheroid axes) are used to calculate the extra
-            distance vertical displacement adds.</para>
-          </listitem>
-        </varlistentry>     
-      </variablelist>
-    </sect2>
-
-    <sect2>
       <title>Geometry Constructors</title>
 
       <variablelist>

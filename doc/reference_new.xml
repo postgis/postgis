@@ -6711,6 +6711,225 @@ st_length3d
 	    <para><xref linkend="ST_Length" />, <xref linkend="ST_Length2D" /></para>
 	  </refsection>
 	</refentry>
+	
+	<refentry id="ST_Length_Spheroid">
+	  <refnamediv>
+	    <refname>ST_Length_Spheroid</refname>
+	
+	    <refpurpose>Calculates the 2D or 3D length of a linestring/multilinestring on an ellipsoid. This
+            is useful if the coordinates of the geometry are in
+            longitude/latitude and a length is desired without reprojection.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>float <function>ST_Length_Spheroid</function></funcdef>
+	        <paramdef><type>geometry </type> <parameter>a_linestring</parameter></paramdef>
+			<paramdef><type>spheroid </type> <parameter>a_spheroid</parameter></paramdef>
+	      </funcprototype>
+	    </funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+	    <para>Calculates the length of a geometry on an ellipsoid. This
+            is useful if the coordinates of the geometry are in
+            longitude/latitude and a length is desired without reprojection.
+            The ellipsoid is a separate database type and can be constructed
+            as follows:</para>
+
+		<literallayout>SPHEROID[&lt;NAME&gt;,&lt;SEMI-MAJOR
+		  AXIS&gt;,&lt;INVERSE FLATTENING&gt;]</literallayout>
+
+
+		<literallayout>SPHEROID["GRS_1980",6378137,298.257222101]</literallayout>
+		<note><para>Will return 0 for anything that is not a MULTILINESTRING or LINESTRING</para></note>
+		
+		<!-- Optionally mention 3d support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+	
+	    <programlisting>SELECT ST_Length_Spheroid( geometry_column,
+              'SPHEROID["GRS_1980",6378137,298.257222101]' )
+              FROM geometry_table;
+			  
+SELECT ST_Length_Spheroid( the_geom, sph_m ) As tot_len, 
+ST_Length_Spheroid(ST_GeometryN(the_geom,1), sph_m) As len_line1, 
+ST_Length_Spheroid(ST_GeometryN(the_geom,2), sph_m) As len_line2
+              FROM (SELECT ST_GeomFromText('MULTILINESTRING((-118.584 38.374,-118.583 38.5),
+	(-71.05957 42.3589 , -71.061 43))') As the_geom, 
+CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo;
+    tot_len      |    len_line1     |    len_line2     
+------------------+------------------+------------------
+ 85204.5207562955 | 13986.8725229309 | 71217.6482333646
+ 
+ --3D 
+SELECT ST_Length_Spheroid( the_geom, sph_m ) As tot_len, 
+ST_Length_Spheroid(ST_GeometryN(the_geom,1), sph_m) As len_line1, 
+ST_Length_Spheroid(ST_GeometryN(the_geom,2), sph_m) As len_line2
+              FROM (SELECT ST_GeomFromEWKT('MULTILINESTRING((-118.584 38.374 20,-118.583 38.5 30),
+	(-71.05957 42.3589 75, -71.061 43 90))') As the_geom, 
+CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo;
+
+     tot_len      |    len_line1    |    len_line2     
+------------------+-----------------+------------------
+ 85204.5259107402 | 13986.876097711 | 71217.6498130292
+
+</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	
+	    <para><xref linkend="ST_GeometryN" />, <xref linkend="ST_Length" />, <xref linkend="ST_Length3D_Spheroid" /></para>
+	  </refsection>
+	</refentry>
+	
+	<refentry id="ST_Length2D_Spheroid">
+	  <refnamediv>
+	    <refname>ST_Length@D_Spheroid</refname>
+	
+	    <refpurpose>Calculates the 2D length of a linestring/multilinestring on an ellipsoid. This
+            is useful if the coordinates of the geometry are in
+            longitude/latitude and a length is desired without reprojection.  </refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>float <function>ST_Length2D_Spheroid</function></funcdef>
+	        <paramdef><type>geometry </type> <parameter>a_linestring</parameter></paramdef>
+			<paramdef><type>spheroid </type> <parameter>a_spheroid</parameter></paramdef>
+	      </funcprototype>
+	    </funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+	    <para>Calculates the 2D length of a geometry on an ellipsoid. This
+            is useful if the coordinates of the geometry are in
+            longitude/latitude and a length is desired without reprojection.
+            The ellipsoid is a separate database type and can be constructed
+            as follows:</para>
+
+		<literallayout>SPHEROID[&lt;NAME&gt;,&lt;SEMI-MAJOR
+		  AXIS&gt;,&lt;INVERSE FLATTENING&gt;]</literallayout>
+
+
+		<literallayout>SPHEROID["GRS_1980",6378137,298.257222101]</literallayout>
+		<note><para>Will return 0 for anything that is not a MULTILINESTRING or LINESTRING</para></note>
+		<note><para>This is much like <xref linkend="ST_Length_Spheroid" /> and <xref linkend="ST_Length3d_Spheriod" /> except it will throw away the Z coordinate in calculations.</para></note>
+		
+
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+	
+	    <programlisting>SELECT ST_Length2D_Spheroid( geometry_column,
+              'SPHEROID["GRS_1980",6378137,298.257222101]' )
+              FROM geometry_table;
+			  
+SELECT ST_Length2D_Spheroid( the_geom, sph_m ) As tot_len, 
+ST_Length2D_Spheroid(ST_GeometryN(the_geom,1), sph_m) As len_line1, 
+ST_Length2D_Spheroid(ST_GeometryN(the_geom,2), sph_m) As len_line2
+              FROM (SELECT ST_GeomFromText('MULTILINESTRING((-118.584 38.374,-118.583 38.5),
+	(-71.05957 42.3589 , -71.061 43))') As the_geom, 
+CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo;
+    tot_len      |    len_line1     |    len_line2     
+------------------+------------------+------------------
+ 85204.5207562955 | 13986.8725229309 | 71217.6482333646
+ 
+ --3D Observe same answer
+SELECT ST_Length2D_Spheroid( the_geom, sph_m ) As tot_len, 
+ST_Length_Spheroid(ST_GeometryN(the_geom,1), sph_m) As len_line1, 
+ST_Length_Spheroid(ST_GeometryN(the_geom,2), sph_m) As len_line2
+              FROM (SELECT ST_GeomFromEWKT('MULTILINESTRING((-118.584 38.374 20,-118.583 38.5 30),
+	(-71.05957 42.3589 75, -71.061 43 90))') As the_geom, 
+CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo;
+
+    tot_len      |    len_line1     |    len_line2     
+------------------+------------------+------------------
+ 85204.5207562955 | 13986.8725229309 | 71217.6482333646
+
+</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	
+	    <para><xref linkend="ST_GeometryN" />, <xref linkend="ST_Length_Spheroid" />, <xref linkend="ST_Length3D_Spheroid" /></para>
+	  </refsection>
+	</refentry>
+		
+	<refentry id="ST_Length3D_Spheroid">
+	  <refnamediv>
+	    <refname>ST_Length3D_Spheroid</refname>
+	
+	    <refpurpose>Calculates the length of a geometry on an ellipsoid,
+            taking the elevation into account. This is just an alias for ST_Length_Spheroid. </refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>float <function>ST_Length3D_Spheroid</function></funcdef>
+	        <paramdef><type>geometry </type> <parameter>a_linestring</parameter></paramdef>
+			<paramdef><type>spheroid </type> <parameter>a_spheroid</parameter></paramdef>
+	      </funcprototype>
+	    </funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+	    <para>Calculates the length of a geometry on an ellipsoid,
+            taking the elevation into account. This is just an alias
+			for ST_Length_Spheroid. </para>
+
+		<note><para>Will return 0 for anything that is not a MULTILINESTRING or LINESTRING</para></note>
+		<note><para>This functionis just an alias for ST_Length_Spheroid. </para></note>
+		
+		<!-- Optionally mention 3d support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+	
+	    <programlisting>See ST_Length_Spheroid</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	
+	    <para><xref linkend="ST_GeometryN" />, <xref linkend="ST_Length" />, <xref linkend="ST_Length_Spheroid" /></para>
+	  </refsection>
+	</refentry>
+	
+	
+
 
     <refentry id="ST_Max_Distance">
       <refnamediv>
