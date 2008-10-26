@@ -3688,7 +3688,7 @@ y' = d*x + e*y + yoff
 z' = z </programlisting> This method is a subcase of the 3D method
             above.</para>
 	
-		<para>Availability: 1.1.2.</para>
+		<para>Availability: 1.1.2. Name changed from Affine to ST_Affine in 1.2.2</para>
 
 		<!-- Optionally mention 3d support -->
 	    <para><inlinemediaobject>
@@ -3994,6 +3994,8 @@ LINESTRING(1 2,1 10) | LINESTRING(1 10,1 2)
 	
 		<para>This is a synonym for ST_RotateZ..  Rotates geometry rotZRadians about the Z-axis.</para>
 		
+		<para>Availability: 1.1.2. Name changed from Rotate to ST_Rotate in 1.2.2</para>
+		
 		<!-- Optionally mention 3d support -->
 		<para><inlinemediaobject>
 			<imageobject>
@@ -4041,6 +4043,8 @@ LINESTRING(1 2,1 10) | LINESTRING(1 10,1 2)
 		
 		<note><para><code>ST_RotateX(geomA,  rotRadians)</code>
             is short-hand for <code>ST_Affine(geomA, 1, 0, 0, 0, cos(rotRadians), -sin(rotRadians), 0, sin(rotRadians), cos(rotRadians), 0, 0, 0)</code>.</para></note>
+			
+		<para>Availability: 1.1.2. Name changed from RotateX to ST_RotateX in 1.2.2</para>
 		
 		<!-- Optionally mention 3d support -->
 		<para><inlinemediaobject>
@@ -4095,6 +4099,8 @@ SELECT ST_AsEWKT(ST_RotateX(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2)
 		
 		<note><para><code>ST_RotateY(geomA,  rotRadians)</code>
             is short-hand for <code>ST_Affine(geomA,  cos(rotRadians), 0, sin(rotRadians),  0, 1, 0,  -sin(rotRadians), 0, cos(rotRadians), 0,  0, 0)</code>.</para></note>
+			
+		<para>Availability: 1.1.2. Name changed from RotateY to ST_RotateY in 1.2.2</para>
 		
 		<!-- Optionally mention 3d support -->
 		<para><inlinemediaobject>
@@ -4150,6 +4156,8 @@ SELECT ST_AsEWKT(ST_RotateX(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2)
 		
 		<note><para><code>ST_RotateZ(geomA,  rotRadians)</code>
             is short-hand for <code>SELECT ST_Affine(geomA,  cos(rotRadians), -sin(rotRadians), 0,  sin(rotRadians), cos(rotRadians), 0,  0, 0, 1,  0, 0, 0)</code>.</para></note>
+			
+		<para>Availability: 1.1.2. Name changed from RotateZ to ST_RotateZ in 1.2.2</para>
 		
 		<!-- Optionally mention 3d support -->
 		<para><inlinemediaobject>
