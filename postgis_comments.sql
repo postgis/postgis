@@ -254,6 +254,10 @@ COMMENT ON FUNCTION ST_Disjoint(geometry, geometry) IS 'args: A, B - Returns TRU
 			
 COMMENT ON FUNCTION ST_Distance(geometry , geometry ) IS 'args: g1, g2 - Returns the 2-dimensional cartesian minimum distance between two geometries in projected units.';
 			
+COMMENT ON FUNCTION ST_Distance_Sphere(geometry , geometry ) IS 'args: pointlonlatA, pointlonlatB - Returns linear distance in meters between two lon/lat points. Uses a spherical earth and radius of 6370986 meters. Faster than ST_Distance_Spheroid(), but less accurate. Only implemented for points.';
+			
+COMMENT ON FUNCTION ST_Distance_Spheroid(geometry , geometry , spheroid ) IS 'args: pointlonlatA, pointlonlatB, measurement_spheroid - Returns linear distance between two lon/lat points given a particular spheroid. Currently only implemented for points.';
+			
 COMMENT ON FUNCTION ST_DWithin(geometry , geometry , double precision ) IS 'args: g1, g2, distance - Returns true if the geometries are within the specified distance of one another';
 			
 COMMENT ON FUNCTION ST_Equals(geometry , geometry ) IS 'args: A, B - Returns true if the given geometries represent the same geometry. Directionality is ignored.';
