@@ -6799,7 +6799,7 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
 	
 	<refentry id="ST_Length2D_Spheroid">
 	  <refnamediv>
-	    <refname>ST_Length@D_Spheroid</refname>
+	    <refname>ST_Length2D_Spheroid</refname>
 	
 	    <refpurpose>Calculates the 2D length of a linestring/multilinestring on an ellipsoid. This
             is useful if the coordinates of the geometry are in
@@ -6856,8 +6856,8 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
  
  --3D Observe same answer
 SELECT ST_Length2D_Spheroid( the_geom, sph_m ) As tot_len, 
-ST_Length_Spheroid(ST_GeometryN(the_geom,1), sph_m) As len_line1, 
-ST_Length_Spheroid(ST_GeometryN(the_geom,2), sph_m) As len_line2
+ST_Length2D_Spheroid(ST_GeometryN(the_geom,1), sph_m) As len_line1, 
+ST_Length2D_Spheroid(ST_GeometryN(the_geom,2), sph_m) As len_line2
               FROM (SELECT ST_GeomFromEWKT('MULTILINESTRING((-118.584 38.374 20,-118.583 38.5 30),
 	(-71.05957 42.3589 75, -71.061 43 90))') As the_geom, 
 CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo;
