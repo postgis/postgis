@@ -600,48 +600,6 @@
             <para>Forces the geometries into XYZM mode.</para>
           </listitem>
         </varlistentry>
-
-        <varlistentry id="ST_Scale">
-          <term>ST_Scale(geometry, float8, float8, float8)</term>
-
-          <listitem>
-            <para>scales the geometry to a new size by multiplying the
-            ordinates with the parameters. Ie: scale(geom, Xfactor, Yfactor,
-            Zfactor).</para>
-
-            <para>Availability: 1.1.0</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry id="ST_Rotate">
-          <term>ST_RotateZ(geometry, float8)</term>
-
-          <term>ST_RotateX(geometry, float8)</term>
-
-          <term>ST_RotateY(geometry, float8)</term>
-
-          <listitem>
-            <para>Rotate the geometry around the Z, X or Y axis by the given
-            angle given in radians. Follows the right-hand rule.</para>
-
-            <para>Availability: 1.1.2.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry id="ST_Transcale">
-          <term>ST_TransScale(geometry, float8, float8, float8, float8)</term>
-
-          <listitem>
-            <para>First, translates the geometry using the first two floats,
-            then scales it using the second two floats, working in 2D only.
-            Using <code>transscale(geom, X, Y, XFactor, YFactor)</code>
-            internally calls <code>affine(geom, XFactor, 0, 0, 0, YFactor, 0,
-            0, 0, 1, X*XFactor, Y*YFactor, 0)</code>.</para>
-
-            <para>Availability: 1.1.0.</para>
-          </listitem>
-        </varlistentry>
-
       
       </variablelist>
     </sect2>

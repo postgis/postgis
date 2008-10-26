@@ -3677,8 +3677,8 @@ y' = d*x + e*y + f*z + yoff
 z' = g*x + h*y + i*z + zoff</programlisting> All of the translate / scale
             functions below are expressed via such an affine
             transformation.</para>
-		<para>Version 2: Applies an 2d affine transformation to the geometry. The
-            call <programlisting>Affine(geom, a, b, d, e, xoff, yoff)</programlisting>
+		<para>Version 2: Applies a 2d affine transformation to the geometry. The
+            call <programlisting>ST_Affine(geom, a, b, d, e, xoff, yoff)</programlisting>
             represents the transformation matrix <programlisting>/  a  b  0  xoff  \       /  a  b  xoff  \ 
 |  d  e  0  yoff  | rsp.  |  d  e  yoff  | 
 |  0  0  1     0  |       \  0  0     1  / 
@@ -3728,6 +3728,67 @@ SELECT ST_AsEWKT(ST_Affine(the_geom, cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi
 	
 	    <para><xref linkend="ST_Rotate" />, <xref linkend="ST_Scale" />, <xref linkend="ST_Translate" />, <xref linkend="ST_TransScale" /></para>
 	  </refsection>
+	</refentry>
+	
+<refentry id="ST_ForceRHR">
+		<refnamediv>
+			<refname>ST_ForceRHR</refname>
+			
+			<refpurpose>Forces the orientation of the vertices in a polygon to follow the
+				Right-Hand-Rule.</refpurpose>
+		</refnamediv>
+		
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>boolean
+						<function>ST_ForceRHR</function></funcdef>
+					
+					<paramdef><type>geometry
+						</type>
+						<parameter>g</parameter></paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+		
+		<refsection>
+			<title>Description</title>
+			
+			<para>Forces the orientation of the vertices in a polygon to follow the
+				Right-Hand-Rule. In GIS terminology, this means that the area that is bounded by the
+				polygon is to the right of the boundary. In particular, the exterior ring is
+				orientated in a clockwise direction and the interior rings in a counter-clockwise
+				direction.</para>
+			
+			<para><inlinemediaobject>
+				<imageobject>
+					<imagedata fileref="images/check.png"/>
+				</imageobject>
+				</inlinemediaobject>This function supports 3d in that it will not drop the
+				z-index.</para>
+		</refsection>
+		
+		<refsection>
+			<title>Examples</title>
+			
+			<programlisting>SELECT ST_AsEWKT( 
+  ST_ForceRHR(
+    'POLYGON((0 0 2, 5 0 2, 0 5 2, 0 0 2),(1 1 2, 1 3 2, 3 1 2, 1 1 2))'
+  )
+); 
+                          st_asewkt                           
+--------------------------------------------------------------
+ POLYGON((0 0 2,0 5 2,5 0 2,0 0 2),(1 1 2,3 1 2,1 3 2,1 1 2))
+(1 row)</programlisting>
+		</refsection>
+		
+		<refsection>
+			<title>See Also</title>
+			
+			<para><xref linkend="ST_BuildArea"/>,
+				<xref linkend="ST_Polygonize"/>,
+				<xref linkend="ST_Reverse"/></para>
+		</refsection>
 	</refentry>
 
 	<refentry id="ST_LineMerge">
@@ -3908,6 +3969,292 @@ FROM
 ---------------------+----------------------
 LINESTRING(1 2,1 10) | LINESTRING(1 10,1 2)
 </programlisting>
+	  </refsection>
+	</refentry>
+			
+	<refentry id="ST_Rotate">
+	  <refnamediv>
+		<refname>ST_Rotate</refname>
+	
+		<refpurpose>This is a synonym for ST_RotateZ</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Rotate</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>rotZRadians</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+	
+		<para>This is a synonym for ST_RotateZ..  Rotates geometry rotZRadians about the Z-axis.</para>
+		
+		<!-- Optionally mention 3d support -->
+		<para><inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+		  </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+	  </refsection>
+	  
+	
+	  <refsection>
+		<title>Examples</title>
+	
+		<programlisting></programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+	
+		<para><xref linkend="ST_Affine" />, <xref linkend="ST_RotateX" />, <xref linkend="ST_RotateY" />, <xref linkend="ST_RotateZ" /></para>
+	  </refsection>
+	</refentry>
+	
+	<refentry id="ST_RotateX">
+	  <refnamediv>
+		<refname>ST_RotateX</refname>
+	
+		<refpurpose>Rotate a geometry rotRadians about the X axis.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_RotateX</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+	
+		<para>Rotate a geometry geomA - rotRadians about the X axis.</para>
+		
+		<note><para><code>ST_RotateX(geomA,  rotRadians)</code>
+            is short-hand for <code>ST_Affine(geomA, 1, 0, 0, 0, cos(rotRadians), -sin(rotRadians), 0, sin(rotRadians), cos(rotRadians), 0, 0, 0)</code>.</para></note>
+		
+		<!-- Optionally mention 3d support -->
+		<para><inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+		  </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+	  </refsection>
+	  
+	
+	  <refsection>
+		<title>Examples</title>
+	
+		<programlisting>
+--Rotate a line 90 degrees along x-axis
+SELECT ST_AsEWKT(ST_RotateX(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2));
+         st_asewkt         
+---------------------------
+ LINESTRING(1 -3 2,1 -1 1)
+</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+	
+		<para><xref linkend="ST_Affine" />, <xref linkend="ST_RotateY" />, <xref linkend="ST_RotateZ" /></para>
+	  </refsection>
+	</refentry>
+	
+	<refentry id="ST_RotateY">
+	  <refnamediv>
+		<refname>ST_RotateY</refname>
+	
+		<refpurpose>Rotate a geometry rotRadians about the Y axis.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_RotateY</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+	
+		<para>Rotate a geometry geomA - rotRadians about the y axis.</para>
+		
+		<note><para><code>ST_RotateY(geomA,  rotRadians)</code>
+            is short-hand for <code>ST_Affine(geomA,  cos(rotRadians), 0, sin(rotRadians),  0, 1, 0,  -sin(rotRadians), 0, cos(rotRadians), 0,  0, 0)</code>.</para></note>
+		
+		<!-- Optionally mention 3d support -->
+		<para><inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+		  </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+	  </refsection>
+	  
+	
+	  <refsection>
+		<title>Examples</title>
+	
+		<programlisting>
+--Rotate a line 90 degrees along y-axis
+ SELECT ST_AsEWKT(ST_RotateY(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2));
+         st_asewkt         
+---------------------------
+ LINESTRING(3 2 -1,1 1 -1)
+</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+	
+		<para><xref linkend="ST_Affine" />, <xref linkend="ST_RotateX" />, <xref linkend="ST_RotateZ" />, <ulink
+      url="/support/wiki/index.php?plpgsqlfunctions">Rotate around Point, Create Ellipse functions</ulink></para>
+	  </refsection>
+	</refentry>
+	
+	<refentry id="ST_RotateZ">
+	  <refnamediv>
+		<refname>ST_RotateZ</refname>
+	
+		<refpurpose>Rotate a geometry rotRadians about the Z axis.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_RotateZ</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+	
+		<para>Rotate a geometry geomA - rotRadians about the Z axis.</para>
+		
+		<note><para><code>ST_RotateZ(geomA,  rotRadians)</code>
+            is short-hand for <code>SELECT ST_Affine(geomA,  cos(rotRadians), -sin(rotRadians), 0,  sin(rotRadians), cos(rotRadians), 0,  0, 0, 1,  0, 0, 0)</code>.</para></note>
+		
+		<!-- Optionally mention 3d support -->
+		<para><inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+		  </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+	  </refsection>
+	  
+	
+	  <refsection>
+		<title>Examples</title>
+	
+		<programlisting>
+--Rotate a line 90 degrees along z-axis
+SELECT ST_AsEWKT(ST_RotateZ(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2));
+         st_asewkt         
+---------------------------
+ LINESTRING(-2 1 3,-1 1 1)
+</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+	
+		<para><xref linkend="ST_Affine" />, <xref linkend="ST_RotateX" />, <xref linkend="ST_RotateY" />, <ulink
+      url="/support/wiki/index.php?plpgsqlfunctions">Rotate around Point, Create Ellipse functions</ulink></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_Scale">
+	  <refnamediv>
+	    <refname>ST_Scale</refname>
+	
+	    <refpurpose>Scales the geometry to a new size by multiplying the
+            ordinates with the parameters. Ie: ST_Scale(geom, Xfactor, Yfactor,
+            Zfactor).
+            </refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>geometry <function>ST_Scale</function></funcdef>
+	        <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>XFactor</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>YFactor</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>ZFactor</parameter></paramdef>
+	      </funcprototype>
+		  
+		  <funcprototype>
+	        <funcdef>geometry <function>ST_Scale</function></funcdef>
+	        <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>XFactor</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>YFactor</parameter></paramdef>
+	      </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+	    <para>Scales the geometry to a new size by multiplying the
+            ordinates with the parameters. Ie: ST_Scale(geom, Xfactor, Yfactor,
+            Zfactor).</para>
+	
+		<note><para><code>ST_Scale(geomA,  XFactor, YFactor, ZFactor)</code>
+            is short-hand for <code>ST_Affine(geomA,  XFactor, 0, 0,  0, YFactor, 0,  0, 0, ZFactor,  0, 0, 0)</code>.</para></note>
+	
+	 
+		<para>Availability: 1.1.0.</para>
+		<!-- Optionally mention 3d support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+	
+	    <programlisting>--Version 1: scale X, Y, Z
+SELECT ST_AsEWKT(ST_Scale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, 0.75, 0.8));
+              st_asewkt               
+--------------------------------------
+ LINESTRING(0.5 1.5 2.4,0.5 0.75 0.8)
+
+--Version 2: Scale X Y
+ SELECT ST_AsEWKT(ST_Scale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, 0.75));
+            st_asewkt             
+----------------------------------
+ LINESTRING(0.5 1.5 3,0.5 0.75 1)
+
+
+</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	
+	    <para><xref linkend="ST_Affine" />, <xref linkend="ST_TransScale" /></para>
 	  </refsection>
 	</refentry>
 	
@@ -4360,70 +4707,72 @@ CREATE INDEX idx_the_geom_26986_parcels
 	  <!-- Optionally add a "See Also" section -->
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_AsText" />, <xref linkend="ST_GeomFromText" /></para>
+		<para><xref linkend="ST_Affine" />, <xref linkend="ST_AsText" />, <xref linkend="ST_GeomFromText" /></para>
+	  </refsection>
+	</refentry>
+			
+	<refentry id="ST_TransScale">
+	  <refnamediv>
+	    <refname>ST_TransScale</refname>
+	
+	    <refpurpose>Translates the geometry using the deltaX and deltaY args,
+            then scales it using the XFactor, YFactor args, working in 2D only.
+            </refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>geometry <function>ST_TransScale</function></funcdef>
+	        <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+	        <paramdef><type>float</type> <parameter>deltaX</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>deltaY</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>XFactor</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>YFactor</parameter></paramdef>
+	      </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+	    <para>Translates the geometry using the deltaX and deltaY args,
+            then scales it using the XFactor, YFactor args, working in 2D only.</para>
+	
+		<note><para><code>ST_TransScale(geomA, deltaX, deltaY, XFactor, YFactor)</code>
+            is short-hand for <code>ST_Affine(geomA, XFactor, 0, 0, 0, YFactor, 0,
+            0, 0, 1, deltaX*XFactor, deltaY*YFactor, 0)</code>.</para></note>
+	
+	 
+		<para>Availability: 1.1.0.</para>
+		<!-- Optionally mention 3d support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+	
+	    <programlisting>SELECT ST_AsEWKT(ST_TransScale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, 1, 1, 2));
+          st_asewkt          
+-----------------------------
+ LINESTRING(1.5 6 3,1.5 4 1)
+</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	
+	    <para><xref linkend="ST_Affine" />, <xref linkend="ST_Translate" /></para>
 	  </refsection>
 	</refentry>
 	
-	<refentry id="ST_ForceRHR">
-		<refnamediv>
-			<refname>ST_ForceRHR</refname>
-			
-			<refpurpose>Forces the orientation of the vertices in a polygon to follow the
-				Right-Hand-Rule.</refpurpose>
-		</refnamediv>
-		
-		<refsynopsisdiv>
-			<funcsynopsis>
-				<funcprototype>
-					<funcdef>boolean
-						<function>ST_ForceRHR</function></funcdef>
-					
-					<paramdef><type>geometry
-						</type>
-						<parameter>g</parameter></paramdef>
-				</funcprototype>
-			</funcsynopsis>
-		</refsynopsisdiv>
-		
-		<refsection>
-			<title>Description</title>
-			
-			<para>Forces the orientation of the vertices in a polygon to follow the
-				Right-Hand-Rule. In GIS terminology, this means that the area that is bounded by the
-				polygon is to the right of the boundary. In particular, the exterior ring is
-				orientated in a clockwise direction and the interior rings in a counter-clockwise
-				direction.</para>
-			
-			<para><inlinemediaobject>
-				<imageobject>
-					<imagedata fileref="images/check.png"/>
-				</imageobject>
-				</inlinemediaobject>This function supports 3d in that it will not drop the
-				z-index.</para>
-		</refsection>
-		
-		<refsection>
-			<title>Examples</title>
-			
-			<programlisting>SELECT ST_AsEWKT( 
-  ST_ForceRHR(
-    'POLYGON((0 0 2, 5 0 2, 0 5 2, 0 0 2),(1 1 2, 1 3 2, 3 1 2, 1 1 2))'
-  )
-); 
-                          st_asewkt                           
---------------------------------------------------------------
- POLYGON((0 0 2,0 5 2,5 0 2,0 0 2),(1 1 2,3 1 2,1 3 2,1 1 2))
-(1 row)</programlisting>
-		</refsection>
-		
-		<refsection>
-			<title>See Also</title>
-			
-			<para><xref linkend="ST_BuildArea"/>,
-				<xref linkend="ST_Polygonize"/>,
-				<xref linkend="ST_Reverse"/></para>
-		</refsection>
-	</refentry>
+	
 	
   </sect1>
 
