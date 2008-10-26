@@ -601,50 +601,7 @@
           </listitem>
         </varlistentry>
 
-  
-
-        <varlistentry>
-          <term>ST_Affine(geometry, float8, float8, float8, float8, float8,
-          float8, float8, float8, float8, float8, float8, float8)</term>
-
-          <listitem>
-            <para>Applies an 3d affine transformation to the geometry. The
-            call <programlisting>Affine(geom, a, b, c, d, e, f, g, h, i, xoff, yoff, zoff) </programlisting>
-            represents the transformation matrix <programlisting>/ a  b  c  xoff \ 
-| d  e  f  yoff | 
-| g  h  i  zoff | 
-\ 0  0  0     1 /</programlisting> and the vertices are transformed as
-            follows: <programlisting>x' = a*x + b*y + c*z + xoff 
-y' = d*x + e*y + f*z + yoff 
-z' = g*x + h*y + i*z + zoff</programlisting> All of the translate / scale
-            functions below are expressed via such an affine
-            transformation.</para>
-
-            <para>Availability: 1.1.2.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>ST_Affine(geometry, float8, float8, float8, float8, float8,
-          float8)</term>
-
-          <listitem>
-            <para>Applies an 2d affine transformation to the geometry. The
-            call <programlisting>Affine(geom, a, b, d, e, xoff, yoff)</programlisting>
-            represents the transformation matrix <programlisting>/  a  b  0  xoff  \       /  a  b  xoff  \ 
-|  d  e  0  yoff  | rsp.  |  d  e  yoff  | 
-|  0  0  1     0  |       \  0  0     1  / 
-\  0  0  0     1  /</programlisting> and the vertices are transformed as
-            follows: <programlisting>x' = a*x + b*y + xoff 
-y' = d*x + e*y + yoff 
-z' = z </programlisting> This method is a subcase of the 3D method
-            above.</para>
-
-            <para>Availability: 1.1.2.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
+        <varlistentry id="ST_Scale">
           <term>ST_Scale(geometry, float8, float8, float8)</term>
 
           <listitem>
@@ -656,7 +613,7 @@ z' = z </programlisting> This method is a subcase of the 3D method
           </listitem>
         </varlistentry>
 
-        <varlistentry id="Rotate">
+        <varlistentry id="ST_Rotate">
           <term>ST_RotateZ(geometry, float8)</term>
 
           <term>ST_RotateX(geometry, float8)</term>
@@ -671,7 +628,7 @@ z' = z </programlisting> This method is a subcase of the 3D method
           </listitem>
         </varlistentry>
 
-        <varlistentry>
+        <varlistentry id="ST_Transcale">
           <term>ST_TransScale(geometry, float8, float8, float8, float8)</term>
 
           <listitem>

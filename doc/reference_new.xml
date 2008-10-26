@@ -3621,6 +3621,114 @@ SELECT ST_Y(ST_Centroid(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)')));
 			<para><xref linkend="ST_RemovePoint"/>, <xref linkend="ST_SetPoint" /></para>
 		  </refsection>
 	</refentry>
+		
+	<refentry id="ST_Affine">
+	  <refnamediv>
+	    <refname>ST_Affine</refname>
+	
+	    <refpurpose>Applies a 3d affine transformation to the geometry to do things like translate, rotate, scale in one step.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>geometry <function>ST_Affine</function></funcdef>
+	        <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+	        <paramdef><type>float </type> <parameter>a</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>b</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>c</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>d</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>e</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>f</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>g</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>h</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>i</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>xoff</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>yoff</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>zoff</parameter></paramdef>
+	      </funcprototype>
+	
+	      <funcprototype>
+	        <funcdef>geometry <function>ST_Affine</function></funcdef>
+	        <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+	        <paramdef><type>float </type> <parameter>a</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>b</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>d</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>e</parameter></paramdef>>
+			<paramdef><type>float </type> <parameter>xoff</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>yoff</parameter></paramdef>
+	      </funcprototype>
+	    </funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+	    <para>Applies a 3d affine transformation to the geometry to do things like translate, rotate, scale in one step.</para>
+		<para>
+		Version 1: The
+            call <programlisting>ST_Affine(geom, a, b, c, d, e, f, g, h, i, xoff, yoff, zoff) </programlisting>
+            represents the transformation matrix <programlisting>/ a  b  c  xoff \ 
+| d  e  f  yoff | 
+| g  h  i  zoff | 
+\ 0  0  0     1 /</programlisting> and the vertices are transformed as
+            follows: <programlisting>x' = a*x + b*y + c*z + xoff 
+y' = d*x + e*y + f*z + yoff 
+z' = g*x + h*y + i*z + zoff</programlisting> All of the translate / scale
+            functions below are expressed via such an affine
+            transformation.</para>
+		<para>Version 2: Applies an 2d affine transformation to the geometry. The
+            call <programlisting>Affine(geom, a, b, d, e, xoff, yoff)</programlisting>
+            represents the transformation matrix <programlisting>/  a  b  0  xoff  \       /  a  b  xoff  \ 
+|  d  e  0  yoff  | rsp.  |  d  e  yoff  | 
+|  0  0  1     0  |       \  0  0     1  / 
+\  0  0  0     1  /</programlisting> and the vertices are transformed as
+            follows: <programlisting>x' = a*x + b*y + xoff 
+y' = d*x + e*y + yoff 
+z' = z </programlisting> This method is a subcase of the 3D method
+            above.</para>
+	
+		<para>Availability: 1.1.2.</para>
+
+		<!-- Optionally mention 3d support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+	
+	    <programlisting>
+--Rotate a 3d line 180 degrees about the z axis.  Note this is long-hand for doing ST_RotateZ();
+ SELECT ST_AsEWKT(ST_Affine(the_geom,  cos(pi()), -sin(pi()), 0,  sin(pi()), cos(pi()), 0,  0, 0, 1,  0, 0, 0)) As using_affine,
+	 ST_AsEWKT(ST_RotateZ(the_geom, pi())) As using_rotatez
+	FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2 3, 1 4 3)') As the_geom) As foo;
+        using_affine         |        using_rotatez        
+-----------------------------+-----------------------------
+ LINESTRING(-1 -2 3,-1 -4 3) | LINESTRING(-1 -2 3,-1 -4 3)
+(1 row)
+
+--Rotate a 3d line 180 degrees in both the x and z axis
+SELECT ST_AsEWKT(ST_Affine(the_geom, cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi()), 0, 0, 0))
+	FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2 3, 1 4 3)') As the_geom) As foo;
+           st_asewkt           
+-------------------------------
+ LINESTRING(-1 -2 -3,-1 -4 -3)
+(1 row)
+		</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	
+	    <para><xref linkend="ST_Rotate" />, <xref linkend="ST_Scale" />, <xref linkend="ST_Translate" />, <xref linkend="ST_TransScale" /></para>
+	  </refsection>
+	</refentry>
 
 	<refentry id="ST_LineMerge">
 		<refnamediv>
