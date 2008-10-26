@@ -143,6 +143,13 @@ COMMENT ON FUNCTION ST_AddPoint(geometry, geometry) IS 'args: linestring, point 
 			
 COMMENT ON FUNCTION ST_AddPoint(geometry, geometry, integer) IS 'args: linestring, point, position - Adds a point to a LineString before point <position> (0-based index).';
 			
+COMMENT ON FUNCTION ST_Affine(geometry , float , float , float , float , float , float , float , float , float , float , float , float ) IS 'args: geomA, a, b, c, d, e, f, g, h, i, xoff, yoff, zoff - Applies a 3d affine transformation to the geometry to do things like translate, rotate, scale in one step.';
+			
+COMMENT ON FUNCTION ST_Affine(geometry , float , float , float , float , float , float ) IS 'args: geomA, a, b, d, e, xoff, yoff - Applies a 3d affine transformation to the geometry to do things like translate, rotate, scale in one step.';
+			
+COMMENT ON FUNCTION ST_ForceRHR(geometry
+						) IS 'args: g - Forces the orientation of the vertices in a polygon to follow the Right-Hand-Rule.';
+			
 COMMENT ON FUNCTION ST_LineMerge(geometry ) IS 'args: amultilinestring - Returns a (set of) LineString(s) formed by sewing together a MULTILINESTRING.';
 			
 COMMENT ON FUNCTION ST_Multi(geometry ) IS 'args: g1 - Returns the geometry as a MULTI* geometry. If the geometry is already a MULTI*, it is returned unchanged.';
@@ -150,6 +157,18 @@ COMMENT ON FUNCTION ST_Multi(geometry ) IS 'args: g1 - Returns the geometry as a
 COMMENT ON FUNCTION ST_RemovePoint(geometry, integer) IS 'args: linestring, offset - Removes point from a linestring. Offset is 0-based.';
 			
 COMMENT ON FUNCTION ST_Reverse(geometry ) IS 'args: g1 - Returns the geometry with vertex order reversed.';
+			
+COMMENT ON FUNCTION ST_Rotate(geometry, float) IS 'args: geomA, rotZRadians - This is a synonym for ST_RotateZ';
+			
+COMMENT ON FUNCTION ST_RotateX(geometry, float) IS 'args: geomA, rotRadians - Rotate a geometry rotRadians about the X axis.';
+			
+COMMENT ON FUNCTION ST_RotateY(geometry, float) IS 'args: geomA, rotRadians - Rotate a geometry rotRadians about the Y axis.';
+			
+COMMENT ON FUNCTION ST_RotateZ(geometry, float) IS 'args: geomA, rotRadians - Rotate a geometry rotRadians about the Z axis.';
+			
+COMMENT ON FUNCTION ST_Scale(geometry , float, float, float) IS 'args: geomA, XFactor, YFactor, ZFactor - Scales the geometry to a new size by multiplying the ordinates with the parameters. Ie: ST_Scale(geom, Xfactor, Yfactor, Zfactor).';
+			
+COMMENT ON FUNCTION ST_Scale(geometry , float, float) IS 'args: geomA, XFactor, YFactor - Scales the geometry to a new size by multiplying the ordinates with the parameters. Ie: ST_Scale(geom, Xfactor, Yfactor, Zfactor).';
 			
 COMMENT ON FUNCTION ST_Segmentize(geometry , float ) IS 'args: geomA, max_length - Return a modified geometry having no segment longer than the given distance. Distance computation is performed in 2d only.';
 			
@@ -171,8 +190,7 @@ COMMENT ON FUNCTION ST_Translate(geometry , float , float ) IS 'args: g1, deltax
 			
 COMMENT ON FUNCTION ST_Translate(geometry , float , float , float ) IS 'args: g1, deltax, deltay, deltaz - Translates the geometry to a new location using the numeric parameters as offsets. Ie: ST_Translate(geom, X, Y) or ST_Translate(geom, X, Y,Z).';
 			
-COMMENT ON FUNCTION ST_ForceRHR(geometry
-						) IS 'args: g - Forces the orientation of the vertices in a polygon to follow the Right-Hand-Rule.';
+COMMENT ON FUNCTION ST_TransScale(geometry , float, float, float, float) IS 'args: geomA, deltaX, deltaY, XFactor, YFactor - Translates the geometry using the deltaX and deltaY args, then scales it using the XFactor, YFactor args, working in 2D only.';
 			
 COMMENT ON FUNCTION ST_AsBinary(geometry ) IS 'args: g1 - Return the Well-Known Binary (WKB) representation of the geometry without SRID meta data.';
 			
