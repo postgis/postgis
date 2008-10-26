@@ -6210,6 +6210,123 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
       </refsection>
     </refentry>
 
+	<refentry id="ST_Distance_Sphere">
+	  <refnamediv>
+		<refname>ST_Distance_Sphere</refname>
+	
+		<refpurpose>Returns linear distance in meters between two lon/lat
+				points. Uses a spherical earth and radius of 6370986 meters.
+				Faster than <link linkend="ST_Distance_Spheroid">ST_Distance_Spheroid()</link>, but less
+				accurate. Only implemented for points.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>float <function>ST_Distance_Sphere</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>pointlonlatA</parameter></paramdef>
+			<paramdef><type>geometry </type> <parameter>pointlonlatB</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+	
+		<para>Returns linear distance in meters between two lon/lat
+				points. Uses a spherical earth and radius of 6370986 meters.
+				Faster than <link linkend="ST_Distance_Spheroid" />, but less
+				accurate. Only implemented for points.</para>
+		<note>
+			<para>This function currently does not look at the SRID of a point geometry and will always assume its in WGS 80 long lat.</para>
+		</note>
+	  </refsection>
+	  
+	
+	  <refsection>
+		<title>Examples</title>
+	
+		<programlisting>SELECT round(CAST(ST_Distance_Sphere(ST_Centroid(the_geom), ST_GeomFromText('POINT(-118 38)',4326)) As numeric),2) As dist_meters, 
+round(CAST(ST_Distance(ST_Transform(ST_Centroid(the_geom),32611), 
+		ST_Transform(ST_GeomFromText('POINT(-118 38)', 4326),32611)) As numeric),2) As dist_utm11_meters,
+round(CAST(ST_Distance(ST_Centroid(the_geom), ST_GeomFromText('POINT(-118 38)', 4326)) As numeric),5) As dist_degrees,
+round(CAST(ST_Distance(ST_Transform(the_geom,32611), 
+		ST_Transform(ST_GeomFromText('POINT(-118 38)', 4326),32611)) As numeric),2) As min_dist_line_point_meters
+FROM
+	(SELECT ST_GeomFromText('LINESTRING(-118.584 38.374,-118.583 38.5)', 4326) As the_geom) as foo;
+	 dist_meters | dist_utm11_meters | dist_degrees | min_dist_line_point_meters 
+	-------------+-------------------+--------------+----------------------------
+		70424.47 |          70438.00 |      0.72900 |                   65871.18
+	
+	</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+	
+		<para><xref linkend="ST_Distance" />, <xref linkend="ST_Distance_Spheroid" /></para>
+	  </refsection>
+	</refentry>
+	
+	<refentry id="ST_Distance_Spheroid">
+	  <refnamediv>
+		<refname>ST_Distance_Spheroid</refname>
+	
+		<refpurpose>Returns linear distance between two lon/lat points given a
+            particular spheroid. 
+            Currently only implemented for points.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>float <function>ST_Distance_Spheroid</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>pointlonlatA</parameter></paramdef>
+			<paramdef><type>geometry </type> <parameter>pointlonlatB</parameter></paramdef>
+			<paramdef><type>spheroid </type> <parameter>measurement_spheroid</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+	
+		<para>Returns linear distance in meters between two lon/lat
+				points given a particular spheroid. See the explanation of spheroids given for
+            <link linkend="ST_Length_Spheroid" />.</para>
+		<note>
+			<para>This function currently does not look at the SRID of a point geometry to determine spheroid and will always assume points are along the spheroid given.</para>
+		</note>
+	  </refsection>
+	  
+	
+	  <refsection>
+		<title>Examples</title>
+	
+		<programlisting>SELECT round(CAST(
+		ST_Distance_Spheroid(ST_Centroid(the_geom), ST_GeomFromText('POINT(-118 38)',4326), 'SPHEROID["WGS 84",6378137,298.257223563]') 
+			As numeric),2) As dist_meters_spheroid,
+		round(CAST(ST_Distance_Sphere(ST_Centroid(the_geom), ST_GeomFromText('POINT(-118 38)',4326)) As numeric),2) As dist_meters_sphere, 
+round(CAST(ST_Distance(ST_Transform(ST_Centroid(the_geom),32611), 
+		ST_Transform(ST_GeomFromText('POINT(-118 38)', 4326),32611)) As numeric),2) As dist_utm11_meters
+FROM
+	(SELECT ST_GeomFromText('LINESTRING(-118.584 38.374,-118.583 38.5)', 4326) As the_geom) as foo;
+ dist_meters_spheroid | dist_meters_sphere | dist_utm11_meters 
+----------------------+--------------------+-------------------
+             70454.92 |           70424.47 |          70438.00
+	
+	</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+	
+		<para><xref linkend="ST_Distance" />, <xref linkend="ST_Distance_Sphere" /></para>
+	  </refsection>
+	</refentry>
+
     <refentry id="ST_DWithin">
       <refnamediv>
         <refname>ST_DWithin</refname>
