@@ -549,7 +549,7 @@
           <listitem>
             <para>Returns a point interpolated along a line. First argument
             must be a LINESTRING. Second argument is a float8 between 0 and 1
-            representing fraction of total <link linkend="ST_Length2d">2d
+            representing fraction of total <link linkend="ST_Length2D">2d
             length</link> the point has to be located.</para>
 
             <para>See <link
@@ -630,7 +630,7 @@ WHERE n*100.00/length &lt; 1;
           <listitem>
             <para>Returns a float between 0 and 1 representing the location of
             the closest point on LineString to the given Point, as a fraction
-            of total <link linkend="ST_Length2d">2d line</link> length.</para>
+            of total <link linkend="ST_Length2D">2d line</link> length.</para>
 
             <para>You can use the returned location to extract a Point (<link
             linkend="line_interpolate_point">line_interpolate_point</link>) or

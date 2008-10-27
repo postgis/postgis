@@ -6772,7 +6772,7 @@ st_length
 	    <title>Description</title>
 	
 	    <para>Returns the 3-dimensional or 2-dimensional length of the geometry if it is a
-            linestring or multi-linestring. For 2-d lines it will just return the 2-d length (same as ST_Length and ST_Length2d)</para>
+            linestring or multi-linestring. For 2-d lines it will just return the 2-d length (same as ST_Length and ST_Length2D)</para>
 	
 		<!-- Optionally mention 3d support -->
 	    <para><inlinemediaobject>
