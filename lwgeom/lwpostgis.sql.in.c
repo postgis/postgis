@@ -2584,7 +2584,7 @@ BEGIN
         
         -- Try to find srid check from system tables (pg_constraint)
         gsrid := 
-            (SELECT replace(split_part(s.consrc, ' = ', 2), ')', '') 
+            (SELECT replace(replace(split_part(s.consrc, ' = ', 2), ')', ''), '(', '') 
              FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s 
              WHERE n.nspname = gcs.nspname 
              AND c.relname = gcs.relname 
