@@ -627,9 +627,8 @@ Check constraints:
             database.</para>
 			
 		<note>
-              <para>If the output of this function doesn't match the output of
-              <link
-              linkend="postgis_scripts_released">postgis_scripts_released()</link>
+              <para>If the output of this function doesn't match the output of 
+              <xref linkend="PostGIS_Scripts_Released" />
               you probably missed to properly upgrade an existing database.
               See the <link linkend="upgrading">Upgrading</link> section for
               more info.</para>
