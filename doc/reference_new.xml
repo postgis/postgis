@@ -6918,8 +6918,7 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
 
 		<literallayout>SPHEROID["GRS_1980",6378137,298.257222101]</literallayout>
 		<note><para>Will return 0 for anything that is not a MULTILINESTRING or LINESTRING</para></note>
-		<note><para>This is much like <xref linkend="ST_Length_Spheroid" /> and <xref linkend="ST_Length3d_Spheriod" /> except it will throw away the Z coordinate in calculations.</para></note>
-		
+		<note><para>This is much like <xref linkend="ST_Length_Spheroid" /> and <xref linkend="ST_Length3D_Spheroid" /> except it will throw away the Z coordinate in calculations.</para></note>
 
 	  </refsection>
 	  
