@@ -6387,7 +6387,7 @@ FROM
 	
 		<para>Returns linear distance in meters between two lon/lat
 				points given a particular spheroid. See the explanation of spheroids given for
-            <link linkend="ST_Length_Spheroid" />.</para>
+            <xref linkend="ST_Length_Spheroid" />.</para>
 		<note>
 			<para>This function currently does not look at the SRID of a point geometry to determine spheroid and will always assume points are along the spheroid given.</para>
 		</note>
