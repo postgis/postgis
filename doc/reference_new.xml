@@ -6168,7 +6168,7 @@ WHERE ST_Crosses(roads.the_geom, highways.the_geom);</programlisting>
     </refsection>
   </refentry>
 
-	<refentry id="ST_Disjoint">
+  <refentry id="ST_Disjoint">
 		<refnamediv>
 			<refname>ST_Disjoint</refname>
 			
@@ -6197,9 +6197,9 @@ WHERE ST_Crosses(roads.the_geom, highways.the_geom);</programlisting>
 				returns true, then the geometries are not spatially disjoint.  
 				Disjoint implies false for spatial intersection.</para>
 				
-      <important>
-        <para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
-      </important>
+			<important>
+				<para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
+			</important>
       
 			<para>Performed by the GEOS module</para>
 			<note>
@@ -6216,6 +6216,12 @@ WHERE ST_Crosses(roads.the_geom, highways.the_geom);</programlisting>
 			  <ulink url="http://www.opengeospatial.org/standards/sfs">OGC SPEC s2.1.1.2 //s2.1.13.3 - a.Relate(b,
             'FF*FF****')</ulink>
 			</para> 
+			    <!-- Optionally mention SQL/MM compliancy if appropriate -->
+			<para><inlinemediaobject>
+				<imageobject>
+				  <imagedata fileref="images/check.png" />
+				</imageobject>
+			  </inlinemediaobject> This method implements the SQL/MM specification: SQL-MM 3: 5.1.26</para>
 		</refsection>
 		<refsection>
 		<title>Examples</title>
