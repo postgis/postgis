@@ -2430,6 +2430,7 @@ LANGUAGE 'plpgsql' _VOLATILE;
 -- this function ensures every geometry column in the database has the
 -- appropriate spatial contraints (for tables) and exists in the 
 -- geometry_columns table.  
+-- Availability: 1.4.0
 -----------------------------------------------------------------------
 CREATEFUNCTION populate_geometry_columns()
   RETURNS text AS
@@ -2539,6 +2540,7 @@ LANGUAGE 'plpgsql' _VOLATILE;
 -- tries to determine the srid, dimension, and type of all the geometries
 -- in the view, inserting appropriate entries into the geometry_columns
 -- table. 
+-- Availability: 1.4.0
 -----------------------------------------------------------------------
 CREATEFUNCTION populate_geometry_columns(tbl_oid oid)
   RETURNS integer AS
