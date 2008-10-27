@@ -6293,7 +6293,7 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
       <refsection>
         <title>See Also</title>
 
-        <para><xref linkend="ST_DWithin"/>, <xref linkend="ST_Distance_Sphere"/>, <xref linkend="ST_Distance_Spheroid"/>, <xhref linkend="ST_Max_Distance" /></para>
+        <para><xref linkend="ST_DWithin"/>, <xref linkend="ST_Distance_Sphere"/>, <xref linkend="ST_Distance_Spheroid"/>, <xref linkend="ST_Max_Distance" /></para>
       </refsection>
     </refentry>
 
