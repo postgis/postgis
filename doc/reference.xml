@@ -635,7 +635,7 @@ WHERE n*100.00/length &lt; 1;
             <para>You can use the returned location to extract a Point (<link
             linkend="line_interpolate_point">line_interpolate_point</link>) or
             a substring (<link
-            linkend="line_substring">line_substring</link>).</para>
+            linkend="ST_Line_Substring">ST_Line_Substring</link>).</para>
 
             <para>Availability: 1.1.0</para>
           </listitem>
