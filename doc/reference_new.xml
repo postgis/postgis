@@ -820,10 +820,9 @@ Check constraints:
         <title>Description</title>
     
         <para>Ensures geometry columns have appropriate spatial constraints and
-        exist in the <varname>geometry_columns</varname> table.</para>
-    
-        <para>In particular, this means that every geometry column belonging to a
-        table has at least three constraints:</para>
+        exist in the <varname>geometry_columns</varname> table.  In particular, 
+        this means that every geometry column belonging to a table has at least 
+        three constraints:</para>
     
         <itemizedlist>
           <listitem>
@@ -845,21 +844,27 @@ Check constraints:
           </listitem>
         </itemizedlist>
     
-        <para>If a table oid is provided, this function tries to determine the
-        srid, dimension, and geometry type of all geometry columns in the table,
-        adding contraints as necessary. If successful, an appropriate row is
-        inserted into the geometry_column table, otherwise, the exception is
-        caught and an error notice is raised describing the problem.</para>
+        <para>If a table <varname>oid</varname> is provided, this function 
+        tries to determine the srid, dimension, and geometry type of all 
+        geometry columns in the table, adding contraints as necessary. if 
+        successful, an appropriate row is inserted into the geometry_column 
+        table, otherwise, the exception is caught and an error notice is raised 
+        describing the problem.</para>
     
-        <para>If an oid of a view is provided, as with a table oid, this function
-        tries to determine the srid, dimension, and type of all the geometries in
-        the view, inserting appropriate entries into the geometry_columns table,
-        but nothing is done to enforce contraints.</para>
+        <para>If the <varname>oid</varname> of a view is provided, as with a 
+        table oid, this function tries to determine the srid, dimension, and 
+        type of all the geometries in the view, inserting appropriate entries 
+        into the <varname>geometry_columns</varname> table, but nothing is done 
+        to enforce contraints.</para>
     
         <para>The parameterless variant is a simple wrapper for the parameterized
         variant that first truncates and repopulates the geometry_columns table
         for every spatial table and view in the database, adding spatial
-        contraints to tables where appropriate.</para>
+        contraints to tables where appropriate.  It returns a summary of the 
+        number of geometry columns detected in the database and the number that
+        were inserted into the <varname>geometry_columns</varname> table.  The
+        parameterized version simply returns the number of rows inserted into 
+        the <varname>geometry_columns</varname> table.</para>
       </refsection>
     
       <refsection>
