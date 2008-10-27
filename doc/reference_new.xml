@@ -2182,7 +2182,7 @@ LINESTRING(0 0 1,1 1 1,1 2 1,1 1 1,0 0 1)
 	  <refsection>
 		<title>See Also</title>
 	
-		<para><xref linkend="ST_Boundary" />, <xref linkend="ST_InteriorRings" /></para>
+		<para><xref linkend="ST_Boundary" />, <xref linkend="ST_NumInteriorRings" /></para>
 	  </refsection>
 	</refentry>
 
