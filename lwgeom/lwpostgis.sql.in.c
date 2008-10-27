@@ -2422,10 +2422,353 @@ $$
 LANGUAGE 'plpgsql' _VOLATILE;
 
 -----------------------------------------------------------------------
+-- POPULATE_GEOMETRY_COLUMNS() 
+-----------------------------------------------------------------------
+-- Truncates and refills the geometry_column table from all tables and 
+-- views in the database that contain geometry columns. This function 
+-- is a simple wrapper for populate_geometry_columns(oid).  In essence,
+-- this function ensures every geometry column in the database has the
+-- appropriate spatial contraints (for tables) and exists in the 
+-- geometry_columns table.  
+-----------------------------------------------------------------------
+CREATEFUNCTION populate_geometry_columns()
+  RETURNS text AS
+$$
+DECLARE
+    inserted    integer;
+    oldcount    integer;
+    probed      integer;
+    stale       integer;
+    gcs         RECORD;
+    gc          RECORD;
+    gsrid       integer;
+    gndims      integer;
+    gtype       text;
+    query       text;
+    gc_is_valid boolean;
+    
+BEGIN
+    SELECT count(*) INTO oldcount FROM geometry_columns;
+    inserted := 0;
+
+    EXECUTE 'TRUNCATE geometry_columns';
+
+    -- Count the number of geometry columns in all tables and views
+    SELECT count(DISTINCT c.oid) INTO probed
+        FROM pg_class c, 
+             pg_attribute a, 
+             pg_type t, 
+             pg_namespace n
+        WHERE (c.relkind = 'r' OR c.relkind = 'v')
+        AND t.typname = 'geometry'
+        AND a.attisdropped = false
+        AND a.atttypid = t.oid
+        AND a.attrelid = c.oid
+        AND c.relnamespace = n.oid
+	AND n.nspname NOT ILIKE 'pg_temp%';
+
+    -- Iterate through all non-dropped geometry columns
+    RAISE DEBUG 'Processing Tables.....';
+
+    FOR gcs IN 
+        SELECT DISTINCT ON (c.oid) c.oid, n.nspname, c.relname
+            FROM pg_class c, 
+                 pg_attribute a, 
+                 pg_type t, 
+                 pg_namespace n
+            WHERE c.relkind = 'r'
+            AND t.typname = 'geometry'
+            AND a.attisdropped = false
+            AND a.atttypid = t.oid
+            AND a.attrelid = c.oid
+            AND c.relnamespace = n.oid
+	    AND n.nspname NOT ILIKE 'pg_temp%'
+        LOOP
+        
+        inserted := inserted + populate_geometry_columns(gcs.oid);
+    END LOOP;
+    
+    -- Add views to geometry columns table
+    RAISE DEBUG 'Processing Views.....';
+    FOR gcs IN 
+        SELECT DISTINCT ON (c.oid) c.oid, n.nspname, c.relname
+            FROM pg_class c, 
+                 pg_attribute a, 
+                 pg_type t, 
+                 pg_namespace n
+            WHERE c.relkind = 'v'
+            AND t.typname = 'geometry'
+            AND a.attisdropped = false
+            AND a.atttypid = t.oid
+            AND a.attrelid = c.oid
+            AND c.relnamespace = n.oid
+        LOOP            
+            
+        inserted := inserted + populate_geometry_columns(gcs.oid);
+    END LOOP;
+
+    IF oldcount > inserted THEN
+        stale = oldcount-inserted;
+    ELSE
+        stale = 0;
+    END IF;
+
+    RETURN 'probed:' ||probed|| ' inserted:'||inserted|| ' conflicts:'||probed-inserted|| ' deleted:'||stale;
+END
+
+$$
+LANGUAGE 'plpgsql' _VOLATILE;
+  
+-----------------------------------------------------------------------
+-- POPULATE_GEOMETRY_COLUMNS(tbl_oid oid) 
+-----------------------------------------------------------------------
+-- DELETEs from and reINSERTs into the geometry_column table all entries 
+-- associated with the oid of a particular table or view.  
+--
+-- If the provided oid is for a table, this function tries to determine 
+-- the srid, dimension, and geometry type of the all geometries 
+-- in the table, adding contraints as necessary to the table.  If 
+-- successful, an appropriate row is inserted into the geometry_column 
+-- table, otherwise, the exception is caught and an error notice is 
+-- raised describing the problem. (This is so the wrapper function 
+-- populate_geometry_columns() can apply spatial constraints to all
+-- geometry columns across an entire database at once without erroring 
+-- out)
+--
+-- If the provided oid is for a view, as with a table oid, this function
+-- tries to determine the srid, dimension, and type of all the geometries
+-- in the view, inserting appropriate entries into the geometry_columns
+-- table. 
+-----------------------------------------------------------------------
+CREATEFUNCTION populate_geometry_columns(tbl_oid oid)
+  RETURNS integer AS
+$$
+DECLARE
+    gcs         RECORD;
+    gc          RECORD;
+    gsrid       integer;
+    gndims      integer;
+    gtype       text;
+    query       text;
+    gc_is_valid boolean;
+    inserted    integer;
+    
+BEGIN
+    inserted := 0;
+    
+    -- Iterate through all geometry columns in this table
+    FOR gcs IN 
+        SELECT n.nspname, c.relname, a.attname
+            FROM pg_class c, 
+                 pg_attribute a, 
+                 pg_type t, 
+                 pg_namespace n
+            WHERE c.relkind = 'r'
+            AND t.typname = 'geometry'
+            AND a.attisdropped = false
+            AND a.atttypid = t.oid
+            AND a.attrelid = c.oid
+            AND c.relnamespace = n.oid
+	    AND n.nspname NOT ILIKE 'pg_temp%'
+            AND c.oid = tbl_oid
+        LOOP
+        
+        RAISE DEBUG 'Processing table %.%.%', gcs.nspname, gcs.relname, gcs.attname;
+
+        DELETE FROM geometry_columns 
+          WHERE f_table_schema = quote_ident(gcs.nspname) 
+          AND f_table_name = quote_ident(gcs.relname)
+          AND f_geometry_column = quote_ident(gcs.attname);
+        
+        gc_is_valid := true;
+        
+        -- Try to find srid check from system tables (pg_constraint)
+        gsrid := 
+            (SELECT replace(split_part(s.consrc, ' = ', 2), ')', '') 
+             FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s 
+             WHERE n.nspname = gcs.nspname 
+             AND c.relname = gcs.relname 
+             AND a.attname = gcs.attname 
+             AND a.attrelid = c.oid
+             AND s.connamespace = n.oid
+             AND s.conrelid = c.oid
+             AND a.attnum = ANY (s.conkey)
+             AND s.consrc LIKE '%srid(% = %');
+        IF (gsrid IS NULL) THEN 
+            -- Try to find srid from the geometry itself
+            EXECUTE 'SELECT public.srid(' || quote_ident(gcs.attname) || ') 
+                     FROM ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || ' 
+                     WHERE ' || quote_ident(gcs.attname) || ' IS NOT NULL LIMIT 1' 
+                INTO gc;
+            gsrid := gc.srid;
+            
+            -- Try to apply srid check to column
+            IF (gsrid IS NOT NULL) THEN
+                BEGIN
+                    EXECUTE 'ALTER TABLE ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || ' 
+                             ADD CONSTRAINT ' || quote_ident('enforce_srid_' || gcs.attname) || ' 
+                             CHECK (srid(' || quote_ident(gcs.attname) || ') = ' || gsrid || ')';
+                EXCEPTION
+                    WHEN check_violation THEN
+                        RAISE WARNING 'Not inserting \'%\' in \'%.%\' into geometry_columns: could not apply constraint CHECK (srid(%) = %)', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname), quote_ident(gcs.attname), gsrid;
+                        gc_is_valid := false;
+                END;
+            END IF;
+        END IF;
+        
+        -- Try to find ndims check from system tables (pg_constraint)
+        gndims := 
+            (SELECT replace(split_part(s.consrc, ' = ', 2), ')', '') 
+             FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s 
+             WHERE n.nspname = gcs.nspname 
+             AND c.relname = gcs.relname 
+             AND a.attname = gcs.attname 
+             AND a.attrelid = c.oid
+             AND s.connamespace = n.oid
+             AND s.conrelid = c.oid
+             AND a.attnum = ANY (s.conkey)
+             AND s.consrc LIKE '%ndims(% = %');
+        IF (gndims IS NULL) THEN
+            -- Try to find ndims from the geometry itself
+            EXECUTE 'SELECT public.ndims(' || quote_ident(gcs.attname) || ') 
+                     FROM ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || ' 
+                     WHERE ' || quote_ident(gcs.attname) || ' IS NOT NULL LIMIT 1' 
+                INTO gc;
+            gndims := gc.ndims;
+            
+            -- Try to apply ndims check to column
+            IF (gndims IS NOT NULL) THEN
+                BEGIN
+                    EXECUTE 'ALTER TABLE ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || ' 
+                             ADD CONSTRAINT ' || quote_ident('enforce_dims_' || gcs.attname) || ' 
+                             CHECK (ndims(' || quote_ident(gcs.attname) || ') = '||gndims||')';
+                EXCEPTION
+                    WHEN check_violation THEN
+                        RAISE WARNING 'Not inserting \'%\' in \'%.%\' into geometry_columns: could not apply constraint CHECK (ndims(%) = %)', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname), quote_ident(gcs.attname), gndims;
+                        gc_is_valid := false;
+                END;
+            END IF;
+        END IF;
+        
+        -- Try to find geotype check from system tables (pg_constraint)
+        gtype := 
+            (SELECT replace(split_part(s.consrc, '''', 2), ')', '') 
+             FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s 
+             WHERE n.nspname = gcs.nspname 
+             AND c.relname = gcs.relname 
+             AND a.attname = gcs.attname 
+             AND a.attrelid = c.oid
+             AND s.connamespace = n.oid
+             AND s.conrelid = c.oid
+             AND a.attnum = ANY (s.conkey)
+             AND s.consrc LIKE '%geometrytype(% = %');
+        IF (gtype IS NULL) THEN
+            -- Try to find geotype from the geometry itself
+            EXECUTE 'SELECT public.geometrytype(' || quote_ident(gcs.attname) || ') 
+                     FROM ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || ' 
+                     WHERE ' || quote_ident(gcs.attname) || ' IS NOT NULL LIMIT 1' 
+                INTO gc;
+            gtype := gc.geometrytype;
+            --IF (gtype IS NULL) THEN
+            --    gtype := 'GEOMETRY';
+            --END IF;
+            
+            -- Try to apply geometrytype check to column
+            IF (gtype IS NOT NULL) THEN
+                BEGIN
+                    EXECUTE 'ALTER TABLE ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || ' 
+                    ADD CONSTRAINT ' || quote_ident('enforce_geotype_' || gcs.attname) || ' 
+                    CHECK ((geometrytype(' || quote_ident(gcs.attname) || ') = ' || quote_literal(gtype) || ') OR (' || quote_ident(gcs.attname) || ' IS NULL))';
+                EXCEPTION
+                    WHEN check_violation THEN
+                        -- No geometry check can be applied. This column contains a number of geometry types.
+                        RAISE WARNING 'Could not add geometry type check (%) to table column: %.%.%', gtype, quote_ident(gcs.nspname),quote_ident(gcs.relname),quote_ident(gcs.attname);
+                END;
+            END IF;
+        END IF;
+                
+        IF (gsrid IS NULL) THEN             
+            RAISE WARNING 'Not inserting \'%\' in \'%.%\' into geometry_columns: could not determine the srid', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname);
+        ELSIF (gndims IS NULL) THEN
+            RAISE WARNING 'Not inserting \'%\' in \'%.%\' into geometry_columns: could not determine the number of dimensions', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname);
+        ELSIF (gtype IS NULL) THEN
+            RAISE WARNING 'Not inserting \'%\' in \'%.%\' into geometry_columns: could not determine the geometry type', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname);
+        ELSE
+            -- Only insert into geometry_columns if table constraints could be applied.
+            IF (gc_is_valid) THEN
+                INSERT INTO geometry_columns (f_table_catalog,f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) 
+                VALUES ('', gcs.nspname, gcs.relname, gcs.attname, gndims, gsrid, gtype);
+                inserted := inserted + 1;
+            END IF;
+        END IF;
+    END LOOP;
+
+    -- Add views to geometry columns table
+    FOR gcs IN 
+        SELECT n.nspname, c.relname, a.attname
+            FROM pg_class c, 
+                 pg_attribute a, 
+                 pg_type t, 
+                 pg_namespace n
+            WHERE c.relkind = 'v'
+            AND t.typname = 'geometry'
+            AND a.attisdropped = false
+            AND a.atttypid = t.oid
+            AND a.attrelid = c.oid
+            AND c.relnamespace = n.oid
+	    AND n.nspname NOT ILIKE 'pg_temp%'
+            AND c.oid = tbl_oid
+        LOOP            
+            RAISE DEBUG 'Processing view %.%.%', gcs.nspname, gcs.relname, gcs.attname;
+
+            EXECUTE 'SELECT public.ndims(' || quote_ident(gcs.attname) || ') 
+                     FROM ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || ' 
+                     WHERE ' || quote_ident(gcs.attname) || ' IS NOT NULL LIMIT 1' 
+                INTO gc;
+            gndims := gc.ndims;
+            
+            EXECUTE 'SELECT public.srid(' || quote_ident(gcs.attname) || ') 
+                     FROM ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || ' 
+                     WHERE ' || quote_ident(gcs.attname) || ' IS NOT NULL LIMIT 1' 
+                INTO gc;
+            gsrid := gc.srid;
+            
+            EXECUTE 'SELECT public.geometrytype(' || quote_ident(gcs.attname) || ') 
+                     FROM ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || ' 
+                     WHERE ' || quote_ident(gcs.attname) || ' IS NOT NULL LIMIT 1' 
+                INTO gc;
+            gtype := gc.geometrytype;
+            
+	    IF (gndims IS NULL) THEN
+                RAISE WARNING 'Not inserting \'%\' in \'%.%\' into geometry_columns: could not determine ndims', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname);
+            ELSIF (gsrid IS NULL) THEN
+                RAISE WARNING 'Not inserting \'%\' in \'%.%\' into geometry_columns: could not determine srid', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname);
+            ELSIF (gtype IS NULL) THEN
+                RAISE WARNING 'Not inserting \'%\' in \'%.%\' into geometry_columns: could not determine gtype', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname);
+            ELSE
+                query := 'INSERT INTO geometry_columns (f_table_catalog,f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) ' ||
+                         'VALUES ('''', ' || quote_literal(gcs.nspname) || ',' || quote_literal(gcs.relname) || ',' || quote_literal(gcs.attname) || ',' || gndims || ',' || gsrid || ',' || quote_literal(gtype) || ')';
+                EXECUTE query;
+                inserted := inserted + 1;
+            END IF;
+    END LOOP;
+    
+    RETURN inserted;
+END
+
+$$
+LANGUAGE 'plpgsql' _VOLATILE;
+
+
+-----------------------------------------------------------------------
 -- PROBE_GEOMETRY_COLUMNS() 
 -----------------------------------------------------------------------
 -- Fill the geometry_columns table with values probed from the system
--- catalogues. 3d flag cannot be probed, it defaults to 2
+-- catalogues. This is done by simply looking up constraints previously
+-- added to a geometry column. If geometry constraints are missing, no
+-- attempt is made to add the necessary constraints to the geometry 
+-- column, nor is it recorded in the geometry_columns table.
+-- 3d flag cannot be probed, it defaults to 2
 --
 -- Note that bogus records already in geometry_columns are not
 -- overridden (a check for schema.table.column is performed), so

@@ -792,12 +792,95 @@ Check constraints:
       </refsection>
     </refentry>
 	
+	<refentry id="Populate_Geometry_Columns">
+      <refnamediv>
+        <refname>Populate_Geometry_Columns</refname>
+    
+        <refpurpose>Ensures geometry columns have appropriate spatial constraints
+        and exist in the <varname>geometry_columns</varname> table.</refpurpose>
+      </refnamediv>
+    
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>text <function>Populate_Geometry_Columns</function></funcdef>
+    
+            <paramdef></paramdef>
+          </funcprototype>
+    
+          <funcprototype>
+            <funcdef>int <function>Populate_Geometry_Columns</function></funcdef>
+    
+            <paramdef><type>oid</type> <parameter>table_oid</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+    
+      <refsection>
+        <title>Description</title>
+    
+        <para>Ensures geometry columns have appropriate spatial constraints and
+        exist in the <varname>geometry_columns</varname> table.</para>
+    
+        <para>In particular, this means that every geometry column belonging to a
+        table has at least three constraints:</para>
+    
+        <itemizedlist>
+          <listitem>
+            <para><varname>enforce_dims_the_geom</varname> - ensures every
+            geometry has the same dimension (see <xref
+            linkend="ST_NDims" />)</para>
+          </listitem>
+    
+          <listitem>
+            <para><varname>enforce_geotype_the_geom</varname> - ensures every
+            geometry is of the same type (see <xref
+            linkend="GeometryType" />)</para>
+          </listitem>
+    
+          <listitem>
+            <para><varname>enforce_srid_the_geom</varname> - ensures every
+            geometry is in the same projection (see <xref
+            linkend="ST_SRID" />)</para>
+          </listitem>
+        </itemizedlist>
+    
+        <para>If a table oid is provided, this function tries to determine the
+        srid, dimension, and geometry type of all geometry columns in the table,
+        adding contraints as necessary. If successful, an appropriate row is
+        inserted into the geometry_column table, otherwise, the exception is
+        caught and an error notice is raised describing the problem.</para>
+    
+        <para>If an oid of a view is provided, as with a table oid, this function
+        tries to determine the srid, dimension, and type of all the geometries in
+        the view, inserting appropriate entries into the geometry_columns table,
+        but nothing is done to enforce contraints.</para>
+    
+        <para>The parameterless variant is a simple wrapper for the parameterized
+        variant that first truncates and repopulates the geometry_columns table
+        for every spatial table and view in the database, adding spatial
+        contraints to tables where appropriate.</para>
+      </refsection>
+    
+      <refsection>
+        <title>Examples</title>
+    
+        <programlisting>SELECT Populate_Geometry_Columns('public.myspatial_table'::regclass);</programlisting>
+      </refsection>
+    
+      <refsection>
+        <title>See Also</title>
+    
+        <para><xref linkend="Probe_Geometry_Columns" /></para>
+      </refsection>
+    </refentry>
+    
 	<refentry id="Probe_Geometry_Columns">
       <refnamediv>
         <refname>Probe_Geometry_Columns</refname>
 
         <refpurpose>Scans all tables with PostGIS geometry constraints and adds them to the <varname>geometry_columns</varname>
-			table if they are not there.  Also give stats on number of inserts and already present or possibly obsolete columns.</refpurpose>
+			table if they are not there.</refpurpose>
       </refnamediv>
 
       <refsynopsisdiv>
