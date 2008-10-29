@@ -864,6 +864,7 @@ Check constraints:
         were inserted into the <varname>geometry_columns</varname> table.  The
         parameterized version simply returns the number of rows inserted into 
         the <varname>geometry_columns</varname> table.</para>
+		<para>Availability: 1.4.0</para>
       </refsection>
     
       <refsection>
