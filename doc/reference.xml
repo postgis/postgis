@@ -540,59 +540,6 @@
     </sect2>
 
     <sect2>
-      <title>Linear Referencing</title>
-
-      <variablelist>
-        <varlistentry id="ST_Line_Locate_Point">
-          <term>ST_line_locate_point(LineString geometry, Point geometry)</term>
-
-          <listitem>
-            <para>Returns a float between 0 and 1 representing the location of
-            the closest point on LineString to the given Point, as a fraction
-            of total <link linkend="ST_Length2D">2d line</link> length.</para>
-
-            <para>You can use the returned location to extract a Point (<link
-            linkend="ST_Line_Interpolate_Point">line_interpolate_point</link>) or
-            a substring (<link
-            linkend="ST_Line_Substring">ST_Line_Substring</link>).</para>
-
-            <para>Availability: 1.1.0</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>ST_locate_along_measure(geometry, float8)</term>
-
-          <listitem>
-            <para>Return a derived geometry collection value with elements
-            that match the specified measure. Polygonal elements are not
-            supported.</para>
-
-            <para>Semantic is specified by: ISO/IEC CD 13249-3:200x(E) - Text
-            for Continuation CD Editing Meeting</para>
-
-            <para>Availability: 1.1.0</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>ST_locate_between_measures(geometry, float8, float8)</term>
-
-          <listitem>
-            <para>Return a derived geometry collection value with elements
-            that match the specified range of measures inclusively. Polygonal
-            elements are not supported.</para>
-
-            <para>Semantic is specified by: ISO/IEC CD 13249-3:200x(E) - Text
-            for Continuation CD Editing Meeting</para>
-
-            <para>Availability: 1.1.0</para>
-          </listitem>
-        </varlistentry>
-      </variablelist>
-    </sect2>
-
-    <sect2>
       <title>Misc</title>
 
       <variablelist>
