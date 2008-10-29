@@ -552,7 +552,7 @@
             of total <link linkend="ST_Length2D">2d line</link> length.</para>
 
             <para>You can use the returned location to extract a Point (<link
-            linkend="line_interpolate_point">line_interpolate_point</link>) or
+            linkend="ST_Line_Interpolate_Point">line_interpolate_point</link>) or
             a substring (<link
             linkend="ST_Line_Substring">ST_Line_Substring</link>).</para>
 
