@@ -16,7 +16,7 @@
     deprecated in a future release.</para>
   </note>
 
-  <sect1>
+  <sect1 id="Management_Functions">
     <title>Management Functions</title>
 
     <refentry id="AddGeometryColumn">
@@ -1007,7 +1007,7 @@ probed:6 inserted:0 conflicts:6 stale:0
     </refentry>
   </sect1>
   
-  <sect1>
+  <sect1 id="Geometry_Constructors">
       <title>Geometry Constructors</title>
 		<refentry id="ST_BdPolyFromText">
 		  <refnamediv>
@@ -1731,7 +1731,7 @@ SELECT ST_PointFromText('POINT(-71.064544 42.28787)', 4326);
 	</refentry>
   </sect1>
    
-  <sect1>
+  <sect1 id="Geometry_Accessors">
     <title>Geometry Accessors</title> 
 
 	<refentry id="GeometryType">
@@ -3641,7 +3641,7 @@ SELECT ST_Y(ST_Centroid(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)')));
 
   </sect1>
   
-  <sect1>
+  <sect1 id="Geometry_Editors">
       <title>Geometry Editors</title>
 		<refentry id="ST_AddPoint">
 		  <refnamediv>
