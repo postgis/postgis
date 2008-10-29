@@ -9388,7 +9388,7 @@ SELECT ST_AsEWKT((ST_Dump(the_geom)).geom)
 
 	<refentry id="ST_Locate_Between_Measures">
 	  <refnamediv>
-	    <refname>ST_Location_Between_Measure</refname>
+	    <refname>ST_Locate_Between_Measure</refname>
 	
 	    <refpurpose>Return a derived geometry collection value with elements
             that match the specified range of measures inclusively. Polygonal
