@@ -9097,7 +9097,7 @@ GEOMETRYCOLLECTION(POINT(-2 3 1),LINESTRING(5 5 5,10 10 10),POLYGON((-7 4.2 2,-7
               Z values (when present), while prior releases set them to
               0.0.</para>
             </note>
-			<para>Availability: 0.8.2, support Z and M 1.1.1</para>
+			<para>Availability: 0.8.2, Z and M supported added in 1.1.1</para>
 			
 			<!-- Optionally mention 3d support -->
 		    <para><inlinemediaobject>
@@ -9137,6 +9137,103 @@ SELECT ST_AsEWKT(ST_Line_Interpolate_Point(the_line, 0.5))
 		    <para><xref linkend="ST_Length" />, <xref linkend="ST_Line_Locate_Point" /></para>
 		  </refsection>
 		</refentry>
+
+		<refentry id="ST_Line_Substring">
+		  <refnamediv>
+		    <refname>ST_Line_Substring</refname>
+		
+		    <refpurpose>Return a linestring being a substring of the input one
+            starting and ending at the given fractions of total 2d length.
+            Second and third arguments are float8 values between 0 and
+            1.</refpurpose>
+		  </refnamediv>
+		
+		  <refsynopsisdiv>
+		    <funcsynopsis>
+		      <funcprototype>
+		        <funcdef>geometry <function>ST_Line_Substring</function></funcdef>
+		        <paramdef><type>geometry </type> <parameter>a_linestring</parameter></paramdef>
+		        <paramdef><type>float </type> <parameter>startfraction</parameter></paramdef>
+				<paramdef><type>float </type> <parameter>endfraction</parameter></paramdef>
+		      </funcprototype>
+		    </funcsynopsis>
+		  </refsynopsisdiv>
+		
+		  <refsection>
+		    <title>Description</title>
+		
+		    <para>Return a linestring being a substring of the input one
+            starting and ending at the given fractions of total 2d length.
+            Second and third arguments are float8 values between 0 and
+            1. This only works with LINESTRINGs.  
+			To use with contiguous MULTILINESTRINGs use in conjunction with ST_LineMerge.</para>
+
+            <para>If 'start' and 'end' have the same value this is equivalent
+            to <xref linkend="ST_Line_Interpolate_Point" />.</para>
+
+            <para>See <xref linkend="ST_Line_Locate_Point" /> for
+            computing the line location nearest to a Point.</para>
+
+            <note>
+              <para>Since release 1.1.1 this function also interpolates M and
+              Z values (when present), while prior releases set them to
+              unspecified values.</para>
+            </note>
+
+            <para>Availability: 1.1.0 , Z and M supported added in 1.1.1</para>
+			
+			<!-- Optionally mention 3d support -->
+		    <para><inlinemediaobject>
+		        <imageobject>
+		          <imagedata fileref="images/check.png" />
+		        </imageobject>
+		      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+		  </refsection>
+		  
+		  <refsection>
+		    <title>Examples</title>
+	<programlisting>
+--Return the approximate 1/3 mid-range part of a linestring	
+SELECT ST_AsText(ST_Line_SubString(ST_GeomFromText('LINESTRING(748130 2919491,
+	747979 2919630,747895 2919705)'), 0.333, 0.666));	
+	
+                                           st_astext                                            
+------------------------------------------------------------------------------------------------
+ LINESTRING(748052.127524758 2919562.68393416,747979 2919630,747974.189261348 2919634.29530237)
+
+--The below example simulates a while loop in 
+--SQL using PostgreSQL generate_series() to cut all 
+--linestrings in a table to 100 unit segments
+-- of which no segment is longer than 100 units
+-- units are measured in the SRID units of measurement
+-- It also assumes all geometries are LINESTRING or contiguous MULTILINESTRING 
+--and no geometry is longer than 100 units*10000
+--for better performance you can reduce the 10000
+--to match max number of segments you expect
+
+SELECT field1, field2, ST_Line_Substring(the_geom, 100.00*n/length,
+  CASE
+    WHEN 100.00*(n+1) &lt; length THEN 100.00*(n+1)/length
+    ELSE 1
+  END) As the_geom
+FROM 
+  (SELECT sometable.field1, sometable.field2, 
+  ST_LineMerge(sometable.the_geom) AS the_geom,
+  ST_Length(sometable.the_geom) As length 
+  FROM sometable 
+  ) AS t 
+CROSS JOIN generate_series(0,10000) AS n 
+WHERE n*100.00/length &lt; 1;
+			</programlisting>
+		  </refsection>
+		
+		  <!-- Optionally add a "See Also" section -->
+		  <refsection>
+		    <title>See Also</title>
+		
+		    <para><xref linkend="ST_Length" />, <xref linkend="ST_Line_Interpolate_Point" />, <xref linkend="ST_LineMerge" /></para>
+		  </refsection>
+	</refentry>
   </sect1>
   
   <sect1>
