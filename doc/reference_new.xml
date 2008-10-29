@@ -9382,13 +9382,13 @@ SELECT ST_AsEWKT((ST_Dump(the_geom)).geom)
 	  <refsection>
 	    <title>See Also</title>
 	
-	    <para><xref linkend="ST_Dump" />, <xref linkend="ST_Locate_Between_Measures" /></para>
+	    <para><xref linkend="ST_Dump" />, <xref linkend="ST_Locate_Between_Measure" /></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Location_Between_Measures">
+	<refentry id="ST_Location_Between_Measure">
 	  <refnamediv>
-	    <refname>ST_Location_Between_Measures</refname>
+	    <refname>ST_Location_Between_Measure</refname>
 	
 	    <refpurpose>Return a derived geometry collection value with elements
             that match the specified range of measures inclusively. Polygonal
@@ -9398,7 +9398,7 @@ SELECT ST_AsEWKT((ST_Dump(the_geom)).geom)
 	  <refsynopsisdiv>
 	    <funcsynopsis>
 	      <funcprototype>
-	        <funcdef>geometry <function>ST_Location_Between_Measures</function></funcdef>
+	        <funcdef>geometry <function>ST_Location_Between_Measure</function></funcdef>
 	        <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
 	        <paramdef><type>float </type> <parameter>measure_start</parameter></paramdef>
 			<paramdef><type>float </type> <parameter>measure_end</parameter></paramdef>
