@@ -9382,11 +9382,11 @@ SELECT ST_AsEWKT((ST_Dump(the_geom)).geom)
 	  <refsection>
 	    <title>See Also</title>
 	
-	    <para><xref linkend="ST_Dump" />, <xref linkend="ST_Locate_Between_Measure" /></para>
+	    <para><xref linkend="ST_Dump" />, <xref linkend="ST_Locate_Between_Measures" /></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Location_Between_Measure">
+	<refentry id="ST_Locate_Between_Measures">
 	  <refnamediv>
 	    <refname>ST_Location_Between_Measure</refname>
 	
@@ -9398,7 +9398,7 @@ SELECT ST_AsEWKT((ST_Dump(the_geom)).geom)
 	  <refsynopsisdiv>
 	    <funcsynopsis>
 	      <funcprototype>
-	        <funcdef>geometry <function>ST_Location_Between_Measure</function></funcdef>
+	        <funcdef>geometry <function>ST_Locate_Between_Measures</function></funcdef>
 	        <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
 	        <paramdef><type>float </type> <parameter>measure_start</parameter></paramdef>
 			<paramdef><type>float </type> <parameter>measure_end</parameter></paramdef>
