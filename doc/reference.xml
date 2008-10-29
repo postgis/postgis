@@ -543,29 +543,6 @@
       <title>Linear Referencing</title>
 
       <variablelist>
-        <varlistentry id="line_interpolate_point">
-          <term>ST_line_interpolate_point(linestring geometry, locationfraction float8)</term>
-
-          <listitem>
-            <para>Returns a point interpolated along a line. First argument
-            must be a LINESTRING. Second argument is a float8 between 0 and 1
-            representing fraction of total <link linkend="ST_Length2D">2d
-            length</link> the point has to be located.</para>
-
-            <para>See <link
-            linkend="line_locate_point">line_locate_point()</link> for
-            computing the line location nearest to a Point.</para>
-
-            <note>
-              <para>Since release 1.1.1 this function also interpolates M and
-              Z values (when present), while prior releases set them to
-              0.0.</para>
-            </note>
-
-            <para>Availability: 0.8.2</para>
-          </listitem>
-        </varlistentry>
-
         <varlistentry id="ST_Line_Substring">
           <term>ST_Line_Substring(linestring geometry, startfraction float8, endfraction float8)</term>
 
@@ -624,7 +601,7 @@ WHERE n*100.00/length &lt; 1;
           </listitem>
         </varlistentry>
 
-        <varlistentry id="line_locate_point">
+        <varlistentry id="ST_Line_Locate_Point">
           <term>ST_line_locate_point(LineString geometry, Point geometry)</term>
 
           <listitem>

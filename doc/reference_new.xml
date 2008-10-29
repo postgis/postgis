@@ -9064,7 +9064,79 @@ GEOMETRYCOLLECTION(POINT(-2 3 1),LINESTRING(5 5 5,10 10 10),POLYGON((-7 4.2 2,-7
   
   <sect1>
       <title>Linear Referencing</title>
-      <para> </para> 
+		<refentry id="ST_Line_Interpolate_Point">
+		  <refnamediv>
+		    <refname>ST_Line_Interpolate_Point</refname>
+		
+		    <refpurpose>Returns a point interpolated along a line. Second argument is a float8 between 0 and 1
+            representing fraction of total length of linestring the point has to be located.</refpurpose>
+		  </refnamediv>
+		
+		  <refsynopsisdiv>
+		    <funcsynopsis>
+		      <funcprototype>
+		        <funcdef>geometry <function>ST_Line_Interpolate_Point</function></funcdef>
+		        <paramdef><type>geometry </type> <parameter>a_linestring</parameter></paramdef>
+		        <paramdef><type>float </type> <parameter>a_fraction</parameter></paramdef>
+		      </funcprototype>
+		    </funcsynopsis>
+		  </refsynopsisdiv>
+		
+		  <refsection>
+		    <title>Description</title>
+		
+		    <para>Returns a point interpolated along a line. First argument
+            must be a LINESTRING. Second argument is a float8 between 0 and 1
+            representing fraction of total linestring length the point has to be located.</para>
+
+            <para>See <xref linkend="ST_Line_Locate_Point" /> for
+            computing the line location nearest to a Point.</para>
+
+            <note>
+              <para>Since release 1.1.1 this function also interpolates M and
+              Z values (when present), while prior releases set them to
+              0.0.</para>
+            </note>
+			<para>Availability: 0.8.2, support Z and M 1.1.1</para>
+			
+			<!-- Optionally mention 3d support -->
+		    <para><inlinemediaobject>
+		        <imageobject>
+		          <imagedata fileref="images/check.png" />
+		        </imageobject>
+		      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+		  </refsection>
+		  
+		
+		  <refsection>
+		    <title>Examples</title>
+		
+		    <programlisting>--Return point mid-way of 2d line
+SELECT ST_AsEWKT(ST_Line_Interpolate_Point(the_line, 0.5)) 
+	FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2, 4 5, 6 7)') as the_line) As foo;
+   st_asewkt    
+----------------
+ POINT(3.5 4.5)
+
+
+--Return point mid-way of 3d line
+SELECT ST_AsEWKT(ST_Line_Interpolate_Point(the_line, 0.5)) 
+	FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2 3, 4 5 6, 6 7 8)') as the_line) As foo;
+
+    st_asewkt      
+--------------------
+ POINT(3.5 4.5 5.5)
+
+</programlisting>
+		  </refsection>
+		
+		  <!-- Optionally add a "See Also" section -->
+		  <refsection>
+		    <title>See Also</title>
+		
+		    <para><xref linkend="ST_Length" />, <xref linkend="ST_Line_Locate_Point" /></para>
+		  </refsection>
+		</refentry>
   </sect1>
   
   <sect1>
