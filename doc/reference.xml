@@ -654,14 +654,6 @@
             <para>Returns the requested maxima of a bounding box.</para>
           </listitem>
         </varlistentry>
-
-        <varlistentry id="ST_Accum">
-          <term>ST_Accum(geometry set)</term>
-
-          <listitem>
-            <para>Aggregate. Constructs an array of geometries.</para>
-          </listitem>
-        </varlistentry>
       </variablelist>
     </sect2>
 
