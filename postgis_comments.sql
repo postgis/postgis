@@ -38,7 +38,7 @@ COMMENT ON FUNCTION PostGIS_Scripts_Released() IS 'Returns the version number of
 COMMENT ON FUNCTION PostGIS_Uses_Stats() IS 'Returns TRUE if STATS usage has been enabled.';
 			
 COMMENT ON FUNCTION PostGIS_Version() IS 'Returns PostGIS version number and compile-time options.';
-			
+					
 COMMENT ON FUNCTION Probe_Geometry_Columns() IS 'Scans all tables with PostGIS geometry constraints and adds them to the geometry_columns table if they are not there.';
 			
 COMMENT ON FUNCTION UpdateGeometrySRID(varchar , varchar , integer ) IS 'args: table_name, column_name, srid - Updates the SRID of all features in a geometry column, geometry_columns metadata and srid table constraint';
@@ -338,7 +338,13 @@ COMMENT ON FUNCTION ST_Union(geometry) IS 'args: g1 - Returns a geometry that re
 			
 COMMENT ON FUNCTION ST_Line_Interpolate_Point(geometry , float ) IS 'args: a_linestring, a_fraction - Returns a point interpolated along a line. Second argument is a float8 between 0 and 1 representing fraction of total length of linestring the point has to be located.';
 			
+COMMENT ON FUNCTION ST_Line_Locate_Point(geometry , geometry ) IS 'args: a_linestring, a_point - Returns a float between 0 and 1 representing the location of the closest point on LineString to the given Point, as a fraction of total 2d line length.';
+			
 COMMENT ON FUNCTION ST_Line_Substring(geometry , float , float ) IS 'args: a_linestring, startfraction, endfraction - Return a linestring being a substring of the input one starting and ending at the given fractions of total 2d length. Second and third arguments are float8 values between 0 and 1.';
+			
+COMMENT ON FUNCTION ST_Locate_Along_Measure(geometry , float ) IS 'args: ageom_with_measure, a_measure - Return a derived geometry collection value with elements that match the specified measure. Polygonal elements are not supported.';
+			
+COMMENT ON FUNCTION ST_Locate_Between_Measures(geometry , float , float ) IS 'args: geomA, measure_start, measure_end - Return a derived geometry collection value with elements that match the specified range of measures inclusively. Polygonal elements are not supported.';
 			
 COMMENT ON FUNCTION ST_Expand(geometry , float) IS 'args: g1, units_to_expand - Returns bounding box expanded in all directions from the bounding box of the input geometry';
 			
