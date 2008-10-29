@@ -38,7 +38,7 @@ COMMENT ON FUNCTION PostGIS_Scripts_Released() IS 'Returns the version number of
 COMMENT ON FUNCTION PostGIS_Uses_Stats() IS 'Returns TRUE if STATS usage has been enabled.';
 			
 COMMENT ON FUNCTION PostGIS_Version() IS 'Returns PostGIS version number and compile-time options.';
-	
+			
 COMMENT ON FUNCTION Probe_Geometry_Columns() IS 'Scans all tables with PostGIS geometry constraints and adds them to the geometry_columns table if they are not there.';
 			
 COMMENT ON FUNCTION UpdateGeometrySRID(varchar , varchar , integer ) IS 'args: table_name, column_name, srid - Updates the SRID of all features in a geometry column, geometry_columns metadata and srid table constraint';
@@ -337,6 +337,8 @@ COMMENT ON AGGREGATE ST_Union(geometry) IS 'args: g1field - Returns a geometry t
 COMMENT ON FUNCTION ST_Union(geometry) IS 'args: g1 - Returns a geometry that represents the point set union of the Geometries.';
 			
 COMMENT ON FUNCTION ST_Line_Interpolate_Point(geometry , float ) IS 'args: a_linestring, a_fraction - Returns a point interpolated along a line. Second argument is a float8 between 0 and 1 representing fraction of total length of linestring the point has to be located.';
+			
+COMMENT ON FUNCTION ST_Line_Substring(geometry , float , float ) IS 'args: a_linestring, startfraction, endfraction - Return a linestring being a substring of the input one starting and ending at the given fractions of total 2d length. Second and third arguments are float8 values between 0 and 1.';
 			
 COMMENT ON FUNCTION ST_Expand(geometry , float) IS 'args: g1, units_to_expand - Returns bounding box expanded in all directions from the bounding box of the input geometry';
 			
