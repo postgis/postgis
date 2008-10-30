@@ -6,7 +6,7 @@
  * Copyright 2001-2003 Refractions Research Inc.
  *
  * This is free software; you can redistribute and/or modify it under
- * the terms of hte GNU General Public Licence. See the COPYING file.
+ * the terms of the GNU General Public Licence. See the COPYING file.
  * 
  **********************************************************************
  * Using shapelib 1.2.8, this program reads in shape files and 
@@ -36,6 +36,8 @@
 #ifdef HAVE_ICONV
 #include <iconv.h>
 #endif
+
+#include "../liblwgeom/liblwgeom.h"
 
 
 #define	POINTTYPE	1
@@ -109,12 +111,10 @@ void CreateTable(void);
 void CreateIndex(void);
 void usage(char *me, int exitcode, FILE* out);
 void InsertPoint(void);
-void InsertPointWKT(void);
 void InsertMultiPoint(void);
 void InsertPolygon(void);
-void InsertPolygonWKT(void);
-void InsertLineString(int id);
-void InsertLineStringWKT(int id);
+void InsertLineString(void);
+void OutputGeometry(char *geometry);
 int ParseCmdline(int ARGC, char **ARGV);
 void SetPgType(void);
 char *dump_ring(Ring *ring);
@@ -130,16 +130,16 @@ void OpenShape(void);
 void LowerCase(char *s);
 void Cleanup(void);
 
-
-/* WKB */
-static char getEndianByte(void);
-static void print_wkb_bytes(unsigned char* ptr, unsigned int cnt, size_t size);
-static void print_wkb_byte(unsigned char val);
-static void print_wkb_int(int val);
-static void print_wkb_double(double val);
-
 static char rcsid[] =
   "$Id$";
+
+
+/* liblwgeom allocator callback - install the defaults (malloc/free/stdout/stderr) */
+void lwgeom_init_allocators()
+{
+	lwgeom_install_default_allocators();
+}
+
 
 void *safe_malloc(size_t size)
 {
@@ -673,13 +673,12 @@ LoadData(void)
 		trans++;
 		/* transaction stuff done */
 
-    /*skip the record if it has been deleted*/
-    if(readshape != 1 && DBFReadDeleted(hDBFHandle, j)) {
-      continue; 
-    }
+		/* skip the record if it has been deleted */
+		if(readshape != 1 && DBFReadDeleted(hDBFHandle, j)) {
+			continue; 
+		}
 
-
-		/*open the next object */
+		/* open the next object */
 		if (readshape == 1)
 		{
 			obj = SHPReadObject(hSHPHandle,j);
@@ -727,29 +726,22 @@ LoadData(void)
 				case SHPT_POLYGON:
 				case SHPT_POLYGONM:
 				case SHPT_POLYGONZ:
-					if ( hwgeom ) InsertPolygonWKT();
-					else InsertPolygon();
+					InsertPolygon();
 					break;
 	
 				case SHPT_POINT:
 				case SHPT_POINTM:
 				case SHPT_POINTZ:
-					if ( hwgeom ) InsertPointWKT();
-					else InsertPoint();
-					break;
-	
 				case SHPT_MULTIPOINT:
 				case SHPT_MULTIPOINTM:
 				case SHPT_MULTIPOINTZ:
-					if ( hwgeom ) InsertPointWKT();
-					else InsertMultiPoint();
+					InsertPoint();
 					break;
 	
 				case SHPT_ARC:
 				case SHPT_ARCM:
 				case SHPT_ARCZ:
-					if ( hwgeom ) InsertLineStringWKT(j);
-					else InsertLineString(j);
+					InsertLineString();
 					break;
 	
 				default:
@@ -813,135 +805,111 @@ usage(char *me, int exitcode, FILE* out)
 }
 
 void
-InsertLineString(int id)
+InsertLineString()
 {
-	int pi; /* part index */
-	unsigned int subtype = LINETYPE | (wkbtype&WKBZOFFSET) | 
-		(wkbtype&WKBMOFFSET);
+	LWCOLLECTION *lwcollection;
+	BOX2DFLOAT4 bbox;
 
-	/* Invalid (MULTI)Linestring */
-	if ( obj->nVertices < 2 )
-	{
-		fprintf(stderr,
-			"MULTILINESTRING %d as %d vertices, set to NULL\n",
-			id, obj->nVertices);
-		if (dump_format) printf("\\N\n");
-		else printf("NULL);\n");
+	LWGEOM **lwmultilinestrings;
+	uchar *serialized_lwgeom;
+	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
 
-		return;
-	}
+	DYNPTARRAY **dpas;
+	POINT4D point4d;
 
-	if (!dump_format) printf("'");
-	if ( sr_id > 0 ) printf("SRID=%d;", sr_id);
+	int dims = 0, hasz = 0, hasm = 0;
+	int result;
+	int u, v, start_vertex, end_vertex;
 
-	if (simple_geometries==0) // We write MULTI geometries, so generate Header 
-	{
-		print_wkb_byte(getEndianByte());
-		print_wkb_int(wkbtype);
-		print_wkb_int(obj->nParts); /* npolys */
-	} 
-	else if ((obj->nParts)!=1) // We write Non-MULTI geometries, but have several parts: 
-	{
-		fprintf(stderr, "We have a MultiLineString with %d parts, can't use -S switch!\n", obj->nParts);
-		exit(1);		
-	}
+	/* Determine the correct dimensions: note that in hwgeom-compatible mode we cannot use
+	   the M coordinate */
+	if (wkbtype & WKBZOFFSET) hasz = 1;
+	if (!hwgeom)
+		if (wkbtype & WKBMOFFSET) hasm = 1;
+	TYPE_SETZM(dims, hasz, hasm);
 
-	for (pi=0; pi<obj->nParts; pi++)
-	{
-		int vi; /* vertex index */
-		int vs; /* start vertex */
-		int ve; /* end vertex */
-
-		print_wkb_byte(getEndianByte());
-		print_wkb_int(subtype);
-
-		/* Set start and end vertexes */
-		if ( pi==obj->nParts-1 ) ve = obj->nVertices;
-		else ve = obj->panPartStart[pi+1];
-		vs = obj->panPartStart[pi];
-
-		print_wkb_int(ve-vs);
-		for ( vi=vs; vi<ve; vi++)
-		{
-			print_wkb_double(obj->padfX[vi]);
-			print_wkb_double(obj->padfY[vi]);
-			if ( wkbtype & WKBZOFFSET )
-				print_wkb_double(obj->padfZ[vi]);
-			if ( wkbtype & WKBMOFFSET )
-				print_wkb_double(obj->padfM[vi]);
-		}
-	}
-
-	if (dump_format) printf("\n");
-	else printf("');\n");
-}
-
-void
-InsertLineStringWKT(int id)
-{
-	int pi; /* part index */
-
-	/* Invalid (MULTI)Linestring */
-	if ( obj->nVertices < 2 )
-	{
-		fprintf(stderr,
-			"MULTILINESTRING %d as %d vertices, set to NULL\n",
-			id, obj->nVertices);
-		if (dump_format) printf("\\N\n");
-		else printf("NULL);\n");
-
-		return;
-	}
-
-	if (dump_format) printf("SRID=%d;",sr_id );
-	else printf("GeometryFromText('");
-	
-	if (simple_geometries==0) // We write MULTI geometries, so generate Header 
-	{
-		printf("MULTILINESTRING(");
-	}
-	else if ((obj->nParts)==1)
-	{
-		printf("LINESTRING");
-	}
-	else // We write Non-MULTI geometries, but have several parts: 
+	if (simple_geometries == 1 && obj->nParts > 1)
 	{
 		fprintf(stderr, "We have a Multilinestring with %d parts, can't use -S switch!\n", obj->nParts);
-		exit(1);		
-	} 
-
-	for (pi=0; pi<obj->nParts; pi++)
-	{
-		int vi; /* vertex index */
-		int vs; /* start vertex */
-		int ve; /* end vertex */
-
-		if (pi) printf(",");
-		printf("(");
-
-		/* Set start and end vertexes */
-		if ( pi==obj->nParts-1 ) ve = obj->nVertices;
-		else ve = obj->panPartStart[pi+1];
-		vs = obj->panPartStart[pi];
-
-		for ( vi=vs; vi<ve; vi++)
-		{
-			if ( vi > vs ) printf(",");
-			printf("%.15g %.15g",
-				obj->padfX[vi],
-				obj->padfY[vi]);
-			if ( wkbtype & WKBZOFFSET )
-				printf(" %.15g", obj->padfZ[vi]);
-		}
-
-		printf(")");
-				
+		exit(1);	
 	}
 
-	if (simple_geometries==0) printf(")");
+	/* Allocate memory for our array of LWLINEs and our dynptarrays */
+	lwmultilinestrings = malloc(sizeof(LWPOINT *) * obj->nParts);	
+	dpas = malloc(sizeof(DYNPTARRAY *) * obj->nParts);
 
-	if (dump_format) printf("\n");
-	else printf("',%d) );\n",sr_id);
+	/* We need an array of pointers to each of our sub-geometries */
+	for (u = 0; u < obj->nParts; u++)
+	{
+		/* Create a dynptarray containing the line points */
+		dpas[u] = dynptarray_create(obj->nParts, dims);
+
+		/* Set the start/end vertices depending upon whether this is
+		a MULTILINESTRING or not */
+		if ( u == obj->nParts-1 )
+			end_vertex = obj->nVertices;
+		else 
+			end_vertex = obj->panPartStart[u + 1];
+		
+		start_vertex = obj->panPartStart[u];
+
+		for (v = start_vertex; v < end_vertex; v++)
+		{
+			/* Generate the point */
+			point4d.x = obj->padfX[v];
+			point4d.y = obj->padfY[v];
+	
+			if (wkbtype & WKBZOFFSET)
+				point4d.z = obj->padfZ[v];
+			if (wkbtype & WKBMOFFSET)
+				point4d.m = obj->padfM[v];
+	
+			dynptarray_addPoint4d(dpas[u], &point4d, 0);
+		}
+	
+		/* Generate the LWLINE */
+		lwmultilinestrings[u] = lwline_as_lwgeom(lwline_construct(-1, &bbox, dpas[u]->pa));
+	}
+
+	//lwcollection = lwcollection_construct(MULTILINETYPE, -1, &bbox, obj->nParts, lwmultilinestrings);
+	//serialized_lwgeom = lwgeom_serialize(lwcollection_as_lwgeom(lwcollection));
+
+	/* If using MULTILINESTRINGs then generate the serialized collection, otherwise just a single LINESTRING */
+	if (simple_geometries == 0)
+	{
+		lwcollection = lwcollection_construct(MULTILINETYPE, -1, &bbox, obj->nParts, lwmultilinestrings);
+		serialized_lwgeom = lwgeom_serialize(lwcollection_as_lwgeom(lwcollection));
+	}
+	else
+	{
+		serialized_lwgeom = lwgeom_serialize(lwmultilinestrings[0]);
+	}
+
+	if (!hwgeom)
+		result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_ALL, -1);
+	else
+		result = serialized_lwgeom_to_ewkt(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_ALL);
+	
+	if (result)
+	{
+		fprintf(stderr, "ERROR: %s\n", lwg_unparser_result.message);
+		exit(1);	
+	}
+
+	OutputGeometry(lwg_unparser_result.wkoutput);
+
+	/* Free all of the allocated items */
+        lwfree(lwg_unparser_result.wkoutput);
+        lwfree(serialized_lwgeom);
+
+	for (u = 0; u < obj->nParts; u++)
+	{
+        	pfree_line(lwgeom_as_lwline(lwmultilinestrings[u]));
+        	lwfree(dpas[u]);
+	}
+
+	lwfree(dpas);
+	lwfree(lwmultilinestrings);
 }
 
 int
@@ -1106,208 +1074,279 @@ ReleasePolygons(Ring **polys, int npolys)
 void
 InsertPolygon(void)
 {
-	unsigned int subtype = POLYGONTYPE | (wkbtype&WKBZOFFSET) | 
-		(wkbtype&WKBMOFFSET);
 	Ring **Outer;
-	int out_index;
-	int pi; /* part index */
+	int polygon_total, ring_total;
+	int pi, vi; // part index and vertex index
+	int u;	
 
-	out_index = FindPolygons(obj, &Outer);
+	LWCOLLECTION *lwcollection = NULL;
+	BOX2DFLOAT4 bbox;
 
-	if (!dump_format) printf("'");
-	if ( sr_id > 0 ) printf("SRID=%d;", sr_id);
+	LWGEOM **lwpolygons;
+	uchar *serialized_lwgeom;
+	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
 
-	if (simple_geometries==0) // We write MULTI geometries, so generate Header 
+	LWPOLY *lwpoly;
+	DYNPTARRAY *dpas;
+	POINTARRAY ***pas;
+	POINT4D point4d;
+
+	int dims = 0, hasz = 0, hasm = 0;
+	int result;
+
+	/* Determine the correct dimensions: note that in hwgeom-compatible mode we cannot use
+	   the M coordinate */
+	if (wkbtype & WKBZOFFSET) hasz = 1;
+	if (!hwgeom)
+		if (wkbtype & WKBMOFFSET) hasm = 1;
+	TYPE_SETZM(dims, hasz, hasm);
+
+	polygon_total = FindPolygons(obj, &Outer);
+
+	if (simple_geometries == 1 && polygon_total != 1) /* We write Non-MULTI geometries, but have several parts: */
 	{
-		print_wkb_byte(getEndianByte());
-		print_wkb_int(wkbtype);
-		print_wkb_int(out_index); /* npolys */
-	} 
-	else if (out_index!=1) // We write Non-MULTI geometries, but have several parts: 
-	{
-		fprintf(stderr, "We have a Multipolygon with %d parts, can't use -S switch!\n", out_index);
+		fprintf(stderr, "We have a Multipolygon with %d parts, can't use -S switch!\n", polygon_total);
 		exit(1);		
 	}
 
-	/* Write the coordinates */
-	for(pi=0; pi<out_index; pi++)
+	/* Allocate memory for our array of LWPOLYs */
+	lwpolygons = malloc(sizeof(LWPOLY *) * polygon_total);
+
+	/* Allocate memory for our POINTARRAY pointers for each polygon */
+	pas = malloc(sizeof(POINTARRAY **) * polygon_total);
+
+	/* Cycle through each individual polygon */
+	for(pi = 0; pi < polygon_total; pi++)
 	{
-		Ring *poly;
+		Ring *polyring;
+		int ring_index = 0;
 
-		poly = Outer[pi];
-
-		print_wkb_byte(getEndianByte());
-		print_wkb_int(subtype);
-		print_wkb_int(poly->linked+1); /* nrings */
-
-		while(poly)
+		/* Firstly count through the total number of rings in this polygon */
+		ring_total = 0;
+		polyring = Outer[pi];
+		while (polyring)
 		{
-			int vi; /* vertex index */
-
-			print_wkb_int(poly->n); /* npoints */
-
-			for(vi=0; vi<poly->n; vi++)
-			{
-				print_wkb_double(poly->list[vi].x);
-				print_wkb_double(poly->list[vi].y);
-				if ( wkbtype & WKBZOFFSET )
-					print_wkb_double(poly->list[vi].z);
-				if ( wkbtype & WKBMOFFSET )
-					print_wkb_double(poly->list[vi].m);
-			}
-
-			poly = poly->next;
+			ring_total++;
+			polyring = polyring->next;
 		}
 
+		/* Reserve memory for the POINTARRAYs representing each ring */
+		pas[pi] = malloc(sizeof(POINTARRAY *) * ring_total);
+
+		/* Cycle through each ring within the polygon, starting with the outer */
+		polyring = Outer[pi];
+
+		while (polyring)
+		{
+			/* Create a DYNPTARRAY containing the points making up the ring */
+			dpas = dynptarray_create(polyring->n, dims);
+
+			for(vi = 0; vi < polyring->n; vi++)
+			{
+				/* Build up a point array of all the points in this ring */
+				point4d.x = polyring->list[vi].x;
+				point4d.y = polyring->list[vi].y;
+		
+				if (wkbtype & WKBZOFFSET)
+					point4d.z = polyring->list[vi].z;
+				if (wkbtype & WKBMOFFSET)
+					point4d.m = polyring->list[vi].m;
+
+				dynptarray_addPoint4d(dpas, &point4d, 0);
+			}
+
+			/* Copy the POINTARRAY pointer from the DYNPTARRAY structure so we can
+			 use the LWPOLY constructor */
+			pas[pi][ring_index] = dpas->pa;
+
+			/* Free the DYNPTARRAY structure (we don't need this part anymore as we
+			have the reference to the internal POINTARRAY) */
+			lwfree(dpas);
+
+			polyring = polyring->next;
+			ring_index++;
+		}
+
+		/* Generate the LWGEOM */
+		lwpoly = lwpoly_construct(-1, &bbox, ring_total, pas[pi]);	
+		lwpolygons[pi] = lwpoly_as_lwgeom(lwpoly);
 	}
 
-	if (dump_format) printf("\n");
-	else printf("');\n");
-
-	/* Release all memory */
-	ReleasePolygons(Outer, out_index);
-	free(Outer);
-}
-
-void
-InsertPolygonWKT(void)
-{
-	Ring **Outer;    /* Pointers to Outer rings */
-	int out_index=0; /* Count of Outer rings */
-	int pi; /* part index */
-
-#ifdef DEBUG
-	static int call = -1;
-	call++;
-
-	fprintf(stderr, "InsertPolygon[%d]: allocated space for %d rings\n",
-		call, obj->nParts);
-#endif
-
-	out_index = FindPolygons(obj, &Outer);
-
-	if (dump_format) printf("SRID=%d;",sr_id );
-	else printf("GeometryFromText('");
-	
-	if (simple_geometries==0) // We write MULTI geometries, so generate Header 
+	/* If using MULTIPOLYGONS then generate the serialized collection, otherwise just a single POLYGON */
+	if (simple_geometries == 0)
 	{
-		printf("MULTIPOLYGON(");
-	} 
-	else if (out_index==1) 
-	{
-		printf("POLYGON");
+		lwcollection = lwcollection_construct(MULTIPOLYGONTYPE, -1, &bbox, polygon_total, lwpolygons);
+		serialized_lwgeom = lwgeom_serialize(lwcollection_as_lwgeom(lwcollection));
 	}
 	else
-	{ // We write Non-MULTI geometries, but have several parts: 
-		fprintf(stderr, "We have a Multipolygon with %d parts, can't use -S switch!\n", out_index);
-		exit(1);		
-	}
-
-	/* Write the coordinates */
-	for(pi=0; pi<out_index; pi++)
 	{
-		Ring *poly;
-
-		poly = Outer[pi];
-
-		if ( pi ) printf(",");
-		printf("(");
-
-		while(poly)
-		{
-			int vi; /* vertex index */
-
-			printf("(");
-			for(vi=0; vi<poly->n; vi++)
-			{
-				if ( vi ) printf(",");
-				printf("%.15g %.15g",
-					poly->list[vi].x,
-					poly->list[vi].y);
-				if ( wkbtype & WKBZOFFSET )
-					printf(" %.15g", poly->list[vi].z);
-			}
-			printf(")");
-
-			poly = poly->next;
-			if ( poly ) printf(",");
-		}
-
-		printf(")");
-
+		serialized_lwgeom = lwgeom_serialize(lwpolygons[0]);
 	}
 
-	if (simple_geometries==0) printf(")");
+	if (!hwgeom)
+		result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_ALL, -1);
+	else
+		result = serialized_lwgeom_to_ewkt(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_ALL);
 	
-	if (dump_format) printf("\n");
-	else printf("',%d) );\n",sr_id);
+	if (result)
+	{
+		fprintf(stderr, "ERROR: %s\n", lwg_unparser_result.message);
+		exit(1);	
+	}
 
-	/* Release all memory */
-	ReleasePolygons(Outer, out_index);
-	free(Outer);
+	OutputGeometry(lwg_unparser_result.wkoutput);
+
+	/* Free all of the allocated items */
+        lwfree(lwg_unparser_result.wkoutput);
+        lwfree(serialized_lwgeom);
+
+	/* Cycle through each polygon, freeing everything we need... */
+	for (u = 0; u < polygon_total; u++)
+		pfree_polygon(lwgeom_as_lwpoly(lwpolygons[u]));
+
+	/* Free the pointer arrays */
+	lwfree(pas);
+	lwfree(lwpolygons);
+	if (simple_geometries == 0)
+		lwfree(lwcollection);
 }
 
+/*
+ * Insert either a POINT or MULTIPOINT into the output stream
+ */
 void
 InsertPoint(void)
 {
-	if (!dump_format) printf("'");
-	if ( sr_id > 0 ) printf("SRID=%d;", sr_id);
+	LWCOLLECTION *lwcollection;
+	BOX2DFLOAT4 bbox;
 
-	print_wkb_byte(getEndianByte());
-	print_wkb_int(wkbtype);
-	print_wkb_double(obj->padfX[0]);
-	print_wkb_double(obj->padfY[0]);
-	if ( wkbtype & WKBZOFFSET ) print_wkb_double(obj->padfZ[0]);
-	if ( wkbtype & WKBMOFFSET ) print_wkb_double(obj->padfM[0]);
+	LWGEOM **lwmultipoints;
+	uchar *serialized_lwgeom;
+	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
 
-	if (dump_format) printf("\n");
-	else printf("');\n");
-}
+	DYNPTARRAY **dpas;
+	POINT4D point4d;
 
-void
-InsertPointWKT(void)
-{
-	unsigned int u;
-	if (dump_format) printf("SRID=%d;%s(", sr_id, pgtype);
-	else printf("GeometryFromText('%s(", pgtype);
+	int dims = 0, hasz = 0, hasm = 0;
+	int result;
+	int u;
 
-	for (u=0;u<obj->nVertices; u++){
-		if (u>0) printf(",");
-		printf("%.15g %.15g",obj->padfX[u],obj->padfY[u]);
-		if ( wkbtype & WKBZOFFSET ) printf(" %.15g", obj->padfZ[u]);
-	}
-	if (dump_format) printf(")\n");
-	else printf(")',%d) );\n",sr_id);
+	/* Determine the correct dimensions: note that in hwgeom-compatible mode we cannot use
+	   the M coordinate */
+	if (wkbtype & WKBZOFFSET) hasz = 1;
+	if (!hwgeom)
+		if (wkbtype & WKBMOFFSET) hasm = 1;
+	TYPE_SETZM(dims, hasz, hasm);
 
-}
+	/* Allocate memory for our array of LWPOINTs and our dynptarrays */
+	lwmultipoints = malloc(sizeof(LWPOINT *) * obj->nVertices);	
+	dpas = malloc(sizeof(DYNPTARRAY *) * obj->nVertices);
 
-void
-InsertMultiPoint(void)
-{
-	unsigned int u;
-	unsigned int subtype = POINTTYPE | (wkbtype&WKBZOFFSET) | 
-		(wkbtype&WKBMOFFSET);
-
-	if (!dump_format) printf("'");
-	if ( sr_id > 0 ) printf("SRID=%d;", sr_id);
-
-	print_wkb_byte(getEndianByte());
-	print_wkb_int(wkbtype);
-	print_wkb_int(obj->nVertices);
-	
-	for (u=0;u<obj->nVertices; u++)
+	/* We need an array of pointers to each of our sub-geometries */
+	for (u = 0; u < obj->nVertices; u++)
 	{
-		print_wkb_byte(getEndianByte());
-		print_wkb_int(subtype);
-		print_wkb_double(obj->padfX[u]);
-		print_wkb_double(obj->padfY[u]);
-		if ( wkbtype & WKBZOFFSET ) print_wkb_double(obj->padfZ[u]);
-		if ( wkbtype & WKBMOFFSET ) print_wkb_double(obj->padfM[u]);
+		/* Generate the point */
+		point4d.x = obj->padfX[u];
+		point4d.y = obj->padfY[u];
+
+		if (wkbtype & WKBZOFFSET)
+			point4d.z = obj->padfZ[u];
+		if (wkbtype & WKBMOFFSET)
+			point4d.m = obj->padfM[u];
+
+		/* Create a dynptarray containing a single point */
+		dpas[u] = dynptarray_create(1, dims);
+		dynptarray_addPoint4d(dpas[u], &point4d, 0);
+
+		/* Generate the LWPOINT */
+		lwmultipoints[u] = lwpoint_as_lwgeom(lwpoint_construct(-1, NULL, dpas[u]->pa));
 	}
 
-	if (dump_format) printf("\n");
-	else printf("');\n");
+	/* If we have more than 1 vertex then we are working on a MULTIPOINT and so generate a MULTIPOINT
+	rather than a POINT */
+	if (obj->nVertices > 1)
+	{
+		lwcollection = lwcollection_construct(MULTIPOINTTYPE, -1, &bbox, obj->nVertices, lwmultipoints);
+		serialized_lwgeom = lwgeom_serialize(lwcollection_as_lwgeom(lwcollection));
+	}
+	else
+	{
+		serialized_lwgeom = lwgeom_serialize(lwmultipoints[0]);
+	}
+
+	if (!hwgeom)
+		result = serialized_lwgeom_to_hexwkb(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_ALL, -1);
+	else
+		result = serialized_lwgeom_to_ewkt(&lwg_unparser_result, serialized_lwgeom, PARSER_CHECK_ALL);
+	
+	if (result)
+	{
+		fprintf(stderr, "ERROR: %s\n", lwg_unparser_result.message);
+		exit(1);	
+	}
+
+	OutputGeometry(lwg_unparser_result.wkoutput);
+
+	/* Free all of the allocated items */
+        lwfree(lwg_unparser_result.wkoutput);
+        lwfree(serialized_lwgeom);
+
+	for (u = 0; u < obj->nVertices; u++)
+	{
+        	pfree_point(lwgeom_as_lwpoint(lwmultipoints[u]));
+        	lwfree(dpas[u]);
+	}
+
+	lwfree(dpas);
+	lwfree(lwmultipoints);
 }
+
+void
+OutputGeometry(char *geometry)
+{
+	/* This function outputs the specified geometry string (WKB or WKT) formatted
+	 * according to whether we have specified dump format or hwgeom format */
+
+	if (hwgeom) 
+	{
+		if (!dump_format)
+			printf("ST_GeomFromText('"); 
+		else
+		{
+			/* Output SRID if relevant */
+			if (sr_id != 0)
+				printf("SRID=%d;", sr_id);
+		}
+
+		printf("%s", geometry);
+
+		if (!dump_format)
+		{
+			printf("'");
+
+			/* Output SRID if relevant */
+			if (sr_id != 0)
+				printf(", %d)", sr_id);
+
+			printf(");\n");
+		}
+		else
+			printf("\n");
+	}	
+	else
+	{
+		if (!dump_format)
+			printf("'");
+
+		printf("%s", geometry);
+
+		if (!dump_format)
+			printf("');\n");
+		else
+			printf("\n");
+	}
+}
+
 
 int
 ParseCmdline(int ARGC, char **ARGV)
@@ -1574,65 +1613,6 @@ dump_ring(Ring *ring)
 			ring->list[i].y);
 	}
 	return buf;
-}
-
-/*--------------- WKB handling  */
-
-static char outchr[]={"0123456789ABCDEF"};
-
-static int endian_check_int = 1; /* dont modify this!!! */
-
-static char
-getEndianByte(void)
-{
-	/* 0 = big endian, 1 = little endian */
-	if ( *((char *) &endian_check_int) ) return 1;
-	else return 0;
-}
-
-static void
-print_wkb_double(double val)
-{
-	print_wkb_bytes((unsigned char *)&val, 1, 8);
-}
-
-static void
-print_wkb_byte(unsigned char val)
-{
-	print_wkb_bytes((unsigned char *)&val, 1, 1);
-}
-
-static void
-print_wkb_int(int val)
-{
-	print_wkb_bytes((unsigned char *)&val, 1, 4);
-}
-
-static void
-print_wkb_bytes(unsigned char *ptr, unsigned int cnt, size_t size)
-{
-	unsigned int bc; /* byte count */
-	static char buf[256];
-	char *bufp;
-
-	if ( size*cnt*2 > 256 )
-	{
-		fprintf(stderr,
-			"You found a bug! wkb_bytes does not allocate enough bytes");
-		exit(4);
-	}
-
-	bufp = buf;
-	while(cnt--){
-		for(bc=0; bc<size; bc++)
-		{
-			*bufp++ = outchr[ptr[bc]>>4];
-			*bufp++ = outchr[ptr[bc]&0x0F];
-		}
-	}
-	*bufp = '\0';
-	/*fprintf(stderr, "\nwkbbytes:%s\n", buf); */
-	printf("%s", buf);
 }
 
 void
