@@ -136,15 +136,7 @@ geometry_to_geojson(uchar *geom, char *srs, bool has_bbox, int precision)
 	type = lwgeom_getType(geom[0]);
 
 	if (has_bbox) {
-		if (lwgeom_hasBBOX(geom[0]) && !TYPE_HASZ(geom[0])) {
-			/* Use 2D Bbox cache if any */
-			BOX2DFLOAT4 * box2d;
-			box2d = lwalloc(sizeof(BOX2DFLOAT4));
-			memcpy(box2d, geom + 1, sizeof(BOX2DFLOAT4));
-			bbox = lwalloc(sizeof(BOX3D));
-			box2df_to_box3d_p(box2d, bbox);
-			lwfree(box2d);
-		} else bbox = compute_serialized_box3d(geom);
+		bbox = compute_serialized_box3d(geom);
 	}
 
 	switch (type)

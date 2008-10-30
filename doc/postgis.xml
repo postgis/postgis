@@ -4516,7 +4516,7 @@ dimension
               </para>
               <para>
                 The third argument may be used to reduce the maximum number of
-                significant digits used in output (defaults to 15).
+                decimal places used in output (defaults to 15).
               </para>
               <para>
                 The last 'options' argument could be used to add Bbox
