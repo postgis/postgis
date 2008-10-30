@@ -448,22 +448,6 @@
             <para>Creates a LineString from a MultiPoint geometry.</para>
           </listitem>
         </varlistentry>
-
-        <varlistentry>
-          <term>ST_DumpRings(geometry)</term>
-
-          <listitem>
-            <para>This is a set-returning function (SRF). It returns a set of
-            geometry_dump rows, formed by a geometry (geom) and an array of
-            integers (path). The 'path' field holds the polygon ring index,
-            contains a single element: 0 for the shell, hole number for holes.
-            The 'geom' field contains the corresponding ring as a
-            polygon.</para>
-
-            <para>Availability: PostGIS 1.1.3. Requires PostgreSQL 7.3 or
-            higher.</para>
-          </listitem>
-        </varlistentry>
       </variablelist>
     </sect2>
 
