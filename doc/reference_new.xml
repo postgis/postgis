@@ -5154,7 +5154,7 @@ SRID=4326;POLYGON((0 0,0 1,1 1,1 0,0 0))
             <para>The version parameter, if specified, must be 1.</para>
 
             <para>The third argument may be used to reduce the maximum number
-            of significant digits used in output (defaults to 15).</para>
+            of decimal places used in output (defaults to 15).</para>
 
             <para>The last 'options' argument could be used to add Bbox or Crs
             in GeoJSON output:
