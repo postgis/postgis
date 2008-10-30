@@ -346,6 +346,8 @@ COMMENT ON FUNCTION ST_Locate_Along_Measure(geometry , float ) IS 'args: ageom_w
 			
 COMMENT ON FUNCTION ST_Locate_Between_Measures(geometry , float , float ) IS 'args: geomA, measure_start, measure_end - Return a derived geometry collection value with elements that match the specified range of measures inclusively. Polygonal elements are not supported.';
 			
+COMMENT ON AGGREGATE ST_Accum(geometry) IS 'args: geomfield - Aggregate. Constructs an array of geometries.';
+			
 COMMENT ON FUNCTION ST_Expand(geometry , float) IS 'args: g1, units_to_expand - Returns bounding box expanded in all directions from the bounding box of the input geometry';
 			
 COMMENT ON FUNCTION ST_Expand(box2d , float) IS 'args: g1, units_to_expand - Returns bounding box expanded in all directions from the bounding box of the input geometry';
