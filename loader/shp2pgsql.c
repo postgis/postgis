@@ -51,8 +51,6 @@
 #define WKBZOFFSET 0x80000000
 #define WKBMOFFSET 0x40000000
 
-/*#define DEBUG 1 */
-
 typedef struct {double x, y, z, m;} Point;
 
 typedef struct Ring {
@@ -871,9 +869,6 @@ InsertLineString()
 		lwmultilinestrings[u] = lwline_as_lwgeom(lwline_construct(-1, &bbox, dpas[u]->pa));
 	}
 
-	//lwcollection = lwcollection_construct(MULTILINETYPE, -1, &bbox, obj->nParts, lwmultilinestrings);
-	//serialized_lwgeom = lwgeom_serialize(lwcollection_as_lwgeom(lwcollection));
-
 	/* If using MULTILINESTRINGs then generate the serialized collection, otherwise just a single LINESTRING */
 	if (simple_geometries == 0)
 	{
@@ -921,13 +916,12 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 	int in_index=0;  /* Count of Inner rings */
 	int pi; /* part index */
 
-#ifdef DEBUG
+#if POSTGIS_DEBUG_LEVEL > 0
 	static int call = -1;
 	call++;
-
-	fprintf(stderr, "FindPolygons[%d]: allocated space for %d rings\n",
-		call, obj->nParts);
 #endif
+
+	LWDEBUGF(4, "FindPolygons[%d]: allocated space for %d rings\n", call, obj->nParts);
 
 	/* Allocate initial memory */
 	Outer = (Ring**)malloc(sizeof(Ring*)*obj->nParts);
@@ -992,10 +986,7 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 		}
 	}
 
-#ifdef DEBUG
-	fprintf(stderr, "FindPolygons[%d]: found %d Outer, %d Inners\n",
-		call, out_index, in_index);
-#endif
+	LWDEBUGF(4, "FindPolygons[%d]: found %d Outer, %d Inners\n", call, out_index, in_index);
 
 	/* Put the inner rings into the list of the outer rings */
 	/* of which they are within */
@@ -1034,11 +1025,8 @@ FindPolygons(SHPObject *obj, Ring ***Out)
 		{
 			/* The ring wasn't within any outer rings, */
 			/* assume it is a new outer ring. */
-#ifdef DEBUG
-			fprintf(stderr,
-				"FindPolygons[%d]: hole %d is orphan\n",
-				call, pi);
-#endif
+			LWDEBUGF(4, "FindPolygons[%d]: hole %d is orphan\n", call, pi);
+
 			Outer[out_index] = inner;
 			out_index++;
 		}
@@ -1394,7 +1382,7 @@ ParseCmdline(int ARGC, char **ARGV)
 				simple_geometries =1;
 				break;
 			case 's':
-                    (void)sscanf(optarg, "%d", &sr_id);
+				(void)sscanf(optarg, "%d", &sr_id);
 				break;
 			case 'g':
 				geom = optarg;
@@ -1416,9 +1404,9 @@ ParseCmdline(int ARGC, char **ARGV)
 				break;
 			case 'W':
 #ifdef HAVE_ICONV
-					encoding = optarg;
+				encoding = optarg;
 #else
-					fprintf(stderr, "WARNING: the -W switch will have no effect. UTF8 disabled at compile time\n");
+				fprintf(stderr, "WARNING: the -W switch will have no effect. UTF8 disabled at compile time\n");
 #endif
 				break;
 			case 'N':
