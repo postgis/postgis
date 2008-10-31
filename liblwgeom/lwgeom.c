@@ -582,6 +582,21 @@ serialized_lwgeom_to_ewkt(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar *se
  * Return an alloced string
  */
 int
+serialized_lwgeom_from_hexwkb(LWGEOM_PARSER_RESULT *lwg_parser_result, char *hexwkb_input, int flags)
+{
+	/* NOTE: it is actually the same combined WKT/WKB parser that decodes HEXEWKB into LWGEOMs! */
+	int result = parse_lwg(lwg_parser_result, hexwkb_input, flags,
+		lwalloc, lwerror);
+
+	LWDEBUGF(2, "serialized_lwgeom_from_hexwkb with %s", hexwkb_input);
+
+	return result;
+}
+
+/*
+ * Return an alloced string
+ */
+int
 serialized_lwgeom_to_hexwkb(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar *serialized, int flags, unsigned int byteorder)
 {
 	int result;
@@ -603,7 +618,6 @@ serialized_lwgeom_to_ewkb(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar *se
 
 	return result;
 }
-
 
 /*
  * geom1 same as geom2
