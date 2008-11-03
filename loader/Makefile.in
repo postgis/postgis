@@ -29,6 +29,9 @@ PGSQL_FE_LDFLAGS=@PGSQL_FE_LDFLAGS@
 # PostgreSQL executable directory
 PGSQL_BINDIR=@PGSQL_BINDIR@
 
+# iconv flags
+ICONV_LDFLAGS=@ICONV_LDFLAGS@
+
 
 all: $(SHP2PGSQL) $(PGSQL2SHP) 
 
