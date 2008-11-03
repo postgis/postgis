@@ -1037,7 +1037,7 @@ Datum LWGEOM_line_locate_point(PG_FUNCTION_ARGS)
 /*******************************************************************************
  * The following is based on the "Fast Winding Number Inclusion of a Point
  * in a Polygon" algorithm by Dan Sunday.
- * http://www.geometryalgorithms.com/Archive/algorithm_0103/algorithm_0103.htm
+ * http://softsurfer.com/Archive/algorithm_0103/algorithm_0103.htm#Winding%20Number
  ******************************************************************************/
 
 /*
