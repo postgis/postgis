@@ -36,7 +36,7 @@ pgsql2shp.o: pgsql2shp.c
 	$(CC) $(CFLAGS) $(PGSQL_FE_CPPFLAGS) -c $<
 
 $(PGSQL2SHP): $(OBJS) pgsql2shp.o
-	$(CC) $(CFLAGS) $(OBJS) pgsql2shp.o $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) -o $@ 
+	$(CC) $(CFLAGS) $(OBJS) pgsql2shp.o $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) ../liblwgeom/liblwgeom.a -lm -o $@ 
 
 $(SHP2PGSQL): $(OBJS) shp2pgsql.o
 	$(CC) $(CFLAGS) $(OBJS) shp2pgsql.o $(ICONV_LDFLAGS) ../liblwgeom/liblwgeom.a -lm -o $@ 
