@@ -1298,7 +1298,7 @@ OutputGeometry(char *geometry)
 	if (hwgeom) 
 	{
 		if (!dump_format)
-			printf("ST_GeomFromText('"); 
+			printf("GeomFromText('"); 
 		else
 		{
 			/* Output SRID if relevant */
