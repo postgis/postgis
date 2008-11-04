@@ -38,7 +38,7 @@ COMMENT ON FUNCTION PostGIS_Scripts_Released() IS 'Returns the version number of
 COMMENT ON FUNCTION PostGIS_Uses_Stats() IS 'Returns TRUE if STATS usage has been enabled.';
 			
 COMMENT ON FUNCTION PostGIS_Version() IS 'Returns PostGIS version number and compile-time options.';
-	
+		
 COMMENT ON FUNCTION Probe_Geometry_Columns() IS 'Scans all tables with PostGIS geometry constraints and adds them to the geometry_columns table if they are not there.';
 			
 COMMENT ON FUNCTION UpdateGeometrySRID(varchar , varchar , integer ) IS 'args: table_name, column_name, srid - Updates the SRID of all features in a geometry column, geometry_columns metadata and srid table constraint';
@@ -266,6 +266,8 @@ COMMENT ON FUNCTION ST_DWithin(geometry , geometry , double precision ) IS 'args
 			
 COMMENT ON FUNCTION ST_Equals(geometry , geometry ) IS 'args: A, B - Returns true if the given geometries represent the same geometry. Directionality is ignored.';
 			
+COMMENT ON FUNCTION ST_HasArc(geometry ) IS 'args: geomA - Returns true if a geometry or geometry collection contains a circular string';
+			
 COMMENT ON FUNCTION ST_Intersects(geometry, geometry) IS 'args: A, B - Returns TRUE if the Geometries "spatially intersect" - (share any portion of space) and FALSE if they dont (they are Disjoint).';
 			
 COMMENT ON FUNCTION ST_Length(geometry ) IS 'args: a_2dlinestring - Returns the 2d length of the geometry if it is a linestring or multilinestring.';
@@ -314,7 +316,9 @@ COMMENT ON FUNCTION ST_Collect(geometry, geometry) IS 'args: g1, g2 - Return a s
 			
 COMMENT ON FUNCTION ST_ConvexHull(geometry ) IS 'args: geomA - The convex hull of a geometry represents the minimum closed geometry that encloses all geometries within the set.';
 			
-COMMENT ON FUNCTION ST_CurveToLine(geometry ) IS 'args: geomCircularString - Converts a CIRCULARSTRING to a LINESTRING';
+COMMENT ON FUNCTION ST_CurveToLine(geometry ) IS 'args: curveGeom - Converts a CIRCULARSTRING/CURVEDPOLYGON to a LINESTRING/POLYGON';
+			
+COMMENT ON FUNCTION ST_CurveToLine(int ) IS 'args: segments_per_qtr_circle - Converts a CIRCULARSTRING/CURVEDPOLYGON to a LINESTRING/POLYGON';
 			
 COMMENT ON FUNCTION ST_Difference(geometry , geometry ) IS 'args: geomA, geomB - Returns a geometry that represents that part of geometry A that does not intersect with geometry B.';
 			
