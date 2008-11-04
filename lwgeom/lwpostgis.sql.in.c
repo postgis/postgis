@@ -4430,7 +4430,7 @@ CREATEFUNCTION AsKML(geometry, int4)
 -- Availability: 1.2.2
 CREATEFUNCTION ST_AsKML(geometry, int4)
 	RETURNS TEXT
-	AS 'SELECT _ST_AsKML(2, transform($1,4326), $2)' 
+	AS 'SELECT _ST_AsKML(2, ST_Transform($1,4326), $2)' 
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- AsKML(geom) / precision=15 version=2
@@ -4450,21 +4450,21 @@ CREATEFUNCTION AsKML(int4, geometry, int4)
 -- Availabiltiy: 1.2.2
 CREATEFUNCTION ST_AsKML(geometry)
 	RETURNS TEXT
-	AS 'SELECT _ST_AsKML(2, transform($1,4326), 15)'
+	AS 'SELECT _ST_AsKML(2, ST_Transform($1,4326), 15)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- ST_AsKML(version, geom) / precision=15 version=2
 -- Availabiltiy: 1.3.2
 CREATEFUNCTION ST_AsKML(int4, geometry)
 	RETURNS TEXT
-	AS 'SELECT _ST_AsKML($1, transform($2,4326), 15)'
+	AS 'SELECT _ST_AsKML($1, ST_Transform($2,4326), 15)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- ST_AsKML(version, geom, precision)
 -- Availabiltiy: 1.3.2
 CREATEFUNCTION ST_AsKML(int4, geometry, int4) 
 	RETURNS TEXT
-	AS 'SELECT _ST_AsKML($1, transform($2,4326), $3)' 
+	AS 'SELECT _ST_AsKML($1, ST_Transform($2,4326), $3)' 
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -----------------------------------------------------------------------
