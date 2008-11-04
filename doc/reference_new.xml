@@ -5347,6 +5347,13 @@ st_asgeojson
 		<note>
 		  <para>Availability: 1.3.2</para>
 		</note>
+		
+		<!-- Optionally mention 3d support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
 	  </refsection>
 	
 	  <refsection>
@@ -5472,6 +5479,10 @@ st_asgeojson
 		  <para>Availability: 1.2.2 - later variants that include version param came in 1.3.2</para>
 		</note>
 		
+		<note>
+			<para>AsKML output will not work with geometries that do not have an SRID</para>
+		</note>
+		
 		<!-- Optionally mention 3d support -->
 	    <para><inlinemediaobject>
 	        <imageobject>
@@ -5490,6 +5501,11 @@ st_asgeojson
 		--3d linestring
 		 SELECT ST_AsKML('SRID=4326;LINESTRING(1 2 3, 4 5 6)');
 		</programlisting>
+	  </refsection>
+	 <refsection>
+		<title>See Also</title>
+	
+		<para><xref linkend="ST_SetSRID" />, <xref linkend="ST_SRID" /></para>
 	  </refsection>
 	</refentry>
 	<refentry id="ST_AsSVG">
