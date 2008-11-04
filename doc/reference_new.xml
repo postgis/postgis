@@ -8653,21 +8653,6 @@ FROM country
 	    <para>Converts plain LINESTRING/POLYGONS to CIRCULAR STRINGs and Curved Polygons.  Note much fewer points are needed to describe the curved equivalent.</para>
 		
 		<para>Availability: 1.2.2?</para>
-	    <!-- Optionally mention OpenGIS compliancy if appropriate -->
-	    <para><inlinemediaobject>
-	        <imageobject>
-	          <imagedata fileref="images/check.png" />
-	        </imageobject>
-	      </inlinemediaobject> This method implements the <ulink
-	    url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
-	    Implementation Specification for SQL.</ulink></para>
-	
-	    <!-- Optionally mention SQL/MM compliancy if appropriate -->
-	    <para><inlinemediaobject>
-	        <imageobject>
-	          <imagedata fileref="images/check.png" />
-	        </imageobject>
-	      </inlinemediaobject> This method implements the SQL/MM specification: SQL-MM 3: 5.1.23</para>
 		
 		<!-- Optionally mention 3d support -->
 	    <para><inlinemediaobject>
