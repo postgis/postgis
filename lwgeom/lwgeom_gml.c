@@ -150,9 +150,15 @@ geometry_to_gml2(uchar *geom, char *srs)
 			poly = lwpoly_deserialize(geom);
 			return asgml2_poly(poly, srs);
 
-		default:
+		case MULTIPOINTTYPE:
+		case MULTILINETYPE:
+		case MULTIPOLYGONTYPE:	
 			inspected = lwgeom_inspect(geom);
 			return asgml2_inspected(inspected, srs);
+
+		default:
+                        lwerror("geometry_to_gml2: '%s' geometry type not supported", lwgeom_typename(type));
+                        return NULL;
 	}
 }
 
