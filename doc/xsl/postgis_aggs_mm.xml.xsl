@@ -99,7 +99,7 @@
 		</sect1>
 		
 		<sect1>
-			<title>PostGIS Circular String Curve Supports Functions</title>
+			<title>PostGIS Circular String Curve Support Functions</title>
 			<para>The functions given below are PostGIS functions that can use CIRCULARSTRING and CURVEDPOLYGON</para>
 				<itemizedlist>
 			<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
