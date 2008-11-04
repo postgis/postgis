@@ -1198,6 +1198,13 @@ probed:6 inserted:0 conflicts:6 stale:0
           <imagedata fileref="images/check.png" />
         </imageobject>
 		</inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+		
+		<!-- Optionally mention Circular String Support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method supports Circular Strings and Curves </para>
 	  </refsection>
 	
 	  <refsection>
@@ -1233,6 +1240,9 @@ SELECT ST_GeomFromEWKT('SRID=4269;MULTIPOLYGON(((-71.1031880899493 42.3152774590
 -71.1031880899493 42.3152774590236)),
 ((-71.1043632495873 42.315113108546,-71.1043583974082 42.3151211109857,
 -71.1043443253471 42.3150676015829,-71.1043850704575 42.3150793250568,-71.1043632495873 42.315113108546)))');
+
+--3d circular string
+SELECT ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)');
 	</programlisting>
 	  </refsection>
 	  <refsection>
@@ -1327,6 +1337,13 @@ SELECT ST_GeomFromEWKT('SRID=4269;MULTIPOLYGON(((-71.1031880899493 42.3152774590
 				</imageobject>
 			  </inlinemediaobject> This method implements the SQL/MM specification:
 			SQL-MM 3: 5.1.40</para>
+			
+			<!-- Optionally mention Circular String Support -->
+		    <para><inlinemediaobject>
+		        <imageobject>
+		          <imagedata fileref="images/check.png" />
+		        </imageobject>
+		      </inlinemediaobject> This method supports Circular Strings and Curves </para>
 		  </refsection>
 		
 		  <refsection>
@@ -1364,6 +1381,8 @@ SELECT ST_GeomFromText('MULTIPOLYGON(((-71.1031880899493 42.3152774590236,
 -71.1031880899493 42.3152774590236)),
 ((-71.1043632495873 42.315113108546,-71.1043583974082 42.3151211109857,
 -71.1043443253471 42.3150676015829,-71.1043850704575 42.3150793250568,-71.1043632495873 42.315113108546)))',4326);
+
+SELECT ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)');
 	</programlisting>
 		  </refsection>
 		  <refsection>
@@ -5074,6 +5093,13 @@ CREATE INDEX idx_the_geom_26986_parcels
 				  <imagedata fileref="images/check.png" />
 				</imageobject>
 			  </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+			  
+			<!-- Optionally mention Circular String Support -->
+			<para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method supports Circular Strings and Curves </para>
 		  </refsection>
 		
 		
@@ -5088,7 +5114,15 @@ CREATE INDEX idx_the_geom_26986_parcels
            st_asewkt
 --------------------------------
 SRID=4326;POLYGON((0 0,0 1,1 1,1 0,0 0))
-(1 row)</programlisting>
+(1 row)
+
+SELECT ST_AsEWKT('0108000080030000000000000060E30A4100000000785C0241000000000000F03F0000000018
+E20A4100000000485F024100000000000000400000000018
+E20A4100000000305C02410000000000000840')
+
+--st_asewkt---
+CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)
+</programlisting>
 		  </refsection>
 		
 		  <!-- Optionally add a "See Also" section -->
