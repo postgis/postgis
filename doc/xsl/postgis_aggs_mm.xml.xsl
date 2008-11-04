@@ -112,7 +112,7 @@
 						<xsl:value-of select="@id" />
 					</xsl:variable>
 				
-			<!-- For each section if there is note that it implements SQL/MM catalog it -->
+			<!-- For each section if there is note that it implements Circular String catalog it -->
 						<xsl:for-each select="refsection">
 							<xsl:for-each select="para">
 								<xsl:choose>
