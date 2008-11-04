@@ -35,13 +35,17 @@ ICONV_LDFLAGS=@ICONV_LDFLAGS@
 
 all: $(SHP2PGSQL) $(PGSQL2SHP) 
 
+# liblwgeom.a dependency to allow "make install" in the loader/ subdirectory to work  
+../liblwgeom/liblwgeom.a:
+	make -C ../liblwgeom
+
 pgsql2shp.o: pgsql2shp.c
 	$(CC) $(CFLAGS) $(PGSQL_FE_CPPFLAGS) -c $<
 
-$(PGSQL2SHP): $(OBJS) pgsql2shp.o
+$(PGSQL2SHP): ../liblwgeom/liblwgeom.a $(OBJS) pgsql2shp.o
 	$(CC) $(CFLAGS) $(OBJS) pgsql2shp.o $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) ../liblwgeom/liblwgeom.a -lm -o $@ 
 
-$(SHP2PGSQL): $(OBJS) shp2pgsql.o
+$(SHP2PGSQL): ../liblwgeom/liblwgeom.a $(OBJS) shp2pgsql.o
 	$(CC) $(CFLAGS) $(OBJS) shp2pgsql.o $(ICONV_LDFLAGS) ../liblwgeom/liblwgeom.a -lm -o $@ 
 
 install: all
