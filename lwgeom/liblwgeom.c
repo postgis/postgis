@@ -121,7 +121,7 @@ const char *
 lwgeom_typename(int type)
 {
 	// something went wrong somewhere
-	if ( type < 0 || type > 12 ) {
+	if ( type < 0 || type > 15 ) {
 		// assert(0);
 		return "Invalid type";
 	}
