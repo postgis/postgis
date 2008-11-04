@@ -35,6 +35,8 @@
       comparison that will make use of any indexes that are available on the
       geometries.</para>
     </note>
+	
+	<para>Availability: version goes here - requires GEOS &gt;= 2.1.0.</para>
 
     <!-- Optionally mention OpenGIS compliancy if appropriate -->
     <para><inlinemediaobject>
@@ -58,6 +60,13 @@
           <imagedata fileref="images/check.png" />
         </imageobject>
       </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+	  
+	<!-- Optionally mention Circular String Support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method supports Circular Strings and Curves </para>
   </refsection>
   
 

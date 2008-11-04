@@ -8201,6 +8201,122 @@ SELECT ST_AsEWKT(ST_Collect(ST_GeomFromEWKT('POINT(1 2 3)'),
 	  </refsection>
 	</refentry>
 	
+	<refentry id="ST_CurveToLine">
+	  <refnamediv>
+	    <refname>ST_CurveToLine</refname>
+	
+	    <refpurpose>Converts a CIRCULARSTRING to a LINESTRING</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>geometry <function>ST_CurveToLine</function></funcdef>
+	        <paramdef><type>geometry </type> <parameter>geomCircularString</parameter></paramdef>
+	      </funcprototype>
+	    </funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+	    <para>Converst a CIRCULAR STRING to regular LINESTRING. Useful for outputting to devices that can't support CIRCULARSTRING geometry types</para>
+	
+		<para>Availability: 1.2.2?</para>
+	    <!-- Optionally mention OpenGIS compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the <ulink
+	    url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+	    Implementation Specification for SQL.</ulink></para>
+	
+	    <!-- Optionally mention SQL/MM compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the SQL/MM specification: SQL-MM 3: 7.1.7 </para>
+		
+		<!-- Optionally mention 3d support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+		  
+		 <!-- Optionally mention Circular String Support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method supports Circular Strings and Curves </para>
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+	
+	    <programlisting>SELECT ST_AsText(ST_CurveToLine(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)')));
+		
+		--Result --
+		 LINESTRING(220268 150415,220269.95064912 150416.539364228,220271.823415575 150418.17258804,220273.613787707 150419.895736857,
+		 220275.317452352 150421.704659462,220276.930305234 150423.594998003,220278.448460847 150425.562198489,
+		 220279.868261823 150427.60152176,220281.186287736 150429.708054909,220282.399363347 150431.876723113,
+		 220283.50456625 150434.10230186,220284.499233914 150436.379429536,220285.380970099 150438.702620341,220286.147650624 150441.066277505,
+		 220286.797428488 150443.464706771,220287.328738321 150445.892130112,220287.740300149 150448.342699654,
+		 220288.031122486 150450.810511759,220288.200504713 150453.289621251,220288.248038775 150455.77405574,
+		 220288.173610157 150458.257830005,220287.977398166 150460.734960415,220287.659875492 150463.199479347,
+		 220287.221807076 150465.64544956,220286.664248262 150468.066978495,220285.988542259 150470.458232479,220285.196316903 150472.81345077,
+		 220284.289480732 150475.126959442,220283.270218395 150477.39318505,220282.140985384 150479.606668057,
+		 220280.90450212 150481.762075989,220279.5637474 150483.85421628,220278.12195122 150485.87804878,
+		 220276.582586992 150487.828697901,220274.949363179 150489.701464356,220273.226214362 150491.491836488,
+		 220271.417291757 150493.195501133,220269.526953216 150494.808354014,220267.559752731 150496.326509628,
+		 220265.520429459 150497.746310603,220263.41389631 150499.064336517,220261.245228106 150500.277412127,
+		 220259.019649359 150501.38261503,220256.742521683 150502.377282695,220254.419330878 150503.259018879,
+		 220252.055673714 150504.025699404,220249.657244448 150504.675477269,220247.229821107 150505.206787101,
+		 220244.779251566 150505.61834893,220242.311439461 150505.909171266,220239.832329968 150506.078553494,
+		 220237.347895479 150506.126087555,220234.864121215 150506.051658938,220232.386990804 150505.855446946,
+		 220229.922471872 150505.537924272,220227.47650166 150505.099855856,220225.054972724 150504.542297043,
+		 220222.663718741 150503.86659104,220220.308500449 150503.074365683,
+		 220217.994991777 150502.167529512,220215.72876617 150501.148267175,
+		 220213.515283163 150500.019034164,220211.35987523 150498.7825509,
+		 220209.267734939 150497.441796181,220207.243902439 150496,
+		 220205.293253319 150494.460635772,220203.420486864 150492.82741196,220201.630114732 150491.104263143,
+		 220199.926450087 150489.295340538,220198.313597205 150487.405001997,220196.795441592 150485.437801511,
+		 220195.375640616 150483.39847824,220194.057614703 150481.291945091,220192.844539092 150479.123276887,220191.739336189 150476.89769814,
+		 220190.744668525 150474.620570464,220189.86293234 150472.297379659,220189.096251815 150469.933722495,
+		 220188.446473951 150467.535293229,220187.915164118 150465.107869888,220187.50360229 150462.657300346,
+		 220187.212779953 150460.189488241,220187.043397726 150457.710378749,220186.995863664 150455.22594426,
+		 220187.070292282 150452.742169995,220187.266504273 150450.265039585,220187.584026947 150447.800520653,
+		 220188.022095363 150445.35455044,220188.579654177 150442.933021505,220189.25536018 150440.541767521,
+		 220190.047585536 150438.18654923,220190.954421707 150435.873040558,220191.973684044 150433.60681495,
+		 220193.102917055 150431.393331943,220194.339400319 150429.237924011,220195.680155039 150427.14578372,220197.12195122 150425.12195122,
+		 220198.661315447 150423.171302099,220200.29453926 150421.298535644,220202.017688077 150419.508163512,220203.826610682 150417.804498867,
+		 220205.716949223 150416.191645986,220207.684149708 150414.673490372,220209.72347298 150413.253689397,220211.830006129 150411.935663483,
+		 220213.998674333 150410.722587873,220216.22425308 150409.61738497,220218.501380756 150408.622717305,220220.824571561 150407.740981121,
+		 220223.188228725 150406.974300596,220225.586657991 150406.324522731,220227 150406)
+
+		--3d example
+		SELECT ST_AsEWKT(ST_CurveToLine(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)')));
+		Output
+		------
+		 LINESTRING(220268 150415 1,220269.95064912 150416.539364228 1.0181172856673,
+		 220271.823415575 150418.17258804 1.03623457133459,220273.613787707 150419.895736857 1.05435185700189,....AD INFINITUM ....
+		 	220225.586657991 150406.324522731 1.32611114201132,220227 150406 3)
+
+		</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	
+	    <para><xref linkend="ST_LineToCurve" /></para>
+	  </refsection>
+	</refentry>
+	
 	<refentry id="ST_Difference">
 	  <refnamediv>
 	    <refname>ST_Difference</refname>
@@ -8413,6 +8529,195 @@ SELECT ST_AsEWKT(geom) As the_geom, path
 	    <para><xref linkend="ST_Dump" />, <xref linkend="ST_ExteriorRing" />, <xref linkend="ST_InteriorRingN" /></para>
 	  </refsection>
 	</refentry>
+		
+	<refentry id="ST_Intersection">
+		<refnamediv>
+			<refname>ST_Intersection</refname>
+			
+			<refpurpose>Returns a geometry that represents the shared portion of geomA and geomB
+			</refpurpose>
+		</refnamediv>
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>geometry <function>ST_Intersection</function></funcdef>
+					<paramdef>
+						<type>geometry</type>
+						<parameter>geomA</parameter>
+					</paramdef>
+					<paramdef>
+						<type>geometry</type>
+						<parameter>geomB</parameter>
+					</paramdef>
+				</funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+		<refsection>
+			<title>Description</title>
+			<para>Returns a geometry that represents the point set
+				intersection of the Geometries.</para>
+
+			<para>In other words - that portion of geometry A and geometry B
+			that is shared between the two geometries.</para>
+			
+			<para>If the geometries do not share any space (are disjoint), then an empty geometry collection
+			is returned.</para>
+			<para>ST_Intersection in conjunction with ST_Intersects is very useful for clipping geometries such as in bounding box, buffer, region 
+				queries where you only want to return that portion of a geometry that sits in a country or region of interest.</para>
+
+		  <important>
+			<para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
+		  </important>
+	  
+		  <para>Performed by the GEOS module</para>
+
+
+			<para>
+			  <inlinegraphic fileref="images/check.png" />
+			  This method implements the
+			  <ulink url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple
+			  Features Implementation Specification for SQL</ulink>  OGC SPEC s2.1.1.3 
+			</para>
+			
+			<!-- Optionally mention SQL/MM compliancy if appropriate -->
+			<para><inlinemediaobject>
+				<imageobject>
+				  <imagedata fileref="images/check.png" />
+				</imageobject>
+			  </inlinemediaobject> This method implements the SQL/MM specification: SQL-MM 3: 5.1.18</para>
+		</refsection>
+		<refsection>
+		<title>Examples</title>
+<programlisting>SELECT ST_AsText(ST_Intersection('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::geometry));
+ st_astext
+---------------
+GEOMETRYCOLLECTION EMPTY
+(1 row)
+SELECT ST_AsText(ST_Intersection('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry));
+ st_astext
+---------------
+POINT(0 0)
+(1 row)
+
+---Clip all lines (trails) by country (here we assume country geom are POLYGON or MULTIPOLYGONS)
+-- NOTE: we are only keeping intersections that result in a LINESTRING or MULTILINESTRING because we don't
+-- care about trails that just share a point
+-- the dump is needed to expand a geometry collection into individual single MULT* parts
+-- the below is fairly generic and will work for polys, etc. by just changing the where clause
+SELECT clipped.gid, clipped.f_name, clipped_geom
+FROM (SELECT trails.gid, trails.f_name, (ST_Dump(ST_Intersection(country.the_geom, trails.the_geom))).geom As clipped_geom 
+FROM country 
+	INNER JOIN trails 
+	ON ST_Intersects(country.the_geom, trails.the_geom))  As clipped
+	WHERE ST_Dimension(clipped.clipped_geom) = 1 ;
+	
+--For polys e.g. polygon landmarks, you can also use the sometimes faster hack that buffering anything by 0.0 
+-- except a polygon results in an empty geometry collection 
+--(so a geometry collection containing polys, lines and points) 
+-- buffered by 0.0 would only leave the polygons and dissolve the collection shell
+SELECT poly.gid,  ST_Multi(ST_Buffer(
+				ST_Intersection(country.the_geom, poly.the_geom),
+				0.0)
+				) As clipped_geom 
+FROM country 
+	INNER JOIN poly
+	ON ST_Intersects(country.the_geom, poly.the_geom) 
+	WHERE Not ST_IsEmpty(ST_Buffer(ST_Intersection(country.the_geom, poly.the_geom),0.0));
+		</programlisting>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_Dimension"/>, <xref linkend="ST_Dump"/>, <xref linkend="ST_Intersects"/>, <xref linkend="ST_Multi"/></para>
+		</refsection>
+	</refentry>	
+	
+	<refentry id="ST_LineToCurve">
+	  <refnamediv>
+	    <refname>ST_LineToCurve</refname>
+	
+	    <refpurpose>Converts a LINESTRING/POLYGON to a CIRCULARSTRING, CURVED POLYGON</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>geometry <function>ST_LineToCurve</function></funcdef>
+	        <paramdef><type>geometry </type> <parameter>geomANoncircular</parameter></paramdef>
+	      </funcprototype>
+	    </funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+	    <para>Converts plain LINESTRING/POLYGONS to CIRCULAR STRINGs and Curved Polygons.  Note much fewer points are needed to describe the curved equivalent.</para>
+		
+		<para>Availability: 1.2.2?</para>
+	    <!-- Optionally mention OpenGIS compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the <ulink
+	    url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+	    Implementation Specification for SQL.</ulink></para>
+	
+	    <!-- Optionally mention SQL/MM compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the SQL/MM specification: SQL-MM 3: 5.1.23</para>
+		
+		<!-- Optionally mention 3d support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+	<!-- Optionally mention Circular String Support -->
+		    <para><inlinemediaobject>
+		        <imageobject>
+		          <imagedata fileref="images/check.png" />
+		        </imageobject>
+		      </inlinemediaobject> This method supports Circular Strings and Curves </para>
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+	
+	    <programlisting>
+SELECT ST_AsText(ST_LineToCurve(foo.the_geom)) As curvedastext,ST_AsText(foo.the_geom) As non_curvedastext
+	FROM (SELECT ST_Buffer('POINT(1 3)'::geometry, 3) As the_geom) As foo;
+		
+curvedatext															non_curvedastext		
+------------------------------------------------------------------|	-----------------------------------------------------------------
+CURVEPOLYGON(CIRCULARSTRING(4 3,3.12132034355964 0.878679656440359,	 |	POLYGON((4 3,3.94235584120969 2.41472903395162,3.77163859753386 1.85194970290473
+1 0,-1.12132034355965 5.12132034355963,4 3))						 | ,3.49440883690764 1.33328930094119,3.12132034355964 0.878679656440359,
+		 															|				2.66671069905881 0.505591163092366,2.14805029709527 0.228361402466141,
+																	|				1.58527096604839 0.0576441587903094,1 0,
+																	|				0.414729033951621 0.0576441587903077,-0.148050297095264 0.228361402466137,
+																	|				-0.666710699058802 0.505591163092361,-1.12132034355964 0.878679656440353,
+																	|				-1.49440883690763 1.33328930094119,-1.77163859753386 1.85194970290472
+																	|				--ETC-- ,3.94235584120969 3.58527096604839,4 3))
+--3D example
+SELECT ST_AsEWKT(ST_LineToCurve(ST_GeomFromEWKT('LINESTRING(1 2 3, 3 4 8, 5 6 4, 7 8 4, 9 10 4)')));
+
+             st_asewkt              
+------------------------------------
+ CIRCULARSTRING(1 2 3,5 6 4,9 10 4)
+
+		</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	
+	    <para><xref linkend="ST_CurveToLine" /></para>
+	  </refsection>
+	</refentry>
 	
 	<refentry id="ST_MakePolygon">
 		<refnamediv>
@@ -8518,107 +8823,6 @@ FROM
 		<refsection>
 			<title>See Also</title>
 			<para><xref linkend="ST_Accum" />, <xref linkend="ST_AddPoint" />, <xref linkend="ST_GeometryType" />, <xref linkend="ST_IsClosed" />, <xref linkend="ST_LineMerge" /></para>
-		</refsection>
-	</refentry>	
-	
-	<refentry id="ST_Intersection">
-		<refnamediv>
-			<refname>ST_Intersection</refname>
-			
-			<refpurpose>Returns a geometry that represents the shared portion of geomA and geomB
-			</refpurpose>
-		</refnamediv>
-		<refsynopsisdiv>
-			<funcsynopsis>
-				<funcprototype>
-					<funcdef>geometry <function>ST_Intersection</function></funcdef>
-					<paramdef>
-						<type>geometry</type>
-						<parameter>geomA</parameter>
-					</paramdef>
-					<paramdef>
-						<type>geometry</type>
-						<parameter>geomB</parameter>
-					</paramdef>
-				</funcprototype>
-			</funcsynopsis>
-		</refsynopsisdiv>
-		<refsection>
-			<title>Description</title>
-			<para>Returns a geometry that represents the point set
-				intersection of the Geometries.</para>
-
-			<para>In other words - that portion of geometry A and geometry B
-			that is shared between the two geometries.</para>
-			
-			<para>If the geometries do not share any space (are disjoint), then an empty geometry collection
-			is returned.</para>
-			<para>ST_Intersection in conjunction with ST_Intersects is very useful for clipping geometries such as in bounding box, buffer, region 
-				queries where you only want to return that portion of a geometry that sits in a country or region of interest.</para>
-
-		  <important>
-			<para>Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument</para>
-		  </important>
-	  
-		  <para>Performed by the GEOS module</para>
-
-
-			<para>
-			  <inlinegraphic fileref="images/check.png" />
-			  This method implements the
-			  <ulink url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple
-			  Features Implementation Specification for SQL</ulink>  OGC SPEC s2.1.1.3 
-			</para>
-			
-			<!-- Optionally mention SQL/MM compliancy if appropriate -->
-			<para><inlinemediaobject>
-				<imageobject>
-				  <imagedata fileref="images/check.png" />
-				</imageobject>
-			  </inlinemediaobject> This method implements the SQL/MM specification: SQL-MM 3: 5.1.18</para>
-		</refsection>
-		<refsection>
-		<title>Examples</title>
-<programlisting>SELECT ST_AsText(ST_Intersection('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::geometry));
- st_astext
----------------
-GEOMETRYCOLLECTION EMPTY
-(1 row)
-SELECT ST_AsText(ST_Intersection('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry));
- st_astext
----------------
-POINT(0 0)
-(1 row)
-
----Clip all lines (trails) by country (here we assume country geom are POLYGON or MULTIPOLYGONS)
--- NOTE: we are only keeping intersections that result in a LINESTRING or MULTILINESTRING because we don't
--- care about trails that just share a point
--- the dump is needed to expand a geometry collection into individual single MULT* parts
--- the below is fairly generic and will work for polys, etc. by just changing the where clause
-SELECT clipped.gid, clipped.f_name, clipped_geom
-FROM (SELECT trails.gid, trails.f_name, (ST_Dump(ST_Intersection(country.the_geom, trails.the_geom))).geom As clipped_geom 
-FROM country 
-	INNER JOIN trails 
-	ON ST_Intersects(country.the_geom, trails.the_geom))  As clipped
-	WHERE ST_Dimension(clipped.clipped_geom) = 1 ;
-	
---For polys e.g. polygon landmarks, you can also use the sometimes faster hack that buffering anything by 0.0 
--- except a polygon results in an empty geometry collection 
---(so a geometry collection containing polys, lines and points) 
--- buffered by 0.0 would only leave the polygons and dissolve the collection shell
-SELECT poly.gid,  ST_Multi(ST_Buffer(
-				ST_Intersection(country.the_geom, poly.the_geom),
-				0.0)
-				) As clipped_geom 
-FROM country 
-	INNER JOIN poly
-	ON ST_Intersects(country.the_geom, poly.the_geom) 
-	WHERE Not ST_IsEmpty(ST_Buffer(ST_Intersection(country.the_geom, poly.the_geom),0.0));
-		</programlisting>
-		</refsection>
-		<refsection>
-			<title>See Also</title>
-			<para><xref linkend="ST_Dimension"/>, <xref linkend="ST_Dump"/>, <xref linkend="ST_Intersects"/>, <xref linkend="ST_Multi"/></para>
 		</refsection>
 	</refentry>	
 
