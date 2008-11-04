@@ -224,9 +224,13 @@ COMMENT ON FUNCTION ST_AsHEXEWKB(geometry , text ) IS 'args: g1, NDRorXDR - Retu
 			
 COMMENT ON FUNCTION ST_AsHEXEWKB(geometry ) IS 'args: g1 - Returns a Geometry in HEXEWKB format (as text) using either little-endian (NDR) or big-endian (XDR) encoding.';
 			
-COMMENT ON FUNCTION ST_AsKML(geometry ) IS 'args: g1 - Return the geometry as a KML element. Second argument may be used to reduce the maximum number of significant digits used in output (defaults to 15).';
+COMMENT ON FUNCTION ST_AsKML(geometry ) IS 'args: g1 - Return the geometry as a KML element. Several variants. Default version=2, default max_sig_digits=15';
 			
-COMMENT ON FUNCTION ST_AsKML(geometry , integer ) IS 'args: g1, max_num_decimal_digits - Return the geometry as a KML element. Second argument may be used to reduce the maximum number of significant digits used in output (defaults to 15).';
+COMMENT ON FUNCTION ST_AsKML(geometry , integer ) IS 'args: g1, max_sig_digits - Return the geometry as a KML element. Several variants. Default version=2, default max_sig_digits=15';
+			
+COMMENT ON FUNCTION ST_AsKML(integer , geometry ) IS 'args: version, geom1 - Return the geometry as a KML element. Several variants. Default version=2, default max_sig_digits=15';
+			
+COMMENT ON FUNCTION ST_AsKML(integer , geometry , integer ) IS 'args: version, geom1, max_sig_digits - Return the geometry as a KML element. Several variants. Default version=2, default max_sig_digits=15';
 			
 COMMENT ON FUNCTION ST_AsSVG(geometry ) IS 'args: g1 - Returns a Geometry in SVG path data.';
 			
@@ -320,7 +324,7 @@ COMMENT ON FUNCTION ST_DumpRings(geometry ) IS 'args: a_polygon - This is a set-
 			
 COMMENT ON FUNCTION ST_Intersection(geometry, geometry) IS 'args: geomA, geomB - Returns a geometry that represents the shared portion of geomA and geomB';
 			
-COMMENT ON FUNCTION ST_LineToCurve(geometry ) IS 'args: geomA - Converts a LINESTRING/POLYGON to a CIRCULARSTRING, CURVED POLYGON';
+COMMENT ON FUNCTION ST_LineToCurve(geometry ) IS 'args: geomANoncircular - Converts a LINESTRING/POLYGON to a CIRCULARSTRING, CURVED POLYGON';
 			
 COMMENT ON FUNCTION ST_MakePolygon(geometry) IS 'args: linestring - Creates a Polygon formed by the given shell. Input geometries must be closed LINESTRINGS.';
 			
