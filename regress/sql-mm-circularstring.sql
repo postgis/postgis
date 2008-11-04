@@ -276,16 +276,55 @@ SELECT 'ST_CurveToLine02', asewkt(snapToGrid(ST_CurveToLine(the_geom_3dm), 'POIN
 SELECT 'ST_CurveToLine03', asewkt(snapToGrid(ST_CurveToLine(the_geom_3dz), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.circularstring;
 SELECT 'ST_CurveToLine04', asewkt(snapToGrid(ST_CurveToLine(the_geom_4d), 'POINT(0 0 0 0)'::geometry, 1e-8, 1e-8, 1e-8, 1e-8)) FROM public.circularstring;
 
---Removed due to discrepencies between hardware
---SELECT 'box2d01', box2d(the_geom_2d) FROM public.circularstring;
---SELECT 'box2d02', box2d(the_geom_3dm) FROM public.circularstring;
---SELECT 'box2d03', box2d(the_geom_3dz) FROM public.circularstring;
---SELECT 'box2d04', box2d(the_geom_4d) FROM public.circularstring;
+SELECT 'box2d01', round(st_xmin(box2d(the_geom_2d))::numeric, 8),
+       round(st_xmax(box2d(the_geom_2d))::numeric, 8),
+       round(st_ymin(box2d(the_geom_2d))::numeric, 8),
+       round(st_ymax(box2d(the_geom_2d))::numeric, 8),
+       round(st_zmin(box2d(the_geom_2d))::numeric, 8),
+       round(st_zmax(box2d(the_geom_2d))::numeric, 8) FROM public.circularstring;
+SELECT 'box2d02', round(st_xmin(box2d(the_geom_3dm))::numeric, 8),
+       round(st_xmax(box2d(the_geom_3dm))::numeric, 8),
+       round(st_ymin(box2d(the_geom_3dm))::numeric, 8),
+       round(st_ymax(box2d(the_geom_3dm))::numeric, 8),
+       round(st_zmin(box2d(the_geom_3dm))::numeric, 8),
+       round(st_zmax(box2d(the_geom_3dm))::numeric, 8) FROM public.circularstring;
+SELECT 'box2d03', round(st_xmin(box2d(the_geom_3dz))::numeric, 8),
+       round(st_xmax(box2d(the_geom_3dm))::numeric, 8),
+       round(st_ymin(box2d(the_geom_3dm))::numeric, 8),
+       round(st_ymax(box2d(the_geom_3dm))::numeric, 8),
+       round(st_zmin(box2d(the_geom_3dm))::numeric, 8),
+       round(st_zmax(box2d(the_geom_3dm))::numeric, 8) FROM public.circularstring;
+SELECT 'box2d04', round(st_xmin(box2d(the_geom_4d))::numeric, 8),
+       round(st_xmax(box2d(the_geom_4d))::numeric, 8),
+       round(st_ymin(box2d(the_geom_4d))::numeric, 8),
+       round(st_ymax(box2d(the_geom_4d))::numeric, 8),
+       round(st_zmin(box2d(the_geom_4d))::numeric, 8),
+       round(st_zmax(box2d(the_geom_4d))::numeric, 8) FROM public.circularstring;
 
---SELECT 'box3d01', box3d(the_geom_2d) FROM public.circularstring;
---SELECT 'box3d02', box3d(the_geom_3dm) FROM public.circularstring;
---SELECT 'box3d03', box3d(the_geom_3dz) FROM public.circularstring;
---SELECT 'box3d04', box3d(the_geom_4d) FROM public.circularstring;
+SELECT 'box3d01', round(st_xmin(box3d(the_geom_2d))::numeric, 8),
+       round(st_xmax(box3d(the_geom_2d))::numeric, 8),
+       round(st_ymin(box3d(the_geom_2d))::numeric, 8),
+       round(st_ymax(box3d(the_geom_2d))::numeric, 8),
+       round(st_zmin(box3d(the_geom_2d))::numeric, 8),
+       round(st_zmax(box3d(the_geom_2d))::numeric, 8) FROM public.circularstring;
+SELECT 'box3d02', round(st_xmin(box3d(the_geom_3dm))::numeric, 8),
+       round(st_xmax(box3d(the_geom_3dm))::numeric, 8),
+       round(st_ymin(box3d(the_geom_3dm))::numeric, 8),
+       round(st_ymax(box3d(the_geom_3dm))::numeric, 8),
+       round(st_zmin(box3d(the_geom_3dm))::numeric, 8),
+       round(st_zmax(box3d(the_geom_3dm))::numeric, 8) FROM public.circularstring;
+SELECT 'box3d03', round(st_xmin(box3d(the_geom_3dz))::numeric, 8),
+       round(st_xmax(box3d(the_geom_3dz))::numeric, 8),
+       round(st_ymin(box3d(the_geom_3dz))::numeric, 8),
+       round(st_ymax(box3d(the_geom_3dz))::numeric, 8),
+       round(st_zmin(box3d(the_geom_3dz))::numeric, 8),
+       round(st_zmax(box3d(the_geom_3dz))::numeric, 8) FROM public.circularstring;
+SELECT 'box3d04', round(st_xmin(box3d(the_geom_4d))::numeric, 8),
+       round(st_xmax(box3d(the_geom_4d))::numeric, 8),
+       round(st_ymin(box3d(the_geom_4d))::numeric, 8),
+       round(st_ymax(box3d(the_geom_4d))::numeric, 8),
+       round(st_zmin(box3d(the_geom_4d))::numeric, 8),
+       round(st_zmax(box3d(the_geom_4d))::numeric, 8) FROM public.circularstring;
 
 SELECT 'isValid01', isValid(the_geom_2d) FROM public.circularstring;
 SELECT 'isValid02', isValid(the_geom_3dm) FROM public.circularstring;
@@ -343,17 +382,6 @@ SELECT 'asewkt04', ST_asewkt(the_geom_4d) FROM public.circularstring;
 --SELECT 'asewkb03', encode(ST_asewkb(the_geom_3dz), 'hex') FROM public.circularstring;
 --SELECT 'asewkb04', encode(ST_asewkb(the_geom_4d), 'hex') FROM public.circularstring;
 
---Removed due to discrepencies between hardware
---SELECT 'box2d01', ST_box2d(the_geom_2d) FROM public.circularstring;
---SELECT 'box2d02', ST_box2d(the_geom_3dm) FROM public.circularstring;
---SELECT 'box2d03', ST_box2d(the_geom_3dz) FROM public.circularstring;
---SELECT 'box2d04', ST_box2d(the_geom_4d) FROM public.circularstring;
-
---SELECT 'box3d01', ST_box3d(the_geom_2d) FROM public.circularstring;
---SELECT 'box3d02', ST_box3d(the_geom_3dm) FROM public.circularstring;
---SELECT 'box3d03', ST_box3d(the_geom_3dz) FROM public.circularstring;
---SELECT 'box3d04', ST_box3d(the_geom_4d) FROM public.circularstring;
-
 SELECT 'isValid01', ST_isValid(the_geom_2d) FROM public.circularstring;
 SELECT 'isValid02', ST_isValid(the_geom_3dm) FROM public.circularstring;
 SELECT 'isValid03', ST_isValid(the_geom_3dz) FROM public.circularstring;
@@ -384,4 +412,9 @@ SELECT DropGeometryColumn('public', 'circularstring', 'the_geom_3dz');
 SELECT DropGeometryColumn('public', 'circularstring', 'the_geom_3dm');
 SELECT DropGeometryColumn('public', 'circularstring', 'the_geom_2d');
 DROP TABLE public.circularstring;
-SELECT ST_asText(ST_box2d('CIRCULARSTRING(220268.439465645 150415.359530563,220227.333322076 150505.561285879,220227.353105332 150406.434743975)'::geometry));
+SELECT round(ST_xmin(ST_box2d('CIRCULARSTRING(220268.439465645 150415.359530563,220227.333322076 150505.561285879,220227.353105332 150406.434743975)'::geometry))::numeric,8),
+       round(ST_xmax(ST_box2d('CIRCULARSTRING(220268.439465645 150415.359530563,220227.333322076 150505.561285879,220227.353105332 150406.434743975)'::geometry))::numeric,8),
+       round(ST_ymin(ST_box2d('CIRCULARSTRING(220268.439465645 150415.359530563,220227.333322076 150505.561285879,220227.353105332 150406.434743975)'::geometry))::numeric,8),
+       round(ST_ymax(ST_box2d('CIRCULARSTRING(220268.439465645 150415.359530563,220227.333322076 150505.561285879,220227.353105332 150406.434743975)'::geometry))::numeric,8),
+       round(ST_zmin(ST_box2d('CIRCULARSTRING(220268.439465645 150415.359530563,220227.333322076 150505.561285879,220227.353105332 150406.434743975)'::geometry))::numeric,8),
+       round(ST_zmax(ST_box2d('CIRCULARSTRING(220268.439465645 150415.359530563,220227.333322076 150505.561285879,220227.353105332 150406.434743975)'::geometry))::numeric,8);
