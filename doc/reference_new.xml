@@ -8423,6 +8423,7 @@ SELECT ST_AsEWKT(ST_Collect(ST_GeomFromEWKT('POINT(1 2 3)'),
 	      </funcprototype>
 		  <funcprototype>
 	        <funcdef>geometry <function>ST_CurveToLine</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>curveGeom</parameter></paramdef>
 	        <paramdef><type>int </type> <parameter>segments_per_qtr_circle</parameter></paramdef>
 	      </funcprototype>
 	    </funcsynopsis>
