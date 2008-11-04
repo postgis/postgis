@@ -6734,6 +6734,62 @@ SELECT ST_Equals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
 	  
 	</refentry>
 	
+	<refentry id="ST_HasArc">
+	  <refnamediv>
+	    <refname>ST_HasArc</refname>
+	
+	    <refpurpose>Returns true if a geometry or geometry collection contains a circular string</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>boolean <function>ST_HasArc</function></funcdef>
+	        <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+	      </funcprototype>
+	    </funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+	    <para>Returns true if a geometry or geometry collection contains a circular string</para>
+
+		<para>Availability: 1.2.3?</para>
+		<!-- Optionally mention 3d support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+		  
+			<!-- Optionally mention Circular String Support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method supports Circular Strings and Curves </para>
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+	
+	    <programlisting>SELECT ST_HasArc(ST_Collect('LINESTRING(1 2, 3 4, 5 6)', 'CIRCULARSTRING(1 1, 2 3, 4 5, 6 7, 5 6)'));
+		st_hasarc
+		--------
+		t
+		</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	
+	    <para><xref linkend="ST_CurveToLine" />,<xref linkend="ST_LineToCurve" /></para>
+	  </refsection>
+	</refentry>
+	
 	<refentry id="ST_Intersects">
 		<refnamediv>
 			<refname>ST_Intersects</refname>
@@ -8356,7 +8412,7 @@ SELECT ST_AsEWKT(ST_Collect(ST_GeomFromEWKT('POINT(1 2 3)'),
 	  <refnamediv>
 	    <refname>ST_CurveToLine</refname>
 	
-	    <refpurpose>Converts a CIRCULARSTRING to a LINESTRING</refpurpose>
+	    <refpurpose>Converts a CIRCULARSTRING/CURVEDPOLYGON to a LINESTRING/POLYGON</refpurpose>
 	  </refnamediv>
 	
 	  <refsynopsisdiv>
@@ -8371,8 +8427,9 @@ SELECT ST_AsEWKT(ST_Collect(ST_GeomFromEWKT('POINT(1 2 3)'),
 	  <refsection>
 	    <title>Description</title>
 	
-	    <para>Converst a CIRCULAR STRING to regular LINESTRING. Useful for outputting to devices that can't support CIRCULARSTRING geometry types</para>
-	
+	    <para>Converst a CIRCULAR STRING to regular LINESTRING or CURVEPOLYGON to POLYGON. Useful for outputting to devices that can't support CIRCULARSTRING geometry types</para>
+		<para>Converts a given geometry to a linear geometry.  
+		Each curved geometry or segment is converted into a linear approximation using the default value of 32 segments per quarter circle</para>
 		<para>Availability: 1.2.2?</para>
 	    <!-- Optionally mention OpenGIS compliancy if appropriate -->
 	    <para><inlinemediaobject>
