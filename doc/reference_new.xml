@@ -120,6 +120,13 @@
           <imagedata fileref="images/check.png" />
         </imageobject>
 		</inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+		
+		<!-- Optionally mention Circular String Support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method supports Circular Strings and Curves </para>
       </refsection>
 
       <refsection>
@@ -139,17 +146,26 @@ postgis=# \d my_schema.my_spatial_table
 -- Add a spatial column to the table
 postgis=# SELECT AddGeometryColumn ('my_schema','my_spatial_table','the_geom',4326,'POINT',2);
 
+--Add a curvepolygon
+SELECT AddGeometryColumn ('my_schema','my_spatial_table','the_geomcp',4326,'CURVEPOLYGON',2);
+
 -- Describe the table again reveals the addition of a new "the_geom" column.
 postgis=# \d my_schema.my_spatial_table
-                              Table "my_schema.my_spatial_table"
-  Column  |   Type   |                                Modifiers                                
-----------+----------+-------------------------------------------------------------------------
- id       | integer  | not null default nextval('my_schema.my_spatial_table_id_seq'::regclass)
- the_geom | geometry | 
+   Column   |   Type   |                                Modifiers
+
+------------+----------+-------------------------------------------------------------------------
+ id         | integer  | not null default nextval('my_schema.my_spatial_table_id_seq'::regclass)
+ the_geom   | geometry |
+ the_geomcp | geometry |
 Check constraints:
     "enforce_dims_the_geom" CHECK (ndims(the_geom) = 2)
-    "enforce_geotype_the_geom" CHECK (geometrytype(the_geom) = 'POINT'::text OR the_geom IS NULL)
-    "enforce_srid_the_geom" CHECK (srid(the_geom) = 4326)</programlisting>
+    "enforce_dims_the_geomcp" CHECK (ndims(the_geomcp) = 2)
+    "enforce_geotype_the_geom" CHECK (geometrytype(the_geom) = 'POINT'::text OR
+the_geom IS NULL)
+    "enforce_geotype_the_geomcp" CHECK (geometrytype(the_geomcp) = 'CURVEPOLYGON
+'::text OR the_geomcp IS NULL)
+    "enforce_srid_the_geom" CHECK (srid(the_geom) = 4326)
+    "enforce_srid_the_geomcp" CHECK (srid(the_geomcp) = 4326)</programlisting>
       </refsection>
       
       <refsection>
@@ -229,8 +245,22 @@ Check constraints:
           <imagedata fileref="images/check.png" />
         </imageobject>
       </inlinemediaobject> This function supports 3d geometry fields.</para>
+	  	<!-- Optionally mention Circular String Support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method supports Circular Strings and Curves </para>
       </refsection>
-      
+      <refsection>
+        <title>Examples</title>
+
+        <programlisting>
+			SELECT DropGeometryColumn ('my_schema','my_spatial_table','the_geomcp');
+			----RESULT output ---
+			my_schema.my_spatial_table.the_geomcp effectively removed.
+		</programlisting>
+	  </refsection>
       <refsection>
         <title>See Also</title>
 
@@ -285,6 +315,15 @@ Check constraints:
         not provided.</para>
       </refsection>
       
+	  <refsection>
+        <title>Examples</title>
+
+        <programlisting>
+			SELECT DropGeometryTable ('my_schema','my_spatial_table');
+			----RESULT output ---
+			my_schema.my_spatial_table dropped.
+		</programlisting>
+	  </refsection>
       <refsection>
         <title>See Also</title>
 
@@ -997,6 +1036,13 @@ probed:6 inserted:0 conflicts:6 stale:0
           <imagedata fileref="images/check.png" />
         </imageobject>
       </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+	  
+	  	<!-- Optionally mention Circular String Support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method supports Circular Strings and Curves </para>
       </refsection>
       
       <refsection>
@@ -5020,6 +5066,13 @@ CREATE INDEX idx_the_geom_26986_parcels
 				  <imagedata fileref="images/check.png" />
 				</imageobject>
 			  </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+			  
+			<!-- Optionally mention Circular String Support -->
+			<para><inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+			</inlinemediaobject> This method supports Circular Strings and Curves </para>
 		  </refsection>
 		
 		
@@ -5220,6 +5273,12 @@ CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)
 			<para>Version 6: ST_AsGeoJSON(version, geom, precision,options)</para>
 			
 			<note><para>Availability: 1.3.4</para></note>
+			<!-- Optionally mention 3d support -->
+			<para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
 	  </refsection>
 	
 	  <refsection>
@@ -5235,7 +5294,16 @@ CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)
 
 {"type":"MultiLineString","coordinates":[[[-89.734634999999997,31.492072000000000],
 [-89.734955999999997,31.492237999999997]]]}
-(1 row)</programlisting>
+(1 row)
+--3d point
+SELECT ST_AsGeoJSON('LINESTRING(1 2 3, 4 5 6)');
+
+st_asgeojson                                                                      
+-----------------------------------------------------------------------------------------
+ {"type":"LineString","coordinates":[[1.000000000000000,2.000000000000000,3.000000000000000],
+ [4.000000000000000,5.000000000000000,6.000000000000000]]}
+
+</programlisting>
 	  </refsection>
 	</refentry>		
 	<refentry id="ST_AsGML">
@@ -5324,6 +5392,19 @@ CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)
 		<note>
 		  <para>Availability: 1.2.2</para>
 		</note>
+		
+		<!-- Optionally mention 3d support -->	
+		<para><inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+		  </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+		<!-- Optionally mention Circular String Support -->
+		<para><inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+			</inlinemediaobject> This method supports Circular Strings and Curves </para>
 	  </refsection>
 	
 	  <refsection>
@@ -5347,9 +5428,7 @@ CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)
 	  <refnamediv>
 		<refname>ST_AsKML</refname>
 	
-		<refpurpose>Return the geometry as a KML element. Second argument may be
-            used to reduce the maximum number of significant digits used in
-            output (defaults to 15).</refpurpose>
+		<refpurpose>Return the geometry as a KML element. Several variants. Default version=2, default max_sig_digits=15</refpurpose>
 	  </refnamediv>
 	
 	  <refsynopsisdiv>
@@ -5361,24 +5440,44 @@ CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)
 			<funcprototype>
 				<funcdef>text <function>ST_AsKML</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>max_num_decimal_digits</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>max_sig_digits</parameter></paramdef>
 			</funcprototype>
-			<!-- TODO: itemize other prototypes - 3 more -->
+			<funcprototype>
+				<funcdef>text <function>ST_AsKML</function></funcdef>
+				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
+				<paramdef><type>geometry </type> <parameter>geom1</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_AsKML</function></funcdef>
+				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
+				<paramdef><type>geometry </type> <parameter>geom1</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>max_sig_digits</parameter></paramdef>
+			</funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
 	
 	  <refsection>
 		<title>Description</title>
 	
-		<para>Return the geometry as a Keyhole Markup Language (KML) element. Second argument may be
-            used to reduce the maximum number of significant digits used in
-            output (defaults to 15).</para>
+		<para>Return the geometry as a Keyhole Markup Language (KML) element. There are several variants of this function.
+			maximum number of significant digits used in
+            output (defaults to 15) and version default to 2.</para>
 			
-		<!-- TODO: Itemize defaults for each function -->
+		<para>Version 1: ST_AsKML(geom) / version=2 max_sig_digits=15</para>
+		<para>Version 2: ST_AsKML(geom, max_sig_digits) / version=2 </para>
+		<para>Version 3: ST_AsKML(version, geom) / max_sig_digits=15 </para>
+		<para>Version 4: ST_AsGeoJSON(version, geom, max_sig_digits) </para>
 
 		<note>
 		  <para>Availability: 1.2.2 - later variants that include version param came in 1.3.2</para>
 		</note>
+		
+		<!-- Optionally mention 3d support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
 	  </refsection>
 	
 	  <refsection>
@@ -5388,6 +5487,8 @@ CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)
 		st_askml
 		--------
 		
+		--3d linestring
+		 SELECT ST_AsKML('SRID=4326;LINESTRING(1 2 3, 4 5 6)');
 		</programlisting>
 	  </refsection>
 	</refentry>
