@@ -8288,6 +8288,14 @@ FROM (SELECT ST_Buffer(ST_MakeLine(ST_MakePoint(21, 22),ST_MakePoint(-19, -18)),
 			  <imagedata fileref="images/check.png" />
 			</imageobject>
 		  </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+		  
+		  <!-- Optionally mention Circular String Support -->
+			<para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method supports Circular Strings and Curves, 
+		  but will never return a MULTICURVE or MULTI as one would expect and PostGIS does not currently support those.</para>
 	  </refsection>
 	
 	  <refsection>
@@ -8324,6 +8332,15 @@ SELECT ST_AsEWKT(ST_Collect(ST_GeomFromEWKT('POINT(1 2 3)'),
         st_asewkt
 -------------------------
  MULTIPOINT(1 2 3,1 2 4)
+ 
+ --Example with curves
+SELECT ST_AsText(ST_Collect(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)'),
+ST_GeomFromText('CIRCULARSTRING(220227 150406,2220227 150407,220227 150406)')));
+                                                                st_astext                                                                 
+------------------------------------------------------------------------------------
+ GEOMETRYCOLLECTION(CIRCULARSTRING(220268 150415,220227 150505,220227 150406),
+ CIRCULARSTRING(220227 150406,2220227 150407,220227 150406))
+		
 </programlisting>
 	  </refsection>
 	  <refsection>
@@ -8521,7 +8538,8 @@ Output
 	
 --use only 2 segments to approximate quarter circle
 SELECT ST_AsText(ST_CurveToLine(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)'),2));
-st_astext                                                                                              --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+st_astext         
+------------------------------
  LINESTRING(220268 150415,220287.740300149 150448.342699654,220278.12195122 150485.87804878,
  220244.779251566 150505.61834893,220207.243902439 150496,220187.50360229 150462.657300346,
  220197.12195122 150425.12195122,220227 150406)
