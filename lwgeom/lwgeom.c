@@ -711,6 +711,7 @@ lwgeom_longitude_shift(LWGEOM *lwgeom)
 			for (i=0; i<poly->nrings; i++)
 				ptarray_longitude_shift(poly->rings[i]);
 			return;
+		case MULTIPOINTTYPE:
 		case MULTILINETYPE:
 		case MULTIPOLYGONTYPE:
 		case COLLECTIONTYPE:
@@ -719,8 +720,8 @@ lwgeom_longitude_shift(LWGEOM *lwgeom)
 				lwgeom_longitude_shift(coll->geoms[i]);
 			return;
 		default:
-			lwerror("%s:%d: unknown geom type: %d",
+			lwerror("%s:%d: unsupported geom type: %s",
 				__FILE__, __LINE__,
-				TYPE_GETTYPE(lwgeom->type));
+				lwgeom_typename(TYPE_GETTYPE(lwgeom->type)));
 	}
 }
