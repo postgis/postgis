@@ -3246,6 +3246,9 @@ VACUUM FULL ANALYZE mytable;</programlisting>
             <term>ST_Shift_Longitude(geometry)</term>
             <listitem>
               <para>Reads every point/vertex in every component of every feature in a geometry, and if the longitude coordinate is &lt;0, adds 360 to it. The result would be a 0-360 version of the data to be plotted in a 180 centric map</para>
+			  
+			  <para>Prior to 1.3.4 - there was a bug in this that prevented it with working for MULTIPOINT.  This bug is fixed in
+			  	1.3.4+</para>
             </listitem>
           </varlistentry>
 
