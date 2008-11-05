@@ -9200,7 +9200,7 @@ geomtextrep
 		<note><para>This is only useful for data in long lat e.g. 4326 (WGS 84 long lat)</para></note>
 		
 		<para><inlinegraphic fileref="images/warning.png" />
-				1.3 doesn't seem to work with MULTIPOINTS but works for everything else - possible bug.
+			Pre-1.3.4 bug prevented this from working for MULTIPOINT. 1.3.4+ works with MULTIPOINT as well.
 		</para>
 	
 		<!-- Optionally mention 3d support -->
