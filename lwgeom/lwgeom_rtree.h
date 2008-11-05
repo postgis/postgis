@@ -45,6 +45,7 @@ LWMLINE *mergeMultiLines(LWMLINE *line1, LWMLINE *line2);
 
 typedef struct
 {
+        char type;
         RTREE_NODE **ringIndices;
         int ringCount;
         int polyCount;

@@ -55,6 +55,7 @@
 #ifdef PREPARED_GEOM
 typedef struct
 {
+    char type;
 	PG_LWGEOM*                    pg_geom1;
 	PG_LWGEOM*                    pg_geom2;
 	size_t                        pg_geom1_size;
@@ -1506,6 +1507,10 @@ Datum contains(PG_FUNCTION_ARGS)
 	errorIfGeometryCollection(geom1,geom2);
 	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
 
+#ifdef PGIS_DEBUG
+    lwnotice("Contains: entered", type1, type2);
+#endif
+
 	/*
 	 * short-circuit 1: if geom2 bounding box is not completely inside
 	 * geom1 bounding box we can prematurely return FALSE.
@@ -1517,6 +1522,9 @@ Datum contains(PG_FUNCTION_ARGS)
 		if ( ( box2.xmin < box1.xmin ) || ( box2.xmax > box1.xmax ) ||
 		     ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax ) ) 
 		{
+#ifdef PGIS_DEBUG
+    lwnotice("Contains: bbox short circuit", type1, type2);
+#endif
 		    PG_RETURN_BOOL(FALSE);
 		}
 	}
@@ -1526,6 +1534,9 @@ Datum contains(PG_FUNCTION_ARGS)
          */
         type1 = lwgeom_getType((uchar)SERIALIZED_FORM(geom1)[0]);
         type2 = lwgeom_getType((uchar)SERIALIZED_FORM(geom2)[0]);
+#ifdef PGIS_DEBUG
+    lwnotice("Contains: type1: %d, type2: %d", type1, type2);
+#endif
     	if((type1 == POLYGONTYPE || type1 == MULTIPOLYGONTYPE) && type2 == POINTTYPE)
 		{
 #ifdef PGIS_DEBUG
@@ -1534,9 +1545,6 @@ Datum contains(PG_FUNCTION_ARGS)
 
         		lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom1));
                 point = lwpoint_deserialize(SERIALIZED_FORM(geom2));
-#ifdef PGIS_DEBUG
-                lwnotice("Precall point_in_polygon %p, %p", lwgeom, point);
-#endif
 
                 /*
                  * Switch the context to the function-scope context,
@@ -1550,14 +1558,24 @@ Datum contains(PG_FUNCTION_ARGS)
 
 				if( poly_cache->ringIndices ) 
 				{
+#ifdef PGIS_DEBUG
+                lwnotice("R-Tree Point in Polygon test.");
+#endif
+				    
 					result = point_in_multipolygon_rtree(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCount, point);
 				}
 				else if ( type1 == POLYGONTYPE ) 
 				{
+#ifdef PGIS_DEBUG
+                lwnotice("Brute force Point in Polygon test.");
+#endif
 					result = point_in_polygon((LWPOLY*)lwgeom, point);
 				}
 				else if ( type1 == MULTIPOLYGONTYPE ) 
 				{
+#ifdef PGIS_DEBUG
+                lwnotice("Brute force Point in Polygon test.");
+#endif
 					result = point_in_multipolygon((LWMPOLY*)lwgeom, point);
 				}
 				else {
@@ -1580,9 +1598,6 @@ Datum contains(PG_FUNCTION_ARGS)
         } 
         else 
         {
-#ifdef PGIS_DEBUG
-                lwnotice("Contains: type1: %d, type2: %d", type1, type2);
-#endif
         }
         
 	initGEOS(lwnotice, lwnotice);
@@ -3880,6 +3895,9 @@ GetPrepGeomCache(FunctionCallInfoData *fcinfo, PG_LWGEOM *pg_geom1, PG_LWGEOM *p
 	size_t pg_geom1_size = 0;
 	size_t pg_geom2_size = 0;
 
+    /* Make sure this isn't someone else's cache object. */
+    if( cache && cache->type != 2 ) cache = NULL;
+
 	if (!PrepGeomHash)
 		CreatePrepGeomHash();
 
@@ -3903,6 +3921,7 @@ GetPrepGeomCache(FunctionCallInfoData *fcinfo, PG_LWGEOM *pg_geom1, PG_LWGEOM *p
 		cache = palloc(sizeof(PrepGeomCache));		
 		MemoryContextSwitchTo(old_context);
 	
+        cache->type = 2;
 		cache->prepared_geom = 0;
 		cache->geom = 0;
 		cache->argnum = 0;
