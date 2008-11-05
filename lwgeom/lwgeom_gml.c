@@ -153,6 +153,7 @@ geometry_to_gml2(uchar *geom, char *srs)
 		case MULTIPOINTTYPE:
 		case MULTILINETYPE:
 		case MULTIPOLYGONTYPE:	
+		case COLLECTIONTYPE:
 			inspected = lwgeom_inspect(geom);
 			return asgml2_inspected(inspected, srs);
 
