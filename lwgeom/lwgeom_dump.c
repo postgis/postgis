@@ -18,6 +18,8 @@
 #include "lwgeom_pg.h"
 #include "profile.h"
 
+int lwgeom_contains_subgeoms(int type);
+
 Datum LWGEOM_dump(PG_FUNCTION_ARGS);
 Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS);
 
