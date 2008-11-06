@@ -23,7 +23,12 @@
 #include "utils/memutils.h"
 #include "executor/spi.h"
 
+/* Workaround for GEOS 2.2 compatibility: old geos_c.h does not contain 
+   header guards to protect from multiple inclusion */ 
+#ifndef GEOS_C_INCLUDED
+#define GEOS_C_INCLUDED
 #include "geos_c.h"
+#endif
 
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
