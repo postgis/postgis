@@ -220,6 +220,21 @@ else
 	fi
 fi
 
+
+dnl
+dnl Ensure that $PG_CONFIG --pgxs points to a valid file. This is because some distributions such as Debian
+dnl also include pg_config as part of libpq-dev packages, but don't install the Makefile it points to unless
+dnl the postgresql-server-dev packages are installed :)
+dnl
+
+PGXS=`$PGCONFIG --pgxs`
+if test ! -f $PGXS; then
+	AC_MSG_ERROR([the PGXS Makefile $PGXS cannot be found. Please install the PostgreSQL server development packages and re-run configure.])
+fi
+
+AC_SUBST([PGXS])
+
+
 dnl Extract the version information from pg_config
 dnl Note: we extract the major & minor separately, ensure they are numeric, and then combine to give
 dnl the final version. This is to guard against user error... 
