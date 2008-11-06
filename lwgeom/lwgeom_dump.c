@@ -38,6 +38,29 @@ typedef struct GEOMDUMPSTATE {
 #define LAST(x) ((x)->stack[(x)->stacklen-1])
 #define POP(x) (--((x)->stacklen))
 
+/* Helper function to determine whether or not a geometry type is MULTI or not.
+   TODO: this is a candidate for adding to liblwgeom, hence its name */
+int
+lwgeom_contains_subgeoms(int type)
+{
+	/* Return TRUE if the geometry contains sub-geometries */
+	switch(type)
+	{
+		case MULTIPOINTTYPE:
+		case MULTIPOLYGONTYPE:
+		case COLLECTIONTYPE:
+		case COMPOUNDTYPE:
+		case MULTICURVETYPE:
+		case MULTISURFACETYPE: 
+			return -1;
+			break;
+
+		default:
+			return 0;
+	}
+}
+
+
 PG_FUNCTION_INFO_V1(LWGEOM_dump);
 Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 {
@@ -73,7 +96,7 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 		state->root = lwgeom;
 		state->stacklen=0;
 
-		if ( TYPE_GETTYPE(lwgeom->type) >= MULTIPOINTTYPE )
+		if ( lwgeom_contains_subgeoms(TYPE_GETTYPE(lwgeom->type)) )
 		{
 			/*
 			 * Push a GEOMDUMPNODE on the state stack
@@ -120,7 +143,7 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 
 	/* Handled simple geometries */
 	if ( ! state->root ) SRF_RETURN_DONE(funcctx);
-	if ( TYPE_GETTYPE(state->root->type) < MULTIPOINTTYPE )
+	if ( ! lwgeom_contains_subgeoms(TYPE_GETTYPE(state->root->type)) )
 	{
 		values[0] = "{}";
 		values[1] = lwgeom_to_hexwkb(state->root, PARSER_CHECK_NONE, -1);
@@ -139,16 +162,16 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 		if ( node->idx < lwcoll->ngeoms )
 		{
 			lwgeom = lwcoll->geoms[node->idx];
-			if ( TYPE_GETTYPE(lwgeom->type) < MULTIPOINTTYPE )
+			if ( ! lwgeom_contains_subgeoms(TYPE_GETTYPE(lwgeom->type)) )
 			{
-	/* write address of current geom */
-	ptr=address; *ptr++='{';
-	for (i=0; i<state->stacklen; i++)
-	{
-		if ( i ) ptr += sprintf(ptr, ",");
-		ptr += sprintf(ptr, "%d", state->stack[i]->idx+1);
-	}
-	*ptr++='}'; *ptr='\0';
+				/* write address of current geom */
+				ptr=address; *ptr++='{';
+				for (i=0; i<state->stacklen; i++)
+				{
+					if ( i ) ptr += sprintf(ptr, ",");
+					ptr += sprintf(ptr, "%d", state->stack[i]->idx+1);
+				}
+				*ptr++='}'; *ptr='\0';
 
 				break;
 			}
