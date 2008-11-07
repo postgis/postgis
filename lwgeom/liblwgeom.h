@@ -1200,6 +1200,10 @@ LWCURVE *lwcurve_clone(const LWCURVE *curve);
 LWCURVE *lwgeom_getcurve_inspected(LWGEOM_INSPECTED *inspected, int geom_number);
 LWCURVEPOLY *lwgeom_getcurvepoly_inspected(LWGEOM_INSPECTED *inspected, int geom_number);
 
+/* Cast functions */
+LWCURVE *lwgeom_as_lwcurve(LWGEOM *lwgeom);
+LWGEOM *lwcurve_as_lwgeom(LWPOINT *obj);
+
 /******************************************************************
  * LWMULTIx and LWCOLLECTION functions
  ******************************************************************/
