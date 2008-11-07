@@ -332,7 +332,6 @@ LWGEOM *lwcollection_as_lwgeom(LWCOLLECTION *obj) { return (LWGEOM *)obj; }
 LWGEOM *lwpoly_as_lwgeom(LWPOLY *obj) { return (LWGEOM *)obj; }
 LWGEOM *lwline_as_lwgeom(LWLINE *obj) { return (LWGEOM *)obj; }
 LWGEOM *lwpoint_as_lwgeom(LWPOINT *obj) { return (LWGEOM *)obj; }
-LWGEOM *lwcurve_as_lwgeom(LWPOINT *obj) { return (LWGEOM *)obj; }
 
 void
 lwgeom_release(LWGEOM *lwgeom)
