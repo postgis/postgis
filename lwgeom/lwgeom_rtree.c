@@ -398,6 +398,7 @@ RTREE_POLY_CACHE * createCache()
 	result->ringCount = 0;
 	result->ringIndices = 0;
 	result->poly = 0;
+	result->type = 1;
 	return result;
 }
 
@@ -487,6 +488,9 @@ RTREE_POLY_CACHE *retrieveCache(LWGEOM *lwgeom, uchar *serializedPoly, RTREE_POL
 	int length;
 
 	LWDEBUGF(2, "retrieveCache called with %p %p %p", lwgeom, serializedPoly, currentCache);
+
+    /* Make sure this isn't someone else's cache object. */
+    if( currentCache && currentCache->type != 1 ) currentCache = NULL;
 
 	if(!currentCache)
 	{

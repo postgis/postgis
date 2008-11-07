@@ -242,6 +242,32 @@ SELECT c, ST_Covers(p1, p2) AS covers_p1p2, ST_Covers(p2, p1) AS covers_p2p1 FRO
 ('covers209', 'POLYGON((0 0, 0 10, 10 10, 11 0, 0 0))', 'POLYGON((-2 -2, -2 -3, -3 -3, -3 -2, -2 -2))')
 ) AS v(c,p1,p2);
 
+-- UNEXPECTED GEOMETRY TYPES --
+
+SELECT c, ST_Contains(p1, p2) AS contains_p1p2, ST_Contains(p2, p1) AS contains_p2p1, 
+          ST_Covers(p1, p2) AS covers_p1p2, ST_Covers(p2, p1) AS covers_p2p1,
+          ST_Intersects(p1, p2) AS intersects_p1p2, ST_Intersects(p2, p1) AS intersects_p2p1,
+          ST_ContainsProperly(p1, p2) AS containsproper_p1p2, ST_ContainsProperly(p2, p1) AS containsproper_p2p1 
+          FROM
+( VALUES
+('types100', 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))', 'POINT(5 5)'), 
+('types101', 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))', 'POINT(5 5)'), 
+('types102', 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))', 'POINT(5 5)'), 
+('types103', 'LINESTRING(0 0, 0 10, 10 10, 10 0)', 'POINT(5 5)'), 
+('types104', 'LINESTRING(0 0, 0 10, 10 10, 10 0)', 'POINT(5 5)'), 
+('types105', 'LINESTRING(0 0, 0 10, 10 10, 10 0)', 'POINT(5 5)'), 
+('types106', 'POINT(5 5)', 'POINT(5 5)'), 
+('types107', 'POINT(5 5)', 'POINT(5 5)'), 
+('types108', 'POINT(5 5)', 'POINT(5 5)'), 
+('types109', 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))', 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'), 
+('types110', 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))', 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'), 
+('types111', 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))', 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'), 
+('types112', 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))', 'LINESTRING(0 0, 0 10, 10 10, 10 0)'), 
+('types113', 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))', 'LINESTRING(0 0, 0 10, 10 10, 10 0)'), 
+('types114', 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))', 'LINESTRING(0 0, 0 10, 10 10, 10 0)') 
+) AS v(c,p1,p2);
+
+
 SELECT 'intersects310', ST_intersects('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))', p) FROM ( VALUES 
 ('LINESTRING(1 10, 9 10, 9 8)'),('LINESTRING(1 10, 9 10, 9 8)'),('LINESTRING(1 10, 9 10, 9 8)')
 ) AS v(p);

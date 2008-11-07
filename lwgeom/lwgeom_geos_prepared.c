@@ -280,6 +280,9 @@ GetPrepGeomCache(FunctionCallInfoData *fcinfo, PG_LWGEOM *pg_geom1, PG_LWGEOM *p
 	size_t pg_geom1_size = 0;
 	size_t pg_geom2_size = 0;
 
+    /* Make sure this isn't someone else's cache object. */
+    if( cache && cache->type != 2 ) cache = NULL;
+
 	if (!PrepGeomHash)
 		CreatePrepGeomHash();
 
@@ -303,6 +306,7 @@ GetPrepGeomCache(FunctionCallInfoData *fcinfo, PG_LWGEOM *pg_geom1, PG_LWGEOM *p
 		cache = palloc(sizeof(PrepGeomCache));		
 		MemoryContextSwitchTo(old_context);
 	
+        cache->type = 2;
 		cache->prepared_geom = 0;
 		cache->geom = 0;
 		cache->argnum = 0;
