@@ -1198,6 +1198,7 @@ extern BOX3D *lwcurve_compute_box3d(LWCURVE *curve);
 extern void pfree_curve(LWCURVE  *curve);
 LWCURVE *lwcurve_clone(const LWCURVE *curve);
 LWCURVE *lwgeom_getcurve_inspected(LWGEOM_INSPECTED *inspected, int geom_number);
+LWCURVEPOLY *lwgeom_getcurvepoly_inspected(LWGEOM_INSPECTED *inspected, int geom_number);
 
 /******************************************************************
  * LWMULTIx and LWCOLLECTION functions

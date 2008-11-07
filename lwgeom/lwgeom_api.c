@@ -1210,6 +1210,28 @@ lwgeom_getcurve_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
 
 /*
  * 1st geometry has geom_number = 0
+ * if the actual geometry isnt a CURVEPOLYGON, null is returned (see _gettype()).
+ * if there arent enough geometries, return null.
+ * this is fine to call on a curvepolygon 
+ */
+LWCURVEPOLY *
+lwgeom_getcurvepoly_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
+{
+	uchar *sub_geom;
+	uchar type;
+
+	sub_geom = lwgeom_getsubgeometry_inspected(inspected, geom_number);
+
+	if (sub_geom == NULL) return NULL;
+
+	type = lwgeom_getType(sub_geom[0]);
+	if (type != CURVEPOLYTYPE) return NULL;
+
+	return lwcurvepoly_deserialize(sub_geom);
+}
+
+/*
+ * 1st geometry has geom_number = 0
  * if there arent enough geometries, return null.
  */
 LWGEOM *lwgeom_getgeom_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
