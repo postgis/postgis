@@ -3325,6 +3325,7 @@ lwgeom_affine_recursive(uchar *serialized,
 		LWLINE *line=NULL;
 		LWPOINT *point=NULL;
 		LWPOLY *poly=NULL;
+		LWCURVE *curve=NULL;
 		uchar *subgeom=NULL;
 
 		point = lwgeom_getpoint_inspected(inspected, i);
@@ -3363,6 +3364,18 @@ lwgeom_affine_recursive(uchar *serialized,
 				gfac, hfac, ifac,
 				xoff, yoff, zoff);
 			lwgeom_release((LWGEOM *)line);
+			continue;
+		}
+
+		curve = lwgeom_getcurve_inspected(inspected, i);
+		if (curve != NULL)
+		{
+			lwgeom_affine_ptarray(curve->points,
+				afac, bfac, cfac,
+				dfac, efac, ffac,
+				gfac, hfac, ifac,
+				xoff, yoff, zoff);
+			lwgeom_release((LWGEOM *)curve);
 			continue;
 		}
 
