@@ -325,34 +325,34 @@ lwcircle_compute_box3d(POINT4D *p1, POINT4D *p2, POINT4D *p3)
          */
 
         // clockwise 1
-        if(r2 < 0 && (r3 > 0 || r3 < r2))
+        if(FP_LT(r2, 0) && (FP_GT(r3, 0) || FP_LT(r3, r2)))
         {
-            sweep = (r3 > 0) ? (r3 - 2 * M_PI) : r3;
+            sweep = (FP_GT(r3, 0)) ? (r3 - 2 * M_PI) : r3;
         }
         // clockwise 2
-        else if(r2 > 0 && r3 > 0 && r3 < r2)
+        else if(FP_GT(r2, 0) && FP_GT(r3, 0) && FP_LT(r3, r2))
         {
-            sweep = (r3 > 0) ? (r3 - 2 * M_PI) : r3;
+            sweep = (FP_GT(r3, 0)) ? (r3 - 2 * M_PI) : r3;
         }
         // counter-clockwise 4
-        else if(r2 > 0 && (r3 < 0 || r3 > r2))
+        else if(FP_GT(r2, 0) && (FP_LT(r3, 0) || FP_GT(r3, r2)))
         {
-            sweep = (r3 < 0) ? (r3 + 2 * M_PI) : r3;
+            sweep = (FP_LT(r3, 0)) ? (r3 + 2 * M_PI) : r3;
         }
         // counter-clockwisk 5
-        else if(r2 < 0 && r3 < 0 && r3 > r2)
+        else if(FP_LT(r2, 0) && FP_LT(r3, 0) && FP_GT(r3, r2))
         {
-            sweep = (r3 < 0) ? (r3 + 2 * M_PI) : r3;
+            sweep = (FP_LT(r3, 0)) ? (r3 + 2 * M_PI) : r3;
         }
         // clockwise invalid 3
-        else if(r2 > 0 && (r3 > r2 || r3 < 0))
+        else if(FP_GT(r2, 0) && (FP_GT(r3, r2) || FP_LT(r3, 0)))
         {
-            sweep = (r2 > 0) ? (r2 - 2 * M_PI) : r2;
+            sweep = (FP_GT(r2, 0)) ? (r2 - 2 * M_PI) : r2;
         }
         // clockwise invalid 6
         else
         {
-            sweep = (r2 < 0) ? (r2 + 2 * M_PI) : r2;
+            sweep = (FP_LT(r2, 0)) ? (r2 + 2 * M_PI) : r2;
         }
 
 #ifdef PGIS_DEBUG
@@ -403,26 +403,26 @@ lwcircle_compute_box3d(POINT4D *p1, POINT4D *p2, POINT4D *p3)
 		// determine if the extents are outside the arc
                 if(i < 4) 
                 {
-                    if(sweep > 0.0)
+                    if(FP_GT(sweep, 0.0))
                     {
-			if(a3 < a1)
+			if(FP_LT(a3, a1))
 			{
-			    if(angle > (a3 + 2 * M_PI) || angle < a1) continue;
+			    if(FP_GT(angle, (a3 + 2 * M_PI)) || FP_LT(angle, a1)) continue;
 			}
 			else
 			{
-			    if(angle > a3 || angle < a1) continue;
+			    if(FP_GT(angle, a3) || FP_LT(angle, a1)) continue;
 			}
                     }
                     else
                     {
-			if(a3 > a1)
+			if(FP_GT(a3, a1))
 			{
- 			    if(angle < (a3 - 2 * M_PI) || angle > a1) continue;
+ 			    if(FP_LT(angle, (a3 - 2 * M_PI)) || FP_GT(angle, a1)) continue;
 			}
 			else
 			{
-			   if(angle < a3 || angle > a1) continue;
+			   if(FP_LT(angle, a3) || FP_GT(angle, a1)) continue;
 			}
                     }
                 }
@@ -430,10 +430,10 @@ lwcircle_compute_box3d(POINT4D *p1, POINT4D *p2, POINT4D *p3)
 #ifdef PGIS_DEBUG
                 lwnotice("lwcircle_compute_box3d: potential extreame %d (%.16f, %.16f)", i, xe, ye);
 #endif
-                x1 = (x1 < xe) ? x1 : xe;
-                y1 = (y1 < ye) ? y1 : ye;
-                x2 = (x2 > xe) ? x2 : xe;
-                y2 = (y2 > ye) ? y2 : ye;
+                x1 = (FP_LT(x1, xe)) ? x1 : xe;
+                y1 = (FP_LT(y1, ye)) ? y1 : ye;
+                x2 = (FP_GT(x2, xe)) ? x2 : xe;
+                y2 = (FP_GT(y2, ye)) ? y2 : ye;
         }
 #ifdef PGIS_DEBUG
         lwnotice("lwcircle_compute_box3d: extreames found (%.16f %.16f, %.16f %.16f)", x1, y1, x2, y2);
@@ -445,10 +445,10 @@ lwcircle_compute_box3d(POINT4D *p1, POINT4D *p2, POINT4D *p3)
         y1 = center->y + y1 * radius;
         y2 = center->y + y2 * radius;
         */
-        z1 = (p1->z < p2->z) ? p1->z : p2->z;
-        z1 = (z1 < p3->z) ? z1 : p3->z;
-        z2 = (p1->z > p2->z) ? p1->z : p2->z;
-        z2 = (z2 > p3->z) ? z2 : p3->z;
+        z1 = (FP_LT(p1->z, p2->z)) ? p1->z : p2->z;
+        z1 = (FP_LT(z1, p3->z)) ? z1 : p3->z;
+        z2 = (FP_GT(p1->z, p2->z)) ? p1->z : p2->z;
+        z2 = (FP_GT(z2, p3->z)) ? z2 : p3->z;
 
         box = lwalloc(sizeof(BOX3D));
         box->xmin = x1; box->xmax = x2;
