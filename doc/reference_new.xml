@@ -8670,6 +8670,7 @@ MULTIPOINT(-118.6 38.329 6,-118.58 38.38 5)
             can be use to expand MULTIPOLYGONS into POLYGONS.</para>
 			
 			<para>Availability: PostGIS 1.0.0RC1. Requires PostgreSQL 7.3 or higher.</para>
+			<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
 			
 			<!-- Optionally mention 3d support -->
 			<para><inlinemediaobject>
@@ -8677,6 +8678,13 @@ MULTIPOINT(-118.6 38.329 6,-118.58 38.38 5)
 	          <imagedata fileref="images/check.png" />
 	        </imageobject>
 	      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+		  
+		  	<!-- Optionally mention Circular String Support -->
+			<para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method supports Circular Strings and Curves </para>
 	  </refsection>
 	
 	  <refsection>
