@@ -207,6 +207,7 @@ lwgeom_npoints(uchar *serialized)
 		LWLINE *line=NULL;
 		LWPOINT *point=NULL;
 		LWPOLY *poly=NULL;
+		LWCURVE *curve=NULL;
 		uchar *subgeom=NULL;
 
 		point = lwgeom_getpoint_inspected(inspected, i);
@@ -230,6 +231,13 @@ lwgeom_npoints(uchar *serialized)
 		if (line != NULL)
 		{
 			npoints += line->points->npoints;
+			continue;
+		}
+
+		curve = lwgeom_getcurve_inspected(inspected, i);
+		if (curve != NULL)
+		{
+			npoints += curve->points->npoints;
 			continue;
 		}
 
