@@ -662,6 +662,7 @@ lwgeom_transform_recursive(uchar *geom, PJ *inpj, PJ *outpj)
 		LWLINE *line=NULL;
 		LWPOINT *point=NULL;
 		LWPOLY *poly=NULL;
+		LWCURVE *curve=NULL;
 		POINT4D p;
 		uchar *subgeom=NULL;
 
@@ -704,6 +705,20 @@ lwgeom_transform_recursive(uchar *geom, PJ *inpj, PJ *outpj)
 				}
 			}
 			lwgeom_release((LWGEOM *)poly);
+			continue;
+		}
+
+		curve = lwgeom_getcurve_inspected(inspected, j);
+		if (curve != NULL)
+		{
+			POINTARRAY *pts = curve->points;
+			for (i=0; i<pts->npoints; i++)
+			{
+				getPoint4d_p(pts, i, &p);
+				transform_point(&p, inpj, outpj);
+				setPoint4d(pts, i, &p);
+			}
+			lwgeom_release((LWGEOM *)curve);
 			continue;
 		}
 
