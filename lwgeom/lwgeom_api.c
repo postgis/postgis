@@ -1188,6 +1188,28 @@ lwgeom_getpoly_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
 
 /*
  * 1st geometry has geom_number = 0
+ * if the actual geometry isnt a CIRCULARSTRING, null is returned (see _gettype()).
+ * if there arent enough geometries, return null.
+ * this is fine to call on a circularstring
+ */
+LWCURVE *
+lwgeom_getcurve_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
+{
+	uchar *sub_geom;
+	uchar type;
+
+	sub_geom = lwgeom_getsubgeometry_inspected(inspected, geom_number);
+
+	if (sub_geom == NULL) return NULL;
+
+	type = lwgeom_getType(sub_geom[0]);
+	if (type != CURVETYPE) return NULL;
+
+	return lwcurve_deserialize(sub_geom);
+}
+
+/*
+ * 1st geometry has geom_number = 0
  * if there arent enough geometries, return null.
  */
 LWGEOM *lwgeom_getgeom_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
