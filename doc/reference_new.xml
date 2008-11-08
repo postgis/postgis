@@ -3887,6 +3887,7 @@ z' = z </programlisting> This method is a subcase of the 3D method
             above.</para>
 	
 		<para>Availability: 1.1.2. Name changed from Affine to ST_Affine in 1.2.2</para>
+		<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
 
 		<!-- Optionally mention 3d support -->
 	    <para><inlinemediaobject>
@@ -3894,6 +3895,13 @@ z' = z </programlisting> This method is a subcase of the 3D method
 	          <imagedata fileref="images/check.png" />
 	        </imageobject>
 	      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+		  
+		<!-- Optionally mention Circular String Support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method supports Circular Strings and Curves </para>
 	  </refsection>
 	  
 	
@@ -3917,6 +3925,7 @@ SELECT ST_AsEWKT(ST_Affine(the_geom, cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi
 -------------------------------
  LINESTRING(-1 -2 -3,-1 -4 -3)
 (1 row)
+
 		</programlisting>
 	  </refsection>
 	
@@ -4200,6 +4209,13 @@ LINESTRING(1 2,1 10) | LINESTRING(1 10,1 2)
 			  <imagedata fileref="images/check.png" />
 			</imageobject>
 		  </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+		  
+			<!-- Optionally mention Circular String Support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method supports Circular Strings and Curves </para>
 	  </refsection>
 	  
 	
@@ -4356,6 +4372,7 @@ SELECT ST_AsEWKT(ST_RotateX(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2)
             is short-hand for <code>SELECT ST_Affine(geomA,  cos(rotRadians), -sin(rotRadians), 0,  sin(rotRadians), cos(rotRadians), 0,  0, 0, 1,  0, 0, 0)</code>.</para></note>
 			
 		<para>Availability: 1.1.2. Name changed from RotateZ to ST_RotateZ in 1.2.2</para>
+		<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
 		
 		<!-- Optionally mention 3d support -->
 		<para><inlinemediaobject>
@@ -4363,6 +4380,14 @@ SELECT ST_AsEWKT(ST_RotateX(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2)
 			  <imagedata fileref="images/check.png" />
 			</imageobject>
 		  </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+		  
+		<!-- Optionally mention Circular String Support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method supports Circular Strings and Curves </para>
+		  
 	  </refsection>
 	  
 	
@@ -4375,6 +4400,15 @@ SELECT ST_AsEWKT(ST_RotateZ(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2)
          st_asewkt         
 ---------------------------
  LINESTRING(-2 1 3,-1 1 1)
+ 
+ --Rotate a curved circle around z-axis
+SELECT ST_AsEWKT(ST_RotateZ(the_geom, pi()/2))
+FROM (SELECT ST_LineToCurve(ST_Buffer(ST_GeomFromText('POINT(234 567)'), 3)) As the_geom) As foo;
+
+                                                       st_asewkt                                                          
+----------------------------------------------------------------------------------------------------------------------------
+ CURVEPOLYGON(CIRCULARSTRING(-567 237,-564.87867965644 236.12132034356,-564 234,-569.12132034356 231.87867965644,-567 237))
+
 </programlisting>
 	  </refsection>
 	
@@ -4425,6 +4459,8 @@ SELECT ST_AsEWKT(ST_RotateZ(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2)
 	
 		<note><para><code>ST_Scale(geomA,  XFactor, YFactor, ZFactor)</code>
             is short-hand for <code>ST_Affine(geomA,  XFactor, 0, 0,  0, YFactor, 0,  0, 0, ZFactor,  0, 0, 0)</code>.</para></note>
+			
+		<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
 	
 	 
 		<para>Availability: 1.1.0.</para>
@@ -4434,6 +4470,13 @@ SELECT ST_AsEWKT(ST_RotateZ(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2)
 	          <imagedata fileref="images/check.png" />
 	        </imageobject>
 	      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+		  
+		<!-- Optionally mention Circular String Support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method supports Circular Strings and Curves </para>
 	  </refsection>
 	  
 	
@@ -4982,6 +5025,8 @@ CREATE INDEX idx_the_geom_26986_parcels
 		<note><para><code>ST_TransScale(geomA, deltaX, deltaY, XFactor, YFactor)</code>
             is short-hand for <code>ST_Affine(geomA, XFactor, 0, 0, 0, YFactor, 0,
             0, 0, 1, deltaX*XFactor, deltaY*YFactor, 0)</code>.</para></note>
+			
+		<note><para>Prior to 1.3.4, this function crashes if used with geometries that contain CURVES.  This is fixed in 1.3.4+</para></note>
 	
 	 
 		<para>Availability: 1.1.0.</para>
@@ -4991,6 +5036,13 @@ CREATE INDEX idx_the_geom_26986_parcels
 	          <imagedata fileref="images/check.png" />
 	        </imageobject>
 	      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+		  
+		<!-- Optionally mention Circular String Support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method supports Circular Strings and Curves </para>
 	  </refsection>
 	  
 	
@@ -5001,6 +5053,14 @@ CREATE INDEX idx_the_geom_26986_parcels
           st_asewkt          
 -----------------------------
  LINESTRING(1.5 6 3,1.5 4 1)
+
+
+--Buffer a point to get an approximation of a circle, convert to curve and then translate 1,2 and scale it 3,4 
+  SELECT ST_AsText(ST_Transscale(ST_LineToCurve(ST_Buffer('POINT(234 567)', 3)),1,2,3,4));
+                                                          st_astext                                                           
+------------------------------------------------------------------------------------------------------------------------------
+ CURVEPOLYGON(CIRCULARSTRING(714 2276,711.363961030679 2267.51471862576,705 2264,698.636038969321 2284.48528137424,714 2276))
+
 </programlisting>
 	  </refsection>
 	
