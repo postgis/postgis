@@ -2309,6 +2309,13 @@ LINESTRING(0 0 1,1 1 1,1 2 1,1 1 1,0 0 1)
 	          <imagedata fileref="images/check.png" />
 	        </imageobject>
 	      </inlinemediaobject>This function supports 3d and will not drop the z-index.</para>
+		  
+		<!-- Optionally mention Circular String Support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method supports Circular Strings and Curves </para>
 	  </refsection>
 	  
 	
@@ -2506,6 +2513,20 @@ FROM (SELECT ST_BuildArea(
           <function>ST_IsClosed(<varname>NULL</varname>)</function> to be 0, while
           PostGIS returns <varname>NULL</varname>.</para>
         </note>
+		
+		<!-- Optionally mention 3d support -->
+		<para><inlinemediaobject>
+        <imageobject>
+          <imagedata fileref="images/check.png" />
+        </imageobject>
+      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+		
+		<!-- Optionally mention Circular String Support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method supports Circular Strings and Curves </para>
       </refsection>
     
       <refsection>
@@ -2595,6 +2616,13 @@ postgis=# SELECT ST_IsClosed('MULTIPOINT((0 0), (1 1))'::geometry);
 		  </inlinemediaobject> This method implements the SQL/MM specification:
 		SQL-MM 3: 5.1.7</para>
 		
+		<!-- Optionally mention Circular String Support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method supports Circular Strings and Curves </para>
+		
 	  </refsection>
 	  
 	
@@ -2626,6 +2654,13 @@ SELECT ST_IsEmpty(ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))'));
 ----------
  t
 (1 row)
+
+ SELECT ST_IsEmpty(ST_GeomFromText('CIRCULARSTRING EMPTY'));
+  st_isempty 
+------------
+ t
+(1 row)
+
 
 		</programlisting>
 	  </refsection>
@@ -4790,7 +4825,7 @@ SELECT ST_AsEWKT(ST_SnapToGrid(ST_GeomFromEWKT('LINESTRING(-1.1115678 2.123 3 2.
 		<title>Examples</title>
 		<para>Change Mass state plane US feet geometry to WGS 84 long lat</para>
 		<programlisting>
-		SELECT ST_AsText(ST_Transform(ST_GeomFromText('POLYGON((743238 2967416,743238 2967450,
+SELECT ST_AsText(ST_Transform(ST_GeomFromText('POLYGON((743238 2967416,743238 2967450,
 	743265 2967450,743265.625 2967416,743238 2967416))',2249),4326)) As wgs_geom;
 	
  wgs_geom
