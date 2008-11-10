@@ -50,7 +50,7 @@
 #ifdef PREPARED_GEOM
 typedef struct
 {
-	char*                         type;
+	char                          type;
 	PG_LWGEOM*                    pg_geom1;
 	PG_LWGEOM*                    pg_geom2;
 	size_t                        pg_geom1_size;
