@@ -3,9 +3,10 @@
 
 typedef struct
 {
-        double min;
-        double max;
-} INTERVAL;
+	double min;
+	double max;
+}
+INTERVAL;
 
 /* Returns 1 if min < value <= max, 0 otherwise */
 uint32 isContained(INTERVAL *interval, double value);
@@ -15,25 +16,26 @@ INTERVAL *createInterval(double value1, double value2);
 INTERVAL *mergeIntervals(INTERVAL *inter1, INTERVAL *inter2);
 
 /*
- * The following struct and methods are used for a 1D RTree implementation, 
+ * The following struct and methods are used for a 1D RTree implementation,
  * described at:
  *  http://lin-ear-th-inking.blogspot.com/2007/06/packed-1-dimensional-r-tree.html
  */
 typedef struct rtree_node
 {
-        INTERVAL *interval;
-        struct rtree_node *leftNode;
-        struct rtree_node *rightNode;
-        LWLINE* segment;
-} RTREE_NODE;
+	INTERVAL *interval;
+	struct rtree_node *leftNode;
+	struct rtree_node *rightNode;
+	LWLINE *segment;
+}
+RTREE_NODE;
 
 /* Creates an interior node given the children. */
 RTREE_NODE *createInteriorNode(RTREE_NODE *left, RTREE_NODE *right);
 /* Creates a leaf node given the pointer to the start point of the segment. */
 RTREE_NODE *createLeafNode(POINTARRAY *pa, int startPoint);
-/* 
- * Creates an rtree given a pointer to the point array. 
- * Must copy the point array. 
+/*
+ * Creates an rtree given a pointer to the point array.
+ * Must copy the point array.
  */
 RTREE_NODE *createTree(POINTARRAY *pointArray);
 /* Frees the tree. */
@@ -46,13 +48,14 @@ LWMLINE *mergeMultiLines(LWMLINE *line1, LWMLINE *line2);
 typedef struct
 {
 	char type;
-        RTREE_NODE **ringIndices;
-        int ringCount;
-        int polyCount;
-        uchar *poly;
-} RTREE_POLY_CACHE;
+	RTREE_NODE **ringIndices;
+	int ringCount;
+	int polyCount;
+	uchar *poly;
+}
+RTREE_POLY_CACHE;
 
-/* 
+/*
  * Creates a new cachable index if needed, or returns the current cache if
  * it is applicable to the current polygon.
  */
