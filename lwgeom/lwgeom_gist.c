@@ -598,6 +598,16 @@ Datum LWGEOM_gist_consistent(PG_FUNCTION_ARGS)
 	uchar *serialized_lwgeom;
 #endif
 
+#if USE_VERSION >= 84
+	/* PostgreSQL 8.4 and later require the RECHECK flag to be set here,
+  	   rather than being supplied as part of the operator class definition */
+	bool *recheck = (bool *) PG_GETARG_POINTER(4);
+
+	/* And since the index is lossy from conversion from float8 to float4, we must
+  	recheck */
+	*recheck = true;
+#endif
+
 #ifdef PGIS_DEBUG_CALLS
 	elog(NOTICE,"GIST: LWGEOM_gist_consistent called");
 #endif
