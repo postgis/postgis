@@ -161,7 +161,7 @@ endif
 # 
 # pg_config --version => PostgreSQL 8.3.1
 #
-PG_VERSION_MAJOR=$(shell $(PGCONFIG) --version | sed 's/[A-Za-z ]*\([0-9]\)\.\([0-9]\)[A-Za-z ]*/\1/')
-PG_VERSION_MINOR=$(shell $(PGCONFIG) --version | sed 's/[A-Za-z ]*\([0-9]\)\.\([0-9]\)[A-Za-z ]*/\2/')
+PG_VERSION_MAJOR=$(shell $(PGCONFIG) --version | sed 's/[A-Za-z ]*\([0-9]\)\.\([0-9]\).*/\1/')
+PG_VERSION_MINOR=$(shell $(PGCONFIG) --version | sed 's/[A-Za-z ]*\([0-9]\)\.\([0-9]\).*/\2/')
 USE_VERSION=$(PG_VERSION_MAJOR)$(PG_VERSION_MINOR)
 
