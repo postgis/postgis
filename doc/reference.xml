@@ -420,38 +420,6 @@
     </sect2>
 
     <sect2>
-      <title>Geometry Constructors</title>
-
-      <variablelist>
-        <varlistentry>
-          <term>ST_MakeBox2D(&lt;LL&gt;, &lt;UR&gt;)</term>
-
-          <listitem>
-            <para>Creates a BOX2D defined by the given point
-            geometries.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>ST_MakeBox3D(&lt;LLB&gt;, &lt;URT&gt;)</term>
-
-          <listitem>
-            <para>Creates a BOX3D defined by the given point
-            geometries.</para>
-          </listitem>
-        </varlistentry>
-		
-        <varlistentry>
-          <term>ST_LineFromMultiPoint(multipoint)</term>
-
-          <listitem>
-            <para>Creates a LineString from a MultiPoint geometry.</para>
-          </listitem>
-        </varlistentry>
-      </variablelist>
-    </sect2>
-
-    <sect2>
       <title>Geometry Editors</title>
 
       <variablelist>

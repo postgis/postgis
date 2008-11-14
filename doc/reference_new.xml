@@ -1437,6 +1437,155 @@ SELECT ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406
 		  </refsection>
 	</refentry>
 		
+	<refentry id="ST_LineFromMultiPoint">
+	  <refnamediv>
+		<refname>ST_LineFromMultiPoint</refname>
+	
+		<refpurpose>Creates a LineString from a MultiPoint geometry.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_LineFromMultiPoint</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>aMultiPoint</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+	
+		<para>Creates a LineString from a MultiPoint geometry.</para>
+	
+		<!-- Optionally mention 3d support -->
+		<para><inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+		  </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+	
+	  </refsection>
+	  
+	  <refsection>
+		<title>Examples</title>
+	
+		<programlisting>
+--Create a 3d line string from a 3d multipoint
+SELECT ST_AsEWKT(ST_LineFromMultiPoint(ST_GeomFromEWKT('MULTIPOINT(1 2 3, 4 5 6, 7 8 9)')));
+--result--
+LINESTRING(1 2 3,4 5 6,7 8 9)		
+		</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+	
+		<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_Collect" />,<xref linkend="ST_MakeLine" /></para>
+	  </refsection>
+	</refentry>
+	
+	<refentry id="ST_MakeBox2D">
+	  <refnamediv>
+	    <refname>ST_MakeBox2D</refname>
+	
+	    <refpurpose>Creates a BOX2D defined by the given point
+            geometries.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>box2d <function>ST_MakeBox2D</function></funcdef>
+	        <paramdef><type>geometry </type> <parameter>pointLowLeft</parameter></paramdef>
+	        <paramdef><type>geometry </type> <parameter>pointUpRight</parameter></paramdef>
+	      </funcprototype>
+	    </funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+	    <para>Creates a BOX2D defined by the given point
+            geometries.  This is useful for doing range queries</para>
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+	
+	    <programlisting>
+--Return all features that fall reside or partly reside in a US national atlas coordinate bounding box
+--It is assumed here that the geometries are stored with SRID = 2163 (US National atlas equal area)
+SELECT feature_id, feature_name, the_geom 
+FROM features
+WHERE the_geom &amp;&amp; ST_SetSRID(ST_MakeBox2D(ST_Point(-989502.1875, 528439.5625),
+	ST_Point(-987121.375 ,529933.1875)),2163)</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	
+	    <para><xref linkend="ST_MakePoint" />, <xref linkend="ST_Point" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_SRID" /></para>
+	  </refsection>
+	</refentry>
+	
+	<refentry id="ST_MakeBox3D">
+	  <refnamediv>
+	    <refname>ST_MakeBox3D</refname>
+	
+	    <refpurpose>Creates a BOX3D defined by the given 3d point
+            geometries.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>box3d <function>ST_MakeBox3D</function></funcdef>
+	        <paramdef><type>geometry </type> <parameter>point3DLowLeftBottom</parameter></paramdef>
+	        <paramdef><type>geometry </type> <parameter>point3DUpRightTop</parameter></paramdef>
+	      </funcprototype>
+	    </funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+	    <para>Creates a BOX3D defined by the given 2 3D point
+            geometries. </para>
+			
+		<!-- Optionally mention 3d support -->
+		<para><inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+		  </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+	
+	    <programlisting>
+SELECT ST_MakeBox3D(ST_MakePoint(-989502.1875, 528439.5625, 10),
+	ST_MakePoint(-987121.375 ,529933.1875, 10)) As abb3d
+	
+--bb3d--
+--------
+BOX3D(-989502.1875 528439.5625 10,-987121.375 529933.1875 10)
+	</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	
+	    <para><xref linkend="ST_MakePoint" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_SRID" /></para>
+	  </refsection>
+	</refentry>
+		
 	<refentry id="ST_MakeLine">
 		<refnamediv>
 		<refname>ST_MakeLine</refname>
