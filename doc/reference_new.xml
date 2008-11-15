@@ -1662,6 +1662,114 @@ SELECT ST_AsEWKT(ST_MakeLine(ST_MakePoint(1,2,3), ST_MakePoint(3,4,5)));
 			<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_AsText" />, <xref linkend="ST_GeomFromText" />, <xref linkend="ST_MakePoint" /></para>
 		</refsection>
 	</refentry>	
+	
+	<refentry id="ST_MakePolygon">
+		<refnamediv>
+		<refname>ST_MakePolygon</refname>
+		
+		<refpurpose>Creates a Polygon formed by the given shell. Input
+            geometries must be closed LINESTRINGS.</refpurpose>
+		</refnamediv>
+		
+		<refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_MakePolygon</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_MakePolygon</function></funcdef>
+			<paramdef><type>geometry</type> <parameter>outerlinestring</parameter></paramdef>
+			<paramdef><type>geometry[]</type> <parameter>interiorlinestrings</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+		</refsynopsisdiv>
+		
+		<refsection>
+			<title>Description</title>
+			
+			<para>Creates a Polygon formed by the given shell. Input
+				geometries must be closed LINESTRINGS. Comes in 2 variants.</para>
+			<para>Variant 1: takes one closed linestring.</para>
+			<para>Variant 2:  Creates a Polygon formed by the given shell and array of
+            holes. You can construct a geometry array using ST_Accum or the PostgreSQL ARRAY[] and
+            ARRAY() constructs. Input geometries must be closed LINESTRINGS.</para>
+			<note>
+				<para>This function will not accept a MULTILINESTRING.  Use <xref linkend="ST_LineMerge" /> or <xref linkend="ST_Dump" /> to generate line strings.</para>
+			</note>
+			
+		</refsection>
+		
+		<refsection>
+		<title>Examples: Single closed LINESTRING</title>		
+		 <programlisting>
+SELECT ST_MakePolygon(ST_GeomFromText('LINESTRING(75.15 29.53,77 29,77.6 29.5, 75.15 29.53)'));
+--If linestring is not closed
+--you can add the start point to close it
+SELECT ST_MakePolygon(ST_AddPoint(foo.open_line, ST_StartPoint(foo.open_line)))
+FROM (
+SELECT ST_GeomFromText('LINESTRING(75.15 29.53,77 29,77.6 29.5)') As open_line) As foo
+			  </programlisting>
+		</refsection>
+		<refsection>
+			<title>Examples: Outter shell with inner shells</title>
+			
+			<para>Build a donut with an ant hole</para>
+           <programlisting>
+SELECT ST_MakePolygon(
+		ST_ExteriorRing(ST_Buffer(foo.line,10)),
+	ARRAY[ST_Translate(foo.line,1,1),
+		ST_ExteriorRing(ST_Buffer(ST_MakePoint(20,20),1)) ]
+	)
+FROM 
+	(SELECT ST_ExteriorRing(ST_Buffer(ST_MakePoint(10,10),10,10))
+		As line )
+		As foo;
+		</programlisting>
+		<para>Build province boundaries with holes
+		representing lakes in the province from a set of 
+		province polygons/multipolygons and water line strings
+		this is an example of using PostGIS ST_Accum
+		<note><para>The use of CASE because feeding a null array into 
+		ST_MakePolygon results in NULL</para></note>
+		<note><para>the use of left join to guarantee we get all provinces back even if they have no lakes</para></note></para>
+		<programlisting>
+	SELECT p.gid, p.province_name, 
+		CASE WHEN
+			ST_Accum(w.the_geom) IS NULL THEN p.the_geom
+		ELSE  ST_MakePolygon(ST_LineMerge(ST_Boundary(p.the_geom)), ST_Accum(w.the_geom)) END
+	FROM 
+		provinces p LEFT JOIN waterlines w 
+			ON (ST_Within(w.the_geom, p.the_geom) AND ST_IsClosed(w.the_geom))
+	GROUP BY p.gid, p.province_name, p.the_geom;
+	
+	--Same example above but utilizing a correlated subquery
+	--and PostgreSQL built-in ARRAY() function that converts a row set to an array
+	
+	SELECT p.gid,  p.province_name, CASE WHEN 
+		EXISTS(SELECT w.the_geom 
+			FROM waterlines w 
+			WHERE ST_Within(w.the_geom, p.the_geom) 
+			AND ST_IsClosed(w.the_geom))
+		THEN 
+		ST_MakePolygon(ST_LineMerge(ST_Boundary(p.the_geom)), 
+			ARRAY(SELECT w.the_geom 
+				FROM waterlines w 
+				WHERE ST_Within(w.the_geom, p.the_geom) 
+				AND ST_IsClosed(w.the_geom)))
+		ELSE p.the_geom END As the_geom
+	FROM 
+		provinces p; 
+			  </programlisting>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_Accum" />, <xref linkend="ST_AddPoint" />, <xref linkend="ST_GeometryType" />, <xref linkend="ST_IsClosed" />, <xref linkend="ST_LineMerge" /></para>
+		</refsection>
+	</refentry>	
+	
 	<refentry id="ST_MakePoint">
 		<refnamediv>
 		<refname>ST_MakePoint</refname>
@@ -1912,6 +2020,113 @@ SELECT ST_PointFromText('POINT(-71.064544 42.28787)', 4326);
 		  <refsection>
 			<title>See Also</title>
 			<para><xref linkend="ST_GeomFromText" />, <xref linkend="ST_MakePoint" />, <xref linkend="ST_SRID" /></para>
+		  </refsection>
+	</refentry>
+
+	<refentry id="ST_Polygon">
+	  <refnamediv>
+	    <refname>ST_Polygon</refname>
+	
+	    <refpurpose>Returns a polygon built from the specified linestring and SRID.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>geometry <function>ST_Polygon</function></funcdef>
+	        <paramdef><type>geometry </type> <parameter>aLineString</parameter></paramdef>
+	        <paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+	      </funcprototype>
+	    </funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+	    <para>Returns a polygon built from the specified linestring and SRID.</para>
+	
+	    <!-- optionally mention that this function uses indexes if appropriate -->
+	    <note>
+	      <para>ST_Polygon is similar to first version oST_MakePolygon except it also sets the spatial ref sys (SRID) of the polygon. Will not work with MULTILINESTRINGS
+		  	so use LineMerge to merge multilines.  Also does not create polygons with holes.  Use ST_MakePolygon for that.</para>
+	    </note>
+	
+	    <!-- Optionally mention OpenGIS compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the <ulink
+	    url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+	    Implementation Specification for SQL.</ulink></para>
+	
+	    <!-- Optionally mention SQL/MM compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the SQL/MM specification: SQL-MM 3: 8.3.2</para>
+		
+		<!-- Optionally mention 3d support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+	
+	    <programlisting>
+--a 2d polygon
+SELECT ST_Polygon(ST_GeomFromText('LINESTRING(75.15 29.53,77 29,77.6 29.5, 75.15 29.53)'), 4326);
+
+--result--
+POLYGON((75.15 29.53,77 29,77.6 29.5,75.15 29.53))
+--a 3d polygon
+SELECT ST_AsEWKT(ST_Polygon(ST_GeomFromEWKT('LINESTRING(75.15 29.53 1,77 29 1,77.6 29.5 1, 75.15 29.53 1)'), 4326));
+
+result
+------
+SRID=4326;POLYGON((75.15 29.53 1,77 29 1,77.6 29.5 1,75.15 29.53 1))
+			</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	
+	    <para> <xref linkend="ST_AsEWKT" />, <xref linkend="ST_AsText" />, <xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_GeomFromText" />, <xref linkend="ST_LineMerge" />, <xref linkend="ST_MakePolygon" /></para>
+	  </refsection>
+	</refentry>
+		  
+	<refentry id="ST_WKTToSQL">
+		  <refnamediv>
+			<refname>ST_WKBToSQL</refname>
+			<refpurpose>Return a specified ST_Geometry value from Well-Known Binary representation (WKB).  This is an alias name for ST_GeomFromWKB that takes no srid</refpurpose>
+		  </refnamediv>		
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_WKBToSQL</function></funcdef>
+				<paramdef><type>bytea </type> <parameter>WKB</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+		  <refsection>
+			<title>Description</title>
+			<!-- Optionally mention OpenGIS compliancy if appropriate -->
+			<para><inlinemediaobject>
+				<imageobject>
+				  <imagedata fileref="images/check.png" />
+				</imageobject>
+			  </inlinemediaobject> This method implements the SQL/MM specification: SQL-MM 3: 5.1.36</para>
+		  </refsection>
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_GeomFromWKB" /></para>
 		  </refsection>
 	</refentry>
 	
@@ -9239,113 +9454,6 @@ SELECT ST_AsEWKT(ST_LineToCurve(ST_GeomFromEWKT('LINESTRING(1 2 3, 3 4 8, 5 6 4,
 	  </refsection>
 	</refentry>
 	
-	<refentry id="ST_MakePolygon">
-		<refnamediv>
-		<refname>ST_MakePolygon</refname>
-		
-		<refpurpose>Creates a Polygon formed by the given shell. Input
-            geometries must be closed LINESTRINGS.</refpurpose>
-		</refnamediv>
-		
-		<refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>geometry <function>ST_MakePolygon</function></funcdef>
-			<paramdef><type>geometry</type> <parameter>linestring</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>geometry <function>ST_MakePolygon</function></funcdef>
-			<paramdef><type>geometry</type> <parameter>outerlinestring</parameter></paramdef>
-			<paramdef><type>geometry[]</type> <parameter>interiorlinestrings</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-		</refsynopsisdiv>
-		
-		<refsection>
-			<title>Description</title>
-			
-			<para>Creates a Polygon formed by the given shell. Input
-				geometries must be closed LINESTRINGS. Comes in 2 variants.</para>
-			<para>Variant 1: takes one closed linestring.</para>
-			<para>Variant 2:  Creates a Polygon formed by the given shell and array of
-            holes. You can construct a geometry array using ST_Accum or the PostgreSQL ARRAY[] and
-            ARRAY() constructs. Input geometries must be closed LINESTRINGS.</para>
-			<note>
-				<para>This function will not accept a MULTILINESTRING.  Use <xref linkend="ST_LineMerge" /> or <xref linkend="ST_Dump" /> to generate line strings.</para>
-			</note>
-			
-		</refsection>
-		
-		<refsection>
-		<title>Examples: Single closed LINESTRING</title>		
-		 <programlisting>
-SELECT ST_MakePolygon(ST_GeomFromText('LINESTRING(75.15 29.53,77 29,77.6 29.5, 75.15 29.53)'));
---If linestring is not closed
---you can add the start point to close it
-SELECT ST_MakePolygon(ST_AddPoint(foo.open_line, ST_StartPoint(foo.open_line)))
-FROM (
-SELECT ST_GeomFromText('LINESTRING(75.15 29.53,77 29,77.6 29.5)') As open_line) As foo
-			  </programlisting>
-		</refsection>
-		<refsection>
-			<title>Examples: Outter shell with inner shells</title>
-			
-			<para>Build a donut with an ant hole</para>
-           <programlisting>
-SELECT ST_MakePolygon(
-		ST_ExteriorRing(ST_Buffer(foo.line,10)),
-	ARRAY[ST_Translate(foo.line,1,1),
-		ST_ExteriorRing(ST_Buffer(ST_MakePoint(20,20),1)) ]
-	)
-FROM 
-	(SELECT ST_ExteriorRing(ST_Buffer(ST_MakePoint(10,10),10,10))
-		As line )
-		As foo;
-		</programlisting>
-		<para>Build province boundaries with holes
-		representing lakes in the province from a set of 
-		province polygons/multipolygons and water line strings
-		this is an example of using PostGIS ST_Accum
-		<note><para>The use of CASE because feeding a null array into 
-		ST_MakePolygon results in NULL</para></note>
-		<note><para>the use of left join to guarantee we get all provinces back even if they have no lakes</para></note></para>
-		<programlisting>
-	SELECT p.gid, p.province_name, 
-		CASE WHEN
-			ST_Accum(w.the_geom) IS NULL THEN p.the_geom
-		ELSE  ST_MakePolygon(ST_LineMerge(ST_Boundary(p.the_geom)), ST_Accum(w.the_geom)) END
-	FROM 
-		provinces p LEFT JOIN waterlines w 
-			ON (ST_Within(w.the_geom, p.the_geom) AND ST_IsClosed(w.the_geom))
-	GROUP BY p.gid, p.province_name, p.the_geom;
-	
-	--Same example above but utilizing a correlated subquery
-	--and PostgreSQL built-in ARRAY() function that converts a row set to an array
-	
-	SELECT p.gid,  p.province_name, CASE WHEN 
-		EXISTS(SELECT w.the_geom 
-			FROM waterlines w 
-			WHERE ST_Within(w.the_geom, p.the_geom) 
-			AND ST_IsClosed(w.the_geom))
-		THEN 
-		ST_MakePolygon(ST_LineMerge(ST_Boundary(p.the_geom)), 
-			ARRAY(SELECT w.the_geom 
-				FROM waterlines w 
-				WHERE ST_Within(w.the_geom, p.the_geom) 
-				AND ST_IsClosed(w.the_geom)))
-		ELSE p.the_geom END As the_geom
-	FROM 
-		provinces p; 
-			  </programlisting>
-		</refsection>
-		<refsection>
-			<title>See Also</title>
-			<para><xref linkend="ST_Accum" />, <xref linkend="ST_AddPoint" />, <xref linkend="ST_GeometryType" />, <xref linkend="ST_IsClosed" />, <xref linkend="ST_LineMerge" /></para>
-		</refsection>
-	</refentry>	
-
 	<refentry id="ST_MemUnion">
 	  <refnamediv>
 	    <refname>ST_MemUnion</refname>

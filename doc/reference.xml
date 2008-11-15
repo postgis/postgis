@@ -859,28 +859,6 @@
           <para>SQL-MM 3: 8.3.7</para>
         </listitem>
       </varlistentry>
-
-      <varlistentry>
-        <term>ST_Polygon</term>
-
-        <listitem>
-          <para>Return a polygon build from the specified linestring and
-          SRID.</para>
-
-          <para>SQL-MM 3: 8.3.2</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term>ST_WKBToSQL</term>
-
-        <listitem>
-          <para>Return an ST_Geometry value for a given well-known binary
-          representation.</para>
-
-          <para>SQL-MM 3: 5.1.36</para>
-        </listitem>
-      </varlistentry>
 	 </variablelist>
   </sect1>
 
