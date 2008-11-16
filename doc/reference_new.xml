@@ -2102,7 +2102,7 @@ SRID=4326;POLYGON((75.15 29.53 1,77 29 1,77.6 29.5 1,75.15 29.53 1))
 	  </refsection>
 	</refentry>
 		  
-	<refentry id="ST_WKTToSQL">
+	<refentry id="ST_WKBToSQL">
 		  <refnamediv>
 			<refname>ST_WKBToSQL</refname>
 			<refpurpose>Return a specified ST_Geometry value from Well-Known Binary representation (WKB).  This is an alias name for ST_GeomFromWKB that takes no srid</refpurpose>
