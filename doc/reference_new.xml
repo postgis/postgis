@@ -10629,9 +10629,11 @@ SELECT ST_SetSRID(ST_Extent(the_geom),2249) as bextent FROM sometable;
 	    <title>Description</title>
 	
 	    <para>Returns the amount of space (in bytes) the geometry takes. </para>
-		<para>This is a nice compliment to PostgreSQL built in functions pg_size_pretty, pg_relation_size.</para>
-		<note><para>pg_relation_size which gives the full size of a table may return byte size lower than ST_Mem_Size. This is because
-		pg_relation_size does not add toasted table contribution where large geometries are stored.</para></note>
+		<para>This is a nice compliment to PostgreSQL built in functions pg_size_pretty, pg_relation_size, pg_total_relation_size.</para>
+		<note><para>pg_relation_size which gives the byte size of a table may return byte size lower than ST_Mem_Size. This is because
+		pg_relation_size does not add toasted table contribution and large geometries are stored in TOAST tables.</para>
+		<para>pg_total_relation_size - includes, the table, the toasted tables, and the indexes.</para>
+		</note>
 		
 	
 		<!-- Optionally mention 3d support -->
@@ -10670,6 +10672,13 @@ SELECT ST_Mem_Size(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,2
 ---
 73
 	
+--What percentage of our table is taken up by just the geometry
+SELECT pg_total_relation_size('public.neighborhoods') As fulltable_size, sum(ST_Mem_Size(the_geom)) As geomsize,
+sum(ST_Mem_Size(the_geom))*1.00/pg_total_relation_size('public.neighborhoods')*100 As pergeom
+FROM neighborhoods;
+fulltable_size geomsize  pergeom	
+------------------------------------------------
+262144         96238	 36.71188354492187500000
 	</programlisting>
 	  </refsection>
 	
