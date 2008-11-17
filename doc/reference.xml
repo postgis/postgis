@@ -571,15 +571,6 @@
           </listitem>
         </varlistentry>
 
-        <varlistentry>
-          <term>ST_mem_size(geometry)</term>
-
-          <listitem>
-            <para>Returns the amount of space (in bytes) the geometry
-            takes.</para>
-          </listitem>
-        </varlistentry>
-
         <varlistentry id="ST_Point_Inside_Circle">
           <term>ST_point_inside_circle(geometry, float, float, float)</term>
 
