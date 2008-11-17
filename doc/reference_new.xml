@@ -5832,7 +5832,11 @@ st_asgeojson
 				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>max_num_decimal_digits</parameter></paramdef>
 			</funcprototype>
-			<!-- TODO: itemize other prototypes - 1 more -->
+			<funcprototype>
+				<funcdef>text <function>ST_AsGML</function></funcdef>
+				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
+				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+			</funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
 	
