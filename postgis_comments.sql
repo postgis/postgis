@@ -38,7 +38,7 @@ COMMENT ON FUNCTION PostGIS_Scripts_Released() IS 'Returns the version number of
 COMMENT ON FUNCTION PostGIS_Uses_Stats() IS 'Returns TRUE if STATS usage has been enabled.';
 			
 COMMENT ON FUNCTION PostGIS_Version() IS 'Returns PostGIS version number and compile-time options.';
-
+					
 COMMENT ON FUNCTION Probe_Geometry_Columns() IS 'Scans all tables with PostGIS geometry constraints and adds them to the geometry_columns table if they are not there.';
 			
 COMMENT ON FUNCTION UpdateGeometrySRID(varchar , varchar , integer ) IS 'args: table_name, column_name, srid - Updates the SRID of all features in a geometry column, geometry_columns metadata and srid table constraint';
@@ -233,6 +233,8 @@ COMMENT ON FUNCTION ST_AsGML(geometry ) IS 'args: g1 - Return the geometry as a 
 COMMENT ON FUNCTION ST_AsGML(geometry , integer ) IS 'args: g1, max_num_decimal_digits - Return the geometry as a GML version 2 or 3 element.';
 			
 COMMENT ON FUNCTION ST_AsGML(integer , geometry , integer ) IS 'args: version, g1, max_num_decimal_digits - Return the geometry as a GML version 2 or 3 element.';
+			
+COMMENT ON FUNCTION ST_AsGML(integer , geometry ) IS 'args: version, g1 - Return the geometry as a GML version 2 or 3 element.';
 			
 COMMENT ON FUNCTION ST_AsHEXEWKB(geometry , text ) IS 'args: g1, NDRorXDR - Returns a Geometry in HEXEWKB format (as text) using either little-endian (NDR) or big-endian (XDR) encoding.';
 			
