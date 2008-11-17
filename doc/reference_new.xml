@@ -10608,18 +10608,10 @@ SELECT ST_SetSRID(ST_Extent(the_geom),2249) as bextent FROM sometable;
         <para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_SRID" /></para>
       </refsection>
 	</refentry>
-	
-	        <varlistentry>
-          <term>ST_mem_size(geometry)</term>
 
-          <listitem>
-            <para>Returns the amount of space (in bytes) the geometry
-            takes.</para>
-          </listitem>
-        </varlistentry>
-	<refentry id="ST_MemSize">
+	<refentry id="ST_Mem_Size">
 	  <refnamediv>
-	    <refname>ST_MemSize</refname>
+	    <refname>ST_Mem_Size</refname>
 	
 	    <refpurpose>Returns the amount of space (in bytes) the geometry takes.</refpurpose>
 	  </refnamediv>
@@ -10627,7 +10619,7 @@ SELECT ST_SetSRID(ST_Extent(the_geom),2249) as bextent FROM sometable;
 	  <refsynopsisdiv>
 	    <funcsynopsis>
 	      <funcprototype>
-	        <funcdef>integer <function>ST_MemSize</function></funcdef>
+	        <funcdef>integer <function>ST_Mem_Size</function></funcdef>
 	        <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
 	      </funcprototype>
 	    </funcsynopsis>
@@ -10638,6 +10630,8 @@ SELECT ST_SetSRID(ST_Extent(the_geom),2249) as bextent FROM sometable;
 	
 	    <para>Returns the amount of space (in bytes) the geometry takes. </para>
 		<para>This is a nice compliment to PostgreSQL built in functions pg_size_pretty, pg_relation_size.</para>
+		<note><para>pg_relation_size which gives the full size of a table may return byte size lower than ST_Mem_Size. This is because
+		pg_relation_size does not add toasted table contribution where large geometries are stored.</para></note>
 		
 	
 		<!-- Optionally mention 3d support -->
@@ -10660,7 +10654,7 @@ SELECT ST_SetSRID(ST_Extent(the_geom),2249) as bextent FROM sometable;
 	
 	    <programlisting>
 --Return how much byte space Boston takes up  in our Mass data set
-SELECT pg_size_pretty(SUM(st_mem_size(the_geom))) as totgeomsum, 
+SELECT pg_size_pretty(SUM(ST_Mem_Size(the_geom))) as totgeomsum, 
 pg_size_pretty(SUM(CASE WHEN town = 'BOSTON' THEN st_mem_size(the_geom) ELSE 0 END)) As bossum, 
 CAST(SUM(CASE WHEN town = 'BOSTON' THEN st_mem_size(the_geom) ELSE 0 END)*1.00 /
 		SUM(st_mem_size(the_geom))*100 As numeric(10,2)) As perbos
@@ -10669,6 +10663,12 @@ FROM towns;
 totgeomsum	bossum	perbos
 ----------	------	------
 1522 kB		30 kB	1.99
+
+
+SELECT ST_Mem_Size(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)'));
+
+---
+73
 	
 	</programlisting>
 	  </refsection>
