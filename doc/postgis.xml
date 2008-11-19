@@ -235,7 +235,7 @@
     </sect1>
 
     <sect1 id="PGInstall">
-      <title>PostGIS</title>
+      <title>PostGIS Compile from Source and Install</title>
 
       <para>The PostGIS module is a extension to the PostgreSQL backend
       server. As such, PostGIS @@LAST_RELEASE_VERSION@@ <emphasis>requires</emphasis>
@@ -288,7 +288,8 @@
 
             <listitem>
               <para>If you want to use GEOS functionality, you must have the
-              GEOS library installed. If ./configure didn't find it, try
+              GEOS library installed. Geos 3.0.3+ is preferred and is required for some functions
+			  such as ST_SimplifyPreserveTopology to be available.  If ./configure didn't find it, try
               using <code>--with-geos=PATH</code> to specify the full path to
               the geos-config program full path.</para>
             </listitem>
@@ -319,6 +320,28 @@
             </listitem>
           </itemizedlist>
         </listitem>
+		
+		<listitem>
+			<para>If you are missing proj based on above or running a version below 4.5, then install by following these steps.</para>
+			<programlisting>wget http://download.osgeo.org/proj/proj-4.6.0.tar.gz
+tar xvzf proj-4.6.0.tar.gz
+cd proj-4.6.0
+./configure &amp;&amp; make clean &amp;&amp; make
+make install
+ldconfig
+cd ..</programlisting>
+		</listitem>
+		
+		<listitem>
+			<para>If you are missing geos based on above or running a version below 3.0, then install by following these steps.</para>
+			<programlisting>wget http://download.osgeo.org/geos/geos-3.0.3.tar.bz2
+tar xvjf geos-3.0.3.tar.bz2
+cd geos-3.0.3
+./configure &amp;&amp; make clean &amp;&amp; make
+make install
+ldconfig
+cd ..</programlisting>
+		</listitem>
 
         <listitem>
           <para>PostGIS requires the PL/pgSQL procedural language extension.
