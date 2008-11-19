@@ -174,9 +174,9 @@ cd ..</programlisting>
 		
 		<listitem>
 			<para>If you are missing geos based on above or running a version below 3.0, then install by following these steps.</para>
-			<programlisting>wget http://download.osgeo.org/geos/geos-3.0.0.tar.bz2
-tar xvjf geos-3.0.0.tar.bz2
-cd geos-3.0.0
+			<programlisting>wget http://download.osgeo.org/geos/geos-3.0.3.tar.bz2
+tar xvjf geos-3.0.3.tar.bz2
+cd geos-3.0.3
 ./configure &amp;&amp; make clean &amp;&amp; make
 make install
 ldconfig
