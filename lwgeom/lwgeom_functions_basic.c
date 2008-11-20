@@ -1548,9 +1548,7 @@ Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom2;
 	double mindist;
 
-#ifdef PROFILE
-	profstart(PROF_QRUN);
-#endif
+	PROFSTART(PROF_QRUN);
 
 	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
@@ -1583,9 +1581,7 @@ Datum LWGEOM_dwithin(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom2;
 	double mindist, tolerance;
 
-#ifdef PROFILE
-	profstart(PROF_QRUN);
-#endif
+	PROFSTART(PROF_QRUN);
 
 	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));

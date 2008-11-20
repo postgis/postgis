@@ -248,9 +248,7 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 	text *type;
 	unsigned int byteorder=-1;
 
-#ifdef PROFILE
-	profstart(PROF_QRUN);
-#endif
+	PROFSTART(PROF_QRUN);
 
 	if ( (PG_NARGS()>1) && (!PG_ARGISNULL(1)) )
 	{
