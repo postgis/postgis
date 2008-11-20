@@ -316,8 +316,8 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 
 #endif
 
-#ifdef PROFILE
-	profstop(PROF_QRUN);
+#if POSTGIS_PROFILE > 0
+	PROFSTOP(PROF_QRUN);
 	lwnotice("serialized_lwgeom_to_ewkb: prof: %lu", proftime[PROF_QRUN]);
 #endif
 

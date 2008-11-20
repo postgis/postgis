@@ -1562,10 +1562,8 @@ Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS)
 	mindist = lwgeom_mindistance2d_recursive(SERIALIZED_FORM(geom1),
 	                SERIALIZED_FORM(geom2));
 
-#ifdef PROFILE
-	profstop(PROF_QRUN);
-	profreport("dist",geom1, geom2, NULL);
-#endif
+	PROFSTOP(PROF_QRUN);
+	PROFREPORT("dist",geom1, geom2, NULL);
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
@@ -1605,10 +1603,8 @@ Datum LWGEOM_dwithin(PG_FUNCTION_ARGS)
 	                  tolerance
 	          );
 
-#ifdef PROFILE
-	profstop(PROF_QRUN);
-	profreport("dist",geom1, geom2, NULL);
-#endif
+	PROFSTOP(PROF_QRUN);
+	PROFREPORT("dist",geom1, geom2, NULL);
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);

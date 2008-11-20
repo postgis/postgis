@@ -34,8 +34,8 @@
 #include "liblwgeom.h"
 #include "profile.h"
 
-#ifdef PROFILE
-#warning PROFILE enabled!
+#if POSTGIS_PROFILE > 0
+#warning POSTGIS_PROFILE enabled!
 #endif
 
 /*
