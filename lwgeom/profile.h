@@ -3,27 +3,27 @@
 
 #include <math.h>
 
-/*
- * Define this to have profiling enabled
- */
-/*#define PROFILE */
+/* Only enable profiling code if POSTGIS_PROFILE in postgis_config.h is > 0 */
+#if POSTGIS_PROFILE > 0
 
-#ifdef PROFILE
 #include <sys/time.h>
+
 #define PROF_P2G1 0
 #define PROF_P2G2 1
 #define PROF_G2P 2
 #define PROF_GRUN 3
 #define PROF_QRUN 4
+
 struct timeval profstart[5], profstop[5];
 long proftime[5];
 long profipts1, profipts2, profopts;
-#define profstart(x) do { gettimeofday(&(profstart[x]), NULL); } while (0);
-#define profstop(x) do { gettimeofday(&(profstop[x]), NULL); \
+
+#define PROFSTART(x) do { gettimeofday(&(profstart[x]), NULL); } while (0);
+#define PROFSTOP(x) do { gettimeofday(&(profstop[x]), NULL); \
 	proftime[x] = ( profstop[x].tv_sec*1000000+profstop[x].tv_usec) - \
 		( profstart[x].tv_sec*1000000+profstart[x].tv_usec); \
 	} while (0);
-#define profreport(n, i1, i2, o) do { \
+#define PROFREPORT(n, i1, i2, o) do { \
 	profipts1 = profipts2 = profopts = 0; \
 	if ((i1)) profipts1 += lwgeom_npoints(SERIALIZED_FORM((i1))); \
 	else proftime[PROF_P2G1] = 0; \
@@ -47,7 +47,14 @@ long profipts1, profipts2, profopts;
 		proftime[PROF_QRUN], \
 		runpercent+convpercent); \
 	} while (0);
-#endif /* PROFILE */
 
+#else
+
+/* Empty prototype that can be optimised away by the compiler for non-profiling builds */
+#define PROFSTART(x) ((void) 0)
+#define PROFSTOP(x) ((void) 0)
+#define PROFREPORT(n, i1, i2, o) ((void) 0)
+
+#endif /* POSTGIS_PROFILE */
 
 #endif /* _PROFILE_H */

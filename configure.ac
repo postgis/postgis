@@ -426,6 +426,14 @@ AC_ARG_ENABLE([debug], AC_HELP_STRING([--enable-debug], [Enable verbose debuggin
 
 AC_DEFINE_UNQUOTED([POSTGIS_DEBUG_LEVEL], [$POSTGIS_DEBUG_LEVEL], [PostGIS library debug level (0=disabled)])
 
+dnl
+dnl Allow the user to enable GEOS profiling with --enable-profile
+dnl
+
+AC_ARG_ENABLE([profile], AC_HELP_STRING([--enable-profile], [Enable GEOS profiling messages]), 
+	[POSTGIS_PROFILE=1], [POSTGIS_PROFILE=0]) 
+
+AC_DEFINE_UNQUOTED([POSTGIS_PROFILE], [$POSTGIS_PROFILE], [Enable GEOS profiling (0=disabled)])
 
 dnl
 dnl Define version macros

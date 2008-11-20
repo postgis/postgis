@@ -345,9 +345,7 @@ Datum geomunion(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(2, "in geomunion");
 
-#ifdef PROFILE
-	profstart(PROF_QRUN);
-#endif
+	PROFSTART(PROF_QRUN);
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
@@ -360,31 +358,20 @@ Datum geomunion(PG_FUNCTION_ARGS)
 
 	initGEOS(lwnotice, lwnotice);
 
-#ifdef PROFILE
-	profstart(PROF_P2G1);
-#endif
+	PROFSTART(PROF_P2G1);
 	g1 = POSTGIS2GEOS(geom1);
-#ifdef PROFILE
-	profstop(PROF_P2G1);
-#endif
-#ifdef PROFILE
-	profstart(PROF_P2G2);
-#endif
+	PROFSTOP(PROF_P2G1);
+
+	PROFSTART(PROF_P2G2);
 	g2 = POSTGIS2GEOS(geom2);
-#ifdef PROFILE
-	profstop(PROF_P2G2);
-#endif
+	PROFSTOP(PROF_P2G2);
 
 	POSTGIS_DEBUGF(3, "g1=%s", GEOSGeomToWKT(g1));
 	POSTGIS_DEBUGF(3, "g2=%s", GEOSGeomToWKT(g2));
 
-#ifdef PROFILE
-	profstart(PROF_GRUN);
-#endif
+	PROFSTART(PROF_GRUN);
 	g3 = GEOSUnion(g1,g2);
-#ifdef PROFILE
-	profstop(PROF_GRUN);
-#endif
+	PROFSTOP(PROF_GRUN);
 
 	POSTGIS_DEBUGF(3, "g3=%s", GEOSGeomToWKT(g3));
 
@@ -400,13 +387,9 @@ Datum geomunion(PG_FUNCTION_ARGS)
 
 	GEOSSetSRID(g3, SRID);
 
-#ifdef PROFILE
-	profstart(PROF_G2P);
-#endif
+	PROFSTART(PROF_G2P);
 	result = GEOS2POSTGIS(g3, is3d);
-#ifdef PROFILE
-	profstop(PROF_G2P);
-#endif
+	PROFSTOP(PROF_G2P);
 
 	GEOSGeom_destroy(g3);
 
@@ -418,10 +401,8 @@ Datum geomunion(PG_FUNCTION_ARGS)
 
 	/* compressType(result); */
 
-#ifdef PROFILE
-	profstop(PROF_QRUN);
-	profreport("geos",geom1, geom2, result);
-#endif
+	PROFSTOP(PROF_QRUN);
+	PROFREPORT("geos",geom1, geom2, result);
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
@@ -445,9 +426,7 @@ Datum symdifference(PG_FUNCTION_ARGS)
 	int is3d;
 	int SRID;
 
-#ifdef PROFILE
-	profstart(PROF_QRUN);
-#endif
+	PROFSTART(PROF_QRUN);
 
 	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
@@ -460,28 +439,17 @@ Datum symdifference(PG_FUNCTION_ARGS)
 
 	initGEOS(lwnotice, lwnotice);
 
-#ifdef PROFILE
-	profstart(PROF_P2G1);
-#endif
+	PROFSTART(PROF_P2G1);
 	g1 = POSTGIS2GEOS(geom1);
-#ifdef PROFILE
-	profstop(PROF_P2G1);
-#endif
-#ifdef PROFILE
-	profstart(PROF_P2G2);
-#endif
-	g2 = POSTGIS2GEOS(geom2);
-#ifdef PROFILE
-	profstop(PROF_P2G2);
-#endif
+	PROFSTOP(PROF_P2G1);
 
-#ifdef PROFILE
-	profstart(PROF_GRUN);
-#endif
+	PROFSTART(PROF_P2G2);
+	g2 = POSTGIS2GEOS(geom2);
+	PROFSTOP(PROF_P2G2);
+
+	PROFSTART(PROF_GRUN);
 	g3 = GEOSSymDifference(g1,g2);
-#ifdef PROFILE
-	profstop(PROF_GRUN);
-#endif
+	PROFSTOP(PROF_GRUN);
 
 	if (g3 == NULL)
 	{
@@ -495,13 +463,9 @@ Datum symdifference(PG_FUNCTION_ARGS)
 
 	GEOSSetSRID(g3, SRID);
 
-#ifdef PROFILE
-	profstart(PROF_G2P);
-#endif
+	PROFSTART(PROF_G2P);
 	result = GEOS2POSTGIS(g3, is3d);
-#ifdef PROFILE
-	profstop(PROF_G2P);
-#endif
+	PROFSTOP(PROF_G2P);
 
 	if (result == NULL)
 	{
@@ -518,10 +482,8 @@ Datum symdifference(PG_FUNCTION_ARGS)
 
 	/* compressType(result); */
 
-#ifdef PROFILE
-	profstop(PROF_QRUN);
-	profreport("geos",geom1, geom2, result);
-#endif
+	PROFSTOP(PROF_QRUN);
+	PROFREPORT("geos",geom1, geom2, result);
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
@@ -538,9 +500,7 @@ Datum boundary(PG_FUNCTION_ARGS)
 	PG_LWGEOM *result;
 	int SRID;
 
-#ifdef PROFILE
-	profstart(PROF_QRUN);
-#endif
+	PROFSTART(PROF_QRUN);
 
 	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
@@ -548,21 +508,13 @@ Datum boundary(PG_FUNCTION_ARGS)
 
 	initGEOS(lwnotice, lwnotice);
 
-#ifdef PROFILE
-	profstart(PROF_P2G1);
-#endif
+	PROFSTART(PROF_P2G1);
 	g1 = POSTGIS2GEOS(geom1 );
-#ifdef PROFILE
-	profstop(PROF_P2G1);
-#endif
+	PROFSTOP(PROF_P2G1);
 
-#ifdef PROFILE
-	profstart(PROF_GRUN);
-#endif
+	PROFSTART(PROF_GRUN);
 	g3 = GEOSBoundary(g1);
-#ifdef PROFILE
-	profstop(PROF_GRUN);
-#endif
+	PROFSTOP(PROF_GRUN);
 
 	if (g3 == NULL)
 	{
@@ -575,13 +527,10 @@ Datum boundary(PG_FUNCTION_ARGS)
 
 	GEOSSetSRID(g3, SRID);
 
-#ifdef PROFILE
-	profstart(PROF_G2P);
-#endif
+	PROFSTART(PROF_G2P);
 	result = GEOS2POSTGIS(g3, TYPE_HASZ(geom1->type));
-#ifdef PROFILE
-	profstart(PROF_P2G1);
-#endif
+
+	PROFSTART(PROF_P2G1);
 
 	if (result == NULL)
 	{
@@ -592,17 +541,13 @@ Datum boundary(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL(); /* never get here */
 	}
 
-
-
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g3);
 
 	/* compressType(result);   */
 
-#ifdef PROFILE
-	profstop(PROF_QRUN);
-	profreport("geos",geom1, NULL, result);
-#endif
+	PROFSTOP(PROF_QRUN);
+	PROFREPORT("geos",geom1, NULL, result);
 
 	PG_FREE_IF_COPY(geom1, 0);
 
@@ -619,30 +564,20 @@ Datum convexhull(PG_FUNCTION_ARGS)
 	int SRID;
 	BOX2DFLOAT4 bbox;
 
-#ifdef PROFILE
-	profstart(PROF_QRUN);
-#endif
+	PROFSTART(PROF_QRUN);
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	SRID = pglwgeom_getSRID(geom1);
 
 	initGEOS(lwnotice, lwnotice);
 
-#ifdef PROFILE
-	profstart(PROF_P2G1);
-#endif
+	PROFSTART(PROF_P2G1);
 	g1 = POSTGIS2GEOS(geom1);
-#ifdef PROFILE
-	profstop(PROF_P2G1);
-#endif
+	PROFSTOP(PROF_P2G1);
 
-#ifdef PROFILE
-	profstart(PROF_GRUN);
-#endif
+	PROFSTART(PROF_GRUN);
 	g3 = GEOSConvexHull(g1);
-#ifdef PROFILE
-	profstop(PROF_GRUN);
-#endif
+	PROFSTOP(PROF_GRUN);
 
 	if (g3 == NULL)
 	{
@@ -656,13 +591,10 @@ Datum convexhull(PG_FUNCTION_ARGS)
 
 	GEOSSetSRID(g3, SRID);
 
-#ifdef PROFILE
-	profstart(PROF_G2P);
-#endif
+	PROFSTART(PROF_G2P);
 	lwout = GEOS2LWGEOM(g3, TYPE_HASZ(geom1->type));
-#ifdef PROFILE
-	profstop(PROF_G2P);
-#endif
+	PROFSTOP(PROF_G2P);
+
 	if (lwout == NULL)
 	{
 		GEOSGeom_destroy(g1);
@@ -692,10 +624,8 @@ Datum convexhull(PG_FUNCTION_ARGS)
 
 	/* compressType(result);   */
 
-#ifdef PROFILE
-	profstop(PROF_QRUN);
-	profreport("geos",geom1, NULL, result);
-#endif
+	PROFSTOP(PROF_QRUN);
+	PROFREPORT("geos",geom1, NULL, result);
 
 	PG_FREE_IF_COPY(geom1, 0);
 
@@ -759,9 +689,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 	PG_LWGEOM *result;
 	int quadsegs = 8; /* the default */
 
-#ifdef PROFILE
-	profstart(PROF_QRUN);
-#endif
+	PROFSTART(PROF_QRUN);
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	size = PG_GETARG_FLOAT8(1);
@@ -769,21 +697,13 @@ Datum buffer(PG_FUNCTION_ARGS)
 
 	initGEOS(lwnotice, lwnotice);
 
-#ifdef PROFILE
-	profstart(PROF_P2G1);
-#endif
+	PROFSTART(PROF_P2G1);
 	g1 = POSTGIS2GEOS(geom1);
-#ifdef PROFILE
-	profstop(PROF_P2G1);
-#endif
+	PROFSTOP(PROF_P2G1);
 
-#ifdef PROFILE
-	profstart(PROF_GRUN);
-#endif
+	PROFSTART(PROF_GRUN);
 	g3 = GEOSBuffer(g1,size,quadsegs);
-#ifdef PROFILE
-	profstop(PROF_GRUN);
-#endif
+	PROFSTOP(PROF_GRUN);
 
 	if (g3 == NULL)
 	{
@@ -792,18 +712,14 @@ Datum buffer(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL(); /* never get here */
 	}
 
-
 	POSTGIS_DEBUGF(3, "result: %s", GEOSGeomToWKT(g3));
 
 	GEOSSetSRID(g3, pglwgeom_getSRID(geom1));
 
-#ifdef PROFILE
-	profstart(PROF_G2P);
-#endif
+	PROFSTART(PROF_G2P);
 	result = GEOS2POSTGIS(g3, TYPE_HASZ(geom1->type));
-#ifdef PROFILE
-	profstop(PROF_G2P);
-#endif
+	PROFSTOP(PROF_G2P);
+
 	if (result == NULL)
 	{
 		GEOSGeom_destroy(g1);
@@ -817,10 +733,8 @@ Datum buffer(PG_FUNCTION_ARGS)
 
 	/* compressType(result); */
 
-#ifdef PROFILE
-	profstop(PROF_QRUN);
-	profreport("geos",geom1, NULL, result);
-#endif
+	PROFSTOP(PROF_QRUN);
+	PROFREPORT("geos",geom1, NULL, result);
 
 	PG_FREE_IF_COPY(geom1, 0);
 
@@ -837,9 +751,7 @@ Datum intersection(PG_FUNCTION_ARGS)
 	int is3d;
 	int SRID;
 
-#ifdef PROFILE
-	profstart(PROF_QRUN);
-#endif
+	PROFSTART(PROF_QRUN);
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
@@ -854,21 +766,13 @@ Datum intersection(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(3, "intersection() START");
 
-#ifdef PROFILE
-	profstart(PROF_P2G1);
-#endif
+	PROFSTART(PROF_P2G1);
 	g1 = POSTGIS2GEOS(geom1);
-#ifdef PROFILE
-	profstop(PROF_P2G1);
-#endif
+	PROFSTOP(PROF_P2G1);
 
-#ifdef PROFILE
-	profstart(PROF_P2G2);
-#endif
+	PROFSTART(PROF_P2G2);
 	g2 = POSTGIS2GEOS(geom2);
-#ifdef PROFILE
-	profstop(PROF_P2G2);
-#endif
+	PROFSTOP(PROF_P2G2);
 
 	POSTGIS_DEBUG(3, " constructed geometrys - calling geos");
 	POSTGIS_DEBUGF(3, " g1 = %s", GEOSGeomToWKT(g1));
@@ -876,13 +780,9 @@ Datum intersection(PG_FUNCTION_ARGS)
 	/*POSTGIS_DEBUGF(3, "g2 is valid = %i",GEOSisvalid(g2)); */
 	/*POSTGIS_DEBUGF(3, "g1 is valid = %i",GEOSisvalid(g1)); */
 
-#ifdef PROFILE
-	profstart(PROF_GRUN);
-#endif
+	PROFSTART(PROF_GRUN);
 	g3 = GEOSIntersection(g1,g2);
-#ifdef PROFILE
-	profstop(PROF_GRUN);
-#endif
+	PROFSTOP(PROF_GRUN);
 
 	POSTGIS_DEBUG(3, " intersection finished");
 
@@ -898,13 +798,9 @@ Datum intersection(PG_FUNCTION_ARGS)
 
 	GEOSSetSRID(g3, SRID);
 
-#ifdef PROFILE
-	profstart(PROF_G2P);
-#endif
+	PROFSTART(PROF_G2P);
 	result = GEOS2POSTGIS(g3, is3d);
-#ifdef PROFILE
-	profstop(PROF_G2P);
-#endif
+	PROFSTOP(PROF_G2P);
 
 	if (result == NULL)
 	{
@@ -919,10 +815,8 @@ Datum intersection(PG_FUNCTION_ARGS)
 	GEOSGeom_destroy(g2);
 	GEOSGeom_destroy(g3);
 
-#ifdef PROFILE
-	profstop(PROF_QRUN);
-	profreport("geos",geom1, geom2, result);
-#endif
+	PROFSTOP(PROF_QRUN);
+	PROFREPORT("geos",geom1, geom2, result);
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
@@ -945,9 +839,7 @@ Datum difference(PG_FUNCTION_ARGS)
 	int is3d;
 	int SRID;
 
-#ifdef PROFILE
-	profstart(PROF_QRUN);
-#endif
+	PROFSTART(PROF_QRUN);
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
@@ -960,28 +852,17 @@ Datum difference(PG_FUNCTION_ARGS)
 
 	initGEOS(lwnotice, lwnotice);
 
-#ifdef PROFILE
-	profstart(PROF_P2G1);
-#endif
+	PROFSTART(PROF_P2G1);
 	g1 = POSTGIS2GEOS(geom1);
-#ifdef PROFILE
-	profstop(PROF_P2G1);
-#endif
-#ifdef PROFILE
-	profstart(PROF_P2G2);
-#endif
-	g2 = POSTGIS2GEOS(geom2);
-#ifdef PROFILE
-	profstop(PROF_P2G2);
-#endif
+	PROFSTOP(PROF_P2G1);
 
-#ifdef PROFILE
-	profstart(PROF_GRUN);
-#endif
+	PROFSTART(PROF_P2G2);
+	g2 = POSTGIS2GEOS(geom2);
+	PROFSTOP(PROF_P2G2);
+
+	PROFSTART(PROF_GRUN);
 	g3 = GEOSDifference(g1,g2);
-#ifdef PROFILE
-	profstop(PROF_GRUN);
-#endif
+	PROFSTOP(PROF_GRUN);
 
 	if (g3 == NULL)
 	{
@@ -995,13 +876,10 @@ Datum difference(PG_FUNCTION_ARGS)
 
 	GEOSSetSRID(g3, SRID);
 
-#ifdef PROFILE
-	profstart(PROF_G2P);
-#endif
+	PROFSTART(PROF_G2P);
 	result = GEOS2POSTGIS(g3, is3d);
-#ifdef PROFILE
-	profstop(PROF_G2P);
-#endif
+	PROFSTOP(PROF_G2P);
+
 	if (result == NULL)
 	{
 		GEOSGeom_destroy(g1);
@@ -1017,10 +895,8 @@ Datum difference(PG_FUNCTION_ARGS)
 
 	/* compressType(result); */
 
-#ifdef PROFILE
-	profstop(PROF_QRUN);
-	profreport("geos",geom1, geom2, result);
-#endif
+	PROFSTOP(PROF_QRUN);
+	PROFREPORT("geos",geom1, geom2, result);
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
@@ -1037,29 +913,19 @@ Datum pointonsurface(PG_FUNCTION_ARGS)
 	GEOSGeom g1,g3;
 	PG_LWGEOM *result;
 
-#ifdef PROFILE
-	profstart(PROF_QRUN);
-#endif
+	PROFSTART(PROF_QRUN);
 
 	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	initGEOS(lwnotice, lwnotice);
 
-#ifdef PROFILE
-	profstart(PROF_P2G1);
-#endif
+	PROFSTART(PROF_P2G1);
 	g1 = POSTGIS2GEOS(geom1);
-#ifdef PROFILE
-	profstop(PROF_P2G1);
-#endif
+	PROFSTOP(PROF_P2G1);
 
-#ifdef PROFILE
-	profstart(PROF_GRUN);
-#endif
+	PROFSTART(PROF_GRUN);
 	g3 = GEOSPointOnSurface(g1);
-#ifdef PROFILE
-	profstop(PROF_GRUN);
-#endif
+	PROFSTOP(PROF_GRUN);
 
 	if (g3 == NULL)
 	{
@@ -1071,13 +937,11 @@ Datum pointonsurface(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUGF(3, "result: %s", GEOSGeomToWKT(g3) ) ;
 
 	GEOSSetSRID(g3, pglwgeom_getSRID(geom1));
-#ifdef PROFILE
-	profstart(PROF_G2P);
-#endif
+
+	PROFSTART(PROF_G2P);
 	result = GEOS2POSTGIS(g3, TYPE_HASZ(geom1->type));
-#ifdef PROFILE
-	profstop(PROF_G2P);
-#endif
+	PROFSTOP(PROF_G2P);
+
 	if (result == NULL)
 	{
 		GEOSGeom_destroy(g1);
@@ -1091,10 +955,8 @@ Datum pointonsurface(PG_FUNCTION_ARGS)
 
 	/* compressType(result);  */
 
-#ifdef PROFILE
-	profstop(PROF_QRUN);
-	profreport("geos",geom1, NULL, result);
-#endif
+	PROFSTOP(PROF_QRUN);
+	PROFREPORT("geos",geom1, NULL, result);
 
 	PG_FREE_IF_COPY(geom1, 0);
 
@@ -1107,29 +969,19 @@ Datum centroid(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom, *result;
 	GEOSGeom geosgeom, geosresult;
 
-#ifdef PROFILE
-	profstart(PROF_QRUN);
-#endif
+	PROFSTART(PROF_QRUN);
 
 	geom = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	initGEOS(lwnotice, lwnotice);
 
-#ifdef PROFILE
-	profstart(PROF_P2G1);
-#endif
+	PROFSTART(PROF_P2G1);
 	geosgeom = POSTGIS2GEOS(geom);
-#ifdef PROFILE
-	profstop(PROF_P2G1);
-#endif
+	PROFSTOP(PROF_P2G1);
 
-#ifdef PROFILE
-	profstart(PROF_GRUN);
-#endif
+	PROFSTART(PROF_GRUN);
 	geosresult = GEOSGetCentroid(geosgeom);
-#ifdef PROFILE
-	profstop(PROF_GRUN);
-#endif
+	PROFSTOP(PROF_GRUN);
 
 	if ( geosresult == NULL )
 	{
@@ -1140,13 +992,10 @@ Datum centroid(PG_FUNCTION_ARGS)
 
 	GEOSSetSRID(geosresult, pglwgeom_getSRID(geom));
 
-#ifdef PROFILE
-	profstart(PROF_G2P);
-#endif
+	PROFSTART(PROF_G2P);
 	result = GEOS2POSTGIS(geosresult, TYPE_HASZ(geom->type));
-#ifdef PROFILE
-	profstop(PROF_G2P);
-#endif
+	PROFSTOP(PROF_G2P);
+
 	if (result == NULL)
 	{
 		GEOSGeom_destroy(geosgeom);
@@ -1157,10 +1006,8 @@ Datum centroid(PG_FUNCTION_ARGS)
 	GEOSGeom_destroy(geosgeom);
 	GEOSGeom_destroy(geosresult);
 
-#ifdef PROFILE
-	profstop(PROF_QRUN);
-	profreport("geos",geom, NULL, result);
-#endif
+	PROFSTOP(PROF_QRUN);
+	PROFREPORT("geos",geom, NULL, result);
 
 	PG_FREE_IF_COPY(geom, 0);
 
@@ -1190,17 +1037,14 @@ Datum isvalid(PG_FUNCTION_ARGS)
 	bool result;
 	GEOSGeom g1;
 
-#ifdef PROFILE
-	profstart(PROF_QRUN);
-#endif
+	PROFSTART(PROF_QRUN);
 
 	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	initGEOS(lwnotice, lwnotice);
 
-#ifdef PROFILE
-	profstart(PROF_P2G1);
-#endif
+	PROFSTART(PROF_P2G1);
+
 	lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom1));
 	if ( ! lwgeom )
 	{
@@ -1213,17 +1057,12 @@ Datum isvalid(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(FALSE);
 	}
 	lwgeom_release(lwgeom);
-#ifdef PROFILE
-	profstop(PROF_P2G1);
-#endif
 
-#ifdef PROFILE
-	profstart(PROF_GRUN);
-#endif
+	PROFSTOP(PROF_P2G1);
+
+	PROFSTART(PROF_GRUN);
 	result = GEOSisValid(g1);
-#ifdef PROFILE
-	profstop(PROF_GRUN);
-#endif
+	PROFSTOP(PROF_GRUN);
 
 	GEOSGeom_destroy(g1);
 	if (result == 2)
@@ -1232,11 +1071,8 @@ Datum isvalid(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL(); /*never get here */
 	}
 
-
-#ifdef PROFILE
-	profstop(PROF_QRUN);
-	profreport("geos",geom1, NULL, NULL);
-#endif
+	PROFSTOP(PROF_QRUN);
+	PROFREPORT("geos",geom1, NULL, NULL);
 
 	PG_FREE_IF_COPY(geom1, 0);
 
@@ -1258,9 +1094,7 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	bool result;
 	BOX2DFLOAT4 box1, box2;
 
-#ifdef PROFILE
-	profstart(PROF_QRUN);
-#endif
+	PROFSTART(PROF_QRUN);
 
 	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
@@ -1284,28 +1118,17 @@ Datum overlaps(PG_FUNCTION_ARGS)
 
 	initGEOS(lwnotice, lwnotice);
 
-#ifdef PROFILE
-	profstart(PROF_P2G1);
-#endif
+	PROFSTART(PROF_P2G1);
 	g1 = POSTGIS2GEOS(geom1);
-#ifdef PROFILE
-	profstop(PROF_P2G1);
-#endif
-#ifdef PROFILE
-	profstart(PROF_P2G2);
-#endif
-	g2 = POSTGIS2GEOS(geom2);
-#ifdef PROFILE
-	profstop(PROF_P2G2);
-#endif
+	PROFSTOP(PROF_P2G1);
 
-#ifdef PROFILE
-	profstart(PROF_GRUN);
-#endif
+	PROFSTART(PROF_P2G2);
+	g2 = POSTGIS2GEOS(geom2);
+	PROFSTOP(PROF_P2G2);
+
+	PROFSTART(PROF_GRUN);
 	result = GEOSOverlaps(g1,g2);
-#ifdef PROFILE
-	profstop(PROF_GRUN);
-#endif
+	PROFSTOP(PROF_GRUN);
 
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g2);
@@ -1315,10 +1138,8 @@ Datum overlaps(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL(); /* never get here */
 	}
 
-#ifdef PROFILE
-	profstop(PROF_QRUN);
-	profreport("geos",geom1, geom2, NULL);
-#endif
+	PROFSTOP(PROF_QRUN);
+	PROFREPORT("geos",geom1, geom2, NULL);
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
@@ -1676,9 +1497,7 @@ Datum within(PG_FUNCTION_ARGS)
 	MemoryContext old_context;
 	RTREE_POLY_CACHE *poly_cache;
 
-#ifdef PROFILE
-	profstart(PROF_QRUN);
-#endif
+	PROFSTART(PROF_QRUN);
 
 	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
@@ -1757,28 +1576,17 @@ Datum within(PG_FUNCTION_ARGS)
 
 	initGEOS(lwnotice, lwnotice);
 
-#ifdef PROFILE
-	profstart(PROF_P2G1);
-#endif
+	PROFSTART(PROF_P2G1);
 	g1 = POSTGIS2GEOS(geom1);
-#ifdef PROFILE
-	profstop(PROF_P2G1);
-#endif
-#ifdef PROFILE
-	profstart(PROF_P2G2);
-#endif
-	g2 = POSTGIS2GEOS(geom2);
-#ifdef PROFILE
-	profstop(PROF_P2G2);
-#endif
+	PROFSTOP(PROF_P2G1);
 
-#ifdef PROFILE
-	profstart(PROF_GRUN);
-#endif
+	PROFSTART(PROF_P2G2);
+	g2 = POSTGIS2GEOS(geom2);
+	PROFSTOP(PROF_P2G2);
+
+	PROFSTART(PROF_GRUN);
 	result = GEOSWithin(g1,g2);
-#ifdef PROFILE
-	profstop(PROF_GRUN);
-#endif
+	PROFSTOP(PROF_GRUN);
 
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g2);
@@ -1789,10 +1597,8 @@ Datum within(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL(); /* never get here */
 	}
 
-#ifdef PROFILE
-	profstop(PROF_QRUN);
-	profreport("geos",geom1, geom2, NULL);
-#endif
+	PROFSTOP(PROF_QRUN);
+	PROFREPORT("geos",geom1, geom2, NULL);
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
@@ -1820,9 +1626,7 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	RTREE_POLY_CACHE *poly_cache;
 	char *patt = "**F**F***";
 
-#ifdef PROFILE
-	profstart(PROF_QRUN);
-#endif
+	PROFSTART(PROF_QRUN);
 
 	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
@@ -1903,28 +1707,17 @@ Datum coveredby(PG_FUNCTION_ARGS)
 
 	initGEOS(lwnotice, lwnotice);
 
-#ifdef PROFILE
-	profstart(PROF_P2G1);
-#endif
+	PROFSTART(PROF_P2G1);
 	g1 = POSTGIS2GEOS(geom1);
-#ifdef PROFILE
-	profstop(PROF_P2G1);
-#endif
-#ifdef PROFILE
-	profstart(PROF_P2G2);
-#endif
-	g2 = POSTGIS2GEOS(geom2);
-#ifdef PROFILE
-	profstop(PROF_P2G2);
-#endif
+	PROFSTOP(PROF_P2G1);
 
-#ifdef PROFILE
-	profstart(PROF_GRUN);
-#endif
+	PROFSTART(PROF_P2G2);
+	g2 = POSTGIS2GEOS(geom2);
+	PROFSTOP(PROF_P2G2);
+
+	PROFSTART(PROF_GRUN);
 	result = GEOSRelatePattern(g1,g2,patt);
-#ifdef PROFILE
-	profstop(PROF_GRUN);
-#endif
+	PROFSTOP(PROF_GRUN);
 
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g2);
@@ -1935,10 +1728,8 @@ Datum coveredby(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL(); /* never get here */
 	}
 
-#ifdef PROFILE
-	profstop(PROF_QRUN);
-	profreport("geos",geom1, geom2, NULL);
-#endif
+	PROFSTOP(PROF_QRUN);
+	PROFREPORT("geos",geom1, geom2, NULL);
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
@@ -1957,9 +1748,7 @@ Datum crosses(PG_FUNCTION_ARGS)
 	bool result;
 	BOX2DFLOAT4 box1, box2;
 
-#ifdef PROFILE
-	profstart(PROF_QRUN);
-#endif
+	PROFSTART(PROF_QRUN);
 
 	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
@@ -1984,28 +1773,17 @@ Datum crosses(PG_FUNCTION_ARGS)
 
 	initGEOS(lwnotice, lwnotice);
 
-#ifdef PROFILE
-	profstart(PROF_P2G1);
-#endif
+	PROFSTART(PROF_P2G1);
 	g1 = POSTGIS2GEOS(geom1);
-#ifdef PROFILE
-	profstop(PROF_P2G1);
-#endif
-#ifdef PROFILE
-	profstart(PROF_P2G2);
-#endif
-	g2 = POSTGIS2GEOS(geom2);
-#ifdef PROFILE
-	profstop(PROF_P2G2);
-#endif
+	PROFSTOP(PROF_P2G1);
 
-#ifdef PROFILE
-	profstart(PROF_GRUN);
-#endif
+	PROFSTART(PROF_P2G2);
+	g2 = POSTGIS2GEOS(geom2);
+	PROFSTOP(PROF_P2G2);
+
+	PROFSTART(PROF_GRUN);
 	result = GEOSCrosses(g1,g2);
-#ifdef PROFILE
-	profstop(PROF_GRUN);
-#endif
+	PROFSTOP(PROF_GRUN);
 
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g2);
@@ -2016,10 +1794,8 @@ Datum crosses(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL(); /* never get here */
 	}
 
-#ifdef PROFILE
-	profstop(PROF_QRUN);
-	profreport("geos",geom1, geom2, NULL);
-#endif
+	PROFSTOP(PROF_QRUN);
+	PROFREPORT("geos",geom1, geom2, NULL);
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
@@ -2184,9 +1960,7 @@ Datum touches(PG_FUNCTION_ARGS)
 	bool result;
 	BOX2DFLOAT4 box1, box2;
 
-#ifdef PROFILE
-	profstart(PROF_QRUN);
-#endif
+	PROFSTART(PROF_QRUN);
 
 	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
@@ -2211,28 +1985,17 @@ Datum touches(PG_FUNCTION_ARGS)
 
 	initGEOS(lwnotice, lwnotice);
 
-#ifdef PROFILE
-	profstart(PROF_P2G1);
-#endif
+	PROFSTART(PROF_P2G1);
 	g1 = POSTGIS2GEOS(geom1 );
-#ifdef PROFILE
-	profstop(PROF_P2G1);
-#endif
-#ifdef PROFILE
-	profstart(PROF_P2G2);
-#endif
-	g2 = POSTGIS2GEOS(geom2 );
-#ifdef PROFILE
-	profstop(PROF_P2G2);
-#endif
+	PROFSTOP(PROF_P2G1);
 
-#ifdef PROFILE
-	profstart(PROF_GRUN);
-#endif
+	PROFSTART(PROF_P2G2);
+	g2 = POSTGIS2GEOS(geom2 );
+	PROFSTOP(PROF_P2G2);
+
+	PROFSTART(PROF_GRUN);
 	result = GEOSTouches(g1,g2);
-#ifdef PROFILE
-	profstop(PROF_GRUN);
-#endif
+	PROFSTOP(PROF_GRUN);
 
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g2);
@@ -2243,10 +2006,8 @@ Datum touches(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL(); /* never get here */
 	}
 
-#ifdef PROFILE
-	profstop(PROF_QRUN);
-	profreport("geos",geom1, geom2, NULL);
-#endif
+	PROFSTOP(PROF_QRUN);
+	PROFREPORT("geos",geom1, geom2, NULL);
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
@@ -2264,9 +2025,7 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	bool result;
 	BOX2DFLOAT4 box1, box2;
 
-#ifdef PROFILE
-	profstart(PROF_QRUN);
-#endif
+	PROFSTART(PROF_QRUN);
 
 	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
@@ -2291,28 +2050,18 @@ Datum disjoint(PG_FUNCTION_ARGS)
 
 	initGEOS(lwnotice, lwnotice);
 
-#ifdef PROFILE
-	profstart(PROF_P2G1);
-#endif
+	PROFSTART(PROF_P2G1);
 	g1 = POSTGIS2GEOS(geom1);
-#ifdef PROFILE
-	profstop(PROF_P2G1);
-#endif
-#ifdef PROFILE
-	profstart(PROF_P2G2);
-#endif
-	g2 = POSTGIS2GEOS(geom2);
-#ifdef PROFILE
-	profstop(PROF_P2G2);
-#endif
+	PROFSTOP(PROF_P2G1);
 
-#ifdef PROFILE
-	profstart(PROF_GRUN);
-#endif
+	PROFSTART(PROF_P2G2);
+	g2 = POSTGIS2GEOS(geom2);
+	PROFSTOP(PROF_P2G2);
+
+	PROFSTART(PROF_GRUN);
 	result = GEOSDisjoint(g1,g2);
-#ifdef PROFILE
-	profstop(PROF_GRUN);
-#endif
+	PROFSTOP(PROF_GRUN);
+
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g2);
 
@@ -2322,10 +2071,8 @@ Datum disjoint(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL(); /* never get here */
 	}
 
-#ifdef PROFILE
-	profstop(PROF_QRUN);
-	profreport("geos",geom1, geom2, NULL);
-#endif
+	PROFSTOP(PROF_QRUN);
+	PROFREPORT("geos",geom1, geom2, NULL);
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
@@ -2460,9 +2207,7 @@ Datum geomequals(PG_FUNCTION_ARGS)
 	bool result;
 	BOX2DFLOAT4 box1, box2;
 
-#ifdef PROFILE
-	profstart(PROF_QRUN);
-#endif
+	PROFSTART(PROF_QRUN);
 
 	geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
@@ -2486,28 +2231,18 @@ Datum geomequals(PG_FUNCTION_ARGS)
 
 	initGEOS(lwnotice, lwnotice);
 
-#ifdef PROFILE
-	profstart(PROF_P2G1);
-#endif
+	PROFSTART(PROF_P2G1);
 	g1 = POSTGIS2GEOS(geom1);
-#ifdef PROFILE
-	profstop(PROF_P2G1);
-#endif
-#ifdef PROFILE
-	profstart(PROF_P2G2);
-#endif
-	g2 = POSTGIS2GEOS(geom2);
-#ifdef PROFILE
-	profstop(PROF_P2G2);
-#endif
+	PROFSTOP(PROF_P2G1);
 
-#ifdef PROFILE
-	profstart(PROF_GRUN);
-#endif
+	PROFSTART(PROF_P2G2);
+	g2 = POSTGIS2GEOS(geom2);
+	PROFSTOP(PROF_P2G2);
+
+	PROFSTART(PROF_GRUN);
 	result = GEOSEquals(g1,g2);
-#ifdef PROFILE
-	profstop(PROF_GRUN);
-#endif
+	PROFSTOP(PROF_GRUN);
+
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g2);
 
@@ -2517,10 +2252,8 @@ Datum geomequals(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL(); /*never get here */
 	}
 
-#ifdef PROFILE
-	profstop(PROF_QRUN);
-	profreport("geos",geom1, geom2, NULL);
-#endif
+	PROFSTOP(PROF_QRUN);
+	PROFREPORT("geos",geom1, geom2, NULL);
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
@@ -3065,10 +2798,8 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 	geosgeom = POSTGIS2GEOS(geom);
 	if ( ! geosgeom ) PG_RETURN_NULL();
 
-#ifdef PROFILE
-	profstart(PROF_GRUN);
-	profstop(PROF_GRUN);
-#endif
+	PROFSTART(PROF_GRUN);
+	PROFSTOP(PROF_GRUN);
 
 	lwgeom_result = GEOS2POSTGIS(geosgeom, TYPE_HASZ(geom->type));
 	GEOSGeom_destroy(geosgeom);
@@ -3174,29 +2905,19 @@ Datum linemerge(PG_FUNCTION_ARGS)
 	GEOSGeom g1,g3;
 	PG_LWGEOM *result;
 
-#ifdef PROFILE
-	profstart(PROF_QRUN);
-#endif
+	PROFSTART(PROF_QRUN);
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	initGEOS(lwnotice, lwnotice);
 
-#ifdef PROFILE
-	profstart(PROF_P2G1);
-#endif
+	PROFSTART(PROF_P2G1);
 	g1 = POSTGIS2GEOS(geom1);
-#ifdef PROFILE
-	profstop(PROF_P2G1);
-#endif
+	PROFSTOP(PROF_P2G1);
 
-#ifdef PROFILE
-	profstart(PROF_GRUN);
-#endif
+	PROFSTART(PROF_GRUN);
 	g3 = GEOSLineMerge(g1);
-#ifdef PROFILE
-	profstop(PROF_GRUN);
-#endif
+	PROFSTOP(PROF_GRUN);
 
 	if (g3 == NULL)
 	{
@@ -3210,13 +2931,10 @@ Datum linemerge(PG_FUNCTION_ARGS)
 
 	GEOSSetSRID(g3, pglwgeom_getSRID(geom1));
 
-#ifdef PROFILE
-	profstart(PROF_G2P);
-#endif
+	PROFSTART(PROF_G2P);
 	result = GEOS2POSTGIS(g3, TYPE_HASZ(geom1->type));
-#ifdef PROFILE
-	profstop(PROF_G2P);
-#endif
+	PROFSTOP(PROF_G2P);
+
 	if (result == NULL)
 	{
 		GEOSGeom_destroy(g1);
@@ -3230,10 +2948,8 @@ Datum linemerge(PG_FUNCTION_ARGS)
 
 	/* compressType(result); */
 
-#ifdef PROFILE
-	profstop(PROF_QRUN);
-	profreport("geos",geom1, NULL, result);
-#endif
+	PROFSTOP(PROF_QRUN);
+	PROFREPORT("geos",geom1, NULL, result);
 
 	PG_FREE_IF_COPY(geom1, 0);
 

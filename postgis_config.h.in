@@ -1,4 +1,7 @@
-/* postgis_config.h.in.  Generated from configure.in by autoheader.  */
+/* postgis_config.h.in.  Generated from configure.ac by autoheader.  */
+
+/* Define to 1 if you have the <dlfcn.h> header file. */
+#undef HAVE_DLFCN_H
 
 /* Defined if libiconv headers and library are present */
 #undef HAVE_ICONV
@@ -54,8 +57,20 @@
 /* PostGIS library version */
 #undef POSTGIS_LIB_VERSION
 
+/* PostGIS major version */
+#undef POSTGIS_MAJOR_VERSION
+
+/* PostGIS micro version */
+#undef POSTGIS_MICRO_VERSION
+
+/* PostGIS minor version */
+#undef POSTGIS_MINOR_VERSION
+
 /* PostgreSQL server version */
 #undef POSTGIS_PGSQL_VERSION
+
+/* Enable GEOS profiling (0=disabled) */
+#undef POSTGIS_PROFILE
 
 /* PROJ library version */
 #undef POSTGIS_PROJ_VERSION
@@ -71,3 +86,7 @@
 
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
+
+/* Define to 1 if `lex' declares `yytext' as a `char *' by default, not a
+   `char[]'. */
+#undef YYTEXT_POINTER
