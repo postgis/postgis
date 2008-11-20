@@ -5195,6 +5195,10 @@ SELECT ST_AsEWKT(ST_SnapToGrid(ST_GeomFromEWKT('LINESTRING(-1.1115678 2.123 3 2.
 		<para>ST_Transform is often confused with ST_SetSRID().  ST_Transform actually changes the coordinates
 		of a geometry from one spatial reference system to another, while ST_SetSRID() simply changes the SRID identifier of
 		the geometry</para>
+		
+		<note>
+		  <para>Requires PostGIS be compiled with Proj support.  Use <xref linkend="PostGIS_Full_Version" /> to confirm you have proj support compiled in.</para>
+		</note>
 	
 		<note>
 		  <para>If using more than one transformation, it is useful to have a functional index on the commonly used
@@ -5267,7 +5271,7 @@ CREATE INDEX idx_the_geom_26986_parcels
 	  <refsection>
 		<title>See Also</title>
 	
-		<para><xref linkend="ST_AsText" />, <xref linkend="ST_SetSRID" />, <xref linkend="UpdateGeometrySRID"/></para>
+		<para><xref linkend="PostGIS_Full_Version" />, <xref linkend="ST_AsText" />, <xref linkend="ST_SetSRID" />, <xref linkend="UpdateGeometrySRID"/></para>
 	  </refsection>
 	</refentry>
 	
@@ -5354,7 +5358,7 @@ CREATE INDEX idx_the_geom_26986_parcels
 	  <!-- Optionally add a "See Also" section -->
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_Affine" />, <xref linkend="ST_AsText" />, <xref linkend="ST_GeomFromText" /></para>
+		<para><xref linkend="Postgis_Full_Version" />, <xref linkend="ST_Affine" />, <xref linkend="ST_AsText" />, <xref linkend="ST_GeomFromText" /></para>
 	  </refsection>
 	</refentry>
 			
@@ -5983,6 +5987,10 @@ st_asgeojson
 		<para>Version 4: ST_AsGeoJSON(version, geom, max_sig_digits) </para>
 
 		<note>
+		  <para>Requires PostGIS be compiled with Proj support.  Use <xref linkend="PostGIS_Full_Version" /> to confirm you have proj support compiled in.</para>
+		</note>
+		
+		<note>
 		  <para>Availability: 1.2.2 - later variants that include version param came in 1.3.2</para>
 		</note>
 		
@@ -6012,7 +6020,7 @@ st_asgeojson
 	 <refsection>
 		<title>See Also</title>
 	
-		<para><xref linkend="ST_SetSRID" />, <xref linkend="ST_SRID" /></para>
+		<para><xref linkend="PostGIS_Full_Version" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_SRID" /></para>
 	  </refsection>
 	</refentry>
 	<refentry id="ST_AsSVG">
