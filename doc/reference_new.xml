@@ -5358,7 +5358,7 @@ CREATE INDEX idx_the_geom_26986_parcels
 	  <!-- Optionally add a "See Also" section -->
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="Postgis_Full_Version" />, <xref linkend="ST_Affine" />, <xref linkend="ST_AsText" />, <xref linkend="ST_GeomFromText" /></para>
+		<para><xref linkend="ST_Affine" />, <xref linkend="ST_AsText" />, <xref linkend="ST_GeomFromText" /></para>
 	  </refsection>
 	</refentry>
 			
