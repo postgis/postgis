@@ -4518,12 +4518,16 @@ dimension
           </varlistentry>
 
           <varlistentry>
-            <term>ST_AsKML(geometry, [precision])</term>
+            <term>ST_AsKML([version], geometry, [precision])</term>
 
             <listitem>
               <para>Return the geometry as a KML element. Second argument may
               be used to reduce the maximum number of significant digits used
-              in output (defaults to 15).</para>
+              in output (defaults to 15). Version defaults to 2</para>
+			  
+			  <note>
+				  <para>Requires PostGIS be compiled with Proj support.  Use PostGIS_Full_Version() to confirm you have proj support compiled in.</para>
+			  </note>
             </listitem>
           </varlistentry>
           <varlistentry>
@@ -4893,6 +4897,10 @@ SELECT sometable.*, (ST_Dump(the_geom)).geom As the_geom
               <para>Returns a new geometry with its coordinates transformed to
               the SRID referenced by the integer parameter. The destination
               SRID must exist in the <varname>SPATIAL_REF_SYS</varname> table.</para>
+			  
+			  <note>
+				  <para>Requires PostGIS be compiled with Proj support.  Use PostGIS_Full_Version() to confirm you have proj support compiled in.</para>
+			  </note>
             </listitem>
           </varlistentry>
 
