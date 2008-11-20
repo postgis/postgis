@@ -4798,13 +4798,14 @@ CREATEFUNCTION ST_AsGML(int4, geometry, int4)
 -----------------------------------------------------------------------
 -- KML OUTPUT
 -----------------------------------------------------------------------
+
+#ifdef USE_PROJ
 -- _ST_AsKML(version, geom, precision)
 CREATEFUNCTION _ST_AsKML(int4, geometry, int4)
 	RETURNS TEXT
 	AS '@MODULE_FILENAME@','LWGEOM_asKML'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
-#ifdef USE_PROJ
 -- AsKML(geom, precision) / version=2
 -- Deprecation in 1.2.3
 CREATEFUNCTION AsKML(geometry, int4)
