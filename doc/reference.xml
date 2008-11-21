@@ -711,17 +711,6 @@
 
     <variablelist>
       <varlistentry>
-        <term>ST_CoordDim</term>
-
-        <listitem>
-          <para>Return the coordinate dimension of the ST_Geometry
-          value.</para>
-
-          <para>SQL-MM 3: 5.1.3</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
         <term>ST_GeomFromWKB</term>
 
         <listitem>

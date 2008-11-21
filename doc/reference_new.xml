@@ -2313,6 +2313,92 @@ MULTIPOINT(-1 1 1,1 1 0.75)
 			<para><xref linkend="ST_ExteriorRing" />, <xref linkend="ST_MakePolygon" /></para>
 		</refsection>
 	</refentry>
+	      <varlistentry>
+        <term>ST_CoordDim</term>
+
+        <listitem>
+          <para>Return the coordinate dimension of the ST_Geometry
+          value.</para>
+
+          <para>SQL-MM 3: 5.1.3</para>
+        </listitem>
+      </varlistentry>
+	<refentry id="ST_CoordDim">
+	  <refnamediv>
+	    <refname>ST_CoordDim</refname>
+	
+	    <refpurpose><para>Return the coordinate dimension of the ST_Geometry value.</para></refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>integer <function>ST_CoordDim</function></funcdef>
+	        <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+	      </funcprototype>
+	    </funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+	    <para>Return the coordinate dimension of the ST_Geometry value.</para>
+
+	    <para>This is the MM compliant alias name for <xref linkend="ST_NDims" /></para>
+
+	
+	    <!-- Optionally mention OpenGIS compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the <ulink
+	    url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+	    Implementation Specification for SQL.</ulink></para>
+	
+	    <!-- Optionally mention SQL/MM compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the SQL/MM specification: SQL-MM 3: 5.1.3</para>
+		
+		<!-- Optionally mention 3d support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+	<!-- Optionally mention Circular String Support -->
+		    <para><inlinemediaobject>
+		        <imageobject>
+		          <imagedata fileref="images/check.png" />
+		        </imageobject>
+		      </inlinemediaobject> This method supports Circular Strings and curves </para>
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+	
+	    <programlisting>SELECT ST_CoordDim('CIRCULARSTRING(1 2 3, 1 3 4, 5 6 7, 8 9 10, 11 12 13)');
+			---result--
+				3
+				
+				SELECT ST_CoordDim(ST_Point(1,2));
+			--result--
+				2
+				
+		</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	
+	    <para><xref linkend="ST_NDims" /></para>
+	  </refsection>
+	</refentry>
 	
     <refentry id="ST_Dimension">
       <refnamediv>
@@ -3366,7 +3452,7 @@ NOTICE:  Self-intersection at or near point 0 0
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_Dimension" />, <xref linkend="ST_GeomFromEWKT" /></para>
+			<para><xref linkend="ST_CoordDim" />, <xref linkend="ST_Dimension" />, <xref linkend="ST_GeomFromEWKT" /></para>
 		</refsection>
 	</refentry>
 
