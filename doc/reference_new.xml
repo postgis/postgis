@@ -107,6 +107,12 @@
         table. The <varname>type</varname> must be an uppercase string
         corresponding to the geometry type, eg, 'POLYGON' or
         'MULTILINESTRING'.</para>
+		
+		<note>
+			<para>Views and derivatively created tables will need to be registered in geometry_columns manually.
+				since AddGeometryColumn also adds a spatial column.  Refer to <xref linkend="Manual_Register_Spatial_Column"/>.
+			</para>
+		</note>
 
         <para>
           <inlinegraphic fileref="images/check.png" />
@@ -171,7 +177,7 @@ the_geom IS NULL)
       <refsection>
         <title>See Also</title>
 
-        <para><xref linkend="DropGeometryColumn"/>, <xref linkend="DropGeometryTable"/></para>
+        <para><xref linkend="DropGeometryColumn"/>, <xref linkend="DropGeometryTable"/>, <xref linkend="Manual_Register_Spatial_Column"/></para>
       </refsection>
     </refentry>
 
