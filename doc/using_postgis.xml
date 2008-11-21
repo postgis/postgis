@@ -539,33 +539,33 @@ SELECT AddGeometryColumn( 'roads', 'roads_geom', -1, 'GEOMETRY', 3 );</programli
 		geometry_columns table manually.  Below is a simple script to do that.</para>
 		
 		<programlisting>
-			--Lets say you have a view created like this
-			CREATE VIEW  public.vwmytablemercator AS
-				SELECT gid, ST_Transform(the_geom,3395) As the_geom, f_name
-				FROM public.mytable;
-				
-			--To register this table in AddGeometry columns - do the following
-			INSERT INTO geometry_columns(f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, "type")
-			SELECT '', 'public', 'vwmytablemercator', 'the_geom', ST_CoordDim(the_geom), ST_SRID(the_geom), GeometryType(the_geom)
-			FROM public.vwmytablemercator LIMIT 1;
+--Lets say you have a view created like this
+CREATE VIEW  public.vwmytablemercator AS
+	SELECT gid, ST_Transform(the_geom,3395) As the_geom, f_name
+	FROM public.mytable;
+	
+--To register this table in AddGeometry columns - do the following
+INSERT INTO geometry_columns(f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, "type")
+SELECT '', 'public', 'vwmytablemercator', 'the_geom', ST_CoordDim(the_geom), ST_SRID(the_geom), GeometryType(the_geom)
+FROM public.vwmytablemercator LIMIT 1;
 
 		</programlisting>
 		
 		<programlisting>
-			--Lets say you created a derivative table by doing a bulk insert
-			SELECT poi.gid, poi.the_geom, citybounds.city_name
-			INTO myschema.myspecialpois
-			FROM poi INNER JOIN citybounds ON ST_Intersects(citybounds.the_geom, poi.the_geom);
-			
-			--Create index on new table
-			CREATE INDEX idx_myschema_myspecialpois_geom_gist
-			  ON myschema.myspecialpois USING gist(the_geom);
-	
-			--To manually register this new table's geometry column in geometry_columns 
-			-- we do the same thing as with view 
-			INSERT INTO geometry_columns(f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, "type")
-			SELECT '', 'myschema', 'myspecialpois', 'the_geom', ST_CoordDim(the_geom), ST_SRID(the_geom), GeometryType(the_geom)
-			FROM public.myschema.myspecialpois LIMIT 1;
+--Lets say you created a derivative table by doing a bulk insert
+SELECT poi.gid, poi.the_geom, citybounds.city_name
+INTO myschema.myspecialpois
+FROM poi INNER JOIN citybounds ON ST_Intersects(citybounds.the_geom, poi.the_geom);
+
+--Create index on new table
+CREATE INDEX idx_myschema_myspecialpois_geom_gist
+  ON myschema.myspecialpois USING gist(the_geom);
+
+--To manually register this new table's geometry column in geometry_columns 
+-- we do the same thing as with view 
+INSERT INTO geometry_columns(f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, "type")
+SELECT '', 'myschema', 'myspecialpois', 'the_geom', ST_CoordDim(the_geom), ST_SRID(the_geom), GeometryType(the_geom)
+FROM public.myschema.myspecialpois LIMIT 1;
 
 		</programlisting>
 	
