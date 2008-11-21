@@ -2313,16 +2313,7 @@ MULTIPOINT(-1 1 1,1 1 0.75)
 			<para><xref linkend="ST_ExteriorRing" />, <xref linkend="ST_MakePolygon" /></para>
 		</refsection>
 	</refentry>
-	      <varlistentry>
-        <term>ST_CoordDim</term>
 
-        <listitem>
-          <para>Return the coordinate dimension of the ST_Geometry
-          value.</para>
-
-          <para>SQL-MM 3: 5.1.3</para>
-        </listitem>
-      </varlistentry>
 	<refentry id="ST_CoordDim">
 	  <refnamediv>
 	    <refname>ST_CoordDim</refname>
