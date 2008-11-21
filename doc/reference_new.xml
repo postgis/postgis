@@ -109,8 +109,8 @@
         'MULTILINESTRING'.</para>
 		
 		<note>
-			<para>Views and derivatively created tables will need to be registered in geometry_columns manually.
-				since AddGeometryColumn also adds a spatial column.  Refer to <xref linkend="Manual_Register_Spatial_Column"/>.
+			<para>Views and derivatively created spatial tables will need to be registered in geometry_columns manually,
+				since AddGeometryColumn also adds a spatial column which is not needed when you already have a spatial column.  Refer to <xref linkend="Manual_Register_Spatial_Column"/>.
 			</para>
 		</note>
 
