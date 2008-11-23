@@ -10624,6 +10624,76 @@ all_em|grabone   | grab_rest
 	    <para><xref linkend="ST_Collect" /></para>
 	  </refsection>
 	</refentry>
+			
+	<refentry id="ST_Estimated_Extent">
+	  <refnamediv>
+		<refname>ST_Estimated_Extent</refname>
+	
+		<refpurpose>Return the 'estimated' extent of the given spatial table.
+            The estimated is taken from the geometry column's statistics. The
+            current schema will be used if not specified.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>box2d <function>ST_Estimated_Extent</function></funcdef>
+			<paramdef><type>text </type> <parameter>schema_name</parameter></paramdef>
+			<paramdef><type>text </type> <parameter>table_name</parameter></paramdef>
+			<paramdef><type>text </type> <parameter>geocolumn_name</parameter></paramdef>
+		  </funcprototype>
+	
+		  <funcprototype>
+			<funcdef>box2d <function>ST_Estimated_Extent</function></funcdef>
+			<paramdef><type>text </type> <parameter>table_name</parameter></paramdef>
+			<paramdef><type>text </type> <parameter>geocolumn_name</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+	
+		<para>Return the 'estimated' extent of the given spatial table.
+            The estimated is taken from the geometry column's statistics. The
+            current schema will be used if not specified.</para>
+
+		<para>For PostgreSQL&gt;=8.0.0 statistics are gathered by VACUUM
+		ANALYZE and resulting extent will be about 95% of the real
+		one.</para>
+
+		<para>For PostgreSQL&lt;8.0.0 statistics are gathered by
+		update_geometry_stats() and resulting extent will be exact.</para>
+	
+	<!-- Optionally mention Circular String Support -->
+		<para><inlinemediaobject>
+				<imageobject>
+				  <imagedata fileref="images/check.png" />
+				</imageobject>
+			  </inlinemediaobject> This method supports Circular Strings and curves </para>
+	  </refsection>
+	  
+	
+	  <refsection>
+		<title>Examples</title>
+	
+		<programlisting>SELECT ST_Estimated_extent('ny', 'edges', 'the_geom');
+		--result--
+		BOX(-8877653 4912316,-8010225.5 5589284)
+		
+		SELECT ST_Estimated_Extent('feature_poly', 'the_geom');
+		--result--
+		BOX(-124.659652709961 24.6830825805664,-67.7798080444336 49.0012092590332)
+		</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+	
+		<para><xref linkend="ST_Extent" /></para>
+	  </refsection>
+	</refentry>
 	<refentry id="ST_Expand">
       <refnamediv>
         <refname>ST_Expand</refname>
