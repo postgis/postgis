@@ -430,52 +430,6 @@
             geometry size, but makes bounding-box based queries slower.</para>
           </listitem>
         </varlistentry>
-		
-        <varlistentry>
-          <term>ST_Force_collection(geometry)</term>
-
-          <listitem>
-            <para>Converts the geometry into a GEOMETRYCOLLECTION. This is
-            useful for simplifying the WKB representation.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry id="force_2d">
-          <term>ST_Force_2d(geometry)</term>
-
-          <listitem>
-            <para>Forces the geometries into a "2-dimensional mode" so that
-            all output representations will only have the X and Y coordinates.
-            This is useful for force OGC-compliant output (since OGC only
-            specifies 2-D geometries).</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry id="force_3dz">
-          <term>ST_Force_3dz(geometry)</term>
-
-          <term>ST_Force_3d(geometry)</term>
-
-          <listitem>
-            <para>Forces the geometries into XYZ mode.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry id="force_3dm">
-          <term>ST_Force_3dm(geometry)</term>
-
-          <listitem>
-            <para>Forces the geometries into XYM mode.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry id="force_4d">
-          <term>ST_Force_4d(geometry)</term>
-
-          <listitem>
-            <para>Forces the geometries into XYZM mode.</para>
-          </listitem>
-        </varlistentry>
       
       </variablelist>
     </sect2>

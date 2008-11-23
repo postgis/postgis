@@ -4464,8 +4464,374 @@ SELECT ST_AsEWKT(ST_Affine(the_geom, cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi
 	    <para><xref linkend="ST_Rotate" />, <xref linkend="ST_Scale" />, <xref linkend="ST_Translate" />, <xref linkend="ST_TransScale" /></para>
 	  </refsection>
 	</refentry>
+			
+	<refentry id="ST_Force_2D">
+	  <refnamediv>
+		<refname>ST_Force_2D</refname>
 	
-<refentry id="ST_ForceRHR">
+		<refpurpose>Forces the geometries into a "2-dimensional mode" so that
+		all output representations will only have the X and Y coordinates.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Force_2D</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+	
+		<para>Forces the geometries into a "2-dimensional mode" so that
+		all output representations will only have the X and Y coordinates.
+		This is useful for force OGC-compliant output (since OGC only
+		specifies 2-D geometries).</para>
+	
+	  
+	<!-- Optionally mention Circular String Support -->
+			<para><inlinemediaobject>
+				<imageobject>
+				  <imagedata fileref="images/check.png" />
+				</imageobject>
+			  </inlinemediaobject> This method supports Circular Strings and curves </para>
+	  </refsection>
+	  
+	
+	  <refsection>
+		<title>Examples</title>
+	
+		<programlisting>SELECT ST_AsEWKT(ST_Force_2D(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 2)')));
+		st_asewkt              
+-------------------------------------
+CIRCULARSTRING(1 1,2 3,4 5,6 7,5 6)
+
+SELECT  ST_AsEWKT(ST_Force_2D('POLYGON((0 0 2,0 5 2,5 0 2,0 0 2),(1 1 2,3 1 2,1 3 2,1 1 2))'));
+
+                  st_asewkt                   
+----------------------------------------------
+ POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))
+
+		</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+	
+		<para><xref linkend="ST_Force_3D"/></para>
+	  </refsection>
+	</refentry>
+	
+	<refentry id="ST_Force_3D">
+	  <refnamediv>
+		<refname>ST_Force_3D</refname>
+	
+		<refpurpose>Forces the geometries into XYZ mode.  This is an alias for ST_Force_3DZ.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Force_3D</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+	
+		<para>Forces the geometries into XYZ mode.  This is an alias for ST_Force_3DZ. If a geometry has no Z component, then a 0 Z coordinate is tacked on.</para>
+	
+	  	<!-- Optionally mention 3d support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+	<!-- Optionally mention Circular String Support -->
+			<para><inlinemediaobject>
+				<imageobject>
+				  <imagedata fileref="images/check.png" />
+				</imageobject>
+			  </inlinemediaobject> This method supports Circular Strings and curves </para>
+	  </refsection>
+	  
+	
+	  <refsection>
+		<title>Examples</title>
+	
+		<programlisting>
+		--Nothing happens to an already 3D geometry
+		SELECT ST_AsEWKT(ST_Force_3D(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 2)')));
+                   st_asewkt                   
+-----------------------------------------------
+ CIRCULARSTRING(1 1 2,2 3 2,4 5 2,6 7 2,5 6 2)
+
+
+SELECT  ST_AsEWKT(ST_Force_3D('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))'));
+
+                         st_asewkt                           
+--------------------------------------------------------------
+ POLYGON((0 0 0,0 5 0,5 0 0,0 0 0),(1 1 0,3 1 0,1 3 0,1 1 0))
+		</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+	
+		<para><xref linkend="ST_AsEWKT"/>, <xref linkend="ST_Force_2D"/>, <xref linkend="ST_Force_3DM"/>, <xref linkend="ST_Force_3DZ"/></para>
+	  </refsection>
+	</refentry>
+	
+	<refentry id="ST_Force_3DZ">
+	  <refnamediv>
+		<refname>ST_Force_3DZ</refname>
+	
+		<refpurpose>Forces the geometries into XYZ mode.  This is a synonym for ST_Force_3D.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Force_3DZ</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+	
+		<para>Forces the geometries into XYZ mode.  This is a synonym for ST_Force_3DZ. If a geometry has no Z component, then a 0 Z coordinate is tacked on.</para>
+	
+	  	<!-- Optionally mention 3d support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+	<!-- Optionally mention Circular String Support -->
+			<para><inlinemediaobject>
+				<imageobject>
+				  <imagedata fileref="images/check.png" />
+				</imageobject>
+			  </inlinemediaobject> This method supports Circular Strings and curves </para>
+	  </refsection>
+	  
+	
+	  <refsection>
+		<title>Examples</title>
+	
+		<programlisting>
+--Nothing happens to an already 3D geometry
+SELECT ST_AsEWKT(ST_Force_3DZ(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 2)')));
+                   st_asewkt                   
+-----------------------------------------------
+ CIRCULARSTRING(1 1 2,2 3 2,4 5 2,6 7 2,5 6 2)
+
+
+SELECT  ST_AsEWKT(ST_Force_3DZ('POLYGON((0 0,0 5,5 0,0 0),(1 1,3 1,1 3,1 1))'));
+
+                         st_asewkt                           
+--------------------------------------------------------------
+ POLYGON((0 0 0,0 5 0,5 0 0,0 0 0),(1 1 0,3 1 0,1 3 0,1 1 0))
+		</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+	
+		<para><xref linkend="ST_AsEWKT"/>, <xref linkend="ST_Force_2D"/>, <xref linkend="ST_Force_3DM"/>, <xref linkend="ST_Force_3D"/></para>
+	  </refsection>
+	</refentry>
+		
+	<refentry id="ST_Force_3DM">
+	  <refnamediv>
+		<refname>ST_Force_3DM</refname>
+	
+		<refpurpose>Forces the geometries into XYM mode.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Force_3DM</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+	
+		<para>Forces the geometries into XYM mode.  If a geometry has no M component, then a 0 M coordinate is tacked on.  If it has a Z component, then Z is removed</para>
+	
+
+	<!-- Optionally mention Circular String Support -->
+			<para><inlinemediaobject>
+				<imageobject>
+				  <imagedata fileref="images/check.png" />
+				</imageobject>
+			  </inlinemediaobject> This method supports Circular Strings and curves </para>
+	  </refsection>
+	  
+	
+	  <refsection>
+		<title>Examples</title>
+	
+		<programlisting>
+--Nothing happens to an already 3D geometry
+SELECT ST_AsEWKT(ST_Force_3DM(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 2)')));
+                   st_asewkt                    
+------------------------------------------------
+ CIRCULARSTRINGM(1 1 0,2 3 0,4 5 0,6 7 0,5 6 0)
+
+
+SELECT  ST_AsEWKT(ST_Force_3DM('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 1,1 3 1,1 1 1))'));
+
+                          st_asewkt                           
+---------------------------------------------------------------
+ POLYGONM((0 0 0,0 5 0,5 0 0,0 0 0),(1 1 0,3 1 0,1 3 0,1 1 0))
+
+		</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+	
+		<para><xref linkend="ST_AsEWKT"/>,  <xref linkend="ST_Force_2D"/>, <xref linkend="ST_Force_3DM"/>, <xref linkend="ST_Force_3D"/>, <xref linkend="ST_GeomFromEWKT"/></para>
+	  </refsection>
+	</refentry>
+		
+	<refentry id="ST_Force_4D">
+	  <refnamediv>
+		<refname>ST_Force_4D</refname>
+	
+		<refpurpose>Forces the geometries into XYZM mode.  </refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Force_4D</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+	
+		<para>Forces the geometries into XYZM mode.  0 is tacked on for missing Z and M dimensions. </para>
+	
+	  	<!-- Optionally mention 3d support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+	<!-- Optionally mention Circular String Support -->
+			<para><inlinemediaobject>
+				<imageobject>
+				  <imagedata fileref="images/check.png" />
+				</imageobject>
+			  </inlinemediaobject> This method supports Circular Strings and curves </para>
+	  </refsection>
+	  
+	
+	  <refsection>
+		<title>Examples</title>
+	
+		<programlisting>
+--Nothing happens to an already 3D geometry
+SELECT ST_AsEWKT(ST_Force_4D(ST_GeomFromEWKT('CIRCULARSTRING(1 1 2, 2 3 2, 4 5 2, 6 7 2, 5 6 2)')));
+                        st_asewkt                        
+---------------------------------------------------------
+ CIRCULARSTRING(1 1 2 0,2 3 2 0,4 5 2 0,6 7 2 0,5 6 2 0)
+
+
+
+SELECT  ST_AsEWKT(ST_Force_4D('MULTILINESTRINGM((0 0 1,0 5 2,5 0 3,0 0 4),(1 1 1,3 1 1,1 3 1,1 1 1))'));
+
+                                      st_asewkt                                       
+--------------------------------------------------------------------------------------
+ MULTILINESTRING((0 0 0 1,0 5 0 2,5 0 0 3,0 0 0 4),(1 1 0 1,3 1 0 1,1 3 0 1,1 1 0 1))
+
+		</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+	
+		<para><xref linkend="ST_AsEWKT"/>, <xref linkend="ST_Force_2D"/>, <xref linkend="ST_Force_3DM"/>, <xref linkend="ST_Force_3D"/></para>
+	  </refsection>
+	</refentry>
+	
+	<refentry id="ST_Force_Collection">
+	  <refnamediv>
+		<refname>ST_Force_Collection</refname>
+	
+		<refpurpose>Converts the geometry into a GEOMETRYCOLLECTION.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Force_Collection</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+	
+		<para>Converts the geometry into a GEOMETRYCOLLECTION. This is
+            useful for simplifying the WKB representation.</para>
+	
+
+	  	<!-- Optionally mention 3d support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+	  </refsection>
+	  
+	
+	  <refsection>
+		<title>Examples</title>
+	
+		<programlisting>
+
+SELECT  ST_AsEWKT(ST_Force_Collection('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 1,1 3 1,1 1 1))'));
+
+                                   st_asewkt                                     
+----------------------------------------------------------------------------------
+ GEOMETRYCOLLECTION(POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,3 1 1,1 3 1,1 1 1)))
+
+
+		</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+	
+		<para><xref linkend="ST_AsEWKT"/>,  <xref linkend="ST_Force_2D"/>, <xref linkend="ST_Force_3DM"/>, <xref linkend="ST_Force_3D"/>, <xref linkend="ST_GeomFromEWKT"/></para>
+	  </refsection>
+	</refentry>
+		    
+	
+	<refentry id="ST_ForceRHR">
 		<refnamediv>
 			<refname>ST_ForceRHR</refname>
 			
