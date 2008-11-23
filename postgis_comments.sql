@@ -38,7 +38,7 @@ COMMENT ON FUNCTION PostGIS_Scripts_Released() IS 'Returns the version number of
 COMMENT ON FUNCTION PostGIS_Uses_Stats() IS 'Returns TRUE if STATS usage has been enabled.';
 			
 COMMENT ON FUNCTION PostGIS_Version() IS 'Returns PostGIS version number and compile-time options.';
-			
+				
 COMMENT ON FUNCTION Probe_Geometry_Columns() IS 'Scans all tables with PostGIS geometry constraints and adds them to the geometry_columns table if they are not there.';
 			
 COMMENT ON FUNCTION UpdateGeometrySRID(varchar , varchar , integer ) IS 'args: table_name, column_name, srid - Updates the SRID of all features in a geometry column, geometry_columns metadata and srid table constraint';
@@ -62,6 +62,10 @@ COMMENT ON FUNCTION ST_GeometryFromText(text , integer ) IS 'args: WKT, srid - R
 COMMENT ON FUNCTION ST_GeomFromText(text ) IS 'args: WKT - Return a specified ST_Geometry value from Well-Known Text representation (WKT).';
 			
 COMMENT ON FUNCTION ST_GeomFromText(text , integer ) IS 'args: WKT, srid - Return a specified ST_Geometry value from Well-Known Text representation (WKT).';
+			
+COMMENT ON FUNCTION ST_GeomFromWKB(bytea ) IS 'args: geomA - Return a specified ST_Geometry value from Well-Known Binary representation (WKB) and optional srid.';
+			
+COMMENT ON FUNCTION ST_GeomFromWKB(bytea , integer ) IS 'args: geomA, srid - Return a specified ST_Geometry value from Well-Known Binary representation (WKB) and optional srid.';
 			
 COMMENT ON FUNCTION ST_LineFromMultiPoint(geometry ) IS 'args: aMultiPoint - Creates a LineString from a MultiPoint geometry.';
 			
@@ -162,6 +166,18 @@ COMMENT ON FUNCTION ST_AddPoint(geometry, geometry, integer) IS 'args: linestrin
 COMMENT ON FUNCTION ST_Affine(geometry , float , float , float , float , float , float , float , float , float , float , float , float ) IS 'args: geomA, a, b, c, d, e, f, g, h, i, xoff, yoff, zoff - Applies a 3d affine transformation to the geometry to do things like translate, rotate, scale in one step.';
 			
 COMMENT ON FUNCTION ST_Affine(geometry , float , float , float , float , float , float ) IS 'args: geomA, a, b, d, e, xoff, yoff - Applies a 3d affine transformation to the geometry to do things like translate, rotate, scale in one step.';
+			
+COMMENT ON FUNCTION ST_Force_2D(geometry ) IS 'args: geomA - Forces the geometries into a "2-dimensional mode" so that all output representations will only have the X and Y coordinates.';
+			
+COMMENT ON FUNCTION ST_Force_3D(geometry ) IS 'args: geomA - Forces the geometries into XYZ mode. This is an alias for ST_Force_3DZ.';
+			
+COMMENT ON FUNCTION ST_Force_3DZ(geometry ) IS 'args: geomA - Forces the geometries into XYZ mode. This is a synonym for ST_Force_3D.';
+			
+COMMENT ON FUNCTION ST_Force_3DM(geometry ) IS 'args: geomA - Forces the geometries into XYM mode.';
+			
+COMMENT ON FUNCTION ST_Force_4D(geometry ) IS 'args: geomA - Forces the geometries into XYZM mode.';
+			
+COMMENT ON FUNCTION ST_Force_Collection(geometry ) IS 'args: geomA - Converts the geometry into a GEOMETRYCOLLECTION.';
 			
 COMMENT ON FUNCTION ST_ForceRHR(geometry
 						) IS 'args: g - Forces the orientation of the vertices in a polygon to follow the Right-Hand-Rule.';
@@ -375,6 +391,10 @@ COMMENT ON FUNCTION ST_Locate_Along_Measure(geometry , float ) IS 'args: ageom_w
 COMMENT ON FUNCTION ST_Locate_Between_Measures(geometry , float , float ) IS 'args: geomA, measure_start, measure_end - Return a derived geometry collection value with elements that match the specified range of measures inclusively. Polygonal elements are not supported.';
 			
 COMMENT ON AGGREGATE ST_Accum(geometry) IS 'args: geomfield - Aggregate. Constructs an array of geometries.';
+			
+COMMENT ON FUNCTION ST_Estimated_Extent(text , text , text ) IS 'args: schema_name, table_name, geocolumn_name - Return the estimated extent of the given spatial table. The estimated is taken from the geometry columns statistics. The current schema will be used if not specified.';
+			
+COMMENT ON FUNCTION ST_Estimated_Extent(text , text ) IS 'args: table_name, geocolumn_name - Return the estimated extent of the given spatial table. The estimated is taken from the geometry columns statistics. The current schema will be used if not specified.';
 			
 COMMENT ON FUNCTION ST_Expand(geometry , float) IS 'args: g1, units_to_expand - Returns bounding box expanded in all directions from the bounding box of the input geometry';
 			
