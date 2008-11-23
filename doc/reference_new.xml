@@ -1203,6 +1203,13 @@ probed:6 inserted:0 conflicts:6 stale:0
           <imagedata fileref="images/check.png" />
         </imageobject>
       </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+	  
+	  	<!-- Optionally mention Circular String Support -->
+		    <para><inlinemediaobject>
+		        <imageobject>
+		          <imagedata fileref="images/check.png" />
+		        </imageobject>
+		      </inlinemediaobject> This method supports Circular Strings and curves </para>
 	  </refsection>
 	
 	  <refsection>
@@ -1218,7 +1225,7 @@ probed:6 inserted:0 conflicts:6 stale:0
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_AsBinary" />, <xref linkend="ST_AsEWKB" /></para>
+		<para><xref linkend="ST_AsBinary" />, <xref linkend="ST_AsEWKB" />, <xref linkend="ST_GeomFromWKB" /></para>
 	  </refsection>
 	</refentry>
 		
@@ -1513,7 +1520,7 @@ SRID=4326;LINESTRING(-113.98 39.198,-113.981 39.195)
 	  <refsection>
 	    <title>See Also</title>
 	
-	    <para><xref linkend="ST_WKBToSQL" />, <xref linkend="ST_AsBinary" /></para>
+	    <para><xref linkend="ST_WKBToSQL" />, <xref linkend="ST_AsBinary" />, <xref linkend="ST_GeomFromEWKB" /></para>
 	  </refsection>
 	</refentry>
 		
