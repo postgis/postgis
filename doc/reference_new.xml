@@ -1442,6 +1442,80 @@ SELECT ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406
 			<para><xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_GeomFromWKB" />, <xref linkend="ST_SRID" /></para>
 		  </refsection>
 	</refentry>
+
+	<refentry id="ST_GeomFromWKB">
+	  <refnamediv>
+	    <refname>ST_GeomFromWKB</refname>
+	    <refpurpose>Return a specified ST_Geometry value from Well-Known Binary representation (WKB) and optional srid.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>geometry <function>ST_GeomFromWKB</function></funcdef>
+	        <paramdef><type>bytea </type> <parameter>geomA</parameter></paramdef>
+	      </funcprototype>
+	
+	      <funcprototype>
+	        <funcdef>geometry <function>ST_GeomFromWKB</function></funcdef>
+	        <paramdef><type>bytea </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+	      </funcprototype>
+	    </funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+	    <para>Return a specified ST_Geometry value from Well-Known Binary representation (WKB) and optinal srid.  This is an alternate name for ST_WKBToSQL</para>
+	
+	    <para>If SRID is not give, it defaults to -1 (UnKnown).</para>
+	
+	    <!-- Optionally mention OpenGIS compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the <ulink
+	    url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+	    Implementation Specification for SQL. OGC SPEC 3.2.6.2 - option SRID is from the conformance suite</ulink></para>
+	
+	    <!-- Optionally mention SQL/MM compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the SQL/MM specification: SQL-MM 3: 5.1.41</para>
+		
+	<!-- Optionally mention Circular String Support -->
+		    <para><inlinemediaobject>
+		        <imageobject>
+		          <imagedata fileref="images/check.png" />
+		        </imageobject>
+		      </inlinemediaobject> This method supports Circular Strings and curves </para>
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+	
+	    <programlisting>
+--Although bytea rep contains single \, these need to be escaped when inserting into a table		
+SELECT ST_AsEWKT(
+ST_GeomFromWKB(E'\\001\\002\\000\\000\\000\\002\\000\\000\\000\\037\\205\\353Q\\270~\\\\\\300\\323Mb\\020X\\231C@\\020X9\\264\\310~\\\\\\300)\\\\\\217\\302\\365\\230C@',4326)
+);
+--result--
+SRID=4326;LINESTRING(-113.98 39.198,-113.981 39.195)
+</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	
+	    <para><xref linkend="ST_WKBToSQL" />, <xref linkend="ST_AsBinary" /></para>
+	  </refsection>
+	</refentry>
 		
 	<refentry id="ST_LineFromMultiPoint">
 	  <refnamediv>
