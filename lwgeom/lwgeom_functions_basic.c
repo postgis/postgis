@@ -1460,7 +1460,7 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS)
 	lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom));
 
 	/* alread a multi*, just make it a collection */
-	if ( TYPE_GETTYPE(lwgeom->type) >= MULTIPOINTTYPE )
+	if ( lwgeom_contains_subgeoms(TYPE_GETTYPE(lwgeom->type)) )
 	{
 		TYPE_SETTYPE(lwgeom->type, COLLECTIONTYPE);
 	}
@@ -1506,7 +1506,7 @@ Datum LWGEOM_force_multi(PG_FUNCTION_ARGS)
 	 * in input. If bbox cache is not there we'll need to handle
 	 * automatic bbox addition FOR_COMPLEX_GEOMS.
 	 */
-	if ( TYPE_GETTYPE(geom->type) >= MULTIPOINTTYPE &&
+	if ( lwgeom_contains_subgeoms(TYPE_GETTYPE(geom->type)) &&
 	                TYPE_HASBBOX(geom->type) )
 	{
 		PG_RETURN_POINTER(geom);
@@ -1517,7 +1517,7 @@ Datum LWGEOM_force_multi(PG_FUNCTION_ARGS)
 	type = TYPE_GETTYPE(lwgeom->type);
 
 	/* single geom, make it a multi */
-	if ( type < MULTIPOINTTYPE )
+	if ( ! lwgeom_contains_subgeoms(type) )
 	{
 		type += 3;
 		SRID = lwgeom->SRID;
