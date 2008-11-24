@@ -485,7 +485,7 @@ Datum build_lwhistogram2d(PG_FUNCTION_ARGS)
 					 */
 
 #if DEBUG_GEOMETRY_STATS
-	elog(NOTICE,"box is : (%.15g,%.15g to %.15g,%.15g)",box->low.x,box->low.y, box->high.x, box->high.y);
+	elog(NOTICE,"box is : (%.15g,%.15g to %.15g,%.15g)",box->xmin,box->ymin, box->xmax, box->ymax);
 	elog(NOTICE,"        search is in x: %i to %i   y: %i to %i",x_idx_min, x_idx_max, y_idx_min,y_idx_max);
 #endif
 
@@ -698,7 +698,7 @@ Datum estimate_lwhistogram2d(PG_FUNCTION_ARGS)
 
 #if DEBUG_GEOMETRY_STATS
 elog(NOTICE,"start estimate_histogram2d: ");
-elog(NOTICE,"box is : (%.15g,%.15g to %.15g,%.15g)",box->low.x,box->low.y, box->high.x, box->high.y);
+elog(NOTICE,"box is : (%.15g,%.15g to %.15g,%.15g)",box->xmin,box->ymin, box->xmax, box->ymax);
 #endif
 
 	box_area = (box->xmax-box->xmin)*(box->ymax-box->ymin);
