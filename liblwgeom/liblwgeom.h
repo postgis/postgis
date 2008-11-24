@@ -375,6 +375,9 @@ extern void lwgeom_addBBOX(LWGEOM *lwgeom);
 
 extern void lwgeom_dropSRID(LWGEOM *lwgeom);
 
+/* Determine whether a LWGEOM can contain sub-geometries or not */
+extern int lwgeom_contains_subgeoms(int type);
+
 /******************************************************************/
 
 /*

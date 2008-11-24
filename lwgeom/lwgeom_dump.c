@@ -40,28 +40,6 @@ typedef struct GEOMDUMPSTATE {
 #define LAST(x) ((x)->stack[(x)->stacklen-1])
 #define POP(x) (--((x)->stacklen))
 
-/* Helper function to determine whether or not a geometry type is MULTI or not.
-   TODO: this is a candidate for adding to liblwgeom, hence its name */
-int
-lwgeom_contains_subgeoms(int type)
-{
-	/* Return TRUE if the geometry contains sub-geometries */
-	switch(type)
-	{
-		case MULTIPOINTTYPE:
-		case MULTIPOLYGONTYPE:
-		case COLLECTIONTYPE:
-		case COMPOUNDTYPE:
-		case MULTICURVETYPE:
-		case MULTISURFACETYPE: 
-			return -1;
-			break;
-
-		default:
-			return 0;
-	}
-}
-
 
 PG_FUNCTION_INFO_V1(LWGEOM_dump);
 Datum LWGEOM_dump(PG_FUNCTION_ARGS)

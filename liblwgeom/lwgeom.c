@@ -782,3 +782,25 @@ lwgeom_longitude_shift(LWGEOM *lwgeom)
 				lwgeom_typename(TYPE_GETTYPE(lwgeom->type)));
 	}
 }
+
+
+int
+lwgeom_contains_subgeoms(int type)
+{
+	/* Return TRUE if the geometry may contain sub-geometries, i.e. it is a MULTI* or COMPOUNDCURVE */
+	switch(type)
+        {
+		case MULTIPOINTTYPE:
+		case MULTIPOLYGONTYPE:
+		case COLLECTIONTYPE:
+		case COMPOUNDTYPE:
+		case MULTICURVETYPE:
+		case MULTISURFACETYPE:
+			return -1;
+			break;
+
+		default:
+			return 0;
+	}
+}
+
