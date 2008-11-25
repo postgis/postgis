@@ -1,3 +1,32 @@
+PostGIS 1.3.4
+2008/XX/XX
+        - New Features
+          - Add new ST_AsGeoJSON() function to allow conversion of 
+            geometries to GeoJSON format within the database. (Olivier Courtin)
+          - Add forthcoming PostgreSQL 8.4 support (Paul Ramsey, Mark Cave-Ayland)
+          - Improved CSS for PostGIS documentation (Dane Springmeyer)
+          - Inclusion of new "postgis_comments.sql" file to enable detailed 
+            function comments to be installed for PostGIS functions. This attaches 
+            a description and associated parameter information to each function 
+            so that this information is available directly within psql/pgAdmin (Regina Obe)
+        - Enhancements and Bug Fixes
+          - General documentation improvements (Regina Obe, Kevin Neufield)
+          - Improve PiP code by removing substantial memory leaks and adding 
+            multi-polygon support (Paul Ramsey)
+          - Improve GiST consistent performance (Paul Ramsey)
+          - GBT#20: Improved algorithm for ST_DWithin (Paul Ramsey)
+          - GBT#21: locate_along_measure: wrong values, invalid data (Mark Cave-Ayland)
+          - GBT#23: wrong proj4text in spatial_ref_sys for SRID 31300 and 31370 (Paul Ramsey)
+          - GBT#43: Heap over-read in compute_geometry_stats() (Landon Fuller)
+          - GBT#44: ST_Relate(geom,geom,pattern) is case sensitive (Paul Ramsey)
+          - GBT#45: bug in postgis_restore.pl - not passing options to createdb (Paul Ramsey)
+          - GBT#58: bounding box of circular string is incorrect (Mark Leslie)
+          - GBT#65: ST_AsGML kills the backend when fed a CIRCULAR STRING (Mark Cave-Ayland)
+          - GBT#66: ST_Dump kills backend when fed CIRCULAR STRING (Mark Cave-Ayland)
+          - GBT#68: ST_Shift_Longitude doesn't work with MULTIPOINT (Mark Cave-Ayland)
+          - GBT#69: ST_Translate crashes when fed circular string (Mark Cave-Ayland)
+          - GBT#70: ST_NPoints Crashes with Curves (Mark Cave-Ayland)
+
 PostGIS 1.3.3
 2008/04/12
         - shp2pgsql, pgsql2shp improvements
