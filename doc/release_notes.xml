@@ -2,6 +2,20 @@
 <appendix id="release_notes">
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
+
+     <sect1>
+      <title>Release 1.3.4</title>
+      <para>Release date: 2008/11/24</para>
+      <para>This release adds support for GeoJSON output, building
+      with PostgreSQL 8.4, improves documentation quality and 
+      output aesthetics, adds function-level SQL documentation,
+      and improves performance for some spatial predicates
+      (point-in-polygon tests).</para>
+      <para>Bug fixes include removal of crashers in handling
+      circular strings for many functions, some memory leaks
+      removed, a linear referencing failure for measures on vertices,
+      and more. See the NEWS file for details.</para>
+    </sect1>
     
     <sect1>
       <title>Release 1.3.3</title>
