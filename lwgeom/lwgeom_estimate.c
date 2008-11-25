@@ -1383,6 +1383,7 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 #if DEBUG_GEOMETRY_STATS
 		elog(NOTICE, " %d stat rows", SPI_processed);
 #endif
+		elog(ERROR, "LWGEOM_estimated_extent: couldn't locate table within current schema");
 		PG_RETURN_NULL() ;
 	}
 
@@ -1396,6 +1397,7 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 #if DEBUG_GEOMETRY_STATS
 		elog(NOTICE, " stats are NULL");
 #endif
+		elog(ERROR, "LWGEOM_estimated_extent: couldn't locate statistics for table");
 		PG_RETURN_NULL();
 	}
 
@@ -2574,6 +2576,7 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 #if DEBUG_GEOMETRY_STATS
 		elog(NOTICE, " %d stat rows", SPI_processed);
 #endif
+		elog(ERROR, "LWGEOM_estimated_extent: couldn't locate table within current schema");
 		PG_RETURN_NULL() ;
 	}
 
@@ -2587,6 +2590,7 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 #if DEBUG_GEOMETRY_STATS
 		elog(NOTICE, " stats are NULL");
 #endif
+		elog(ERROR, "LWGEOM_estimated_extent: couldn't locate statistics for table");
 		PG_RETURN_NULL();
 	}
 	if ( ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array)) != 4 )
