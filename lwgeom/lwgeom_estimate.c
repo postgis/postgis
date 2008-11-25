@@ -1434,6 +1434,8 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 
 		POSTGIS_DEBUGF(3, " %d stat rows", SPI_processed);
 
+		elog(ERROR, "LWGEOM_estimated_extent: couldn't locate table within current schema");
+
 		PG_RETURN_NULL() ;
 	}
 
@@ -1446,6 +1448,8 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 		SPI_finish();
 
 		POSTGIS_DEBUG(3, " stats are NULL");
+
+		elog(ERROR, "LWGEOM_estimated_extent: couldn't locate statistics for table");
 
 		PG_RETURN_NULL();
 	}
