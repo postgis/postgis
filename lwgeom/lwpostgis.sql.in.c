@@ -2352,7 +2352,7 @@ LANGUAGE 'SQL' _IMMUTABLE;
 -----------------------------------------------------------------------
 -- This function will:
 --
---	o try to fix the schema of records with an invalid one
+--	o try to fix the schema of records with an integer one
 --		(for PG>=73)
 --
 --	o link records to system tables through attrelid and varattnum
@@ -3936,6 +3936,15 @@ CREATEFUNCTION ST_ConvexHull(geometry)
 CREATEFUNCTION ST_SimplifyPreserveTopology(geometry, float8)
     RETURNS geometry
     AS 'MODULE_PATHNAME','topologypreservesimplify'
+    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+#endif
+
+#if POSTGIS_GEOS_VERSION >= 31
+-- Requires GEOS >= 3.1.0
+-- Availability: 1.4.0
+CREATEFUNCTION ST_IsValidReason(geometry)
+    RETURNS text
+    AS 'MODULE_PATHNAME', 'isvalidreason'
     LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 #endif
 

@@ -37,6 +37,7 @@ Datum containsproperly(PG_FUNCTION_ARGS);
 Datum covers(PG_FUNCTION_ARGS);
 Datum overlaps(PG_FUNCTION_ARGS);
 Datum isvalid(PG_FUNCTION_ARGS);
+Datum isvalidreason(PG_FUNCTION_ARGS);
 Datum buffer(PG_FUNCTION_ARGS);
 Datum intersection(PG_FUNCTION_ARGS);
 Datum convexhull(PG_FUNCTION_ARGS);
@@ -1079,6 +1080,44 @@ Datum isvalid(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(result);
 }
 
+
+PG_FUNCTION_INFO_V1(isvalidreason);
+Datum isvalidreason(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *geom = NULL;
+	char *reason_str = NULL;
+	int len = 0;
+	char *result = NULL;
+	GEOSGeom g1 = NULL;
+
+	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+	initGEOS(lwnotice, lwnotice);
+
+	g1 = POSTGIS2GEOS(geom);
+	if ( ! g1 )
+	{
+		PG_RETURN_NULL();
+	}
+
+	reason_str = GEOSisValidReason(g1);
+	GEOSGeom_destroy(g1);
+	
+	if (reason_str == NULL)
+	{
+		elog(ERROR,"GEOS isvalidreason() threw an error!");
+		PG_RETURN_NULL(); /* never get here */
+	}
+	len = strlen(reason_str);
+	result = palloc(VARHDRSZ + len);
+	SET_VARSIZE(result, VARHDRSZ + len);
+	memcpy(VARDATA(result), reason_str, len);
+	free(reason_str);
+
+	PG_FREE_IF_COPY(geom, 0);
+	PG_RETURN_POINTER(result);
+	
+}
 
 /*
  * overlaps(PG_LWGEOM g1,PG_LWGEOM g2)
