@@ -42,7 +42,9 @@ SA_OBJS=measures.o \
 	lex.yy.o \
 	vsprintf.o	
 
-all: $(SA_OBJS)
+all: liblwgeom.a
+
+liblwgeom.a: $(SA_OBJS)
 	ar rs liblwgeom.a $(SA_OBJS) 	
 
 clean:
