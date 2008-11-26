@@ -35,15 +35,13 @@ test check:
 test-clean:
 	$(MAKE) -C regress clean
 
-liblwgeom/liblwgeom.a:
+liblwgeom:
 	$(MAKE) -C liblwgeom 
-
-liblwgeom: liblwgeom/liblwgeom.a 
 
 liblwgeom-clean:
 	$(MAKE) -C liblwgeom clean
 
-postgis: liblwgeom/liblwgeom.a 
+postgis: liblwgeom
 	$(MAKE) -C lwgeom 
 
 postgis-clean:
@@ -101,4 +99,4 @@ configure: configure.in
 config.status: configure
 	./configure
 
-.PHONY: utils
+.PHONY: utils liblwgeom
