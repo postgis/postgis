@@ -200,7 +200,7 @@ cd ..</programlisting>
 			database by loading the <filename>lwpostgis.sql</filename> definitions
 			file.</para>
 			
-			<programlisting># psql -d [yourdatabase] -f lwpostgis.sql</programlisting>
+			<programlisting># psql -d [yourdatabase] -f lwgeom/lwpostgis.sql</programlisting>
 			
 			<para>The PostGIS server extensions are now loaded and ready to
 			use.</para>
