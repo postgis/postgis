@@ -146,8 +146,8 @@ manually for some reason.)
 
 So, as postgres run:
 
-  createlang plpgsql yourdatabase
-  psql -f lwpostgis.sql -d your_database
+  createlang plpgsql <yourdatabase>
+  psql -f lwgeom/lwpostgis.sql -d <your_database>
 
 Your database should now be spatially enabled.
 
