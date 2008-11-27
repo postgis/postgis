@@ -3417,7 +3417,7 @@ NOTICE:  Self-intersection at or near point 0 0
 	  <refnamediv>
 	    <refname>ST_IsValidReason</refname>
 	
-	    <refpurpose>Returns text stating if a geometry is valid or not an if not valid, a reason why.</refpurpose>
+	    <refpurpose>Returns text stating if a geometry is valid or not and if not valid, a reason why.</refpurpose>
 	  </refnamediv>
 	
 	  <refsynopsisdiv>
@@ -3469,6 +3469,13 @@ LIMIT 3;
  5330 | Self-intersection [32 5]
  5340 | Self-intersection [42 5]
  5350 | Self-intersection [52 5]
+ 
+ --simple example
+ SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,220227 150406)');
+
+ st_isvalidreason 
+------------------
+ Valid Geometry
 		
 		</programlisting>
 	  </refsection>
