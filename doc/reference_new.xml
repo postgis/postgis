@@ -3471,7 +3471,7 @@ LIMIT 3;
  5350 | Self-intersection [52 5]
  
  --simple example
- SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,220227 150406)');
+SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,222020 150410)');
 
  st_isvalidreason 
 ------------------
