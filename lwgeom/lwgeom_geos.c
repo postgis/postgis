@@ -1080,7 +1080,11 @@ Datum isvalid(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(result);
 }
 
-
+#if POSTGIS_GEOS_VERSION >= 31
+/* 
+** IsValidReason is only available in the GEOS
+** C API > version 3.0 
+*/
 PG_FUNCTION_INFO_V1(isvalidreason);
 Datum isvalidreason(PG_FUNCTION_ARGS)
 {
@@ -1118,6 +1122,7 @@ Datum isvalidreason(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 	
 }
+#endif
 
 /*
  * overlaps(PG_LWGEOM g1,PG_LWGEOM g2)
