@@ -4689,7 +4689,7 @@ SELECT ST_AsEWKT(ST_Affine(the_geom, cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi
 		  <refsection>
 		    <title>See Also</title>
 		
-		    <para><xref linkend="ST_AddBBox" />, <xref linkend="ST_HasBBox" /></para>
+		    <para><xref linkend="ST_AddBBox" />, <xref linkend="ST_HasBBOX" /></para>
 		  </refsection>
 	</refentry>
 			
