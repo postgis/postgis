@@ -4453,7 +4453,7 @@ SELECT ST_Y(ST_Centroid(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)')));
 		  <refsection>
 		    <title>See Also</title>
 		
-		    <para><xref linkend="ST_DropBBox" />, <xref linkend="ST_HasBBox" /></para>
+		    <para><xref linkend="ST_DropBBox" />, <xref linkend="ST_HasBBOX" /></para>
 		  </refsection>
 		</refentry>
 		
