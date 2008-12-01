@@ -2920,9 +2920,9 @@ WHERE n &gt;= ST_NumGeometries(the_geom);</programlisting>
 		</refsection>
 	</refentry>
 			
-	<refentry id="ST_HasBBOX">
+	<refentry id="ST_HasBBox">
 	  <refnamediv>
-		<refname>ST_HasBBOX</refname>
+		<refname>ST_HasBBox</refname>
 	
 		<refpurpose>Returns TRUE if the bbox of this geometry is cached, FALSE otherwise.</refpurpose>
 	  </refnamediv>
@@ -2930,7 +2930,7 @@ WHERE n &gt;= ST_NumGeometries(the_geom);</programlisting>
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>boolean <function>ST_HasBBOX</function></funcdef>
+			<funcdef>boolean <function>ST_HasBBox</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
@@ -4453,7 +4453,7 @@ SELECT ST_Y(ST_Centroid(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)')));
 		  <refsection>
 		    <title>See Also</title>
 		
-		    <para><xref linkend="ST_DropBBox" />, <xref linkend="ST_HasBBOX" /></para>
+		    <para><xref linkend="ST_DropBBox" />, <xref linkend="ST_HasBBox" /></para>
 		  </refsection>
 		</refentry>
 		
@@ -4689,7 +4689,7 @@ SELECT ST_AsEWKT(ST_Affine(the_geom, cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi
 		  <refsection>
 		    <title>See Also</title>
 		
-		    <para><xref linkend="ST_AddBBox" />, <xref linkend="ST_HasBBOX" /></para>
+		    <para><xref linkend="ST_AddBBox" />, <xref linkend="ST_HasBBox" /></para>
 		  </refsection>
 	</refentry>
 			
