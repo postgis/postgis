@@ -11167,8 +11167,7 @@ SELECT ST_AsEWKT((ST_Dump(the_geom)).geom)
 	  
 	   <para>This module and associated pl/pgsql functions have been
       implemented to provide long locking support required by <ulink
-      url="http://portal.opengeospatial.org/files/index.php?artifact_id=7176">Web
-      Feature Service</ulink> specification.</para>
+      url="http://portal.opengeospatial.org/files/index.php?artifact_id=7176">Web Feature Service</ulink> specification.</para>
 
       <note>
         <para>Users must use <ulink
@@ -11181,7 +11180,7 @@ SELECT ST_AsEWKT((ST_Dump(the_geom)).geom)
         <refnamediv>
           <refname>DisableLongTransactions</refname>
       
-          <refpurpose>>Disable long transaction support. This function removes the
+          <refpurpose>Disable long transaction support. This function removes the
             long transaction support metadata tables, and drops all triggers
             attached to lock-checked tables.</refpurpose>
         </refnamediv>
