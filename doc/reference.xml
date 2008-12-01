@@ -409,32 +409,6 @@
     </sect2>
 
     <sect2>
-      <title>Geometry Editors</title>
-
-      <variablelist>
-        <varlistentry id="addbbox">
-          <term>ST_AddBBOX(geometry)</term>
-
-          <listitem>
-            <para>Add bounding box to the geometry. This would make bounding
-            box based queries faster, but will increase the size of the
-            geometry.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry id="dropbbox">
-          <term>ST_DropBBOX(geometry)</term>
-
-          <listitem>
-            <para>Drop the bounding box cache from the geometry. This reduces
-            geometry size, but makes bounding-box based queries slower.</para>
-          </listitem>
-        </varlistentry>
-      
-      </variablelist>
-    </sect2>
-
-    <sect2>
       <title>Misc</title>
 
       <variablelist>

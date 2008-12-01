@@ -4356,6 +4356,60 @@ SELECT ST_Y(ST_Centroid(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)')));
   
   <sect1 id="Geometry_Editors">
       <title>Geometry Editors</title>
+		
+		<refentry id="ST_AddBBox">
+		  <refnamediv>
+		    <refname>ST_AddBBox</refname>
+		
+		    <refpurpose>Add bounding box to the geometry.</refpurpose>
+		  </refnamediv>
+		
+		  <refsynopsisdiv>
+		    <funcsynopsis>
+		      <funcprototype>
+		        <funcdef>geometry <function>ST_AddBBox</function></funcdef>
+		        <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		      </funcprototype>
+		    </funcsynopsis>
+		  </refsynopsisdiv>
+		
+		  <refsection>
+		    <title>Description</title>
+		
+		    <para>Add bounding box to the geometry. This would make bounding
+            box based queries faster, but will increase the size of the
+            geometry.</para>
+	
+		    <note>
+		      <para>Bounding boxes are automatically added to geometries so in general this is not needed
+			  	unless the generated bounding box somehow becomes corrupted or you have an old install that is lacking bounding boxes.  Then you need to drop the old and readd.</para>
+		    </note>
+		
+		<!-- Optionally mention Circular String Support -->
+			<para><inlinemediaobject>
+				<imageobject>
+				  <imagedata fileref="images/check.png" />
+				</imageobject>
+			  </inlinemediaobject> This method supports Circular Strings and curves </para>
+		  </refsection>
+		  
+		
+		  <refsection>
+		    <title>Examples</title>
+		
+		    <programlisting>UPDATE sometable 
+ SET the_geom =  ST_AddBBox(the_geom) 
+ WHERE ST_HasBBox(the_geom) = false;</programlisting>
+		  </refsection>
+		
+		  <!-- Optionally add a "See Also" section -->
+		  <refsection>
+		    <title>See Also</title>
+		
+		    <para><xref linkend="ST_DropBBox" />, <xref linkend="ST_HasBBox" /></para>
+		  </refsection>
+		</refentry>
+		
 		<refentry id="ST_AddPoint">
 		  <refnamediv>
 			<refname>ST_AddPoint</refname>
@@ -4538,6 +4592,58 @@ SELECT ST_AsEWKT(ST_Affine(the_geom, cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi
 	
 	    <para><xref linkend="ST_Rotate" />, <xref linkend="ST_Scale" />, <xref linkend="ST_Translate" />, <xref linkend="ST_TransScale" /></para>
 	  </refsection>
+	</refentry>
+		
+	<refentry id="ST_DropBBox">
+		  <refnamediv>
+		    <refname>ST_DropBBox</refname>
+		
+		    <refpurpose>Drop the bounding box cache from the geometry.</refpurpose>
+		  </refnamediv>
+		
+		  <refsynopsisdiv>
+		    <funcsynopsis>
+		      <funcprototype>
+		        <funcdef>geometry <function>ST_DropBBox</function></funcdef>
+		        <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		      </funcprototype>
+		    </funcsynopsis>
+		  </refsynopsisdiv>
+		
+		  <refsection>
+		    <title>Description</title>
+		
+		    <para>Drop the bounding box cache from the geometry. This reduces
+            geometry size, but makes bounding-box based queries slower.</para>
+	
+		    <note>
+		      <para>Bounding boxes are automatically added to geometries and improve speed of queries so in general this is not needed
+			  	unless the generated bounding box somehow becomes corrupted or you have an old install that is lacking bounding boxes.  Then you need to drop the old and readd.</para>
+		    </note>
+		
+		<!-- Optionally mention Circular String Support -->
+			<para><inlinemediaobject>
+				<imageobject>
+				  <imagedata fileref="images/check.png" />
+				</imageobject>
+			  </inlinemediaobject> This method supports Circular Strings and curves </para>
+		  </refsection>
+		  
+		
+		  <refsection>
+		    <title>Examples</title>
+		
+		    <programlisting>UPDATE sometable 
+ SET the_geom =  ST_DropBBox(the_geom) 
+ WHERE ST_HasBBox(the_geom) = true;</programlisting>
+		  </refsection>
+		
+		  <!-- Optionally add a "See Also" section -->
+		  <refsection>
+		    <title>See Also</title>
+		
+		    <para><xref linkend="ST_AddBBox" />, <xref linkend="ST_HasBBox" /></para>
+		  </refsection>
 	</refentry>
 			
 	<refentry id="ST_Force_2D">
