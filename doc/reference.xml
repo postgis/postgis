@@ -507,31 +507,6 @@
       </note>
 
       <variablelist>
-        <varlistentry id="EnableLongTransactions">
-          <term>EnableLongTransactions()</term>
-
-          <listitem>
-            <para>Enable long transaction support. This function creates the
-            required metadata tables, needs to be called once before using the
-            other functions in this section. Calling it twice is
-            harmless.</para>
-
-            <para>Availability: 1.1.3</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry id="DisableLongTransactions">
-          <term>DisableLongTransactions()</term>
-
-          <listitem>
-            <para>Disable long transaction support. This function removes the
-            long transaction support metadata tables, and drops all triggers
-            attached to lock-checked tables.</para>
-
-            <para>Availability: 1.1.3</para>
-          </listitem>
-        </varlistentry>
-
         <varlistentry id="CheckAuth">
           <term>CheckAuth([&lt;schema&gt;], &lt;table&gt;,
           &lt;rowid_col&gt;)</term>

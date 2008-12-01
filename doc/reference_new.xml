@@ -11162,9 +11162,127 @@ SELECT ST_AsEWKT((ST_Dump(the_geom)).geom)
 	</refentry>
   </sect1>
   
-  <sect1>
+  <sect1 id="Long_Transactions_Support">
       <title>Long Transactions Support</title>
-      <para> </para>
+	  
+	   <para>This module and associated pl/pgsql functions have been
+      implemented to provide long locking support required by <ulink
+      url="http://portal.opengeospatial.org/files/index.php?artifact_id=7176">Web
+      Feature Service</ulink> specification.</para>
+
+      <note>
+        <para>Users must use <ulink
+        url="http://www.postgresql.org/docs/8.3/static/transaction-iso.html">serializable
+        transaction level</ulink> otherwise locking mechanism would
+        break.</para>
+      </note>
+	  <varlistentry id="DisableLongTransactions">
+          <term>DisableLongTransactions()</term>
+
+          <listitem>
+            <para>Disable long transaction support. This function removes the
+            long transaction support metadata tables, and drops all triggers
+            attached to lock-checked tables.</para>
+
+            <para>Availability: 1.1.3</para>
+          </listitem>
+        </varlistentry>
+	  <refentry id="DisableLongTransactions">
+        <refnamediv>
+          <refname>DisableLongTransactions</refname>
+      
+          <refpurpose>>Disable long transaction support. This function removes the
+            long transaction support metadata tables, and drops all triggers
+            attached to lock-checked tables.</refpurpose>
+        </refnamediv>
+      
+        <refsynopsisdiv>
+          <funcsynopsis>
+            <funcprototype>
+              <funcdef>text <function>DisableLongTransactions</function></funcdef>
+            </funcprototype>
+          </funcsynopsis>
+        </refsynopsisdiv>
+      
+        <refsection>
+          <title>Description</title>
+      
+			<para>Disable long transaction support. This function removes the
+            long transaction support metadata tables, and drops all triggers
+            attached to lock-checked tables.</para>
+			<para>Drops meta table called <varname>authorization_table</varname> and a view called <varname>authorized_tables</varname>
+				and all triggers called <varname>checkauthtrigger</varname></para>
+			
+			<para>Availability: 1.1.3</para>
+			
+        </refsection>
+        
+      
+        <refsection>
+          <title>Examples</title>
+      
+          <programlisting>SELECT DisableLongTransactions();
+--result--
+Long transactions support disabled
+		  </programlisting>
+        </refsection>
+      
+        <!-- Optionally add a "See Also" section -->
+        <refsection>
+          <title>See Also</title>
+      
+          <para><xref linkend="EnableLongTransactions" /></para>
+        </refsection>
+      </refentry>
+	  
+      <refentry id="EnableLongTransactions">
+        <refnamediv>
+          <refname>EnableLongTransactions</refname>
+      
+          <refpurpose>Enable long transaction support. This function creates the
+            required metadata tables, needs to be called once before using the
+            other functions in this section. Calling it twice is
+            harmless.</refpurpose>
+        </refnamediv>
+      
+        <refsynopsisdiv>
+          <funcsynopsis>
+            <funcprototype>
+              <funcdef>text <function>EnableLongTransactions</function></funcdef>
+            </funcprototype>
+          </funcsynopsis>
+        </refsynopsisdiv>
+      
+        <refsection>
+          <title>Description</title>
+      
+			<para>Enable long transaction support. This function creates the
+			required metadata tables, needs to be called once before using the
+			other functions in this section. Calling it twice is
+			harmless.</para>
+			<para>Creates a meta table called <varname>authorization_table</varname> and a view called <varname>authorized_tables</varname></para>
+			
+			<para>Availability: 1.1.3</para>
+			
+        </refsection>
+        
+      
+        <refsection>
+          <title>Examples</title>
+      
+          <programlisting>SELECT EnableLongTransactions();
+--result--
+Long transactions support enabled
+		  </programlisting>
+        </refsection>
+      
+        <!-- Optionally add a "See Also" section -->
+        <refsection>
+          <title>See Also</title>
+      
+          <para><xref linkend="DisableLongTransactions" /></para>
+        </refsection>
+      </refentry>
   </sect1>
   
   <sect1 id="Miscellaneous_Functions">
