@@ -2919,6 +2919,53 @@ WHERE n &gt;= ST_NumGeometries(the_geom);</programlisting>
 			<para><xref linkend="GeometryType" /></para>
 		</refsection>
 	</refentry>
+			
+	<refentry id="ST_HasBBOX">
+	  <refnamediv>
+		<refname>ST_HasBBOX</refname>
+	
+		<refpurpose>Returns TRUE if the bbox of this geometry is cached, FALSE otherwise.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_HasBBOX</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+	
+		<para>Returns TRUE if the bbox of this geometry is cached, FALSE
+				otherwise. Use <xref linkend="ST_AddBBox" /> and <xref linkend="ST_DropBBox" /> to control caching.</para>
+	
+	
+	<!-- Optionally mention Circular String Support -->
+			<para><inlinemediaobject>
+				<imageobject>
+				  <imagedata fileref="images/check.png" />
+				</imageobject>
+			  </inlinemediaobject> This method supports Circular Strings and curves </para>
+	  </refsection>
+	  
+	
+	  <refsection>
+		<title>Examples</title>
+	
+		<programlisting>SELECT the_geom 
+FROM sometable WHERE ST_HasBBox(the_geom) = false;</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+	
+		<para><xref linkend="ST_AddBBox" />, <xref linkend="ST_DropBBox" /></para>
+	  </refsection>
+	</refentry>
 		
 	<refentry id="ST_InteriorRingN">
 	  <refnamediv>
