@@ -11331,6 +11331,93 @@ Long transactions support enabled
           <para><xref linkend="DisableLongTransactions" /></para>
         </refsection>
       </refentry>
+	  
+	<varlistentry id="LockRow">
+	  <term>LockRow([&lt;schema&gt;], &lt;table&gt;, &lt;rowid&gt;,
+	  &lt;authid&gt;, [&lt;expires&gt;])</term>
+
+	  <listitem>
+		<para>Set lock/authorization for specific row in table
+		&lt;authid&gt; is a text value, &lt;expires&gt; is a timestamp
+		defaulting to now()+1hour. Returns 1 if lock has been assigned, 0
+		otherwise (already locked by other auth).</para>
+
+		<para>Availability: 1.1.3</para>
+	  </listitem>
+	</varlistentry>
+	
+	<refentry id="LockRow">
+	  <refnamediv>
+	    <refname>LockRow</refname>
+	
+	    <refpurpose>Set lock/authorization for specific row in table</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>integer <function>LockRow</function></funcdef>
+	        <paramdef><type>text </type> <parameter>a_schema_name</parameter></paramdef>
+	        <paramdef><type>text </type> <parameter>a_table_name</parameter></paramdef>
+			<paramdef><type>text </type> <parameter>a_row_key</parameter></paramdef>
+			<paramdef><type>text</type> <parameter>an_auth_token</parameter></paramdef>
+			<paramdef><type>timestamp</type> <parameter>expire_dt</parameter></paramdef>
+	      </funcprototype>
+	
+	      <funcprototype>
+	        <funcdef>integer <function>LockRow</function></funcdef>
+	        <paramdef><type>text </type> <parameter>a_table_name</parameter></paramdef>
+			<paramdef><type>text </type> <parameter>a_row_key</parameter></paramdef>
+			<paramdef><type>text</type> <parameter>an_auth_token</parameter></paramdef>
+			<paramdef><type>timestamp</type> <parameter>expire_dt</parameter></paramdef>
+	      </funcprototype>
+		  
+		  <funcprototype>
+	        <funcdef>integer <function>LockRow</function></funcdef>
+	        <paramdef><type>text </type> <parameter>a_table_name</parameter></paramdef>
+			<paramdef><type>text </type> <parameter>a_row_key</parameter></paramdef>
+			<paramdef><type>text</type> <parameter>an_auth_token</parameter></paramdef>
+	      </funcprototype>
+		  
+	    </funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+	    <para>Set lock/authorization for specific row in table
+		&lt;authid&gt; is a text value, &lt;expires&gt; is a timestamp
+		defaulting to now()+1hour. Returns 1 if lock has been assigned, 0
+		otherwise (already locked by other auth)</para>
+
+		<para>Availability: 1.1.3</para>
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+	
+	    <programlisting>SELECT LockRow('public', 'towns', '2', 'joey');
+LockRow
+-------
+1
+
+--Joey has already locked the record and Priscilla is out of luck
+SELECT LockRow('public', 'towns', '2', 'priscilla');
+LockRow
+-------
+0
+
+		</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	
+	    <para><xref linkend="UnlockRows" /></para>
+	  </refsection>
+	</refentry>
   </sect1>
   
   <sect1 id="Miscellaneous_Functions">
