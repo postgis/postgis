@@ -11180,8 +11180,7 @@ SELECT ST_AsEWKT((ST_Dump(the_geom)).geom)
 		  <refnamediv>
 			<refname>CheckAuth</refname>
 		
-			<refpurpose>Creates trigger that check updates and deletes of rows in given table for being
-            authorized.</refpurpose>
+			<refpurpose>Creates trigger on a table to prevent/allow updates and deletes of rows based on authorization token.</refpurpose>
 		  </refnamediv>
 		
 		  <refsynopsisdiv>
@@ -11204,12 +11203,11 @@ SELECT ST_AsEWKT((ST_Dump(the_geom)).geom)
 		  <refsection>
 			<title>Description</title>
 		
-			<para>Check updates and deletes of rows in given table for being
-            authorized. Identify rows using &lt;rowid_col&gt; column.</para>
+			<para>Creates trigger on a table to prevent/allow updates and deletes of rows based on authorization token. Identify rows using &lt;rowid_col&gt; column.</para>
 			
 			<para>If a_schema_name is not passed in, then searches for table in current schema.</para>
 			<note><para>If an authorization trigger already exists on this table function errors.</para>
-				<para>If Transaction support is not enabled, function throws and exception.</para>
+				<para>If Transaction support is not enabled, function throws an exception.</para>
 			</note>
 
             <para>Availability: 1.1.3</para>
@@ -11331,20 +11329,6 @@ Long transactions support enabled
           <para><xref linkend="DisableLongTransactions" /></para>
         </refsection>
       </refentry>
-	  
-	<varlistentry id="LockRow">
-	  <term>LockRow([&lt;schema&gt;], &lt;table&gt;, &lt;rowid&gt;,
-	  &lt;authid&gt;, [&lt;expires&gt;])</term>
-
-	  <listitem>
-		<para>Set lock/authorization for specific row in table
-		&lt;authid&gt; is a text value, &lt;expires&gt; is a timestamp
-		defaulting to now()+1hour. Returns 1 if lock has been assigned, 0
-		otherwise (already locked by other auth).</para>
-
-		<para>Availability: 1.1.3</para>
-	  </listitem>
-	</varlistentry>
 	
 	<refentry id="LockRow">
 	  <refnamediv>
