@@ -11175,6 +11175,65 @@ SELECT ST_AsEWKT((ST_Dump(the_geom)).geom)
         transaction level</ulink> otherwise locking mechanism would
         break.</para>
       </note>
+	 
+		<refentry id="CheckAuth">
+		  <refnamediv>
+			<refname>CheckAuth</refname>
+		
+			<refpurpose>Creates trigger that check updates and deletes of rows in given table for being
+            authorized.</refpurpose>
+		  </refnamediv>
+		
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>integer <function>CheckAuth</function></funcdef>
+				<paramdef><type>text </type> <parameter>a_schema_name</parameter></paramdef>
+				<paramdef><type>text </type> <parameter>a_table_name</parameter></paramdef>
+				<paramdef><type>text </type> <parameter>a_key_column_name</parameter></paramdef>
+			  </funcprototype>
+			  
+			  <funcprototype>
+				<funcdef>integer <function>CheckAuth</function></funcdef>
+				<paramdef><type>text </type> <parameter>a_table_name</parameter></paramdef>
+				<paramdef><type>text </type> <parameter>a_key_column_name</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+		
+		  <refsection>
+			<title>Description</title>
+		
+			<para>Check updates and deletes of rows in given table for being
+            authorized. Identify rows using &lt;rowid_col&gt; column.</para>
+			
+			<para>If a_schema_name is not passed in, then searches for table in current schema.</para>
+			<note><para>If an authorization trigger already exists on this table function errors.</para>
+				<para>If Transaction support is not enabled, function throws and exception.</para>
+			</note>
+
+            <para>Availability: 1.1.3</para>
+		
+		  </refsection>
+		  
+		
+		  <refsection>
+			<title>Examples</title>
+		
+			<programlisting>SELECT CheckAuth('public', 'towns', 'gid');
+			result
+			------
+			0
+			</programlisting>
+		  </refsection>
+		
+		  <!-- Optionally add a "See Also" section -->
+		  <refsection>
+			<title>See Also</title>
+		
+			<para><xref linkend="EnableLongTransactions" /></para>
+		  </refsection>
+		</refentry>
 
 	  <refentry id="DisableLongTransactions">
         <refnamediv>
