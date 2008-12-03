@@ -852,7 +852,7 @@ dynptarray_addPoint4d(DYNPTARRAY *dpa, POINT4D *p4d, int allow_duplicates)
 		 * return 0 and do nothing else if previous point in list is
 		 * equal to this one  (4D equality)
 		 */
-		if ( ! memcmp(p4d, &tmp, sizeof(POINT4D)) ) return 0;
+		if (tmp.x == p4d->x && tmp.y == p4d->y && tmp.z == p4d->z && tmp.m == p4d->m) return 0;
 	}
 
 	++pa->npoints;
