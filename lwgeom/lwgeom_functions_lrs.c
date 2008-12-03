@@ -67,6 +67,8 @@ clip_seg_by_m_range(POINT4D *p1, POINT4D *p2, double m0, double m1)
 	int swapped=0;
 	int ret=0;
 
+	LWDEBUGF(3, "m0: %g m1: %g", m0, m1);
+
 	/* Handle corner case of m values being the same */
 	if ( p1->m == p2->m )
 	{
@@ -121,7 +123,7 @@ clip_seg_by_m_range(POINT4D *p1, POINT4D *p2, double m0, double m1)
 
 	LWDEBUGF(3, "dM0:%g dM1:%g", dM0, dM1);
 	LWDEBUGF(3, "dX:%g dY:%g dZ:%g", dX, dY, dZ);
-
+	LWDEBUGF(3, "swapped: %d", swapped);
 
 	/* 
 	 * First point out of range, project 
@@ -130,12 +132,25 @@ clip_seg_by_m_range(POINT4D *p1, POINT4D *p2, double m0, double m1)
 	if ( p1->m < m0 )
 	{
 		/*
-		 * Interpolate coordinates 
+		 * To prevent rounding errors, then if m0==m1 and p2 lies within the range, copy 
+		 * p1 as a direct copy of p2
 		 */
-		p1->x += (dX*dM0);
-		p1->y += (dY*dM0);
-		p1->z += (dZ*dM0);
-		p1->m = m0;
+		if (m0 == m1 && p2->m <= m1)
+		{
+			memcpy(p1, p2, sizeof(POINT4D));
+
+			LWDEBUG(3, "Projected p1 on range (as copy of p2)");
+		}
+		else
+		{
+			/* Otherwise interpolate coordinates */
+			p1->x += (dX*dM0);
+			p1->y += (dY*dM0);
+			p1->z += (dZ*dM0);
+			p1->m = m0;
+
+			LWDEBUG(3, "Projected p1 on range");
+		}
 
 		if ( swapped ) ret |= 0x0100;
 		else ret |= 0x0010;
@@ -148,12 +163,25 @@ clip_seg_by_m_range(POINT4D *p1, POINT4D *p2, double m0, double m1)
 	if ( p2->m > m1 )
 	{
 		/*
-		 * Interpolate coordinates 
+		 * To prevent rounding errors, then if m0==m1 and p1 lies within the range, copy 
+		 * p2 as a direct copy of p1
 		 */
-		p2->x += (dX*dM1);
-		p2->y += (dY*dM1);
-		p2->z += (dZ*dM1);
-		p2->m = m1;
+		if (m0 == m1 && p1->m >= m0)
+		{
+			memcpy(p2, p1, sizeof(POINT4D));
+
+			LWDEBUG(3, "Projected p2 on range (as copy of p1)");
+		}
+		else
+		{
+			/* Otherwise interpolate coordinates */
+			p2->x += (dX*dM1);
+			p2->y += (dY*dM1);
+			p2->z += (dZ*dM1);
+			p2->m = m1;
+
+			LWDEBUG(3, "Projected p2 on range");
+		}
 
 		if ( swapped ) ret |= 0x0010;
 		else ret |= 0x0100;
@@ -199,69 +227,45 @@ ptarray_locate_between_m(POINTARRAY *ipa, double m0, double m1)
 			p1.x, p1.y, p1.z, p1.m,
 			p2.x, p2.y, p2.z, p2.m);
 
+		clipval = clip_seg_by_m_range(&p1, &p2, m0, m1);
 
-		clipval=clip_seg_by_m_range(&p1, &p2, m0, m1);
-				
 		/* segment completely outside, nothing to do */
-		if ( ! clipval ) continue;
+		if (! clipval ) continue;
 
-		/*
-		 * second point is clipped, or this is last
-		 * point in the array: close the pointarray
-		 * (eventually opening it if none is defined)
-		 */
-		if ( clipval & 0x0100 || i == ipa->npoints-1 ) 
+		LWDEBUGF(3, " clipped to: [ %g %g %g %g - %g %g %g %g ]   clipval: %x", p1.x, p1.y, p1.z, p1.m,
+			p2.x, p2.y, p2.z, p2.m, clipval);
+
+		/* If no points have been accumulated so far, then if clipval != 0 the first point must be the
+		   start of the intersection */
+		if (dpa == NULL)
 		{
-			LWDEBUG(3, " second point clipped");
-
-			/*
-			 * No output points defined, so
-			 * we have to open a new one and add the first point
-			 */
-			if ( dpa == NULL )
-			{
-				LWDEBUGF(3, " 1 creating new POINARRAY with first point %g,%g,%g,%g", p1.x, p1.y, p1.z, p1.m);
-
-				dpa = dynptarray_create(2, ipa->dims);
-				dynptarray_addPoint4d(dpa, &p1, 1);
-			}
-
-			LWDEBUGF(3, " 1 adding new point %g,%g,%g,%g", p2.x, p2.y, p2.z, p2.m);
-
-			dynptarray_addPoint4d(dpa, &p2, 0);
-
-			LWDEBUGF(3, " closing pointarray %x with %d points", dpa->pa, dpa->pa->npoints);
-
-			ret.ptarrays[ret.nptarrays++] = dpa->pa;
-			lwfree(dpa); dpa=NULL;
-			continue;
-		}
-
-		/*
-		 * If dpa==NULL we create it and add the first segment
-		 */
-		if ( dpa==NULL )
-		{
-			LWDEBUGF(3, " 3 creating new POINARRAY with first point %g,%g,%g,%g", p1.x, p1.y, p1.z, p1.m);
+			LWDEBUGF(3, " 1 creating new POINTARRAY with first point %g,%g,%g,%g", p1.x, p1.y, p1.z, p1.m);
 
 			dpa = dynptarray_create(ipa->npoints-i, ipa->dims);
 			dynptarray_addPoint4d(dpa, &p1, 1);
 		}
 
-		/*
-		 * In any case we add the second point (w/out allowin duplicates)
-		 */
-		LWDEBUGF(3, " 2 adding new point %g,%g,%g,%g", p2.x, p2.y, p2.z, p2.m);
+		/* Otherwise always add the next point, avoiding duplicates */
+		if (dpa)
+			dynptarray_addPoint4d(dpa, &p2, 0);
 
-		dynptarray_addPoint4d(dpa, &p2, 0);
+                /*
+                 * second point has been clipped
+                 */
+                if ( clipval & 0x0100 || i == ipa->npoints-1 )
+                {
+                        LWDEBUGF(3, " closing pointarray %x with %d points", dpa->pa, dpa->pa->npoints);
 
+                        ret.ptarrays[ret.nptarrays++] = dpa->pa;
+                        lwfree(dpa); dpa=NULL;
+                }
 	}
 
 	/* 
 	 * if dpa!=NULL it means we didn't close it yet.
 	 * this should never happen.
 	 */
-	if ( dpa != NULL ) lwerror("Something wrong with algorightm");
+	if ( dpa != NULL ) lwerror("Something wrong with algorithm");
 
 	return ret;
 }
