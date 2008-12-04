@@ -11175,8 +11175,60 @@ SELECT ST_AsEWKT((ST_Dump(the_geom)).geom)
         transaction level</ulink> otherwise locking mechanism would
         break.</para>
       </note>
+	  		
+	<refentry id="AddAuth">
+	  <refnamediv>
+		<refname>AddAuth</refname>
+	
+		<refpurpose>Add an authorization token to be used in current transaction.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>AddAuth</function></funcdef>
+			<paramdef><type>text </type> <parameter>auth_token</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+	
+		<para>Add an authorization token to be used in current transaction.</para>
+	
+		<para>Creates/adds to a temp table called temp_lock_have_table the current transaction identifier
+			and authorization token key.</para>
+			
+		<para>Availability: 1.1.3</para>
+	  </refsection>
+	  
+	
+	  <refsection>
+		<title>Examples</title>
+	
+		<programlisting>
+		SELECT LockRow('towns', '353', 'priscilla');
+		BEGIN TRANSACTION;
+			SELECT AddAuth('joey');
+			UPDATE towns SET the_geom = ST_Translate(the_geom,2,2) WHERE gid = 353;
+		COMMIT;
+		
+		
+		---Error--
+		ERROR:  UPDATE where "gid" = '353' requires authorization 'priscilla'
+		</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+	
+		<para><xref linkend="LockRow" /></para>
+	  </refsection>
+	</refentry>
 	 
-		<refentry id="CheckAuth">
+	  <refentry id="CheckAuth">
 		  <refnamediv>
 			<refname>CheckAuth</refname>
 		
@@ -11218,7 +11270,8 @@ SELECT ST_AsEWKT((ST_Dump(the_geom)).geom)
 		  <refsection>
 			<title>Examples</title>
 		
-			<programlisting>SELECT CheckAuth('public', 'towns', 'gid');
+			<programlisting>
+			SELECT CheckAuth('public', 'towns', 'gid');
 			result
 			------
 			0
@@ -11400,6 +11453,54 @@ LockRow
 	    <title>See Also</title>
 	
 	    <para><xref linkend="UnlockRows" /></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="UnlockRows">
+	  <refnamediv>
+	    <refname>UnlockRows</refname>
+	
+	    <refpurpose>Remove all locks held by specified authorization id. Returns
+            the number of locks released.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>integer <function>UnlockRows</function></funcdef>
+	        <paramdef><type>text </type> <parameter>auth_token</parameter></paramdef>
+	      </funcprototype>
+	    </funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+	    <para>Remove all locks held by specified authorization id. Returns
+            the number of locks released.</para>
+	
+		<para>Availability: 1.1.3</para>
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+	
+	    <programlisting>
+		SELECT LockRow('towns', '353', 'priscilla');
+		SELECT LockRow('towns', '2', 'priscilla');
+		SELECT UnLockRows('priscilla');
+		UnLockRows
+		------------
+		2
+		</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	
+	    <para><xref linkend="LockRow" /></para>
 	  </refsection>
 	</refentry>
   </sect1>

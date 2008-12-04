@@ -490,46 +490,6 @@
         </varlistentry>
       </variablelist>
     </sect2>
-
-    <sect2>
-      <title>Long Transactions support</title>
-
-      <para>This module and associated pl/pgsql functions have been
-      implemented to provide long locking support required by <ulink
-      url="http://portal.opengeospatial.org/files/index.php?artifact_id=7176">Web
-      Feature Service</ulink> specification.</para>
-
-      <note>
-        <para>Users must use <ulink
-        url="http://www.postgresql.org/docs/8.3/static/transaction-iso.html">serializable
-        transaction level</ulink> otherwise locking mechanism would
-        break.</para>
-      </note>
-
-      <variablelist>
-        <varlistentry id="UnlockRows">
-          <term>UnlockRows(&lt;authid&gt;)</term>
-
-          <listitem>
-            <para>Remove all locks held by specified authorization id. Returns
-            the number of locks released.</para>
-
-            <para>Availability: 1.1.3</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry id="AddAuth">
-          <term>AddAuth(&lt;authid&gt;)</term>
-
-          <listitem>
-            <para>Add an authorization token to be used in current
-            transaction.</para>
-
-            <para>Availability: 1.1.3</para>
-          </listitem>
-        </varlistentry>
-      </variablelist>
-    </sect2>
   </sect1>
 
   <sect1>
