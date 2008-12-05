@@ -54,6 +54,7 @@ lwgeom_contains_subgeoms(int type)
 	switch(type)
 	{
 		case MULTIPOINTTYPE:
+		case MULTILINETYPE:
 		case MULTIPOLYGONTYPE:
 		case COLLECTIONTYPE:
 		case COMPOUNDTYPE:
