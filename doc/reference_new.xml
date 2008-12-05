@@ -9040,10 +9040,10 @@ SELECT ST_AsText(ST_PointOnSurface('POLYGON((0 0, 0 5, 5 5, 5 0, 0 0))'::geometr
 	  <refsection>
 		<title>Examples</title>
 		<programlisting>
---Find all lines that intersect and not touches a poly (interior intersects)
+--Find all compounds that intersect and not touch a poly (interior intersects)
 SELECT l.* , b.name As poly_name
 FROM polys As b 
-	INNER JOIN lines As l 
+	INNER JOIN compounds As l 
 	ON (p.the_geom &amp;&amp; b.the_geom 
 	AND ST_Relate(l.the_geom, b.the_geom,'T********'));
 
