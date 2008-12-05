@@ -9003,6 +9003,11 @@ SELECT ST_AsText(ST_PointOnSurface('POLYGON((0 0, 0 5, 5 5, 5 0, 0 0))'::geometr
 		<note><para>This is the "allowable" version that returns a
 		boolean, not an integer.  This is defined in OGC spec</para></note>
 		
+		<note><para>This DOES NOT automagically include an index call.  The reason for that
+			is some relationships are anti e.g. Disjoint.  If you are 
+			using a relationship pattern that requires intersection, then include the &amp;&amp; 
+			index call.</para></note>
+		
 		<para>Version 2: Takes geomA and geomB and returns the <ulink url="http://docs.codehaus.org/display/GEOTDOC/Point+Set+Theory+and+the+DE-9IM+Matrix#PointSetTheoryandtheDE-9IMMatrix-9IntersectionMatrix">DE-9IM (dimensionally extended nine-intersection
 		matrix)</ulink></para>
 		
@@ -9034,10 +9039,18 @@ SELECT ST_AsText(ST_PointOnSurface('POLYGON((0 0, 0 5, 5 5, 5 0, 0 0))'::geometr
 	
 	  <refsection>
 		<title>Examples</title>
-		<programlisting>SELECT ST_Relate(ST_GeometryFromText('POINT(1 2)'), ST_Buffer(ST_GeometryFromText('POINT(1 2)'),2));
-	 st_relate
-	-----------
-	 0FFFFF212
+		<programlisting>
+--Find all lines that intersect and not touches a poly (interior intersects)
+SELECT l.* , b.name As poly_name
+FROM polys As b 
+	INNER JOIN lines As l 
+	ON (p.the_geom &amp;&amp; b.the_geom 
+	AND ST_Relate(l.the_geom, b.the_geom,'T********'));
+
+SELECT ST_Relate(ST_GeometryFromText('POINT(1 2)'), ST_Buffer(ST_GeometryFromText('POINT(1 2)'),2));
+ st_relate
+-----------
+ 0FFFFF212
 	 
 SELECT ST_Relate(ST_GeometryFromText('LINESTRING(1 2, 3 4)'), ST_GeometryFromText('LINESTRING(5 6, 7 8)'));
  st_relate 
@@ -9046,14 +9059,14 @@ SELECT ST_Relate(ST_GeometryFromText('LINESTRING(1 2, 3 4)'), ST_GeometryFromTex
 
 	 
 SELECT ST_Relate(ST_GeometryFromText('POINT(1 2)'), ST_Buffer(ST_GeometryFromText('POINT(1 2)'),2), '0FFFFF212');
-	 st_relate
-	-----------
-	 t
+ st_relate
+-----------
+ t
 	 
 SELECT ST_Relate(ST_GeometryFromText('POINT(1 2)'), ST_Buffer(ST_GeometryFromText('POINT(1 2)'),2), '*FF*FF212');
-	 st_relate
-	-----------
-	 t 
+ st_relate
+-----------
+ t 
 		</programlisting>
 	  </refsection>
 	
