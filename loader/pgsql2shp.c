@@ -90,6 +90,7 @@ int pgis_major_version;
 /* Prototypes */
 int getMaxFieldSize(PGconn *conn, char *schema, char *table, char *fname);
 int parse_commandline(int ARGC, char **ARGV);
+char *protect_quotes_string_noiconv(char *str);
 void usage(char* me, int exitstatus, FILE* out);
 char *getTableOID(char *schema, char *table);
 int addRecord(PGresult *res, int residx, int row);
@@ -113,6 +114,7 @@ int get_postgis_major_version(void);
 static void parse_table(char *spec);
 static int create_usrquerytable(void);
 static const char *nullDBFValue(char fieldType);
+int projFileCreate(const char * pszFilename, char *schema, char *table, char *geo_col_name);
 /* 
  * Make appropriate formatting of a DBF value based on type.
  * Might return untouched input or pointer to static private 
@@ -1327,6 +1329,7 @@ initialize(void)
 	int gidfound=0;
 	char *dbf_flds[256];
 	int dbf_nfields=0;
+	int projsuccess;
 
 	/* Detect postgis version */
 	pgis_major_version = get_postgis_major_version();
@@ -1386,7 +1389,7 @@ initialize(void)
 		printf( "Could not create dbf file\n");
 		return 0;
 	}
-
+	
 	/* Get geometry oid */
 	geo_oid = getGeometryOID(conn);
 	if ( geo_oid == -1 )
@@ -1704,6 +1707,7 @@ initialize(void)
 		 * We now create the appropriate shape (shp) file.
 		 * And set the shape creator function.
 		 */
+		projsuccess = projFileCreate(shp_file, schema, table, geo_col_name);
 		geotype = getGeometryType(schema, table, geo_col_name);
 		if ( geotype == -1 ) return 0;
 
@@ -2062,6 +2066,150 @@ char *convert_bytes_to_hex(uchar *ewkb, size_t size)
 	hexewkb[size * 2] = '\0';
 
 	return hexewkb;
+}
+
+int projFileCreate(const char * pszFilename, char *schema, char *table, char *geo_col_name)
+{
+    FILE	*fp;
+    char	*pszFullname, *pszBasename;
+    int		i, result;
+	char *srtext;
+	char *query;
+	PGresult *res;
+	int size;
+	
+	size = strlen(table);
+	if ( schema ) size += strlen(schema);
+	size += 1000;
+
+	/** make our address space large enough to hold query with table/schema **/
+	query = (char *)malloc(size);
+	if ( ! query ) return 0; /* out of virtual memory */
+	
+	/**************************************************
+	 * Get what kind of spatial ref is the selected geometry field
+	 * We first check the geometry_columns table for a match and then if no match do a distinct against the table
+	 * NOTE: COALESCE does a short-circuit check returning the faster query result and skipping the second if first returns something
+	 *	Escaping quotes in the schema and table in query may not be necessary except to prevent malicious attacks 
+	 *	or should someone be crazy enough to havshort quotes in their table, column or schema names 
+	 **************************************************/
+	if ( schema )
+	{
+		sprintf(query, "SELECT COALESCE((SELECT sr.srtext "
+				" FROM  geometry_columns As gc INNER JOIN spatial_ref_sys sr ON sr.srid = gc.srid "
+				" WHERE gc.f_table_schema = '%s' AND gc.f_table_name = '%s' AND gc.f_geometry_column = '%s' LIMIT 1),  " 
+				" (SELECT CASE WHEN COUNT(DISTINCT sr.srid) > 1 THEN 'm' ELSE MAX(sr.srtext) END As srtext "
+			" FROM \"%s\".\"%s\" As g INNER JOIN spatial_ref_sys sr ON sr.srid = ST_SRID(g.\"%s\")) , ' ') As srtext ", 
+				protect_quotes_string_noiconv(schema), protect_quotes_string_noiconv(table), protect_quotes_string_noiconv(geo_col_name), schema, table, geo_col_name);
+	}
+	else
+	{
+		sprintf(query, "SELECT COALESCE((SELECT sr.srtext "
+				" FROM  geometry_columns As gc INNER JOIN spatial_ref_sys sr ON sr.srid = gc.srid "
+				" WHERE gc.f_table_name = '%s' AND gc.f_geometry_column = '%s' AND pg_table_is_visible((gc.f_table_schema || '.' || gc.f_table_name)::regclass) LIMIT 1),  "
+				" (SELECT CASE WHEN COUNT(DISTINCT sr.srid) > 1 THEN 'm' ELSE MAX(sr.srtext) END as srtext "
+			" FROM \"%s\" As g INNER JOIN spatial_ref_sys sr ON sr.srid = ST_SRID(g.\"%s\")), ' ') As srtext ", 
+				protect_quotes_string_noiconv(table), protect_quotes_string_noiconv(geo_col_name), table, geo_col_name);
+	}
+
+	LWDEBUGF(3,"%s\n",query);
+
+	res = PQexec(conn, query);	
+	if ( ! res || PQresultStatus(res) != PGRES_TUPLES_OK ) {
+		printf( "Error: %s", PQerrorMessage(conn));
+		return 0;
+	}
+
+	for (i=0; i < PQntuples(res); i++)
+	{
+		srtext = PQgetvalue(res, i, 0);
+		if (srtext[0] == 'm'){
+			printf("ERROR: Mixed set of spatial references.\n");	
+			PQclear(res);
+			return 0;
+		}
+		else 
+			if (srtext[0] == ' '){
+				printf("ERROR: Cannot determine spatial reference (empty table or unknown spatial ref).\n");
+				PQclear(res);
+				return 0;
+			}
+			else {	
+				/* -------------------------------------------------------------------- */
+				/*	Compute the base (layer) name.  If there is any extension	*/
+				/*	on the passed in filename we will strip it off.			*/
+				/* -------------------------------------------------------------------- */
+					pszBasename = (char *) malloc(strlen(pszFilename)+5);
+					strcpy( pszBasename, pszFilename );
+					for( i = strlen(pszBasename)-1; 
+					 i > 0 && pszBasename[i] != '.' && pszBasename[i] != '/'
+						   && pszBasename[i] != '\\';
+					 i-- ) {}
+				
+					if( pszBasename[i] == '.' )
+						pszBasename[i] = '\0';
+				
+					pszFullname = (char *) malloc(strlen(pszBasename) + 5);
+					sprintf( pszFullname, "%s.prj", pszBasename );
+					free( pszBasename );
+					
+				
+				/* -------------------------------------------------------------------- */
+				/*      Create the file.                                                */
+				/* -------------------------------------------------------------------- */
+				fp = fopen( pszFullname, "wb" );
+				if( fp == NULL ){
+					return 0;
+				}
+				result = fputs (srtext,fp);
+				LWDEBUGF(3, "\n result %d proj SRText is %s .\n", result, srtext);	
+				fclose( fp );
+				free( pszFullname );
+			}	
+	}
+	PQclear(res);
+
+	return 1;
+}
+
+char *
+protect_quotes_string_noiconv(char *str)
+{
+	/*
+	 * find all quotes and make them \quotes
+	 * find all '\' and make them '\\'
+	 * 	 
+	 * 1. find # of characters
+	 * 2. make new string 
+	 */
+
+	char	*result;
+	char	*ptr, *optr;
+	int	toescape = 0;
+	size_t size;
+	ptr = str;
+
+	while (*ptr) {
+		if ( *ptr == '\'' || *ptr == '\\' ) toescape++;
+		ptr++;
+	}
+
+	if (toescape == 0) return str;
+	
+	size = ptr-str+toescape+1;
+
+	result = calloc(1, size);
+
+	optr=result;
+	ptr=str;
+	while (*ptr) {
+		if ( *ptr == '\\' ) *optr++='\\';
+                if ( *ptr == '\'') *optr++='\'';
+		*optr++=*ptr++;
+	}
+	*optr='\0';
+
+	return result;
 }
 
 /**********************************************************************
