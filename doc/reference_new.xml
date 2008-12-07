@@ -12016,7 +12016,7 @@ fulltable_size geomsize  pergeom
 	  <refnamediv>
 	    <refname>ST_XMax</refname>
 	
-	    <refpurpose>Returns x maxima of a bounding box 2d or 3d or a geometry.</refpurpose>
+	    <refpurpose>Returns X maxima of a bounding box 2d or 3d or a geometry.</refpurpose>
 	  </refnamediv>
 	
 	  <refsynopsisdiv>
@@ -12094,7 +12094,7 @@ st_xmax
 	  <refnamediv>
 	    <refname>ST_XMin</refname>
 	
-	    <refpurpose>Returns x minima of a bounding box 2d or 3d or a geometry.</refpurpose>
+	    <refpurpose>Returns X minima of a bounding box 2d or 3d or a geometry.</refpurpose>
 	  </refnamediv>
 	
 	  <refsynopsisdiv>
@@ -12343,7 +12343,7 @@ st_ymin
 	  <refsection>
 	    <title>Description</title>
 	
-	    <para>Returns Z minima of a bounding box 2d or 3d or a geometry.</para>
+	    <para>Returns Z maxima of a bounding box 2d or 3d or a geometry.</para>
 	
 	    <note>
 	      <para>Although this function is only defined for box3d, it will work for box2d and geometry because of the auto-casting behavior
