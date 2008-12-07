@@ -2077,7 +2077,7 @@ result
 			
 			<note>
 				<para>If you are absolutely sure all your WKT geometries are points, don't use this function.  
-					It is slower than ST_GeomFromText since it adds an additional validation step.  If you are building points from long lat coordinates and care more about performance than OGC compliance, use ST_MakePoint.  </para>
+					It is slower than ST_GeomFromText since it adds an additional validation step.  If you are building points from long lat coordinates and care more about performance and accuracy than OGC compliance, use <xref linkend="ST_MakePoint" /> or OGC compliant alias <xref linkend="ST_Point" />.   </para>
 			</note>
 		
 			<!-- Optionally mention OpenGIS compliancy if appropriate -->
@@ -2106,7 +2106,7 @@ SELECT ST_PointFromText('POINT(-71.064544 42.28787)', 4326);
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_GeomFromText" />, <xref linkend="ST_MakePoint" />, <xref linkend="ST_SRID" /></para>
+			<para><xref linkend="ST_GeomFromText" />, <xref linkend="ST_MakePoint" />, <xref linkend="ST_Point" />, <xref linkend="ST_SRID" /></para>
 		  </refsection>
 	</refentry>
 
