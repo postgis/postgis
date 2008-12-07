@@ -2093,8 +2093,7 @@ result
 				<imageobject>
 				  <imagedata fileref="images/check.png" />
 				</imageobject>
-			  </inlinemediaobject> This method implements the SQL/MM specification:
-			SQL-MM 3: 5.1.40</para>
+			  </inlinemediaobject> This method implements the SQL/MM specification:SQL-MM 3: 6.1.8</para>
 		  </refsection>
 		
 		  <refsection>
