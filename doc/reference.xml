@@ -454,22 +454,6 @@
             circle. Returns false otherwise.</para>
           </listitem>
         </varlistentry>
-
-        <varlistentry>
-          <term>ST_XMin(box3d) ST_YMin(box3d) ST_ZMin(box3d)</term>
-
-          <listitem>
-            <para>Returns the requested minima of a bounding box.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>ST_XMax(box3d) ST_YMax(box3d) ST_ZMax(box3d)</term>
-
-          <listitem>
-            <para>Returns the requested maxima of a bounding box.</para>
-          </listitem>
-        </varlistentry>
       </variablelist>
     </sect2>
   </sect1>
