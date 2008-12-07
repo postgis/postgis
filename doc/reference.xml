@@ -412,24 +412,6 @@
       <title>Misc</title>
 
       <variablelist>
-        <varlistentry>
-          <term>ST_box2d(geometry)</term>
-
-          <listitem>
-            <para>Returns a BOX2D representing the maximum extents of the
-            geometry.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>ST_box3d(geometry)</term>
-
-          <listitem>
-            <para>Returns a BOX3D representing the maximum extents of the
-            geometry.</para>
-          </listitem>
-        </varlistentry>
-
 
         <varlistentry id="zmflag">
           <term>ST_zmflag(geometry)</term>
