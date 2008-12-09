@@ -15,6 +15,8 @@
 #define FP_MIN(A, B) ((A < B) ? A : B)
 #define FP_LT(A, B) ((A + PGIS_EPSILON) < B)
 #define FP_LTEQ(A, B) ((A - PGIS_EPSILON) <= B)
+#define FP_GT(A, B) ((A - PGIS_EPSILON) > B)
+#define FP_GTEQ(A, B) ((A + PGIS_EPSILON) >= B)
 #define FP_CONTAINS_TOP(A, X, B) (FP_LT(A, X) && FP_LTEQ(X, B))
 #define FP_CONTAINS_BOTTOM(A, X, B) (FP_LTEQ(A, X) && FP_LT(X, B))
 #define FP_CONTAINS_INCL(A, X, B) (FP_LTEQ(A, X) && FP_LTEQ(X, B))
