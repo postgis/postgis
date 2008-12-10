@@ -1182,6 +1182,7 @@ extern void lwfree(void *mem);
 
 /* Utilities */
 extern void trim_trailing_zeros(char *num);
+extern char *lwmessage_truncate(char *str, int startpos, int endpos, int maxlength, int truncdirection);
 
 /* Machine endianness */
 #define XDR 0
