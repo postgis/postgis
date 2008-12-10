@@ -271,6 +271,65 @@ trim_trailing_zeros(char *str)
 	LWDEBUGF(3, "output: %s", str);
 }
 
+
+/*
+ * Returns a new string which contains a maximum of maxlength characters starting 
+ * from startpos and finishing at endpos. If the string is truncated then the 
+ * first or last characters are replaced by "..." as appropriate.
+ *
+ * The caller should specify start or end truncation by setting the truncdirection
+ * parameter as follows:
+ *    0 - start truncation (i.e. characters are removed from the beginning)
+ *    1 - end trunctation (i.e. characters are removed from the end)
+ */  
+
+char *lwmessage_truncate(char *str, int startpos, int endpos, int maxlength, int truncdirection)
+{
+	char *output;
+	char *outstart;
+
+	/* Allocate space for new string */
+	output = lwalloc(maxlength + 1);
+	output[0] = '\0';
+
+	/* Start truncation */
+	if (truncdirection == 0)
+	{
+		/* Calculate the start position */
+		if (endpos - startpos <= maxlength) 
+		{
+			outstart = str + startpos;
+			strncat(output, outstart, endpos - startpos); 
+		}		
+		else
+		{
+			/* Add "..." prefix */
+			outstart = str + endpos - maxlength + 3;
+			strncpy(output, "...", 4);
+			strncat(output, outstart, maxlength - 3); 
+		}
+	}
+
+	/* End truncation */
+	if (truncdirection == 1)
+	{
+		/* Calculate the end position */
+		if (endpos - startpos <= maxlength)
+		{
+			strncat(output, str, endpos - startpos);
+		}	
+		else
+		{
+			/* Add "..." suffix */
+			strncat(output, str, maxlength - 3);
+			strncat(output, "...", 3); 
+		}
+	}
+
+	return output;
+}
+
+
 char
 getMachineEndian(void)
 {

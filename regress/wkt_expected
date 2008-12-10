@@ -27,9 +27,9 @@ HINT:  "MULTILINESTRING(0" <-- parse error at position 17 within geometry
 MULTILINESTRING((0 0,2 0))
 MULTILINESTRING((0 0,2 0),(1 1,2 2))
 ERROR:  parse error - invalid geometry
-HINT:  "...LINESTRING((0 0, 2 0), (1 1, 2 2), EMPTY" <-- parse error at position 45 within geometry
+HINT:  "...ESTRING((0 0, 2 0), (1 1, 2 2), EMPTY" <-- parse error at position 45 within geometry
 ERROR:  parse error - invalid geometry
-HINT:  "...INESTRING((0 0, 2 0), (1 1, 2 2), (EMPTY" <-- parse error at position 46 within geometry
+HINT:  "...STRING((0 0, 2 0), (1 1, 2 2), (EMPTY" <-- parse error at position 46 within geometry
 GEOMETRYCOLLECTION EMPTY
 ERROR:  parse error - invalid geometry
 HINT:  "POLYGON(EMPTY" <-- parse error at position 13 within geometry

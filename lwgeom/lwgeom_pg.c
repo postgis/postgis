@@ -29,25 +29,10 @@ PG_MODULE_MAGIC;
 void
 pg_parser_errhint(LWGEOM_PARSER_RESULT *lwg_parser_result)
 {
-	char hintbuffer[128];
-	char *hintstart;
-	char *hintfinish; 
+	char *hintbuffer;
 
-	/* Generate the HINT string as the last 40 chars up until the error location */
-	hintbuffer[0] = '\0';
-	hintfinish = (char *)lwg_parser_result->wkinput + lwg_parser_result->errlocation;	
-
-	if (lwg_parser_result->errlocation <= 40)
-		hintstart = (char *)lwg_parser_result->wkinput;
-	else
-		hintstart = hintfinish - 40;
-
-	/* If we are not at the start of the buffer, prefix with "..." */
-	if (hintstart != lwg_parser_result->wkinput)
-		strncpy(hintbuffer, "...", 4);
-	
-	/* Append to the existing string */
-	strncat(hintbuffer, hintstart, hintfinish-hintstart);
+	/* Return a copy of the input string start truncated at the error location */
+	hintbuffer = lwmessage_truncate((char *)lwg_parser_result->wkinput, 0, lwg_parser_result->errlocation, 40, 0);
 	
 	/* Only display the parser position if the location is > 0; this provides a nicer output when the first token
 	   within the input stream cannot be matched */	
