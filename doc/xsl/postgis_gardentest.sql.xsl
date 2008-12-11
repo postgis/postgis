@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <!-- ********************************************************************
- * $Id: 0.1 postgis_gardentest.sql.xsl 3377 2008-12-11 15:56:18Z robe $
+ * $Id$
  ********************************************************************
 	 Copyright 2008, Regina Obe
      License: BSD
@@ -12,11 +12,65 @@
 	<xsl:template match='/chapter'>
 <!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
 		<xsl:for-each select='sect1/refentry'>
+		<xsl:sort select="@id"/>
 <!-- For each function prototype generate a test sql statement
 	Test functions that take no arguments  -->
 			<xsl:for-each select="refsynopsisdiv/funcsynopsis/funcprototype">
 <xsl:if test="count(paramdef/parameter) = 0">SELECT  <xsl:value-of select="funcdef/function" />();
 </xsl:if>
+<!--Start Test aggregate functions 
+ TODO: Make this section less verbose -->
+<!--Point Aggregate/geom accessor test -->
+<xsl:if test="contains(paramdef/type,'geometry set') or (count(paramdef/parameter) = 1 and contains(paramdef/type, 'geometry'))">
+<!-- If output is geometry show ewkt rep -->
+	<xsl:choose>
+	  <xsl:when test="contains(funcdef/function, 'geometry')">
+		SELECT ST_AsEWKT(<xsl:value-of select="funcdef/function" />(the_geom)),
+	ST_AsEWKT(<xsl:value-of select="funcdef/function" />(ST_Multi(the_geom)))
+	  </xsl:when>
+	  <xsl:otherwise>
+		SELECT <xsl:value-of select="funcdef/function" />(the_geom),
+		<xsl:value-of select="funcdef/function" />(ST_Multi(the_geom))
+	  </xsl:otherwise>
+	</xsl:choose>
+	FROM (SELECT ST_Point(i,j) As the_geom 
+		FROM generate_series(-60,50,5) As i 
+			CROSS JOIN generate_series(40,70, 5) j) As foo;  
+</xsl:if>
+<!--Multi/Line Aggregate/accessor test -->
+<xsl:if test="contains(paramdef/type,'geometry set') or (count(paramdef/parameter) = 1 and contains(paramdef/type, 'geometry'))">
+	<xsl:choose>
+	  <xsl:when test="contains(funcdef/function, 'geometry')">
+SELECT ST_AsEWKT(<xsl:value-of select="funcdef/function" />(the_geom)),
+	ST_AsEWKT(<xsl:value-of select="funcdef/function" />(ST_Multi(the_geom)))
+	  </xsl:when>
+	  <xsl:otherwise>
+		SELECT <xsl:value-of select="funcdef/function" />(the_geom),
+		<xsl:value-of select="funcdef/function" />(ST_Multi(the_geom))
+	  </xsl:otherwise>
+	</xsl:choose>
+	FROM (SELECT ST_MakeLine(ST_Point(i,j),ST_Point(j,i))  As the_geom 
+		FROM generate_series(-60,50,5) As i 
+			CROSS JOIN generate_series(40,70, 5) j) As foo;  
+</xsl:if>
+<!--Multi/Polygon Aggregate/accessor test -->
+<xsl:if test="contains(paramdef/type,'geometry set') or (count(paramdef/parameter) = 1 and contains(paramdef/type, 'geometry'))">
+<!-- If output is geometry show ewkt rep -->
+	<xsl:choose>
+	  <xsl:when test="contains(funcdef/function, 'geometry')">
+		SELECT ST_AsEWKT(<xsl:value-of select="funcdef/function" />(the_geom)),
+	ST_AsEWKT(<xsl:value-of select="funcdef/function" />(ST_Multi(the_geom)))
+	  </xsl:when>
+	  <xsl:otherwise>
+		SELECT <xsl:value-of select="funcdef/function" />(the_geom),
+		<xsl:value-of select="funcdef/function" />(ST_Multi(the_geom))
+	  </xsl:otherwise>
+	</xsl:choose>
+	FROM (SELECT ST_Buffer(ST_Point(i,j), j)  As the_geom 
+		FROM generate_series(-60,50,5) As i 
+			CROSS JOIN generate_series(40,70, 5) j) As foo;  
+</xsl:if>
+<!--End Test aggregate functions -->
 			</xsl:for-each>
 		</xsl:for-each>
 	</xsl:template>
