@@ -90,7 +90,6 @@ int pgis_major_version;
 /* Prototypes */
 int getMaxFieldSize(PGconn *conn, char *schema, char *table, char *fname);
 int parse_commandline(int ARGC, char **ARGV);
-char *protect_quotes_string_noiconv(char *str);
 void usage(char* me, int exitstatus, FILE* out);
 char *getTableOID(char *schema, char *table);
 int addRecord(PGresult *res, int residx, int row);
@@ -2075,15 +2074,28 @@ int projFileCreate(const char * pszFilename, char *schema, char *table, char *ge
     int		i, result;
 	char *srtext;
 	char *query;
+	char *esc_schema;
+	char *esc_table;
+	char *esc_geo_col_name;
+	int error;
 	PGresult *res;
 	int size;
 	
-	size = strlen(table);
-	if ( schema ) size += strlen(schema);
+	/***********
+	*** I'm multiplying by 2 instead of 3 because I am too lazy to figure out how many characters to add
+	*** after escaping if any **/
+	size = 1000;
+	if ( schema ) {
+		size += 3 * strlen(schema);
+	}
 	size += 1000;
+	esc_table = (char *) malloc(3 * strlen(table) + 1);
+	esc_geo_col_name = (char *) malloc(3 * strlen(geo_col_name) + 1);
+	PQescapeStringConn(conn, esc_table, table, strlen(table), &error);
+	PQescapeStringConn(conn, esc_geo_col_name, geo_col_name, strlen(geo_col_name), &error);
 
 	/** make our address space large enough to hold query with table/schema **/
-	query = (char *)malloc(size);
+	query = (char *) malloc(size);
 	if ( ! query ) return 0; /* out of virtual memory */
 	
 	/**************************************************
@@ -2091,16 +2103,19 @@ int projFileCreate(const char * pszFilename, char *schema, char *table, char *ge
 	 * We first check the geometry_columns table for a match and then if no match do a distinct against the table
 	 * NOTE: COALESCE does a short-circuit check returning the faster query result and skipping the second if first returns something
 	 *	Escaping quotes in the schema and table in query may not be necessary except to prevent malicious attacks 
-	 *	or should someone be crazy enough to havshort quotes in their table, column or schema names 
+	 *	or should someone be crazy enough to have quotes or other weird character in their table, column or schema names 
 	 **************************************************/
 	if ( schema )
 	{
+		esc_schema = (char *) malloc(2 * strlen(schema) + 1);
+		PQescapeStringConn(conn, esc_schema, schema, strlen(schema), &error);
 		sprintf(query, "SELECT COALESCE((SELECT sr.srtext "
 				" FROM  geometry_columns As gc INNER JOIN spatial_ref_sys sr ON sr.srid = gc.srid "
 				" WHERE gc.f_table_schema = '%s' AND gc.f_table_name = '%s' AND gc.f_geometry_column = '%s' LIMIT 1),  " 
 				" (SELECT CASE WHEN COUNT(DISTINCT sr.srid) > 1 THEN 'm' ELSE MAX(sr.srtext) END As srtext "
 			" FROM \"%s\".\"%s\" As g INNER JOIN spatial_ref_sys sr ON sr.srid = ST_SRID(g.\"%s\")) , ' ') As srtext ", 
-				protect_quotes_string_noiconv(schema), protect_quotes_string_noiconv(table), protect_quotes_string_noiconv(geo_col_name), schema, table, geo_col_name);
+				esc_schema, esc_table,esc_geo_col_name, schema, table, geo_col_name);
+		free(esc_schema);
 	}
 	else
 	{
@@ -2109,12 +2124,15 @@ int projFileCreate(const char * pszFilename, char *schema, char *table, char *ge
 				" WHERE gc.f_table_name = '%s' AND gc.f_geometry_column = '%s' AND pg_table_is_visible((gc.f_table_schema || '.' || gc.f_table_name)::regclass) LIMIT 1),  "
 				" (SELECT CASE WHEN COUNT(DISTINCT sr.srid) > 1 THEN 'm' ELSE MAX(sr.srtext) END as srtext "
 			" FROM \"%s\" As g INNER JOIN spatial_ref_sys sr ON sr.srid = ST_SRID(g.\"%s\")), ' ') As srtext ", 
-				protect_quotes_string_noiconv(table), protect_quotes_string_noiconv(geo_col_name), table, geo_col_name);
+				esc_table, esc_geo_col_name, table, geo_col_name);
 	}
 
 	LWDEBUGF(3,"%s\n",query);
+	free(esc_table);
+	free(esc_geo_col_name);
 
-	res = PQexec(conn, query);	
+	res = PQexec(conn, query);
+	
 	if ( ! res || PQresultStatus(res) != PGRES_TUPLES_OK ) {
 		printf( "Error: %s", PQerrorMessage(conn));
 		return 0;
@@ -2128,7 +2146,7 @@ int projFileCreate(const char * pszFilename, char *schema, char *table, char *ge
 			PQclear(res);
 			return 0;
 		}
-		else 
+		else {
 			if (srtext[0] == ' '){
 				printf("ERROR: Cannot determine spatial reference (empty table or unknown spatial ref).\n");
 				PQclear(res);
@@ -2165,51 +2183,12 @@ int projFileCreate(const char * pszFilename, char *schema, char *table, char *ge
 				LWDEBUGF(3, "\n result %d proj SRText is %s .\n", result, srtext);	
 				fclose( fp );
 				free( pszFullname );
-			}	
+			}
+		}
 	}
 	PQclear(res);
-
+	free(query);
 	return 1;
-}
-
-char *
-protect_quotes_string_noiconv(char *str)
-{
-	/*
-	 * find all quotes and make them \quotes
-	 * find all '\' and make them '\\'
-	 * 	 
-	 * 1. find # of characters
-	 * 2. make new string 
-	 */
-
-	char	*result;
-	char	*ptr, *optr;
-	int	toescape = 0;
-	size_t size;
-	ptr = str;
-
-	while (*ptr) {
-		if ( *ptr == '\'' || *ptr == '\\' ) toescape++;
-		ptr++;
-	}
-
-	if (toescape == 0) return str;
-	
-	size = ptr-str+toescape+1;
-
-	result = calloc(1, size);
-
-	optr=result;
-	ptr=str;
-	while (*ptr) {
-		if ( *ptr == '\\' ) *optr++='\\';
-                if ( *ptr == '\'') *optr++='\'';
-		*optr++=*ptr++;
-	}
-	*optr='\0';
-
-	return result;
 }
 
 /**********************************************************************
