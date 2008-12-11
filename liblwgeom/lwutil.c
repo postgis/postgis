@@ -274,8 +274,9 @@ trim_trailing_zeros(char *str)
 
 /*
  * Returns a new string which contains a maximum of maxlength characters starting 
- * from startpos and finishing at endpos. If the string is truncated then the 
- * first or last characters are replaced by "..." as appropriate.
+ * from startpos and finishing at endpos (0-based indexing). If the string is 
+ * truncated then the first or last characters are replaced by "..." as 
+ * appropriate.
  *
  * The caller should specify start or end truncation by setting the truncdirection
  * parameter as follows:
@@ -296,17 +297,25 @@ char *lwmessage_truncate(char *str, int startpos, int endpos, int maxlength, int
 	if (truncdirection == 0)
 	{
 		/* Calculate the start position */
-		if (endpos - startpos <= maxlength) 
+		if (endpos - startpos < maxlength) 
 		{
 			outstart = str + startpos;
-			strncat(output, outstart, endpos - startpos); 
+			strncat(output, outstart, endpos - startpos + 1); 
 		}		
 		else
 		{
-			/* Add "..." prefix */
-			outstart = str + endpos - maxlength + 3;
-			strncpy(output, "...", 4);
-			strncat(output, outstart, maxlength - 3); 
+			if (maxlength >= 3)
+			{
+				/* Add "..." prefix */
+				outstart = str + endpos + 1 - maxlength + 3;
+				strncat(output, "...", 3);
+				strncat(output, outstart, maxlength - 3); 
+			}
+			else
+			{
+				/* maxlength is too small; just output "..." */
+				strncat(output, "...", 3);
+			}
 		}
 	}
 
@@ -314,15 +323,25 @@ char *lwmessage_truncate(char *str, int startpos, int endpos, int maxlength, int
 	if (truncdirection == 1)
 	{
 		/* Calculate the end position */
-		if (endpos - startpos <= maxlength)
+		if (endpos - startpos < maxlength)
 		{
-			strncat(output, str, endpos - startpos);
+			outstart = str + startpos;
+			strncat(output, outstart, endpos - startpos + 1);
 		}	
 		else
 		{
-			/* Add "..." suffix */
-			strncat(output, str, maxlength - 3);
-			strncat(output, "...", 3); 
+			if (maxlength >= 3)
+			{
+				/* Add "..." suffix */
+				outstart = str + startpos;	
+				strncat(output, outstart, maxlength - 3);
+				strncat(output, "...", 3); 
+			}
+			else
+			{
+				/* maxlength is too small; just output "..." */
+				strncat(output, "...", 3);
+			}
 		}
 	}
 
