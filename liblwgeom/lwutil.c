@@ -290,7 +290,7 @@ char *lwmessage_truncate(char *str, int startpos, int endpos, int maxlength, int
 	char *outstart;
 
 	/* Allocate space for new string */
-	output = lwalloc(maxlength + 1);
+	output = lwalloc(maxlength + 4);
 	output[0] = '\0';
 
 	/* Start truncation */
