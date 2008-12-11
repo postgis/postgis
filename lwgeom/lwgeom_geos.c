@@ -1020,14 +1020,39 @@ Datum centroid(PG_FUNCTION_ARGS)
 /*---------------------------------------------*/
 
 
-
+/* 
+ * Throws an ereport ERROR if either geometry is a COLLECTIONTYPE.  Additionally
+ * displays a HINT of the first 80 characters of the WKT representation of the
+ * problematic geometry so a user knows which parameter and which geometry
+ * is causing the problem.
+ */
 void errorIfGeometryCollection(PG_LWGEOM *g1, PG_LWGEOM *g2)
 {
 	int t1 = lwgeom_getType(g1->type);
 	int t2 = lwgeom_getType(g2->type);
+	
+	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
+	int result;
+	char* hintmsg;
 
-	if (  (t1 == COLLECTIONTYPE) || (t2 == COLLECTIONTYPE) )
-		elog(ERROR,"Relate Operation called with a LWGEOMCOLLECTION type.  This is unsupported");
+	if ( t1 == COLLECTIONTYPE) {
+		result = serialized_lwgeom_to_ewkt(&lwg_unparser_result, SERIALIZED_FORM(g1), PARSER_CHECK_NONE);
+		hintmsg = lwmessage_truncate(lwg_unparser_result.wkoutput, 0, strlen(lwg_unparser_result.wkoutput), 80, 1);
+		ereport(ERROR,
+			(errmsg("Relate Operation called with a LWGEOMCOLLECTION type.  This is unsupported."),
+			 errhint("Change argument 1: '%s'", hintmsg))
+		);	
+		pfree(hintmsg);
+	}
+	else if (t2 == COLLECTIONTYPE) {
+		result = serialized_lwgeom_to_ewkt(&lwg_unparser_result, SERIALIZED_FORM(g2), PARSER_CHECK_NONE);
+		hintmsg = lwmessage_truncate(lwg_unparser_result.wkoutput, 0, strlen(lwg_unparser_result.wkoutput), 80, 1);
+		ereport(ERROR,
+			(errmsg("Relate Operation called with a LWGEOMCOLLECTION type.  This is unsupported."),
+			 errhint("Change argument 2: '%s'", hintmsg))
+		);	
+		pfree(hintmsg);
+	}
 }
 
 PG_FUNCTION_INFO_V1(isvalid);
