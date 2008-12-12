@@ -76,7 +76,7 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text> <xsl:value-of se
 </xsl:if>
 
 <!--Garden Relationship/geom2 output function tests  -->
-<xsl:if test="(count(paramdef/parameter) = 2 and contains(paramdef[1]/type, 'geometry ')  and contains(paramdef[2]/type, 'geometry '))">
+<xsl:if test="(count(paramdef/parameter) = 2 and (paramdef[1]/type = 'geometry' or paramdef[1]/type = 'geometry ')  and (paramdef[2]/type = 'geometry' or paramdef[2]/type = 'geometry '))">
 	<xsl:variable name='fnname'><xsl:value-of select="funcdef/function"/></xsl:variable>
 	<xsl:variable name='fndef'><xsl:value-of select="funcdef"/></xsl:variable>
 	<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
