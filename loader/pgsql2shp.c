@@ -2141,7 +2141,7 @@ int projFileCreate(const char * pszFilename, char *schema, char *table, char *ge
 	for (i=0; i < PQntuples(res); i++)
 	{
 		srtext = PQgetvalue(res, i, 0);
-		if (srtext[0] == 'm'){
+		if (strcmp(srtext,"m") == 0){
 			printf("ERROR: Mixed set of spatial references.\n");	
 			PQclear(res);
 			return 0;
