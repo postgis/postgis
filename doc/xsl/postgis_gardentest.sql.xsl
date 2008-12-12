@@ -32,7 +32,6 @@
 	</pgis:gardens>
 
 	<xsl:template match='/chapter'>
-<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
 		<xsl:for-each select='sect1/refentry'>
 		<xsl:sort select="@id"/>
 <!-- For each function prototype generate a test sql statement
