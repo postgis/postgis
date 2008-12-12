@@ -19,6 +19,14 @@
 		<pgis:gset ID='PolySet' GeometryType='POLYGON'>(SELECT ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j)  As the_geom 
 		FROM generate_series(-60,50,10) As i 
 			CROSS JOIN generate_series(40,70, 10) As j)</pgis:gset>
+		<pgis:gset ID='PointMSet' GeometryType='POINTM'>(SELECT ST_SetSRID(ST_MakePointM(i,j,m),4326) As the_geom 
+		FROM generate_series(-50,50,10) As i 
+			CROSS JOIN generate_series(50,70, 20) AS j
+			CROSS JOIN generate_series(1,2) As m)</pgis:gset>
+		<pgis:gset ID='LineMSet' GeometryType='LINESTRINGM'>(SELECT ST_MakeLine(ST_SetSRID(ST_MakePointM(i,j,m),4326),ST_SetSRID(ST_MakePointM(j,i,m),4326))  As the_geom 
+		FROM generate_series(-50,50,10) As i 
+			CROSS JOIN generate_series(50,70, 20) As j
+			CROSS JOIN generate_series(1,2) As m)</pgis:gset>
 	</pgis:gardens>
 
 	<xsl:template match='/chapter'>
