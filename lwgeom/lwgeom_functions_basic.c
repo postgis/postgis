@@ -1841,6 +1841,7 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 	Datum datum;
 	PG_LWGEOM *geom;
 	ArrayType *result;
+	Oid oid = get_fn_expr_argtype(fcinfo->flinfo, 1);
 
 	POSTGIS_DEBUG(2, "LWGEOM_accum called");
 
@@ -1898,6 +1899,7 @@ Datum LWGEOM_accum(PG_FUNCTION_ARGS)
 
 		SET_VARSIZE(result, nbytes);
 		result->ndim = 1;
+		result->elemtype = oid;
 
 #if POSTGIS_PGSQL_VERSION > 81
 		result->dataoffset = 0;
