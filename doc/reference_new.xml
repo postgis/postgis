@@ -1735,17 +1735,39 @@ SELECT ST_AsEWKT(ST_MakeLine(ST_MakePoint(1,2,3), ST_MakePoint(3,4,5)));
 				<para>This function will not accept a MULTILINESTRING.  Use <xref linkend="ST_LineMerge" /> or <xref linkend="ST_Dump" /> to generate line strings.</para>
 			</note>
 			
+			<!-- Optionally mention 3d support -->	
+			<para><inlinemediaobject>
+				<imageobject>
+				  <imagedata fileref="images/check.png" />
+				</imageobject>
+			  </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+			
 		</refsection>
 		
 		<refsection>
 		<title>Examples: Single closed LINESTRING</title>		
 		 <programlisting>
+--2d line
 SELECT ST_MakePolygon(ST_GeomFromText('LINESTRING(75.15 29.53,77 29,77.6 29.5, 75.15 29.53)'));
 --If linestring is not closed
 --you can add the start point to close it
 SELECT ST_MakePolygon(ST_AddPoint(foo.open_line, ST_StartPoint(foo.open_line)))
 FROM (
-SELECT ST_GeomFromText('LINESTRING(75.15 29.53,77 29,77.6 29.5)') As open_line) As foo
+SELECT ST_GeomFromText('LINESTRING(75.15 29.53,77 29,77.6 29.5)') As open_line) As foo;
+
+--3d closed line
+SELECT ST_MakePolygon(ST_GeomFromText('LINESTRING(75.15 29.53 1,77 29 1,77.6 29.5 1, 75.15 29.53 1)'));
+
+st_asewkt
+-----------
+POLYGON((75.15 29.53 1,77 29 1,77.6 29.5 1,75.15 29.53 1))
+
+--measured line --
+SELECT ST_MakePolygon(ST_GeomFromText('LINESTRINGM(75.15 29.53 1,77 29 1,77.6 29.5 2, 75.15 29.53 2)'));
+
+st_asewkt
+----------
+POLYGONM((75.15 29.53 1,77 29 1,77.6 29.5 2,75.15 29.53 2))
 			  </programlisting>
 		</refsection>
 		<refsection>
