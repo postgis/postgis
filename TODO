@@ -71,6 +71,10 @@ Add the maintenance of GEOMETRY_COLUMNS to the "ANALYZE" operation, so that
 an ANALYZE automatically removes orphaned rows from GEOMETRY_COLUMNS and
 adds entries for new rows.
 
+-- typmod support --
+
+Allow geometry(srid, type) constructors to automatically fill out GEOMETRY_COLUMNS and constraints.
+
 -- Estimated Extent --
 
 Fast extent estimation based on reading the head of the R-Tree.
