@@ -6,8 +6,6 @@ Updated 2008/11/12
   TRUE or FALSE depending on existence of M
 * ST_LocateAlong(reference geometry, measure float)
 * ST_LocateBetween(reference geometry, start float, end float)
-* ST_IsValidReason(geometry)
-  For invalid geometries return the GEOS reason
 * ST_CleanGeometry(geometry)
   Attempt to make invalid geometry valid
 * ST_SplitGeometry(polygon, line) returns components of polygon
