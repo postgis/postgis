@@ -11,6 +11,10 @@
 	<xsl:output method="text" />
 	<!--Exclude this from testing - it crashes with geometry collection -->
 	<xsl:variable name='fnexclude'>ST_CurveToLine</xsl:variable>
+	<xsl:variable name='var_integer'>4269</xsl:variable>
+	<xsl:variable name='var_float1'>0.5</xsl:variable>
+	<xsl:variable name='var_float2'>0.75</xsl:variable>
+	<xsl:variable name='var_version'>2</xsl:variable>
 	<pgis:gardens>
 		<pgis:gset ID='PointSet' GeometryType='POINT'>(SELECT ST_SetSRID(ST_Point(i,j),4326) As the_geom 
 		FROM generate_series(-10,50,15) As i 
@@ -56,6 +60,10 @@
 			CROSS JOIN generate_series(50,70, 20) As j
 			CROSS JOIN generate_series(1,2) As m
 			GROUP BY m)</pgis:gset>
+			
+		<pgis:gset ID='CurvePolySet' GeometryType='CURVEPOLYGON'>(SELECT ST_LineToCurve(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j))  As the_geom 
+		FROM generate_series(-10,50,10) As i 
+			CROSS JOIN generate_series(40,70, 20) As j)</pgis:gset>
 	</pgis:gardens>
 
 	<xsl:template match='/chapter'>
@@ -146,5 +154,20 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text> <xsl:value-of se
 </xsl:if>
 			</xsl:for-each>
 		</xsl:for-each>
+	</xsl:template>
+	
+	<!--macro to replace func args with dummy var args -->
+	<xsl:template name="replaceparams">
+		<xsl:param name="func" />
+		<xsl:for-each select="$func">
+			<xsl:for-each select="paramdef">
+				<xsl:choose>
+					<xsl:when test="count(parameter) &gt; 0"> 
+						<xsl:value-of select="parameter" />
+					</xsl:when>
+				</xsl:choose>
+				<xsl:if test="position()&lt;last()"><xsl:text>, </xsl:text></xsl:if>
+			</xsl:for-each>
+		</xsl:for-each>	
 	</xsl:template>
 </xsl:stylesheet>
