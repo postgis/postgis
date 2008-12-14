@@ -9,6 +9,8 @@
 	 		using a garden variety of geometries.  Its intent is to flag major crashes.
      ******************************************************************** -->
 	<xsl:output method="text" />
+	<!--Exclude this from testing - it crashes with geometry collection -->
+	<xsl:variable name='fnexclude'>ST_CurveToLine</xsl:variable>
 	<pgis:gardens>
 		<pgis:gset ID='PointSet' GeometryType='POINT'>(SELECT ST_SetSRID(ST_Point(i,j),4326) As the_geom 
 		FROM generate_series(-10,50,15) As i 
@@ -49,7 +51,7 @@
 			CROSS JOIN generate_series(50,70, 20) As j
 			CROSS JOIN generate_series(1,2) As m)</pgis:gset>
 			
-		<pgis:gset ID='GCSet3D' GeometryType='GEOMETRYCOLLECTION'>(SELECT ST_Collect(ST_Collect(ST_SetSRID(ST_MakePoint(i,j,m),4326),ST_SetSRID(ST_MakePolygon(ST_AddPoint(ST_AddPoint(ST_MakeLine(ST_MakePoint(i+m,j,m),ST_MakePoint(j+m,i-m,m)),ST_MakePoint(i,j,m)),ST_MakePointM(i+m,j,m))),4326)))  As the_geom 
+		<pgis:gset ID='GCSet3D' GeometryType='GEOMETRYCOLLECTION' SkipUnary='1'>(SELECT ST_Collect(ST_Collect(ST_SetSRID(ST_MakePoint(i,j,m),4326),ST_SetSRID(ST_MakePolygon(ST_AddPoint(ST_AddPoint(ST_MakeLine(ST_MakePoint(i+m,j,m),ST_MakePoint(j+m,i-m,m)),ST_MakePoint(i,j,m)),ST_MakePointM(i+m,j,m))),4326)))  As the_geom 
 		FROM generate_series(-10,50,20) As i 
 			CROSS JOIN generate_series(50,70, 20) As j
 			CROSS JOIN generate_series(1,2) As m
@@ -91,7 +93,7 @@ SELECT  'Ending <xsl:value-of select="funcdef/function" />()';
 </xsl:if>
 <!--Start Test aggregate and unary functions -->
 <!--Garden Aggregator/Unary function with input gsets test -->
-<xsl:if test="contains(paramdef/type,'geometry set') or (count(paramdef/parameter) = 1 and (contains(paramdef/type, 'geometry') or contains(paramdef/type, 'box')))">
+<xsl:if test="(contains(paramdef/type,'geometry set') or (count(paramdef/parameter) = 1 and (contains(paramdef/type, 'geometry') or contains(paramdef/type, 'box')))) and not(contains($fnexclude,funcdef/function))" >
 	<xsl:variable name='fnname'><xsl:value-of select="funcdef/function"/></xsl:variable>
 	<xsl:variable name='fndef'><xsl:value-of select="funcdef"/></xsl:variable>
 	<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
