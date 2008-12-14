@@ -37,6 +37,28 @@
 	</pgis:gardens>
 
 	<xsl:template match='/chapter'>
+<!--Start Test table creation, insert, drop -->
+		<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
+SELECT 'create,insert,drop Test: Start Testing Multi/<xsl:value-of select="@GeometryType" />'; 
+BEGIN;
+	CREATE TABLE pgis_garden (gid serial);
+	SELECT AddGeometryColumn('pgis_garden','the_geom',ST_SRID(the_geom),GeometryType(the_geom),ST_CoordDim(the_geom))
+			FROM (<xsl:value-of select="." />) As foo limit 1;
+	SELECT AddGeometryColumn('pgis_garden','the_geom_multi',ST_SRID(the_geom),GeometryType(ST_Multi(the_geom)),ST_CoordDim(the_geom))
+			FROM (<xsl:value-of select="." />) As foo limit 1;
+	INSERT INTO pgis_garden(the_geom, the_geom_multi)
+	SELECT the_geom, ST_Multi(the_geom)
+	FROM (<xsl:value-of select="." />) As foo;
+	
+	SELECT DropGeometryColumn ('pgis_garden','the_geom');
+	SELECT DropGeometryTable ('pgis_garden');
+COMMIT;
+SELECT 'create,insert,drop Test: Start Testing Multi/<xsl:value-of select="@GeometryType" />'; 
+	<xsl:text>
+	
+	</xsl:text>
+		</xsl:for-each>
+<!--End Test table creation, insert, drop -->
 		<xsl:for-each select='sect1/refentry'>
 		<xsl:sort select="@id"/>
 <!-- For each function prototype generate a test sql statement
@@ -47,8 +69,7 @@ SELECT  <xsl:value-of select="funcdef/function" />();
 COMMIT;
 SELECT  'Ending <xsl:value-of select="funcdef/function" />()';
 </xsl:if>
-<!--Start Test aggregate and unary functions 
- DONE: Make this section less verbose -->
+<!--Start Test aggregate and unary functions -->
 <!--Garden Aggregator/Unary function with input gsets test -->
 <xsl:if test="contains(paramdef/type,'geometry set') or (count(paramdef/parameter) = 1 and contains(paramdef/type, 'geometry'))">
 	<xsl:variable name='fnname'><xsl:value-of select="funcdef/function"/></xsl:variable>
