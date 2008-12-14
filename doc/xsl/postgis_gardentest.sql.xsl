@@ -48,6 +48,12 @@
 		FROM generate_series(-10,50,20) As i 
 			CROSS JOIN generate_series(50,70, 20) As j
 			CROSS JOIN generate_series(1,2) As m)</pgis:gset>
+			
+		<pgis:gset ID='GCSet3D' GeometryType='GEOMETRYCOLLECTION'>(SELECT ST_Collect(ST_Collect(ST_SetSRID(ST_MakePoint(i,j,m),4326),ST_SetSRID(ST_MakePolygon(ST_AddPoint(ST_AddPoint(ST_MakeLine(ST_MakePoint(i+m,j,m),ST_MakePoint(j+m,i-m,m)),ST_MakePoint(i,j,m)),ST_MakePointM(i+m,j,m))),4326)))  As the_geom 
+		FROM generate_series(-10,50,20) As i 
+			CROSS JOIN generate_series(50,70, 20) As j
+			CROSS JOIN generate_series(1,2) As m
+			GROUP BY m)</pgis:gset>
 	</pgis:gardens>
 
 	<xsl:template match='/chapter'>
