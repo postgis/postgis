@@ -11,10 +11,13 @@
 	<xsl:output method="text" />
 	<!--Exclude this from testing - it crashes with geometry collection -->
 	<xsl:variable name='fnexclude'>ST_CurveToLine</xsl:variable>
-	<xsl:variable name='var_integer'>4269</xsl:variable>
+	<xsl:variable name='var_srid'>4269</xsl:variable>
+	<xsl:variable name='var_integer'>-5</xsl:variable>
 	<xsl:variable name='var_float1'>0.5</xsl:variable>
 	<xsl:variable name='var_float2'>0.75</xsl:variable>
 	<xsl:variable name='var_version'>2</xsl:variable>
+	<xsl:variable name='var_NDRXDR'>XDR</xsl:variable>
+	<xsl:variable name='var_text'>monkey</xsl:variable>
 	<pgis:gardens>
 		<pgis:gset ID='PointSet' GeometryType='POINT'>(SELECT ST_SetSRID(ST_Point(i,j),4326) As the_geom 
 		FROM generate_series(-10,50,15) As i 
@@ -60,11 +63,14 @@
 			CROSS JOIN generate_series(50,70, 20) As j
 			CROSS JOIN generate_series(1,2) As m
 			GROUP BY m)</pgis:gset>
-			
+	</pgis:gardens>
+	<!--This is just a placeholder to hold geometries that will crash server when hitting against some functions
+		We'll fix these crashers in 1.4 -->
+	<pgis:gardencrashers>
 		<pgis:gset ID='CurvePolySet' GeometryType='CURVEPOLYGON'>(SELECT ST_LineToCurve(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j))  As the_geom 
 		FROM generate_series(-10,50,10) As i 
 			CROSS JOIN generate_series(40,70, 20) As j)</pgis:gset>
-	</pgis:gardens>
+	</pgis:gardencrashers>
 
 	<xsl:template match='/chapter'>
 <!--Start Test table creation, insert, drop -->
@@ -91,9 +97,12 @@ SELECT 'create,insert,drop Test: Start Testing Multi/<xsl:value-of select="@Geom
 <!--End Test table creation, insert, drop -->
 		<xsl:for-each select='sect1/refentry'>
 		<xsl:sort select="@id"/>
+
+			<xsl:for-each select="refsynopsisdiv/funcsynopsis/funcprototype">
+<!--Create dummy paramaters to be used later -->
+			<xsl:variable name='fnfakeparams'><xsl:call-template name="replaceparams"><xsl:with-param name="func" select="." /></xsl:call-template></xsl:variable>
 <!-- For each function prototype generate a test sql statement
 	Test functions that take no arguments  -->
-			<xsl:for-each select="refsynopsisdiv/funcsynopsis/funcprototype">
 <xsl:if test="count(paramdef/parameter) = 0">SELECT  'Starting <xsl:value-of select="funcdef/function" />()';BEGIN; 
 SELECT  <xsl:value-of select="funcdef/function" />();
 COMMIT;
@@ -126,7 +135,7 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text> <xsl:value-of se
 	</xsl:for-each>
 </xsl:if>
 
-<!--Garden Relationship/geom2 output function tests  -->
+<!--Garden Relationship and 2 geom input function tests  -->
 <xsl:if test="(count(paramdef/parameter) = 2 and (paramdef[1]/type = 'geometry' or paramdef[1]/type = 'geometry ')  and (paramdef[2]/type = 'geometry' or paramdef[2]/type = 'geometry '))">
 	<xsl:variable name='fnname'><xsl:value-of select="funcdef/function"/></xsl:variable>
 	<xsl:variable name='fndef'><xsl:value-of select="funcdef"/></xsl:variable>
@@ -152,6 +161,33 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text> <xsl:value-of se
 	</xsl:text>
 	</xsl:for-each>
 </xsl:if>
+
+<!--Garden Relationship more than 1 args first geom -->
+<xsl:if test="(count(paramdef/parameter) &gt; 1 and (paramdef[1]/type = 'geometry' or paramdef[1]/type = 'geometry ')  and not(paramdef[2]/type = 'geometry' or paramdef[2]/type = 'geometry '))">
+	<xsl:variable name='fnname'><xsl:value-of select="funcdef/function"/></xsl:variable>
+	<xsl:variable name='fndef'><xsl:value-of select="funcdef"/></xsl:variable>
+	<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
+SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="@GeometryType" />'; 
+BEGIN; <!-- If output is geometry show ewkt rep -->
+		<xsl:choose>
+		  <xsl:when test="contains($fndef, 'geometry ')">
+SELECT ST_AsEWKT(<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />))
+		  </xsl:when>
+		  <xsl:otherwise>
+SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)
+		  </xsl:otherwise>
+		</xsl:choose>
+		FROM (<xsl:value-of select="." />) As foo1 CROSS JOIN (<xsl:value-of select="." />) As foo2
+		LIMIT 5;  
+COMMIT;
+SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text> <xsl:value-of select="@ID" />: End Testing Multi/<xsl:value-of select="@GeometryType" />';
+	<xsl:text>
+	
+	</xsl:text>
+	</xsl:for-each>
+</xsl:if>
+
+
 			</xsl:for-each>
 		</xsl:for-each>
 	</xsl:template>
@@ -162,8 +198,26 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text> <xsl:value-of se
 		<xsl:for-each select="$func">
 			<xsl:for-each select="paramdef">
 				<xsl:choose>
-					<xsl:when test="count(parameter) &gt; 0"> 
-						<xsl:value-of select="parameter" />
+					<xsl:when test="contains(parameter, 'srid')"> 
+						<xsl:value-of select="$var_srid" />
+					</xsl:when>
+					<xsl:when test="contains(parameter, 'NDR')"> 
+						"<xsl:value-of select="$var_NDRXDR" />"
+					</xsl:when>
+					<xsl:when test="contains(parameter, 'version')"> 
+						<xsl:value-of select="$var_version" />
+					</xsl:when>
+					<xsl:when test="type = 'geometry' or type = 'geometry '"> 
+						<xsl:text>the_geom</xsl:text>
+					</xsl:when>
+					<xsl:when test="contains(type, 'float')"> 
+						<xsl:value-of select="$var_float1" />
+					</xsl:when>
+					<xsl:when test="contains(type, 'integer')"> 
+						<xsl:value-of select="$var_integer" />
+					</xsl:when>
+					<xsl:when test="contains(type, 'text')"> 
+						"<xsl:value-of select="$var_text" />"
 					</xsl:when>
 				</xsl:choose>
 				<xsl:if test="position()&lt;last()"><xsl:text>, </xsl:text></xsl:if>
