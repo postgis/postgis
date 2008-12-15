@@ -1516,8 +1516,8 @@ Datum LWGEOM_force_multi(PG_FUNCTION_ARGS)
 	lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom));
 	type = TYPE_GETTYPE(lwgeom->type);
 
-	/* single geom, make it a multi */
-	if ( ! lwgeom_contains_subgeoms(type) )
+	/* if it's a single POINT, LINESTRING or POLYGON geom, make it a multi */
+	if ( type == POINTTYPE || type == LINETYPE || type == POLYGONTYPE )
 	{
 		type += 3;
 		SRID = lwgeom->SRID;
