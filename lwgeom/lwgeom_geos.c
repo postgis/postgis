@@ -519,7 +519,7 @@ Datum boundary(PG_FUNCTION_ARGS)
 
 	if (g3 == NULL)
 	{
-		elog(ERROR,"GEOS bounary() threw an error!");
+		elog(ERROR,"GEOS boundary() threw an error!");
 		GEOSGeom_destroy(g1);
 		PG_RETURN_NULL(); /* never get here */
 	}
