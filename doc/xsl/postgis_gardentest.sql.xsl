@@ -17,7 +17,8 @@
 	<xsl:variable name='var_float2'>0.75</xsl:variable>
 	<xsl:variable name='var_version'>2</xsl:variable>
 	<xsl:variable name='var_NDRXDR'>XDR</xsl:variable>
-	<xsl:variable name='var_text'>monkey</xsl:variable>
+	<xsl:variable name='var_text'>'monkey'</xsl:variable>
+	<xsl:variable name='var_spheroid'>'SPHEROID["GRS_1980",6378137,298.257222101]'</xsl:variable>
 	<pgis:gardens>
 		<pgis:gset ID='PointSet' GeometryType='POINT'>(SELECT ST_SetSRID(ST_Point(i,j),4326) As the_geom 
 		FROM generate_series(-10,50,15) As i 
@@ -163,7 +164,7 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text> <xsl:value-of se
 </xsl:if>
 
 <!--Garden Relationship more than 1 args first geom -->
-<xsl:if test="(count(paramdef/parameter) &gt; 1 and (paramdef[1]/type = 'geometry' or paramdef[1]/type = 'geometry ')  and not(paramdef[2]/type = 'geometry' or paramdef[2]/type = 'geometry '))">
+<xsl:if test="(count(paramdef/parameter) &gt; 1 and not(contains(paramdef[1]/type,'text')) and not(paramdef[2]/type = 'geometry' or paramdef[2]/type = 'geometry '))">
 	<xsl:variable name='fnname'><xsl:value-of select="funcdef/function"/></xsl:variable>
 	<xsl:variable name='fndef'><xsl:value-of select="funcdef"/></xsl:variable>
 	<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
@@ -202,25 +203,37 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text> <xsl:value-of se
 						<xsl:value-of select="$var_srid" />
 					</xsl:when>
 					<xsl:when test="contains(parameter, 'NDR')"> 
-						"<xsl:value-of select="$var_NDRXDR" />"
+						'<xsl:value-of select="$var_NDRXDR" />'
 					</xsl:when>
 					<xsl:when test="contains(parameter, 'version')"> 
 						<xsl:value-of select="$var_version" />
 					</xsl:when>
-					<xsl:when test="contains(type, 'geometry[]')"> 
-						ARRAY[foo2.the_geom]
-					</xsl:when>
 					<xsl:when test="type = 'geometry' or type = 'geometry '"> 
 						<xsl:text>foo1.the_geom</xsl:text>
 					</xsl:when>
+					<xsl:when test="contains(type, 'geometry[]')"> 
+						ARRAY[foo2.the_geom]
+					</xsl:when>
+					<xsl:when test="contains(parameter, 'EWKT')"> 
+						<xsl:text>ST_AsEWKT(foo1.the_geom)</xsl:text>
+					</xsl:when>
+					<xsl:when test="contains(parameter, 'WKT')"> 
+						<xsl:text>ST_AsText(foo1.the_geom)</xsl:text>
+					</xsl:when>
+					<xsl:when test="contains(parameter, 'WKB')"> 
+						<xsl:text>ST_AsBinary(foo1.the_geom)</xsl:text>
+					</xsl:when>
 					<xsl:when test="contains(type, 'float')"> 
 						<xsl:value-of select="$var_float1" />
+					</xsl:when>
+					<xsl:when test="contains(type, 'spheroid')"> 
+						<xsl:value-of select="$var_spheroid" />
 					</xsl:when>
 					<xsl:when test="contains(type, 'integer')"> 
 						<xsl:value-of select="$var_integer" />
 					</xsl:when>
 					<xsl:when test="contains(type, 'text')"> 
-						"<xsl:value-of select="$var_text" />"
+						'<xsl:value-of select="$var_text" />'
 					</xsl:when>
 				</xsl:choose>
 				<xsl:if test="position()&lt;last()"><xsl:text>, </xsl:text></xsl:if>
