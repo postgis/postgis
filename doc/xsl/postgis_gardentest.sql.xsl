@@ -12,12 +12,13 @@
 	<!--Exclude this from testing - it crashes with geometry collection -->
 	<xsl:variable name='fnexclude'>ST_CurveToLine</xsl:variable>
 	<xsl:variable name='var_srid'>4269</xsl:variable>
-	<xsl:variable name='var_integer'>-5</xsl:variable>
+	<xsl:variable name='var_integer'>5</xsl:variable>
 	<xsl:variable name='var_float1'>0.5</xsl:variable>
 	<xsl:variable name='var_float2'>0.75</xsl:variable>
 	<xsl:variable name='var_version'>2</xsl:variable>
 	<xsl:variable name='var_NDRXDR'>XDR</xsl:variable>
 	<xsl:variable name='var_text'>'monkey'</xsl:variable>
+	<xsl:variable name='var_varchar'>'test'</xsl:variable>
 	<xsl:variable name='var_spheroid'>'SPHEROID["GRS_1980",6378137,298.257222101]'</xsl:variable>
 	<pgis:gardens>
 		<pgis:gset ID='PointSet' GeometryType='POINT'>(SELECT ST_SetSRID(ST_Point(i,j),4326) As the_geom 
@@ -69,6 +70,9 @@
 		We'll fix these crashers in 1.4 -->
 	<pgis:gardencrashers>
 		<pgis:gset ID='CurvePolySet' GeometryType='CURVEPOLYGON'>(SELECT ST_LineToCurve(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j))  As the_geom 
+		FROM generate_series(-10,50,10) As i 
+			CROSS JOIN generate_series(40,70, 20) As j)</pgis:gset>
+		<pgis:gset ID='CircularStringSet' GeometryType='CIRCULARSTRING'>(SELECT ST_LineToCurve(ST_Boundary(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j)))  As the_geom 
 		FROM generate_series(-10,50,10) As i 
 			CROSS JOIN generate_series(40,70, 20) As j)</pgis:gset>
 	</pgis:gardencrashers>
@@ -164,7 +168,7 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text> <xsl:value-of se
 </xsl:if>
 
 <!--Garden Relationship more than 1 args first geom -->
-<xsl:if test="(count(paramdef/parameter) &gt; 1 and not(contains(paramdef[1]/type,'text')) and not(paramdef[2]/type = 'geometry' or paramdef[2]/type = 'geometry '))">
+<xsl:if test="(count(paramdef/parameter) &gt; 1 and not(contains($fnexclude,funcdef/function)) and not(contains(paramdef[1]/type,'text')) and not(paramdef[2]/type = 'geometry' or paramdef[2]/type = 'geometry '))">
 	<xsl:variable name='fnname'><xsl:value-of select="funcdef/function"/></xsl:variable>
 	<xsl:variable name='fndef'><xsl:value-of select="funcdef"/></xsl:variable>
 	<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
@@ -208,6 +212,9 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text> <xsl:value-of se
 					<xsl:when test="contains(parameter, 'version')"> 
 						<xsl:value-of select="$var_version" />
 					</xsl:when>
+					<xsl:when test="contains(type,'box')"> 
+						<xsl:text>foo1.the_geom</xsl:text>
+					</xsl:when>
 					<xsl:when test="type = 'geometry' or type = 'geometry '"> 
 						<xsl:text>foo1.the_geom</xsl:text>
 					</xsl:when>
@@ -220,7 +227,7 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text> <xsl:value-of se
 					<xsl:when test="contains(parameter, 'WKT')"> 
 						<xsl:text>ST_AsText(foo1.the_geom)</xsl:text>
 					</xsl:when>
-					<xsl:when test="contains(parameter, 'WKB')"> 
+					<xsl:when test="contains(type, 'bytea')"> 
 						<xsl:text>ST_AsBinary(foo1.the_geom)</xsl:text>
 					</xsl:when>
 					<xsl:when test="contains(type, 'float')"> 
@@ -233,7 +240,10 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text> <xsl:value-of se
 						<xsl:value-of select="$var_integer" />
 					</xsl:when>
 					<xsl:when test="contains(type, 'text')"> 
-						'<xsl:value-of select="$var_text" />'
+						<xsl:value-of select="$var_text" />
+					</xsl:when>
+					<xsl:when test="contains(type, 'varchar')"> 
+						<xsl:value-of select="$var_varchar" />
 					</xsl:when>
 				</xsl:choose>
 				<xsl:if test="position()&lt;last()"><xsl:text>, </xsl:text></xsl:if>
