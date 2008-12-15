@@ -207,8 +207,11 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text> <xsl:value-of se
 					<xsl:when test="contains(parameter, 'version')"> 
 						<xsl:value-of select="$var_version" />
 					</xsl:when>
+					<xsl:when test="contains(type, 'geometry[]')"> 
+						ARRAY[foo2.the_geom]
+					</xsl:when>
 					<xsl:when test="type = 'geometry' or type = 'geometry '"> 
-						<xsl:text>the_geom</xsl:text>
+						<xsl:text>foo1.the_geom</xsl:text>
 					</xsl:when>
 					<xsl:when test="contains(type, 'float')"> 
 						<xsl:value-of select="$var_float1" />
