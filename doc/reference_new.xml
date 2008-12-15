@@ -9706,12 +9706,12 @@ ST_GeomFromText('CIRCULARSTRING(220227 150406,2220227 150407,220227 150406)')));
 	    <funcsynopsis>
 	      <funcprototype>
 	        <funcdef>geometry <function>ST_CurveToLine</function></funcdef>
-	        <paramdef><type>geometry </type> <parameter>curveGeom</parameter></paramdef>
+	        <paramdef><type>geometry</type> <parameter>curveGeom</parameter></paramdef>
 	      </funcprototype>
 		  <funcprototype>
 	        <funcdef>geometry <function>ST_CurveToLine</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>curveGeom</parameter></paramdef>
-	        <paramdef><type>int </type> <parameter>segments_per_qtr_circle</parameter></paramdef>
+			<paramdef><type>geometry</type> <parameter>curveGeom</parameter></paramdef>
+	        <paramdef><type>integer</type> <parameter>segments_per_qtr_circle</parameter></paramdef>
 	      </funcprototype>
 	    </funcsynopsis>
 	  </refsynopsisdiv>
