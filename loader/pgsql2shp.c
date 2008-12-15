@@ -1706,6 +1706,7 @@ initialize(void)
 		 * We now create the appropriate shape (shp) file.
 		 * And set the shape creator function.
 		 */
+		 /**Create the prj file if we can **/
 		projsuccess = projFileCreate(shp_file, schema, table, geo_col_name);
 		geotype = getGeometryType(schema, table, geo_col_name);
 		if ( geotype == -1 ) return 0;
