@@ -1,3 +1,14 @@
+PostGIS 1.3.5
+2008/12/15
+        - A quick bug fix release, to remove crashes in cases of
+          collecting LINESTRING (ST_Force_Collection(), ST_Multi())
+          that had a large affect on Mapserver with LINE layers.
+        - Enhancements and Bug Fixes
+          - GBT#21: improve LRS fix to apply to more platforms
+          - GBT#72: fix st_estimated_extent for better schema sensitivity
+          - GBT#80: segfault on st_multi in MULTILINESTRING repaired
+          - GBT#83: segfault on collecting LINESTRING repaired
+
 PostGIS 1.3.4
 2008/11/24
         - New Features
