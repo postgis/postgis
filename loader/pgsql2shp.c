@@ -116,6 +116,7 @@ int get_postgis_major_version(void);
 static void parse_table(char *spec);
 static int create_usrquerytable(void);
 static const char *nullDBFValue(char fieldType);
+int projFileCreate(const char * pszFilename, char *schema, char *table, char *geo_col_name);
 /* 
  * Make appropriate formatting of a DBF value based on type.
  * Might return untouched input or pointer to static private 
@@ -2446,6 +2447,7 @@ initialize(void)
 	int gidfound=0;
 	char *dbf_flds[256];
 	int dbf_nfields=0;
+	int projsuccess;
 
 	/* Detect postgis version */
 	pgis_major_version = get_postgis_major_version();
@@ -2828,6 +2830,8 @@ initialize(void)
 		 */
 		geotype = getGeometryType(schema, table, geo_col_name);
 		if ( geotype == -1 ) return 0;
+		/**Create the prj file if we can **/
+		projsuccess = projFileCreate(shp_file, schema, table, geo_col_name);
 
 		switch (geotype)
 		{
@@ -3346,6 +3350,132 @@ goodDBFValue(const char *in, char fieldType)
 		default:
 			return in;
 	}
+}
+
+int projFileCreate(const char * pszFilename, char *schema, char *table, char *geo_col_name)
+{
+    FILE	*fp;
+    char	*pszFullname, *pszBasename;
+    int		i, result;
+	char *srtext;
+	char *query;
+	char *esc_schema;
+	char *esc_table;
+	char *esc_geo_col_name;
+	int error;
+	PGresult *res;
+	int size;
+	
+	/***********
+	*** I'm multiplying by 2 instead of 3 because I am too lazy to figure out how many characters to add
+	*** after escaping if any **/
+	size = 1000;
+	if ( schema ) {
+		size += 3 * strlen(schema);
+	}
+	size += 1000;
+	esc_table = (char *) malloc(3 * strlen(table) + 1);
+	esc_geo_col_name = (char *) malloc(3 * strlen(geo_col_name) + 1);
+	PQescapeStringConn(conn, esc_table, table, strlen(table), &error);
+	PQescapeStringConn(conn, esc_geo_col_name, geo_col_name, strlen(geo_col_name), &error);
+
+	/** make our address space large enough to hold query with table/schema **/
+	query = (char *) malloc(size);
+	if ( ! query ) return 0; /* out of virtual memory */
+	
+	/**************************************************
+	 * Get what kind of spatial ref is the selected geometry field
+	 * We first check the geometry_columns table for a match and then if no match do a distinct against the table
+	 * NOTE: COALESCE does a short-circuit check returning the faster query result and skipping the second if first returns something
+	 *	Escaping quotes in the schema and table in query may not be necessary except to prevent malicious attacks 
+	 *	or should someone be crazy enough to have quotes or other weird character in their table, column or schema names 
+	 **************************************************/
+	if ( schema )
+	{
+		esc_schema = (char *) malloc(2 * strlen(schema) + 1);
+		PQescapeStringConn(conn, esc_schema, schema, strlen(schema), &error);
+		sprintf(query, "SELECT COALESCE((SELECT sr.srtext "
+				" FROM  geometry_columns As gc INNER JOIN spatial_ref_sys sr ON sr.srid = gc.srid "
+				" WHERE gc.f_table_schema = '%s' AND gc.f_table_name = '%s' AND gc.f_geometry_column = '%s' LIMIT 1),  " 
+				" (SELECT CASE WHEN COUNT(DISTINCT sr.srid) > 1 THEN 'm' ELSE MAX(sr.srtext) END As srtext "
+			" FROM \"%s\".\"%s\" As g INNER JOIN spatial_ref_sys sr ON sr.srid = ST_SRID(g.\"%s\")) , ' ') As srtext ", 
+				esc_schema, esc_table,esc_geo_col_name, schema, table, geo_col_name);
+		free(esc_schema);
+	}
+	else
+	{
+		sprintf(query, "SELECT COALESCE((SELECT sr.srtext "
+				" FROM  geometry_columns As gc INNER JOIN spatial_ref_sys sr ON sr.srid = gc.srid "
+				" WHERE gc.f_table_name = '%s' AND gc.f_geometry_column = '%s' AND pg_table_is_visible((gc.f_table_schema || '.' || gc.f_table_name)::regclass) LIMIT 1),  "
+				" (SELECT CASE WHEN COUNT(DISTINCT sr.srid) > 1 THEN 'm' ELSE MAX(sr.srtext) END as srtext "
+			" FROM \"%s\" As g INNER JOIN spatial_ref_sys sr ON sr.srid = ST_SRID(g.\"%s\")), ' ') As srtext ", 
+				esc_table, esc_geo_col_name, table, geo_col_name);
+	}
+
+	//LWDEBUGF(3,"%s\n",query);
+	free(esc_table);
+	free(esc_geo_col_name);
+
+	res = PQexec(conn, query);
+	
+	if ( ! res || PQresultStatus(res) != PGRES_TUPLES_OK ) {
+		printf( "Error: %s", PQerrorMessage(conn));
+		return 0;
+	}
+
+	for (i=0; i < PQntuples(res); i++)
+	{
+		srtext = PQgetvalue(res, i, 0);
+		if (strcmp(srtext,"m") == 0){
+			printf("ERROR: Mixed set of spatial references.\n");	
+			PQclear(res);
+			return 0;
+		}
+		else {
+			if (srtext[0] == ' '){
+				printf("ERROR: Cannot determine spatial reference (empty table or unknown spatial ref).\n");
+				PQclear(res);
+				return 0;
+			}
+			else {	
+				/* -------------------------------------------------------------------- */
+				/*	Compute the base (layer) name.  If there is any extension	*/
+				/*	on the passed in filename we will strip it off.			*/
+				/* -------------------------------------------------------------------- */
+					pszBasename = (char *) malloc(strlen(pszFilename)+5);
+					strcpy( pszBasename, pszFilename );
+					for( i = strlen(pszBasename)-1; 
+					 i > 0 && pszBasename[i] != '.' && pszBasename[i] != '/'
+						   && pszBasename[i] != '\\';
+					 i-- ) {}
+				
+					if( pszBasename[i] == '.' )
+						pszBasename[i] = '\0';
+				
+					pszFullname = (char *) malloc(strlen(pszBasename) + 5);
+					sprintf( pszFullname, "%s.prj", pszBasename );
+					free( pszBasename );
+					
+				
+				/* -------------------------------------------------------------------- */
+				/*      Create the file.                                                */
+				/* -------------------------------------------------------------------- */
+				fp = fopen( pszFullname, "wb" );
+				if( fp == NULL ){
+					return 0;
+				}
+				result = fputs (srtext,fp);
+				#if VERBOSE > 2
+					printf("\n result %d proj SRText is %s .\n", result, srtext);
+				#endif
+				fclose( fp );
+				free( pszFullname );
+			}
+		}
+	}
+	PQclear(res);
+	free(query);
+	return 1;
 }
 
 /**********************************************************************
