@@ -3425,7 +3425,7 @@ NOTICE:  Self-intersection at or near point 0 0
       <refsection>
         <title>See Also</title>
     
-        <para><xref linkend="ST_Summary" /></para>
+        <para><xref linkend="ST_IsValidReason" />, <xref linkend="ST_Summary" /></para>
       </refsection>
     </refentry>
 	
@@ -4153,7 +4153,7 @@ Line[ZB] with 2 points : Polygon[ZB] with 1 rings
       <refsection>
         <title>See Also</title>
     
-        <para><xref linkend="ST_IsValid" /></para>
+        <para><xref linkend="ST_IsValid" />, <xref linkend="ST_IsValidReason" /></para>
       </refsection>
     </refentry>
 		
