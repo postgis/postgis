@@ -16,6 +16,7 @@
 #include "lwgeom_pg.h"
 #include "math.h"
 #include "lwgeom_rtree.h"
+#include "lwalgorithm.h"
 
 
 /***********************************************************************
@@ -35,6 +36,7 @@ LWPOLY *simplify2d_lwpoly(const LWPOLY *ipoly, double dist);
 LWCOLLECTION *simplify2d_collection(const LWCOLLECTION *igeom, double dist);
 LWGEOM *simplify2d_lwgeom(const LWGEOM *igeom, double dist);
 Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS);
+Datum crossingDirection(PG_FUNCTION_ARGS);
 
 double determineSide(POINT2D *seg1, POINT2D *seg2, POINT2D *point);
 int isOnSegment(POINT2D *seg1, POINT2D *seg2, POINT2D *point);
@@ -935,6 +937,60 @@ Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS)
 	out_geom = pglwgeom_serialize(out_lwgeom);
 
 	PG_RETURN_POINTER(out_geom);
+}
+
+
+/* 
+** crossingDirection(line1, line2)
+** 
+** Determines crossing direction of line2 relative to line1.
+** Only accepts LINESTRING ass parameters!
+*/
+PG_FUNCTION_INFO_V1(crossingDirection);
+Datum crossingDirection(PG_FUNCTION_ARGS)
+{
+	int type1, type2, rv;
+	BOX2DFLOAT4 box1, box2;
+	LWLINE *l1 = NULL;
+	LWLINE *l2 = NULL;
+	PG_LWGEOM *geom1 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	PG_LWGEOM *geom2 = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	
+	errorIfSRIDMismatch(pglwgeom_getSRID(geom1), pglwgeom_getSRID(geom2));
+	
+	/*
+	** If the bounding boxes don't interact, then there can't be any 
+	** crossing, return right away.
+	*/
+	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
+	     getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	{
+		if ( ( box2.xmax < box1.xmin ) || ( box2.xmin > box1.xmax ) ||
+		     ( box2.ymax < box1.ymin ) || ( box2.ymin > box1.ymax ) )
+		{
+			PG_RETURN_INT32(LINE_NO_CROSS); 
+		}
+	}
+
+	type1 = lwgeom_getType((uchar)SERIALIZED_FORM(geom1)[0]);
+	type2 = lwgeom_getType((uchar)SERIALIZED_FORM(geom2)[0]);
+
+	if ( type1 != LINETYPE || type2 != LINETYPE ) 
+	{
+			elog(ERROR,"This function only accepts LINESTRING as arguments.");
+			PG_RETURN_NULL();
+	}
+
+	l1 = lwline_deserialize(SERIALIZED_FORM(geom1));
+	l2 = lwline_deserialize(SERIALIZED_FORM(geom2));
+
+	rv = lineCrossingDirection(l1, l2);
+	
+	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom2, 0);	
+
+	PG_RETURN_INT32(rv);
+
 }
 
 /***********************************************************************

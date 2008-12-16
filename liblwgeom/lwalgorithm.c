@@ -210,7 +210,7 @@ int lineCrossingDirection(LWLINE *l1, LWLINE *l2) {
 			** TODO Handle co-linear cases. 
 			*/
 
- 			LWDEBUGF(5, "lineCrossingDirection: this_cross=%d, prev_cross=%d, vertex_touch=%d, vertex_touch_type=%d", this_cross, prev_cross, vertex_touch, vertex_touch_type);
+ 			LWDEBUGF(5, "lineCrossingDirection: this_cross=%d, vertex_touch=%d, vertex_touch_type=%d", this_cross, vertex_touch, vertex_touch_type);
 				
 		}
 		

@@ -3965,6 +3965,14 @@ CREATEFUNCTION ST_ConvexHull(geometry)
     AS 'MODULE_PATHNAME','convexhull'
     LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Only accepts LINESTRING as parameters.
+-- Availability: 1.4.0
+CREATEFUNCTION ST_CrossingDirection(geometry, geometry)
+    RETURNS integer
+    AS 'MODULE_PATHNAME', 'crossingDirection'
+    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+
 #if POSTGIS_GEOS_VERSION >= 30
 -- Requires GEOS >= 3.0.0
 -- Availability: 1.3.3
