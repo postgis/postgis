@@ -5056,10 +5056,7 @@ SELECT  ST_AsEWKT(ST_Force_Collection('POLYGON((0 0 1,0 5 1,5 0 1,0 0 1),(1 1 1,
 				<funcprototype>
 					<funcdef>boolean
 						<function>ST_ForceRHR</function></funcdef>
-					
-					<paramdef><type>geometry
-						</type>
-						<parameter>g</parameter></paramdef>
+						<paramdef><type>geometry</type> <parameter>g</parameter></paramdef>
 				</funcprototype>
 			</funcsynopsis>
 		</refsynopsisdiv>
