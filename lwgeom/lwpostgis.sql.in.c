@@ -2814,7 +2814,7 @@ BEGIN
 		2 as coord_dimension,
 		trim(both  ' =)' from 
 			replace(replace(split_part(
-				s.consrc, ' = ', 2), ')', ''), '(', ''))::integer AS srid,
+				sridcheck.consrc, ' = ', 2), ')', ''), '(', ''))::integer AS srid,
 		trim(both ' =)''' from substr(typecheck.consrc, 
 			strpos(typecheck.consrc, '='),
 			strpos(typecheck.consrc, '::')-
