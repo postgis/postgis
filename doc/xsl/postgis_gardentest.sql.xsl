@@ -11,6 +11,8 @@
 	<xsl:output method="text" />
 	<!--Exclude this from testing - it crashes or already tested in special section -->
 	<xsl:variable name='fnexclude'>ST_CurveToLine AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
+	<!--This is just a place holder to state functions not supported in 1.3 branch -->
+	<xsl:variable name='fnexclude13'>Populate_Geometry_Columns ST_IsValidReason</xsl:variable>	
 	<xsl:variable name='var_srid'>4269</xsl:variable>
 	<xsl:variable name='var_integer'>5</xsl:variable>
 	<xsl:variable name='var_float1'>0.5</xsl:variable>
@@ -112,14 +114,14 @@ SELECT 'create,insert,drop Test: Start Testing Multi/<xsl:value-of select="@Geom
 <!-- For each function prototype generate a test sql statement -->
 <xsl:choose>
 <!--Test functions that take no arguments -->
-	<xsl:when test="count(paramdef/parameter) = 0">SELECT  'Starting <xsl:value-of select="funcdef/function" />()';BEGIN; 
+	<xsl:when test="count(paramdef/parameter) = 0 and not(contains($fnexclude,@id))">SELECT  'Starting <xsl:value-of select="funcdef/function" />()';BEGIN; 
 SELECT  <xsl:value-of select="funcdef/function" />();
 COMMIT;
 SELECT  'Ending <xsl:value-of select="funcdef/function" />()';
 	</xsl:when>
 <!--Start Test aggregate and unary functions -->
 <!--Garden Aggregator/Unary function with input gsets test -->
-	<xsl:when test="(contains(paramdef/type,'geometry set') or (count(paramdef/parameter) = 1 and (contains(paramdef/type, 'geometry') or contains(paramdef/type, 'box')))) and not(contains($fnexclude,funcdef/function))" >
+	<xsl:when test="(contains(paramdef[1]/type,'geometry set') or (count(paramdef/parameter) = 1 and contains(paramdef[1]/type, 'geometry')) and not(contains($fnexclude,@id)))" >
 		<xsl:variable name='fnname'><xsl:value-of select="funcdef/function"/></xsl:variable>
 		<xsl:variable name='fndef'><xsl:value-of select="funcdef"/></xsl:variable>
 		<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
@@ -233,7 +235,7 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text> <xsl:value-of se
 					<xsl:when test="contains(type, 'bytea')"> 
 						<xsl:text>ST_AsBinary(foo1.the_geom)</xsl:text>
 					</xsl:when>
-					<xsl:when test="contains(type, 'float')"> 
+					<xsl:when test="contains(type, 'float') or contains(type, 'double')"> 
 						<xsl:value-of select="$var_float1" />
 					</xsl:when>
 					<xsl:when test="contains(type, 'spheroid')"> 
