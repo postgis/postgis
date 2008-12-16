@@ -2812,8 +2812,9 @@ BEGIN
 		c.relname::varchar as f_table_name,
 		a.attname::varchar as f_geometry_column,
 		2 as coord_dimension,
-		trim(both  ' =)' from substr(sridcheck.consrc,
-			strpos(sridcheck.consrc, '=')))::integer as srid,
+		trim(both  ' =)' from 
+			replace(replace(split_part(
+				s.consrc, ' = ', 2), ')', ''), '(', ''))::integer AS srid,
 		trim(both ' =)''' from substr(typecheck.consrc, 
 			strpos(typecheck.consrc, '='),
 			strpos(typecheck.consrc, '::')-
@@ -2863,16 +2864,15 @@ LANGUAGE 'plpgsql' _VOLATILE;
 --   <catalogue>, <schema>, <table>, <column>, <srid>, <type>, <dim>
 -----------------------------------------------------------------------
 --
--- Type can be one of geometry, GEOMETRYCOLLECTION, POINT, MULTIPOINT, POLYGON,
+-- Type can be one of GEOMETRY, GEOMETRYCOLLECTION, POINT, MULTIPOINT, POLYGON,
 -- MULTIPOLYGON, LINESTRING, or MULTILINESTRING.
 --
--- Types (except geometry) are checked for consistency using a CHECK constraint
--- uses SQL ALTER TABLE command to add the geometry column to the table.
+-- Geometry types (except GEOMETRY) are checked for consistency using a CHECK constraint.
+-- Uses an ALTER TABLE command to add the geometry column to the table.
 -- Addes a row to geometry_columns.
 -- Addes a constraint on the table that all the geometries MUST have the same 
 -- SRID. Checks the coord_dimension to make sure its between 0 and 3.
 -- Should also check the precision grid (future expansion).
--- Calls fix_geometry_columns() at the end.
 --
 -----------------------------------------------------------------------
 CREATEFUNCTION AddGeometryColumn(varchar,varchar,varchar,varchar,integer,varchar,integer)
@@ -2888,148 +2888,183 @@ DECLARE
 	new_type alias for $6;
 	new_dim alias for $7;
 	rec RECORD;
-	schema_ok bool;
 	sr varchar;
 	real_schema name;
+	sql text;
 
 BEGIN
 
-	IF ( not ( (new_type ='GEOMETRY') or
-		   (new_type ='GEOMETRYCOLLECTION') or
-		   (new_type ='POINT') or 
-		   (new_type ='MULTIPOINT') or
-		   (new_type ='POLYGON') or
-		   (new_type ='MULTIPOLYGON') or
-		   (new_type ='LINESTRING') or
-		   (new_type ='MULTILINESTRING') or
-		   (new_type ='GEOMETRYCOLLECTIONM') or
-		   (new_type ='POINTM') or 
-		   (new_type ='MULTIPOINTM') or
-		   (new_type ='POLYGONM') or
-		   (new_type ='MULTIPOLYGONM') or
-		   (new_type ='LINESTRINGM') or
-		   (new_type ='MULTILINESTRINGM') or
-                   (new_type = 'CIRCULARSTRING') or
-                   (new_type = 'CIRCULARSTRINGM') or
-                   (new_type = 'COMPOUNDCURVE') or
-                   (new_type = 'COMPOUNDCURVEM') or
-                   (new_type = 'CURVEPOLYGON') or
-                   (new_type = 'CURVEPOLYGONM') or
-                   (new_type = 'MULTICURVE') or
-                   (new_type = 'MULTICURVEM') or
-                   (new_type = 'MULTISURFACE') or
-                   (new_type = 'MULTISURFACEM')) )
+	-- Verify geometry type
+	IF ( NOT ( (new_type = 'GEOMETRY') OR
+			   (new_type = 'GEOMETRYCOLLECTION') OR
+			   (new_type = 'POINT') OR
+			   (new_type = 'MULTIPOINT') OR
+			   (new_type = 'POLYGON') OR
+			   (new_type = 'MULTIPOLYGON') OR
+			   (new_type = 'LINESTRING') OR
+			   (new_type = 'MULTILINESTRING') OR
+			   (new_type = 'GEOMETRYCOLLECTIONM') OR
+			   (new_type = 'POINTM') OR
+			   (new_type = 'MULTIPOINTM') OR
+			   (new_type = 'POLYGONM') OR
+			   (new_type = 'MULTIPOLYGONM') OR
+			   (new_type = 'LINESTRINGM') OR
+			   (new_type = 'MULTILINESTRINGM') OR
+			   (new_type = 'CIRCULARSTRING') OR
+			   (new_type = 'CIRCULARSTRINGM') OR
+			   (new_type = 'COMPOUNDCURVE') OR
+			   (new_type = 'COMPOUNDCURVEM') OR
+			   (new_type = 'CURVEPOLYGON') OR
+			   (new_type = 'CURVEPOLYGONM') OR
+			   (new_type = 'MULTICURVE') OR
+			   (new_type = 'MULTICURVEM') OR
+			   (new_type = 'MULTISURFACE') OR
+			   (new_type = 'MULTISURFACEM')) )
 	THEN
-		RAISE EXCEPTION 'Invalid type name - valid ones are: 
-			GEOMETRY, GEOMETRYCOLLECTION, POINT, 
-			MULTIPOINT, POLYGON, MULTIPOLYGON, 
-			LINESTRING, MULTILINESTRING,
-                        CIRCULARSTRING, COMPOUNDCURVE,
-                        CURVEPOLYGON, MULTICURVE, MULTISURFACE,
-			GEOMETRYCOLLECTIONM, POINTM, 
-			MULTIPOINTM, POLYGONM, MULTIPOLYGONM, 
-			LINESTRINGM, MULTILINESTRINGM 
-                        CIRCULARSTRINGM, COMPOUNDCURVEM,
-                        CURVEPOLYGONM, MULTICURVEM or MULTISURFACEM';
-		return 'fail';
+		RAISE EXCEPTION 'Invalid type name - valid ones are:
+	POINT, MULTIPOINT,
+	LINESTRING, MULTILINESTRING,
+	POLYGON, MULTIPOLYGON,
+	CIRCULARSTRING, COMPOUNDCURVE, MULTICURVE,
+	CURVEPOLYGON, MULTISURFACE,
+	GEOMETRY, GEOMETRYCOLLECTION,
+	POINTM, MULTIPOINTM,
+	LINESTRINGM, MULTILINESTRINGM,
+	POLYGONM, MULTIPOLYGONM,
+	CIRCULARSTRINGM, COMPOUNDCURVEM, MULTICURVEM
+	CURVEPOLYGONM, MULTISURFACEM,
+	or GEOMETRYCOLLECTIONM';
+		RETURN 'fail';
 	END IF;
 
-	IF ( (new_dim >4) or (new_dim <0) ) THEN
+
+	-- Verify dimension
+	IF ( (new_dim >4) OR (new_dim <0) ) THEN
 		RAISE EXCEPTION 'invalid dimension';
-		return 'fail';
+		RETURN 'fail';
 	END IF;
 
-	IF ( (new_type LIKE '%M') and (new_dim!=3) ) THEN
-
+	IF ( (new_type LIKE '%M') AND (new_dim!=3) ) THEN
 		RAISE EXCEPTION 'TypeM needs 3 dimensions';
-		return 'fail';
+		RETURN 'fail';
 	END IF;
 
-	IF ( schema_name != '' ) THEN
-		schema_ok = 'f';
-		FOR rec IN SELECT nspname FROM pg_namespace WHERE text(nspname) = schema_name LOOP
-			schema_ok := 't';
-		END LOOP;
 
-		if ( schema_ok <> 't' ) THEN
-			RAISE NOTICE 'Invalid schema name - using current_schema()';
-			SELECT current_schema() into real_schema;
-		ELSE
-			real_schema = schema_name;
-		END IF;
-
-	ELSE
-		SELECT current_schema() into real_schema;
-	END IF;
-
+	-- Verify SRID
 	IF ( new_srid != -1 ) THEN
-		SELECT SRID INTO sr FROM SPATIAL_REF_SYS WHERE SRID = new_srid;
+		SELECT SRID INTO sr FROM spatial_ref_sys WHERE SRID = new_srid;
 		IF NOT FOUND THEN
 			RAISE EXCEPTION 'AddGeometryColumns() - invalid SRID';
+			RETURN 'fail';
 		END IF;
 	END IF;
 
-	-- Add geometry column
 
-	EXECUTE 'ALTER TABLE ' ||
+	-- Verify schema
+	IF ( schema_name IS NOT NULL AND schema_name != '' ) THEN
+		sql := 'SELECT nspname FROM pg_namespace ' ||
+			'WHERE text(nspname) = ' || quote_literal(schema_name) ||
+			'LIMIT 1';
+		RAISE DEBUG '%', sql;
+		EXECUTE sql INTO real_schema;
+
+		IF ( real_schema IS NULL ) THEN
+			RAISE EXCEPTION 'Schema % is not a valid schemaname', quote_literal(schema_name);
+			RETURN 'fail';
+		END IF;
+	END IF;
+
+	IF ( real_schema IS NULL ) THEN
+		RAISE DEBUG 'Detecting schema';
+		sql := 'SELECT n.nspname AS schemaname ' ||
+			'FROM pg_catalog.pg_class c ' ||
+			  'JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace ' ||
+			'WHERE c.relkind = ' || quote_literal('r') ||
+			' AND n.nspname NOT IN (' || quote_literal('pg_catalog') || ', ' || quote_literal('pg_toast') || ')' ||
+			' AND pg_catalog.pg_table_is_visible(c.oid)' ||
+			' AND c.relname = ' || quote_literal(table_name);
+		RAISE DEBUG '%', sql;
+		EXECUTE sql INTO real_schema;
+
+		IF ( real_schema IS NULL ) THEN
+			RAISE EXCEPTION 'Table % does not occur in the search_path', quote_literal(table_name);
+			RETURN 'fail';
+		END IF;
+	END IF;
+	
+
+	-- Add geometry column to table
+	sql := 'ALTER TABLE ' ||
 		quote_ident(real_schema) || '.' || quote_ident(table_name)
-		|| ' ADD COLUMN ' || quote_ident(column_name) || 
+		|| ' ADD COLUMN ' || quote_ident(column_name) ||
 		' geometry ';
+	RAISE DEBUG '%', sql;
+	EXECUTE sql;
 
 
 	-- Delete stale record in geometry_column (if any)
-
-	EXECUTE 'DELETE FROM geometry_columns WHERE
-		f_table_catalog = ' || quote_literal('') || 
+	sql := 'DELETE FROM geometry_columns WHERE
+		f_table_catalog = ' || quote_literal('') ||
 		' AND f_table_schema = ' ||
-		quote_literal(real_schema) || 
+		quote_literal(real_schema) ||
 		' AND f_table_name = ' || quote_literal(table_name) ||
 		' AND f_geometry_column = ' || quote_literal(column_name);
+	RAISE DEBUG '%', sql;
+	EXECUTE sql;
 
 
-	-- Add record in geometry_column 
-
-	EXECUTE 'INSERT INTO geometry_columns VALUES (' ||
+	-- Add record in geometry_column
+	sql := 'INSERT INTO geometry_columns (f_table_catalog,f_table_schema,f_table_name,' ||
+										  'f_geometry_column,coord_dimension,srid,type)' ||
+		' VALUES (' ||
 		quote_literal('') || ',' ||
 		quote_literal(real_schema) || ',' ||
 		quote_literal(table_name) || ',' ||
 		quote_literal(column_name) || ',' ||
-		new_dim::text || ',' || new_srid::text || ',' ||
+		new_dim::text || ',' ||
+		new_srid::text || ',' ||
 		quote_literal(new_type) || ')';
+	RAISE DEBUG '%', sql;
+	EXECUTE sql;
 
-	-- Add table checks
 
-	EXECUTE 'ALTER TABLE ' || 
+	-- Add table CHECKs
+	sql := 'ALTER TABLE ' ||
 		quote_ident(real_schema) || '.' || quote_ident(table_name)
-		|| ' ADD CONSTRAINT ' 
+		|| ' ADD CONSTRAINT '
 		|| quote_ident('enforce_srid_' || column_name)
-		|| ' CHECK (SRID(' || quote_ident(column_name) ||
+		|| ' CHECK (ST_SRID(' || quote_ident(column_name) ||
 		') = ' || new_srid::text || ')' ;
+	RAISE DEBUG '%', sql;
+	EXECUTE sql;
 
-	EXECUTE 'ALTER TABLE ' || 
+	sql := 'ALTER TABLE ' ||
 		quote_ident(real_schema) || '.' || quote_ident(table_name)
 		|| ' ADD CONSTRAINT '
 		|| quote_ident('enforce_dims_' || column_name)
-		|| ' CHECK (ndims(' || quote_ident(column_name) ||
+		|| ' CHECK (ST_NDims(' || quote_ident(column_name) ||
 		') = ' || new_dim::text || ')' ;
+	RAISE DEBUG '%', sql;
+	EXECUTE sql;
 
-	IF (not(new_type = 'GEOMETRY')) THEN
-		EXECUTE 'ALTER TABLE ' || 
-		quote_ident(real_schema) || '.' || quote_ident(table_name)
-		|| ' ADD CONSTRAINT '
-		|| quote_ident('enforce_geotype_' || column_name)
-		|| ' CHECK (geometrytype(' ||
-		quote_ident(column_name) || ')=' ||
-		quote_literal(new_type) || ' OR (' ||
-		quote_ident(column_name) || ') is null)';
+	IF ( NOT (new_type = 'GEOMETRY')) THEN
+		sql := 'ALTER TABLE ' ||
+			quote_ident(real_schema) || '.' || quote_ident(table_name) || ' ADD CONSTRAINT ' ||
+			quote_ident('enforce_geotype_' || column_name) ||
+			' CHECK (GeometryType(' ||
+			quote_ident(column_name) || ')=' ||
+			quote_literal(new_type) || ' OR (' ||
+			quote_ident(column_name) || ') is null)';
+		RAISE DEBUG '%', sql;
+		EXECUTE sql;
 	END IF;
 
-	return 
-		real_schema || '.' || 
+	RETURN
+		real_schema || '.' ||
 		table_name || '.' || column_name ||
 		' SRID:' || new_srid::text ||
-		' TYPE:' || new_type || 
-		' DIMS:' || new_dim::text || chr(10) || ' '; 
+		' TYPE:' || new_type ||
+		' DIMS:' || new_dim::text || ' ';
 END;
 $$
 LANGUAGE 'plpgsql' _VOLATILE_STRICT; -- WITH (isstrict);
