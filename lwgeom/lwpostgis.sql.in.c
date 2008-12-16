@@ -2830,7 +2830,7 @@ BEGIN
 		AND sridcheck.connamespace = n.oid
 		AND typecheck.connamespace = n.oid
 		AND sridcheck.conrelid = c.oid
-		AND sridcheck.consrc LIKE '(srid('||a.attname||') = %)'
+		AND sridcheck.consrc LIKE '(st_srid('||a.attname||') = %)'
 		AND typecheck.conrelid = c.oid
 		AND typecheck.consrc LIKE
 		'((geometrytype('||a.attname||') = ''%''::text) OR (% IS NULL))'
