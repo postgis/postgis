@@ -35,6 +35,7 @@ SA_OBJS=measures.o \
 	lwmcurve.o \
 	lwmsurface.o \
 	lwutil.o \
+	lwalgorithm.o \
 	lwgunparse.o \
 	lwgparse.o \
 	lwsegmentize.o \
