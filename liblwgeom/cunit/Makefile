@@ -1,5 +1,5 @@
 
-LWGEOM=../liblwgeom
+LWGEOM=..
 LIBCUNIT=/usr/local/lib/libcunit.a
 LIBLWGEOM=$(LWGEOM)/liblwgeom.a
 

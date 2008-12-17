@@ -84,3 +84,11 @@ See,
   http://citeseer.ist.psu.edu/roussopoulos95nearest.html
   http://citeseer.ist.psu.edu/91356.html
 
+
+== Breaking Changes ==
+
+* Convert the "default SRID" from -1 to 0
+* Convert the LWGEOM struct(s) to have enough padding that the coordinates
+  are double-aligned and can be accessed directly as doubles on all
+  architectures
+
