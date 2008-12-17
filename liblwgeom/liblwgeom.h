@@ -5,6 +5,23 @@
 #include <stdarg.h>
 #include <stdio.h>
 
+/**
+* @file liblwgeom.h
+* 
+* This library is the generic geometry handling section of PostGIS. The geometry
+* objects, constructors, destructors, and a set of spatial processing functions,
+* are implemented here. 
+* 
+* The library is designed for use in non-PostGIS applications if necessary. The 
+* units tests at cunit/cu_tester.c and the loader/dumper programs at 
+* ../loader/shp2pgsql.c are examples of non-PostGIS applications using liblwgeom.
+* 
+* Programs using this library should set up the default memory managers and error
+* handlers by implementing an lwgeom_init_allocators() function, which can be as 
+* a wrapper around the lwgeom_install_default_allocators() function if you want
+* no special handling for memory management and error reporting.
+*/
+
 #define INTEGRITY_CHECKS 1
 
 /*
@@ -25,28 +42,6 @@
 #define LW_TRUE 1
 #define LW_FALSE 0
 
-
-/*
- * Memory management function types
- */
-extern void lwgeom_init_allocators(void);
-extern void lwgeom_install_default_allocators(void);
-
-typedef void* (*lwallocator)(size_t size);
-typedef void* (*lwreallocator)(void *mem, size_t size);
-typedef void (*lwfreeor)(void* mem);
-typedef void (*lwreporter)(const char* fmt, va_list ap);
-
-void lwnotice(const char *fmt, ...);
-void lwerror(const char *fmt, ...);
-
-#ifndef C_H
-
-typedef unsigned int uint32;
-typedef int int32;
-
-#endif
-
 /*
  * this will change to NaN when I figure out how to
  * get NaN in a platform-independent way
@@ -55,20 +50,60 @@ typedef int int32;
 #define NO_Z_VALUE NO_VALUE
 #define NO_M_VALUE NO_VALUE
 
+#ifndef C_H
 
-/* prototypes */
+typedef unsigned int uint32;
+typedef int int32;
+
+#endif
+
+
+/**
+* Supply the memory management and error handling functions you want your
+* application to use.
+* @ingroup system
+*/
+extern void lwgeom_init_allocators(void);
+/**
+* Apply the default memory management (malloc() and free()) and error handlers.
+* Called inside lwgeom_init_allocators() generally.
+* @ingroup system
+*/
+extern void lwgeom_install_default_allocators(void);
+
+
+/**
+* Write a notice out to the notice handler. Uses standard printf() substitutions.
+* Use for messages you always want output. For debugging, use LWDEBUG() or LWDEBUGF().
+* @ingroup logging
+*/
+void lwnotice(const char *fmt, ...);
+/**
+* Write a notice out to the error handler. Uses standard printf() substitutions.
+* Use for errors you always want output. For debugging, use LWDEBUG() or LWDEBUGF().
+* @ingroup logging
+*/
+void lwerror(const char *fmt, ...);
+
+
+/* Globals for memory/logging handlers. */
+typedef void* (*lwallocator)(size_t size);
+typedef void* (*lwreallocator)(void *mem, size_t size);
+typedef void (*lwfreeor)(void* mem);
+typedef void (*lwreporter)(const char* fmt, va_list ap);
+extern lwreallocator lwrealloc_var;
+extern lwallocator lwalloc_var;
+extern lwfreeor lwfree_var;
+extern lwreporter lwerror_var;
+extern lwreporter lwnotice_var;
+
+/* The default memory/logging handlers installed by lwgeom_install_default_allocators() */
 void *default_allocator(size_t size);
 void *default_reallocator(void *mem, size_t size);
 void default_freeor(void *ptr);
 void default_errorreporter(const char *fmt, va_list ap);
 void default_noticereporter(const char *fmt, va_list ap);
 
-/* globals */
-extern lwreallocator lwrealloc_var;
-extern lwallocator lwalloc_var;
-extern lwfreeor lwfree_var;
-extern lwreporter lwerror_var;
-extern lwreporter lwnotice_var;
 
 extern int lw_vasprintf (char **result, const char *format, va_list args);
 

@@ -91,4 +91,5 @@ See,
 * Convert the LWGEOM struct(s) to have enough padding that the coordinates
   are double-aligned and can be accessed directly as doubles on all
   architectures
-
+* Support all typologies of EMPTY (POINT EMPTY, LINESTRING EMPTY) instead
+  of just using GEOMETRYCOLLECTION EMPTY all the time.

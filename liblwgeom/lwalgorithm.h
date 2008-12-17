@@ -38,3 +38,5 @@ enum CG_LINE_CROSS_TYPE {
 };
 
 int lwline_crossing_direction(LWLINE *l1, LWLINE *l2);
+
+double lwpoint_get_ordinate(POINT4D *p, int ordinate);
