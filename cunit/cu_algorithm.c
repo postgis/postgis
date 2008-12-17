@@ -472,5 +472,23 @@ void testLineCrossingLongLines(void)
 	setPoint4d(pa52, 4, p);
 	CU_ASSERT( lineCrossingDirection(l51, l52) == LINE_MULTICROSS_END_LEFT );
 
+	/* One mid-point co-linear crossing */
+	p->x = 1.0;
+	p->y = 1.0;
+	setPoint4d(pa52, 0, p);
+	p->x = 0.0;
+	p->y = 1.5;
+	setPoint4d(pa52, 1, p);
+	p->x = 0.0;
+	p->y = 2.5;
+	setPoint4d(pa52, 2, p);
+	p->x = -1.0;
+	p->y = 3.0;
+	setPoint4d(pa52, 3, p);
+	p->x = -1.0;
+	p->y = 4.0;
+	setPoint4d(pa52, 4, p);
+	CU_ASSERT( lineCrossingDirection(l51, l52) == LINE_CROSS_LEFT );
+
 }
 

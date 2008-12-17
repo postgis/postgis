@@ -175,6 +175,16 @@ int lineCrossingDirection(LWLINE *l1, LWLINE *l2) {
 				cross_right++;
 				break;
 			}
+
+			/*
+			** Crossing at a co-linearity can be turned into crossing at
+			** a vertex by pulling the original touch point forward along
+			** the co-linearity.
+			*/
+			if( this_cross == SEG_COLINEAR && vertex_touch == (i-1) ) {
+				vertex_touch = i;
+				break;
+			}
 				
 			/* 
 			** Crossing-at-vertex will cause four segment touch interactions, two at
@@ -223,15 +233,9 @@ int lineCrossingDirection(LWLINE *l1, LWLINE *l2) {
 	lwfree(q1);
 	lwfree(q2);
 
-	if( !cross_left && !cross_right && !first_cross && !final_cross ) 
+	if( !cross_left && !cross_right ) 
 		return LINE_NO_CROSS;
 
-	if( !cross_left && !cross_right && ( first_cross == SEG_TOUCH_RIGHT || final_cross == SEG_TOUCH_RIGHT ) )
-		return LINE_TOUCH_RIGHT;
-
-	if( !cross_left && !cross_right && ( first_cross == SEG_TOUCH_LEFT || final_cross == SEG_TOUCH_LEFT ) )
-		return LINE_TOUCH_LEFT;
-		
 	if( !cross_left && cross_right == 1 )
 		return LINE_CROSS_RIGHT;
 		
