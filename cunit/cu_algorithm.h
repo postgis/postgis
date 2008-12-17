@@ -27,9 +27,8 @@ int init_cg_suite(void);
 int clean_cg_suite(void);
 
 /* Test functions */
-void testSegmentSide(void);
-void testSegmentIntersects(void);
-void testLineCrossingShortLines(void);
-void testLineCrossingLongLines(void);
-
+void test_lw_segment_side(void);
+void test_lw_segment_intersects(void);
+void test_lwline_crossing_short_lines(void);
+void test_lwline_crossing_long_lines(void);
 

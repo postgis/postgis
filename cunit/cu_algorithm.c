@@ -26,10 +26,10 @@ CU_pSuite register_cg_suite(void)
 	}
 
 	if (
-	    (NULL == CU_add_test(pSuite, "testSegmentSide()", testSegmentSide)) ||
-	    (NULL == CU_add_test(pSuite, "testSegmentIntersects()", testSegmentIntersects)) ||
-	    (NULL == CU_add_test(pSuite, "testLineCrossingShortLines()", testLineCrossingShortLines)) ||
-	    (NULL == CU_add_test(pSuite, "testLineCrossingLongLines()", testLineCrossingLongLines)) 
+	    (NULL == CU_add_test(pSuite, "test_lw_segment_side()", test_lw_segment_side)) ||
+	    (NULL == CU_add_test(pSuite, "test_lw_segment_intersects()", test_lw_segment_intersects)) ||
+	    (NULL == CU_add_test(pSuite, "test_lwline_crossing_short_lines()", test_lwline_crossing_short_lines)) ||
+	    (NULL == CU_add_test(pSuite, "test_lwline_crossing_long_lines()", test_lwline_crossing_long_lines)) 
 	)
 	{
 		CU_cleanup_registry();
@@ -106,7 +106,7 @@ int clean_cg_suite(void)
 /*
 ** Test left/right side.
 */
-void testSegmentSide(void)
+void test_lw_segment_side(void)
 {
 	double rv = 0.0;
 	POINT2D *q = NULL;
@@ -121,19 +121,19 @@ void testSegmentSide(void)
 	/* On the left */
 	q->x = -2.0;
 	q->y = 1.5;
-	rv = segmentSide(p1, p2, q);
+	rv = lw_segment_side(p1, p2, q);
 	//printf("left %g\n",rv);
 	CU_ASSERT(rv < 0.0);
 	
 	/* On the right */
 	q->x = 2.0;
-	rv = segmentSide(p1, p2, q);
+	rv = lw_segment_side(p1, p2, q);
 	//printf("right %g\n",rv);
 	CU_ASSERT(rv > 0.0);
 	
 	/* On the line */
 	q->x = 0.0;
-	rv = segmentSide(p1, p2, q);
+	rv = lw_segment_side(p1, p2, q);
 	//printf("on line %g\n",rv);
 	CU_ASSERT_EQUAL(rv, 0.0);
 	
@@ -144,7 +144,7 @@ void testSegmentSide(void)
 /*
 ** Test crossings side.
 */
-void testSegmentIntersects(void)
+void test_lw_segment_intersects(void)
 {
 	
 	/* P: Vertical line at x=0 */
@@ -158,123 +158,123 @@ void testSegmentIntersects(void)
 	q1->y = 0.5;
 	q2->x = 0.5;
 	q2->y = 0.5;
-	CU_ASSERT( segmentIntersects(p1, p2, q1, q2) == SEG_CROSS_RIGHT );
+	CU_ASSERT( lw_segment_intersects(p1, p2, q1, q2) == SEG_CROSS_RIGHT );
 
 	/* Q: Horizontal line crossing right to left */
 	q1->x = 0.5;
 	q1->y = 0.5;
 	q2->x = -0.5;
 	q2->y = 0.5;
-	CU_ASSERT( segmentIntersects(p1, p2, q1, q2) == SEG_CROSS_LEFT );
+	CU_ASSERT( lw_segment_intersects(p1, p2, q1, q2) == SEG_CROSS_LEFT );
 
 	/* Q: Horizontal line not crossing right to left */
 	q1->x = 0.5;
 	q1->y = 1.5;
 	q2->x = -0.5;
 	q2->y = 1.5;
-	CU_ASSERT( segmentIntersects(p1, p2, q1, q2) == SEG_NO_INTERSECTION );
+	CU_ASSERT( lw_segment_intersects(p1, p2, q1, q2) == SEG_NO_INTERSECTION );
 
 	/* Q: Horizontal line crossing at vertex right to left */
 	q1->x = 0.5;
 	q1->y = 1.0;
 	q2->x = -0.5;
 	q2->y = 1.0;
-	CU_ASSERT( segmentIntersects(p1, p2, q1, q2) == SEG_CROSS_LEFT );
+	CU_ASSERT( lw_segment_intersects(p1, p2, q1, q2) == SEG_CROSS_LEFT );
 
 	/* Q: Diagonal line with large range crossing at vertex right to left */
 	q1->x = 0.5;
 	q1->y = 10.0;
 	q2->x = -0.5;
 	q2->y = -10.0;
-	CU_ASSERT( segmentIntersects(p1, p2, q1, q2) == SEG_CROSS_LEFT );
+	CU_ASSERT( lw_segment_intersects(p1, p2, q1, q2) == SEG_CROSS_LEFT );
 
 	/* Q: Diagonal line with large range crossing at vertex right to left */
 	q1->x = 0.5;
 	q1->y = 11.0;
 	q2->x = -0.5;
 	q2->y = -9.0;
-	CU_ASSERT( segmentIntersects(p1, p2, q1, q2) == SEG_CROSS_LEFT );
+	CU_ASSERT( lw_segment_intersects(p1, p2, q1, q2) == SEG_CROSS_LEFT );
 
 	/* Q: Horizontal touching from left */
 	q1->x = -0.5;
 	q1->y = 0.5;
 	q2->x = 0.0;
 	q2->y = 0.5;
-	CU_ASSERT( segmentIntersects(p1, p2, q1, q2) == SEG_TOUCH_LEFT );
+	CU_ASSERT( lw_segment_intersects(p1, p2, q1, q2) == SEG_TOUCH_LEFT );
 
 	/* Q: Horizontal touching from right */
 	q1->x = 0.5;
 	q1->y = 0.5;
 	q2->x = 0.0;
 	q2->y = 0.5;
-	CU_ASSERT( segmentIntersects(p1, p2, q1, q2) == SEG_TOUCH_RIGHT );
+	CU_ASSERT( lw_segment_intersects(p1, p2, q1, q2) == SEG_TOUCH_RIGHT );
 
 	/* Q: Horizontal touching from left and far below*/
 	q1->x = -0.5;
 	q1->y = -10.5;
 	q2->x = 0.0;
 	q2->y = 0.5;
-	CU_ASSERT( segmentIntersects(p1, p2, q1, q2) == SEG_TOUCH_LEFT );
+	CU_ASSERT( lw_segment_intersects(p1, p2, q1, q2) == SEG_TOUCH_LEFT );
 
 	/* Q: Horizontal touching from right and far above */
 	q1->x = 0.5;
 	q1->y = 10.5;
 	q2->x = 0.0;
 	q2->y = 0.5;
-	CU_ASSERT( segmentIntersects(p1, p2, q1, q2) == SEG_TOUCH_RIGHT );
+	CU_ASSERT( lw_segment_intersects(p1, p2, q1, q2) == SEG_TOUCH_RIGHT );
 
 	/* Q: Co-linear from top */
 	q1->x = 0.0;
 	q1->y = 10.0;
 	q2->x = 0.0;
 	q2->y = 0.5;
-	CU_ASSERT( segmentIntersects(p1, p2, q1, q2) == SEG_COLINEAR );
+	CU_ASSERT( lw_segment_intersects(p1, p2, q1, q2) == SEG_COLINEAR );
 
 	/* Q: Co-linear from bottom */
 	q1->x = 0.0;
 	q1->y = -10.0;
 	q2->x = 0.0;
 	q2->y = 0.5;
-	CU_ASSERT( segmentIntersects(p1, p2, q1, q2) == SEG_COLINEAR );
+	CU_ASSERT( lw_segment_intersects(p1, p2, q1, q2) == SEG_COLINEAR );
 
 	/* Q: Co-linear contained */
 	q1->x = 0.0;
 	q1->y = 0.4;
 	q2->x = 0.0;
 	q2->y = 0.5;
-	CU_ASSERT( segmentIntersects(p1, p2, q1, q2) == SEG_COLINEAR );
+	CU_ASSERT( lw_segment_intersects(p1, p2, q1, q2) == SEG_COLINEAR );
 
 	/* Q: Horizontal touching at end point from left */
 	q1->x = -0.5;
 	q1->y = 1.0;
 	q2->x = 0.0;
 	q2->y = 1.0;
-	CU_ASSERT( segmentIntersects(p1, p2, q1, q2) == SEG_TOUCH_LEFT );
+	CU_ASSERT( lw_segment_intersects(p1, p2, q1, q2) == SEG_TOUCH_LEFT );
 
 	/* Q: Horizontal touching at end point from right */
 	q1->x = 0.5;
 	q1->y = 1.0;
 	q2->x = 0.0;
 	q2->y = 1.0;
-	CU_ASSERT( segmentIntersects(p1, p2, q1, q2) == SEG_TOUCH_RIGHT );
+	CU_ASSERT( lw_segment_intersects(p1, p2, q1, q2) == SEG_TOUCH_RIGHT );
 
 	/* Q: Horizontal touching at start point from left */
 	q1->x = -0.5;
 	q1->y = 0.0;
 	q2->x = 0.0;
 	q2->y = 0.0;
-	CU_ASSERT( segmentIntersects(p1, p2, q1, q2) == SEG_TOUCH_LEFT );
+	CU_ASSERT( lw_segment_intersects(p1, p2, q1, q2) == SEG_TOUCH_LEFT );
 
 	/* Q: Horizontal touching at start point from right */
 	q1->x = 0.5;
 	q1->y = 0.0;
 	q2->x = 0.0;
 	q2->y = 0.0;
-	CU_ASSERT( segmentIntersects(p1, p2, q1, q2) == SEG_TOUCH_RIGHT );
+	CU_ASSERT( lw_segment_intersects(p1, p2, q1, q2) == SEG_TOUCH_RIGHT );
 
 }
 
-void testLineCrossingShortLines(void) 
+void test_lwline_crossing_short_lines(void) 
 {
 
 	int rv = 0;
@@ -297,7 +297,7 @@ void testLineCrossingShortLines(void)
 	p->x = 0.5;
 	setPoint4d(pa22, 1, p);
 
-	CU_ASSERT( lineCrossingDirection(l21, l22) == LINE_CROSS_RIGHT );
+	CU_ASSERT( lwline_crossing_direction(l21, l22) == LINE_CROSS_RIGHT );
 
 	/* Horizontal, crossing at top end vertex */
 	p->x = -0.5;
@@ -306,7 +306,7 @@ void testLineCrossingShortLines(void)
 	p->x = 0.5;
 	setPoint4d(pa22, 1, p);
 
-	CU_ASSERT( lineCrossingDirection(l21, l22) == LINE_CROSS_RIGHT );
+	CU_ASSERT( lwline_crossing_direction(l21, l22) == LINE_CROSS_RIGHT );
 
 	/* Horizontal, crossing at bottom end vertex */
 	p->x = -0.5;
@@ -315,7 +315,7 @@ void testLineCrossingShortLines(void)
 	p->x = 0.5;
 	setPoint4d(pa22, 1, p);
 
-	CU_ASSERT( lineCrossingDirection(l21, l22) == LINE_CROSS_RIGHT );
+	CU_ASSERT( lwline_crossing_direction(l21, l22) == LINE_CROSS_RIGHT );
 
 	/* Horizontal, no crossing */
 	p->x = -0.5;
@@ -324,7 +324,7 @@ void testLineCrossingShortLines(void)
 	p->x = 0.5;
 	setPoint4d(pa22, 1, p);
 
-	CU_ASSERT( lineCrossingDirection(l21, l22) == LINE_NO_CROSS );
+	CU_ASSERT( lwline_crossing_direction(l21, l22) == LINE_NO_CROSS );
 
 	/* Vertical, no crossing */
 	p->x = -0.5;
@@ -333,11 +333,11 @@ void testLineCrossingShortLines(void)
 	p->y = 1.0;
 	setPoint4d(pa22, 1, p);
 
-	CU_ASSERT( lineCrossingDirection(l21, l22) == LINE_NO_CROSS );
+	CU_ASSERT( lwline_crossing_direction(l21, l22) == LINE_NO_CROSS );
 
 }
 	
-void testLineCrossingLongLines(void) 
+void test_lwline_crossing_long_lines(void) 
 {
 
 	/* 
@@ -373,7 +373,7 @@ void testLineCrossingLongLines(void)
 	p->x = 1.0;
 	p->y = 5.0;
 	setPoint4d(pa52, 4, p);
-	CU_ASSERT( lineCrossingDirection(l51, l52) == LINE_MULTICROSS_END_SAME_FIRST_LEFT );
+	CU_ASSERT( lwline_crossing_direction(l51, l52) == LINE_MULTICROSS_END_SAME_FIRST_LEFT );
 
 	/* One crossing at interior vertex */
 	p->x = 1.0;
@@ -391,7 +391,7 @@ void testLineCrossingLongLines(void)
 	p->x = -1.0;
 	p->y = 3.0;
 	setPoint4d(pa52, 4, p);
-	CU_ASSERT( lineCrossingDirection(l51, l52) == LINE_CROSS_LEFT );
+	CU_ASSERT( lwline_crossing_direction(l51, l52) == LINE_CROSS_LEFT );
 
 	/* Two crossings at interior vertices */
 	p->x = 1.0;
@@ -409,7 +409,7 @@ void testLineCrossingLongLines(void)
 	p->x = 1.0;
 	p->y = 3.0;
 	setPoint4d(pa52, 4, p);
-	CU_ASSERT( lineCrossingDirection(l51, l52) == LINE_MULTICROSS_END_SAME_FIRST_LEFT );
+	CU_ASSERT( lwline_crossing_direction(l51, l52) == LINE_MULTICROSS_END_SAME_FIRST_LEFT );
 
 	/* Two crossings, one at the first vertex on at interior vertex */
 	p->x = 1.0;
@@ -427,7 +427,7 @@ void testLineCrossingLongLines(void)
 	p->x = 1.0;
 	p->y = 3.0;
 	setPoint4d(pa52, 4, p);
-	CU_ASSERT( lineCrossingDirection(l51, l52) == LINE_MULTICROSS_END_SAME_FIRST_LEFT );
+	CU_ASSERT( lwline_crossing_direction(l51, l52) == LINE_MULTICROSS_END_SAME_FIRST_LEFT );
 
 	/* Two crossings, one at the first vertex on the next interior vertex */
 	p->x = 1.0;
@@ -445,7 +445,7 @@ void testLineCrossingLongLines(void)
 	p->x = 1.0;
 	p->y = 2.0;
 	setPoint4d(pa52, 4, p);
-	CU_ASSERT( lineCrossingDirection(l51, l52) == LINE_MULTICROSS_END_SAME_FIRST_LEFT );
+	CU_ASSERT( lwline_crossing_direction(l51, l52) == LINE_MULTICROSS_END_SAME_FIRST_LEFT );
 
 	/* Two crossings, one at the last vertex on the next interior vertex */
 	p->x = 1.0;
@@ -463,7 +463,7 @@ void testLineCrossingLongLines(void)
 	p->x = 1.0;
 	p->y = 3.0;
 	setPoint4d(pa52, 4, p);
-	CU_ASSERT( lineCrossingDirection(l51, l52) == LINE_MULTICROSS_END_SAME_FIRST_LEFT );
+	CU_ASSERT( lwline_crossing_direction(l51, l52) == LINE_MULTICROSS_END_SAME_FIRST_LEFT );
 
 	/* Three crossings, two at midpoints, one at vertex */
 	p->x = 0.5;
@@ -481,7 +481,7 @@ void testLineCrossingLongLines(void)
 	p->x = -1.0;
 	p->y = 3.0;
 	setPoint4d(pa52, 4, p);
-	CU_ASSERT( lineCrossingDirection(l51, l52) == LINE_MULTICROSS_END_LEFT );
+	CU_ASSERT( lwline_crossing_direction(l51, l52) == LINE_MULTICROSS_END_LEFT );
 
 	/* One mid-point co-linear crossing */
 	p->x = 1.0;
@@ -499,7 +499,7 @@ void testLineCrossingLongLines(void)
 	p->x = -1.0;
 	p->y = 4.0;
 	setPoint4d(pa52, 4, p);
-	CU_ASSERT( lineCrossingDirection(l51, l52) == LINE_CROSS_LEFT );
+	CU_ASSERT( lwline_crossing_direction(l51, l52) == LINE_CROSS_LEFT );
 
 	/* One on-vertices co-linear crossing */
 	p->x = 1.0;
@@ -517,7 +517,7 @@ void testLineCrossingLongLines(void)
 	p->x = -1.0;
 	p->y = 4.0;
 	setPoint4d(pa52, 4, p);
-	CU_ASSERT( lineCrossingDirection(l51, l52) == LINE_CROSS_LEFT );
+	CU_ASSERT( lwline_crossing_direction(l51, l52) == LINE_CROSS_LEFT );
 
 	/* No crossing, but end on a co-linearity. */
 	p->x = 1.0;
@@ -535,7 +535,7 @@ void testLineCrossingLongLines(void)
 	p->x = 0.0;
 	p->y = 4.0;
 	setPoint4d(pa52, 4, p);
-	CU_ASSERT( lineCrossingDirection(l51, l52) == LINE_NO_CROSS );
+	CU_ASSERT( lwline_crossing_direction(l51, l52) == LINE_NO_CROSS );
 
 
 }
