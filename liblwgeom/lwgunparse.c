@@ -415,40 +415,41 @@ uchar *output_multipoint(uchar* geom,int suppress){
 	return output_wkt(geom,suppress);
 }
 
-/* special case for compound to suppress linestring but not circularstring */
+/* Special case for compound curves: suppress the LINESTRING prefix from a curve if it appears as
+   a component of a COMPOUNDCURVE, but not CIRCULARSTRING */
 uchar *output_compound(uchar* geom, int suppress) {
         unsigned type;
 
         LWDEBUG(2, "output_compound called.");
 
-        type=*geom++;
+        type=*geom;
         switch(TYPE_GETTYPE(type)) 
         {
                 case LINETYPE:
-                        geom = output_collection(geom,output_point,0);
+                        geom = output_wkt(geom,2);
                         break;
                 case CURVETYPE:
-                        write_str("CIRCULARSTRING");
-                        geom = output_curve_collection(geom,output_point,1);
+                        geom = output_wkt(geom,1);
                         break;
         }
 	return geom;
 }
 
+/* Special case for multisurfaces: suppress the POLYGON prefix from a surface if it appears as
+   a component of a MULTISURFACE, but not CURVEPOLYGON */
 uchar *output_multisurface(uchar* geom, int suppress) {
         unsigned type;
 
         LWDEBUG(2, "output_multisurface called.");
 
-        type=*geom++;
+        type=*geom;
         switch(TYPE_GETTYPE(type))
         {
                 case POLYGONTYPE:
-                        geom = output_collection(geom, output_polygon_collection,0);
+                        geom = output_wkt(geom,2);
                         break;
                 case CURVEPOLYTYPE:
-                        write_str("CURVEPOLYGON");
-                        geom = output_collection(geom, output_compound,1);
+                        geom = output_wkt(geom,1);
                         break;
         }
         return geom;
