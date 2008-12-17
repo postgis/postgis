@@ -15,14 +15,10 @@ ndims03|3
 geometrytype03|MULTISURFACEM
 ndims04|2
 geometrytype04|MULTISURFACE
-public.multisurface.the_geom_2d SRID:-1 TYPE:MULTISURFACE DIMS:2
- 
-public.multisurface.the_geom_3dm SRID:-1 TYPE:MULTISURFACEM DIMS:3
- 
-public.multisurface.the_geom_3dz SRID:-1 TYPE:MULTISURFACE DIMS:3
- 
-public.multisurface.the_geom_4d SRID:-1 TYPE:MULTISURFACE DIMS:4
- 
+public.multisurface.the_geom_2d SRID:-1 TYPE:MULTISURFACE DIMS:2 
+public.multisurface.the_geom_3dm SRID:-1 TYPE:MULTISURFACEM DIMS:3 
+public.multisurface.the_geom_3dz SRID:-1 TYPE:MULTISURFACE DIMS:3 
+public.multisurface.the_geom_4d SRID:-1 TYPE:MULTISURFACE DIMS:4 
 astext01|MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0)),((7 8,10 10,6 14,4 11,7 8)))
 astext02|MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0)),((7 8,10 10,6 14,4 11,7 8)))
 astext03|MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0)),((7 8,10 10,6 14,4 11,7 8)))

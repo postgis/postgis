@@ -15,14 +15,10 @@ ndims03|3
 geometrytype03|CURVEPOLYGONM
 ndims04|2
 geometrytype04|CURVEPOLYGON
-public.curvepolygon.the_geom_2d SRID:-1 TYPE:CURVEPOLYGON DIMS:2
- 
-public.curvepolygon.the_geom_3dm SRID:-1 TYPE:CURVEPOLYGONM DIMS:3
- 
-public.curvepolygon.the_geom_3dz SRID:-1 TYPE:CURVEPOLYGON DIMS:3
- 
-public.curvepolygon.the_geom_4d SRID:-1 TYPE:CURVEPOLYGON DIMS:4
- 
+public.curvepolygon.the_geom_2d SRID:-1 TYPE:CURVEPOLYGON DIMS:2 
+public.curvepolygon.the_geom_3dm SRID:-1 TYPE:CURVEPOLYGONM DIMS:3 
+public.curvepolygon.the_geom_3dz SRID:-1 TYPE:CURVEPOLYGON DIMS:3 
+public.curvepolygon.the_geom_4d SRID:-1 TYPE:CURVEPOLYGON DIMS:4 
 astext01|CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0))
 astext02|CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0))
 astext03|CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0))
