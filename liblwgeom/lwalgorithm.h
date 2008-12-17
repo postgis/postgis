@@ -1,3 +1,15 @@
+/**********************************************************************
+ * $Id$
+ *
+ * PostGIS - Spatial Types for PostgreSQL
+ * http://postgis.refractions.net
+ * Copyright 2008 Paul Ramsey
+ *
+ * This is free software; you can redistribute and/or modify it under
+ * the terms of the GNU General Public Licence. See the COPYING file.
+ * 
+ **********************************************************************/
+
 #include "liblwgeom.h"
 
 enum CG_SEGMENT_INTERSECTION_TYPE { 
@@ -10,9 +22,9 @@ enum CG_SEGMENT_INTERSECTION_TYPE {
 	SEG_TOUCH_RIGHT = 5
 };
 
-double segmentSide(POINT2D *p1, POINT2D *p2, POINT2D *q);
-int segmentIntersects(POINT2D *p1, POINT2D *p2, POINT2D *q1, POINT2D *q2);
-int segmentEnvelopeIntersects(POINT2D *p1, POINT2D *p2, POINT2D *q1, POINT2D *q2);
+double lw_segment_side(POINT2D *p1, POINT2D *p2, POINT2D *q);
+int lw_segment_intersects(POINT2D *p1, POINT2D *p2, POINT2D *q1, POINT2D *q2);
+int lw_segment_envelope_intersects(POINT2D *p1, POINT2D *p2, POINT2D *q1, POINT2D *q2);
 
 
 enum CG_LINE_CROSS_TYPE {
@@ -25,4 +37,4 @@ enum CG_LINE_CROSS_TYPE {
 	LINE_MULTICROSS_END_SAME_FIRST_RIGHT = 3
 };
 
-int lineCrossingDirection(LWLINE *l1, LWLINE *l2);
+int lwline_crossing_direction(LWLINE *l1, LWLINE *l2);

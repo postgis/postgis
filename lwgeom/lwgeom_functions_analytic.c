@@ -984,7 +984,7 @@ Datum crossingDirection(PG_FUNCTION_ARGS)
 	l1 = lwline_deserialize(SERIALIZED_FORM(geom1));
 	l2 = lwline_deserialize(SERIALIZED_FORM(geom2));
 
-	rv = lineCrossingDirection(l1, l2);
+	rv = lw_line_crossing_direction(l1, l2);
 	
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 0);	

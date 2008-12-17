@@ -1,3 +1,14 @@
+/**********************************************************************
+ * $Id$
+ *
+ * PostGIS - Spatial Types for PostgreSQL
+ * http://postgis.refractions.net
+ * Copyright 2008 Paul Ramsey
+ *
+ * This is free software; you can redistribute and/or modify it under
+ * the terms of the GNU General Public Licence. See the COPYING file.
+ * 
+ **********************************************************************/
 
 #include <stdio.h>
 #include <string.h>
@@ -19,12 +30,8 @@ void cunit_lwnotice(const char *fmt, va_list ap) {
 }
 
 void lwgeom_init_allocators(void) {
-        /* liblwgeom callback - install PostgreSQL handlers */
-        lwalloc_var = malloc;
-        lwrealloc_var = realloc;
-        lwfree_var = free;
-        lwerror_var = default_errorreporter;
-        lwnotice_var = default_noticereporter;
+        /* liblwgeom callback - install default handlers */
+        lwgeom_install_default_allocators();
 }
 
 /*

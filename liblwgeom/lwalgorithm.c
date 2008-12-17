@@ -1,3 +1,15 @@
+/**********************************************************************
+ * $Id$
+ *
+ * PostGIS - Spatial Types for PostgreSQL
+ * http://postgis.refractions.net
+ * Copyright 2008 Paul Ramsey
+ *
+ * This is free software; you can redistribute and/or modify it under
+ * the terms of the GNU General Public Licence. See the COPYING file.
+ * 
+ **********************************************************************/
+
 #include "lwalgorithm.h"
 
 /*
@@ -7,12 +19,12 @@
 ** Return > 0.0 if point Q is right of segment P
 ** Return = 0.0 if point Q in on segment P
 */
-double segmentSide(POINT2D *p1, POINT2D *p2, POINT2D *q)
+double lw_segment_side(POINT2D *p1, POINT2D *p2, POINT2D *q)
 {
 	return ( (q->x - p1->x) * (p2->y - p1->y) - (p2->x - p1->x) * (q->y - p1->y) );
 }
 
-int segmentEnvelopeIntersects(POINT2D *p1, POINT2D *p2, POINT2D *q1, POINT2D *q2) {
+int lw_segment_envelope_intersects(POINT2D *p1, POINT2D *p2, POINT2D *q1, POINT2D *q2) {
 	double minq=LW_MIN(q1->x,q2->x);
 	double maxq=LW_MAX(q1->x,q2->x);
 	double minp=LW_MIN(p1->x,p2->x);
@@ -44,7 +56,7 @@ int segmentEnvelopeIntersects(POINT2D *p1, POINT2D *p2, POINT2D *q1, POINT2D *q2
 **	SEG_TOUCH_LEFT = 4, 
 **	SEG_TOUCH_RIGHT = 5
 */
-int segmentIntersects(POINT2D *p1, POINT2D *p2, POINT2D *q1, POINT2D *q2) {
+int lw_segment_intersects(POINT2D *p1, POINT2D *p2, POINT2D *q1, POINT2D *q2) {
 	
 	double pq1, pq2, qp1, qp2;
 	
@@ -115,7 +127,7 @@ int segmentIntersects(POINT2D *p1, POINT2D *p2, POINT2D *q1, POINT2D *q2) {
 **   LINE_TOUCH_RIGHT = 4
 **
 */
-int lineCrossingDirection(LWLINE *l1, LWLINE *l2) {
+int lwline_crossing_direction(LWLINE *l1, LWLINE *l2) {
 	
 	int i = 0, j = 0, rv = 0;
 	POINT2D *p1;
@@ -144,8 +156,8 @@ int lineCrossingDirection(LWLINE *l1, LWLINE *l2) {
 	if( pa1->npoints < 2 || pa2->npoints < 2 ) 
 		return LINE_NO_CROSS;
 
-	LWDEBUGF(5, "lineCrossingDirection: l1 = %s", lwgeom_to_ewkt((LWGEOM*)l1,0));
-	LWDEBUGF(5, "lineCrossingDirection: l2 = %s", lwgeom_to_ewkt((LWGEOM*)l2,0));
+	LWDEBUGF(4, "lineCrossingDirection: l1 = %s", lwgeom_to_ewkt((LWGEOM*)l1,0));
+	LWDEBUGF(4, "lineCrossingDirection: l2 = %s", lwgeom_to_ewkt((LWGEOM*)l2,0));
 
 	for ( i = 1; i < pa2->npoints; i++ ) {
 		
@@ -157,7 +169,7 @@ int lineCrossingDirection(LWLINE *l1, LWLINE *l2) {
 			rv = getPoint2d_p(pa1, j-1, p1);
 			rv = getPoint2d_p(pa1, j, p2);
 			
-			LWDEBUGF(5, "lineCrossingDirection: i=%d, j=%d", i, j);
+			LWDEBUGF(4, "lineCrossingDirection: i=%d, j=%d", i, j);
 			
 			this_cross = segmentIntersects(p1, p2, q1, q2);
 		
@@ -220,13 +232,13 @@ int lineCrossingDirection(LWLINE *l1, LWLINE *l2) {
 			** TODO Handle co-linear cases. 
 			*/
 
- 			LWDEBUGF(5, "lineCrossingDirection: this_cross=%d, vertex_touch=%d, vertex_touch_type=%d", this_cross, vertex_touch, vertex_touch_type);
+ 			LWDEBUGF(4, "lineCrossingDirection: this_cross=%d, vertex_touch=%d, vertex_touch_type=%d", this_cross, vertex_touch, vertex_touch_type);
 				
 		}
 		
 	}
 
-	LWDEBUGF(5, "first_cross=%d, final_cross=%d, cross_left=%d, cross_right=%d", first_cross, final_cross, cross_left, cross_right);
+	LWDEBUGF(4, "first_cross=%d, final_cross=%d, cross_left=%d, cross_right=%d", first_cross, final_cross, cross_left, cross_right);
 
 	lwfree(p1);
 	lwfree(p2);
