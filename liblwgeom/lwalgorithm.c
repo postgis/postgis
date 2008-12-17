@@ -61,20 +61,20 @@ int lw_segment_intersects(POINT2D *p1, POINT2D *p2, POINT2D *q1, POINT2D *q2) {
 	double pq1, pq2, qp1, qp2;
 	
 	/* No envelope interaction => we are done. */
-	if (!segmentEnvelopeIntersects(p1, p2, q1, p2))	{
+	if (!lw_segment_envelope_intersects(p1, p2, q1, p2))	{
 		return SEG_NO_INTERSECTION;
 	}
 
 	/* Are the start and end points of q on the same side of p? */
-	pq1=segmentSide(p1,p2,q1);
-	pq2=segmentSide(p1,p2,q2);
+	pq1=lw_segment_side(p1,p2,q1);
+	pq2=lw_segment_side(p1,p2,q2);
 	if ((pq1>0 && pq2>0) || (pq1<0 && pq2<0)) {
 		return SEG_NO_INTERSECTION;
 	}
 
 	/* Are the start and end points of p on the same side of q? */
-	qp1=segmentSide(q1,q2,p1);
-	qp2=segmentSide(q1,q2,p2);
+	qp1=lw_segment_side(q1,q2,p1);
+	qp2=lw_segment_side(q1,q2,p2);
 	if ((qp1>0 && qp2>0) || (qp1<0 && qp2<0)) {
 		return SEG_NO_INTERSECTION;
 	}
@@ -171,7 +171,7 @@ int lwline_crossing_direction(LWLINE *l1, LWLINE *l2) {
 			
 			LWDEBUGF(4, "lineCrossingDirection: i=%d, j=%d", i, j);
 			
-			this_cross = segmentIntersects(p1, p2, q1, q2);
+			this_cross = lw_segment_intersects(p1, p2, q1, q2);
 		
 			if( ! first_cross && this_cross )
 				first_cross = this_cross;
