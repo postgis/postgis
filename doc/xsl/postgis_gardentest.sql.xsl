@@ -13,15 +13,16 @@
 	<xsl:variable name='fnexclude'>ST_CurveToLine AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
 	<!--This is just a place holder to state functions not supported in 1.3 branch -->
 	<xsl:variable name='fnexclude13'>Populate_Geometry_Columns ST_IsValidReason</xsl:variable>	
-	<xsl:variable name='var_srid'>4269</xsl:variable>
+	<xsl:variable name='var_srid'>3395</xsl:variable>
 	<xsl:variable name='var_integer'>5</xsl:variable>
 	<xsl:variable name='var_float1'>0.5</xsl:variable>
 	<xsl:variable name='var_float2'>0.75</xsl:variable>
-	<xsl:variable name='var_version'>2</xsl:variable>
+	<xsl:variable name='var_version'>1</xsl:variable>
 	<xsl:variable name='var_NDRXDR'>XDR</xsl:variable>
 	<xsl:variable name='var_text'>'monkey'</xsl:variable>
 	<xsl:variable name='var_varchar'>'test'</xsl:variable>
 	<xsl:variable name='var_spheroid'>'SPHEROID["GRS_1980",6378137,298.257222101]'</xsl:variable>
+	<xsl:variable name='var_matrix'>'FF1FF0102'</xsl:variable>
 	<pgis:gardens>
 		<pgis:gset ID='PointSet' GeometryType='POINT'>(SELECT ST_SetSRID(ST_Point(i,j),4326) As the_geom 
 		FROM generate_series(-10,50,15) As i 
@@ -113,11 +114,11 @@ SELECT 'create,insert,drop Test: Start Testing Multi/<xsl:value-of select="@Geom
 				<xsl:variable name='fnargs'><xsl:call-template name="listparams"><xsl:with-param name="func" select="." /></xsl:call-template></xsl:variable>
 <!-- For each function prototype generate a test sql statement -->
 <xsl:choose>
-<!--Test functions that take no arguments -->
-	<xsl:when test="count(paramdef/parameter) = 0 and not(contains($fnexclude,@id))">SELECT  'Starting <xsl:value-of select="funcdef/function" />()';BEGIN; 
-SELECT  <xsl:value-of select="funcdef/function" />();
+<!--Test functions that take no arguments or take no geometries -->
+	<xsl:when test="(count(paramdef/parameter) = 0 or not(contains(paramdef[1]/type,'geometry') or contains(paramdef[2]/type,'geometry') or contains(paramdef[1]/parameter,'WKT') or contains(paramdef[1]/type,'box') or contains(paramdef[1]/type,'bytea'))) and not(contains($fnexclude,funcdef/function))">SELECT  'Starting <xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnargs" />)';BEGIN; 
+SELECT  <xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnfakeparams" />);
 COMMIT;
-SELECT  'Ending <xsl:value-of select="funcdef/function" />()';
+SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnargs" />)';
 	</xsl:when>
 <!--Start Test aggregate and unary functions -->
 <!--Garden Aggregator/Unary function with input gsets test -->
@@ -203,11 +204,15 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text> <xsl:value-of se
 	</xsl:template>
 	
 	<!--macro to replace func args with dummy var args -->
+	<!--macro to replace func args with dummy var args -->
 	<xsl:template name="replaceparams">
 		<xsl:param name="func" />
 		<xsl:for-each select="$func">
 			<xsl:for-each select="paramdef">
 				<xsl:choose>
+					<xsl:when test="contains(parameter, 'matrix') or contains(parameter, 'Matrix')"> 
+						<xsl:value-of select="$var_matrix" />
+					</xsl:when>
 					<xsl:when test="contains(parameter, 'srid')"> 
 						<xsl:value-of select="$var_srid" />
 					</xsl:when>
@@ -217,11 +222,17 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text> <xsl:value-of se
 					<xsl:when test="contains(parameter, 'version')"> 
 						<xsl:value-of select="$var_version" />
 					</xsl:when>
+					<xsl:when test="contains(type,'box') and position() = 1"> 
+						<xsl:text>foo1.the_geom</xsl:text>
+					</xsl:when>
 					<xsl:when test="contains(type,'box')"> 
+						<xsl:text>foo2.the_geom</xsl:text>
+					</xsl:when>
+					<xsl:when test="(type = 'geometry' or type = 'geometry ') and position() = 1"> 
 						<xsl:text>foo1.the_geom</xsl:text>
 					</xsl:when>
 					<xsl:when test="type = 'geometry' or type = 'geometry '"> 
-						<xsl:text>foo1.the_geom</xsl:text>
+						<xsl:text>foo2.the_geom</xsl:text>
 					</xsl:when>
 					<xsl:when test="contains(type, 'geometry[]')"> 
 						ARRAY[foo2.the_geom]
