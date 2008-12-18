@@ -29,7 +29,10 @@ CU_pSuite register_cg_suite(void)
 	    (NULL == CU_add_test(pSuite, "test_lw_segment_side()", test_lw_segment_side)) ||
 	    (NULL == CU_add_test(pSuite, "test_lw_segment_intersects()", test_lw_segment_intersects)) ||
 	    (NULL == CU_add_test(pSuite, "test_lwline_crossing_short_lines()", test_lwline_crossing_short_lines)) ||
-	    (NULL == CU_add_test(pSuite, "test_lwline_crossing_long_lines()", test_lwline_crossing_long_lines)) 
+	    (NULL == CU_add_test(pSuite, "test_lwline_crossing_long_lines()", test_lwline_crossing_long_lines)) ||
+	    (NULL == CU_add_test(pSuite, "test_lwpoint_set_ordinate()", test_lwpoint_set_ordinate)) || 
+	    (NULL == CU_add_test(pSuite, "test_lwpoint_get_ordinate()", test_lwpoint_get_ordinate)) ||
+	    (NULL == CU_add_test(pSuite, "test_lwpoint_interpolate()", test_lwpoint_interpolate)) 
 	)
 	{
 		CU_cleanup_registry();
@@ -47,6 +50,7 @@ POINT2D *p2 = NULL;
 POINT2D *q1 = NULL;
 POINT2D *q2 = NULL;
 POINT4D *p = NULL;
+POINT4D *q = NULL;
 /* Two-point objects */
 POINTARRAY *pa21 = NULL;
 POINTARRAY *pa22 = NULL;
@@ -66,6 +70,7 @@ LWLINE *l52 = NULL;
 int init_cg_suite(void)
 {
 	p = lwalloc(sizeof(POINT4D));
+	q = lwalloc(sizeof(POINT4D));
 	p1 = lwalloc(sizeof(POINT2D));
 	p2 = lwalloc(sizeof(POINT2D));
 	q1 = lwalloc(sizeof(POINT2D));
@@ -540,3 +545,60 @@ void test_lwline_crossing_long_lines(void)
 
 }
 
+void test_lwpoint_set_ordinate(void) 
+{
+    p->x = 0.0;
+    p->y = 0.0;
+    p->z = 0.0;
+    p->m = 0.0;
+    
+    lwpoint_set_ordinate(p, 0, 1.5);
+    CU_ASSERT_EQUAL( p->x, 1.5 );
+    
+    lwpoint_set_ordinate(p, 3, 2.5);
+    CU_ASSERT_EQUAL( p->m, 2.5 );
+    
+    lwpoint_set_ordinate(p, 2, 3.5);
+    CU_ASSERT_EQUAL( p->z, 3.5 );
+    
+}
+
+void test_lwpoint_get_ordinate(void) 
+{
+
+    p->x = 10.0;
+    p->y = 20.0;
+    p->z = 30.0;
+    p->m = 40.0;
+
+    CU_ASSERT_EQUAL( lwpoint_get_ordinate(p, 0), 10.0 );
+    CU_ASSERT_EQUAL( lwpoint_get_ordinate(p, 1), 20.0 );
+    CU_ASSERT_EQUAL( lwpoint_get_ordinate(p, 2), 30.0 );
+    CU_ASSERT_EQUAL( lwpoint_get_ordinate(p, 3), 40.0 );
+        
+}
+
+void test_lwpoint_interpolate(void)
+{
+    POINT4D *r = NULL;
+    r = lwalloc(sizeof(POINT4D));
+    int rv = 0;
+    
+    p->x = 10.0;
+    p->y = 20.0;
+    p->z = 30.0;
+    p->m = 40.0;
+    q->x = 20.0;
+    q->y = 30.0;
+    q->z = 40.0;
+    q->m = 50.0;
+    
+    rv = lwpoint_interpolate(p, q, r, 4, 2, 35.0);
+    CU_ASSERT_EQUAL( r->x, 15.0);
+
+    rv = lwpoint_interpolate(p, q, r, 4, 3, 41.0);
+    CU_ASSERT_EQUAL( r->y, 21.0);
+
+    lwfree(r);
+    
+}

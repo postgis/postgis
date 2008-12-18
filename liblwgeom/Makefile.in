@@ -17,7 +17,8 @@ YACC=@YACC@
 LEX=@LEX@
 
 # Standalone LWGEOM objects
-SA_OBJS=measures.o \
+SA_OBJS = \
+	measures.o \
 	box2d.o \
 	ptarray.o \
 	lwgeom_api.o \
@@ -43,9 +44,13 @@ SA_OBJS=measures.o \
 	lex.yy.o \
 	vsprintf.o	
 
+SA_HEADERS = \
+	liblwgeom.h \
+	lwalgorithm.h
+
 all: liblwgeom.a
 
-liblwgeom.a: $(SA_OBJS)
+liblwgeom.a: $(SA_OBJS) $(SA_HEADERS) 
 	ar rs liblwgeom.a $(SA_OBJS) 	
 
 clean:
@@ -53,7 +58,7 @@ clean:
 	rm -f liblwgeom.a 
 
 # Command to build each of the .o files
-$(SA_OBJS): %.o: %.c
+$(SA_OBJS): %.o: %.c 
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 # Commands to generate the lexer and parser from input files

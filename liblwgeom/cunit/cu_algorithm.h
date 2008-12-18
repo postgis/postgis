@@ -31,4 +31,6 @@ void test_lw_segment_side(void);
 void test_lw_segment_intersects(void);
 void test_lwline_crossing_short_lines(void);
 void test_lwline_crossing_long_lines(void);
-
+void test_lwpoint_set_ordinate(void);
+void test_lwpoint_get_ordinate(void);
+void test_lwpoint_interpolate(void);

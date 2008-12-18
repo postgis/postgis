@@ -10,6 +10,7 @@
  * 
  **********************************************************************/
 
+#include <math.h>
 #include "liblwgeom.h"
 
 enum CG_SEGMENT_INTERSECTION_TYPE { 
@@ -40,3 +41,6 @@ enum CG_LINE_CROSS_TYPE {
 int lwline_crossing_direction(LWLINE *l1, LWLINE *l2);
 
 double lwpoint_get_ordinate(POINT4D *p, int ordinate);
+void lwpoint_set_ordinate(POINT4D *p, int ordinate, double value);
+int lwpoint_interpolate(POINT4D *p1, POINT4D *p2, POINT4D *p, int ndims, int ordinate, double interpolation_value);
+LWLINE *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double from, double to);

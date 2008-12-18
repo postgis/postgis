@@ -292,7 +292,6 @@ int lwline_crossing_direction(LWLINE *l1, LWLINE *l2)
 	
 }
 
-#if 0 
 /*
 ** lwpoint_get_ordinate(point, ordinate) => double
 */
@@ -320,6 +319,69 @@ double lwpoint_get_ordinate(POINT4D *p, int ordinate)
 	return p->x;
 	
 }
+void lwpoint_set_ordinate(POINT4D *p, int ordinate, double value) 
+{
+	if( ! p ) 
+	{
+		lwerror("Null input geometry.");
+		return;
+	}
+	
+	if( ordinate > 3 || ordinate < 0 ) 
+	{
+		lwerror("Cannot extract ordinate %d.", ordinate);
+		return;
+	}
+
+	switch ( ordinate ) {
+        case 3:
+            p->m = value;
+            return;
+        case 2:
+            p->z = value;
+            return;
+        case 1:
+            p->y = value;
+            return;
+        case 0:
+            p->x = value;
+            return;
+    }    	
+}
+
+
+int lwpoint_interpolate(POINT4D *p1, POINT4D *p2, POINT4D *p, int ndims, int ordinate, double interpolation_value)
+{
+    double p1_value = lwpoint_get_ordinate(p1, ordinate);
+    double p2_value = lwpoint_get_ordinate(p2, ordinate);
+    double proportion;
+    int i = 0;
+    
+    if( ordinate < 0 || ordinate >= ndims ) 
+    {
+        lwerror("Ordinate (%d) is not within ndims (%d).", ordinate, ndims);
+        return 0;
+    }
+    
+    if( FP_MIN(p1_value, p2_value) > interpolation_value || 
+        FP_MAX(p1_value, p2_value) < interpolation_value )
+    {
+        lwerror("Cannot interpolate to a value (%g) not between the input points.", interpolation_value);
+        return 0;
+    } 
+    
+    proportion = (interpolation_value - p1_value) / fabs(p2_value - p1_value);
+        
+    for( i = 0; i < ndims; i++ ) 
+    {
+        p1_value = lwpoint_get_ordinate(p1, i);
+        p2_value = lwpoint_get_ordinate(p2, i);
+        lwpoint_set_ordinate(p, i, p1_value + proportion * fabs(p2_value - p1_value));
+    }
+    
+    return 1;
+}
+
 
 /*
 ** lwline_clip_to_ordinate_range(line, ordinate, from, to) => lwmline
@@ -330,14 +392,14 @@ double lwpoint_get_ordinate(POINT4D *p, int ordinate)
 LWLINE *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double from, double to) 
 {
 	
-	POINTARRAY *pa_in;
-	LWMLINE *mline_out;
-	POINTARRAY *pa_out;
-	DYNPTARRAY *dp;
+	POINTARRAY *pa_in = NULL;
+	LWMLINE *mline_out = NULL;
+	POINTARRAY *pa_out = NULL;
+	DYNPTARRAY *dp = NULL;
 	int i, rv;
-	int last_point = 0;
+	int added_last_point = 0;
 	int nparts = 0;
-	POINT4D *p, *q;
+	POINT4D *p, *q, *r;
 	double ordinate_value;
 
 	
@@ -367,22 +429,61 @@ LWLINE *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double from, d
 	
 	p = lwalloc(sizeof(POINT4D));
 	q = lwalloc(sizeof(POINT4D));
+    r = lwalloc(sizeof(POINT4D));
 
 	pa_in = (POINTARRAY*)line->points;
 	
 	dp = dynptarray_create(64, ndims);
 
-	
-	for ( i = 1; i < pa_in->npoints; i++ ) 
+	for ( i = 0; i < pa_in->npoints; i++ ) 
 	{
 		rv = getPoint4d_p(pa_in, i, p);
 		ordinate_value = lwpoint_get_ordinate(p, ordinate);
+		/* Is this point inside the range? Yes. */
 		if ( ordinate_value >= from && ordinate_value <= to )
 		{
-			rv =dynptarray_addPoint4d(dp, p, 1);
+			if ( ! added_last_point ) 
+			{
+			    /* TODO Make a new ptarray */
+    			if ( ordinate_value > from && ordinate_value < to &&
+    			     i > 0 && i < pa_in->npoints - 1 )
+    		    {
+            		/* We're transiting in so add an interpolated point */
+                    double interpolation_value;
+                    double last_value;
+                    rv = getPoint4d_p(pa_in, i-1, q);
+                    last_value = lwpoint_get_ordinate(q, ordinate);
+                    (last_value > to) ? (interpolation_value = to) : (interpolation_value = from);
+                    rv = lwpoint_interpolate(q, p, r, ndims, ordinate, interpolation_value);
+                    rv = dynptarray_addPoint4d(dp, r, 1);
+                    
+    		    }
+			}
+		    /* add the point */
+    		rv = dynptarray_addPoint4d(dp, p, 1);
+            added_last_point = LW_TRUE;
 		} 
+		/* Is this point inside the range? No. */
+		else 
+		{
+		    if( added_last_point ) 
+		    {
+		        /* We're transiting out, so add an interpolated point */
+                double interpolation_value;
+                rv = getPoint4d_p(pa_in, i-1, q);
+                (ordinate_value > to) ? (interpolation_value = to) : (interpolation_value = from);
+                rv = lwpoint_interpolate(q, p, r, ndims, ordinate, interpolation_value);
+                rv = dynptarray_addPoint4d(dp, r, 1);
+                
+		        /* TODO save back the current ptarray to a lwmline */
+	        }
+            added_last_point = LW_FALSE;
+	    }
 	}
+	
+    lwfree(p);
+    lwfree(q);
+    lwfree(r);
 
 	
 }
-#endif
