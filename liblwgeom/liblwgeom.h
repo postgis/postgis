@@ -944,7 +944,7 @@ char box2d_same(BOX2DFLOAT4 *box1, BOX2DFLOAT4 *box2);
 
 
 extern void pfree_inspected(LWGEOM_INSPECTED *inspected);
-extern void pfree_point    (LWPOINT *pt);
+extern void free_point    (LWPOINT *pt);
 extern void pfree_line     (LWLINE  *line);
 extern void pfree_polygon  (LWPOLY  *poly);
 extern void pfree_POINTARRAY(POINTARRAY *pa);

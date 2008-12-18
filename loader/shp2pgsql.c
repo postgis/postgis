@@ -1281,7 +1281,7 @@ InsertPoint(void)
 
 	for (u = 0; u < obj->nVertices; u++)
 	{
-        	pfree_point(lwgeom_as_lwpoint(lwmultipoints[u]));
+        	free_point(lwgeom_as_lwpoint(lwmultipoints[u]));
         	lwfree(dpas[u]);
 	}
 

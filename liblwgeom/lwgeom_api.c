@@ -1666,7 +1666,7 @@ compute_serialized_box3d(uchar *srl)
 
 		LWDEBUG(3, "compute_serialized_box3d: bbox found");
 
-		pfree_point(pt);
+		free_point(pt);
 		return result;
 	}
 

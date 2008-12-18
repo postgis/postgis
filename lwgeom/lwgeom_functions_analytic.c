@@ -379,7 +379,7 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 		                           1);
 		point = lwpoint_construct(line->SRID, 0, opa);
 		srl = lwpoint_serialize(point);
-		pfree_point(point);
+		free_point(point);
 		PG_RETURN_POINTER(PG_LWGEOM_construct(srl, line->SRID, 0));
 	}
 
@@ -414,7 +414,7 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 			                           1);
 			point = lwpoint_construct(line->SRID, 0, opa);
 			srl = lwpoint_serialize(point);
-			pfree_point(point);
+			free_point(point);
 			PG_RETURN_POINTER(PG_LWGEOM_construct(srl, line->SRID, 0));
 		}
 		tlength += slength;
@@ -429,7 +429,7 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 	                           1);
 	point = lwpoint_construct(line->SRID, 0, opa);
 	srl = lwpoint_serialize(point);
-	pfree_point(point);
+	free_point(point);
 	PG_RETURN_POINTER(PG_LWGEOM_construct(srl, line->SRID, 0));
 }
 /***********************************************************************

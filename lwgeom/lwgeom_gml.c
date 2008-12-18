@@ -324,7 +324,7 @@ asgml2_inspected_size(LWGEOM_INSPECTED *insp, char *srs)
 		if ((point=lwgeom_getpoint_inspected(insp, i)))
 		{
 			size += asgml2_point_size(point, 0);
-			pfree_point(point);
+			free_point(point);
 		}
 		else if ((line=lwgeom_getline_inspected(insp, i)))
 		{
@@ -384,7 +384,7 @@ asgml2_inspected_buf(LWGEOM_INSPECTED *insp, char *srs, char *output)
 		{
 		  ptr += sprintf(ptr, "<gml:pointMember>");
 			ptr += asgml2_point_buf(point, 0, ptr);
-			pfree_point(point);
+			free_point(point);
 			ptr += sprintf(ptr, "</gml:pointMember>");
 		}
 		else if ((line=lwgeom_getline_inspected(insp, i)))
@@ -681,7 +681,7 @@ asgml3_inspected_size(LWGEOM_INSPECTED *insp, char *srs)
 		if ((point=lwgeom_getpoint_inspected(insp, i)))
 		{
 			size += asgml3_point_size(point, 0);
-			pfree_point(point);
+			free_point(point);
 		}
 		else if ((line=lwgeom_getline_inspected(insp, i)))
 		{
@@ -741,7 +741,7 @@ asgml3_inspected_buf(LWGEOM_INSPECTED *insp, char *srs, char *output)
 		{
 		  ptr += sprintf(ptr, "<gml:pointMember>");
 			ptr += asgml3_point_buf(point, 0, ptr);
-			pfree_point(point);
+			free_point(point);
 			ptr += sprintf(ptr, "</gml:pointMember>");
 		}
 		else if ((line=lwgeom_getline_inspected(insp, i)))

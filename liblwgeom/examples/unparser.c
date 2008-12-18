@@ -79,7 +79,7 @@ int main()
 	/* Free all of the allocated items */
 	lwfree(lwg_unparser_result.wkoutput);
 	lwfree(serialized_lwgeom);
-	pfree_point(testpoint);
+	free_point(testpoint);
 	lwfree(dpa);
 
 

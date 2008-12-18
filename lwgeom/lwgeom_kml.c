@@ -284,7 +284,7 @@ askml2_inspected_size(LWGEOM_INSPECTED *insp)
 		if ((point=lwgeom_getpoint_inspected(insp, i)))
 		{
 			size += askml2_point_size(point);
-			pfree_point(point);
+			free_point(point);
 		}
 		else if ((line=lwgeom_getline_inspected(insp, i)))
 		{
@@ -334,7 +334,7 @@ askml2_inspected_buf(LWGEOM_INSPECTED *insp, char *output)
 		if ((point=lwgeom_getpoint_inspected(insp, i)))
 		{
 			ptr += askml2_point_buf(point, ptr);
-			pfree_point(point);
+			free_point(point);
 		}
 		else if ((line=lwgeom_getline_inspected(insp, i)))
 		{
