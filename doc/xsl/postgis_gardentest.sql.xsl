@@ -112,6 +112,8 @@ SELECT 'create,insert,drop Test: Start Testing Multi/<xsl:value-of select="@Geom
 <!--Create dummy paramaters to be used later -->
 				<xsl:variable name='fnfakeparams'><xsl:call-template name="replaceparams"><xsl:with-param name="func" select="." /></xsl:call-template></xsl:variable>
 				<xsl:variable name='fnargs'><xsl:call-template name="listparams"><xsl:with-param name="func" select="." /></xsl:call-template></xsl:variable>
+				<xsl:variable name='fnname'><xsl:value-of select="funcdef/function"/></xsl:variable>
+				<xsl:variable name='fndef'><xsl:value-of select="funcdef"/></xsl:variable>
 <!-- For each function prototype generate a test sql statement -->
 <xsl:choose>
 <!--Test functions that take no arguments or take no geometries -->
@@ -123,8 +125,6 @@ SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select=
 <!--Start Test aggregate and unary functions -->
 <!--Garden Aggregator/Unary function with input gsets test -->
 	<xsl:when test="(contains(paramdef[1]/type,'geometry set') or (count(paramdef/parameter) = 1 and contains(paramdef[1]/type, 'geometry')) and not(contains($fnexclude,@id)))" >
-		<xsl:variable name='fnname'><xsl:value-of select="funcdef/function"/></xsl:variable>
-		<xsl:variable name='fndef'><xsl:value-of select="funcdef"/></xsl:variable>
 		<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
 	SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing Multi/<xsl:value-of select="@GeometryType" />'; 
 	BEGIN; <!-- If output is geometry show ewkt rep -->
@@ -149,8 +149,6 @@ SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select=
 
 <!--Functions more than 1 args not already covered -->
 	<xsl:when test="not(contains($fnexclude,funcdef/function))">
-		<xsl:variable name='fnname'><xsl:value-of select="funcdef/function"/></xsl:variable>
-		<xsl:variable name='fndef'><xsl:value-of select="funcdef"/></xsl:variable>
 		<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
 	SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="@GeometryType" />'; 
 	BEGIN; <!-- If output is geometry show ewkt rep -->
