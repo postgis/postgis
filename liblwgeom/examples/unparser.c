@@ -115,7 +115,7 @@ int main()
 	/* Free all of the allocated items */
 	lwfree(lwg_unparser_result.wkoutput);
 	lwfree(serialized_lwgeom);
-	pfree_line(testline);
+	lwfree_line(testline);
 	lwfree(dpa);
 
 
@@ -191,6 +191,6 @@ int main()
 	/* Free all of the allocated items */
 	lwfree(lwg_unparser_result.wkoutput);
 	lwfree(serialized_lwgeom);
-	pfree_polygon(testpoly);
+	lwfree_polygon(testpoly);
 
 }

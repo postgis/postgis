@@ -354,13 +354,13 @@ lwpoly_serialize_size(LWPOLY *poly)
 	return size;
 }
 
-void pfree_polygon  (LWPOLY  *poly)
+void lwfree_polygon  (LWPOLY  *poly)
 {
 	int t;
 
 	for (t=0;t<poly->nrings;t++)
 	{
-		pfree_POINTARRAY(poly->rings[t]);
+		lwfree_pointarray(poly->rings[t]);
 	}
 
 	lwfree(poly);

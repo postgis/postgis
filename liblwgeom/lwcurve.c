@@ -494,7 +494,7 @@ lwcurve_compute_box2d_p(LWCURVE *curve, BOX2DFLOAT4 *result)
         return 1;
 }
 
-void pfree_curve(LWCURVE *curve)
+void lwfree_curve(LWCURVE *curve)
 {
         lwfree(curve->points);
         lwfree(curve);

@@ -241,7 +241,7 @@ lwline_serialize_size(LWLINE *line)
 	return size;
 }
 
-void pfree_line (LWLINE  *line)
+void lwfree_line (LWLINE  *line)
 {
 	lwfree(line->points);
 	lwfree(line);

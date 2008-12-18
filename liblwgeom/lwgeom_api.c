@@ -1218,7 +1218,7 @@ lwgeom_getsubgeometry(const uchar *serialized_form, int geom_number)
 	LWGEOM_INSPECTED *inspected = lwgeom_inspect(serialized_form);
 
 	result = lwgeom_getsubgeometry_inspected(inspected, geom_number);
-	pfree_inspected(inspected);
+	lwfree_inspected(inspected);
 	return result;
 }
 
@@ -1252,7 +1252,7 @@ lwgeom_getsubtype(uchar *serialized_form, int geom_number)
 	LWGEOM_INSPECTED *inspected = lwgeom_inspect(serialized_form);
 
 	result = lwgeom_getsubtype_inspected(inspected, geom_number);
-	pfree_inspected(inspected);
+	lwfree_inspected(inspected);
 	return result;
 }
 
@@ -1674,7 +1674,7 @@ compute_serialized_box3d(uchar *srl)
 	{
 		LWLINE *line = lwline_deserialize(srl);
 		result = lwline_compute_box3d(line);
-		pfree_line(line);
+		lwfree_line(line);
 		return result;
 
 	}
@@ -1682,14 +1682,14 @@ compute_serialized_box3d(uchar *srl)
         {
                 LWCURVE *curve = lwcurve_deserialize(srl);
                 result = lwcurve_compute_box3d(curve);
-                pfree_curve(curve);
+                lwfree_curve(curve);
                 return result;
         }
 	else if (type == POLYGONTYPE)
 	{
 		LWPOLY *poly = lwpoly_deserialize(srl);
 		result = lwpoly_compute_box3d(poly);
-		pfree_polygon(poly);
+		lwfree_polygon(poly);
 		return result;
 	}
 
@@ -1757,7 +1757,7 @@ compute_serialized_box3d(uchar *srl)
  ****************************************************************/
 
 void
-pfree_inspected(LWGEOM_INSPECTED *inspected)
+lwfree_inspected(LWGEOM_INSPECTED *inspected)
 {
 	if ( inspected->ngeometries )
 		lwfree(inspected->sub_geoms);
@@ -1765,7 +1765,7 @@ pfree_inspected(LWGEOM_INSPECTED *inspected)
 }
 
 
-void pfree_POINTARRAY(POINTARRAY *pa)
+void lwfree_pointarray(POINTARRAY *pa)
 {
 	lwfree(pa);
 }
@@ -1871,7 +1871,7 @@ printMULTI(uchar *serialized)
 
     lwnotice("end multi*");
 
-	pfree_inspected(inspected);
+	lwfree_inspected(inspected);
 }
 
 void
