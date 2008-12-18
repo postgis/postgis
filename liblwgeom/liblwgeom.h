@@ -948,7 +948,6 @@ extern void lwfree_point    (LWPOINT *pt);
 extern void lwfree_line     (LWLINE  *line);
 extern void lwfree_polygon  (LWPOLY  *poly);
 extern void lwfree_pointarray(POINTARRAY *pa);
-extern void lwfree_curve(LWCURVE  *curve);
 
 
 /****************************************************************
@@ -1326,6 +1325,7 @@ extern int lwcurve_compute_box2d_p(LWCURVE *curve, BOX2DFLOAT4 *box);
 extern BOX3D *lwcurve_compute_box3d(LWCURVE *curve);
 LWCURVE *lwcurve_clone(const LWCURVE *curve);
 extern LWCURVE *lwgeom_getcurve_inspected(LWGEOM_INSPECTED *inspected, int geom_number);
+extern void lwfree_curve(LWCURVE  *curve);
 
 /******************************************************************
  * LWMULTIx and LWCOLLECTION functions
