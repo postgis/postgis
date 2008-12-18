@@ -350,6 +350,7 @@ lwgeom_release(LWGEOM *lwgeom)
 
 }
 
+
 /* Clone an LWGEOM object. POINTARRAY are not copied. */
 LWGEOM *
 lwgeom_clone(const LWGEOM *lwgeom)

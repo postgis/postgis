@@ -32,7 +32,8 @@ CU_pSuite register_cg_suite(void)
 	    (NULL == CU_add_test(pSuite, "test_lwline_crossing_long_lines()", test_lwline_crossing_long_lines)) ||
 	    (NULL == CU_add_test(pSuite, "test_lwpoint_set_ordinate()", test_lwpoint_set_ordinate)) || 
 	    (NULL == CU_add_test(pSuite, "test_lwpoint_get_ordinate()", test_lwpoint_get_ordinate)) ||
-	    (NULL == CU_add_test(pSuite, "test_lwpoint_interpolate()", test_lwpoint_interpolate)) 
+	    (NULL == CU_add_test(pSuite, "test_lwpoint_interpolate()", test_lwpoint_interpolate)) ||
+	    (NULL == CU_add_test(pSuite, "test_lwline_clip()", test_lwline_clip)) 
 	)
 	{
 		CU_cleanup_registry();
@@ -602,3 +603,23 @@ void test_lwpoint_interpolate(void)
     lwfree(r);
     
 }
+
+void test_lwline_clip(void)
+{
+	int rv = 0;
+	LWCOLLECTION *c;
+	char *ewkt;
+	
+	c = lwline_clip_to_ordinate_range(l51, 1, 1.5, 2.5);
+	ewkt = lwgeom_to_ewkt((LWGEOM*)c,0);
+	printf("c = %s\n", ewkt);
+	CU_ASSERT_STRING_EQUAL(ewkt, "MULTILINESTRING((0 1.5,0 2,0 2.5))");
+	lwfree(ewkt);
+	lwgeom_release(c);
+
+	CU_ASSERT_STRING_EQUAL(ewkt, "MULTILINESTRING((0 1.5,0 2,0 2.5))");
+
+	free(c);
+	
+}
+
