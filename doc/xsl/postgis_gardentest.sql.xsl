@@ -147,9 +147,14 @@ SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select=
 		</xsl:for-each>
 	</xsl:when>
 
-<!--Functions more than 1 args not already covered -->
+<!--Functions more than 1 args not already covered this will cross every geometry type with every other -->
+<!-- TODO: put functions that take only one geometry into another section - no need to do a cross for these -->
 	<xsl:when test="not(contains($fnexclude,funcdef/function))">
 		<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
+	<!--Store first garden sql geometry from -->
+			<xsl:variable name="from1"><xsl:value-of select="." /></xsl:variable>
+SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="@GeometryType" /> against other types'; 
+				<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
 	SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="@GeometryType" />'; 
 	BEGIN; <!-- If output is geometry show ewkt rep -->
 			<xsl:choose>
@@ -160,13 +165,15 @@ SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select=
 	SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)
 			  </xsl:otherwise>
 			</xsl:choose>
-			FROM (<xsl:value-of select="." />) As foo1 CROSS JOIN (<xsl:value-of select="." />) As foo2
-			LIMIT 5;  
+			FROM (<xsl:value-of select="$from1" />) As foo1 CROSS JOIN (<xsl:value-of select="." />) As foo2
+			LIMIT 3;  
 	COMMIT;
 	SELECT '<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnargs" />) <xsl:text> </xsl:text> <xsl:value-of select="@ID" />: End Testing Multi/<xsl:value-of select="@GeometryType" />';
 		<xsl:text>
 		
 		</xsl:text>
+			</xsl:for-each>
+SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): End Testing <xsl:value-of select="@GeometryType" /> against other types';
 		</xsl:for-each>
 	</xsl:when>
 </xsl:choose>
