@@ -470,7 +470,7 @@ asgeojson_multipoint_buf(LWGEOM_INSPECTED *insp, char *srs, char *output, BOX3D 
                 if (i) ptr += sprintf(ptr, ",");
                 point=lwgeom_getpoint_inspected(insp, i);
 		ptr += pointArray_to_geojson(point->point, ptr, precision);
-                free_point(point);
+                lwfree_point(point);
 	}
 	ptr += sprintf(ptr, "]}");
 
@@ -538,7 +538,7 @@ asgeojson_multiline_buf(LWGEOM_INSPECTED *insp, char *srs, char *output, BOX3D *
 		ptr += pointArray_to_geojson(line->points, ptr, precision);
                 ptr += sprintf(ptr, "]");
 		
-                pfree_line(line);
+                lwfree_line(line);
 	}
 
 	ptr += sprintf(ptr, "]}");
@@ -614,7 +614,7 @@ asgeojson_multipolygon_buf(LWGEOM_INSPECTED *insp, char *srs, char *output, BOX3
                 	ptr += sprintf(ptr, "]");
 		}
                 ptr += sprintf(ptr, "]");
-                pfree_polygon(poly);
+                lwfree_polygon(poly);
 	}
 	ptr += sprintf(ptr, "]}");
 
@@ -658,7 +658,7 @@ asgeojson_collection_size(LWGEOM_INSPECTED *insp, char *srs, BOX3D *bbox, int pr
 		subgeom = lwgeom_getsubgeometry_inspected(insp, i);
 		subinsp = lwgeom_inspect(subgeom);
 		size += asgeojson_inspected_size(subinsp, bbox, precision);
-		pfree_inspected(subinsp);
+		lwfree_inspected(subinsp);
 	}
 	size += sizeof(",") * i;
 	size += sizeof("]}");
@@ -685,7 +685,7 @@ asgeojson_collection_buf(LWGEOM_INSPECTED *insp, char *srs, char *output, BOX3D 
 		subgeom = lwgeom_getsubgeometry_inspected(insp, i);
 		subinsp = lwgeom_inspect(subgeom);
 		ptr += asgeojson_inspected_buf(subinsp, ptr, bbox, precision);
-		pfree_inspected(subinsp);
+		lwfree_inspected(subinsp);
 	}
 
 	ptr += sprintf(ptr, "]}");
@@ -721,19 +721,19 @@ asgeojson_inspected_size(LWGEOM_INSPECTED *insp, BOX3D *bbox, int precision)
 		case POINTTYPE:
 			point=lwgeom_getpoint_inspected(insp, 0);
                         size = asgeojson_point_size(point, NULL, bbox, precision);
-        	        free_point(point);
+        	        lwfree_point(point);
 			break;
 
 		case LINETYPE:
 			line=lwgeom_getline_inspected(insp, 0);
                         size = asgeojson_line_size(line, NULL, bbox, precision);
-       	                pfree_line(line);
+       	                lwfree_line(line);
 			break;
 			
 		case POLYGONTYPE:
 			poly=lwgeom_getpoly_inspected(insp, 0);
                         size = asgeojson_poly_size(poly, NULL, bbox, precision);
-			pfree_polygon(poly);
+			lwfree_polygon(poly);
 			break;
 
 		case MULTIPOINTTYPE:
@@ -776,19 +776,19 @@ asgeojson_inspected_buf(LWGEOM_INSPECTED *insp, char *output, BOX3D *bbox, int p
 		case POINTTYPE:
 			point=lwgeom_getpoint_inspected(insp, 0);
                         ptr += asgeojson_point_buf(point, NULL, ptr, bbox, precision);
-        	        free_point(point);
+        	        lwfree_point(point);
 			break;
 
 		case LINETYPE:
 			line=lwgeom_getline_inspected(insp, 0);
                         ptr += asgeojson_line_buf(line, NULL, ptr, bbox, precision);
-       	                pfree_line(line);
+       	                lwfree_line(line);
 			break;
 			
 		case POLYGONTYPE:
 			poly=lwgeom_getpoly_inspected(insp, 0);
 			ptr += asgeojson_poly_buf(poly, NULL, ptr, bbox, precision);
-			pfree_polygon(poly);
+			lwfree_polygon(poly);
 			break;
 
 		case MULTIPOINTTYPE:

@@ -727,20 +727,20 @@ lwgeom_transform_recursive(uchar *geom, PJ *inpj, PJ *outpj)
 		{
 			if (!lwgeom_transform_recursive(subgeom, inpj, outpj))
 			{
-				pfree_inspected(inspected);
+				lwfree_inspected(inspected);
 				return 0;
 			}
 			continue;
 		}
 		else
 		{
-			pfree_inspected(inspected);
+			lwfree_inspected(inspected);
 			lwerror("lwgeom_getsubgeometry_inspected returned NULL");
 			return 0;
 		}
 	}
 
-	pfree_inspected(inspected);
+	lwfree_inspected(inspected);
 	return 1;
 }
 

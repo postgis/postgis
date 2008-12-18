@@ -402,7 +402,7 @@ Datum LWGEOM_length2d_ellipsoid_linestring(PG_FUNCTION_ARGS)
 			dist);
 	}
 
-	pfree_inspected(inspected);
+	lwfree_inspected(inspected);
 
 	PG_RETURN_FLOAT8(dist);
 }
@@ -440,7 +440,7 @@ Datum LWGEOM_length_ellipsoid_linestring(PG_FUNCTION_ARGS)
 			dist);
 	}
 
-	pfree_inspected(inspected);
+	lwfree_inspected(inspected);
 
 	PG_RETURN_FLOAT8(dist);
 }
