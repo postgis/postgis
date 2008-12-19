@@ -107,3 +107,24 @@ lwmpoint_add(const LWMPOINT *to, uint32 where, const LWGEOM *what)
 	return (LWGEOM *)col;
 
 }
+
+void lwfree_mpoint(LWMPOINT *mpt) 
+{
+	int i;
+	if( mpt->bbox ) 
+	{
+		lwfree(mpt->bbox);
+	}
+	for ( i = 0; i < mpt->ngeoms; i++ ) 
+	{
+		if( mpt->geoms[i] ) {
+			lwfree_point(mpt->geoms[i]);
+		}
+	}
+	if( mpt->geoms ) 
+	{
+		lwfree(mpt->geoms);
+	}
+	lwfree(mpt);
+	
+};

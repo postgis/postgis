@@ -110,3 +110,24 @@ lwmpoly_add(const LWMPOLY *to, uint32 where, const LWGEOM *what)
 	return (LWGEOM *)col;
 
 }
+
+void lwfree_mpolygon(LWMPOLY *mpoly) 
+{
+	int i;
+	if( mpoly->bbox ) 
+	{
+		lwfree(mpoly->bbox);
+	}
+	for ( i = 0; i < mpoly->ngeoms; i++ ) 
+	{
+		if( mpoly->geoms[i] ) {
+			lwfree_polygon(mpoly->geoms[i]);
+		}
+	}
+	if( mpoly->geoms ) 
+	{
+		lwfree(mpoly->geoms);
+	}
+	lwfree(mpoly);
+	
+};

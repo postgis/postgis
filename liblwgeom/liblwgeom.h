@@ -948,7 +948,10 @@ extern void lwfree_point    (LWPOINT *pt);
 extern void lwfree_line     (LWLINE  *line);
 extern void lwfree_polygon  (LWPOLY  *poly);
 extern void lwfree_pointarray(POINTARRAY *pa);
-
+extern void lwfree_mpoint   (LWMPOINT *mpt);
+extern void lwfree_mline   (LWMLINE *mline);
+extern void lwfree_mpolygon   (LWMPOLY *mpoly);
+extern void lwfree_collection   (LWCOLLECTION *col);
 
 /****************************************************************
  * utility

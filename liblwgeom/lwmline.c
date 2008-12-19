@@ -108,3 +108,24 @@ lwmline_add(const LWMLINE *to, uint32 where, const LWGEOM *what)
 	return (LWGEOM *)col;
 
 }
+
+void lwfree_mline(LWMLINE *mline) 
+{
+	int i;
+	if( mline->bbox ) 
+	{
+		lwfree(mline->bbox);
+	}
+	for ( i = 0; i < mline->ngeoms; i++ ) 
+	{
+		if( mline->geoms[i] ) {
+			lwfree_line(mline->geoms[i]);
+		}
+	}
+	if( mline->geoms ) 
+	{
+		lwfree(mline->geoms);
+	}
+	lwfree(mline);
+	
+};

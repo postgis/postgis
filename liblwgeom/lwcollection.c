@@ -354,3 +354,48 @@ lwcollection_same(const LWCOLLECTION *c1, const LWCOLLECTION *c2)
 	}
 	return 1;
 }
+
+
+void lwfree_collection(LWCOLLECTION *col) 
+{
+	int i;
+	if( col->bbox ) 
+	{
+		lwfree(col->bbox);
+	}
+	for ( i = 0; i < col->ngeoms; i++ ) 
+	{
+		if( col->geoms[i] ) {
+			switch( TYPE_GETTYPE(col->geoms[i]->type) )
+			{
+				case POINTTYPE:
+					lwfree_point((LWPOINT*)col->geoms[i]);
+					break;
+				case LINETYPE:
+					lwfree_line((LWLINE*)col->geoms[i]);
+					break;
+				case POLYGONTYPE:
+					lwfree_polygon((LWPOLY*)col->geoms[i]);
+					break;
+				case MULTIPOINTTYPE:
+					lwfree_mpoint((LWMPOINT*)col->geoms[i]);
+					break;
+				case MULTILINETYPE:
+					lwfree_mline((LWMLINE*)col->geoms[i]);
+					break;
+				case MULTIPOLYGONTYPE:
+					lwfree_mpolygon((LWMPOLY*)col->geoms[i]);
+					break;
+				case COLLECTIONTYPE:
+					lwfree_collection((LWCOLLECTION*)col->geoms[i]);
+					break;
+			}
+		}
+	}
+	if( col->geoms ) 
+	{
+		lwfree(col->geoms);
+	}
+	lwfree(col);
+	
+};
