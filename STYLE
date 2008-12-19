@@ -43,7 +43,7 @@ Enumerations should be ALL_UPPERCASE.
 For liblwgeom:
 
 - Files should be named with an lw prefix.
-- Functions should have an lw prefix (lw_getPoint).
+- Functions should have an lw prefix (lw_get_point).
 - Function names should use underscores, not camel case.
 - Function names should indicate the geometry type of inputs
   if relevant (lwline_split)
