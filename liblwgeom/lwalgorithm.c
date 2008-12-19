@@ -465,8 +465,21 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 		LWDEBUGF(1, "ordinate_value_p %g", ordinate_value_p);
 		LWDEBUGF(1, "ordinate_value_q %g", ordinate_value_q);
 
+		/* Is this point on the edges of our range? */
+		if( ordinate_value_p == from || ordinate_value_p == to ) 
+		{
+			if( ! added_last_point ) 
+			{	
+				if( dp ) lwfree(dp);
+				dp = dynptarray_create(64, ndims);
+			}
+			rv = dynptarray_addPoint4d(dp, p, 0);
+            added_last_point = 2; /* Added on a boundary. */
+			continue;
+		}
+
 		/* Is this point inside the ordinate range? Yes. */
-		if ( ordinate_value_p >= from && ordinate_value_p <= to )
+		if ( ordinate_value_p > from && ordinate_value_p < to )
 		{
 			LWDEBUGF(1, "inside ordinate range (%g, %g)", from, to);
 
@@ -474,8 +487,7 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 			{
 				/* We didn't add the previous point, so this is a new segment.
 				*  Make a new point array. */
-				if( dp ) 
-					lwfree(dp);
+				if( dp ) lwfree(dp);
 				dp = dynptarray_create(64, ndims);
 
            		/* We're transiting into the range so add an interpolated 
@@ -485,41 +497,33 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
                     double interpolation_value;
                     (ordinate_value_q > to) ? (interpolation_value = to) : (interpolation_value = from);
                     rv = lwpoint_interpolate(q, p, r, ndims, ordinate, interpolation_value);
-                    rv = dynptarray_addPoint4d(dp, r, 1);
+                    rv = dynptarray_addPoint4d(dp, r, 0);
     		    }
 			}
 		    /* Add the current vertex to the point array. */
-    		rv = dynptarray_addPoint4d(dp, p, 1);
-            added_last_point = LW_TRUE;
+    		rv = dynptarray_addPoint4d(dp, p, 0);
+            added_last_point = 1;
 		} 
 		/* Is this point inside the ordinate range? No. */
 		else 
 		{
-		    if( added_last_point ) 
+		    if( added_last_point == 1 ) 
 		    {
 		        /* We're transiting out of the range, so add an interpolated point 
 				*  to the point array at the range boundary. */
                 double interpolation_value;
-				LWGEOM *oline;
-
                 (ordinate_value_p > to) ? (interpolation_value = to) : (interpolation_value = from);
                 rv = lwpoint_interpolate(q, p, r, ndims, ordinate, interpolation_value);
-                rv = dynptarray_addPoint4d(dp, r, 1);
-                
-		        /* Save the point array out to the final collection. */
-				oline = (LWGEOM*)lwline_construct(line->SRID, NULL, dp->pa);
-				lwgeom_out->ngeoms++;
-				lwgeom_out->geoms = lwrealloc(lwgeom_out->geoms, sizeof(LWGEOM*) * lwgeom_out->ngeoms);
-				lwgeom_out->geoms[lwgeom_out->ngeoms - 1] = oline;				
-				lwgeom_dropBBOX((LWGEOM*)lwgeom_out);
-				lwgeom_addBBOX((LWGEOM*)lwgeom_out);
-				lwfree(dp);
-				dp = NULL;
+                rv = dynptarray_addPoint4d(dp, r, 0);
 	        }
+			else if ( added_last_point == 2 ) 
+			{
+				/* We're out and the last point was on the boundary.
+				*  Nothing to do, the point was already added above. */
+			}
 			else if ( ordinate_value_q < from && ordinate_value_p > to ) {
 				/* We just hopped over the whole range, from bottom to top, 
 				*  so we need to add *two* interpolated points! */
-				LWGEOM *oline;
 				pa_out = ptarray_construct(hasz, hasm, 2);
 				/* Interpolate lower point. */
 				rv = lwpoint_interpolate(p, q, r, ndims, ordinate, from);
@@ -527,18 +531,10 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 				/* Interpolate upper point. */
 				rv = lwpoint_interpolate(p, q, r, ndims, ordinate, to);
 				setPoint4d(pa_out, 1, r);
-		        /* Save the point array out to the final collection. */
-				oline = (LWGEOM*)lwline_construct(line->SRID, NULL, pa_out);
-				lwgeom_out->ngeoms++;
-				lwgeom_out->geoms = lwrealloc(lwgeom_out->geoms, sizeof(LWGEOM*) * lwgeom_out->ngeoms);
-				lwgeom_out->geoms[lwgeom_out->ngeoms - 1] = oline;				
-				lwgeom_dropBBOX((LWGEOM*)lwgeom_out);
-				lwgeom_addBBOX((LWGEOM*)lwgeom_out);
 			}
 			else if ( ordinate_value_q > to && ordinate_value_p < from ) {
 				/* We just hopped over the whole range, from top to bottom, 
 				*  so we need to add *two* interpolated points! */
-				LWGEOM *oline;
 				pa_out = ptarray_construct(hasz, hasm, 2);
 				/* Interpolate upper point. */
 				rv = lwpoint_interpolate(p, q, r, ndims, ordinate, to);
@@ -546,15 +542,38 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 				/* Interpolate lower point. */
 				rv = lwpoint_interpolate(p, q, r, ndims, ordinate, from);
 				setPoint4d(pa_out, 1, r);
-		        /* Save the point array out to the final collection. */
-				oline = (LWGEOM*)lwline_construct(line->SRID, NULL, pa_out);
+			}
+			/* We have an extant point-array, save it out to a multi-line. */
+			if ( dp || pa_out ) {
+				LWGEOM *oline;
+				if( dp ) 
+				{
+					/* Only one point, so we have to make an lwpoint to hold this
+					*  and set the overall output type to a generic collection. */
+					if( dp->pa->npoints == 1 ) 
+					{
+						oline = (LWGEOM*)lwpoint_construct(line->SRID, NULL, dp->pa);
+						lwgeom_out->type = lwgeom_makeType(hasz, hasm, hassrid, COLLECTIONTYPE);
+					}
+					else
+					{
+						oline = (LWGEOM*)lwline_construct(line->SRID, NULL, dp->pa);
+					}
+				}
+				else 
+				{
+					oline = (LWGEOM*)lwline_construct(line->SRID, NULL, pa_out);
+				}
 				lwgeom_out->ngeoms++;
 				lwgeom_out->geoms = lwrealloc(lwgeom_out->geoms, sizeof(LWGEOM*) * lwgeom_out->ngeoms);
 				lwgeom_out->geoms[lwgeom_out->ngeoms - 1] = oline;				
 				lwgeom_dropBBOX((LWGEOM*)lwgeom_out);
 				lwgeom_addBBOX((LWGEOM*)lwgeom_out);
+				if( dp ) lwfree(dp);
+				dp = NULL;
+				if( pa_out ) pa_out = NULL;
 			}
-            added_last_point = LW_FALSE;
+            added_last_point = 0;
 
 	    }
 	}

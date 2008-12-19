@@ -600,6 +600,12 @@ void test_lwpoint_interpolate(void)
     rv = lwpoint_interpolate(p, q, r, 4, 3, 41.0);
     CU_ASSERT_EQUAL( r->y, 21.0);
 
+    rv = lwpoint_interpolate(p, q, r, 4, 3, 50.0);
+    CU_ASSERT_EQUAL( r->y, 30.0);
+
+    rv = lwpoint_interpolate(p, q, r, 4, 3, 40.0);
+    CU_ASSERT_EQUAL( r->y, 20.0);
+
     lwfree(r);
     
 }
@@ -610,16 +616,61 @@ void test_lwline_clip(void)
 	LWCOLLECTION *c;
 	char *ewkt;
 	
+	/* Clip in the middle, mid-range. */
 	c = lwline_clip_to_ordinate_range(l51, 1, 1.5, 2.5);
 	ewkt = lwgeom_to_ewkt((LWGEOM*)c,0);
-	printf("c = %s\n", ewkt);
+	//printf("c = %s\n", ewkt);
 	CU_ASSERT_STRING_EQUAL(ewkt, "MULTILINESTRING((0 1.5,0 2,0 2.5))");
 	lwfree(ewkt);
-	lwgeom_release(c);
+	lwfree_collection(c);
 
-	CU_ASSERT_STRING_EQUAL(ewkt, "MULTILINESTRING((0 1.5,0 2,0 2.5))");
+	/* Clip off the top. */
+	c = lwline_clip_to_ordinate_range(l51, 1, 3.5, 5.5);
+	ewkt = lwgeom_to_ewkt((LWGEOM*)c,0);
+	//printf("c = %s\n", ewkt);
+	CU_ASSERT_STRING_EQUAL(ewkt, "MULTILINESTRING((0 3.5,0 4))");
+	lwfree(ewkt);
+	lwfree_collection(c);
 
-	free(c);
-	
+	/* Clip off the bottom. */
+	c = lwline_clip_to_ordinate_range(l51, 1, -1.5, 2.5);
+	ewkt = lwgeom_to_ewkt((LWGEOM*)c,0);
+	//printf("c = %s\n", ewkt);
+	CU_ASSERT_STRING_EQUAL(ewkt, "MULTILINESTRING((0 0,0 1,0 2,0 2.5))" );
+	lwfree(ewkt);
+	lwfree_collection(c);	
+
+	/* Range holds entire object. */
+	c = lwline_clip_to_ordinate_range(l51, 1, -1.5, 5.5);
+	ewkt = lwgeom_to_ewkt((LWGEOM*)c,0);
+	//printf("c = %s\n", ewkt);
+	CU_ASSERT_STRING_EQUAL(ewkt, "MULTILINESTRING((0 0,0 1,0 2,0 3,0 4))" );
+	lwfree(ewkt);
+	lwfree_collection(c);
+
+	/* Clip on vertices. */
+	c = lwline_clip_to_ordinate_range(l51, 1, 1.0, 2.0);
+	ewkt = lwgeom_to_ewkt((LWGEOM*)c,0);
+	//printf("c = %s\n", ewkt);
+	CU_ASSERT_STRING_EQUAL(ewkt, "MULTILINESTRING((0 1,0 2))" );
+	lwfree(ewkt);
+	lwfree_collection(c);
+
+	/* Clip on vertices off the bottom. */
+	c = lwline_clip_to_ordinate_range(l51, 1, -1.0, 2.0);
+	ewkt = lwgeom_to_ewkt((LWGEOM*)c,0);
+	//printf("c = %s\n", ewkt);
+	CU_ASSERT_STRING_EQUAL(ewkt, "MULTILINESTRING((0 0,0 1,0 2))" );
+	lwfree(ewkt);
+	lwfree_collection(c);
+
+	/* Clip on top. */
+	c = lwline_clip_to_ordinate_range(l51, 1, -1.0, 0.0);
+	ewkt = lwgeom_to_ewkt((LWGEOM*)c,0);
+	//printf("c = %s\n", ewkt);
+	CU_ASSERT_STRING_EQUAL(ewkt, "GEOMETRYCOLLECTION(POINT(0 0))" );
+	lwfree(ewkt);
+	lwfree_collection(c);
+
 }
 
