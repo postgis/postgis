@@ -44,15 +44,6 @@ static char rcsid[] =
 
 #include "../liblwgeom/liblwgeom.h"
 
-#define	POINTTYPE	1
-#define	LINETYPE	2
-#define	POLYGONTYPE	3
-#define	MULTIPOINTTYPE	4
-#define	MULTILINETYPE	5
-#define	MULTIPOLYGONTYPE	6
-#define	COLLECTIONTYPE	7
-#define	BBOXONLYTYPE	99
-
 /*
  * Verbosity:
  *   set to 1 to see record fetching progress
