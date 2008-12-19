@@ -3310,15 +3310,15 @@ FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS the_geom) AS foo
 		<title>Description</title>
 	
 		<para>Returns true if this Geometry has no anomalous geometric
-				points, such as self intersection or self tangency.</para>
+				points, such as self intersection or self tangency. For more 
+			information on the OGC's definition of geometry simplicity and validity, refer
+			to <link linkend="OGC_Validity">"Ensuring OpenGIS compliancy of geometries"</link></para>
 				
 		<note>
 			<para>SQL-MM defines the result of ST_IsSimple(NULL) to be 0,
 			while PostGIS returns NULL.</para>
 		</note>
 
-	
-		<!-- Optionally mention OpenGIS compliancy if appropriate -->
 		<para><inlinemediaobject>
 			<imageobject>
 			  <imagedata fileref="images/check.png" />
@@ -3327,7 +3327,6 @@ FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS the_geom) AS foo
 		url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
 		Implementation Specification for SQL.</ulink> OGC SPEC s2.1.1.1</para>
 	
-		<!-- Optionally mention SQL/MM compliancy if appropriate -->
 		<para><inlinemediaobject>
 			<imageobject>
 			  <imagedata fileref="images/check.png" />
@@ -3335,7 +3334,6 @@ FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS the_geom) AS foo
 		  </inlinemediaobject> This method implements the SQL/MM specification:
 		SQL-MM 3: 5.1.8</para>
 		
-		<!-- Optionally mention 3d support -->
 		<para><inlinemediaobject>
 			<imageobject>
 			  <imagedata fileref="images/check.png" />
@@ -3343,7 +3341,6 @@ FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS the_geom) AS foo
 		  </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
 	  </refsection>
 	  
-	
 	  <refsection>
 		<title>Examples</title>
 	
@@ -3357,10 +3354,14 @@ FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS the_geom) AS foo
  st_issimple 
 -------------
  f
-(1 row)
-
-</programlisting>
-	  </refsection>
+(1 row)</programlisting>
+		</refsection>
+	  
+		<refsection>
+			<title>See Also</title>
+    
+			<para><xref linkend="ST_IsValid" /></para>
+		</refsection>
 	</refentry>
 
     <refentry id="ST_IsValid">
@@ -3386,7 +3387,9 @@ FROM (SELECT 'LINESTRING(0 0, 0 1, 1 0, 1 1, 0 0)'::geometry AS the_geom) AS foo
         <title>Description</title>
     
         <para>Test if an ST_Geometry value is well formed.  For geometries that are invalid,
-			the PostgreSQL NOTICE will provide details of why it is not valid.</para>
+			the PostgreSQL NOTICE will provide details of why it is not valid.  For more 
+			information on the OGC's definition of geometry simplicity and validity, refer
+			to <link linkend="OGC_Validity">"Ensuring OpenGIS compliancy of geometries"</link></para>
 		<note>
 			<para>SQL-MM defines the result of ST_IsValid(NULL) to be 0, while
 			PostGIS returns NULL.</para>
@@ -3425,7 +3428,7 @@ NOTICE:  Self-intersection at or near point 0 0
       <refsection>
         <title>See Also</title>
     
-        <para><xref linkend="ST_IsValidReason" />, <xref linkend="ST_Summary" /></para>
+        <para><xref linkend="ST_IsSimple" />, <xref linkend="ST_IsValidReason" />, <xref linkend="ST_Summary" /></para>
       </refsection>
     </refentry>
 	

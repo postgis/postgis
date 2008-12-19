@@ -571,20 +571,304 @@ FROM public.myschema.myspecialpois LIMIT 1;
 	
 	</sect2>
 
-    <sect2>
+    <sect2 id="OGC_Validity">
       <title>Ensuring OpenGIS compliancy of geometries</title>
 
+      <para>PostGIS is compliant with the Open Geospatial Consortium’s (OGC) 
+      OpenGIS Specifications.  As such, many PostGIS methods require, or more 
+      accurately, assume that geometries that are operated on are both simple 
+      and valid. for example, it does not make sense to calculate the area of 
+      a polygon that has a hole defined outside of the polygon, or to construct
+      a polygon from a non-simple boundary line.</para>
+      
+      <para>According to the OGC Specifications, a <emphasis>simple</emphasis>
+      geometry is one that has no anomalous geometric points, such as self 
+      intersection or self tangency and primarily refers to 0 or 1-dimensional 
+      geometries (i.e. <varname>[MULTI]POINT, [MULTI]LINESTRING</varname>).  
+      Geometry validity, on the other hand, primarily refers to 2-dimensional 
+      geometries (i.e. <varname>[MULTI]POLYGON)</varname> and defines the set 
+      of assertions that characterizes a valid polygon. The description of each 
+      geometric class includes specific conditions that further detail geometric 
+      simplicity and validity.</para>
+      
+      <para>A <varname>POINT</varname> is inheritably <emphasis>simple</emphasis> 
+      as a 0-dimensional geometry object.</para>
+      
+      <para><varname>MULTIPOINT</varname>s are <emphasis>simple</emphasis> if 
+      no two coordinates (<varname>POINT</varname>s) are equal (have identical 
+      coordinate values).</para>
+      
+      <para>A <varname>LINESTRING</varname> is <emphasis>simple</emphasis> if 
+      it does not pass through the same <varname>POINT</varname> twice (except 
+      for the endpoints, in which case it is referred to as a linear ring and 
+      additionally considered closed).</para>
+      
+      <informaltable>
+        <tgroup cols="2" align="center">
+          <tbody>
+            <row>
+              <entry><para><informalfigure>
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/st_issimple01.png" />
+                    </imageobject>
+
+                    <caption><para><emphasis role="bold">(a)</emphasis></para></caption>
+                  </mediaobject>
+                </informalfigure></para></entry>
+
+              <entry><para><informalfigure>
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/st_issimple02.png" />
+                    </imageobject>
+
+                    <caption><para><emphasis role="bold">(b)</emphasis></para></caption>
+                  </mediaobject>
+                </informalfigure></para></entry>
+            </row>
+
+            <row>
+              <entry><para><informalfigure>
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/st_issimple03.png" />
+                    </imageobject>
+
+                    <caption><para><emphasis role="bold">(c)</emphasis></para></caption>
+                  </mediaobject>
+                </informalfigure></para></entry>
+
+              <entry><para><informalfigure>
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/st_issimple04.png" />
+                    </imageobject>
+
+                    <caption><para><emphasis role="bold">(d)</emphasis></para></caption>
+                  </mediaobject>
+                </informalfigure></para></entry>
+            </row>
+          </tbody>
+        </tgroup>
+        
+        <tgroup cols="1">
+          <tbody>
+          	<row>
+          		<entry><para><emphasis role="bold">(a)</emphasis> and 
+          		<emphasis role="bold">(c)</emphasis> are simple 
+          		<varname>LINESTRING</varname>s, <emphasis role="bold">(b)</emphasis> 
+          		and <emphasis role="bold">(d)</emphasis> are not.</para></entry>
+          	</row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+      
+      <para>A <varname>MULTILINESTRING</varname> is <emphasis>simple</emphasis> 
+      only if all of its elements are simple and the only intersection between 
+      any two elements occurs at <varname>POINT</varname>s that are on the 
+      boundaries of both elements.  </para>
+
+      <informaltable>
+        <tgroup cols="3" align="center">
+          <tbody>
+            <row>
+              <entry><para><informalfigure>
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/st_issimple05.png" />
+                    </imageobject>
+
+                    <caption><para><emphasis role="bold">(e)</emphasis></para></caption>
+                  </mediaobject>
+                </informalfigure></para></entry>
+
+              <entry><para><informalfigure>
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/st_issimple06.png" />
+                    </imageobject>
+
+                    <caption><para><emphasis role="bold">(f)</emphasis></para></caption>
+                  </mediaobject>
+                </informalfigure></para></entry>
+                
+              <entry><para><informalfigure>
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/st_issimple07.png" />
+                    </imageobject>
+
+                    <caption><para><emphasis role="bold">(g)</emphasis></para></caption>
+                  </mediaobject>
+                </informalfigure></para></entry>
+            </row>
+          </tbody>
+        </tgroup>
+        
+        <tgroup cols="1">
+          <tbody>
+          	<row>
+          		<entry><para><emphasis role="bold">(e)</emphasis> and 
+          		<emphasis role="bold">(f)</emphasis> are simple 
+          		<varname>MULTILINESTRING</varname>s, <emphasis role="bold">(g)</emphasis> 
+          		is not.</para></entry>
+          	</row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+      
+      <para>By definition, a <varname>POLYGON</varname> is always 
+      <emphasis>simple</emphasis>.  It is <emphasis>valid</emphasis> if no two 
+      rings in the boundary (made up of an exterior ring and interior rings) 
+      cross.  The boundary of a <varname>POLYGON</varname> may intersect at a 
+      <varname>POINT</varname> but only as a tangent (i.e. not on a line).  
+      A <varname>POLYGON</varname> may not have cut lines or spikes and the 
+      interior rings must be contained entirely within the exterior ring.</para>
+      
+      <informaltable>
+        <tgroup cols="3" align="center">
+          <tbody>
+            <row>
+              <entry><para><informalfigure>
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/st_isvalid01.png" />
+                    </imageobject>
+
+                    <caption><para><emphasis role="bold">(h)</emphasis></para></caption>
+                  </mediaobject>
+                </informalfigure></para></entry>
+
+              <entry><para><informalfigure>
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/st_isvalid02.png" />
+                    </imageobject>
+
+                    <caption><para><emphasis role="bold">(i)</emphasis></para></caption>
+                  </mediaobject>
+                </informalfigure></para></entry>
+                
+              <entry><para><informalfigure>
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/st_isvalid03.png" />
+                    </imageobject>
+
+                    <caption><para><emphasis role="bold">(j)</emphasis></para></caption>
+                  </mediaobject>
+                </informalfigure></para></entry>
+            </row>
+            <row>
+
+              <entry><para><informalfigure>
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/st_isvalid04.png" />
+                    </imageobject>
+
+                    <caption><para><emphasis role="bold">(k)</emphasis></para></caption>
+                  </mediaobject>
+                </informalfigure></para></entry>
+                
+              <entry><para><informalfigure>
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/st_isvalid05.png" />
+                    </imageobject>
+
+                    <caption><para><emphasis role="bold">(l)</emphasis></para></caption>
+                  </mediaobject>
+                </informalfigure></para></entry>
+                
+              <entry><para><informalfigure>
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/st_isvalid06.png" />
+                    </imageobject>
+
+                    <caption><para><emphasis role="bold">(m)</emphasis></para></caption>
+                  </mediaobject>
+                </informalfigure></para></entry>
+            </row>
+          </tbody>
+        </tgroup>
+        <tgroup cols="1">
+          <tbody>
+          	<row>
+          		<entry><para><emphasis role="bold">(h)</emphasis> and 
+          		<emphasis role="bold">(i)</emphasis> are valid 
+          		<varname>POLYGON</varname>s, <emphasis role="bold">(j-m)</emphasis> 
+          		cannot be represented as single <varname>POLYGON</varname>s, but 
+          		<emphasis role="bold">(j)</emphasis> and <emphasis role="bold">(m)</emphasis>
+          		could be represented as a valid <varname>MULTIPOLYGON</varname>.
+          		</para></entry>
+          	</row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+      
+      <para>A <varname>MULTIPOLYGON</varname> is <emphasis>valid</emphasis> 
+      if and only if all of its elements are valid and the interiors of no two 
+      elements intersect.  The boundaries of any two elements may touch, but 
+      only at a finite number of <varname>POINT</varname>s.</para>
+      
+      <informaltable>
+        <tgroup cols="2" align="center">
+          <tbody>
+            <row>
+              <entry><para><informalfigure>
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/st_isvalid07.png" />
+                    </imageobject>
+
+                    <caption><para><emphasis role="bold">(n)</emphasis></para></caption>
+                  </mediaobject>
+                </informalfigure></para></entry>
+
+              <entry><para><informalfigure>
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/st_isvalid08.png" />
+                    </imageobject>
+
+                    <caption><para><emphasis role="bold">(o)</emphasis></para></caption>
+                  </mediaobject>
+                </informalfigure></para></entry>
+            </row>
+          </tbody>
+        </tgroup>
+        <tgroup cols="1">
+          <tbody>
+          	<row>
+          		<entry><para><emphasis role="bold">(n)</emphasis> and 
+          		<emphasis role="bold">(o)</emphasis> are not valid 
+          		<varname>MULTIPOLYGON</varname>s.</para></entry>
+          	</row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+      
       <para>Most of the functions implemented by the GEOS library rely on the
       assumption that your geometries are valid as specified by the OpenGIS
-      Simple Feature Specification. To check validity of geometries you can
-      use the <link linkend="ST_IsValid">IsValid()</link> function:</para>
+      Simple Feature Specification. To check simplicity or validity of 
+      geometries you can use the <link linkend="ST_IsSimple">ST_IsSimple()</link> and 
+      <link linkend="ST_IsValid">ST_IsValid()</link></para>
+      
+      <programlisting>-- Typically, it doesn't make sense to check
+-- for validity on linear features since it will always return TRUE.
+-- But in this example, PostGIS extends the definition of the OGC IsValid
+-- by returning false if a LinearRing (start and end points are the same) 
+-- has less than 2 vertices.
+gisdb=# SELECT 
+   st_isvalid('LINESTRING(0 0, 1 1)'), 
+   st_isvalid('LINESTRING(0 0, 0 0)'); 
 
-      <programlisting> gisdb=# select isvalid('LINESTRING(0 0, 1 1)'), 
-        isvalid('LINESTRING(0 0,0 0)'); 
-
- isvalid | isvalid
----------+--------- 
-       t |       f</programlisting>
+ st_isvalid | st_isvalid
+------------+--------- 
+      t     |     f</programlisting>
 
       <para>By default, PostGIS does not apply this validity check on geometry
       input, because testing for validity needs lots of CPU time for complex
@@ -605,7 +889,7 @@ FROM public.myschema.myspecialpois LIMIT 1;
 
       <note>
         <para>Strictly compliant OGC geometries cannot have Z or M values. The
-        <link linkend="ST_IsValid">IsValid()</link> function won't consider
+        <link linkend="ST_IsValid">ST_IsValid()</link> function won't consider
         higher dimensioned geometries invalid! Invocations of <link
         linkend="AddGeometryColumn">AddGeometryColumn()</link> will add a
         constraint checking geometry dimensions, so it is enough to specify 2
