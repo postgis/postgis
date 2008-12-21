@@ -37,6 +37,7 @@ LWCOLLECTION *simplify2d_collection(const LWCOLLECTION *igeom, double dist);
 LWGEOM *simplify2d_lwgeom(const LWGEOM *igeom, double dist);
 Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS);
 Datum crossingDirection(PG_FUNCTION_ARGS);
+Datum ST_LineClipZ(PG_FUNCTION_ARGS);
 
 double determineSide(POINT2D *seg1, POINT2D *seg2, POINT2D *point);
 int isOnSegment(POINT2D *seg1, POINT2D *seg2, POINT2D *point);
@@ -991,6 +992,45 @@ Datum crossingDirection(PG_FUNCTION_ARGS)
 
 	PG_RETURN_INT32(rv);
 
+}
+
+PG_FUNCTION_INFO_V1(ST_LineClipZ);
+Datum ST_LineClipZ(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *geom_in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	double from = PG_GETARG_FLOAT8(1);
+	double to = PG_GETARG_FLOAT8(2);
+	LWCOLLECTION *geom_out = NULL;
+	LWLINE *line_in = NULL;
+	uchar type = (uchar)SERIALIZED_FORM(geom_in)[0];
+	char geomtype = TYPE_GETTYPE(type);
+	char hasz = TYPE_HASZ(type);
+	static int ordinate = 2; /* Z */
+	
+	if ( geomtype != LINETYPE )
+	{
+		elog(ERROR,"This function only accepts LINESTRING as arguments.");
+		PG_RETURN_NULL();
+	}
+
+	if( ! hasz ) 
+	{
+		elog(ERROR,"This function only accepts LINESTRING with Z values as arguments.");
+		PG_RETURN_NULL();
+	}
+
+	line_in = lwline_deserialize(SERIALIZED_FORM(geom_in));
+	geom_out = lwline_clip_to_ordinate_range(line_in, ordinate, from, to);
+	lwfree_line(line_in);
+
+	if( ! geom_out ) {
+		elog(ERROR,"The lwline_clip_to_ordinate_range returned null.");
+		PG_RETURN_NULL();
+	}
+
+	PG_FREE_IF_COPY(geom_in, 0);
+	PG_RETURN_POINTER(pglwgeom_serialize((LWGEOM*)geom_out));
+	
 }
 
 /***********************************************************************

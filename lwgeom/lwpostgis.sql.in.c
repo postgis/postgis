@@ -3972,6 +3972,12 @@ CREATEFUNCTION ST_CrossingDirection(geometry, geometry)
     AS 'MODULE_PATHNAME', 'crossingDirection'
     LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+-- Only accepts LINESTRING as parameters.
+-- Availability: 1.4.0
+CREATEFUNCTION ST_LineClipZ(geometry, float8, float8)
+    RETURNS geometry
+    AS 'MODULE_PATHNAME', 'ST_LineClipZ'
+    LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 #if POSTGIS_GEOS_VERSION >= 30
 -- Requires GEOS >= 3.0.0

@@ -33,7 +33,8 @@ CU_pSuite register_cg_suite(void)
 	    (NULL == CU_add_test(pSuite, "test_lwpoint_set_ordinate()", test_lwpoint_set_ordinate)) || 
 	    (NULL == CU_add_test(pSuite, "test_lwpoint_get_ordinate()", test_lwpoint_get_ordinate)) ||
 	    (NULL == CU_add_test(pSuite, "test_lwpoint_interpolate()", test_lwpoint_interpolate)) ||
-	    (NULL == CU_add_test(pSuite, "test_lwline_clip()", test_lwline_clip)) 
+	    (NULL == CU_add_test(pSuite, "test_lwline_clip()", test_lwline_clip)) ||
+	    (NULL == CU_add_test(pSuite, "test_lwline_clip_big()", test_lwline_clip_big)) 
 	)
 	{
 		CU_cleanup_registry();
@@ -672,5 +673,38 @@ void test_lwline_clip(void)
 	lwfree(ewkt);
 	lwfree_collection(c);
 
+}
+
+void test_lwline_clip_big(void)
+{
+	POINTARRAY *pa = ptarray_construct(1, 0, 3);
+	LWLINE *line = lwline_construct(-1, NULL, pa);
+	LWCOLLECTION *c;
+	char *ewkt;
+	int rv = 0;
+
+	p->x = 0.0;
+	p->y = 0.0;
+	p->z = 0.0;
+	setPoint4d(pa, 0, p);
+	
+	p->x = 1.0;
+	p->y = 1.0;
+	p->z = 1.0;
+	setPoint4d(pa, 1, p);
+	
+	p->x = 2.0;
+	p->y = 2.0;
+	p->z = 2.0;
+	setPoint4d(pa, 2, p);
+	
+	c = lwline_clip_to_ordinate_range(line, 2, 0.5, 1.5);
+	ewkt = lwgeom_to_ewkt((LWGEOM*)c,0);
+	//printf("c = %s\n", ewkt);
+	CU_ASSERT_STRING_EQUAL(ewkt, "MULTILINESTRING((0.5 0.5 0.5,1 1 1,1.5 1.5 1.5))" );
+
+	lwfree(ewkt);
+	lwfree_collection(c);
+	lwfree_line(line);
 }
 
