@@ -2399,69 +2399,10 @@ Datum isring(PG_FUNCTION_ARGS)
 /*
 **  GEOS <==> PostGIS conversion functions
 **
-** WKB_CONVERSION is turned off by default. It serializes PostGIS to a WKB
-** array, then GEOS deserializes that array. 
-**
 ** Default conversion creates a GEOS point array, then iterates through the
 ** PostGIS points, setting each value in the GEOS array one at a time.
 **
 */
-
-#ifdef WKB_CONVERSION
-
-/* Return an LWGEOM from a GEOSGeom */
-LWGEOM *
-GEOS2LWGEOM(GEOSGeom geom, char want3d)
-{
-	size_t size;
-	char *wkb;
-	LWGEOM *lwgeom;
-
-	if ( want3d ) GEOS_setWKBOutputDims(3);
-	else GEOS_setWKBOutputDims(2);
-
-	wkb = GEOSGeomToWKB_buf(geom, &size);
-	lwgeom = lwgeom_from_ewkb(wkb, flags, size);
-
-	return lwgeom;
-}
-
-PG_LWGEOM *
-GEOS2POSTGIS(GEOSGeom geom, char want3d)
-{
-	size_t size;
-	char *wkb;
-	PG_LWGEOM *pglwgeom, *ret;
-
-	if ( want3d ) GEOS_setWKBOutputDims(3);
-	else GEOS_setWKBOutputDims(2);
-
-	wkb = GEOSGeomToWKB_buf(geom, &size);
-	if ( ! wkb )
-	{
-		lwerror("GEOS failed to export WKB");
-	}
-	pglwgeom = pglwgeom_from_ewkb(wkb, size);
-	if ( ! pglwgeom )
-	{
-		lwerror("GEOS2POSTGIS: lwgeom_from_ewkb returned NULL");
-	}
-
-	if ( is_worth_caching_pglwgeom_bbox(pglwgeom) )
-	{
-		ret = (PG_LWGEOM *)DatumGetPointer(DirectFunctionCall1(
-		                                           LWGEOM_addBBOX, PointerGetDatum(pglwgeom)));
-		lwfree(pglwgeom);
-	}
-	else
-	{
-		ret = pglwgeom;
-	}
-
-	return ret;
-}
-
-#else /* !ndef WKB_CONVERSION */
 
 /* Return a POINTARRAY from a GEOSCoordSeq */
 POINTARRAY *
@@ -2627,55 +2568,7 @@ GEOS2POSTGIS(GEOSGeom geom, char want3d)
 	return result;
 }
 
-#endif /* def WKB_CONVERSION */
-
 /*-----=POSTGIS2GEOS= */
-
-
-#ifdef WKB_CONVERSION
-
-GEOSGeom LWGEOM2GEOS(LWGEOM *);
-
-GEOSGeom
-LWGEOM2GEOS(LWGEOM *lwgeom)
-{
-	size_t size;
-	char *wkb;
-	GEOSGeom geom;
-
-	wkb = lwgeom_to_ewkb(lwgeom, getMachineEndian(), &size);
-	geom = GEOSGeomFromWKB_buf(wkb, size);
-	return geom;
-}
-
-GEOSGeom
-POSTGIS2GEOS(PG_LWGEOM *pglwgeom)
-{
-	size_t size;
-	char *wkb;
-	GEOSGeom geom;
-
-	wkb = pglwgeom_to_ewkb(pglwgeom, getMachineEndian(), &size);
-	if ( ! wkb )
-	{
-		lwerror("Postgis failed to export EWKB %s:%d", __FILE__, __LINE__);
-	}
-	geom = GEOSGeomFromWKB_buf(wkb, size);
-	lwfree(wkb);
-	if ( ! geom )
-	{
-		lwerror("POSTGIS2GEOS conversion failed");
-	}
-
-#if POSTGIS_DEBUG_LEVEL >= 4
-	wkb = GEOSGeomToWKT(geom);
-	POSTGIS_DEBUGF(4, "GEOS geom: %s", wkb);
-#endif
-
-	return geom;
-}
-
-#else /* ndef WKB_CONVERSION */
 
 GEOSCoordSeq ptarray_to_GEOSCoordSeq(POINTARRAY *);
 GEOSGeom LWGEOM2GEOS(LWGEOM *lwgeom);
@@ -2842,7 +2735,6 @@ POSTGIS2GEOS(PG_LWGEOM *pglwgeom)
 	return ret;
 }
 
-#endif /* WKB_CONVERSION */
 
 PG_FUNCTION_INFO_V1(GEOSnoop);
 Datum GEOSnoop(PG_FUNCTION_ARGS)
