@@ -7576,6 +7576,85 @@ WHERE ST_Crosses(roads.the_geom, highways.the_geom);</programlisting>
         </informalexample></para>
     </refsection>
   </refentry>
+  
+  <refentry id="ST_CrossingDirection">
+    <refnamediv>
+      <refname>ST_CrossingDirection</refname>
+  
+      <refpurpose>Given 2 linestrings, returns a number between -3 and 3 denoting what kind of crossing behavior. 0 is no crossing.</refpurpose>
+    </refnamediv>
+  
+    <refsynopsisdiv>
+      <funcsynopsis>
+        <funcprototype>
+          <funcdef>integer <function>ST_CrossingDirection</function></funcdef>
+          <paramdef><type>geometry </type> <parameter>linestringA</parameter></paramdef>
+          <paramdef><type>geometry </type> <parameter>linestringB</parameter></paramdef>
+        </funcprototype>
+      </funcsynopsis>
+    </refsynopsisdiv>
+  
+    <refsection>
+      <title>Description</title>
+  
+      <para>Given 2 linestrings, returns a number between -3 and 3 denoting what kind of crossing behavior. 0 is no crossing.  This is only supported for <varname>LINESTRING</varname></para>
+	  <para>Definition of integer constants is as follows: 
+		   <itemizedlist>
+				<listitem>
+				  <para> 0: LINE NO CROSS</para>
+				</listitem>
+				<listitem>
+				  <para>-1: LINE CROSS LEFT</para>
+				</listitem>
+				<listitem>
+				  <para> 1: LINE CROSS RIGHT</para>
+				</listitem>
+				<listitem>
+				  <para>-2: LINE MULTICROSS END LEFT</para>
+				</listitem>
+				<listitem>
+				  <para>-3: LINE MULTICROSS END SAME FIRST LEFT</para>
+				</listitem>
+				<listitem>
+				  <para> 3: LINE MULTICROSS END SAME FIRST RIGHT</para>
+				</listitem>
+			</itemizedlist>
+	  </para>
+	  <para>Availability: 1.4</para>
+      <!-- optionally mention that this function uses indexes if appropriate -->
+      <note>
+        <para><inlinegraphic fileref="images/warning.png" /> This function does not use indexes.  Include &amp;&amp; + ST_CrossingDirection = 0 or ST_Crosses 
+		if you want to throw out linestrings that do not cross.</para>
+      </note>
+	  <note><para><inlinegraphic fileref="images/warning.png" />This function is under development and the name and constants may change.</para></note>
+
+    </refsection>
+    
+  
+    <refsection>
+      <title>Examples</title>
+  <!-- TODO: We really badly need diagrams here and more examples -->
+      <programlisting>SELECT ST_CrossingDirection(foo.line1, foo.line2) As linecrossleft , ST_CrossingDirection(foo.line2, foo.line1) As linecrossright
+FROM (SELECT ST_GeomFromText('LINESTRING(744589 2923929,744521 2923861)') As line1, 
+ST_GeomFromText('LINESTRING(744753 2924117,744563 2923902)') As line2) As foo;
+
+ linecrossleft | linecrossright 
+---------------+----------------
+            -1 |              1
+
+	SELECT s1.gid, s2.gid, ST_CrossingDirection(s1.the_geom, s2.the_geom)
+	FROM streets s1 CROSS JOIN streets s2 ON (s1 &gt;&lt; s2 AND s1 &amp;&amp; s2 )
+	WHERE ST_CrossingDirection(s1.the_geom, s2.the_geom) > 0;
+</programlisting>
+    </refsection>
+  
+    <!-- Optionally add a "See Also" section -->
+    <refsection>
+      <title>See Also</title>
+  
+      <para><xref linkend="ST_Crosses" /></para>
+    </refsection>
+  </refentry>
 
   <refentry id="ST_Disjoint">
 		<refnamediv>
