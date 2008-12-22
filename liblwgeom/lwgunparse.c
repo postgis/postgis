@@ -401,7 +401,7 @@ uchar *output_wkt(uchar* geom, int supress);
 
 /* special case for multipoint to supress extra brackets */
 uchar *output_multipoint(uchar* geom,int suppress){
-	unsigned type = *geom & 0x0f;
+	unsigned char type = *geom & 0x0f;
 	
 	if ( type  == POINTTYPE )
 		return output_point(++geom,suppress);
@@ -418,7 +418,7 @@ uchar *output_multipoint(uchar* geom,int suppress){
 /* Special case for compound curves: suppress the LINESTRING prefix from a curve if it appears as
    a component of a COMPOUNDCURVE, but not CIRCULARSTRING */
 uchar *output_compound(uchar* geom, int suppress) {
-        unsigned type;
+        unsigned char type;
 
         LWDEBUG(2, "output_compound called.");
 
@@ -438,7 +438,7 @@ uchar *output_compound(uchar* geom, int suppress) {
 /* Special case for multisurfaces: suppress the POLYGON prefix from a surface if it appears as
    a component of a MULTISURFACE, but not CURVEPOLYGON */
 uchar *output_multisurface(uchar* geom, int suppress) {
-        unsigned type;
+        unsigned char type;
 
         LWDEBUG(2, "output_multisurface called.");
 
@@ -464,7 +464,7 @@ uchar *
 output_wkt(uchar* geom, int supress)
 {
 
-	unsigned type=*geom++;
+	unsigned char type=*geom++;
 	char writeM=0;
 	dims = TYPE_NDIMS(type); /* ((type & 0x30) >> 4)+2; */
 
