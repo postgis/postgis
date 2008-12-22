@@ -7626,7 +7626,7 @@ WHERE ST_Crosses(roads.the_geom, highways.the_geom);</programlisting>
 	  <para>Availability: 1.4</para>
       <!-- optionally mention that this function uses indexes if appropriate -->
       <note>
-        <para><inlinegraphic fileref="images/warning.png" /> This function does not use indexes.  Include &amp;&amp; And ST_CrossingDirection &gt;&lt; 0 or ST_Crosses 
+        <para><inlinegraphic fileref="images/warning.png" /> This function does not use indexes.  Include &amp;&amp; And ST_CrossingDirection != 0 or ST_Crosses 
 		if you want to throw out linestrings that do not cross.</para>
       </note>
 	  <note><para><inlinegraphic fileref="images/warning.png" />This function is under development and the name and constants may change.</para></note>
@@ -7646,7 +7646,7 @@ ST_GeomFromText('LINESTRING(744753 2924117,744563 2923902)') As line2) As foo;
             -1 |              1
 
 	SELECT s1.gid, s2.gid, ST_CrossingDirection(s1.the_geom, s2.the_geom)
-	FROM streets s1 CROSS JOIN streets s2 ON (s1 &gt;&lt; s2 AND s1 &amp;&amp; s2 )
+	FROM streets s1 CROSS JOIN streets s2 ON (s1 != s2 AND s1 &amp;&amp; s2 )
 	WHERE ST_CrossingDirection(s1.the_geom, s2.the_geom) > 0;
 </programlisting>
     </refsection>
