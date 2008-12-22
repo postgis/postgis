@@ -114,17 +114,19 @@ SELECT 'create,insert,drop Test: Start Testing Multi/<xsl:value-of select="@Geom
 				<xsl:variable name='fnargs'><xsl:call-template name="listparams"><xsl:with-param name="func" select="." /></xsl:call-template></xsl:variable>
 				<xsl:variable name='fnname'><xsl:value-of select="funcdef/function"/></xsl:variable>
 				<xsl:variable name='fndef'><xsl:value-of select="funcdef"/></xsl:variable>
-<!-- For each function prototype generate a test sql statement -->
-<xsl:choose>
+				<xsl:variable name='numparams'><xsl:value-of select="count(paramdef/parameter)" /></xsl:variable>
+				<xsl:variable name='numparamgeoms'><xsl:value-of select="count(paramdef/type[contains(text(),'geometry') or contains(text(),'box') or contains(text(), 'WKT') or contains(text(), 'bytea')])" /></xsl:variable>
+				<!-- For each function prototype generate a test sql statement -->
+				<xsl:choose>
 <!--Test functions that take no arguments or take no geometries -->
-	<xsl:when test="(count(paramdef/parameter) = 0 or not(contains(paramdef[1]/type,'geometry') or contains(paramdef[2]/type,'geometry') or contains(paramdef[1]/parameter,'WKT') or contains(paramdef[1]/type,'box') or contains(paramdef[1]/type,'bytea'))) and not(contains($fnexclude,funcdef/function))">SELECT  'Starting <xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnargs" />)';BEGIN; 
+	<xsl:when test="$numparamgeoms = '0'">SELECT  'Starting <xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnargs" />)';BEGIN; 
 SELECT  <xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnfakeparams" />);
 COMMIT;
 SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnargs" />)';
 	</xsl:when>
 <!--Start Test aggregate and unary functions -->
 <!--Garden Aggregator/Unary function with input gsets test -->
-	<xsl:when test="(contains(paramdef[1]/type,'geometry set') or (count(paramdef/parameter) = 1 and contains(paramdef[1]/type, 'geometry')) and not(contains($fnexclude,@id)))" >
+	<xsl:when test="$numparams = '1' and $numparamgeoms = '1' and not(contains($fnexclude,funcdef/function))" >
 		<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
 	SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing Multi/<xsl:value-of select="@GeometryType" />'; 
 	BEGIN; <!-- If output is geometry show ewkt rep -->
@@ -138,7 +140,7 @@ SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select=
 				<xsl:value-of select="$fnname" />(ST_Multi(the_geom))
 			  </xsl:otherwise>
 			</xsl:choose>
-			FROM (<xsl:value-of select="." />) As foo;  
+			FROM (<xsl:value-of select="." />) As foo1;  
 	COMMIT;
 	SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text> <xsl:value-of select="@ID" />: End Testing Multi/<xsl:value-of select="@GeometryType" />';
 		<xsl:text>
@@ -146,16 +148,37 @@ SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select=
 		</xsl:text>
 		</xsl:for-each>
 	</xsl:when>
+	<!-- put functions that take only one geometry no need to cross with another geom collection -->
+	<xsl:when test="$numparamgeoms = '1' and not(contains($fnexclude,funcdef/function))" >
+		<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
+	SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="@GeometryType" />'; 
+	BEGIN; <!-- If output is geometry show ewkt rep -->
+			<xsl:choose>
+			  <xsl:when test="contains($fndef, 'geometry ')">
+	SELECT ST_AsEWKT(<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />))
+			  </xsl:when>
+			  <xsl:otherwise>
+	SELECT <xsl:value-of select="$fnname" />(<xsl:value-of select="$fnfakeparams" />)
+			  </xsl:otherwise>
+			</xsl:choose>
+			FROM (<xsl:value-of select="." />) As foo1;  
+	COMMIT;
+	SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text> <xsl:value-of select="@ID" />: End Testing <xsl:value-of select="@GeometryType" />';
+		<xsl:text>
+		
+		</xsl:text>
+		</xsl:for-each>
+	</xsl:when>
 
 <!--Functions more than 1 args not already covered this will cross every geometry type with every other -->
-<!-- TODO: put functions that take only one geometry into another section - no need to do a cross for these -->
 	<xsl:when test="not(contains($fnexclude,funcdef/function))">
 		<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
 	<!--Store first garden sql geometry from -->
 			<xsl:variable name="from1"><xsl:value-of select="." /></xsl:variable>
-SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="@GeometryType" /> against other types'; 
+			<xsl:variable name='geom1type'><xsl:value-of select="@GeometryType"/></xsl:variable>
+SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$geom1type" /> against other types'; 
 				<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
-	SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="@GeometryType" />'; 
+	SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryType" />'; 
 	BEGIN; <!-- If output is geometry show ewkt rep -->
 			<xsl:choose>
 			  <xsl:when test="contains($fndef, 'geometry ')">
@@ -168,15 +191,17 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 			FROM (<xsl:value-of select="$from1" />) As foo1 CROSS JOIN (<xsl:value-of select="." />) As foo2
 			LIMIT 3;  
 	COMMIT;
-	SELECT '<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnargs" />) <xsl:text> </xsl:text> <xsl:value-of select="@ID" />: End Testing Multi/<xsl:value-of select="@GeometryType" />';
+	SELECT '<xsl:value-of select="$fnname" />(<xsl:value-of select="$fnargs" />) <xsl:text> </xsl:text> <xsl:value-of select="@ID" />: End Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryType" />';
 		<xsl:text>
 		
 		</xsl:text>
 			</xsl:for-each>
 SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): End Testing <xsl:value-of select="@GeometryType" /> against other types';
+
+<!-- TODO: Put in test for multi geoms -->
 		</xsl:for-each>
-	</xsl:when>
-</xsl:choose>
+		</xsl:when>
+	</xsl:choose>
 			</xsl:for-each>
 		</xsl:for-each>
 	</xsl:template>
