@@ -124,7 +124,7 @@ SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select=
 	</xsl:when>
 <!--Start Test aggregate and unary functions -->
 <!--Garden Aggregator/Unary function with input gsets test -->
-	<xsl:when test="(contains(paramdef[1]/type,'geometry set') or (count(paramdef/parameter) = 1 and contains(paramdef[1]/type, 'geometry')) and not(contains($fnexclude,@id)))" >
+	<xsl:when test="count(paramdef[position() > -1]/type[contains(text(), 'geometry')]) = 0 and not(contains($fnexclude,@id))" >
 		<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
 	SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing Multi/<xsl:value-of select="@GeometryType" />'; 
 	BEGIN; <!-- If output is geometry show ewkt rep -->
@@ -206,7 +206,7 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="contains(type,'box')"> 
 						<xsl:text>foo2.the_geom</xsl:text>
 					</xsl:when>
-					<xsl:when test="(type = 'geometry' or type = 'geometry ') and position() = 1"> 
+					<xsl:when test="(type = 'geometry' or type = 'geometry ' or contains(type,'geometry set')) and position() = 1"> 
 						<xsl:text>foo1.the_geom</xsl:text>
 					</xsl:when>
 					<xsl:when test="type = 'geometry' or type = 'geometry '"> 
