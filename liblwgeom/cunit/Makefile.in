@@ -1,6 +1,8 @@
 
 LWGEOM=..
-LIBCUNIT=/usr/local/lib/libcunit.a
+CUNIT_LIB=@CUNIT_PATH@/lib/libcunit.a
+CUNIT_HEADER=@CUNIT_PATH@/include
+
 LIBLWGEOM=$(LWGEOM)/liblwgeom.a
 
 OBJS =	cu_tester.o \
@@ -8,9 +10,9 @@ OBJS =	cu_tester.o \
 
 #---------------------------------------------------------------
 
-INCLUDES = -I/usr/local/include -I$(LWGEOM)
+INCLUDES = -I$(CUNIT_HEADER) -I$(LWGEOM)
 CFLAGS = -g $(MSDEFINES) $(INCLUDES)
-LIBS = $(LIBCUNIT) $(LIBLWGEOM)
+LIBS = $(LIBLWGEOM) $(CUNIT_LIB)
 LDFLAGS = 
 
 cu_tester: $(OBJS) $(LIBS)

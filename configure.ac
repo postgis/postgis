@@ -153,6 +153,28 @@ fi
 
 AC_SUBST([XSLBASE])
 
+dnl
+dnl Detect CUnit if it is installed (used for unit testing)
+dnl
+
+SEARCHPATH="
+	/usr
+	/usr/local
+	/opt/local
+	/opt
+	"
+HAVE_CUNIT_H=0
+for p in ${SEARCHPATH}; do
+	AC_CHECK_HEADER([${p}/include/CUnit/CUnit.h], [HAVE_CUNIT_H=1], [])
+	if test "x$HAVE_CUNIT_H" = "x1"; then
+		AC_MSG_RESULT([Using CUnit found in: ${p}/include/CUnit/CUnit.h])
+		CUNIT_PATH="${p}"
+		break
+	fi
+done	
+AC_SUBST([HAVE_CUNIT_H])
+AC_SUBST([CUNIT_PATH])
+
 
 dnl
 dnl Detect iconv if it is installed (used for shp2pgsql encoding conversion if available)
@@ -474,5 +496,5 @@ AC_SUBST([SHLIB_LINK])
 dnl AC_MSG_RESULT([SHLIB_LINK: $SHLIB_LINK])
 
 dnl Output the relevant files
-AC_OUTPUT([liblwgeom/Makefile lwgeom/Makefile lwgeom/sqldefines.h loader/Makefile topology/Makefile regress/Makefile doc/Makefile])
+AC_OUTPUT([liblwgeom/Makefile liblwgeom/cunit/Makefile lwgeom/Makefile lwgeom/sqldefines.h loader/Makefile topology/Makefile regress/Makefile doc/Makefile])
 
