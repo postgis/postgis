@@ -7645,9 +7645,9 @@ ST_GeomFromText('LINESTRING(744753 2924117,744563 2923902)') As line2) As foo;
 ---------------+----------------
             -1 |              1
 
-	SELECT s1.gid, s2.gid, ST_CrossingDirection(s1.the_geom, s2.the_geom)
-	FROM streets s1 CROSS JOIN streets s2 ON (s1 != s2 AND s1 &amp;&amp; s2 )
-	WHERE ST_CrossingDirection(s1.the_geom, s2.the_geom) > 0;
+SELECT s1.gid, s2.gid, ST_CrossingDirection(s1.the_geom, s2.the_geom)
+	FROM streets s1 CROSS JOIN streets s2 ON (s1.gid != s2.gid AND s1.the_geom &amp;&amp; s2.the_geom )
+WHERE ST_CrossingDirection(s1.the_geom, s2.the_geom) > 0;
 </programlisting>
     </refsection>
   
