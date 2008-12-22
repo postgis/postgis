@@ -59,18 +59,18 @@ lwmcurve_deserialize(uchar *srl)
                 else
                 {
                         lwerror("Only Circular and Line strings are currenly permitted in a MultiCurve.");
-                        free(result);
-                        free(insp);
+                        lwfree(result);
+                        lwfree(insp);
                         return NULL;
                 }
                         
                 if(TYPE_NDIMS(result->geoms[i]->type) != TYPE_NDIMS(result->type))
                 {
-                        lwerror("Mixed diminsions (multicurve: %d, curve %d:%d)",
+                        lwerror("Mixed dimensions (multicurve: %d, curve %d:%d)",
                                 TYPE_NDIMS(result->type), i,
                                 TYPE_NDIMS(result->geoms[i]->type));
-                        free(result);
-                        free(insp);
+                        lwfree(result);
+                        lwfree(insp);
                         return NULL;
                 }
         }
@@ -122,4 +122,4 @@ lwmcurve_add(const LWMCURVE *to, uint32 where, const LWGEOM *what)
 
         return (LWGEOM *)col;
 }
-        
+
