@@ -2062,7 +2062,14 @@ fprintf(stdout, "s"); fflush(stdout);
 		}
 		SHPDestroyObject(obj);
 
-		if ( ! binary ) free(v);
+		if ( ! binary )  {
+			if ( pgis_major_version > 0 ){
+				PQfreemem(v);
+			}
+			else {
+				free(v);
+			}
+		}
 	}
 
 #if VERBOSE > 2
