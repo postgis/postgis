@@ -884,7 +884,7 @@ pgchip_construct(BOX3D *bvol, int SRID, int width, int height,
 	chip->datatype=datatype;
 	chip->height=height;
 	chip->width=width;
-	chip->compression=0; // no compression
+	chip->compression=0; /* no compression */
 	if ( ! initvalue ) {
 		memset(&(chip->data), '\0', datasize);
 	} else {

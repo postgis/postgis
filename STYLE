@@ -37,6 +37,8 @@ logic, so the logic commits are easier to read.
 Macros should be ALL_UPPERCASE. 
 Enumerations should be ALL_UPPERCASE.
 
+Comments should be written in C style (/* .... */) and not C++ style (//)
+
 
 :Naming:
 
