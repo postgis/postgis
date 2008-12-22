@@ -7613,6 +7613,9 @@ WHERE ST_Crosses(roads.the_geom, highways.the_geom);</programlisting>
 				  <para>-2: LINE MULTICROSS END LEFT</para>
 				</listitem>
 				<listitem>
+					<para> 2: LINE MULTICROSS END RIGHT</para>
+				</listitem>
+				<listitem>
 				  <para>-3: LINE MULTICROSS END SAME FIRST LEFT</para>
 				</listitem>
 				<listitem>
