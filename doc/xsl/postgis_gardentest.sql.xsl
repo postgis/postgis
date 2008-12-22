@@ -119,7 +119,7 @@ SELECT 'create,insert,drop Test: Start Testing Multi/<xsl:value-of select="@Geom
 				<!-- For each function prototype generate a test sql statement -->
 				<xsl:choose>
 <!--Test functions that take no arguments or take no geometries -->
-	<xsl:when test="$numparamgeoms = '0'">SELECT  'Starting <xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnargs" />)';BEGIN; 
+	<xsl:when test="$numparamgeoms = '0' and not(contains($fnexclude,funcdef/function))">SELECT  'Starting <xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnargs" />)';BEGIN; 
 SELECT  <xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnfakeparams" />);
 COMMIT;
 SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnargs" />)';
@@ -225,16 +225,10 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="contains(parameter, 'version')"> 
 						<xsl:value-of select="$var_version" />
 					</xsl:when>
-					<xsl:when test="contains(type,'box') and position() = 1"> 
+					<xsl:when test="(contains(type,'box') or type = 'geometry' or type = 'geometry ' or contains(type,'geometry set')) and (position() = 1 or count($func/paramdef/type[contains(text(),'geometry') or contains(text(),'box') or contains(text(), 'WKT') or contains(text(), 'bytea')]) = '1')"> 
 						<xsl:text>foo1.the_geom</xsl:text>
 					</xsl:when>
-					<xsl:when test="contains(type,'box')"> 
-						<xsl:text>foo2.the_geom</xsl:text>
-					</xsl:when>
-					<xsl:when test="(type = 'geometry' or type = 'geometry ' or contains(type,'geometry set')) and position() = 1"> 
-						<xsl:text>foo1.the_geom</xsl:text>
-					</xsl:when>
-					<xsl:when test="type = 'geometry' or type = 'geometry '"> 
+					<xsl:when test="contains(type,'box') or type = 'geometry' or type = 'geometry '"> 
 						<xsl:text>foo2.the_geom</xsl:text>
 					</xsl:when>
 					<xsl:when test="contains(type, 'geometry[]')"> 
