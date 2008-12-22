@@ -256,8 +256,8 @@ fi
 dnl Note: We don't need the server-side LDFLAGS or CPPFLAGS because we get these from PGXS 
 
 dnl Extract the linker and include flags for the frontend (for programs that use libpq)
-PGSQL_FE_LDFLAGS="-L`$PGCONFIG --libdir` -lpq"
-PGSQL_FE_CPPFLAGS="-I`$PGCONFIG --includedir`"
+PGSQL_FE_LDFLAGS=-L`$PGCONFIG --libdir`" -lpq"
+PGSQL_FE_CPPFLAGS=-I`$PGCONFIG --includedir`
 
 AC_SUBST([PGSQL_FE_LDFLAGS])
 AC_SUBST([PGSQL_FE_CPPFLAGS])
