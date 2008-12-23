@@ -731,6 +731,7 @@ extern size_t lwcollection_serialize_size(LWCOLLECTION *coll);
 extern void lwgeom_serialize_buf(LWGEOM *geom, uchar *buf, size_t *size);
 extern uchar *lwgeom_serialize(LWGEOM *geom);
 extern void lwcollection_serialize_buf(LWCOLLECTION *mcoll, uchar *buf, size_t *size);
+extern int lwcollection_ngeoms(const LWCOLLECTION *col);
 
 /*
  * Deserialize an lwgeom serialized form.

@@ -3967,16 +3967,23 @@ CREATEFUNCTION ST_ConvexHull(geometry)
 
 -- Only accepts LINESTRING as parameters.
 -- Availability: 1.4.0
-CREATEFUNCTION ST_CrossingDirection(geometry, geometry)
+CREATEFUNCTION _ST_LineCrossingDirection(geometry, geometry)
     RETURNS integer
-    AS 'MODULE_PATHNAME', 'crossingDirection'
+    AS 'MODULE_PATHNAME', 'ST_LineCrossingDirection'
     LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- Availability: 1.4.0
+CREATE OR REPLACE FUNCTION ST_LineCrossingDirection(geometry, geometry)
+  RETURNS integer AS 
+  $$ SELECT CASE WHEN NOT $1 && $2 THEN 0 ELSE _ST_LineCrossingDirection($1,$2) END $$
+  LANGUAGE 'sql' IMMUTABLE;
+
 
 -- Only accepts LINESTRING as parameters.
 -- Availability: 1.4.0
-CREATEFUNCTION ST_LineClipZ(geometry, float8, float8)
+CREATEFUNCTION ST_LocateBetweenElevations(geometry, float8, float8)
     RETURNS geometry
-    AS 'MODULE_PATHNAME', 'ST_LineClipZ'
+    AS 'MODULE_PATHNAME', 'ST_LocateBetweenElevations'
     LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 #if POSTGIS_GEOS_VERSION >= 30

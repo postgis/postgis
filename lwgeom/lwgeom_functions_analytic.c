@@ -36,8 +36,8 @@ LWPOLY *simplify2d_lwpoly(const LWPOLY *ipoly, double dist);
 LWCOLLECTION *simplify2d_collection(const LWCOLLECTION *igeom, double dist);
 LWGEOM *simplify2d_lwgeom(const LWGEOM *igeom, double dist);
 Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS);
-Datum crossingDirection(PG_FUNCTION_ARGS);
-Datum ST_LineClipZ(PG_FUNCTION_ARGS);
+Datum ST_LineCrossingDirection(PG_FUNCTION_ARGS);
+Datum ST_LocateBetweenElevations(PG_FUNCTION_ARGS);
 
 double determineSide(POINT2D *seg1, POINT2D *seg2, POINT2D *point);
 int isOnSegment(POINT2D *seg1, POINT2D *seg2, POINT2D *point);
@@ -947,8 +947,8 @@ Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS)
 ** Determines crossing direction of line2 relative to line1.
 ** Only accepts LINESTRING ass parameters!
 */
-PG_FUNCTION_INFO_V1(crossingDirection);
-Datum crossingDirection(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(ST_LineCrossingDirection);
+Datum ST_LineCrossingDirection(PG_FUNCTION_ARGS)
 {
 	int type1, type2, rv;
 	BOX2DFLOAT4 box1, box2;
@@ -994,8 +994,8 @@ Datum crossingDirection(PG_FUNCTION_ARGS)
 
 }
 
-PG_FUNCTION_INFO_V1(ST_LineClipZ);
-Datum ST_LineClipZ(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(ST_LocateBetweenElevations);
+Datum ST_LocateBetweenElevations(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom_in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	double from = PG_GETARG_FLOAT8(1);
