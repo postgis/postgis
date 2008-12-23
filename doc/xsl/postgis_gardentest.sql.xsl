@@ -14,6 +14,7 @@
 	<!--This is just a place holder to state functions not supported in 1.3 branch -->
 	<xsl:variable name='fnexclude13'>Populate_Geometry_Columns ST_IsValidReason</xsl:variable>	
 	<xsl:variable name='var_srid'>3395</xsl:variable>
+	<xsl:variable name='var_position'>1</xsl:variable>
 	<xsl:variable name='var_integer'>5</xsl:variable>
 	<xsl:variable name='var_float1'>0.5</xsl:variable>
 	<xsl:variable name='var_float2'>0.75</xsl:variable>
@@ -68,6 +69,38 @@
 			CROSS JOIN generate_series(50,70, 20) As j
 			CROSS JOIN generate_series(1,2) As m
 			GROUP BY m)</pgis:gset>
+			
+<!-- MULTIs start here -->
+		<pgis:gset ID='MultiPointSet' GeometryType='MULTIPOINT'>(SELECT ST_Collect(s.the_geom) As the_geom 
+		FROM (SELECT ST_SetSRID(ST_Point(i,j),4326) As the_geom 
+		FROM generate_series(-10,50,15) As i 
+			CROSS JOIN generate_series(40,70, 15) j) As s)</pgis:gset>
+			
+		<pgis:gset ID='MultiLineSet' GeometryType='MULTILINESTRING'>(SELECT ST_Collect(s.the_geom) As the_geom
+		FROM (SELECT ST_MakeLine(ST_SetSRID(ST_Point(i,j),4326),ST_SetSRID(ST_Point(j,i),4326))  As the_geom 
+		FROM generate_series(-10,50,10) As i 
+			CROSS JOIN generate_series(40,70, 15) As j
+			WHERE NOT(i = j)) As s)</pgis:gset>
+			
+		<pgis:gset ID='MultiPolySet' GeometryType='MULTIPOLYGON'>(SELECT ST_Collect(s.the_geom) As the_geom
+		FROM (SELECT ST_MakePolygon(ST_AddPoint(ST_AddPoint(ST_MakeLine(ST_SetSRID(ST_MakePointM(i+m,j,m),4326),ST_SetSRID(ST_MakePointM(j+m,i-m,m),4326)),ST_SetSRID(ST_MakePointM(i,j,m),4326)),ST_SetSRID(ST_MakePointM(i+m,j,m),4326)))  As the_geom 
+		FROM generate_series(-10,50,20) As i 
+			CROSS JOIN generate_series(50,70, 20) As j
+			CROSS JOIN generate_series(1,2) As m
+			) As s)</pgis:gset>
+		<pgis:gset ID='MultiPointMSet' GeometryType='MULTIPOINTM'>(SELECT ST_Collect(s.the_geom) As the_geom
+		FROM (SELECT ST_SetSRID(ST_MakePointM(i,j,m),4326) As the_geom 
+		FROM generate_series(-10,50,10) As i 
+			CROSS JOIN generate_series(50,70, 20) AS j
+			CROSS JOIN generate_series(1,2) As m) As s)</pgis:gset>
+			
+		<pgis:gset ID='MultiLineMSet' GeometryType='MULTILINESTRINGM'>(SELECT ST_Collect(s.the_geom) As the_geom
+		FROM (SELECT ST_MakeLine(ST_SetSRID(ST_MakePointM(i,j,m),4326),ST_SetSRID(ST_MakePointM(j,i,m),4326))  As the_geom 
+		FROM generate_series(-10,50,10) As i 
+			CROSS JOIN generate_series(50,70, 20) As j
+			CROSS JOIN generate_series(1,2) As m
+			WHERE NOT(i = j)) As s)</pgis:gset>
+	<!-- TODO: Finish off MULTI list -->
 	</pgis:gardens>
 	<!--This is just a placeholder to hold geometries that will crash server when hitting against some functions
 		We'll fix these crashers in 1.4 -->
@@ -125,30 +158,7 @@ COMMIT;
 SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select="$fnargs" />)';
 	</xsl:when>
 <!--Start Test aggregate and unary functions -->
-<!--Garden Aggregator/Unary function with input gsets test -->
-	<xsl:when test="$numparams = '1' and $numparamgeoms = '1' and not(contains($fnexclude,funcdef/function))" >
-		<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
-	SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing Multi/<xsl:value-of select="@GeometryType" />'; 
-	BEGIN; <!-- If output is geometry show ewkt rep -->
-			<xsl:choose>
-			  <xsl:when test="contains($fndef, 'geometry ')">
-	SELECT ST_AsEWKT(<xsl:value-of select="$fnname" />(the_geom)),
-		ST_AsEWKT(<xsl:value-of select="$fnname" />(ST_Multi(the_geom)))
-			  </xsl:when>
-			  <xsl:otherwise>
-	SELECT <xsl:value-of select="$fnname" />(the_geom),
-				<xsl:value-of select="$fnname" />(ST_Multi(the_geom))
-			  </xsl:otherwise>
-			</xsl:choose>
-			FROM (<xsl:value-of select="." />) As foo1;  
-	COMMIT;
-	SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text> <xsl:value-of select="@ID" />: End Testing Multi/<xsl:value-of select="@GeometryType" />';
-		<xsl:text>
-		
-		</xsl:text>
-		</xsl:for-each>
-	</xsl:when>
-	<!-- put functions that take only one geometry no need to cross with another geom collection -->
+<!-- put functions that take only one geometry no need to cross with another geom collection, these are unary geom, aggregates, and so forth -->
 	<xsl:when test="$numparamgeoms = '1' and not(contains($fnexclude,funcdef/function))" >
 		<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
 	SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="@GeometryType" />'; 
@@ -175,7 +185,7 @@ SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select=
 		<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
 	<!--Store first garden sql geometry from -->
 			<xsl:variable name="from1"><xsl:value-of select="." /></xsl:variable>
-			<xsl:variable name='geom1type'><xsl:value-of select="@GeometryType"/></xsl:variable>
+			<xsl:variable name='geom1type'><xsl:value-of select="@ID"/></xsl:variable>
 SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$geom1type" /> against other types'; 
 				<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
 	SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): Start Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryType" />'; 
@@ -197,8 +207,6 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 		</xsl:text>
 			</xsl:for-each>
 SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />(<xsl:value-of select="$fnargs" />): End Testing <xsl:value-of select="@GeometryType" /> against other types';
-
-<!-- TODO: Put in test for multi geoms -->
 		</xsl:for-each>
 		</xsl:when>
 	</xsl:choose>
@@ -218,6 +226,9 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					</xsl:when>
 					<xsl:when test="contains(parameter, 'srid')"> 
 						<xsl:value-of select="$var_srid" />
+					</xsl:when>
+					<xsl:when test="contains(parameter, 'position')"> 
+						<xsl:value-of select="$var_position" />
 					</xsl:when>
 					<xsl:when test="contains(parameter, 'NDR')"> 
 						'<xsl:value-of select="$var_NDRXDR" />'
@@ -239,6 +250,9 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					</xsl:when>
 					<xsl:when test="contains(parameter, 'WKT')"> 
 						<xsl:text>ST_AsText(foo1.the_geom)</xsl:text>
+					</xsl:when>
+					<xsl:when test="contains(parameter, 'EWKB')"> 
+						<xsl:text>ST_AsEWKB(foo1.the_geom)</xsl:text>
 					</xsl:when>
 					<xsl:when test="contains(type, 'bytea')"> 
 						<xsl:text>ST_AsBinary(foo1.the_geom)</xsl:text>
