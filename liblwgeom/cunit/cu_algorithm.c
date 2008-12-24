@@ -63,6 +63,8 @@ POINTARRAY *pa51 = NULL;
 POINTARRAY *pa52 = NULL;
 LWLINE *l51 = NULL;
 LWLINE *l52 = NULL;
+/* Parsing support */
+LWGEOM_PARSER_RESULT parse_result;
 
 
 /*
@@ -81,11 +83,8 @@ int init_cg_suite(void)
 	pa22 = ptarray_construct(0, 0, 2);
 	l21 = lwline_construct(-1, NULL, pa21);
 	l22 = lwline_construct(-1, NULL, pa22);
-	pa51 = ptarray_construct(0, 0, 5);
-	pa52 = ptarray_construct(0, 0, 5);
-	l51 = lwline_construct(-1, NULL, pa51);
-	l52 = lwline_construct(-1, NULL, pa52);
 	return 0;
+
 }
 
 /*
@@ -99,14 +98,9 @@ int clean_cg_suite(void)
 	lwfree(p2);
 	lwfree(q1);
 	lwfree(q2);
-	lwfree(pa21);
-	lwfree(pa22);
-	lwfree(pa51);
-	lwfree(pa52);
-	lwfree(l21);
-	lwfree(l22);
-	lwfree(l51);
-	lwfree(l52);
+	lwfree_line(l21);
+	lwfree_line(l22);
+	lwfree_line(l51);
 	return 0;
 }
 
@@ -346,204 +340,64 @@ void test_lwline_crossing_short_lines(void)
 	
 void test_lwline_crossing_long_lines(void) 
 {
-
+	int rv;
+	
 	/* 
 	** More complex test, longer lines and multiple crossings 
 	*/
 
 	/* Vertical line with vertices at y integers */
-	p->x = 0.0;
-	p->y = 0.0;
-	setPoint4d(pa51, 0, p);
-	p->y = 1.0;
-	setPoint4d(pa51, 1, p);
-	p->y = 2.0;
-	setPoint4d(pa51, 2, p);
-	p->y = 3.0;
-	setPoint4d(pa51, 3, p);
-	p->y = 4.0;
-	setPoint4d(pa51, 4, p);
+	l51 = (LWLINE*)lwgeom_from_ewkt("LINESTRING(0 0, 0 1, 0 2, 0 3, 0 4)", 0);
 
 	/* Two crossings at segment midpoints */
-	p->x = 1.0;
-	p->y = 1.0;
-	setPoint4d(pa52, 0, p);
-	p->x = -1.0;
-	p->y = 1.5;
-	setPoint4d(pa52, 1, p);
-	p->x = 1.0;
-	p->y = 3.0;
-	setPoint4d(pa52, 2, p);
-	p->x = 1.0;
-	p->y = 4.0;
-	setPoint4d(pa52, 3, p);
-	p->x = 1.0;
-	p->y = 5.0;
-	setPoint4d(pa52, 4, p);
+	l52 = (LWLINE*)lwgeom_from_ewkt("LINESTRING(1 1, -1 1.5, 1 3, 1 4, 1 5)",0);
 	CU_ASSERT( lwline_crossing_direction(l51, l52) == LINE_MULTICROSS_END_SAME_FIRST_LEFT );
+	lwfree_line(l52);
 
 	/* One crossing at interior vertex */
-	p->x = 1.0;
-	p->y = 1.0;
-	setPoint4d(pa52, 0, p);
-	p->x = 0.0;
-	p->y = 1.0;
-	setPoint4d(pa52, 1, p);
-	p->x = -1.0;
-	p->y = 1.0;
-	setPoint4d(pa52, 2, p);
-	p->x = -1.0;
-	p->y = 2.0;
-	setPoint4d(pa52, 3, p);
-	p->x = -1.0;
-	p->y = 3.0;
-	setPoint4d(pa52, 4, p);
+	l52 = (LWLINE*)lwgeom_from_ewkt("LINESTRING(1 1, 0 1, -1 1, -1 2, -1 3)",0);
 	CU_ASSERT( lwline_crossing_direction(l51, l52) == LINE_CROSS_LEFT );
+	lwfree_line(l52);
 
 	/* Two crossings at interior vertices */
-	p->x = 1.0;
-	p->y = 1.0;
-	setPoint4d(pa52, 0, p);
-	p->x = 0.0;
-	p->y = 1.0;
-	setPoint4d(pa52, 1, p);
-	p->x = -1.0;
-	p->y = 1.0;
-	setPoint4d(pa52, 2, p);
-	p->x = 0.0;
-	p->y = 3.0;
-	setPoint4d(pa52, 3, p);
-	p->x = 1.0;
-	p->y = 3.0;
-	setPoint4d(pa52, 4, p);
+	l52 = (LWLINE*)lwgeom_from_ewkt("LINESTRING(1 1, 0 1, -1 1, 0 3, 1 3)",0);
 	CU_ASSERT( lwline_crossing_direction(l51, l52) == LINE_MULTICROSS_END_SAME_FIRST_LEFT );
+	lwfree_line(l52);
 
 	/* Two crossings, one at the first vertex on at interior vertex */
-	p->x = 1.0;
-	p->y = 0.0;
-	setPoint4d(pa52, 0, p);
-	p->x = 0.0;
-	p->y = 0.0;
-	setPoint4d(pa52, 1, p);
-	p->x = -1.0;
-	p->y = 1.0;
-	setPoint4d(pa52, 2, p);
-	p->x = 0.0;
-	p->y = 3.0;
-	setPoint4d(pa52, 3, p);
-	p->x = 1.0;
-	p->y = 3.0;
-	setPoint4d(pa52, 4, p);
+	l52 = (LWLINE*)lwgeom_from_ewkt("LINESTRING(1 0, 0 0, -1 1, 0 3, 1 3)",0);
 	CU_ASSERT( lwline_crossing_direction(l51, l52) == LINE_MULTICROSS_END_SAME_FIRST_LEFT );
+	lwfree_line(l52);
 
 	/* Two crossings, one at the first vertex on the next interior vertex */
-	p->x = 1.0;
-	p->y = 0.0;
-	setPoint4d(pa52, 0, p);
-	p->x = 0.0;
-	p->y = 0.0;
-	setPoint4d(pa52, 1, p);
-	p->x = -1.0;
-	p->y = 1.0;
-	setPoint4d(pa52, 2, p);
-	p->x = 0.0;
-	p->y = 1.0;
-	setPoint4d(pa52, 3, p);
-	p->x = 1.0;
-	p->y = 2.0;
-	setPoint4d(pa52, 4, p);
+	l52 = (LWLINE*)lwgeom_from_ewkt("LINESTRING(1 0, 0 0, -1 1, 0 1, 1 2)",0);
 	CU_ASSERT( lwline_crossing_direction(l51, l52) == LINE_MULTICROSS_END_SAME_FIRST_LEFT );
+	lwfree_line(l52);
 
 	/* Two crossings, one at the last vertex on the next interior vertex */
-	p->x = 1.0;
-	p->y = 4.0;
-	setPoint4d(pa52, 0, p);
-	p->x = 0.0;
-	p->y = 4.0;
-	setPoint4d(pa52, 1, p);
-	p->x = -1.0;
-	p->y = 3.0;
-	setPoint4d(pa52, 2, p);
-	p->x = 0.0;
-	p->y = 3.0;
-	setPoint4d(pa52, 3, p);
-	p->x = 1.0;
-	p->y = 3.0;
-	setPoint4d(pa52, 4, p);
+	l52 = (LWLINE*)lwgeom_from_ewkt("LINESTRING(1 4, 0 4, -1 3, 0 3, 1 3)",0);
 	CU_ASSERT( lwline_crossing_direction(l51, l52) == LINE_MULTICROSS_END_SAME_FIRST_LEFT );
+	lwfree_line(l52);
 
 	/* Three crossings, two at midpoints, one at vertex */
-	p->x = 0.5;
-	p->y = 1.0;
-	setPoint4d(pa52, 0, p);
-	p->x = -1.0;
-	p->y = 0.5;
-	setPoint4d(pa52, 1, p);
-	p->x = 1.0;
-	p->y = 2.0;
-	setPoint4d(pa52, 2, p);
-	p->x = -1.0;
-	p->y = 2.0;
-	setPoint4d(pa52, 3, p);
-	p->x = -1.0;
-	p->y = 3.0;
-	setPoint4d(pa52, 4, p);
+	l52 = (LWLINE*)lwgeom_from_ewkt("LINESTRING(0.5 1, -1 0.5, 1 2, -1 2, -1 3)",0);
 	CU_ASSERT( lwline_crossing_direction(l51, l52) == LINE_MULTICROSS_END_LEFT );
+	lwfree_line(l52);
 
 	/* One mid-point co-linear crossing */
-	p->x = 1.0;
-	p->y = 1.0;
-	setPoint4d(pa52, 0, p);
-	p->x = 0.0;
-	p->y = 1.5;
-	setPoint4d(pa52, 1, p);
-	p->x = 0.0;
-	p->y = 2.5;
-	setPoint4d(pa52, 2, p);
-	p->x = -1.0;
-	p->y = 3.0;
-	setPoint4d(pa52, 3, p);
-	p->x = -1.0;
-	p->y = 4.0;
-	setPoint4d(pa52, 4, p);
+	l52 = (LWLINE*)lwgeom_from_ewkt("LINESTRING(1 1, 0 1.5, 0 2.5, -1 3, -1 4)",0);
 	CU_ASSERT( lwline_crossing_direction(l51, l52) == LINE_CROSS_LEFT );
+	lwfree_line(l52);
 
 	/* One on-vertices co-linear crossing */
-	p->x = 1.0;
-	p->y = 1.0;
-	setPoint4d(pa52, 0, p);
-	p->x = 0.0;
-	p->y = 1.0;
-	setPoint4d(pa52, 1, p);
-	p->x = 0.0;
-	p->y = 2.0;
-	setPoint4d(pa52, 2, p);
-	p->x = -1.0;
-	p->y = 3.0;
-	setPoint4d(pa52, 3, p);
-	p->x = -1.0;
-	p->y = 4.0;
-	setPoint4d(pa52, 4, p);
+	l52 = (LWLINE*)lwgeom_from_ewkt("LINESTRING(1 1, 0 1, 0 2, -1 4, -1 4)",0);
 	CU_ASSERT( lwline_crossing_direction(l51, l52) == LINE_CROSS_LEFT );
+	lwfree_line(l52);
 
 	/* No crossing, but end on a co-linearity. */
-	p->x = 1.0;
-	p->y = 1.0;
-	setPoint4d(pa52, 0, p);
-	p->x = 1.0;
-	p->y = 2.0;
-	setPoint4d(pa52, 1, p);
-	p->x = 1.0;
-	p->y = 3.0;
-	setPoint4d(pa52, 2, p);
-	p->x = 0.0;
-	p->y = 3.0;
-	setPoint4d(pa52, 3, p);
-	p->x = 0.0;
-	p->y = 4.0;
-	setPoint4d(pa52, 4, p);
+	l52 = (LWLINE*)lwgeom_from_ewkt("LINESTRING(1 1, 1 2, 1 3, 0 3, 0 4)",0);
 	CU_ASSERT( lwline_crossing_direction(l51, l52) == LINE_NO_CROSS );
-
+	lwfree_line(l52);
 
 }
 

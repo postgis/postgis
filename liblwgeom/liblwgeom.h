@@ -1210,6 +1210,7 @@ typedef struct struct_lwgeom_unparser_result
 extern char *lwgeom_to_ewkt(LWGEOM *lwgeom, int flags);
 extern char *lwgeom_to_hexwkb(LWGEOM *lwgeom, int flags, unsigned int byteorder);
 extern LWGEOM *lwgeom_from_ewkb(uchar *ewkb, int flags, size_t ewkblen);
+extern LWGEOM *lwgeom_from_ewkt(char *ewkt, int flags);
 extern uchar *lwgeom_to_ewkb(LWGEOM *lwgeom, int flags, char byteorder, size_t *ewkblen);
 
 extern int serialized_lwgeom_to_ewkt(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar *serialized, int flags);
