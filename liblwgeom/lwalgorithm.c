@@ -132,8 +132,6 @@ int lw_segment_intersects(POINT2D *p1, POINT2D *p2, POINT2D *q1, POINT2D *q2)
 **   LINE_MULTICROSS_END_RIGHT = 2
 **   LINE_MULTICROSS_END_SAME_FIRST_LEFT = -3
 **   LINE_MULTICROSS_END_SAME_FIRST_RIGHT = 3
-**   LINE_TOUCH_LEFT = -4
-**   LINE_TOUCH_RIGHT = 4
 **
 */
 int lwline_crossing_direction(LWLINE *l1, LWLINE *l2) 
@@ -296,7 +294,7 @@ int lwline_crossing_direction(LWLINE *l1, LWLINE *l2)
 /*
 ** lwpoint_get_ordinate(point, ordinate) => double
 */
-double lwpoint_get_ordinate(POINT4D *p, int ordinate) 
+double lwpoint_get_ordinate(const POINT4D *p, int ordinate) 
 {
 	if( ! p ) 
 	{
@@ -351,7 +349,7 @@ void lwpoint_set_ordinate(POINT4D *p, int ordinate, double value)
 }
 
 
-int lwpoint_interpolate(POINT4D *p1, POINT4D *p2, POINT4D *p, int ndims, int ordinate, double interpolation_value)
+int lwpoint_interpolate(const POINT4D *p1, const POINT4D *p2, POINT4D *p, int ndims, int ordinate, double interpolation_value)
 {
     double p1_value = lwpoint_get_ordinate(p1, ordinate);
     double p2_value = lwpoint_get_ordinate(p2, ordinate);
@@ -383,7 +381,77 @@ int lwpoint_interpolate(POINT4D *p1, POINT4D *p2, POINT4D *p, int ndims, int ord
     return 1;
 }
 
-
+LWCOLLECTION *lwmline_clip_to_ordinate_range(LWMLINE *mline, int ordinate, double from, double to) 
+{
+    LWCOLLECTION *lwgeom_out = NULL;
+    
+    if( ! mline ) 
+    {
+		lwerror("Null input geometry.");
+		return NULL;
+    }
+    
+    if( mline->ngeoms == 1) 
+    {
+        lwgeom_out = lwline_clip_to_ordinate_range(mline->geoms[0], ordinate, from, to);        
+    }
+    else 
+    {
+        LWCOLLECTION *col;
+    	char hasz = TYPE_HASZ(mline->type);
+    	char hasm = TYPE_HASM(mline->type);
+    	char hassrid = TYPE_HASSRID(mline->type);
+        int i, j;
+        char homogeneous = 1;
+        size_t geoms_size = 0;
+        lwgeom_out = lwcollection_construct_empty(mline->SRID, hasz, hasm);
+        lwgeom_out->type = lwgeom_makeType(hasz, hasm, hassrid, MULTILINETYPE);
+        for( i = 0; i < mline->ngeoms; i ++ ) 
+        {
+            col = lwline_clip_to_ordinate_range(mline->geoms[i], ordinate, from, to);
+            if ( col ) { /* Something was left after the clip. */
+                if( lwgeom_out->ngeoms + col->ngeoms > geoms_size )
+                {
+                    geoms_size += 16;
+                    if( lwgeom_out->geoms ) 
+                    {
+                        lwgeom_out->geoms = lwrealloc(lwgeom_out->geoms, geoms_size * sizeof(LWGEOM*));
+                    }
+                    else
+                    {
+                        lwgeom_out->geoms = lwalloc(geoms_size * sizeof(LWGEOM*));
+                    }
+                }
+                for( j = 0; j < col->ngeoms; j++ ) 
+                {
+                    lwgeom_out->geoms[lwgeom_out->ngeoms] = col->geoms[j];
+                    lwgeom_out->ngeoms++;
+                }
+                if( TYPE_GETTYPE(col->type) != TYPE_GETTYPE(mline->type) )
+                {
+                    homogeneous = 0;
+                }
+                /* Shallow free the struct, leaving the geoms behind. */
+                if( col->bbox ) lwfree(col->bbox);
+                lwfree(col); 
+            }
+        }
+        lwgeom_dropBBOX((LWGEOM*)lwgeom_out);
+		lwgeom_addBBOX((LWGEOM*)lwgeom_out);
+		if ( ! homogeneous ) 
+		{
+		    lwgeom_out->type = lwgeom_makeType(hasz, hasm, hassrid, COLLECTIONTYPE);
+	    }        
+    }
+    
+    if( ! lwgeom_out || lwgeom_out->ngeoms == 0 ) /* Nothing left after clip. */
+    {
+        return NULL;
+    }
+    
+    return lwgeom_out;    
+    
+}
 
 
 /*
