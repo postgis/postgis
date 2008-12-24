@@ -3351,7 +3351,7 @@ char *lwg_parse_yytext;
 #line 11 "wktparse.lex"
 #include "wktparse.tab.h"
 #include <unistd.h>
-#include <stdlib.h> // need stdlib for atof() definition 
+#include <stdlib.h> /* need stdlib for atof() definition */
 
 void init_parser(const char *src);
 void close_parser(void);
