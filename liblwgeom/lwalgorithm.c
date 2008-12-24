@@ -384,6 +384,8 @@ int lwpoint_interpolate(POINT4D *p1, POINT4D *p2, POINT4D *p, int ndims, int ord
 }
 
 
+
+
 /*
 ** lwline_clip_to_ordinate_range(line, ordinate, from, to) => lwmline
 **

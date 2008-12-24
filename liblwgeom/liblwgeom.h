@@ -953,6 +953,7 @@ extern void lwfree_mpoint   (LWMPOINT *mpt);
 extern void lwfree_mline   (LWMLINE *mline);
 extern void lwfree_mpolygon   (LWMPOLY *mpoly);
 extern void lwfree_collection   (LWCOLLECTION *col);
+extern void lwfree_geom (LWGEOM *geom);
 
 /****************************************************************
  * utility

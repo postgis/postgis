@@ -59,8 +59,6 @@ POINTARRAY *pa22 = NULL;
 LWLINE *l21 = NULL;
 LWLINE *l22 = NULL;
 /* Five-point objects */
-POINTARRAY *pa51 = NULL;
-POINTARRAY *pa52 = NULL;
 LWLINE *l51 = NULL;
 LWLINE *l52 = NULL;
 /* Parsing support */
@@ -340,8 +338,6 @@ void test_lwline_crossing_short_lines(void)
 	
 void test_lwline_crossing_long_lines(void) 
 {
-	int rv;
-	
 	/* 
 	** More complex test, longer lines and multiple crossings 
 	*/
