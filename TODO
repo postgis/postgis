@@ -84,6 +84,9 @@ See,
   http://citeseer.ist.psu.edu/roussopoulos95nearest.html
   http://citeseer.ist.psu.edu/91356.html
 
+-- Heat Map / Clustering --
+
+Given a set of points, generate a heat map output. Or, given a set of points, geterate a clustering and set of representative points. In general, extract a trend from a collection.
 
 == Breaking Changes ==
 
