@@ -34,7 +34,9 @@ CU_pSuite register_cg_suite(void)
 	    (NULL == CU_add_test(pSuite, "test_lwpoint_get_ordinate()", test_lwpoint_get_ordinate)) ||
 	    (NULL == CU_add_test(pSuite, "test_lwpoint_interpolate()", test_lwpoint_interpolate)) ||
 	    (NULL == CU_add_test(pSuite, "test_lwline_clip()", test_lwline_clip)) ||
-	    (NULL == CU_add_test(pSuite, "test_lwline_clip_big()", test_lwline_clip_big)) 
+	    (NULL == CU_add_test(pSuite, "test_lwline_clip_big()", test_lwline_clip_big)) ||
+	    (NULL == CU_add_test(pSuite, "test_lwmline_clip()", test_lwmline_clip)) 
+	
 	)
 	{
 		CU_cleanup_registry();
@@ -524,6 +526,62 @@ void test_lwline_clip(void)
 	lwfree_collection(c);
 
 }
+
+void test_lwmline_clip(void)
+{
+	int rv = 0;
+	LWCOLLECTION *c;
+	char *ewkt;
+	LWMLINE *mline = NULL;
+
+	/*
+	** Set up the input line. Trivial one-member case. 
+	*/
+	mline = (LWMLINE*)lwgeom_from_ewkt("MULTILINESTRING((0 0,0 1,0 2,0 3,0 4))",0);
+
+	/* Clip in the middle, mid-range. */
+	c = lwmline_clip_to_ordinate_range(mline, 1, 1.5, 2.5);
+	ewkt = lwgeom_to_ewkt((LWGEOM*)c,0);
+	//printf("c = %s\n", ewkt);
+	CU_ASSERT_STRING_EQUAL(ewkt, "MULTILINESTRING((0 1.5,0 2,0 2.5))");
+	lwfree(ewkt);
+	lwfree_collection(c);
+
+	lwfree_mline(mline);
+
+	/* 
+	** Set up the input line. Two-member case. 
+	*/
+	mline = (LWMLINE*)lwgeom_from_ewkt("MULTILINESTRING((1 0,1 1,1 2,1 3,1 4), (0 0,0 1,0 2,0 3,0 4))",0);
+
+	/* Clip off the top. */
+	c = lwmline_clip_to_ordinate_range(mline, 1, 3.5, 5.5);
+	ewkt = lwgeom_to_ewkt((LWGEOM*)c,0);
+	//printf("c = %s\n", ewkt);
+	CU_ASSERT_STRING_EQUAL(ewkt, "MULTILINESTRING((1 3.5,1 4),(0 3.5,0 4))");
+	lwfree(ewkt);
+	lwfree_collection(c);
+
+	lwfree_mline(mline);
+
+	/* 
+	** Set up staggered input line to create multi-type output. 
+	*/
+	mline = (LWMLINE*)lwgeom_from_ewkt("MULTILINESTRING((1 0,1 -1,1 -2,1 -3,1 -4), (0 0,0 1,0 2,0 3,0 4))",0);
+
+	/* Clip from 0 upwards.. */
+	c = lwmline_clip_to_ordinate_range(mline, 1, 0.0, 2.5);
+	ewkt = lwgeom_to_ewkt((LWGEOM*)c,0);
+	//printf("c = %s\n", ewkt);
+	CU_ASSERT_STRING_EQUAL(ewkt, "GEOMETRYCOLLECTION(POINT(1 0),LINESTRING(0 0,0 1,0 2,0 2.5))");
+	lwfree(ewkt);
+	lwfree_collection(c);
+
+	lwfree_mline(mline);
+
+}
+
+
 
 void test_lwline_clip_big(void)
 {

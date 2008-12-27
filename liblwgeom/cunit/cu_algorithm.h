@@ -36,4 +36,5 @@ void test_lwpoint_get_ordinate(void);
 void test_lwpoint_interpolate(void);
 void test_lwline_clip(void);
 void test_lwline_clip_big(void);
+void test_lwmline_clip(void);
 
