@@ -795,8 +795,7 @@ pointArray_construct(uchar *points, char hasz, char hasm,
 int
 pointArray_ptsize(const POINTARRAY *pa)
 {
-	LWDEBUGF(2, "pointArray_ptsize: TYPE_NDIMS(pa->dims)=%x\n",
-		TYPE_NDIMS(pa->dims));
+	LWDEBUGF(2, "pointArray_ptsize: TYPE_NDIMS(pa->dims)=%x",TYPE_NDIMS(pa->dims));
 
 	return sizeof(double)*TYPE_NDIMS(pa->dims);
 }

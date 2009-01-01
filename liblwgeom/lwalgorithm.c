@@ -369,13 +369,14 @@ int lwpoint_interpolate(const POINT4D *p1, const POINT4D *p2, POINT4D *p, int nd
         return 0;
     } 
     
-    proportion = (interpolation_value - p1_value) / fabs(p2_value - p1_value);
-        
+    proportion = fabs((interpolation_value - p1_value) / (p2_value - p1_value));
+
     for( i = 0; i < ndims; i++ ) 
     {
         p1_value = lwpoint_get_ordinate(p1, i);
         p2_value = lwpoint_get_ordinate(p2, i);
-        lwpoint_set_ordinate(p, i, p1_value + proportion * fabs(p2_value - p1_value));
+        lwpoint_set_ordinate(p, i, p1_value + proportion * (p2_value - p1_value));
+		LWDEBUGF(1, "   clip ordinate(%d) p1_value(%g) p2_value(%g) proportion(%g)", i, p1_value, p2_value, proportion );
     }
     
     return 1;
@@ -530,26 +531,13 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 		}
 		rv = getPoint4d_p(pa_in, i, p);
 		ordinate_value_p = lwpoint_get_ordinate(p, ordinate);
-		LWDEBUGF(1, "ordinate_value_p %g", ordinate_value_p);
-		LWDEBUGF(1, "ordinate_value_q %g", ordinate_value_q);
-
-		/* Is this point on the edges of our range? */
-		if( ordinate_value_p == from || ordinate_value_p == to ) 
-		{
-			if( ! added_last_point ) 
-			{	
-				if( dp ) lwfree(dp);
-				dp = dynptarray_create(64, line->type);
-			}
-			rv = dynptarray_addPoint4d(dp, p, 0);
-            added_last_point = 2; /* Added on a boundary. */
-			continue;
-		}
+		LWDEBUGF(1, " ordinate_value_p %g (current)", ordinate_value_p);
+		LWDEBUGF(1, " ordinate_value_q %g (previous)", ordinate_value_q);
 
 		/* Is this point inside the ordinate range? Yes. */
-		if ( ordinate_value_p > from && ordinate_value_p < to )
+		if ( ordinate_value_p >= from && ordinate_value_p <= to )
 		{
-			LWDEBUGF(1, "inside ordinate range (%g, %g)", from, to);
+			LWDEBUGF(1, " inside ordinate range (%g, %g)", from, to);
 
 			if ( ! added_last_point ) 
 			{
@@ -559,22 +547,36 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 				dp = dynptarray_create(64, line->type);
 
            		/* We're transiting into the range so add an interpolated 
-				*  point at the range boundary. */
-    			if ( ordinate_value_p > from && ordinate_value_p < to && i > 0 )
+				*  point at the range boundary. 
+				*  If we're on a boundary and crossing from the far side, 
+				*  we also need an interpolated point. */
+    			if ( i > 0 && ( /* Don't try to interpolate if this is the first point */
+				     ( ordinate_value_p > from && ordinate_value_p < to ) || /* Inside */
+				     ( ordinate_value_p == from && ordinate_value_q > to ) || /* Hopping from above */
+				     ( ordinate_value_p == to && ordinate_value_q < from ) ) ) /* Hopping from below */
     		    {
                     double interpolation_value;
                     (ordinate_value_q > to) ? (interpolation_value = to) : (interpolation_value = from);
                     rv = lwpoint_interpolate(q, p, r, dims, ordinate, interpolation_value);
                     rv = dynptarray_addPoint4d(dp, r, 0);
+					LWDEBUGF(1, " interpolating between (%g, %g) with interpolation point (%g)", ordinate_value_q, ordinate_value_p, interpolation_value);
     		    }
 			}
 		    /* Add the current vertex to the point array. */
     		rv = dynptarray_addPoint4d(dp, p, 0);
-            added_last_point = 1; /* Added inside range. */
+			if ( ordinate_value_p == from || ordinate_value_p == to ) 
+			{
+            	added_last_point = 2; /* Added on boundary. */
+			}
+			else
+			{
+            	added_last_point = 1; /* Added inside range. */
+			}
 		} 
 		/* Is this point inside the ordinate range? No. */
 		else 
 		{
+			LWDEBUGF(4, "  added_last_point (%d)", added_last_point);
 		    if( added_last_point == 1 ) 
 		    {
 		        /* We're transiting out of the range, so add an interpolated point 
@@ -583,11 +585,22 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
                 (ordinate_value_p > to) ? (interpolation_value = to) : (interpolation_value = from);
                 rv = lwpoint_interpolate(q, p, r, dims, ordinate, interpolation_value);
                 rv = dynptarray_addPoint4d(dp, r, 0);
+				LWDEBUGF(1, " interpolating between (%g, %g) with interpolation point (%g)", ordinate_value_q, ordinate_value_p, interpolation_value);
 	        }
 			else if ( added_last_point == 2 ) 
 			{
 				/* We're out and the last point was on the boundary.
-				*  Nothing to do, the point was already added above. */
+				*  If the last point was the near boundary, nothing to do.
+				*  If it was the far boundary, we need an interpolated point. */
+				if( (ordinate_value_q == from && ordinate_value_p > from) || 
+				    (ordinate_value_q == to && ordinate_value_p < to) ) 
+				{
+	                double interpolation_value;
+                	(ordinate_value_p > to) ? (interpolation_value = to) : (interpolation_value = from);
+                	rv = lwpoint_interpolate(q, p, r, dims, ordinate, interpolation_value);
+                	rv = dynptarray_addPoint4d(dp, r, 0);
+					LWDEBUGF(1, " interpolating between (%g, %g) with interpolation point (%g)", ordinate_value_q, ordinate_value_p, interpolation_value);
+				}
 			}
 			else if ( ordinate_value_q < from && ordinate_value_p > to ) {
 				/* We just hopped over the whole range, from bottom to top, 

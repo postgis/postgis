@@ -93,14 +93,14 @@ int init_cg_suite(void)
 */
 int clean_cg_suite(void)
 {
-	lwfree(p);
-	lwfree(p1);
-	lwfree(p2);
-	lwfree(q1);
-	lwfree(q2);
-	lwfree_line(l21);
-	lwfree_line(l22);
-	lwfree_line(l51);
+	if ( p ) lwfree(p);
+	if ( p1 )lwfree(p1);
+	if ( p2 ) lwfree(p2);
+	if ( q1 ) lwfree(q1);
+	if ( q2 ) lwfree(q2);
+	if ( l21 ) lwfree_line(l21);
+	if ( l22 ) lwfree_line(l22);
+	if ( l51 ) lwfree_line(l51);
 	return 0;
 }
 
@@ -533,6 +533,7 @@ void test_lwmline_clip(void)
 	LWCOLLECTION *c;
 	char *ewkt;
 	LWMLINE *mline = NULL;
+	LWLINE *line = NULL;
 
 	/*
 	** Set up the input line. Trivial one-member case. 
@@ -578,6 +579,46 @@ void test_lwmline_clip(void)
 	lwfree_collection(c);
 
 	lwfree_mline(mline);
+
+	/* 
+	** Set up input line from MAC
+	*/
+	line = (LWLINE*)lwgeom_from_ewkt("LINESTRING(0 0 0 0,1 1 1 1,2 2 2 2,3 3 3 3,4 4 4 4,3 3 3 5,2 2 2 6,1 1 1 7,0 0 0 8)",0);
+
+	/* Clip from 3 to 3.5 */
+	c = lwline_clip_to_ordinate_range(line, 2, 3.0, 3.5);
+	ewkt = lwgeom_to_ewkt((LWGEOM*)c,0);
+	//printf("c = %s\n", ewkt);
+	CU_ASSERT_STRING_EQUAL(ewkt, "MULTILINESTRING((3 3 3 3,3.5 3.5 3.5 3.5),(3.5 3.5 3.5 4.5,3 3 3 5))");
+	lwfree(ewkt);
+	lwfree_collection(c);
+
+	/* Clip from 2 to 3.5 */
+	c = lwline_clip_to_ordinate_range(line, 2, 2.0, 3.5);
+	ewkt = lwgeom_to_ewkt((LWGEOM*)c,0);
+	//printf("c = %s\n", ewkt);
+	CU_ASSERT_STRING_EQUAL(ewkt, "MULTILINESTRING((2 2 2 2,3 3 3 3,3.5 3.5 3.5 3.5),(3.5 3.5 3.5 4.5,3 3 3 5,2 2 2 6))");
+	lwfree(ewkt);
+	lwfree_collection(c);
+
+	/* Clip from 3 to 4 */
+	c = lwline_clip_to_ordinate_range(line, 2, 3.0, 4.0);
+	ewkt = lwgeom_to_ewkt((LWGEOM*)c,0);
+	//printf("c = %s\n", ewkt);
+	CU_ASSERT_STRING_EQUAL(ewkt, "MULTILINESTRING((3 3 3 3,4 4 4 4,3 3 3 5))");
+	lwfree(ewkt);
+	lwfree_collection(c);
+
+	/* Clip from 2 to 3 */
+	c = lwline_clip_to_ordinate_range(line, 2, 2.0, 3.0);
+	ewkt = lwgeom_to_ewkt((LWGEOM*)c,0);
+	//printf("c = %s\n", ewkt);
+	CU_ASSERT_STRING_EQUAL(ewkt, "MULTILINESTRING((2 2 2 2,3 3 3 3),(3 3 3 5,2 2 2 6))");
+	lwfree(ewkt);
+	lwfree_collection(c);
+
+
+	lwfree_line(line);
 
 }
 
