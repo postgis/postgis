@@ -28,7 +28,7 @@ $Id$
   Format string could use DD DD.DD MM MM.MM SS SSSS.SSS style 
   tokens and allow anything else (E, W, ", ', degree sign) 
   to be interleaved within.
-* ST_DumpPoints - similar in concept to ST_Dump and ST_DumpRings will output a geometry_dump array 
+* ST_DumpPoints(g1 geometry) returns setof geometry_dump - similar in concept to ST_Dump and ST_DumpRings will output a geometry_dump array 
 	for any geometry where each geometry is a point and path info to denote the locaiton/subgeometry it is located in.
 
 
