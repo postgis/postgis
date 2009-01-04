@@ -535,6 +535,8 @@ lwgeom_from_ewkb(uchar *ewkb, int flags, size_t size)
 
 	/* Rely on grammar parser to construct a LWGEOM */
 	result = serialized_lwgeom_from_ewkt(&lwg_parser_result, hexewkb, flags);
+	if (result)
+		lwerror("%s", (char *)lwg_parser_result.message);
 
 	/* Free intermediate HEXified representation */
 	lwfree(hexewkb);
@@ -546,11 +548,7 @@ lwgeom_from_ewkb(uchar *ewkb, int flags, size_t size)
 }
 
 /*
- * Make an LWGEOM object from a EWKB binary representation.
- * Currently highly unoptimized as it:
- * 	- convert EWKB to HEXEWKB 
- *	- construct PG_LWGEOM
- *	- deserialize it
+ * Make an LWGEOM object from a EWKT representation.
  */
 LWGEOM *
 lwgeom_from_ewkt(char *ewkt, int flags)
@@ -561,6 +559,8 @@ lwgeom_from_ewkt(char *ewkt, int flags)
 
 	/* Rely on grammar parser to construct a LWGEOM */
 	result = serialized_lwgeom_from_ewkt(&lwg_parser_result, ewkt, flags);
+	if (result)
+		lwerror("%s", (char *)lwg_parser_result.message);
 
 	/* Deserialize */
 	ret = lwgeom_deserialize(lwg_parser_result.serialized_lwgeom);
