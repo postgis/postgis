@@ -12,7 +12,7 @@ OBJS =	cu_tester.o \
 
 INCLUDES = -I$(CUNIT_HEADER) -I$(LWGEOM)
 CFLAGS = -g $(MSDEFINES) $(INCLUDES)
-LIBS = $(LIBLWGEOM) $(CUNIT_LIB)
+LIBS = $(LIBLWGEOM) $(CUNIT_LIB) -lm
 LDFLAGS = 
 
 cu_tester: $(OBJS) $(LIBS)
