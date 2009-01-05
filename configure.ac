@@ -157,15 +157,22 @@ AC_SUBST([XSLBASE])
 dnl
 dnl Detect CUnit if it is installed (used for unit testing)
 dnl
+dnl Note that we pass any specified CPPFLAGS and LDFLAGS into the Makefile as CUnit is
+dnl the only compile-time dependency that cannot obtain any specialised flags using
+dnl a --with-X parameter, and so we allow this information to be passed in if
+dnl required.
+dnl
 
 CUNIT_LDFLAGS=""
 AC_CHECK_HEADER([CUnit/CUnit.h], [
-	AC_CHECK_LIB([cunit], [CU_initialize_registry], [CUNIT_LDFLAGS=-lcunit], [AC_MSG_WARN([could not locate CUnit required for liblwgeom unit tests])])
+	CUNIT_CPPFLAGS="$CPPFLAGS"
+	AC_CHECK_LIB([cunit], [CU_initialize_registry], [CUNIT_LDFLAGS="$LDFLAGS -lcunit"], [AC_MSG_WARN([could not locate CUnit required for liblwgeom unit tests])])
 	],
 	[
 	AC_MSG_WARN([could not locate CUnit required for liblwgeom unit tests])
 	])
 	
+AC_SUBST([CUNIT_CPPFLAGS])
 AC_SUBST([CUNIT_LDFLAGS])
 
 
