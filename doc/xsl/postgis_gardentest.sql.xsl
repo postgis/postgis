@@ -70,6 +70,13 @@
 			CROSS JOIN generate_series(1,2) As m
 			GROUP BY m)</pgis:gset>
 			
+		<pgis:gset ID='CurvePolySet' GeometryType='CURVEPOLYGON'>(SELECT ST_LineToCurve(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j))  As the_geom 
+		FROM generate_series(-10,50,10) As i 
+			CROSS JOIN generate_series(40,70, 20) As j)</pgis:gset>
+		<pgis:gset ID='CircularStringSet' GeometryType='CIRCULARSTRING'>(SELECT ST_LineToCurve(ST_Boundary(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j)))  As the_geom 
+		FROM generate_series(-10,50,10) As i 
+			CROSS JOIN generate_series(40,70, 20) As j)</pgis:gset>
+			
 <!-- MULTIs start here -->
 		<pgis:gset ID='MultiPointSet' GeometryType='MULTIPOINT'>(SELECT ST_Collect(s.the_geom) As the_geom 
 		FROM (SELECT ST_SetSRID(ST_Point(i,j),4326) As the_geom 
@@ -105,12 +112,7 @@
 	<!--This is just a placeholder to hold geometries that will crash server when hitting against some functions
 		We'll fix these crashers in 1.4 -->
 	<pgis:gardencrashers>
-		<pgis:gset ID='CurvePolySet' GeometryType='CURVEPOLYGON'>(SELECT ST_LineToCurve(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j))  As the_geom 
-		FROM generate_series(-10,50,10) As i 
-			CROSS JOIN generate_series(40,70, 20) As j)</pgis:gset>
-		<pgis:gset ID='CircularStringSet' GeometryType='CIRCULARSTRING'>(SELECT ST_LineToCurve(ST_Boundary(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j)))  As the_geom 
-		FROM generate_series(-10,50,10) As i 
-			CROSS JOIN generate_series(40,70, 20) As j)</pgis:gset>
+
 	</pgis:gardencrashers>
 
 	<xsl:template match='/chapter'>
