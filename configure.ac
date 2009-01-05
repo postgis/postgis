@@ -153,27 +153,20 @@ fi
 
 AC_SUBST([XSLBASE])
 
+
 dnl
 dnl Detect CUnit if it is installed (used for unit testing)
 dnl
 
-SEARCHPATH="
-	/usr
-	/usr/local
-	/opt/local
-	/opt
-	"
-HAVE_CUNIT_H=0
-for p in ${SEARCHPATH}; do
-	AC_CHECK_HEADER([${p}/include/CUnit/CUnit.h], [HAVE_CUNIT_H=1], [])
-	if test "x$HAVE_CUNIT_H" = "x1"; then
-		AC_MSG_RESULT([Using CUnit found in: ${p}/include/CUnit/CUnit.h])
-		CUNIT_PATH="${p}"
-		break
-	fi
-done	
-AC_SUBST([HAVE_CUNIT_H])
-AC_SUBST([CUNIT_PATH])
+CUNIT_LDFLAGS=""
+AC_CHECK_HEADER([CUnit/CUnit.h], [
+	AC_CHECK_LIB([cunit], [CU_initialize_registry], [CUNIT_LDFLAGS=-lcunit], [AC_MSG_WARN([could not locate CUnit required for liblwgeom unit tests])])
+	],
+	[
+	AC_MSG_WARN([could not locate CUnit required for liblwgeom unit tests])
+	])
+	
+AC_SUBST([CUNIT_LDFLAGS])
 
 
 dnl

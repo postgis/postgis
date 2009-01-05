@@ -12,7 +12,6 @@
 
 CC=@CC@
 CFLAGS=@CFLAGS@ @PICFLAGS@ @WARNFLAGS@ 
-HAVE_CUNIT_H=@HAVE_CUNIT_H@
 
 YACC=@YACC@
 LEX=@LEX@
@@ -58,11 +57,8 @@ clean:
 	rm -f $(SA_OBJS) 
 	rm -f liblwgeom.a 
 
-test: liblwgeom.a
-ifeq ($(HAVE_CUNIT_H),1)
-	make -C cunit test 
-endif
-
+check: liblwgeom.a
+	make -C cunit check
 
 # Command to build each of the .o files
 $(SA_OBJS): %.o: %.c 
