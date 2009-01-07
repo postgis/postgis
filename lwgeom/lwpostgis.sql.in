@@ -3137,8 +3137,7 @@ BEGIN
 		END LOOP;
 
 		if ( schema_ok <> ''t'' ) THEN
-			RAISE NOTICE ''Invalid schema name - using current_schema()'';
-			SELECT current_schema() into real_schema;
+			RAISE EXCEPTION ''Invalid schema name'';
 		ELSE
 			real_schema = schema_name;
 		END IF;
