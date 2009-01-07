@@ -376,7 +376,8 @@ int lwpoint_interpolate(const POINT4D *p1, const POINT4D *p2, POINT4D *p, int nd
         p1_value = lwpoint_get_ordinate(p1, i);
         p2_value = lwpoint_get_ordinate(p2, i);
         lwpoint_set_ordinate(p, i, p1_value + proportion * (p2_value - p1_value));
-		LWDEBUGF(1, "   clip ordinate(%d) p1_value(%g) p2_value(%g) proportion(%g)", i, p1_value, p2_value, proportion );
+
+	LWDEBUGF(3, "   clip ordinate(%d) p1_value(%g) p2_value(%g) proportion(%g)", i, p1_value, p2_value, proportion );
     }
     
     return 1;
@@ -521,7 +522,7 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 
 	for ( i = 0; i < pa_in->npoints; i++ ) 
 	{
-		LWDEBUGF(1, "Point #%d", i);
+		LWDEBUGF(4, "Point #%d", i);
 		if( i > 0 ) {
 			q->x = p->x;
 			q->y = p->y;
@@ -531,13 +532,13 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 		}
 		rv = getPoint4d_p(pa_in, i, p);
 		ordinate_value_p = lwpoint_get_ordinate(p, ordinate);
-		LWDEBUGF(1, " ordinate_value_p %g (current)", ordinate_value_p);
-		LWDEBUGF(1, " ordinate_value_q %g (previous)", ordinate_value_q);
+		LWDEBUGF(4, " ordinate_value_p %g (current)", ordinate_value_p);
+		LWDEBUGF(4, " ordinate_value_q %g (previous)", ordinate_value_q);
 
 		/* Is this point inside the ordinate range? Yes. */
 		if ( ordinate_value_p >= from && ordinate_value_p <= to )
 		{
-			LWDEBUGF(1, " inside ordinate range (%g, %g)", from, to);
+			LWDEBUGF(4, " inside ordinate range (%g, %g)", from, to);
 
 			if ( ! added_last_point ) 
 			{
@@ -559,7 +560,7 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
                     (ordinate_value_q > to) ? (interpolation_value = to) : (interpolation_value = from);
                     rv = lwpoint_interpolate(q, p, r, dims, ordinate, interpolation_value);
                     rv = dynptarray_addPoint4d(dp, r, 0);
-					LWDEBUGF(1, " interpolating between (%g, %g) with interpolation point (%g)", ordinate_value_q, ordinate_value_p, interpolation_value);
+  			LWDEBUGF(4, " interpolating between (%g, %g) with interpolation point (%g)", ordinate_value_q, ordinate_value_p, interpolation_value);
     		    }
 			}
 		    /* Add the current vertex to the point array. */
@@ -585,7 +586,7 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
                 (ordinate_value_p > to) ? (interpolation_value = to) : (interpolation_value = from);
                 rv = lwpoint_interpolate(q, p, r, dims, ordinate, interpolation_value);
                 rv = dynptarray_addPoint4d(dp, r, 0);
-				LWDEBUGF(1, " interpolating between (%g, %g) with interpolation point (%g)", ordinate_value_q, ordinate_value_p, interpolation_value);
+				LWDEBUGF(4, " interpolating between (%g, %g) with interpolation point (%g)", ordinate_value_q, ordinate_value_p, interpolation_value);
 	        }
 			else if ( added_last_point == 2 ) 
 			{
@@ -599,7 +600,7 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
                 	(ordinate_value_p > to) ? (interpolation_value = to) : (interpolation_value = from);
                 	rv = lwpoint_interpolate(q, p, r, dims, ordinate, interpolation_value);
                 	rv = dynptarray_addPoint4d(dp, r, 0);
-					LWDEBUGF(1, " interpolating between (%g, %g) with interpolation point (%g)", ordinate_value_q, ordinate_value_p, interpolation_value);
+					LWDEBUGF(4, " interpolating between (%g, %g) with interpolation point (%g)", ordinate_value_q, ordinate_value_p, interpolation_value);
 				}
 			}
 			else if ( ordinate_value_q < from && ordinate_value_p > to ) {
