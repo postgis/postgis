@@ -1054,6 +1054,7 @@ ReleasePolygons(Ring **polys, int npolys)
 			free(temp);
 		}
 	}
+	free(polys);
 }
 
 /*This function basically deals with the polygon case. */
@@ -1159,6 +1160,8 @@ InsertPolygon(void)
 		lwpoly = lwpoly_construct(sr_id, &bbox, ring_total, pas[pi]);	
 		lwpolygons[pi] = lwpoly_as_lwgeom(lwpoly);
 	}
+
+	ReleasePolygons(Outer, polygon_total);
 
 	/* If using MULTIPOLYGONS then generate the serialized collection, otherwise just a single POLYGON */
 	if (simple_geometries == 0)
