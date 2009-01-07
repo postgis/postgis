@@ -106,7 +106,9 @@
         must be an integer value reference to an entry in the SPATIAL_REF_SYS
         table. The <varname>type</varname> must be an uppercase string
         corresponding to the geometry type, eg, 'POLYGON' or
-        'MULTILINESTRING'.</para>
+        'MULTILINESTRING'.  An error is thrown if the schemaname doesn't exist 
+        (or not visible in the current search_path) or the specified SRID, 
+        geometry type, or dimension is invalid.</para>
 		
 		<note>
 			<para>Views and derivatively created spatial tables will need to be registered in geometry_columns manually,
