@@ -89,24 +89,47 @@
 			CROSS JOIN generate_series(40,70, 15) As j
 			WHERE NOT(i = j)) As s)</pgis:gset>
 			
-		<pgis:gset ID='MultiPolySet' GeometryType='MULTIPOLYGON'>(SELECT ST_Collect(s.the_geom) As the_geom
+		<pgis:gset ID='MultiPolySet' GeometryType='POLYGON'>(SELECT ST_Collect(ST_Buffer(ST_SetSRID(ST_Point(i,j),4326), j))  As the_geom 
+		FROM generate_series(-10,50,10) As i 
+			CROSS JOIN generate_series(40,70, 20) As j)</pgis:gset>
+			
+		<pgis:gset ID='MultiPointSet3D' GeometryType='MULTIPOINT'>(SELECT ST_Collect(ST_SetSRID(ST_MakePoint(i,j,k),4326)) As the_geom 
+		FROM generate_series(-10,50,20) As i 
+			CROSS JOIN generate_series(40,70, 20) j
+			CROSS JOIN generate_series(1,3) k
+			)</pgis:gset>
+			
+		<pgis:gset ID='MultiLineSet3D' GeometryType='MULTILINESTRING'>(SELECT ST_Collect(ST_SetSRID(ST_MakeLine(ST_MakePoint(i,j,k), ST_MakePoint(i+k,j+k,k)),4326)) As the_geom 
+		FROM generate_series(-10,50,20) As i 
+			CROSS JOIN generate_series(40,70, 20) j
+			CROSS JOIN generate_series(1,2) k
+			)</pgis:gset>
+			
+		<pgis:gset ID='MultiPolySet3D' GeometryType='MULTIPOLYGON'>(SELECT ST_Collect(s.the_geom) As the_geom
 		FROM (SELECT ST_MakePolygon(ST_AddPoint(ST_AddPoint(ST_MakeLine(ST_SetSRID(ST_MakePointM(i+m,j,m),4326),ST_SetSRID(ST_MakePointM(j+m,i-m,m),4326)),ST_SetSRID(ST_MakePointM(i,j,m),4326)),ST_SetSRID(ST_MakePointM(i+m,j,m),4326)))  As the_geom 
 		FROM generate_series(-10,50,20) As i 
 			CROSS JOIN generate_series(50,70, 20) As j
 			CROSS JOIN generate_series(1,2) As m
 			) As s)</pgis:gset>
+			
 		<pgis:gset ID='MultiPointMSet' GeometryType='MULTIPOINTM'>(SELECT ST_Collect(s.the_geom) As the_geom
 		FROM (SELECT ST_SetSRID(ST_MakePointM(i,j,m),4326) As the_geom 
 		FROM generate_series(-10,50,10) As i 
 			CROSS JOIN generate_series(50,70, 20) AS j
 			CROSS JOIN generate_series(1,2) As m) As s)</pgis:gset>
-			
+				
 		<pgis:gset ID='MultiLineMSet' GeometryType='MULTILINESTRINGM'>(SELECT ST_Collect(s.the_geom) As the_geom
 		FROM (SELECT ST_MakeLine(ST_SetSRID(ST_MakePointM(i,j,m),4326),ST_SetSRID(ST_MakePointM(j,i,m),4326))  As the_geom 
 		FROM generate_series(-10,50,10) As i 
 			CROSS JOIN generate_series(50,70, 20) As j
 			CROSS JOIN generate_series(1,2) As m
 			WHERE NOT(i = j)) As s)</pgis:gset>
+			
+		<pgis:gset ID='MultiPolygonMSet' GeometryType='MULTIPOLYGONM'>(SELECT ST_Collect(ST_MakePolygon(ST_AddPoint(ST_AddPoint(ST_MakeLine(ST_SetSRID(ST_MakePointM(i+m,j,m),4326),ST_SetSRID(ST_MakePointM(j+m,i-m,m),4326)),ST_SetSRID(ST_MakePointM(i,j,m),4326)),ST_SetSRID(ST_MakePointM(i+m,j,m),4326))))  As the_geom 
+		FROM generate_series(-10,50,20) As i 
+			CROSS JOIN generate_series(50,70, 20) As j
+			CROSS JOIN generate_series(1,2) As m
+			)</pgis:gset>
 	<!-- TODO: Finish off MULTI list -->
 	</pgis:gardens>
 	<!--This is just a placeholder to hold geometries that will crash server when hitting against some functions
