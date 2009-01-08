@@ -7579,9 +7579,9 @@ WHERE ST_Crosses(roads.the_geom, highways.the_geom);</programlisting>
     </refsection>
   </refentry>
   
-  <refentry id="ST_CrossingDirection">
+  <refentry id="ST_LineCrossingDirection">
     <refnamediv>
-      <refname>ST_CrossingDirection</refname>
+      <refname>ST_LineCrossingDirection</refname>
   
       <refpurpose>Given 2 linestrings, returns a number between -3 and 3 denoting what kind of crossing behavior. 0 is no crossing.</refpurpose>
     </refnamediv>
@@ -7589,7 +7589,7 @@ WHERE ST_Crosses(roads.the_geom, highways.the_geom);</programlisting>
     <refsynopsisdiv>
       <funcsynopsis>
         <funcprototype>
-          <funcdef>integer <function>ST_CrossingDirection</function></funcdef>
+          <funcdef>integer <function>ST_LineCrossingDirection</function></funcdef>
           <paramdef><type>geometry </type> <parameter>linestringA</parameter></paramdef>
           <paramdef><type>geometry </type> <parameter>linestringB</parameter></paramdef>
         </funcprototype>
