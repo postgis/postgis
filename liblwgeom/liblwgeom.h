@@ -1,3 +1,17 @@
+/**********************************************************************
+ * $Id$
+ *
+ * PostGIS - Spatial Types for PostgreSQL
+ * http://postgis.refractions.net
+ * Copyright 2001-2006 Refractions Research Inc.
+ * Copyright 2007-2008 Mark Cave-Ayland
+ * Copyright 2008 Paul Ramsey <pramsey@cleverelephant.ca>
+ *
+ * This is free software; you can redistribute and/or modify it under
+ * the terms of the GNU General Public Licence. See the COPYING file.
+ * 
+ **********************************************************************/
+
 #ifndef _LIBLWGEOM_H
 #define _LIBLWGEOM_H 1
 
@@ -43,9 +57,9 @@
 #define LW_FALSE 0
 
 /*
- * this will change to NaN when I figure out how to
- * get NaN in a platform-independent way
- */
+* this will change to NaN when I figure out how to
+* get NaN in a platform-independent way
+*/
 #define NO_VALUE 0.0
 #define NO_Z_VALUE NO_VALUE
 #define NO_M_VALUE NO_VALUE
@@ -57,36 +71,9 @@ typedef int int32;
 
 #endif
 
-
-/**
-* Supply the memory management and error handling functions you want your
-* application to use.
-* @ingroup system
+/** 
+* Global functions for memory/logging handlers. 
 */
-extern void lwgeom_init_allocators(void);
-/**
-* Apply the default memory management (malloc() and free()) and error handlers.
-* Called inside lwgeom_init_allocators() generally.
-* @ingroup system
-*/
-extern void lwgeom_install_default_allocators(void);
-
-
-/**
-* Write a notice out to the notice handler. Uses standard printf() substitutions.
-* Use for messages you always want output. For debugging, use LWDEBUG() or LWDEBUGF().
-* @ingroup logging
-*/
-void lwnotice(const char *fmt, ...);
-/**
-* Write a notice out to the error handler. Uses standard printf() substitutions.
-* Use for errors you always want output. For debugging, use LWDEBUG() or LWDEBUGF().
-* @ingroup logging
-*/
-void lwerror(const char *fmt, ...);
-
-
-/* Globals for memory/logging handlers. */
 typedef void* (*lwallocator)(size_t size);
 typedef void* (*lwreallocator)(void *mem, size_t size);
 typedef void (*lwfreeor)(void* mem);
@@ -97,7 +84,37 @@ extern lwfreeor lwfree_var;
 extern lwreporter lwerror_var;
 extern lwreporter lwnotice_var;
 
-/* The default memory/logging handlers installed by lwgeom_install_default_allocators() */
+/**
+* Supply the memory management and error handling functions you want your
+* application to use.
+* @ingroup system
+*/
+extern void lwgeom_init_allocators(void);
+
+/**
+* Apply the default memory management (malloc() and free()) and error handlers.
+* Called inside lwgeom_init_allocators() generally.
+* @ingroup system
+*/
+extern void lwgeom_install_default_allocators(void);
+
+/**
+* Write a notice out to the notice handler. Uses standard printf() substitutions.
+* Use for messages you always want output. For debugging, use LWDEBUG() or LWDEBUGF().
+* @ingroup logging
+*/
+void lwnotice(const char *fmt, ...);
+
+/**
+* Write a notice out to the error handler. Uses standard printf() substitutions.
+* Use for errors you always want output. For debugging, use LWDEBUG() or LWDEBUGF().
+* @ingroup logging
+*/
+void lwerror(const char *fmt, ...);
+
+/**
+* The default memory/logging handlers installed by lwgeom_install_default_allocators() 
+*/
 void *default_allocator(size_t size);
 void *default_reallocator(void *mem, size_t size);
 void default_freeor(void *ptr);
@@ -740,13 +757,9 @@ extern int lwcollection_ngeoms(const LWCOLLECTION *col);
  */
 LWGEOM *lwgeom_deserialize(uchar *serializedform);
 
-/*
- * Release memory associated with LWGEOM.
- * POINTARRAYs are not released as they are usually
- * pointers to user-managed memory.
- * BBOX is released.
- */
-void lwgeom_release(LWGEOM *lwgeom);
+
+
+
 
 /******************************************************************
  * LWMULTIx and LWCOLLECTION functions
@@ -937,23 +950,50 @@ void expand_box3d(BOX3D *box, double d);
 /* Check if to boxes are equal (considering FLOAT approximations) */
 char box2d_same(BOX2DFLOAT4 *box1, BOX2DFLOAT4 *box2);
 
+
+
 /****************************************************************
- * memory management -- these only delete the memory associated
- *  directly with the structure - NOT the stuff pointing into
- *  the original de-serialized info
+ * MEMORY MANAGEMENT
  ****************************************************************/
 
-
-extern void lwfree_inspected(LWGEOM_INSPECTED *inspected);
-extern void lwfree_point    (LWPOINT *pt);
-extern void lwfree_line     (LWLINE  *line);
-extern void lwfree_polygon  (LWPOLY  *poly);
+/* 
+ * The lwfree_* family of functions frees *all* memory associated 
+ * with the pointer, including the serialized__pointlist in the
+ * point arrays. Do not use these on LWGEOMs de-serialized from
+ * PG_LWGEOMs or they will try to free an underlying structure
+ * managed by PgSQL. Only use these on LWGEOMs you have 
+ * constructed yourself.
+ */
+ 
+extern void lwfree_point(LWPOINT *pt);
+extern void lwfree_line(LWLINE  *line);
+extern void lwfree_polygon(LWPOLY  *poly);
 extern void lwfree_pointarray(POINTARRAY *pa);
-extern void lwfree_mpoint   (LWMPOINT *mpt);
-extern void lwfree_mline   (LWMLINE *mline);
-extern void lwfree_mpolygon   (LWMPOLY *mpoly);
-extern void lwfree_collection   (LWCOLLECTION *col);
-extern void lwfree_geom (LWGEOM *geom);
+extern void lwfree_mpoint(LWMPOINT *mpt);
+extern void lwfree_mline(LWMLINE *mline);
+extern void lwfree_mpolygon(LWMPOLY *mpoly);
+extern void lwfree_collection(LWCOLLECTION *col);
+extern void lwfree_geom(LWGEOM *geom);
+
+extern void lwfree_inspected(LWGEOM_INSPECTED *inspected); /* TODO: make this deep free... */
+
+/*
+ * The *_release family of functions frees the LWGEOM structures
+ * surrounding the POINTARRAYs but leaves the POINTARRAYs 
+ * intact. Use these on LWGEOMs that have been de-serialized
+ * from PG_LWGEOMs. Do not use these on LWGEOMs you have 
+ * constructed yourself, or you will leak lots of memory.
+ */
+
+extern void lwgeom_release(LWGEOM *lwgeom);
+extern void lwpoly_release(LWPOLY *lwpoly);
+extern void lwline_release(LWLINE *lwline);
+extern void lwpoint_release(LWPOINT *lwpoint);
+extern void lwmpoly_release(LWMPOLY *lwpoly);
+extern void lwmline_release(LWMLINE *lwline);
+extern void lwmpoint_release(LWMPOINT *lwpoint);
+extern void lwcollection_release(LWCOLLECTION *lwcollection);
+
 
 /****************************************************************
  * utility
@@ -984,9 +1024,9 @@ extern double nextUp_d(float d);
 extern float nextafterf_custom(float x, float y);
 
 
-#define LW_MAX(a,b)	((a) >	(b) ? (a) : (b))
-#define LW_MIN(a,b)	((a) <= (b) ? (a) : (b))
-#define LW_ABS(a)	((a) <	(0) ? (-a) : (a))
+#define LW_MAX(a,b) ((a) >	(b) ? (a) : (b))
+#define LW_MIN(a,b) ((a) <= (b) ? (a) : (b))
+#define LW_ABS(a)   ((a) <	(0) ? (-a) : (a))
 
 
 /* general utilities */
@@ -1157,11 +1197,11 @@ extern uchar parse_hex(char *str);
 extern void deparse_hex(uchar str, char *result);
 
 /* Parser check flags */
-#define PARSER_CHECK_MINPOINTS	1
-#define PARSER_CHECK_ODD	2
-#define PARSER_CHECK_CLOSURE	4
+#define PARSER_CHECK_MINPOINTS  1
+#define PARSER_CHECK_ODD        2
+#define PARSER_CHECK_CLOSURE    4
 
-#define PARSER_CHECK_NONE	0
+#define PARSER_CHECK_NONE   0
 #define PARSER_CHECK_ALL	(PARSER_CHECK_MINPOINTS | PARSER_CHECK_ODD | PARSER_CHECK_CLOSURE)
 
 /*
@@ -1179,12 +1219,12 @@ typedef struct struct_lwgeom_parser_result
 /*
  * Parser error messages (these must match the message array in lwgparse.c)
  */
-#define PARSER_ERROR_MOREPOINTS 	1
-#define PARSER_ERROR_ODDPOINTS		2	
-#define PARSER_ERROR_UNCLOSED		3 
-#define PARSER_ERROR_MIXDIMS		4	
-#define PARSER_ERROR_INVALIDGEOM	5
-#define PARSER_ERROR_INVALIDWKBTYPE	6
+#define PARSER_ERROR_MOREPOINTS     1
+#define PARSER_ERROR_ODDPOINTS      2	
+#define PARSER_ERROR_UNCLOSED       3 
+#define PARSER_ERROR_MIXDIMS        4	
+#define PARSER_ERROR_INVALIDGEOM    5
+#define PARSER_ERROR_INVALIDWKBTYPE 6
 
 
 /*
@@ -1284,11 +1324,11 @@ typedef struct
         LWGEOM **geoms;
 } LWMSURFACE;
 
-#define CURVETYPE       8
-#define COMPOUNDTYPE    9
-#define CURVEPOLYTYPE   13
-#define MULTICURVETYPE          14
-#define MULTISURFACETYPE        15
+#define CURVETYPE         8
+#define COMPOUNDTYPE      9
+#define CURVEPOLYTYPE    13
+#define MULTICURVETYPE   14
+#define MULTISURFACETYPE 15
 
 /******************************************************************
  * LWCURVE functions

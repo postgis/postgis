@@ -358,10 +358,17 @@ void lwfree_polygon  (LWPOLY  *poly)
 {
 	int t;
 
+	if ( poly->bbox )
+		lwfree(poly->bbox);
+
 	for (t=0;t<poly->nrings;t++)
 	{
-		lwfree_pointarray(poly->rings[t]);
+		if( poly->rings[t] )
+			lwfree_pointarray(poly->rings[t]);
 	}
+
+	if ( poly->rings ) 
+		lwfree(poly->rings);
 
 	lwfree(poly);
 }
@@ -482,6 +489,11 @@ lwpoly_forceRHR(LWPOLY *poly)
 	}
 }
 
+void
+lwpoly_release(LWPOLY *lwpoly)
+{
+  lwgeom_release(lwpoly_as_lwgeom(lwpoly));
+}
 
 void
 lwpoly_reverse(LWPOLY *poly)

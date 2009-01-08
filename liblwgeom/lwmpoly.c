@@ -16,6 +16,13 @@
 #include "liblwgeom.h"
 
 
+void
+lwmpoly_release(LWMPOLY *lwmpoly)
+{
+  lwgeom_release(lwmpoly_as_lwgeom(lwmpoly));
+}
+
+
 LWMPOLY *
 lwmpoly_deserialize(uchar *srl)
 {

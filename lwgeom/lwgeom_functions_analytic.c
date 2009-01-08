@@ -380,7 +380,8 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 		                           1);
 		point = lwpoint_construct(line->SRID, 0, opa);
 		srl = lwpoint_serialize(point);
-		lwfree_point(point);
+		/* We shouldn't need this, the memory context is getting freed on the next line.
+		lwfree_point(point); */
 		PG_RETURN_POINTER(PG_LWGEOM_construct(srl, line->SRID, 0));
 	}
 
@@ -415,7 +416,8 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 			                           1);
 			point = lwpoint_construct(line->SRID, 0, opa);
 			srl = lwpoint_serialize(point);
-			lwfree_point(point);
+			/* We shouldn't need this, the memory context is getting freed on the next line
+			lwfree_point(point); */
 			PG_RETURN_POINTER(PG_LWGEOM_construct(srl, line->SRID, 0));
 		}
 		tlength += slength;
@@ -430,7 +432,8 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 	                           1);
 	point = lwpoint_construct(line->SRID, 0, opa);
 	srl = lwpoint_serialize(point);
-	lwfree_point(point);
+	/* We shouldn't need this, the memory context is getting freed on the next line
+	lwfree_point(point); */
 	PG_RETURN_POINTER(PG_LWGEOM_construct(srl, line->SRID, 0));
 }
 /***********************************************************************

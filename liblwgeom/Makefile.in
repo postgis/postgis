@@ -49,6 +49,9 @@ SA_HEADERS = \
 	lwalgorithm.h
 
 all: liblwgeom.a
+ifeq ($(HAVE_CUNIT_H),1)
+	make -C cunit 
+endif
 
 liblwgeom.a: $(SA_OBJS) $(SA_HEADERS) 
 	ar rs liblwgeom.a $(SA_OBJS) 	

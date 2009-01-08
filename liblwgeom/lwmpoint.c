@@ -15,6 +15,13 @@
 #include <string.h>
 #include "liblwgeom.h"
 
+void
+lwmpoint_release(LWMPOINT *lwmpoint)
+{
+  lwgeom_release(lwmpoint_as_lwgeom(lwmpoint));
+}
+
+
 LWMPOINT *
 lwmpoint_deserialize(uchar *srl)
 {

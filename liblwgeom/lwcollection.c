@@ -18,6 +18,13 @@
 
 #define CHECK_LWGEOM_ZM 1
 
+void
+lwcollection_release(LWCOLLECTION *lwcollection)
+{
+  lwgeom_release(lwcollection_as_lwgeom(lwcollection));
+}
+
+
 LWCOLLECTION *
 lwcollection_construct(unsigned int type, int SRID, BOX2DFLOAT4 *bbox,
 	unsigned int ngeoms, LWGEOM **geoms)

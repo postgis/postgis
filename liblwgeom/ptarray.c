@@ -37,6 +37,17 @@ ptarray_construct(char hasz, char hasm, unsigned int npoints)
 
 }
 
+void lwfree_pointarray(POINTARRAY *pa)
+{
+	/* TODO 
+	*  Turn this on after retrofitting all calls to lwfree_ in /lwgeom 
+	if( pa->serialized_pointlist )
+		lwfree(pa->serialized_pointlist);
+  */
+  
+	lwfree(pa);
+}
+
 void
 ptarray_reverse(POINTARRAY *pa)
 {

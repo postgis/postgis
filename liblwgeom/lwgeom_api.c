@@ -767,8 +767,7 @@ getPoint_internal(const POINTARRAY *pa, int n)
  *       points to.  No data conversion is done.
  */
 POINTARRAY *
-pointArray_construct(uchar *points, char hasz, char hasm,
-	uint32 npoints)
+pointArray_construct(uchar *points, char hasz, char hasm, uint32 npoints)
 {
 	POINTARRAY  *pa;
 	
@@ -1764,10 +1763,6 @@ lwfree_inspected(LWGEOM_INSPECTED *inspected)
 }
 
 
-void lwfree_pointarray(POINTARRAY *pa)
-{
-	lwfree(pa);
-}
 
 
 

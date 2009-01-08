@@ -300,9 +300,10 @@ lwpoint_deserialize(uchar *serialized_form)
 	return result;
 }
 
-void lwfree_point    (LWPOINT *pt)
+void lwfree_point(LWPOINT *pt)
 {
-	lwfree_pointarray(pt->point);
+	if(pt->point)
+		lwfree_pointarray(pt->point);
 	lwfree(pt);
 }
 
@@ -422,6 +423,13 @@ lwgeom_size_point(const uchar *serialized_point)
 
 	return result;
 }
+
+void
+lwpoint_release(LWPOINT *lwpoint)
+{
+  lwgeom_release(lwpoint_as_lwgeom(lwpoint));
+}
+
 
 /* check coordinate equality  */
 char

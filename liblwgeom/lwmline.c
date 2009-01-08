@@ -15,6 +15,12 @@
 #include <string.h>
 #include "liblwgeom.h"
 
+void
+lwmline_release(LWMLINE *lwmline)
+{
+  lwgeom_release(lwmline_as_lwgeom(lwmline));
+}
+
 LWMLINE *
 lwmline_deserialize(uchar *srl)
 {

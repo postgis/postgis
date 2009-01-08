@@ -243,7 +243,10 @@ lwline_serialize_size(LWLINE *line)
 
 void lwfree_line (LWLINE  *line)
 {
-	lwfree(line->points);
+	if ( line->bbox ) 
+		lwfree(line->bbox);
+
+	lwfree_pointarray(line->points);
 	lwfree(line);
 }
 
@@ -365,6 +368,12 @@ lwline_add(const LWLINE *to, uint32 where, const LWGEOM *what)
 		2, geoms);
 	
 	return (LWGEOM *)col;
+}
+
+void
+lwline_release(LWLINE *lwline)
+{
+  lwgeom_release(lwline_as_lwgeom(lwline));
 }
 
 void

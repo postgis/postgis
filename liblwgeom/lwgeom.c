@@ -14,7 +14,6 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-/*#include "lwgeom_pg.h"*/
 #include "liblwgeom.h"
 #include "wktparse.h"
 
