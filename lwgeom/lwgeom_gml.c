@@ -324,17 +324,17 @@ asgml2_inspected_size(LWGEOM_INSPECTED *insp, char *srs)
 		if ((point=lwgeom_getpoint_inspected(insp, i)))
 		{
 			size += asgml2_point_size(point, 0);
-			lwfree_point(point);
+			lwpoint_release(point);
 		}
 		else if ((line=lwgeom_getline_inspected(insp, i)))
 		{
 			size += asgml2_line_size(line, 0);
-			lwfree_line(line);
+			lwline_release(line);
 		}
 		else if ((poly=lwgeom_getpoly_inspected(insp, i)))
 		{
 			size += asgml2_poly_size(poly, 0);
-			lwfree_polygon(poly);
+			lwpoly_release(poly);
 		}
 		else
 		{
@@ -384,21 +384,21 @@ asgml2_inspected_buf(LWGEOM_INSPECTED *insp, char *srs, char *output)
 		{
 		  ptr += sprintf(ptr, "<gml:pointMember>");
 			ptr += asgml2_point_buf(point, 0, ptr);
-			lwfree_point(point);
+			lwpoint_release(point);
 			ptr += sprintf(ptr, "</gml:pointMember>");
 		}
 		else if ((line=lwgeom_getline_inspected(insp, i)))
 		{
 		  ptr += sprintf(ptr, "<gml:lineStringMember>");
 			ptr += asgml2_line_buf(line, 0, ptr);
-			lwfree_line(line);
+			lwline_release(line);
 			ptr += sprintf(ptr, "</gml:lineStringMember>");
 		}
 		else if ((poly=lwgeom_getpoly_inspected(insp, i)))
 		{
 		  ptr += sprintf(ptr, "<gml:polygonMember>");
 			ptr += asgml2_poly_buf(poly, 0, ptr);
-			lwfree_polygon(poly);
+			lwpoly_release(poly);
 			ptr += sprintf(ptr, "</gml:polygonMember>");
 		}
 		else
@@ -681,17 +681,17 @@ asgml3_inspected_size(LWGEOM_INSPECTED *insp, char *srs)
 		if ((point=lwgeom_getpoint_inspected(insp, i)))
 		{
 			size += asgml3_point_size(point, 0);
-			lwfree_point(point);
+			lwpoint_release(point);
 		}
 		else if ((line=lwgeom_getline_inspected(insp, i)))
 		{
 			size += asgml3_line_size(line, 0);
-			lwfree_line(line);
+			lwline_release(line);
 		}
 		else if ((poly=lwgeom_getpoly_inspected(insp, i)))
 		{
 			size += asgml3_poly_size(poly, 0);
-			lwfree_polygon(poly);
+			lwpoly_release(poly);
 		}
 		else
 		{
@@ -741,21 +741,21 @@ asgml3_inspected_buf(LWGEOM_INSPECTED *insp, char *srs, char *output)
 		{
 		  ptr += sprintf(ptr, "<gml:pointMember>");
 			ptr += asgml3_point_buf(point, 0, ptr);
-			lwfree_point(point);
+			lwpoint_release(point);
 			ptr += sprintf(ptr, "</gml:pointMember>");
 		}
 		else if ((line=lwgeom_getline_inspected(insp, i)))
 		{
 		  ptr += sprintf(ptr, "<gml:curveMember>");
 			ptr += asgml3_line_buf(line, 0, ptr);
-			lwfree_line(line);
+			lwline_release(line);
 			ptr += sprintf(ptr, "</gml:curveMember>");
 		}
 		else if ((poly=lwgeom_getpoly_inspected(insp, i)))
 		{
 		  ptr += sprintf(ptr, "<gml:surfaceMember>");
 			ptr += asgml3_poly_buf(poly, 0, ptr);
-			lwfree_polygon(poly);
+			lwpoly_release(poly);
 			ptr += sprintf(ptr, "</gml:surfaceMember>");
 		}
 		else
