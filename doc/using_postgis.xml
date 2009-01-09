@@ -2085,6 +2085,7 @@ END</programlisting>
       and label our roads.</para>
 
       <programlisting>LAYER 
+  CONNECTIONTYPE postgis
   CONNECTION "user=theuser password=thepass dbname=thedb host=theserver" 
   DATA "the_geom FROM (SELECT roads.oid AS oid, roads.the_geom AS the_geom, 
         road_names.name as name FROM roads LEFT JOIN road_names ON 
