@@ -12128,6 +12128,7 @@ SELECT ST_SetSRID(ST_Extent(the_geom),2249) as bextent FROM sometable;
 	        <paramdef><type>varchar </type> <parameter>a_table_name</parameter></paramdef>
 			 <paramdef><type>varchar </type> <parameter>a_geomfield_name</parameter></paramdef>
 	      </funcprototype>
+		</funcsynopsis>
 	  </refsynopsisdiv>
 	
 	  <refsection>
