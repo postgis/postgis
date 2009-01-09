@@ -413,15 +413,6 @@
 
       <variablelist>
 
-        <varlistentry id="zmflag">
-          <term>ST_zmflag(geometry)</term>
-
-          <listitem>
-            <para>Returns ZM (dimension semantic) flag of the geometries as a
-            small int. Values are: 0=2d, 1=3dm, 2=3dz, 3=4d.</para>
-          </listitem>
-        </varlistentry>
-
         <varlistentry>
           <term>ST_nrings(geometry)</term>
 
