@@ -341,7 +341,7 @@ asgml2_inspected_size(LWGEOM_INSPECTED *insp, char *srs)
 			subgeom = lwgeom_getsubgeometry_inspected(insp, i);
 			subinsp = lwgeom_inspect(subgeom);
 			size += asgml2_inspected_size(subinsp, 0);
-			lwfree_inspected(subinsp);
+			lwinspected_release(subinsp);
 		}
 	}
 
@@ -406,7 +406,7 @@ asgml2_inspected_buf(LWGEOM_INSPECTED *insp, char *srs, char *output)
 			subgeom = lwgeom_getsubgeometry_inspected(insp, i);
 			subinsp = lwgeom_inspect(subgeom);
 			ptr += asgml2_inspected_buf(subinsp, 0, ptr);
-			lwfree_inspected(subinsp);
+			lwinspected_release(subinsp);
 		}
 	}
 
@@ -698,7 +698,7 @@ asgml3_inspected_size(LWGEOM_INSPECTED *insp, char *srs)
 			subgeom = lwgeom_getsubgeometry_inspected(insp, i);
 			subinsp = lwgeom_inspect(subgeom);
 			size += asgml3_inspected_size(subinsp, 0);
-			lwfree_inspected(subinsp);
+			lwinspected_release(subinsp);
 		}
 	}
 
@@ -763,7 +763,7 @@ asgml3_inspected_buf(LWGEOM_INSPECTED *insp, char *srs, char *output)
 			subgeom = lwgeom_getsubgeometry_inspected(insp, i);
 			subinsp = lwgeom_inspect(subgeom);
 			ptr += asgml3_inspected_buf(subinsp, 0, ptr);
-			lwfree_inspected(subinsp);
+			lwinspected_release(subinsp);
 		}
 	}
 

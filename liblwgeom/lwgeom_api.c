@@ -1216,7 +1216,7 @@ lwgeom_getsubgeometry(const uchar *serialized_form, int geom_number)
 	LWGEOM_INSPECTED *inspected = lwgeom_inspect(serialized_form);
 
 	result = lwgeom_getsubgeometry_inspected(inspected, geom_number);
-	lwfree_inspected(inspected);
+	lwinspected_release(inspected);
 	return result;
 }
 
@@ -1250,7 +1250,7 @@ lwgeom_getsubtype(uchar *serialized_form, int geom_number)
 	LWGEOM_INSPECTED *inspected = lwgeom_inspect(serialized_form);
 
 	result = lwgeom_getsubtype_inspected(inspected, geom_number);
-	lwfree_inspected(inspected);
+	lwinspected_release(inspected);
 	return result;
 }
 
@@ -1755,7 +1755,7 @@ compute_serialized_box3d(uchar *srl)
  ****************************************************************/
 
 void
-lwfree_inspected(LWGEOM_INSPECTED *inspected)
+lwinspected_release(LWGEOM_INSPECTED *inspected)
 {
 	if ( inspected->ngeometries )
 		lwfree(inspected->sub_geoms);
@@ -1865,7 +1865,7 @@ printMULTI(uchar *serialized)
 
     lwnotice("end multi*");
 
-	lwfree_inspected(inspected);
+	lwinspected_release(inspected);
 }
 
 void

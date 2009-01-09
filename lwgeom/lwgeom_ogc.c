@@ -207,12 +207,12 @@ lwgeom_numpoints_linestring_recursive(const uchar *serialized)
 		npoints = lwgeom_numpoints_linestring_recursive(subgeom);
 		if ( npoints == -1 ) continue;
 
-		lwfree_inspected(inspected);	
+		lwinspected_release(inspected);	
 
 		return npoints;
 	}
 
-	lwfree_inspected(inspected);	
+	lwinspected_release(inspected);	
 
 	return -1;
 }
@@ -354,7 +354,7 @@ lwgeom_dimension_recursive(const uchar *serialized)
 		{
 			subgeom = lwgeom_getsubgeometry_inspected(inspected, i);
 			if ( subgeom == NULL ) {
-				lwfree_inspected(inspected);
+				lwinspected_release(inspected);
 				return -2;
 			}
 
@@ -362,13 +362,13 @@ lwgeom_dimension_recursive(const uchar *serialized)
 		}
 
 		if ( dims == 2 ) { /* nothing can be higher */
-				lwfree_inspected(inspected);
+				lwinspected_release(inspected);
 				return 2;
 		}
 		if ( dims > ret ) ret = dims;
 	}
 
-	lwfree_inspected(inspected);
+	lwinspected_release(inspected);
 
 	return ret;
 }
@@ -493,7 +493,7 @@ Datum LWGEOM_numinteriorrings_polygon(PG_FUNCTION_ARGS)
 
 	if ( tmp == NULL ) {
 		PG_FREE_IF_COPY(geom, 0);
-		lwfree_inspected(inspected);
+		lwinspected_release(inspected);
 		PG_RETURN_NULL();
 	}
 
@@ -516,11 +516,11 @@ Datum LWGEOM_numinteriorrings_polygon(PG_FUNCTION_ARGS)
         else 
         {
 		PG_FREE_IF_COPY(geom, 0);
-		lwfree_inspected(inspected);
+		lwinspected_release(inspected);
 		PG_RETURN_NULL();
         }
 	PG_FREE_IF_COPY(geom, 0);
-        if(inspected != NULL) lwfree_inspected(inspected);
+        if(inspected != NULL) lwinspected_release(inspected);
 	lwgeom_release((LWGEOM *)tmp);
 
 	PG_RETURN_INT32(result);
@@ -654,7 +654,7 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 	        }
 
 	        if ( tmp == NULL ) {
-		        lwfree_inspected(inspected);
+		        lwinspected_release(inspected);
 		        PG_FREE_IF_COPY(geom, 0);
 		        PG_RETURN_NULL();
 	        }
@@ -663,12 +663,12 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
                         curve = (LWCURVE *)tmp;
                         if(wanted_index > curve->points->npoints)
                         {
-                                lwfree_inspected(inspected);
+                                lwinspected_release(inspected);
                                 PG_FREE_IF_COPY(geom, 0);
                                 lwgeom_release(tmp);
                                 PG_RETURN_NULL();
                         }
-                        lwfree_inspected(inspected);
+                        lwinspected_release(inspected);
 
                         pts = pointArray_construct(getPoint_internal(
                                         curve->points,
@@ -682,12 +682,12 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 	                /* Ok, now we have a line. Let's see if it has enough points. */
 	                if ( wanted_index > line->points->npoints )
 	                {
-		                lwfree_inspected(inspected);
+		                lwinspected_release(inspected);
 		                PG_FREE_IF_COPY(geom, 0);
 		                lwgeom_release(tmp);
 		                PG_RETURN_NULL();
 	                }
-	                lwfree_inspected(inspected);
+	                lwinspected_release(inspected);
         
 	                /* Construct a point array */
 	                pts = pointArray_construct(getPoint_internal(line->points,
@@ -696,7 +696,7 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
                 }
                 else
                 {
-                        lwfree_inspected(inspected);
+                        lwinspected_release(inspected);
                         PG_FREE_IF_COPY(geom, 0);
                         lwgeom_release(tmp);
                         PG_RETURN_NULL();
@@ -925,7 +925,7 @@ Datum LWGEOM_endpoint_linestring(PG_FUNCTION_ARGS)
 	        line = lwgeom_getline_inspected(inspected, i);
 	        if ( line ) break;
         }
-        lwfree_inspected(inspected);
+        lwinspected_release(inspected);
 
 	if ( line == NULL ) {
 		PG_FREE_IF_COPY(geom, 0);
@@ -1254,7 +1254,7 @@ Datum LWGEOM_isclosed_linestring(PG_FUNCTION_ARGS)
                         !line_is_closed((LWLINE *)sub))
                 {
                         lwgeom_release(sub);
-                        lwfree_inspected(inspected);
+                        lwinspected_release(inspected);
                         PG_FREE_IF_COPY(geom, 0);
                         PG_RETURN_BOOL(FALSE);
                 }
@@ -1262,7 +1262,7 @@ Datum LWGEOM_isclosed_linestring(PG_FUNCTION_ARGS)
                         !curve_is_closed((LWCURVE *)sub))
                 {
                         lwgeom_release(sub);
-                        lwfree_inspected(inspected);
+                        lwinspected_release(inspected);
                         PG_FREE_IF_COPY(geom, 0);
                         PG_RETURN_BOOL(FALSE);
                 }
@@ -1270,14 +1270,14 @@ Datum LWGEOM_isclosed_linestring(PG_FUNCTION_ARGS)
                         !compound_is_closed((LWCOMPOUND *)sub))
                 {
                         lwgeom_release(sub);
-                        lwfree_inspected(inspected);
+                        lwinspected_release(inspected);
                         PG_FREE_IF_COPY(geom, 0);
                         PG_RETURN_BOOL(FALSE);
                 }
 		lwgeom_release(sub);
 		linesfound++;
 	}
-	lwfree_inspected(inspected);
+	lwinspected_release(inspected);
 
 	if ( ! linesfound ) {
 			PG_FREE_IF_COPY(geom, 0);

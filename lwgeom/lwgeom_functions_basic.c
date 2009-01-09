@@ -288,7 +288,7 @@ lwgeom_nrings_recursive(uchar *serialized)
 		}
 	}
 
-	lwfree_inspected(inspected);
+	lwinspected_release(inspected);
 
 	return nrings;
 }
@@ -356,7 +356,7 @@ Datum LWGEOM_area_polygon(PG_FUNCTION_ARGS)
 		POSTGIS_DEBUGF(3, " LWGEOM_area_polygon found a poly (%f)", area);
 	}
 
-	lwfree_inspected(inspected);
+	lwinspected_release(inspected);
 
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_FLOAT8(area);
@@ -389,7 +389,7 @@ Datum LWGEOM_length2d_linestring(PG_FUNCTION_ARGS)
 		POSTGIS_DEBUGF(3, " LWGEOM_length2d found a line (%f)", dist);
 	}
 
-	lwfree_inspected(inspected);
+	lwinspected_release(inspected);
 
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_FLOAT8(dist);
@@ -418,7 +418,7 @@ Datum LWGEOM_length_linestring(PG_FUNCTION_ARGS)
 		dist += lwgeom_pointarray_length(line->points);
 	}
 
-	lwfree_inspected(inspected);
+	lwinspected_release(inspected);
 
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_FLOAT8(dist);
@@ -447,7 +447,7 @@ Datum LWGEOM_perimeter_poly(PG_FUNCTION_ARGS)
 		ret += lwgeom_polygon_perimeter(poly);
 	}
 
-	lwfree_inspected(inspected);
+	lwinspected_release(inspected);
 
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_FLOAT8(ret);
@@ -476,7 +476,7 @@ Datum LWGEOM_perimeter2d_poly(PG_FUNCTION_ARGS)
 		ret += lwgeom_polygon_perimeter2d(poly);
 	}
 
-	lwfree_inspected(inspected);
+	lwinspected_release(inspected);
 	PG_FREE_IF_COPY(geom, 0);
 
 	PG_RETURN_FLOAT8(ret);
@@ -701,7 +701,7 @@ lwgeom_force2d_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 		LWDEBUGF(3, "lwgeom_force2d_recursive: added elem %d size: %d (tot: %d)",
 		         i, size, totsize);
 	}
-	lwfree_inspected(inspected);
+	lwinspected_release(inspected);
 
 	LWDEBUG(3, "lwgeom_force2d_recursive returning");
 
@@ -889,7 +889,7 @@ lwgeom_force3dz_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 
 		LWDEBUGF(3, " elem %d size: %d (tot: %d)", i, size, totsize);
 	}
-	lwfree_inspected(inspected);
+	lwinspected_release(inspected);
 
 	*retsize = totsize;
 }
@@ -1111,7 +1111,7 @@ lwgeom_force3dm_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 		LWDEBUGF(3, "lwgeom_force3dm_recursive: added elem %d size: %d (tot: %d)",
 		         i, size, totsize);
 	}
-	lwfree_inspected(inspected);
+	lwinspected_release(inspected);
 
 	LWDEBUG(3, "lwgeom_force3dm_recursive returning");
 
@@ -1297,7 +1297,7 @@ lwgeom_force4d_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 
 		LWDEBUGF(3, " elem %d size: %d (tot: %d)", i, size, totsize);
 	}
-	lwfree_inspected(inspected);
+	lwinspected_release(inspected);
 
 	*retsize = totsize;
 }
@@ -3258,7 +3258,7 @@ lwgeom_affine_recursive(uchar *serialized,
 		                        xoff, yoff, zoff);
 	}
 
-	lwfree_inspected(inspected);
+	lwinspected_release(inspected);
 }
 
 /*affine transform geometry */

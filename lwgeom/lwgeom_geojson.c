@@ -658,7 +658,7 @@ asgeojson_collection_size(LWGEOM_INSPECTED *insp, char *srs, BOX3D *bbox, int pr
 		subgeom = lwgeom_getsubgeometry_inspected(insp, i);
 		subinsp = lwgeom_inspect(subgeom);
 		size += asgeojson_inspected_size(subinsp, bbox, precision);
-		lwfree_inspected(subinsp);
+		lwinspected_release(subinsp);
 	}
 	size += sizeof(",") * i;
 	size += sizeof("]}");
@@ -685,7 +685,7 @@ asgeojson_collection_buf(LWGEOM_INSPECTED *insp, char *srs, char *output, BOX3D 
 		subgeom = lwgeom_getsubgeometry_inspected(insp, i);
 		subinsp = lwgeom_inspect(subgeom);
 		ptr += asgeojson_inspected_buf(subinsp, ptr, bbox, precision);
-		lwfree_inspected(subinsp);
+		lwinspected_release(subinsp);
 	}
 
 	ptr += sprintf(ptr, "]}");

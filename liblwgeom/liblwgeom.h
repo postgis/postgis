@@ -805,8 +805,7 @@ typedef struct
 			       of the sub-geoms */
 } LWGEOM_INSPECTED;
 
-extern int lwgeom_size_inspected(const LWGEOM_INSPECTED *inspected,
-	int geom_number);
+extern int lwgeom_size_inspected(const LWGEOM_INSPECTED *inspected, int geom_number);
 
 /*
  * note - for a simple type (ie. point), this will have
@@ -975,7 +974,7 @@ extern void lwmpoly_free(LWMPOLY *mpoly);
 extern void lwcollection_free(LWCOLLECTION *col);
 extern void lwgeom_free(LWGEOM *geom);
 
-extern void lwfree_inspected(LWGEOM_INSPECTED *inspected); /* TODO: make this deep free... */
+extern void lwinspected_release(LWGEOM_INSPECTED *inspected); /* TODO: make this deep free... */
 
 /*
  * The *_release family of functions frees the LWGEOM structures

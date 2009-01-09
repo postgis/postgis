@@ -301,7 +301,7 @@ askml2_inspected_size(LWGEOM_INSPECTED *insp)
 			subgeom = lwgeom_getsubgeometry_inspected(insp, i);
 			subinsp = lwgeom_inspect(subgeom);
 			size += askml2_inspected_size(subinsp);
-			lwfree_inspected(subinsp);
+			lwinspected_release(subinsp);
 		}
 	}
 
@@ -351,7 +351,7 @@ askml2_inspected_buf(LWGEOM_INSPECTED *insp, char *output)
 			subgeom = lwgeom_getsubgeometry_inspected(insp, i);
 			subinsp = lwgeom_inspect(subgeom);
 			ptr += askml2_inspected_buf(subinsp, ptr);
-			lwfree_inspected(subinsp);
+			lwinspected_release(subinsp);
 		}
 	}
 
