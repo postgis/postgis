@@ -3714,9 +3714,15 @@ SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,222020 150410)'
 	          <imagedata fileref="images/check.png" />
 	        </imageobject>
 	      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+		  
+	<!-- Optionally mention Circular String Support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method supports Circular Strings and Curves </para>
 	  </refsection>
 	  
-	
 	  <refsection>
 	    <title>Examples</title>
 	
@@ -4453,6 +4459,13 @@ SELECT ST_Y(ST_Centroid(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)')));
 	          <imagedata fileref="images/check.png" />
 	        </imageobject>
 	      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+		  
+	<!-- Optionally mention Circular String Support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method supports Circular Strings and Curves </para>
 	  </refsection>
 	  
 	
