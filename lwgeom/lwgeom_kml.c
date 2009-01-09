@@ -284,17 +284,17 @@ askml2_inspected_size(LWGEOM_INSPECTED *insp)
 		if ((point=lwgeom_getpoint_inspected(insp, i)))
 		{
 			size += askml2_point_size(point);
-			lwfree_point(point);
+			lwpoint_free(point);
 		}
 		else if ((line=lwgeom_getline_inspected(insp, i)))
 		{
 			size += askml2_line_size(line);
-			lwfree_line(line);
+			lwline_free(line);
 		}
 		else if ((poly=lwgeom_getpoly_inspected(insp, i)))
 		{
 			size += askml2_poly_size(poly);
-			lwfree_polygon(poly);
+			lwpoly_free(poly);
 		}
 		else
 		{
@@ -334,17 +334,17 @@ askml2_inspected_buf(LWGEOM_INSPECTED *insp, char *output)
 		if ((point=lwgeom_getpoint_inspected(insp, i)))
 		{
 			ptr += askml2_point_buf(point, ptr);
-			lwfree_point(point);
+			lwpoint_free(point);
 		}
 		else if ((line=lwgeom_getline_inspected(insp, i)))
 		{
 			ptr += askml2_line_buf(line, ptr);
-			lwfree_line(line);
+			lwline_free(line);
 		}
 		else if ((poly=lwgeom_getpoly_inspected(insp, i)))
 		{
 			ptr += askml2_poly_buf(poly, ptr);
-			lwfree_polygon(poly);
+			lwpoly_free(poly);
 		}
 		else
 		{

@@ -37,7 +37,7 @@ ptarray_construct(char hasz, char hasm, unsigned int npoints)
 
 }
 
-void lwfree_pointarray(POINTARRAY *pa)
+void ptarray_free(POINTARRAY *pa)
 {
 	/* TODO 
 	*  Turn this on after retrofitting all calls to lwfree_ in /lwgeom 

@@ -354,7 +354,7 @@ lwpoly_serialize_size(LWPOLY *poly)
 	return size;
 }
 
-void lwfree_polygon  (LWPOLY  *poly)
+void lwpoly_free  (LWPOLY  *poly)
 {
 	int t;
 
@@ -364,7 +364,7 @@ void lwfree_polygon  (LWPOLY  *poly)
 	for (t=0;t<poly->nrings;t++)
 	{
 		if( poly->rings[t] )
-			lwfree_pointarray(poly->rings[t]);
+			ptarray_free(poly->rings[t]);
 	}
 
 	if ( poly->rings ) 

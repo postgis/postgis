@@ -1664,7 +1664,7 @@ compute_serialized_box3d(uchar *srl)
 
 		LWDEBUG(3, "compute_serialized_box3d: bbox found");
 
-		lwfree_point(pt);
+		lwpoint_free(pt);
 		return result;
 	}
 
@@ -1672,7 +1672,7 @@ compute_serialized_box3d(uchar *srl)
 	{
 		LWLINE *line = lwline_deserialize(srl);
 		result = lwline_compute_box3d(line);
-		lwfree_line(line);
+		lwline_free(line);
 		return result;
 
 	}
@@ -1687,7 +1687,7 @@ compute_serialized_box3d(uchar *srl)
 	{
 		LWPOLY *poly = lwpoly_deserialize(srl);
 		result = lwpoly_compute_box3d(poly);
-		lwfree_polygon(poly);
+		lwpoly_free(poly);
 		return result;
 	}
 

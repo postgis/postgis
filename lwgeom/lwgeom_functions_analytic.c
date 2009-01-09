@@ -381,7 +381,7 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 		point = lwpoint_construct(line->SRID, 0, opa);
 		srl = lwpoint_serialize(point);
 		/* We shouldn't need this, the memory context is getting freed on the next line.
-		lwfree_point(point); */
+		lwpoint_free(point); */
 		PG_RETURN_POINTER(PG_LWGEOM_construct(srl, line->SRID, 0));
 	}
 
@@ -417,7 +417,7 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 			point = lwpoint_construct(line->SRID, 0, opa);
 			srl = lwpoint_serialize(point);
 			/* We shouldn't need this, the memory context is getting freed on the next line
-			lwfree_point(point); */
+			lwpoint_free(point); */
 			PG_RETURN_POINTER(PG_LWGEOM_construct(srl, line->SRID, 0));
 		}
 		tlength += slength;
@@ -433,7 +433,7 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 	point = lwpoint_construct(line->SRID, 0, opa);
 	srl = lwpoint_serialize(point);
 	/* We shouldn't need this, the memory context is getting freed on the next line
-	lwfree_point(point); */
+	lwpoint_free(point); */
 	PG_RETURN_POINTER(PG_LWGEOM_construct(srl, line->SRID, 0));
 }
 /***********************************************************************
@@ -1031,7 +1031,7 @@ Datum ST_LocateBetweenElevations(PG_FUNCTION_ARGS)
 	{
 		geom_out = lwmline_clip_to_ordinate_range((LWMLINE*)line_in, ordinate, from, to);
 	}
-	lwfree_geom(line_in);
+	lwgeom_free(line_in);
 
 	if( ! geom_out ) {
 		elog(ERROR,"The lwline_clip_to_ordinate_range returned null.");

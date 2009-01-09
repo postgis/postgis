@@ -115,7 +115,7 @@ lwmpoint_add(const LWMPOINT *to, uint32 where, const LWGEOM *what)
 
 }
 
-void lwfree_mpoint(LWMPOINT *mpt) 
+void lwmpoint_free(LWMPOINT *mpt) 
 {
 	int i;
 	if( mpt->bbox ) 
@@ -125,7 +125,7 @@ void lwfree_mpoint(LWMPOINT *mpt)
 	for ( i = 0; i < mpt->ngeoms; i++ ) 
 	{
 		if( mpt->geoms[i] ) {
-			lwfree_point(mpt->geoms[i]);
+			lwpoint_free(mpt->geoms[i]);
 		}
 	}
 	if( mpt->geoms ) 

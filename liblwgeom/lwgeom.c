@@ -827,30 +827,30 @@ lwgeom_contains_subgeoms(int type)
 	}
 }
 
-void lwfree_geom(LWGEOM *lwgeom) {
+void lwgeom_free(LWGEOM *lwgeom) {
 
 	switch(TYPE_GETTYPE(lwgeom->type))
 	{
 		case POINTTYPE:
-			lwfree_point((LWPOINT *)lwgeom);
+			lwpoint_free((LWPOINT *)lwgeom);
 			break;
 		case LINETYPE:
-			lwfree_line((LWLINE *)lwgeom);
+			lwline_free((LWLINE *)lwgeom);
 			break;
 		case POLYGONTYPE:
-			lwfree_polygon((LWPOLY *)lwgeom);
+			lwpoly_free((LWPOLY *)lwgeom);
 			break;
 		case MULTIPOINTTYPE:
-			lwfree_mpoint((LWMPOINT *)lwgeom);
+			lwmpoint_free((LWMPOINT *)lwgeom);
 			break;
 		case MULTILINETYPE:
-			lwfree_mline((LWMLINE *)lwgeom);
+			lwmline_free((LWMLINE *)lwgeom);
 			break;
 		case MULTIPOLYGONTYPE:
-			lwfree_mpolygon((LWMPOLY *)lwgeom);
+			lwmpoly_free((LWMPOLY *)lwgeom);
 			break;
 		case COLLECTIONTYPE:
-			lwfree_collection((LWCOLLECTION *)lwgeom);
+			lwcollection_free((LWCOLLECTION *)lwgeom);
 			break;
 	}	
 	return;

@@ -899,7 +899,7 @@ InsertLineString()
 
 	for (u = 0; u < obj->nParts; u++)
 	{
-        	lwfree_line(lwgeom_as_lwline(lwmultilinestrings[u]));
+        	lwline_free(lwgeom_as_lwline(lwmultilinestrings[u]));
         	lwfree(dpas[u]);
 	}
 
@@ -1193,7 +1193,7 @@ InsertPolygon(void)
 
 	/* Cycle through each polygon, freeing everything we need... */
 	for (u = 0; u < polygon_total; u++)
-		lwfree_polygon(lwgeom_as_lwpoly(lwpolygons[u]));
+		lwpoly_free(lwgeom_as_lwpoly(lwpolygons[u]));
 
 	/* Free the pointer arrays */
 	lwfree(pas);
@@ -1284,7 +1284,7 @@ InsertPoint(void)
 
 	for (u = 0; u < obj->nVertices; u++)
 	{
-        	lwfree_point(lwgeom_as_lwpoint(lwmultipoints[u]));
+        	lwpoint_free(lwgeom_as_lwpoint(lwmultipoints[u]));
         	lwfree(dpas[u]);
 	}
 

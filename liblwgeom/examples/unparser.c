@@ -79,7 +79,7 @@ int main()
 	/* Free all of the allocated items */
 	lwfree(lwg_unparser_result.wkoutput);
 	lwfree(serialized_lwgeom);
-	lwfree_point(testpoint);
+	lwpoint_free(testpoint);
 	lwfree(dpa);
 
 
@@ -115,7 +115,7 @@ int main()
 	/* Free all of the allocated items */
 	lwfree(lwg_unparser_result.wkoutput);
 	lwfree(serialized_lwgeom);
-	lwfree_line(testline);
+	lwline_free(testline);
 	lwfree(dpa);
 
 
@@ -191,6 +191,6 @@ int main()
 	/* Free all of the allocated items */
 	lwfree(lwg_unparser_result.wkoutput);
 	lwfree(serialized_lwgeom);
-	lwfree_polygon(testpoly);
+	lwpoly_free(testpoly);
 
 }

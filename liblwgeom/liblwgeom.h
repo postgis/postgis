@@ -965,15 +965,15 @@ char box2d_same(BOX2DFLOAT4 *box1, BOX2DFLOAT4 *box2);
  * constructed yourself.
  */
  
-extern void lwfree_point(LWPOINT *pt);
-extern void lwfree_line(LWLINE  *line);
-extern void lwfree_polygon(LWPOLY  *poly);
-extern void lwfree_pointarray(POINTARRAY *pa);
-extern void lwfree_mpoint(LWMPOINT *mpt);
-extern void lwfree_mline(LWMLINE *mline);
-extern void lwfree_mpolygon(LWMPOLY *mpoly);
-extern void lwfree_collection(LWCOLLECTION *col);
-extern void lwfree_geom(LWGEOM *geom);
+extern void ptarray_free(POINTARRAY *pa);
+extern void lwpoint_free(LWPOINT *pt);
+extern void lwline_free(LWLINE *line);
+extern void lwpoly_free(LWPOLY *poly);
+extern void lwmpoint_free(LWMPOINT *mpt);
+extern void lwmline_free(LWMLINE *mline);
+extern void lwmpoly_free(LWMPOLY *mpoly);
+extern void lwcollection_free(LWCOLLECTION *col);
+extern void lwgeom_free(LWGEOM *geom);
 
 extern void lwfree_inspected(LWGEOM_INSPECTED *inspected); /* TODO: make this deep free... */
 
@@ -985,14 +985,14 @@ extern void lwfree_inspected(LWGEOM_INSPECTED *inspected); /* TODO: make this de
  * constructed yourself, or you will leak lots of memory.
  */
 
-extern void lwgeom_release(LWGEOM *lwgeom);
-extern void lwpoly_release(LWPOLY *lwpoly);
-extern void lwline_release(LWLINE *lwline);
 extern void lwpoint_release(LWPOINT *lwpoint);
-extern void lwmpoly_release(LWMPOLY *lwpoly);
-extern void lwmline_release(LWMLINE *lwline);
+extern void lwline_release(LWLINE *lwline);
+extern void lwpoly_release(LWPOLY *lwpoly);
 extern void lwmpoint_release(LWMPOINT *lwpoint);
+extern void lwmline_release(LWMLINE *lwline);
+extern void lwmpoly_release(LWMPOLY *lwpoly);
 extern void lwcollection_release(LWCOLLECTION *lwcollection);
+extern void lwgeom_release(LWGEOM *lwgeom);
 
 
 /****************************************************************

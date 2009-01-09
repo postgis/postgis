@@ -118,7 +118,7 @@ lwmpoly_add(const LWMPOLY *to, uint32 where, const LWGEOM *what)
 
 }
 
-void lwfree_mpolygon(LWMPOLY *mpoly) 
+void lwmpoly_free(LWMPOLY *mpoly) 
 {
 	int i;
 	if( mpoly->bbox ) 
@@ -128,7 +128,7 @@ void lwfree_mpolygon(LWMPOLY *mpoly)
 	for ( i = 0; i < mpoly->ngeoms; i++ ) 
 	{
 		if( mpoly->geoms[i] ) {
-			lwfree_polygon(mpoly->geoms[i]);
+			lwpoly_free(mpoly->geoms[i]);
 		}
 	}
 	if( mpoly->geoms ) 

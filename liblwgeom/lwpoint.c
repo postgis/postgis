@@ -300,10 +300,10 @@ lwpoint_deserialize(uchar *serialized_form)
 	return result;
 }
 
-void lwfree_point(LWPOINT *pt)
+void lwpoint_free(LWPOINT *pt)
 {
 	if(pt->point)
-		lwfree_pointarray(pt->point);
+		ptarray_free(pt->point);
 	lwfree(pt);
 }
 

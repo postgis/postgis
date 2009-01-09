@@ -443,7 +443,7 @@ TODO: pramsey
 */
 
 
-void lwfree_collection(LWCOLLECTION *col) 
+void lwcollection_free(LWCOLLECTION *col) 
 {
 	int i;
 	if( col->bbox ) 
@@ -456,25 +456,25 @@ void lwfree_collection(LWCOLLECTION *col)
 			switch( TYPE_GETTYPE(col->geoms[i]->type) )
 			{
 				case POINTTYPE:
-					lwfree_point((LWPOINT*)col->geoms[i]);
+					lwpoint_free((LWPOINT*)col->geoms[i]);
 					break;
 				case LINETYPE:
-					lwfree_line((LWLINE*)col->geoms[i]);
+					lwline_free((LWLINE*)col->geoms[i]);
 					break;
 				case POLYGONTYPE:
-					lwfree_polygon((LWPOLY*)col->geoms[i]);
+					lwpoly_free((LWPOLY*)col->geoms[i]);
 					break;
 				case MULTIPOINTTYPE:
-					lwfree_mpoint((LWMPOINT*)col->geoms[i]);
+					lwmpoint_free((LWMPOINT*)col->geoms[i]);
 					break;
 				case MULTILINETYPE:
-					lwfree_mline((LWMLINE*)col->geoms[i]);
+					lwmline_free((LWMLINE*)col->geoms[i]);
 					break;
 				case MULTIPOLYGONTYPE:
-					lwfree_mpolygon((LWMPOLY*)col->geoms[i]);
+					lwmpoly_free((LWMPOLY*)col->geoms[i]);
 					break;
 				case COLLECTIONTYPE:
-					lwfree_collection((LWCOLLECTION*)col->geoms[i]);
+					lwcollection_free((LWCOLLECTION*)col->geoms[i]);
 					break;
 			}
 		}

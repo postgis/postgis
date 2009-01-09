@@ -241,12 +241,12 @@ lwline_serialize_size(LWLINE *line)
 	return size;
 }
 
-void lwfree_line (LWLINE  *line)
+void lwline_free (LWLINE  *line)
 {
 	if ( line->bbox ) 
 		lwfree(line->bbox);
 
-	lwfree_pointarray(line->points);
+	ptarray_free(line->points);
 	lwfree(line);
 }
 
