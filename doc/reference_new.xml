@@ -12111,6 +12111,55 @@ SELECT ST_SetSRID(ST_Extent(the_geom),2249) as bextent FROM sometable;
       </refsection>
 	</refentry>
 
+	<refentry id="Find_SRID">
+	  <refnamediv>
+	    <refname>Find_SRID</refname>
+	
+	    <refpurpose>The syntax is find_srid(&lt;db/schema&gt;, &lt;table&gt;,
+            &lt;column&gt;) and the function returns the integer SRID of the
+            specified column by searching through the GEOMETRY_COLUMNS table.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>integer <function>Find_SRID</function></funcdef>
+	        <paramdef><type>varchar </type> <parameter>a_schema_name</parameter></paramdef>
+	        <paramdef><type>varchar </type> <parameter>a_table_name</parameter></paramdef>
+			 <paramdef><type>varchar </type> <parameter>a_geomfield_name</parameter></paramdef>
+	      </funcprototype>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+	    <para>The syntax is find_srid(&lt;db/schema&gt;, &lt;table&gt;,
+            &lt;column&gt;) and the function returns the integer SRID of the
+            specified column by searching through the GEOMETRY_COLUMNS table.
+            If the geometry column has not been properly added with the
+            AddGeometryColumns() function, this function will not work
+            either.</para>
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+	
+	    <programlisting> SELECT Find_SRID('public', 'tiger_us_state_2007', 'the_geom_4269');
+find_srid
+----------
+4269
+</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	
+	    <para><xref linkend="ST_SRID" /></para>
+	  </refsection>
+	</refentry>
+
 	<refentry id="ST_Mem_Size">
 	  <refnamediv>
 	    <refname>ST_Mem_Size</refname>
@@ -12189,6 +12238,54 @@ fulltable_size geomsize  pergeom
 	    <title>See Also</title>
 	
 	    <para></para>
+	  </refsection>
+	</refentry>
+
+	<refentry id="ST_Point_Inside_Circle">
+	  <refnamediv>
+		<refname>ST_Point_Inside_Circle</refname>
+	
+		<refpurpose>Is the point geometry insert circle defined by center_x, center_y , radius</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>ST_Point_Inside_Circle</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>a_point</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>center_x</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>center_y</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>radius</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+		<title>Description</title>
+	
+		<para>The syntax for this functions is
+            point_inside_circle(&lt;geometry&gt;,&lt;circle_center_x&gt;,&lt;circle_center_y&gt;,&lt;radius&gt;).
+            Returns the true if the geometry is a point and is inside the
+            circle. Returns false otherwise.</para>
+		<para><note>This only works for points as the name suggests</note></para>
+	  </refsection>
+	  
+	
+	  <refsection>
+		<title>Examples</title>
+	
+		<programlisting>SELECT ST_Point_Inside_Circle(ST_Point(1,2), 0.5, 2, 3);
+ st_point_inside_circle
+------------------------
+ t
+</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+	
+		<para><xref linkend="ST_DWithin" /></para>
 	  </refsection>
 	</refentry>
 		

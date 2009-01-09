@@ -407,36 +407,6 @@
         </varlistentry>
       </variablelist>
     </sect2>
-
-    <sect2>
-      <title>Misc</title>
-
-      <variablelist>
-        <varlistentry>
-          <term>ST_find_srid(varchar,varchar,varchar)</term>
-
-          <listitem>
-            <para>The syntax is find_srid(&lt;db/schema&gt;, &lt;table&gt;,
-            &lt;column&gt;) and the function returns the integer SRID of the
-            specified column by searching through the GEOMETRY_COLUMNS table.
-            If the geometry column has not been properly added with the
-            AddGeometryColumns() function, this function will not work
-            either.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry id="ST_Point_Inside_Circle">
-          <term>ST_point_inside_circle(geometry, float, float, float)</term>
-
-          <listitem>
-            <para>The syntax for this functions is
-            point_inside_circle(&lt;geometry&gt;,&lt;circle_center_x&gt;,&lt;circle_center_y&gt;,&lt;radius&gt;).
-            Returns the true if the geometry is a point and is inside the
-            circle. Returns false otherwise.</para>
-          </listitem>
-        </varlistentry>
-      </variablelist>
-    </sect2>
   </sect1>
 
   <sect1>
