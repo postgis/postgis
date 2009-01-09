@@ -63,16 +63,16 @@
       <para>Input/Output of these formats are available using the following
       interfaces:</para>
 
-      <programlisting>bytea WKB = asBinary(geometry); 
+      <programlisting>bytea WKB = ST_AsBinary(geometry); 
 text WKT = asText(geometry); 
-geometry = GeomFromWKB(bytea WKB, SRID); 
-geometry = GeometryFromText(text WKT, SRID);</programlisting>
+geometry = ST_GeomFromWKB(bytea WKB, SRID); 
+geometry = ST_GeometryFromText(text WKT, SRID);</programlisting>
 
       <para>For example, a valid insert statement to create and insert an OGC
       spatial object would be:</para>
 
       <programlisting>INSERT INTO geotable ( the_geom, the_name )
-  VALUES ( GeomFromText('POINT(-126.4 45.32)', 312), 'A Place');</programlisting>
+  VALUES ( ST_GeomFromText('POINT(-126.4 45.32)', 312), 'A Place');</programlisting>
     </sect2>
 
     <sect2>
@@ -137,16 +137,16 @@ geometry = GeometryFromText(text WKT, SRID);</programlisting>
       <para>Input/Output of these formats are available using the following
       interfaces:</para>
 
-      <programlisting>bytea EWKB = asEWKB(geometry); 
-text EWKT = asEWKT(geometry); 
-geometry = GeomFromEWKB(bytea EWKB); 
-geometry = GeomFromEWKT(text EWKT);</programlisting>
+      <programlisting>bytea EWKB = ST_AsEWKB(geometry); 
+text EWKT = ST_AsEWKT(geometry); 
+geometry = ST_GeomFromEWKB(bytea EWKB); 
+geometry = ST_GeomFromEWKT(text EWKT);</programlisting>
 
       <para>For example, a valid insert statement to create and insert a
       PostGIS spatial object would be:</para>
 
       <programlisting>INSERT INTO geotable ( the_geom, the_name ) 
-  VALUES ( GeomFromEWKT('SRID=312;POINTM(-126.4 45.32 15)'), 'A Place' )</programlisting>
+  VALUES ( ST_GeomFromEWKT('SRID=312;POINTM(-126.4 45.32 15)'), 'A Place' )</programlisting>
 
       <para>The "canonical forms" of a PostgreSQL type are the representations
       you get with a simple query (without any function call) and the one
@@ -920,17 +920,17 @@ gisdb=# SELECT
 
       <programlisting>BEGIN; 
 INSERT INTO roads (road_id, roads_geom, road_name) 
-  VALUES (1,GeomFromText('LINESTRING(191232 243118,191108 243242)',-1),'Jeff Rd'); 
+  VALUES (1,ST_GeomFromText('LINESTRING(191232 243118,191108 243242)',-1),'Jeff Rd'); 
 INSERT INTO roads (road_id, roads_geom, road_name) 
-  VALUES (2,GeomFromText('LINESTRING(189141 244158,189265 244817)',-1),'Geordie Rd'); 
+  VALUES (2,ST_GeomFromText('LINESTRING(189141 244158,189265 244817)',-1),'Geordie Rd'); 
 INSERT INTO roads (road_id, roads_geom, road_name) 
-  VALUES (3,GeomFromText('LINESTRING(192783 228138,192612 229814)',-1),'Paul St'); 
+  VALUES (3,ST_GeomFromText('LINESTRING(192783 228138,192612 229814)',-1),'Paul St'); 
 INSERT INTO roads (road_id, roads_geom, road_name) 
-  VALUES (4,GeomFromText('LINESTRING(189412 252431,189631 259122)',-1),'Graeme Ave'); 
+  VALUES (4,ST_GeomFromText('LINESTRING(189412 252431,189631 259122)',-1),'Graeme Ave'); 
 INSERT INTO roads (road_id, roads_geom, road_name) 
-  VALUES (5,GeomFromText('LINESTRING(190131 224148,190871 228134)',-1),'Phil Tce'); 
+  VALUES (5,ST_GeomFromText('LINESTRING(190131 224148,190871 228134)',-1),'Phil Tce'); 
 INSERT INTO roads (road_id, roads_geom, road_name) 
-  VALUES (6,GeomFromText('LINESTRING(198231 263418,198213 268322)',-1),'Dave Cres'); 
+  VALUES (6,ST_GeomFromText('LINESTRING(198231 263418,198213 268322)',-1),'Dave Cres'); 
 COMMIT;</programlisting>
 
       <para>The data file can be piped into PostgreSQL very easily using the
@@ -1087,7 +1087,7 @@ COMMIT;</programlisting>
       is to use a SQL select query and dump the resulting columns into a
       parsable text file:</para>
 
-      <programlisting>db=# SELECT road_id, AsText(road_geom) AS geom, road_name FROM roads; 
+      <programlisting>db=# SELECT road_id, ST_AsText(road_geom) AS geom, road_name FROM roads; 
 
 road_id | geom                                    | road_name
 --------+-----------------------------------------+----------- 
@@ -1143,7 +1143,7 @@ road_id | geom                                    | road_name
 
       <programlisting>SELECT road_id, road_name 
   FROM roads 
-  WHERE roads_geom ~= GeomFromText('LINESTRING(191232 243118,191108 243242)',-1);</programlisting>
+  WHERE roads_geom ~= ST_GeomFromText('LINESTRING(191232 243118,191108 243242)',-1);</programlisting>
 
       <para>The above query would return the single record from the
       "ROADS_GEOM" table in which the geometry was equal to that value.</para>
@@ -1155,7 +1155,7 @@ road_id | geom                                    | road_name
 
       <programlisting>SELECT road_id, road_name 
 FROM roads 
-WHERE roads_geom &amp;&amp; GeomFromText('POLYGON((...))',-1);</programlisting>
+WHERE roads_geom &amp;&amp; ST_GeomFromText('POLYGON((...))',-1);</programlisting>
 
       <para>The above query will use the bounding box of the polygon for
       comparison purposes.</para>
@@ -1422,7 +1422,7 @@ SELECT UPDATE_GEOMETRY_STATS([table_name], [column_name]);</programlisting></par
 
       <programlisting>SELECT the_geom 
 FROM geom_table 
-WHERE ST_Distance(the_geom, GeomFromText('POINT(100000 200000)', -1)) &lt; 100</programlisting>
+WHERE ST_Distance(the_geom, ST_GeomFromText('POINT(100000 200000)', -1)) &lt; 100</programlisting>
 
       <para>This query is selecting all the geometries in geom_table which are
       within 100 units of the point (100000, 200000). It will be slow because
@@ -1435,7 +1435,7 @@ WHERE ST_Distance(the_geom, GeomFromText('POINT(100000 200000)', -1)) &lt; 100</
 FROM geom_table 
 WHERE the_geom &amp;&amp; 'BOX3D(90900 190900, 100100 200100)'::box3d 
   AND
-ST_Distance(the_geom, GeomFromText('POINT(100000 200000)', -1)) &lt; 100</programlisting>
+ST_Distance(the_geom, ST_GeomFromText('POINT(100000 200000)', -1)) &lt; 100</programlisting>
 
       <para>This query selects the same geometries, but it does it in a more
       efficient way. Assuming there is a GiST index on the_geom, the query
@@ -1668,7 +1668,7 @@ gid  | name         | area
     </sect2>
   </sect1>
 
-  <sect1>
+  <sect1 id="Using_Mapserver">
     <title>Using Mapserver</title>
 
     <para>The Minnesota Mapserver is an internet web-mapping server which
@@ -1727,6 +1727,7 @@ gid  | name         | area
   NAME "widehighways" 
   # Connect to a remote spatial database
   CONNECTION "user=dbuser dbname=gisdatabase host=bigserver"
+  PROCESSING "CLOSE_CONNECTION=DEFER"
   # Get the lines from the 'geom' column of the 'roads' table 
   DATA "geom from roads" 
   STATUS ON
@@ -1788,6 +1789,15 @@ END</programlisting>
                 <para>The form of this parameter is "&lt;column&gt; from
                 &lt;tablename&gt;" where the column is the spatial column to
                 be rendered to the map.</para>
+              </listitem>
+            </varlistentry>
+			
+			<varlistentry>
+              <term>PROCESSING</term>
+
+              <listitem>
+                <para>Putting in a CLOSE_CONNECTION=DEFER if you have multiple layers reuses existing connections instead of closing them.  This improves 
+					speed.  Refer to for <ulink url="http://blog.cleverelephant.ca/2008/10/mapserverpostgis-performance-tips.html">Paul's Mapserver PostGIS Performance Tips</ulink> for more detailed explanation.  </para>
               </listitem>
             </varlistentry>
 
@@ -2024,7 +2034,9 @@ END</programlisting>
       effect:</para>
 
       <programlisting>LAYER 
+  CONNECTIONTYPE postgis 
   CONNECTION "user=theuser password=thepass dbname=thedb host=theserver" 
+  PROCESSING "CLOSE_CONNECTION=DEFER"
   DATA "the_geom FROM roads"
   MINSCALE 100000 
   STATUS ON 
@@ -2035,7 +2047,9 @@ END</programlisting>
   END 
 END 
 LAYER 
+  CONNECTIONTYPE postgis 
   CONNECTION "user=theuser password=thepass dbname=thedb host=theserver"
+  PROCESSING "CLOSE_CONNECTION=DEFER"
   DATA "the_geom FROM roads" 
   MAXSCALE 100000 
   STATUS ON 
