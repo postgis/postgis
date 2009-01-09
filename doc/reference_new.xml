@@ -3686,6 +3686,56 @@ SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,222020 150410)'
 			<para><xref linkend="ST_NumPoints" /></para>
 		</refsection>
 	</refentry>
+
+	<refentry id="ST_NRings">
+	  <refnamediv>
+	    <refname>ST_NRings</refname>
+	    <refpurpose>If the geometry is a polygon or multi-polygon returns the number of rings.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>integer <function>ST_NRings</function></funcdef>
+	        <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+	      </funcprototype>
+	    </funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+	    <para>If the geometry is a polygon or multi-polygon returns the number of rings.  Unlike NumInteriorRings, it counts
+		the outer rings as well.</para>
+	  
+		<!-- Optionally mention 3d support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+	
+	    <programlisting>SELECT ST_NRings(the_geom) As Nrings, ST_NumInteriorRings(the_geom) As ninterrings
+					FROM (SELECT ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))') As the_geom) As foo;
+	 nrings | ninterrings
+--------+-------------
+      1 |           0
+(1 row)				
+</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	
+	    <para><xref linkend="ST_NumInteriorRings" /></para>
+	  </refsection>
+	</refentry>
 	
 	<refentry id="ST_NumGeometries">
 		<refnamediv>
@@ -4434,7 +4484,7 @@ SELECT ST_Zmflag(ST_GeomFromEWKT('POINT(1 2 3 4)'));
 	  <refsection>
 	    <title>See Also</title>
 	
-	    <para><xref linkend="ST_CoordDim" /></para>
+	    <para><xref linkend="ST_CoordDim" />, <xref linkend="ST_NDims" />, <xref linkend="ST_Dimension" /></para>
 	  </refsection>
 	</refentry>
 

@@ -412,16 +412,6 @@
       <title>Misc</title>
 
       <variablelist>
-
-        <varlistentry>
-          <term>ST_nrings(geometry)</term>
-
-          <listitem>
-            <para>If the geometry is a polygon or multi-polygon returns the
-            number of rings.</para>
-          </listitem>
-        </varlistentry>
-
         <varlistentry>
           <term>ST_find_srid(varchar,varchar,varchar)</term>
 
