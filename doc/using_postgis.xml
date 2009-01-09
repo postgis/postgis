@@ -64,7 +64,7 @@
       interfaces:</para>
 
       <programlisting>bytea WKB = ST_AsBinary(geometry); 
-text WKT = asText(geometry); 
+text WKT = ST_AsText(geometry); 
 geometry = ST_GeomFromWKB(bytea WKB, SRID); 
 geometry = ST_GeometryFromText(text WKT, SRID);</programlisting>
 
@@ -1165,7 +1165,7 @@ WHERE roads_geom &amp;&amp; ST_GeomFromText('POLYGON((...))',-1);</programlistin
       grab a "map frame" worth of data for display. Using a "BOX3D" object for
       the frame, such a query looks like this:</para>
 
-      <programlisting>SELECT AsText(roads_geom) AS geom 
+      <programlisting>SELECT ST_AsText(roads_geom) AS geom 
 FROM roads 
 WHERE 
   roads_geom &amp;&amp; SetSRID('BOX3D(191232 243117,191232 243119)'::box3d,-1);</programlisting>
@@ -2151,7 +2151,7 @@ public static void main(String[] args) {
     * Create a statement and execute a select query. 
     */ 
     Statement s = conn.createStatement(); 
-    ResultSet r = s.executeQuery("select AsText(geom) as geom,id from geomtable"); 
+    ResultSet r = s.executeQuery("select ST_AsText(geom) as geom,id from geomtable"); 
     while( r.next() ) { 
       /* 
       * Retrieve the geometry as an object then cast it to the geometry type. 
