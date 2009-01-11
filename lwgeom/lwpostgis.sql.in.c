@@ -990,28 +990,25 @@ CREATEFUNCTION LWGEOM_gist_decompress(internal)
 -------------------------------------------
 -- GIST opclass index binding entries.
 -------------------------------------------
-
-#if POSTGIS_PGSQL_VERSION < 84
-
 --
--- Create opclass index bindings for PG>=73 and PG<=83
+-- Create opclass index bindings for PG>=73
 --
 
 CREATE OPERATOR CLASS gist_geometry_ops
         DEFAULT FOR TYPE geometry USING gist AS
 	STORAGE 	box2d,
-        OPERATOR        1        << 	RECHECK,
-        OPERATOR        2        &<	RECHECK,
-        OPERATOR        3        &&	RECHECK,
-        OPERATOR        4        &>	RECHECK,
-        OPERATOR        5        >>	RECHECK,
-        OPERATOR        6        ~=	RECHECK,
-        OPERATOR        7        ~	RECHECK,
-        OPERATOR        8        @	RECHECK,
-	OPERATOR	9	 &<|	RECHECK,
-	OPERATOR	10	 <<|	RECHECK,
-	OPERATOR	11	 |>>	RECHECK,
-	OPERATOR	12	 |&>	RECHECK,
+        OPERATOR        1        << 	,
+        OPERATOR        2        &<	,
+        OPERATOR        3        &&	,
+        OPERATOR        4        &>	,
+        OPERATOR        5        >>	,
+        OPERATOR        6        ~=	,
+        OPERATOR        7        ~	,
+        OPERATOR        8        @	,
+	OPERATOR	9	 &<|	,
+	OPERATOR	10	 <<|	,
+	OPERATOR	11	 |>>	,
+	OPERATOR	12	 |&>	,
 	FUNCTION        1        LWGEOM_gist_consistent (internal, geometry, int4),
         FUNCTION        2        LWGEOM_gist_union (bytea, internal),
         FUNCTION        3        LWGEOM_gist_compress (internal),
@@ -1019,39 +1016,6 @@ CREATE OPERATOR CLASS gist_geometry_ops
         FUNCTION        5        LWGEOM_gist_penalty (internal, internal, internal),
         FUNCTION        6        LWGEOM_gist_picksplit (internal, internal),
         FUNCTION        7        LWGEOM_gist_same (box2d, box2d, internal);
-
-#else
-
---
--- Create opclass index bindings for PG>83 
--- (No RECHECK since this is now handled as part of the GiST Access methods)
---
-
-CREATE OPERATOR CLASS gist_geometry_ops
-        DEFAULT FOR TYPE geometry USING gist AS
-	STORAGE 	box2d,
-        OPERATOR        1        <<,
-        OPERATOR        2        &<,
-        OPERATOR        3        &&,
-        OPERATOR        4        &>,
-        OPERATOR        5        >>,
-        OPERATOR        6        ~=,
-        OPERATOR        7        ~,
-        OPERATOR        8        @,
-	OPERATOR	9	 &<|,
-	OPERATOR	10	 <<|,
-	OPERATOR	11	 |>>,
-	OPERATOR	12	 |&>,
-	FUNCTION        1        LWGEOM_gist_consistent (internal, geometry, int4),
-        FUNCTION        2        LWGEOM_gist_union (bytea, internal),
-        FUNCTION        3        LWGEOM_gist_compress (internal),
-        FUNCTION        4        LWGEOM_gist_decompress (internal),
-        FUNCTION        5        LWGEOM_gist_penalty (internal, internal, internal),
-        FUNCTION        6        LWGEOM_gist_picksplit (internal, internal),
-        FUNCTION        7        LWGEOM_gist_same (box2d, box2d, internal);
-
-#endif
-
 	
 -------------------------------------------
 -- other lwgeom functions

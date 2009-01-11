@@ -556,9 +556,10 @@ Datum LWGEOM_gist_consistent(PG_FUNCTION_ARGS)
 	   rather than being supplied as part of the operator class definition */
 	bool *recheck = (bool *) PG_GETARG_POINTER(4);
 
-	/* Since the index is lossy from conversion from float8 to float4, we must
-	   recheck */
-	*recheck = true;
+	/* We set recheck to false to avoid repeatedly pulling every "possibly matched" geometry
+	   out during index scans. For cases when the geometries are large, doing this
+	   can make things twice as slow. */
+	*recheck = false;
 #endif
 
 	POSTGIS_DEBUG(2, "GIST: LWGEOM_gist_consistent called");
