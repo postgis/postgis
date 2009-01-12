@@ -1527,8 +1527,8 @@ LINESTRING(1 2 3,4 5 6,7 8 9)
 	  <refnamediv>
 	    <refname>ST_LineFromText</refname>
 	
-	    <refpurpose>>Makes a Geometry from WKT with the given SRID. If SRID is
-				not give, it defaults to -1.</refpurpose>
+	    <refpurpose>Makes a Geometry from WKT representation with the given SRID. If SRID is
+				not given, it defaults to -1.</refpurpose>
 	  </refnamediv>
 	
 	  <refsynopsisdiv>
@@ -1605,7 +1605,7 @@ aline                            | null_return
 	  <refnamediv>
 	    <refname>ST_LineFromWKB</refname>
 	
-	    <refpurpose>>Makes a Geometry from WKB with the given SRID. If SRID is
+	    <refpurpose>Makes a Geometry from WKB with the given SRID. If SRID is
 				not give, it defaults to -1.</refpurpose>
 	  </refnamediv>
 	
@@ -1686,8 +1686,8 @@ aline                            | null_return
 	  <refnamediv>
 	    <refname>ST_LinestringFromWKB</refname>
 	
-	    <refpurpose>>Makes a Geometry from WKB with the given SRID. If SRID is
-				not give, it defaults to -1.</refpurpose>
+	    <refpurpose>Makes a Geometry from WKB with the given SRID. If SRID is
+				not given, it defaults to -1.</refpurpose>
 	  </refnamediv>
 	
 	  <refsynopsisdiv>
