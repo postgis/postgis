@@ -806,7 +806,6 @@ void
 InsertLineString()
 {
 	LWCOLLECTION *lwcollection;
-	BOX2DFLOAT4 bbox;
 
 	LWGEOM **lwmultilinestrings;
 	uchar *serialized_lwgeom;
@@ -866,13 +865,13 @@ InsertLineString()
 		}
 	
 		/* Generate the LWLINE */
-		lwmultilinestrings[u] = lwline_as_lwgeom(lwline_construct(sr_id, &bbox, dpas[u]->pa));
+		lwmultilinestrings[u] = lwline_as_lwgeom(lwline_construct(sr_id, NULL, dpas[u]->pa));
 	}
 
 	/* If using MULTILINESTRINGs then generate the serialized collection, otherwise just a single LINESTRING */
 	if (simple_geometries == 0)
 	{
-		lwcollection = lwcollection_construct(MULTILINETYPE, sr_id, &bbox, obj->nParts, lwmultilinestrings);
+		lwcollection = lwcollection_construct(MULTILINETYPE, sr_id, NULL, obj->nParts, lwmultilinestrings);
 		serialized_lwgeom = lwgeom_serialize(lwcollection_as_lwgeom(lwcollection));
 	}
 	else
@@ -1069,7 +1068,6 @@ InsertPolygon(void)
 	int u;	
 
 	LWCOLLECTION *lwcollection = NULL;
-	BOX2DFLOAT4 bbox;
 
 	LWGEOM **lwpolygons;
 	uchar *serialized_lwgeom;
@@ -1157,7 +1155,7 @@ InsertPolygon(void)
 		}
 
 		/* Generate the LWGEOM */
-		lwpoly = lwpoly_construct(sr_id, &bbox, ring_total, pas[pi]);	
+		lwpoly = lwpoly_construct(sr_id, NULL, ring_total, pas[pi]);	
 		lwpolygons[pi] = lwpoly_as_lwgeom(lwpoly);
 	}
 
@@ -1166,7 +1164,7 @@ InsertPolygon(void)
 	/* If using MULTIPOLYGONS then generate the serialized collection, otherwise just a single POLYGON */
 	if (simple_geometries == 0)
 	{
-		lwcollection = lwcollection_construct(MULTIPOLYGONTYPE, sr_id, &bbox, polygon_total, lwpolygons);
+		lwcollection = lwcollection_construct(MULTIPOLYGONTYPE, sr_id, NULL, polygon_total, lwpolygons);
 		serialized_lwgeom = lwgeom_serialize(lwcollection_as_lwgeom(lwcollection));
 	}
 	else
@@ -1209,7 +1207,6 @@ void
 InsertPoint(void)
 {
 	LWCOLLECTION *lwcollection;
-	BOX2DFLOAT4 bbox;
 
 	LWGEOM **lwmultipoints;
 	uchar *serialized_lwgeom;
@@ -1257,7 +1254,7 @@ InsertPoint(void)
 	rather than a POINT */
 	if (obj->nVertices > 1)
 	{
-		lwcollection = lwcollection_construct(MULTIPOINTTYPE, sr_id, &bbox, obj->nVertices, lwmultipoints);
+		lwcollection = lwcollection_construct(MULTIPOINTTYPE, sr_id, NULL, obj->nVertices, lwmultipoints);
 		serialized_lwgeom = lwgeom_serialize(lwcollection_as_lwgeom(lwcollection));
 	}
 	else

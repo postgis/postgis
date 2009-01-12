@@ -486,3 +486,4 @@ void lwcollection_free(LWCOLLECTION *col)
 	lwfree(col);
 	
 };
+
