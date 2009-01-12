@@ -23,34 +23,9 @@
       <title>Geometry Constructors</title>
 
       <variablelist>
-        <varlistentry>
-			<term>ST_LineFromText(text)</term>
-			<term>ST_LineFromText(text,srid integer)</term>
 
-			<listitem>
-				<para>Makes a Geometry from WKT with the given SRID. If SRID is
-				not give, it defaults to -1.</para>
-				
-				<para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
-				suite</para>
-				
-				<para>Throws an error if the WKT is not a Line</para>
-			</listitem>
-        </varlistentry>
 
-        <varlistentry>
-			<term>ST_LinestringFromText(text)</term>
-			<term>ST_LinestringFromText(text,srid integer)</term>
-			
-			<listitem>
-				<para>Makes a Geometry from WKT with the given SRID. If SRID is
-				not give, it defaults to -1.</para>
-				
-				<para>from the conformance suite</para>
-				
-				<para>Throws an error if the WKT is not a Line</para>
-			</listitem>
-        </varlistentry>
+
 
         <varlistentry>
           <term>ST_PolyFromText(text,[&lt;srid&gt;])</term>
@@ -172,19 +147,6 @@
 
             <para>OGC SPEC 3.2.7.2 - option SRID is from the conformance
             suite</para>
-
-            <para>throws an error if WKB is not a LINESTRING</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>ST_LinestringFromWKB(bytea,[&lt;srid&gt;])</term>
-
-          <listitem>
-            <para>Makes a Geometry from WKB with the given SRID. If SRID is
-            not give, it defaults to -1.</para>
-
-            <para>from the conformance suite</para>
 
             <para>throws an error if WKB is not a LINESTRING</para>
           </listitem>
@@ -427,26 +389,6 @@
     </note>
 
     <variablelist>  
-      <varlistentry>
-        <term>ST_LineFromText</term>
-
-        <listitem>
-          <para>Return a specified ST_LineString value.</para>
-
-          <para>SQL-MM 3: 7.2.8</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term>ST_LineFromWKB</term>
-
-        <listitem>
-          <para>Return a specified ST_LineString value.</para>
-
-          <para>SQL-MM 3: 7.2.9</para>
-        </listitem>
-      </varlistentry>
-
       <varlistentry>
         <term>ST_MLineFromText</term>
 

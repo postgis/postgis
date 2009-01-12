@@ -1473,7 +1473,7 @@ SRID=4326;LINESTRING(-113.98 39.198,-113.981 39.195)
 	    <para><xref linkend="ST_WKBToSQL" />, <xref linkend="ST_AsBinary" />, <xref linkend="ST_GeomFromEWKB" /></para>
 	  </refsection>
 	</refentry>
-		
+			
 	<refentry id="ST_LineFromMultiPoint">
 	  <refnamediv>
 		<refname>ST_LineFromMultiPoint</refname>
@@ -1520,6 +1520,247 @@ LINESTRING(1 2 3,4 5 6,7 8 9)
 		<title>See Also</title>
 	
 		<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_Collect" />,<xref linkend="ST_MakeLine" /></para>
+	  </refsection>
+	</refentry>
+		
+	<refentry id="ST_LineFromText">
+	  <refnamediv>
+	    <refname>ST_LineFromText</refname>
+	
+	    <refpurpose>>Makes a Geometry from WKT with the given SRID. If SRID is
+				not give, it defaults to -1.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>geometry <function>ST_LineFromText</function></funcdef>
+	        <paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
+	      </funcprototype>
+	
+		  <funcprototype>
+	        <funcdef>geometry <function>ST_LineFromText</function></funcdef>
+	        <paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+	      </funcprototype>
+	    </funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+	    <para>Makes a Geometry from WKT with the given SRID. If SRID is
+				not give, it defaults to -1.  If WKT passed in is not a LINESTRING, then null is returned.  This is an alias
+				for ST_LinestringFromText.</para>
+	   
+	    <note>
+	      <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
+				suite.</para>
+	    </note>
+		
+		<note>
+	      <para>If you know all your geometries are LINESTRINGS, its more efficient to just use ST_GeomFromText.
+		  	This just calls ST_GeomFromText and adds additional validation that it returns a linestring.</para>
+	    </note>
+		
+	
+	    <!-- Optionally mention OpenGIS compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the <ulink
+	    url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+	    Implementation Specification for SQL.  OGC SPEC 3.2.6.2</ulink></para>
+	
+	    <!-- Optionally mention SQL/MM compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the SQL/MM specification:
+	    SQL-MM 3: 7.2.8</para>
+		
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+	
+	    <programlisting>SELECT ST_LineFromText('LINESTRING(1 2, 3 4)') AS aline, ST_LineFromText('POINT(1 2)') AS null_return;
+aline                            | null_return
+------------------------------------------------
+010200000002000000000000000000F ... | t	
+		</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	
+	    <para><xref linkend="ST_GeomFromText" />, <xref linkend="ST_LinestringFromText" /></para>
+	  </refsection>
+	</refentry>
+	
+	<refentry id="ST_LineFromWKB">
+	  <refnamediv>
+	    <refname>ST_LineFromWKB</refname>
+	
+	    <refpurpose>>Makes a Geometry from WKB with the given SRID. If SRID is
+				not give, it defaults to -1.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>geometry <function>ST_LineFromWKB</function></funcdef>
+	        <paramdef><type>bytea </type> <parameter>WKB</parameter></paramdef>
+	      </funcprototype>
+	
+		  <funcprototype>
+	        <funcdef>geometry <function>ST_LineFromWKB</function></funcdef>
+	        <paramdef><type>bytea </type> <parameter>WKT</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+	      </funcprototype>
+	    </funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+	    <para>Makes a Geometry from WKB with the given SRID. If SRID is
+				not give, it defaults to -1. This an alias for ST_LinestringFromWKB.</para>
+				
+		<note><para>If WKB passed in is not a LINESTRING, then null is returned.</para></note>
+	   
+	    <note>
+	      <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
+				suite.</para>
+	    </note>
+		
+		<note>
+	      <para>If you know all your geometries are LINESTRINGS, its more efficient to just use ST_GeomFromWKB.
+		  	This just calls ST_GeomFromWKB and adds additional validation that it returns a linestring.</para>
+	    </note>
+		
+	
+	    <!-- Optionally mention OpenGIS compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the <ulink
+	    url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+	    Implementation Specification for SQL.  OGC SPEC 3.2.6.2</ulink></para>
+	
+	    <!-- Optionally mention SQL/MM compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the SQL/MM specification:
+	    SQL-MM 3: 7.2.9</para>
+		
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+	
+	    <programlisting>SELECT ST_LineFromWKB(ST_AsBinary(ST_GeomFromText('LINESTRING(1 2, 3 4)'))) AS aline, 
+		ST_LineFromWKB(ST_AsBinary(ST_GeomFromText('POINT(1 2)'))) IS NULL AS null_return;
+aline                            | null_return
+------------------------------------------------
+010200000002000000000000000000F ... | t	
+		</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	
+	    <para><xref linkend="ST_GeomFromWKB" />, <xref linkend="ST_LinestringFromWKB" /></para>
+	  </refsection>
+	</refentry>
+	
+	<refentry id="ST_LinestringFromWKB">
+	  <refnamediv>
+	    <refname>ST_LinestringFromWKB</refname>
+	
+	    <refpurpose>>Makes a Geometry from WKB with the given SRID. If SRID is
+				not give, it defaults to -1.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>geometry <function>ST_LinestringFromWKB</function></funcdef>
+	        <paramdef><type>bytea </type> <parameter>WKB</parameter></paramdef>
+	      </funcprototype>
+	
+		  <funcprototype>
+	        <funcdef>geometry <function>ST_LinestringFromWKB</function></funcdef>
+	        <paramdef><type>bytea </type> <parameter>WKT</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+	      </funcprototype>
+	    </funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+	    <para>Makes a Geometry from WKB with the given SRID. If SRID is
+				not give, it defaults to -1. This an alias for ST_LineFromWKB.</para>
+				
+		<note><para>If WKB passed in is not a LINESTRING, then null is returned.</para></note>
+	   
+	    <note>
+	      <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
+				suite.</para>
+	    </note>
+		
+		<note>
+	      <para>If you know all your geometries are LINESTRINGS, its more efficient to just use ST_GeomFromWKB.
+		  	This just calls ST_GeomFromWKB and adds additional validation that it returns a linestring.</para>
+	    </note>
+		
+	
+	    <!-- Optionally mention OpenGIS compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the <ulink
+	    url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+	    Implementation Specification for SQL.  OGC SPEC 3.2.6.2</ulink></para>
+	
+	    <!-- Optionally mention SQL/MM compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the SQL/MM specification:
+	    SQL-MM 3: 7.2.9</para>
+		
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+	
+	    <programlisting>SELECT ST_LineStringFromWKB(ST_AsBinary(ST_GeomFromText('LINESTRING(1 2, 3 4)'))) AS aline, 
+		ST_LinestringFromWKB(ST_AsBinary(ST_GeomFromText('POINT(1 2)'))) IS NULL AS null_return;
+aline                            | null_return
+------------------------------------------------
+010200000002000000000000000000F ... | t	
+		</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	
+	    <para><xref linkend="ST_GeomFromWKB" />, <xref linkend="ST_LineFromWKB" /></para>
 	  </refsection>
 	</refentry>
 	
