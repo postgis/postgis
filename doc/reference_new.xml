@@ -1550,8 +1550,7 @@ LINESTRING(1 2 3,4 5 6,7 8 9)
 	    <title>Description</title>
 	
 	    <para>Makes a Geometry from WKT with the given SRID. If SRID is
-				not give, it defaults to -1.  If WKT passed in is not a LINESTRING, then null is returned.  This is an alias
-				for ST_LinestringFromText.</para>
+				not give, it defaults to -1.  If WKT passed in is not a LINESTRING, then null is returned.  </para>
 	   
 	    <note>
 	      <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
@@ -1598,7 +1597,7 @@ aline                            | null_return
 	  <refsection>
 	    <title>See Also</title>
 	
-	    <para><xref linkend="ST_GeomFromText" />, <xref linkend="ST_LinestringFromText" /></para>
+	    <para><xref linkend="ST_GeomFromText" /></para>
 	  </refsection>
 	</refentry>
 	
