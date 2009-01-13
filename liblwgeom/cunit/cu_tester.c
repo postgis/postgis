@@ -21,14 +21,6 @@
 ** Set up liblwgeom to run in stand-alone mode using the 
 ** usual system memory handling functions.
 */
-void cunit_lwerr(const char *fmt, va_list ap) {
-	printf("Got an LWERR.\n");
-}
-
-void cunit_lwnotice(const char *fmt, va_list ap) {
-	printf("Got an LWNOTICE.\n");
-}
-
 void lwgeom_init_allocators(void) {
         /* liblwgeom callback - install default handlers */
         lwgeom_install_default_allocators();

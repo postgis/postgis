@@ -278,8 +278,6 @@ void test_lw_segment_intersects(void)
 void test_lwline_crossing_short_lines(void) 
 {
 
-	int rv = 0;
-	
 	/*
 	** Simple test, two two-point lines 
 	*/
@@ -465,7 +463,6 @@ void test_lwpoint_interpolate(void)
 
 void test_lwline_clip(void)
 {
-	int rv = 0;
 	LWCOLLECTION *c;
 	char *ewkt;
 	
@@ -529,7 +526,6 @@ void test_lwline_clip(void)
 
 void test_lwmline_clip(void)
 {
-	int rv = 0;
 	LWCOLLECTION *c;
 	char *ewkt;
 	LWMLINE *mline = NULL;
@@ -630,7 +626,6 @@ void test_lwline_clip_big(void)
 	LWLINE *line = lwline_construct(-1, NULL, pa);
 	LWCOLLECTION *c;
 	char *ewkt;
-	int rv = 0;
 
 	p->x = 0.0;
 	p->y = 0.0;
