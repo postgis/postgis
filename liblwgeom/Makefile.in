@@ -30,7 +30,7 @@ SA_OBJS = \
 	lwmline.o \
 	lwmpoly.o \
 	lwcollection.o \
-	lwcurve.o \
+	lwcircstring.o \
 	lwcompound.o \
 	lwcurvepoly.o \
 	lwmcurve.o \

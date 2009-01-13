@@ -948,9 +948,9 @@ lwgeom_inspect(const uchar *serialized_form)
 		loc += 4;
 	}
 
-	if ( (type==POINTTYPE) || (type==LINETYPE) || (type==POLYGONTYPE) || (type == CURVETYPE))
+	if ( (type==POINTTYPE) || (type==LINETYPE) || (type==POLYGONTYPE) || (type == CIRCSTRINGTYPE))
 	{
-		/* simple geometry (point/line/polygon)-- not multi! */
+		/* simple geometry (point/line/polygon/circstring)-- not multi! */
 		result->ngeometries = 1;
 		sub_geoms = (uchar**) lwalloc(sizeof(char*));
 		sub_geoms[0] = (uchar *)serialized_form;
@@ -1155,8 +1155,8 @@ lwgeom_getpoly_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
  * if there arent enough geometries, return null.
  * this is fine to call on a circularstring
  */
-LWCURVE *
-lwgeom_getcurve_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
+LWCIRCSTRING *
+lwgeom_getcircstring_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
 {
 	uchar *sub_geom;
 	uchar type;
@@ -1166,9 +1166,9 @@ lwgeom_getcurve_inspected(LWGEOM_INSPECTED *inspected, int geom_number)
 	if (sub_geom == NULL) return NULL;
 
 	type = lwgeom_getType(sub_geom[0]);
-	if (type != CURVETYPE) return NULL;
+	if (type != CIRCSTRINGTYPE) return NULL;
 
-	return lwcurve_deserialize(sub_geom);
+	return lwcircstring_deserialize(sub_geom);
 }
 
 /*
@@ -1275,7 +1275,7 @@ lwgeom_getnumgeometries(uchar *serialized_form)
 	uchar *loc;
 
 	if ( (type==POINTTYPE) || (type==LINETYPE) || (type==POLYGONTYPE) ||
-            (type==CURVETYPE) || (type==COMPOUNDTYPE) || (type==CURVEPOLYTYPE) )
+            (type==CIRCSTRINGTYPE) || (type==COMPOUNDTYPE) || (type==CURVEPOLYTYPE) )
 	{
 		return 1;
 	}
@@ -1511,11 +1511,11 @@ lwgeom_size(const uchar *serialized_form)
 
 		return lwgeom_size_line(serialized_form);
 	}
-        else if(type == CURVETYPE)
+        else if(type == CIRCSTRINGTYPE)
         {
-                LWDEBUG(3, "lwgeom_size: is a curve");
+                LWDEBUG(3, "lwgeom_size: is a circularstring");
 
-                return lwgeom_size_curve(serialized_form);
+                return lwgeom_size_circstring(serialized_form);
         }
 	else if (type == POLYGONTYPE)
 	{
@@ -1676,11 +1676,11 @@ compute_serialized_box3d(uchar *srl)
 		return result;
 
 	}
-        else if (type == CURVETYPE)
+        else if (type == CIRCSTRINGTYPE)
         {
-                LWCURVE *curve = lwcurve_deserialize(srl);
-                result = lwcurve_compute_box3d(curve);
-                lwfree_curve(curve);
+                LWCIRCSTRING *curve = lwcircstring_deserialize(srl);
+                result = lwcircstring_compute_box3d(curve);
+                lwfree_circstring(curve);
                 return result;
         }
 	else if (type == POLYGONTYPE)

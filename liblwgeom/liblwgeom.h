@@ -630,7 +630,7 @@ char is_worth_caching_lwgeom_bbox(const LWGEOM *);
 extern size_t lwgeom_size(const uchar *serialized_form);
 extern size_t lwgeom_size_subgeom(const uchar *serialized_form, int geom_number);
 extern size_t lwgeom_size_line(const uchar *serialized_line);
-extern size_t lwgeom_size_curve(const uchar *serialized_curve);
+extern size_t lwgeom_size_circstring(const uchar *serialized_curve);
 extern size_t lwgeom_size_point(const uchar *serialized_point);
 extern size_t lwgeom_size_poly(const uchar *serialized_line);
 
@@ -1274,14 +1274,14 @@ extern char getMachineEndian(void);
 
 void errorIfSRIDMismatch(int srid1, int srid2);
 
-/* CURVETYPE */
+/* CIRCSTRINGTYPE */
 typedef struct
 {
-        uchar type; /* CURVETYPE */
+        uchar type; /* CIRCSTRINGTYPE */
         BOX2DFLOAT4 *bbox;
         uint32 SRID;
         POINTARRAY *points; /* array of POINT(3D/3DM) */
-} LWCURVE; /* "light-weight arcline" */
+} LWCIRCSTRING; /* "light-weight circularstring" */
 
 /* COMPOUNDTYPE */
 typedef struct
@@ -1323,54 +1323,54 @@ typedef struct
         LWGEOM **geoms;
 } LWMSURFACE;
 
-#define CURVETYPE         8
+#define CIRCSTRINGTYPE    8
 #define COMPOUNDTYPE      9
 #define CURVEPOLYTYPE    13
 #define MULTICURVETYPE   14
 #define MULTISURFACETYPE 15
 
 /******************************************************************
- * LWCURVE functions
+ * LWCIRCSTRING functions
  ******************************************************************/
 
 /* Casts LWGEOM->LW* (return NULL if cast is illegal) */
-extern LWCURVE *lwgeom_as_lwcurve(LWGEOM *lwgeom);
+extern LWCIRCSTRING *lwgeom_as_lwcircstring(LWGEOM *lwgeom);
 
 
-LWCURVE *lwcurve_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points);
+LWCIRCSTRING *lwcircstring_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points);
 
 /*
  * given the LWGEOM serialized form (or a pointer into a muli* one)
- * construct a proper LWCURVE.
+ * construct a proper LWCIRCSTRING.
  * serialized_form should point to the 8bit type format (with type = 2)
  * See SERIALIZED_FORM doc
  */
-extern LWCURVE *lwcurve_deserialize(uchar *serialized_form);
+extern LWCIRCSTRING *lwcircstring_deserialize(uchar *serialized_form);
 
 /* find the size this curve would get when serialized */
-extern size_t lwcurve_serialize_size(LWCURVE *curve);
+extern size_t lwcircstring_serialize_size(LWCIRCSTRING *curve);
 
 /*
- * convert this curve into its serialize form
+ * convert this circularstring into its serialize form
  * result's first char will be the 8bit type.  See serialized form doc
  * copies data.
  */
-extern uchar *lwcurve_serialize(LWCURVE *curve);
+extern uchar *lwcircstring_serialize(LWCIRCSTRING *curve);
 
 /* same as above, writes to buf */
-extern void lwcurve_serialize_buf(LWCURVE *curve, uchar *buf, size_t *size);
+extern void lwcircstring_serialize_buf(LWCIRCSTRING *curve, uchar *buf, size_t *size);
 
 /*
  * find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
  */
-extern BOX3D *lwcurve_compute_box3d(LWCURVE *curve);
+extern BOX3D *lwcircstring_compute_box3d(LWCIRCSTRING *curve);
 
-LWGEOM *lwcurve_add(const LWCURVE *to, uint32 where, const LWGEOM *what);
-extern int lwcurve_compute_box2d_p(LWCURVE *curve, BOX2DFLOAT4 *box);
-extern BOX3D *lwcurve_compute_box3d(LWCURVE *curve);
-LWCURVE *lwcurve_clone(const LWCURVE *curve);
-extern LWCURVE *lwgeom_getcurve_inspected(LWGEOM_INSPECTED *inspected, int geom_number);
-extern void lwfree_curve(LWCURVE  *curve);
+LWGEOM *lwcircstring_add(const LWCIRCSTRING *to, uint32 where, const LWGEOM *what);
+extern int lwcircstring_compute_box2d_p(LWCIRCSTRING *curve, BOX2DFLOAT4 *box);
+extern BOX3D *lwcircstring_compute_box3d(LWCIRCSTRING *curve);
+LWCIRCSTRING *lwcircstring_clone(const LWCIRCSTRING *curve);
+extern LWCIRCSTRING *lwgeom_getcircstring_inspected(LWGEOM_INSPECTED *inspected, int geom_number);
+extern void lwfree_circstring(LWCIRCSTRING  *curve);
 
 /******************************************************************
  * LWMULTIx and LWCOLLECTION functions

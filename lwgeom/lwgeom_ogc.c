@@ -77,7 +77,7 @@ Datum LWGEOM_isclosed_linestring(PG_FUNCTION_ARGS);
 static int32 lwgeom_numpoints_linestring_recursive(const uchar *serialized);
 static int32 lwgeom_dimension_recursive(const uchar *serialized);
 char line_is_closed(LWLINE *line);
-char curve_is_closed(LWCURVE *curve);
+char circstring_is_closed(LWCIRCSTRING *curve);
 char compound_is_closed(LWCOMPOUND *compound);
 
 /*------------------------------------------------------------------*/
@@ -132,7 +132,7 @@ Datum LWGEOM_getTYPE(PG_FUNCTION_ARGS)
 		strcpy(result,"MULTIPOINT");
 	else if (type == LINETYPE)
 		strcpy(result,"LINESTRING");
-        else if (type == CURVETYPE)
+        else if (type == CIRCSTRINGTYPE)
                 strcpy(result,"CIRCULARSTRING");
         else if (type == COMPOUNDTYPE)
                 strcpy(result, "COMPOUNDCURVE");
@@ -277,7 +277,7 @@ Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS)
 	/* elog(NOTICE, "GeometryN called"); */
 
 	/* call is valid on multi* geoms only */
-	if (type==POINTTYPE || type==LINETYPE || type==CURVETYPE ||
+	if (type==POINTTYPE || type==LINETYPE || type==CIRCSTRINGTYPE ||
                 type==COMPOUNDTYPE || type==POLYGONTYPE || type==CURVEPOLYTYPE)
 	{
 		/* elog(NOTICE, "geometryn: geom is of type %d, requires >=4", type); */
@@ -342,7 +342,7 @@ lwgeom_dimension_recursive(const uchar *serialized)
 		if ( type == POINTTYPE ) dims = 0;
 		else if ( type == MULTIPOINTTYPE ) dims=0;
 		else if ( type == LINETYPE ) dims=1;
-                else if ( type == CURVETYPE ) dims=1;
+                else if ( type == CIRCSTRINGTYPE ) dims=1;
                 else if ( type == COMPOUNDTYPE ) dims=1;
 		else if ( type == MULTILINETYPE ) dims=1;
                 else if ( type == MULTICURVETYPE ) dims=1;
@@ -622,7 +622,7 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 	int32 wanted_index;
 	LWGEOM_INSPECTED *inspected;
 	LWLINE *line = NULL;
-        LWCURVE *curve = NULL;
+        LWCIRCSTRING *curve = NULL;
         LWGEOM *tmp = NULL;
 	POINTARRAY *pts;
 	LWPOINT *point;
@@ -649,7 +649,7 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 	        {
 		        tmp = lwgeom_getgeom_inspected(inspected, i);
 		        if (lwgeom_getType(tmp->type) == LINETYPE ||
-                                lwgeom_getType(tmp->type) == CURVETYPE) 
+                                lwgeom_getType(tmp->type) == CIRCSTRINGTYPE) 
                             break;
 	        }
 
@@ -658,9 +658,9 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 		        PG_FREE_IF_COPY(geom, 0);
 		        PG_RETURN_NULL();
 	        }
-                if(lwgeom_getType(tmp->type) == CURVETYPE)
+                if(lwgeom_getType(tmp->type) == CIRCSTRINGTYPE)
                 {
-                        curve = (LWCURVE *)tmp;
+                        curve = (LWCIRCSTRING *)tmp;
                         if(wanted_index > curve->points->npoints)
                         {
                                 lwinspected_release(inspected);
@@ -1155,11 +1155,11 @@ char line_is_closed(LWLINE *line)
 	return 1;
 }
 
-char curve_is_closed(LWCURVE *curve)
+char circstring_is_closed(LWCIRCSTRING *curve)
 {
         POINT3DZ sp, ep;
 
-        LWDEBUG(2, "curve_is_closed called.");
+        LWDEBUG(2, "circstring_is_closed called.");
 
         getPoint3dz_p(curve->points, 0, &sp);
         getPoint3dz_p(curve->points, curve->points->npoints-1, &ep);
@@ -1187,7 +1187,7 @@ char compound_is_closed(LWCOMPOUND *compound)
         }
         else 
         {
-                getPoint3dz_p(((LWCURVE *)tmp)->points, 0, &sp);
+                getPoint3dz_p(((LWCIRCSTRING *)tmp)->points, 0, &sp);
         }
 
         tmp = compound->geoms[compound->ngeoms - 1];
@@ -1197,7 +1197,7 @@ char compound_is_closed(LWCOMPOUND *compound)
         }
         else
         {
-                getPoint3dz_p(((LWCURVE *)tmp)->points, ((LWCURVE *)tmp)->points->npoints - 1, &ep);
+                getPoint3dz_p(((LWCIRCSTRING *)tmp)->points, ((LWCIRCSTRING *)tmp)->points->npoints - 1, &ep);
         }
 
         if(sp.x != ep.x) return 0;
@@ -1258,8 +1258,8 @@ Datum LWGEOM_isclosed_linestring(PG_FUNCTION_ARGS)
                         PG_FREE_IF_COPY(geom, 0);
                         PG_RETURN_BOOL(FALSE);
                 }
-                else if(lwgeom_getType(sub->type) == CURVETYPE &&
-                        !curve_is_closed((LWCURVE *)sub))
+                else if(lwgeom_getType(sub->type) == CIRCSTRINGTYPE &&
+                        !circstring_is_closed((LWCIRCSTRING *)sub))
                 {
                         lwgeom_release(sub);
                         lwinspected_release(inspected);

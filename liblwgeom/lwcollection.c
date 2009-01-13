@@ -378,7 +378,7 @@ int lwcollection_ngeoms(const LWCOLLECTION *col)
 			switch(TYPE_GETTYPE(col->geoms[i]->type)) {
 				case POINTTYPE:
 				case LINETYPE:
-				case CURVETYPE:
+				case CIRCSTRINGTYPE:
 				case POLYGONTYPE:
 					ngeoms += 1;
 					break;

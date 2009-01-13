@@ -31,8 +31,8 @@ lwgeom_deserialize(uchar *srl)
 			return (LWGEOM *)lwpoint_deserialize(srl);
 		case LINETYPE:
 			return (LWGEOM *)lwline_deserialize(srl);
-                case CURVETYPE:
-                        return (LWGEOM *)lwcurve_deserialize(srl);
+                case CIRCSTRINGTYPE:
+                        return (LWGEOM *)lwcircstring_deserialize(srl);
 		case POLYGONTYPE:
 			return (LWGEOM *)lwpoly_deserialize(srl);
 		case MULTIPOINTTYPE:
@@ -74,8 +74,8 @@ lwgeom_serialize_size(LWGEOM *lwgeom)
 			return lwline_serialize_size((LWLINE *)lwgeom);
 		case POLYGONTYPE:
 			return lwpoly_serialize_size((LWPOLY *)lwgeom);
-                case CURVETYPE:
-                        return lwcurve_serialize_size((LWCURVE *)lwgeom);
+                case CIRCSTRINGTYPE:
+                        return lwcircstring_serialize_size((LWCIRCSTRING *)lwgeom);
                 case CURVEPOLYTYPE:
                 case COMPOUNDTYPE:
 		case MULTIPOINTTYPE:
@@ -111,8 +111,8 @@ lwgeom_serialize_buf(LWGEOM *lwgeom, uchar *buf, size_t *retsize)
 		case POLYGONTYPE:
 			lwpoly_serialize_buf((LWPOLY *)lwgeom, buf, retsize);
 			break;
-                case CURVETYPE:
-                        lwcurve_serialize_buf((LWCURVE *)lwgeom, buf, retsize);
+                case CIRCSTRINGTYPE:
+                        lwcircstring_serialize_buf((LWCIRCSTRING *)lwgeom, buf, retsize);
                         break;
                 case CURVEPOLYTYPE:
                 case COMPOUNDTYPE:
@@ -210,8 +210,8 @@ lwgeom_compute_box2d_p(LWGEOM *lwgeom, BOX2DFLOAT4 *buf)
 			return lwpoint_compute_box2d_p((LWPOINT *)lwgeom, buf);
 		case LINETYPE:
 			return lwline_compute_box2d_p((LWLINE *)lwgeom, buf);
-                case CURVETYPE:
-                        return lwcurve_compute_box2d_p((LWCURVE *)lwgeom, buf);
+                case CIRCSTRINGTYPE:
+                        return lwcircstring_compute_box2d_p((LWCIRCSTRING *)lwgeom, buf);
 		case POLYGONTYPE:
 			return lwpoly_compute_box2d_p((LWPOLY *)lwgeom, buf);
                 case COMPOUNDTYPE:
@@ -257,11 +257,11 @@ lwgeom_as_lwline(LWGEOM *lwgeom)
 	else return NULL;
 }
 
-LWCURVE *
-lwgeom_as_lwcurve(LWGEOM *lwgeom)
+LWCIRCSTRING *
+lwgeom_as_lwcircstring(LWGEOM *lwgeom)
 {
-        if( TYPE_GETTYPE(lwgeom->type) == CURVETYPE )
-                return (LWCURVE *)lwgeom;
+        if( TYPE_GETTYPE(lwgeom->type) == CIRCSTRINGTYPE )
+                return (LWCIRCSTRING *)lwgeom;
         else return NULL;
 }
 
@@ -362,8 +362,8 @@ lwgeom_clone(const LWGEOM *lwgeom)
 			return (LWGEOM *)lwpoint_clone((LWPOINT *)lwgeom);
 		case LINETYPE:
 			return (LWGEOM *)lwline_clone((LWLINE *)lwgeom);
-                case CURVETYPE:
-                        return (LWGEOM *)lwcurve_clone((LWCURVE *)lwgeom);
+                case CIRCSTRINGTYPE:
+                        return (LWGEOM *)lwcircstring_clone((LWCIRCSTRING *)lwgeom);
 		case POLYGONTYPE:
 			return (LWGEOM *)lwpoly_clone((LWPOLY *)lwgeom);
                 case COMPOUNDTYPE:
@@ -409,8 +409,8 @@ lwgeom_add(const LWGEOM *to, uint32 where, const LWGEOM *what)
 		case LINETYPE:
 			return (LWGEOM *)lwline_add((const LWLINE *)to, where, what);
 
-                case CURVETYPE:
-                        return (LWGEOM *)lwcurve_add((const LWCURVE *)to, where, what);
+                case CIRCSTRINGTYPE:
+                        return (LWGEOM *)lwcircstring_add((const LWCIRCSTRING *)to, where, what);
 
 		case POLYGONTYPE:
 			return (LWGEOM *)lwpoly_add((const LWPOLY *)to, where, what);

@@ -63,7 +63,7 @@ typedef void  (*report_error)(const char* string, ...);
 #define LINETYPEI     11
 #define POLYGONTYPEI  12
 
-#define CURVETYPE       8
+#define CIRCSTRINGTYPE       8
 #define COMPOUNDTYPE    9
 #define CURVEPOLYTYPE   13
 #define MULTICURVETYPE          14

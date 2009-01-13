@@ -208,7 +208,7 @@ double read_wkb_double(const char **in, int convert_from_int);
 void read_wkb_point(const char **b);
 void read_wkb_polygon(const char **b);
 void read_wkb_linestring(const char **b);
-void read_wkb_curve(const char **b);
+void read_wkb_circstring(const char **b);
 void read_wkb_ordinate_array(const char **b);
 void read_collection(const char **b, read_col_func f);
 void parse_wkb(const char **b);
@@ -640,7 +640,7 @@ alloc_circularstring(void)
 {
         LWDEBUG(2, "alloc_circularstring");
 
-        alloc_stack_tuple(CURVETYPE,write_type,1);
+        alloc_stack_tuple(CIRCSTRINGTYPE,write_type,1);
         minpoints=3;
         checkclosed=0;
         isodd=1;
@@ -988,10 +988,10 @@ read_wkb_linestring(const char **b)
 
 
 void
-read_wkb_curve(const char **b)
+read_wkb_circstring(const char **b)
 {
 
-	/* Things to check for CURVE ORDINATE_ARRAYs */
+	/* Things to check for CIRCULARSTRING ORDINATE_ARRAYs */
 	minpoints=3;
 	checkclosed=0;
 	isodd=-1;
@@ -1103,8 +1103,8 @@ parse_wkb(const char **b)
 			read_wkb_linestring(b);
 			break;
 
-                case    CURVETYPE:
-                        read_wkb_curve(b);
+                case    CIRCSTRINGTYPE:
+                        read_wkb_circstring(b);
                         break;
 
 		case	POLYGONTYPE:

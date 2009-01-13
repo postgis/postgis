@@ -207,7 +207,7 @@ lwgeom_npoints(uchar *serialized)
 		LWLINE *line=NULL;
 		LWPOINT *point=NULL;
 		LWPOLY *poly=NULL;
-		LWCURVE *curve=NULL;
+		LWCIRCSTRING *curve=NULL;
 		uchar *subgeom=NULL;
 
 		point = lwgeom_getpoint_inspected(inspected, i);
@@ -234,7 +234,7 @@ lwgeom_npoints(uchar *serialized)
 			continue;
 		}
 
-		curve = lwgeom_getcurve_inspected(inspected, i);
+		curve = lwgeom_getcircstring_inspected(inspected, i);
 		if (curve != NULL)
 		{
 			npoints += curve->points->npoints;
@@ -500,7 +500,7 @@ lwgeom_force2d_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 	uchar newtypefl;
 	LWPOINT *point = NULL;
 	LWLINE *line = NULL;
-	LWCURVE *curve = NULL;
+	LWCIRCSTRING *curve = NULL;
 	LWPOLY *poly = NULL;
 	POINTARRAY newpts;
 	POINTARRAY **nrings;
@@ -562,11 +562,11 @@ lwgeom_force2d_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 		return;
 	}
 
-	if ( type == CURVETYPE )
+	if ( type == CIRCSTRINGTYPE )
 	{
-		curve = lwcurve_deserialize(serialized);
+		curve = lwcircstring_deserialize(serialized);
 
-		LWDEBUGF(3, "lwgeom_force2d_recursize: it's a curve with %d points", curve->points->npoints);
+		LWDEBUGF(3, "lwgeom_force2d_recursize: it's a circularstring with %d points", curve->points->npoints);
 
 		TYPE_SETZM(newpts.dims, 0, 0);
 		newpts.npoints = curve->points->npoints;
@@ -583,7 +583,7 @@ lwgeom_force2d_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 		}
 		curve->points = &newpts;
 		TYPE_SETZM(curve->type, 0, 0);
-		lwcurve_serialize_buf(curve, optr, retsize);
+		lwcircstring_serialize_buf(curve, optr, retsize);
 		lwfree(newpts.serialized_pointlist);
 		lwfree(curve);
 		return;
@@ -725,7 +725,7 @@ lwgeom_force3dz_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 	int type;
 	LWPOINT *point = NULL;
 	LWLINE *line = NULL;
-	LWCURVE *curve = NULL;
+	LWCIRCSTRING *curve = NULL;
 	LWPOLY *poly = NULL;
 	POINTARRAY newpts;
 	POINTARRAY **nrings;
@@ -780,11 +780,11 @@ lwgeom_force3dz_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 		return;
 	}
 
-	if ( type == CURVETYPE )
+	if ( type == CIRCSTRINGTYPE )
 	{
-		curve = lwcurve_deserialize(serialized);
+		curve = lwcircstring_deserialize(serialized);
 
-		LWDEBUG(3, "lwgeom_force3dz_recursize: it's a curve");
+		LWDEBUG(3, "lwgeom_force3dz_recursize: it's a circularstring");
 
 		TYPE_SETZM(newpts.dims, 1, 0);
 		newpts.npoints = curve->points->npoints;
@@ -798,9 +798,9 @@ lwgeom_force3dz_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 		}
 		curve->points = &newpts;
 		TYPE_SETZM(curve->type, 1, 0);
-		lwcurve_serialize_buf(curve, optr, retsize);
+		lwcircstring_serialize_buf(curve, optr, retsize);
 
-		LWDEBUGF(3, "lwgeom_force3dz_recursive: it's a curve, size:%d", *retsize);
+		LWDEBUGF(3, "lwgeom_force3dz_recursive: it's a circularstring, size:%d", *retsize);
 
 		return;
 	}
@@ -912,7 +912,7 @@ lwgeom_force3dm_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 	uchar newtypefl;
 	LWPOINT *point = NULL;
 	LWLINE *line = NULL;
-	LWCURVE *curve = NULL;
+	LWCIRCSTRING *curve = NULL;
 	LWPOLY *poly = NULL;
 	POINTARRAY newpts;
 	POINTARRAY **nrings;
@@ -974,11 +974,11 @@ lwgeom_force3dm_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 		return;
 	}
 
-	if ( type == CURVETYPE )
+	if ( type == CIRCSTRINGTYPE )
 	{
-		curve = lwcurve_deserialize(serialized);
+		curve = lwcircstring_deserialize(serialized);
 
-		LWDEBUGF(3, "lwgeom_force3dm_recursize: it's a curve with %d points", curve->points->npoints);
+		LWDEBUGF(3, "lwgeom_force3dm_recursize: it's a circularstring with %d points", curve->points->npoints);
 
 		TYPE_SETZM(newpts.dims, 0, 1);
 		newpts.npoints = curve->points->npoints;
@@ -993,7 +993,7 @@ lwgeom_force3dm_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 		}
 		curve->points = &newpts;
 		TYPE_SETZM(curve->type, 0, 1);
-		lwcurve_serialize_buf(curve, optr, retsize);
+		lwcircstring_serialize_buf(curve, optr, retsize);
 		lwfree(newpts.serialized_pointlist);
 		lwfree(curve);
 		return;
@@ -1135,7 +1135,7 @@ lwgeom_force4d_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 	int type;
 	LWPOINT *point = NULL;
 	LWLINE *line = NULL;
-	LWCURVE *curve = NULL;
+	LWCIRCSTRING *curve = NULL;
 	LWPOLY *poly = NULL;
 	POINTARRAY newpts;
 	POINTARRAY **nrings;
@@ -1189,9 +1189,9 @@ lwgeom_force4d_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 		return;
 	}
 
-	if ( type == CURVETYPE )
+	if ( type == CIRCSTRINGTYPE )
 	{
-		curve = lwcurve_deserialize(serialized);
+		curve = lwcircstring_deserialize(serialized);
 		TYPE_SETZM(newpts.dims, 1, 1);
 		newpts.npoints = curve->points->npoints;
 		newpts.serialized_pointlist = lwalloc(sizeof(POINT4D)*curve->points->npoints);
@@ -1204,9 +1204,9 @@ lwgeom_force4d_recursive(uchar *serialized, uchar *optr, size_t *retsize)
 		}
 		curve->points = &newpts;
 		TYPE_SETZM(curve->type, 1, 1);
-		lwcurve_serialize_buf(curve, optr, retsize);
+		lwcircstring_serialize_buf(curve, optr, retsize);
 
-		LWDEBUGF(3, "lwgeom_force4d_recursive: it's a curve, size:%d", *retsize);
+		LWDEBUGF(3, "lwgeom_force4d_recursive: it's a circularstring, size:%d", *retsize);
 
 		return;
 	}
@@ -3191,7 +3191,7 @@ lwgeom_affine_recursive(uchar *serialized,
 		LWLINE *line=NULL;
 		LWPOINT *point=NULL;
 		LWPOLY *poly=NULL;
-		LWCURVE *curve=NULL;
+		LWCIRCSTRING *curve=NULL;
 		uchar *subgeom=NULL;
 
 		point = lwgeom_getpoint_inspected(inspected, i);
@@ -3233,7 +3233,7 @@ lwgeom_affine_recursive(uchar *serialized,
 			continue;
 		}
 
-		curve = lwgeom_getcurve_inspected(inspected, i);
+		curve = lwgeom_getcircstring_inspected(inspected, i);
 		if (curve != NULL)
 		{
 			lwgeom_affine_ptarray(curve->points,

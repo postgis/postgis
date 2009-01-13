@@ -53,10 +53,10 @@ lwcurvepoly_deserialize(uchar *srl)
         for(i = 0; i < insp->ngeometries; i++)
         {
                 result->rings[i] = lwgeom_deserialize(insp->sub_geoms[i]);
-                if(lwgeom_getType(result->rings[i]->type) != CURVETYPE 
+                if(lwgeom_getType(result->rings[i]->type) != CIRCSTRINGTYPE 
                         && lwgeom_getType(result->rings[i]->type) != LINETYPE)
                 {
-                        lwerror("Only Circular curves and Linestrings are currently supported as rings, not %s (%d)", lwgeom_typename(result->rings[i]->type), result->rings[i]->type);
+                        lwerror("Only Circularstrings and Linestrings are currently supported as rings, not %s (%d)", lwgeom_typename(result->rings[i]->type), result->rings[i]->type);
                         lwfree(result);
                         lwfree(insp);
                         return NULL;

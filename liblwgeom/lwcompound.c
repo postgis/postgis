@@ -49,10 +49,10 @@ lwcompound_deserialize(uchar *serialized)
                 if(lwgeom_getType(insp->sub_geoms[i][0]) == LINETYPE)
                         result->geoms[i] = (LWGEOM *)lwline_deserialize(insp->sub_geoms[i]);
                 else
-                        result->geoms[i] = (LWGEOM *)lwcurve_deserialize(insp->sub_geoms[i]);
+                        result->geoms[i] = (LWGEOM *)lwcircstring_deserialize(insp->sub_geoms[i]);
                 if(TYPE_NDIMS(result->geoms[i]->type) != TYPE_NDIMS(result->type))
                 {
-                        lwerror("Mixed dimensions (compound:%d, line/curve%d:%d)",
+                        lwerror("Mixed dimensions (compound: %d, line/circularstring %d:%d)",
                             TYPE_NDIMS(result->type), i,
                             TYPE_NDIMS(result->geoms[i]->type)
                         );
@@ -107,7 +107,7 @@ lwcompound_add(const LWCOMPOUND *to, uint32 where, const LWGEOM *what)
         TYPE_SETHASBBOX(geoms[1]->type, 0);
 
         /* Find appropriate geom type */
-        if(TYPE_GETTYPE(what->type) == LINETYPE || TYPE_GETTYPE(what->type) == CURVETYPE) newtype = COMPOUNDTYPE;
+        if(TYPE_GETTYPE(what->type) == LINETYPE || TYPE_GETTYPE(what->type) == CIRCSTRINGTYPE) newtype = COMPOUNDTYPE;
         else newtype = COLLECTIONTYPE;
 
         col = lwcollection_construct(newtype,

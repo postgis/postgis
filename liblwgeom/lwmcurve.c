@@ -36,7 +36,7 @@ lwmcurve_deserialize(uchar *srl)
         result->type = insp->type;
         result->SRID = insp->SRID;
         result->ngeoms = insp->ngeometries;
-        result->geoms = lwalloc(sizeof(LWCURVE *)*insp->ngeometries);
+        result->geoms = lwalloc(sizeof(LWGEOM *)*insp->ngeometries);
 
         if(lwgeom_hasBBOX(srl[0]))
         {
@@ -48,9 +48,9 @@ lwmcurve_deserialize(uchar *srl)
         for(i = 0; i < insp->ngeometries; i++)
         {
                 stype = lwgeom_getType(insp->sub_geoms[i][0]);
-                if(stype == CURVETYPE)
+                if(stype == CIRCSTRINGTYPE)
                 {
-                        result->geoms[i] = (LWGEOM *)lwcurve_deserialize(insp->sub_geoms[i]);
+                        result->geoms[i] = (LWGEOM *)lwcircstring_deserialize(insp->sub_geoms[i]);
                 }
                 else if(stype == LINETYPE)
                 {
@@ -113,7 +113,7 @@ lwmcurve_add(const LWMCURVE *to, uint32 where, const LWGEOM *what)
                 geoms[i+1] = lwgeom_clone((LWGEOM *)to->geoms[i]);
         }
 
-        if(TYPE_GETTYPE(what->type) == CURVETYPE) newtype = MULTICURVETYPE;
+        if(TYPE_GETTYPE(what->type) == CIRCSTRINGTYPE) newtype = MULTICURVETYPE;
         else newtype = COLLECTIONTYPE;
 
         col = lwcollection_construct(newtype,

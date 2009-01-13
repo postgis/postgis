@@ -662,7 +662,7 @@ lwgeom_transform_recursive(uchar *geom, PJ *inpj, PJ *outpj)
 		LWLINE *line=NULL;
 		LWPOINT *point=NULL;
 		LWPOLY *poly=NULL;
-		LWCURVE *curve=NULL;
+		LWCIRCSTRING *curve=NULL;
 		POINT4D p;
 		uchar *subgeom=NULL;
 
@@ -708,7 +708,7 @@ lwgeom_transform_recursive(uchar *geom, PJ *inpj, PJ *outpj)
 			continue;
 		}
 
-		curve = lwgeom_getcurve_inspected(inspected, j);
+		curve = lwgeom_getcircstring_inspected(inspected, j);
 		if (curve != NULL)
 		{
 			POINTARRAY *pts = curve->points;

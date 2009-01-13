@@ -43,7 +43,7 @@ uchar* output_collection(uchar* geom,outfunc func,int supress);
 uchar* output_line_collection(uchar* geom,outfunc func,int supress);
 uchar* output_polygon_collection(uchar* geom,int suppress);
 uchar* output_polygon_ring_collection(uchar* geom,outfunc func,int supress);
-uchar* output_curve_collection(uchar* geom,outfunc func,int supress);
+uchar* output_circstring_collection(uchar* geom,outfunc func,int supress);
 uchar* output_multipoint(uchar* geom,int suppress);
 uchar* output_compound(uchar* geom, int suppress);
 uchar* output_multisurface(uchar* geom, int suppress);
@@ -58,7 +58,7 @@ uchar* output_wkb_collection(uchar* geom,outwkbfunc func);
 uchar* output_wkb_polygon_collection(uchar* geom);
 uchar* output_wkb_polygon_ring_collection(uchar* geom,outwkbfunc func);
 uchar* output_wkb_line_collection(uchar* geom,outwkbfunc func);
-uchar* output_wkb_curve_collection(uchar* geom,outwkbfunc func);
+uchar* output_wkb_circstring_collection(uchar* geom,outwkbfunc func);
 uchar* output_wkb_point(uchar* geom);
 uchar* output_wkb(uchar* geom);
 
@@ -358,7 +358,7 @@ output_polygon_ring_collection(uchar* geom,outfunc func,int supress)
 
 /* Ouput the points from a CIRCULARSTRING */
 uchar *
-output_curve_collection(uchar* geom,outfunc func,int supress)
+output_circstring_collection(uchar* geom,outfunc func,int supress)
 {
 	int cnt = read_int(&geom);
 	int orig_cnt = cnt;
@@ -428,7 +428,7 @@ uchar *output_compound(uchar* geom, int suppress) {
                 case LINETYPE:
                         geom = output_wkt(geom,2);
                         break;
-                case CURVETYPE:
+                case CIRCSTRINGTYPE:
                         geom = output_wkt(geom,1);
                         break;
         }
@@ -500,13 +500,13 @@ output_wkt(uchar* geom, int supress)
 			}
 			geom = output_line_collection(geom,output_point,0);
 			break;
-                case CURVETYPE:
+                case CIRCSTRINGTYPE:
                         if ( supress < 2 )
                         {
                                 if(writeM) write_str("CIRCULARSTRINGM");
                                 else write_str("CIRCULARSTRING");
                         }
-                        geom = output_curve_collection(geom,output_point,0);
+                        geom = output_circstring_collection(geom,output_point,0);
                         break;
 		case POLYGONTYPE:
 			if ( supress < 2 )
@@ -832,7 +832,7 @@ output_wkb_polygon_collection(uchar* geom)
 
 /* Ouput the points from a CIRCULARSTRING */
 uchar *
-output_wkb_curve_collection(uchar* geom,outwkbfunc func)
+output_wkb_circstring_collection(uchar* geom,outwkbfunc func)
 {
 	int cnt = read_int(&geom);
 	int orig_cnt = cnt;
@@ -897,8 +897,8 @@ output_wkb(uchar* geom)
 		case LINETYPE:
 			geom=output_wkb_line_collection(geom,output_wkb_point);
 			break;
-                case CURVETYPE:
-                        geom=output_wkb_curve_collection(geom,output_wkb_point);
+                case CIRCSTRINGTYPE:
+                        geom=output_wkb_circstring_collection(geom,output_wkb_point);
                         break;
 		case POLYGONTYPE:
 			geom=output_wkb_collection(geom,output_wkb_polygon_collection);
