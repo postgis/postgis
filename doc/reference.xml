@@ -24,36 +24,6 @@
 
       <variablelist>
 
-
-
-
-        <varlistentry>
-          <term>ST_PolyFromText(text,[&lt;srid&gt;])</term>
-
-          <listitem>
-            <para>Makes a Geometry from WKT with the given SRID. If SRID is
-            not give, it defaults to -1.</para>
-
-            <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
-            suite</para>
-
-            <para>Throws an error if the WKT is not a Polygon</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>ST_PolygonFromText(text,[&lt;srid&gt;])</term>
-
-          <listitem>
-            <para>Makes a Geometry from WKT with the given SRID. If SRID is
-            not give, it defaults to -1.</para>
-
-            <para>from the conformance suite</para>
-
-            <para>Throws an error if the WKT is not a Polygon</para>
-          </listitem>
-        </varlistentry>
-
         <varlistentry>
           <term>ST_MPointFromText(text,[&lt;srid&gt;])</term>
 
@@ -459,15 +429,6 @@
         </listitem>
       </varlistentry>
 
-      <varlistentry>
-        <term>ST_PolyFromText</term>
-
-        <listitem>
-          <para>Return a specified ST_Polygon value.</para>
-
-          <para>SQL-MM 3: 8.3.6</para>
-        </listitem>
-      </varlistentry>
 
       <varlistentry>
         <term>ST_PolyFromWKB</term>

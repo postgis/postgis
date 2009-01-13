@@ -2399,6 +2399,84 @@ SRID=4326;POLYGON((75.15 29.53 1,77 29 1,77.6 29.5 1,75.15 29.53 1))
 	    <para> <xref linkend="ST_AsEWKT" />, <xref linkend="ST_AsText" />, <xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_GeomFromText" />, <xref linkend="ST_LineMerge" />, <xref linkend="ST_MakePolygon" /></para>
 	  </refsection>
 	</refentry>
+
+	<refentry id="ST_PolygonFromText">
+	  <refnamediv>
+	    <refname>ST_PolygonFromText</refname>
+	
+	    <refpurpose>Makes a Geometry from WKT with the given SRID. If SRID is
+            not give, it defaults to -1.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>geometry <function>ST_PolygonFromText</function></funcdef>
+	        <paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
+	      </funcprototype>
+	      <funcprototype>
+	        <funcdef>geometry <function>ST_PolygonFromText</function></funcdef>
+	        <paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
+	        <paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+	      </funcprototype>
+	    </funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+	    <para>Makes a Geometry from WKT with the given SRID. If SRID is
+            not give, it defaults to -1.  Returns null if WKT is not a polygon.</para>
+	  
+	
+		<para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
+            suite</para>
+			
+		<note><para>If you are absolutely sure all your WKT geometries are polygons, don't use this function.  
+					It is slower than ST_GeomFromText since it adds an additional validation step. </para></note>
+	    <!-- Optionally mention OpenGIS compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the <ulink
+	    url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+	    Implementation Specification for SQL. OGC SPEC 3.2.6.2</ulink></para>
+	
+	    <!-- Optionally mention SQL/MM compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the SQL/MM specification: SQL-MM 3: 8.3.6</para>
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+	
+	    <programlisting>SELECT ST_PolygonFromText('POLYGON((-71.1776585052917 42.3902909739571,-71.1776820268866 42.3903701743239,
+-71.1776063012595 42.3903825660754,-71.1775826583081 42.3903033653531,-71.1776585052917 42.3902909739571))');
+st_polygonfromtext
+------------------
+010300000001000000050000006...
+
+
+SELECT ST_PolygonFromText('POINT(1 2)') IS NULL as point_is_notpoly;
+
+point_is_not_poly
+----------
+t
+</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	
+	    <para><xref linkend="ST_GeomFromText" /></para>
+	  </refsection>
+	</refentry>
 		  
 	<refentry id="ST_WKBToSQL">
 		  <refnamediv>
