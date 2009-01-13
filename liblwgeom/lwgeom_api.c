@@ -1680,7 +1680,7 @@ compute_serialized_box3d(uchar *srl)
         {
                 LWCIRCSTRING *curve = lwcircstring_deserialize(srl);
                 result = lwcircstring_compute_box3d(curve);
-                lwfree_circstring(curve);
+                lwcircstring_free(curve);
                 return result;
         }
 	else if (type == POLYGONTYPE)

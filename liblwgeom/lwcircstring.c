@@ -494,7 +494,7 @@ lwcircstring_compute_box2d_p(LWCIRCSTRING *curve, BOX2DFLOAT4 *result)
         return 1;
 }
 
-void lwfree_circstring(LWCIRCSTRING *curve)
+void lwcircstring_free(LWCIRCSTRING *curve)
 {
         lwfree(curve->points);
         lwfree(curve);

@@ -395,6 +395,55 @@ typedef struct
 	LWGEOM **geoms;
 } LWCOLLECTION; 
 
+/* CIRCSTRINGTYPE */
+typedef struct
+{
+        uchar type; /* CIRCSTRINGTYPE */
+        BOX2DFLOAT4 *bbox;
+        uint32 SRID;
+        POINTARRAY *points; /* array of POINT(3D/3DM) */
+} LWCIRCSTRING; /* "light-weight circularstring" */
+
+/* COMPOUNDTYPE */
+typedef struct
+{
+        uchar type; /* COMPOUNDTYPE */
+        BOX2DFLOAT4 *bbox;
+        uint32 SRID;
+        int ngeoms;
+        LWGEOM **geoms;
+} LWCOMPOUND; /* "light-weight compound line" */
+
+/* CURVEPOLYTYPE */
+typedef struct
+{
+        uchar type; /* CURVEPOLYTYPE */
+        BOX2DFLOAT4 *bbox;
+        uint32 SRID;
+        int nrings;
+        LWGEOM **rings; /* list of rings (list of points) */
+} LWCURVEPOLY; /* "light-weight polygon" */
+
+/* MULTICURVE */
+typedef struct
+{
+        uchar type;
+        BOX2DFLOAT4 *bbox;
+        uint32 SRID;
+        int ngeoms;
+        LWGEOM **geoms;
+} LWMCURVE;
+
+/* MULTISURFACETYPE */
+typedef struct
+{
+        uchar type;
+        BOX2DFLOAT4 *bbox;
+        uint32 SRID;
+        int ngeoms;
+        LWGEOM **geoms;
+} LWMSURFACE;
+
 /* Casts LWGEOM->LW* (return NULL if cast is illegal) */
 extern LWMPOLY *lwgeom_as_lwmpoly(LWGEOM *lwgeom);
 extern LWMLINE *lwgeom_as_lwmline(LWGEOM *lwgeom);
@@ -403,6 +452,7 @@ extern LWCOLLECTION *lwgeom_as_lwcollection(LWGEOM *lwgeom);
 extern LWPOLY *lwgeom_as_lwpoly(LWGEOM *lwgeom);
 extern LWLINE *lwgeom_as_lwline(LWGEOM *lwgeom);
 extern LWPOINT *lwgeom_as_lwpoint(LWGEOM *lwgeom);
+extern LWCIRCSTRING *lwgeom_as_lwcircstring(LWGEOM *lwgeom);
 
 /* Casts LW*->LWGEOM (always cast) */
 extern LWGEOM *lwmpoly_as_lwgeom(LWMPOLY *obj);
@@ -541,6 +591,11 @@ extern int pointArray_ptsize(const POINTARRAY *pa);
 #define	MULTILINETYPE	5
 #define	MULTIPOLYGONTYPE	6
 #define	COLLECTIONTYPE	7
+#define CIRCSTRINGTYPE    8
+#define COMPOUNDTYPE      9
+#define CURVEPOLYTYPE    13
+#define MULTICURVETYPE   14
+#define MULTISURFACETYPE 15
 
 #define WKBZOFFSET 0x80000000
 #define WKBMOFFSET 0x40000000
@@ -740,6 +795,38 @@ extern void lwpoly_serialize_buf(LWPOLY *poly, uchar *buf, size_t *size);
 extern BOX3D *lwpoly_compute_box3d(LWPOLY *poly);
 
 /******************************************************************
+ * LWCIRCSTRING functions
+ ******************************************************************/
+
+/*
+ * given the LWGEOM serialized form (or a pointer into a muli* one)
+ * construct a proper LWCIRCSTRING.
+ * serialized_form should point to the 8bit type format (with type = 2)
+ * See SERIALIZED_FORM doc
+ */
+extern LWCIRCSTRING *lwcircstring_deserialize(uchar *serialized_form);
+
+/* find the size this curve would get when serialized */
+extern size_t lwcircstring_serialize_size(LWCIRCSTRING *curve);
+
+/*
+ * convert this circularstring into its serialize form
+ * result's first char will be the 8bit type.  See serialized form doc
+ * copies data.
+ */
+extern uchar *lwcircstring_serialize(LWCIRCSTRING *curve);
+
+/* same as above, writes to buf */
+extern void lwcircstring_serialize_buf(LWCIRCSTRING *curve, uchar *buf, size_t *size);
+
+/*
+ * find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
+ */
+extern BOX3D *lwcircstring_compute_box3d(LWCIRCSTRING *curve);
+
+
+
+/******************************************************************
  * LWGEOM functions
  ******************************************************************/
 
@@ -759,8 +846,6 @@ LWGEOM *lwgeom_deserialize(uchar *serializedform);
 
 
 
-
-
 /******************************************************************
  * LWMULTIx and LWCOLLECTION functions
  ******************************************************************/
@@ -769,7 +854,14 @@ LWMPOINT *lwmpoint_deserialize(uchar *serializedform);
 LWMLINE *lwmline_deserialize(uchar *serializedform);
 LWMPOLY *lwmpoly_deserialize(uchar *serializedform);
 LWCOLLECTION *lwcollection_deserialize(uchar *serializedform);
+LWCOMPOUND *lwcompound_deserialize(uchar *serialized_form);
+LWCURVEPOLY *lwcurvepoly_deserialize(uchar *serialized_form);
+LWMCURVE *lwmcurve_deserialize(uchar *serialized_form);
+LWMSURFACE *lwmsurface_deserialize(uchar *serialized_form);
+
 LWGEOM *lwcollection_getsubgeom(LWCOLLECTION *, int);
+
+
 
 /******************************************************************
  * SERIALIZED FORM functions
@@ -848,7 +940,17 @@ extern LWLINE *lwgeom_getline_inspected(LWGEOM_INSPECTED *inspected, int geom_nu
 extern LWPOLY *lwgeom_getpoly(uchar *serialized_form, int geom_number);
 extern LWPOLY *lwgeom_getpoly_inspected(LWGEOM_INSPECTED *inspected, int geom_number);
 
+/*
+ * 1st geometry has geom_number = 0
+ * if the actual geometry isnt a POLYGON, null is returned (see _gettype()).
+ * if there arent enough geometries, return null.
+ * this is fine to call on a polygon, multipolygon or geometrycollection
+ */
+extern LWCIRCSTRING *lwgeom_getcircstring_inspected(LWGEOM_INSPECTED *inspected, int geom_number);
+
 extern LWGEOM *lwgeom_getgeom_inspected(LWGEOM_INSPECTED *inspected, int geom_number);
+
+
 
 /*
  * this gets the serialized form of a sub-geometry
@@ -972,6 +1074,7 @@ extern void lwmpoint_free(LWMPOINT *mpt);
 extern void lwmline_free(LWMLINE *mline);
 extern void lwmpoly_free(LWMPOLY *mpoly);
 extern void lwcollection_free(LWCOLLECTION *col);
+extern void lwcircstring_free(LWCIRCSTRING *curve);
 extern void lwgeom_free(LWGEOM *geom);
 
 extern void lwinspected_release(LWGEOM_INSPECTED *inspected); /* TODO: make this deep free... */
@@ -1071,6 +1174,7 @@ extern int lwpoint_compute_box2d_p(LWPOINT *point, BOX2DFLOAT4 *box);
 extern int lwline_compute_box2d_p(LWLINE *line, BOX2DFLOAT4 *box);
 extern int lwpoly_compute_box2d_p(LWPOLY *poly, BOX2DFLOAT4 *box);
 extern int lwcollection_compute_box2d_p(LWCOLLECTION *col, BOX2DFLOAT4 *box);
+extern int lwcircstring_compute_box2d_p(LWCIRCSTRING *curve, BOX2DFLOAT4 *box);
 extern BOX2DFLOAT4 *lwgeom_compute_box2d(LWGEOM *lwgeom);
 
 extern void interpolate_point4d(POINT4D *A, POINT4D *B, POINT4D *I, double F);
@@ -1107,6 +1211,11 @@ LWGEOM *lwmpoly_add(const LWMPOLY *to, uint32 where, const LWGEOM *what);
 LWGEOM *lwmline_add(const LWMLINE *to, uint32 where, const LWGEOM *what);
 LWGEOM *lwmpoint_add(const LWMPOINT *to, uint32 where, const LWGEOM *what);
 LWGEOM *lwcollection_add(const LWCOLLECTION *to, uint32 where, const LWGEOM *what);
+LWGEOM *lwcompound_add(const LWCOMPOUND *to, uint32 where, const LWGEOM *what);
+LWGEOM *lwcurvepoly_add(const LWCURVEPOLY *to, uint32 where, const LWGEOM *what);
+LWGEOM *lwmcurve_add(const LWMCURVE *to, uint32 where, const LWGEOM *what);
+LWGEOM *lwmsurface_add(const LWMSURFACE *to, uint32 where, const LWGEOM *what);
+LWGEOM *lwcircstring_add(const LWCIRCSTRING *to, uint32 where, const LWGEOM *what);
 
 /*
  * Clone an LWGEOM
@@ -1118,6 +1227,7 @@ extern LWPOINT *lwpoint_clone(const LWPOINT *lwgeom);
 extern LWLINE *lwline_clone(const LWLINE *lwgeom);
 extern LWPOLY *lwpoly_clone(const LWPOLY *lwgeom);
 extern LWCOLLECTION *lwcollection_clone(const LWCOLLECTION *lwgeom);
+extern LWCIRCSTRING *lwcircstring_clone(const LWCIRCSTRING *curve);
 extern BOX2DFLOAT4 *box2d_clone(const BOX2DFLOAT4 *lwgeom);
 extern POINTARRAY *ptarray_clone(const POINTARRAY *ptarray);
 
@@ -1141,6 +1251,12 @@ extern LWCOLLECTION *lwcollection_construct(unsigned int type, int SRID,
 	BOX2DFLOAT4 *bbox, unsigned int ngeoms, LWGEOM **geoms);
 extern LWCOLLECTION *lwcollection_construct_empty(int SRID,
 	char hasZ, char hasM);
+
+/*
+ * Construct a new LWCIRCSTRING.  arrays (points/points per ring) will NOT be copied
+ * use SRID=-1 for unknown SRID (will have 8bit type's S = 0)
+ */
+extern LWCIRCSTRING *lwcircstring_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points);
 
 /* Other constructors */
 extern LWPOINT *make_lwpoint2d(int SRID, double x, double y);
@@ -1274,126 +1390,9 @@ extern char getMachineEndian(void);
 
 void errorIfSRIDMismatch(int srid1, int srid2);
 
-/* CIRCSTRINGTYPE */
-typedef struct
-{
-        uchar type; /* CIRCSTRINGTYPE */
-        BOX2DFLOAT4 *bbox;
-        uint32 SRID;
-        POINTARRAY *points; /* array of POINT(3D/3DM) */
-} LWCIRCSTRING; /* "light-weight circularstring" */
-
-/* COMPOUNDTYPE */
-typedef struct
-{
-        uchar type; /* COMPOUNDTYPE */
-        BOX2DFLOAT4 *bbox;
-        uint32 SRID;
-        int ngeoms;
-        LWGEOM **geoms;
-} LWCOMPOUND; /* "light-weight compound line" */
-
-/* CURVEPOLYTYPE */
-typedef struct
-{
-        uchar type; /* CURVEPOLYTYPE */
-        BOX2DFLOAT4 *bbox;
-        uint32 SRID;
-        int nrings;
-        LWGEOM **rings; /* list of rings (list of points) */
-} LWCURVEPOLY; /* "light-weight polygon" */
-
-/* MULTICURVE */
-typedef struct
-{
-        uchar type;
-        BOX2DFLOAT4 *bbox;
-        uint32 SRID;
-        int ngeoms;
-        LWGEOM **geoms;
-} LWMCURVE;
-
-/* MULTISURFACETYPE */
-typedef struct
-{
-        uchar type;
-        BOX2DFLOAT4 *bbox;
-        uint32 SRID;
-        int ngeoms;
-        LWGEOM **geoms;
-} LWMSURFACE;
-
-#define CIRCSTRINGTYPE    8
-#define COMPOUNDTYPE      9
-#define CURVEPOLYTYPE    13
-#define MULTICURVETYPE   14
-#define MULTISURFACETYPE 15
-
-/******************************************************************
- * LWCIRCSTRING functions
- ******************************************************************/
-
-/* Casts LWGEOM->LW* (return NULL if cast is illegal) */
-extern LWCIRCSTRING *lwgeom_as_lwcircstring(LWGEOM *lwgeom);
-
-
-LWCIRCSTRING *lwcircstring_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points);
-
-/*
- * given the LWGEOM serialized form (or a pointer into a muli* one)
- * construct a proper LWCIRCSTRING.
- * serialized_form should point to the 8bit type format (with type = 2)
- * See SERIALIZED_FORM doc
- */
-extern LWCIRCSTRING *lwcircstring_deserialize(uchar *serialized_form);
-
-/* find the size this curve would get when serialized */
-extern size_t lwcircstring_serialize_size(LWCIRCSTRING *curve);
-
-/*
- * convert this circularstring into its serialize form
- * result's first char will be the 8bit type.  See serialized form doc
- * copies data.
- */
-extern uchar *lwcircstring_serialize(LWCIRCSTRING *curve);
-
-/* same as above, writes to buf */
-extern void lwcircstring_serialize_buf(LWCIRCSTRING *curve, uchar *buf, size_t *size);
-
-/*
- * find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
- */
-extern BOX3D *lwcircstring_compute_box3d(LWCIRCSTRING *curve);
-
-LWGEOM *lwcircstring_add(const LWCIRCSTRING *to, uint32 where, const LWGEOM *what);
-extern int lwcircstring_compute_box2d_p(LWCIRCSTRING *curve, BOX2DFLOAT4 *box);
-extern BOX3D *lwcircstring_compute_box3d(LWCIRCSTRING *curve);
-LWCIRCSTRING *lwcircstring_clone(const LWCIRCSTRING *curve);
-extern LWCIRCSTRING *lwgeom_getcircstring_inspected(LWGEOM_INSPECTED *inspected, int geom_number);
-extern void lwfree_circstring(LWCIRCSTRING  *curve);
-
-/******************************************************************
- * LWMULTIx and LWCOLLECTION functions
- ******************************************************************/
-
-LWCOMPOUND *lwcompound_deserialize(uchar *serialized_form);
-
-LWGEOM *lwcompound_add(const LWCOMPOUND *to, uint32 where, const LWGEOM *what);
-
-LWCURVEPOLY *lwcurvepoly_deserialize(uchar *serialized_form);
-
-LWGEOM *lwcurvepoly_add(const LWCURVEPOLY *to, uint32 where, const LWGEOM *what);
-
-LWMCURVE *lwmcurve_deserialize(uchar *serialized_form);
-
-LWGEOM *lwmcurve_add(const LWMCURVE *to, uint32 where, const LWGEOM *what);
-
-LWMSURFACE *lwmsurface_deserialize(uchar *serialized_form);
-
-LWGEOM *lwmsurface_add(const LWMSURFACE *to, uint32 where, const LWGEOM *what);
 
 /*******************************************************************************
- * SQLMM internal functions
+ * SQLMM internal functions - TODO: Move into separate header files
  ******************************************************************************/
 
 uint32 has_arc(LWGEOM *geom);
