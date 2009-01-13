@@ -1,6 +1,6 @@
 ERROR:  AddToPROJ4SRSCache: Cannot find SRID (4326) in spatial_ref_sys
 ERROR:  Input geometry has unknown (-1) SRID
-ERROR:  geometry_to_kml: 'Curve' geometry type not supported by Google Earth
+ERROR:  geometry_to_kml: 'CircularString' geometry type not supported by Google Earth
 ERROR:  geometry_to_kml: 'CompoundString' geometry type not supported by Google Earth
 ERROR:  geometry_to_kml: 'CurvePolygon' geometry type not supported by Google Earth
 ERROR:  geometry_to_kml: 'MultiCurve' geometry type not supported by Google Earth
@@ -20,7 +20,7 @@ ERROR:  Only KML 2 is supported
 <Point><coordinates>-73.1978481045547,6.76797715816346</coordinates></Point>
 <Point><coordinates>-74.0775046875181,4.59620005298432</coordinates></Point>
 ERROR:  Input geometry has unknown (-1) SRID
-ERROR:  geometry_to_kml: 'Curve' geometry type not supported by Google Earth
+ERROR:  geometry_to_kml: 'CircularString' geometry type not supported by Google Earth
 ERROR:  geometry_to_kml: 'CompoundString' geometry type not supported by Google Earth
 ERROR:  geometry_to_kml: 'CurvePolygon' geometry type not supported by Google Earth
 ERROR:  geometry_to_kml: 'MultiCurve' geometry type not supported by Google Earth
