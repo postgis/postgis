@@ -120,5 +120,7 @@ int unparse_WKT(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar* serialized, 
 int unparse_WKB(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar* serialized, allocator alloc, freeor free, int flags, char endian, uchar hexform);
 int lwg_parse_yyparse(void);
 int lwg_parse_yyerror(char* s);
+void lwg_parse_yynotice(char* s);
+
 
 #endif /* _WKTPARSE_H */
