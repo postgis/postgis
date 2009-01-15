@@ -173,11 +173,7 @@ Datum postgis_scripts_released(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(postgis_uses_stats);
 Datum postgis_uses_stats(PG_FUNCTION_ARGS)
 {
-#ifdef USE_STATS
 	PG_RETURN_BOOL(TRUE);
-#else
-	PG_RETURN_BOOL(FALSE);
-#endif
 }
 
 PG_FUNCTION_INFO_V1(postgis_autocache_bbox);

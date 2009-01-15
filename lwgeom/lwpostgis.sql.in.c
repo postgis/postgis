@@ -3465,7 +3465,7 @@ CREATEFUNCTION postgis_proj_version() RETURNS text
 -- Do not modify this w/out also changing postgis_proc_upgrade.pl
 --
 CREATEFUNCTION postgis_scripts_installed() RETURNS text
-        AS _POSTGIS_SQL_SELECT_POSTGIS_VERSION
+        AS _POSTGIS_SQL_SELECT_POSTGIS_SCRIPTS_VERSION 
         LANGUAGE 'sql' _IMMUTABLE;
 
 CREATEFUNCTION postgis_lib_version() RETURNS text
