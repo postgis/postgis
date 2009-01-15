@@ -68,7 +68,7 @@ endif
 all: test 
 
 test check: ../lwgeom/liblwgeom.so ../loader/pgsql2shp ../loader/shp2pgsql $(PREPROC)
-	cp ../lwgeom/lwpostgis.sql .
+	cp ../lwgeom/postgis.sql .
 	@USE_VERSION="$(POSTGIS_PGSQL_VERSION)" ./run_test $(TESTS)
 
 ../lwgeom/liblwgeom.so:
@@ -85,4 +85,4 @@ cleanup:
 	@dropdb postgis_reg > /dev/null
 
 clean:
-	rm -f lwpostgis.sql $(PREPROC)
+	rm -f postgis.sql $(PREPROC)

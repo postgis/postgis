@@ -8,7 +8,7 @@ to run.
 
   createdb ogc
   createlang plpgsql ogc
-  psql ogc < ../../lwpostgis.sql
+  psql ogc < ../../postgis.sql
 
   psql -a -f 1_schema.sql ogc >& 1_output.txt
   psql -a -f 2_queries.sql ogc >& 2_output.txt

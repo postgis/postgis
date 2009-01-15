@@ -11,7 +11,7 @@ install: all postgis-install loaderdumper-install
 uninstall: postgis-uninstall loaderdumper-uninstall docs-uninstall 
 
 clean: liblwgeom-clean postgis-clean loaderdumper-clean docs-clean test-clean 
-	rm -f lwpostgis.sql lwpostgis_upgrade.sql
+	rm -f postgis.sql postgis_upgrade.sql
 
 distclean: clean
 	rm -Rf autom4te.cache

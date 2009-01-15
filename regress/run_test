@@ -386,7 +386,7 @@ if test -z "$db_exists"; then
 
 		createdb "${DB}" > ${TMPDIR}/regress_log
 		createlang plpgsql "${DB}" >> ${TMPDIR}/regress_log
-		${PSQL} -f lwpostgis.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1
+		${PSQL} -f postgis.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1
 	else
 
 		echo "Database ${DB} does not exist" >&2

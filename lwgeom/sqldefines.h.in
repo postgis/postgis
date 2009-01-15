@@ -2,7 +2,7 @@
 #define _LWPGIS_DEFINES
 
 /*
- * Define just the version numbers; otherwise we get some strange substitutions in lwpostgis.sql.in
+ * Define just the version numbers; otherwise we get some strange substitutions in postgis.sql.in
  */
 #define POSTGIS_PGSQL_VERSION @POSTGIS_PGSQL_VERSION@
 #define POSTGIS_GEOS_VERSION @POSTGIS_GEOS_VERSION@

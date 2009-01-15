@@ -10,15 +10,14 @@
 # *
 # **********************************************************************
 
-MODULE_big=lwpostgis
-
+MODULE_big=postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 
 # Files to be copied to the contrib/ directory
-DATA_built=lwpostgis.sql
+DATA_built=postgis.sql
 DATA=../spatial_ref_sys.sql
 
 # SQL objects (files requiring C pre-processing)
-SQL_OBJS=lwpostgis.sql.in
+SQL_OBJS=postgis.sql.in
 
 # PostgreSQL objects
 PG_OBJS=lwgeom_pg.o \
@@ -70,6 +69,10 @@ PG_CONFIG = @PGCONFIG@
 PGXS := @PGXS@
 include $(PGXS)
 
+
+# Borrow the $libdir substitution from PGXS but customise by adding the version number
+%.sql: %.sql.in
+	sed 's,MODULE_PATHNAME,$$libdir/$*-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@,g' $< >$@
 
 # Generate any .sql.in files from .sql.in.c files by running them through the C pre-processor 
 $(SQL_OBJS): %.in: %.in.c

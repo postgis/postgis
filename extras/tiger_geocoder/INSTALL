@@ -4,7 +4,7 @@ TIGER Geocoder
 
 - Install postgresql-8.2-postgis (For various GIS bits)
 - Install PostGIS functions and spatial ref definitions:
-  \i /usr/share/postgresql-8.2-postgis/lwpostgis.sql
+  \i /usr/share/postgresql-8.2-postgis/postgis.sql
   \i /usr/share/postgresql-8.2-postgis/spatial_ref_sys.sql
 - Install postgresql-contrib-8.2 for soundex (from fuzzystrmatch)
 - Install functions into PG using:

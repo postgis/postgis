@@ -135,7 +135,7 @@ CREATING NEW SPATIAL DATABASES
 ------------------------------
 
 PostGIS support must be enabled for each database that requires
-its usage. This is done by feeding the lwpostgis.sql (the enabler script)
+its usage. This is done by feeding the postgis.sql (the enabler script)
 file to the target database. 
 
 The enabler script requires the PL/pgSQL procedural language in order
@@ -147,7 +147,7 @@ manually for some reason.)
 So, as postgres run:
 
   createlang plpgsql <yourdatabase>
-  psql -f lwgeom/lwpostgis.sql -d <your_database>
+  psql -f lwgeom/postgis.sql -d <your_database>
 
 Your database should now be spatially enabled.
 
@@ -166,10 +166,10 @@ releases, and an HARD UPGRADE procedure for major releases.
 
 --- SOFT UPGRADE ---
 
-Soft upgrade consists of sourcing the lwpostgis_upgrade.sql
+Soft upgrade consists of sourcing the postgis_upgrade.sql
 script in your spatial database:
 
-  psql -f lwpostgis_upgrade.sql -d your_spatial_database
+  psql -f postgis_upgrade.sql -d your_spatial_database
 
 If a soft upgrade is not possible the script will abort and 
 you will be warned about HARD UPGRADE being required,
@@ -196,11 +196,11 @@ in "custom" format. The hard upgrade procedure is as follows:
 	# a new database. 
         # Note: The new database does NOT have to exist.
 	# Let's call it "newdb"
-	$ sh utils/postgis_restore.pl lwpostgis.sql newdb olddb.dump > restore.log
+	$ sh utils/postgis_restore.pl postgis.sql newdb olddb.dump > restore.log
 
 	# Check that all restored dump objects really had to be 
         # restored from dump and do not conflict with the 
-        # ones defined in lwpostgis.sql
+        # ones defined in postgis.sql
 	$ grep ^KEEPING restore.log | less
 
 	# If upgrading from PostgreSQL < 8.0 to >= 8.0 you will want to 

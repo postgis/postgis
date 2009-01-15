@@ -111,7 +111,7 @@
 			
 			  <listitem>
 				<para>Important support files such as
-				<filename>lwpostgis.sql</filename> are installed in
+				<filename>postgis.sql</filename> are installed in
 				<filename>[prefix]/share/contrib</filename>.</para>
 			  </listitem>
 			
@@ -186,7 +186,7 @@ cd ..</programlisting>
 		
 		<listitem>
 			<para>PostGIS requires the PL/pgSQL procedural language extension.
-			Before loading the <filename>lwpostgis.sql</filename> file, you must
+			Before loading the <filename>postgis.sql</filename> file, you must
 			first enable PL/pgSQL. You should use the
 			<filename>createlang</filename> command. The PostgreSQL Programmer's
 			Guide has the details if you want to this manually for some
@@ -197,10 +197,10 @@ cd ..</programlisting>
 			
 			<listitem>
 			<para>Now load the PostGIS object and function definitions into your
-			database by loading the <filename>lwpostgis.sql</filename> definitions
+			database by loading the <filename>postgis.sql</filename> definitions
 			file.</para>
 			
-			<programlisting># psql -d [yourdatabase] -f lwgeom/lwpostgis.sql</programlisting>
+			<programlisting># psql -d [yourdatabase] -f lwgeom/postgis.sql</programlisting>
 			
 			<para>The PostGIS server extensions are now loaded and ready to
 			use.</para>
@@ -259,10 +259,10 @@ cd ..</programlisting>
       <sect3 id="soft_upgrade">
         <title>Soft upgrade</title>
 
-        <para>Soft upgrade consists of sourcing the lwpostgis_upgrade.sql
+        <para>Soft upgrade consists of sourcing the postgis_upgrade.sql
         script in your spatial database:</para>
 
-        <programlisting>$ psql -f lwpostgis_upgrade.sql -d your_spatial_database</programlisting>
+        <programlisting>$ psql -f postgis_upgrade.sql -d your_spatial_database</programlisting>
 
         <para>If a soft upgrade is not possible the script will abort and you
         will be warned about HARD UPGRADE being required, so do not hesitate
@@ -270,11 +270,11 @@ cd ..</programlisting>
 
         <note>
           <para>If you can't find the
-          <filename>lwpostgis_upgrade.sql</filename> file you are probably
+          <filename>postgis_upgrade.sql</filename> file you are probably
           using a version prior to 1.1 and must generate that file by
           yourself. This is done with the following command:</para>
 
-          <programlisting>$ utils/postgis_proc_upgrade.pl lwpostgis.sql &gt; lwpostgis_upgrade.sql</programlisting>
+          <programlisting>$ utils/postgis_proc_upgrade.pl postgis.sql &gt; postgis_upgrade.sql</programlisting>
         </note>
       </sect3>
 
@@ -305,11 +305,11 @@ cd ..</programlisting>
         your database. Let's call it "newdb", with UNICODE as the character
         encoding:</para>
 
-        <programlisting>$ sh utils/postgis_restore.pl lwpostgis.sql newdb olddb.dump -E=UNICODE &gt; restore.log</programlisting>
+        <programlisting>$ sh utils/postgis_restore.pl postgis.sql newdb olddb.dump -E=UNICODE &gt; restore.log</programlisting>
 
         <para>Check that all restored dump objects really had to be restored
         from dump and do not conflict with the ones defined in
-        lwpostgis.sql</para>
+        postgis.sql</para>
 
         <programlisting>$ grep ^KEEPING restore.log | less</programlisting>
 
