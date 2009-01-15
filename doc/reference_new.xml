@@ -2241,9 +2241,9 @@ result
          <para>Returns null if the WKT is not a MULTIPOINT</para>
 		 
 		 <note>
-				<para>If you are absolutely sure all your WKT geometries are points, don't use this function.  
-					It is slower than ST_GeomFromText since it adds an additional validation step.  
-				</para>
+			<para>If you are absolutely sure all your WKT geometries are points, don't use this function.  
+				It is slower than ST_GeomFromText since it adds an additional validation step.  
+			</para>
 		</note>
 	
 	    <!-- Optionally mention OpenGIS compliancy if appropriate -->
