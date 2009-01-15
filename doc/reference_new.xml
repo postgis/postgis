@@ -2239,6 +2239,12 @@ result
             suite</para>
 
          <para>Returns null if the WKT is not a MULTIPOINT</para>
+		 
+		 <note>
+				<para>If you are absolutely sure all your WKT geometries are points, don't use this function.  
+					It is slower than ST_GeomFromText since it adds an additional validation step.  
+				</para>
+		</note>
 	
 	    <!-- Optionally mention OpenGIS compliancy if appropriate -->
 	    <para><inlinemediaobject>
@@ -2276,7 +2282,7 @@ SELECT ST_MPointFromText('MULTIPOINT(-70.9590 42.1180, -70.9611 42.1223)', 4326)
 	  <refsection>
 	    <title>See Also</title>
 	
-	    <para><xref linkend="ST_MyMethod2" />, ...</para>
+	    <para><xref linkend="ST_GeomFromText" /></para>
 	  </refsection>
 	</refentry>
 	
