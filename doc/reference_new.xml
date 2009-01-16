@@ -2204,6 +2204,20 @@ result
 			<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_MakePoint" />, <xref linkend="ST_SetSRID" /></para>
 		</refsection>
 	</refentry>	
+	
+        <varlistentry>
+          <term>ST_MLineFromText(text,[&lt;srid&gt;])</term>
+
+          <listitem>
+            <para>Makes a Geometry from WKT with the given SRID. If SRID is
+            not give, it defaults to -1.</para>
+
+            <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
+            suite</para>
+
+            <para>Throws an error if the WKT is not a MULTILINESTRING</para>
+          </listitem>
+        </varlistentry>
 	  
 	<refentry id="ST_MLineFromText">
 	  <refnamediv>
@@ -2350,6 +2364,83 @@ SELECT ST_MPointFromText('MULTIPOINT(-70.9590 42.1180, -70.9611 42.1223)', 4326)
 	    <title>See Also</title>
 	
 	    <para><xref linkend="ST_GeomFromText" /></para>
+	  </refsection>
+	</refentry>
+			
+	<refentry id="ST_MPolyFromText">
+	  <refnamediv>
+	    <refname>ST_MPolyFromText</refname>
+	
+	    <refpurpose>Makes a MultiPolygon Geometry from WKT with the given SRID. If SRID is
+            not give, it defaults to -1.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>geometry <function>ST_MPolyFromText</function></funcdef>
+	        <paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
+	        <paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+	      </funcprototype>
+		  
+		  <funcprototype>
+	        <funcdef>geometry <function>ST_MPolyFromText</function></funcdef>
+	        <paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
+	      </funcprototype>
+
+	    </funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+	     <para>Makes a MultiPolygon from WKT with the given SRID. If SRID is
+            not give, it defaults to -1.</para>
+
+		 <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance suite</para>
+
+
+         <para>Throws an error if the WKT is not a MULTIPOLYGON</para>
+		 
+		 <note>
+			<para>If you are absolutely sure all your WKT geometries are multipolygons, don't use this function.  
+				It is slower than ST_GeomFromText since it adds an additional validation step.  
+			</para>
+		</note>
+	
+	    <!-- Optionally mention OpenGIS compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the <ulink
+	    url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+	    Implementation Specification for SQL. OGC SPEC 3.2.6.2</ulink></para>
+	
+	    <!-- Optionally mention SQL/MM compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the SQL/MM specification: SQL-MM 3: 9.6.4</para>
+
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+	
+	    <programlisting>SELECT ST_MPolyFromText('MULTIPOLYGON(((0 0 1,20 0 1,20 20 1,0 20 1,0 0 1),(5 5 3,5 7 3,7 7 3,7 5 3,5 5 3)))');
+SELECt ST_MPolyFromText('MULTIPOLYGON(((-70.916 42.1002,-70.9468 42.0946,-70.9765 42.0872,-70.9754 42.0875,-70.9749 42.0879,-70.9752 42.0881,-70.9754 42.0891,-70.9758 42.0894,-70.9759 42.0897,-70.9759 42.0899,-70.9754 42.0902,-70.9756 42.0906,-70.9753 42.0907,-70.9753 42.0917,-70.9757 42.0924,-70.9755 42.0928,-70.9755 42.0942,-70.9751 42.0948,-70.9755 42.0953,-70.9751 42.0958,-70.9751 42.0962,-70.9759 42.0983,-70.9767 42.0987,-70.9768 42.0991,-70.9771 42.0997,-70.9771 42.1003,-70.9768 42.1005,-70.977 42.1011,-70.9766 42.1019,-70.9768 42.1026,-70.9769 42.1033,-70.9775 42.1042,-70.9773 42.1043,-70.9776 42.1043,-70.9778 42.1048,-70.9773 42.1058,-70.9774 42.1061,-70.9779 42.1065,-70.9782 42.1078,-70.9788 42.1085,-70.9798 42.1087,-70.9806 42.109,-70.9807 42.1093,-70.9806 42.1099,-70.9809 42.1109,-70.9808 42.1112,-70.9798 42.1116,-70.9792 42.1127,-70.979 42.1129,-70.9787 42.1134,-70.979 42.1139,-70.9791 42.1141,-70.9987 42.1116,-71.0022 42.1273,
+	-70.9408 42.1513,-70.9315 42.1165,-70.916 42.1002)))',4326);
+</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	
+	    <para><xref linkend="ST_GeomFromText" />, <xref linkend="ST_SRID" /></para>
 	  </refsection>
 	</refentry>
 	
