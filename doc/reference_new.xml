@@ -1124,6 +1124,81 @@ probed:6 inserted:0 conflicts:6 stale:0
 				<para><xref linkend="ST_BuildArea" />, <xref linkend="ST_BdPolyFromText" /></para>
 			</refsection>
 	</refentry>
+
+		
+	<refentry id="ST_GeomCollFromText">
+	  <refnamediv>
+	    <refname>ST_GeomCollFromText</refname>
+	
+	    <refpurpose>Makes a collection Geometry from collection WKT with the given SRID. If SRID is
+            not give, it defaults to -1.</refpurpose>
+	  </refnamediv>
+	
+	  <refsynopsisdiv>
+	    <funcsynopsis>
+	      <funcprototype>
+	        <funcdef>geometry <function>ST_GeomCollFromText</function></funcdef>
+	        <paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
+	        <paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+	      </funcprototype>
+		  
+		  <funcprototype>
+	        <funcdef>geometry <function>ST_GeomCollFromText</function></funcdef>
+	        <paramdef><type>text </type> <parameter>WKT</parameter></paramdef>
+	      </funcprototype>
+
+	    </funcsynopsis>
+	  </refsynopsisdiv>
+	
+	  <refsection>
+	    <title>Description</title>
+	
+	      <para>Makes a collection Geometry from the Well-Known-Text (WKT) representation with the given SRID. If SRID is
+            not give, it defaults to -1.</para>
+
+          <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance suite</para>
+
+          <para>Returns null if the WKT is not a GEOMETRYCOLLECTION</para>
+		 <note>
+			<para>If you are absolutely sure all your WKT geometries are collections, don't use this function.  
+				It is slower than ST_GeomFromText since it adds an additional validation step.  
+			</para>
+		</note>
+	
+	    <!-- Optionally mention OpenGIS compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the <ulink
+	    url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
+	    Implementation Specification for SQL. OGC SPEC 3.2.6.2</ulink></para>
+	
+	    <!-- Optionally mention SQL/MM compliancy if appropriate -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method implements the SQL/MM specification: ?</para>
+
+	  </refsection>
+	  
+	
+	  <refsection>
+	    <title>Examples</title>
+	
+	    <programlisting>SELECT ST_GeomCollFromText('GEOMETRYCOLLECTION(POINT(1 2),LINESTRING(1 2, 3 4))');
+</programlisting>
+	  </refsection>
+	
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+	    <title>See Also</title>
+	
+	    <para><xref linkend="ST_GeomFromText" />, <xref linkend="ST_SRID" /></para>
+	  </refsection>
+	</refentry>
+	
 		
 	<refentry id="ST_GeomFromEWKB">
 	  <refnamediv>

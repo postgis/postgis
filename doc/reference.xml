@@ -25,22 +25,6 @@
       <variablelist>
 
         <varlistentry>
-          <term>ST_GeomCollFromText(text,[&lt;srid&gt;])</term>
-
-          <listitem>
-            <para>Makes a Geometry from WKT with the given SRID. If SRID is
-            not give, it defaults to -1.</para>
-
-            <para>OGC SPEC 3.2.6.2 - option SRID is from the conformance
-            suite</para>
-
-            <para>Throws an error if the WKT is not a
-            GEOMETRYCOLLECTION</para>
-          </listitem>
-        </varlistentry>
-
-
-        <varlistentry>
           <term>ST_GeometryFromWKB(bytea,[&lt;srid&gt;])</term>
 
           <listitem>
