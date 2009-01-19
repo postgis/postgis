@@ -12,6 +12,7 @@ dnl **********************************************************************
 
 AC_INIT()
 AC_CONFIG_HEADERS([postgis_config.h])
+AC_CONFIG_MACRO_DIR([macros])
 
 dnl Invoke libtool: we do this as it is the easiest way to find the PIC
 dnl flags required to build liblwgeom
@@ -69,6 +70,9 @@ AC_SUBST([LEX])
 AC_SUBST([YACC])
 
 
+dnl ===========================================================================
+dnl Find components needed to build documentation
+dnl ===========================================================================
 dnl
 dnl Search for xsltproc which is required for building documentation
 dnl
@@ -77,7 +81,6 @@ AC_PATH_PROG([XSLTPROC], [xsltproc], [])
 if test "x$XSLTPROC" = "x"; then
 	AC_MSG_WARN([xsltproc is not installed so documentation cannot be built])
 fi
-
 
 dnl
 dnl Search for db2pdf which is required for building PDF documentation
@@ -88,7 +91,6 @@ if test "x$DB2PDF" = "x"; then
 	AC_MSG_WARN([db2pdf is not installed so PDF documentation cannot be built])
 fi
 
-
 dnl
 dnl Search for dblatex which is required for building PDF documentation
 dnl
@@ -97,8 +99,6 @@ AC_PATH_PROG([DBLATEX], [dblatex], [])
 if test "x$DBLATEX" = "x"; then
 	AC_MSG_WARN([dblatex is not installed so PDF documentation cannot be built])
 fi
-
-
 
 dnl
 dnl Allow the user to specify the location of the html/docbook.xsl stylesheet
@@ -110,7 +110,8 @@ AC_ARG_WITH([xsldir],
 
 XSLBASE_AUTO=""
 if test "x$XSLBASE" = "x"; then
-	dnl If the user did not specify a directory for the docbook stylesheet, choose the first directory
+	dnl If the user did not specify a directory for the docbook 
+	dnl stylesheet, choose the first directory
 	dnl that matches from the following list
 	SEARCHPATH="
 		/usr/share/sgml/docbook/xsl-stylesheets 
@@ -124,12 +125,14 @@ if test "x$XSLBASE" = "x"; then
 		fi
 	done
 
-	dnl Check to see if the automatically searched paths above located a valid Docbook stylesheet
+	dnl Check to see if the automatically searched paths above located a 
+	dnl valid Docbook stylesheet
 	if test "x$XSLBASE_AUTO" = "x"; then
 		AC_MSG_WARN([could not locate Docbook stylesheets required to build the documentation])
 	fi
 else
-	dnl The user specified an alternate directory so make sure everything looks sensible
+	dnl The user specified an alternate directory so make sure everything 
+	dnl looks sensible
 	if test ! -d "$XSLBASE"; then
 		AC_MSG_ERROR([the docbook stylesheet directory specified using --with-xsldir does not exist])
 	fi 
@@ -140,8 +143,10 @@ else
 fi
 
 dnl
-dnl If XSLBASE has been set then at this point we know it must be valid and so we can just use it. If XSLBASE_AUTO has been set, and XSLBASE
-dnl is empty then a valid stylesheet was found in XSLBASE_AUTO so we should use that. Otherwise just continue silently with a blank XSLBASE
+dnl If XSLBASE has been set then at this point we know it must be 
+dnl valid and so we can just use it. If XSLBASE_AUTO has been set, and XSLBASE
+dnl is empty then a valid stylesheet was found in XSLBASE_AUTO so we 
+dnl should use that. Otherwise just continue silently with a blank XSLBASE
 dnl variable which will trigger the error message in the documentation Makefile
 dnl
 
@@ -154,14 +159,14 @@ fi
 AC_SUBST([XSLBASE])
 
 
-dnl
+dnl ===========================================================================
 dnl Detect CUnit if it is installed (used for unit testing)
 dnl
-dnl Note that we pass any specified CPPFLAGS and LDFLAGS into the Makefile as CUnit is
-dnl the only compile-time dependency that cannot obtain any specialised flags using
-dnl a --with-X parameter, and so we allow this information to be passed in if
-dnl required.
-dnl
+dnl Note that we pass any specified CPPFLAGS and LDFLAGS into the Makefile 
+dnl as CUnit is the only compile-time dependency that cannot obtain any 
+dnl specialised flags using a --with-X parameter, and so we allow this 
+dnl information to be passed in if required.
+dnl ===========================================================================
 
 CUNIT_LDFLAGS=""
 AC_CHECK_HEADER([CUnit/CUnit.h], [
@@ -176,9 +181,10 @@ AC_SUBST([CUNIT_CPPFLAGS])
 AC_SUBST([CUNIT_LDFLAGS])
 
 
-dnl
-dnl Detect iconv if it is installed (used for shp2pgsql encoding conversion if available)
-dnl
+dnl ===========================================================================
+dnl Detect iconv if it is installed (used for shp2pgsql encoding conversion 
+dnl if available)
+dnl ===========================================================================
 
 HAVE_ICONV_H=0
 AC_CHECK_HEADER([iconv.h], [HAVE_ICONV_H=1], [])
@@ -213,9 +219,9 @@ fi
 AC_SUBST([ICONV_LDFLAGS])
 
 
-dnl
+dnl ===========================================================================
 dnl Detect the version of PostgreSQL installed on the system
-dnl
+dnl ===========================================================================
 
 AC_ARG_WITH([pgconfig], 
 	[AS_HELP_STRING([--with-pgconfig=FILE], [specify an alternative pg_config file])], 
@@ -243,11 +249,12 @@ else
 fi
 
 
-dnl
-dnl Ensure that $PG_CONFIG --pgxs points to a valid file. This is because some distributions such as Debian
-dnl also include pg_config as part of libpq-dev packages, but don't install the Makefile it points to unless
+dnl ===========================================================================
+dnl Ensure that $PG_CONFIG --pgxs points to a valid file. This is because some 
+dnl distributions such as Debian also include pg_config as part of libpq-dev 
+dnl packages, but don't install the Makefile it points to unless
 dnl the postgresql-server-dev packages are installed :)
-dnl
+dnl ===========================================================================
 
 PGXS=`$PGCONFIG --pgxs`
 if test ! -f $PGXS; then
@@ -316,9 +323,10 @@ AC_DEFINE_UNQUOTED([POSTGIS_PGSQL_VERSION], [$POSTGIS_PGSQL_VERSION], [PostgreSQ
 AC_SUBST([POSTGIS_PGSQL_VERSION])
 
 
-dnl
+
+dnl ===========================================================================
 dnl Detect the version of GEOS installed on the system
-dnl
+dnl ===========================================================================
 
 AC_ARG_WITH([geosconfig], 
 	[AS_HELP_STRING([--with-geosconfig=FILE], [specify an alternative geos-config file])], 
@@ -345,9 +353,10 @@ else
 	fi
 fi
 
-dnl Extract the version information from pg_config
-dnl Note: we extract the major & minor separately, ensure they are numeric, and then combine to give
-dnl the final version. This is to guard against user error... 
+dnl Extract the version information from geos_config
+dnl Note: we extract the major & minor separately, ensure they are numeric, 
+dnl and then combine to give the final version. 
+dnl This is to guard against user error... 
 GEOS_MAJOR_VERSION=`$GEOSCONFIG --version | cut -d. -f1 | sed 's/[[^0-9]]//g'`
 GEOS_MINOR_VERSION=`$GEOSCONFIG --version | cut -d. -f2 | sed 's/[[^0-9]]//g'`
 POSTGIS_GEOS_VERSION="$GEOS_MAJOR_VERSION$GEOS_MINOR_VERSION"
@@ -386,9 +395,9 @@ AC_DEFINE_UNQUOTED([POSTGIS_GEOS_VERSION], [$POSTGIS_GEOS_VERSION], [GEOS librar
 AC_SUBST([POSTGIS_GEOS_VERSION])
 
 
-dnl
+dnl ===========================================================================
 dnl Detect the version of PROJ.4 installed
-dnl
+dnl ===========================================================================
 
 AC_ARG_WITH([projdir], 
 	[AS_HELP_STRING([--with-projdir=PATH], [specify the PROJ.4 installation directory])], 
@@ -410,6 +419,7 @@ if test ! "x$PROJDIR" = "x"; then
 		fi
 	fi
 fi
+
 
 dnl Check that we can find the proj_api.h header file
 CPPFLAGS_SAVE="$CPPFLAGS"
@@ -436,8 +446,51 @@ AC_CHECK_LIB([proj], [pj_get_release],
 	[])
 LIBS="$LIBS_SAVE"
 
+dnl ===========================================================================
+dnl Detect GLib GTK for GUI
+dnl ===========================================================================
 
-dnl
+AC_ARG_WITH([gui], 
+	[AS_HELP_STRING([--with-gui], [compile the data import GUI (requires GTK+2.0)])], 
+	[GUI="yes"], [GUI="no"])
+
+if test "x$GUI" = "xyes"; then
+	AC_MSG_RESULT([GUI: Build requested, checking for dependencies (GKT+2.0)])
+	case $host in
+		*apple*)
+			for frmwrk [ in Cairo GLib Gtk ]; do
+				if test -d /Library/Frameworks/${frmwrk}.framework; then
+					GTK_INCLUDES="$GTK_INCLUDES -I/Library/Frameworks/${frmwrk}.framework/Headers" 
+					GTK_LIBS="$GTK_LIBS -framework $frmwrk" 
+					AC_MSG_RESULT([GUI: Found /Library/Frameworks/${frmwrk}.framework])
+				else
+					AC_MSG_ERROR([GUI: Mac OS/X build requires the GTK+2.0 frameworks available from http://www.gtk-osx.org])
+				fi
+			done
+			GTK_BUILD="gui"
+			;;
+		*)
+			dnl Try to find the GTK libs with pkgconfig 
+			if ! test -x `which pkg-config`; then
+				AC_MSG_ERROR([GUI: Building GTK applications requires 'pkg-config', please install it.])
+			else
+				AC_MSG_RESULT([GUI: Running 'pkg-config gtk+-2.0 --cflags'])
+				GTK_INCLUDES=`pkg-config gtk+-2.0 --cflags`
+				AC_MSG_RESULT([GUI: Running 'pkg-config gtk+-2.0 --libs'])
+				GTK_LIBS=`pkg-config gtk+-2.0 --libs`
+				if test ! "x$GTK_LIBS" = "x"; then
+					GTK_BUILD="gui"
+				fi
+			fi
+	esac
+fi
+AC_SUBST([GTK_INCLUDES])
+AC_SUBST([GTK_LIBS])
+AC_SUBST([GTK_BUILD])
+
+
+
+dnl ===========================================================================
 dnl Allow the user to enable debugging with --enable-debug
 dnl
 dnl Currently we default to debug level 4. See DEBUG for more information. 
@@ -448,7 +501,7 @@ AC_ARG_ENABLE([debug], AC_HELP_STRING([--enable-debug], [Enable verbose debuggin
 
 AC_DEFINE_UNQUOTED([POSTGIS_DEBUG_LEVEL], [$POSTGIS_DEBUG_LEVEL], [PostGIS library debug level (0=disabled)])
 
-dnl
+dnl ===========================================================================
 dnl Allow the user to enable GEOS profiling with --enable-profile
 dnl
 
@@ -457,7 +510,7 @@ AC_ARG_ENABLE([profile], AC_HELP_STRING([--enable-profile], [Enable GEOS profili
 
 AC_DEFINE_UNQUOTED([POSTGIS_PROFILE], [$POSTGIS_PROFILE], [Enable GEOS profiling (0=disabled)])
 
-dnl
+dnl ===========================================================================
 dnl Define version macros
 dnl
 
@@ -477,7 +530,7 @@ AC_SUBST([POSTGIS_BUILD_DATE])
 AC_SUBST([POSTGIS_SCRIPTS_VERSION])
 
 
-dnl
+dnl ===========================================================================
 dnl Other parameters 
 dnl
 

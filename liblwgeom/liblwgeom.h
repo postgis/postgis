@@ -1274,8 +1274,7 @@ extern LWPOLY *lwpoly_from_lwlines(const LWLINE *shell, unsigned int nholes, con
 extern const char *lwgeom_typeflags(uchar type);
 
 /* Construct an empty pointarray */
-extern POINTARRAY *ptarray_construct(char hasz, char hasm,
-	unsigned int npoints);
+extern POINTARRAY *ptarray_construct(char hasz, char hasm, unsigned int npoints);
 
 /*
  * extern POINTARRAY *ptarray_construct2d(uint32 npoints, const POINT2D *pts);
