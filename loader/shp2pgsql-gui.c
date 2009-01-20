@@ -221,39 +221,39 @@ static gboolean
 check_translation_stage (gpointer data)
 {
 	int rv = 0;
-	if ( translation_stage == 0 ) return FALSE;
-	if ( translation_stage == 4 )
+	if ( translation_stage == TRANSLATION_IDLE ) return FALSE;
+	if ( translation_stage == TRANSLATION_DONE )
 	{
 		pgui_logf("Import complete.");
 		return FALSE;
 	}
-	if ( translation_stage == 1 )
+	if ( translation_stage == TRANSLATION_CREATE )
 	{
 		rv = translation_start();
 		if ( ! rv )
 		{
 			pgui_logf("Import failed.");
-			translation_stage = 0;
+			translation_stage = TRANSLATION_IDLE;
 		}
 		return TRUE;
 	}
-	if ( translation_stage == 2 )
+	if ( translation_stage == TRANSLATION_LOAD )
 	{
 		rv = translation_middle();
 		if ( ! rv )
 		{
 			pgui_logf("Import failed.");
-			translation_stage = 0;
+			translation_stage = TRANSLATION_IDLE;
 		}
 		return TRUE;
 	}
-	if ( translation_stage == 3 )
+	if ( translation_stage == TRANSLATION_CLEANUP )
 	{
 		rv = translation_end();
 		if ( ! rv )
 		{
 			pgui_logf("Import failed.");
-			translation_stage = 0;
+			translation_stage = TRANSLATION_IDLE;
 		}
 		return TRUE;
 	}
@@ -387,7 +387,7 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 	const char *entry_encoding = gtk_entry_get_text(GTK_ENTRY(entry_options_encoding));
 
 	/* Do nothing if we're busy */
-	if ( translation_stage > 0 && translation_stage < 4 )
+	if ( translation_stage > TRANSLATION_IDLE && translation_stage < TRANSLATION_DONE )
 	{
 		return;
 	}
@@ -483,7 +483,7 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 
 	/* add the idle action */
 	cur_entity = -1;
-	translation_stage = 1;
+	translation_stage = TRANSLATION_CREATE;
 	g_idle_add(check_translation_stage, NULL);
 
 	free(connection_string);
@@ -497,7 +497,7 @@ static void
 pgui_action_options(GtkWidget *widget, gpointer data)
 {
 	/* Do nothing if we're busy */
-	if ( translation_stage > 0 && translation_stage < 4 )
+	if ( translation_stage > TRANSLATION_IDLE && translation_stage < TRANSLATION_DONE )
 	{
 		return;
 	}
@@ -510,11 +510,11 @@ pgui_action_options(GtkWidget *widget, gpointer data)
 static void
 pgui_action_cancel(GtkWidget *widget, gpointer data)
 {
-	if ( translation_stage > 0 && translation_stage < 4 )
+	if ( translation_stage > TRANSLATION_IDLE && translation_stage < TRANSLATION_DONE )
 	{
 		pgui_logf("Import stopped.");
 
-		translation_stage = 0; /* return to idle if we are running */
+		translation_stage = TRANSLATION_IDLE; /* return to idle if we are running */
 	}
 	else
 	{
@@ -529,7 +529,7 @@ pgui_action_connection_test(GtkWidget *widget, gpointer data)
 	char *connection_string = NULL;
 
 	/* Do nothing if we're busy */
-	if ( translation_stage > 0 && translation_stage < 4 )
+	if ( translation_stage > TRANSLATION_IDLE && translation_stage < TRANSLATION_DONE )
 	{
 		return;
 	}

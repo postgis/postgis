@@ -36,6 +36,7 @@
 #define WKBZOFFSET 0x80000000
 #define WKBMOFFSET 0x40000000
 
+
 typedef struct
 {
 	double x, y, z, m;
@@ -70,7 +71,7 @@ int null_policy = insert_null; /* how to handle nulls */
 int sr_id = 0; /* SRID specified */
 char *shp_file = NULL; /* the shape file (without the .shp extension) */
 int gui_mode = 0; /* 1 = GUI, 0 = commandline */
-int translation_stage = 0;
+int translation_stage = TRANSLATION_IDLE;
 
 /* Private globals */
 stringbuffer_t *sb_row; /* stringbuffer to append results to */
@@ -486,7 +487,7 @@ translation_start ()
 		if ( ! CreateTable() )
 			return 0;
 
-	translation_stage = 2; /* done start */
+	translation_stage = TRANSLATION_LOAD; /* done start */
 	return 1;
 }
 
@@ -503,7 +504,7 @@ translation_middle()
 	}
 	else
 	{
-		translation_stage = 3; /* done middle */
+		translation_stage = TRANSLATION_CLEANUP; /* done middle */
 	}
 	return 1;
 }
@@ -520,7 +521,7 @@ translation_end()
 
 	if ( ! pgis_exec("END") ) return 0; /* End the last transaction */
 
-	translation_stage = 4;
+	translation_stage = TRANSLATION_DONE;
 
 	return 1;
 }
@@ -890,7 +891,7 @@ LoadData(void)
 		pgis_copy_end(0);
 	}
 
-	translation_stage = 3; /* done middle */
+	translation_stage = TRANSLATION_CLEANUP; /* done middle */
 
 	return 1;
 }

@@ -21,6 +21,12 @@
 
 #define RCSID "$Id: shp2pgsql.c 3450 2008-12-18 20:42:09Z pramsey $"
 
+#define TRANSLATION_IDLE 0
+#define TRANSLATION_CREATE 1
+#define TRANSLATION_LOAD 2
+#define TRANSLATION_CLEANUP 3
+#define TRANSLATION_DONE 4
+
 enum {
 	insert_null,
 	skip_null,
