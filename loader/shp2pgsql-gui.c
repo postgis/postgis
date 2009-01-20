@@ -580,7 +580,7 @@ pgui_action_shape_file_set(GtkWidget *widget, gpointer data)
 	char *table_start;
 	char *table_end;
 	char *table;
-	const char *gtk_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widget))
+	const char *gtk_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widget));
 	
 	if( gtk_filename ) 
 	{
