@@ -33,7 +33,7 @@ ICONV_LDFLAGS=@ICONV_LDFLAGS@
 LIBLWGEOM=../liblwgeom/liblwgeom.a
 
 # GTK includes and libraries
-GTK_INCLUDES = @GTK_INCLUDES@
+GTK_CFLAGS = @GTK_CFLAGS@
 GTK_LIBS = @GTK_LIBS@
 
 all: $(SHP2PGSQL) $(PGSQL2SHP) $(SHP2PGSQL-CLI) @GTK_BUILD@
@@ -58,7 +58,7 @@ shp2pgsql-core-gui.o: shp2pgsql-core.c
 	$(CC) $(CFLAGS) -DPGUI -c -o $@ $^
 
 shp2pgsql-gui.o: shp2pgsql-gui.c
-	$(CC) $(PGSQL_FE_CPPFLAGS) $(CFLAGS) $(GTK_INCLUDES) -o $@ -c shp2pgsql-gui.c
+	$(CC) $(PGSQL_FE_CPPFLAGS) $(CFLAGS) $(GTK_CFLAGS) -o $@ -c shp2pgsql-gui.c
 
 $(SHP2PGSQL-GUI): stringbuffer.o shpopen.o dbfopen.o shp2pgsql-core-gui.o shp2pgsql-gui.o $(LIBLWGEOM) 
 	$(CC) $(CFLAGS) $(GTK_LIBS) $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) -lm $^ -o $@

@@ -460,7 +460,7 @@ if test "x$GUI" = "xyes"; then
 		*apple*)
 			for frmwrk [ in Cairo GLib Gtk ]; do
 				if test -d /Library/Frameworks/${frmwrk}.framework; then
-					GTK_INCLUDES="$GTK_INCLUDES -I/Library/Frameworks/${frmwrk}.framework/Headers" 
+					GTK_CFLAGS="$GTK_CFLAGS -I/Library/Frameworks/${frmwrk}.framework/Headers" 
 					GTK_LIBS="$GTK_LIBS -framework $frmwrk" 
 					AC_MSG_RESULT([GUI: Found /Library/Frameworks/${frmwrk}.framework])
 				else
@@ -471,20 +471,10 @@ if test "x$GUI" = "xyes"; then
 			;;
 		*)
 			dnl Try to find the GTK libs with pkgconfig 
-			if ! test -x `which pkg-config`; then
-				AC_MSG_ERROR([GUI: Building GTK applications requires 'pkg-config', please install it.])
-			else
-				AC_MSG_RESULT([GUI: Running 'pkg-config gtk+-2.0 --cflags'])
-				GTK_INCLUDES=`pkg-config gtk+-2.0 --cflags`
-				AC_MSG_RESULT([GUI: Running 'pkg-config gtk+-2.0 --libs'])
-				GTK_LIBS=`pkg-config gtk+-2.0 --libs`
-				if test ! "x$GTK_LIBS" = "x"; then
-					GTK_BUILD="gui"
-				fi
-			fi
+			AM_PATH_GTK_2_0([2.8.0], [GTK_BUILD="gui"], [GTK_BUILD=""])
 	esac
 fi
-AC_SUBST([GTK_INCLUDES])
+AC_SUBST([GTK_CFLAGS])
 AC_SUBST([GTK_LIBS])
 AC_SUBST([GTK_BUILD])
 
