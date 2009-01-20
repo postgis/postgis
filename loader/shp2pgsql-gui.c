@@ -580,9 +580,17 @@ pgui_action_shape_file_set(GtkWidget *widget, gpointer data)
 	char *table_start;
 	char *table_end;
 	char *table;
+	const char *gtk_filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widget))
 	
-	shp_file = strdup(gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(widget)));
-	shp_file_len = strlen(shp_file);
+	if( gtk_filename ) 
+	{
+		shp_file = strdup(gtk_filename);
+		shp_file_len = strlen(shp_file);
+	}
+	else 
+	{
+		return;
+	}
 
 	/* Roll back from end to first slash character. */
 	table_start = shp_file + shp_file_len;
