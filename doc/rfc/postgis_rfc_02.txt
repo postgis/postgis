@@ -1,0 +1,197 @@
+Getting into Alignment
+----------------------
+
+- Goal 1: Get our on-disk format aligned, so that we can read directly out of it after it has been brought into memory.
+- Goal 2: Sacrifice as little of the compactness of the current scheme as possible
+- Goal 3: Retain the ability to represent structures like GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(...)) 
+
+
+PG_LWGEOM/LWGEOM
+----------------
+
+Right now, PG_LWGEOM is just an LWGEOM with an extra 4-bytes of information tacked onto the front.  The "align" keyword in CREATE TYPE is guaranteed to align the complete PG structure, so the front of the PG_LWGEOM can be guaranteed to be on an alignment boundary.  That means that the front of the LWGEOM will be four-bytes *off* the boundary.  
+
+The simplest fix is to make our LWGEOM/PG_LWGEOM be the same struct, and have LWGEOM carry around the PG_LWGEOM 'size' attribute, even though there is not internal use for it. It can be "application data", where most of the time the application is PostgreSQL. 
+
+Since our main goal is the keep size-on-disk down, increasing our size-in-memory for non-PostgreSQL applications of liblwgeom seems like a reasonable trade-off.
+
+TYPE
+----
+
+The type char at the head of the serialized form is a problem. By expanding it to 2-bytes, and in combination with some 2-byte length fields further down, we can achieve alignment at the cost of just 1 extra byte. See below in SRID for an approach that combines type and srid to reduce the cost to 1 byte.
+
+BBOX
+----
+
+Because the bbox is 4 floats ( = 2 doubles ) wide, we can ignore it. The fact that it is optional is not a problem, adding or removing it does not change the alignment of anything.
+
+SRID
+----
+
+Right now the SRID is optional and 4 bytes.  That's a problem, because it knocks us in/out of alignment depending on its presence. I see two approaches:
+
+-- Make it smaller and mandatory. 
+
+o Reduce it to 2 bytes, and expand the type byte to 2 bytes, and you have a 4-byte block that should be easy to add to another 4-byte block to get aligned. 
+o Reduce it to 3 bytes, and use the spare bit in the type char for extra geometry types.
+
+Currently, none of the SRID values in the EPSG database exceed 32000, so they fit into an unsigned short (65536). With three bytes, SRID can be as large as 16M.  Users will have filled in their spatial_ref_sys tables with god-knows-what, however.
+
+-- Make it larger and keep it optional. 
+
+Doubling SRID to 8-bytes makes it a no-pain optional field, like the bbox, but at 4-byte cost.  However, since most geometries in production *do* carry SRID information, this is a size hit that will likely apply to many users.
+
+LENGTHS
+-------
+
+Lengths (ordinate array lengths, ring counts, sub-object counts) are the hardest thing to deal with. They are 4-bytes long and they mostly come one at a time, which has the effect of misaligning the structure each and every time we hit one.
+
+- Basic fix, simply pad all the lengths out to 8 bytes.
+- More complex fix, move to a serialized form more like the shape file, which stores all the offsets in one block at the front, and then all the doubles in one uninterrupted set afterwards. That means the net lack of alignment for a given group of offsets is only ever four bytes at the most.
+
+
+FULLY PADDED EXAMPLES
+---------------------
+
+The simplest approach is to pad out everything as needed. Here is what things look like for some examples. The leanest features (2d points, two-vertex 2d lines) take the biggest hit, as expected. The balance between speed increase gained from aligned access versus lost to disk I/O is going to require some empirical testing, unfortunately.
+
+:: POINT2D ::
+
+<int> Pg VarSize
+<int> type
+<longlong> srid
+<double> X
+<double> Y
+
+Old size: 25 bytes
+New size: 32 bytes (28% larger)
+
+:: LINESTRING2D (w/ bbox and srid) :: 
+
+<int> Pg VarSize
+<int> type
+<longlong> srid
+<float><float> bbox mins
+<float><float> bbox maxs
+<longlong> npoints
+<double> X0
+<double> Y0
+<double> X1
+<double> Y1
+
+Old size: 61 bytes
+New size: 72 bytes (18% larger)
+
+:: POLYGON2D (w/ bbox and srid) :: 
+
+<int> Pg VarSize
+<int> type
+<longlong> srid
+<float><float> bbox mins
+<float><float> bbox maxs
+<longlong> nrings
+<longlong> npoints
+<double> X0
+<double> Y0
+<double> X1
+<double> Y1
+<double> X2
+<double> Y2
+<double> X3
+<double> Y3
+
+Old size: 97 bytes
+New size: 112 bytes (15% larger)
+
+
+:: MULTILINESTRING2D (w/ bbox and srid and just one part) :: 
+
+Note that the bbox and srid are dropped from the subgeometry.
+
+<int> Pg VarSize
+<int> type
+<longlong> srid
+<float><float> bbox mins
+<float><float> bbox maxs
+<longlong> nlines
+<int> Pg VarSize
+<int> type
+<longlong> npoints
+<double> X0
+<double> Y0
+<double> X1
+<double> Y1
+
+Old size: 66 bytes
+New size: 88 bytes (33% larger)
+
+
+SCRUNCHED HEADER EXAMPLES
+-------------------------
+
+Keeping the "type" at 8 bits, and reducing "srid" to 24 bits, scrunches that metadata complex into a single 32-bit space. Because SRID is made mandatory, a bit is also freed up in "type" for more geometry types.
+
+:: POINT2D ::
+
+<int> Pg VarSize
+<int> type / srid
+<double> X
+<double> Y
+
+Old size: 25 bytes
+New size: 24 bytes (4% smaller)
+
+:: LINESTRING2D (w/ bbox and srid) :: 
+
+<int> Pg VarSize
+<int> type / srid
+<float><float> bbox mins
+<float><float> bbox maxs
+<longlong> npoints
+<double> X0
+<double> Y0
+<double> X1
+<double> Y1
+
+Old size: 61 bytes
+New size: 64 bytes (5% larger)
+
+:: POLYGON2D (w/ bbox and srid) :: 
+
+<int> Pg VarSize
+<int> type / srid
+<float><float> bbox mins
+<float><float> bbox maxs
+<longlong> nrings
+<longlong> npoints
+<double> X0
+<double> Y0
+<double> X1
+<double> Y1
+<double> X2
+<double> Y2
+<double> X3
+<double> Y3
+
+Old size: 97 bytes
+New size: 104 bytes (7% larger)
+
+:: MULTILINESTRING2D (w/ bbox and srid and just one part) :: 
+
+Note that the bbox and srid are dropped from the subgeometry.
+
+<int> Pg VarSize
+<int> type / srid
+<float><float> bbox mins
+<float><float> bbox maxs
+<longlong> nlines
+<int> Pg VarSize
+<int> type / srid
+<longlong> npoints
+<double> X0
+<double> Y0
+<double> X1
+<double> Y1
+
+Old size: 66 bytes
+New size: 80 bytes (21% larger)
