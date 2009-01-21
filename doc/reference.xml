@@ -157,28 +157,7 @@
     <sect2>
       <title>Operators</title>
 
-      <variablelist>
-	  	<varlistentry>
-          <term>A = B</term>
-
-          <listitem>
-            <para>The "=" operator returns true if A's bounding box
-            is the same as B's bounding box.</para>
-			<note><para>This is cause for a lot of confusion.  When you compare geometryA = geometryB it will return 
-			true even when the geometries are clearly different if their bounding boxes are the same.  To check for 
-			true equality use <xref linkend="ST_OrderingEquals"/> or <xref linkend="ST_Equals"/></para></note>
-          </listitem>
-        </varlistentry>
-		
-        <varlistentry>
-          <term>A &amp;&lt; B</term>
-
-          <listitem>
-            <para>The "&amp;&lt;" operator returns true if A's bounding box
-            overlaps or is to the left of B's bounding box.</para>
-          </listitem>
-        </varlistentry>
-
+      <variablelist>		
         <varlistentry>
           <term>A &amp;&gt; B</term>
 
@@ -267,16 +246,6 @@
           <listitem>
             <para>The "~" operator returns true if A's bounding box completely
             contains B's bounding box.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>A &amp;&amp; B</term>
-
-          <listitem>
-            <para>The "&amp;&amp;" operator is the "overlaps" operator. If A's
-            bounding box overlaps B's bounding box the operator returns
-            true.</para>
           </listitem>
         </varlistentry>
       </variablelist>
