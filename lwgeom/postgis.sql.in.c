@@ -4054,6 +4054,12 @@ CREATEFUNCTION ST_unite_garray (geometry[])
 	AS 'MODULE_PATHNAME','unite_garray'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable); 
 
+CREATEFUNCTION _unite_garray_fast (geometry[])
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','unite_garray_fast'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable); 
+
+
 -- Deprecation in 1.2.3
 CREATE AGGREGATE GeomUnion (
 	sfunc = geom_accum,
@@ -4068,6 +4074,12 @@ CREATE AGGREGATE ST_Union (
 	basetype = geometry,
 	stype = geometry[],
 	finalfunc = ST_unite_garray
+	);
+CREATE AGGREGATE ST_Union_Fast (
+	sfunc = ST_geom_accum,
+	basetype = geometry,
+	stype = geometry[],
+	finalfunc = _unite_garray_fast
 	);
 
 -- Deprecation in 1.2.3

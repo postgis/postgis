@@ -447,7 +447,7 @@ AC_CHECK_LIB([proj], [pj_get_release],
 LIBS="$LIBS_SAVE"
 
 dnl ===========================================================================
-dnl Detect GLib GTK for GUI
+dnl Detect GTK+2.0 for GUI
 dnl ===========================================================================
 
 AC_ARG_WITH([gui], 
