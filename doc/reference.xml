@@ -157,16 +157,7 @@
     <sect2>
       <title>Operators</title>
 
-      <variablelist>		
-        <varlistentry>
-          <term>A &amp;&gt; B</term>
-
-          <listitem>
-            <para>The "&amp;&gt;" operator returns true if A's bounding box
-            overlaps or is to the right of B's bounding box.</para>
-          </listitem>
-        </varlistentry>
-
+      <variablelist>	
         <varlistentry>
           <term>A &lt;&lt; B</term>
 
