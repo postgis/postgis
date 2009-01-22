@@ -673,7 +673,7 @@ LoadData(void)
 		trans++;
 		/* transaction stuff done */
 
-    /*skip the record if it has been deleted*/
+		/*skip the record if it has been deleted*/
 		if(readshape != 1 && DBFReadDeleted(hDBFHandle, j)) {
 		  continue; 
 		}
