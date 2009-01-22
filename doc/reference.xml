@@ -177,15 +177,6 @@
         </varlistentry>
 
         <varlistentry>
-          <term>A |&amp;&gt; B</term>
-
-          <listitem>
-            <para>The "|&amp;&gt;" operator returns true if A's bounding box
-            overlaps or is above B's bounding box.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
           <term>A &lt;&lt;| B</term>
 
           <listitem>
