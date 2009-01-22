@@ -163,7 +163,7 @@ SELECT 'create,insert,drop Test: Start Testing Multi/<xsl:value-of select="@Geom
 	</xsl:text>
 		</xsl:for-each>
 <!--End Test table creation, insert, drop -->
-		<xsl:for-each select='sect1/refentry'>
+		<xsl:for-each select="sect1/refentry[not(contains(@id,'Operator'))]">
 		<xsl:sort select="@id"/>
 
 			<xsl:for-each select="refsynopsisdiv/funcsynopsis/funcprototype">
