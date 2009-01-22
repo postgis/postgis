@@ -4042,6 +4042,31 @@ CREATE AGGREGATE ST_MemUnion (
 	stype = geometry
 	);
 
+#if 0
+-- Availability: 1.4.0
+CREATE FUNCTION pgis_geometry_accum_transfn(int, geometry)
+    RETURNS int
+    AS 'MODULE_PATHNAME' LANGUAGE 'C';
+    
+-- Availability: 1.4.0
+CREATE FUNCTION pgis_geometry_accum_finalfn(int)
+    RETURNS geometry[]
+    AS 'MODULE_PATHNAME' LANGUAGE 'C';
+
+-- Availability: 1.4.0
+CREATE AGGREGATE ST_GeometryArray (
+    BASETYPE = geometry,
+    SFUNC = pgis_geometry_accum_transfn,
+    STYPE = int,
+    FINALFUNC = pgis_geometry_accum_finalfn
+    );
+
+UPDATE pg_aggregate SET aggtranstype = 2281 WHERE aggfnoid = 'st_geometryarray'::regproc;
+UPDATE pg_proc SET prorettype = 2281 WHERE oid = 'pgis_geometry_accum_transfn'::regproc;
+UPDATE pg_proc SET proargtypes = ('2281 ' || proargtypes[1]::text)::oidvector WHERE oid = 'pgis_geometry_accum_transfn'::regproc;
+UPDATE pg_proc SET proargtypes = '2281' WHERE oid = 'pgis_geometry_accum_finalfn'::regproc;
+#endif
+
 -- Deprecation in 1.2.3
 CREATEFUNCTION unite_garray (geometry[])
 	RETURNS geometry
