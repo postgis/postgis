@@ -152,44 +152,6 @@
   </sect1>
 
   <sect1>
-    <title>PostGIS Extensions</title>
-
-    <sect2>
-      <title>Operators</title>
-
-      <variablelist>
-        <varlistentry>
-          <term>A ~= B</term>
-
-          <listitem>
-            <para>The "~=" operator is the "same as" operator. It tests actual
-            geometric equality of two features. So if A and B are the same
-            feature, vertex-by-vertex, the operator returns true.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>A @ B</term>
-
-          <listitem>
-            <para>The "@" operator returns true if A's bounding box is
-            completely contained by B's bounding box.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>A ~ B</term>
-
-          <listitem>
-            <para>The "~" operator returns true if A's bounding box completely
-            contains B's bounding box.</para>
-          </listitem>
-        </varlistentry>
-      </variablelist>
-    </sect2>
-  </sect1>
-
-  <sect1>
     <title>SQL-MM Functions</title>
 
     <para>This is a listing of the SQL-MM defined functions that PostGIS

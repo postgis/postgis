@@ -7640,11 +7640,11 @@ F000000000000000000000000000000000000000000000000');
   
   <sect1 id="Operators">
 	<title>Operators</title>
-		<refentry id="ST_Geometry_Overlaps">	
+		<refentry id="ST_Geometry_Overlap">	
 		  <refnamediv>
 		    <refname>&amp;&amp;</refname>
 		
-		    <refpurpose>Returns <varname>TRUE</varname> if A overlaps B.</refpurpose>
+		    <refpurpose>Returns <varname>TRUE</varname> if A's bounding box overlaps B's.</refpurpose>
 		  </refnamediv>
 		
 		  <refsynopsisdiv>
@@ -7675,8 +7675,7 @@ F000000000000000000000000000000000000000000000000');
 		
 		    <para>The <varname>&amp;&amp;</varname> operator returns <varname>TRUE</varname> if the bounding box of geometry A overlaps the bounding box of geometry B.</para>
 		    
-			<note><para>This function call will automatically include a bounding box
-      			comparison that will make use of any indexes that are available on the
+			<note><para>This operand will make use of any indexes that may be available on the
       			geometries.</para></note>
 		  </refsection>
 		
@@ -7704,7 +7703,9 @@ FROM ( VALUES
 		    	<xref linkend="ST_Geometry_Overabove" />,
 		    	<xref linkend="ST_Geometry_Overright" />, 
 		    	<xref linkend="ST_Geometry_Overbelow" />,
-		    	<xref linkend="ST_Geometry_Overleft" /></para>
+		    	<xref linkend="ST_Geometry_Overleft" />,
+		    	<xref linkend="ST_Geometry_Contain" />,
+		    	<xref linkend="ST_Geometry_Contained" /></para>
 		  </refsection>
 		</refentry>
 
@@ -7712,7 +7713,7 @@ FROM ( VALUES
 		  <refnamediv>
 		    <refname>&amp;&lt;</refname>
 		
-		    <refpurpose>Returns <varname>TRUE</varname> if A overlaps or is to the left of B.</refpurpose>
+		    <refpurpose>Returns <varname>TRUE</varname> if A's bounding box overlaps or is to the left of B's.</refpurpose>
 		  </refnamediv>
 		
 		  <refsynopsisdiv>
@@ -7744,12 +7745,15 @@ FROM ( VALUES
 		    <para>The <varname>&amp;&lt;</varname> operator returns <varname>TRUE</varname> if the bounding box of geometry A
             overlaps or is to the left of the bounding box of geometry B, or more accurately, overlaps or is NOT to the right 
             of the bounding box of geometry B.</para>
+            
+			<caution><para>This operand will NOT make use of any indexes that may be available on the
+      			geometries.</para></caution>
 		  </refsection>
 		
 		  <refsection>
 		    <title>Examples</title>
 		
-		    <programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 &amp;&lt; tbl2.column2 AS overlaps
+		    <programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 &amp;&lt; tbl2.column2 AS overleft
 FROM 
   ( VALUES
 	(1, 'LINESTRING(1 2, 4 6)'::geometry)) AS tbl1,
@@ -7758,7 +7762,7 @@ FROM
 	(3, 'LINESTRING(0 1, 0 5)'::geometry), 
 	(4, 'LINESTRING(6 0, 6 1)'::geometry)) AS tbl2;
 
- column1 | column1 | overlaps 
+ column1 | column1 | overleft 
 ---------+---------+----------
        1 |       2 | f        
        1 |       3 | f
@@ -7770,7 +7774,7 @@ FROM
 		    <title>See Also</title>
 		
 		    <para>
-		    	<xref linkend="ST_Geometry_Overlaps" />, 
+		    	<xref linkend="ST_Geometry_Overlap" />, 
 		    	<xref linkend="ST_Geometry_Overabove" />,
 		    	<xref linkend="ST_Geometry_Overright" />, 
 		    	<xref linkend="ST_Geometry_Overbelow" /></para>
@@ -7781,7 +7785,7 @@ FROM
 		  <refnamediv>
 		    <refname>&amp;&lt;|</refname>
 		
-		    <refpurpose>Returns <varname>TRUE</varname> if A overlaps or is below B.</refpurpose>
+		    <refpurpose>Returns <varname>TRUE</varname> if A's bounding box overlaps or is below B's.</refpurpose>
 		  </refnamediv>
 		
 		  <refsynopsisdiv>
@@ -7813,12 +7817,15 @@ FROM
 		    <para>The <varname>&amp;&lt;|</varname> operator returns <varname>TRUE</varname> if the bounding box of geometry A
             overlaps or is below of the bounding box of geometry B, or more accurately, overlaps or is NOT above the bounding 
             box of geometry B.</para>
+            
+			<caution><para>This operand will NOT make use of any indexes that may be available on the
+      			geometries.</para></caution>
 		  </refsection>
 		
 		  <refsection>
 		    <title>Examples</title>
 		
-		    <programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 &amp;&lt;| tbl2.column2 AS overlaps
+		    <programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 &amp;&lt;| tbl2.column2 AS overbelow
 FROM 
   ( VALUES
 	(1, 'LINESTRING(6 0, 6 4)'::geometry)) AS tbl1,
@@ -7827,8 +7834,8 @@ FROM
 	(3, 'LINESTRING(0 1, 0 5)'::geometry), 
 	(4, 'LINESTRING(1 2, 4 6)'::geometry)) AS tbl2;
 
- column1 | column1 | overlaps 
----------+---------+----------
+ column1 | column1 | overbelow 
+---------+---------+-----------
        1 |       2 | f
        1 |       3 | t
        1 |       4 | t
@@ -7839,7 +7846,7 @@ FROM
 		    <title>See Also</title>
 		
 		    <para>
-		    	<xref linkend="ST_Geometry_Overlaps" />,
+		    	<xref linkend="ST_Geometry_Overlap" />,
 		    	<xref linkend="ST_Geometry_Overabove" />,
 		    	<xref linkend="ST_Geometry_Overright" />, 
 		    	<xref linkend="ST_Geometry_Overleft" /></para>
@@ -7850,7 +7857,7 @@ FROM
 		  <refnamediv>
 		    <refname>&amp;&gt;</refname>
 		
-		    <refpurpose>Returns <varname>TRUE</varname> if A overlaps or is to the right of B.</refpurpose>
+		    <refpurpose>Returns <varname>TRUE</varname> if A' bounding box overlaps or is to the right of B's.</refpurpose>
 		  </refnamediv>
 		
 		  <refsynopsisdiv>
@@ -7882,12 +7889,15 @@ FROM
 		    <para>The <varname>&amp;&gt;</varname> operator returns <varname>TRUE</varname> if the bounding box of geometry A
             overlaps or is to the right of the bounding box of geometry B, or more accurately, overlaps or is NOT to the left 
             of the bounding box of geometry B.</para>
+
+			<caution><para>This operand will NOT make use of any indexes that may be available on the
+      			geometries.</para></caution>
 		  </refsection>
 		
 		  <refsection>
 		    <title>Examples</title>
 		
-		    <programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 &amp;&gt; tbl2.column2 AS overlaps
+		    <programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 &amp;&gt; tbl2.column2 AS overright
 FROM 
   ( VALUES
 	(1, 'LINESTRING(1 2, 4 6)'::geometry)) AS tbl1,
@@ -7896,8 +7906,8 @@ FROM
 	(3, 'LINESTRING(0 1, 0 5)'::geometry), 
 	(4, 'LINESTRING(6 0, 6 1)'::geometry)) AS tbl2;
 
- column1 | column1 | overlaps 
----------+---------+----------
+ column1 | column1 | overright 
+---------+---------+-----------
        1 |       2 | t
        1 |       3 | t
        1 |       4 | f
@@ -7908,7 +7918,7 @@ FROM
 		    <title>See Also</title>
 		
 		    <para>
-		    	<xref linkend="ST_Geometry_Overlaps" />,
+		    	<xref linkend="ST_Geometry_Overlap" />,
 		    	<xref linkend="ST_Geometry_Overabove" />,
 		    	<xref linkend="ST_Geometry_Overbelow" />, 
 		    	<xref linkend="ST_Geometry_Overleft" /></para>
@@ -7919,7 +7929,7 @@ FROM
 		  <refnamediv>
 		    <refname>&lt;&lt;</refname>
 		
-		    <refpurpose>Returns <varname>TRUE</varname> if A is strictly to the left of B.</refpurpose>
+		    <refpurpose>Returns <varname>TRUE</varname> if A's bounding box is strictly to the left of B's.</refpurpose>
 		  </refnamediv>
 		
 		  <refsynopsisdiv>
@@ -7950,12 +7960,15 @@ FROM
 		
 		    <para>The <varname>&lt;&lt;</varname> operator returns <varname>TRUE</varname> if the bounding box of geometry A
             is strickly to the left of the bounding box of geometry B.</para>
+
+			<caution><para>This operand will NOT make use of any indexes that may be available on the
+      			geometries.</para></caution>
 		  </refsection>
 		
 		  <refsection>
 		    <title>Examples</title>
 		
-		    <programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 &lt;&lt; tbl2.column2 AS overlaps
+		    <programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 &lt;&lt; tbl2.column2 AS left
 FROM 
   ( VALUES
 	(1, 'LINESTRING (1 2, 1 5)'::geometry)) AS tbl1,
@@ -7964,8 +7977,8 @@ FROM
 	(3, 'LINESTRING (6 0, 6 5)'::geometry), 
 	(4, 'LINESTRING (2 2, 5 6)'::geometry)) AS tbl2;
 
- column1 | column1 | overlaps 
----------+---------+----------
+ column1 | column1 | left 
+---------+---------+------
        1 |       2 | f
        1 |       3 | t
        1 |       4 | t
@@ -7979,11 +7992,11 @@ FROM
 		  </refsection>
 		</refentry>
 
-		<refentry id="ST_Geometry_Below">	
+		<refentry id="ST_Geometry_Below">			  
 		  <refnamediv>
 		    <refname>&lt;&lt;|</refname>
 		
-		    <refpurpose>Returns <varname>TRUE</varname> if A is strictly below B.</refpurpose>
+		    <refpurpose>Returns <varname>TRUE</varname> if A's bounding box is strictly below B's.</refpurpose>
 		  </refnamediv>
 		
 		  <refsynopsisdiv>
@@ -8014,12 +8027,15 @@ FROM
 		
 		    <para>The <varname>&lt;&lt;|</varname> operator returns <varname>TRUE</varname> if the bounding box of geometry A
             is strickly below the bounding box of geometry B.</para>
+
+			<caution><para>This operand will NOT make use of any indexes that may be available on the
+      			geometries.</para></caution>
 		  </refsection>
 		
 		  <refsection>
 		    <title>Examples</title>
 		
-		    <programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 &lt;&lt;| tbl2.column2 AS overlaps
+		    <programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 &lt;&lt;| tbl2.column2 AS below
 FROM 
   ( VALUES
 	(1, 'LINESTRING (0 0, 4 3)'::geometry)) AS tbl1,
@@ -8028,8 +8044,8 @@ FROM
 	(3, 'LINESTRING (6 1, 6 5)'::geometry), 
 	(4, 'LINESTRING (2 3, 5 6)'::geometry)) AS tbl2;
 
- column1 | column1 | overlaps 
----------+---------+----------
+ column1 | column1 | below 
+---------+---------+-------
        1 |       2 | t
        1 |       3 | f
        1 |       4 | f
@@ -8043,208 +8059,11 @@ FROM
 		  </refsection>
 		</refentry>
 		
-		<refentry id="ST_Geometry_Right">	
-		  <refnamediv>
-		    <refname>&gt;&gt;</refname>
-		
-		    <refpurpose>Returns <varname>TRUE</varname> if A is strictly to the right of B.</refpurpose>
-		  </refnamediv>
-		
-		  <refsynopsisdiv>
-		    <funcsynopsis>
-		      <funcprototype>
-		        <!-- TODO: Ideally, it would be nice if this coule be reordered to 
-		        "boolean (geometry A >> geometry B)" instead of 
-		        "boolean >>( geometry A, geometry B)" -->
-		        <funcdef>boolean <function>&gt;&gt;</function></funcdef>
-		
-		        <paramdef>
-		          <type>geometry </type>
-		
-		          <parameter>A</parameter>
-		        </paramdef>
-		
-		        <paramdef>
-		          <type>geometry </type>
-		
-		          <parameter>B</parameter>
-		        </paramdef>
-		      </funcprototype>
-		    </funcsynopsis>
-		  </refsynopsisdiv>
-		
-		  <refsection>
-		    <title>Description</title>
-		
-		    <para>The <varname>&gt;&gt;</varname> operator returns <varname>TRUE</varname> if the bounding box of geometry A
-            is strickly to the right of the bounding box of geometry B.</para>
-		  </refsection>
-		
-		  <refsection>
-		    <title>Examples</title>
-		
-		    <programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 &gt;&gt; tbl2.column2 AS overlaps
-FROM 
-  ( VALUES
-	(1, 'LINESTRING (2 3, 5 6)'::geometry)) AS tbl1,
-  ( VALUES
-	(2, 'LINESTRING (1 4, 1 7)'::geometry), 
-	(3, 'LINESTRING (6 1, 6 5)'::geometry), 
-	(4, 'LINESTRING (0 0, 4 3)'::geometry)) AS tbl2;
-
- column1 | column1 | overlaps 
----------+---------+----------
-       1 |       2 | t
-       1 |       3 | f
-       1 |       4 | f
-(3 rows)</programlisting>
-		  </refsection>
-		
-		  <refsection>
-		    <title>See Also</title>
-		
-		    <para><xref linkend="ST_Geometry_Left" />, <xref linkend="ST_Geometry_Above" />, <xref linkend="ST_Geometry_Below" /></para>
-		  </refsection>
-		</refentry>
-
-		<refentry id="ST_Geometry_Overabove">	
-		  <refnamediv>
-		    <refname>|&amp;&gt;</refname>
-		
-		    <refpurpose>Returns <varname>TRUE</varname> if A overlaps or is above B.</refpurpose>
-		  </refnamediv>
-		
-		  <refsynopsisdiv>
-		    <funcsynopsis>
-		      <funcprototype>
-		        <!-- TODO: Ideally, it would be nice if this coule be reordered to 
-		        "boolean (geometry A |&> geometry B)" instead of 
-		        "boolean |&>( geometry A, geometry B)" -->
-		        <funcdef>boolean <function>|&amp;&gt;</function></funcdef>
-		
-		        <paramdef>
-		          <type>geometry </type>
-		
-		          <parameter>A</parameter>
-		        </paramdef>
-		
-		        <paramdef>
-		          <type>geometry </type>
-		
-		          <parameter>B</parameter>
-		        </paramdef>
-		      </funcprototype>
-		    </funcsynopsis>
-		  </refsynopsisdiv>
-		
-		  <refsection>
-		    <title>Description</title>
-		
-		    <para>The <varname>|&amp;&gt;</varname> operator returns <varname>TRUE</varname> if the bounding box of geometry A
-            overlaps or is above the bounding box of geometry B, or more accurately, overlaps or is NOT below 
-            the bounding box of geometry B.</para>
-		  </refsection>
-		
-		  <refsection>
-		    <title>Examples</title>
-		
-		    <programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 |&amp;&gt; tbl2.column2 AS overlaps
-FROM 
-  ( VALUES
-	(1, 'LINESTRING(6 0, 6 4)'::geometry)) AS tbl1,
-  ( VALUES
-	(2, 'LINESTRING(0 0, 3 3)'::geometry), 
-	(3, 'LINESTRING(0 1, 0 5)'::geometry), 
-	(4, 'LINESTRING(1 2, 4 6)'::geometry)) AS tbl2;
-
- column1 | column1 | overlaps 
----------+---------+----------
-       1 |       2 | t
-       1 |       3 | f
-       1 |       4 | f
-(3 rows)</programlisting>
-		  </refsection>
-		
-		  <refsection>
-		    <title>See Also</title>
-		
-		    <para>
-		    	<xref linkend="ST_Geometry_Overlaps" />,
-		    	<xref linkend="ST_Geometry_Overright" />,
-		    	<xref linkend="ST_Geometry_Overbelow" />, 
-		    	<xref linkend="ST_Geometry_Overleft" /></para>
-		  </refsection>
-		</refentry>
-		
-		<refentry id="ST_Geometry_Above">	
-		  <refnamediv>
-		    <refname>|&gt;&gt;</refname>
-		
-		    <refpurpose>Returns <varname>TRUE</varname> if A is strictly above B.</refpurpose>
-		  </refnamediv>
-		
-		  <refsynopsisdiv>
-		    <funcsynopsis>
-		      <funcprototype>
-		        <!-- TODO: Ideally, it would be nice if this coule be reordered to 
-		        "boolean (geometry A |>> geometry B)" instead of 
-		        "boolean |>>( geometry A, geometry B)" -->
-		        <funcdef>boolean <function>|&gt;&gt;</function></funcdef>
-		
-		        <paramdef>
-		          <type>geometry </type>
-		
-		          <parameter>A</parameter>
-		        </paramdef>
-		
-		        <paramdef>
-		          <type>geometry </type>
-		
-		          <parameter>B</parameter>
-		        </paramdef>
-		      </funcprototype>
-		    </funcsynopsis>
-		  </refsynopsisdiv>
-		
-		  <refsection>
-		    <title>Description</title>
-		
-		    <para>The <varname>|&gt;&gt;</varname> operator returns <varname>TRUE</varname> if the bounding box of geometry A
-            is strickly to the right of the bounding box of geometry B.</para>
-		  </refsection>
-		
-		  <refsection>
-		    <title>Examples</title>
-		
-		    <programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 |&gt;&gt; tbl2.column2 AS overlaps
-FROM 
-  ( VALUES
-	(1, 'LINESTRING (1 4, 1 7)'::geometry)) AS tbl1,
-  ( VALUES
-	(2, 'LINESTRING (0 0, 4 2)'::geometry), 
-	(3, 'LINESTRING (6 1, 6 5)'::geometry), 
-	(4, 'LINESTRING (2 3, 5 6)'::geometry)) AS tbl2;
-
- column1 | column1 | overlaps 
----------+---------+----------
-       1 |       2 | t
-       1 |       3 | f
-       1 |       4 | f
-(3 rows)</programlisting>
-		  </refsection>
-		
-		  <refsection>
-		    <title>See Also</title>
-		
-		    <para><xref linkend="ST_Geometry_Left" />, <xref linkend="ST_Geometry_Right" />, <xref linkend="ST_Geometry_Below" /></para>
-		  </refsection>
-		</refentry>
-
 		<refentry id="ST_Geometry_EQ">	
 		  <refnamediv>
 		    <refname>&#61;</refname>
 		
-		    <refpurpose>Returns <varname>TRUE</varname> if A is the same as B.</refpurpose>
+		    <refpurpose>Returns <varname>TRUE</varname> if A's bounding box is the same as B's.</refpurpose>
 		  </refnamediv>
 		
 		  <refsynopsisdiv>
@@ -8277,13 +8096,17 @@ FROM
 		    is the same as the bounding box of geometry B.  PostgreSQL uses the =, &lt;, and &gt; operators defined for geometries to 
 		    perform internal orderings and comparison of geometries (ie. in a GROUP BY or ORDER BY clause).</para>
 		
-		    <note>
+		    <warning>
 		      <para>This is cause for a lot of confusion. When you compare geometryA =
 		      geometryB it will return true even when the geometries are clearly
 		      different IF their bounding boxes are the same. To check for true
 		      equality use <xref linkend="ST_OrderingEquals" /> or <xref
 		      linkend="ST_Equals" /></para>
-		    </note>
+		    </warning>
+
+			<caution><para>This operand will NOT make use of any indexes that may be available on the
+      			geometries.</para></caution>
+
 		  </refsection>
 		
 		  <refsection>
@@ -8320,8 +8143,422 @@ GROUP BY column1;
 		  <refsection>
 		    <title>See Also</title>
 		
-		    <para><xref linkend="ST_Equals" />, <xref linkend="ST_OrderingEquals" />
+		    <para><xref linkend="ST_Equals" />, <xref linkend="ST_OrderingEquals" />, <xref linkend="ST_Geometry_Same" />
 		    <!--, <xref linkend="ST_Geometry_LT" />, <xref linkend="ST_Geometry_GT" /> --></para>
+		  </refsection>
+		</refentry>
+		
+		<refentry id="ST_Geometry_Right">	
+		  <refnamediv>
+		    <refname>&gt;&gt;</refname>
+		
+		    <refpurpose>Returns <varname>TRUE</varname> if A's bounding box is strictly to the right of B's.</refpurpose>
+		  </refnamediv>
+		
+		  <refsynopsisdiv>
+		    <funcsynopsis>
+		      <funcprototype>
+		        <!-- TODO: Ideally, it would be nice if this coule be reordered to 
+		        "boolean (geometry A >> geometry B)" instead of 
+		        "boolean >>( geometry A, geometry B)" -->
+		        <funcdef>boolean <function>&gt;&gt;</function></funcdef>
+		
+		        <paramdef>
+		          <type>geometry </type>
+		
+		          <parameter>A</parameter>
+		        </paramdef>
+		
+		        <paramdef>
+		          <type>geometry </type>
+		
+		          <parameter>B</parameter>
+		        </paramdef>
+		      </funcprototype>
+		    </funcsynopsis>
+		  </refsynopsisdiv>
+		
+		  <refsection>
+		    <title>Description</title>
+		
+		    <para>The <varname>&gt;&gt;</varname> operator returns <varname>TRUE</varname> if the bounding box of geometry A
+            is strickly to the right of the bounding box of geometry B.</para>
+
+			<caution><para>This operand will NOT make use of any indexes that may be available on the
+      			geometries.</para></caution>
+		  </refsection>
+		
+		  <refsection>
+		    <title>Examples</title>
+		
+		    <programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 &gt;&gt; tbl2.column2 AS right
+FROM 
+  ( VALUES
+	(1, 'LINESTRING (2 3, 5 6)'::geometry)) AS tbl1,
+  ( VALUES
+	(2, 'LINESTRING (1 4, 1 7)'::geometry), 
+	(3, 'LINESTRING (6 1, 6 5)'::geometry), 
+	(4, 'LINESTRING (0 0, 4 3)'::geometry)) AS tbl2;
+
+ column1 | column1 | right 
+---------+---------+-------
+       1 |       2 | t
+       1 |       3 | f
+       1 |       4 | f
+(3 rows)</programlisting>
+		  </refsection>
+		
+		  <refsection>
+		    <title>See Also</title>
+		
+		    <para><xref linkend="ST_Geometry_Left" />, <xref linkend="ST_Geometry_Above" />, <xref linkend="ST_Geometry_Below" /></para>
+		  </refsection>
+		</refentry>
+		
+		<refentry id="ST_Geometry_Contained">	
+		  <refnamediv>
+		    <refname>@</refname>
+		
+		    <refpurpose>Returns <varname>TRUE</varname> if A's bounding box is contained by B's.</refpurpose>
+		  </refnamediv>
+		
+		  <refsynopsisdiv>
+		    <funcsynopsis>
+		      <funcprototype>
+		        <!-- TODO: Ideally, it would be nice if this coule be reordered to 
+		        "boolean (geometry A @ geometry B)" instead of 
+		        "boolean @( geometry A, geometry B)" -->
+		        <funcdef>boolean <function>~=</function></funcdef>
+		
+		        <paramdef>
+		          <type>geometry </type>
+		
+		          <parameter>A</parameter>
+		        </paramdef>
+		
+		        <paramdef>
+		          <type>geometry </type>
+		
+		          <parameter>B</parameter>
+		        </paramdef>
+		      </funcprototype>
+		    </funcsynopsis>
+		  </refsynopsisdiv>
+		
+		  <refsection>
+		    <title>Description</title>
+		
+		    <para>The <varname>@</varname> operator returns <varname>TRUE</varname> if the bounding box of geometry A is completely 
+		    contained by the bounding box of geometry B.</para>
+
+    		<note>
+    		  <para>This operand will make use of any indexes that may be available on the
+    		  geometries.</para>
+    		</note>
+		  </refsection>
+		
+		  <refsection>
+		    <title>Examples</title>
+		
+		    <programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 @ tbl2.column2 AS contained
+FROM 
+  ( VALUES
+	(1, 'LINESTRING (1 1, 3 3)'::geometry)) AS tbl1,
+  ( VALUES
+	(2, 'LINESTRING (0 0, 4 4)'::geometry), 
+	(3, 'LINESTRING (2 2, 4 4)'::geometry), 
+	(4, 'LINESTRING (1 1, 3 3)'::geometry)) AS tbl2;
+
+ column1 | column1 | contained 
+---------+---------+-----------
+       1 |       2 | t
+       1 |       3 | f
+       1 |       4 | t
+(3 rows)</programlisting>
+		  </refsection>
+		
+		  <refsection>
+		    <title>See Also</title>
+		
+		    <para><xref linkend="ST_Geometry_Contain" />, <xref linkend="ST_Geometry_Overlap" /></para>
+		  </refsection>
+		</refentry>
+	
+		<refentry id="ST_Geometry_Overabove">	
+		  <refnamediv>
+		    <refname>|&amp;&gt;</refname>
+		
+		    <refpurpose>Returns <varname>TRUE</varname> if A's bounding box overlaps or is above B's.</refpurpose>
+		  </refnamediv>
+		
+		  <refsynopsisdiv>
+		    <funcsynopsis>
+		      <funcprototype>
+		        <!-- TODO: Ideally, it would be nice if this coule be reordered to 
+		        "boolean (geometry A |&> geometry B)" instead of 
+		        "boolean |&>( geometry A, geometry B)" -->
+		        <funcdef>boolean <function>|&amp;&gt;</function></funcdef>
+		
+		        <paramdef>
+		          <type>geometry </type>
+		
+		          <parameter>A</parameter>
+		        </paramdef>
+		
+		        <paramdef>
+		          <type>geometry </type>
+		
+		          <parameter>B</parameter>
+		        </paramdef>
+		      </funcprototype>
+		    </funcsynopsis>
+		  </refsynopsisdiv>
+		
+		  <refsection>
+		    <title>Description</title>
+		
+		    <para>The <varname>|&amp;&gt;</varname> operator returns <varname>TRUE</varname> if the bounding box of geometry A
+            overlaps or is above the bounding box of geometry B, or more accurately, overlaps or is NOT below 
+            the bounding box of geometry B.</para>
+
+			<caution><para>This operand will NOT make use of any indexes that may be available on the
+      			geometries.</para></caution>
+		  </refsection>
+		
+		  <refsection>
+		    <title>Examples</title>
+		
+		    <programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 |&amp;&gt; tbl2.column2 AS overabove
+FROM 
+  ( VALUES
+	(1, 'LINESTRING(6 0, 6 4)'::geometry)) AS tbl1,
+  ( VALUES
+	(2, 'LINESTRING(0 0, 3 3)'::geometry), 
+	(3, 'LINESTRING(0 1, 0 5)'::geometry), 
+	(4, 'LINESTRING(1 2, 4 6)'::geometry)) AS tbl2;
+
+ column1 | column1 | overabove 
+---------+---------+-----------
+       1 |       2 | t
+       1 |       3 | f
+       1 |       4 | f
+(3 rows)</programlisting>
+		  </refsection>
+		
+		  <refsection>
+		    <title>See Also</title>
+		
+		    <para>
+		    	<xref linkend="ST_Geometry_Overlap" />,
+		    	<xref linkend="ST_Geometry_Overright" />,
+		    	<xref linkend="ST_Geometry_Overbelow" />, 
+		    	<xref linkend="ST_Geometry_Overleft" /></para>
+		  </refsection>
+		</refentry>
+		
+		<refentry id="ST_Geometry_Above">	
+		  <refnamediv>
+		    <refname>|&gt;&gt;</refname>
+		
+		    <refpurpose>Returns <varname>TRUE</varname> if A's bounding box is strictly above B's.</refpurpose>
+		  </refnamediv>
+		
+		  <refsynopsisdiv>
+		    <funcsynopsis>
+		      <funcprototype>
+		        <!-- TODO: Ideally, it would be nice if this coule be reordered to 
+		        "boolean (geometry A |>> geometry B)" instead of 
+		        "boolean |>>( geometry A, geometry B)" -->
+		        <funcdef>boolean <function>|&gt;&gt;</function></funcdef>
+		
+		        <paramdef>
+		          <type>geometry </type>
+		
+		          <parameter>A</parameter>
+		        </paramdef>
+		
+		        <paramdef>
+		          <type>geometry </type>
+		
+		          <parameter>B</parameter>
+		        </paramdef>
+		      </funcprototype>
+		    </funcsynopsis>
+		  </refsynopsisdiv>
+		
+		  <refsection>
+		    <title>Description</title>
+		
+		    <para>The <varname>|&gt;&gt;</varname> operator returns <varname>TRUE</varname> if the bounding box of geometry A
+            is strickly to the right of the bounding box of geometry B.</para>
+
+			<caution><para>This operand will NOT make use of any indexes that may be available on the
+      			geometries.</para></caution>
+		  </refsection>
+		
+		  <refsection>
+		    <title>Examples</title>
+		
+		    <programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 |&gt;&gt; tbl2.column2 AS above
+FROM 
+  ( VALUES
+	(1, 'LINESTRING (1 4, 1 7)'::geometry)) AS tbl1,
+  ( VALUES
+	(2, 'LINESTRING (0 0, 4 2)'::geometry), 
+	(3, 'LINESTRING (6 1, 6 5)'::geometry), 
+	(4, 'LINESTRING (2 3, 5 6)'::geometry)) AS tbl2;
+
+ column1 | column1 | above 
+---------+---------+-------
+       1 |       2 | t
+       1 |       3 | f
+       1 |       4 | f
+(3 rows)</programlisting>
+		  </refsection>
+		
+		  <refsection>
+		    <title>See Also</title>
+		
+		    <para><xref linkend="ST_Geometry_Left" />, <xref linkend="ST_Geometry_Right" />, <xref linkend="ST_Geometry_Below" /></para>
+		  </refsection>
+		</refentry>
+
+		<refentry id="ST_Geometry_Contain">	
+		  <refnamediv>
+		    <refname>~</refname>
+		
+		    <refpurpose>Returns <varname>TRUE</varname> if A's bounding box contains B's.</refpurpose>
+		  </refnamediv>
+		
+		  <refsynopsisdiv>
+		    <funcsynopsis>
+		      <funcprototype>
+		        <!-- TODO: Ideally, it would be nice if this coule be reordered to 
+		        "boolean (geometry A ~ geometry B)" instead of 
+		        "boolean ~( geometry A, geometry B)" -->
+		        <funcdef>boolean <function>~</function></funcdef>
+		
+		        <paramdef>
+		          <type>geometry </type>
+		
+		          <parameter>A</parameter>
+		        </paramdef>
+		
+		        <paramdef>
+		          <type>geometry </type>
+		
+		          <parameter>B</parameter>
+		        </paramdef>
+		      </funcprototype>
+		    </funcsynopsis>
+		  </refsynopsisdiv>
+		
+		  <refsection>
+		    <title>Description</title>
+		
+		    <para>The <varname>~</varname> operator returns <varname>TRUE</varname> if the bounding box of geometry A completely 
+		    contains the bounding box of geometry B.</para>
+
+    		<note>
+    		  <para>This operant will make use of any indexes that may be available on the
+    		  geometries.</para>
+    		</note>
+		  </refsection>
+		
+		  <refsection>
+		    <title>Examples</title>
+		
+		    <programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 ~ tbl2.column2 AS contains
+FROM 
+  ( VALUES
+	(1, 'LINESTRING (0 0, 3 3)'::geometry)) AS tbl1,
+  ( VALUES
+	(2, 'LINESTRING (0 0, 4 4)'::geometry), 
+	(3, 'LINESTRING (1 1, 2 2)'::geometry), 
+	(4, 'LINESTRING (0 0, 3 3)'::geometry)) AS tbl2;
+
+ column1 | column1 | contains 
+---------+---------+----------
+       1 |       2 | f
+       1 |       3 | t
+       1 |       4 | t
+(3 rows)</programlisting>
+		  </refsection>
+		
+		  <refsection>
+		    <title>See Also</title>
+		
+		    <para><xref linkend="ST_Geometry_Contained" />, <xref linkend="ST_Geometry_Overlap" /></para>
+		  </refsection>
+		</refentry>
+	
+		<refentry id="ST_Geometry_Same">	
+		  <refnamediv>
+		    <refname>~=</refname>
+		
+		    <refpurpose>Returns <varname>TRUE</varname> if the geometry A is the same as B.</refpurpose>
+		  </refnamediv>
+		
+		  <refsynopsisdiv>
+		    <funcsynopsis>
+		      <funcprototype>
+		        <!-- TODO: Ideally, it would be nice if this coule be reordered to 
+		        "boolean (geometry A ~= geometry B)" instead of 
+		        "boolean ~=( geometry A, geometry B)" -->
+		        <funcdef>boolean <function>~=</function></funcdef>
+		
+		        <paramdef>
+		          <type>geometry </type>
+		
+		          <parameter>A</parameter>
+		        </paramdef>
+		
+		        <paramdef>
+		          <type>geometry </type>
+		
+		          <parameter>B</parameter>
+		        </paramdef>
+		      </funcprototype>
+		    </funcsynopsis>
+		  </refsynopsisdiv>
+		
+		  <refsection>
+		    <title>Description</title>
+		
+		    <para>The <varname>~=</varname> operator returns <varname>TRUE</varname> if geometry A is the same as geometry B.
+		    It tests actual geometric equality of two features.  So if A and B are the same feature, vertex-by-vertex, the 
+		    operator returns <varname>TRUE</varname>.</para>
+
+    		<note>
+    		  <para>This operand will make use of any indexes that may be available on the
+    		  geometries.</para>
+    		</note>
+		  </refsection>
+		
+		  <refsection>
+		    <title>Examples</title>
+		
+		    <programlisting>SELECT tbl1.column1, tbl2.column1, tbl1.column2 ~= tbl2.column2 AS same
+FROM 
+  ( VALUES
+	(1, 'LINESTRING (0 0, 2 2)'::geometry)) AS tbl1,
+  ( VALUES
+	(2, 'LINESTRING (0 0, 1 1, 2 2)'::geometry), 
+	(3, 'LINESTRING (2 2, 0 0)'::geometry), 
+	(4, 'LINESTRING (0 0, 2 2)'::geometry)) AS tbl2;
+
+ column1 | column1 | same 
+---------+---------+------
+       1 |       2 | f
+       1 |       3 | f
+       1 |       4 | t
+(3 rows)</programlisting>
+		  </refsection>
+		
+		  <refsection>
+		    <title>See Also</title>
+		
+		    <para><xref linkend="ST_Equals" />, <xref linkend="ST_OrderingEquals" />, <xref linkend="ST_Geometry_EQ" /></para>
 		  </refsection>
 		</refentry>
 	
