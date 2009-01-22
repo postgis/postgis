@@ -7638,7 +7638,7 @@ F000000000000000000000000000000000000000000000000');
 	
   </sect1>
   
-  <sect1>
+  <sect1 id="Operators">
 	<title>Operators</title>
 		<refentry id="ST_Geometry_Overlaps">	
 		  <refnamediv>
