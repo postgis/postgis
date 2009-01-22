@@ -4042,7 +4042,7 @@ CREATE AGGREGATE ST_MemUnion (
 	stype = geometry
 	);
 
-#if 0
+#if 1
 -- Availability: 1.4.0
 CREATE FUNCTION pgis_geometry_accum_transfn(int, geometry)
     RETURNS int
@@ -4063,7 +4063,7 @@ CREATE AGGREGATE ST_GeometryArray (
 
 UPDATE pg_aggregate SET aggtranstype = 2281 WHERE aggfnoid = 'st_geometryarray'::regproc;
 UPDATE pg_proc SET prorettype = 2281 WHERE oid = 'pgis_geometry_accum_transfn'::regproc;
-UPDATE pg_proc SET proargtypes = ('2281 ' || proargtypes[1]::text)::oidvector WHERE oid = 'pgis_geometry_accum_transfn'::regproc;
+UPDATE pg_proc SET proargtypes = oidvectorin(textout('2281 ' || textin(oidout(proargtypes[1])))) WHERE oid = 'pgis_geometry_accum_transfn'::regproc;
 UPDATE pg_proc SET proargtypes = '2281' WHERE oid = 'pgis_geometry_accum_finalfn'::regproc;
 #endif
 
