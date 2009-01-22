@@ -46,8 +46,6 @@ Datum difference(PG_FUNCTION_ARGS);
 Datum boundary(PG_FUNCTION_ARGS);
 Datum symdifference(PG_FUNCTION_ARGS);
 Datum geomunion(PG_FUNCTION_ARGS);
-Datum unite_garray(PG_FUNCTION_ARGS);
-Datum unite_garray_fast(PG_FUNCTION_ARGS);
 Datum issimple(PG_FUNCTION_ARGS);
 Datum isring(PG_FUNCTION_ARGS);
 Datum geomequals(PG_FUNCTION_ARGS);
@@ -59,6 +57,10 @@ Datum polygonize_garray(PG_FUNCTION_ARGS);
 Datum LWGEOM_buildarea(PG_FUNCTION_ARGS); /* TODO: rename to match others */
 Datum linemerge(PG_FUNCTION_ARGS);
 Datum coveredby(PG_FUNCTION_ARGS);
+
+Datum pgis_union_geometry_array_old(PG_FUNCTION_ARGS);
+Datum pgis_union_geometry_array(PG_FUNCTION_ARGS);
+
 
 /* TODO: move these to a lwgeom_functions_analytic.h */
 int point_in_polygon_rtree(RTREE_NODE **root, int ringCount, LWPOINT *point);
@@ -89,8 +91,8 @@ Datum postgis_geos_version(PG_FUNCTION_ARGS)
  * versions of them and return PGIS-converted version back.
  * Changing combination order *might* speed up performance.
  */
-PG_FUNCTION_INFO_V1(unite_garray_fast);
-Datum unite_garray_fast(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(pgis_union_geometry_array);
+Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 {
 	Datum datum;
 	ArrayType *array;
@@ -292,8 +294,8 @@ Datum unite_garray_fast(PG_FUNCTION_ARGS)
 
 }
 
-PG_FUNCTION_INFO_V1(unite_garray);
-Datum unite_garray(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(pgis_union_geometry_array_old);
+Datum pgis_union_geometry_array_old(PG_FUNCTION_ARGS)
 {
 	Datum datum;
 	ArrayType *array;

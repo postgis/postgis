@@ -1522,98 +1522,6 @@ CREATEFUNCTION ST_multi(geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_multi'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
 
--- Deprecation in 1.2.3
-CREATEFUNCTION collector(geometry, geometry) 
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_collect'
-	LANGUAGE 'C' _IMMUTABLE;
-
--- Availability: 1.2.2
-CREATEFUNCTION ST_collector(geometry, geometry) 
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_collect'
-	LANGUAGE 'C' _IMMUTABLE;
-
--- Deprecation in 1.2.3
-CREATEFUNCTION collect(geometry, geometry) 
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_collect'
-	LANGUAGE 'C' _IMMUTABLE;
-
--- Availability: 1.2.2
-CREATEFUNCTION ST_collect(geometry, geometry) 
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_collect'
-	LANGUAGE 'C' _IMMUTABLE;
-
--- Deprecation in 1.2.3
-CREATE AGGREGATE memcollect(
-	sfunc = ST_collect,
-	basetype = geometry,
-	stype = geometry
-	);
-
--- Availability: 1.2.2
-CREATE AGGREGATE ST_memcollect(
-	sfunc = ST_collect,
-	basetype = geometry,
-	stype = geometry
-	);
-
--- Deprecation in 1.2.3
-CREATEFUNCTION geom_accum (geometry[],geometry)
-	RETURNS geometry[]
-	AS 'MODULE_PATHNAME', 'LWGEOM_accum'
-	LANGUAGE 'C' _IMMUTABLE;
-
--- Availability: 1.2.2
-CREATEFUNCTION ST_geom_accum (geometry[],geometry)
-	RETURNS geometry[]
-	AS 'MODULE_PATHNAME', 'LWGEOM_accum'
-	LANGUAGE 'C' _IMMUTABLE;
-
--- Deprecation in 1.2.3
-CREATE AGGREGATE accum (
-	sfunc = ST_geom_accum,
-	basetype = geometry,
-	stype = geometry[]
-	);
-
--- Availability: 1.2.2
-CREATE AGGREGATE ST_accum (
-	sfunc = ST_geom_accum,
-	basetype = geometry,
-	stype = geometry[]
-	);
-
--- Deprecation in 1.2.3
-CREATEFUNCTION collect_garray (geometry[])
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_collect_garray'
-	LANGUAGE 'C' _IMMUTABLE_STRICT;
-
--- Availability: 1.2.2
-CREATEFUNCTION ST_collect_garray (geometry[])
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_collect_garray'
-	LANGUAGE 'C' _IMMUTABLE_STRICT;
-
--- Deprecation in 1.2.3
-CREATE AGGREGATE collect (
-	sfunc = ST_geom_accum,
-	basetype = geometry,
-	stype = geometry[],
-	finalfunc = ST_collect_garray
-	);
-
-
--- Availability: 1.2.2
-CREATE AGGREGATE ST_collect (
-	sfunc = ST_geom_accum,
-	basetype = geometry,
-	stype = geometry[],
-	finalfunc = ST_collect_garray
-	);
 
 -- Deprecation in 1.2.3
 CREATEFUNCTION expand(box3d,float8)
@@ -1919,6 +1827,12 @@ CREATEFUNCTION ST_MakeLine_GArray (geometry[])
 	AS 'MODULE_PATHNAME', 'LWGEOM_makeline_garray'
 	LANGUAGE 'C' _IMMUTABLE_STRICT;
 
+-- Availability: 1.4.0
+CREATEFUNCTION ST_MakeLine (geometry[])
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_makeline_garray'
+	LANGUAGE 'C' _IMMUTABLE_STRICT;
+
 -- Deprecation in 1.2.3
 CREATEFUNCTION LineFromMultiPoint(geometry)
 	RETURNS geometry
@@ -1991,21 +1905,6 @@ CREATEFUNCTION ST_SetPoint(geometry, integer, geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_setpoint_linestring'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (iscachable,isstrict);
 
--- Deprecation in 1.2.3
-CREATE AGGREGATE makeline (
-	sfunc = geom_accum,
-	basetype = geometry,
-	stype = geometry[],
-	finalfunc = makeline_garray
-	);
-
--- Availability: 1.2.2
-CREATE AGGREGATE ST_MakeLine (
-	sfunc = geom_accum,
-	basetype = geometry,
-	stype = geometry[],
-	finalfunc = ST_makeline_garray
-	);
 
 -- Deprecation in 1.2.3
 CREATEFUNCTION MakePolygon(geometry, geometry[])
@@ -2055,6 +1954,12 @@ CREATEFUNCTION ST_Polygonize_GArray (geometry[])
 	AS 'MODULE_PATHNAME', 'polygonize_garray'
 	LANGUAGE 'C' _IMMUTABLE_STRICT;
 
+-- Availability: 1.4.0
+CREATEFUNCTION ST_Polygonize (geometry[])
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'polygonize_garray'
+	LANGUAGE 'C' _IMMUTABLE_STRICT;
+
 -- Deprecation in 1.2.3
 CREATEFUNCTION LineMerge(geometry)
 	RETURNS geometry
@@ -2067,21 +1972,6 @@ CREATEFUNCTION ST_LineMerge(geometry)
 	AS 'MODULE_PATHNAME', 'linemerge'
 	LANGUAGE 'C' _IMMUTABLE_STRICT;
 
--- Deprecation in 1.2.3
-CREATE AGGREGATE Polygonize (
-	sfunc = geom_accum,
-	basetype = geometry,
-	stype = geometry[],
-	finalfunc = polygonize_garray
-	);
-
--- Availability: 1.2.2
-CREATE AGGREGATE ST_Polygonize (
-	sfunc = ST_geom_accum,
-	basetype = geometry,
-	stype = geometry[],
-	finalfunc = ST_polygonize_garray
-	);
 
 CREATE TYPE geometry_dump AS (path integer[], geom geometry);
 
@@ -4028,6 +3918,80 @@ CREATEFUNCTION ST_Union(geometry,geometry)
     AS 'MODULE_PATHNAME','geomunion'
     LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+--------------------------------------------------------------------------------
+-- Aggregates and their supporting functions
+--------------------------------------------------------------------------------
+
+-- Deprecation in 1.2.3
+CREATEFUNCTION collector(geometry, geometry) 
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_collect'
+	LANGUAGE 'C' _IMMUTABLE;
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_collector(geometry, geometry) 
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_collect'
+	LANGUAGE 'C' _IMMUTABLE;
+
+-- Deprecation in 1.2.3
+CREATEFUNCTION collect(geometry, geometry) 
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_collect'
+	LANGUAGE 'C' _IMMUTABLE;
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_collect(geometry, geometry) 
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_collect'
+	LANGUAGE 'C' _IMMUTABLE;
+
+-- Deprecation in 1.2.3
+CREATE AGGREGATE memcollect(
+	sfunc = ST_collect,
+	basetype = geometry,
+	stype = geometry
+	);
+
+-- Availability: 1.2.2
+CREATE AGGREGATE ST_memcollect(
+	sfunc = ST_collect,
+	basetype = geometry,
+	stype = geometry
+	);
+
+-- Deprecation in 1.2.3
+CREATEFUNCTION geom_accum (geometry[],geometry)
+	RETURNS geometry[]
+	AS 'MODULE_PATHNAME', 'LWGEOM_accum'
+	LANGUAGE 'C' _IMMUTABLE;
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_geom_accum (geometry[],geometry)
+	RETURNS geometry[]
+	AS 'MODULE_PATHNAME', 'LWGEOM_accum'
+	LANGUAGE 'C' _IMMUTABLE;
+
+
+
+-- Deprecation in 1.2.3
+CREATEFUNCTION collect_garray (geometry[])
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_collect_garray'
+	LANGUAGE 'C' _IMMUTABLE_STRICT;
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_collect_garray (geometry[])
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_collect_garray'
+	LANGUAGE 'C' _IMMUTABLE_STRICT;
+
+-- Availability: 1.2.2
+CREATEFUNCTION ST_collect (geometry[])
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_collect_garray'
+	LANGUAGE 'C' _IMMUTABLE_STRICT;
+
 -- Deprecation in 1.2.3
 CREATE AGGREGATE MemGeomUnion (
 	basetype = geometry,
@@ -4042,68 +4006,183 @@ CREATE AGGREGATE ST_MemUnion (
 	stype = geometry
 	);
 
+--
+-- pgis_abs
+-- Container type to hold the ArrayBuildState pointer as it passes through
+-- the geometry array accumulation aggregate.
+--
+CREATE FUNCTION pgis_abs_in(cstring)
+    RETURNS pgis_abs
+    AS 'MODULE_PATHNAME'
+    LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE FUNCTION pgis_abs_out(pgis_abs)
+    RETURNS cstring
+    AS 'MODULE_PATHNAME'
+    LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE TYPE pgis_abs (
+   internallength = 8, 
+   input = pgis_abs_in,
+   output = pgis_abs_out,
+   alignment = double
+);
+
 -- Availability: 1.4.0
-CREATE FUNCTION pgis_geometry_accum_transfn(int, geometry)
-    RETURNS int
+CREATE FUNCTION pgis_geometry_accum_transfn(pgis_abs, geometry)
+    RETURNS pgis_abs
     AS 'MODULE_PATHNAME' LANGUAGE 'C';
     
 -- Availability: 1.4.0
-CREATE FUNCTION pgis_geometry_accum_finalfn(int)
+CREATE FUNCTION pgis_geometry_accum_finalfn(pgis_abs)
     RETURNS geometry[]
     AS 'MODULE_PATHNAME' LANGUAGE 'C';
 
 -- Availability: 1.4.0
-CREATE AGGREGATE ST_GeometryArray (
+CREATE FUNCTION pgis_geometry_union_finalfn(pgis_abs)
+    RETURNS geometry
+    AS 'MODULE_PATHNAME' LANGUAGE 'C';
+    
+-- Availability: 1.4.0
+CREATE FUNCTION pgis_geometry_collect_finalfn(pgis_abs)
+    RETURNS geometry
+    AS 'MODULE_PATHNAME' LANGUAGE 'C';
+    
+-- Availability: 1.4.0
+CREATE FUNCTION pgis_geometry_polygonize_finalfn(pgis_abs)
+    RETURNS geometry
+    AS 'MODULE_PATHNAME' LANGUAGE 'C';
+    
+-- Availability: 1.4.0
+CREATE FUNCTION pgis_geometry_makeline_finalfn(pgis_abs)
+    RETURNS geometry
+    AS 'MODULE_PATHNAME' LANGUAGE 'C';
+    
+-- Deprecation in: 1.2.3
+CREATE AGGREGATE accum (
     BASETYPE = geometry,
     SFUNC = pgis_geometry_accum_transfn,
-    STYPE = int,
+    STYPE = pgis_abs,
     FINALFUNC = pgis_geometry_accum_finalfn
     );
 
-UPDATE pg_aggregate SET aggtranstype = 2281 WHERE aggfnoid = 'st_geometryarray'::regproc;
-UPDATE pg_proc SET prorettype = 2281 WHERE oid = 'pgis_geometry_accum_transfn'::regproc;
-UPDATE pg_proc SET proargtypes = oidvectorin(textout('2281 ' || textin(oidout(proargtypes[1])))) WHERE oid = 'pgis_geometry_accum_transfn'::regproc;
-UPDATE pg_proc SET proargtypes = '2281' WHERE oid = 'pgis_geometry_accum_finalfn'::regproc;
+-- Availability: 1.2.2
+CREATE AGGREGATE ST_Accum (
+    BASETYPE = geometry,
+    SFUNC = pgis_geometry_accum_transfn,
+    STYPE = pgis_abs,
+    FINALFUNC = pgis_geometry_accum_finalfn
+    );
+
+-- TO BE REMOVED BEFORE RELEASE
+CREATE AGGREGATE accum_old (
+	sfunc = ST_geom_accum,
+	basetype = geometry,
+	stype = geometry[]
+	);
+
+-- TO BE REMOVED BEFORE RELEASE
+CREATE AGGREGATE ST_accum_old (
+	sfunc = ST_geom_accum,
+	basetype = geometry,
+	stype = geometry[]
+	);
 
 -- Deprecation in 1.2.3
 CREATEFUNCTION unite_garray (geometry[])
 	RETURNS geometry
-        AS 'MODULE_PATHNAME'
+        AS 'MODULE_PATHNAME', 'pgis_union_geometry_array_old'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable); 
 
--- Availability: 1.2.2
+-- Deprecation in 1.4.0
 CREATEFUNCTION ST_unite_garray (geometry[])
 	RETURNS geometry
-	AS 'MODULE_PATHNAME','unite_garray'
+	AS 'MODULE_PATHNAME','pgis_union_geometry_array_old'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable); 
 
-CREATEFUNCTION _unite_garray_fast (geometry[])
+CREATEFUNCTION ST_Union (geometry[])
 	RETURNS geometry
-	AS 'MODULE_PATHNAME','unite_garray_fast'
+	AS 'MODULE_PATHNAME','pgis_union_geometry_array'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable); 
 
-
--- Deprecation in 1.2.3
-CREATE AGGREGATE GeomUnion (
+-- TO BE REMOVED BEFORE RELEASE
+CREATE AGGREGATE GeomUnion_Old (
 	sfunc = geom_accum,
 	basetype = geometry,
 	stype = geometry[],
 	finalfunc = ST_unite_garray
 	);
 
--- Availability: 1.2.2
-CREATE AGGREGATE ST_Union (
+-- TO BE REMOVED BEFORE RELEASE
+CREATE AGGREGATE ST_Union_Old (
 	sfunc = ST_geom_accum,
 	basetype = geometry,
 	stype = geometry[],
 	finalfunc = ST_unite_garray
 	);
-CREATE AGGREGATE ST_Union_Fast (
-	sfunc = ST_geom_accum,
-	basetype = geometry,
-	stype = geometry[],
-	finalfunc = _unite_garray_fast
+	
+CREATE AGGREGATE ST_Union (
+    BASETYPE = geometry,
+    SFUNC = pgis_geometry_accum_transfn,
+    STYPE = pgis_abs,
+	FINALFUNC = pgis_geometry_union_finalfn
 	);
+
+-- Deprecation in 1.2.3
+CREATE AGGREGATE collect (
+    BASETYPE = geometry,
+    SFUNC = pgis_geometry_accum_transfn,
+    STYPE = pgis_abs,
+	FINALFUNC = pgis_geometry_collect_finalfn
+	);
+
+-- Availability: 1.2.2
+CREATE AGGREGATE ST_Collect (
+    BASETYPE = geometry,
+    SFUNC = pgis_geometry_accum_transfn,
+    STYPE = pgis_abs,
+	FINALFUNC = pgis_geometry_collect_finalfn
+	);
+
+-- Deprecation in 1.2.3
+CREATE AGGREGATE Polygonize (
+    BASETYPE = geometry,
+    SFUNC = pgis_geometry_accum_transfn,
+    STYPE = pgis_abs,
+	FINALFUNC = pgis_geometry_polygonize_finalfn
+--	finalfunc = polygonize_garray
+	);
+
+-- Availability: 1.2.2
+CREATE AGGREGATE ST_Polygonize (
+    BASETYPE = geometry,
+    SFUNC = pgis_geometry_accum_transfn,
+    STYPE = pgis_abs,
+	FINALFUNC = pgis_geometry_polygonize_finalfn
+--	finalfunc = polygonize_garray
+	);
+
+-- Deprecation in 1.2.3
+CREATE AGGREGATE makeline (
+    BASETYPE = geometry,
+    SFUNC = pgis_geometry_accum_transfn,
+    STYPE = pgis_abs,
+	FINALFUNC = pgis_geometry_makeline_finalfn
+--	finalfunc = makeline_garray
+	);
+
+-- Availability: 1.2.2
+CREATE AGGREGATE ST_MakeLine (
+    BASETYPE = geometry,
+    SFUNC = pgis_geometry_accum_transfn,
+    STYPE = pgis_abs,
+	FINALFUNC = pgis_geometry_makeline_finalfn
+--	finalfunc = ST_makeline_garray
+	);
+
+
+
+--------------------------------------------------------------------------------
 
 -- Deprecation in 1.2.3
 CREATEFUNCTION relate(geometry,geometry)
