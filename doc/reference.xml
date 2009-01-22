@@ -159,15 +159,6 @@
 
       <variablelist>
         <varlistentry>
-          <term>A |&gt;&gt; B</term>
-
-          <listitem>
-            <para>The "|&gt;&gt;" operator returns true if A's bounding box is
-            strictly above B's bounding box.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
           <term>A ~= B</term>
 
           <listitem>
