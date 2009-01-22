@@ -784,8 +784,7 @@ int DBFReadDeleted(DBFHandle psDBF, int hEntity)
   pabyRec = (unsigned char *) psDBF->pszCurrentRecord;
 
   /* 0x20 => not deleted, 0x24 => deleted */
-  return *pabyRec == 0x20 ? 1 : 0;
-
+  return *pabyRec == 0x20 ? 0 : 1;
 }
 
 /************************************************************************/

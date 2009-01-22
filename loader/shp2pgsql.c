@@ -674,9 +674,9 @@ LoadData(void)
 		/* transaction stuff done */
 
     /*skip the record if it has been deleted*/
-    if(readshape != 1 && DBFReadDeleted(hDBFHandle, j)) {
-      continue; 
-    }
+		if(readshape != 1 && DBFReadDeleted(hDBFHandle, j)) {
+		  continue; 
+		}
 
 
 		/*open the next object */
