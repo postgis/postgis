@@ -238,7 +238,7 @@ the_geom IS NULL)
         <title>Description</title>
 
         <para>Removes a geometry column from a spatial table. Note that
-        schema_name will need to match the f_schema_name field of the table's
+        schema_name will need to match the f_table_schema field of the table's
         row in the geometry_columns table.</para>
 
         <para>
