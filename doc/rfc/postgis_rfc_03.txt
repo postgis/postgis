@@ -1,0 +1,5 @@
+The functions listed in 
+postgis_rfc_03_sheet.txt
+should be updated per the instructions in the sheet.
+
+Functions that are PUBLIC/KEEP should be documented.
