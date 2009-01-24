@@ -20,6 +20,7 @@
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
 
+/* Local prototypes */
 Datum pgis_geometry_accum_transfn(PG_FUNCTION_ARGS);
 Datum pgis_geometry_accum_finalfn(PG_FUNCTION_ARGS);
 Datum pgis_geometry_union_finalfn(PG_FUNCTION_ARGS);
@@ -122,6 +123,10 @@ pgis_geometry_accum_transfn(PG_FUNCTION_ARGS)
 
 Datum pgis_accum_finalfn(pgis_abs *p, MemoryContext mctx, FunctionCallInfo fcinfo);
 
+/*
+** The final function rescues the built array from the side memory context
+** using the PostgreSQL built-in function makeMdArrayResult
+*/
 Datum 
 pgis_accum_finalfn(pgis_abs *p, MemoryContext mctx, FunctionCallInfo fcinfo)
 {
@@ -151,6 +156,9 @@ pgis_accum_finalfn(pgis_abs *p, MemoryContext mctx, FunctionCallInfo fcinfo)
 	return result;
 }
 
+/*
+** The "accum" final function just returns the geometry[]
+*/
 PG_FUNCTION_INFO_V1(pgis_geometry_accum_finalfn);
 Datum
 pgis_geometry_accum_finalfn(PG_FUNCTION_ARGS)
@@ -169,6 +177,10 @@ pgis_geometry_accum_finalfn(PG_FUNCTION_ARGS)
 
 }
 
+/*
+** The "accum" final function passes the geometry[] to a union 
+** conversion before returning the result.
+*/
 PG_FUNCTION_INFO_V1(pgis_geometry_union_finalfn);
 Datum
 pgis_geometry_union_finalfn(PG_FUNCTION_ARGS)
@@ -188,6 +200,10 @@ pgis_geometry_union_finalfn(PG_FUNCTION_ARGS)
 	PG_RETURN_DATUM(result);
 }
 
+/*
+** The "collect" final function passes the geometry[] to a geometrycollection 
+** conversion before returning the result.
+*/
 PG_FUNCTION_INFO_V1(pgis_geometry_collect_finalfn);
 Datum
 pgis_geometry_collect_finalfn(PG_FUNCTION_ARGS)
@@ -207,6 +223,10 @@ pgis_geometry_collect_finalfn(PG_FUNCTION_ARGS)
 	PG_RETURN_DATUM(result);
 }
 
+/*
+** The "polygonize" final function passes the geometry[] to a polygonization
+** before returning the result.
+*/
 PG_FUNCTION_INFO_V1(pgis_geometry_polygonize_finalfn);
 Datum
 pgis_geometry_polygonize_finalfn(PG_FUNCTION_ARGS)
@@ -226,6 +246,10 @@ pgis_geometry_polygonize_finalfn(PG_FUNCTION_ARGS)
 	PG_RETURN_DATUM(result);
 }
 
+/*
+** The "makeline" final function passes the geometry[] to a line builder
+** before returning the result.
+*/
 PG_FUNCTION_INFO_V1(pgis_geometry_makeline_finalfn);
 Datum
 pgis_geometry_makeline_finalfn(PG_FUNCTION_ARGS)

@@ -139,26 +139,26 @@ CREATE TYPE geometry (
 
 -- Availability: 1.1.2
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION Affine(geometry,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8)
+CREATEFUNCTION Affine(geometry,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_affine'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; 
 
 -- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_Affine(geometry,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8)
+CREATEFUNCTION ST_Affine(geometry,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_affine'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; 
 
 -- Availability: 1.1.2
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION Affine(geometry,float8,float8,float8,float8,float8,float8)
+CREATEFUNCTION Affine(geometry,float8,float8,float8,float8,float8,float8)
 	RETURNS geometry
 	AS 'SELECT affine($1,  $2, $3, 0,  $4, $5, 0,  0, 0, 1,  $6, $7, 0)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; 
 
 -- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_Affine(geometry,float8,float8,float8,float8,float8,float8)
+CREATEFUNCTION ST_Affine(geometry,float8,float8,float8,float8,float8,float8)
 	RETURNS geometry
 	AS 'SELECT affine($1,  $2, $3, 0,  $4, $5, 0,  0, 0, 1,  $6, $7, 0)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; 
@@ -3827,7 +3827,7 @@ CREATEFUNCTION _ST_LineCrossingDirection(geometry, geometry)
     LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Availability: 1.4.0
-CREATE OR REPLACE FUNCTION ST_LineCrossingDirection(geometry, geometry)
+CREATEFUNCTION ST_LineCrossingDirection(geometry, geometry)
   RETURNS integer AS 
   $$ SELECT CASE WHEN NOT $1 && $2 THEN 0 ELSE _ST_LineCrossingDirection($1,$2) END $$
   LANGUAGE 'sql' IMMUTABLE;
@@ -5934,7 +5934,7 @@ CREATEFUNCTION ST_GeomCollFromWKB(bytea)
 -- Also, we profit from plpgsql to RAISE exceptions.
 --
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION BdPolyFromText(text, integer)
+CREATEFUNCTION BdPolyFromText(text, integer)
 RETURNS geometry
 AS $$ 
 DECLARE
@@ -5963,7 +5963,7 @@ $$
 LANGUAGE 'plpgsql' _IMMUTABLE_STRICT; 
 
 -- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_BdPolyFromText(text, integer)
+CREATEFUNCTION ST_BdPolyFromText(text, integer)
 RETURNS geometry
 AS $$ 
 DECLARE
