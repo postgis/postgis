@@ -287,7 +287,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 	
 	if ( result == NULL )
 	{
-		elog(ERROR, "GEOS2POSTGIS returned an error");
+		elog(ERROR, "Union returned a NULL geometry.");
 		PG_RETURN_NULL(); /* never get here */
 	}
 
