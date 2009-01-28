@@ -98,8 +98,11 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 	ArrayType *array;
 	int is3d = 0;
 	int nelems, i;
-	PG_LWGEOM *result, *pgis_geom;
-	GEOSGeom g1, g2, geos_result=NULL;
+	PG_LWGEOM *result = NULL;
+	PG_LWGEOM *pgis_geom = NULL;
+	GEOSGeom g1 = NULL;
+	GEOSGeom g2 = NULL;
+	GEOSGeom geos_result=NULL;
 	int SRID=-1;
 	size_t offset = 0;
 #if POSTGIS_DEBUG_LEVEL > 0
@@ -218,14 +221,12 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 		** then pass that into cascaded union.
 		*/
 		g1 = GEOSGeom_createCollection(GEOS_MULTIPOLYGON, geoms, curgeom);
-		/* TODO protect against null return */
-		g2 = GEOSUnionCascaded(g1);
-		/* TODO protect against null return */
-		GEOSSetSRID(g2, SRID);
-		result = GEOS2POSTGIS(g2, is3d);
+		if ( g1 ) g2 = GEOSUnionCascaded(g1);
+		if ( g2 ) GEOSSetSRID(g2, SRID);
+		if ( g2 ) result = GEOS2POSTGIS(g2, is3d);
 		/* Clean up the mess. */
-		GEOSGeom_destroy(g1);
-		GEOSGeom_destroy(g2);
+		if ( g1 ) GEOSGeom_destroy(g1);
+		if ( g2 ) GEOSGeom_destroy(g2);
 	}
 	else 
 	{
