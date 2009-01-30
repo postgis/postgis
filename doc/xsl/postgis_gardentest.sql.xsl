@@ -162,7 +162,32 @@ SELECT 'create,insert,drop Test: Start Testing Multi/<xsl:value-of select="@Geom
 	
 	</xsl:text>
 		</xsl:for-each>
-<!--End Test table creation, insert, drop -->
+<!--End Test table creation, insert, drop  -->
+
+<!--Start test on operators  -->
+	<xsl:for-each select="sect1[contains(@id,'Operator')]/refentry">
+		<xsl:sort select="@id"/>
+		<xsl:for-each select="refsynopsisdiv/funcsynopsis/funcprototype">
+			<xsl:variable name='fnname'><xsl:value-of select="funcdef/function"/></xsl:variable>
+			<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
+			<!--Store first garden sql geometry from -->
+					<xsl:variable name="from1"><xsl:value-of select="." /></xsl:variable>
+					<xsl:variable name='geom1type'><xsl:value-of select="@ID"/></xsl:variable>
+		SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" /> : Start Testing <xsl:value-of select="$geom1type" /> against other types'; 
+						<xsl:for-each select="document('')//pgis:gardens/pgis:gset">
+			SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="$geom1type" />, <xsl:value-of select="@GeometryType" />'; 
+			BEGIN; 
+			SELECT foo1.the_geom <xsl:value-of select="$fnname" /> foo2.the_geom
+					FROM (<xsl:value-of select="$from1" />) As foo1 CROSS JOIN (<xsl:value-of select="." />) As foo2
+					LIMIT 3;  
+			COMMIT;
+					</xsl:for-each>
+		SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: End Testing <xsl:value-of select="@GeometryType" /> against other types';
+				</xsl:for-each>
+			</xsl:for-each>
+	</xsl:for-each>
+<!--End test on operators -->
+<!-- Start regular function checks excluding operators -->
 		<xsl:for-each select="sect1[not(contains(@id,'Operator'))]/refentry">
 		<xsl:sort select="@id"/>
 
