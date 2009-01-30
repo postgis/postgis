@@ -322,6 +322,9 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="contains(type, 'varchar')"> 
 						<xsl:value-of select="$var_varchar" />
 					</xsl:when>
+					<xsl:when test="contains(type,'timestamp') or type = 'date'"> 
+						<xsl:text>'2009-01-01'</xsl:text>
+					</xsl:when>
 				</xsl:choose>
 				<xsl:if test="position()&lt;last()"><xsl:text>, </xsl:text></xsl:if>
 			</xsl:for-each>
