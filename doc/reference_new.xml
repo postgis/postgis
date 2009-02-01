@@ -9293,11 +9293,6 @@ WHERE ST_Crosses(roads.the_geom, highways.the_geom);</programlisting>
 	  </para>
 	  <para>Availability: 1.4</para>
 	  <!-- optionally mention that this function uses indexes if appropriate -->
-	  <note>
-		<para><inlinegraphic fileref="images/warning.png" /> This function does not use indexes.  Include &amp;&amp; And ST_CrossingDirection != 0 or ST_Crosses
-		if you want to throw out linestrings that do not cross.</para>
-	  </note>
-	  <note><para><inlinegraphic fileref="images/warning.png" />This function is under development and the name and constants may change.</para></note>
 
 	</refsection>
 
