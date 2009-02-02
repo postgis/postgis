@@ -25,20 +25,20 @@ double lw_segment_side(POINT2D *p1, POINT2D *p2, POINT2D *q)
 	return ( (q->x - p1->x) * (p2->y - p1->y) - (p2->x - p1->x) * (q->y - p1->y) );
 }
 
-int lw_segment_envelope_intersects(POINT2D *p1, POINT2D *p2, POINT2D *q1, POINT2D *q2) 
+int lw_segment_envelope_intersects(POINT2D p1, POINT2D p2, POINT2D q1, POINT2D q2) 
 {
-	double minq=LW_MIN(q1->x,q2->x);
-	double maxq=LW_MAX(q1->x,q2->x);
-	double minp=LW_MIN(p1->x,p2->x);
-	double maxp=LW_MAX(p1->x,p2->x);
+	double minq=LW_MIN(q1.x,q2.x);
+	double maxq=LW_MAX(q1.x,q2.x);
+	double minp=LW_MIN(p1.x,p2.x);
+	double maxp=LW_MAX(p1.x,p2.x);
 
 	if(minp>maxq || maxp<minq) 
 		return LW_FALSE;
 
-	minq=LW_MIN(q1->y,q2->y);
-	maxq=LW_MAX(q1->y,q2->y);
-	minp=LW_MIN(p1->y,p2->y);
-	maxp=LW_MAX(p1->y,p2->y);
+	minq=LW_MIN(q1.y,q2.y);
+	maxq=LW_MAX(q1.y,q2.y);
+	minp=LW_MIN(p1.y,p2.y);
+	maxp=LW_MAX(p1.y,p2.y);
 
 	if(minp>maxq || maxp<minq) 
 		return LW_FALSE;
@@ -64,7 +64,7 @@ int lw_segment_intersects(POINT2D *p1, POINT2D *p2, POINT2D *q1, POINT2D *q2)
 	double pq1, pq2, qp1, qp2;
 	
 	/* No envelope interaction => we are done. */
-	if (!lw_segment_envelope_intersects(p1, p2, q1, p2))	
+	if (!lw_segment_envelope_intersects(*p1, *p2, *q1, *p2))	
 	{
 		return SEG_NO_INTERSECTION;
 	}

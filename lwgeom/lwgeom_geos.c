@@ -1219,7 +1219,7 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-	                getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	     getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
 		if ( box2.xmax < box1.xmin ) PG_RETURN_BOOL(FALSE);
 		if ( box2.xmin > box1.xmax ) PG_RETURN_BOOL(FALSE);
@@ -1290,7 +1290,7 @@ Datum contains(PG_FUNCTION_ARGS)
 	** Do the test IFF BOUNDING BOX AVAILABLE.
 	*/
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-	                getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	     getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
 		if ( ( box2.xmin < box1.xmin ) || ( box2.xmax > box1.xmax ) ||
 		     ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax ) )
@@ -1622,7 +1622,7 @@ Datum within(PG_FUNCTION_ARGS)
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-	                getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	     getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
 		if ( ( box1.xmin < box2.xmin ) || ( box1.xmax > box2.xmax ) ||
 		     ( box1.ymin < box2.ymin ) || ( box1.ymax > box2.ymax ) )
@@ -1751,7 +1751,7 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-	                getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	     getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
 		if ( ( box1.xmin < box2.xmin ) || ( box1.xmax > box2.xmax ) ||
 		     ( box1.ymin < box2.ymin ) || ( box1.ymax > box2.ymax ) )
@@ -1944,7 +1944,7 @@ Datum intersects(PG_FUNCTION_ARGS)
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-	                getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	     getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
 		if ( ( box2.xmax < box1.xmin ) || ( box2.xmin > box1.xmax ) ||
 		     ( box2.ymax < box1.ymin ) || ( box2.ymin > box1.ymax ) )
@@ -1960,7 +1960,7 @@ Datum intersects(PG_FUNCTION_ARGS)
 	type1 = lwgeom_getType((uchar)SERIALIZED_FORM(geom1)[0]);
 	type2 = lwgeom_getType((uchar)SERIALIZED_FORM(geom2)[0]);
 	if ( (type1 == POINTTYPE && (type2 == POLYGONTYPE || type2 == MULTIPOLYGONTYPE)) ||
-	                (type2 == POINTTYPE && (type1 == POLYGONTYPE || type1 == MULTIPOLYGONTYPE)))
+	     (type2 == POINTTYPE && (type1 == POLYGONTYPE || type1 == MULTIPOLYGONTYPE)))
 	{
 		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
 
@@ -2085,7 +2085,7 @@ Datum touches(PG_FUNCTION_ARGS)
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-	                getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	     getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
 		if ( ( box2.xmax < box1.xmin ) || ( box2.xmin > box1.xmax ) ||
 		     ( box2.ymax < box1.ymin ) || ( box2.ymin > box1.ymax ) )
@@ -2150,7 +2150,7 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
 	if ( getbox2d_p(SERIALIZED_FORM(geom1), &box1) &&
-	                getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
+	     getbox2d_p(SERIALIZED_FORM(geom2), &box2) )
 	{
 		if ( ( box2.xmax < box1.xmin ) || ( box2.xmin > box1.xmax ) ||
 		     ( box2.ymax < box1.ymin ) || ( box2.ymin > box1.ymax ) )

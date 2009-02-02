@@ -25,7 +25,7 @@ enum CG_SEGMENT_INTERSECTION_TYPE {
 
 double lw_segment_side(POINT2D *p1, POINT2D *p2, POINT2D *q);
 int lw_segment_intersects(POINT2D *p1, POINT2D *p2, POINT2D *q1, POINT2D *q2);
-int lw_segment_envelope_intersects(POINT2D *p1, POINT2D *p2, POINT2D *q1, POINT2D *q2);
+int lw_segment_envelope_intersects(POINT2D p1, POINT2D p2, POINT2D q1, POINT2D q2);
 
 
 enum CG_LINE_CROSS_TYPE {
