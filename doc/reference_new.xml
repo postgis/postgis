@@ -1693,7 +1693,7 @@ aline                            | null_return
 
 		  <funcprototype>
 			<funcdef>geometry <function>ST_LineFromWKB</function></funcdef>
-			<paramdef><type>bytea </type> <parameter>WKT</parameter></paramdef>
+			<paramdef><type>bytea </type> <parameter>WKB</parameter></paramdef>
 			<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
