@@ -12889,6 +12889,82 @@ SELECT ST_AsEWKT((ST_Dump(the_geom)).geom)
 		<para><xref linkend="ST_Dump" />, <xref linkend="ST_Locate_Along_Measure" /></para>
 	  </refsection>
 	</refentry>
+
+	<refentry id="ST_LocateBetweenElevations">
+	  <refnamediv>
+		<refname>ST_LocateBetweenElevations</refname>
+
+		<refpurpose>Return a derived geometry (collection) value with elements
+			that intersect the specified range of elevations inclusively. Only 3D, 4D LINESTRINGS and MULTILINESTRINGS
+			are supported.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_LocateBetweenElevations</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geom_mline</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>elevation_start</parameter></paramdef>
+			<paramdef><type>float </type> <parameter>elevation_end</parameter></paramdef>
+		  </funcprototype>
+
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		   <para>Return a derived geometry (collection) value with elements
+			that intersect the specified range of elevations inclusively. Only 3D, 3DM LINESTRINGS and MULTILINESTRINGS
+			are supported.</para>
+
+			<para>Availability: 1.4.0</para>
+
+		<!-- Optionally mention 3d support -->
+		<para><inlinemediaobject>
+			<imageobject>
+			  <imagedata fileref="images/check.png" />
+			</imageobject>
+		  </inlinemediaobject> This function supports 3d and will not drop the z-index.</para>
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+
+		<programlisting>SELECT ST_AsEWKT(ST_LocateBetweenElevations(
+			ST_GeomFromEWKT('LINESTRING(1 2 3, 4 5 6)'),2,4)) As ewelev;
+								   ewelev
+----------------------------------------------------------------
+	MULTILINESTRING((1 2 3,2 3 4))
+
+SELECT ST_AsEWKT(ST_LocateBetweenElevations(
+			ST_GeomFromEWKT('LINESTRING(1 2 6, 4 5 -1, 7 8 9)'),6,9)) As ewelev;
+
+				ewelev
+----------------------------------------------------------------
+GEOMETRYCOLLECTION(POINT(1 2 6),LINESTRING(6.1 7.1 6,7 8 9))
+
+--Geometry collections are difficult animals so dump them
+--to make them more digestable
+SELECT ST_AsEWKT((ST_Dump(the_geom)).geom)
+		FROM
+		(SELECT ST_LocateBetweenElevations(
+			ST_GeomFromEWKT('LINESTRING(1 2 6, 4 5 -1, 7 8 9)'),6,9) As the_geom) As foo;
+
+		   st_asewkt
+--------------------------------
+POINT(1 2 6)
+LINESTRING(6.1 7.1 6,7 8 9)
+</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para><xref linkend="ST_Dump" /></para>
+	  </refsection>
+	</refentry>
   </sect1>
 
   <sect1 id="Long_Transactions_Support">
