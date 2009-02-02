@@ -608,13 +608,14 @@ append_segment(LWGEOM *geom, POINTARRAY *pts, int type, int SRID)
                 newPoints = ptarray_construct(TYPE_HASZ(pts->dims), TYPE_HASM(pts->dims), pts->npoints + line->points->npoints - 1);
                 for(i=0; i<line->points->npoints; i++)
                 {
-                        getPoint4d_p(pts, i, &pt);
+                        getPoint4d_p(line->points, i, &pt);
+						LWDEBUGF(5, "copying to %p [%d]", newPoints, i);
                         setPoint4d(newPoints, i, &pt);
                 }
                 for(i=1; i<pts->npoints; i++)
                 {
-                        getPoint4d_p(line->points, i, &pt);
-                        setPoint4d(newPoints, i + pts->npoints, &pt);
+                        getPoint4d_p(pts, i, &pt);
+                        setPoint4d(newPoints, i + line->points->npoints - 1, &pt);
                 }
                 result = (LWGEOM *)lwline_construct(SRID, NULL, newPoints);
                 lwgeom_release(geom);
