@@ -11367,7 +11367,7 @@ ST_GeomFromText('CIRCULARSTRING(220227 150406,2220227 150407,220227 150406)')));
 	<refentry id="ST_ConvexHull">
 	  <refnamediv>
 		<refname>ST_ConvexHull</refname>
-		<refpurpose>The convex hull of a geometry represents the minimum closed
+		<refpurpose>The convex hull of a geometry represents the minimum convex
 		geometry that encloses all geometries within the set.</refpurpose>
 	  </refnamediv>
 
@@ -11382,8 +11382,12 @@ ST_GeomFromText('CIRCULARSTRING(220227 150406,2220227 150407,220227 150406)')));
 
 	  <refsection>
 		<title>Description</title>
-			<para>The convex hull of a geometry represents the minimum closed
+			<para>The convex hull of a geometry represents the minimum convex
 		geometry that encloses all geometries within the set.</para>
+		
+		<para>One can think of the convex hull as the geometry you get by wrapping an elastic
+			band around a set of geometries.  This is different from a concave hull (not currently supported)
+				which is analogous to shrink-wrapping your geometries.</para>
 
 			<para>It is usually used with MULTI and Geometry Collections.
 		Although it is not an aggregate - you can use it in conjunction
