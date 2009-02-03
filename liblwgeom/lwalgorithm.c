@@ -7,7 +7,7 @@
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
- * 
+ *
  **********************************************************************/
 
 #include "lwalgorithm.h"
@@ -25,14 +25,14 @@ double lw_segment_side(POINT2D *p1, POINT2D *p2, POINT2D *q)
 	return ( (q->x - p1->x) * (p2->y - p1->y) - (p2->x - p1->x) * (q->y - p1->y) );
 }
 
-int lw_segment_envelope_intersects(POINT2D p1, POINT2D p2, POINT2D q1, POINT2D q2) 
+int lw_segment_envelope_intersects(POINT2D p1, POINT2D p2, POINT2D q1, POINT2D q2)
 {
 	double minq=LW_MIN(q1.x,q2.x);
 	double maxq=LW_MAX(q1.x,q2.x);
 	double minp=LW_MIN(p1.x,p2.x);
 	double maxp=LW_MAX(p1.x,p2.x);
 
-	if(minp>maxq || maxp<minq) 
+	if (minp>maxq || maxp<minq)
 		return LW_FALSE;
 
 	minq=LW_MIN(q1.y,q2.y);
@@ -40,7 +40,7 @@ int lw_segment_envelope_intersects(POINT2D p1, POINT2D p2, POINT2D q1, POINT2D q
 	minp=LW_MIN(p1.y,p2.y);
 	maxp=LW_MAX(p1.y,p2.y);
 
-	if(minp>maxq || maxp<minq) 
+	if (minp>maxq || maxp<minq)
 		return LW_FALSE;
 
 	return LW_TRUE;
@@ -48,23 +48,23 @@ int lw_segment_envelope_intersects(POINT2D p1, POINT2D p2, POINT2D q1, POINT2D q
 
 /*
 ** lw_segment_intersects()
-** 
+**
 ** Returns one of
 **	SEG_ERROR = -1,
-**	SEG_NO_INTERSECTION = 0, 
-**	SEG_COLINEAR = 1, 
-**	SEG_CROSS_LEFT = 2, 
-**	SEG_CROSS_RIGHT = 3, 
-**	SEG_TOUCH_LEFT = 4, 
+**	SEG_NO_INTERSECTION = 0,
+**	SEG_COLINEAR = 1,
+**	SEG_CROSS_LEFT = 2,
+**	SEG_CROSS_RIGHT = 3,
+**	SEG_TOUCH_LEFT = 4,
 **	SEG_TOUCH_RIGHT = 5
 */
-int lw_segment_intersects(POINT2D *p1, POINT2D *p2, POINT2D *q1, POINT2D *q2) 
+int lw_segment_intersects(POINT2D *p1, POINT2D *p2, POINT2D *q1, POINT2D *q2)
 {
-	
+
 	double pq1, pq2, qp1, qp2;
-	
+
 	/* No envelope interaction => we are done. */
-	if (!lw_segment_envelope_intersects(*p1, *p2, *q1, *p2))	
+	if (!lw_segment_envelope_intersects(*p1, *p2, *q1, *p2))
 	{
 		return SEG_NO_INTERSECTION;
 	}
@@ -72,7 +72,7 @@ int lw_segment_intersects(POINT2D *p1, POINT2D *p2, POINT2D *q1, POINT2D *q2)
 	/* Are the start and end points of q on the same side of p? */
 	pq1=lw_segment_side(p1,p2,q1);
 	pq2=lw_segment_side(p1,p2,q2);
-	if ((pq1>0 && pq2>0) || (pq1<0 && pq2<0)) 
+	if ((pq1>0 && pq2>0) || (pq1<0 && pq2<0))
 	{
 		return SEG_NO_INTERSECTION;
 	}
@@ -80,50 +80,50 @@ int lw_segment_intersects(POINT2D *p1, POINT2D *p2, POINT2D *q1, POINT2D *q2)
 	/* Are the start and end points of p on the same side of q? */
 	qp1=lw_segment_side(q1,q2,p1);
 	qp2=lw_segment_side(q1,q2,p2);
-	if ((qp1>0 && qp2>0) || (qp1<0 && qp2<0)) 
+	if ((qp1>0 && qp2>0) || (qp1<0 && qp2<0))
 	{
 		return SEG_NO_INTERSECTION;
 	}
 
 	/* Nobody is on one side or another? Must be colinear. */
-	if (pq1 == 0.0 && pq2 == 0.0 && qp1 == 0.0 && qp2 == 0.0) 
+	if (pq1 == 0.0 && pq2 == 0.0 && qp1 == 0.0 && qp2 == 0.0)
 	{
 		return SEG_COLINEAR;
 	}
 
-	/* 
+	/*
 	** When one end-point touches, the sidedness is determined by the 
 	** location of the other end-point.
 	*/
-	if ( pq2 == 0.0 ) 
+	if ( pq2 == 0.0 )
 	{
-		if ( pq1 < 0.0 ) 
+		if ( pq1 < 0.0 )
 			return SEG_TOUCH_LEFT;
-		else 
+		else
 			return SEG_TOUCH_RIGHT;
 	}
-	if ( pq1 == 0.0 ) 
+	if ( pq1 == 0.0 )
 	{
-		if ( pq2 < 0.0 ) 
+		if ( pq2 < 0.0 )
 			return SEG_TOUCH_LEFT;
-		else 
+		else
 			return SEG_TOUCH_RIGHT;
 	}
 
 	/* The segments cross, what direction is the crossing? */
-	if ( pq1 < pq2 ) 
+	if ( pq1 < pq2 )
 		return SEG_CROSS_RIGHT;
-	else 
+	else
 		return SEG_CROSS_LEFT;
-	
+
 	/* This should never happen! */
 	return SEG_ERROR;
-		
+
 }
 
 /*
 ** lwline_crossing_direction()
-** 
+**
 ** Returns one of
 **   LINE_NO_CROSS = 0
 **   LINE_CROSS_LEFT = -1
@@ -134,9 +134,9 @@ int lw_segment_intersects(POINT2D *p1, POINT2D *p2, POINT2D *q1, POINT2D *q2)
 **   LINE_MULTICROSS_END_SAME_FIRST_RIGHT = 3
 **
 */
-int lwline_crossing_direction(LWLINE *l1, LWLINE *l2) 
+int lwline_crossing_direction(LWLINE *l1, LWLINE *l2)
 {
-	
+
 	int i = 0, j = 0, rv = 0;
 	POINT2D *p1;
 	POINT2D *p2;
@@ -151,50 +151,50 @@ int lwline_crossing_direction(LWLINE *l1, LWLINE *l2)
 	int this_cross = 0;
 	int vertex_touch = -1;
 	int vertex_touch_type = 0;
-	
+
 	pa1 = (POINTARRAY*)l1->points;
 	pa2 = (POINTARRAY*)l2->points;
-	
+
 	p1 = lwalloc(sizeof(POINT2D));
 	p2 = lwalloc(sizeof(POINT2D));
 	q1 = lwalloc(sizeof(POINT2D));
 	q2 = lwalloc(sizeof(POINT2D));
-	
+
 	/* One-point lines can't intersect (and shouldn't exist). */
-	if( pa1->npoints < 2 || pa2->npoints < 2 ) 
+	if ( pa1->npoints < 2 || pa2->npoints < 2 )
 		return LINE_NO_CROSS;
 
 	LWDEBUGF(4, "lineCrossingDirection: l1 = %s", lwgeom_to_ewkt((LWGEOM*)l1,0));
 	LWDEBUGF(4, "lineCrossingDirection: l2 = %s", lwgeom_to_ewkt((LWGEOM*)l2,0));
 
-	for ( i = 1; i < pa2->npoints; i++ ) 
+	for ( i = 1; i < pa2->npoints; i++ )
 	{
-		
+
 		rv = getPoint2d_p(pa2, i-1, q1);
 		rv = getPoint2d_p(pa2, i, q2);
-		
-		for ( j = 1; j < pa1->npoints; j++ ) 
-		{   
-			
+
+		for ( j = 1; j < pa1->npoints; j++ )
+		{
+
 			rv = getPoint2d_p(pa1, j-1, p1);
 			rv = getPoint2d_p(pa1, j, p2);
-			
+
 			LWDEBUGF(4, "lineCrossingDirection: i=%d, j=%d", i, j);
-			
+
 			this_cross = lw_segment_intersects(p1, p2, q1, q2);
-		
-			if( ! first_cross && this_cross )
+
+			if ( ! first_cross && this_cross )
 				first_cross = this_cross;
-			if( this_cross ) 
+			if ( this_cross )
 				final_cross = this_cross;
-				
-			if( this_cross == SEG_CROSS_LEFT ) 
+
+			if ( this_cross == SEG_CROSS_LEFT )
 			{
 				cross_left++;
 				break;
 			}
-				
-			if( this_cross == SEG_CROSS_RIGHT ) 
+
+			if ( this_cross == SEG_CROSS_RIGHT )
 			{
 				cross_right++;
 				break;
@@ -205,52 +205,56 @@ int lwline_crossing_direction(LWLINE *l1, LWLINE *l2)
 			** a vertex by pulling the original touch point forward along
 			** the co-linearity.
 			*/
-			if( this_cross == SEG_COLINEAR && vertex_touch == (i-1) ) 
+			if ( this_cross == SEG_COLINEAR && vertex_touch == (i-1) )
 			{
 				vertex_touch = i;
 				break;
 			}
-				
-			/* 
+
+			/*
 			** Crossing-at-vertex will cause four segment touch interactions, two at
 			** j-1 and two at j. We avoid incrementing our cross count by ignoring the
 			** second pair.
 			*/
-			if( this_cross == SEG_TOUCH_LEFT ) 
+			if ( this_cross == SEG_TOUCH_LEFT )
 			{
-				if ( vertex_touch == (i-1) && vertex_touch_type == SEG_TOUCH_RIGHT ) {
+				if ( vertex_touch == (i-1) && vertex_touch_type == SEG_TOUCH_RIGHT )
+				{
 					cross_left++;
 					vertex_touch = -1;
 					vertex_touch_type = 0;
 				}
-				else {
+				else
+				{
 					vertex_touch = i;
 					vertex_touch_type = this_cross;
 				}
 				break;
 			}
-			if( this_cross == SEG_TOUCH_RIGHT ) 
+			if ( this_cross == SEG_TOUCH_RIGHT )
 			{
-				if ( vertex_touch == (i-1) && vertex_touch_type == SEG_TOUCH_LEFT ) {
+				if ( vertex_touch == (i-1) && vertex_touch_type == SEG_TOUCH_LEFT )
+				{
 					cross_right++;
 					vertex_touch = -1;
 					vertex_touch_type = 0;
 				}
-				else {
+				else
+				{
 					vertex_touch = i;
 					vertex_touch_type = this_cross;
 				}
 				break;
 			}
 
-			/* 
+			/*
 			** TODO Handle co-linear cases. 
 			*/
 
- 			LWDEBUGF(4, "lineCrossingDirection: this_cross=%d, vertex_touch=%d, vertex_touch_type=%d", this_cross, vertex_touch, vertex_touch_type);
-				
+			LWDEBUGF(4, "lineCrossingDirection: this_cross=%d, vertex_touch=%d, vertex_touch_type=%d", this_cross, vertex_touch, vertex_touch_type);
+
 		}
-		
+
 	}
 
 	LWDEBUGF(4, "first_cross=%d, final_cross=%d, cross_left=%d, cross_right=%d", first_cross, final_cross, cross_left, cross_right);
@@ -260,211 +264,213 @@ int lwline_crossing_direction(LWLINE *l1, LWLINE *l2)
 	lwfree(q1);
 	lwfree(q2);
 
-	if( !cross_left && !cross_right ) 
+	if ( !cross_left && !cross_right )
 		return LINE_NO_CROSS;
 
-	if( !cross_left && cross_right == 1 )
+	if ( !cross_left && cross_right == 1 )
 		return LINE_CROSS_RIGHT;
-		
-	if( !cross_right && cross_left == 1 )
+
+	if ( !cross_right && cross_left == 1 )
 		return LINE_CROSS_LEFT;
 
-	if( cross_left - cross_right == 1 )
+	if ( cross_left - cross_right == 1 )
 		return LINE_MULTICROSS_END_LEFT;
 
-	if( cross_left - cross_right == -1 )
+	if ( cross_left - cross_right == -1 )
 		return LINE_MULTICROSS_END_RIGHT;
 
-	if( cross_left - cross_right == 0 && first_cross == SEG_CROSS_LEFT )
+	if ( cross_left - cross_right == 0 && first_cross == SEG_CROSS_LEFT )
 		return LINE_MULTICROSS_END_SAME_FIRST_LEFT;
 
-	if( cross_left - cross_right == 0 && first_cross == SEG_CROSS_RIGHT )
+	if ( cross_left - cross_right == 0 && first_cross == SEG_CROSS_RIGHT )
 		return LINE_MULTICROSS_END_SAME_FIRST_RIGHT;
 
-	if( cross_left - cross_right == 0 && first_cross == SEG_TOUCH_LEFT )
+	if ( cross_left - cross_right == 0 && first_cross == SEG_TOUCH_LEFT )
 		return LINE_MULTICROSS_END_SAME_FIRST_RIGHT;
 
-	if( cross_left - cross_right == 0 && first_cross == SEG_TOUCH_RIGHT )
+	if ( cross_left - cross_right == 0 && first_cross == SEG_TOUCH_RIGHT )
 		return LINE_MULTICROSS_END_SAME_FIRST_LEFT;
-		
+
 	return LINE_NO_CROSS;
-	
+
 }
 
 /*
 ** lwpoint_get_ordinate(point, ordinate) => double
 */
-double lwpoint_get_ordinate(const POINT4D *p, int ordinate) 
+double lwpoint_get_ordinate(const POINT4D *p, int ordinate)
 {
-	if( ! p ) 
+	if ( ! p )
 	{
 		lwerror("Null input geometry.");
 		return 0.0;
 	}
-	
-	if( ordinate > 3 || ordinate < 0 ) 
+
+	if ( ordinate > 3 || ordinate < 0 )
 	{
 		lwerror("Cannot extract ordinate %d.", ordinate);
 		return 0.0;
 	}
 
-	if( ordinate == 3 ) 
+	if ( ordinate == 3 )
 		return p->m;
-	if( ordinate == 2 ) 
+	if ( ordinate == 2 )
 		return p->z;
-	if( ordinate == 1 ) 
+	if ( ordinate == 1 )
 		return p->y;
 
 	return p->x;
-	
+
 }
-void lwpoint_set_ordinate(POINT4D *p, int ordinate, double value) 
+void lwpoint_set_ordinate(POINT4D *p, int ordinate, double value)
 {
-	if( ! p ) 
+	if ( ! p )
 	{
 		lwerror("Null input geometry.");
 		return;
 	}
-	
-	if( ordinate > 3 || ordinate < 0 ) 
+
+	if ( ordinate > 3 || ordinate < 0 )
 	{
 		lwerror("Cannot extract ordinate %d.", ordinate);
 		return;
 	}
 
-	switch ( ordinate ) {
-        case 3:
-            p->m = value;
-            return;
-        case 2:
-            p->z = value;
-            return;
-        case 1:
-            p->y = value;
-            return;
-        case 0:
-            p->x = value;
-            return;
-    }    	
+	switch ( ordinate )
+	{
+	case 3:
+		p->m = value;
+		return;
+	case 2:
+		p->z = value;
+		return;
+	case 1:
+		p->y = value;
+		return;
+	case 0:
+		p->x = value;
+		return;
+	}
 }
 
 
 int lwpoint_interpolate(const POINT4D *p1, const POINT4D *p2, POINT4D *p, int ndims, int ordinate, double interpolation_value)
 {
-    double p1_value = lwpoint_get_ordinate(p1, ordinate);
-    double p2_value = lwpoint_get_ordinate(p2, ordinate);
-    double proportion;
-    int i = 0;
-    
-    if( ordinate < 0 || ordinate >= ndims ) 
-    {
-        lwerror("Ordinate (%d) is not within ndims (%d).", ordinate, ndims);
-        return 0;
-    }
-    
-    if( FP_MIN(p1_value, p2_value) > interpolation_value || 
-        FP_MAX(p1_value, p2_value) < interpolation_value )
-    {
-        lwerror("Cannot interpolate to a value (%g) not between the input points.", interpolation_value);
-        return 0;
-    } 
-    
-    proportion = fabs((interpolation_value - p1_value) / (p2_value - p1_value));
+	double p1_value = lwpoint_get_ordinate(p1, ordinate);
+	double p2_value = lwpoint_get_ordinate(p2, ordinate);
+	double proportion;
+	int i = 0;
 
-    for( i = 0; i < ndims; i++ ) 
-    {
-        p1_value = lwpoint_get_ordinate(p1, i);
-        p2_value = lwpoint_get_ordinate(p2, i);
-        lwpoint_set_ordinate(p, i, p1_value + proportion * (p2_value - p1_value));
+	if ( ordinate < 0 || ordinate >= ndims )
+	{
+		lwerror("Ordinate (%d) is not within ndims (%d).", ordinate, ndims);
+		return 0;
+	}
 
-	LWDEBUGF(3, "   clip ordinate(%d) p1_value(%g) p2_value(%g) proportion(%g)", i, p1_value, p2_value, proportion );
-    }
-    
-    return 1;
+	if ( FP_MIN(p1_value, p2_value) > interpolation_value ||
+	        FP_MAX(p1_value, p2_value) < interpolation_value )
+	{
+		lwerror("Cannot interpolate to a value (%g) not between the input points (%g, %g).", interpolation_value, p1_value, p2_value);
+		return 0;
+	}
+
+	proportion = fabs((interpolation_value - p1_value) / (p2_value - p1_value));
+
+	for ( i = 0; i < ndims; i++ )
+	{
+		p1_value = lwpoint_get_ordinate(p1, i);
+		p2_value = lwpoint_get_ordinate(p2, i);
+		lwpoint_set_ordinate(p, i, p1_value + proportion * (p2_value - p1_value));
+
+		LWDEBUGF(3, "   clip ordinate(%d) p1_value(%g) p2_value(%g) proportion(%g)", i, p1_value, p2_value, proportion );
+	}
+
+	return 1;
 }
 
-LWCOLLECTION *lwmline_clip_to_ordinate_range(LWMLINE *mline, int ordinate, double from, double to) 
+LWCOLLECTION *lwmline_clip_to_ordinate_range(LWMLINE *mline, int ordinate, double from, double to)
 {
-    LWCOLLECTION *lwgeom_out = NULL;
-    
-    if( ! mline ) 
-    {
+	LWCOLLECTION *lwgeom_out = NULL;
+
+	if ( ! mline )
+	{
 		lwerror("Null input geometry.");
 		return NULL;
-    }
-    
-    if( mline->ngeoms == 1) 
-    {
-        lwgeom_out = lwline_clip_to_ordinate_range(mline->geoms[0], ordinate, from, to);        
-    }
-    else 
-    {
-        LWCOLLECTION *col;
-    	char hasz = TYPE_HASZ(mline->type);
-    	char hasm = TYPE_HASM(mline->type);
-    	char hassrid = TYPE_HASSRID(mline->type);
-        int i, j;
-        char homogeneous = 1;
-        size_t geoms_size = 0;
-        lwgeom_out = lwcollection_construct_empty(mline->SRID, hasz, hasm);
-        lwgeom_out->type = lwgeom_makeType(hasz, hasm, hassrid, MULTILINETYPE);
-        for( i = 0; i < mline->ngeoms; i ++ ) 
-        {
-            col = lwline_clip_to_ordinate_range(mline->geoms[i], ordinate, from, to);
-            if ( col ) { /* Something was left after the clip. */
-                if( lwgeom_out->ngeoms + col->ngeoms > geoms_size )
-                {
-                    geoms_size += 16;
-                    if( lwgeom_out->geoms ) 
-                    {
-                        lwgeom_out->geoms = lwrealloc(lwgeom_out->geoms, geoms_size * sizeof(LWGEOM*));
-                    }
-                    else
-                    {
-                        lwgeom_out->geoms = lwalloc(geoms_size * sizeof(LWGEOM*));
-                    }
-                }
-                for( j = 0; j < col->ngeoms; j++ ) 
-                {
-                    lwgeom_out->geoms[lwgeom_out->ngeoms] = col->geoms[j];
-                    lwgeom_out->ngeoms++;
-                }
-                if( TYPE_GETTYPE(col->type) != TYPE_GETTYPE(mline->type) )
-                {
-                    homogeneous = 0;
-                }
-                /* Shallow free the struct, leaving the geoms behind. */
-                if( col->bbox ) lwfree(col->bbox);
-                lwfree(col); 
-            }
-        }
-        lwgeom_dropBBOX((LWGEOM*)lwgeom_out);
-		lwgeom_addBBOX((LWGEOM*)lwgeom_out);
-		if ( ! homogeneous ) 
+	}
+
+	if ( mline->ngeoms == 1)
+	{
+		lwgeom_out = lwline_clip_to_ordinate_range(mline->geoms[0], ordinate, from, to);
+	}
+	else
+	{
+		LWCOLLECTION *col;
+		char hasz = TYPE_HASZ(mline->type);
+		char hasm = TYPE_HASM(mline->type);
+		char hassrid = TYPE_HASSRID(mline->type);
+		int i, j;
+		char homogeneous = 1;
+		size_t geoms_size = 0;
+		lwgeom_out = lwcollection_construct_empty(mline->SRID, hasz, hasm);
+		lwgeom_out->type = lwgeom_makeType(hasz, hasm, hassrid, MULTILINETYPE);
+		for ( i = 0; i < mline->ngeoms; i ++ )
 		{
-		    lwgeom_out->type = lwgeom_makeType(hasz, hasm, hassrid, COLLECTIONTYPE);
-	    }        
-    }
-    
-    if( ! lwgeom_out || lwgeom_out->ngeoms == 0 ) /* Nothing left after clip. */
-    {
-        return NULL;
-    }
-    
-    return lwgeom_out;    
-    
+			col = lwline_clip_to_ordinate_range(mline->geoms[i], ordinate, from, to);
+			if ( col )
+			{ /* Something was left after the clip. */
+				if ( lwgeom_out->ngeoms + col->ngeoms > geoms_size )
+				{
+					geoms_size += 16;
+					if ( lwgeom_out->geoms )
+					{
+						lwgeom_out->geoms = lwrealloc(lwgeom_out->geoms, geoms_size * sizeof(LWGEOM*));
+					}
+					else
+					{
+						lwgeom_out->geoms = lwalloc(geoms_size * sizeof(LWGEOM*));
+					}
+				}
+				for ( j = 0; j < col->ngeoms; j++ )
+				{
+					lwgeom_out->geoms[lwgeom_out->ngeoms] = col->geoms[j];
+					lwgeom_out->ngeoms++;
+				}
+				if ( TYPE_GETTYPE(col->type) != TYPE_GETTYPE(mline->type) )
+				{
+					homogeneous = 0;
+				}
+				/* Shallow free the struct, leaving the geoms behind. */
+				if ( col->bbox ) lwfree(col->bbox);
+				lwfree(col);
+			}
+		}
+		lwgeom_dropBBOX((LWGEOM*)lwgeom_out);
+		lwgeom_addBBOX((LWGEOM*)lwgeom_out);
+		if ( ! homogeneous )
+		{
+			lwgeom_out->type = lwgeom_makeType(hasz, hasm, hassrid, COLLECTIONTYPE);
+		}
+	}
+
+	if ( ! lwgeom_out || lwgeom_out->ngeoms == 0 ) /* Nothing left after clip. */
+	{
+		return NULL;
+	}
+
+	return lwgeom_out;
+
 }
 
 
 /*
 ** lwline_clip_to_ordinate_range(line, ordinate, from, to) => lwmline
 **
-** Take in a LINESTRING and return a MULTILINESTRING of those portions of the 
+** Take in a LINESTRING and return a MULTILINESTRING of those portions of the
 ** LINESTRING between the from/to range for the specified ordinate (XYZM)
 */
-LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double from, double to) 
+LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double from, double to)
 {
-	
+
 	POINTARRAY *pa_in = NULL;
 	LWCOLLECTION *lwgeom_out = NULL;
 	POINTARRAY *pa_out = NULL;
@@ -481,36 +487,36 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 	LWDEBUGF(5, "hassrid = %d", hassrid);
 
 	/* Null input, nothing we can do. */
-	if( ! line ) 
+	if ( ! line )
 	{
 		lwerror("Null input geometry.");
 		return NULL;
 	}
-	
+
 	/* Ensure 'from' is less than 'to'. */
-	if( to < from ) 
+	if ( to < from )
 	{
 		double t = from;
 		from = to;
 		to = t;
 	}
-	
+
 	/* Asking for an ordinate we don't have. Error. */
-	if( ordinate >= dims ) 
+	if ( ordinate >= dims )
 	{
 		lwerror("Cannot clip on ordinate %d in a %d-d geometry.", ordinate, dims);
 		return NULL;
 	}
-	
+
 	/* Prepare our working point objects. */
 	p = lwalloc(sizeof(POINT4D));
 	q = lwalloc(sizeof(POINT4D));
-    r = lwalloc(sizeof(POINT4D));
+	r = lwalloc(sizeof(POINT4D));
 
 	/* Construct a collection to hold our outputs. */
 	lwgeom_out = lwalloc(sizeof(LWCOLLECTION));
 	lwgeom_out->type = lwgeom_makeType(hasz, hasm, hassrid, MULTILINETYPE);
-	if(hassrid) 
+	if (hassrid)
 		lwgeom_out->SRID = line->SRID;
 	else
 		lwgeom_out->SRID = -1;
@@ -520,10 +526,11 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 
 	pa_in = (POINTARRAY*)line->points;
 
-	for ( i = 0; i < pa_in->npoints; i++ ) 
+	for ( i = 0; i < pa_in->npoints; i++ )
 	{
 		LWDEBUGF(4, "Point #%d", i);
-		if( i > 0 ) {
+		if ( i > 0 )
+		{
 			q->x = p->x;
 			q->y = p->y;
 			q->z = p->z;
@@ -540,71 +547,72 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 		{
 			LWDEBUGF(4, " inside ordinate range (%g, %g)", from, to);
 
-			if ( ! added_last_point ) 
+			if ( ! added_last_point )
 			{
 				/* We didn't add the previous point, so this is a new segment.
 				*  Make a new point array. */
-				if( dp ) lwfree(dp);
+				if ( dp ) lwfree(dp);
 				dp = dynptarray_create(64, line->type);
 
-           		/* We're transiting into the range so add an interpolated 
+				/* We're transiting into the range so add an interpolated
 				*  point at the range boundary. 
 				*  If we're on a boundary and crossing from the far side, 
 				*  we also need an interpolated point. */
-    			if ( i > 0 && ( /* Don't try to interpolate if this is the first point */
-				     ( ordinate_value_p > from && ordinate_value_p < to ) || /* Inside */
-				     ( ordinate_value_p == from && ordinate_value_q > to ) || /* Hopping from above */
-				     ( ordinate_value_p == to && ordinate_value_q < from ) ) ) /* Hopping from below */
-    		    {
-                    double interpolation_value;
-                    (ordinate_value_q > to) ? (interpolation_value = to) : (interpolation_value = from);
-                    rv = lwpoint_interpolate(q, p, r, dims, ordinate, interpolation_value);
-                    rv = dynptarray_addPoint4d(dp, r, 0);
-  			LWDEBUGF(4, " interpolating between (%g, %g) with interpolation point (%g)", ordinate_value_q, ordinate_value_p, interpolation_value);
-    		    }
+				if ( i > 0 && ( /* Don't try to interpolate if this is the first point */
+				            ( ordinate_value_p > from && ordinate_value_p < to ) || /* Inside */
+				            ( ordinate_value_p == from && ordinate_value_q > to ) || /* Hopping from above */
+				            ( ordinate_value_p == to && ordinate_value_q < from ) ) ) /* Hopping from below */
+				{
+					double interpolation_value;
+					(ordinate_value_q > to) ? (interpolation_value = to) : (interpolation_value = from);
+					rv = lwpoint_interpolate(q, p, r, dims, ordinate, interpolation_value);
+					rv = dynptarray_addPoint4d(dp, r, 0);
+					LWDEBUGF(4, " interpolating between (%g, %g) with interpolation point (%g)", ordinate_value_q, ordinate_value_p, interpolation_value);
+				}
 			}
-		    /* Add the current vertex to the point array. */
-    		rv = dynptarray_addPoint4d(dp, p, 0);
-			if ( ordinate_value_p == from || ordinate_value_p == to ) 
+			/* Add the current vertex to the point array. */
+			rv = dynptarray_addPoint4d(dp, p, 0);
+			if ( ordinate_value_p == from || ordinate_value_p == to )
 			{
-            	added_last_point = 2; /* Added on boundary. */
+				added_last_point = 2; /* Added on boundary. */
 			}
 			else
 			{
-            	added_last_point = 1; /* Added inside range. */
+				added_last_point = 1; /* Added inside range. */
 			}
-		} 
+		}
 		/* Is this point inside the ordinate range? No. */
-		else 
+		else
 		{
 			LWDEBUGF(4, "  added_last_point (%d)", added_last_point);
-		    if( added_last_point == 1 ) 
-		    {
-		        /* We're transiting out of the range, so add an interpolated point 
+			if ( added_last_point == 1 )
+			{
+				/* We're transiting out of the range, so add an interpolated point
 				*  to the point array at the range boundary. */
-                double interpolation_value;
-                (ordinate_value_p > to) ? (interpolation_value = to) : (interpolation_value = from);
-                rv = lwpoint_interpolate(q, p, r, dims, ordinate, interpolation_value);
-                rv = dynptarray_addPoint4d(dp, r, 0);
+				double interpolation_value;
+				(ordinate_value_p > to) ? (interpolation_value = to) : (interpolation_value = from);
+				rv = lwpoint_interpolate(q, p, r, dims, ordinate, interpolation_value);
+				rv = dynptarray_addPoint4d(dp, r, 0);
 				LWDEBUGF(4, " interpolating between (%g, %g) with interpolation point (%g)", ordinate_value_q, ordinate_value_p, interpolation_value);
-	        }
-			else if ( added_last_point == 2 ) 
+			}
+			else if ( added_last_point == 2 )
 			{
 				/* We're out and the last point was on the boundary.
 				*  If the last point was the near boundary, nothing to do.
 				*  If it was the far boundary, we need an interpolated point. */
-				if( (ordinate_value_q == from && ordinate_value_p > from) || 
-				    (ordinate_value_q == to && ordinate_value_p < to) ) 
+				if ( (ordinate_value_q == from && ordinate_value_p > from) ||
+				        (ordinate_value_q == to && ordinate_value_p < to) )
 				{
-	                double interpolation_value;
-                	(ordinate_value_p > to) ? (interpolation_value = to) : (interpolation_value = from);
-                	rv = lwpoint_interpolate(q, p, r, dims, ordinate, interpolation_value);
-                	rv = dynptarray_addPoint4d(dp, r, 0);
+					double interpolation_value;
+					(ordinate_value_p > to) ? (interpolation_value = to) : (interpolation_value = from);
+					rv = lwpoint_interpolate(q, p, r, dims, ordinate, interpolation_value);
+					rv = dynptarray_addPoint4d(dp, r, 0);
 					LWDEBUGF(4, " interpolating between (%g, %g) with interpolation point (%g)", ordinate_value_q, ordinate_value_p, interpolation_value);
 				}
 			}
-			else if ( ordinate_value_q < from && ordinate_value_p > to ) {
-				/* We just hopped over the whole range, from bottom to top, 
+			else if ( ordinate_value_q < from && ordinate_value_p > to )
+			{
+				/* We just hopped over the whole range, from bottom to top,
 				*  so we need to add *two* interpolated points! */
 				pa_out = ptarray_construct(hasz, hasm, 2);
 				/* Interpolate lower point. */
@@ -614,8 +622,9 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 				rv = lwpoint_interpolate(p, q, r, dims, ordinate, to);
 				setPoint4d(pa_out, 1, r);
 			}
-			else if ( ordinate_value_q > to && ordinate_value_p < from ) {
-				/* We just hopped over the whole range, from top to bottom, 
+			else if ( ordinate_value_q > to && ordinate_value_p < from )
+			{
+				/* We just hopped over the whole range, from top to bottom,
 				*  so we need to add *two* interpolated points! */
 				pa_out = ptarray_construct(hasz, hasm, 2);
 				/* Interpolate upper point. */
@@ -626,13 +635,14 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 				setPoint4d(pa_out, 1, r);
 			}
 			/* We have an extant point-array, save it out to a multi-line. */
-			if ( dp || pa_out ) {
+			if ( dp || pa_out )
+			{
 				LWGEOM *oline;
-				if( dp ) 
+				if ( dp )
 				{
 					/* Only one point, so we have to make an lwpoint to hold this
 					*  and set the overall output type to a generic collection. */
-					if( dp->pa->npoints == 1 ) 
+					if ( dp->pa->npoints == 1 )
 					{
 						oline = (LWGEOM*)lwpoint_construct(line->SRID, NULL, dp->pa);
 						oline->type = lwgeom_makeType(hasz, hasm, hassrid, POINTTYPE);
@@ -644,12 +654,12 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 						oline->type = lwgeom_makeType(hasz, hasm, hassrid, LINETYPE);
 					}
 				}
-				else 
+				else
 				{
 					oline = (LWGEOM*)lwline_construct(line->SRID, NULL, pa_out);
 				}
 				lwgeom_out->ngeoms++;
-				if( lwgeom_out->geoms ) /* We can't just realloc, since repalloc chokes on a starting null ptr. */
+				if ( lwgeom_out->geoms ) /* We can't just realloc, since repalloc chokes on a starting null ptr. */
 				{
 					lwgeom_out->geoms = lwrealloc(lwgeom_out->geoms, sizeof(LWGEOM*) * lwgeom_out->ngeoms);
 				}
@@ -657,25 +667,26 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 				{
 					lwgeom_out->geoms = lwalloc(sizeof(LWGEOM*) * lwgeom_out->ngeoms);
 				}
-				lwgeom_out->geoms[lwgeom_out->ngeoms - 1] = oline;				
+				lwgeom_out->geoms[lwgeom_out->ngeoms - 1] = oline;
 				lwgeom_dropBBOX((LWGEOM*)lwgeom_out);
 				lwgeom_addBBOX((LWGEOM*)lwgeom_out);
-				if( dp ) lwfree(dp);
+				if ( dp ) lwfree(dp);
 				dp = NULL;
-				if( pa_out ) pa_out = NULL;
+				if ( pa_out ) pa_out = NULL;
 			}
-            added_last_point = 0;
+			added_last_point = 0;
 
-	    }
+		}
 	}
 
 	/* Still some points left to be saved out. */
-	if( dp && dp->pa->npoints > 0 ) {
+	if ( dp && dp->pa->npoints > 0 )
+	{
 		LWGEOM *oline;
 		oline = (LWGEOM*)lwline_construct(line->SRID, NULL, dp->pa);
 		oline->type = lwgeom_makeType(hasz, hasm, hassrid, LINETYPE);
 		lwgeom_out->ngeoms++;
-		if( lwgeom_out->geoms ) /* We can't just realloc, since repalloc chokes on a starting null ptr. */
+		if ( lwgeom_out->geoms ) /* We can't just realloc, since repalloc chokes on a starting null ptr. */
 		{
 			lwgeom_out->geoms = lwrealloc(lwgeom_out->geoms, sizeof(LWGEOM*) * lwgeom_out->ngeoms);
 		}
@@ -683,18 +694,18 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 		{
 			lwgeom_out->geoms = lwalloc(sizeof(LWGEOM*) * lwgeom_out->ngeoms);
 		}
-		lwgeom_out->geoms[lwgeom_out->ngeoms - 1] = oline;				
+		lwgeom_out->geoms[lwgeom_out->ngeoms - 1] = oline;
 		lwgeom_dropBBOX((LWGEOM*)lwgeom_out);
 		lwgeom_addBBOX((LWGEOM*)lwgeom_out);
 		lwfree(dp);
 	}
-    lwfree(p);
-    lwfree(q);
-    lwfree(r);
+	lwfree(p);
+	lwfree(q);
+	lwfree(r);
 
-	if( lwgeom_out->ngeoms > 0 ) 
+	if ( lwgeom_out->ngeoms > 0 )
 		return lwgeom_out;
-		
+
 	return NULL;
 
 }
