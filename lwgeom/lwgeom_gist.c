@@ -573,6 +573,7 @@ Datum LWGEOM_gist_consistent(PG_FUNCTION_ARGS)
 	/*
 	** First pull only a small amount of the tuple, enough to 
 	** get the bounding box, if one exists.
+	** size = header + type + box2df4?
 	*/
 	query = (PG_LWGEOM*)PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(1), 0, VARHDRSZ + 1 + sizeof(BOX2DFLOAT4) );
 
