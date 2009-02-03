@@ -12018,6 +12018,78 @@ SELECT ST_AsEWKT(ST_LineToCurve(ST_GeomFromEWKT('LINESTRING(1 2 3, 3 4 8, 5 6 4,
 		<para><xref linkend="ST_Union" /></para>
 	  </refsection>
 	</refentry>
+	
+	<refentry id="ST_MinimumBoundingCircle">
+	  <refnamediv>
+		<refname>ST_MinimumBoundingCircle</refname>
+		<refpurpose>Returns the smallest circle polygon that can fully contain a geometry.  
+			Defaults to 48 segs per quarter to approximate a circle</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry<function>ST_MinimumBoundingCircle</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		  </funcprototype>
+		  <funcprototype>
+			<funcdef>geometry<function>ST_MinimumBoundingCircle</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>num_segs_per_qt_circ</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+			<para>Returns the smallest circle polygon that can fully contain a geometry.  
+			Defaults to 48 segs per quarter to approximate a circle</para>
+
+			<para>It is often used with MULTI and Geometry Collections.
+		Although it is not an aggregate - you can use it in conjunction
+		with ST_Collect to get the minimum bounding cirlce of a set of geometries.
+		ST_MinimumBoundingCircle(ST_Collect(somepointfield)).</para>
+
+		<para>It is often referred to as the  Roeck test.</para>
+
+		<para>Requires GEOS module</para>
+
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+<programlisting>SELECT d.disease_type,
+	ST_MinimumBoundingCircle(ST_Collect(d.the_geom)) As the_geom
+	FROM disease_obs As d
+	GROUP BY d.disease_type;
+
+	--Only use 8 segs to approximate a quarter circle
+	SELECT ST_AsText(ST_MinimumBoundingCircle(
+		ST_Collect(
+			ST_GeomFromEWKT('LINESTRING(1 2,3 4)'),
+				ST_MakePoint(0, 2)), 8
+				)) As wktmbc;
+wktmbc
+-----------
+POLYGON((3.30277563773199 3,3.26813580935709 2.64829592031203,3.16554751341057 2.31010763116856,
+2.9989531605735 1.99843151886317,2.7747548783982 1.7252451216018,2.50156848113683 1.50104683942651,
+2.18989236883145 1.33445248658943,1.85170407968797 1.23186419064291,1.5 1.19722436226801,
+1.14829592031204 1.23186419064291,0.81010763116856 1.33445248658943,0.498431518863177 1.5010468394265,
+0.225245121601807 1.7252451216018,0.00104683942650734 1.99843151886317,-0.16554751341057 2.31010763116855,
+-0.268135809357086 2.64829592031203,-0.302775637731995 2.99999999999999,-0.268135809357088 3.35170407968796,
+-0.165547513410575 3.68989236883144,0.00104683942650074 4.00156848113682,0.225245121601799 4.27475487839819,
+0.498431518863167 4.49895316057349,0.81010763116855 4.66554751341057,1.14829592031203 4.76813580935709,
+1.49999999999999 4.80277563773199,1.85170407968796 4.76813580935709,2.18989236883144 4.66554751341057,
+2.50156848113682 4.4989531605735,2.77475487839819 4.2747548783982,2.99895316057349 4.00156848113683,
+3.16554751341057 3.68989236883145,3.26813580935709 3.35170407968797,3.30277563773199 3))
+				</programlisting>
+	  </refsection>
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_Collect" />, <xref linkend="ST_ConvexHull" /></para>
+	  </refsection>
+	</refentry>
 
 	<refentry id="ST_Polygonize">
 		<refnamediv>
