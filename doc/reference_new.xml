@@ -12026,8 +12026,8 @@ SELECT ST_AsEWKT(ST_LineToCurve(ST_GeomFromEWKT('LINESTRING(1 2 3, 3 4 8, 5 6 4,
 	<refentry id="ST_MinimumBoundingCircle">
 	  <refnamediv>
 		<refname>ST_MinimumBoundingCircle</refname>
-		<refpurpose>Returns the smallest circle polygon that can fully contain a geometry.  
-			Defaults to 48 segs per quarter to approximate a circle</refpurpose>
+		<refpurpose>Returns the smallest circle polygon that can fully contain a geometry. Default
+		uses 48 segments per quarter circle.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -12046,15 +12046,15 @@ SELECT ST_AsEWKT(ST_LineToCurve(ST_GeomFromEWKT('LINESTRING(1 2 3, 3 4 8, 5 6 4,
 
 	  <refsection>
 		<title>Description</title>
-			<para>Returns the smallest circle polygon that can fully contain a geometry.  
-			Defaults to 48 segs per quarter to approximate a circle</para>
-
+			<para>Returns the smallest circle polygon that can fully contain a geometry. </para>
+			<note><para>The circle is approximated by a polygon with a default of 48 segments per quarter circle.  This number can be increased with little performance penalty to obtain a more accurate result.</para></note>
+			
 			<para>It is often used with MULTI and Geometry Collections.
 		Although it is not an aggregate - you can use it in conjunction
 		with ST_Collect to get the minimum bounding cirlce of a set of geometries.
 		ST_MinimumBoundingCircle(ST_Collect(somepointfield)).</para>
 
-		<para>It is often referred to as the  Roeck test.</para>
+		<para>The ratio of the area of a polygon divided by the area of its Minimum Bounding Circle is often referred to as the Roeck test.</para>
 
 		<para>Availability: 1.4.0 - requires GEOS</para>
 
