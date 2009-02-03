@@ -12056,7 +12056,7 @@ SELECT ST_AsEWKT(ST_LineToCurve(ST_GeomFromEWKT('LINESTRING(1 2 3, 3 4 8, 5 6 4,
 
 		<para>It is often referred to as the  Roeck test.</para>
 
-		<para>Requires GEOS module</para>
+		<para>Availability: 1.4.0 - requires GEOS</para>
 
 
 	  </refsection>
