@@ -701,8 +701,8 @@ lwgeom_same(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2)
 			return lwcollection_same((LWCOLLECTION *)lwgeom1,
 				(LWCOLLECTION *)lwgeom2);
 		default:
-			lwerror("lwgeom_same: unknown geometry type: %d",
-				TYPE_GETTYPE(lwgeom1->type));
+			lwerror("lwgeom_same: unsupported geometry type: %s",
+				lwgeom_typename(TYPE_GETTYPE(lwgeom1->type)));
 			return 0;
 	}
 
