@@ -407,7 +407,7 @@ Insert_attributes(DBFHandle hDBFHandle, int row)
 			else
 			{
 				escval = protect_quotes_string(val);
-				stringbuffer_aprintf(sb_row, "'%s'", escval);
+				stringbuffer_aprintf(sb_row, "E'%s'", escval);
 				//printf(",");
 			}
 			if ( val != escval ) free(escval);

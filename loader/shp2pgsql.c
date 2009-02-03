@@ -359,7 +359,7 @@ Insert_attributes(DBFHandle hDBFHandle, int row)
 				//printf("\t");
 			} else {
 				escval = protect_quotes_string(val);
-				printf("'%s'", escval);
+				printf("E'%s'", escval);
 				//printf(",");
 			}
 			if ( val != escval ) free(escval);
