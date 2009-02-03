@@ -6132,8 +6132,13 @@ $BODY$
 
 	-- First compute the ConvexHull of the geometry
 	hull = ST_ConvexHull(inputgeom);
+	--A point really has no MBC
+	IF ST_GeometryType(hull) = 'ST_Point' THEN
+		RETURN hull;
+	END IF;
 	-- convert the hull perimeter to a linestring so we can manipulate individual points
-	ring = ST_ExteriorRing(hull);
+	--If its already a linestring force it to a closed linestring
+	ring = CASE WHEN ST_GeometryType(hull) = 'ST_LineString' THEN ST_AddPoint(hull, ST_StartPoint(hull)) ELSE ST_ExteriorRing(hull) END;
 
 	dist = 0;
 	-- Brute Force - check every pair
