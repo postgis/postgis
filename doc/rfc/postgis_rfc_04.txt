@@ -1,0 +1,37 @@
+ISSUE
+-----
+
+I've been working away in an isolated little spike to try and sort out the parser issues that have kept me from finishing the marshalling / unmarshalling support for curved geometries.  The issue that I've run up against is that the parsers validation for things like closed linestrings, minimum points and the odd point (added for circular strings) assume that these checks are constant across sub-elements.  As an example parsing a linestring and a polygon:
+
+LINESTRING
+The linestring is alloc'd a tuple, and the minpoints are set to 2.  A point array tuple (counting tuple) is alloc'd and then each point has a tuple.  When the point array tuple is pop'd the minpoints are checked.
+
+POLYGON
+For a polygon, it is alloc'd a tuple just the same except closed is flagged and minpoints set to 4.  Then there's a ring counting tuple alloc'd followed by one or more point array tuples.  As each point array tuple is pop'd the minpoints and is-closed are checked.
+
+This is perfectly sensible and fast-fail.  But this falls down with the introduction of compound curves and curved polygons.  Under this model, the following happens when parsing a curved polygon:
+
+CURVEPOLYGON
+The curved polygon is alloc'd a tuple, minpoints set to 4 and closed flagged.  A ring counter is alloc'd.  Then there are options.  If the first ring is a linestring it is alloc'd a tuple and the minpoints set to 2.  If it's a circularstring minpoints are 3 and isodd is flagged.  If it's a compound curve it gets minpoints = 2, and then sub-geometries are alloc'd.  As well as overwriting the minpoints and isodd, the compound curve breaks the isclosed, as it must be closed but it's sub-geometries can't be.
+
+There is currently no way to check the continuity of a compound curve (one sub-geometry ends on the same point the next sub-geometry begins) or the closedness using thing mechanism, as it only operates on distinct point arrays tuples.
+
+PROPOSAL
+--------
+My proposed fix is to change how and where these basic validations are performed.  Instead of tracking the validation requirements in global variable they will be handled by the parser.  By adding calls to validation methods as the parser closes each geometry or sub-geometry we know the proper context and can evaluate the geometry as a whole.
+
+To pick an example, the parser will call a method 'void check_linestring(void)' before popping a parsed linestrings tuple from the stack.  This method will currently implement the minpoints check.  In the case of a closed linestring, an aditional method 'void check_geometry_closed(void)' will be called.  With this process, the point arrays themselves have no validation, since point arrays have no 
+
+nonempty_linestring :
+	{ alloc_linestring(); } linestring_1 { check_linestring(); pop(); } 
+
+nonempty_linestring_closed :
+        { alloc_linestring_closed(); } linestring_1 { check_geometry_closed(); check_linestring(); pop(); }
+
+This is a change in paradigm for how we currently validate geometries.  The previous method was very efficient as only a single tuple was ever handled at a time, start and end points were copied into global variables during parsing to perform closed checks, and the parser would report any invalidities at the end of the offending point array making debugging easier for the user.
+
+This solution requires traversing the tuple chain from the geometry into point array tuples and in some cases sub-geometries.  While this won't have a large effect on linestrings it can be expected to have a negative performance impact on polygons, as each point needs to be fully traversed in order to validate it.  Compound curves have a similar problem, but under the current mechanism are simply not fully validated.
+
+The other negative impact of this changes is the invalidity reporting.  Because validation is performed at the end of the geometry, it is not simple to identify where in the WKT string an error occured.  For example, if a polygon consists of several rings, one of which is not closed, the Hint provided to the user will indicate the end of the polygon, not the end of the unclosed point array.  I have yet to resolve this issue.
+
+The advantages here are the proper support of compound curves and curve polygons and the validation mechanism is much more clear and flexible.
