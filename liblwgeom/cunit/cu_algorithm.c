@@ -100,7 +100,6 @@ int clean_cg_suite(void)
 	if ( q2 ) lwfree(q2);
 	if ( l21 ) lwline_free(l21);
 	if ( l22 ) lwline_free(l22);
-	if ( l51 ) lwline_free(l51);
 	return 0;
 }
 
@@ -338,6 +337,8 @@ void test_lwline_crossing_short_lines(void)
 	
 void test_lwline_crossing_long_lines(void) 
 {
+    LWLINE *l51;
+    LWLINE *l52;
 	/* 
 	** More complex test, longer lines and multiple crossings 
 	*/
@@ -394,6 +395,8 @@ void test_lwline_crossing_long_lines(void)
 	l52 = (LWLINE*)lwgeom_from_ewkt("LINESTRING(1 1, 1 2, 1 3, 0 3, 0 4)", PARSER_CHECK_NONE);
 	CU_ASSERT( lwline_crossing_direction(l51, l52) == LINE_NO_CROSS );
 	lwline_free(l52);
+
+	lwline_free(l51);
 
 }
 
@@ -464,7 +467,12 @@ void test_lwpoint_interpolate(void)
 void test_lwline_clip(void)
 {
 	LWCOLLECTION *c;
+	LWLINE *line = NULL;
+    LWLINE *l51 = NULL;
 	char *ewkt;
+	
+	/* Vertical line with vertices at y integers */
+	l51 = (LWLINE*)lwgeom_from_ewkt("LINESTRING(0 0, 0 1, 0 2, 0 3, 0 4)", PARSER_CHECK_NONE);
 	
 	/* Clip in the middle, mid-range. */
 	c = lwline_clip_to_ordinate_range(l51, 1, 1.5, 2.5);
@@ -521,6 +529,48 @@ void test_lwline_clip(void)
 	CU_ASSERT_STRING_EQUAL(ewkt, "GEOMETRYCOLLECTION(POINT(0 0))" );
 	lwfree(ewkt);
 	lwcollection_free(c);
+
+	/* ST_LocateBetweenElevations(ST_GeomFromEWKT('LINESTRING(1 2 3, 4 5 6, 6 6 6, 1 1 1)'), 1, 2)) */
+	line = (LWLINE*)lwgeom_from_ewkt("LINESTRING(1 2 3, 4 5 6, 6 6 6, 1 1 1)", PARSER_CHECK_NONE);
+	c = lwline_clip_to_ordinate_range(line, 2, 1.0, 2.0);
+	ewkt = lwgeom_to_ewkt((LWGEOM*)c, PARSER_CHECK_NONE);
+	//printf("a = %s\n", ewkt);
+	CU_ASSERT_STRING_EQUAL(ewkt, "MULTILINESTRING((2 2 2,1 1 1))" );
+	lwfree(ewkt);
+	lwcollection_free(c);
+	lwline_free(line);
+
+	/* ST_LocateBetweenElevations('LINESTRING(1 2 3, 4 5 6, 6 6 6, 1 1 1)', 1, 2)) */
+	line = (LWLINE*)lwgeom_from_ewkt("LINESTRING(1 2 3, 4 5 6, 6 6 6, 1 1 1)", PARSER_CHECK_NONE);
+	c = lwline_clip_to_ordinate_range(line, 2, 1.0, 2.0);
+	ewkt = lwgeom_to_ewkt((LWGEOM*)c, PARSER_CHECK_NONE);
+	//printf("a = %s\n", ewkt);
+	CU_ASSERT_STRING_EQUAL(ewkt, "MULTILINESTRING((2 2 2,1 1 1))" );
+	lwfree(ewkt);
+	lwcollection_free(c);
+	lwline_free(line);
+    
+	/* ST_LocateBetweenElevations('LINESTRING(1 2 3, 4 5 6, 6 6 6, 1 1 1)', 1, 1)) */
+	line = (LWLINE*)lwgeom_from_ewkt("LINESTRING(1 2 3, 4 5 6, 6 6 6, 1 1 1)", PARSER_CHECK_NONE);
+	c = lwline_clip_to_ordinate_range(line, 2, 1.0, 1.0);
+	ewkt = lwgeom_to_ewkt((LWGEOM*)c, PARSER_CHECK_NONE);
+	//printf("b = %s\n", ewkt);
+	CU_ASSERT_STRING_EQUAL(ewkt, "GEOMETRYCOLLECTION(POINT(1 1 1))" );
+	lwfree(ewkt);
+	lwcollection_free(c);
+	lwline_free(line);
+
+	/* ST_LocateBetweenElevations('LINESTRING(1 1 1, 1 2 2)', 1,1) */
+	line = (LWLINE*)lwgeom_from_ewkt("LINESTRING(1 1 1, 1 2 2)", PARSER_CHECK_NONE);
+	c = lwline_clip_to_ordinate_range(line, 2, 1.0, 1.0);
+	ewkt = lwgeom_to_ewkt((LWGEOM*)c, PARSER_CHECK_NONE);
+	//printf("c = %s\n", ewkt);
+	CU_ASSERT_STRING_EQUAL(ewkt, "GEOMETRYCOLLECTION(POINT(1 1 1))" );
+	lwfree(ewkt);
+	lwcollection_free(c);
+	lwline_free(line);
+
+    lwline_free(l51);
 
 }
 
