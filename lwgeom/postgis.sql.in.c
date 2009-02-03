@@ -6095,5 +6095,119 @@ CREATEFUNCTION ST_LineToCurve(geometry)
 -- END
 ---------------------------------------------------------------
 
+
+---------------------------------------------------------------
+-- USER CONTRIUBUTED
+---------------------------------------------------------------
+
+-----------------------------------------------------------------------
+-- ST_MinimumBoundingCircle(inputgeom geometry, segs_per_quarter integer) 
+-----------------------------------------------------------------------
+-- Returns the smallest circle polygon that can fully contain a geometry
+-- Defaults to 48 segs per quarter to approximate a circle
+-- Contributed by Bruce Rindahl
+-- Availability: 1.4.0
+-----------------------------------------------------------------------
+CREATEFUNCTION ST_MinimumBoundingCircle(inputgeom geometry, segs_per_quarter integer)
+  RETURNS geometry AS
+$BODY$
+  DECLARE     
+    hull GEOMETRY;
+    ring GEOMETRY;
+    center GEOMETRY;
+    radius DOUBLE PRECISION;
+    dist DOUBLE PRECISION;
+    d DOUBLE PRECISION;
+    idx1 integer;
+    idx2 integer;
+    l1 GEOMETRY;
+    l2 GEOMETRY;
+    p1 GEOMETRY;
+    p2 GEOMETRY;
+    a1 DOUBLE PRECISION;
+    a2 DOUBLE PRECISION;
+
+    
+  BEGIN
+
+	-- First compute the ConvexHull of the geometry
+	hull = ST_ConvexHull(inputgeom);
+	-- convert the hull perimeter to a linestring so we can manipulate individual points
+	ring = ST_ExteriorRing(hull);
+
+	dist = 0;
+	-- Brute Force - check every pair
+	FOR i in 1 .. (ST_NumPoints(ring)-2)
+		LOOP
+			FOR j in i .. (ST_NumPoints(ring)-1)
+				LOOP
+				d = ST_Distance(ST_PointN(ring,i),ST_PointN(ring,j));
+				-- Check the distance and update if larger
+				IF (d > dist) THEN
+					dist = d;
+					idx1 = i;
+					idx2 = j;
+				END IF;
+			END LOOP;
+		END LOOP;
+
+	-- We now have the diameter of the convex hull.  The following line returns it if desired.
+	-- RETURN MakeLine(PointN(ring,idx1),PointN(ring,idx2));
+
+	-- Now for the Minimum Bounding Circle.  Since we know the two points furthest from each
+	-- other, the MBC must go through those two points. Start with those points as a diameter of a circle.
+	
+	-- The radius is half the distance between them and the center is midway between them
+	radius = ST_Distance(ST_PointN(ring,idx1),ST_PointN(ring,idx2)) / 2.0;
+	center = ST_Line_interpolate_point(ST_MakeLine(ST_PointN(ring,idx1),ST_PointN(ring,idx2)),0.5);
+
+	-- Loop through each vertex and check if the distance from the center to the point
+	-- is greater than the current radius.
+	FOR k in 1 .. (ST_NumPoints(ring)-1)
+		LOOP
+		IF(k <> idx1 and k <> idx2) THEN
+			dist = ST_Distance(center,ST_PointN(ring,k));
+			IF (dist > radius) THEN
+				-- We have to expand the circle.  The new circle must pass trhough
+				-- three points - the two original diameters and this point.
+				
+				-- Draw a line from the first diameter to this point
+				l1 = ST_Makeline(ST_PointN(ring,idx1),ST_PointN(ring,k));
+				-- Compute the midpoint
+				p1 = ST_line_interpolate_point(l1,0.5);
+				-- Rotate the line 90 degrees around the midpoint (perpendicular bisector)
+				l1 = ST_Translate(ST_Rotate(ST_Translate(l1,-X(p1),-Y(p1)),pi()/2),X(p1),Y(p1));
+				--  Compute the azimuth of the bisector
+				a1 = ST_Azimuth(ST_PointN(l1,1),ST_PointN(l1,2));
+				--  Extend the line in each direction the new computed distance to insure they will intersect
+				l1 = ST_AddPoint(l1,ST_Makepoint(X(ST_PointN(l1,2))+sin(a1)*dist,Y(ST_PointN(l1,2))+cos(a1)*dist),-1);
+				l1 = ST_AddPoint(l1,ST_Makepoint(X(ST_PointN(l1,1))-sin(a1)*dist,Y(ST_PointN(l1,1))-cos(a1)*dist),0);
+
+				-- Repeat for the line from the point to the other diameter point
+				l2 = ST_Makeline(ST_PointN(ring,idx2),ST_PointN(ring,k));
+				p2 = ST_Line_interpolate_point(l2,0.5);
+				l2 = ST_Translate(ST_Rotate(ST_Translate(l2,-X(p2),-Y(p2)),pi()/2),X(p2),Y(p2));
+				a2 = ST_Azimuth(ST_PointN(l2,1),ST_PointN(l2,2));
+				l2 = ST_AddPoint(l2,ST_Makepoint(X(ST_PointN(l2,2))+sin(a2)*dist,Y(ST_PointN(l2,2))+cos(a2)*dist),-1);
+				l2 = ST_AddPoint(l2,ST_Makepoint(X(ST_PointN(l2,1))-sin(a2)*dist,Y(ST_PointN(l2,1))-cos(a2)*dist),0);
+
+				-- The new center is the intersection of the two bisectors
+				center = ST_Intersection(l1,l2);
+				-- The new radius is the distance to any of the three points
+				radius = ST_Distance(center,ST_PointN(ring,idx1));
+			END IF;
+		END IF;
+		END LOOP;
+	--DONE!!  Return the MBC via the buffer command
+    RETURN ST_Buffer(center,radius,segs_per_quarter);
+
+  END;
+$BODY$
+  LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+  
+CREATE OR REPLACE FUNCTION ST_MinimumBoundingCircle(geometry)
+ RETURNS geometry AS
+'SELECT ST_MinimumBoundingCircle($1, 48)'
+ LANGUAGE 'sql' IMMUTABLE STRICT;
 COMMIT;
 
