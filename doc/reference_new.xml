@@ -4288,15 +4288,14 @@ SELECT ST_IsValidReason('LINESTRING(220227 150406,2220227 150407,222020 150410)'
 		<refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT ST_NPoints(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'));
-			--result
-			4
+<programlisting>SELECT ST_NPoints(ST_GeomFromText('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'));
+--result
+4
 
-			--Polygon in 3d space
-			SELECT ST_NPoints(ST_GeomFromEWKT('LINESTRING(77.29 29.07 1,77.42 29.26 0,77.27 29.31 -1,77.29 29.07 3)'))
-			--result
-			4
-			</programlisting>
+--Polygon in 3D space
+SELECT ST_NPoints(ST_GeomFromEWKT('LINESTRING(77.29 29.07 1,77.42 29.26 0,77.27 29.31 -1,77.29 29.07 3)'))
+--result
+4</programlisting>
 		</refsection>
 		<refsection>
 			<title>See Also</title>
@@ -4610,14 +4609,12 @@ GROUP BY gid, field1,field2;
 		url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
 		Implementation Specification for SQL.</ulink></para>
 
-		<!-- Optionally mention SQL/MM compliancy if appropriate -->
 		<para><inlinemediaobject>
 			<imageobject>
 			  <imagedata fileref="images/check.png" />
 			</imageobject>
 		  </inlinemediaobject> This method implements the SQL/MM specification: SQL-MM 3: 7.2.5, 7.3.5</para>
 
-		<!-- Optionally mention 3d support -->
 		<para><inlinemediaobject>
 			<imageobject>
 			  <imagedata fileref="images/check.png" />
@@ -4629,14 +4626,26 @@ GROUP BY gid, field1,field2;
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting></programlisting>
+		<programlisting>-- Extract all POINTs from a LINESTRING
+SELECT ST_AsText(
+   ST_PointN(
+      column1, 
+      generate_series(1, ST_NPoints(column1))
+   ))
+FROM ( VALUES ('LINESTRING(0 0, 1 1, 2 2)'::geometry) ) AS foo;
+
+ st_astext  
+------------
+ POINT(0 0)
+ POINT(1 1)
+ POINT(2 2)
+(3 rows)</programlisting>
 	  </refsection>
 
-	  <!-- Optionally add a "See Also" section -->
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Dump" />, <xref linkend="ST_NPoints" /></para>
+		<para><xref linkend="ST_NPoints" /></para>
 	  </refsection>
 	</refentry>
 
