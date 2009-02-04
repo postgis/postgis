@@ -10,15 +10,17 @@
      ******************************************************************** -->
 	<xsl:output method="text" />
 	<!--Exclude this from testing - it crashes or already tested in special section -->
-	<xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable</xsl:variable>
+	<xsl:variable name='fnexclude'>AddGeometryColumn DropGeometryColumn DropGeometryTable ST_CurveToLine</xsl:variable>
 	<!--This is just a place holder to state functions not supported in 1.3 branch -->
 	<xsl:variable name='fnexclude13'>Populate_Geometry_Columns ST_IsValidReason</xsl:variable>	
 	<xsl:variable name='var_srid'>3395</xsl:variable>
 	<xsl:variable name='var_position'>1</xsl:variable>
-	<xsl:variable name='var_integer'>5</xsl:variable>
+	<xsl:variable name='var_integer1'>3</xsl:variable>
+	<xsl:variable name='var_integer2'>5</xsl:variable>
 	<xsl:variable name='var_float1'>0.5</xsl:variable>
 	<xsl:variable name='var_float2'>0.75</xsl:variable>
-	<xsl:variable name='var_version'>1</xsl:variable>
+	<xsl:variable name='var_version1'>1</xsl:variable>
+	<xsl:variable name='var_version2'>2</xsl:variable>
 	<xsl:variable name='var_NDRXDR'>XDR</xsl:variable>
 	<xsl:variable name='var_text'>'monkey'</xsl:variable>
 	<xsl:variable name='var_varchar'>'test'</xsl:variable>
@@ -283,8 +285,11 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="contains(parameter, 'NDR')"> 
 						'<xsl:value-of select="$var_NDRXDR" />'
 					</xsl:when>
-					<xsl:when test="contains(parameter, 'version')"> 
-						<xsl:value-of select="$var_version" />
+					<xsl:when test="contains(parameter, 'version') and position() = 2"> 
+						<xsl:value-of select="$var_version1" />
+					</xsl:when>
+					<xsl:when test="(contains(parameter, 'version'))"> 
+						<xsl:value-of select="$var_version2" />
 					</xsl:when>
 					<xsl:when test="(contains(type,'box') or type = 'geometry' or type = 'geometry ' or contains(type,'geometry set')) and (position() = 1 or count($func/paramdef/type[contains(text(),'geometry') or contains(text(),'box') or contains(text(), 'WKT') or contains(text(), 'bytea')]) = '1')"> 
 						<xsl:text>foo1.the_geom</xsl:text>
@@ -313,8 +318,11 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="contains(type, 'spheroid')"> 
 						<xsl:value-of select="$var_spheroid" />
 					</xsl:when>
+					<xsl:when test="contains(type, 'integer') and position() = 2"> 
+						<xsl:value-of select="$var_integer1" />
+					</xsl:when>
 					<xsl:when test="contains(type, 'integer')"> 
-						<xsl:value-of select="$var_integer" />
+						<xsl:value-of select="$var_integer2" />
 					</xsl:when>
 					<xsl:when test="contains(type, 'text')"> 
 						<xsl:value-of select="$var_text" />
