@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id: shp2pgsql-gui.c 3450 2008-12-18 20:42:09Z pramsey $
+ * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net

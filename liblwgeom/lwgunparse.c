@@ -4,7 +4,7 @@
  * Copyright Telogis 2004
  * www.telogis.com
  *
- * $Id: wktunparse.c 2781 2008-05-22 20:43:00Z mcayland $
+ * $Id$
  */
 
 

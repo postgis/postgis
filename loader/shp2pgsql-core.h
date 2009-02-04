@@ -19,7 +19,7 @@
 #include "../liblwgeom/liblwgeom.h"
 #include "stringbuffer.h"
 
-#define RCSID "$Id: shp2pgsql.c 3450 2008-12-18 20:42:09Z pramsey $"
+#define RCSID "$Id$"
 
 #define TRANSLATION_IDLE 0
 #define TRANSLATION_CREATE 1

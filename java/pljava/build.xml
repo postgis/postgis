@@ -16,14 +16,14 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA or visit the web at
 http://www.gnu.org.
 
-$Id: JtsBinaryParser.java 2407 2006-07-18 18:13:31Z mschaber $
+$Id$
 -->
 <project name="Postgis-PLJava" default="all">
     <property file="build.properties" />
     <description>
     Build the api jar and JNI headers for the navi java api
 
-        $Id: build.xml 1329 2006-01-04 10:26:07Z schabi $           
+        $Id$           
     </description>
 
     <property name="source.dir" value="src" />

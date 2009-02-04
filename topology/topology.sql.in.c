@@ -1,6 +1,6 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- 
--- $Id: topology.sql.in 2469 2006-09-06 11:16:59Z strk $
+-- $Id$
 --
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.refractions.net

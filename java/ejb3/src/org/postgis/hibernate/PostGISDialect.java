@@ -19,7 +19,7 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA or visit the web at
  * http://www.gnu.org.
  * 
- * $Id: PostGISDialect.java 2531 2006-11-22 10:42:17Z mschaber $
+ * $Id$
  */
 package org.postgis.hibernate;
 

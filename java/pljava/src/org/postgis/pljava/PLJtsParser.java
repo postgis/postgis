@@ -19,7 +19,7 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA or visit the web at
  * http://www.gnu.org.
  * 
- * $Id: JtsBinaryParser.java 2407 2006-07-18 18:13:31Z mschaber $
+ * $Id$
  */
 package org.postgis.pljava;
 

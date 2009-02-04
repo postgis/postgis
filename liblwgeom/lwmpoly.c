@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id: lwmpoly.c 2797 2008-05-31 09:56:44Z mcayland $
+ * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net

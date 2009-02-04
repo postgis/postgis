@@ -19,7 +19,7 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA or visit the web at
  * http://www.gnu.org.
  * 
- * $Id: JtsBinaryWriter.java 2410 2006-07-19 13:31:18Z mschaber $
+ * $Id$
  */
 package org.postgis.pljava;
 
