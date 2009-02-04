@@ -7,7 +7,7 @@
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
- * 
+ *
  **********************************************************************/
 
 #include "cu_algorithm.h"
@@ -30,13 +30,12 @@ CU_pSuite register_cg_suite(void)
 	    (NULL == CU_add_test(pSuite, "test_lw_segment_intersects()", test_lw_segment_intersects)) ||
 	    (NULL == CU_add_test(pSuite, "test_lwline_crossing_short_lines()", test_lwline_crossing_short_lines)) ||
 	    (NULL == CU_add_test(pSuite, "test_lwline_crossing_long_lines()", test_lwline_crossing_long_lines)) ||
-	    (NULL == CU_add_test(pSuite, "test_lwpoint_set_ordinate()", test_lwpoint_set_ordinate)) || 
+	    (NULL == CU_add_test(pSuite, "test_lwpoint_set_ordinate()", test_lwpoint_set_ordinate)) ||
 	    (NULL == CU_add_test(pSuite, "test_lwpoint_get_ordinate()", test_lwpoint_get_ordinate)) ||
 	    (NULL == CU_add_test(pSuite, "test_lwpoint_interpolate()", test_lwpoint_interpolate)) ||
 	    (NULL == CU_add_test(pSuite, "test_lwline_clip()", test_lwline_clip)) ||
 	    (NULL == CU_add_test(pSuite, "test_lwline_clip_big()", test_lwline_clip_big)) ||
-	    (NULL == CU_add_test(pSuite, "test_lwmline_clip()", test_lwmline_clip)) 
-	
+	    (NULL == CU_add_test(pSuite, "test_lwmline_clip()", test_lwmline_clip))
 	)
 	{
 		CU_cleanup_registry();
@@ -111,34 +110,34 @@ void test_lw_segment_side(void)
 	double rv = 0.0;
 	POINT2D *q = NULL;
 	q = lwalloc(sizeof(POINT2D));
-	
+
 	/* Vertical line at x=0 */
 	p1->x = 0.0;
 	p1->y = 0.0;
 	p2->x = 0.0;
 	p2->y = 1.0;
-	
+
 	/* On the left */
 	q->x = -2.0;
 	q->y = 1.5;
 	rv = lw_segment_side(p1, p2, q);
 	//printf("left %g\n",rv);
 	CU_ASSERT(rv < 0.0);
-	
+
 	/* On the right */
 	q->x = 2.0;
 	rv = lw_segment_side(p1, p2, q);
 	//printf("right %g\n",rv);
 	CU_ASSERT(rv > 0.0);
-	
+
 	/* On the line */
 	q->x = 0.0;
 	rv = lw_segment_side(p1, p2, q);
 	//printf("on line %g\n",rv);
 	CU_ASSERT_EQUAL(rv, 0.0);
-	
+
 	lwfree(q);
-	
+
 }
 
 /*
@@ -146,7 +145,7 @@ void test_lw_segment_side(void)
 */
 void test_lw_segment_intersects(void)
 {
-	
+
 	/* P: Vertical line at x=0 */
 	p1->x = 0.0;
 	p1->y = 0.0;
@@ -274,7 +273,7 @@ void test_lw_segment_intersects(void)
 
 }
 
-void test_lwline_crossing_short_lines(void) 
+void test_lwline_crossing_short_lines(void)
 {
 
 	/*
@@ -287,7 +286,7 @@ void test_lwline_crossing_short_lines(void)
 	setPoint4d(pa21, 0, p);
 	p->y = 1.0;
 	setPoint4d(pa21, 1, p);
-	
+
 	/* Horizontal, crossing mid-segment */
 	p->x = -0.5;
 	p->y = 0.5;
@@ -334,12 +333,12 @@ void test_lwline_crossing_short_lines(void)
 	CU_ASSERT( lwline_crossing_direction(l21, l22) == LINE_NO_CROSS );
 
 }
-	
-void test_lwline_crossing_long_lines(void) 
+
+void test_lwline_crossing_long_lines(void)
 {
-    LWLINE *l51;
-    LWLINE *l52;
-	/* 
+	LWLINE *l51;
+	LWLINE *l52;
+	/*
 	** More complex test, longer lines and multiple crossings 
 	*/
 
@@ -400,80 +399,80 @@ void test_lwline_crossing_long_lines(void)
 
 }
 
-void test_lwpoint_set_ordinate(void) 
+void test_lwpoint_set_ordinate(void)
 {
-    p->x = 0.0;
-    p->y = 0.0;
-    p->z = 0.0;
-    p->m = 0.0;
-    
-    lwpoint_set_ordinate(p, 0, 1.5);
-    CU_ASSERT_EQUAL( p->x, 1.5 );
-    
-    lwpoint_set_ordinate(p, 3, 2.5);
-    CU_ASSERT_EQUAL( p->m, 2.5 );
-    
-    lwpoint_set_ordinate(p, 2, 3.5);
-    CU_ASSERT_EQUAL( p->z, 3.5 );
-    
+	p->x = 0.0;
+	p->y = 0.0;
+	p->z = 0.0;
+	p->m = 0.0;
+
+	lwpoint_set_ordinate(p, 0, 1.5);
+	CU_ASSERT_EQUAL( p->x, 1.5 );
+
+	lwpoint_set_ordinate(p, 3, 2.5);
+	CU_ASSERT_EQUAL( p->m, 2.5 );
+
+	lwpoint_set_ordinate(p, 2, 3.5);
+	CU_ASSERT_EQUAL( p->z, 3.5 );
+
 }
 
-void test_lwpoint_get_ordinate(void) 
+void test_lwpoint_get_ordinate(void)
 {
 
-    p->x = 10.0;
-    p->y = 20.0;
-    p->z = 30.0;
-    p->m = 40.0;
+	p->x = 10.0;
+	p->y = 20.0;
+	p->z = 30.0;
+	p->m = 40.0;
 
-    CU_ASSERT_EQUAL( lwpoint_get_ordinate(p, 0), 10.0 );
-    CU_ASSERT_EQUAL( lwpoint_get_ordinate(p, 1), 20.0 );
-    CU_ASSERT_EQUAL( lwpoint_get_ordinate(p, 2), 30.0 );
-    CU_ASSERT_EQUAL( lwpoint_get_ordinate(p, 3), 40.0 );
-        
+	CU_ASSERT_EQUAL( lwpoint_get_ordinate(p, 0), 10.0 );
+	CU_ASSERT_EQUAL( lwpoint_get_ordinate(p, 1), 20.0 );
+	CU_ASSERT_EQUAL( lwpoint_get_ordinate(p, 2), 30.0 );
+	CU_ASSERT_EQUAL( lwpoint_get_ordinate(p, 3), 40.0 );
+
 }
 
 void test_lwpoint_interpolate(void)
 {
-    POINT4D *r = NULL;
-    r = lwalloc(sizeof(POINT4D));
-    int rv = 0;
-    
-    p->x = 10.0;
-    p->y = 20.0;
-    p->z = 30.0;
-    p->m = 40.0;
-    q->x = 20.0;
-    q->y = 30.0;
-    q->z = 40.0;
-    q->m = 50.0;
-    
-    rv = lwpoint_interpolate(p, q, r, 4, 2, 35.0);
-    CU_ASSERT_EQUAL( r->x, 15.0);
+	POINT4D *r = NULL;
+	r = lwalloc(sizeof(POINT4D));
+	int rv = 0;
 
-    rv = lwpoint_interpolate(p, q, r, 4, 3, 41.0);
-    CU_ASSERT_EQUAL( r->y, 21.0);
+	p->x = 10.0;
+	p->y = 20.0;
+	p->z = 30.0;
+	p->m = 40.0;
+	q->x = 20.0;
+	q->y = 30.0;
+	q->z = 40.0;
+	q->m = 50.0;
 
-    rv = lwpoint_interpolate(p, q, r, 4, 3, 50.0);
-    CU_ASSERT_EQUAL( r->y, 30.0);
+	rv = lwpoint_interpolate(p, q, r, 4, 2, 35.0);
+	CU_ASSERT_EQUAL( r->x, 15.0);
 
-    rv = lwpoint_interpolate(p, q, r, 4, 3, 40.0);
-    CU_ASSERT_EQUAL( r->y, 20.0);
+	rv = lwpoint_interpolate(p, q, r, 4, 3, 41.0);
+	CU_ASSERT_EQUAL( r->y, 21.0);
 
-    lwfree(r);
-    
+	rv = lwpoint_interpolate(p, q, r, 4, 3, 50.0);
+	CU_ASSERT_EQUAL( r->y, 30.0);
+
+	rv = lwpoint_interpolate(p, q, r, 4, 3, 40.0);
+	CU_ASSERT_EQUAL( r->y, 20.0);
+
+	lwfree(r);
+
 }
 
 void test_lwline_clip(void)
 {
 	LWCOLLECTION *c;
 	LWLINE *line = NULL;
-    LWLINE *l51 = NULL;
+	LWLINE *l51 = NULL;
 	char *ewkt;
-	
+
 	/* Vertical line with vertices at y integers */
 	l51 = (LWLINE*)lwgeom_from_ewkt("LINESTRING(0 0, 0 1, 0 2, 0 3, 0 4)", PARSER_CHECK_NONE);
-	
+
 	/* Clip in the middle, mid-range. */
 	c = lwline_clip_to_ordinate_range(l51, 1, 1.5, 2.5);
 	ewkt = lwgeom_to_ewkt((LWGEOM*)c, PARSER_CHECK_NONE);
@@ -496,7 +495,7 @@ void test_lwline_clip(void)
 	//printf("c = %s\n", ewkt);
 	CU_ASSERT_STRING_EQUAL(ewkt, "MULTILINESTRING((0 0,0 1,0 2,0 2.5))" );
 	lwfree(ewkt);
-	lwcollection_free(c);	
+	lwcollection_free(c);
 
 	/* Range holds entire object. */
 	c = lwline_clip_to_ordinate_range(l51, 1, -1.5, 5.5);
@@ -549,7 +548,7 @@ void test_lwline_clip(void)
 	lwfree(ewkt);
 	lwcollection_free(c);
 	lwline_free(line);
-    
+
 	/* ST_LocateBetweenElevations('LINESTRING(1 2 3, 4 5 6, 6 6 6, 1 1 1)', 1, 1)) */
 	line = (LWLINE*)lwgeom_from_ewkt("LINESTRING(1 2 3, 4 5 6, 6 6 6, 1 1 1)", PARSER_CHECK_NONE);
 	c = lwline_clip_to_ordinate_range(line, 2, 1.0, 1.0);
@@ -570,7 +569,7 @@ void test_lwline_clip(void)
 	lwcollection_free(c);
 	lwline_free(line);
 
-    lwline_free(l51);
+	lwline_free(l51);
 
 }
 
@@ -596,7 +595,7 @@ void test_lwmline_clip(void)
 
 	lwmline_free(mline);
 
-	/* 
+	/*
 	** Set up the input line. Two-member case. 
 	*/
 	mline = (LWMLINE*)lwgeom_from_ewkt("MULTILINESTRING((1 0,1 1,1 2,1 3,1 4), (0 0,0 1,0 2,0 3,0 4))", PARSER_CHECK_NONE);
@@ -611,7 +610,7 @@ void test_lwmline_clip(void)
 
 	lwmline_free(mline);
 
-	/* 
+	/*
 	** Set up staggered input line to create multi-type output. 
 	*/
 	mline = (LWMLINE*)lwgeom_from_ewkt("MULTILINESTRING((1 0,1 -1,1 -2,1 -3,1 -4), (0 0,0 1,0 2,0 3,0 4))", PARSER_CHECK_NONE);
@@ -626,7 +625,7 @@ void test_lwmline_clip(void)
 
 	lwmline_free(mline);
 
-	/* 
+	/*
 	** Set up input line from MAC
 	*/
 	line = (LWLINE*)lwgeom_from_ewkt("LINESTRING(0 0 0 0,1 1 1 1,2 2 2 2,3 3 3 3,4 4 4 4,3 3 3 5,2 2 2 6,1 1 1 7,0 0 0 8)", PARSER_CHECK_NONE);
@@ -681,17 +680,17 @@ void test_lwline_clip_big(void)
 	p->y = 0.0;
 	p->z = 0.0;
 	setPoint4d(pa, 0, p);
-	
+
 	p->x = 1.0;
 	p->y = 1.0;
 	p->z = 1.0;
 	setPoint4d(pa, 1, p);
-	
+
 	p->x = 2.0;
 	p->y = 2.0;
 	p->z = 2.0;
 	setPoint4d(pa, 2, p);
-	
+
 	c = lwline_clip_to_ordinate_range(line, 2, 0.5, 1.5);
 	ewkt = lwgeom_to_ewkt((LWGEOM*)c, PARSER_CHECK_NONE);
 	//printf("c = %s\n", ewkt);
