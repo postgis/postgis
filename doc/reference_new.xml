@@ -4629,12 +4629,12 @@ GROUP BY gid, field1,field2;
 		<programlisting>-- Extract all POINTs from a LINESTRING
 SELECT ST_AsText(
    ST_PointN(
-      column1, 
+      column1,
       generate_series(1, ST_NPoints(column1))
    ))
 FROM ( VALUES ('LINESTRING(0 0, 1 1, 2 2)'::geometry) ) AS foo;
 
- st_astext  
+ st_astext
 ------------
  POINT(0 0)
  POINT(1 1)
@@ -5300,7 +5300,7 @@ SELECT ST_Zmflag(ST_GeomFromEWKT('POINT(1 2 3 4)'));
 		<para>
 		Version 1: The
 			call <programlisting>ST_Affine(geom, a, b, c, d, e, f, g, h, i, xoff, yoff, zoff) </programlisting>
-			represents the transformation matrix <programlisting>/ a  b  c  xoff \ 
+			represents the transformation matrix <programlisting>/ a  b  c  xoff \
 | d  e  f  yoff |
 | g  h  i  zoff |
 \ 0  0  0     1 /</programlisting> and the vertices are transformed as
@@ -5311,7 +5311,7 @@ z' = g*x + h*y + i*z + zoff</programlisting> All of the translate / scale
 			transformation.</para>
 		<para>Version 2: Applies a 2d affine transformation to the geometry. The
 			call <programlisting>ST_Affine(geom, a, b, d, e, xoff, yoff)</programlisting>
-			represents the transformation matrix <programlisting>/  a  b  0  xoff  \       /  a  b  xoff  \ 
+			represents the transformation matrix <programlisting>/  a  b  0  xoff  \       /  a  b  xoff  \
 |  d  e  0  yoff  | rsp.  |  d  e  yoff  |
 |  0  0  1     0  |       \  0  0     1  /
 \  0  0  0     1  /</programlisting> and the vertices are transformed as
@@ -11393,7 +11393,7 @@ ST_GeomFromText('CIRCULARSTRING(220227 150406,2220227 150407,220227 150406)')));
 		<title>Description</title>
 			<para>The convex hull of a geometry represents the minimum convex
 		geometry that encloses all geometries within the set.</para>
-		
+
 		<para>One can think of the convex hull as the geometry you get by wrapping an elastic
 			band around a set of geometries.  This is different from a concave hull (not currently supported)
 				which is analogous to shrink-wrapping your geometries.</para>
@@ -11731,12 +11731,8 @@ FROM sometable</programlisting>
 	  <refnamediv>
 		<refname>ST_DumpRings</refname>
 
-		<refpurpose>This is a set-returning function (SRF). It returns a set of
-			geometry_dump rows, formed by a geometry (geom) and an array of
-			integers (path). The 'path' field holds the polygon ring index,
-			contains a single element: 0 for the shell, hole number for holes.
-			The 'geom' field contains the corresponding ring as a
-			polygon.</refpurpose>
+		<refpurpose>Returns a set of <varname>geometry_dump</varname> rows, representing
+		    the exterior and interior rings of a polygon.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -11752,11 +11748,10 @@ FROM sometable</programlisting>
 		<title>Description</title>
 
 		<para>This is a set-returning function (SRF). It returns a set of
-			geometry_dump rows, formed by a geometry (geom) and an array of
-			integers (path). The 'path' field holds the polygon ring index,
-			contains a single element: 0 for the shell, hole number for holes.
-			The 'geom' field contains the corresponding ring as a
-			polygon.</para>
+			<varname>geometry_dump</varname> rows, defined as an <varname>integer[]</varname> 
+			and a <varname>geometry</varname>, aliased "path" and "geom" respectively. 
+			The "path" field holds the polygon ring index containing a single integer: 0 for the shell, >0 for holes.
+			The "geom" field contains the corresponding ring as a polygon.</para>
 
 		<para>Availability: PostGIS 1.1.3. Requires PostgreSQL 7.3 or higher.</para>
 		<note><para>This only works for POLYGON geometries. It will not work for MULTIPOLYGONS</para></note>
@@ -11773,28 +11768,25 @@ FROM sometable</programlisting>
 		<title>Examples</title>
 
 		<programlisting>SELECT sometable.field1, sometable.field1,
-	  (ST_DumpRings(sometable.the_geom)).geom As the_geom
+      (ST_DumpRings(sometable.the_geom)).geom As the_geom
 FROM sometableOfpolys;
 
 SELECT ST_AsEWKT(geom) As the_geom, path
-	FROM ST_DumpRings(
-		ST_GeomFromEWKT('POLYGON((-8149064 5133092 1,-8149064 5132986 1,-8148996 5132839 1,-8148972 5132767 1,-8148958 5132508 1,-8148941 5132466 1,-8148924 5132394 1,
-		-8148903 5132210 1,-8148930 5131967 1,-8148992 5131978 1,-8149237 5132093 1,-8149404 5132211 1,-8149647 5132310 1,-8149757 5132394 1,
-		-8150305 5132788 1,-8149064 5133092 1),
-		(-8149362 5132394 1,-8149446 5132501 1,-8149548 5132597 1,-8149695 5132675 1,-8149362 5132394 1))')
-		)  as foo;
-																					  the_geom                               | path
------------------------------------------------------------------------------------------------------------------------------------------------
- POLYGON((-8149064 5133092 1,-8149064 5132986 1,-8148996 5132839 1,-8148972 5132767 1,-8148958 5132508 1,					 | {0}
- -8148941 5132466 1,-8148924 5132394 1,
- -8148903 5132210 1,-8148930 5131967 1,
- -8148992 5131978 1,-8149237 5132093 1,
- -8149404 5132211 1,-8149647 5132310 1,-8149757 5132394 1,-8150305 5132788 1,-8149064 5133092 1))
- POLYGON((-8149362 5132394 1,-8149446 5132501 1,																			 | {1}
- -8149548 5132597 1,-8149695 5132675 1,-8149362 5132394 1))
-
-
-</programlisting>
+    FROM ST_DumpRings(
+        ST_GeomFromEWKT('POLYGON((-8149064 5133092 1,-8149064 5132986 1,-8148996 5132839 1,-8148972 5132767 1,-8148958 5132508 1,-8148941 5132466 1,-8148924 5132394 1,
+        -8148903 5132210 1,-8148930 5131967 1,-8148992 5131978 1,-8149237 5132093 1,-8149404 5132211 1,-8149647 5132310 1,-8149757 5132394 1,
+        -8150305 5132788 1,-8149064 5133092 1),
+        (-8149362 5132394 1,-8149446 5132501 1,-8149548 5132597 1,-8149695 5132675 1,-8149362 5132394 1))')
+        )  as foo;
+ path |                                            the_geom
+----------------------------------------------------------------------------------------------------------------
+  {0} | POLYGON((-8149064 5133092 1,-8149064 5132986 1,-8148996 5132839 1,-8148972 5132767 1,-8148958 5132508 1,
+      |          -8148941 5132466 1,-8148924 5132394 1,
+      |          -8148903 5132210 1,-8148930 5131967 1,
+      |          -8148992 5131978 1,-8149237 5132093 1,
+      |          -8149404 5132211 1,-8149647 5132310 1,-8149757 5132394 1,-8150305 5132788 1,-8149064 5133092 1))
+  {1} | POLYGON((-8149362 5132394 1,-8149446 5132501 1,
+      |          -8149548 5132597 1,-8149695 5132675 1,-8149362 5132394 1))</programlisting>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
@@ -12031,7 +12023,7 @@ SELECT ST_AsEWKT(ST_LineToCurve(ST_GeomFromEWKT('LINESTRING(1 2 3, 3 4 8, 5 6 4,
 		<para><xref linkend="ST_Union" /></para>
 	  </refsection>
 	</refentry>
-	
+
 	<refentry id="ST_MinimumBoundingCircle">
 	  <refnamediv>
 		<refname>ST_MinimumBoundingCircle</refname>
@@ -12057,7 +12049,7 @@ SELECT ST_AsEWKT(ST_LineToCurve(ST_GeomFromEWKT('LINESTRING(1 2 3, 3 4 8, 5 6 4,
 		<title>Description</title>
 			<para>Returns the smallest circle polygon that can fully contain a geometry. </para>
 			<note><para>The circle is approximated by a polygon with a default of 48 segments per quarter circle.  This number can be increased with little performance penalty to obtain a more accurate result.</para></note>
-			
+
 			<para>It is often used with MULTI and Geometry Collections.
 		Although it is not an aggregate - you can use it in conjunction
 		with ST_Collect to get the minimum bounding cirlce of a set of geometries.
