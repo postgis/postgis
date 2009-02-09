@@ -55,6 +55,12 @@ my %types = ();
 my %opclass = ();
 my %ops = ();
 
+
+# Old aggregate functions we don't carry any more
+$aggs{"accum"} = 1;
+$aggs{"fastunion"} = 1;
+$aggs{"mem_collect"} = 1;
+
 # This are old postgis functions which might
 # still be in a dump
 my %obsoleted_function = (
@@ -273,14 +279,14 @@ while( my $line = <INPUT>)
 		}
 		next;
 	}
-	if ($line =~ /^create aggregate *([^ ]*) *\(/i)
+	if ( $line =~ /^create aggregate *([^ ]*) *\(/i )
 	{
 		my $name = lc($1);
 		$name =~ s/^public.//;
 		my $type = undef;
 		while( my $subline = <INPUT>)
 		{
-			if ( $subline =~ /basetype .* ([^, ]*)/ )
+			if ( $subline =~ /basetype .* ([^, ]*)/i )
 			{
 				$type = $1;
 				last;
@@ -486,6 +492,12 @@ while( my $line = <INPUT> )
 			next;
 		}
 
+		# This is an old postgis aggregate
+		if ( $name eq 'accum' )
+		{
+			print "SKIPPING old PGIS AGG $id\n" if $DEBUG;
+			next;
+		}
 		print "KEEPING AGGREGATE [$id]\n" if $DEBUG;
 		#next;
 	}
@@ -607,7 +619,7 @@ while( my $line = <INPUT> )
 	} # CAST
 
 	print OUTPUT $line;
-#	print "UNANDLED: $line"
+#	print "UNHANDLED: $line"
 }
 close( INPUT );
 close(OUTPUT);
