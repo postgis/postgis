@@ -7444,7 +7444,7 @@ st_asgeojson
 	  <refnamediv>
 		<refname>ST_AsKML</refname>
 
-		<refpurpose>Return the geometry as a KML element. Several variants. Default version=2, default max_sig_digits=15</refpurpose>
+		<refpurpose>Return the geometry as a KML element. Several variants. Default version=2, default precision=15</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -7456,7 +7456,7 @@ st_asgeojson
 			<funcprototype>
 				<funcdef>text <function>ST_AsKML</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>max_sig_digits</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
 			</funcprototype>
 			<funcprototype>
 				<funcdef>text <function>ST_AsKML</function></funcdef>
@@ -7467,7 +7467,7 @@ st_asgeojson
 				<funcdef>text <function>ST_AsKML</function></funcdef>
 				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
 				<paramdef><type>geometry </type> <parameter>geom1</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>max_sig_digits</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -7476,13 +7476,13 @@ st_asgeojson
 		<title>Description</title>
 
 		<para>Return the geometry as a Keyhole Markup Language (KML) element. There are several variants of this function.
-			maximum number of significant digits used in
+			maximum number of decimal places used in
 			output (defaults to 15) and version default to 2.</para>
 
-		<para>Version 1: ST_AsKML(geom) / version=2 max_sig_digits=15</para>
+		<para>Version 1: ST_AsKML(geom) / version=2 precision=15</para>
 		<para>Version 2: ST_AsKML(geom, max_sig_digits) / version=2 </para>
-		<para>Version 3: ST_AsKML(version, geom) / max_sig_digits=15 </para>
-		<para>Version 4: ST_AsGeoJSON(version, geom, max_sig_digits) </para>
+		<para>Version 3: ST_AsKML(version, geom) / precision=15 </para>
+		<para>Version 4: ST_AsGeoJSON(version, geom, precision) </para>
 
 		<note>
 		  <para>Requires PostGIS be compiled with Proj support.  Use <xref linkend="PostGIS_Full_Version" /> to confirm you have proj support compiled in.</para>
@@ -7506,13 +7506,16 @@ st_asgeojson
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting>SELECT ST_AsKML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
+		<programlisting><![CDATA[SELECT ST_AsKML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
 
 		st_askml
 		--------
+		<Polygon><outerBoundaryIs><LinearRing><coordinates>0,0 0,1 1,1 1,0 0,0</coordinates></LinearRing></outerBoundaryIs></Polygon>
 
 		--3d linestring
-		 SELECT ST_AsKML('SRID=4326;LINESTRING(1 2 3, 4 5 6)');
+		SELECT ST_AsKML('SRID=4326;LINESTRING(1 2 3, 4 5 6)');
+		<LineString><coordinates>1,2,3 4,5,6</coordinates></LineString>
+		]]>
 		</programlisting>
 	  </refsection>
 	 <refsection>

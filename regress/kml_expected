@@ -5,37 +5,37 @@ ERROR:  geometry_to_kml: 'CompoundString' geometry type not supported by Google 
 ERROR:  geometry_to_kml: 'CurvePolygon' geometry type not supported by Google Earth
 ERROR:  geometry_to_kml: 'MultiCurve' geometry type not supported by Google Earth
 ERROR:  geometry_to_kml: 'MultiSurface' geometry type not supported by Google Earth
-ERROR:  Precision out of range 1..15
-ERROR:  Precision out of range 1..15
+parameter_01|<Point><coordinates>1,1</coordinates></Point>
+parameter_02|<Point><coordinates>1.111111111111111,1.111111111111111</coordinates></Point>
 ERROR:  Only KML 2 is supported
-<Point><coordinates>-75.5521729775749,10.4203366345305</coordinates></Point>
-<Point><coordinates>-75.55217298,10.42033663</coordinates></Point>
-<LineString><coordinates>-75.5884516874785,6.23081171191744 -75.5925764681848,6.20903425257533</coordinates></LineString>
-<LineString><coordinates>-75.58845169,6.230811712 -75.59257647,6.209034253</coordinates></LineString>
-<Polygon><outerBoundaryIs><LinearRing><coordinates>-74.042399,4.701288 -74.042099,4.700951 -74.042018,4.701012 -74.041835,4.700831 -74.041486,4.70114 -74.041328,4.700977 -74.04102,4.701245 -74.041178,4.701426 -74.040872,4.701697 -74.040941,4.701774 -74.0409,4.702606 -74.040824,4.702678 -74.041066,4.70295 -74.040873,4.703121 -74.041189,4.703468 -74.041383,4.703309 -74.041739,4.703689 -74.041924,4.703528 -74.041954,4.703555 -74.042307,4.703239 -74.042075,4.702978 -74.042155,4.702908 -74.04195,4.702675 -74.042096,4.702534 -74.042035,4.702467 -74.042053,4.702038 -74.042123,4.701974 -74.041986,4.701817 -74.042222,4.701604 -74.042149,4.70152 -74.042399,4.701288</coordinates></LinearRing></outerBoundaryIs></Polygon>
-<Polygon><outerBoundaryIs><LinearRing><coordinates>-74.04239911,4.701288195 -74.04209926,4.700950994 -74.0420183,4.701011516 -74.04183483,4.700831449 -74.04148629,4.70114015 -74.04132847,4.700976981 -74.04101991,4.701244757 -74.04117774,4.701425554 -74.04087245,4.701697127 -74.04094064,4.70177368 -74.04089953,4.70260566 -74.04082413,4.702677666 -74.04106565,4.702949831 -74.04087265,4.703121095 -74.04118885,4.703468333 -74.04138265,4.703308984 -74.04173931,4.703688848 -74.0419237,4.703528239 -74.04195356,4.703554861 -74.04230658,4.703239478 -74.04207492,4.702978243 -74.0421547,4.702907817 -74.04195033,4.702675127 -74.04209558,4.702533577 -74.04203505,4.702466796 -74.04205318,4.702038078 -74.04212336,4.701974338 -74.04198589,4.701816902 -74.04222168,4.701604424 -74.04214902,4.701519996 -74.04239911,4.701288195</coordinates></LinearRing></outerBoundaryIs></Polygon>
-<MultiGeometry><Point><coordinates>-74.0460345759477,4.75468700665652</coordinates></Point><Point><coordinates>-74.095833,4.746435</coordinates></Point><Point><coordinates>-74.1103754749261,4.7098754227297</coordinates></Point><Point><coordinates>-74.120148,4.533696</coordinates></Point></MultiGeometry>
-<MultiGeometry><Point><coordinates>-74.04603458,4.754687007</coordinates></Point><Point><coordinates>-74.095833,4.746435</coordinates></Point><Point><coordinates>-74.11037547,4.709875423</coordinates></Point><Point><coordinates>-74.120148,4.533696</coordinates></Point></MultiGeometry>
-<Point><coordinates>-73.1137865115871,7.10625638610512</coordinates></Point>
-<Point><coordinates>-73.1978481045547,6.76797715816346</coordinates></Point>
-<Point><coordinates>-74.0775046875181,4.59620005298432</coordinates></Point>
+point_01|<Point><coordinates>-75.552,10.42</coordinates></Point>
+point_02|<Point><coordinates>-75.55217298,10.42033663</coordinates></Point>
+linestring_01|<LineString><coordinates>-75.588,6.231 -75.593,6.209</coordinates></LineString>
+linestring_02|<LineString><coordinates>-75.58845169,6.23081171 -75.59257647,6.20903425</coordinates></LineString>
+polygon_01|<Polygon><outerBoundaryIs><LinearRing><coordinates>-74.042,4.701 -74.042,4.701 -74.042,4.701 -74.042,4.701 -74.041,4.701 -74.041,4.701 -74.041,4.701 -74.041,4.701 -74.041,4.702 -74.041,4.702 -74.041,4.703 -74.041,4.703 -74.041,4.703 -74.041,4.703 -74.041,4.703 -74.041,4.703 -74.042,4.704 -74.042,4.704 -74.042,4.704 -74.042,4.703 -74.042,4.703 -74.042,4.703 -74.042,4.703 -74.042,4.703 -74.042,4.702 -74.042,4.702 -74.042,4.702 -74.042,4.702 -74.042,4.702 -74.042,4.702 -74.042,4.701</coordinates></LinearRing></outerBoundaryIs></Polygon>
+polygon_02|<Polygon><outerBoundaryIs><LinearRing><coordinates>-74.04239911,4.70128819 -74.04209926,4.70095099 -74.0420183,4.70101152 -74.04183483,4.70083145 -74.04148629,4.70114015 -74.04132847,4.70097698 -74.04101991,4.70124476 -74.04117774,4.70142555 -74.04087245,4.70169713 -74.04094064,4.70177368 -74.04089953,4.70260566 -74.04082413,4.70267767 -74.04106565,4.70294983 -74.04087265,4.70312109 -74.04118885,4.70346833 -74.04138265,4.70330898 -74.04173931,4.70368885 -74.0419237,4.70352824 -74.04195356,4.70355486 -74.04230658,4.70323948 -74.04207492,4.70297824 -74.0421547,4.70290782 -74.04195033,4.70267513 -74.04209558,4.70253358 -74.04203505,4.7024668 -74.04205318,4.70203808 -74.04212336,4.70197434 -74.04198589,4.7018169 -74.04222168,4.70160442 -74.04214902,4.70152 -74.04239911,4.70128819</coordinates></LinearRing></outerBoundaryIs></Polygon>
+multipoint_01|<MultiGeometry><Point><coordinates>-74.046,4.755</coordinates></Point><Point><coordinates>-74.096,4.746</coordinates></Point><Point><coordinates>-74.11,4.71</coordinates></Point><Point><coordinates>-74.12,4.534</coordinates></Point></MultiGeometry>
+multipoint_02|<MultiGeometry><Point><coordinates>-74.04603458,4.75468701</coordinates></Point><Point><coordinates>-74.095833,4.746435</coordinates></Point><Point><coordinates>-74.11037547,4.70987542</coordinates></Point><Point><coordinates>-74.120148,4.533696</coordinates></Point></MultiGeometry>
+projection_01|<Point><coordinates>-73,7</coordinates></Point>
+projection_02|<Point><coordinates>-73,7</coordinates></Point>
+projection_03|<Point><coordinates>-74,5</coordinates></Point>
 ERROR:  Input geometry has unknown (-1) SRID
 ERROR:  geometry_to_kml: 'CircularString' geometry type not supported by Google Earth
 ERROR:  geometry_to_kml: 'CompoundString' geometry type not supported by Google Earth
 ERROR:  geometry_to_kml: 'CurvePolygon' geometry type not supported by Google Earth
 ERROR:  geometry_to_kml: 'MultiCurve' geometry type not supported by Google Earth
 ERROR:  geometry_to_kml: 'MultiSurface' geometry type not supported by Google Earth
-ERROR:  Precision out of range 1..15
-ERROR:  Precision out of range 1..15
+parameter_04|<Point><coordinates>1,1</coordinates></Point>
+parameter_05|<Point><coordinates>1.111111111111111,1.111111111111111</coordinates></Point>
 ERROR:  Only KML 2 is supported
-<Point><coordinates>-75.5521729775749,10.4203366345305</coordinates></Point>
-<Point><coordinates>-75.55217298,10.42033663</coordinates></Point>
-<LineString><coordinates>-75.5884516874785,6.23081171191744 -75.5925764681848,6.20903425257533</coordinates></LineString>
-<LineString><coordinates>-75.58845169,6.230811712 -75.59257647,6.209034253</coordinates></LineString>
-<Polygon><outerBoundaryIs><LinearRing><coordinates>-74.042399,4.701288 -74.042099,4.700951 -74.042018,4.701012 -74.041835,4.700831 -74.041486,4.70114 -74.041328,4.700977 -74.04102,4.701245 -74.041178,4.701426 -74.040872,4.701697 -74.040941,4.701774 -74.0409,4.702606 -74.040824,4.702678 -74.041066,4.70295 -74.040873,4.703121 -74.041189,4.703468 -74.041383,4.703309 -74.041739,4.703689 -74.041924,4.703528 -74.041954,4.703555 -74.042307,4.703239 -74.042075,4.702978 -74.042155,4.702908 -74.04195,4.702675 -74.042096,4.702534 -74.042035,4.702467 -74.042053,4.702038 -74.042123,4.701974 -74.041986,4.701817 -74.042222,4.701604 -74.042149,4.70152 -74.042399,4.701288</coordinates></LinearRing></outerBoundaryIs></Polygon>
-<Polygon><outerBoundaryIs><LinearRing><coordinates>-74.04239911,4.701288195 -74.04209926,4.700950994 -74.0420183,4.701011516 -74.04183483,4.700831449 -74.04148629,4.70114015 -74.04132847,4.700976981 -74.04101991,4.701244757 -74.04117774,4.701425554 -74.04087245,4.701697127 -74.04094064,4.70177368 -74.04089953,4.70260566 -74.04082413,4.702677666 -74.04106565,4.702949831 -74.04087265,4.703121095 -74.04118885,4.703468333 -74.04138265,4.703308984 -74.04173931,4.703688848 -74.0419237,4.703528239 -74.04195356,4.703554861 -74.04230658,4.703239478 -74.04207492,4.702978243 -74.0421547,4.702907817 -74.04195033,4.702675127 -74.04209558,4.702533577 -74.04203505,4.702466796 -74.04205318,4.702038078 -74.04212336,4.701974338 -74.04198589,4.701816902 -74.04222168,4.701604424 -74.04214902,4.701519996 -74.04239911,4.701288195</coordinates></LinearRing></outerBoundaryIs></Polygon>
-<MultiGeometry><Point><coordinates>-74.0460345759477,4.75468700665652</coordinates></Point><Point><coordinates>-74.095833,4.746435</coordinates></Point><Point><coordinates>-74.1103754749261,4.7098754227297</coordinates></Point><Point><coordinates>-74.120148,4.533696</coordinates></Point></MultiGeometry>
-<MultiGeometry><Point><coordinates>-74.04603458,4.754687007</coordinates></Point><Point><coordinates>-74.095833,4.746435</coordinates></Point><Point><coordinates>-74.11037547,4.709875423</coordinates></Point><Point><coordinates>-74.120148,4.533696</coordinates></Point></MultiGeometry>
-<Point><coordinates>-73.1137865115871,7.10625638610512</coordinates></Point>
-<Point><coordinates>-73.1978481045547,6.76797715816346</coordinates></Point>
-<Point><coordinates>-74.0775046875181,4.59620005298432</coordinates></Point>
+point_03|<Point><coordinates>-75.552172977574884,10.420336634530541</coordinates></Point>
+point_04|<Point><coordinates>-75.55217298,10.42033663</coordinates></Point>
+linestring_03|<LineString><coordinates>-75.588,6.231 -75.593,6.209</coordinates></LineString>
+linestring_04|<LineString><coordinates>-75.58845169,6.23081171 -75.59257647,6.20903425</coordinates></LineString>
+polygon_03|<Polygon><outerBoundaryIs><LinearRing><coordinates>-74.042,4.701 -74.042,4.701 -74.042,4.701 -74.042,4.701 -74.041,4.701 -74.041,4.701 -74.041,4.701 -74.041,4.701 -74.041,4.702 -74.041,4.702 -74.041,4.703 -74.041,4.703 -74.041,4.703 -74.041,4.703 -74.041,4.703 -74.041,4.703 -74.042,4.704 -74.042,4.704 -74.042,4.704 -74.042,4.703 -74.042,4.703 -74.042,4.703 -74.042,4.703 -74.042,4.703 -74.042,4.702 -74.042,4.702 -74.042,4.702 -74.042,4.702 -74.042,4.702 -74.042,4.702 -74.042,4.701</coordinates></LinearRing></outerBoundaryIs></Polygon>
+polygon_04|<Polygon><outerBoundaryIs><LinearRing><coordinates>-74.04239911,4.70128819 -74.04209926,4.70095099 -74.0420183,4.70101152 -74.04183483,4.70083145 -74.04148629,4.70114015 -74.04132847,4.70097698 -74.04101991,4.70124476 -74.04117774,4.70142555 -74.04087245,4.70169713 -74.04094064,4.70177368 -74.04089953,4.70260566 -74.04082413,4.70267767 -74.04106565,4.70294983 -74.04087265,4.70312109 -74.04118885,4.70346833 -74.04138265,4.70330898 -74.04173931,4.70368885 -74.0419237,4.70352824 -74.04195356,4.70355486 -74.04230658,4.70323948 -74.04207492,4.70297824 -74.0421547,4.70290782 -74.04195033,4.70267513 -74.04209558,4.70253358 -74.04203505,4.7024668 -74.04205318,4.70203808 -74.04212336,4.70197434 -74.04198589,4.7018169 -74.04222168,4.70160442 -74.04214902,4.70152 -74.04239911,4.70128819</coordinates></LinearRing></outerBoundaryIs></Polygon>
+multipoint_03|<MultiGeometry><Point><coordinates>-74.046,4.755</coordinates></Point><Point><coordinates>-74.096,4.746</coordinates></Point><Point><coordinates>-74.11,4.71</coordinates></Point><Point><coordinates>-74.12,4.534</coordinates></Point></MultiGeometry>
+multipoint_04|<MultiGeometry><Point><coordinates>-74.04603458,4.75468701</coordinates></Point><Point><coordinates>-74.095833,4.746435</coordinates></Point><Point><coordinates>-74.11037547,4.70987542</coordinates></Point><Point><coordinates>-74.120148,4.533696</coordinates></Point></MultiGeometry>
+projection_04|<Point><coordinates>-73.114,7.106</coordinates></Point>
+projection_05|<Point><coordinates>-73.1978481,6.76797716</coordinates></Point>
+projection_06|<Point><coordinates>-74.078,4.596</coordinates></Point>
