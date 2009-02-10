@@ -39,6 +39,7 @@ TESTS = \
 	sql-mm-multicurve \
 	sql-mm-multisurface \
 	geojson \
+	gml \
 	regress_ogc \
 	regress_bdpoly \
 	regress_proj \

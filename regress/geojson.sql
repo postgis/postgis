@@ -17,10 +17,10 @@ SELECT 'empty_geom', ST_AsGeoJson(GeomFromEWKT(NULL));
 
 
 -- Precision
-SELECT 'precision_01', ST_AsGeoJson(GeomFromEWKT('SRID=4326;POINT(1 1)'), 0);
-SELECT 'precision_02', ST_AsGeoJson(GeomFromEWKT('SRID=4326;POINT(1 1)'), 3);
-SELECT 'precision_03', ST_AsGeoJson(GeomFromEWKT('SRID=4326;POINT(1 1)'), -2);
-SELECT 'precision_04', ST_AsGeoJson(GeomFromEWKT('SRID=4326;POINT(1 1)'), 19);
+SELECT 'precision_01', ST_AsGeoJson(GeomFromEWKT('SRID=4326;POINT(1.1111111 1.1111111)'), 0);
+SELECT 'precision_02', ST_AsGeoJson(GeomFromEWKT('SRID=4326;POINT(1.1111111 1.1111111)'), 3);
+SELECT 'precision_03', ST_AsGeoJson(GeomFromEWKT('SRID=4326;POINT(1.1111111 1.1111111)'), -2);
+SELECT 'precision_04', ST_AsGeoJson(GeomFromEWKT('SRID=4326;POINT(1.1111111 1.1111111)'), 19);
 
 
 -- Version

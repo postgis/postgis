@@ -7305,8 +7305,7 @@ SELECT ST_AsGeoJSON('LINESTRING(1 2 3, 4 5 6)');
 
 st_asgeojson
 -----------------------------------------------------------------------------------------
- {"type":"LineString","coordinates":[[1.000000000000000,2.000000000000000,3.000000000000000],
- [4.000000000000000,5.000000000000000,6.000000000000000]]}
+ {"type":"LineString","coordinates":[[1,2,3],[4,5,6]]}
 
 </programlisting>
 	  </refsection>
@@ -7326,13 +7325,13 @@ st_asgeojson
 			<funcprototype>
 				<funcdef>text <function>ST_AsGML</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>max_num_decimal_digits</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
 			</funcprototype>
 			<funcprototype>
 				<funcdef>text <function>ST_AsGML</function></funcdef>
 				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
 				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>max_num_decimal_digits</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
 			</funcprototype>
 			<funcprototype>
 				<funcdef>text <function>ST_AsGML</function></funcdef>
@@ -7348,7 +7347,7 @@ st_asgeojson
 		<para>Return the geometry as a Geography Markup Language (GML) element. The version parameter,
 			if specified, may be either 2 or 3. If no version parameter is
 			specified then the default is assumed to be 2. The third argument
-			may be used to reduce the maximum number of significant digits
+			may be used to reduce the maximum number of decimal places
 			used in output (defaults to 15).</para>
 
 		<!-- TODO: Itemize defaults for each function -->
@@ -7367,10 +7366,11 @@ st_asgeojson
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting>SELECT ST_AsGML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
+		<programlisting><![CDATA[SELECT ST_AsGML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
 
 		st_asgml
 		--------
+		<gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>0,0 0,1 1,1 1,0 0,0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>]]>
 		</programlisting>
 	  </refsection>
 	</refentry>

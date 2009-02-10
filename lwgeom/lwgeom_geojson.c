@@ -39,7 +39,6 @@ static size_t pointArray_to_geojson(POINTARRAY *pa, char *buf, int precision);
 static size_t pointArray_geojson_size(POINTARRAY *pa, int precision);
 static char *getSRSbySRID(int SRID);
 
-
 #define SHOW_DIGS_DOUBLE 15
 #define MAX_DOUBLE_PRECISION 15
 #define MAX_DIGS_DOUBLE (SHOW_DIGS_DOUBLE + 2) /* +2 mean add dot and sign */
@@ -447,6 +446,7 @@ asgeojson_multipoint_size(LWGEOM_INSPECTED *insp, char *srs, BOX3D *bbox, int pr
 	for (i=0; i<insp->ngeometries; i++) {
 		point = lwgeom_getpoint_inspected(insp, i);
          	size += pointArray_geojson_size(point->point, precision);
+                lwpoint_release(point);
 	}
 	size += sizeof(",") * i;
 
@@ -512,6 +512,7 @@ asgeojson_multiline_size(LWGEOM_INSPECTED *insp, char *srs, BOX3D *bbox, int pre
 		line = lwgeom_getline_inspected(insp, i);
          	size += pointArray_geojson_size(line->points, precision);
 		size += sizeof("[]");
+                lwline_release(line);
 	}
 	size += sizeof(",") * i;
 
@@ -583,6 +584,7 @@ asgeojson_multipolygon_size(LWGEOM_INSPECTED *insp, char *srs, BOX3D *bbox, int 
 	         	size += pointArray_geojson_size(poly->rings[j], precision);
 			size += sizeof("[]");
 		}
+                lwpoly_release(poly);
 		size += sizeof("[]");
 	}
 	size += sizeof(",") * i;
@@ -817,6 +819,9 @@ pointArray_to_geojson(POINTARRAY *pa, char *output, int precision)
 {
 	int i;
 	char *ptr;
+	char x[MAX_DIGS_DOUBLE+3];
+	char y[MAX_DIGS_DOUBLE+3];
+	char z[MAX_DIGS_DOUBLE+3];
 
 	ptr = output;
 
@@ -824,20 +829,25 @@ pointArray_to_geojson(POINTARRAY *pa, char *output, int precision)
 		for (i=0; i<pa->npoints; i++) {
 			POINT2D pt;
 			getPoint2d_p(pa, i, &pt);
+			sprintf(x, "%.*f", precision, pt.x);
+			trim_trailing_zeros(x);
+			sprintf(y, "%.*f", precision, pt.y);
+			trim_trailing_zeros(y);
 			if ( i ) ptr += sprintf(ptr, ",");
-			ptr += sprintf(ptr, "[%.*f,%.*f]",
-					precision, pt.x,
-					precision, pt.y);
+			ptr += sprintf(ptr, "[%s,%s]", x, y);
 		}
 	} else {
 		for (i=0; i<pa->npoints; i++) {
 			POINT4D pt;
 			getPoint4d_p(pa, i, &pt);
+			sprintf(x, "%.*f", precision, pt.x);
+			trim_trailing_zeros(x);
+			sprintf(y, "%.*f", precision, pt.y);
+			trim_trailing_zeros(y);
+			sprintf(z, "%.*f", precision, pt.z);
+			trim_trailing_zeros(z);
 			if ( i ) ptr += sprintf(ptr, ",");
-			ptr += sprintf(ptr, "[%.*f,%.*f,%.*f]",
-					precision, pt.x,
-					precision, pt.y,
-					precision, pt.z);
+			ptr += sprintf(ptr, "[%s,%s,%s]", x, y, z);
 		}
 	}
 
