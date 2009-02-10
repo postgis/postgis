@@ -36,9 +36,9 @@ LIBLWGEOM=../liblwgeom/liblwgeom.a
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_LIBS = @GTK_LIBS@
 
-all: $(SHP2PGSQL) $(PGSQL2SHP) $(SHP2PGSQL-CLI) @GTK_BUILD@
+all: $(SHP2PGSQL) $(PGSQL2SHP) @GTK_BUILD@
 
-gui: $(SHP2PGSQL-GUI)
+gui: $(SHP2PGSQL-GUI) $(SHP2PGSQL-CLI)
 
 # liblwgeom.a dependency to allow "make install" in 
 # the loader/ subdirectory to work  
