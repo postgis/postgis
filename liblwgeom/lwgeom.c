@@ -199,6 +199,34 @@ lwgeom_reverse(LWGEOM *lwgeom)
 	}
 }
 
+BOX3D *lwgeom_compute_box3d(const LWGEOM *lwgeom)
+{
+    if( ! lwgeom ) return NULL;
+    
+    switch(TYPE_GETTYPE(lwgeom->type))
+	{
+		case POINTTYPE:
+			return lwpoint_compute_box3d((LWPOINT *)lwgeom);
+		case LINETYPE:
+			return lwline_compute_box3d((LWLINE *)lwgeom);
+        case CIRCSTRINGTYPE:
+            return lwcircstring_compute_box3d((LWCIRCSTRING *)lwgeom);
+		case POLYGONTYPE:
+			return lwpoly_compute_box3d((LWPOLY *)lwgeom);
+        case COMPOUNDTYPE:
+        case CURVEPOLYTYPE:
+		case MULTIPOINTTYPE:
+		case MULTILINETYPE:
+        case MULTICURVETYPE:
+		case MULTIPOLYGONTYPE:
+        case MULTISURFACETYPE:
+		case COLLECTIONTYPE:
+			return lwcollection_compute_box3d((LWCOLLECTION *)lwgeom);
+	}
+	/* Never get here, please. */
+	return NULL;
+}
+
 int
 lwgeom_compute_box2d_p(LWGEOM *lwgeom, BOX2DFLOAT4 *buf)
 {

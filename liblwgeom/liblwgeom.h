@@ -843,7 +843,7 @@ extern int lwcollection_ngeoms(const LWCOLLECTION *col);
  * pointers to the serialized form (POINTARRAYs).
  */
 LWGEOM *lwgeom_deserialize(uchar *serializedform);
-
+BOX3D *lwgeom_compute_box3d(const LWGEOM *geom);
 
 
 /******************************************************************
@@ -859,8 +859,8 @@ LWCURVEPOLY *lwcurvepoly_deserialize(uchar *serialized_form);
 LWMCURVE *lwmcurve_deserialize(uchar *serialized_form);
 LWMSURFACE *lwmsurface_deserialize(uchar *serialized_form);
 
-LWGEOM *lwcollection_getsubgeom(LWCOLLECTION *, int);
-
+LWGEOM *lwcollection_getsubgeom(LWCOLLECTION *col, int gnum);
+BOX3D *lwcollection_compute_box3d(LWCOLLECTION *col);
 
 
 /******************************************************************

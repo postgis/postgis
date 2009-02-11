@@ -734,3 +734,185 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 	return NULL;
 
 }
+
+int lwgeom_geohash_precision(BOX3D bbox)
+{
+	double minx, miny, maxx, maxy;
+	double latmax, latmin, lonmax, lonmin;
+	double lonwidth, latwidth;
+	double latmaxadjust, lonmaxadjust, latminadjust, lonminadjust;
+	int precision = 0;
+	
+	/* Get the bounding box, return error if things don't work out. */
+	minx = bbox.xmin;
+	miny = bbox.ymin;
+	maxx = bbox.xmax;
+	maxy = bbox.ymax;
+
+	if( minx == maxx && miny == maxy )
+	{
+		/* It's a point. Doubles have 51 bits of precision. 
+		** 2 * 51 / 5 == 20 */
+		return 20;
+	}
+
+	lonmin = -180.0;
+	latmin = -90.0;
+	lonmax = 180.0;
+	latmax = 90.0;
+
+	/* Shrink a world bounding box until one of the edges interferes with the
+	** bounds of our rectangle. */
+	while( 1 ) 
+	{
+		lonwidth = lonmax - lonmin;
+		latwidth = latmax - latmin;
+		latmaxadjust = lonmaxadjust = latminadjust = lonminadjust = 0.0;
+
+		if( minx > lonmin + lonwidth / 2.0 ) 
+		{
+			lonminadjust = lonwidth / 2.0;
+		}
+		else if ( maxx < lonmax - lonwidth / 2.0 ) 
+		{
+			lonmaxadjust = -1 * lonwidth / 2.0;
+		}
+		if( miny > latmin + latwidth / 2.0 ) 
+		{
+			latminadjust = latwidth / 2.0;
+		}
+		else if (maxy < latmax - latwidth / 2.0 ) 
+		{
+			latmaxadjust = -1 * latwidth / 2.0;
+		}
+		if ( (lonminadjust || lonmaxadjust) && (latminadjust || latmaxadjust ) )
+		{
+			latmin += latminadjust;
+			lonmin += lonminadjust;
+			latmax += latmaxadjust;
+			lonmax += lonmaxadjust;
+			precision++;
+		}
+		else 
+		{
+			break;
+		}
+	}
+
+	/* Each adjustment above corresponds to 2 bits of storage in the 
+	** geohash. Each geohash character can contain 5 bits of information.
+	** So geohashes have even lengths. 2 characters corresponds to 10 bits
+	** of storage, which is 5 adjustments. */
+	return 2 * ( precision / 5 );
+}
+
+char *lwgeom_geohash(const LWGEOM *lwgeom) 
+{
+	BOX3D *bbox = NULL;
+	int precision = 0;
+	double lat, lon;
+	
+	bbox = lwgeom_compute_box3d(lwgeom);
+	if( ! bbox ) return NULL;
+	
+	if ( bbox->xmin < -180 || bbox->ymin < -90 || bbox->xmax > 180 || bbox->ymax > 90 )
+	{
+		lwerror("Geohash requires inputs in decimal degrees.");
+		lwfree(bbox);
+		return NULL;
+	}
+
+	/* What is the center of our geometry? */
+	lon = bbox->xmin + (bbox->xmax - bbox->xmin) / 2;
+	lat = bbox->ymin + (bbox->ymax - bbox->ymin) / 2;
+	
+	precision = lwgeom_geohash_precision(*bbox);
+	
+	lwfree(bbox);
+
+	/* Return the geohash of the center, with a precision determined by the
+	** extent of the bounds. */
+	return geohash_point(lat, lon, precision);
+}
+
+static char *base32 = "0123456789bcdefghjkmnpqrstuvwxyz";
+
+char *geohash_point(double latitude, double longitude, int precision)
+{   
+	int is_even=1, i=0;
+	double lat[2], lon[2], mid;
+	char bits[] = {16,8,4,2,1};
+	int bit=0, ch=0;
+	char *geohash = NULL;
+
+	geohash = lwalloc(precision + 1);
+
+	lat[0] = -90.0;  lat[1] = 90.0;
+	lon[0] = -180.0; lon[1] = 180.0;
+
+	while (i < precision) 
+	{
+		if (is_even) 
+		{
+			mid = (lon[0] + lon[1]) / 2;
+			if (longitude > mid) 
+			{
+				ch |= bits[bit];
+				lon[0] = mid;
+			} 
+			else
+			{
+				lon[1] = mid;
+			}
+		} 
+		else 
+		{
+			mid = (lat[0] + lat[1]) / 2;
+			if (latitude > mid) 
+			{
+				ch |= bits[bit];
+				lat[0] = mid;
+			} 
+			else
+			{
+				lat[1] = mid;
+			}
+		}
+
+		is_even = !is_even;
+		if (bit < 4)
+		{
+			bit++;
+		}
+		else 
+		{
+			geohash[i++] = base32[ch];
+			bit = 0;
+			ch = 0;
+		}
+	}
+	geohash[i] = 0;
+	return geohash;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
