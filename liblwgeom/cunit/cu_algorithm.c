@@ -36,6 +36,7 @@ CU_pSuite register_cg_suite(void)
 	    (NULL == CU_add_test(pSuite, "test_lwline_clip()", test_lwline_clip)) ||
 	    (NULL == CU_add_test(pSuite, "test_lwline_clip_big()", test_lwline_clip_big)) ||
 	    (NULL == CU_add_test(pSuite, "test_lwmline_clip()", test_lwmline_clip)) ||
+	    (NULL == CU_add_test(pSuite, "test_geohash_point()", test_geohash_point)) ||
 	    (NULL == CU_add_test(pSuite, "test_geohash_precision()", test_geohash_precision)) ||
 	    (NULL == CU_add_test(pSuite, "test_geohash()", test_geohash))
 	)
@@ -706,31 +707,53 @@ void test_lwline_clip_big(void)
 void test_geohash_precision(void)
 {
 	BOX3D bbox;
+    BOX3D bounds;
 	int precision = 0;
 	
 	bbox.xmin = 23.0;
 	bbox.xmax = 23.0;
 	bbox.ymin = 25.2;
 	bbox.ymax = 25.2;
-	precision = lwgeom_geohash_precision(bbox);
-	//printf("precision %d\n",precision);
+	precision = lwgeom_geohash_precision(bbox, &bounds);
+	printf("\nprecision %d\n",precision);
 	CU_ASSERT_EQUAL(precision, 20);
 
 	bbox.xmin = 23.0;
 	bbox.ymin = 23.0;
 	bbox.xmax = 23.1;
 	bbox.ymax = 23.1;
-	precision = lwgeom_geohash_precision(bbox);
-	//printf("precision %d\n",precision);
+	precision = lwgeom_geohash_precision(bbox, &bounds);
+	printf("precision %d\n",precision);
 	CU_ASSERT_EQUAL(precision, 2);
 
 	bbox.xmin = 23.0;
 	bbox.ymin = 23.0;
 	bbox.xmax = 23.0001;
 	bbox.ymax = 23.0001;
-	precision = lwgeom_geohash_precision(bbox);
-	//printf("precision %d\n",precision);
+	precision = lwgeom_geohash_precision(bbox, &bounds);
+	printf("precision %d\n",precision);
 	CU_ASSERT_EQUAL(precision, 6);
+
+}
+
+void test_geohash_point(void)
+{
+    char *geohash;
+	
+    geohash = geohash_point(0, 0, 16);
+	//printf("\ngeohash %s\n",geohash);
+	CU_ASSERT_STRING_EQUAL(geohash, "7zzzzzzzzzzzzzzz");
+	lwfree(geohash);
+
+    geohash = geohash_point(90, 0, 16);
+	//printf("\ngeohash %s\n",geohash);
+	CU_ASSERT_STRING_EQUAL(geohash, "gzzzzzzzzzzzzzzz");
+	lwfree(geohash);
+
+    geohash = geohash_point(20.012345, -20.012345, 15);
+	//printf("\ngeohash %s\n",geohash);
+	CU_ASSERT_STRING_EQUAL(geohash, "ee9cbe5kqe6pbku");
+	lwfree(geohash);
 
 }
 
@@ -743,7 +766,7 @@ void test_geohash(void)
 	
 	lwpoint = (LWPOINT*)lwgeom_from_ewkt("POINT(23.0 25.2)", PARSER_CHECK_NONE);
 	geohash = lwgeom_geohash((LWGEOM*)lwpoint);
-	printf("geohash %s\n",geohash);
+	printf("\ngeohash %s\n",geohash);
 	CU_ASSERT_STRING_EQUAL(geohash, "20");
 	lwfree(lwpoint);
 	lwfree(geohash);

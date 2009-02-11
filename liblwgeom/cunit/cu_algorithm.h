@@ -38,4 +38,5 @@ void test_lwline_clip(void);
 void test_lwline_clip_big(void);
 void test_lwmline_clip(void);
 void test_geohash_precision(void);
+void test_geohash_point(void);
 void test_geohash(void);

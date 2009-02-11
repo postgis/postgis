@@ -23,6 +23,7 @@
 #include "utils/geo_decls.h"
 
 #include "liblwgeom.h"
+#include "lwalgorithm.h"
 #include "lwgeom_pg.h"
 #include "profile.h"
 
@@ -73,6 +74,7 @@ Datum LWGEOM_azimuth(PG_FUNCTION_ARGS);
 Datum LWGEOM_affine(PG_FUNCTION_ARGS);
 Datum LWGEOM_longitude_shift(PG_FUNCTION_ARGS);
 Datum optimistic_overlap(PG_FUNCTION_ARGS);
+Datum ST_GeoHash(PG_FUNCTION_ARGS);
 
 void lwgeom_affine_ptarray(POINTARRAY *pa, double afac, double bfac, double cfac,
                            double dfac, double efac, double ffac, double gfac, double hfac, double ifac, double xoff, double yoff, double zoff);
@@ -3298,4 +3300,43 @@ Datum LWGEOM_affine(PG_FUNCTION_ARGS)
 	lwgeom_release(tmp);
 
 	PG_RETURN_POINTER(ret);
+}
+
+PG_FUNCTION_INFO_V1(ST_GeoHash);
+Datum ST_GeoHash(PG_FUNCTION_ARGS)
+{
+
+    PG_LWGEOM *geom = NULL;
+    int precision = 0;
+    int len = 0;
+    char *geohash = NULL;
+    char *result = NULL;
+
+    if( PG_ARGISNULL(0) )
+    {
+		PG_RETURN_NULL();
+    }
+
+    geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+    if( ! PG_ARGISNULL(1) ) 
+    {
+        precision = PG_GETARG_INT32(1);
+    }
+
+    geohash = lwgeom_geohash((LWGEOM*)(pglwgeom_deserialize(geom)), precision);
+
+    if( ! geohash ) 
+    {
+		elog(ERROR,"ST_GeoHash: lwgeom_geohash returned NULL.\n");
+		PG_RETURN_NULL();
+    }
+
+	len = strlen(geohash) + VARHDRSZ;
+    result = palloc(len);
+	SET_VARSIZE(result, len);
+	memcpy(VARDATA(result), geohash, len-VARHDRSZ);
+	pfree(geohash);
+	PG_RETURN_POINTER(result);
+    
 }

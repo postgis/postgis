@@ -7521,7 +7521,7 @@ st_asgeojson
 	 <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="PostGIS_Full_Version" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_SRID" /></para>
+		<para><xref linkend="ST_AsSVG" />, <xref linkend="ST_AsGML" /></para>
 	  </refsection>
 	</refentry>
 	<refentry id="ST_AsSVG">
@@ -7577,6 +7577,72 @@ st_asgeojson
 		M 0 0 0 -1 1 -1 1 0 Z</programlisting>
 	  </refsection>
 	</refentry>
+
+
+	<refentry id="ST_GeoHash">
+	  <refnamediv>
+		<refname>ST_GeoHash</refname>
+
+		<refpurpose>Return a GeoHash representation (geohash.org) of the geometry.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>text <function>ST_GeoHash</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_GeoHash</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Return a GeoHash representation (geohash.org) of the geometry. A GeoHash encodes a point into a text form that is sortable and searchable based on prefixing.  A shorter GeoHash is a less precise representation of a point.  It can also be thought of as a box, that contains the actual point.</para>
+		
+		<para>The one-parameter variant of ST_GeoHash returns a GeoHash based on the input geometry type. Points return a GeoHash with 20 characters of precision (about enough to hold the full double precision of the input). Other types return a GeoHash with a variable amount of precision, based on the size of the feature. Larger features are represented with less precision, smaller features with more precision. The idea is that the box implied by the GeoHash will always contain the input feature.</para>
+		
+		<para>The two-parameter variant of ST_GeoHash returns a GeoHash with a requested precision. For non-points, the starting point of the calculation is the center of the bounding box of the geometry.</para>
+
+		<note>
+		  <para>Availability: 1.4.0</para>
+		</note>
+
+		<note>
+			<para>ST_GeoHash will not work with geometries that are not in geographic (lon/lat) coordinates.</para>
+		</note>
+
+	  </refsection>
+
+	  <refsection>
+		<title>Examples</title>
+		<programlisting><![CDATA[SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326));
+
+     st_geohash      
+----------------------
+ c0w3hf1s70w3hf1s70w3
+
+SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);
+
+ st_geohash 
+------------
+ c0w3h
+		]]>
+		</programlisting>
+	  </refsection>
+	 <refsection>
+		<title>See Also</title>
+
+		<para></para>
+	  </refsection>
+	</refentry>
+
+
 	<refentry id="ST_AsText">
 		  <refnamediv>
 			<refname>ST_AsText</refname>

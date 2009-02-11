@@ -4534,21 +4534,21 @@ CREATEFUNCTION AsGML(geometry)
 	AS 'SELECT _ST_AsGML(2, $1, 15)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
--- Availabiltiy: 1.2.2
+-- Availability: 1.2.2
 CREATEFUNCTION ST_AsGML(geometry)
 	RETURNS TEXT
 	AS 'SELECT _ST_AsGML(2, $1, 15)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- ST_AsGML(version, geom) / precision=15 version=2
--- Availabiltiy: 1.3.2
+-- Availability: 1.3.2
 CREATEFUNCTION ST_AsGML(int4, geometry)
 	RETURNS TEXT
 	AS 'SELECT _ST_AsGML($1, $2, 15)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- ST_AsGML(version, geom, precision)
--- Availabiltiy: 1.3.2
+-- Availability: 1.3.2
 CREATEFUNCTION ST_AsGML(int4, geometry, int4)
 	RETURNS TEXT
 	AS 'SELECT _ST_AsGML($1, $2, $3)'
@@ -4590,21 +4590,21 @@ CREATEFUNCTION AsKML(int4, geometry, int4)
 	AS 'SELECT _ST_AsKML($1, transform($2,4326), $3)' 
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
--- Availabiltiy: 1.2.2
+-- Availability: 1.2.2
 CREATEFUNCTION ST_AsKML(geometry)
 	RETURNS TEXT
 	AS 'SELECT _ST_AsKML(2, ST_Transform($1,4326), 15)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- ST_AsKML(version, geom) / precision=15 version=2
--- Availabiltiy: 1.3.2
+-- Availability: 1.3.2
 CREATEFUNCTION ST_AsKML(int4, geometry)
 	RETURNS TEXT
 	AS 'SELECT _ST_AsKML($1, ST_Transform($2,4326), 15)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- ST_AsKML(version, geom, precision)
--- Availabiltiy: 1.3.2
+-- Availability: 1.3.2
 CREATEFUNCTION ST_AsKML(int4, geometry, int4) 
 	RETURNS TEXT
 	AS 'SELECT _ST_AsKML($1, ST_Transform($2,4326), $3)' 
@@ -4612,7 +4612,7 @@ CREATEFUNCTION ST_AsKML(int4, geometry, int4)
 
 -----------------------------------------------------------------------
 -- GEOJSON OUTPUT
--- Availabiltiy: 1.3.4
+-- Availability: 1.3.4
 -----------------------------------------------------------------------
 -- _ST_AsGeoJson(version, geom, precision, options)
 CREATEFUNCTION _ST_AsGeoJson(int4, geometry, int4, int4)
@@ -4656,6 +4656,21 @@ CREATEFUNCTION ST_AsGeoJson(int4, geometry, int4, int4)
         AS 'SELECT _ST_AsGeoJson($1, $2, $3, $4)'
         LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
+------------------------------------------------------------------------
+-- GeoHash (geohash.org)
+------------------------------------------------------------------------
+
+-- Availability 1.4.0
+CREATEFUNCTION ST_GeoHash(geometry, int4)
+        RETURNS TEXT
+	    AS 'MODULE_PATHNAME', 'ST_GeoHash'
+        LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrictl,iscachable);
+
+-- Availability 1.4.0
+CREATEFUNCTION ST_GeoHash(geometry)
+        RETURNS TEXT
+        AS 'SELECT ST_GeoHash($1, 0)'
+        LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 ------------------------------------------------------------------------
 -- OGC defined
