@@ -42,7 +42,7 @@ Comments should be written in C style (/* .... */) and not C++ style (//)
 
 :Naming:
 
-For liblwgeom:
+For ./liblwgeom:
 
 - Files should be named with an lw prefix.
 - Functions should have an lw prefix (lw_get_point).
@@ -50,7 +50,7 @@ For liblwgeom:
 - Function names should indicate the geometry type of inputs
   if relevant (lwline_split)
 
-For lwgeom:
+For ./postgis:
 
 - C functions called by the back-end directly (function(PG_FUNCTION_ARGS)) 
   should be named to match their most likely SQL alias. So

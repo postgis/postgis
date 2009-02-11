@@ -68,12 +68,12 @@ endif
 
 all: test 
 
-test check: ../lwgeom/liblwgeom.so ../loader/pgsql2shp ../loader/shp2pgsql $(PREPROC)
-	cp ../lwgeom/postgis.sql .
+test check: ../postgis/postgis.so ../loader/pgsql2shp ../loader/shp2pgsql $(PREPROC)
+	cp ../postgis/postgis.sql .
 	@USE_VERSION="$(POSTGIS_PGSQL_VERSION)" ./run_test $(TESTS)
 
-../lwgeom/liblwgeom.so:
-	$(MAKE) -C ../lwgeom
+../postgis/postgis.so:
+	$(MAKE) -C ../postgis
 
 ../loader/pgsql2shp ../loader/shp2pgsql:
 	$(MAKE) -C ../loader

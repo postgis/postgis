@@ -13,7 +13,7 @@ Directory structure:
 
   ./            Build scripts and install directions.
   ./liblwgeom   LWGEOM access library.
-  ./lwgeom      PostGIS library source code.
+  ./postgis     PostGIS library source code.
   ./java/ejb    EJB Java support
   ./java/jdbc   Extensions to the PostgreSQL JDBC drivers to support
                 the GIS objects. 
@@ -147,7 +147,7 @@ manually for some reason.)
 So, as postgres run:
 
   createlang plpgsql <yourdatabase>
-  psql -f lwgeom/postgis.sql -d <your_database>
+  psql -f postgis/postgis.sql -d <your_database>
 
 Your database should now be spatially enabled.
 

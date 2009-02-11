@@ -66,7 +66,7 @@ cd "$owd"
 ## generating parser
 #echo "Generating parser"
 #owd="$PWD"
-#cd "$outdir"/lwgeom
+#cd "$outdir"/postgis
 #make lex.yy.c
 #if [ $? -gt 0 ]; then
 #	exit 1

@@ -24,7 +24,7 @@ maintainer-clean:
 	@echo 'deletes files that may need special tools to rebuild.'
 	@echo '------------------------------------------------------'
 	$(MAKE) -C doc maintainer-clean
-	$(MAKE) -C lwgeom maintainer-clean
+	$(MAKE) -C postgis maintainer-clean
 	$(MAKE) -C jdbc2 maintainer-clean
 	$(MAKE) distclean
 	rm -f configure
@@ -42,16 +42,16 @@ liblwgeom-clean:
 	$(MAKE) -C liblwgeom clean
 
 postgis: liblwgeom
-	$(MAKE) -C lwgeom 
+	$(MAKE) -C postgis 
 
 postgis-clean:
-	$(MAKE) -C lwgeom clean
+	$(MAKE) -C postgis clean
 
 postgis-install:
-	$(MAKE) -C lwgeom install
+	$(MAKE) -C postgis install
 
 postgis-uninstall:
-	$(MAKE) -C lwgeom uninstall
+	$(MAKE) -C postgis uninstall
 
 loaderdumper:
 	$(MAKE) -C loader

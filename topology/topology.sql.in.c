@@ -160,7 +160,7 @@
 --  
 --  
 
-#include "../lwgeom/sqldefines.h"
+#include "../postgis/sqldefines.h"
 
 DROP SCHEMA topology CASCADE;
 
