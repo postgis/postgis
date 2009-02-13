@@ -145,7 +145,7 @@
 							<xsl:for-each select="para">
 								<xsl:choose>
 									<xsl:when test="contains(.,'Availability: 1.4')">
-										<listitem><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="$comment" /> <xsl:value-of select="." /></listitem>
+										<listitem><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="$comment" /> <xsl:text> </xsl:text><xsl:value-of select="." /></listitem>
 									</xsl:when>
 								</xsl:choose>
 							</xsl:for-each>

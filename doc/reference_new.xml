@@ -12512,6 +12512,10 @@ MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))
 		<paramdef><type>geometry</type> <parameter>g1</parameter></paramdef>
 		<paramdef><type>geometry</type> <parameter>g2</parameter></paramdef>
 	  </funcprototype>
+	  <funcprototype>
+		<funcdef>geometry <function>ST_Union</function></funcdef>
+		<paramdef><type>geometry[]</type> <parameter>g1_array</parameter></paramdef>
+	  </funcprototype>
 	</funcsynopsis>
   </refsynopsisdiv>
 
@@ -12540,6 +12544,10 @@ MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))
 	<para>NOTE: this function was formerly called GeomUnion(), which
 		was renamed from "Union" because UNION is an SQL reserved
 		word.</para>
+	<para>Availability: 1.4.0 - ST_Union was enhanced. ST_Union(geomarray) was introduced and also faster aggregate collection in PostgreSQL.  If you are using GEOS 3.1.0+
+		ST_Union will use the faster Cascaded Union algorithm described in
+		<ulink
+		url="http://blog.cleverelephant.ca/2009/01/must-faster-unions-in-postgis-14.html">http://blog.cleverelephant.ca/2009/01/must-faster-unions-in-postgis-14.html</ulink></para>
 
 	<para><inlinemediaobject>
 			<imageobject>
