@@ -7609,9 +7609,7 @@ st_asgeojson
 		
 		<para>The two-parameter variant of ST_GeoHash returns a GeoHash with a requested precision. For non-points, the starting point of the calculation is the center of the bounding box of the geometry.</para>
 
-		<note>
-		  <para>Availability: 1.4.0</para>
-		</note>
+		<para>Availability: 1.4.0</para>
 
 		<note>
 			<para>ST_GeoHash will not work with geometries that are not in geographic (lon/lat) coordinates.</para>
