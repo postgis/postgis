@@ -48,9 +48,9 @@ PGSQL_MANDIR=@PGSQL_MANDIR@
 # build the documentation
 ifeq ($(XSLTPROC),)
 all: requirements_not_met_xsltproc
-else 
+else
 ifeq ($(XSLBASE),)
-all: requirements_not_met_xslbase 
+all: requirements_not_met_xslbase
 else
 all: html/postgis.html
 	postgis_comments.sql
@@ -59,7 +59,7 @@ endif
 
 postgis_aggs_mm.xml: ./xsl/postgis_aggs_mm.xml.xsl reference_new.xml
 	$(XSLTPROC) ./xsl/postgis_aggs_mm.xml.xsl reference_new.xml > $@
-	
+
 postgis_comments.sql: ./xsl/postgis_comments.sql.xsl reference_new.xml
 	$(XSLTPROC) ./xsl/postgis_comments.sql.xsl reference_new.xml > $@
 
@@ -119,7 +119,7 @@ clean:
 
 maintainer-clean: clean
 	@rm -f html/*.html \
-		postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf 
+		postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf
 
 install: html/postgis.html man/shp2pgsql.1 man/pgsql2shp.1
 	@mkdir -p $(PGSQL_DOCDIR)/postgis
