@@ -52,7 +52,7 @@ else
 ifeq ($(XSLBASE),)
 all: requirements_not_met_xslbase
 else
-all: html/postgis.html postgis_comments.sql
+all: html/postgis.html	postgis_comments.sql
 endif
 endif
 
