@@ -127,6 +127,7 @@
 		</sect1>
 
 		<sect1 id="NewFunctions">
+			<title>New PostGIS Functions</title>
 			<sect2 id="NewFunctions_1_4">
 			<title>PostGIS Functions new in 1.4</title>
 			<para>The functions given below are PostGIS functions that were introduced in this major release.</para>
