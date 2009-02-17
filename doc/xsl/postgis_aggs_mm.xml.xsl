@@ -157,7 +157,7 @@
 			</sect2>
 			<sect2 id="NewFunctions_1_3">
 				<title>PostGIS Functions new in 1.3</title>
-				<para>The functions given below are PostGIS functions that were introduced the 1.3 release.</para>
+				<para>The functions given below are PostGIS functions that were introduced in the 1.3 release.</para>
 				<itemizedlist>
 				<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
 				<xsl:for-each select='sect1/refentry'>
