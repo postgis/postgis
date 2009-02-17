@@ -4629,8 +4629,8 @@ GROUP BY gid, field1,field2;
 		<programlisting>-- Extract all POINTs from a LINESTRING
 SELECT ST_AsText(
    ST_PointN(
-      column1,
-      generate_series(1, ST_NPoints(column1))
+	  column1,
+	  generate_series(1, ST_NPoints(column1))
    ))
 FROM ( VALUES ('LINESTRING(0 0, 1 1, 2 2)'::geometry) ) AS foo;
 
@@ -7277,7 +7277,7 @@ CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)
 			<para>Version 5: ST_AsGeoJSON(version, geom, precision) /options=0</para>
 			<para>Version 6: ST_AsGeoJSON(version, geom, precision,options)</para>
 
-			<note><para>Availability: 1.3.4</para></note>
+			<para>Availability: 1.3.4</para>
 			<!-- Optionally mention 3d support -->
 			<para><inlinemediaobject>
 			<imageobject>
@@ -7604,9 +7604,9 @@ st_asgeojson
 		<title>Description</title>
 
 		<para>Return a GeoHash representation (geohash.org) of the geometry. A GeoHash encodes a point into a text form that is sortable and searchable based on prefixing.  A shorter GeoHash is a less precise representation of a point.  It can also be thought of as a box, that contains the actual point.</para>
-		
+
 		<para>The one-parameter variant of ST_GeoHash returns a GeoHash based on the input geometry type. Points return a GeoHash with 20 characters of precision (about enough to hold the full double precision of the input). Other types return a GeoHash with a variable amount of precision, based on the size of the feature. Larger features are represented with less precision, smaller features with more precision. The idea is that the box implied by the GeoHash will always contain the input feature.</para>
-		
+
 		<para>The two-parameter variant of ST_GeoHash returns a GeoHash with a requested precision. For non-points, the starting point of the calculation is the center of the bounding box of the geometry.</para>
 
 		<para>Availability: 1.4.0</para>
@@ -7621,13 +7621,13 @@ st_asgeojson
 		<title>Examples</title>
 		<programlisting><![CDATA[SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326));
 
-     st_geohash      
+	 st_geohash
 ----------------------
  c0w3hf1s70w3hf1s70w3
 
 SELECT ST_GeoHash(ST_SetSRID(ST_MakePoint(-126,48),4326),5);
 
- st_geohash 
+ st_geohash
 ------------
  c0w3h
 		]]>
@@ -11799,7 +11799,7 @@ FROM sometable</programlisting>
 		<refname>ST_DumpRings</refname>
 
 		<refpurpose>Returns a set of <varname>geometry_dump</varname> rows, representing
-		    the exterior and interior rings of a polygon.</refpurpose>
+			the exterior and interior rings of a polygon.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -11815,8 +11815,8 @@ FROM sometable</programlisting>
 		<title>Description</title>
 
 		<para>This is a set-returning function (SRF). It returns a set of
-			<varname>geometry_dump</varname> rows, defined as an <varname>integer[]</varname> 
-			and a <varname>geometry</varname>, aliased "path" and "geom" respectively. 
+			<varname>geometry_dump</varname> rows, defined as an <varname>integer[]</varname>
+			and a <varname>geometry</varname>, aliased "path" and "geom" respectively.
 			The "path" field holds the polygon ring index containing a single integer: 0 for the shell, >0 for holes.
 			The "geom" field contains the corresponding ring as a polygon.</para>
 
@@ -11835,25 +11835,25 @@ FROM sometable</programlisting>
 		<title>Examples</title>
 
 		<programlisting>SELECT sometable.field1, sometable.field1,
-      (ST_DumpRings(sometable.the_geom)).geom As the_geom
+	  (ST_DumpRings(sometable.the_geom)).geom As the_geom
 FROM sometableOfpolys;
 
 SELECT ST_AsEWKT(geom) As the_geom, path
-    FROM ST_DumpRings(
-        ST_GeomFromEWKT('POLYGON((-8149064 5133092 1,-8149064 5132986 1,-8148996 5132839 1,-8148972 5132767 1,-8148958 5132508 1,-8148941 5132466 1,-8148924 5132394 1,
-        -8148903 5132210 1,-8148930 5131967 1,-8148992 5131978 1,-8149237 5132093 1,-8149404 5132211 1,-8149647 5132310 1,-8149757 5132394 1,
-        -8150305 5132788 1,-8149064 5133092 1),
-        (-8149362 5132394 1,-8149446 5132501 1,-8149548 5132597 1,-8149695 5132675 1,-8149362 5132394 1))')
-        )  as foo;
+	FROM ST_DumpRings(
+		ST_GeomFromEWKT('POLYGON((-8149064 5133092 1,-8149064 5132986 1,-8148996 5132839 1,-8148972 5132767 1,-8148958 5132508 1,-8148941 5132466 1,-8148924 5132394 1,
+		-8148903 5132210 1,-8148930 5131967 1,-8148992 5131978 1,-8149237 5132093 1,-8149404 5132211 1,-8149647 5132310 1,-8149757 5132394 1,
+		-8150305 5132788 1,-8149064 5133092 1),
+		(-8149362 5132394 1,-8149446 5132501 1,-8149548 5132597 1,-8149695 5132675 1,-8149362 5132394 1))')
+		)  as foo;
  path |                                            the_geom
 ----------------------------------------------------------------------------------------------------------------
   {0} | POLYGON((-8149064 5133092 1,-8149064 5132986 1,-8148996 5132839 1,-8148972 5132767 1,-8148958 5132508 1,
-      |          -8148941 5132466 1,-8148924 5132394 1,
-      |          -8148903 5132210 1,-8148930 5131967 1,
-      |          -8148992 5131978 1,-8149237 5132093 1,
-      |          -8149404 5132211 1,-8149647 5132310 1,-8149757 5132394 1,-8150305 5132788 1,-8149064 5133092 1))
+	  |          -8148941 5132466 1,-8148924 5132394 1,
+	  |          -8148903 5132210 1,-8148930 5131967 1,
+	  |          -8148992 5131978 1,-8149237 5132093 1,
+	  |          -8149404 5132211 1,-8149647 5132310 1,-8149757 5132394 1,-8150305 5132788 1,-8149064 5133092 1))
   {1} | POLYGON((-8149362 5132394 1,-8149446 5132501 1,
-      |          -8149548 5132597 1,-8149695 5132675 1,-8149362 5132394 1))</programlisting>
+	  |          -8149548 5132597 1,-8149695 5132675 1,-8149362 5132394 1))</programlisting>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
