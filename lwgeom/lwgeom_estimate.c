@@ -26,6 +26,11 @@
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
 
+#include "utils/selfuncs.h"
+#include "utils/syscache.h"
+#include "utils/guc.h"
+#include "utils/builtins.h"
+
 /*#define DEBUG_GEOMETRY_STATS 1*/
 
 
