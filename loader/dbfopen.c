@@ -509,6 +509,18 @@ DBFClose(DBFHandle psDBF)
         DBFUpdateHeader( psDBF );
 
 /* -------------------------------------------------------------------- */
+/*  Add the DBF end-of-file marker after the last record.               */
+/* -------------------------------------------------------------------- */
+
+    fseek(psDBF->fp, -1, SEEK_END);
+    fread(&eof_test, 1, 1, psDBF->fp);
+    if( eof_test != 0x1a ) /* no EOF exists, so write one */
+    {
+        fseek(psDBF->fp, 0, SEEK_END);
+        fwrite(&eof, 1, 1, psDBF->fp);
+    }
+
+/* -------------------------------------------------------------------- */
 /*      Close, and free resources.                                      */
 /* -------------------------------------------------------------------- */
     fclose( psDBF->fp );
