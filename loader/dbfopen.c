@@ -496,6 +496,9 @@ DBFOpen( const char * pszFilename, const char * pszAccess )
 void SHPAPI_CALL
 DBFClose(DBFHandle psDBF)
 {
+    static char eof = 0x1a;
+    char eof_test;
+    
 /* -------------------------------------------------------------------- */
 /*      Write out header if not already written.                        */
 /* -------------------------------------------------------------------- */
@@ -510,6 +513,18 @@ DBFClose(DBFHandle psDBF)
 /* -------------------------------------------------------------------- */
     if( psDBF->bUpdated )
         DBFUpdateHeader( psDBF );
+
+/* -------------------------------------------------------------------- */
+/*  Add the DBF end-of-file marker after the last record.               */
+/* -------------------------------------------------------------------- */
+
+    fseek(psDBF->fp, -1, SEEK_END);
+    fread(&eof_test, 1, 1 nitems, psDBF->fp);
+    if( eof_test != 0x1a ) /* no EOF exists, so write one */
+    {
+        fseek(psDBF->fp, 0, SEEK_END);
+        fwrite(&eof, 1, 1, psDBF->fp);
+    }
 
 /* -------------------------------------------------------------------- */
 /*      Close, and free resources.                                      */
