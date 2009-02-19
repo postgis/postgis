@@ -1,6 +1,7 @@
 #include "lwgeom_pg.h"
 
 #include "postgres.h"
+#include "access/xact.h"
 #include "executor/spi.h"       /* this is what you need to work with SPI */
 #include "commands/trigger.h"   /* ... and triggers */
 #include "utils/lsyscache.h"	/* for get_namespace_name() */

@@ -20,20 +20,15 @@
 #include "postgres.h"
 #include "executor/spi.h"
 #include "fmgr.h"
+#include "commands/vacuum.h"
+#include "nodes/relation.h"
 #include "parser/parsetree.h"
 #include "utils/array.h"
+#include "utils/lsyscache.h"
+#include "utils/syscache.h"
 
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
-
-#include "commands/vacuum.h"
-#include "utils/lsyscache.h"
-
-#if POSTGIS_PGSQL_VERSION >= 84
-#include "utils/syscache.h"
-#include "nodes/relation.h"
-#endif
-
 
 /*
  * 	Assign a number to the postgis statistics kind
