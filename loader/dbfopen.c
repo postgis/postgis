@@ -519,7 +519,7 @@ DBFClose(DBFHandle psDBF)
 /* -------------------------------------------------------------------- */
 
     fseek(psDBF->fp, -1, SEEK_END);
-    fread(&eof_test, 1, 1 nitems, psDBF->fp);
+    fread(&eof_test, 1, 1, psDBF->fp);
     if( eof_test != 0x1a ) /* no EOF exists, so write one */
     {
         fseek(psDBF->fp, 0, SEEK_END);
