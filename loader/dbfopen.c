@@ -493,6 +493,9 @@ DBFOpen( const char * pszFilename, const char * pszAccess )
 void SHPAPI_CALL
 DBFClose(DBFHandle psDBF)
 {
+    static char eof = 0x1a;
+    char eof_test;
+
 /* -------------------------------------------------------------------- */
 /*      Write out header if not already written.                        */
 /* -------------------------------------------------------------------- */
