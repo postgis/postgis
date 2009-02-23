@@ -52,14 +52,14 @@ else
 ifeq ($(XSLBASE),)
 all: requirements_not_met_xslbase
 else
-all: html/postgis.html	postgis_comments.sql
+all: html/postgis.html	../postgis_comments.sql
 endif
 endif
 
 postgis_aggs_mm.xml: ./xsl/postgis_aggs_mm.xml.xsl reference_new.xml
 	$(XSLTPROC) ./xsl/postgis_aggs_mm.xml.xsl reference_new.xml > $@
 
-postgis_comments.sql: ./xsl/postgis_comments.sql.xsl reference_new.xml
+../postgis_comments.sql: ./xsl/postgis_comments.sql.xsl reference_new.xml
 	$(XSLTPROC) ./xsl/postgis_comments.sql.xsl reference_new.xml > $@
 
 postgis-out.xml: postgis.xml introduction.xml installation.xml faq.xml using_postgis.xml performance_tips.xml reference.xml reference_new.xml postgis_aggs_mm.xml reporting.xml release_notes.xml ../Version.config
