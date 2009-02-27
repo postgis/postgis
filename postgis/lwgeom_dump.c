@@ -96,10 +96,7 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 		tupdesc = RelationNameGetTupleDesc("geometry_dump");
 
 		/* allocate a slot for a tuple with this tupdesc */
-		slot = TupleDescGetSlot(tupdesc);
-
-		/* allocate a slot for a tuple with this tupdesc */
-		slot = TupleDescGetSlot(tupdesc);
+		slot = BlessTupleDesc(tupdesc);
 
 		/* assign slot to function context */
 		funcctx->slot = slot;
@@ -239,10 +236,7 @@ Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS)
 		tupdesc = RelationNameGetTupleDesc("geometry_dump");
 
 		/* allocate a slot for a tuple with this tupdesc */
-		slot = TupleDescGetSlot(tupdesc);
-
-		/* allocate a slot for a tuple with this tupdesc */
-		slot = TupleDescGetSlot(tupdesc);
+		slot = BlessTupleDesc(tupdesc);
 
 		/* assign slot to function context */
 		funcctx->slot = slot;
