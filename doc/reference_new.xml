@@ -7614,6 +7614,13 @@ st_asgeojson
 		<note>
 			<para>ST_GeoHash will not work with geometries that are not in geographic (lon/lat) coordinates.</para>
 		</note>
+		
+		<!-- Optionally mention Circular String Support -->
+	    <para><inlinemediaobject>
+	        <imageobject>
+	          <imagedata fileref="images/check.png" />
+	        </imageobject>
+	      </inlinemediaobject> This method supports Circular Strings and Curves </para>
 
 	  </refsection>
 

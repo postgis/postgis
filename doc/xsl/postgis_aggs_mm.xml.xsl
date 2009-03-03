@@ -12,7 +12,7 @@
 	<xsl:template match='/chapter'>
 	<chapter>
 		<title>PostGIS Special Functions Index</title>
-		<sect1>
+		<sect1 id="PostGIS_Aggregate_Functions">
 			<title>PostGIS Aggregate Functions</title>
 			<para>The functions given below are spatial aggregate functions provided with PostGIS that can be used just like any other sql aggregate function such as sum, average.</para>
 			<itemizedlist>
@@ -38,7 +38,7 @@
 			</itemizedlist>
 		</sect1>
 
-		<sect1>
+		<sect1 id="PostGIS_SQLMM_Functions">
 			<title>PostGIS SQL-MM Compliant Functions</title>
 			<para>The functions given below are PostGIS functions that conform to the SQL/MM 3 standard</para>
 			<note>
@@ -70,7 +70,7 @@
 				</itemizedlist>
 		</sect1>
 
-		<sect1>
+		<sect1 id="PostGIS_3D_Functions">
 			<title>PostGIS Functions that support 3D</title>
 			<para>The functions given below are PostGIS functions that do not throw away the Z-Index.</para>
 				<itemizedlist>
