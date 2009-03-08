@@ -770,8 +770,8 @@ lwgeom_grid(LWGEOM *lwgeom, gridspec *grid)
 		case COLLECTIONTYPE:
 			return (LWGEOM *)lwcollection_grid((LWCOLLECTION *)lwgeom, grid);
 		default:
-			elog(ERROR, "lwgeom_grid: Unknown geometry type: %d",
-				TYPE_GETTYPE(lwgeom->type));
+			elog(ERROR, "lwgeom_grid: Unsupported geometry type: %s",
+				lwgeom_typename(TYPE_GETTYPE(lwgeom->type)));
 			return NULL;
 	}
 }
