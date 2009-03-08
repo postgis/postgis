@@ -1645,14 +1645,31 @@ compute_serialized_box3d(uchar *srl)
 {
 	int type = lwgeom_getType(srl[0]);
 	int t;
-	uchar *loc;
-	uint32 ngeoms;
+	uchar *loc = srl;
+	uint32 nelems;
 	BOX3D *result;
 	BOX3D b1;
 	int sub_size;
 	char nboxes=0;
 
 	LWDEBUGF(2, "compute_serialized_box3d called on type %d", type);
+
+	loc += 1; /* Move past the 'type' byte. */
+
+	if (lwgeom_hasBBOX(srl[0]))
+	{
+		loc += sizeof(BOX2DFLOAT4); /* Move past the bbox */
+	}
+
+	if (lwgeom_hasSRID(srl[0]) )
+	{
+		loc +=4; /* Move past the SRID */
+	}
+
+	nelems = lw_get_uint32(loc);
+
+	/* No elements? This is an EMPTY geometry. */
+	if ( nelems == 0 ) return NULL;
 
 	if (type == POINTTYPE)
 	{
@@ -1700,24 +1717,11 @@ compute_serialized_box3d(uchar *srl)
 		return NULL;
 	}
 
-	loc = srl+1;
-
-	if (lwgeom_hasBBOX(srl[0]))
-	{
-		loc += sizeof(BOX2DFLOAT4);
-	}
-
-	if (lwgeom_hasSRID(srl[0]) )
-	{
-		loc +=4;
-	}
-
-	ngeoms = lw_get_uint32(loc);
 	loc += 4;
 
 	/* each sub-type */
 	result = NULL;
-	for (t=0; t<ngeoms; t++)
+	for (t=0; t<nelems; t++)
 	{
 		if ( compute_serialized_box3d_p(loc, &b1) ) 
 		{
