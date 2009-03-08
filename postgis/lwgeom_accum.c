@@ -36,6 +36,19 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS);
 Datum polygonize_garray(PG_FUNCTION_ARGS);
 Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS);
 
+
+/*
+** Versions of PostgreSQL < 8.4 perform array accumulation internally using 
+** pass by value, which is very slow working with large/many geometries.
+** Hence PostGIS currently implements its own aggregate for building
+** geometry arrays using pass by reference, which is significantly faster and
+** similar to the method used in PostgreSQL 8.4.
+**
+** Hence we can revert this to the original aggregate functions from 1.3 at
+** whatever point PostgreSQL 8.4 becomes the minimum version we support :) 
+*/
+
+
 /*
 ** To pass the internal ArrayBuildState pointer between the 
 ** transfn and finalfn we need to wrap it into a custom type first,
