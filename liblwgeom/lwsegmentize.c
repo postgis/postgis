@@ -498,11 +498,6 @@ lwcollection_segmentize(LWCOLLECTION *collection, uint32 perQuad)
 
         LWDEBUG(2, "lwcollection_segmentize called.");
 
-        if(has_arc((LWGEOM *)collection) == 0)
-        {
-                return collection;
-        }
-
         geoms = lwalloc(sizeof(LWGEOM *)*collection->ngeoms);
 
         for(i=0; i<collection->ngeoms; i++)
@@ -517,6 +512,9 @@ lwcollection_segmentize(LWCOLLECTION *collection, uint32 perQuad)
                         break;
                 case CURVEPOLYTYPE:
                         geoms[i] = (LWGEOM *)lwcurvepoly_segmentize((LWCURVEPOLY *)tmp, perQuad);
+                        break;
+                case COLLECTIONTYPE:
+                        geoms[i] = (LWGEOM *)lwcollection_segmentize((LWCOLLECTION *)tmp, perQuad);
                         break;
                 default:
                         geoms[i] = lwgeom_clone(tmp);
