@@ -1720,10 +1720,6 @@ lwnotice("compute_serialized_box3d called on type %d", type);
 		loc +=4; /* Move past the SRID */
 	}
 
-	nelems = lw_get_uint32(loc);
-
-	/* No elements? This is an EMPTY geometry. */
-	if ( nelems == 0 ) return NULL;
 
 	if (type == POINTTYPE)
 	{
@@ -1739,7 +1735,14 @@ lwnotice("compute_serialized_box3d: bbox found");
 		return result;
 	}
 
-	else if (type == LINETYPE)
+	/* 
+	** For items that have elements (everything except points), 
+	** nelems == 0 => EMPTY geometry
+	*/
+	nelems = lw_get_uint32(loc);
+	if ( nelems == 0 ) return NULL;
+
+	if (type == LINETYPE)
 	{
 		LWLINE *line = lwline_deserialize(srl);
 		result = lwline_compute_box3d(line);
