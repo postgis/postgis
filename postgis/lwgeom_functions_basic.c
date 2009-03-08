@@ -2400,17 +2400,18 @@ Datum LWGEOM_expand(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_to_BOX);
 Datum LWGEOM_to_BOX(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	BOX2DFLOAT4 box2d;
+	PG_LWGEOM *pg_lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	BOX3D *box3d;
 	BOX *result = (BOX *)lwalloc(sizeof(BOX));
+	LWGEOM *lwgeom = lwgeom_deserialize(SERIALIZED_FORM(pg_lwgeom));
 
-	if ( ! getbox2d_p(SERIALIZED_FORM(lwgeom), &box2d) )
-	{
-		PG_RETURN_NULL(); /* must be the empty geometry */
-	}
-	box2df_to_box_p(&box2d, result);
+	/* Calculate the BOX3D of the geometry */
+	box3d = lwgeom_compute_box3d(lwgeom);
+	box3d_to_box_p(box3d, result);
+	lwfree(box3d);
+	lwfree(lwgeom);
 
-	PG_FREE_IF_COPY(lwgeom, 0);
+	PG_FREE_IF_COPY(pg_lwgeom, 0);
 
 	PG_RETURN_POINTER(result);
 }

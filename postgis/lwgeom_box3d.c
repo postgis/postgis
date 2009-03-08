@@ -150,10 +150,9 @@ PG_FUNCTION_INFO_V1(BOX3D_to_BOX);
 Datum BOX3D_to_BOX(PG_FUNCTION_ARGS)
 {
 	BOX3D *in = (BOX3D *)PG_GETARG_POINTER(0);
-	BOX2DFLOAT4 *box2d = box3d_to_box2df(in);
 	BOX *box = palloc(sizeof(BOX));
 
-	box2df_to_box_p(box2d, box);
+	box3d_to_box_p(in, box);
 	PG_RETURN_POINTER(box);
 }
 

@@ -1,3 +1,16 @@
+/**********************************************************************
+ * $Id$
+ *
+ * PostGIS - Spatial Types for PostgreSQL
+ * http://postgis.refractions.net
+ * Copyright 2001-2009 Refractions Research Inc.
+ * Copyright 2009 Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>
+ *
+ * This is free software; you can redistribute and/or modify it under
+ * the terms of the GNU General Public Licence. See the COPYING file.
+ *
+ **********************************************************************/
+
 #include "postgres.h"
 #include "utils/geo_decls.h"
 
@@ -5,38 +18,38 @@
 #include "liblwgeom.h"
 
 
-void box_to_box2df(BOX *box, BOX2DFLOAT4 *out);
+void box_to_box3d(BOX *box, BOX3D *out);
+void box3d_to_box_p(BOX3D *box, BOX *out);
 
 
-
-/* convert postgresql BOX to BOX2D */
+/* convert postgresql BOX to BOX3D */
 void
-box_to_box2df(BOX *box, BOX2DFLOAT4 *out)
+box_to_box3d(BOX *box, BOX3D *out)
 {
 #if PARANOIA_LEVEL > 0
 	if (box == NULL) return;
 #endif
 
-	out->xmin = nextDown_f(box->low.x);
-	out->ymin = nextDown_f(box->low.y);
+	out->xmin = box->low.x;
+	out->ymin = box->low.y;
 
-	out->xmax = nextUp_f(box->high.x);
-	out->ymax = nextUp_f(box->high.x);
+	out->xmax = box->high.x;
+	out->ymax = box->high.y;
 
 }
 
-/* convert BOX2D to postgresql BOX */
+/* convert BOX3D to postgresql BOX */
 void
-box2df_to_box_p(BOX2DFLOAT4 *box, BOX *out)
+box3d_to_box_p(BOX3D *box, BOX *out)
 {
 #if PARANOIA_LEVEL > 0
 	if (box == NULL) return;
 #endif
 
-	out->low.x = nextDown_d(box->xmin);
-	out->low.y = nextDown_d(box->ymin);
+	out->low.x = box->xmin;
+	out->low.y = box->ymin;
 
-	out->high.x = nextUp_d(box->xmax);
-	out->high.y = nextUp_d(box->ymax);
+	out->high.x = box->xmax;
+	out->high.y = box->ymax;
 }
 
