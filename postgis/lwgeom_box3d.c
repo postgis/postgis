@@ -26,6 +26,7 @@
 /* forward defs */
 Datum BOX3D_in(PG_FUNCTION_ARGS);
 Datum BOX3D_out(PG_FUNCTION_ARGS);
+Datum BOX3D_extent_out(PG_FUNCTION_ARGS);
 Datum LWGEOM_to_BOX3D(PG_FUNCTION_ARGS);
 Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS);
 Datum BOX3D_expand(PG_FUNCTION_ARGS);
@@ -134,6 +135,43 @@ Datum BOX3D_out(PG_FUNCTION_ARGS)
 	sprintf(result, "BOX3D(%.15g %.15g %.15g,%.15g %.15g %.15g)",
 			bbox->xmin, bbox->ymin, bbox->zmin,
 			bbox->xmax,bbox->ymax,bbox->zmax);
+
+	PG_RETURN_CSTRING(result);
+}
+
+/*
+ *  Takes an internal rep of a BOX3D and returns a string rep.
+ *  but beginning with BOX(...) and with only 2 dimensions. This
+ *  is a temporary hack to allow ST_Extent() to return a result
+ *  with the precision of BOX2DFLOAT4 but with the BOX2DFLOAT4
+ *  output format. 
+ *
+ *  example:
+ *     "BOX(xmin ymin, xmax ymax)"
+ */
+PG_FUNCTION_INFO_V1(BOX3D_extent_out);
+Datum BOX3D_extent_out(PG_FUNCTION_ARGS)
+{
+	BOX3D  *bbox = (BOX3D *) PG_GETARG_POINTER(0);
+	int size;
+	char *result;
+
+	if (bbox == NULL)
+	{
+		result = palloc(5);
+		strcat(result,"NULL");
+		PG_RETURN_CSTRING(result);
+	}
+
+
+	/*double digits+ "BOX3D"+ "()" + commas +null */
+	size = MAX_DIGS_DOUBLE*6+5+2+4+5+1;
+
+	result = (char *) palloc(size);
+
+	sprintf(result, "BOX(%.15g %.15g,%.15g %.15g)",
+			bbox->xmin, bbox->ymin,
+			bbox->xmax,bbox->ymax);
 
 	PG_RETURN_CSTRING(result);
 }

@@ -328,6 +328,27 @@ CREATE TYPE box3d (
 	output = ST_box3d_out
 );
 
+-- Temporary box3d aggregate type to retain full double precision
+-- for ST_Extent(). Should be removed when we change the output 
+-- type of ST_Extent() to return something other than BOX2DFLOAT4.
+CREATEFUNCTION box3d_extent_in(cstring)
+        RETURNS box3d_extent
+        AS '$libdir/postgis-1.4', 'BOX3D_in'
+        LANGUAGE 'C' IMMUTABLE STRICT; -- WITH (isstrict);
+
+CREATEFUNCTION box3d_extent_out(box3d_extent)
+	RETURNS cstring 
+	AS 'MODULE_PATHNAME', 'BOX3D_extent_out'
+	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict);
+
+CREATE TYPE box3d_extent (
+	alignment = double,
+	internallength = 48,
+	input = box3d_extent_in,
+	output = box3d_extent_out
+);
+-- End of temporary hack
+
 -- Deprecation in 1.2.3
 CREATEFUNCTION xmin(box3d)
 	RETURNS FLOAT8
@@ -2017,18 +2038,30 @@ CREATEFUNCTION ST_Combine_BBox(box2d,geometry)
 	AS 'MODULE_PATHNAME', 'BOX2DFLOAT4_combine'
 	LANGUAGE 'C' _IMMUTABLE;
 
+-- Temporary hack function
+CREATEFUNCTION combine_bbox(box3d_extent,geometry)
+	RETURNS box3d_extent
+	AS 'MODULE_PATHNAME', 'BOX3D_combine'
+	LANGUAGE 'C' _IMMUTABLE;
+
+-- Temporary hack function
+CREATEFUNCTION ST_Combine_BBox(box3d_extent,geometry)
+	RETURNS box3d_extent
+	AS 'MODULE_PATHNAME', 'BOX3D_combine'
+	LANGUAGE 'C' _IMMUTABLE;
+
 -- Deprecation in 1.2.3
 CREATE AGGREGATE Extent(
 	sfunc = ST_combine_bbox,
 	basetype = geometry,
-	stype = box2d
+	stype = box3d_extent
 	);
 
 -- Availability: 1.2.2
 CREATE AGGREGATE ST_Extent(
 	sfunc = ST_combine_bbox,
 	basetype = geometry,
-	stype = box2d
+	stype = box3d_extent
 	);
 
 -- Deprecation in 1.2.3
