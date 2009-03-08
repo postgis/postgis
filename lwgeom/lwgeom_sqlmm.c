@@ -514,11 +514,12 @@ lwcollection_segmentize(LWCOLLECTION *collection, uint32 perQuad)
         lwnotice("lwcollection_segmentize called.");
 #endif
 
+/*
         if(has_arc((LWGEOM *)collection) == 0)
         {
                 return collection;
         }
-
+*/
         geoms = lwalloc(sizeof(LWGEOM *)*collection->ngeoms);
 
         for(i=0; i<collection->ngeoms; i++)
