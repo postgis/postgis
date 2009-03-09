@@ -1491,47 +1491,29 @@ Datum LWGEOM_force_multi(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	PG_LWGEOM *result;
-	LWGEOM *lwgeoms[1];
 	LWGEOM *lwgeom;
-	int type;
-	int SRID=-1;
-	BOX2DFLOAT4 *box;
+	LWGEOM *ogeom;
 
 	POSTGIS_DEBUG(2, "LWGEOM_force_multi called");
 
 	/*
-	 * This funx is a no-op only if a bbox cache is already present
-	 * in input. If bbox cache is not there we'll need to handle
-	 * automatic bbox addition FOR_COMPLEX_GEOMS.
-	 */
-	if ( lwgeom_contains_subgeoms(TYPE_GETTYPE(geom->type)) &&
-	                TYPE_HASBBOX(geom->type) )
+	** This funx is a no-op only if a bbox cache is already present
+	** in input. If bbox cache is not there we'll need to handle
+	** automatic bbox addition FOR_COMPLEX_GEOMS.
+	*/
+	if ( lwgeom_contains_subgeoms(TYPE_GETTYPE(geom->type)) && TYPE_HASBBOX(geom->type) )
 	{
 		PG_RETURN_POINTER(geom);
 	}
 
+
 	/* deserialize into lwgeoms[0] */
 	lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom));
-	type = TYPE_GETTYPE(lwgeom->type);
+	ogeom = lwgeom_as_multi(lwgeom);
+		printf("ogeom %p\n",ogeom);
+		printf("ogeom->type %d\n", ogeom->type);
 
-	/* if it's a single POINT, LINESTRING or POLYGON geom, make it a multi */
-	if ( type == POINTTYPE || type == LINETYPE || type == POLYGONTYPE )
-	{
-		type += 3;
-		SRID = lwgeom->SRID;
-		/* We transfer bbox ownership from input to output */
-		box = lwgeom->bbox;
-		lwgeom->SRID=-1;
-		lwgeom->bbox=NULL;
-		lwgeoms[0] = lwgeom;
-
-		lwgeom = (LWGEOM *)lwcollection_construct(type,
-		                SRID, box, 1, lwgeoms);
-	}
-
-
-	result = pglwgeom_serialize(lwgeom);
-	lwgeom_release(lwgeom);
+	result = pglwgeom_serialize(ogeom);
 
 	PG_FREE_IF_COPY(geom, 0);
 

@@ -342,6 +342,67 @@ LWGEOM *lwpoly_as_lwgeom(LWPOLY *obj) { return (LWGEOM *)obj; }
 LWGEOM *lwline_as_lwgeom(LWLINE *obj) { return (LWGEOM *)obj; }
 LWGEOM *lwpoint_as_lwgeom(LWPOINT *obj) { return (LWGEOM *)obj; }
 
+
+/* 
+** Look-up for the correct MULTI* type promotion for
+** singleton types.
+*/
+static unsigned char MULTITYPE[16] = {
+	0,
+	MULTIPOINTTYPE,
+	MULTILINETYPE,
+	MULTIPOLYGONTYPE,
+	0,0,0,0,
+	MULTICURVETYPE,
+	MULTICURVETYPE,
+	0,0,0,
+	MULTISURFACETYPE,
+	0,0
+};
+
+/*
+** Create a new LWGEOM of the appropriate MULTI* type.
+*/
+LWGEOM *
+lwgeom_as_multi(LWGEOM *lwgeom)
+{
+	LWGEOM **ogeoms;
+	LWGEOM *ogeom = NULL;
+	BOX2DFLOAT4 *box = NULL;
+	int type;
+
+	ogeoms = lwalloc(sizeof(LWGEOM*));
+
+	/*
+	** This funx is a no-op only if a bbox cache is already present
+	** in input. 
+	*/
+	if ( lwgeom_contains_subgeoms(TYPE_GETTYPE(lwgeom->type)) )
+	{
+		return lwgeom_clone(lwgeom);
+	}
+
+	type = TYPE_GETTYPE(lwgeom->type);
+
+	if ( MULTITYPE[type] )
+	{
+		ogeoms[0] = lwgeom_clone(lwgeom);
+
+		/* Sub-geometries are not allowed to have bboxes or SRIDs, move the bbox to the collection */
+		box = ogeoms[0]->bbox;
+		ogeoms[0]->bbox = NULL;
+		ogeoms[0]->SRID = -1;
+			
+		ogeom = (LWGEOM *)lwcollection_construct(MULTITYPE[type], lwgeom->SRID, box, 1, ogeoms);
+	}
+	else 
+	{
+		return lwgeom_clone(lwgeom);
+	}
+
+	return ogeom;
+}
+
 void
 lwgeom_release(LWGEOM *lwgeom)
 {

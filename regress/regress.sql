@@ -244,7 +244,7 @@ select '142', ST_asewkt(ST_multi(ST_setsrid('LINESTRING(2 2, 3 3)'::geometry, 5)
 select '142_', asewkt(multi(setsrid('LINESTRING(2 2, 3 3)'::geometry, 5)));
 select '143', ST_asewkt(ST_multi(ST_setsrid('POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))'::geometry, 6)));
 select '143_', asewkt(multi(setsrid('POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))'::geometry, 6)));
-
+select '143c1', ST_asewkt(ST_multi('CIRCULARSTRING(0 0, 1 1, 2 2)'::geometry));
 select '144', ST_asewkt(ST_force_3dm('POINT(1 2 3)'));
 select '144_', asewkt(force_3dm('POINT(1 2 3)'));
 select '145', ST_asewkt(ST_force_3dz('POINTM(1 2 3)'));

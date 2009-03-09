@@ -453,6 +453,7 @@ extern LWPOLY *lwgeom_as_lwpoly(LWGEOM *lwgeom);
 extern LWLINE *lwgeom_as_lwline(LWGEOM *lwgeom);
 extern LWPOINT *lwgeom_as_lwpoint(LWGEOM *lwgeom);
 extern LWCIRCSTRING *lwgeom_as_lwcircstring(LWGEOM *lwgeom);
+extern LWGEOM *lwgeom_as_multi(LWGEOM *lwgeom);
 
 /* Casts LW*->LWGEOM (always cast) */
 extern LWGEOM *lwmpoly_as_lwgeom(LWMPOLY *obj);
@@ -601,6 +602,7 @@ extern int pointArray_ptsize(const POINTARRAY *pa);
 #define WKBMOFFSET 0x40000000
 #define WKBSRIDFLAG 0x20000000
 #define WKBBBOXFLAG 0x10000000
+
 
 /* These macros work on PG_LWGEOM.type, LWGEOM.type and all its subclasses */
 
