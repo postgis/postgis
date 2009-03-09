@@ -372,9 +372,9 @@ lwpoint_add(const LWPOINT *to, uint32 where, const LWGEOM *what)
 	}
 	/* reset SRID and wantbbox flag from component types */
 	lwgeom_dropSRID(geoms[0]);
-	lwgeom_dropBBOX(geoms[0]);
+	lwgeom_drop_bbox(geoms[0]);
 	lwgeom_dropSRID(geoms[1]);
-	lwgeom_dropBBOX(geoms[1]);
+	lwgeom_drop_bbox(geoms[1]);
 
 	/* Find appropriate geom type */
 	if ( TYPE_GETTYPE(what->type) == POINTTYPE ) newtype = MULTIPOINTTYPE;

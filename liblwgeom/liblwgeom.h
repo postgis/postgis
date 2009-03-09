@@ -475,10 +475,10 @@ extern void lwgeom_changed(LWGEOM *lwgeom);
  * with the HASBBOX flag and has a bbox, it
  * will be released.
  */
-extern void lwgeom_dropBBOX(LWGEOM *lwgeom);
+extern void lwgeom_drop_bbox(LWGEOM *lwgeom);
 
 /* Compute a bbox if not already computed */
-extern void lwgeom_addBBOX(LWGEOM *lwgeom);
+extern void lwgeom_add_bbox(LWGEOM *lwgeom);
 
 extern void lwgeom_dropSRID(LWGEOM *lwgeom);
 

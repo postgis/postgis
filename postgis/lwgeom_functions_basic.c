@@ -1682,7 +1682,7 @@ Datum LWGEOM_longitude_shift(PG_FUNCTION_ARGS)
 	lwgeom = pglwgeom_deserialize(geom);
 
 	/* Drop bbox, will be recomputed */
-	lwgeom_dropBBOX(lwgeom);
+	lwgeom_drop_bbox(lwgeom);
 
 	/* Modify geometry */
 	lwgeom_longitude_shift(lwgeom);
@@ -1802,9 +1802,9 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 	}
 
 	/* Drop input geometries bbox and SRID */
-	lwgeom_dropBBOX(lwgeoms[0]);
+	lwgeom_drop_bbox(lwgeoms[0]);
 	lwgeom_dropSRID(lwgeoms[0]);
-	lwgeom_dropBBOX(lwgeoms[1]);
+	lwgeom_drop_bbox(lwgeoms[1]);
 	lwgeom_dropSRID(lwgeoms[1]);
 
 	outlwg = (LWGEOM *)lwcollection_construct(
@@ -2059,7 +2059,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 
 
 		lwgeom_dropSRID(lwgeoms[i]);
-		lwgeom_dropBBOX(lwgeoms[i]);
+		lwgeom_drop_bbox(lwgeoms[i]);
 
 		/* Output type not initialized */
 		if ( ! outtype )
@@ -3292,7 +3292,7 @@ Datum LWGEOM_affine(PG_FUNCTION_ARGS)
 
 	/* COMPUTE_BBOX TAINTING */
 	tmp = pglwgeom_deserialize(geom);
-	lwgeom_dropBBOX(tmp);
+	lwgeom_drop_bbox(tmp);
 	tmp->bbox = lwgeom_compute_box2d(tmp);
 	ret = pglwgeom_serialize(tmp);
 

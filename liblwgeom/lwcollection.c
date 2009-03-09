@@ -293,16 +293,16 @@ lwcollection_add(const LWCOLLECTION *to, uint32 where, const LWGEOM *what)
 	{
 		geoms[i] = lwgeom_clone(to->geoms[i]);
 		lwgeom_dropSRID(geoms[i]);
-		lwgeom_dropBBOX(geoms[i]);
+		lwgeom_drop_bbox(geoms[i]);
 	}
 	geoms[where] = lwgeom_clone(what);
 	lwgeom_dropSRID(geoms[where]);
-	lwgeom_dropBBOX(geoms[where]);
+	lwgeom_drop_bbox(geoms[where]);
 	for (i=where; i<to->ngeoms; i++)
 	{
 		geoms[i+1] = lwgeom_clone(to->geoms[i]);
 		lwgeom_dropSRID(geoms[i+1]);
-		lwgeom_dropBBOX(geoms[i+1]);
+		lwgeom_drop_bbox(geoms[i+1]);
 	}
 
 	col = lwcollection_construct(COLLECTIONTYPE,
@@ -441,6 +441,7 @@ LWGEOM *lwcollection_extract(const LWCOLLECTION *col, char type)
 TODO: pramsey
 }
 */
+
 
 
 void lwcollection_free(LWCOLLECTION *col) 

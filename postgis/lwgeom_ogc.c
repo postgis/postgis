@@ -296,7 +296,7 @@ Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS)
 	subgeom->SRID = coll->SRID;
 
 	/* COMPUTE_BBOX==TAINTING */
-	if ( coll->bbox ) lwgeom_addBBOX(subgeom);
+	if ( coll->bbox ) lwgeom_add_bbox(subgeom);
 
 	result = pglwgeom_serialize(subgeom);
 

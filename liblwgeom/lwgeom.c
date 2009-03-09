@@ -745,7 +745,7 @@ lwgeom_changed(LWGEOM *lwgeom)
 }
 
 void
-lwgeom_dropBBOX(LWGEOM *lwgeom)
+lwgeom_drop_bbox(LWGEOM *lwgeom)
 {
 	if ( lwgeom->bbox ) lwfree(lwgeom->bbox);
 	lwgeom->bbox = NULL;
@@ -758,7 +758,7 @@ lwgeom_dropBBOX(LWGEOM *lwgeom)
  * else compute it.
  */
 void
-lwgeom_addBBOX(LWGEOM *lwgeom)
+lwgeom_add_bbox(LWGEOM *lwgeom)
 {
 	if ( lwgeom->bbox ) return;
 	lwgeom->bbox = lwgeom_compute_box2d(lwgeom);

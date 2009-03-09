@@ -313,7 +313,7 @@ Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS)
 	if ( ! out ) PG_RETURN_NULL();
 
 	/* COMPUTE_BBOX TAINTING */
-	if ( in->bbox ) lwgeom_addBBOX(out);
+	if ( in->bbox ) lwgeom_add_bbox(out);
 
 	result = pglwgeom_serialize(out);
 
@@ -804,7 +804,7 @@ Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS)
 	if ( out_lwgeom == NULL ) PG_RETURN_NULL();
 
 	/* COMPUTE_BBOX TAINTING */
-	if ( in_lwgeom->bbox ) lwgeom_addBBOX(out_lwgeom);
+	if ( in_lwgeom->bbox ) lwgeom_add_bbox(out_lwgeom);
 
 #if 0
 	/*
@@ -906,7 +906,7 @@ Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS)
 	if ( out_lwgeom == NULL ) PG_RETURN_NULL();
 
 	/* COMPUTE_BBOX TAINTING */
-	if ( in_lwgeom->bbox ) lwgeom_addBBOX(out_lwgeom);
+	if ( in_lwgeom->bbox ) lwgeom_add_bbox(out_lwgeom);
 
 #if 0
 	/*

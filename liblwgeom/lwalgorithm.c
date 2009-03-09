@@ -447,8 +447,8 @@ LWCOLLECTION *lwmline_clip_to_ordinate_range(LWMLINE *mline, int ordinate, doubl
 				lwfree(col);
 			}
 		}
-		lwgeom_dropBBOX((LWGEOM*)lwgeom_out);
-		lwgeom_addBBOX((LWGEOM*)lwgeom_out);
+		lwgeom_drop_bbox((LWGEOM*)lwgeom_out);
+		lwgeom_add_bbox((LWGEOM*)lwgeom_out);
 		if ( ! homogeneous )
 		{
 			lwgeom_out->type = lwgeom_makeType(hasz, hasm, hassrid, COLLECTIONTYPE);
@@ -677,8 +677,8 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 					lwgeom_out->geoms = lwalloc(sizeof(LWGEOM*) * lwgeom_out->ngeoms);
 				}
 				lwgeom_out->geoms[lwgeom_out->ngeoms - 1] = oline;
-				lwgeom_dropBBOX((LWGEOM*)lwgeom_out);
-				lwgeom_addBBOX((LWGEOM*)lwgeom_out);
+				lwgeom_drop_bbox((LWGEOM*)lwgeom_out);
+				lwgeom_add_bbox((LWGEOM*)lwgeom_out);
 				if ( dp ) lwfree(dp);
 				dp = NULL;
 				if ( pa_out ) pa_out = NULL;
@@ -718,8 +718,8 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 			lwgeom_out->geoms = lwalloc(sizeof(LWGEOM*) * lwgeom_out->ngeoms);
 		}
 		lwgeom_out->geoms[lwgeom_out->ngeoms - 1] = oline;
-		lwgeom_dropBBOX((LWGEOM*)lwgeom_out);
-		lwgeom_addBBOX((LWGEOM*)lwgeom_out);
+		lwgeom_drop_bbox((LWGEOM*)lwgeom_out);
+		lwgeom_add_bbox((LWGEOM*)lwgeom_out);
 		if ( dp ) lwfree(dp);
 		dp = NULL;
 	}

@@ -2602,7 +2602,7 @@ GEOS2POSTGIS(GEOSGeom geom, char want3d)
 
 	if ( is_worth_caching_lwgeom_bbox(lwgeom) )
 	{
-		lwgeom_addBBOX(lwgeom);
+		lwgeom_add_bbox(lwgeom);
 	}
 
 	result = pglwgeom_serialize(lwgeom);

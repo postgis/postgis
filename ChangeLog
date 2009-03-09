@@ -6624,7 +6624,7 @@
 
 2004-12-14 11:41  strk
 
-	* lwgeom/lwgeom.c: Fixed a bug in lwgeom_dropBBOX()
+	* lwgeom/lwgeom.c: Fixed a bug in lwgeom_drop_bbox()
 
 2004-12-14 11:02  strk
 
@@ -7356,7 +7356,7 @@
 2004-10-11 09:32  strk
 
 	* lwgeom/liblwgeom.h, lwgeom/lwcollection.c, lwgeom/lwgeom.c: Added
-	  lwgeom_addBBOX() and lwcollection_construct_empty()
+	  lwgeom_add_bbox() and lwcollection_construct_empty()
 
 2004-10-11 07:15  strk
 
