@@ -60,7 +60,6 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 	GEOMDUMPSTATE *state;
 	GEOMDUMPNODE *node;
 	TupleDesc tupdesc;
-	TupleTableSlot *slot;
 	HeapTuple tuple;
 	AttInMetadata *attinmeta;
 	MemoryContext oldcontext, newcontext;
@@ -104,12 +103,6 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 		 */
 		tupdesc = RelationNameGetTupleDesc("geometry_dump");
 
-		/* allocate a slot for a tuple with this tupdesc */
-		slot = BlessTupleDesc(tupdesc);
-
-		/* assign slot to function context */
-		funcctx->slot = slot;
-
 		/*
 		 * generate attribute metadata needed later to produce
 		 * tuples from raw C strings
@@ -134,7 +127,7 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 		values[0] = "{}";
 		values[1] = lwgeom_to_hexwkb(state->root, PARSER_CHECK_NONE, -1);
 		tuple = BuildTupleFromCStrings(funcctx->attinmeta, values);
-		result = TupleGetDatum(funcctx->slot, tuple);
+		result = HeapTupleGetDatum(tuple);
 
 		state->root = NULL;
 		SRF_RETURN_NEXT(funcctx, result);
@@ -207,7 +200,6 @@ Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS)
 	FuncCallContext *funcctx;
 	struct POLYDUMPSTATE *state;
 	TupleDesc tupdesc;
-	TupleTableSlot *slot;
 	HeapTuple tuple;
 	AttInMetadata *attinmeta;
 	MemoryContext oldcontext, newcontext;
@@ -243,12 +235,6 @@ Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS)
 		 * geometry_dump tuple
 		 */
 		tupdesc = RelationNameGetTupleDesc("geometry_dump");
-
-		/* allocate a slot for a tuple with this tupdesc */
-		slot = BlessTupleDesc(tupdesc);
-
-		/* assign slot to function context */
-		funcctx->slot = slot;
 
 		/*
 		 * generate attribute metadata needed later to produce
@@ -297,7 +283,7 @@ Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS)
 		MemoryContextSwitchTo(oldcontext);
 
 		tuple = BuildTupleFromCStrings(funcctx->attinmeta, values);
-		result = TupleGetDatum(funcctx->slot, tuple);
+		result = HeapTupleGetDatum(tuple);
 		++state->ringnum;
 		SRF_RETURN_NEXT(funcctx, result);
 	}
