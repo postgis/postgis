@@ -12,7 +12,7 @@
  *
  * SVG output routines.
  * Originally written by: Klaus Förster <klaus@svg.cc>
- * Patches from: Olivier Courtin <pnine@free.fr>
+ * Refactored by: Olivier Courtin (Camptocamp)
  *
  **********************************************************************/
 
@@ -22,15 +22,24 @@
 #include "liblwgeom.h"
 
 Datum assvg_geometry(PG_FUNCTION_ARGS);
-char *geometry_to_svg(PG_LWGEOM *geometry, int svgrel, int precision);
-void print_svg_coords(char *result, POINT2D *pt, int precision);
-void print_svg_circle(char *result, POINT2D *pt, int precision);
-void print_svg_path_abs(char *result, POINTARRAY *pa, int precision, int polygonRing);
-void print_svg_path_rel(char *result, POINTARRAY *pa, int precision, int polygonRing);
+char *geometry_to_svg(uchar *srl, bool relative, int precision);
+static char * assvg_point(LWPOINT *point, bool relative, int precision);
+static char * assvg_line(LWLINE *line, bool relative, int precision);
+static char * assvg_polygon(LWPOLY *poly, bool relative, int precision);
+static char * assvg_multipoint(LWGEOM_INSPECTED *insp, bool relative, int precision);
+static char * assvg_multiline(LWGEOM_INSPECTED *insp, bool relative, int precision);
+static char * assvg_multipolygon(LWGEOM_INSPECTED *insp, bool relative, int precision);
+static char * assvg_collection(LWGEOM_INSPECTED *insp, bool relative, int precision);
+
+static size_t assvg_inspected_size(LWGEOM_INSPECTED *insp, bool relative, int precision);
+static size_t assvg_inspected_buf(LWGEOM_INSPECTED *insp, char *output, bool relative, int precision);
+static size_t pointArray_svg_size(POINTARRAY *pa, int precision);
+static size_t pointArray_svg_rel(POINTARRAY *pa, char * output, bool close_ring, int precision);
+static size_t pointArray_svg_abs(POINTARRAY *pa, char * output, bool close_ring, int precision);
 
 #define SHOW_DIGS_DOUBLE 15
 #define MAX_DOUBLE_PRECISION 15
-#define MAX_DIGS_DOUBLE (SHOW_DIGS_DOUBLE + 6 + 1 + 3 +1)
+#define MAX_DIGS_DOUBLE (SHOW_DIGS_DOUBLE + 2) /* +2 mean add dot and sign */
 
 /**
  * SVG features
@@ -42,8 +51,8 @@ Datum assvg_geometry(PG_FUNCTION_ARGS)
 	char *svg;
 	text *result;
 	int len;
-	int32 svgrel=0;
-	int32 precision=MAX_DOUBLE_PRECISION;
+	bool relative = false;
+	int precision=MAX_DOUBLE_PRECISION;
 
 	if ( PG_ARGISNULL(0) ) PG_RETURN_NULL();
 
@@ -51,7 +60,7 @@ Datum assvg_geometry(PG_FUNCTION_ARGS)
 
 	/* check for relative path notation */
 	if ( PG_NARGS() > 1 && ! PG_ARGISNULL(1) )
-			svgrel = PG_GETARG_INT32(1);
+		relative = PG_GETARG_INT32(1) ? true:false;
 
 	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
 	{
@@ -61,18 +70,15 @@ Datum assvg_geometry(PG_FUNCTION_ARGS)
 		else if ( precision < 0 ) precision = 0;
 	}
 		
-	svg = geometry_to_svg(geom, svgrel, precision);
-	if ( ! svg ) PG_RETURN_NULL();
+	svg = geometry_to_svg(SERIALIZED_FORM(geom), relative, precision);
+	PG_FREE_IF_COPY(geom, 0);
 
 	len = strlen(svg) + VARHDRSZ;
-
 	result = palloc(len);
 	SET_VARSIZE(result, len);
-
 	memcpy(VARDATA(result), svg, len-VARHDRSZ);
 
 	pfree(svg);
-	PG_FREE_IF_COPY(geom, 0);
 
 	PG_RETURN_POINTER(result);
 }
@@ -80,324 +86,581 @@ Datum assvg_geometry(PG_FUNCTION_ARGS)
 
 /*takes a GEOMETRY and returns a SVG representation */
 char *
-geometry_to_svg(PG_LWGEOM *geometry, int svgrel, int precision)
+geometry_to_svg(uchar *geom, bool relative, int precision)
 {
-	char *result = NULL;
-	LWGEOM_INSPECTED *inspected;
-	int t,u;
-	POINT2D	pt;
-	int npts;
-	int size;
+	char *ret = NULL;
+	int type;
 
-	/*elog(NOTICE, "precision is %d", precision); */
-	size = 30;	/*just enough to put in object type */
-
-	if (lwgeom_getType(geometry->type) == COLLECTIONTYPE)
-	{
-	  LWCOLLECTION* theCollection = lwcollection_deserialize(SERIALIZED_FORM(geometry));
-
-	  PG_LWGEOM* theGeom;
-	  char* geomSvg;
-	  int i;
-
-	  for(i = 0; i < theCollection->ngeoms; ++i)
-	    {
-	      theGeom = pglwgeom_serialize(theCollection->geoms[i]);
-	      if(!theGeom)
-		{
-		  pfree(result);
-		  return NULL;
-		}
-
-	      geomSvg = geometry_to_svg(theGeom, svgrel, precision);
-	      size += strlen(geomSvg + 1);
-	      	      
-	      if(!geomSvg)
-		{
-		  pfree(result);
-		  return NULL;
-		}
-
-	      if(i == 0)
-		{
-		  result = geomSvg;
-		}
-	      else
-		{
-		  result = repalloc(result, size);
-		  strcat(result, ";");
-		  strncat(result, geomSvg, strlen(geomSvg));
-		  pfree(geomSvg);
-		}
-	      pfree(theGeom);
-	    }
-	  return result;
-	}
-
-	result = palloc(size);
-	result[0] = '\0';
-
-	inspected = lwgeom_inspect(SERIALIZED_FORM(geometry));
-	for(t=0; t<inspected->ngeometries; t++)
-	{
-		uchar *subgeom = lwgeom_getsubgeometry_inspected(inspected, t);
-		LWPOINT *point;
-		LWLINE *line;
-		LWPOLY *poly;
-
-		if (lwgeom_getType(subgeom[0]) == POINTTYPE)
-		{
-			point = lwpoint_deserialize(subgeom);
-			size +=MAX_DIGS_DOUBLE*3 + 2 +10  ;
-			/*make memory bigger */
-			result = repalloc(result, size );
-
-			if (t) strcat(result, ",");
-
-			getPoint2d_p(point->point, 0, &pt);
-			if (svgrel == 1)
-			{  
-				/*render circle */
-				print_svg_coords(result, &pt, precision);
-			}
-			else
-			{  
-				/*render circle */
-				print_svg_circle(result, &pt, precision);
-			}
-
-		}
-		if (lwgeom_getType(subgeom[0]) == LINETYPE)
-		{
-			line = lwline_deserialize(subgeom);
-
-			size +=(MAX_DIGS_DOUBLE*3+5)*line->points->npoints+12+3;
-			result = repalloc(result, size);
-
-			if(t)
-			  {
-			    strcat(result, " ");
-			  }
-
-			/* start path with moveto */
-			strcat(result, "M ");
-
-			if (svgrel == 1)
-				print_svg_path_rel(result, line->points,
-						   precision, 0);
-			else
-				print_svg_path_abs( result, line->points,
-						    precision, 0);
-		}
-		if (lwgeom_getType(subgeom[0]) == POLYGONTYPE)
-		{
-			poly = lwpoly_deserialize(subgeom);
-
-			npts = 0;
-			for (u=0; u<poly->nrings; u++)
-				npts += poly->rings[u]->npoints;
-
-			size += (MAX_DIGS_DOUBLE*3+3) * npts +
-				5 * poly->nrings + 1;
-			result = repalloc(result, size);
-
-			if(t)
-			  {
-			    strcat(result, " ");
-			  }
-
-			for (u=0; u<poly->nrings; u++)  /*for each ring */
-			{
-			  if(u)
-			    {
-			      strcat(result," "); /*Blank separator from previous ring*/
-			    }
-
-				strcat(result,"M ");	/*begin ring */
-				if (svgrel == 1)
-					print_svg_path_rel(result, 
-						poly->rings[u],
-							   precision, 1);
-				else
-					print_svg_path_abs(result,
-						poly->rings[u],
-							   precision, 1);
-			}
-		}
-	}
-	return(result);
-}
-
-
-void print_svg_coords(char *result, POINT2D *pt, int precision)
-{
-	char temp[MAX_DIGS_DOUBLE*3+12];
-	char x[MAX_DIGS_DOUBLE+3];
-	char y[MAX_DIGS_DOUBLE+3];
-
-	if ( (pt == NULL) || (result == NULL) )
-		return;
-
-	sprintf(x, "%.*f", precision, pt->x);
-	trim_trailing_zeros(x);
-	sprintf(y, "%.*f", precision, fabs(pt->y) > 0 ? (pt->y * -1) : pt->y);
-	trim_trailing_zeros(y);
-
-	sprintf(temp, "x=\"%s\" y=\"%s\"", x, y);
-	strcat(result,temp);
-}
-
-
-void print_svg_circle(char *result, POINT2D *pt, int precision)
-{
-	char temp[MAX_DIGS_DOUBLE*3 +12];
-	char x[MAX_DIGS_DOUBLE+3];
-	char y[MAX_DIGS_DOUBLE+3];
-
-	if ( (pt == NULL) || (result == NULL) )
-		return;
-
-	sprintf(x, "%.*f", precision, pt->x);
-	trim_trailing_zeros(x);
-	sprintf(y, "%.*f", precision, fabs(pt->y) > 0 ? (pt->y * -1) : pt->y);
-	trim_trailing_zeros(y);
-
-	sprintf(temp, "cx=\"%s\" cy=\"%s\"", x, y);
-	strcat(result,temp);
-}
-
-
-void
-print_svg_path_abs(char *result, POINTARRAY *pa, int precision, int polygonRing)
-{
-	int u;
-	POINT2D pt;
-	char x[MAX_DIGS_DOUBLE+3];
-	char y[MAX_DIGS_DOUBLE+3];
-
-	result += strlen(result);
-	for (u=0; u<pa->npoints; u++)
-	{
-		getPoint2d_p(pa, u, &pt);
-	      
-		/* close PATH with 'Z' for polygon rings if last point equals first point */
-		if(u > 0 && u == (pa->npoints - 1) && polygonRing)
-		  {
-		    POINT2D firstPoint;
-		    getPoint2d_p(pa, 0, &firstPoint);
-		    if(pt.x == firstPoint.x && pt.y == firstPoint.y)
-		      {
-			sprintf(result, " Z");
+	type = lwgeom_getType(geom[0]);
+	switch (type)
+        {
+                case POINTTYPE:
+                        ret = assvg_point(lwpoint_deserialize(geom), relative, precision);
+                        break;
+		case LINETYPE:
+                        ret = assvg_line(lwline_deserialize(geom), relative, precision);
+                        break;
+		case POLYGONTYPE:
+                        ret = assvg_polygon(lwpoly_deserialize(geom), relative, precision);
+                        break;
+		case MULTIPOINTTYPE:
+                        ret = assvg_multipoint(lwgeom_inspect(geom), relative, precision);
 			break;
-		      }
-		  }
+		case MULTILINETYPE:
+                        ret = assvg_multiline(lwgeom_inspect(geom), relative, precision);
+			break;
+		case MULTIPOLYGONTYPE:
+                        ret = assvg_multipolygon(lwgeom_inspect(geom), relative, precision);
+			break;
+		case COLLECTIONTYPE:
+                        ret = assvg_collection(lwgeom_inspect(geom), relative, precision);
+                        break;
 
-		if (u != 0)
-		{
-			result[0] = ' ';
-			result++;
-		}
-
-		sprintf(x, "%.*f", precision, pt.x);
-		trim_trailing_zeros(x);
-		sprintf(y, "%.*f", precision, fabs(pt.y) > 0.0 ? (pt.y * -1) : pt.y);
-		trim_trailing_zeros(y);
-		result+= sprintf(result,"%s %s", x, y);
+		default: lwerror("ST_AsSVG: '%s' geometry type not supported.",
+                                lwgeom_typename(type));
 	}
+
+	return ret;
 }
 
 
-void
-print_svg_path_rel(char *result, POINTARRAY *pa, int precision, int polygonRing)
+/*
+ * Point Geometry
+ */
+
+static size_t
+assvg_point_size(LWPOINT *point, bool circle, int precision)
 {
-	int u;
-	POINT2D pt, lpt;
+        size_t size;
+
+	size = (MAX_DIGS_DOUBLE + precision) * 2;
+	if (circle) size += sizeof("cx='' cy=''"); 
+	else size += sizeof("x='' y=''"); 
+
+        return size;
+}
+
+static size_t
+assvg_point_buf(LWPOINT *point, char * output, bool circle, int precision)
+{
+        char *ptr=output;
 	char x[MAX_DIGS_DOUBLE+3];
-	char y[MAX_DIGS_DOUBLE+3];
+        char y[MAX_DIGS_DOUBLE+3];
+        POINT2D pt;
 
-	result += strlen(result);
-
-	getPoint2d_p(pa, 0, &pt);
-
+        getPoint2d_p(point->point, 0, &pt);
 	sprintf(x, "%.*f", precision, pt.x);
-	trim_trailing_zeros(x);
-	sprintf(y, "%.*f", precision, fabs(pt.y) > 0 ? (pt.y * -1) : pt.y);
-	trim_trailing_zeros(y);
+       	trim_trailing_zeros(x);
+	/* SVG Y axis is reversed, an no need to transform 0 into -0 */
+       	sprintf(y, "%.*f", precision, fabs(pt.y) ? pt.y * -1 : pt.y);
+       	trim_trailing_zeros(y);
 
-	result += sprintf(result,"%s %s l", x, y); 
+	if (circle) ptr += sprintf(ptr, "x=\"%s\" y=\"%s\"", x, y);
+	else ptr += sprintf(ptr, "cx=\"%s\" cy=\"%s\"", x, y);
 
-	lpt = pt;
-	for (u=1; u<pa->npoints; u++)
-	{
-	  getPoint2d_p(pa, u, &pt);
+        return (ptr-output);
+}
 
-	  if(u == (pa->npoints - 1) && polygonRing)
-	    {
-	      /* close PATH with 'z' if last point equals first point */
-	      POINT2D firstPoint;
-	      getPoint2d_p(pa, 0, &firstPoint);
-	      if(pt.x == firstPoint.x && pt.y == firstPoint.y)
-		{
-		  sprintf(result, " z");
-		  break;
-		}
-	    }
+static char *
+assvg_point(LWPOINT *point, bool circle, int precision)
+{
+        char *output;
+        int size;
 
-	  sprintf(x, "%.*f", precision, pt.x - lpt.x);
-	  trim_trailing_zeros(x);
-	  sprintf(y, "%.*f", precision, fabs(pt.y - lpt.y) > 0 ? ((pt.y - lpt.y) * -1) : (pt.y - lpt.y));
-	  trim_trailing_zeros(y);
-	  result+= sprintf(result," %s %s", x, y);
-	  lpt = pt;
-	}
+        size = assvg_point_size(point, circle, precision);
+        output = palloc(size);
+        assvg_point_buf(point, output, circle, precision);
+
+        return output;
 }
 
 
-/**********************************************************************
- * $Log$
- * Revision 1.11  2006/01/09 15:55:55  strk
- * ISO C90 comments (finished in lwgeom/)
- *
- * Revision 1.10  2005/12/30 18:14:53  strk
- * Fixed all signedness warnings
- *
- * Revision 1.9  2005/11/18 10:16:21  strk
- * Removed casts on lwalloc return.
- * Used varlena macros when appropriate.
- *
- * Revision 1.8  2005/02/10 17:41:55  strk
- * Dropped getbox2d_internal().
- * Removed all castings of getPoint() output, which has been renamed
- * to getPoint_internal() and commented about danger of using it.
- * Changed SERIALIZED_FORM() macro to use VARDATA() macro.
- * All this changes are aimed at taking into account memory alignment
- * constraints which might be the cause of recent crash bug reports.
- *
- * Revision 1.7  2004/10/27 12:30:53  strk
- * AsSVG returns NULL on GEOMETRY COLLECTION input.
- *
- * Revision 1.6  2004/10/25 14:20:57  strk
- * Y axis reverse and relative path fixes from Olivier Courtin.
- *
- * Revision 1.5  2004/10/15 11:48:48  strk
- * Fixed a bug making asSVG return a spurious char at the end.
- *
- * Revision 1.4  2004/10/15 09:41:22  strk
- * changed precision semantic back to number of decimal digits
- *
- * Revision 1.3  2004/09/29 10:50:30  strk
- * Big layout change.
- * lwgeom.h is public API
- * liblwgeom.h is private header
- * lwgeom_pg.h is for PG-links
- * lw<type>.c contains type-specific functions
- *
- * Revision 1.2  2004/09/29 06:31:42  strk
- * Changed LWGEOM to PG_LWGEOM.
- * Changed LWGEOM_construct to PG_LWGEOM_construct.
- *
- * Revision 1.1  2004/09/13 13:32:01  strk
- * Added AsSVG().
- *
- **********************************************************************/
+/*
+ * Line Geometry
+ */
 
+static size_t
+assvg_line_size(LWLINE *line, bool relative, int precision)
+{
+        size_t size;
+
+        size = sizeof("M ");
+	size += pointArray_svg_size(line->points, precision);
+        return size;
+}
+
+static size_t
+assvg_line_buf(LWLINE *line, char * output, bool relative, int precision)
+{
+        char *ptr=output;
+
+	/* Start path with SVG MoveTo */
+        ptr += sprintf(ptr, "M ");
+	if (relative) 
+		ptr += pointArray_svg_rel(line->points, ptr, true, precision);
+	else 
+		ptr += pointArray_svg_abs(line->points, ptr, true, precision);
+
+        return (ptr-output);
+}
+
+static char *
+assvg_line(LWLINE *line, bool relative, int precision)
+{
+        char *output;
+        int size;
+
+        size = assvg_line_size(line, relative, precision);
+        output = palloc(size);
+        assvg_line_buf(line, output, relative, precision);
+
+        return output;
+}
+
+
+/* 
+ * Polygon Geometry
+ */
+
+static size_t
+assvg_polygon_size(LWPOLY *poly, bool relative, int precision)
+{
+	int i;
+        size_t size=0;
+
+	for (i=0; i<poly->nrings; i++)
+	size += pointArray_svg_size(poly->rings[i], precision);
+	size += sizeof(" M Z") * poly->nrings;
+
+        return size;
+}
+
+static size_t
+assvg_polygon_buf(LWPOLY *poly, char * output, bool relative, int precision)
+{
+	int i;
+        char *ptr=output;
+
+	for (i=0; i<poly->nrings; i++) {
+		if (i) ptr += sprintf(ptr, " ");	/* Space beetween each ring */
+        	ptr += sprintf(ptr, "M ");		/* Start path with SVG MoveTo */
+
+		if (relative) { 
+			ptr += pointArray_svg_rel(poly->rings[i], ptr, false, precision);
+        		ptr += sprintf(ptr, " z");	/* SVG closepath */
+		} else {
+			ptr += pointArray_svg_abs(poly->rings[i], ptr, false, precision);
+        		ptr += sprintf(ptr, " Z");	/* SVG closepath */
+		}	
+	}
+
+        return (ptr-output);
+}
+
+static char *
+assvg_polygon(LWPOLY *poly, bool relative, int precision)
+{
+        char *output;
+        int size;
+
+        size = assvg_polygon_size(poly, relative, precision);
+        output = palloc(size);
+        assvg_polygon_buf(poly, output, relative, precision);
+
+        return output;
+}
+
+
+/* 
+ * Multipoint Geometry
+ */
+
+static size_t
+assvg_multipoint_size(LWGEOM_INSPECTED *insp, bool relative, int precision)
+{
+	LWPOINT *point;
+	size_t size=0;
+        int i;
+
+        for (i=0 ; i<insp->ngeometries ; i++) {
+                point = lwgeom_getpoint_inspected(insp, i);
+                size += assvg_point_size(point, relative, precision);
+                /* lwpoint_release(point); */
+	}
+        size += sizeof(" ") * --i;  /* Arbitrary comma separator */
+
+	return size;
+}
+
+static size_t
+assvg_multipoint_buf(LWGEOM_INSPECTED *insp, char *output, bool relative, int precision)
+{
+	LWPOINT *point;
+        int i;
+        char *ptr=output;
+
+        for (i=0 ; i<insp->ngeometries ; i++)
+        {
+                if (i) ptr += sprintf(ptr, ",");  /* Arbitrary comma separator */
+                point = lwgeom_getpoint_inspected(insp, i);
+                ptr += assvg_point_buf(point, ptr, relative, precision);
+                if (point) lwpoint_release(point);
+         }
+
+	return (ptr-output);
+}
+
+static char *
+assvg_multipoint(LWGEOM_INSPECTED *point, bool relative, int precision)
+{
+        char *output;
+        int size;
+
+        size = assvg_multipoint_size(point, relative, precision);
+        output = palloc(size);
+        assvg_multipoint_buf(point, output, relative, precision);
+
+        return output;
+}
+
+
+/* 
+ * Multiline Geometry
+ */
+
+static size_t
+assvg_multiline_size(LWGEOM_INSPECTED *insp, bool relative, int precision)
+{
+	LWLINE *line;
+	size_t size=0;
+        int i;
+
+        for (i=0 ; i<insp->ngeometries ; i++) {
+                line = lwgeom_getline_inspected(insp, i);
+                size += assvg_line_size(line, relative, precision);
+                if (line) lwline_release(line);
+	}
+        size += sizeof(" ") * --i;   /* SVG whitespace Separator */
+
+	return size;
+}
+
+static size_t
+assvg_multiline_buf(LWGEOM_INSPECTED *insp, char *output, bool relative, int precision)
+{
+	LWLINE *line;
+        int i;
+        char *ptr=output;
+
+        for (i=0 ; i<insp->ngeometries ; i++)
+        {
+                if (i) ptr += sprintf(ptr, " ");  /* SVG whitespace Separator */
+                line = lwgeom_getline_inspected(insp, i);
+                ptr += assvg_line_buf(line, ptr, relative, precision);
+                if (line) lwline_release(line);
+         }
+
+	return (ptr-output);
+}
+
+static char *
+assvg_multiline(LWGEOM_INSPECTED *line, bool relative, int precision)
+{
+        char *output;
+        int size;
+
+        size = assvg_multiline_size(line, relative, precision);
+        output = palloc(size);
+        assvg_multiline_buf(line, output, relative, precision);
+
+        return output;
+}
+
+
+/* 
+ * Multipolygon Geometry
+ */
+
+static size_t
+assvg_multipolygon_size(LWGEOM_INSPECTED *insp, bool relative, int precision)
+{
+	LWPOLY *poly;
+	size_t size=0;
+        int i;
+
+        for (i=0 ; i<insp->ngeometries ; i++) {
+                poly = lwgeom_getpoly_inspected(insp, i);
+                size += assvg_polygon_size(poly, relative, precision);
+                /* lwpoly_release(poly); */
+	}
+        size += sizeof(" ") * --i;   /* SVG whitespace Separator */
+
+	return size;
+}
+
+static size_t
+assvg_multipolygon_buf(LWGEOM_INSPECTED *insp, char *output, bool relative, int precision)
+{
+	LWPOLY *poly;
+        int i;
+        char *ptr=output;
+
+        for (i=0 ; i<insp->ngeometries ; i++)
+        {
+                if (i) ptr += sprintf(ptr, " ");  /* SVG whitespace Separator */
+                poly = lwgeom_getpoly_inspected(insp, i);
+                ptr += assvg_polygon_buf(poly, ptr, relative, precision);
+                /* lwpoly_release(poly); */
+         }
+
+	return (ptr-output);
+}
+
+static char *
+assvg_multipolygon(LWGEOM_INSPECTED *poly, bool relative, int precision)
+{
+        char *output;
+        int size;
+
+        size = assvg_multipolygon_size(poly, relative, precision);
+        output = palloc(size);
+        assvg_multipolygon_buf(poly, output, relative, precision);
+
+        return output;
+}
+
+
+ /*
+ * Collection Geometry
+ */
+
+static size_t
+assvg_collection_size(LWGEOM_INSPECTED *insp, bool relative, int precision)
+{
+        int i;
+        size_t size=0;
+        LWGEOM_INSPECTED *subinsp;
+        uchar *subgeom;
+
+        for (i=0; i<insp->ngeometries; i++)
+        {
+                subgeom = lwgeom_getsubgeometry_inspected(insp, i);
+                subinsp = lwgeom_inspect(subgeom);
+                size += assvg_inspected_size(subinsp, relative, precision);
+                lwinspected_release(subinsp);
+        }
+        size += sizeof(";") * --i;
+
+        return size;
+}
+
+static size_t
+assvg_collection_buf(LWGEOM_INSPECTED *insp, char *output, bool relative, int precision)
+{
+        int i;
+        char *ptr=output;
+        LWGEOM_INSPECTED *subinsp;
+        uchar *subgeom;
+
+        for (i=0; i<insp->ngeometries; i++)
+        {
+                if (i) ptr += sprintf(ptr, ";");
+                subgeom = lwgeom_getsubgeometry_inspected(insp, i);
+                subinsp = lwgeom_inspect(subgeom);
+                ptr += assvg_inspected_buf(subinsp, ptr, relative, precision);
+                lwinspected_release(subinsp);
+        }
+
+        return (ptr - output);
+}
+
+static char *
+assvg_collection(LWGEOM_INSPECTED *insp, bool relative, int precision)
+{
+        char *output;
+        int size;
+
+        size = assvg_collection_size(insp, relative, precision);
+        output = palloc(size);
+        assvg_collection_buf(insp, output, relative, precision);
+
+        return output;
+}
+
+
+
+static size_t
+assvg_inspected_buf(LWGEOM_INSPECTED *insp, char *output, bool relative, int precision)
+{
+        LWPOINT *point;
+        LWLINE *line;
+        LWPOLY *poly;
+        int type = lwgeom_getType(insp->serialized_form[0]);
+        char *ptr=output;
+
+	switch(type) {
+                case POINTTYPE:
+                        point=lwgeom_getpoint_inspected(insp, 0);
+                        ptr += assvg_point_buf(point, ptr, relative, precision);
+                        lwpoint_release(point);
+                        break;
+
+                case LINETYPE:
+                        line=lwgeom_getline_inspected(insp, 0);
+                        ptr += assvg_line_buf(line, ptr, relative, precision);
+                        lwline_release(line);
+                        break;
+
+                case POLYGONTYPE:
+                        poly=lwgeom_getpoly_inspected(insp, 0);
+                        ptr += assvg_polygon_buf(poly, ptr, relative, precision);
+                        lwpoly_release(poly);
+                        break;
+
+                case MULTIPOINTTYPE:
+                        ptr += assvg_multipoint_buf(insp, ptr, relative, precision);
+                        break;
+
+                case MULTILINETYPE:
+                        ptr += assvg_multiline_buf(insp, ptr, relative, precision);
+                        break;
+
+                case MULTIPOLYGONTYPE:
+			ptr += assvg_multipolygon_buf(insp, ptr, relative, precision);
+                        break;
+
+		default: lwerror("ST_AsSVG: '%s' geometry type not supported.",
+                                lwgeom_typename(type));
+         }
+
+        return (ptr-output);
+}
+
+
+static size_t
+assvg_inspected_size(LWGEOM_INSPECTED *insp, bool relative, int precision)
+{
+        int type = lwgeom_getType(insp->serialized_form[0]);
+        size_t size = 0;
+        LWPOINT *point;
+        LWLINE *line;
+        LWPOLY *poly;
+
+        switch(type) {
+                case POINTTYPE:
+                        point=lwgeom_getpoint_inspected(insp, 0);
+                        size = assvg_point_size(point, relative, precision);
+                        lwpoint_release(point);
+                        break;
+
+                case LINETYPE:
+                        line=lwgeom_getline_inspected(insp, 0);
+                        size = assvg_line_size(line, relative, precision);
+                        lwline_release(line);
+                        break;
+
+                case POLYGONTYPE:
+                        poly=lwgeom_getpoly_inspected(insp, 0);
+                        size = assvg_polygon_size(poly, relative, precision);
+                        lwpoly_release(poly);
+
+                case MULTIPOINTTYPE:
+                        size = assvg_multipoint_size(insp, relative, precision);
+                        break;
+
+                case MULTILINETYPE:
+                        size = assvg_multiline_size(insp, relative, precision);
+                        break;
+
+                case MULTIPOLYGONTYPE:
+                        size = assvg_multipolygon_size(insp, relative, precision);
+                        break;
+
+                default: lwerror("ST_AsSVG: geometry not supported.");
+                }
+
+        return size;
+}
+
+
+static size_t
+pointArray_svg_rel(POINTARRAY *pa, char *output, bool close_ring, int precision)
+{
+        int i, end;
+        char *ptr;
+        char x[MAX_DIGS_DOUBLE+3];
+        char y[MAX_DIGS_DOUBLE+3];
+        POINT2D pt, lpt;
+
+        ptr = output;
+ 
+	if (close_ring) end = pa->npoints;
+	else end = pa->npoints - 1;
+
+	/* Starting point */
+	getPoint2d_p(pa, 0, &pt);
+        sprintf(x, "%.*f", precision, pt.x);
+        trim_trailing_zeros(x);
+        sprintf(y, "%.*f", precision, fabs(pt.y) ? pt.y * -1 : pt.y);
+        trim_trailing_zeros(y);
+        ptr += sprintf(ptr,"%s %s l", x, y);
+
+	/* All the following ones */
+        for (i=1 ; i < end ; i++) {
+        	lpt = pt;
+        	getPoint2d_p(pa, i, &pt);
+		sprintf(x, "%.*f", precision, pt.x -lpt.x);
+                trim_trailing_zeros(x);
+		/* SVG Y axis is reversed, an no need to transform 0 into -0 */
+                sprintf(y, "%.*f", precision, 
+			fabs(pt.y -lpt.y) ? (pt.y - lpt.y) * -1: (pt.y - lpt.y));
+                trim_trailing_zeros(y);
+                ptr += sprintf(ptr," %s %s", x, y);
+        }
+
+	return (ptr-output);
+}
+
+
+/*
+ * Returns maximum size of rendered pointarray in bytes.
+ */
+static size_t
+pointArray_svg_abs(POINTARRAY *pa, char *output, bool close_ring, int precision)
+{
+        int i, end;
+        char *ptr;
+        char x[MAX_DIGS_DOUBLE+3];
+        char y[MAX_DIGS_DOUBLE+3];
+        POINT2D pt;
+
+        ptr = output;
+
+	if (close_ring) end = pa->npoints;
+	else end = pa->npoints - 1;
+
+        for (i=0 ; i < end ; i++) {
+        	getPoint2d_p(pa, i, &pt);
+		sprintf(x, "%.*f", precision, pt.x);
+                trim_trailing_zeros(x);
+		/* SVG Y axis is reversed, an no need to transform 0 into -0 */
+                sprintf(y, "%.*f", precision, fabs(pt.y) ? pt.y * -1:pt.y);
+                trim_trailing_zeros(y);
+		if (i) ptr += sprintf(ptr, " ");
+                ptr += sprintf(ptr,"%s %s", x, y);
+		/* FIXME Could we really omit SVG L after M start point ? */
+        }
+
+	return (ptr-output);
+}
+
+
+/*
+ * Returns maximum size of rendered pointarray in bytes.
+ */
+static size_t
+pointArray_svg_size(POINTARRAY *pa, int precision)
+{
+        return (MAX_DIGS_DOUBLE + precision + sizeof(", "))
+                        * 2 * pa->npoints + sizeof("l ");
+}
