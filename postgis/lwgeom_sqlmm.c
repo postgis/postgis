@@ -69,6 +69,10 @@ Datum LWGEOM_curve_segmentize(PG_FUNCTION_ARGS)
         }
 #endif
         igeom = lwgeom_deserialize(SERIALIZED_FORM(geom));
+		if( ! has_arc(igeom) )
+		{
+			PG_RETURN_POINTER(geom);
+		}
         ogeom = lwgeom_segmentize(igeom, perQuad);
         if(ogeom == NULL) PG_RETURN_NULL();
         ret = pglwgeom_serialize(ogeom);
