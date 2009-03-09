@@ -154,7 +154,7 @@ lwgeom_serialize(LWGEOM *lwgeom)
 
 /* Force Right-hand-rule on LWGEOM polygons */
 void
-lwgeom_forceRHR(LWGEOM *lwgeom)
+lwgeom_force_rhr(LWGEOM *lwgeom)
 {
 	LWCOLLECTION *coll;
 	int i;
@@ -169,7 +169,7 @@ lwgeom_forceRHR(LWGEOM *lwgeom)
 		case COLLECTIONTYPE:
 			coll = (LWCOLLECTION *)lwgeom;
 			for (i=0; i<coll->ngeoms; i++)
-				lwgeom_forceRHR(coll->geoms[i]);
+				lwgeom_force_rhr(coll->geoms[i]);
 			return;
 	}
 }

@@ -2603,7 +2603,7 @@ Datum LWGEOM_forceRHR_poly(PG_FUNCTION_ARGS)
 	ingeom = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
 
 	lwgeom = lwgeom_deserialize(SERIALIZED_FORM(ingeom));
-	lwgeom_forceRHR(lwgeom);
+	lwgeom_force_rhr(lwgeom);
 
 	outgeom = pglwgeom_serialize(lwgeom);
 

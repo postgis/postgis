@@ -1165,7 +1165,7 @@ extern void lwgeom_reverse(LWGEOM *lwgeom);
 extern void lwline_reverse(LWLINE *line);
 extern void lwpoly_reverse(LWPOLY *poly);
 extern void lwpoly_forceRHR(LWPOLY *poly);
-extern void lwgeom_forceRHR(LWGEOM *lwgeom);
+extern void lwgeom_force_rhr(LWGEOM *lwgeom);
 extern char *lwgeom_summary(LWGEOM *lwgeom, int offset);
 extern const char *lwgeom_typename(int type);
 extern int ptarray_compute_box2d_p(const POINTARRAY *pa, BOX2DFLOAT4 *result);
