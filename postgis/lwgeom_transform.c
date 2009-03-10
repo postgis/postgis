@@ -521,69 +521,6 @@ void SetPROJ4LibPath(void)
 }
 
 
-/*
- * This is *exactly* the same as PROJ.4's pj_transform(),
- * but it doesn't do the datum shift.
- */
-int
-pj_transform_nodatum(PJ *srcdefn, PJ *dstdefn, long point_count,
-int point_offset, double *x, double *y, double *z )
-{
-    long      i;
-    /*int       need_datum_shift; */
-
-    int* pj_errno_ref;
-
-    if( point_offset == 0 )
-        point_offset = 1;
-
-    if( !srcdefn->is_latlong )
-    {
-        for( i = 0; i < point_count; i++ )
-        {
-            XY         projected_loc;
-            LP	       geodetic_loc;
-
-            projected_loc.u = x[point_offset*i];
-            projected_loc.v = y[point_offset*i];
-
-            geodetic_loc = pj_inv( projected_loc, srcdefn );
-            
-            pj_errno_ref = pj_get_errno_ref();
-            if( (*pj_errno_ref) != 0 )
-                return *pj_errno_ref;
-
-            x[point_offset*i] = geodetic_loc.u;
-            y[point_offset*i] = geodetic_loc.v;
-        }
-    }
-
-    if( !dstdefn->is_latlong )
-    {
-        for( i = 0; i < point_count; i++ )
-        {
-            XY         projected_loc;
-            LP	       geodetic_loc;
-
-            geodetic_loc.u = x[point_offset*i];
-            geodetic_loc.v = y[point_offset*i];
-
-            projected_loc = pj_fwd( geodetic_loc, dstdefn );
-
-            pj_errno_ref = pj_get_errno_ref();
-            if( (*pj_errno_ref) != 0 )
-                return *pj_errno_ref;
-
-            x[point_offset*i] = projected_loc.u;
-            y[point_offset*i] = projected_loc.v;
-        }
-    }
-
-    return 0;
-}
-
-
-
 /* convert decimal degress to radians */
 void
 to_rad(POINT4D *pt)
@@ -1006,27 +943,36 @@ int
 transform_point(POINT4D *pt, PJ *srcpj, PJ *dstpj)
 {
 	int* pj_errno_ref;
+	POINT4D orig_pt;
 	
-	if (srcpj->is_latlong) to_rad(pt);
-	pj_transform(srcpj, dstpj, 1, 2, &(pt->x), &(pt->y), &(pt->z));
-	
-	pj_errno_ref = pj_get_errno_ref();
-        if (*pj_errno_ref)
-	{
-		if ((*pj_errno_ref) == -38)  /*2nd chance */
-		{
-			elog(WARNING, "transform: %i (%s)",
-				*pj_errno_ref, pj_strerrno(*pj_errno_ref));
-			/*couldnt do nadshift - do it without the datum */
-			pj_transform_nodatum(srcpj, dstpj, 1, 2,
-				&(pt->x), &(pt->y), NULL);
-		}
+	/* Make a copy of the input point so we can report the original should an error occur */
+	orig_pt.x = pt->x;
+	orig_pt.y = pt->y;
+	orig_pt.z = pt->z;
 
-		pj_errno_ref = pj_get_errno_ref();
-		if ((*pj_errno_ref))
+	if (srcpj->is_latlong) to_rad(pt);
+
+	/* Perform the transform */
+	pj_transform(srcpj, dstpj, 1, 0, &(pt->x), &(pt->y), &(pt->z));
+	
+	/* For NAD grid-shift errors, display an error message with an additional hint */
+	pj_errno_ref = pj_get_errno_ref();
+
+	if (*pj_errno_ref != 0)
+	{
+		if (*pj_errno_ref == -38)
 		{
-			elog(ERROR,"transform: couldn't project point: %i (%s)",
-				*pj_errno_ref, pj_strerrno(*pj_errno_ref));
+			ereport(ERROR, ( 
+				errmsg_internal("transform: couldn't project point (%g %g %g): %s (%d)",
+				orig_pt.x, orig_pt.y, orig_pt.z, pj_strerrno(*pj_errno_ref), *pj_errno_ref),
+				errhint("PostGIS was unable to transform the point because either no grid shift files were found, or the point does not lie within the range for which the grid shift is defined. Refer to the ST_Transform() section of the PostGIS manual for details on how to configure PostGIS to alter this behaviour.")
+				));
+			return 0;
+		}
+		else
+		{
+			elog(ERROR, "transform: couldn't project point (%g %g %g): %s (%d)",
+				orig_pt.x, orig_pt.y, orig_pt.z, pj_strerrno(*pj_errno_ref), *pj_errno_ref);
 			return 0;
 		}
 	}

@@ -6765,6 +6765,18 @@ CREATE INDEX idx_the_geom_26986_parcels
 		</programlisting>
 	  </refsection>
 
+	  <refsection>
+		<title>Configuring transformation behaviour</title>
+                <para>Sometimes coordinate transformation involving a grid-shift can fail, for example if PROJ.4 has not been built with grid-shift files or the coordinate does not lie within the range for which the grid shift is defined. By default, PostGIS will throw an error if a grid shift file is not present, but this behaviour can be configured on a per-SRID basis by altering the proj4text value within the spatial_ref_sys table.</para>
+                <para>For example, the proj4text parameter +datum=NAD87 is a shorthand form for the following +nadgrids parameter:</para>
+                <programlisting>+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat</programlisting>  
+                <para>The @ prefix means no error is reported if the files are not present, but if the end of the list is reached with no file having been appropriate (ie. found and overlapping) then an error is issued.</para>
+                <para>If, conversely, you wanted to ensure that at least the standard files were present, but that if all files were scanned without a hit a null transformation is applied you could use:</para>
+                <programlisting>+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat,null</programlisting>
+                <para>The null grid shift file is a valid grid shift file covering the whole world and applying no shift. So for a complete example, if you wanted to alter PostGIS so that transformations to SRID 4267 that didn't lie within the correct range did not throw an ERROR, you would use the following:</para>
+                <programlisting>UPDATE spatial_ref_sys SET proj4text = '+proj=longlat +ellps=clrk66 +nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat,null +no_defs' WHERE srid = 4267;</programlisting>
+          </refsection>
+
 	  <!-- Optionally add a "See Also" section -->
 	  <refsection>
 		<title>See Also</title>
