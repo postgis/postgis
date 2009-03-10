@@ -308,12 +308,14 @@ output_polygon_ring_collection(uchar* geom,outfunc func,int supress)
         int dimcount;
 	double *first_point;
 	double *last_point;
+	int cnt;
+	int orig_cnt;
 
         first_point = lwalloc(dims * sizeof(double));
         last_point = lwalloc(dims * sizeof(double));
 
-	int cnt = read_int(&geom);
-	int orig_cnt = cnt;
+	cnt = read_int(&geom);
+	orig_cnt = cnt;
 	if ( cnt == 0 ){
 		write_str(" EMPTY");
 	}
@@ -827,12 +829,14 @@ output_wkb_polygon_ring_collection(uchar* geom,outwkbfunc func)
 	int dimcount;
 	double *first_point;
 	double *last_point;
+	int cnt;
+	int orig_cnt;
 
         first_point = lwalloc(dims * sizeof(double));
         last_point = lwalloc(dims * sizeof(double));
 
-	int cnt = read_int(&geom);
-	int orig_cnt = cnt;
+	cnt = read_int(&geom);
+	orig_cnt = cnt;
 
 	LWDEBUGF(2, "output_wkb_polygon_ring_collection: %d iterations loop", cnt);
 
