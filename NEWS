@@ -37,7 +37,8 @@ PostGIS 1.4.0
           - Expanded and more stable support for CIRCULARSTRING, 
             COMPOUNDCURVE and CURVEPOLYGON, better parsing, wider support
             in functions (Mark Leslie & Mark Cave-Ayland)
-          - Improved support for OpenSolaris
+          - Improved support for OpenSolaris builds
+          - Improved support for MSVC builds (Mateusz Loskot)
           - Updated KML support (Olivier Courtin)
           - Unit testing framework for liblwgeom (Paul Ramsey)
           - New testing framework to comprehensively exercise every PostGIS 
