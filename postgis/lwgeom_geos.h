@@ -43,11 +43,11 @@
 */
 
 PG_LWGEOM *GEOS2POSTGIS(GEOSGeom geom, char want3d);
-GEOSGeom POSTGIS2GEOS(PG_LWGEOM *g);
+const GEOSGeometry * POSTGIS2GEOS(PG_LWGEOM *g);
 
-LWGEOM *GEOS2LWGEOM(GEOSGeom geom, char want3d);
-GEOSGeom LWGEOM2GEOS(LWGEOM *g);
+LWGEOM *GEOS2LWGEOM(const GEOSGeometry *geom, char want3d);
+GEOSGeometry * LWGEOM2GEOS(LWGEOM *g);
 
-POINTARRAY *ptarray_from_GEOSCoordSeq(GEOSCoordSeq cs, char want3d);
+POINTARRAY *ptarray_from_GEOSCoordSeq(const GEOSCoordSequence *cs, char want3d);
 void errorIfGeometryCollection(PG_LWGEOM *g1, PG_LWGEOM *g2);
 

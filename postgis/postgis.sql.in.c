@@ -4124,13 +4124,13 @@ CREATE AGGREGATE ST_accum_old (
 -- Deprecation in 1.2.3
 CREATEFUNCTION unite_garray (geometry[])
 	RETURNS geometry
-        AS 'MODULE_PATHNAME', 'pgis_union_geometry_array_old'
+        AS 'MODULE_PATHNAME', 'pgis_union_geometry_array'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable); 
 
 -- Deprecation in 1.4.0
 CREATEFUNCTION ST_unite_garray (geometry[])
 	RETURNS geometry
-	AS 'MODULE_PATHNAME','pgis_union_geometry_array_old'
+	AS 'MODULE_PATHNAME','pgis_union_geometry_array'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable); 
 
 CREATEFUNCTION ST_Union (geometry[])

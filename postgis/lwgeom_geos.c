@@ -100,9 +100,9 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 	int nelems, i;
 	PG_LWGEOM *result = NULL;
 	PG_LWGEOM *pgis_geom = NULL;
-	GEOSGeom g1 = NULL;
-	GEOSGeom g2 = NULL;
-	GEOSGeom geos_result=NULL;
+	const GEOSGeometry * g1 = NULL;
+	GEOSGeometry * g2 = NULL;
+	GEOSGeometry * geos_result=NULL;
 	int SRID=-1;
 	size_t offset = 0;
 #if POSTGIS_DEBUG_LEVEL > 0
@@ -250,7 +250,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 			/* Check SRID homogeneity and initialize geos result */
 			if ( ! i )
 			{
-				geos_result = POSTGIS2GEOS(geom);
+				geos_result = (GEOSGeometry *)POSTGIS2GEOS(geom);
 				SRID = pglwgeom_getSRID(geom);
 				POSTGIS_DEBUGF(3, "first geom is a %s", lwgeom_typename(TYPE_GETTYPE(geom->type)));
 				continue;
@@ -265,15 +265,15 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 			POSTGIS_DEBUGF(3, "unite_garray(%d): adding geom %d to union (%s)",
 		                      call, i, lwgeom_typename(TYPE_GETTYPE(geom->type)));
 
-			g2 = GEOSUnion(g1,geos_result);
+			g2 = GEOSUnion(g1, geos_result);
 			if ( g2 == NULL )
 			{
-				GEOSGeom_destroy(g1);
-				GEOSGeom_destroy(geos_result);
+				GEOSGeom_destroy((GEOSGeometry *)g1);
+				GEOSGeom_destroy((GEOSGeometry *)geos_result);
 				elog(ERROR,"GEOS union() threw an error!");
 			}
-			GEOSGeom_destroy(g1);
-			GEOSGeom_destroy(geos_result);
+			GEOSGeom_destroy((GEOSGeometry *)g1);
+			GEOSGeom_destroy((GEOSGeometry *)geos_result);
 			geos_result = g2;
 		}
 
@@ -295,79 +295,6 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 
 }
 
-PG_FUNCTION_INFO_V1(pgis_union_geometry_array_old);
-Datum pgis_union_geometry_array_old(PG_FUNCTION_ARGS)
-{
-	Datum datum;
-	ArrayType *array;
-	int is3d = 0;
-	int nelems, i;
-	PG_LWGEOM *result, *pgis_geom;
-	GEOSGeom g1, g2, geos_result=NULL;
-	int SRID=-1;
-	size_t offset = 0;
-
-	datum = PG_GETARG_DATUM(0);
-
-	/* Null array, null geometry (should be empty?) */
-	if ( (Pointer *)datum == NULL ) PG_RETURN_NULL();
-
-	array = DatumGetArrayTypeP(datum);
-
-	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
-
-	if ( nelems == 0 ) PG_RETURN_NULL();
-
-	/* One-element union is the element itself */
-	if ( nelems == 1 ) PG_RETURN_POINTER((PG_LWGEOM *)(ARR_DATA_PTR(array)));
-
-	/* Ok, we really need geos now ;) */
-	initGEOS(lwnotice, lwnotice);
-
-	offset = 0;
-	for (i=0; i<nelems; i++)
-	{
-		PG_LWGEOM *geom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
-		offset += INTALIGN(VARSIZE(geom));
-		pgis_geom = geom;
-		/* Check is3d flag */
-		if ( TYPE_HASZ(geom->type) ) is3d = 1;
-		/* Check SRID homogeneity and initialize geos result */
-		if ( ! i )
-		{
-			geos_result = POSTGIS2GEOS(geom);
-			SRID = pglwgeom_getSRID(geom);
-			continue;
-		}
-		else
-		{
-			errorIfSRIDMismatch(SRID, pglwgeom_getSRID(geom));
-		}
-		g1 = POSTGIS2GEOS(pgis_geom);
-		g2 = GEOSUnion(g1,geos_result);
-		if ( g2 == NULL )
-		{
-			GEOSGeom_destroy(g1);
-			GEOSGeom_destroy(geos_result);
-			elog(ERROR,"GEOS union() threw an error!");
-		}
-		GEOSGeom_destroy(g1);
-		GEOSGeom_destroy(geos_result);
-		geos_result = g2;
-	}
-	GEOSSetSRID(geos_result, SRID);
-	result = GEOS2POSTGIS(geos_result, is3d);
-	GEOSGeom_destroy(geos_result);
-
-	if ( result == NULL )
-	{
-		elog(ERROR, "GEOS2POSTGIS returned an error");
-		PG_RETURN_NULL(); /* never get here */
-	}
-
-	PG_RETURN_POINTER(result);
-}
-
 
 /*
  * select geomunion(
@@ -383,7 +310,7 @@ Datum geomunion(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom2;
 	int is3d;
 	int SRID;
-	GEOSGeom g1,g2,g3;
+	GEOSGeometry *g1, *g2, *g3;
 	PG_LWGEOM *result;
 
 	POSTGIS_DEBUG(2, "in geomunion");
@@ -402,11 +329,11 @@ Datum geomunion(PG_FUNCTION_ARGS)
 	initGEOS(lwnotice, lwnotice);
 
 	PROFSTART(PROF_P2G1);
-	g1 = POSTGIS2GEOS(geom1);
+	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	PROFSTOP(PROF_P2G1);
 
 	PROFSTART(PROF_P2G2);
-	g2 = POSTGIS2GEOS(geom2);
+	g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 	PROFSTOP(PROF_P2G2);
 
 	POSTGIS_DEBUGF(3, "g1=%s", GEOSGeomToWKT(g1));
@@ -464,7 +391,7 @@ Datum symdifference(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom1;
 	PG_LWGEOM *geom2;
-	GEOSGeom g1,g2,g3;
+	GEOSGeometry *g1, *g2, *g3;
 	PG_LWGEOM *result;
 	int is3d;
 	int SRID;
@@ -483,11 +410,11 @@ Datum symdifference(PG_FUNCTION_ARGS)
 	initGEOS(lwnotice, lwnotice);
 
 	PROFSTART(PROF_P2G1);
-	g1 = POSTGIS2GEOS(geom1);
+	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	PROFSTOP(PROF_P2G1);
 
 	PROFSTART(PROF_P2G2);
-	g2 = POSTGIS2GEOS(geom2);
+	g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 	PROFSTOP(PROF_P2G2);
 
 	PROFSTART(PROF_GRUN);
@@ -539,7 +466,7 @@ PG_FUNCTION_INFO_V1(boundary);
 Datum boundary(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM	*geom1;
-	GEOSGeom g1,g3;
+	GEOSGeometry *g1, *g3;
 	PG_LWGEOM *result;
 	int SRID;
 
@@ -552,11 +479,11 @@ Datum boundary(PG_FUNCTION_ARGS)
 	initGEOS(lwnotice, lwnotice);
 
 	PROFSTART(PROF_P2G1);
-	g1 = POSTGIS2GEOS(geom1 );
+	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1 );
 	PROFSTOP(PROF_P2G1);
 
 	PROFSTART(PROF_GRUN);
-	g3 = GEOSBoundary(g1);
+	g3 = (GEOSGeometry *)GEOSBoundary(g1);
 	PROFSTOP(PROF_GRUN);
 
 	if (g3 == NULL)
@@ -601,7 +528,7 @@ PG_FUNCTION_INFO_V1(convexhull);
 Datum convexhull(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom1;
-	GEOSGeom g1, g3;
+	GEOSGeometry *g1, *g3;
 	PG_LWGEOM *result;
 	LWGEOM *lwout;
 	int SRID;
@@ -615,11 +542,11 @@ Datum convexhull(PG_FUNCTION_ARGS)
 	initGEOS(lwnotice, lwnotice);
 
 	PROFSTART(PROF_P2G1);
-	g1 = POSTGIS2GEOS(geom1);
+	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	PROFSTOP(PROF_P2G1);
 
 	PROFSTART(PROF_GRUN);
-	g3 = GEOSConvexHull(g1);
+	g3 = (GEOSGeometry *)GEOSConvexHull(g1);
 	PROFSTOP(PROF_GRUN);
 
 	if (g3 == NULL)
@@ -683,7 +610,7 @@ Datum topologypreservesimplify(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM	*geom1;
 	double	tolerance;
-	GEOSGeom g1,g3;
+	GEOSGeometry *g1, *g3;
 	PG_LWGEOM *result;
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
@@ -691,7 +618,7 @@ Datum topologypreservesimplify(PG_FUNCTION_ARGS)
 
 	initGEOS(lwnotice, lwnotice);
 
-	g1 = POSTGIS2GEOS(geom1);
+	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	g3 = GEOSTopologyPreserveSimplify(g1,tolerance);
 
 	if (g3 == NULL)
@@ -728,7 +655,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM	*geom1;
 	double	size;
-	GEOSGeom g1,g3;
+	GEOSGeometry *g1, *g3;
 	PG_LWGEOM *result;
 	int quadsegs = 8; /* the default */
 
@@ -741,7 +668,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 	initGEOS(lwnotice, lwnotice);
 
 	PROFSTART(PROF_P2G1);
-	g1 = POSTGIS2GEOS(geom1);
+	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	PROFSTOP(PROF_P2G1);
 
 	PROFSTART(PROF_GRUN);
@@ -789,7 +716,7 @@ Datum intersection(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom1;
 	PG_LWGEOM *geom2;
-	GEOSGeom g1,g2,g3;
+	GEOSGeometry *g1, *g2, *g3;
 	PG_LWGEOM *result;
 	int is3d;
 	int SRID;
@@ -810,11 +737,11 @@ Datum intersection(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUG(3, "intersection() START");
 
 	PROFSTART(PROF_P2G1);
-	g1 = POSTGIS2GEOS(geom1);
+	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	PROFSTOP(PROF_P2G1);
 
 	PROFSTART(PROF_P2G2);
-	g2 = POSTGIS2GEOS(geom2);
+	g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 	PROFSTOP(PROF_P2G2);
 
 	POSTGIS_DEBUG(3, " constructed geometrys - calling geos");
@@ -877,7 +804,7 @@ Datum difference(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom1;
 	PG_LWGEOM *geom2;
-	GEOSGeom g1,g2,g3;
+	GEOSGeometry *g1, *g2, *g3;
 	PG_LWGEOM *result;
 	int is3d;
 	int SRID;
@@ -896,11 +823,11 @@ Datum difference(PG_FUNCTION_ARGS)
 	initGEOS(lwnotice, lwnotice);
 
 	PROFSTART(PROF_P2G1);
-	g1 = POSTGIS2GEOS(geom1);
+	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	PROFSTOP(PROF_P2G1);
 
 	PROFSTART(PROF_P2G2);
-	g2 = POSTGIS2GEOS(geom2);
+	g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 	PROFSTOP(PROF_P2G2);
 
 	PROFSTART(PROF_GRUN);
@@ -953,7 +880,7 @@ PG_FUNCTION_INFO_V1(pointonsurface);
 Datum pointonsurface(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom1;
-	GEOSGeom g1,g3;
+	GEOSGeometry *g1, *g3;
 	PG_LWGEOM *result;
 
 	PROFSTART(PROF_QRUN);
@@ -963,7 +890,7 @@ Datum pointonsurface(PG_FUNCTION_ARGS)
 	initGEOS(lwnotice, lwnotice);
 
 	PROFSTART(PROF_P2G1);
-	g1 = POSTGIS2GEOS(geom1);
+	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	PROFSTOP(PROF_P2G1);
 
 	PROFSTART(PROF_GRUN);
@@ -1010,7 +937,7 @@ PG_FUNCTION_INFO_V1(centroid);
 Datum centroid(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom, *result;
-	GEOSGeom geosgeom, geosresult;
+	GEOSGeometry *geosgeom, *geosresult;
 
 	PROFSTART(PROF_QRUN);
 
@@ -1019,7 +946,7 @@ Datum centroid(PG_FUNCTION_ARGS)
 	initGEOS(lwnotice, lwnotice);
 
 	PROFSTART(PROF_P2G1);
-	geosgeom = POSTGIS2GEOS(geom);
+	geosgeom = (GEOSGeometry *)POSTGIS2GEOS(geom);
 	PROFSTOP(PROF_P2G1);
 
 	PROFSTART(PROF_GRUN);
@@ -1201,7 +1128,7 @@ Datum overlaps(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom1;
 	PG_LWGEOM *geom2;
-	GEOSGeom g1,g2;
+	GEOSGeometry *g1, *g2;
 	bool result;
 	BOX2DFLOAT4 box1, box2;
 
@@ -1230,11 +1157,11 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	initGEOS(lwnotice, lwnotice);
 
 	PROFSTART(PROF_P2G1);
-	g1 = POSTGIS2GEOS(geom1);
+	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	PROFSTOP(PROF_P2G1);
 
 	PROFSTART(PROF_P2G2);
-	g2 = POSTGIS2GEOS(geom2);
+	g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 	PROFSTOP(PROF_P2G2);
 
 	PROFSTART(PROF_GRUN);
@@ -1264,7 +1191,7 @@ Datum contains(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom1;
 	PG_LWGEOM *geom2;
-	GEOSGeom g1,g2;
+	GEOSGeometry *g1, *g2;
 	BOX2DFLOAT4 box1, box2;
 	int type1, type2;
 	LWGEOM *lwgeom;
@@ -1373,8 +1300,8 @@ Datum contains(PG_FUNCTION_ARGS)
 	else
 #endif
 	{
-		g1 = POSTGIS2GEOS(geom1);
-		g2 = POSTGIS2GEOS(geom2);
+		g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
+		g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 		POSTGIS_DEBUG(4, "containsPrepared: cache is not ready, running standard contains");
 		result = GEOSContains( g1, g2);
 		GEOSGeom_destroy(g1);
@@ -1438,8 +1365,8 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 	else
 #endif
 	{
-		GEOSGeom g1 = POSTGIS2GEOS(geom1);
-		GEOSGeom g2 = POSTGIS2GEOS(geom2);
+		GEOSGeometry *g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
+		GEOSGeometry *g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 		result = GEOSRelatePattern( g1, g2, "T**FF*FF*" );
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g2);
@@ -1572,8 +1499,8 @@ Datum covers(PG_FUNCTION_ARGS)
 	else
 #endif
 	{
-		GEOSGeom g1 = POSTGIS2GEOS(geom1);
-		GEOSGeom g2 = POSTGIS2GEOS(geom2);
+		GEOSGeometry *g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
+		GEOSGeometry *g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 		result = GEOSRelatePattern( g1, g2, "******FF*" );
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g2);
@@ -1599,7 +1526,7 @@ Datum within(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom1;
 	PG_LWGEOM *geom2;
-	GEOSGeom g1,g2;
+	GEOSGeometry *g1, *g2;
 	bool result;
 	BOX2DFLOAT4 box1, box2;
 	LWGEOM *lwgeom;
@@ -1688,11 +1615,11 @@ Datum within(PG_FUNCTION_ARGS)
 	initGEOS(lwnotice, lwnotice);
 
 	PROFSTART(PROF_P2G1);
-	g1 = POSTGIS2GEOS(geom1);
+	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	PROFSTOP(PROF_P2G1);
 
 	PROFSTART(PROF_P2G2);
-	g2 = POSTGIS2GEOS(geom2);
+	g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 	PROFSTOP(PROF_P2G2);
 
 	PROFSTART(PROF_GRUN);
@@ -1727,7 +1654,7 @@ Datum coveredby(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom1;
 	PG_LWGEOM *geom2;
-	GEOSGeom g1,g2;
+	GEOSGeometry *g1, *g2;
 	bool result;
 	BOX2DFLOAT4 box1, box2;
 	LWGEOM *lwgeom;
@@ -1819,11 +1746,11 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	initGEOS(lwnotice, lwnotice);
 
 	PROFSTART(PROF_P2G1);
-	g1 = POSTGIS2GEOS(geom1);
+	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	PROFSTOP(PROF_P2G1);
 
 	PROFSTART(PROF_P2G2);
-	g2 = POSTGIS2GEOS(geom2);
+	g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 	PROFSTOP(PROF_P2G2);
 
 	PROFSTART(PROF_GRUN);
@@ -1855,7 +1782,7 @@ Datum crosses(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom1;
 	PG_LWGEOM *geom2;
-	GEOSGeom g1,g2;
+	GEOSGeometry *g1, *g2;
 	bool result;
 	BOX2DFLOAT4 box1, box2;
 
@@ -1885,11 +1812,11 @@ Datum crosses(PG_FUNCTION_ARGS)
 	initGEOS(lwnotice, lwnotice);
 
 	PROFSTART(PROF_P2G1);
-	g1 = POSTGIS2GEOS(geom1);
+	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	PROFSTOP(PROF_P2G1);
 
 	PROFSTART(PROF_P2G2);
-	g2 = POSTGIS2GEOS(geom2);
+	g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 	PROFSTOP(PROF_P2G2);
 
 	PROFSTART(PROF_GRUN);
@@ -2042,8 +1969,8 @@ Datum intersects(PG_FUNCTION_ARGS)
 	else
 #endif
 	{
-		GEOSGeom g1 = POSTGIS2GEOS(geom1);
-		GEOSGeom g2 = POSTGIS2GEOS(geom2);
+		GEOSGeometry *g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
+		GEOSGeometry *g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 		result = GEOSIntersects( g1, g2);
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g2);
@@ -2067,7 +1994,7 @@ Datum touches(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom1;
 	PG_LWGEOM *geom2;
-	GEOSGeom g1,g2;
+	GEOSGeometry *g1, *g2;
 	bool result;
 	BOX2DFLOAT4 box1, box2;
 
@@ -2097,11 +2024,11 @@ Datum touches(PG_FUNCTION_ARGS)
 	initGEOS(lwnotice, lwnotice);
 
 	PROFSTART(PROF_P2G1);
-	g1 = POSTGIS2GEOS(geom1 );
+	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1 );
 	PROFSTOP(PROF_P2G1);
 
 	PROFSTART(PROF_P2G2);
-	g2 = POSTGIS2GEOS(geom2 );
+	g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2 );
 	PROFSTOP(PROF_P2G2);
 
 	PROFSTART(PROF_GRUN);
@@ -2132,7 +2059,7 @@ Datum disjoint(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom1;
 	PG_LWGEOM *geom2;
-	GEOSGeom g1,g2;
+	GEOSGeometry *g1, *g2;
 	bool result;
 	BOX2DFLOAT4 box1, box2;
 
@@ -2162,11 +2089,11 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	initGEOS(lwnotice, lwnotice);
 
 	PROFSTART(PROF_P2G1);
-	g1 = POSTGIS2GEOS(geom1);
+	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	PROFSTOP(PROF_P2G1);
 
 	PROFSTART(PROF_P2G2);
-	g2 = POSTGIS2GEOS(geom2);
+	g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 	PROFSTOP(PROF_P2G2);
 
 	PROFSTART(PROF_GRUN);
@@ -2199,7 +2126,7 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom2;
 	char *patt;
 	bool result;
-	GEOSGeom g1,g2;
+	GEOSGeometry *g1, *g2;
 	int i;
 
 	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
@@ -2210,8 +2137,8 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 
 	initGEOS(lwnotice, lwnotice);
 
-	g1 = POSTGIS2GEOS(geom1);
-	g2 = POSTGIS2GEOS(geom2);
+	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
+	g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 
 	patt =  DatumGetCString(DirectFunctionCall1(textout,
 	                        PointerGetDatum(PG_GETARG_DATUM(2))));
@@ -2249,7 +2176,7 @@ Datum relate_full(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom1;
 	PG_LWGEOM *geom2;
-	GEOSGeom g1,g2;
+	GEOSGeometry *g1, *g2;
 	char *relate_str;
 	int len;
 	text *result;
@@ -2264,8 +2191,8 @@ Datum relate_full(PG_FUNCTION_ARGS)
 
 	initGEOS(lwnotice, lwnotice);
 
-	g1 = POSTGIS2GEOS(geom1 );
-	g2 = POSTGIS2GEOS(geom2 );
+	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1 );
+	g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2 );
 
 	POSTGIS_DEBUG(3, "constructed geometries ");
 
@@ -2314,7 +2241,7 @@ Datum geomequals(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom1;
 	PG_LWGEOM *geom2;
-	GEOSGeom g1,g2;
+	GEOSGeometry *g1, *g2;
 	bool result;
 	BOX2DFLOAT4 box1, box2;
 
@@ -2343,11 +2270,11 @@ Datum geomequals(PG_FUNCTION_ARGS)
 	initGEOS(lwnotice, lwnotice);
 
 	PROFSTART(PROF_P2G1);
-	g1 = POSTGIS2GEOS(geom1);
+	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	PROFSTOP(PROF_P2G1);
 
 	PROFSTART(PROF_P2G2);
-	g2 = POSTGIS2GEOS(geom2);
+	g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
 	PROFSTOP(PROF_P2G2);
 
 	PROFSTART(PROF_GRUN);
@@ -2376,7 +2303,7 @@ PG_FUNCTION_INFO_V1(issimple);
 Datum issimple(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom;
-	GEOSGeom g1;
+	GEOSGeometry *g1;
 	int result;
 
 	POSTGIS_DEBUG(2, "issimple called");
@@ -2388,7 +2315,7 @@ Datum issimple(PG_FUNCTION_ARGS)
 
 	initGEOS(lwnotice, lwnotice);
 
-	g1 = POSTGIS2GEOS(geom);
+	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom);
 	result = GEOSisSimple(g1);
 	GEOSGeom_destroy(g1);
 
@@ -2407,7 +2334,7 @@ PG_FUNCTION_INFO_V1(isring);
 Datum isring(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom;
-	GEOSGeom g1;
+	GEOSGeometry *g1;
 	int result;
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
@@ -2422,7 +2349,7 @@ Datum isring(PG_FUNCTION_ARGS)
 
 	initGEOS(lwnotice, lwnotice);
 
-	g1 = POSTGIS2GEOS(geom );
+	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom );
 	result = GEOSisRing(g1);
 	GEOSGeom_destroy(g1);
 
@@ -2448,7 +2375,7 @@ Datum isring(PG_FUNCTION_ARGS)
 
 /* Return a POINTARRAY from a GEOSCoordSeq */
 POINTARRAY *
-ptarray_from_GEOSCoordSeq(GEOSCoordSeq cs, char want3d)
+ptarray_from_GEOSCoordSeq(const GEOSCoordSequence *cs, char want3d)
 {
 	unsigned int dims=2;
 	unsigned int size, i, ptsize;
@@ -2496,7 +2423,7 @@ ptarray_from_GEOSCoordSeq(GEOSCoordSeq cs, char want3d)
 
 /* Return an LWGEOM from a Geometry */
 LWGEOM *
-GEOS2LWGEOM(GEOSGeom geom, char want3d)
+GEOS2LWGEOM(const GEOSGeometry *geom, char want3d)
 {
 	int type = GEOSGeomTypeId(geom) ;
 	bool hasZ = GEOSHasZ(geom);
@@ -2517,9 +2444,9 @@ GEOS2LWGEOM(GEOSGeom geom, char want3d)
 
 	switch (type)
 	{
-		GEOSCoordSeq cs;
+		const GEOSCoordSequence *cs;
 		POINTARRAY *pa, **ppaa;
-		GEOSGeom g;
+		const GEOSGeometry *g;
 		LWGEOM **geoms;
 		unsigned int i, ngeoms;
 
@@ -2642,7 +2569,7 @@ ptarray_to_GEOSCoordSeq(POINTARRAY *pa)
 	return sq;
 }
 
-GEOSGeom
+GEOSGeometry *
 LWGEOM2GEOS(LWGEOM *lwgeom)
 {
 	GEOSCoordSeq sq;
@@ -2757,10 +2684,10 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 	return g;
 }
 
-GEOSGeom
+const GEOSGeometry *
 POSTGIS2GEOS(PG_LWGEOM *pglwgeom)
 {
-	GEOSGeom ret;
+	const GEOSGeometry *ret;
 	LWGEOM *lwgeom = lwgeom_deserialize(SERIALIZED_FORM(pglwgeom));
 	if ( ! lwgeom )
 	{
@@ -2782,7 +2709,7 @@ PG_FUNCTION_INFO_V1(GEOSnoop);
 Datum GEOSnoop(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom;
-	GEOSGeom geosgeom;
+	GEOSGeometry *geosgeom;
 	PG_LWGEOM *lwgeom_result;
 #if POSTGIS_DEBUG_LEVEL > 0
 	int result; 
@@ -2798,7 +2725,7 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUGF(2, "GEOSnoop: IN: %s", lwg_unparser_result.wkoutput);
 #endif
 
-	geosgeom = POSTGIS2GEOS(geom);
+	geosgeom = (GEOSGeometry *)POSTGIS2GEOS(geom);
 	if ( ! geosgeom ) PG_RETURN_NULL();
 
 	PROFSTART(PROF_GRUN);
@@ -2825,8 +2752,8 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 	int is3d = 0;
 	unsigned int nelems, i;
 	PG_LWGEOM *result;
-	GEOSGeom geos_result;
-	GEOSGeom *vgeoms;
+	GEOSGeometry *geos_result;
+	const GEOSGeometry **vgeoms;
 	int SRID=-1;
 	size_t offset;
 #if POSTGIS_DEBUG_LEVEL >= 3
@@ -2853,14 +2780,14 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 	/* Ok, we really need geos now ;) */
 	initGEOS(lwnotice, lwnotice);
 
-	vgeoms = palloc(sizeof(GEOSGeom)*nelems);
+	vgeoms = palloc(sizeof(GEOSGeometry *)*nelems);
 	offset = 0;
 	for (i=0; i<nelems; i++)
 	{
 		PG_LWGEOM *geom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
 		offset += INTALIGN(VARSIZE(geom));
 
-		vgeoms[i] = POSTGIS2GEOS(geom);
+		vgeoms[i] = (GEOSGeometry *)POSTGIS2GEOS(geom);
 		if ( ! i )
 		{
 			SRID = pglwgeom_getSRID(geom);
@@ -2881,7 +2808,7 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(3, "polygonize_garray: GEOSpolygonize returned");
 
-	for (i=0; i<nelems; ++i) GEOSGeom_destroy(vgeoms[i]);
+	for (i=0; i<nelems; ++i) GEOSGeom_destroy((GEOSGeometry *)vgeoms[i]);
 	pfree(vgeoms);
 
 	if ( ! geos_result ) PG_RETURN_NULL();
@@ -2905,7 +2832,7 @@ PG_FUNCTION_INFO_V1(linemerge);
 Datum linemerge(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM	*geom1;
-	GEOSGeom g1,g3;
+	GEOSGeometry *g1, *g3;
 	PG_LWGEOM *result;
 
 	PROFSTART(PROF_QRUN);
@@ -2915,7 +2842,7 @@ Datum linemerge(PG_FUNCTION_ARGS)
 	initGEOS(lwnotice, lwnotice);
 
 	PROFSTART(PROF_P2G1);
-	g1 = POSTGIS2GEOS(geom1);
+	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 	PROFSTOP(PROF_P2G1);
 
 	PROFSTART(PROF_GRUN);
@@ -2973,8 +2900,8 @@ Datum LWGEOM_buildarea(PG_FUNCTION_ARGS)
 	unsigned int i, ngeoms;
 	PG_LWGEOM *result;
 	LWGEOM *lwg;
-	GEOSGeom geos_result, shp;
-	GEOSGeom vgeoms[1];
+	GEOSGeometry *geos_result, *shp;
+	GEOSGeometry const *vgeoms[1];
 	int SRID=-1;
 #if POSTGIS_DEBUG_LEVEL >= 3
 	static int call=1;
@@ -2994,9 +2921,9 @@ Datum LWGEOM_buildarea(PG_FUNCTION_ARGS)
 
 	initGEOS(lwnotice, lwnotice);
 
-	vgeoms[0] = POSTGIS2GEOS(geom);
+	vgeoms[0] = (const GEOSGeometry *)POSTGIS2GEOS(geom);
 	geos_result = GEOSPolygonize(vgeoms, 1);
-	GEOSGeom_destroy(vgeoms[0]);
+	GEOSGeom_destroy((GEOSGeometry *)vgeoms[0]);
 
 	POSTGIS_DEBUGF(3, "GEOSpolygonize returned @ %p", geos_result);
 
@@ -3034,7 +2961,7 @@ Datum LWGEOM_buildarea(PG_FUNCTION_ARGS)
 	 */
 	if ( ngeoms == 1 )
 	{
-		shp = GEOSGetGeometryN(geos_result, 0);
+		shp = (GEOSGeometry *)GEOSGetGeometryN(geos_result, 0);
 		lwg = GEOS2LWGEOM(shp, is3d);
 		lwg->SRID = SRID;
 		result = pglwgeom_serialize(lwg);

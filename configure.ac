@@ -361,16 +361,10 @@ GEOS_MAJOR_VERSION=`$GEOSCONFIG --version | cut -d. -f1 | sed 's/[[^0-9]]//g'`
 GEOS_MINOR_VERSION=`$GEOSCONFIG --version | cut -d. -f2 | sed 's/[[^0-9]]//g'`
 POSTGIS_GEOS_VERSION="$GEOS_MAJOR_VERSION$GEOS_MINOR_VERSION"
 
-dnl Ensure that we are using GEOS >= 2.2.0 (requires CAPI) 
-if test ! "$GEOS_MAJOR_VERSION" -ge 2; then
-	AC_MSG_ERROR([PostGIS requires GEOS >= 2.2])
-else
-	if test "$GEOS_MAJOR_VERSION" -eq 2; then
-		if test ! "$GEOS_MINOR_VERSION" -ge 2; then
-			AC_MSG_ERROR([PostGIS requires GEOS >= 2.2])
-		fi
-	fi
-fi	
+dnl Ensure that we are using GEOS >= 3.0.0
+if test ! "$GEOS_MAJOR_VERSION" -ge 3; then
+	AC_MSG_ERROR([PostGIS requires GEOS >= 3.0])
+fi
 
 dnl Extract the linker and include flags 
 GEOS_LDFLAGS=`$GEOSCONFIG --ldflags`
