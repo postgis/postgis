@@ -29,7 +29,10 @@ SELECT 'version_02', ST_AsGML(3, GeomFromEWKT('SRID=4326;POINT(1 1)'));
 SELECT 'version_03', ST_AsGML(21, GeomFromEWKT('SRID=4326;POINT(1 1)'));
 SELECT 'version_04', ST_AsGML(-4, GeomFromEWKT('SRID=4326;POINT(1 1)'));
 
-
+-- Option
+SELECT 'option_01', ST_AsGML(2, GeomFromEWKT('SRID=4326;POINT(1 1)'), 0, 0);
+SELECT 'option_02', ST_AsGML(3, GeomFromEWKT('SRID=4326;POINT(1 1)'), 0, 1);
+  
 --
 -- Line
 --
