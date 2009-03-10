@@ -3448,7 +3448,8 @@ static int input (void );
 
 /* Amount of stuff to slurp up with each read. */
 #ifndef YY_READ_BUF_SIZE
-#define YY_READ_BUF_SIZE 8192
+/* On IA-64, the buffer size is 16k, not 8k */
+#define YY_READ_BUF_SIZE 16384
 #endif
 
 /* Copy whatever the last rule matched to the standard output. */
@@ -3536,7 +3537,7 @@ YY_DECL
 #line 30 "wktparse.lex"
 
 
-#line 3540 "lex.yy.c"
+#line 3541 "lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -3798,7 +3799,7 @@ YY_RULE_SETUP
 #line 73 "wktparse.lex"
 ECHO;
 	YY_BREAK
-#line 3802 "lex.yy.c"
+#line 3803 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(vals_ok):
 	yyterminate();
@@ -4552,8 +4553,8 @@ YY_BUFFER_STATE lwg_parse_yy_scan_string (yyconst char * yystr )
 
 /** Setup the input buffer state to scan the given bytes. The next call to lwg_parse_yylex() will
  * scan from a @e copy of @a bytes.
- * @param bytes the byte buffer to scan
- * @param len the number of bytes in the buffer pointed to by @a bytes.
+ * @param yybytes the byte buffer to scan
+ * @param _yybytes_len the number of bytes in the buffer pointed to by @a bytes.
  * 
  * @return the newly allocated buffer state object.
  */

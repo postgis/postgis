@@ -1341,6 +1341,7 @@ typedef struct struct_lwgeom_parser_result
 #define PARSER_ERROR_MIXDIMS        4	
 #define PARSER_ERROR_INVALIDGEOM    5
 #define PARSER_ERROR_INVALIDWKBTYPE 6
+#define PARSER_ERROR_INCONTINUOUS	7
 
 
 /*

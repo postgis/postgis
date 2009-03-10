@@ -92,6 +92,7 @@ void alloc_linestring_closed(void);
 void alloc_circularstring(void);
 void alloc_circularstring_closed(void);
 void alloc_polygon(void);
+void alloc_polyring_counter(void);
 void alloc_compoundcurve(void);
 void alloc_curvepolygon(void);
 void alloc_multipoint(void);
@@ -103,6 +104,14 @@ void alloc_geomertycollection(void);
 void alloc_empty();
 void alloc_counter(void);
 
+void check_compoundcurve(void);
+void check_linestring(void);
+void check_polygon(void);
+void check_curvepolygon(void);
+void check_circularstring(void);
+void check_closed_compoundcurve(void);
+void check_closed_linestring(void);
+void check_closed_circularstring(void);
 
 void pop(void);
 void popc(void);

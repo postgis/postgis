@@ -44,6 +44,7 @@ uchar* output_line_collection(uchar* geom,outfunc func,int supress);
 uchar* output_polygon_collection(uchar* geom,int suppress);
 uchar* output_polygon_ring_collection(uchar* geom,outfunc func,int supress);
 uchar* output_circstring_collection(uchar* geom,outfunc func,int supress);
+uchar* output_curvepoly(uchar* geom, int supress);
 uchar* output_multipoint(uchar* geom,int suppress);
 uchar* output_compound(uchar* geom, int suppress);
 uchar* output_multisurface(uchar* geom, int suppress);
@@ -432,6 +433,32 @@ uchar *output_compound(uchar* geom, int suppress) {
                         geom = output_wkt(geom,1);
                         break;
         }
+	return geom;
+}
+
+/*
+ * Supress linestring but not circularstring and correctly handle compoundcurve
+ */
+uchar *output_curvepoly(uchar* geom, int supress) {
+	unsigned type;
+	type = *geom++;
+
+	LWDEBUG(2, "output_curvepoly.");
+
+	switch(TYPE_GETTYPE(type))
+	{
+		case LINETYPE:
+			geom = output_collection(geom,output_point,0);
+			break;
+		case CIRCSTRINGTYPE:
+			write_str("CIRCULARSTRING");
+			geom = output_circstring_collection(geom,output_point,1);
+			break;
+		case COMPOUNDTYPE:
+			write_str("COMPOUNDCURVE");
+			geom = output_collection(geom,output_compound,1);
+			break;
+	}
 	return geom;
 }
 

@@ -56,9 +56,14 @@ lwmcurve_deserialize(uchar *srl)
                 {
                         result->geoms[i] = (LWGEOM *)lwline_deserialize(insp->sub_geoms[i]);
                 }
+	            else if(stype == COMPOUNDTYPE)
+ 		        {
+                        result->geoms[i] = (LWGEOM *)lwcompound_deserialize(insp->sub_geoms[i]);
+                }
                 else
                 {
-                        lwerror("Only Circular and Line strings are currenly permitted in a MultiCurve.");
+                        lwerror("Only Circular strings, Line strings or Compound curves are permitted in a MultiCurve.");
+ 
                         lwfree(result);
                         lwfree(insp);
                         return NULL;

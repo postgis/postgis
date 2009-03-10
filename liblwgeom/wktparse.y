@@ -134,13 +134,13 @@ empty_linestring :
 	{ alloc_linestring(); } empty { pop(); } 
 
 nonempty_linestring :
-	{ alloc_linestring(); } linestring_1 { pop(); } 
+	{ alloc_linestring(); } linestring_1 { check_linestring(); pop(); } 
 
 nonempty_linestring_closed :
-        { alloc_linestring_closed(); } linestring_1 { pop(); }
+        { alloc_linestring_closed(); } linestring_1 { check_closed_linestring(); pop(); }
 
 linestring_1 :
-	{ alloc_counter(); } LPAREN linestring_int RPAREN { popc(); }
+	{ alloc_counter(); } LPAREN linestring_int RPAREN { pop(); }
 
 linestring_int :
 	a_point
@@ -173,13 +173,13 @@ empty_circularstring :
         { alloc_circularstring(); } empty { pop(); }
 
 nonempty_circularstring :
-        { alloc_circularstring(); } circularstring_1 { pop(); }
+        { alloc_circularstring(); } circularstring_1 { check_circularstring(); pop(); }
 
 nonempty_circularstring_closed :
-        { alloc_circularstring_closed(); } circularstring_1 { pop(); }
+        { alloc_circularstring_closed(); } circularstring_1 { check_closed_circularstring(); pop(); }
 
 circularstring_1 :
-        { alloc_counter(); } LPAREN circularstring_int RPAREN { popc(); }
+        { alloc_counter(); } LPAREN circularstring_int RPAREN { pop(); }
 
 circularstring_int :
         a_point
@@ -189,14 +189,39 @@ circularstring_int :
 /* COMPOUNDCURVE */
 
 geom_compoundcurve:
-        COMPOUNDCURVE { alloc_compoundcurve(); } compoundcurve { pop(); }
-        |
-        COMPOUNDCURVEM {set_zm(0, 1); alloc_compoundcurve(); } compoundcurve { pop(); }
+	COMPOUNDCURVE compoundcurve
+	|
+	COMPOUNDCURVEM { set_zm(0, 1); } compoundcurve
+
+geom_compoundcurve_closed:
+	COMPOUNDCURVE compoundcurve_closed
+	|
+	COMPOUNDCURVEM { set_zm(0, 1); } compoundcurve_closed
 
 compoundcurve:
-        empty
-        |
-        { alloc_counter(); } LPAREN compoundcurve_int RPAREN { pop(); }
+	empty_compoundcurve
+	|
+	nonempty_compoundcurve
+
+compoundcurve_closed:
+	empty_compoundcurve_closed
+	|
+	nonempty_compoundcurve_closed
+
+empty_compoundcurve:
+	{ alloc_compoundcurve(); } empty { pop(); }
+
+empty_compoundcurve_closed:
+	{ alloc_compoundcurve_closed(); } empty { pop(); }
+
+nonempty_compoundcurve:
+	{ alloc_compoundcurve(); } compoundcurve_1 {  check_compoundcurve(); pop(); }
+
+nonempty_compoundcurve_closed:
+	{ alloc_compoundcurve_closed(); } compoundcurve_1 {  check_closed_compoundcurve(); pop(); }
+
+compoundcurve_1:
+	{ alloc_counter(); } LPAREN compoundcurve_int RPAREN {pop();}
 
 compoundcurve_int:
         nonempty_linestring
@@ -265,23 +290,25 @@ empty_polygon :
 	{ alloc_polygon(); } empty  { pop(); } 
 
 nonempty_polygon :
-	{ alloc_polygon(); } polygon_1  { pop(); } 
+	{ alloc_polygon(); } polygon_1  { check_polygon(); pop(); } 
 
 polygon_1 :
 	{ alloc_counter(); } LPAREN polygon_int RPAREN { pop();} 
 
 polygon_int :
+	/* nonempty_linestring_closed */
 	linestring_1
 	|
+	/* polygon_int COMMA nonempty_linestring_closed */
 	polygon_int COMMA linestring_1
 
 /* CURVEPOLYGON */
 
 geom_curvepolygon :
-        CURVEPOLYGON { alloc_curvepolygon(); } curvepolygon { pop(); }
+        CURVEPOLYGON { alloc_curvepolygon(); } curvepolygon { check_curvepolygon(); pop(); }
         |
         CURVEPOLYGONM { set_zm(0, 1); alloc_curvepolygon(); } 
-                        curvepolygon { pop(); }
+                        curvepolygon { check_curvepolygon(); pop(); }
 
 curvepolygon :
         empty
@@ -293,9 +320,13 @@ curvepolygon_int :
         |
         geom_circularstring_closed
         |
+	geom_compoundcurve_closed
+	|
         curvepolygon_int COMMA nonempty_linestring_closed
         |
         curvepolygon_int COMMA geom_circularstring_closed
+	|
+	curvepolygon_int COMMA geom_compoundcurve_closed
 
 /* MULTIPOLYGON */
 
