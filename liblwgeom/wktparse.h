@@ -94,6 +94,7 @@ void alloc_circularstring_closed(void);
 void alloc_polygon(void);
 void alloc_polyring_counter(void);
 void alloc_compoundcurve(void);
+void alloc_compoundcurve_closed(void);
 void alloc_curvepolygon(void);
 void alloc_multipoint(void);
 void alloc_multilinestring(void);
