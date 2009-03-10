@@ -29,8 +29,9 @@ maintainer-clean:
 	$(MAKE) distclean
 	rm -f configure
 
-test check: 
-	$(MAKE) -C regress test
+test check: postgis
+	$(MAKE) -C liblwgeom/cunit check
+	$(MAKE) -C regress check
 
 test-clean:
 	$(MAKE) -C regress clean

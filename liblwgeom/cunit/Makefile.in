@@ -50,6 +50,8 @@ clean:
 # Requirements message
 requirements_not_met_cunit:
 	@echo
+	@echo "WARNING:"
+	@echo
 	@echo "configure was unable to find CUnit which is required for unit testing."
 	@echo "In order to enable unit testing, you must install CUnit and then re-run configure."
 	@echo
