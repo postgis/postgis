@@ -348,7 +348,12 @@ output_polygon_ring_collection(uchar* geom,outfunc func,int supress)
                 	dimcount++;
        	 	}
 
-        	/* Check if they are the same... */
+        	/* Check if they are the same...
+
+		   WARNING: due to various GEOS bugs related to producing rings with incorrect
+                   3rd dimensions, the closure check here for outgoing geometries only checks on 2
+		   dimensions. This is currently different to the parser! */
+	
         	if (
              (first_point[0] != last_point[0] || first_point[1] != last_point[1] ) &&
 			 (current_unparser_check_flags & PARSER_CHECK_CLOSURE))
