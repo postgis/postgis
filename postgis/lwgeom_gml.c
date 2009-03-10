@@ -48,7 +48,8 @@ static char *asgml3_inspected(LWGEOM_INSPECTED *geom, char *srs, int precision);
 static size_t pointArray_toGML3(POINTARRAY *pa, char *buf, int precision);
 
 static size_t pointArray_GMLsize(POINTARRAY *pa, int precision);
-static char *getSRSbySRID(int SRID);
+static char *getSRSbySRID(int SRID, bool short_crs);
+
 
 /* Add dot, sign, exponent sign, 'e', exponent digits */
 #define SHOW_DIGS_DOUBLE 15
@@ -70,17 +71,18 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	char *srs;
 	int SRID;
 	int precision = MAX_DOUBLE_PRECISION;
+	int option=0;
 
 
-    /* Get the version */
-    version = PG_GETARG_INT32(0);
+    	/* Get the version */
+    	version = PG_GETARG_INT32(0);
 	if ( version != 2 && version != 3 )
 	{
 		elog(ERROR, "Only GML 2 and GML 3 are supported");
 		PG_RETURN_NULL();
 	}
 
-    /* Get the geometry */
+    	/* Get the geometry */
 	if ( PG_ARGISNULL(1) ) PG_RETURN_NULL();
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
@@ -92,11 +94,14 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 		else if ( precision < 0 ) precision = 0;
         }
 
-	SRID = lwgeom_getsrid(SERIALIZED_FORM(geom));
-	if ( SRID != -1 ) srs = getSRSbySRID(SRID);
-	else srs = NULL;
+	/* retrieve option */
+	if (PG_NARGS() >3 && !PG_ARGISNULL(3))
+                option = PG_GETARG_INT32(3);
 
-	/*elog(NOTICE, "srs=%s", srs); */
+	SRID = lwgeom_getsrid(SERIALIZED_FORM(geom));
+	if (SRID == -1) srs = NULL;
+	else if (option & 1) srs = getSRSbySRID(SRID, false);
+	else srs = getSRSbySRID(SRID, true);
 
 	if (version == 2)
 	  gml = geometry_to_gml2(SERIALIZED_FORM(geom), srs, precision);
@@ -849,7 +854,7 @@ pointArray_toGML3(POINTARRAY *pa, char *output, int precision)
  */
 
 static char *
-getSRSbySRID(int SRID)
+getSRSbySRID(int SRID, bool short_crs)
 {
 	char query[128];
 	char *srs, *srscopy;
@@ -862,11 +867,12 @@ getSRSbySRID(int SRID)
 		return NULL;
 	}
 
-	/* write query */
-	sprintf(query, "SELECT textcat(auth_name, textcat(':', auth_srid::text)) \
-		FROM spatial_ref_sys WHERE srid = '%d'", SRID);
-
-	POSTGIS_DEBUGF(3, "Query: %s", query);
+	 if (short_crs)
+                sprintf(query, "SELECT auth_name||':'||auth_srid \
+                                FROM spatial_ref_sys WHERE srid='%d'", SRID);
+         else
+                sprintf(query, "SELECT 'urn:ogc:def:crs:'||auth_name||':'||auth_srid \
+                                FROM spatial_ref_sys WHERE srid='%d'", SRID);
 
 	/* execute query */
 	err = SPI_exec(query, 1);

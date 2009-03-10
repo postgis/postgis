@@ -7268,19 +7268,17 @@ CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)
 				</listitem>
 
 				<listitem>
-				  <para>1: GeoJSON CRS</para>
+				  <para>1: GeoJSON Bbox</para>
 				</listitem>
 
 				<listitem>
-				  <para>2: GeoJSON Bbox</para>
+				  <para>2: GeoJSON Short CRS (e.g EPSG:4326)</para>
 				</listitem>
 
 				<listitem>
-				  <para>3: Both GeoJSON Bbox and CRS</para>
+				  <para>4: GeoJSON Long CRS (e.g urn:ogc:def:crs:EPSG:4326)</para>
 				</listitem>
 			  </itemizedlist>
-			GeoJson CRS pattern is: <literal>auth_name:auth_srid</literal>
-			from spatial_ref_sys table (EPSG:4326 for instance).
 			</para>
 			<para>Version 1: ST_AsGeoJSON(geom) / precision=15 version=1 options=0</para>
 			<para>Version 2: ST_AsGeoJSON(geom, precision) / version=1 options=0</para>
@@ -7343,12 +7341,19 @@ st_asgeojson
 				<funcdef>text <function>ST_AsGML</function></funcdef>
 				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
 				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>text <function>ST_AsGML</function></funcdef>
+				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
+				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
 			</funcprototype>
 			<funcprototype>
 				<funcdef>text <function>ST_AsGML</function></funcdef>
 				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
 				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>options</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -7361,6 +7366,19 @@ st_asgeojson
 			specified then the default is assumed to be 2. The third argument
 			may be used to reduce the maximum number of decimal places
 			used in output (defaults to 15).</para>
+		<para>GML 2 refer to 2.1.2 version, GML 3 to 3.1.1 version</para>
+                <para>The last 'options' argument could be used to define Crs output type
+                        in GML output:
+                          <itemizedlist>
+                                <listitem>
+                                  <para>1: GML Short CRS (e.g EPSG:4326), default value</para>
+                                </listitem>
+
+                                <listitem>
+                                  <para>2: GML Long CRS (e.g urn:ogc:def:crs:EPSG:4326)</para>
+                                </listitem>
+                          </itemizedlist>
+                        </para>
 
 		<!-- TODO: Itemize defaults for each function -->
 
@@ -7494,7 +7512,7 @@ st_asgeojson
 		<para>Version 1: ST_AsKML(geom) / version=2 precision=15</para>
 		<para>Version 2: ST_AsKML(geom, max_sig_digits) / version=2 </para>
 		<para>Version 3: ST_AsKML(version, geom) / precision=15 </para>
-		<para>Version 4: ST_AsGeoJSON(version, geom, precision) </para>
+		<para>Version 4: ST_AsKML(version, geom, precision) </para>
 
 		<note>
 		  <para>Requires PostGIS be compiled with Proj support.  Use <xref linkend="PostGIS_Full_Version" /> to confirm you have proj support compiled in.</para>

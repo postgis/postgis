@@ -4541,8 +4541,8 @@ CREATEFUNCTION ST_AsSVG(geometry)
 -----------------------------------------------------------------------
 -- GML OUTPUT
 -----------------------------------------------------------------------
--- _ST_AsGML(version, geom, precision)
-CREATEFUNCTION _ST_AsGML(int4, geometry, int4)
+-- _ST_AsGML(version, geom, precision, option)
+CREATEFUNCTION _ST_AsGML(int4, geometry, int4, int4)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asGML'
 	LANGUAGE 'C' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
@@ -4551,40 +4551,54 @@ CREATEFUNCTION _ST_AsGML(int4, geometry, int4)
 -- Deprecation in 1.2.3
 CREATEFUNCTION AsGML(geometry, int4)
 	RETURNS TEXT
-	AS 'SELECT _ST_AsGML(2, $1, $2)'
+	AS 'SELECT _ST_AsGML(2, $1, $2, 0)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Availability: 1.2.2
 CREATEFUNCTION ST_AsGML(geometry, int4)
 	RETURNS TEXT
-	AS 'SELECT _ST_AsGML(2, $1, $2)'
+	AS 'SELECT _ST_AsGML(2, $1, $2, 0)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- AsGML(geom) / precision=15 version=2
 -- Deprecation in 1.2.3
 CREATEFUNCTION AsGML(geometry)
 	RETURNS TEXT
-	AS 'SELECT _ST_AsGML(2, $1, 15)'
+	AS 'SELECT _ST_AsGML(2, $1, 15, 0)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- Availability: 1.2.2
 CREATEFUNCTION ST_AsGML(geometry)
 	RETURNS TEXT
-	AS 'SELECT _ST_AsGML(2, $1, 15)'
+	AS 'SELECT _ST_AsGML(2, $1, 15, 0)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- ST_AsGML(version, geom) / precision=15 version=2
 -- Availability: 1.3.2
 CREATEFUNCTION ST_AsGML(int4, geometry)
 	RETURNS TEXT
-	AS 'SELECT _ST_AsGML($1, $2, 15)'
+	AS 'SELECT _ST_AsGML($1, $2, 15, 0)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -- ST_AsGML(version, geom, precision)
 -- Availability: 1.3.2
 CREATEFUNCTION ST_AsGML(int4, geometry, int4)
 	RETURNS TEXT
-	AS 'SELECT _ST_AsGML($1, $2, $3)'
+	AS 'SELECT _ST_AsGML($1, $2, $3, 0)'
+	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- ST_AsGML (geom, precision, option) / version=2
+-- Availability: 1.4.0
+CREATEFUNCTION ST_AsGML(geometry, int4, int4)
+        RETURNS TEXT
+        AS 'SELECT _ST_AsGML(2, $1, $2, $3)'
+        LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
+
+-- ST_AsGML(version, geom, precision, option)
+-- Availability: 1.4.0
+CREATEFUNCTION ST_AsGML(int4, geometry, int4, int4)
+	RETURNS TEXT
+	AS 'SELECT _ST_AsGML($1, $2, $3, $4)'
 	LANGUAGE 'SQL' _IMMUTABLE_STRICT; -- WITH (isstrict,iscachable);
 
 -----------------------------------------------------------------------

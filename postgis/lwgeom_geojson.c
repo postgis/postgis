@@ -37,7 +37,7 @@ static size_t asgeojson_inspected_buf(LWGEOM_INSPECTED *insp, char *output, BOX3
 
 static size_t pointArray_to_geojson(POINTARRAY *pa, char *buf, int precision);
 static size_t pointArray_geojson_size(POINTARRAY *pa, int precision);
-static char *getSRSbySRID(int SRID);
+static char *getSRSbySRID(int SRID, bool short_crs);
 
 #define SHOW_DIGS_DOUBLE 15
 #define MAX_DOUBLE_PRECISION 15
@@ -82,17 +82,18 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 
 	/* Retrieve output option 
 	 * 0 = without option (default)
-	 * 1 = crs 
-	 * 2 = bbox
-	 * 3 = crs & bbox
+	 * 1 = bbox
+	 * 2 = short crs
+	 * 4 = long crs
 	 */
      	if (PG_NARGS() >3 && !PG_ARGISNULL(3)) 
                 option = PG_GETARG_INT32(3);
 
-	if (option & 1) {
+	if (option & 2 || option & 4) {
  		SRID = lwgeom_getsrid(SERIALIZED_FORM(geom));
         	if ( SRID != -1 ) {
-			srs = getSRSbySRID(SRID);
+			if (option & 2) srs = getSRSbySRID(SRID, true);
+			if (option & 4) srs = getSRSbySRID(SRID, false);
 			if (!srs) {
                 		elog(ERROR, "SRID %i unknown in spatial_ref_sys table", SRID);
                 		PG_RETURN_NULL();
@@ -100,7 +101,7 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 		}
 	}
 
-	if (option & 2) has_bbox = 1;
+	if (option & 1) has_bbox = 1;
 	
 	geojson = geometry_to_geojson(SERIALIZED_FORM(geom), srs, has_bbox, precision);
 	PG_FREE_IF_COPY(geom, 1);
@@ -134,9 +135,7 @@ geometry_to_geojson(uchar *geom, char *srs, bool has_bbox, int precision)
 
 	type = lwgeom_getType(geom[0]);
 
-	if (has_bbox) {
-		bbox = compute_serialized_box3d(geom);
-	}
+	if (has_bbox) bbox = compute_serialized_box3d(geom);
 
 	switch (type)
 	{
@@ -194,38 +193,19 @@ static size_t
 asgeojson_srs_size(char *srs) {
 	int size;
 
-	size = sizeof("'crs':{'type':'',");
-	size += sizeof("'properties':{'code':}");
-	size += strlen(srs) * sizeof(char) * 2; /* a bit more than really needed
-						   but avoid to search : separator */
+	size = sizeof("'crs':{'type':'name',");
+	size += sizeof("'properties':{'name':''}},");
+	size += strlen(srs) * sizeof(char);
+
 	return size;
 }
 
 static size_t
 asgeojson_srs_buf(char *output, char *srs) {
-	char *ptr_sep;
-	char buf[256+1];
 	char *ptr = output;
-	int size;
 
-	ptr_sep = strchr(srs, ':');
-	if ( ptr_sep == NULL ) {
-		lwerror("GeoJson: SRS dont't use a valid ':' separator !");
-		return (ptr-output);
-	}
-
-	size = ptr_sep - srs;
-	if (size > 256) size = 256;
-	memcpy(buf, srs, size);
-	buf[size] = '\0';
-	ptr += sprintf(ptr, "\"crs\":{\"type\":\"%s\",", buf);
-	ptr += sprintf(ptr, "\"properties\":{\"%s\":", buf);
-
-	size = srs + strlen(srs) - ptr_sep;
-	if (size > 256) size = 256;
-	memcpy(buf, ptr_sep + 1, size);
-	buf[size] = '\0';
-	ptr += sprintf(ptr, "%s}},", buf);
+	ptr += sprintf(ptr, "\"crs\":{\"type\":\"name\",");
+	ptr += sprintf(ptr, "\"properties\":{\"name\":\"%s\"}},", srs);
 
 	return (ptr-output);
 }
@@ -860,24 +840,25 @@ pointArray_to_geojson(POINTARRAY *pa, char *output, int precision)
  */
 
 static char *
-getSRSbySRID(int SRID)
+getSRSbySRID(int SRID, bool short_crs)
 {
-	char query[128];
+	char query[256];
 	char *srs, *srscopy;
 	int size, err;
 
-	/* connect to SPI */
 	if (SPI_OK_CONNECT != SPI_connect ()) {
 		elog(NOTICE, "getSRSbySRID: could not connect to SPI manager");
 		SPI_finish();
 		return NULL;
 	}
 
-	/* write query */
-	sprintf(query, "SELECT textcat(auth_name, textcat(':', auth_srid::text)) \
-			FROM spatial_ref_sys WHERE srid = '%d'", SRID);
-
-	/* execute query */
+	if (short_crs)
+		sprintf(query, "SELECT auth_name||':'||auth_srid \
+				FROM spatial_ref_sys WHERE srid='%d'", SRID);
+	else
+		sprintf(query, "SELECT 'urn:ogc:def:crs:'||auth_name||':'||auth_srid \
+				FROM spatial_ref_sys WHERE srid='%d'", SRID);
+		
 	err = SPI_exec(query, 1);
 	if ( err < 0 ) {
 		elog(NOTICE, "getSRSbySRID: error executing query %d", err);
@@ -896,7 +877,6 @@ getSRSbySRID(int SRID)
 	
 	/* NULL result */
 	if ( ! srs ) {
-		/*elog(NOTICE, "getSRSbySRID: null result"); */
 		SPI_finish();
 		return NULL;
 	}
