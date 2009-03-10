@@ -14,6 +14,7 @@
  * Originally written by: Klaus Förster <klaus@svg.cc>
  * Refactored by: Olivier Courtin (Camptocamp)
  *
+ * BNF SVG Path: <http://www.w3.org/TR/SVG/paths.html#PathDataBNF>
  **********************************************************************/
 
 
@@ -285,7 +286,7 @@ assvg_multipoint_size(LWGEOM_INSPECTED *insp, bool relative, int precision)
         for (i=0 ; i<insp->ngeometries ; i++) {
                 point = lwgeom_getpoint_inspected(insp, i);
                 size += assvg_point_size(point, relative, precision);
-                /* lwpoint_release(point); */
+                if (point) lwpoint_release(point);
 	}
         size += sizeof(" ") * --i;  /* Arbitrary comma separator */
 
@@ -391,7 +392,7 @@ assvg_multipolygon_size(LWGEOM_INSPECTED *insp, bool relative, int precision)
         for (i=0 ; i<insp->ngeometries ; i++) {
                 poly = lwgeom_getpoly_inspected(insp, i);
                 size += assvg_polygon_size(poly, relative, precision);
-                /* lwpoly_release(poly); */
+                if (poly) lwpoly_release(poly);
 	}
         size += sizeof(" ") * --i;   /* SVG whitespace Separator */
 
@@ -410,7 +411,7 @@ assvg_multipolygon_buf(LWGEOM_INSPECTED *insp, char *output, bool relative, int 
                 if (i) ptr += sprintf(ptr, " ");  /* SVG whitespace Separator */
                 poly = lwgeom_getpoly_inspected(insp, i);
                 ptr += assvg_polygon_buf(poly, ptr, relative, precision);
-                /* lwpoly_release(poly); */
+                if (poly) lwpoly_release(poly);
          }
 
 	return (ptr-output);
@@ -646,9 +647,9 @@ pointArray_svg_abs(POINTARRAY *pa, char *output, bool close_ring, int precision)
 		/* SVG Y axis is reversed, an no need to transform 0 into -0 */
                 sprintf(y, "%.*f", precision, fabs(pt.y) ? pt.y * -1:pt.y);
                 trim_trailing_zeros(y);
-		if (i) ptr += sprintf(ptr, " ");
+		if (i == 1) ptr += sprintf(ptr, " L ");
+		else if (i) ptr += sprintf(ptr, " ");
                 ptr += sprintf(ptr,"%s %s", x, y);
-		/* FIXME Could we really omit SVG L after M start point ? */
         }
 
 	return (ptr-output);
@@ -662,5 +663,5 @@ static size_t
 pointArray_svg_size(POINTARRAY *pa, int precision)
 {
         return (MAX_DIGS_DOUBLE + precision + sizeof(", "))
-                        * 2 * pa->npoints + sizeof("l ");
+                        * 2 * pa->npoints + sizeof(" L ");
 }
