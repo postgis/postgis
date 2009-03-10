@@ -346,9 +346,13 @@ output_polygon_ring_collection(uchar* geom,outfunc func,int supress)
        	 	}
 
         	/* Check if they are the same... */
-        	if (memcmp(&first_point, &last_point, sizeof(double) * dims) &&
-			(current_unparser_check_flags & PARSER_CHECK_CLOSURE))
+        	if (
+             (first_point[0] != last_point[0] || first_point[1] != last_point[1] ) &&
+			 (current_unparser_check_flags & PARSER_CHECK_CLOSURE))
+			{
                 	LWGEOM_WKT_UNPARSER_ERROR(UNPARSER_ERROR_UNCLOSED);	
+			}
+
 
 		/* Ensure that POLYGON has a minimum of 4 points */
         	if ((current_unparser_check_flags & PARSER_CHECK_MINPOINTS) && orig_cnt < 4)
@@ -835,15 +839,22 @@ output_wkb_polygon_ring_collection(uchar* geom,outwkbfunc func)
 		dimcount++;
 	}
 
-	/* Check if they are the same... */
-	if (memcmp(&first_point, &last_point, sizeof(double) * dims) &&
-		(current_unparser_check_flags & PARSER_CHECK_CLOSURE)) {
+	/* Check if they are the same... */	
+	if (((first_point[0] != last_point[0]) ||
+		(first_point[1] != last_point[1])) &&
+		(current_unparser_check_flags & PARSER_CHECK_CLOSURE)) 
+	{
 		LWGEOM_WKB_UNPARSER_ERROR(UNPARSER_ERROR_UNCLOSED);
 	}
 
+/*	if (memcmp(&first_point, &last_point, sizeof(double) * dims) &&
+		(current_unparser_check_flags & PARSER_CHECK_CLOSURE)) {
+		LWGEOM_WKB_UNPARSER_ERROR(UNPARSER_ERROR_UNCLOSED);
+	}
+*/
 	/* Ensure that POLYGON has a minimum of 4 points */
 	if ((current_unparser_check_flags & PARSER_CHECK_MINPOINTS) && orig_cnt < 4)
-		LWGEOM_WKT_UNPARSER_ERROR(UNPARSER_ERROR_MOREPOINTS);
+		LWGEOM_WKB_UNPARSER_ERROR(UNPARSER_ERROR_MOREPOINTS);
 
 	return geom;
 }
