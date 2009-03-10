@@ -2965,18 +2965,18 @@ BEGIN
 		a.attname::varchar as f_geometry_column,
 		2 as coord_dimension,
 #if USE_VERSION >= 73
-		trim(both  ' =)' from 
+		trim(both  '' =)'' from 
 			replace(replace(split_part(
-				sridcheck.consrc, ' = ', 2), ')', ''), '(', ''))::integer AS srid,
+				sridcheck.consrc, '' = '', 2), '')'', ''''), ''('', ''''))::integer AS srid,
 		trim(both '' =)'''''' from substr(typecheck.consrc, 
 			strpos(typecheck.consrc, ''=''),
 			strpos(typecheck.consrc, ''::'')-
 			strpos(typecheck.consrc, ''='')
 			))::varchar as type
 #else
-		trim(both  ' =)' from 
+		trim(both  '' =)'' from 
 			replace(replace(split_part(
-				sridcheck.rcsrc, ' = ', 2), ')', ''), '(', ''))::integer AS srid,
+				sridcheck.rcsrc, '' = '', 2), '')'', ''''), ''('', ''''))::integer AS srid,
 		trim(both '' =)'''''' from substr(typecheck.rcsrc, 
 			strpos(typecheck.rcsrc, ''=''),
 			strpos(typecheck.rcsrc, ''::'')-
