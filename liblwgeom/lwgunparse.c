@@ -306,8 +306,11 @@ output_polygon_ring_collection(uchar* geom,outfunc func,int supress)
 {
         uchar *temp;
         int dimcount;
-        double first_point[dims];
-        double last_point[dims];
+	double *first_point;
+	double *last_point;
+
+        first_point = lwalloc(dims * sizeof(double));
+        last_point = lwalloc(dims * sizeof(double));
 
 	int cnt = read_int(&geom);
 	int orig_cnt = cnt;
@@ -350,14 +353,24 @@ output_polygon_ring_collection(uchar* geom,outfunc func,int supress)
              (first_point[0] != last_point[0] || first_point[1] != last_point[1] ) &&
 			 (current_unparser_check_flags & PARSER_CHECK_CLOSURE))
 			{
+			lwfree(first_point);
+			lwfree(last_point);
                 	LWGEOM_WKT_UNPARSER_ERROR(UNPARSER_ERROR_UNCLOSED);	
 			}
 
 
 		/* Ensure that POLYGON has a minimum of 4 points */
         	if ((current_unparser_check_flags & PARSER_CHECK_MINPOINTS) && orig_cnt < 4)
+		{
+			lwfree(first_point);
+			lwfree(last_point);
                 	LWGEOM_WKT_UNPARSER_ERROR(UNPARSER_ERROR_MOREPOINTS);
+		}
 	}
+
+	lwfree(first_point);
+	lwfree(last_point);
+
 	return geom;
 }
 
@@ -807,8 +820,11 @@ output_wkb_polygon_ring_collection(uchar* geom,outwkbfunc func)
 {
 	uchar *temp;
 	int dimcount;
-	double first_point[dims];
-	double last_point[dims];
+	double *first_point;
+	double *last_point;
+
+        first_point = lwalloc(dims * sizeof(double));
+        last_point = lwalloc(dims * sizeof(double));
 
 	int cnt = read_int(&geom);
 	int orig_cnt = cnt;
@@ -844,17 +860,21 @@ output_wkb_polygon_ring_collection(uchar* geom,outwkbfunc func)
 		(first_point[1] != last_point[1])) &&
 		(current_unparser_check_flags & PARSER_CHECK_CLOSURE)) 
 	{
+		lwfree(first_point);
+		lwfree(last_point);
 		LWGEOM_WKB_UNPARSER_ERROR(UNPARSER_ERROR_UNCLOSED);
 	}
 
-/*	if (memcmp(&first_point, &last_point, sizeof(double) * dims) &&
-		(current_unparser_check_flags & PARSER_CHECK_CLOSURE)) {
-		LWGEOM_WKB_UNPARSER_ERROR(UNPARSER_ERROR_UNCLOSED);
-	}
-*/
 	/* Ensure that POLYGON has a minimum of 4 points */
 	if ((current_unparser_check_flags & PARSER_CHECK_MINPOINTS) && orig_cnt < 4)
+	{
+		lwfree(first_point);
+		lwfree(last_point);
 		LWGEOM_WKB_UNPARSER_ERROR(UNPARSER_ERROR_MOREPOINTS);
+	}
+
+	lwfree(first_point);
+	lwfree(last_point);
 
 	return geom;
 }
