@@ -29,18 +29,18 @@ Datum transform_geom(PG_FUNCTION_ARGS);
 Datum postgis_proj_version(PG_FUNCTION_ARGS);
 
 
-#include "projects.h"
+#include "proj_api.h"
 #include "utils/memutils.h"
 #include "executor/spi.h"
 #include "access/hash.h"
 #include "utils/hsearch.h"
 
-PJ *make_project(char *str1);
+projPJ make_project(char *str1);
 void to_rad(POINT4D *pt);
 void to_dec(POINT4D *pt);
-int pj_transform_nodatum(PJ *srcdefn, PJ *dstdefn, long point_count, int point_offset, double *x, double *y, double *z );
-int transform_point(POINT4D *pt, PJ *srcdefn, PJ *dstdefn);
-static int lwgeom_transform_recursive(uchar *geom, PJ *inpj, PJ *outpj);
+int pj_transform_nodatum(projPJ srcdefn, projPJ dstdefn, long point_count, int point_offset, double *x, double *y, double *z );
+int transform_point(POINT4D *pt, projPJ srcdefn, projPJ dstdefn);
+static int lwgeom_transform_recursive(uchar *geom, projPJ inpj, projPJ outpj);
 
 
 
@@ -60,7 +60,7 @@ static int lwgeom_transform_recursive(uchar *geom, PJ *inpj, PJ *outpj);
 typedef struct struct_PROJ4SRSCacheItem
 {
 	int srid;
-	PJ *projection;	
+	projPJ projection;	
 	MemoryContext projection_mcxt;
 } PROJ4SRSCacheItem;
 
@@ -74,14 +74,14 @@ typedef struct struct_PROJ4PortalCache
 
 
 /*
- * Backend PJ hash table
+ * Backend projPJ hash table
  *
- * This hash table stores a key/value pair of MemoryContext/PJ * objects.
- * Whenever we create a PJ * object using pj_init(), we create a separate
+ * This hash table stores a key/value pair of MemoryContext/projPJ objects.
+ * Whenever we create a projPJ object using pj_init(), we create a separate
  * MemoryContext as a child context of the current executor context.
- * The MemoryContext/PJ * object is stored in this hash table so
+ * The MemoryContext/projPJ object is stored in this hash table so
  * that when PROJ4SRSCacheDelete() is called during query cleanup, we can
- * lookup the PJ * object based upon the MemoryContext parameter and hence
+ * lookup the projPJ object based upon the MemoryContext parameter and hence
  * pj_free() it.
  */
 static HTAB *PJHash = NULL;
@@ -89,7 +89,7 @@ static HTAB *PJHash = NULL;
 typedef struct struct_PJHashEntry
 {
 	MemoryContext ProjectionContext;
-	PJ *projection;
+	projPJ projection;
 } PJHashEntry;
 
 
@@ -97,13 +97,13 @@ typedef struct struct_PJHashEntry
 uint32 mcxt_ptr_hash(const void *key, Size keysize);
 
 static HTAB *CreatePJHash(void);
-static void AddPJHashEntry(MemoryContext mcxt, PJ *projection);
-static PJ *GetPJHashEntry(MemoryContext mcxt);
+static void AddPJHashEntry(MemoryContext mcxt, projPJ projection);
+static projPJ GetPJHashEntry(MemoryContext mcxt);
 static void DeletePJHashEntry(MemoryContext mcxt);
 
 /* Cache API */
 bool IsInPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid);
-PJ *GetProjectionFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid);
+projPJ GetProjectionFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid);
 void AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid);
 void DeleteFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid);
 
@@ -151,9 +151,9 @@ PROJ4SRSCacheInit(MemoryContext context)
 static void
 PROJ4SRSCacheDelete(MemoryContext context)
 {
-	PJ *projection;
+	projPJ projection;
 
-	/* Lookup the PJ pointer in the global hash table so we can free it */
+	/* Lookup the projPJ pointer in the global hash table so we can free it */
 	projection = GetPJHashEntry(context);
 
 	if (!projection)
@@ -211,7 +211,7 @@ PROJ4SRSCacheCheck(MemoryContext context)
 
 
 /*
- * PROJ4 PJ Hash Table functions
+ * PROJ4 projPJ Hash Table functions
  */
 
 
@@ -238,10 +238,10 @@ static HTAB *CreatePJHash(void)
 	ctl.entrysize = sizeof(PJHashEntry);
 	ctl.hash = mcxt_ptr_hash;
 
-	return hash_create("PostGIS PROJ4 Backend PJ MemoryContext Hash", PROJ4_BACKEND_HASH_SIZE, &ctl, (HASH_ELEM | HASH_FUNCTION));
+	return hash_create("PostGIS PROJ4 Backend projPJ MemoryContext Hash", PROJ4_BACKEND_HASH_SIZE, &ctl, (HASH_ELEM | HASH_FUNCTION));
 }
 
-static void AddPJHashEntry(MemoryContext mcxt, PJ *projection)
+static void AddPJHashEntry(MemoryContext mcxt, projPJ projection)
 {
 	bool found;
 	void **key;
@@ -264,7 +264,7 @@ static void AddPJHashEntry(MemoryContext mcxt, PJ *projection)
 	}
 }
 
-static PJ *GetPJHashEntry(MemoryContext mcxt)
+static projPJ GetPJHashEntry(MemoryContext mcxt)
 {
 	void **key;
 	PJHashEntry *he;
@@ -326,7 +326,7 @@ IsInPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
  * Return the projection object from the cache (we should
  * already have checked it exists using IsInPROJ4SRSCache first)
  */
-PJ *
+projPJ 
 GetProjectionFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
 {
 	int i;
@@ -351,7 +351,7 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 {
 	MemoryContext PJMemoryContext;
 	int spi_result;
-	PJ *projection = NULL;
+	projPJ projection = NULL;
 	char *proj_str;
 	char proj4_spi_buffer[256];
 	int* pj_errno_ref;
@@ -525,27 +525,27 @@ void SetPROJ4LibPath(void)
 void
 to_rad(POINT4D *pt)
 {
-	pt->x *= PI/180.0;
-	pt->y *= PI/180.0;
+	pt->x *= M_PI/180.0;
+	pt->y *= M_PI/180.0;
 }
 
 /* convert radians to decimal degress */
 void
 to_dec(POINT4D *pt)
 {
-	pt->x *= 180.0/PI;
-	pt->y *= 180.0/PI;
+	pt->x *= 180.0/M_PI;
+	pt->y *= 180.0/M_PI;
 }
 
 /* given a string, make a PJ object */
-PJ *
+projPJ 
 make_project(char *str1)
 {
 	int t;
 	char *params[1024];  /* one for each parameter */
 	char *loc;
 	char *str;
-	PJ *result;
+	projPJ result;
 
 
 	if (str1 == NULL) return NULL;
@@ -589,7 +589,7 @@ make_project(char *str1)
  * from inpj projection to outpj projection
  */
 static int
-lwgeom_transform_recursive(uchar *geom, PJ *inpj, PJ *outpj)
+lwgeom_transform_recursive(uchar *geom, projPJ inpj, projPJ outpj)
 {
 	LWGEOM_INSPECTED *inspected = lwgeom_inspect(geom);
 	int j, i;
@@ -696,7 +696,7 @@ Datum transform(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom;
 	PG_LWGEOM *result=NULL;
 	LWGEOM *lwgeom;
-	PJ *input_pj,*output_pj;
+	projPJ input_pj, output_pj;
 	int32 result_srid ;
 	uchar *srl;
 
@@ -825,7 +825,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom;
 	PG_LWGEOM *result=NULL;
 	LWGEOM *lwgeom;
-	PJ *input_pj,*output_pj;
+	projPJ input_pj, output_pj;
 	char *input_proj4, *output_proj4;
 	text *input_proj4_text;
 	text *output_proj4_text;
@@ -940,7 +940,7 @@ Datum postgis_proj_version(PG_FUNCTION_ARGS)
 
 
 int
-transform_point(POINT4D *pt, PJ *srcpj, PJ *dstpj)
+transform_point(POINT4D *pt, projPJ srcpj, projPJ dstpj)
 {
 	int* pj_errno_ref;
 	POINT4D orig_pt;
@@ -950,7 +950,7 @@ transform_point(POINT4D *pt, PJ *srcpj, PJ *dstpj)
 	orig_pt.y = pt->y;
 	orig_pt.z = pt->z;
 
-	if (srcpj->is_latlong) to_rad(pt);
+	if (pj_is_latlong(srcpj)) to_rad(pt);
 
 	/* Perform the transform */
 	pj_transform(srcpj, dstpj, 1, 0, &(pt->x), &(pt->y), &(pt->z));
@@ -977,7 +977,7 @@ transform_point(POINT4D *pt, PJ *srcpj, PJ *dstpj)
 		}
 	}
 
-	if (dstpj->is_latlong) to_dec(pt);
+	if (pj_is_latlong(dstpj)) to_dec(pt);
 	return 1;
 }
 
