@@ -40,11 +40,11 @@ TESTS = \
 	sql-mm-multisurface \
 	geojson \
 	gml \
+	svg \
+	kml \
 	regress_ogc \
 	regress_bdpoly \
-	regress_proj \
-	kml
-
+	regress_proj
 
 PREPROC = \
 	sql-mm-circularstring_expected \
