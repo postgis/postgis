@@ -29,17 +29,22 @@ SELECT 'version_02', ST_AsGeoJson(21, GeomFromEWKT('SRID=4326;POINT(1 1)'));
 SELECT 'version_03', ST_AsGeoJson(-4, GeomFromEWKT('SRID=4326;POINT(1 1)'));
 
 
--- CRS
-SELECT 'crs_01', ST_AsGeoJson(GeomFromEWKT('SRID=4326;POINT(1 1)'), 0, 1);
-SELECT 'crs_02', ST_AsGeoJson(GeomFromEWKT('SRID=-1;POINT(1 1)'), 0, 1);
-SELECT 'crs_03', ST_AsGeoJson(GeomFromEWKT('SRID=27572;POINT(600000 2430000)'), 0, 1);
-SELECT 'crs_04', ST_AsGeoJson(GeomFromEWKT('SRID=100000;POINT(600000 2430000)'), 0, 1);
+-- Short CRS
+SELECT 'crs_01', ST_AsGeoJson(GeomFromEWKT('SRID=4326;POINT(1 1)'), 0, 2);
+SELECT 'crs_02', ST_AsGeoJson(GeomFromEWKT('SRID=-1;POINT(1 1)'), 0, 2);
+SELECT 'crs_03', ST_AsGeoJson(GeomFromEWKT('SRID=27572;POINT(600000 2430000)'), 0, 2);
+SELECT 'crs_04', ST_AsGeoJson(GeomFromEWKT('SRID=100000;POINT(600000 2430000)'), 0, 2);
 
+-- Long CRS
+SELECT 'crs_05', ST_AsGeoJson(GeomFromEWKT('SRID=4326;POINT(1 1)'), 0, 4);
+SELECT 'crs_06', ST_AsGeoJson(GeomFromEWKT('SRID=-1;POINT(1 1)'), 0, 4);
+SELECT 'crs_07', ST_AsGeoJson(GeomFromEWKT('SRID=27572;POINT(600000 2430000)'), 0, 4);
 
 -- Bbox
 SELECT 'bbox_01', ST_AsGeoJson(GeomFromEWKT('LINESTRING(1 1, 2 2, 3 3, 4 4)'), 0);
-SELECT 'bbox_02', ST_AsGeoJson(GeomFromEWKT('LINESTRING(1 1, 2 2, 3 3, 4 4)'), 0, 2);
+SELECT 'bbox_02', ST_AsGeoJson(GeomFromEWKT('LINESTRING(1 1, 2 2, 3 3, 4 4)'), 0, 1);
 SELECT 'bbox_03', ST_AsGeoJson(GeomFromEWKT('LINESTRING(1 1, 2 2, 3 3, 4 4)'), 0, 3);
+SELECT 'bbox_04', ST_AsGeoJson(GeomFromEWKT('LINESTRING(1 1, 2 2, 3 3, 4 4)'), 0, 5);
 
 
 -- CRS and Bbox
@@ -51,6 +56,14 @@ SELECT 'options_05', ST_AsGeoJson(GeomFromEWKT('SRID=-1;LINESTRING(1 1, 2 2, 3 3
 SELECT 'options_06', ST_AsGeoJson(GeomFromEWKT('SRID=4326;LINESTRING(1 1, 2 2, 3 3, 4 4)'), 0, 2);
 SELECT 'options_07', ST_AsGeoJson(GeomFromEWKT('SRID=-1;LINESTRING(1 1, 2 2, 3 3, 4 4)'), 0, 3);
 SELECT 'options_08', ST_AsGeoJson(GeomFromEWKT('SRID=4326;LINESTRING(1 1, 2 2, 3 3, 4 4)'), 0, 3);
+SELECT 'options_09', ST_AsGeoJson(GeomFromEWKT('SRID=-1;LINESTRING(1 1, 2 2, 3 3, 4 4)'), 0, 4);
+SELECT 'options_10', ST_AsGeoJson(GeomFromEWKT('SRID=4326;LINESTRING(1 1, 2 2, 3 3, 4 4)'), 0, 4);
+SELECT 'options_10', ST_AsGeoJson(GeomFromEWKT('SRID=-1;LINESTRING(1 1, 2 2, 3 3, 4 4)'), 0, 5);
+SELECT 'options_11', ST_AsGeoJson(GeomFromEWKT('SRID=4326;LINESTRING(1 1, 2 2, 3 3, 4 4)'), 0, 5);
+SELECT 'options_12', ST_AsGeoJson(GeomFromEWKT('SRID=-1;LINESTRING(1 1, 2 2, 3 3, 4 4)'), 0, 6);
+SELECT 'options_13', ST_AsGeoJson(GeomFromEWKT('SRID=4326;LINESTRING(1 1, 2 2, 3 3, 4 4)'), 0, 6);
+SELECT 'options_14', ST_AsGeoJson(GeomFromEWKT('SRID=-1;LINESTRING(1 1, 2 2, 3 3, 4 4)'), 0, 7);
+SELECT 'options_15', ST_AsGeoJson(GeomFromEWKT('SRID=4326;LINESTRING(1 1, 2 2, 3 3, 4 4)'), 0, 7);
 
 
 
