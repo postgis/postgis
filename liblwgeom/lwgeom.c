@@ -338,6 +338,7 @@ LWGEOM *lwmpoly_as_lwgeom(LWMPOLY *obj) { return (LWGEOM *)obj; }
 LWGEOM *lwmline_as_lwgeom(LWMLINE *obj) { return (LWGEOM *)obj; }
 LWGEOM *lwmpoint_as_lwgeom(LWMPOINT *obj) { return (LWGEOM *)obj; }
 LWGEOM *lwcollection_as_lwgeom(LWCOLLECTION *obj) { return (LWGEOM *)obj; }
+LWGEOM *lwcircstring_as_lwgeom(LWCIRCSTRING *obj) { return (LWGEOM *)obj; }
 LWGEOM *lwpoly_as_lwgeom(LWPOLY *obj) { return (LWGEOM *)obj; }
 LWGEOM *lwline_as_lwgeom(LWLINE *obj) { return (LWGEOM *)obj; }
 LWGEOM *lwpoint_as_lwgeom(LWPOINT *obj) { return (LWGEOM *)obj; }

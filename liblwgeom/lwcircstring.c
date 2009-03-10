@@ -21,6 +21,7 @@
 BOX3D *lwcircle_compute_box3d(POINT4D *p1, POINT4D *p2, POINT4D *p3);
 void printLWCIRCSTRING(LWCIRCSTRING *curve);
 void lwcircstring_reverse(LWCIRCSTRING *curve);
+void lwcircstring_release(LWCIRCSTRING *lwcirc);
 LWCIRCSTRING *lwcircstring_segmentize2d(LWCIRCSTRING *curve, double dist);
 char lwcircstring_same(const LWCIRCSTRING *me, const LWCIRCSTRING *you);
 LWCIRCSTRING *lwcircstring_from_lwpointarray(int SRID, unsigned int npoints, LWPOINT **points);
@@ -66,6 +67,12 @@ lwcircstring_construct(int SRID, BOX2DFLOAT4 *bbox, POINTARRAY *points)
         result->bbox = bbox;
          
         return result;
+}
+
+void
+lwcircstring_release(LWCIRCSTRING *lwcirc)
+{
+  lwgeom_release(lwcircstring_as_lwgeom(lwcirc));
 }
 
 /*

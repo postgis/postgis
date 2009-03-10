@@ -460,6 +460,7 @@ extern LWGEOM *lwmpoly_as_lwgeom(LWMPOLY *obj);
 extern LWGEOM *lwmline_as_lwgeom(LWMLINE *obj);
 extern LWGEOM *lwmpoint_as_lwgeom(LWMPOINT *obj);
 extern LWGEOM *lwcollection_as_lwgeom(LWCOLLECTION *obj);
+extern LWGEOM *lwcircstring_as_lwgeom(LWCIRCSTRING *obj);
 extern LWGEOM *lwpoly_as_lwgeom(LWPOLY *obj);
 extern LWGEOM *lwline_as_lwgeom(LWLINE *obj);
 extern LWGEOM *lwpoint_as_lwgeom(LWPOINT *obj);
@@ -1092,6 +1093,7 @@ extern void lwinspected_release(LWGEOM_INSPECTED *inspected); /* TODO: make this
 extern void lwpoint_release(LWPOINT *lwpoint);
 extern void lwline_release(LWLINE *lwline);
 extern void lwpoly_release(LWPOLY *lwpoly);
+extern void lwcircstring_release(LWCIRCSTRING *lwcirc);
 extern void lwmpoint_release(LWMPOINT *lwpoint);
 extern void lwmline_release(LWMLINE *lwline);
 extern void lwmpoly_release(LWMPOLY *lwpoly);
