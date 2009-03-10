@@ -163,9 +163,9 @@ ldconfig</programlisting>
 		
 		<listitem>
 			<para>If you are missing proj based on above or running a version below 4.5, then install by following these steps.</para>
-			<programlisting>wget http://download.osgeo.org/proj/proj-4.6.0.tar.gz
-tar xvzf proj-4.6.0.tar.gz
-cd proj-4.6.0
+			<programlisting>wget http://download.osgeo.org/proj/proj-&last_proj_release_version;.tar.gz
+gzip -d -c proj-&last_proj_release_version;.tar.gz | tar xvf -
+cd proj-&last_proj_release_version;
 ./configure &amp;&amp; make clean &amp;&amp; make
 make install
 ldconfig
@@ -174,9 +174,9 @@ cd ..</programlisting>
 		
 		<listitem>
 			<para>If you are missing geos based on above or running a version below 3.0, then install by following these steps.</para>
-			<programlisting>wget http://download.osgeo.org/geos/geos-3.0.3.tar.bz2
-tar xvjf geos-3.0.3.tar.bz2
-cd geos-3.0.3
+			<programlisting>wget http://download.osgeo.org/geos/geos-&last_geos_release_version;.tar.bz2
+bunzip2 -d -c geos-&last_geos_release_version;.tar.bz2 | tar xvf -
+cd geos-&last_geos_release_version;
 ./configure &amp;&amp; make clean &amp;&amp; make
 make install
 ldconfig
