@@ -10,14 +10,14 @@
  *
  **********************************************************************/
 
-#include "../postgis_config.h"
-
 #include "postgres.h"
 #include "fmgr.h"
 #include "miscadmin.h"
 #include "utils/hsearch.h"
 #include "utils/memutils.h"
 #include "access/hash.h"
+
+#include "../postgis_config.h"
 
 /* Workaround for GEOS 2.2 compatibility: old geos_c.h does not contain
    header guards to protect from multiple inclusion */

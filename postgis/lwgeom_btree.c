@@ -7,18 +7,18 @@
  *
  ***********************************************************/
 
-#include <math.h>
-#include <float.h>
-#include <string.h>
-#include <stdio.h>
-#include <errno.h>
-
 #include "postgres.h"
 #include "fmgr.h"
 #include "utils/geo_decls.h"
 
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
+
+#include <math.h>
+#include <float.h>
+#include <string.h>
+#include <stdio.h>
+#include <errno.h>
 
 Datum lwgeom_lt(PG_FUNCTION_ARGS);
 Datum lwgeom_le(PG_FUNCTION_ARGS);

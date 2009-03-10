@@ -1,6 +1,6 @@
-#include "../postgis_config.h"
-
 #include "postgres.h"
+
+#include "../postgis_config.h"
 
 #include <math.h>
 #include <float.h>

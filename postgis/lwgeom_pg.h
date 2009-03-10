@@ -1,10 +1,12 @@
 #ifndef _LWGEOM_PG_H
 #define _LWGEOM_PG_H 1
 
-#include "../postgis_config.h"
 #include "postgres.h"
 #include "utils/geo_decls.h"
 #include "fmgr.h"
+
+#include "../postgis_config.h"
+
 #include "liblwgeom.h"
 #include "pgsql_compat.h"
 

@@ -1,9 +1,3 @@
-#include <math.h>
-#include <float.h>
-#include <string.h>
-#include <stdio.h>
-#include <errno.h>
-
 #include "postgres.h"
 #include "access/gist.h"
 #include "access/itup.h"
@@ -14,6 +8,11 @@
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
 
+#include <math.h>
+#include <float.h>
+#include <string.h>
+#include <stdio.h>
+#include <errno.h>
 
 
 /* forward defs */

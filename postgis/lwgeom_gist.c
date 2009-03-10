@@ -1,11 +1,3 @@
-#include <math.h>
-#include <float.h>
-#include <string.h>
-#include <stdio.h>
-#include <errno.h>
-
-#include "../postgis_config.h"
-
 #include "postgres.h"
 #include "access/gist.h"
 #include "access/itup.h"
@@ -14,9 +6,16 @@
 #include "fmgr.h"
 #include "utils/elog.h"
 
+#include "../postgis_config.h"
 #include "liblwgeom.h"
 
 #include "lwgeom_pg.h"
+
+#include <math.h>
+#include <float.h>
+#include <string.h>
+#include <stdio.h>
+#include <errno.h>
 
 
 /*

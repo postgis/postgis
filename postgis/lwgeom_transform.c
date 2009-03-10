@@ -10,18 +10,18 @@
  * 
  **********************************************************************/
 
-#include <math.h>
-#include <float.h>
-#include <string.h>
-#include <stdio.h>
-#include <errno.h>
-
 #include "postgres.h"
 #include "fmgr.h"
 #include "miscadmin.h"
 
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
+
+#include <math.h>
+#include <float.h>
+#include <string.h>
+#include <stdio.h>
+#include <errno.h>
 
 
 Datum transform(PG_FUNCTION_ARGS);

@@ -4,12 +4,6 @@
  *
  **********************************************************************/
 
-#include <math.h>
-#include <float.h>
-#include <string.h>
-#include <stdio.h>
-#include <errno.h>
-
 #include "postgres.h"
 #include "fmgr.h"
 #include "utils/elog.h"
@@ -18,7 +12,11 @@
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
 
-
+#include <math.h>
+#include <float.h>
+#include <string.h>
+#include <stdio.h>
+#include <errno.h>
 
 #define SHOW_DIGS_DOUBLE 15
 #define MAX_DIGS_DOUBLE (SHOW_DIGS_DOUBLE + 6 + 1 + 3 +1)

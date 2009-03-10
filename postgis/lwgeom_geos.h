@@ -10,10 +10,6 @@
  * 
  **********************************************************************/
 
-#include <string.h>
-
-#include "../postgis_config.h"
-
 #include "postgres.h"
 #include "fmgr.h"
 #include "miscadmin.h"
@@ -22,6 +18,8 @@
 #include "utils/hsearch.h"
 #include "utils/memutils.h"
 #include "executor/spi.h"
+
+#include "../postgis_config.h"
 
 /* Workaround for GEOS 2.2 compatibility: old geos_c.h does not contain 
    header guards to protect from multiple inclusion */ 
@@ -33,6 +31,8 @@
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
 #include "profile.h"
+
+#include <string.h>
 
 #if POSTGIS_PROFILE > 0
 #warning POSTGIS_PROFILE enabled!

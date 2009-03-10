@@ -10,13 +10,6 @@
  * 
  **********************************************************************/
 
-#include <math.h>
-#include <float.h>
-#include <string.h>
-#include <stdio.h>
-#include <errno.h>
-#include <ctype.h>
-
 #include "postgres.h"
 #include "executor/spi.h"
 #include "fmgr.h"
@@ -29,6 +22,13 @@
 
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
+
+#include <math.h>
+#include <float.h>
+#include <string.h>
+#include <stdio.h>
+#include <errno.h>
+#include <ctype.h>
 
 /*
  * 	Assign a number to the postgis statistics kind

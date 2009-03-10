@@ -9,15 +9,6 @@
  * the terms of the GNU General Public Licence. See the COPYING file.
  * 
  **********************************************************************/
-#include "../postgis_config.h"
-
-#include <math.h>
-#include <float.h>
-#include <string.h>
-#include <stdio.h>
-#include <errno.h>
-#include <assert.h>
-
 #include "postgres.h"
 #include "fmgr.h"
 #include "utils/elog.h"
@@ -28,6 +19,16 @@
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
 #include "profile.h"
+
+#include "../postgis_config.h"
+
+#include <math.h>
+#include <float.h>
+#include <string.h>
+#include <stdio.h>
+#include <errno.h>
+#include <assert.h>
+
 
 Datum LWGEOM_dump(PG_FUNCTION_ARGS);
 Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS);

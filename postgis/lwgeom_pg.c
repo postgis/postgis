@@ -1,14 +1,14 @@
+#include <postgres.h>
+#include <fmgr.h>
+#include <executor/spi.h>
+
 #include "../postgis_config.h"
+#include "liblwgeom.h"
+#include "lwgeom_pg.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
-#include <postgres.h>
-#include <fmgr.h>
-#include <executor/spi.h>
-#include "liblwgeom.h"
-#include "lwgeom_pg.h"
-
 
 #define PARANOIA_LEVEL 1
 

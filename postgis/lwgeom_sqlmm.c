@@ -10,15 +10,15 @@
  * 
  **********************************************************************/
 
+#include "postgres.h"
+#include "liblwgeom.h"
+#include "fmgr.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
 #include <math.h>
-
-#include "postgres.h"
-#include "liblwgeom.h"
-#include "fmgr.h"
 
 #include "lwgeom_pg.h"
 
