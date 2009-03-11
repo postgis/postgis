@@ -160,17 +160,6 @@
       </varlistentry>
 
       <varlistentry>
-        <term>ST_PointFromWKB</term>
-
-        <listitem>
-          <para>Return a specified ST_Point value.</para>
-
-          <para>SQL-MM 3: 6.1.9</para>
-        </listitem>
-      </varlistentry>
-
-
-      <varlistentry>
         <term>ST_PolyFromWKB</term>
 
         <listitem>

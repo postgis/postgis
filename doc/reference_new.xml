@@ -2693,9 +2693,16 @@ SELECT ST_PointFromText('POINT(-71.064544 42.28787)', 4326);
             <imageobject>
               <imagedata fileref="images/check.png" />
             </imageobject>
-          </inlinemediaobject> This method implements the <ulink
+          </inlinemediaobject>This method implements the <ulink
         url="http://www.opengeospatial.org/standards/sfs">OpenGIS Simple Features
         Implementation Specification for SQL. 3.2.7.2</ulink></para>
+
+        <para><inlinemediaobject>
+            <imageobject>
+              <imagedata fileref="images/check.png" />
+            </imageobject>
+            </inlinemediaobject>This method implements the SQL/MM specification: SQL-MM 3: 6.1.9
+        </para>
     	
     	<!-- Optionally mention 3d support -->
         <para><inlinemediaobject>
